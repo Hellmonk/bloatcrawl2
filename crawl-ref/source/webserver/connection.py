@@ -86,16 +86,12 @@ class WebtilesSocketConnection(object):
                 self.message_callback(data)
 
     def send_message(self, data):
-        start = datetime.now()
         try:
             self.socket.sendto(data, self.crawl_socketpath)
         except socket.timeout:
-            self.logger.warning("Game socket send timeout", exc_info=True)
+            self.logger.warning("Game socket send timeout. Sent %s bytes: (%s)", len(data), data, exc_info=True)
             self.close()
             return
-        end = datetime.now()
-        if end - start >= timedelta(seconds=1):
-            self.logger.warning("Slow socket send: " + str(end - start))
 
     def close(self):
         if self.socket:
