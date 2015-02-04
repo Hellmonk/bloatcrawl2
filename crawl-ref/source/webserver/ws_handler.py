@@ -43,25 +43,31 @@ def remove_in_lobbys(process):
         if socket.is_in_lobby():
             socket.send_message("lobby", remove=process.id)
 
+def all_games_info():
+    """Return an iterable containing live game info.
+
+    The seemingly-arbitrary ordering is `dgamelaunch -s` compatible.
+    """
+    for socket in list(sockets):
+        if socket.username and socket.is_running():
+            yield (socket.username,
+                   socket.game_id,
+                   socket.process.human_readable_where(),
+                   str(socket.process.idle_time()),
+                   str(socket.process.watcher_count()),
+                   )
 
 def write_dgl_status_file():
     if not config.get("dgl_status_file") \
        or not config.get("status_file_update_rate"):
         return
-    f = None
     try:
-        f = open(config.dgl_status_file, "w")
-        for socket in list(sockets):
-            if socket.username and socket.is_running():
-                f.write("%s#%s#%s#0x0#%s#%s#\n" %
-                        (socket.username, socket.game_id,
-                         (socket.process.human_readable_where()),
-                         str(socket.process.idle_time()),
-                         str(socket.process.watcher_count())))
+        with open(config.dgl_status_file, "w") as f:
+            for game in all_games_info():
+                f.write("#".join(game))
+                f.write('\n')
     except (OSError, IOError) as e:
         logging.warning("Could not write dgl status file: %s", e)
-    finally:
-        if f: f.close()
 
 def status_file_timeout():
     if not config.get("dgl_status_file") \
