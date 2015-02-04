@@ -282,6 +282,7 @@ function (React, misc, comm, pubsub, user) {
                                onChange={this.update}
                                value={this.state.password_repeat}/>
                       </div>
+                      <p>Your email address will only be used for password resets!</p>
                       <div>
                         <input type="button" name="cancel"
                                value="Cancel" onClick={this.cancel} />
