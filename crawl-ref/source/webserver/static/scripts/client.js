@@ -19,7 +19,7 @@ function (exports, $, React, comm, user, LobbyRoot, Loader, Scores, pubsub) {
             case "connecting":
                 return React.DOM.div({}, "Connecting...");
             case "connect_failure":
-                return React.DOM.div({}, "Could not connect to server.");
+                return React.DOM.div({}, "Could not connect to server.<br>If you are using a proxy server, this may be causing problems :(");
             case "lobby":
                 return LobbyRoot();
             case "play":
