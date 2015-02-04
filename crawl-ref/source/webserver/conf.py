@@ -151,6 +151,11 @@ class Conf(object):
         if init_prog and not os.access(init_prog, os.X_OK):
             raise ConfigError("init_player_program ({0}) is not "
                               "executable".format(init_prog))
+        dgamelaunch = self.get('dgamelaunch_path')
+        if dgamelaunch and not \
+                (os.path.isfile(dgamelaunch) and os.access(dgamelaunch, os.X_OK)):
+            raise ConfigError("dgamelaunch_path doesn't point to an executable"
+                              "file I can access")
         # crawl usernames are case-insensitive
         self.admins = set()
         if self.get("server_admins"):

@@ -48,6 +48,15 @@ watch_socket_dirs = false
 #dgl_status_file = "./rcs/status"
 #status_file_update_rate = 5
 
+# Enable /dgl-status. This is used by the DCSS website to collect global player
+# information
+expose_dgl_status = true
+
+# If you're using expose_dgl_status and also serve console games using
+# dgamelaunch, set the path to dgamelaunch to show those games in /dgl-status
+# too.
+# dgamelaunch_path = "/usr/local/bin/dgamelaunch"
+
 milestone_files = ["./milestones"]
 list_savegames = false
 
