@@ -79,7 +79,7 @@ bool make_hungry(int hunger_amount, bool suppress_msg,
     }
     else
     {
-        const int sp_loss = div_rand_round(hunger_amount, 30);
+        const int sp_loss = div_rand_round(hunger_amount, 20);
         result = dec_sp(sp_loss, true);
     }
 

@@ -1998,7 +1998,7 @@ int player_movement_speed()
     int mv = 1100;
 
     // transformations
-    if (you.exertion == EXERT_POWER)
+    if (you.exertion == EXERT_ESCAPE)
     {
         if (you.form == TRAN_BAT)
             mv = 500;
@@ -2026,7 +2026,7 @@ int player_movement_speed()
 			mv += 100;
 		}
 
-        if (you.exertion == EXERT_POWER)
+        if (you.exertion == EXERT_ESCAPE)
         {
             if (you.temperature >= TEMP_ROOM) {
                 mv -= 100;
@@ -2055,7 +2055,7 @@ int player_movement_speed()
     if (you.duration[DUR_ICY_ARMOUR])
         mv += 100; // as ponderous
 
-    if (you.exertion == EXERT_POWER)
+    if (you.exertion == EXERT_ESCAPE)
         for (int i = 0; i < player_mutation_level(MUT_FAST); i++)
             mv = mv * 4 / 5;
 
@@ -2070,7 +2070,7 @@ int player_movement_speed()
           mv = mv * 4 / 3;
     }
 
-    if (you.exertion == EXERT_POWER && you.religion != GOD_CHEIBRIADOS)
+    if (you.exertion == EXERT_ESCAPE && you.religion != GOD_CHEIBRIADOS)
         mv = mv * 3 / 4;
 
     mv = div_rand_round(mv, 100);
@@ -2114,7 +2114,7 @@ int player_speed()
 
     if (you.duration[DUR_BERSERK] && !have_passive(passive_t::no_haste))
         ps = berserk_div(ps);
-    else if (you.duration[DUR_HASTE] && you.exertion == EXERT_POWER)
+    else if (you.duration[DUR_HASTE])
         ps = haste_div(ps);
 
     if (you.form == TRAN_STATUE || you.duration[DUR_PETRIFYING])
@@ -3529,7 +3529,7 @@ int check_stealth()
     if (player_has_orb())
         stealth /= 3;
 
-    if (you.exertion == EXERT_POWER)
+    if (you.exertion == EXERT_ESCAPE)
         stealth >>= 2;
 
     if (you.exertion == EXERT_CAREFUL)
@@ -4199,8 +4199,6 @@ void set_exertion(const exertion_mode new_exertion)
     if (new_exertion == you.exertion)
         return;
 
-    const bool old_exertion_is_normal = you.exertion == EXERT_NORMAL;
-
     if (you.duration[DUR_BERSERK])
     {
         mpr("You can't change exertion mode while berserk.");
@@ -4210,10 +4208,14 @@ void set_exertion(const exertion_mode new_exertion)
     you.exertion = new_exertion;
     you.duration[DUR_CARE] = 0;
     you.duration[DUR_POWER] = 0;
+    you.duration[DUR_ESCAPE] = 0;
     switch(new_exertion)
     {
         case EXERT_POWER:
             you.duration[DUR_POWER] = 1;
+            break;
+        case EXERT_ESCAPE:
+            you.duration[DUR_ESCAPE] = 1;
             break;
         case EXERT_CAREFUL:
             you.duration[DUR_CARE] = 1;
@@ -4222,18 +4224,10 @@ void set_exertion(const exertion_mode new_exertion)
             break;
     }
     you.redraw_status_lights = true;
+    you.redraw_evasion = true;
 
-    if (!old_exertion_is_normal)
+    if (new_exertion != EXERT_ESCAPE)
         you.turn_is_over = true;
-}
-
-/*
- * Won't consume stamina if player is at normal exertion
- */
-void maybe_consume_stamina(int factor)
-{
-    if (you.exertion != EXERT_NORMAL)
-        dec_sp(factor);
 }
 
 // returns true if after subtracting the given sp, sp is still > 0
@@ -4290,26 +4284,36 @@ bool dec_sp(int sp_loss, bool special)
     if (you.sp < 0)
     {
         you.sp = 0;
-        set_exertion(EXERT_NORMAL);
+        bool sent_message = false;
 
-        if (you.duration[DUR_BERSERK] > 1 && you.duration_source[DUR_BERSERK] != SRC_POTION)
+        if (you.duration[DUR_BERSERK] > 1 && you.duration_source[DUR_BERSERK] != SRC_POTION && !sent_message)
         {
             mpr("You are too tired to continue your rampage.");
             you.duration[DUR_BERSERK] = 1;
+            sent_message = true;
         }
 
-        if (you.duration[DUR_HASTE] > 0 && you.duration_source[DUR_HASTE] != SRC_POTION)
+        if (you.duration[DUR_HASTE] > 0 && you.duration_source[DUR_HASTE] != SRC_POTION && !sent_message)
         {
             mpr("You are too tired to maintain this pace.");
             you.duration[DUR_HASTE] = 0;
+            sent_message = true;
         }
 
-        if (you.duration[DUR_INVIS] > 0 && you.duration_source[DUR_INVIS] != SRC_POTION)
+        if (you.duration[DUR_INVIS] > 0 && you.duration_source[DUR_INVIS] != SRC_POTION && !sent_message)
         {
             mpr("You are too tired to stay invisible.");
             you.duration[DUR_INVIS] = 0;
+            sent_message = true;
         }
 
+        if (you.exertion != EXERT_NORMAL && !sent_message)
+        {
+            mpr("You are too tired to continue exerting yourself.");
+            sent_message = true;
+        }
+
+        set_exertion(EXERT_NORMAL);
         result = false;
     }
 
@@ -5304,7 +5308,6 @@ bool haste_player(int turns, bool rageext, source_type source)
 
     you.increase_duration(DUR_HASTE, turns, threshold, nullptr);
     you.duration_source[DUR_HASTE] = source;
-    set_exertion(EXERT_POWER);
 
     return true;
 }
@@ -6629,14 +6632,20 @@ int player::evasion(ev_ignore_type evit, const actor* act) const
     const int invis_penalty = attacker_invis && !(evit & EV_IGNORE_HELPLESS) ?
                               10 : 0;
 
-    int amount_of_stairs_penalty = 0;
+    int amount_of_stairs_penalty = 3;
 
     const int stairs_penalty = player_stair_delay()
                                 && !(evit & EV_IGNORE_HELPLESS) ?
                                     amount_of_stairs_penalty :
                                     0;
 
-    return base_evasion - constrict_penalty - invis_penalty - stairs_penalty;
+    int ev = base_evasion - constrict_penalty - invis_penalty - stairs_penalty;
+    if (you.exertion == EXERT_ESCAPE)
+    {
+        ev = div_rand_round(ev * 4, 3);
+    }
+
+    return ev;
 }
 
 bool player::heal(int amount)
@@ -9078,8 +9087,6 @@ void player_end_berserk()
     if (!you.duration[DUR_PARALYSIS] && !you.petrified())
         mprf(MSGCH_WARN, "You are exhausted.");
 
-    set_exertion(EXERT_NORMAL);
-
     if (you.species == SP_LAVA_ORC)
         mpr("You feel less hot-headed.");
 
@@ -9139,30 +9146,6 @@ const int rune_curse_dam_adjust(int dam)
     return new_dam;
 }
 
-void player_was_offensive()
-{
-    if (you.current_form_spell != SPELL_NO_SPELL)
-    {
-        int fail = raw_spell_fail(you.current_form_spell);
-        fail = 100 - fail;
-        fail *= fail;
-        fail = 100 - div_rand_round(fail, 100);
-
-        if (x_chance_in_y(fail, 100))
-        {
-            you.current_form_spell_failure++;
-            if (you.current_form_spell_failure == 2)
-                mprf(MSGCH_WARN, "Your form is beginning to unravel.");
-
-            if (you.current_form_spell_failure == 4)
-                mprf(MSGCH_WARN, "You can't maintain your form for much longer!");
-
-            if (you.current_form_spell_failure > 4)
-                untransform();
-        }
-    }
-}
-
 void summoned_monster_died(monster* mons, bool natural_death)
 {
     const int mp_cost = mons->mp_freeze;
@@ -9219,3 +9202,83 @@ bool player_summoned_monster(spell_type spell, monster* mons, bool first)
 
     return success;
 }
+
+// triggered for any ranged or melee attack
+void player_attacked_something()
+{
+    player_was_offensive();
+    if (you.exertion != EXERT_NORMAL)
+        dec_sp(1);
+}
+
+// When any kind of magic spell is cast by the player
+void player_used_magic()
+{
+    player_was_offensive();
+    // spell cost increase is handled by player_spell_hunger_modifier()
+//    if (you.exertion != EXERT_NORMAL)
+//        dec_sp(1);
+}
+
+void player_evoked_something()
+{
+    player_was_offensive();
+}
+
+void player_moved()
+{
+    if (you.exertion == EXERT_ESCAPE)
+        dec_sp(1);
+}
+
+void player_was_offensive()
+{
+    if (you.current_form_spell != SPELL_NO_SPELL)
+    {
+        int fail = raw_spell_fail(you.current_form_spell);
+        fail = 100 - fail;
+        fail *= fail;
+        fail = 100 - div_rand_round(fail, 100);
+
+        if (x_chance_in_y(fail, 100))
+        {
+            you.current_form_spell_failure++;
+            if (you.current_form_spell_failure == 2)
+                mprf(MSGCH_WARN, "Your form is beginning to unravel.");
+
+            if (you.current_form_spell_failure == 4)
+                mprf(MSGCH_WARN, "You can't maintain your form for much longer!");
+
+            if (you.current_form_spell_failure > 4)
+                untransform();
+        }
+    }
+}
+
+void player_before_long_safe_action()
+{
+    if (you.exertion == EXERT_ESCAPE)
+        set_exertion(EXERT_NORMAL);
+}
+
+void player_after_long_safe_action(int turns)
+{
+    if (turns > 5)
+    {
+        if (you.current_form_spell_failure)
+        {
+            mpr("You form becomes more stable.");
+            you.current_form_spell_failure = 0;
+        }
+    }
+}
+
+int player_spell_hunger_modifier(int old_hunger)
+{
+    int new_hunger = old_hunger;
+    if (you.exertion == EXERT_POWER || you.exertion == EXERT_CAREFUL)
+        new_hunger = new_hunger * 2 + 40;
+
+    return new_hunger;
+}
+

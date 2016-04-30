@@ -109,38 +109,36 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
     * get book gifts at 2* piety instead of 5*
 
 * Implement stamina points, alongside magic points and health points
-    * three exertion levels
+    * four exertion levels
         * normal mode (press 'c' if in another mode)
-            * no stamina cost for most actions
+            * no stamina cost for most actions, except for spell casting which has a stamina cost caused by spell hunger
             * movement speed is 1.1 for all species, except naga, which is 1.4
         * power mode (change to this by pressing 'e')
-            * actions cost stamina
-            * stamina is slowly depleted while in power mode
+            * stamina is depleted for each attack or spell cast
+            * melee and ranged damage is higher (1.3x normal)
+            * spellpower is greater (1.5x normal)
+            * can't stab
+        * escape mode (change to this by pressing 's')
+            * stealth is reduced (0.25x normal)
             * movement speed is 0.9 for most species
                 * 0.5 for spriggan
                 * 0.7 for centaur
                 * 1.4 for naga, since they can't run, so they don't have a stamina cost for moving in power mode
-            * melee and ranged damage is higher (1.3x normal)
-            * spellpower is greater (1.5x normal)
             * movement speed is penalized if the player stops or changes direction more than 45 degrees from original heading
-            * can't stab
-            * stealth is reduced (0.25x normal)
         * careful mode (change to this by pressing 'E')
-            * actions cost stamina
+            * attacks and spells cast cost stamina
+            * spell hunger -> stamina cost is doubled
             * stealth is amplified (1.5x normal)
             * accuracy is increased (1.5x normal)
             * spell failure chance is reduced (-30 or 1/2, whichever is worse)
     * when stamina is depleted, game switches back to normal exertion mode automatically
-    * berserking automatically switches to power mode
     * species differences:
         * centaurs and nagas have a larger than normal stamina pool
         * spriggans consume half as much stamina when running
         * trolls consume stamina more quickly than normal, but immediately eat 50% of corpses dropped to recover some stamina. 
         * ghouls immediately consume 50% of corpses dropped to recover some health / remove rot. 
     * vampiric weapons consume stamina as they heal the player, and stop healing the player when stamina runs out
-    * added endurance potions (not implemented yet)
-        * make all stamina costs drop to 0 for a limited time
-    * haste consumes stamina
+    * eating royal jelly reduces stamina costs to 0 temporarily
 
 * Minor background tweaks
     * Fighters no longer have a special exception to prevent them from choosing a quarterstaff.

@@ -78,9 +78,10 @@ enum class mutflag
     XOM     = 1 << 4, // xom being xom
     DEPENDS = 1 << 5, // maybe good, maybe bad depending on the circumstances
 
-    LAST    = XOM
+    LAST    = DEPENDS,
 };
-DEF_BITFIELD(mutflags, mutflag, 4);
+
+DEF_BITFIELD(mutflags, mutflag, 5);
 COMPILE_CHECK(mutflags::exponent(mutflags::last_exponent) == mutflag::LAST);
 
 #include "mutation-data.h"
@@ -888,7 +889,9 @@ static mutation_type _get_random_mutation(mutation_type mutclass)
         {
             const int good_dna = player_mutation_level(MUT_GOOD_DNA);
             const int bad_dna = player_mutation_level(MUT_BAD_DNA);
-            mt = x_chance_in_y(3 + random2(good_dna * 2) - random2(bad_dna * 2), 5) ? mutflag::GOOD : mutflag::BAD;
+            mt = x_chance_in_y(3 + random2(good_dna * 2) - random2(bad_dna * 2), 5)
+                 ? mutflag::GOOD
+                 : (x_chance_in_y(1, 3) ? mutflag::DEPENDS : mutflag::BAD);
         }
             break;
         case RANDOM_BAD_MUTATION:
