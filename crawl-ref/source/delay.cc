@@ -246,7 +246,8 @@ void stop_delay(bool stop_stair_travel, bool force_unsafe)
         if (delay_is_run(delay.type) && you.running)
             stop_running();
 
-        maybe_reset_form_decay();
+        player_after_long_safe_action(you.time_taken);
+
         // There's no special action needed for macros - if we don't call out
         // to the Lua function, it can't do damage.
         break;

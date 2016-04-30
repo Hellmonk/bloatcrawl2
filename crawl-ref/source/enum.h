@@ -1024,6 +1024,7 @@ enum command_type
     CMD_PRAY,
     CMD_EAT,
     CMD_EXERT_POWER,
+    CMD_EXERT_ESCAPE,
     CMD_EXERT_CAREFUL,
     CMD_EXERT_NORMAL,
     CMD_QUAFF,
@@ -1946,6 +1947,7 @@ enum duration_type
     DUR_VERTIGO,
     DUR_POWER,
     DUR_CARE,
+    DUR_ESCAPE,
     NUM_DURATIONS
 };
 
@@ -2191,7 +2193,8 @@ enum exertion_mode
 {
     EXERT_CAREFUL = -1,
     EXERT_NORMAL = 0,
-    EXERT_POWER = 1,
+    EXERT_POWER,
+    EXERT_ESCAPE,
 };
 
 enum flush_reason_type

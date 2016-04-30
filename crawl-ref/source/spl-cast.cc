@@ -629,7 +629,7 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
     if (!fail_rate_check)
     {
         if (you.exertion == EXERT_POWER)
-            power = power * 3 / 2;
+            power = power * 4 / 3;
     }
 
     const int cap = spell_power_cap(spell);
@@ -1063,7 +1063,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     you.turn_is_over = true;
     alert_nearby_monsters();
 
-    player_was_offensive();
+    player_used_magic();
     if (is_self_transforming_spell(spell))
         you.current_form_spell = spell;
 
@@ -1471,7 +1471,6 @@ spret_type your_spells(spell_type spell, int powc,
 
     int potion = -1;
 
-    maybe_consume_stamina();
     if (!powc)
         powc = calc_spell_power(spell, true);
 

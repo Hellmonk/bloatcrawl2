@@ -1044,7 +1044,6 @@ bool dec_hp(int hp_loss, bool fatal, const char *aux = nullptr);
 bool dec_mp(int mp_loss, bool silent = false);
 bool drain_mp(int mp_loss);
 
-void maybe_consume_stamina(int factor = 3);
 bool dec_sp(int sp_loss = 1, bool special = false);
 void inc_sp(int sp_gain = 1, bool silent = false);
 void inc_mp(int mp_gain, bool silent = false);
@@ -1183,6 +1182,12 @@ const int get_max_skill_level();
 const int rune_curse_hp_adjust(int hp);
 const int rune_curse_dam_adjust(int dam);
 void player_was_offensive();
+void player_attacked_something();
+void player_used_magic();
+void player_evoked_something();
+void player_moved();
+void player_before_long_safe_action();
+void player_after_long_safe_action(int turns);
 void summoned_monster_died(monster* mons, bool natural_death);
 bool player_summoned_monster(spell_type spell, monster* mons, bool first);
 

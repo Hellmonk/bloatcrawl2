@@ -1913,7 +1913,7 @@ static void _do_rest()
     you.prev_direction.reset();
     if (i_feel_safe())
     {
-        set_exertion(EXERT_NORMAL);
+        player_before_long_safe_action();
         if ((you.hp == you.hp_max || !player_regenerates_hp())
             && (you.magic_points == you.max_magic_points
                 || !player_regenerates_mp())
@@ -2307,6 +2307,9 @@ void process_command(command_type cmd)
                 break;
             case CMD_EXERT_POWER:
                 set_exertion(EXERT_POWER);
+                break;
+            case CMD_EXERT_ESCAPE:
+                set_exertion(EXERT_ESCAPE);
                 break;
             case CMD_FIRE:                 fire_thing();             break;
             case CMD_FORCE_CAST_SPELL:     do_cast_spell_cmd(true);  break;
@@ -2845,7 +2848,7 @@ static bool _cancel_confused_move(bool stationary)
 
 static void _swing_at_target(coord_def move)
 {
-    dec_sp();
+    player_attacked_something();
 
     you.prev_direction.reset();
     if (you.attribute[ATTR_HELD])
@@ -3575,7 +3578,7 @@ static void _move_player(coord_def move)
             env.travel_trail.push_back(you.pos());
 
         you.time_taken *= player_movement_speed();
-        if (Options.movement_penalty && you.exertion == EXERT_POWER)
+        if (Options.movement_penalty && you.exertion == EXERT_ESCAPE)
         {
             if (you.prev_direction.x == 0 && you.prev_direction.y == 0 || move.is_sharp_turn(you.prev_direction))
             {
@@ -3586,8 +3589,6 @@ static void _move_player(coord_def move)
 
         you.time_taken = div_rand_round(you.time_taken, 10);
         you.time_taken += additional_time_taken;
-
-        maybe_consume_stamina();
 
         if (you.running && you.running.travel_speed)
         {
@@ -3670,6 +3671,8 @@ static void _move_player(coord_def move)
     {
         did_god_conduct(DID_HASTY, 1, true);
     }
+
+    player_moved();
 }
 
 static int _get_num_and_char_keyfun(int &ch)

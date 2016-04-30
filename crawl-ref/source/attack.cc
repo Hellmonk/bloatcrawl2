@@ -133,7 +133,7 @@ bool attack::handle_phase_end()
     fire_final_effects();
 
     if (attacker->is_player())
-        player_was_offensive();
+        player_attacked_something();
 
     return true;
 }
