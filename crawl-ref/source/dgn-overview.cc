@@ -1012,13 +1012,13 @@ void unmarshallUniqueAnnotations(reader& inf)
 */
 bool connected_branch_can_exist(branch_type br)
 {
-    if (br == BRANCH_SPIDER && stair_level.count(BRANCH_SNAKE)
-        || br == BRANCH_SNAKE && stair_level.count(BRANCH_SPIDER)
-        || br == BRANCH_SWAMP && stair_level.count(BRANCH_SHOALS)
-        || br == BRANCH_SHOALS && stair_level.count(BRANCH_SWAMP))
-    {
-        return false;
-    }
+//    if (br == BRANCH_SPIDER && stair_level.count(BRANCH_SNAKE)
+//        || br == BRANCH_SNAKE && stair_level.count(BRANCH_SPIDER)
+//        || br == BRANCH_SWAMP && stair_level.count(BRANCH_SHOALS)
+//        || br == BRANCH_SHOALS && stair_level.count(BRANCH_SWAMP))
+//    {
+//        return false;
+//    }
 
     return true;
 }

@@ -933,6 +933,7 @@ const char* rune_type_name(short p)
     case RUNE_VAULTS:      return "silver";
     case RUNE_SNAKE:       return "serpentine";
     case RUNE_ELF:         return "elven";
+    case RUNE_DWARF:       return "dwarven";
     case RUNE_TOMB:        return "golden";
     case RUNE_SWAMP:       return "decaying";
     case RUNE_SHOALS:      return "barnacled";

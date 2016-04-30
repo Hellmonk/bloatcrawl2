@@ -329,7 +329,7 @@ enum rune_type
     RUNE_SNAKE,
     RUNE_SHOALS,
     RUNE_SLIME,
-    RUNE_ELF, // unused
+    RUNE_ELF,
     RUNE_VAULTS,
     RUNE_TOMB,
 
@@ -350,6 +350,7 @@ enum rune_type
 
     RUNE_SPIDER,
     RUNE_FOREST, // unused
+    RUNE_DWARF,
     NUM_RUNE_TYPES
 };
 

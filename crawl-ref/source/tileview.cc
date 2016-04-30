@@ -108,9 +108,6 @@ void tile_default_flv(branch_type br, int depth, tile_flavour &flv)
         flv.floor = TILE_FLOOR_LIMESTONE;
         return;
 
-#if TAG_MAJOR_VERSION == 34
-    case BRANCH_BLADE:
-#endif
     case BRANCH_ELF:
         flv.wall  = TILE_WALL_HALL;
         flv.floor = TILE_FLOOR_HALL;

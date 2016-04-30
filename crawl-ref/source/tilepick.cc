@@ -2294,6 +2294,7 @@ static tileidx_t _tileidx_rune(const item_def &item)
     case RUNE_SWAMP:       return TILE_RUNE_SWAMP;
     case RUNE_SHOALS:      return TILE_RUNE_SHOALS;
     case RUNE_ELF:         return TILE_RUNE_ELVEN;
+    case RUNE_DWARF:       return TILE_RUNE_DWARF;
 
     case RUNE_FOREST:
     default:               return TILE_MISC_RUNE_OF_ZOT;
