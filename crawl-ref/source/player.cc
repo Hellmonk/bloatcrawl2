@@ -9278,7 +9278,7 @@ int player_spell_hunger_modifier(int old_hunger)
     int new_hunger = old_hunger;
     if (you.exertion == EXERT_POWER)
     {
-        new_hunger = new_hunger * 2 + 2;
+        new_hunger = new_hunger * 2 + 40;
     }
     return new_hunger;
 }
