@@ -406,19 +406,16 @@ bool del_spell_from_memory(spell_type spell)
 
 int spell_hunger(spell_type which_spell, bool rod)
 {
-    if (player_energy())
-        return 0;
-
     const int level = spell_difficulty(which_spell);
 
-    const int basehunger[] = { 50, 100, 150, 250, 400, 550, 700, 850, 1000 };
+//    const int basehunger[] = { 50, 100, 150, 250, 400, 550, 700, 850, 1000 };
 
     int hunger;
 
-    if (level < 10 && level > 0)
-        hunger = basehunger[level-1];
-    else
-        hunger = (basehunger[0] * level * level) / 4;
+    hunger = 25 * level * level;
+
+    if (player_energy())
+        hunger >>= 1;
 
     if (rod)
     {
@@ -428,11 +425,11 @@ int spell_hunger(spell_type which_spell, bool rod)
     else
         hunger -= you.skill(SK_SPELLCASTING, you.intel());
 
+    hunger = player_spell_hunger_modifier(hunger);
+
     if (hunger < 0)
         hunger = 0;
 
-    // adjust for circus because spell hunger is eating through stamina a little too quickly
-    hunger /= 2;
     return hunger;
 }
 

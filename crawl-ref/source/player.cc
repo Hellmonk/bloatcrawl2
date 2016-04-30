@@ -9215,8 +9215,9 @@ void player_attacked_something()
 void player_used_magic()
 {
     player_was_offensive();
-    if (you.exertion != EXERT_NORMAL)
-        dec_sp(1);
+    // spell cost increase is handled by player_spell_hunger_modifier()
+//    if (you.exertion != EXERT_NORMAL)
+//        dec_sp(1);
 }
 
 void player_evoked_something()
@@ -9270,5 +9271,15 @@ void player_after_long_safe_action(int turns)
             you.current_form_spell_failure = 0;
         }
     }
+}
+
+int player_spell_hunger_modifier(int old_hunger)
+{
+    int new_hunger = old_hunger;
+    if (you.exertion == EXERT_POWER)
+    {
+        new_hunger = new_hunger * 2 + 2;
+    }
+    return new_hunger;
 }
 
