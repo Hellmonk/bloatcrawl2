@@ -109,7 +109,7 @@ static const map<species_type, species_def> species_data =
     MONS_DEEP_DWARF,
     HT_LAND, US_ALIVE, SIZE_MEDIUM,
     11, 8, 8, // 27
-    { STAT_STR, STAT_INT }, 4,
+    { STAT_INT, STAT_STR }, 4,
     {
       { MUT_SLOW_REGENERATION, 3, 1 },
       { MUT_HIGH_STAMINA, 1, 1 },
