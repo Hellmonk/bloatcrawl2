@@ -9276,10 +9276,9 @@ void player_after_long_safe_action(int turns)
 int player_spell_hunger_modifier(int old_hunger)
 {
     int new_hunger = old_hunger;
-    if (you.exertion == EXERT_POWER)
-    {
+    if (you.exertion == EXERT_POWER || you.exercises == EXERT_CAREFUL)
         new_hunger = new_hunger * 2 + 40;
-    }
+
     return new_hunger;
 }
 
