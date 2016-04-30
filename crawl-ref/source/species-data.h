@@ -574,7 +574,7 @@ static const map<species_type, species_def> species_data =
     MONS_LAVA_ORC,
     HT_AMPHIBIOUS_LAVA, US_ALIVE, SIZE_MEDIUM,
     10, 8, 6, // 24
-    { STAT_INT, STAT_DEX }, 5,
+    { STAT_INT, STAT_STR }, 5,
     {},
     {},
     {},
@@ -795,9 +795,8 @@ static const map<species_type, species_def> species_data =
     		{ MUT_GELATINOUS_BODY, 1, 8 },
     },
     { "You cannot wear most types of armour.",
-      "You are amphibious.",
     },
-    { "almost no armour", "amphibious" },
+    { "almost no armour", },
     { JOB_TRANSMUTER, JOB_WIZARD, JOB_CONJURER, JOB_ASSASSIN,
       JOB_FIRE_ELEMENTALIST, JOB_ICE_ELEMENTALIST, JOB_EARTH_ELEMENTALIST,
       JOB_VENOM_MAGE },
@@ -820,7 +819,7 @@ static const map<species_type, species_def> species_data =
     },
     {},
     {},
-    { JOB_MONK, JOB_ASSASSIN, JOB_HUNTER, JOB_TRANSMUTER, JOB_WARPER, JOB_NECROMANCER
+    { JOB_MONK, JOB_ASSASSIN, JOB_HUNTER, JOB_TRANSMUTER, JOB_WARPER, JOB_NECROMANCER, JOB_SUMMONER,
       },
     { SK_SHORT_BLADES, SK_LONG_BLADES, SK_STAVES, SK_BOWS, SK_UNARMED_COMBAT },
 } },

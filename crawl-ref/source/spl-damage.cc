@@ -925,8 +925,6 @@ spret_type cast_freeze(int pow, monster* mons, bool fail)
     {
         set_attack_conducts(conducts, mons);
 
-        mprf("You freeze %s.", mons->name(DESC_THE).c_str());
-
         behaviour_event(mons, ME_ANNOY, &you);
     }
 
@@ -947,6 +945,8 @@ spret_type cast_freeze(int pow, monster* mons, bool fail)
     const int orig_hurted = roll_dice(1, 3 + pow / 3);
     int hurted = mons_adjust_flavoured(mons, beam, orig_hurted);
     mons->hurt(&you, hurted);
+    mprf("You freeze %s (%d).", mons->name(DESC_THE).c_str(), hurted);
+
 
     if (mons->alive())
     {

@@ -382,7 +382,7 @@ void crawl_view_geometry::init_geometry()
             const int x_left = lay_inline.leftover_x();
             const int y_left = lay_inline.leftover_y();
 
-            dprf(1, false, "Terminal too small (%d,%d); layout needs (%d,%d)",
+            dprf("Terminal too small (%d,%d); layout needs (%d,%d)",
                 termsz.x, termsz.y,
                 x_left < 0 ? termsz.x - x_left : MIN_COLS,
                 y_left < 0 ? termsz.y - y_left : MIN_LINES);
