@@ -80,7 +80,8 @@ enum class mutflag
 
     LAST    = DEPENDS,
 };
-DEF_BITFIELD(mutflags, mutflag, 4);
+
+DEF_BITFIELD(mutflags, mutflag, 5);
 COMPILE_CHECK(mutflags::exponent(mutflags::last_exponent) == mutflag::LAST);
 
 #include "mutation-data.h"
