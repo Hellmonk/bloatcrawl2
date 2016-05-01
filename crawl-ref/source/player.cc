@@ -9227,7 +9227,7 @@ void player_evoked_something()
 
 void player_moved()
 {
-    if (you.exertion == EXERT_ESCAPE || you.exertion == EXERT_CAREFUL)
+    if (you.exertion == EXERT_ESCAPE || you.exertion == EXERT_CAREFUL && player_in_a_dangerous_place())
         dec_sp(2);
     if (you.airborne())
         dec_sp(1);
