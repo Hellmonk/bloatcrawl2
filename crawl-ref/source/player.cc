@@ -9209,16 +9209,13 @@ void player_attacked_something()
 {
     player_was_offensive();
     if (you.exertion != EXERT_NORMAL)
-        dec_sp(1);
+        dec_sp(2);
 }
 
 // When any kind of magic spell is cast by the player
 void player_used_magic()
 {
     player_was_offensive();
-    // spell cost increase is handled by player_spell_hunger_modifier()
-//    if (you.exertion != EXERT_NORMAL)
-//        dec_sp(1);
 }
 
 void player_evoked_something()
@@ -9277,7 +9274,7 @@ void player_after_long_safe_action(int turns)
 int player_spell_hunger_modifier(int old_hunger)
 {
     int new_hunger = old_hunger;
-    if (you.exertion == EXERT_POWER || you.exertion == EXERT_CAREFUL)
+    if (you.duration[DUR_CHANNELING] == 0 && (you.exertion == EXERT_POWER || you.exertion == EXERT_CAREFUL))
         new_hunger = new_hunger + 40;
     else
         new_hunger = 0;
@@ -9297,8 +9294,9 @@ int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost)
 
     if (you.duration[DUR_CHANNELING])
         new_cost = 0;
-    else if (piety_rank(you.piety) >= 1)
+    else if (have_passive(passive_t::conserve_mp))
         new_cost = qpow(new_cost, 97, 100, you.skill(SK_INVOCATIONS));
 
     return new_cost;
 }
+

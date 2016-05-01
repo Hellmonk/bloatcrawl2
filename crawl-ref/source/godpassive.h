@@ -234,8 +234,11 @@ enum class passive_t
     /// Enemies that inflict damage upon you will sometime receive a detrimental status effect
     upgraded_aura_of_power,
 
-    // Pakellas prevents you from regenerating your mana reserve
+    /// Pakellas prevents you from regenerating your mana reserve
     no_mp_regen,
+
+    /// MP usage is less based on invocations
+    conserve_mp,
 };
 
 enum ru_interference
