@@ -9229,7 +9229,7 @@ void player_evoked_something()
 void player_moved()
 {
     if (you.exertion == EXERT_ESCAPE)
-        dec_sp(1);
+        dec_sp(2);
 }
 
 void player_was_offensive()
