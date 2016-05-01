@@ -425,10 +425,10 @@ int spell_hunger(spell_type which_spell, bool rod)
     else
         hunger -= you.skill(SK_SPELLCASTING, you.intel());
 
-    hunger = player_spell_hunger_modifier(hunger);
-
     if (hunger < 0)
         hunger = 0;
+
+    hunger = player_spell_hunger_modifier(hunger);
 
     return hunger;
 }
