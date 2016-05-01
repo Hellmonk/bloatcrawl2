@@ -9229,6 +9229,8 @@ void player_moved()
 {
     if (you.exertion == EXERT_ESCAPE || you.exertion == EXERT_CAREFUL)
         dec_sp(2);
+    if (you.airborne())
+        dec_sp(1);
 }
 
 void player_was_offensive()
