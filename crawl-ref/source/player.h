@@ -1190,6 +1190,7 @@ void player_before_long_safe_action();
 void player_after_long_safe_action(int turns);
 int player_spell_hunger_modifier(int old_hunger);
 int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost);
+int player_tohit_modifier(int old_tohit);
 void summoned_monster_died(monster* mons, bool natural_death);
 bool player_summoned_monster(spell_type spell, monster* mons, bool first);
 

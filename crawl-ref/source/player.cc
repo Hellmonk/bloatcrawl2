@@ -9275,11 +9275,9 @@ void player_after_long_safe_action(int turns)
 
 int player_spell_hunger_modifier(int old_hunger)
 {
-    int new_hunger = old_hunger;
+    int new_hunger = 0;
     if (you.duration[DUR_CHANNELING] == 0 && (you.exertion == EXERT_POWER || you.exertion == EXERT_CAREFUL))
-        new_hunger = new_hunger;
-    else
-        new_hunger = 0;
+        new_hunger = old_hunger;
 
     return new_hunger;
 }
@@ -9302,3 +9300,11 @@ int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost)
     return new_cost;
 }
 
+int player_tohit_modifier(int old_tohit)
+{
+    int new_tohit = old_tohit;
+    if (you.exertion == EXERT_CAREFUL)
+        new_tohit = div_rand_round(new_tohit * 3, 2);
+
+    return new_tohit;
+}

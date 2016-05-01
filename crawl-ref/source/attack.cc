@@ -220,6 +220,8 @@ int attack::calc_to_hit(bool random)
 
         // hit roll
         mhit = maybe_random2(mhit, random);
+
+        mhit = player_tohit_modifier(mhit);
     }
     else    // Monster to-hit.
     {

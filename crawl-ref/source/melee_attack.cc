@@ -2273,12 +2273,6 @@ int melee_attack::calc_to_hit(bool random)
         mhit += maybe_random2(get_form()->unarmed_hit_bonus, random);
     }
 
-    if (attacker->is_player())
-    {
-        if (you.exertion == EXERT_CAREFUL)
-            mhit = div_rand_round(mhit * 3, 2);
-    }
-
     return mhit;
 }
 
