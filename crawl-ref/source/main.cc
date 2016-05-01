@@ -3528,8 +3528,7 @@ static void _move_player(coord_def move)
                  DESC_THE, false).c_str());
             destroy_wall(targ);
             noisy(6, you.pos());
-            if (!make_hungry(60, true))
-                you.digging = false;
+            make_hungry(60, true);
             additional_time_taken += BASELINE_DELAY / 5;
         }
 

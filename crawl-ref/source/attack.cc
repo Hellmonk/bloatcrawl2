@@ -1455,7 +1455,8 @@ int attack::test_hit(int to_land, int ev, bool randomise_ev)
          */
 
         const int chance = div_rand_round(to_land * 100, to_land + ev);
-        player_update_last_hit_chance(chance);
+        if (attacker->is_player())
+            player_update_last_hit_chance(chance);
 
         const bool hit = x_chance_in_y(to_land, to_land + ev);
         margin = to_land - ev;

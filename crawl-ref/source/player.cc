@@ -4225,6 +4225,8 @@ void set_exertion(const exertion_mode new_exertion)
 
     if (new_exertion != EXERT_ESCAPE)
         you.turn_is_over = true;
+
+    update_tohit();
 }
 
 // returns true if after subtracting the given sp, sp is still > 0
@@ -4307,6 +4309,13 @@ bool dec_sp(int sp_loss, bool special)
         if (you.exertion != EXERT_NORMAL && !sent_message)
         {
             mpr("You are too tired to continue exerting yourself.");
+            sent_message = true;
+        }
+
+        if (you.digging && !sent_message)
+        {
+            you.digging = false;
+            mpr("You are too tired to continue digging.");
             sent_message = true;
         }
 
@@ -9325,5 +9334,7 @@ void update_tohit()
 {
     melee_attack attk(&you, nullptr);
     const int to_hit = attk.calc_to_hit(false);
+    you.last_tohit = to_hit;
     you.redraw_tohit = true;
 }
+
