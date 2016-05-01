@@ -1211,7 +1211,7 @@ static void _redraw_title()
         if ((unsigned int)(strwidth(species) + strwidth(god) + 5 + 1)
             <= WIDTH)
         {
-            NOWRAP_EOL_CPRINTF(" %d %s", you.piety, piety_stars);
+            NOWRAP_EOL_CPRINTF(" %d %s", you.piety, piety_stars.c_str());
         }
         else if ((unsigned int)(strwidth(species) + strwidth(god) + 5 + 1)
                   > WIDTH)
