@@ -846,6 +846,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     {
         int keyin = 0;
 
+        msgwin_set_temporary(true);
         while (true)
         {
 #ifdef TOUCH_UI
@@ -936,6 +937,9 @@ bool cast_a_spell(bool check_range, spell_type spell)
         }
         else
             spell = get_spell_by_letter(keyin);
+
+        msgwin_clear_temporary();
+        msgwin_set_temporary(false);
     }
 
     if (spell == SPELL_NO_SPELL)
