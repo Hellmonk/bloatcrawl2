@@ -412,7 +412,7 @@ int spell_hunger(spell_type which_spell, bool rod)
 
     int hunger;
 
-    hunger = 25 * level * level;
+    hunger = 15 * level * level;
 
     if (player_energy())
         hunger >>= 1;
@@ -425,10 +425,10 @@ int spell_hunger(spell_type which_spell, bool rod)
     else
         hunger -= you.skill(SK_SPELLCASTING, you.intel());
 
-    hunger = player_spell_hunger_modifier(hunger);
-
     if (hunger < 0)
         hunger = 0;
+
+    hunger = player_spell_hunger_modifier(hunger);
 
     return hunger;
 }
@@ -470,15 +470,9 @@ bool spell_harms_area(spell_type spell)
 // for Xom acting (more power = more likely to grab his attention) {dlb}
 int spell_mana(spell_type which_spell, bool raw)
 {
-    int cost = 0;
-	if (is_summon_spell(which_spell) && !raw)
-		cost = 0;
-    else
-        cost =  _seekspell(which_spell)->level;
+    int cost = _seekspell(which_spell)->level;
 
-//    if (is_self_transforming_spell(which_spell))
-//        cost *= 2;
-
+    cost = player_spell_cost_modifier(which_spell, raw, cost);
     return cost;
 }
 

@@ -417,7 +417,7 @@ static const ability_def Ability_List[] =
 
     // Sif Muna
     { ABIL_SIF_MUNA_CHANNEL_ENERGY, "Channel Energy",
-      0, 0, 100, 0, {FAIL_INVO, 40, 2, 20}, abflag::NONE },
+      0, 0, 0, generic_cost::fixed(50), {FAIL_INVO, 40, 2, 20}, abflag::NONE },
     { ABIL_SIF_MUNA_FORGET_SPELL, "Forget Spell",
       5, 0, 0, 8, {FAIL_INVO}, abflag::NONE },
 
@@ -2299,10 +2299,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     case ABIL_SIF_MUNA_CHANNEL_ENERGY:
         fail_check();
         surge_power(you.spec_invoc(), "divine");
-        mpr("You channel some magical energy.");
+        mpr("You begin channelling magical energy.");
 
-        inc_mp(player_adjust_invoc_power(
-                   1 + random2(you.skill_rdiv(SK_INVOCATIONS, 1, 4) + 2)));
+        you.increase_duration(DUR_CHANNELING,
+                              player_adjust_invoc_power(10 + random2avg(you.skill(SK_INVOCATIONS, 1), 2)),
+                              100);
         break;
 
     case ABIL_OKAWARU_HEROISM:
