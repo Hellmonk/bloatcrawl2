@@ -105,8 +105,10 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
         * clean dna: increases chances that mutators will remove a bad mutation 
 
 * Sif Muna
-    * get miscast protection at 3* piety instead of 2*
     * get book gifts at 2* piety instead of 5*
+    * channeling ability has been dramatically changed. Instead there is a 50 piety cost to make spells cost 0 mp
+      for 20-40 turns, based on invocations.
+    * passive ability added: conserve MP: with higher invocations levels, spells cost less MP to cast. 
 
 * Implement stamina points, alongside magic points and health points
     * four exertion levels
