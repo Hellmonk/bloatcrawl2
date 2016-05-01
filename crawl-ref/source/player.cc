@@ -69,6 +69,7 @@
 #include "status.h"
 #include "stepdown.h"
 #include "stringutil.h"
+#include "spl-summoning.h"
 #include "terrain.h"
 #ifdef USE_TILE
  #include "tiledef-feat.h"
@@ -9277,8 +9278,27 @@ int player_spell_hunger_modifier(int old_hunger)
 {
     int new_hunger = old_hunger;
     if (you.exertion == EXERT_POWER || you.exertion == EXERT_CAREFUL)
-        new_hunger = new_hunger * 2 + 40;
+        new_hunger = new_hunger + 40;
+    else
+        new_hunger = 0;
 
     return new_hunger;
 }
 
+int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost)
+{
+    int new_cost = old_cost;
+
+    if (is_summon_spell(which_spell) && !raw)
+        new_cost = 0;
+
+//    if (is_self_transforming_spell(which_spell))
+//        new_cost *= 2;
+
+    if (you.duration[DUR_CHANNELING])
+        new_cost = 0;
+    else if (piety_rank(you.piety) >= 1)
+        new_cost = qpow(new_cost, 97, 100, you.skill(SK_INVOCATIONS));
+
+    return new_cost;
+}

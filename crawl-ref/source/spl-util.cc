@@ -470,15 +470,9 @@ bool spell_harms_area(spell_type spell)
 // for Xom acting (more power = more likely to grab his attention) {dlb}
 int spell_mana(spell_type which_spell, bool raw)
 {
-    int cost = 0;
-	if (is_summon_spell(which_spell) && !raw)
-		cost = 0;
-    else
-        cost =  _seekspell(which_spell)->level;
+    int cost = _seekspell(which_spell)->level;
 
-//    if (is_self_transforming_spell(which_spell))
-//        cost *= 2;
-
+    cost = player_spell_cost_modifier(which_spell, raw, cost);
     return cost;
 }
 

@@ -1948,6 +1948,7 @@ enum duration_type
     DUR_POWER,
     DUR_CARE,
     DUR_ESCAPE,
+    DUR_CHANNELING,
     NUM_DURATIONS
 };
 
