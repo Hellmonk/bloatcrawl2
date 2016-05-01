@@ -3671,13 +3671,9 @@ static void _display_movement_speed()
 
 static void _display_tohit()
 {
-#ifdef DEBUG_DIAGNOSTICS
     melee_attack attk(&you, nullptr);
-
     const int to_hit = attk.calc_to_hit(false);
-
-    dprf("To-hit: %d", to_hit);
-#endif
+    mprf("To-hit: %d", to_hit);
 }
 
 static const char* _attack_delay_desc(int attack_delay)
@@ -5847,6 +5843,7 @@ player::player()
     redraw_experience    = false;
     redraw_armour_class  = false;
     redraw_evasion       = false;
+    redraw_tohit         = false;
     redraw_title         = false;
 
     flash_colour        = BLACK;
@@ -5873,6 +5870,8 @@ player::player()
     max_exp             = 0;
     current_form_spell  = SPELL_NO_SPELL;
     current_form_spell_failure  = 0;
+    last_hit_chance     = 0;
+    last_tohit = 0;
     summoned.init(MID_NOBODY);
 
     save                = nullptr;
@@ -9309,4 +9308,22 @@ int player_tohit_modifier(int old_tohit)
         new_tohit = div_rand_round(new_tohit * 3, 2);
 
     return new_tohit;
+}
+
+void player_update_last_hit_chance(int chance)
+{
+    if (chance < 0)
+        chance = 0;
+
+    if (chance > 99)
+        chance = 99;
+
+    you.last_hit_chance = chance;
+}
+
+void update_tohit()
+{
+    melee_attack attk(&you, nullptr);
+    const int to_hit = attk.calc_to_hit(false);
+    you.redraw_tohit = true;
 }
