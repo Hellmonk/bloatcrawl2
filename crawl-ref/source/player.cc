@@ -9216,6 +9216,8 @@ void player_attacked_something()
 void player_used_magic()
 {
     player_was_offensive();
+    if (you.exertion == EXERT_POWER)
+        dec_sp(2);
 }
 
 void player_evoked_something()
@@ -9225,7 +9227,7 @@ void player_evoked_something()
 
 void player_moved()
 {
-    if (you.exertion == EXERT_ESCAPE)
+    if (you.exertion == EXERT_ESCAPE || you.exertion == EXERT_CAREFUL)
         dec_sp(2);
 }
 
@@ -9275,7 +9277,7 @@ int player_spell_hunger_modifier(int old_hunger)
 {
     int new_hunger = old_hunger;
     if (you.duration[DUR_CHANNELING] == 0 && (you.exertion == EXERT_POWER || you.exertion == EXERT_CAREFUL))
-        new_hunger = new_hunger + 40;
+        new_hunger = new_hunger;
     else
         new_hunger = 0;
 

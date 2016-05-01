@@ -121,6 +121,7 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
             * spellpower is greater (1.5x normal)
             * can't stab
         * escape mode (change to this by pressing 's')
+            * movement costs stamina
             * stealth is reduced (0.25x normal)
             * movement speed is 0.9 for most species
                 * 0.5 for spriggan
@@ -128,7 +129,7 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
                 * 1.4 for naga, since they can't run, so they don't have a stamina cost for moving in power mode
             * movement speed is penalized if the player stops or changes direction more than 45 degrees from original heading
         * careful mode (change to this by pressing 'E')
-            * attacks and spells cast cost stamina
+            * attacks, spells cast, and movement cost stamina
             * spell hunger -> stamina cost is doubled
             * stealth is amplified (1.5x normal)
             * accuracy is increased (1.5x normal)
