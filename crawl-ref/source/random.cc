@@ -345,9 +345,17 @@ bool x_chance_in_y(int x, int y)
 int random_diff(int success, int failure, int *chance)
 {
     if (success <= 0)
+    {
+        if (chance)
+            *chance = 0;
         return -1;
+    }
     if (failure <= 0)
+    {
+        if (chance)
+            *chance = 100;
         return 0;
+    }
 
     // needs the +1 to avoid div by 0 and guarantees a chance of failure or success, however small
     const int random_success = random2(success) + 1;
