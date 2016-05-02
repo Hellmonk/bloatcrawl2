@@ -1424,8 +1424,8 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_DJINNI,          SK_AIR_MAGIC,       2),
     APT(SP_DJINNI,          SK_EARTH_MAGIC,    -2),
     APT(SP_DJINNI,          SK_POISON_MAGIC,    0),
-    APT(SP_DJINNI,          SK_INVOCATIONS,    -2),
-    APT(SP_DJINNI,          SK_EVOCATIONS,      0),
+    APT(SP_DJINNI,          SK_INVOCATIONS,     1),
+    APT(SP_DJINNI,          SK_EVOCATIONS,     -1),
 
     // SP_FORMICID
     APT(SP_FORMICID,        SK_FIGHTING,        1),
