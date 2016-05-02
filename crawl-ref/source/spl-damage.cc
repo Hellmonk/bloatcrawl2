@@ -1880,7 +1880,7 @@ int discharge_monsters(coord_def where, int pow, actor *agent)
 
     if (victim->is_player())
     {
-        mpr("You are struck by lightning.");
+        mprf("You are struck by lightning. (%d)", damage);
         damage = 1 + random2(3 + pow / 15);
         dprf("You: static discharge damage: %d", damage);
         damage = check_your_resists(damage, BEAM_ELECTRICITY,
@@ -1906,7 +1906,7 @@ int discharge_monsters(coord_def where, int pow, actor *agent)
         if (damage)
         {
             mprf("%s is struck by lightning.",
-                 mons->name(DESC_THE).c_str());
+                 mons->name(DESC_THE).c_str(), damage);
             if (agent->is_player())
             {
                 _player_hurt_monster(*mons, damage);
