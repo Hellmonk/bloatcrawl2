@@ -4225,6 +4225,8 @@ void set_exertion(const exertion_mode new_exertion)
 
     if (new_exertion != EXERT_ESCAPE)
         you.turn_is_over = true;
+
+    player_update_tohit();
 }
 
 // returns true if after subtracting the given sp, sp is still > 0
