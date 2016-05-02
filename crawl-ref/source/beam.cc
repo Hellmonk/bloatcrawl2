@@ -3054,13 +3054,14 @@ static bool _test_beam_hit(int attack, int defense, bool pierce,
 
     dprf(DIAG_BEAM, "Beam attack: %d, defense: %d", attack, defense);
 
-    const bool result = x_chance_in_y(attack, attack + defense);
-    player_update_last_hit_chance(attack * 100 / (attack + defense));
+    int chance = 0;
+    const int result = random_diff(attack, defense, &chance);
+    player_update_last_hit_chance(chance);
     player_update_tohit(attack);
 
     dprf(DIAG_BEAM, "Beam new attack: %d, defense: %d", attack, defense);
 
-    return result;
+    return result >= 0;
 }
 
 bool bolt::is_harmless(const monster* mon) const

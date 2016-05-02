@@ -1439,29 +1439,15 @@ int attack::test_hit(int to_land, int ev, bool randomise_ev)
 {
     int margin = AUTOMATIC_HIT;
 
-    /* no longer needed
-    if (randomise_ev)
-        ev = random2avg(2*ev, 2);
-    */
-
     if (to_land >= AUTOMATIC_HIT)
         player_update_last_hit_chance(100);
     else
     {
-        /* deprecated
-        if (x_chance_in_y(MIN_HIT_MISS_PERCENTAGE, 100))
-            margin = (random2(2) ? 1 : -1) * AUTOMATIC_HIT;
-        else
-         */
+        int chance = 0;
+        margin = random_diff(to_land, ev, &chance);
 
-        const int chance = div_rand_round(to_land * 100, to_land + ev);
         if (attacker->is_player())
             player_update_last_hit_chance(chance);
-
-        const bool hit = x_chance_in_y(to_land, to_land + ev);
-        margin = to_land - ev;
-        if (hit && margin < 0 || !hit && margin > 0)
-            margin = -margin;
     }
 
 #ifdef DEBUG_DIAGNOSTICS

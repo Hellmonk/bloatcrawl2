@@ -903,7 +903,7 @@ static void _print_stats_tohit()
 {
     textcolour(HUD_VALUE_COLOUR);
     CGOTOXY(9, hit_row, GOTO_STAT);
-    CPRINTF("%d", you.last_tohit);
+    CPRINTF("%4d", you.last_tohit);
     CGOTOXY(31, hit_row, GOTO_STAT);
     CPRINTF("%2d%%", you.last_hit_chance);
 }
