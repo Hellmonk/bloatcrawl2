@@ -5281,7 +5281,7 @@ static void tag_construct_level_monsters(writer &th)
     {
         monster& m(menv[i]);
 
-#if defined(DEBUG) || defined(DEBUG_MONS_SCAN)
+#if defined(DEBUG_DEEP) || defined(DEBUG_MONS_SCAN)
         if (m.type != MONS_NO_MONSTER)
         {
             if (invalid_monster_type(m.type))
@@ -6055,20 +6055,19 @@ static void tag_read_level_monsters(reader &th)
 #if defined(DEBUG) || defined(DEBUG_MONS_SCAN)
         if (invalid_monster_type(m.type))
         {
-            mprf(MSGCH_ERROR, "Unmarshalled monster #%d %s",
+            dprf("Unmarshalled monster #%d %s",
                  i, m.name(DESC_PLAIN, true).c_str());
         }
         if (!in_bounds(m.pos()))
         {
-            mprf(MSGCH_ERROR,
-                 "Unmarshalled monster #%d %s out of bounds at (%d, %d)",
+            dprf("Unmarshalled monster #%d %s out of bounds at (%d, %d)",
                  i, m.name(DESC_PLAIN, true).c_str(),
                  m.pos().x, m.pos().y);
         }
         int midx = mgrd(m.pos());
         if (midx != NON_MONSTER)
         {
-            mprf(MSGCH_ERROR, "(%d, %d) for %s already occupied by %s",
+            dprf("(%d, %d) for %s already occupied by %s",
                  m.pos().x, m.pos().y,
                  m.name(DESC_PLAIN, true).c_str(),
                  menv[midx].name(DESC_PLAIN, true).c_str());
