@@ -1495,8 +1495,7 @@ int melee_attack::player_apply_final_multipliers(int damage)
     if (you.duration[DUR_CONFUSING_TOUCH] && wpn_skill == SK_UNARMED_COMBAT)
         return 0;
 
-    if (you.exertion == EXERT_POWER)
-        damage = div_rand_round(damage * 4, 3);
+    damage = player_damage_modifier(damage);
 
     return damage;
 }

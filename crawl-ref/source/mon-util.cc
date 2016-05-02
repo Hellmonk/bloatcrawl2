@@ -5250,8 +5250,10 @@ void print_wounds(const monster* mons)
 
     desc.insert(0, " is ");
     desc += ".";
+    /* this really isn't necessary
     simple_monster_message(mons, desc.c_str(), MSGCH_MONSTER_DAMAGE,
                            dam_level);
+                           */
 }
 
 // (true == 'damaged') [constructs, undead, etc.]
