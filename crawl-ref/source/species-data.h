@@ -435,7 +435,7 @@ static const map<species_type, species_def> species_data =
     "Fo",
     "Formicid", nullptr, "Ant",
     SPF_NONE,
-    -1, 2, 0,
+    1, 0, 0,
     15, 4,
     MONS_FORMICID,
     HT_LAND, US_ALIVE, SIZE_MEDIUM,
