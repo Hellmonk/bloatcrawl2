@@ -9313,10 +9313,31 @@ int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost)
 int player_tohit_modifier(int old_tohit)
 {
     int new_tohit = old_tohit;
+
     if (you.exertion == EXERT_CAREFUL)
-        new_tohit = div_rand_round(new_tohit * 3, 2);
+        new_tohit = div_rand_round(new_tohit * 4, 3) + 5;
 
     return new_tohit;
+}
+
+int player_damage_modifier(int old_damage)
+{
+    int new_damage = old_damage;
+
+    if (you.exertion == EXERT_POWER)
+        new_damage = div_rand_round(new_damage * 4, 3) + 2;
+
+    return new_damage;
+}
+
+int player_spellpower_modifier(int old_spellpower)
+{
+    int new_spellpower = old_spellpower;
+
+    if (you.exertion == EXERT_POWER)
+        new_spellpower = div_rand_round(new_spellpower * 4, 3) + 10;
+
+    return new_spellpower;
 }
 
 void player_update_last_hit_chance(int chance)

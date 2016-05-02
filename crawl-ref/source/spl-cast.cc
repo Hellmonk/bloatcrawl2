@@ -628,10 +628,7 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
     }
 
     if (!fail_rate_check)
-    {
-        if (you.exertion == EXERT_POWER)
-            power = power * 4 / 3;
-    }
+        power = player_spellpower_modifier(power);
 
     const int cap = spell_power_cap(spell);
     if (cap > 0 && cap_power)
