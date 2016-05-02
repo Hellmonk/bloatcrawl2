@@ -1905,7 +1905,7 @@ int discharge_monsters(coord_def where, int pow, actor *agent)
 
         if (damage)
         {
-            mprf("%s is struck by lightning.",
+            mprf("%s is struck by lightning. (%d)",
                  mons->name(DESC_THE).c_str(), damage);
             if (agent->is_player())
             {
