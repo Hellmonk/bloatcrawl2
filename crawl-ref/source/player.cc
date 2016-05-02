@@ -4226,7 +4226,7 @@ void set_exertion(const exertion_mode new_exertion)
     if (new_exertion != EXERT_ESCAPE)
         you.turn_is_over = true;
 
-    update_tohit();
+    player_update_tohit(0);
 }
 
 // returns true if after subtracting the given sp, sp is still > 0
@@ -9328,13 +9328,18 @@ void player_update_last_hit_chance(int chance)
         chance = 99;
 
     you.last_hit_chance = chance;
+    you.redraw_tohit = true;
 }
 
-void update_tohit()
+void player_update_tohit(int new_tohit)
 {
-    melee_attack attk(&you, nullptr);
-    const int to_hit = attk.calc_to_hit(false);
-    you.last_tohit = to_hit;
+    if (new_tohit == -1)
+    {
+        melee_attack attk(&you, nullptr);
+        new_tohit = attk.calc_to_hit(false);
+    }
+
+    you.last_tohit = new_tohit;
     you.redraw_tohit = true;
 }
 

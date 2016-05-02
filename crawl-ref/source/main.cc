@@ -490,7 +490,7 @@ NORETURN static void _launch_game()
 
     run_uncancels();
 
-    update_tohit();
+    player_update_tohit(0);
 
     cursor_control ccon(!Options.use_fake_player_cursor);
     while (true)
