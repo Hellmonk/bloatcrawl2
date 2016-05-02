@@ -549,6 +549,8 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
                     const coord_def pos = item_pos(corpse);
                     if (!pos.origin())
                         move_item_to_grid(&id, pos);
+                    else
+                        destroy_item(id);
                 }
             }
         }

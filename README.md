@@ -105,8 +105,10 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
         * clean dna: increases chances that mutators will remove a bad mutation 
 
 * Sif Muna
-    * get miscast protection at 3* piety instead of 2*
     * get book gifts at 2* piety instead of 5*
+    * channeling ability has been dramatically changed. Instead there is a 50 piety cost to make spells cost 0 mp
+      for 20-40 turns, based on invocations.
+    * passive ability added: conserve MP: with higher invocations levels, spells cost less MP to cast. Starts at 1*.
 
 * Implement stamina points, alongside magic points and health points
     * four exertion levels
@@ -119,6 +121,7 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
             * spellpower is greater (1.5x normal)
             * can't stab
         * escape mode (change to this by pressing 's')
+            * movement costs stamina
             * stealth is reduced (0.25x normal)
             * movement speed is 0.9 for most species
                 * 0.5 for spriggan
@@ -126,7 +129,7 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
                 * 1.4 for naga, since they can't run, so they don't have a stamina cost for moving in power mode
             * movement speed is penalized if the player stops or changes direction more than 45 degrees from original heading
         * careful mode (change to this by pressing 'E')
-            * attacks and spells cast cost stamina
+            * attacks, spells cast, and movement cost stamina
             * spell hunger -> stamina cost is doubled
             * stealth is amplified (1.5x normal)
             * accuracy is increased (1.5x normal)

@@ -3671,13 +3671,9 @@ static void _display_movement_speed()
 
 static void _display_tohit()
 {
-#ifdef DEBUG_DIAGNOSTICS
     melee_attack attk(&you, nullptr);
-
     const int to_hit = attk.calc_to_hit(false);
-
-    dprf("To-hit: %d", to_hit);
-#endif
+    mprf("To-hit: %d", to_hit);
 }
 
 static const char* _attack_delay_desc(int attack_delay)
@@ -4229,6 +4225,8 @@ void set_exertion(const exertion_mode new_exertion)
 
     if (new_exertion != EXERT_ESCAPE)
         you.turn_is_over = true;
+
+    player_update_tohit();
 }
 
 // returns true if after subtracting the given sp, sp is still > 0
@@ -4311,6 +4309,13 @@ bool dec_sp(int sp_loss, bool special)
         if (you.exertion != EXERT_NORMAL && !sent_message)
         {
             mpr("You are too tired to continue exerting yourself.");
+            sent_message = true;
+        }
+
+        if (you.digging && !sent_message)
+        {
+            you.digging = false;
+            mpr("You are too tired to continue digging.");
             sent_message = true;
         }
 
@@ -5847,6 +5852,7 @@ player::player()
     redraw_experience    = false;
     redraw_armour_class  = false;
     redraw_evasion       = false;
+    redraw_tohit         = false;
     redraw_title         = false;
 
     flash_colour        = BLACK;
@@ -5873,6 +5879,8 @@ player::player()
     max_exp             = 0;
     current_form_spell  = SPELL_NO_SPELL;
     current_form_spell_failure  = 0;
+    last_hit_chance     = 0;
+    last_tohit = 0;
     summoned.init(MID_NOBODY);
 
     save                = nullptr;
@@ -9216,6 +9224,8 @@ void player_attacked_something()
 void player_used_magic()
 {
     player_was_offensive();
+    if (you.exertion == EXERT_POWER)
+        dec_sp(2);
 }
 
 void player_evoked_something()
@@ -9225,8 +9235,10 @@ void player_evoked_something()
 
 void player_moved()
 {
-    if (you.exertion == EXERT_ESCAPE)
+    if (you.exertion == EXERT_ESCAPE || you.exertion == EXERT_CAREFUL && player_in_a_dangerous_place())
         dec_sp(2);
+    if (you.airborne() && you.species != SP_DJINNI)
+        dec_sp(1);
 }
 
 void player_was_offensive()
@@ -9273,11 +9285,9 @@ void player_after_long_safe_action(int turns)
 
 int player_spell_hunger_modifier(int old_hunger)
 {
-    int new_hunger = old_hunger;
+    int new_hunger = 0;
     if (you.duration[DUR_CHANNELING] == 0 && (you.exertion == EXERT_POWER || you.exertion == EXERT_CAREFUL))
-        new_hunger = new_hunger + 40;
-    else
-        new_hunger = 0;
+        new_hunger = old_hunger;
 
     return new_hunger;
 }
@@ -9298,5 +9308,38 @@ int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost)
         new_cost = qpow(new_cost, 97, 100, you.skill(SK_INVOCATIONS));
 
     return new_cost;
+}
+
+int player_tohit_modifier(int old_tohit)
+{
+    int new_tohit = old_tohit;
+    if (you.exertion == EXERT_CAREFUL)
+        new_tohit = div_rand_round(new_tohit * 3, 2);
+
+    return new_tohit;
+}
+
+void player_update_last_hit_chance(int chance)
+{
+    if (chance < 0)
+        chance = 0;
+
+    if (chance > 99)
+        chance = 99;
+
+    you.last_hit_chance = chance;
+    you.redraw_tohit = true;
+}
+
+void player_update_tohit(int new_tohit)
+{
+    if (new_tohit == -1)
+    {
+        melee_attack attk(&you, nullptr);
+        new_tohit = attk.calc_to_hit(false);
+    }
+
+    you.last_tohit = new_tohit;
+    you.redraw_tohit = true;
 }
 

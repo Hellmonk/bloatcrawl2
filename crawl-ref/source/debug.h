@@ -26,7 +26,7 @@
 #endif
 
 #if defined(DEBUG) && !defined(ASSERTS)
-#define ASSERTS
+//#define ASSERTS
 #endif
 
 #ifdef ASSERTS

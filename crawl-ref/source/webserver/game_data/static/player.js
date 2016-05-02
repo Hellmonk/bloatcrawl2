@@ -351,10 +351,15 @@ function ($, comm, enums, map_knowledge, messages, options) {
         else if ((player.piety_rank > 0 || player.god != "")
                  && player.god != "Gozag")
         {
-            $("#stats_piety").text("(" + player.piety + ")");
+            $("#stats_piety").text(" " + player.piety + " " 
+                + repeat_string("*", player.piety_rank)
+                + repeat_string(".", 6-player.piety_rank));
         }
         else
+        {
             $("#stats_piety").text("");
+        }
+
         $("#stats_species_god").text(species_god);
         $("#stats_piety").toggleClass("penance", !!player.penance);
         $("#stats_piety").toggleClass("monk", player.god == "");
@@ -404,6 +409,9 @@ function ($, comm, enums, map_knowledge, messages, options) {
             $("#stats_time_caption").text("Turn:");
             $("#stats_time").text(player.turn);
         }
+        
+        $("#stats_tohit").text(player.tohit);
+        $("#stats_hit_chance").text(player.hit_chance);
 
         var place_desc = player.place;
         if (player.depth) place_desc += ":" + player.depth;

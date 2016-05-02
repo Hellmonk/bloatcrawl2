@@ -343,6 +343,7 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
         else
             canned_msg(MSG_EMPTY_HANDED_ALREADY);
 
+        player_update_tohit();
         return true;
     }
 
@@ -393,6 +394,8 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
     you.m_quiver.on_weapon_changed();
     you.turn_is_over  = true;
     you.prev_direction.reset();
+
+    player_update_tohit();
 
     return true;
 }

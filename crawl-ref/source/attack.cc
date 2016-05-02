@@ -145,6 +145,9 @@ bool attack::handle_phase_end()
  */
 int attack::calc_to_hit(bool random)
 {
+    // randomness isn't needed anymore here since it is handled in a centralized place now
+    random = false;
+
     int mhit = attacker->is_player() ?
                 15 + (you.dex() / 2)
               : calc_mon_to_hit_base();
@@ -218,8 +221,12 @@ int attack::calc_to_hit(bool random)
         if (player_mutation_level(MUT_EYEBALLS))
             mhit += 2 * player_mutation_level(MUT_EYEBALLS) + 1;
 
+        /* no longer needed
         // hit roll
         mhit = maybe_random2(mhit, random);
+        */
+
+        mhit = player_tohit_modifier(mhit);
     }
     else    // Monster to-hit.
     {
@@ -267,14 +274,31 @@ int attack::calc_to_hit(bool random)
             mhit -= 2 * how_transparent;
 
         if (defender->backlit(false))
+        {
+            /** randomness not needed anymore
             mhit += 2 + random2(8);
+             */
+
+            mhit += 6;
+        }
         else if (!attacker->nightvision()
                  && defender->umbra())
+        {
+            /* randomness not needed anymore
             mhit -= 2 + random2(4);
+             */
+            mhit -= 4;
+        }
     }
+
     // Don't delay doing this roll until test_hit().
     if (!attacker->is_player())
+    {
+        /* randomness not needed anymore
         mhit = random2(mhit + 1);
+         */
+        mhit /= 2;
+    }
 
     dprf(DIAG_COMBAT, "%s: Base to-hit: %d, Final to-hit: %d",
          attacker->name(DESC_PLAIN).c_str(),
@@ -360,6 +384,12 @@ void attack::init_attack(skill_type unarmed_skill, int attack_number)
     attacker_shield_tohit_penalty =
         div_rand_round(attacker->shield_tohit_penalty(true, 20), 20);
     to_hit          = calc_to_hit(true);
+
+    if (attacker->is_player())
+    {
+        you.last_tohit = to_hit;
+        you.redraw_tohit = true;
+    }
 
     shield = attacker->shield();
     defender_shield = defender ? defender->shield() : defender_shield;
@@ -1408,19 +1438,22 @@ int attack::calc_damage()
 int attack::test_hit(int to_land, int ev, bool randomise_ev)
 {
     int margin = AUTOMATIC_HIT;
-    if (randomise_ev)
-        ev = random2avg(2*ev, 2);
-    if (to_land >= AUTOMATIC_HIT)
-        return true;
-    else if (x_chance_in_y(MIN_HIT_MISS_PERCENTAGE, 100))
-        margin = (random2(2) ? 1 : -1) * AUTOMATIC_HIT;
-    else
-        margin = to_land - ev;
 
-//#ifdef DEBUG_DIAGNOSTICS
+    if (to_land >= AUTOMATIC_HIT)
+        player_update_last_hit_chance(100);
+    else
+    {
+        int chance = 0;
+        margin = random_diff(to_land, ev, &chance);
+
+        if (attacker->is_player())
+            player_update_last_hit_chance(chance);
+    }
+
+#ifdef DEBUG_DIAGNOSTICS
     dprf(DIAG_COMBAT, "to hit: %d; ev: %d; result: %s (%d)",
          to_hit, ev, (margin >= 0) ? "hit" : "miss", margin);
-//#endif
+#endif
 
     return margin;
 }
@@ -1944,7 +1977,7 @@ int attack::player_stab(int damage)
  */
 void attack::player_stab_check()
 {
-    if (you.duration[DUR_CLUMSY] || you.confused() || you.exertion == EXERT_POWER)
+    if (you.duration[DUR_CLUMSY] || you.confused())
     {
         stab_attempt = false;
         stab_bonus = 0;

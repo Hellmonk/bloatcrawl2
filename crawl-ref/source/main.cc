@@ -490,6 +490,8 @@ NORETURN static void _launch_game()
 
     run_uncancels();
 
+    player_update_tohit(0);
+
     cursor_control ccon(!Options.use_fake_player_cursor);
     while (true)
         _input();
@@ -2915,7 +2917,6 @@ static void _swing_at_target(coord_def move)
         }
         else if (!you.fumbles_attack())
             mpr("You swing at nothing.");
-        make_hungry(3, true);
         // Take the usual attack delay.
         you.time_taken = you.attack_delay().roll();
     }
@@ -3527,7 +3528,7 @@ static void _move_player(coord_def move)
                  DESC_THE, false).c_str());
             destroy_wall(targ);
             noisy(6, you.pos());
-            make_hungry(50, true);
+            make_hungry(60, true);
             additional_time_taken += BASELINE_DELAY / 5;
         }
 

@@ -391,6 +391,7 @@ public:
     bool redraw_armour_class;
     bool redraw_evasion;
     bool redraw_status_lights;
+    bool redraw_tohit;
 
     colour_t flash_colour;
     targetter *flash_where;
@@ -441,6 +442,8 @@ public:
     // The save file itself.
     // ---------------------
     package *save;
+    int last_hit_chance;
+    int last_tohit;
 
 protected:
     FixedVector<PlaceInfo, NUM_BRANCHES> branch_info;
@@ -1190,6 +1193,9 @@ void player_before_long_safe_action();
 void player_after_long_safe_action(int turns);
 int player_spell_hunger_modifier(int old_hunger);
 int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost);
+int player_tohit_modifier(int old_tohit);
+void player_update_last_hit_chance(int chance);
+void player_update_tohit(int new_tohit = -1);
 void summoned_monster_died(monster* mons, bool natural_death);
 bool player_summoned_monster(spell_type spell, monster* mons, bool first);
 

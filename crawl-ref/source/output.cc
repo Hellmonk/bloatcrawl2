@@ -496,6 +496,7 @@ int gold_row = 0;
 int time_row = 0;
 int wield_row = 0;
 int quiver_row = 0;
+int hit_row = 0;
 int status_row = 0;
 
 // ----------------------------------------------------------------------
@@ -898,6 +899,15 @@ static void _print_stats_wp(int y)
     textcolour(LIGHTGREY);
 }
 
+static void _print_stats_tohit()
+{
+    textcolour(HUD_VALUE_COLOUR);
+    CGOTOXY(9, hit_row, GOTO_STAT);
+    CPRINTF("%4d", you.last_tohit);
+    CGOTOXY(31, hit_row, GOTO_STAT);
+    CPRINTF("%2d%%", you.last_hit_chance);
+}
+
 static void _print_stats_qv()
 {
     int col;
@@ -1206,17 +1216,15 @@ static void _redraw_title()
                                       : god_name(you.religion);
         NOWRAP_EOL_CPRINTF("%s", god.c_str());
 
-        /*
-        string piety = _god_asterisks();
-         */
+        const string piety_stars = _god_asterisks();
         textcolour(_god_status_colour(YELLOW));
         if ((unsigned int)(strwidth(species) + strwidth(god) + 5 + 1)
             <= WIDTH)
         {
-            NOWRAP_EOL_CPRINTF(" (%d)", you.piety);
+            NOWRAP_EOL_CPRINTF(" %d %s", you.piety, piety_stars.c_str());
         }
         else if ((unsigned int)(strwidth(species) + strwidth(god) + 5 + 1)
-                  == (WIDTH + 1))
+                  > WIDTH)
         {
             //mottled draconian of TSO doesn't fit by one symbol,
             //so we remove leading space.
@@ -1364,6 +1372,12 @@ void print_stats()
     }
     you.wield_change  = false;
 
+    if (you.redraw_tohit)
+    {
+        _print_stats_tohit();
+        you.redraw_tohit = false;
+    }
+
     if (you.species != SP_FELID)
     {
         if (you.redraw_quiver || you.wield_change)
@@ -1436,6 +1450,11 @@ void draw_border()
     CGOTOXY(1, gold_row, GOTO_STAT); CPRINTF("Gold:");
     CGOTOXY(19, time_row, GOTO_STAT);
     CPRINTF(Options.show_game_turns ? "Time:" : "Turn:");
+
+    CGOTOXY(1, hit_row, GOTO_STAT);
+    CPRINTF("To hit:");
+    CGOTOXY(19, hit_row, GOTO_STAT);
+    CPRINTF("Hit Chance:");
 }
 
 void update_row_info()
@@ -1451,6 +1470,7 @@ void update_row_info()
     sh_row = dex_row = ++row;
     xl_row = place_row = ++row;
     gold_row = time_row = ++row;
+    hit_row = ++row;
     wield_row = ++row;
     quiver_row = ++row;
     status_row = ++row;
@@ -1483,6 +1503,7 @@ void redraw_screen()
     you.redraw_experience    = true;
     you.wield_change         = true;
     you.redraw_quiver        = true;
+    you.redraw_tohit         = true;
     you.redraw_status_lights = true;
 
     print_stats();
