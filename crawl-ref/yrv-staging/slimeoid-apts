@@ -1,5 +1,6 @@
     // SP__SLIMEOID
-    // aptitudes should overall be low-ish due to there being few skills to choose from. And low apts in crawl means more intrinsics!
+    // aptitudes should overall be low-ish due to there being few skills to choose from. 
+    // And low apts in crawl means more intrinsics!
     APT(SP__SLIMEOID,        SK_FIGHTING,        0),
 
     APT(SP__SLIMEOID,        SK_THROWING,       -1),
