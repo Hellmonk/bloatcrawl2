@@ -177,7 +177,7 @@ body {
 }
 
 #stats[data-species="Djinni"] #stats_contamline {
-    display:block;
+    display:none;
     visibility:hidden;
 }
 /* Hide MP bar */
