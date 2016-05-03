@@ -1027,7 +1027,7 @@ static const mutation_def mut_data[] =
 },
 #endif
 
-{ MUT_STOCHASTIC_TORMENT_RESISTANCE, 3, 1, mutflag::GOOD, false,
+{ MUT_STOCHASTIC_TORMENT_RESISTANCE, 1, 1, mutflag::GOOD, false,
   "50% torment resistance",
 
   {"You are somewhat able to resist unholy torments (1 in 2 success).","",""},
