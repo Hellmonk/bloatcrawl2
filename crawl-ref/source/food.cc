@@ -1015,8 +1015,8 @@ static void _eating(item_def& food)
         }
         case FOOD_ROYAL_JELLY:
         {
-            you.duration[DUR_TIRELESS] += 500;
-            if (you.duration[DUR_TIRELESS] > 500)
+            you.duration[DUR_TIRELESS] += 100;
+            if (you.duration[DUR_TIRELESS] > 100)
                 mpr("You feel more tireless");
             else
                 mpr("You feel tireless");
