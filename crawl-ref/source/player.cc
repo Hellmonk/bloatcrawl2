@@ -1256,6 +1256,7 @@ int player_hunger_rate(bool temp)
         hunger += 4;
     }
 
+    /*
     if (temp)
     {
         if (you.duration[DUR_INVIS] && you.duration_source[DUR_INVIS] != SRC_POTION)
@@ -1272,6 +1273,7 @@ int player_hunger_rate(bool temp)
             hunger += haste_mul(50);
         }
     }
+     */
 
     if (you.species == SP_VAMPIRE)
     {
