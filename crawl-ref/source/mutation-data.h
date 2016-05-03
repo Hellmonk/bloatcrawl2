@@ -985,7 +985,7 @@ static const mutation_def mut_data[] =
    "You tire less rapidly."},
 },
 
-{ MUT_WILD_MAGIC, 60, 3, mutflag::GOOD, false,
+{ MUT_WILD_MAGIC, 60, 3, mutflag::DEPENDS, false,
   "wild magic",
 
   {"Your spells are a little harder to cast, but a little more powerful.",
@@ -1001,7 +1001,7 @@ static const mutation_def mut_data[] =
    "You feel more in control of your magic."},
 },
 
-{ MUT_SUBDUED_MAGIC, 60, 3, mutflag::BAD, false,
+{ MUT_SUBDUED_MAGIC, 60, 3, mutflag::DEPENDS, false,
   "subdued magic",
 
   {"Your spells are a little easier to cast, but a little less powerful.",
