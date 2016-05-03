@@ -610,7 +610,7 @@ static const mutation_def mut_data[] =
    "You feel robust."},
 },
 
-{ MUT_ROBUST, 50, 3, mutflag::GOOD, false,
+{ MUT_ROBUST, 30, 3, mutflag::GOOD, false,
   "robust",
 
   {"You are robust (+10% HP).",
@@ -698,7 +698,7 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_HURL_DAMNATION, 2, 1, mutflag::GOOD, false,
+{ MUT_HURL_DAMNATION, 0, 1, mutflag::GOOD, false,
   "hurl damnation",
 
   {"You can hurl damnation.", "", ""},
@@ -953,42 +953,6 @@ static const mutation_def mut_data[] =
    "You feel more energetic."},
 },
 
-{ MUT_STAMINA_EFFICIENT_NORMAL, 0, 3, mutflag::GOOD, false,
-  "stamina efficient",
-
-  {"Normal actions take a little less stamina. (-25%)",
-   "Normal actions take less stamina. (-50%)",
-   "Normal actions take a lot less stamina. (-75%)"},
-
-  {"You use stamina more efficiently.",
-   "You use stamina more efficiently.",
-   "You use stamina more efficiently."},
-
-  {
-      "You use stamina less efficiently.",
-      "You use stamina less efficiently.",
-      "You use stamina less efficiently.",
-  },
-},
-
-{ MUT_STAMINA_EFFICIENT_SPECIAL, 0, 3, mutflag::GOOD, false,
-  "stamina efficient special",
-
-  {"Advanced actions take a little less stamina. (-25%)",
-   "Advanced actions take less stamina. (-50%)",
-   "Advanced actions take a lot less stamina. (-75%)"},
-
-  {"You use stamina more efficiently for advanced tasks.",
-   "You use stamina more efficiently for advanced tasks.",
-   "You use stamina more efficiently for advanced tasks."},
-
-  {
-   "You use stamina less efficiently for advanced tasks.",
-   "You use stamina less efficiently for advanced tasks.",
-   "You use stamina less efficiently for advanced tasks.",
-  },
-},
-
 { MUT_HIGH_STAMINA, 30, 3, mutflag::GOOD, false,
   "high sp",
 
@@ -1063,7 +1027,7 @@ static const mutation_def mut_data[] =
 },
 #endif
 
-{ MUT_STOCHASTIC_TORMENT_RESISTANCE, 3, 1, mutflag::GOOD, false,
+{ MUT_STOCHASTIC_TORMENT_RESISTANCE, 1, 1, mutflag::GOOD, false,
   "50% torment resistance",
 
   {"You are somewhat able to resist unholy torments (1 in 2 success).","",""},
@@ -1113,7 +1077,7 @@ static const mutation_def mut_data[] =
 },
 #endif
 
-{ MUT_PASSIVE_FREEZE, 10, 1, mutflag::GOOD, false,
+{ MUT_PASSIVE_FREEZE, 5, 1, mutflag::GOOD, false,
   "passive freeze",
 
   {"A frigid envelope surrounds you and freezes all who hurt you.", "", ""},
@@ -1183,7 +1147,7 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_AUGMENTATION, 1, 3, mutflag::GOOD, false,
+{ MUT_AUGMENTATION, 2, 3, mutflag::GOOD, false,
   "augmentation",
 
   {"Your magical and physical power is slightly enhanced at high health.",
@@ -1650,7 +1614,7 @@ static const mutation_def mut_data[] =
 },
 #endif
 
-{ MUT_BLACK_MARK, 1, 1, mutflag::GOOD, false,
+{ MUT_BLACK_MARK, 5, 1, mutflag::GOOD, false,
   "black mark",
 
   {"Your melee attacks may debilitate your foes.", "", ""},
@@ -2064,7 +2028,7 @@ static const mutation_def mut_data[] =
    "You gain less health from kills."},
 },
 
-{ MUT_GOOD_DNA, 20, 3, mutflag::GOOD, false,
+{ MUT_GOOD_DNA, 5, 3, mutflag::GOOD, false,
   "good dna",
 
   {"You have a slightly better chance of getting good mutations.",
@@ -2078,7 +2042,7 @@ static const mutation_def mut_data[] =
    "Your dna weakens."},
 },
 
-{ MUT_CLEAN_DNA, 20, 3, mutflag::GOOD, false,
+{ MUT_CLEAN_DNA, 5, 3, mutflag::GOOD, false,
   "clean dna",
 
   {"You have a slightly better chance of losing bad mutations.",
@@ -2106,7 +2070,7 @@ static const mutation_def mut_data[] =
    "Your dna recovers somewhat."},
 },
 
-{ MUT_RESILIENT_DNA, 20, 3, mutflag::GOOD, false,
+{ MUT_RESILIENT_DNA, 5, 3, mutflag::GOOD, false,
   "resilient dna",
 
   {"You are slightly less likely to lose good mutations.",
@@ -2120,7 +2084,7 @@ static const mutation_def mut_data[] =
    "Your dna becomes less resilient."},
 },
 
-{ MUT_WEAK_DNA, 20, 3, mutflag::BAD, false,
+{ MUT_WEAK_DNA, 5, 3, mutflag::BAD, false,
   "weak dna",
 
   {"You are slightly more likely to lose good mutations.",

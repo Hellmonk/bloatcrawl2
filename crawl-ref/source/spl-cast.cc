@@ -1538,7 +1538,14 @@ spret_type your_spells(spell_type spell, int powc,
             args.self = CONFIRM_NONE;
         }
         args.get_desc_func = additional_desc;
-        if (!spell_direction(spd, beam, &args))
+        
+        msgwin_set_temporary(true);
+        const bool direction_chooser_result = !spell_direction(spd, beam, &args);
+        if (!crawl_state.doing_prev_cmd_again)
+            redraw_screen();
+        clear_messages();
+
+        if (direction_chooser_result)
             return SPRET_ABORT;
 
         beam.range = range;

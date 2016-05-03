@@ -530,6 +530,9 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
         corpse_remains = false;
     }
 
+    if (corpse_remains && in_bounds(mons.pos()))
+        move_item_to_grid(&o, mons.pos(), !mons.swimming());
+
     if (corpse.is_valid())
     {
         maybe_drop_monster_hide(corpse);
@@ -546,8 +549,8 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
                     // Automatically identify the potion.
                     set_ident_flags(new_potion, ISFLAG_IDENT_MASK);
 
-                    const coord_def pos = item_pos(corpse);
-                    if (!pos.origin())
+                    const coord_def pos = mons.pos();
+                    if (!pos.origin() && in_bounds(pos))
                         move_item_to_grid(&id, pos);
                     else
                         destroy_item(id);
@@ -561,11 +564,6 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
         item_was_destroyed(corpse);
         destroy_item(o);
         return nullptr;
-    }
-    else
-    {
-        if (in_bounds(mons.pos()))
-            move_item_to_grid(&o, mons.pos(), !mons.swimming());
     }
 
     if (o == NON_ITEM)

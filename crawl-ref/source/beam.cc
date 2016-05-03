@@ -3458,8 +3458,9 @@ void bolt::affect_player_enchantment(bool resistible)
     {
         if (x_chance_in_y(absorption_level * absorption_level, 10))
         {
-            mprf("You absorb the magic.");
-            inc_mp(2 + ench_power/10);
+            const int mp_gain = 2 + ench_power / 10;
+            mprf(MSGCH_INTRINSIC_GAIN, "You absorb the magic. (%d)", mp_gain);
+            inc_mp(mp_gain);
             return;
         }
     }

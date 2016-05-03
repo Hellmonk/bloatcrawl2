@@ -998,17 +998,14 @@ spret_type cast_airstrike(int pow, const dist &beam, bool fail)
     fail_check();
     set_attack_conducts(conducts, mons);
 
-    mprf("The air twists around and %sstrikes %s!",
-         mons->airborne() ? "violently " : "",
-         mons->name(DESC_THE).c_str());
+    int hurted = 8 + random2(random2(4) + (random2(pow) / 6)
+                             + (random2(pow) / 7));
+
     noisy(spell_effect_noise(SPELL_AIRSTRIKE), beam.target);
 
     behaviour_event(mons, ME_ANNOY, &you);
 
     enable_attack_conducts(conducts);
-
-    int hurted = 8 + random2(random2(4) + (random2(pow) / 6)
-                   + (random2(pow) / 7));
 
     bolt pbeam;
     pbeam.flavour = BEAM_AIR;
@@ -1018,6 +1015,10 @@ spret_type cast_airstrike(int pow, const dist &beam, bool fail)
 #endif
     hurted = mons->apply_ac(mons->beam_resists(pbeam, hurted, false));
     dprf("preac: %d, postac: %d", preac, hurted);
+
+    mprf("The air twists around and %sstrikes %s! (%d)",
+         mons->airborne() ? "violently " : "",
+         mons->name(DESC_THE).c_str(), hurted);
 
     mons->hurt(&you, hurted);
     if (mons->alive())

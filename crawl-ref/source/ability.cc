@@ -428,14 +428,14 @@ static const ability_def Ability_List[] =
     { ABIL_TROG_REGEN_MR, "Trog's Hand",
       0, 0, 50, 2, {FAIL_INVO, piety_breakpoint(2), 0, 1}, abflag::NONE },
     { ABIL_TROG_BROTHERS_IN_ARMS, "Brothers in Arms",
-      0, 0, 100, generic_cost::range(5, 6),
+      0, 0, 100, generic_cost::fixed(6),
       {FAIL_INVO, piety_breakpoint(5), 0, 1}, abflag::NONE },
 
     // Elyvilon
     { ABIL_ELYVILON_LIFESAVING, "Divine Protection",
       0, 0, 0, 0, {FAIL_INVO}, abflag::PIETY },
     { ABIL_ELYVILON_LESSER_HEALING, "Lesser Healing", 1, 0, 100,
-      generic_cost::range(0, 1), {FAIL_INVO, 30, 6, 20}, abflag::CONF_OK },
+      generic_cost::fixed(1), {FAIL_INVO, 30, 6, 20}, abflag::CONF_OK },
     { ABIL_ELYVILON_HEAL_OTHER, "Heal Other",
       2, 0, 250, 2, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_ELYVILON_PURIFICATION, "Purification",
@@ -450,7 +450,7 @@ static const ability_def Ability_List[] =
       1, 0, 150, 10, {FAIL_INVO, 30, 6, 20}, abflag::NONE },
     { ABIL_LUGONU_BEND_SPACE, "Bend Space",
       1, 0, 50, 0, {FAIL_INVO, 40, 5, 20}, abflag::PAIN },
-    { ABIL_LUGONU_BANISH, "Banish", 4, 0, 200, generic_cost::range(3, 4),
+    { ABIL_LUGONU_BANISH, "Banish", 4, 0, 200, generic_cost::fixed(4),
       {FAIL_INVO, 85, 7, 20}, abflag::NONE },
     { ABIL_LUGONU_CORRUPT, "Corrupt", 7, scaling_cost::fixed(5), 500, 10,
       {FAIL_INVO, 70, 4, 25}, abflag::NONE },
@@ -727,7 +727,7 @@ const string make_cost_description(ability_type ability)
     if (abil.piety_cost || abil.flags & abflag::PIETY)
     {
         const int piety_cost = _scale_piety_cost(abil.ability, abil.piety_cost.cost());
-        ret += make_stringf(", ~%d Piety", piety_cost);
+        ret += make_stringf(", %d Piety", piety_cost);
     }
 
     if (abil.flags & abflag::BREATH)
@@ -2302,7 +2302,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         mpr("You begin channelling magical energy.");
 
         you.increase_duration(DUR_CHANNELING,
-                              player_adjust_invoc_power(10 + random2avg(you.skill(SK_INVOCATIONS, 1), 2)),
+                              player_adjust_invoc_power(20 + random2avg(you.skill(SK_INVOCATIONS, 2), 2)),
                               100);
         break;
 
