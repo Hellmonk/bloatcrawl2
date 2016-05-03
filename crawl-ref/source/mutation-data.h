@@ -610,7 +610,7 @@ static const mutation_def mut_data[] =
    "You feel robust."},
 },
 
-{ MUT_ROBUST, 50, 3, mutflag::GOOD, false,
+{ MUT_ROBUST, 30, 3, mutflag::GOOD, false,
   "robust",
 
   {"You are robust (+10% HP).",
@@ -1113,7 +1113,7 @@ static const mutation_def mut_data[] =
 },
 #endif
 
-{ MUT_PASSIVE_FREEZE, 10, 1, mutflag::GOOD, false,
+{ MUT_PASSIVE_FREEZE, 5, 1, mutflag::GOOD, false,
   "passive freeze",
 
   {"A frigid envelope surrounds you and freezes all who hurt you.", "", ""},
@@ -1183,7 +1183,7 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_AUGMENTATION, 1, 3, mutflag::GOOD, false,
+{ MUT_AUGMENTATION, 2, 3, mutflag::GOOD, false,
   "augmentation",
 
   {"Your magical and physical power is slightly enhanced at high health.",
@@ -1650,7 +1650,7 @@ static const mutation_def mut_data[] =
 },
 #endif
 
-{ MUT_BLACK_MARK, 1, 1, mutflag::GOOD, false,
+{ MUT_BLACK_MARK, 5, 1, mutflag::GOOD, false,
   "black mark",
 
   {"Your melee attacks may debilitate your foes.", "", ""},
