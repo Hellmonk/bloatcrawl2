@@ -1,28 +1,39 @@
+// ?? 5 ?? anything-goes equipment slots. and a hat on top (not a helmet)
+// due to deformed 2, armours contribute 1/3 of their AC to total AC.
+        // no Armour skill to increase it, but no Encumbrance to deal with either
+// weapons add 2 to your UC damage, so theoretically you can have "claws 5"
+        // if you wear 5 weapons 
+        // maybe jewelry should increase hp+mp+sp by 1% so that it doesn't feel like
+        // you're "losing something" by not wearing 5 weaps/armours
+
 // start with bits from Felid, Octopode, demonspawn, Gray Drac, and modify from there
+// try for a somewhat flatter race, as counterpoint to the Gurr school of leveled species design
 
 { SP_SLIMEOID, {
     "SL",
     "Slimeoid", nullptr, "Jelly",
     SPF_NO_HAIR,
-    0, -1, 1,
-    18, 6,
-    MONS_FELID,
+    0, 0, 0,
+    18, 5,
+    MONS_GIANT_AMOEBA,
     HT_AMPHIBIOUS, US_ALIVE, SIZE_SMALL,
     9, 6, 9, // This slime only recently became self-aware 
     { STAT_INT, STAT_DEX }, 5, // with no muscles, getting stronger is not easy
     {
+      { 
       { MUT_GELATINOUS_BODY, 1, 1 },
-      { MUT_SLOW, 1, 4 },
-      { MUT_SIZE_UPGRADE, 1, 4 },
-      { MUT_GELATINOUS_BODY, 1, 4 },
-      { MUT_GELATINOUS_BODY, 1, 8 },
-      { MUT_SLOW, 1, 16 },
-      { MUT_SIZE_UPGRADE, 1, 16 },
+      { MUT_DEFORMED, 1, 1 },
+      { MUT_TRANSLUCENT_SKIN, 
+      { MUT_GELATINOUS_BODY, 1, 3 },
+      { MUT_DEFORMED, 1, 3 },
+      { rando bad mut AND Jiyva mut, 1, 10},
+      { rando bad mut AND Jiyva mut, 1, 15},
+      { rando bad mut AND Jiyva mut, 1, 20},
+      { rando bad mut AND Jiyva mut, 1, 25},
     },
-    { "You can only wear hats.",
-      "You can keep up to (size) magical trinkets in your body."
-      "With no arms, you can't attack with weapons."
-      "You may hold one weapon and benefit from its magic."
+    { "You can balance one hat on top of your blobby self.",
+      "You can keep up to ??5?? magical items in your body.",
+      "Lacking arms, you are unable to attack with weapons.",
       "You can ooze through water." },
     { "no armour", "no weapon attacks", "walk through water" },
     { JOB_GLADIATOR, JOB_BERSERKER, JOB_ENCHANTER, JOB_TRANSMUTER, 
