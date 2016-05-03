@@ -9220,12 +9220,11 @@ void player_was_offensive()
         const bool flip = fail > 50;
         if (flip)
             fail = 100 - fail;
-        fail *= fail;
-        fail = div_rand_round(fail, 100);
+        fail = fail / 2;
         if (flip)
             fail = 100 - fail;
 
-        if (x_chance_in_y(fail, 100))
+        if (x_chance_in_y(fail + 1, 100))
         {
             you.current_form_spell_failure++;
             if (you.current_form_spell_failure == 2)
