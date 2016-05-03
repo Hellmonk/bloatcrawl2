@@ -2028,7 +2028,7 @@ static const mutation_def mut_data[] =
    "You gain less health from kills."},
 },
 
-{ MUT_GOOD_DNA, 20, 3, mutflag::GOOD, false,
+{ MUT_GOOD_DNA, 5, 3, mutflag::GOOD, false,
   "good dna",
 
   {"You have a slightly better chance of getting good mutations.",
@@ -2042,7 +2042,7 @@ static const mutation_def mut_data[] =
    "Your dna weakens."},
 },
 
-{ MUT_CLEAN_DNA, 20, 3, mutflag::GOOD, false,
+{ MUT_CLEAN_DNA, 5, 3, mutflag::GOOD, false,
   "clean dna",
 
   {"You have a slightly better chance of losing bad mutations.",
@@ -2070,7 +2070,7 @@ static const mutation_def mut_data[] =
    "Your dna recovers somewhat."},
 },
 
-{ MUT_RESILIENT_DNA, 20, 3, mutflag::GOOD, false,
+{ MUT_RESILIENT_DNA, 5, 3, mutflag::GOOD, false,
   "resilient dna",
 
   {"You are slightly less likely to lose good mutations.",
@@ -2084,7 +2084,7 @@ static const mutation_def mut_data[] =
    "Your dna becomes less resilient."},
 },
 
-{ MUT_WEAK_DNA, 20, 3, mutflag::BAD, false,
+{ MUT_WEAK_DNA, 5, 3, mutflag::BAD, false,
   "weak dna",
 
   {"You are slightly more likely to lose good mutations.",
