@@ -1,8 +1,11 @@
+// if a mut isn't flagged as "jiyva", it should fall off in roughly the amount of time it takes
+        // for yellow Drain to fall off. Your blobby DNA/body can't really hold any other forms.
+
 // ?? 5 ?? anything-goes equipment slots. and a hat on top (not a helmet)
 // due to deformed 2, armours contribute 1/3 of their AC to total AC.
         // no Armour skill to increase it, but no Encumbrance to deal with either
-// weapons add 2 to your UC damage, so theoretically you can have "claws 5"
-        // if you wear 5 weapons 
+// weapons add 1 to your UC damage
+        // so you almost (but not quite) have troll-like "claws 3", if you wear 5 weapons
         // maybe jewelry should increase hp+mp+sp by 1% so that it doesn't feel like
         // you're "losing something" by not wearing 5 weaps/armours
 
@@ -20,7 +23,10 @@
     9, 6, 9, // This slime only recently became self-aware 
     { STAT_INT, STAT_DEX }, 5, // with no muscles, getting stronger is not easy
     {
-      { 
+      { MUT_UNBREATHING, 1, 1 },
+      { MUT_ACID_RESISTANCE, 1, 1 },
+      { MUT_CORROSION_RESISTANCE, 1, 1 },
+      { MUT_POISON_RESISTANCE, 1, 1 },
       { MUT_GELATINOUS_BODY, 1, 1 },
       { MUT_DEFORMED, 1, 1 },
       { MUT_TRANSLUCENT_SKIN, 1, 1 }, // does nothing, but prepares you for possibly getting rank 2
