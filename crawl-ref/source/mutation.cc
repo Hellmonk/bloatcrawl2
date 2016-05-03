@@ -889,7 +889,7 @@ static mutation_type _get_random_mutation(mutation_type mutclass)
         {
             const int good_dna = player_mutation_level(MUT_GOOD_DNA);
             const int bad_dna = player_mutation_level(MUT_BAD_DNA);
-            mt = x_chance_in_y(3 + random2(good_dna * 2) - random2(bad_dna * 2), 5)
+            mt = x_chance_in_y(8 + random2(good_dna * 2) - random2(bad_dna * 2), 12)
                  ? mutflag::GOOD
                  : (x_chance_in_y(1, 3) ? mutflag::DEPENDS : mutflag::BAD);
         }
