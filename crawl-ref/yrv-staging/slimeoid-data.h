@@ -23,7 +23,7 @@
       { 
       { MUT_GELATINOUS_BODY, 1, 1 },
       { MUT_DEFORMED, 1, 1 },
-      { MUT_TRANSLUCENT_SKIN, 
+      { MUT_TRANSLUCENT_SKIN, 1, 1 }, // does nothing, but prepares you for possibly getting rank 2
       { MUT_GELATINOUS_BODY, 1, 3 },
       { MUT_DEFORMED, 1, 3 },
       { rando bad mut AND Jiyva mut, 1, 10},
