@@ -2302,7 +2302,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         mpr("You begin channelling magical energy.");
 
         you.increase_duration(DUR_CHANNELING,
-                              player_adjust_invoc_power(10 + random2avg(you.skill(SK_INVOCATIONS, 1), 2)),
+                              player_adjust_invoc_power(20 + random2avg(you.skill(SK_INVOCATIONS, 2), 2)),
                               100);
         break;
 
