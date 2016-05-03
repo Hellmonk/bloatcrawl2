@@ -9206,7 +9206,7 @@ void player_moved()
 {
     if (you.exertion == EXERT_ESCAPE || you.exertion == EXERT_CAREFUL && player_in_a_dangerous_place())
         dec_sp(2);
-    if (you.airborne() && !you.permanent_flight())
+    if (you.airborne() && you.cancellable_flight())
         dec_sp(1);
 }
 
