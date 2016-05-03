@@ -4240,37 +4240,6 @@ bool dec_sp(int sp_loss, bool special)
     if (sp_loss < 1)
         return true;
 
-    if (special)
-        switch(player_mutation_level(MUT_STAMINA_EFFICIENT_SPECIAL))
-        {
-            case 1:
-                sp_loss = div_rand_round(sp_loss * 2, 3);
-                break;
-            case 2:
-                sp_loss = div_rand_round(sp_loss, 3);
-                break;
-            case 3:
-                sp_loss = div_rand_round(sp_loss, 9);
-                break;
-            default:
-                break;
-        }
-    else
-        switch(player_mutation_level(MUT_STAMINA_EFFICIENT_NORMAL))
-        {
-            case 1:
-                sp_loss = div_rand_round(sp_loss * 2, 3);
-                break;
-            case 2:
-                sp_loss = div_rand_round(sp_loss, 3);
-                break;
-            case 3:
-                sp_loss = div_rand_round(sp_loss, 9);
-                break;
-            default:
-                break;
-        }
-
     const int fast_metabolism = player_mutation_level(MUT_FAST_METABOLISM);
     if (fast_metabolism)
         sp_loss = qpow(sp_loss, 4, 3, fast_metabolism);

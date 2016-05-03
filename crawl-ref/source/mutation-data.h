@@ -698,7 +698,7 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_HURL_DAMNATION, 2, 1, mutflag::GOOD, false,
+{ MUT_HURL_DAMNATION, 0, 1, mutflag::GOOD, false,
   "hurl damnation",
 
   {"You can hurl damnation.", "", ""},
@@ -951,42 +951,6 @@ static const mutation_def mut_data[] =
   {"You feel more energetic.",
    "You feel more energetic.",
    "You feel more energetic."},
-},
-
-{ MUT_STAMINA_EFFICIENT_NORMAL, 0, 3, mutflag::GOOD, false,
-  "stamina efficient",
-
-  {"Normal actions take a little less stamina. (-25%)",
-   "Normal actions take less stamina. (-50%)",
-   "Normal actions take a lot less stamina. (-75%)"},
-
-  {"You use stamina more efficiently.",
-   "You use stamina more efficiently.",
-   "You use stamina more efficiently."},
-
-  {
-      "You use stamina less efficiently.",
-      "You use stamina less efficiently.",
-      "You use stamina less efficiently.",
-  },
-},
-
-{ MUT_STAMINA_EFFICIENT_SPECIAL, 0, 3, mutflag::GOOD, false,
-  "stamina efficient special",
-
-  {"Advanced actions take a little less stamina. (-25%)",
-   "Advanced actions take less stamina. (-50%)",
-   "Advanced actions take a lot less stamina. (-75%)"},
-
-  {"You use stamina more efficiently for advanced tasks.",
-   "You use stamina more efficiently for advanced tasks.",
-   "You use stamina more efficiently for advanced tasks."},
-
-  {
-   "You use stamina less efficiently for advanced tasks.",
-   "You use stamina less efficiently for advanced tasks.",
-   "You use stamina less efficiently for advanced tasks.",
-  },
 },
 
 { MUT_HIGH_STAMINA, 30, 3, mutflag::GOOD, false,
