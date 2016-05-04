@@ -184,12 +184,13 @@ void mirror_damage_fineff::fire()
 
     if (att == MID_PLAYER)
     {
-        mpr("Your damage is reflected back at you!");
+        mprf("Your damage is reflected back at you! (%d)", damage);
         ouch(damage, KILLED_BY_MIRROR_DAMAGE);
     }
     else if (def == MID_PLAYER)
     {
-        simple_god_message(" mirrors your injury!");
+        std::string message = " mirrors your injury! (" + to_string(damage) + ")";
+        simple_god_message(message);
 #ifndef USE_TILE_LOCAL
         flash_monster_colour(monster_by_mid(att), RED, 200);
 #endif
@@ -203,7 +204,7 @@ void mirror_damage_fineff::fire()
     }
     else
     {
-        simple_monster_message(monster_by_mid(att), " suffers a backlash!");
+        monster_message(monster_by_mid(att), " suffers a backlash! (%d)", damage);
         attack->hurt(defender(), damage);
     }
 }
