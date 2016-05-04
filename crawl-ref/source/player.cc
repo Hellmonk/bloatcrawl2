@@ -7669,7 +7669,7 @@ bool player::backlit(bool self_halo) const
         || duration[DUR_LIQUID_FLAMES]
         || duration[DUR_QUAD_DAMAGE]
         || !umbraed() && haloed() && (self_halo || halo_radius() == -1)
-		|| player_mutation_level(MUT_GLOW) > 0;
+		|| player_mutation_level(MUT_GLOW) > 2;
 }
 
 bool player::umbra() const
