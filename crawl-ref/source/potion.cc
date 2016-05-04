@@ -238,6 +238,23 @@ public:
             return false;
         }
 
+        int minimum_healing;
+        switch(crawl_state.difficulty)
+        {
+            case DIFFICULTY_STANDARD:
+                minimum_healing = 20;
+                break;
+            case DIFFICULTY_CHALLENGE:
+                minimum_healing = 10;
+                break;
+            case DIFFICULTY_NIGHTMARE:
+                minimum_healing = 5;
+                break;
+            default:
+                // should not be possible
+                break;
+        }
+
         int amount = 0;
         if (is_device)
         {
@@ -256,7 +273,7 @@ public:
             amount = min(you.hp_max, div_rand_round(you.hp_max * power, divisor));
             if (amount > you.hp_max - you.hp)
                 amount = you.hp_max - you.hp;
-            amount = max(20, amount);
+            amount = max(minimum_healing, amount);
 
             mprf("You feel better. (%d)", amount);
         }
@@ -280,8 +297,7 @@ public:
             }
 
 
-        // heal at least 20 points
-        amount = max(20, amount);
+        amount = max(minimum_healing, amount);
 
         // Pay for rot right off the top.
         amount = unrot_hp(amount);
