@@ -3175,6 +3175,7 @@ bool bolt::harmless_to_player() const
     case BEAM_FIRE:
     case BEAM_HOLY_FLAME:
     case BEAM_STICKY_FLAME:
+    case BEAM_LAVA:
         return you.species == SP_DJINNI;
 
     case BEAM_VIRULENCE:
