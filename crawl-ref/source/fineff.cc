@@ -190,7 +190,7 @@ void mirror_damage_fineff::fire()
     else if (def == MID_PLAYER)
     {
         std::string message = " mirrors your injury! (" + to_string(damage) + ")";
-        simple_god_message(message);
+        simple_god_message(message.c_str());
 #ifndef USE_TILE_LOCAL
         flash_monster_colour(monster_by_mid(att), RED, 200);
 #endif
