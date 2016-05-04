@@ -189,6 +189,7 @@ static bool _mut_has_use(const mutation_def &mut, mutflag use)
 }
 
 #define MUT_BAD(mut) _mut_has_use((mut), mutflag::BAD)
+#define MUT_DEPENDS(mut) _mut_has_use((mut), mutflag::DEPENDS)
 #define MUT_GOOD(mut) _mut_has_use((mut), mutflag::GOOD)
 
 static int _mut_weight(const mutation_def &mut, mutflag use)
@@ -1426,6 +1427,11 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
         }
 
         if (you.mutation[mutat] > 0 && x_chance_in_y(player_mutation_level(MUT_UNFOCUSSED_DNA), 3))
+        {
+            continue;
+        }
+
+        if (you.mutation[mutat] == 0 && x_chance_in_y(player_mutation_level(MUT_FOCUSSED_DNA), 3))
         {
             continue;
         }
