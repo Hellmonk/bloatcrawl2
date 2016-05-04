@@ -241,9 +241,22 @@ public:
         int amount = 0;
         if (is_device)
         {
-            amount = min(you.hp_max, div_rand_round(you.hp_max * power, 100));
+            int divisor = 50;
+            switch(crawl_state.difficulty)
+            {
+                case DIFFICULTY_CHALLENGE:
+                    divisor = 100;
+                    break;
+                case DIFFICULTY_NIGHTMARE:
+                    divisor = 200;
+                    break;
+                default:
+                    break;
+            }
+            amount = min(you.hp_max, div_rand_round(you.hp_max * power, divisor));
             if (amount > you.hp_max - you.hp)
                 amount = you.hp_max - you.hp;
+            amount = max(20, amount);
 
             mprf("You feel better. (%d)", amount);
         }
