@@ -362,8 +362,6 @@ void jiyva_slurp_item_stack(const item_def& item, int quantity)
 
     if (gain.piety_gain > PIETY_NONE)
         simple_god_message(" appreciates your sacrifice.");
-    if (gain.jiyva_bonus & JS_FOOD)
-        mpr("You feel a little less hungry.");
     if (gain.jiyva_bonus & JS_MP)
         canned_msg(MSG_GAIN_MAGIC, gain.amount);
     if (gain.jiyva_bonus & JS_HP)
