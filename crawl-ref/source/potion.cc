@@ -275,6 +275,9 @@ public:
                 amount = you.hp_max - you.hp;
             amount = max(minimum_healing, amount);
 
+            if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
+                amount = you.scale_device_healing(10 + random2avg(28, 3));
+
             mprf("You feel better. (%d)", amount);
         }
         else switch(crawl_state.difficulty)
@@ -288,7 +291,7 @@ public:
                     mprf("You feel much better. (%d)", amount);
                     break;
                 case DIFFICULTY_NIGHTMARE:
-                    amount = you.hp_max/4;
+                    amount = 10 + random2avg(28, 3);
                     mprf("You feel a little better. (%d)", amount);
                     break;
                 default:
