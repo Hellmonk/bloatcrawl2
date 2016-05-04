@@ -2953,12 +2953,6 @@ static void tag_read_you(reader &th)
             you.mutation[MUT_FORLORN] = 0;
     }
 
-    if (th.getMinorVersion() < TAG_MINOR_MP_WANDS)
-    {
-        if (you.mutation[MUT_MP_WANDS] > 1)
-            you.mutation[MUT_MP_WANDS] = 1;
-    }
-
     if (th.getMinorVersion() < TAG_MINOR_NAGA_METABOLISM)
     {
         if (you.species == SP_NAGA)

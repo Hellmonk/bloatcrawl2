@@ -1878,12 +1878,24 @@ static const mutation_def mut_data[] =
     "Your ability to control magic is less disrupted."},
 },
 
-{ MUT_MP_WANDS, 70, 1, mutflag::BAD, false,
+{ MUT_MP_WANDS, 70, 3, mutflag::DEPENDS, false,
   "MP-powered wands",
 
-  {"You expend magic power (3 MP) to strengthen your wands.", "", ""},
-  {"You feel your magical essence link to your wands.", "", ""},
-  {"Your magical essence is no longer linked to your wands.", "", ""},
+  {
+   "You expend magic power (3 MP) to strengthen your wands.",
+   "You expend magic power (6 MP) to strengthen your wands.",
+   "You expend magic power (9 MP) to strengthen your wands.",
+  },
+  {
+   "You feel your magical essence link to your wands.",
+   "Your magical essence is more linked to your wands.",
+   "Your magical essence is more linked to your wands.",
+  },
+  {
+   "Your magical essence is no longer linked to your wands.",
+   "Your magical essence is less linked to your wands.",
+   "Your magical essence is less linked to your wands.",
+  },
 },
 
 { MUT_UNSKILLED, 5, 3, mutflag::BAD, false,
