@@ -3482,9 +3482,9 @@ int check_stealth()
 
     if (player_mutation_level(MUT_GLOW) > 0)
     	stealth -= STEALTH_PIP / 2;
-    if (player_mutation_level(MUT_GLOW) > 0)
+    if (player_mutation_level(MUT_GLOW) > 1)
     	stealth -= STEALTH_PIP;
-    if (player_mutation_level(MUT_GLOW) > 0)
+    if (player_mutation_level(MUT_GLOW) > 2)
     	stealth -= STEALTH_PIP * 2;
 
     stealth += STEALTH_PIP * player_mutation_level(MUT_CAMOUFLAGE);
