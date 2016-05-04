@@ -1256,6 +1256,7 @@ int player_hunger_rate(bool temp)
         hunger += 4;
     }
 
+    /*
     if (temp)
     {
         if (you.duration[DUR_INVIS] && you.duration_source[DUR_INVIS] != SRC_POTION)
@@ -1272,6 +1273,7 @@ int player_hunger_rate(bool temp)
             hunger += haste_mul(50);
         }
     }
+     */
 
     if (you.species == SP_VAMPIRE)
     {
@@ -9215,11 +9217,14 @@ void player_was_offensive()
     if (you.current_form_spell != SPELL_NO_SPELL)
     {
         int fail = raw_spell_fail(you.current_form_spell);
-        fail = 100 - fail;
-        fail *= fail;
-        fail = 100 - div_rand_round(fail, 100);
+        const bool flip = fail > 50;
+        if (flip)
+            fail = 100 - fail;
+        fail = fail / 2;
+        if (flip)
+            fail = 100 - fail;
 
-        if (x_chance_in_y(fail, 100))
+        if (x_chance_in_y(fail + 1, 100))
         {
             you.current_form_spell_failure++;
             if (you.current_form_spell_failure == 2)

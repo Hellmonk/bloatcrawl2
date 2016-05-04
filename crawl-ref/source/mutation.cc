@@ -85,6 +85,7 @@ DEF_BITFIELD(mutflags, mutflag, 5);
 COMPILE_CHECK(mutflags::exponent(mutflags::last_exponent) == mutflag::LAST);
 
 #include "mutation-data.h"
+#include "stepdown.h"
 
 static const body_facet_def _body_facets[] =
 {
@@ -145,6 +146,8 @@ static const int conflict[][3] =
     { MUT_FAST,                MUT_SLOW,                   1},
     { MUT_GOOD_DNA,            MUT_BAD_DNA,                1},
     { MUT_RESILIENT_DNA,       MUT_WEAK_DNA,               1},
+    { MUT_LONG_DNA,            MUT_SHORT_DNA,              1},
+    { MUT_FOCUSSED_DNA,        MUT_UNFOCUSSED_DNA,         1},
     { MUT_SUSTAIN_ATTRIBUTES,  MUT_DETERIORATION,         -1},
     { MUT_FANGS,               MUT_BEAK,                  -1},
     { MUT_ANTENNAE,            MUT_HORNS,                 -1},
@@ -186,6 +189,7 @@ static bool _mut_has_use(const mutation_def &mut, mutflag use)
 }
 
 #define MUT_BAD(mut) _mut_has_use((mut), mutflag::BAD)
+#define MUT_DEPENDS(mut) _mut_has_use((mut), mutflag::DEPENDS)
 #define MUT_GOOD(mut) _mut_has_use((mut), mutflag::GOOD)
 
 static int _mut_weight(const mutation_def &mut, mutflag use)
@@ -997,8 +1001,8 @@ static int _handle_conflicting_mutations(mutation_type mutation,
                         return 0;       // Allow conflicting transient mutations
                     else
                     {
-                        delete_mutation(b, reason, true, true);
-                        return 1;     // Nothing more to do.
+                        if(delete_mutation(b, reason, true, true))
+                            return 1;     // Nothing more to do.
                     }
 
                 default:
@@ -1310,89 +1314,148 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
         }
     }
 
-    const int clean_dna = player_mutation_level(MUT_CLEAN_DNA);
-    const int resilient_dna = player_mutation_level(MUT_RESILIENT_DNA) - player_mutation_level(MUT_WEAK_DNA);
+    int tries = 100;
+    mutation_def mdef;
+    bool success = false;
 
-    if (mutclass == MUTCLASS_NORMAL
-        && (which_mutation == RANDOM_MUTATION || which_mutation == RANDOM_XOM_MUTATION)
-        && x_chance_in_y(how_mutated(false, true) + random2(clean_dna * 3), 15))
+    while (tries--)
     {
-        // God gifts override mutation loss due to being heavily
-        // mutated.
-        if (!one_chance_in(3) && !god_gift && !force_mutation)
-            return false;
-        else
+        if (mutclass == MUTCLASS_NORMAL
+            && (which_mutation == RANDOM_MUTATION || which_mutation == RANDOM_XOM_MUTATION)
+            )
         {
-            mutation_type mutation = x_chance_in_y(resilient_dna + 1, 4) ? RANDOM_BAD_MUTATION : RANDOM_MUTATION;
-            if (resilient_dna < 0)
-                mutation = x_chance_in_y(-resilient_dna, 4) ? RANDOM_GOOD_MUTATION : RANDOM_MUTATION;
+            const int long_dna = player_mutation_level(MUT_LONG_DNA) - player_mutation_level(MUT_SHORT_DNA);
+            const int mutation_count = qpow(how_mutated(false, true) * 2, 1, 2, long_dna);
+            const int focussed = player_mutation_level(MUT_FOCUSSED_DNA);
+            const int unfocussed = player_mutation_level(MUT_UNFOCUSSED_DNA);
 
-            return delete_mutation(mutation, reason, failMsg, force_mutation, false);
-        }
-    }
+            const int focus_level = 6 + focussed * focussed * 4 - unfocussed * unfocussed * 2;
+            if (x_chance_in_y(random2(mutation_count), 15))
+            {
+                const int clean_dna = player_mutation_level(MUT_CLEAN_DNA);
 
-    switch (which_mutation)
-    {
-    case RANDOM_MUTATION:
-    case RANDOM_GOOD_MUTATION:
-    case RANDOM_BAD_MUTATION:
-    case RANDOM_CORRUPT_MUTATION:
-        mutat = _get_random_mutation(which_mutation);
-        break;
-    case RANDOM_XOM_MUTATION:
-        mutat = _get_random_xom_mutation();
-        break;
-    case RANDOM_SLIME_MUTATION:
-        mutat = _get_random_slime_mutation();
-        break;
-    case RANDOM_QAZLAL_MUTATION:
-        mutat = _get_random_qazlal_mutation();
-        break;
-    default:
-        break;
-    }
-
-    if (!_is_valid_mutation(mutat))
-        return false;
-
-    // [Cha] don't allow teleportitis in sprint
-    if (mutat == MUT_TELEPORT && crawl_state.game_is_sprint())
-        return false;
-
-    if (physiology_mutation_conflict(mutat))
-        return false;
-
-    const mutation_def& mdef = _get_mutation_def(mutat);
-
-    if (you.mutation[mutat] >= mdef.levels)
-    {
-        bool found = false;
-        if (you.species == SP_DEMONSPAWN)
-        {
-            for (player::demon_trait trait : you.demonic_traits)
-                if (trait.mutation == mutat)
+                // God gifts override mutation loss due to being heavily
+                // mutated.
+                if (x_chance_in_y(2, 3 + clean_dna * clean_dna) && !god_gift && !force_mutation)
+                    return false;
+                else
                 {
-                    // This mutation is about to be re-gained, so there is
-                    // no need to redraw any stats or print any messages.
-                    found = true;
-                    you.mutation[mutat]--;
-                    break;
+                    const int resilient_dna = player_mutation_level(MUT_RESILIENT_DNA) - player_mutation_level(MUT_WEAK_DNA);
+                    mutation_type mutation = x_chance_in_y(resilient_dna + 1, 5) ? RANDOM_BAD_MUTATION : RANDOM_MUTATION;
+                    if (resilient_dna < 0)
+                        mutation = x_chance_in_y(-resilient_dna, 4) ? RANDOM_GOOD_MUTATION : RANDOM_MUTATION;
+
+                    return delete_mutation(mutation, reason, failMsg, force_mutation, false);
                 }
+            }
+            else if (x_chance_in_y(random2(focus_level), 10) && mutation_count > 0)
+            {
+                int tries2 = 100;
+                bool found = false;
+                mutation_type existing_mutation;
+                while(tries2--)
+                {
+                    existing_mutation = static_cast<mutation_type>(random2(NUM_MUTATIONS));
+                    mdef = _get_mutation_def(existing_mutation);
+                    const int level = player_mutation_level(existing_mutation);
+
+                    if (level && level < mdef.levels)
+                    {
+                        if (MUT_BAD(mdef) && x_chance_in_y(3 - player_mutation_level(MUT_BAD_DNA), 4))
+                            continue;
+
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found)
+                    mutat = existing_mutation;
+            }
         }
-        if (!found)
+
+        switch (mutat)
+        {
+            case RANDOM_MUTATION:
+            case RANDOM_GOOD_MUTATION:
+            case RANDOM_BAD_MUTATION:
+            case RANDOM_CORRUPT_MUTATION:
+                mutat = _get_random_mutation(which_mutation);
+                break;
+            case RANDOM_XOM_MUTATION:
+                mutat = _get_random_xom_mutation();
+                break;
+            case RANDOM_SLIME_MUTATION:
+                mutat = _get_random_slime_mutation();
+                break;
+            case RANDOM_QAZLAL_MUTATION:
+                mutat = _get_random_qazlal_mutation();
+                break;
+            default:
+                break;
+        }
+
+        if (!_is_valid_mutation(mutat))
+            continue;
+
+        // [Cha] don't allow teleportitis in sprint
+        if (mutat == MUT_TELEPORT && crawl_state.game_is_sprint())
+            continue;
+
+        if (physiology_mutation_conflict(mutat))
+            continue;
+
+        mdef = _get_mutation_def(mutat);
+
+        if (you.mutation[mutat] >= mdef.levels)
+        {
+            bool found = false;
+            if (you.species == SP_DEMONSPAWN)
+            {
+                for (player::demon_trait trait : you.demonic_traits)
+                    if (trait.mutation == mutat)
+                    {
+                        // This mutation is about to be re-gained, so there is
+                        // no need to redraw any stats or print any messages.
+                        found = true;
+                        you.mutation[mutat]--;
+                        break;
+                    }
+            }
+            if (!found)
+                continue;
+        }
+
+        if (you.mutation[mutat] > 0 && x_chance_in_y(player_mutation_level(MUT_UNFOCUSSED_DNA), 3))
+        {
+            continue;
+        }
+
+        if (you.mutation[mutat] == 0 && x_chance_in_y(player_mutation_level(MUT_FOCUSSED_DNA), 3))
+        {
+            continue;
+        }
+
+        // God gifts and forced mutations clear away conflicting mutations.
+        int rc = _handle_conflicting_mutations(mutat, god_gift || force_mutation,
+                                               reason,
+                                               mutclass == MUTCLASS_TEMPORARY);
+        if (rc == 1)
+            return true;
+        if (rc == -1)
             return false;
+
+        // much lower chance of getting dna muts
+        if (mutat >= MUT_FIRST_DNA && mutat <= MUT_LAST_DNA && x_chance_in_y(3, 4))
+            continue;
+
+        ASSERT(rc == 0);
+        success = true;
+        break;
     }
 
-    // God gifts and forced mutations clear away conflicting mutations.
-    int rc = _handle_conflicting_mutations(mutat, god_gift || force_mutation,
-                                           reason,
-                                           mutclass == MUTCLASS_TEMPORARY);
-    if (rc == 1)
-        return true;
-    if (rc == -1)
+    if (!success)
         return false;
-
-    ASSERT(rc == 0);
 
     const unsigned int old_talents = your_talents(false).size();
 
@@ -1681,17 +1744,15 @@ bool delete_mutation(mutation_type which_mutation, const string &reason,
 
     if (!force_mutation)
     {
-//        if (!god_gift)
-//        {
-//            if (player_mutation_level(MUT_MUTATION_RESISTANCE) > 1
-//                && (player_mutation_level(MUT_MUTATION_RESISTANCE) == 3
-//                    || coinflip()))
-//            {
-//                if (failMsg)
-//                    mprf(MSGCH_MUTATION, "You feel rather odd for a moment.");
-//                return false;
-//            }
-//        }
+        if (!god_gift)
+        {
+            if (x_chance_in_y(player_mutation_level(MUT_MUTATION_RESISTANCE), 4))
+            {
+                if (failMsg)
+                    mprf(MSGCH_MUTATION, "You feel rather odd for a moment.");
+                return false;
+            }
+        }
 
         if (undead_mutation_rot())
             return false;
@@ -1752,6 +1813,16 @@ bool delete_mutation(mutation_type which_mutation, const string &reason,
 
             if (you.temp_mutation[mutat] >= you.mutation[mutat])
                 continue; // don't attempt to cure transient mutations
+
+            if (MUT_BAD(mdef) && x_chance_in_y(player_mutation_level(MUT_WEAK_DNA), 4))
+                continue;
+
+            if (MUT_GOOD(mdef) && x_chance_in_y(player_mutation_level(MUT_RESILIENT_DNA), 4))
+                continue;
+
+            // we don't want to lose dna mutations easily
+            if (mutat >= MUT_FIRST_DNA && mutat <= MUT_LAST_DNA && x_chance_in_y(3, 4))
+                continue;
 
             break;
         }

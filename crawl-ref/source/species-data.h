@@ -86,6 +86,7 @@ static const map<species_type, species_def> species_data =
     10, 7, 4, // 21
     { STAT_STR, STAT_DEX }, 4,
     {
+      { MUT_CLEAN_DNA, 2, 1 },
       { MUT_TOUGH_SKIN, 3, 1 },
       { MUT_HIGH_STAMINA, 1, 1 },
       { MUT_FAST, 1, 1 },
@@ -616,7 +617,9 @@ static const map<species_type, species_def> species_data =
         { MUT_RESILIENT_DNA, 1, 1 },
         { MUT_CARNIVOROUS, 3, 1 },
         { MUT_EVOLUTION, 2, 1 },
+        { MUT_LONG_DNA, 1, 3 },
         { MUT_RESILIENT_DNA, 1, 6 },
+        { MUT_LONG_DNA, 1, 9 },
         { MUT_EVOLUTION, -1, 10 },
     },
     {},
@@ -815,6 +818,7 @@ static const map<species_type, species_def> species_data =
     { STAT_INT, STAT_DEX }, 4,
     {
     	{ MUT_SUBDUED_MAGIC, 3, 1 },
+        { MUT_WEAK_DNA, 1, 1 },
     },
     {},
     {},
@@ -865,7 +869,6 @@ static const map<species_type, species_def> species_data =
       { MUT_GOOD_DNA, 1, 8 },
 	  { MUT_TENGU_FLIGHT, 1, 10 },
 	  { MUT_ABSORB_ENCH, 1, 12 },
-      { MUT_GOOD_DNA, 1, 16 },
 	  { MUT_ABSORB_ENCH, 1, 18 },
     },
     {},

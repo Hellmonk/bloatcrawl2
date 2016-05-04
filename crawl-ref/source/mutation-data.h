@@ -985,7 +985,7 @@ static const mutation_def mut_data[] =
    "You tire less rapidly."},
 },
 
-{ MUT_WILD_MAGIC, 60, 3, mutflag::GOOD, false,
+{ MUT_WILD_MAGIC, 60, 3, mutflag::DEPENDS, false,
   "wild magic",
 
   {"Your spells are a little harder to cast, but a little more powerful.",
@@ -1001,7 +1001,7 @@ static const mutation_def mut_data[] =
    "You feel more in control of your magic."},
 },
 
-{ MUT_SUBDUED_MAGIC, 60, 3, mutflag::BAD, false,
+{ MUT_SUBDUED_MAGIC, 60, 3, mutflag::DEPENDS, false,
   "subdued magic",
 
   {"Your spells are a little easier to cast, but a little less powerful.",
@@ -2028,7 +2028,7 @@ static const mutation_def mut_data[] =
    "You gain less health from kills."},
 },
 
-{ MUT_GOOD_DNA, 5, 3, mutflag::GOOD, false,
+{ MUT_GOOD_DNA, 2, 3, mutflag::GOOD, false,
   "good dna",
 
   {"You have a slightly better chance of getting good mutations.",
@@ -2042,12 +2042,12 @@ static const mutation_def mut_data[] =
    "Your dna weakens."},
 },
 
-{ MUT_CLEAN_DNA, 5, 3, mutflag::GOOD, false,
+{ MUT_CLEAN_DNA, 5, 3, mutflag::DEPENDS, false,
   "clean dna",
 
-  {"You have a slightly better chance of losing bad mutations.",
-   "You have a better chance of losing bad mutations.",
-   "You have a much better chance of losing bad mutations."},
+  {"You have a slightly better chance of losing mutations.",
+   "You have a better chance of losing mutations.",
+   "You have a much better chance of losing mutations."},
   {"Your dna becomes more clean.",
    "Your dna becomes more clean.",
    "Your dna becomes more clean."},
@@ -2056,7 +2056,7 @@ static const mutation_def mut_data[] =
    "Your dna becomes less clean."},
 },
 
-{ MUT_BAD_DNA, 5, 3, mutflag::BAD, false,
+{ MUT_BAD_DNA, 1, 3, mutflag::BAD, false,
   "bad dna",
 
   {"You have a slightly better chance of getting bad mutations.",
@@ -2084,7 +2084,7 @@ static const mutation_def mut_data[] =
    "Your dna becomes less resilient."},
 },
 
-{ MUT_WEAK_DNA, 5, 3, mutflag::BAD, false,
+{ MUT_WEAK_DNA, 2, 3, mutflag::BAD, false,
   "weak dna",
 
   {"You are slightly more likely to lose good mutations.",
@@ -2097,4 +2097,99 @@ static const mutation_def mut_data[] =
    "Your dna becomes less weak.",
    "Your dna becomes less weak."},
 },
+
+{ MUT_SHORT_DNA, 10, 3, mutflag::DEPENDS, false,
+  "short dna",
+
+  {"Your body has a lower mutation capacity.",
+   "Your body has a much lower mutation capacity.",
+   "Your body has a dramatically lower mutation capacity."},
+  {"Your body rejects larger amounts of mutation.",
+   "Your body rejects larger amounts of mutation.",
+   "Your body rejects larger amounts of mutation."},
+  {"Your accepts a more normal amount of mutation.",
+   "Your accepts a more normal amount of mutation.",
+   "Your accepts a more normal amount of mutation."},
+},
+
+{ MUT_LONG_DNA, 10, 3, mutflag::DEPENDS, false,
+  "long dna",
+
+  {"Your body has a higher mutation capacity.",
+   "Your body has a much higher mutation capacity.",
+   "Your body has a dramatically higher mutation capacity."},
+  {"Your body accepts larger amounts of mutation.",
+   "Your body accepts larger amounts of mutation.",
+   "Your body accepts larger amounts of mutation."},
+  {"Your accepts a more normal amount of mutation.",
+   "Your accepts a more normal amount of mutation.",
+   "Your accepts a more normal amount of mutation."},
+},
+
+{ MUT_FOCUSSED_DNA, 10, 3, mutflag::DEPENDS, false,
+  "focussed dna",
+
+  {"New mutations are more likely to enhance existing mutations.",
+   "New mutations are much more likely to enhance existing mutations.",
+   "New mutations are dramatically more likely to enhance existing mutations."},
+  {"Your dna gains focus.",
+   "Your dna gains focus.",
+   "Your dna gains focus."},
+  {"Your dna loses focus.",
+   "Your dna loses focus.",
+   "Your dna loses focus."},
+},
+
+{ MUT_UNFOCUSSED_DNA, 10, 3, mutflag::DEPENDS, false,
+  "unfocussed dna",
+
+  {"New mutations are less likely to enhance existing mutations.",
+   "New mutations are much less likely to enhance existing mutations.",
+   "New mutations are dramatically less likely to enhance existing mutations."},
+  {"Your dna loses focus.",
+   "Your dna loses focus.",
+   "Your dna loses focus."},
+  {"Your dna gains focus.",
+   "Your dna gains focus.",
+   "Your dna gains focus."},
+},
+
+// deprecated
+{ MUT_STAMINA_EFFICIENT_NORMAL, 0, 3, mutflag::GOOD, false,
+  "stamina efficient",
+
+  {"Normal actions take a little less stamina. (-25%)",
+   "Normal actions take less stamina. (-50%)",
+   "Normal actions take a lot less stamina. (-75%)"},
+
+  {"You use stamina more efficiently.",
+   "You use stamina more efficiently.",
+   "You use stamina more efficiently."},
+
+  {
+      "You use stamina less efficiently.",
+      "You use stamina less efficiently.",
+      "You use stamina less efficiently.",
+  },
+},
+
+// deprecated
+{ MUT_STAMINA_EFFICIENT_SPECIAL, 0, 3, mutflag::GOOD, false,
+  "stamina efficient special",
+
+  {"Advanced actions take a little less stamina. (-25%)",
+   "Advanced actions take less stamina. (-50%)",
+   "Advanced actions take a lot less stamina. (-75%)"},
+
+  {"You use stamina more efficiently for advanced tasks.",
+   "You use stamina more efficiently for advanced tasks.",
+   "You use stamina more efficiently for advanced tasks."},
+
+  {
+      "You use stamina less efficiently for advanced tasks.",
+      "You use stamina less efficiently for advanced tasks.",
+      "You use stamina less efficiently for advanced tasks.",
+  },
+},
+
 };

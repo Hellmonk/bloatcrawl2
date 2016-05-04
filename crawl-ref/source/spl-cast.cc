@@ -582,11 +582,11 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
         {
             for (const auto bit : spschools_type::range())
                 if (disciplines & bit)
-                    power += you.skill(spell_type2skill(bit), SPELL_POWER_CAP);
+                    power += you.skill(spell_type2skill(bit), 200);
             power /= skillcount;
         }
 
-        power += you.skill(SK_SPELLCASTING, SPELL_POWER_CAP / 3);
+        power += you.skill(SK_SPELLCASTING, 200 / 3);
 
         // Brilliance boosts spell power a bit (equivalent to three
         // spell school levels).

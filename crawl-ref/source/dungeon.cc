@@ -1243,7 +1243,7 @@ static int _num_items_wanted(int absdepth0)
 {
     if (branches[you.where_are_you].branch_flags & BFLAG_NO_ITEMS)
         return 0;
-    else if (absdepth0 > 5 && one_chance_in(500 - 5 * absdepth0))
+    else if (absdepth0 > 5 && x_chance_in_y(absdepth0, 200))
         return 10 + random2avg(90, 2); // rich level!
     else
         return 3 + roll_dice(3, 11);
