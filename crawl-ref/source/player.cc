@@ -4578,7 +4578,7 @@ int get_real_sp(bool include_items)
     if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
         boost--;
 
-    max_sp = qpow(max_sp, 5, 4, boost);
+    max_sp = max_sp + 20 * boost;
 
     return max_sp;
 }
