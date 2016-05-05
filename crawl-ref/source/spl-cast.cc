@@ -577,37 +577,35 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
         // Brilliance boosts spell power a bit (equivalent to three
         // spell school levels).
         if (!fail_rate_check && you.duration[DUR_BRILLIANCE])
-            power += 600;
+            power = max(600, power * 3 / 2);
 
         if (apply_intel)
             power = (power * you.intel()) / 10;
 
-        // [dshaligram] Enhancers don't affect fail rates any more, only spell
-        // power. Note that this does not affect Vehumet's boost in castability.
         if (!fail_rate_check)
+        {
+            // [dshaligram] Enhancers don't affect fail rates any more, only spell
+            // power. Note that this does not affect Vehumet's boost in castability.
             power = apply_enhancement(power, _spell_enhancement(spell));
 
-        // Wild magic boosts spell power but decreases success rate.
-        if (!fail_rate_check)
-        {
+            // Wild magic boosts spell power but decreases success rate.
             const int wild = player_mutation_level(MUT_WILD_MAGIC);
             const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
-            power *= (10 + 3 * wild * wild);
-            power /= (10 + 3 * subdued * subdued);
-        }
+            if (wild)
+                power *= (10 + 3 * wild * wild);
+            if (subdued)
+                power /= (10 + 3 * subdued * subdued);
 
-        // Augmentation boosts spell power at high HP.
-        if (!fail_rate_check)
-        {
+            // Augmentation boosts spell power at high HP.
             power *= 10 + 4 * augmentation_amount();
             power /= 10;
-        }
 
-        // Each level of horror reduces spellpower by 10%
-        if (you.duration[DUR_HORROR] && !fail_rate_check)
-        {
-            power *= 10;
-            power /= 10 + (you.props[HORROR_PENALTY_KEY].get_int() * 3) / 2;
+            // Each level of horror reduces spellpower by 10%
+            if (you.duration[DUR_HORROR])
+            {
+                power *= 10;
+                power /= 10 + (you.props[HORROR_PENALTY_KEY].get_int() * 3) / 2;
+            }
         }
 
         power = stepdown_spellpower(power);
