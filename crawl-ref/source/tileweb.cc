@@ -760,6 +760,8 @@ void TilesFramework::_send_player(bool force_full)
     _update_int(force_full, c.experience_level, you.experience_level, "xl");
     _update_int(force_full, c.exp_progress, (int8_t) get_exp_progress(), "progress");
     _update_int(force_full, c.gold, you.gold, "gold");
+    _update_int(force_full, c.tohit, you.last_tohit, "tohit");
+    _update_int(force_full, c.hit_chance, you.last_hit_chance, "hit_chance");
 
     if (you.running == 0) // Don't update during running/resting
     {

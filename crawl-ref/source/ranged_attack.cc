@@ -385,8 +385,8 @@ int ranged_attack::apply_damage_modifiers(int damage, int damage_max)
         damage += random2avg(bonus, 2);
     }
 
-    if (you.exertion == EXERT_POWER && attacker->is_player())
-        damage = div_rand_round(damage * 4, 3);
+    if (attacker->is_player())
+        damage = player_damage_modifier(damage);
 
     return damage;
 }

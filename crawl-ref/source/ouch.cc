@@ -934,9 +934,6 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             dam = dam * 10 / 15;
     }
     ait_hp_loss hpl(dam, death_type);
-    if(dam > 0) {
-        interrupt_activity(source == MID_NOBODY ? AI_HP_LOSS_FROM_OTHER : AI_HP_LOSS_FROM_MONSTER, &hpl);
-    }
 
     if (dam > 0 && death_type != KILLED_BY_POISON)
         you.check_awaken(500);
@@ -1022,6 +1019,10 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             you.source_damage = 0;
         }
         you.source_damage += dam;
+
+        if(dam > 0) {
+            interrupt_activity(source == MID_NOBODY ? AI_HP_LOSS_FROM_OTHER : AI_HP_LOSS_FROM_MONSTER, &hpl);
+        }
 
         dec_hp(dam, true);
 

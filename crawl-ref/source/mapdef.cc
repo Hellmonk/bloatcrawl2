@@ -4241,7 +4241,7 @@ mons_spec mons_list::get_hydra_spec(const string &name) const
     else if (nheads > 20)
     {
 #if defined(DEBUG) || defined(DEBUG_DIAGNOSTICS)
-        mprf(MSGCH_DIAGNOSTICS, "Hydra spec wants %d heads, clamping to 20.",
+        dprf("Hydra spec wants %d heads, clamping to 20.",
              nheads);
 #endif
         nheads = 20;
@@ -4269,7 +4269,7 @@ mons_spec mons_list::get_slime_spec(const string &name) const
     else
     {
 #if defined(DEBUG) || defined(DEBUG_DIAGNOSTICS)
-        mprf(MSGCH_DIAGNOSTICS, "Slime spec wants invalid size '%s'",
+        dprf("Slime spec wants invalid size '%s'",
              prefix.c_str());
 #endif
     }

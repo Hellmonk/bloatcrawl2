@@ -246,7 +246,8 @@ void stop_delay(bool stop_stair_travel, bool force_unsafe)
         if (delay_is_run(delay.type) && you.running)
             stop_running();
 
-        maybe_reset_form_decay();
+        player_after_long_safe_action(you.time_taken);
+
         // There's no special action needed for macros - if we don't call out
         // to the Lua function, it can't do damage.
         break;
@@ -1487,6 +1488,8 @@ static inline bool _monster_warning(activity_interrupt_type ai,
         }
 
         monster_info mi(mon);
+
+        text += " (" + to_string(mon->hit_points) + "hp)";
 
         const string mweap = get_monster_equipment_desc(mi,
                                                         ash_id ? DESC_IDENTIFIED

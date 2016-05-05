@@ -152,9 +152,12 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Sif Muna
-    { { 1, ABIL_SIF_MUNA_CHANNEL_ENERGY, "tap ambient magical fields" },
-      { 3, "Sif Muna is protecting you from the effects of miscast magic.",
+    {
+      { 1, "Sif Muna is helping you to conserve magic.",
+           "Sif Muna is no longer helping you to conserve magic." },
+      { 2, "Sif Muna is protecting you from the effects of miscast magic.",
            "Sif Muna no longer protects you from the effects of miscast magic." },
+      { 3, ABIL_SIF_MUNA_CHANNEL_ENERGY, "tap ambient magical fields" },
       { 4, ABIL_SIF_MUNA_FORGET_SPELL, "freely open your mind to new spells",
           "forget spells at will" },
     },
@@ -877,8 +880,9 @@ static bool _give_nemelex_gift(bool forced = false)
 
         misc_item_type gift_type = random_choose_weighted(
                                         4, MISC_DECK_OF_WAR,
-                                        4, MISC_DECK_OF_DESTRUCTION,
+                                        3, MISC_DECK_OF_DESTRUCTION,
                                         2, MISC_DECK_OF_ESCAPE,
+                                        1, MISC_DECK_OF_WONDERS, 
                                         0);
 
         int thing_created = items(true, OBJ_MISCELLANY, gift_type, 1, 0,
@@ -1527,7 +1531,7 @@ bool do_god_gift(bool forced)
                 you.num_total_gifts[you.religion]++;
                 // Timeouts are meaningless for Kiku.
                 if (!you_worship(GOD_KIKUBAAQUDGHA))
-                    _inc_gift_timeout(30 + random2avg(19, 2));
+                    _inc_gift_timeout(40 + random2avg(19, 2));
                 take_note(Note(NOTE_GOD_GIFT, you.religion));
             }
             break;

@@ -8,7 +8,7 @@
 
 #include "enum.h"
 
-#define SPELL_POWER_CAP			200
+#define SPELL_POWER_CAP			999
 
 enum spflag_type
 {

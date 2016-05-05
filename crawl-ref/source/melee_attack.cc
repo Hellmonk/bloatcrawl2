@@ -1495,8 +1495,7 @@ int melee_attack::player_apply_final_multipliers(int damage)
     if (you.duration[DUR_CONFUSING_TOUCH] && wpn_skill == SK_UNARMED_COMBAT)
         return 0;
 
-    if (you.exertion == EXERT_POWER)
-        damage = div_rand_round(damage * 4, 3);
+    damage = player_damage_modifier(damage);
 
     return damage;
 }
@@ -2271,12 +2270,6 @@ int melee_attack::calc_to_hit(bool random)
         // TODO: Review this later (transformations getting extra hit
         // almost across the board seems bad) - Cryp71c
         mhit += maybe_random2(get_form()->unarmed_hit_bonus, random);
-    }
-
-    if (attacker->is_player())
-    {
-        if (you.exertion == EXERT_CAREFUL)
-            mhit = div_rand_round(mhit * 3, 2);
     }
 
     return mhit;
@@ -3329,10 +3322,10 @@ void melee_attack::emit_foul_stench()
     {
         const int mut = player_mutation_level(MUT_FOUL_STENCH);
 
-        if (one_chance_in(3))
+        if (x_chance_in_y(2, 5))
             mon->sicken(50 + random2(100));
 
-        if (damage_done > 4 && x_chance_in_y(mut, 5)
+        if (damage_done > 4 && x_chance_in_y(mut, 4)
             && !cell_is_solid(mon->pos())
             && !cloud_at(mon->pos()))
         {

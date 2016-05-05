@@ -2414,7 +2414,7 @@ static vector<mon_spellbook_type> _mons_spellbook_list(monster_type mon_type)
                  MST_TENGU_REAVER_III };
                  
     case MONS_DEEP_DWARF_SCION:
-        return { MST_EARTH_WIZ_II, MST_EARTH_WIZ_III };
+        return { MST_EARTH_WIZ_I, MST_EARTH_WIZ_II, MST_EARTH_WIZ_III };
 
     case MONS_DEEP_ELF_MAGE:
         return { MST_DEEP_ELF_MAGE_I, MST_DEEP_ELF_MAGE_II,
@@ -5250,8 +5250,10 @@ void print_wounds(const monster* mons)
 
     desc.insert(0, " is ");
     desc += ".";
+    /* this really isn't necessary
     simple_monster_message(mons, desc.c_str(), MSGCH_MONSTER_DAMAGE,
                            dam_level);
+                           */
 }
 
 // (true == 'damaged') [constructs, undead, etc.]

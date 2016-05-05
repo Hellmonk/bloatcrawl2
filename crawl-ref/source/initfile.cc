@@ -950,7 +950,7 @@ void game_options::reset_options()
     movement_penalty = 11;
 
     danger_mode_threshold = 30;
-    level_27_cap = true;
+    level_27_cap = false;
     exp_potion_on_each_floor = false;
     uniques_drop_exp_potions = false;
     exp_percent_from_monsters = 100;

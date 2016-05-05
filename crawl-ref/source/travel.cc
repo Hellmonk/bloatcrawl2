@@ -621,22 +621,9 @@ static void _start_running()
         start_delay(DELAY_TRAVEL, 1);
 }
 
-void maybe_reset_form_decay()
-{
-    if (you.time_taken > 10)
-    {
-        if (you.current_form_spell_failure)
-        {
-            mpr("You form becomes more stable.");
-            you.current_form_spell_failure = 0;
-        }
-    }
-}
-
 // Stops shift+running and all forms of travel.
 void stop_running()
 {
-    maybe_reset_form_decay();
     you.running.stop();
 }
 
@@ -2961,7 +2948,7 @@ void start_travel(const coord_def& p)
 
 void start_explore(bool grab_items)
 {
-    set_exertion(EXERT_NORMAL);
+    player_before_long_safe_action();
     if (Hints.hints_explored)
         Hints.hints_explored = false;
 

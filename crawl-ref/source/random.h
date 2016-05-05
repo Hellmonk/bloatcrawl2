@@ -20,6 +20,7 @@ int div_rand_round(int num, int den);
 int div_round_up(int num, int den);
 bool one_chance_in(int a_million);
 bool x_chance_in_y(int x, int y);
+int random_diff(int success, int failure, int *chance = nullptr);
 int random2(int max);
 int maybe_random2(int x, bool random_factor);
 int maybe_random_div(int nom, int denom, bool random_factor);

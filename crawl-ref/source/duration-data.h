@@ -191,6 +191,10 @@ static const duration_def duration_data[] =
       "divinely vigorous", "divine vigour",
       "You are imbued with divine vigour.", D_NO_FLAGS,
       {{ "", elyvilon_remove_divine_vigour }}},
+    { DUR_ESCAPE,
+      YELLOW, "Escape",
+      "escape", "",
+      "You are focussed on escape.", D_NO_FLAGS},
     { DUR_EXHAUSTED,
       YELLOW, "Exh",
       "exhausted", "",
@@ -613,6 +617,12 @@ static const duration_def duration_data[] =
     { DUR_COLLAPSE, 0, "", "", "collapse", "", D_NO_FLAGS },
     { DUR_BRAINLESS, 0, "", "", "brainless", "", D_NO_FLAGS },
     { DUR_CLUMSY, 0, "", "", "clumsy", "", D_NO_FLAGS },
+    { DUR_CHANNELING,
+      LIGHTBLUE, "Channel",
+      "channeling", "",
+      "Casting a spell costs 0 magic points.", D_NO_FLAGS,
+      {{ "Your magic pool becomes finite again."},
+          { "Your magic pool is returning to normal.", 1}}, 6},
 
 #if TAG_MAJOR_VERSION == 34
     // And removed ones

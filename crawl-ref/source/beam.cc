@@ -497,9 +497,16 @@ void zappy(zap_type z_type, int power, bool is_monster, bolt &pbolt)
                                              : zinfo->player_tohit;
         ASSERT(hit_calc);
         pbolt.hit = (*hit_calc)(power);
+
+        if (!is_monster)
+            pbolt.hit = player_tohit_modifier(pbolt.hit);
+
         if (pbolt.hit != AUTOMATIC_HIT && !is_monster)
             pbolt.hit = max(0, pbolt.hit - 5 * you.inaccuracy());
     }
+
+    if (!is_monster)
+        player_update_tohit(pbolt.hit);
 
     dam_deducer* dam_calc = is_monster ? zinfo->monster_damage
                                        : zinfo->player_damage;
@@ -3029,7 +3036,7 @@ bool bolt::fuzz_invis_tracer()
 // A first step towards to-hit sanity for beams. We're still being
 // very kind to the player, but it should be fairer to monsters than
 // 4.0.
-static bool _test_beam_hit(int attack, int defence, bool pierce,
+static bool _test_beam_hit(int attack, int defense, bool pierce,
                            int defl, defer_rand &r)
 {
     if (attack == AUTOMATIC_HIT)
@@ -3038,21 +3045,23 @@ static bool _test_beam_hit(int attack, int defence, bool pierce,
     if (pierce)
     {
         if (defl > 1)
-            attack = r[0].random2(attack * 2) / 3;
+            attack /= 3;
         else if (defl && attack >= 2) // don't increase acc of 0
-            attack = r[0].random_range((attack + 1) / 2 + 1, attack);
+            attack = attack * 3 / 2;
     }
     else if (defl)
-        attack = r[0].random2(attack / defl);
+        attack = attack / defl / 2;
 
-    dprf(DIAG_BEAM, "Beam attack: %d, defence: %d", attack, defence);
+    dprf(DIAG_BEAM, "Beam attack: %d, defense: %d", attack, defense);
 
-    attack = r[1].random2(attack);
-    defence = r[2].random2avg(defence, 2);
+    int chance = 0;
+    const int result = random_diff(attack, defense, &chance);
+    player_update_last_hit_chance(chance);
+    player_update_tohit(attack);
 
-    dprf(DIAG_BEAM, "Beam new attack: %d, defence: %d", attack, defence);
+    dprf(DIAG_BEAM, "Beam new attack: %d, defense: %d", attack, defense);
 
-    return attack >= defence;
+    return result >= 0;
 }
 
 bool bolt::is_harmless(const monster* mon) const
@@ -3166,6 +3175,7 @@ bool bolt::harmless_to_player() const
     case BEAM_FIRE:
     case BEAM_HOLY_FLAME:
     case BEAM_STICKY_FLAME:
+    case BEAM_LAVA:
         return you.species == SP_DJINNI;
 
     case BEAM_VIRULENCE:
@@ -3449,8 +3459,9 @@ void bolt::affect_player_enchantment(bool resistible)
     {
         if (x_chance_in_y(absorption_level * absorption_level, 10))
         {
-            mprf("You absorb the magic.");
-            inc_mp(2 + ench_power/10);
+            const int mp_gain = 2 + ench_power / 10;
+            mprf(MSGCH_INTRINSIC_GAIN, "You absorb the magic. (%d)", mp_gain);
+            inc_mp(mp_gain);
             return;
         }
     }
@@ -4993,7 +5004,10 @@ void bolt::affect_monster(monster* mon)
         return;
 
     defer_rand r;
+    /* Don't need this to be random any more
     int rand_ev = random2(mon->evasion());
+     */
+    int rand_ev = mon->evasion() / 2;
     int defl = mon->missile_deflection();
 
     // FIXME: We're randomising mon->evasion, which is further

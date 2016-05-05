@@ -361,6 +361,8 @@ static void _create_monster_hide(const item_def &corpse)
     const coord_def pos = item_pos(corpse);
     if (!pos.origin())
         move_item_to_grid(&o, pos);
+    else
+        destroy_item(o);
 }
 
 void maybe_drop_monster_hide(const item_def &corpse)

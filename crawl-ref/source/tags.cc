@@ -2216,6 +2216,15 @@ void tag_read_char(reader &th, uint8_t format, uint8_t major, uint8_t minor)
         crawl_state.map = "";
 
     crawl_state.difficulty = (game_difficulty_level) unmarshallUByte(th);
+    switch(crawl_state.difficulty)
+    {
+        case DIFFICULTY_STANDARD:
+        case DIFFICULTY_CHALLENGE:
+        case DIFFICULTY_NIGHTMARE:
+            break;
+        default:
+            crawl_state.difficulty = DIFFICULTY_CHALLENGE;
+    }
 
     if (major > 32 || major == 32 && minor > 26)
     {
@@ -2951,12 +2960,6 @@ static void tag_read_you(reader &th)
     {
         if (you.mutation[MUT_FORLORN])
             you.mutation[MUT_FORLORN] = 0;
-    }
-
-    if (th.getMinorVersion() < TAG_MINOR_MP_WANDS)
-    {
-        if (you.mutation[MUT_MP_WANDS] > 1)
-            you.mutation[MUT_MP_WANDS] = 1;
     }
 
     if (th.getMinorVersion() < TAG_MINOR_NAGA_METABOLISM)
@@ -5281,7 +5284,7 @@ static void tag_construct_level_monsters(writer &th)
     {
         monster& m(menv[i]);
 
-#if defined(DEBUG) || defined(DEBUG_MONS_SCAN)
+#if defined(DEBUG_DEEP) || defined(DEBUG_MONS_SCAN)
         if (m.type != MONS_NO_MONSTER)
         {
             if (invalid_monster_type(m.type))
@@ -6055,20 +6058,19 @@ static void tag_read_level_monsters(reader &th)
 #if defined(DEBUG) || defined(DEBUG_MONS_SCAN)
         if (invalid_monster_type(m.type))
         {
-            mprf(MSGCH_ERROR, "Unmarshalled monster #%d %s",
+            dprf("Unmarshalled monster #%d %s",
                  i, m.name(DESC_PLAIN, true).c_str());
         }
         if (!in_bounds(m.pos()))
         {
-            mprf(MSGCH_ERROR,
-                 "Unmarshalled monster #%d %s out of bounds at (%d, %d)",
+            dprf("Unmarshalled monster #%d %s out of bounds at (%d, %d)",
                  i, m.name(DESC_PLAIN, true).c_str(),
                  m.pos().x, m.pos().y);
         }
         int midx = mgrd(m.pos());
         if (midx != NON_MONSTER)
         {
-            mprf(MSGCH_ERROR, "(%d, %d) for %s already occupied by %s",
+            dprf("(%d, %d) for %s already occupied by %s",
                  m.pos().x, m.pos().y,
                  m.name(DESC_PLAIN, true).c_str(),
                  menv[midx].name(DESC_PLAIN, true).c_str());

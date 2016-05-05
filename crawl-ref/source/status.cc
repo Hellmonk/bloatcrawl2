@@ -445,7 +445,14 @@ bool fill_status_info(int status, status_info* inf)
         break;
 
     case STATUS_DRAINED:
-        if (you.attribute[ATTR_XP_DRAIN] > 250)
+        if (you.attribute[ATTR_XP_DRAIN] > 400)
+        {
+            inf->light_colour = RED;
+            inf->light_text   = "DRAIN!";
+            inf->short_text   = "extremely heavily drained";
+            inf->long_text    = "Your life force is extremely heavily drained.";
+        }
+        else if (you.attribute[ATTR_XP_DRAIN] > 200)
         {
             inf->light_colour = RED;
             inf->light_text   = "Drain";
@@ -459,15 +466,22 @@ bool fill_status_info(int status, status_info* inf)
             inf->short_text   = "heavily drained";
             inf->long_text    = "Your life force is heavily drained.";
         }
-        else if (you.attribute[ATTR_XP_DRAIN])
+        else if (you.attribute[ATTR_XP_DRAIN] > 50)
         {
             inf->light_colour = YELLOW;
             inf->light_text   = "Drain";
             inf->short_text   = "drained";
             inf->long_text    = "Your life force is drained.";
         }
+        else if (you.attribute[ATTR_XP_DRAIN])
+        {
+            inf->light_colour = YELLOW;
+            inf->light_text   = "Dra..";
+            inf->short_text   = "drained";
+            inf->long_text    = "Your life force is a bit drained.";
+        }
         break;
-
+        
     case STATUS_RAY:
         if (you.attribute[ATTR_SEARING_RAY])
         {

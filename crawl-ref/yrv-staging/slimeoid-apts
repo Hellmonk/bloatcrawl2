@@ -1,0 +1,26 @@
+    // SP__SLIMEOID
+    // aptitudes should overall be low-ish due to there being few skills to choose from. 
+    // And low apts in crawl means more intrinsics!
+    APT(SP__SLIMEOID,        SK_FIGHTING,        0),
+
+    APT(SP__SLIMEOID,        SK_THROWING,       -1),
+
+    APT(SP__SLIMEOID,        SK_DODGING,         1),
+    APT(SP__SLIMEOID,        SK_STEALTH,         1),
+
+    APT(SP__SLIMEOID,        SK_UNARMED_COMBAT,  0),
+    APT(SP__SLIMEOID,        SK_SPELLCASTING,   -1),
+    APT(SP__SLIMEOID,        SK_CONJURATIONS,    0),
+    APT(SP__SLIMEOID,        SK_HEXES,           0),
+    APT(SP__SLIMEOID,        SK_CHARMS,          0),
+    APT(SP__SLIMEOID,        SK_SUMMONINGS,      2),
+    APT(SP__SLIMEOID,        SK_NECROMANCY,      1),
+    APT(SP__SLIMEOID,        SK_TRANSLOCATIONS,  2),
+    APT(SP__SLIMEOID,        SK_TRANSMUTATIONS,  0),
+    APT(SP__SLIMEOID,        SK_FIRE_MAGIC,      1),
+    APT(SP__SLIMEOID,        SK_ICE_MAGIC,       1),
+    APT(SP__SLIMEOID,        SK_AIR_MAGIC,      -2),
+    APT(SP__SLIMEOID,        SK_EARTH_MAGIC,     0),
+    APT(SP__SLIMEOID,        SK_POISON_MAGIC,    3),
+    APT(SP__SLIMEOID,        SK_INVOCATIONS,     2),
+    APT(SP__SLIMEOID,        SK_EVOCATIONS,      1),

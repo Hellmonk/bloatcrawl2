@@ -586,7 +586,7 @@ void unlink_item(int dest)
 
 #ifdef DEBUG
     // Okay, the sane ways are gone... let's warn the player:
-    mprf(MSGCH_ERROR, "BUG WARNING: Problems unlinking item '%s', (%d, %d)!!!",
+    dprf("BUG WARNING: Problems unlinking item '%s', (%d, %d)!!!",
          mitm[dest].name(DESC_PLAIN).c_str(),
          mitm[dest].pos.x, mitm[dest].pos.y);
 
@@ -638,7 +638,7 @@ void unlink_item(int dest)
 
     // Okay, finally warn player if we didn't do anything.
     if (!linked)
-        mprf(MSGCH_ERROR, "BUG WARNING: Item didn't seem to be linked at all.");
+        dprf("BUG WARNING: Item didn't seem to be linked at all.");
 #endif
 }
 

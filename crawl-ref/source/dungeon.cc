@@ -1243,7 +1243,7 @@ static int _num_items_wanted(int absdepth0)
 {
     if (branches[you.where_are_you].branch_flags & BFLAG_NO_ITEMS)
         return 0;
-    else if (absdepth0 > 5 && one_chance_in(500 - 5 * absdepth0))
+    else if (absdepth0 > 5 && x_chance_in_y(absdepth0, 200))
         return 10 + random2avg(90, 2); // rich level!
     else
         return 3 + roll_dice(3, 11);
@@ -2476,7 +2476,15 @@ static bool _pan_level()
     // Unique pan lords become more common as you travel through pandemonium.
     // On average it takes 27 levels to see all four, and you're likely to see
     // your first one after about 10 levels.
-    if (x_chance_in_y(1 + place_info.levels_seen, 65 + place_info.levels_seen * 2)
+    int more_unlikely = 65;
+    if (place_info.levels_seen > 15)
+        more_unlikely = 0;
+    else if (place_info.levels_seen > 10)
+        more_unlikely = 20;
+    else if (place_info.levels_seen > 5)
+        more_unlikely = 40;
+
+    if (x_chance_in_y(1 + place_info.levels_seen, more_unlikely + place_info.levels_seen * 2)
         && !all_demons_generated)
     {
         do

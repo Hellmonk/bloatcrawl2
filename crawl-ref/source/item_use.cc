@@ -343,6 +343,7 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
         else
             canned_msg(MSG_EMPTY_HANDED_ALREADY);
 
+        player_update_tohit();
         return true;
     }
 
@@ -393,6 +394,8 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
     you.m_quiver.on_weapon_changed();
     you.turn_is_over  = true;
     you.prev_direction.reset();
+
+    player_update_tohit();
 
     return true;
 }
@@ -2459,6 +2462,11 @@ string cannot_read_item_reason(const item_def &item)
     // Prevent hot lava orcs reading scrolls
     if (you.species == SP_LAVA_ORC && temperature_effect(LORC_NO_SCROLLS))
         return "You'd burn any scroll you tried to read!";
+        
+     if (you.species == SP_DJINNI)
+        return "You'd burn any scroll you tried to read!";
+    
+ 
 
     // don't waste the player's time reading known scrolls in situations where
     // they'd be useless

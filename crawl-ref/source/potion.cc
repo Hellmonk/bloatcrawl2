@@ -238,12 +238,45 @@ public:
             return false;
         }
 
+        int minimum_healing;
+        switch(crawl_state.difficulty)
+        {
+            case DIFFICULTY_STANDARD:
+                minimum_healing = 20;
+                break;
+            case DIFFICULTY_CHALLENGE:
+                minimum_healing = 10;
+                break;
+            case DIFFICULTY_NIGHTMARE:
+                minimum_healing = 5;
+                break;
+            default:
+                // should not be possible
+                break;
+        }
+
         int amount = 0;
         if (is_device)
         {
-            amount = min(you.hp_max, div_rand_round(you.hp_max * power, 100));
+            int divisor = 50;
+            switch(crawl_state.difficulty)
+            {
+                case DIFFICULTY_CHALLENGE:
+                    divisor = 100;
+                    break;
+                case DIFFICULTY_NIGHTMARE:
+                    divisor = 200;
+                    break;
+                default:
+                    break;
+            }
+            amount = min(you.hp_max, div_rand_round(you.hp_max * power, divisor));
             if (amount > you.hp_max - you.hp)
                 amount = you.hp_max - you.hp;
+            amount = max(minimum_healing, amount);
+
+            if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
+                amount = you.scale_device_healing(10 + random2avg(28, 3));
 
             mprf("You feel better. (%d)", amount);
         }
@@ -258,7 +291,7 @@ public:
                     mprf("You feel much better. (%d)", amount);
                     break;
                 case DIFFICULTY_NIGHTMARE:
-                    amount = you.hp_max/4;
+                    amount = 10 + random2avg(28, 3);
                     mprf("You feel a little better. (%d)", amount);
                     break;
                 default:
@@ -267,8 +300,7 @@ public:
             }
 
 
-        // heal at least 20 points
-        amount = max(20, amount);
+        amount = max(minimum_healing, amount);
 
         // Pay for rot right off the top.
         amount = unrot_hp(amount);

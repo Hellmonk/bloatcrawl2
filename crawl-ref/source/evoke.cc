@@ -691,15 +691,19 @@ void zap_wand(int slot)
         power = player_adjust_evoc_power(power);
     }
 
+    /*
 	if(wand.sub_type == WAND_HEAL_WOUNDS && aimed_at_self)
 	{
         start_delay(DELAY_WAND_HEAL, 1, power);
 	}
 	else
 	{
+     */
 	    // zapping() updates beam.
 	    zapping(type_zapped, power, beam);
+    /*
 	}
+     */
 
     // Take off a charge.
     wand.charges--;
@@ -2279,7 +2283,7 @@ bool evoke_item(int slot, bool check_range)
 
     you.attribute[ATTR_PAKELLAS_DEVICE_SURGE] = 0; // set later if needed
 
-    player_was_offensive();
+    player_evoked_something();
     if (entry && entry->evoke_func)
     {
         ASSERT(item_is_equipped(item));

@@ -188,6 +188,7 @@ static string _spell_wide_description(spell_type spell, bool viewing)
     desc << chop_string(failure, 5);
     desc << "</" << colour_to_str(highlight) << ">";
     desc << chop_string(make_stringf("%d", spell_difficulty(spell)), 6);
+    desc << chop_string(make_stringf("%d", spell_mana(spell)), 3);
 
     // spell schools
     desc << spell_schools_string(spell);
@@ -348,7 +349,7 @@ int list_spells_wide(bool viewing, bool allow_preselect,
         // [enne] - Hack. Make title an item so that it's aligned.
         MenuEntry* me =
             new MenuEntry(
-                " " + titlestring + "        Power Range      Hunger  Fail Level Type",
+                " " + titlestring + "        Power Range      Hunger  Fail Level MP Type",
                 MEL_ITEM);
         me->colour = BLUE;
         spell_menu.add_entry(me);
@@ -356,7 +357,7 @@ int list_spells_wide(bool viewing, bool allow_preselect,
 #else
     spell_menu.set_title(
         new MenuEntry(
-                " " + titlestring + "        Power Range      Hunger  Fail Level Type",
+                " " + titlestring + "        Power Range      Hunger  Fail Level MP Type",
             MEL_TITLE));
 #endif
     spell_menu.set_highlighter(nullptr);
@@ -499,20 +500,6 @@ int raw_spell_fail(spell_type spell)
     ASSERT_RANGE(spell_level, 0, (int) ARRAYSZ(difficulty_by_level));
     chance += difficulty_by_level[spell_level];
 
-    // Only apply this penalty to Dj because other species lose nutrition
-    // rather than gaining contamination when casting spells.
-    // Also, this penalty gives fairly precise information about contam
-    // level, and only Dj already has such information (on the contam bar).
-    // Other species would have to check their failure rates all the time
-    // when at yellow glow.
-//    if (you.species == SP_DJINNI)
-//    {
-//        int64_t contam = you.magic_contamination;
-//        // Just +25 on the edge of yellow glow, +200 in the middle of yellow,
-//        // forget casting when in orange.
-//        chance += contam * contam * contam / 5000000000LL;
-//    }
-
     int chance2 = chance;
 
     const int chance_breaks[][2] =
@@ -550,7 +537,7 @@ int raw_spell_fail(spell_type spell)
     chance2 = _apply_spellcasting_success_boosts(spell, chance2);
 
     if (you.exertion == EXERT_CAREFUL)
-        chance2 = max(chance2 - 30, chance2 / 2);
+        chance2 = max(chance2 - 10, chance2 / 2);
 
     if (chance2 > 100)
         chance2 = 100;
@@ -581,56 +568,51 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
         {
             for (const auto bit : spschools_type::range())
                 if (disciplines & bit)
-                    power += you.skill(spell_type2skill(bit), SPELL_POWER_CAP);
+                    power += you.skill(spell_type2skill(bit), 200);
             power /= skillcount;
         }
 
-        power += you.skill(SK_SPELLCASTING, SPELL_POWER_CAP / 3);
+        power += you.skill(SK_SPELLCASTING, 200 / 3);
 
         // Brilliance boosts spell power a bit (equivalent to three
         // spell school levels).
         if (!fail_rate_check && you.duration[DUR_BRILLIANCE])
-            power += 600;
+            power = max(600, power * 3 / 2);
 
         if (apply_intel)
             power = (power * you.intel()) / 10;
 
-        // [dshaligram] Enhancers don't affect fail rates any more, only spell
-        // power. Note that this does not affect Vehumet's boost in castability.
         if (!fail_rate_check)
+        {
+            // [dshaligram] Enhancers don't affect fail rates any more, only spell
+            // power. Note that this does not affect Vehumet's boost in castability.
             power = apply_enhancement(power, _spell_enhancement(spell));
 
-        // Wild magic boosts spell power but decreases success rate.
-        if (!fail_rate_check)
-        {
+            // Wild magic boosts spell power but decreases success rate.
             const int wild = player_mutation_level(MUT_WILD_MAGIC);
             const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
-            power *= (10 + 3 * wild * wild);
-            power /= (10 + 3 * subdued * subdued);
-        }
+            if (wild)
+                power *= (10 + 3 * wild * wild);
+            if (subdued)
+                power /= (10 + 3 * subdued * subdued);
 
-        // Augmentation boosts spell power at high HP.
-        if (!fail_rate_check)
-        {
+            // Augmentation boosts spell power at high HP.
             power *= 10 + 4 * augmentation_amount();
             power /= 10;
-        }
 
-        // Each level of horror reduces spellpower by 10%
-        if (you.duration[DUR_HORROR] && !fail_rate_check)
-        {
-            power *= 10;
-            power /= 10 + (you.props[HORROR_PENALTY_KEY].get_int() * 3) / 2;
+            // Each level of horror reduces spellpower by 10%
+            if (you.duration[DUR_HORROR])
+            {
+                power *= 10;
+                power /= 10 + (you.props[HORROR_PENALTY_KEY].get_int() * 3) / 2;
+            }
         }
 
         power = stepdown_spellpower(power);
     }
 
     if (!fail_rate_check)
-    {
-        if (you.exertion == EXERT_POWER)
-            power = power * 3 / 2;
-    }
+        power = player_spellpower_modifier(power);
 
     const int cap = spell_power_cap(spell);
     if (cap > 0 && cap_power)
@@ -845,6 +827,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     {
         int keyin = 0;
 
+        msgwin_set_temporary(true);
         while (true)
         {
 #ifdef TOUCH_UI
@@ -935,6 +918,9 @@ bool cast_a_spell(bool check_range, spell_type spell)
         }
         else
             spell = get_spell_by_letter(keyin);
+
+        msgwin_clear_temporary();
+        msgwin_set_temporary(false);
     }
 
     if (spell == SPELL_NO_SPELL)
@@ -1063,7 +1049,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     you.turn_is_over = true;
     alert_nearby_monsters();
 
-    player_was_offensive();
+    player_used_magic();
     if (is_self_transforming_spell(spell))
         you.current_form_spell = spell;
 
@@ -1471,7 +1457,6 @@ spret_type your_spells(spell_type spell, int powc,
 
     int potion = -1;
 
-    maybe_consume_stamina();
     if (!powc)
         powc = calc_spell_power(spell, true);
 
@@ -1537,7 +1522,14 @@ spret_type your_spells(spell_type spell, int powc,
             args.self = CONFIRM_NONE;
         }
         args.get_desc_func = additional_desc;
-        if (!spell_direction(spd, beam, &args))
+        
+        msgwin_set_temporary(true);
+        const bool direction_chooser_result = !spell_direction(spd, beam, &args);
+        if (!crawl_state.doing_prev_cmd_again)
+            redraw_screen();
+        clear_messages();
+
+        if (direction_chooser_result)
             return SPRET_ABORT;
 
         beam.range = range;

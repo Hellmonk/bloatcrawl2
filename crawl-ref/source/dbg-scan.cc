@@ -154,9 +154,15 @@ void debug_item_scan()
         // Don't check (-1, -1) player items or (-2, -2) monster items
         // (except to make sure that the monster is alive).
         if (mitm[i].pos.origin())
+        {
             _dump_item(name, i, mitm[i], "Unlinked temporary item:");
+            destroy_item(i);
+        }
         else if (mon != nullptr && mon->type == MONS_NO_MONSTER)
+        {
             _dump_item(name, i, mitm[i], "Unlinked item held by dead monster:");
+            destroy_item(i);
+        }
         else if ((mitm[i].pos.x > 0 || mitm[i].pos.y > 0) && !visited[i])
         {
             _dump_item(name, i, mitm[i], "Unlinked item:");
