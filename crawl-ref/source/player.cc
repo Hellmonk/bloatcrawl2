@@ -9112,18 +9112,31 @@ const int get_max_skill_level()
     return MAX_SKILL_LEVEL;
 }
 
+const int rune_curse_hd_adjust(int hd)
+{
+    const int runes = runes_in_pack();
+    const int new_hd = hd + runes;
+    return new_hd;
+}
+
 const int rune_curse_hp_adjust(int hp)
 {
+    /*
     const int runes = runes_in_pack();
     const int new_hp = qpow(hp, 50 + crawl_state.difficulty, 50, runes);
     return new_hp;
+     */
+    return hp;
 }
 
 const int rune_curse_dam_adjust(int dam)
 {
+/*
     const int runes = runes_in_pack();
     const int new_dam = qpow(dam, 50 + crawl_state.difficulty, 50, runes);
     return new_dam;
+*/
+    return dam;
 }
 
 void summoned_monster_died(monster* mons, bool natural_death)

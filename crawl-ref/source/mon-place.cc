@@ -1478,6 +1478,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     {
         mon->max_hit_points = min(rune_curse_hp_adjust(mon->max_hit_points), MAX_MONSTER_HP);
         mon->hit_points = mon->max_hit_points;
+        mon->hit_dice = rune_curse_hp_adjust(mon->hit_dice);
     }
 
     // Store the extra flags here.
