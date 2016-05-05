@@ -2216,6 +2216,15 @@ void tag_read_char(reader &th, uint8_t format, uint8_t major, uint8_t minor)
         crawl_state.map = "";
 
     crawl_state.difficulty = (game_difficulty_level) unmarshallUByte(th);
+    switch(crawl_state.difficulty)
+    {
+        case DIFFICULTY_STANDARD:
+        case DIFFICULTY_CHALLENGE:
+        case DIFFICULTY_NIGHTMARE:
+            break;
+        default:
+            crawl_state.difficulty = DIFFICULTY_CHALLENGE;
+    }
 
     if (major > 32 || major == 32 && minor > 26)
     {
