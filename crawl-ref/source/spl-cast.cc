@@ -564,9 +564,7 @@ int raw_spell_fail(spell_type spell)
 
 int stepdown_spellpower(int power)
 {
-//    return stepdown(power / 100, 50, ROUND_DOWN, SPELL_POWER_CAP, 2);
-    return stepdown_value(power / 100, 50, 50, 150, SPELL_POWER_CAP);
-
+    return stepdown(power / 100, 50, ROUND_DOWN, SPELL_POWER_CAP, 2);
 }
 
 int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
