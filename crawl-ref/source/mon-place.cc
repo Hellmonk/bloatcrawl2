@@ -1455,7 +1455,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
                 get_monster_data(draco_or_demonspawn_subspecies(mon));
             bonus_hp = mbase->avg_hp_10x;
         }
-        mon->set_hit_dice(mg.hd);
+        mon->set_hit_dice(rune_curse_hp_adjust(mg.hd));
         // Re-roll HP.
         const int base_avg_hp = m_ent->avg_hp_10x + bonus_hp;
         const int new_avg_hp = div_rand_round(base_avg_hp * mg.hd, m_ent->HD);
@@ -1478,7 +1478,6 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     {
         mon->max_hit_points = min(rune_curse_hp_adjust(mon->max_hit_points), MAX_MONSTER_HP);
         mon->hit_points = mon->max_hit_points;
-        mon->hit_dice = rune_curse_hp_adjust(mon->hit_dice);
     }
 
     // Store the extra flags here.
