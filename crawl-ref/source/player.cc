@@ -4619,11 +4619,11 @@ int get_real_mp(bool include_items, bool rotted)
     {
         const int num_magic_rings = you.wearing(EQ_RINGS, RING_MAGICAL_POWER);
         for (int i = 0; i < num_magic_rings; i++)
-            enp += max(9, enp / 4);
+            enp += 9;
         enp += you.scan_artefacts(ARTP_MAGICAL_POWER);
 
         if (you.wearing(EQ_STAFF, STAFF_POWER))
-            enp += max(15, enp / 2);
+            enp += 15;
     }
 
     if (include_items && you.wearing_ego(EQ_WEAPON, SPWPN_ANTIMAGIC))
