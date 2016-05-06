@@ -589,7 +589,17 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
     // Set these again, since _mark_fully_random may reset ng.
     ng.name = choice.name;
     ng.type = choice.type;
-    ng.difficulty = choice.difficulty;
+    switch(choice.difficulty)
+    {
+        DIFFICULTY_CHALLENGE:
+        DIFFICULTY_STANDARD:
+        DIFFICULTY_NIGHTMARE:
+            ng.difficulty = choice.difficulty;
+            break;
+        default:
+            ng.diff = choice.challenge;
+            break;
+    }
 
 #ifndef DGAMELAUNCH
     // New: pick name _after_ character choices.
