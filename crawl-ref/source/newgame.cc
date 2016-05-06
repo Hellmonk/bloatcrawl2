@@ -597,7 +597,7 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
             ng.difficulty = choice.difficulty;
             break;
         default:
-            ng.diff = choice.challenge;
+            ng.difficulty = DIFFICULTY_CHALLENGE;
             break;
     }
 
