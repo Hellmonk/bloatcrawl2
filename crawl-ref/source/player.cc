@@ -2059,11 +2059,9 @@ int player_movement_speed()
         mv += 100; // as ponderous
 
     if (you.exertion == EXERT_ESCAPE)
-        for (int i = 0; i < player_mutation_level(MUT_FAST); i++)
-            mv = mv * 4 / 5;
+        mv -= player_mutation_level(MUT_FAST) * 150;
 
-    for (int i = 0; i < player_mutation_level(MUT_SLOW); i++)
-        mv = mv * 4 / 3;
+    mv += player_mutation_level(MUT_SLOW) * 150;
 
     if (you.duration[DUR_SWIFTNESS] > 0 && !you.in_liquid())
     {
