@@ -1670,7 +1670,7 @@ static const mutation_def mut_data[] =
   {"You can once more read scrolls while threatened.", "", ""},
 },
 
-{ MUT_MISSING_HAND, 1, 1, mutflag::BAD, false,
+{ MUT_MISSING_HAND, 0, 1, mutflag::BAD, false,
   "missing a hand",
 
   {"You are missing a hand.", "", ""},
