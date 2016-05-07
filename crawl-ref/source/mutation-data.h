@@ -168,7 +168,7 @@ static const mutation_def mut_data[] =
    "You feel less vulnerable to cold."},
 },
 
-{ MUT_DEMONIC_GUARDIAN, 10, 3, mutflag::GOOD, false,
+{ MUT_DEMONIC_GUARDIAN, 10, 3, mutflag::DEPENDS, false,
   "demonic guardian",
 
   {"A weak demonic guardian rushes to your aid.",
@@ -561,7 +561,7 @@ static const mutation_def mut_data[] =
    "Your vision sharpens a little."},
 },
 
-{ MUT_MUTATION_RESISTANCE, 40, 3, mutflag::GOOD, false,
+{ MUT_MUTATION_RESISTANCE, 20, 3, mutflag::GOOD, false,
   "mutation resistance",
 
   {"You are somewhat resistant to further mutation.",
@@ -626,7 +626,7 @@ static const mutation_def mut_data[] =
    "You feel frail."},
 },
 
-{ MUT_UNBREATHING, 0, 1, mutflag::GOOD, true,
+{ MUT_UNBREATHING, 10, 1, mutflag::GOOD, true,
   "unbreathing",
 
   {"You can survive without breathing.", "", ""},
@@ -634,7 +634,7 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_TORMENT_RESISTANCE, 1, 1, mutflag::GOOD, false,
+{ MUT_TORMENT_RESISTANCE, 0, 1, mutflag::GOOD, false,
   "torment resistance",
 
   {"You are immune to unholy pain and torment.", "", ""},
@@ -1236,7 +1236,7 @@ static const mutation_def mut_data[] =
    "The eyeballs on your body recede somewhat."},
 },
 
-{ MUT_TRANSLUCENT_SKIN, 10, 3, mutflag::GOOD | mutflag::JIYVA, true,
+{ MUT_TRANSLUCENT_SKIN, 20, 3, mutflag::GOOD | mutflag::JIYVA, true,
   "translucent skin",
 
   {"Your skin is partially translucent (Stealth, -foe acc).",
@@ -1294,7 +1294,7 @@ static const mutation_def mut_data[] =
   {"Your magical appetite wanes.", "", ""},
 },
 
-{ MUT_NO_DEVICE_HEAL, 30, 3, mutflag::BAD, false,
+{ MUT_NO_DEVICE_HEAL, 20, 3, mutflag::BAD, false,
   "no device heal",
 
   {"Potions and wands are less effective at restoring your health.",
@@ -1518,7 +1518,7 @@ static const mutation_def mut_data[] =
    "Your natural camouflage becomes less effective."},
 },
 
-{ MUT_IGNITE_BLOOD, 1, 1, mutflag::GOOD, false,
+{ MUT_IGNITE_BLOOD, 3, 1, mutflag::GOOD, false,
   "ignite blood",
 
   {"Your demonic aura causes spilled blood to erupt in flames.", "", ""},
@@ -1589,11 +1589,11 @@ static const mutation_def mut_data[] =
   {"You feel slippery.", "", ""},
 },
 
-{ MUT_EXOSKELETON, 0, 2, mutflag::GOOD, true,
+{ MUT_EXOSKELETON, 5, 2, mutflag::GOOD, true,
   "exoskeleton",
 
-  {"Your body is surrounded by an exoskeleton. (buggy)",
-   "Your body is surrounded by a tough exoskeleton. (buggy)",
+  {"Your body is surrounded by an exoskeleton. ",
+   "Your body is surrounded by a tough exoskeleton. ",
    ""},
 
   {"Your exoskeleton hardens.",
@@ -1670,7 +1670,7 @@ static const mutation_def mut_data[] =
   {"You can once more read scrolls while threatened.", "", ""},
 },
 
-{ MUT_MISSING_HAND, 1, 1, mutflag::BAD, false,
+{ MUT_MISSING_HAND, 0, 1, mutflag::BAD, false,
   "missing a hand",
 
   {"You are missing a hand.", "", ""},
@@ -1678,7 +1678,7 @@ static const mutation_def mut_data[] =
   {"Your stump has regrown into a hand!", "", ""},
 },
 
-{ MUT_NO_STEALTH, 2, 1, mutflag::BAD, false,
+{ MUT_NO_STEALTH, 0, 1, mutflag::BAD, false,
   "no stealth",
 
   {"You cannot be stealthy.", "", ""},
@@ -1686,7 +1686,7 @@ static const mutation_def mut_data[] =
   {"You can once more be stealthy.", "", ""},
 },
 
-{ MUT_NO_ARTIFICE, 2, 1, mutflag::BAD, false,
+{ MUT_NO_ARTIFICE, 0, 1, mutflag::BAD, false,
   "inability to use devices",
 
   {"You cannot study or use magical devices.", "", ""},
@@ -1702,7 +1702,7 @@ static const mutation_def mut_data[] =
   {"You are no longer hated by all.", "", ""},
 },
 
-{ MUT_COWARDICE, 2, 1, mutflag::BAD, false,
+{ MUT_COWARDICE, 5, 1, mutflag::BAD, false,
   "cowardly",
 
   {"Your cowardice makes you less effective in combat with threatening monsters.", "", ""},
@@ -1726,7 +1726,7 @@ static const mutation_def mut_data[] =
   {"You can once more train Armour skill.", "", ""},
 },
 
-{ MUT_NO_AIR_MAGIC, 1, 1, mutflag::BAD, false,
+{ MUT_NO_AIR_MAGIC, 0, 1, mutflag::BAD, false,
   "no air magic",
 
   {"You cannot study or cast Air magic.", "", ""},
@@ -1734,7 +1734,7 @@ static const mutation_def mut_data[] =
   {"You can once more study and cast Air magic.", "", ""},
 },
 
-{ MUT_NO_CHARM_MAGIC, 1, 1, mutflag::BAD, false,
+{ MUT_NO_CHARM_MAGIC, 0, 1, mutflag::BAD, false,
   "no charms magic",
 
   {"You cannot study or cast Charms magic.", "", ""},
@@ -1742,7 +1742,7 @@ static const mutation_def mut_data[] =
   {"You can once more study and cast Charms magic.", "", ""},
 },
 
-{ MUT_NO_CONJURATION_MAGIC, 1, 1, mutflag::BAD, false,
+{ MUT_NO_CONJURATION_MAGIC, 0, 1, mutflag::BAD, false,
   "no conjurations magic",
 
   {"You cannot study or cast Conjurations magic.", "", ""},
@@ -1750,7 +1750,7 @@ static const mutation_def mut_data[] =
   {"You can once more study and cast Conjurations magic.", "", ""},
 },
 
-{ MUT_NO_EARTH_MAGIC, 1, 1, mutflag::BAD, false,
+{ MUT_NO_EARTH_MAGIC, 0, 1, mutflag::BAD, false,
   "no earth magic",
 
   {"You cannot study or cast Earth magic.", "", ""},
@@ -1758,7 +1758,7 @@ static const mutation_def mut_data[] =
   {"You can once more study and cast Earth magic.", "", ""},
 },
 
-{ MUT_NO_FIRE_MAGIC, 1, 1, mutflag::BAD, false,
+{ MUT_NO_FIRE_MAGIC, 0, 1, mutflag::BAD, false,
   "no fire magic",
 
   {"You cannot study or cast Fire magic.", "", ""},
@@ -1766,7 +1766,7 @@ static const mutation_def mut_data[] =
   {"You can once more study and cast Fire magic.", "", ""},
 },
 
-{ MUT_NO_HEXES_MAGIC, 1, 1, mutflag::BAD, false,
+{ MUT_NO_HEXES_MAGIC, 0, 1, mutflag::BAD, false,
   "no hexes magic",
 
   {"You cannot study or cast Hexes magic.", "", ""},
@@ -1774,7 +1774,7 @@ static const mutation_def mut_data[] =
   {"You can once more study and cast Hexes magic.", "", ""},
 },
 
-{ MUT_NO_ICE_MAGIC, 1, 1, mutflag::BAD, false,
+{ MUT_NO_ICE_MAGIC, 0, 1, mutflag::BAD, false,
   "no ice magic",
 
   {"You cannot study or cast Ice magic.", "", ""},
@@ -1782,7 +1782,7 @@ static const mutation_def mut_data[] =
   {"You can once more study and cast Ice magic.", "", ""},
 },
 
-{ MUT_NO_NECROMANCY_MAGIC, 1, 1, mutflag::BAD, false,
+{ MUT_NO_NECROMANCY_MAGIC, 0, 1, mutflag::BAD, false,
   "no necromancy magic",
 
   {"You cannot study or cast Necromancy magic.", "", ""},
@@ -1790,7 +1790,7 @@ static const mutation_def mut_data[] =
   {"You can once more study and cast Necromancy magic.", "", ""},
 },
 
-{ MUT_NO_POISON_MAGIC, 1, 1, mutflag::BAD, false,
+{ MUT_NO_POISON_MAGIC, 0, 1, mutflag::BAD, false,
   "no poison magic",
 
   {"You cannot study or cast Poison magic.", "", ""},
@@ -1798,7 +1798,7 @@ static const mutation_def mut_data[] =
   {"You can once more study and cast Poison magic.", "", ""},
 },
 
-{ MUT_NO_SUMMONING_MAGIC, 1, 1, mutflag::BAD, false,
+{ MUT_NO_SUMMONING_MAGIC, 0, 1, mutflag::BAD, false,
   "no summoning magic",
 
   {"You cannot study or cast Summoning magic.", "", ""},
@@ -1806,7 +1806,7 @@ static const mutation_def mut_data[] =
   {"You can once more study and cast Summoning magic.", "", ""},
 },
 
-{ MUT_NO_TRANSLOCATION_MAGIC, 1, 1, mutflag::BAD, false,
+{ MUT_NO_TRANSLOCATION_MAGIC, 0, 1, mutflag::BAD, false,
   "no translocations magic",
 
   {"You cannot study or cast Translocations magic.", "", ""},
@@ -1814,7 +1814,7 @@ static const mutation_def mut_data[] =
   {"You can once more study and cast Translocations magic.", "", ""},
 },
 
-{ MUT_NO_TRANSMUTATION_MAGIC, 1, 1, mutflag::BAD, false,
+{ MUT_NO_TRANSMUTATION_MAGIC, 0, 1, mutflag::BAD, false,
   "no transmutations magic",
 
   {"You cannot study or cast Transmutations magic.", "", ""},

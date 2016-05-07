@@ -610,7 +610,7 @@ static void _inc_penance(god_type god, int val)
         return;
 
     if (you.species == SP_HUMAN)
-        val >>= 1;
+        val >>= 2;
 
     if (!player_under_penance(god))
     {

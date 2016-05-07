@@ -258,6 +258,7 @@ public:
         int amount = 0;
         if (is_device)
         {
+            /*
             int divisor = 50;
             switch(crawl_state.difficulty)
             {
@@ -276,6 +277,7 @@ public:
             amount = max(minimum_healing, amount);
 
             if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
+             */
                 amount = you.scale_device_healing(10 + random2avg(28, 3));
 
             mprf("You feel better. (%d)", amount);
@@ -283,15 +285,19 @@ public:
         else switch(crawl_state.difficulty)
             {
                 case DIFFICULTY_STANDARD:
+                    /*
                     amount = you.hp_max;
                     mprf("You feel completely better. (%d)", amount);
                     break;
+                     */
                 case DIFFICULTY_CHALLENGE:
+                    /*
                     amount = you.hp_max/2;
                     mprf("You feel much better. (%d)", amount);
                     break;
+                     */
                 case DIFFICULTY_NIGHTMARE:
-                    amount = 10 + random2avg(28, 3);
+                    amount = minimum_healing + random2avg(28, 3);
                     mprf("You feel a little better. (%d)", amount);
                     break;
                 default:
@@ -300,7 +306,9 @@ public:
             }
 
 
+        /*
         amount = max(minimum_healing, amount);
+         */
 
         // Pay for rot right off the top.
         amount = unrot_hp(amount);

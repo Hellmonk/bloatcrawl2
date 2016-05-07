@@ -1605,6 +1605,16 @@ vector<skill_type> get_crosstrain_skills(skill_type sk)
                 return {SK_ICE_MAGIC, SK_EARTH_MAGIC, SK_AIR_MAGIC};
             else
                 return {};
+        case SK_HEXES:
+            if (you.species == SP_HUMAN)
+                return {SK_CHARMS};
+            else
+                return {};
+        case SK_CHARMS:
+            if (you.species == SP_HUMAN)
+                return {SK_HEXES};
+            else
+                return {};
         default:
             return {};
     }

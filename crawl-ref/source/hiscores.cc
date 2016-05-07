@@ -2939,7 +2939,7 @@ void mark_milestone(const string &type, const string &milestone,
     lastturn      = you.num_turns;
 
     const string milestone_file =
-        (Options.save_dir + "milestones" + crawl_state.game_type_qualifier());
+        (Options.shared_dir + "milestones" + crawl_state.game_type_qualifier());
     const scorefile_entry se(0, MID_NOBODY, KILL_MISC, nullptr);
     se.set_base_xlog_fields();
     xlog_fields xl = se.get_fields();
