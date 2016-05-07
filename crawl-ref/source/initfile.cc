@@ -947,7 +947,7 @@ void game_options::reset_options()
 
     regex_search = false;
 
-    movement_penalty = 11;
+    movement_penalty = 15;
 
     danger_mode_threshold = 30;
     level_27_cap = false;

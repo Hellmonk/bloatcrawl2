@@ -69,6 +69,12 @@ int check_stealth();
 #endif
 extern player you;
 
+enum stamina_flag
+{
+    STAMF_RUNNING                   = (1 << 0),
+    STAMF_SKIP_MOVEMENT_PENALTY     = (1 << 1),
+};
+
 typedef FixedVector<int, NUM_DURATIONS> durations_t;
 class player : public actor
 {
@@ -424,7 +430,10 @@ public:
 
     // normally 1, anything else alters how the next potion or scroll works, amplifying or reversing it's effects.
     int amplification;
+
+    // stamina stuff
     exertion_mode exertion;
+    int stamina_flags;
 
     // the deepest the player has been
     int max_exp;

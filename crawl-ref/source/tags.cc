@@ -1558,6 +1558,7 @@ static void tag_construct_you(writer &th)
     marshallInt(th, you.amplification);
     marshallInt(th, you.exertion);
     marshallInt(th, you.max_exp);
+    marshallInt(th, you.stamina_flags);
     marshallInt(th, you.current_form_spell);
     marshallInt(th, you.current_form_spell_failure);
     marshallInt(th, MAX_SUMMONS);
@@ -3216,6 +3217,7 @@ static void tag_read_you(reader &th)
         you.amplification = 1;
     set_exertion((exertion_mode)unmarshallInt(th));
     you.max_exp = unmarshallInt(th);
+    you.stamina_flags = unmarshallInt(th);
     you.current_form_spell = (spell_type) unmarshallInt(th);
     you.current_form_spell_failure = unmarshallInt(th);
     const int summon_count = unmarshallInt(th);
