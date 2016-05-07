@@ -168,7 +168,7 @@ static const mutation_def mut_data[] =
    "You feel less vulnerable to cold."},
 },
 
-{ MUT_DEMONIC_GUARDIAN, 10, 3, mutflag::GOOD, false,
+{ MUT_DEMONIC_GUARDIAN, 10, 3, mutflag::DEPENDS, false,
   "demonic guardian",
 
   {"A weak demonic guardian rushes to your aid.",
