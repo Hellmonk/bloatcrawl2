@@ -577,7 +577,7 @@ static const mutation_def mut_data[] =
    "You feel genetically unstable."},
 },
 
-{ MUT_EVOLUTION, 80, 2, mutflag::GOOD, false,
+{ MUT_EVOLUTION, 80, 2, mutflag::DEPENDS, false,
   "evolution",
 
   {"You evolve.",
