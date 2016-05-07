@@ -6448,30 +6448,33 @@ int player::base_ac_from(const item_def &armour, int scale) const
  */
 int player::racial_ac(bool temp) const
 {
+    int ac = 0;
+
     // drac scales suppressed in all serious forms, except dragon
     if (species_is_draconian(species)
         && (!player_is_shapechanged() || form == TRAN_DRAGON || !temp))
     {
-        int AC = 400 + 100 * (experience_level / 3);  // max 13
+        ac += 400 + 100 * (experience_level / 3);  // max 13
         if (species == SP_GREY_DRACONIAN) // no breath
-            AC += 500;
-        return AC;
+            ac += 500;
     }
 
     if (!(player_is_shapechanged() && temp))
     {
         if (species == SP_NAGA)
-            return 100 * experience_level / 3;  	// max 9 or so
+            ac += 100 * experience_level / 3;  	// max 9 or so
         else if (species == SP_LAVA_ORC && you.temperature <= TEMP_WARM)
-            return 300 + 100 * experience_level / 6;	// max 8 or so
+            ac += 300 + 100 * experience_level / 6;	// max 8 or so
         else if (species == SP_GARGOYLE)
         {
-            return 200 + 100 * experience_level * 2 / 5	// max 20 or so
+            ac += 200 + 100 * experience_level * 2 / 5	// max 20 or so
                        + 100 * (max(0, experience_level - 7) * 2 / 5);
         }
     }
 
-    return 0;
+    ac += player_mutation_level(MUT_EXOSKELETON) * 300;
+
+    return ac;
 }
 
 int player::armour_class(bool /*calc_unid*/) const
