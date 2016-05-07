@@ -383,7 +383,7 @@ static map<jewellery_type, vector<jewellery_fake_artp>> jewellery_artps = {
     { RING_PROTECTION, { { ARTP_AC, 0 } } },
     { RING_EVASION, { { ARTP_EVASION, 0 } } },
     { RING_SLAYING, { { ARTP_SLAYING, 0 } } },
-    { RING_STAMINA, { { ARTP_STAMINA, 2 } } },
+    { RING_STAMINA, { { ARTP_STAMINA, 1 } } },
 };
 
 /**

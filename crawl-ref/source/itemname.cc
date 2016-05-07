@@ -928,7 +928,7 @@ const char* rune_type_name(short p)
     case RUNE_DIS:         return "iron";
     case RUNE_GEHENNA:     return "obsidian";
     case RUNE_COCYTUS:     return "icy";
-    case RUNE_TARTARUS:    return "bone";
+    case RUNE_TARTARUS:    return "bony";
     case RUNE_SLIME:       return "slimy";
     case RUNE_VAULTS:      return "silver";
     case RUNE_SNAKE:       return "serpentine";
@@ -938,7 +938,9 @@ const char* rune_type_name(short p)
     case RUNE_SWAMP:       return "decaying";
     case RUNE_SHOALS:      return "barnacled";
     case RUNE_SPIDER:      return "gossamer";
-    case RUNE_FOREST:      return "mossy";
+        // should not exist
+//    case RUNE_FOREST:      return "mossy";
+    case RUNE_CRYPT:       return "creeping";
 
     // pandemonium and abyss runes:
     case RUNE_DEMONIC:     return "demonic";
@@ -949,6 +951,7 @@ const char* rune_type_name(short p)
     case RUNE_LOM_LOBON:   return "magical";
     case RUNE_CEREBOV:     return "fiery";
     case RUNE_GLOORX_VLOQ: return "dark";
+
     default:               return "buggy";
     }
 }

@@ -3793,40 +3793,6 @@ static PlaceInfo unmarshallPlaceInfo(reader &th)
     return place_info;
 }
 
-#if TAG_MAJOR_VERSION == 34
-static branch_type old_entries[] =
-{
-    /* D */      NUM_BRANCHES,
-    /* Temple */ BRANCH_DUNGEON,
-    /* Orc */    BRANCH_DUNGEON,
-    /* Elf */    BRANCH_ORC,
-    /* Dwarf */  BRANCH_ELF,
-    /* Lair */   BRANCH_DUNGEON,
-    /* Swamp */  BRANCH_LAIR,
-    /* Shoals */ BRANCH_LAIR,
-    /* Snake */  BRANCH_LAIR,
-    /* Spider */ BRANCH_LAIR,
-    /* Slime */  BRANCH_LAIR,
-    /* Vaults */ BRANCH_DUNGEON,
-    /* Blade */  BRANCH_VAULTS,
-    /* Crypt */  BRANCH_VAULTS,
-    /* Tomb */   BRANCH_CRYPT, // or Forest
-    /* Hell */   NUM_BRANCHES,
-    /* Dis */    BRANCH_VESTIBULE,
-    /* Geh */    BRANCH_VESTIBULE,
-    /* Coc */    BRANCH_VESTIBULE,
-    /* Tar */    BRANCH_VESTIBULE,
-    /* Zot */    BRANCH_DUNGEON,
-    /* Forest */ BRANCH_VAULTS,
-    /* Abyss */  NUM_BRANCHES,
-    /* Pan */    NUM_BRANCHES,
-    /* various portal branches */ NUM_BRANCHES,
-    NUM_BRANCHES, NUM_BRANCHES, NUM_BRANCHES, NUM_BRANCHES, NUM_BRANCHES,
-    NUM_BRANCHES, NUM_BRANCHES, NUM_BRANCHES, NUM_BRANCHES, NUM_BRANCHES,
-    NUM_BRANCHES,
-};
-#endif
-
 static void tag_read_you_dungeon(reader &th)
 {
     // how many unique creatures?
@@ -3847,29 +3813,9 @@ static void tag_read_you_dungeon(reader &th)
     {
         brdepth[j]    = unmarshallInt(th);
         ASSERT_RANGE(brdepth[j], -1, MAX_BRANCH_DEPTH + 1);
-#if TAG_MAJOR_VERSION == 34
-        if (th.getMinorVersion() < TAG_MINOR_BRANCH_ENTRY)
-        {
-            int depth = unmarshallInt(th);
-            if (j != BRANCH_VESTIBULE)
-                brentry[j] = level_id(old_entries[j], depth);
-        }
-        else
-#endif
         brentry[j]    = unmarshall_level_id(th);
-#if TAG_MAJOR_VERSION == 34
-        if (th.getMinorVersion() < TAG_MINOR_BRIBE_BRANCH)
-            branch_bribe[j] = 0;
-        else
-#endif
         branch_bribe[j] = unmarshallInt(th);
     }
-#if TAG_MAJOR_VERSION == 34
-    // Deepen the Abyss; this is okay since new abyssal stairs will be
-    // generated as the place shifts.
-    if (crawl_state.game_is_normal() && th.getMinorVersion() <= TAG_MINOR_ORIG_MONNUM)
-        brdepth[BRANCH_ABYSS] = 5;
-#endif
 
     ASSERT(you.depth <= brdepth[you.where_are_you]);
 

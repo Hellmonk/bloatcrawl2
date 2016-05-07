@@ -781,6 +781,7 @@ enum branch_type                // you.where_are_you
     BRANCH_VAULTS,
     BRANCH_CRYPT,
     BRANCH_TOMB,
+    BRANCH_DEPTHS,
     BRANCH_VESTIBULE,
     BRANCH_DIS,
     BRANCH_GEHENNA,
@@ -802,7 +803,6 @@ enum branch_type                // you.where_are_you
     BRANCH_ICE_CAVE,
     BRANCH_VOLCANO,
     BRANCH_WIZLAB,
-    BRANCH_DEPTHS,
     NUM_BRANCHES
 };
 

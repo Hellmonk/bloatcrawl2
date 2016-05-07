@@ -112,7 +112,7 @@ const Branch branches[NUM_BRANCHES] =
       "Crypt", "the Crypt", "Crypt",
       nullptr,
       LIGHTGREY, BROWN,
-      'C', {}, -3 },
+      'C', { RUNE_CRYPT }, -3 },
 
     { BRANCH_TOMB, BRANCH_CRYPT, 3, 3, 3, 21,
       BFLAG_ISLANDED | BFLAG_DANGEROUS_END | BFLAG_NO_SHAFTS,
@@ -121,6 +121,14 @@ const Branch branches[NUM_BRANCHES] =
       nullptr,
       BROWN, BROWN,
       'W', { RUNE_TOMB }, -10 },
+
+    { BRANCH_DEPTHS, BRANCH_DUNGEON, 15, 15, 5, 22,
+        BFLAG_NONE,
+        DNGN_ENTER_DEPTHS, DNGN_EXIT_DEPTHS,
+        "Depths", "the Depths", "Depths",
+        nullptr,
+        LIGHTGREY, BROWN,
+        'U', {}, 0 },
 
     { BRANCH_VESTIBULE, NUM_BRANCHES, 27, 27, 1, 27,
       BFLAG_NO_ITEMS,
@@ -279,12 +287,4 @@ const Branch branches[NUM_BRANCHES] =
       "You enter a wizard's laboratory!",
       LIGHTGREY, BROWN, // set per-map
       '8', {}, 0 },
-
-    { BRANCH_DEPTHS, BRANCH_DUNGEON, 15, 15, 5, 22,
-      BFLAG_NONE,
-      DNGN_ENTER_DEPTHS, DNGN_EXIT_DEPTHS,
-      "Depths", "the Depths", "Depths",
-      nullptr,
-      LIGHTGREY, BROWN,
-      'U', {}, 0 },
 };

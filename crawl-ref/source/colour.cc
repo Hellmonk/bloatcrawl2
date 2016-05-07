@@ -348,6 +348,7 @@ colour_t rune_colour(int type)
         case RUNE_SPIDER: return BROWN;
         case RUNE_ELF: return WHITE;
         case RUNE_DWARF: return DARKGRAY;
+        case RUNE_CRYPT: return DARKGRAY;
         default: return GREEN;
     }
 }

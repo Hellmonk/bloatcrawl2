@@ -3858,6 +3858,9 @@ colour_t item_def::rune_colour() const
         case RUNE_TOMB:                     // golden
             return ETC_GOLD;
 
+        case RUNE_CRYPT:                    // dwarven
+            return ETC_DECAY;
+
         case RUNE_SWAMP:                    // decaying
             return ETC_DECAY;
 

@@ -351,6 +351,7 @@ enum rune_type
     RUNE_SPIDER,
     RUNE_FOREST, // unused
     RUNE_DWARF,
+    RUNE_CRYPT,
     NUM_RUNE_TYPES
 };
 
