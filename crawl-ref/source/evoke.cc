@@ -691,15 +691,19 @@ void zap_wand(int slot)
         power = player_adjust_evoc_power(power);
     }
 
+    /*
 	if(wand.sub_type == WAND_HEAL_WOUNDS && aimed_at_self)
 	{
         start_delay(DELAY_WAND_HEAL, 1, power);
 	}
 	else
 	{
+     */
 	    // zapping() updates beam.
 	    zapping(type_zapped, power, beam);
+    /*
 	}
+     */
 
     // Take off a charge.
     wand.charges--;

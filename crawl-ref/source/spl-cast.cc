@@ -500,20 +500,6 @@ int raw_spell_fail(spell_type spell)
     ASSERT_RANGE(spell_level, 0, (int) ARRAYSZ(difficulty_by_level));
     chance += difficulty_by_level[spell_level];
 
-    // Only apply this penalty to Dj because other species lose nutrition
-    // rather than gaining contamination when casting spells.
-    // Also, this penalty gives fairly precise information about contam
-    // level, and only Dj already has such information (on the contam bar).
-    // Other species would have to check their failure rates all the time
-    // when at yellow glow.
-//    if (you.species == SP_DJINNI)
-//    {
-//        int64_t contam = you.magic_contamination;
-//        // Just +25 on the edge of yellow glow, +200 in the middle of yellow,
-//        // forget casting when in orange.
-//        chance += contam * contam * contam / 5000000000LL;
-//    }
-
     int chance2 = chance;
 
     const int chance_breaks[][2] =
@@ -551,7 +537,7 @@ int raw_spell_fail(spell_type spell)
     chance2 = _apply_spellcasting_success_boosts(spell, chance2);
 
     if (you.exertion == EXERT_CAREFUL)
-        chance2 = max(chance2 - 30, chance2 / 2);
+        chance2 = max(chance2 - 10, chance2 / 2);
 
     if (chance2 > 100)
         chance2 = 100;
@@ -591,37 +577,35 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
         // Brilliance boosts spell power a bit (equivalent to three
         // spell school levels).
         if (!fail_rate_check && you.duration[DUR_BRILLIANCE])
-            power += 600;
+            power = max(600, power * 3 / 2);
 
         if (apply_intel)
             power = (power * you.intel()) / 10;
 
-        // [dshaligram] Enhancers don't affect fail rates any more, only spell
-        // power. Note that this does not affect Vehumet's boost in castability.
         if (!fail_rate_check)
+        {
+            // [dshaligram] Enhancers don't affect fail rates any more, only spell
+            // power. Note that this does not affect Vehumet's boost in castability.
             power = apply_enhancement(power, _spell_enhancement(spell));
 
-        // Wild magic boosts spell power but decreases success rate.
-        if (!fail_rate_check)
-        {
+            // Wild magic boosts spell power but decreases success rate.
             const int wild = player_mutation_level(MUT_WILD_MAGIC);
             const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
-            power *= (10 + 3 * wild * wild);
-            power /= (10 + 3 * subdued * subdued);
-        }
+            if (wild)
+                power *= (10 + 3 * wild * wild);
+            if (subdued)
+                power /= (10 + 3 * subdued * subdued);
 
-        // Augmentation boosts spell power at high HP.
-        if (!fail_rate_check)
-        {
+            // Augmentation boosts spell power at high HP.
             power *= 10 + 4 * augmentation_amount();
             power /= 10;
-        }
 
-        // Each level of horror reduces spellpower by 10%
-        if (you.duration[DUR_HORROR] && !fail_rate_check)
-        {
-            power *= 10;
-            power /= 10 + (you.props[HORROR_PENALTY_KEY].get_int() * 3) / 2;
+            // Each level of horror reduces spellpower by 10%
+            if (you.duration[DUR_HORROR])
+            {
+                power *= 10;
+                power /= 10 + (you.props[HORROR_PENALTY_KEY].get_int() * 3) / 2;
+            }
         }
 
         power = stepdown_spellpower(power);

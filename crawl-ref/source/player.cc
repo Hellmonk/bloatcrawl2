@@ -2059,11 +2059,9 @@ int player_movement_speed()
         mv += 100; // as ponderous
 
     if (you.exertion == EXERT_ESCAPE)
-        for (int i = 0; i < player_mutation_level(MUT_FAST); i++)
-            mv = mv * 4 / 5;
+        mv -= player_mutation_level(MUT_FAST) * 150;
 
-    for (int i = 0; i < player_mutation_level(MUT_SLOW); i++)
-        mv = mv * 4 / 3;
+    mv += player_mutation_level(MUT_SLOW) * 150;
 
     if (you.duration[DUR_SWIFTNESS] > 0 && !you.in_liquid())
     {
@@ -3482,9 +3480,9 @@ int check_stealth()
 
     if (player_mutation_level(MUT_GLOW) > 0)
     	stealth -= STEALTH_PIP / 2;
-    if (player_mutation_level(MUT_GLOW) > 0)
+    if (player_mutation_level(MUT_GLOW) > 1)
     	stealth -= STEALTH_PIP;
-    if (player_mutation_level(MUT_GLOW) > 0)
+    if (player_mutation_level(MUT_GLOW) > 2)
     	stealth -= STEALTH_PIP * 2;
 
     stealth += STEALTH_PIP * player_mutation_level(MUT_CAMOUFLAGE);
@@ -4578,7 +4576,7 @@ int get_real_sp(bool include_items)
     if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
         boost--;
 
-    max_sp = qpow(max_sp, 5, 4, boost);
+    max_sp = max_sp + 20 * boost;
 
     return max_sp;
 }
@@ -4619,11 +4617,11 @@ int get_real_mp(bool include_items, bool rotted)
     {
         const int num_magic_rings = you.wearing(EQ_RINGS, RING_MAGICAL_POWER);
         for (int i = 0; i < num_magic_rings; i++)
-            enp += max(9, enp / 4);
+            enp += 9;
         enp += you.scan_artefacts(ARTP_MAGICAL_POWER);
 
         if (you.wearing(EQ_STAFF, STAFF_POWER))
-            enp += max(15, enp / 2);
+            enp += 15;
     }
 
     if (include_items && you.wearing_ego(EQ_WEAPON, SPWPN_ANTIMAGIC))
@@ -6450,30 +6448,33 @@ int player::base_ac_from(const item_def &armour, int scale) const
  */
 int player::racial_ac(bool temp) const
 {
+    int ac = 0;
+
     // drac scales suppressed in all serious forms, except dragon
     if (species_is_draconian(species)
         && (!player_is_shapechanged() || form == TRAN_DRAGON || !temp))
     {
-        int AC = 400 + 100 * (experience_level / 3);  // max 13
+        ac += 400 + 100 * (experience_level / 3);  // max 13
         if (species == SP_GREY_DRACONIAN) // no breath
-            AC += 500;
-        return AC;
+            ac += 500;
     }
 
     if (!(player_is_shapechanged() && temp))
     {
         if (species == SP_NAGA)
-            return 100 * experience_level / 3;  	// max 9 or so
+            ac += 100 * experience_level / 3;  	// max 9 or so
         else if (species == SP_LAVA_ORC && you.temperature <= TEMP_WARM)
-            return 300 + 100 * experience_level / 6;	// max 8 or so
+            ac += 300 + 100 * experience_level / 6;	// max 8 or so
         else if (species == SP_GARGOYLE)
         {
-            return 200 + 100 * experience_level * 2 / 5	// max 20 or so
+            ac += 200 + 100 * experience_level * 2 / 5	// max 20 or so
                        + 100 * (max(0, experience_level - 7) * 2 / 5);
         }
     }
 
-    return 0;
+    ac += player_mutation_level(MUT_EXOSKELETON) * 300;
+
+    return ac;
 }
 
 int player::armour_class(bool /*calc_unid*/) const
@@ -7669,7 +7670,7 @@ bool player::backlit(bool self_halo) const
         || duration[DUR_LIQUID_FLAMES]
         || duration[DUR_QUAD_DAMAGE]
         || !umbraed() && haloed() && (self_halo || halo_radius() == -1)
-		|| player_mutation_level(MUT_GLOW) > 0;
+		|| player_mutation_level(MUT_GLOW) > 2;
 }
 
 bool player::umbra() const
@@ -9112,18 +9113,37 @@ const int get_max_skill_level()
     return MAX_SKILL_LEVEL;
 }
 
+const int rune_curse_hd_adjust(int hd)
+{
+    const int runes = runes_in_pack();
+    int multiplier = 1;
+    if (crawl_state.difficulty == DIFFICULTY_CHALLENGE)
+        multiplier = 2;
+    else if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
+        multiplier = 3;
+
+    const int new_hd = hd + runes * multiplier;
+    return new_hd;
+}
+
 const int rune_curse_hp_adjust(int hp)
 {
+    /*
     const int runes = runes_in_pack();
     const int new_hp = qpow(hp, 50 + crawl_state.difficulty, 50, runes);
     return new_hp;
+     */
+    return hp;
 }
 
 const int rune_curse_dam_adjust(int dam)
 {
+/*
     const int runes = runes_in_pack();
     const int new_dam = qpow(dam, 50 + crawl_state.difficulty, 50, runes);
     return new_dam;
+*/
+    return dam;
 }
 
 void summoned_monster_died(monster* mons, bool natural_death)

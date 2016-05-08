@@ -610,7 +610,7 @@ static void _inc_penance(god_type god, int val)
         return;
 
     if (you.species == SP_HUMAN)
-        val >>= 1;
+        val >>= 2;
 
     if (!player_under_penance(god))
     {
@@ -1531,7 +1531,7 @@ bool do_god_gift(bool forced)
                 you.num_total_gifts[you.religion]++;
                 // Timeouts are meaningless for Kiku.
                 if (!you_worship(GOD_KIKUBAAQUDGHA))
-                    _inc_gift_timeout(30 + random2avg(19, 2));
+                    _inc_gift_timeout(40 + random2avg(19, 2));
                 take_note(Note(NOTE_GOD_GIFT, you.religion));
             }
             break;
