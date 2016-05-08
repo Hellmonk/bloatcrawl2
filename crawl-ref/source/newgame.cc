@@ -591,9 +591,9 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
     ng.type = choice.type;
     switch(choice.difficulty)
     {
-        DIFFICULTY_CHALLENGE:
-        DIFFICULTY_STANDARD:
-        DIFFICULTY_NIGHTMARE:
+        case DIFFICULTY_CHALLENGE:
+        case DIFFICULTY_STANDARD:
+        case DIFFICULTY_NIGHTMARE:
             ng.difficulty = choice.difficulty;
             break;
         default:
@@ -640,17 +640,20 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
 }
 
 // Set ng_choice to defaults without overwriting name and game type.
-static void _set_default_choice(newgame_def& ng, newgame_def& ng_choice,
-                                const newgame_def& defaults)
+void set_default_choice(newgame_def &ng, newgame_def &ng_choice, const newgame_def &defaults)
 {
     // Reset ng so _resolve_species_job will work properly.
     ng.clear_character();
 
     const string name = ng_choice.name;
     const game_type type   = ng_choice.type;
+    const game_difficulty_level difficulty = ng_choice.difficulty;
+
     ng_choice = defaults;
     ng_choice.name = name;
     ng_choice.type = type;
+    if (difficulty != DIFFICULTY_ASK)
+        ng_choice.difficulty = difficulty;
 }
 
 static void _mark_fully_random(newgame_def& ng, newgame_def& ng_choice,
@@ -997,7 +1000,7 @@ static void _prompt_species(newgame_def& ng, newgame_def& ng_choice,
             case M_DEFAULT_CHOICE:
                 if (_char_defined(defaults))
                 {
-                    _set_default_choice(ng, ng_choice, defaults);
+                    set_default_choice(ng, ng_choice, defaults);
                     return;
                 }
                 else
@@ -1411,7 +1414,7 @@ static void _prompt_job(newgame_def& ng, newgame_def& ng_choice,
             case M_DEFAULT_CHOICE:
                 if (_char_defined(defaults))
                 {
-                    _set_default_choice(ng, ng_choice, defaults);
+                    set_default_choice(ng, ng_choice, defaults);
                     return;
                 }
                 else
@@ -2004,6 +2007,11 @@ static bool _choose_difficulty(newgame_def& ng, newgame_def& ng_choice,
 		menu.draw_menu();
 		int keyn = getch_ck();
         menu.process_key(keyn);
+        if (keyn == '\t' && defaults.difficulty != DIFFICULTY_ASK)
+        {
+            set_default_choice(ng, ng_choice, defaults);
+            return true;
+        }
 
 		// We have a significant key input!
 		// Construct selection vector
@@ -2283,7 +2291,7 @@ static void _prompt_gamemode_map(newgame_def& ng, newgame_def& ng_choice,
             list_commands('?');
             return _prompt_gamemode_map(ng, ng_choice, defaults, maps);
         case M_DEFAULT_CHOICE:
-            _set_default_choice(ng, ng_choice, defaults);
+            set_default_choice(ng, ng_choice, defaults);
             return;
         case M_RANDOM:
             // FIXME setting this to "random" is broken

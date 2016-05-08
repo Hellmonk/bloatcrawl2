@@ -580,7 +580,7 @@ static const int NUM_MISC_LINES     = 5;
 /**
  * Saves game mode and player name to ng_choice.
  */
-static void _show_startup_menu(newgame_def& ng_choice,
+static void _show_startup_menu(newgame_def &ng, newgame_def& ng_choice,
                                const newgame_def& defaults)
 {
     // Initialise before the loop so that ? doesn't forget the typed name.
@@ -760,7 +760,7 @@ again:
         }
         else if (keyn == '\t' && _game_defined(defaults))
         {
-            ng_choice = defaults;
+            set_default_choice(ng, ng_choice, defaults);
             return;
         }
         else if (keyn == '?')
@@ -987,6 +987,7 @@ bool startup_step()
     if (!SysEnv.crawl_name.empty())
         choice.name = SysEnv.crawl_name;
 
+    newgame_def ng;
 #ifndef DGAMELAUNCH
     if (crawl_state.last_type == GAME_TYPE_TUTORIAL
         || crawl_state.last_type == GAME_TYPE_SPRINT)
@@ -1004,7 +1005,7 @@ bool startup_step()
     else if (!is_good_name(choice.name, false, false)
         && choice.type != GAME_TYPE_ARENA)
     {
-        _show_startup_menu(choice, defaults);
+        _show_startup_menu(ng, choice, defaults);
         // [ds] Must set game type here, or we won't be able to load
         // Sprint saves.
         crawl_state.type = choice.type;
@@ -1022,7 +1023,6 @@ bool startup_step()
     }
 
     bool newchar = false;
-    newgame_def ng;
     if (choice.filename.empty() && !choice.name.empty())
         choice.filename = get_save_filename(choice.name);
 
