@@ -1,5 +1,9 @@
 # Dungeon Crawl Stone Soup: Circus Animals variation
 
+There are two known servers where you can play Circus Animals! 
+- http://crawl.homedns.org/      (arizona, USA)
+- https://crawl.project357.org/  (sydney, AUS)
+
 Checkout branch v1.4.2 if you want to try it yourself. The master branch will be where future, save game breaking features will be implemented, and then broken off.
 
 For those who don't know how to clone from a git repo: install git on your system, then type:
@@ -17,26 +21,20 @@ This fork is in sync with the original DCSS repo as of Apr 2016. I intend to kee
 
 Check out the FUTURE.md file in the same directory as the README.md for details about what features I'm considering on implementing.
 
-There are two known servers running this fork at this time: 
-- http://crawl.homedns.org/      
-- https://crawl.project357.org/  
-
 Feel free to create issues on github for either problems with the crawl.homedns.org server, or bugs in the game itself, or ideas you have that you think are in line
 with my goals here, or with concerns you have about my future plans. 
 
-A player has created an IRC channel for discussion of this fork. Grab an IRC client and come start the conversation - it's a quiet place right now! The channel is ##circusfork on the Freenode IRC server. If you're already hanging out in ##crawl, all you have to do is type /join ##circusfork!
+A player has created an IRC channel for discussion of this fork. Grab an IRC client and come join the conversation! The channel is ##circusfork on the Freenode IRC server. If you're already hanging out in ##crawl, all you have to do is type /join ##circusfork!
 
 ## Objectives
 
 (Not necessarily all that different form mainstream crawl, just different in exactly how I interpret these...)
 
 * No boring species, gods, monsters, items, branches, etc.
-    * I never play humans in the mainstream crawl. It's just never interesting for me to do so, since they don't have any real benefit over any other species.
-      So in this version, I amplified the differences between species, especially the "boring" ones I never play, to make each species more appealing in it's
-      own way. 
+    * I never play humans in the mainstream crawl. It's just never interesting! They don't have any real benefit over other species.
+      So, I amplified the differences between species, especially the "boring" ones I never play, to make each species more appealing in its own way. 
     * My philosophy is to first try and make a problem area more interesting. If that seems utterly impossible, then it should be removed. 
-    * For example, Djinni was removed from mainstream crawl because of serious problems with it's design. I brought it back, changed the design dramatically,
-      and now I believe it is a fun and interesting species to play without the major issues it was removed for in the first place. 
+    * For example, Djinni was removed from mainstream crawl because of serious problems with it's design. I brought it back, changed the design dramatically, and now I believe it is a fun and interesting species to play without the major issues!
       
 * A more fun experience for new players and intermediate players.
     * Current mainstream crawl seems to heavily favor making the game fun for extreme veterans and experts. New players have a very hard time finding enough fun
