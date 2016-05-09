@@ -2000,6 +2000,9 @@ int player_movement_speed()
 {
     int mv = 1100;
 
+    if (you.exertion == EXERT_ESCAPE && you.religion != GOD_CHEIBRIADOS)
+        mv = 1000;
+
     // transformations
     if (you.exertion == EXERT_ESCAPE)
     {
@@ -2070,9 +2073,6 @@ int player_movement_speed()
         else
           mv = mv * 4 / 3;
     }
-
-    if (you.exertion == EXERT_ESCAPE && you.religion != GOD_CHEIBRIADOS)
-        mv = mv * 3 / 4;
 
     mv = div_rand_round(mv, 100);
 
