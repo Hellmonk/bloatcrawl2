@@ -37,15 +37,13 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
     * For example, Djinni was removed from mainstream crawl because of serious problems with it's design. I brought it back, changed the design dramatically, and now I believe it is a fun and interesting species to play without the major issues!
       
 * A more fun experience for new players and intermediate players.
-    * Current mainstream crawl seems to heavily favor making the game fun for extreme veterans and experts. New players have a very hard time finding enough fun
-      in the game to justify investing the time needed to really get good at it. Everything is balanced around understanding how to effectively use every item
-      in the game, a situation most players don't achieve until they've played the game for a very long time. 
+    * Current mainstream crawl is very "spoilery". Knowledge of hidden facts that don't appear in item or monster descriptions makes a huge difference in your chances of success, so most players will be making unintentional blunders due to a lack of information until they've played the game for a very long time. 
     * There should be a way for people who don't know how to properly use a blink scroll, or to effectively identify their inventory, for example, to still have fun.
     * A wiki shouldn't be required to have fun with the game. I'm hardly a newbie with many hundreds of hours of crawl gametime experience, yet I still feel
       like I have to lean on the wiki from time to time because of the way mainstream crawl is designed. 
     * Example: Mainstream crawl's refusal to show how much damage a given attack is doing makes it very difficult for new players to figure out which attacking
-      strategies / weapons / buffs are most effective. Just adding a simple damage number makes it so much easier to see if the flame tongue spell is really
-      accomplishing more than just trying to bash them with a morningstar. This is somewhat ironic because I think the reason to avoid numbers is to make it
+      strategies / weapons / buffs are most effective. Just adding a simple damage number makes it so much easier to see whether your flame tongue spell is actually 
+      accomplishing more than your morningstar. This is somewhat ironic because I think the justification behind hiding damage numbers is to make it
       easier for new players... but in my experience it seems to be doing the opposite. 
 
 ## Major modifications from the original DCSS
@@ -70,8 +68,8 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
     * power of the transformation is based on spell power
     * when the player takes any offensive action (attacks, casts, evokes), the spell failure of the form is tested. 
       Once the spell "fails" 5 times, the form unravells and the player returns to normal. 
-    * each failure chance is squared towards failure, so 50% failure becomes 75% failure, 20% failure becomes 36% failure.
-      so if you can't get the failure below about 20%, you won't be able to maintain the form for long.
+    * each failure chance is cut in half towards the edges, so 60% failure becomes 80% failure, 20% failure becomes 10% failure.
+      so if you can't get the failure below about 30%, you won't be able to maintain the form for long.
     * undead can transmute
         * in living forms, undead can also mutate
 
@@ -97,10 +95,17 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
 
 * Mutations
     * added a bunch more super rare mutations that could really throw a curveball at the player.
-    * created the good dna, bad dna, and clean dna mutations
+    * created the dna mutations (which are very hard to get, and very hard to lose)
         * good dna: increases chances that mutators will add a good mutation
         * bad dna: increases chances that mutators will add a bad mutation
-        * clean dna: increases chances that mutators will remove a bad mutation 
+        * clean dna: increases chances that mutators will remove a mutation when heavily mutated
+        * resilient dna: lowers chances of a mutator causing the player to lose a good mutation
+        * weak dna: increases chaces of a mutator causing the player to lose a good mutation
+        * short dna: lowers the player's total mutation capacity, meaning a mutator will be likely to remove mutations
+          even when a player doesn't have very many yet.
+        * long dna: increases the player's total mutation capacity.
+        * focussed dna: increases the chance that a new mutation will be an enhancement to an existing one
+        * unfocussed dna: reduces the chance that a new mutation will be an enhancement to an existing one
 
 * Sif Muna
     * get book gifts at 2* piety instead of 5*
@@ -111,27 +116,36 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
 * Implement stamina points, alongside magic points and health points
     * four exertion levels
         * normal mode (press 'c' if in another mode)
-            * no stamina cost for most actions, except for spell casting which has a stamina cost caused by spell hunger
+            * no stamina cost for most actions, except for spell casting which has a stamina cost based on spell hunger
             * movement speed is 1.1 for all species, except naga, which is 1.4
-        * power mode (change to this by pressing 'e')
+            * damage, spellpower, accuracy, stealth, evasion modifications from vanilla crawl:
+                * standard difficulty: 100% of vanilla crawl (means will do the same damage in normal mode as in vanilla)
+                * challenge difficulty: 75% of vanilla crawl
+                * nightmare difficulty: 50% of vanilla crawl
+        * power mode (press 'e' if in another mode)
             * stamina is depleted for each attack or spell cast
-            * melee and ranged damage is higher (1.3x normal)
-            * spellpower is greater (1.5x normal)
-            * can't stab
-        * escape mode (change to this by pressing 's')
+            * melee and ranged damage is 33% higher than normal mode
+            * spellpower is 33% higher than normal mode
+        * escape mode (press 'S' if in another mode)
             * movement costs stamina
-            * stealth is reduced (0.25x normal)
-            * movement speed is 0.9 for most species
-                * 0.5 for spriggan
-                * 0.7 for centaur
-                * 1.4 for naga, since they can't run, so they don't have a stamina cost for moving in power mode
+            * stealth is reduced to 25% of normal
+            * evasion is increased 33% over normal
+            * movement speed is 1.0 for most species
+                * 0.7 for spriggan
+                * 0.85 for centaur
+                * 1.4 for naga
             * movement speed is penalized if the player stops or changes direction more than 45 degrees from original heading
-        * careful mode (change to this by pressing 'E')
+        * careful mode (press 'E' if in another mode)
             * attacks, spells cast, and movement cost stamina
             * spell hunger -> stamina cost is doubled
-            * stealth is amplified (1.5x normal)
-            * accuracy is increased (1.5x normal)
-            * spell failure chance is reduced (-30 or 1/2, whichever is worse)
+            * stealth is increased 33% over normal
+            * accuracy is increased 33% over normal
+            * spell failure chance is reduced (-10% or 1/2, whichever is worse)
+    * exertion mode examples:
+        * standard difficulty, normal mode damage: 100% of vanilla
+        * standard difficulty, power mode damage: 133% of vanilla
+        * nightmare difficulty, normal mode damage: 50% of vanilla
+        * nightmare difficulty, power mode damage: 66% of vanilla
     * when stamina is depleted, game switches back to normal exertion mode automatically
     * species differences:
         * centaurs and nagas have a larger than normal stamina pool
@@ -139,6 +153,7 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
         * trolls consume stamina more quickly than normal, but immediately eat 50% of corpses dropped to recover some stamina. 
         * ghouls immediately consume 50% of corpses dropped to recover some health / remove rot. 
     * vampiric weapons consume stamina as they heal the player, and stop healing the player when stamina runs out
+    * eating fruit recovers 25 stamina
     * eating royal jelly reduces stamina costs to 0 temporarily
 
 * Minor background tweaks
@@ -147,14 +162,15 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
         
 * Remove food
     * no more chopping or eating
-    * fruits and royal jelly can still be consumed with the quaff command
-        * fruit is used by fedhas still or may be consumed for stamina
-        * consuming royal jelly reduces stamina costs to 0 temporarily
+    * fruits and royal jelly can be consumed with the quaff command
+        * consume fruit to regain stamina! (also used by Fedhas)
+        * consum royal jelly to reduce stamina costs by 75% !
     * vampire still drink blood to change their satiation level
     * ghouls automatically eat some of the corpses they kill to heal and cure rot
 
 * Enchanted Forest and Dwarven Halls (now called Dwarven Fortress) brought back
-    * I haven't done anything to them yet, but I intend to make them interesting and fun enough to want to keep around. 
+    * Work continues to make these more interesting and fun!
+    * If you visit these areas, your feedback is very valuable.
     * If you don't want to play in a likely broken or boring area, avoid these branches for now. 
     * If you want to help test and refine them, go ahead and explore, and tell me what you think will make them
       better.
@@ -215,10 +231,10 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
 * Human 
     * exp apt +2
     * fighting and spellcasting apt +2
-    * can crosstrain many more skills
+    * can crosstrain more skills
         * fire, ice, earth, air
         * invo, evo, spellcasting
-    * god wrath lasts half as long, since the gods understand how fickle humans can be.
+    * god wrath lasts 1/4 as long, since the gods understand how fickle humans can be.
     
 * Draconian
     * Pale Draconian
@@ -438,16 +454,10 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
     * Throw Flame has been removed from spell books. Monsters still cast it, but the player can't. Instead, Flame Tongue has been slightly enhanced to fill that
       void. Not much of a void, since I hardly used it anyway. Magma Bolt has been put in the Flames Book as a level 5 spell alongside Fireball. 
 
-* Potions of heal wounds
-    * easy mode: heals 100% of max hp
-    * normal mode: heals 50% of max hp (minimum of 20 points)
-    * hard mode: heals 25% of max hp (minimum of 20 points)
-
-* Wands of heal wounds
-    * heal based on evocations skill
-    * always take 2 turns, uninterruptable
-        * this means that they aren't as good as a potion of health in the middle of a battle
-        * they are more for dwarves to use between battles
+* Potions and wands of heal wounds
+    * easy mode: minimum healing of 20
+    * normal mode: minimum healing of 10 (same as vanilla crawl)
+    * hard mode: minimum healing of 5
 
 * Recharge scrolls
     * less common, but fully recharge the wand.
