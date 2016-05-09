@@ -2000,6 +2000,9 @@ int player_movement_speed()
 {
     int mv = 1100;
 
+    if (you.exertion == EXERT_ESCAPE && you.religion != GOD_CHEIBRIADOS)
+        mv = 1000;
+
     // transformations
     if (you.exertion == EXERT_ESCAPE)
     {
@@ -2070,9 +2073,6 @@ int player_movement_speed()
         else
           mv = mv * 4 / 3;
     }
-
-    if (you.exertion == EXERT_ESCAPE && you.religion != GOD_CHEIBRIADOS)
-        mv = mv * 3 / 4;
 
     mv = div_rand_round(mv, 100);
 
@@ -3530,12 +3530,7 @@ int check_stealth()
     if (player_has_orb())
         stealth /= 3;
 
-    if (you.exertion == EXERT_ESCAPE)
-        stealth >>= 2;
-
-    if (you.exertion == EXERT_CAREFUL)
-        stealth = div_rand_round(stealth * 3, 2);
-
+    stealth = player_stealth_modifier(stealth);
     stealth = max(0, stealth);
 
     return stealth;
@@ -6621,11 +6616,8 @@ int player::evasion(ev_ignore_type evit, const actor* act) const
                                     0;
 
     int ev = base_evasion - constrict_penalty - invis_penalty - stairs_penalty;
-    if (you.exertion == EXERT_ESCAPE)
-    {
-        ev = div_rand_round(ev * 4, 3);
-    }
 
+    ev = player_evasion_modifier(ev);
     return ev;
 }
 
@@ -9304,34 +9296,82 @@ int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost)
     return new_cost;
 }
 
+int _difficulty_mode_multiplier()
+{
+    int x;
+
+    switch(crawl_state.difficulty)
+    {
+        case DIFFICULTY_STANDARD:
+            x = 40;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            x = 30;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            x = 20;
+            break;
+        default:
+            // should not be possible
+            x = 30;
+            break;
+    }
+
+    return x;
+}
+
 int player_tohit_modifier(int old_tohit)
 {
-    int new_tohit = old_tohit;
+    int new_tohit = old_tohit * _difficulty_mode_multiplier();
 
     if (you.exertion == EXERT_CAREFUL)
-        new_tohit = div_rand_round(new_tohit * 4, 3) + 5;
+        new_tohit = new_tohit * 4 / 3 + 50;
 
-    return new_tohit;
+    return div_rand_round(new_tohit, 40);
 }
 
 int player_damage_modifier(int old_damage)
 {
-    int new_damage = old_damage;
+    int new_damage = old_damage * _difficulty_mode_multiplier();
 
     if (you.exertion == EXERT_POWER)
-        new_damage = div_rand_round(new_damage * 4, 3) + 2;
+        new_damage = new_damage * 4 / 3 + 20;
 
-    return new_damage;
+    return div_rand_round(new_damage, 40);
 }
 
 int player_spellpower_modifier(int old_spellpower)
 {
-    int new_spellpower = old_spellpower;
+    int new_spellpower = old_spellpower * _difficulty_mode_multiplier();
 
     if (you.exertion == EXERT_POWER)
-        new_spellpower = div_rand_round(new_spellpower * 4, 3) + 10;
+        new_spellpower = new_spellpower * 4 / 3 + 100;
 
-    return new_spellpower;
+    return div_rand_round(new_spellpower, 40);
+}
+
+
+int player_stealth_modifier(int old_stealth)
+{
+    int new_stealth = old_stealth * _difficulty_mode_multiplier();
+
+    if (you.exertion == EXERT_ESCAPE)
+        new_stealth >>= 2;
+
+    if (you.exertion == EXERT_CAREFUL)
+        new_stealth = new_stealth * 4 / 3 + 200;
+
+    return div_rand_round(new_stealth, 40);
+}
+
+int player_evasion_modifier(int old_evasion)
+{
+    int new_evasion = old_evasion * _difficulty_mode_multiplier();
+
+    if (you.exertion == EXERT_ESCAPE)
+        new_evasion = new_evasion * 4 / 3 + 50;
+
+    return div_rand_round(new_evasion, 40);
 }
 
 void player_update_last_hit_chance(int chance)

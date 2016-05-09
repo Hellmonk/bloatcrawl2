@@ -586,15 +586,14 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
         {
             // [dshaligram] Enhancers don't affect fail rates any more, only spell
             // power. Note that this does not affect Vehumet's boost in castability.
-            power = apply_enhancement(power, _spell_enhancement(spell));
+            const int enhancement = _spell_enhancement(spell);
+            power = apply_enhancement(power, enhancement);
 
             // Wild magic boosts spell power but decreases success rate.
             const int wild = player_mutation_level(MUT_WILD_MAGIC);
             const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
-            if (wild)
-                power *= (10 + 3 * wild * wild);
-            if (subdued)
-                power /= (10 + 3 * subdued * subdued);
+            power *= (10 + 3 * wild * wild);
+            power /= (10 + 3 * subdued * subdued);
 
             // Augmentation boosts spell power at high HP.
             power *= 10 + 4 * augmentation_amount();

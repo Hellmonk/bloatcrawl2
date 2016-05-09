@@ -56,7 +56,7 @@
 #include "unwind.h"
 #include "version.h"
 
-#define SCORE_VERSION "0.1"
+#define SCORE_VERSION "dcssca-0.1"
 
 // enough memory allocated to snarf in the scorefile entries
 static unique_ptr<scorefile_entry> hs_list[SCORE_FILE_ENTRIES];

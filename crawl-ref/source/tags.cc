@@ -2367,6 +2367,8 @@ static void tag_read_you(reader &th)
 
     you.target_hunger_state       = (hunger_state_t) unmarshallUByte(th);
     you.motion                    = (motion_type) unmarshallUByte(th);
+    you.last_tohit = 0;
+    you.last_hit_chance = 0;
 
     for (int i = 0; i < NUM_STATS; ++i)
         you.base_stats[i] = unmarshallByte(th);
