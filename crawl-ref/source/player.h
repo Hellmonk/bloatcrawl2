@@ -1197,6 +1197,8 @@ int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost);
 int player_tohit_modifier(int old_tohit);
 int player_damage_modifier(int old_damage);
 int player_spellpower_modifier(int old_spellpower);
+int player_stealth_modifier(int old_stealth);
+int player_evasion_modifier(int old_evasion);
 void player_update_last_hit_chance(int chance);
 void player_update_tohit(int new_tohit = -1);
 void summoned_monster_died(monster* mons, bool natural_death);
