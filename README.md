@@ -37,15 +37,13 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
     * For example, Djinni was removed from mainstream crawl because of serious problems with it's design. I brought it back, changed the design dramatically, and now I believe it is a fun and interesting species to play without the major issues!
       
 * A more fun experience for new players and intermediate players.
-    * Current mainstream crawl seems to heavily favor making the game fun for extreme veterans and experts. New players have a very hard time finding enough fun
-      in the game to justify investing the time needed to really get good at it. Everything is balanced around understanding how to effectively use every item
-      in the game, a situation most players don't achieve until they've played the game for a very long time. 
+    * Current mainstream crawl is very "spoilery". Knowledge of hidden facts that don't appear in item or monster descriptions makes a huge difference in your chances of success, so most players will be making unintentional blunders due to a lack of information until they've played the game for a very long time. 
     * There should be a way for people who don't know how to properly use a blink scroll, or to effectively identify their inventory, for example, to still have fun.
     * A wiki shouldn't be required to have fun with the game. I'm hardly a newbie with many hundreds of hours of crawl gametime experience, yet I still feel
       like I have to lean on the wiki from time to time because of the way mainstream crawl is designed. 
     * Example: Mainstream crawl's refusal to show how much damage a given attack is doing makes it very difficult for new players to figure out which attacking
-      strategies / weapons / buffs are most effective. Just adding a simple damage number makes it so much easier to see if the flame tongue spell is really
-      accomplishing more than just trying to bash them with a morningstar. This is somewhat ironic because I think the reason to avoid numbers is to make it
+      strategies / weapons / buffs are most effective. Just adding a simple damage number makes it so much easier to see whether your flame tongue spell is actually 
+      accomplishing more than your morningstar. This is somewhat ironic because I think the justification behind hiding damage numbers is to make it
       easier for new players... but in my experience it seems to be doing the opposite. 
 
 ## Major modifications from the original DCSS
@@ -111,14 +109,14 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
 * Implement stamina points, alongside magic points and health points
     * four exertion levels
         * normal mode (press 'c' if in another mode)
-            * no stamina cost for most actions, except for spell casting which has a stamina cost caused by spell hunger
+            * no stamina cost for most actions, except for spell casting which has a stamina cost based on spell hunger
             * movement speed is 1.1 for all species, except naga, which is 1.4
-        * power mode (change to this by pressing 'e')
+        * power mode (press 'e' if in another mode)
             * stamina is depleted for each attack or spell cast
             * melee and ranged damage is higher (1.3x normal)
             * spellpower is greater (1.5x normal)
             * can't stab
-        * escape mode (change to this by pressing 's')
+        * escape mode (press 'S' if in another mode)
             * movement costs stamina
             * stealth is reduced (0.25x normal)
             * movement speed is 0.9 for most species
@@ -126,7 +124,7 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
                 * 0.7 for centaur
                 * 1.4 for naga, since they can't run, so they don't have a stamina cost for moving in power mode
             * movement speed is penalized if the player stops or changes direction more than 45 degrees from original heading
-        * careful mode (change to this by pressing 'E')
+        * careful mode (press 'E' if in another mode)
             * attacks, spells cast, and movement cost stamina
             * spell hunger -> stamina cost is doubled
             * stealth is amplified (1.5x normal)
@@ -147,14 +145,15 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
         
 * Remove food
     * no more chopping or eating
-    * fruits and royal jelly can still be consumed with the quaff command
-        * fruit is used by fedhas still or may be consumed for stamina
-        * consuming royal jelly reduces stamina costs to 0 temporarily
+    * fruits and royal jelly can be consumed with the quaff command
+        * consume fruit to regain stamina! (also used by Fedhas)
+        * consum royal jelly to reduce stamina costs by 75% !
     * vampire still drink blood to change their satiation level
     * ghouls automatically eat some of the corpses they kill to heal and cure rot
 
 * Enchanted Forest and Dwarven Halls (now called Dwarven Fortress) brought back
-    * I haven't done anything to them yet, but I intend to make them interesting and fun enough to want to keep around. 
+    * Work continues to make these more interesting and fun!
+    * If you visit these areas, your feedback is very valuable.
     * If you don't want to play in a likely broken or boring area, avoid these branches for now. 
     * If you want to help test and refine them, go ahead and explore, and tell me what you think will make them
       better.
