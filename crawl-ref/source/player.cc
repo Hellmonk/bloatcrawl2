@@ -3921,13 +3921,14 @@ unsigned int exp_needed(int lev, int exp_apt)
                 break;
         }
 
-        needed_exp = (level - 1) * apt_to_factor(exp_apt - 1);
+        const float apt_factor = apt_to_factor(exp_apt - 1);
+        needed_exp = (level - 1) * apt_factor * apt_factor;
     }
     else
     {
         const float apt_factor = apt_to_factor(exp_apt - 1);
-        const int base = stepup2(lev, 3, 5, 15) + 1;
-        needed_exp = base * apt_factor * apt_factor * apt_factor;
+        const int base = stepup2(lev, 3, 5, 15) + 5;
+        needed_exp = base * apt_factor * apt_factor;
     }
     return (unsigned int) needed_exp;
 }
@@ -4565,9 +4566,9 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
     if (adjust_for_difficulty)
     {
         if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-            hitp = hitp * 3 / 2;
+            hitp = hitp * 4 / 3;
         if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-            hitp = hitp * 2 / 3;
+            hitp = hitp * 3 / 4;
     }
 
     return max(1, hitp + 5);
@@ -4640,9 +4641,9 @@ int get_real_mp(bool include_items, bool rotted)
         enp /= 3;
 
     if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-        enp = enp * 3 / 2;
+        enp = enp * 4 / 3;
     if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-        enp = enp * 2 / 3;
+        enp = enp * 3 / 4;
 
     enp = max(enp, 4);
     if (!rotted)
