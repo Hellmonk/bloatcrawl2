@@ -2001,7 +2001,24 @@ int player_movement_speed()
     int mv = 1100;
 
     if (you.exertion == EXERT_ESCAPE && you.religion != GOD_CHEIBRIADOS)
-        mv = 1000;
+    {
+        switch(crawl_state.difficulty)
+        {
+            case DIFFICULTY_STANDARD:
+                mv = 900;
+                break;
+            case DIFFICULTY_CHALLENGE:
+                mv = 950;
+                break;
+            case DIFFICULTY_NIGHTMARE:
+                mv = 1000;
+                break;
+            default:
+                // should not be possible
+                mv = 950;
+                break;
+        }
+    }
 
     // transformations
     if (you.exertion == EXERT_ESCAPE)
@@ -2032,12 +2049,12 @@ int player_movement_speed()
 			mv += 100;
 		}
 
+        if (you.temperature >= TEMP_ROOM) {
+            mv -= 100;
+        }
+
         if (you.exertion == EXERT_ESCAPE)
         {
-            if (you.temperature >= TEMP_ROOM) {
-                mv -= 100;
-            }
-
             if (you.temperature >= TEMP_HOT) {
                 mv -= 100;
             }
