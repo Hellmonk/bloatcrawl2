@@ -1,0 +1,26 @@
+## v1.5
+
+* Stamina overhaul
+    * Normal mode fighting actions cost sp, power mode increases cost.
+    * SP cost of attack based on fighting skill, strength, weapon weight.
+    * Spells only cost mp, no more spell hunger.
+    * MP cost is based on spellcasting, intelligence, spell level.
+    * Fixed size mp pool like sp pool.
+    * Power mode adds an SP cost to affected actions.
+    * Careful mode renamed to focus mode.
+    * Focus mode adds an MP cost to affected actions.
+
+* Spell failure
+    * Dexterity is used instead of intelligence to reduce spell failure.
+        * Similar to how dexterity improves a fighter's chances of hitting.
+    * Intelligence is still used to boost spell power.
+    
+* New branch layout
+    * Dungeon contains: Orc (no rune), Lair of Beasts, Enchanted Forest, and Depths.
+        * Orc has 5 floors, and contains an arena to battle in.
+    * Enchanted Forest appears a little after Lair in the dungeon.
+    * Lair contains four rune branches: Swamp, Shoals, Spider, and Snake (every game).
+    * Enchanted Forest contains four rune branches: Crypt, Slime, Elven Halls, and Dwarven Fortress.
+        * Crypt, Dwarven Fortress, and Elven Halls have 5 floors and runes now.
+    * Depths contains: Vaults, Zot, Ziggurat, Abyss, Vestibule, and Pandemonium.
+

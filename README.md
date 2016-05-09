@@ -61,6 +61,9 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
     * When a summon dies, they player gets 1/2 of the mp used on that creature
     * When going up or down stairs, if there are no monsters in sight, summons automatically follow the player.
 
+* Pan has been shortened
+    * All 4 rune floors are guanteed within the first 25 floors. 
+    
 ### v1.4.1
 
 * Transmutation
