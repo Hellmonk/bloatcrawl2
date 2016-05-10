@@ -22,16 +22,16 @@ git:
 install: perl .travis/deps.pl
 script: perl .travis/build.pl
 notifications:
+    irc:
+        channels: "chat.freenode.net##circusfork"
+        on_success: change
+        on_failure: change
+        use_notice: true
+        template:
+            - "%{message} (%{branch} - %{commit} #%{build_number} : %{author}): %{build_url}"
 #    email:
 #        on_success: change
 #        on_failure: always
 #        recipients:
 #          - crawl-ref-commits@lists.sourceforge.net
-    irc:
-        channels: "chat.freenode.net##circusfork"
-        on_success: change
-        on_failure: always
-        use_notice: true
-        template:
-            - "%{message} (%{branch} - %{commit} #%{build_number} : %{author}): %{build_url}"
 sudo: required
