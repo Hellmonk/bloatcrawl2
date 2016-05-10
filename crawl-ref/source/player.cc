@@ -9431,10 +9431,10 @@ int _difficulty_mode_multiplier()
             x = 40;
             break;
         case DIFFICULTY_CHALLENGE:
-            x = 30;
+            x = 35;
             break;
         case DIFFICULTY_NIGHTMARE:
-            x = 20;
+            x = 30;
             break;
         default:
             // should not be possible
@@ -9471,6 +9471,20 @@ int player_damage_modifier(int old_damage, bool silent)
         new_damage = new_damage * 4 / 3 + 20;
 
     return div_rand_round(new_damage, 40);
+}
+
+int player_attack_delay_modifier(int attack_delay)
+{
+    attack_delay *= _difficulty_mode_multiplier();
+
+    if (you.sp == 0)
+    {
+        attack_delay *= 4 / 3;
+    }
+    else if (you.exertion == EXERT_POWER)
+        attack_delay *= 3 / 4 - 1;
+
+    return div_rand_dound(attack_delay, 40);
 }
 
 int player_spellpower_modifier(int old_spellpower)
