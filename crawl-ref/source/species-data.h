@@ -132,7 +132,7 @@ static const map<species_type, species_def> species_data =
     "DE",
     "Deep Elf", "Elven", "Elf",
     SPF_ELVEN,
-    -1, -2, 4,
+    -1, -2, 3,
     15, 4,
     MONS_ELF,
     HT_LAND, US_ALIVE, SIZE_MEDIUM,
