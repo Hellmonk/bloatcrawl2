@@ -3730,3 +3730,4 @@ const item_def* melee_attack::get_weapon_used()
 {
     return weapon;
 }
+

@@ -9473,7 +9473,7 @@ int player_damage_modifier(int old_damage, bool silent)
     return div_rand_round(new_damage, 40);
 }
 
-int player_attack_delay_modifier(int attack_delay)
+random_var player_attack_delay_modifier(random_var attack_delay)
 {
     attack_delay *= _difficulty_mode_multiplier();
 
@@ -9484,7 +9484,7 @@ int player_attack_delay_modifier(int attack_delay)
     else if (you.exertion == EXERT_POWER)
         attack_delay *= 3 / 4 - 1;
 
-    return div_rand_dound(attack_delay, 40);
+    return div_rand_round(attack_delay, 40);
 }
 
 int player_spellpower_modifier(int old_spellpower)
