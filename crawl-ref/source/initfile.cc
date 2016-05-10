@@ -699,7 +699,7 @@ void game_options::reset_options()
     set_default_activity_interrupts();
 
 #ifdef DEBUG_DIAGNOSTICS
-    quiet_debug_messages.reset();
+    quiet_debug_messages.init(true);
 #ifdef DEBUG_MONSPEAK
     quiet_debug_messages.set(DIAG_SPEECH);
 #endif
