@@ -4,11 +4,12 @@
     * Normal mode fighting actions cost sp, power mode increases cost.
     * SP cost of attack based on fighting skill, strength, weapon weight.
         * Heavier weapons will cost more stamina to swing than lighter ones.
-    * When a fighter runs out of SP, they can still attack, but at 75% damage and 75% accuracy.
+    * When a fighter runs out of SP, they can still attack, but at 75% damage, 75% accuracy, and 75% attack speed.
     * Spells only cost mp, no more spell hunger.
     * MP cost is based on spellcasting, intelligence, spell level.
     * Fixed size mp pool like sp pool.
     * Power mode adds an SP cost to affected actions.
+        * in addition to increasing damage by 33%, power mode now increases attack speed by the same.
     * Careful mode renamed to focus mode.
     * Focus mode adds an MP cost to affected actions.
     * Escape mode was removed and in it's place a separate quick / normal mode

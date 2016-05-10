@@ -1209,6 +1209,7 @@ int player_spell_mp_freeze_modifier(spell_type which_spell, bool raw, int old_co
 int player_tohit_modifier(int old_tohit);
 int player_damage_modifier(int old_damage, bool silent = false);
 int player_spellpower_modifier(int old_spellpower);
+int player_attack_delay_modifier(attk_delay);
 int player_stealth_modifier(int old_stealth);
 int player_evasion_modifier(int old_evasion);
 void player_update_last_hit_chance(int chance);
