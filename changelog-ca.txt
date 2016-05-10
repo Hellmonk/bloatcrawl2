@@ -4,7 +4,7 @@
     * Normal mode fighting actions cost sp, power mode increases cost.
     * SP cost of attack based on fighting skill, strength, weapon weight.
         * Heavier weapons will cost more stamina to swing than lighter ones.
-    * When a fighter runs out of SP, they can still attack, but at 75% damage, 75% accuracy, and 75% attack speed.
+    * When a player runs out of SP, they can still attack, but at 75% damage, 75% accuracy, and 75% attack speed.
     * Spells only cost mp, no more spell hunger.
     * MP cost is based on spellcasting, intelligence, spell level.
     * You can see how much spells cost in the 'S' spell list.
