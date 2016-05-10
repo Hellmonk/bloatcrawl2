@@ -936,6 +936,7 @@ void trap_def::trigger(actor& triggerer, bool flat_footed)
 
         // Formicids can't fall for shaftung.
         if (you.species == SP_FORMICID)
+            mpr("You detect a shaft, and choose not to fall.")
             break;
 
         // A chance to escape.
