@@ -4250,6 +4250,9 @@ void set_exertion(const exertion_mode new_exertion)
     if (new_exertion == you.exertion)
         return;
 
+    if (you.restore_exertion)
+        you.restore_exertion = EXERT_NORMAL;
+
     if (you.duration[DUR_BERSERK])
     {
         mpr("You can't change exertion mode while berserk.");
