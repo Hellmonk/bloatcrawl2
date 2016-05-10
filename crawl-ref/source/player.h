@@ -594,7 +594,7 @@ public:
                           bool base = false) const override;
     brand_type  damage_brand(int which_attack = -1) override;
     int         damage_type(int which_attack = -1) override;
-    random_var  attack_delay(const item_def *projectile = nullptr,
+    int         attack_delay(const item_def *projectile = nullptr,
                              bool rescale = true) const override;
     int         constriction_damage() const override;
 
@@ -1209,7 +1209,7 @@ int player_spell_mp_freeze_modifier(spell_type which_spell, bool raw, int old_co
 int player_tohit_modifier(int old_tohit);
 int player_damage_modifier(int old_damage, bool silent = false);
 int player_spellpower_modifier(int old_spellpower);
-random_var player_attack_delay_modifier(random_var attk_delay);
+int player_attack_delay_modifier(int attk_delay);
 int player_stealth_modifier(int old_stealth);
 int player_evasion_modifier(int old_evasion);
 void player_update_last_hit_chance(int chance);

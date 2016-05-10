@@ -146,7 +146,7 @@ bool melee_attack::handle_phase_attempted()
     if (attacker->is_player())
     {
         // Set delay now that we know the attack won't be cancelled.
-        you.time_taken = you.attack_delay().roll();
+        you.time_taken = you.attack_delay();
 
         if (sp_cost)
             dec_sp(sp_cost, true);
@@ -173,7 +173,7 @@ bool melee_attack::handle_phase_attempted()
         if (!effective_attack_number)
         {
             int energy = attacker->as_monster()->action_energy(EUT_ATTACK);
-            int delay = attacker->attack_delay().roll();
+            int delay = attacker->attack_delay();
             dprf(DIAG_COMBAT, "Attack delay %d, multiplier %1.1f", delay, energy * 0.1);
             ASSERT(energy > 0);
             ASSERT(delay > 0);

@@ -255,10 +255,10 @@ brand_type player::damage_brand(int)
  *                    attack delay. It can be casted to an int, in which case
  *                    its value is determined by the appropriate rolls.
  */
-random_var player::attack_delay(const item_def *projectile, bool rescale) const
+int player::attack_delay(const item_def *projectile, bool rescale) const
 {
     const item_def* weap = weapon();
-    random_var attk_delay(15);
+    int attk_delay = 15;
     // a semi-arbitrary multiplier, to minimize loss of precision from integer
     // math.
     const int DELAY_SCALE = 20;
@@ -269,19 +269,17 @@ random_var player::attack_delay(const item_def *projectile, bool rescale) const
         // Thrown weapons use 10 + projectile damage to determine base delay.
         const skill_type wpn_skill = SK_THROWING;
         const int projectile_delay = 10 + property(*projectile, PWPN_DAMAGE) / 2;
-        attk_delay = random_var(projectile_delay);
-        attk_delay -= div_rand_round(random_var(you.skill(wpn_skill, 10)),
-                                     DELAY_SCALE);
+        attk_delay = projectile_delay;
+        attk_delay -= div_rand_round(you.skill(wpn_skill, 10), DELAY_SCALE);
 
         // apply minimum to weapon skill modification
-        attk_delay = rv::max(attk_delay,
-                random_var(FASTEST_PLAYER_THROWING_SPEED));
+        attk_delay = max(attk_delay, FASTEST_PLAYER_THROWING_SPEED);
     }
     else if (!weap)
     {
         int sk = form_uses_xl() ? experience_level * 10 :
                                   skill(SK_UNARMED_COMBAT, 10);
-        attk_delay = random_var(10) - div_rand_round(random_var(sk), 27*2);
+        attk_delay = 10 - div_rand_round(sk, 27*2);
 
         // Bats are faster (for whatever good it does them).
         if (you.form == TRAN_BAT && !projectile)
@@ -297,23 +295,20 @@ random_var player::attack_delay(const item_def *projectile, bool rescale) const
         const int wpn_sklev = min(you.skill(wpn_skill, 10),
                                   10 * weapon_min_delay_skill(*weap));
 
-        attk_delay = random_var(property(*weap, PWPN_SPEED));
-        attk_delay -= div_rand_round(random_var(wpn_sklev), DELAY_SCALE);
+        attk_delay = property(*weap, PWPN_SPEED);
+        attk_delay -= div_rand_round(wpn_sklev, DELAY_SCALE);
         if (get_weapon_brand(*weap) == SPWPN_SPEED)
             attk_delay = div_rand_round(attk_delay * 2, 3);
     }
 
     // At the moment it never gets this low anyway.
-    attk_delay = rv::max(attk_delay, random_var(3));
+    attk_delay = max(attk_delay, 3);
 
     if (base_shield_penalty)
     {
         // Calculate this separately to avoid overflowing the weights in
         // the random_var.
-        random_var shield_penalty =
-            div_rand_round(rv::min(rv::roll_dice(1, base_shield_penalty),
-                                   rv::roll_dice(1, base_shield_penalty)),
-                           DELAY_SCALE);
+        int shield_penalty = div_rand_round(base_shield_penalty, DELAY_SCALE);
         attk_delay += shield_penalty;
     }
 
@@ -324,7 +319,7 @@ random_var player::attack_delay(const item_def *projectile, bool rescale) const
         // longer so when Haste speeds it up, only Finesse will apply.
         if (you.duration[DUR_HASTE] && rescale)
             attk_delay = haste_mul(attk_delay);
-        attk_delay = rv::max(random_var(2), div_rand_round(attk_delay, 2));
+        attk_delay = max(2, div_rand_round(attk_delay, 2));
     }
 
     attk_delay = player_attack_delay_modifier(attk_delay);

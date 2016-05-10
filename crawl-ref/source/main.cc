@@ -2921,7 +2921,7 @@ static void _swing_at_target(coord_def move)
         else if (!you.fumbles_attack())
             mpr("You swing at nothing.");
         // Take the usual attack delay.
-        you.time_taken = you.attack_delay().roll();
+        you.time_taken = you.attack_delay();
     }
     you.turn_is_over = true;
     return;

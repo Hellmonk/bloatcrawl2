@@ -3718,10 +3718,10 @@ static void _display_attack_delay()
         item_def ammo;
         ammo.base_type = OBJ_MISSILES;
         ammo.sub_type = fires_ammo_type(*weapon);
-        delay = you.attack_delay(&ammo, false).expected();
+        delay = you.attack_delay(&ammo, false);
     }
     else
-        delay = you.attack_delay(nullptr, false).expected();
+        delay = you.attack_delay(nullptr, false);
 
     const bool at_min_delay = weapon
                               && you.skill(item_attack_skill(*weapon))
@@ -9473,18 +9473,19 @@ int player_damage_modifier(int old_damage, bool silent)
     return div_rand_round(new_damage, 40);
 }
 
-random_var player_attack_delay_modifier(random_var attack_delay)
+int player_attack_delay_modifier(int attack_delay)
 {
-    attack_delay *= _difficulty_mode_multiplier();
+    attack_delay *= 1000;
+    attack_delay /= _difficulty_mode_multiplier();
 
     if (you.sp == 0)
     {
-        attack_delay *= 4 / 3;
+        attack_delay = attack_delay * 4 / 3;
     }
     else if (you.exertion == EXERT_POWER)
-        attack_delay *= 3 / 4 - 1;
+        attack_delay = attack_delay * 3 / 4 - 100;
 
-    return div_rand_round(attack_delay, 40);
+    return attack_delay * 40 / 1000;
 }
 
 int player_spellpower_modifier(int old_spellpower)
