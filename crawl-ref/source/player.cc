@@ -9427,17 +9427,25 @@ int player_tohit_modifier(int old_tohit)
 {
     int new_tohit = old_tohit * _difficulty_mode_multiplier();
 
-    if (you.exertion == EXERT_FOCUS)
+    if (you.sp == 0)
+        new_tohit= new_tohit * 3 / 4;
+    else if (you.exertion == EXERT_FOCUS)
         new_tohit = new_tohit * 4 / 3 + 50;
 
     return div_rand_round(new_tohit, 40);
 }
 
-int player_damage_modifier(int old_damage)
+int player_damage_modifier(int old_damage, bool silent)
 {
     int new_damage = old_damage * _difficulty_mode_multiplier();
 
-    if (you.exertion == EXERT_POWER)
+    if (you.sp == 0)
+    {
+        new_damage = new_damage * 3 / 4;
+        if (!silent)
+            mpr("Your attack is sluggish.");
+    }
+    else if (you.exertion == EXERT_POWER)
         new_damage = new_damage * 4 / 3 + 20;
 
     return div_rand_round(new_damage, 40);

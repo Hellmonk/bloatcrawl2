@@ -148,11 +148,8 @@ bool melee_attack::handle_phase_attempted()
         // Set delay now that we know the attack won't be cancelled.
         you.time_taken = you.attack_delay().roll();
 
-        if (sp_cost && !dec_sp(sp_cost))
-        {
-            cancel_attack = true;
-            return false;
-        }
+        if (sp_cost)
+            dec_sp(sp_cost, true);
 
         if (weapon)
         {

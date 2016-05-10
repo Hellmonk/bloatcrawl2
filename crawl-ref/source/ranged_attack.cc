@@ -163,11 +163,8 @@ bool ranged_attack::handle_phase_attempted()
     attacker->attacking(defender, true);
     attack_occurred = true;
 
-    if (sp_cost && !dec_sp(sp_cost))
-    {
-        cancel_attack = true;
-        return false;
-    }
+    if (sp_cost)
+        dec_sp(sp_cost, true);
 
     return true;
 }

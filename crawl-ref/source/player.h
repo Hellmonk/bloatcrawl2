@@ -1201,7 +1201,7 @@ int player_spell_hunger_modifier(int old_hunger);
 int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost);
 int player_spell_mp_freeze_modifier(spell_type which_spell, bool raw, int old_cost);
 int player_tohit_modifier(int old_tohit);
-int player_damage_modifier(int old_damage);
+int player_damage_modifier(int old_damage, bool silent = false);
 int player_spellpower_modifier(int old_spellpower);
 int player_stealth_modifier(int old_stealth);
 int player_evasion_modifier(int old_evasion);

@@ -3,6 +3,7 @@
 * Stamina overhaul
     * Normal mode fighting actions cost sp, power mode increases cost.
     * SP cost of attack based on fighting skill, strength, weapon weight.
+    * When a fighter runs out of SP, they can still attack, but at 75% damage and 75% accuracy.
     * Spells only cost mp, no more spell hunger.
     * MP cost is based on spellcasting, intelligence, spell level.
     * Fixed size mp pool like sp pool.
