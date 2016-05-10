@@ -350,7 +350,7 @@ ENDMAP
 # Tomb:1
 #
 NAME:     tomb_1
-PLACE:    Tomb:1
+PLACE:    Tomb
 
 ORIENT:   encompass
 TAGS:     no_dump
@@ -712,7 +712,7 @@ ENDMAP
 # Tomb:2
 #
 NAME:     tomb_2
-PLACE:    Tomb:2
+PLACE:    Tomb
 # Can be rotated!
 ORIENT:   encompass
 TAGS:     no_dump
@@ -911,10 +911,10 @@ MAP
 ENDMAP
 
 #############################################################################
-# Tomb:3
+# Tomb:$
 #
 NAME:     tomb_3
-PLACE:    Tomb:3
+PLACE:    Tomb:$
 ORIENT:   encompass
 TAGS:     no_rotate no_dump
 SUBVAULT: A : tomb_3_rune
