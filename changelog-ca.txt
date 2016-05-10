@@ -15,6 +15,8 @@
         * Quick mode has the benefits of the old escape mode, which are faster movement speed and increased evasion. But
           there is also an additional stamina cost. Stealth is also dramatically reduced.
         * Normal mode doesn't have those benefits, but it doesn't have the additional stamina cost.
+    * If you run out of stamina in power mode, and it switches you back to normal mode, once you've recovered 50% of your
+      sp, the game will switch you back to power mode automatically.
 
 * Keyboard changes
     * instead of 's' to open spell list, now you press 'S'
