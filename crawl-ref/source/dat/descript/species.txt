@@ -40,8 +40,8 @@ a colour.
 %%%%
 Formicid
 
-Formicids are humanoid ants adept at digging. Their limbs are exceptionally
-strong and they live in a state of permanent stasis.
+Formicids are humanoid ants, masters of tunnels and digging. Their limbs are
+exceptionally strong and they live in a state of permanent stasis.
 %%%%
 Felid
 
