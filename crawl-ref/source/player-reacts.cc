@@ -853,7 +853,7 @@ static void _regenerate_hp_and_mp(int delay)
 
     if (you.sp < you.sp_max && !in_quick_mode())
     {
-        const int base_val = 7 + you.sp_max / 3;
+        const int base_val = 15 + you.sp_max / 2;
         int sp_regen_countup = div_rand_round(base_val * delay, BASELINE_DELAY);
 
         if (int level = player_mutation_level(MUT_STAMINA_REGENERATION))
