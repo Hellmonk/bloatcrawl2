@@ -1557,6 +1557,15 @@ static void tag_construct_you(writer &th)
     marshallInt(th, you.exploration);
     marshallInt(th, you.amplification);
     marshallInt(th, you.exertion);
+    marshallInt(th, you.restore_exertion);
+
+    for (int i = 0; i < NUM_RUNE_TYPES; ++i)
+    {
+        marshallInt(th, you.rune_charges[i]);
+    }
+    marshallFixedBitVector<NUM_RUNE_TYPES>(th, you.rune_curse_active);
+    marshallInt(th, you.first_hit_time);
+
     marshallInt(th, you.max_exp);
     marshallInt(th, you.stamina_flags);
     marshallInt(th, you.current_form_spell);
@@ -3218,6 +3227,15 @@ static void tag_read_you(reader &th)
     if(you.amplification > 100 || you.amplification == 0)
         you.amplification = 1;
     set_exertion((exertion_mode)unmarshallInt(th));
+    you.restore_exertion = (exertion_mode)unmarshallInt(th);
+
+    for (int i = 0; i < NUM_RUNE_TYPES; ++i)
+    {
+        you.rune_charges[i] = unmarshallInt(th);
+    }
+    unmarshallFixedBitVector<NUM_RUNE_TYPES>(th, you.rune_curse_active);
+    you.first_hit_time = unmarshallInt(th);
+
     you.max_exp = unmarshallInt(th);
     you.stamina_flags = unmarshallInt(th);
     you.current_form_spell = (spell_type) unmarshallInt(th);

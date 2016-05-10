@@ -4348,6 +4348,9 @@ bool dec_sp(int sp_loss, bool silent)
             sent_message = true;
         }
 
+        if (you.exertion != EXERT_NORMAL)
+            you.restore_exertion = you.exertion;
+
         set_exertion(EXERT_NORMAL);
         set_quick_mode(false);
         result = false;
@@ -4364,6 +4367,12 @@ void inc_sp(int sp_gain, bool silent)
         return;
 
     you.sp += sp_gain;
+
+    if (you.sp > you.sp_max / 2 && you.restore_exertion)
+    {
+        set_exertion(you.restore_exertion);
+        you.restore_exertion = EXERT_NORMAL;
+    }
 
     if (you.sp > you.sp_max)
         you.sp = you.sp_max;
@@ -5911,6 +5920,12 @@ player::player()
 
     amplification       = 1;
     exertion            = EXERT_NORMAL;
+    restore_exertion    = EXERT_NORMAL;
+
+    rune_charges.init(0);
+    rune_curse_active.reset();
+    first_hit_time      = 0;
+
     max_exp             = 0;
     current_form_spell  = SPELL_NO_SPELL;
     current_form_spell_failure  = 0;

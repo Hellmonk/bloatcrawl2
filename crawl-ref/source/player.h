@@ -427,6 +427,12 @@ public:
 
     // stamina stuff
     exertion_mode exertion;
+    exertion_mode restore_exertion;
+
+    FixedVector<int, NUM_RUNE_TYPES> rune_charges;
+    FixedBitVector<NUM_RUNE_TYPES> rune_curse_active;
+    int first_hit_time;
+
     int stamina_flags;
 
     // the deepest the player has been
