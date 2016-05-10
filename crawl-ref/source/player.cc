@@ -9380,6 +9380,9 @@ int _apply_hunger(const spell_type &which_spell, int cost)
         const int hunger = spell_hunger(which_spell, false);
         cost = div_rand_round(cost * (log10(hunger + 1) + 1) * 10, 20);
     }
+    else
+        cost /= 2;
+    
     return cost;
 }
 
