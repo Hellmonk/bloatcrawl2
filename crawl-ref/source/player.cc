@@ -9410,7 +9410,7 @@ int player_spell_mp_freeze_modifier(spell_type which_spell, bool raw, int old_co
 
     if (is_summon_spell(which_spell))
     {
-        new_cost = spell_difficulty(which_spell) * 4;
+        new_cost = spell_difficulty(which_spell) * 8;
     }
 
     new_cost = _apply_hunger(which_spell, new_cost);
