@@ -3725,3 +3725,8 @@ bool melee_attack::_vamp_wants_blood_from_monster(const monster* mon)
            && mons_has_blood(mon->type)
            && !testbits(mon->flags, MF_SPECTRALISED);
 }
+
+const item_def* melee_attack::get_weapon_used()
+{
+    return weapon;
+}

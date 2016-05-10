@@ -106,6 +106,7 @@ public:
     string actor_pronoun(const actor *a, pronoun_type ptyp, bool actor_visible);
     string anon_name(description_level_type desc);
     string anon_pronoun(pronoun_type ptyp);
+    virtual const item_def* get_weapon_used();
 
 // Private Properties
     string aux_source;

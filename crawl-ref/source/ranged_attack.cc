@@ -834,3 +834,9 @@ void ranged_attack::announce_hit()
          debug_damage_number().c_str(),
          attack_strength_punctuation(damage_done).c_str());
 }
+
+const item_def* ranged_attack::get_weapon_used()
+{
+    return projectile;
+}
+

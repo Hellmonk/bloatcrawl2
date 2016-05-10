@@ -177,7 +177,10 @@ static string _spell_wide_description(spell_type spell, bool viewing)
 
     desc << chop_string(spell_power, 6)
          << chop_string(rangestring, 11 + tagged_string_tag_length(rangestring))
-         << chop_string(spell_hunger_string(spell), 8);
+    /* no longer needed
+         << chop_string(spell_hunger_string(spell), 8)
+         */
+        ;
 
     desc << "</" << colour_to_str(highlight) <<">";
 
@@ -349,7 +352,7 @@ int list_spells_wide(bool viewing, bool allow_preselect,
         // [enne] - Hack. Make title an item so that it's aligned.
         MenuEntry* me =
             new MenuEntry(
-                " " + titlestring + "        Power Range      Hunger  Fail Level MP Type",
+                " " + titlestring + "        Power Range      Fail Level MP Type",
                 MEL_ITEM);
         me->colour = BLUE;
         spell_menu.add_entry(me);
@@ -357,7 +360,7 @@ int list_spells_wide(bool viewing, bool allow_preselect,
 #else
     spell_menu.set_title(
         new MenuEntry(
-                " " + titlestring + "        Power Range      Hunger  Fail Level MP Type",
+                " " + titlestring + "        Power Range      Fail Level MP Type",
             MEL_TITLE));
 #endif
     spell_menu.set_highlighter(nullptr);

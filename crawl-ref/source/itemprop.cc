@@ -605,14 +605,14 @@ static int Missile_index[NUM_MISSILES];
 static const missile_def Missile_prop[] =
 {
 #if TAG_MAJOR_VERSION == 34
-    { MI_DART,          "dart",          2, 1,   5, true  },
+    { MI_DART,          "dart",          2, 1,   2, true  },
 #endif
-    { MI_NEEDLE,        "needle",        0, 12,  5, false },
-    { MI_STONE,         "stone",         2, 8,   5, true  },
+    { MI_NEEDLE,        "needle",        0, 12,  2, false },
+    { MI_STONE,         "stone",         2, 8,   2, true  },
     { MI_ARROW,         "arrow",         0, 8,   5, false },
     { MI_BOLT,          "bolt",          0, 8,   5, false },
     { MI_LARGE_ROCK,    "large rock",   20, 25, 20, true  },
-    { MI_SLING_BULLET,  "sling bullet",  4, 8,   5, false },
+    { MI_SLING_BULLET,  "sling bullet",  4, 8,   2, false },
     { MI_JAVELIN,       "javelin",      10, 20, 10, true  },
     { MI_THROWING_NET,  "throwing net",  0, 0,  10, true  },
     { MI_TOMAHAWK,      "tomahawk",      6, 20,  5, true  },
