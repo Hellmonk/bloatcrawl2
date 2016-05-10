@@ -10,7 +10,7 @@ const Branch branches[NUM_BRANCHES] =
     //  floor colour, rock colour
     //  travel shortcut, runes, ambient noise level
 
-    { BRANCH_ABYSS, NUM_BRANCHES, -1, -1, 5, 24,
+    { BRANCH_ABYSS, NUM_BRANCHES, -1, -1, 4, 24,
         BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_MAP,
         DNGN_ENTER_ABYSS, DNGN_EXIT_ABYSS,
         "Abyss", "the Abyss", "Abyss",
@@ -42,7 +42,7 @@ const Branch branches[NUM_BRANCHES] =
         LIGHTBLUE, LIGHTCYAN,
         'X', { RUNE_COCYTUS }, 0 },
 
-    { BRANCH_CRYPT, BRANCH_FOREST, 2, 4, 3, 19,
+    { BRANCH_CRYPT, BRANCH_FOREST, 1, 7, 4, 19,
         BFLAG_DANGEROUS_END,
         DNGN_ENTER_CRYPT, DNGN_EXIT_CRYPT,
         "Crypt", "the Crypt", "Crypt",
@@ -74,7 +74,7 @@ const Branch branches[NUM_BRANCHES] =
         LIGHTGREY, BROWN,
         'D', {}, 0 },
 
-    { BRANCH_DWARF, BRANCH_FOREST, 1, 5, 4, 17,
+    { BRANCH_DWARF, BRANCH_FOREST, 1, 7, 4, 17,
         BFLAG_NONE,
         DNGN_ENTER_DWARF, DNGN_EXIT_DWARF,
         "Dwarven Fortress", "the Dwarven Fortress", "Dwarf",
@@ -82,7 +82,7 @@ const Branch branches[NUM_BRANCHES] =
         BROWN, BROWN,
         'K', { RUNE_DWARF }, 6 },
 
-    { BRANCH_ELF, BRANCH_FOREST, 1, 5, 4, 17,
+    { BRANCH_ELF, BRANCH_FOREST, 1, 7, 4, 17,
         BFLAG_DANGEROUS_END,
         DNGN_ENTER_ELF, DNGN_EXIT_ELF,
         "Elven Halls", "the Elven Halls", "Elf",
@@ -90,7 +90,7 @@ const Branch branches[NUM_BRANCHES] =
         WHITE, ETC_ELVEN_BRICK,
         'E', { RUNE_ELF }, 0 },
 
-    { BRANCH_FOREST, BRANCH_DUNGEON, 12, 15, 5, 13,
+    { BRANCH_FOREST, BRANCH_DUNGEON, 12, 15, 7, 13,
         BFLAG_SPOTTY,
         DNGN_ENTER_FOREST, DNGN_EXIT_FOREST,
         "Forest", "the Enchanted Forest", "Forest",
@@ -126,7 +126,7 @@ const Branch branches[NUM_BRANCHES] =
         BLACK, BLACK,
         '0', {}, 0 },
 
-    { BRANCH_LAIR, BRANCH_DUNGEON, 8, 11, 8, 10,
+    { BRANCH_LAIR, BRANCH_DUNGEON, 7, 11, 7, 10,
         BFLAG_NONE,
         DNGN_ENTER_LAIR, DNGN_EXIT_LAIR,
         "Lair", "the Lair of Beasts", "Lair",
@@ -168,7 +168,7 @@ const Branch branches[NUM_BRANCHES] =
         LIGHTGREY, BLUE,
         '3', {}, 0 },
 
-    { BRANCH_SHOALS, BRANCH_LAIR, 2, 7, 4, 15,
+    { BRANCH_SHOALS, BRANCH_LAIR, 1, 7, 4, 15,
         BFLAG_DANGEROUS_END,
         DNGN_ENTER_SHOALS, DNGN_EXIT_SHOALS,
         "Shoals", "the Shoals", "Shoals",
@@ -176,7 +176,7 @@ const Branch branches[NUM_BRANCHES] =
         BROWN, BROWN,
         'A', { RUNE_SHOALS }, 3 },
 
-    { BRANCH_SLIME, BRANCH_FOREST, 2, 4, 6, 17,
+    { BRANCH_SLIME, BRANCH_FOREST, 1, 7, 4, 17,
         BFLAG_NO_ITEMS | BFLAG_DANGEROUS_END | BFLAG_SPOTTY,
         DNGN_ENTER_SLIME, DNGN_EXIT_SLIME,
         "Slime Pits", "the Pits of Slime", "Slime",
@@ -184,7 +184,7 @@ const Branch branches[NUM_BRANCHES] =
         GREEN, BROWN,
         'M', { RUNE_SLIME }, -5 },
 
-    { BRANCH_SNAKE, BRANCH_LAIR, 2, 7, 4, 15,
+    { BRANCH_SNAKE, BRANCH_LAIR, 1, 7, 4, 15,
         BFLAG_DANGEROUS_END,
         DNGN_ENTER_SNAKE, DNGN_EXIT_SNAKE,
         "Snake Pit", "the Snake Pit", "Snake",
@@ -192,7 +192,7 @@ const Branch branches[NUM_BRANCHES] =
         LIGHTGREEN, YELLOW,
         'P', { RUNE_SNAKE }, 0 },
 
-    { BRANCH_SPIDER, BRANCH_LAIR, 2, 7, 4, 15,
+    { BRANCH_SPIDER, BRANCH_LAIR, 1, 7, 4, 15,
         BFLAG_DANGEROUS_END,
         DNGN_ENTER_SPIDER, DNGN_EXIT_SPIDER,
         "Spider Nest", "the Spider Nest", "Spider",
@@ -200,7 +200,7 @@ const Branch branches[NUM_BRANCHES] =
         BROWN, YELLOW,
         'N', { RUNE_SPIDER }, 0 },
 
-    { BRANCH_SWAMP, BRANCH_LAIR, 2, 7, 4, 15,
+    { BRANCH_SWAMP, BRANCH_LAIR, 1, 7, 4, 15,
         BFLAG_DANGEROUS_END | BFLAG_SPOTTY,
         DNGN_ENTER_SWAMP, DNGN_EXIT_SWAMP,
         "Swamp", "the Swamp", "Swamp",
@@ -240,7 +240,7 @@ const Branch branches[NUM_BRANCHES] =
         DARKGREY, BLUE,
         '2', {}, 0 },
 
-    { BRANCH_VAULTS, BRANCH_DEPTHS, 1, 2, 5, 19,
+    { BRANCH_VAULTS, BRANCH_DEPTHS, 1, 2, 4, 19,
         BFLAG_DANGEROUS_END,
         DNGN_ENTER_VAULTS, DNGN_EXIT_VAULTS,
         "Vaults", "the Vaults", "Vaults",
@@ -280,7 +280,7 @@ const Branch branches[NUM_BRANCHES] =
         BLACK, BLACK,
         'Q', {}, 0 },
 
-    { BRANCH_ZOT, BRANCH_DEPTHS, 5, 5, 5, 27,
+    { BRANCH_ZOT, BRANCH_DEPTHS, 5, 5, 4, 27,
         BFLAG_DANGEROUS_END,
         DNGN_ENTER_ZOT, DNGN_EXIT_ZOT,
         "Zot", "the Realm of Zot", "Zot",
