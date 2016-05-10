@@ -9518,7 +9518,7 @@ int player_evasion_modifier(int old_evasion)
 {
     int new_evasion = old_evasion * _difficulty_mode_multiplier();
 
-    if (in_quick_mode())
+    if (you.exertion == EXERT_FOCUS)
         new_evasion = new_evasion * 4 / 3 + 50;
 
     return div_rand_round(new_evasion, 40);
