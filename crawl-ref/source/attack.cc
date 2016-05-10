@@ -392,6 +392,8 @@ void attack::init_attack(skill_type unarmed_skill, int attack_number)
         sp_cost /= max(1, you.strength(true));
         sp_cost /= max(1, you.skill(SK_FIGHTING));
 
+        sp_cost = max(1, sp_cost);
+
         you.last_tohit = to_hit;
         you.redraw_tohit = true;
     }

@@ -9388,6 +9388,7 @@ int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost)
 //        new_cost *= 2;
 
     new_cost = _apply_hunger(which_spell, new_cost);
+    new_cost = max(new_cost, 1);
 
     if (you.duration[DUR_CHANNELING])
         new_cost = 0;
