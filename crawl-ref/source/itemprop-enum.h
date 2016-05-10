@@ -339,7 +339,6 @@ enum rune_type
     RUNE_TARTARUS,
 
     RUNE_ABYSSAL,
-
     RUNE_DEMONIC,
 
     // order must match monsters
@@ -349,7 +348,6 @@ enum rune_type
     RUNE_GLOORX_VLOQ,
 
     RUNE_SPIDER,
-    RUNE_FOREST, // unused
     RUNE_DWARF,
     RUNE_CRYPT,
     NUM_RUNE_TYPES

@@ -3336,7 +3336,8 @@ static void _place_branch_entrances(bool use_vaults)
     {
         // Vestibule and hells are placed by other means.
         // Likewise, if we already have an entrance, keep going.
-        if (it->id >= BRANCH_VESTIBULE && it->id <= BRANCH_LAST_HELL
+        if (it->id == BRANCH_VESTIBULE
+            || is_hell_subbranch(it->id)
             || branch_entrance_placed[it->id])
         {
             continue;

@@ -295,7 +295,7 @@ static string _get_unseen_branches()
 
     for (branch_iterator it; it; ++it)
     {
-        if (it->id < BRANCH_FIRST_NON_DUNGEON)
+        if (it->id == BRANCH_DUNGEON)
             continue;
 
         const branch_type branch = it->id;
