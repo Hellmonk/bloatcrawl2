@@ -726,12 +726,6 @@ void inspect_spells()
 
 static bool _can_cast()
 {
-    if (player_is_very_tired(true) && you.exertion != EXERT_NORMAL)
-    {
-        mpr("You are too tired to use your magic now. You could if you were in normal mode.");
-        return false;
-    }
-
     if (!get_form()->can_cast)
     {
         canned_msg(MSG_PRESENT_FORM);

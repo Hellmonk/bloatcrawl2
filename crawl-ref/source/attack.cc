@@ -387,7 +387,7 @@ void attack::init_attack(skill_type unarmed_skill, int attack_number)
 
     if (attacker->is_player())
     {
-        int weight = property(*weapon, PWPN_WEIGHT);
+        int weight = weapon ? property(*weapon, PWPN_WEIGHT) : 1;
         sp_cost = 100 * weight;
         sp_cost /= max(1, you.strength(true));
         sp_cost /= max(1, you.skill(SK_FIGHTING));
@@ -1451,7 +1451,9 @@ int attack::test_hit(int to_land, int ev, bool randomise_ev)
     else
     {
         int chance = 0;
-        margin = random_diff(to_land, ev, &chance);
+
+        defer_rand r;
+        margin = random_diff(to_land, ev, &chance, r);
 
         if (attacker->is_player())
             player_update_last_hit_chance(chance);

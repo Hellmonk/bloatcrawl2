@@ -3,6 +3,7 @@
 * Stamina overhaul
     * Normal mode fighting actions cost sp, power mode increases cost.
     * SP cost of attack based on fighting skill, strength, weapon weight.
+        * Heavier weapons will cost more stamina to swing than lighter ones.
     * When a fighter runs out of SP, they can still attack, but at 75% damage and 75% accuracy.
     * Spells only cost mp, no more spell hunger.
     * MP cost is based on spellcasting, intelligence, spell level.
@@ -17,6 +18,9 @@
         * Normal mode doesn't have those benefits, but it doesn't have the additional stamina cost.
     * If you run out of stamina in power mode, and it switches you back to normal mode, once you've recovered 50% of your
       sp, the game will switch you back to power mode automatically.
+    * Switching exertion modes (normal, power, focus), costs 1 turn.
+    * Switching speed mode from normal to quick, costs 0 turns.
+    * Switching speed mode from quick to normal, costs 1 turn.
 
 * Keyboard changes
     * instead of 's' to open spell list, now you press 'S'
