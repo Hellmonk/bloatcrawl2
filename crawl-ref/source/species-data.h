@@ -712,6 +712,7 @@ static const map<species_type, species_def> species_data =
     14, 14,  14, // 42
     { STAT_STR, STAT_INT, STAT_DEX }, 5,
     { { MUT_NEGATIVE_ENERGY_RESISTANCE, 3, 1 },
+      { MUT_HUNGERLESS, 1, 1 },
       { MUT_COLD_RESISTANCE, 1, 1 },
       { MUT_TORMENT_RESISTANCE, 1, 1 },
       { MUT_UNBREATHING, 1, 1 },

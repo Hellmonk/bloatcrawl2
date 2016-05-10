@@ -9373,19 +9373,19 @@ int player_spell_hunger_modifier(int old_hunger)
     return new_hunger;
 }
 
-int _apply_hunger(const spell_type &which_spell, int new_cost)
+int _apply_hunger(const spell_type &which_spell, int cost)
 {
-    const int hunger = spell_hunger(which_spell, false);
-    new_cost = div_rand_round(new_cost * (log10(hunger + 1) + 1) * 10, 20);
-    return new_cost;
+    if (player_mutation_level(MUT_HUNGERLESS) == 0)
+    {
+        const int hunger = spell_hunger(which_spell, false);
+        cost = div_rand_round(cost * (log10(hunger + 1) + 1) * 10, 20);
+    }
+    return cost;
 }
 
 int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost)
 {
     int new_cost = old_cost * 4;
-
-    if (is_summon_spell(which_spell) && !raw)
-        new_cost = 0;
 
 //    if (is_self_transforming_spell(which_spell))
 //        new_cost *= 2;
@@ -9398,6 +9398,9 @@ int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost)
     else if (have_passive(passive_t::conserve_mp))
         new_cost = qpow(new_cost, 97, 100, you.skill(SK_INVOCATIONS));
 
+    if (is_summon_spell(which_spell) && !raw)
+        new_cost = 0;
+
     return new_cost;
 }
 
@@ -9407,7 +9410,7 @@ int player_spell_mp_freeze_modifier(spell_type which_spell, bool raw, int old_co
 
     if (is_summon_spell(which_spell))
     {
-        new_cost = spell_difficulty(which_spell);
+        new_cost = spell_difficulty(which_spell) * 4;
     }
 
     new_cost = _apply_hunger(which_spell, new_cost);

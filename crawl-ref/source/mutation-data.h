@@ -2166,41 +2166,20 @@ static const mutation_def mut_data[] =
    "Your dna gains focus."},
 },
 
-// deprecated
-{ MUT_STAMINA_EFFICIENT_NORMAL, 0, 3, mutflag::GOOD, false,
-  "stamina efficient",
+{ MUT_HUNGERLESS, 0, 1, mutflag::GOOD, false,
+  "hungerless",
 
-  {"Normal actions take a little less stamina. (-25%)",
-   "Normal actions take less stamina. (-50%)",
-   "Normal actions take a lot less stamina. (-75%)"},
+  {"Spellcasting doesn't affect your hunger (mp cost is reduced)",
+   "",
+   ""},
 
-  {"You use stamina more efficiently.",
-   "You use stamina more efficiently.",
-   "You use stamina more efficiently."},
+  {"Spellcasting no longer makes you hungry.",
+   "",
+   ""},
 
-  {
-      "You use stamina less efficiently.",
-      "You use stamina less efficiently.",
-      "You use stamina less efficiently.",
-  },
-},
-
-// deprecated
-{ MUT_STAMINA_EFFICIENT_SPECIAL, 0, 3, mutflag::GOOD, false,
-  "stamina efficient special",
-
-  {"Advanced actions take a little less stamina. (-25%)",
-   "Advanced actions take less stamina. (-50%)",
-   "Advanced actions take a lot less stamina. (-75%)"},
-
-  {"You use stamina more efficiently for advanced tasks.",
-   "You use stamina more efficiently for advanced tasks.",
-   "You use stamina more efficiently for advanced tasks."},
-
-  {
-      "You use stamina less efficiently for advanced tasks.",
-      "You use stamina less efficiently for advanced tasks.",
-      "You use stamina less efficiently for advanced tasks.",
+  {"Spellcasting makes you hungry again.",
+   "",
+   "",
   },
 },
 

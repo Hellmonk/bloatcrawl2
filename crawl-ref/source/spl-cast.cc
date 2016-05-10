@@ -191,7 +191,12 @@ static string _spell_wide_description(spell_type spell, bool viewing)
     desc << chop_string(failure, 5);
     desc << "</" << colour_to_str(highlight) << ">";
     desc << chop_string(make_stringf("%d", spell_difficulty(spell)), 6);
-    desc << chop_string(make_stringf("%d", spell_mana(spell)), 3);
+
+    int mp_cost = spell_mana(spell);
+    if (mp_cost == 0)
+        mp_cost = spell_freeze_mana(spell);
+
+    desc << chop_string(make_stringf("%d", mp_cost), 3);
 
     // spell schools
     desc << spell_schools_string(spell);
@@ -998,7 +1003,6 @@ bool cast_a_spell(bool check_range, spell_type spell)
         }
     }
 
-    const bool staff_energy = player_energy();
     you.last_cast_spell = spell;
     // Silently take MP before the spell.
     dec_mp(cost, true);
