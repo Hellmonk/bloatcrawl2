@@ -4373,9 +4373,9 @@ void inc_sp(int sp_gain, bool silent, bool manual)
 
     you.sp += sp_gain;
 
-    if (you.sp > you.sp_max / 2 && you.restore_exertion)
+    if (you.sp > you.sp_max / 2 && you.restore_exertion != EXERT_NORMAL)
     {
-        set_exertion(you.restore_exertion);
+        set_exertion(you.restore_exertion, false);
         you.restore_exertion = EXERT_NORMAL;
     }
 
