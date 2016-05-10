@@ -1057,7 +1057,7 @@ bool dec_mp(int mp_loss, bool silent = false);
 bool drain_mp(int mp_loss);
 
 bool dec_sp(int sp_loss = 1, bool silent = false);
-void inc_sp(int sp_gain = 1, bool silent = false);
+void inc_sp(int sp_gain = 1, bool silent = false, bool manual = true);
 void inc_mp(int mp_gain, bool silent = false);
 void inc_hp(int hp_gain);
 void flush_mp();
@@ -1144,7 +1144,7 @@ bool player_is_tired(bool silent = false);
 bool player_is_very_tired(bool silent = false);
 bool in_quick_mode();
 void set_quick_mode(const bool new_quick_mode);
-void set_exertion(const exertion_mode new_exertion);
+void set_exertion(const exertion_mode new_exertion, bool manual = true);
 void exert_toggle(exertion_mode new_exertion);
 
 bool player_has_orb();

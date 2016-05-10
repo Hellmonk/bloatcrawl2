@@ -4245,12 +4245,12 @@ void set_quick_mode(const bool new_quick_mode)
     you.redraw_evasion = true;
 }
 
-void set_exertion(const exertion_mode new_exertion)
+void set_exertion(const exertion_mode new_exertion, bool manual)
 {
     if (new_exertion == you.exertion)
         return;
 
-    if (you.restore_exertion)
+    if (you.restore_exertion && manual)
         you.restore_exertion = EXERT_NORMAL;
 
     if (you.duration[DUR_BERSERK])
@@ -4352,9 +4352,11 @@ bool dec_sp(int sp_loss, bool silent)
         }
 
         if (you.exertion != EXERT_NORMAL)
+        {
             you.restore_exertion = you.exertion;
+        }
 
-        set_exertion(EXERT_NORMAL);
+        set_exertion(EXERT_NORMAL, false);
         set_quick_mode(false);
         result = false;
     }
@@ -4364,7 +4366,7 @@ bool dec_sp(int sp_loss, bool silent)
     return result;
 }
 
-void inc_sp(int sp_gain, bool silent)
+void inc_sp(int sp_gain, bool silent, bool manual)
 {
     if (sp_gain < 1 || you.sp >= you.sp_max)
         return;
