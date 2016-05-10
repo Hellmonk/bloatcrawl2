@@ -9,6 +9,7 @@
 
 #include <iomanip>
 #include <sstream>
+#include <cmath>
 
 #include "areas.h"
 #include "art-enum.h"
@@ -479,81 +480,49 @@ static int _apply_spellcasting_success_boosts(spell_type spell, int chance)
 
 int raw_spell_fail(spell_type spell)
 {
-    int chance = 60;
-
-    // Don't cap power for failure rate purposes.
-    chance -= 6 * calc_spell_power(spell, false, true, false);
-    chance -= you.dex() * you.intel() / 5;
-
+    const int spell_level = spell_difficulty(spell);
+    int resist = pow(2, spell_level) * 100;
     const int armour_shield_penalty = player_armour_shield_spell_penalty();
     dprf("Armour+Shield spell failure penalty: %d", armour_shield_penalty);
-    chance += armour_shield_penalty;
-
-    static const int difficulty_by_level[] =
-    {
-        0,
-        3,
-        15,
-        35,
-
-        70,
-        100,
-        150,
-
-        200,
-        260,
-        330,
-    };
-    const int spell_level = spell_difficulty(spell);
-    ASSERT_RANGE(spell_level, 0, (int) ARRAYSZ(difficulty_by_level));
-    chance += difficulty_by_level[spell_level];
-
-    int chance2 = chance;
-
-    const int chance_breaks[][2] =
-    {
-        {45, 45}, {42, 43}, {38, 41}, {35, 40}, {32, 38}, {28, 36},
-        {22, 34}, {16, 32}, {10, 30}, {2, 28}, {-7, 26}, {-12, 24},
-        {-18, 22}, {-24, 20}, {-30, 18}, {-38, 16}, {-46, 14},
-        {-60, 12}, {-80, 10}, {-100, 8}, {-120, 6}, {-140, 4},
-        {-160, 2}, {-180, 0}
-    };
-
-    for (const int (&cbrk)[2] : chance_breaks)
-        if (chance < cbrk[0])
-            chance2 = cbrk[1];
+    resist += armour_shield_penalty;
+    resist += get_form()->spellcasting_penalty;
+    resist *= 10 * player_mutation_level(MUT_ANTI_WIZARDRY) / 10;
+    resist *= (you.duration[DUR_VERTIGO] ? 15 : 10) / 10;
 
     const int wild = player_mutation_level(MUT_WILD_MAGIC);
-    chance2 = qpow(chance2, 3, 2, wild);
+    resist = qpow(resist, 3, 2, wild);
+
+    int force = (you.dex(true) + 1);
+    force *= you.intel(true);
+    force *= you.skill(SK_SPELLCASTING);
+
+    const spschools_type disciplines = get_spell_disciplines(spell);
+    force *= average_schools(disciplines);
 
     const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
-    chance2 = qpow(chance2, 1, 2, subdued);
-
-    chance2 += get_form()->spellcasting_penalty;
-
-    chance2 += 4 * player_mutation_level(MUT_ANTI_WIZARDRY);
+    force = qpow(force, 3, 2, subdued);
 
     if (player_equip_unrand(UNRAND_HIGH_COUNCIL))
-        chance2 += 7;
+        force += 7;
 
     if (you.props.exists(SAP_MAGIC_KEY))
-        chance2 += you.props[SAP_MAGIC_KEY].get_int() * 12;
+        force += you.props[SAP_MAGIC_KEY].get_int() * 12;
 
-    chance2 += you.duration[DUR_VERTIGO] ? 7 : 0;
+    int chance = 100 * force / (force + resist);
 
     // Apply the effects of Vehumet and items of wizardry.
-    chance2 = _apply_spellcasting_success_boosts(spell, chance2);
+    chance = _apply_spellcasting_success_boosts(spell, chance);
 
     if (you.exertion == EXERT_FOCUS)
-        chance2 = max(chance2 - 10, chance2 / 2);
+        chance = max(chance - 15, chance / 2);
 
-    if (chance2 > 100)
-        chance2 = 100;
+    if (chance > 100)
+        chance = 100;
 
-    if (chance2 < 0)
-        chance2 = 0;
+    if (chance < 0)
+        chance = 0;
 
-    return chance2;
+    return chance;
 }
 
 int stepdown_spellpower(int power)

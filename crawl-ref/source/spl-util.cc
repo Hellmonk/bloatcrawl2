@@ -479,6 +479,22 @@ int spell_mana(spell_type which_spell, bool raw)
     return cost;
 }
 
+int average_schools(const spschools_type &disciplines, const int scale)
+{
+    int multiplier = 0;
+    int skillcount = count_bits(disciplines);
+    if (skillcount)
+    {
+        for (const auto disc : spschools_type::range())
+        {
+            if (disciplines & disc)
+                multiplier += you.skill(spell_type2skill(disc), scale);
+        }
+        multiplier /= skillcount;
+    }
+    return multiplier;
+}
+
 int spell_freeze_mana(const spell_type spell)
 {
     int amount = 0;
