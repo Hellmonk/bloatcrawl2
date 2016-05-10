@@ -9382,7 +9382,7 @@ int _apply_hunger(const spell_type &which_spell, int cost)
     }
     else
         cost /= 2;
-    
+
     return cost;
 }
 
@@ -9396,13 +9396,10 @@ int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost)
     new_cost = _apply_hunger(which_spell, new_cost);
     new_cost = max(new_cost, 1);
 
-    if (you.duration[DUR_CHANNELING])
+    if (you.duration[DUR_CHANNELING] || is_summon_spell(which_spell) && !raw)
         new_cost = 0;
     else if (have_passive(passive_t::conserve_mp))
         new_cost = qpow(new_cost, 97, 100, you.skill(SK_INVOCATIONS));
-
-    if (is_summon_spell(which_spell) && !raw)
-        new_cost = 0;
 
     return new_cost;
 }
