@@ -2018,6 +2018,8 @@ int player_movement_speed()
                 mv = 950;
                 break;
         }
+        // override for now, since we've nerfed so many other things in this release.
+        mv = 900;
     }
 
     // transformations
