@@ -388,7 +388,8 @@ void attack::init_attack(skill_type unarmed_skill, int attack_number)
 
     if (attacker->is_player())
     {
-        int weight = max(1, property(*get_weapon_used(), PWPN_WEIGHT));
+        const item_def *const weapon_used = get_weapon_used();
+        int weight = weapon_used ? max(1, property(*weapon_used, PWPN_WEIGHT)) : 1;
 
         sp_cost = 100 * weight;
         sp_cost /= max(1, you.strength(true));
