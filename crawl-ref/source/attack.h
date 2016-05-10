@@ -53,6 +53,7 @@ public:
     attack_type     attk_type;
     attack_flavour  attk_flavour;
     int             attk_damage;
+    int             sp_cost;
 
     item_def        *weapon;
     brand_type      damage_brand;

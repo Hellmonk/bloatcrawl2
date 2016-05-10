@@ -14,7 +14,6 @@ struct bolt;
 
 void init_properties();
 
-
 typedef uint32_t armflags_t;
 #define ard(flg, lev) (armflags_t)((flg) * ((lev) & 7))
 #define MAX_CURSE_LEVEL 10000

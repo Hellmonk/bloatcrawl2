@@ -138,7 +138,7 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
                 * 0.85 for centaur
                 * 1.4 for naga
             * movement speed is penalized if the player stops or changes direction more than 45 degrees from original heading
-        * careful mode (press 'E' if in another mode)
+        * focus mode (press 'E' if in another mode)
             * attacks, spells cast, and movement cost stamina
             * spell hunger -> stamina cost is doubled
             * stealth is increased 33% over normal

@@ -628,6 +628,7 @@ enum weapon_property_type
     PWPN_HIT,
     PWPN_SPEED,
     PWPN_ACQ_WEIGHT,
+    PWPN_WEIGHT,
 };
 
 enum vorpal_damage_type

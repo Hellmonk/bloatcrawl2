@@ -69,12 +69,6 @@ int check_stealth();
 #endif
 extern player you;
 
-enum stamina_flag
-{
-    STAMF_RUNNING                   = (1 << 0),
-    STAMF_SKIP_MOVEMENT_PENALTY     = (1 << 1),
-};
-
 typedef FixedVector<int, NUM_DURATIONS> durations_t;
 class player : public actor
 {
@@ -1056,7 +1050,7 @@ bool dec_hp(int hp_loss, bool fatal, const char *aux = nullptr);
 bool dec_mp(int mp_loss, bool silent = false);
 bool drain_mp(int mp_loss);
 
-bool dec_sp(int sp_loss = 1, bool special = false);
+bool dec_sp(int sp_loss = 1, bool silent = false);
 void inc_sp(int sp_gain = 1, bool silent = false);
 void inc_mp(int mp_gain, bool silent = false);
 void inc_hp(int hp_gain);
@@ -1142,6 +1136,8 @@ bool need_expiration_warning(coord_def p = you.pos());
 
 bool player_is_tired(bool silent = false);
 bool player_is_very_tired(bool silent = false);
+bool in_quick_mode();
+void set_quick_mode(const bool new_quick_mode);
 void set_exertion(const exertion_mode new_exertion);
 void exert_toggle(exertion_mode new_exertion);
 
@@ -1203,6 +1199,7 @@ void player_before_long_safe_action();
 void player_after_long_safe_action(int turns);
 int player_spell_hunger_modifier(int old_hunger);
 int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost);
+int player_spell_mp_freeze_modifier(spell_type which_spell, bool raw, int old_cost);
 int player_tohit_modifier(int old_tohit);
 int player_damage_modifier(int old_damage);
 int player_spellpower_modifier(int old_spellpower);

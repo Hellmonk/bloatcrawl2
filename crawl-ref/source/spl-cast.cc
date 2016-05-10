@@ -475,7 +475,7 @@ int raw_spell_fail(spell_type spell)
 
     // Don't cap power for failure rate purposes.
     chance -= 6 * calc_spell_power(spell, false, true, false);
-    chance -= (you.intel() * 2);
+    chance -= you.dex() * you.intel() / 5;
 
     const int armour_shield_penalty = player_armour_shield_spell_penalty();
     dprf("Armour+Shield spell failure penalty: %d", armour_shield_penalty);
@@ -536,7 +536,7 @@ int raw_spell_fail(spell_type spell)
     // Apply the effects of Vehumet and items of wizardry.
     chance2 = _apply_spellcasting_success_boosts(spell, chance2);
 
-    if (you.exertion == EXERT_CAREFUL)
+    if (you.exertion == EXERT_FOCUS)
         chance2 = max(chance2 - 10, chance2 / 2);
 
     if (chance2 > 100)
@@ -1035,6 +1035,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     else // Redraw MP
         flush_mp();
 
+    /* no longer applicable
     if (!staff_energy && you.undead_state() != US_UNDEAD)
     {
         const int spellh = spell_hunger(spell);
@@ -1044,6 +1045,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
             learned_something_new(HINT_SPELL_HUNGER);
         }
     }
+     */
 
     you.turn_is_over = true;
     alert_nearby_monsters();

@@ -387,6 +387,11 @@ void attack::init_attack(skill_type unarmed_skill, int attack_number)
 
     if (attacker->is_player())
     {
+        int weight = property(*weapon, PWPN_WEIGHT);
+        sp_cost = 100 * weight;
+        sp_cost /= max(1, you.strength(true));
+        sp_cost /= max(1, you.skill(SK_FIGHTING));
+
         you.last_tohit = to_hit;
         you.redraw_tohit = true;
     }

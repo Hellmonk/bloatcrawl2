@@ -851,7 +851,7 @@ static void _regenerate_hp_and_mp(int delay)
 
     update_regen_amulet_attunement();
 
-    if (you.sp < you.sp_max && you.exertion != EXERT_ESCAPE)
+    if (you.sp < you.sp_max && !in_quick_mode())
     {
         const int base_val = 7 + you.sp_max / 3;
         int sp_regen_countup = div_rand_round(base_val * delay, BASELINE_DELAY);

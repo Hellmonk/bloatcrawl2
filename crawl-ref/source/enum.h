@@ -1014,9 +1014,10 @@ enum command_type
     CMD_USE_ABILITY,
     CMD_PRAY,
     CMD_EAT,
+    CMD_EXERT_FAST,
+    CMD_EXERT_SLOW,
     CMD_EXERT_POWER,
-    CMD_EXERT_ESCAPE,
-    CMD_EXERT_CAREFUL,
+    CMD_EXERT_FOCUS,
     CMD_EXERT_NORMAL,
     CMD_QUAFF,
     CMD_READ,
@@ -1936,9 +1937,9 @@ enum duration_type
     DUR_DOOM_HOWL_IMMUNITY,
 #endif
     DUR_VERTIGO,
-    DUR_POWER,
-    DUR_CARE,
-    DUR_ESCAPE,
+    DUR_POWER_MODE,
+    DUR_FOCUS_MODE,
+    DUR_QUICK_MODE,
     DUR_CHANNELING,
     NUM_DURATIONS
 };
@@ -2183,10 +2184,15 @@ enum eq_type_flags
 
 enum exertion_mode
 {
-    EXERT_CAREFUL = -1,
+    EXERT_FOCUS = -1,
     EXERT_NORMAL = 0,
     EXERT_POWER,
-    EXERT_ESCAPE,
+};
+
+enum stamina_flag
+{
+    STAMF_QUICK_MODE                = (1 << 0),
+    STAMF_SKIP_MOVEMENT_PENALTY     = (1 << 1),
 };
 
 enum flush_reason_type

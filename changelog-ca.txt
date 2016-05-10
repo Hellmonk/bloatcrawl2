@@ -9,18 +9,29 @@
     * Power mode adds an SP cost to affected actions.
     * Careful mode renamed to focus mode.
     * Focus mode adds an MP cost to affected actions.
+    * Escape mode was removed and in it's place a separate quick / normal mode
+        * This can operate independently of exertion mode, i.e. you can have Quick mode + Careful mode.
+        * Quick mode has the benefits of the old escape mode, which are faster movement speed and increased evasion. But
+          there is also an additional stamina cost. Stealth is also dramatically reduced.
+        * Normal mode doesn't have those benefits, but it doesn't have the additional stamina cost.
+
+* Keyboard changes
+    * instead of 's' to open spell list, now you press 'S'
+    * 'g' will switch to quick mode (go)
+    * 's' will switch to normal speed mode (slow)
 
 * Spell failure
-    * Dexterity is used instead of intelligence to reduce spell failure.
-        * Similar to how dexterity improves a fighter's chances of hitting.
-    * Intelligence is still used to boost spell power.
-    
+    * Spell failure is reduced by intelligence * dexterity / 5
+        * Used to be intelligency * 2
+
 * New branch layout
     * Dungeon contains: Orc (no rune), Lair of Beasts, Enchanted Forest, and Depths.
-        * Orc has 5 floors, and contains an arena to battle in.
-    * Enchanted Forest appears a little after Lair in the dungeon.
-    * Lair contains four rune branches: Swamp, Shoals, Spider, and Snake (every game).
-    * Enchanted Forest contains four rune branches: Crypt, Slime, Elven Halls, and Dwarven Fortress.
-        * Crypt, Dwarven Fortress, and Elven Halls have 5 floors and runes now.
-    * Depths contains: Vaults, Zot, Ziggurat, Abyss, Vestibule, and Pandemonium.
+        * Orc has 4 floors, and contains an arena to battle in.
+    * Enchanted Forest appears a little after Lair in the dungeon, and has 7 floors
+    * Lair has 7 floors and contains four rune branches: Swamp, Shoals, Spider, and Snake (every game), each
+      containing 4 floors.
+    * Enchanted Forest has 7 floors and contains four rune branches: Crypt, Slime, Elven Halls, and Dwarven Fortress,
+      each with 4 floors and a rune.
+    * Depths contains: Vaults, Zot, Ziggurat, Abyss, Vestibule, and Pandemonium. All have 4 floors except vestibule
+      and pan.
 
