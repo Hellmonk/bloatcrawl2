@@ -484,9 +484,9 @@ int raw_spell_fail(spell_type spell)
     int resist = pow(2, spell_level) * 100;
     const int armour_shield_penalty = player_armour_shield_spell_penalty();
     dprf("Armour+Shield spell failure penalty: %d", armour_shield_penalty);
-    resist += armour_shield_penalty;
-    resist += get_form()->spellcasting_penalty;
-    resist *= 10 * player_mutation_level(MUT_ANTI_WIZARDRY) / 10;
+    resist *= (20 + armour_shield_penalty) / 20;
+    resist *= (20 + get_form()->spellcasting_penalty) / 20;
+    resist *= 10 * (player_mutation_level(MUT_ANTI_WIZARDRY) + 1) / 10;
     resist *= (you.duration[DUR_VERTIGO] ? 15 : 10) / 10;
 
     const int wild = player_mutation_level(MUT_WILD_MAGIC);
@@ -503,12 +503,13 @@ int raw_spell_fail(spell_type spell)
     force = qpow(force, 3, 2, subdued);
 
     if (player_equip_unrand(UNRAND_HIGH_COUNCIL))
-        force += 7;
+        force *= 2;
 
-    if (you.props.exists(SAP_MAGIC_KEY))
-        force += you.props[SAP_MAGIC_KEY].get_int() * 12;
+    // I have no idea what this does, so I'm leaving it for now.
+//    if (you.props.exists(SAP_MAGIC_KEY))
+//        force *= you.props[SAP_MAGIC_KEY].get_int() * 12;
 
-    int chance = 100 * force / (force + resist);
+    int chance = 100 * resist / (force + resist);
 
     // Apply the effects of Vehumet and items of wizardry.
     chance = _apply_spellcasting_success_boosts(spell, chance);
@@ -519,8 +520,8 @@ int raw_spell_fail(spell_type spell)
     if (chance > 100)
         chance = 100;
 
-    if (chance < 0)
-        chance = 0;
+    if (chance <= 0)
+        chance = 1;
 
     return chance;
 }
