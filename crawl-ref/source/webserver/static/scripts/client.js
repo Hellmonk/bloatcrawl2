@@ -685,7 +685,7 @@ function (exports, $, key_conversion, chat, comm) {
 
     function macrofile_contents(data)
     {
-        $("#rc_file_contents").val(data.contents);
+        $("#macro_file_contents").val(data.contents);
         show_dialog("#macro_edit");
         $("#macro_file_contents").focus();
     }
@@ -695,6 +695,16 @@ function (exports, $, key_conversion, chat, comm) {
         send_message("set_rc", {
             game_id: editing_rc,
             contents: $("#rc_file_contents").val()
+        });
+        hide_dialog();
+        return false;
+    }
+
+    function send_macro()
+    {
+        send_message("set_macro", {
+            game_id: editing_macro,
+            contents: $("#macro_file_contents").val()
         });
         hide_dialog();
         return false;
@@ -1219,6 +1229,7 @@ function (exports, $, key_conversion, chat, comm) {
         $("#reg_cancel").bind("click", cancel_register);
 
         $("#rc_edit_form").bind("submit", send_rc);
+        $("#macro_edit_form").bind("submit", send_macro);
 
         $("#force_terminate_no").click(force_terminate_no);
         $("#force_terminate_yes").click(force_terminate_yes);

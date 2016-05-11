@@ -53,12 +53,23 @@
       </div>
 
       <div id="rc_edit" class="floating_dialog" style="display: none;">
-        <form action="#" id="rc_edit_form">
-          <textarea class="text" name="rc_file_contents" id="rc_file_contents"
+          <form action="#" id="rc_edit_form">
+        <textarea class="text" name="rc_file_contents" id="rc_file_contents"
+                  cols="80" rows="25">
+        </textarea>
+              <br>
+              <input class="button" type="submit" name="submit" id="rc_submit" value="Save"
+                     style="float: right;">
+          </form>
+      </div>
+
+      <div id="macro_edit" class="floating_dialog" style="display: none;">
+        <form action="#" id="macro_edit_form">
+          <textarea class="text" name="macro_file_contents" id="macro_file_contents"
                     cols="80" rows="25">
           </textarea>
           <br>
-          <input class="button" type="submit" name="submit" id="rc_submit" value="Save"
+          <input class="button" type="submit" name="submit" id="macro_submit" value="Save"
                  style="float: right;">
         </form>
       </div>

@@ -153,6 +153,7 @@ class CrawlWebSocket(tornado.websocket.WebSocketHandler):
             "get_rc": self.get_rc,
             "set_rc": self.set_rc,
             "get_macro": self.get_macro,
+            "set_macro": self.set_macro,
             }
 
     client_closed = property(lambda self: (not self.ws_connection) or self.ws_connection.client_terminated)
@@ -553,6 +554,13 @@ class CrawlWebSocket(tornado.websocket.WebSocketHandler):
         with open(self.macrofile_path(game_id), 'r') as f:
             contents = f.read()
         self.send_message("macrofile_contents", contents = contents)
+
+    def set_macro(self, game_id, contents):
+        rcfile_path = dgl_format_str(config.games[game_id]["rcfile_path"],
+                                     self.username, config.games[game_id])
+        rcfile_path = os.path.join(rcfile_path, self.username + ".macro")
+        with open(rcfile_path, 'w') as f:
+            f.write(contents.encode("utf8"))
 
     def on_message(self, message):
         try:
