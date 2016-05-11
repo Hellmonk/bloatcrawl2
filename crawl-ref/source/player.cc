@@ -9631,7 +9631,7 @@ int player_spellfailure_modifier(int failure)
         failure = failure * 4 / 3;
 
     if (you.exertion == EXERT_FOCUS)
-        failure = max(failure - 15, failure / 2);
+        failure = max(failure - 1500, failure / 2);
 
     return failure * 40 / 100 / _difficulty_mode_multiplier();
 }

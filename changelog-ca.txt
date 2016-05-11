@@ -3,7 +3,6 @@
 * Magic potions restore 40, 30, 20 points depending on difficulty mode.
 * Spellcasting skill no longer influences spell power. It is only used for spell slots, reducing spell
   hunger, and reducing spell failure rate.
-* Spell school skills no longer influence spell failure rate. Only spell power and spell hunger.
 * Removed all food, and created stamina potions. You can now sacrifice stamina potions to evoke fedhas' abilities.
 * Quick mode doesn't use stamina if monsters aren't around.
 
