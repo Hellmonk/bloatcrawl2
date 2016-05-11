@@ -895,7 +895,7 @@ static void _grab_followers()
 
     monster* dowan = nullptr;
     monster* duvessa = nullptr;
-/*
+
     // Handle nearby ghosts.
     for (adjacent_iterator ai(you.pos()); ai; ++ai)
     {
@@ -985,7 +985,6 @@ static void _grab_followers()
             place_set = !place_set;
         }
     }
-*/
 
     for (const mid_t &mid : you.summoned)
     {

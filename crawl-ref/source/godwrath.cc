@@ -1748,7 +1748,7 @@ bool drain_wands()
         if (charges > 0 && coinflip())
         {
             const int charge_val = wand_charge_value(wand.sub_type);
-            wand.plus -= min(1 + random2(charge_val), charges);
+            wand.plus -= min(1 + random2(min(charges, charge_val)), charges);
             // Display new number of charges when messaging.
             wands.push_back(wand.name(DESC_PLAIN));
         }

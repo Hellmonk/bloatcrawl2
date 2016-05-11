@@ -2778,7 +2778,7 @@ void melee_attack::mons_apply_attack_flavour()
                 }
 
                 if (attacker->is_player())
-                    dec_sp(1, true);
+                    dec_sp(healing / 2, true);
             }
         }
         break;

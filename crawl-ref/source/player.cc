@@ -82,6 +82,7 @@
 #include "xom.h"
 #include "place.h"
 #include "items.h"
+#include "decks.h"
 
 const int DJ_MP_RATE = 1;
 
@@ -123,6 +124,8 @@ static void _moveto_maybe_repel_stairs()
         }
     }
 }
+
+static void _handle_insight(int exp_gain);
 
 bool check_moveto_cloud(const coord_def& p, const string &move_verb,
                         bool *prompted)
@@ -2018,6 +2021,8 @@ int player_movement_speed()
                 mv = 950;
                 break;
         }
+        // override for now, since we've nerfed so many other things in this release.
+        mv = 900;
     }
 
     // transformations
@@ -2920,7 +2925,72 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
             }
         }
 
+        _handle_insight(exp_gained);
         _fade_curses(exp_gained);
+    }
+}
+
+static void _handle_insight(int exp_gain)
+{
+    const int skill_cost = calc_skill_cost(you.skill_cost_level);
+    const int insight_gained = div_rand_round(exp_gain, skill_cost);
+    you.attribute[ATTR_INSIGHT] += insight_gained;
+    
+    while (you.attribute[ATTR_INSIGHT] > 100)
+    {
+        you.attribute[ATTR_INSIGHT] -= 100;
+        
+        int lev = 1 + player_mutation_level(MUT_INSIGHT);
+        if (x_chance_in_y(1 << ((lev - 1) * 2), 64)) {
+            string before, after;
+            bool success = false;
+
+            FixedVector< item_def, ENDOFPACK > *inv;
+            if(one_chance_in(3)) {
+                inv = &(you.inv2);
+            } else {
+                inv = &(you.inv1);
+            }
+
+            // top to bottom
+            // this give the player the option to move items to the top so that they are more likely to be identified first
+            for(auto &item : *inv)
+            {
+                if (item.defined()
+                    && (
+                        (item.flags & ISFLAG_IDENT_MASK) < ISFLAG_IDENT_MASK)
+                    || is_deck(item) && !top_card_is_known(item)
+                    )
+                {
+                    if (is_deck(item) && !top_card_is_known(item))
+                    {
+                        set_ident_flags(item, ISFLAG_IDENT_MASK);
+                        set_ident_type(item, true);
+                        after = get_menu_colour_prefix_tags(item, DESC_A).c_str();
+                        mprf(MSGCH_INTRINSIC_GAIN, "You gain insight into: %s", after.c_str());
+                        deck_identify_first(item);
+                        break;
+                    }
+                    else
+                    {
+                        before = get_menu_colour_prefix_tags(item, DESC_A).c_str();
+                        int bitToCheck = 1 << random2(4);
+                        if((item.flags & bitToCheck) == 0) {
+                            set_ident_flags(item, bitToCheck);
+                            set_ident_type(item, true);
+                            after = get_menu_colour_prefix_tags(item, DESC_A).c_str();
+                            if(before != after) {
+                                success = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(success)
+                mprf(MSGCH_INTRINSIC_GAIN, "You gain insight: %s -> %s", before.c_str(), after.c_str());
+        }
     }
 }
 
@@ -9482,10 +9552,10 @@ int player_attack_delay_modifier(int attack_delay)
 
     if (you.sp == 0)
     {
-        attack_delay = attack_delay * 5 / 4;
+        attack_delay = attack_delay * 8 / 7;
     }
     else if (you.exertion == EXERT_POWER)
-        attack_delay = attack_delay * 4 / 5 - 100;
+        attack_delay = attack_delay * 7 / 8 - 25;
 
     return attack_delay * 40 / 1000;
 }

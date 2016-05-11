@@ -3198,7 +3198,7 @@ static void tag_read_you(reader &th)
     // Verify that timers aren't scheduled for the past.
     for (int j = 0; j < NUM_TIMERS; ++j)
     {
-        if (you.next_timer_effect[j] < you.elapsed_time)
+        if (false && you.next_timer_effect[j] < you.elapsed_time)
         {
 #if TAG_MAJOR_VERSION == 34
             if (th.getMinorVersion() >= TAG_MINOR_EVENT_TIMERS

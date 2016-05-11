@@ -1193,10 +1193,8 @@ void TilesFramework::_send_cell(const coord_def &gc,
         if (next_pc.travel_trail != current_pc.travel_trail)
             json_write_int("travel_trail", next_pc.travel_trail);
 
-#if TAG_MAJOR_VERSION == 34
         if (next_pc.heat_aura != current_pc.heat_aura)
             json_write_int("heat_aura", next_pc.heat_aura);
-#endif
 
         if (_needs_flavour(next_pc) &&
             (next_pc.flv.floor != current_pc.flv.floor
