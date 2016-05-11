@@ -3055,7 +3055,7 @@ static bool _test_beam_hit(int attack, int defense, bool pierce,
     dprf(DIAG_BEAM, "Beam attack: %d, defense: %d", attack, defense);
 
     int chance = 0;
-    const int result = random_diff(attack, defense, &chance);
+    const int result = random_diff(attack, defense, &chance, r);
     player_update_last_hit_chance(chance);
     player_update_tohit(attack);
 

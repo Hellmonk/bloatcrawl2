@@ -6,6 +6,9 @@ There are two known servers where you can play Circus Animals!
 
 Checkout branch v1.4.2 if you want to try it yourself. The master branch will be where future, save game breaking features will be implemented, and then broken off.
 
+WARNING: The changelog-ca.txt file will contain the latest detailed changes. This file will be shortened and kept to a high level summary of what is in this fork. If you want specifics,
+then you need to look at the changelog. 
+
 For those who don't know how to clone from a git repo: install git on your system, then type:
 
     git clone https://github.com/jeremygurr/dcssca.git -b v1.4.2
@@ -61,6 +64,9 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
     * When a summon dies, they player gets 1/2 of the mp used on that creature
     * When going up or down stairs, if there are no monsters in sight, summons automatically follow the player.
 
+* Pan has been shortened
+    * All 4 rune floors are guanteed within the first 25 floors. 
+    
 ### v1.4.1
 
 * Transmutation
@@ -135,7 +141,7 @@ A player has created an IRC channel for discussion of this fork. Grab an IRC cli
                 * 0.85 for centaur
                 * 1.4 for naga
             * movement speed is penalized if the player stops or changes direction more than 45 degrees from original heading
-        * careful mode (press 'E' if in another mode)
+        * focus mode (press 'E' if in another mode)
             * attacks, spells cast, and movement cost stamina
             * spell hunger -> stamina cost is doubled
             * stealth is increased 33% over normal

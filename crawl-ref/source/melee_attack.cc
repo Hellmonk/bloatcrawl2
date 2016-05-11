@@ -146,7 +146,11 @@ bool melee_attack::handle_phase_attempted()
     if (attacker->is_player())
     {
         // Set delay now that we know the attack won't be cancelled.
-        you.time_taken = you.attack_delay().roll();
+        you.time_taken = you.attack_delay();
+
+        if (sp_cost)
+            dec_sp(sp_cost, true);
+
         if (weapon)
         {
             if (weapon->base_type == OBJ_WEAPONS)
@@ -169,7 +173,7 @@ bool melee_attack::handle_phase_attempted()
         if (!effective_attack_number)
         {
             int energy = attacker->as_monster()->action_energy(EUT_ATTACK);
-            int delay = attacker->attack_delay().roll();
+            int delay = attacker->attack_delay();
             dprf(DIAG_COMBAT, "Attack delay %d, multiplier %1.1f", delay, energy * 0.1);
             ASSERT(energy > 0);
             ASSERT(delay > 0);
@@ -3721,3 +3725,9 @@ bool melee_attack::_vamp_wants_blood_from_monster(const monster* mon)
            && mons_has_blood(mon->type)
            && !testbits(mon->flags, MF_SPECTRALISED);
 }
+
+const item_def* melee_attack::get_weapon_used()
+{
+    return weapon;
+}
+

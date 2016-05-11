@@ -342,7 +342,7 @@ bool x_chance_in_y(int x, int y)
  *
  * chance is an output containing percent chance of success given the other two parameters
  */
-int random_diff(int success, int failure, int *chance)
+int random_diff(int success, int failure, int *chance, defer_rand &r)
 {
     if (success <= 0)
     {
@@ -358,12 +358,12 @@ int random_diff(int success, int failure, int *chance)
     }
 
     // needs the +1 to avoid div by 0 and guarantees a chance of failure or success, however small
-    const int random_success = random2(success) + 1;
-    const int random_failure = random2(failure) + 1;
+    const int random_success = r[0].random2(success) + 1;
+    const int random_failure = r[1].random2(failure) + 1;
     int result = random_success - random_failure;
     if (result == 0)
     {
-        result = coinflip() ? 0 : -1;
+        result = r[2].random2(2) ? 0 : -1;
     }
 
     if (chance)

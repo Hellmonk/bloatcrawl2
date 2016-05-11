@@ -330,7 +330,7 @@ SHUFFLE:  123456
 : line_setup(_G)
 : general_item_setup(_G)
 : lua_marker('~', props_marker {
-:           door_description_suffix=" to Lair:8",
+:           door_description_suffix=" to Lair:$",
 :           })
 MAP
 xxxxxxxxxxxxx
@@ -1064,7 +1064,7 @@ TAGS:     pan_hell_end
 KMONS:    1 = Dispater
 KITEM:    1 = iron rune of zot
 KMONS:    2 = Ereshkigal
-KITEM:    2 = bone rune of zot
+KITEM:    2 = bony rune of zot
 KMONS:    3 = Asmodeus
 KITEM:    3 = obsidian rune of zot
 KMONS:    4 = Antaeus

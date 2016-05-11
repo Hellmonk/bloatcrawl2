@@ -158,11 +158,13 @@ bool ranged_attack::attack()
     return attack_occurred;
 }
 
-// XXX: Are there any cases where this might fail?
 bool ranged_attack::handle_phase_attempted()
 {
     attacker->attacking(defender, true);
     attack_occurred = true;
+
+    if (sp_cost)
+        dec_sp(sp_cost, true);
 
     return true;
 }
@@ -832,3 +834,9 @@ void ranged_attack::announce_hit()
          debug_damage_number().c_str(),
          attack_strength_punctuation(damage_done).c_str());
 }
+
+const item_def* ranged_attack::get_weapon_used()
+{
+    return projectile;
+}
+

@@ -699,7 +699,7 @@ void game_options::reset_options()
     set_default_activity_interrupts();
 
 #ifdef DEBUG_DIAGNOSTICS
-    quiet_debug_messages.reset();
+    quiet_debug_messages.init(true);
 #ifdef DEBUG_MONSPEAK
     quiet_debug_messages.set(DIAG_SPEECH);
 #endif
@@ -947,7 +947,7 @@ void game_options::reset_options()
 
     regex_search = false;
 
-    movement_penalty = 11;
+    movement_penalty = 15;
 
     danger_mode_threshold = 30;
     level_27_cap = false;

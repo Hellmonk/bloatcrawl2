@@ -386,7 +386,7 @@ static fight_data _get_fight_data(monster &mon, int iter_limit, bool defend)
                 attk.attack();
                 if (attk.ev_margin >= 0)
                     hits++;
-                you.time_taken = you.attack_delay(&you.inv1[missile]).roll();
+                you.time_taken = you.attack_delay(&you.inv1[missile]);
             }
             else // otherwise, melee combat
             {

@@ -705,7 +705,7 @@ public:
             // Defer calling level_change() until later in drink() to prevent
             // SIGHUP abuse.
 
-            if (Options.exp_potion_on_each_floor || Options.uniques_drop_exp_potions)
+            if (Options.exp_potion_on_each_floor || Options.uniques_drop_exp_potions || !Options.exp_based_on_player_level)
                 gain_potion_exp();
             else
                 adjust_level(1, true);

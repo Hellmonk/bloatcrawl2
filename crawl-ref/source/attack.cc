@@ -32,6 +32,7 @@
 #include "mon-clone.h"
 #include "mon-death.h"
 #include "mon-poly.h"
+#include "ranged_attack.h"
 #include "religion.h"
 #include "spl-miscast.h"
 #include "state.h"
@@ -387,6 +388,15 @@ void attack::init_attack(skill_type unarmed_skill, int attack_number)
 
     if (attacker->is_player())
     {
+        const item_def *const weapon_used = get_weapon_used();
+        int weight = weapon_used ? max(1, property(*weapon_used, PWPN_WEIGHT)) : 1;
+
+        sp_cost = 50 * weight;
+        sp_cost /= max(1, you.strength(true));
+        sp_cost /= max(1, you.skill(SK_FIGHTING));
+
+        sp_cost = max(1, sp_cost);
+
         you.last_tohit = to_hit;
         you.redraw_tohit = true;
     }
@@ -1444,7 +1454,9 @@ int attack::test_hit(int to_land, int ev, bool randomise_ev)
     else
     {
         int chance = 0;
-        margin = random_diff(to_land, ev, &chance);
+
+        defer_rand r;
+        margin = random_diff(to_land, ev, &chance, r);
 
         if (attacker->is_player())
             player_update_last_hit_chance(chance);
@@ -2030,3 +2042,6 @@ void attack::player_stab_check()
     if (stab_attempt)
         count_action(CACT_STAB, st);
 }
+
+const item_def* attack::get_weapon_used() { return nullptr; }
+

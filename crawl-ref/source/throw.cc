@@ -850,7 +850,7 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
             did_return = true;
     }
 
-    you.time_taken = you.attack_delay(&item).roll();
+    you.time_taken = you.attack_delay(&item);
 
     // Create message.
     mprf("You %s%s %s.",
@@ -994,7 +994,7 @@ bool mons_throw(monster* mons, bolt &beam, int msl, bool teleport)
     if (!teleport)
     {
         const int energy = mons->action_energy(EUT_MISSILE);
-        const int delay = mons->attack_delay(&mitm[msl]).roll();
+        const int delay = mons->attack_delay(&mitm[msl]);
         ASSERT(energy > 0);
         ASSERT(delay > 0);
         mons->speed_increment -= div_rand_round(energy * delay, 10);

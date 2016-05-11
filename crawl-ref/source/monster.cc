@@ -382,7 +382,7 @@ int monster::damage_type(int which_attack)
  * @return              The time taken by an attack with the monster's weapon
  *                      and the given projectile, in aut.
  */
-random_var monster::attack_delay(const item_def *projectile,
+int monster::attack_delay(const item_def *projectile,
                                  bool /*rescale*/) const
 {
     const item_def* weap = weapon();
@@ -392,12 +392,14 @@ random_var monster::attack_delay(const item_def *projectile,
                      : !weap;
 
     if (use_unarmed || !weap)
-        return random_var(10);
+        return 10;
 
-    random_var delay(property(*weap, PWPN_SPEED));
+    int delay = property(*weap, PWPN_SPEED);
+
     if (get_weapon_brand(*weap) == SPWPN_SPEED)
         delay = div_rand_round(delay * 2, 3);
-    return (random_var(10) + delay) / 2;
+
+    return (10 + delay) / 2;
 }
 
 int monster::has_claws(bool allow_tran) const
