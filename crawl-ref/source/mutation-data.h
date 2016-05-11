@@ -72,9 +72,9 @@ static const mutation_def mut_data[] =
 { MUT_CARNIVOROUS, 20, 3, mutflag::BAD, false,
   "carnivore",
 
-  {"Your digestive system is specialised to digest meat.",
-   "Your digestive system is highly specialised to digest meat.",
-   "You are carnivorous and can eat meat at any time."},
+  {"You digest fruit inefficiently.",
+   "You digest fruit very inefficiently.",
+   "You are a carnivore and can only eat meat at any time."},
 
   {"You hunger for flesh.",
    "You hunger for flesh.",
@@ -86,19 +86,19 @@ static const mutation_def mut_data[] =
 },
 
 { MUT_HERBIVOROUS, 20, 3, mutflag::GOOD, false,
-  "herbivore",
+  "powered by fruit",
 
-  {"You digest meat inefficiently.",
-   "You digest meat very inefficiently.",
-   "You are a herbivore."},
+  {"You digest fruit efficiently.",
+   "You digest fruit very efficiently.",
+   "You gain tons of stamina from non-meat foods."},
 
   {"You hunger for vegetation.",
    "You hunger for vegetation.",
    "You hunger for vegetation."},
 
-  {"You feel able to eat a more balanced diet.",
-   "You feel able to eat a more balanced diet.",
-   "You feel able to eat a more balanced diet."},
+  {"You will gain less power from fruits and veggies.",
+   "You will gain less power from fruits and veggies.",
+   "You will gain less power from fruits and veggies."},
 },
 
 { MUT_HEAT_RESISTANCE, 40, 3, mutflag::GOOD, true,
