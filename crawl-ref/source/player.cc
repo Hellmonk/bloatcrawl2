@@ -9526,7 +9526,7 @@ int player_tohit_modifier(int old_tohit)
     else if (you.exertion == EXERT_FOCUS)
         new_tohit = new_tohit * 4 / 3 + 50;
 
-    return div_rand_round(new_tohit, 40);
+    return new_tohit / 40;
 }
 
 int player_damage_modifier(int old_damage, bool silent)
@@ -9542,7 +9542,7 @@ int player_damage_modifier(int old_damage, bool silent)
     else if (you.exertion == EXERT_POWER)
         new_damage = new_damage * 4 / 3 + 20;
 
-    return div_rand_round(new_damage, 40);
+    return new_damage / 40;
 }
 
 int player_attack_delay_modifier(int attack_delay)
@@ -9567,7 +9567,7 @@ int player_spellpower_modifier(int old_spellpower)
     if (you.exertion == EXERT_POWER)
         new_spellpower = new_spellpower * 4 / 3 + 100;
 
-    return div_rand_round(new_spellpower, 40);
+    return new_spellpower / 40;
 }
 
 
@@ -9581,7 +9581,7 @@ int player_stealth_modifier(int old_stealth)
     if (you.exertion == EXERT_FOCUS)
         new_stealth = new_stealth * 4 / 3 + 200;
 
-    return div_rand_round(new_stealth, 40);
+    return new_stealth / 40;
 }
 
 int player_evasion_modifier(int old_evasion)
@@ -9591,7 +9591,7 @@ int player_evasion_modifier(int old_evasion)
     if (you.exertion == EXERT_FOCUS)
         new_evasion = new_evasion * 4 / 3 + 50;
 
-    return div_rand_round(new_evasion, 40);
+    return new_evasion / 40;
 }
 
 void player_update_last_hit_chance(int chance)
