@@ -1088,52 +1088,40 @@ static const pop_entry pop_depths[] =
 #define POP(x) { pop_##x, ARRAYSZ(pop_##x) - 1 }
 static const struct { const pop_entry *pop; int count; } population[] =
 {
+    POP(abyss),
+    POP(bailey),
+    POP(bazaar),
+    POP(coc),
+    POP(crypt),
+    POP(depths),
+    POP(dis),
     POP(d),
-    POP(temple),
-    POP(orc),
-    POP(elf),
-#if TAG_MAJOR_VERSION == 34
     POP(dwarf),
-#endif
+    POP(elf),
+    POP(forest),
+    POP(geh),
+    POP(icecv),
+    POP(lab),
     POP(lair),
-    POP(swamp),
+    POP(orc),
+    POP(ossuary),
+    POP(pan),
+    POP(sewer),
     POP(shoals),
+    POP(slime),
     POP(snake),
     POP(spider),
-    POP(slime),
-    POP(vaults),
-#if TAG_MAJOR_VERSION == 34
-    POP(blade),
-#endif
-    POP(crypt),
-    POP(tomb),
-#if TAG_MAJOR_VERSION > 34
-    POP(depths),
-#endif
-    POP(hell),
-    POP(dis),
-    POP(geh),
-    POP(coc),
+    POP(swamp),
     POP(tar),
-    POP(zot),
-#if TAG_MAJOR_VERSION == 34
-    POP(forest),
-#endif
-    POP(abyss),
-    POP(pan),
-    POP(zig),
-    POP(lab),
-    POP(bazaar),
+    POP(temple),
+    POP(tomb),
     POP(trove),
-    POP(sewer),
-    POP(ossuary),
-    POP(bailey),
-    POP(icecv),
+    POP(vaults),
+    POP(hell),
     POP(volcano),
     POP(wizlab),
-#if TAG_MAJOR_VERSION == 34
-    POP(depths),
-#endif
+    POP(zig),
+    POP(zot),
 };
 
 // Lists for picking zombies from.
@@ -1196,52 +1184,40 @@ static const pop_entry pop_generic_late_zombie[] =
 
 static const struct { const pop_entry *pop; int count; } population_zombie[] =
 {
+    POP(generic_late_zombie),
+    POP(bailey),
+    POP(bazaar),
+    POP(generic_late_zombie),
+    POP(generic_late_zombie),
+    POP(depths),
+    POP(generic_late_zombie),
     POP(d),
-    POP(temple),
-    POP(orc),
-    POP(elf),
-#if TAG_MAJOR_VERSION == 34
     POP(dwarf),
-#endif
+    POP(elf),
+    POP(forest),
+    POP(generic_late_zombie), // gehenna
+    POP(icecv),
+    POP(lab),
     POP(lair),
-    POP(swamp),
+    POP(orc),
+    POP(ossuary),
+    POP(generic_late_zombie), // pan
+    POP(sewer),
     POP(shoals),
+    POP(slime),
     POP(snake),
     POP(spider),
-    POP(slime),
-    POP(vaults),
-#if TAG_MAJOR_VERSION == 34
-    POP(blade),
-#endif
-    POP(generic_late_zombie),
-    POP(generic_late_zombie),
-#if TAG_MAJOR_VERSION > 34
-    POP(depths),
-#endif
-    POP(generic_late_zombie),
-    POP(generic_late_zombie),
-    POP(generic_late_zombie),
-    POP(generic_late_zombie),
-    POP(generic_late_zombie),
-    POP(zot),
-#if TAG_MAJOR_VERSION == 34
-    POP(forest),
-#endif
-    POP(generic_late_zombie),
-    POP(generic_late_zombie),
-    POP(zig),
-    POP(lab),
-    POP(bazaar),
+    POP(swamp),
+    POP(temple),
+    POP(generic_late_zombie), // tar
+    POP(generic_late_zombie), // tomb
     POP(trove),
-    POP(sewer),
-    POP(ossuary),
-    POP(bailey),
-    POP(icecv),
+    POP(vaults),
+    POP(generic_late_zombie), // vestibule
     POP(volcano),
     POP(wizlab),
-#if TAG_MAJOR_VERSION == 34
-    POP(depths),
-#endif
+    POP(zig),
+    POP(zot),
 };
 
 static const pop_entry pop_water_generic[] =
@@ -1299,52 +1275,40 @@ static const pop_entry pop_water_hell[] =
 // Shoals, Abyss, Pan, Zot, D:1-5 liquid monsters are blocked in dungeon.cc
 static const struct { const pop_entry *pop; int count; } population_water[] =
 {
-    POP(water_d),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-#if TAG_MAJOR_VERSION == 34
-    POP(water_generic),
-#endif
-    POP(water_generic),
-    POP(water_swamp),
-    POP(water_generic),
+    POP(water_generic), // abyss
+    POP(water_generic), // bailey
+    POP(water_generic), // bazaar
+    POP(water_hell),    // coc
+    POP(water_generic), // crypt
+    POP(water_depths),
+    POP(water_hell),    // dis
+    POP(water_generic), // dungeon
+    POP(water_generic), // dwarf
+    POP(water_generic), // elf
+    POP(water_generic), // forest
+    POP(water_hell),    // geh
+    POP(water_generic), // ice
+    POP(water_generic), // lab
+    POP(water_generic), // lair
+    POP(water_generic), // orc
+    POP(water_generic), // ossu
+    POP(water_generic), // pan
+    POP(water_generic), // sewer
+    POP(water_generic), // shoals
+    POP(water_generic), // slime
     POP(water_snake),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-#if TAG_MAJOR_VERSION == 34
-    POP(water_generic),
-#endif
-    POP(water_generic),
-    POP(water_generic),
-#if TAG_MAJOR_VERSION > 34
-    POP(water_depths),
-#endif
-    POP(water_hell),
-    POP(water_hell),
-    POP(water_hell),
-    POP(water_hell),
-    POP(water_hell),
-    POP(water_generic),
-#if TAG_MAJOR_VERSION == 34
-    POP(water_generic), // Forest
-#endif
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-#if TAG_MAJOR_VERSION == 34
-    POP(water_depths),
-#endif
+    POP(water_generic), // spider
+    POP(water_swamp),
+    POP(water_hell),    // tar
+    POP(water_generic), // temple
+    POP(water_generic), // tomb
+    POP(water_generic), // trove
+    POP(water_generic), // vaults
+    POP(water_hell),    // vestibule
+    POP(water_generic), // volcano
+    POP(water_generic), // wiz
+    POP(water_generic), // zig
+    POP(water_generic), // zot
 };
 
 static const pop_entry pop_lava_generic[] =
@@ -1403,50 +1367,38 @@ static const pop_entry pop_lava_hell[] =
 
 static const struct { const pop_entry *pop; int count; } population_lava[] =
 {
+    POP(lava_generic), // abyss
+    POP(lava_generic), // bailey
+    POP(lava_generic), // bazaar
+    POP(lava_hell),    // coc
+    POP(lava_generic), // crypt
+    POP(lava_depths),
+    POP(lava_hell),    // dis
     POP(lava_d),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-#if TAG_MAJOR_VERSION == 34
-    POP(lava_generic),
-#endif
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
+    POP(lava_generic), // dwarf
+    POP(lava_generic), // elf
+    POP(lava_generic), // forest
+    POP(lava_hell),    // geh
+    POP(lava_generic), // ice
+    POP(lava_generic), // lab
+    POP(lava_generic), // lair
+    POP(lava_generic), // orc
+    POP(lava_generic), // oss
+    POP(lava_generic), // pan
+    POP(lava_generic), // sewer
+    POP(lava_generic), // shoals
+    POP(lava_generic), // slime
     POP(lava_snake),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-#if TAG_MAJOR_VERSION == 34
-    POP(lava_generic),
-#endif
-    POP(lava_generic),
-    POP(lava_generic),
-#if TAG_MAJOR_VERSION > 34
-    POP(lava_depths),
-#endif
-    POP(lava_hell),
-    POP(lava_hell),
-    POP(lava_hell),
-    POP(lava_hell),
-    POP(lava_hell),
-    POP(lava_generic),
-#if TAG_MAJOR_VERSION == 34
-    POP(lava_generic),
-#endif
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-#if TAG_MAJOR_VERSION == 34
-    POP(lava_depths),
-#endif
+    POP(lava_generic), // spider
+    POP(lava_generic), // swamp
+    POP(lava_hell),    // tar
+    POP(lava_generic), // temple
+    POP(lava_generic), // tomb
+    POP(lava_generic), // trove
+    POP(lava_generic), // vaults
+    POP(lava_hell),    // vestibule
+    POP(lava_generic), // volcano
+    POP(lava_generic), // wizlab
+    POP(lava_generic), // zig
+    POP(lava_generic), // zot
 };

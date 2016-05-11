@@ -87,6 +87,7 @@ static const map<species_type, species_def> species_data =
     { STAT_STR, STAT_DEX }, 4,
     {
       { MUT_CLEAN_DNA, 2, 1 },
+      { MUT_RESILIENT_DNA, 2, 1 },
       { MUT_TOUGH_SKIN, 3, 1 },
       { MUT_HIGH_STAMINA, 1, 1 },
       { MUT_FAST, 1, 1 },
@@ -131,7 +132,7 @@ static const map<species_type, species_def> species_data =
     "DE",
     "Deep Elf", "Elven", "Elf",
     SPF_ELVEN,
-    -1, -2, 4,
+    -1, -2, 3,
     15, 4,
     MONS_ELF,
     HT_LAND, US_ALIVE, SIZE_MEDIUM,
@@ -711,6 +712,7 @@ static const map<species_type, species_def> species_data =
     14, 14,  14, // 42
     { STAT_STR, STAT_INT, STAT_DEX }, 5,
     { { MUT_NEGATIVE_ENERGY_RESISTANCE, 3, 1 },
+      { MUT_HUNGERLESS, 1, 1 },
       { MUT_COLD_RESISTANCE, 1, 1 },
       { MUT_TORMENT_RESISTANCE, 1, 1 },
       { MUT_UNBREATHING, 1, 1 },

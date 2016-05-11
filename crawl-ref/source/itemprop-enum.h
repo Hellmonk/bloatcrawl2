@@ -329,7 +329,7 @@ enum rune_type
     RUNE_SNAKE,
     RUNE_SHOALS,
     RUNE_SLIME,
-    RUNE_ELF, // unused
+    RUNE_ELF,
     RUNE_VAULTS,
     RUNE_TOMB,
 
@@ -339,7 +339,6 @@ enum rune_type
     RUNE_TARTARUS,
 
     RUNE_ABYSSAL,
-
     RUNE_DEMONIC,
 
     // order must match monsters
@@ -349,7 +348,8 @@ enum rune_type
     RUNE_GLOORX_VLOQ,
 
     RUNE_SPIDER,
-    RUNE_FOREST, // unused
+    RUNE_DWARF,
+    RUNE_CRYPT,
     NUM_RUNE_TYPES
 };
 
@@ -628,6 +628,7 @@ enum weapon_property_type
     PWPN_HIT,
     PWPN_SPEED,
     PWPN_ACQ_WEIGHT,
+    PWPN_WEIGHT,
 };
 
 enum vorpal_damage_type

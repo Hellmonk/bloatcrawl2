@@ -139,7 +139,7 @@ static bool _reaching_weapon_attack(const item_def& wpn)
     }
 
     // Calculate attack delay now in case we have to apply it.
-    const int attack_delay = you.attack_delay().roll();
+    const int attack_delay = you.attack_delay();
 
     if (!feat_is_reachable_past(grd(first_middle))
         && !feat_is_reachable_past(grd(second_middle)))

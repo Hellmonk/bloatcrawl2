@@ -4624,6 +4624,8 @@ static const map<branch_type, int> branch_bribability_factor =
     { BRANCH_DUNGEON,     2 },
     { BRANCH_ORC,         2 },
     { BRANCH_ELF,         3 },
+    { BRANCH_DWARF,       3 },
+    { BRANCH_FOREST,      3 },
     { BRANCH_SNAKE,       3 },
     { BRANCH_SHOALS,      3 },
     { BRANCH_CRYPT,       3 },

@@ -2304,14 +2304,17 @@ void process_command(command_type cmd)
             case CMD_EXERT_NORMAL:
                 set_exertion(EXERT_NORMAL);
                 break;
-            case CMD_EXERT_CAREFUL:
-                set_exertion(EXERT_CAREFUL);
+            case CMD_EXERT_FOCUS:
+                set_exertion(EXERT_FOCUS);
                 break;
             case CMD_EXERT_POWER:
                 set_exertion(EXERT_POWER);
                 break;
-            case CMD_EXERT_ESCAPE:
-                set_exertion(EXERT_ESCAPE);
+            case CMD_EXERT_FAST:
+                set_quick_mode(true);
+                break;
+            case CMD_EXERT_SLOW:
+                set_quick_mode(false);
                 break;
             case CMD_FIRE:                 fire_thing();             break;
             case CMD_FORCE_CAST_SPELL:     do_cast_spell_cmd(true);  break;
@@ -2918,7 +2921,7 @@ static void _swing_at_target(coord_def move)
         else if (!you.fumbles_attack())
             mpr("You swing at nothing.");
         // Take the usual attack delay.
-        you.time_taken = you.attack_delay().roll();
+        you.time_taken = you.attack_delay();
     }
     you.turn_is_over = true;
     return;
@@ -3579,12 +3582,14 @@ static void _move_player(coord_def move)
             env.travel_trail.push_back(you.pos());
 
         you.time_taken *= player_movement_speed();
-        if (Options.movement_penalty && you.exertion == EXERT_ESCAPE)
+        if (Options.movement_penalty && in_quick_mode())
         {
             if (you.prev_direction.x == 0 && you.prev_direction.y == 0 || move.is_sharp_turn(you.prev_direction))
             {
-                you.time_taken = max(you.time_taken, Options.movement_penalty * 10);
+                if (!(you.stamina_flags & STAMF_SKIP_MOVEMENT_PENALTY))
+                    you.time_taken = max(you.time_taken, Options.movement_penalty * 10);
                 you.prev_direction = move;
+                you.stamina_flags &= ~STAMF_SKIP_MOVEMENT_PENALTY;
             }
         }
 

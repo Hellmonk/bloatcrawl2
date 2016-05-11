@@ -289,9 +289,11 @@ ENDMAP
 ## Treasure maps
 ################################################
 NAME:    dhfh_treasure_sunken_tomb
-TAGS:    dhfh_treasure no_item_gen no_monster_gen no_pool_fixup no_wall_fixup
+TAGS:    dhfh_treasure no_pool_fixup no_wall_fixup
+PLACE:   Dwarf:$
 WEIGHT:  40
 ORIENT:  float
+KITEM:   Z = dwarven rune of Zot
 MONS:    deep dwarf w:30 / elf w:3
 MONS:    deep dwarf w:20 / elf w:3
 MONS:    generate_awake giant centipede / generate_awake redback / \
@@ -317,7 +319,7 @@ MAP
         xxxxxxxxxxxxxxxxxxxx
         xxxxxxxxxxxxgxxxxxxx
         xxxxxxxxxx1111xxxxxx
-        xxxx.x.x111..111xxxx
+        xxxx.x.x111.Z111xxxx
         xx...+.........111xx
 xxxxxxxxx....xxxxxxxxx...11x
 xxxxxx.....xxx.......x...1xx
@@ -344,9 +346,11 @@ xxx+xxxx....xxxC7.xc+cG4$ccx
 ENDMAP
 
 NAME:   dhfh_treasure_vault
-TAGS:   dhfh_treasure no_item_gen no_monster_gen no_wall_fixup no_rotate
+TAGS:   dhfh_treasure no_wall_fixup no_rotate
+PLACE:  Dwarf:$
 ORIENT: float
 WEIGHT: 15
+KITEM:  Z = dwarven rune of Zot
 MONS:   deep dwarf
 MONS:   troll w:20, elf, wight
 MONS:   wight
@@ -358,7 +362,7 @@ MAP
 cccccccccccccccccccc@cccccccccccccccccccc
 c$X...x............x.x............x...X$c
 c*X1...........x.4.x.x.4.x...........2X.c
-c.X*..x........x...G.G...x........x..1X.c
+cZX*..x........x...G.G...x........x..1X.c
 c.X1..x........x.G.....G.x........x..*X.c
 c.X2........xxxxxx..4..xxxxxx........1X*c
 c$X...x........$$x.....x$$........x...X$c
@@ -366,7 +370,7 @@ cccccccccccccccccccc@cccccccccccccccccccc
 ENDMAP
 
 NAME:   dhfh_treasure_sunken_vault
-TAGS:   dhfh_treasure no_item_gen no_monster_gen no_wall_fixup no_rotate
+TAGS:   dhfh_treasure no_wall_fixup no_rotate
 ORIENT: float
 WEIGHT: 5
 MONS:   wight
@@ -396,7 +400,7 @@ ENDMAP
 ################################################
 NAME:   dhfh_guard_house_d2
 TAGS:   dhfh_guard_house allow_dup
-DEPTH:  Dwarf:1
+DEPTH:  Dwarf
 NSUBST: C = 1:@ / *:c
 KITEM:  * = % w:20 / * / $
 SUBST:  1 = 2 w:2 / 1 / .
@@ -420,7 +424,7 @@ ENDMAP
 
 NAME:   dhfh_guard_house_d3
 TAGS:   dhfh_guard_house allow_dup
-DEPTH:  Dwarf:1
+DEPTH:  Dwarf
 NSUBST: C = 1:@ / *:c
 KITEM:  * = % w:20 / * / $
 SUBST:  1 = 2 w:2 / 1 / .
@@ -443,7 +447,7 @@ ENDMAP
 
 NAME:   dhfh_guard_house_d4
 TAGS:   dhfh_guard_house allow_dup
-DEPTH:  Dwarf:1
+DEPTH:  Dwarf
 NSUBST: C = 1:@ / *:c
 KITEM:  * = % w:20 / * / $
 SUBST:  1 = 2 w:2 / 1 / .
@@ -494,7 +498,7 @@ MAP
 ENDMAP
 
 NAME:     dhfh_hall
-TAGS:     no_monster_gen no_item_gen no_wall_fixup
+TAGS:     no_wall_fixup
 ORIENT:   northwest
 PLACE:    Dwarf
 NSUBST:   s = 1:+ / *:c
@@ -549,7 +553,7 @@ NAME:   dhfh_barracks_1
 TAGS:   extra uniq_dhfh_barracks chance_dhfh_barracks
 ORIENT: float
 CHANCE: 50%
-DEPTH:  Dwarf:1
+DEPTH:  Dwarf
 MONS:   elf w:5 / deep dwarf / deep dwarf necromancer / \
         deep dwarf berserker
 MONS:   shadow wraith / wraith / wight w:5 / troll / deep troll w:5 / \
@@ -612,7 +616,7 @@ NAME:   dhfh_barracks_2
 TAGS:   extra uniq_dhfh_barracks chance_dhfh_barracks
 ORIENT: float
 CHANCE: 50%
-DEPTH:  Dwarf:1
+DEPTH:  Dwarf
 MONS:   elf w:5 / dwarf / deep dwarf necromancer / \
         deep dwarf berserker
 MONS:   shadow wraith / wraith / wight w:5 / troll / deep troll w:5 / \

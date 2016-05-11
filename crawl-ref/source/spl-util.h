@@ -54,6 +54,7 @@ spell_type spell_by_name(string name, bool partial_match = false);
 
 spschool_flag_type school_by_name(string name);
 
+int average_schools(const spschools_type &disciplines, const int scale = 1);
 int get_spell_slot_by_letter(char letter);
 int get_spell_letter(spell_type spell);
 spell_type get_spell_by_letter(char letter);

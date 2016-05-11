@@ -53,6 +53,7 @@ public:
     attack_type     attk_type;
     attack_flavour  attk_flavour;
     int             attk_damage;
+    int             sp_cost;
 
     item_def        *weapon;
     brand_type      damage_brand;
@@ -105,6 +106,7 @@ public:
     string actor_pronoun(const actor *a, pronoun_type ptyp, bool actor_visible);
     string anon_name(description_level_type desc);
     string anon_pronoun(pronoun_type ptyp);
+    virtual const item_def* get_weapon_used();
 
 // Private Properties
     string aux_source;

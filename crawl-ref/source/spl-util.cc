@@ -412,6 +412,9 @@ int spell_hunger(spell_type which_spell, bool rod)
 
     int hunger;
 
+    // maximum hunger = 1215
+    // level 5 hunger = 375
+    // level 1 hunger = 15
     hunger = 15 * level * level;
 
     if (player_energy())
@@ -476,14 +479,26 @@ int spell_mana(spell_type which_spell, bool raw)
     return cost;
 }
 
+int average_schools(const spschools_type &disciplines, const int scale)
+{
+    int multiplier = 0;
+    int skillcount = count_bits(disciplines);
+    if (skillcount)
+    {
+        for (const auto disc : spschools_type::range())
+        {
+            if (disciplines & disc)
+                multiplier += you.skill(spell_type2skill(disc), scale);
+        }
+        multiplier /= skillcount;
+    }
+    return multiplier;
+}
+
 int spell_freeze_mana(const spell_type spell)
 {
     int amount = 0;
-    if (is_summon_spell(spell))
-    {
-        const int base_mana = spell_mana(spell, true);
-        amount = base_mana * 2;
-    }
+    amount = player_spell_mp_freeze_modifier(spell, false, amount);
     return amount;
 }
 

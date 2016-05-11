@@ -1125,8 +1125,6 @@ _random_map_in_list(const map_selector &sel,
 static const map_def *_random_map_by_selector(const map_selector &sel)
 {
     const vault_indices filtered = _eligible_maps_for_selector(sel);
-    if (filtered.size() == 0)
-        vault_indices filtered2 = _eligible_maps_for_selector(sel);
     return _random_map_in_list(sel, filtered);
 }
 

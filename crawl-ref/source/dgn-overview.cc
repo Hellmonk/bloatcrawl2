@@ -295,7 +295,7 @@ static string _get_unseen_branches()
 
     for (branch_iterator it; it; ++it)
     {
-        if (it->id < BRANCH_FIRST_NON_DUNGEON)
+        if (it->id == BRANCH_DUNGEON)
             continue;
 
         const branch_type branch = it->id;
@@ -1012,13 +1012,13 @@ void unmarshallUniqueAnnotations(reader& inf)
 */
 bool connected_branch_can_exist(branch_type br)
 {
-    if (br == BRANCH_SPIDER && stair_level.count(BRANCH_SNAKE)
-        || br == BRANCH_SNAKE && stair_level.count(BRANCH_SPIDER)
-        || br == BRANCH_SWAMP && stair_level.count(BRANCH_SHOALS)
-        || br == BRANCH_SHOALS && stair_level.count(BRANCH_SWAMP))
-    {
-        return false;
-    }
+//    if (br == BRANCH_SPIDER && stair_level.count(BRANCH_SNAKE)
+//        || br == BRANCH_SNAKE && stair_level.count(BRANCH_SPIDER)
+//        || br == BRANCH_SWAMP && stair_level.count(BRANCH_SHOALS)
+//        || br == BRANCH_SHOALS && stair_level.count(BRANCH_SWAMP))
+//    {
+//        return false;
+//    }
 
     return true;
 }

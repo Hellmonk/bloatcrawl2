@@ -1,3 +1,5 @@
+#include "enum.h"
+
 /**
  * Status defaults for durations.
  */
@@ -149,10 +151,10 @@ static const duration_def duration_data[] =
       {{ "You feel a little less clever now.", []() {
           notify_stat_change(STAT_INT, -5, true);
       }}}},
-    { DUR_CARE,
-      YELLOW, "Care",
-      "care", "",
-      "You are being more careful.", D_NO_FLAGS},
+    { DUR_FOCUS_MODE,
+      YELLOW, "Focus",
+      "focus", "",
+      "You are focussed.", D_NO_FLAGS},
     { DUR_CONF,
       RED, "Conf",
       "confused", "conf",
@@ -191,10 +193,10 @@ static const duration_def duration_data[] =
       "divinely vigorous", "divine vigour",
       "You are imbued with divine vigour.", D_NO_FLAGS,
       {{ "", elyvilon_remove_divine_vigour }}},
-    { DUR_ESCAPE,
-      YELLOW, "Escape",
-      "escape", "",
-      "You are focussed on escape.", D_NO_FLAGS},
+    { DUR_QUICK_MODE,
+      YELLOW, "Quick",
+      "quick", "",
+      "You are quick.", D_NO_FLAGS},
     { DUR_EXHAUSTED,
       YELLOW, "Exh",
       "exhausted", "",
@@ -244,7 +246,7 @@ static const duration_def duration_data[] =
       "petrifying", "",
       "You are turning to stone.", D_DISPELLABLE /*but special-cased*/ | D_EXPIRES,
         {}, 1},
-    { DUR_POWER,
+    { DUR_POWER_MODE,
       YELLOW, "Power",
       "power", "",
       "You are exerting yourself.", D_NO_FLAGS},

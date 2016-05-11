@@ -254,3 +254,19 @@ Depths
 The Depths are the deepest part of the dungeon proper, subject to the
 corrupting influence of the Realm of Zot without being considered a part of it.
 %%%%
+Dwarven Fortress
+
+Not much is known about this yet. Maybe you can be the first to survive and tell
+others about it!
+%%%%
+Depths
+
+The Depths are the deepest part of the dungeon proper, subject to the
+corrupting influence of the Realm of Zot without being considered a part of it.
+%%%%
+Enchanted Forest
+
+Not much is known about this yet. Maybe you can be the first to survive and tell
+others about it!
+%%%%
+

@@ -925,30 +925,33 @@ const char* rune_type_name(short p)
 {
     switch (static_cast<rune_type>(p))
     {
-    case RUNE_DIS:         return "iron";
-    case RUNE_GEHENNA:     return "obsidian";
-    case RUNE_COCYTUS:     return "icy";
-    case RUNE_TARTARUS:    return "bone";
-    case RUNE_SLIME:       return "slimy";
-    case RUNE_VAULTS:      return "silver";
-    case RUNE_SNAKE:       return "serpentine";
-    case RUNE_ELF:         return "elven";
-    case RUNE_TOMB:        return "golden";
-    case RUNE_SWAMP:       return "decaying";
-    case RUNE_SHOALS:      return "barnacled";
-    case RUNE_SPIDER:      return "gossamer";
-    case RUNE_FOREST:      return "mossy";
+        case RUNE_SWAMP: return "decaying";
+        case RUNE_SNAKE: return "serpentine";
+        case RUNE_SHOALS: return "barnacled";
+        case RUNE_SLIME: return "slimy";
+        case RUNE_ELF: return "elven";
+        case RUNE_VAULTS: return "silver";
+        case RUNE_TOMB: return "golden";
 
-    // pandemonium and abyss runes:
-    case RUNE_DEMONIC:     return "demonic";
-    case RUNE_ABYSSAL:     return "abyssal";
+        case RUNE_DIS: return "iron";
+        case RUNE_GEHENNA: return "obsidian";
+        case RUNE_COCYTUS: return "icy";
+        case RUNE_TARTARUS: return "bony";
 
-    // special pandemonium runes:
-    case RUNE_MNOLEG:      return "glowing";
-    case RUNE_LOM_LOBON:   return "magical";
-    case RUNE_CEREBOV:     return "fiery";
-    case RUNE_GLOORX_VLOQ: return "dark";
-    default:               return "buggy";
+        case RUNE_ABYSSAL: return "abyssal";
+        case RUNE_DEMONIC: return "demonic";
+
+            // special pandemonium runes:
+        case RUNE_MNOLEG: return "glowing";
+        case RUNE_LOM_LOBON: return "magical";
+        case RUNE_CEREBOV: return "fiery";
+        case RUNE_GLOORX_VLOQ: return "dark";
+
+        case RUNE_SPIDER: return "gossamer";
+        case RUNE_DWARF: return "dwarven";
+        case RUNE_CRYPT: return "creeping";
+
+        default: return "buggy";
     }
 }
 
@@ -4100,8 +4103,7 @@ void init_item_name_cache()
                 }
                 else if (name.find("buggy") != string::npos)
                 {
-                    crawl_state.add_startup_error("Bad name for item name"
-                                                  " cache: " + name);
+                    crawl_state.add_startup_error("Bad name for item name cache: " + name);
                     continue;
                 }
 
