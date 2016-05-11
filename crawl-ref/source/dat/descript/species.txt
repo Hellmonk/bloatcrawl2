@@ -128,13 +128,13 @@ with the basics of magic, however.
 Sludge Elf
 
 A depraved type of elf, who prefers cunning to fair fighting, and dark magic to
-other wizardry. They can't obtain much power in magic, but can easily cast even
-very complex spells.
+other wizardry. They can't obtain much magical power, but can easily cast even
+very complex spells. They are rumored to have orcish blood in their lineage.
 %%%%
 Spriggan
 
-Very small, very frail and very fast, Spriggans make highly competent stabbers
-and spellcasters.
+Very small, very frail and very fast, Spriggans make highly competent stabbers,
+chefs, and spellcasters.
 %%%%
 Vampire
 
