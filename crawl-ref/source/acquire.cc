@@ -1443,6 +1443,7 @@ int acquirement_create_item(object_class_type class_wanted,
                 break;
 
             case RING_LOUDNESS:
+            case RING_TELEPORTATION:
             case AMU_INACCURACY:
                 // These are the only truly bad pieces of jewellery.
                 if (!one_chance_in(9))
@@ -1454,8 +1455,7 @@ int acquirement_create_item(object_class_type class_wanted,
             }
         }
         else if (acq_item.base_type == OBJ_WEAPONS
-                 && !is_unrandom_artefact(acq_item)
-                 && acq_item.sub_type != WPN_BLOWGUN)
+                 && !is_unrandom_artefact(acq_item))
         {
             // These can never get egos, and mundane versions are quite common,
             // so guarantee artefact status. Rarity is a bit low to compensate.

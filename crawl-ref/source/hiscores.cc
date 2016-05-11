@@ -383,7 +383,7 @@ static void _show_morgue(scorefile_entry& se)
     cols.add_formatted(
             0,
             morgue_text,
-            true, true);
+            true);
 
     vector<formatted_string> blines = cols.formatted_lines();
 
@@ -1721,7 +1721,8 @@ void scorefile_entry::init(time_t dt)
     zigmax     = you.zig_max;
 
     scrolls_used = 0;
-    pair<caction_type, int> p(CACT_USE, OBJ_SCROLLS);
+    dprf("checking %d", caction_compound(OBJ_SCROLLS));
+    pair<caction_type, int> p(CACT_USE, caction_compound(OBJ_SCROLLS));
 
     const int maxlev = min<int>(you.max_level, get_max_skill_level());
     if (you.action_count.count(p))
@@ -1729,7 +1730,7 @@ void scorefile_entry::init(time_t dt)
             scrolls_used += you.action_count[p][i];
 
     potions_used = 0;
-    p = make_pair(CACT_USE, OBJ_POTIONS);
+    p = make_pair(CACT_USE, caction_compound(OBJ_POTIONS));
     if (you.action_count.count(p))
         for (int i = 0; i < maxlev; i++)
             potions_used += you.action_count[p][i];
@@ -2696,7 +2697,8 @@ string scorefile_entry::death_description(death_desc_verbosity verbosity) const
             {
                 if (!semiverbose)
                 {
-                    desc += (is_vowel(auxkilldata[0])) ? "... with an "
+                    desc += auxkilldata == "damnation" ? "... with " :
+                            (is_vowel(auxkilldata[0])) ? "... with an "
                                                        : "... with a ";
                     desc += auxkilldata;
                     desc += _hiscore_newline_string();

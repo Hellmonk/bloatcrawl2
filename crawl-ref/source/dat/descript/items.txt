@@ -292,6 +292,16 @@ A box filled with the bizarre leftovers of a depraved wizard's magical
 experimentations. Opening it might set loose a friendly mutant beast: bizarre
 creatures, each with their own combination of traits. Increased skill with
 Evocations will allow stronger beasts to be released.
+
+There are six known traits:
+ * Bat beasts fly and move very quickly, but erratically.
+ * Fire beasts resist and breathe fire.
+ * Ox beasts resist cold, are armoured with thick fur, and can knock back foes.
+ * Shock beasts resist electricity and can transform into living lightning.
+ * Sting beasts resist poison and have a reaching poison-tail attack.
+ * Weird beasts can see invisible and attack with constricting tentacles.
+
+As far as anyone knows, all beasts have exactly two of these traits.
 %%%%
 bread ration
 
@@ -701,11 +711,13 @@ quest is complete.
 %%%%
 pair of boots
 
-A pair of boots.
+A pair of boots. They are worn on the feet, and cover all but the largest
+hooves and talons.
 %%%%
 pair of gloves
 
-A pair of gloves.
+A pair of gloves. They are worn on the hands, and cover all but the largest
+claws.
 %%%%
 pearl dragon armour
 

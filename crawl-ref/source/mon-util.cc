@@ -1753,9 +1753,7 @@ void name_zombie(monster* mon, monster_type mc, const string &mon_name)
         mon->flags |= MF_NAME_ADJECTIVE;
     }
     else if (mons_species(mc) == MONS_SERPENT_OF_HELL)
-    {
         mon->mname = "";
-    }
 
     if (starts_with(mon->mname, "shaped "))
         mon->flags |= MF_NAME_SUFFIX;
@@ -5370,6 +5368,7 @@ void init_mutant_beast(monster &mons, short HD, vector<int> beast_facets,
         {
             case BF_BAT:
                 mons.props[MON_SPEED_KEY] = mons.speed * 2;
+                mons.calc_speed();
                 break;
             case BF_FIRE:
                 mons.spells.emplace_back(SPELL_FIRE_BREATH, 60,

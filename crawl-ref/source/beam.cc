@@ -291,6 +291,7 @@ bool player_tracer(zap_type ztype, int power, bolt &pbolt, int range)
     pbolt.foe_ratio        = 100;
     pbolt.beam_cancelled   = false;
     pbolt.dont_stop_player = false;
+    pbolt.dont_stop_trees  = false;
 
     // Clear misc
     pbolt.seen          = false;
@@ -927,7 +928,7 @@ void bolt::burn_wall_effect()
 
 static bool _destroy_wall_msg(dungeon_feature_type feat, const coord_def& p)
 {
-    const char *msg = nullptr;
+    string msg = "";
     msg_channel_type chan = MSGCH_PLAIN;
     bool hear = player_can_hear(p);
     bool see = you.see_cell(p);
@@ -943,7 +944,7 @@ static bool _destroy_wall_msg(dungeon_feature_type feat, const coord_def& p)
         if (see)
         {
             msg = (feature_description_at(p, false, DESC_THE, false)
-                   + " explodes into countless fragments.").c_str();
+                   + " explodes into countless fragments.");
         }
         else if (hear)
         {
@@ -992,9 +993,9 @@ static bool _destroy_wall_msg(dungeon_feature_type feat, const coord_def& p)
         break;
     }
 
-    if (msg)
+    if (!msg.empty())
     {
-        mprf(chan, "%s", msg);
+        mprf(chan, "%s", msg.c_str());
         return true;
     }
     else
@@ -1073,6 +1074,34 @@ void bolt::affect_wall()
     {
         if (!can_affect_wall(grd(pos())))
             finish_beam();
+
+        // potentially warn about offending your god by burning/disinting trees
+        const bool burns_trees = can_burn_trees();
+        const bool god_relevant = you.religion == GOD_DITHMENOS && burns_trees
+                                  || you.religion == GOD_FEDHAS;
+        const string veto_key = burns_trees ? "veto_fire" : "veto_disintegrate";
+        const bool vetoed = env.markers.property_at(pos(), MAT_ANY, veto_key)
+                            == "veto";
+        // XXX: should check env knowledge for feat_is_tree()
+        if (god_relevant && feat_is_tree(grd(pos())) && !vetoed
+            && !is_targeting && YOU_KILL(thrower) && !dont_stop_trees)
+        {
+            const string prompt =
+                make_stringf("Are you sure you want to %s %s?",
+                             burns_trees ? "burn" : "destroy",
+                             feature_description_at(pos(), false, DESC_THE,
+                                                    false).c_str());
+
+            if (yesno(prompt.c_str(), false, 'n'))
+                dont_stop_trees = true;
+            else
+            {
+                canned_msg(MSG_OK);
+                beam_cancelled = true;
+                finish_beam();
+            }
+        }
+
         // The only thing that doesn't stop at walls.
         if (flavour != BEAM_DIGGING)
             finish_beam();
@@ -2330,6 +2359,7 @@ void bolt_parent_init(const bolt &parent, bolt &child)
     child.friend_info.dont_stop = parent.friend_info.dont_stop;
     child.foe_info.dont_stop    = parent.foe_info.dont_stop;
     child.dont_stop_player      = parent.dont_stop_player;
+    child.dont_stop_trees       = parent.dont_stop_trees;
 
 #ifdef DEBUG_DIAGNOSTICS
     child.quiet_debug    = parent.quiet_debug;
@@ -5263,7 +5293,8 @@ bool ench_flavour_affects_monster(beam_type flavour, const monster* mon,
                  && !mon->is_summoned()
                  && !mons_enslaved_body_and_soul(mon)
                  && mon->attitude != ATT_FRIENDLY
-                 && mons_intel(mon) >= I_HUMAN;
+                 && mons_intel(mon) >= I_HUMAN
+                 && mon->type != MONS_PANDEMONIUM_LORD;
             break;
 
         case BEAM_DISPEL_UNDEAD:

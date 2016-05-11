@@ -534,6 +534,15 @@ void dec_penance(god_type god, int val)
                 add_daction(DACT_SLIME_NEW_ATTEMPT);
             else if (god == GOD_PAKELLAS)
                 pakellas_id_device_charges();
+
+            if (have_passive(passive_t::friendly_plants)
+                && env.forest_awoken_until)
+            {
+                // XXX: add a dact here & on-join to handle offlevel
+                // awakened forests?
+                for (monster_iterator mi; mi; ++mi)
+                     mi->del_ench(ENCH_AWAKEN_FOREST);
+            }
         }
         else if (god == GOD_PAKELLAS)
         {
@@ -1026,7 +1035,7 @@ static bool _give_pakellas_gift()
 
     bool success = false;
     object_class_type basetype = OBJ_UNASSIGNED;
-    int subtype;
+    int subtype = -1;
 
     if (you.piety >= piety_breakpoint(0))
     {
@@ -1077,6 +1086,7 @@ static bool _give_pakellas_gift()
         success = acquirement(basetype, you.religion);
     else
     {
+        ASSERT(subtype >= 0);
         int thing_created = items(true, basetype, subtype, 1, 0,
                                   you.religion);
 

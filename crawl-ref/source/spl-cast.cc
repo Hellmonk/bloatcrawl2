@@ -478,6 +478,14 @@ static int _apply_spellcasting_success_boosts(spell_type spell, int chance)
     return chance * fail_reduce / 100;
 }
 
+/**
+ * Calculate the player's failure rate with the given spell, including all
+ * modifiers. (Armour, mutations, statuses effects, etc.)
+ *
+ * @param spell     The spell in question.
+ * @return          A failure rate. This is *not* a percentage - for a human-
+ *                  readable version, call _get_true_fail_rate().
+ */
 int raw_spell_fail(spell_type spell)
 {
     const int spell_level = spell_difficulty(spell);
@@ -1453,7 +1461,11 @@ spret_type your_spells(spell_type spell, int powc,
         if (dir == DIR_DIR)
             mprf(MSGCH_PROMPT, "%s", prompt ? prompt : "Which direction?");
 
-        const bool needs_path = !testbits(flags, SPFLAG_TARGET);
+        const bool needs_path = !testbits(flags, SPFLAG_TARGET)
+                                // Apportation must be SPFLAG_TARGET, since a
+                                // shift-direction makes no sense for it, but
+                                // it nevertheless requires line-of-fire.
+                                || spell == SPELL_APPORTATION;
 
         const int range = calc_spell_range(spell, powc);
 
