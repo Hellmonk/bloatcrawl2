@@ -383,7 +383,7 @@ void ghost_demon::init_player_ghost(bool actual_ghost)
     {
         // Unarmed combat.
         if (you.innate_mutation[MUT_CLAWS])
-            damage += you.experience_level;
+            damage += effective_xl();
 
         damage += you.skills[SK_UNARMED_COMBAT];
     }
@@ -403,7 +403,7 @@ void ghost_demon::init_player_ghost(bool actual_ghost)
 
     best_skill = ::best_skill(SK_FIRST_SKILL, SK_LAST_SKILL);
     best_skill_level = you.skills[best_skill];
-    xl = you.experience_level;
+    xl = effective_xl();
 
     flies = true;
 

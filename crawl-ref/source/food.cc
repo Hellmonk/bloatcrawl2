@@ -977,7 +977,7 @@ static void _eat_chunk(item_def& food)
         if (you.species == SP_GHOUL)
         {
             suppress_msg = true;
-            const int hp_amt = 1 + random2avg(5 + you.experience_level, 3);
+            const int hp_amt = 1 + random2avg(5 + effective_xl(), 3);
             _heal_from_food(hp_amt);
         }
 

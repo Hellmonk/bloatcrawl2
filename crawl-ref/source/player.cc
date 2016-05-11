@@ -1321,7 +1321,7 @@ int player_hunger_rate(bool temp)
 
 int player_spell_levels()
 {
-    int sl = you.experience_level - 1 + you.skill(SK_SPELLCASTING, 2, true);
+    int sl = effective_xl() - 1 + you.skill(SK_SPELLCASTING, 2, true);
 
     bool fireball = false;
     bool delayed_fireball = false;
@@ -2043,7 +2043,7 @@ int player_movement_speed()
 
         // Tengu can move slightly faster when flying.
         if (you.tengu_flight())
-            mv -= 200 + you.experience_level * 14;
+            mv -= 200 + effective_xl() * 14;
     }
 
     if (you.liquefied_ground() && you.species != SP_LAVA_ORC)
@@ -2339,7 +2339,7 @@ static int _player_scale_evasion(int prescaled_ev, const int scale)
     // Flying Tengu get a 20% evasion bonus.
     if (you.tengu_flight())
     {
-        const int ev_bonus = max(1 * scale, prescaled_ev * you.experience_level / 60);
+        const int ev_bonus = max(1 * scale, prescaled_ev * effective_xl() / 60);
         return prescaled_ev + ev_bonus;
     }
 
@@ -4647,6 +4647,12 @@ void set_mp(int new_amount)
     you.redraw_magic_points = true;
 }
 
+int effective_xl()
+{
+    const int effective = you.experience_level - player_mutation_level(MUT_INEXPERIENCED) * 2;
+    return max(1, effective);
+}
+
 // If trans is true, being berserk and/or transformed is taken into account
 // here. Else, the base hp is calculated. If rotted is true, calculate the
 // real max hp you'd have if the rotting was cured.
@@ -4657,11 +4663,11 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
     if (you.species == SP_MOON_TROLL)
         hitp  = 80;
     else
-        hitp  = you.experience_level * 11 / 2 + 8;
+        hitp  = effective_xl() * 11 / 2 + 8;
 
     hitp += you.hp_max_adj_perm;
     // Important: we shouldn't add Heroism boosts here.
-    hitp += you.experience_level * you.skill(SK_FIGHTING, 5, true) / 70
+    hitp += effective_xl() * you.skill(SK_FIGHTING, 5, true) / 70
           + (you.skill(SK_FIGHTING, 3, true) + 1) / 2;
 
     // Racial modifier.
@@ -4736,7 +4742,7 @@ int get_real_mp(bool include_items, bool rotted)
 
     const int scale = 100;
     int spellcasting = you.skill(SK_SPELLCASTING, 1 * scale, true);
-    int scaled_xl = you.experience_level * scale;
+    int scaled_xl = effective_xl() * scale;
 
     // the first 4 experience levels give an extra .5 mp up to your spellcasting
     // the last 4 give no mp
@@ -4788,6 +4794,11 @@ int get_real_mp(bool include_items, bool rotted)
     max_mp = max(max_mp, 0);
 
     return max_mp;
+}
+
+int get_unfrozen_mp()
+{
+    return you.magic_points + you.mp_frozen_summons;
 }
 
 bool player_regenerates_hp()
@@ -7029,7 +7040,7 @@ int player_res_magic(bool calc_unid, bool temp)
     if (temp && you.form == TRAN_SHADOW)
         return MAG_IMMUNE;
 
-    int rm = you.experience_level * species_mr_modifier(you.species);
+    int rm = effective_xl() * species_mr_modifier(you.species);
 
     // randarts
     rm += MR_PIP * you.scan_artefacts(ARTP_MAGIC_RESISTANCE, calc_unid);
@@ -9526,7 +9537,7 @@ int player_tohit_modifier(int old_tohit)
     else if (you.exertion == EXERT_FOCUS)
         new_tohit = new_tohit * 4 / 3 + 50;
 
-    return div_rand_round(new_tohit, 40);
+    return new_tohit / 40;
 }
 
 int player_damage_modifier(int old_damage, bool silent)
@@ -9542,7 +9553,7 @@ int player_damage_modifier(int old_damage, bool silent)
     else if (you.exertion == EXERT_POWER)
         new_damage = new_damage * 4 / 3 + 20;
 
-    return div_rand_round(new_damage, 40);
+    return new_damage / 40;
 }
 
 int player_attack_delay_modifier(int attack_delay)
@@ -9567,7 +9578,7 @@ int player_spellpower_modifier(int old_spellpower)
     if (you.exertion == EXERT_POWER)
         new_spellpower = new_spellpower * 4 / 3 + 100;
 
-    return div_rand_round(new_spellpower, 40);
+    return new_spellpower / 40;
 }
 
 
@@ -9581,7 +9592,7 @@ int player_stealth_modifier(int old_stealth)
     if (you.exertion == EXERT_FOCUS)
         new_stealth = new_stealth * 4 / 3 + 200;
 
-    return div_rand_round(new_stealth, 40);
+    return new_stealth / 40;
 }
 
 int player_evasion_modifier(int old_evasion)
@@ -9591,7 +9602,7 @@ int player_evasion_modifier(int old_evasion)
     if (you.exertion == EXERT_FOCUS)
         new_evasion = new_evasion * 4 / 3 + 50;
 
-    return div_rand_round(new_evasion, 40);
+    return new_evasion / 40;
 }
 
 void player_update_last_hit_chance(int chance)

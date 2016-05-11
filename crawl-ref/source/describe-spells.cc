@@ -251,7 +251,7 @@ static int _spell_colour(spell_type spell, const item_def* const source_item)
 
     // this is kind of ugly.
     if (!you_can_memorise(spell)
-        || you.experience_level < spell_difficulty(spell)
+        || effective_xl() < spell_difficulty(spell)
         || player_spell_levels() < spell_levels_required(spell))
     {
         return COL_USELESS;

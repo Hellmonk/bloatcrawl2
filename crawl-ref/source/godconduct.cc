@@ -334,7 +334,7 @@ static peeve_map divine_peeves[] =
             1, 1
         } },
         { DID_UNCLEAN, {
-            "you use unclean or chatoic magic or items", true,
+            "you use unclean or chaotic magic or items", true,
             1, 1, " forgives your inadvertent unclean act, just this once."
         } },
         { DID_CHAOS, {
@@ -770,7 +770,7 @@ static like_map divine_likes[] =
                     return;
 
                 const int level = denom; // also = piety
-                denom = level / 2 + 6 - you.experience_level / 4;
+                denom = level / 2 + 6 - effective_xl() / 4;
                 piety = denom - 4;
             }
         } },

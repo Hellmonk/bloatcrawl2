@@ -328,7 +328,7 @@ bool player_can_memorise(const item_def &book)
     for (spell_type stype : spells_in_book(book))
     {
         // Easiest spell already too difficult?
-        if (spell_difficulty(stype) > you.experience_level
+        if (spell_difficulty(stype) > effective_xl()
             || player_spell_levels() < spell_levels_required(stype))
         {
             return false;
@@ -472,7 +472,7 @@ static bool _get_mem_list(spell_list &mem_spells,
             if (current_spell != SPELL_NO_SPELL)
                 avail_slots -= spell_levels_required(current_spell);
 
-            if (spell_difficulty(spell) > you.experience_level)
+            if (spell_difficulty(spell) > effective_xl())
                 num_low_xl++;
             else if (avail_slots < spell_levels_required(spell))
                 num_low_levels++;
@@ -684,7 +684,7 @@ static spell_type _choose_mem_spell(spell_list &spells,
         if (vehumet_is_offering(spell))
             colour = LIGHTBLUE;
         // Grey out spells for which you lack experience or spell levels.
-        else if (spell_difficulty(spell) > you.experience_level
+        else if (spell_difficulty(spell) > effective_xl()
                  || player_spell_levels() < spell_levels_required(spell))
             colour = DARKGRAY;
         else
@@ -838,7 +838,7 @@ static bool _learn_spell_checks(spell_type specspell, bool wizard = false)
         return false;
     }
 
-    if (you.experience_level < spell_difficulty(specspell) && !wizard)
+    if (effective_xl() < spell_difficulty(specspell) && !wizard)
     {
         mpr("You're too inexperienced to learn that spell!");
         return false;

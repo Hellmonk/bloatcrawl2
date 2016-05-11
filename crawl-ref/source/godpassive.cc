@@ -1342,7 +1342,7 @@ void dithmenos_shadow_spell(bolt* orig_beam, spell_type spell)
     // Don't let shadow spells get too powerful.
     mon->set_hit_dice(max(1,
                           min(3 * spell_difficulty(spell),
-                              you.experience_level) / 2));
+                              effective_xl()) / 2));
 
     mon->target = clamp_in_bounds(target);
     if (actor_at(target))

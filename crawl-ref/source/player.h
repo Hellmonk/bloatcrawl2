@@ -1076,6 +1076,7 @@ void dec_max_hp(int hp_loss);
 void deflate_hp(int new_level, bool floor);
 void set_hp(int new_amount);
 
+int effective_xl();
 int get_real_hp(bool trans, bool rotted = false, bool adjust_for_difficulty = true);
 int get_real_sp(bool include_items = true);
 int get_real_mp(bool include_items = true, bool rotted = false);
@@ -1085,6 +1086,8 @@ string describe_contamination(int level);
 
 void set_sp(int new_amount);
 void set_mp(int new_amount);
+
+int get_unfrozen_mp();
 
 bool player_regenerates_hp();
 bool player_regenerates_sp();

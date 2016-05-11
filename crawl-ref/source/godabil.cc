@@ -1713,7 +1713,12 @@ bool beogh_gift_item()
     if (!beogh_can_gift_items_to(mons, false))
         return false;
 
-    int item_slot = prompt_invent_item(you.inv1, "Give which item?",
+    FixedVector< item_def, ENDOFPACK > *inv_to_give_from;
+
+    if (!inv_from_prompt(inv_to_give_from, "Give"))
+        return false;
+
+    int item_slot = prompt_invent_item(*inv_to_give_from, "Give which item?",
                                        MT_INVLIST, OSEL_BEOGH_GIFT, true);
 
     if (item_slot == PROMPT_ABORT || item_slot == PROMPT_NOTHING)
@@ -1722,7 +1727,7 @@ bool beogh_gift_item()
         return false;
     }
 
-    item_def& gift = you.inv1[item_slot];
+    item_def& gift = (*inv_to_give_from)[item_slot];
 
     const bool shield = is_shield(gift);
     const bool body_armour = gift.base_type == OBJ_ARMOUR
@@ -1758,16 +1763,15 @@ bool beogh_gift_item()
                                  is_range_weapon(*mons_weapon);
 
     mons->take_item(item_slot, body_armour ? MSLOT_ARMOUR :
-                                    shield ? MSLOT_SHIELD :
-                              use_alt_slot ? MSLOT_ALT_WEAPON :
-                                             MSLOT_WEAPON);
+                               shield ? MSLOT_SHIELD :
+                               use_alt_slot ? MSLOT_ALT_WEAPON :
+                               MSLOT_WEAPON, *inv_to_give_from);
     if (use_alt_slot)
         mons->swap_weapons();
 
     dprf("is_ranged weap: %d", range_weapon);
     if (range_weapon)
         gift_ammo_to_orc(mons, true); // give a small initial ammo freebie
-
 
     if (shield)
         mons->props[BEOGH_SH_GIFT_KEY] = true;
@@ -4530,7 +4534,7 @@ static void _gozag_place_shop(int index)
     feature_spec feat = kmspec.get_feat();
     shop_spec *spec = feat.shop.get();
     ASSERT(spec);
-    place_spec_shop(you.pos(), *spec, you.experience_level);
+    place_spec_shop(you.pos(), *spec, effective_xl());
 
     link_items();
     env.markers.add(new map_feature_marker(you.pos(), DNGN_ABANDONED_SHOP));
@@ -6017,11 +6021,11 @@ bool ru_do_sacrifice(ability_type sac)
         variable_sac = false;
         mut = sac_def.mutation;
         num_sacrifices = 1;
-        const char* handtxt = "";
+        string handtxt = "";
         if (sac == ABIL_RU_SACRIFICE_HAND)
-            handtxt = you.hand_name(true).c_str();
+            handtxt = you.hand_name(true);
 
-        offer_text = make_stringf("%s%s", sac_def.sacrifice_text, handtxt);
+        offer_text = sac_def.sacrifice_text + handtxt;
         mile_text = make_stringf("%s.", sac_def.milestone_text);
     }
 
@@ -6395,7 +6399,7 @@ bool ru_power_leap()
 
         //damage scales with XL amd piety
         mon->hurt((actor*)&you, roll_dice(1 + div_rand_round(you.piety *
-            (54 + you.experience_level), 777), 3),
+            (54 + effective_xl()), 777), 3),
             BEAM_ENERGY, KILLED_BY_BEAM, "", "", true);
     }
 
@@ -6459,7 +6463,7 @@ static int _apply_apocalypse(coord_def where)
 
     //damage scales with XL and piety
     const int pow = you.piety;
-    int die_size = 1 + div_rand_round(pow * (54 + you.experience_level), 584);
+    int die_size = 1 + div_rand_round(pow * (54 + effective_xl()), 584);
     int dmg = 10 + roll_dice(num_dice, die_size);
 
     mons->hurt(&you, dmg, BEAM_ENERGY, KILLED_BY_BEAM, "", "", true);

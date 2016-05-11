@@ -146,7 +146,7 @@ void seen_monsters_react(int stealth)
         gozag_check_bribe(*mi);
         slime_convert(*mi);
 
-        if (!mi->has_ench(ENCH_INSANE))
+        if (!mi->has_ench(ENCH_INSANE) && mi->can_see(you))
         {
             // Trigger Duvessa & Dowan upgrades
             if (mi->props.exists(ELVEN_ENERGIZE_KEY))
@@ -383,7 +383,7 @@ static void _maybe_gozag_incite(vector<monster*> monsters)
         }
 
         if (coinflip()
-            && mon->get_experience_level() >= random2(you.experience_level))
+            && mon->get_experience_level() >= random2(effective_xl()))
         {
             mon_count.add(mon);
             incited.push_back(mon);

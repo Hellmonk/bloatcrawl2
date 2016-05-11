@@ -948,7 +948,7 @@ static bool _actor_apply_cloud_side_effects(actor *act,
     {
         if (player)
         {
-            if (1 + random2(27) >= you.experience_level)
+            if (1 + random2(27) >= effective_xl())
             {
                 mpr("You choke on the stench!");
                 // effectively one or two turns, since it will be
@@ -979,7 +979,7 @@ static bool _actor_apply_cloud_side_effects(actor *act,
     {
         if (player)
         {
-            if (random2(55) - 13 >= you.experience_level)
+            if (random2(55) - 13 >= effective_xl())
             {
                 you.petrify(act);
                 return true;

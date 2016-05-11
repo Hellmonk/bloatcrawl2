@@ -773,10 +773,10 @@ static bool _beogh_forcibly_convert_orc(monster &mons, killer_type killer)
          "your xl: %d",
          mons.name(DESC_PLAIN).c_str(),
          mons.get_hit_dice(),
-         you.experience_level);
+         effective_xl());
 #endif
     if (random2(you.piety) >= piety_breakpoint(0)
-        && random2(you.experience_level) >= random2(mons.get_hit_dice())
+        && random2(effective_xl()) >= random2(mons.get_hit_dice())
         // Bias beaten-up-conversion towards the stronger orcs.
         && random2(mons.get_experience_level()) > 2)
     {

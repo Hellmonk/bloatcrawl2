@@ -3582,6 +3582,9 @@ static void _move_player(coord_def move)
             env.travel_trail.push_back(you.pos());
 
         you.time_taken *= player_movement_speed();
+
+        // remove movement penalty for now
+        /*
         if (Options.movement_penalty && in_quick_mode())
         {
             if (you.prev_direction.x == 0 && you.prev_direction.y == 0 || move.is_sharp_turn(you.prev_direction))
@@ -3592,6 +3595,7 @@ static void _move_player(coord_def move)
                 you.stamina_flags &= ~STAMF_SKIP_MOVEMENT_PENALTY;
             }
         }
+         */
 
         you.time_taken = div_rand_round(you.time_taken, 10);
         you.time_taken += additional_time_taken;

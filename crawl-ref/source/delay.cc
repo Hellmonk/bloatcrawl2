@@ -1529,7 +1529,7 @@ static inline bool _monster_warning(activity_interrupt_type ai,
             {
                 if (coinflip()
                     && mon->get_experience_level() >=
-                       random2(you.experience_level))
+                       random2(effective_xl()))
                 {
                     mprf(MSGCH_GOD, GOD_GOZAG, "Gozag incites %s against you.",
                          mon->name(DESC_THE).c_str());

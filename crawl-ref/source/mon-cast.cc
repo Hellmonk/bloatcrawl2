@@ -2704,14 +2704,14 @@ static bool _trace_los(monster* agent, bool (*vulnerable)(actor*))
         {
             tracer.friend_info.count++;
             tracer.friend_info.power +=
-                    ai->is_player() ? you.experience_level
+                    ai->is_player() ? effective_xl()
                                     : ai->as_monster()->get_experience_level();
         }
         else
         {
             tracer.foe_info.count++;
             tracer.foe_info.power +=
-                    ai->is_player() ? you.experience_level
+                    ai->is_player() ? effective_xl()
                                     : ai->as_monster()->get_experience_level();
         }
     }
@@ -2822,7 +2822,11 @@ static bool _glaciate_tracer(monster *caster, int pow, coord_def aim)
             continue;
 
         if (mons_atts_aligned(castatt, victim->temp_attitude()))
+        {
+            if (victim->is_player() && !(caster->holiness() & MH_DEMONIC))
+                return false; // never glaciate the player! except demons
             friendly += victim->get_experience_level();
+        }
         else
             enemy += victim->get_experience_level();
     }
@@ -5864,6 +5868,16 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         return;
 
     case SPELL_AWAKEN_FOREST:
+        if (have_passive(passive_t::friendly_plants))
+        {
+            if (you.can_see(*mons))
+            {
+                mprf("%s commands the forest to attack, but nothing happens.",
+                     mons->name(DESC_THE).c_str());
+            }
+            return;
+        }
+
         duration = 50 + random2(mons->spell_hd(spell_cast) * 20);
 
         mons->add_ench(mon_enchant(ENCH_AWAKEN_FOREST, 0, mons, duration));
@@ -7620,8 +7634,7 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
     case SPELL_AWAKEN_FOREST:
         return mon->has_ench(ENCH_AWAKEN_FOREST)
                || env.forest_awoken_until > you.elapsed_time
-               || !forest_near_enemy(mon)
-               || you_worship(GOD_FEDHAS);
+               || !forest_near_enemy(mon);
 
     case SPELL_DEATHS_DOOR:
         // The caster may be an (undead) enslaved soul.
@@ -7810,6 +7823,11 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
     case SPELL_WARNING_CRY:
         return friendly;
 
+    case SPELL_CONJURE_BALL_LIGHTNING:
+        return friendly
+               && (you.res_elec() <= 0 || you.hp <= 50)
+               && !(mon->holiness() & MH_DEMONIC); // rude demons
+
     case SPELL_SEAL_DOORS:
         return friendly || !_seal_doors_and_stairs(mon, true);
 
@@ -7869,7 +7887,8 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
                   && !player_res_torment(false)
                   && !player_kiku_res_torment();
     case SPELL_CHAIN_LIGHTNING:
-        return !_trace_los(mon, _elec_vulnerable);
+        return !_trace_los(mon, _elec_vulnerable)
+                || you.visible_to(mon) && friendly; // don't zap player
     case SPELL_CHAIN_OF_CHAOS:
         return !_trace_los(mon, _dummy_vulnerable);
     case SPELL_CORRUPTING_PULSE:
@@ -7879,7 +7898,9 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
     case SPELL_TORNADO:
         return mon->has_ench(ENCH_TORNADO)
                || mon->has_ench(ENCH_TORNADO_COOLDOWN)
-               || !_trace_los(mon, _tornado_vulnerable);
+               || !_trace_los(mon, _tornado_vulnerable)
+               || you.visible_to(mon) && friendly // don't cast near the player
+                  && !(mon->holiness() & MH_DEMONIC); // demons are rude
 
     case SPELL_ENGLACIATION:
         return !foe
