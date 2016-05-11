@@ -389,16 +389,19 @@ static bool _tag_follower_at(const coord_def &pos, bool &real_follower)
 
     // Only non-wandering friendly monsters or those actively
     // seeking the player will follow up/down stairs.
-    if (!fol->friendly()
-          && (!mons_is_seeking(fol) || fol->foe != MHITYOU)
-        || fol->foe == MHITNOT)
+    /* old way
+    if (!fol->friendly() && (!mons_is_seeking(fol) || fol->foe != MHITYOU) || fol->foe == MHITNOT)
+     */
+    if (!fol->friendly())
     {
         return false;
     }
 
     // Unfriendly monsters must be directly adjacent to follow.
+    /* not used here
     if (!fol->friendly() && (pos - you.pos()).rdist() > 1)
         return false;
+        */
 
     // Monsters that can't use stairs can still be marked as followers
     // (though they'll be ignored for transit), so any adjacent real
@@ -412,10 +415,6 @@ static bool _tag_follower_at(const coord_def &pos, bool &real_follower)
         }
         return false;
     }
-
-    // don't allow enemies to follow player up stairs
-    if (!fol->friendly())
-        return false;
 
     real_follower = true;
 
@@ -472,7 +471,6 @@ void tag_followers()
         }
     }
 
-    /** old way
     const int radius = follower_tag_radius();
     int n_followers = 18;
 
@@ -507,7 +505,6 @@ void tag_followers()
         places[place_set].clear();
         place_set = !place_set;
     }
-     */
 }
 
 void untag_followers()
