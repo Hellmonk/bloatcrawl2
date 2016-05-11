@@ -9642,7 +9642,7 @@ int player_stealth_modifier(int old_stealth)
         */
 
     if (you.exertion == EXERT_FOCUS)
-        new_stealth = new_stealth * 3 / 2 + 500;
+        new_stealth = new_stealth * 4 / 3 + 500;
 
     return new_stealth / 40;
 }
