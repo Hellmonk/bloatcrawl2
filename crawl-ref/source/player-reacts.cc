@@ -851,7 +851,12 @@ static void _regenerate_hp_and_mp(int delay)
 
     update_regen_amulet_attunement();
 
-    if (you.sp < you.sp_max && !in_quick_mode())
+    if (player_in_a_dangerous_place())
+        you.peace = 0;
+    else
+        you.peace += you.time_taken;
+
+    if (you.sp < you.sp_max && (!in_quick_mode() || you.peace > 100))
     {
         const int base_val = 15 + you.sp_max / 2;
         int sp_regen_countup = div_rand_round(base_val * delay, BASELINE_DELAY);
