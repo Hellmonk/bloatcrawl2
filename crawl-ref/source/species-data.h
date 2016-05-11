@@ -811,7 +811,7 @@ static const map<species_type, species_def> species_data =
 { SP_SLUDGE_ELF, {
     "SE",
     "Sludge Elf", "Elven", "Elf",
-    SPF_ELVEN,
+    SPF_ELVEN | SPF_ORCISH,
     0, 0, -4,
     15, 3,
     MONS_ELF,
