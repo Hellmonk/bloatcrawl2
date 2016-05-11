@@ -402,9 +402,9 @@ bool disc_of_storms()
  */
 void black_drac_breath()
 {
-    const int num_shots = roll_dice(2, 1 + you.experience_level / 7);
-    const int range = you.experience_level / 3 + 5; // 5--14
-    const int power = 25 + you.experience_level; // 25-52
+    const int num_shots = roll_dice(2, 1 + effective_xl() / 7);
+    const int range = effective_xl() / 3 + 5; // 5--14
+    const int power = 25 + effective_xl(); // 25-52
     for (int i = 0; i < num_shots; ++i)
         _spray_lightning(range, power);
 }

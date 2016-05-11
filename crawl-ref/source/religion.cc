@@ -1261,7 +1261,7 @@ static set<spell_type> _vehumet_eligible_gift_spells(set<spell_type> excluded_sp
     int min_level = min_lev[gifts];
     int max_level = max_lev[gifts];
 
-    if (min_level > you.experience_level)
+    if (min_level > effective_xl())
         return eligible_spells;
 
     set<spell_type> backup_spells;

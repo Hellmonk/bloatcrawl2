@@ -115,7 +115,7 @@ static bool _yred_random_zombified_hostile()
     {
         // XXX: better zombie selection?
         level_id place(BRANCH_DUNGEON,
-                       min(MAX_BRANCH_DEPTH, you.experience_level + 5));
+                       min(MAX_BRANCH_DEPTH, effective_xl() + 5));
         z_base = pick_local_zombifiable_monster(place, RANDOM_MONSTER,
                                                 you.pos());
     }
@@ -164,7 +164,7 @@ static const pop_entry _okawaru_servants[] =
 static bool _okawaru_random_servant()
 {
     monster_type mon_type = pick_monster_from(_okawaru_servants,
-                                              you.experience_level);
+                                              effective_xl());
 
     mgen_data temp = mgen_data::hostile_at(mon_type,
                                            _god_wrath_name(GOD_OKAWARU),
@@ -205,7 +205,7 @@ static bool _dithmenos_random_shadow(const int count, const int tier)
 static void _tso_summon_warriors()
 {
     bool success = false;
-    int how_many = 1 + random2(you.experience_level / 5) + random2(3);
+    int how_many = 1 + random2(effective_xl() / 5) + random2(3);
 
     for (; how_many > 0; --how_many)
     {
@@ -524,8 +524,8 @@ static void _spell_retribution(monster* avatar, spell_type spell, god_type god)
  */
 static spell_type _makhleb_destruction_type()
 {
-    const int severity = min(random_range(you.experience_level / 14,
-                                          you.experience_level / 9),
+    const int severity = min(random_range(effective_xl() / 14,
+                                          effective_xl() / 9),
                              2);
     switch (severity)
     {
@@ -576,7 +576,7 @@ static monster* get_avatar(god_type god)
     avatar->mname = _god_wrath_name(god);
     avatar->flags |= MF_NAME_REPLACE;
     avatar->attitude = ATT_HOSTILE;
-    avatar->set_hit_dice(you.experience_level);
+    avatar->set_hit_dice(effective_xl());
 
     return avatar;
 }
@@ -612,11 +612,11 @@ static bool _makhleb_call_down_destruction()
  */
 static int _makhleb_num_greater_servants()
 {
-    const int severity = 1 + you.experience_level / 2
-                           + random2(you.experience_level / 2);
+    const int severity = 1 + effective_xl() / 2
+                           + random2(effective_xl() / 2);
 
     if (severity > 13)
-        return 2 + random2(you.experience_level / 5 - 2); // up to 6 at XL27
+        return 2 + random2(effective_xl() / 5 - 2); // up to 6 at XL27
     else if (severity > 7 && !one_chance_in(5))
         return 1;
     return 0;
@@ -652,8 +652,8 @@ static bool _makhleb_summon_servants()
 
     // up to 6 at XL25+
     const int total_servants = max(greater_servants,
-                               1 + (random2(you.experience_level)
-                                 + random2(you.experience_level)) / 10);
+                               1 + (random2(effective_xl())
+                                 + random2(effective_xl())) / 10);
     const int lesser_servants = total_servants - greater_servants;
 
     int summoned = 0;
@@ -711,16 +711,16 @@ static bool _kikubaaqudgha_retribution()
     god_speaks(god, coinflip() ? "You hear Kikubaaqudgha cackling."
                                : "Kikubaaqudgha's malice focuses upon you.");
 
-    if (!count_corpses_in_los(nullptr) || random2(you.experience_level) > 4)
+    if (!count_corpses_in_los(nullptr) || random2(effective_xl()) > 4)
     {
         // Either zombies, or corpse rot + skeletons.
-        kiku_receive_corpses(you.experience_level * 4);
+        kiku_receive_corpses(effective_xl() * 4);
 
         if (coinflip())
             corpse_rot(nullptr);
     }
 
-    if (x_chance_in_y(you.experience_level, 27))
+    if (x_chance_in_y(effective_xl(), 27))
     {
         // torment, or 3 necromancy miscasts
         if (!player_res_torment(false))
@@ -731,18 +731,18 @@ static bool _kikubaaqudgha_retribution()
             {
                 MiscastEffect(&you, nullptr, GOD_MISCAST + god,
                               SPTYP_NECROMANCY,
-                              2 + div_rand_round(you.experience_level, 9),
+                              2 + div_rand_round(effective_xl(), 9),
                               random2avg(88, 3), _god_wrath_name(god));
             }
         }
     }
-    else if (random2(you.experience_level) >= 4)
+    else if (random2(effective_xl()) >= 4)
     {
         // necromancy miscast, 20% chance of additional miscast
         do
         {
             MiscastEffect(&you, nullptr, GOD_MISCAST + god, SPTYP_NECROMANCY,
-                          2 + div_rand_round(you.experience_level, 9),
+                          2 + div_rand_round(effective_xl(), 9),
                           random2avg(88, 3), _god_wrath_name(god));
         }
         while (one_chance_in(5));
@@ -767,12 +767,12 @@ static bool _yredelemnul_retribution()
             ;
         else
         {
-            int how_many = 1 + random2avg(1 + (you.experience_level / 5), 2);
+            int how_many = 1 + random2avg(1 + (effective_xl() / 5), 2);
             int count = 0;
 
             for (; how_many > 0; --how_many)
             {
-                if (one_chance_in(you.experience_level))
+                if (one_chance_in(effective_xl()))
                 {
                     if (_yred_random_zombified_hostile())
                         count++;
@@ -796,7 +796,7 @@ static bool _yredelemnul_retribution()
     {
         simple_god_message("'s anger turns toward you for a moment.", god);
         MiscastEffect(&you, nullptr, GOD_MISCAST + god, SPTYP_NECROMANCY,
-                      2 + div_rand_round(you.experience_level, 9),
+                      2 + div_rand_round(effective_xl(), 9),
                       random2avg(88, 3), _god_wrath_name(god));
     }
 
@@ -811,7 +811,7 @@ static bool _trog_retribution()
     if (coinflip())
     {
         int count = 0;
-        int points = 3 + you.experience_level * 3;
+        int points = 3 + effective_xl() * 3;
 
         {
             no_messages msg;
@@ -819,7 +819,7 @@ static bool _trog_retribution()
             while (points > 0)
             {
                 int cost =
-                    min(min(random2avg((1 + you.experience_level / 3), 2) + 3,
+                    min(min(random2avg((1 + effective_xl() / 3), 2) + 3,
                             10),
                         points);
 
@@ -827,7 +827,7 @@ static bool _trog_retribution()
                 if (points > 20 && coinflip())
                 {
                     points -= 10;
-                    cost = min(1 + div_rand_round(you.experience_level, 2), 10);
+                    cost = min(1 + div_rand_round(effective_xl(), 2), 10);
                 }
 
                 points -= cost;
@@ -893,7 +893,7 @@ static bool _trog_retribution()
         dec_penance(god, 2);
         mprf(MSGCH_WARN, "You feel Trog's fiery rage upon you!");
         MiscastEffect(&you, nullptr, GOD_MISCAST + god, SPTYP_FIRE,
-                      8 + you.experience_level, random2avg(98, 3),
+                      8 + effective_xl(), random2avg(98, 3),
                       _god_wrath_name(god));
     }
 
@@ -949,7 +949,7 @@ static bool _beogh_retribution()
 
                 ghost_demon newstats;
                 newstats.init_dancing_weapon(wpn,
-                                             you.experience_level * 50 / 9);
+                                             effective_xl() * 50 / 9);
 
                 mon->set_ghost(newstats);
                 mon->ghost_demon_init();
@@ -975,8 +975,8 @@ static bool _beogh_retribution()
         // else fall through
     default: // send orcs after you (3/8 to 5/8)
     {
-        const int points = you.experience_level + 3
-                           + random2(you.experience_level * 3);
+        const int points = effective_xl() + 3
+                           + random2(effective_xl() * 3);
 
         monster_type punisher;
         // "natural" bands
@@ -1018,7 +1018,7 @@ static bool _okawaru_retribution()
     // warrior theme
     const god_type god = GOD_OKAWARU;
 
-    int how_many = 1 + (you.experience_level / 5);
+    int how_many = 1 + (effective_xl() / 5);
     int count = 0;
 
     for (; how_many > 0; --how_many)
@@ -1119,14 +1119,14 @@ static void _lugonu_minion_retribution()
 
     // should we summon more & higher-tier lugonu minions?
     // linear chance, from 0% at xl 4 to 80% at xl 16
-    const bool major = (you.experience_level > (4 + random2(12))
+    const bool major = (effective_xl() > (4 + random2(12))
                         && !one_chance_in(5));
 
     // how many lesser minions should we try to summon?
     // if this is major wrath, summon a few minions; 0 below xl9, 0-3 at xl 27.
     // otherwise, summon exactly (!) 1 + xl/7 minions, maxing at 4 at xl 21.
-    const int how_many = (major ? random2(you.experience_level / 9 + 1)
-                                : 1 + you.experience_level / 7);
+    const int how_many = (major ? random2(effective_xl() / 9 + 1)
+                                : 1 + effective_xl() / 7);
 
     // did we successfully summon any minions? (potentially set true below)
     bool success = false;
@@ -1138,8 +1138,8 @@ static void _lugonu_minion_retribution()
         // higher levels
         const monster_type to_summon =
             random_choose_weighted(
-                15 - (you.experience_level/2),  MONS_ABOMINATION_SMALL,
-                you.experience_level/2,         MONS_ABOMINATION_LARGE,
+                15 - (effective_xl()/2),  MONS_ABOMINATION_SMALL,
+                effective_xl()/2,         MONS_ABOMINATION_LARGE,
                 6,                              MONS_THRASHING_HORROR,
                 3,                              MONS_ANCIENT_ZYME,
                 0
@@ -1196,8 +1196,8 @@ static bool _lugonu_retribution()
  */
 static spell_type _vehumet_wrath_type()
 {
-    const int severity = min(random_range(1 + you.experience_level / 5,
-                                          1 + you.experience_level / 3),
+    const int severity = min(random_range(1 + effective_xl() / 5,
+                                          1 + effective_xl() / 3),
                              9);
     // Mostly player-castable conjurations with a couple of additions.
     switch (severity)
@@ -1364,7 +1364,7 @@ static void _jiyva_summon_slimes()
         MONS_SLIME_CREATURE,
     };
 
-    const int how_many = 1 + (you.experience_level / 10) + random2(3);
+    const int how_many = 1 + (effective_xl() / 10) + random2(3);
     bool success = false;
 
     for (int i = 0; i < how_many; i++)
@@ -1425,7 +1425,7 @@ static void _fedhas_elemental_miscast()
     const spschool_flag_type stype = random_choose(SPTYP_ICE, SPTYP_FIRE,
                                                    SPTYP_EARTH, SPTYP_AIR);
     MiscastEffect(&you, nullptr, GOD_MISCAST + god, stype,
-                  5 + you.experience_level, random2avg(88, 3),
+                  5 + effective_xl(), random2avg(88, 3),
                   _god_wrath_name(god));
 }
 
@@ -1570,9 +1570,9 @@ static bool _dithmenos_retribution()
     case 0:
     {
         int count = 0;
-        int how_many = 3 + random2avg(div_rand_round(you.experience_level, 3),
+        int how_many = 3 + random2avg(div_rand_round(effective_xl(), 3),
                                       2);
-        const int tier = div_rand_round(you.experience_level, 9);
+        const int tier = div_rand_round(effective_xl(), 9);
         while (how_many-- > 0)
         {
             if (_dithmenos_random_shadow(count, tier))
@@ -1586,7 +1586,7 @@ static bool _dithmenos_retribution()
     case 1:
     {
         int count = 0;
-        int how_many = 2 + random2avg(div_rand_round(you.experience_level, 4),
+        int how_many = 2 + random2avg(div_rand_round(effective_xl(), 4),
                                       4);
         for (int i = 0; i < how_many; ++i)
         {
@@ -1596,7 +1596,7 @@ static bool _dithmenos_retribution()
                         4, MON_SUMM_WRATH, you.pos(), MHITYOU, MG_NONE, god,
                         MONS_NO_MONSTER, COLOUR_UNDEF, PROX_ANYWHERE,
                         level_id(BRANCH_DUNGEON,
-                                 min(MAX_BRANCH_DEPTH, you.experience_level + 5)),
+                                 min(MAX_BRANCH_DEPTH, effective_xl() + 5)),
                         0, 0, MF_NO_FLAGS, "", _god_wrath_name(god))))
             {
                 count++;
@@ -1654,13 +1654,13 @@ static void _qazlal_summon_elementals()
 {
     const god_type god = GOD_QAZLAL;
 
-    const int how_many = 1 + div_rand_round(you.experience_level, 7);
+    const int how_many = 1 + div_rand_round(effective_xl(), 7);
     bool success = false;
 
     for (int i = 0; i < how_many; i++)
     {
         monster_type mon = pick_monster_from(pop_qazlal_wrath,
-                                             you.experience_level);
+                                             effective_xl());
 
         mgen_data temp =
             mgen_data::hostile_at(mon, _god_wrath_name(god),
@@ -1732,7 +1732,7 @@ void pakellas_evoke_backfire(spell_type spell)
     simple_god_message(" does not allow the disloyal to dabble in "
                         "devices!", GOD_PAKELLAS);
     MiscastEffect(&you, nullptr, GOD_MISCAST + GOD_PAKELLAS, spell,
-                  (you.experience_level / 2) + (spell_difficulty(spell) * 2),
+                  (effective_xl() / 2) + (spell_difficulty(spell) * 2),
                   random2avg(88, 3), _god_wrath_name(GOD_PAKELLAS));
 }
 
@@ -1910,7 +1910,7 @@ bool divine_retribution(god_type god, bool no_bonus, bool force)
         return true;
 
     // Sometimes divine experiences are overwhelming...
-    if (do_more && one_chance_in(5) && you.experience_level < random2(37))
+    if (do_more && one_chance_in(5) && effective_xl() < random2(37))
     {
         if (coinflip())
         {
@@ -1982,7 +1982,7 @@ static void _tso_blasts_cleansing_flame(const char *message)
                        GOD_SHINING_ONE);
 
     // damage is 2d(pow), *3/2 for undead and demonspawn
-    cleansing_flame(5 + (you.experience_level * 7) / 12,
+    cleansing_flame(5 + (effective_xl() * 7) / 12,
                     CLEANSING_FLAME_TSO, you.pos());
 }
 
@@ -2016,7 +2016,7 @@ static void _god_smites_you(god_type god, const char *message,
     int divine_hurt = 10 + random2(10);
 
     for (int i = 0; i < 5; ++i)
-        divine_hurt += random2(you.experience_level);
+        divine_hurt += random2(effective_xl());
 
     simple_god_message(" smites you!", god);
     ouch(divine_hurt, death_type, MID_NOBODY, aux.c_str());

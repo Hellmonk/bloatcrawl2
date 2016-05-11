@@ -2956,7 +2956,7 @@ static int _card_power(deck_rarity_type rarity, bool punishment)
         }
     }
 
-    result += (punishment) ? you.experience_level * 18
+    result += (punishment) ? effective_xl() * 18
                            : player_adjust_evoc_power(
                                  you.skill(SK_EVOCATIONS, 9));
 

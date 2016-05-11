@@ -2704,14 +2704,14 @@ static bool _trace_los(monster* agent, bool (*vulnerable)(actor*))
         {
             tracer.friend_info.count++;
             tracer.friend_info.power +=
-                    ai->is_player() ? you.experience_level
+                    ai->is_player() ? effective_xl()
                                     : ai->as_monster()->get_experience_level();
         }
         else
         {
             tracer.foe_info.count++;
             tracer.foe_info.power +=
-                    ai->is_player() ? you.experience_level
+                    ai->is_player() ? effective_xl()
                                     : ai->as_monster()->get_experience_level();
         }
     }

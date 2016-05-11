@@ -4534,7 +4534,7 @@ static void _gozag_place_shop(int index)
     feature_spec feat = kmspec.get_feat();
     shop_spec *spec = feat.shop.get();
     ASSERT(spec);
-    place_spec_shop(you.pos(), *spec, you.experience_level);
+    place_spec_shop(you.pos(), *spec, effective_xl());
 
     link_items();
     env.markers.add(new map_feature_marker(you.pos(), DNGN_ABANDONED_SHOP));
@@ -6399,7 +6399,7 @@ bool ru_power_leap()
 
         //damage scales with XL amd piety
         mon->hurt((actor*)&you, roll_dice(1 + div_rand_round(you.piety *
-            (54 + you.experience_level), 777), 3),
+            (54 + effective_xl()), 777), 3),
             BEAM_ENERGY, KILLED_BY_BEAM, "", "", true);
     }
 
@@ -6463,7 +6463,7 @@ static int _apply_apocalypse(coord_def where)
 
     //damage scales with XL and piety
     const int pow = you.piety;
-    int die_size = 1 + div_rand_round(pow * (54 + you.experience_level), 584);
+    int die_size = 1 + div_rand_round(pow * (54 + effective_xl()), 584);
     int dmg = 10 + roll_dice(num_dice, die_size);
 
     mons->hurt(&you, dmg, BEAM_ENERGY, KILLED_BY_BEAM, "", "", true);

@@ -808,7 +808,7 @@ void sonic_damage(bool scream)
         int cap = scream ? mi->max_hit_points / 2 : mi->max_hit_points * 3 / 10;
         hurt = min(hurt, max(cap, 1));
         // not so much damage if you're a n00b
-        hurt = div_rand_round(hurt * you.experience_level, 27);
+        hurt = div_rand_round(hurt * effective_xl(), 27);
         /* per dpeg:
          * damage is universal (well, only to those who can hear, but not sure
            we can determine that in-game), i.e. smiting, no resists

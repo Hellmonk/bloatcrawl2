@@ -3259,7 +3259,7 @@ void bolt::tracer_affect_player()
             if (yesno(prompt.c_str(), false, 'n'))
             {
                 friend_info.count++;
-                friend_info.power += you.experience_level;
+                friend_info.power += effective_xl();
                 dont_stop_player = true;
             }
             else
@@ -3275,12 +3275,12 @@ void bolt::tracer_affect_player()
         if (mons_att_wont_attack(attitude))
         {
             friend_info.count++;
-            friend_info.power += you.experience_level;
+            friend_info.power += effective_xl();
         }
         else
         {
             foe_info.count++;
-            foe_info.power += you.experience_level;
+            foe_info.power += effective_xl();
         }
     }
 
@@ -4144,7 +4144,7 @@ void bolt::affect_player()
     else if (origin_spell == SPELL_DAZZLING_SPRAY
              && !(you.holiness() & (MH_UNDEAD | MH_NONLIVING | MH_PLANT)))
     {
-        if (x_chance_in_y(85 - you.experience_level * 3 , 100))
+        if (x_chance_in_y(85 - effective_xl() * 3 , 100))
             you.confuse(agent(), 5 + random2(3));
     }
 }

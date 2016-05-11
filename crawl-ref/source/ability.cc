@@ -216,7 +216,7 @@ struct failure_info
         switch (basis)
         {
         case FAIL_XL:
-            return base_chance - you.experience_level * variable_fail_mult;
+            return base_chance - effective_xl() * variable_fail_mult;
         case FAIL_EVO:
             return base_chance - you.skill(SK_EVOCATIONS, variable_fail_mult);
         case FAIL_INVO:
@@ -962,7 +962,7 @@ static int _adjusted_failure_chance(ability_type ability, int base_chance)
 
     case ABIL_BLINK:
         return 48 - (17 * player_mutation_level(MUT_BLINK))
-                  - you.experience_level / 2;
+                  - effective_xl() / 2;
 
     case ABIL_NEMELEX_DEAL_FOUR:
         return 70 - (you.piety * 2 / 45) - you.skill(SK_EVOCATIONS, 9) / 2;
@@ -1086,7 +1086,7 @@ void no_ability_msg()
     // Give messages if the character cannot use innate talents right now.
     // * Vampires can't turn into bats when full of blood.
     // * Tengu can't start to fly if already flying.
-    if (you.species == SP_VAMPIRE && you.experience_level >= 3)
+    if (you.species == SP_VAMPIRE && effective_xl() >= 3)
     {
         ASSERT(you.hunger_state > HS_SATIATED);
         mpr("Sorry, you're too full to transform right now.");
@@ -1769,7 +1769,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_SPIT_POISON:      // Spit poison mutation
     {
-        int power = you.experience_level
+        int power = effective_xl()
                 + player_mutation_level(MUT_SPIT_POISON) * 5;
         beam.range = 5;         // following Venom Bolt
 
@@ -1802,11 +1802,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
         fail_check();
         zapping(ZAP_BREATHE_STICKY_FLAME, (you.form == TRAN_DRAGON) ?
-                2 * you.experience_level : you.experience_level,
+                2 * effective_xl() : effective_xl(),
             beam, false, "You spit a glob of burning liquid.");
 
         you.increase_duration(DUR_BREATH_WEAPON,
-                      3 + random2(10) + random2(30 - you.experience_level));
+                      3 + random2(10) + random2(30 - effective_xl()));
         break;
     }
 
@@ -1833,7 +1833,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         {
         case ABIL_BREATHE_FIRE:
         {
-            int power = you.experience_level;
+            int power = effective_xl();
 
             if (you.form == TRAN_DRAGON)
                 power += 12;
@@ -1849,7 +1849,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         case ABIL_BREATHE_FROST:
             if (!zapping(ZAP_BREATHE_FROST,
                  (you.form == TRAN_DRAGON) ?
-                     2 * you.experience_level : you.experience_level,
+                     2 * effective_xl() : effective_xl(),
                  beam, true,
                          "You exhale a wave of freezing cold."))
             {
@@ -1858,7 +1858,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             break;
 
         case ABIL_BREATHE_POISON:
-            if (!zapping(ZAP_BREATHE_POISON, you.experience_level, beam, true,
+            if (!zapping(ZAP_BREATHE_POISON, effective_xl(), beam, true,
                          "You exhale a blast of poison gas."))
             {
                 return SPRET_ABORT;
@@ -1873,7 +1873,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         case ABIL_SPIT_ACID:
             if (!zapping(ZAP_BREATHE_ACID,
                 (you.form == TRAN_DRAGON) ?
-                    2 * you.experience_level : you.experience_level,
+                    2 * effective_xl() : effective_xl(),
                 beam, true, "You spit a glob of acid."))
             {
                 return SPRET_ABORT;
@@ -1883,7 +1883,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         case ABIL_BREATHE_POWER:
             if (!zapping(ZAP_BREATHE_POWER,
                 (you.form == TRAN_DRAGON) ?
-                    2 * you.experience_level : you.experience_level,
+                    2 * effective_xl() : effective_xl(),
                 beam, true,
                          "You breathe a bolt of dispelling energy."))
             {
@@ -1894,7 +1894,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         case ABIL_BREATHE_STICKY_FLAME:
             if (!zapping(ZAP_BREATHE_STICKY_FLAME,
                 (you.form == TRAN_DRAGON) ?
-                    2 * you.experience_level : you.experience_level,
+                    2 * effective_xl() : effective_xl(),
                 beam, true,
                          "You spit a glob of burning liquid."))
             {
@@ -1905,7 +1905,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         case ABIL_BREATHE_STEAM:
             if (!zapping(ZAP_BREATHE_STEAM,
                 (you.form == TRAN_DRAGON) ?
-                    2 * you.experience_level : you.experience_level,
+                    2 * effective_xl() : effective_xl(),
                 beam, true,
                          "You exhale a blast of scalding steam."))
             {
@@ -1916,7 +1916,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         case ABIL_BREATHE_MEPHITIC:
             if (!zapping(ZAP_BREATHE_MEPHITIC,
                 (you.form == TRAN_DRAGON) ?
-                    2 * you.experience_level : you.experience_level,
+                    2 * effective_xl() : effective_xl(),
                 beam, true,
                          "You exhale a blast of noxious fumes."))
             {
@@ -1929,7 +1929,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         }
 
         you.increase_duration(DUR_BREATH_WEAPON,
-                      3 + random2(10) + random2(30 - you.experience_level));
+                      3 + random2(10) + random2(30 - effective_xl()));
 
         if (abil.ability == ABIL_BREATHE_STEAM
             || abil.ability == ABIL_SPIT_ACID)
@@ -1970,7 +1970,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         // low level Te
         else
         {
-            int power = you.experience_level * 4;
+            int power = effective_xl() * 4;
             const int dur_change = 25 + random2(power) + random2(power);
 
             you.increase_duration(DUR_FLIGHT, dur_change, 100);
@@ -1986,7 +1986,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     case ABIL_DAMNATION:
         fail_check();
         if (your_spells(SPELL_HURL_DAMNATION,
-                        you.experience_level * 10,
+                        effective_xl() * 10,
                         false, false, true) == SPRET_ABORT)
         {
             return SPRET_ABORT;
@@ -3331,7 +3331,7 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
         _add_talent(talents, draconian_breath(you.species), check_confused);
     }
 
-    if (you.species == SP_VAMPIRE && you.experience_level >= 3
+    if (you.species == SP_VAMPIRE && effective_xl() >= 3
         && you.hunger_state <= HS_SATIATED
         && you.form != TRAN_BAT)
     {

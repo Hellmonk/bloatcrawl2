@@ -179,7 +179,7 @@ int attack::calc_to_hit(bool random)
             }
         }
         else if (you.form_uses_xl())
-            mhit += maybe_random_div(you.experience_level * 100, 100, random);
+            mhit += maybe_random_div(effective_xl() * 100, 100, random);
         else
         {
             // Claws give a slight bonus to accuracy when active
@@ -1354,7 +1354,7 @@ int attack::calc_base_unarmed_damage()
         damage += you.has_claws() * 2;
 
     if (you.form_uses_xl())
-        damage += you.experience_level;
+        damage += effective_xl();
     else if (you.form == TRAN_BAT || you.form == TRAN_PORCUPINE)
     {
         // Bats really don't do a lot of damage.

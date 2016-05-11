@@ -253,7 +253,7 @@ int Form::get_ac_bonus() const
 {
     return flat_ac * 100
            + power_ac * you.props[TRANSFORM_POW_KEY].get_int()
-           + xl_ac * you.experience_level;
+           + xl_ac * effective_xl();
 }
 
 /**

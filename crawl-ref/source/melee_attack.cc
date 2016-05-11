@@ -3270,7 +3270,7 @@ void melee_attack::do_spines()
 
         if (mut && attacker->alive() && coinflip())
         {
-            int dmg = random_range(mut, 3 + ceil(mut * you.experience_level / 4));
+            int dmg = random_range(mut, 3 + ceil(mut * effective_xl() / 4));
             int hurt = attacker->apply_ac(dmg);
 
             dprf(DIAG_COMBAT, "Spiny: dmg = %d hurt = %d", dmg, hurt);
@@ -3698,8 +3698,8 @@ bool melee_attack::_player_vampire_draws_blood(const monster* mon, const int dam
     if (you.hp < you.hp_max)
     {
         int heal = 2 + random2(damage) + random2(damage);
-        if (heal > you.experience_level)
-            heal = you.experience_level;
+        if (heal > effective_xl())
+            heal = effective_xl();
 
         if (heal > 0 && !you.duration[DUR_DEATHS_DOOR])
         {

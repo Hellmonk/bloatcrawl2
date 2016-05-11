@@ -1321,7 +1321,7 @@ int player_hunger_rate(bool temp)
 
 int player_spell_levels()
 {
-    int sl = you.experience_level - 1 + you.skill(SK_SPELLCASTING, 2, true);
+    int sl = effective_xl() - 1 + you.skill(SK_SPELLCASTING, 2, true);
 
     bool fireball = false;
     bool delayed_fireball = false;
@@ -2043,7 +2043,7 @@ int player_movement_speed()
 
         // Tengu can move slightly faster when flying.
         if (you.tengu_flight())
-            mv -= 200 + you.experience_level * 14;
+            mv -= 200 + effective_xl() * 14;
     }
 
     if (you.liquefied_ground() && you.species != SP_LAVA_ORC)
@@ -2339,7 +2339,7 @@ static int _player_scale_evasion(int prescaled_ev, const int scale)
     // Flying Tengu get a 20% evasion bonus.
     if (you.tengu_flight())
     {
-        const int ev_bonus = max(1 * scale, prescaled_ev * you.experience_level / 60);
+        const int ev_bonus = max(1 * scale, prescaled_ev * effective_xl() / 60);
         return prescaled_ev + ev_bonus;
     }
 
@@ -4647,6 +4647,12 @@ void set_mp(int new_amount)
     you.redraw_magic_points = true;
 }
 
+int effective_xl()
+{
+    const int effective = you.experience_level - player_mutation_level(MUT_INEXPERIENCED) * 2;
+    return max(1, effective);
+}
+
 // If trans is true, being berserk and/or transformed is taken into account
 // here. Else, the base hp is calculated. If rotted is true, calculate the
 // real max hp you'd have if the rotting was cured.
@@ -4657,11 +4663,11 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
     if (you.species == SP_MOON_TROLL)
         hitp  = 80;
     else
-        hitp  = you.experience_level * 11 / 2 + 8;
+        hitp  = effective_xl() * 11 / 2 + 8;
 
     hitp += you.hp_max_adj_perm;
     // Important: we shouldn't add Heroism boosts here.
-    hitp += you.experience_level * you.skill(SK_FIGHTING, 5, true) / 70
+    hitp += effective_xl() * you.skill(SK_FIGHTING, 5, true) / 70
           + (you.skill(SK_FIGHTING, 3, true) + 1) / 2;
 
     // Racial modifier.
@@ -4736,7 +4742,7 @@ int get_real_mp(bool include_items, bool rotted)
 
     const int scale = 100;
     int spellcasting = you.skill(SK_SPELLCASTING, 1 * scale, true);
-    int scaled_xl = you.experience_level * scale;
+    int scaled_xl = effective_xl() * scale;
 
     // the first 4 experience levels give an extra .5 mp up to your spellcasting
     // the last 4 give no mp
@@ -7029,7 +7035,7 @@ int player_res_magic(bool calc_unid, bool temp)
     if (temp && you.form == TRAN_SHADOW)
         return MAG_IMMUNE;
 
-    int rm = you.experience_level * species_mr_modifier(you.species);
+    int rm = effective_xl() * species_mr_modifier(you.species);
 
     // randarts
     rm += MR_PIP * you.scan_artefacts(ARTP_MAGIC_RESISTANCE, calc_unid);
