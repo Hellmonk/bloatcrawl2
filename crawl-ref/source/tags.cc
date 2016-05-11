@@ -1316,7 +1316,11 @@ static void tag_construct_char(writer &th)
     marshallByte(th, you.religion);
     marshallString2(th, you.jiyva_second_name);
 
+#if defined(DEBUG)
+    marshallByte(th, 0);
+#else
     marshallByte(th, you.wizard);
+#endif
 
     marshallByte(th, crawl_state.type);
     marshallByte(th, crawl_state.difficulty);

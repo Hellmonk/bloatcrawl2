@@ -6457,7 +6457,7 @@ void monster::steal_item_from_player()
          name(DESC_THE).c_str(),
          you.inv2[steal_what].name(DESC_YOUR).c_str());
 
-    item_def* tmp = take_item(steal_what, mslot);
+    item_def* tmp = take_item(steal_what, mslot, you.inv2);
     if (!tmp)
         return;
     item_def& new_item = *tmp;
@@ -6486,7 +6486,7 @@ void monster::steal_item_from_player()
  *
  * @returns new_item the new item, now in the monster's inventory.
  */
-item_def* monster::take_item(int steal_what, mon_inv_type mslot)
+item_def * monster::take_item(int steal_what, mon_inv_type mslot, FixedVector< item_def, ENDOFPACK > &player_inv)
 {
     // Create new item.
     int index = get_mitm_slot(10);
@@ -6496,7 +6496,7 @@ item_def* monster::take_item(int steal_what, mon_inv_type mslot)
     item_def &new_item = mitm[index];
 
     // Copy item.
-    new_item = you.inv2[steal_what];
+    new_item = player_inv[steal_what];
 
     // Drop the item already in the slot (including the shield
     // if it's a two-hander).
@@ -6521,7 +6521,7 @@ item_def* monster::take_item(int steal_what, mon_inv_type mslot)
     equip(new_item, true);
 
     // Item is gone from player's inventory.
-    dec_inv_item_quantity(you.inv2, steal_what, new_item.quantity);
+    dec_inv_item_quantity(player_inv, steal_what, new_item.quantity);
 
     return &new_item;
 }
