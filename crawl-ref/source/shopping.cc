@@ -1436,7 +1436,7 @@ void ShopMenu::purchase_selected()
 
     // Store last_pickup in case we need to restore it.
     // Then clear it to fill with items purchased.
-    map<int,int> tmp_l_p = you.last_pickup;
+    map<item_def*,int> tmp_l_p = you.last_pickup;
     you.last_pickup.clear();
 
     // Will iterate backwards through the shop (because of the earlier sort).
