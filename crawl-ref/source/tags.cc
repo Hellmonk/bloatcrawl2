@@ -1568,7 +1568,9 @@ static void tag_construct_you(writer &th)
         marshallInt(th, you.rune_charges[i]);
     }
     marshallFixedBitVector<NUM_RUNE_TYPES>(th, you.rune_curse_active);
-    marshallInt(th, you.first_hit_time);
+    // todo
+//    marshallInt(th, you.first_hit_time);
+    marshallInt(th, you.peace);
 
     marshallInt(th, you.max_exp);
     marshallInt(th, you.stamina_flags);
@@ -3238,7 +3240,10 @@ static void tag_read_you(reader &th)
         you.rune_charges[i] = unmarshallInt(th);
     }
     unmarshallFixedBitVector<NUM_RUNE_TYPES>(th, you.rune_curse_active);
-    you.first_hit_time = unmarshallInt(th);
+
+    // todo
+//    you.first_hit_time = unmarshallInt(th);
+    you.peace = unmarshallInt(th);
 
     you.max_exp = unmarshallInt(th);
     you.stamina_flags = unmarshallInt(th);

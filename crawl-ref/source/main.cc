@@ -1553,6 +1553,8 @@ static void _input()
         _do_searing_ray();
 
         world_reacts();
+
+        player_after_each_turn();
     }
 
     update_can_train();

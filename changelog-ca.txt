@@ -5,6 +5,7 @@
   hunger, and reducing spell failure rate.
 * Spell school skills no longer influence spell failure rate. Only spell power and spell hunger.
 * Removed all food, and created stamina potions. You can now sacrifice stamina potions to evoke fedhas' abilities.
+* Quick mode doesn't use stamina if monsters aren't around.
 
 ## v1.5
 
@@ -61,10 +62,11 @@
         * Movement delay is 1.1 for all species + slowing down effects, mutations, etc.
             * So a naga still is 1.3 speed because of the slow mutation they possess
     * Quick mode
-        * Does NOT cost a turn to active, but DOES cost a turn to deactivate.
+        * Does NOT cost a turn to activate, but DOES cost a turn to deactivate.
         * Movement delay is based on species, artifact properties, mutations, spells in effect (haste, swiftness)
             * Standard species movement delay in quick mode is 0.9
         * -3 SP per movement
+        * SP does not regenerate
 
 * Summary of exhaustion (when the player has 1 or less SP) (All compared to normal mode values)
     * A player is exhausted if their SP is below 5.

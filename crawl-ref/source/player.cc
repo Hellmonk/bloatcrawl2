@@ -4098,10 +4098,10 @@ bool dec_hp(int hp_loss, bool fatal, const char *aux)
     if (!fatal && you.hp < 1)
         you.hp = 1;
 
+    hp_loss = rune_curse_dam_adjust(hp_loss);
+
     if (!fatal && hp_loss >= you.hp)
         hp_loss = you.hp - 1;
-
-    hp_loss = rune_curse_dam_adjust(hp_loss);
 
     // If it's not fatal, use ouch() so that notes can be taken. If it IS
     // fatal, somebody else is doing the bookkeeping, and we don't want to mess
@@ -4116,6 +4116,8 @@ bool dec_hp(int hp_loss, bool fatal, const char *aux)
     if(you.hp > you.hp_max) you.hp = you.hp_max;
 
     you.redraw_hit_points = true;
+
+    you.peace = 0;
 
     return result;
 }
@@ -4166,13 +4168,17 @@ bool dec_mp(int mp_loss, bool silent)
         bool sent_message = false;
         result = false;
 
-        if (you.exertion != EXERT_NORMAL && !sent_message && !silent)
+        if (you.exertion == EXERT_FOCUS && !sent_message && !silent)
         {
             mpr("Your energy is too low to continue exerting yourself.");
             sent_message = true;
         }
 
-        set_exertion(EXERT_NORMAL);
+        if (you.exertion == EXERT_FOCUS)
+        {
+            you.restore_exertion = you.exertion;
+            set_exertion(EXERT_NORMAL, false);
+        }
     }
 
     if (!silent)
@@ -4346,7 +4352,6 @@ void set_exertion(const exertion_mode new_exertion, bool manual)
     you.exertion = new_exertion;
     you.duration[DUR_FOCUS_MODE] = 0;
     you.duration[DUR_POWER_MODE] = 0;
-    you.duration[DUR_QUICK_MODE] = 0;
     switch(new_exertion)
     {
         case EXERT_POWER:
@@ -4381,7 +4386,10 @@ bool dec_sp(int sp_loss, bool silent)
 
     const int slow_metabolism = player_mutation_level(MUT_SLOW_METABOLISM);
     if (slow_metabolism)
+    {
         sp_loss = qpow(sp_loss, 3, 4, slow_metabolism);
+        sp_loss = max(1, sp_loss);
+    }
 
     you.sp -= sp_loss;
     if (you.sp < 0)
@@ -4435,12 +4443,12 @@ bool dec_sp(int sp_loss, bool silent)
             sent_message = true;
         }
 
-        if (you.exertion != EXERT_NORMAL)
+        if (you.exertion == EXERT_POWER)
         {
             you.restore_exertion = you.exertion;
+            set_exertion(EXERT_NORMAL, false);
         }
 
-        set_exertion(EXERT_NORMAL, false);
         set_quick_mode(false);
         result = false;
         you.redraw_evasion = true;
@@ -6048,6 +6056,7 @@ player::player()
     clear_constricted();
     constricting        = 0;
     stamina_flags       = 0;
+    peace               = 1000;
 
     // Protected fields:
     for (branch_iterator it; it; ++it)
@@ -6157,9 +6166,10 @@ bool player::is_banished() const
 bool player::is_sufficiently_rested() const
 {
     // Only return false if resting will actually help.
-    return (hp >= _rest_trigger_level(hp_max) || !player_regenerates_hp())
-           && (magic_points >= _rest_trigger_level(max_magic_points) || !player_regenerates_mp())
-           && (sp >= _rest_trigger_level(sp_max) || !player_regenerates_sp());
+    const bool hp_is_good = hp >= _rest_trigger_level(hp_max) || !player_regenerates_hp();
+    const bool mp_is_good = magic_points >= _rest_trigger_level(max_magic_points) || !player_regenerates_mp();
+    const bool sp_is_good = sp >= _rest_trigger_level(sp_max) || !player_regenerates_sp();
+    return hp_is_good && mp_is_good && sp_is_good;
 }
 
 bool player::in_water() const
@@ -9420,9 +9430,9 @@ void player_evoked_something()
 
 void player_moved()
 {
-    if (in_quick_mode())
+    if (in_quick_mode() && you.peace < 100)
         dec_sp(3);
-    if (you.exertion == EXERT_FOCUS && player_in_a_dangerous_place())
+    if (you.exertion == EXERT_FOCUS && you.peace < 50)
         dec_mp(3);
     if (you.airborne() && you.cancellable_flight())
         dec_sp(2);
@@ -9457,19 +9467,22 @@ void player_was_offensive()
 
 void player_before_long_safe_action()
 {
+    /* no longer needed since quick mode doesn't use stamina when monsters aren't around
     if (in_quick_mode())
         set_quick_mode(false);
+     */
 }
 
 void player_after_long_safe_action(int turns)
 {
-    if (turns > 5)
+}
+
+void player_after_each_turn()
+{
+    if (you.current_form_spell_failure && you.peace >= 200)
     {
-        if (you.current_form_spell_failure)
-        {
-            mpr("You form becomes more stable.");
-            you.current_form_spell_failure = 0;
-        }
+        mpr("You form becomes more stable.");
+        you.current_form_spell_failure = 0;
     }
 }
 
@@ -9633,7 +9646,7 @@ int player_stealth_modifier(int old_stealth)
         */
 
     if (you.exertion == EXERT_FOCUS)
-        new_stealth = new_stealth * 3 / 2 + 500;
+        new_stealth = new_stealth * 4 / 3 + 500;
 
     return new_stealth / 40;
 }

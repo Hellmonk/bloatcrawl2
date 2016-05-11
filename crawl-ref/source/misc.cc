@@ -376,7 +376,7 @@ bool player_in_a_dangerous_place(bool *invis)
     if (invis == nullptr)
         invis = &junk;
 
-    const double logexp = log((double)you.experience);
+    const double logexp = log((double)you.experience + 1);
     double gen_threat = 0.0, hi_threat = 0.0;
     _monster_threat_values(&gen_threat, &hi_threat, invis);
 
