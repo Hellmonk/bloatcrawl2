@@ -4168,13 +4168,17 @@ bool dec_mp(int mp_loss, bool silent)
         bool sent_message = false;
         result = false;
 
-        if (you.exertion != EXERT_NORMAL && !sent_message && !silent)
+        if (you.exertion == EXERT_FOCUS && !sent_message && !silent)
         {
             mpr("Your energy is too low to continue exerting yourself.");
             sent_message = true;
         }
 
-        set_exertion(EXERT_NORMAL);
+        if (you.exertion == EXERT_FOCUS)
+        {
+            you.restore_exertion = you.exertion;
+            set_exertion(EXERT_NORMAL, false);
+        }
     }
 
     if (!silent)
@@ -4439,12 +4443,12 @@ bool dec_sp(int sp_loss, bool silent)
             sent_message = true;
         }
 
-        if (you.exertion != EXERT_NORMAL)
+        if (you.exertion == EXERT_POWER)
         {
             you.restore_exertion = you.exertion;
+            set_exertion(EXERT_NORMAL, false);
         }
 
-        set_exertion(EXERT_NORMAL, false);
         set_quick_mode(false);
         result = false;
         you.redraw_evasion = true;
