@@ -9431,7 +9431,7 @@ void player_evoked_something()
 void player_moved()
 {
     if (in_quick_mode() && you.peace < 100)
-        dec_sp(3);
+        dec_sp(5);
     if (you.exertion == EXERT_FOCUS && you.peace < 50)
         dec_mp(3);
     if (you.airborne() && you.cancellable_flight())

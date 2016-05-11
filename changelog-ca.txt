@@ -87,8 +87,7 @@
         * 'E' turns on focus mode. (E...xamine?)
 
 * Spell failure
-    * Spell failure is reduced by intelligence * dexterity / 5
-        * Used to be intelligency * 2
+    * Spell failure is reduced by intelligence AND dexterity, as well as spellcasting and spell schools.
     * Significant simplification of failure calculations.
     * All spells are between 1 and 99% failure.
     * It's easier to get a level 9 spell down to 80% failure rate than in vanilla.
