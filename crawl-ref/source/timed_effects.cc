@@ -934,62 +934,6 @@ static void _evolve(int time_delta)
         }
 }
 
-static void _handle_insight(int time_delta)
-{
-    if (int lev = 1 + player_mutation_level(MUT_INSIGHT)) {
-    	if (x_chance_in_y(1 << ((lev - 1) * 2), 64)) {
-    		string before, after;
-    		bool success = false;
-
-    		FixedVector< item_def, ENDOFPACK > *inv;
-    		if(one_chance_in(3)) {
-    			inv = &(you.inv2);
-    		} else {
-    			inv = &(you.inv1);
-    		}
-
-    		// top to bottom
-    		// this give the player the option to move items to the top so that they are more likely to be identified first
-    		for(auto &item : *inv)
-    		{
-    	        if (item.defined()
-    	        		&& (
-    	        			(item.flags & ISFLAG_IDENT_MASK) < ISFLAG_IDENT_MASK)
-							|| is_deck(item) && !top_card_is_known(item)
-    	        			)
-    	        {
-    	        	if (is_deck(item) && !top_card_is_known(item))
-    	        	{
-	    	            set_ident_flags(item, ISFLAG_IDENT_MASK);
-	    	            set_ident_type(item, true);
-	    	    		after = get_menu_colour_prefix_tags(item, DESC_A).c_str();
-    	        		mprf(MSGCH_INTRINSIC_GAIN, "You gain insight into: %s", after.c_str());
-    	                deck_identify_first(item);
-    	                break;
-    	        	}
-    	        	else
-    	        	{
-        	    		before = get_menu_colour_prefix_tags(item, DESC_A).c_str();
-    					int bitToCheck = 1 << random2(4);
-    					if((item.flags & bitToCheck) == 0) {
-    	    	            set_ident_flags(item, bitToCheck);
-    	    	            set_ident_type(item, true);
-    	    	    		after = get_menu_colour_prefix_tags(item, DESC_A).c_str();
-    	    	    		if(before != after) {
-    							success = true;
-    							break;
-    	    	    		}
-    					}
-    	        	}
-    	        }
-    	    }
-
-        	if(success)
-        		mprf(MSGCH_INTRINSIC_GAIN, "You gain insight: %s -> %s", before.c_str(), after.c_str());
-    	}
-    }
-}
-
 // Get around C++ dividing integers towards 0.
 static int _div(int num, int denom)
 {
@@ -1027,7 +971,6 @@ static struct timed_effect timed_effects[] =
 #if TAG_MAJOR_VERSION == 34
     { nullptr,                         0,     0, false },
 #endif
-    { _handle_insight,               100,   400, false },
 };
 
 // Do various time related actions...

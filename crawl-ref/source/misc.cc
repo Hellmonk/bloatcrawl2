@@ -463,6 +463,7 @@ void revive()
     you.attribute[ATTR_INVIS_UNCANCELLABLE] = 0;
     you.attribute[ATTR_FLIGHT_UNCANCELLABLE] = 0;
     you.attribute[ATTR_XP_DRAIN] = 0;
+    you.attribute[ATTR_INSIGHT] = 0;
     if (you.duration[DUR_SCRYING])
         you.xray_vision = false;
 

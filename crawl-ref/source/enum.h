@@ -562,6 +562,7 @@ enum attribute_type
     ATTR_STAT_LOSS_XP,         // Unmodified XP needed for stat recovery.
     ATTR_PAKELLAS_DEVICE_SURGE,// Surge power applied to next evocation.
     ATTR_PAKELLAS_EXTRA_MP,    // MP to be collected to get a !magic from P
+    ATTR_INSIGHT,              // tracks experience over time to unlock unidentified items
     NUM_ATTRIBUTES
 };
 
