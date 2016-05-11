@@ -162,7 +162,8 @@ int player::get_max_xl() const
 {
     const int inexperienced = player_mutation_level(MUT_INEXPERIENCED);
     int max_xl = 27 - inexperienced * RU_SAC_XP_LEVELS;
-    if (!Options.level_27_cap)
+    bool cap = Options.level_27_cap;
+    if (!cap)
         max_xl = get_max_exp_level();
     return max_xl;
 }

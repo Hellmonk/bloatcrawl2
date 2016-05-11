@@ -1713,7 +1713,12 @@ bool beogh_gift_item()
     if (!beogh_can_gift_items_to(mons, false))
         return false;
 
-    int item_slot = prompt_invent_item(you.inv1, "Give which item?",
+    FixedVector< item_def, ENDOFPACK > *inv_to_give_from;
+
+    if (!inv_from_prompt(inv_to_give_from, "Give"))
+        return false;
+
+    int item_slot = prompt_invent_item(*inv_to_give_from, "Give which item?",
                                        MT_INVLIST, OSEL_BEOGH_GIFT, true);
 
     if (item_slot == PROMPT_ABORT || item_slot == PROMPT_NOTHING)
@@ -1722,7 +1727,7 @@ bool beogh_gift_item()
         return false;
     }
 
-    item_def& gift = you.inv1[item_slot];
+    item_def& gift = (*inv_to_give_from)[item_slot];
 
     const bool shield = is_shield(gift);
     const bool body_armour = gift.base_type == OBJ_ARMOUR
@@ -1758,16 +1763,15 @@ bool beogh_gift_item()
                                  is_range_weapon(*mons_weapon);
 
     mons->take_item(item_slot, body_armour ? MSLOT_ARMOUR :
-                                    shield ? MSLOT_SHIELD :
-                              use_alt_slot ? MSLOT_ALT_WEAPON :
-                                             MSLOT_WEAPON);
+                               shield ? MSLOT_SHIELD :
+                               use_alt_slot ? MSLOT_ALT_WEAPON :
+                               MSLOT_WEAPON, *inv_to_give_from);
     if (use_alt_slot)
         mons->swap_weapons();
 
     dprf("is_ranged weap: %d", range_weapon);
     if (range_weapon)
         gift_ammo_to_orc(mons, true); // give a small initial ammo freebie
-
 
     if (shield)
         mons->props[BEOGH_SH_GIFT_KEY] = true;
