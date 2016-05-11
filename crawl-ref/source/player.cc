@@ -6023,7 +6023,8 @@ player::player()
     prev_save_version.clear();
 
     clear_constricted();
-    constricting = 0;
+    constricting        = 0;
+    stamina_flags       = 0;
 
     // Protected fields:
     for (branch_iterator it; it; ++it)
