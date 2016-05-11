@@ -675,6 +675,7 @@ const char* potion_type_name(int potiontype)
 #endif
     case POT_EXPERIENCE:        return "experience";
     case POT_MAGIC:             return "magic";
+    case POT_STAMINA:           return "stamina";
 #if TAG_MAJOR_VERSION == 34
     case POT_RESTORE_ABILITIES: return "restore abilities";
 #endif
@@ -3274,6 +3275,7 @@ bool is_emergency_item(const item_def &item)
         case POT_CURING:
         case POT_RESISTANCE:
         case POT_MAGIC:
+        case POT_STAMINA:
             return true;
         default:
             return false;

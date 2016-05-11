@@ -2853,8 +2853,6 @@ static bool _cancel_confused_move(bool stationary)
 
 static void _swing_at_target(coord_def move)
 {
-    player_attacked_something();
-
     you.prev_direction.reset();
     if (you.attribute[ATTR_HELD])
     {

@@ -3061,9 +3061,9 @@ static void _decrease_amount(vector<pair<int, int> >& available, int amount)
         dec_inv_item_quantity(you.inv2, avail.second, decrease_amount);
     }
     if (total_decrease > 1)
-        mprf("%d pieces of fruit are consumed!", total_decrease);
+        mprf("%d stamina potions are consumed!", total_decrease);
     else
-        mpr("A piece of fruit is consumed!");
+        mpr("A stamina potion is consumed!");
 }
 
 // Create a ring or partial ring around the caster. The user is
@@ -3096,7 +3096,7 @@ bool fedhas_plant_ring_from_fruit()
         if (adjacent.empty())
             mpr("No empty adjacent squares.");
         else
-            mpr("No fruit available.");
+            mpr("No stamina potions available.");
 
         return false;
     }
@@ -3496,7 +3496,7 @@ spret_type fedhas_evolve_flora(bool fail)
 
         if (total_fruit < upgrade.fruit_cost)
         {
-            mpr("Not enough fruit available.");
+            mpr("Not enough stamina potions available.");
             return SPRET_ABORT;
         }
     }
@@ -4096,7 +4096,9 @@ static potion_type _gozag_potion_list[][4] =
     { POT_HEAL_WOUNDS, NUM_POTIONS, NUM_POTIONS, NUM_POTIONS },
     { POT_HEAL_WOUNDS, POT_CURING, NUM_POTIONS, NUM_POTIONS },
     { POT_HEAL_WOUNDS, POT_MAGIC, NUM_POTIONS, NUM_POTIONS, },
+    { POT_HEAL_WOUNDS, POT_STAMINA, NUM_POTIONS, NUM_POTIONS, },
     { POT_CURING, POT_MAGIC, NUM_POTIONS, NUM_POTIONS },
+    { POT_CURING, POT_STAMINA, NUM_POTIONS, NUM_POTIONS },
     { POT_HEAL_WOUNDS, POT_BERSERK_RAGE, NUM_POTIONS, NUM_POTIONS },
     { POT_HASTE, POT_HEAL_WOUNDS, NUM_POTIONS, NUM_POTIONS },
     { POT_HASTE, POT_BRILLIANCE, NUM_POTIONS, NUM_POTIONS },
@@ -4108,6 +4110,7 @@ static potion_type _gozag_potion_list[][4] =
     { POT_RESISTANCE, POT_FLIGHT, NUM_POTIONS, NUM_POTIONS },
     { POT_INVISIBILITY, POT_AGILITY, NUM_POTIONS , NUM_POTIONS },
     { POT_HEAL_WOUNDS, POT_CURING, POT_MAGIC, NUM_POTIONS },
+    { POT_HEAL_WOUNDS, POT_CURING, POT_STAMINA, NUM_POTIONS },
     { POT_HEAL_WOUNDS, POT_CURING, POT_BERSERK_RAGE, NUM_POTIONS },
     { POT_HEAL_WOUNDS, POT_HASTE, POT_AGILITY, NUM_POTIONS },
     { POT_MIGHT, POT_AGILITY, POT_BRILLIANCE, NUM_POTIONS },

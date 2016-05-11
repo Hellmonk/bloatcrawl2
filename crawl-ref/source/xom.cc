@@ -1012,7 +1012,7 @@ static void _xom_do_potion(int /*sever*/)
     potion_type pot = POT_CURING;
     do
     {
-        pot = random_choose(POT_CURING, POT_HEAL_WOUNDS, POT_MAGIC, POT_HASTE,
+        pot = random_choose(POT_CURING, POT_HEAL_WOUNDS, POT_MAGIC, POT_STAMINA, POT_HASTE,
                             POT_MIGHT, POT_AGILITY, POT_BRILLIANCE,
                             POT_INVISIBILITY, POT_BERSERK_RAGE, POT_EXPERIENCE);
 

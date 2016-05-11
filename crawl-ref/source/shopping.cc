@@ -686,6 +686,7 @@ unsigned int item_value(item_def item, bool ident)
                 break;
 
             case POT_MAGIC:
+            case POT_STAMINA:
             case POT_INVISIBILITY:
             case POT_CANCELLATION:
             case POT_AMBROSIA:

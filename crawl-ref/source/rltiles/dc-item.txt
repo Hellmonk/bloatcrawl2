@@ -862,6 +862,7 @@ i-mutation POT_PATIENCE
 i-poison POT_POISON_VULNERABILITY
 i-resistance POT_RESISTANCE
 i-mutation POT_WEAK_MUTATION
+i-magic POT_STAMINA
 # please remove when TAG_MAJOR_VERSION is bumped
 i-slowing POT_SLOWING
 i-porridge POT_PORRIDGE

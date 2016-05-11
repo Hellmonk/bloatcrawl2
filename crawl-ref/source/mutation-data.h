@@ -2166,7 +2166,7 @@ static const mutation_def mut_data[] =
    "Your dna gains focus."},
 },
 
-{ MUT_HUNGERLESS, 0, 1, mutflag::GOOD, false,
+{ MUT_HUNGERLESS, 1, 1, mutflag::GOOD, false,
   "hungerless",
 
   {"Spellcasting doesn't affect your hunger (mp cost is reduced)",

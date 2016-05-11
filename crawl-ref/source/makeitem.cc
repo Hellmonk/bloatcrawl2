@@ -1399,15 +1399,16 @@ static void _generate_potion_item(item_def& item, int force_type,
                                             46, POT_MUTATION,
                                             35, POT_INVISIBILITY,
                                             35, POT_RESISTANCE,
-                                            35, POT_MAGIC,
+                                        35 * 3, POT_MAGIC,
+                                        35 * 3, POT_STAMINA,
                                             35, POT_BERSERK_RAGE,
                 Options.exp_percent_from_monsters == 0 ?
                                        72 : 34, POT_CANCELLATION,
                                             34, POT_AMBROSIA,
                                             34, POT_CURE_MUTATION,
                                             11, POT_BENEFICIAL_MUTATION,
-                Options.exp_percent_from_potions
-                                       ? 2 : 0, POT_EXPERIENCE,
+                Options.exp_percent_from_potions > 0 ?
+                                         2 : 0, POT_EXPERIENCE,
                                              0);
         }
         while (agent == GOD_XOM
@@ -1895,7 +1896,9 @@ int items(bool allow_uniques,
                 1, OBJ_RODS,
                 9, OBJ_STAVES,
                 30, OBJ_BOOKS,
+                /* no more food in this game
            50 / 25, OBJ_FOOD,
+                 */
                 50, OBJ_JEWELLERY,
                 70, OBJ_WANDS,
                 212, OBJ_ARMOUR,
@@ -1968,8 +1971,10 @@ int items(bool allow_uniques,
         break;
 
     case OBJ_FOOD:
+    /* no more food, becomes potions instead
         _generate_food_item(item, allow_uniques, force_type);
         break;
+    */
 
     case OBJ_POTIONS:
         _generate_potion_item(item, force_type, item_level, agent);
