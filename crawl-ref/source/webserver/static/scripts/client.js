@@ -669,11 +669,25 @@ function (exports, $, key_conversion, chat, comm) {
         editing_rc = id;
     }
 
+    var editing_macro;
+    function edit_macro(id)
+    {
+        send_message("get_macro", { game_id: id });
+        editing_macro = id;
+    }
+
     function rcfile_contents(data)
     {
         $("#rc_file_contents").val(data.contents);
         show_dialog("#rc_edit");
         $("#rc_file_contents").focus();
+    }
+
+    function macrofile_contents(data)
+    {
+        $("#rc_file_contents").val(data.contents);
+        show_dialog("#macro_edit");
+        $("#macro_file_contents").focus();
     }
 
     function send_rc()
@@ -1024,6 +1038,10 @@ function (exports, $, key_conversion, chat, comm) {
             var id = $(this).data("game_id");
             edit_rc(id);
         });
+        $("#play_now .edit_macro_link").click(function (ev) {
+            var id = $(this).data("game_id");
+            edit_macro(id);
+        });
     }
 
     function set_html(data)
@@ -1167,6 +1185,7 @@ function (exports, $, key_conversion, chat, comm) {
         "watching_started": watching_started,
 
         "rcfile_contents": rcfile_contents,
+        "macrofile_contents": macrofile_contents,
 
         "game_client": receive_game_client,
 
