@@ -389,11 +389,11 @@ void attack::init_attack(skill_type unarmed_skill, int attack_number)
     if (attacker->is_player())
     {
         const item_def *const weapon_used = get_weapon_used();
-        int weight = weapon_used ? max(1, property(*weapon_used, PWPN_WEIGHT)) : 1;
+        int weight = weapon_used ? max(1, property(*weapon_used, PWPN_WEIGHT)) : 5;
 
-        sp_cost = 50 * weight;
-        sp_cost /= max(1, you.strength(true));
-        sp_cost /= max(1, you.skill(SK_FIGHTING));
+        sp_cost = 200 * weight;
+        sp_cost /= 5 + you.strength(true);
+        sp_cost /= 5 + you.skill(SK_FIGHTING);
 
         sp_cost = max(1, sp_cost);
 
@@ -1757,7 +1757,6 @@ bool attack::apply_damage_brand(const char *what)
         // worries on that score.
         if (attacker->is_player())
         {
-            dec_sp(1, true);
             canned_msg(MSG_GAIN_HEALTH, hp_boost);
         }
         else if (attacker_visible)

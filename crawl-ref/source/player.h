@@ -1145,6 +1145,7 @@ bool need_expiration_warning(coord_def p = you.pos());
 
 bool player_is_tired(bool silent = false);
 bool player_is_very_tired(bool silent = false);
+bool player_is_exhausted(bool silent = false);
 bool in_quick_mode();
 void set_quick_mode(const bool new_quick_mode);
 void set_exertion(const exertion_mode new_exertion, bool manual = true);
@@ -1212,6 +1213,7 @@ int player_spell_mp_freeze_modifier(spell_type which_spell, bool raw, int old_co
 int player_tohit_modifier(int old_tohit);
 int player_damage_modifier(int old_damage, bool silent = false);
 int player_spellpower_modifier(int old_spellpower);
+int player_spellfailure_modifier(int spellfaifailureure);
 int player_attack_delay_modifier(int attk_delay);
 int player_stealth_modifier(int old_stealth);
 int player_evasion_modifier(int old_evasion);

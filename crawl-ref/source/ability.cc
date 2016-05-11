@@ -746,10 +746,10 @@ const string make_cost_description(ability_type ability)
         ret += ", Instant"; // not really a cost, more of a bonus - bwr
 
     if (abil.flags & abflag::FRUIT)
-        ret += ", Fruit";
+        ret += ", Stamina Potion";
 
     if (abil.flags & abflag::VARIABLE_FRUIT)
-        ret += ", Fruit or Piety";
+        ret += ", Stamina Potion or Piety";
 
     if (abil.flags & abflag::SKILL_DRAIN)
         ret += ", Skill drain";

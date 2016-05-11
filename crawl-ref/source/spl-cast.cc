@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <sstream>
 #include <cmath>
+#include <algorithm>
 
 #include "areas.h"
 #include "art-enum.h"
@@ -489,23 +490,27 @@ static int _apply_spellcasting_success_boosts(spell_type spell, int chance)
 int raw_spell_fail(spell_type spell)
 {
     const int spell_level = spell_difficulty(spell);
-    int resist = pow(2, spell_level) * 100;
+    float resist = 1 << spell_level;
     const int armour_shield_penalty = player_armour_shield_spell_penalty();
     dprf("Armour+Shield spell failure penalty: %d", armour_shield_penalty);
-    resist *= (20 + armour_shield_penalty) / 20;
-    resist *= (20 + get_form()->spellcasting_penalty) / 20;
-    resist *= 10 * (player_mutation_level(MUT_ANTI_WIZARDRY) + 1) / 10;
-    resist *= (you.duration[DUR_VERTIGO] ? 15 : 10) / 10;
+    resist = resist * (20 + armour_shield_penalty) / 20;
+    resist = resist * (20 + get_form()->spellcasting_penalty) / 20;
+    resist = resist * (player_mutation_level(MUT_ANTI_WIZARDRY) + 1);
+    resist = resist * (you.duration[DUR_VERTIGO] ? 1.5 : 1.0);
 
     const int wild = player_mutation_level(MUT_WILD_MAGIC);
     resist = qpow(resist, 3, 2, wild);
 
-    int force = (you.dex(true) + 1);
-    force *= you.intel(true);
-    force *= you.skill(SK_SPELLCASTING);
+    // with all factors being 10, player should have a 50% chance of casting a level 5 spell
+    float force = 1 << 5;
+
+    force *= (1.0 + you.dex(true)) / 10;
+    force *= (1.0 + you.intel(true)) / 10;
+    force *= (1.0 + you.skill(SK_SPELLCASTING)) / 10;
 
     const spschools_type disciplines = get_spell_disciplines(spell);
-    force *= average_schools(disciplines);
+    const int skill_factor = average_schools(disciplines);
+    force *= (1.0 + skill_factor) / 10;
 
     const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
     force = qpow(force, 3, 2, subdued);
@@ -517,21 +522,28 @@ int raw_spell_fail(spell_type spell)
 //    if (you.props.exists(SAP_MAGIC_KEY))
 //        force *= you.props[SAP_MAGIC_KEY].get_int() * 12;
 
-    int chance = 100 * resist / (force + resist);
+    force = fmax(1, force);
+    resist = fmax(1, resist);
+
+    int fail_chance;
+
+    if (force >= resist)
+        fail_chance = 50 / (force / resist);
+    else
+        fail_chance = 100 - 50 / (resist / force);
 
     // Apply the effects of Vehumet and items of wizardry.
-    chance = _apply_spellcasting_success_boosts(spell, chance);
+    fail_chance = _apply_spellcasting_success_boosts(spell, fail_chance);
 
-    if (you.exertion == EXERT_FOCUS)
-        chance = max(chance - 15, chance / 2);
+    fail_chance = player_spellfailure_modifier(fail_chance);
 
-    if (chance > 100)
-        chance = 100;
+    if (fail_chance > 99)
+        fail_chance = 99;
 
-    if (chance <= 0)
-        chance = 1;
+    if (fail_chance < 1)
+        fail_chance = 1;
 
-    return chance;
+    return fail_chance;
 }
 
 int stepdown_spellpower(int power)
@@ -554,19 +566,21 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
         {
             for (const auto bit : spschools_type::range())
                 if (disciplines & bit)
-                    power += you.skill(spell_type2skill(bit), 200);
+                    power += you.skill(spell_type2skill(bit), 250);
             power /= skillcount;
         }
 
+        /* spellcasting does not add to spellpower
         power += you.skill(SK_SPELLCASTING, 200 / 3);
+         */
 
         // Brilliance boosts spell power a bit (equivalent to three
         // spell school levels).
         if (!fail_rate_check && you.duration[DUR_BRILLIANCE])
-            power = max(600, power * 3 / 2);
+            power = max(750, power * 3 / 2);
 
         if (apply_intel)
-            power = (power * you.intel()) / 10;
+            power = power * (you.intel() + 1) / 10;
 
         if (!fail_rate_check)
         {

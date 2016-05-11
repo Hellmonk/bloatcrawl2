@@ -1,31 +1,80 @@
+## v1.5.1
+
+* Magic potions restore 40, 30, 20 points depending on difficulty mode.
+* Spellcasting skill no longer influences spell power. It is only used for spell slots, reducing spell
+  hunger, and reducing spell failure rate.
+* Spell school skills no longer influence spell failure rate. Only spell power and spell hunger.
+* Removed all food, and created stamina potions. You can now sacrifice stamina potions to evoke fedhas' abilities.
+
 ## v1.5
 
 * Stamina overhaul
-    * Normal mode fighting actions cost sp, power mode increases cost.
-    * SP cost of attack based on fighting skill, strength, weapon weight.
+    * Normal mode fighting actions cost stamina points (SP).
+    * SP cost of attack is based on fighting skill, strength, weapon weight.
         * Heavier weapons will cost more stamina to swing than lighter ones.
-    * When a player runs out of SP, they can still attack, but at 75% damage, 75% accuracy, and 75% attack speed.
-    * Spells only cost mp, no more spell hunger.
+    * When a player runs out of SP, they can continue to attack, but at 75% damage, 75% accuracy, and 75% attack speed.
+    * Spells only cost magic points (MP), no more spell hunger.
     * MP cost is based on spellcasting, intelligence, spell level.
     * You can see how much spells cost in the 'S' spell list.
-    * Fixed size mp pool like sp pool. Does not go up with xl.
+    * Fixed size MP pool like SP pool. Does not go up with experience level (XL).
     * Power mode adds an SP cost to affected actions.
         * In addition to increasing damage by 33%, power mode now increases attack speed by the same.
     * Careful mode renamed to focus mode.
     * Focus mode adds an MP cost to affected actions.
         * In addition to improving stealth and accuracy by 33%, focus mode now improves evasion by the same.
     * Escape mode was removed and in it's place a separate quick / normal mode
-        * This can operate independently of exertion mode, i.e. you can have Quick mode + Careful mode.
-        * Quick mode has the benefits of the old escape mode, which are faster movement speed and increased evasion. But
+        * This can operate independently of exertion mode, i.e. you can have Quick mode + Focus or Quick + Power mode.
+        * Quick mode has the benefits of the old escape mode, which are faster movement speed. But
           there is also an additional stamina cost. Stealth is also dramatically reduced.
         * Normal mode doesn't have those benefits, but it doesn't have the additional stamina cost.
         * Quick mode no longer gives an evasion boost, only a speed boost.
-        * Quick mode drastically cuts stealth to 1/4 of normal mode stealth.
+        * Quick mode no longer has a stealth penalty.
+        * Quick mode no longer has a movement penalty when changing directions.
     * If you run out of stamina in power mode, and it switches you back to normal mode, once you've recovered 50% of your
-      sp, the game will automatically switch you back to power mode.
+      SP, the game will automatically switch you back to power mode. Same applies to Focus mode.
     * Switching exertion modes (normal, power, focus), costs 1 turn.
     * Switching speed mode from normal to quick, costs 0 turns.
     * Switching speed mode from quick to normal, costs 1 turn.
+
+* Summary of exertion modes: (existing info merged with changes from this update)
+    * Normal mode
+        * Melee and ranged attacks require SP based on weapon weight, player strength, and fighting skill.
+            * Weapon skill does not affect SP cost.
+        * Spell casting costs MP based on spell level, player intelligence, and spellcasting skill.
+            * Spell school skills do not affect MP cost.
+        * Damage, evasion, accuracy, stealth, spellpower, spell success, and attack speed are reduced from vanilla
+          crawl levels, based on difficulty mode being played.
+    * Power mode (same as normal mode except for the following)
+        * +33% damage
+        * +33% spellpower increase
+        * +15% attack speed
+        * -3 SP per attack or spell cast
+    * Focus mode (same as normal mode except for the following)
+        * +33% attack accuracy
+        * +33% stealth
+        * +33% evasion
+        * -15% spell failure chance or 1/2 failure chance, whichever is worse
+        * -3 MP per movement or attack or spell cast
+
+* Summary of Quick mode: (this can be on or off independently of the player's exertion mode)
+    * Slow mode (normal state)
+        * Movement delay is 1.1 for all species + slowing down effects, mutations, etc.
+            * So a naga still is 1.3 speed because of the slow mutation they possess
+    * Quick mode
+        * Does NOT cost a turn to active, but DOES cost a turn to deactivate.
+        * Movement delay is based on species, artifact properties, mutations, spells in effect (haste, swiftness)
+            * Standard species movement delay in quick mode is 0.9
+        * -3 SP per movement
+
+* Summary of exhaustion (when the player has 1 or less SP) (All compared to normal mode values)
+    * A player is exhausted if their SP is below 5.
+    * -25% damage (ranged and melee).
+    * -25% accuracy.
+    * -25% movement speed.
+    * -25% attack speed.
+    * -25% spell power.
+    * -25% spell success chance.
+    * can't invoke a berserk ability, but you CAN use a haste or berserk potion.
 
 * Keyboard changes
     * instead of 's' to open spell list, now you press 'S'
@@ -40,7 +89,7 @@
     * Spell failure is reduced by intelligence * dexterity / 5
         * Used to be intelligency * 2
     * Significant simplification of failure calculations.
-    * All spells are between 0 and 100% failure. Even hard spells are just slightly below 100% failure.
+    * All spells are between 1 and 99% failure.
     * It's easier to get a level 9 spell down to 80% failure rate than in vanilla.
     * It's harder to get a level 9 spell down to 20% failure rate than in vanilla.
 

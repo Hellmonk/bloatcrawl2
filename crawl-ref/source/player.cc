@@ -2096,6 +2096,9 @@ int player_movement_speed()
           mv = mv * 4 / 3;
     }
 
+    if (player_is_exhausted(true))
+        mv = mv * 4 / 3;
+
     mv = div_rand_round(mv, 100);
 
     // We'll use the old value of six as a minimum, with haste this could
@@ -4287,6 +4290,17 @@ bool player_is_very_tired(bool silent)
     return is_tired;
 }
 
+/* used to give stamina penalties such as lower melee / ranged damage */
+bool player_is_exhausted(bool silent)
+{
+    const bool is_tired = you.sp < 5;
+
+    if (!silent && is_tired)
+        mpr("You are exhausted!");
+
+    return is_tired;
+}
+
 bool in_quick_mode()
 {
     return you.stamina_flags & STAMF_QUICK_MODE;
@@ -4429,6 +4443,8 @@ bool dec_sp(int sp_loss, bool silent)
         set_exertion(EXERT_NORMAL, false);
         set_quick_mode(false);
         result = false;
+        you.redraw_evasion = true;
+        you.redraw_tohit = true;
     }
 
     you.redraw_stamina_points = true;
@@ -4441,7 +4457,14 @@ void inc_sp(int sp_gain, bool silent, bool manual)
     if (sp_gain < 1 || you.sp >= you.sp_max)
         return;
 
+    bool was_exhausted = player_is_exhausted(true);
     you.sp += sp_gain;
+
+    if (was_exhausted && !player_is_exhausted(true))
+    {
+        you.redraw_evasion = true;
+        you.redraw_tohit = true;
+    }
 
     if (you.sp > you.sp_max / 2 && you.restore_exertion != EXERT_NORMAL)
     {
@@ -9230,8 +9253,10 @@ void player_end_berserk()
         }
     }
 
+    /* This message already happens when stamina gets very low
     if (!you.duration[DUR_PARALYSIS] && !you.petrified())
         mprf(MSGCH_WARN, "You are exhausted.");
+        */
 
     if (you.species == SP_LAVA_ORC)
         mpr("You feel less hot-headed.");
@@ -9373,9 +9398,9 @@ void player_attacked_something()
 {
     player_was_offensive();
     if (you.exertion == EXERT_POWER)
-        dec_sp(2);
+        dec_sp(3);
     if (you.exertion == EXERT_FOCUS)
-        dec_mp(2);
+        dec_mp(3);
 }
 
 // When any kind of magic spell is cast by the player
@@ -9383,9 +9408,9 @@ void player_used_magic()
 {
     player_was_offensive();
     if (you.exertion == EXERT_POWER)
-        dec_sp(2);
+        dec_sp(3);
     if (you.exertion == EXERT_FOCUS)
-        dec_mp(2);
+        dec_mp(3);
 }
 
 void player_evoked_something()
@@ -9396,11 +9421,11 @@ void player_evoked_something()
 void player_moved()
 {
     if (in_quick_mode())
-        dec_sp(2);
+        dec_sp(3);
     if (you.exertion == EXERT_FOCUS && player_in_a_dangerous_place())
-        dec_mp(2);
+        dec_mp(3);
     if (you.airborne() && you.cancellable_flight())
-        dec_sp(1);
+        dec_sp(2);
 }
 
 void player_was_offensive()
@@ -9533,7 +9558,7 @@ int player_tohit_modifier(int old_tohit)
 {
     int new_tohit = old_tohit * _difficulty_mode_multiplier();
 
-    if (you.sp == 0)
+    if (player_is_exhausted(true))
         new_tohit= new_tohit * 3 / 4;
     else if (you.exertion == EXERT_FOCUS)
         new_tohit = new_tohit * 4 / 3 + 50;
@@ -9545,7 +9570,7 @@ int player_damage_modifier(int old_damage, bool silent)
 {
     int new_damage = old_damage * _difficulty_mode_multiplier();
 
-    if (you.sp == 0)
+    if (player_is_exhausted(true))
     {
         new_damage = new_damage * 3 / 4;
         if (!silent)
@@ -9562,7 +9587,7 @@ int player_attack_delay_modifier(int attack_delay)
     attack_delay *= 1000;
     attack_delay /= _difficulty_mode_multiplier();
 
-    if (you.sp == 0)
+    if (player_is_exhausted(true))
     {
         attack_delay = attack_delay * 8 / 7;
     }
@@ -9576,22 +9601,39 @@ int player_spellpower_modifier(int old_spellpower)
 {
     int new_spellpower = old_spellpower * _difficulty_mode_multiplier();
 
+    if (player_is_exhausted(true))
+        new_spellpower = new_spellpower * 3 / 4;
+
     if (you.exertion == EXERT_POWER)
         new_spellpower = new_spellpower * 4 / 3 + 100;
 
     return new_spellpower / 40;
 }
 
+int player_spellfailure_modifier(int failure)
+{
+    failure = failure * 100;
+
+    if (player_is_exhausted(true))
+        failure = failure * 4 / 3;
+
+    if (you.exertion == EXERT_FOCUS)
+        failure = max(failure - 15, failure / 2);
+
+    return failure * 40 / 100 / _difficulty_mode_multiplier();
+}
 
 int player_stealth_modifier(int old_stealth)
 {
     int new_stealth = old_stealth * _difficulty_mode_multiplier();
 
+    /* this isn't needed anymore, quick mode is penalized enough
     if (in_quick_mode())
         new_stealth >>= 2;
+        */
 
     if (you.exertion == EXERT_FOCUS)
-        new_stealth = new_stealth * 4 / 3 + 200;
+        new_stealth = new_stealth * 3 / 2 + 500;
 
     return new_stealth / 40;
 }
@@ -9599,6 +9641,9 @@ int player_stealth_modifier(int old_stealth)
 int player_evasion_modifier(int old_evasion)
 {
     int new_evasion = old_evasion * _difficulty_mode_multiplier();
+
+    if (player_is_exhausted(true))
+        new_evasion = new_evasion * 3 / 4;
 
     if (you.exertion == EXERT_FOCUS)
         new_evasion = new_evasion * 4 / 3 + 50;
