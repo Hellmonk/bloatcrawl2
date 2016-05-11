@@ -9510,7 +9510,7 @@ int _difficulty_mode_multiplier()
             break;
         default:
             // should not be possible
-            x = 30;
+            x = 35;
             break;
     }
 
@@ -9555,7 +9555,7 @@ int player_attack_delay_modifier(int attack_delay)
         attack_delay = attack_delay * 8 / 7;
     }
     else if (you.exertion == EXERT_POWER)
-        attack_delay = attack_delay * 7 / 8;
+        attack_delay = attack_delay * 7 / 8 - 25;
 
     return attack_delay * 40 / 1000;
 }
