@@ -691,7 +691,7 @@ int get_gold_cost(ability_type ability)
 
 static const int _pakellas_quick_charge_mp_cost()
 {
-    return max(1, you.magic_points * 2 / 3);
+    return max(1, get_unfrozen_mp() * 2 / 3);
 }
 
 const string make_cost_description(ability_type ability)

@@ -4796,6 +4796,11 @@ int get_real_mp(bool include_items, bool rotted)
     return max_mp;
 }
 
+int get_unfrozen_mp()
+{
+    return you.magic_points + you.mp_frozen_summons;
+}
+
 bool player_regenerates_hp()
 {
     if (player_mutation_level(MUT_SLOW_REGENERATION) == 3)

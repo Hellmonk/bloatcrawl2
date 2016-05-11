@@ -1087,6 +1087,8 @@ string describe_contamination(int level);
 void set_sp(int new_amount);
 void set_mp(int new_amount);
 
+int get_unfrozen_mp();
+
 bool player_regenerates_hp();
 bool player_regenerates_sp();
 bool player_regenerates_mp();
