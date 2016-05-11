@@ -239,29 +239,29 @@ static const mutation_def mut_data[] =
    "You have a very fast metabolism.",
    "Your metabolism is lightning-fast."},
 
-  {"You feel a little hungry.",
-   "You feel a little hungry.",
-   "You feel a little hungry."},
+  {"Your metabolism speeds up!",
+   "Your metabolism speeds up!",
+   "Your metabolism speeds up!"},
 
   {"Your metabolism slows.",
    "Your metabolism slows.",
    "Your metabolism slows."},
 },
 
-{ MUT_SLOW_METABOLISM, 20, 2, mutflag::GOOD, false,
+{ MUT_SLOW_METABOLISM, 20, 3, mutflag::GOOD, false,
   "slow metabolism",
 
   {"You have a slow metabolism.",
    "You need consume almost no food.",
-   ""},
+   "You feel like you could run 10 marathons!"},
 
   {"Your metabolism slows.",
    "Your metabolism slows.",
-   ""},
+   "Your metabolism slows."},
 
-  {"You feel a little hungry.",
-   "You feel a little hungry.",
-   ""},
+  {"Your metabolism speeds up!",
+   "Your metabolism speeds up!",
+   "Your metabolism speeds up!"},
 },
 
 { MUT_WEAK, 80, 2, mutflag::BAD | mutflag::XOM, false,

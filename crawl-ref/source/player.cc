@@ -4382,7 +4382,10 @@ bool dec_sp(int sp_loss, bool silent)
 
     const int slow_metabolism = player_mutation_level(MUT_SLOW_METABOLISM);
     if (slow_metabolism)
+    {
         sp_loss = qpow(sp_loss, 3, 4, slow_metabolism);
+        sp_loss = max(1, sp_loss);
+    }
 
     you.sp -= sp_loss;
     if (you.sp < 0)
@@ -9425,7 +9428,7 @@ void player_moved()
 {
     if (in_quick_mode() && you.peace < 100)
         dec_sp(3);
-    if (you.exertion == EXERT_FOCUS && player_in_a_dangerous_place())
+    if (you.exertion == EXERT_FOCUS && you.peace < 50)
         dec_mp(3);
     if (you.airborne() && you.cancellable_flight())
         dec_sp(2);
