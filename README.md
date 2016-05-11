@@ -1,17 +1,21 @@
 # Dungeon Crawl Stone Soup: Circus Animals variation
 
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+NOTICE: The changelog-ca.txt file will contain the latest detailed changes. This file will be shortened and kept to a high level summary of what is in this fork. If you want specifics,
+then you need to look at the changelog. 
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 There are two known servers where you can play Circus Animals! 
 - http://crawl.homedns.org/      (arizona, USA)
 - https://crawl.project357.org/  (sydney, AUS)
 
-Checkout branch v1.4.2 if you want to try it yourself. The master branch will be where future, save game breaking features will be implemented, and then broken off.
-
-WARNING: The changelog-ca.txt file will contain the latest detailed changes. This file will be shortened and kept to a high level summary of what is in this fork. If you want specifics,
-then you need to look at the changelog. 
+Checkout branch v1.5.1 if you want to try it yourself. The master branch will be where future, save game breaking features will be implemented, and then broken off.
 
 For those who don't know how to clone from a git repo: install git on your system, then type:
 
-    git clone https://github.com/jeremygurr/dcssca.git -b v1.4.2
+    git clone https://github.com/jeremygurr/dcssca.git -b v1.5.1
 
 This fork of DCSS is a playground for some ideas I wanted to try. 
 Many of my changes center around increasing the richness of the different species in DCSS. 
