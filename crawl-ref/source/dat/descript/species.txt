@@ -45,8 +45,8 @@ exceptionally strong and they live in a state of permanent stasis.
 %%%%
 Felid
 
-Felids are many-lived cats possessing sentience. They are incapable of advanced
-item manipulation or the use of armour or weapons.
+Felids are nine-lived cats possessing sentience. They are incapable of advanced
+item manipulation or the use of armour or weapons, but can wear four rings.
 %%%%
 Ghoul
 
@@ -108,7 +108,7 @@ magic. They regenerate health, and later, magic, rapidly.
 Mummy
 
 Compelled to walk by an ancient curse, Mummies are adept at Necromancy but
-learn other skills very slowly. They are unable to consume any food or potions.
+learn other skills very slowly. They are unable to consume any potions.
 %%%%
 Naga
 
@@ -118,7 +118,7 @@ trailing off like that of a snake. They move slowly but are naturally resilient.
 Octopode
 
 A species of amphibious cephalopods. They can wear eight rings, but almost no
-armour fits them.
+armour fits them. They possess mysterious power when they are uninjured.
 %%%%
 Ogre
 
