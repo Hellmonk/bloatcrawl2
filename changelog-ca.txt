@@ -1,5 +1,7 @@
 ## v1.5.1
 
+* Increased Fighting and/or Spellcasting skills for all starting jobs that use them by 1, to make it a little
+  easier for characters to get off the ground with the recent changes.
 * Orc branch has been doubled in size, to 8 floors
     * The "boss" level is still on floor 4.
     * Floors 5-8 don't give experience for kills, although they will restore drain and charge evocables.
@@ -102,6 +104,8 @@
     * All spells are between 1 and 99% failure.
     * It's easier to get a level 9 spell down to 80% failure rate than in vanilla.
     * It's harder to get a level 9 spell down to 20% failure rate than in vanilla.
+    * If all spell factors are at 10, a player has a 50% spell failure rate for a level 5 spell.
+        * So if you've got 0 or 1 in 2 different factors, you can expect to have a hard time even casting level 1 spells.
 
 * New branch layout
     * Dungeon (15 floors)
