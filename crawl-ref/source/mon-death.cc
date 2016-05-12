@@ -2218,7 +2218,7 @@ item_def* monster_die(monster* mons, killer_type killer,
                     int tmp = min(you.mp_max - you.mp,
                                   mp_heal);
                     canned_msg(MSG_GAIN_MAGIC);
-                    inc_mp(mp_heal);
+                    inc_mp(mp_heal * 3);
                     mp_heal -= tmp;
                 }
 

@@ -685,7 +685,7 @@ static void _powered_by_pain(int dam)
                         mpr("You focus on the pain.");
                         int mp = roll_dice(3, 2 + 3 * level);
                         canned_msg(MSG_GAIN_MAGIC);
-                        inc_mp(mp);
+                        inc_mp(mp * 3);
                         break;
                     }
                     break;

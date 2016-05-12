@@ -1255,7 +1255,7 @@ static bool _ball_of_energy()
             mpr("You are suffused with power!");
             inc_mp(
                 player_adjust_evoc_power(
-                    5 + random2avg(you.skill(SK_EVOCATIONS), 2)));
+                    5 + random2avg(you.skill(SK_EVOCATIONS), 2)) * 3);
 
             ret = true;
         }
@@ -2366,7 +2366,8 @@ bool evoke_item(int slot, bool check_range)
                                4000))
         {
             mpr("You channel some magical energy.");
-            inc_mp(1 + random2(3));
+            const int gain = 1 + random2(3);
+            inc_mp(gain * 3);
             make_hungry(50, false, true);
             pract = 1;
             did_work = true;

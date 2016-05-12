@@ -1437,9 +1437,10 @@ bool elyvilon_divine_vigour()
         calc_mp();
         if (old_mp_max > 0)
         {
-            inc_mp((you.mp_max * you.mp + old_mp_max - 1)
-                     / old_mp_max
-                   - you.mp);
+            const int gain = (you.mp_max * you.mp + old_mp_max - 1)
+                             / old_mp_max
+                             - you.mp;
+            inc_mp(gain * 3);
         }
 
         success = true;
@@ -6258,8 +6259,9 @@ void ru_draw_out_power()
 
     inc_hp(div_rand_round(you.piety, 16)
            + roll_dice(div_rand_round(you.piety, 20), 6));
-    inc_mp(div_rand_round(you.piety, 48)
-           + roll_dice(div_rand_round(you.piety, 40), 4));
+    const int gain = div_rand_round(you.piety, 48)
+                     + roll_dice(div_rand_round(you.piety, 40), 4);
+    inc_mp(gain * 3);
     drain_player(30, false, true);
 }
 

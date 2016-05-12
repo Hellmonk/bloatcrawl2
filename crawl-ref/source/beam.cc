@@ -3491,7 +3491,7 @@ void bolt::affect_player_enchantment(bool resistible)
         {
             const int mp_gain = 2 + ench_power / 10;
             mprf(MSGCH_INTRINSIC_GAIN, "You absorb the magic. (%d)", mp_gain);
-            inc_mp(mp_gain);
+            inc_mp(mp_gain * 3);
             return;
         }
     }

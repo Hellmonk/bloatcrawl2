@@ -327,7 +327,7 @@ static slurp_gain _sacrifice_one_item_noncount(const item_def& item)
         && you.mp < you.mp_max)
     {
         const int mp_gain = max(random2(item_value), 1);
-        inc_mp(mp_gain);
+        inc_mp(mp_gain * 3);
         gain.jiyva_bonus |= JS_MP;
         gain.amount = mp_gain;
     }

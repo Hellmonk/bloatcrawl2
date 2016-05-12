@@ -840,7 +840,7 @@ static void _regenerate_hp_and_mp(int delay)
         if (player_mutation_level(MUT_MANA_LINK)
             && !x_chance_in_y(you.mp, you.mp_max))
         {
-            inc_mp(1);
+            inc_mp(3);
         }
         else // standard hp regeneration
             inc_hp(1);

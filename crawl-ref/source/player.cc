@@ -5569,7 +5569,7 @@ static void _dec_elixir_mp(int delay)
         you.duration[DUR_ELIXIR_MAGIC] = 0;
 
     int heal = (delay * you.mp_max / 10) / BASELINE_DELAY;
-    inc_mp(heal);
+    inc_mp(heal * 3);
 }
 
 void dec_elixir_player(int delay)
@@ -5598,7 +5598,7 @@ void dec_ambrosia_player(int delay)
     if (!you.duration[DUR_DEATHS_DOOR])
         inc_hp(you.scale_device_healing(hp_restoration));
 
-    inc_mp(mp_restoration);
+    inc_mp(mp_restoration * 3);
 
     if (!you.duration[DUR_AMBROSIA])
         mpr("You feel less invigorated.");

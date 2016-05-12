@@ -1371,7 +1371,7 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
                 if (drain)
                 {
                     mpr("You feel invigorated.");
-                    inc_mp(drain);
+                    inc_mp(drain * 3);
                 }
             }
         }
