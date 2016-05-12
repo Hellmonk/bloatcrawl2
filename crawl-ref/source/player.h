@@ -53,11 +53,11 @@ static const int STEALTH_PIP = 50;
 static const int BONE_ARMOUR_HIT_RATIO = 50;
 
 /// The minimum aut cost for a player move (before haste)
-static const int FASTEST_PLAYER_MOVE_SPEED = 4;
+static const int FASTEST_PLAYER_MOVE_SPEED = 3;
 // relevant for swiftness, etc
 
 // Min delay for thrown projectiles.
-static const int FASTEST_PLAYER_THROWING_SPEED = 7;
+static const int FASTEST_PLAYER_THROWING_SPEED = 5;
 
 class targetter;
 
@@ -1146,7 +1146,8 @@ bool need_expiration_warning(coord_def p = you.pos());
 
 bool player_is_tired(bool silent = false);
 bool player_is_very_tired(bool silent = false);
-bool player_is_exhausted(bool silent = false);
+bool player_mp_is_exhausted(bool silent);
+bool player_sp_is_exhausted(bool silent = false);
 bool in_quick_mode();
 void set_quick_mode(const bool new_quick_mode);
 void set_exertion(const exertion_mode new_exertion, bool manual = true);

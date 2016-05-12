@@ -2096,7 +2096,7 @@ int player_movement_speed()
           mv = mv * 4 / 3;
     }
 
-    if (player_is_exhausted(true))
+    if (player_sp_is_exhausted(true))
         mv = mv * 8 / 7;
 
     mv = div_rand_round(mv, 100);
@@ -4299,8 +4299,18 @@ bool player_is_very_tired(bool silent)
     return is_tired;
 }
 
+bool player_mp_is_exhausted(bool silent)
+{
+    const bool is_tired = you.mp < 5;
+
+    if (!silent && is_tired)
+        mpr("Your energy is low!");
+
+    return is_tired;
+}
+
 /* used to give stamina penalties such as lower melee / ranged damage */
-bool player_is_exhausted(bool silent)
+bool player_sp_is_exhausted(bool silent)
 {
     const bool is_tired = you.sp < 5;
 
@@ -4352,9 +4362,15 @@ void set_exertion(const exertion_mode new_exertion, bool manual)
         return;
     }
 
-    if (player_is_exhausted(true) && new_exertion != EXERT_NORMAL)
+    if (player_sp_is_exhausted(true) && new_exertion == EXERT_POWER)
     {
         mpr("You are too tired to exert yourself now.");
+        return;
+    }
+
+    if (player_mp_is_exhausted(true) && new_exertion == EXERT_FOCUS)
+    {
+        mpr("Your energy is too low to focus.");
         return;
     }
 
@@ -4471,10 +4487,10 @@ void inc_sp(int sp_gain, bool silent, bool manual)
     if (sp_gain < 1 || you.sp >= you.sp_max)
         return;
 
-    bool was_exhausted = player_is_exhausted(true);
+    bool was_exhausted = player_sp_is_exhausted(true);
     you.sp += sp_gain;
 
-    if (was_exhausted && !player_is_exhausted(true))
+    if (was_exhausted && !player_sp_is_exhausted(true))
     {
         you.redraw_evasion = true;
         you.redraw_tohit = true;
@@ -9583,7 +9599,7 @@ int player_tohit_modifier(int old_tohit)
 {
     int new_tohit = old_tohit * _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_sp_is_exhausted(true))
         new_tohit= new_tohit * 7 / 8;
     else if (you.exertion == EXERT_FOCUS)
         new_tohit = new_tohit * 4 / 3 + 50;
@@ -9595,7 +9611,7 @@ int player_damage_modifier(int old_damage, bool silent)
 {
     int new_damage = old_damage * _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_sp_is_exhausted(true))
     {
         new_damage = new_damage * 7 / 8;
         if (!silent)
@@ -9612,7 +9628,7 @@ int player_attack_delay_modifier(int attack_delay)
     attack_delay *= 1000;
     attack_delay /= _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_sp_is_exhausted(true))
         attack_delay = attack_delay * 8 / 7;
     else if (you.exertion == EXERT_POWER)
         attack_delay = attack_delay * 7 / 8 - 25;
@@ -9624,7 +9640,7 @@ int player_spellpower_modifier(int old_spellpower)
 {
     int new_spellpower = old_spellpower * _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_sp_is_exhausted(true))
         new_spellpower = new_spellpower * 7 / 8;
 
     if (you.exertion == EXERT_POWER)
@@ -9637,7 +9653,7 @@ int player_spellfailure_modifier(int failure)
 {
     failure = failure * 100;
 
-    if (player_is_exhausted(true))
+    if (player_sp_is_exhausted(true))
         failure = failure * 8 / 7;
 
     if (you.exertion == EXERT_FOCUS)
@@ -9665,7 +9681,7 @@ int player_evasion_modifier(int old_evasion)
 {
     int new_evasion = old_evasion * _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_sp_is_exhausted(true))
         new_evasion = new_evasion * 7 / 8;
 
     if (you.exertion == EXERT_FOCUS)
