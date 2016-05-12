@@ -678,6 +678,7 @@ void actor::handle_constriction()
         damage = timescale_damage(this, damage);
         DIAG_ONLY(const int timescale_dam = damage);
 
+        damage = max(0, damage);
         damage = defender->hurt(this, damage, BEAM_MISSILE,
                                 KILLED_BY_MONSTER, "", "", false);
         DIAG_ONLY(const int infdam = damage);
