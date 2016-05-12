@@ -2938,31 +2938,10 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
     }
 }
 
-static void _handle_insight(int exp_gain)
-{
-    const int skill_cost = calc_skill_cost(you.skill_cost_level);
-    const int insight_gained = div_rand_round(exp_gain, skill_cost);
-    you.attribute[ATTR_INSIGHT] += insight_gained * 10;
-    
-    while (you.attribute[ATTR_INSIGHT] > 100)
-    {
-        you.attribute[ATTR_INSIGHT] -= 100;
-        
-        int lev = 1 + player_mutation_level(MUT_INSIGHT);
-        if (x_chance_in_y(1 << ((lev - 1) * 2), 64)) {
-            string before, after;
-            bool success = false;
-
-            FixedVector< item_def, ENDOFPACK > *inv;
-            if(one_chance_in(3)) {
-                inv = &(you.inv2);
-            } else {
-                inv = &(you.inv1);
-            }
-
-            // top to bottom
-            // this give the player the option to move items to the top so that they are more likely to be identified first
-            for(auto &item : *inv)
+void _handle_insight_inv(string &before, string &after, bool success, const FixedVector<item_def, 52> *inv)
+{// top to bottom
+    // this give the player the option to move items to the top so that they are more likely to be identified first
+    for(auto &item : *inv)
             {
                 if (item.defined()
                     && (
@@ -2996,8 +2975,27 @@ static void _handle_insight(int exp_gain)
                 }
             }
 
-            if(success)
+    if(success)
                 mprf(MSGCH_INTRINSIC_GAIN, "You gain insight: %s -> %s", before.c_str(), after.c_str());
+}
+
+static void _handle_insight(int exp_gain)
+{
+    const int skill_cost = calc_skill_cost(you.skill_cost_level);
+    const int insight_gained = div_rand_round(exp_gain, skill_cost);
+    you.attribute[ATTR_INSIGHT] += insight_gained * 5;
+    
+    while (you.attribute[ATTR_INSIGHT] > 100)
+    {
+        you.attribute[ATTR_INSIGHT] -= 100;
+        
+        int lev = player_mutation_level(MUT_INSIGHT);
+        if (x_chance_in_y(1 << (lev * 2), 64)) {
+            string before, after;
+            bool success = false;
+
+            _handle_insight_inv(before, after, success, &you.inv1);
+            _handle_insight_inv(before, after, success, &you.inv2);
         }
     }
 }
