@@ -4480,7 +4480,7 @@ void inc_sp(int sp_gain, bool silent, bool manual)
         you.redraw_tohit = true;
     }
 
-    if (you.sp > you.sp_max / 2 && you.restore_exertion != EXERT_NORMAL)
+    if (you.sp > you.sp_max / 2 && you.restore_exertion == EXERT_POWER)
     {
         set_exertion(you.restore_exertion, false);
         you.restore_exertion = EXERT_NORMAL;
@@ -4508,6 +4508,12 @@ void inc_mp(int mp_gain, bool silent)
         return;
 
     you.magic_points += mp_gain;
+
+    if (you.magic_points > you.max_magic_points / 2 && you.restore_exertion == EXERT_FOCUS)
+    {
+        set_exertion(you.restore_exertion, false);
+        you.restore_exertion = EXERT_NORMAL;
+    }
 
     if (you.magic_points > you.max_magic_points)
         you.magic_points = you.max_magic_points;
