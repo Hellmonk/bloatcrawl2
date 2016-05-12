@@ -70,12 +70,12 @@
 
 * Summary of exhaustion (when the player has 1 or less SP) (All compared to normal mode values)
     * A player is exhausted if their SP is below 5.
-    * -25% damage (ranged and melee).
-    * -25% accuracy.
-    * -25% movement speed.
-    * -25% attack speed.
-    * -25% spell power.
-    * -25% spell success chance.
+    * -12% damage (ranged and melee).
+    * -12% accuracy.
+    * -12% movement speed.
+    * -12% attack speed.
+    * -12% spell power.
+    * -12% spell success chance.
     * can't invoke a berserk ability, but you CAN use a haste or berserk potion.
 
 * Keyboard changes
