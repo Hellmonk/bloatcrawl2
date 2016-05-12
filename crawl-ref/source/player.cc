@@ -4301,7 +4301,7 @@ bool player_is_very_tired(bool silent)
 
 bool player_mp_is_exhausted(bool silent)
 {
-    const bool is_tired = you.mp < 5;
+    const bool is_tired = you.magic_points < 5;
 
     if (!silent && is_tired)
         mpr("Your energy is low!");
