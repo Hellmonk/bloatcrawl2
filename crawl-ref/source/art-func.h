@@ -312,7 +312,7 @@ static void _OLGREB_melee_effects(item_def* weapon, actor* attacker,
 
 static void _power_pluses(item_def *item)
 {
-    item->plus  = min(you.hp / 10, MAX_ITEM_PLUS);
+    item->plus  = min(get_hp() / 10, MAX_ITEM_PLUS);
 }
 
 static void _POWER_equip(item_def *item, bool *show_msgs, bool unmeld)
@@ -469,7 +469,7 @@ static bool _WUCAD_MU_evoke(item_def *item, int* pract, bool* did_work,
         return true;
     }
 
-    if (you.mp == you.mp_max)
+    if (get_mp() == get_mp_max())
     {
         mpr("Your reserves of magic are full.");
         *unevokable = true;
@@ -1213,7 +1213,7 @@ static void _FLAMING_DEATH_melee_effects(item_def* weapon, actor* attacker,
 
 static void _MAJIN_equip(item_def *item, bool *show_msgs, bool unmeld)
 {
-    if (!you.mp_max)
+    if (!get_mp_max())
         return;
 
     const bool should_msg = !show_msgs || *show_msgs;
@@ -1230,7 +1230,7 @@ static void _MAJIN_equip(item_def *item, bool *show_msgs, bool unmeld)
 
 static void _MAJIN_unequip(item_def *item, bool *show_msgs)
 {
-    if (you.mp_max)
+    if (get_mp_max())
     {
         _equip_mpr(show_msgs,
                    "The darkness slowly releases its grasp on your magic.");

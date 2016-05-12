@@ -3963,8 +3963,8 @@ int get_tension(god_type god)
 
     // Tension goes up inversely proportional to the percentage of max
     // hp you have.
-    tension *= (scale + 1) * you.hp_max;
-    tension /= max(you.hp_max + scale * you.hp, 1);
+    tension *= (scale + 1) * get_hp_max();
+    tension /= max(get_hp_max() + scale * get_hp(), 1);
 
     // Divides by 1 at level 1, 200 at level 27.
     const int exp_lev  = you.get_experience_level();

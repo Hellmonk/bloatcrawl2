@@ -1609,7 +1609,7 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
             you.attribute[ATTR_TEMP_MUT_XP] = temp_mutation_roll();
         }
 
-        if (you.hp <= 0)
+        if (get_hp() <= 0)
         {
             ouch(0, KILLED_BY_FRAILTY, MID_NOBODY,
                  make_stringf("gaining the %s mutation",
@@ -1713,7 +1713,7 @@ static bool _delete_single_mutation_level(mutation_type mutat,
     if (!transient)
         take_note(Note(NOTE_LOSE_MUTATION, mutat, you.mutation[mutat], reason));
 
-    if (you.hp <= 0)
+    if (get_hp() <= 0)
     {
         ouch(0, KILLED_BY_FRAILTY, MID_NOBODY,
              make_stringf("losing the %s mutation", mutation_name(mutat)).c_str());
@@ -2561,7 +2561,7 @@ int augmentation_amount()
 
     for (int i = 0; i < level; ++i)
     {
-        if (you.hp >= ((i + level) * you.hp_max) / (2 * level))
+        if (get_hp() >= ((i + level) * get_hp_max()) / (2 * level))
             amount++;
     }
 

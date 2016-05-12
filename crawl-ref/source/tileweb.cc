@@ -699,10 +699,10 @@ void TilesFramework::_send_player(bool force_full)
 
     _update_int(force_full, c.form, (uint8_t) you.form, "form");
 
-    _update_int(force_full, c.hp, you.hp, "hp");
-    _update_int(force_full, c.hp_max, you.hp_max, "hp_max");
-    _update_int(force_full, c.sp, you.sp, "sp");
-    _update_int(force_full, c.sp_max, you.sp_max, "sp_max");
+    _update_int(force_full, c.hp, get_hp(), "hp");
+    _update_int(force_full, c.hp_max, get_hp_max(), "hp_max");
+    _update_int(force_full, c.sp, get_sp(), "sp");
+    _update_int(force_full, c.sp_max, get_sp_max(), "sp_max");
 
     int max_max_hp = get_real_hp(true, true);
     int max_max_mp = get_real_mp(true, true);
@@ -716,10 +716,10 @@ void TilesFramework::_send_player(bool force_full)
 
     if (you.species != SP_DJINNI)
     {
-        _update_int(force_full, c.mp, you.mp, "mp");
-        _update_int(force_full, c.mp_max, you.mp_max, "mp_max");
-        _update_int(force_full, c.sp, you.sp, "sp");
-        _update_int(force_full, c.sp_max, you.sp_max, "sp_max");
+        _update_int(force_full, c.mp, get_mp(), "mp");
+        _update_int(force_full, c.mp_max, get_mp_max(), "mp_max");
+        _update_int(force_full, c.sp, get_sp(), "sp");
+        _update_int(force_full, c.sp_max, get_sp_max(), "sp_max");
     }
 
     _update_int(force_full, c.real_mp_max, max_max_mp, "real_mp_max");

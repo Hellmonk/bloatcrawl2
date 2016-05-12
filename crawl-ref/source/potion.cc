@@ -92,7 +92,7 @@ public:
             return false;
         }
         if (!you.can_device_heal()
-            || you.hp == you.hp_max && player_rotted() == 0)
+            || get_hp() == get_hp_max() && player_rotted() == 0)
         {
             if (reason)
                 *reason = "You have no ailments to cure.";
@@ -216,7 +216,7 @@ public:
                 *reason = "You cannot heal while in Death's door!";
             return false;
         }
-        if (you.hp == you.hp_max && player_rotted() == 0)
+        if (get_hp() == get_hp_max() && player_rotted() == 0)
         {
             if (reason)
                 *reason = "Your health is already full!";
@@ -271,9 +271,9 @@ public:
                 default:
                     break;
             }
-            amount = min(you.hp_max, div_rand_round(you.hp_max * power, divisor));
-            if (amount > you.hp_max - you.hp)
-                amount = you.hp_max - you.hp;
+            amount = min(get_hp_max(), div_rand_round(get_hp_max() * power, divisor));
+            if (amount > get_hp_max() - get_hp())
+                amount = get_hp_max() - get_hp();
             amount = max(minimum_healing, amount);
 
             if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
@@ -286,13 +286,13 @@ public:
             {
                 case DIFFICULTY_STANDARD:
                     /*
-                    amount = you.hp_max;
+                    amount = get_hp_max();
                     mprf("You feel completely better. (%d)", amount);
                     break;
                      */
                 case DIFFICULTY_CHALLENGE:
                     /*
-                    amount = you.hp_max/2;
+                    amount = get_hp_max()/2;
                     mprf("You feel much better. (%d)", amount);
                     break;
                      */
@@ -736,7 +736,7 @@ public:
     {
         if (you.species == SP_DJINNI)
             return PotionHealWounds::instance().can_quaff(reason);
-        if (you.mp == you.mp_max)
+        if (get_mp() == get_mp_max())
         {
             if (reason)
                 *reason = "Your magic is already full.";
@@ -793,7 +793,7 @@ public:
         if (you.species == SP_DJINNI)
             return PotionHealWounds::instance().can_quaff(reason);
 
-        if (you.sp == you.sp_max)
+        if (get_sp() == get_sp_max())
         {
             if (reason)
                 *reason = "Your stamina is already full.";

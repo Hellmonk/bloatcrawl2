@@ -1153,6 +1153,13 @@ void set_quick_mode(const bool new_quick_mode);
 void set_exertion(const exertion_mode new_exertion, bool manual = true);
 void exert_toggle(exertion_mode new_exertion);
 
+int get_hp();
+int get_hp_max();
+int get_sp();
+int get_sp_max();
+int get_mp();
+int get_mp_max();
+
 bool player_has_orb();
 bool player_on_orb_run();
 

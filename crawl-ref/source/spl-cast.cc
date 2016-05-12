@@ -1020,7 +1020,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     // Nasty special cases.
     if (you.species == SP_DJINNI && cast_result == SPRET_SUCCESS
         && (spell == SPELL_BORGNJORS_REVIVIFICATION
-            || spell == SPELL_SUBLIMATION_OF_BLOOD && you.hp == you.hp_max))
+            || spell == SPELL_SUBLIMATION_OF_BLOOD && get_hp() == get_hp_max()))
     {
         // These spells have replenished essence to full.
         inc_mp(cost, true);
@@ -1174,7 +1174,7 @@ static void _try_monster_cast(spell_type spell, int powc,
     mon->attitude   = ATT_FRIENDLY;
     mon->flags      = (MF_NO_REWARD | MF_JUST_SUMMONED | MF_SEEN
                        | MF_WAS_IN_VIEW | MF_HARD_RESET);
-    mon->hit_points = you.hp;
+    mon->hit_points = get_hp();
     mon->set_hit_dice(you.experience_level);
     mon->set_position(you.pos());
     mon->target     = spd.target;
@@ -1342,7 +1342,7 @@ static double _chance_miscast_prot()
 static void _spellcasting_corruption(spell_type spell)
 {
     // never kill the player (directly)
-    int hp_cost = min(you.spell_hp_cost() * spell_mana(spell), you.hp - 1);
+    int hp_cost = min(you.spell_hp_cost() * spell_mana(spell), get_hp() - 1);
     const char * source = nullptr;
     if (player_equip_unrand(UNRAND_MAJIN))
         source = "the Majin-Bo"; // for debugging
@@ -1569,7 +1569,7 @@ spret_type your_spells(spell_type spell, int powc,
     bool antimagic = false; // lost time but no other penalty
 
     if (allow_fail && you.duration[DUR_ANTIMAGIC]
-        && x_chance_in_y(you.duration[DUR_ANTIMAGIC] / 3, you.hp_max))
+        && x_chance_in_y(you.duration[DUR_ANTIMAGIC] / 3, get_hp_max()))
     {
         mpr("You fail to access your magic.");
         fail = antimagic = true;

@@ -292,7 +292,7 @@ static bool _check_crystal_ball()
         return false;
     }
 
-    if (you.mp == you.mp_max)
+    if (get_mp() == get_mp_max())
     {
         mpr("Your reserves of magic are already full.");
         return false;
@@ -1227,13 +1227,13 @@ static bool _ball_of_energy()
     else if (use < 5 && enough_mp(1, true))
     {
         mpr("You feel your power drain away!");
-        dec_mp(you.mp);
+        dec_mp(get_mp());
     }
     else if (use < 10)
         confuse_player(10 + random2(10));
     else
     {
-        int proportional = (you.mp * 100) / you.mp_max;
+        int proportional = (get_mp() * 100) / get_mp_max();
 
         if (random2avg(
                 77 - player_adjust_evoc_power(you.skill(SK_EVOCATIONS, 2)), 4)
@@ -1241,7 +1241,7 @@ static bool _ball_of_energy()
             || one_chance_in(25))
         {
             mpr("You feel your power drain away!");
-            dec_mp(you.mp);
+            dec_mp(get_mp());
         }
         else
         {
@@ -2346,8 +2346,8 @@ bool evoke_item(int slot, bool check_range)
             canned_msg(MSG_TOO_HUNGRY);
             return false;
         }
-        else if (you.mp >= you.mp_max
-                 && (you.species != SP_DJINNI || you.hp == you.hp_max)
+        else if (get_mp() >= get_mp_max()
+                 && (you.species != SP_DJINNI || get_hp() == get_hp_max())
                 )
         {
             mpr("Your reserves of magic are already full.");

@@ -4278,6 +4278,44 @@ static bool _should_stop_resting(int cur, int max)
     return cur == max || cur == _rest_trigger_level(max);
 }
 
+int get_hp()
+{
+    return you.hp;
+}
+
+int get_hp_max()
+{
+    return you.hp_max;
+}
+
+int get_sp()
+{
+    if (you.species == SP_DJINNI)
+        return you.hp;
+    return you.sp;
+}
+
+int get_sp_max()
+{
+    if (you.species == SP_DJINNI)
+        return you.hp_max;
+    return you.sp_max;
+}
+
+int get_mp()
+{
+    if (you.species == SP_DJINNI)
+        return you.hp;
+    return you.mp;
+}
+
+int get_mp_max()
+{
+    if (you.species == SP_DJINNI)
+        return you.hp_max;
+    return you.mp_max;
+}
+
 bool player_is_tired(bool silent)
 {
     const bool is_tired = you.sp * 100 / you.sp_max < 50;

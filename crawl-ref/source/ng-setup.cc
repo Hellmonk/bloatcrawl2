@@ -585,9 +585,9 @@ static void _setup_generic(const newgame_def& ng)
     calc_mp();
 
     // Make sure the starting player is fully charged up.
-    set_hp(you.hp_max);
-    set_sp(you.sp_max);
-    set_mp(you.mp_max);
+    set_hp(get_hp_max());
+    set_sp(get_sp_max());
+    set_mp(get_mp_max());
 
     initialise_branch_depths();
     initialise_temples();
