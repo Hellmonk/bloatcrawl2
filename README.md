@@ -1,10 +1,10 @@
-Dungeon Crawl Stone Soup: Circus Animals variation
+# Dungeon Crawl Stone Soup: Circus Animals variation
 
-vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+---
 
-NOTICE: The changelog-ca.txt file will contain the latest detailed changes. This file will be shortened and kept to a high level summary of what is in this fork. If you want specifics, then you need to look at the changelog.
+_NOTICE: The changelog-ca.txt file will contain the latest detailed changes. This file will be shortened and kept to a high level summary of what is in this fork. If you want specifics, then you need to look at the changelog._
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---
 
 There are two known servers where you can play Circus Animals!
 
