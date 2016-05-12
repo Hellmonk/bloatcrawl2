@@ -2942,7 +2942,7 @@ static void _handle_insight(int exp_gain)
 {
     const int skill_cost = calc_skill_cost(you.skill_cost_level);
     const int insight_gained = div_rand_round(exp_gain, skill_cost);
-    you.attribute[ATTR_INSIGHT] += insight_gained;
+    you.attribute[ATTR_INSIGHT] += insight_gained * 10;
     
     while (you.attribute[ATTR_INSIGHT] > 100)
     {
