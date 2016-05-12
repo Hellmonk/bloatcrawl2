@@ -198,7 +198,7 @@ static string _spell_wide_description(spell_type spell, bool viewing)
     if (mp_cost == 0)
         mp_cost = spell_freeze_mana(spell);
 
-    desc << chop_string(make_stringf("%d", mp_cost), 3);
+    desc << chop_string(make_stringf("%d", mp_cost), 4);
 
     // spell schools
     desc << spell_schools_string(spell);
@@ -359,7 +359,7 @@ int list_spells_wide(bool viewing, bool allow_preselect,
         // [enne] - Hack. Make title an item so that it's aligned.
         MenuEntry* me =
             new MenuEntry(
-                " " + titlestring + "        Power Range      Fail Level MP Type",
+                " " + titlestring + "        Power Range      Fail Level MP  Type",
                 MEL_ITEM);
         me->colour = BLUE;
         spell_menu.add_entry(me);
@@ -367,7 +367,7 @@ int list_spells_wide(bool viewing, bool allow_preselect,
 #else
     spell_menu.set_title(
         new MenuEntry(
-                " " + titlestring + "        Power Range      Fail Level MP Type",
+                " " + titlestring + "        Power Range      Fail Level MP  Type",
             MEL_TITLE));
 #endif
     spell_menu.set_highlighter(nullptr);
