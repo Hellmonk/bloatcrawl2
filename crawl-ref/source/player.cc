@@ -9561,6 +9561,12 @@ int player_spell_mp_freeze_modifier(spell_type which_spell, bool raw, int old_co
     return new_cost;
 }
 
+const int base_factor = 100;
+
+// all standard attributes are multipled by the base factor and then
+// divided by this value. So if this function returns 100 (the current
+// base_factor), that means that the normal mode damage (for example)
+// is the same as vanilla crawl damage.
 int _difficulty_mode_multiplier()
 {
     int x;
@@ -9568,17 +9574,17 @@ int _difficulty_mode_multiplier()
     switch(crawl_state.difficulty)
     {
         case DIFFICULTY_STANDARD:
-            x = 40;
+            x = 90;
             break;
         case DIFFICULTY_CHALLENGE:
-            x = 35;
+            x = 80;
             break;
         case DIFFICULTY_NIGHTMARE:
-            x = 30;
+            x = 70;
             break;
         default:
             // should not be possible
-            x = 35;
+            x = 80;
             break;
     }
 
@@ -9592,7 +9598,7 @@ int player_tohit_modifier(int old_tohit)
     if (you.exertion == EXERT_FOCUS)
         new_tohit = new_tohit * 4 / 3 + 50;
 
-    return new_tohit / 40;
+    return new_tohit / base_factor;
 }
 
 int player_damage_modifier(int old_damage, bool silent)
@@ -9602,63 +9608,57 @@ int player_damage_modifier(int old_damage, bool silent)
     if (you.exertion == EXERT_POWER)
         new_damage = new_damage * 4 / 3 + 20;
 
-    return new_damage / 40;
+    return new_damage / base_factor;
 }
 
 int player_attack_delay_modifier(int attack_delay)
 {
-    attack_delay *= 1000;
-    attack_delay /= _difficulty_mode_multiplier();
+    attack_delay *= base_factor;
 
     if (you.exertion == EXERT_POWER)
         attack_delay = attack_delay * 7 / 8 - 25;
 
-    return attack_delay * 40 / 1000;
+    return attack_delay / _difficulty_mode_multiplier();
 }
 
-int player_spellpower_modifier(int old_spellpower)
+int player_spellpower_modifier(int spellpower)
 {
-    int new_spellpower = old_spellpower * _difficulty_mode_multiplier();
+    spellpower *= _difficulty_mode_multiplier();
 
     if (you.exertion == EXERT_POWER)
-        new_spellpower = new_spellpower * 4 / 3 + 100;
+        spellpower = spellpower * 4 / 3 + 100;
 
-    return new_spellpower / 40;
+    return spellpower / base_factor;
 }
 
 int player_spellfailure_modifier(int failure)
 {
-    failure = failure * 100;
+    failure *= base_factor;
 
     if (you.exertion == EXERT_FOCUS)
-        failure = max(failure - 1500, failure / 2);
+        failure = max(failure - 15 * base_factor, failure / 2);
 
-    return failure * 40 / 100 / _difficulty_mode_multiplier();
+    return failure / _difficulty_mode_multiplier();
 }
 
-int player_stealth_modifier(int old_stealth)
+int player_stealth_modifier(int stealth)
 {
-    int new_stealth = old_stealth * _difficulty_mode_multiplier();
-
-    /* this isn't needed anymore, quick mode is penalized enough
-    if (in_quick_mode())
-        new_stealth >>= 2;
-        */
+    stealth *= _difficulty_mode_multiplier();
 
     if (you.exertion == EXERT_FOCUS)
-        new_stealth = new_stealth * 4 / 3 + 500;
+        stealth = stealth * 4 / 3 + 500;
 
-    return new_stealth / 40;
+    return stealth / base_factor;
 }
 
-int player_evasion_modifier(int old_evasion)
+int player_evasion_modifier(int evasion)
 {
-    int new_evasion = old_evasion * _difficulty_mode_multiplier();
+    evasion *= _difficulty_mode_multiplier();
 
     if (you.exertion == EXERT_FOCUS)
-        new_evasion = new_evasion * 4 / 3 + 50;
+        evasion = evasion * 4 / 3 + 50;
 
-    return new_evasion / 40;
+    return evasion / base_factor;
 }
 
 void player_update_last_hit_chance(int chance)
