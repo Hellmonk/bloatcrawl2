@@ -819,7 +819,7 @@ public:
         }
 
         inc_sp(amount);
-        mprf("Energy courses through your body. (SP+%d)", amount);
+        mprf("This potion tastes like fruit juice. Energy courses through your body! (SP+%d)", amount);
         return true;
     }
 };
