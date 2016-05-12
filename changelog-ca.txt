@@ -1,6 +1,15 @@
 ## v1.5.1
 
+* Orc branch has been doubled in size, to 8 floors
+    * The "boss" level is still on floor 4.
+    * Floors 5-8 don't give experience for kills, although they will restore drain and charge evocables.
+* Turned off monster spawning.
+    * Increased initial floor population by 20% to compensate.
+    * Monsters still spawn in Abyss and during orb run.
+* Deactivated ghosts.
+    * I have a better solution, but for now this will help.
 * Magic potions restore 40, 30, 20 points depending on difficulty mode.
+* Stamina potions restore 40, 30, 20 points depending on difficulty mode.
 * Spellcasting skill no longer influences spell power. It is only used for spell slots, reducing spell
   hunger, and reducing spell failure rate.
 * Spell cost is not influenced by spell skills, only by spellcasting, intelligence, and spell level.
