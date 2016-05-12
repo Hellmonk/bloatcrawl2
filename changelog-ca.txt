@@ -96,7 +96,7 @@
 
 * New branch layout
     * Dungeon contains: Orc (no rune), Lair of Beasts, Enchanted Forest, and Depths.
-        * Orc has 4 floors, and contains an arena to battle in.
+        * Orc has 4 floors.
     * Enchanted Forest appears a little after Lair in the dungeon, and has 7 floors
     * Lair has 7 floors and contains four rune branches: Swamp, Shoals, Spider, and Snake (every game), each
       containing 4 floors.
