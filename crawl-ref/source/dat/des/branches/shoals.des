@@ -603,7 +603,7 @@ KPROP: YycfZ. = no_tide
 KPROP: ZYcf. = no_tele_into
 KMONS: c = patrolling hungry ghost
 NSUBST: f = 1:g / 2:f / *:.
-KITEM: g = stamina potion / stamina potion / royal jelly
+KITEM: g = stamina potion / stamina potion / stamina potion
 KITEM: f = stamina potion / stamina potion / nothing w:20
 : dgn.delayed_decay(_G, 'c', 'human skeleton')
 SUBST: Z = yY
