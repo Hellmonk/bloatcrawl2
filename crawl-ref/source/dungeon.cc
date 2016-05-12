@@ -5290,8 +5290,8 @@ void place_spec_shop(const coord_def& where, shop_type force_type)
 
 int greed_for_shop_type(shop_type shop, int level_number)
 {
-    if (shop == SHOP_FOOD)
-        return 10 + random2(5);
+//    if (shop == SHOP_FOOD)
+//        return 10 + random2(5);
     if (_shop_sells_antiques(shop))
         return 15 + random2avg(19, 2) + random2(level_number);
     return 10 + random2(5) + random2(level_number / 2);
@@ -5478,11 +5478,11 @@ static void _stock_shop_item(int j, shop_type shop_type_,
         object_class_type basetype = item_in_shop(shop_type_);
         int subtype = OBJ_RANDOM;
 
-        if (spec.gozag && shop_type_ == SHOP_FOOD && you.species == SP_VAMPIRE)
-        {
-            basetype = OBJ_POTIONS;
-            subtype = POT_BLOOD;
-        }
+//        if (spec.gozag && shop_type_ == SHOP_FOOD && you.species == SP_VAMPIRE)
+//        {
+//            basetype = OBJ_POTIONS;
+//            subtype = POT_BLOOD;
+//        }
 
         if (!spec.items.empty() && !spec.use_all)
         {
@@ -5497,11 +5497,11 @@ static void _stock_shop_item(int j, shop_type shop_type_,
             item_index = dgn_place_item(spec.items.get_item(j), coord_def(),
                                         item_level);
         }
-        else if (spec.gozag && shop_type_ == SHOP_FOOD
-                 && you.species == SP_GHOUL)
-        {
-            item_index = _make_delicious_corpse();
-        }
+//        else if (spec.gozag && shop_type_ == SHOP_FOOD
+//                 && you.species == SP_GHOUL)
+//        {
+//            item_index = _make_delicious_corpse();
+//        }
         else
         {
             // make an item randomly
@@ -5539,11 +5539,11 @@ static void _stock_shop_item(int j, shop_type shop_type_,
     if (shop_type_ == SHOP_BOOK && !is_artefact(item))
         stocked[item.sub_type]++;
 
-    if (spec.gozag && shop_type_ == SHOP_FOOD && you.species == SP_VAMPIRE)
-    {
-        ASSERT(is_blood_potion(item));
-        item.quantity += random2(3); // blood for the vampire friends :)
-    }
+//    if (spec.gozag && shop_type_ == SHOP_FOOD && you.species == SP_VAMPIRE)
+//    {
+//        ASSERT(is_blood_potion(item));
+//        item.quantity += random2(3); // blood for the vampire friends :)
+//    }
 
     // Identify the item, unless we don't do that.
     if (!_shop_sells_antiques(shop_type_))
@@ -5628,9 +5628,9 @@ object_class_type item_in_shop(shop_type shop_type)
     case SHOP_BOOK:
         return OBJ_BOOKS;
 
-    case SHOP_FOOD:
-        return OBJ_FOOD;
-
+//    case SHOP_FOOD:
+//        return OBJ_FOOD;
+//
     case SHOP_DISTILLERY:
         return OBJ_POTIONS;
 

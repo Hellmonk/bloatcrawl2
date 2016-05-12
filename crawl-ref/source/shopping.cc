@@ -1725,8 +1725,8 @@ string shop_type_name(shop_type type)
             return "Gadget";
         case SHOP_BOOK:
             return "Book";
-        case SHOP_FOOD:
-            return "Food";
+//        case SHOP_FOOD:
+//            return "Food";
         case SHOP_SCROLL:
             return "Magic Scroll";
         case SHOP_GENERAL_ANTIQUE:
@@ -1825,7 +1825,7 @@ static const char *shop_types[] =
     "jewellery",
     "gadget",
     "book",
-    "food",
+//    "food",
     "distillery",
     "scroll",
     "general",
