@@ -9503,10 +9503,10 @@ int _apply_hunger(const spell_type &which_spell, int cost)
     if (player_mutation_level(MUT_HUNGERLESS) == 0)
     {
         const int hunger = spell_hunger(which_spell, false);
-        cost = div_rand_round(cost * (log10(hunger + 1) + 1) * 10, 20);
+        cost = div_rand_round(cost * (log2(hunger + 1) + 1) * 10, 40);
     }
     else
-        cost /= 2;
+        cost /= 4;
 
     return cost;
 }
