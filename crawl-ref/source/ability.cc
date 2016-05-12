@@ -2485,8 +2485,6 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             pow = player_adjust_invoc_power(
                 10 + (you.skill_rdiv(SK_INVOCATIONS, 1, 3)));
         }
-        if (you.species == SP_DJINNI)
-            pow /= 2;
         pow = min(50, pow);
         const int healed = pow + roll_dice(2, pow) - 2;
         mpr("You are healed.");

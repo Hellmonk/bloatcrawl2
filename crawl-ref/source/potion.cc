@@ -790,6 +790,9 @@ public:
 
     bool can_quaff(string *reason = nullptr) const override
     {
+        if (you.species == SP_DJINNI)
+            return PotionHealWounds::instance().can_quaff(reason);
+
         if (you.sp == you.sp_max)
         {
             if (reason)
@@ -801,7 +804,15 @@ public:
 
     bool effect(bool=true, int pow = 40, bool=true) const override
     {
+        // Allow repairing rot, disallow going through Death's Door.
+        if (you.species == SP_DJINNI
+            && PotionHealWounds::instance().can_quaff())
+        {
+            return PotionHealWounds::instance().effect(true, pow, false);
+        }
+
         int amount = 0;
+
         switch(crawl_state.difficulty)
         {
             case DIFFICULTY_STANDARD:

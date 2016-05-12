@@ -707,7 +707,10 @@ void TilesFramework::_send_player(bool force_full)
     int max_max_hp = get_real_hp(true, true);
     int max_max_mp = get_real_mp(true, true);
     if (you.species == SP_DJINNI)
+    {
         max_max_hp += get_real_mp(true); // compare _print_stats_hp
+        max_max_hp += get_real_sp(true); // compare _print_stats_hp
+    }
 
     _update_int(force_full, c.real_hp_max, max_max_hp, "real_hp_max");
 
@@ -715,6 +718,8 @@ void TilesFramework::_send_player(bool force_full)
     {
         _update_int(force_full, c.mp, you.mp, "mp");
         _update_int(force_full, c.mp_max, you.mp_max, "mp_max");
+        _update_int(force_full, c.sp, you.sp, "sp");
+        _update_int(force_full, c.sp_max, you.sp_max, "sp_max");
     }
 
     _update_int(force_full, c.real_mp_max, max_max_mp, "real_mp_max");

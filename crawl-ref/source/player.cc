@@ -84,8 +84,6 @@
 #include "items.h"
 #include "decks.h"
 
-const int DJ_MP_RATE = 1;
-
 static int _bone_armour_bonus();
 static void _fade_curses(int exp_gained);
 
@@ -1313,9 +1311,6 @@ int player_hunger_rate(bool temp)
     if (hunger < 0)
         hunger = 0;
 
-    if (you.duration[DUR_FLIGHT] && you.species != SP_DJINNI)
-        hunger += 5;
-
     return hunger;
 }
 
@@ -1365,9 +1360,6 @@ int player_likes_chunks(bool permanently)
 // If temp is set to false, temporary sources or resistance won't be counted.
 int player_res_fire(bool calc_unid, bool temp, bool items)
 {
-//    if (you.species == SP_DJINNI)
-//        return 4; // full immunity
-
     int rf = 0;
 
     if (items)
@@ -3066,13 +3058,14 @@ static void _gain_and_note_hp_mp()
     // transformations or equipped items.
     const int note_maxhp = get_real_hp(false, false);
     const int note_maxmp = get_real_mp(false);
+    const int note_maxsp = get_real_sp(false);
 
     char buf[200];
     if (you.species == SP_DJINNI)
         // Djinn don't HP/MP
         sprintf(buf, "EP: %d/%d",
-                min(you.hp, note_maxhp + note_maxmp),
-                note_maxhp + note_maxmp);
+                min(you.hp, note_maxhp + note_maxmp + note_maxsp),
+                note_maxhp + note_maxmp + note_maxsp);
     else
         sprintf(buf, "HP: %d/%d MP: %d/%d",
                 min(you.hp, note_maxhp), note_maxhp,
@@ -4072,7 +4065,10 @@ void calc_hp()
     int oldhp = you.hp, oldmax = you.hp_max;
     you.hp_max = get_real_hp(true, false);
     if (you.species == SP_DJINNI)
+    {
         you.hp_max += get_real_mp(true);
+        you.hp_max += get_real_sp(true);
+    }
     deflate_hp(you.hp_max, false);
     if (oldhp != you.hp || oldmax != you.hp_max)
         dprf("HP changed: %d/%d -> %d/%d", oldhp, oldmax, you.hp, you.hp_max);
@@ -4081,6 +4077,12 @@ void calc_hp()
 
 void calc_sp()
 {
+    if (you.species == SP_DJINNI)
+    {
+        you.sp = you.sp_max = 0;
+        return calc_hp();
+    }
+
     int oldsp = you.sp, oldmax = you.sp_max;
     you.sp_max = get_real_sp(true);
     if (you.sp > you.sp_max)
@@ -4158,7 +4160,7 @@ bool dec_mp(int mp_loss, bool silent)
         return true;
 
     if (you.species == SP_DJINNI)
-        return dec_hp(mp_loss * DJ_MP_RATE, false);
+        return dec_hp(mp_loss, false);
 
     you.mp -= mp_loss;
 
@@ -4242,7 +4244,7 @@ bool enough_hp(int minimum, bool suppress_msg, bool abort_macros)
 bool enough_mp(int minimum, bool suppress_msg, bool abort_macros)
 {
     if (you.species == SP_DJINNI)
-        return enough_hp(minimum * DJ_MP_RATE, suppress_msg);
+        return enough_hp(minimum * 1, suppress_msg);
 
     ASSERT(!crawl_state.game_is_arena());
 
@@ -4394,6 +4396,9 @@ void set_exertion(const exertion_mode new_exertion, bool manual)
 // returns true if after subtracting the given sp, sp is still > 0
 bool dec_sp(int sp_loss, bool silent)
 {
+    if (you.species == SP_DJINNI)
+        return dec_hp(sp_loss, false);
+
     bool result = true;
 
     if (you.duration[DUR_TIRELESS])
@@ -4484,6 +4489,9 @@ void inc_sp(int sp_gain, bool silent, bool manual)
     if (sp_gain < 1 || you.sp >= you.sp_max)
         return;
 
+    if (you.species == SP_DJINNI)
+        return inc_hp(sp_gain);
+
     you.sp += sp_gain;
 
     if (you.sp > you.sp_max / 2 && you.restore_exertion == EXERT_POWER)
@@ -4508,7 +4516,7 @@ void inc_mp(int mp_gain, bool silent)
     ASSERT(!crawl_state.game_is_arena());
 
     if (you.species == SP_DJINNI)
-        return inc_hp(mp_gain * DJ_MP_RATE);
+        return inc_hp(mp_gain);
 
     if (mp_gain < 1 || you.mp >= you.mp_max)
         return;

@@ -279,13 +279,6 @@ static bool _evoke_horn_of_geryon(item_def &item)
 
 static bool _check_crystal_ball()
 {
-    if (you.species == SP_DJINNI)
-    {
-        mpr("These balls have not yet been approved for use by djinn. "
-            "(OOC: they're supposed to work, but need a redesign.)");
-        return false;
-    }
-
     if (you.confused())
     {
         mpr("You are unable to concentrate on the shapes in the crystal ball.");

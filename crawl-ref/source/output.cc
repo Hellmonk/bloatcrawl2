@@ -609,6 +609,9 @@ static void _print_stats_temperature(int x, int y)
 
 static void _print_stats_sp(int x, int y)
 {
+    if (you.species == SP_DJINNI)
+        return;
+
     // Calculate colour
     short sp_colour = HUD_VALUE_COLOUR;
 
@@ -705,7 +708,10 @@ static void _print_stats_hp(int x, int y)
 {
     int max_max_hp = get_real_hp(true, true);
     if (you.species == SP_DJINNI)
+    {
         max_max_hp += get_real_mp(true);
+        max_max_hp += get_real_sp(true);
+    }
 
     // Calculate colour
     short hp_colour = HUD_VALUE_COLOUR;
@@ -728,10 +734,12 @@ static void _print_stats_hp(int x, int y)
     // Health: xxx/yyy (zzz)
     CGOTOXY(x, y, GOTO_STAT);
     textcolour(HUD_CAPTION_COLOUR);
+
     if (you.species == SP_DJINNI)
         CPRINTF(player_rotted() ? "EP: " : "Essence: ");
     else
-    CPRINTF(player_rotted() ? "HP: " : "Health: ");
+        CPRINTF(player_rotted() ? "HP: " : "Health: ");
+
     textcolour(hp_colour);
     CPRINTF("%d", you.hp);
     if (!boosted)
@@ -752,7 +760,7 @@ static void _print_stats_hp(int x, int y)
         if (you.species == SP_DJINNI)
             EP_Bar.vdraw(2, 10, you.hp, you.hp_max);
         else
-        HP_Bar.vdraw(2, 10, you.hp, you.hp_max);
+            HP_Bar.vdraw(2, 10, you.hp, you.hp_max);
     }
     else
 #endif
@@ -1461,8 +1469,11 @@ void update_row_info()
 {
     int row = 2;
     hp_row = ++row;
-    sp_row = ++row;
-    mp_row = ++row;
+    if (you.species != SP_DJINNI)
+    {
+        sp_row = ++row;
+        mp_row = ++row;
+    }
     if (you.species == SP_LAVA_ORC)
         temp_row = ++row;
     ac_row = str_row = stat_row = ++row;
