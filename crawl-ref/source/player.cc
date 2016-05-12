@@ -2827,7 +2827,12 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
         }
     }
 
-    if (Options.exp_percent_from_monsters || !from_monster)
+    const bool can_gain_experience_here =
+        !(is_double_deep_branch(you.where_are_you) && in_lower_half_of_branch())
+        && Options.exp_percent_from_monsters
+        || !from_monster;
+
+    if (can_gain_experience_here)
     {
         if (exp_loss)
         {
