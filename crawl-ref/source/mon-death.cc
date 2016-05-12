@@ -525,8 +525,6 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
         else if(gain_stamina)
             mprf("That corpse tasted great! (sp+%d)", sp_gain);
 
-        o = NON_ITEM;
-
         corpse_remains = false;
     }
 
