@@ -198,7 +198,7 @@ static string _spell_wide_description(spell_type spell, bool viewing)
     if (mp_cost == 0)
         mp_cost = spell_freeze_mana(spell);
 
-    desc << chop_string(make_stringf("%d", mp_cost), 3);
+    desc << chop_string(make_stringf("%d", mp_cost), 4);
 
     // spell schools
     desc << spell_schools_string(spell);
@@ -359,7 +359,7 @@ int list_spells_wide(bool viewing, bool allow_preselect,
         // [enne] - Hack. Make title an item so that it's aligned.
         MenuEntry* me =
             new MenuEntry(
-                " " + titlestring + "        Power Range      Fail Level MP Type",
+                " " + titlestring + "        Power Range      Fail Level MP  Type",
                 MEL_ITEM);
         me->colour = BLUE;
         spell_menu.add_entry(me);
@@ -367,7 +367,7 @@ int list_spells_wide(bool viewing, bool allow_preselect,
 #else
     spell_menu.set_title(
         new MenuEntry(
-                " " + titlestring + "        Power Range      Fail Level MP Type",
+                " " + titlestring + "        Power Range      Fail Level MP  Type",
             MEL_TITLE));
 #endif
     spell_menu.set_highlighter(nullptr);
@@ -548,7 +548,7 @@ int raw_spell_fail(spell_type spell)
 
 int stepdown_spellpower(int power)
 {
-    return stepdown(power / 100, 50, ROUND_DOWN, SPELL_POWER_CAP, 2);
+    return stepdown(power / 100, 100, ROUND_DOWN, SPELL_POWER_CAP, 2);
 }
 
 int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
@@ -1233,7 +1233,7 @@ static bool _spellcasting_aborted(spell_type spell,
         const int rest_mp = (evoked || fake_spell) ? 0 : spell_mana(spell);
 
         // Temporarily restore MP so that we're not uncastable for lack of MP.
-        unwind_var<int> fake_mp(you.magic_points, you.magic_points + rest_mp);
+        unwind_var<int> fake_mp(you.mp, you.mp + rest_mp);
         msg = spell_uselessness_reason(spell, true, true, evoked, fake_spell);
     }
 

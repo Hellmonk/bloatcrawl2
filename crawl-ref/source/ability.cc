@@ -1464,7 +1464,7 @@ static bool _check_ability_possible(const ability_def& abil,
         return true;
 
     case ABIL_PAKELLAS_DEVICE_SURGE:
-        if (you.magic_points == 0)
+        if (you.mp == 0)
         {
             if (!quiet)
                 mpr("You have no magic power.");
@@ -2566,8 +2566,8 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         dec_hp(random2avg(you.hp, 2), false);
 
         // Deflate MP.
-        if (you.magic_points)
-            dec_mp(random2avg(you.magic_points, 2));
+        if (you.mp)
+            dec_mp(random2avg(you.mp, 2));
 
         no_notes nx; // This banishment shouldn't be noted.
         banished();
@@ -2872,7 +2872,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             mpr("You're too exhausted to draw out your power.");
             return SPRET_ABORT;
         }
-        if (you.hp == you.hp_max && you.magic_points == you.max_magic_points
+        if (you.hp == you.hp_max && you.mp == you.mp_max
             && !you.duration[DUR_CONF]
             && !you.duration[DUR_SLOW]
             && !you.attribute[ATTR_HELD]

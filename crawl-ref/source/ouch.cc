@@ -414,7 +414,7 @@ void lose_level()
 
     char buf[200];
     sprintf(buf, "HP: %d/%d MP: %d/%d",
-            you.hp, you.hp_max, you.magic_points, you.max_magic_points);
+            you.hp, you.hp_max, you.mp, you.mp_max);
     take_note(Note(NOTE_XP_LEVEL_CHANGE, you.experience_level, 0, buf));
 
     you.redraw_title = true;
@@ -680,12 +680,12 @@ static void _powered_by_pain(int dam)
                 case 0:
                 case 1:
                 {
-                    if (you.magic_points < you.max_magic_points)
+                    if (you.mp < you.mp_max)
                     {
                         mpr("You focus on the pain.");
                         int mp = roll_dice(3, 2 + 3 * level);
                         canned_msg(MSG_GAIN_MAGIC);
-                        inc_mp(mp);
+                        inc_mp(mp * 3);
                         break;
                     }
                     break;
@@ -994,11 +994,11 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             && !(aux && strstr(aux, "flay_damage")))
         {
             // round off fairly (important for taking 1 damage at a time)
-            int mp = div_rand_round(dam * you.magic_points,
-                                    max(you.hp + you.magic_points, 1));
+            int mp = div_rand_round(dam * you.mp,
+                                    max(you.hp + you.mp, 1));
             // but don't kill the player with round-off errors
             mp = max(mp, dam + 1 - you.hp);
-            mp = min(mp, you.magic_points);
+            mp = min(mp, you.mp);
 
             dam -= mp;
             dec_mp(mp);

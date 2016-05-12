@@ -1,6 +1,19 @@
-## v1.5.1
+# v1.5.1
 
+* Labyrinth allows auto-explore
+    * It's not super reliable, but I find that is removes some tedium without making it totally trivial.
+* Increased Fighting and/or Spellcasting skills for all starting jobs that use them by 1, to make it a little
+  easier for characters to get off the ground with the recent changes.
+* Orc branch has been doubled in size, to 8 floors
+    * The "boss" level is still on floor 4.
+    * Floors 5-8 don't give experience for kills, although they will restore drain and charge evocables.
+* Turned off monster spawning.
+    * Increased initial floor population by 20% to compensate.
+    * Monsters still spawn in Abyss and during orb run.
+* Deactivated ghosts.
+    * I have a better solution, but for now this will help.
 * Magic potions restore 40, 30, 20 points depending on difficulty mode.
+* Stamina potions restore 40, 30, 20 points depending on difficulty mode.
 * Spellcasting skill no longer influences spell power. It is only used for spell slots, reducing spell
   hunger, and reducing spell failure rate.
 * Spell cost is not influenced by spell skills, only by spellcasting, intelligence, and spell level.
@@ -10,10 +23,13 @@
 ## v1.5
 
 * Stamina overhaul
+    * Extremely brief summary: you won't be able to swing around a broad axe as a spriggan with 5 str just as well as
+      an ogre with 25 str any more. Trying to swing that broad axe as a spriggan will exhaust the player almost immediately,
+      whereas and ogre with some minimal fighting skill (say 3) can use it quite a few times before getting tired. But
+      even for an ogre, throwing a large rock is going to be expensive stamina-wise.
     * Normal mode fighting actions cost stamina points (SP).
     * SP cost of attack is based on fighting skill, strength, weapon weight.
         * Heavier weapons will cost more stamina to swing than lighter ones.
-    * When a player runs out of SP, they can continue to attack, but at 75% damage, 75% accuracy, and 75% attack speed.
     * Spells only cost magic points (MP), no more spell hunger.
     * MP cost is based on spellcasting, intelligence, spell level.
     * You can see how much spells cost in the 'S' spell list.
@@ -68,16 +84,6 @@
         * -3 SP per movement
         * SP does not regenerate
 
-* Summary of exhaustion (when the player has 1 or less SP) (All compared to normal mode values)
-    * A player is exhausted if their SP is below 5.
-    * -12% damage (ranged and melee).
-    * -12% accuracy.
-    * -12% movement speed.
-    * -12% attack speed.
-    * -12% spell power.
-    * -12% spell success chance.
-    * can't invoke a berserk ability, but you CAN use a haste or berserk potion.
-
 * Keyboard changes
     * instead of 's' to open spell list, now you press 'S'
     * 'g' will switch to quick speed mode (go)
@@ -93,6 +99,8 @@
     * All spells are between 1 and 99% failure.
     * It's easier to get a level 9 spell down to 80% failure rate than in vanilla.
     * It's harder to get a level 9 spell down to 20% failure rate than in vanilla.
+    * If all spell factors are at 10, a player has a 50% spell failure rate for a level 5 spell.
+        * So if you've got 0 or 1 in 2 different factors, you can expect to have a hard time even casting level 1 spells.
 
 * New branch layout
     * Dungeon (15 floors)

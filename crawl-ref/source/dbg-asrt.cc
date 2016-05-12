@@ -149,7 +149,7 @@ static void _dump_player(FILE *file)
     fprintf(file, "HP: %d/%d; mods: %d/%d\n", you.hp, you.hp_max,
             you.hp_max_adj_temp, you.hp_max_adj_perm);
     fprintf(file, "MP: %d/%d; mod: %d\n",
-            you.magic_points, you.max_magic_points,
+            you.mp, you.mp_max,
             you.mp_max_adj);
     fprintf(file, "Stats: %d (%d) %d (%d) %d (%d)\n",
             you.strength(false), you.max_strength(),

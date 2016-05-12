@@ -72,11 +72,13 @@ extern branch_type root_branch;
 const Branch& your_branch();
 
 bool at_branch_bottom();
+bool in_lower_half_of_branch();
 bool is_hell_subbranch(branch_type branch);
 bool is_random_subbranch(branch_type branch);
 bool is_connected_branch(const Branch *branch);
 bool is_connected_branch(branch_type branch);
 bool is_connected_branch(level_id place);
+bool is_double_deep_branch(branch_type branch);
 level_id current_level_parent();
 bool is_safe_branch(branch_type branch);
 

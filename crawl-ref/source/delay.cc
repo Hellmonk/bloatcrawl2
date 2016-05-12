@@ -1076,7 +1076,7 @@ static command_type _get_running_command()
 
         if (!is_resting() && you.running.hp == you.hp
             && you.running.sp == you.sp
-            && you.running.mp == you.magic_points)
+            && you.running.mp == you.mp)
         {
             mpr("Done waiting.");
         }

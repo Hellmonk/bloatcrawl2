@@ -1059,7 +1059,7 @@ static bool _sif_muna_retribution()
 
     case 7:
     case 8:
-        if (you.magic_points > 0
+        if (you.mp > 0
                  || you.species == SP_DJINNI
                 )
         {
@@ -1833,9 +1833,9 @@ static bool _pakellas_retribution()
             if ((*func)())
                 return true;
     }
-    if (you.magic_points > 0 && coinflip())
+    if (you.mp > 0 && coinflip())
     {
-        drain_mp(you.magic_points);
+        drain_mp(you.mp);
         canned_msg(MSG_MAGIC_DRAIN);
         return true;
     }

@@ -1246,36 +1246,37 @@ static int _num_items_wanted(int absdepth0)
     else if (absdepth0 > 5 && x_chance_in_y(absdepth0, 200))
         return 10 + random2avg(90, 2); // rich level!
     else
-        return 3 + roll_dice(3, 11);
+        return 3 + roll_dice(3, 13);
 }
 
 static int _num_mons_wanted()
 {
-    if (player_in_branch(BRANCH_ABYSS))
-        return 0;
-
-    if (player_in_branch(BRANCH_PANDEMONIUM))
-        return random2avg(28, 3);
-
-    // Except for Abyss and Pan, no other portal gets random monsters.
-    if (!player_in_connected_branch())
-        return 0;
-
-    if (!branch_has_monsters(you.where_are_you))
-        return 0;
-
-    if (player_in_branch(BRANCH_CRYPT))
-        return roll_dice(3, 8);
-
     int mon_wanted = roll_dice(3, 10);
 
-    if (player_in_hell())
+    if (player_in_branch(BRANCH_ABYSS))
+        mon_wanted = 0;
+
+    else if (player_in_branch(BRANCH_PANDEMONIUM))
+        mon_wanted = random2avg(28, 3);
+
+    // Except for Abyss and Pan, no other portal gets random monsters.
+    else if (!player_in_connected_branch())
+        mon_wanted = 0;
+
+    else if (!branch_has_monsters(you.where_are_you))
+        mon_wanted = 0;
+
+    else if (player_in_branch(BRANCH_CRYPT))
+        mon_wanted = roll_dice(3, 8);
+
+    else if (player_in_hell())
         mon_wanted += roll_dice(3, 8);
 
-    if (mon_wanted > 60)
+    else if (mon_wanted > 60)
         mon_wanted = 60;
 
-    return mon_wanted;
+    // boost monster creation since we don't generate them any more
+    return mon_wanted * 12 / 10;
 }
 
 static void _fixup_walls()

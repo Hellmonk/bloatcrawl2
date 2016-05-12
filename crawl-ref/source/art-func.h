@@ -469,7 +469,7 @@ static bool _WUCAD_MU_evoke(item_def *item, int* pract, bool* did_work,
         return true;
     }
 
-    if (you.magic_points == you.max_magic_points)
+    if (you.mp == you.mp_max)
     {
         mpr("Your reserves of magic are full.");
         *unevokable = true;
@@ -488,7 +488,7 @@ static bool _WUCAD_MU_evoke(item_def *item, int* pract, bool* did_work,
 
     mpr("Magical energy flows into your mind!");
 
-    inc_mp(3 + random2(5) + you.skill_rdiv(SK_EVOCATIONS, 1, 3));
+    inc_mp((3 + random2(5) + you.skill_rdiv(SK_EVOCATIONS, 1, 3)) * 3);
     make_hungry(50, false, true);
 
     *pract    = 1;
@@ -1213,7 +1213,7 @@ static void _FLAMING_DEATH_melee_effects(item_def* weapon, actor* attacker,
 
 static void _MAJIN_equip(item_def *item, bool *show_msgs, bool unmeld)
 {
-    if (!you.max_magic_points)
+    if (!you.mp_max)
         return;
 
     const bool should_msg = !show_msgs || *show_msgs;
@@ -1230,7 +1230,7 @@ static void _MAJIN_equip(item_def *item, bool *show_msgs, bool unmeld)
 
 static void _MAJIN_unequip(item_def *item, bool *show_msgs)
 {
-    if (you.max_magic_points)
+    if (you.mp_max)
     {
         _equip_mpr(show_msgs,
                    "The darkness slowly releases its grasp on your magic.");
@@ -1335,7 +1335,7 @@ static void _ETHERIC_CAGE_world_reacts(item_def *item)
 
     // coinflip() chance of 1 MP per turn.
     if (player_regenerates_mp())
-        inc_mp(binomial(div_rand_round(delay, BASELINE_DELAY), 1, 2));
+        inc_mp(binomial(div_rand_round(delay, BASELINE_DELAY), 1, 2) * 3);
 }
 
 ///////////////////////////////////////////////////

@@ -693,7 +693,7 @@ static void _take_starting_note()
         _wanderer_note_items();
 
     notestr << "HP: " << you.hp << "/" << you.hp_max
-            << " MP: " << you.magic_points << "/" << you.max_magic_points;
+            << " MP: " << you.mp << "/" << you.mp_max;
 
     take_note(Note(NOTE_XP_LEVEL_CHANGE, you.experience_level, 0,
                    notestr.str().c_str()));
@@ -1919,7 +1919,7 @@ static void _do_rest()
     {
         player_before_long_safe_action();
         if ((you.hp == you.hp_max || !player_regenerates_hp())
-            && (you.magic_points == you.max_magic_points
+            && (you.mp == you.mp_max
                 || !player_regenerates_mp())
             && (you.sp == you.sp_max || !player_regenerates_sp()))
         {

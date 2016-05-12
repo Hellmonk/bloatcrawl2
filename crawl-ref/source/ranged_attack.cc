@@ -163,7 +163,7 @@ bool ranged_attack::handle_phase_attempted()
     attacker->attacking(defender, true);
     attack_occurred = true;
 
-    if (sp_cost)
+    if (sp_cost && attacker->is_player())
         dec_sp(sp_cost, true);
 
     return true;
@@ -835,8 +835,11 @@ void ranged_attack::announce_hit()
          attack_strength_punctuation(damage_done).c_str());
 }
 
-const item_def* ranged_attack::get_weapon_used()
+const item_def* ranged_attack::get_weapon_used(bool launcher)
 {
-    return projectile;
+    if (launcher)
+        return weapon;
+    else
+        return projectile;
 }
 

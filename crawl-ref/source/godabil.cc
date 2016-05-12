@@ -1426,7 +1426,7 @@ bool elyvilon_divine_vigour()
         const int vigour_amt =
             player_adjust_invoc_power(1 + you.skill_rdiv(SK_INVOCATIONS, 1, 3));
         const int old_hp_max = you.hp_max;
-        const int old_mp_max = you.max_magic_points;
+        const int old_mp_max = you.mp_max;
         you.attribute[ATTR_DIVINE_VIGOUR] = vigour_amt;
         you.set_duration(DUR_DIVINE_VIGOUR,
                          player_adjust_invoc_power(
@@ -1437,9 +1437,10 @@ bool elyvilon_divine_vigour()
         calc_mp();
         if (old_mp_max > 0)
         {
-            inc_mp((you.max_magic_points * you.magic_points + old_mp_max - 1)
-                     / old_mp_max
-                   - you.magic_points);
+            const int gain = (you.mp_max * you.mp + old_mp_max - 1)
+                             / old_mp_max
+                             - you.mp;
+            inc_mp(gain * 3);
         }
 
         success = true;
@@ -6258,8 +6259,9 @@ void ru_draw_out_power()
 
     inc_hp(div_rand_round(you.piety, 16)
            + roll_dice(div_rand_round(you.piety, 20), 6));
-    inc_mp(div_rand_round(you.piety, 48)
-           + roll_dice(div_rand_round(you.piety, 40), 4));
+    const int gain = div_rand_round(you.piety, 48)
+                     + roll_dice(div_rand_round(you.piety, 40), 4);
+    inc_mp(gain * 3);
     drain_player(30, false, true);
 }
 
@@ -6525,7 +6527,7 @@ int pakellas_effective_hex_power(int pow)
     if (!you_worship(GOD_PAKELLAS) || !you.duration[DUR_DEVICE_SURGE])
         return pow;
 
-    if (you.magic_points == 0)
+    if (you.mp == 0)
         return 0;
 
     const int die_size = you.piety * 9 / piety_breakpoint(5);
@@ -6538,7 +6540,7 @@ int pakellas_effective_hex_power(int pow)
         for (int j = 0; j < die_size; j++)
         {
             // This should be the same as the formula in pakellas_device_surge()
-            int roll = min(you.magic_points,
+            int roll = min(you.mp,
                               min(9,
                                   max(3,
                                       1 + (i + j) / 2)));
@@ -6546,7 +6548,7 @@ int pakellas_effective_hex_power(int pow)
         }
 
     if (die_size == 0)
-        rolls[min(3, you.magic_points)] = 1;
+        rolls[min(3, you.mp)] = 1;
 
     int total_pow = 0;
     int weight = 0;
@@ -6577,7 +6579,7 @@ bool pakellas_device_surge()
     if (!you_worship(GOD_PAKELLAS) || !you.duration[DUR_DEVICE_SURGE])
         return true;
 
-    const int mp = min(you.magic_points, min(9, max(3,
+    const int mp = min(you.mp, min(9, max(3,
                        1 + random2avg(you.piety * 9 / piety_breakpoint(5),
                                       2))));
 

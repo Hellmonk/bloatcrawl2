@@ -378,7 +378,7 @@ void hints_new_turn()
             // if you were just cast into the Abyss. Right?
 
             if (2 * you.hp < you.hp_max
-                || 2 * you.magic_points < you.max_magic_points)
+                || 2 * you.mp < you.mp_max)
             {
                 _hints_healing_reminder();
             }
@@ -386,7 +386,7 @@ void hints_new_turn()
                      && Hints.hints_events[HINT_SHIFT_RUN]
                      && you.num_turns >= 200
                      && you.hp == you.hp_max
-                     && you.magic_points == you.max_magic_points)
+                     && you.mp == you.mp_max)
             {
                 learned_something_new(HINT_SHIFT_RUN);
             }
@@ -394,7 +394,7 @@ void hints_new_turn()
                      && Hints.hints_events[HINT_MAP_VIEW]
                      && you.num_turns >= 500
                      && you.hp == you.hp_max
-                     && you.magic_points == you.max_magic_points)
+                     && you.mp == you.mp_max)
             {
                 learned_something_new(HINT_MAP_VIEW);
             }
@@ -402,7 +402,7 @@ void hints_new_turn()
                      && Hints.hints_events[HINT_AUTO_EXPLORE]
                      && you.num_turns >= 700
                      && you.hp == you.hp_max
-                     && you.magic_points == you.max_magic_points)
+                     && you.mp == you.mp_max)
             {
                 learned_something_new(HINT_AUTO_EXPLORE);
             }
@@ -417,7 +417,7 @@ void hints_new_turn()
             else if (2*you.hp < you.hp_max)
                 learned_something_new(HINT_RUN_AWAY);
 
-            if (Hints.hints_type == HINT_MAGIC_CHAR && you.magic_points < 1)
+            if (Hints.hints_type == HINT_MAGIC_CHAR && you.mp < 1)
                 learned_something_new(HINT_RETREAT_CASTER);
         }
     }
@@ -2595,7 +2595,7 @@ void learned_something_new(hints_event_type seen_what, coord_def gc)
     case HINT_SPELL_MISCAST:
     {
         // Don't give at the beginning of your spellcasting career.
-        if (you.max_magic_points <= 2)
+        if (you.mp_max <= 2)
             DELAY_EVENT;
 
         if (!crawl_state.game_is_hints())

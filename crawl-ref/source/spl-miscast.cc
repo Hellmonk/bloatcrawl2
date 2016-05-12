@@ -1152,7 +1152,7 @@ void MiscastEffect::_charms(int severity)
                 if (target->is_player())
                 {
                     debuff_player();
-                    if (you.magic_points > 0
+                    if (you.mp > 0
                         || you.species == SP_DJINNI
                         )
                         {
@@ -1627,7 +1627,7 @@ void MiscastEffect::_divination_you(int severity)
             break;
         case 1:
             mpr("You lose your focus.");
-            if (you.magic_points > 0
+            if (you.mp > 0
                     || you.species == SP_DJINNI
                     )
             {
@@ -1645,7 +1645,7 @@ void MiscastEffect::_divination_you(int severity)
         {
         case 0:
             mpr("You lose concentration completely!");
-            if (you.magic_points > 0
+            if (you.mp > 0
                 || you.species == SP_DJINNI
                     )
             {
@@ -3232,7 +3232,7 @@ void MiscastEffect::_zot()
                 target->polymorph(0);
             break;
         case 9:
-            if (you.magic_points > 0)
+            if (you.mp > 0)
             {
                 dec_mp(10 + random2(21));
                 canned_msg(MSG_MAGIC_DRAIN);

@@ -1379,9 +1379,9 @@ static void tag_construct_you(writer &th)
     marshallUByte(th, you.sp);
     marshallUByte(th, you.sp_max);
 
-    ASSERT_RANGE(you.magic_points, 0, you.max_magic_points + 1);
-    marshallUByte(th, you.magic_points);
-    marshallUByte(th, you.max_magic_points);
+    ASSERT_RANGE(you.mp, 0, you.mp_max + 1);
+    marshallUByte(th, you.mp);
+    marshallUByte(th, you.mp_max);
 
     marshallUByte(th, you.target_hunger_state);
     marshallUByte(th, you.motion);
@@ -2378,8 +2378,8 @@ static void tag_read_you(reader &th)
 
     you.sp                        = unmarshallUByte(th);
     you.sp_max                    = unmarshallUByte(th);
-    you.magic_points              = unmarshallUByte(th);
-    you.max_magic_points          = unmarshallUByte(th);
+    you.mp              = unmarshallUByte(th);
+    you.mp_max          = unmarshallUByte(th);
 
     you.target_hunger_state       = (hunger_state_t) unmarshallUByte(th);
     you.motion                    = (motion_type) unmarshallUByte(th);

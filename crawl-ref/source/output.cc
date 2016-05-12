@@ -666,9 +666,9 @@ static void _print_stats_mp(int x, int y)
         mp_colour = LIGHTBLUE;
     else
     {
-        int mp_percent = (you.max_magic_points == 0
+        int mp_percent = (you.mp_max == 0
                           ? 100
-                          : (you.magic_points * 100) / you.max_magic_points);
+                          : (you.mp * 100) / you.mp_max);
 
         for (const auto &entry : Options.mp_colour)
             if (mp_percent <= entry.first)
@@ -679,26 +679,26 @@ static void _print_stats_mp(int x, int y)
     textcolour(HUD_CAPTION_COLOUR);
     CPRINTF(player_rotted() ? "MP: " : "Magic:  ");
     textcolour(mp_colour);
-    CPRINTF("%d", you.magic_points);
+    CPRINTF("%d", you.mp);
     if (!boosted)
         textcolour(HUD_VALUE_COLOUR);
-    CPRINTF("/%d", you.max_magic_points);
+    CPRINTF("/%d", you.mp_max);
     if (boosted)
         textcolour(HUD_VALUE_COLOUR);
-    if (max_max_mp != you.max_magic_points)
+    if (max_max_mp != you.mp_max)
         CPRINTF(" (%d)", max_max_mp);
 
-    int col = _count_digits(you.magic_points)
-              + _count_digits(you.max_magic_points) + 1;
+    int col = _count_digits(you.mp)
+              + _count_digits(you.mp_max) + 1;
     for (int i = 11-col; i > 0; i--)
         CPRINTF(" ");
 
 #ifdef TOUCH_UI
     if (tiles.is_using_small_layout())
-        MP_Bar.vdraw(6, 10, you.magic_points, you.max_magic_points);
+        MP_Bar.vdraw(6, 10, you.mp, you.mp_max);
     else
 #endif
-    MP_Bar.draw(19, y, you.magic_points, you.max_magic_points);
+    MP_Bar.draw(19, y, you.mp, you.mp_max);
 }
 
 static void _print_stats_hp(int x, int y)
@@ -2168,7 +2168,7 @@ static vector<formatted_string> _get_overview_stats()
     else
         entry.textcolour(HUD_VALUE_COLOUR);
 
-    entry.cprintf("%d/%d", you.magic_points, you.max_magic_points);
+    entry.cprintf("%d/%d", you.mp, you.mp_max);
 
     cols.add_formatted(0, entry.to_colour_string(), false);
     entry.clear();

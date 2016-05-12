@@ -26,9 +26,12 @@ static bool _banned_combination(job_type job, species_type species)
                && (job == JOB_BERSERKER
                    || job == JOB_CHAOS_KNIGHT
                    || job == JOB_ABYSSAL_KNIGHT)
+           /* This is okay now
            || job == JOB_TRANSMUTER
               && (species_undead_type(species) == US_UNDEAD
-                  || species_undead_type(species) == US_HUNGRY_DEAD);
+                  || species_undead_type(species) == US_HUNGRY_DEAD)
+                  */
+        ;
 }
 
 char_choice_restriction species_allowed(job_type job, species_type speci)
