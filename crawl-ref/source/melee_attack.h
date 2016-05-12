@@ -48,7 +48,7 @@ public:
     int calc_to_hit(bool random = true) override;
 
     static void chaos_affect_actor(actor *victim);
-    const item_def* get_weapon_used() override;
+    const item_def* get_weapon_used(bool launcher = false) override;
 
 private:
     /* Attack phases */

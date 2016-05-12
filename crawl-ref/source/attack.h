@@ -5,6 +5,7 @@
 #include "itemprop-enum.h"
 #include "mon-enum.h"
 #include "ouch.h"
+#include "externs.h"
 
 // Used throughout inheriting classes, define them here for universal access
 const int HIT_WEAK   = 7;
@@ -106,7 +107,7 @@ public:
     string actor_pronoun(const actor *a, pronoun_type ptyp, bool actor_visible);
     string anon_name(description_level_type desc);
     string anon_pronoun(pronoun_type ptyp);
-    virtual const item_def* get_weapon_used();
+    virtual const item_def *get_weapon_used(bool launcher = false);
 
 // Private Properties
     string aux_source;

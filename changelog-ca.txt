@@ -1,5 +1,7 @@
 # v1.5.1
 
+* Labyrinth allows auto-explore
+    * It's not super reliable, but I find that is removes some tedium without making it totally trivial.
 * Increased Fighting and/or Spellcasting skills for all starting jobs that use them by 1, to make it a little
   easier for characters to get off the ground with the recent changes.
 * Orc branch has been doubled in size, to 8 floors
@@ -21,6 +23,10 @@
 ## v1.5
 
 * Stamina overhaul
+    * Extremely brief summary: you won't be able to swing around a broad axe as a spriggan with 5 str just as well as
+      an ogre with 25 str any more. Trying to swing that broad axe as a spriggan will exhaust the player almost immediately,
+      whereas and ogre with some minimal fighting skill (say 3) can use it quite a few times before getting tired. But
+      even for an ogre, throwing a large rock is going to be expensive stamina-wise.
     * Normal mode fighting actions cost stamina points (SP).
     * SP cost of attack is based on fighting skill, strength, weapon weight.
         * Heavier weapons will cost more stamina to swing than lighter ones.

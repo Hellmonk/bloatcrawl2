@@ -388,7 +388,7 @@ void attack::init_attack(skill_type unarmed_skill, int attack_number)
 
     if (attacker->is_player())
     {
-        const item_def *const weapon_used = get_weapon_used();
+        const item_def *const weapon_used = get_weapon_used(true);
         int weight = weapon_used ? max(1, property(*weapon_used, PWPN_WEIGHT)) : 3;
 
         sp_cost = 100 * weight;
@@ -2042,5 +2042,6 @@ void attack::player_stab_check()
         count_action(CACT_STAB, st);
 }
 
-const item_def* attack::get_weapon_used() { return nullptr; }
+const item_def * attack::get_weapon_used(bool launcher)
+{ return nullptr; }
 
