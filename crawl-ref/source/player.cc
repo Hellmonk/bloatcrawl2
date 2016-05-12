@@ -2938,10 +2938,10 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
     }
 }
 
-void _handle_insight_inv(string &before, string &after, bool success, const FixedVector<item_def, 52> *inv)
+void _handle_insight_inv(string &before, string &after, bool success, FixedVector<item_def, 52> *inv)
 {// top to bottom
     // this give the player the option to move items to the top so that they are more likely to be identified first
-    for(auto &item : *inv)
+    for(item_def &item : *inv)
             {
                 if (item.defined()
                     && (
