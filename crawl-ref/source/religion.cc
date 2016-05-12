@@ -2612,6 +2612,9 @@ bool poor_god_choice_for_player(god_type which_god)
 	if (you.spells[0] != SPELL_NO_SPELL && which_god == GOD_TROG)
 		return true;
 
+    if (which_god == GOD_JIYVA && you.get_experience_level() < 15)
+        return true;
+
 	return false;
 }
 
