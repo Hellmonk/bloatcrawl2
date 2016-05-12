@@ -634,7 +634,7 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_TORMENT_RESISTANCE, 0, 1, mutflag::GOOD, false,
+{ MUT_TORMENT_RESISTANCE, 0, 1, mutflag::GOOD, true,
   "torment resistance",
 
   {"You are immune to unholy pain and torment.", "", ""},
@@ -642,7 +642,7 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_NEGATIVE_ENERGY_RESISTANCE, 20, 3, mutflag::GOOD, false,
+{ MUT_NEGATIVE_ENERGY_RESISTANCE, 20, 3, mutflag::GOOD, true,
   "negative energy resistance",
 
   {"You resist negative energy.",
