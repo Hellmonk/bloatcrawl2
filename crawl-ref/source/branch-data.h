@@ -1,4 +1,5 @@
 #include "colour.h"
+#include "enum.h"
 
 const Branch branches[NUM_BRANCHES] =
 {
@@ -240,7 +241,7 @@ const Branch branches[NUM_BRANCHES] =
         DARKGREY, BLUE,
         '2', {}, 0 },
 
-    { BRANCH_VAULTS, BRANCH_DEPTHS, 1, 2, 4, 19,
+    { BRANCH_VAULTS, BRANCH_DUNGEON, 13, 15, 4, 19,
         BFLAG_DANGEROUS_END,
         DNGN_ENTER_VAULTS, DNGN_EXIT_VAULTS,
         "Vaults", "the Vaults", "Vaults",

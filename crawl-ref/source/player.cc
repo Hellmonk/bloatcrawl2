@@ -2097,7 +2097,7 @@ int player_movement_speed()
     }
 
     if (player_is_exhausted(true))
-        mv = mv * 4 / 3;
+        mv = mv * 8 / 7;
 
     mv = div_rand_round(mv, 100);
 
@@ -4349,6 +4349,12 @@ void set_exertion(const exertion_mode new_exertion, bool manual)
         return;
     }
 
+    if (player_is_exhausted(true) && new_exertion != EXERT_NORMAL)
+    {
+        mpr("You are too tired to exert yourself now.");
+        return;
+    }
+
     you.exertion = new_exertion;
     you.duration[DUR_FOCUS_MODE] = 0;
     you.duration[DUR_POWER_MODE] = 0;
@@ -4395,61 +4401,58 @@ bool dec_sp(int sp_loss, bool silent)
     if (you.sp < 0)
     {
         you.sp = 0;
-        bool sent_message = false;
 
-        if (you.duration[DUR_BERSERK] > 1 && you.duration_source[DUR_BERSERK] != SRC_POTION && !sent_message)
+        if (you.duration[DUR_BERSERK] > 1 && you.duration_source[DUR_BERSERK] != SRC_POTION)
         {
             if (!silent)
                 mpr("You are too tired to continue your rampage.");
             you.duration[DUR_BERSERK] = 1;
-            sent_message = true;
         }
 
-        if (you.duration[DUR_HASTE] > 0 && you.duration_source[DUR_HASTE] != SRC_POTION && !sent_message)
+        if (you.duration[DUR_HASTE] > 0 && you.duration_source[DUR_HASTE] != SRC_POTION)
         {
             if (!silent)
                 mpr("You are too tired to maintain this pace.");
             you.duration[DUR_HASTE] = 0;
-            sent_message = true;
         }
 
-        if (you.duration[DUR_INVIS] > 0 && you.duration_source[DUR_INVIS] != SRC_POTION && !sent_message)
+        if (you.duration[DUR_INVIS] > 0 && you.duration_source[DUR_INVIS] != SRC_POTION)
         {
             if (!silent)
                 mpr("You are too tired to stay invisible.");
             you.duration[DUR_INVIS] = 0;
-            sent_message = true;
         }
 
-        if (you.exertion != EXERT_NORMAL && !sent_message)
-        {
-            if (!silent)
-                mpr("You are too tired to continue exerting yourself.");
-            sent_message = true;
-        }
-
-        if (you.digging && !sent_message)
+        if (you.digging)
         {
             you.digging = false;
             if (!silent)
                 mpr("You are too tired to continue digging.");
-            sent_message = true;
         }
 
-        if (!sent_message)
+        if (you.exertion == EXERT_FOCUS)
         {
+            you.restore_exertion = you.exertion;
             if (!silent)
-                mpr("You are too tired to do that.");
-            sent_message = true;
+                mpr("You are too tired to focus.");
+            set_exertion(EXERT_NORMAL, false);
         }
 
         if (you.exertion == EXERT_POWER)
         {
+            if (!silent)
+                mpr("You are too tired to continue exerting yourself.");
             you.restore_exertion = you.exertion;
             set_exertion(EXERT_NORMAL, false);
         }
 
-        set_quick_mode(false);
+        if (in_quick_mode())
+        {
+            if (!silent)
+                mpr("You are too tired to continue at this pace.");
+            set_quick_mode(false);
+        }
+
         result = false;
         you.redraw_evasion = true;
         you.redraw_tohit = true;
@@ -9431,7 +9434,7 @@ void player_evoked_something()
 void player_moved()
 {
     if (in_quick_mode() && you.peace < 100)
-        dec_sp(3);
+        dec_sp(5);
     if (you.exertion == EXERT_FOCUS && you.peace < 50)
         dec_mp(3);
     if (you.airborne() && you.cancellable_flight())
@@ -9572,7 +9575,7 @@ int player_tohit_modifier(int old_tohit)
     int new_tohit = old_tohit * _difficulty_mode_multiplier();
 
     if (player_is_exhausted(true))
-        new_tohit= new_tohit * 3 / 4;
+        new_tohit= new_tohit * 7 / 8;
     else if (you.exertion == EXERT_FOCUS)
         new_tohit = new_tohit * 4 / 3 + 50;
 
@@ -9585,7 +9588,7 @@ int player_damage_modifier(int old_damage, bool silent)
 
     if (player_is_exhausted(true))
     {
-        new_damage = new_damage * 3 / 4;
+        new_damage = new_damage * 7 / 8;
         if (!silent)
             mpr("Your attack is sluggish.");
     }
@@ -9601,9 +9604,7 @@ int player_attack_delay_modifier(int attack_delay)
     attack_delay /= _difficulty_mode_multiplier();
 
     if (player_is_exhausted(true))
-    {
         attack_delay = attack_delay * 8 / 7;
-    }
     else if (you.exertion == EXERT_POWER)
         attack_delay = attack_delay * 7 / 8 - 25;
 
@@ -9615,7 +9616,7 @@ int player_spellpower_modifier(int old_spellpower)
     int new_spellpower = old_spellpower * _difficulty_mode_multiplier();
 
     if (player_is_exhausted(true))
-        new_spellpower = new_spellpower * 3 / 4;
+        new_spellpower = new_spellpower * 7 / 8;
 
     if (you.exertion == EXERT_POWER)
         new_spellpower = new_spellpower * 4 / 3 + 100;
@@ -9628,10 +9629,10 @@ int player_spellfailure_modifier(int failure)
     failure = failure * 100;
 
     if (player_is_exhausted(true))
-        failure = failure * 4 / 3;
+        failure = failure * 8 / 7;
 
     if (you.exertion == EXERT_FOCUS)
-        failure = max(failure - 15, failure / 2);
+        failure = max(failure - 1500, failure / 2);
 
     return failure * 40 / 100 / _difficulty_mode_multiplier();
 }
@@ -9656,7 +9657,7 @@ int player_evasion_modifier(int old_evasion)
     int new_evasion = old_evasion * _difficulty_mode_multiplier();
 
     if (player_is_exhausted(true))
-        new_evasion = new_evasion * 3 / 4;
+        new_evasion = new_evasion * 7 / 8;
 
     if (you.exertion == EXERT_FOCUS)
         new_evasion = new_evasion * 4 / 3 + 50;

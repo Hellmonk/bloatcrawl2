@@ -1548,7 +1548,7 @@ xxxWWWWWxx
      @  @
 ENDMAP
 
-# contains food and one ok item to make the hell rats a little more worth it
+# contains one ok item to make the hell rats a little more worth it
 NAME:   kennysheep_abandoned_house
 TAGS:   ruin
 DEPTH:  Lair

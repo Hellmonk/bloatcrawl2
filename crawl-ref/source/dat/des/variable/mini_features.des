@@ -2926,7 +2926,7 @@ ENDMAP
 NAME:    minmay_variable_closet
 TAGS:    extra
 DEPTH:   D:9-, Depths
-ITEM:    any weapon, any missile, any armour, any food, any scroll
+ITEM:    any weapon, any missile, any armour, potion of stamina, any scroll
 ITEM:    any jewellery, any potion, any book
 SUBST:   $ : $ZYXW
 SUBST:   $ : $%defghijk

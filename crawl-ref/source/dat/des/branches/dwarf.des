@@ -490,7 +490,7 @@ ENDMAP
 
 NAME:  dhfh_hall_right
 TAGS:  dhfh_hall_right allow_dup no_rotate no_hmirror no_vmirror
-KITEM: * = any scroll / any potion / any food / any book w:2 / any jewellery w:3 / \
+KITEM: * = any scroll / any potion / any book w:2 / any jewellery w:3 / \
            w:2 any misc / any level:20 weapon / w:3 any level:20 armour
 : dhfh.hall_setup(_G, "*")
 MAP

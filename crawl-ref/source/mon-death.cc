@@ -454,7 +454,7 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
     bool corpse_remains = true;
 
     // 50/50 chance of getting a corpse, usually.
-    if (!no_coinflip && coinflip())
+    if (!no_coinflip && one_chance_in(3))
         return nullptr;
 
     // The game can attempt to place a corpse for an out-of-bounds monster
@@ -502,8 +502,8 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
     {
         const int amount = max_corpse_chunks(corpse.mon_type);
 
-        const int sp_gain = div_rand_round(amount * qpow(10, 3, 2, gain_stamina - 1), 10);
-        int hp_gain = div_rand_round(amount * qpow(10, 3, 2, gain_health - 1), 10);
+        const int sp_gain = div_rand_round(amount * qpow(10, 3, 2, gain_stamina), 10);
+        int hp_gain = div_rand_round(amount * qpow(10, 3, 2, gain_health), 10);
 
         if (gain_stamina)
             inc_sp(sp_gain, true);

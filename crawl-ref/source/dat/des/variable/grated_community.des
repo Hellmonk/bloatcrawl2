@@ -60,7 +60,7 @@ KFEAT:  ~ = closed_door
 KFEAT:  7 = tree
 KFEAT:  A = general shop type:Slaves suffix:and_Accessories count:10 ; \
             w:50 whip | wand of enslavement | w:1 wand of hasting
-KFEAT:  B = food shop name:Jack type:Juice-a-riffic suffix:Juicer count:10 ; \
+KFEAT:  B = any shop name:Jack type:Juice-a-riffic suffix:Juicer count:10 ; \
             q:5 fruit
 KFEAT:  C = distillery shop type:Miraculous suffix:Elixirs count:10 \
             greed:50 ; potion of mutation

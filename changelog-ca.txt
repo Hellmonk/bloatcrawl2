@@ -3,7 +3,7 @@
 * Magic potions restore 40, 30, 20 points depending on difficulty mode.
 * Spellcasting skill no longer influences spell power. It is only used for spell slots, reducing spell
   hunger, and reducing spell failure rate.
-* Spell school skills no longer influence spell failure rate. Only spell power and spell hunger.
+* Spell cost is not influenced by spell skills, only by spellcasting, intelligence, and spell level.
 * Removed all food, and created stamina potions. You can now sacrifice stamina potions to evoke fedhas' abilities.
 * Quick mode doesn't use stamina if monsters aren't around.
 
@@ -70,12 +70,12 @@
 
 * Summary of exhaustion (when the player has 1 or less SP) (All compared to normal mode values)
     * A player is exhausted if their SP is below 5.
-    * -25% damage (ranged and melee).
-    * -25% accuracy.
-    * -25% movement speed.
-    * -25% attack speed.
-    * -25% spell power.
-    * -25% spell success chance.
+    * -12% damage (ranged and melee).
+    * -12% accuracy.
+    * -12% movement speed.
+    * -12% attack speed.
+    * -12% spell power.
+    * -12% spell success chance.
     * can't invoke a berserk ability, but you CAN use a haste or berserk potion.
 
 * Keyboard changes
@@ -88,21 +88,34 @@
         * 'E' turns on focus mode. (E...xamine?)
 
 * Spell failure
-    * Spell failure is reduced by intelligence * dexterity / 5
-        * Used to be intelligency * 2
+    * Spell failure is reduced by intelligence AND dexterity, as well as spellcasting and spell schools.
     * Significant simplification of failure calculations.
     * All spells are between 1 and 99% failure.
     * It's easier to get a level 9 spell down to 80% failure rate than in vanilla.
     * It's harder to get a level 9 spell down to 20% failure rate than in vanilla.
 
 * New branch layout
-    * Dungeon contains: Orc (no rune), Lair of Beasts, Enchanted Forest, and Depths.
-        * Orc has 4 floors, and contains an arena to battle in.
-    * Enchanted Forest appears a little after Lair in the dungeon, and has 7 floors
-    * Lair has 7 floors and contains four rune branches: Swamp, Shoals, Spider, and Snake (every game), each
-      containing 4 floors.
-    * Enchanted Forest has 7 floors and contains four rune branches: Crypt, Slime, Elven Halls, and Dwarven Fortress,
-      each with 4 floors and a rune.
-    * Depths contains: Vaults, Zot, Ziggurat, Abyss, Vestibule, and Pandemonium. All have 4 floors except vestibule
-      and pan.
+    * Dungeon (15 floors)
+        * Orcish Mines  (4)
+        * Lair (7)
+            * Swamp (4)
+            * Shoals (4)
+            * Spider (4)
+            * Snake (4)
+        * Forest (7)
+            * Crypt (4)
+            * Slime (4)
+            * Elven Halls (4)
+            * Dwarven Fortress (4)
+        * Vaults (4)
+        * Depths (5)
+            * Zig (27)
+            * Abyss (4)
+            * Vestibule
+                * Dis (7)
+                * Gehenna (7)
+                * Cocytus (7)
+                * Tartarus (7)
+            * Pandemonium (~25)
+            * Zot (4)
 

@@ -4384,9 +4384,9 @@ static void _setup_gozag_shop(int index, vector<shop_type> &valid_shops)
     ASSERT(!you.props.exists(make_stringf(GOZAG_SHOPKEEPER_NAME_KEY, index)));
 
     shop_type type = NUM_SHOPS;
-    if (index == 0 && !you_foodless_normally() && false)
-        type = SHOP_FOOD;
-    else
+//    if (index == 0 && !you_foodless_normally() && false)
+//        type = SHOP_FOOD;
+//    else
     {
         int choice = random2(valid_shops.size());
         type = valid_shops[choice];
@@ -4420,13 +4420,13 @@ static void _setup_gozag_shop(int index, vector<shop_type> &valid_shops)
  */
 static string _gozag_special_shop_name(shop_type type)
 {
-    if (type == SHOP_FOOD)
-    {
-        if (you.species == SP_VAMPIRE)
-            return "Blood";
-        else if (you.species == SP_GHOUL)
-            return "Carrion"; // yum!
-    }
+//    if (type == SHOP_FOOD)
+//    {
+//        if (you.species == SP_VAMPIRE)
+//            return "Blood";
+//        else if (you.species == SP_GHOUL)
+//            return "Carrion"; // yum!
+//    }
 
     return "";
 }
@@ -4566,8 +4566,8 @@ bool gozag_call_merchant()
         shop_type type = static_cast<shop_type>(i);
         // if they are useful to the player, food shops are handled through the
         // first index.
-        if (type == SHOP_FOOD)
-            continue;
+//        if (type == SHOP_FOOD)
+//            continue;
         if (type == SHOP_DISTILLERY && you.species == SP_MUMMY)
             continue;
         if (type == SHOP_EVOKABLES && player_mutation_level(MUT_NO_ARTIFICE))
