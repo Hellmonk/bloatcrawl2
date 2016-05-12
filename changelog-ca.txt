@@ -95,13 +95,27 @@
     * It's harder to get a level 9 spell down to 20% failure rate than in vanilla.
 
 * New branch layout
-    * Dungeon contains: Orc (no rune), Lair of Beasts, Enchanted Forest, and Depths.
-        * Orc has 4 floors.
-    * Enchanted Forest appears a little after Lair in the dungeon, and has 7 floors
-    * Lair has 7 floors and contains four rune branches: Swamp, Shoals, Spider, and Snake (every game), each
-      containing 4 floors.
-    * Enchanted Forest has 7 floors and contains four rune branches: Crypt, Slime, Elven Halls, and Dwarven Fortress,
-      each with 4 floors and a rune.
-    * Depths contains: Vaults, Zot, Ziggurat, Abyss, Vestibule, and Pandemonium. All have 4 floors except vestibule
-      and pan.
+    * Dungeon (15 floors)
+        * Orcish Mines  (4)
+        * Lair (7)
+            * Swamp (4)
+            * Shoals (4)
+            * Spider (4)
+            * Snake (4)
+        * Forest (7)
+            * Crypt (4)
+            * Slime (4)
+            * Elven Halls (4)
+            * Dwarven Fortress (4)
+        * Vaults (4)
+        * Depths (5)
+            * Zig (27)
+            * Abyss (4)
+            * Vestibule
+                * Dis (7)
+                * Gehenna (7)
+                * Cocytus (7)
+                * Tartarus (7)
+            * Pandemonium (~25)
+            * Zot (4)
 
