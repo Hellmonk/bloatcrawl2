@@ -1246,7 +1246,7 @@ static int _num_items_wanted(int absdepth0)
     else if (absdepth0 > 5 && x_chance_in_y(absdepth0, 200))
         return 10 + random2avg(90, 2); // rich level!
     else
-        return 3 + roll_dice(3, 11);
+        return 3 + roll_dice(3, 13);
 }
 
 static int _num_mons_wanted()
