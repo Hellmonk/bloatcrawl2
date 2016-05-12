@@ -467,6 +467,9 @@ void revive()
     if (you.duration[DUR_SCRYING])
         you.xray_vision = false;
 
+    set_exertion(EXERT_NORMAL, false);
+    set_quick_mode(false);
+
     for (int dur = 0; dur < NUM_DURATIONS; dur++)
         if (dur != DUR_GOURMAND && dur != DUR_PIETY_POOL)
             you.duration[dur] = 0;
@@ -474,6 +477,8 @@ void revive()
     unrot_hp(9999);
     set_hp(9999);
     set_mp(9999);
+    set_sp(9999);
+
     you.dead = false;
 
     // Remove silence.

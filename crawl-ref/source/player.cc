@@ -4354,7 +4354,7 @@ void set_exertion(const exertion_mode new_exertion, bool manual)
         return;
 
     if (you.restore_exertion && manual)
-        you.restore_exertion = EXERT_NORMAL;
+        you.restore_exertion = new_exertion;
 
     if (you.duration[DUR_BERSERK])
     {
