@@ -163,7 +163,7 @@ bool ranged_attack::handle_phase_attempted()
     attacker->attacking(defender, true);
     attack_occurred = true;
 
-    if (sp_cost)
+    if (sp_cost && attacker->is_player())
         dec_sp(sp_cost, true);
 
     return true;
