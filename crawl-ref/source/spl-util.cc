@@ -404,36 +404,37 @@ bool del_spell_from_memory(spell_type spell)
         return del_spell_from_memory_by_slot(i);
 }
 
+// should be around 0-1000
 int spell_hunger(spell_type which_spell, bool rod)
 {
     const int level = spell_difficulty(which_spell);
 
 //    const int basehunger[] = { 50, 100, 150, 250, 400, 550, 700, 850, 1000 };
 
-    int hunger;
 
-    // maximum hunger = 1215
-    // level 5 hunger = 375
-    // level 1 hunger = 15
-    hunger = 15 * level * level;
+    const int scale = 100;
+    int hunger = 25 * scale * level * level;
 
     if (player_energy())
-        hunger >>= 1;
+        hunger >>= 2;
 
     if (rod)
     {
-        hunger -= you.skill(SK_EVOCATIONS, 10);
-        hunger = max(hunger, level * 5);
+        hunger /= 5 + you.skill(SK_EVOCATIONS);
+        hunger /= 25;
     }
     else
-        hunger -= you.skill(SK_SPELLCASTING, you.intel());
+    {
+        hunger /= 5 + you.skill(SK_SPELLCASTING);
+        hunger /= 5 + you.intel();
+    }
 
     if (hunger < 0)
         hunger = 0;
 
     hunger = player_spell_hunger_modifier(hunger);
 
-    return hunger;
+    return max(10, hunger * 10 / scale);
 }
 
 // Checks if the spell is an explosion that can be placed anywhere even without

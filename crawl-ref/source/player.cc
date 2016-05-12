@@ -9518,17 +9518,15 @@ int _apply_hunger(const spell_type &which_spell, int cost)
     if (player_mutation_level(MUT_HUNGERLESS) == 0)
     {
         const int hunger = spell_hunger(which_spell, false);
-        cost = div_rand_round(cost * (log2(hunger + 1) + 1) * 10, 40);
+        cost = div_rand_round(cost * (hunger + 10), 10);
     }
-    else
-        cost /= 4;
 
     return cost;
 }
 
 int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost)
 {
-    int new_cost = old_cost * 4;
+    int new_cost = old_cost;
 
 //    if (is_self_transforming_spell(which_spell))
 //        new_cost *= 2;
@@ -9550,7 +9548,7 @@ int player_spell_mp_freeze_modifier(spell_type which_spell, bool raw, int old_co
 
     if (is_summon_spell(which_spell))
     {
-        new_cost = spell_difficulty(which_spell) * 16;
+        new_cost = spell_difficulty(which_spell) * 2;
     }
 
     new_cost = _apply_hunger(which_spell, new_cost);
