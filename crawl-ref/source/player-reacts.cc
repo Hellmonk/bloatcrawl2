@@ -822,7 +822,7 @@ static void _rot_ghoul_players()
 // is below 100, it is increased by a variable calculated from delay,
 // BASELINE_DELAY, and your regeneration rate. MP regeneration happens
 // similarly, but the countup depends on delay, BASELINE_DELAY, and
-// you.max_magic_points
+// you.mp_max
 static void _regenerate_hp_and_mp(int delay)
 {
 	if (crawl_state.disables[DIS_PLAYER_REGEN])
@@ -838,7 +838,7 @@ static void _regenerate_hp_and_mp(int delay)
     {
         // at low mp, "mana link" restores mp in place of hp
         if (player_mutation_level(MUT_MANA_LINK)
-            && !x_chance_in_y(you.magic_points, you.max_magic_points))
+            && !x_chance_in_y(you.mp, you.mp_max))
         {
             inc_mp(1);
         }
@@ -878,9 +878,9 @@ static void _regenerate_hp_and_mp(int delay)
     if (!player_regenerates_mp())
         return;
 
-    if (you.magic_points < you.max_magic_points || you.species == SP_DJINNI && you.hp < you.hp_max)
+    if (you.mp < you.mp_max || you.species == SP_DJINNI && you.hp < you.hp_max)
     {
-        const int base_val = 7 + you.max_magic_points / 2;
+        const int base_val = 7 + you.mp_max / 2;
         int mp_regen_countup = div_rand_round(base_val * delay, BASELINE_DELAY);
 
         if (int level = player_mutation_level(MUT_MANA_REGENERATION))

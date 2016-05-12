@@ -265,7 +265,7 @@ void DungeonRegion::draw_minibars()
 {
     if (Options.tile_show_minihealthbar && you.hp < you.hp_max
         || Options.tile_show_minimagicbar
-           && you.magic_points < you.max_magic_points)
+           && you.mp < you.mp_max)
     {
         // Tiles are 32x32 pixels; 1/32 = 0.03125.
         // The bars are two pixels high each.
@@ -285,13 +285,13 @@ void DungeonRegion::draw_minibars()
         player_on_screen.x = (player_on_screen.x-sx)/dx;
         player_on_screen.y = (player_on_screen.y-sy)/dy;
 
-        if (Options.tile_show_minimagicbar && you.max_magic_points > 0)
+        if (Options.tile_show_minimagicbar && you.mp_max > 0)
         {
             static const VColour magic(0, 114, 159, 207);      // lightblue
             static const VColour magic_spent(0, 0, 0, 255);  // black
 
-            const float magic_divider = (float) you.magic_points
-                                        / (float) you.max_magic_points;
+            const float magic_divider = (float) you.mp
+                                        / (float) you.mp_max;
 
             buff.add(player_on_screen.x,
                      player_on_screen.y + healthbar_offset + bar_height,
@@ -595,7 +595,7 @@ static bool _cast_spell_on_target(actor* target)
         return true;
     }
 
-    if (spell_mana(spell) > you.magic_points)
+    if (spell_mana(spell) > you.mp)
     {
         mpr("You don't have enough magic to cast that spell.");
         return true;

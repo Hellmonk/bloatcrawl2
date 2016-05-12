@@ -791,7 +791,7 @@ static void _spirit_shield_message(bool unmeld)
 {
     if (!unmeld && you.spirit_shield() < 2)
     {
-        dec_mp(you.magic_points);
+        dec_mp(you.mp);
         mpr("You feel your power drawn to a protective spirit.");
         if (you.species == SP_DEEP_DWARF)
             mpr("Now linked to your health, your magic stops regenerating.");
@@ -1156,7 +1156,7 @@ static void _equip_amulet_of_mana_regeneration()
 {
     if (!player_regenerates_mp())
         mpr("The amulet feels cold and inert.");
-    else if (you.magic_points == you.max_magic_points)
+    else if (you.mp == you.mp_max)
     {
         you.props[MANA_REGEN_AMULET_ACTIVE] = 1;
         mpr("The amulet hums as it attunes itself to your energized body.");

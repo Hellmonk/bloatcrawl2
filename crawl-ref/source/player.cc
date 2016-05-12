@@ -1229,7 +1229,7 @@ void update_mana_regen_amulet_attunement()
     if (you.wearing(EQ_AMULET, AMU_MANA_REGENERATION)
         && player_regenerates_mp())
     {
-        if (you.magic_points == you.max_magic_points
+        if (you.mp == you.mp_max
             && you.props[MANA_REGEN_AMULET_ACTIVE].get_int() == 0)
         {
             you.props[MANA_REGEN_AMULET_ACTIVE] = 1;
@@ -3055,15 +3055,15 @@ static void _felid_extra_life()
 
 static void _gain_and_note_hp_mp()
 {
-    const int old_mp = you.magic_points;
-    const int old_maxmp = you.max_magic_points;
+    const int old_mp = you.mp;
+    const int old_maxmp = you.mp_max;
 
     // recalculate for game
     recalc_and_scale_hp();
     calc_mp();
 
-    set_mp(old_maxmp > 0 ? old_mp * you.max_magic_points / old_maxmp
-           : you.max_magic_points);
+    set_mp(old_maxmp > 0 ? old_mp * you.mp_max / old_maxmp
+           : you.mp_max);
 
     // Get "real" values for note-taking, i.e. ignore Berserk,
     // transformations or equipped items.
@@ -3079,7 +3079,7 @@ static void _gain_and_note_hp_mp()
     else
         sprintf(buf, "HP: %d/%d MP: %d/%d",
                 min(you.hp, note_maxhp), note_maxhp,
-                min(you.magic_points, note_maxmp), note_maxmp);
+                min(you.mp, note_maxmp), note_maxmp);
     take_note(Note(NOTE_XP_LEVEL_CHANGE, you.experience_level, 0, buf));
 }
 
@@ -4129,25 +4129,25 @@ void calc_mp()
 {
     if (you.species == SP_DJINNI)
     {
-        you.magic_points = you.max_magic_points = 0;
+        you.mp = you.mp_max = 0;
         return calc_hp();
     }
 
-    you.max_magic_points = get_real_mp(true);
-    you.magic_points = min(you.magic_points, you.max_magic_points);
+    you.mp_max = get_real_mp(true);
+    you.mp = min(you.mp, you.mp_max);
     you.redraw_magic_points = true;
 }
 
 void flush_mp()
 {
     if (Options.magic_point_warning
-        && you.magic_points < you.max_magic_points
+        && you.mp < you.mp_max
                               * Options.magic_point_warning / 100)
     {
         mprf(MSGCH_DANGER, "* * * LOW MAGIC WARNING * * *");
     }
 
-    take_note(Note(NOTE_MP_CHANGE, you.magic_points, you.max_magic_points));
+    take_note(Note(NOTE_MP_CHANGE, you.mp, you.mp_max));
     you.redraw_magic_points = true;
 }
 
@@ -4163,11 +4163,11 @@ bool dec_mp(int mp_loss, bool silent)
     if (you.species == SP_DJINNI)
         return dec_hp(mp_loss * DJ_MP_RATE, false);
 
-    you.magic_points -= mp_loss;
+    you.mp -= mp_loss;
 
-    if (you.magic_points < 0)
+    if (you.mp < 0)
     {
-        you.magic_points = max(0, you.magic_points);
+        you.mp = max(0, you.mp);
         bool sent_message = false;
         result = false;
 
@@ -4249,7 +4249,7 @@ bool enough_mp(int minimum, bool suppress_msg, bool abort_macros)
 
     ASSERT(!crawl_state.game_is_arena());
 
-    if (you.magic_points < minimum)
+    if (you.mp < minimum)
     {
         if (!suppress_msg)
         {
@@ -4301,7 +4301,7 @@ bool player_is_very_tired(bool silent)
 
 bool player_mp_is_exhausted(bool silent)
 {
-    const bool is_tired = you.magic_points < 5;
+    const bool is_tired = you.mp < 5;
 
     if (!silent && is_tired)
         mpr("Your energy is low!");
@@ -4520,23 +4520,23 @@ void inc_mp(int mp_gain, bool silent)
     if (you.species == SP_DJINNI)
         return inc_hp(mp_gain * DJ_MP_RATE);
 
-    if (mp_gain < 1 || you.magic_points >= you.max_magic_points)
+    if (mp_gain < 1 || you.mp >= you.mp_max)
         return;
 
-    you.magic_points += mp_gain;
+    you.mp += mp_gain;
 
-    if (you.magic_points > you.max_magic_points / 2 && you.restore_exertion == EXERT_FOCUS)
+    if (you.mp > you.mp_max / 2 && you.restore_exertion == EXERT_FOCUS)
     {
         set_exertion(you.restore_exertion, false);
         you.restore_exertion = EXERT_NORMAL;
     }
 
-    if (you.magic_points > you.max_magic_points)
-        you.magic_points = you.max_magic_points;
+    if (you.mp > you.mp_max)
+        you.mp = you.mp_max;
 
     if (!silent)
     {
-        if (_should_stop_resting(you.magic_points, you.max_magic_points))
+        if (_should_stop_resting(you.mp, you.mp_max))
             interrupt_activity(AI_FULL_MP);
     }
     you.redraw_magic_points = true;
@@ -4695,12 +4695,12 @@ void set_mp(int new_amount)
 {
     ASSERT(!crawl_state.game_is_arena());
 
-    you.magic_points = new_amount;
+    you.mp = new_amount;
 
-    if (you.magic_points > you.max_magic_points)
-        you.magic_points = you.max_magic_points;
+    if (you.mp > you.mp_max)
+        you.mp = you.mp_max;
 
-    take_note(Note(NOTE_MP_CHANGE, you.magic_points, you.max_magic_points));
+    take_note(Note(NOTE_MP_CHANGE, you.mp, you.mp_max));
 
     // Must remain outside conditional, given code usage. {dlb}
     you.redraw_magic_points = true;
@@ -4857,7 +4857,7 @@ int get_real_mp(bool include_items, bool rotted)
 
 int get_unfrozen_mp()
 {
-    return you.magic_points + you.mp_frozen_summons;
+    return you.mp + you.mp_frozen_summons;
 }
 
 bool player_regenerates_hp()
@@ -5578,7 +5578,7 @@ static void _dec_elixir_mp(int delay)
     if (you.duration[DUR_ELIXIR_MAGIC] < 0)
         you.duration[DUR_ELIXIR_MAGIC] = 0;
 
-    int heal = (delay * you.max_magic_points / 10) / BASELINE_DELAY;
+    int heal = (delay * you.mp_max / 10) / BASELINE_DELAY;
     inc_mp(heal);
 }
 
@@ -5839,8 +5839,8 @@ player::player()
 
     sp               = 0;
     sp_max           = 0;
-    magic_points     = 0;
-    max_magic_points = 0;
+    mp     = 0;
+    mp_max = 0;
     mp_max_adj       = 0;
     mp_frozen_summons        = 0;
 
@@ -6195,7 +6195,7 @@ bool player::is_sufficiently_rested() const
 {
     // Only return false if resting will actually help.
     const bool hp_is_good = hp >= _rest_trigger_level(hp_max) || !player_regenerates_hp();
-    const bool mp_is_good = magic_points >= _rest_trigger_level(max_magic_points) || !player_regenerates_mp();
+    const bool mp_is_good = mp >= _rest_trigger_level(mp_max) || !player_regenerates_mp();
     const bool sp_is_good = sp >= _rest_trigger_level(sp_max) || !player_regenerates_sp();
     return hp_is_good && mp_is_good && sp_is_good;
 }

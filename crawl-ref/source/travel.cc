@@ -3937,7 +3937,7 @@ void runrest::initialise(int dir, int mode)
     // Note HP and MP for reference.
     hp = you.hp;
     sp = you.sp;
-    mp = you.magic_points;
+    mp = you.mp;
     notified_hp_full = false;
     notified_mp_full = false;
     notified_sp_full = false;

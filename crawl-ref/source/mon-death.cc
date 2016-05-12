@@ -2213,9 +2213,9 @@ item_def* monster_die(monster* mons, killer_type killer,
                     inc_hp(hp_heal);
                 }
 
-                if (mp_heal && you.magic_points < you.max_magic_points)
+                if (mp_heal && you.mp < you.mp_max)
                 {
-                    int tmp = min(you.max_magic_points - you.magic_points,
+                    int tmp = min(you.mp_max - you.mp,
                                   mp_heal);
                     canned_msg(MSG_GAIN_MAGIC);
                     inc_mp(mp_heal);

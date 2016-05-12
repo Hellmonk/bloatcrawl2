@@ -212,7 +212,7 @@ void SpellRegion::update()
         if ((spell == SPELL_BLINK || spell == SPELL_CONTROLLED_BLINK)
              && you.no_tele(false, false, true)
             || spell_is_useless(spell, true, true)
-            || spell_mana(spell) > you.magic_points)
+            || spell_mana(spell) > you.mp)
         {
             desc.flag |= TILEI_FLAG_INVALID;
         }

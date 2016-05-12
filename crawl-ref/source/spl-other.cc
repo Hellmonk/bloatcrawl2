@@ -63,7 +63,7 @@ spret_type cast_sublimation_of_blood(int pow, bool fail)
         // Take at most 90% of currhp.
         const int minhp = max(div_rand_round(you.hp, 10), 1);
 
-        while (you.magic_points < you.max_magic_points && you.hp > minhp)
+        while (you.mp < you.mp_max && you.hp > minhp)
         {
             fail_check();
             success = true;

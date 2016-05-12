@@ -2688,7 +2688,7 @@ static void _alchemist_card(int power, deck_rarity_type rarity)
     }
     // Maybe spend some more gold to regain magic.
     int mp = min((gold_max - gold_used) / 5,
-                 you.max_magic_points - you.magic_points);
+                 you.mp_max - you.mp);
     if (mp > 0 && x_chance_in_y(power_level + 1, 5))
     {
         you.del_gold(mp * 5);
@@ -2925,7 +2925,7 @@ static void _wild_magic_card(int power, deck_rarity_type rarity)
             mp += random2(5);
 
         mpr("You feel a surge of magic.");
-        if (mp && you.magic_points < you.max_magic_points)
+        if (mp && you.mp < you.mp_max)
         {
             inc_mp(mp);
             canned_msg(MSG_GAIN_MAGIC);

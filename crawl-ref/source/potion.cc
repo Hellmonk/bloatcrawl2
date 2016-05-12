@@ -736,7 +736,7 @@ public:
     {
         if (you.species == SP_DJINNI)
             return PotionHealWounds::instance().can_quaff(reason);
-        if (you.magic_points == you.max_magic_points)
+        if (you.mp == you.mp_max)
         {
             if (reason)
                 *reason = "Your magic is already full.";

@@ -1335,7 +1335,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         {
             return "you have no blood to sublime.";
         }
-        if (you.magic_points == you.max_magic_points && temp)
+        if (you.mp == you.mp_max && temp)
             return "your magic capacity is already full.";
         break;
 

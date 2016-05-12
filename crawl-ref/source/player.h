@@ -110,8 +110,8 @@ public:
     int sp;
     int sp_max;
 
-    int magic_points;
-    int max_magic_points;
+    int mp;
+    int mp_max;
     int mp_max_adj;             // max MP loss (ability costs, tutorial bonus)
     int mp_frozen_summons;
 

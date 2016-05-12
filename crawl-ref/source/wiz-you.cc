@@ -349,7 +349,7 @@ void wizard_heal(bool super_heal)
     you.duration[DUR_POISONING] = 0;
     you.duration[DUR_EXHAUSTED] = 0;
     set_hp(you.hp_max);
-    set_mp(you.max_magic_points);
+    set_mp(you.mp_max);
     set_hunger(HUNGER_VERY_FULL + 100, true);
     you.redraw_hit_points = true;
     you.redraw_armour_class = true;

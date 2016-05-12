@@ -1233,7 +1233,7 @@ static bool _spellcasting_aborted(spell_type spell,
         const int rest_mp = (evoked || fake_spell) ? 0 : spell_mana(spell);
 
         // Temporarily restore MP so that we're not uncastable for lack of MP.
-        unwind_var<int> fake_mp(you.magic_points, you.magic_points + rest_mp);
+        unwind_var<int> fake_mp(you.mp, you.mp + rest_mp);
         msg = spell_uselessness_reason(spell, true, true, evoked, fake_spell);
     }
 

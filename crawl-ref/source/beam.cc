@@ -3826,7 +3826,7 @@ void bolt::affect_player_enchantment(bool resistible)
 
         case BEAM_DRAIN_MAGIC:
         {
-            int amount = min(you.magic_points, random2avg(ench_power / 8, 3));
+            int amount = min(you.mp, random2avg(ench_power / 8, 3));
 
             if (you.species == SP_DJINNI)
                 amount = min(you.hp / 2, random2avg(ench_power / 8, 3));
