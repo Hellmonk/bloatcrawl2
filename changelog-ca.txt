@@ -1,4 +1,4 @@
-## v1.5.1
+# v1.5.1
 
 * Increased Fighting and/or Spellcasting skills for all starting jobs that use them by 1, to make it a little
   easier for characters to get off the ground with the recent changes.
@@ -24,7 +24,6 @@
     * Normal mode fighting actions cost stamina points (SP).
     * SP cost of attack is based on fighting skill, strength, weapon weight.
         * Heavier weapons will cost more stamina to swing than lighter ones.
-    * When a player runs out of SP, they can continue to attack, but at 75% damage, 75% accuracy, and 75% attack speed.
     * Spells only cost magic points (MP), no more spell hunger.
     * MP cost is based on spellcasting, intelligence, spell level.
     * You can see how much spells cost in the 'S' spell list.
@@ -78,16 +77,6 @@
             * Standard species movement delay in quick mode is 0.9
         * -3 SP per movement
         * SP does not regenerate
-
-* Summary of exhaustion (when the player has 1 or less SP) (All compared to normal mode values)
-    * A player is exhausted if their SP is below 5.
-    * -12% damage (ranged and melee).
-    * -12% accuracy.
-    * -12% movement speed.
-    * -12% attack speed.
-    * -12% spell power.
-    * -12% spell success chance.
-    * can't invoke a berserk ability, but you CAN use a haste or berserk potion.
 
 * Keyboard changes
     * instead of 's' to open spell list, now you press 'S'
