@@ -268,7 +268,7 @@ static void initialize_crawl()
 
     los_changed();
     you.hp = you.hp_max = PLAYER_MAXHP;
-    you.mp = you.max_mp = PLAYER_MAXMP;
+    you.mp = you.mp_max = PLAYER_MAXMP;
     you.species = SP_HUMAN;
 }
 
