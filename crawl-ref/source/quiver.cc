@@ -92,6 +92,7 @@ int player_quiver::get_fire_item(string* no_item_reason) const
     get_desired_item(&desired_item, &slot);
 
     // If not in inv, try the head of the fire order.
+    /* don't auto select ammo here. Players need to be able to unselect ammo so that the standard ammo is fired.
     if (slot == -1)
     {
         vector<int> order;
@@ -99,6 +100,7 @@ int player_quiver::get_fire_item(string* no_item_reason) const
         if (!order.empty())
             slot = order[0];
     }
+     */
 
     // If we can't find anything, tell caller why.
     if (slot == -1)

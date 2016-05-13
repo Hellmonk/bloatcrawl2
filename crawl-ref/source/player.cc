@@ -9548,6 +9548,8 @@ void player_after_each_turn()
         mpr("You form becomes more stable.");
         you.current_form_spell_failure = 0;
     }
+
+    crawl_state.danger_mode_counter = max(0, crawl_state.danger_mode_counter - 1);
 }
 
 int player_spell_hunger_modifier(int old_hunger)

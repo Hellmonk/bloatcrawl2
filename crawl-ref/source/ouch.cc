@@ -996,11 +996,12 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             && !(aux && strstr(aux, "flay_damage")))
         {
             // round off fairly (important for taking 1 damage at a time)
-            int mp = div_rand_round(dam * get_mp(),
-                                    max(get_hp() + get_mp(), 1));
+            const int adjusted_mp = get_mp() / 3;
+            int mp = div_rand_round(dam * adjusted_mp,
+                                    max(get_hp() + adjusted_mp, 1));
             // but don't kill the player with round-off errors
             mp = max(mp, dam + 1 - get_hp());
-            mp = min(mp, get_mp());
+            mp = min(mp, adjusted_mp);
 
             dam -= mp;
             dec_mp(mp);
@@ -1035,15 +1036,14 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         // big hit warning (in this case, a hit for half our HPs) -- bwr
         if (Options.danger_mode_threshold > 0 && dam > Options.danger_mode_threshold * get_hp() / 100 && dam < get_hp())
         {
-            if (crawl_state.danger_mode == 0)
+            if (crawl_state.danger_mode_counter == 0)
             {
                 mprf(MSGCH_DANGER, "Damage (%d) was greater than %d%% of your hp (%d)!!!", dam, Options.danger_mode_threshold, get_hp());
                 for(int i = 0; i < 10; i++)
                     flash_view_delay(UA_ALWAYS_ON, RED, 100);
                 more(true);
+                crawl_state.danger_mode_counter = 10;
             }
-
-            crawl_state.danger_mode = 10;
         }
 
         else if (dam > 0 && get_hp_max() <= dam * 2)

@@ -44,6 +44,7 @@
 #include "traps.h"
 #include "viewchar.h"
 #include "view.h"
+#include "makeitem.h"
 
 static int  _fire_prompt_for_item();
 static bool _fire_validate_item(int selected, string& err);
@@ -465,16 +466,33 @@ void fire_thing(int item)
 {
     dist target;
     item = get_ammo_to_shoot(item, target, is_pproj_active());
-    if (item == -1)
-        return;
 
-    if (check_warning_inscriptions(you.inv1[item], OPER_FIRE)
+    item_def *ammo;
+    if (item == -1)
+    {
+        you.m_quiver.get_desired_item(&ammo, nullptr);
+        if (ammo)
+        {
+            special_missile_type ego = SPMSL_NORMAL;
+            if (ammo->sub_type == MI_NEEDLE)
+                ego = SPMSL_POISONED;
+
+            int p = items(false, OBJ_MISSILES, ammo->sub_type, 0, ego);
+            ammo = &mitm[p];
+        }
+    }
+    else
+    {
+        ammo = &you.inv1[item];
+    }
+
+    if (check_warning_inscriptions(*ammo, OPER_FIRE)
         && (!you.weapon()
-            || is_launched(&you, you.weapon(), you.inv1[item]) != LRET_LAUNCHED
+            || is_launched(&you, you.weapon(), *ammo) != LRET_LAUNCHED
             || check_warning_inscriptions(*you.weapon(), OPER_FIRE)))
     {
         bolt beam;
-        throw_it(beam, item, &target);
+        throw_it(beam, *ammo, &target);
     }
     you.prev_direction.reset();
 }
@@ -511,7 +529,8 @@ void throw_item_no_quiver()
     }
 
     bolt beam;
-    throw_it(beam, slot);
+    item_def &item = you.inv1[slot];
+    throw_it(beam, item);
     you.prev_direction.reset();
 }
 
@@ -675,7 +694,7 @@ static void _throw_noise(actor* act, const bolt &pbolt, const item_def &ammo)
 //
 // Return value is only relevant if dummy_target is non-nullptr, and returns
 // true if dummy_target is hit.
-bool throw_it(bolt &pbolt, int throw_2, dist *target)
+bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
 {
     dist thr;
     bool returning   = false;    // Item can return to pack.
@@ -705,7 +724,6 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
     }
     pbolt.set_target(thr);
 
-    item_def& thrown = you.inv1[throw_2];
     ASSERT(thrown.defined());
 
     // Figure out if we're thrown or launched.
@@ -1123,6 +1141,9 @@ bool thrown_object_destroyed(item_def *item, const coord_def& where)
 
     if (item->base_type != OBJ_MISSILES)
         return false;
+
+    // always mulch
+    return true;
 
     if (ammo_always_destroyed(*item))
         return true;

@@ -1518,7 +1518,6 @@ static void _input()
         // macro.
         if (!you.turn_is_over && cmd != CMD_NEXT_CMD)
             process_command(cmd);
-        crawl_state.danger_mode = max(0, crawl_state.danger_mode - 1);
 
         repeat_again_rec.paused = true;
 

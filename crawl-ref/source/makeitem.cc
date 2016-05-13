@@ -507,7 +507,12 @@ static special_missile_type _determine_missile_brand(const item_def& item,
     special_missile_type rc = SPMSL_NORMAL;
 
     // "Normal weight" of SPMSL_NORMAL.
+    /*
     int nw = force_good ? 0 : random2(2000 - 55 * item_level);
+     */
+
+    // no normal ammo
+    int nw = 0;
 
     switch (item.sub_type)
     {
@@ -664,10 +669,13 @@ static void _generate_missile_item(item_def& item, int force_type,
     else
     {
         item.sub_type =
-            random_choose_weighted(50, MI_STONE,
+            random_choose_weighted(
+                                   50, MI_STONE,
                                    20, MI_ARROW,
                                    12, MI_BOLT,
+                                   /* don't need these since they are unbranded and infinite in a launcher
                                    12, MI_SLING_BULLET,
+                                    */
                                    10, MI_NEEDLE,
                                    3,  MI_TOMAHAWK,
                                    2,  MI_JAVELIN,
@@ -710,6 +718,8 @@ static void _generate_missile_item(item_def& item, int force_type,
         item.quantity = 1 + random2(7) + random2(10) + random2(10);
     else
         item.quantity = 1 + random2(7) + random2(10) + random2(10) + random2(12);
+
+    item.quantity *= 5;
 }
 
 static bool _try_make_armour_artefact(item_def& item, int force_type,
@@ -1897,14 +1907,14 @@ int items(bool allow_uniques,
                 9, OBJ_STAVES,
                 30, OBJ_BOOKS,
                 /* no more food in this game
-           50 / 25, OBJ_FOOD,
+                50, OBJ_FOOD,
                  */
                 50, OBJ_JEWELLERY,
                 70, OBJ_WANDS,
                 212, OBJ_ARMOUR,
                 212, OBJ_WEAPONS,
                 176, OBJ_POTIONS,
-                300, OBJ_MISSILES,
+            300 / 3, OBJ_MISSILES,
                 320, OBJ_SCROLLS,
                 440, OBJ_GOLD,
                 0);
