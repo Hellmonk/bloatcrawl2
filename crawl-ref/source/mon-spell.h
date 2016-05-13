@@ -2103,9 +2103,8 @@ static const mon_spellbook mspell_list[] =
     {  MST_DEEP_DWARF_NECROMANCER,
         {
             { SPELL_CONTROL_UNDEAD, 15, MON_SPELL_WIZARD },
-            { SPELL_BOLT_OF_COLD, 15, MON_SPELL_WIZARD },
-            { SPELL_BOLT_OF_DRAINING, 15, MON_SPELL_WIZARD },
-            { SPELL_VAMPIRIC_DRAINING, 25, MON_SPELL_WIZARD },
+            { SPELL_BOLT_OF_COLD, 18, MON_SPELL_WIZARD },
+            { SPELL_VAMPIRIC_DRAINING, 33, MON_SPELL_WIZARD },
             { SPELL_HAUNT, 15, MON_SPELL_WIZARD },
         }
     },
