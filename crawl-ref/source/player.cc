@@ -9729,3 +9729,36 @@ void player_update_tohit(int new_tohit)
     you.redraw_tohit = true;
 }
 
+// reduce damage to player if it has exceeded protection thresholds (to avoid 1 hit kills for example)
+int player_ouch_modifier(int damage)
+{
+    int percentage_allowed = 100;
+
+    switch (crawl_state.difficulty)
+    {
+        case DIFFICULTY_STANDARD:
+            percentage_allowed = 25;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            percentage_allowed = 50;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            percentage_allowed = 75;
+            break;
+        default:
+            // should not be possible
+            break;
+    }
+
+    const int max_damage_allowed_per_turn = get_hp_max() * percentage_allowed / 100;
+    const int damage_left = max_damage_allowed_per_turn - you.turn_damage;
+
+    if (damage > damage_left)
+        mpr("You almost died there!");
+
+    damage = min(damage, damage_left);
+    damage = max(0, damage);
+
+    return damage;
+}
+

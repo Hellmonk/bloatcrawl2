@@ -1231,5 +1231,6 @@ void player_update_last_hit_chance(int chance);
 void player_update_tohit(int new_tohit = -1);
 void summoned_monster_died(monster* mons, bool natural_death);
 bool player_summoned_monster(spell_type spell, monster* mons, bool first);
+int player_ouch_modifier(int damage);
 
 #endif

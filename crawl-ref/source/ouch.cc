@@ -1014,12 +1014,15 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             return;
         }
 
+        dam = player_ouch_modifier(dam);
+
         you.turn_damage += dam;
         if (you.damage_source != source)
         {
             you.damage_source = source;
             you.source_damage = 0;
         }
+
         you.source_damage += dam;
 
         if(dam > 0) {
