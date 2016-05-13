@@ -398,6 +398,34 @@ ENDMAP
 
 ## guardhouses
 ################################################
+NAME:   oh_my_dwarfness
+TAGS:   dhfh_guard_house
+ORIENT: float
+DEPTH:  Dwarf, !Dwarf:1
+MONS:   deep dwarf artificer / deep dwarf
+MONS:   deep dwarf scion
+MONS:   deep dwarf necromancer
+MONS:   frost giant
+MAP
+  ccccccccc     cccccccc
+ cc.**2...ccccccc......cc
+ c.|**..3.+.c...c.ccccc.c
+ c..|*2...c...c...c   c.c
+ccccccccccccccccccccccc.cc
+@...1...1...1...1...1....{
+..........................
+@c4.....1c......c1.....4c{
+..........................
+@...1...1...1...1...1....{
+cc.ccccccccGGccccccccccccc
+ c......cccccccc...2*|..c
+ c.............+.3..**|.c
+ cc......ccccccc...2**.cc
+  cccccccc     ccccccc
+cc
+ENDMAP
+
+
 NAME:   dhfh_guard_house_d2
 TAGS:   dhfh_guard_house allow_dup
 DEPTH:  Dwarf
