@@ -435,7 +435,7 @@ NAME:   ecumenical_altar_touched_by_chaotic_gods
 DEPTH:  D:4-5
 ORIENT: float
 TAGS:  uniq_ecumenical_altar chance_ecumenical_altar 
-LFLOORCOL:     1 = random
+LFLOORCOL:  random
 KFEAT:  2 = altar_ecumenical
 KFEAT:  _ = w:2 altar_ecumenical / w:5 altar_xom / w:2 altar_jiyva / w:1 altar_lugonu
 CHANCE: 50 : 33%
