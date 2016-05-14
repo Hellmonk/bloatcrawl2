@@ -348,8 +348,8 @@ void wizard_heal(bool super_heal)
     you.duration[DUR_CONF]      = 0;
     you.duration[DUR_POISONING] = 0;
     you.duration[DUR_EXHAUSTED] = 0;
-    set_hp(you.hp_max);
-    set_mp(you.mp_max);
+    set_hp(get_hp_max());
+    set_mp(get_mp_max());
     set_hunger(HUNGER_VERY_FULL + 100, true);
     you.redraw_hit_points = true;
     you.redraw_armour_class = true;
@@ -928,7 +928,7 @@ static void debug_uptick_xl(int newxl, bool train)
  */
 static void debug_downtick_xl(int newxl)
 {
-    set_hp(you.hp_max);
+    set_hp(get_hp_max());
     // boost maxhp so we don't die if heavily rotted
     you.hp_max_adj_perm += 1000;
     you.experience = exp_needed(newxl);
@@ -938,7 +938,7 @@ static void debug_downtick_xl(int newxl)
     // restore maxhp loss
     you.hp_max_adj_perm -= 1000;
     calc_hp();
-    if (you.hp_max <= 0)
+    if (get_hp_max() <= 0)
     {
         // ... but remove it completely if unviable
         you.hp_max_adj_temp = max(you.hp_max_adj_temp, 0);
@@ -946,7 +946,7 @@ static void debug_downtick_xl(int newxl)
         calc_hp();
     }
 
-    set_hp(max(1, you.hp));
+    set_hp(max(1, get_hp()));
 }
 
 void wizard_set_xl()

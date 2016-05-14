@@ -45,7 +45,7 @@ static void _mark_unseen_monsters();
 static void _calc_hp_artefact()
 {
     recalc_and_scale_hp();
-    if (you.hp_max <= 0) // Borgnjor's abusers...
+    if (get_hp_max() <= 0) // Borgnjor's abusers...
         ouch(0, KILLED_BY_DRAINING);
 }
 
@@ -791,7 +791,7 @@ static void _spirit_shield_message(bool unmeld)
 {
     if (!unmeld && you.spirit_shield() < 2)
     {
-        dec_mp(you.mp);
+        dec_mp(get_mp());
         mpr("You feel your power drawn to a protective spirit.");
         if (you.species == SP_DEEP_DWARF)
             mpr("Now linked to your health, your magic stops regenerating.");
@@ -1139,7 +1139,7 @@ static void _equip_amulet_of_regeneration()
 {
     if (player_mutation_level(MUT_SLOW_REGENERATION) == 3)
         mpr("The amulet feels cold and inert.");
-    else if (you.hp == you.hp_max)
+    else if (get_hp() == get_hp_max())
     {
         you.props[REGEN_AMULET_ACTIVE] = 1;
         mpr("The amulet throbs as it attunes itself to your uninjured body.");
@@ -1156,7 +1156,7 @@ static void _equip_amulet_of_mana_regeneration()
 {
     if (!player_regenerates_mp())
         mpr("The amulet feels cold and inert.");
-    else if (you.mp == you.mp_max)
+    else if (get_mp() == get_mp_max())
     {
         you.props[MANA_REGEN_AMULET_ACTIVE] = 1;
         mpr("The amulet hums as it attunes itself to your energized body.");

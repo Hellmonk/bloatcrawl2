@@ -194,9 +194,11 @@ static string _spell_wide_description(spell_type spell, bool viewing)
     desc << "</" << colour_to_str(highlight) << ">";
     desc << chop_string(make_stringf("%d", spell_difficulty(spell)), 6);
 
-    int mp_cost = spell_mana(spell);
+    int mp_cost = spell_mp_cost(spell);
     if (mp_cost == 0)
-        mp_cost = spell_freeze_mana(spell);
+    {
+        mp_cost = spell_mp_freeze(spell);
+    }
 
     desc << chop_string(make_stringf("%d", mp_cost), 4);
 
@@ -502,18 +504,20 @@ int raw_spell_fail(spell_type spell)
     resist = qpow(resist, 3, 2, wild);
 
     // with all factors being 10, player should have a 50% chance of casting a level 5 spell
-    float force = 1 << 5;
+    float force = 5;
 
-    force *= (1.0 + you.dex(true)) / 10;
-    force *= (1.0 + you.intel(true)) / 10;
-    force *= (1.0 + you.skill(SK_SPELLCASTING)) / 10;
+    force *= (1.0 + you.dex(true)) / 3;
+    /* intelligence is no longer a factor
+    force *= (1.0 + you.intel(true)) / 3;
+     */
+    force *= (1.0 + you.skill(SK_SPELLCASTING)) / 3;
 
     const spschools_type disciplines = get_spell_disciplines(spell);
     const int skill_factor = average_schools(disciplines);
-    force *= (1.0 + skill_factor) / 10;
+    force *= (1.0 + skill_factor) / 3;
 
     const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
-    force = qpow(force, 3, 2, subdued);
+    force = fpow(force, 3, 2, subdued);
 
     if (player_equip_unrand(UNRAND_HIGH_COUNCIL))
         force *= 2;
@@ -923,12 +927,18 @@ bool cast_a_spell(bool check_range, spell_type spell)
         return false;
     }
 
-    const int cost = spell_mana(spell);
-    const int freeze_cost = spell_freeze_mana(spell);
+    const int cost = spell_mp_cost(spell);
+    const int freeze_cost = spell_mp_freeze(spell);
     if (!enough_mp(cost + freeze_cost, true))
     {
         mpr("You don't have enough magic to cast that spell.");
         crawl_state.zero_turns_taken();
+        return false;
+    }
+
+    if (is_summon_spell(spell) && player_summon_count() >= 5)
+    {
+        mpr("You can't maintain any more summons.");
         return false;
     }
 
@@ -1020,7 +1030,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     // Nasty special cases.
     if (you.species == SP_DJINNI && cast_result == SPRET_SUCCESS
         && (spell == SPELL_BORGNJORS_REVIVIFICATION
-            || spell == SPELL_SUBLIMATION_OF_BLOOD && you.hp == you.hp_max))
+            || spell == SPELL_SUBLIMATION_OF_BLOOD && get_hp() == get_hp_max()))
     {
         // These spells have replenished essence to full.
         inc_mp(cost, true);
@@ -1174,7 +1184,7 @@ static void _try_monster_cast(spell_type spell, int powc,
     mon->attitude   = ATT_FRIENDLY;
     mon->flags      = (MF_NO_REWARD | MF_JUST_SUMMONED | MF_SEEN
                        | MF_WAS_IN_VIEW | MF_HARD_RESET);
-    mon->hit_points = you.hp;
+    mon->hit_points = get_hp();
     mon->set_hit_dice(you.experience_level);
     mon->set_position(you.pos());
     mon->target     = spd.target;
@@ -1230,7 +1240,7 @@ static bool _spellcasting_aborted(spell_type spell,
         // isn't evoked but still doesn't use the spell's MP. your_spells,
         // this function, and spell_uselessness_reason should take a flag
         // indicating whether MP should be checked (or should never check).
-        const int rest_mp = (evoked || fake_spell) ? 0 : spell_mana(spell);
+        const int rest_mp = (evoked || fake_spell) ? 0 : spell_mp_cost(spell);
 
         // Temporarily restore MP so that we're not uncastable for lack of MP.
         unwind_var<int> fake_mp(you.mp, you.mp + rest_mp);
@@ -1342,7 +1352,7 @@ static double _chance_miscast_prot()
 static void _spellcasting_corruption(spell_type spell)
 {
     // never kill the player (directly)
-    int hp_cost = min(you.spell_hp_cost() * spell_mana(spell), you.hp - 1);
+    int hp_cost = min(you.spell_hp_cost() * spell_mp_cost(spell), get_hp() - 1);
     const char * source = nullptr;
     if (player_equip_unrand(UNRAND_MAJIN))
         source = "the Majin-Bo"; // for debugging
@@ -1569,7 +1579,7 @@ spret_type your_spells(spell_type spell, int powc,
     bool antimagic = false; // lost time but no other penalty
 
     if (allow_fail && you.duration[DUR_ANTIMAGIC]
-        && x_chance_in_y(you.duration[DUR_ANTIMAGIC] / 3, you.hp_max))
+        && x_chance_in_y(you.duration[DUR_ANTIMAGIC] / 3, get_hp_max()))
     {
         mpr("You fail to access your magic.");
         fail = antimagic = true;
@@ -1752,20 +1762,6 @@ spret_type _handle_summoning_spells(spell_type spell, int powc,
         // Summoning spells, and other spells that create new monsters.
         // If a god is making you cast one of these spells, any monsters
         // produced will count as god gifts.
-        case SPELL_WEAVE_SHADOWS:
-        {
-            level_id place(BRANCH_DUNGEON, 1);
-            const int level = 5 + div_rand_round(powc, 3);
-            const int depthsabs = branches[BRANCH_DEPTHS].absdepth;
-            if (level >= depthsabs && x_chance_in_y(level + 1 - depthsabs, 5))
-            {
-                place.branch = BRANCH_DEPTHS;
-                place.depth = level  + 1 - depthsabs;
-            }
-            else
-                place.depth = level;
-            return cast_shadow_creatures(spell, god, place, fail);
-        }
 
         case SPELL_SUMMON_BUTTERFLIES:
             return cast_summon_butterflies(powc, god, fail);
@@ -1858,6 +1854,20 @@ static spret_type _do_cast(spell_type spell, int powc,
 
     switch (spell)
     {
+    case SPELL_WEAVE_SHADOWS:
+    {
+        level_id place(BRANCH_DUNGEON, 1);
+        const int level = 5 + div_rand_round(powc, 3);
+        const int depthsabs = branches[BRANCH_DEPTHS].absdepth;
+        if (level >= depthsabs && x_chance_in_y(level + 1 - depthsabs, 5))
+        {
+            place.branch = BRANCH_DEPTHS;
+            place.depth = level  + 1 - depthsabs;
+        }
+        else
+            place.depth = level;
+        return cast_shadow_creatures(spell, god, place, fail);
+    }
     case SPELL_FREEZE:
         return cast_freeze(powc, monster_at(target), fail);
 

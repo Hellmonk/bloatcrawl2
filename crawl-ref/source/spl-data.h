@@ -1321,7 +1321,7 @@ static const struct spell_desc spelldata[] =
 	// even though it says max distance 13, it will never go beyond visible range (7).
 	// it is set high so that it will grow a little faster with the power level.
 	// Since power caps are so high now, it's hard to see any growth at all here in the early game.
-    1, 13,
+    2, 13,
     1, 0,
     TILEG_FLAME_TONGUE,
 },

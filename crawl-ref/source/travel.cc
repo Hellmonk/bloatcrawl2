@@ -3935,9 +3935,9 @@ runrest::runrest()
 void runrest::initialise(int dir, int mode)
 {
     // Note HP and MP for reference.
-    hp = you.hp;
-    sp = you.sp;
-    mp = you.mp;
+    hp = get_hp();
+    sp = get_sp();
+    mp = get_mp();
     notified_hp_full = false;
     notified_mp_full = false;
     notified_sp_full = false;

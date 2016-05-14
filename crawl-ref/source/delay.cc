@@ -1074,9 +1074,9 @@ static command_type _get_running_command()
             tiles.redraw();
 #endif
 
-        if (!is_resting() && you.running.hp == you.hp
-            && you.running.sp == you.sp
-            && you.running.mp == you.mp)
+        if (!is_resting() && you.running.hp == get_hp()
+            && you.running.sp == get_sp()
+            && you.running.mp == get_mp())
         {
             mpr("Done waiting.");
         }

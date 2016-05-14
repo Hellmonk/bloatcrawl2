@@ -877,7 +877,7 @@ spret_type vampiric_drain(int pow, monster* mons, bool fail)
     int hp_gain = 3 + random2avg(9, 2) + random2(pow) / 7;
 
     hp_gain = min(mons->hit_points, hp_gain);
-    hp_gain = min(you.hp_max - you.hp, hp_gain);
+    hp_gain = min(get_hp_max() - get_hp(), hp_gain);
 
     if (!hp_gain)
     {

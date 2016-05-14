@@ -1220,7 +1220,7 @@ monster* shadow_monster(bool equip)
     mon->attitude   = ATT_FRIENDLY;
     mon->flags      = MF_NO_REWARD | MF_JUST_SUMMONED | MF_SEEN
                     | MF_WAS_IN_VIEW | MF_HARD_RESET;
-    mon->hit_points = you.hp;
+    mon->hit_points = get_hp();
     mon->set_hit_dice(min(MAX_MONS_LEVEL, max(1,
                                   you.skill_rdiv(wpn_index != NON_ITEM
                                                  ? item_attack_skill(mitm[wpn_index])

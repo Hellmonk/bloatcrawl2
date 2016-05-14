@@ -610,6 +610,9 @@ static void _print_stats_temperature(int x, int y)
 
 static void _print_stats_sp(int x, int y)
 {
+    if (you.species == SP_DJINNI)
+        return;
+
     // Calculate colour
     short sp_colour = HUD_VALUE_COLOUR;
 
@@ -619,9 +622,9 @@ static void _print_stats_sp(int x, int y)
         sp_colour = LIGHTBLUE;
     else
     {
-        int sp_percent = (you.sp_max == 0
+        int sp_percent = (get_sp_max() == 0
                           ? 100
-                          : (you.sp * 100) / you.sp_max);
+                          : (get_sp() * 100) / get_sp_max());
 
         for (const auto &entry : Options.sp_colour)
             if (sp_percent <= entry.first)
@@ -632,24 +635,24 @@ static void _print_stats_sp(int x, int y)
     textcolour(HUD_CAPTION_COLOUR);
     CPRINTF(player_rotted() ? "SP: " : "Stamina: ");
     textcolour(sp_colour);
-    CPRINTF("%d", you.sp);
+    CPRINTF("%d", get_sp());
     if (!boosted)
         textcolour(HUD_VALUE_COLOUR);
-    CPRINTF("/%d", you.sp_max);
+    CPRINTF("/%d", get_sp_max());
     if (boosted)
         textcolour(HUD_VALUE_COLOUR);
 
-    int col = _count_digits(you.sp)
-              + _count_digits(you.sp_max) + 1;
+    int col = _count_digits(get_sp())
+              + _count_digits(get_sp_max()) + 1;
     for (int i = 11-col; i > 0; i--)
         CPRINTF(" ");
 
 #ifdef TOUCH_UI
     if (tiles.is_using_small_layout())
-        SP_Bar.vdraw(6, 10, you.sp, you.sp_max);
+        SP_Bar.vdraw(6, 10, get_sp(), get_sp_max());
     else
 #endif
-    SP_Bar.draw(19, y, you.sp, you.sp_max);
+    SP_Bar.draw(19, y, get_sp(), get_sp_max());
 }
 
 static void _print_stats_mp(int x, int y)
@@ -667,9 +670,9 @@ static void _print_stats_mp(int x, int y)
         mp_colour = LIGHTBLUE;
     else
     {
-        int mp_percent = (you.mp_max == 0
+        int mp_percent = (get_mp_max() == 0
                           ? 100
-                          : (you.mp * 100) / you.mp_max);
+                          : (get_mp() * 100) / get_mp_max());
 
         for (const auto &entry : Options.mp_colour)
             if (mp_percent <= entry.first)
@@ -680,33 +683,36 @@ static void _print_stats_mp(int x, int y)
     textcolour(HUD_CAPTION_COLOUR);
     CPRINTF(player_rotted() ? "MP: " : "Magic:  ");
     textcolour(mp_colour);
-    CPRINTF("%d", you.mp);
+    CPRINTF("%d", get_mp());
     if (!boosted)
         textcolour(HUD_VALUE_COLOUR);
-    CPRINTF("/%d", you.mp_max);
+    CPRINTF("/%d", get_mp_max());
     if (boosted)
         textcolour(HUD_VALUE_COLOUR);
-    if (max_max_mp != you.mp_max)
+    if (max_max_mp != get_mp_max())
         CPRINTF(" (%d)", max_max_mp);
 
-    int col = _count_digits(you.mp)
-              + _count_digits(you.mp_max) + 1;
+    int col = _count_digits(get_mp())
+              + _count_digits(get_mp_max()) + 1;
     for (int i = 11-col; i > 0; i--)
         CPRINTF(" ");
 
 #ifdef TOUCH_UI
     if (tiles.is_using_small_layout())
-        MP_Bar.vdraw(6, 10, you.mp, you.mp_max);
+        MP_Bar.vdraw(6, 10, get_mp(), get_mp_max());
     else
 #endif
-    MP_Bar.draw(19, y, you.mp, you.mp_max);
+    MP_Bar.draw(19, y, get_mp(), get_mp_max());
 }
 
 static void _print_stats_hp(int x, int y)
 {
     int max_max_hp = get_real_hp(true, true);
     if (you.species == SP_DJINNI)
+    {
         max_max_hp += get_real_mp(true);
+        max_max_hp += get_real_sp(true);
+    }
 
     // Calculate colour
     short hp_colour = HUD_VALUE_COLOUR;
@@ -718,7 +724,7 @@ static void _print_stats_hp(int x, int y)
     else
     {
         const int hp_percent =
-            (you.hp * 100) / get_real_hp(true, false);
+            (get_hp() * 100) / get_real_hp(true, false);
 
         for (const auto &entry : Options.hp_colour)
             if (hp_percent <= entry.first)
@@ -729,16 +735,18 @@ static void _print_stats_hp(int x, int y)
     // Health: xxx/yyy (zzz)
     CGOTOXY(x, y, GOTO_STAT);
     textcolour(HUD_CAPTION_COLOUR);
+
     if (you.species == SP_DJINNI)
         CPRINTF(player_rotted() ? "EP: " : "Essence: ");
     else
-    CPRINTF(player_rotted() ? "HP: " : "Health: ");
+        CPRINTF(player_rotted() ? "HP: " : "Health: ");
+
     textcolour(hp_colour);
-    CPRINTF("%d", you.hp);
+    CPRINTF("%d", get_hp());
     if (!boosted)
         textcolour(HUD_VALUE_COLOUR);
-    CPRINTF("/%d", you.hp_max);
-    if (max_max_hp != you.hp_max)
+    CPRINTF("/%d", get_hp_max());
+    if (max_max_hp != get_hp_max())
         CPRINTF(" (%d)", max_max_hp);
     if (boosted)
         textcolour(HUD_VALUE_COLOUR);
@@ -751,16 +759,16 @@ static void _print_stats_hp(int x, int y)
     if (tiles.is_using_small_layout())
     {
         if (you.species == SP_DJINNI)
-            EP_Bar.vdraw(2, 10, you.hp, you.hp_max);
+            EP_Bar.vdraw(2, 10, get_hp(), get_hp_max());
         else
-        HP_Bar.vdraw(2, 10, you.hp, you.hp_max);
+            HP_Bar.vdraw(2, 10, get_hp(), get_hp_max());
     }
     else
 #endif
     if (you.species == SP_DJINNI)
-        EP_Bar.draw(19, y, you.hp, you.hp_max);
+        EP_Bar.draw(19, y, get_hp(), get_hp_max());
     else
-        HP_Bar.draw(19, y, you.hp, you.hp_max, false, you.hp - max(0, poison_survival()));
+        HP_Bar.draw(19, y, get_hp(), get_hp_max(), false, get_hp() - max(0, poison_survival()));
 }
 
 static short _get_stat_colour(stat_type stat)
@@ -1462,8 +1470,11 @@ void update_row_info()
 {
     int row = 2;
     hp_row = ++row;
-    sp_row = ++row;
-    mp_row = ++row;
+    if (you.species != SP_DJINNI)
+    {
+        sp_row = ++row;
+        mp_row = ++row;
+    }
     if (you.species == SP_LAVA_ORC)
         temp_row = ++row;
     ac_row = str_row = stat_row = ++row;
@@ -2151,7 +2162,7 @@ static vector<formatted_string> _get_overview_stats()
     else
         entry.textcolour(HUD_VALUE_COLOUR);
 
-    entry.cprintf("%d/%d", you.hp, you.hp_max);
+    entry.cprintf("%d/%d", get_hp(), get_hp_max());
     if (player_rotted())
         entry.cprintf(" (%d)", get_real_hp(true, true));
 
@@ -2169,7 +2180,7 @@ static vector<formatted_string> _get_overview_stats()
     else
         entry.textcolour(HUD_VALUE_COLOUR);
 
-    entry.cprintf("%d/%d", you.mp, you.mp_max);
+    entry.cprintf("%d/%d", get_mp(), get_mp_max());
 
     cols.add_formatted(0, entry.to_colour_string(), false);
     entry.clear();

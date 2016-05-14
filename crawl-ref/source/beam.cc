@@ -3191,7 +3191,7 @@ bool bolt::harmless_to_player() const
         // Normally we'd just ignore it, but we shouldn't let a player
         // kill themselves without a warning.
         return player_res_poison(false) > 0 || you.is_unbreathing()
-            || you.clarity(false) && you.hp > 2;
+            || you.clarity(false) && get_hp() > 2;
 
     case BEAM_ELECTRICITY:
         return player_res_electricity(false);
@@ -3674,7 +3674,7 @@ void bolt::affect_player_enchantment(bool resistible)
                 break;
             }
 
-            const int hurt = you.hp / 2 - 1;
+            const int hurt = get_hp() / 2 - 1;
             mprf("Your body is wracked with pain! (%d)", hurt);
 
             // On the player, Agony acts like single-target torment.
@@ -3826,10 +3826,10 @@ void bolt::affect_player_enchantment(bool resistible)
 
         case BEAM_DRAIN_MAGIC:
         {
-            int amount = min(you.mp, random2avg(ench_power / 8, 3));
+            int amount = min(get_mp(), random2avg(ench_power / 8, 3));
 
             if (you.species == SP_DJINNI)
-                amount = min(you.hp / 2, random2avg(ench_power / 8, 3));
+                amount = min(get_hp() / 2, random2avg(ench_power / 8, 3));
 
             if (!amount)
                 break;
@@ -3992,7 +3992,7 @@ void bolt::affect_player()
     practise(EX_BEAM_WILL_HIT);
 
     bool was_affected = false;
-    int  old_hp       = you.hp;
+    int  old_hp       = get_hp();
 
 //    hurted = max(0, hurted);
 
@@ -4002,7 +4002,7 @@ void bolt::affect_player()
         && (flavour == BEAM_MISSILE || flavour == BEAM_MMISSILE))
     {
         // assumes DVORP_PIERCING, factor: 0.5
-        int blood = min(you.hp, hurted / 2);
+        int blood = min(get_hp(), hurted / 2);
         bleed_onto_floor(you.pos(), MONS_PLAYER, blood, true);
     }
 
@@ -4068,7 +4068,7 @@ void bolt::affect_player()
         }
 
         if (you.mutation[MUT_JELLY_MISSILE]
-            && you.hp < you.hp_max
+            && get_hp() < get_hp_max()
             && !you.duration[DUR_DEATHS_DOOR]
             && item_is_jelly_edible(*item)
             && coinflip())
@@ -4123,7 +4123,7 @@ void bolt::affect_player()
     if (origin_spell == SPELL_QUICKSILVER_BOLT)
         debuff_player();
 
-    if (hurted > 0 || old_hp < you.hp || was_affected)
+    if (hurted > 0 || old_hp < get_hp() || was_affected)
     {
         if (mons_att_wont_attack(attitude))
         {

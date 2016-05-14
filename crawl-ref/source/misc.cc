@@ -484,7 +484,7 @@ void revive()
     // Remove silence.
     invalidate_agrid();
 
-    if (you.hp_max <= 0)
+    if (get_hp_max() <= 0)
     {
         you.lives = 0;
         mpr("You are too frail to live.");
