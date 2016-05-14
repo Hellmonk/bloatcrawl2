@@ -862,9 +862,9 @@ static void _regenerate_hp_and_mp(int delay)
         int sp_regen_countup = div_rand_round(base_val * delay, BASELINE_DELAY);
 
         if (int level = player_mutation_level(MUT_STAMINA_REGENERATION))
-            sp_regen_countup = qpow(sp_regen_countup, 3, 2, level);
+            sp_regen_countup = qpow(sp_regen_countup, 4, 3, level);
         if (you.wearing(EQ_AMULET, AMU_STAMINA_REGENERATION))
-            sp_regen_countup = qpow(sp_regen_countup, 3, 2, 3);
+            sp_regen_countup = qpow(sp_regen_countup, 4, 3, 2);
 
         you.stamina_points_regeneration += sp_regen_countup;
     }
