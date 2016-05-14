@@ -570,7 +570,7 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
         {
             for (const auto bit : spschools_type::range())
                 if (disciplines & bit)
-                    power += you.skill(spell_type2skill(bit), 250);
+                    power += you.skill(spell_type2skill(bit), 200);
             power /= skillcount;
         }
 
@@ -584,7 +584,7 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
             power = max(750, power * 3 / 2);
 
         if (apply_intel)
-            power = power * (you.intel() + 1) / 10;
+            power = power * (you.intel() + 15) / 20;
 
         if (!fail_rate_check)
         {
