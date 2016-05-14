@@ -45,9 +45,11 @@
 * Magic potions restore 40, 30, 20 points depending on difficulty mode.
 * Stamina potions restore 40, 30, 20 points depending on difficulty mode.
 
-* Spellcasting skill no longer influences spell power. It is only used for spell slots, reducing spell
-  hunger, and reducing spell failure rate.
-* Spell cost is not influenced by spell skills, only by spellcasting, intelligence, and spell level.
+* Spell factors:
+    * Spell failure: dexterity, spellcasting, spell schools
+    * Spell power: intelligence, spell schools
+    * Spell cost: intelligence, spellcasting
+
 * Removed all food, and created stamina potions. You can now sacrifice stamina potions to evoke fedhas' abilities.
 * Quick mode doesn't use stamina if monsters aren't around.
 

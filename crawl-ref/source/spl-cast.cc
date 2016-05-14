@@ -504,10 +504,12 @@ int raw_spell_fail(spell_type spell)
     resist = qpow(resist, 3, 2, wild);
 
     // with all factors being 10, player should have a 50% chance of casting a level 5 spell
-    float force = 1;
+    float force = 5;
 
     force *= (1.0 + you.dex(true)) / 3;
+    /* intelligence is no longer a factor
     force *= (1.0 + you.intel(true)) / 3;
+     */
     force *= (1.0 + you.skill(SK_SPELLCASTING)) / 3;
 
     const spschools_type disciplines = get_spell_disciplines(spell);
@@ -568,7 +570,7 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
         {
             for (const auto bit : spschools_type::range())
                 if (disciplines & bit)
-                    power += you.skill(spell_type2skill(bit), 250);
+                    power += you.skill(spell_type2skill(bit), 200);
             power /= skillcount;
         }
 
@@ -582,7 +584,7 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
             power = max(750, power * 3 / 2);
 
         if (apply_intel)
-            power = power * (you.intel() + 1) / 10;
+            power = power * (you.intel() + 15) / 20;
 
         if (!fail_rate_check)
         {
