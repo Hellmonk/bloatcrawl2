@@ -6682,7 +6682,7 @@ int player::racial_ac(bool temp) const
     {
         if (species == SP_NAGA)
             ac += 100 * experience_level / 3;  	// max 9 or so
-        else if (species == SP_LAVA_ORC && you.temperature <= TEMP_WARM)
+        else if (species == SP_LAVA_ORC && temperature_effect(LORC_STONESKIN))
             ac += 300 + 100 * experience_level / 6;	// max 8 or so
         else if (species == SP_GARGOYLE)
         {
