@@ -1025,7 +1025,7 @@ static bool _do_book_acquirement(item_def &book, int agent)
     if (_should_acquire_manual(agent))
         return _acquire_manual(book);
     const int choice = random_choose_weighted(
-                                    30, BOOK_RANDART_THEME,
+       agent == GOD_SIF_MUNA ? 10 : 30, BOOK_RANDART_THEME,
        agent == GOD_SIF_MUNA ? 10 : 40, NUM_BOOKS, // normal books
                                      1, BOOK_RANDART_LEVEL, 0);
 
@@ -1403,7 +1403,7 @@ int acquirement_create_item(object_class_type class_wanted,
                                        * roll_dice(1, 8)));
         }
         else if (class_wanted == OBJ_MISSILES && !divine)
-            acq_item.quantity *= 5;
+            acq_item.quantity *= 5 * 5;
         else if (quant > 1)
             acq_item.quantity = quant;
 

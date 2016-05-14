@@ -53,7 +53,7 @@ player_quiver::player_quiver()
 //
 // This is the item that will be displayed in Qv:
 //
-void player_quiver::get_desired_item(const item_def** item_out, int* slot_out) const
+void player_quiver::get_desired_item(item_def **item_out, int *slot_out)
 {
     const int slot = _get_pack_slot(m_last_used_of_type[m_last_used_type]);
     if (slot == -1)
@@ -77,7 +77,7 @@ void player_quiver::get_desired_item(const item_def** item_out, int* slot_out) c
 // This differs from get_desired_item; that method can return
 // an item that is not in inventory, while this one cannot.
 // If no item can be found, return the reason why.
-int player_quiver::get_fire_item(string* no_item_reason) const
+int player_quiver::get_fire_item(string* no_item_reason)
 {
     // Felids have no use for the quiver.
     if (you.species == SP_FELID)
@@ -87,11 +87,12 @@ int player_quiver::get_fire_item(string* no_item_reason) const
         return -1;
     }
     int slot;
-    const item_def* desired_item;
+    item_def* desired_item;
 
     get_desired_item(&desired_item, &slot);
 
     // If not in inv, try the head of the fire order.
+    /* don't auto select ammo here. Players need to be able to unselect ammo so that the standard ammo is fired.
     if (slot == -1)
     {
         vector<int> order;
@@ -99,6 +100,7 @@ int player_quiver::get_fire_item(string* no_item_reason) const
         if (!order.empty())
             slot = order[0];
     }
+     */
 
     // If we can't find anything, tell caller why.
     if (slot == -1)
@@ -289,6 +291,7 @@ void player_quiver::on_weapon_changed()
 
 void player_quiver::on_inv_quantity_changed(int slot, int amt)
 {
+    /*
     if (m_last_used_of_type[m_last_used_type].base_type == OBJ_UNASSIGNED)
     {
         // Empty quiver. Maybe we can fill it now?
@@ -297,11 +300,14 @@ void player_quiver::on_inv_quantity_changed(int slot, int amt)
     }
     else
     {
+     */
         // We might need to update the quiver...
         int qv_slot = get_fire_item();
         if (qv_slot == slot)
             you.redraw_quiver = true;
+    /*
     }
+     */
 }
 
 // If current quiver slot is empty, fill it with something useful.

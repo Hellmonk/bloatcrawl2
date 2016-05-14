@@ -342,8 +342,8 @@ static fight_data _get_fight_data(monster &mon, int iter_limit, bool defend)
 
     // now make sure the player is ready
     you.exp_available = 0;
-    const int yhp  = you.hp;
-    const int ymhp = you.hp_max;
+    const int yhp  = get_hp();
+    const int ymhp = get_hp_max();
 
     // disable death and delay, but make sure that these values
     // get reset when the function call ends
@@ -415,7 +415,7 @@ static fight_data _get_fight_data(monster &mon, int iter_limit, bool defend)
 
             time_taken += 1000 / (mon.speed ? mon.speed : 10);
 
-            int damage = you.hp_max - you.hp;
+            int damage = get_hp_max() - get_hp();
             if (did_hit)
                 hits++;
             cumulative_damage += damage;

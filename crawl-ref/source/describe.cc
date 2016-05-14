@@ -2622,7 +2622,7 @@ static string _player_spell_desc(spell_type spell, const item_def* item)
 
     // Report summon cap
     const int limit = summons_limit(spell);
-    if (limit)
+    if (false && limit)
     {
         description += "You can sustain at most " + number_in_words(limit)
                         + " creature" + (limit > 1 ? "s" : "")

@@ -1322,7 +1322,7 @@ void scorefile_entry::init_death_cause(int dam, mid_t dsrc,
             // [ds] The highscore entry may be constructed while the player
             // is alive (for notes), so make sure we don't reveal info we
             // shouldn't.
-            if (you.hp <= 0)
+            if (get_hp() <= 0)
             {
                 set_ident_flags(mitm[mons->inv[MSLOT_WEAPON]],
                                  ISFLAG_IDENT_MASK);
@@ -1334,7 +1334,7 @@ void scorefile_entry::init_death_cause(int dam, mid_t dsrc,
                 auxkilldata = mitm[mons->inv[MSLOT_WEAPON]].name(DESC_A);
         }
 
-        const bool death = (you.hp <= 0 || death_type == KILLED_BY_DRAINING);
+        const bool death = (get_hp() <= 0 || death_type == KILLED_BY_DRAINING);
 
         const description_level_type desc =
             death_type == KILLED_BY_SPORE ? DESC_PLAIN : DESC_A;
@@ -1664,12 +1664,12 @@ void scorefile_entry::init(time_t dt)
 
     kills            = you.kills.total_kills();
 
-    final_hp         = you.hp;
-    final_max_hp     = you.hp_max;
+    final_hp         = get_hp();
+    final_max_hp     = get_hp_max();
     final_max_max_hp = get_real_hp(true, true);
 
-    final_mp          = you.mp;
-    final_max_mp      = you.mp_max;
+    final_mp          = get_mp();
+    final_max_mp      = get_mp_max();
     final_base_max_mp = get_real_mp(false);
 
     source_damage    = you.source_damage;

@@ -55,7 +55,7 @@ spret_type cast_deaths_door(int pow, bool fail)
         mprf(MSGCH_SOUND, "You seem to hear sand running through an hourglass...");
 
         set_hp(allowed_deaths_door_hp());
-        deflate_hp(you.hp_max, false);
+        deflate_hp(get_hp_max(), false);
 
         you.set_duration(DUR_DEATHS_DOOR, 10 + random2avg(13, 3)
                                            + (random2(pow) / 10));
@@ -263,9 +263,9 @@ spret_type cast_regen(int pow, bool fail)
 
 spret_type cast_revivification(int pow, bool fail)
 {
-    if (you.hp == you.hp_max)
+    if (get_hp() == get_hp_max())
         canned_msg(MSG_NOTHING_HAPPENS);
-    else if (you.hp_max < 21)
+    else if (get_hp_max() < 21)
         mpr("You lack the resilience to cast this spell.");
     else
     {
@@ -273,8 +273,8 @@ spret_type cast_revivification(int pow, bool fail)
         mpr("Your body is healed in an amazingly painful way.");
 
         const int loss = 6 + binomial(9, 8, pow);
-        dec_max_hp(loss * you.hp_max / 100);
-        set_hp(you.hp_max);
+        dec_max_hp(loss * get_hp_max() / 100);
+        set_hp(get_hp_max());
 
         if (you.duration[DUR_DEATHS_DOOR])
         {

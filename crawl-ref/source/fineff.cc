@@ -335,7 +335,7 @@ void deferred_damage_fineff::fire()
             // FIXME: Consider adding a 'fatal' parameter to ::hurt
             //        to better interact with damage reduction/boosts
             //        which may be applied later.
-            int df_hp = df->is_player() ? you.hp
+            int df_hp = df->is_player() ? get_hp()
                                         : df->as_monster()->hit_points;
             damage = min(damage, df_hp - 1);
         }

@@ -2467,8 +2467,6 @@ string cannot_read_item_reason(const item_def &item)
         
      if (you.species == SP_DJINNI)
         return "You'd burn any scroll you tried to read!";
-    
- 
 
     // don't waste the player's time reading known scrolls in situations where
     // they'd be useless

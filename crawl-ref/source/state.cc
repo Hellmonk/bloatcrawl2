@@ -53,7 +53,7 @@ game_state::game_state()
 #endif
       invisible_targeting(false),
       darken_range(nullptr), unsaved_macros(false), disables(),
-      minor_version(-1), save_rcs_version(), danger_mode(0),
+      minor_version(-1), save_rcs_version(), danger_mode_counter(0),
       free_stair_escape(false),
       warn_about_experience(true),
       need_floor_exp(false),
