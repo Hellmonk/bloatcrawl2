@@ -996,7 +996,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             && !(aux && strstr(aux, "flay_damage")))
         {
             // round off fairly (important for taking 1 damage at a time)
-            const int adjusted_mp = get_mp() / 3;
+            const int adjusted_mp = get_mp() / 2;
             int mp = div_rand_round(dam * adjusted_mp,
                                     max(get_hp() + adjusted_mp, 1));
             // but don't kill the player with round-off errors

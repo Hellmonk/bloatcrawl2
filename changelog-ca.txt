@@ -1,5 +1,10 @@
 # v1.5.1
 
+* Spirit shield
+    * Since players have much more magic now, to keep spirit shield from being too powerful, it behaves as if you
+      have half as much max mp. So if you have 50 max hp, and 100 max mp, half of your damage would come from hp,
+      and half would come from mp (since it acts as if you had 50 mp).
+
 * Unlimited ammo
     * If you fire a ranged weapon without ammo, the unbranded ammo fires.
     * Unbranded ammo no longer spawns.
