@@ -92,8 +92,8 @@ LUARET1(you_evil_god, boolean,
 function one_time_ability_used() */
 LUARET1(you_one_time_ability_used, boolean,
         you.one_time_ability_used[you.religion])
-LUARET2(you_hp, number, you.hp, you.hp_max)
-LUARET2(you_mp, number, you.mp, you.mp_max)
+LUARET2(you_hp, number, get_hp(), get_hp_max())
+LUARET2(you_mp, number, get_mp(), get_mp_max())
 LUARET1(you_base_mp, number, get_real_mp(false))
 LUARET1(you_rot, number, player_rotted())
 LUARET1(you_poison_survival, number, poison_survival())

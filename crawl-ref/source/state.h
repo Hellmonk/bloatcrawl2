@@ -128,7 +128,7 @@ struct game_state
     std::string save_rcs_version;
 
     game_difficulty_level difficulty;
-    int danger_mode;
+    int danger_mode_counter;
     bool free_stair_escape;
     bool warn_about_experience;         // currently unused
     bool need_floor_exp;                // means we entered a floor for the first time and we need to give exp for it

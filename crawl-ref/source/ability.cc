@@ -417,7 +417,7 @@ static const ability_def Ability_List[] =
 
     // Sif Muna
     { ABIL_SIF_MUNA_CHANNEL_ENERGY, "Channel Energy",
-      0, 0, 0, generic_cost::fixed(50), {FAIL_INVO, 40, 2, 20}, abflag::NONE },
+      0, 0, 0, generic_cost::fixed(25), {FAIL_INVO, 40, 2, 20}, abflag::NONE },
     { ABIL_SIF_MUNA_FORGET_SPELL, "Forget Spell",
       5, 0, 0, 8, {FAIL_INVO}, abflag::NONE },
 
@@ -713,7 +713,7 @@ const string make_cost_description(ability_type ability)
 
     if (abil.hp_cost)
     {
-        ret += make_stringf(", %d %sHP", abil.hp_cost.cost(you.hp_max),
+        ret += make_stringf(", %d %sHP", abil.hp_cost.cost(get_hp_max()),
             abil.flags & abflag::PERMANENT_HP ? "Permanent " : "");
     }
 
@@ -816,7 +816,7 @@ static const string _detailed_cost_description(ability_type ability)
             ret << "\nMax HP : ";
         else
             ret << "\nHP     : ";
-        ret << abil.hp_cost.cost(you.hp_max);
+        ret << abil.hp_cost.cost(get_hp_max());
     }
 
     if (abil.food_cost && !you_foodless(true)
@@ -1464,7 +1464,7 @@ static bool _check_ability_possible(const ability_def& abil,
         return true;
 
     case ABIL_PAKELLAS_DEVICE_SURGE:
-        if (you.mp == 0)
+        if (get_mp() == 0)
         {
             if (!quiet)
                 mpr("You have no magic power.");
@@ -1588,7 +1588,7 @@ bool activate_talent(const talent& tal)
         return false;
     }
 
-    const int hpcost = abil.hp_cost.cost(you.hp_max);
+    const int hpcost = abil.hp_cost.cost(get_hp_max());
     if (hpcost > 0 && !enough_hp(hpcost, false))
     {
         crawl_state.zero_turns_taken();
@@ -1686,9 +1686,9 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         mpr("You infuse your body with magical energy.");
         bool did_restore = restore_stat(STAT_ALL, 0, false);
 
-        const int oldhpmax = you.hp_max;
+        const int oldhpmax = get_hp_max();
         unrot_hp(9999);
-        if (you.hp_max > oldhpmax)
+        if (get_hp_max() > oldhpmax)
             did_restore = true;
 
         // If nothing happened, don't take one max MP, don't use a turn.
@@ -2485,8 +2485,6 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             pow = player_adjust_invoc_power(
                 10 + (you.skill_rdiv(SK_INVOCATIONS, 1, 3)));
         }
-        if (you.species == SP_DJINNI)
-            pow /= 2;
         pow = min(50, pow);
         const int healed = pow + roll_dice(2, pow) - 2;
         mpr("You are healed.");
@@ -2563,11 +2561,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     {
         fail_check();
         // Deflate HP.
-        dec_hp(random2avg(you.hp, 2), false);
+        dec_hp(random2avg(get_hp(), 2), false);
 
         // Deflate MP.
-        if (you.mp)
-            dec_mp(random2avg(you.mp, 2));
+        if (get_mp())
+            dec_mp(random2avg(get_mp(), 2));
 
         no_notes nx; // This banishment shouldn't be noted.
         banished();
@@ -2872,7 +2870,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             mpr("You're too exhausted to draw out your power.");
             return SPRET_ABORT;
         }
-        if (you.hp == you.hp_max && you.mp == you.mp_max
+        if (get_hp() == get_hp_max() && get_mp() == get_mp_max()
             && !you.duration[DUR_CONF]
             && !you.duration[DUR_SLOW]
             && !you.attribute[ATTR_HELD]
@@ -3094,7 +3092,7 @@ static void _pay_ability_costs(const ability_def& abil)
 
     const int food_cost  = abil.food_cost + random2avg(abil.food_cost, 2);
     const int piety_cost = _scale_piety_cost(abil.ability, abil.piety_cost.cost());
-    const int hp_cost    = abil.hp_cost.cost(you.hp_max);
+    const int hp_cost    = abil.hp_cost.cost(get_hp_max());
 
     dprf("Cost: mp=%d; hp=%d; food=%d; piety=%d",
          abil.mp_cost, hp_cost, food_cost, piety_cost);
@@ -3304,7 +3302,7 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     if (you.species == SP_VINE_STALKER && you.form != TRAN_TREE)
         _add_talent(talents, ABIL_LIGNIFY, check_confused);
 
-    if (player_has_summons(true)) {
+    if (player_summon_count()) {
         _add_talent(talents, ABIL_RELEASE_SUMMONS, check_confused);
     }
 

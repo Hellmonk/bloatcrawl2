@@ -3350,7 +3350,6 @@ bool is_summon_spell(spell_type spell)
     bool result;
     switch(spell)
     {
-        case SPELL_WEAVE_SHADOWS:
         case SPELL_SUMMON_BUTTERFLIES:
         case SPELL_SUMMON_SMALL_MAMMAL:
         case SPELL_CALL_CANINE_FAMILIAR:
@@ -3573,17 +3572,14 @@ void unsummon(monster *mons)
     }
 }
 
-bool player_has_summons(bool from_summoning_spell)
+int player_summon_count()
 {
-    bool found = false;
+    int count = 0;
     for (unsigned int i = 0; i < you.summoned.size(); i++)
     {
         if (you.summoned[i] != MID_NOBODY)
-        {
-            found = true;
-            break;
-        }
+            count++;
     }
 
-    return found;
+    return count;
 }

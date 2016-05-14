@@ -683,7 +683,7 @@ static void _decrement_durations()
         }
     }
 
-    if (you.duration[DUR_DEATHS_DOOR] && you.hp > allowed_deaths_door_hp())
+    if (you.duration[DUR_DEATHS_DOOR] && get_hp() > allowed_deaths_door_hp())
     {
         set_hp(allowed_deaths_door_hp());
         you.redraw_hit_points = true;
@@ -804,7 +804,7 @@ static void _rot_ghoul_players()
     // Faster rotting when tired.
     if (player_is_tired(true))
     {
-        resilience *= max(10, 100 * you.sp / you.sp_max);
+        resilience *= max(10, 100 * get_sp() / get_sp_max());
         resilience = div_rand_round(resilience, 100);
     }
 
@@ -822,7 +822,7 @@ static void _rot_ghoul_players()
 // is below 100, it is increased by a variable calculated from delay,
 // BASELINE_DELAY, and your regeneration rate. MP regeneration happens
 // similarly, but the countup depends on delay, BASELINE_DELAY, and
-// you.mp_max
+// get_mp_max()
 static void _regenerate_hp_and_mp(int delay)
 {
 	if (crawl_state.disables[DIS_PLAYER_REGEN])
@@ -838,7 +838,7 @@ static void _regenerate_hp_and_mp(int delay)
     {
         // at low mp, "mana link" restores mp in place of hp
         if (player_mutation_level(MUT_MANA_LINK)
-            && !x_chance_in_y(you.mp, you.mp_max))
+            && !x_chance_in_y(get_mp(), get_mp_max()))
         {
             inc_mp(3);
         }
@@ -856,9 +856,9 @@ static void _regenerate_hp_and_mp(int delay)
     else
         you.peace += you.time_taken;
 
-    if (you.sp < you.sp_max && (!in_quick_mode() || you.peace > 100))
+    if ((get_sp() < get_sp_max() || you.species == SP_DJINNI && get_hp() < get_hp_max()) && (!in_quick_mode() || you.peace > 100))
     {
-        const int base_val = 15 + you.sp_max / 2;
+        const int base_val = 15 + get_sp_max() / 2;
         int sp_regen_countup = div_rand_round(base_val * delay, BASELINE_DELAY);
 
         if (int level = player_mutation_level(MUT_STAMINA_REGENERATION))
@@ -878,9 +878,9 @@ static void _regenerate_hp_and_mp(int delay)
     if (!player_regenerates_mp())
         return;
 
-    if (you.mp < you.mp_max || you.species == SP_DJINNI && you.hp < you.hp_max)
+    if (get_mp() < get_mp_max() || you.species == SP_DJINNI && get_hp() < get_hp_max())
     {
-        const int base_val = 7 + you.mp_max / 2;
+        const int base_val = 7 + get_mp_max() / 2;
         int mp_regen_countup = div_rand_round(base_val * delay, BASELINE_DELAY);
 
         if (int level = player_mutation_level(MUT_MANA_REGENERATION))

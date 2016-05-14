@@ -1939,7 +1939,7 @@ bool transform(int pow, transformation_type which_trans, bool involuntary,
     if (you.species == SP_MERFOLK)
         merfolk_check_swimming(false);
 
-    if (you.hp <= 0)
+    if (get_hp() <= 0)
     {
         ouch(0, KILLED_BY_FRAILTY, MID_NOBODY,
              make_stringf("gaining the %s transformation",
@@ -2064,19 +2064,19 @@ void untransform(bool skip_move)
              armour->name(DESC_YOUR).c_str());
     }
 
-    if (hp_downscale != 10 && you.hp != you.hp_max)
+    if (hp_downscale != 10 && get_hp() != get_hp_max())
     {
-        int hp = you.hp * 10 / hp_downscale;
+        int hp = get_hp() * 10 / hp_downscale;
         if (hp < 1)
             hp = 1;
-        else if (hp > you.hp_max)
-            hp = you.hp_max;
+        else if (hp > get_hp_max())
+            hp = get_hp_max();
         set_hp(hp);
     }
     calc_hp();
     calc_sp();
 
-    if (you.hp <= 0)
+    if (get_hp() <= 0)
     {
         ouch(0, KILLED_BY_FRAILTY, MID_NOBODY,
              make_stringf("losing the %s form",
@@ -2108,7 +2108,7 @@ static void _extra_hp(int amount_extra) // must also set in calc_hp
     you.hp *= amount_extra;
     you.hp /= 10;
 
-    deflate_hp(you.hp_max, false);
+    deflate_hp(get_hp_max(), false);
 }
 
 void emergency_untransform()

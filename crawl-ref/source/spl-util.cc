@@ -409,9 +409,6 @@ int spell_hunger(spell_type which_spell, bool rod)
 {
     const int level = spell_difficulty(which_spell);
 
-//    const int basehunger[] = { 50, 100, 150, 250, 400, 550, 700, 850, 1000 };
-
-
     const int scale = 100;
     int hunger = 25 * scale * level * level;
 
@@ -429,12 +426,10 @@ int spell_hunger(spell_type which_spell, bool rod)
         hunger /= 5 + you.intel();
     }
 
-    if (hunger < 0)
+    if (hunger < 0 || you.duration[DUR_CHANNELING] != 0 || player_mutation_level(MUT_HUNGERLESS) != 0)
         hunger = 0;
 
-    hunger = player_spell_hunger_modifier(hunger);
-
-    return max(10, hunger * 10 / scale);
+    return hunger;
 }
 
 // Checks if the spell is an explosion that can be placed anywhere even without
@@ -470,16 +465,6 @@ bool spell_harms_area(spell_type spell)
     return false;
 }
 
-// applied to spell misfires (more power = worse) and triggers
-// for Xom acting (more power = more likely to grab his attention) {dlb}
-int spell_mana(spell_type which_spell, bool raw)
-{
-    int cost = _seekspell(which_spell)->level;
-
-    cost = player_spell_cost_modifier(which_spell, raw, cost);
-    return cost;
-}
-
 int average_schools(const spschools_type &disciplines, const int scale)
 {
     int multiplier = 0;
@@ -494,13 +479,6 @@ int average_schools(const spschools_type &disciplines, const int scale)
         multiplier /= skillcount;
     }
     return multiplier;
-}
-
-int spell_freeze_mana(const spell_type spell)
-{
-    int amount = 0;
-    amount = player_spell_mp_freeze_modifier(spell, false, amount);
-    return amount;
 }
 
 // applied in naughties (more difficult = higher level knowledge = worse)
@@ -1166,7 +1144,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     {
         if (!fake_spell && you.duration[DUR_CONF] > 0)
             return "you're too confused.";
-        if (!enough_mp(spell_mana(spell), true, false)
+        if (!enough_mp(spell_mp_cost(spell), true, false)
             && !evoked && !fake_spell)
         {
             return "you don't have enough magic.";
@@ -1336,7 +1314,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         {
             return "you have no blood to sublime.";
         }
-        if (you.mp == you.mp_max && temp)
+        if (get_mp() == get_mp_max() && temp)
             return "your magic capacity is already full.";
         break;
 

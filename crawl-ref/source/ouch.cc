@@ -304,8 +304,10 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         // Airstrike.
         if (you.res_wind())
             hurted = 0;
+            /* this is just annoying
         else if (you.airborne())
             hurted += hurted / 2;
+             */
         break;
     }
 
@@ -414,7 +416,7 @@ void lose_level()
 
     char buf[200];
     sprintf(buf, "HP: %d/%d MP: %d/%d",
-            you.hp, you.hp_max, you.mp, you.mp_max);
+            get_hp(), get_hp_max(), get_mp(), get_mp_max());
     take_note(Note(NOTE_XP_LEVEL_CHANGE, you.experience_level, 0, buf));
 
     you.redraw_title = true;
@@ -493,7 +495,7 @@ static void _xom_checks_damage(kill_method_type death_type,
         {
             // Xom thinks the player accidentally hurting him/herself is funny.
             // Deliberate damage is only amusing if it's dangerous.
-            int amusement = 200 * dam / (dam + you.hp);
+            int amusement = 200 * dam / (dam + get_hp());
             if (death_type == KILLED_BY_SELF_AIMED)
                 amusement /= 5;
             xom_is_stimulated(amusement);
@@ -529,7 +531,7 @@ static void _xom_checks_damage(kill_method_type death_type,
         if (mons->wont_attack())
         {
             // Xom thinks collateral damage is funny.
-            xom_is_stimulated(200 * dam / (dam + you.hp));
+            xom_is_stimulated(200 * dam / (dam + get_hp()));
             return;
         }
 
@@ -559,7 +561,7 @@ static void _xom_checks_damage(kill_method_type death_type,
         if (player_in_a_dangerous_place())
             amusementvalue += 2;
 
-        amusementvalue /= (you.hp > 0) ? you.hp : 1;
+        amusementvalue /= (get_hp() > 0) ? get_hp() : 1;
 
         xom_is_stimulated(amusementvalue);
     }
@@ -571,8 +573,8 @@ static void _yred_mirrors_injury(int dam, mid_t death_source)
     {
         // Cap damage to what was enough to kill you. Can matter if
         // Yred saves your life or you have an extra kitty.
-        if (you.hp < 0)
-            dam += you.hp;
+        if (get_hp() < 0)
+            dam += get_hp();
 
         monster* mons = monster_by_mid(death_source);
         if (dam <= 0 || !mons)
@@ -588,8 +590,8 @@ static void _maybe_ru_retribution(int dam, mid_t death_source)
     {
         // Cap damage to what was enough to kill you. Can matter if
         // you have an extra kitty.
-        if (you.hp < 0)
-            dam += you.hp;
+        if (get_hp() < 0)
+            dam += get_hp();
 
         monster* mons = monster_by_mid(death_source);
         if (dam <= 0 || !mons)
@@ -620,16 +622,16 @@ static void _maybe_spawn_monsters(int dam, const bool is_torment,
         && you.piety >= piety_breakpoint(5))
     {
         mon = royal_jelly_ejectable_monster();
-        if (dam >= you.hp_max * 3 / 4)
+        if (dam >= get_hp_max() * 3 / 4)
             how_many = random2(4) + 2;
-        else if (dam >= you.hp_max / 2)
+        else if (dam >= get_hp_max() / 2)
             how_many = random2(2) + 2;
-        else if (dam >= you.hp_max / 4)
+        else if (dam >= get_hp_max() / 4)
             how_many = 1;
     }
     else if (you_worship(GOD_XOM)
-             && dam >= you.hp_max / 4
-             && x_chance_in_y(dam, 3 * you.hp_max))
+             && dam >= get_hp_max() / 4
+             && x_chance_in_y(dam, 3 * get_hp_max()))
     {
         mon = MONS_BUTTERFLY;
         how_many = 2 + random2(5);
@@ -671,7 +673,7 @@ static void _powered_by_pain(int dam)
 
     if (you.mutation[MUT_POWERED_BY_PAIN]
         && (random2(dam) > 4 + div_rand_round(you.experience_level, 4)
-            || dam >= you.hp_max / 2))
+            || dam >= get_hp_max() / 2))
     {
         if (x_chance_in_y(level, 3))
         {
@@ -680,7 +682,7 @@ static void _powered_by_pain(int dam)
                 case 0:
                 case 1:
                 {
-                    if (you.mp < you.mp_max)
+                    if (get_mp() < get_mp_max())
                     {
                         mpr("You focus on the pain.");
                         int mp = roll_dice(3, 2 + 3 * level);
@@ -709,7 +711,7 @@ static void _maybe_fog(int dam)
         ? piety_breakpoint(rank_for_passive(passive_t::hit_smoke) - 1)
         : piety_breakpoint(2); // Xom
 
-    const int upper_threshold = you.hp_max / 2;
+    const int upper_threshold = get_hp_max() / 2;
     const int lower_threshold = upper_threshold
                                 - upper_threshold
                                   * (you.piety - minpiety)
@@ -735,7 +737,7 @@ static void _maybe_fog(int dam)
 static void _deteriorate(int dam)
 {
     if (x_chance_in_y(player_mutation_level(MUT_DETERIORATION), 4)
-        && dam > you.hp_max / 10)
+        && dam > get_hp_max() / 10)
     {
         mprf(MSGCH_WARN, "Your body deteriorates!");
         lose_stat(STAT_RANDOM, 1);
@@ -811,12 +813,12 @@ static void _place_player_corpse(bool explode)
 #if defined(WIZARD) || defined(DEBUG)
 static void _wizard_restore_life()
 {
-    if (you.hp_max <= 0)
+    if (get_hp_max() <= 0)
         unrot_hp(9999);
-    while (you.hp_max <= 0)
+    while (get_hp_max() <= 0)
         you.hp_max_adj_perm++, calc_hp();
-    if (you.hp <= 0)
-        set_hp(you.hp_max);
+    if (get_hp() <= 0)
+        set_hp(get_hp_max());
 }
 #endif
 
@@ -879,7 +881,7 @@ int do_shave_damage(int dam)
 // current hp.
 static bool _is_damage_threatening (int damage_fraction_of_hp)
 {
-    int hp_fraction = you.hp * 100 / you.hp_max;
+    int hp_fraction = get_hp() * 100 / get_hp_max();
     return damage_fraction_of_hp > 5
             && hp_fraction <= 85
             && (damage_fraction_of_hp + random2(20) >= 20
@@ -952,14 +954,14 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
     // death's door protects against everything but falling into water/lava,
     // excessive rot, leaving the dungeon, or quitting.
     if (you.duration[DUR_DEATHS_DOOR] && !env_death && !non_death
-        && you.hp_max > 0)
+        && get_hp_max() > 0)
     {
         return;
     }
 
     if (dam > 0 && death_type != KILLED_BY_POISON)
     {
-        int damage_fraction_of_hp = dam * 100 / you.hp_max;
+        int damage_fraction_of_hp = dam * 100 / get_hp_max();
 
         // Check _is_damage_threatening separately for read and drink so they
         // don't always trigger in unison when you have both.
@@ -994,23 +996,26 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             && !(aux && strstr(aux, "flay_damage")))
         {
             // round off fairly (important for taking 1 damage at a time)
-            int mp = div_rand_round(dam * you.mp,
-                                    max(you.hp + you.mp, 1));
+            const int adjusted_mp = get_mp() / 2;
+            int mp = div_rand_round(dam * adjusted_mp,
+                                    max(get_hp() + adjusted_mp, 1));
             // but don't kill the player with round-off errors
-            mp = max(mp, dam + 1 - you.hp);
-            mp = min(mp, you.mp);
+            mp = max(mp, dam + 1 - get_hp());
+            mp = min(mp, adjusted_mp);
 
             dam -= mp;
             dec_mp(mp);
-            if (dam <= 0 && you.hp > 0)
+            if (dam <= 0 && get_hp() > 0)
                 return;
         }
 
-        if (dam >= you.hp && you.hp_max > 0 && god_protects_from_harm())
+        if (dam >= get_hp() && get_hp_max() > 0 && god_protects_from_harm())
         {
             simple_god_message(" protects you from harm!");
             return;
         }
+
+        dam = player_ouch_modifier(dam);
 
         you.turn_damage += dam;
         if (you.damage_source != source)
@@ -1018,6 +1023,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             you.damage_source = source;
             you.source_damage = 0;
         }
+
         you.source_damage += dam;
 
         if(dam > 0) {
@@ -1028,26 +1034,25 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
         // Even if we have low HP messages off, we'll still give a
         // big hit warning (in this case, a hit for half our HPs) -- bwr
-        if (Options.danger_mode_threshold > 0 && dam > Options.danger_mode_threshold * you.hp / 100 && dam < you.hp)
+        if (Options.danger_mode_threshold > 0 && dam > Options.danger_mode_threshold * get_hp() / 100 && dam < get_hp())
         {
-            if (crawl_state.danger_mode == 0)
+            if (crawl_state.danger_mode_counter == 0)
             {
-                mprf(MSGCH_DANGER, "Damage (%d) was greater than %d%% of your hp (%d)!!!", dam, Options.danger_mode_threshold, you.hp);
+                mprf(MSGCH_DANGER, "Damage (%d) was greater than %d%% of your hp (%d)!!!", dam, Options.danger_mode_threshold, get_hp());
                 for(int i = 0; i < 10; i++)
                     flash_view_delay(UA_ALWAYS_ON, RED, 100);
                 more(true);
+                crawl_state.danger_mode_counter = 10;
             }
-
-            crawl_state.danger_mode = 10;
         }
 
-        else if (dam > 0 && you.hp_max <= dam * 2)
+        else if (dam > 0 && get_hp_max() <= dam * 2)
             mprf(MSGCH_DANGER, "Ouch! That really hurt! (%d)", dam);
 
-        if (you.hp > 0 && dam > 0)
+        if (get_hp() > 0 && dam > 0)
         {
             if (Options.hp_warning
-                && you.hp <= (you.hp_max * Options.hp_warning) / 100
+                && get_hp() <= (get_hp_max() * Options.hp_warning) / 100
                 && (death_type != KILLED_BY_POISON || poison_is_lethal()))
             {
                 flash_view_delay(UA_HP, RED, 50);
@@ -1070,7 +1075,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
                     .death_description(scorefile_entry::DDV_TERSE);
             }
 
-            take_note(Note(NOTE_HP_CHANGE, you.hp, you.hp_max,
+            take_note(Note(NOTE_HP_CHANGE, get_hp(), get_hp_max(),
                            damage_desc.c_str()));
 
             _deteriorate(dam);
@@ -1088,7 +1093,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
                 drain_player(drain_amount, true, true);
             _maybe_dismiss(source);
         }
-        if (you.hp > 0)
+        if (get_hp() > 0)
           return;
     }
 
@@ -1157,12 +1162,12 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             const string death_desc
                 = se.death_description(scorefile_entry::DDV_VERBOSE);
 
-            dprf("Damage: %d; Hit points: %d", dam, you.hp);
+            dprf("Damage: %d; Hit points: %d", dam, get_hp());
 
             if (crawl_state.test || !yesno("Die?", false, 'n'))
             {
                 mpr("Thought so.");
-                take_note(Note(NOTE_DEATH, you.hp, you.hp_max,
+                take_note(Note(NOTE_DEATH, get_hp(), get_hp_max(),
                                 death_desc.c_str()), true);
                 _wizard_restore_life();
                 return;
@@ -1181,7 +1186,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
     }
 
     // Okay, so you're dead.
-    take_note(Note(NOTE_DEATH, you.hp, you.hp_max,
+    take_note(Note(NOTE_DEATH, get_hp(), get_hp_max(),
                     se.death_description(scorefile_entry::DDV_NORMAL).c_str()),
               true);
     if (you.lives && !non_death)
