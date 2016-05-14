@@ -4319,7 +4319,7 @@ int get_mp_max()
 
 bool player_is_tired(bool silent)
 {
-    const bool is_tired = you.sp * 100 / you.sp_max < 50;
+    const bool is_tired = you.sp * 100 / (you.sp_max + 1) < 50;
 
     if (!silent && is_tired)
         mpr("You are too tired to exert yourself now.");
@@ -4329,7 +4329,7 @@ bool player_is_tired(bool silent)
 
 bool player_is_very_tired(bool silent)
 {
-    const bool is_tired = you.sp * 100 / you.sp_max < 10;
+    const bool is_tired = you.sp * 100 / (you.sp_max + 1) < 10;
 
     if (!silent && is_tired)
         mpr("You are too tired to exert yourself now.");
