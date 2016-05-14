@@ -380,7 +380,8 @@ bool dec_inv_item_quantity(FixedVector< item_def, ENDOFPACK > &inv, int obj, int
     if (you.equip[EQ_WEAPON] == obj)
         you.wield_change = true;
 
-    you.m_quiver.on_inv_quantity_changed(obj, amount);
+    if (!consumable)
+        you.m_quiver.on_inv_quantity_changed(obj, amount);
 
     if (inv[obj].quantity <= amount)
     {

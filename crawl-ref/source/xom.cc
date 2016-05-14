@@ -989,7 +989,7 @@ static monster_type _xom_random_demon(int sever)
 
 static bool _player_is_dead()
 {
-    return you.hp <= 0
+    return get_hp() <= 0
         || is_feat_dangerous(grd(you.pos()))
         || you.did_escape_death();
 }
@@ -1498,8 +1498,8 @@ static void _xom_give_mutations(bool good)
 
     mpr("Your body is suffused with distortional energy.");
 
-    dec_hp(random2(you.hp), false);
-    deflate_hp(you.hp_max / 2, true);
+    dec_hp(random2(get_hp()), false);
+    deflate_hp(get_hp_max() / 2, true);
 
     bool failMsg = true;
 
@@ -1522,7 +1522,7 @@ static void _xom_give_bad_mutations(int) { _xom_give_mutations(false); }
  */
 static void _xom_throw_divine_lightning(int /*sever*/)
 {
-    const bool protection = you.hp <= random2(201);
+    const bool protection = get_hp() <= random2(201);
     if (protection)
         you.attribute[ATTR_DIVINE_LIGHTNING_PROTECTION] = 1;
 
@@ -2732,7 +2732,7 @@ static void _xom_torment(int /*sever*/)
 
     torment_player(0, TORMENT_XOM);
 
-    const string note = make_stringf("torment (%d/%d hp)", you.hp, you.hp_max);
+    const string note = make_stringf("torment (%d/%d hp)", get_hp(), get_hp_max());
     take_note(Note(NOTE_XOM_EFFECT, you.piety, -1, note), true);
 }
 
@@ -2976,8 +2976,8 @@ static void _handle_accidental_death(const int orig_hp,
     god_speaks(GOD_XOM, _get_xom_speech(speech_type).c_str());
     god_speaks(GOD_XOM, _get_xom_speech("resurrection").c_str());
 
-    int pre_mut_hp = you.hp;
-    if (you.hp <= 0)
+    int pre_mut_hp = get_hp();
+    if (get_hp() <= 0)
         you.hp = 9999; // avoid spurious recursive deaths if heavily rotten
 
     // If any mutation has changed, death was because of it.
@@ -2990,7 +2990,7 @@ static void _handle_accidental_death(const int orig_hp,
     }
 
     if (pre_mut_hp <= 0)
-        set_hp(min(orig_hp, you.hp_max));
+        set_hp(min(orig_hp, get_hp_max()));
 
     if (orig_form != you.form)
     {
@@ -3350,7 +3350,7 @@ xom_event_type xom_choose_action(bool niceness, int sever, int tension)
  */
 void xom_take_action(xom_event_type action, int sever)
 {
-    const int  orig_hp       = you.hp;
+    const int  orig_hp       = get_hp();
     const transformation_type orig_form = you.form;
     const FixedVector<uint8_t, NUM_MUTATIONS> orig_mutation = you.mutation;
     const bool was_bored = _xom_is_bored();
@@ -3522,14 +3522,14 @@ void xom_death_message(const kill_method_type killed_by)
 
     // "Normal" deaths with only down to -2 hp and comparatively low tension
     // are considered particularly boring.
-    if (!_death_is_funny(killed_by) && you.hp >= -1 * random2(3)
+    if (!_death_is_funny(killed_by) && get_hp() >= -1 * random2(3)
         && death_tension <= random2(10))
     {
         god_speaks(GOD_XOM, _get_xom_speech("boring death").c_str());
     }
     // Unusual methods of dying, really low hp, or high tension make
     // for funny deaths.
-    else if (_death_is_funny(killed_by) || you.hp <= -10
+    else if (_death_is_funny(killed_by) || get_hp() <= -10
              || death_tension >= 20)
     {
         god_speaks(GOD_XOM, _get_xom_speech("laughter").c_str());
@@ -3595,7 +3595,7 @@ bool xom_saves_your_life(const kill_method_type death_type, const char *aux)
         return false;
 
     // If this happens, don't bother.
-    if (you.hp_max < 1 || you.experience_level < 1)
+    if (get_hp_max() < 1 || you.experience_level < 1)
         return false;
 
     // Generally a rare effect.
@@ -3620,8 +3620,8 @@ bool xom_saves_your_life(const kill_method_type death_type, const char *aux)
     god_speaks(GOD_XOM, speech.c_str());
 
     // Give back some hp.
-    if (you.hp < 1)
-        set_hp(1 + random2(you.hp_max/4));
+    if (get_hp() < 1)
+        set_hp(1 + random2(get_hp_max()/4));
 
     god_speaks(GOD_XOM, "Xom revives you!");
 

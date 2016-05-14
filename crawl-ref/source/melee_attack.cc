@@ -1359,14 +1359,14 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
                  defender->as_monster()->pronoun(PRONOUN_POSSESSIVE).c_str(),
                  spell_user ? "magic" : "power");
 
-            if (you.mp != you.mp_max
+            if (get_mp() != get_mp_max()
                 && !defender->as_monster()->is_summoned()
                 && !mons_is_firewood(defender->as_monster()))
             {
                 int drain = random2(damage_done * 2) + 1;
                 //Augment mana drain--1.25 "standard" effectiveness at 0 mp,
                 //.25 at mana == max_mana
-                drain = (int)((1.25 - you.mp / you.mp_max)
+                drain = (int)((1.25 - get_mp() / get_mp_max())
                               * drain);
                 if (drain)
                 {
@@ -3695,7 +3695,7 @@ bool melee_attack::_player_vampire_draws_blood(const monster* mon, const int dam
     }
 
     // Regain hp.
-    if (you.hp < you.hp_max)
+    if (get_hp() < get_hp_max())
     {
         int heal = 2 + random2(damage) + random2(damage);
         if (heal > effective_xl())

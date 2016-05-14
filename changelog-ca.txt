@@ -1,22 +1,55 @@
 # v1.5.1
 
+* Each spell costs a minimum of 5 mp, and it's easier to reduce the mp cost than before.
+
+* You can only have a maximum of 5 summons total between all spells.
+
+* Spirit shield
+    * Since players have much more magic now, to keep spirit shield from being too powerful, it behaves as if you
+      have half as much max mp. So if you have 50 max hp, and 100 max mp, half of your damage would come from hp,
+      and half would come from mp (since it acts as if you had 50 mp).
+
+* Unlimited ammo
+    * If you fire a ranged weapon without ammo, the unbranded ammo fires.
+    * Unbranded ammo no longer spawns.
+    * Branded ammo still spawn in higher quantities than before, but always mulches.
+    * You can switch to unbranded ammo by hitting the quiver command 'Q', and then '-', just like weilding nothing.
+
+* One shot kill protection
+    * Player isn't allowed to receive more than some percentage of damage between times when the player can act.
+        * This means, even if paralyzed, there is a limit to how much damage can be done before the player gets
+          a chance to do something about it.
+    * Nightmare mode: 75% damage per turn max
+    * Challenge mode: 50% damage per turn max
+    * Standard mode:  25% damage per turn max
+    * What this means, for example, is that in standard mode, a player can't die in 3 turns (assuming they began
+      at full health).
+
 * Labyrinth allows auto-explore
     * It's not super reliable, but I find that is removes some tedium without making it totally trivial.
+
 * Increased Fighting and/or Spellcasting skills for all starting jobs that use them by 1, to make it a little
   easier for characters to get off the ground with the recent changes.
+
 * Orc branch has been doubled in size, to 8 floors
     * The "boss" level is still on floor 4.
     * Floors 5-8 don't give experience for kills, although they will restore drain and charge evocables.
+
 * Turned off monster spawning.
     * Increased initial floor population by 20% to compensate.
     * Monsters still spawn in Abyss and during orb run.
+
 * Deactivated ghosts.
     * I have a better solution, but for now this will help.
+
 * Magic potions restore 40, 30, 20 points depending on difficulty mode.
 * Stamina potions restore 40, 30, 20 points depending on difficulty mode.
-* Spellcasting skill no longer influences spell power. It is only used for spell slots, reducing spell
-  hunger, and reducing spell failure rate.
-* Spell cost is not influenced by spell skills, only by spellcasting, intelligence, and spell level.
+
+* Spell factors:
+    * Spell failure: dexterity, spellcasting, spell schools
+    * Spell power: intelligence, spell schools
+    * Spell cost: intelligence, spellcasting
+
 * Removed all food, and created stamina potions. You can now sacrifice stamina potions to evoke fedhas' abilities.
 * Quick mode doesn't use stamina if monsters aren't around.
 

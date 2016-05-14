@@ -4708,9 +4708,9 @@ static void _cast_flay(monster* source, actor *defender)
     int damage_taken = 0;
     if (defender->is_player())
     {
-        damage_taken = (6 + (you.hp * 18 / you.hp_max)) * you.hp_max / 100;
+        damage_taken = (6 + (get_hp() * 18 / get_hp_max())) * get_hp_max() / 100;
         damage_taken = min(damage_taken,
-                           max(0, you.hp - 25 - random2(15)));
+                           max(0, get_hp() - 25 - random2(15)));
         if (damage_taken < 10)
             return;
 
@@ -7825,7 +7825,7 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
 
     case SPELL_CONJURE_BALL_LIGHTNING:
         return friendly
-               && (you.res_elec() <= 0 || you.hp <= 50)
+               && (you.res_elec() <= 0 || get_hp() <= 50)
                && !(mon->holiness() & MH_DEMONIC); // rude demons
 
     case SPELL_SEAL_DOORS:
