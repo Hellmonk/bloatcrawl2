@@ -1,5 +1,9 @@
 # v1.5.1
 
+* Each spell costs a minimum of 5 mp, and it's easier to reduce the mp cost than before.
+
+* You can only have a maximum of 5 summons total between all spells.
+
 * Spirit shield
     * Since players have much more magic now, to keep spirit shield from being too powerful, it behaves as if you
       have half as much max mp. So if you have 50 max hp, and 100 max mp, half of your damage would come from hp,

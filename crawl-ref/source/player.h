@@ -1217,9 +1217,9 @@ void player_moved();
 void player_before_long_safe_action();
 void player_after_long_safe_action(int turns);
 void player_after_each_turn();
-int player_spell_hunger_modifier(int old_hunger);
-int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost);
-int player_spell_mp_freeze_modifier(spell_type which_spell, bool raw, int old_cost);
+
+int spell_mp_cost(spell_type which_spell);
+int spell_mp_freeze(spell_type which_spell);
 int player_tohit_modifier(int old_tohit);
 int player_damage_modifier(int old_damage, bool silent = false);
 int player_spellpower_modifier(int old_spellpower);

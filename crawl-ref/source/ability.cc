@@ -3302,7 +3302,7 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     if (you.species == SP_VINE_STALKER && you.form != TRAN_TREE)
         _add_talent(talents, ABIL_LIGNIFY, check_confused);
 
-    if (player_has_summons(true)) {
+    if (player_summon_count()) {
         _add_talent(talents, ABIL_RELEASE_SUMMONS, check_confused);
     }
 

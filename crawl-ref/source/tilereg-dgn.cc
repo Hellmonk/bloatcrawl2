@@ -595,7 +595,7 @@ static bool _cast_spell_on_target(actor* target)
         return true;
     }
 
-    if (spell_mana(spell) > get_mp())
+    if (spell_mp_cost(spell) > get_mp())
     {
         mpr("You don't have enough magic to cast that spell.");
         return true;

@@ -194,9 +194,11 @@ static string _spell_wide_description(spell_type spell, bool viewing)
     desc << "</" << colour_to_str(highlight) << ">";
     desc << chop_string(make_stringf("%d", spell_difficulty(spell)), 6);
 
-    int mp_cost = spell_mana(spell);
+    int mp_cost = spell_mp_cost(spell);
     if (mp_cost == 0)
-        mp_cost = spell_freeze_mana(spell);
+    {
+        mp_cost = spell_mp_freeze(spell);
+    }
 
     desc << chop_string(make_stringf("%d", mp_cost), 4);
 
@@ -923,12 +925,18 @@ bool cast_a_spell(bool check_range, spell_type spell)
         return false;
     }
 
-    const int cost = spell_mana(spell);
-    const int freeze_cost = spell_freeze_mana(spell);
+    const int cost = spell_mp_cost(spell);
+    const int freeze_cost = spell_mp_freeze(spell);
     if (!enough_mp(cost + freeze_cost, true))
     {
         mpr("You don't have enough magic to cast that spell.");
         crawl_state.zero_turns_taken();
+        return false;
+    }
+
+    if (is_summon_spell(spell) && player_summon_count() >= 5)
+    {
+        mpr("You can't maintain any more summons.");
         return false;
     }
 
@@ -1230,7 +1238,7 @@ static bool _spellcasting_aborted(spell_type spell,
         // isn't evoked but still doesn't use the spell's MP. your_spells,
         // this function, and spell_uselessness_reason should take a flag
         // indicating whether MP should be checked (or should never check).
-        const int rest_mp = (evoked || fake_spell) ? 0 : spell_mana(spell);
+        const int rest_mp = (evoked || fake_spell) ? 0 : spell_mp_cost(spell);
 
         // Temporarily restore MP so that we're not uncastable for lack of MP.
         unwind_var<int> fake_mp(you.mp, you.mp + rest_mp);
@@ -1342,7 +1350,7 @@ static double _chance_miscast_prot()
 static void _spellcasting_corruption(spell_type spell)
 {
     // never kill the player (directly)
-    int hp_cost = min(you.spell_hp_cost() * spell_mana(spell), get_hp() - 1);
+    int hp_cost = min(you.spell_hp_cost() * spell_mp_cost(spell), get_hp() - 1);
     const char * source = nullptr;
     if (player_equip_unrand(UNRAND_MAJIN))
         source = "the Majin-Bo"; // for debugging
@@ -1752,20 +1760,6 @@ spret_type _handle_summoning_spells(spell_type spell, int powc,
         // Summoning spells, and other spells that create new monsters.
         // If a god is making you cast one of these spells, any monsters
         // produced will count as god gifts.
-        case SPELL_WEAVE_SHADOWS:
-        {
-            level_id place(BRANCH_DUNGEON, 1);
-            const int level = 5 + div_rand_round(powc, 3);
-            const int depthsabs = branches[BRANCH_DEPTHS].absdepth;
-            if (level >= depthsabs && x_chance_in_y(level + 1 - depthsabs, 5))
-            {
-                place.branch = BRANCH_DEPTHS;
-                place.depth = level  + 1 - depthsabs;
-            }
-            else
-                place.depth = level;
-            return cast_shadow_creatures(spell, god, place, fail);
-        }
 
         case SPELL_SUMMON_BUTTERFLIES:
             return cast_summon_butterflies(powc, god, fail);
@@ -1858,6 +1852,20 @@ static spret_type _do_cast(spell_type spell, int powc,
 
     switch (spell)
     {
+    case SPELL_WEAVE_SHADOWS:
+    {
+        level_id place(BRANCH_DUNGEON, 1);
+        const int level = 5 + div_rand_round(powc, 3);
+        const int depthsabs = branches[BRANCH_DEPTHS].absdepth;
+        if (level >= depthsabs && x_chance_in_y(level + 1 - depthsabs, 5))
+        {
+            place.branch = BRANCH_DEPTHS;
+            place.depth = level  + 1 - depthsabs;
+        }
+        else
+            place.depth = level;
+        return cast_shadow_creatures(spell, god, place, fail);
+    }
     case SPELL_FREEZE:
         return cast_freeze(powc, monster_at(target), fail);
 

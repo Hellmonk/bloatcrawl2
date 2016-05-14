@@ -825,7 +825,7 @@ void floor_transition(dungeon_feature_type how,
     }
 
     const int dangerous = get_nearby_monsters(false, true, true).size();
-    if (dangerous && player_has_summons())
+    if (dangerous && player_summon_count())
     {
         mpr("Your summoned creatures have suddenly lost their courage!");
         unsummon_all();

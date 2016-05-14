@@ -9441,7 +9441,7 @@ void remove_from_summoned(mid_t mid)
 bool player_summoned_monster(spell_type spell, monster* mons, bool first)
 {
     bool success = true;
-    const int cost = first ? spell_freeze_mana(spell) : 0;
+    const int cost = first ? spell_mp_freeze(spell) : 0;
     mons->mp_freeze = cost;
     freeze_summons_mp(cost);
 
@@ -9553,59 +9553,41 @@ void player_after_each_turn()
     crawl_state.danger_mode_counter = max(0, crawl_state.danger_mode_counter - 1);
 }
 
-int player_spell_hunger_modifier(int old_hunger)
-{
-    int new_hunger = 0;
-    if (you.duration[DUR_CHANNELING] == 0)
-        new_hunger = old_hunger;
-
-    return new_hunger;
-}
-
 int _apply_hunger(const spell_type &which_spell, int cost)
 {
     if (player_mutation_level(MUT_HUNGERLESS) == 0)
     {
         const int hunger = spell_hunger(which_spell, false);
-        cost = div_rand_round(cost * (hunger + 10), 10);
+        cost = div_rand_round(cost * (hunger + 100), 100);
     }
 
     return cost;
 }
 
-int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost)
+int spell_mp_cost(spell_type which_spell)
 {
-    int new_cost = old_cost;
+    int cost = _apply_hunger(which_spell, 5);
+    cost = max(cost, 5);
 
-//    if (is_self_transforming_spell(which_spell))
-//        new_cost *= 2;
-
-    new_cost = _apply_hunger(which_spell, new_cost);
-    new_cost = max(new_cost, 1);
-
-    if (you.duration[DUR_CHANNELING] || is_summon_spell(which_spell) && !raw)
-        new_cost = 0;
+    if (you.duration[DUR_CHANNELING] || is_summon_spell(which_spell))
+        cost = 0;
     else if (have_passive(passive_t::conserve_mp))
-        new_cost = qpow(new_cost, 97, 100, you.skill(SK_INVOCATIONS));
+        cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS));
 
-    return new_cost;
+    return cost;
 }
 
-int player_spell_mp_freeze_modifier(spell_type which_spell, bool raw, int old_cost)
+int spell_mp_freeze(spell_type which_spell)
 {
-    int new_cost = old_cost;
-
+    int cost = 0;
     if (is_summon_spell(which_spell))
     {
-        new_cost = spell_difficulty(which_spell) * 2;
+        cost = _apply_hunger(which_spell, 10);
+        if (have_passive(passive_t::conserve_mp))
+            cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS));
     }
 
-    new_cost = _apply_hunger(which_spell, new_cost);
-
-    if (have_passive(passive_t::conserve_mp))
-        new_cost = qpow(new_cost, 97, 100, you.skill(SK_INVOCATIONS));
-
-    return new_cost;
+    return cost;
 }
 
 const int base_factor = 100;
