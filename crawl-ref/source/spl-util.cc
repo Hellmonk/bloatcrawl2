@@ -413,7 +413,7 @@ int spell_hunger(spell_type which_spell, bool rod)
     int hunger = 25 * scale * level * level;
 
     if (player_energy())
-        hunger >>= 2;
+        hunger >>= 1;
 
     if (rod)
     {
