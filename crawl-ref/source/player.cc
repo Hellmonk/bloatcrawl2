@@ -4069,7 +4069,6 @@ void calc_hp()
     {
         you.hp_max += get_real_mp(true);
         you.hp_max += get_real_sp(true);
-        you.hp_max /= 2;
     }
     deflate_hp(you.hp_max, false);
     if (oldhp != you.hp || oldmax != you.hp_max)
@@ -4806,7 +4805,11 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
             hitp = hitp * 3 / 4;
     }
 
-    return max(1, hitp + 5);
+    hitp = max(1, hitp + 5);
+    if (you.species == SP_DJINNI)
+        hitp /= 2;
+
+    return hitp;
 }
 
 int get_real_sp(bool include_items)
@@ -4828,6 +4831,8 @@ int get_real_sp(bool include_items)
     if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
         max_sp = max_sp * 3 / 4;
 
+    if (you.species == SP_DJINNI)
+        max_sp /= 2;
     return max_sp;
 }
 
@@ -4889,6 +4894,8 @@ int get_real_mp(bool include_items, bool rotted)
         max_mp -= you.mp_frozen_summons;
 
     max_mp = max(max_mp, 0);
+    if (you.species == SP_DJINNI)
+        max_mp /= 2;
 
     return max_mp;
 }
