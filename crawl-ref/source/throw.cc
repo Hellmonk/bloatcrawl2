@@ -467,19 +467,46 @@ void fire_thing(int item)
     dist target;
     item = get_ammo_to_shoot(item, target, is_pproj_active());
 
+    if (!target.isValid)
+        return;
+
     item_def *ammo;
     if (item == -1)
     {
-        you.m_quiver.get_desired_item(&ammo, nullptr);
-        if (ammo)
+        item_def *const weapon = you.weapon();    
+        if (weapon && weapon->isValid() && weapon->base_type == OBJ_WEAPONS)
         {
+            missile_type missileType = MI_STONE;
             special_missile_type ego = SPMSL_NORMAL;
-            if (ammo->sub_type == MI_NEEDLE)
-                ego = SPMSL_POISONED;
 
-            int p = items(false, OBJ_MISSILES, ammo->sub_type, 0, ego);
+            switch(weapon->sub_type)
+            {
+                case WPN_BLOWGUN:
+                    missileType = MI_NEEDLE;
+                    ego = SPMSL_POISONED;
+                    break;
+                case WPN_HAND_CROSSBOW:
+                case WPN_TRIPLE_CROSSBOW:
+                    missileType = MI_BOLT;
+                    break;
+                case WPN_SHORTBOW:
+                case WPN_LONGBOW:
+                    missileType = MI_ARROW;
+                    break;
+                case WPN_HUNTING_SLING:
+                    missileType = MI_SLING_BULLET;
+                    break;
+                default:
+                    // should not happen
+                    missileType = MI_STONE;
+                    break;
+            }
+
+            int p = items(false, OBJ_MISSILES, missileType, 0, ego);
             ammo = &mitm[p];
         }
+        else
+            return;
     }
     else
     {
@@ -796,6 +823,7 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
     pbolt.is_tracer = false;
 
     bool unwielded = false;
+    /* outdated
     if (throw_2 == you.equip[EQ_WEAPON] && thrown.quantity == 1)
     {
         if (!wield_weapon(true, SLOT_BARE_HANDS, true, false, false, true, false))
@@ -806,6 +834,7 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
 
         unwielded = true;
     }
+     */
 
     // Now start real firing!
     origin_set_unknown(item);
@@ -911,14 +940,16 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
             Hints.hints_throw_counter++;
 
         // Dropping item copy, since the launched item might be different.
-        pbolt.drop_item = !did_return;
+        pbolt.drop_item = false;
         pbolt.fire();
 
         hit = !pbolt.hit_verb.empty();
 
+        /* no longer applies
         // The item can be destroyed before returning.
         if (did_return && thrown_object_destroyed(&item, pbolt.target))
             did_return = false;
+            */
     }
 
     if (bow_brand == SPWPN_CHAOS || ammo_brand == SPMSL_CHAOS)
@@ -941,18 +972,22 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
                     << endl;
 
         // Player saw the item return.
-        if (!is_artefact(you.inv1[throw_2]))
-            set_ident_flags(you.inv1[throw_2], ISFLAG_KNOW_TYPE);
+        if (!is_artefact(thrown))
+            set_ident_flags(thrown, ISFLAG_KNOW_TYPE);
     }
     else
     {
         // Should have returned but didn't.
-        if (returning && item_type_known(you.inv1[throw_2]))
+        if (returning && item_type_known(thrown))
         {
             msg::stream << item.name(DESC_THE)
                         << " fails to return to your pack!" << endl;
         }
-        dec_inv_item_quantity(you.inv1, throw_2, 1);
+        if (thrown.in_player_inventory())
+            dec_inv_item_quantity(you.inv1, thrown.link, 1);
+        else
+            destroy_item(thrown);
+
         if (unwielded)
             canned_msg(MSG_EMPTY_HANDED_NOW);
     }
