@@ -2765,12 +2765,6 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
         exp_loss = Options.exp_percent_from_monsters < 0;
     }
 
-    if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-        exp_gained = div_rand_round(exp_gained * 3, 2);
-
-    if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-        exp_gained = div_rand_round(exp_gained * 2, 3);
-
     if (crawl_state.game_is_arena() || exp_gained == 0)
         return;
 
@@ -2823,18 +2817,25 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
 
     if (can_gain_experience_here)
     {
+        int adjusted_gain = exp_gained;
+        if (crawl_state.difficulty == DIFFICULTY_STANDARD)
+            adjusted_gain = div_rand_round(adjusted_gain * 3, 2);
+
+        if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
+            adjusted_gain = div_rand_round(adjusted_gain * 2, 3);
+
         if (exp_loss)
         {
-            if (you.experience < exp_gained)
+            if (you.experience < adjusted_gain)
                 you.experience = 0;
             else
-                you.experience -= exp_gained;
+                you.experience -= adjusted_gain;
         }
         else
-            if (you.experience + exp_gained > (unsigned int)MAX_EXP_TOTAL)
+            if (you.experience + adjusted_gain > (unsigned int)MAX_EXP_TOTAL)
                 you.experience = MAX_EXP_TOTAL;
             else
-                you.experience += exp_gained;
+                you.experience += adjusted_gain;
     }
 
     if (!exp_loss)
