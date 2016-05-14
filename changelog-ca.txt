@@ -1,5 +1,11 @@
 # v1.5.1
 
+* Unlimited ammo
+    * If you fire a ranged weapon without ammo, the unbranded ammo fires.
+    * Unbranded ammo no longer spawns.
+    * Branded ammo still spawn in higher quantities than before, but always mulches.
+    * You can switch to unbranded ammo by hitting the quiver command 'Q', and then '-', just like weilding nothing.
+
 * One shot kill protection
     * Player isn't allowed to receive more than some percentage of damage between times when the player can act.
         * This means, even if paralyzed, there is a limit to how much damage can be done before the player gets
