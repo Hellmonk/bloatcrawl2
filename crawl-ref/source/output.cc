@@ -525,8 +525,8 @@ static bool _boosted_ac()
            || you.duration[DUR_MAGIC_ARMOUR]
            || player_icemail_armour_class()
            || you.duration[DUR_QAZLAL_AC]
-           || you.attribute[ATTR_BONE_ARMOUR] > 0;
-           || temperature_effect(LORC_STONESKIN)
+           || you.attribute[ATTR_BONE_ARMOUR] > 0
+           || temperature_effect(LORC_STONESKIN);
 }
 
 static bool _boosted_ev()
