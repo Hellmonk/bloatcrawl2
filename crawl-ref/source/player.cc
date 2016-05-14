@@ -4069,6 +4069,7 @@ void calc_hp()
     {
         you.hp_max += get_real_mp(true);
         you.hp_max += get_real_sp(true);
+        you.hp_max /= 2;
     }
     deflate_hp(you.hp_max, false);
     if (oldhp != you.hp || oldmax != you.hp_max)
