@@ -186,6 +186,11 @@ body {
     visibility:hidden;
 }
 
+#stats[data-species="Djinni"] #stats_spline {
+    display:none;
+    visibility:hidden;
+}
+
 #stats_contam_bar {
     background-color: #555753; /* darkgray */
 }

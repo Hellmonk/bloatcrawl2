@@ -267,7 +267,7 @@ static void initialize_crawl()
         grd(*ri) = DNGN_FLOOR;
 
     los_changed();
-    you.hp = you.hp_max = PLAYER_MAXHP;
+    you.hp = get_hp_max() = PLAYER_MAXHP;
     you.magic_points = you.max_magic_points = PLAYER_MAXMP;
     you.species = SP_HUMAN;
 }

@@ -377,32 +377,32 @@ void hints_new_turn()
             // We don't want those "Whew, it's safe to rest now" messages
             // if you were just cast into the Abyss. Right?
 
-            if (2 * you.hp < you.hp_max
-                || 2 * you.mp < you.mp_max)
+            if (2 * get_hp() < get_hp_max()
+                || 2 * get_mp() < get_mp_max())
             {
                 _hints_healing_reminder();
             }
             else if (!you.running
                      && Hints.hints_events[HINT_SHIFT_RUN]
                      && you.num_turns >= 200
-                     && you.hp == you.hp_max
-                     && you.mp == you.mp_max)
+                     && get_hp() == get_hp_max()
+                     && get_mp() == get_mp_max())
             {
                 learned_something_new(HINT_SHIFT_RUN);
             }
             else if (!you.running
                      && Hints.hints_events[HINT_MAP_VIEW]
                      && you.num_turns >= 500
-                     && you.hp == you.hp_max
-                     && you.mp == you.mp_max)
+                     && get_hp() == get_hp_max()
+                     && get_mp() == get_mp_max())
             {
                 learned_something_new(HINT_MAP_VIEW);
             }
             else if (!you.running
                      && Hints.hints_events[HINT_AUTO_EXPLORE]
                      && you.num_turns >= 700
-                     && you.hp == you.hp_max
-                     && you.mp == you.mp_max)
+                     && get_hp() == get_hp_max()
+                     && get_mp() == get_mp_max())
             {
                 learned_something_new(HINT_AUTO_EXPLORE);
             }
@@ -414,10 +414,10 @@ void hints_new_turn()
                 if (Hints.hints_events[HINT_NEED_POISON_HEALING])
                     learned_something_new(HINT_NEED_POISON_HEALING);
             }
-            else if (2*you.hp < you.hp_max)
+            else if (2*get_hp() < get_hp_max())
                 learned_something_new(HINT_RUN_AWAY);
 
-            if (Hints.hints_type == HINT_MAGIC_CHAR && you.mp < 1)
+            if (Hints.hints_type == HINT_MAGIC_CHAR && get_mp() < 1)
                 learned_something_new(HINT_RETREAT_CASTER);
         }
     }
@@ -578,7 +578,7 @@ static bool _advise_use_healing_potion()
 
 void hints_healing_check()
 {
-    if (2*you.hp <= you.hp_max
+    if (2*get_hp() <= get_hp_max()
         && _advise_use_healing_potion())
     {
         learned_something_new(HINT_HEALING_POTIONS);
@@ -622,7 +622,7 @@ static void _hints_healing_reminder()
                     "<tiles>, or <w>click on the stat area</w> with your mouse</tiles>"
                     ".";
 
-            if (you.hp < you.hp_max && you_worship(GOD_TROG)
+            if (get_hp() < get_hp_max() && you_worship(GOD_TROG)
                 && you.can_go_berserk())
             {
                 text += "\nAlso, berserking might help you not to lose so much "
@@ -2595,7 +2595,7 @@ void learned_something_new(hints_event_type seen_what, coord_def gc)
     case HINT_SPELL_MISCAST:
     {
         // Don't give at the beginning of your spellcasting career.
-        if (you.mp_max <= 2)
+        if (get_mp_max() <= 2)
             DELAY_EVENT;
 
         if (!crawl_state.game_is_hints())

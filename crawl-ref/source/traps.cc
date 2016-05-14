@@ -225,15 +225,15 @@ bool trap_def::is_safe(actor* act) const
 #endif
 
     if (type == TRAP_NEEDLE)
-        return you.hp > 15;
+        return get_hp() > 15;
     else if (type == TRAP_ARROW)
-        return you.hp > 35;
+        return get_hp() > 35;
     else if (type == TRAP_BOLT)
-        return you.hp > 45;
+        return get_hp() > 45;
     else if (type == TRAP_SPEAR)
-        return you.hp > 40;
+        return get_hp() > 40;
     else if (type == TRAP_BLADE)
-        return you.hp > 95;
+        return get_hp() > 95;
 
     return false;
 }

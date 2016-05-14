@@ -1541,7 +1541,7 @@ bool do_god_gift(bool forced)
                 you.num_total_gifts[you.religion]++;
                 // Timeouts are meaningless for Kiku.
                 if (!you_worship(GOD_KIKUBAAQUDGHA))
-                    _inc_gift_timeout(40 + random2avg(19, 2));
+                    _inc_gift_timeout(80 + random2avg(40, 2));
                 take_note(Note(NOTE_GOD_GIFT, you.religion));
             }
             break;
@@ -2611,6 +2611,9 @@ bool poor_god_choice_for_player(god_type which_god)
 {
 	if (you.spells[0] != SPELL_NO_SPELL && which_god == GOD_TROG)
 		return true;
+
+    if (which_god == GOD_JIYVA && you.get_experience_level() < 15)
+        return true;
 
 	return false;
 }
@@ -3960,8 +3963,8 @@ int get_tension(god_type god)
 
     // Tension goes up inversely proportional to the percentage of max
     // hp you have.
-    tension *= (scale + 1) * you.hp_max;
-    tension /= max(you.hp_max + scale * you.hp, 1);
+    tension *= (scale + 1) * get_hp_max();
+    tension /= max(get_hp_max() + scale * get_hp(), 1);
 
     // Divides by 1 at level 1, 200 at level 27.
     const int exp_lev  = you.get_experience_level();
