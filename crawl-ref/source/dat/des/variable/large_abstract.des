@@ -185,7 +185,7 @@ ENDMAP
 # A little maze vault
 #
 NAME:   little_maze_vault
-DEPTH:  Depths, !Depths:$
+DEPTH:  Depths, !Depths:$, Dwarf
 ORIENT: northeast
 MAP
 cccccxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -634,7 +634,7 @@ ENDMAP
 
 NAME:    minmay_triangles_in_corner
 ORIENT:  southeast
-DEPTH:   D:12-, !D:$, Depths
+DEPTH:   D:12-, !D:$, Depths, Dwarf
 SHUFFLE: $%
 SUBST:   $ = $$$$%* .:180
 SUBST:   % = %%%%$* .:180
@@ -704,7 +704,7 @@ ENDMAP
 
 NAME:    minmay_connected_triangles_in_corner
 ORIENT:  southeast
-DEPTH:   D:12-, !D:$, Depths, !Depths:$
+DEPTH:   D:12-, !D:$, Depths, !Depths:$, Dwarf
 SHUFFLE: ([{)]}, 890, |*%$
 SUBST:   c : cv
 MAP
@@ -874,7 +874,7 @@ ENDMAP
 ################################################################################
 # Two diamond shaped vaults
 NAME:   evilmike_diamond_1
-DEPTH:  D:12-, !D:$, Depths, !Depths:$
+DEPTH:  D:12-, !D:$, Dwarf
 ORIENT: northwest
 NSUBST: | = 2:* / *:|
 SUBST:  X : c.., Y : c..
@@ -916,7 +916,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.@
 ENDMAP
 
 NAME:   evilmike_diamond_2
-DEPTH:  D:12-, !D:$, Depths
+DEPTH:  D:12-, !D:$, Dwarf
 ORIENT: southeast
 SUBST:  X : xxxnb.
 SUBST:  c : ccxxb
@@ -1193,7 +1193,7 @@ ENDMAP
 
 NAME:   minmay_outward_triangles
 ORIENT: northwest
-DEPTH:  D:12-, !D:$, Depths
+DEPTH:  D:12-, !D:$, Depths, Dwarf
 SUBST:  z : xcvb
 SUBST:  9 = 9.
 MAP
@@ -1292,7 +1292,7 @@ ENDMAP
 
 NAME:   grunt_twisty_corner
 ORIENT: southwest
-DEPTH:  Depths, !Depths:$
+DEPTH:  Depths, !Depths:$, Dwarf
 KMONS:  0 = 0 band
 KMONS:  9 = 9 band
 KMONS:  8 = 8 band
