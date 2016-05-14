@@ -4,7 +4,7 @@
 
     This file determines which spells are contained in monster spellbooks.
     It is used by /util/gen-mst.pl to generate spellbook enums, which are
-    listed in mon-mst.h.
+    listed in mon-mst.h. beep boop, test test
 
     Template Format:
 
