@@ -515,7 +515,7 @@ int raw_spell_fail(spell_type spell)
     force *= (1.0 + skill_factor) / 10;
 
     const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
-    force = qpow(force, 3, 2, subdued);
+    force = fpow(force, 3, 2, subdued);
 
     if (player_equip_unrand(UNRAND_HIGH_COUNCIL))
         force *= 2;
