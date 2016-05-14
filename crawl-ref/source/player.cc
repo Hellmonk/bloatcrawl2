@@ -9690,12 +9690,16 @@ int player_stealth_modifier(int stealth)
 
 int player_evasion_modifier(int evasion)
 {
+    return evasion;
+    /* old way
+
     evasion *= _difficulty_mode_multiplier();
 
     if (you.exertion == EXERT_FOCUS)
         evasion = evasion * 4 / 3 + 50;
 
     return evasion / base_factor;
+     */
 }
 
 void player_update_last_hit_chance(int chance)
