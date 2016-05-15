@@ -286,7 +286,9 @@ void player_quiver::on_weapon_changed()
         }
     }
 
+    /* we don't want this anymore
     _maybe_fill_empty_slot();
+     */
 }
 
 void player_quiver::on_inv_quantity_changed(int slot, int amt)
