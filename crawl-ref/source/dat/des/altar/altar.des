@@ -401,46 +401,47 @@ ENDMAP
 ### Ecumenical altars ########################################################
 
 NAME:   ecumenical_altar_1
-DEPTH:  D:3-4
+DEPTH:  D:4-5
 TAGS:  uniq_ecumenical_altar chance_ecumenical_altar
 KFEAT:  _ = altar_ecumenical
-CHANCE: 30 : 100%
+CHANCE: 25 : 33%
 MAP
-.....
-..x..
+  .  
+ .x. 
 .x_x.
-..x..
-.....
+ .x. 
+  .  
 ENDMAP
 
 NAME: ecumenical_altar_2
-DEPTH: D:3-4
+DEPTH:  D:4-5
 TAGS:  uniq_ecumenical_altar chance_ecumenical_altar
 KFEAT:  _ = altar_ecumenical
-CHANCE: 30 : 100%
+CHANCE: 25 : 33%
 MAP
-.......
+ ..... 
 ...G...
 ..G.G..
 .G._.G.
 ..G.G..
 ...G...
-.......
+ ..... 
 ENDMAP
 
 # a 3% chance that this will be just 4 ecu altars, won't happen often 
-# 
+# if player is willing to suffer wrath, can reroll on the spot. (if 2 ecu's exist)
 
 NAME:   ecumenical_altar_touched_by_chaotic_gods
-DEPTH:  D:3-4
+DEPTH:  D:4-5
 ORIENT: float
 TAGS:  uniq_ecumenical_altar chance_ecumenical_altar 
-COLOUR:     1 = random
+LFLOORCOL:  random
 KFEAT:  2 = altar_ecumenical
-KFEAT:  _ = w:2 altar_ecumenical / w:5 altar_xom / w:3 altar_jiyva
-CHANCE: 40 : 100%
+KFEAT:  _ = w:2 altar_ecumenical / w:5 altar_xom / w:2 altar_jiyva / w:1 altar_lugonu
+CHANCE: 50 : 33%
+MONS: butterfly
 MAP
-121
+.2.
 _G_
-1_1
+._.
 ENDMAP
