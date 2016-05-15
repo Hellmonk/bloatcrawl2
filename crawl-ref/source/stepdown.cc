@@ -48,9 +48,13 @@ double stepdown(double value, double step, double base)
     return step * log(1 + value / step) / log(base);
 }
 
-int qpow(int value, int num, int denom, int power)
+int qpow(int value, int num, int denom, int power, bool random_rounding)
 {
-    return rand_round((double)value * pow((double)num/(double)denom, power));
+    double v = (double)value * pow((double)num / (double)denom, power);
+    int result = v;
+    if (random_rounding)
+        result = rand_round(v);
+    return result;
 }
 
 double fpow(double value, double num, double denom, double power)

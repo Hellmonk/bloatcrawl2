@@ -79,6 +79,7 @@ bool is_connected_branch(const Branch *branch);
 bool is_connected_branch(branch_type branch);
 bool is_connected_branch(level_id place);
 bool is_double_deep_branch(branch_type branch);
+bool player_can_gain_experience_here();
 level_id current_level_parent();
 bool is_safe_branch(branch_type branch);
 

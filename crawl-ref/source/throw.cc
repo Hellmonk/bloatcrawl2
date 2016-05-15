@@ -477,7 +477,7 @@ void fire_thing(int item)
         if (weapon && weapon->isValid() && weapon->base_type == OBJ_WEAPONS)
         {
             missile_type missileType = MI_STONE;
-            special_missile_type ego = SPMSL_NORMAL;
+            special_missile_type ego = SPMSL_FORBID_BRAND;
 
             switch(weapon->sub_type)
             {
@@ -487,6 +487,7 @@ void fire_thing(int item)
                     break;
                 case WPN_HAND_CROSSBOW:
                 case WPN_TRIPLE_CROSSBOW:
+                case WPN_ARBALEST:
                     missileType = MI_BOLT;
                     break;
                 case WPN_SHORTBOW:
