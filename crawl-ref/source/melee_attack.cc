@@ -2576,7 +2576,7 @@ bool melee_attack::mons_attack_effects()
         return false;
     }
 
-    if (attacker != defender && attk_flavour == AF_TRAMPLE)
+    if (attacker != defender && attk_flavour == AF_TRAMPLE && you.mutation[MUT_TRAMPLE_RESISTANCE] < 1)
         do_knockback();
 
     special_damage = 0;

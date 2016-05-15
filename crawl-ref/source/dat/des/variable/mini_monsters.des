@@ -69,7 +69,7 @@ function random_stair(e, symbol)
 end
 }}
 
-default-depth: D:9-, Depths, Elf
+default-depth: D:9-, Depths, Elf, Dwarf
 
 ###############################################################################
 #
@@ -162,7 +162,7 @@ ENDMAP
 NAME:   not_door_vault_mu
 TAGS:   extra allow_dup luniq
 WEIGHT: 1
-DEPTH:  Depths, Elf
+DEPTH:  Depths, Elf, Dwarf
 MONS:   butterfly
 MARKER: X = lua: props_marker { connected_exclude="true" }
 MARKER: Y = lua: props_marker { stop_explore="strange structure made of doors" }
@@ -3359,7 +3359,7 @@ ENDMAP
 # Small chamber for a nice item (Eino)
 NAME:   small_chamber_with_monster
 TAGS:   extra
-DEPTH:  D:8-, Depths, Elf, Crypt
+DEPTH:  D:8-, Depths, Elf, Dwarf, Crypt
 MAP
 xxxxxxx
 xxG.Gxx
