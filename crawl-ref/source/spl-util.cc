@@ -412,8 +412,10 @@ int spell_hunger(spell_type which_spell, bool rod)
     const int scale = 100;
     int hunger = 25 * scale * level * level;
 
+    /* Staff of energy doesn't affect this any more
     if (player_energy())
         hunger >>= 1;
+        */
 
     if (rod)
     {
