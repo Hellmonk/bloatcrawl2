@@ -2940,45 +2940,42 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
     }
 }
 
-void _handle_insight_inv(string &before, string &after, bool success, FixedVector<item_def, 52> *inv)
+void _handle_insight_inv(string &before, string &after, FixedVector<item_def, 52> *inv)
 {// top to bottom
     // this give the player the option to move items to the top so that they are more likely to be identified first
     for(item_def &item : *inv)
+    {
+        if (item.defined()
+            && (
+                (item.flags & ISFLAG_IDENT_MASK) < ISFLAG_IDENT_MASK)
+            || is_deck(item) && !top_card_is_known(item)
+            )
+        {
+            if (is_deck(item) && !top_card_is_known(item))
             {
-                if (item.defined()
-                    && (
-                        (item.flags & ISFLAG_IDENT_MASK) < ISFLAG_IDENT_MASK)
-                    || is_deck(item) && !top_card_is_known(item)
-                    )
-                {
-                    if (is_deck(item) && !top_card_is_known(item))
-                    {
-                        set_ident_flags(item, ISFLAG_IDENT_MASK);
-                        set_ident_type(item, true);
-                        after = get_menu_colour_prefix_tags(item, DESC_A).c_str();
-                        mprf(MSGCH_INTRINSIC_GAIN, "You gain insight into: %s", after.c_str());
-                        deck_identify_first(item);
+                set_ident_flags(item, ISFLAG_IDENT_MASK);
+                set_ident_type(item, true);
+                after = get_menu_colour_prefix_tags(item, DESC_A);
+                mprf(MSGCH_INTRINSIC_GAIN, "You gain insight into: %s", after.c_str());
+                deck_identify_first(item);
+                break;
+            }
+            else
+            {
+                before = item.name(DESC_A);
+                int bitToCheck = 1 << random2(4);
+                if((item.flags & bitToCheck) == 0) {
+                    set_ident_flags(item, bitToCheck);
+                    set_ident_type(item, true);
+                    after = item.name(DESC_A);
+                    if(before != after) {
+                        mprf(MSGCH_INTRINSIC_GAIN, "You gain insight: %s -> %s", before.c_str(), after.c_str());
                         break;
-                    }
-                    else
-                    {
-                        before = get_menu_colour_prefix_tags(item, DESC_A).c_str();
-                        int bitToCheck = 1 << random2(4);
-                        if((item.flags & bitToCheck) == 0) {
-                            set_ident_flags(item, bitToCheck);
-                            set_ident_type(item, true);
-                            after = get_menu_colour_prefix_tags(item, DESC_A).c_str();
-                            if(before != after) {
-                                success = true;
-                                break;
-                            }
-                        }
                     }
                 }
             }
-
-    if(success)
-                mprf(MSGCH_INTRINSIC_GAIN, "You gain insight: %s -> %s", before.c_str(), after.c_str());
+        }
+    }
 }
 
 static void _handle_insight(int exp_gain)
@@ -2994,10 +2991,8 @@ static void _handle_insight(int exp_gain)
         int lev = player_mutation_level(MUT_INSIGHT);
         if (x_chance_in_y(1 << (lev * 2), 64)) {
             string before, after;
-            bool success = false;
-
-            _handle_insight_inv(before, after, success, &you.inv1);
-            _handle_insight_inv(before, after, success, &you.inv2);
+            _handle_insight_inv(before, after, &you.inv1);
+            _handle_insight_inv(before, after, &you.inv2);
         }
     }
 }
