@@ -9488,6 +9488,8 @@ void player_used_magic()
         dec_sp(3);
     if (you.exertion == EXERT_FOCUS)
         dec_mp(3);
+
+    you.time_taken = player_attack_delay_modifier(you.time_taken);
 }
 
 void player_evoked_something()
