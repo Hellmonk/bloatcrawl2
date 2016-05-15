@@ -1017,6 +1017,12 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             return;
         }
 
+        if (dam < 0)
+        {
+            inc_hp(-dam);
+            return;
+        }
+
         dam = player_ouch_modifier(dam);
 
         you.turn_damage += dam;
