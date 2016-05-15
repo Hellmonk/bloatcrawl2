@@ -3305,12 +3305,12 @@ bool item_def::has_spells() const
 
 bool item_def::cursed() const
 {
-    return curse_weight > 10;
+    return curse_weight >= 1;
 }
 
 bool item_def::super_cursed() const
 {
-    return curse_weight > 1000;
+    return curse_weight >= 1000;
 }
 
 bool item_def::launched_by(const item_def &launcher) const
