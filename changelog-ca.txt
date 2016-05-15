@@ -71,7 +71,6 @@
         * In addition to increasing damage by 33%, power mode now increases attack speed by the same.
     * Careful mode renamed to focus mode.
     * Focus mode adds an MP cost to affected actions.
-        * In addition to improving stealth and accuracy by 33%, focus mode now improves evasion by the same.
     * Escape mode was removed and in it's place a separate quick / normal mode
         * This can operate independently of exertion mode, i.e. you can have Quick mode + Focus or Quick + Power mode.
         * Quick mode has the benefits of the old escape mode, which are faster movement speed. But
@@ -92,7 +91,7 @@
             * Weapon skill does not affect SP cost.
         * Spell casting costs MP based on spell level, player intelligence, and spellcasting skill.
             * Spell school skills do not affect MP cost.
-        * Damage, evasion, accuracy, stealth, spellpower, spell success, and attack speed are reduced from vanilla
+        * Damage, accuracy, stealth, spellpower, spell success, and attack speed are reduced from vanilla
           crawl levels, based on difficulty mode being played.
     * Power mode (same as normal mode except for the following)
         * +33% damage
@@ -102,7 +101,6 @@
     * Focus mode (same as normal mode except for the following)
         * +33% attack accuracy
         * +33% stealth
-        * +33% evasion
         * -15% spell failure chance or 1/2 failure chance, whichever is worse
         * -3 MP per movement or attack or spell cast
 

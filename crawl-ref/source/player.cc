@@ -858,71 +858,83 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid) const
 
     switch (slot)
     {
-    case EQ_WEAPON:
-        // Hands can have more than just weapons.
-        if (weapon() && weapon()->is_type(OBJ_WEAPONS, sub_type))
-            ret++;
-        break;
-
-    case EQ_STAFF:
-        // Like above, but must be magical staff.
-        if (weapon()
-            && weapon()->is_type(OBJ_STAVES, sub_type)
-            && (calc_unid || item_type_known(*weapon())))
+        case EQ_WEAPON:
         {
-            ret++;
+            item = weapon();
+            // Hands can have more than just weapons.
+            if (item && item->is_type(OBJ_WEAPONS, sub_type) && !item->super_cursed())
+                ret++;
+            break;
         }
-        break;
 
-    case EQ_AMULET:
-    case EQ_AMULET_PLUS:
-        if ((item = slot_item(static_cast<equipment_type>(EQ_AMULET)))
-            && item->sub_type == sub_type
-            && (calc_unid
-                || item_type_known(*item)))
+        case EQ_STAFF:
         {
-            ret += (slot == EQ_AMULET_PLUS ? item->plus : 1);
+            item = weapon();
+            // Like above, but must be magical staff.
+            if (item
+                && item->is_type(OBJ_STAVES, sub_type)
+                && (calc_unid || item_type_known(*item))
+                && !item->super_cursed()
+                )
+            {
+                ret++;
+            }
+            break;
         }
-        break;
 
-    case EQ_RINGS:
-    case EQ_RINGS_PLUS:
-        for (int slots = EQ_LEFT_RING; slots < NUM_EQUIP; slots++)
-        {
-            if (slots == EQ_AMULET)
-                continue;
-
-            if ((item = slot_item(static_cast<equipment_type>(slots)))
+        case EQ_AMULET:
+        case EQ_AMULET_PLUS:
+            if ((item = slot_item(static_cast<equipment_type>(EQ_AMULET)))
                 && item->sub_type == sub_type
                 && (calc_unid
-                    || item_type_known(*item)))
+                    || item_type_known(*item))
+                && !item->super_cursed()
+                )
             {
-                int bonus = 1;
-                if (slot == EQ_RINGS_PLUS)
+                ret += (slot == EQ_AMULET_PLUS ? item->plus : 1);
+            }
+            break;
+
+        case EQ_RINGS:
+        case EQ_RINGS_PLUS:
+            for (int slots = EQ_LEFT_RING; slots < NUM_EQUIP; slots++)
+            {
+                if (slots == EQ_AMULET)
+                    continue;
+
+                if ((item = slot_item(static_cast<equipment_type>(slots)))
+                    && item->sub_type == sub_type
+                    && (calc_unid
+                        || item_type_known(*item)))
+                {
+                    int bonus = 1;
+                    if (slot == EQ_RINGS_PLUS)
+                        bonus = item->plus;
+
                     if (item->super_cursed())
                         bonus = 0;
-                    else
-                        bonus = item->plus;
-                ret += bonus;
+                    ret += bonus;
+                }
             }
-        }
-        break;
+            break;
 
-    case EQ_ALL_ARMOUR:
-        // Doesn't make much sense here... be specific. -- bwr
-        die("EQ_ALL_ARMOUR is not a proper slot");
-        break;
+        case EQ_ALL_ARMOUR:
+            // Doesn't make much sense here... be specific. -- bwr
+            die("EQ_ALL_ARMOUR is not a proper slot");
+            break;
 
-    default:
-        if (! (slot > EQ_NONE && slot < NUM_EQUIP))
-            die("invalid slot");
-        if ((item = slot_item(slot))
-            && item->sub_type == sub_type
-            && (calc_unid || item_type_known(*item)))
-        {
-            ret++;
-        }
-        break;
+        default:
+            if (! (slot > EQ_NONE && slot < NUM_EQUIP))
+                die("invalid slot");
+            if ((item = slot_item(slot))
+                && item->sub_type == sub_type
+                && (calc_unid || item_type_known(*item))
+                && !item->super_cursed()
+                )
+            {
+                ret++;
+            }
+            break;
     }
 
     return ret;
@@ -939,32 +951,47 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
     const item_def* item;
     switch (slot)
     {
-    case EQ_WEAPON:
-        // Hands can have more than just weapons.
-        if ((item = slot_item(EQ_WEAPON))
-            && item->base_type == OBJ_WEAPONS
-            && get_weapon_brand(*item) == special
-            && !item->super_cursed()
-            )
-        {
-            ret++;
-        }
-        break;
+        case EQ_WEAPON:
+            // Hands can have more than just weapons.
+            if ((item = slot_item(EQ_WEAPON))
+                && item->base_type == OBJ_WEAPONS
+                && get_weapon_brand(*item) == special
+                && !item->super_cursed()
+                )
+            {
+                ret++;
+            }
+            break;
 
-    case EQ_LEFT_RING:
-    case EQ_RIGHT_RING:
-    case EQ_AMULET:
-    case EQ_STAFF:
-    case EQ_RINGS:
-    case EQ_RINGS_PLUS:
-        // no ego types for these slots
-        break;
+        case EQ_LEFT_RING:
+        case EQ_RIGHT_RING:
+        case EQ_AMULET:
+        case EQ_STAFF:
+        case EQ_RINGS:
+        case EQ_RINGS_PLUS:
+            // no ego types for these slots
+            break;
 
-    case EQ_ALL_ARMOUR:
-        // Check all armour slots:
-        for (int i = EQ_MIN_ARMOUR; i <= EQ_MAX_ARMOUR; i++)
-        {
-            if ((item = slot_item(static_cast<equipment_type>(i)))
+        case EQ_ALL_ARMOUR:
+            // Check all armour slots:
+            for (int i = EQ_MIN_ARMOUR; i <= EQ_MAX_ARMOUR; i++)
+            {
+                if ((item = slot_item(static_cast<equipment_type>(i)))
+                    && get_armour_ego_type(*item) == special
+                    && (calc_unid || item_type_known(*item))
+                    && !item->super_cursed()
+                    )
+                {
+                    ret++;
+                }
+            }
+            break;
+
+        default:
+            if (slot < EQ_MIN_ARMOUR || slot > EQ_MAX_ARMOUR)
+                die("invalid slot: %d", slot);
+            // Check a specific armour slot for an ego type:
+            if ((item = slot_item(static_cast<equipment_type>(slot)))
                 && get_armour_ego_type(*item) == special
                 && (calc_unid || item_type_known(*item))
                 && !item->super_cursed()
@@ -972,22 +999,7 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
             {
                 ret++;
             }
-        }
-        break;
-
-    default:
-        if (slot < EQ_MIN_ARMOUR || slot > EQ_MAX_ARMOUR)
-            die("invalid slot: %d", slot);
-        // Check a specific armour slot for an ego type:
-        if ((item = slot_item(static_cast<equipment_type>(slot)))
-            && get_armour_ego_type(*item) == special
-            && (calc_unid || item_type_known(*item))
-            && !item->super_cursed()
-            )
-        {
-            ret++;
-        }
-        break;
+            break;
     }
 
     return ret;
@@ -1006,52 +1018,52 @@ bool player_equip_unrand(int unrand_index)
 
     switch (slot)
     {
-    case EQ_WEAPON:
-        // Hands can have more than just weapons.
-        if ((item = you.slot_item(slot))
-            && item->base_type == OBJ_WEAPONS
-            && is_unrandom_artefact(*item)
-            && item->unrand_idx == unrand_index)
-        {
-            return true;
-        }
-        break;
-
-    case EQ_RINGS:
-        for (int slots = EQ_LEFT_RING; slots < NUM_EQUIP; ++slots)
-        {
-            if (slots == EQ_AMULET)
-                continue;
-
-            if ((item = you.slot_item(static_cast<equipment_type>(slots)))
+        case EQ_WEAPON:
+            // Hands can have more than just weapons.
+            if ((item = you.slot_item(slot))
+                && item->base_type == OBJ_WEAPONS
                 && is_unrandom_artefact(*item)
                 && item->unrand_idx == unrand_index)
             {
                 return true;
             }
-        }
-        break;
+            break;
 
-    case EQ_NONE:
-    case EQ_STAFF:
-    case EQ_LEFT_RING:
-    case EQ_RIGHT_RING:
-    case EQ_RINGS_PLUS:
-    case EQ_ALL_ARMOUR:
-        // no unrandarts for these slots.
-        break;
+        case EQ_RINGS:
+            for (int slots = EQ_LEFT_RING; slots < NUM_EQUIP; ++slots)
+            {
+                if (slots == EQ_AMULET)
+                    continue;
 
-    default:
-        if (slot <= EQ_NONE || slot >= NUM_EQUIP)
-            die("invalid slot: %d", slot);
-        // Check a specific slot.
-        if ((item = you.slot_item(slot))
-            && is_unrandom_artefact(*item)
-            && item->unrand_idx == unrand_index)
-        {
-            return true;
-        }
-        break;
+                if ((item = you.slot_item(static_cast<equipment_type>(slots)))
+                    && is_unrandom_artefact(*item)
+                    && item->unrand_idx == unrand_index)
+                {
+                    return true;
+                }
+            }
+            break;
+
+        case EQ_NONE:
+        case EQ_STAFF:
+        case EQ_LEFT_RING:
+        case EQ_RIGHT_RING:
+        case EQ_RINGS_PLUS:
+        case EQ_ALL_ARMOUR:
+            // no unrandarts for these slots.
+            break;
+
+        default:
+            if (slot <= EQ_NONE || slot >= NUM_EQUIP)
+                die("invalid slot: %d", slot);
+            // Check a specific slot.
+            if ((item = you.slot_item(slot))
+                && is_unrandom_artefact(*item)
+                && item->unrand_idx == unrand_index)
+            {
+                return true;
+            }
+            break;
     }
 
     return false;
@@ -1194,7 +1206,7 @@ int player_regen()
         rr += 100;
         if(you.species == SP_DEEP_DWARF)
         {
-        	rr <<= 1;
+            rr <<= 1;
         }
     }
 
@@ -1213,7 +1225,7 @@ void update_regen_amulet_attunement()
         {
             you.props[REGEN_AMULET_ACTIVE] = 1;
             mpr("Your amulet attunes itself to your body and you begin to "
-                "regenerate more quickly.");
+                    "regenerate more quickly.");
         }
     }
     else
@@ -1232,7 +1244,7 @@ void update_mana_regen_amulet_attunement()
         {
             you.props[MANA_REGEN_AMULET_ACTIVE] = 1;
             mpr("Your amulet attunes itself to your body and you begin to "
-                "regenerate magic more quickly.");
+                    "regenerate magic more quickly.");
         }
     }
     else
@@ -1280,27 +1292,27 @@ int player_hunger_rate(bool temp)
     {
         switch (you.hunger_state)
         {
-        case HS_FAINTING:
-        case HS_STARVING:
-        case HS_NEAR_STARVING:
-            hunger -= 3;
-            break;
-        case HS_VERY_HUNGRY:
-            hunger -= 2;
-            break;
-        case HS_HUNGRY:
-            hunger--;
-            break;
-        case HS_SATIATED:
-            break;
-        case HS_FULL:
-            hunger++;
-            break;
-        case HS_VERY_FULL:
-            hunger += 2;
-            break;
-        case HS_ENGORGED:
-            hunger += 3;
+            case HS_FAINTING:
+            case HS_STARVING:
+            case HS_NEAR_STARVING:
+                hunger -= 3;
+                break;
+            case HS_VERY_HUNGRY:
+                hunger -= 2;
+                break;
+            case HS_HUNGRY:
+                hunger--;
+                break;
+            case HS_SATIATED:
+                break;
+            case HS_FULL:
+                hunger++;
+                break;
+            case HS_VERY_FULL:
+                hunger += 2;
+                break;
+            case HS_ENGORGED:
+                hunger += 3;
         }
     }
 
@@ -1505,7 +1517,7 @@ int player_res_cold(bool calc_unid, bool temp, bool items)
 
         // body armour:
         const item_def *body_armour = you.slot_item(EQ_BODY_ARMOUR);
-        if (body_armour)
+        if (body_armour && !body_armour->super_cursed())
             rc += armour_type_prop(body_armour->sub_type, ARMF_RES_COLD);
 
         // ego armours
@@ -1637,10 +1649,10 @@ bool player_res_torment(bool random)
     return get_form()->res_neg() == 3
            || you.species == SP_VAMPIRE && you.hunger_state <= HS_STARVING
            || you.petrified()
-#if TAG_MAJOR_VERSION == 34
+           #if TAG_MAJOR_VERSION == 34
            || player_equip_unrand(UNRAND_ETERNAL_TORMENT)
 #endif
-           ;
+        ;
 }
 
 // Kiku protects you from torment to a degree.
@@ -4069,7 +4081,6 @@ void calc_hp()
     {
         you.hp_max += get_real_mp(true);
         you.hp_max += get_real_sp(true);
-        you.hp_max /= 2;
     }
     deflate_hp(you.hp_max, false);
     if (oldhp != you.hp || oldmax != you.hp_max)
@@ -4161,12 +4172,13 @@ bool dec_mp(int mp_loss, bool silent)
     if (mp_loss < 1)
         return true;
 
+
     if (you.species == SP_DJINNI)
-        return dec_hp(mp_loss, false);
+        dec_hp(mp_loss, false);
+    else
+        you.mp -= mp_loss;
 
-    you.mp -= mp_loss;
-
-    if (you.mp < 0)
+    if (you.mp < 0 || you.species == SP_DJINNI && you.hp < you.hp_max * 25 / 100)
     {
         you.mp = max(0, you.mp);
         bool sent_message = false;
@@ -4320,7 +4332,7 @@ int get_mp_max()
 
 bool player_is_tired(bool silent)
 {
-    const bool is_tired = you.sp * 100 / you.sp_max < 50;
+    const bool is_tired = get_sp() * 100 / (get_sp_max() + 1) < 50;
 
     if (!silent && is_tired)
         mpr("You are too tired to exert yourself now.");
@@ -4330,7 +4342,7 @@ bool player_is_tired(bool silent)
 
 bool player_is_very_tired(bool silent)
 {
-    const bool is_tired = you.sp * 100 / you.sp_max < 10;
+    const bool is_tired = get_sp() * 100 / (get_sp_max() + 1) < 10;
 
     if (!silent && is_tired)
         mpr("You are too tired to exert yourself now.");
@@ -4340,7 +4352,7 @@ bool player_is_very_tired(bool silent)
 
 bool player_mp_is_exhausted(bool silent)
 {
-    const bool is_tired = you.mp < 5;
+    const bool is_tired = get_mp() < 5;
 
     if (!silent && is_tired)
         mpr("Your energy is low!");
@@ -4351,7 +4363,7 @@ bool player_mp_is_exhausted(bool silent)
 /* used to give stamina penalties such as lower melee / ranged damage */
 bool player_sp_is_exhausted(bool silent)
 {
-    const bool is_tired = you.sp < 5;
+    const bool is_tired = get_sp() < 5;
 
     if (!silent && is_tired)
         mpr("You are exhausted!");
@@ -4436,9 +4448,6 @@ void set_exertion(const exertion_mode new_exertion, bool manual)
 // returns true if after subtracting the given sp, sp is still > 0
 bool dec_sp(int sp_loss, bool silent)
 {
-    if (you.species == SP_DJINNI)
-        return dec_hp(sp_loss, false);
-
     bool result = true;
 
     if (you.duration[DUR_TIRELESS])
@@ -4458,8 +4467,12 @@ bool dec_sp(int sp_loss, bool silent)
         sp_loss = max(1, sp_loss);
     }
 
-    you.sp -= sp_loss;
-    if (you.sp < 0)
+    if (you.species == SP_DJINNI)
+        dec_hp(sp_loss, false);
+    else
+        you.sp -= sp_loss;
+
+    if (you.sp < 0 || you.species == SP_DJINNI && you.hp < you.hp_max * 25 / 100)
     {
         you.sp = 0;
 
@@ -4489,14 +4502,6 @@ bool dec_sp(int sp_loss, bool silent)
             you.digging = false;
             if (!silent)
                 mpr("You are too tired to continue digging.");
-        }
-
-        if (you.exertion == EXERT_FOCUS)
-        {
-            you.restore_exertion = you.exertion;
-            if (!silent)
-                mpr("You are too tired to focus.");
-            set_exertion(EXERT_NORMAL, false);
         }
 
         if (you.exertion == EXERT_POWER)
@@ -4806,7 +4811,9 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
             hitp = hitp * 3 / 4;
     }
 
-    return max(1, hitp + 5);
+    hitp = max(1, hitp + 5);
+
+    return hitp;
 }
 
 int get_real_sp(bool include_items)
@@ -4828,6 +4835,8 @@ int get_real_sp(bool include_items)
     if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
         max_sp = max_sp * 3 / 4;
 
+    if (you.species == SP_DJINNI)
+        max_sp /= 2;
     return max_sp;
 }
 
@@ -4889,6 +4898,8 @@ int get_real_mp(bool include_items, bool rotted)
         max_mp -= you.mp_frozen_summons;
 
     max_mp = max(max_mp, 0);
+    if (you.species == SP_DJINNI)
+        max_mp /= 2;
 
     return max_mp;
 }
@@ -5912,7 +5923,7 @@ player::player()
     for (auto &item : inv2)
         item.clear();
     runes.reset();
-    obtainable_runes = 15;
+    obtainable_runes = 20;
 
     spells.init(SPELL_NO_SPELL);
     old_vehumet_gifts.clear();
@@ -9388,27 +9399,22 @@ const int rune_curse_hd_adjust(int hd)
     else if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
         multiplier = 3;
 
-    const int new_hd = hd + runes * multiplier;
+    const int new_hd = hd + div_rand_round(runes * multiplier, 3);
     return new_hd;
 }
 
 const int rune_curse_hp_adjust(int hp)
 {
-    /*
     const int runes = runes_in_pack();
-    const int new_hp = qpow(hp, 50 + crawl_state.difficulty, 50, runes);
-    return new_hp;
-     */
+    hp = qpow(hp, 50 + crawl_state.difficulty, 50, runes);
     return hp;
 }
 
 const int rune_curse_dam_adjust(int dam)
 {
-/*
     const int runes = runes_in_pack();
-    const int new_dam = qpow(dam, 50 + crawl_state.difficulty, 50, runes);
-    return new_dam;
-*/
+    if (runes > 0)
+        dam = qpow(dam, 50 + crawl_state.difficulty, 50, runes);
     return dam;
 }
 
@@ -9583,7 +9589,7 @@ int spell_mp_freeze(spell_type which_spell)
     int cost = 0;
     if (is_summon_spell(which_spell))
     {
-        cost = _apply_hunger(which_spell, 10);
+        cost = _apply_hunger(which_spell, 5);
         if (have_passive(passive_t::conserve_mp))
             cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS));
     }
@@ -9683,12 +9689,16 @@ int player_stealth_modifier(int stealth)
 
 int player_evasion_modifier(int evasion)
 {
+    return evasion;
+    /* old way
+
     evasion *= _difficulty_mode_multiplier();
 
     if (you.exertion == EXERT_FOCUS)
         evasion = evasion * 4 / 3 + 50;
 
     return evasion / base_factor;
+     */
 }
 
 void player_update_last_hit_chance(int chance)
@@ -9740,7 +9750,7 @@ int player_ouch_modifier(int damage)
     const int damage_left = max_damage_allowed_per_turn - you.turn_damage;
 
     if (damage > damage_left)
-        mpr("You almost died there!");
+        mprf("You were prevented from receiving too much damage! (%d -> %d)", damage, damage_left);
 
     damage = min(damage, damage_left);
     damage = max(0, damage);
