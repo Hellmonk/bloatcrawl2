@@ -4332,7 +4332,7 @@ int get_mp_max()
 
 bool player_is_tired(bool silent)
 {
-    const bool is_tired = you.sp * 100 / (you.sp_max + 1) < 50;
+    const bool is_tired = get_sp() * 100 / (get_sp_max() + 1) < 50;
 
     if (!silent && is_tired)
         mpr("You are too tired to exert yourself now.");
@@ -4342,7 +4342,7 @@ bool player_is_tired(bool silent)
 
 bool player_is_very_tired(bool silent)
 {
-    const bool is_tired = you.sp * 100 / (you.sp_max + 1) < 10;
+    const bool is_tired = get_sp() * 100 / (get_sp_max() + 1) < 10;
 
     if (!silent && is_tired)
         mpr("You are too tired to exert yourself now.");
@@ -4352,7 +4352,7 @@ bool player_is_very_tired(bool silent)
 
 bool player_mp_is_exhausted(bool silent)
 {
-    const bool is_tired = you.mp < 5;
+    const bool is_tired = get_mp() < 5;
 
     if (!silent && is_tired)
         mpr("Your energy is low!");
@@ -4363,7 +4363,7 @@ bool player_mp_is_exhausted(bool silent)
 /* used to give stamina penalties such as lower melee / ranged damage */
 bool player_sp_is_exhausted(bool silent)
 {
-    const bool is_tired = you.sp < 5;
+    const bool is_tired = get_sp() < 5;
 
     if (!silent && is_tired)
         mpr("You are exhausted!");
