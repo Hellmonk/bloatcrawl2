@@ -107,6 +107,7 @@ int player_quiver::get_fire_item(string* no_item_reason)
     {
         vector<int> full_fire_order;
         _get_fire_order(full_fire_order, true, you.weapon(), false);
+        /*
         if (no_item_reason == nullptr)
         {
             // nothing
@@ -129,6 +130,7 @@ int player_quiver::get_fire_item(string* no_item_reason)
                     index_to_letter(skipped_item));
             }
         }
+         */
     }
 
     return slot;
