@@ -263,9 +263,9 @@ void DungeonRegion::render()
  */
 void DungeonRegion::draw_minibars()
 {
-    if (Options.tile_show_minihealthbar && you.hp < you.hp_max
+    if (Options.tile_show_minihealthbar && get_hp() < get_hp_max()
         || Options.tile_show_minimagicbar
-           && you.mp < you.mp_max)
+           && get_mp() < get_mp_max())
     {
         // Tiles are 32x32 pixels; 1/32 = 0.03125.
         // The bars are two pixels high each.
@@ -285,13 +285,13 @@ void DungeonRegion::draw_minibars()
         player_on_screen.x = (player_on_screen.x-sx)/dx;
         player_on_screen.y = (player_on_screen.y-sy)/dy;
 
-        if (Options.tile_show_minimagicbar && you.mp_max > 0)
+        if (Options.tile_show_minimagicbar && get_mp_max() > 0)
         {
             static const VColour magic(0, 114, 159, 207);      // lightblue
             static const VColour magic_spent(0, 0, 0, 255);  // black
 
-            const float magic_divider = (float) you.mp
-                                        / (float) you.mp_max;
+            const float magic_divider = (float) get_mp()
+                                        / (float) get_mp_max();
 
             buff.add(player_on_screen.x,
                      player_on_screen.y + healthbar_offset + bar_height,
@@ -309,10 +309,10 @@ void DungeonRegion::draw_minibars()
 
         if (Options.tile_show_minihealthbar)
         {
-            const float min_hp = max(0, you.hp);
-            const float health_divider = min_hp / (float) you.hp_max;
+            const float min_hp = max(0, get_hp());
+            const float health_divider = min_hp / (float) get_hp_max();
 
-            const int hp_percent = (you.hp * 100) / you.hp_max;
+            const int hp_percent = (get_hp() * 100) / get_hp_max();
 
             int hp_colour = GREEN;
             for (const auto &entry : Options.hp_colour)
@@ -595,7 +595,7 @@ static bool _cast_spell_on_target(actor* target)
         return true;
     }
 
-    if (spell_mana(spell) > you.mp)
+    if (spell_mp_cost(spell) > get_mp())
     {
         mpr("You don't have enough magic to cast that spell.");
         return true;

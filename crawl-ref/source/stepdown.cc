@@ -53,6 +53,11 @@ int qpow(int value, int num, int denom, int power)
     return rand_round((double)value * pow((double)num/(double)denom, power));
 }
 
+double fpow(double value, double num, double denom, double power)
+{
+    return value * pow(num/denom, power);
+}
+
 int stepdown(int value, int step, rounding_type rounding, int max, double base)
 {
     double ret = stepdown((double) value, double(step), double(base));

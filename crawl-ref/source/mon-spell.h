@@ -2099,8 +2099,9 @@ static const mon_spellbook mspell_list[] =
             { SPELL_DISPEL_UNDEAD, 44, MON_SPELL_PRIEST },
         }
     },
-    
-    {  MST_EARTH_WIZ_I, // the spell spammer
+
+    // the spell spammer
+    {  MST_EARTH_WIZ_I,
       {
        { SPELL_SANDBLAST, 21, MON_SPELL_WIZARD },
        { SPELL_STONE_ARROW, 21, MON_SPELL_WIZARD },
@@ -2108,7 +2109,8 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
-    {  MST_EARTH_WIZ_II, // the battle wizard
+    // the battle wizard
+    {  MST_EARTH_WIZ_II,
       {
        { SPELL_OZOCUBUS_ARMOUR, 24, MON_SPELL_WIZARD },
        { SPELL_IRON_SHOT, 12, MON_SPELL_WIZARD },
@@ -2116,7 +2118,8 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
-    {  MST_EARTH_WIZ_III, // the scary nuker
+    // the scary nuker
+    {  MST_EARTH_WIZ_III,
       {
        { SPELL_IRON_SHOT, 18, MON_SPELL_WIZARD },
        { SPELL_LEHUDIBS_CRYSTAL_SPEAR, 18, MON_SPELL_WIZARD },

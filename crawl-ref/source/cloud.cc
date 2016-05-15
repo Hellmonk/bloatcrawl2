@@ -820,14 +820,6 @@ bool actor_cloud_immune(const actor *act, const cloud_struct &cloud)
     if (player && YOU_KILL(cloud.killer) && have_passive(passive_t::resist_own_clouds))
         return true;
 
-//    if (player && you.species == SP_DJINNI
-//        && (cloud.type == CLOUD_FIRE
-//            || cloud.type == CLOUD_FOREST_FIRE
-//            || cloud.type == CLOUD_HOLY_FLAMES))
-//    {
-//        return true;
-//    }
-
     switch (cloud.type)
     {
     case CLOUD_FIRE:
@@ -1258,10 +1250,12 @@ int actor_apply_cloud(actor *act)
                   KILLED_BY_CLOUD, "", cloud.cloud_name(true));
     }
 
+    /*
     if (final_damage < 0) {
     	// cloud dissipates twice as fast if we are healing from it
     	cl->decay -= _cloud_dissipation_rate(cloud);
     }
+     */
 
     return final_damage;
 }
