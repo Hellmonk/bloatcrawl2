@@ -1789,7 +1789,7 @@ static void _get_rune(const item_def& it, bool quiet)
         mprf("You pick up the %s rune and feel its power.",
              rune_type_name(it.sub_type));
         int nrunes = runes_in_pack();
-        if (nrunes >= you.obtainable_runes)
+        if (nrunes >= OBTAINABLE_RUNES)
             mpr("You have collected all the runes! Now go and win!");
         else if (nrunes == ZOT_ENTRY_RUNES)
         {
@@ -3305,12 +3305,12 @@ bool item_def::has_spells() const
 
 bool item_def::cursed() const
 {
-    return curse_weight > 10;
+    return curse_weight >= 1;
 }
 
 bool item_def::super_cursed() const
 {
-    return curse_weight > 1000;
+    return curse_weight >= 1000;
 }
 
 bool item_def::launched_by(const item_def &launcher) const

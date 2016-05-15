@@ -1250,10 +1250,12 @@ int actor_apply_cloud(actor *act)
                   KILLED_BY_CLOUD, "", cloud.cloud_name(true));
     }
 
+    /*
     if (final_damage < 0) {
     	// cloud dissipates twice as fast if we are healing from it
     	cl->decay -= _cloud_dissipation_rate(cloud);
     }
+     */
 
     return final_damage;
 }
