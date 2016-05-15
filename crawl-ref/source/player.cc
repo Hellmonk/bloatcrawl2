@@ -9600,6 +9600,22 @@ int spell_mp_freeze(spell_type which_spell)
     return cost;
 }
 
+int weapon_sp_cost(const item_def* weapon)
+{
+    int weight = weapon ? max(1, property(*weapon, PWPN_WEIGHT)) : 3;
+
+    int sp_cost = 100 * weight;
+    sp_cost /= 5 + you.strength(true);
+    sp_cost /= 5 + you.skill(SK_FIGHTING);
+
+    sp_cost = max(1, sp_cost);
+
+    you.last_tohit = to_hit;
+    you.redraw_tohit = true;
+
+    return sp_cost;
+}
+
 const int base_factor = 100;
 
 // all standard attributes are multipled by the base factor and then
