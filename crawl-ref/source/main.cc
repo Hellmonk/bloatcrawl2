@@ -692,8 +692,8 @@ static void _take_starting_note()
     if (you.char_class == JOB_WANDERER)
         _wanderer_note_items();
 
-    notestr << "HP: " << you.hp << "/" << you.hp_max
-            << " MP: " << you.mp << "/" << you.mp_max;
+    notestr << "HP: " << get_hp() << "/" << get_hp_max()
+            << " MP: " << get_mp() << "/" << get_mp_max();
 
     take_note(Note(NOTE_XP_LEVEL_CHANGE, you.experience_level, 0,
                    notestr.str().c_str()));
@@ -1375,7 +1375,7 @@ static void _input()
     }
 
     // Unhandled things that should have caused death.
-    ASSERT(you.hp > 0);
+    ASSERT(get_hp() > 0);
 
     if (crawl_state.is_replaying_keys() && crawl_state.is_repeating_cmd()
         && kbhit())
@@ -1518,7 +1518,6 @@ static void _input()
         // macro.
         if (!you.turn_is_over && cmd != CMD_NEXT_CMD)
             process_command(cmd);
-        crawl_state.danger_mode = max(0, crawl_state.danger_mode - 1);
 
         repeat_again_rec.paused = true;
 
@@ -1918,10 +1917,10 @@ static void _do_rest()
     if (i_feel_safe())
     {
         player_before_long_safe_action();
-        if ((you.hp == you.hp_max || !player_regenerates_hp())
-            && (you.mp == you.mp_max
+        if ((get_hp() == get_hp_max() || !player_regenerates_hp())
+            && (get_mp() == get_mp_max()
                 || !player_regenerates_mp())
-            && (you.sp == you.sp_max || !player_regenerates_sp()))
+            && (get_sp() == get_sp_max() || !player_regenerates_sp()))
         {
             mpr("You start waiting.");
 

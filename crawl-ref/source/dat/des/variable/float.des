@@ -90,7 +90,7 @@ default-depth: D:12-, Depths, !Depths:$
 
 NAME:   firewood_loft
 TAGS:   extra
-DEPTH:  D, !D:$, Depths, !Depths:$
+DEPTH:  D, !D:$, Depths, !Depths:$, Dwarf
 ORIENT: float
 WEIGHT: 5
 : if you.absdepth() > 8 then
@@ -2693,7 +2693,7 @@ ORIENT: float
 TAGS: no_monster_gen no_item_gen
 DEPTH: Dis, !Dis:$, Depths, !Depths:$
 MONS: patrolling iron giant, flying skull
-ITEM: bolt
+ITEM: bolt ego:exploding q:5
 ITEM: potion of heal wounds
 ITEM: plate armour good_item
 ITEM: arbalest ego:flaming w:9 ident:type / arbalest unrand:damnation w:1
@@ -5938,7 +5938,7 @@ ENDMAP
 
 NAME:   cheibrodos_leafed_vault
 TAGS:   no_item_gen no_monster_gen
-DEPTH:  D:14-16, Depths:1-5
+DEPTH:  D:14-16, Depths:1-5, Dwarf
 ORIENT: float
 NSUBST: - = 4 = 8 / 8 = 9 / 90 = . / * = .:45 0
 SUBST:  " = $:5 * |:3
@@ -6234,7 +6234,7 @@ ENDMAP
 
 NAME:   kennysheep_cluttered_fort
 ORIENT: float
-DEPTH:  D:15-, Depths, !Depths:$
+DEPTH:  D:15-, Depths, !Depths:$, Dwarf
 NSUBST: % : 1:|
 SUBST:  % = *
 SUBST:  9 = 9900.
@@ -6379,7 +6379,7 @@ llllllllll-xxlxxxxll
 ENDMAP
 
 NAME: nicolae_legendary_halls
-DEPTH: Depths, !Depths:$
+DEPTH: Depths, !Depths:$, Dwarf
 TAGS: transparent
 ORIENT: float
 SUBST: + : +..., $ = $$$$%*, % = %%%%$*, * = ****%|, 0 = 0009.., 9 = 998.
@@ -6671,7 +6671,7 @@ xx..0x..T.T..x0..xx
 ENDMAP
 
 NAME: kennysheep_blocky_hall
-DEPTH: D:8-, Depths, Elf, Zot
+DEPTH: D:8-, Depths, Zot, Dwarf
 ORIENT: float
 TAGS: transparent
 MAP
@@ -6846,7 +6846,7 @@ xx...x...x...xx
 ENDMAP
 
 NAME: kennysheep_oblong_rooms
-DEPTH: D:$, Depths, Elf, Zot
+DEPTH: D:$, Depths, Zot, Dwarf
 ORIENT: float
 TAGS: transparent
 SUBST:  G : GTV.

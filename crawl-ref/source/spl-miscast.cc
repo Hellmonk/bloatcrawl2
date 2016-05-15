@@ -593,7 +593,7 @@ bool MiscastEffect::_malign_gateway(bool hostile)
 
 bool MiscastEffect::avoid_lethal(int dam)
 {
-    if (lethality_margin <= 0 || (you.hp - dam) > lethality_margin)
+    if (lethality_margin <= 0 || (get_hp() - dam) > lethality_margin)
         return false;
 
     if (recursion_depth == MAX_RECURSE)
@@ -1152,7 +1152,7 @@ void MiscastEffect::_charms(int severity)
                 if (target->is_player())
                 {
                     debuff_player();
-                    if (you.mp > 0
+                    if (get_mp() > 0
                         || you.species == SP_DJINNI
                         )
                         {
@@ -1627,7 +1627,7 @@ void MiscastEffect::_divination_you(int severity)
             break;
         case 1:
             mpr("You lose your focus.");
-            if (you.mp > 0
+            if (get_mp() > 0
                     || you.species == SP_DJINNI
                     )
             {
@@ -1645,7 +1645,7 @@ void MiscastEffect::_divination_you(int severity)
         {
         case 0:
             mpr("You lose concentration completely!");
-            if (you.mp > 0
+            if (get_mp() > 0
                 || you.species == SP_DJINNI
                     )
             {
@@ -2137,8 +2137,8 @@ void MiscastEffect::_transmutation(int severity)
             // HACK: Avoid lethality before deleting mutation, since
             // afterwards a message would already have been given.
             if (lethality_margin > 0
-                && (you.hp - lethality_margin) <= 27
-                && avoid_lethal(you.hp))
+                && (get_hp() - lethality_margin) <= 27
+                && avoid_lethal(get_hp()))
             {
                 return;
             }
@@ -2159,8 +2159,8 @@ void MiscastEffect::_transmutation(int severity)
                 // HACK: Avoid lethality before giving mutation, since
                 // afterwards a message would already have been given.
                 if (lethality_margin > 0
-                    && (you.hp - lethality_margin) <= 27
-                    && avoid_lethal(you.hp))
+                    && (get_hp() - lethality_margin) <= 27
+                    && avoid_lethal(get_hp()))
                 {
                     return;
                 }
@@ -3232,7 +3232,7 @@ void MiscastEffect::_zot()
                 target->polymorph(0);
             break;
         case 9:
-            if (you.mp > 0)
+            if (get_mp() > 0)
             {
                 dec_mp(10 + random2(21));
                 canned_msg(MSG_MAGIC_DRAIN);

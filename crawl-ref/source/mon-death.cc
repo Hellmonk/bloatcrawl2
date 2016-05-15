@@ -2206,16 +2206,16 @@ item_def* monster_die(monster* mons, killer_type killer,
 
                 if (you.species == SP_DJINNI)
                     hp_heal = max(hp_heal, mp_heal * 2), mp_heal = 0;
-                if (hp_heal && you.hp < you.hp_max
+                if (hp_heal && get_hp() < get_hp_max()
                     && !you.duration[DUR_DEATHS_DOOR])
                 {
                     canned_msg(MSG_GAIN_HEALTH, hp_heal);
                     inc_hp(hp_heal);
                 }
 
-                if (mp_heal && you.mp < you.mp_max)
+                if (mp_heal && get_mp() < get_mp_max())
                 {
-                    int tmp = min(you.mp_max - you.mp,
+                    int tmp = min(get_mp_max() - get_mp(),
                                   mp_heal);
                     canned_msg(MSG_GAIN_MAGIC);
                     inc_mp(mp_heal * 3);

@@ -445,43 +445,43 @@ bool fill_status_info(int status, status_info* inf)
         break;
 
     case STATUS_DRAINED:
-        if (you.attribute[ATTR_XP_DRAIN] > 400)
+    {
+        const int &drain_amount = you.attribute[ATTR_XP_DRAIN];
+
+        if (drain_amount)
         {
-            inf->light_colour = RED;
-            inf->light_text   = "DRAIN!";
-            inf->short_text   = "extremely heavily drained";
-            inf->long_text    = "Your life force is extremely heavily drained.";
-        }
-        else if (you.attribute[ATTR_XP_DRAIN] > 200)
-        {
-            inf->light_colour = RED;
-            inf->light_text   = "Drain";
-            inf->short_text   = "very heavily drained";
-            inf->long_text    = "Your life force is very heavily drained.";
-        }
-        else if (you.attribute[ATTR_XP_DRAIN] > 100)
-        {
-            inf->light_colour = LIGHTRED;
-            inf->light_text   = "Drain";
-            inf->short_text   = "heavily drained";
-            inf->long_text    = "Your life force is heavily drained.";
-        }
-        else if (you.attribute[ATTR_XP_DRAIN] > 50)
-        {
-            inf->light_colour = YELLOW;
-            inf->light_text   = "Drain";
-            inf->short_text   = "drained";
-            inf->long_text    = "Your life force is drained.";
-        }
-        else if (you.attribute[ATTR_XP_DRAIN])
-        {
-            inf->light_colour = YELLOW;
-            inf->light_text   = "Dra..";
-            inf->short_text   = "drained";
-            inf->long_text    = "Your life force is a bit drained.";
+            char buffer[15];
+            std::sprintf(buffer, "Drain(%d)", drain_amount);
+            inf->light_text = string(buffer);
+
+            if (drain_amount > 200)
+            {
+                inf->light_colour = RED;
+                inf->short_text = "very heavily drained";
+                inf->long_text = "Your life force is very heavily drained.";
+            }
+            else if (drain_amount > 100)
+            {
+                inf->light_colour = LIGHTRED;
+                inf->short_text = "heavily drained";
+                inf->long_text = "Your life force is heavily drained.";
+            }
+            else if (drain_amount > 50)
+            {
+                inf->light_colour = YELLOW;
+                inf->short_text = "drained";
+                inf->long_text = "Your life force is drained.";
+            }
+            else
+            {
+                inf->light_colour = YELLOW;
+                inf->short_text = "drained";
+                inf->long_text = "Your life force is a bit drained.";
+            }
         }
         break;
-        
+    }
+
     case STATUS_RAY:
         if (you.attribute[ATTR_SEARING_RAY])
         {
@@ -798,8 +798,8 @@ static void _describe_regen(status_info* inf)
 
 static void _describe_poison(status_info* inf)
 {
-    int pois_perc = (you.hp <= 0) ? 100
-                                  : ((you.hp - max(0, poison_survival())) * 100 / you.hp);
+    int pois_perc = (get_hp() <= 0) ? 100
+                                  : ((get_hp() - max(0, poison_survival())) * 100 / get_hp());
     inf->light_colour = (player_res_poison(false) >= 3
                          ? DARKGREY : _bad_ench_colour(pois_perc, 35, 100));
     inf->light_text   = "Pois";
@@ -809,7 +809,7 @@ static void _describe_poison(status_info* inf)
          (pois_perc > 35)   ? "quite"
                             : "mildly";
     inf->short_text   = adj + " poisoned"
-        + make_stringf(" (%d -> %d)", you.hp, poison_survival());
+        + make_stringf(" (%d -> %d)", get_hp(), poison_survival());
     inf->long_text    = "You are " + inf->short_text + ".";
 }
 
