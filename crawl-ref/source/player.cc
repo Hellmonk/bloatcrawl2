@@ -4174,7 +4174,7 @@ bool dec_mp(int mp_loss, bool silent)
 
 
     if (you.species == SP_DJINNI)
-        dec_hp(sp_loss, false);
+        dec_hp(mp_loss, false);
     else
         you.mp -= mp_loss;
 
