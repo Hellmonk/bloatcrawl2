@@ -807,6 +807,9 @@ void floor_transition(dungeon_feature_type how,
     if ((Options.exp_potion_on_each_floor || Options.uniques_drop_exp_potions) && you.species != SP_MUMMY && !Options.exp_based_on_player_level)
         mprf("Quaffing an experience potion here would give %d exp.", potion_experience_for_this_floor());
 
+    if (!player_can_gain_experience_here())
+        mprf(MSGCH_WARN, "Warning: you can't gain experience on this floor. But you can gain piety, reduce drain, etc.");
+
     // refresh experience annotations
     // shouldn't be needed, but something wonky is slipping by and so this hack keeps it clean for now
     if (Options.exp_potion_on_each_floor)
