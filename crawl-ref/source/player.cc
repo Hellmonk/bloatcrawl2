@@ -9395,27 +9395,22 @@ const int rune_curse_hd_adjust(int hd)
     else if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
         multiplier = 3;
 
-    const int new_hd = hd + runes * multiplier;
+    const int new_hd = hd + div_rand_round(runes * multiplier, 3);
     return new_hd;
 }
 
 const int rune_curse_hp_adjust(int hp)
 {
-    /*
     const int runes = runes_in_pack();
-    const int new_hp = qpow(hp, 50 + crawl_state.difficulty, 50, runes);
-    return new_hp;
-     */
+    hp = qpow(hp, 50 + crawl_state.difficulty, 50, runes);
     return hp;
 }
 
 const int rune_curse_dam_adjust(int dam)
 {
-/*
     const int runes = runes_in_pack();
-    const int new_dam = qpow(dam, 50 + crawl_state.difficulty, 50, runes);
-    return new_dam;
-*/
+    if (runes > 0)
+        dam = qpow(dam, 50 + crawl_state.difficulty, 50, runes);
     return dam;
 }
 
