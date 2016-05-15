@@ -4172,12 +4172,13 @@ bool dec_mp(int mp_loss, bool silent)
     if (mp_loss < 1)
         return true;
 
+
     if (you.species == SP_DJINNI)
-        return dec_hp(mp_loss, false);
+        dec_hp(sp_loss, false);
+    else
+        you.mp -= mp_loss;
 
-    you.mp -= mp_loss;
-
-    if (you.mp < 0)
+    if (you.mp < 0 || you.species == SP_DJINNI && you.hp < you.hp_max * 25 / 100)
     {
         you.mp = max(0, you.mp);
         bool sent_message = false;
@@ -4447,9 +4448,6 @@ void set_exertion(const exertion_mode new_exertion, bool manual)
 // returns true if after subtracting the given sp, sp is still > 0
 bool dec_sp(int sp_loss, bool silent)
 {
-    if (you.species == SP_DJINNI)
-        return dec_hp(sp_loss, false);
-
     bool result = true;
 
     if (you.duration[DUR_TIRELESS])
@@ -4469,8 +4467,12 @@ bool dec_sp(int sp_loss, bool silent)
         sp_loss = max(1, sp_loss);
     }
 
-    you.sp -= sp_loss;
-    if (you.sp < 0)
+    if (you.species == SP_DJINNI)
+        dec_hp(sp_loss, false);
+    else
+        you.sp -= sp_loss;
+
+    if (you.sp < 0 || you.species == SP_DJINNI && you.hp < you.hp_max * 25 / 100)
     {
         you.sp = 0;
 
@@ -4500,14 +4502,6 @@ bool dec_sp(int sp_loss, bool silent)
             you.digging = false;
             if (!silent)
                 mpr("You are too tired to continue digging.");
-        }
-
-        if (you.exertion == EXERT_FOCUS)
-        {
-            you.restore_exertion = you.exertion;
-            if (!silent)
-                mpr("You are too tired to focus.");
-            set_exertion(EXERT_NORMAL, false);
         }
 
         if (you.exertion == EXERT_POWER)
@@ -9758,7 +9752,7 @@ int player_ouch_modifier(int damage)
     const int damage_left = max_damage_allowed_per_turn - you.turn_damage;
 
     if (damage > damage_left)
-        mpr("You almost died there!");
+        mprf("You were prevented from receiving too much damage! (%d -> %d)", damage, damage_left);
 
     damage = min(damage, damage_left);
     damage = max(0, damage);
