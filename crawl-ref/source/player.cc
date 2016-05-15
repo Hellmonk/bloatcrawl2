@@ -860,7 +860,7 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid) const
     {
         case EQ_WEAPON:
         {
-            item_def *const item = weapon();
+            item = weapon();
             // Hands can have more than just weapons.
             if (item && item->is_type(OBJ_WEAPONS, sub_type) && !item->super_cursed())
                 ret++;
@@ -869,7 +869,7 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid) const
 
         case EQ_STAFF:
         {
-            item_def *const item = weapon();
+            item = weapon();
             // Like above, but must be magical staff.
             if (item
                 && item->is_type(OBJ_STAVES, sub_type)
@@ -4813,7 +4813,7 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
 
     hitp = max(1, hitp + 5);
     if (you.species == SP_DJINNI)
-        hitp /= 2;
+        hitp = hitp * 2 / 3;
 
     return hitp;
 }
