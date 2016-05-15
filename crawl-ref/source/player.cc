@@ -4587,6 +4587,12 @@ void inc_hp(int hp_gain)
 {
     ASSERT(!crawl_state.game_is_arena());
 
+    if (you.species == SP_DJINNI && you.hp > you.hp_max / 2 && (you.restore_exertion == EXERT_POWER || you.restore_exertion == EXERT_FOCUS))
+    {
+        set_exertion(you.restore_exertion, false);
+        you.restore_exertion = EXERT_NORMAL;
+    }
+
     if (hp_gain < 1 || you.hp >= you.hp_max)
         return;
 
