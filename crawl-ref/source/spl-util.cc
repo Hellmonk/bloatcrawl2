@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <cctype>
 #include <climits>
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -1022,8 +1023,11 @@ int spell_range(spell_type spell, int pow, bool player_spell)
         return min(maxrange, (int)you.current_vision);
 
     // Round appropriately.
-    return min((int)you.current_vision,
-           (pow * (maxrange - minrange) + powercap / 2) / powercap + minrange);
+    int range = (log2(pow + 1) - 2) * 10;
+    range = max(range, 0);
+    range = (range * (maxrange - minrange) / 70) + minrange + 0.5;
+    range = min((int)you.current_vision, range);
+    return range;
 }
 
 /**
