@@ -9608,10 +9608,7 @@ int weapon_sp_cost(const item_def* weapon)
     sp_cost /= 5 + you.strength(true);
     sp_cost /= 5 + you.skill(SK_FIGHTING);
 
-    sp_cost = max(1, sp_cost);
-
-    you.last_tohit = to_hit;
-    you.redraw_tohit = true;
+    sp_cost = max(2, sp_cost);
 
     return sp_cost;
 }
