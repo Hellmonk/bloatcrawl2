@@ -917,6 +917,8 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
     if (dam != INSTANT_DEATH)
         dam = _apply_extra_harm (dam, source);
 
+    dam = rune_curse_dam_adjust(dam);
+
     if (can_shave_damage() && dam != INSTANT_DEATH
         && death_type != KILLED_BY_POISON)
     {
@@ -1012,6 +1014,12 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         if (dam >= get_hp() && get_hp_max() > 0 && god_protects_from_harm())
         {
             simple_god_message(" protects you from harm!");
+            return;
+        }
+
+        if (dam < 0)
+        {
+            inc_hp(-dam);
             return;
         }
 
