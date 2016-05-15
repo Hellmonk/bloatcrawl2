@@ -9562,7 +9562,7 @@ int _apply_hunger(const spell_type &which_spell, int cost)
     if (player_mutation_level(MUT_HUNGERLESS) == 0)
     {
         const int hunger = spell_hunger(which_spell, false);
-        cost = div_rand_round(cost * (hunger + 100), 100);
+        cost = cost * (hunger + 100) / 100;
     }
 
     return cost;
@@ -9576,7 +9576,7 @@ int spell_mp_cost(spell_type which_spell)
     if (you.duration[DUR_CHANNELING] || is_summon_spell(which_spell))
         cost = 0;
     else if (have_passive(passive_t::conserve_mp))
-        cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS));
+        cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
 
     return cost;
 }
@@ -9588,7 +9588,7 @@ int spell_mp_freeze(spell_type which_spell)
     {
         cost = _apply_hunger(which_spell, 5);
         if (have_passive(passive_t::conserve_mp))
-            cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS));
+            cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
     }
 
     return cost;
