@@ -1220,7 +1220,8 @@ void player_after_each_turn();
 
 int spell_mp_cost(spell_type which_spell);
 int spell_mp_freeze(spell_type which_spell);
-int player_tohit_modifier(int old_tohit);
+int weapon_sp_cost(const item_def* weapon);
+int player_tohit_modifier(const int old_tohit);
 int player_damage_modifier(int old_damage, bool silent = false);
 int player_spellpower_modifier(int old_spellpower);
 int player_spellfailure_modifier(int spellfaifailureure);

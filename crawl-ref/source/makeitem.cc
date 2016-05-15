@@ -749,7 +749,7 @@ static void _generate_missile_item(item_def& item, int force_type,
     else
         item.quantity = 1 + random2(7) + random2(10) + random2(10) + random2(12);
 
-    item.quantity *= 5;
+    item.quantity *= 3;
 }
 
 static bool _try_make_armour_artefact(item_def& item, int force_type,
