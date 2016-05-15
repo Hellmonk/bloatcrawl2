@@ -1059,9 +1059,7 @@ static bool _sif_muna_retribution()
 
     case 7:
     case 8:
-        if (get_mp() > 0
-                 || you.species == SP_DJINNI
-                )
+        if (get_mp() > 0)
         {
             drain_mp(100);  // This should zero it.
             canned_msg(MSG_MAGIC_DRAIN);
