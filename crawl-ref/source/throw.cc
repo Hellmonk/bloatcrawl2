@@ -487,6 +487,7 @@ void fire_thing(int item)
                     break;
                 case WPN_HAND_CROSSBOW:
                 case WPN_TRIPLE_CROSSBOW:
+                case WPN_ARBALEST:
                     missileType = MI_BOLT;
                     break;
                 case WPN_SHORTBOW:
