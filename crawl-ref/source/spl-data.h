@@ -1317,11 +1317,8 @@ static const struct spell_desc spelldata[] =
     SPTYP_FIRE,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEEDS_TRACER,
     1,
-    40, // cap for range; damage cap is at 25
-	// even though it says max distance 13, it will never go beyond visible range (7).
-	// it is set high so that it will grow a little faster with the power level.
-	// Since power caps are so high now, it's hard to see any growth at all here in the early game.
-    2, 13,
+    40,
+    2, 9,
     1, 0,
     TILEG_FLAME_TONGUE,
 },
