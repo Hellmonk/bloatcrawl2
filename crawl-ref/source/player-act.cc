@@ -272,7 +272,9 @@ int player::attack_delay(const item_def *projectile, bool rescale) const
         attk_delay -= you.skill(wpn_skill, 10) / DELAY_SCALE;
 
         // apply minimum to weapon skill modification
+        /* This is happening elsewhere now
         attk_delay = max(attk_delay, FASTEST_PLAYER_THROWING_SPEED);
+         */
     }
     else if (!weap)
     {
@@ -300,7 +302,8 @@ int player::attack_delay(const item_def *projectile, bool rescale) const
             attk_delay = attk_delay * 2 / 3;
     }
 
-    // At the moment it never gets this low anyway.
+    attk_delay = player_attack_delay_modifier(attk_delay);
+
     attk_delay = max(attk_delay, 3);
 
     if (base_shield_penalty)
@@ -320,8 +323,6 @@ int player::attack_delay(const item_def *projectile, bool rescale) const
             attk_delay = haste_mul(attk_delay);
         attk_delay = max(2, attk_delay / 2);
     }
-
-    attk_delay = player_attack_delay_modifier(attk_delay);
 
     // see comment on player.cc:player_speed
     return attk_delay * you.time_taken / 10;
