@@ -4812,8 +4812,6 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
     }
 
     hitp = max(1, hitp + 5);
-    if (you.species == SP_DJINNI)
-        hitp = hitp * 2 / 3;
 
     return hitp;
 }
