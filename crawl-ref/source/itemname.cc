@@ -2802,7 +2802,7 @@ static MenuEntry* _fixup_runeorb_entry(MenuEntry* me)
 void display_runes()
 {
     auto col = runes_in_pack() < ZOT_ENTRY_RUNES ?  "lightgrey" :
-               runes_in_pack() < you.obtainable_runes ? "green" :
+               runes_in_pack() < OBTAINABLE_RUNES ? "green" :
                                                    "lightgreen";
 
     auto title = make_stringf("<white>Runes of Zot (</white>"

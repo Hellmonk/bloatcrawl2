@@ -5931,7 +5931,7 @@ player::player()
     for (auto &item : inv2)
         item.clear();
     runes.reset();
-    obtainable_runes = 15;
+    obtainable_runes = 20;
 
     spells.init(SPELL_NO_SPELL);
     old_vehumet_gifts.clear();
