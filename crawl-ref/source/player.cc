@@ -4533,12 +4533,6 @@ void inc_sp(int sp_gain, bool silent, bool manual)
     if (sp_gain < 1)
         return;
 
-    if (!silent)
-    {
-        if (_should_stop_resting(you.sp, you.sp_max))
-            interrupt_activity(AI_FULL_SP);
-    }
-
     if (you.species == SP_DJINNI)
         return inc_hp(sp_gain);
 
@@ -4554,6 +4548,12 @@ void inc_sp(int sp_gain, bool silent, bool manual)
         you.sp = you.sp_max;
 
     you.redraw_stamina_points = true;
+
+    if (!silent)
+    {
+        if (_should_stop_resting(you.sp, you.sp_max))
+            interrupt_activity(AI_FULL_SP);
+    }
 }
 
 void inc_mp(int mp_gain, bool silent)
@@ -4565,12 +4565,6 @@ void inc_mp(int mp_gain, bool silent)
 
     if (mp_gain < 1)
         return;
-
-    if (!silent)
-    {
-        if (_should_stop_resting(you.mp, you.mp_max))
-            interrupt_activity(AI_FULL_MP);
-    }
 
     you.mp += mp_gain;
 
@@ -4584,6 +4578,12 @@ void inc_mp(int mp_gain, bool silent)
         you.mp = you.mp_max;
 
     you.redraw_magic_points = true;
+
+    if (!silent)
+    {
+        if (_should_stop_resting(you.mp, you.mp_max))
+            interrupt_activity(AI_FULL_MP);
+    }
 }
 
 // Note that "max_too" refers to the base potential, the actual
@@ -4602,15 +4602,15 @@ void inc_hp(int hp_gain)
     if (hp_gain < 1)
         return;
 
-    if (_should_stop_resting(you.hp, you.hp_max))
-        interrupt_activity(AI_FULL_HP);
-
     you.hp += hp_gain;
 
     if (you.hp > you.hp_max)
         you.hp = you.hp_max;
 
     you.redraw_hit_points = true;
+
+    if (_should_stop_resting(you.hp, you.hp_max))
+        interrupt_activity(AI_FULL_HP);
 }
 
 void rot_hp(int hp_loss)
