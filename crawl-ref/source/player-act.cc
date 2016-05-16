@@ -257,7 +257,7 @@ brand_type player::damage_brand(int)
 int player::attack_delay(const item_def *projectile, bool rescale, const item_def *weapon) const
 {
     if (!weapon)
-        weapon = weapon();
+        weapon = you.weapon();
 
     int attk_delay = 15;
     // a semi-arbitrary multiplier, to minimize loss of precision from integer
