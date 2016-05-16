@@ -1313,6 +1313,7 @@ void bolt::do_fire()
             // of the player manually targeting something whose line of fire
             // is blocked, even though its line of sight isn't blocked. Give
             // a warning about this fact.
+            /*
             string prompt = "Your line of fire to ";
             const monster* mon = monster_at(target);
 
@@ -1338,6 +1339,7 @@ void bolt::do_fire()
                 finish_beam();
                 return;
             }
+             */
 
             // Well, we warned them.
         }
