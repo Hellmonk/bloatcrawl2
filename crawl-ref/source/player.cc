@@ -8822,28 +8822,28 @@ bool temperature_effect(int which)
     if (you.species == SP_LAVA_ORC)
     	switch (which)
     	{
-	        case LORC_FIRE_RES_I:
-	            return true; // 1-15
-	        case LORC_STONESKIN:
-	            return temperature() < TEMP_WARM; // 1-8
-	//      case nothing, right now:
-	//            return (you.temperature >= TEMP_COOL && you.temperature < TEMP_WARM); // 5-8
-	        case LORC_LAVA_BOOST:
-	            return temperature() >= TEMP_WARM; // 9-10
-	        case LORC_FIRE_RES_II:
-	            return temperature() >= TEMP_WARM; // 9-15
-	        case LORC_FIRE_RES_III:
-	//        case LORC_FIRE_BOOST:
-	        case LORC_COLD_VULN:
-	            return temperature() >= TEMP_HOT; // 11-15
-	        case LORC_PASSIVE_HEAT:
-	            return temperature() >= TEMP_FIRE; // 13-15
-	        case LORC_HEAT_AURA:
-	            if (you_worship(GOD_BEOGH))
-	                return false;
-	            // Deliberate fall-through.
-	        case LORC_NO_SCROLLS:
-	            return temperature() >= TEMP_MAX; // 15
+        case LORC_FIRE_RES_I:
+            return true; // 1-15
+        case LORC_STONESKIN:
+            return temperature() < TEMP_WARM; // 1-8
+//      case nothing, right now:
+//            return (you.temperature >= TEMP_COOL && you.temperature < TEMP_WARM); // 5-8
+        case LORC_LAVA_BOOST:
+            return temperature() >= TEMP_WARM; // 9-10
+        case LORC_FIRE_RES_II:
+            return temperature() >= TEMP_WARM; // 9-15
+        case LORC_FIRE_RES_III:
+//        case LORC_FIRE_BOOST:
+        case LORC_COLD_VULN:
+            return temperature() >= TEMP_HOT; // 11-15
+        case LORC_PASSIVE_HEAT:
+            return temperature() >= TEMP_FIRE; // 13-15
+        case LORC_HEAT_AURA:
+            if (you_worship(GOD_BEOGH))
+                return false;
+            // Deliberate fall-through.
+        case LORC_NO_SCROLLS:
+            return temperature() >= TEMP_MAX; // 15
 
         default:
             return false;
