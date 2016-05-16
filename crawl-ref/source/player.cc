@@ -9753,13 +9753,13 @@ int player_ouch_modifier(int damage)
     switch (crawl_state.difficulty)
     {
         case DIFFICULTY_STANDARD:
-            percentage_allowed = 25;
+            percentage_allowed = 20;
             break;
         case DIFFICULTY_CHALLENGE:
-            percentage_allowed = 50;
+            percentage_allowed = 40;
             break;
         case DIFFICULTY_NIGHTMARE:
-            percentage_allowed = 75;
+            percentage_allowed = 80;
             break;
         default:
             // should not be possible
