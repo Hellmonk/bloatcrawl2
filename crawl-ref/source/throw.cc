@@ -527,7 +527,7 @@ void fire_thing(int item)
     you.prev_direction.reset();
 
     if (ammo && ammo->isValid())
-        destroy_item(ammo);
+        destroy_item(*ammo);
 }
 
 // Basically does what throwing used to do: throw an item without changing
