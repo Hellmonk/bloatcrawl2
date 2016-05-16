@@ -824,7 +824,6 @@ bool cast_a_spell(bool check_range, spell_type spell)
     {
         int keyin = 0;
 
-        msgwin_set_temporary(true);
         while (true)
         {
 #ifdef TOUCH_UI
@@ -860,6 +859,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
                     }
                 }
 
+                msgwin_set_temporary(true);
                 if (you.last_cast_spell == SPELL_NO_SPELL
                     || !Options.enable_recast_spell)
                 {
@@ -867,12 +867,15 @@ bool cast_a_spell(bool check_range, spell_type spell)
                 }
                 else
                 {
-                    mprf(MSGCH_PROMPT, "Casting: <w>%s</w>",
-                         spell_title(you.last_cast_spell));
+                    mprf(MSGCH_PROMPT, "Casting: <w>%s</w>", spell_title(you.last_cast_spell));
                     mprf(MSGCH_PROMPT, "Confirm with . or Enter, or press ? or * to list all spells.");
                 }
 
                 keyin = get_ch();
+
+                msgwin_set_temporary(false);
+                msgwin_clear_temporary();
+                clear_messages();
             }
 
             if (keyin == '?' || keyin == '*')
@@ -914,10 +917,9 @@ bool cast_a_spell(bool check_range, spell_type spell)
             return false;
         }
         else
+        {
             spell = get_spell_by_letter(keyin);
-
-        msgwin_clear_temporary();
-        msgwin_set_temporary(false);
+        }
     }
 
     if (spell == SPELL_NO_SPELL)

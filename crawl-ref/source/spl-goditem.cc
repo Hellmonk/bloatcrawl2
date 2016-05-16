@@ -35,6 +35,7 @@
 #include "traps.h"
 #include "view.h"
 #include "viewchar.h"
+#include "stringutil.h"
 
 static void _print_holy_pacification_speech(const string &key,
                                             monster* mon,
@@ -98,8 +99,9 @@ int is_pacifiable(const monster* mon)
 // Returns -3, if monster can be pacified but the attempt narrowly failed.
 // Returns -4, if monster can currently not be pacified (too much hp).
 static int _can_pacify_monster(const monster* mon, const int healed,
-                               const int max_healed)
+                               const int max_healed, int& pacify_chance)
 {
+    pacify_chance = 0;
     int pacifiable = is_pacifiable(mon);
     if (pacifiable < 0)
         return pacifiable;
@@ -120,33 +122,59 @@ static int _can_pacify_monster(const monster* mon, const int healed,
     else if (holiness & MH_DEMONIC)
         divisor += 2;
 
-    if (mon->max_hit_points > factor * ((you.skill(SK_INVOCATIONS, max_healed)
-                                         + max_healed) / divisor))
+    const int max_hp = mon->max_hit_points;
+    if (max_hp > factor * ((you.skill(SK_INVOCATIONS, max_healed)
+                            + max_healed) / divisor))
     {
         return -4;
     }
 
-    int random_factor = random2((you.skill(SK_INVOCATIONS, healed) + healed)
-                                / divisor);
+    int max_random_factor = (you.skill(SK_INVOCATIONS, healed) + healed) / divisor;
+    max_random_factor = max(4, max_random_factor);
+    int success_part = max_random_factor - (max_hp / factor) - 1;
+    success_part = max(0, success_part);
+    pacify_chance = success_part * 100 / max_random_factor;
+
+    const int random_factor = random2(max_random_factor);
 
     dprf("pacifying %s? max hp: %d, factor: %d, Inv: %d, healed: %d, rnd: %d",
-         mon->name(DESC_PLAIN).c_str(), mon->max_hit_points, factor,
+         mon->name(DESC_PLAIN).c_str(), max_hp, factor,
          you.skill(SK_INVOCATIONS), healed, random_factor);
 
-    if (mon->max_hit_points < factor * random_factor)
+    if (max_hp < factor * random_factor)
         return 1;
-    if (mon->max_hit_points < factor * random_factor * 1.15)
+    if (max_hp < factor * random_factor * 1.15)
         return -3;
 
     return 0;
 }
 
-static vector<string> _desc_mindless(const monster_info& mi)
+// used for cast_healing to keep the numbers stable
+// better to make a global temporary state handler, but this will do for now
+int cast_healing_healed = -1;
+int cast_healing_max_healed = -1;
+
+static vector<string> _desc_pacification_potential(const monster_info &mi)
 {
+    vector<string> descs;
     if (mi.intel() <= I_BRAINLESS)
-        return { "mindless" };
+        descs = { "mindless" };
     else
-        return {};
+    {
+        const monster* mons = monster_at(mi.pos);
+        if (mons)
+        {
+            int pacify_chance = 0;
+            _can_pacify_monster(mons, cast_healing_healed, cast_healing_max_healed, pacify_chance);
+            descs.push_back(make_stringf("chance to pacify: %d%%", pacify_chance));
+        }
+        else
+        {
+            descs.push_back(make_stringf("will heal: %d", cast_healing_healed));
+        }
+    }
+
+    return descs;
 }
 
 /**
@@ -172,119 +200,154 @@ bool heal_monster(monster& patient, int amount)
     return true;
 }
 
-spret_type cast_healing(int pow, int max_pow, bool fail)
+spret_type cast_healing(int pow, int max_pow, bool fail, bool& healed_self)
 {
-    const int healed = pow + roll_dice(2, pow) - 2;
-    const int max_healed = (3 * max_pow) - 2;
+    healed_self = false;
+
+    if (cast_healing_healed == -1)
+    {
+        cast_healing_healed = pow + roll_dice(2, pow) - 2;
+        cast_healing_max_healed = (3 * max_pow) - 2;
+    }
+
+    int healed = cast_healing_healed;
+    int max_healed = cast_healing_max_healed;
+
     ASSERT(healed >= 1);
 
+    spret_type result = SPRET_SUCCESS;
     dist spd;
 
     direction_chooser_args args;
     args.restricts = DIR_TARGET;
     args.mode = TARG_INJURED_FRIEND;
     args.needs_path = false;
-    args.self = CONFIRM_CANCEL;
+    args.self = CONFIRM_NONE;
     args.target_prefix = "Heal";
-    args.get_desc_func = _desc_mindless;
+    args.get_desc_func = _desc_pacification_potential;
+
     direction(spd, args);
 
-    if (!spd.isValid)
-        return SPRET_ABORT;
-    if (cell_is_solid(spd.target))
+    while (true)
     {
-        canned_msg(MSG_NOTHING_THERE);
-        return SPRET_ABORT;
-    }
-
-    monster* mons = monster_at(spd.target);
-    if (!mons)
-    {
-        canned_msg(MSG_NOTHING_THERE);
-        // This isn't a cancel, to avoid leaking invisible monster
-        // locations.
-        return SPRET_SUCCESS;
-    }
-
-    bool did_something = false;
-
-    if (_mons_hostile(mons))
-    {
-        const int can_pacify  = _can_pacify_monster(mons, healed, max_healed);
-        if (can_pacify == -1)
+        if (!spd.isValid)
         {
-            mpr("You cannot pacify this monster!");
-            return SPRET_ABORT;
+            result = SPRET_ABORT;
+            break;
         }
-        if (can_pacify == -2)
+        if (cell_is_solid(spd.target))
         {
-            mprf("You cannot pacify this monster while %s is sleeping!",
-                 mons->pronoun(PRONOUN_SUBJECTIVE).c_str());
-            return SPRET_ABORT;
+            canned_msg(MSG_NOTHING_THERE);
+            result = SPRET_ABORT;
+            break;
         }
-        fail_check();
 
-        switch (can_pacify)
+        monster* mons = monster_at(spd.target);
+        if (!mons)
         {
-        case 0:
-            mprf("The light of Elyvilon fails to reach %s.",
-                 mons->name(DESC_THE).c_str());
-            return SPRET_SUCCESS;
-
-        case -3:
-            mprf("The light of Elyvilon almost touches upon %s.",
-                 mons->name(DESC_THE).c_str());
-            return SPRET_SUCCESS;
-
-        case -4:
-            mprf("%s is completely unfazed by your meager offer of peace.",
-                 mons->name(DESC_THE).c_str());
-            return SPRET_SUCCESS;
-
-        case 1:
-            did_something = true;
-
-            if (mons->is_holy())
+            bool hit_player = spd.isMe();
+            if (hit_player)
             {
-                string key;
-
-                // Quadrupeds can't salute, etc.
-                if (mon_shape_is_humanoid(get_mon_shape(mons)))
-                    key = "_humanoid";
-
-                _print_holy_pacification_speech(key, mons,
-                                                MSGCH_FRIEND_ENCHANT);
-
-                if (!one_chance_in(3)
-                    && mons->can_speak()
-                    && mons->type != MONS_MENNAS) // Mennas is mute and only has visual speech
-                {
-                    _print_holy_pacification_speech("_speech", mons, MSGCH_TALK);
-                }
+                mprf("You are healed. (hp+%d)", healed);
+                healed_self = true;
+                inc_hp(healed);
             }
             else
-                simple_monster_message(mons, " turns neutral.");
-
-            record_monster_defeat(mons, KILL_PACIFIED);
-            mons_pacify(mons, ATT_NEUTRAL);
+            {
+                canned_msg(MSG_NOTHING_THERE);
+                // This isn't a cancel, to avoid leaking invisible monster
+                // locations.
+            }
             break;
-
-        default:
-            die("bad _can_pacify_monster return type %d", can_pacify);
         }
+
+        bool did_something = false;
+
+        if (_mons_hostile(mons))
+        {
+            int pacify_chance;
+            const int can_pacify  = _can_pacify_monster(mons, healed, max_healed, pacify_chance);
+            if (can_pacify == -1)
+            {
+                mpr("You cannot pacify this monster!");
+                result = SPRET_ABORT;
+                break;
+            }
+            if (can_pacify == -2)
+            {
+                mprf("You cannot pacify this monster while %s is sleeping!",
+                     mons->pronoun(PRONOUN_SUBJECTIVE).c_str());
+                result = SPRET_ABORT;
+                break;
+            }
+            fail_check();
+
+            switch (can_pacify)
+            {
+                case 0:
+                    mprf("The light of Elyvilon fails to reach %s.",
+                         mons->name(DESC_THE).c_str());
+                    break;
+
+                case -3:
+                    mprf("The light of Elyvilon almost touches upon %s.",
+                         mons->name(DESC_THE).c_str());
+                    break;
+
+                case -4:
+                    mprf("%s is completely unfazed by your meager offer of peace.",
+                         mons->name(DESC_THE).c_str());
+                    break;
+
+                case 1:
+                    did_something = true;
+
+                    if (mons->is_holy())
+                    {
+                        string key;
+
+                        // Quadrupeds can't salute, etc.
+                        if (mon_shape_is_humanoid(get_mon_shape(mons)))
+                            key = "_humanoid";
+
+                        _print_holy_pacification_speech(key, mons,
+                                                        MSGCH_FRIEND_ENCHANT);
+
+                        if (!one_chance_in(3)
+                            && mons->can_speak()
+                            && mons->type != MONS_MENNAS) // Mennas is mute and only has visual speech
+                        {
+                            _print_holy_pacification_speech("_speech", mons, MSGCH_TALK);
+                        }
+                    }
+                    else
+                        simple_monster_message(mons, " turns neutral.");
+
+                    record_monster_defeat(mons, KILL_PACIFIED);
+                    mons_pacify(mons, ATT_NEUTRAL);
+                    break;
+
+                default:
+                    die("bad _can_pacify_monster return type %d", can_pacify);
+            }
+        }
+
+        fail_check();
+        if (heal_monster(*mons, healed))
+            did_something = true;
+
+        // make next call to this function recalculate healed, instead of using the same
+        healed = -1;
+
+        if (!did_something)
+        {
+            canned_msg(MSG_NOTHING_HAPPENS);
+        }
+
+        break;
     }
 
-    fail_check();
-    if (heal_monster(*mons, healed))
-        did_something = true;
-
-    if (!did_something)
-    {
-        canned_msg(MSG_NOTHING_HAPPENS);
-        return SPRET_SUCCESS;
-    }
-
-    return SPRET_SUCCESS;
+    return result;
 }
 
 /// Effects that occur when the player is debuffed.
