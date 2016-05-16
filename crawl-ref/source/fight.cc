@@ -708,7 +708,7 @@ int weapon_min_delay_skill(const item_def &weapon)
 int weapon_min_delay(const item_def &weapon, bool check_speed)
 {
     const int base = property(weapon, PWPN_SPEED);
-    int min_delay = base/2;
+    int min_delay = base/3;
 
     // Short blades can get up to at least unarmed speed.
     if (item_attack_skill(weapon) == SK_SHORT_BLADES && min_delay > 5)
@@ -724,7 +724,9 @@ int weapon_min_delay(const item_def &weapon, bool check_speed)
 
     // ... and unless it would take more than skill 27 to get there.
     // Round up the reduction from skill, so that min delay is rounded down.
+    /* level caps are gone so this is no longer relevant
     min_delay = max(min_delay, base - (get_max_skill_level() + 1)/2);
+     */
 
     if (check_speed && get_weapon_brand(weapon) == SPWPN_SPEED)
     {

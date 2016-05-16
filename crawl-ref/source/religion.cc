@@ -179,10 +179,12 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Elyvilon
-    { { 1, ABIL_ELYVILON_LESSER_HEALING, "provide lesser healing for yourself" },
+    { { 1, ABIL_ELYVILON_LESSER_HEALING, "provide lesser healing for yourself or others" },
+        /*
       { 2, ABIL_ELYVILON_HEAL_OTHER, "heal and attempt to pacify others" },
+         */
       { 3, ABIL_ELYVILON_PURIFICATION, "purify yourself" },
-      { 4, ABIL_ELYVILON_GREATER_HEALING, "provide greater healing for yourself" },
+      { 4, ABIL_ELYVILON_GREATER_HEALING, "provide greater healing for yourself or others" },
       { 5, ABIL_ELYVILON_DIVINE_VIGOUR, "call upon Elyvilon for divine vigour" },
       { 1, ABIL_ELYVILON_LIFESAVING, "call on Elyvilon to save your life" },
     },
@@ -3572,6 +3574,27 @@ void handle_god_time(int /*time_delta*/)
         you.attribute[ATTR_GOD_WRATH_COUNT]--;
     }
 
+    if (you.religion == GOD_RU)
+    {
+        int delay;
+        int sacrifice_count;
+
+        ASSERT(you.props.exists(RU_SACRIFICE_PROGRESS_KEY));
+        ASSERT(you.props.exists(RU_SACRIFICE_DELAY_KEY));
+        ASSERT(you.props.exists(AVAILABLE_SAC_KEY));
+
+        delay = you.props[RU_SACRIFICE_DELAY_KEY].get_int();
+        sacrifice_count = you.props[AVAILABLE_SAC_KEY].get_vector().size();
+
+        // 6* is max piety for Ru
+        if (sacrifice_count == 0 && you.piety < piety_breakpoint(5)
+            && you.props[RU_SACRIFICE_PROGRESS_KEY].get_int() >= delay)
+        {
+            ru_offer_new_sacrifices();
+        }
+    }
+
+    /* We don't need piety decay any more.
     // Update the god's opinion of the player.
     if (!you_worship(GOD_NO_GOD))
     {
@@ -3663,6 +3686,7 @@ void handle_god_time(int /*time_delta*/)
         if (you.piety < 1)
             excommunication();
     }
+     */
 }
 
 int god_colour(god_type god) // mv - added

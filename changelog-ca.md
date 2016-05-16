@@ -1,4 +1,12 @@
-# v1.5.1
+## v1.5.1
+
+* The player can fire missiles through friendlies now without hurting them.
+
+* Elyvilon improvements
+    * Healing targeting shows pacification chance when a monster is selected.
+    * Lesser and Greater healing may be applied to player or monster.
+        * When applied to monster, the ability will cost hp from the player.
+        * When applied to player, the ability costs piety.
 
 * Each spell costs a minimum of 5 mp, and it's easier to reduce the mp cost than before.
 

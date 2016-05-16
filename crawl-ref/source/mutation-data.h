@@ -205,11 +205,11 @@ static const mutation_def mut_data[] =
 
   {"Your natural rate of healing is unusually fast.",
    "You heal very quickly.",
-   "You regenerate."},
+   "You regenerate health."},
 
   {"You begin to heal more quickly.",
    "You begin to heal more quickly.",
-   "You begin to regenerate."},
+   "You begin to regenerate health."},
 
   {"Your rate of healing slows.",
    "Your rate of healing slows.",
