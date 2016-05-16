@@ -9571,11 +9571,13 @@ void player_after_each_turn()
 
 int _apply_hunger(const spell_type &which_spell, int cost)
 {
+
+    int hunger = spell_hunger(which_spell, false);
+
     if (player_mutation_level(MUT_HUNGERLESS) == 0)
-    {
-        const int hunger = spell_hunger(which_spell, false);
-        cost = cost * (hunger + 100) / 100;
-    }
+        hunger /= 2;
+
+    cost = cost * (hunger + 100) / 100;
 
     return cost;
 }
