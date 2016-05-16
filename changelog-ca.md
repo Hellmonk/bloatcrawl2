@@ -1,4 +1,7 @@
-# v1.5.1
+## v1.5.1
+
+* The player can fire missiles through friendlies now without hurting them.
+
 * Elyvilon improvements
     * Healing targeting shows pacification chance when a monster is selected.
     * Lesser and Greater healing may be applied to player or monster.

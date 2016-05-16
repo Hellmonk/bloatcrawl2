@@ -6741,7 +6741,9 @@ bool shoot_through_monster(const bolt& beam, const monster* victim)
     return (origin_worships_fedhas
             && fedhas_protects(victim))
            || (originator->is_player()
+               /*
                && testbits(victim->flags, MF_DEMONIC_GUARDIAN))
+                */
               && !beam.is_enchantment()
               && beam.origin_spell != SPELL_CHAIN_LIGHTNING
               && (mons_atts_aligned(victim->attitude, origin_attitude)
