@@ -4,7 +4,7 @@
 
     This file determines which spells are contained in monster spellbooks.
     It is used by /util/gen-mst.pl to generate spellbook enums, which are
-    listed in mon-mst.h.
+    listed in mon-mst.h. beep boop, test test
 
     Template Format:
 
@@ -2099,7 +2099,16 @@ static const mon_spellbook mspell_list[] =
             { SPELL_DISPEL_UNDEAD, 44, MON_SPELL_PRIEST },
         }
     },
-
+    
+    {  MST_DEEP_DWARF_NECROMANCER,
+        {
+            { SPELL_CONTROL_UNDEAD, 15, MON_SPELL_WIZARD },
+            { SPELL_BOLT_OF_COLD, 18, MON_SPELL_WIZARD },
+            { SPELL_VAMPIRIC_DRAINING, 33, MON_SPELL_WIZARD },
+            { SPELL_HAUNT, 15, MON_SPELL_WIZARD },
+        }
+    },
+    
     // the spell spammer
     {  MST_EARTH_WIZ_I,
       {
