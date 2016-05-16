@@ -591,8 +591,9 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
     ng.type = choice.type;
     switch(choice.difficulty)
     {
-        case DIFFICULTY_CHALLENGE:
+        case DIFFICULTY_EASY:
         case DIFFICULTY_STANDARD:
+        case DIFFICULTY_CHALLENGE:
         case DIFFICULTY_NIGHTMARE:
             ng.difficulty = choice.difficulty;
             break;
@@ -1937,7 +1938,7 @@ static bool _choose_difficulty(newgame_def& ng, newgame_def& ng_choice,
 	TextItem* tmp = nullptr;
 	string text;
 
-	for (int difficulty = 0; difficulty < 3; difficulty ++)
+	for (int difficulty = 0; difficulty < 4; difficulty ++)
 	{
 		coord_def min_coord(0,0);
 		coord_def max_coord(0,0);
@@ -1949,20 +1950,26 @@ static bool _choose_difficulty(newgame_def& ng, newgame_def& ng_choice,
 
 		switch(difficulty)
 		{
-		case 0:
+        case 0:
+            tmp->set_fg_colour(WHITE);
+            tmp->add_hotkey('e');
+            tmp->set_id(DIFFICULTY_EASY);
+            text += "e - Easy";
+            break;
+		case 1:
 			tmp->set_fg_colour(WHITE);
 			tmp->add_hotkey('s');
 			tmp->set_id(DIFFICULTY_STANDARD);
 			text += "s - Standard";
 			break;
-		case 1:
+		case 2:
 			tmp->set_fg_colour(YELLOW);
 			tmp->add_hotkey('c');
 			tmp->set_id(DIFFICULTY_CHALLENGE);
 			text += "c - Challenge";
 			freeform->set_active_item(tmp);
 			break;
-		case 2:
+		case 3:
 			tmp->set_fg_colour(LIGHTRED);
 			tmp->add_hotkey('n');
 			tmp->set_id(DIFFICULTY_NIGHTMARE);

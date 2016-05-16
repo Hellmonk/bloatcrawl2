@@ -2009,23 +2009,6 @@ int player_movement_speed()
 
     if (in_quick_mode() && you.religion != GOD_CHEIBRIADOS)
     {
-        switch(crawl_state.difficulty)
-        {
-            case DIFFICULTY_STANDARD:
-                mv = 900;
-                break;
-            case DIFFICULTY_CHALLENGE:
-                mv = 950;
-                break;
-            case DIFFICULTY_NIGHTMARE:
-                mv = 1000;
-                break;
-            default:
-                // should not be possible
-                mv = 950;
-                break;
-        }
-        // override for now, since we've nerfed so many other things in this release.
         mv = 900;
     }
 
@@ -2830,11 +2813,14 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
     if (can_gain_experience_here)
     {
         int adjusted_gain = exp_gained;
+        if (crawl_state.difficulty == DIFFICULTY_EASY)
+            adjusted_gain = div_rand_round(adjusted_gain * 5, 3);
+
         if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-            adjusted_gain = div_rand_round(adjusted_gain * 3, 2);
+            adjusted_gain = div_rand_round(adjusted_gain * 4, 3);
 
         if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-            adjusted_gain = div_rand_round(adjusted_gain * 2, 3);
+            adjusted_gain = div_rand_round(adjusted_gain * 3, 4);
 
         if (exp_loss)
         {
@@ -4812,6 +4798,8 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
 
     if (adjust_for_difficulty)
     {
+        if (crawl_state.difficulty == DIFFICULTY_EASY)
+            hitp = hitp * 5 / 3;
         if (crawl_state.difficulty == DIFFICULTY_STANDARD)
             hitp = hitp * 4 / 3;
         if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
@@ -4837,6 +4825,8 @@ int get_real_sp(bool include_items)
 
     max_sp = max(max_sp, 20);
 
+    if (crawl_state.difficulty == DIFFICULTY_EASY)
+        max_sp = max_sp * 5 / 3;
     if (crawl_state.difficulty == DIFFICULTY_STANDARD)
         max_sp = max_sp * 4 / 3;
     if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
@@ -4896,6 +4886,8 @@ int get_real_mp(bool include_items, bool rotted)
 
     max_mp = max(max_mp, 20);
 
+    if (crawl_state.difficulty == DIFFICULTY_EASY)
+        max_mp = max_mp * 5 / 3;
     if (crawl_state.difficulty == DIFFICULTY_STANDARD)
         max_mp = max_mp * 4 / 3;
     if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
@@ -9633,6 +9625,9 @@ int _difficulty_mode_multiplier()
 
     switch(crawl_state.difficulty)
     {
+        case DIFFICULTY_EASY:
+            x = 100;
+            break;
         case DIFFICULTY_STANDARD:
             x = 90;
             break;
@@ -9756,6 +9751,9 @@ int player_ouch_modifier(int damage)
 
     switch (crawl_state.difficulty)
     {
+        case DIFFICULTY_EASY:
+            percentage_allowed = 10;
+            break;
         case DIFFICULTY_STANDARD:
             percentage_allowed = 20;
             break;
