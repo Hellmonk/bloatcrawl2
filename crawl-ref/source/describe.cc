@@ -844,17 +844,18 @@ static void _append_weapon_stats(string &description, const item_def &item)
       make_stringf("\n (Your skill: %.1f)", (float) you.skill(skill, 10) / 10)
       : "";
     description += make_stringf(
-    "\nBase accuracy: %+d  Base damage: %d  Attack delay (Base/Current): %.1f / %.1f  SP cost: %d"
+    "\nBase accuracy: %+d  Base damage: %d  SP cost: %d"
+    "\nAttack delay:  Base: %.1f  Current: %.1f"
     "\nThis weapon's minimum attack delay (%.1f) is reached at skill level %d."
     "%s",
-     property(item, PWPN_HIT),
-     base_dam + ammo_dam,
-     (float) property(item, PWPN_SPEED) / 10,
-     (float) weapon_min_delay(item) / 10,
-     (float) you.attack_delay(nullptr),
-     weapon_sp_cost(&item),
-     weapon_min_delay_skill(item),
-     your_skill.c_str());
+    property(item, PWPN_HIT),
+    base_dam + ammo_dam,
+    weapon_sp_cost(&item),
+    (float) player_attack_delay_modifier(property(item, PWPN_SPEED)) / 10,
+    (float) you.attack_delay(nullptr) / 10,
+    (float) weapon_min_delay(item) / 10,
+    weapon_min_delay_skill(item),
+    your_skill.c_str());
 
     if (skill == SK_SLINGS)
     {
