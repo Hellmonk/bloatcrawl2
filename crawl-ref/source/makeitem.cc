@@ -1922,6 +1922,12 @@ int items(bool allow_uniques,
     if (item_level > 50 && !force_good)
         item_level = 50;
 
+    if (force_class == OBJ_FOOD)
+    {
+        force_class = OBJ_POTIONS;
+        force_type = POT_STAMINA;
+    }
+
     // determine base_type for item generated {dlb}:
     if (force_class != OBJ_RANDOM)
     {

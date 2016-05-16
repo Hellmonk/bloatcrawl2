@@ -4530,7 +4530,7 @@ bool dec_sp(int sp_loss, bool silent)
 
 void inc_sp(int sp_gain, bool silent, bool manual)
 {
-    if (sp_gain < 1 || you.sp >= you.sp_max)
+    if (sp_gain < 1)
         return;
 
     if (you.species == SP_DJINNI)
@@ -4547,12 +4547,13 @@ void inc_sp(int sp_gain, bool silent, bool manual)
     if (you.sp > you.sp_max)
         you.sp = you.sp_max;
 
+    you.redraw_stamina_points = true;
+
     if (!silent)
     {
         if (_should_stop_resting(you.sp, you.sp_max))
             interrupt_activity(AI_FULL_SP);
     }
-    you.redraw_stamina_points = true;
 }
 
 void inc_mp(int mp_gain, bool silent)
@@ -4562,7 +4563,7 @@ void inc_mp(int mp_gain, bool silent)
     if (you.species == SP_DJINNI)
         return inc_hp(mp_gain);
 
-    if (mp_gain < 1 || you.mp >= you.mp_max)
+    if (mp_gain < 1)
         return;
 
     you.mp += mp_gain;
@@ -4576,12 +4577,13 @@ void inc_mp(int mp_gain, bool silent)
     if (you.mp > you.mp_max)
         you.mp = you.mp_max;
 
+    you.redraw_magic_points = true;
+
     if (!silent)
     {
         if (_should_stop_resting(you.mp, you.mp_max))
             interrupt_activity(AI_FULL_MP);
     }
-    you.redraw_magic_points = true;
 }
 
 // Note that "max_too" refers to the base potential, the actual
@@ -4597,7 +4599,7 @@ void inc_hp(int hp_gain)
         you.restore_exertion = EXERT_NORMAL;
     }
 
-    if (hp_gain < 1 || you.hp >= you.hp_max)
+    if (hp_gain < 1)
         return;
 
     you.hp += hp_gain;
@@ -4605,10 +4607,10 @@ void inc_hp(int hp_gain)
     if (you.hp > you.hp_max)
         you.hp = you.hp_max;
 
+    you.redraw_hit_points = true;
+
     if (_should_stop_resting(you.hp, you.hp_max))
         interrupt_activity(AI_FULL_HP);
-
-    you.redraw_hit_points = true;
 }
 
 void rot_hp(int hp_loss)
@@ -9596,7 +9598,7 @@ int spell_mp_freeze(spell_type which_spell)
     int cost = 0;
     if (is_summon_spell(which_spell))
     {
-        cost = _apply_hunger(which_spell, 5);
+        cost = _apply_hunger(which_spell, 10);
         if (have_passive(passive_t::conserve_mp))
             cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
     }
