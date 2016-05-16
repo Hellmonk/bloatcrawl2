@@ -399,6 +399,7 @@ ENDMAP
 ## guardhouses
 ################################################
 NAME:   oh_my_dwarfness
+TAGS:   dhfh_guard_house
 ORIENT: float
 DEPTH:  Dwarf, !Dwarf:1
 MONS:   deep dwarf artificer / deep dwarf
@@ -421,7 +422,6 @@ cc.ccccccccGGccccccccccccc
  c.............+.3..**|.c
  cc......ccccccc...2**.cc
   cccccccc     ccccccccc
-ENDMAP
 
 NAME:   dhfh_guard_house_d2
 TAGS:   dhfh_guard_house allow_dup
