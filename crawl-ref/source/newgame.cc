@@ -1951,7 +1951,7 @@ static bool _choose_difficulty(newgame_def& ng, newgame_def& ng_choice,
 		switch(difficulty)
 		{
         case 0:
-            tmp->set_fg_colour(WHITE);
+            tmp->set_fg_colour(GREEN);
             tmp->add_hotkey('e');
             tmp->set_id(DIFFICULTY_EASY);
             text += "e - Easy";
