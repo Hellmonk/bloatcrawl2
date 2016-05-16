@@ -2940,45 +2940,47 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
     }
 }
 
-void _handle_insight_inv(string &before, string &after, bool success, FixedVector<item_def, 52> *inv)
+void _handle_insight_inv(FixedVector<item_def, 52> *inv)
 {// top to bottom
     // this give the player the option to move items to the top so that they are more likely to be identified first
     for(item_def &item : *inv)
+    {
+        if (item.defined()
+            && (
+                (item.flags & ISFLAG_IDENT_MASK) < ISFLAG_IDENT_MASK)
+            || is_deck(item) && !top_card_is_known(item)
+            )
+        {
+            string before, after;
+            string before_colored, after_colored;
+
+            if (is_deck(item) && !top_card_is_known(item))
             {
-                if (item.defined()
-                    && (
-                        (item.flags & ISFLAG_IDENT_MASK) < ISFLAG_IDENT_MASK)
-                    || is_deck(item) && !top_card_is_known(item)
-                    )
-                {
-                    if (is_deck(item) && !top_card_is_known(item))
-                    {
-                        set_ident_flags(item, ISFLAG_IDENT_MASK);
-                        set_ident_type(item, true);
-                        after = get_menu_colour_prefix_tags(item, DESC_A).c_str();
-                        mprf(MSGCH_INTRINSIC_GAIN, "You gain insight into: %s", after.c_str());
-                        deck_identify_first(item);
+                set_ident_flags(item, ISFLAG_IDENT_MASK);
+                set_ident_type(item, true);
+                after = get_menu_colour_prefix_tags(item, DESC_A);
+                mprf(MSGCH_INTRINSIC_GAIN, "You gain insight into: %s", after.c_str());
+                deck_identify_first(item);
+                break;
+            }
+            else
+            {
+                before = item.name(DESC_A);
+                before_colored = get_menu_colour_prefix_tags(item, DESC_A);
+                int bitToCheck = 1 << random2(4);
+                if((item.flags & bitToCheck) == 0) {
+                    set_ident_flags(item, bitToCheck);
+                    set_ident_type(item, true);
+                    after = item.name(DESC_A);
+                    after_colored = get_menu_colour_prefix_tags(item, DESC_A);
+                    if(before != after) {
+                        mprf(MSGCH_INTRINSIC_GAIN, "You gain insight: %s -> %s", before.c_str(), after.c_str());
                         break;
-                    }
-                    else
-                    {
-                        before = get_menu_colour_prefix_tags(item, DESC_A).c_str();
-                        int bitToCheck = 1 << random2(4);
-                        if((item.flags & bitToCheck) == 0) {
-                            set_ident_flags(item, bitToCheck);
-                            set_ident_type(item, true);
-                            after = get_menu_colour_prefix_tags(item, DESC_A).c_str();
-                            if(before != after) {
-                                success = true;
-                                break;
-                            }
-                        }
                     }
                 }
             }
-
-    if(success)
-                mprf(MSGCH_INTRINSIC_GAIN, "You gain insight: %s -> %s", before.c_str(), after.c_str());
+        }
+    }
 }
 
 static void _handle_insight(int exp_gain)
@@ -2993,11 +2995,8 @@ static void _handle_insight(int exp_gain)
         
         int lev = player_mutation_level(MUT_INSIGHT);
         if (x_chance_in_y(1 << (lev * 2), 64)) {
-            string before, after;
-            bool success = false;
-
-            _handle_insight_inv(before, after, success, &you.inv1);
-            _handle_insight_inv(before, after, success, &you.inv2);
+            _handle_insight_inv(&you.inv1);
+            _handle_insight_inv(&you.inv2);
         }
     }
 }
@@ -4591,6 +4590,12 @@ void inc_mp(int mp_gain, bool silent)
 void inc_hp(int hp_gain)
 {
     ASSERT(!crawl_state.game_is_arena());
+
+    if (you.species == SP_DJINNI && you.hp > you.hp_max / 2 && (you.restore_exertion == EXERT_POWER || you.restore_exertion == EXERT_FOCUS))
+    {
+        set_exertion(you.restore_exertion, false);
+        you.restore_exertion = EXERT_NORMAL;
+    }
 
     if (hp_gain < 1 || you.hp >= you.hp_max)
         return;
@@ -6741,7 +6746,7 @@ int player::racial_ac(bool temp) const
     {
         if (species == SP_NAGA)
             ac += 100 * experience_level / 3;  	// max 9 or so
-        else if (species == SP_LAVA_ORC && you.temperature <= TEMP_WARM)
+        else if (species == SP_LAVA_ORC && temperature_effect(LORC_STONESKIN))
             ac += 300 + 100 * experience_level / 6;	// max 8 or so
         else if (species == SP_GARGOYLE)
         {
@@ -9493,6 +9498,8 @@ void player_used_magic()
         dec_sp(3);
     if (you.exertion == EXERT_FOCUS)
         dec_mp(3);
+
+    you.time_taken = player_attack_delay_modifier(you.time_taken);
 }
 
 void player_evoked_something()
@@ -9565,7 +9572,7 @@ int _apply_hunger(const spell_type &which_spell, int cost)
     if (player_mutation_level(MUT_HUNGERLESS) == 0)
     {
         const int hunger = spell_hunger(which_spell, false);
-        cost = div_rand_round(cost * (hunger + 100), 100);
+        cost = cost * (hunger + 100) / 100;
     }
 
     return cost;
@@ -9579,7 +9586,7 @@ int spell_mp_cost(spell_type which_spell)
     if (you.duration[DUR_CHANNELING] || is_summon_spell(which_spell))
         cost = 0;
     else if (have_passive(passive_t::conserve_mp))
-        cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS));
+        cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
 
     return cost;
 }
@@ -9591,10 +9598,23 @@ int spell_mp_freeze(spell_type which_spell)
     {
         cost = _apply_hunger(which_spell, 5);
         if (have_passive(passive_t::conserve_mp))
-            cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS));
+            cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
     }
 
     return cost;
+}
+
+int weapon_sp_cost(const item_def* weapon)
+{
+    int weight = weapon ? max(1, property(*weapon, PWPN_WEIGHT)) : 3;
+
+    int sp_cost = 100 * weight;
+    sp_cost /= 5 + you.strength(true);
+    sp_cost /= 5 + you.skill(SK_FIGHTING);
+
+    sp_cost = max(2, sp_cost);
+
+    return sp_cost;
 }
 
 const int base_factor = 100;
@@ -9733,13 +9753,13 @@ int player_ouch_modifier(int damage)
     switch (crawl_state.difficulty)
     {
         case DIFFICULTY_STANDARD:
-            percentage_allowed = 25;
+            percentage_allowed = 20;
             break;
         case DIFFICULTY_CHALLENGE:
-            percentage_allowed = 50;
+            percentage_allowed = 40;
             break;
         case DIFFICULTY_NIGHTMARE:
-            percentage_allowed = 75;
+            percentage_allowed = 80;
             break;
         default:
             // should not be possible

@@ -104,11 +104,6 @@ bool at_branch_bottom()
     return brdepth[you.where_are_you] == you.depth;
 }
 
-bool in_lower_half_of_branch()
-{
-    return you.depth > brdepth[you.where_are_you] / 2;
-}
-
 level_id current_level_parent()
 {
     // Never called from X[], we don't have to support levels you're not on.
@@ -148,9 +143,19 @@ bool is_connected_branch(level_id place)
     return is_connected_branch(place.branch);
 }
 
+bool in_lower_half_of_branch()
+{
+    return you.depth > brdepth[you.where_are_you] / 2;
+}
+
 bool is_double_deep_branch(branch_type branch)
 {
     return branch == BRANCH_ORC;
+}
+
+bool player_can_gain_experience_here()
+{
+    return !is_double_deep_branch(you.where_are_you) || !in_lower_half_of_branch();
 }
 
 branch_type branch_by_abbrevname(const string &branch, branch_type err)

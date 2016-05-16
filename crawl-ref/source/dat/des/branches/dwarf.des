@@ -421,10 +421,7 @@ cc.ccccccccGGccccccccccccc
  c......cccccccc...2*|..c
  c.............+.3..**|.c
  cc......ccccccc...2**.cc
-  cccccccc     ccccccc
-cc
-ENDMAP
-
+  cccccccc     ccccccccc
 
 NAME:   dhfh_guard_house_d2
 TAGS:   dhfh_guard_house allow_dup
