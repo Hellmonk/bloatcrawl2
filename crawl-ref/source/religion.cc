@@ -3574,6 +3574,9 @@ void handle_god_time(int /*time_delta*/)
 
     if (you.religion == GOD_RU)
     {
+        int delay;
+        int sacrifice_count;
+
         ASSERT(you.props.exists(RU_SACRIFICE_PROGRESS_KEY));
         ASSERT(you.props.exists(RU_SACRIFICE_DELAY_KEY));
         ASSERT(you.props.exists(AVAILABLE_SAC_KEY));
