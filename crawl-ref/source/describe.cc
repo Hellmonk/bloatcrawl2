@@ -844,13 +844,15 @@ static void _append_weapon_stats(string &description, const item_def &item)
       make_stringf("\n (Your skill: %.1f)", (float) you.skill(skill, 10) / 10)
       : "";
     description += make_stringf(
-    "\nBase accuracy: %+d  Base damage: %d  Base attack delay: %.1f"
+    "\nBase accuracy: %+d  Base damage: %d  Attack delay (Base/Current): %.1f / %.1f  SP cost: %d"
     "\nThis weapon's minimum attack delay (%.1f) is reached at skill level %d."
     "%s",
      property(item, PWPN_HIT),
      base_dam + ammo_dam,
      (float) property(item, PWPN_SPEED) / 10,
      (float) weapon_min_delay(item) / 10,
+     (float) you.attack_delay(nullptr),
+     weapon_sp_cost(&item),
      weapon_min_delay_skill(item),
      your_skill.c_str());
 
@@ -2622,7 +2624,7 @@ static string _player_spell_desc(spell_type spell, const item_def* item)
 
     // Report summon cap
     const int limit = summons_limit(spell);
-    if (limit)
+    if (false && limit)
     {
         description += "You can sustain at most " + number_in_words(limit)
                         + " creature" + (limit > 1 ? "s" : "")

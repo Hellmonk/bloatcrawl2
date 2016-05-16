@@ -1153,6 +1153,13 @@ void set_quick_mode(const bool new_quick_mode);
 void set_exertion(const exertion_mode new_exertion, bool manual = true);
 void exert_toggle(exertion_mode new_exertion);
 
+int get_hp();
+int get_hp_max();
+int get_sp();
+int get_sp_max();
+int get_mp();
+int get_mp_max();
+
 bool player_has_orb();
 bool player_on_orb_run();
 
@@ -1210,10 +1217,11 @@ void player_moved();
 void player_before_long_safe_action();
 void player_after_long_safe_action(int turns);
 void player_after_each_turn();
-int player_spell_hunger_modifier(int old_hunger);
-int player_spell_cost_modifier(spell_type which_spell, bool raw, int old_cost);
-int player_spell_mp_freeze_modifier(spell_type which_spell, bool raw, int old_cost);
-int player_tohit_modifier(int old_tohit);
+
+int spell_mp_cost(spell_type which_spell);
+int spell_mp_freeze(spell_type which_spell);
+int weapon_sp_cost(const item_def* weapon);
+int player_tohit_modifier(const int old_tohit);
 int player_damage_modifier(int old_damage, bool silent = false);
 int player_spellpower_modifier(int old_spellpower);
 int player_spellfailure_modifier(int spellfaifailureure);
@@ -1224,5 +1232,6 @@ void player_update_last_hit_chance(int chance);
 void player_update_tohit(int new_tohit = -1);
 void summoned_monster_died(monster* mons, bool natural_death);
 bool player_summoned_monster(spell_type spell, monster* mons, bool first);
+int player_ouch_modifier(int damage);
 
 #endif

@@ -1880,7 +1880,7 @@ static void _elixir_card(int power, deck_rarity_type rarity)
     }
     else if (power_level == 1)
     {
-        if (you.hp * 2 < you.hp_max)
+        if (get_hp() * 2 < get_hp_max())
             you.set_duration(DUR_ELIXIR_HEALTH, 3 + random2(3));
         else
             you.set_duration(DUR_ELIXIR_MAGIC, 10);
@@ -2677,7 +2677,7 @@ static void _alchemist_card(int power, deck_rarity_type rarity)
     dprf("%d gold available to spend.", gold_max);
 
     // Spend some gold to regain health.
-    int hp = min((gold_max - gold_used) / 3, you.hp_max - you.hp);
+    int hp = min((gold_max - gold_used) / 3, get_hp_max() - get_hp());
     if (hp > 0)
     {
         you.del_gold(hp * 2);
@@ -2688,7 +2688,7 @@ static void _alchemist_card(int power, deck_rarity_type rarity)
     }
     // Maybe spend some more gold to regain magic.
     int mp = min((gold_max - gold_used) / 5,
-                 you.mp_max - you.mp);
+                 get_mp_max() - get_mp());
     if (mp > 0 && x_chance_in_y(power_level + 1, 5))
     {
         you.del_gold(mp * 5);
@@ -2925,7 +2925,7 @@ static void _wild_magic_card(int power, deck_rarity_type rarity)
             mp += random2(5);
 
         mpr("You feel a surge of magic.");
-        if (mp && you.mp < you.mp_max)
+        if (mp && get_mp() < get_mp_max())
         {
             inc_mp(mp * 3);
             canned_msg(MSG_GAIN_MAGIC);

@@ -69,7 +69,7 @@ function random_stair(e, symbol)
 end
 }}
 
-default-depth: D:9-, Depths, Elf
+default-depth: D:9-, Depths, Elf, Dwarf
 
 ###############################################################################
 #
@@ -162,7 +162,7 @@ ENDMAP
 NAME:   not_door_vault_mu
 TAGS:   extra allow_dup luniq
 WEIGHT: 1
-DEPTH:  Depths, Elf
+DEPTH:  Depths, Elf, Dwarf
 MONS:   butterfly
 MARKER: X = lua: props_marker { connected_exclude="true" }
 MARKER: Y = lua: props_marker { stop_explore="strange structure made of doors" }
@@ -827,7 +827,7 @@ ITEM:   Young Poisoner's Handbook / book of Changes / \
         randbook numspells:5 title:Nature \
         spells:beastly_appendage&sting&sticks_to_snakes&cure_poison&spider_form w:245
 : if crawl.coinflip() then
-KITEM:  f = javelin ego:poisoned q:4-6 / tomahawk ego:poisoned
+KITEM:  f = arrow ego:poisoned / javelin ego:poisoned q:4-6 / tomahawk ego:poisoned
 : else
 KITEM:  f = blowgun / w:5 nothing, needle ego:poisoned / needle ego:curare / needle ego:paralysis
 : end
@@ -882,7 +882,7 @@ ITEM:   Young Poisoner's Handbook / book of Changes / \
         randbook numspells:5 title:Nature \
         spells:beastly_appendage&sting&sticks_to_snakes&cure_poison&spider_form w:245
 : if crawl.coinflip() then
-KITEM:  f = javelin ego:poisoned q:4-6 / tomahawk ego:poisoned
+KITEM:  f = arrow ego:poisoned / javelin ego:poisoned q:4-6 / tomahawk ego:poisoned
 : else
 KITEM:  f = blowgun / w:5 nothing, needle ego:poisoned / needle ego:curare / needle ego:paralysis
 : end
@@ -3359,7 +3359,7 @@ ENDMAP
 # Small chamber for a nice item (Eino)
 NAME:   small_chamber_with_monster
 TAGS:   extra
-DEPTH:  D:8-, Depths, Elf, Crypt
+DEPTH:  D:8-, Depths, Elf, Dwarf, Crypt
 MAP
 xxxxxxx
 xxG.Gxx

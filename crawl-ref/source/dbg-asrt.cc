@@ -125,7 +125,7 @@ static void _dump_player(FILE *file)
     // Only dump player info during arena mode if the player is likely
     // the cause of the crash.
     if ((crawl_state.game_is_arena() || crawl_state.arena_suspended)
-        && !in_bounds(you.pos()) && you.hp > 0 && you.hp_max > 0
+        && !in_bounds(you.pos()) && get_hp() > 0 && get_hp_max() > 0
         && you.strength() > 0 && you.intel() > 0 && you.dex() > 0)
     {
         // Arena mode can change behavior of the rest of the code and/or lead
@@ -146,10 +146,10 @@ static void _dump_player(FILE *file)
     fprintf(file, "Species: %s\n", species_name(you.species).c_str());
     fprintf(file, "Job:     %s\n\n", get_job_name(you.char_class));
 
-    fprintf(file, "HP: %d/%d; mods: %d/%d\n", you.hp, you.hp_max,
+    fprintf(file, "HP: %d/%d; mods: %d/%d\n", get_hp(), get_hp_max(),
             you.hp_max_adj_temp, you.hp_max_adj_perm);
     fprintf(file, "MP: %d/%d; mod: %d\n",
-            you.mp, you.mp_max,
+            get_mp(), get_mp_max(),
             you.mp_max_adj);
     fprintf(file, "Stats: %d (%d) %d (%d) %d (%d)\n",
             you.strength(false), you.max_strength(),
