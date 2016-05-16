@@ -472,7 +472,7 @@ void fire_thing(int item)
     if (!target.isValid)
         return;
 
-    item_def *ammo;
+    item_def *ammo = nullptr;
     if (item == -1)
     {
         item_def *const weapon = you.weapon();    
@@ -525,6 +525,9 @@ void fire_thing(int item)
         throw_it(beam, *ammo, &target);
     }
     you.prev_direction.reset();
+
+    if (ammo && ammo->isValid())
+        destroy_item(ammo);
 }
 
 // Basically does what throwing used to do: throw an item without changing
