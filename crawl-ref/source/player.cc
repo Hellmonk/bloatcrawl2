@@ -4530,14 +4530,14 @@ bool dec_sp(int sp_loss, bool silent)
 
 void inc_sp(int sp_gain, bool silent, bool manual)
 {
+    if (sp_gain < 1)
+        return;
+
     if (!silent)
     {
         if (_should_stop_resting(you.sp, you.sp_max))
             interrupt_activity(AI_FULL_SP);
     }
-
-    if (sp_gain < 1 || you.sp >= you.sp_max)
-        return;
 
     if (you.species == SP_DJINNI)
         return inc_hp(sp_gain);
@@ -4563,14 +4563,14 @@ void inc_mp(int mp_gain, bool silent)
     if (you.species == SP_DJINNI)
         return inc_hp(mp_gain);
 
+    if (mp_gain < 1)
+        return;
+
     if (!silent)
     {
         if (_should_stop_resting(you.mp, you.mp_max))
             interrupt_activity(AI_FULL_MP);
     }
-
-    if (mp_gain < 1 || you.mp >= you.mp_max)
-        return;
 
     you.mp += mp_gain;
 
@@ -4599,11 +4599,11 @@ void inc_hp(int hp_gain)
         you.restore_exertion = EXERT_NORMAL;
     }
 
+    if (hp_gain < 1)
+        return;
+
     if (_should_stop_resting(you.hp, you.hp_max))
         interrupt_activity(AI_FULL_HP);
-
-    if (hp_gain < 1 || you.hp >= you.hp_max)
-        return;
 
     you.hp += hp_gain;
 
