@@ -434,16 +434,20 @@ static const ability_def Ability_List[] =
     // Elyvilon
     { ABIL_ELYVILON_LIFESAVING, "Divine Protection",
       0, 0, 0, 0, {FAIL_INVO}, abflag::PIETY },
-    { ABIL_ELYVILON_LESSER_HEALING, "Lesser Healing", 1, 0, 100,
-      generic_cost::fixed(1), {FAIL_INVO, 30, 6, 20}, abflag::CONF_OK },
+    { ABIL_ELYVILON_LESSER_HEALING, "Lesser Healing",
+      0, scaling_cost::fixed(1), 0, generic_cost::fixed(1),
+      {FAIL_INVO, 30, 6, 20}, abflag::CONF_OK },
+    /*
     { ABIL_ELYVILON_HEAL_OTHER, "Heal Other",
       2, 0, 250, 2, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
+      */
     { ABIL_ELYVILON_PURIFICATION, "Purification",
-      3, 0, 300, 3, {FAIL_INVO, 20, 5, 20}, abflag::CONF_OK },
+      3, 0, 0, 3, {FAIL_INVO, 20, 5, 20}, abflag::CONF_OK },
     { ABIL_ELYVILON_GREATER_HEALING, "Greater Healing",
-      2, 0, 250, 3, {FAIL_INVO, 40, 5, 20}, abflag::CONF_OK },
+      0, scaling_cost::fixed(3), 0, generic_cost::fixed(3),
+     {FAIL_INVO, 40, 5, 20}, abflag::CONF_OK },
     { ABIL_ELYVILON_DIVINE_VIGOUR, "Divine Vigour",
-      0, 0, 600, 6, {FAIL_INVO, 80, 4, 25}, abflag::CONF_OK },
+      0, 0, 0, 6, {FAIL_INVO, 80, 4, 25}, abflag::CONF_OK },
 
     // Lugonu
     { ABIL_LUGONU_ABYSS_EXIT, "Depart the Abyss",
@@ -1609,7 +1613,10 @@ bool activate_talent(const talent& tal)
         case SPRET_SUCCESS:
             ASSERT(!fail || testbits(abil.flags, abflag::HOSTILE));
             practise(EX_USED_ABIL, abil.ability);
-            _pay_ability_costs(abil);
+            if (tal.which != ABIL_ELYVILON_LESSER_HEALING
+                && tal.which != ABIL_ELYVILON_GREATER_HEALING
+                )
+                _pay_ability_costs(abil);
             count_action(tal.is_invocation ? CACT_INVOKE : CACT_ABIL, abil.ability);
             return true;
         case SPRET_FAIL:
@@ -2477,19 +2484,33 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         int pow = 0;
         if (abil.ability == ABIL_ELYVILON_LESSER_HEALING)
         {
-            pow = player_adjust_invoc_power(
-                3 + (you.skill_rdiv(SK_INVOCATIONS, 1, 6)));
+            pow = 3 + (you.skill_rdiv(SK_INVOCATIONS, 1, 6));
         }
         else
         {
-            pow = player_adjust_invoc_power(
-                10 + (you.skill_rdiv(SK_INVOCATIONS, 1, 3)));
+            pow = 10 + (you.skill_rdiv(SK_INVOCATIONS, 1, 3));
         }
+        pow = player_adjust_invoc_power(pow);
         pow = min(50, pow);
+        /*
         const int healed = pow + roll_dice(2, pow) - 2;
-        mpr("You are healed.");
+        mprf("You are healed. (hp+%d)", healed);
         inc_hp(healed);
-        break;
+         */
+        bool healed_self;
+        spret_type result = cast_healing(pow, 50, fail, healed_self);
+        if (healed_self)
+        {
+            const int piety_cost = abil.piety_cost.cost();
+            lose_piety(piety_cost);
+        }
+        else
+        {
+            const int hp_cost = abil.hp_cost.cost(10);
+            dec_hp(hp_cost, false);
+        }
+
+        return result;
     }
 
     case ABIL_ELYVILON_PURIFICATION:
@@ -2497,6 +2518,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         elyvilon_purification();
         break;
 
+            /* no longer used
     case ABIL_ELYVILON_HEAL_OTHER:
     {
         int pow = player_adjust_invoc_power(
@@ -2507,6 +2529,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         max_pow = min(50, max_pow);
         return cast_healing(pow, max_pow, fail);
     }
+             */
 
     case ABIL_ELYVILON_DIVINE_VIGOUR:
         fail_check();

@@ -124,7 +124,6 @@ static const body_facet_def _body_facets[] =
  */
 static const int conflict[][3] =
 {
-    { MUT_REGENERATION,        MUT_SLOW_METABOLISM,        0},
     { MUT_REGENERATION,        MUT_SLOW_REGENERATION,      0},
     { MUT_ACUTE_VISION,        MUT_BLURRY_VISION,          0},
     { MUT_FAST,                MUT_SLOW,                   0},
@@ -162,6 +161,8 @@ static const int conflict[][3] =
     { MUT_CAMOUFLAGE,    	   MUT_GLOW, 				  -1},
     { MUT_NIGHTSTALKER,    	   MUT_GLOW, 				  -1},
     { MUT_POISON_RESISTANCE,   MUT_POISON_VULNERABILITY,  -1},
+    { MUT_FLAME_CLOUD_IMMUNITY,  MUT_HEAT_VULNERABILITY,  -1},
+    { MUT_FREEZING_CLOUD_IMMUNITY, MUT_COLD_VULNERABILITY,-1},
 };
 
 equipment_type beastly_slot(int mut)
