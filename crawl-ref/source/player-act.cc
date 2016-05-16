@@ -257,6 +257,7 @@ brand_type player::damage_brand(int)
 int player::attack_delay(const item_def *projectile, bool rescale) const
 {
     const item_def* weap = weapon();
+
     int attk_delay = 15;
     // a semi-arbitrary multiplier, to minimize loss of precision from integer
     // math.
@@ -286,15 +287,18 @@ int player::attack_delay(const item_def *projectile, bool rescale) const
         if (you.form == TRAN_BAT && !projectile)
             attk_delay = attk_delay * 3 / 5;
     }
-    else if (weap &&
-             (projectile ? projectile->launched_by(*weap)
-                         : is_melee_weapon(*weap)))
+    else if (weap
+             /*
+             && (projectile ? projectile->launched_by(*weap)
+                         : is_melee_weapon(*weap))
+                         */
+        )
     {
         const skill_type wpn_skill = item_attack_skill(*weap);
         // Cap skill contribution to mindelay skill, so that rounding
         // doesn't make speed brand benefit from higher skill.
-        const int wpn_sklev = min(you.skill(wpn_skill, 10),
-                                  10 * weapon_min_delay_skill(*weap));
+        int wpn_sklev = you.skill(wpn_skill, 10);
+        wpn_sklev = min(wpn_sklev, 10 * weapon_min_delay_skill(*weap));
 
         attk_delay = property(*weap, PWPN_SPEED);
         attk_delay -= wpn_sklev / DELAY_SCALE;
