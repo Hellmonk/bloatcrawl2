@@ -254,9 +254,10 @@ brand_type player::damage_brand(int)
  *                    finesse doesn't stack with haste.
  * @return            The attack delay.
  */
-int player::attack_delay(const item_def *projectile, bool rescale) const
+int player::attack_delay(const item_def *projectile, bool rescale, const item_def *weapon) const
 {
-    const item_def* weap = weapon();
+    if (!weapon)
+        weapon = weapon();
 
     int attk_delay = 15;
     // a semi-arbitrary multiplier, to minimize loss of precision from integer
@@ -264,7 +265,7 @@ int player::attack_delay(const item_def *projectile, bool rescale) const
     const int DELAY_SCALE = 20;
     const int base_shield_penalty = adjusted_shield_penalty(DELAY_SCALE);
 
-    if (projectile && is_launched(this, weap, *projectile) == LRET_THROWN)
+    if (projectile && is_launched(this, weapon, *projectile) == LRET_THROWN)
     {
         // Thrown weapons use 10 + projectile damage to determine base delay.
         const skill_type wpn_skill = SK_THROWING;
@@ -277,7 +278,7 @@ int player::attack_delay(const item_def *projectile, bool rescale) const
         attk_delay = max(attk_delay, FASTEST_PLAYER_THROWING_SPEED);
          */
     }
-    else if (!weap)
+    else if (!weapon)
     {
         int sk = form_uses_xl() ? experience_level * 10 :
                                   skill(SK_UNARMED_COMBAT, 10);
@@ -287,22 +288,22 @@ int player::attack_delay(const item_def *projectile, bool rescale) const
         if (you.form == TRAN_BAT && !projectile)
             attk_delay = attk_delay * 3 / 5;
     }
-    else if (weap
+    else if (weapon
              /*
              && (projectile ? projectile->launched_by(*weap)
                          : is_melee_weapon(*weap))
                          */
         )
     {
-        const skill_type wpn_skill = item_attack_skill(*weap);
+        const skill_type wpn_skill = item_attack_skill(*weapon);
         // Cap skill contribution to mindelay skill, so that rounding
         // doesn't make speed brand benefit from higher skill.
         int wpn_sklev = you.skill(wpn_skill, 10);
-        wpn_sklev = min(wpn_sklev, 10 * weapon_min_delay_skill(*weap));
+        wpn_sklev = min(wpn_sklev, 10 * weapon_min_delay_skill(*weapon));
 
-        attk_delay = property(*weap, PWPN_SPEED);
+        attk_delay = property(*weapon, PWPN_SPEED);
         attk_delay -= wpn_sklev / DELAY_SCALE;
-        if (get_weapon_brand(*weap) == SPWPN_SPEED)
+        if (get_weapon_brand(*weapon) == SPWPN_SPEED)
             attk_delay = attk_delay * 2 / 3;
     }
 
