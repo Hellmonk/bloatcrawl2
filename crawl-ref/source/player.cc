@@ -4530,6 +4530,12 @@ bool dec_sp(int sp_loss, bool silent)
 
 void inc_sp(int sp_gain, bool silent, bool manual)
 {
+    if (!silent)
+    {
+        if (_should_stop_resting(you.sp, you.sp_max))
+            interrupt_activity(AI_FULL_SP);
+    }
+
     if (sp_gain < 1 || you.sp >= you.sp_max)
         return;
 
@@ -4547,11 +4553,6 @@ void inc_sp(int sp_gain, bool silent, bool manual)
     if (you.sp > you.sp_max)
         you.sp = you.sp_max;
 
-    if (!silent)
-    {
-        if (_should_stop_resting(you.sp, you.sp_max))
-            interrupt_activity(AI_FULL_SP);
-    }
     you.redraw_stamina_points = true;
 }
 
@@ -4561,6 +4562,12 @@ void inc_mp(int mp_gain, bool silent)
 
     if (you.species == SP_DJINNI)
         return inc_hp(mp_gain);
+
+    if (!silent)
+    {
+        if (_should_stop_resting(you.mp, you.mp_max))
+            interrupt_activity(AI_FULL_MP);
+    }
 
     if (mp_gain < 1 || you.mp >= you.mp_max)
         return;
@@ -4576,11 +4583,6 @@ void inc_mp(int mp_gain, bool silent)
     if (you.mp > you.mp_max)
         you.mp = you.mp_max;
 
-    if (!silent)
-    {
-        if (_should_stop_resting(you.mp, you.mp_max))
-            interrupt_activity(AI_FULL_MP);
-    }
     you.redraw_magic_points = true;
 }
 
@@ -4597,6 +4599,9 @@ void inc_hp(int hp_gain)
         you.restore_exertion = EXERT_NORMAL;
     }
 
+    if (_should_stop_resting(you.hp, you.hp_max))
+        interrupt_activity(AI_FULL_HP);
+
     if (hp_gain < 1 || you.hp >= you.hp_max)
         return;
 
@@ -4604,9 +4609,6 @@ void inc_hp(int hp_gain)
 
     if (you.hp > you.hp_max)
         you.hp = you.hp_max;
-
-    if (_should_stop_resting(you.hp, you.hp_max))
-        interrupt_activity(AI_FULL_HP);
 
     you.redraw_hit_points = true;
 }
