@@ -347,13 +347,13 @@ Naga
    * made them even slower, but the slowness comes gradually, at levels 1, 4, and 8.
 
 Ogre
-   * powered by pain at level 12. (LINK)
+   * [powered by pain](http://crawl.chaosforge.org/Powered_By_Pain) at level 12.
    * powered by pain now only works 2/3 of the time on normal, and 1/3 of the time on hard.
    * significantly increased health. They now have by far the greatest health pool of all species.
    * Poor fitting armour now reduces base AC by 1/3, and level 2 reduces it by 2/3. They get level 1 at exp level 10, and level 2 of this effect at exp level 15.
 
 Octopode
-   * (LINK) augmentation 1 after level 6. This boosts damage and spellpower when at high health. Then their gelatinous body advances to level 3 by exp level 8.
+   * [Aug](http://crawl.chaosforge.org/Augmentation) 1 at level 6. This boosts damage and spellpower when at high health. Then their gelatinous body advances to level 3 by exp level 8.
 
 Tengu
    * while flying, their speed increases based on their experience level.
@@ -386,7 +386,7 @@ Demigod
    * Slower leveling
 
 Lava Orcs
-   * Please see the wiki (LINK) for full details.
+   * Please see the [wiki](https://github.com/jeremygurr/dcssca/wiki/Lava-Orc) for full details.
 
 Vine Stalkers
    * They can lignify or unlignify at will, which takes time but may add some interesting strategic choices.
