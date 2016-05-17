@@ -1150,7 +1150,7 @@ bool player_is_very_tired(bool silent = false);
 bool player_mp_is_exhausted(bool silent);
 bool player_sp_is_exhausted(bool silent = false);
 bool in_quick_mode();
-void set_quick_mode(const bool new_quick_mode);
+void set_quick_mode(const bool new_quick_mode, const bool automatic = false);
 void set_exertion(const exertion_mode new_exertion, bool manual = true);
 void exert_toggle(exertion_mode new_exertion);
 

@@ -4361,7 +4361,7 @@ bool in_quick_mode()
     return you.stamina_flags & STAMF_QUICK_MODE;
 }
 
-void set_quick_mode(const bool new_quick_mode)
+void set_quick_mode(const bool new_quick_mode, const bool automatic)
 {
     if (new_quick_mode == in_quick_mode())
         return;
@@ -4378,6 +4378,11 @@ void set_quick_mode(const bool new_quick_mode)
         you.stamina_flags &= ~STAMF_QUICK_MODE;
         you.duration[DUR_QUICK_MODE] = 0;
         you.turn_is_over = true;
+
+        if (automatic)
+            you.stamina_flags |= STAMF_QUICK_MODE_RESTORE;
+        else
+            you.stamina_flags &= ~STAMF_QUICK_MODE_RESTORE;
     }
 
     you.redraw_status_lights = true;
@@ -4501,7 +4506,7 @@ bool dec_sp(int sp_loss, bool silent)
         {
             if (!silent)
                 mpr("You are too tired to continue at this pace.");
-            set_quick_mode(false);
+            set_quick_mode(false, true);
         }
 
         result = false;
@@ -4524,10 +4529,17 @@ void inc_sp(int sp_gain, bool silent, bool manual)
 
     you.sp += sp_gain;
 
-    if (you.sp > you.sp_max / 2 && you.restore_exertion == EXERT_POWER)
+    if (you.sp > you.sp_max / 2)
     {
-        set_exertion(you.restore_exertion, false);
-        you.restore_exertion = EXERT_NORMAL;
+        if (you.restore_exertion == EXERT_POWER)
+        {
+            set_exertion(you.restore_exertion, false);
+            you.restore_exertion = EXERT_NORMAL;
+        }
+        if (you.stamina_flags & STAMF_QUICK_MODE_RESTORE)
+        {
+            set_quick_mode(true, true);
+        }
     }
 
     if (you.sp > you.sp_max)
