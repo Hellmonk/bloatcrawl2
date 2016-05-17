@@ -1915,6 +1915,9 @@ static spret_type _do_cast(spell_type spell, int powc,
         return cast_gravitas(powc, beam.target, fail);
 
     // other effects
+    case SPELL_INNER_FLAME:
+        return cast_inner_flame(powc, monster_at(target), &you);
+
     case SPELL_DISCHARGE:
         return cast_discharge(powc, fail);
 

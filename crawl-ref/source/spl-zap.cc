@@ -51,7 +51,9 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_PETRIFY, ZAP_PETRIFY },
     { SPELL_POLYMORPH, ZAP_POLYMORPH },
     { SPELL_TELEPORT_OTHER, ZAP_TELEPORT_OTHER },
+    /*
     { SPELL_INNER_FLAME, ZAP_INNER_FLAME },
+     */
     { SPELL_HASTE, ZAP_HASTE },
     { SPELL_INVISIBILITY, ZAP_INVISIBILITY },
     { SPELL_DIG, ZAP_DIG },

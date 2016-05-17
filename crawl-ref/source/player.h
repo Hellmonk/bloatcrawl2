@@ -596,7 +596,8 @@ public:
     brand_type  damage_brand(int which_attack = -1) override;
     int         damage_type(int which_attack = -1) override;
     int         attack_delay(const item_def *projectile = nullptr,
-                             bool rescale = true) const override;
+                             bool rescale = true,
+                             const item_def *weapon = nullptr) const override;
     int         constriction_damage() const override;
 
     int       has_claws(bool allow_tran = true) const override;

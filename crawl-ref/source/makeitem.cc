@@ -2061,14 +2061,19 @@ int items(bool allow_uniques,
     // that is, everything turns to gold if not enumerated above, so ... {dlb}
     default:
         item.base_type = OBJ_GOLD;
+
         if (force_good)
             item.quantity = 100 + random2(400);
         else
             item.quantity = 1 + random2avg(19, 2) + random2(item_level);
+
+        if (crawl_state.difficulty == DIFFICULTY_EASY)
+            item.quantity = item.quantity * 5 / 3;
         if (crawl_state.difficulty == DIFFICULTY_STANDARD)
         	item.quantity = item.quantity * 4 / 3;
-        else if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
+        if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
             item.quantity = item.quantity * 2 / 3;
+
         break;
     }
 
