@@ -1,5 +1,7 @@
 ## v1.5.1
 
+* Drinking an experience potion no longer pull up a menu to choose skills. So allocate your training before you drink it.
+
 * Inner Flame is smite targetted now.
 
 * The player can fire missiles through friendlies now without hurting them.
