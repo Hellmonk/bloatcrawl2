@@ -292,7 +292,6 @@ static bool _fire_choose_item_and_target(int& slot, dist& target,
 
     if (!beh.active_item())
     {
-        canned_msg(MSG_OK);
         return false;
     }
     if (!target.isValid)

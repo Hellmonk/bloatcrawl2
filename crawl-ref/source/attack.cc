@@ -134,7 +134,7 @@ bool attack::handle_phase_end()
     fire_final_effects();
 
     if (attacker->is_player())
-        player_attacked_something();
+        player_attacked_something(sp_cost);
 
     return true;
 }

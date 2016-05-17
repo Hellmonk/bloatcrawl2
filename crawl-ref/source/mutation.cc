@@ -1355,6 +1355,9 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
                         if (MUT_BAD(mdef) && x_chance_in_y(3 - player_mutation_level(MUT_BAD_DNA), 4))
                             continue;
 
+                        if (MUT_DEPENDS(mdef) && x_chance_in_y(3 - player_mutation_level(MUT_BAD_DNA), 6))
+                            continue;
+
                         found = true;
                         break;
                     }
@@ -1365,6 +1368,7 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
             }
         }
 
+        bool mutation_randomized = true;
         switch (mutat)
         {
             case RANDOM_MUTATION:
@@ -1383,8 +1387,16 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
                 mutat = _get_random_qazlal_mutation();
                 break;
             default:
+                mutation_randomized = false;
                 break;
         }
+
+        // much lower chance of getting dna muts
+        if (mutation_randomized
+            && mutat >= MUT_FIRST_DNA
+            && mutat <= MUT_LAST_DNA
+            && x_chance_in_y(3, 4))
+            continue;
 
         if (!_is_valid_mutation(mutat))
             continue;
@@ -1435,10 +1447,6 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
             return true;
         if (rc == -1)
             return false;
-
-        // much lower chance of getting dna muts
-        if (mutat >= MUT_FIRST_DNA && mutat <= MUT_LAST_DNA && x_chance_in_y(3, 4))
-            continue;
 
         ASSERT(rc == 0);
         success = true;

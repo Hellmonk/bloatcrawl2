@@ -9382,20 +9382,15 @@ const int get_max_skill_level()
 const int rune_curse_hd_adjust(int hd)
 {
     const int runes = runes_in_pack();
-    int multiplier = 1;
-    if (crawl_state.difficulty == DIFFICULTY_CHALLENGE)
-        multiplier = 2;
-    else if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-        multiplier = 3;
-
-    const int new_hd = hd + div_rand_round(runes * multiplier, 3);
+    int multiplier = crawl_state.difficulty + 1;
+    const int new_hd = hd + div_rand_round(runes * multiplier, 4);
     return new_hd;
 }
 
 const int rune_curse_hp_adjust(int hp)
 {
     const int runes = runes_in_pack();
-    hp = qpow(hp, 50 + crawl_state.difficulty, 50, runes);
+    hp = qpow(hp, 50 + crawl_state.difficulty + 1, 50, runes);
     return hp;
 }
 
@@ -9403,7 +9398,7 @@ const int rune_curse_dam_adjust(int dam)
 {
     const int runes = runes_in_pack();
     if (runes > 0)
-        dam = qpow(dam, 50 + crawl_state.difficulty, 50, runes);
+        dam = qpow(dam, 50 + crawl_state.difficulty + 1, 50, runes);
     return dam;
 }
 
@@ -9465,23 +9460,23 @@ bool player_summoned_monster(spell_type spell, monster* mons, bool first)
 }
 
 // triggered for any ranged or melee attack
-void player_attacked_something()
+void player_attacked_something(int sp_cost)
 {
     player_was_offensive();
     if (you.exertion == EXERT_POWER)
-        dec_sp(3);
+        dec_sp(sp_cost);
     if (you.exertion == EXERT_FOCUS)
-        dec_mp(3);
+        dec_mp(sp_cost);
 }
 
 // When any kind of magic spell is cast by the player
-void player_used_magic()
+void player_used_magic(int mp_cost)
 {
     player_was_offensive();
     if (you.exertion == EXERT_POWER)
-        dec_sp(3);
+        dec_sp(mp_cost);
     if (you.exertion == EXERT_FOCUS)
-        dec_mp(3);
+        dec_mp(mp_cost);
 
     you.time_taken = player_attack_delay_modifier(you.time_taken);
 }
@@ -9595,8 +9590,8 @@ int weapon_sp_cost(const item_def* weapon)
     int weight = weapon ? max(1, property(*weapon, PWPN_WEIGHT)) : 3;
 
     int sp_cost = 100 * weight;
-    sp_cost /= 5 + you.strength(true);
-    sp_cost /= 5 + you.skill(SK_FIGHTING);
+    sp_cost /= 5 + you.strength(true) * 3 / 2;
+    sp_cost /= 5 + you.skill(SK_FIGHTING) * 3 / 2;
 
     sp_cost = max(2, sp_cost);
 
