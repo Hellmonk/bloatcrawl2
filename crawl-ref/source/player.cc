@@ -9657,7 +9657,7 @@ int player_tohit_modifier(int tohit, const int range)
         tohit = tohit * (10 - range + 1) / 10;
 
     if (you.exertion == EXERT_FOCUS)
-        tohit = tohit * 4 / 3 + 50;
+        tohit = tohit * 3 / 2 + 50;
 
     return tohit / base_factor;
 }
