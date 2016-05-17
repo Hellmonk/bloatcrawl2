@@ -53,7 +53,7 @@ amulet of reflection
 An amulet which exerts a force that blocks some incoming attacks, and can even
 reflect any blocked ranged attacks back towards the attacker.
 %%%%
-amulet of regeneration
+amulet of health regeneration
 
 An amulet that increases the wearer's natural regeneration rate. In order to
 function, it must first attune itself to the wearer's body at full health.
