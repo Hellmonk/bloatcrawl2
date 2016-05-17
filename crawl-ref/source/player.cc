@@ -9460,23 +9460,23 @@ bool player_summoned_monster(spell_type spell, monster* mons, bool first)
 }
 
 // triggered for any ranged or melee attack
-void player_attacked_something()
+void player_attacked_something(int sp_cost)
 {
     player_was_offensive();
     if (you.exertion == EXERT_POWER)
-        dec_sp(3);
+        dec_sp(sp_cost);
     if (you.exertion == EXERT_FOCUS)
-        dec_mp(3);
+        dec_mp(sp_cost);
 }
 
 // When any kind of magic spell is cast by the player
-void player_used_magic()
+void player_used_magic(int mp_cost)
 {
     player_was_offensive();
     if (you.exertion == EXERT_POWER)
-        dec_sp(3);
+        dec_sp(mp_cost);
     if (you.exertion == EXERT_FOCUS)
-        dec_mp(3);
+        dec_mp(mp_cost);
 
     you.time_taken = player_attack_delay_modifier(you.time_taken);
 }
@@ -9590,8 +9590,8 @@ int weapon_sp_cost(const item_def* weapon)
     int weight = weapon ? max(1, property(*weapon, PWPN_WEIGHT)) : 3;
 
     int sp_cost = 100 * weight;
-    sp_cost /= 5 + you.strength(true);
-    sp_cost /= 5 + you.skill(SK_FIGHTING);
+    sp_cost /= 5 + you.strength(true) * 3 / 2;
+    sp_cost /= 5 + you.skill(SK_FIGHTING) * 3 / 2;
 
     sp_cost = max(2, sp_cost);
 

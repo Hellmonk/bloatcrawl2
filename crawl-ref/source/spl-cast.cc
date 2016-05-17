@@ -1054,7 +1054,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     you.turn_is_over = true;
     alert_nearby_monsters();
 
-    player_used_magic();
+    player_used_magic(cost + freeze_cost);
     if (is_self_transforming_spell(spell))
         you.current_form_spell = spell;
 

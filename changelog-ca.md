@@ -1,5 +1,11 @@
 ## v1.5.1
 
+* Exertion mode cost is based on action cost instead of a flat cost.
+    * For example, if an attack costs 8 SP in normal exertion mode, and the player is in power mode, it will instead
+      cost 16 SP (+100%). If they are in focus mode, it would cost 8 SP + 8 MP. 
+    * If a player casts a spell costing 10 MP in normal mode, if they were in power mode it would cost 10 MP + 10 SP. In
+      focus mode, it would cost 20 MP. 
+
 * Drinking an experience potion no longer pull up a menu to choose skills. So allocate your training before you drink it.
 
 * Inner Flame is smite targetted now.
