@@ -9664,7 +9664,7 @@ int player_tohit_modifier(int tohit, const int range)
 
     // worst case, range 7, gives 40% of original tohit, which should give about 80% lower chance of hitting
     if (range > 1)
-        tohit = tohit * (10 - range + 1) / 10;
+        tohit = tohit * (20 - range + 1) / 20;
 
     if (you.exertion == EXERT_FOCUS)
         tohit = tohit * 3 / 2 + 50;
