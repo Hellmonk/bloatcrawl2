@@ -1966,6 +1966,22 @@ static bool _safe_discharge(coord_def where, vector<const monster *> &exclude)
     return true;
 }
 
+spret_type cast_inner_flame(int powc, monster* mon, actor* agent, bool fail)
+{
+    fail_check();
+
+    spret_type result = SPRET_ABORT;
+    if (!mon->has_ench(ENCH_INNER_FLAME)
+        && !mon->is_summoned()
+        && mon->add_ench(mon_enchant(ENCH_INNER_FLAME, 0, agent))
+        )
+    {
+        result = SPRET_SUCCESS;
+    }
+
+    return result;
+}
+
 spret_type cast_discharge(int pow, bool fail)
 {
     fail_check();
