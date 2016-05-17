@@ -852,7 +852,7 @@ static void _append_weapon_stats(string &description, const item_def &item)
     base_dam + ammo_dam,
     weapon_sp_cost(&item),
     (float) player_attack_delay_modifier(property(item, PWPN_SPEED)) / 10,
-    (float) you.attack_delay(nullptr) / 10,
+    (float) you.attack_delay(nullptr, true, &item) / 10,
     (float) player_attack_delay_modifier(weapon_min_delay(item)) / 10,
     weapon_min_delay_skill(item),
     your_skill.c_str());

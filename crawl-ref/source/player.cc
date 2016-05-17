@@ -2009,23 +2009,6 @@ int player_movement_speed()
 
     if (in_quick_mode() && you.religion != GOD_CHEIBRIADOS)
     {
-        switch(crawl_state.difficulty)
-        {
-            case DIFFICULTY_STANDARD:
-                mv = 900;
-                break;
-            case DIFFICULTY_CHALLENGE:
-                mv = 950;
-                break;
-            case DIFFICULTY_NIGHTMARE:
-                mv = 1000;
-                break;
-            default:
-                // should not be possible
-                mv = 950;
-                break;
-        }
-        // override for now, since we've nerfed so many other things in this release.
         mv = 900;
     }
 
@@ -2830,11 +2813,14 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
     if (can_gain_experience_here)
     {
         int adjusted_gain = exp_gained;
+        if (crawl_state.difficulty == DIFFICULTY_EASY)
+            adjusted_gain = div_rand_round(adjusted_gain * 5, 3);
+
         if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-            adjusted_gain = div_rand_round(adjusted_gain * 3, 2);
+            adjusted_gain = div_rand_round(adjusted_gain * 4, 3);
 
         if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-            adjusted_gain = div_rand_round(adjusted_gain * 2, 3);
+            adjusted_gain = div_rand_round(adjusted_gain * 3, 4);
 
         if (exp_loss)
         {
@@ -4530,11 +4516,11 @@ bool dec_sp(int sp_loss, bool silent)
 
 void inc_sp(int sp_gain, bool silent, bool manual)
 {
-    if (sp_gain < 1)
-        return;
-
     if (you.species == SP_DJINNI)
         return inc_hp(sp_gain);
+
+    if (sp_gain < 1 || you.sp == you.sp_max)
+        return;
 
     you.sp += sp_gain;
 
@@ -4549,11 +4535,8 @@ void inc_sp(int sp_gain, bool silent, bool manual)
 
     you.redraw_stamina_points = true;
 
-    if (!silent)
-    {
-        if (_should_stop_resting(you.sp, you.sp_max))
-            interrupt_activity(AI_FULL_SP);
-    }
+    if (_should_stop_resting(you.sp, you.sp_max))
+        interrupt_activity(AI_FULL_SP);
 }
 
 void inc_mp(int mp_gain, bool silent)
@@ -4563,7 +4546,7 @@ void inc_mp(int mp_gain, bool silent)
     if (you.species == SP_DJINNI)
         return inc_hp(mp_gain);
 
-    if (mp_gain < 1)
+    if (mp_gain < 1 || you.mp == you.mp_max)
         return;
 
     you.mp += mp_gain;
@@ -4579,11 +4562,8 @@ void inc_mp(int mp_gain, bool silent)
 
     you.redraw_magic_points = true;
 
-    if (!silent)
-    {
-        if (_should_stop_resting(you.mp, you.mp_max))
-            interrupt_activity(AI_FULL_MP);
-    }
+    if (_should_stop_resting(you.mp, you.mp_max))
+        interrupt_activity(AI_FULL_MP);
 }
 
 // Note that "max_too" refers to the base potential, the actual
@@ -4593,14 +4573,14 @@ void inc_hp(int hp_gain)
 {
     ASSERT(!crawl_state.game_is_arena());
 
+    if (hp_gain < 1 || you.hp == you.hp_max)
+        return;
+
     if (you.species == SP_DJINNI && you.hp > you.hp_max / 2 && (you.restore_exertion == EXERT_POWER || you.restore_exertion == EXERT_FOCUS))
     {
         set_exertion(you.restore_exertion, false);
         you.restore_exertion = EXERT_NORMAL;
     }
-
-    if (hp_gain < 1)
-        return;
 
     you.hp += hp_gain;
 
@@ -4812,10 +4792,12 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
 
     if (adjust_for_difficulty)
     {
+        if (crawl_state.difficulty == DIFFICULTY_EASY)
+            hitp = hitp * 10 / 8;
         if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-            hitp = hitp * 4 / 3;
+            hitp = hitp * 9 / 8;
         if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-            hitp = hitp * 3 / 4;
+            hitp = hitp * 7 / 8;
     }
 
     hitp = max(1, hitp + 5);
@@ -4837,13 +4819,13 @@ int get_real_sp(bool include_items)
 
     max_sp = max(max_sp, 20);
 
+    if (crawl_state.difficulty == DIFFICULTY_EASY)
+        max_sp = max_sp * 10 / 8;
     if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-        max_sp = max_sp * 4 / 3;
+        max_sp = max_sp * 9 / 8;
     if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-        max_sp = max_sp * 3 / 4;
+        max_sp = max_sp * 7 / 8;
 
-    if (you.species == SP_DJINNI)
-        max_sp /= 2;
     return max_sp;
 }
 
@@ -4896,17 +4878,17 @@ int get_real_mp(bool include_items, bool rotted)
 
     max_mp = max(max_mp, 20);
 
+    if (crawl_state.difficulty == DIFFICULTY_EASY)
+        max_mp = max_mp * 10 / 8;
     if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-        max_mp = max_mp * 4 / 3;
+        max_mp = max_mp * 9 / 8;
     if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-        max_mp = max_mp * 3 / 4;
+        max_mp = max_mp * 7 / 8;
 
     if (!rotted)
         max_mp -= you.mp_frozen_summons;
 
     max_mp = max(max_mp, 0);
-    if (you.species == SP_DJINNI)
-        max_mp /= 2;
 
     return max_mp;
 }
@@ -9574,11 +9556,13 @@ void player_after_each_turn()
 
 int _apply_hunger(const spell_type &which_spell, int cost)
 {
+
+    int hunger = spell_hunger(which_spell, false);
+
     if (player_mutation_level(MUT_HUNGERLESS) == 0)
-    {
-        const int hunger = spell_hunger(which_spell, false);
-        cost = cost * (hunger + 100) / 100;
-    }
+        hunger /= 2;
+
+    cost = cost * (hunger + 100) / 100;
 
     return cost;
 }
@@ -9634,6 +9618,9 @@ int _difficulty_mode_multiplier()
 
     switch(crawl_state.difficulty)
     {
+        case DIFFICULTY_EASY:
+            x = 100;
+            break;
         case DIFFICULTY_STANDARD:
             x = 90;
             break;
@@ -9652,14 +9639,17 @@ int _difficulty_mode_multiplier()
     return x;
 }
 
-int player_tohit_modifier(int old_tohit)
+int player_tohit_modifier(int tohit)
 {
-    int new_tohit = old_tohit * _difficulty_mode_multiplier();
+    if (tohit == AUTOMATIC_HIT)
+        return tohit;
+
+    tohit *= _difficulty_mode_multiplier();
 
     if (you.exertion == EXERT_FOCUS)
-        new_tohit = new_tohit * 4 / 3 + 50;
+        tohit = tohit * 4 / 3 + 50;
 
-    return new_tohit / base_factor;
+    return tohit / base_factor;
 }
 
 int player_damage_modifier(int old_damage, bool silent)
@@ -9757,6 +9747,9 @@ int player_ouch_modifier(int damage)
 
     switch (crawl_state.difficulty)
     {
+        case DIFFICULTY_EASY:
+            percentage_allowed = 10;
+            break;
         case DIFFICULTY_STANDARD:
             percentage_allowed = 20;
             break;
@@ -9770,6 +9763,9 @@ int player_ouch_modifier(int damage)
             // should not be possible
             break;
     }
+
+    if (Options.disable_instakill_protection)
+        percentage_allowed = 1000;
 
     const int max_damage_allowed_per_turn = get_hp_max() * percentage_allowed / 100;
     const int damage_left = max_damage_allowed_per_turn - you.turn_damage;

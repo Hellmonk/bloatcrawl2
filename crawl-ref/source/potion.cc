@@ -241,6 +241,9 @@ public:
         int minimum_healing;
         switch(crawl_state.difficulty)
         {
+            case DIFFICULTY_EASY:
+                minimum_healing = 30;
+                break;
             case DIFFICULTY_STANDARD:
                 minimum_healing = 20;
                 break;
@@ -258,57 +261,14 @@ public:
         int amount = 0;
         if (is_device)
         {
-            /*
-            int divisor = 50;
-            switch(crawl_state.difficulty)
-            {
-                case DIFFICULTY_CHALLENGE:
-                    divisor = 100;
-                    break;
-                case DIFFICULTY_NIGHTMARE:
-                    divisor = 200;
-                    break;
-                default:
-                    break;
-            }
-            amount = min(get_hp_max(), div_rand_round(get_hp_max() * power, divisor));
-            if (amount > get_hp_max() - get_hp())
-                amount = get_hp_max() - get_hp();
-            amount = max(minimum_healing, amount);
-
-            if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-             */
-                amount = you.scale_device_healing(10 + random2avg(28, 3));
-
-            mprf("You feel better. (HP+%d)", amount);
+            amount = you.scale_device_healing(10 + random2avg(28, 3));
+            mprf("You feel better. (hp+%d)", amount);
         }
-        else switch(crawl_state.difficulty)
-            {
-                case DIFFICULTY_STANDARD:
-                    /*
-                    amount = get_hp_max();
-                    mprf("You feel completely better. (%d)", amount);
-                    break;
-                     */
-                case DIFFICULTY_CHALLENGE:
-                    /*
-                    amount = get_hp_max()/2;
-                    mprf("You feel much better. (%d)", amount);
-                    break;
-                     */
-                case DIFFICULTY_NIGHTMARE:
-                    amount = minimum_healing + random2avg(28, 3);
-                    mprf("You feel a little better. (%d)", amount);
-                    break;
-                default:
-                    // should not be possible
-                    break;
-            }
-
-
-        /*
-        amount = max(minimum_healing, amount);
-         */
+        else
+        {
+            amount = minimum_healing + random2avg(28, 3);
+            mprf("You feel a little better. (hp+%d)", amount);
+        }
 
         // Pay for rot right off the top.
         amount = unrot_hp(amount);
@@ -705,18 +665,11 @@ public:
             // Defer calling level_change() until later in drink() to prevent
             // SIGHUP abuse.
 
-            if (Options.exp_potion_on_each_floor || Options.uniques_drop_exp_potions || !Options.exp_based_on_player_level)
-                gain_potion_exp();
-            else
-                adjust_level(1, true);
+            gain_potion_exp();
         }
         else
             mpr("A flood of memories washes over you.");
         
-        // these are included in default force_more_message
-        if (!Options.exp_potion_on_each_floor && !Options.uniques_drop_exp_potions)
-            skill_menu(SKMF_EXPERIENCE, 750 * you.experience_level);
-            
         return true;
     }
 };
@@ -757,6 +710,9 @@ public:
         int amount = 0;
         switch(crawl_state.difficulty)
         {
+            case DIFFICULTY_EASY:
+                amount = 60;
+                break;
             case DIFFICULTY_STANDARD:
                 amount = 40;
                 break;
@@ -815,6 +771,9 @@ public:
 
         switch(crawl_state.difficulty)
         {
+            case DIFFICULTY_EASY:
+                amount = 60;
+                break;
             case DIFFICULTY_STANDARD:
                 amount = 40;
                 break;
