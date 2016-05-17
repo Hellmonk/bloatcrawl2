@@ -9382,15 +9382,15 @@ const int get_max_skill_level()
 const int rune_curse_hd_adjust(int hd)
 {
     const int runes = runes_in_pack();
-    int multiplier = crawl_state.difficulty;
-    const int new_hd = hd + div_rand_round(runes * multiplier, 3);
+    int multiplier = crawl_state.difficulty + 1;
+    const int new_hd = hd + div_rand_round(runes * multiplier, 4);
     return new_hd;
 }
 
 const int rune_curse_hp_adjust(int hp)
 {
     const int runes = runes_in_pack();
-    hp = qpow(hp, 50 + crawl_state.difficulty, 50, runes);
+    hp = qpow(hp, 50 + crawl_state.difficulty + 1, 50, runes);
     return hp;
 }
 
@@ -9398,7 +9398,7 @@ const int rune_curse_dam_adjust(int dam)
 {
     const int runes = runes_in_pack();
     if (runes > 0)
-        dam = qpow(dam, 50 + crawl_state.difficulty, 50, runes);
+        dam = qpow(dam, 50 + crawl_state.difficulty + 1, 50, runes);
     return dam;
 }
 
