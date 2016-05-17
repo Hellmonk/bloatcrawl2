@@ -9767,6 +9767,9 @@ int player_ouch_modifier(int damage)
             break;
     }
 
+    if (Options.disable_instakill_protection)
+        percentage_allowed = 1000;
+
     const int max_damage_allowed_per_turn = get_hp_max() * percentage_allowed / 100;
     const int damage_left = max_damage_allowed_per_turn - you.turn_damage;
 
