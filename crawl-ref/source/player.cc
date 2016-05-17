@@ -9643,12 +9643,18 @@ int _difficulty_mode_multiplier()
     return x;
 }
 
-int player_tohit_modifier(int tohit)
+int player_tohit_modifier(int tohit, const int range)
 {
+    ASSERT(range <= LOS_MAX_RANGE);
+
     if (tohit == AUTOMATIC_HIT)
         return tohit;
 
     tohit *= _difficulty_mode_multiplier();
+
+    // worst case, range 7, gives 40% of original tohit, which should give about 80% lower chance of hitting
+    if (range > 1)
+        tohit = tohit * (10 - range + 1) / 10;
 
     if (you.exertion == EXERT_FOCUS)
         tohit = tohit * 4 / 3 + 50;
@@ -9656,14 +9662,18 @@ int player_tohit_modifier(int tohit)
     return tohit / base_factor;
 }
 
-int player_damage_modifier(int old_damage, bool silent)
+int player_damage_modifier(int damage, bool silent, const int range)
 {
-    int new_damage = old_damage * _difficulty_mode_multiplier();
+    damage *= _difficulty_mode_multiplier();
+
+    // worst case, range 7, gives 80% of original damage
+    if (range > 1)
+        damage = damage * (30 - range + 1) / 30;
 
     if (you.exertion == EXERT_POWER)
-        new_damage = new_damage * 4 / 3 + 20;
+        damage = damage * 4 / 3 + 20;
 
-    return new_damage / base_factor;
+    return damage / base_factor;
 }
 
 int player_attack_delay_modifier(int attack_delay)
