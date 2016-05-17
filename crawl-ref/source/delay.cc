@@ -1489,7 +1489,7 @@ static inline bool _monster_warning(activity_interrupt_type ai,
 
         monster_info mi(mon);
 
-        text += " (" + to_string(mon->hit_points) + "hp)";
+        text += make_stringf(" (hp=%d, hd=%d)", mon->hit_points, mon->get_hit_dice());
 
         const string mweap = get_monster_equipment_desc(mi,
                                                         ash_id ? DESC_IDENTIFIED
