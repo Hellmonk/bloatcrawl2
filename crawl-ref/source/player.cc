@@ -9691,7 +9691,7 @@ int player_attack_delay_modifier(int attack_delay)
     attack_delay *= base_factor;
 
     if (you.exertion == EXERT_POWER)
-        attack_delay = attack_delay * 7 / 8 - 25;
+        attack_delay = attack_delay * 7 / 8 - 50;
 
     return attack_delay / _difficulty_mode_multiplier();
 }
