@@ -6,6 +6,8 @@
     * If a player casts a spell costing 10 MP in normal mode, if they were in power mode it would cost 10 MP + 10 SP. In
       focus mode, it would cost 20 MP. 
 
+* Maces have higher base damage, because they have the highest weight of all weapons, and cost the most stamina to use.
+
 * Drinking an experience potion no longer pull up a menu to choose skills. So allocate your training before you drink it.
 
 * Inner Flame is smite targetted now.
