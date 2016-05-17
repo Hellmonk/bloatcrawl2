@@ -8,8 +8,8 @@ _NOTICE: The changelog-ca.txt file will contain the latest detailed changes. Thi
 
 There are two known servers where you can play Circus Animals!
 
-http://crawl.homedns.org/ (arizona, USA)
-https://crawl.project357.org/ (sydney, AUS)
+* http://crawl.homedns.org/ (arizona, USA)
+* https://crawl.project357.org/ (sydney, AUS)
 
 Checkout branch v1.5.1 if you want to try it yourself. The master branch will be where future, save game breaking features will be implemented, and then broken off.
 
