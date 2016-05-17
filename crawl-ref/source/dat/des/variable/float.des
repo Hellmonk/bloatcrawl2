@@ -100,9 +100,9 @@ KITEM:  " = club, quarterstaff, quarterstaff
 : end
 KITEM:  ' = club, any magical staff / any rod w:1
 MAP
-xxxxx
-x"']x
-xxxxx
+cmmmc
+m"']m
+cmmmc
 ENDMAP
 
 ################################################################################

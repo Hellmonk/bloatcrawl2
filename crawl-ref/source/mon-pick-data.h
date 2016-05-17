@@ -203,25 +203,25 @@ static const pop_entry pop_blade[] =
 #endif
 
 static const pop_entry pop_dwarf[] =
-{ // Dwarven Fortress
-    {  1,  27, 1000, FLAT, MONS_DEEP_DWARF },
-    {  1,  27,  826, FLAT, MONS_DEEP_DWARF_SCION },
-    {  1,  27,  826, FLAT, MONS_DEEP_DWARF_ARTIFICER },
-    {  1,  27,  690, FLAT, MONS_DEEP_DWARF_NECROMANCER },
-    {  1,  27,  690, FLAT, MONS_DEEP_DWARF_BERSERKER },
-    {  1,  27,  690, FLAT, MONS_DEEP_DWARF_DEATH_KNIGHT },
-    {  1,  27,  334, FLAT, MONS_UNBORN_DEEP_DWARF },
-    {  1,  27,    3, FLAT, MONS_IRON_TROLL },
-    {  1,  27,    3, FLAT, MONS_DEEP_TROLL },
-    {  1,  27,    3, FLAT, MONS_DEEP_TROLL_EARTH_MAGE },
-    {  1,  27,    3, FLAT, MONS_DEEP_TROLL_SHAMAN },
-    {  1,  27,    8, FLAT, MONS_STONE_GIANT },
-    {  1,  27,    8, FLAT, MONS_FIRE_GIANT },
-    {  1,  27,    8, FLAT, MONS_FROST_GIANT },
-    {  1,  27,  192, FLAT, MONS_WRAITH },
-    {  1,  27,    3, FLAT, MONS_SHADOW_WRAITH },
-    {  1,  27,    8, FLAT, MONS_EIDOLON },
-    {  1,  27,    8, FLAT, MONS_PHANTASMAL_WARRIOR },
+{ // Dwarven Fortress (OOD cap: 8)
+    {  1,  8, 1111, FLAT, MONS_DEEP_DWARF },
+    {  1,  6,  888, SEMI, MONS_DEEP_DWARF_SCION },
+    {  1,  8,  999, FLAT, MONS_DEEP_DWARF_ARTIFICER },
+    {  1,  5,  666, SEMI, MONS_DEEP_DWARF_NECROMANCER },
+    {  0,  4,  666, SEMI, MONS_DEEP_DWARF_BERSERKER },
+    {  1,  8,  666, FLAT, MONS_DEEP_DWARF_DEATH_KNIGHT },
+    {  2,  8,  333, FLAT, MONS_UNBORN_DEEP_DWARF },
+    {  1,  7,  222, PEAK, MONS_IRON_TROLL },
+    {  1,  7,  222, FLAT, MONS_DEEP_TROLL },
+    {  1,  7,  111, FLAT, MONS_DEEP_TROLL_EARTH_MAGE },
+    {  2,  7,  333, FLAT, MONS_DEEP_TROLL_SHAMAN },
+    {  3,  7,  333, FLAT, MONS_STONE_GIANT },
+    {  3,  7,  111, FLAT, MONS_FIRE_GIANT },
+    {  3,  7,  222, FLAT, MONS_FROST_GIANT },
+    {  1,  3,  333, FLAT, MONS_WRAITH },
+    {  1,  3,  222, FLAT, MONS_SHADOW_WRAITH },
+    {  2,  7,   33, FLAT, MONS_EIDOLON },
+    {  1,  7,  444, FLAT, MONS_PHANTASMAL_WARRIOR },
     { 0,0,0,FLAT,MONS_0 }
 };
 
