@@ -760,9 +760,11 @@ static void _set_penance(god_type god, int val)
 
 static void _inc_gift_timeout(int val)
 {
+    /*
     if (200 - you.gift_timeout < val)
         you.gift_timeout = 200;
     else
+     */
         you.gift_timeout += val;
 }
 
