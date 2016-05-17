@@ -4832,8 +4832,6 @@ int get_real_sp(bool include_items)
     if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
         max_sp = max_sp * 3 / 4;
 
-    if (you.species == SP_DJINNI)
-        max_sp /= 2;
     return max_sp;
 }
 
@@ -4897,8 +4895,6 @@ int get_real_mp(bool include_items, bool rotted)
         max_mp -= you.mp_frozen_summons;
 
     max_mp = max(max_mp, 0);
-    if (you.species == SP_DJINNI)
-        max_mp /= 2;
 
     return max_mp;
 }
@@ -9646,14 +9642,17 @@ int _difficulty_mode_multiplier()
     return x;
 }
 
-int player_tohit_modifier(int old_tohit)
+int player_tohit_modifier(int tohit)
 {
-    int new_tohit = old_tohit * _difficulty_mode_multiplier();
+    if (tohit == AUTOMATIC_HIT)
+        return tohit;
+
+    tohit *= _difficulty_mode_multiplier();
 
     if (you.exertion == EXERT_FOCUS)
-        new_tohit = new_tohit * 4 / 3 + 50;
+        tohit = tohit * 4 / 3 + 50;
 
-    return new_tohit / base_factor;
+    return tohit / base_factor;
 }
 
 int player_damage_modifier(int old_damage, bool silent)
