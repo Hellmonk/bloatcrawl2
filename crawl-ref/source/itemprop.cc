@@ -310,7 +310,7 @@ static int Weapon_index[NUM_WEAPONS];
 static const weapon_def Weapon_prop[] =
 {
     // Maces & Flails
-    { WPN_CLUB,              "club",                5,  3, 13, 10,
+    { WPN_CLUB,              "club",                7,  3, 13, 10,
         SK_MACES_FLAILS, SIZE_LITTLE,  SIZE_LITTLE, MI_NONE,
         DAMV_CRUSHING, 10, 0, {} },
 #if TAG_MAJOR_VERSION == 34
@@ -338,13 +338,13 @@ static const weapon_def Weapon_prop[] =
         SK_MACES_FLAILS, SIZE_LITTLE,  SIZE_LITTLE, MI_NONE,
         DAMV_CRUSHING, 0, 0, M_AND_F_BRANDS },
 #endif
-    { WPN_MACE,              "mace",                8,  3, 14, 15,
+    { WPN_MACE,              "mace",                9,  3, 14, 15,
         SK_MACES_FLAILS, SIZE_LITTLE,  SIZE_LITTLE, MI_NONE,
         DAMV_CRUSHING, 9, 10, M_AND_F_BRANDS },
-    { WPN_FLAIL,             "flail",              10,  0, 14, 15,
+    { WPN_FLAIL,             "flail",              11,  0, 14, 15,
         SK_MACES_FLAILS, SIZE_LITTLE,  SIZE_LITTLE, MI_NONE,
         DAMV_CRUSHING, 8, 10, M_AND_F_BRANDS },
-    { WPN_MORNINGSTAR,       "morningstar",        13, -2, 15, 20,
+    { WPN_MORNINGSTAR,       "morningstar",        14, -2, 15, 20,
         SK_MACES_FLAILS, SIZE_LITTLE,  SIZE_SMALL,  MI_NONE,
         DAMV_CRUSHING | DAM_PIERCE, 7, 10, {
             { SPWPN_PROTECTION,     30 },
@@ -366,10 +366,10 @@ static const weapon_def Weapon_prop[] =
     { WPN_SACRED_SCOURGE,    "sacred scourge",     12,  0, 11, 5,
         SK_MACES_FLAILS, SIZE_LITTLE,  SIZE_LITTLE, MI_NONE,
         DAMV_SLASHING, 0, 0, HOLY_BRANDS },
-    { WPN_DIRE_FLAIL,        "dire flail",         13, -3, 13, 20,
+    { WPN_DIRE_FLAIL,        "dire flail",         15, -3, 13, 20,
         SK_MACES_FLAILS, SIZE_MEDIUM,  SIZE_BIG,    MI_NONE,
         DAMV_CRUSHING | DAM_PIERCE, 2, 10, M_AND_F_BRANDS },
-    { WPN_EVENINGSTAR,       "eveningstar",        15, -1, 15, 25,
+    { WPN_EVENINGSTAR,       "eveningstar",        17, -1, 15, 25,
         SK_MACES_FLAILS, SIZE_LITTLE,  SIZE_SMALL,  MI_NONE,
         DAMV_CRUSHING | DAM_PIERCE, 0, 2, {
             { SPWPN_PROTECTION,     30 },
@@ -385,13 +385,13 @@ static const weapon_def Weapon_prop[] =
             { SPWPN_PAIN,            2 },
             { SPWPN_VAMPIRISM,       2 },
         }},
-    { WPN_GREAT_MACE,        "great mace",         17, -4, 17, 30,
+    { WPN_GREAT_MACE,        "great mace",         19, -4, 17, 30,
         SK_MACES_FLAILS, SIZE_MEDIUM,  SIZE_BIG,    MI_NONE,
         DAMV_CRUSHING, 3, 10, M_AND_F_BRANDS },
-    { WPN_GIANT_CLUB,        "giant club",         20, -6, 16, 40,
+    { WPN_GIANT_CLUB,        "giant club",         22, -6, 16, 40,
         SK_MACES_FLAILS, SIZE_LARGE, NUM_SIZE_LEVELS, MI_NONE,
         DAMV_CRUSHING, 1, 10, {} },
-    { WPN_GIANT_SPIKED_CLUB, "giant spiked club",  22, -7, 19, 50,
+    { WPN_GIANT_SPIKED_CLUB, "giant spiked club",  25, -7, 19, 50,
         SK_MACES_FLAILS, SIZE_LARGE, NUM_SIZE_LEVELS, MI_NONE,
         DAMV_CRUSHING | DAM_PIERCE, 1, 10, {} },
 

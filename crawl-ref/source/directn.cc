@@ -2085,7 +2085,6 @@ bool direction_chooser::choose_direction()
     if (hitfunc)
         need_beam_redraw = true;
 
-    clear_messages();
     msgwin_set_temporary(true);
     show_initial_prompt();
     need_text_redraw = false;
@@ -2095,6 +2094,7 @@ bool direction_chooser::choose_direction()
     while (!do_main_loop())
         ;
 
+    msgwin_clear_temporary();
     msgwin_set_temporary(false);
 #ifndef USE_TILE_LOCAL
     update_mlist(false);

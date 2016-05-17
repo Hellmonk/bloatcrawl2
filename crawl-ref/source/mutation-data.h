@@ -723,7 +723,7 @@ static const mutation_def mut_data[] =
    "The horns on your head shrink a bit."},
 },
 
-{ MUT_BEAK, 10, 1, mutflag::GOOD, true,
+{ MUT_BEAK, 10, 1, mutflag::DEPENDS, true,
   "beak",
 
   {"You have a beak for a mouth.", "", ""},
