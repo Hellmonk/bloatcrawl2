@@ -155,13 +155,14 @@ static const int MAX_SKILL_COST_LEVEL = 27;
 int calc_skill_cost(int skill_cost_level)
 {
     int cost;
-    if (skill_cost_level >= MAX_SKILL_COST_LEVEL)
+
+    if (Options.level_27_cap)
     {
-        cost = 265;
-    }
-    else
-    {
-        if (Options.level_27_cap)
+        if (skill_cost_level >= MAX_SKILL_COST_LEVEL)
+        {
+            cost = 265;
+        }
+        else
         {
             const int cost_array[] = {1, 2, 3, 4, 5,            // 1-5
                                       7, 8, 9, 13, 22,         // 6-10
@@ -173,11 +174,10 @@ int calc_skill_cost(int skill_cost_level)
             ASSERT_RANGE(skill_cost_level, 1, 27 + 1);
             cost = cost_array[skill_cost_level - 1];
         }
-        else
-        {
-            ASSERT_RANGE(skill_cost_level, 1, MAX_SKILL_COST_LEVEL + 1);
-            cost = stepup2(skill_cost_level, 6, 2, 14) + 1;
-        }
+    }
+    else
+    {
+        cost = stepup2(skill_cost_level, 6, 2, 14) + 1;
     }
 
     return cost;
