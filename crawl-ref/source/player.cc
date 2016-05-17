@@ -9382,12 +9382,7 @@ const int get_max_skill_level()
 const int rune_curse_hd_adjust(int hd)
 {
     const int runes = runes_in_pack();
-    int multiplier = 1;
-    if (crawl_state.difficulty == DIFFICULTY_CHALLENGE)
-        multiplier = 2;
-    else if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-        multiplier = 3;
-
+    int multiplier = crawl_state.difficulty;
     const int new_hd = hd + div_rand_round(runes * multiplier, 3);
     return new_hd;
 }
