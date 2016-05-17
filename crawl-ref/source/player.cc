@@ -9414,6 +9414,16 @@ const int rune_curse_dam_adjust(int dam)
     return dam;
 }
 
+const int rune_curse_depth_adjust(int depth)
+{
+    const int runes = runes_in_pack();
+    /* not ready yet
+    if (runes > 0)
+        depth += runes;
+        */
+    return depth;
+}
+
 void summoned_monster_died(monster* mons, bool natural_death)
 {
     const int mp_cost = mons->mp_freeze;

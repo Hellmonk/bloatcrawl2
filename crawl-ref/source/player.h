@@ -1210,6 +1210,7 @@ const int get_max_skill_level();
 const int rune_curse_hd_adjust(int hd);
 const int rune_curse_hp_adjust(int hp);
 const int rune_curse_dam_adjust(int dam);
+const int rune_curse_depth_adjust(int depth);
 void player_was_offensive();
 void player_attacked_something(int sp_cost);
 void player_used_magic(int mp_cost);

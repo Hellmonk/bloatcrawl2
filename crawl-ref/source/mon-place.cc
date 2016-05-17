@@ -276,10 +276,9 @@ static void _apply_ood(level_id &place)
     // moderate OODs go up to 100% after a ramp-up period.
 
     if (place.branch == BRANCH_DUNGEON
-    	&& crawl_state.difficulty != DIFFICULTY_NIGHTMARE
         && (place.depth == 1 && env.turns_on_level < 701
          || place.depth == 2 && (env.turns_on_level < 584 || one_chance_in(4)))
-		 || place.depth < 6 && crawl_state.difficulty <= DIFFICULTY_STANDARD)
+        )
     {
         return;
     }
@@ -288,8 +287,7 @@ static void _apply_ood(level_id &place)
     level_id old_place = place;
 #endif
 
-    if (x_chance_in_y(_scale_spawn_parameter(140, 1000, 1000, 3000, 4800),
-                      1000))
+    if (x_chance_in_y(_scale_spawn_parameter(140, 1000, 1000, 3000, 4800), 1000))
     {
         const int fuzzspan = 5;
         const int fuzz = max(0, random_range(-fuzzspan, fuzzspan, 2));
@@ -304,9 +302,9 @@ static void _apply_ood(level_id &place)
     }
 
     // On D:13 and deeper, and for those who tarry, something extreme:
+    const bool super_chance = x_chance_in_y(_scale_spawn_parameter(2, 10000, 10000, 3000, 9000), 10000);
     if (Options.exp_percent_from_monsters > 0 && env.turns_on_level > 1400 - place.absdepth() * 117
-        && x_chance_in_y(_scale_spawn_parameter(2, 10000, 10000, 3000, 9000),
-                         10000))
+        && super_chance)
     {
         // this maxes depth most of the time
         place.depth += random2avg(27, 2);
@@ -469,6 +467,7 @@ monster_type pick_random_monster(level_id place,
     if (allow_ood)
         _apply_ood(place);
 
+    place.depth = rune_curse_depth_adjust(place.depth);
     place.depth = min(place.depth, branch_ood_cap(place.branch));
 
     if (final_place)
