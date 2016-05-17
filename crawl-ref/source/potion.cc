@@ -769,6 +769,7 @@ public:
 
         int amount = 0;
 
+        /*
         switch(crawl_state.difficulty)
         {
             case DIFFICULTY_EASY:
@@ -787,6 +788,8 @@ public:
                 // should not be possible
                 break;
         }
+         */
+        amount = 20 + random2(50);
 
         inc_sp(amount);
         mprf("This potion tastes like fruit juice. Energy courses through your body! (SP+%d)", amount);
