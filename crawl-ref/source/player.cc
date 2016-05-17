@@ -4799,11 +4799,11 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
     if (adjust_for_difficulty)
     {
         if (crawl_state.difficulty == DIFFICULTY_EASY)
-            hitp = hitp * 5 / 3;
+            hitp = hitp * 10 / 8;
         if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-            hitp = hitp * 4 / 3;
+            hitp = hitp * 9 / 8;
         if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-            hitp = hitp * 3 / 4;
+            hitp = hitp * 7 / 8;
     }
 
     hitp = max(1, hitp + 5);
@@ -4826,11 +4826,11 @@ int get_real_sp(bool include_items)
     max_sp = max(max_sp, 20);
 
     if (crawl_state.difficulty == DIFFICULTY_EASY)
-        max_sp = max_sp * 5 / 3;
+        max_sp = max_sp * 10 / 8;
     if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-        max_sp = max_sp * 4 / 3;
+        max_sp = max_sp * 9 / 8;
     if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-        max_sp = max_sp * 3 / 4;
+        max_sp = max_sp * 7 / 8;
 
     return max_sp;
 }
@@ -4885,11 +4885,11 @@ int get_real_mp(bool include_items, bool rotted)
     max_mp = max(max_mp, 20);
 
     if (crawl_state.difficulty == DIFFICULTY_EASY)
-        max_mp = max_mp * 5 / 3;
+        max_mp = max_mp * 10 / 8;
     if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-        max_mp = max_mp * 4 / 3;
+        max_mp = max_mp * 9 / 8;
     if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-        max_mp = max_mp * 3 / 4;
+        max_mp = max_mp * 7 / 8;
 
     if (!rotted)
         max_mp -= you.mp_frozen_summons;
