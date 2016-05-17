@@ -117,7 +117,7 @@ struct message_line
     {
         messages = { { msg, 1 } };
         // Don't join long messages.
-        join = jn && strwidth(last_msg().pure_text()) < 40;
+        join = jn && strwidth(last_msg().pure_text()) < msgwin_line_length();
     }
 
     // Constructor for restored messages.

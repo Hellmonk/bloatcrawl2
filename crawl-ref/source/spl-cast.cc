@@ -506,15 +506,15 @@ int raw_spell_fail(spell_type spell)
     // with all factors being 10, player should have a 50% chance of casting a level 5 spell
     float force = 5;
 
-    force *= (1.0 + you.dex(true)) / 3;
+    force *= (1.0 + you.dex(true)) / 2;
     /* intelligence is no longer a factor
-    force *= (1.0 + you.intel(true)) / 3;
+    force *= (1.0 + you.intel(true)) / 2;
      */
-    force *= (1.0 + you.skill(SK_SPELLCASTING)) / 3;
+    force *= (1.0 + you.skill(SK_SPELLCASTING)) / 2;
 
     const spschools_type disciplines = get_spell_disciplines(spell);
     const int skill_factor = average_schools(disciplines);
-    force *= (1.0 + skill_factor) / 3;
+    force *= (1.0 + skill_factor) / 2;
 
     const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
     force = fpow(force, 3, 2, subdued);
@@ -873,9 +873,8 @@ bool cast_a_spell(bool check_range, spell_type spell)
 
                 keyin = get_ch();
 
-                msgwin_set_temporary(false);
                 msgwin_clear_temporary();
-                clear_messages();
+                msgwin_set_temporary(false);
             }
 
             if (keyin == '?' || keyin == '*')
