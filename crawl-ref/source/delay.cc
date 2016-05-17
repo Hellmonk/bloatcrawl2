@@ -1326,7 +1326,8 @@ static bool _should_stop_activity(const delay_queue_item &item,
 
     if (ai == AI_FULL_HP || ai == AI_FULL_MP || ai == AI_FULL_SP)
     {
-        if (Options.rest_wait_both && curr == DELAY_REST
+        if (Options.rest_wait_both
+            && curr == DELAY_REST
             && !you.is_sufficiently_rested())
         {
             return false;
