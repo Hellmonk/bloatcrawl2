@@ -2646,7 +2646,7 @@ void define_monster(monster* mons)
 
     case MONS_HYDRA:
         // Hydras start off with 4 to 8 heads.
-        mons->num_heads = random_range(4, 8);
+        mons->num_heads = random_range(4, 8 + crawl_state.difficulty * 2 - 2);
         break;
 
     case MONS_LERNAEAN_HYDRA:
