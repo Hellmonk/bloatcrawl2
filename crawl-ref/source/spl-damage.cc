@@ -1971,7 +1971,8 @@ spret_type cast_inner_flame(int powc, monster* mon, actor* agent, bool fail)
     fail_check();
 
     spret_type result = SPRET_ABORT;
-    if (!mon->has_ench(ENCH_INNER_FLAME)
+    if (mon
+        && !mon->has_ench(ENCH_INNER_FLAME)
         && !mon->is_summoned()
         && mon->add_ench(mon_enchant(ENCH_INNER_FLAME, 0, agent))
         )
