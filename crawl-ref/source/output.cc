@@ -1201,6 +1201,8 @@ static void _redraw_title()
             _draw_wizmode_flag("WIZARD");
         else if (you.explore)
             _draw_wizmode_flag("EXPLORE");
+        else if (crawl_state.difficulty == DIFFICULTY_EASY)
+            _draw_wizmode_flag("EASY");
         else if (crawl_state.difficulty == DIFFICULTY_STANDARD)
             _draw_wizmode_flag("STANDARD");
         else if (crawl_state.difficulty == DIFFICULTY_CHALLENGE)

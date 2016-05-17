@@ -279,7 +279,7 @@ static void _apply_ood(level_id &place)
     	&& crawl_state.difficulty != DIFFICULTY_NIGHTMARE
         && (place.depth == 1 && env.turns_on_level < 701
          || place.depth == 2 && (env.turns_on_level < 584 || one_chance_in(4)))
-		 || place.depth < 6 && crawl_state.difficulty == DIFFICULTY_STANDARD)
+		 || place.depth < 6 && crawl_state.difficulty <= DIFFICULTY_STANDARD)
     {
         return;
     }

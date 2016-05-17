@@ -828,7 +828,7 @@ amulet of rage
 
 <amulet>
 %%%%
-amulet of regeneration
+amulet of health regeneration
 
 <amulet>
 %%%%

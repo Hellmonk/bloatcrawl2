@@ -97,7 +97,8 @@ public:
         return weapon(0);
     }
     virtual int attack_delay(const item_def *projectile = nullptr,
-                                    bool rescale = true) const = 0;
+                             bool rescale = true,
+                             const item_def* weapon = nullptr) const = 0;
     virtual int has_claws(bool allow_tran = true) const = 0;
     virtual item_def *shield() const = 0;
     virtual item_def *slot_item(equipment_type eq,

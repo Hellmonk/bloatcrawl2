@@ -1108,7 +1108,7 @@ KFEAT:  J = general shop type:Miscellaneous suffix:Merchandise count:14 greed:15
             fruit q:100 | potion of blood q:5 | potion of blood q:5 |\
             potion of blood q:5 | potion of blood q:5 | ring of poison resistance |\
             ring of protection from fire | ring of protection from cold |\
-            ring of protection from magic | amulet of regeneration |\
+            ring of protection from magic | amulet of health regeneration |\
             amulet of harm | amulet of reflection |\
             ring of see invisible
 SUBST:  b : cb

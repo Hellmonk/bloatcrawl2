@@ -432,20 +432,27 @@ NORETURN static void _launch_game()
                     << " " << get_job_name(you.char_class) << ".</yellow>"
                     << endl;
 
+        msg::stream << "<white>You are playing the ";
+
         switch(crawl_state.difficulty)
         {
+        case DIFFICULTY_EASY:
+            msg::stream << "Easy";
+            break;
         case DIFFICULTY_STANDARD:
-        	msg::stream << "<white>You are playing the Standard difficulty mode, " << get_exp_mode_string() << " experience mode</white> <yellow></yellow>" << endl;
+            msg::stream << "Standard";
         	break;
         case DIFFICULTY_CHALLENGE:
-        	msg::stream << "<yellow>You are playing the Challenge difficulty mode, " << get_exp_mode_string() << " experience mode</yellow> <yellow></yellow>" << endl;
+            msg::stream << "Challenge";
         	break;
         case DIFFICULTY_NIGHTMARE:
-        	msg::stream << "<lightred>You are playing the Nightmare difficulty mode, " << get_exp_mode_string() << " experience mode</lightred><yellow></yellow>" << endl;
+            msg::stream << "Nightmare";
         	break;
         default:
         	break;
         }
+
+        msg::stream << " difficulty mode, " << get_exp_mode_string() << " experience mode</white> <yellow></yellow>" << endl;
     }
 
 #ifdef USE_TILE

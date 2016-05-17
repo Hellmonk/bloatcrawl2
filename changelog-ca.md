@@ -1,5 +1,7 @@
 ## v1.5.1
 
+* Inner Flame is smite targetted now.
+
 * The player can fire missiles through friendlies now without hurting them.
 
 * Elyvilon improvements
@@ -38,6 +40,7 @@
       is allowed (40 points of damage) that round. Then the player gets a chance to read a blink scroll and maybe escape.
     * This isn't going to make up for chronically bad habits, but it will reduces the chances of players who are playing
       well from dying because of a freak RNG roll.
+    * This may be disabled with: disable_instakill_protection = true
 
 * Labyrinth allows auto-explore
     * It's not super reliable, but I find that is removes some tedium without making it totally trivial.
