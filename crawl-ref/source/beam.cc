@@ -506,7 +506,7 @@ void zappy(zap_type z_type, int power, bool is_monster, bolt &pbolt)
             pbolt.hit = max(0, pbolt.hit - 5 * you.inaccuracy());
     }
 
-    if (!is_monster)
+    if (!is_monster && pbolt.hit != AUTOMATIC_HIT)
         player_update_tohit(pbolt.hit);
 
     dam_deducer* dam_calc = is_monster ? zinfo->monster_damage
@@ -1288,6 +1288,7 @@ void bolt::do_fire()
 
         const dungeon_feature_type feat = grd(pos());
 
+        /*
         if (in_bounds(target)
             // We ran into a solid wall with a real beam...
             && (feat_is_solid(feat)
@@ -1313,7 +1314,6 @@ void bolt::do_fire()
             // of the player manually targeting something whose line of fire
             // is blocked, even though its line of sight isn't blocked. Give
             // a warning about this fact.
-            /*
             string prompt = "Your line of fire to ";
             const monster* mon = monster_at(target);
 
@@ -1339,10 +1339,10 @@ void bolt::do_fire()
                 finish_beam();
                 return;
             }
-             */
 
-            // Well, we warned them.
-        }
+                // Well, we warned them.
+            }
+             */
 
         if (feat_is_solid(feat) && !can_affect_wall(feat))
         {
