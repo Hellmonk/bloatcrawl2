@@ -1210,8 +1210,7 @@ static string _describe_ammo(const item_def &item)
             description += "It is coated with poison.";
             break;
         case SPMSL_CURARE:
-            description += "It is tipped with impact poison. It is twice as "
-                           "likely to be destroyed on impact as other needles.";
+            description += "It is tipped with impact poison.";
             break;
         case SPMSL_PARALYSIS:
             description += "It is tipped with a paralysing substance.";

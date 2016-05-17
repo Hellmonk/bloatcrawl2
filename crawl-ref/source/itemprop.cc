@@ -293,9 +293,11 @@ static const vector<brand_weight_tuple> POLEARM_BRANDS = {
 
 /// brand weights for most ranged weapons.
 static const vector<brand_weight_tuple> RANGED_BRANDS = {
-    { SPWPN_NORMAL,   50 },
+    { SPWPN_NORMAL,   75 },
+    /*
     { SPWPN_FLAMING,  24 },
     { SPWPN_FREEZING, 12 },
+     */
     { SPWPN_EVASION,   8 },
     { SPWPN_VORPAL,    6 },
 };

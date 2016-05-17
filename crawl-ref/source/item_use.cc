@@ -1848,12 +1848,14 @@ static void _rebrand_weapon(item_def& wpn)
         if (is_range_weapon(wpn))
         {
             new_brand = random_choose_weighted(
+                                    /*
                                     30, SPWPN_FLAMING,
                                     30, SPWPN_FREEZING,
                                     20, SPWPN_VENOM,
+                                    5, SPWPN_ELECTROCUTION,
+                                    */
                                     20, SPWPN_VORPAL,
                                     12, SPWPN_EVASION,
-                                    5, SPWPN_ELECTROCUTION,
                                     3, SPWPN_CHAOS,
                                     0);
         }
