@@ -2749,7 +2749,7 @@ void gain_floor_exp()
     gain_exp(abs(exp), nullptr, false, exp < 0);
 }
 
-void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_monster, bool exp_loss, bool skip_training = false)
+void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_monster, bool exp_loss, bool skip_training)
 {
     if (actual_gain != nullptr)
         *actual_gain = 0;
