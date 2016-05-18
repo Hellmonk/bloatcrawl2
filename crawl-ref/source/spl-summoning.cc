@@ -3557,8 +3557,6 @@ int unsummon_all()
 
 void unsummon(monster *mons)
 {
-//    unfreeze_summons_mp(mons->mp_freeze);
-
     if (mons->attitude != ATT_HOSTILE)
     {
         mons->del_ench(ENCH_ABJ);
@@ -3570,16 +3568,4 @@ void unsummon(monster *mons)
         const int mp_cost = mons->mp_freeze;
         unfreeze_summons_mp(mp_cost);
     }
-}
-
-int player_summon_count()
-{
-    int count = 0;
-    for (unsigned int i = 0; i < you.summoned.size(); i++)
-    {
-        if (you.summoned[i] != MID_NOBODY)
-            count++;
-    }
-
-    return count;
 }

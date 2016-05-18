@@ -4656,11 +4656,15 @@ void rot_mp(int mp_loss)
     you.redraw_magic_points = true;
 }
 
-void freeze_summons_mp(int mp_loss)
+bool freeze_summons_mp(int mp_loss)
 {
+    if (get_mp_max() < mp_loss)
+        return false;
+
     you.mp_frozen_summons += mp_loss;
     calc_mp();
     you.redraw_magic_points = true;
+    return true;
 }
 
 void unfreeze_summons_mp(int amount)
@@ -9454,28 +9458,38 @@ void remove_from_summoned(mid_t mid)
 bool player_summoned_monster(spell_type spell, monster* mons, bool first)
 {
     bool success = true;
-    const int cost = first ? spell_mp_freeze(spell) : 0;
+    const int cost = spell_mp_freeze(spell);
     mons->mp_freeze = cost;
-    freeze_summons_mp(cost);
-
-    int open_slot = -1;
-    for (unsigned int i = 0; i < you.summoned.size(); i++)
+    while (true)
     {
-        if (you.summoned[i] == MID_NOBODY)
+        if (!freeze_summons_mp(cost))
         {
-            open_slot = i;
+            mpr("You don't have enough energy to support more summons of this magnitude.");
+            success = false;
             break;
         }
-    }
 
-    if (open_slot == -1)
-    {
-        mpr("Your mind can't handle so many summons at once.");
-        success = false;
-    }
-    else
-    {
-        you.summoned[open_slot] = mons->mid;
+        int open_slot = -1;
+        for (unsigned int i = 0; i < you.summoned.size(); i++)
+        {
+            if (you.summoned[i] == MID_NOBODY)
+            {
+                open_slot = i;
+                break;
+            }
+        }
+
+        if (open_slot == -1)
+        {
+            mpr("Your mind can't handle so many summons at once.");
+            success = false;
+        }
+        else
+        {
+            you.summoned[open_slot] = mons->mid;
+        }
+
+        break;
     }
 
     return success;

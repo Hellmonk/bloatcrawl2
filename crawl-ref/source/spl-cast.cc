@@ -937,7 +937,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
         return false;
     }
 
-    if (is_summon_spell(spell) && player_summon_count() >= 5)
+    if (is_summon_spell(spell) && player_summon_count() >= MAX_SUMMONS)
     {
         mpr("You can't maintain any more summons.");
         return false;

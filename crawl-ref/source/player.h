@@ -1069,7 +1069,7 @@ void rot_hp(int hp_loss);
 int unrot_hp(int hp_recovered);
 int player_rotted();
 void rot_mp(int mp_loss);
-void freeze_summons_mp(int mp_loss);
+bool freeze_summons_mp(int mp_loss);
 void unfreeze_summons_mp(int amount = -1);
 
 void inc_max_hp(int hp_gain);
@@ -1235,5 +1235,6 @@ void player_update_tohit(int new_tohit = -1);
 void summoned_monster_died(monster* mons, bool natural_death);
 bool player_summoned_monster(spell_type spell, monster* mons, bool first);
 int player_ouch_modifier(int damage);
+int player_summon_count();
 
 #endif
