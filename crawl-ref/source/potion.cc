@@ -666,6 +666,7 @@ public:
             // SIGHUP abuse.
 
             gain_potion_exp();
+            skill_menu(SKMF_EXPERIENCE, 750 * you.experience_level);
         }
         else
             mpr("A flood of memories washes over you.");

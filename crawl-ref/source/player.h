@@ -1027,10 +1027,10 @@ void remove_from_summoned(mid_t mid);
 void forget_map(bool rot = false);
 
 int get_exp_progress();
-void gain_exp(unsigned int exp_gained, unsigned int* actual_gain = nullptr, bool from_monster = true, bool exp_loss = false);
+void gain_exp(unsigned int exp_gained, unsigned int* actual_gain = nullptr, bool from_monster = true, bool exp_loss = false, bool skip_training = false);
 const int potion_experience_for_this_floor();
 const int floor_experience_for_this_floor();
-void gain_potion_exp();
+void gain_potion_exp(bool skip_training=false);
 void gain_floor_exp();
 
 bool player_can_open_doors();
