@@ -4808,15 +4808,10 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
 
     if (adjust_for_difficulty)
     {
-        if (crawl_state.difficulty == DIFFICULTY_EASY)
-            hitp = hitp * 10 / 8;
-        if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-            hitp = hitp * 9 / 8;
-        if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-            hitp = hitp * 7 / 8;
+        hitp = player_generic_modifier(hitp);
     }
 
-    hitp = max(1, hitp + 5);
+    hitp = max(10, hitp);
 
     return hitp;
 }
@@ -4833,14 +4828,8 @@ int get_real_sp(bool include_items)
 
     max_sp = max_sp + 20 * boost;
 
+    max_sp = player_generic_modifier(max_sp);
     max_sp = max(max_sp, 20);
-
-    if (crawl_state.difficulty == DIFFICULTY_EASY)
-        max_sp = max_sp * 10 / 8;
-    if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-        max_sp = max_sp * 9 / 8;
-    if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-        max_sp = max_sp * 7 / 8;
 
     return max_sp;
 }
@@ -4849,30 +4838,12 @@ int get_real_mp(bool include_items, bool rotted)
 {
     int max_mp = 100;
 
-    /* no longer needed
-
-    const int scale = 100;
-    int spellcasting = you.skill(SK_SPELLCASTING, 1 * scale, true);
-    int scaled_xl = effective_xl() * scale;
-
-    // the first 4 experience levels give an extra .5 mp up to your spellcasting
-    // the last 4 give no mp
-    int enp = min(23 * scale, scaled_xl);
-
-    int spell_extra = spellcasting; // 100%
-    int invoc_extra = you.skill(SK_INVOCATIONS, 1 * scale, true) / 2; // 50%
-    int evoc_extra = you.skill(SK_EVOCATIONS, 1 * scale, true) / 2; // 50%
-    int highest_skill = max(spell_extra, max(invoc_extra, evoc_extra));
-    enp += highest_skill + min(8 * scale, min(highest_skill, scaled_xl)) / 2;
-     */
-
     // Analogous to ROBUST/FRAIL
-    max_mp *= 100  + (player_mutation_level(MUT_HIGH_MAGIC) * 10)
-                   + (you.attribute[ATTR_DIVINE_VIGOUR] * 5)
-                   - (player_mutation_level(MUT_LOW_MAGIC) * 10)
-                   + species_mp_modifier(you.species) * 20
-                   ;
-    max_mp /= 100;
+    max_mp += + (player_mutation_level(MUT_HIGH_MAGIC) * 10)
+              + (you.attribute[ATTR_DIVINE_VIGOUR] * 5)
+              - (player_mutation_level(MUT_LOW_MAGIC) * 10)
+              + species_mp_modifier(you.species) * 20
+              ;
 
     // This is our "rotted" base, applied after multipliers
     max_mp += you.mp_max_adj;
@@ -4892,14 +4863,8 @@ int get_real_mp(bool include_items, bool rotted)
     if (include_items && you.wearing_ego(EQ_WEAPON, SPWPN_ANTIMAGIC))
         max_mp /= 3;
 
+    max_mp = player_generic_modifier(max_mp);
     max_mp = max(max_mp, 20);
-
-    if (crawl_state.difficulty == DIFFICULTY_EASY)
-        max_mp = max_mp * 10 / 8;
-    if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-        max_mp = max_mp * 9 / 8;
-    if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-        max_mp = max_mp * 7 / 8;
 
     if (!rotted)
         max_mp -= you.mp_frozen_summons;
@@ -9455,6 +9420,18 @@ void remove_from_summoned(mid_t mid)
     }
 }
 
+int player_summon_count()
+{
+    int count = 0;
+    for (unsigned int i = 0; i < you.summoned.size(); i++)
+    {
+        if (you.summoned[i] != MID_NOBODY)
+            count++;
+    }
+
+    return count;
+}
+
 bool player_summoned_monster(spell_type spell, monster* mons, bool first)
 {
     bool success = true;
@@ -9776,6 +9753,33 @@ void player_update_tohit(int new_tohit)
 
     you.last_tohit = new_tohit;
     you.redraw_tohit = true;
+}
+
+// used for pool sizes. Generic way to scale something based on difficulty
+int player_generic_modifier(int amount)
+{
+    int percent = 100;
+
+    switch (crawl_state.difficulty)
+    {
+        case DIFFICULTY_EASY:
+            percent = 150;
+            break;
+        case DIFFICULTY_STANDARD:
+            percent = 100;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            percent = 90;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            percent = 80;
+            break;
+        default:
+            // should not be possible
+            break;
+    }
+
+    return amount * percent / 100;
 }
 
 // reduce damage to player if it has exceeded protection thresholds (to avoid 1 hit kills for example)
