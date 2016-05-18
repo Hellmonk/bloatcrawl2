@@ -4361,7 +4361,7 @@ bool in_quick_mode()
     return you.stamina_flags & STAMF_QUICK_MODE;
 }
 
-void set_quick_mode(const bool new_quick_mode)
+void set_quick_mode(const bool new_quick_mode, const bool automatic)
 {
     if (new_quick_mode == in_quick_mode())
         return;
@@ -4378,6 +4378,11 @@ void set_quick_mode(const bool new_quick_mode)
         you.stamina_flags &= ~STAMF_QUICK_MODE;
         you.duration[DUR_QUICK_MODE] = 0;
         you.turn_is_over = true;
+
+        if (automatic)
+            you.stamina_flags |= STAMF_QUICK_MODE_RESTORE;
+        else
+            you.stamina_flags &= ~STAMF_QUICK_MODE_RESTORE;
     }
 
     you.redraw_status_lights = true;
@@ -4501,7 +4506,7 @@ bool dec_sp(int sp_loss, bool silent)
         {
             if (!silent)
                 mpr("You are too tired to continue at this pace.");
-            set_quick_mode(false);
+            set_quick_mode(false, true);
         }
 
         result = false;
@@ -4524,10 +4529,17 @@ void inc_sp(int sp_gain, bool silent, bool manual)
 
     you.sp += sp_gain;
 
-    if (you.sp > you.sp_max / 2 && you.restore_exertion == EXERT_POWER)
+    if (you.sp > you.sp_max / 2)
     {
-        set_exertion(you.restore_exertion, false);
-        you.restore_exertion = EXERT_NORMAL;
+        if (you.restore_exertion == EXERT_POWER)
+        {
+            set_exertion(you.restore_exertion, false);
+            you.restore_exertion = EXERT_NORMAL;
+        }
+        if (you.stamina_flags & STAMF_QUICK_MODE_RESTORE)
+        {
+            set_quick_mode(true, true);
+        }
     }
 
     if (you.sp > you.sp_max)
@@ -9402,6 +9414,16 @@ const int rune_curse_dam_adjust(int dam)
     return dam;
 }
 
+const int rune_curse_depth_adjust(int depth)
+{
+    const int runes = runes_in_pack();
+    /* not ready yet
+    if (runes > 0)
+        depth += runes;
+        */
+    return depth;
+}
+
 void summoned_monster_died(monster* mons, bool natural_death)
 {
     const int mp_cost = mons->mp_freeze;
@@ -9631,27 +9653,37 @@ int _difficulty_mode_multiplier()
     return x;
 }
 
-int player_tohit_modifier(int tohit)
+int player_tohit_modifier(int tohit, const int range)
 {
+    ASSERT(range <= LOS_MAX_RANGE);
+
     if (tohit == AUTOMATIC_HIT)
         return tohit;
 
     tohit *= _difficulty_mode_multiplier();
 
+    // worst case, range 7, gives 40% of original tohit, which should give about 80% lower chance of hitting
+    if (range > 1)
+        tohit = tohit * (20 - range + 1) / 20;
+
     if (you.exertion == EXERT_FOCUS)
-        tohit = tohit * 4 / 3 + 50;
+        tohit = tohit * 3 / 2 + 50;
 
     return tohit / base_factor;
 }
 
-int player_damage_modifier(int old_damage, bool silent)
+int player_damage_modifier(int damage, bool silent, const int range)
 {
-    int new_damage = old_damage * _difficulty_mode_multiplier();
+    damage *= _difficulty_mode_multiplier();
+
+    // worst case, range 7, gives 80% of original damage
+    if (range > 1)
+        damage = damage * (30 - range + 1) / 30;
 
     if (you.exertion == EXERT_POWER)
-        new_damage = new_damage * 4 / 3 + 20;
+        damage = damage * 4 / 3 + 20;
 
-    return new_damage / base_factor;
+    return damage / base_factor;
 }
 
 int player_attack_delay_modifier(int attack_delay)
@@ -9659,7 +9691,7 @@ int player_attack_delay_modifier(int attack_delay)
     attack_delay *= base_factor;
 
     if (you.exertion == EXERT_POWER)
-        attack_delay = attack_delay * 7 / 8 - 25;
+        attack_delay = attack_delay * 7 / 8 - 50;
 
     return attack_delay / _difficulty_mode_multiplier();
 }

@@ -1917,6 +1917,8 @@ int prompt_invent_item(FixedVector< item_def, ENDOFPACK > &inv,
             keyin = '*';
     }
 
+    msgwin_set_temporary(true);
+
     while (true)
     {
         if (need_redraw && !crawl_state.doing_prev_cmd_again)
@@ -2042,6 +2044,9 @@ int prompt_invent_item(FixedVector< item_def, ENDOFPACK > &inv,
             need_prompt = false;
         }
     }
+
+    msgwin_clear_temporary();
+    msgwin_set_temporary(false);
 
     return ret;
 }

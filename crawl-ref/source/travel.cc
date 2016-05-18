@@ -3008,7 +3008,8 @@ level_id level_id::current()
 
 int level_id::absdepth() const
 {
-    return absdungeon_depth(branch, depth);
+    const int original = absdungeon_depth(branch, depth);
+    return rune_curse_depth_adjust(original);
 }
 
 level_id level_id::get_next_level_id(const coord_def &pos)

@@ -2198,6 +2198,7 @@ enum stamina_flag
 {
     STAMF_QUICK_MODE                = (1 << 0),
     STAMF_SKIP_MOVEMENT_PENALTY     = (1 << 1),
+    STAMF_QUICK_MODE_RESTORE        = (1 << 2),
 };
 
 enum flush_reason_type

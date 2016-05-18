@@ -21,22 +21,30 @@ int branch_ood_cap(branch_type branch)
 {
     ASSERT(branch < NUM_BRANCHES);
 
+    int cap = branches[branch].numlevels;
+
     switch (branch)
     {
     case BRANCH_DUNGEON:
-        return 27;
+        cap = 27;
+        break;
     case BRANCH_DEPTHS:
-        return 14;
+        cap = 14;
+        break;
     case BRANCH_VAULTS:
-        return 12;
+        cap = 12;
+        break;
     case BRANCH_ELF:
-        return 7;
+        cap = 7;
+        break;
     case BRANCH_CRYPT:
     case BRANCH_TOMB:
-        return 5;
-    default:
-        return branches[branch].numlevels;
+        cap = 5;
+        break;
     }
+
+    cap = rune_curse_depth_adjust(cap);
+    return cap;
 }
 
 // only Pan currently

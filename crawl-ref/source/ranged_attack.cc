@@ -387,9 +387,6 @@ int ranged_attack::apply_damage_modifiers(int damage, int damage_max)
         damage += random2avg(bonus, 2);
     }
 
-    if (attacker->is_player())
-        damage = player_damage_modifier(damage);
-
     return damage;
 }
 

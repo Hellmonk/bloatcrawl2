@@ -227,7 +227,10 @@ int attack::calc_to_hit(bool random)
         mhit = maybe_random2(mhit, random);
         */
 
-        mhit = player_tohit_modifier(mhit);
+        int range = 1;
+        if (attacker && defender)
+            range = grid_distance(attacker->pos(), defender->pos());
+        mhit = player_tohit_modifier(mhit, range);
     }
     else    // Monster to-hit.
     {
@@ -1317,6 +1320,9 @@ int attack::player_apply_final_multipliers(int damage)
     // Can't affect much of anything as a shadow.
     if (you.form == TRAN_SHADOW)
         damage = div_rand_round(damage, 2);
+
+    const int range = grid_distance(attacker->pos(), defender->pos());
+    damage = player_damage_modifier(damage, false, range);
 
     return damage;
 }

@@ -466,10 +466,12 @@ static void _add_randart_weapon_brand(const item_def &item,
     {
         item_props[ARTP_BRAND] = random_choose_weighted(
             2, SPWPN_SPEED,
-            4, SPWPN_VENOM,
             4, SPWPN_VORPAL,
+            /*
+            4, SPWPN_VENOM,
             4, SPWPN_FLAMING,
             4, SPWPN_FREEZING,
+             */
             0);
 
         if (item_type == WPN_BLOWGUN)
