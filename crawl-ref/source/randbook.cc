@@ -1180,9 +1180,11 @@ static void _choose_themed_randbook_spells(weighted_spells &possible_spells,
     for (int i = 0; i < size; ++i)
     {
         const spell_type *spell = random_choose_weighted(possible_spells);
-        ASSERT(spell);
-        spells.push_back(*spell);
-        possible_spells[*spell] = 0; // don't choose the same one twice!
+        if (spell)
+        {
+            spells.push_back(*spell);
+            possible_spells[*spell] = 0; // don't choose the same one twice!
+        }
     }
 }
 
