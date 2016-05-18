@@ -9562,7 +9562,7 @@ int _apply_hunger(const spell_type &which_spell, int cost)
 
     int hunger = spell_hunger(which_spell, false);
 
-    if (player_mutation_level(MUT_HUNGERLESS) == 0)
+    if (player_mutation_level(MUT_HUNGERLESS) > 0)
         hunger /= 2;
 
     cost = cost * (hunger + 100) / 100;
