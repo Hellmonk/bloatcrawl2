@@ -4098,8 +4098,6 @@ bool dec_hp(int hp_loss, bool fatal, const char *aux)
     if (!fatal && you.hp < 1)
         you.hp = 1;
 
-    hp_loss = rune_curse_dam_adjust(hp_loss);
-
     if (!fatal && hp_loss >= you.hp)
         hp_loss = you.hp - 1;
 
