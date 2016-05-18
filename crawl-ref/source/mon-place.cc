@@ -1476,7 +1476,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
 
     if (!crawl_state.game_is_arena())
     {
-        mon->max_hit_points = min(rune_curse_hp_adjust(mon->max_hit_points), MAX_MONSTER_HP);
+        mon->max_hit_points = min(mon->max_hit_points, MAX_MONSTER_HP);
         mon->hit_points = mon->max_hit_points;
     }
 
