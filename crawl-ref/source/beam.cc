@@ -5528,10 +5528,13 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
         }
 
         case BEAM_DISINTEGRATION:   // disrupt/disintegrate
-            if (simple_monster_message(mon, " is blasted."))
+        {
+            int hurt = damage.roll();
+            if (monster_message(mon, " is blasted (%d).", hurt))
                 obvious_effect = true;
-            mon->hurt(agent(), damage.roll(), flavour);
+            mon->hurt(agent(), hurt, flavour);
             return MON_AFFECTED;
+        }
 
         case BEAM_HIBERNATION:
             if (mon->can_hibernate())
