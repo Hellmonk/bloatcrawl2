@@ -9387,7 +9387,7 @@ const int rune_curse_hp_adjust(int hp)
 const int rune_curse_dam_adjust(int dam)
 {
     const int runes = runes_in_pack();
-    if (runes > 0)
+    if (runes > 0 && dam != INSTANT_DEATH)
         dam = qpow(dam, 100 + crawl_state.difficulty + 1, 100, runes);
     return dam;
 }
