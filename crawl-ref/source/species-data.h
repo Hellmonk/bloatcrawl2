@@ -553,7 +553,7 @@ static const map<species_type, species_def> species_data =
     "HO",
     "Hill Orc", "Orcish", "Orc",
     SPF_ORCISH,
-    0, 1, 2,
+    0, 1, 1,
     15, 3,
     MONS_ORC,
     HT_LAND, US_ALIVE, SIZE_MEDIUM,
