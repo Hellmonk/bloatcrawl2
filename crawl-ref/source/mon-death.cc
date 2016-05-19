@@ -537,7 +537,7 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
         if (mons_corpse_effect(corpse.mon_type) == CE_MUTAGEN)
         {
             int potion_count = random2(max_corpse_chunks(corpse.mon_type));
-            potion_count = max(1, count / 2);
+            potion_count = max(1, potion_count / 2);
 
             for (int i = 0; i < potion_count; i++)
             {
