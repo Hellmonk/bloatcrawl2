@@ -1159,7 +1159,7 @@ int get_hp_max();
 int get_sp();
 int get_sp_max();
 int get_mp();
-int get_mp_max();
+int get_mp_max(bool raw = false);
 
 bool player_has_orb();
 bool player_on_orb_run();

@@ -4306,11 +4306,15 @@ int get_mp()
     return you.mp;
 }
 
-int get_mp_max()
+int get_mp_max(bool raw = false)
 {
     if (you.species == SP_DJINNI)
         return you.hp_max;
-    return you.mp_max;
+    int max = you.mp_max;
+    if (raw)
+        max += you.mp_frozen_summons;
+
+    return max;
 }
 
 bool player_is_tired(bool silent)
@@ -9501,10 +9505,13 @@ void player_moved()
 {
     if (in_quick_mode() && you.peace < 100)
         dec_sp(3);
-    if (you.exertion == EXERT_FOCUS && you.peace < 50)
-        dec_mp(3);
-    if (you.airborne() && you.cancellable_flight())
-        dec_sp(3);
+    if (you.peace < 50)
+    {
+        if (you.exertion == EXERT_FOCUS)
+            dec_mp(3);
+        if (you.airborne() && you.cancellable_flight())
+            dec_sp(3);
+    }
 }
 
 void player_was_offensive()
