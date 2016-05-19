@@ -1,5 +1,10 @@
 ## v1.5.2
 
+* Power mode now doubles cost of action, whether it is MP *or* SP (before it only had an SP cost)
+* Focus mode now doubles cost of action, whether it is MP *or* SP (before it only had an MP cost)
+    * This means that spellcasters in power mode no longer consume SP when casting a spell, but instead must pay
+      double the spell cost. 
+
 * Monster HD slightly adjusted based on difficulty level
     * Easy: -1
     * Standard: 0 (unchanged)
@@ -102,10 +107,9 @@
     * MP cost is based on spellcasting, intelligence, spell level.
     * You can see how much spells cost in the 'S' spell list.
     * Fixed size MP pool like SP pool. Does not go up with experience level (XL).
-    * Power mode adds an SP cost to affected actions.
+    * Power and Focus mode doubles the SP or MP costs of an action.
         * In addition to increasing damage by 33%, power mode now increases attack speed by the same.
     * Careful mode renamed to focus mode.
-    * Focus mode adds an MP cost to affected actions.
     * Escape mode was removed and in it's place a separate quick / normal mode
         * This can operate independently of exertion mode, i.e. you can have Quick mode + Focus or Quick + Power mode.
         * Quick mode has the benefits of the old escape mode, which are faster movement speed. But

@@ -9488,17 +9488,13 @@ void player_attacked_something(int sp_cost)
     if (you.exertion == EXERT_POWER)
         dec_sp(sp_cost);
     if (you.exertion == EXERT_FOCUS)
-        dec_mp(sp_cost);
+        dec_sp(sp_cost);
 }
 
 // When any kind of magic spell is cast by the player
 void player_used_magic(int mp_cost)
 {
     player_was_offensive();
-    if (you.exertion == EXERT_POWER)
-        dec_sp(mp_cost);
-    if (you.exertion == EXERT_FOCUS)
-        dec_mp(mp_cost);
 
     you.time_taken = player_attack_delay_modifier(you.time_taken);
 }
@@ -9594,6 +9590,9 @@ int spell_mp_cost(spell_type which_spell)
     else if (have_passive(passive_t::conserve_mp))
         cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
 
+    if (you.exertion != EXERT_NORMAL)
+        cost *= 2;
+
     return cost;
 }
 
@@ -9606,6 +9605,9 @@ int spell_mp_freeze(spell_type which_spell)
         if (have_passive(passive_t::conserve_mp))
             cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
     }
+
+    if (you.exertion != EXERT_NORMAL)
+        cost *= 2;
 
     return cost;
 }
