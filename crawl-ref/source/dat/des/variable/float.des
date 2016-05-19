@@ -90,7 +90,7 @@ default-depth: D:12-, Depths, !Depths:$
 
 NAME:   firewood_loft
 TAGS:   extra
-DEPTH:  D, !D:$, Depths, !Depths:$, Dwarf
+DEPTH:  D, !D:$, Depths, !Depths:$, Dwarf, !Dwarf:$
 ORIENT: float
 WEIGHT: 5
 : if you.absdepth() > 8 then
@@ -100,9 +100,9 @@ KITEM:  " = club, quarterstaff, quarterstaff
 : end
 KITEM:  ' = club, any magical staff / any rod w:1
 MAP
-cmmmc
-m"']m
-cmmmc
+cxxxc
+x"']x
+cxxxc
 ENDMAP
 
 ################################################################################
