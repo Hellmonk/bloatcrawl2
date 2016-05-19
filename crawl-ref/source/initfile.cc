@@ -781,7 +781,7 @@ void game_options::reset_options()
 
     autopickup_on    = 1;
     autopickup_starting_ammo = true;
-    default_manual_training = false;
+    default_manual_training = true;
     default_show_all_skills = false;
 
     show_newturn_mark = true;
@@ -809,7 +809,7 @@ void game_options::reset_options()
     show_uncursed          = true;
     travel_open_doors      = true;
     easy_unequip           = true;
-    equip_unequip          = false;
+    equip_unequip          = true;
     jewellery_prompt       = false;
     easy_door              = true;
     warn_hatches           = false;
@@ -821,7 +821,7 @@ void game_options::reset_options()
     easy_quit_item_prompts = true;
     allow_self_target      = CONFIRM_PROMPT;
     hp_warning             = 30;
-    autofight_warning      = 0;
+    autofight_warning      = 20;
     magic_point_warning    = 0;
     skill_focus            = SKM_FOCUS_ON;
     cloud_status           = !is_tiles();
@@ -832,7 +832,7 @@ void game_options::reset_options()
     note_xom_effects       = true;
     note_chat_messages     = false;
     note_dgl_messages      = true;
-    note_hp_percent        = 5;
+    note_hp_percent        = 10;
 
     fail_severity_to_confirm = 3;
 
@@ -840,9 +840,9 @@ void game_options::reset_options()
 #ifdef TOUCH_UI
     show_more              = false;
 #else
-    show_more              = true;
+    show_more              = false;
 #endif
-    small_more             = false;
+    small_more             = true;
 
     pickup_thrown          = true;
 
@@ -915,9 +915,9 @@ void game_options::reset_options()
     explore_item_greed     = 10;
     explore_greedy         = true;
 
-    explore_wall_bias      = 0;
-    explore_auto_rest      = false;
-    explore_improved       = false;
+    explore_wall_bias      = 1;
+    explore_auto_rest      = true;
+    explore_improved       = true;
     travel_key_stop        = true;
     auto_sacrifice         = false;
 
@@ -949,7 +949,7 @@ void game_options::reset_options()
 
     regex_search = false;
 
-    movement_penalty = 15;
+    movement_penalty = 11;
 
     danger_mode_threshold = 30;
     disable_instakill_protection = false;
