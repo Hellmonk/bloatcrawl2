@@ -618,11 +618,9 @@ static const map<species_type, species_def> species_data =
     { STAT_STR, STAT_DEX }, 5,
     {
         { MUT_RESILIENT_DNA, 1, 1 },
+        { MUT_LONG_DNA, 2, 1 },
         { MUT_CARNIVOROUS, 3, 1 },
         { MUT_EVOLUTION, 2, 1 },
-        { MUT_LONG_DNA, 1, 3 },
-        { MUT_RESILIENT_DNA, 1, 6 },
-        { MUT_LONG_DNA, 1, 9 },
         { MUT_EVOLUTION, -1, 10 },
     },
     {},
