@@ -9485,9 +9485,7 @@ bool player_summoned_monster(spell_type spell, monster* mons, bool first)
 void player_attacked_something(int sp_cost)
 {
     player_was_offensive();
-    if (you.exertion == EXERT_POWER)
-        dec_sp(sp_cost);
-    if (you.exertion == EXERT_FOCUS)
+    if (you.exertion != EXERT_NORMAL)
         dec_sp(sp_cost);
 }
 
