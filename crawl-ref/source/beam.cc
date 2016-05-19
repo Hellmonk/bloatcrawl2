@@ -4019,7 +4019,7 @@ void bolt::affect_player()
         {
             if (hit_verb.empty())
                 hit_verb = engulfs ? "engulfs" : "hits";
-            mprf("The %s %s you! (%d)", name.c_str(), hit_verb.c_str(), hurted);
+            mprf("The %s %s you! (%d)", name.c_str(), hit_verb.c_str(), rune_curse_dam_adjust(hurted));
         }
 
         // Irresistible portion of resistable effect; must happen before MR

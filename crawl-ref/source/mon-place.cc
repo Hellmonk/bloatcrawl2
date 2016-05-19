@@ -1476,7 +1476,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
 
     if (!crawl_state.game_is_arena())
     {
-        mon->max_hit_points = min(rune_curse_hp_adjust(mon->max_hit_points), MAX_MONSTER_HP);
+        mon->max_hit_points = min(mon->max_hit_points, MAX_MONSTER_HP);
         mon->hit_points = mon->max_hit_points;
     }
 
@@ -1817,10 +1817,6 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     {
         gozag_set_bribe(mon);
     }
-
-    const int old_hd = mon->get_hit_dice();
-    const int new_hd = rune_curse_hd_adjust(old_hd);
-    mon->set_hit_dice(new_hd);
 
     return mon;
 }
