@@ -106,19 +106,40 @@ spret_type cast_summon_small_mammal(int pow, god_type god, bool fail)
 
     monster_type mon = MONS_PROGRAM_BUG;
 
-    if (x_chance_in_y(10, pow + 1))
-        mon = coinflip() ? MONS_BAT : MONS_RAT;
-    else
-        mon = MONS_QUOKKA;
+    int how_many = 1;
+    if (x_chance_in_y(1 + random2(pow), 20))
+        how_many++;
+    if (x_chance_in_y(1 + random2(pow), 40))
+        how_many++;
+    if (x_chance_in_y(1 + random2(pow), 80))
+        how_many++;
+    if (x_chance_in_y(1 + random2(pow), 160))
+        how_many++;
+    if (x_chance_in_y(1 + random2(pow), 320))
+        how_many++;
+    if (x_chance_in_y(1 + random2(pow), 640))
+        how_many++;
 
-    if (!create_monster(
-            mgen_data(mon, BEH_FRIENDLY, &you,
-                      3, SPELL_SUMMON_SMALL_MAMMAL,
-                      you.pos(), MHITYOU,
-                      MG_AUTOFOE, god)))
+    bool success = false;
+    for (int i = 0; i < how_many; ++i)
     {
-        canned_msg(MSG_NOTHING_HAPPENS);
+        if (x_chance_in_y(10, pow + 1))
+            mon = coinflip() ? MONS_BAT : MONS_RAT;
+        else
+            mon = MONS_QUOKKA;
+
+        if (create_monster(
+                mgen_data(mon, BEH_FRIENDLY, &you,
+                          3, SPELL_SUMMON_SMALL_MAMMAL,
+                          you.pos(), MHITYOU,
+                          MG_AUTOFOE, god)))
+        {
+            success = true;
+        }
     }
+
+    if (!success)
+        canned_msg(MSG_NOTHING_HAPPENS);
 
     return SPRET_SUCCESS;
 }
@@ -224,13 +245,11 @@ spret_type cast_call_canine_familiar(int pow, god_type god, bool fail)
     fail_check();
     monster_type mon = MONS_PROGRAM_BUG;
 
-    const int chance = pow;
-
-    if (chance >= 60)
+    if (pow >= 60)
         mon = MONS_WARG;
-    else if (chance >= 40)
+    else if (pow >= 40)
         mon = MONS_WOLF;
-    else if (chance >= 20)
+    else if (pow >= 20)
         mon = MONS_HOUND;
     else
         mon = MONS_JACKAL;
