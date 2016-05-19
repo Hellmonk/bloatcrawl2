@@ -4306,7 +4306,7 @@ int get_mp()
     return you.mp;
 }
 
-int get_mp_max(bool raw = false)
+int get_mp_max(bool raw)
 {
     if (you.species == SP_DJINNI)
         return you.hp_max;
