@@ -1230,6 +1230,7 @@ int player_spellfailure_modifier(int spellfaifailureure);
 int player_attack_delay_modifier(int attk_delay);
 int player_stealth_modifier(int old_stealth);
 int player_evasion_modifier(int old_evasion);
+int player_item_gen_modifier(int item_count);
 void player_update_last_hit_chance(int chance);
 void player_update_tohit(int new_tohit = -1);
 int player_generic_modifier(int amount);

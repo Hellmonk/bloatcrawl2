@@ -9745,6 +9745,32 @@ int player_evasion_modifier(int evasion)
      */
 }
 
+int player_item_gen_modifier(int item_count)
+{
+    int x;
+    switch(crawl_state.difficulty)
+    {
+        case DIFFICULTY_EASY:
+            x = 120;
+            break;
+        case DIFFICULTY_STANDARD:
+            x = 100;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            x = 90;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            x = 80;
+            break;
+        default:
+            // should not be possible
+            x = 100;
+            break;
+    }
+
+    item_count = item_count * x / 100;
+}
+
 void player_update_last_hit_chance(int chance)
 {
     if (chance < 0)
