@@ -9564,10 +9564,10 @@ void player_after_each_turn()
     crawl_state.danger_mode_counter = max(0, crawl_state.danger_mode_counter - 1);
 }
 
-int _apply_hunger(const spell_type &which_spell, int cost)
+int _apply_hunger(const spell_type &which_spell, int cost, int multiplier = 100)
 {
 
-    int hunger = spell_hunger(which_spell, false);
+    int hunger = spell_hunger(which_spell, false, multiplier);
 
     if (player_mutation_level(MUT_HUNGERLESS) > 0)
         hunger /= 2;
@@ -9595,7 +9595,7 @@ int spell_mp_freeze(spell_type which_spell)
     int cost = 0;
     if (is_summon_spell(which_spell))
     {
-        cost = _apply_hunger(which_spell, 15);
+        cost = _apply_hunger(which_spell, 5, 300);
         if (have_passive(passive_t::conserve_mp))
             cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
     }

@@ -63,7 +63,7 @@ bool add_spell_to_memory(spell_type spell);
 bool del_spell_from_memory_by_slot(int slot);
 bool del_spell_from_memory(spell_type spell);
 
-int spell_hunger(spell_type which_spell, bool rod = false);
+int spell_hunger(spell_type which_spell, bool rod = false, int multiplier = 100);
 
 int spell_difficulty(spell_type which_spell);
 int spell_power_cap(spell_type spell);
