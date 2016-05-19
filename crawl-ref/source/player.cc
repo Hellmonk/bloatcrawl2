@@ -9367,9 +9367,14 @@ const int get_max_skill_level()
 const int rune_curse_hd_adjust(int hd)
 {
     const int runes = runes_in_pack();
-    int multiplier = crawl_state.difficulty + 1;
-    const int new_hd = hd + div_rand_round(runes * multiplier, 4);
-    return new_hd;
+    const game_difficulty_level difficulty = crawl_state.difficulty;
+    int multiplier = difficulty + 1;
+    
+    hd = hd + div_rand_round(runes * multiplier, 4);
+    hd = hd + difficulty - 2;
+    hd = max(1, hd);
+    
+    return hd;
 }
 
 const int rune_curse_hp_adjust(int hp)

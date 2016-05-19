@@ -1,3 +1,11 @@
+## v1.5.2
+
+* Monster HD slightly adjusted based on difficulty level
+    * Easy: -1
+    * Standard: 0 (unchanged)
+    * Challenge: +1
+    * Nightmare: +2
+
 ## v1.5.1
 
 * Exertion mode cost is based on action cost instead of a flat cost.
