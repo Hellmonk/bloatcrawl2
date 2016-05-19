@@ -2737,7 +2737,7 @@ const int floor_experience_for_this_floor()
     return exp;
 }
 
-void gain_potion_exp()
+void gain_potion_exp(bool skip_training)
 {
     const int exp = potion_experience_for_this_floor();
     gain_exp(abs(exp), nullptr, false, exp < 0);
@@ -2749,7 +2749,7 @@ void gain_floor_exp()
     gain_exp(abs(exp), nullptr, false, exp < 0);
 }
 
-void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_monster, bool exp_loss)
+void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_monster, bool exp_loss, bool skip_training)
 {
     if (actual_gain != nullptr)
         *actual_gain = 0;
@@ -2856,7 +2856,7 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
         if (crawl_state.game_is_sprint())
             exp_gained = sprint_modify_exp(exp_gained);
 
-        if (Options.exp_percent_from_monsters || !from_monster)
+        if (!skip_training && (Options.exp_percent_from_monsters || !from_monster))
         {
             you.exp_available += exp_gained;
 
@@ -4098,8 +4098,6 @@ bool dec_hp(int hp_loss, bool fatal, const char *aux)
     if (!fatal && you.hp < 1)
         you.hp = 1;
 
-    hp_loss = rune_curse_dam_adjust(hp_loss);
-
     if (!fatal && hp_loss >= you.hp)
         hp_loss = you.hp - 1;
 
@@ -4308,11 +4306,15 @@ int get_mp()
     return you.mp;
 }
 
-int get_mp_max()
+int get_mp_max(bool raw)
 {
     if (you.species == SP_DJINNI)
         return you.hp_max;
-    return you.mp_max;
+    int max = you.mp_max;
+    if (raw)
+        max += you.mp_frozen_summons;
+
+    return max;
 }
 
 bool player_is_tired(bool silent)
@@ -4656,11 +4658,15 @@ void rot_mp(int mp_loss)
     you.redraw_magic_points = true;
 }
 
-void freeze_summons_mp(int mp_loss)
+bool freeze_summons_mp(int mp_loss)
 {
+    if (get_mp_max() < mp_loss)
+        return false;
+
     you.mp_frozen_summons += mp_loss;
     calc_mp();
     you.redraw_magic_points = true;
+    return true;
 }
 
 void unfreeze_summons_mp(int amount)
@@ -4767,9 +4773,11 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
         hitp  = effective_xl() * 11 / 2 + 8;
 
     hitp += you.hp_max_adj_perm;
+    /*
     // Important: we shouldn't add Heroism boosts here.
     hitp += effective_xl() * you.skill(SK_FIGHTING, 5, true) / 70
           + (you.skill(SK_FIGHTING, 3, true) + 1) / 2;
+          */
 
     // Racial modifier.
     hitp *= 10 + species_hp_modifier(you.species);
@@ -4804,15 +4812,10 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
 
     if (adjust_for_difficulty)
     {
-        if (crawl_state.difficulty == DIFFICULTY_EASY)
-            hitp = hitp * 10 / 8;
-        if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-            hitp = hitp * 9 / 8;
-        if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-            hitp = hitp * 7 / 8;
+        hitp = player_generic_modifier(hitp);
     }
 
-    hitp = max(1, hitp + 5);
+    hitp = max(10, hitp);
 
     return hitp;
 }
@@ -4829,14 +4832,8 @@ int get_real_sp(bool include_items)
 
     max_sp = max_sp + 20 * boost;
 
+    max_sp = player_generic_modifier(max_sp);
     max_sp = max(max_sp, 20);
-
-    if (crawl_state.difficulty == DIFFICULTY_EASY)
-        max_sp = max_sp * 10 / 8;
-    if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-        max_sp = max_sp * 9 / 8;
-    if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-        max_sp = max_sp * 7 / 8;
 
     return max_sp;
 }
@@ -4845,30 +4842,12 @@ int get_real_mp(bool include_items, bool rotted)
 {
     int max_mp = 100;
 
-    /* no longer needed
-
-    const int scale = 100;
-    int spellcasting = you.skill(SK_SPELLCASTING, 1 * scale, true);
-    int scaled_xl = effective_xl() * scale;
-
-    // the first 4 experience levels give an extra .5 mp up to your spellcasting
-    // the last 4 give no mp
-    int enp = min(23 * scale, scaled_xl);
-
-    int spell_extra = spellcasting; // 100%
-    int invoc_extra = you.skill(SK_INVOCATIONS, 1 * scale, true) / 2; // 50%
-    int evoc_extra = you.skill(SK_EVOCATIONS, 1 * scale, true) / 2; // 50%
-    int highest_skill = max(spell_extra, max(invoc_extra, evoc_extra));
-    enp += highest_skill + min(8 * scale, min(highest_skill, scaled_xl)) / 2;
-     */
-
     // Analogous to ROBUST/FRAIL
-    max_mp *= 100  + (player_mutation_level(MUT_HIGH_MAGIC) * 10)
-                   + (you.attribute[ATTR_DIVINE_VIGOUR] * 5)
-                   - (player_mutation_level(MUT_LOW_MAGIC) * 10)
-                   + species_mp_modifier(you.species) * 20
-                   ;
-    max_mp /= 100;
+    max_mp += + (player_mutation_level(MUT_HIGH_MAGIC) * 10)
+              + (you.attribute[ATTR_DIVINE_VIGOUR] * 5)
+              - (player_mutation_level(MUT_LOW_MAGIC) * 10)
+              + species_mp_modifier(you.species) * 20
+              ;
 
     // This is our "rotted" base, applied after multipliers
     max_mp += you.mp_max_adj;
@@ -4888,14 +4867,8 @@ int get_real_mp(bool include_items, bool rotted)
     if (include_items && you.wearing_ego(EQ_WEAPON, SPWPN_ANTIMAGIC))
         max_mp /= 3;
 
+    max_mp = player_generic_modifier(max_mp);
     max_mp = max(max_mp, 20);
-
-    if (crawl_state.difficulty == DIFFICULTY_EASY)
-        max_mp = max_mp * 10 / 8;
-    if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-        max_mp = max_mp * 9 / 8;
-    if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-        max_mp = max_mp * 7 / 8;
 
     if (!rotted)
         max_mp -= you.mp_frozen_summons;
@@ -9394,9 +9367,14 @@ const int get_max_skill_level()
 const int rune_curse_hd_adjust(int hd)
 {
     const int runes = runes_in_pack();
-    int multiplier = crawl_state.difficulty + 1;
-    const int new_hd = hd + div_rand_round(runes * multiplier, 4);
-    return new_hd;
+    const game_difficulty_level difficulty = crawl_state.difficulty;
+    int multiplier = difficulty + 1;
+    
+    hd = hd + div_rand_round(runes * multiplier, 4);
+    hd = hd + difficulty - 2;
+    hd = max(1, hd);
+    
+    return hd;
 }
 
 const int rune_curse_hp_adjust(int hp)
@@ -9451,31 +9429,53 @@ void remove_from_summoned(mid_t mid)
     }
 }
 
+int player_summon_count()
+{
+    int count = 0;
+    for (unsigned int i = 0; i < you.summoned.size(); i++)
+    {
+        if (you.summoned[i] != MID_NOBODY)
+            count++;
+    }
+
+    return count;
+}
+
 bool player_summoned_monster(spell_type spell, monster* mons, bool first)
 {
     bool success = true;
-    const int cost = first ? spell_mp_freeze(spell) : 0;
+    const int cost = spell_mp_freeze(spell);
     mons->mp_freeze = cost;
-    freeze_summons_mp(cost);
-
-    int open_slot = -1;
-    for (unsigned int i = 0; i < you.summoned.size(); i++)
+    while (true)
     {
-        if (you.summoned[i] == MID_NOBODY)
+        if (!freeze_summons_mp(cost))
         {
-            open_slot = i;
+            mpr("You don't have enough energy to support more summons of this magnitude.");
+            success = false;
             break;
         }
-    }
 
-    if (open_slot == -1)
-    {
-        mpr("Your mind can't handle so many summons at once.");
-        success = false;
-    }
-    else
-    {
-        you.summoned[open_slot] = mons->mid;
+        int open_slot = -1;
+        for (unsigned int i = 0; i < you.summoned.size(); i++)
+        {
+            if (you.summoned[i] == MID_NOBODY)
+            {
+                open_slot = i;
+                break;
+            }
+        }
+
+        if (open_slot == -1)
+        {
+            mpr("Your mind can't handle so many summons at once.");
+            success = false;
+        }
+        else
+        {
+            you.summoned[open_slot] = mons->mid;
+        }
+
+        break;
     }
 
     return success;
@@ -9512,10 +9512,13 @@ void player_moved()
 {
     if (in_quick_mode() && you.peace < 100)
         dec_sp(3);
-    if (you.exertion == EXERT_FOCUS && you.peace < 50)
-        dec_mp(3);
-    if (you.airborne() && you.cancellable_flight())
-        dec_sp(3);
+    if (you.peace < 50)
+    {
+        if (you.exertion == EXERT_FOCUS)
+            dec_mp(3);
+        if (you.airborne() && you.cancellable_flight())
+            dec_sp(3);
+    }
 }
 
 void player_was_offensive()
@@ -9568,12 +9571,12 @@ void player_after_each_turn()
     crawl_state.danger_mode_counter = max(0, crawl_state.danger_mode_counter - 1);
 }
 
-int _apply_hunger(const spell_type &which_spell, int cost)
+int _apply_hunger(const spell_type &which_spell, int cost, int multiplier = 100)
 {
 
-    int hunger = spell_hunger(which_spell, false);
+    int hunger = spell_hunger(which_spell, false, multiplier);
 
-    if (player_mutation_level(MUT_HUNGERLESS) == 0)
+    if (player_mutation_level(MUT_HUNGERLESS) > 0)
         hunger /= 2;
 
     cost = cost * (hunger + 100) / 100;
@@ -9599,7 +9602,7 @@ int spell_mp_freeze(spell_type which_spell)
     int cost = 0;
     if (is_summon_spell(which_spell))
     {
-        cost = _apply_hunger(which_spell, 10);
+        cost = _apply_hunger(which_spell, 5, 400);
         if (have_passive(passive_t::conserve_mp))
             cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
     }
@@ -9762,6 +9765,33 @@ void player_update_tohit(int new_tohit)
 
     you.last_tohit = new_tohit;
     you.redraw_tohit = true;
+}
+
+// used for pool sizes. Generic way to scale something based on difficulty
+int player_generic_modifier(int amount)
+{
+    int percent = 100;
+
+    switch (crawl_state.difficulty)
+    {
+        case DIFFICULTY_EASY:
+            percent = 150;
+            break;
+        case DIFFICULTY_STANDARD:
+            percent = 100;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            percent = 90;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            percent = 80;
+            break;
+        default:
+            // should not be possible
+            break;
+    }
+
+    return amount * percent / 100;
 }
 
 // reduce damage to player if it has exceeded protection thresholds (to avoid 1 hit kills for example)

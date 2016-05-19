@@ -406,17 +406,10 @@ bool del_spell_from_memory(spell_type spell)
 }
 
 // should be around 0-1000
-int spell_hunger(spell_type which_spell, bool rod)
+int spell_hunger(spell_type which_spell, bool rod, int multiplier)
 {
     const int level = spell_difficulty(which_spell);
-
-    const int scale = 100;
-    int hunger = 25 * scale * level * level;
-
-    /* Staff of energy doesn't affect this any more
-    if (player_energy())
-        hunger >>= 1;
-        */
+    int hunger = 25 * multiplier * level * level;
 
     if (rod)
     {

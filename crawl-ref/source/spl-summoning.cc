@@ -106,19 +106,39 @@ spret_type cast_summon_small_mammal(int pow, god_type god, bool fail)
 
     monster_type mon = MONS_PROGRAM_BUG;
 
-    if (x_chance_in_y(10, pow + 1))
-        mon = coinflip() ? MONS_BAT : MONS_RAT;
-    else
-        mon = MONS_QUOKKA;
+    int how_many = 1;
+    if (x_chance_in_y(1 + random2(pow), 20))
+        how_many++;
+    if (x_chance_in_y(1 + random2(pow), 40))
+        how_many++;
+    if (x_chance_in_y(1 + random2(pow), 80))
+        how_many++;
+    if (x_chance_in_y(1 + random2(pow), 160))
+        how_many++;
+    if (x_chance_in_y(1 + random2(pow), 320))
+        how_many++;
+    if (x_chance_in_y(1 + random2(pow), 640))
+        how_many++;
 
-    if (!create_monster(
-            mgen_data(mon, BEH_FRIENDLY, &you,
-                      3, SPELL_SUMMON_SMALL_MAMMAL,
-                      you.pos(), MHITYOU,
-                      MG_AUTOFOE, god)))
+    bool success = false;
+    for (int i = 0; i < how_many; ++i)
     {
-        canned_msg(MSG_NOTHING_HAPPENS);
+        if (x_chance_in_y(10, pow + 1))
+            mon = coinflip() ? MONS_BAT : MONS_RAT;
+        else
+            mon = MONS_QUOKKA;
+
+        mgen_data mg = mgen_data(mon, BEH_FRIENDLY, &you,
+                                        3, SPELL_SUMMON_SMALL_MAMMAL,
+                                        you.pos(), MHITYOU,
+                                        MG_AUTOFOE, god);
+
+        if (create_monster(mg))
+            success = true;
     }
+
+    if (!success)
+        canned_msg(MSG_NOTHING_HAPPENS);
 
     return SPRET_SUCCESS;
 }
@@ -224,13 +244,11 @@ spret_type cast_call_canine_familiar(int pow, god_type god, bool fail)
     fail_check();
     monster_type mon = MONS_PROGRAM_BUG;
 
-    const int chance = pow;
-
-    if (chance >= 60)
+    if (pow >= 60)
         mon = MONS_WARG;
-    else if (chance >= 40)
+    else if (pow >= 40)
         mon = MONS_WOLF;
-    else if (chance >= 20)
+    else if (pow >= 20)
         mon = MONS_HOUND;
     else
         mon = MONS_JACKAL;
@@ -343,8 +361,6 @@ spret_type cast_monstrous_menagerie(actor* caster, int pow, god_type god, bool f
 spret_type cast_summon_hydra(actor *caster, int pow, god_type god, bool fail)
 {
     fail_check();
-    // Power determines number of heads. Minimum 4 heads, maximum 12.
-    // Rare to get more than 8.
     const int heads = max(2, pow / 10);
 
     // Duration is always very short - just 1.
@@ -371,12 +387,14 @@ static monster_type _choose_dragon_type(int pow, god_type god, bool player)
 
     const int chance = random2(pow);
 
-    if (chance >= 80 || one_chance_in(6))
+    if (chance >= 120)
         mon = random_choose(MONS_GOLDEN_DRAGON, MONS_QUICKSILVER_DRAGON);
-    else if (chance >= 40 || one_chance_in(6))
+    else if (chance >= 60)
         mon = random_choose(MONS_IRON_DRAGON, MONS_SHADOW_DRAGON, MONS_STORM_DRAGON);
-    else
+    else if (chance >= 30)
         mon = random_choose(MONS_FIRE_DRAGON, MONS_ICE_DRAGON);
+    else
+        mon = random_choose(MONS_SWAMP_DRAGON, MONS_MOTTLED_DRAGON);
 
     // For good gods, switch away from shadow dragons (and, for TSO,
     // golden dragons, since they poison) to storm/iron dragons.
@@ -615,7 +633,9 @@ spret_type cast_summon_mana_viper(int pow, god_type god, bool fail)
     viper.hd = (5 + div_rand_round(pow, 12));
 
     // Don't scale hp at the same time as their antimagic power
+    /*
     viper.hp = hit_points(495); // avg 50
+     */
 
     if (create_monster(viper))
         mpr("A mana viper appears with a sibilant hiss.");
@@ -1074,9 +1094,11 @@ spret_type cast_call_imp(int pow, god_type god, bool fail)
 
     const int dur = min(2 + (random2(pow) / 4), 6);
 
-    if (monster *imp = create_monster(
-            mgen_data(imp_type, BEH_FRIENDLY, &you, dur, SPELL_CALL_IMP,
-                      you.pos(), MHITYOU, MG_FORCE_BEH | MG_AUTOFOE, god)))
+    mgen_data mg = mgen_data(imp_type, BEH_FRIENDLY, &you, dur, SPELL_CALL_IMP,
+                                    you.pos(), MHITYOU, MG_FORCE_BEH | MG_AUTOFOE, god);
+    mg.hd = get_monster_data(imp_type)->HD + div_rand_round(pow, 16);
+
+    if (monster *imp = create_monster(mg))
     {
         mpr(_imp_summon_messages[imp_type]);
 
@@ -3557,8 +3579,6 @@ int unsummon_all()
 
 void unsummon(monster *mons)
 {
-//    unfreeze_summons_mp(mons->mp_freeze);
-
     if (mons->attitude != ATT_HOSTILE)
     {
         mons->del_ench(ENCH_ABJ);
@@ -3570,16 +3590,4 @@ void unsummon(monster *mons)
         const int mp_cost = mons->mp_freeze;
         unfreeze_summons_mp(mp_cost);
     }
-}
-
-int player_summon_count()
-{
-    int count = 0;
-    for (unsigned int i = 0; i < you.summoned.size(); i++)
-    {
-        if (you.summoned[i] != MID_NOBODY)
-            count++;
-    }
-
-    return count;
 }

@@ -193,7 +193,7 @@ NORETURN void end(int exit_code, bool print_error, const char *format, ...)
 static void _delete_files()
 {
     crawl_state.need_save = false;
-    you.save->unlink();
+    you.save->unlink(true);
     delete you.save;
     you.save = 0;
 }

@@ -125,6 +125,5 @@ int count_summons(const actor *summoner, spell_type spell);
 bool is_summon_spell(spell_type spell);
 int unsummon_all();
 void unsummon(monster *mons);
-int player_summon_count();
 
 #endif

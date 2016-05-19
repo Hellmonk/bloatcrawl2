@@ -228,7 +228,7 @@ public:
     string jiyva_second_name;       // Random second name of Jiyva
     uint8_t piety;
     uint8_t piety_hysteresis;       // amount of stored-up docking
-    uint8_t gift_timeout;
+    int gift_timeout;
     uint8_t saved_good_god_piety;   // for if you "switch" between E/Z/1 by abandoning one first
     god_type previous_good_god;
     FixedVector<uint8_t, NUM_GODS>  penance;
@@ -1027,10 +1027,10 @@ void remove_from_summoned(mid_t mid);
 void forget_map(bool rot = false);
 
 int get_exp_progress();
-void gain_exp(unsigned int exp_gained, unsigned int* actual_gain = nullptr, bool from_monster = true, bool exp_loss = false);
+void gain_exp(unsigned int exp_gained, unsigned int* actual_gain = nullptr, bool from_monster = true, bool exp_loss = false, bool skip_training = false);
 const int potion_experience_for_this_floor();
 const int floor_experience_for_this_floor();
-void gain_potion_exp();
+void gain_potion_exp(bool skip_training=false);
 void gain_floor_exp();
 
 bool player_can_open_doors();
@@ -1069,7 +1069,7 @@ void rot_hp(int hp_loss);
 int unrot_hp(int hp_recovered);
 int player_rotted();
 void rot_mp(int mp_loss);
-void freeze_summons_mp(int mp_loss);
+bool freeze_summons_mp(int mp_loss);
 void unfreeze_summons_mp(int amount = -1);
 
 void inc_max_hp(int hp_gain);
@@ -1159,7 +1159,7 @@ int get_hp_max();
 int get_sp();
 int get_sp_max();
 int get_mp();
-int get_mp_max();
+int get_mp_max(bool raw = false);
 
 bool player_has_orb();
 bool player_on_orb_run();
@@ -1232,8 +1232,10 @@ int player_stealth_modifier(int old_stealth);
 int player_evasion_modifier(int old_evasion);
 void player_update_last_hit_chance(int chance);
 void player_update_tohit(int new_tohit = -1);
+int player_generic_modifier(int amount);
 void summoned_monster_died(monster* mons, bool natural_death);
 bool player_summoned_monster(spell_type spell, monster* mons, bool first);
 int player_ouch_modifier(int damage);
+int player_summon_count();
 
 #endif
