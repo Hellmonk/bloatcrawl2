@@ -536,8 +536,10 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
         maybe_drop_monster_hide(corpse);
         if (mons_corpse_effect(corpse.mon_type) == CE_MUTAGEN)
         {
-            const int chunk_count = random2(max_corpse_chunks(corpse.mon_type));
-            for (int i = 0; i < chunk_count; i++)
+            int potion_count = random2(max_corpse_chunks(corpse.mon_type));
+            potion_count = max(1, count / 2);
+
+            for (int i = 0; i < potion_count; i++)
             {
                 int id = items(false, OBJ_POTIONS, POT_WEAK_MUTATION, 0);
                 if (id != NON_ITEM)
