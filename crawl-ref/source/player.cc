@@ -4773,9 +4773,11 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
         hitp  = effective_xl() * 11 / 2 + 8;
 
     hitp += you.hp_max_adj_perm;
+    /*
     // Important: we shouldn't add Heroism boosts here.
     hitp += effective_xl() * you.skill(SK_FIGHTING, 5, true) / 70
           + (you.skill(SK_FIGHTING, 3, true) + 1) / 2;
+          */
 
     // Racial modifier.
     hitp *= 10 + species_hp_modifier(you.species);
