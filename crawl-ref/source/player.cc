@@ -9636,7 +9636,7 @@ int _difficulty_mode_multiplier()
     switch(crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            x = 100;
+            x = 120;
             break;
         case DIFFICULTY_STANDARD:
             x = 90;
