@@ -688,7 +688,7 @@ bool is_missile_brand_ok(int type, int brand, bool strict)
 static void _generate_missile_item(item_def& item, int force_type,
                                    int item_level)
 {
-    const bool no_brand = (item.brand == SPMSL_FORBID_BRAND);
+    bool no_brand = (item.brand == SPMSL_FORBID_BRAND);
     if (no_brand)
         item.brand = SPMSL_NORMAL;
 
@@ -718,38 +718,36 @@ static void _generate_missile_item(item_def& item, int force_type,
     if (item.sub_type == MI_LARGE_ROCK)
     {
         item.quantity = 2 + random2avg(5,2);
-        return;
+        no_brand = true;
     }
     else if (item.sub_type == MI_STONE)
     {
         item.quantity = 1 + random2(7) + random2(10) + random2(12) + random2(10);
-        return;
+        no_brand = true;
     }
     else if (item.sub_type == MI_THROWING_NET) // no fancy nets, either
     {
         item.quantity = 1 + one_chance_in(4); // and only one, rarely two
-        return;
+        no_brand = true;
     }
-
-    if (!no_brand)
+    else
     {
         set_item_ego_type(item, OBJ_MISSILES,
                            _determine_missile_brand(item, item_level));
-    }
 
-    // Reduced quantity if special.
-    if (item.sub_type == MI_JAVELIN || item.sub_type == MI_TOMAHAWK
-        || (item.sub_type == MI_NEEDLE && get_ammo_brand(item) != SPMSL_POISONED)
-        || get_ammo_brand(item) == SPMSL_RETURNING)
-    {
-        item.quantity = random_range(2, 8);
+        // Reduced quantity if special.
+        if (item.sub_type == MI_JAVELIN || item.sub_type == MI_TOMAHAWK
+            || (item.sub_type == MI_NEEDLE && get_ammo_brand(item) != SPMSL_POISONED)
+            || get_ammo_brand(item) == SPMSL_RETURNING)
+        {
+            item.quantity = random_range(2, 8);
+        }
+        else if (get_ammo_brand(item) != SPMSL_NORMAL)
+            item.quantity = 1 + random2(7) + random2(10) + random2(10);
+        else
+            item.quantity = 1 + random2(7) + random2(10) + random2(10) + random2(12);
+        item.quantity *= 4;
     }
-    else if (get_ammo_brand(item) != SPMSL_NORMAL)
-        item.quantity = 1 + random2(7) + random2(10) + random2(10);
-    else
-        item.quantity = 1 + random2(7) + random2(10) + random2(10) + random2(12);
-
-    item.quantity *= 3;
 }
 
 static bool _try_make_armour_artefact(item_def& item, int force_type,
