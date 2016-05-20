@@ -8791,8 +8791,9 @@ bool temperature_tier (int which)
 
 bool temperature_effect(int which)
 {
-    switch (which)
-    {
+    if (you.species == SP_LAVA_ORC)
+    	switch (which)
+    	{
         case LORC_FIRE_RES_I:
             return true; // 1-15
         case LORC_STONESKIN:
@@ -8818,7 +8819,9 @@ bool temperature_effect(int which)
 
         default:
             return false;
-    }
+    	}
+    else
+    	return false;
 }
 
 int temperature_colour(int temp)
