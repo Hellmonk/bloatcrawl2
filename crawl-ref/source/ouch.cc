@@ -898,7 +898,9 @@ static bool _is_damage_threatening (int damage_fraction_of_hp)
  *  @param death_source_name the attacker's name if it is already dead.
  */
 void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
-          bool see_source, const char *death_source_name)
+          bool see_source, const char *death_source_name,
+          const bool skip_rune_curse_damage
+          )
 {
     ASSERT(!crawl_state.game_is_arena());
     if (you.duration[DUR_TIME_STEP])
@@ -917,7 +919,8 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
     if (dam != INSTANT_DEATH)
         dam = _apply_extra_harm (dam, source);
 
-    dam = rune_curse_dam_adjust(dam);
+    if (!skip_rune_curse_damage)
+        dam = rune_curse_dam_adjust(dam);
 
     if (can_shave_damage() && dam != INSTANT_DEATH
         && death_type != KILLED_BY_POISON)
