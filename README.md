@@ -2,7 +2,7 @@
 
 ---
 
-_NOTICE: The changelog-ca.txt file will contain the latest detailed changes. This file will be shortened and kept to a high level summary of what is in this fork. If you want specifics, then you need to look at the changelog._
+NOTICE: The [changelog-ca](https://github.com/jeremygurr/dcssca/blob/master/README.md) file contains the latest detailed changes. We'll try to keep this file as a high level summary of the fork. If you want specifics, check out the changelog!_
 
 ---
 
@@ -11,38 +11,38 @@ There are two known servers where you can play Circus Animals!
 * http://crawl.homedns.org/ (arizona, USA)
 * https://crawl.project357.org/ (sydney, AUS)
 
-Checkout branch v1.5.1 if you want to try it yourself. The master branch will be where future, save game breaking features will be implemented, and then broken off.
+Checkout branch v1.5.2 if you want to try it on your desktop. The master branch is where future, save game breaking features get implemented, and then broken off.
 
-For those who don't know how to clone from a git repo: install git on your system, then type:
+To do so from a git repo, install git on your system, then type:
 
-git clone https://github.com/jeremygurr/dcssca.git -b v1.5.1
+```git clone https://github.com/jeremygurr/dcssca.git -b v1.5.2```
 
-This fork of DCSS is a playground for some ideas I wanted to try. Many of my changes center around increasing the richness of the different species in DCSS. I would repeatedly take the species that I considered most boring to play, and alter that species until it was a compelling choice for me to play. I know quite well that I am not nearly as experienced in playing this game as many others are, and likely some of these changes may break important things that I don't yet understand because of that lack of experience, but I figured since I am having so much fun with this fork, it doesn't take much effort to share it with others, and maybe some of my crazy ideas may be merged into the main DCSS repo. And of course you are welcome to submit changes to this fork or even make another fork if you don't like the direction I'm taking this one. This fork is in sync with the original DCSS repo as of Apr 2016. I intend to keep merging in non-conflicting changes from the main DCSS project.
+This fork of DCSS is a playground for some ideas I wanted to try. Many changes center around increasing the richness of the species in DCSS. I take a species that I consider boring to play, then alter that species until it feels like a compelling choice. I am not as experienced as many others are, and likely some of these changes may break important things that I don't yet understand because of that . But because I am having so much fun with this fork, and it doesn't take much effort to share it with others, here it is. Maybe some of my crazy ideas can be merged into the main DCSS repo. You are most welcome to submit changes to this fork, or even make another fork if you don't like the direction of this one. This fork was in sync with the original DCSS repo as of Apr 2016. I intend to keep merging in non-conflicting changes from the [main DCSS project](https://github.com/crawl/crawl).
 
-Check out the FUTURE.md file in the same directory as the README.md for details about what features I'm considering on implementing.
+Check out [FUTURE.md](https://github.com/jeremygurr/dcssca/blob/master/FUTURE.md) for details about further features I'm considering.
 
-Feel free to create issues on github for either problems with the crawl.homedns.org server, or bugs in the game itself, or ideas you have that you think are in line with my goals here, or with concerns you have about my future plans.
+Feel free to create "issues" here on github for any problems with the crawl.homedns.org server or bugs in the game itself. Ideas you have that you think are in line with my goals are also welcome, or concerns you have about future plans.
 
-A player has created an IRC channel for discussion of this fork. Grab an IRC client and come join the conversation! The channel is ##circusfork on the Freenode IRC server. If you're already hanging out in ##crawl, all you have to do is type /join ##circusfork!
+A player made an IRC channel for discussion of this fork. Grab an IRC client and come join the conversation! The channel is [##circusfork on the Freenode IRC server](https://webchat.freenode.net/?channels=##circusfork). If you're already hanging out in ##crawl, all you have to do is type /join ##circusfork!
 Objectives
 
-(Not necessarily all that different form mainstream crawl, just different in exactly how I interpret these...)
+(My goals aren't necessarily that different from mainstream crawl, just different in exactly how those goals are interpreted and implemented...)
 
 
 
 Major modifications from the original DCSS
 v1.4.2
 
-Summoning simplification
-   * Summoning now simply reduces the players mana until the summons are released.
-   * Summons cost 2x the normal price of the spell.
-   * Summons may be maintained as long as the player wants to continue with the reduced mp.
-   * Spell power may affect various attributes of the summoned creature, but it does not affect duration or cost.
-   * Added a "release summons" ability, so you can free up your magic pool if you no longer need those summons.
-   * If a summon is released, all of the magic used to summon it is returned to the player
-   * The number of summons a player can have is only limited by their magic pool, with a maximum cap of 20 total summons.
-   * When a summon dies, they player gets 1/2 of the mp used on that creature
-   * When going up or down stairs, if there are no monsters in sight, summons automatically follow the player.
+Summoning changes
+   * Summoning simply reduces your mana until the summons are gone, but have no duration.
+   * Summons multiply the spell's base cost.
+   * Added a "release summons" ability, so you can free up your mana if you no longer need those summons.
+   * If you release a summon, all of the mana used to summon it is returned.
+   * The number of summons a player can have is only limited by max mana, with a cap of 20 total summons.
+   * When a summon dies, they player gets 1/2 of the mp used for that creature
+   * When going up or down stairs, if there are no monsters in sight, summons automatically follow you.
+
+
 
 Pan has been shortened
    * All 4 rune floors are guanteed within the first 25 floors.
