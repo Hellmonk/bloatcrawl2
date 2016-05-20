@@ -703,9 +703,7 @@ static void _generate_missile_item(item_def& item, int force_type,
                                    50, MI_STONE,
                                    20, MI_ARROW,
                                    12, MI_BOLT,
-                                   /* don't need these since they are unbranded and infinite in a launcher
                                    12, MI_SLING_BULLET,
-                                    */
                                    10, MI_NEEDLE,
                                    3,  MI_TOMAHAWK,
                                    2,  MI_JAVELIN,
