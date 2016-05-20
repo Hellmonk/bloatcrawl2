@@ -492,11 +492,11 @@ static int _apply_spellcasting_success_boosts(spell_type spell, int chance)
 int raw_spell_fail(spell_type spell)
 {
     const int spell_level = spell_difficulty(spell);
-    float resist = 1 << spell_level;
+    float resist = 1 << (spell_level + 2);
     const int armour_shield_penalty = player_armour_shield_spell_penalty();
     dprf("Armour+Shield spell failure penalty: %d", armour_shield_penalty);
-    resist = resist * (20 + armour_shield_penalty) / 20;
-    resist = resist * (20 + get_form()->spellcasting_penalty) / 20;
+    resist = resist * (10 + armour_shield_penalty) / 10;
+    resist = resist * (10 + get_form()->spellcasting_penalty) / 10;
     resist = resist * (player_mutation_level(MUT_ANTI_WIZARDRY) + 1);
     resist = resist * (you.duration[DUR_VERTIGO] ? 1.5 : 1.0);
 
