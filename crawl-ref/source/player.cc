@@ -2501,8 +2501,11 @@ int player_shield_class()
     shield += _bone_armour_bonus() * 2;
     shield += you.wearing(EQ_AMULET_PLUS, AMU_REFLECTION) * 200;
     shield += you.scan_artefacts(ARTP_SHIELDING) * 200;
+    shield = (shield + 50) / 100;
 
-    return (shield + 50) / 100;
+    shield = player_sh_modifier(shield);
+
+    return shield;
 }
 
 /**
@@ -6809,7 +6812,10 @@ int player::armour_class(bool /*calc_unid*/) const
           ? 100 + _mut_level(MUT_YELLOW_SCALES, MUTACT_FULL) * 100 : 0;        // +2, +3, +4
     AC -= player_mutation_level(MUT_PHYSICAL_VULNERABILITY)
           ? player_mutation_level(MUT_PHYSICAL_VULNERABILITY) * 300 : 0;       // +3, +6, +9
-    return AC / 100;
+    AC = player_ac_modifier(AC);
+    AC = AC / 100;
+
+    return AC;
 }
  /**
   * Guaranteed damage reduction.
@@ -9739,16 +9745,32 @@ int player_stealth_modifier(int stealth)
 
 int player_evasion_modifier(int evasion)
 {
-    return evasion;
-    /* old way
-
     evasion *= _difficulty_mode_multiplier();
 
     if (you.exertion == EXERT_FOCUS)
         evasion = evasion * 4 / 3 + 50;
 
     return evasion / base_factor;
-     */
+}
+
+int player_ac_modifier(int ac)
+{
+    ac *= _difficulty_mode_multiplier();
+
+    if (you.exertion == EXERT_FOCUS)
+        ac = ac * 4 / 3 + 50;
+
+    return ac / base_factor;
+}
+
+int player_sh_modifier(int sh)
+{
+    sh *= _difficulty_mode_multiplier();
+
+    if (you.exertion == EXERT_FOCUS)
+        sh = sh * 4 / 3 + 50;
+
+    return sh / base_factor;
 }
 
 int player_item_gen_modifier(int item_count)
