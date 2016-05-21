@@ -4188,7 +4188,7 @@ bool dec_mp(int mp_loss, bool silent, bool allow_overdrive)
             sent_message = true;
         }
 
-        if (you.exertion == EXERT_FOCUS)
+        if (you.exertion != EXERT_NORMAL)
         {
             you.restore_exertion = you.exertion;
             set_exertion(EXERT_NORMAL, false);
@@ -4524,7 +4524,7 @@ bool dec_sp(int sp_loss, bool silent, bool allow_overdrive)
                 mpr("You are too tired to continue digging.");
         }
 
-        if (you.exertion == EXERT_POWER)
+        if (you.exertion != EXERT_NORMAL)
         {
             if (!silent)
                 mpr("You are too tired to continue exerting yourself.");
