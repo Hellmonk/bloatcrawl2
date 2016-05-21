@@ -380,7 +380,7 @@ void spawn_random_monsters()
     if (player_in_branch(BRANCH_ABYSS))
     {
         if (!player_in_starting_abyss())
-            rate = 5;
+            rate = 20;
         if (have_passive(passive_t::slow_abyss))
             rate *= 2;
     }
