@@ -3688,7 +3688,8 @@ static void _move_player(coord_def move)
         did_god_conduct(DID_HASTY, 1, true);
     }
 
-    player_moved();
+    if (!attacking)
+        player_moved();
 }
 
 static int _get_num_and_char_keyfun(int &ch)
