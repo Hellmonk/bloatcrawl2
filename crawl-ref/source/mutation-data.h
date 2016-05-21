@@ -414,8 +414,8 @@ static const mutation_def mut_data[] =
    "You feel an ache in your throat."},
 },
 
-#if TAG_MAJOR_VERSION == 34
-{ MUT_BREATHE_FLAMES, 00, 3, mutflag::GOOD, false,
+// doesn't work yet
+{ MUT_BREATHE_FLAMES, 0, 3, mutflag::GOOD, false,
   "breathe flames",
 
   {"You can breathe flames.",
@@ -431,7 +431,8 @@ static const mutation_def mut_data[] =
    "A chill runs up and down your throat."},
 },
 
-{ MUT_JUMP, 00, 3, mutflag::GOOD, false,
+// doesn't work yet, needs to be implemented
+{ MUT_JUMP, 0, 3, mutflag::GOOD, false,
   "jump",
 
   {"You can jump attack at a short distance.",
@@ -446,7 +447,7 @@ static const mutation_def mut_data[] =
    "You feel less sure on your feet.",
    "You feel less sure on your feet."},
 },
-#endif
+
 { MUT_BLINK, 30, 1, mutflag::GOOD, false,
   "blink",
 
