@@ -458,7 +458,13 @@ static void _choose_char(newgame_def& ng, newgame_def& choice,
     }
 #endif
 
-    _choose_difficulty(ng, choice, defaults);
+    if (!_choose_difficulty(ng, choice, defaults))
+    {
+#ifdef USE_TILE_WEB
+        tiles.send_exit_reason("cancel");
+#endif
+        game_ended();
+    }
 
     while (true)
     {
@@ -2014,11 +2020,14 @@ static bool _choose_difficulty(newgame_def& ng, newgame_def& ng_choice,
 		menu.draw_menu();
 		int keyn = getch_ck();
         menu.process_key(keyn);
-        if (keyn == '\t' && defaults.difficulty != DIFFICULTY_ASK)
+        if (keyn == '\t')
         {
             set_default_choice(ng, ng_choice, defaults);
-            return true;
+            continue;
         }
+
+        if (keyn == CK_ESCAPE)
+            return false;
 
 		// We have a significant key input!
 		// Construct selection vector
