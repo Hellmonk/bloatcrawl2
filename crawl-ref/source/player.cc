@@ -4158,7 +4158,6 @@ bool dec_mp(int mp_loss, bool silent)
     if (mp_loss < 1)
         return true;
 
-
     if (you.species == SP_DJINNI)
         dec_hp(mp_loss, false);
     else
@@ -4166,6 +4165,10 @@ bool dec_mp(int mp_loss, bool silent)
 
     if (you.mp < 0 || you.species == SP_DJINNI && you.hp < you.hp_max * 25 / 100)
     {
+        const int overdraft = -you.mp;
+        you.duration[DUR_EXHAUSTED] += overdraft;
+        rot_hp(div_rand_round(overdraft, 4));
+
         you.mp = max(0, you.mp);
         bool sent_message = false;
         result = false;
@@ -4340,6 +4343,19 @@ bool player_is_very_tired(bool silent)
     return is_tired;
 }
 
+bool player_is_exhausted(bool silent)
+{
+    /* old way
+    const bool is_tired = player_sp_is_exhausted(true) || player_mp_is_exhausted(true);
+     */
+    const bool is_tired = you.duration[DUR_EXHAUSTED] > 0;
+
+    if (!silent && is_tired)
+        mpr("Your are exhausted!");
+
+    return is_tired;
+}
+
 bool player_mp_is_exhausted(bool silent)
 {
     const bool is_tired = get_mp() < 5;
@@ -4408,15 +4424,9 @@ void set_exertion(const exertion_mode new_exertion, bool manual)
         return;
     }
 
-    if (player_sp_is_exhausted(true) && new_exertion == EXERT_POWER)
+    if (player_is_exhausted(true) && new_exertion != EXERT_NORMAL)
     {
         mpr("You are too tired to exert yourself now.");
-        return;
-    }
-
-    if (player_mp_is_exhausted(true) && new_exertion == EXERT_FOCUS)
-    {
-        mpr("Your energy is too low to focus.");
         return;
     }
 
@@ -4469,6 +4479,10 @@ bool dec_sp(int sp_loss, bool silent)
 
     if (you.sp < 0 || you.species == SP_DJINNI && you.hp < you.hp_max * 25 / 100)
     {
+        const int overdraft = -you.sp;
+        you.duration[DUR_EXHAUSTED] += overdraft;
+        rot_hp(div_rand_round(overdraft, 4));
+
         you.sp = 0;
 
         if (you.duration[DUR_BERSERK] > 1 && you.duration_source[DUR_BERSERK] != SRC_POTION)
@@ -4532,8 +4546,11 @@ void inc_sp(int sp_gain, bool silent, bool manual)
     if (sp_gain < 1 || you.sp == you.sp_max)
         return;
 
-    you.sp += sp_gain;
+    you.duration[DUR_EXHAUSTED] -= sp_gain;
+    if (you.duration[DUR_EXHAUSTED] < 0)
+        you.duration[DUR_EXHAUSTED] = 0;
 
+    you.sp += sp_gain;
     if (you.sp > you.sp_max / 2)
     {
         if (you.restore_exertion == EXERT_POWER)
@@ -4566,8 +4583,11 @@ void inc_mp(int mp_gain, bool silent)
     if (mp_gain < 1 || you.mp == you.mp_max)
         return;
 
-    you.mp += mp_gain;
+    you.duration[DUR_EXHAUSTED] -= mp_gain;
+    if (you.duration[DUR_EXHAUSTED] < 0)
+        you.duration[DUR_EXHAUSTED] = 0;
 
+    you.mp += mp_gain;
     if (you.mp > you.mp_max / 2 && you.restore_exertion == EXERT_FOCUS)
     {
         set_exertion(you.restore_exertion, false);
@@ -4617,8 +4637,29 @@ void rot_hp(int hp_loss)
 
     const int initial_rot = you.hp_max_adj_temp;
     you.hp_max_adj_temp -= hp_loss;
-    // don't allow more rot than you have normal mhp
-    you.hp_max_adj_temp = max(-(get_real_hp(false, true) - 1),
+
+    // don't allow too much rot
+    int min_rot_allowed = 50;
+    switch(crawl_state.difficulty)
+    {
+        case DIFFICULTY_EASY:
+            min_rot_allowed = 75;
+            break;
+        case DIFFICULTY_STANDARD:
+            min_rot_allowed = 50;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            min_rot_allowed = 25;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            min_rot_allowed = 10;
+            break;
+        default:
+            // should not be possible
+            break;
+    }
+
+    you.hp_max_adj_temp = max(-(get_real_hp(false, true) - 1) * min_rot_allowed / 100,
                               you.hp_max_adj_temp);
     if (initial_rot == you.hp_max_adj_temp)
         return;
@@ -4815,7 +4856,7 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
 
     if (adjust_for_difficulty)
     {
-        hitp = player_generic_modifier(hitp);
+        hitp = player_pool_modifier(hitp);
     }
 
     hitp = max(10, hitp);
@@ -4835,7 +4876,7 @@ int get_real_sp(bool include_items)
 
     max_sp = max_sp + 20 * boost;
 
-    max_sp = player_generic_modifier(max_sp);
+    max_sp = player_pool_modifier(max_sp);
     max_sp = max(max_sp, 20);
 
     return max_sp;
@@ -4870,7 +4911,7 @@ int get_real_mp(bool include_items, bool rotted)
     if (include_items && you.wearing_ego(EQ_WEAPON, SPWPN_ANTIMAGIC))
         max_mp /= 3;
 
-    max_mp = player_generic_modifier(max_mp);
+    max_mp = player_pool_modifier(max_mp);
     max_mp = max(max_mp, 20);
 
     if (!rotted)
@@ -9645,32 +9686,36 @@ const int base_factor = 100;
 // is the same as vanilla crawl damage.
 int _difficulty_mode_multiplier()
 {
-    int x;
+    int x = 100;
 
-    switch(crawl_state.difficulty)
+    if (player_is_exhausted(true))
     {
-        case DIFFICULTY_EASY:
-            x = 120;
-            break;
-        case DIFFICULTY_STANDARD:
-            x = 90;
-            break;
-        case DIFFICULTY_CHALLENGE:
-            x = 80;
-            break;
-        case DIFFICULTY_NIGHTMARE:
-            x = 70;
-            break;
-        default:
-            // should not be possible
-            x = 80;
-            break;
+        switch(crawl_state.difficulty)
+        {
+            // yes, easy mode actually gets a boost when exhausted...
+            case DIFFICULTY_EASY:
+                x = 120;
+                break;
+            case DIFFICULTY_STANDARD:
+                x = 90;
+                break;
+            case DIFFICULTY_CHALLENGE:
+                x = 80;
+                break;
+            case DIFFICULTY_NIGHTMARE:
+                x = 70;
+                break;
+            default:
+                // should not be possible
+                x = 80;
+                break;
+        }
     }
 
     return x;
 }
 
-int player_tohit_modifier(int tohit, const int range)
+int player_tohit_modifier(int tohit, int range)
 {
     ASSERT(range <= LOS_MAX_RANGE);
 
@@ -9682,7 +9727,7 @@ int player_tohit_modifier(int tohit, const int range)
 
     tohit *= _difficulty_mode_multiplier();
 
-    // worst case, range 7, gives 40% of original tohit, which should give about 80% lower chance of hitting
+    // worst case, range 7, gives 40% of original tohit, which should give about 80% chance of hitting
     if (range > 1)
         tohit = tohit * (20 - range + 1) / 20;
 
@@ -9751,7 +9796,7 @@ int player_evasion_modifier(int evasion)
     evasion *= _difficulty_mode_multiplier();
 
     if (you.exertion == EXERT_FOCUS)
-        evasion = evasion * 4 / 3 + 50;
+        evasion = evasion * 4 / 3 + 100;
 
     return evasion / base_factor;
 }
@@ -9761,7 +9806,7 @@ int player_ac_modifier(int ac)
     ac *= _difficulty_mode_multiplier();
 
     if (you.exertion == EXERT_FOCUS)
-        ac = ac * 4 / 3 + 50;
+        ac = ac * 4 / 3 + 100;
 
     return ac / base_factor;
 }
@@ -9827,7 +9872,7 @@ void player_update_tohit(int new_tohit)
 }
 
 // used for pool sizes. Generic way to scale something based on difficulty
-int player_generic_modifier(int amount)
+int player_pool_modifier(int amount)
 {
     int percent = 100;
 
