@@ -4154,7 +4154,10 @@ void _handle_overdraft(const int overdraft)
     you.duration[DUR_EXHAUSTED] += overdraft * 5;
     if (you.duration[DUR_EXHAUSTED] > 200)
         you.duration[DUR_EXHAUSTED] = 200;
+
+    /* No more rot :(
     rot_hp(div_rand_round(overdraft, 50));
+     */
 }
 
 // returns false if there isn't enough mp
@@ -9572,15 +9575,14 @@ void player_evoked_something()
 
 void player_moved()
 {
-    if (in_quick_mode() && you.peace < 100)
-        dec_sp(3, false, true);
-    if (you.peace < 50)
-    {
-        if (you.exertion == EXERT_FOCUS)
-            dec_mp(3, false, true);
-        if (you.airborne() && you.cancellable_flight())
-            dec_sp(3, false, true);
-    }
+    if (you.peace < 100 && in_quick_mode())
+        dec_sp(5, false, true);
+
+    if (you.peace < 50 && you.airborne() && you.cancellable_flight())
+        dec_sp(5, false, true);
+
+    if (you.peace < 10 && you.exertion == EXERT_FOCUS)
+        dec_mp(5, false, true);
 }
 
 void player_was_offensive()
@@ -9780,9 +9782,9 @@ int player_attack_delay_modifier(int attack_delay)
     attack_delay *= base_factor;
 
     if (player_is_exhausted(true))
-        attack_delay = attack_delay * 9 / 8;
+        attack_delay = attack_delay * 6 / 5;
     else if (you.exertion == EXERT_POWER)
-        attack_delay = attack_delay * 7 / 8 - 50;
+        attack_delay = attack_delay * 4 / 5 - 50;
 
     return attack_delay / _difficulty_mode_multiplier();
 }
@@ -9816,7 +9818,7 @@ int player_stealth_modifier(int stealth)
     stealth *= _difficulty_mode_multiplier();
 
     if (player_is_exhausted(true))
-        stealth = stealth * 3 / 2;
+        stealth = stealth * 2 / 3;
     else if (you.exertion == EXERT_FOCUS)
         stealth = stealth * 4 / 3 + 500;
 
