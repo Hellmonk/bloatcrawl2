@@ -1012,14 +1012,15 @@ bool cast_a_spell(bool check_range, spell_type spell)
 
     you.last_cast_spell = spell;
     // Silently take MP before the spell.
-    dec_mp(cost, true);
+    const int full_cost = cost + freeze_cost;
+    dec_mp(full_cost, true);
 
     const spret_type cast_result = your_spells(spell, 0, true);
     if (cast_result == SPRET_ABORT)
     {
         crawl_state.zero_turns_taken();
         // Return the MP since the spell is aborted.
-        inc_mp(cost, true);
+        inc_mp(full_cost, true);
         return false;
     }
 
@@ -1038,7 +1039,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
             || spell == SPELL_SUBLIMATION_OF_BLOOD && get_hp() == get_hp_max()))
     {
         // These spells have replenished essence to full.
-        inc_mp(cost, true);
+        inc_mp(full_cost, true);
     }
     else // Redraw MP
         flush_mp();
@@ -1058,7 +1059,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     you.turn_is_over = true;
     alert_nearby_monsters();
 
-    player_used_magic(cost + freeze_cost);
+    player_used_magic(full_cost);
     if (is_self_transforming_spell(spell))
         you.current_form_spell = spell;
 

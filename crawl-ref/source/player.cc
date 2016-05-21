@@ -9644,7 +9644,9 @@ int spell_mp_cost(spell_type which_spell)
     int cost = _apply_hunger(which_spell, 5);
     cost = max(cost, 5);
 
-    if (you.duration[DUR_CHANNELING] || is_summon_spell(which_spell))
+    if (you.duration[DUR_CHANNELING]
+        || is_summon_spell(which_spell)
+        )
         cost = 0;
     else if (have_passive(passive_t::conserve_mp))
         cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
