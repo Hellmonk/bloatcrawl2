@@ -9400,7 +9400,9 @@ void player_end_berserk()
     const bool hints_slow = Hints.hints_events[HINT_YOU_ENCHANTED];
     Hints.hints_events[HINT_YOU_ENCHANTED] = false;
 
+    /* This isn't necessary since we tank stamina
     slow_player(dur);
+     */
 
     make_hungry(BERSERK_NUTRITION, true);
     you.hunger = max(HUNGER_STARVING - 100, you.hunger);
