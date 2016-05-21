@@ -9734,7 +9734,7 @@ int player_tohit_modifier(int tohit, int range)
         return tohit;
 
     if (you.duration[DUR_PORTAL_PROJECTILE])
-        range = 0;
+        range = 1;
 
     tohit *= _difficulty_mode_multiplier();
 
