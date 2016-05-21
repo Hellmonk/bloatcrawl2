@@ -4154,7 +4154,7 @@ void _handle_overdraft(const int overdraft)
     you.duration[DUR_EXHAUSTED] += overdraft * 5;
     if (you.duration[DUR_EXHAUSTED] > 200)
         you.duration[DUR_EXHAUSTED] = 200;
-    rot_hp(div_rand_round(overdraft, 20));
+    rot_hp(div_rand_round(overdraft, 50));
 }
 
 // returns false if there isn't enough mp
