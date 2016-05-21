@@ -9808,7 +9808,7 @@ int player_evasion_modifier(int evasion)
     evasion *= _difficulty_mode_multiplier();
 
     if (you.exertion == EXERT_FOCUS)
-        evasion = evasion * 4 / 3 + 100;
+        evasion = evasion * 5 / 4 + 100;
 
     return evasion / base_factor;
 }
@@ -9818,7 +9818,7 @@ int player_ac_modifier(int ac)
     ac *= _difficulty_mode_multiplier();
 
     if (you.exertion == EXERT_FOCUS)
-        ac = ac * 4 / 3 + 100;
+        ac = ac * 5 / 4 + 100;
 
     return ac / base_factor;
 }
@@ -9828,7 +9828,7 @@ int player_sh_modifier(int sh)
     sh *= _difficulty_mode_multiplier();
 
     if (you.exertion == EXERT_FOCUS)
-        sh = sh * 4 / 3 + 50;
+        sh = sh * 5 / 4 + 100;
 
     return sh / base_factor;
 }
