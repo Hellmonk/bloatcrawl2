@@ -1292,7 +1292,7 @@ void torment_player(actor *attacker, torment_source_type taux)
         break;
     }
 
-    ouch(hploss, type, attacker? attacker->mid : MID_NOBODY, aux);
+    ouch(hploss, type, attacker? attacker->mid : MID_NOBODY, aux, true, nullptr, true);
 
     return;
 }

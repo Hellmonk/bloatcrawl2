@@ -163,8 +163,10 @@ bool ranged_attack::handle_phase_attempted()
     attacker->attacking(defender, true);
     attack_occurred = true;
 
+    /* I think this is happening twice
     if (sp_cost && attacker->is_player())
-        dec_sp(sp_cost, true);
+        dec_sp(sp_cost, true, false);
+        */
 
     return true;
 }

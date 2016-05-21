@@ -98,7 +98,7 @@ bool attack::handle_phase_damaged()
     }
 
     announce_hit();
-    // Inflict s			tored damage
+    // Inflict stored damage
     damage_done = inflict_damage(damage_done);
 
     // TODO: Unify these, added here so we can get rid of player_attack

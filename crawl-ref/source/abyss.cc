@@ -355,7 +355,7 @@ static int _abyss_create_items(const map_bitmask &abyss_genlevel_mask,
     {
         if (_abyss_square_accepts_items(abyss_genlevel_mask, place))
         {
-            int thing_created = items(true, OBJ_RANDOM, OBJ_RANDOM,
+            int thing_created = items(true, OBJ_POTIONS, POT_STAMINA,
                                       items_level);
             move_item_to_grid(&thing_created, place);
             if (thing_created != NON_ITEM)

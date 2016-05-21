@@ -149,7 +149,7 @@ bool melee_attack::handle_phase_attempted()
         you.time_taken = you.attack_delay();
 
         if (sp_cost)
-            dec_sp(sp_cost, true);
+            dec_sp(sp_cost, true, true);
 
         if (weapon)
         {
@@ -807,7 +807,6 @@ bool melee_attack::attack()
             shield_blocked = false;
         }
     }
-
 
     if(defender->is_player() && player_ephemeral_passthrough(atk_name(DESC_THE), true)) {
     	return false;

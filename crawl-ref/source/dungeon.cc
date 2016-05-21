@@ -1241,12 +1241,16 @@ void dgn_reset_level(bool enable_random_maps)
 
 static int _num_items_wanted(int absdepth0)
 {
+    int items_wanted = 0;
     if (branches[you.where_are_you].branch_flags & BFLAG_NO_ITEMS)
-        return 0;
+        items_wanted = 0;
     else if (absdepth0 > 5 && x_chance_in_y(absdepth0, 200))
-        return 10 + random2avg(90, 2); // rich level!
+        items_wanted = 10 + random2avg(90, 2); // rich level!
     else
-        return 3 + roll_dice(3, 13);
+        items_wanted = 3 + roll_dice(3, 13);
+
+    items_wanted = player_item_gen_modifier(items_wanted);
+    return items_wanted;
 }
 
 static int _num_mons_wanted()
@@ -3697,6 +3701,7 @@ static void _builder_items()
 {
     int i = 0;
     object_class_type specif_type = OBJ_RANDOM;
+    int specif_sub_type = OBJ_RANDOM;
     int items_levels = env.absdepth0;
     int items_wanted = _num_items_wanted(items_levels);
 
@@ -3707,10 +3712,16 @@ static void _builder_items()
     }
     else if (player_in_branch(BRANCH_ORC))
         specif_type = OBJ_GOLD;  // Lots of gold in the orcish mines.
+    else if (player_in_branch(BRANCH_ABYSS))
+    {
+        specif_type = OBJ_POTIONS;
+        specif_sub_type = POT_STAMINA;
+        items_wanted = 20;
+    }
 
     for (i = 0; i < items_wanted; i++)
     {
-        int item = items(true, specif_type, OBJ_RANDOM, items_levels);
+        int item = items(true, specif_type, specif_sub_type, items_levels);
 
         _randomly_place_item(item);
     }
