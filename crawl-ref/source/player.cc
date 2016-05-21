@@ -4453,6 +4453,8 @@ void set_exertion(const exertion_mode new_exertion, bool manual)
             break;
     }
     you.redraw_status_lights = true;
+    you.redraw_evasion = true;
+    you.redraw_armour_class = true;
     you.turn_is_over = true;
 
     player_update_tohit();
