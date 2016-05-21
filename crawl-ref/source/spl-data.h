@@ -1013,7 +1013,7 @@ static const struct spell_desc spelldata[] =
     SPELL_STONE_ARROW, "Stone Arrow",
     SPTYP_CONJURATION | SPTYP_EARTH,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
-    3,
+    2,
     50,
     4, 4,
     3, 0,
