@@ -4556,9 +4556,11 @@ void inc_sp(int sp_gain, bool silent, bool manual)
     if (sp_gain < 1 || you.sp == you.sp_max)
         return;
 
+    /*
     you.duration[DUR_EXHAUSTED] -= sp_gain;
     if (you.duration[DUR_EXHAUSTED] < 0)
         you.duration[DUR_EXHAUSTED] = 0;
+        */
 
     you.sp += sp_gain;
     if (you.sp > you.sp_max / 2)
@@ -4593,9 +4595,11 @@ void inc_mp(int mp_gain, bool silent)
     if (mp_gain < 1 || you.mp == you.mp_max)
         return;
 
+    /*
     you.duration[DUR_EXHAUSTED] -= mp_gain;
     if (you.duration[DUR_EXHAUSTED] < 0)
         you.duration[DUR_EXHAUSTED] = 0;
+        */
 
     you.mp += mp_gain;
     if (you.mp > you.mp_max / 2 && you.restore_exertion == EXERT_FOCUS)
@@ -9551,8 +9555,6 @@ bool player_summoned_monster(spell_type spell, monster* mons, bool first)
 void player_attacked_something(int sp_cost)
 {
     player_was_offensive();
-    if (you.exertion != EXERT_NORMAL)
-        dec_sp(sp_cost, true, true);
 }
 
 // When any kind of magic spell is cast by the player
@@ -9647,17 +9649,20 @@ int _apply_hunger(const spell_type &which_spell, int cost, int multiplier = 100)
 int spell_mp_cost(spell_type which_spell)
 {
     int cost = _apply_hunger(which_spell, 3);
-    cost = max(cost, 3);
 
     if (you.duration[DUR_CHANNELING]
         || is_summon_spell(which_spell)
         )
         cost = 0;
     else if (have_passive(passive_t::conserve_mp))
+    {
         cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
 
-    if (you.exertion != EXERT_NORMAL)
-        cost *= 2;
+        cost = max(cost, 2);
+
+        if (you.exertion != EXERT_NORMAL)
+            cost *= 2;
+    }
 
     return cost;
 }
@@ -9668,12 +9673,15 @@ int spell_mp_freeze(spell_type which_spell)
     if (is_summon_spell(which_spell))
     {
         cost = _apply_hunger(which_spell, 10, 400);
+
         if (have_passive(passive_t::conserve_mp))
             cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
-    }
 
-    if (you.exertion != EXERT_NORMAL)
-        cost *= 2;
+        cost = max(cost, 2);
+
+        if (you.exertion != EXERT_NORMAL)
+            cost *= 2;
+    }
 
     return cost;
 }
@@ -9686,7 +9694,9 @@ int weapon_sp_cost(const item_def* weapon)
     sp_cost /= 5 + you.strength(true) * 3 / 2;
     sp_cost /= 5 + you.skill(SK_FIGHTING) * 3 / 2;
 
-    sp_cost = max(3, sp_cost);
+    sp_cost = max(2, sp_cost);
+    if (you.exertion != EXERT_NORMAL)
+        sp_cost *= 2;
 
     return sp_cost;
 }
@@ -9701,28 +9711,25 @@ int _difficulty_mode_multiplier()
 {
     int x = 100;
 
-    if (player_is_exhausted(true))
+    switch(crawl_state.difficulty)
     {
-        switch(crawl_state.difficulty)
-        {
-            // yes, easy mode actually gets a boost when exhausted...
-            case DIFFICULTY_EASY:
-                x = 120;
-                break;
-            case DIFFICULTY_STANDARD:
-                x = 90;
-                break;
-            case DIFFICULTY_CHALLENGE:
-                x = 80;
-                break;
-            case DIFFICULTY_NIGHTMARE:
-                x = 70;
-                break;
-            default:
-                // should not be possible
-                x = 80;
-                break;
-        }
+        // yes, easy mode actually gets a boost when exhausted...
+        case DIFFICULTY_EASY:
+            x = 120;
+            break;
+        case DIFFICULTY_STANDARD:
+            x = 110;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            x = 100;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            x = 90;
+            break;
+        default:
+            // should not be possible
+            x = 100;
+            break;
     }
 
     return x;
@@ -9744,7 +9751,9 @@ int player_tohit_modifier(int tohit, int range)
     if (range > 1)
         tohit = tohit * (20 - range + 1) / 20;
 
-    if (you.exertion == EXERT_FOCUS)
+    if (player_is_exhausted(true))
+        tohit = tohit * 3 / 4;
+    else if (you.exertion == EXERT_FOCUS)
         tohit = tohit * 3 / 2 + 50;
 
     return tohit / base_factor;
@@ -9758,7 +9767,9 @@ int player_damage_modifier(int damage, bool silent, const int range)
     if (range > 1)
         damage = damage * (30 - range + 1) / 30;
 
-    if (you.exertion == EXERT_POWER)
+    if (player_is_exhausted(true))
+        damage = damage * 4 / 5;
+    else if (you.exertion == EXERT_POWER)
         damage = damage * 4 / 3 + 20;
 
     return damage / base_factor;
@@ -9768,7 +9779,9 @@ int player_attack_delay_modifier(int attack_delay)
 {
     attack_delay *= base_factor;
 
-    if (you.exertion == EXERT_POWER)
+    if (player_is_exhausted(true))
+        attack_delay = attack_delay * 9 / 8;
+    else if (you.exertion == EXERT_POWER)
         attack_delay = attack_delay * 7 / 8 - 50;
 
     return attack_delay / _difficulty_mode_multiplier();
@@ -9778,7 +9791,9 @@ int player_spellpower_modifier(int spellpower)
 {
     spellpower *= _difficulty_mode_multiplier();
 
-    if (you.exertion == EXERT_POWER)
+    if (player_is_exhausted(true))
+        spellpower = spellpower * 3 / 4;
+    else if (you.exertion == EXERT_POWER)
         spellpower = spellpower * 4 / 3 + 100;
 
     return spellpower / base_factor;
@@ -9788,7 +9803,9 @@ int player_spellfailure_modifier(int failure)
 {
     failure *= base_factor;
 
-    if (you.exertion == EXERT_FOCUS)
+    if (player_is_exhausted(true))
+        failure = failure * 3 / 2;
+    else if (you.exertion == EXERT_FOCUS)
         failure = max(failure - 15 * base_factor, failure / 2);
 
     return failure / _difficulty_mode_multiplier();
@@ -9798,7 +9815,9 @@ int player_stealth_modifier(int stealth)
 {
     stealth *= _difficulty_mode_multiplier();
 
-    if (you.exertion == EXERT_FOCUS)
+    if (player_is_exhausted(true))
+        stealth = stealth * 3 / 2;
+    else if (you.exertion == EXERT_FOCUS)
         stealth = stealth * 4 / 3 + 500;
 
     return stealth / base_factor;
@@ -9808,7 +9827,9 @@ int player_evasion_modifier(int evasion)
 {
     evasion *= _difficulty_mode_multiplier();
 
-    if (you.exertion == EXERT_FOCUS)
+    if (player_is_exhausted(true))
+        evasion = evasion * 4 / 5;
+    else if (you.exertion == EXERT_FOCUS)
         evasion = evasion * 5 / 4 + 100;
 
     return evasion / base_factor;
@@ -9818,7 +9839,9 @@ int player_ac_modifier(int ac)
 {
     ac *= _difficulty_mode_multiplier();
 
-    if (you.exertion == EXERT_FOCUS)
+    if (player_is_exhausted(true))
+        ac = ac * 4 / 5;
+    else if (you.exertion == EXERT_FOCUS)
         ac = ac * 5 / 4 + 100;
 
     return ac / base_factor;
@@ -9828,7 +9851,9 @@ int player_sh_modifier(int sh)
 {
     sh *= _difficulty_mode_multiplier();
 
-    if (you.exertion == EXERT_FOCUS)
+    if (player_is_exhausted(true))
+        sh = sh * 4 / 5;
+    else if (you.exertion == EXERT_FOCUS)
         sh = sh * 5 / 4 + 100;
 
     return sh / base_factor;
