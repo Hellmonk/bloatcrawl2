@@ -930,7 +930,11 @@ bool cast_a_spell(bool check_range, spell_type spell)
 
     const int cost = spell_mp_cost(spell);
     const int freeze_cost = spell_mp_freeze(spell);
+    /* old way
     if (!enough_mp(cost + freeze_cost, true))
+     */
+    // now we allow casting without mp, unless freezing mp
+    if (!enough_mp(freeze_cost, true))
     {
         mpr("You don't have enough magic to cast that spell.");
         crawl_state.zero_turns_taken();
