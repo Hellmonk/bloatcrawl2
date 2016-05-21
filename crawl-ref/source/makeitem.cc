@@ -716,22 +716,19 @@ static void _generate_missile_item(item_def& item, int force_type,
     if (item.sub_type == MI_LARGE_ROCK)
     {
         item.quantity = 2 + random2avg(5,2);
-        no_brand = true;
     }
     else if (item.sub_type == MI_STONE)
     {
         item.quantity = 1 + random2(7) + random2(10) + random2(12) + random2(10);
-        no_brand = true;
     }
     else if (item.sub_type == MI_THROWING_NET) // no fancy nets, either
     {
         item.quantity = 1 + one_chance_in(4); // and only one, rarely two
-        no_brand = true;
     }
     else
     {
-        set_item_ego_type(item, OBJ_MISSILES,
-                           _determine_missile_brand(item, item_level));
+        if (!no_brand)
+            item.brand = _determine_missile_brand(item, item_level);
 
         // Reduced quantity if special.
         if (item.sub_type == MI_JAVELIN || item.sub_type == MI_TOMAHAWK
