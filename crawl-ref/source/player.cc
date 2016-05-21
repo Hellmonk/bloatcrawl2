@@ -696,7 +696,6 @@ void update_vision_range()
  */
 maybe_bool you_can_wear(equipment_type eq, bool temp)
 {
-    eq = EQ_RING_THREE;
     if (temp && !get_form()->slot_available(eq))
         return MB_FALSE;
 
