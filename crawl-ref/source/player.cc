@@ -6745,7 +6745,7 @@ int player::base_ac_from(const item_def &armour, int scale) const
         return AC - (base_ac * deformity) / 4;
     }
 
-    return AC;
+    return max(0, AC);
 }
 
 /**
