@@ -1,5 +1,18 @@
 ## v1.5.2
 
+* Exhaustion mode is the same as normal mode before. 
+    * When you drop below 0 sp or mp, you enter exhaustion mode.
+    * In exhaustion mode, your basic attributes are a little lower than normal mode. 
+    * You are no longer exhausted once you have at least 5 mp and 5 sp. 
+    * There is a chance to rot player hp based on amount of sp or mp spent while exhausted.
+
+* Spells may be cast even when mp is empty.
+    * Except for spells which reduce max mp instead of consuming mp (like transmutations and summons).
+    
+* Focus mode now increases ac and ev slightly
+    * By paying closer attention to incoming attacks, a player can optimize their armour (making sure the enemy hits the
+      more fortified places) or increase their chance of dodging the attacks.
+
 * Power mode now doubles cost of action, whether it is MP *or* SP (before it only had an SP cost)
 * Focus mode now doubles cost of action, whether it is MP *or* SP (before it only had an MP cost)
     * This means that spellcasters in power mode no longer consume SP when casting a spell, but instead must pay
