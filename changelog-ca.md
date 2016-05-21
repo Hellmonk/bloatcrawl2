@@ -1,5 +1,11 @@
 ## v1.5.2
 
+* Set hp rot caps based on difficulty.
+    * Easy mode can't rot to less than 80% of hp.
+    * Standard: 60%
+    * Challenge: 40%
+    * Nightmare: 20%
+
 * Exhaustion mode is the same as normal mode before. 
     * When you drop below 0 sp or mp, you enter exhaustion mode.
     * In exhaustion mode, your basic attributes are a little lower than normal mode. 

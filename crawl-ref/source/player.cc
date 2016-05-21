@@ -4149,6 +4149,14 @@ void flush_mp()
     you.redraw_magic_points = true;
 }
 
+void _handle_overdraft(const int overdraft)
+{
+    you.duration[DUR_EXHAUSTED] += overdraft * 10;
+    if (you.duration[DUR_EXHAUSTED] > 200)
+        you.duration[DUR_EXHAUSTED] = 200;
+    rot_hp(div_rand_round(overdraft, 10));
+}
+
 // returns false if there isn't enough mp
 bool dec_mp(int mp_loss, bool silent)
 {
@@ -4166,8 +4174,7 @@ bool dec_mp(int mp_loss, bool silent)
     if (you.mp < 0 || you.species == SP_DJINNI && you.hp < you.hp_max * 25 / 100)
     {
         const int overdraft = -you.mp;
-        you.duration[DUR_EXHAUSTED] += overdraft;
-        rot_hp(div_rand_round(overdraft, 4));
+        _handle_overdraft(overdraft);
 
         you.mp = max(0, you.mp);
         bool sent_message = false;
@@ -4480,8 +4487,7 @@ bool dec_sp(int sp_loss, bool silent)
     if (you.sp < 0 || you.species == SP_DJINNI && you.hp < you.hp_max * 25 / 100)
     {
         const int overdraft = -you.sp;
-        you.duration[DUR_EXHAUSTED] += overdraft;
-        rot_hp(div_rand_round(overdraft, 4));
+        _handle_overdraft(overdraft);
 
         you.sp = 0;
 
@@ -4639,20 +4645,20 @@ void rot_hp(int hp_loss)
     you.hp_max_adj_temp -= hp_loss;
 
     // don't allow too much rot
-    int min_rot_allowed = 50;
+    int min_rot_allowed = 60;
     switch(crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            min_rot_allowed = 75;
+            min_rot_allowed = 80;
             break;
         case DIFFICULTY_STANDARD:
-            min_rot_allowed = 50;
+            min_rot_allowed = 60;
             break;
         case DIFFICULTY_CHALLENGE:
-            min_rot_allowed = 25;
+            min_rot_allowed = 40;
             break;
         case DIFFICULTY_NIGHTMARE:
-            min_rot_allowed = 10;
+            min_rot_allowed = 20;
             break;
         default:
             // should not be possible
