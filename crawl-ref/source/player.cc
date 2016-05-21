@@ -6740,13 +6740,12 @@ int player::base_ac_from(const item_def &armour, int scale) const
     // (This includes nagas and centaurs.)
     int deformity = player_mutation_level(MUT_DEFORMED);
     if (get_armour_slot(armour) == EQ_BODY_ARMOUR
-        && (deformity
-                || player_mutation_level(MUT_PSEUDOPODS)))
+        && (deformity || player_mutation_level(MUT_PSEUDOPODS)))
     {
-        return AC - (base_ac * deformity) / 3;
+        return AC - (base_ac * deformity) / 4;
     }
 
-    return AC;
+    return max(0, AC);
 }
 
 /**
@@ -9401,7 +9400,9 @@ void player_end_berserk()
     const bool hints_slow = Hints.hints_events[HINT_YOU_ENCHANTED];
     Hints.hints_events[HINT_YOU_ENCHANTED] = false;
 
+    /* This isn't necessary since we tank stamina
     slow_player(dur);
+     */
 
     make_hungry(BERSERK_NUTRITION, true);
     you.hunger = max(HUNGER_STARVING - 100, you.hunger);
@@ -9645,8 +9646,8 @@ int _apply_hunger(const spell_type &which_spell, int cost, int multiplier = 100)
 
 int spell_mp_cost(spell_type which_spell)
 {
-    int cost = _apply_hunger(which_spell, 5);
-    cost = max(cost, 5);
+    int cost = _apply_hunger(which_spell, 3);
+    cost = max(cost, 3);
 
     if (you.duration[DUR_CHANNELING]
         || is_summon_spell(which_spell)
@@ -9666,7 +9667,7 @@ int spell_mp_freeze(spell_type which_spell)
     int cost = 0;
     if (is_summon_spell(which_spell))
     {
-        cost = _apply_hunger(which_spell, 5, 400);
+        cost = _apply_hunger(which_spell, 10, 400);
         if (have_passive(passive_t::conserve_mp))
             cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
     }
@@ -9681,11 +9682,11 @@ int weapon_sp_cost(const item_def* weapon)
 {
     int weight = weapon ? max(1, property(*weapon, PWPN_WEIGHT)) : 3;
 
-    int sp_cost = 100 * weight;
+    int sp_cost = 50 * weight;
     sp_cost /= 5 + you.strength(true) * 3 / 2;
     sp_cost /= 5 + you.skill(SK_FIGHTING) * 3 / 2;
 
-    sp_cost = max(2, sp_cost);
+    sp_cost = max(3, sp_cost);
 
     return sp_cost;
 }
@@ -9735,7 +9736,7 @@ int player_tohit_modifier(int tohit, int range)
         return tohit;
 
     if (you.duration[DUR_PORTAL_PROJECTILE])
-        range = 0;
+        range = 1;
 
     tohit *= _difficulty_mode_multiplier();
 

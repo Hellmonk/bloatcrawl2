@@ -1013,7 +1013,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     you.last_cast_spell = spell;
     // Silently take MP before the spell.
     const int full_cost = cost + freeze_cost;
-    dec_mp(full_cost, true);
+    dec_mp(full_cost, true, true);
 
     const spret_type cast_result = your_spells(spell, 0, true);
     if (cast_result == SPRET_ABORT)

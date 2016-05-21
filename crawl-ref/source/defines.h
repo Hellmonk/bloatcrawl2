@@ -128,9 +128,9 @@ const int LABYRINTH_BORDER = 4;
 
 const int MAX_EXP_LEVEL = 99;
 const int MAX_SKILL_LEVEL = 99;
-const int MAX_ITEM_PLUS = 27;
-const int MAX_EXP_TOTAL = 8999999;
-const int MAX_MONS_LEVEL = 27;
+const int MAX_ITEM_PLUS = 99;
+const int MAX_EXP_TOTAL = 89999999;
+const int MAX_MONS_LEVEL = 99;
 const int HIGH_EXP_POOL = 20000;
 const int EXERCISE_QUEUE_SIZE = 100;
 
@@ -199,7 +199,7 @@ const int AGILITY_BONUS = 5;
 #define berserk_mul(x) div_rand_round((x) * 3, 2)
 #define berserk_div(x) div_rand_round((x) * 2, 3)
 
-#define MAX_MONSTER_HP 16000
+#define MAX_MONSTER_HP 99000
 
 // some shortcuts:
 #define menv   env.mons
