@@ -149,7 +149,7 @@ bool melee_attack::handle_phase_attempted()
         you.time_taken = you.attack_delay();
 
         if (sp_cost)
-            dec_sp(sp_cost, true);
+            dec_sp(sp_cost, true, true);
 
         if (weapon)
         {

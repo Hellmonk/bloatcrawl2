@@ -1055,10 +1055,10 @@ void calc_mp();
 void recalc_and_scale_hp();
 
 bool dec_hp(int hp_loss, bool fatal, const char *aux = nullptr);
-bool dec_mp(int mp_loss, bool silent = false);
+bool dec_mp(int mp_loss, bool silent = false, bool allow_overdrive = false);
+bool dec_sp(int sp_loss = 1, bool silent = false, bool allow_overdrive = false);
 bool drain_mp(int mp_loss);
 
-bool dec_sp(int sp_loss = 1, bool silent = false);
 void inc_sp(int sp_gain = 1, bool silent = false, bool manual = true);
 void inc_mp(int mp_gain, bool silent = false);
 void inc_hp(int hp_gain);

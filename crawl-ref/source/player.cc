@@ -4158,7 +4158,7 @@ void _handle_overdraft(const int overdraft)
 }
 
 // returns false if there isn't enough mp
-bool dec_mp(int mp_loss, bool silent)
+bool dec_mp(int mp_loss, bool silent, bool allow_overdrive)
 {
     ASSERT(!crawl_state.game_is_arena());
     bool result = true;
@@ -4174,7 +4174,8 @@ bool dec_mp(int mp_loss, bool silent)
     if (you.mp < 0 || you.species == SP_DJINNI && you.hp < you.hp_max * 25 / 100)
     {
         const int overdraft = -you.mp;
-        _handle_overdraft(overdraft);
+        if (allow_overdrive)
+            _handle_overdraft(overdraft);
 
         you.mp = max(0, you.mp);
         bool sent_message = false;
@@ -4458,7 +4459,7 @@ void set_exertion(const exertion_mode new_exertion, bool manual)
 }
 
 // returns true if after subtracting the given sp, sp is still > 0
-bool dec_sp(int sp_loss, bool silent)
+bool dec_sp(int sp_loss, bool silent, bool allow_overdrive)
 {
     bool result = true;
 
@@ -4487,7 +4488,8 @@ bool dec_sp(int sp_loss, bool silent)
     if (you.sp < 0 || you.species == SP_DJINNI && you.hp < you.hp_max * 25 / 100)
     {
         const int overdraft = -you.sp;
-        _handle_overdraft(overdraft);
+        if (allow_overdrive)
+            _handle_overdraft(overdraft);
 
         you.sp = 0;
 
@@ -9547,7 +9549,7 @@ void player_attacked_something(int sp_cost)
 {
     player_was_offensive();
     if (you.exertion != EXERT_NORMAL)
-        dec_sp(sp_cost);
+        dec_sp(sp_cost, true, true);
 }
 
 // When any kind of magic spell is cast by the player
@@ -9566,13 +9568,13 @@ void player_evoked_something()
 void player_moved()
 {
     if (in_quick_mode() && you.peace < 100)
-        dec_sp(3);
+        dec_sp(3, false, true);
     if (you.peace < 50)
     {
         if (you.exertion == EXERT_FOCUS)
-            dec_mp(3);
+            dec_mp(3, false, true);
         if (you.airborne() && you.cancellable_flight())
-            dec_sp(3);
+            dec_sp(3, false, true);
     }
 }
 
