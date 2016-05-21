@@ -3726,7 +3726,7 @@ enum mutation_type
     MUT_HIGH_MAGIC,
     MUT_HIGH_STAMINA,
     MUT_LOW_STAMINA,
-    MUT_HUNGERLESS,
+    MUT_HUNGERLESS, // no longer used
 #if TAG_MAJOR_VERSION > 34
     MUT_FREEZING_CLOUD_IMMUNITY,
 #endif
