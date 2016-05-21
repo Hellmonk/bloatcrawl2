@@ -9677,6 +9677,9 @@ int player_tohit_modifier(int tohit, const int range)
     if (tohit == AUTOMATIC_HIT)
         return tohit;
 
+    if (you.duration[DUR_PORTAL_PROJECTILE])
+        range = 0;
+
     tohit *= _difficulty_mode_multiplier();
 
     // worst case, range 7, gives 40% of original tohit, which should give about 80% lower chance of hitting
