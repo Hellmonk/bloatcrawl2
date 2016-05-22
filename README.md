@@ -299,6 +299,11 @@ Unequipping shields
 Traps
    * Shafting doesn't happen in the first 2 floors of dungeon
 
+Formicid
+   * Immune to shaft traps
+   * Fast movement
+   * Vulnerable to poison
+
 Djinni brought back from the dead and greatly enhanced.
    * Unusual contamination mechanism that they originally had has been removed. They also consume food like normal species, so excessive spell casting has the normal consequence.
    * Djinni can no longer read scrolls of any kind, even though they can use spell books.
