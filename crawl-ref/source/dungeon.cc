@@ -2157,6 +2157,8 @@ static void _ruin_level(Iterator iter,
 
 static bool _mimic_at_level()
 {
+    return false;
+    /* no more mimics
     return !player_in_branch(BRANCH_TEMPLE)
            && !player_in_branch(BRANCH_VESTIBULE)
            && !player_in_branch(BRANCH_SLIME)
@@ -2164,6 +2166,7 @@ static bool _mimic_at_level()
            && !player_in_branch(BRANCH_PANDEMONIUM)
            && !player_in_hell()
            && !crawl_state.game_is_tutorial();
+           */
 }
 
 static void _place_feature_mimics(dungeon_feature_type dest_stairs_type)
