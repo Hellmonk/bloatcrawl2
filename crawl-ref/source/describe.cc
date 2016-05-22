@@ -844,7 +844,7 @@ static void _append_weapon_stats(string &description, const item_def &item)
       make_stringf("\n (Your skill: %.1f)", (float) you.skill(skill, 10) / 10)
       : "";
     description += make_stringf(
-    "\nBase accuracy: %+d   Base damage: %d   Base SP cost: %d"
+    "\nBase accuracy: %+d   Base damage: %d   Current SP cost: %d"
     "\nAttack delay:  Base: %.1f   Current: %.1f"
     "\nThis weapon's minimum attack delay (%.1f) is reached at skill level %d."
     "%s",

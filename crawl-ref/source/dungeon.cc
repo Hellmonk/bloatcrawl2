@@ -1211,7 +1211,9 @@ void dgn_reset_level(bool enable_random_maps)
     }
     else if (player_in_connected_branch()
              || (player_on_orb_run() && !player_in_branch(BRANCH_ABYSS)))
+    {
         env.spawn_random_rate = 240;
+    }
     else if (player_in_branch(BRANCH_ABYSS)
              || player_in_branch(BRANCH_PANDEMONIUM))
     {
@@ -1242,7 +1244,8 @@ void dgn_reset_level(bool enable_random_maps)
 static int _num_items_wanted(int absdepth0)
 {
     int items_wanted = 0;
-    if (branches[you.where_are_you].branch_flags & BFLAG_NO_ITEMS)
+
+    if (branches[you.where_are_you].branch_flags & BFLAG_NO_ITEMS && you.where_are_you == BRANCH_TEMPLE)
         items_wanted = 0;
     else if (absdepth0 > 5 && x_chance_in_y(absdepth0, 200))
         items_wanted = 10 + random2avg(90, 2); // rich level!
@@ -1279,8 +1282,10 @@ static int _num_mons_wanted()
     else if (mon_wanted > 60)
         mon_wanted = 60;
 
+    mon_wanted = player_monster_gen_modifier(mon_wanted);
+
     // boost monster creation since we don't generate them any more
-    return mon_wanted * 12 / 10;
+    return mon_wanted;
 }
 
 static void _fixup_walls()
@@ -2156,6 +2161,8 @@ static void _ruin_level(Iterator iter,
 
 static bool _mimic_at_level()
 {
+    return false;
+    /* no more mimics
     return !player_in_branch(BRANCH_TEMPLE)
            && !player_in_branch(BRANCH_VESTIBULE)
            && !player_in_branch(BRANCH_SLIME)
@@ -2163,6 +2170,7 @@ static bool _mimic_at_level()
            && !player_in_branch(BRANCH_PANDEMONIUM)
            && !player_in_hell()
            && !crawl_state.game_is_tutorial();
+           */
 }
 
 static void _place_feature_mimics(dungeon_feature_type dest_stairs_type)

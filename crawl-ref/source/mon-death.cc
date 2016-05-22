@@ -502,8 +502,8 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
     {
         const int amount = max_corpse_chunks(corpse.mon_type);
 
-        const int sp_gain = div_rand_round(amount * qpow(10, 3, 2, gain_stamina), 10);
-        int hp_gain = div_rand_round(amount * qpow(10, 3, 2, gain_health), 10);
+        const int sp_gain = div_rand_round(amount * qpow(10, 3, 2, gain_stamina), 5);
+        int hp_gain = div_rand_round(amount * qpow(10, 3, 2, gain_health), 5);
 
         if (gain_stamina)
             inc_sp(sp_gain, true);
