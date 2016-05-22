@@ -1640,8 +1640,8 @@ bool player_res_torment(bool random)
         return true;
 
     if (random
-        && player_mutation_level(MUT_STOCHASTIC_TORMENT_RESISTANCE)
-        && coinflip())
+        && x_chance_in_y(player_mutation_level(MUT_STOCHASTIC_TORMENT_RESISTANCE), 4)
+        )
     {
         return true;
     }
@@ -4910,9 +4910,9 @@ int get_real_mp(bool include_items, bool rotted)
     int max_mp = 100;
 
     // Analogous to ROBUST/FRAIL
-    max_mp += + (player_mutation_level(MUT_HIGH_MAGIC) * 10)
+    max_mp += + (player_mutation_level(MUT_HIGH_MAGIC) * 20)
               + (you.attribute[ATTR_DIVINE_VIGOUR] * 5)
-              - (player_mutation_level(MUT_LOW_MAGIC) * 10)
+              - (player_mutation_level(MUT_LOW_MAGIC) * 20)
               + species_mp_modifier(you.species) * 20
               ;
 

@@ -541,7 +541,7 @@ static const map<species_type, species_def> species_data =
     HT_LAND, US_ALIVE, SIZE_MEDIUM,
     7, 11, 10, // 28
     { STAT_INT, STAT_DEX }, 3,
-    {},
+    { { MUT_FOCUSSED_DNA, 2, 1 }, },
     {},
     {},
     { JOB_HUNTER, JOB_SKALD, JOB_WIZARD, JOB_CONJURER, JOB_FIRE_ELEMENTALIST,
@@ -597,7 +597,7 @@ static const map<species_type, species_def> species_data =
     HT_LAND, US_ALIVE, SIZE_MEDIUM,
     8, 8, 8, // 24
     { STAT_STR, STAT_INT, STAT_DEX }, 4,
-    {},
+    { { MUT_UNFOCUSSED_DNA, 2, 1 }, },
     {},
     {},
     { JOB_BERSERKER, JOB_CONJURER, JOB_NECROMANCER, JOB_FIRE_ELEMENTALIST,
@@ -841,6 +841,7 @@ static const map<species_type, species_def> species_data =
     { { MUT_FAST, 2, 1 },
       { MUT_HERBIVOROUS, 3, 1 },
       { MUT_ACUTE_VISION, 1, 1 },
+      { MUT_SHORT_DNA, 2, 1 },
     },
     {},
     {},
