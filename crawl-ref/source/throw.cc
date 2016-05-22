@@ -953,7 +953,9 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
         if (pbolt.source_id == MID_PLAYER)
         {
             const item_def *weapon_used = you.weapon();
-            const int sp_cost = weapon_sp_cost(weapon_used);
+            const item_def *ammo_used = pbolt.item;
+
+            const int sp_cost = weapon_sp_cost(weapon_used, ammo_used);
 
             if (sp_cost)
                 dec_sp(sp_cost, true, true);
