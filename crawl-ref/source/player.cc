@@ -9885,6 +9885,8 @@ int player_item_gen_modifier(int item_count)
     }
 
     item_count = item_count * x / 100;
+
+    return item_count;
 }
 
 void player_update_last_hit_chance(int chance)
