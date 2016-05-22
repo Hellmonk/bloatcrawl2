@@ -448,7 +448,7 @@ static const mutation_def mut_data[] =
    "You feel less sure on your feet."},
 },
 
-{ MUT_BLINK, 30, 1, mutflag::GOOD, false,
+{ MUT_BLINK, 30, 1, mutflag::DEPENDS, false,
   "blink",
 
   {"You can translocate small distances at will.", "", ""},
@@ -457,7 +457,7 @@ static const mutation_def mut_data[] =
 },
 
 #if TAG_MAJOR_VERSION == 34
-{ MUT_STRONG_STIFF, 00, 3, mutflag::GOOD, false,
+{ MUT_STRONG_STIFF, 00, 3, mutflag::DEPENDS, false,
   "strong stiff",
 
   {"Your muscles are strong, but stiff (Str +1, Dex -1).",
@@ -473,7 +473,7 @@ static const mutation_def mut_data[] =
    "Your muscles feel loose."},
 },
 
-{ MUT_FLEXIBLE_WEAK, 00, 3, mutflag::GOOD, false,
+{ MUT_FLEXIBLE_WEAK, 00, 3, mutflag::DEPENDS, false,
   "flexible weak",
 
   {"Your muscles are flexible, but weak (Str -1, Dex +1).",
@@ -732,7 +732,7 @@ static const mutation_def mut_data[] =
   {"Your beak shortens and softens into a mouth.", "", ""},
 },
 
-{ MUT_CLAWS, 22, 3, mutflag::DEPENDS, true,
+{ MUT_CLAWS, 20, 3, mutflag::DEPENDS, true,
   "claws",
 
   {"You have sharp fingernails.",
@@ -922,7 +922,7 @@ static const mutation_def mut_data[] =
    "Your shaggy fur recedes somewhat."},
 },
 
-{ MUT_HIGH_MAGIC, 30, 3, mutflag::GOOD, false,
+{ MUT_HIGH_MAGIC, 40, 3, mutflag::GOOD, false,
   "high mp",
 
   {"You have an increased reservoir of magic (+10% MP).",
@@ -938,7 +938,7 @@ static const mutation_def mut_data[] =
    "You feel less energetic."},
 },
 
-{ MUT_LOW_MAGIC, 50, 3, mutflag::BAD, false,
+{ MUT_LOW_MAGIC, 30, 3, mutflag::BAD, false,
   "low mp",
 
   {"Your magical capacity is low (-10% MP).",
@@ -954,7 +954,7 @@ static const mutation_def mut_data[] =
    "You feel more energetic."},
 },
 
-{ MUT_HIGH_STAMINA, 30, 3, mutflag::GOOD, false,
+{ MUT_HIGH_STAMINA, 50, 3, mutflag::GOOD, false,
   "high sp",
 
   {"You have an increased reservoir of stamina (+33% SP).",
@@ -970,7 +970,7 @@ static const mutation_def mut_data[] =
    "You tire more rapidly."},
 },
 
-{ MUT_LOW_STAMINA, 50, 3, mutflag::BAD, false,
+{ MUT_LOW_STAMINA, 30, 3, mutflag::BAD, false,
   "low sp",
 
   {"Your stamina capacity is low (-25% SP).",
@@ -1408,7 +1408,7 @@ static const mutation_def mut_data[] =
    "Your rough black scales recede somewhat."},
 },
 
-{ MUT_RUGGED_BROWN_SCALES, 22, 3, mutflag::GOOD, true,
+{ MUT_RUGGED_BROWN_SCALES, 20, 3, mutflag::GOOD, true,
   "rugged brown scales",
 
   {"You are partially covered in rugged brown scales (AC +1, +3% HP).",
@@ -1623,7 +1623,7 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_COLD_BLOODED, 7, 1, mutflag::BAD | mutflag::XOM, true,
+{ MUT_COLD_BLOODED, 10, 1, mutflag::BAD | mutflag::XOM, true,
   "cold-blooded",
 
   {"You are cold-blooded and may be slowed by cold attacks.", "", ""},
@@ -1703,7 +1703,7 @@ static const mutation_def mut_data[] =
   {"You are no longer hated by all.", "", ""},
 },
 
-{ MUT_COWARDICE, 0, 1, mutflag::BAD, false,
+{ MUT_COWARDICE, 5, 1, mutflag::BAD, false,
   "cowardly",
 
   {"Your cowardice makes you less effective in combat with threatening monsters.", "", ""},
@@ -1975,7 +1975,7 @@ static const mutation_def mut_data[] =
   {"You stop glowing.", "You emit less light.", "You emit less light. Your vision narrows."},
 },
 
-{ MUT_EPHEMERAL, 12, 3, mutflag::GOOD, false,
+{ MUT_EPHEMERAL, 10, 3, mutflag::GOOD, false,
   "ephemeral",
 
   {"Attacks rarely pass right through you.",
@@ -2111,7 +2111,7 @@ static const mutation_def mut_data[] =
    "Your dna becomes less weak."},
 },
 
-{ MUT_SHORT_DNA, 8, 3, mutflag::DEPENDS, false,
+{ MUT_SHORT_DNA, 10, 3, mutflag::DEPENDS, false,
   "short dna",
 
   {"Your body has a lower mutation capacity.",
@@ -2125,7 +2125,7 @@ static const mutation_def mut_data[] =
    "Your accepts a more normal amount of mutation."},
 },
 
-{ MUT_LONG_DNA, 9, 3, mutflag::DEPENDS, false,
+{ MUT_LONG_DNA, 10, 3, mutflag::DEPENDS, false,
   "long dna",
 
   {"Your body has a higher mutation capacity.",
@@ -2139,7 +2139,7 @@ static const mutation_def mut_data[] =
    "Your accepts a more normal amount of mutation."},
 },
 
-{ MUT_FOCUSSED_DNA, 12, 3, mutflag::DEPENDS, false,
+{ MUT_FOCUSSED_DNA, 15, 3, mutflag::DEPENDS, false,
   "focussed dna",
 
   {"New mutations are more likely to enhance existing mutations.",
