@@ -1,5 +1,7 @@
 ## v1.5.2
 
+* Rune curse effects are now shown in rune list (show with '{').
+
 * Players can unsummon individual summoned friendlies by using the 'x' command, selecting the monster, and then 
     pressing 'q'.
     
