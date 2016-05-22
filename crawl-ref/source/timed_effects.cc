@@ -993,7 +993,7 @@ void handle_time()
     }
 
     // Labyrinth and Abyss maprot.
-    if (player_in_branch(BRANCH_LABYRINTH) || player_in_branch(BRANCH_ABYSS))
+    if (player_in_branch(BRANCH_ABYSS))
         forget_map(true);
 
     // Magic contamination from spells and Orb.
