@@ -4905,6 +4905,7 @@ void bolt::affect_monster(monster* mon)
         if (mon->mp_freeze)
         {
             player_summon_was_shot_through(mon);
+            return;
         }
     }
 

@@ -9591,13 +9591,14 @@ void player_moved()
         dec_mp(5, false, true);
 }
 
-bool _spell_fails(spell_type spell)
+// factor reduces failure chance by the given percentage (or success chance if fail < 50%)
+bool _spell_fails(spell_type spell, int factor)
 {
     int fail = raw_spell_fail(spell);
     const bool flip = fail > 50;
     if (flip)
         fail = 100 - fail;
-    fail = fail / 2;
+    fail = fail * factor / 100;
     if (flip)
         fail = 100 - fail;
 
@@ -9608,8 +9609,9 @@ bool _spell_fails(spell_type spell)
 void player_summon_was_shot_through(monster* mon)
 {
     const spell_type spell = mon->summoned_by_spell;
-    if (spell && _spell_fails(spell))
+    if (spell && spell != SPELL_NO_SPELL && _spell_fails(spell, 100))
     {
+        mpr("Your missile disrupts your summoned creature.");
         unsummon(mon);
     }
 }
@@ -9618,7 +9620,7 @@ void player_was_offensive()
 {
     if (you.current_form_spell != SPELL_NO_SPELL)
     {
-        if (_spell_fails(you.current_form_spell))
+        if (_spell_fails(you.current_form_spell, 50))
         {
             you.current_form_spell_failure++;
             if (you.current_form_spell_failure == 2)
