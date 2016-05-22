@@ -1242,7 +1242,8 @@ void dgn_reset_level(bool enable_random_maps)
 static int _num_items_wanted(int absdepth0)
 {
     int items_wanted = 0;
-    if (branches[you.where_are_you].branch_flags & BFLAG_NO_ITEMS)
+
+    if (branches[you.where_are_you].branch_flags & BFLAG_NO_ITEMS && you.where_are_you == BRANCH_TEMPLE)
         items_wanted = 0;
     else if (absdepth0 > 5 && x_chance_in_y(absdepth0, 200))
         items_wanted = 10 + random2avg(90, 2); // rich level!
