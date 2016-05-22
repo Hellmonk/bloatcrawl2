@@ -1221,7 +1221,7 @@ static const mutation_def mut_data[] =
    "Your body becomes less viscous."},
 },
 
-{ MUT_EYEBALLS, 10, 3, mutflag::GOOD | mutflag::JIYVA, true,
+{ MUT_EYEBALLS, 0, 3, mutflag::GOOD | mutflag::JIYVA, true,
   "eyeballs",
 
   {"Your body is partially covered in golden eyeballs (Acc +3).",
