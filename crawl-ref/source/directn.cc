@@ -1952,7 +1952,7 @@ bool direction_chooser::do_main_loop()
             need_all_redraw = true;
         }
 
-        break;
+        return true;
     }
 
     case CMD_TARGET_MAYBE_PREV_TARGET:
