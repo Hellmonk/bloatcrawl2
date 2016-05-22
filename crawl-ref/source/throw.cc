@@ -950,6 +950,15 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
         pbolt.drop_item = false;
         pbolt.fire();
 
+        if (pbolt.source_id == MID_PLAYER)
+        {
+            const item_def *weapon_used = you.weapon();
+            const int sp_cost = weapon_sp_cost(weapon_used);
+
+            if (sp_cost)
+                dec_sp(sp_cost, true, true);
+        }
+
         hit = !pbolt.hit_verb.empty();
 
         /* no longer applies

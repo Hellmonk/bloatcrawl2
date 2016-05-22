@@ -391,9 +391,6 @@ void attack::init_attack(skill_type unarmed_skill, int attack_number)
 
     if (attacker->is_player())
     {
-        const item_def *weapon_used = get_weapon_used(true);
-        sp_cost = weapon_sp_cost(weapon_used);
-
         you.last_tohit = to_hit;
         you.redraw_tohit = true;
     }
