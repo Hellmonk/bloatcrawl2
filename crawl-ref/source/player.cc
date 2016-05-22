@@ -4151,7 +4151,7 @@ void flush_mp()
 
 void _handle_overdraft(const int overdraft)
 {
-    you.duration[DUR_EXHAUSTED] += overdraft * 5;
+    you.duration[DUR_EXHAUSTED] += overdraft * 20;
     if (you.duration[DUR_EXHAUSTED] > 200)
         you.duration[DUR_EXHAUSTED] = 200;
 
