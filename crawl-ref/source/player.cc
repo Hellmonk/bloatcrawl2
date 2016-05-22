@@ -9585,19 +9585,34 @@ void player_moved()
         dec_mp(5, false, true);
 }
 
+bool _spell_fails(spell_type spell)
+{
+    int fail = raw_spell_fail(spell);
+    const bool flip = fail > 50;
+    if (flip)
+        fail = 100 - fail;
+    fail = fail / 2;
+    if (flip)
+        fail = 100 - fail;
+
+    const bool failed = x_chance_in_y(fail + 1, 100);
+    return failed;
+}
+
+void player_summon_was_shot_through(monster* mon)
+{
+    const spell_type spell = mon->summoned_by_spell;
+    if (spell && _spell_fails(spell))
+    {
+        unsummon(mon);
+    }
+}
+
 void player_was_offensive()
 {
     if (you.current_form_spell != SPELL_NO_SPELL)
     {
-        int fail = raw_spell_fail(you.current_form_spell);
-        const bool flip = fail > 50;
-        if (flip)
-            fail = 100 - fail;
-        fail = fail / 2;
-        if (flip)
-            fail = 100 - fail;
-
-        if (x_chance_in_y(fail + 1, 100))
+        if (_spell_fails(you.current_form_spell))
         {
             you.current_form_spell_failure++;
             if (you.current_form_spell_failure == 2)
