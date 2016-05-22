@@ -1,6 +1,9 @@
 ## v1.5.2
 
-* Player can fire missiles through friendly summons, but when they do, their spell failure is checked for the
+* Players can unsummon individual summoned friendlies by using the 'x' command, selecting the monster, and then 
+    pressing 'q'.
+    
+* Players can fire missiles through friendly summons, but when they do, their spell failure is checked for the
   spell that summoned the creature. If it fails, the creature is unsummoned.
     * Friendly fire does not work through other friendlies, such as animated dead and simulacrum. 
 

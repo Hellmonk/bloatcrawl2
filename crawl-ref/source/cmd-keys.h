@@ -202,6 +202,7 @@
 {'<', CMD_TARGET_FIND_UPSTAIR},
 {'>', CMD_TARGET_FIND_DOWNSTAIR},
 {'r', CMD_TARGET_FIND_YOU},
+{'q', CMD_TARGET_UNSUMMON},
 {CONTROL('L'), CMD_TARGET_TOGGLE_MLIST},
 {'p', CMD_TARGET_PREV_TARGET},
 //{'f', CMD_TARGET_SELECT}, // HACK: Moved to be the downmost for tutorial key
