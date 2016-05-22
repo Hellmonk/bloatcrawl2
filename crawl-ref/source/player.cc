@@ -9938,6 +9938,32 @@ int player_pool_modifier(int amount)
     return amount * percent / 100;
 }
 
+int player_monster_gen_modifier(int amount)
+{
+    int percent = 100;
+
+    switch (crawl_state.difficulty)
+    {
+        case DIFFICULTY_EASY:
+            percent = 70;
+            break;
+        case DIFFICULTY_STANDARD:
+            percent = 100;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            percent = 110;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            percent = 120;
+            break;
+        default:
+            // should not be possible
+            break;
+    }
+
+    return amount * percent / 100;
+}
+
 // reduce damage to player if it has exceeded protection thresholds (to avoid 1 hit kills for example)
 int player_ouch_modifier(int damage)
 {

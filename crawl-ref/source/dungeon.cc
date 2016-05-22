@@ -1211,7 +1211,9 @@ void dgn_reset_level(bool enable_random_maps)
     }
     else if (player_in_connected_branch()
              || (player_on_orb_run() && !player_in_branch(BRANCH_ABYSS)))
+    {
         env.spawn_random_rate = 240;
+    }
     else if (player_in_branch(BRANCH_ABYSS)
              || player_in_branch(BRANCH_PANDEMONIUM))
     {
@@ -1280,8 +1282,10 @@ static int _num_mons_wanted()
     else if (mon_wanted > 60)
         mon_wanted = 60;
 
+    mon_wanted = player_monster_gen_modifier(mon_wanted);
+
     // boost monster creation since we don't generate them any more
-    return mon_wanted * 12 / 10;
+    return mon_wanted;
 }
 
 static void _fixup_walls()

@@ -1239,6 +1239,7 @@ void player_update_tohit(int new_tohit = -1);
 int player_pool_modifier(int amount);
 void summoned_monster_died(monster* mons, bool natural_death);
 bool player_summoned_monster(spell_type spell, monster* mons, bool first);
+int player_monster_gen_modifier(int amount);
 int player_ouch_modifier(int damage);
 int player_summon_count();
 
