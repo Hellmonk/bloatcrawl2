@@ -9404,7 +9404,7 @@ void player_end_berserk()
     const int dur = 12 + roll_dice(2, 12);
     // For consistency with slow give exhaustion 2 times the nominal
     // duration.
-    dec_sp(you.sp + 1);
+    dec_sp(50, true);
     you.duration[DUR_EXHAUSTED] = dur * 10;
 
     notify_stat_change(STAT_STR, -5, true);
