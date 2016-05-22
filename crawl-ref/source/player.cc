@@ -9679,16 +9679,15 @@ int spell_mp_cost(spell_type which_spell)
 {
     int cost = _apply_hunger(which_spell, 2);
 
+    cost = max(cost, 2);
+
     if (you.duration[DUR_CHANNELING]
         || is_summon_spell(which_spell)
         )
         cost = 0;
     else if (have_passive(passive_t::conserve_mp))
-    {
         cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
-    }
 
-    cost = max(cost, 2);
     if (you.exertion != EXERT_NORMAL)
         cost *= 2;
 
@@ -9725,6 +9724,7 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
     sp_cost /= 5 + you.skill(SK_FIGHTING) * 3 / 2;
 
     sp_cost = max(2, sp_cost);
+
     if (you.exertion != EXERT_NORMAL)
         sp_cost *= 2;
 
