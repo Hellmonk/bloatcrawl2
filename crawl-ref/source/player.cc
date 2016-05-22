@@ -2012,6 +2012,11 @@ int player_movement_speed()
         mv = 900;
     }
 
+    if (player_is_exhausted(true))
+    {
+        mv = 1200;
+    }
+
     // transformations
     if (in_quick_mode())
     {
