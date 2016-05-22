@@ -3146,7 +3146,7 @@ static const struct spell_desc spelldata[] =
     SPFLAG_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEUTRAL,
     5,
     100,
-    1, 3,
+    1, 5,
     2, 0,
     TILEG_SUMMON_LIGHTNING_SPIRE,
 },

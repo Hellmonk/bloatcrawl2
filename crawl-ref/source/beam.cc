@@ -4901,6 +4901,12 @@ void bolt::affect_monster(monster* mon)
                     GOD_FEDHAS);
             }
         }
+
+        if (mon->mp_freeze)
+        {
+            player_summon_was_shot_through(mon);
+            return;
+        }
     }
 
     if (flavour == BEAM_WATER && mon->type == MONS_WATER_ELEMENTAL && !is_tracer)
@@ -6752,6 +6758,7 @@ bool shoot_through_monster(const bolt& beam, const monster* victim)
                /*
                && testbits(victim->flags, MF_DEMONIC_GUARDIAN)
                 */
+              && victim->mp_freeze
               && !beam.is_enchantment()
               && beam.origin_spell != SPELL_CHAIN_LIGHTNING
               && (mons_atts_aligned(victim->attitude, origin_attitude)

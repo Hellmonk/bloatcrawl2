@@ -772,7 +772,6 @@ static const map<species_type, species_def> species_data =
             { MUT_TOUGH_SKIN, 1, 1 },
             { MUT_DEFORMED, 1, 10 },
     		{ MUT_POWERED_BY_PAIN, 1, 12 },
-            { MUT_DEFORMED, 1, 15 },
     },
     {},
     {},

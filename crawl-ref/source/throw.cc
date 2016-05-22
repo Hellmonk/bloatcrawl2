@@ -478,7 +478,7 @@ void fire_thing(int item)
         item_def *const weapon = you.weapon();    
         if (weapon && weapon->isValid() && weapon->base_type == OBJ_WEAPONS)
         {
-            missile_type missileType = MI_STONE;
+            missile_type missileType = MI_TOMAHAWK;
             special_missile_type ego = SPMSL_FORBID_BRAND;
 
             switch(weapon->sub_type)
@@ -501,7 +501,7 @@ void fire_thing(int item)
                     break;
                 default:
                     // should not happen
-                    missileType = MI_STONE;
+                    missileType = MI_TOMAHAWK;
                     break;
             }
 
@@ -949,6 +949,17 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
         // Dropping item copy, since the launched item might be different.
         pbolt.drop_item = false;
         pbolt.fire();
+
+        if (pbolt.source_id == MID_PLAYER)
+        {
+            const item_def *weapon_used = you.weapon();
+            const item_def *ammo_used = pbolt.item;
+
+            const int sp_cost = weapon_sp_cost(weapon_used, ammo_used);
+
+            if (sp_cost)
+                dec_sp(sp_cost, true, true);
+        }
 
         hit = !pbolt.hit_verb.empty();
 

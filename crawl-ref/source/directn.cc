@@ -42,6 +42,7 @@
 #include "prompt.h"
 #include "showsymb.h"
 #include "spl-goditem.h"
+#include "spl-summoning.h"
 #include "stash.h"
 #include "state.h"
 #include "stringutil.h"
@@ -1941,6 +1942,18 @@ bool direction_chooser::do_main_loop()
     case CMD_TARGET_FIND_ALTAR:     feature_cycle_forward('_');  break;
     case CMD_TARGET_FIND_UPSTAIR:   feature_cycle_forward('<');  break;
     case CMD_TARGET_FIND_DOWNSTAIR: feature_cycle_forward('>');  break;
+
+    case CMD_TARGET_UNSUMMON:
+    {
+        monster* const m = monster_at(target());
+        if (m && m->mp_freeze)
+        {
+            unsummon(m);
+            need_all_redraw = true;
+        }
+
+        return true;
+    }
 
     case CMD_TARGET_MAYBE_PREV_TARGET:
         loop_done = looking_at_you() ? select_previous_target()

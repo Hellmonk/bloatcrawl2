@@ -838,6 +838,21 @@ static bool _in_ood_pack_protected_place()
     return env.turns_on_level < 1400 - env.absdepth0 * 117;
 }
 
+void _prep_summoned_monster(const mgen_data &mg, monster* &mon)
+{
+    if (mg.summon_type && mon && mon->is_player_summon())
+    {
+        const spell_type spell = (const spell_type) mg.summon_type;
+        if (!player_summoned_monster(spell, mon, true))
+        {
+            mons_remove_from_grid(mon);
+            mon->destroy_inventory();
+            monster_cleanup(mon);
+            mon = 0;
+        }
+    }
+}
+
 monster* place_monster(mgen_data mg, bool force_pos, bool dont_place)
 {
 #ifdef DEBUG_MON_CREATION
@@ -1062,6 +1077,8 @@ monster* place_monster(mgen_data mg, bool force_pos, bool dont_place)
 
     monster* mon = _place_monster_aux(mg, 0, place, force_pos, dont_place);
 
+    _prep_summoned_monster(mg, mon);
+
     // Bail out now if we failed.
     if (!mon)
         return 0;
@@ -1175,10 +1192,12 @@ monster* place_monster(mgen_data mg, bool force_pos, bool dont_place)
             }
             else if (mon->type == MONS_KIRKE)
                 member->props["kirke_band"] = true;
+
+            _prep_summoned_monster(band_template, member);
         }
     }
 
-    // Placement of first monster, at least, was a success.
+    // Placement if first monster, at least, was a success.
     return mon;
 }
 
@@ -3313,13 +3332,6 @@ monster* create_monster(mgen_data mg, bool fail_msg, bool first)
 
         if (!summd && fail_msg && you.see_cell(mg.pos))
             mpr("You see a puff of smoke.");
-    }
-
-    if (mg.summon_type && summd && summd->is_player_summon())
-    {
-        const spell_type spell = (const spell_type) mg.summon_type;
-        if (!player_summoned_monster(spell, summd, first))
-            summd = 0;
     }
 
     return summd;

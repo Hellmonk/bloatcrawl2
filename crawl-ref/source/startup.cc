@@ -1044,8 +1044,6 @@ bool startup_step()
     return newchar;
 }
 
-
-
 static void _cio_init()
 {
     crawl_state.io_inited = true;

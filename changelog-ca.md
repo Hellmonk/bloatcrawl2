@@ -1,5 +1,14 @@
 ## v1.5.2
 
+* Rune curse effects are now shown in rune list (show with '{').
+
+* Players can unsummon individual summoned friendlies by using the 'x' command, selecting the monster, and then 
+    pressing 'q'.
+    
+* Players can fire missiles through friendly summons, but when they do, their spell failure is checked for the
+  spell that summoned the creature. If it fails, the creature is unsummoned.
+    * Friendly fire does not work through other friendlies, such as animated dead and simulacrum. 
+
 * Set hp rot caps based on difficulty.
     * Easy mode can't rot to less than 80% of hp.
     * Standard: 60%
@@ -43,8 +52,6 @@
 * Drinking an experience potion no longer pull up a menu to choose skills. So allocate your training before you drink it.
 
 * Inner Flame is smite targetted now.
-
-* The player can fire missiles through friendlies now without hurting them.
 
 * Elyvilon improvements
     * Healing targeting shows pacification chance when a monster is selected.

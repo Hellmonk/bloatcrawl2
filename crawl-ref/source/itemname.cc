@@ -2805,9 +2805,16 @@ void display_runes()
                runes_in_pack() < OBTAINABLE_RUNES ? "green" :
                                                    "lightgreen";
 
+    string curse_effects = "";
+    if (runes_in_pack())
+    {
+        curse_effects = make_stringf("  <yellow>Rune curse effects:</yellow>  hd: <white>+%d</white>   hp: <white>%d%%</white>   damage: <white>%d%%</white>", rune_curse_hd_adjust(0, false), rune_curse_hd_adjust(100, false), rune_curse_dam_adjust(100, false));
+    }
+
     auto title = make_stringf("<white>Runes of Zot (</white>"
-                              "<%s>%d</%s><white> collected) & Orbs of Power</white>",
-                              col, runes_in_pack(), col);
+                              "<%s>%d</%s><white> collected)</white>"
+                              "%s",
+                              col, runes_in_pack(), col, curse_effects.c_str());
     title = string(max(0, 39 - printed_width(title) / 2), ' ') + title;
 
     InvMenu menu(MF_NOSELECT | MF_ALLOW_FORMATTING);

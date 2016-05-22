@@ -1016,10 +1016,12 @@ int spell_range(spell_type spell, int pow, bool player_spell)
         return min(maxrange, (int)you.current_vision);
 
     // Round appropriately.
-    int range = (log2(pow + 1) - 2) * 10;
+    int range = max(1, pow);
+    range = (log2(range) - 3) * 20;
     range = max(range, 0);
-    range = (range * (maxrange - minrange) / 70) + minrange + 0.5;
+    range = (range * (maxrange - minrange) / 100) + minrange + 0.5;
     range = min((int)you.current_vision, range);
+    range = min(range, maxrange);
     return range;
 }
 

@@ -2012,6 +2012,11 @@ int player_movement_speed()
         mv = 900;
     }
 
+    if (player_is_exhausted(true))
+    {
+        mv = 1200;
+    }
+
     // transformations
     if (in_quick_mode())
     {
@@ -4151,7 +4156,7 @@ void flush_mp()
 
 void _handle_overdraft(const int overdraft)
 {
-    you.duration[DUR_EXHAUSTED] += overdraft * 5;
+    you.duration[DUR_EXHAUSTED] += overdraft * 20;
     if (you.duration[DUR_EXHAUSTED] > 200)
         you.duration[DUR_EXHAUSTED] = 200;
 
@@ -9399,7 +9404,8 @@ void player_end_berserk()
     const int dur = 12 + roll_dice(2, 12);
     // For consistency with slow give exhaustion 2 times the nominal
     // duration.
-    you.increase_duration(DUR_EXHAUSTED, dur * 2);
+    dec_sp(50, true);
+    you.duration[DUR_EXHAUSTED] = dur * 10;
 
     notify_stat_change(STAT_STR, -5, true);
 
@@ -9437,38 +9443,41 @@ const int get_max_skill_level()
     return MAX_SKILL_LEVEL;
 }
 
-const int rune_curse_hd_adjust(int hd)
+const int rune_curse_hd_adjust(int hd, bool absolute)
 {
     const int runes = runes_in_pack();
     const game_difficulty_level difficulty = crawl_state.difficulty;
     int multiplier = difficulty + 1;
     
     hd = hd + div_rand_round(runes * multiplier, 4);
-    hd = hd + difficulty - 2;
-    hd = max(1, hd);
-    
+    if (absolute && hd > 1)
+    {
+        hd = hd + difficulty - 2;
+        hd = max(1, hd);
+    }
+
     return hd;
 }
 
-const int rune_curse_hp_adjust(int hp)
+const int rune_curse_hp_adjust(int hp, bool absolute)
 {
     const int runes = runes_in_pack();
-    hp = qpow(hp, 200 + crawl_state.difficulty + 1, 200, runes);
+    hp = qpow(hp, 200 + crawl_state.difficulty + 1, 200, runes, false);
     return hp;
 }
 
-const int rune_curse_dam_adjust(int dam)
+const int rune_curse_dam_adjust(int dam, bool absolute)
 {
     const int runes = runes_in_pack();
     if (runes > 0 && dam != INSTANT_DEATH)
-        dam = qpow(dam, 200 + crawl_state.difficulty + 1, 200, runes);
+        dam = qpow(dam, 200 + crawl_state.difficulty + 1, 200, runes, false);
     return dam;
 }
 
 const int rune_curse_depth_adjust(int depth)
 {
-    const int runes = runes_in_pack();
     /* not ready yet
+    const int runes = runes_in_pack();
     if (runes > 0)
         depth += runes;
         */
@@ -9585,19 +9594,36 @@ void player_moved()
         dec_mp(5, false, true);
 }
 
+// factor reduces failure chance by the given percentage (or success chance if fail < 50%)
+bool _spell_fails(spell_type spell, int factor)
+{
+    int fail = raw_spell_fail(spell);
+    const bool flip = fail > 50;
+    if (flip)
+        fail = 100 - fail;
+    fail = fail * factor / 100;
+    if (flip)
+        fail = 100 - fail;
+
+    const bool failed = x_chance_in_y(fail + 1, 100);
+    return failed;
+}
+
+void player_summon_was_shot_through(monster* mon)
+{
+    const spell_type spell = mon->summoned_by_spell;
+    if (spell && spell != SPELL_NO_SPELL && _spell_fails(spell, 100))
+    {
+        mpr("Your missile disrupts your summoned creature.");
+        unsummon(mon);
+    }
+}
+
 void player_was_offensive()
 {
     if (you.current_form_spell != SPELL_NO_SPELL)
     {
-        int fail = raw_spell_fail(you.current_form_spell);
-        const bool flip = fail > 50;
-        if (flip)
-            fail = 100 - fail;
-        fail = fail / 2;
-        if (flip)
-            fail = 100 - fail;
-
-        if (x_chance_in_y(fail + 1, 100))
+        if (_spell_fails(you.current_form_spell, 50))
         {
             you.current_form_spell_failure++;
             if (you.current_form_spell_failure == 2)
@@ -9650,7 +9676,7 @@ int _apply_hunger(const spell_type &which_spell, int cost, int multiplier = 100)
 
 int spell_mp_cost(spell_type which_spell)
 {
-    int cost = _apply_hunger(which_spell, 3);
+    int cost = _apply_hunger(which_spell, 2);
 
     if (you.duration[DUR_CHANNELING]
         || is_summon_spell(which_spell)
@@ -9660,7 +9686,7 @@ int spell_mp_cost(spell_type which_spell)
     {
         cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
 
-        cost = max(cost, 2);
+        cost = max(cost, 1);
 
         if (you.exertion != EXERT_NORMAL)
             cost *= 2;
@@ -9674,12 +9700,12 @@ int spell_mp_freeze(spell_type which_spell)
     int cost = 0;
     if (is_summon_spell(which_spell))
     {
-        cost = _apply_hunger(which_spell, 10, 400);
+        cost = _apply_hunger(which_spell, 10, 200);
 
         if (have_passive(passive_t::conserve_mp))
             cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
 
-        cost = max(cost, 2);
+        cost = max(cost, 1);
 
         if (you.exertion != EXERT_NORMAL)
             cost *= 2;
@@ -9688,9 +9714,11 @@ int spell_mp_freeze(spell_type which_spell)
     return cost;
 }
 
-int weapon_sp_cost(const item_def* weapon)
+int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
 {
     int weight = weapon ? max(1, property(*weapon, PWPN_WEIGHT)) : 3;
+    if (ammo && !ammo->launched_by(*weapon))
+        weight = property(*ammo, PWPN_WEIGHT);
 
     int sp_cost = 50 * weight;
     sp_cost /= 5 + you.strength(true) * 3 / 2;
@@ -9885,6 +9913,8 @@ int player_item_gen_modifier(int item_count)
     }
 
     item_count = item_count * x / 100;
+
+    return item_count;
 }
 
 void player_update_last_hit_chance(int chance)
