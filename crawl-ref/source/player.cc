@@ -2969,6 +2969,7 @@ void _handle_insight_inv(FixedVector<item_def, 52> *inv)
                     after_colored = get_menu_colour_prefix_tags(item, DESC_A);
                     if(before != after) {
                         mprf(MSGCH_INTRINSIC_GAIN, "You gain insight: %s -> %s", before.c_str(), after.c_str());
+                        more();
                         break;
                     }
                 }
