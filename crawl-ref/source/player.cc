@@ -9467,8 +9467,8 @@ const int rune_curse_dam_adjust(int dam)
 
 const int rune_curse_depth_adjust(int depth)
 {
-    const int runes = runes_in_pack();
     /* not ready yet
+    const int runes = runes_in_pack();
     if (runes > 0)
         depth += runes;
         */
@@ -9650,7 +9650,7 @@ int _apply_hunger(const spell_type &which_spell, int cost, int multiplier = 100)
 
 int spell_mp_cost(spell_type which_spell)
 {
-    int cost = _apply_hunger(which_spell, 3);
+    int cost = _apply_hunger(which_spell, 2);
 
     if (you.duration[DUR_CHANNELING]
         || is_summon_spell(which_spell)
@@ -9660,7 +9660,7 @@ int spell_mp_cost(spell_type which_spell)
     {
         cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
 
-        cost = max(cost, 2);
+        cost = max(cost, 1);
 
         if (you.exertion != EXERT_NORMAL)
             cost *= 2;
@@ -9674,12 +9674,12 @@ int spell_mp_freeze(spell_type which_spell)
     int cost = 0;
     if (is_summon_spell(which_spell))
     {
-        cost = _apply_hunger(which_spell, 5, 400);
+        cost = _apply_hunger(which_spell, 10, 200);
 
         if (have_passive(passive_t::conserve_mp))
             cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
 
-        cost = max(cost, 2);
+        cost = max(cost, 1);
 
         if (you.exertion != EXERT_NORMAL)
             cost *= 2;
