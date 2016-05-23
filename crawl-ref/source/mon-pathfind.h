@@ -22,6 +22,7 @@ public:
     bool start_pathfind(bool msg = false);
     vector<coord_def> backtrack();
     vector<coord_def> calc_waypoints();
+    int min_length;
 
 protected:
     // protected methods
@@ -57,7 +58,6 @@ protected:
     int range;
 
     // Currently shortest and longest possible total length of the path.
-    int min_length;
     int max_length;
 
     // The array of distances from start to any already tried point.

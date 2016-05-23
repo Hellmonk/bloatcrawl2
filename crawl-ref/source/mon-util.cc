@@ -2609,7 +2609,7 @@ bool init_abomination(monster* mon, int hd)
 }
 
 // Generate a shiny, new and unscarred monster.
-void define_monster(monster* mons)
+void define_monster(monster* mons, beh_type behavior)
 {
     monster_type mcls         = mons->type;
     ASSERT(!mons_class_is_zombified(mcls)); // should have called define_zombie
@@ -2721,8 +2721,11 @@ void define_monster(monster* mons)
         hp = hit_points(m->avg_hp_10x);
     const int hp_max = hp;
 
-    hd = rune_curse_hd_adjust(hd);
-    hp = rune_curse_hp_adjust(hp);
+    if (behavior == BEH_HOSTILE)
+    {
+        hd = rune_curse_hd_adjust(hd);
+        hp = rune_curse_hp_adjust(hp);
+    }
 
     // So let it be written, so let it be done.
     mons->set_hit_dice(hd);

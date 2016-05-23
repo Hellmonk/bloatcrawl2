@@ -1789,8 +1789,7 @@ item_def* monster_die(monster* mons, killer_type killer,
     if (invalid_monster(mons))
         return nullptr;
 
-    if (mons->mp_freeze)
-        summoned_monster_died(mons, killer != KILL_RESET);
+    monster_died(mons, killer);
 
     const bool was_visible = you.can_see(*mons);
 

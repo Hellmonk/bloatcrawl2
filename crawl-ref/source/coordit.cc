@@ -13,6 +13,131 @@
 #include "los.h"
 #include "random.h"
 
+edge_iterator::edge_iterator(const coord_def& center, int radius,
+                             bool clip_to_map)
+{
+    topleft.set(center.x - radius, center.y - radius);
+    bottomright.set(center.x + radius, center.y + radius);
+    if (clip_to_map)
+    {
+        topleft.x = max(topleft.x, X_BOUND_1);
+        topleft.y = max(topleft.y, Y_BOUND_1);
+        bottomright.x = min(bottomright.x, X_BOUND_2);
+        bottomright.y = min(bottomright.y, Y_BOUND_2);
+    }
+
+    for (int y = topleft.y; y <= bottomright.y; y++)
+    {
+        remaining.emplace_back(topleft.x, y);
+        remaining.emplace_back(bottomright.x, y);
+    }
+    for (int x = topleft.x; x <= bottomright.x; x++)
+    {
+        remaining.emplace_back(x, topleft.y);
+        remaining.emplace_back(x, bottomright.y);
+    }
+
+    current = 0;
+}
+
+edge_iterator::operator bool() const
+{
+    return current < remaining.size();
+}
+
+coord_def edge_iterator::operator *() const
+{
+    if (remaining.empty())
+        return topleft;
+    else
+        return remaining[current];
+}
+
+const coord_def* edge_iterator::operator->() const
+{
+    if (remaining.empty())
+        return &topleft;
+    else
+        return &(remaining[current]);
+}
+
+void edge_iterator::operator ++()
+{
+    current++;
+}
+
+void edge_iterator::operator++(int)
+{
+    ++(*this);
+}
+
+random_edge_iterator::random_edge_iterator(const coord_def& center, int radius,
+                             bool clip_to_map)
+{
+    topleft.set(center.x - radius, center.y - radius);
+    bottomright.set(center.x + radius, center.y + radius);
+    if (clip_to_map)
+    {
+        topleft.x = max(topleft.x, X_BOUND_1);
+        topleft.y = max(topleft.y, Y_BOUND_1);
+        bottomright.x = min(bottomright.x, X_BOUND_2);
+        bottomright.y = min(bottomright.y, Y_BOUND_2);
+    }
+
+    for (int y = topleft.y; y <= bottomright.y; y++)
+    {
+        remaining.emplace_back(topleft.x, y);
+        remaining.emplace_back(bottomright.x, y);
+    }
+    for (int x = topleft.x; x <= bottomright.y; x++)
+    {
+        remaining.emplace_back(x, topleft.y);
+        remaining.emplace_back(x, bottomright.y);
+    }
+
+    if (remaining.empty())
+        current = 0;
+    else
+        current = random2(remaining.size());
+}
+
+random_edge_iterator::operator bool() const
+{
+    return !remaining.empty();
+}
+
+coord_def random_edge_iterator::operator *() const
+{
+    if (remaining.empty())
+        return topleft;
+    else
+        return remaining[current];
+}
+
+const coord_def* random_edge_iterator::operator->() const
+{
+    if (remaining.empty())
+        return &topleft;
+    else
+        return &(remaining[current]);
+}
+
+void random_edge_iterator::operator ++()
+{
+    if (!remaining.empty())
+    {
+        remaining[current] = remaining.back();
+        remaining.pop_back();
+        if (!remaining.empty())
+            current = random2(remaining.size());
+    }
+}
+
+void random_edge_iterator::operator++(int)
+{
+    ++(*this);
+}
+
 rectangle_iterator::rectangle_iterator(const coord_def& corner1,
                                         const coord_def& corner2)
 {

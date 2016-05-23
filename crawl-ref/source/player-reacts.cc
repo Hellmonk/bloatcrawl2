@@ -854,7 +854,11 @@ static void _regenerate_hp_and_mp(int delay)
     if (!i_feel_safe(false, false, true))
         you.peace = 0;
     else
+    {
         you.peace += you.time_taken;
+        if (you.peace > 100)
+            you.monsters_recently_seen = 0;
+    }
 
     if (get_sp() < get_sp_max() && (!in_quick_mode() || you.peace > 100))
     {
