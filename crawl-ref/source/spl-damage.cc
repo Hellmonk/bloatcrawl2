@@ -1640,7 +1640,7 @@ static int _ignite_poison_monsters(coord_def where, int pow, actor *agent)
     if (tracer)
         return mons_aligned(mon, agent) ? -1 * damage : damage;
 
-    simple_monster_message(mon, " seems to burn from within!");
+    monster_message(mon, " seems to burn from within! (%d)", damage);
 
     dprf("Dice: %dd%d; Damage: %d", dam_dice.num, dam_dice.size, damage);
 
