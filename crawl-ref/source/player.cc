@@ -6170,7 +6170,7 @@ player::player()
     current_form_spell  = SPELL_NO_SPELL;
     current_form_spell_failure  = 0;
     last_hit_chance     = 0;
-    last_tohit = 0;
+    last_tohit          = 0;
     monsters_recently_seen = 0;
     summoned.init(MID_NOBODY);
 
@@ -9694,7 +9694,7 @@ int spell_mp_cost(spell_type which_spell)
     else if (have_passive(passive_t::conserve_mp))
         cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
 
-    if (you.exertion != EXERT_NORMAL && you.peace > 50)
+    if (you.exertion != EXERT_NORMAL && you.peace < 50)
         cost *= 2;
 
     return cost;
