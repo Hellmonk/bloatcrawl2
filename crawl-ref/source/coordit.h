@@ -3,6 +3,50 @@
 
 #include "coord-circle.h"
 
+/**
+ * @class edge_iterator
+ * Iterates over coordinates around a rectangle at the given radius
+ * randomly.
+ */
+class edge_iterator : public iterator<forward_iterator_tag, coord_def>
+{
+public:
+    edge_iterator(const coord_def& center, int radius,
+                       bool clip_to_map = false);
+    operator bool() const PURE;
+    coord_def operator *() const PURE;
+    const coord_def* operator->() const PURE;
+
+    void operator ++ ();
+    void operator ++ (int);
+private:
+    coord_def topleft, bottomright;
+    int current;
+    vector<coord_def> remaining;
+};
+
+/**
+ * @class random_edge_iterator
+ * Iterates over coordinates around a rectangle at the given radius
+ * randomly.
+ */
+class random_edge_iterator : public iterator<forward_iterator_tag, coord_def>
+{
+public:
+    random_edge_iterator(const coord_def& center, int radius,
+                  bool clip_to_map = false);
+    operator bool() const PURE;
+    coord_def operator *() const PURE;
+    const coord_def* operator->() const PURE;
+
+    void operator ++ ();
+    void operator ++ (int);
+private:
+    coord_def topleft, bottomright;
+    int current;
+    vector<coord_def> remaining;
+};
+
 class rectangle_iterator : public iterator<forward_iterator_tag, coord_def>
 {
 public:

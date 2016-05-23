@@ -948,7 +948,6 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
 
         // Dropping item copy, since the launched item might be different.
         pbolt.drop_item = false;
-        pbolt.fire();
 
         if (pbolt.source_id == MID_PLAYER)
         {
@@ -960,6 +959,8 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
             if (sp_cost)
                 dec_sp(sp_cost, true, true);
         }
+
+        pbolt.fire();
 
         hit = !pbolt.hit_verb.empty();
 

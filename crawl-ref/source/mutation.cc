@@ -1320,7 +1320,7 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
             const int focussed = player_mutation_level(MUT_FOCUSSED_DNA);
             const int unfocussed = player_mutation_level(MUT_UNFOCUSSED_DNA);
 
-            const int focus_level = 6 + focussed * focussed * 4 - unfocussed * unfocussed * 2;
+            const int focus_level = 4 + focussed * 4 - unfocussed;
             if (x_chance_in_y(random2(mutation_count), 15))
             {
                 const int clean_dna = player_mutation_level(MUT_CLEAN_DNA);
@@ -1339,7 +1339,7 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
                     return delete_mutation(mutation, reason, failMsg, force_mutation, false);
                 }
             }
-            else if (x_chance_in_y(random2(focus_level), 10) && mutation_count > 0)
+            else if (x_chance_in_y(focus_level, 17) && mutation_count > 0)
             {
                 int tries2 = 100;
                 bool found = false;

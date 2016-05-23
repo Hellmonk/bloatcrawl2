@@ -122,7 +122,6 @@ public:
     int hunger;
     int disease;
     hunger_state_t hunger_state;
-    hunger_state_t target_hunger_state;
     uint8_t max_level;
     int hit_points_regeneration;
     int magic_points_regeneration;
@@ -454,6 +453,7 @@ public:
     package *save;
     int last_hit_chance;
     int last_tohit;
+    uint8_t monsters_recently_seen;
 
 protected:
     FixedVector<PlaceInfo, NUM_BRANCHES> branch_info;
@@ -1231,7 +1231,7 @@ int player_spellpower_modifier(int old_spellpower);
 int player_spellfailure_modifier(int spellfaifailureure);
 int player_attack_delay_modifier(int attk_delay);
 int player_stealth_modifier(int old_stealth);
-int player_evasion_modifier(int old_evasion);
+int player_ev_modifier(int ev);
 int player_sh_modifier(int sh);
 int player_ac_modifier(int ac);
 int player_item_gen_modifier(int item_count);
@@ -1243,5 +1243,8 @@ bool player_summoned_monster(spell_type spell, monster* mons, bool first);
 int player_monster_gen_modifier(int amount);
 int player_ouch_modifier(int damage);
 int player_summon_count();
+void attempt_instant_rest();
+void monster_died(monster* mons, killer_type killer);
+void after_floor_change();
 
 #endif

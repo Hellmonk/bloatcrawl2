@@ -910,9 +910,11 @@ static void _jiyva_effects(int /*time_delta*/)
 static void _evolve(int time_delta)
 {
     if (int lev = player_mutation_level(MUT_EVOLUTION))
-        if (one_chance_in((lev > 1) ? 1 : 3)
+    {
+        const int chance = 4 - lev;
+        if (one_chance_in(chance * chance)
             && you.attribute[ATTR_EVOL_XP] * (1 + random2(10))
-               > (int)exp_needed(you.experience_level + 1))
+               > (int)exp_needed(you.experience_level + 1) / lev)
         {
             you.attribute[ATTR_EVOL_XP] = 0;
             mpr("You feel a genetic drift.");
@@ -932,6 +934,7 @@ static void _evolve(int time_delta)
             if (evol)
                 more();
         }
+    }
 }
 
 // Get around C++ dividing integers towards 0.

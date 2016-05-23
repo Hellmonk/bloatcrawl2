@@ -332,7 +332,7 @@ Ghouls
    * ghouls automatically eat some of the corpses they kill to heal and cure rot
 
 Halfling
-   * added wild magic mutation at the level 6, 12, and 18, making it much more difficult for them to cast spells, but they are quite powerful when they do.
+   * added wild magic mutation at the level 8, 16, and 24, making it much more difficult for them to cast spells, but they are quite powerful when they do.
    * added an extraordinary level of magic resistance
    * improved conjuration apt from -2 to +2
 

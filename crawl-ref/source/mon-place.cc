@@ -1344,7 +1344,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         define_zombie(mon, ztype, mg.cls);
     }
     else
-        define_monster(mon);
+        define_monster(mon, mg.behaviour);
 
     if (mon->type == MONS_MUTANT_BEAST)
     {

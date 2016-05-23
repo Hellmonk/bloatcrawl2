@@ -83,6 +83,8 @@
 #include "place.h"
 #include "items.h"
 #include "decks.h"
+#include "mon-pathfind.h"
+#include "mon-behv.h"
 
 static int _bone_armour_bonus();
 static void _fade_curses(int exp_gained);
@@ -1640,8 +1642,8 @@ bool player_res_torment(bool random)
         return true;
 
     if (random
-        && player_mutation_level(MUT_STOCHASTIC_TORMENT_RESISTANCE)
-        && coinflip())
+        && x_chance_in_y(player_mutation_level(MUT_STOCHASTIC_TORMENT_RESISTANCE), 4)
+        )
     {
         return true;
     }
@@ -2969,6 +2971,7 @@ void _handle_insight_inv(FixedVector<item_def, 52> *inv)
                     after_colored = get_menu_colour_prefix_tags(item, DESC_A);
                     if(before != after) {
                         mprf(MSGCH_INTRINSIC_GAIN, "You gain insight: %s -> %s", before.c_str(), after.c_str());
+                        more();
                         break;
                     }
                 }
@@ -4548,6 +4551,7 @@ bool dec_sp(int sp_loss, bool silent, bool allow_overdrive)
 
         result = false;
         you.redraw_evasion = true;
+        you.redraw_armour_class = true;
         you.redraw_tohit = true;
     }
 
@@ -4909,9 +4913,9 @@ int get_real_mp(bool include_items, bool rotted)
     int max_mp = 100;
 
     // Analogous to ROBUST/FRAIL
-    max_mp += + (player_mutation_level(MUT_HIGH_MAGIC) * 10)
+    max_mp += + (player_mutation_level(MUT_HIGH_MAGIC) * 20)
               + (you.attribute[ATTR_DIVINE_VIGOUR] * 5)
-              - (player_mutation_level(MUT_LOW_MAGIC) * 10)
+              - (player_mutation_level(MUT_LOW_MAGIC) * 20)
               + species_mp_modifier(you.species) * 20
               ;
 
@@ -5562,6 +5566,8 @@ void dec_exhaust_player(int delay)
     {
         mprf(MSGCH_DURATION, "You feel less exhausted.");
         you.duration[DUR_EXHAUSTED] = 0;
+        you.redraw_evasion = true;
+        you.redraw_armour_class = true;
     }
 }
 
@@ -6164,7 +6170,8 @@ player::player()
     current_form_spell  = SPELL_NO_SPELL;
     current_form_spell_failure  = 0;
     last_hit_chance     = 0;
-    last_tohit = 0;
+    last_tohit          = 0;
+    monsters_recently_seen = 0;
     summoned.init(MID_NOBODY);
 
     save                = nullptr;
@@ -6947,7 +6954,7 @@ int player::evasion(ev_ignore_type evit, const actor* act) const
 
     int ev = base_evasion - constrict_penalty - invis_penalty - stairs_penalty;
 
-    ev = player_evasion_modifier(ev);
+    ev = player_ev_modifier(ev);
     return ev;
 }
 
@@ -9678,19 +9685,17 @@ int spell_mp_cost(spell_type which_spell)
 {
     int cost = _apply_hunger(which_spell, 2);
 
+    cost = max(cost, 2);
+
     if (you.duration[DUR_CHANNELING]
         || is_summon_spell(which_spell)
         )
         cost = 0;
     else if (have_passive(passive_t::conserve_mp))
-    {
         cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
 
-        cost = max(cost, 1);
-
-        if (you.exertion != EXERT_NORMAL)
-            cost *= 2;
-    }
+    if (you.exertion != EXERT_NORMAL && you.peace < 50)
+        cost *= 2;
 
     return cost;
 }
@@ -9725,6 +9730,7 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
     sp_cost /= 5 + you.skill(SK_FIGHTING) * 3 / 2;
 
     sp_cost = max(2, sp_cost);
+
     if (you.exertion != EXERT_NORMAL)
         sp_cost *= 2;
 
@@ -9853,16 +9859,16 @@ int player_stealth_modifier(int stealth)
     return stealth / base_factor;
 }
 
-int player_evasion_modifier(int evasion)
+int player_ev_modifier(int ev)
 {
-    evasion *= _difficulty_mode_multiplier();
+    ev *= _difficulty_mode_multiplier();
 
     if (player_is_exhausted(true))
-        evasion = evasion * 4 / 5;
-    else if (you.exertion == EXERT_FOCUS)
-        evasion = evasion * 5 / 4 + 100;
+        ev = ev * 4 / 5;
+    else if (you.exertion == EXERT_FOCUS && ev > 0)
+        ev = ev * 5 / 4 + 200;
 
-    return evasion / base_factor;
+    return ev / base_factor;
 }
 
 int player_ac_modifier(int ac)
@@ -9871,8 +9877,8 @@ int player_ac_modifier(int ac)
 
     if (player_is_exhausted(true))
         ac = ac * 4 / 5;
-    else if (you.exertion == EXERT_FOCUS)
-        ac = ac * 5 / 4 + 100;
+    else if (you.exertion == EXERT_FOCUS && ac > 0)
+        ac = ac * 5 / 4 + 10000;
 
     return ac / base_factor;
 }
@@ -9883,8 +9889,8 @@ int player_sh_modifier(int sh)
 
     if (player_is_exhausted(true))
         sh = sh * 4 / 5;
-    else if (you.exertion == EXERT_FOCUS)
-        sh = sh * 5 / 4 + 100;
+    else if (you.exertion == EXERT_FOCUS && sh > 0)
+        sh = sh * 5 / 4 + 500;
 
     return sh / base_factor;
 }
@@ -10031,5 +10037,106 @@ int player_ouch_modifier(int damage)
     damage = max(0, damage);
 
     return damage;
+}
+
+void _instant_rest()
+{
+    if (player_regenerates_hp())
+        inc_hp(get_hp_max() - get_hp());
+
+    if (player_regenerates_sp())
+        inc_sp(get_sp_max() - get_sp());
+
+    if (player_regenerates_mp())
+        inc_mp(get_mp_max() - get_mp());
+}
+
+void _attempt_instant_rest_handle_no_visible_monsters(vector<monster*> &visible)
+{
+    bool can_restore_all = true;
+
+    visible.clear();
+
+    // Find nearby monsters
+    for (rectangle_iterator ri(you.pos(), 9); ri; ++ri)
+    {
+        if (monster *mon = monster_at(*ri))
+        {
+            if (mon->alive() && !mons_is_safe(mon, false, false, true))
+            {
+                visible.push_back(mon);
+                break;
+            }
+        }
+    }
+
+    if (visible.size() > 0)
+    {
+        monster *near_monster = visible[0];
+
+        coord_def to = {0, 0};
+        int shortest = -1;
+        for (edge_iterator ei(you.pos(), you.current_vision, true); ei; ++ei)
+        {
+            if (!near_monster->can_pass_through(*ei) || near_monster->cannot_move())
+                continue;
+
+            monster_pathfind pf;
+            if (!pf.init_pathfind(near_monster, *ei, true, false, true))
+                continue;
+
+            if (shortest == -1 || pf.min_length < shortest)
+            {
+                to = *ei;
+                shortest = pf.min_length;
+            }
+        }
+
+        if (shortest != -1)
+        {
+            near_monster->move_to_pos(to);
+            behaviour_event(near_monster, ME_ALERT, &you, you.pos());
+            you.monsters_recently_seen++;
+            can_restore_all = false;
+        }
+    }
+
+    if (can_restore_all && get_player_poisoning() == 0)
+    {
+        _instant_rest();
+    }
+}
+
+void attempt_instant_rest()
+{
+    if (you.monsters_recently_seen == 255 || you.monsters_recently_seen == 0)
+    {
+        you.monsters_recently_seen = 0;
+
+        vector<monster*> visible = get_nearby_monsters(false, true, true, false, false, false, -1);
+        if (visible.size() == 0)
+        {
+            _attempt_instant_rest_handle_no_visible_monsters(visible);
+        }
+    }
+}
+
+void monster_died(monster* mons, killer_type killer)
+{
+    if (mons->flags & MF_SEEN && mons->attitude == ATT_HOSTILE)
+    {
+        you.monsters_recently_seen--;
+        attempt_instant_rest();
+    }
+
+    if (mons->mp_freeze)
+        summoned_monster_died(mons, killer != KILL_RESET);
+}
+
+void after_floor_change()
+{
+    crawl_state.free_stair_escape = true;
+    you.monsters_recently_seen = 0;
+    attempt_instant_rest();
 }
 

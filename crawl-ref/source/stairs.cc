@@ -877,7 +877,8 @@ void take_stairs(dungeon_feature_type force_stair, bool going_up,
     floor_transition(how, old_feat, whither,
                      bool(force_stair), going_up, shaft, wizard);
 
-    crawl_state.free_stair_escape = true;
+    you.monsters_recently_seen = 0;
+    after_floor_change();
 }
 
 void up_stairs(dungeon_feature_type force_stair, bool wizard)
