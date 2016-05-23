@@ -9865,7 +9865,7 @@ int player_ev_modifier(int ev)
 
     if (player_is_exhausted(true))
         ev = ev * 4 / 5;
-    else if (you.exertion == EXERT_FOCUS)
+    else if (you.exertion == EXERT_FOCUS && ev > 0)
         ev = ev * 5 / 4 + 200;
 
     return ev / base_factor;
@@ -9877,7 +9877,7 @@ int player_ac_modifier(int ac)
 
     if (player_is_exhausted(true))
         ac = ac * 4 / 5;
-    else if (you.exertion == EXERT_FOCUS)
+    else if (you.exertion == EXERT_FOCUS && ac > 0)
         ac = ac * 5 / 4 + 10000;
 
     return ac / base_factor;
@@ -9889,7 +9889,7 @@ int player_sh_modifier(int sh)
 
     if (player_is_exhausted(true))
         sh = sh * 4 / 5;
-    else if (you.exertion == EXERT_FOCUS)
+    else if (you.exertion == EXERT_FOCUS && sh > 0)
         sh = sh * 5 / 4 + 500;
 
     return sh / base_factor;
