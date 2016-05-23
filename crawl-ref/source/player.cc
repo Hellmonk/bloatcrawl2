@@ -9694,7 +9694,7 @@ int spell_mp_cost(spell_type which_spell)
     else if (have_passive(passive_t::conserve_mp))
         cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
 
-    if (you.exertion != EXERT_NORMAL)
+    if (you.exertion != EXERT_NORMAL && you.peace > 50)
         cost *= 2;
 
     return cost;
