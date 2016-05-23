@@ -83,6 +83,8 @@
 #include "place.h"
 #include "items.h"
 #include "decks.h"
+#include "mon-pathfind.h"
+#include "mon-behv.h"
 
 static int _bone_armour_bonus();
 static void _fade_curses(int exp_gained);
@@ -6166,6 +6168,7 @@ player::player()
     current_form_spell_failure  = 0;
     last_hit_chance     = 0;
     last_tohit = 0;
+    monsters_recently_seen = 0;
     summoned.init(MID_NOBODY);
 
     save                = nullptr;
@@ -10031,5 +10034,84 @@ int player_ouch_modifier(int damage)
     damage = max(0, damage);
 
     return damage;
+}
+
+void monster_died(monster* mons, killer_type killer)
+{
+    if (mons->flags & MF_SEEN)
+    {
+        you.monsters_recently_seen--;
+        if (you.monsters_recently_seen == 255 || you.monsters_recently_seen == 0)
+        {
+            you.monsters_recently_seen = 0;
+
+            vector<monster*> visible = get_nearby_monsters(false, true, true, false, false, false, -1);
+            if (visible.size() == 0)
+            {
+                bool can_restore_all = true;
+
+                visible.clear();
+
+                // Find nearby monsters
+                for (rectangle_iterator ri(you.pos(), 9); ri; ++ri)
+                {
+                    if (monster* mon = monster_at(*ri))
+                    {
+                        if (mon->alive() && !mons_is_safe(mon, false, false, true))
+                        {
+                            visible.push_back(mon);
+                            break;
+                        }
+                    }
+                }
+
+                if (visible.size() > 0)
+                {
+                    monster* near_monster = visible[0];
+
+                    coord_def to = {0, 0};
+                    int shortest = -1;
+                    for (edge_iterator ei(you.pos(), you.current_vision, true); ei; ++ei)
+                    {
+                        if (!near_monster->can_pass_through(*ei) || near_monster->cannot_move())
+                            continue;
+
+                        monster_pathfind pf;
+                        if (!pf.init_pathfind(near_monster, *ei, true, false, true))
+                            continue;
+
+                        if (shortest == -1 || pf.min_length < shortest)
+                        {
+                            to = *ei;
+                            shortest = pf.min_length;
+                        }
+                    }
+
+                    if (shortest != -1)
+                    {
+                        near_monster->move_to_pos(to);
+                        behaviour_event(near_monster, ME_ALERT, &you, you.pos());
+                        you.monsters_recently_seen++;
+                        can_restore_all = false;
+                    }
+                }
+
+                if (can_restore_all && get_player_poisoning() == 0)
+                {
+                    if (player_regenerates_hp())
+                        inc_hp(get_hp_max() - get_hp());
+
+                    if (player_regenerates_sp())
+                        inc_sp(get_sp_max() - get_sp());
+
+                    if (player_regenerates_mp())
+                        inc_mp(get_mp_max() - get_mp());
+                }
+            }
+        }
+    }
+
+    if (mons->mp_freeze)
+        summoned_monster_died(mons, killer != KILL_RESET);
 }
 

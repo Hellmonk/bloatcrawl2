@@ -1383,7 +1383,7 @@ static void tag_construct_you(writer &th)
     marshallUByte(th, you.mp);
     marshallUByte(th, you.mp_max);
 
-    marshallUByte(th, you.target_hunger_state);
+    marshallUByte(th, you.monsters_recently_seen);
     marshallUByte(th, you.motion);
 
     COMPILE_CHECK(NUM_STATS == 3);
@@ -2382,7 +2382,7 @@ static void tag_read_you(reader &th)
     you.mp              = unmarshallUByte(th);
     you.mp_max          = unmarshallUByte(th);
 
-    you.target_hunger_state       = (hunger_state_t) unmarshallUByte(th);
+    you.monsters_recently_seen    = unmarshallUByte(th);
     you.motion                    = (motion_type) unmarshallUByte(th);
     you.last_tohit = 0;
     you.last_hit_chance = 0;

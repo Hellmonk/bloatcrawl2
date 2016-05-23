@@ -1,5 +1,14 @@
 ## v1.5.2
 
+* Retreat simplification (instant rest)
+    * Instead of making it optimal for a player to retreat and recharge after every monster killed, the player is 
+      instantly fully recharged as soon as they have killed all nearby monsters. 
+    * If the player kills the last known monster, and there is another just beyond the edge of LOS, it is brought to
+      edge of LOS instead of player instant-resting.
+    * If instarest doesn't happen, that means there is an invisible monster nearby or you have seen a monster, 
+      but haven't actually killed it, and it has moved out of LOS. In this case you'll have to rest the old-fashioned
+      way.
+
 * Rune curse effects are now shown in rune list (show with '{').
 
 * Players can unsummon individual summoned friendlies by using the 'x' command, selecting the monster, and then 
