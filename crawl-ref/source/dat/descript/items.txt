@@ -762,7 +762,7 @@ fundamentally linked – the regeneration ends the moment the confusion does.
 %%%%
 potion of beneficial mutation
 
-A potion which grants a supposedly good mutation.
+A potion which grants a non-disruptive good mutation.
 %%%%
 potion of berserk rage
 
@@ -827,9 +827,13 @@ potion of might
 A potion which greatly increases the strength and physical power of one who
 drinks it.
 %%%%
-potion of mutation
+potion of single mutation
 
-A potion which causes random mutation.
+A potion which causes one random mutation.
+%%%%
+potion of triple mutation
+
+A potion which causes three random mutations.
 %%%%
 potion of resistance
 
