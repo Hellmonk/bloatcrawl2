@@ -33,7 +33,7 @@
 * Spells may be cast even when mp is empty.
     * Except for spells which reduce max mp instead of consuming mp (like transmutations and summons).
     
-* Focus mode now increases ac and ev slightly
+* Focus mode now increases ac, sh, and ev slightly
     * By paying closer attention to incoming attacks, a player can optimize their armour (making sure the enemy hits the
       more fortified places) or increase their chance of dodging the attacks.
 
