@@ -4551,6 +4551,7 @@ bool dec_sp(int sp_loss, bool silent, bool allow_overdrive)
 
         result = false;
         you.redraw_evasion = true;
+        you.redraw_armour_class = true;
         you.redraw_tohit = true;
     }
 
@@ -5565,6 +5566,8 @@ void dec_exhaust_player(int delay)
     {
         mprf(MSGCH_DURATION, "You feel less exhausted.");
         you.duration[DUR_EXHAUSTED] = 0;
+        you.redraw_evasion = true;
+        you.redraw_armour_class = true;
     }
 }
 
@@ -6951,7 +6954,7 @@ int player::evasion(ev_ignore_type evit, const actor* act) const
 
     int ev = base_evasion - constrict_penalty - invis_penalty - stairs_penalty;
 
-    ev = player_evasion_modifier(ev);
+    ev = player_ev_modifier(ev);
     return ev;
 }
 
@@ -9856,16 +9859,16 @@ int player_stealth_modifier(int stealth)
     return stealth / base_factor;
 }
 
-int player_evasion_modifier(int evasion)
+int player_ev_modifier(int ev)
 {
-    evasion *= _difficulty_mode_multiplier();
+    ev *= _difficulty_mode_multiplier();
 
     if (player_is_exhausted(true))
-        evasion = evasion * 4 / 5;
+        ev = ev * 4 / 5;
     else if (you.exertion == EXERT_FOCUS)
-        evasion = evasion * 5 / 4 + 100;
+        ev = ev * 5 / 4 + 200;
 
-    return evasion / base_factor;
+    return ev / base_factor;
 }
 
 int player_ac_modifier(int ac)
@@ -9875,7 +9878,7 @@ int player_ac_modifier(int ac)
     if (player_is_exhausted(true))
         ac = ac * 4 / 5;
     else if (you.exertion == EXERT_FOCUS)
-        ac = ac * 5 / 4 + 100;
+        ac = ac * 5 / 4 + 10000;
 
     return ac / base_factor;
 }
@@ -9887,7 +9890,7 @@ int player_sh_modifier(int sh)
     if (player_is_exhausted(true))
         sh = sh * 4 / 5;
     else if (you.exertion == EXERT_FOCUS)
-        sh = sh * 5 / 4 + 100;
+        sh = sh * 5 / 4 + 500;
 
     return sh / base_factor;
 }
@@ -10048,7 +10051,7 @@ void _instant_rest()
         inc_mp(get_mp_max() - get_mp());
 }
 
-void _attempt_instant_rest_handle_no_visible_monsters()
+void _attempt_instant_rest_handle_no_visible_monsters(vector<monster*> &visible)
 {
     bool can_restore_all = true;
 
@@ -10113,7 +10116,7 @@ void attempt_instant_rest()
         vector<monster*> visible = get_nearby_monsters(false, true, true, false, false, false, -1);
         if (visible.size() == 0)
         {
-            _attempt_instant_rest_handle_no_visible_monsters();
+            _attempt_instant_rest_handle_no_visible_monsters(visible);
         }
     }
 }
