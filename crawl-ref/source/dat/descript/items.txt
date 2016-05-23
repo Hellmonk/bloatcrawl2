@@ -831,7 +831,7 @@ potion of single mutation
 
 A potion which causes one random mutation.
 %%%%
-potion of triple mutation
+potion of mutation
 
 A potion which causes three random mutations.
 %%%%

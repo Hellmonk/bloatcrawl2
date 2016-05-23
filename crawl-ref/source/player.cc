@@ -9712,7 +9712,7 @@ int spell_mp_freeze(spell_type which_spell)
 
         cost = max(cost, 1);
 
-        if (you.exertion != EXERT_NORMAL)
+        if (you.exertion != EXERT_NORMAL && you.peace < 50)
             cost *= 2;
     }
 

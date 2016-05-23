@@ -681,8 +681,8 @@ const char* potion_type_name(int potiontype)
 #endif
     case POT_BERSERK_RAGE:      return "berserk rage";
     case POT_CURE_MUTATION:     return "cure mutation";
-    case POT_MUTATION:          return "triple mutation";
-    case POT_WEAK_MUTATION:     return "single mutation";
+    case POT_MUTATION:          return "mutation";
+    case POT_WEAK_MUTATION:     return "weak mutation";
     case POT_BLOOD:             return "blood";
 #if TAG_MAJOR_VERSION == 34
     case POT_BLOOD_COAGULATED:  return "coagulated blood";
