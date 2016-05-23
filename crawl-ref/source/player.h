@@ -1243,6 +1243,8 @@ bool player_summoned_monster(spell_type spell, monster* mons, bool first);
 int player_monster_gen_modifier(int amount);
 int player_ouch_modifier(int damage);
 int player_summon_count();
+void attempt_instant_rest();
 void monster_died(monster* mons, killer_type killer);
+void after_floor_change();
 
 #endif
