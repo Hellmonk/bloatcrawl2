@@ -668,7 +668,9 @@ void seen_monster(monster* mons)
 
     // First time we've seen this particular monster.
     mons->flags |= MF_SEEN;
-    you.monsters_recently_seen++;
+
+    if (mons->attitude == ATT_HOSTILE)
+        you.monsters_recently_seen++;
 
     if (crawl_state.game_is_hints())
         hints_monster_seen(*mons);

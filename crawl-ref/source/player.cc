@@ -10123,7 +10123,7 @@ void attempt_instant_rest()
 
 void monster_died(monster* mons, killer_type killer)
 {
-    if (mons->flags & MF_SEEN)
+    if (mons->flags & MF_SEEN && mons->attitude == ATT_HOSTILE)
     {
         you.monsters_recently_seen--;
         attempt_instant_rest();
