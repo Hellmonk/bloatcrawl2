@@ -2102,7 +2102,7 @@ void melee_attack::attacker_sustain_passive_damage()
 
     int hurt = roll_dice(1, acid_strength);
     if (attacker->is_player())
-        mprf(you.hands_act("burn", "! (%d)"), hurt);
+        mprf(MSGCH_PLAIN, you.hands_act("burn", "! (%d)").c_str(), hurt);
     else
     {
         monster_message(attacker->as_monster(),
