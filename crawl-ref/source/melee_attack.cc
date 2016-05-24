@@ -2100,14 +2100,15 @@ void melee_attack::attacker_sustain_passive_damage()
             attacker->corrode_equipment();
     }
 
+    int hurt = roll_dice(1, acid_strength);
     if (attacker->is_player())
-        mpr(you.hands_act("burn", "!"));
+        mprf(you.hands_act("burn", "! (%d)").c_str(), hurt);
     else
     {
-        simple_monster_message(attacker->as_monster(),
-                               " is burned by acid!");
+        monster_message(attacker->as_monster(),
+                               " is burned by acid! (%d)", hurt);
     }
-    attacker->hurt(defender, roll_dice(1, acid_strength), BEAM_ACID,
+    attacker->hurt(defender, hurt, BEAM_ACID,
                    KILLED_BY_ACID, "", "", false);
 }
 
