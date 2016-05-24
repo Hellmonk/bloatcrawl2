@@ -709,13 +709,13 @@ static const pop_entry pop_zot[] =
   {  1,  5,   42, FLAT, MONS_ORB_OF_FIRE },
   { 0,0,0,FLAT,MONS_0 }
 };
-#if TAG_MAJOR_VERSION == 34
+
 static const pop_entry pop_forest[] =
 { // Forest
   {  1,  5,  120, FALL, MONS_WOLF },
   {  1,  5,   35, FALL, MONS_BLACK_BEAR },
   {  1,  5,   50, FLAT, MONS_YAK },
-  {  1,  7,  145, SEMI, MONS_DIRE_ELEPHANT },
+  {  3,  7,  145, SEMI, MONS_DIRE_ELEPHANT },
   {  1,  5,   15, FALL, MONS_WASP },
   {  1,  5,   30, FLAT, MONS_HORNET },
   {  1,  6,   75, FALL, MONS_REDBACK },
@@ -728,8 +728,8 @@ static const pop_entry pop_forest[] =
   {  2,  8,   55, SEMI, MONS_SPRIGGAN_DRUID },
   {  1,  6,  155, SEMI, MONS_SPRIGGAN_RIDER },
   {  1,  9,  235, SEMI, MONS_SPRIGGAN_BERSERKER },
-  {  1,  8,  155, SEMI, MONS_SPRIGGAN_AIR_MAGE },
-  {  3,  5,  115, RISE, MONS_SPRIGGAN_DEFENDER },
+  {  4,  8,   80, SEMI, MONS_SPRIGGAN_AIR_MAGE },
+  {  3,  8,  115, RISE, MONS_SPRIGGAN_DEFENDER },
   {  1,  7,   85, PEAK, MONS_APIS },
   {  2,  7,  165, SEMI, MONS_SHAMBLING_MANGROVE },
   {  1,  6,   85, SEMI, MONS_ANACONDA },
@@ -737,7 +737,6 @@ static const pop_entry pop_forest[] =
   {  1,  5,  125, FLAT, MONS_BUTTERFLY },
   { 0,0,0,FLAT,MONS_0 }
 };
-#endif
 
 static const pop_entry pop_abyss[] =
 { // Abyss
