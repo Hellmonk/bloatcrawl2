@@ -1,5 +1,7 @@
 ## v1.5.2
 
+* Switching between exertion or quick modes costs 0 turns.
+    
 * Spell failure is higher now
     * It's still fairly easy to cast low level spells, but mid and high level spells will be considerably harder to pull
       off.
@@ -162,9 +164,7 @@
         * Quick mode no longer has a movement penalty when changing directions.
     * If you run out of stamina in power mode, and it switches you back to normal mode, once you've recovered 50% of your
       SP, the game will automatically switch you back to power mode. Same applies to Focus mode.
-    * Switching exertion modes (normal, power, focus), costs 1 turn.
-    * Switching speed mode from normal to quick, costs 0 turns.
-    * Switching speed mode from quick to normal, costs 1 turn.
+    * Switching any modes costs 0 turns.
 
 * Summary of exertion modes: (existing info merged with changes from this update)
     * Normal mode

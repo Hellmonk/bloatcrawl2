@@ -4417,7 +4417,9 @@ void set_quick_mode(const bool new_quick_mode, const bool automatic)
         you.stamina_flags &= ~STAMF_SKIP_MOVEMENT_PENALTY;
         you.stamina_flags &= ~STAMF_QUICK_MODE;
         you.duration[DUR_QUICK_MODE] = 0;
+        /*
         you.turn_is_over = true;
+         */
 
         if (automatic)
             you.stamina_flags |= STAMF_QUICK_MODE_RESTORE;
@@ -4466,7 +4468,9 @@ void set_exertion(const exertion_mode new_exertion, bool manual)
     you.redraw_status_lights = true;
     you.redraw_evasion = true;
     you.redraw_armour_class = true;
+    /*
     you.turn_is_over = true;
+     */
 
     player_update_tohit();
 }
