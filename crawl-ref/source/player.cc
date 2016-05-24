@@ -9835,16 +9835,16 @@ int player_spellpower_modifier(int spellpower)
     return spellpower / base_factor;
 }
 
-int player_spellfailure_modifier(int failure)
+int player_spellsuccess_modifier(int force)
 {
-    failure *= base_factor;
+    force *= _difficulty_mode_multiplier() * _difficulty_mode_multiplier();
 
     if (player_is_exhausted(true))
-        failure = failure * 3 / 2;
+        force = force * 2 / 3;
     else if (you.exertion == EXERT_FOCUS)
-        failure = max(failure - 15 * base_factor, failure / 2);
+        force *= 2;
 
-    return failure / _difficulty_mode_multiplier();
+    return force / base_factor / base_factor;
 }
 
 int player_stealth_modifier(int stealth)
@@ -10049,6 +10049,12 @@ void _instant_rest()
 
     if (player_regenerates_mp())
         inc_mp(get_mp_max() - get_mp());
+
+    if (you.current_form_spell_failure > 0)
+    {
+        mpr("You form becomes more stable.");
+        you.current_form_spell_failure = 0;
+    }
 }
 
 void _attempt_instant_rest_handle_no_visible_monsters(vector<monster*> &visible)
