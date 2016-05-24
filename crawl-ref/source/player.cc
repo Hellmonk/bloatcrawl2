@@ -4364,6 +4364,9 @@ bool player_is_very_tired(bool silent)
 
 bool player_is_exhausted(bool silent)
 {
+    if (Options.exertion_disabled)
+        return false;
+
     /* old way
     const bool is_tired = player_sp_is_exhausted(true) || player_mp_is_exhausted(true);
      */
@@ -4433,6 +4436,12 @@ void set_quick_mode(const bool new_quick_mode, const bool automatic)
 
 void set_exertion(const exertion_mode new_exertion, bool manual)
 {
+    if (Options.exertion_disabled)
+    {
+        mpr("Exertion modes are disabled in your rc file, so you can't use power or focus modes.");
+        return;
+    }
+
     if (new_exertion == you.exertion)
         return;
 
@@ -9670,6 +9679,12 @@ void player_after_each_turn()
     }
 
     crawl_state.danger_mode_counter = max(0, crawl_state.danger_mode_counter - 1);
+
+    if (Options.exertion_disabled)
+    {
+        if (you.exertion != EXERT_NORMAL)
+            you.exertion = EXERT_NORMAL;
+    }
 }
 
 int _apply_hunger(const spell_type &which_spell, int cost, int multiplier = 100)
@@ -9751,26 +9766,27 @@ int _difficulty_mode_multiplier()
 {
     int x = 100;
 
-    switch(crawl_state.difficulty)
-    {
-        // yes, easy mode actually gets a boost when exhausted...
-        case DIFFICULTY_EASY:
-            x = 120;
-            break;
-        case DIFFICULTY_STANDARD:
-            x = 110;
-            break;
-        case DIFFICULTY_CHALLENGE:
-            x = 100;
-            break;
-        case DIFFICULTY_NIGHTMARE:
-            x = 90;
-            break;
-        default:
-            // should not be possible
-            x = 100;
-            break;
-    }
+    if (!Options.exertion_disabled)
+        switch(crawl_state.difficulty)
+        {
+            // yes, easy mode actually gets a boost when exhausted...
+            case DIFFICULTY_EASY:
+                x = 120;
+                break;
+            case DIFFICULTY_STANDARD:
+                x = 110;
+                break;
+            case DIFFICULTY_CHALLENGE:
+                x = 100;
+                break;
+            case DIFFICULTY_NIGHTMARE:
+                x = 90;
+                break;
+            default:
+                // should not be possible
+                x = 100;
+                break;
+        }
 
     return x;
 }

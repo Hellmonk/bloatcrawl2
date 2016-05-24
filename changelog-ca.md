@@ -1,5 +1,9 @@
 ## v1.5.2
 
+* You can now disable exertion modes
+    * Put this in your rc file: exertion_disabled = true
+    * Quick mode is still available, but focus and power modes won't be if you have this option set.
+
 * Switching between exertion or quick modes costs 0 turns.
     
 * Spell failure is higher now

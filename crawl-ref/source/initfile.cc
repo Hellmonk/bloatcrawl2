@@ -952,6 +952,7 @@ void game_options::reset_options()
     movement_penalty = 11;
 
     danger_mode_threshold = 30;
+    exertion_disabled = false;
     disable_instakill_protection = false;
     level_27_cap = false;
     exp_potion_on_each_floor = false;
@@ -3003,6 +3004,7 @@ void game_options::read_option_line(const string &str, bool runscript)
     }
 
     else INT_OPTION(danger_mode_threshold, 0, 100);
+    else BOOL_OPTION(exertion_disabled);
     else BOOL_OPTION(disable_instakill_protection);
 #if !defined(DGAMELAUNCH) || defined(DGL_REMEMBER_NAME)
     else BOOL_OPTION(remember_name);

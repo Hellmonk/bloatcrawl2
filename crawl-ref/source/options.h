@@ -435,6 +435,7 @@ public:
     int         exp_percent_from_new_branch_floor;     // what percent of normal experience potion experience to give when drinking
 
     int         danger_mode_threshold;      // enter danger mode if player's health is less than this percentage of the last damage done.
+    bool        exertion_disabled;         // don't allow exertion mode changes
     bool        disable_instakill_protection;   // removes protection from player receiving more than a certain % of damage in a round
 
     lang_t              language;         // Translation to use.
