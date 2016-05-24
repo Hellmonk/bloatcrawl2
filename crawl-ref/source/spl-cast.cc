@@ -469,14 +469,14 @@ static int _apply_spellcasting_success_boosts(spell_type spell, int chance)
     const int wizardry = player_wizardry(spell);
 
     if (wizardry > 0)
-      fail_reduce = fail_reduce * 6 / (7 + wizardry);
+      fail_reduce = fail_reduce * 3 / (4 + wizardry);
 
     if (you.duration[DUR_BRILLIANCE])
         fail_reduce = fail_reduce / 2;
 
     // Hard cap on fail rate reduction.
-    if (fail_reduce < 50)
-        fail_reduce = 50;
+    if (fail_reduce < 25)
+        fail_reduce = 25;
 
     return chance * fail_reduce / 100;
 }
@@ -492,7 +492,7 @@ static int _apply_spellcasting_success_boosts(spell_type spell, int chance)
 int raw_spell_fail(spell_type spell)
 {
     const int spell_level = spell_difficulty(spell);
-    float resist = 1 << (spell_level + 2);
+    float resist = qpow(10, 5, 2, spell_level - 1, false);
     const int armour_shield_penalty = player_armour_shield_spell_penalty();
     dprf("Armour+Shield spell failure penalty: %d", armour_shield_penalty);
     resist = resist * (10 + armour_shield_penalty) / 10;
@@ -526,6 +526,11 @@ int raw_spell_fail(spell_type spell)
 //    if (you.props.exists(SAP_MAGIC_KEY))
 //        force *= you.props[SAP_MAGIC_KEY].get_int() * 12;
 
+    // Apply the effects of Vehumet and items of wizardry.
+    resist = _apply_spellcasting_success_boosts(spell, resist);
+    force = player_spellsuccess_modifier(force);
+
+
     force = fmax(1, force);
     resist = fmax(1, resist);
 
@@ -535,11 +540,6 @@ int raw_spell_fail(spell_type spell)
         fail_chance = 50 / (force / resist);
     else
         fail_chance = 100 - 50 / (resist / force);
-
-    // Apply the effects of Vehumet and items of wizardry.
-    fail_chance = _apply_spellcasting_success_boosts(spell, fail_chance);
-
-    fail_chance = player_spellfailure_modifier(fail_chance);
 
     if (fail_chance > 99)
         fail_chance = 99;

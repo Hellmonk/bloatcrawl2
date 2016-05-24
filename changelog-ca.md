@@ -1,5 +1,12 @@
 ## v1.5.2
 
+* Spell failure is higher now
+    * It's still fairly easy to cast low level spells, but mid and high level spells will be considerably harder to pull
+      off.
+    * Blade Hands will barely be useable, for short bursts, around level 12 of a character (depending on many factors,
+      of course). It may well take until about level 15 before a player can keep blade hands up for extended lengths 
+      of time. 
+
 * Retreat simplification (instant rest)
     * Instead of making it optimal for a player to retreat and recharge after every monster killed, the player is 
       instantly fully recharged as soon as they have killed all nearby monsters. 
