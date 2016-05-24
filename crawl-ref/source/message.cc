@@ -1100,6 +1100,17 @@ void mprf(msg_channel_type channel, const char *format, ...)
     va_end(argp);
 }
 
+void ldprf(live_debug_type type, const char *format, ...)
+{
+    if (Options.live_debug != (int)type)
+        return;
+
+    va_list argp;
+    va_start(argp, format);
+    do_message_print(MSGCH_DIAGNOSTICS, 0, true, false, format, argp);
+    va_end(argp);
+}
+
 void mprf(const char *format, ...)
 {
     va_list argp;

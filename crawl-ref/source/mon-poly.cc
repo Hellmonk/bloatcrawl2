@@ -32,6 +32,7 @@
 #include "traps.h"
 #include "view.h"
 #include "xom.h"
+#include "mon-pathfind.h"
 
 bool feature_mimic_at(const coord_def &c)
 {
@@ -670,7 +671,18 @@ void seen_monster(monster* mons)
     mons->flags |= MF_SEEN;
 
     if (mons->attitude == ATT_HOSTILE)
-        you.monsters_recently_seen++;
+    {
+        monster_pathfind pf;
+        if (pf.init_pathfind(mons, you.pos(), true, false, true))
+        {
+            you.monsters_recently_seen++;
+            ldprf(LD_INSTAREST, "Saw hostile monster: %s. recently_seen = %d", mons->name(DESC_A, true).c_str(), you.monsters_recently_seen);
+        }
+        else
+        {
+            ldprf(LD_INSTAREST, "Saw hostile monster: %s, but it can't get to you.", mons->name(DESC_A, true).c_str());
+        }
+    }
 
     if (crawl_state.game_is_hints())
         hints_monster_seen(*mons);

@@ -856,8 +856,11 @@ static void _regenerate_hp_and_mp(int delay)
     else
     {
         you.peace += you.time_taken;
-        if (you.peace > 100)
+        if (you.peace > 100 && you.monsters_recently_seen > 0)
+        {
             you.monsters_recently_seen = 0;
+            ldprf(LD_INSTAREST, "Peace > 100. recently_seen = %d", you.monsters_recently_seen);
+        }
     }
 
     if (get_sp() < get_sp_max() && (!in_quick_mode() || you.peace > 100))

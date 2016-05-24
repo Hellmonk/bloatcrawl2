@@ -10075,12 +10075,15 @@ void _instant_rest()
         mpr("You form becomes more stable.");
         you.current_form_spell_failure = 0;
     }
+
+    you.duration[DUR_EXHAUSTED] = 0;
 }
 
-void _attempt_instant_rest_handle_no_visible_monsters(vector<monster*> &visible)
+void _attempt_instant_rest_handle_no_visible_monsters()
 {
     bool can_restore_all = true;
 
+    vector<monster*> visible;
     visible.clear();
 
     // Find nearby monsters
@@ -10096,15 +10099,21 @@ void _attempt_instant_rest_handle_no_visible_monsters(vector<monster*> &visible)
         }
     }
 
+    ldprf(LD_INSTAREST, "Checking for further out monsters...");
+
     if (visible.size() > 0)
     {
+        ldprf(LD_INSTAREST, "Found further out monsters: %d (%s)", visible.size(), visible[0]->name(DESC_A, true).c_str());
         monster *near_monster = visible[0];
 
-        coord_def to = {0, 0};
+        coord_def to;
         int shortest = -1;
         for (edge_iterator ei(you.pos(), you.current_vision, true); ei; ++ei)
         {
             if (!near_monster->can_pass_through(*ei) || near_monster->cannot_move())
+                continue;
+
+            if (!you.see_cell(*ei))
                 continue;
 
             monster_pathfind pf;
@@ -10122,12 +10131,20 @@ void _attempt_instant_rest_handle_no_visible_monsters(vector<monster*> &visible)
         {
             near_monster->move_to_pos(to);
             behaviour_event(near_monster, ME_ALERT, &you, you.pos());
-            you.monsters_recently_seen++;
+            ldprf(LD_INSTAREST, "Pulled in monster. recently_seen = %d.", you.monsters_recently_seen);
             can_restore_all = false;
         }
+        else
+        {
+            ldprf(LD_INSTAREST, "Further out monster couldn't find there way here.");
+        }
+    }
+    else
+    {
+        ldprf(LD_INSTAREST, "Didn't find any further out monsters");
     }
 
-    if (can_restore_all && get_player_poisoning() == 0)
+    if (can_restore_all && !poison_is_lethal())
     {
         _instant_rest();
     }
@@ -10135,14 +10152,31 @@ void _attempt_instant_rest_handle_no_visible_monsters(vector<monster*> &visible)
 
 void attempt_instant_rest()
 {
-    if (you.monsters_recently_seen == 255 || you.monsters_recently_seen == 0)
+    if (you.monsters_recently_seen > 200 || you.monsters_recently_seen == 0)
     {
         you.monsters_recently_seen = 0;
+        ldprf(LD_INSTAREST, "Recently_seen hit 0. Checking for nearby monsters...", you.monsters_recently_seen);
 
-        vector<monster*> visible = get_nearby_monsters(false, true, true, false, false, false, -1);
-        if (visible.size() == 0)
+        vector<monster*> visible = get_nearby_monsters(false, false, true, false, false, false, -1);
+
+        int reachable_count = 0;
+        for (monster *m : visible)
         {
-            _attempt_instant_rest_handle_no_visible_monsters(visible);
+            monster_pathfind pf;
+            if (!pf.init_pathfind(m, you.pos(), true, false, true))
+                continue;
+
+            reachable_count++;
+        }
+
+        if (reachable_count == 0)
+        {
+            ldprf(LD_INSTAREST, "No nearby monsters found.");
+            _attempt_instant_rest_handle_no_visible_monsters();
+        }
+        else
+        {
+            ldprf(LD_INSTAREST, "Nearby monsters found: %d", reachable_count);
         }
     }
 }
@@ -10152,6 +10186,7 @@ void monster_died(monster* mons, killer_type killer)
     if (mons->flags & MF_SEEN && mons->attitude == ATT_HOSTILE)
     {
         you.monsters_recently_seen--;
+        ldprf(LD_INSTAREST, "Hostile seen monster died. recently_seen = %d", you.monsters_recently_seen);
         attempt_instant_rest();
     }
 

@@ -101,6 +101,9 @@ msg_colour_type msg_colour(int colour);
 void mpr(const string &text);
 void mpr_nojoin(msg_channel_type channel, string text);
 
+// for live debugging
+void ldprf(live_debug_type type, const char *format, ...);
+
 // 4.1-style mpr, currently named mprf for minimal disruption.
 void mprf(msg_channel_type channel, int param, PRINTF(2, ));
 void mprf(msg_channel_type channel, PRINTF(1, ));
