@@ -104,4 +104,11 @@ NORETURN void die_noline(PRINTF(0, ));
 #ifdef DEBUG
 void debuglog(PRINTF(0, ));
 #endif
+
+enum live_debug_type
+{
+    LD_NONE      = 0,
+    LD_INSTAREST = 1,
+};
+
 #endif
