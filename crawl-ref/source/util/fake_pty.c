@@ -1,4 +1,4 @@
-#ifdef TARGET_OS_MACOSX
+#if defined(TARGET_OS_MACOSX)
 #include <util.h>
 #else
 #include <pty.h>
