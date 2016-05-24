@@ -492,7 +492,7 @@ static int _apply_spellcasting_success_boosts(spell_type spell, int chance)
 int raw_spell_fail(spell_type spell)
 {
     const int spell_level = spell_difficulty(spell);
-    float resist = qpow(10, 5, 2, spell_level - 1, false);
+    float resist = qpow(2, 3, 1, spell_level - 1, false);
     const int armour_shield_penalty = player_armour_shield_spell_penalty();
     dprf("Armour+Shield spell failure penalty: %d", armour_shield_penalty);
     resist = resist * (10 + armour_shield_penalty) / 10;

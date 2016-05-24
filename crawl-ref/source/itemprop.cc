@@ -792,8 +792,10 @@ bool curse_a_slot(int power)
         maybe_bool can_wear = you_can_wear((equipment_type) slot);
         if (can_wear != MB_FALSE && can_wear != MB_MAYBE)
         {
+            /* not sure if this is really helpful
             if (coinflip() && slot != EQ_WEAPON && slot < EQ_LEFT_RING)
                 continue;
+                */
             slot_to_curse = slot;
         }
     }
