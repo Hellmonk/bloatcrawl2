@@ -976,6 +976,7 @@ const char* item_slot_name(equipment_type type)
 {
     switch (type)
     {
+    case EQ_WEAPON:      return "weapon";
     case EQ_CLOAK:       return "cloak";
     case EQ_HELMET:      return "helmet";
     case EQ_GLOVES:      return "gloves";
