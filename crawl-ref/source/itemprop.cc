@@ -213,7 +213,6 @@ static const vector<brand_weight_tuple> SBL_BRANDS = {
     { SPWPN_VAMPIRISM, 4 },
     { SPWPN_FLAMING, 4 },
     { SPWPN_FREEZING, 4 },
-    { SPWPN_EVASION,   2 },
     { SPWPN_DISTORTION, 1 },
     { SPWPN_ANTIMAGIC, 1 },
 };
@@ -289,7 +288,6 @@ static const vector<brand_weight_tuple> POLEARM_BRANDS = {
     { SPWPN_DISTORTION,  2 },
     { SPWPN_PAIN,        2 },
     { SPWPN_ANTIMAGIC,   2 },
-    { SPWPN_EVASION,     1 },
     { SPWPN_HOLY_WRATH,  1 },
 };
 
@@ -302,8 +300,6 @@ static const vector<brand_weight_tuple> RANGED_BRANDS = {
      */
     { SPWPN_EVASION,   8 },
     { SPWPN_VORPAL,    6 },
-    { SPWPN_ANTIMAGIC, 1 },
-    { SPWPN_HOLY_WRATH,1 },
 };
 
 /// brand weights for holy (TSO-blessed) weapons.
