@@ -1,7 +1,7 @@
-#if defined(TARGET_OS_MACOSX)
-#include <util.h>
-#else
+#if defined(TARGET_OS_UNIX)
 #include <pty.h>
+#else
+#include <util.h>
 #endif
 
 #include <stdio.h>
