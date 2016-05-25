@@ -10197,7 +10197,11 @@ void _attempt_instant_rest_handle_no_visible_monsters()
 
 void attempt_instant_rest()
 {
-    if (you.monsters_recently_seen > 200 || you.monsters_recently_seen == 0)
+    if (
+        !player_in_hell()
+        && you.where_are_you != BRANCH_ABYSS
+        && (you.monsters_recently_seen > 200 || you.monsters_recently_seen == 0)
+        )
     {
         you.monsters_recently_seen = 0;
         ldprf(LD_INSTAREST, "Recently_seen hit 0. Checking for nearby monsters...", you.monsters_recently_seen);
