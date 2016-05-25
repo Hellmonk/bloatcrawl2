@@ -4853,7 +4853,7 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
     if (you.species == SP_MOON_TROLL)
         hitp  = 80;
     else
-        hitp  = effective_xl() * 11 / 2 + 8;
+        hitp  = effective_xl() * 7 + 8;
 
     hitp += you.hp_max_adj_perm;
     /*
