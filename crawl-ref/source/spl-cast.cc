@@ -523,10 +523,10 @@ int raw_spell_fail(spell_type spell)
     x += player_success * 2;
     x += success_boosts;
 
-    int fail_chance = 100 * pow(15.0 / 16, abs(x)) / 2;
+    float fail_chance = 100 * pow(15.0 / 16, abs(x)) / 2;
 
     if (x < 0)
-        fail_chance = 100 - x;
+        fail_chance = 100 - fail_chance;
 
     if (fail_chance > 99)
         fail_chance = 99;
