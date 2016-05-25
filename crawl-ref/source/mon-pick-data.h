@@ -166,8 +166,7 @@ static const pop_entry pop_orc[] =
   {  2,  4,    8, RISE, MONS_CYCLOPS },
   {  3,  4,    4, RISE, MONS_ETTIN },
   {  3,  4,    4, RISE, MONS_STONE_GIANT },
-  {  5,  7, 1000, FLAT, MONS_ORC },
-  {  5,  7,  192, FLAT, MONS_ORC_WARRIOR },
+  // the following entries populate "extra" floors
   {  5,  7,   25, FLAT, MONS_ORC_PRIEST },
   {  5,  7,   25, FLAT, MONS_ORC_WIZARD },
   {  5,  7,   25, FLAT, MONS_ORC_KNIGHT },
@@ -175,7 +174,6 @@ static const pop_entry pop_orc[] =
   {  5,  7,   25, FLAT, MONS_ORC_SORCERER },
   {  5,  7,   80, FLAT, MONS_ORC_WARLORD },
   {  5,  7,   40, FLAT, MONS_WARG },
-  {  5,  7,  280, FLAT, MONS_NO_MONSTER },
   {  5,  7,   30, FLAT, MONS_GNOLL },
   {  5,  7,   10, FLAT, MONS_GNOLL_SHAMAN },
   {  5,  7,   10, FLAT, MONS_GNOLL_SERGEANT },
