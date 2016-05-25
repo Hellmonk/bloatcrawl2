@@ -2069,13 +2069,6 @@ int items(bool allow_uniques,
         else
             item.quantity = 1 + random2avg(19, 2) + random2(item_level);
 
-        if (crawl_state.difficulty == DIFFICULTY_EASY)
-            item.quantity = item.quantity * 5 / 3;
-        if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-        	item.quantity = item.quantity * 4 / 3;
-        if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-            item.quantity = item.quantity * 2 / 3;
-
         break;
     }
 
