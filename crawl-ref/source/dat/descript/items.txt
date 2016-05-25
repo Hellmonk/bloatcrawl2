@@ -842,7 +842,7 @@ fire, cold, electricity, poison, and acid.
 %%%%
 potion of stamina
 
-Enchanted slime mold juice which gives you a burst of stamina.
+Enchanted slime mold juice which grants you a burst of stamina.
 %%%%
 potion of haste
 
