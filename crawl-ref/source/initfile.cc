@@ -2952,9 +2952,9 @@ void game_options::read_option_line(const string &str, bool runscript)
             exp_potion_on_each_floor = true;
             uniques_drop_exp_potions = true;
             exp_based_on_player_level = false;
-            exp_percent_from_monsters = 20;
+            exp_percent_from_monsters = 10;
             exp_percent_from_potions = 5;
-            exp_percent_from_new_branch_floor = 20;
+            exp_percent_from_new_branch_floor = 10;
         }
         else if (field == "serenity")
         {

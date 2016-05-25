@@ -2720,7 +2720,7 @@ const int _experience_for_this_floor(int multiplier) {
         if (Options.exp_based_on_player_level)
             exp = exp_needed(you.experience_level + 1, 0) - exp_needed(you.experience_level, 0);
         else
-            exp = exp_needed(how_deep, 0);
+            exp = exp_needed(min(1, how_deep * 2 / 3), 0);
 
         exp *= multiplier;
         exp = div_rand_round(exp, 100);
@@ -9512,7 +9512,7 @@ void summoned_monster_died(monster* mons, bool natural_death)
     int mp_recovered = mp_cost;
     if (natural_death)
     {
-        mp_recovered = div_rand_round(mp_recovered, 2);
+        mp_recovered = div_rand_round(mp_recovered, 3);
     }
     inc_mp(mp_recovered);
 
@@ -9769,27 +9769,33 @@ int _difficulty_mode_multiplier()
 {
     int x = 100;
 
-    if (!Options.exertion_disabled)
-        switch(crawl_state.difficulty)
-        {
-            // yes, easy mode actually gets a boost when exhausted...
-            case DIFFICULTY_EASY:
-                x = 120;
-                break;
-            case DIFFICULTY_STANDARD:
-                x = 110;
-                break;
-            case DIFFICULTY_CHALLENGE:
-                x = 100;
-                break;
-            case DIFFICULTY_NIGHTMARE:
-                x = 90;
-                break;
-            default:
-                // should not be possible
-                x = 100;
-                break;
-        }
+    switch(crawl_state.difficulty)
+    {
+        // yes, easy mode actually gets a boost when exhausted...
+        case DIFFICULTY_EASY:
+            x = 110;
+            break;
+        case DIFFICULTY_STANDARD:
+            x = 100;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            x = 90;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            x = 80;
+            break;
+        default:
+            // should not be possible
+            x = 100;
+            break;
+    }
+
+    if (Options.exertion_disabled)
+    {
+        // bring nightmare mode back to baseline if player isn't
+        // using exertion modes
+        x += 20;
+    }
 
     return x;
 }
@@ -9860,6 +9866,41 @@ int player_spellpower_modifier(int spellpower)
 
 int player_spellsuccess_modifier(int force)
 {
+    if (!Options.exertion_disabled)
+        switch(crawl_state.difficulty)
+        {
+            // yes, easy mode actually gets a boost when exhausted...
+            case DIFFICULTY_EASY:
+                force -= 0;
+                break;
+            case DIFFICULTY_STANDARD:
+                force -= 1;
+                break;
+            case DIFFICULTY_CHALLENGE:
+                force -= 2;
+                break;
+            case DIFFICULTY_NIGHTMARE:
+                force -= 3;
+                break;
+            default:
+                // should not be possible
+                force -= 1;
+                break;
+        }
+    else
+    {
+        // same as playing challenge mode with focus on
+        force += 3;
+    }
+
+    if (player_is_exhausted(true))
+        force -= 5;
+    else if (you.exertion == EXERT_FOCUS)
+        force += 5;
+
+    return force;
+
+    /* old way
     force *= _difficulty_mode_multiplier() * _difficulty_mode_multiplier();
 
     if (player_is_exhausted(true))
@@ -9868,6 +9909,7 @@ int player_spellsuccess_modifier(int force)
         force *= 2;
 
     return force / base_factor / base_factor;
+     */
 }
 
 int player_stealth_modifier(int stealth)
@@ -10155,7 +10197,11 @@ void _attempt_instant_rest_handle_no_visible_monsters()
 
 void attempt_instant_rest()
 {
-    if (you.monsters_recently_seen > 200 || you.monsters_recently_seen == 0)
+    if (
+        !player_in_hell()
+        && you.where_are_you != BRANCH_ABYSS
+        && (you.monsters_recently_seen > 200 || you.monsters_recently_seen == 0)
+        )
     {
         you.monsters_recently_seen = 0;
         ldprf(LD_INSTAREST, "Recently_seen hit 0. Checking for nearby monsters...", you.monsters_recently_seen);

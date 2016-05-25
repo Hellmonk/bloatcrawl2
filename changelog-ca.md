@@ -1,5 +1,14 @@
 ## v1.5.2
 
+* Simplified spell failure
+    * Now all failure factors (dex, spellcasting, spell schools) have equal effect on spell failure.
+        * So adding one point in dex *always* has exactly the same effect as adding one point in spellcasting or
+          one point in *average* spell schools (which if there are two schools for the spell, technically requires
+          2 points to have the same effect as one point of dex).
+    * Many spell failure rates are different now than might be expected. Don't think it's a bad thing just because
+      they are different. Instead, try out the difference and see how it works. If it creates a specific case that
+      limits player options more than it produces, then tell me and we'll tweak it. 
+
 * When summoning more than one monster with a single spell cast, all summons after the first only cost 1/3 as much. 
 
 * You can now disable exertion modes
@@ -8,13 +17,6 @@
 
 * Switching between exertion or quick modes costs 0 turns.
     
-* Spell failure is higher now
-    * It's still fairly easy to cast low level spells, but mid and high level spells will be considerably harder to pull
-      off.
-    * Blade Hands will barely be useable, for short bursts, around level 12 of a character (depending on many factors,
-      of course). It may well take until about level 15 before a player can keep blade hands up for extended lengths 
-      of time. 
-
 * Retreat simplification (instant rest)
     * Instead of making it optimal for a player to retreat and recharge after every monster killed, the player is 
       instantly fully recharged as soon as they have killed all nearby monsters. 

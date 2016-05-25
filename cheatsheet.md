@@ -11,16 +11,16 @@
 
 ## Spellcasting
 
-* Spell Power is increased by:
+* *Spell Power* is increased by:
     * Intelligence
     * Spell School Average
     
-* Spell Cost is reduced by:
+* *Spell Cost* is reduced by:
     * Intelligence
     * Spellcasting Skill
     * Sif's passive ability (proportional to Invocations)
 
-* Spell Failure Rate is reduced by:
+* *Spell Failure Rate* is reduced by:
     * Dexterity
     * Spellcasting Skill
     * Spell School Average
