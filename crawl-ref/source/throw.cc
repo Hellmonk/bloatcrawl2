@@ -478,7 +478,7 @@ void fire_thing(int item)
         item_def *const weapon = you.weapon();    
         if (weapon && weapon->isValid() && weapon->base_type == OBJ_WEAPONS)
         {
-            missile_type missileType = MI_TOMAHAWK;
+            missile_type missileType = MI_STONE;
             special_missile_type ego = SPMSL_FORBID_BRAND;
 
             switch(weapon->sub_type)
@@ -501,7 +501,7 @@ void fire_thing(int item)
                     break;
                 default:
                     // should not happen
-                    missileType = MI_TOMAHAWK;
+                    missileType = MI_STONE;
                     break;
             }
 
