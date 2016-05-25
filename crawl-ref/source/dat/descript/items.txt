@@ -827,7 +827,7 @@ potion of might
 A potion which greatly increases the strength and physical power of one who
 drinks it.
 %%%%
-potion of single mutation
+potion of weak mutation
 
 A potion which causes one random mutation.
 %%%%
@@ -839,6 +839,10 @@ potion of resistance
 
 A potion which grants temporary resistance to a variety of harmful effects:
 fire, cold, electricity, poison, and acid.
+%%%%
+potion of stamina
+
+Enchanted slime mold juice which grants you a burst of stamina.
 %%%%
 potion of haste
 
