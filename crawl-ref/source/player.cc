@@ -9607,7 +9607,7 @@ void player_evoked_something()
 
 void player_moved()
 {
-    if (you.peace < 100 && in_quick_mode())
+    if (you.peace < 200 && in_quick_mode())
         dec_sp(5, false, true);
 
     if (you.peace < 50 && you.airborne() && you.cancellable_flight())
