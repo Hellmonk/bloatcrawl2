@@ -562,7 +562,7 @@ static beam_type _chaos_beam_flavour(bolt* beam)
             10, BEAM_POISON,
             10, BEAM_NEG,
             10, BEAM_ACID,
-            10, BEAM_DAMNATION,
+            10, BEAM_HELLFIRE,
             10, BEAM_STICKY_FLAME,
             10, BEAM_SLOW,
             10, BEAM_HASTE,
@@ -711,7 +711,7 @@ void bolt::apply_beam_conducts()
     {
         switch (flavour)
         {
-        case BEAM_DAMNATION:
+        case BEAM_HELLFIRE:
             did_god_conduct(DID_UNHOLY, 2 + random2(3), god_cares());
             break;
         case BEAM_FIRE:
@@ -1737,8 +1737,8 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
         }
         break;
 
-    case BEAM_DAMNATION:
-        if (mons->res_damnation())
+    case BEAM_HELLFIRE:
+        if (mons->res_hellfire())
         {
             if (doFlavouredEffects)
             {
@@ -4188,7 +4188,7 @@ int bolt::apply_AC(const actor *victim, int hurted)
 {
     switch (flavour)
     {
-        case BEAM_DAMNATION:
+        case BEAM_HELLFIRE:
             ac_rule = AC_NONE; break;
         case BEAM_ELECTRICITY:
             ac_rule = AC_HALF; break;
@@ -5928,8 +5928,8 @@ int bolt::range_used_on_hit() const
         used = BEAM_STOP;
     else if (is_enchantment())
         used = (flavour == BEAM_DIGGING ? 0 : BEAM_STOP);
-        // Damnation stops for nobody!
-    else if (flavour == BEAM_DAMNATION)
+        // Hellfire stops for nobody!
+    else if (flavour == BEAM_HELLFIRE)
         used = 0;
         // Generic explosion.
     else if (is_explosion || is_big_cloud())
@@ -5964,12 +5964,12 @@ struct explosion_sfx
 
 // A map from origin_spells to special explosion info for each.
 const map<spell_type, explosion_sfx> spell_explosions = {
-    { SPELL_HURL_DAMNATION, {
-                                "The damnation unfurls!",
+    { SPELL_HURL_HELLFIRE, {
+                                "The hellfire unfurls!",
                                 "the wailing of the damned",
                             } },
-    { SPELL_CALL_DOWN_DAMNATION, {
-                                "The damnation unfurls!",
+    { SPELL_CALL_DOWN_HELLFIRE, {
+                                "The hellfire unfurls!",
                                 "the wailing of the damned",
                             } },
     { SPELL_FIREBALL, {
@@ -6614,7 +6614,7 @@ static string _beam_type_name(beam_type type)
         case BEAM_MIASMA:                return "miasma";
         case BEAM_SPORE:                 return "spores";
         case BEAM_POISON_ARROW:          return "poison arrow";
-        case BEAM_DAMNATION:             return "damnation";
+        case BEAM_HELLFIRE:             return "hellfire";
         case BEAM_STICKY_FLAME:          return "sticky fire";
         case BEAM_STEAM:                 return "steam";
         case BEAM_ENERGY:                return "energy";

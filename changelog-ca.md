@@ -189,17 +189,16 @@
         * +33% attack accuracy
         * +33% stealth
         * -15% spell failure chance or 1/2 failure chance, whichever is worse
-        * -3 MP per movement or attack or spell cast
+        * -5 MP per movement or attack or spell cast
 
 * Summary of Quick mode: (this can be on or off independently of the player's exertion mode)
     * Slow mode (normal state)
         * Movement delay is 1.1 for all species + slowing down effects, mutations, etc.
             * So a naga still is 1.3 speed because of the slow mutation they possess
     * Quick mode
-        * Does NOT cost a turn to activate, but DOES cost a turn to deactivate.
         * Movement delay is based on species, artifact properties, mutations, spells in effect (haste, swiftness)
             * Standard species movement delay in quick mode is 0.9
-        * -3 SP per movement
+        * -5 SP per movement
         * SP does not regenerate
 
 * Keyboard changes
@@ -212,17 +211,15 @@
         * 'E' turns on focus mode. (E...xamine?)
 
 * Spell failure
-    * Spell failure is reduced by intelligence AND dexterity, as well as spellcasting and spell schools.
+    * Spell failure is reduced by dexterity, as well as spellcasting and spell schools.
     * Significant simplification of failure calculations.
     * All spells are between 1 and 99% failure.
     * It's easier to get a level 9 spell down to 80% failure rate than in vanilla.
     * It's harder to get a level 9 spell down to 20% failure rate than in vanilla.
-    * If all spell factors are at 10, a player has a 50% spell failure rate for a level 5 spell.
-        * So if you've got 0 or 1 in 2 different factors, you can expect to have a hard time even casting level 1 spells.
 
 * New branch layout
     * Dungeon (15 floors)
-        * Orcish Mines  (4)
+        * Orcish Mines (7) (only 4 floors provide XP, 4th floor is boss level)
         * Lair (7)
             * Swamp (4)
             * Shoals (4)
