@@ -2554,3 +2554,40 @@ LROCKTILE:  wall_zot_magenta
 MAP
 .
 ENDMAP
+
+NAME:       hall_of_Zot_5
+DEPTH:      Zot:4
+CHANCE:     100%
+TAGS:       extra transparent allow_dup no_dump
+LFLOORCOL:  lightred
+LROCKCOL:   magenta
+LFLOORTILE: floor_rough_lightblue
+LROCKTILE:  wall_zot_magenta
+MAP
+.
+ENDMAP
+
+NAME:       hall_of_Zot_6
+DEPTH:      Zot:4
+CHANCE:     100%
+TAGS:       extra transparent allow_dup no_dump
+LFLOORCOL:  lightred
+LROCKCOL:   lightgrey
+LFLOORTILE: floor_rough_lightblue
+LROCKTILE:  wall_zot_magenta
+MAP
+.
+ENDMAP
+
+NAME:       hall_of_Zot_7
+DEPTH:      Zot:4
+CHANCE:     100%
+TAGS:       extra transparent allow_dup no_dump
+LFLOORCOL:  lightred
+LROCKCOL:   darkgrey
+LFLOORTILE: floor_rough_lightblue
+LROCKTILE:  wall_zot_red
+MAP
+.
+ENDMAP
+

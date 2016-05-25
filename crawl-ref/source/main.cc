@@ -1761,6 +1761,18 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
         }
       }
 
+    if (ygrd == DNGN_EXIT_ZOT && !down && !player_has_orb())
+    {
+        mpr("Sorry, you can't leave Zot without the orb.");
+        return false;
+    }
+
+    if (ygrd == DNGN_ENTER_ZOT && down && !yesno("Once you enter Zot, you can't return without the orb. Are you sure you want to enter?", false, 'n'))
+    {
+        canned_msg(MSG_OK);
+        return false;
+    }
+
     // Escaping.
     if (!down && ygrd == DNGN_EXIT_DUNGEON && !player_has_orb())
     {

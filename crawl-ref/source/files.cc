@@ -1289,7 +1289,7 @@ bool load_level(dungeon_feature_type stair_taken, load_mode_type load_mode,
     bool just_created_level = false;
 
     // GENERATE new level when the file can't be opened:
-    if (!you.save->has_chunk(level_name))
+    if (!you.save->has_chunk(level_name) || player_on_orb_run() && load_mode != LOAD_RESTART_GAME)
     {
         ASSERT(load_mode != LOAD_VISITOR);
         dprf("Generating new level for '%s'.", level_name.c_str());

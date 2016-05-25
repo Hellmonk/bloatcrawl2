@@ -1,5 +1,11 @@
 ## v1.5.2
 
+* Simplified orb run
+    * Once you enter Zot, you can't leave without the orb.
+    * Once you leave Zot with the orb, the game is over. You won!
+    * Zot is 7 floors now. 
+    * Depths is 7 floors now.
+
 * Simplified spell failure
     * Now all failure factors (dex, spellcasting, spell schools) have equal effect on spell failure.
         * So adding one point in dex *always* has exactly the same effect as adding one point in spellcasting or

@@ -51,7 +51,7 @@ const Branch branches[NUM_BRANCHES] =
         LIGHTGREY, BROWN,
         'C', { RUNE_CRYPT }, -3 },
 
-    { BRANCH_DEPTHS, BRANCH_DUNGEON, 15, 15, 5, 22,
+    { BRANCH_DEPTHS, BRANCH_DUNGEON, 15, 15, 7, 22,
         BFLAG_NONE,
         DNGN_ENTER_DEPTHS, DNGN_EXIT_DEPTHS,
         "Depths", "the Depths", "Depths",
@@ -225,7 +225,7 @@ const Branch branches[NUM_BRANCHES] =
         LIGHTGREY, BROWN,
         'T', {}, 0 },
 
-    { BRANCH_TOMB, BRANCH_DEPTHS, 3, 5, 4, 21,
+    { BRANCH_TOMB, BRANCH_DEPTHS, 3, 7, 4, 21,
         BFLAG_ISLANDED | BFLAG_DANGEROUS_END | BFLAG_NO_SHAFTS,
         DNGN_ENTER_TOMB, DNGN_EXIT_TOMB,
         "Tomb", "the Tomb of the Ancients", "Tomb",
@@ -273,7 +273,7 @@ const Branch branches[NUM_BRANCHES] =
         LIGHTGREY, BROWN, // set per-map
         '8', {}, 0 },
 
-    { BRANCH_ZIGGURAT, BRANCH_DEPTHS, 1, 5, 27, 27,
+    { BRANCH_ZIGGURAT, BRANCH_DEPTHS, 1, 7, 27, 27,
         BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
         DNGN_ENTER_ZIGGURAT, DNGN_EXIT_ZIGGURAT,
         "Ziggurat", "a ziggurat", "Zig",
@@ -281,7 +281,7 @@ const Branch branches[NUM_BRANCHES] =
         BLACK, BLACK,
         'Q', {}, 0 },
 
-    { BRANCH_ZOT, BRANCH_DEPTHS, 5, 5, 4, 27,
+    { BRANCH_ZOT, BRANCH_DEPTHS, 7, 7, 7, 27,
         BFLAG_DANGEROUS_END,
         DNGN_ENTER_ZOT, DNGN_EXIT_ZOT,
         "Zot", "the Realm of Zot", "Zot",
