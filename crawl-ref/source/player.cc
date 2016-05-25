@@ -2720,7 +2720,7 @@ const int _experience_for_this_floor(int multiplier) {
         if (Options.exp_based_on_player_level)
             exp = exp_needed(you.experience_level + 1, 0) - exp_needed(you.experience_level, 0);
         else
-            exp = exp_needed(how_deep, 0);
+            exp = exp_needed(min(1, how_deep * 2 / 3), 0);
 
         exp *= multiplier;
         exp = div_rand_round(exp, 100);
