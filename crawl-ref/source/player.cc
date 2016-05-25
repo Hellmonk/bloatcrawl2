@@ -4853,7 +4853,7 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
     if (you.species == SP_MOON_TROLL)
         hitp  = 80;
     else
-        hitp  = effective_xl() * 11 / 2 + 8;
+        hitp  = effective_xl() * 7 + 8;
 
     hitp += you.hp_max_adj_perm;
     /*
@@ -9546,7 +9546,10 @@ int player_summon_count()
 bool player_summoned_monster(spell_type spell, monster* mons, bool first)
 {
     bool success = true;
-    const int cost = spell_mp_freeze(spell);
+    int cost = spell_mp_freeze(spell);
+    if (!first)
+        cost = div_rand_round(cost, 3);
+
     mons->mp_freeze = cost;
     while (true)
     {
@@ -9604,7 +9607,7 @@ void player_evoked_something()
 
 void player_moved()
 {
-    if (you.peace < 100 && in_quick_mode())
+    if (you.peace < 200 && in_quick_mode())
         dec_sp(5, false, true);
 
     if (you.peace < 50 && you.airborne() && you.cancellable_flight())
@@ -9884,9 +9887,9 @@ int player_ev_modifier(int ev)
     ev *= _difficulty_mode_multiplier();
 
     if (player_is_exhausted(true))
-        ev = ev * 4 / 5;
+        ev = ev * 5 / 6;
     else if (you.exertion == EXERT_FOCUS && ev > 0)
-        ev = ev * 5 / 4 + 200;
+        ev = ev * 6 / 5 + 200;
 
     return ev / base_factor;
 }
@@ -9896,9 +9899,9 @@ int player_ac_modifier(int ac)
     ac *= _difficulty_mode_multiplier();
 
     if (player_is_exhausted(true))
-        ac = ac * 4 / 5;
+        ac = ac * 5 / 6;
     else if (you.exertion == EXERT_FOCUS && ac > 0)
-        ac = ac * 5 / 4 + 10000;
+        ac = ac * 6 / 5 + 10000;
 
     return ac / base_factor;
 }
@@ -9908,9 +9911,9 @@ int player_sh_modifier(int sh)
     sh *= _difficulty_mode_multiplier();
 
     if (player_is_exhausted(true))
-        sh = sh * 4 / 5;
+        sh = sh * 5 / 6;
     else if (you.exertion == EXERT_FOCUS && sh > 0)
-        sh = sh * 5 / 4 + 500;
+        sh = sh * 6 / 5 + 500;
 
     return sh / base_factor;
 }
@@ -9921,16 +9924,16 @@ int player_item_gen_modifier(int item_count)
     switch(crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            x = 150;
+            x = 120;
             break;
         case DIFFICULTY_STANDARD:
-            x = 130;
+            x = 110;
             break;
         case DIFFICULTY_CHALLENGE:
-            x = 115;
+            x = 100;
             break;
         case DIFFICULTY_NIGHTMARE:
-            x = 100;
+            x = 90;
             break;
         default:
             // should not be possible

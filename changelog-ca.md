@@ -1,5 +1,7 @@
 ## v1.5.2
 
+* When summoning more than one monster with a single spell cast, all summons after the first only cost 1/3 as much. 
+
 * You can now disable exertion modes
     * Put this in your rc file: exertion_disabled = true
     * Quick mode is still available, but focus and power modes won't be if you have this option set.

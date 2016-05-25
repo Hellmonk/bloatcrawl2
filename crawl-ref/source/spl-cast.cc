@@ -492,13 +492,14 @@ static int _apply_spellcasting_success_boosts(spell_type spell, int chance)
 int raw_spell_fail(spell_type spell)
 {
     const int spell_level = spell_difficulty(spell);
-    float resist = qpow(2, 3, 1, spell_level - 1, false);
+    float resist = qpow(5, 3, 1, spell_level - 1, false);
     const int armour_shield_penalty = player_armour_shield_spell_penalty();
     dprf("Armour+Shield spell failure penalty: %d", armour_shield_penalty);
-    resist = resist * (10 + armour_shield_penalty) / 10;
-    resist = resist * (10 + get_form()->spellcasting_penalty) / 10;
-    resist = resist * (player_mutation_level(MUT_ANTI_WIZARDRY) + 1);
-    resist = resist * (you.duration[DUR_VERTIGO] ? 1.5 : 1.0);
+    const float armour_penalty = (15 + armour_shield_penalty) / 15;
+    const float spellcasting_penalty = (15 + get_form()->spellcasting_penalty) / 15;
+    const float anti_wizardry = player_mutation_level(MUT_ANTI_WIZARDRY) + 1;
+    const float vertigo = you.duration[DUR_VERTIGO] ? 1.5 : 1.0;
+    resist *= armour_penalty * spellcasting_penalty * anti_wizardry * vertigo;
 
     const int wild = player_mutation_level(MUT_WILD_MAGIC);
     resist = qpow(resist, 3, 2, wild);
@@ -506,15 +507,14 @@ int raw_spell_fail(spell_type spell)
     // with all factors being 10, player should have a 50% chance of casting a level 5 spell
     float force = 5;
 
-    force *= (1.0 + you.dex(true)) / 2;
-    /* intelligence is no longer a factor
-    force *= (1.0 + you.intel(true)) / 2;
-     */
-    force *= (1.0 + you.skill(SK_SPELLCASTING)) / 2;
+    const float dex = (1.0 + you.dex(true)) / 2;
+    const float spellcasting = (1.0 + you.skill(SK_SPELLCASTING)) / 2;
 
     const spschools_type disciplines = get_spell_disciplines(spell);
     const int skill_factor = average_schools(disciplines);
-    force *= (1.0 + skill_factor) / 2;
+    const float spell_schools = (1.0 + skill_factor) / 2;
+
+    force *= dex * spellcasting * spell_schools;
 
     const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
     force = fpow(force, 3, 2, subdued);
@@ -528,8 +528,10 @@ int raw_spell_fail(spell_type spell)
 
     // Apply the effects of Vehumet and items of wizardry.
     resist = _apply_spellcasting_success_boosts(spell, resist);
-    force = player_spellsuccess_modifier(force);
+    if (Options.exertion_disabled)
+        resist /= 2;
 
+    force = player_spellsuccess_modifier(force);
 
     force = fmax(1, force);
     resist = fmax(1, resist);

@@ -838,12 +838,12 @@ static bool _in_ood_pack_protected_place()
     return env.turns_on_level < 1400 - env.absdepth0 * 117;
 }
 
-void _prep_summoned_monster(const mgen_data &mg, monster* &mon)
+void _prep_summoned_monster(const mgen_data &mg, monster* &mon, bool first = true)
 {
     if (mg.summon_type && mon && mon->is_player_summon())
     {
         const spell_type spell = (const spell_type) mg.summon_type;
-        if (!player_summoned_monster(spell, mon, true))
+        if (!player_summoned_monster(spell, mon, first))
         {
             mons_remove_from_grid(mon);
             mon->destroy_inventory();
@@ -853,7 +853,7 @@ void _prep_summoned_monster(const mgen_data &mg, monster* &mon)
     }
 }
 
-monster* place_monster(mgen_data mg, bool force_pos, bool dont_place)
+monster* place_monster(mgen_data mg, bool force_pos, bool dont_place, bool first)
 {
 #ifdef DEBUG_MON_CREATION
     mprf(MSGCH_DIAGNOSTICS, "in place_monster()");
@@ -1077,7 +1077,7 @@ monster* place_monster(mgen_data mg, bool force_pos, bool dont_place)
 
     monster* mon = _place_monster_aux(mg, 0, place, force_pos, dont_place);
 
-    _prep_summoned_monster(mg, mon);
+    _prep_summoned_monster(mg, mon, first);
 
     // Bail out now if we failed.
     if (!mon)
@@ -1193,7 +1193,7 @@ monster* place_monster(mgen_data mg, bool force_pos, bool dont_place)
             else if (mon->type == MONS_KIRKE)
                 member->props["kirke_band"] = true;
 
-            _prep_summoned_monster(band_template, member);
+            _prep_summoned_monster(band_template, member, false);
         }
     }
 
@@ -2954,7 +2954,7 @@ static monster_type _pick_zot_exit_defender()
         0);
 }
 
-monster* mons_place(mgen_data mg)
+monster* mons_place(mgen_data mg, bool first)
 {
 #ifdef DEBUG_MON_CREATION
     mprf(MSGCH_DIAGNOSTICS, "in mons_place()");
@@ -2999,7 +2999,7 @@ monster* mons_place(mgen_data mg)
                         : SAME_ATTITUDE(mg.summoner->as_monster());
     }
 
-    monster* creation = place_monster(mg);
+    monster* creation = place_monster(mg, first);
     if (!creation)
         return 0;
 
@@ -3325,7 +3325,7 @@ monster* create_monster(mgen_data mg, bool fail_msg, bool first)
 
     if (in_bounds(mg.pos))
     {
-        summd = mons_place(mg);
+        summd = mons_place(mg, first);
         // If the arena vetoed the placement then give no fail message.
         if (crawl_state.game_is_arena())
             fail_msg = false;
