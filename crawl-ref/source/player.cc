@@ -9546,7 +9546,10 @@ int player_summon_count()
 bool player_summoned_monster(spell_type spell, monster* mons, bool first)
 {
     bool success = true;
-    const int cost = spell_mp_freeze(spell);
+    int cost = spell_mp_freeze(spell);
+    if (!first)
+        cost = div_rand_round(cost, 3);
+
     mons->mp_freeze = cost;
     while (true)
     {
