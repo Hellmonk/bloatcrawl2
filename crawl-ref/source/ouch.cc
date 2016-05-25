@@ -158,7 +158,7 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         }
         break;
 
-    case BEAM_DAMNATION:
+    case BEAM_HELLFIRE:
         break; // sucks to be you (:
 
     case BEAM_COLD:

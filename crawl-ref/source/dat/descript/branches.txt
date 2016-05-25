@@ -85,7 +85,7 @@ every noise echoes worryingly, violating the overbearing silence of the grave.
 %%%%
 Tomb
 
-The Tomb of the Ancients is a place of damnation, of horrors animated by the
+The Tomb of the Ancients is a place of hellfire, of horrors animated by the
 vilest necromancy. The list of those who have returned from this place of pure
 death is exceedingly short.
 %%%%
@@ -104,7 +104,7 @@ opposing them.
 %%%%
 Gehenna
 
-Gehenna is a realm of lava, flames and damnation. Those who linger will have
+Gehenna is a realm of lava, flames and hellfire. Those who linger will have
 fire and brimstone rained down upon them.
 %%%%
 Cocytus

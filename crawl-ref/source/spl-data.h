@@ -494,14 +494,14 @@ static const struct spell_desc spelldata[] =
 },
 
 {
-    SPELL_CALL_DOWN_DAMNATION, "Call Down Damnation",
+    SPELL_CALL_DOWN_HELLFIRE, "Call Down Hellfire",
     SPTYP_CONJURATION,
     SPFLAG_TARGET | SPFLAG_AREA | SPFLAG_UNHOLY | SPFLAG_NEEDS_TRACER,
     9,
     200,
     LOS_RADIUS, LOS_RADIUS,
     9, 0,
-    TILEG_CALL_DOWN_DAMNATION,
+    TILEG_CALL_DOWN_HELLFIRE,
 },
 
 {
@@ -1708,7 +1708,7 @@ static const struct spell_desc spelldata[] =
 },
 
 {
-    SPELL_HURL_DAMNATION, "Hurl Damnation",
+    SPELL_HURL_HELLFIRE, "Hurl Hellfire",
     SPTYP_CONJURATION,
     SPFLAG_DIR_OR_TARGET | SPFLAG_UNHOLY | SPFLAG_MONSTER | SPFLAG_NEEDS_TRACER,
     // plus DS ability, staff of Dispater & Sceptre of Asmodeus
@@ -1716,7 +1716,7 @@ static const struct spell_desc spelldata[] =
     200,
     6, 6,
     9, 0,
-    TILEG_HURL_DAMNATION,
+    TILEG_HURL_HELLFIRE,
 },
 
 #if TAG_MAJOR_VERSION == 34

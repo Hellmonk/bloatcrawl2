@@ -261,7 +261,7 @@ enum ability_type
 
     // Species-specific abilities.
     // Demonspawn-only
-    ABIL_DAMNATION,
+    ABIL_HELLFIRE,
     // Tengu, Draconians
     ABIL_FLY,
 #if TAG_MAJOR_VERSION == 34
@@ -612,7 +612,7 @@ enum beam_type                  // bolt::flavour
 
     BEAM_SPORE,
     BEAM_POISON_ARROW,
-    BEAM_DAMNATION,
+    BEAM_HELLFIRE,
     BEAM_STICKY_FLAME,
     BEAM_STEAM,
     BEAM_ENERGY,
@@ -3712,7 +3712,7 @@ enum mutation_type
     MUT_FLAME_CLOUD_IMMUNITY,
 #endif
     MUT_HERBIVOROUS,
-    MUT_HURL_DAMNATION,
+    MUT_HURL_HELLFIRE,
 
     MUT_FAST,
     MUT_FAST_METABOLISM,
@@ -4353,7 +4353,7 @@ enum spell_type
     SPELL_STING,
     SPELL_SUBLIMATION_OF_BLOOD,
     SPELL_TUKIMAS_DANCE,
-    SPELL_HURL_DAMNATION,
+    SPELL_HURL_HELLFIRE,
     SPELL_SUMMON_DEMON,
 #if TAG_MAJOR_VERSION == 34
     SPELL_DEMONIC_HORDE,
@@ -4442,7 +4442,7 @@ enum spell_type
     SPELL_GOLUBRIAS_PASSAGE,
 
     // Mostly monster-only spells after this point:
-    SPELL_CALL_DOWN_DAMNATION,
+    SPELL_CALL_DOWN_HELLFIRE,
 #if TAG_MAJOR_VERSION == 34
     SPELL_VAMPIRE_SUMMON,
 #endif
@@ -4814,7 +4814,7 @@ enum zap_type
     ZAP_DISPEL_UNDEAD,
     ZAP_BANISHMENT,
     ZAP_STING,
-    ZAP_DAMNATION,
+    ZAP_HELLFIRE,
     ZAP_IRON_SHOT,
     ZAP_STONE_ARROW,
     ZAP_SHOCK,

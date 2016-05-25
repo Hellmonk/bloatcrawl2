@@ -399,7 +399,7 @@ static bool _is_appropriate_spell(spell_type spell, const actor* target)
     {
         switch (spell)
         {
-        case SPELL_CALL_DOWN_DAMNATION:
+        case SPELL_CALL_DOWN_HELLFIRE:
         case SPELL_SMITING:
         case SPELL_HAUNT:
         case SPELL_FIRE_STORM:

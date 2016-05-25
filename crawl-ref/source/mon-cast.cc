@@ -617,11 +617,11 @@ bolt mons_spell_beam(monster* mons, spell_type spell_cast, int power,
         beam.foe_ratio = random_range(40, 55);
         break;
 
-    case SPELL_CALL_DOWN_DAMNATION:
-        beam.aux_source   = "damnation";
-        beam.name         = "damnation";
+    case SPELL_CALL_DOWN_HELLFIRE:
+        beam.aux_source   = "hellfire";
+        beam.name         = "hellfire";
         beam.ex_size      = 1;
-        beam.flavour      = BEAM_DAMNATION;
+        beam.flavour      = BEAM_HELLFIRE;
         beam.is_explosion = true;
         beam.colour       = LIGHTRED;
         beam.aux_source.clear();
@@ -738,13 +738,13 @@ bolt mons_spell_beam(monster* mons, spell_type spell_cast, int power,
         beam.flavour    = BEAM_MMISSILE;
         break;
 
-    case SPELL_HURL_DAMNATION:           // fiend's damnation
-        beam.name         = "damnation";
-        beam.aux_source   = "damnation";
+    case SPELL_HURL_HELLFIRE:           // fiend's hellfire
+        beam.name         = "hellfire";
+        beam.aux_source   = "hellfire";
         beam.colour       = LIGHTRED;
         beam.damage       = dice_def(3, 20);
         beam.hit          = 24;
-        beam.flavour      = BEAM_DAMNATION;
+        beam.flavour      = BEAM_HELLFIRE;
         beam.pierce       = true; // needed?
         beam.is_explosion = true;
         break;
@@ -2188,7 +2188,7 @@ static bool _ms_low_hitpoint_cast(monster* mon, mon_spell_slot slot)
     case SPELL_CONFUSE:
     case SPELL_DRAIN_LIFE:
     case SPELL_BANISHMENT:
-    case SPELL_CALL_DOWN_DAMNATION:
+    case SPELL_CALL_DOWN_HELLFIRE:
     case SPELL_FIREBALL:
     case SPELL_AIRSTRIKE:
     case SPELL_IOOD:

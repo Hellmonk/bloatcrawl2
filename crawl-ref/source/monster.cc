@@ -3827,7 +3827,7 @@ bool monster::is_insubstantial() const
     return mons_class_flag(type, M_INSUBSTANTIAL);
 }
 
-bool monster::res_damnation() const
+bool monster::res_hellfire() const
 {
     return get_mons_resist(this, MR_RES_FIRE) >= 4; // XXX: ???
 }

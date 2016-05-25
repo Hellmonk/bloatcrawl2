@@ -1414,7 +1414,7 @@ Nemelex Xobeh player ghost
 
 @The_monster@ says @to_foe@, "I will deal out your death!"
 
-@The_monster@ tells you, "It seems you just drew Damnation."
+@The_monster@ tells you, "It seems you just drew Hellfire."
 %%%%
 Okawaru player ghost
 
@@ -4926,7 +4926,6 @@ VISUAL:@The_monster@ weaves an illusion.
 _Mara_rare_
 
 # Lord of Light
-@The_monster@ screams, "Tenfold be your damnation!"
 
 @The_monster@'s features momentarily become yours. "Wouldst slay thyself?"
 
