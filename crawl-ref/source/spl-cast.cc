@@ -514,13 +514,13 @@ int raw_spell_fail(spell_type spell)
     x += spellcasting_penalty * -0.3;
     x += anti_wizardry * -3;
     x += vertigo * -3;
-    x += wild * -5;
-    x += subdued * 5;
+    x += wild * -10;
+    x += subdued * 10;
     x += dex;
     x += spellcasting_skill / 10.0;
     x += school_average / 10.0;
     x += high_council;
-    x += player_success;
+    x += player_success * 2;
     x += success_boosts;
 
     int fail_chance = 100 * pow(15.0 / 16, abs(x)) / 2;
