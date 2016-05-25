@@ -6757,8 +6757,8 @@ bool shoot_through_monster(const bolt& beam, const monster* victim)
            || originator->is_player()
                /*
                && testbits(victim->flags, MF_DEMONIC_GUARDIAN)
-                */
               && victim->mp_freeze
+                */
               && !beam.is_enchantment()
               && beam.origin_spell != SPELL_CHAIN_LIGHTNING
               && (mons_atts_aligned(victim->attitude, origin_attitude)
