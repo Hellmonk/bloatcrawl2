@@ -9512,7 +9512,7 @@ void summoned_monster_died(monster* mons, bool natural_death)
     int mp_recovered = mp_cost;
     if (natural_death)
     {
-        mp_recovered = div_rand_round(mp_recovered, 2);
+        mp_recovered = div_rand_round(mp_recovered, 3);
     }
     inc_mp(mp_recovered);
 
