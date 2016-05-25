@@ -205,8 +205,8 @@ Experience modes
 v1.2.2
 
 Human
-   * exp apt +2
-   * fighting and spellcasting apt +2
+   * exp apt +1
+   * fighting and spellcasting apt +1
    * can crosstrain more skills
        * fire, ice, earth, air
        * invo, evo, spellcasting
@@ -323,17 +323,17 @@ Mummy
    * can worship Ash, but their curse immunity leaves
 
 Felid
-   * can wear 4 rings. Why not? They have four identical "hands"... I find that this helps to balance their severe limitations a bit better and make the early game a bit more doable.
-   * move faster as they advance in levels.
+   * can wear 4 rings.
+   * Move speed (in Quick Mode) goes up as they advance in levels.
    * have exactly 9 lives right at the beginning, which never increases. How many lives can you end up with at the end of the game?
-   * no loss of experience when death happens
+   * no loss of experience on death
 
 Ghouls
    * ghouls automatically eat some of the corpses they kill to heal and cure rot
 
 Halfling
-   * added wild magic mutation at the level 8, 16, and 24, making it much more difficult for them to cast spells, but they are quite powerful when they do.
-   * added an extraordinary level of magic resistance
+   * wild magic at level 8, 16, and 24, making it more difficult to cast spells, but those spells are quite powerful.
+   * an extraordinary level of magic resistance
    * improved conjuration apt from -2 to +2
 
 Kobold
@@ -343,8 +343,9 @@ Kobold
 
 Sludge Elf
    * brought back because I needed a species to experiment with.
-   * added subdued magic 3 mutation at the beginning, making it very easy for them to cast spells, but they are quite weak as a result. This enables them to cast high level, low power requirement spells early or even in heavy armour, that would be impossible for others.
-   * their starting attributes are unusually low.
+   * Nasty family history - which means they can worship Beogh.
+   * subdued magic 3, making it very easy to cast spells, but fidh quite low spellpower. This enables them to cast high level, low power requirement spells early or even in heavy armour.
+   * unusually low starting attributes
    * they have low mana.
 
 Naga
