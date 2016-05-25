@@ -491,7 +491,52 @@ static int _apply_spellcasting_success_boosts(spell_type spell, int chance)
  */
 int raw_spell_fail(spell_type spell)
 {
+    float x = 20;
+
     const int spell_level = spell_difficulty(spell);
+    const int armour_shield_penalty = player_armour_shield_spell_penalty();
+    const int spellcasting_penalty = get_form()->spellcasting_penalty;
+    const int anti_wizardry = player_mutation_level(MUT_ANTI_WIZARDRY);
+    const int vertigo = you.duration[DUR_VERTIGO] ? 1 : 0;
+    const int wild = player_mutation_level(MUT_WILD_MAGIC);
+    const int dex = you.dex(true);
+    const int spellcasting_skill = you.skill(SK_SPELLCASTING, 10);
+    const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
+    const int high_council = player_equip_unrand(UNRAND_HIGH_COUNCIL) ? 5 : 0;
+    const int player_success = player_spellsuccess_modifier(0);
+    const float success_boosts = 10 - _apply_spellcasting_success_boosts(spell, 10);
+
+    const spschools_type disciplines = get_spell_disciplines(spell);
+    const int school_average = average_schools(disciplines, 10);
+
+    x += spell_level * -10;
+    x += armour_shield_penalty * -0.05;
+    x += spellcasting_penalty * -0.3;
+    x += anti_wizardry * -3;
+    x += vertigo * -3;
+    x += wild * -5;
+    x += subdued * 5;
+    x += dex;
+    x += spellcasting_skill / 10.0;
+    x += school_average / 10.0;
+    x += high_council;
+    x += player_success;
+    x += success_boosts;
+
+    int fail_chance = 100 * pow(15.0 / 16, abs(x)) / 2;
+
+    if (x < 0)
+        fail_chance = 100 - x;
+
+    if (fail_chance > 99)
+        fail_chance = 99;
+
+    if (fail_chance < 1)
+        fail_chance = 1;
+
+    return fail_chance;
+
+    /* old way
     float resist = qpow(5, 3, 1, spell_level - 1, false);
     const int armour_shield_penalty = player_armour_shield_spell_penalty();
     dprf("Armour+Shield spell failure penalty: %d", armour_shield_penalty);
@@ -507,13 +552,13 @@ int raw_spell_fail(spell_type spell)
     // with all factors being 10, player should have a 50% chance of casting a level 5 spell
     float force = 5;
 
-    const float dex = (1.0 + you.dex(true)) / 2;
+    const float dex = (2.0 + you.dex(true)) / 6;
     const int spellcasting_skill = you.skill(SK_SPELLCASTING, 10);
-    const float spellcasting = (1.0 + spellcasting_skill) / 20;
+    const float spellcasting = (10.0 + spellcasting_skill) / 20;
 
     const spschools_type disciplines = get_spell_disciplines(spell);
     const int skill_factor = average_schools(disciplines, 10);
-    const float spell_schools = (1.0 + skill_factor) / 20;
+    const float spell_schools = (10.0 + skill_factor) / 20;
 
     force *= dex * spellcasting * spell_schools;
 
@@ -551,6 +596,7 @@ int raw_spell_fail(spell_type spell)
         fail_chance = 1;
 
     return fail_chance;
+     */
 }
 
 int stepdown_spellpower(int power)

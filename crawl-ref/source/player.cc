@@ -9769,27 +9769,33 @@ int _difficulty_mode_multiplier()
 {
     int x = 100;
 
-    if (!Options.exertion_disabled)
-        switch(crawl_state.difficulty)
-        {
-            // yes, easy mode actually gets a boost when exhausted...
-            case DIFFICULTY_EASY:
-                x = 120;
-                break;
-            case DIFFICULTY_STANDARD:
-                x = 110;
-                break;
-            case DIFFICULTY_CHALLENGE:
-                x = 100;
-                break;
-            case DIFFICULTY_NIGHTMARE:
-                x = 90;
-                break;
-            default:
-                // should not be possible
-                x = 100;
-                break;
-        }
+    switch(crawl_state.difficulty)
+    {
+        // yes, easy mode actually gets a boost when exhausted...
+        case DIFFICULTY_EASY:
+            x = 110;
+            break;
+        case DIFFICULTY_STANDARD:
+            x = 100;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            x = 90;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            x = 80;
+            break;
+        default:
+            // should not be possible
+            x = 100;
+            break;
+    }
+
+    if (Options.exertion_disabled)
+    {
+        // bring nightmare mode back to baseline if player isn't
+        // using exertion modes
+        x += 20;
+    }
 
     return x;
 }
@@ -9860,6 +9866,41 @@ int player_spellpower_modifier(int spellpower)
 
 int player_spellsuccess_modifier(int force)
 {
+    if (!Options.exertion_disabled)
+        switch(crawl_state.difficulty)
+        {
+            // yes, easy mode actually gets a boost when exhausted...
+            case DIFFICULTY_EASY:
+                force -= 0;
+                break;
+            case DIFFICULTY_STANDARD:
+                force -= 1;
+                break;
+            case DIFFICULTY_CHALLENGE:
+                force -= 2;
+                break;
+            case DIFFICULTY_NIGHTMARE:
+                force -= 3;
+                break;
+            default:
+                // should not be possible
+                force -= 1;
+                break;
+        }
+    else
+    {
+        // same as playing challenge mode with focus on
+        force += 3;
+    }
+
+    if (player_is_exhausted(true))
+        force -= 5;
+    else if (you.exertion == EXERT_FOCUS)
+        force += 5;
+
+    return force;
+
+    /* old way
     force *= _difficulty_mode_multiplier() * _difficulty_mode_multiplier();
 
     if (player_is_exhausted(true))
@@ -9868,6 +9909,7 @@ int player_spellsuccess_modifier(int force)
         force *= 2;
 
     return force / base_factor / base_factor;
+     */
 }
 
 int player_stealth_modifier(int stealth)
