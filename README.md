@@ -210,7 +210,9 @@ Human
    * can crosstrain more skills
        * fire, ice, earth, air
        * invo, evo, spellcasting
+       * charms & hexes
    * god wrath lasts 1/4 as long, since the gods understand how fickle humans can be.
+   * Unfocused DNA (more likely to get new muts than strenghten existing muts)
 
 Draconian
    * Pale Draconian
@@ -344,7 +346,7 @@ Kobold
 Sludge Elf
    * brought back because I needed a species to experiment with.
    * Nasty family history - which means they can worship Beogh.
-   * subdued magic 3, making it very easy to cast spells, but fidh quite low spellpower. This enables them to cast high level, low power requirement spells early or even in heavy armour.
+   * subdued magic 3, making it very easy to cast spells, but with quite low spellpower. This enables them to cast high level, low power requirement spells early or even in heavy armour.
    * unusually low starting attributes
    * they have low mana.
 
