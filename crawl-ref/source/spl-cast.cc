@@ -508,11 +508,12 @@ int raw_spell_fail(spell_type spell)
     float force = 5;
 
     const float dex = (1.0 + you.dex(true)) / 2;
-    const float spellcasting = (1.0 + you.skill(SK_SPELLCASTING)) / 2;
+    const int spellcasting_skill = you.skill(SK_SPELLCASTING, 10);
+    const float spellcasting = (1.0 + spellcasting_skill) / 20;
 
     const spschools_type disciplines = get_spell_disciplines(spell);
-    const int skill_factor = average_schools(disciplines);
-    const float spell_schools = (1.0 + skill_factor) / 2;
+    const int skill_factor = average_schools(disciplines, 10);
+    const float spell_schools = (1.0 + skill_factor) / 20;
 
     force *= dex * spellcasting * spell_schools;
 
