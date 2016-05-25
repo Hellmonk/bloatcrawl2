@@ -9924,16 +9924,16 @@ int player_item_gen_modifier(int item_count)
     switch(crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            x = 150;
+            x = 120;
             break;
         case DIFFICULTY_STANDARD:
-            x = 130;
+            x = 110;
             break;
         case DIFFICULTY_CHALLENGE:
-            x = 115;
+            x = 100;
             break;
         case DIFFICULTY_NIGHTMARE:
-            x = 100;
+            x = 90;
             break;
         default:
             // should not be possible
