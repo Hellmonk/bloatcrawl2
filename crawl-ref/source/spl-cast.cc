@@ -491,7 +491,7 @@ static int _apply_spellcasting_success_boosts(spell_type spell, int chance)
  */
 int raw_spell_fail(spell_type spell)
 {
-    float x = 0;
+    float x = -10;
 
     const int spell_level = spell_difficulty(spell);
     const int armour_shield_penalty = player_armour_shield_spell_penalty();
