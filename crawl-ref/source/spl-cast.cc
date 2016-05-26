@@ -622,7 +622,7 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool rod)
         else
             power += 20;
 
-        power -= 40;
+        power -= 30;
 
         // Brilliance boosts spell power a bit (equivalent to three
         // spell school levels).
@@ -647,11 +647,12 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool rod)
             power -= 10;
         }
 
-        power = fpow(80, 2, 1, power / 20);
+        power = fpow(80, 2, 1, power / 20) - 30;
     }
 
     power = player_spellpower_modifier(power);
     power = min((int)power, 999);
+    power = max(0, (int)power);
 
     return power;
 }
