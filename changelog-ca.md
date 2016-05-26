@@ -2,6 +2,7 @@
 
 * Fighting skill changed
     * Attack speed now is only influenced by fighting skill and dex. 
+    * Weapon damage is no longer affected by fighting skill. 
 
 * Simplified spell power calculations
     * Like spell failure, spell power now has equalized factors. 
