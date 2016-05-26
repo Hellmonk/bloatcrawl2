@@ -802,7 +802,7 @@ static void _rot_ghoul_players()
         resilience = resilience * 3 / 2;
 
     // Faster rotting when tired.
-    if (player_is_tired(true))
+    if (player_is_exhausted(true))
     {
         resilience *= max(10, 100 * get_sp() / get_sp_max());
         resilience = div_rand_round(resilience, 100);

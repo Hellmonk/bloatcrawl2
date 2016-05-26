@@ -2814,7 +2814,7 @@ void toxic_radiance_effect(actor* agent, int mult)
 {
     int pow;
     if (agent->is_player())
-        pow = calc_spell_power(SPELL_OLGREBS_TOXIC_RADIANCE, true);
+        pow = calc_spell_power(SPELL_OLGREBS_TOXIC_RADIANCE, true, false);
     else
         pow = agent->as_monster()->get_hit_dice() * 8;
 
@@ -2919,7 +2919,7 @@ void handle_searing_ray()
     }
 
     const zap_type zap = zap_type(ZAP_SEARING_RAY_I + (you.attribute[ATTR_SEARING_RAY]-1));
-    const int pow = calc_spell_power(SPELL_SEARING_RAY, true);
+    const int pow = calc_spell_power(SPELL_SEARING_RAY, true, false);
 
     bolt beam;
     beam.thrower = KILL_YOU_MISSILE;

@@ -585,7 +585,7 @@ void floor_transition(dungeon_feature_type how,
 
     const coord_def stair_pos = you.pos();
 
-    if (how == DNGN_EXIT_DUNGEON)
+    if (how == DNGN_EXIT_DUNGEON || how == DNGN_EXIT_ZOT)
     {
         you.depth = 0;
         mpr("You have escaped!");

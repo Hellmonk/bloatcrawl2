@@ -370,6 +370,10 @@ void spawn_random_monsters()
     else if (!player_in_starting_abyss())
         rate = _scale_spawn_parameter(rate, 6 * rate, 0);
 
+    // scale back the orb run monster gen since floors are already being populated with monsters
+    if (player_on_orb_run())
+        rate *= 3;
+
     if (rate == 0)
     {
         dprf(DIAG_MONPLACE, "random monster gen scaled off, %d turns on level",
@@ -2999,7 +3003,7 @@ monster* mons_place(mgen_data mg, bool first)
                         : SAME_ATTITUDE(mg.summoner->as_monster());
     }
 
-    monster* creation = place_monster(mg, first);
+    monster* creation = place_monster(mg, false, false, first);
     if (!creation)
         return 0;
 

@@ -51,7 +51,7 @@ const Branch branches[NUM_BRANCHES] =
         LIGHTGREY, BROWN,
         'C', { RUNE_CRYPT }, -3 },
 
-    { BRANCH_DEPTHS, BRANCH_DUNGEON, 15, 15, 5, 22,
+    { BRANCH_DEPTHS, BRANCH_DUNGEON, 13, 13, 7, 22,
         BFLAG_NONE,
         DNGN_ENTER_DEPTHS, DNGN_EXIT_DEPTHS,
         "Depths", "the Depths", "Depths",
@@ -67,7 +67,7 @@ const Branch branches[NUM_BRANCHES] =
         CYAN, BROWN,
         'I', { RUNE_DIS }, 0 },
 
-    { BRANCH_DUNGEON, NUM_BRANCHES, 0, 0, 15, 0,
+    { BRANCH_DUNGEON, NUM_BRANCHES, 0, 0, 13, 0,
         BFLAG_NONE,
         NUM_FEATURES, DNGN_EXIT_DUNGEON,
         "Dungeon", "the Dungeon", "D",
@@ -91,7 +91,7 @@ const Branch branches[NUM_BRANCHES] =
         WHITE, ETC_ELVEN_BRICK,
         'E', { RUNE_ELF }, 0 },
 
-    { BRANCH_FOREST, BRANCH_DUNGEON, 12, 15, 7, 13,
+    { BRANCH_FOREST, BRANCH_DUNGEON, 11, 13, 7, 13,
         BFLAG_SPOTTY,
         DNGN_ENTER_FOREST, DNGN_EXIT_FOREST,
         "Forest", "the Enchanted Forest", "Forest",
@@ -127,7 +127,7 @@ const Branch branches[NUM_BRANCHES] =
         BLACK, BLACK,
         '0', {}, 0 },
 
-    { BRANCH_LAIR, BRANCH_DUNGEON, 7, 11, 7, 10,
+    { BRANCH_LAIR, BRANCH_DUNGEON, 7, 10, 7, 10,
         BFLAG_NONE,
         DNGN_ENTER_LAIR, DNGN_EXIT_LAIR,
         "Lair", "the Lair of Beasts", "Lair",
@@ -135,7 +135,7 @@ const Branch branches[NUM_BRANCHES] =
         GREEN, BROWN,
         'L', {}, 4 },
 
-    { BRANCH_ORC, BRANCH_DUNGEON, 6, 10, 7, 8,
+    { BRANCH_ORC, BRANCH_DUNGEON, 6, 13, 7, 8,
         BFLAG_SPOTTY,
         DNGN_ENTER_ORC, DNGN_EXIT_ORC,
         "Orcish Mines", "the Orcish Mines", "Orc",
@@ -225,7 +225,7 @@ const Branch branches[NUM_BRANCHES] =
         LIGHTGREY, BROWN,
         'T', {}, 0 },
 
-    { BRANCH_TOMB, BRANCH_DEPTHS, 3, 5, 4, 21,
+    { BRANCH_TOMB, BRANCH_DEPTHS, 3, 7, 4, 21,
         BFLAG_ISLANDED | BFLAG_DANGEROUS_END | BFLAG_NO_SHAFTS,
         DNGN_ENTER_TOMB, DNGN_EXIT_TOMB,
         "Tomb", "the Tomb of the Ancients", "Tomb",
@@ -241,7 +241,7 @@ const Branch branches[NUM_BRANCHES] =
         DARKGREY, BLUE,
         '2', {}, 0 },
 
-    { BRANCH_VAULTS, BRANCH_DUNGEON, 13, 15, 4, 19,
+    { BRANCH_VAULTS, BRANCH_DUNGEON, 12, 13, 4, 19,
         BFLAG_DANGEROUS_END,
         DNGN_ENTER_VAULTS, DNGN_EXIT_VAULTS,
         "Vaults", "the Vaults", "Vaults",
@@ -273,7 +273,7 @@ const Branch branches[NUM_BRANCHES] =
         LIGHTGREY, BROWN, // set per-map
         '8', {}, 0 },
 
-    { BRANCH_ZIGGURAT, BRANCH_DEPTHS, 1, 5, 27, 27,
+    { BRANCH_ZIGGURAT, BRANCH_DEPTHS, 1, 7, 27, 27,
         BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
         DNGN_ENTER_ZIGGURAT, DNGN_EXIT_ZIGGURAT,
         "Ziggurat", "a ziggurat", "Zig",
@@ -281,7 +281,7 @@ const Branch branches[NUM_BRANCHES] =
         BLACK, BLACK,
         'Q', {}, 0 },
 
-    { BRANCH_ZOT, BRANCH_DEPTHS, 5, 5, 4, 27,
+    { BRANCH_ZOT, BRANCH_DEPTHS, 7, 7, 7, 27,
         BFLAG_DANGEROUS_END,
         DNGN_ENTER_ZOT, DNGN_EXIT_ZOT,
         "Zot", "the Realm of Zot", "Zot",

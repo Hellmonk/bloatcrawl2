@@ -8,6 +8,8 @@
 * 'e' power exertion mode
 * 'E' focus exertion mode
 * 'c' cancel exertion mode (go back to normal mode)
+* 'I' consumable inventory (where your potions, scrolls, and books are)
+* '^d' drop something from consumable inventory
 
 ## Spellcasting
 

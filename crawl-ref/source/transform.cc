@@ -2181,6 +2181,7 @@ bool is_self_transforming_spell(spell_type spell)
     return get_spell_disciplines(spell) & SPTYP_TRANSMUTATION
            && spell != SPELL_STICKS_TO_SNAKES
            && spell != SPELL_PETRIFY
+           && spell != SPELL_IGNITE_POISON
         ;
 }
 

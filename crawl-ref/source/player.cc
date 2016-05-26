@@ -2936,8 +2936,9 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
     }
 }
 
-void _handle_insight_inv(FixedVector<item_def, 52> *inv)
+bool _handle_insight_inv(FixedVector<item_def, 52> *inv)
 {// top to bottom
+    bool had_insight = false;
     // this give the player the option to move items to the top so that they are more likely to be identified first
     for(item_def &item : *inv)
     {
@@ -2957,6 +2958,7 @@ void _handle_insight_inv(FixedVector<item_def, 52> *inv)
                 after = get_menu_colour_prefix_tags(item, DESC_A);
                 mprf(MSGCH_INTRINSIC_GAIN, "You gain insight into: %s", after.c_str());
                 deck_identify_first(item);
+                had_insight = true;
                 break;
             }
             else
@@ -2971,13 +2973,15 @@ void _handle_insight_inv(FixedVector<item_def, 52> *inv)
                     after_colored = get_menu_colour_prefix_tags(item, DESC_A);
                     if(before != after) {
                         mprf(MSGCH_INTRINSIC_GAIN, "You gain insight: %s -> %s", before.c_str(), after.c_str());
-                        more();
+                        had_insight = true;
                         break;
                     }
                 }
             }
         }
     }
+
+    return had_insight;
 }
 
 static void _handle_insight(int exp_gain)
@@ -2985,17 +2989,26 @@ static void _handle_insight(int exp_gain)
     const int skill_cost = calc_skill_cost(you.skill_cost_level);
     const int insight_gained = div_rand_round(exp_gain, skill_cost);
     you.attribute[ATTR_INSIGHT] += insight_gained * 20;
-    
+
+    bool do_more = false;
     while (you.attribute[ATTR_INSIGHT] > 100)
     {
         you.attribute[ATTR_INSIGHT] -= 100;
         
         int lev = player_mutation_level(MUT_INSIGHT);
         if (x_chance_in_y(1 << (lev * 2), 64)) {
-            _handle_insight_inv(&you.inv1);
-            _handle_insight_inv(&you.inv2);
+            if (_handle_insight_inv(&you.inv1))
+                do_more = true;
+        }
+
+        if (x_chance_in_y(1 << (lev * 2), 64)) {
+            if (_handle_insight_inv(&you.inv2))
+                do_more = true;
         }
     }
+
+    if (do_more)
+        more();
 }
 
 bool player_is_immune_to_curses()
@@ -4907,13 +4920,10 @@ int get_real_sp(bool include_items)
 {
     int max_sp = 100;
 
-    int boost = 0;
-    boost += player_mutation_level(MUT_HIGH_STAMINA);
-    boost -= player_mutation_level(MUT_LOW_STAMINA);
-    boost += you.wearing(EQ_RINGS, RING_STAMINA);
-    boost += you.scan_artefacts(ARTP_STAMINA);
-
-    max_sp = max_sp + 20 * boost;
+    max_sp += player_mutation_level(MUT_HIGH_STAMINA) * 20;
+    max_sp -= player_mutation_level(MUT_LOW_STAMINA) * 20;
+    max_sp += you.wearing(EQ_RINGS, RING_STAMINA) * 20;
+    max_sp += you.scan_artefacts(ARTP_STAMINA);
 
     max_sp = player_pool_modifier(max_sp);
     max_sp = max(max_sp, 20);
@@ -6555,7 +6565,7 @@ void player::ablate_deflection()
     bool did_something = false;
     if (attribute[ATTR_DEFLECT_MISSILES])
     {
-        const int power = calc_spell_power(SPELL_DEFLECT_MISSILES, true);
+        const int power = calc_spell_power(SPELL_DEFLECT_MISSILES, true, false);
         if (one_chance_in(2 + power / 8))
         {
             attribute[ATTR_DEFLECT_MISSILES] = 0;
@@ -6564,7 +6574,7 @@ void player::ablate_deflection()
     }
     else if (attribute[ATTR_REPEL_MISSILES])
     {
-        const int power = calc_spell_power(SPELL_REPEL_MISSILES, true);
+        const int power = calc_spell_power(SPELL_REPEL_MISSILES, true, false);
         if (one_chance_in(2 + power / 8))
         {
             attribute[ATTR_REPEL_MISSILES] = 0;
@@ -6743,7 +6753,7 @@ static int _bone_armour_bonus()
     if (!you.attribute[ATTR_BONE_ARMOUR])
         return 0;
 
-    const int power = calc_spell_power(SPELL_CIGOTUVIS_EMBRACE, true);
+    const int power = calc_spell_power(SPELL_CIGOTUVIS_EMBRACE, true, false);
     // rounding errors here, but not sure of a good way to avoid that.
     return you.attribute[ATTR_BONE_ARMOUR] * (50 + power);
 }
@@ -8426,7 +8436,6 @@ void player::increase_duration(duration_type dur, int turns, int cap, const char
     {
         const int sp_loss = turns;
         dec_sp(sp_loss);
-        duration[DUR_EXHAUSTED] = 0;
         return;
     }
 
@@ -8777,7 +8786,7 @@ void temperature_check()
 void temperature_increment(float degree)
 {
     // No warming up while you're exhausted!
-    if (you.duration[DUR_EXHAUSTED] || player_is_tired(true))
+    if (you.duration[DUR_EXHAUSTED])
         return;
 
     you.temperature += sqrt(degree);
@@ -9646,7 +9655,7 @@ void player_was_offensive()
 {
     if (you.current_form_spell != SPELL_NO_SPELL)
     {
-        if (_spell_fails(you.current_form_spell, 50))
+        if (_spell_fails(you.current_form_spell, 100))
         {
             you.current_form_spell_failure++;
             if (you.current_form_spell_failure == 2)
@@ -9675,9 +9684,9 @@ void player_after_long_safe_action(int turns)
 
 void player_after_each_turn()
 {
-    if (you.current_form_spell_failure && you.peace >= 200)
+    if (you.current_form_spell_failure && you.peace >= 200 && you.current_form_spell_failure > 0)
     {
-        mpr("You form becomes more stable.");
+        mpr("Your form becomes more stable.");
         you.current_form_spell_failure = 0;
     }
 
@@ -9715,6 +9724,9 @@ int spell_mp_cost(spell_type which_spell)
         cost = 0;
     else if (have_passive(passive_t::conserve_mp))
         cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
+
+    if (is_self_transforming_spell(which_spell))
+        cost *= 2;
 
     if (you.exertion != EXERT_NORMAL && you.peace < 50)
         cost *= 2;
@@ -10020,7 +10032,7 @@ int player_pool_modifier(int amount)
     switch (crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            percent = 150;
+            percent = 110;
             break;
         case DIFFICULTY_STANDARD:
             percent = 100;
@@ -10115,11 +10127,7 @@ void _instant_rest()
     if (player_regenerates_mp())
         inc_mp(get_mp_max() - get_mp());
 
-    if (you.current_form_spell_failure > 0)
-    {
-        mpr("You form becomes more stable.");
-        you.current_form_spell_failure = 0;
-    }
+    player_after_each_turn();
 
     you.duration[DUR_EXHAUSTED] = 0;
 }
@@ -10132,7 +10140,7 @@ void _attempt_instant_rest_handle_no_visible_monsters()
     visible.clear();
 
     // Find nearby monsters
-    for (rectangle_iterator ri(you.pos(), 9); ri; ++ri)
+    for (rectangle_iterator ri(you.pos(), 10); ri; ++ri)
     {
         if (monster *mon = monster_at(*ri))
         {
@@ -10175,6 +10183,7 @@ void _attempt_instant_rest_handle_no_visible_monsters()
         if (shortest != -1)
         {
             near_monster->move_to_pos(to);
+            near_monster->speed_increment = 0;
             behaviour_event(near_monster, ME_ALERT, &you, you.pos());
             ldprf(LD_INSTAREST, "Pulled in monster. recently_seen = %d.", you.monsters_recently_seen);
             can_restore_all = false;

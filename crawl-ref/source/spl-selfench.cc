@@ -32,7 +32,7 @@
 
 int allowed_deaths_door_hp()
 {
-    int hp = calc_spell_power(SPELL_DEATHS_DOOR, true) / 10;
+    int hp = calc_spell_power(SPELL_DEATHS_DOOR, true, false) / 10;
 
     if (have_passive(passive_t::deaths_door_hp_boost))
         hp += you.piety / 15;
@@ -44,7 +44,7 @@ spret_type cast_deaths_door(int pow, bool fail)
 {
     if (you.undead_state())
         mpr("You're already dead!");
-    else if (you.duration[DUR_EXHAUSTED] || player_is_tired(true))
+    else if (you.duration[DUR_EXHAUSTED])
         mpr("You are too exhausted to enter Death's door!");
     else if (you.duration[DUR_DEATHS_DOOR])
         mpr("Your appeal for an extension has been denied.");

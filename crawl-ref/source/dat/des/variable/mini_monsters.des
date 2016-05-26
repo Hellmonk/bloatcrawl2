@@ -5342,7 +5342,7 @@ cccc+cccc
 ENDMAP
 
 NAME:   kennysheep_inner_square
-DEPTH:  D:15-, Depths, !Depths:$
+DEPTH:  D:$, Depths, !Depths:$
 : ks_random_setup(_G)
 NSUBST: % : 1:|
 SUBST:  % = *
@@ -5392,7 +5392,7 @@ cccccccc++cccccccc
 ENDMAP
 
 NAME:   kennysheep_two_boxes
-DEPTH:  D:15-, Depths, !Depths:$
+DEPTH:  D:$, Depths, !Depths:$
 : ks_random_setup(_G)
 NSUBST: % : 1:|
 SUBST:  % = *

@@ -383,7 +383,7 @@ static map<jewellery_type, vector<jewellery_fake_artp>> jewellery_artps = {
     { RING_PROTECTION, { { ARTP_AC, 0 } } },
     { RING_EVASION, { { ARTP_EVASION, 0 } } },
     { RING_SLAYING, { { ARTP_SLAYING, 0 } } },
-    { RING_STAMINA, { { ARTP_STAMINA, 1 } } },
+    { RING_STAMINA, { { ARTP_STAMINA, 20 } } },
 };
 
 /**
@@ -612,10 +612,10 @@ struct artefact_prop_data
 };
 
 /// Generate 'good' values for stat artps (e.g. ARTP_STRENGTH)
-static int _gen_good_stat_artp() { return 1 + random2(3); }
+static int _gen_good_stat_artp() { return 1 + random2(2); }
 
 /// Generate 'bad' values for stat artps (e.g. ARTP_STRENGTH)
-static int _gen_bad_stat_artp() { return -2 - random2(4); }
+static int _gen_bad_stat_artp() { return -2 - random2(2); }
 
 /// Generate 'good' values for resist-ish artps (e.g. ARTP_FIRE)
 static int _gen_good_res_artp() { return 1; }
@@ -630,7 +630,7 @@ static int _gen_good_hpmp_artp() { return 20; }
 static int _gen_bad_hpmp_artp() { return -_gen_good_hpmp_artp(); }
 
 /// Generate 'good' values for ARTP_HP/ARTP_MAGICAL_POWER
-static int _gen_good_sp_artp() { return 1 + random2(3); }
+static int _gen_good_sp_artp() { return 20; }
 
 /// Generate 'bad' values for ARTP_HP/ARTP_MAGICAL_POWER
 static int _gen_bad_sp_artp() { return -_gen_good_hpmp_artp(); }
@@ -642,11 +642,11 @@ static const artefact_prop_data artp_data[] =
     { "AC", ARTP_VAL_ANY, 0, nullptr, nullptr, 0, 0}, // ARTP_AC,
     { "EV", ARTP_VAL_ANY, 0, nullptr, nullptr, 0, 0 }, // ARTP_EVASION,
     { "Str", ARTP_VAL_ANY, 100,     // ARTP_STRENGTH,
-        _gen_good_stat_artp, _gen_bad_stat_artp, 7, 1 },
+        _gen_good_stat_artp, _gen_bad_stat_artp, 4, 1 },
     { "Int", ARTP_VAL_ANY, 100,     // ARTP_INTELLIGENCE,
-        _gen_good_stat_artp, _gen_bad_stat_artp, 7, 1 },
+        _gen_good_stat_artp, _gen_bad_stat_artp, 4, 1 },
     { "Dex", ARTP_VAL_ANY, 100,     // ARTP_DEXTERITY,
-        _gen_good_stat_artp, _gen_bad_stat_artp, 7, 1 },
+        _gen_good_stat_artp, _gen_bad_stat_artp, 4, 1 },
     { "rF", ARTP_VAL_ANY, 60,       // ARTP_FIRE,
         _gen_good_res_artp, _gen_bad_res_artp, 2, 4},
     { "rC", ARTP_VAL_ANY, 60,       // ARTP_COLD,
@@ -1688,7 +1688,7 @@ static void _make_faerie_armour(item_def &item)
         if (one_chance_in(20))
             artefact_set_property(doodad, ARTP_HP, random2(21) - 10);
         if (one_chance_in(20))
-            artefact_set_property(doodad, ARTP_STAMINA, roll_dice(2, 3) - 3);
+            artefact_set_property(doodad, ARTP_STAMINA, random2(41) - 20);
 
         break;
     }

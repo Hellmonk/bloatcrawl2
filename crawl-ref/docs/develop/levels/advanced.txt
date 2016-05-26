@@ -975,7 +975,7 @@ crawl -mapstat 1
 You can instead limit the levels to operate on by providing a comma
 separated list of level ranges, with same syntax as in DEPTH: stanzas:
 
-crawl -mapstat D:15,Zot,!Zot:5
+crawl -mapstat D:13,Zot,!Zot:5
 
 Mapstat tends to take large amounts of time, so remember you can have
 optimized debug builds by 'make debug CFOPTIMIZE="-Ofast"' if you're not
