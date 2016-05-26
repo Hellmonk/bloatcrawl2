@@ -10140,7 +10140,7 @@ void _attempt_instant_rest_handle_no_visible_monsters()
     visible.clear();
 
     // Find nearby monsters
-    for (rectangle_iterator ri(you.pos(), 9); ri; ++ri)
+    for (rectangle_iterator ri(you.pos(), 10); ri; ++ri)
     {
         if (monster *mon = monster_at(*ri))
         {
