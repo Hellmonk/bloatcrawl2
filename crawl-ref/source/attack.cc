@@ -1256,8 +1256,8 @@ int attack::player_apply_weapon_skill(int damage)
 {
     if (using_weapon())
     {
-        damage *= 2500 + (random2(you.skill(wpn_skill, 100) + 1));
-        damage /= 2500;
+        damage *= 1500 + (random2(you.skill(wpn_skill, 100) + 1));
+        damage /= 1500;
     }
 
     return damage;
@@ -1418,7 +1418,9 @@ int attack::calc_damage()
         damage = random2(potential_damage+1);
 
         damage = player_apply_weapon_skill(damage);
+        /* don't apply fighting skill to damage any more
         damage = player_apply_fighting_skill(damage, false);
+         */
         damage = player_apply_misc_modifiers(damage);
         damage = player_apply_slaying_bonuses(damage, false);
         damage = player_stab(damage);

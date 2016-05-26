@@ -455,32 +455,6 @@ int list_spells_wide(bool viewing, bool allow_preselect,
     }
 }
 
-static int _apply_spellcasting_success_boosts(spell_type spell, int chance)
-{
-    int fail_reduce = 100;
-
-    if (have_passive(passive_t::spells_success) && vehumet_supports_spell(spell))
-    {
-        // [dshaligram] Fail rate multiplier used to be .5, scaled
-        // back to 67%.
-        fail_reduce = fail_reduce * 2 / 3;
-    }
-
-    const int wizardry = player_wizardry(spell);
-
-    if (wizardry > 0)
-      fail_reduce = fail_reduce * 3 / (4 + wizardry);
-
-    if (you.duration[DUR_BRILLIANCE])
-        fail_reduce = fail_reduce / 2;
-
-    // Hard cap on fail rate reduction.
-    if (fail_reduce < 25)
-        fail_reduce = 25;
-
-    return chance * fail_reduce / 100;
-}
-
 /**
  * Calculate the player's failure rate with the given spell, including all
  * modifiers. (Armour, mutations, statuses effects, etc.)
@@ -502,9 +476,11 @@ int raw_spell_fail(spell_type spell)
     const int dex = you.dex(true);
     const int spellcasting_skill = you.skill(SK_SPELLCASTING, 10);
     const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
-    const int high_council = player_equip_unrand(UNRAND_HIGH_COUNCIL) ? 5 : 0;
+    const int high_council = player_equip_unrand(UNRAND_HIGH_COUNCIL);
     const int player_success = player_spellsuccess_modifier(0);
-    const float success_boosts = 10 - _apply_spellcasting_success_boosts(spell, 10);
+    const int vehumet_support = have_passive(passive_t::spells_success) && vehumet_supports_spell(spell);
+    const int wizardry = player_wizardry(spell);
+    const int brilliance = you.duration[DUR_BRILLIANCE] > 0;
 
     const spschools_type disciplines = get_spell_disciplines(spell);
     const int school_average = average_schools(disciplines, 10);
@@ -519,9 +495,11 @@ int raw_spell_fail(spell_type spell)
     x += dex;
     x += spellcasting_skill / 10.0;
     x += school_average / 10.0;
-    x += high_council;
+    x += high_council * 5;
     x += player_success * 2;
-    x += success_boosts;
+    x += vehumet_support * 3;
+    x += wizardry * 5;
+    x += brilliance * 5;
 
     float fail_chance = 100 * pow(15.0 / 16, abs(x)) / 2;
 

@@ -259,6 +259,7 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
     if (!weapon)
         weapon = you.weapon();
 
+    int base_delay = 15;
     int attk_delay = 15;
     // a semi-arbitrary multiplier, to minimize loss of precision from integer
     // math.
@@ -270,8 +271,11 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
         // Thrown weapons use 10 + projectile damage to determine base delay.
         const skill_type wpn_skill = SK_THROWING;
         const int projectile_delay = 10 + property(*projectile, PWPN_DAMAGE) / 2;
-        attk_delay = projectile_delay;
+        base_delay = projectile_delay;
+
+        /* Using fighting instead
         attk_delay -= you.skill(wpn_skill, 10) / DELAY_SCALE;
+         */
 
         // apply minimum to weapon skill modification
         /* This is happening elsewhere now
@@ -282,7 +286,9 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
     {
         int sk = form_uses_xl() ? experience_level * 10 :
                                   skill(SK_UNARMED_COMBAT, 10);
+        /* we use fighting and dex now instead
         attk_delay = 10 - div_rand_round(sk, 27*2);
+         */
 
         // Bats are faster (for whatever good it does them).
         if (you.form == TRAN_BAT && !projectile)
@@ -301,14 +307,22 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
         int wpn_sklev = you.skill(wpn_skill, 10);
         wpn_sklev = min(wpn_sklev, 10 * weapon_min_delay_skill(*weapon));
 
-        attk_delay = property(*weapon, PWPN_SPEED);
+        base_delay = property(*weapon, PWPN_SPEED);
+        /*
         attk_delay -= wpn_sklev / DELAY_SCALE;
+         */
         if (get_weapon_brand(*weapon) == SPWPN_SPEED)
             attk_delay = attk_delay * 2 / 3;
     }
 
-    attk_delay = player_attack_delay_modifier(attk_delay);
+    attk_delay -= you.skill(SK_FIGHTING, 10) * 2 / 3 / DELAY_SCALE;
+    const int dexterity = you.dex(true);
+    attk_delay -= (dexterity - 10) * 10 / DELAY_SCALE / 2;
 
+    attk_delay = max(base_delay / 2, attk_delay);
+    attk_delay = min(base_delay, attk_delay);
+
+    attk_delay = player_attack_delay_modifier(attk_delay);
     attk_delay = max(attk_delay, 3);
 
     if (base_shield_penalty)

@@ -841,21 +841,30 @@ static void _append_weapon_stats(string &description, const item_def &item)
     const skill_type skill = item_attack_skill(item);
 
     const string your_skill = crawl_state.need_save ?
-      make_stringf("\n (Your skill: %.1f)", (float) you.skill(skill, 10) / 10)
+      make_stringf("\n (Your skill: %.1f)", (float) you.skill(SK_FIGHTING, 10) / 10)
       : "";
     description += make_stringf(
     "\nBase accuracy: %+d   Base damage: %d   Current SP cost: %d"
-    "\nAttack delay:  Base: %.1f   Current: %.1f"
-    "\nThis weapon's minimum attack delay (%.1f) is reached at skill level %d."
+    "\nAttack delay:  Base: %.1f   Current: %.1f   Min: %.1f"
+    "\nBoth dexterity and fighting skill reduce attack delay equally. Weapon skill does not.",
+        /*
+    "\nThis weapon's minimum attack delay (%.1f) is reached at *fighting* skill level %d."
     "%s",
+         */
     property(item, PWPN_HIT),
     base_dam + ammo_dam,
     weapon_sp_cost(&item),
     (float) player_attack_delay_modifier(property(item, PWPN_SPEED)) / 10,
     (float) you.attack_delay(nullptr, true, &item) / 10,
-    (float) player_attack_delay_modifier(weapon_min_delay(item)) / 10,
-    weapon_min_delay_skill(item),
-    your_skill.c_str());
+    (float) (
+        (float)player_attack_delay_modifier(property(item, PWPN_SPEED) / 2)
+        / 10)
+        /*
+        (float) player_attack_delay_modifier(weapon_min_delay(item)) / 10,
+        weapon_min_delay_skill(item),
+        your_skill.c_str()
+         */
+     );
 
     if (skill == SK_SLINGS)
     {
