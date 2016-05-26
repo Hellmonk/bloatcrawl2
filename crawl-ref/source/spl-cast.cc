@@ -620,34 +620,34 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool rod)
         if (apply_intel)
             power += intel;
         else
-            power += 5;
+            power += 20;
 
-        power *= 2;
+        power -= 40;
 
         // Brilliance boosts spell power a bit (equivalent to three
         // spell school levels).
         if (you.duration[DUR_BRILLIANCE])
-            power *= 3 / 2;
+            power += 10;
 
         const int enhancement = _spell_enhancement(spell);
-        power = fpow(power, 3, 2, enhancement);
+        power += 5 * enhancement;
 
         // Wild magic boosts spell power but decreases success rate.
         const int wild = player_mutation_level(MUT_WILD_MAGIC);
         const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
-        power *= (10 + 3 * wild);
-        power /= (10 + 3 * subdued);
+        power += 5 * wild;
+        power -= 5 * subdued;
 
         // Augmentation boosts spell power at high HP.
-        power *= 10 + 4 * augmentation_amount();
-        power /= 10;
+        power += 5 * augmentation_amount();
 
         // Each level of horror reduces spellpower by 10%
         if (you.duration[DUR_HORROR])
         {
-            power *= 10;
-            power /= 10 + (you.props[HORROR_PENALTY_KEY].get_int() * 3) / 2;
+            power -= 10;
         }
+
+        power = fpow(40, 2, 1, power / 20);
     }
 
     power = player_spellpower_modifier(power);
