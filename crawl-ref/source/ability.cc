@@ -1755,7 +1755,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     {
         fail_check();
         // Note: Power level of ball calculated at release. - bwr
-        int power = calc_spell_power(SPELL_DELAYED_FIREBALL, true);
+        int power = calc_spell_power(SPELL_DELAYED_FIREBALL, true, false);
         beam.range = spell_range(SPELL_FIREBALL, power);
 
         targetter_beam tgt(&you, beam.range, ZAP_FIREBALL, power, 1, 1);

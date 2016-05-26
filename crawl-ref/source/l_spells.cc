@@ -49,7 +49,7 @@ LUAFN(l_spells_mana_cost)
 LUAFN(l_spells_range)
 {
     spell_type spell = spell_by_name(luaL_checkstring(ls, 1), false);
-    PLUARET(number, spell_range(spell, calc_spell_power(spell, true)));
+    PLUARET(number, spell_range(spell, calc_spell_power(spell, true, false)));
 }
 
 LUAFN(l_spells_max_range)
@@ -84,7 +84,7 @@ LUAFN(l_spells_hunger)
 LUAFN(l_spells_power)
 {
     spell_type spell = spell_by_name(luaL_checkstring(ls, 1), false);
-    PLUARET(number, power_to_barcount(calc_spell_power(spell, true)));
+    PLUARET(number, power_to_barcount(calc_spell_power(spell, true, false)));
 }
 
 LUAFN(l_spells_max_power)

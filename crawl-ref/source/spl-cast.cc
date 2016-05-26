@@ -604,71 +604,54 @@ int stepdown_spellpower(int power)
     return stepdown(power / 100, 100, ROUND_DOWN, SPELL_POWER_CAP, 2);
 }
 
-int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
-                     bool cap_power, bool rod)
+int calc_spell_power(spell_type spell, bool apply_intel, bool rod)
 {
-    int power = 0;
+    double power = 0;
     if (rod)
         power = player_adjust_evoc_power(5 + you.skill(SK_EVOCATIONS, 3));
     else
     {
         const spschools_type disciplines = get_spell_disciplines(spell);
+        const int school_average = average_schools(disciplines, 10);
+        const int intel = you.intel();
 
-        int skillcount = count_bits(disciplines);
-        if (skillcount)
-        {
-            for (const auto bit : spschools_type::range())
-                if (disciplines & bit)
-                    power += you.skill(spell_type2skill(bit), 200);
-            power /= skillcount;
-        }
+        power = school_average / 10.0;
 
-        /* spellcasting does not add to spellpower
-        power += you.skill(SK_SPELLCASTING, 200 / 3);
-         */
+        if (apply_intel)
+            power += intel;
+        else
+            power += 5;
+
+        power *= 2;
 
         // Brilliance boosts spell power a bit (equivalent to three
         // spell school levels).
-        if (!fail_rate_check && you.duration[DUR_BRILLIANCE])
-            power = max(750, power * 3 / 2);
+        if (you.duration[DUR_BRILLIANCE])
+            power *= 3 / 2;
 
-        if (apply_intel)
-            power = power * (you.intel() + 15) / 20;
+        const int enhancement = _spell_enhancement(spell);
+        power = fpow(power, 3, 2, enhancement);
 
-        if (!fail_rate_check)
+        // Wild magic boosts spell power but decreases success rate.
+        const int wild = player_mutation_level(MUT_WILD_MAGIC);
+        const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
+        power *= (10 + 3 * wild);
+        power /= (10 + 3 * subdued);
+
+        // Augmentation boosts spell power at high HP.
+        power *= 10 + 4 * augmentation_amount();
+        power /= 10;
+
+        // Each level of horror reduces spellpower by 10%
+        if (you.duration[DUR_HORROR])
         {
-            // [dshaligram] Enhancers don't affect fail rates any more, only spell
-            // power. Note that this does not affect Vehumet's boost in castability.
-            const int enhancement = _spell_enhancement(spell);
-            power = apply_enhancement(power, enhancement);
-
-            // Wild magic boosts spell power but decreases success rate.
-            const int wild = player_mutation_level(MUT_WILD_MAGIC);
-            const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
-            power *= (10 + 3 * wild * wild);
-            power /= (10 + 3 * subdued * subdued);
-
-            // Augmentation boosts spell power at high HP.
-            power *= 10 + 4 * augmentation_amount();
-            power /= 10;
-
-            // Each level of horror reduces spellpower by 10%
-            if (you.duration[DUR_HORROR])
-            {
-                power *= 10;
-                power /= 10 + (you.props[HORROR_PENALTY_KEY].get_int() * 3) / 2;
-            }
+            power *= 10;
+            power /= 10 + (you.props[HORROR_PENALTY_KEY].get_int() * 3) / 2;
         }
-
-        power = stepdown_spellpower(power);
     }
 
-    if (!fail_rate_check)
-        power = player_spellpower_modifier(power);
-
-    const int cap = spell_power_cap(spell);
-    if (cap > 0 && cap_power)
-        power = min(power, cap);
+    power = player_spellpower_modifier(power);
+    power = min((int)power, 999);
 
     return power;
 }
@@ -1517,7 +1500,7 @@ spret_type your_spells(spell_type spell, int powc,
     int potion = -1;
 
     if (!powc)
-        powc = calc_spell_power(spell, true);
+        powc = calc_spell_power(spell, true, false);
 
     // XXX: This handles only some of the cases where spells need
     // targeting. There are others that do their own that will be
@@ -2427,7 +2410,7 @@ static int _spell_power_bars(spell_type spell, bool rod)
     const int cap = spell_power_cap(spell);
     if (cap == 0)
         return -1;
-    const int power = min(calc_spell_power(spell, true, false, false, rod), cap);
+    const int power = min(calc_spell_power(spell, true, rod), cap);
 //    return power_to_barcount(power);
     return power * 10 / cap;
 }
@@ -2437,7 +2420,7 @@ string spell_power_numeric_string(spell_type spell, bool show_cap, bool rod)
     const int cap = spell_power_cap(spell);
     if (cap == 0)
         return "N/A";
-    const int power = min(calc_spell_power(spell, true, false, false, rod), cap);
+    const int power = min(calc_spell_power(spell, true, rod), cap);
     string result;
     if(show_cap)
     	result = make_stringf("%d (%d)", power, cap);
@@ -2461,7 +2444,7 @@ string spell_power_string(spell_type spell, bool rod)
 int calc_spell_range(spell_type spell, int power, bool rod)
 {
     if (power == 0)
-        power = calc_spell_power(spell, true, false, false, rod);
+        power = calc_spell_power(spell, true, rod);
     const int range = spell_range(spell, power);
 
     return range;

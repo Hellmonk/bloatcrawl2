@@ -6565,7 +6565,7 @@ void player::ablate_deflection()
     bool did_something = false;
     if (attribute[ATTR_DEFLECT_MISSILES])
     {
-        const int power = calc_spell_power(SPELL_DEFLECT_MISSILES, true);
+        const int power = calc_spell_power(SPELL_DEFLECT_MISSILES, true, false);
         if (one_chance_in(2 + power / 8))
         {
             attribute[ATTR_DEFLECT_MISSILES] = 0;
@@ -6574,7 +6574,7 @@ void player::ablate_deflection()
     }
     else if (attribute[ATTR_REPEL_MISSILES])
     {
-        const int power = calc_spell_power(SPELL_REPEL_MISSILES, true);
+        const int power = calc_spell_power(SPELL_REPEL_MISSILES, true, false);
         if (one_chance_in(2 + power / 8))
         {
             attribute[ATTR_REPEL_MISSILES] = 0;
@@ -6753,7 +6753,7 @@ static int _bone_armour_bonus()
     if (!you.attribute[ATTR_BONE_ARMOUR])
         return 0;
 
-    const int power = calc_spell_power(SPELL_CIGOTUVIS_EMBRACE, true);
+    const int power = calc_spell_power(SPELL_CIGOTUVIS_EMBRACE, true, false);
     // rounding errors here, but not sure of a good way to avoid that.
     return you.attribute[ATTR_BONE_ARMOUR] * (50 + power);
 }

@@ -1,5 +1,10 @@
 ## v1.5.2
 
+* Simplified spell power calculations
+    * Like spell failure, spell power now has equalized factors. 
+    * Adding a point to intelligence will have the same impact on spell power as raising the average spell school
+      level by 1 point, under all circumstances.
+
 * Simplified orb run
     * Once you enter Zot, you can't leave without the orb.
     * Once you leave Zot with the orb, the game is over. You won!

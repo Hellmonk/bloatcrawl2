@@ -427,7 +427,7 @@ spret_type cast_dragon_call(int pow, bool fail)
 
 static bool _place_dragon()
 {
-    const int pow = calc_spell_power(SPELL_DRAGON_CALL, true);
+    const int pow = calc_spell_power(SPELL_DRAGON_CALL, true, false);
     monster_type mon = _choose_dragon_type(pow, you.religion, true);
 
     vector<monster*> targets;
@@ -2454,7 +2454,7 @@ static void _init_servitor_monster(monster &mon, const actor& caster)
     const monster* caster_mon = caster.as_monster();
     const int pow = caster_mon ?
                         6 * caster_mon->spell_hd(SPELL_SPELLFORGED_SERVITOR) :
-                        calc_spell_power(SPELL_SPELLFORGED_SERVITOR, true);
+                    calc_spell_power(SPELL_SPELLFORGED_SERVITOR, true, false);
 
     mon.set_hit_dice(9 + div_rand_round(pow, 14));
     mon.max_hit_points = mon.hit_points = 60 + roll_dice(7, 5); // 67-95
