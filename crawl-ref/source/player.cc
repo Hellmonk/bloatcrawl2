@@ -2936,7 +2936,7 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
     }
 }
 
-boolean _handle_insight_inv(FixedVector<item_def, 52> *inv)
+bool _handle_insight_inv(FixedVector<item_def, 52> *inv)
 {// top to bottom
     bool had_insight = false;
     // this give the player the option to move items to the top so that they are more likely to be identified first
