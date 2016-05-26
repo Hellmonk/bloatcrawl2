@@ -8777,7 +8777,7 @@ void temperature_check()
 void temperature_increment(float degree)
 {
     // No warming up while you're exhausted!
-    if (you.duration[DUR_EXHAUSTED] || player_is_tired(true))
+    if (you.duration[DUR_EXHAUSTED])
         return;
 
     you.temperature += sqrt(degree);
