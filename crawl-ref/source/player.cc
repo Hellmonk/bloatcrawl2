@@ -2936,8 +2936,9 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
     }
 }
 
-void _handle_insight_inv(FixedVector<item_def, 52> *inv)
+boolean _handle_insight_inv(FixedVector<item_def, 52> *inv)
 {// top to bottom
+    bool had_insight = false;
     // this give the player the option to move items to the top so that they are more likely to be identified first
     for(item_def &item : *inv)
     {
@@ -2957,6 +2958,7 @@ void _handle_insight_inv(FixedVector<item_def, 52> *inv)
                 after = get_menu_colour_prefix_tags(item, DESC_A);
                 mprf(MSGCH_INTRINSIC_GAIN, "You gain insight into: %s", after.c_str());
                 deck_identify_first(item);
+                had_insight = true;
                 break;
             }
             else
@@ -2971,13 +2973,15 @@ void _handle_insight_inv(FixedVector<item_def, 52> *inv)
                     after_colored = get_menu_colour_prefix_tags(item, DESC_A);
                     if(before != after) {
                         mprf(MSGCH_INTRINSIC_GAIN, "You gain insight: %s -> %s", before.c_str(), after.c_str());
-                        more();
+                        had_insight = true;
                         break;
                     }
                 }
             }
         }
     }
+
+    return had_insight;
 }
 
 static void _handle_insight(int exp_gain)
@@ -2992,8 +2996,10 @@ static void _handle_insight(int exp_gain)
         
         int lev = player_mutation_level(MUT_INSIGHT);
         if (x_chance_in_y(1 << (lev * 2), 64)) {
-            _handle_insight_inv(&you.inv1);
-            _handle_insight_inv(&you.inv2);
+            const bool i1 = _handle_insight_inv(&you.inv1);
+            const bool i2 = _handle_insight_inv(&you.inv2);
+            if (i1 || i2)
+                more();
         }
     }
 }
