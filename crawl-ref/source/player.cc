@@ -9645,7 +9645,7 @@ void player_was_offensive()
 {
     if (you.current_form_spell != SPELL_NO_SPELL)
     {
-        if (_spell_fails(you.current_form_spell, 50))
+        if (_spell_fails(you.current_form_spell, 100))
         {
             you.current_form_spell_failure++;
             if (you.current_form_spell_failure == 2)
@@ -9714,6 +9714,9 @@ int spell_mp_cost(spell_type which_spell)
         cost = 0;
     else if (have_passive(passive_t::conserve_mp))
         cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
+
+    if (is_self_transforming_spell(which_spell))
+        cost *= 2;
 
     if (you.exertion != EXERT_NORMAL && you.peace < 50)
         cost *= 2;
