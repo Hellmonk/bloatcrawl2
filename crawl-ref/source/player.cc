@@ -4920,13 +4920,10 @@ int get_real_sp(bool include_items)
 {
     int max_sp = 100;
 
-    int boost = 0;
-    boost += player_mutation_level(MUT_HIGH_STAMINA);
-    boost -= player_mutation_level(MUT_LOW_STAMINA);
-    boost += you.wearing(EQ_RINGS, RING_STAMINA);
-    boost += you.scan_artefacts(ARTP_STAMINA);
-
-    max_sp = max_sp + 20 * boost;
+    max_sp += player_mutation_level(MUT_HIGH_STAMINA) * 20;
+    max_sp -= player_mutation_level(MUT_LOW_STAMINA) * 20;
+    max_sp += you.wearing(EQ_RINGS, RING_STAMINA) * 20;
+    max_sp += you.scan_artefacts(ARTP_STAMINA);
 
     max_sp = player_pool_modifier(max_sp);
     max_sp = max(max_sp, 20);
@@ -10035,7 +10032,7 @@ int player_pool_modifier(int amount)
     switch (crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            percent = 150;
+            percent = 110;
             break;
         case DIFFICULTY_STANDARD:
             percent = 100;
