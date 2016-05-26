@@ -8426,7 +8426,6 @@ void player::increase_duration(duration_type dur, int turns, int cap, const char
     {
         const int sp_loss = turns;
         dec_sp(sp_loss);
-        duration[DUR_EXHAUSTED] = 0;
         return;
     }
 
