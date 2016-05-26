@@ -1,5 +1,8 @@
 ## v1.5.2
 
+* Fighting skill changed
+    * Attack speed now is only influenced by fighting skill and dex. 
+
 * Simplified spell power calculations
     * Like spell failure, spell power now has equalized factors. 
     * Adding a point to intelligence will have the same impact on spell power as raising the average spell school
