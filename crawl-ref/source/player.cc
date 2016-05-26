@@ -2989,19 +2989,26 @@ static void _handle_insight(int exp_gain)
     const int skill_cost = calc_skill_cost(you.skill_cost_level);
     const int insight_gained = div_rand_round(exp_gain, skill_cost);
     you.attribute[ATTR_INSIGHT] += insight_gained * 20;
-    
+
+    bool do_more = false;
     while (you.attribute[ATTR_INSIGHT] > 100)
     {
         you.attribute[ATTR_INSIGHT] -= 100;
         
         int lev = player_mutation_level(MUT_INSIGHT);
         if (x_chance_in_y(1 << (lev * 2), 64)) {
-            const bool i1 = _handle_insight_inv(&you.inv1);
-            const bool i2 = _handle_insight_inv(&you.inv2);
-            if (i1 || i2)
-                more();
+            if (_handle_insight_inv(&you.inv1))
+                do_more = true;
+        }
+
+        if (x_chance_in_y(1 << (lev * 2), 64)) {
+            if (_handle_insight_inv(&you.inv2))
+                do_more = true;
         }
     }
+
+    if (do_more)
+        more();
 }
 
 bool player_is_immune_to_curses()
