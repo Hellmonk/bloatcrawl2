@@ -647,7 +647,7 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool rod)
             power -= 10;
         }
 
-        power = fpow(40, 2, 1, power / 20);
+        power = fpow(80, 2, 1, power / 20);
     }
 
     power = player_spellpower_modifier(power);
