@@ -267,7 +267,7 @@ public:
         else
         {
             amount = minimum_healing + random2avg(28, 3);
-            mprf("You feel a little better. (hp+%d)", amount);
+            mprf("You feel better. (hp+%d)", amount);
         }
 
         // Pay for rot right off the top.

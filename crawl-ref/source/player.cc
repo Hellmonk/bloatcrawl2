@@ -10058,7 +10058,7 @@ int player_monster_gen_modifier(int amount)
     switch (crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            percent = 70;
+            percent = 90;
             break;
         case DIFFICULTY_STANDARD:
             percent = 100;
