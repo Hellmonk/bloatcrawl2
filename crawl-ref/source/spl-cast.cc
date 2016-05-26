@@ -491,7 +491,7 @@ static int _apply_spellcasting_success_boosts(spell_type spell, int chance)
  */
 int raw_spell_fail(spell_type spell)
 {
-    float x = 20;
+    float x = 0;
 
     const int spell_level = spell_difficulty(spell);
     const int armour_shield_penalty = player_armour_shield_spell_penalty();
@@ -509,7 +509,7 @@ int raw_spell_fail(spell_type spell)
     const spschools_type disciplines = get_spell_disciplines(spell);
     const int school_average = average_schools(disciplines, 10);
 
-    x += spell_level * -10;
+    x += spell_level * -5;
     x += armour_shield_penalty * -0.05;
     x += spellcasting_penalty * -0.3;
     x += anti_wizardry * -3;
