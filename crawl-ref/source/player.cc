@@ -9674,9 +9674,9 @@ void player_after_long_safe_action(int turns)
 
 void player_after_each_turn()
 {
-    if (you.current_form_spell_failure && you.peace >= 200)
+    if (you.current_form_spell_failure && you.peace >= 200 && you.current_form_spell_failure > 0)
     {
-        mpr("You form becomes more stable.");
+        mpr("Your form becomes more stable.");
         you.current_form_spell_failure = 0;
     }
 
@@ -10117,11 +10117,7 @@ void _instant_rest()
     if (player_regenerates_mp())
         inc_mp(get_mp_max() - get_mp());
 
-    if (you.current_form_spell_failure > 0)
-    {
-        mpr("You form becomes more stable.");
-        you.current_form_spell_failure = 0;
-    }
+    player_after_each_turn();
 
     you.duration[DUR_EXHAUSTED] = 0;
 }
