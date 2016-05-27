@@ -11,7 +11,27 @@
 * 'I' consumable inventory (where your potions, scrolls, and books are)
 * '^d' drop something from consumable inventory
 
-## Spellcasting
+## Fighting (perfectly parallels Spellcasting, see below)
+
+* *Damage* is increase by:
+    * Strength
+    * Weapon Skill
+
+* *Stamina Cost* is reduced by:
+    * Strength
+    * Fighting Skill
+
+* *Hit Accuracy* is increased by:
+    * Dexterity
+    * Weapon Skill
+
+* *Attack Speed* is increased by:
+    * Dexterity
+    * Fighting Skill
+
+* Mindelay is reached when dex+fighting = 50
+
+## Spellcasting (perfectly parallels Fighting, see above)
 
 * *Spell Power* is increased by:
     * Intelligence
@@ -20,15 +40,15 @@
 * *Spell Cost* is reduced by:
     * Intelligence
     * Spellcasting Skill
-    * Sif's passive ability (proportional to Invocations)
 
 * *Spell Failure Rate* is reduced by:
     * Dexterity
-    * Spellcasting Skill
     * Spell School Average
-    * Rings of Wizardry 
-    * Vehumet's conjuration reduction
-    
+
+* *Spell Casting Speed* is increased by:
+    * Dexterity
+    * Spellcasting Skill
+
 ## Exertion modes
 
 * Quick mode

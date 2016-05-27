@@ -1,21 +1,9 @@
 ## v1.5.2
 
-* Minimum spell failure change
-    * Minimum spell failure is now based on spell school average and spell level
-        * Minimum failure of level 1 spell with 0 spell school average is 10%
-        * Minimum failure of level 5 spell with 0 spell school average is 50%
-        * Minimum failure of level 5 spell with 1 spell school average is 40%
-        * Minimum failure of level 5 spell with 2 spell school average is 30%
-        * Minimum failure of level 5 spell with 5 spell school average is 0%
-        
-* Minimum attack delay reduction change
-    * Minimum attack delay reduction with 0 fighting skill: 0.0
-    * Minimum attack delay reduction with 5 fighting skill: 0.5
-    * Minimum attack delay reduction with 10 fighting skill: 1.0
+* Min attack speed for all weapons achieved when dex + weapon skill = 50.
 
-* Fighting skill changed
-    * Attack speed now is only influenced by fighting skill and dex. 
-    * Weapon damage is no longer affected by fighting skill. 
+* Fighting and Spellcasting factors changed. See cheatsheet under "Fighting" and "Spellcasting"
+  for details.
 
 * Simplified spell power calculations
     * Like spell failure, spell power now has equalized factors. 
