@@ -272,6 +272,7 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
         const skill_type wpn_skill = SK_THROWING;
         const int projectile_delay = 10 + property(*projectile, PWPN_DAMAGE) / 2;
         base_delay = projectile_delay;
+        attk_delay = base_delay;
 
         /* Using fighting instead
         attk_delay -= you.skill(wpn_skill, 10) / DELAY_SCALE;
@@ -308,6 +309,7 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
         wpn_sklev = min(wpn_sklev, 10 * weapon_min_delay_skill(*weapon));
 
         base_delay = property(*weapon, PWPN_SPEED);
+        attk_delay = base_delay;
         /*
         attk_delay -= wpn_sklev / DELAY_SCALE;
          */
@@ -315,10 +317,19 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
             attk_delay = attk_delay * 2 / 3;
     }
 
-    attk_delay -= you.skill(SK_FIGHTING, 10) * 2 / 3 / DELAY_SCALE;
-    const int dexterity = you.dex(true);
-    attk_delay -= (dexterity - 10) * 10 / DELAY_SCALE / 2;
+    int reduction = 0;
 
+    const int fighting = you.skill(SK_FIGHTING, 10);
+    reduction += fighting;
+
+    const int dexterity = you.dex(true);
+    reduction += max(0, dexterity - 10) * 10;
+
+    reduction /= 30;
+
+    reduction = min(fighting / 10, reduction);
+
+    attk_delay -= reduction;
     attk_delay = max(base_delay / 2, attk_delay);
     attk_delay = min(base_delay, attk_delay);
 

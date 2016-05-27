@@ -501,16 +501,16 @@ int raw_spell_fail(spell_type spell)
     x += wizardry * 5;
     x += brilliance * 5;
 
-    float fail_chance = 100 * pow(15.0 / 16, abs(x)) / 2;
+    int fail_chance = 100.0 * pow(15.0 / 16, abs(x)) / 2;
 
     if (x < 0)
         fail_chance = 100 - fail_chance;
 
-    if (fail_chance > 99)
-        fail_chance = 99;
+    const int min_fail = (spell_level * 10 - school_average);
 
-    if (fail_chance < 1)
-        fail_chance = 1;
+    fail_chance = min(99, fail_chance);
+    fail_chance = max(min_fail, fail_chance);
+    fail_chance = max(1, fail_chance);
 
     return fail_chance;
 
