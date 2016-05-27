@@ -1265,7 +1265,7 @@ int attack::player_apply_weapon_skill(int damage)
         damage /= 1000;
          */
 
-        damage = div_rand_round(damage * (200 + you.skill(wpn_skill), 10), 200);
+        damage = div_rand_round(damage * (150 + you.skill(wpn_skill, 10)), 200);
     }
 
     return damage;
