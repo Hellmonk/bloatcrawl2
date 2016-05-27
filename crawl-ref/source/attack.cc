@@ -164,7 +164,9 @@ int attack::calc_to_hit(bool random)
     if (attacker->is_player())
     {
         // fighting contribution
+        /* no longer rely on fighting
         mhit += maybe_random_div(you.skill(SK_FIGHTING, 100), 100, random);
+         */
 
         // weapon skill contribution
         if (using_weapon())
@@ -174,8 +176,7 @@ int attack::calc_to_hit(bool random)
                 if (you.skill(wpn_skill) < 1 && player_in_a_dangerous_place())
                     xom_is_stimulated(10); // Xom thinks that is mildly amusing.
 
-                mhit += maybe_random_div(you.skill(wpn_skill, 100), 100,
-                                         random);
+                mhit += maybe_random_div(you.skill(wpn_skill, 150), 100, random);
             }
         }
         else if (you.form_uses_xl())
@@ -186,8 +187,7 @@ int attack::calc_to_hit(bool random)
             mhit += (player_mutation_level(MUT_CLAWS) > 0
                      && wpn_skill == SK_UNARMED_COMBAT) ? 4 : 2;
 
-            mhit += maybe_random_div(you.skill(wpn_skill, 100), 100,
-                                     random);
+            mhit += maybe_random_div(you.skill(wpn_skill, 150), 100, random);
         }
 
         // weapon bonus contribution
@@ -1256,8 +1256,8 @@ int attack::player_apply_weapon_skill(int damage)
 {
     if (using_weapon())
     {
-        damage *= 1500 + (random2(you.skill(wpn_skill, 100) + 1));
-        damage /= 1500;
+        damage *= 1000 + (random2(you.skill(wpn_skill, 100) + 1));
+        damage /= 1000;
     }
 
     return damage;

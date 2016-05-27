@@ -144,7 +144,7 @@ int maybe_random_div(int nom, int denom, bool random_factor)
     if (random_factor)
         return random2(nom + denom) / denom;
     else
-        return nom / 2 / denom;
+        return (nom + denom) / 2 / denom;
 }
 
 // [num, num*size]
