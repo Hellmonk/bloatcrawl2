@@ -1660,10 +1660,11 @@ bool attack::apply_damage_brand(const char *what)
         {
             special_damage_message =
                 make_stringf(
-                    "%s %s%s",
+                    "%s %s%s (%d)",
                     defender_name(false).c_str(),
                     defender->conj_verb("convulse").c_str(),
-                    attack_strength_punctuation(special_damage).c_str());
+                    attack_strength_punctuation(special_damage).c_str(),
+                    special_damage);
         }
         break;
 
