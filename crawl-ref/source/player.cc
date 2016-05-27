@@ -10183,10 +10183,8 @@ void _attempt_instant_rest_handle_no_visible_monsters()
         if (shortest != -1)
         {
             near_monster->move_to_pos(to);
-            near_monster->speed_increment = 0;
-            /* we don't necessarily want them alert, as if the player just stumbled on them
+            near_monster->speed_increment /= 2;
             behaviour_event(near_monster, ME_ALERT, &you, you.pos());
-             */
             ldprf(LD_INSTAREST, "Pulled in monster. recently_seen = %d.", you.monsters_recently_seen);
             can_restore_all = false;
         }
