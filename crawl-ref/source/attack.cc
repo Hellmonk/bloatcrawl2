@@ -1239,6 +1239,7 @@ string attack::defender_name(bool allow_reflexive)
 
 int attack::player_stat_modify_damage(int damage)
 {
+    /* old way
     int dammod = 39;
 
     if (you.strength() > 10)
@@ -1248,6 +1249,9 @@ int attack::player_stat_modify_damage(int damage)
 
     damage *= dammod;
     damage /= 39;
+     */
+
+    damage = div_rand_round(damage * (5 + you.strength()), 15);
 
     return damage;
 }
