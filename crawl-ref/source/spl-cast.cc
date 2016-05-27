@@ -493,8 +493,10 @@ int raw_spell_fail(spell_type spell)
     x += wild * -5;
     x += subdued * 5;
     x += dex;
+    /*
     x += spellcasting_skill / 10.0;
-    x += school_average / 10.0;
+     */
+    x += school_average / 5.0;
     x += high_council * 5;
     x += player_success * 2;
     x += vehumet_support * 3;
