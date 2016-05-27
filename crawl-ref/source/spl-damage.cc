@@ -946,7 +946,7 @@ spret_type cast_freeze(int pow, monster* mons, bool fail)
     int hurted = mons_adjust_flavoured(mons, beam, orig_hurted);
     string name = mons->name(DESC_THE);
     mons->hurt(&you, hurted);
-    mprf("You freeze %s (%d).", mons->name.c_str(), hurted);
+    mprf("You freeze %s (%d).", name.c_str(), hurted);
 
 
     if (mons->alive())
