@@ -9710,22 +9710,9 @@ void player_after_each_turn()
     }
 }
 
-int _apply_hunger(const spell_type &which_spell, int cost, int multiplier = 100)
-{
-
-    int hunger = spell_hunger(which_spell, false, multiplier);
-
-    if (player_mutation_level(MUT_HUNGERLESS) > 0)
-        hunger /= 2;
-
-    cost = cost * (hunger + 100) / 100;
-
-    return cost;
-}
-
 int spell_mp_cost(spell_type which_spell)
 {
-    int cost = _apply_hunger(which_spell, 2);
+    int cost = 2 * spell_hunger(which_spell, false) / 10;
 
     cost = max(cost, 2);
 
@@ -9733,8 +9720,6 @@ int spell_mp_cost(spell_type which_spell)
         || is_summon_spell(which_spell)
         )
         cost = 0;
-    else if (have_passive(passive_t::conserve_mp))
-        cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
 
     if (is_self_transforming_spell(which_spell))
         cost *= 2;
@@ -9750,12 +9735,9 @@ int spell_mp_freeze(spell_type which_spell)
     int cost = 0;
     if (is_summon_spell(which_spell))
     {
-        cost = _apply_hunger(which_spell, 10, 200);
+        cost = 5 * spell_hunger(which_spell, false, 200);
 
-        if (have_passive(passive_t::conserve_mp))
-            cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
-
-        cost = max(cost, 1);
+        cost = max(cost, 5);
 
         if (you.exertion != EXERT_NORMAL && you.peace < 50)
             cost *= 2;

@@ -421,11 +421,16 @@ int spell_hunger(spell_type which_spell, bool rod, int multiplier)
     {
         const int spellcasting = you.skill(SK_SPELLCASTING, 10);
         const int intel = you.intel() * 10;
-        x -= spellcasting;
-        x -= intel * 10;
+        x -= spellcasting / 2;
+        x -= intel / 2;
+        if (have_passive(passive_t::conserve_mp))
+        {
+            const int invo = you.skill(SK_INVOCATIONS, 10);
+            x -= invo / 2;
+        }
     }
 
-    int hunger = pow(17.0 / 16, x / 10);
+    int hunger = pow(17.0 / 16, x / 10.0) * 10;
 
     if (hunger < 0 || you.duration[DUR_CHANNELING] != 0 || player_mutation_level(MUT_HUNGERLESS) != 0)
         hunger = 0;
