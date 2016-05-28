@@ -405,22 +405,27 @@ bool del_spell_from_memory(spell_type spell)
         return del_spell_from_memory_by_slot(i);
 }
 
-// should be around 0-1000
 int spell_hunger(spell_type which_spell, bool rod, int multiplier)
 {
     const int level = spell_difficulty(which_spell);
-    int hunger = 25 * multiplier * level * level;
+    int x = 300;
+    x += level * 50;
 
     if (rod)
     {
-        hunger /= 5 + you.skill(SK_EVOCATIONS);
-        hunger /= 25;
+        const int evo = you.skill(SK_EVOCATIONS, 10);
+        x -= evo;
+        x -= 250;
     }
     else
     {
-        hunger /= 5 + you.skill(SK_SPELLCASTING);
-        hunger /= 5 + you.intel();
+        const int spellcasting = you.skill(SK_SPELLCASTING, 10);
+        const int intel = you.intel() * 10;
+        x -= spellcasting;
+        x -= intel * 10;
     }
+
+    int hunger = pow(17.0 / 16, x / 10);
 
     if (hunger < 0 || you.duration[DUR_CHANNELING] != 0 || player_mutation_level(MUT_HUNGERLESS) != 0)
         hunger = 0;
