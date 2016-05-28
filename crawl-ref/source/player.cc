@@ -9770,9 +9770,13 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
     if (ammo && !ammo->launched_by(*weapon))
         weight = property(*ammo, PWPN_WEIGHT);
 
-    int sp_cost = 50 * weight;
-    sp_cost /= 5 + you.strength(true) * 3 / 2;
-    sp_cost /= 5 + you.skill(SK_FIGHTING) * 3 / 2;
+    const int strength = (you.strength(true) - 10) * 10;
+    const int fighting = you.skill(SK_FIGHTING, 10);
+
+    // may be negative
+    const int benefit = strength + fighting;
+
+    double sp_cost = fpow(weight * 2, 9, 10, benefit / 10.0);
 
     sp_cost = max(2, sp_cost);
 
