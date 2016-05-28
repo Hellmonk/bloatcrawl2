@@ -9610,7 +9610,7 @@ void player_used_magic(int mp_cost, spell_type spell)
     const int dex = (you.dex(true) - 10) * 10;
 
     double benefit = spellcasting + dex;
-    benefit = max(0, benefit);
+    benefit = max(0, (int)benefit);
 
     benefit /= 400.0;
 
@@ -9778,7 +9778,7 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
 
     double sp_cost = fpow(weight * 2, 9, 10, benefit / 10.0);
 
-    sp_cost = max(2, sp_cost);
+    sp_cost = max(2, (int)sp_cost);
 
     if (you.exertion != EXERT_NORMAL)
         sp_cost *= 2;
