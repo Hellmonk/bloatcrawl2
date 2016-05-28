@@ -325,8 +325,8 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
 
     reduction = max(0, reduction);
 
-    const int ratio = max(0, 400 - reduction) + 400;
-    attk_delay = attk_delay * ratio / 800;
+    const int num = max(0, 400 - reduction) + 400;
+    attk_delay = attk_delay * num / 800;
 
     attk_delay = player_attack_delay_modifier(attk_delay);
 

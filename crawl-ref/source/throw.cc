@@ -476,38 +476,47 @@ void fire_thing(int item)
     if (item == -1)
     {
         item_def *const weapon = you.weapon();    
-        if (weapon && weapon->isValid() && weapon->base_type == OBJ_WEAPONS)
+        if (weapon && weapon->isValid())
         {
-            missile_type missileType = MI_STONE;
-            special_missile_type ego = SPMSL_FORBID_BRAND;
-
-            switch(weapon->sub_type)
+            if (weapon->base_type == OBJ_WEAPONS)
             {
-                case WPN_BLOWGUN:
-                    missileType = MI_NEEDLE;
-                    ego = SPMSL_POISONED;
-                    break;
-                case WPN_HAND_CROSSBOW:
-                case WPN_TRIPLE_CROSSBOW:
-                case WPN_ARBALEST:
-                    missileType = MI_BOLT;
-                    break;
-                case WPN_SHORTBOW:
-                case WPN_LONGBOW:
-                    missileType = MI_ARROW;
-                    break;
-                case WPN_HUNTING_SLING:
-                    missileType = MI_SLING_BULLET;
-                    break;
-                default:
-                    // should not happen
-                    missileType = MI_STONE;
-                    break;
-            }
+                missile_type missileType = MI_STONE;
+                special_missile_type ego = SPMSL_FORBID_BRAND;
 
-            int p = items(false, OBJ_MISSILES, missileType, 0, ego);
-            ammo = &mitm[p];
-            created_ammo = true;
+                switch(weapon->sub_type)
+                {
+                    case WPN_BLOWGUN:
+                        missileType = MI_NEEDLE;
+                        ego = SPMSL_POISONED;
+                        break;
+                    case WPN_HAND_CROSSBOW:
+                    case WPN_TRIPLE_CROSSBOW:
+                    case WPN_ARBALEST:
+                        missileType = MI_BOLT;
+                        break;
+                    case WPN_SHORTBOW:
+                    case WPN_LONGBOW:
+                        missileType = MI_ARROW;
+                        break;
+                    case WPN_HUNTING_SLING:
+                        missileType = MI_SLING_BULLET;
+                        break;
+                    default:
+                        // should not happen
+                        missileType = MI_STONE;
+                        break;
+                }
+
+                int p = items(false, OBJ_MISSILES, missileType, 0, ego);
+                ammo = &mitm[p];
+                created_ammo = true;
+            }
+            else if (weapon->base_type == OBJ_MISSILES)
+            {
+                ammo = weapon;
+            }
+            else
+                return;
         }
         else
             return;
