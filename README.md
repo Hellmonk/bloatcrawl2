@@ -310,13 +310,13 @@ Djinni brought back from the dead and greatly enhanced.
    * Unusual contamination mechanism that they originally had has been removed. They also consume food like normal species, so excessive spell casting has the normal consequence.
    * Djinni can no longer read scrolls of any kind, even though they can use spell books.
    * Since they can't read remove curse scrolls, cursed items are a much bigger deal for them. To mitigate this a little, they have a remove curse ability that costs one permanent MP.
-   * Since they can't read identify scrolls, they can either identify items by using them (very dangerous for potentially cursed items), or wait and use the new insight mutation that they start with which, over time, randomly identifies attributes of items in their inventory. This mutation can also randomly be gained by other species as they drink mutation potions, etc. An item with an earlier inventory letter will likely be identified before an item with a later one ('b' will be identified sooner than 'z' in most cases).
+   * Since they can't read identify scrolls, they can either identify items by using them (very dangerous for potentially cursed items), or wait for the new insight mutation which will, over time, randomly identify attributes of items in their inventory. All species have a weak version of this mutation. An item with an earlier inventory letter will likely be identified before an item with a later one ('b' will be identified sooner than 'z' in most cases).
    * Fire damage heals them. Standing in a flame cloud is a way to heal, but the flame cloud is absorbed by the Djinni and disappears more quickly than normal. Be careful though, increasing their fire resistance (through an item, ring, etc), will reduce their healing. Maybe you can find a source of lowering their fire resistance?
    * They have very low magic resistance.
-   * They have the glow mutation, which increases with experience, which reduces their stealth.
+   * They glow, which reduces their stealth and gets brighter as they level up
    * Cold and water damage does triple the resistable amount of damage, in addition to the penalties of having one level of cold vulnerability. A ring of ice would be very valuable here, reducing the cold damage done, as well as increasing the healing from fire damage. Unfortunately, there is no water resistance buff... muahahaha....
    * Unarmed combat gets a fire brand.
-   * They start with ephemeral 3 mutation, and slowly lose it as they gain experience (as they become more corporeal). The ephemeral mutation give a chance that attacks (both melee and ranged) will completely pass through the Djinni.
+   * Ephemeral 3, which dwindles as they level up (as they become more corporeal). Ephemeral gives a chance that attacks (both melee and ranged) will completely pass through the Djinni.
    * Dithmenos rejects Dj of course
 
 Mummy
@@ -335,7 +335,7 @@ Ghouls
 
 Halfling
    * wild magic at level 8, 16, and 24, making it more difficult to cast spells, but those spells are quite powerful.
-   * an extraordinary level of magic resistance
+   * 12 magic resist per level (instead of 3)
    * improved conjuration apt from -2 to +2
 
 Kobold
@@ -368,14 +368,14 @@ Tengu
    * start with shock resistance
    * start with thin skeletal structure
    * can't wear rings at all
-   * a new mutation called enchantment absorption which can cause enchantments used on the player to instead be absorbed as mana
+   * enchantment absorption, which causes some enchantments used on the player to instead be absorbed as mana
        * at 6 they get enchantment absorb 1: they absorb 10% of all bad enchantments
        * at 12 they get ench absorb 2: they absorb 40% of all bad enchantments
        * at 18 they get ench absorb 3: absorb 90% of all bad enchantments, making them almost immune.
 
 Trolls
    * Cave Troll
-       * like old troll, except with a couple more shaggy fur mutations
+       * like old troll, except with more shaggy fur
    * Moon Troll
        * gain several elemental resistances as they gain levels
        * start with higher hp than normal, but never gain hp with level. They can increase hp by training fighting or through items, but late game they will have rather low hp.
