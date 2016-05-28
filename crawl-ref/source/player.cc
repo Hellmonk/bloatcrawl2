@@ -9602,10 +9602,21 @@ void player_attacked_something(int sp_cost)
 }
 
 // When any kind of magic spell is cast by the player
-void player_used_magic(int mp_cost)
+void player_used_magic(int mp_cost, spell_type spell)
 {
     player_was_offensive();
 
+    const int spellcasting = you.skill(SK_SPELLCASTING, 10);
+    const int dex = (you.dex(true) - 10) * 10;
+
+    double benefit = spellcasting + dex;
+    benefit = max(0, benefit);
+
+    benefit /= 400.0;
+
+    double delay = 0.5 + (1 - benefit);
+
+    you.time_taken = delay;
     you.time_taken = player_attack_delay_modifier(you.time_taken);
 }
 

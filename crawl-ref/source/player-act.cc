@@ -313,8 +313,6 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
         /*
         attk_delay -= wpn_sklev / DELAY_SCALE;
          */
-        if (get_weapon_brand(*weapon) == SPWPN_SPEED)
-            attk_delay = attk_delay * 2 / 3;
     }
 
     int reduction = 0;
@@ -323,18 +321,14 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
     reduction += fighting;
 
     const int dexterity = you.dex(true);
-    reduction += max(0, dexterity - 10) * 10;
+    reduction += (dexterity - 10) * 10;
 
-    reduction /= 30;
+    reduction = max(0, reduction);
 
-    reduction = min(fighting / 10, reduction);
-
-    attk_delay -= reduction;
-    attk_delay = max(base_delay / 2, attk_delay);
-    attk_delay = min(base_delay, attk_delay);
+    const int ratio = max(0, 400 - reduction) + 400;
+    attk_delay = attk_delay * ratio / 800;
 
     attk_delay = player_attack_delay_modifier(attk_delay);
-    attk_delay = max(attk_delay, 3);
 
     if (base_shield_penalty)
     {
@@ -343,6 +337,9 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
         int shield_penalty = base_shield_penalty / DELAY_SCALE;
         attk_delay += shield_penalty;
     }
+
+    if (weapon && get_weapon_brand(*weapon) == SPWPN_SPEED)
+        attk_delay = attk_delay * 2 / 3;
 
     if (you.duration[DUR_FINESSE])
     {
@@ -353,6 +350,8 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
             attk_delay = haste_mul(attk_delay);
         attk_delay = max(2, attk_delay / 2);
     }
+
+    attk_delay = max(attk_delay, 3);
 
     // see comment on player.cc:player_speed
     return attk_delay * you.time_taken / 10;

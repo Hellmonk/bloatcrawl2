@@ -29,7 +29,7 @@
     * Dexterity
     * Fighting Skill
 
-* Mindelay is reached when dex+fighting = 50
+* Min attacking delay is reached when dex + fighting = 50
 
 ## Spellcasting (perfectly parallels Fighting, see above)
 
@@ -48,6 +48,8 @@
 * *Spell Casting Speed* is increased by:
     * Dexterity
     * Spellcasting Skill
+
+* Min casting delay is reached when dex + spellcasting = 50
 
 ## Exertion modes
 
