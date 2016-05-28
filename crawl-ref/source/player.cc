@@ -9712,7 +9712,7 @@ void player_after_each_turn()
 
 int spell_mp_cost(spell_type which_spell)
 {
-    int cost = 2 * spell_hunger(which_spell, false) / 10;
+    int cost = spell_hunger(which_spell, false) / 10;
 
     cost = max(cost, 2);
 
@@ -9735,7 +9735,7 @@ int spell_mp_freeze(spell_type which_spell)
     int cost = 0;
     if (is_summon_spell(which_spell))
     {
-        cost = 5 * spell_hunger(which_spell, false, 200);
+        cost = 3 * spell_hunger(which_spell, false, 200);
 
         cost = max(cost, 5);
 
