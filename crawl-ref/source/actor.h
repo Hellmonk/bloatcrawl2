@@ -4,6 +4,7 @@
 #include "itemprop-enum.h"
 #include "random-var.h"
 #include "ouch.h"
+#include "enum.h"
 
 #define CLING_KEY "clinging" // 'is creature clinging' property key
 
@@ -98,7 +99,8 @@ public:
     }
     virtual int attack_delay(const item_def *projectile = nullptr,
                              bool rescale = true,
-                             const item_def* weapon = nullptr) const = 0;
+                             const item_def* weapon = nullptr,
+                             const action_delay_type adt = ACTION_DELAY_CURRENT) const = 0;
     virtual int has_claws(bool allow_tran = true) const = 0;
     virtual item_def *shield() const = 0;
     virtual item_def *slot_item(equipment_type eq,

@@ -254,7 +254,7 @@ brand_type player::damage_brand(int)
  *                    finesse doesn't stack with haste.
  * @return            The attack delay.
  */
-int player::attack_delay(const item_def *projectile, bool rescale, const item_def *weapon) const
+int player::attack_delay(const item_def *projectile, bool rescale, const item_def *weapon, const action_delay_type adt) const
 {
     if (!weapon)
         weapon = you.weapon();
@@ -296,10 +296,8 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
             attk_delay = attk_delay * 3 / 5;
     }
     else if (weapon
-             /*
-             && (projectile ? projectile->launched_by(*weap)
-                         : is_melee_weapon(*weap))
-                         */
+             && (projectile ? projectile->launched_by(*weapon)
+                         : is_melee_weapon(*weapon))
         )
     {
         const skill_type wpn_skill = item_attack_skill(*weapon);
@@ -310,30 +308,9 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
 
         base_delay = property(*weapon, PWPN_SPEED);
         attk_delay = base_delay;
-        /*
-        attk_delay -= wpn_sklev / DELAY_SCALE;
-         */
     }
 
-    int reduction = 0;
-
-    const int fighting = you.skill(SK_FIGHTING, 10);
-    reduction += fighting;
-
-    const int dexterity = you.dex();
-    reduction += (dexterity - 10) * 10;
-
-    reduction = max(0, reduction);
-    reduction = min(400, reduction);
-
-    double adjusted_reduction = reduction / 400;
-    // square it so it's harder to reach max reduction
-    adjusted_reduction *= adjusted_reduction;
-    adjusted_reduction *= 400;
-
-    attk_delay = attk_delay * (800 - adjusted_reduction) / 800;
-
-    attk_delay = player_attack_delay_modifier(attk_delay);
+    attk_delay = generic_action_delay(you.skill(SK_FIGHTING, 10), attk_delay, adt);
 
     if (base_shield_penalty)
     {

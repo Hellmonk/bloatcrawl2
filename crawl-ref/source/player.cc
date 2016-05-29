@@ -9601,22 +9601,46 @@ void player_attacked_something(int sp_cost)
     player_was_offensive();
 }
 
+int generic_action_delay(const int skill, const int base, const action_delay_type type)
+{
+    const int dex = (you.dex(true) - 10) * 10;
+
+    int benefit = skill + dex;
+
+    benefit = max(0, benefit);
+    benefit = min(400, benefit);
+
+    double adjusted_benefit = benefit / 400.0;
+    // square it so it's harder to reach max benefit
+    adjusted_benefit *= adjusted_benefit;
+    adjusted_benefit *= 400;
+
+    if (type == ACTION_DELAY_MAX)
+        adjusted_benefit = 0;
+    if (type == ACTION_DELAY_MIN)
+        adjusted_benefit = 400;
+
+    int delay = base * (800 - adjusted_benefit) / 800;
+    delay = player_attack_delay_modifier(delay);
+    return delay;
+}
+
+int spell_cast_delay(const action_delay_type type)
+{
+    const int skill = you.skill(SK_SPELLCASTING, 10);
+    const int base = 15;
+
+    int delay = generic_action_delay(skill, base);
+
+    return delay * you.time_taken / 10;
+}
+
 // When any kind of magic spell is cast by the player
 void player_used_magic(int mp_cost, spell_type spell)
 {
     player_was_offensive();
 
-    const int spellcasting = you.skill(SK_SPELLCASTING, 10);
-    const int dex = (you.dex(true) - 10) * 10;
-
-    double benefit = spellcasting + dex;
-    benefit = max(0, (int)benefit);
-
-    benefit /= 400.0;
-
-    double delay = 0.5 + (1 - benefit * benefit);
-
-    you.time_taken = player_attack_delay_modifier(rand_round(delay * 10));
+    you.time_taken = spell_cast_delay();
 }
 
 void player_evoked_something()

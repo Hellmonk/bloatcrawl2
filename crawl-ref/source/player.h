@@ -597,7 +597,8 @@ public:
     int         damage_type(int which_attack = -1) override;
     int         attack_delay(const item_def *projectile = nullptr,
                              bool rescale = true,
-                             const item_def *weapon = nullptr) const override;
+                             const item_def *weapon = nullptr,
+                             const action_delay_type adt = ACTION_DELAY_CURRENT) const override;
     int         constriction_damage() const override;
 
     int       has_claws(bool allow_tran = true) const override;
@@ -1221,6 +1222,9 @@ void player_moved();
 void player_before_long_safe_action();
 void player_after_long_safe_action(int turns);
 void player_after_each_turn();
+
+int generic_action_delay(const int skill, const int base, const action_delay_type type = ACTION_DELAY_CURRENT);
+int spell_cast_delay(const action_delay_type type = ACTION_DELAY_CURRENT);
 
 int spell_mp_cost(spell_type which_spell);
 int spell_mp_freeze(spell_type which_spell);
