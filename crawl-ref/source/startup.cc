@@ -72,8 +72,10 @@ static void _initialize()
     Options.fixup_options();
 
     you.symbol = MONS_PLAYER;
-    you.last_hit_chance     = 0;
-    you.last_tohit          = 0;
+    you.last_hit_resistance  = 0;
+    you.last_damage_resist   = 0;
+    you.last_damage          = 0;
+    you.last_hit_chance      = 0;
 
     seed_rng();
 

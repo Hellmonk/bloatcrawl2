@@ -390,7 +390,7 @@ public:
     bool redraw_armour_class;
     bool redraw_evasion;
     bool redraw_status_lights;
-    bool redraw_tohit;
+    bool redraw_hit_chance;
 
     colour_t flash_colour;
     targetter *flash_where;
@@ -451,8 +451,10 @@ public:
     // The save file itself.
     // ---------------------
     package *save;
+    int last_hit_resistance;
     int last_hit_chance;
-    int last_tohit;
+    int last_damage_resist;
+    int last_damage;
     uint8_t monsters_recently_seen;
 
 protected:

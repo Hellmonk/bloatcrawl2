@@ -62,26 +62,21 @@ ranged_attack::ranged_attack(actor *attk, actor *defn, item_def *proj,
         wpn_skill = SK_THROWING;
 }
 
-int ranged_attack::calc_to_hit(bool random)
+int ranged_attack::calc_to_hit()
 {
-    orig_to_hit = attack::calc_to_hit(random);
+    orig_to_hit = attack::calc_to_hit();
     if (teleport)
     {
         orig_to_hit +=
             (attacker->is_player())
-            ? maybe_random2(you.attribute[ATTR_PORTAL_PROJECTILE] / 4, random)
+            ? you.attribute[ATTR_PORTAL_PROJECTILE] / 8
             : 3 * attacker->as_monster()->get_hit_dice();
     }
 
     int hit = orig_to_hit;
     const int defl = defender->missile_deflection();
     if (defl)
-    {
-        if (random)
-            hit = random2(hit / defl);
-        else
-            hit = (hit - 1) / (2 * defl);
-    }
+        hit = (hit - 1) / (2 * defl);
 
     return hit;
 }

@@ -12,6 +12,8 @@ const int HIT_WEAK   = 7;
 const int HIT_MED    = 18;
 const int HIT_STRONG = 36;
 
+int calc_player_to_hit(item_def *weapon, skill_type wpn_skill);
+
 class attack
 {
 // Public Properties
@@ -99,7 +101,7 @@ public:
     attack(actor *attk, actor *defn, actor *blame = 0);
 
     // To-hit is a function of attacker/defender, defined in sub-classes
-    virtual int calc_to_hit(bool random);
+    virtual int calc_to_hit();
 
     // Exact copies of their melee_attack predecessors
     string actor_name(const actor *a, description_level_type desc,
@@ -199,6 +201,7 @@ protected:
     virtual int  player_stab_weapon_bonus(int damage);
     virtual int  player_stab(int damage);
     virtual void player_stab_check();
+
 };
 
 #endif

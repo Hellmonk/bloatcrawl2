@@ -502,7 +502,7 @@ void zappy(zap_type z_type, int power, bool is_monster, bolt &pbolt)
         if (!is_monster)
         {
             const int range = grid_distance(pbolt.source, pbolt.target);
-            pbolt.hit = player_tohit_modifier(pbolt.hit);
+            pbolt.hit = player_tohit_modifier(pbolt.hit, range);
         }
 
         if (pbolt.hit != AUTOMATIC_HIT && !is_monster)

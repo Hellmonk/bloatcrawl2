@@ -2384,8 +2384,11 @@ static void tag_read_you(reader &th)
 
     you.monsters_recently_seen    = unmarshallUByte(th);
     you.motion                    = (motion_type) unmarshallUByte(th);
-    you.last_tohit = 0;
-    you.last_hit_chance = 0;
+
+    you.last_damage_resist        = 0;
+    you.last_hit_resistance       = 0;
+    you.last_hit_chance           = 0;
+    you.last_damage               = 0;
 
     for (int i = 0; i < NUM_STATS; ++i)
         you.base_stats[i] = unmarshallByte(th);

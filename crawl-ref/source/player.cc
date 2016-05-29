@@ -3772,7 +3772,7 @@ static void _display_movement_speed()
 static void _display_tohit()
 {
     melee_attack attk(&you, nullptr);
-    const int to_hit = attk.calc_to_hit(false);
+    const int to_hit = attk.calc_to_hit();
     mprf("To-hit: %d", to_hit);
 }
 
@@ -4578,7 +4578,7 @@ bool dec_sp(int sp_loss, bool silent, bool allow_overdrive)
         result = false;
         you.redraw_evasion = true;
         you.redraw_armour_class = true;
-        you.redraw_tohit = true;
+        you.redraw_hit_chance = true;
     }
 
     you.redraw_stamina_points = true;
@@ -6159,7 +6159,7 @@ player::player()
     redraw_experience    = false;
     redraw_armour_class  = false;
     redraw_evasion       = false;
-    redraw_tohit         = false;
+    redraw_hit_chance    = false;
     redraw_title         = false;
 
     flash_colour        = BLACK;
@@ -6192,8 +6192,10 @@ player::player()
     max_exp             = 0;
     current_form_spell  = SPELL_NO_SPELL;
     current_form_spell_failure  = 0;
-    last_hit_chance     = 0;
-    last_tohit          = 0;
+    last_hit_resistance = 0;
+    last_damage_resist  = 0;
+    last_damage         = 0;
+    last_damage_resist  = 0;
     monsters_recently_seen = 0;
     summoned.init(MID_NOBODY);
 
@@ -10028,20 +10030,8 @@ void player_update_last_hit_chance(int chance)
     if (chance > 99)
         chance = 99;
 
-    you.last_hit_chance = chance;
-    you.redraw_tohit = true;
-}
-
-void player_update_tohit(int new_tohit)
-{
-    if (new_tohit == -1)
-    {
-        melee_attack attk(&you, nullptr);
-        new_tohit = attk.calc_to_hit(false);
-    }
-
-    you.last_tohit = new_tohit;
-    you.redraw_tohit = true;
+    you.last_hit_resistance = chance;
+    you.redraw_hit_chance = true;
 }
 
 // used for pool sizes. Generic way to scale something based on difficulty
