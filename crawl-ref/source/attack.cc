@@ -1237,40 +1237,6 @@ string attack::defender_name(bool allow_reflexive)
         return def_name(DESC_THE);
 }
 
-int attack::player_stat_modify_damage(int damage)
-{
-    /* old way
-    int dammod = 39;
-
-    if (you.strength() > 10)
-        dammod += (random2(you.strength() - 10) * 2);
-    else if (you.strength() < 10)
-        dammod -= (random2(10 - you.strength()) * 3);
-
-    damage *= dammod;
-    damage /= 39;
-     */
-
-    damage = div_rand_round(damage * (5 + you.strength()), 15);
-
-    return damage;
-}
-
-int attack::player_apply_weapon_skill(int damage)
-{
-    if (using_weapon())
-    {
-        /* old way
-        damage *= 1000 + (random2(you.skill(wpn_skill, 100) + 1));
-        damage /= 1000;
-         */
-
-        damage = div_rand_round(damage * (150 + you.skill(wpn_skill, 10)), 200);
-    }
-
-    return damage;
-}
-
 int attack::player_apply_fighting_skill(int damage, bool aux)
 {
     const int base = aux? 40 : 30;
@@ -1421,14 +1387,17 @@ int attack::calc_damage()
         potential_damage = using_weapon() || wpn_skill == SK_THROWING
             ? weapon_damage() : calc_base_unarmed_damage();
 
-        potential_damage = player_stat_modify_damage(potential_damage);
+        const int strength = you.strength();
+        int boost = (strength - 10) * 10;
+        if (using_weapon())
+        {
+            const int weapon_skill = you.skill(wpn_skill, 10);
+            boost += weapon_skill;
+        }
 
+        potential_damage = div_rand_round(potential_damage * (40 + boost), 40);
         damage = random2(potential_damage+1);
 
-        damage = player_apply_weapon_skill(damage);
-        /* don't apply fighting skill to damage any more
-        damage = player_apply_fighting_skill(damage, false);
-         */
         damage = player_apply_misc_modifiers(damage);
         damage = player_apply_slaying_bonuses(damage, false);
         damage = player_stab(damage);
