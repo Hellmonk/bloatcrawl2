@@ -320,8 +320,8 @@ int chei_stat_boost(int piety)
     if (piety < piety_breakpoint(0))  // Since you've already begun to slow down.
         return 1;
     if (piety >= piety_breakpoint(5))
-        return 15;
-    return (piety - 10) / 10;
+        return 10;
+    return piety / 20;
 }
 
 // Eat from one random off-level item stack.
