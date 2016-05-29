@@ -1405,7 +1405,7 @@ int attack::test_hit(int to_land, int ev)
 
     if (to_land < AUTOMATIC_HIT)
     {
-        const int chance = get_success_chance(to_land, ev, 5);
+        const int chance = get_success_chance(to_land - ev, 5);
         player_update_last_hit_chance(chance);
         const int r = random2(101);
         margin = chance - r;

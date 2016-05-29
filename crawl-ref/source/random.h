@@ -11,7 +11,7 @@
 void seed_rng();
 void seed_rng(uint32_t seed);
 void seed_rng(uint64_t[], int);
-int get_success_chance(int force, int resist, int cap = 0, int spread = 16);
+int get_success_chance(int diff, int cap = 0, int spread = 16);
 
 uint32_t get_uint32(int generator = RNG_GAMEPLAY);
 uint64_t get_uint64(int generator = RNG_GAMEPLAY);
