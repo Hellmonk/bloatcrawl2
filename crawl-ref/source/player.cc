@@ -9781,7 +9781,7 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
     // may be negative
     const int benefit = strength + fighting;
 
-    double sp_cost = fpow(weight * 2, 9, 10, benefit / 10.0);
+    double sp_cost = fpow(weight * 2, 15, 16, benefit / 10.0);
 
     sp_cost = max(2, (int)sp_cost);
 
