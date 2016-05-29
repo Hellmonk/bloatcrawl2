@@ -53,7 +53,7 @@ attack::attack(actor *attk, actor *defn, actor *blame)
       perceived_attack(false), obvious_effect(false), to_hit(0),
       damage_done(0), special_damage(0), aux_damage(0), min_delay(0),
       final_attack_delay(0), special_damage_flavour(BEAM_NONE),
-      stab_attempt(false), stab_bonus(0), ev_margin(0), weapon(nullptr),
+      stab_attempt(false), stab_bonus(0), hit_margin(0), weapon(nullptr),
       damage_brand(SPWPN_NORMAL), wpn_skill(SK_UNARMED_COMBAT),
       shield(nullptr), art_props(0), unrand_entry(nullptr),
       attacker_to_hit_penalty(0), attack_verb("bug"), verb_degree(),
@@ -1098,10 +1098,10 @@ string attack::attack_strength_punctuation(int dmg)
  */
 string attack::evasion_margin_adverb()
 {
-    return (ev_margin <= -20) ? " completely" :
-           (ev_margin <= -12) ? "" :
-           (ev_margin <= -6)  ? " closely"
-                              : " barely";
+    return (hit_margin <= -20) ? " completely" :
+           (hit_margin <= -12) ? "" :
+           (hit_margin <= -6)  ? " closely"
+                               : " barely";
 }
 
 void attack::stab_message()
@@ -1399,7 +1399,7 @@ int attack::calc_damage()
     return 0;
 }
 
-int attack::test_hit(int to_land, int ev, bool randomise_ev)
+int attack::test_hit(int to_land, int ev)
 {
     int margin = AUTOMATIC_HIT;
 

@@ -99,7 +99,7 @@ bool ranged_attack::attack()
     }
 
     const int ev = defender->evasion(EV_IGNORE_NONE, attacker);
-    ev_margin = test_hit(to_hit, ev, !attacker->is_player());
+    hit_margin = test_hit(to_hit, ev);
     bool shield_blocked = attack_shield_blocked(false);
 
     god_conduct_trigger conducts[3];
@@ -112,7 +112,7 @@ bool ranged_attack::attack()
         handle_phase_blocked();
     else
     {
-        if (ev_margin >= 0)
+        if (hit_margin >= 0)
         {
             if (!handle_phase_hit())
             {
@@ -141,7 +141,7 @@ bool ranged_attack::attack()
         handle_phase_killed();
 
     if (attacker->is_player() && defender->is_monster()
-        && !shield_blocked && ev_margin >= 0)
+        && !shield_blocked && hit_margin >= 0)
     {
         print_wounds(defender->as_monster());
     }
@@ -223,7 +223,7 @@ bool ranged_attack::handle_phase_dodged()
     const int ev = defender->evasion(EV_IGNORE_NONE, attacker);
 
     const int orig_ev_margin =
-        test_hit(orig_to_hit, ev, !attacker->is_player());
+        test_hit(orig_to_hit, ev);
 
     if (defender->missile_deflection() && orig_ev_margin >= 0)
     {

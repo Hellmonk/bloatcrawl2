@@ -384,7 +384,7 @@ static fight_data _get_fight_data(monster &mon, int iter_limit, bool defend)
                 ranged_attack attk(&you, &mon, &you.inv1[missile], false);
                 attk.simu = true;
                 attk.attack();
-                if (attk.ev_margin >= 0)
+                if (attk.hit_margin >= 0)
                     hits++;
                 you.time_taken = you.attack_delay(&you.inv1[missile]);
             }

@@ -47,7 +47,7 @@ public:
     int     stab_bonus;
 
     // Fetched/Calculated from the attacker, stored to save execution time
-    int             ev_margin;
+    int     hit_margin;
 
     // TODO: Expand the implementation of attack_type/attack_flavour to be used
     // by players as well as monsters. It could be a good middle ground for
@@ -136,7 +136,7 @@ protected:
     virtual int calc_mon_to_hit_base() = 0;
     virtual int apply_damage_modifiers(int damage, int damage_max) = 0;
     virtual int calc_damage();
-    int test_hit(int to_hit, int ev, bool randomise_ev);
+    int test_hit(int to_hit, int ev);
     int apply_defender_ac(int damage, int damage_max = 0) const;
     // Determine if we're blocking (partially or entirely)
     virtual bool attack_shield_blocked(bool verbose);
