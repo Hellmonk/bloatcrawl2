@@ -1215,7 +1215,7 @@ const int rune_curse_depth_adjust(int depth);
 void player_summon_was_shot_through(monster* mon);
 void player_was_offensive();
 void player_attacked_something(int sp_cost);
-void player_used_magic(int mp_cost);
+void player_used_magic(int mp_cost, spell_type spell);
 void player_evoked_something();
 void player_moved();
 void player_before_long_safe_action();

@@ -9602,11 +9602,21 @@ void player_attacked_something(int sp_cost)
 }
 
 // When any kind of magic spell is cast by the player
-void player_used_magic(int mp_cost)
+void player_used_magic(int mp_cost, spell_type spell)
 {
     player_was_offensive();
 
-    you.time_taken = player_attack_delay_modifier(you.time_taken);
+    const int spellcasting = you.skill(SK_SPELLCASTING, 10);
+    const int dex = (you.dex(true) - 10) * 10;
+
+    double benefit = spellcasting + dex;
+    benefit = max(0, (int)benefit);
+
+    benefit /= 400.0;
+
+    double delay = 0.5 + (1 - benefit * benefit);
+
+    you.time_taken = player_attack_delay_modifier(rand_round(delay * 10));
 }
 
 void player_evoked_something()
@@ -9699,22 +9709,9 @@ void player_after_each_turn()
     }
 }
 
-int _apply_hunger(const spell_type &which_spell, int cost, int multiplier = 100)
-{
-
-    int hunger = spell_hunger(which_spell, false, multiplier);
-
-    if (player_mutation_level(MUT_HUNGERLESS) > 0)
-        hunger /= 2;
-
-    cost = cost * (hunger + 100) / 100;
-
-    return cost;
-}
-
 int spell_mp_cost(spell_type which_spell)
 {
-    int cost = _apply_hunger(which_spell, 2);
+    int cost = spell_hunger(which_spell, false) / 10;
 
     cost = max(cost, 2);
 
@@ -9722,8 +9719,6 @@ int spell_mp_cost(spell_type which_spell)
         || is_summon_spell(which_spell)
         )
         cost = 0;
-    else if (have_passive(passive_t::conserve_mp))
-        cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
 
     if (is_self_transforming_spell(which_spell))
         cost *= 2;
@@ -9739,12 +9734,9 @@ int spell_mp_freeze(spell_type which_spell)
     int cost = 0;
     if (is_summon_spell(which_spell))
     {
-        cost = _apply_hunger(which_spell, 10, 200);
+        cost = 3 * spell_hunger(which_spell, false, 200);
 
-        if (have_passive(passive_t::conserve_mp))
-            cost = qpow(cost, 97, 100, you.skill(SK_INVOCATIONS), false);
-
-        cost = max(cost, 1);
+        cost = max(cost, 5);
 
         if (you.exertion != EXERT_NORMAL && you.peace < 50)
             cost *= 2;
@@ -9759,11 +9751,15 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
     if (ammo && !ammo->launched_by(*weapon))
         weight = property(*ammo, PWPN_WEIGHT);
 
-    int sp_cost = 50 * weight;
-    sp_cost /= 5 + you.strength(true) * 3 / 2;
-    sp_cost /= 5 + you.skill(SK_FIGHTING) * 3 / 2;
+    const int strength = (you.strength(true) - 10) * 10;
+    const int fighting = you.skill(SK_FIGHTING, 10);
 
-    sp_cost = max(2, sp_cost);
+    // may be negative
+    const int benefit = strength + fighting;
+
+    double sp_cost = fpow(weight * 2, 9, 10, benefit / 10.0);
+
+    sp_cost = max(2, (int)sp_cost);
 
     if (you.exertion != EXERT_NORMAL)
         sp_cost *= 2;
@@ -10183,8 +10179,8 @@ void _attempt_instant_rest_handle_no_visible_monsters()
         if (shortest != -1)
         {
             near_monster->move_to_pos(to);
-            near_monster->speed_increment = 0;
-            /* we don't necessarily want them alert, as if the player just stumbled on them
+            /*
+            near_monster->speed_increment /= 2;
             behaviour_event(near_monster, ME_ALERT, &you, you.pos());
              */
             ldprf(LD_INSTAREST, "Pulled in monster. recently_seen = %d.", you.monsters_recently_seen);
