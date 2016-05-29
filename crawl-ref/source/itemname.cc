@@ -2808,7 +2808,10 @@ void display_runes()
     string curse_effects = "";
     if (runes_in_pack())
     {
-        curse_effects = make_stringf("  <yellow>Rune curse effects:</yellow>  hd: <white>+%d</white>   hp: <white>%d%%</white>   damage: <white>%d%%</white>", rune_curse_hd_adjust(0, false), rune_curse_hd_adjust(100, false), rune_curse_dam_adjust(100, false));
+        curse_effects = make_stringf("  <yellow>Rune curse effects:</yellow>  hd: <white>+%d</white>   hp: <white>%d%%</white>   damage: <white>%d%%</white>",
+                                     rune_curse_hd_adjust(0, false),
+                                     rune_curse_hp_adjust(100, false),
+                                     rune_curse_dam_adjust(100, false));
     }
 
     auto title = make_stringf("<white>Runes of Zot (</white>"
