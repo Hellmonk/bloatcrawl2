@@ -9614,9 +9614,9 @@ void player_used_magic(int mp_cost, spell_type spell)
 
     benefit /= 400.0;
 
-    double delay = 0.5 + (1 - benefit);
+    double delay = 0.5 + (1 - benefit * benefit);
 
-    you.time_taken = player_attack_delay_modifier(delay * 10);
+    you.time_taken = player_attack_delay_modifier(rand_round(delay * 10));
 }
 
 void player_evoked_something()
