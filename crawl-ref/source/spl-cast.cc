@@ -465,7 +465,7 @@ int list_spells_wide(bool viewing, bool allow_preselect,
  */
 int raw_spell_fail(spell_type spell)
 {
-    float x = -10;
+    float x = 30;
 
     const int spell_level = spell_difficulty(spell);
     const int armour_shield_penalty = player_armour_shield_spell_penalty();
@@ -485,11 +485,11 @@ int raw_spell_fail(spell_type spell)
     const spschools_type disciplines = get_spell_disciplines(spell);
     const int school_average = average_schools(disciplines, 10);
 
-    x += spell_level * -5;
-    x += armour_shield_penalty * -0.05;
+    x += spell_level * -10;
+    x += armour_shield_penalty * -0.1;
     x += spellcasting_penalty * -0.3;
     x += anti_wizardry * -3;
-    x += vertigo * -3;
+    x += vertigo * -5;
     x += wild * -5;
     x += subdued * 5;
     x += (dex - 10) * 2;
