@@ -9748,7 +9748,7 @@ int spell_mp_freeze(spell_type which_spell)
 int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
 {
     int weight = weapon ? max(1, property(*weapon, PWPN_WEIGHT)) : 3;
-    if (ammo && !ammo->launched_by(*weapon))
+    if (ammo && (!weapon || !ammo->launched_by(*weapon)))
         weight = property(*ammo, PWPN_WEIGHT);
 
     const int strength = (you.strength(true) - 10) * 10;
