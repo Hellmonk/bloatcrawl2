@@ -150,7 +150,7 @@ int attack::calc_to_hit(bool random)
     random = false;
 
     int mhit = attacker->is_player() ?
-                15 + (you.dex() / 2)
+                15 + (you.dex() - 10) * 2
               : calc_mon_to_hit_base();
 
 #ifdef DEBUG_DIAGNOSTICS
@@ -176,18 +176,18 @@ int attack::calc_to_hit(bool random)
                 if (you.skill(wpn_skill) < 1 && player_in_a_dangerous_place())
                     xom_is_stimulated(10); // Xom thinks that is mildly amusing.
 
-                mhit += maybe_random_div(you.skill(wpn_skill, 150), 100, random);
+                mhit += maybe_random_div(you.skill(wpn_skill, 200), 100, random);
             }
         }
         else if (you.form_uses_xl())
-            mhit += maybe_random_div(effective_xl() * 100, 100, random);
+            mhit += effective_xl() * 2;
         else
         {
             // Claws give a slight bonus to accuracy when active
             mhit += (player_mutation_level(MUT_CLAWS) > 0
                      && wpn_skill == SK_UNARMED_COMBAT) ? 4 : 2;
 
-            mhit += maybe_random_div(you.skill(wpn_skill, 150), 100, random);
+            mhit += maybe_random_div(you.skill(wpn_skill, 200), 100, random);
         }
 
         // weapon bonus contribution
