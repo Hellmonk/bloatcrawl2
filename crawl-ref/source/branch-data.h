@@ -135,7 +135,7 @@ const Branch branches[NUM_BRANCHES] =
         GREEN, BROWN,
         'L', {}, 4 },
 
-    { BRANCH_ORC, BRANCH_DUNGEON, 6, 13, 7, 8,
+    { BRANCH_ORC, BRANCH_DUNGEON, 9, 12, 7, 8,
         BFLAG_SPOTTY,
         DNGN_ENTER_ORC, DNGN_EXIT_ORC,
         "Orcish Mines", "the Orcish Mines", "Orc",
