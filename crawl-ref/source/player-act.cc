@@ -320,13 +320,18 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
     const int fighting = you.skill(SK_FIGHTING, 10);
     reduction += fighting;
 
-    const int dexterity = you.dex(true);
+    const int dexterity = you.dex();
     reduction += (dexterity - 10) * 10;
 
     reduction = max(0, reduction);
+    reduction = min(400, reduction);
 
-    const int num = max(0, 400 - reduction) + 400;
-    attk_delay = attk_delay * num / 800;
+    double adjusted_reduction = reduction / 400;
+    // square it so it's harder to reach max reduction
+    adjusted_reduction *= adjusted_reduction;
+    adjusted_reduction *= 400;
+
+    attk_delay = attk_delay * (800 - adjusted_reduction) / 800;
 
     attk_delay = player_attack_delay_modifier(attk_delay);
 
