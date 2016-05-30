@@ -9910,9 +9910,9 @@ int player_attack_delay_modifier(int attack_delay)
     attack_delay *= base_factor;
 
     if (player_is_exhausted(true))
-        attack_delay = attack_delay * 6 / 5;
+        attack_delay = attack_delay * 7 / 6;
     else if (you.exertion == EXERT_POWER)
-        attack_delay = attack_delay * 4 / 5 - 50;
+        attack_delay = attack_delay * 5 / 6 - 50;
 
     return attack_delay / _difficulty_mode_multiplier();
 }
