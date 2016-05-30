@@ -85,6 +85,7 @@
 #include "decks.h"
 #include "mon-pathfind.h"
 #include "mon-behv.h"
+#include "player-reacts.h"
 
 static int _bone_armour_bonus();
 static void _fade_curses(int exp_gained);
@@ -10177,6 +10178,8 @@ void _instant_rest()
     you.peace = 1000;
 
     dec_exhaust_player(1000);
+
+    decrement_durations(5000);
 }
 
 void _attempt_instant_rest_handle_no_visible_monsters()
