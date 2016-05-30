@@ -233,7 +233,7 @@ int calc_player_to_hit(item_def *weapon, skill_type wpn_skill)
 {
     int mhit = 150;
     const int dex = you.dex();
-    mhit += (dex - 10) * 20;
+    mhit += (dex - 10) * 10;
 
     // weapon skill contribution
     if (weapon)
@@ -243,7 +243,7 @@ int calc_player_to_hit(item_def *weapon, skill_type wpn_skill)
             if (you.skill(wpn_skill) < 1 && player_in_a_dangerous_place())
                 xom_is_stimulated(10); // Xom thinks that is mildly amusing.
 
-            mhit += you.skill(wpn_skill, 20);
+            mhit += you.skill(wpn_skill, 10);
         }
     }
     else if (you.form_uses_xl())
@@ -254,7 +254,7 @@ int calc_player_to_hit(item_def *weapon, skill_type wpn_skill)
         mhit += (player_mutation_level(MUT_CLAWS) > 0
                  && wpn_skill == SK_UNARMED_COMBAT) ? 40 : 20;
 
-        mhit += you.skill(wpn_skill, 20);
+        mhit += you.skill(wpn_skill, 10);
     }
 
     // weapon bonus contribution
