@@ -1,5 +1,9 @@
 ## v1.5.2
 
+* To Hit Chance and Be Hit Chance now displayed in right stats panel
+    * To Hit Chance shows how likely it was for the player to hit the last monster it attempted to hit.
+    * Be Hit Chance shows how likely it was for the player to be hit from the last monster who hit the player.
+
 * Min attack speed for all weapons achieved when dex + weapon skill = 50.
 
 * Fighting and Spellcasting factors changed. See cheatsheet under "Fighting" and "Spellcasting"
