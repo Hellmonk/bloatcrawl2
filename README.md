@@ -268,38 +268,14 @@ Damage numbers are shown
    * yeah I know it adds some details that the original designers want to avoid. But really, how many crawl players aren't seriously hard core RPGers anyway? I personally find it a bit less tedious to try out different attack strategies when I can see the numbers, instead of trying to guess from vague descriptions whether or not a change is actually improving my attacking effectiveness.
 
 Game difficulty levels
-   * At game start, or in the init file, you can specify that the game is easy, normal, or hard.
-   * Normal is the standard, unmodified parameters.
-   * Easy:
-       * reduces the chances of out of depth monsters spawning
-       * player has 50% more hp
-       * player has 50% more mp
-       * player has 33% more sp
-       * increases the amount of gold spawned by 33%
-       * starts player with a healing potion
-       * faster level advancement (exp apt + 2)
-       * 1/4 normal score
-       * healing potions heal 100% of health
-       * ghosts don't spawn above level 10 of dungeon
-   * Normal:
-       * ghosts don't spawn above level 5 of dungeon
-       * healing potions heal 50% of health, minimum of 20 points
-   * Hard:
-       * increases the chances of out of depth monsters spawning
-       * slower level advancement (exp apt - 2)
-       * 33% less gold spawned
-       * 33% less hp
-       * 33% less mp
-       * 25% less sp
-       * 4x normal score
-       * healing potions heal 25% of health, minimum of 20 points
-   * This is just the beginning. I'm sure with more testing and experience, we can find ways to make these difficulty levels a lot more interesting.
+   * These are still being tested and refined. Rather than keep out-of-date information in the Readme, we recommend that you check the [changelog](https://github.com/jeremygurr/dcssca/blob/master/changelog-ca.md) to see the latest info about difficulty levels.
+   * In general: Easy is easy, Standard is a good starting point for crawl vets new to the fork, Challenge starts out a bit easier than vanilla, then as you accumulate Rune Curses it becomes more difficult, and Nightmare is, well... you'll see.
 
 Unequipping shields
    * When trying to equip a weapon that is incompatible with a shield, the game will ask if you want to unequip the shield first, saving some hassel.
 
 Traps
-   * Shafting doesn't happen in the first 2 floors of dungeon
+   * Shafting doesn't happen in the first 2 floors of dungeon (and Fo are immune!)
 
 Formicid
    * Immune to shaft traps
