@@ -236,7 +236,7 @@ static const map<job_type, job_def> job_data =
     2, 5, 5,
     { SP_NAGA, SP_MERFOLK, SP_BASE_DRACONIAN, SP_DEMIGOD, SP_DEMONSPAWN, SP_MOON_TROLL,
       SP_CAVE_TROLL, },
-    { "arrow q:12", "robe", "book of Changes" },
+    { "arrow q:6", "robe", "book of Changes" },
     WCHOICE_NONE,
     { { SK_FIGHTING, 3 }, { SK_UNARMED_COMBAT, 3 }, { SK_DODGING, 2 },
       { SK_SPELLCASTING, 3 }, { SK_TRANSMUTATIONS, 2 }, },

@@ -3068,11 +3068,16 @@ bool bolt::fuzz_invis_tracer()
 // A first step towards to-hit sanity for beams. We're still being
 // very kind to the player, but it should be fairer to monsters than
 // 4.0.
-static bool _test_beam_hit(int attack, int defense, bool pierce,
-                           int defl, defer_rand &r)
+static bool _test_beam_hit(int roll, int attack, int defense, bool pierce, int defl, bool from_player, bool to_player)
 {
     if (attack == AUTOMATIC_HIT)
+    {
+        if (from_player)
+            player_update_last_to_hit_chance(100);
+        if (to_player)
+            player_update_last_be_hit_chance(100);
         return true;
+    }
 
     if (pierce)
     {
@@ -3084,14 +3089,13 @@ static bool _test_beam_hit(int attack, int defense, bool pierce,
     else if (defl)
         attack = attack / defl / 2;
 
-    dprf(DIAG_BEAM, "Beam attack: %d, defense: %d", attack, defense);
+    const int chance = get_success_chance(attack - defense, 5);
+    if (from_player)
+        player_update_last_to_hit_chance(chance);
+    if (to_player)
+        player_update_last_be_hit_chance(chance);
 
-    int chance = 0;
-    const int result = random_diff(attack, defense, &chance, r);
-
-    dprf(DIAG_BEAM, "Beam new attack: %d, defense: %d", attack, defense);
-
-    return result >= 0;
+    return roll <= chance;
 }
 
 bool bolt::is_harmless(const monster* mon) const
@@ -3374,8 +3378,7 @@ bool bolt::misses_player(int hurted)
     {
         // We use the original to-hit here.
         // (so that effects increasing dodge chance don't increase block...?)
-        const int testhit = random2(hit * 130 / 100
-                                    + you.shield_block_penalty());
+        const int testhit = random2(hit * 130 / 100 + you.shield_block_penalty());
 
         const int block = you.shield_bonus();
 
@@ -3448,12 +3451,16 @@ bool bolt::misses_player(int hurted)
 
     int defl = you.missile_deflection();
 
-    if (!_test_beam_hit(real_tohit, dodge, pierce, 0, r))
+    const bool from_player = source_id == MID_PLAYER;
+    const bool to_player = true;
+    const int roll = random2(101);
+
+    if (!_test_beam_hit(roll, real_tohit, dodge, pierce, 0, from_player, to_player))
     {
         mprf("The %s misses you.", name.c_str());
         count_action(CACT_DODGE, DODGE_EVASION);
     }
-    else if (defl && !_test_beam_hit(real_tohit, dodge, pierce, defl, r))
+    else if (defl && !_test_beam_hit(roll, real_tohit, dodge, pierce, defl, from_player, to_player))
     {
         // active voice to imply stronger effect
         mprf(defl == 1 ? "The %s is repelled." : "You deflect the %s!",
@@ -3468,7 +3475,7 @@ bool bolt::misses_player(int hurted)
         if (hit_verb.empty())
             hit_verb = engulfs ? "engulfs" : "hits";
 
-        if (_test_beam_hit(real_tohit, dodge_more, pierce, defl, r))
+        if (_test_beam_hit(roll, real_tohit, dodge_more, pierce, defl, from_player, to_player))
             mprf("The %s %s you! (%d)", name.c_str(), hit_verb.c_str(), hurted);
         else
             mprf("Helpless, you fail to dodge the %s.", name.c_str());
@@ -5046,17 +5053,21 @@ void bolt::affect_monster(monster* mon)
     int rand_ev = mon->evasion() / 2;
     int defl = mon->missile_deflection();
 
+    const bool from_player = source_id == MID_PLAYER;
+    const bool to_player = false;
+    const int roll = random2(101);
+
     // FIXME: We're randomising mon->evasion, which is further
     // randomised inside test_beam_hit. This is so we stay close to the
     // 4.0 to-hit system (which had very little love for monsters).
-    if (!engulfs && !_test_beam_hit(beam_hit, rand_ev, pierce, defl, r))
+    if (!engulfs && !_test_beam_hit(roll, beam_hit, rand_ev, pierce, defl, from_player, to_player))
     {
-        const bool deflected = _test_beam_hit(beam_hit, rand_ev, pierce, 0, r);
+        const bool deflected = _test_beam_hit(roll, beam_hit, rand_ev, pierce, 0, from_player, to_player);
         // If the PLAYER cannot see the monster, don't tell them anything!
         if (mon->observable() && name != "burst of metal fragments")
         {
             // if it would have hit otherwise...
-            if (_test_beam_hit(beam_hit, rand_ev, pierce, 0, r))
+            if (_test_beam_hit(roll, beam_hit, rand_ev, pierce, 0, from_player, to_player))
             {
                 string deflects = (defl == 2) ? "deflects" : "repels";
                 msg::stream << mon->name(DESC_THE) << " "

@@ -1358,6 +1358,9 @@ int attack::calc_damage()
     }
     else
     {
+        if (!defender->alive())
+            return 0;
+
         int potential_damage, damage;
 
         potential_damage = using_weapon() || wpn_skill == SK_THROWING
@@ -1383,9 +1386,8 @@ int attack::calc_damage()
         // The correct thing to do would be either to delay the call to
         // alert_nearby_monsters (currently in player_stab) until later
         // in the attack; or to avoid removing monsters in handle_behaviour.
-        if (!defender->alive())
-            return 0;
         damage = player_apply_final_multipliers(damage);
+
         damage = apply_defender_ac(damage);
 
         damage = max(0, damage);
@@ -1625,8 +1627,8 @@ bool attack::apply_damage_brand(const char *what)
             special_damage = 8 + random2(13);
             special_damage_message =
                 defender->is_player()?
-                   "You are electrocuted causing " + to_string(special_damage) + " damage!"
-                :  "There is a sudden explosion of sparks causing " + to_string(special_damage) + " damage!";
+                   "You are electrocuted! (" + to_string(special_damage) + ")"
+                :  "There is a sudden explosion of sparks! (" + to_string(special_damage) + ")";
             special_damage_flavour = BEAM_ELECTRICITY;
             defender->expose_to_element(BEAM_ELECTRICITY, 2);
         }

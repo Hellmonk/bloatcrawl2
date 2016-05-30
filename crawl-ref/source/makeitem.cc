@@ -727,7 +727,7 @@ static void _generate_missile_item(item_def& item, int force_type,
     }
     else if (item.sub_type == MI_STONE)
     {
-        item.quantity = 1 + random2(7) + random2(10) + random2(12) + random2(10);
+        item.quantity = 1 + random2avg(20,2);
     }
     else if (item.sub_type == MI_THROWING_NET) // no fancy nets, either
     {
@@ -747,11 +747,11 @@ static void _generate_missile_item(item_def& item, int force_type,
             item.quantity = random_range(2, 8);
         }
         else if (get_ammo_brand(item) != SPMSL_NORMAL)
-            item.quantity = 1 + random2(7) + random2(10) + random2(10);
+            item.quantity = 1 + random2avg(20, 2);
         else
-            item.quantity = 1 + random2(7) + random2(10) + random2(10) + random2(12);
+            item.quantity = 1 + random2avg(30, 2);
     }
-    item.quantity *= 4;
+    item.quantity *= 3;
 }
 
 static bool _try_make_armour_artefact(item_def& item, int force_type,
@@ -1926,8 +1926,16 @@ int items(bool allow_uniques,
 
     if (force_class == OBJ_FOOD)
     {
-        force_class = OBJ_POTIONS;
-        force_type = POT_STAMINA;
+        if (x_chance_in_y(1, 4))
+        {
+            force_class = OBJ_POTIONS;
+            force_type = POT_STAMINA;
+        }
+        else
+        {
+            force_class = OBJ_RANDOM;
+            force_type = 0;
+        }
     }
 
     // determine base_type for item generated {dlb}:
@@ -1952,7 +1960,7 @@ int items(bool allow_uniques,
                 212, OBJ_ARMOUR,
                 212, OBJ_WEAPONS,
                 176, OBJ_POTIONS,
-            300 / 3, OBJ_MISSILES,
+            300 / 4, OBJ_MISSILES,
                 320, OBJ_SCROLLS,
                 440, OBJ_GOLD,
                 0);

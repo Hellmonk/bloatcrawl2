@@ -166,11 +166,13 @@ spret_type cast_sticks_to_snakes(int pow, god_type god, bool fail)
             num_sticks += i.quantity;
         }
 
-    if (valid_sticks.empty())
+    const int stick_cost = 3;
+    if (valid_sticks.empty() || num_sticks < stick_cost)
     {
-        mpr("You don't have anything to turn into a snake.");
+        mpr("You don't have enough sticks.");
         return SPRET_ABORT;
     }
+
     // Sort by the quantity if the player has no bow skill; this will
     // put arrows with the smallest quantity first in line
     // If the player has bow skill, we will already have plain arrows
@@ -211,8 +213,8 @@ spret_type cast_sticks_to_snakes(int pow, god_type god, bool fail)
                                       3, SPELL_STICKS_TO_SNAKES, you.pos(),
                                       MHITYOU, MG_AUTOFOE, god), false))
         {
-            count++;
-            dec_inv_item_quantity(you.inv1, letter_to_index(stick->slot), 1);
+            count += stick_cost;
+            dec_inv_item_quantity(you.inv1, letter_to_index(stick->slot), stick_cost);
             snake->add_ench(mon_enchant(ENCH_FAKE_ABJURATION, dur));
         }
     }
@@ -220,8 +222,8 @@ spret_type cast_sticks_to_snakes(int pow, god_type god, bool fail)
     {
         int sticks_left = num_sticks - count;
 
-        if (count > 1)
-            mprf("You create %d snakes!", count);
+        if (count > stick_cost)
+            mprf("You create %d snakes!", count / stick_cost);
         else
             mpr("You create a snake!");
 

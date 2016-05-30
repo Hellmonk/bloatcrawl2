@@ -85,6 +85,7 @@
 #include "decks.h"
 #include "mon-pathfind.h"
 #include "mon-behv.h"
+#include "player-reacts.h"
 
 static int _bone_armour_bonus();
 static void _fade_curses(int exp_gained);
@@ -9655,13 +9656,13 @@ void player_evoked_something()
 void player_moved()
 {
     if (you.peace < 200 && in_quick_mode())
-        dec_sp(5, false, true);
+        dec_sp(4, false, true);
 
     if (you.peace < 50 && you.airborne() && you.cancellable_flight())
-        dec_sp(5, false, true);
+        dec_sp(4, false, true);
 
     if (you.peace < 10 && you.exertion == EXERT_FOCUS)
-        dec_mp(5, false, true);
+        dec_mp(4, false, true);
 }
 
 // factor reduces failure chance by the given percentage (or success chance if fail < 50%)
@@ -9910,9 +9911,9 @@ int player_attack_delay_modifier(int attack_delay)
     attack_delay *= base_factor;
 
     if (player_is_exhausted(true))
-        attack_delay = attack_delay * 6 / 5;
+        attack_delay = attack_delay * 7 / 6;
     else if (you.exertion == EXERT_POWER)
-        attack_delay = attack_delay * 4 / 5 - 50;
+        attack_delay = attack_delay * 5 / 6 - 50;
 
     return attack_delay / _difficulty_mode_multiplier();
 }
@@ -10122,6 +10123,9 @@ int player_monster_gen_modifier(int amount)
 // reduce damage to player if it has exceeded protection thresholds (to avoid 1 hit kills for example)
 int player_ouch_modifier(int damage)
 {
+    // global monster damage reduction
+    damage = div_rand_round(damage * 2, 3);
+
     int percentage_allowed = 100;
 
     switch (crawl_state.difficulty)
@@ -10169,9 +10173,13 @@ void _instant_rest()
     if (player_regenerates_mp())
         inc_mp(get_mp_max() - get_mp());
 
+    you.duration[DUR_BERSERK] = 0;
     player_after_each_turn();
+    you.peace = 1000;
 
     dec_exhaust_player(1000);
+
+    decrement_durations(5000);
 }
 
 void _attempt_instant_rest_handle_no_visible_monsters()
@@ -10201,6 +10209,9 @@ void _attempt_instant_rest_handle_no_visible_monsters()
         ldprf(LD_INSTAREST, "Found further out monsters: %d (%s)", visible.size(), visible[0]->name(DESC_A, true).c_str());
         for(monster *near_monster : visible)
         {
+            if (near_monster->behaviour == BEH_SLEEP)
+                continue;
+
             coord_def to;
             int shortest = -1;
             for (edge_iterator ei(you.pos(), you.current_vision, true); ei; ++ei)
@@ -10258,6 +10269,7 @@ void attempt_instant_rest()
         !player_in_hell()
         && you.where_are_you != BRANCH_ABYSS
         && (you.monsters_recently_seen > 200 || you.monsters_recently_seen == 0)
+        && i_feel_safe()
         )
     {
         you.monsters_recently_seen = 0;

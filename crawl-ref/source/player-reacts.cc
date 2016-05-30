@@ -484,9 +484,10 @@ static void _decrement_simple_duration(duration_type dur, int delay)
 /**
  * Decrement player durations based on how long the player's turn lasted in aut.
  */
-static void _decrement_durations()
+void decrement_durations(int delay)
 {
-    const int delay = you.time_taken;
+    if (delay == -1)
+        delay = you.time_taken;
 
     if (you.gourmand())
     {
@@ -984,7 +985,7 @@ void player_reacts()
     // the Fainting light and actually fainting.
     handle_starvation();
 
-    _decrement_durations();
+    decrement_durations();
     _rot_ghoul_players();
 
     // Translocations and possibly other duration decrements can
