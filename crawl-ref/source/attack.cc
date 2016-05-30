@@ -1407,7 +1407,9 @@ int attack::test_hit(int to_land, int ev)
     {
         const int chance = get_success_chance(to_land - ev, 5);
         if (attacker->is_player())
-            player_update_last_hit_chance(chance);
+            player_update_last_to_hit_chance(chance);
+        else if (defender->is_player())
+            player_update_last_be_hit_chance(chance);
 
         const int r = random2(101);
         margin = chance - r;

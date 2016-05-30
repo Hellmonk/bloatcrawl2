@@ -3088,7 +3088,6 @@ static bool _test_beam_hit(int attack, int defense, bool pierce,
 
     int chance = 0;
     const int result = random_diff(attack, defense, &chance, r);
-    player_update_last_hit_chance(chance);
 
     dprf(DIAG_BEAM, "Beam new attack: %d, defense: %d", attack, defense);
 

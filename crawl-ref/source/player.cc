@@ -6193,7 +6193,8 @@ player::player()
     max_exp             = 0;
     current_form_spell  = SPELL_NO_SPELL;
     current_form_spell_failure  = 0;
-    last_hit_chance     = 0;
+    last_to_hit_chance  = 0;
+    last_be_hit_chance  = 0;
     last_hit_resistance = 0;
     last_damage         = 0;
     last_damage_resist  = 0;
@@ -10041,7 +10042,7 @@ int player_item_gen_modifier(int item_count)
     return item_count;
 }
 
-void player_update_last_hit_chance(int chance)
+void player_update_last_be_hit_chance(int chance)
 {
     if (chance < 0)
         chance = 0;
@@ -10049,7 +10050,19 @@ void player_update_last_hit_chance(int chance)
     if (chance > 99)
         chance = 99;
 
-    you.last_hit_chance = chance;
+    you.last_be_hit_chance = chance;
+    you.redraw_hit_chance = true;
+}
+
+void player_update_last_to_hit_chance(int chance)
+{
+    if (chance < 0)
+        chance = 0;
+
+    if (chance > 99)
+        chance = 99;
+
+    you.last_to_hit_chance = chance;
     you.redraw_hit_chance = true;
 }
 

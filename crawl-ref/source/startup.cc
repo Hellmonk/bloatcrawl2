@@ -75,7 +75,8 @@ static void _initialize()
     you.last_hit_resistance  = 0;
     you.last_damage_resist   = 0;
     you.last_damage          = 0;
-    you.last_hit_chance      = 0;
+    you.last_to_hit_chance   = 0;
+    you.last_be_hit_chance   = 0;
 
     seed_rng();
 

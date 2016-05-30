@@ -67,8 +67,8 @@ struct player_info
     int experience_level;
     int8_t exp_progress;
     int gold;
-    int last_damage;
-    int last_hit_chance;
+    int last_to_hit_chance;
+    int last_be_hit_chance;
     int zot_points;
     int elapsed_time;
     int num_turns;

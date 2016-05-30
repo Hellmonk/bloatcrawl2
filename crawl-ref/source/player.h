@@ -452,7 +452,8 @@ public:
     // ---------------------
     package *save;
     int last_hit_resistance;
-    int last_hit_chance;
+    int last_to_hit_chance;
+    int last_be_hit_chance;
     int last_damage_resist;
     int last_damage;
     uint8_t monsters_recently_seen;
@@ -1241,7 +1242,8 @@ int player_ev_modifier(int ev);
 int player_sh_modifier(int sh);
 int player_ac_modifier(int ac);
 int player_item_gen_modifier(int item_count);
-void player_update_last_hit_chance(int chance);
+void player_update_last_be_hit_chance(int chance);
+void player_update_last_to_hit_chance(int chance);
 int player_pool_modifier(int amount);
 void summoned_monster_died(monster* mons, bool natural_death);
 bool player_summoned_monster(spell_type spell, monster* mons, bool first);
