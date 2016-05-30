@@ -10123,7 +10123,7 @@ int player_monster_gen_modifier(int amount)
 int player_ouch_modifier(int damage)
 {
     // global monster damage reduction
-    damage = damage * 2 / 3;
+    damage = div_rand_round(damage * 2, 3);
 
     int percentage_allowed = 100;
 

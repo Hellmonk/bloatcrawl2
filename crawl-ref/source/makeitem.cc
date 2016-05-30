@@ -747,9 +747,9 @@ static void _generate_missile_item(item_def& item, int force_type,
             item.quantity = random_range(2, 8);
         }
         else if (get_ammo_brand(item) != SPMSL_NORMAL)
-            item.quantity = 1 + random2avg(20);
+            item.quantity = 1 + random2avg(20, 2);
         else
-            item.quantity = 1 + random2avg(30);
+            item.quantity = 1 + random2avg(30, 2);
     }
     item.quantity *= 3;
 }
