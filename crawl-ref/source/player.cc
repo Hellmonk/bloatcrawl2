@@ -10172,6 +10172,8 @@ void _instant_rest()
     if (player_regenerates_mp())
         inc_mp(get_mp_max() - get_mp());
 
+    player_end_berserk();
+
     player_after_each_turn();
     you.peace = 1000;
 
