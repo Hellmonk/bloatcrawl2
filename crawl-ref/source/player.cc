@@ -4213,7 +4213,6 @@ bool dec_mp(int mp_loss, bool silent, bool allow_overdrive)
 
         if (you.exertion != EXERT_NORMAL)
         {
-            you.restore_exertion = you.exertion;
             set_exertion(EXERT_NORMAL, false);
         }
     }
@@ -4417,10 +4416,18 @@ bool in_quick_mode()
     return you.stamina_flags & STAMF_QUICK_MODE;
 }
 
-void set_quick_mode(const bool new_quick_mode, const bool automatic)
+void set_quick_mode(const bool new_quick_mode, const bool manual)
 {
     if (new_quick_mode == in_quick_mode())
         return;
+
+    if (manual)
+    {
+        if (new_quick_mode)
+            you.stamina_flags |= STAMF_QUICK_MODE_RESTORE;
+        else
+            you.stamina_flags &= ~STAMF_QUICK_MODE_RESTORE;
+    }
 
     if (new_quick_mode)
     {
@@ -4436,18 +4443,13 @@ void set_quick_mode(const bool new_quick_mode, const bool automatic)
         /*
         you.turn_is_over = true;
          */
-
-        if (automatic)
-            you.stamina_flags |= STAMF_QUICK_MODE_RESTORE;
-        else
-            you.stamina_flags &= ~STAMF_QUICK_MODE_RESTORE;
     }
 
     you.redraw_status_lights = true;
     you.redraw_evasion = true;
 }
 
-void set_exertion(const exertion_mode new_exertion, bool manual)
+void set_exertion(const exertion_mode new_exertion, const bool manual)
 {
     if (Options.exertion_disabled)
     {
@@ -4562,7 +4564,6 @@ bool dec_sp(int sp_loss, bool silent, bool allow_overdrive)
         {
             if (!silent)
                 mpr("You are too tired to continue exerting yourself.");
-            you.restore_exertion = you.exertion;
             set_exertion(EXERT_NORMAL, false);
         }
 
@@ -4570,7 +4571,7 @@ bool dec_sp(int sp_loss, bool silent, bool allow_overdrive)
         {
             if (!silent)
                 mpr("You are too tired to continue at this pace.");
-            set_quick_mode(false, true);
+            set_quick_mode(false, false);
         }
 
         result = false;
@@ -4601,14 +4602,13 @@ void inc_sp(int sp_gain, bool silent, bool manual)
     you.sp += sp_gain;
     if (you.sp > you.sp_max / 2)
     {
-        if (you.restore_exertion == EXERT_POWER)
+        if (you.restore_exertion != EXERT_NORMAL)
         {
             set_exertion(you.restore_exertion, false);
-            you.restore_exertion = EXERT_NORMAL;
         }
         if (you.stamina_flags & STAMF_QUICK_MODE_RESTORE)
         {
-            set_quick_mode(true, true);
+            set_quick_mode(true, false);
         }
     }
 
@@ -4631,17 +4631,13 @@ void inc_mp(int mp_gain, bool silent)
     if (mp_gain < 1 || you.mp == you.mp_max)
         return;
 
-    /*
-    you.duration[DUR_EXHAUSTED] -= mp_gain;
-    if (you.duration[DUR_EXHAUSTED] < 0)
-        you.duration[DUR_EXHAUSTED] = 0;
-        */
-
     you.mp += mp_gain;
-    if (you.mp > you.mp_max / 2 && you.restore_exertion == EXERT_FOCUS)
+    if (you.mp > you.mp_max / 2)
     {
-        set_exertion(you.restore_exertion, false);
-        you.restore_exertion = EXERT_NORMAL;
+        if (you.restore_exertion != EXERT_NORMAL)
+        {
+            set_exertion(you.restore_exertion, false);
+        }
     }
 
     if (you.mp > you.mp_max)
@@ -4666,7 +4662,6 @@ void inc_hp(int hp_gain)
     if (you.species == SP_DJINNI && you.hp > you.hp_max / 2 && (you.restore_exertion == EXERT_POWER || you.restore_exertion == EXERT_FOCUS))
     {
         set_exertion(you.restore_exertion, false);
-        you.restore_exertion = EXERT_NORMAL;
     }
 
     you.hp += hp_gain;
@@ -9960,17 +9955,6 @@ int player_spellsuccess_modifier(int force)
         force += 5;
 
     return force;
-
-    /* old way
-    force *= _difficulty_mode_multiplier() * _difficulty_mode_multiplier();
-
-    if (player_is_exhausted(true))
-        force = force * 2 / 3;
-    else if (you.exertion == EXERT_FOCUS)
-        force *= 2;
-
-    return force / base_factor / base_factor;
-     */
 }
 
 int player_stealth_modifier(int stealth)
