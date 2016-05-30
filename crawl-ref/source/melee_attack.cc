@@ -3373,9 +3373,11 @@ void melee_attack::do_minotaur_retaliation()
                 }
                 else
                 {
-                    mprf("%s headbutts %s%s", defname.c_str(),
+                    mprf("%s headbutts %s%s (%d)", defname.c_str(),
                          attacker->name(DESC_THE).c_str(),
-                         attack_strength_punctuation(hurt).c_str());
+                         attack_strength_punctuation(hurt).c_str(),
+                         hurt
+                    );
                 }
             }
             if (hurt > 0)
@@ -3417,9 +3419,11 @@ void melee_attack::do_minotaur_retaliation()
         }
         else
         {
-            mprf("You headbutt %s%s",
+            mprf("You headbutt %s%s (%d)",
                  attacker->name(DESC_THE).c_str(),
-                 attack_strength_punctuation(hurt).c_str());
+                 attack_strength_punctuation(hurt).c_str(),
+                 hurt
+            );
             attacker->hurt(&you, hurt);
         }
     }
