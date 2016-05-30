@@ -10201,6 +10201,9 @@ void _attempt_instant_rest_handle_no_visible_monsters()
         ldprf(LD_INSTAREST, "Found further out monsters: %d (%s)", visible.size(), visible[0]->name(DESC_A, true).c_str());
         for(monster *near_monster : visible)
         {
+            if (near_monster->behaviour == BEH_SLEEP)
+                continue;
+
             coord_def to;
             int shortest = -1;
             for (edge_iterator ei(you.pos(), you.current_vision, true); ei; ++ei)
