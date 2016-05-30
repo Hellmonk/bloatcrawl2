@@ -500,7 +500,7 @@ int raw_spell_fail(spell_type spell)
     x += wizardry * 5;
     x += brilliance * 5;
 
-    int fail_chance = get_success_chance(x, 1);
+    int fail_chance = 100 - get_success_chance(x, 1);
 
     return fail_chance;
 }
