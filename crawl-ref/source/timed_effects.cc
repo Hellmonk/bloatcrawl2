@@ -999,6 +999,9 @@ void handle_time()
     if (player_in_branch(BRANCH_ABYSS))
         forget_map(true);
 
+    if (player_in_branch(BRANCH_LABYRINTH) && you.species != SP_MINOTAUR)
+        forget_map(true);
+
     // Magic contamination from spells and Orb.
     if (!crawl_state.game_is_arena())
         _handle_magic_contamination();

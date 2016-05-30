@@ -1,5 +1,7 @@
 ## v1.5.2
 
+* In labyrinth, if you are a minotaur, map rot doesn't happen (the map doesn't fade away).
+
 * To Hit Chance and Be Hit Chance now displayed in right stats panel
     * To Hit Chance shows how likely it was for the player to hit the last monster it attempted to hit.
     * Be Hit Chance shows how likely it was for the player to be hit from the last monster who hit the player.
