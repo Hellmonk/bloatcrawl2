@@ -414,8 +414,8 @@ function ($, comm, enums, map_knowledge, messages, options) {
             $("#stats_time").text(player.turn);
         }
         
-        $("#stats_tohit").text(player.tohit);
-        $("#stats_hit_chance").text(player.hit_chance + "%");
+        $("#stats_be_hit_chance").text(player.be_hit_chance + "%");
+        $("#stats_to_hit_chance").text(player.to_hit_chance + "%");
 
         var place_desc = player.place;
         if (player.depth) place_desc += ":" + player.depth;

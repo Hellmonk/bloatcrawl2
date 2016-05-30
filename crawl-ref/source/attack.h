@@ -12,6 +12,8 @@ const int HIT_WEAK   = 7;
 const int HIT_MED    = 18;
 const int HIT_STRONG = 36;
 
+int calc_player_to_hit(item_def *weapon, skill_type wpn_skill);
+
 class attack
 {
 // Public Properties
@@ -45,7 +47,7 @@ public:
     int     stab_bonus;
 
     // Fetched/Calculated from the attacker, stored to save execution time
-    int             ev_margin;
+    int     hit_margin;
 
     // TODO: Expand the implementation of attack_type/attack_flavour to be used
     // by players as well as monsters. It could be a good middle ground for
@@ -99,7 +101,7 @@ public:
     attack(actor *attk, actor *defn, actor *blame = 0);
 
     // To-hit is a function of attacker/defender, defined in sub-classes
-    virtual int calc_to_hit(bool random);
+    virtual int calc_to_hit();
 
     // Exact copies of their melee_attack predecessors
     string actor_name(const actor *a, description_level_type desc,
@@ -134,7 +136,7 @@ protected:
     virtual int calc_mon_to_hit_base() = 0;
     virtual int apply_damage_modifiers(int damage, int damage_max) = 0;
     virtual int calc_damage();
-    int test_hit(int to_hit, int ev, bool randomise_ev);
+    int test_hit(int to_hit, int ev);
     int apply_defender_ac(int damage, int damage_max = 0) const;
     // Determine if we're blocking (partially or entirely)
     virtual bool attack_shield_blocked(bool verbose);
@@ -188,8 +190,6 @@ protected:
 
     attack_flavour random_chaos_attack_flavour();
 
-    virtual int  player_stat_modify_damage(int damage);
-    virtual int  player_apply_weapon_skill(int damage);
     virtual int  player_apply_fighting_skill(int damage, bool aux);
     virtual int  player_apply_misc_modifiers(int damage);
     virtual int  player_apply_slaying_bonuses(int damage, bool aux);
@@ -201,6 +201,7 @@ protected:
     virtual int  player_stab_weapon_bonus(int damage);
     virtual int  player_stab(int damage);
     virtual void player_stab_check();
+
 };
 
 #endif

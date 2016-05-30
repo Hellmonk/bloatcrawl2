@@ -502,15 +502,12 @@ void zappy(zap_type z_type, int power, bool is_monster, bolt &pbolt)
         if (!is_monster)
         {
             const int range = grid_distance(pbolt.source, pbolt.target);
-            pbolt.hit = player_tohit_modifier(pbolt.hit);
+            pbolt.hit = player_tohit_modifier(pbolt.hit, range);
         }
 
         if (pbolt.hit != AUTOMATIC_HIT && !is_monster)
             pbolt.hit = max(0, pbolt.hit - 5 * you.inaccuracy());
     }
-
-    if (!is_monster && pbolt.hit != AUTOMATIC_HIT)
-        player_update_tohit(pbolt.hit);
 
     dam_deducer* dam_calc = is_monster ? zinfo->monster_damage
                                        : zinfo->player_damage;
@@ -3091,8 +3088,6 @@ static bool _test_beam_hit(int attack, int defense, bool pierce,
 
     int chance = 0;
     const int result = random_diff(attack, defense, &chance, r);
-    player_update_last_hit_chance(chance);
-    player_update_tohit(attack);
 
     dprf(DIAG_BEAM, "Beam new attack: %d, defense: %d", attack, defense);
 
@@ -3959,7 +3954,7 @@ void bolt::affect_player()
         attk.attack();
         // fsim purposes - throw_it detects if an attack connected through
         // hit_verb
-        if (attk.ev_margin >= 0 && hit_verb.empty())
+        if (attk.hit_margin >= 0 && hit_verb.empty())
             hit_verb = attk.attack_verb;
         if (attk.reflected)
             reflect();
@@ -4938,7 +4933,7 @@ void bolt::affect_monster(monster* mon)
         attk.attack();
         // fsim purposes - throw_it detects if an attack connected through
         // hit_verb
-        if (attk.ev_margin >= 0 && hit_verb.empty())
+        if (attk.hit_margin >= 0 && hit_verb.empty())
             hit_verb = attk.attack_verb;
         if (attk.reflected)
             reflect();

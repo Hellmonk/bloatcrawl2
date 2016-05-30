@@ -390,7 +390,7 @@ public:
     bool redraw_armour_class;
     bool redraw_evasion;
     bool redraw_status_lights;
-    bool redraw_tohit;
+    bool redraw_hit_chance;
 
     colour_t flash_colour;
     targetter *flash_where;
@@ -451,8 +451,11 @@ public:
     // The save file itself.
     // ---------------------
     package *save;
-    int last_hit_chance;
-    int last_tohit;
+    int last_hit_resistance;
+    int last_to_hit_chance;
+    int last_be_hit_chance;
+    int last_damage_resist;
+    int last_damage;
     uint8_t monsters_recently_seen;
 
 protected:
@@ -597,7 +600,8 @@ public:
     int         damage_type(int which_attack = -1) override;
     int         attack_delay(const item_def *projectile = nullptr,
                              bool rescale = true,
-                             const item_def *weapon = nullptr) const override;
+                             const item_def *weapon = nullptr,
+                             const action_delay_type adt = ACTION_DELAY_CURRENT) const override;
     int         constriction_damage() const override;
 
     int       has_claws(bool allow_tran = true) const override;
@@ -1151,8 +1155,8 @@ bool player_is_exhausted(bool silent = false);
 bool player_mp_is_exhausted(bool silent = false);
 bool player_sp_is_exhausted(bool silent = false);
 bool in_quick_mode();
-void set_quick_mode(const bool new_quick_mode, const bool automatic = false);
-void set_exertion(const exertion_mode new_exertion, bool manual = true);
+void set_quick_mode(const bool new_quick_mode, const bool manual = true);
+void set_exertion(const exertion_mode new_exertion, const bool manual = true);
 void exert_toggle(exertion_mode new_exertion);
 
 int get_hp();
@@ -1222,6 +1226,9 @@ void player_before_long_safe_action();
 void player_after_long_safe_action(int turns);
 void player_after_each_turn();
 
+int generic_action_delay(const int skill, const int base, const action_delay_type type = ACTION_DELAY_CURRENT);
+int spell_cast_delay(const action_delay_type type = ACTION_DELAY_CURRENT);
+
 int spell_mp_cost(spell_type which_spell);
 int spell_mp_freeze(spell_type which_spell);
 int weapon_sp_cost(const item_def* weapon, const item_def* ammo = nullptr);
@@ -1235,8 +1242,8 @@ int player_ev_modifier(int ev);
 int player_sh_modifier(int sh);
 int player_ac_modifier(int ac);
 int player_item_gen_modifier(int item_count);
-void player_update_last_hit_chance(int chance);
-void player_update_tohit(int new_tohit = -1);
+void player_update_last_be_hit_chance(int chance);
+void player_update_last_to_hit_chance(int chance);
 int player_pool_modifier(int amount);
 void summoned_monster_died(monster* mons, bool natural_death);
 bool player_summoned_monster(spell_type spell, monster* mons, bool first);

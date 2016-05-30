@@ -3772,7 +3772,7 @@ static void _display_movement_speed()
 static void _display_tohit()
 {
     melee_attack attk(&you, nullptr);
-    const int to_hit = attk.calc_to_hit(false);
+    const int to_hit = attk.calc_to_hit();
     mprf("To-hit: %d", to_hit);
 }
 
@@ -4213,7 +4213,6 @@ bool dec_mp(int mp_loss, bool silent, bool allow_overdrive)
 
         if (you.exertion != EXERT_NORMAL)
         {
-            you.restore_exertion = you.exertion;
             set_exertion(EXERT_NORMAL, false);
         }
     }
@@ -4417,10 +4416,18 @@ bool in_quick_mode()
     return you.stamina_flags & STAMF_QUICK_MODE;
 }
 
-void set_quick_mode(const bool new_quick_mode, const bool automatic)
+void set_quick_mode(const bool new_quick_mode, const bool manual)
 {
     if (new_quick_mode == in_quick_mode())
         return;
+
+    if (manual)
+    {
+        if (new_quick_mode)
+            you.stamina_flags |= STAMF_QUICK_MODE_RESTORE;
+        else
+            you.stamina_flags &= ~STAMF_QUICK_MODE_RESTORE;
+    }
 
     if (new_quick_mode)
     {
@@ -4436,40 +4443,38 @@ void set_quick_mode(const bool new_quick_mode, const bool automatic)
         /*
         you.turn_is_over = true;
          */
-
-        if (automatic)
-            you.stamina_flags |= STAMF_QUICK_MODE_RESTORE;
-        else
-            you.stamina_flags &= ~STAMF_QUICK_MODE_RESTORE;
     }
 
     you.redraw_status_lights = true;
     you.redraw_evasion = true;
 }
 
-void set_exertion(const exertion_mode new_exertion, bool manual)
+void set_exertion(const exertion_mode new_exertion, const bool manual)
 {
     if (Options.exertion_disabled)
     {
-        mpr("Exertion modes are disabled in your rc file, so you can't use power or focus modes.");
+        if (manual)
+            mpr("Exertion modes are disabled in your rc file, so you can't use power or focus modes.");
         return;
     }
 
     if (new_exertion == you.exertion)
         return;
 
-    if (you.restore_exertion && manual)
+    if (manual)
         you.restore_exertion = new_exertion;
 
     if (you.duration[DUR_BERSERK])
     {
-        mpr("You can't change exertion mode while berserk.");
+        if (manual)
+            mpr("You can't change exertion mode while berserk.");
         return;
     }
 
     if (player_is_exhausted(true) && new_exertion != EXERT_NORMAL)
     {
-        mpr("You are too tired to exert yourself now.");
+        if (manual)
+            mpr("You are too tired to exert yourself now.");
         return;
     }
 
@@ -4493,8 +4498,6 @@ void set_exertion(const exertion_mode new_exertion, bool manual)
     /*
     you.turn_is_over = true;
      */
-
-    player_update_tohit();
 }
 
 // returns true if after subtracting the given sp, sp is still > 0
@@ -4564,7 +4567,6 @@ bool dec_sp(int sp_loss, bool silent, bool allow_overdrive)
         {
             if (!silent)
                 mpr("You are too tired to continue exerting yourself.");
-            you.restore_exertion = you.exertion;
             set_exertion(EXERT_NORMAL, false);
         }
 
@@ -4572,18 +4574,37 @@ bool dec_sp(int sp_loss, bool silent, bool allow_overdrive)
         {
             if (!silent)
                 mpr("You are too tired to continue at this pace.");
-            set_quick_mode(false, true);
+            set_quick_mode(false, false);
         }
 
         result = false;
         you.redraw_evasion = true;
         you.redraw_armour_class = true;
-        you.redraw_tohit = true;
+        you.redraw_hit_chance = true;
     }
 
     you.redraw_stamina_points = true;
 
     return result;
+}
+
+void _restore_exertion_mode()
+{
+    const int sp_target = get_sp_max() / 2;
+    if (get_sp() >= sp_target)
+    {
+        if (you.stamina_flags & STAMF_QUICK_MODE_RESTORE)
+        {
+            set_quick_mode(true, false);
+        }
+
+        const int mp_target = get_mp_max() / 2;
+
+        if (get_mp() >= mp_target && you.restore_exertion != EXERT_NORMAL)
+        {
+            set_exertion(you.restore_exertion, false);
+        }
+    }
 }
 
 void inc_sp(int sp_gain, bool silent, bool manual)
@@ -4601,18 +4622,7 @@ void inc_sp(int sp_gain, bool silent, bool manual)
         */
 
     you.sp += sp_gain;
-    if (you.sp > you.sp_max / 2)
-    {
-        if (you.restore_exertion == EXERT_POWER)
-        {
-            set_exertion(you.restore_exertion, false);
-            you.restore_exertion = EXERT_NORMAL;
-        }
-        if (you.stamina_flags & STAMF_QUICK_MODE_RESTORE)
-        {
-            set_quick_mode(true, true);
-        }
-    }
+    _restore_exertion_mode();
 
     if (you.sp > you.sp_max)
         you.sp = you.sp_max;
@@ -4633,18 +4643,8 @@ void inc_mp(int mp_gain, bool silent)
     if (mp_gain < 1 || you.mp == you.mp_max)
         return;
 
-    /*
-    you.duration[DUR_EXHAUSTED] -= mp_gain;
-    if (you.duration[DUR_EXHAUSTED] < 0)
-        you.duration[DUR_EXHAUSTED] = 0;
-        */
-
     you.mp += mp_gain;
-    if (you.mp > you.mp_max / 2 && you.restore_exertion == EXERT_FOCUS)
-    {
-        set_exertion(you.restore_exertion, false);
-        you.restore_exertion = EXERT_NORMAL;
-    }
+    _restore_exertion_mode();
 
     if (you.mp > you.mp_max)
         you.mp = you.mp_max;
@@ -4668,7 +4668,6 @@ void inc_hp(int hp_gain)
     if (you.species == SP_DJINNI && you.hp > you.hp_max / 2 && (you.restore_exertion == EXERT_POWER || you.restore_exertion == EXERT_FOCUS))
     {
         set_exertion(you.restore_exertion, false);
-        you.restore_exertion = EXERT_NORMAL;
     }
 
     you.hp += hp_gain;
@@ -5591,6 +5590,8 @@ void dec_exhaust_player(int delay)
         you.duration[DUR_EXHAUSTED] = 0;
         you.redraw_evasion = true;
         you.redraw_armour_class = true;
+
+        _restore_exertion_mode();
     }
 }
 
@@ -6159,7 +6160,7 @@ player::player()
     redraw_experience    = false;
     redraw_armour_class  = false;
     redraw_evasion       = false;
-    redraw_tohit         = false;
+    redraw_hit_chance    = false;
     redraw_title         = false;
 
     flash_colour        = BLACK;
@@ -6192,8 +6193,11 @@ player::player()
     max_exp             = 0;
     current_form_spell  = SPELL_NO_SPELL;
     current_form_spell_failure  = 0;
-    last_hit_chance     = 0;
-    last_tohit          = 0;
+    last_to_hit_chance  = 0;
+    last_be_hit_chance  = 0;
+    last_hit_resistance = 0;
+    last_damage         = 0;
+    last_damage_resist  = 0;
     monsters_recently_seen = 0;
     summoned.init(MID_NOBODY);
 
@@ -9601,22 +9605,46 @@ void player_attacked_something(int sp_cost)
     player_was_offensive();
 }
 
+int generic_action_delay(const int skill, const int base, const action_delay_type type)
+{
+    const int dex = (you.dex(true) - 10) * 10;
+
+    int benefit = skill + dex;
+
+    benefit = max(0, benefit);
+    benefit = min(400, benefit);
+
+    double adjusted_benefit = benefit / 400.0;
+    // square it so it's harder to reach max benefit
+    adjusted_benefit *= adjusted_benefit;
+    adjusted_benefit *= 400;
+
+    if (type == ACTION_DELAY_MAX)
+        adjusted_benefit = 0;
+    if (type == ACTION_DELAY_MIN)
+        adjusted_benefit = 400;
+
+    int delay = base * (800 - adjusted_benefit) / 800;
+    delay = player_attack_delay_modifier(delay);
+    return delay;
+}
+
+int spell_cast_delay(const action_delay_type type)
+{
+    const int skill = you.skill(SK_SPELLCASTING, 10);
+    const int base = 15;
+
+    int delay = generic_action_delay(skill, base);
+
+    return delay * you.time_taken / 10;
+}
+
 // When any kind of magic spell is cast by the player
 void player_used_magic(int mp_cost, spell_type spell)
 {
     player_was_offensive();
 
-    const int spellcasting = you.skill(SK_SPELLCASTING, 10);
-    const int dex = (you.dex(true) - 10) * 10;
-
-    double benefit = spellcasting + dex;
-    benefit = max(0, (int)benefit);
-
-    benefit /= 400.0;
-
-    double delay = 0.5 + (1 - benefit * benefit);
-
-    you.time_taken = player_attack_delay_modifier(rand_round(delay * 10));
+    you.time_taken = spell_cast_delay();
 }
 
 void player_evoked_something()
@@ -9748,7 +9776,7 @@ int spell_mp_freeze(spell_type which_spell)
 int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
 {
     int weight = weapon ? max(1, property(*weapon, PWPN_WEIGHT)) : 3;
-    if (ammo && !ammo->launched_by(*weapon))
+    if (ammo && (!weapon || !ammo->launched_by(*weapon)))
         weight = property(*ammo, PWPN_WEIGHT);
 
     const int strength = (you.strength(true) - 10) * 10;
@@ -9757,7 +9785,7 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
     // may be negative
     const int benefit = strength + fighting;
 
-    double sp_cost = fpow(weight * 2, 9, 10, benefit / 10.0);
+    double sp_cost = fpow(weight * 2, 15, 16, benefit / 10.0);
 
     sp_cost = max(2, (int)sp_cost);
 
@@ -9768,6 +9796,35 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
 }
 
 const int base_factor = 100;
+
+int _difficulty_mode_adder()
+{
+    int x = 0;
+
+    if (!Options.exertion_disabled)
+        switch(crawl_state.difficulty)
+        {
+            // yes, easy mode actually gets a boost when exhausted...
+            case DIFFICULTY_EASY:
+                x = 1;
+                break;
+            case DIFFICULTY_STANDARD:
+                x = 0;
+                break;
+            case DIFFICULTY_CHALLENGE:
+                x = -1;
+                break;
+            case DIFFICULTY_NIGHTMARE:
+                x = -2;
+                break;
+            default:
+                // should not be possible
+                x = 0;
+                break;
+        }
+
+    return x;
+}
 
 // all standard attributes are multipled by the base factor and then
 // divided by this value. So if this function returns 100 (the current
@@ -9818,18 +9875,18 @@ int player_tohit_modifier(int tohit, int range)
     if (you.duration[DUR_PORTAL_PROJECTILE])
         range = 1;
 
-    tohit *= _difficulty_mode_multiplier();
+    tohit += _difficulty_mode_adder();
 
     // worst case, range 7, gives 40% of original tohit, which should give about 80% chance of hitting
     if (range > 1)
-        tohit = tohit * (20 - range + 1) / 20;
+        tohit = tohit - 2 * range;
 
     if (player_is_exhausted(true))
-        tohit = tohit * 3 / 4;
+        tohit = tohit - 5;
     else if (you.exertion == EXERT_FOCUS)
-        tohit = tohit * 3 / 2 + 50;
+        tohit = tohit + 5;
 
-    return tohit / base_factor;
+    return tohit;
 }
 
 int player_damage_modifier(int damage, bool silent, const int range)
@@ -9907,17 +9964,6 @@ int player_spellsuccess_modifier(int force)
         force += 5;
 
     return force;
-
-    /* old way
-    force *= _difficulty_mode_multiplier() * _difficulty_mode_multiplier();
-
-    if (player_is_exhausted(true))
-        force = force * 2 / 3;
-    else if (you.exertion == EXERT_FOCUS)
-        force *= 2;
-
-    return force / base_factor / base_factor;
-     */
 }
 
 int player_stealth_modifier(int stealth)
@@ -9996,7 +10042,7 @@ int player_item_gen_modifier(int item_count)
     return item_count;
 }
 
-void player_update_last_hit_chance(int chance)
+void player_update_last_be_hit_chance(int chance)
 {
     if (chance < 0)
         chance = 0;
@@ -10004,20 +10050,20 @@ void player_update_last_hit_chance(int chance)
     if (chance > 99)
         chance = 99;
 
-    you.last_hit_chance = chance;
-    you.redraw_tohit = true;
+    you.last_be_hit_chance = chance;
+    you.redraw_hit_chance = true;
 }
 
-void player_update_tohit(int new_tohit)
+void player_update_last_to_hit_chance(int chance)
 {
-    if (new_tohit == -1)
-    {
-        melee_attack attk(&you, nullptr);
-        new_tohit = attk.calc_to_hit(false);
-    }
+    if (chance < 0)
+        chance = 0;
 
-    you.last_tohit = new_tohit;
-    you.redraw_tohit = true;
+    if (chance > 99)
+        chance = 99;
+
+    you.last_to_hit_chance = chance;
+    you.redraw_hit_chance = true;
 }
 
 // used for pool sizes. Generic way to scale something based on difficulty
@@ -10081,10 +10127,10 @@ int player_ouch_modifier(int damage)
     switch (crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            percentage_allowed = 10;
+            percentage_allowed = 20;
             break;
         case DIFFICULTY_STANDARD:
-            percentage_allowed = 20;
+            percentage_allowed = 30;
             break;
         case DIFFICULTY_CHALLENGE:
             percentage_allowed = 40;
@@ -10125,7 +10171,7 @@ void _instant_rest()
 
     player_after_each_turn();
 
-    you.duration[DUR_EXHAUSTED] = 0;
+    dec_exhaust_player(1000);
 }
 
 void _attempt_instant_rest_handle_no_visible_monsters()
@@ -10153,42 +10199,46 @@ void _attempt_instant_rest_handle_no_visible_monsters()
     if (visible.size() > 0)
     {
         ldprf(LD_INSTAREST, "Found further out monsters: %d (%s)", visible.size(), visible[0]->name(DESC_A, true).c_str());
-        monster *near_monster = visible[0];
-
-        coord_def to;
-        int shortest = -1;
-        for (edge_iterator ei(you.pos(), you.current_vision, true); ei; ++ei)
+        for(monster *near_monster : visible)
         {
-            if (!near_monster->can_pass_through(*ei) || near_monster->cannot_move())
-                continue;
-
-            if (!you.see_cell(*ei))
-                continue;
-
-            monster_pathfind pf;
-            if (!pf.init_pathfind(near_monster, *ei, true, false, true))
-                continue;
-
-            if (shortest == -1 || pf.min_length < shortest)
+            coord_def to;
+            int shortest = -1;
+            for (edge_iterator ei(you.pos(), you.current_vision, true); ei; ++ei)
             {
-                to = *ei;
-                shortest = pf.min_length;
-            }
-        }
+                if (!near_monster->can_pass_through(*ei) || near_monster->cannot_move())
+                    continue;
 
-        if (shortest != -1)
-        {
-            near_monster->move_to_pos(to);
-            /*
-            near_monster->speed_increment /= 2;
-            behaviour_event(near_monster, ME_ALERT, &you, you.pos());
-             */
-            ldprf(LD_INSTAREST, "Pulled in monster. recently_seen = %d.", you.monsters_recently_seen);
-            can_restore_all = false;
-        }
-        else
-        {
-            ldprf(LD_INSTAREST, "Further out monster couldn't find there way here.");
+                if (!you.see_cell(*ei))
+                    continue;
+
+                monster_pathfind pf;
+                if (!pf.init_pathfind(near_monster, *ei, true, false, true))
+                    continue;
+
+                if (shortest == -1 || pf.min_length < shortest)
+                {
+                    to = *ei;
+                    shortest = pf.min_length;
+                }
+            }
+
+            if (shortest != -1)
+            {
+                near_monster->move_to_pos(to);
+                /*
+                near_monster->speed_increment /= 2;
+                behaviour_event(near_monster, ME_ALERT, &you, you.pos());
+                 */
+                ldprf(LD_INSTAREST, "Pulled in monster. recently_seen = %d.", you.monsters_recently_seen);
+                can_restore_all = false;
+            }
+            else
+            {
+                ldprf(LD_INSTAREST, "Further out monster couldn't find there way here.");
+            }
+
+            if (coinflip())
+                break;
         }
     }
     else

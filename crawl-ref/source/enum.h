@@ -182,6 +182,13 @@ public:
     EXPANDMACRO(DEF_BITFIELD_OPERATORS(fieldT, __VA_ARGS__, ))
 // The trailing comma suppresses "ISO C99 requires rest arguments to be used"
 
+enum action_delay_type
+{
+    ACTION_DELAY_MIN,
+    ACTION_DELAY_CURRENT,
+    ACTION_DELAY_MAX,
+};
+
 enum exp_mode
 {
     EXP_MODE_ASK = -1,

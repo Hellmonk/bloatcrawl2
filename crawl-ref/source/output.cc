@@ -48,6 +48,7 @@
 #include "viewchar.h"
 #include "view.h"
 #include "xom.h"
+#include "attack.h"
 
 
 #ifdef USE_TILE_LOCAL
@@ -908,13 +909,15 @@ static void _print_stats_wp(int y)
     textcolour(LIGHTGREY);
 }
 
-static void _print_stats_tohit()
+static void _print_stats_hit_chance()
 {
     textcolour(HUD_VALUE_COLOUR);
-    CGOTOXY(9, hit_row, GOTO_STAT);
-    CPRINTF("%4d", you.last_tohit);
-    CGOTOXY(31, hit_row, GOTO_STAT);
-    CPRINTF("%2d%%", you.last_hit_chance);
+
+    CGOTOXY(1 + 15, hit_row, GOTO_STAT);
+    CPRINTF("%2d%%", you.last_be_hit_chance);
+
+    CGOTOXY(19 + 15, hit_row, GOTO_STAT);
+    CPRINTF("%2d%%", you.last_to_hit_chance);
 }
 
 static void _print_stats_qv()
@@ -1383,10 +1386,10 @@ void print_stats()
     }
     you.wield_change  = false;
 
-    if (you.redraw_tohit)
+    if (you.redraw_hit_chance)
     {
-        _print_stats_tohit();
-        you.redraw_tohit = false;
+        _print_stats_hit_chance();
+        you.redraw_hit_chance = false;
     }
 
     if (you.species != SP_FELID)
@@ -1463,9 +1466,9 @@ void draw_border()
     CPRINTF(Options.show_game_turns ? "Time:" : "Turn:");
 
     CGOTOXY(1, hit_row, GOTO_STAT);
-    CPRINTF("To hit:");
+    CPRINTF("Be Hit Chance:");
     CGOTOXY(19, hit_row, GOTO_STAT);
-    CPRINTF("Hit Chance:");
+    CPRINTF("To Hit Chance:");
 }
 
 void update_row_info()
@@ -1517,7 +1520,7 @@ void redraw_screen()
     you.redraw_experience    = true;
     you.wield_change         = true;
     you.redraw_quiver        = true;
-    you.redraw_tohit         = true;
+    you.redraw_hit_chance    = true;
     you.redraw_status_lights = true;
 
     print_stats();

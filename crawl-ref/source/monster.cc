@@ -381,7 +381,7 @@ int monster::damage_type(int which_attack)
  * @return              The time taken by an attack with the monster's weapon
  *                      and the given projectile, in aut.
  */
-int monster::attack_delay(const item_def *projectile, bool /*rescale*/, const item_def* /*weapon*/) const
+int monster::attack_delay(const item_def *projectile, bool /*rescale*/, const item_def* /*weapon*/, action_delay_type /* adt */) const
 {
     const item_def* weap = weapon();
 

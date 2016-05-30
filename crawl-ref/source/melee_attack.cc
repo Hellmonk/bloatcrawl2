@@ -781,7 +781,8 @@ bool melee_attack::attack()
     // Calculate various ev values and begin to check them to determine the
     // correct handle_phase_ handler.
     const int ev = defender->evasion(EV_IGNORE_NONE, attacker);
-    ev_margin = test_hit(to_hit, ev, !attacker->is_player());
+    you.last_hit_resistance = ev;
+    hit_margin = test_hit(to_hit, ev);
     bool shield_blocked = attack_shield_blocked(true);
 
     // Stuff for god conduct, this has to remain here for scope reasons.
@@ -794,7 +795,7 @@ bool melee_attack::attack()
 
         if (player_under_penance(GOD_ELYVILON)
             && god_hates_your_god(GOD_ELYVILON)
-            && ev_margin >= 0
+            && hit_margin >= 0
             && one_chance_in(20))
         {
             simple_god_message(" blocks your attack.", GOD_ELYVILON);
@@ -806,7 +807,7 @@ bool melee_attack::attack()
         // Make sure we hit if we passed the stab check.
         if (stab_attempt && stab_bonus > 0)
         {
-            ev_margin = AUTOMATIC_HIT;
+            hit_margin = AUTOMATIC_HIT;
             shield_blocked = false;
         }
     }
@@ -829,7 +830,7 @@ bool melee_attack::attack()
                 return false;
         }
 
-        if (ev_margin >= 0)
+        if (hit_margin >= 0)
         {
             bool cont = handle_phase_hit();
 
@@ -1220,10 +1221,11 @@ bool melee_attack::player_aux_test_hit()
     did_hit = false;
 
     const int evasion = defender->evasion(EV_IGNORE_NONE, attacker);
+    const int hit = test_hit(to_hit, evasion);
 
     if (player_under_penance(GOD_ELYVILON)
         && god_hates_your_god(GOD_ELYVILON)
-        && to_hit >= evasion
+        && hit > 0
         && one_chance_in(20))
     {
         simple_god_message(" blocks your attack.", GOD_ELYVILON);
@@ -1232,7 +1234,7 @@ bool melee_attack::player_aux_test_hit()
 
     bool auto_hit = one_chance_in(30);
 
-    if (to_hit >= evasion || auto_hit)
+    if (hit > 0 || auto_hit)
         return true;
 
     mprf("Your %s misses %s.", aux_attack.c_str(),
@@ -1406,6 +1408,7 @@ void melee_attack::player_announce_aux_hit()
 
 string melee_attack::player_why_missed()
 {
+    /* todo: catch this up to new hit mechanics
     const int ev = defender->evasion(EV_IGNORE_NONE, attacker);
     const int combined_penalty =
         attacker_armour_tohit_penalty + attacker_shield_tohit_penalty;
@@ -1430,6 +1433,7 @@ string melee_attack::player_why_missed()
             return "Your shield and " + armour_name
                    + " prevent you from hitting ";
     }
+     */
 
     return "You" + evasion_margin_adverb() + " miss ";
 }
@@ -2264,19 +2268,19 @@ void melee_attack::apply_staff_damage()
  *
  * @param random If false, calculate average to-hit deterministically.
  */
-int melee_attack::calc_to_hit(bool random)
+int melee_attack::calc_to_hit()
 {
-    int mhit = attack::calc_to_hit(random);
+    int mhit = attack::calc_to_hit();
 
     if (attacker->is_player() && !weapon)
     {
         // Just trying to touch is easier than trying to damage.
         if (you.duration[DUR_CONFUSING_TOUCH])
-            mhit += maybe_random2(you.dex(), random);
+            mhit += you.dex() / 2;
 
         // TODO: Review this later (transformations getting extra hit
         // almost across the board seems bad) - Cryp71c
-        mhit += maybe_random2(get_form()->unarmed_hit_bonus, random);
+        mhit += get_form()->unarmed_hit_bonus / 2;
     }
 
     return mhit;

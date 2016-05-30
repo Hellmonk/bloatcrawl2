@@ -72,8 +72,11 @@ static void _initialize()
     Options.fixup_options();
 
     you.symbol = MONS_PLAYER;
-    you.last_hit_chance     = 0;
-    you.last_tohit          = 0;
+    you.last_hit_resistance  = 0;
+    you.last_damage_resist   = 0;
+    you.last_damage          = 0;
+    you.last_to_hit_chance   = 0;
+    you.last_be_hit_chance   = 0;
 
     seed_rng();
 
@@ -302,6 +305,7 @@ static void _post_init(bool newc)
     you.redraw_magic_points = true;
     you.redraw_armour_class = true;
     you.redraw_evasion      = true;
+    you.redraw_hit_chance   = true;
     you.redraw_experience   = true;
     if (you.species == SP_LAVA_ORC)
         you.redraw_temperature = true;

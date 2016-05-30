@@ -854,16 +854,9 @@ static void _append_weapon_stats(string &description, const item_def &item)
     property(item, PWPN_HIT),
     base_dam + ammo_dam,
     weapon_sp_cost(&item),
-    (float) player_attack_delay_modifier(property(item, PWPN_SPEED)) / 10,
-    (float) you.attack_delay(nullptr, true, &item) / 10,
-    (float) (
-        (float)player_attack_delay_modifier(property(item, PWPN_SPEED) / 2)
-        / 10)
-        /*
-        (float) player_attack_delay_modifier(weapon_min_delay(item)) / 10,
-        weapon_min_delay_skill(item),
-        your_skill.c_str()
-         */
+    (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_MAX) / 10,
+    (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_CURRENT) / 10,
+    (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_MIN) / 10
      );
 
     if (skill == SK_SLINGS)

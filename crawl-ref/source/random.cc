@@ -491,3 +491,17 @@ int defer_rand::random2avg(int max, int rolls)
 
     return sum / rolls;
 }
+
+int get_success_chance(int diff, int cap, int spread)
+{
+    double ratio = pow((spread - 1.0)/spread, abs(diff)) / 2;
+    if (diff > 0)
+        ratio = 1 - ratio;
+
+    int chance = 100 * ratio;
+    chance = min(100 - cap, chance);
+    chance = max(0 + cap, chance);
+
+    return chance;
+}
+

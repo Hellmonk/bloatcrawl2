@@ -31,7 +31,7 @@ static const map<job_type, job_def> job_data =
     { "leather armour" },
     WCHOICE_GOOD,
     { { SK_FIGHTING, 4 }, { SK_ARMOUR, 2 }, { SK_DODGING, 1 },
-      { SK_INVOCATIONS, 2 }, { SK_WEAPON, 2 }, { SK_STEALTH, 1 }, },
+      { SK_INVOCATIONS, 2 }, { SK_WEAPON, 3 }, { SK_STEALTH, 1 }, },
 } },
 
 { JOB_AIR_ELEMENTALIST, {
@@ -52,7 +52,7 @@ static const map<job_type, job_def> job_data =
     { "spear", "robe", "book of Debilitation" },
     WCHOICE_RANGED,
     { { SK_FIGHTING, 2 }, { SK_DODGING, 2 }, { SK_SPELLCASTING, 3 },
-      { SK_HEXES, 3 }, { SK_WEAPON, 2 }, },
+      { SK_HEXES, 3 }, { SK_WEAPON, 3 }, },
 } },
 
 { JOB_ARTIFICER, {
@@ -64,7 +64,7 @@ static const map<job_type, job_def> job_data =
       "wand of enslavement charges:15", "wand of slowing charges:15" },
     WCHOICE_NONE,
     { { SK_EVOCATIONS, 4 }, { SK_DODGING, 2 }, { SK_FIGHTING, 2 },
-      { SK_WEAPON, 1 }, { SK_STEALTH, 2 }, },
+      { SK_WEAPON, 2 }, { SK_STEALTH, 2 }, },
 } },
 
 { JOB_ASSASSIN, {
@@ -76,7 +76,7 @@ static const map<job_type, job_def> job_data =
       "needle ego:curare q:10" },
     WCHOICE_NONE,
     { { SK_FIGHTING, 3 }, { SK_DODGING, 1 }, { SK_STEALTH, 4 },
-      { SK_THROWING, 2 }, { SK_WEAPON, 2 }, },
+      { SK_THROWING, 2 }, { SK_WEAPON, 3 }, },
 } },
 
 { JOB_BERSERKER, {
@@ -86,7 +86,7 @@ static const map<job_type, job_def> job_data =
       SP_DEMONSPAWN, },
     { "animal skin" },
     WCHOICE_PLAIN,
-    { { SK_FIGHTING, 4 }, { SK_DODGING, 2 }, { SK_WEAPON, 3 }, },
+    { { SK_FIGHTING, 4 }, { SK_DODGING, 2 }, { SK_WEAPON, 4 }, },
 } },
 
 { JOB_CHAOS_KNIGHT, {
@@ -97,7 +97,7 @@ static const map<job_type, job_def> job_data =
     { "leather armour plus:2" },
     WCHOICE_GOOD,
     { { SK_FIGHTING, 4 }, { SK_ARMOUR, 1 }, { SK_DODGING, 2 },
-      { SK_WEAPON, 3 } },
+      { SK_WEAPON, 4 } },
 } },
 
 { JOB_CONJURER, {
@@ -128,7 +128,7 @@ static const map<job_type, job_def> job_data =
     { SP_DEEP_ELF, SP_FELID, SP_KOBOLD, SP_SPRIGGAN, SP_NAGA, SP_VAMPIRE, },
     { "dagger plus:1", "robe plus:1", "book of Maledictions" },
     WCHOICE_NONE,
-    { { SK_WEAPON, 1 }, { SK_HEXES, 3 }, { SK_SPELLCASTING, 3 },
+    { { SK_WEAPON, 2 }, { SK_HEXES, 3 }, { SK_SPELLCASTING, 3 },
       { SK_DODGING, 2 }, { SK_STEALTH, 3 }, },
 } },
 
@@ -140,7 +140,7 @@ static const map<job_type, job_def> job_data =
     { "scale mail", "shield", "potion of might" },
     WCHOICE_GOOD,
     { { SK_FIGHTING, 3 }, { SK_SHIELDS, 3 }, { SK_ARMOUR, 3 },
-      { SK_THROWING, 1 }, { SK_WEAPON, 2 } },
+      { SK_THROWING, 1 }, { SK_WEAPON, 3 } },
 } },
 
 { JOB_FIRE_ELEMENTALIST, {
@@ -162,7 +162,7 @@ static const map<job_type, job_def> job_data =
     { "leather armour", "helmet", "throwing net q:10" },
     WCHOICE_GOOD,
     { { SK_FIGHTING, 3 }, { SK_THROWING, 2 }, { SK_DODGING, 3 },
-      { SK_WEAPON, 3}, },
+      { SK_WEAPON, 4 }, },
 } },
 
 { JOB_HUNTER, {
@@ -217,7 +217,7 @@ static const map<job_type, job_def> job_data =
     { "leather armour", "buckler", "book of Battle" },
     WCHOICE_PLAIN,
     { { SK_FIGHTING, 3 }, { SK_ARMOUR, 1 }, { SK_DODGING, 1 },
-      { SK_SPELLCASTING, 3 }, { SK_CHARMS, 3 }, { SK_WEAPON, 2 }, },
+      { SK_SPELLCASTING, 3 }, { SK_CHARMS, 3 }, { SK_WEAPON, 3 }, },
 } },
 
 { JOB_SUMMONER, {
@@ -273,7 +273,7 @@ static const map<job_type, job_def> job_data =
     WCHOICE_PLAIN,
     { { SK_FIGHTING, 2 }, { SK_ARMOUR, 1 }, { SK_DODGING, 2 },
       { SK_SPELLCASTING, 3 }, { SK_TRANSLOCATIONS, 3 }, { SK_THROWING, 1 },
-      { SK_WEAPON, 2 }, },
+      { SK_WEAPON, 3 }, },
 } },
 
 { JOB_WIZARD, {

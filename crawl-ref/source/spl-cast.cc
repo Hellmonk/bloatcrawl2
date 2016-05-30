@@ -465,7 +465,7 @@ int list_spells_wide(bool viewing, bool allow_preselect,
  */
 int raw_spell_fail(spell_type spell)
 {
-    float x = -10;
+    float x = 30;
 
     const int spell_level = spell_difficulty(spell);
     const int armour_shield_penalty = player_armour_shield_spell_penalty();
@@ -485,11 +485,11 @@ int raw_spell_fail(spell_type spell)
     const spschools_type disciplines = get_spell_disciplines(spell);
     const int school_average = average_schools(disciplines, 10);
 
-    x += spell_level * -5;
-    x += armour_shield_penalty * -0.05;
+    x += spell_level * -10;
+    x += armour_shield_penalty * -0.1;
     x += spellcasting_penalty * -0.3;
     x += anti_wizardry * -3;
-    x += vertigo * -3;
+    x += vertigo * -5;
     x += wild * -5;
     x += subdued * 5;
     x += (dex - 10) * 2;
@@ -500,80 +500,9 @@ int raw_spell_fail(spell_type spell)
     x += wizardry * 5;
     x += brilliance * 5;
 
-    int fail_chance = 100.0 * pow(15.0 / 16, abs(x)) / 2;
-
-    if (x < 0)
-        fail_chance = 100 - fail_chance;
-
-    const int min_fail = (spell_level * 10 - school_average);
-
-    fail_chance = min(99, fail_chance);
-    fail_chance = max(min_fail, fail_chance);
-    fail_chance = max(1, fail_chance);
+    int fail_chance = 100 - get_success_chance(x, 1);
 
     return fail_chance;
-
-    /* old way
-    float resist = qpow(5, 3, 1, spell_level - 1, false);
-    const int armour_shield_penalty = player_armour_shield_spell_penalty();
-    dprf("Armour+Shield spell failure penalty: %d", armour_shield_penalty);
-    const float armour_penalty = (15 + armour_shield_penalty) / 15;
-    const float spellcasting_penalty = (15 + get_form()->spellcasting_penalty) / 15;
-    const float anti_wizardry = player_mutation_level(MUT_ANTI_WIZARDRY) + 1;
-    const float vertigo = you.duration[DUR_VERTIGO] ? 1.5 : 1.0;
-    resist *= armour_penalty * spellcasting_penalty * anti_wizardry * vertigo;
-
-    const int wild = player_mutation_level(MUT_WILD_MAGIC);
-    resist = qpow(resist, 3, 2, wild);
-
-    // with all factors being 10, player should have a 50% chance of casting a level 5 spell
-    float force = 5;
-
-    const float dex = (2.0 + you.dex(true)) / 6;
-    const int spellcasting_skill = you.skill(SK_SPELLCASTING, 10);
-    const float spellcasting = (10.0 + spellcasting_skill) / 20;
-
-    const spschools_type disciplines = get_spell_disciplines(spell);
-    const int skill_factor = average_schools(disciplines, 10);
-    const float spell_schools = (10.0 + skill_factor) / 20;
-
-    force *= dex * spellcasting * spell_schools;
-
-    const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
-    force = fpow(force, 3, 2, subdued);
-
-    if (player_equip_unrand(UNRAND_HIGH_COUNCIL))
-        force *= 2;
-
-    // I have no idea what this does, so I'm leaving it for now.
-//    if (you.props.exists(SAP_MAGIC_KEY))
-//        force *= you.props[SAP_MAGIC_KEY].get_int() * 12;
-
-    // Apply the effects of Vehumet and items of wizardry.
-    resist = _apply_spellcasting_success_boosts(spell, resist);
-    if (Options.exertion_disabled)
-        resist /= 2;
-
-    force = player_spellsuccess_modifier(force);
-
-    force = fmax(1, force);
-    resist = fmax(1, resist);
-
-    int fail_chance;
-
-    if (force >= resist)
-        fail_chance = 50 / (force / resist);
-    else
-        fail_chance = 100 - 50 / (resist / force);
-
-    if (fail_chance > 99)
-        fail_chance = 99;
-
-    if (fail_chance < 1)
-        fail_chance = 1;
-
-    return fail_chance;
-     */
 }
 
 int stepdown_spellpower(int power)

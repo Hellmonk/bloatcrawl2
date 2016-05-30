@@ -62,26 +62,21 @@ ranged_attack::ranged_attack(actor *attk, actor *defn, item_def *proj,
         wpn_skill = SK_THROWING;
 }
 
-int ranged_attack::calc_to_hit(bool random)
+int ranged_attack::calc_to_hit()
 {
-    orig_to_hit = attack::calc_to_hit(random);
+    orig_to_hit = attack::calc_to_hit();
     if (teleport)
     {
         orig_to_hit +=
             (attacker->is_player())
-            ? maybe_random2(you.attribute[ATTR_PORTAL_PROJECTILE] / 4, random)
+            ? you.attribute[ATTR_PORTAL_PROJECTILE] / 8
             : 3 * attacker->as_monster()->get_hit_dice();
     }
 
     int hit = orig_to_hit;
     const int defl = defender->missile_deflection();
     if (defl)
-    {
-        if (random)
-            hit = random2(hit / defl);
-        else
-            hit = (hit - 1) / (2 * defl);
-    }
+        hit = (hit - 1) / (2 * defl);
 
     return hit;
 }
@@ -104,7 +99,7 @@ bool ranged_attack::attack()
     }
 
     const int ev = defender->evasion(EV_IGNORE_NONE, attacker);
-    ev_margin = test_hit(to_hit, ev, !attacker->is_player());
+    hit_margin = test_hit(to_hit, ev);
     bool shield_blocked = attack_shield_blocked(false);
 
     god_conduct_trigger conducts[3];
@@ -117,7 +112,7 @@ bool ranged_attack::attack()
         handle_phase_blocked();
     else
     {
-        if (ev_margin >= 0)
+        if (hit_margin >= 0)
         {
             if (!handle_phase_hit())
             {
@@ -146,7 +141,7 @@ bool ranged_attack::attack()
         handle_phase_killed();
 
     if (attacker->is_player() && defender->is_monster()
-        && !shield_blocked && ev_margin >= 0)
+        && !shield_blocked && hit_margin >= 0)
     {
         print_wounds(defender->as_monster());
     }
@@ -228,7 +223,7 @@ bool ranged_attack::handle_phase_dodged()
     const int ev = defender->evasion(EV_IGNORE_NONE, attacker);
 
     const int orig_ev_margin =
-        test_hit(orig_to_hit, ev, !attacker->is_player());
+        test_hit(orig_to_hit, ev);
 
     if (defender->missile_deflection() && orig_ev_margin >= 0)
     {
