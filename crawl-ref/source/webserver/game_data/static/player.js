@@ -272,7 +272,7 @@ function ($, comm, enums, map_knowledge, messages, options) {
             $("#stats_" + name).addClass("colour_" + colour);
     }
 
-    var simple_stats = ["hp", "hp_max", "sp", "sp_max", "mp", "mp_max", "xl", "progress", "gold"];
+    var simple_stats = ["hp", "hp_max", "sp", "sp_max", "mp", "mp_max", "xl", "progress", "gold", "to_hit_chance", "be_hit_chance"];
     /**
      * Update the stats pane area based on the player's current properties.
      */
@@ -524,7 +524,9 @@ function ($, comm, enums, map_knowledge, messages, options) {
                 wizard: 0,
                 depth: 0, place: "",
                 contam: 0,
-                heat: 0
+                heat: 0,
+                to_hit_chance: 0,
+                be_hit_chance: 0
             });
             delete player["old_hp"];
             delete player["old_mp"];
