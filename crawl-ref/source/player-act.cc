@@ -259,7 +259,6 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
     if (!weapon)
         weapon = you.weapon();
 
-    int base_delay = 15;
     int attk_delay = 15;
     // a semi-arbitrary multiplier, to minimize loss of precision from integer
     // math.
@@ -271,8 +270,7 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
         // Thrown weapons use 10 + projectile damage to determine base delay.
         const skill_type wpn_skill = SK_THROWING;
         const int projectile_delay = 10 + property(*projectile, PWPN_DAMAGE) / 2;
-        base_delay = projectile_delay;
-        attk_delay = base_delay;
+        attk_delay = projectile_delay;
 
         /* Using fighting instead
         attk_delay -= you.skill(wpn_skill, 10) / DELAY_SCALE;
@@ -287,9 +285,7 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
     {
         int sk = form_uses_xl() ? experience_level * 10 :
                                   skill(SK_UNARMED_COMBAT, 10);
-        /* we use fighting and dex now instead
-        attk_delay = 10 - div_rand_round(sk, 27*2);
-         */
+        attk_delay = 10;
 
         // Bats are faster (for whatever good it does them).
         if (you.form == TRAN_BAT && !projectile)
@@ -306,8 +302,7 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
         int wpn_sklev = you.skill(wpn_skill, 10);
         wpn_sklev = min(wpn_sklev, 10 * weapon_min_delay_skill(*weapon));
 
-        base_delay = property(*weapon, PWPN_SPEED);
-        attk_delay = base_delay;
+        attk_delay = property(*weapon, PWPN_SPEED);
     }
 
     attk_delay = generic_action_delay(you.skill(SK_FIGHTING, 10), attk_delay, adt);
