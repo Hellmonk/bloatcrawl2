@@ -1926,8 +1926,16 @@ int items(bool allow_uniques,
 
     if (force_class == OBJ_FOOD)
     {
-        force_class = OBJ_POTIONS;
-        force_type = POT_STAMINA;
+        if (x_chance_in_y(1, 4))
+        {
+            force_class = OBJ_POTIONS;
+            force_type = POT_STAMINA;
+        }
+        else
+        {
+            force_class = OBJ_RANDOM;
+            force_type = 0;
+        }
     }
 
     // determine base_type for item generated {dlb}:
