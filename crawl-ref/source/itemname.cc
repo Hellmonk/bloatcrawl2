@@ -467,7 +467,7 @@ static const char *weapon_brands_verbose[] =
 static const char* _vorpal_brand_name(const item_def &item, bool terse)
 {
     if (is_range_weapon(item))
-        return "velocity";
+        return "shredding";
 
     // Would be nice to implement this as an array (like other brands), but
     // mapping the DVORP flags to array entries seems very fragile.
