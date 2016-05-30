@@ -912,10 +912,11 @@ static void _print_stats_wp(int y)
 static void _print_stats_hit_chance()
 {
     textcolour(HUD_VALUE_COLOUR);
-    CGOTOXY(9, hit_row, GOTO_STAT);
 
-    CPRINTF("%2d%%", you.last_hit_chance);
-    CGOTOXY(31, hit_row, GOTO_STAT);
+    CGOTOXY(13, hit_row, GOTO_STAT);
+    CPRINTF("%2d\\%", you.last_hit_chance);
+
+    CGOTOXY(19 + 16, hit_row, GOTO_STAT);
     CPRINTF("%4d", you.last_damage);
 }
 
@@ -1519,7 +1520,7 @@ void redraw_screen()
     you.redraw_experience    = true;
     you.wield_change         = true;
     you.redraw_quiver        = true;
-    you.redraw_hit_chance         = true;
+    you.redraw_hit_chance    = true;
     you.redraw_status_lights = true;
 
     print_stats();

@@ -6190,8 +6190,8 @@ player::player()
     max_exp             = 0;
     current_form_spell  = SPELL_NO_SPELL;
     current_form_spell_failure  = 0;
+    last_hit_chance     = 0;
     last_hit_resistance = 0;
-    last_damage_resist  = 0;
     last_damage         = 0;
     last_damage_resist  = 0;
     monsters_recently_seen = 0;
@@ -9793,6 +9793,35 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
 
 const int base_factor = 100;
 
+int _difficulty_mode_adder()
+{
+    int x = 0;
+
+    if (!Options.exertion_disabled)
+        switch(crawl_state.difficulty)
+        {
+            // yes, easy mode actually gets a boost when exhausted...
+            case DIFFICULTY_EASY:
+                x = 1;
+                break;
+            case DIFFICULTY_STANDARD:
+                x = 0;
+                break;
+            case DIFFICULTY_CHALLENGE:
+                x = -1;
+                break;
+            case DIFFICULTY_NIGHTMARE:
+                x = -2;
+                break;
+            default:
+                // should not be possible
+                x = 0;
+                break;
+        }
+
+    return x;
+}
+
 // all standard attributes are multipled by the base factor and then
 // divided by this value. So if this function returns 100 (the current
 // base_factor), that means that the normal mode damage (for example)
@@ -9842,18 +9871,18 @@ int player_tohit_modifier(int tohit, int range)
     if (you.duration[DUR_PORTAL_PROJECTILE])
         range = 1;
 
-    tohit *= _difficulty_mode_multiplier();
+    tohit += _difficulty_mode_adder();
 
     // worst case, range 7, gives 40% of original tohit, which should give about 80% chance of hitting
     if (range > 1)
-        tohit = tohit * (20 - range + 1) / 20;
+        tohit = tohit - 2 * range;
 
     if (player_is_exhausted(true))
-        tohit = tohit * 3 / 4;
+        tohit = tohit - 5;
     else if (you.exertion == EXERT_FOCUS)
-        tohit = tohit * 3 / 2 + 50;
+        tohit = tohit + 5;
 
-    return tohit / base_factor;
+    return tohit;
 }
 
 int player_damage_modifier(int damage, bool silent, const int range)
@@ -10028,7 +10057,7 @@ void player_update_last_hit_chance(int chance)
     if (chance > 99)
         chance = 99;
 
-    you.last_hit_resistance = chance;
+    you.last_hit_chance = chance;
     you.redraw_hit_chance = true;
 }
 

@@ -494,8 +494,8 @@ int defer_rand::random2avg(int max, int rolls)
 
 int get_success_chance(int diff, int cap, int spread)
 {
-    double ratio = pow((spread - 1.0)/spread, abs(diff));
-    if (diff < 0)
+    double ratio = pow((spread - 1.0)/spread, abs(diff)) / 2;
+    if (diff > 0)
         ratio = 1 - ratio;
 
     int chance = 100 * ratio;

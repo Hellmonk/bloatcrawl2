@@ -304,6 +304,7 @@ static void _post_init(bool newc)
     you.redraw_magic_points = true;
     you.redraw_armour_class = true;
     you.redraw_evasion      = true;
+    you.redraw_hit_chance   = true;
     you.redraw_experience   = true;
     if (you.species == SP_LAVA_ORC)
         you.redraw_temperature = true;
