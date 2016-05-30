@@ -145,7 +145,7 @@ bool is_connected_branch(level_id place)
 
 bool in_lower_half_of_branch()
 {
-    return you.depth > brdepth[you.where_are_you] / 2;
+    return you.depth > (brdepth[you.where_are_you] + 1) / 2;
 }
 
 bool is_double_deep_branch(branch_type branch)
