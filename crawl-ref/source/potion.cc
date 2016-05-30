@@ -791,6 +791,7 @@ public:
         }
          */
         amount = 20 + random2(50);
+        dec_exhaust_player(1000);
 
         inc_sp(amount);
         mprf("This potion tastes like fruit juice. Energy courses through your body! (SP+%d)", amount);
