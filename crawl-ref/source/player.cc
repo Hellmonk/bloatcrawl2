@@ -10265,6 +10265,7 @@ void attempt_instant_rest()
         !player_in_hell()
         && you.where_are_you != BRANCH_ABYSS
         && (you.monsters_recently_seen > 200 || you.monsters_recently_seen == 0)
+        && i_feel_safe()
         )
     {
         you.monsters_recently_seen = 0;
