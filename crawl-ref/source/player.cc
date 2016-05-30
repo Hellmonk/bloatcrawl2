@@ -4453,25 +4453,28 @@ void set_exertion(const exertion_mode new_exertion, const bool manual)
 {
     if (Options.exertion_disabled)
     {
-        mpr("Exertion modes are disabled in your rc file, so you can't use power or focus modes.");
+        if (manual)
+            mpr("Exertion modes are disabled in your rc file, so you can't use power or focus modes.");
         return;
     }
 
     if (new_exertion == you.exertion)
         return;
 
-    if (you.restore_exertion && manual)
+    if (manual)
         you.restore_exertion = new_exertion;
 
     if (you.duration[DUR_BERSERK])
     {
-        mpr("You can't change exertion mode while berserk.");
+        if (manual)
+            mpr("You can't change exertion mode while berserk.");
         return;
     }
 
     if (player_is_exhausted(true) && new_exertion != EXERT_NORMAL)
     {
-        mpr("You are too tired to exert yourself now.");
+        if (manual)
+            mpr("You are too tired to exert yourself now.");
         return;
     }
 
@@ -4585,6 +4588,25 @@ bool dec_sp(int sp_loss, bool silent, bool allow_overdrive)
     return result;
 }
 
+void _restore_exertion_mode()
+{
+    const int sp_target = get_sp_max() / 2;
+    if (get_sp() >= sp_target)
+    {
+        if (you.stamina_flags & STAMF_QUICK_MODE_RESTORE)
+        {
+            set_quick_mode(true, false);
+        }
+
+        const int mp_target = get_mp_max() / 2;
+
+        if (get_mp() >= mp_target && you.restore_exertion != EXERT_NORMAL)
+        {
+            set_exertion(you.restore_exertion, false);
+        }
+    }
+}
+
 void inc_sp(int sp_gain, bool silent, bool manual)
 {
     if (you.species == SP_DJINNI)
@@ -4600,17 +4622,7 @@ void inc_sp(int sp_gain, bool silent, bool manual)
         */
 
     you.sp += sp_gain;
-    if (you.sp > you.sp_max / 2)
-    {
-        if (you.restore_exertion != EXERT_NORMAL)
-        {
-            set_exertion(you.restore_exertion, false);
-        }
-        if (you.stamina_flags & STAMF_QUICK_MODE_RESTORE)
-        {
-            set_quick_mode(true, false);
-        }
-    }
+    _restore_exertion_mode();
 
     if (you.sp > you.sp_max)
         you.sp = you.sp_max;
@@ -4632,13 +4644,7 @@ void inc_mp(int mp_gain, bool silent)
         return;
 
     you.mp += mp_gain;
-    if (you.mp > you.mp_max / 2)
-    {
-        if (you.restore_exertion != EXERT_NORMAL)
-        {
-            set_exertion(you.restore_exertion, false);
-        }
-    }
+    _restore_exertion_mode();
 
     if (you.mp > you.mp_max)
         you.mp = you.mp_max;
@@ -5584,6 +5590,8 @@ void dec_exhaust_player(int delay)
         you.duration[DUR_EXHAUSTED] = 0;
         you.redraw_evasion = true;
         you.redraw_armour_class = true;
+
+        _restore_exertion_mode();
     }
 }
 
@@ -10150,7 +10158,7 @@ void _instant_rest()
 
     player_after_each_turn();
 
-    you.duration[DUR_EXHAUSTED] = 0;
+    dec_exhaust_player(1000);
 }
 
 void _attempt_instant_rest_handle_no_visible_monsters()
