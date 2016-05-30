@@ -10194,42 +10194,46 @@ void _attempt_instant_rest_handle_no_visible_monsters()
     if (visible.size() > 0)
     {
         ldprf(LD_INSTAREST, "Found further out monsters: %d (%s)", visible.size(), visible[0]->name(DESC_A, true).c_str());
-        monster *near_monster = visible[0];
-
-        coord_def to;
-        int shortest = -1;
-        for (edge_iterator ei(you.pos(), you.current_vision, true); ei; ++ei)
+        for(monster *near_monster : visible)
         {
-            if (!near_monster->can_pass_through(*ei) || near_monster->cannot_move())
-                continue;
-
-            if (!you.see_cell(*ei))
-                continue;
-
-            monster_pathfind pf;
-            if (!pf.init_pathfind(near_monster, *ei, true, false, true))
-                continue;
-
-            if (shortest == -1 || pf.min_length < shortest)
+            coord_def to;
+            int shortest = -1;
+            for (edge_iterator ei(you.pos(), you.current_vision, true); ei; ++ei)
             {
-                to = *ei;
-                shortest = pf.min_length;
-            }
-        }
+                if (!near_monster->can_pass_through(*ei) || near_monster->cannot_move())
+                    continue;
 
-        if (shortest != -1)
-        {
-            near_monster->move_to_pos(to);
-            /*
-            near_monster->speed_increment /= 2;
-            behaviour_event(near_monster, ME_ALERT, &you, you.pos());
-             */
-            ldprf(LD_INSTAREST, "Pulled in monster. recently_seen = %d.", you.monsters_recently_seen);
-            can_restore_all = false;
-        }
-        else
-        {
-            ldprf(LD_INSTAREST, "Further out monster couldn't find there way here.");
+                if (!you.see_cell(*ei))
+                    continue;
+
+                monster_pathfind pf;
+                if (!pf.init_pathfind(near_monster, *ei, true, false, true))
+                    continue;
+
+                if (shortest == -1 || pf.min_length < shortest)
+                {
+                    to = *ei;
+                    shortest = pf.min_length;
+                }
+            }
+
+            if (shortest != -1)
+            {
+                near_monster->move_to_pos(to);
+                /*
+                near_monster->speed_increment /= 2;
+                behaviour_event(near_monster, ME_ALERT, &you, you.pos());
+                 */
+                ldprf(LD_INSTAREST, "Pulled in monster. recently_seen = %d.", you.monsters_recently_seen);
+                can_restore_all = false;
+            }
+            else
+            {
+                ldprf(LD_INSTAREST, "Further out monster couldn't find there way here.");
+            }
+
+            if (coinflip())
+                break;
         }
     }
     else
