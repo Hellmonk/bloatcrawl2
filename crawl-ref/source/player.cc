@@ -10122,6 +10122,9 @@ int player_monster_gen_modifier(int amount)
 // reduce damage to player if it has exceeded protection thresholds (to avoid 1 hit kills for example)
 int player_ouch_modifier(int damage)
 {
+    // global monster damage reduction
+    damage = damage * 2 / 3;
+
     int percentage_allowed = 100;
 
     switch (crawl_state.difficulty)
@@ -10170,6 +10173,7 @@ void _instant_rest()
         inc_mp(get_mp_max() - get_mp());
 
     player_after_each_turn();
+    you.peace = 1000;
 
     dec_exhaust_player(1000);
 }
