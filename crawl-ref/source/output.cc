@@ -914,10 +914,10 @@ static void _print_stats_hit_chance()
     textcolour(HUD_VALUE_COLOUR);
 
     CGOTOXY(1 + 15, hit_row, GOTO_STAT);
-    CPRINTF("%2d%%", you.last_to_hit_chance);
+    CPRINTF("%2d%%", you.last_be_hit_chance);
 
     CGOTOXY(19 + 15, hit_row, GOTO_STAT);
-    CPRINTF("%2d%%", you.last_be_hit_chance);
+    CPRINTF("%2d%%", you.last_to_hit_chance);
 }
 
 static void _print_stats_qv()
