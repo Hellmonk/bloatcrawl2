@@ -9711,14 +9711,27 @@ void player_evoked_something()
 
 void player_moved()
 {
+    double movement_cost = 0;
+
     if (you.peace < 200 && in_quick_mode())
-        dec_sp(3, false, true);
+        movement_cost += 20;
 
     if (you.peace < 50 && you.airborne() && you.cancellable_flight())
-        dec_sp(3, false, true);
+        movement_cost += 20;
 
-    if (you.peace < 10 && you.exertion == EXERT_FOCUS)
-        dec_mp(2, false, true);
+    const int armour_penalty = you.adjusted_body_armour_penalty(10);
+    const int shield_penalty = you.adjusted_shield_penalty(10);
+    const int total_penalty = armour_penalty + shield_penalty;
+
+    double slow_down = 0;
+    if (movement_cost > 0 && total_penalty > 0)
+    {
+        slow_down = log2(total_penalty / 10.0);
+        movement_cost += slow_down * 10;
+    }
+
+    movement_cost = div_rand_round(movement_cost, 10);
+    dec_sp(movement_cost, false, true);
 }
 
 // factor reduces failure chance by the given percentage (or success chance if fail < 50%)
