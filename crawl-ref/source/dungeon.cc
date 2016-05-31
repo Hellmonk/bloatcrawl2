@@ -1219,7 +1219,7 @@ void dgn_reset_level(bool enable_random_maps)
     {
         // Abyss spawn rate is set for those characters that start out in the
         // Abyss; otherwise the number is ignored in the Abyss.
-        env.spawn_random_rate = 50;
+        env.spawn_random_rate = 100;
     }
     else
         // No random monsters in Labyrinths and portal vaults if we don't have
