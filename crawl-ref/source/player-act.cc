@@ -323,7 +323,12 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
         attk_delay += shield_penalty;
     }
 
-    brand_type brand = get_weapon_brand(*weapon);
+    brand_type brand;
+    if (weapon)
+        brand = get_weapon_brand(*weapon);
+    else
+        brand = SPWPN_NORMAL;
+
     if (weapon && brand == SPWPN_SPEED)
         attk_delay = attk_delay * 2 / 3;
 
