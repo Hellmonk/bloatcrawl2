@@ -1,24 +1,23 @@
 %%%%
 Fighting
 
-Fighting skill increases your accuracy and damage in hand-to-hand combat, and
-also increases your maximum health.
+Fighting skill increases your attack speed and reduces stamina costs of attacks.
 %%%%
 Short Blades
 
 Short Blades are more effective than any other weapon type at stabbing helpless
 foes.
 
-Being skilled with Short Blades will allow you to attack more quickly with all
-weapons of this type, as well as increasing your accuracy and damage with them.
+Being skilled with Short Blades will allow you to do more damage with all
+weapons of this type, as well as increasing your accuracy with them.
 
 Being skilled with Short Blades increases your effectiveness with Long Blades,
 and vice versa.
 %%%%
 Long Blades
 
-Being skilled with Long Blades will allow you to attack more quickly with all
-weapons of this type, as well as increasing your accuracy and damage with them.
+Being skilled with Long Blades will allow you to do more damage with all
+weapons of this type, as well as increasing your accuracy with them.
 
 Being skilled with Long Blades increases your effectiveness with Short Blades,
 and vice versa.
@@ -28,16 +27,16 @@ Axes
 Axes cleave through multiple enemies with a single swing, hitting foes in an
 arc around the wielder.
 
-Being skilled with Axes will allow you to attack more quickly with all weapons
-of this type, as well as increasing your accuracy and damage with them.
+Being skilled with Axes will allow you to do more damage with all weapons
+of this type, as well as increasing your accuracy with them.
 
 Being skilled with Axes increases your effectiveness with Maces & Flails and
 Polearms, and vice versa.
 %%%%
 Maces & Flails
 
-Being skilled with Maces & Flails will allow you to attack more quickly with
-all weapons of this type, as well as increasing your accuracy and damage with
+Being skilled with Maces & Flails will allow you to do more damage with
+all weapons of this type, as well as increasing your accuracy with
 them.
 
 Being skilled with Maces & Flails increases your effectiveness with Axes and
@@ -47,8 +46,8 @@ Polearms
 
 Polearms can be evoked with ‘v’ to attack enemies from two spaces away.
 
-Being skilled with Polearms will allow you to attack more quickly with all
-weapons of this type, as well as increasing your accuracy and damage with them.
+Being skilled with Polearms will allow you to do more damage with all
+weapons of this type, as well as increasing your accuracy with them.
 
 Being skilled with Polearms increases your effectiveness with Axes and Staves,
 and vice versa.
@@ -58,8 +57,8 @@ Staves
 Staves require a relatively low amount of skill to be used most effectively,
 although they lack the high damage potential of some other weapon classes.
 
-Being skilled with Staves will allow you to attack more quickly with all
-weapons of this type, as well as increasing your accuracy and damage with them.
+Being skilled with Staves will allow you to do more damage with all
+weapons of this type, as well as increasing your accuracy with them.
 
 Being skilled with Staves increases your effectiveness with Maces & Flails and
 Polearms, and vice versa.
@@ -67,20 +66,21 @@ Polearms, and vice versa.
 Slings
 
 Being skilled with Slings will let you deal more damage when using the
-appropriate launcher and ammunition.
+appropriate launcher and ammunition. It also will increase your accuracy with
+slings.
 
 Being skilled with Slings increases your effectiveness in Throwing, and vice
 versa.
 %%%%
 Bows
 
-Being skilled with Bows will let you deal more damage when using the
-appropriate launcher and ammunition.
+Being skilled with Bows will let you deal more damage and hit more often when
+using the appropriate launcher and ammunition.
 %%%%
 Crossbows
 
-Being skilled with Crossbows will let you deal more damage when using the
-appropriate launcher and ammunition.
+Being skilled with Crossbows will let you deal more damage and hit more often
+when using the appropriate launcher and ammunition.
 %%%%
 Throwing
 
@@ -122,16 +122,15 @@ bolts, cannot be blocked at all.
 %%%%
 Unarmed Combat
 
-Being skilled in Unarmed Combat increases your accuracy, damage and attack
-speed in melee combat when barehanded. It also allows you to occasionally punch
+Being skilled in Unarmed Combat increases your accuracy and damage
+in melee combat when barehanded. It also allows you to occasionally punch
 with your off hand as an additional melee attack, provided your hand is free to
 do so.
 %%%%
 Spellcasting
 
-Being skilled in Spellcasting slightly increases the success rate and spell
-power of all spells, along with increasing your magical reserves and reducing
-the effects of spell hunger.
+Being skilled in Spellcasting increases the speed at which you can cast spells,
+as well as reducing the cost of spells.
 
 Training Spellcasting also gives you more spell slots to spend on new spells.
 %%%%
