@@ -4852,6 +4852,7 @@ static int _str_to_ego(item_spec &spec, string ego_str)
 #endif
         "penetration",
         "reaping",
+        "light",
         nullptr
     };
     COMPILE_CHECK(ARRAYSZ(weapon_brands) == NUM_REAL_SPECIAL_WEAPONS);

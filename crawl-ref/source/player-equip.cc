@@ -531,6 +531,10 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
                     mpr("You feel nimbler!");
                     break;
 
+                case SPWPN_LIGHT:
+                    mprf("%s feels so light!", item_name.c_str());
+                    break;
+
                 case SPWPN_DRAINING:
                     mpr("You sense an unholy aura.");
                     break;

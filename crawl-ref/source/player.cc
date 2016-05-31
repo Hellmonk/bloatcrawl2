@@ -9859,6 +9859,9 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
 
     sp_cost = max(2, (int)sp_cost);
 
+    if (weapon && get_weapon_brand(*weapon) == SPWPN_LIGHT)
+        sp_cost /= 2;
+
     if (you.exertion != EXERT_NORMAL)
         sp_cost *= 2;
 

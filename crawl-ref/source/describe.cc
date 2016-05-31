@@ -843,6 +843,12 @@ static void _append_weapon_stats(string &description, const item_def &item)
     const string your_skill = crawl_state.need_save ?
       make_stringf("\n (Your skill: %.1f)", (float) you.skill(SK_FIGHTING, 10) / 10)
       : "";
+    const int hit = property(item, PWPN_HIT);
+    const int damage = base_dam + ammo_dam;
+    const int sp_cost = weapon_sp_cost(&item);
+    const float base_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_MAX) / 10;
+    const float current_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_CURRENT) / 10;
+    const float min_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_MIN) / 10;
     description += make_stringf(
     "\nBase accuracy: %+d   Base damage: %d   Current SP cost: %d"
     "\nAttack delay:  Base: %.1f   Current: %.1f   Min: %.1f"
@@ -851,12 +857,12 @@ static void _append_weapon_stats(string &description, const item_def &item)
     "\nThis weapon's minimum attack delay (%.1f) is reached at *fighting* skill level %d."
     "%s",
          */
-    property(item, PWPN_HIT),
-    base_dam + ammo_dam,
-    weapon_sp_cost(&item),
-    (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_MAX) / 10,
-    (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_CURRENT) / 10,
-    (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_MIN) / 10
+    hit,
+    damage,
+    sp_cost,
+    base_delay,
+    current_delay,
+    min_delay
      );
 
     if (skill == SK_SLINGS)
@@ -1020,6 +1026,9 @@ static string _describe_weapon(const item_def &item, bool verbose)
             break;
         case SPWPN_EVASION:
             description += "It affects your evasion (+5 to EV).";
+            break;
+        case SPWPN_LIGHT:
+            description += "It is lighter than normal, reducing stamina cost when using it.";
             break;
         case SPWPN_DRAINING:
             description += "A truly terrible weapon, it drains the "

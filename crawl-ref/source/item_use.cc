@@ -1,5 +1,6 @@
 /**
  * @file
+}
  * @brief Functions for making use of inventory items.
 **/
 
@@ -1996,6 +1997,7 @@ static void _rebrand_weapon(item_def& wpn)
                                     */
                                     20, SPWPN_VORPAL,
                                     12, SPWPN_EVASION,
+                                    12, SPWPN_LIGHT,
                                     3, SPWPN_CHAOS,
                                     0);
         }
@@ -2009,6 +2011,7 @@ static void _rebrand_weapon(item_def& wpn)
                                     15, SPWPN_DRAINING,
                                     15, SPWPN_ELECTROCUTION,
                                     12, SPWPN_PROTECTION,
+                                    12, SPWPN_LIGHT,
                                     8, SPWPN_VAMPIRISM,
                                     3, SPWPN_CHAOS,
                                     0);
@@ -2045,6 +2048,11 @@ static void _brand_weapon(item_def &wpn)
     case SPWPN_EVASION:
         flash_colour = YELLOW;
         mprf("%s emits a repelling force!",itname.c_str());
+        break;
+
+    case SPWPN_LIGHT:
+        flash_colour = YELLOW;
+        mprf("%s feels so light!",itname.c_str());
         break;
 
     case SPWPN_FLAMING:

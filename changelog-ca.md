@@ -1,5 +1,7 @@
 ## v1.5.4
 
+* Added "light" weapon brand, making weapons weigh half as much, allowing them to be swung for half of the SP cost.
+
 * Moving around in focus mode no longer consumes stamina.
 
 * Moving around in heavy armour with a large shield increases stamina costs.

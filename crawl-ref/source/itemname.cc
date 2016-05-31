@@ -425,7 +425,7 @@ static const char *weapon_brands_terse[] =
 #if TAG_MAJOR_VERSION == 34
     "confuse",
 #endif
-    "penet", "reap", "buggy-num", "acid",
+    "penet", "reap", "light", "buggy-num", "acid",
 #if TAG_MAJOR_VERSION > 34
     "confuse",
 #endif
@@ -450,7 +450,7 @@ static const char *weapon_brands_verbose[] =
 #if TAG_MAJOR_VERSION == 34
     "confusion",
 #endif
-    "penetration", "reaping", "buggy-num", "acid",
+    "penetration", "reaping", "lightness", "buggy-num", "acid",
 #if TAG_MAJOR_VERSION > 34
     "confusion",
 #endif
