@@ -19,6 +19,7 @@
 #include "english.h"
 #include "env.h"
 #include "fight.h"
+#include "godabil.h"
 #include "ghost.h"
 #include "itemname.h"
 #include "itemprop.h"
@@ -109,6 +110,8 @@ static map<enchant_type, monster_info_flags> trivial_ench_mb_mappings = {
     { ENCH_BRILLIANCE_AURA, MB_BRILLIANCE_AURA },
     { ENCH_EMPOWERED_SPELLS, MB_EMPOWERED_SPELLS },
     { ENCH_GOZAG_INCITE,    MB_GOZAG_INCITED },
+    { ENCH_PAIN_BOND,       MB_PAIN_BOND },
+    { ENCH_IDEALISED,       MB_IDEALISED },
 };
 
 static monster_info_flags ench_to_mb(const monster& mons, enchant_type ench)
@@ -189,7 +192,8 @@ static bool _is_public_key(string key)
      || key == ELVEN_IS_ENERGIZED_KEY
      || key == MUTANT_BEAST_FACETS
      || key == MUTANT_BEAST_TIER
-     || key == DOOM_HOUND_HOWLED_KEY)
+     || key == DOOM_HOUND_HOWLED_KEY
+     || key == MON_GENDER_KEY)
     {
         return true;
     }
@@ -1175,7 +1179,7 @@ static string _verbose_info0(const monster_info& mi)
     if (mi.is(MB_INNER_FLAME))
         return "inner flame";
     if (mi.is(MB_DUMB))
-        return "dumb";
+        return "stupefied";
     if (mi.is(MB_PARALYSED))
         return "paralysed";
     if (mi.is(MB_CAUGHT))
@@ -1515,6 +1519,10 @@ vector<string> monster_info::attributes() const
         v.emplace_back("fully charged");
     if (is(MB_GOZAG_INCITED))
         v.emplace_back("incited by Gozag");
+    if (is(MB_PAIN_BOND))
+        v.emplace_back("sharing its pain");
+    if (is(MB_IDEALISED))
+        v.emplace_back("idealised");
     return v;
 }
 
@@ -1796,4 +1804,14 @@ monster_type monster_info::draco_or_demonspawn_subspecies() const
     if (type == MONS_PLAYER_ILLUSION && mons_genus(type) == MONS_DRACONIAN)
         return player_species_to_mons_species(i_ghost.species);
     return ::draco_or_demonspawn_subspecies(type, base_type);
+}
+
+const char *monster_info::pronoun(pronoun_type variant) const
+{
+    if (props.exists(MON_GENDER_KEY))
+    {
+        return decline_pronoun((gender_type)props[MON_GENDER_KEY].get_int(),
+                               variant);
+    }
+    return mons_pronoun(type, variant, true);
 }

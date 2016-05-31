@@ -34,6 +34,7 @@
 #include "food.h"
 #include "format.h"
 #include "godabil.h"
+#include "godpassive.h"
 #include "godprayer.h"
 #include "hints.h"
 #include "itemname.h"
@@ -1111,15 +1112,12 @@ static void _fill_exclude_radius(const travel_exclude &exc)
         for (int x = c.x - radius; x <= c.x + radius; ++x)
         {
             const coord_def p(x, y);
-            if (!map_bounds(x, y) || !env.map_knowledge(p).known()
-                || travel_point_distance[x][y])
-            {
+            if (!map_bounds(x, y) || travel_point_distance[x][y])
                 continue;
-            }
 
             if (is_exclude_root(p))
                 travel_point_distance[x][y] = PD_EXCLUDED;
-            else if (is_excluded(p))
+            else if (is_excluded(p) && env.map_knowledge(p).known())
                 travel_point_distance[x][y] = PD_EXCLUDED_RADIUS;
         }
 }
@@ -4026,7 +4024,7 @@ bool runrest::run_should_stop() const
     const map_cell& tcell = env.map_knowledge(targ);
 
     if (tcell.cloud() != CLOUD_NONE
-        && (!in_good_standing(GOD_QAZLAL)
+        && (!have_passive(passive_t::resist_own_clouds)
             || !YOU_KILL(tcell.cloudinfo()->killer)))
     {
         return true;

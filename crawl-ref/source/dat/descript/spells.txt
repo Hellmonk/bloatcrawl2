@@ -257,10 +257,10 @@ may knock back airborne targets.
 Cigotuvi's Embrace spell
 
 Violently mutilates all nearby corpses, wrapping them around the caster to
-serve as both armour and shield. As it takes hits, the carrion will gradually
-fall away, faster and faster as more is piled on, though increased power will
-tighten its grasp on the caster's body. It has no effect on casters in Statue
-Form, or with Ozocubu's Armour active.
+serve as both armour and shield. The carrion will fall away over time, faster
+and faster as more is piled on, though increased power will tighten its grasp
+on the caster's body. It has no effect on casters in Statue Form, or with
+Ozocubu's Armour active.
 %%%%
 Cleansing Flame spell
 
@@ -883,8 +883,7 @@ Creates a large cloud of noxious fumes, which may cause confusion.
 Olgreb's Toxic Radiance spell
 
 Causes the caster to radiate toxic energy, continuously inflicting poison on
-everything nearby for as long as the spell lasts. It is strongly focused on the
-caster, and will affect them even through poison resistance.
+everything nearby for as long as the spell lasts.
 %%%%
 Orb of Destruction spell
 

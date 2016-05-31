@@ -390,6 +390,9 @@ public:
     bool        restart_after_game; // If true, Crawl will not close on game-end
     bool        restart_after_save; // .. or on save
 
+    bool        read_persist_options; // If true, Crawl will try to load
+                                      // options from c_persist.options
+
     vector<text_pattern> drop_filter;
 
     FixedVector<FixedBitVector<NUM_AINTERRUPTS>, NUM_DELAYS> activity_interrupts;
@@ -420,6 +423,8 @@ public:
                                    // fraction of HP or MP
 
     bool        regex_search; // whether to default to regex search for ^F
+    bool        autopickup_search; // whether to annotate stash items with
+                                   // autopickup status
 
     int         movement_penalty;           // original crawl movement, where direction changes aren't penalized
 

@@ -784,7 +784,8 @@ bool tukima_affects(const actor &target)
            && is_weapon(*wpn)
            && !is_range_weapon(*wpn)
            && !is_special_unrandom_artefact(*wpn)
-           && !mons_class_is_animated_weapon(target.type);
+           && !mons_class_is_animated_weapon(target.type)
+           && !mons_is_hepliaklqana_ancestor(target.type);
 }
 
 /**
@@ -2051,7 +2052,7 @@ spret_type cast_simulacrum(int pow, god_type god, bool fail)
         {
             count++;
             player_angers_monster(sim);
-            sim->add_ench(mon_enchant(ENCH_FAKE_ABJURATION, 6));
+            sim->add_ench(mon_enchant(ENCH_FAKE_ABJURATION, 4));
         }
     }
 
@@ -2128,7 +2129,7 @@ bool monster_simulacrum(monster *mon, bool actual)
                 {
                     was_successful = true;
                     player_angers_monster(sim);
-                    sim->add_ench(mon_enchant(ENCH_FAKE_ABJURATION, 6));
+                    sim->add_ench(mon_enchant(ENCH_FAKE_ABJURATION, 4));
                     if (you.can_see(*sim))
                         num_seen++;
                 }

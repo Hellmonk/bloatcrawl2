@@ -16,6 +16,7 @@
 #include "items.h"
 #include "mon-place.h"
 #include "randbook.h" // roxanne, roxanne...
+#include "religion.h" // upgrade_hepliaklqana_weapon
 #include "state.h"
 #include "tilepick.h"
 #include "unwind.h"
@@ -209,8 +210,7 @@ static item_def* make_item_for_monster(
     iflags_t flags = 0);
 
 static void _give_weapon(monster* mon, int level, bool melee_only = false,
-                         bool give_aux_melee = true, bool spectral_orcs = false,
-                         bool merc = false)
+                         bool give_aux_melee = true, bool spectral_orcs = false)
 {
     bool force_item = false;
     bool force_uncursed = false;
@@ -223,7 +223,7 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
 
     item.base_type = OBJ_UNASSIGNED;
 
-    if (type == MONS_DANCING_WEAPON || merc)
+    if (type == MONS_DANCING_WEAPON)
         level = ISPEC_GOOD_ITEM;
 
     // moved setting of quantity here to keep it in mind {dlb}
@@ -1292,16 +1292,6 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
                                                  0);
         break;
 
-    case MONS_SALAMANDER_STORMCALLER:
-        item.base_type = OBJ_WEAPONS;
-        item.sub_type  = random_choose_weighted(5, WPN_HALBERD,
-                                                5, WPN_TRIDENT,
-                                                3, WPN_SPEAR,
-                                                2, WPN_GLAIVE,
-                                                0);
-        break;
-
-
     case MONS_SPRIGGAN:
         item.base_type = OBJ_WEAPONS;
         // no quick blades for mooks
@@ -1535,6 +1525,13 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
             floor_tile = "wpn_staff_mummy";
             equip_tile = "staff_mummy";
         }
+        break;
+
+    case MONS_ANCESTOR_HEXER:
+    case MONS_ANCESTOR_BATTLEMAGE:
+    case MONS_ANCESTOR_KNIGHT:
+        force_item = true;
+        upgrade_hepliaklqana_weapon(*mon, item);
         break;
 
     default:
@@ -1999,12 +1996,30 @@ static void _give_shield(monster* mon, int level)
                               ISPEC_GOOD_ITEM);
         break;
 
+    case MONS_ANCESTOR_KNIGHT:
+    {
+        item_def shld;
+        upgrade_hepliaklqana_shield(*mon, shld);
+        if (!shld.defined())
+            break;
+
+        item_set_appearance(shld);
+
+        const int thing_created = get_mitm_slot();
+        if (thing_created == NON_ITEM)
+            break;
+
+        mitm[thing_created] = shld;
+        _give_monster_item(mon, thing_created, true);
+    }
+        break;
+
     default:
         break;
     }
 }
 
-static void _give_armour(monster* mon, int level, bool spectral_orcs, bool merc)
+static void _give_armour(monster* mon, int level, bool spectral_orcs)
 {
     item_def               item;
 
@@ -2457,21 +2472,7 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs, bool merc)
         break;
 
     default:
-        if (merc) //mercenaries always get something
-            break;
-        else
-            return;
-    }
-
-    if (merc)
-    {
-        level = ISPEC_GOOD_ITEM;
-
-        if (item.base_type == OBJ_UNASSIGNED)
-        {
-            item.base_type = OBJ_ARMOUR;
-            item.sub_type = mons_is_draconian(type) ? ARM_CLOAK : ARM_ROBE;
-        }
+        return;
     }
 
     // Only happens if something in above switch doesn't set it. {dlb}
@@ -2524,10 +2525,15 @@ void give_weapon(monster *mons, int level_number, bool spectral_orcs)
 
 void give_armour(monster *mons, int level_number)
 {
-    _give_armour(mons, 1 + level_number/2, false, false);
+    _give_armour(mons, 1 + level_number/2, false);
 }
 
-void give_item(monster *mons, int level_number, bool mons_summoned, bool spectral_orcs, bool merc)
+void give_shield(monster *mons)
+{
+    _give_shield(mons, -1);
+}
+
+void give_item(monster *mons, int level_number, bool mons_summoned, bool spectral_orcs)
 {
     ASSERT(level_number > -1); // debugging absdepth0 changes
 
@@ -2537,8 +2543,8 @@ void give_item(monster *mons, int level_number, bool mons_summoned, bool spectra
     _give_book(mons, level_number);
     _give_wand(mons, level_number);
     _give_potion(mons, level_number);
-    _give_weapon(mons, level_number, false, true, spectral_orcs, merc);
+    _give_weapon(mons, level_number, false, true, spectral_orcs);
     _give_ammo(mons, level_number, mons_summoned);
-    _give_armour(mons, 1 + level_number / 2, spectral_orcs, merc);
+    _give_armour(mons, 1 + level_number / 2, spectral_orcs);
     _give_shield(mons, 1 + level_number / 2);
 }

@@ -426,6 +426,7 @@ string no_selectables_message(int item_selector)
     case OSEL_UNIDENT:
         return "You don't have any unidentified items.";
     case OSEL_RECHARGE:
+    case OSEL_DIVINE_RECHARGE:
     case OSEL_SUPERCHARGE:
         return "You aren't carrying any rechargeable items.";
     case OSEL_ENCH_ARM:
@@ -1087,6 +1088,7 @@ bool item_is_selected(const item_def &i, int selector)
     case OSEL_RECHARGE:
     case OSEL_RECHARGE_BASIC:
     case OSEL_RECHARGE_ADVANCED:
+    case OSEL_DIVINE_RECHARGE:
     case OSEL_SUPERCHARGE:
     {
     	if (i.sub_type == WAND_HASTING
@@ -1103,7 +1105,7 @@ bool item_is_selected(const item_def &i, int selector)
     			return false;
     	}
 
-        return item_is_rechargeable(i, selector == OSEL_RECHARGE);
+        return item_is_rechargeable(i, selector != OSEL_SUPERCHARGE, selector == OSEL_DIVINE_RECHARGE);
     }
 
     case OSEL_EVOKABLE:

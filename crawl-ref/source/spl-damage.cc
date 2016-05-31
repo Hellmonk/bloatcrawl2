@@ -2784,7 +2784,7 @@ spret_type cast_toxic_radiance(actor *agent, int pow, bool fail, bool mon_tracer
     }
     else if (mon_tracer)
     {
-        for (actor_near_iterator ai(agent, LOS_NO_TRANS); ai; ++ai)
+        for (actor_near_iterator ai(agent->pos(), LOS_NO_TRANS); ai; ++ai)
         {
             if (!_toxic_can_affect(*ai) || mons_aligned(agent, *ai))
                 continue;
@@ -2830,38 +2830,20 @@ void toxic_radiance_effect(actor* agent, int mult)
         if (agent->is_monster() && mons_aligned(agent, *ai))
             continue;
 
-        int dam = roll_dice(1, 3 + pow / 25) * mult;
-
-        // Only applied if the player is also not the agent; Done early so that
-        // distance falloff won't frequently reduce damage to 1.
-        if (ai->is_player())
-            dam = dam * 5 / 2;
-
-        // Give monster OTR a weaker distance falloff than player OTR
-        if (agent->is_player())
-            dam = dam * 3 / (2 + ai->pos().distance_from(agent->pos()));
-        else
-            dam = dam * 9 / (8 + ai->pos().distance_from(agent->pos()));
-
+        int dam = roll_dice(1, 1 + pow / 20) * mult;
         dam = resist_adjust_damage(*ai, BEAM_POISON, dam);
 
         if (ai->is_player())
         {
-            // We take direct damage only if we're not the agent, but we
-            // still get poisoned
+            // We're affected only if we're not the agent.
             if (!agent->is_player())
             {
                 ouch(dam, KILLED_BY_BEAM, agent->mid,
                     "by Olgreb's Toxic Radiance", true,
                     agent->as_monster()->name(DESC_A).c_str());
 
-                poison_player(dam * 4 / 3, agent->name(DESC_A), "toxic radiance",
-                              false);
-            }
-            else
-            {
                 poison_player(roll_dice(2, 3), agent->name(DESC_A),
-                              "toxic radiance", true);
+                              "toxic radiance", false);
             }
         }
         else
@@ -2946,7 +2928,10 @@ void handle_searing_ray()
     dec_mp(1);
 
     if (++you.attribute[ATTR_SEARING_RAY] > 3)
+    {
+        mpr("You finish channeling your searing ray.");
         end_searing_ray();
+    }
 }
 
 void end_searing_ray()

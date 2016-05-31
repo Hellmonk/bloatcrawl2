@@ -54,7 +54,7 @@ static string _ability_type_descriptor(mon_spell_slot_flag type)
 {
     static const map<mon_spell_slot_flag, string> descriptors =
     {
-        { MON_SPELL_NATURAL, "special" },
+        { MON_SPELL_NATURAL, "natural" },
         { MON_SPELL_MAGICAL, "magical" },
         { MON_SPELL_PRIEST,  "divine" },
     };
@@ -63,38 +63,59 @@ static string _ability_type_descriptor(mon_spell_slot_flag type)
 }
 
 /**
+ * What type of effects is this spell type vulnerable to?
+ *
+ * @param type              The type of spell-ability; e.g. MON_SPELL_MAGICAL.
+ * @param silencable        Whether any of the spells are subject to Silence
+ *                          despite being non-wizardly and non-priestly.
+ * @return                  A description of the spell's vulnerabilities.
+ */
+static string _ability_type_vulnerabilities(mon_spell_slot_flag type,
+                                            bool silencable)
+{
+    if (type == MON_SPELL_NATURAL && !silencable)
+        return "";
+    silencable |= type == MON_SPELL_WIZARD || type == MON_SPELL_PRIEST;
+    const bool antimagicable
+        = type == MON_SPELL_WIZARD || type == MON_SPELL_MAGICAL;
+    ASSERT(silencable || antimagicable);
+    return make_stringf(" (which are affected by%s%s%s)",
+                        silencable ? " silence" : "",
+                        silencable && antimagicable ? " and" : "",
+                        antimagicable ? " antimagic" : "");
+}
+
+/**
  * What description should a given (set of) monster spellbooks be prefixed
  * with?
  *
  * @param type              The type of book(s); e.g. MON_SPELL_MAGICAL.
  * @param num_books         The number of books in the set.
- * @param mi                The player's information about the caster.
+ * @param has_silencable    Whether any of the spells are subject to Silence
+ *                          despite being non-wizardly and non-priestly.
  * @return                  A header string for the bookset; e.g.,
- *                          "She has mastered one of the following spellbooks:\n"
- *                          "It possesses the following special abilities:\n"
+ *                          "has mastered one of the following spellbooks:"
+ *                          "possesses the following natural abilities:"
  */
 static string _booktype_header(mon_spell_slot_flag type, size_t num_books,
-                               const monster_info &mi)
+                               bool has_silencable)
 {
-    const string pronoun = uppercase_first(mi.pronoun(PRONOUN_SUBJECTIVE));
+    const string vulnerabilities =
+        _ability_type_vulnerabilities(type, has_silencable);
 
     if (type == MON_SPELL_WIZARD)
     {
-        return make_stringf("\n%s has mastered %s:", pronoun.c_str(),
+        return make_stringf("has mastered %s%s:",
                             num_books > 1 ? "one of the following spellbooks"
-                                          : "the following spells");
+                                          : "the following spells",
+                            vulnerabilities.c_str());
     }
 
     const string descriptor = _ability_type_descriptor(type);
 
-    if (num_books > 1)
-    {
-        return make_stringf("\n%s possesses one of the following sets of %s abilities:",
-                            pronoun.c_str(), descriptor.c_str());
-    }
-
-    return make_stringf("\n%s possesses the following %s abilities:",
-                        pronoun.c_str(), descriptor.c_str());
+    return make_stringf("possesses the following %s abilities%s:",
+                        descriptor.c_str(),
+                        vulnerabilities.c_str());
 }
 
 /**
@@ -121,11 +142,24 @@ static void _monster_spellbooks(const monster_info &mi,
     // Loop through books and display spells/abilities for each of them
     for (size_t i = 0; i < num_books; ++i)
     {
-        const vector<spell_type> &book_spells = books[i];
+        const vector<mon_spell_slot> &book_slots = books[i];
         spellbook_contents output_book;
 
+        const bool has_silencable = any_of(begin(book_slots), end(book_slots),
+            [](const mon_spell_slot& slot)
+            {
+                return slot.flags & MON_SPELL_NO_SILENT;
+            });
+
+
         if (i == 0)
-            output_book.label += _booktype_header(type, num_books, mi);
+        {
+            output_book.label +=
+                "\n" +
+                uppercase_first(mi.pronoun(PRONOUN_SUBJECTIVE)) +
+                " " +
+                _booktype_header(type, num_books, has_silencable);
+        }
         if (num_books > 1)
         {
             output_book.label += make_stringf("\n%s %d:",
@@ -135,8 +169,9 @@ static void _monster_spellbooks(const monster_info &mi,
         // Does the monster have a spell that allows them to cast Abjuration?
         bool mons_abjure = false;
 
-        for (auto spell : book_spells)
+        for (const auto& slot : book_slots)
         {
+            const spell_type spell = slot.spell;
             if (spell != SPELL_SERPENT_OF_HELL_BREATH)
             {
                 output_book.spells.emplace_back(spell);
@@ -153,7 +188,9 @@ static void _monster_spellbooks(const monster_info &mi,
                 { MONS_SERPENT_OF_HELL_TARTARUS, 3 },
             };
 
-            const size_t *s_i_ptr = map_find(serpent_indices, mi.type);
+            const monster_type serpent_type
+                = mons_class_is_zombified(mi.type) ? mi.base_type : mi.type;
+            const size_t *s_i_ptr = map_find(serpent_indices, serpent_type);
             ASSERT(s_i_ptr);
             const size_t serpent_index = *s_i_ptr;
             ASSERT_LESS(serpent_index, ARRAYSZ(serpent_of_hell_breaths));

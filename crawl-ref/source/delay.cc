@@ -488,21 +488,21 @@ bool already_learning_spell(int spell)
 }
 
 /**
- * Can the player currently read the scroll in the given inventory slot?
+ * Can the player currently read the given scroll?
  *
  * Prints corresponding messages if the answer is false.
  *
- * @param inv_slot      The inventory slot in question.
+ * @param inv_slot      The scroll in question.
  * @return              false if the player is confused, berserk, silenced,
- *                      has no scroll in the given slot, etc; true otherwise.
+ *                      etc; true otherwise.
  */
-static bool _can_read_scroll(int inv_slot)
+static bool _can_read_scroll(const item_def& scroll)
 {
     // prints its own messages
     if (!player_can_read())
         return false;
 
-    const string illiteracy_reason = cannot_read_item_reason(you.inv2[inv_slot]);
+    const string illiteracy_reason = cannot_read_item_reason(scroll);
     if (illiteracy_reason.empty())
         return true;
 
@@ -681,7 +681,7 @@ void handle_delay()
     }
     else if (delay.type == DELAY_BLURRY_SCROLL)
     {
-        if (!_can_read_scroll(delay.parm1))
+        if (!_can_read_scroll(item_from_int(true, delay.parm2, delay.parm1)))
         {
             _pop_delay();
             you.time_taken = 0;
@@ -955,10 +955,10 @@ static void _finish_delay(const delay_queue_item &delay)
         break;
 
     case DELAY_BLURRY_SCROLL:
-        // Make sure the scroll still exists, the player isn't confused, etc
-        if (_can_read_scroll(delay.parm1))
-            read_scroll(delay.parm1);
-        break;
+            // Make sure the scroll still exists, the player isn't confused, etc
+        if (_can_read_scroll(item_from_int(true, delay.parm2, delay.parm1)))
+            read_scroll(item_from_int(true, delay.parm2, delay.parm1));
+            break;
 
     case DELAY_BUTCHER:
     case DELAY_BOTTLE_BLOOD:

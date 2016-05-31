@@ -41,6 +41,7 @@ enum object_selector
                                         // leakage.
     OSEL_RECHARGE_BASIC          = -21,
     OSEL_RECHARGE_ADVANCED       = -22,
+    OSEL_DIVINE_RECHARGE         = -23,
 };
 
 #define PROMPT_ABORT         -1

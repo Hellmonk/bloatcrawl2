@@ -83,6 +83,8 @@ static const char *_god_wrath_adjectives[] =
     "adversity",        // Qazlal
     "disappointment",   // Ru
     "progress",         // Pakellas
+    "fury",             // Uskayaw
+    "memory",           // Hepliaklqana (unused)
 };
 COMPILE_CHECK(ARRAYSZ(_god_wrath_adjectives) == NUM_GODS);
 
@@ -1720,20 +1722,6 @@ static bool _qazlal_retribution()
     return true;
 }
 
-void pakellas_evoke_backfire(spell_type spell)
-{
-    if (!one_chance_in(20))
-        return;
-
-    // Like Veh and Kiku: you can still get the spell to go through,
-    // but you get a miscast anyway.
-    simple_god_message(" does not allow the disloyal to dabble in "
-                        "devices!", GOD_PAKELLAS);
-    MiscastEffect(&you, nullptr, GOD_MISCAST + GOD_PAKELLAS, spell,
-                  (effective_xl() / 2) + (spell_difficulty(spell) * 2),
-                  random2avg(88, 3), _god_wrath_name(GOD_PAKELLAS));
-}
-
 bool drain_wands()
 {
     vector<string> wands;
@@ -1758,89 +1746,49 @@ bool drain_wands()
     return true;
 }
 
-static bool _pakellas_drain_rods()
+static bool _choose_hostile_monster(const monster* mon)
 {
-    vector<string> rods;
-    for (int i = 0; i < ENDOFPACK; ++i)
-    {
-        if (!you.inv1[i].defined())
-            continue;
-
-        if (you.inv1[i].base_type == OBJ_RODS)
-        {
-            const int charges = you.inv1[i].charges;
-            if (charges > 0 && coinflip())
-            {
-                you.inv1[i].charges = 0;
-                if (you.inv1[i].charge_cap > 6 * ROD_CHARGE_MULT)
-                    you.inv1[i].charge_cap -= ROD_CHARGE_MULT;
-                if (you.inv1[i].rod_plus > -3)
-                    you.inv1[i].rod_plus -= 1 + random2(2);
-
-                rods.push_back(you.inv1[i].name(DESC_PLAIN));
-            }
-        }
-    }
-    if (rods.empty())
-        return false;
-
-    mpr_comma_separated_list("Magical energy is drained from your ", rods);
-    return true;
+    return mon->attitude == ATT_HOSTILE;
 }
 
-static bool _pakellas_drain_evokers()
-{
-    vector<string> evokers;
-    for (int i = 0; i < ENDOFPACK; ++i)
-    {
-        if (!you.inv1[i].defined())
-            continue;
 
-        if (is_xp_evoker(you.inv1[i]) && evoker_is_charged(you.inv1[i])
-            && coinflip())
+static bool _uskayaw_retribution()
+{
+    const god_type god = GOD_USKAYAW;
+
+    // check if we have monsters around
+    monster* mon = nullptr;
+    mon = choose_random_nearby_monster(0, _choose_hostile_monster);
+
+    switch (random2(5))
+    {
+    case 0:
+    case 1:
+        if (mon && mon->can_go_berserk())
         {
-            expend_xp_evoker(you.inv1[i]);
-            evokers.push_back(you.inv1[i].name(DESC_PLAIN));
+            simple_god_message(make_stringf(" drives %s into a dance frenzy!",
+                                     mon->name(DESC_THE).c_str()).c_str(), god);
+            mon->go_berserk(true);
+            return true;
         }
+        // else we intentionally fall through
+
+    case 2:
+    case 3:
+        if (mon)
+        {
+            simple_god_message(" booms out, \"Time for someone else to take a solo\"",
+                                    god);
+            paralyse_player(_god_wrath_name(god));
+            return false;
+        }
+        // else we intentionally fall through
+
+    case 5:
+        simple_god_message(" booms out: \"Revellers, it's time to dance!\"", god);
+        noisy(35, you.pos());
+        break;
     }
-    if (evokers.empty())
-        return false;
-
-    mpr_comma_separated_list("Magical energy is drained from your ", evokers);
-    return true;
-}
-
-/**
- * Call down the wrath of Pakellas upon the player!
- *
- * Devices / inventor theme.
- *
- * @return Whether to take further divine wrath actions afterward.
- */
-static bool _pakellas_retribution()
-{
-    simple_god_message(" sneers upon you!", GOD_PAKELLAS);
-
-    vector<bool(*)()> pakellas_wrath_funcs =
-        { drain_wands, _pakellas_drain_rods, _pakellas_drain_evokers };
-    shuffle_array(pakellas_wrath_funcs);
-    if (x_chance_in_y(pakellas_wrath_funcs.size(),
-                      pakellas_wrath_funcs.size() + 2))
-    {
-        for (auto func : pakellas_wrath_funcs)
-            if ((*func)())
-                return true;
-    }
-    if (get_mp() > 0 && coinflip())
-    {
-        drain_mp(get_mp());
-        canned_msg(MSG_MAGIC_DRAIN);
-        return true;
-    }
-
-    // Pakellas can't or won't drain one of your possessions right now,
-    // so drain *you* instead...
-    drain_player(100, false, true);
     return true;
 }
 
@@ -1888,11 +1836,13 @@ bool divine_retribution(god_type god, bool no_bonus, bool force)
     case GOD_CHEIBRIADOS:   do_more = _cheibriados_retribution(); break;
     case GOD_DITHMENOS:     do_more = _dithmenos_retribution(); break;
     case GOD_QAZLAL:        do_more = _qazlal_retribution(); break;
-    case GOD_PAKELLAS:      do_more = _pakellas_retribution(); break;
+    case GOD_USKAYAW:       do_more = _uskayaw_retribution(); break;
 
     case GOD_ASHENZARI:
     case GOD_GOZAG:
     case GOD_RU:
+    case GOD_HEPLIAKLQANA:
+    case GOD_PAKELLAS:
         // No reduction with time.
         return false;
 

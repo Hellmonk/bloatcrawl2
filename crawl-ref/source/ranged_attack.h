@@ -58,6 +58,7 @@ private:
     bool teleport;
     int orig_to_hit;
     bool should_alert_defender;
+    launch_retval launch_type;
 };
 
 #endif

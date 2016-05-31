@@ -1013,7 +1013,6 @@ static bool _sort_by_first(pair<int, FixedVector<int, MAX_EXP_LEVEL+1> > a,
 
 static void _count_action(caction_type type, int subtype)
 {
-    dprf("counting %d", subtype);
     pair<caction_type, int> pair(type, subtype);
     if (!you.action_count.count(pair))
         you.action_count[pair].init(0);

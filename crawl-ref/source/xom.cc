@@ -1495,11 +1495,7 @@ static void _xom_give_mutations(bool good)
              num_tries > 1 ? "s" : "");
 
     take_note(Note(NOTE_XOM_EFFECT, you.piety, -1, note), true);
-
     mpr("Your body is suffused with distortional energy.");
-
-    dec_hp(random2(get_hp()), false);
-    deflate_hp(get_hp_max() / 2, true);
 
     bool failMsg = true;
 

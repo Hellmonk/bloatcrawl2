@@ -85,6 +85,41 @@
 #include "xom.h"
 #include "dgn-overview.h"
 
+/**
+ * Return an item's location (floor or inventory) and the corresponding mitm
+ * int or inv slot referring to it.
+ *
+ * @param item_def An item in either mitm (the floor or monster inventory)
+ *                 or you.inv.
+ *
+ * @return A pair containing bool and int. The bool is true for items in
+ *         inventory, false for others. The int is the item's index in either
+ *         you.inv or mitm.
+ */
+
+pair<bool, int> item_int(item_def &item)
+{
+    if (in_inventory(item))
+        return make_pair(true, item.link);
+    return make_pair(false, item.index());
+}
+
+
+/**
+ * Return an item_def& requested by an item's inv slot or mitm index.
+ *
+ * @param inv Is the item in inventory?
+ * @param number The index of the item, either in you.inv (if inv == true)
+ *               or in mitm (if inv == false).
+ *
+ * @return The item.
+ */
+
+item_def& item_from_int(bool consumable, bool inv, int number)
+{
+    return inv ? (consumable ? you.inv2[number] : you.inv1[number]) : mitm[number];
+}
+
 static void _autoinscribe_item(item_def& item);
 static void _autoinscribe_floor_items();
 static void _autoinscribe_inventory();
@@ -1979,8 +2014,7 @@ static int _place_item_in_free_slot(item_def &it, int quant_got,
         set_ident_type(item, true);
 
     if ((item.base_type == OBJ_WANDS || item.base_type == OBJ_RODS)
-        && you_worship(GOD_PAKELLAS)
-        && in_good_standing(GOD_PAKELLAS))
+        && have_passive(passive_t::identify_devices))
     {
         if (item.base_type == OBJ_RODS)
             set_ident_flags(item, ISFLAG_KNOW_TYPE);
@@ -3339,7 +3373,7 @@ zap_type item_def::zap() const
                              ZAP_ICEBLAST, ZAP_TELEPORT_OTHER,
                              ZAP_LIGHTNING_BOLT, ZAP_POLYMORPH,
                              ZAP_ENSLAVEMENT, ZAP_BOLT_OF_DRAINING,
-                             ZAP_DISINTEGRATE, ZAP_DIG, ZAP_INVISIBILITY,
+                             ZAP_INVISIBILITY,
                              ZAP_BOLT_OF_FIRE);
     }
 
@@ -3736,15 +3770,13 @@ colour_t item_def::amulet_colour() const
     // (use an array of [name, colour] tuples/structs)
     switch (subtype_rnd % NDSC_JEWEL_PRI)
     {
-        case 0:             // "zirconium amulet"
-        case 9:             // "ivory amulet"
+        case 1:             // "zirconium amulet"
         case 10:            // "bone amulet"
         case 11:            // "platinum amulet"
         case 16:            // "pearl amulet"
         case 20:            // "diamond amulet"
-        case 24:            // "silver amulet"
             return LIGHTGREY;
-        case 1:             // "sapphire amulet"
+        case 0:             // "sapphire amulet"
         case 17:            // "blue amulet"
         case 26:            // "lapis lazuli amulet"
             return BLUE;
@@ -3761,16 +3793,18 @@ colour_t item_def::amulet_colour() const
         case 15:            // "cameo amulet"
             return RED;
         case 22:            // "steel amulet"
-        case 23:            // "cabochon amulet"
+        case 24:            // "silver amulet"
         case 27:            // "filigree amulet"
             return CYAN;
         case 13:            // "fluorescent amulet"
-        case 14:            // "crystal amulet"
+        case 14:            // "amethyst amulet"
+        case 23:            // "cabochon amulet"
             return MAGENTA;
         case 2:             // "golden amulet"
         case 5:             // "bronze amulet"
         case 6:             // "brass amulet"
         case 7:             // "copper amulet"
+        case 9:             // "citrine amulet"
         default:
             return BROWN;
     }
@@ -3921,8 +3955,10 @@ colour_t item_def::miscellany_colour() const
 #endif
         case MISC_PHANTOM_MIRROR:
             return RED;
+#if TAG_MAJOR_VERSION == 34
         case MISC_STONE_OF_TREMORS:
             return BROWN;
+#endif
         case MISC_DISC_OF_STORMS:
             return LIGHTGREY;
         case MISC_PHIAL_OF_FLOODS:
@@ -4246,11 +4282,7 @@ static void _deck_from_specs(const char* _specs, item_def &item,
 
     while (item.sub_type == MISC_DECK_UNKNOWN)
     {
-        mprf(MSGCH_PROMPT,
-             "[a] escape     [b] destruction [c] summoning [d] wonders");
-        mprf(MSGCH_PROMPT,
-             "[e] war         [f] changes  [g] defence");
-        mpr("Which deck (ESC to exit)? ");
+        mprf(MSGCH_PROMPT, "[a] escape [b] destruction [c] war? (ESC to exit)");
 
         const int keyin = toalower(get_ch());
 
@@ -4266,11 +4298,7 @@ static void _deck_from_specs(const char* _specs, item_def &item,
         {
             { 'a', MISC_DECK_OF_ESCAPE },
             { 'b', MISC_DECK_OF_DESTRUCTION },
-            { 'c', MISC_DECK_OF_SUMMONING },
-            { 'd', MISC_DECK_OF_WONDERS },
-            { 'e', MISC_DECK_OF_WAR },
-            { 'f', MISC_DECK_OF_CHANGES },
-            { 'g', MISC_DECK_OF_DEFENCE }
+            { 'c', MISC_DECK_OF_WAR },
         };
 
         const misc_item_type *deck_type = map_find(deckmap, keyin);

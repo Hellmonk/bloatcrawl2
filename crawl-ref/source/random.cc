@@ -200,15 +200,6 @@ dice_def calc_dice(int num_dice, int max_damage)
     return ret;
 }
 
-int rand_round(double value)
-{
-    double intpart;
-    double fracpart = modf(value, &intpart);
-    if (decimal_chance(fracpart))
-        ++intpart;
-    return intpart;
-}
-
 // Calculates num/den and randomly adds one based on the remainder.
 // [floor(num/den), ceil(num/den)]
 int div_rand_round(int num, int den)
@@ -218,6 +209,14 @@ int div_rand_round(int num, int den)
         return num / den + (random2(den) < rem);
     else
         return num / den;
+}
+
+// Converts a double to an integer by randomly rounding.
+// Currently does not handle negative inputs.
+int rand_round(double x)
+{
+    ASSERT(x >= 0);
+    return int(x) + decimal_chance(fmod(x, 1.0));
 }
 
 int div_round_up(int num, int den)

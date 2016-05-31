@@ -449,6 +449,31 @@ enum ability_type
     ABIL_PAKELLAS_QUICK_CHARGE,
     ABIL_PAKELLAS_SUPERCHARGE,
 
+    // Uskayaw
+    ABIL_USKAYAW_STOMP = 1240,
+    ABIL_USKAYAW_LINE_PASS,
+    ABIL_USKAYAW_GRAND_FINALE,
+
+    // Hepliaklqana
+    ABIL_HEPLIAKLQANA_RECALL = 1250,
+    ABIL_HEPLIAKLQANA_IDEALISE,
+    ABIL_HEPLIAKLQANA_TRANSFERENCE,
+
+    ABIL_HEPLIAKLQANA_TYPE_KNIGHT,
+        ABIL_HEPLIAKLQANA_FIRST_TYPE = ABIL_HEPLIAKLQANA_TYPE_KNIGHT,
+    ABIL_HEPLIAKLQANA_TYPE_BATTLEMAGE,
+    ABIL_HEPLIAKLQANA_TYPE_HEXER,
+        ABIL_HEPLIAKLQANA_LAST_TYPE = ABIL_HEPLIAKLQANA_TYPE_HEXER,
+
+    ABIL_HEPLIAKLQANA_IDENTITY,
+
+    ABIL_HEPLIAKLQANA_KNIGHT_REACHING,
+    ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING,
+    ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST,
+    ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA,
+    ABIL_HEPLIAKLQANA_HEXER_PARALYSE,
+    ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION,
+
     // For both Yred and Beogh
     ABIL_STOP_RECALL = 1500,
 
@@ -673,7 +698,9 @@ enum beam_type                  // bolt::flavour
     BEAM_TUKIMAS_DANCE,
     BEAM_RESISTANCE,
     BEAM_UNRAVELLING,
-    BEAM_LAST_ENCHANTMENT = BEAM_UNRAVELLING,
+    BEAM_SHARED_PAIN,
+    BEAM_IRRESISTIBLE_CONFUSION,
+    BEAM_LAST_ENCHANTMENT = BEAM_IRRESISTIBLE_CONFUSION,
 
     BEAM_MEPHITIC,
     BEAM_INK,
@@ -1329,7 +1356,7 @@ enum conduct_type
     DID_KILL_FIERY,                       // Dithmenos
     DID_SACRIFICE_LOVE,                   // Ru
     DID_CHANNEL,                          // Pakellas
-
+    DID_HURT_FOE,                         // Uskayaw
     NUM_CONDUCTS
 };
 
@@ -1699,6 +1726,8 @@ enum dungeon_feature_type
     DNGN_ALTAR_QAZLAL,
     DNGN_ALTAR_RU,
     DNGN_ALTAR_PAKELLAS,
+    DNGN_ALTAR_USKAYAW,
+    DNGN_ALTAR_HEPLIAKLQANA,
     DNGN_ALTAR_ECUMENICAL,
 #endif
 
@@ -1765,6 +1794,8 @@ enum dungeon_feature_type
     DNGN_TRAP_SHADOW_DORMANT,
     DNGN_ALTAR_ECUMENICAL,
     DNGN_ALTAR_PAKELLAS,
+    DNGN_ALTAR_USKAYAW,
+    DNGN_ALTAR_HEPLIAKLQANA,
 #endif
 
     NUM_FEATURES
@@ -1954,6 +1985,8 @@ enum duration_type
     DUR_FOCUS_MODE,
     DUR_QUICK_MODE,
     DUR_CHANNELING,
+    DUR_ANCESTOR_DELAY,
+    DUR_SANGUINE_ARMOUR,
     NUM_DURATIONS
 };
 
@@ -2118,6 +2151,8 @@ enum enchant_type
     ENCH_BRILLIANCE_AURA, // emanating a brilliance aura
     ENCH_EMPOWERED_SPELLS, // affected by above
     ENCH_GOZAG_INCITE,
+    ENCH_PAIN_BOND, // affected by above
+    ENCH_IDEALISED,
     // Update enchantment names in mon-ench.cc when adding or removing
     // enchantments.
     NUM_ENCHANTMENTS
@@ -2254,6 +2289,8 @@ enum god_type
     GOD_QAZLAL,
     GOD_RU,
     GOD_PAKELLAS,
+    GOD_USKAYAW,
+    GOD_HEPLIAKLQANA,
     NUM_GODS,                          // always after last god
 
     GOD_RANDOM = 100,
@@ -3081,7 +3118,6 @@ enum monster_type                      // menv[].type
     MONS_SALAMANDER,
 #if TAG_MAJOR_VERSION > 34
     MONS_SALAMANDER_MYSTIC,
-    MONS_SALAMANDER_STORMCALLER,
 #endif
 
     // Water monsters:
@@ -3396,6 +3432,10 @@ enum monster_type                      // menv[].type
     MONS_PLAYER,                // a certain ugly creature
 #if TAG_MAJOR_VERSION > 34
     MONS_PLAYER_SHADOW,         // Dithmenos
+    MONS_ANCESTOR,              // Hepliaklqana
+    MONS_ANCESTOR_KNIGHT,
+    MONS_ANCESTOR_BATTLEMAGE,
+    MONS_ANCESTOR_HEXER,
 #endif
     MONS_TEST_SPAWNER,
 
@@ -3547,7 +3587,9 @@ enum monster_type                      // menv[].type
 
     MONS_SHARD_SHRIKE,
     MONS_SINGULARITY,
+#if TAG_MAJOR_VERSION == 34
     MONS_SALAMANDER_STORMCALLER,
+#endif
     MONS_ENTROPY_WEAVER,
     MONS_MOON_TROLL,
     MONS_MUTANT_BEAST,
@@ -3560,6 +3602,10 @@ enum monster_type                      // menv[].type
     MONS_WITHERED_PLANT,
     MONS_DART_SLUG,
     MONS_HOWLER_MONKEY,
+    MONS_ANCESTOR,
+    MONS_ANCESTOR_KNIGHT,
+    MONS_ANCESTOR_BATTLEMAGE,
+    MONS_ANCESTOR_HEXER,
 #endif
 
     NUM_MONSTERS,               // used for polymorph
@@ -3683,6 +3729,7 @@ enum mutation_type
     MUT_THIN_SKELETAL_STRUCTURE,
     MUT_YELLOW_SCALES,
     MUT_STURDY_FRAME,
+    MUT_SANGUINE_ARMOUR,
     MUT_CAMOUFLAGE,
 
     MUT_ACUTE_VISION,
@@ -4940,6 +4987,8 @@ enum daction_type
 #if TAG_MAJOR_VERSION == 34
     DACT_ALLY_SACRIFICE_LOVE,
 #endif
+    DACT_ALLY_HEPLIAKLQANA,
+    DACT_UPGRADE_ANCESTOR,
     NUM_DACTIONS,
     // If you want to add a new daction, you need to
     // add a corresponding entry to *daction_names[]
@@ -5015,7 +5064,9 @@ enum uncancellable_type
     UNC_ACQUIREMENT,           // arg is AQ_SCROLL
     UNC_DRAW_THREE,            // arg is inv slot of the deck
     UNC_STACK_FIVE,            // arg is inv slot of the deck
+#if TAG_MAJOR_VERSION == 34
     UNC_MERCENARY,             // arg is mid of the monster
+#endif
     UNC_POTION_PETITION,       // arg is ignored
     UNC_CALL_MERCHANT,         // arg is ignored
 };
@@ -5101,6 +5152,7 @@ enum tile_flags ENUM_INT64
     TILE_FLAG_DEATHS_DOOR = 0x2000000000000ULL,
     TILE_FLAG_RECALL =     0x4000000000000ULL,
     TILE_FLAG_DRAIN =      0x8000000000000ULL,
+    TILE_FLAG_IDEALISED =  0x10000000000000ULL,
 
     // MDAM has 5 possibilities, so uses 3 bits.
     TILE_FLAG_MDAM_MASK  = 0x1C0000000ULL,

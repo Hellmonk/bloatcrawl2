@@ -498,9 +498,9 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
                     break;
 
                 case SPWPN_FREEZING:
-                   mprf("%s %s.", item_name.c_str(),
+                   mprf("%s %s", item_name.c_str(),
                         is_range_weapon(item) ?
-                            "is covered in frost" :
+                            "is covered in frost." :
                             "glows with a cold blue light!");
                     break;
 
@@ -793,8 +793,12 @@ static void _spirit_shield_message(bool unmeld)
     {
         dec_mp(get_mp());
         mpr("You feel your power drawn to a protective spirit.");
-        if (you.species == SP_DEEP_DWARF)
+        if (you.species == SP_DEEP_DWARF
+            && !(have_passive(passive_t::no_mp_regen)
+                 || player_under_penance(GOD_PAKELLAS)))
+        {
             mpr("Now linked to your health, your magic stops regenerating.");
+        }
     }
     else if (!unmeld && player_mutation_level(MUT_MANA_SHIELD))
         mpr("You feel the presence of a powerless spirit.");
@@ -1121,9 +1125,9 @@ static void _remove_amulet_of_faith(item_def &item)
 static void _remove_amulet_of_harm()
 {
     if (you.undead_state() == US_ALIVE)
-        mpr("The amulet rips away your life force as you remove it!");
+        mpr("The amulet drains your life force as you remove it!");
     else
-        mpr("The amulet rips away your animating force as you remove it!");
+        mpr("The amulet drains your animating force as you remove it!");
 
     drain_player(100, false, true);
 }
@@ -1411,7 +1415,7 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
         break;
 
     case AMU_GUARDIAN_SPIRIT:
-        if (you.species == SP_DEEP_DWARF)
+        if (you.species == SP_DEEP_DWARF && player_regenerates_mp())
             mpr("Your magic begins regenerating once more.");
         break;
     }

@@ -32,6 +32,7 @@
 #include "exercise.h"
 #include "food.h"
 #include "godabil.h"
+#include "godcompanions.h"
 #include "godconduct.h"
 #include "godprayer.h"
 #include "godwrath.h"
@@ -387,11 +388,11 @@ static const ability_def Ability_List[] =
     { ABIL_YRED_INJURY_MIRROR, "Injury Mirror",
       0, 0, 0, 0, {FAIL_INVO, 40, 4, 20}, abflag::PIETY },
     { ABIL_YRED_ANIMATE_REMAINS, "Animate Remains",
-      2, 0, 50, 0, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
+      2, 0, 200, 0, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
     { ABIL_YRED_RECALL_UNDEAD_SLAVES, "Recall Undead Slaves",
-      2, 0, 50, 0, {FAIL_INVO, 50, 4, 20}, abflag::NONE },
+      2, 0, 0, 0, {FAIL_INVO, 50, 4, 20}, abflag::NONE },
     { ABIL_YRED_ANIMATE_DEAD, "Animate Dead",
-      2, 0, 50, 0, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
+      2, 0, 200, 0, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
     { ABIL_YRED_DRAIN_LIFE, "Drain Life",
       0, 0, 200, 4, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
     { ABIL_YRED_ENSLAVE_SOUL, "Enslave Soul",
@@ -405,7 +406,7 @@ static const ability_def Ability_List[] =
 
     // Makhleb
     { ABIL_MAKHLEB_MINOR_DESTRUCTION, "Minor Destruction",
-      0, scaling_cost::fixed(1), 20, 0, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
+      0, scaling_cost::fixed(1), 0, 0, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_MAKHLEB_LESSER_SERVANT_OF_MAKHLEB, "Lesser Servant of Makhleb",
       0, scaling_cost::fixed(4), 50, 4, {FAIL_INVO, 40, 5, 20}, abflag::HOSTILE },
     { ABIL_MAKHLEB_MAJOR_DESTRUCTION, "Major Destruction",
@@ -476,7 +477,7 @@ static const ability_def Ability_List[] =
     { ABIL_BEOGH_SMITING, "Smiting",
       0, 0, 80, 6, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_BEOGH_RECALL_ORCISH_FOLLOWERS, "Recall Orcish Followers",
-      2, 0, 50, 0, {FAIL_INVO, 30, 6, 20}, abflag::NONE },
+      2, 0, 0, 0, {FAIL_INVO, 30, 6, 20}, abflag::NONE },
     { ABIL_BEOGH_GIFT_ITEM, "Give Item to Named Follower",
       0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
     { ABIL_BEOGH_RESURRECTION, "Resurrection",
@@ -599,6 +600,46 @@ static const ability_def Ability_List[] =
       0, 0, 100, 4, {FAIL_INVO, 40, 5, 25}, abflag::NONE },
     { ABIL_PAKELLAS_SUPERCHARGE, "Supercharge",
       0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+
+    // Uskayaw
+    { ABIL_USKAYAW_STOMP, "Stomp",
+        3, 0, 100, generic_cost::fixed(20), {FAIL_INVO}, abflag::NONE },
+    { ABIL_USKAYAW_LINE_PASS, "Line Pass",
+        4, 0, 200, generic_cost::fixed(30), {FAIL_INVO}, abflag::NONE},
+    { ABIL_USKAYAW_GRAND_FINALE, "Grand Finale",
+        8, 0, 500, generic_cost::fixed(0),
+        {FAIL_INVO, 120 + piety_breakpoint(4), 5, 1}, abflag::NONE},
+
+    // Hepliaklqana
+    { ABIL_HEPLIAKLQANA_RECALL, "Recall Ancestor",
+        2, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_TRANSFERENCE, "Transference",
+        2, 0, 0, 2, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_IDEALISE, "Idealise",
+        4, 0, 0, 4, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
+
+    { ABIL_HEPLIAKLQANA_TYPE_KNIGHT,       "Ancestor Life: Knight",
+        0, 0, 0, 0, {FAIL_INVO},abflag::NONE },
+    { ABIL_HEPLIAKLQANA_TYPE_BATTLEMAGE,   "Ancestor Life: Battlemage",
+        0, 0, 0, 0, {FAIL_INVO},abflag::NONE },
+    { ABIL_HEPLIAKLQANA_TYPE_HEXER,        "Ancestor Life: Hexer",
+        0, 0, 0, 0, {FAIL_INVO},abflag::NONE },
+
+    { ABIL_HEPLIAKLQANA_KNIGHT_REACHING, "Knight: Demon Trident",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING, "Knight: Broad Axe",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST, "Battlemage: Iceblast",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA, "Battlemage: Bolt of Magma",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_HEXER_PARALYSE, "Hexer: Paralyse",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION, "Hexer: Englaciation",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+
+    { ABIL_HEPLIAKLQANA_IDENTITY,  "Ancestor Identity",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::INSTANT },
 
     { ABIL_STOP_RECALL, "Stop Recall", 0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
     { ABIL_RENOUNCE_RELIGION, "Renounce Religion",
@@ -1480,6 +1521,18 @@ static bool _check_ability_possible(const ability_def& abil,
     case ABIL_PAKELLAS_QUICK_CHARGE:
         return pakellas_check_quick_charge(quiet);
 
+        // only available while your ancestor is alive.
+    case ABIL_HEPLIAKLQANA_IDEALISE:
+    case ABIL_HEPLIAKLQANA_RECALL:
+    case ABIL_HEPLIAKLQANA_TRANSFERENCE:
+        if (hepliaklqana_ancestor() == MID_NOBODY)
+        {
+            if (!quiet)
+                mpr("Your ancestor is still trapped in memory!");
+            return false;
+        }
+        return true;
+
     default:
         return true;
     }
@@ -1949,10 +2002,6 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_EVOKE_BLINK:      // randarts
         fail_check();
-        if (!you_worship(GOD_PAKELLAS) && you.penance[GOD_PAKELLAS])
-            pakellas_evoke_backfire(SPELL_BLINK);
-        else if (!pakellas_device_surge())
-            return SPRET_FAIL;
         // deliberate fall-through
     case ABIL_BLINK:            // mutation
         return cast_blink(fail);
@@ -1960,10 +2009,6 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_EVOKE_BERSERK:    // amulet of rage, randarts
         fail_check();
-        if (!you_worship(GOD_PAKELLAS) && you.penance[GOD_PAKELLAS])
-            pakellas_evoke_backfire(SPELL_BERSERKER_RAGE);
-        else if (!pakellas_device_surge())
-            return SPRET_FAIL;
         you.go_berserk(true);
         break;
 
@@ -2005,10 +2050,6 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         if (!invis_allowed())
             return SPRET_ABORT;
         fail_check();
-        if (!you_worship(GOD_PAKELLAS) && you.penance[GOD_PAKELLAS])
-            pakellas_evoke_backfire(SPELL_INVISIBILITY);
-        else if (!pakellas_device_surge())
-            return SPRET_FAIL;
         surge_power(you.spec_evoke());
         potionlike_effect(POT_INVISIBILITY,
                           player_adjust_evoc_power(
@@ -2037,13 +2078,6 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         }
         else
         {
-            if (!you_worship(GOD_PAKELLAS) && you.penance[GOD_PAKELLAS])
-            {
-                pakellas_evoke_backfire(SPELL_REPEL_MISSILES);
-                // we'd use SPELL_FLY, but that was removed...
-            }
-            else if (!pakellas_device_surge())
-                return SPRET_FAIL;
             surge_power(you.spec_evoke());
             fly_player(
                 player_adjust_evoc_power(you.skill(SK_EVOCATIONS, 2) + 30));
@@ -2305,6 +2339,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     }
 
     case ABIL_SIF_MUNA_CHANNEL_ENERGY:
+        if (get_mp() >= get_mp_max())
+        {
+            mpr("Your reserves of magic are already full.");
+            return SPRET_ABORT;
+        }
         fail_check();
         surge_power(you.spec_invoc(), "divine");
         mpr("You begin channelling magical energy.");
@@ -3009,10 +3048,9 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             set_ident_flags(wand, ISFLAG_KNOW_PLUSES);
             wand.charges = 9 * wand_charge_value(wand.sub_type) / 2;
             wand.used_count = ZAPCOUNT_RECHARGED;
-            wand.props[PAKELLAS_SUPERCHARGE_KEY].get_bool() = true;
-            wand.set_cap(wand_max_charges(wand));
         }
 
+        wand.props[PAKELLAS_SUPERCHARGE_KEY].get_bool() = true;
         you.wield_change = true;
         you.one_time_ability_used.set(GOD_PAKELLAS);
 
@@ -3032,6 +3070,57 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 #endif
         break;
     }
+
+    case ABIL_USKAYAW_STOMP:
+        fail_check();
+        if (!uskayaw_stomp())
+            return SPRET_ABORT;
+        break;
+
+    case ABIL_USKAYAW_LINE_PASS:
+        fail_check();
+        if (!uskayaw_line_pass())
+            return SPRET_ABORT;
+        break;
+
+    case ABIL_USKAYAW_GRAND_FINALE:
+        fail_check();
+        if (!uskayaw_grand_finale())
+            return SPRET_ABORT;
+        break;
+
+    case ABIL_HEPLIAKLQANA_IDEALISE:
+        return hepliaklqana_idealise(fail);
+
+    case ABIL_HEPLIAKLQANA_RECALL:
+        fail_check();
+        if (try_recall(hepliaklqana_ancestor()))
+            upgrade_hepliaklqana_ancestor(true);
+        break;
+
+    case ABIL_HEPLIAKLQANA_TRANSFERENCE:
+        return hepliaklqana_transference(fail);
+
+    case ABIL_HEPLIAKLQANA_TYPE_KNIGHT:
+    case ABIL_HEPLIAKLQANA_TYPE_BATTLEMAGE:
+    case ABIL_HEPLIAKLQANA_TYPE_HEXER:
+        if (!hepliaklqana_choose_ancestor_type(abil.ability))
+            return SPRET_ABORT;
+        break;
+
+    case ABIL_HEPLIAKLQANA_IDENTITY:
+        hepliaklqana_choose_identity();
+        return SPRET_ABORT; // always free
+
+    case ABIL_HEPLIAKLQANA_KNIGHT_REACHING:
+    case ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING:
+    case ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST:
+    case ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA:
+    case ABIL_HEPLIAKLQANA_HEXER_PARALYSE:
+    case ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION:
+        if (!hepliaklqana_specialize_ancestor(abil.ability))
+            return SPRET_ABORT;
+        break;
 
     case ABIL_RENOUNCE_RELIGION:
         fail_check();
@@ -3626,6 +3715,16 @@ int find_ability_slot(const ability_type abil, char firstletter)
     case ABIL_RU_SACRIFICE_EYE:
     case ABIL_RU_SACRIFICE_RESISTANCE:
     case ABIL_RU_REJECT_SACRIFICES:
+    case ABIL_HEPLIAKLQANA_TYPE_KNIGHT:
+    case ABIL_HEPLIAKLQANA_TYPE_BATTLEMAGE:
+    case ABIL_HEPLIAKLQANA_TYPE_HEXER:
+    case ABIL_HEPLIAKLQANA_IDENTITY: // move this?
+    case ABIL_HEPLIAKLQANA_KNIGHT_REACHING:
+    case ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING:
+    case ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST:
+    case ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA:
+    case ABIL_HEPLIAKLQANA_HEXER_PARALYSE:
+    case ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION:
         first_slot = letter_to_index('G');
         break;
     default:
@@ -3655,6 +3754,32 @@ int find_ability_slot(const ability_type abil, char firstletter)
     return -1;
 }
 
+/**
+ * Add the appropriate specialization choice options for the player's chosen
+ * ancestor type.
+ *
+ * @param[out] abilities   A vector to which the specializiation choices should
+ *                         be added.
+ */
+static void _add_hep_specialization_choices(vector<ability_type> &abilities)
+{
+    static const map<int, vector<ability_type>> specializations = {
+        { MONS_ANCESTOR_KNIGHT,     { ABIL_HEPLIAKLQANA_KNIGHT_REACHING,
+                                      ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING } },
+        { MONS_ANCESTOR_BATTLEMAGE, { ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST,
+                                      ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA } },
+        { MONS_ANCESTOR_HEXER,      { ABIL_HEPLIAKLQANA_HEXER_PARALYSE,
+                                      ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION } },
+    };
+
+    const int ancestor = you.props[HEPLIAKLQANA_ALLY_TYPE_KEY].get_int();
+    const vector<ability_type> *choices = map_find(specializations, ancestor);
+    ASSERT(choices);
+    for (ability_type choice : *choices)
+        abilities.push_back(choice);
+}
+
+
 vector<ability_type> get_god_abilities(bool ignore_silence, bool ignore_piety,
                                        bool ignore_penance)
 {
@@ -3670,6 +3795,26 @@ vector<ability_type> get_god_abilities(bool ignore_silence, bool ignore_piety,
         }
         if (any_sacrifices)
             abilities.push_back(ABIL_RU_REJECT_SACRIFICES);
+    }
+    if (you_worship(GOD_HEPLIAKLQANA))
+    {
+        // XXX: should we check ignore_piety?
+        if (piety_rank() >= 2 && !you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY))
+        {
+            for (int anc_type = ABIL_HEPLIAKLQANA_FIRST_TYPE;
+                 anc_type <= ABIL_HEPLIAKLQANA_LAST_TYPE;
+                 ++anc_type)
+            {
+                abilities.push_back(static_cast<ability_type>(anc_type));
+            }
+        }
+
+        if (you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY)
+            && you.experience_level >= HEP_SPECIALIZATION_LEVEL
+            && !you.props.exists(HEPLIAKLQANA_SPECIALIZATION_KEY))
+        {
+            _add_hep_specialization_choices(abilities);
+        }
     }
     if (you.transfer_skill_points > 0)
         abilities.push_back(ABIL_ASHENZARI_END_TRANSFER);

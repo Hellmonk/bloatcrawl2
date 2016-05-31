@@ -526,8 +526,9 @@ static bool _boosted_ac()
            || you.duration[DUR_MAGIC_ARMOUR]
            || player_icemail_armour_class()
            || you.duration[DUR_QAZLAL_AC]
-           || you.attribute[ATTR_BONE_ARMOUR] > 0
-           || temperature_effect(LORC_STONESKIN);
+           || temperature_effect(LORC_STONESKIN)
+           || sanguine_armour_bonus()
+           || you.attribute[ATTR_BONE_ARMOUR] > 0;
 }
 
 static bool _boosted_ev()
@@ -2668,7 +2669,7 @@ static string _status_mut_abilities(int sw)
             !form_keeps_mutations()));
     }
 
-    if (have_passive(passive_t::water_walk))
+    if (you.can_water_walk())
         mutations.emplace_back("walk on water");
 
     string current;

@@ -403,7 +403,7 @@ static void _splash()
 {
     if (you.can_swim())
         noisy(4, you.pos(), "Floosh!");
-    else if (!have_passive(passive_t::water_walk))
+    else if (!you.can_water_walk())
         noisy(8, you.pos(), "Splash!");
 }
 
@@ -449,35 +449,39 @@ void moveto_location_effects(dungeon_feature_type old_feat,
             }
         }
 
-        if (feat_is_water(new_grid) && !stepped)
-            _splash();
-
-        if (feat_is_water(new_grid) && !you.can_swim()
-            && !have_passive(passive_t::water_walk))
+        if (feat_is_water(new_grid))
         {
-            if (stepped)
-            {
-                you.time_taken *= 13 + random2(8);
-                you.time_taken /= 10;
-            }
+            if (!stepped)
+                _splash();
 
-            if (!feat_is_water(old_feat))
+            if (!you.can_swim() && !you.can_water_walk())
             {
-                mprf("You %s the %s water.",
-                     stepped ? "enter" : "fall into",
-                     new_grid == DNGN_SHALLOW_WATER ? "shallow" : "deep");
-            }
+                if (stepped)
+                {
+                    you.time_taken *= 13 + random2(8);
+                    you.time_taken /= 10;
+                }
 
-            if (new_grid == DNGN_DEEP_WATER && old_feat != DNGN_DEEP_WATER)
-                mpr("You sink to the bottom.");
+                if (!feat_is_water(old_feat))
+                {
+                    mprf("You %s the %s water.",
+                         stepped ? "enter" : "fall into",
+                         new_grid == DNGN_SHALLOW_WATER ? "shallow" : "deep");
+                }
 
-            if (!feat_is_water(old_feat))
-            {
-                mpr("Moving in this stuff is going to be slow.");
-                if (you.invisible())
-                    mpr("...and don't expect to remain undetected.");
+                if (new_grid == DNGN_DEEP_WATER && old_feat != DNGN_DEEP_WATER)
+                    mpr("You sink to the bottom.");
+
+                if (!feat_is_water(old_feat))
+                {
+                    mpr("Moving in this stuff is going to be slow.");
+                    if (you.invisible())
+                        mpr("...and don't expect to remain undetected.");
+                }
             }
         }
+        else if (you.props.exists(TEMP_WATERWALK_KEY))
+            you.props.erase(TEMP_WATERWALK_KEY);
     }
 
     // Traps go off.
@@ -580,7 +584,7 @@ bool player_in_connected_branch()
 
 bool player_likes_water(bool permanently)
 {
-    return !permanently && have_passive(passive_t::water_walk)
+    return !permanently && you.can_water_walk()
            || (species_likes_water(you.species) || !permanently)
                && form_likes_water();
 }
@@ -2367,8 +2371,7 @@ static int _player_scale_evasion(int prescaled_ev, const int scale)
  */
 static int _player_armour_adjusted_dodge_bonus(int scale)
 {
-    const int ev_dex = stepdown_value(you.dex(), 10, 24, MAX_STAT_VALUE,
-            MAX_STAT_VALUE);
+    const int ev_dex = stepdown(you.dex(), 18, ROUND_CLOSE, MAX_STAT_VALUE);
 
     const int dodge_bonus =
         (70 + you.skill(SK_DODGING, 10) * ev_dex) * scale
@@ -2771,8 +2774,8 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
         exp_loss = Options.exp_percent_from_monsters < 0;
     }
 
-    if (crawl_state.game_is_arena() || exp_gained == 0)
-        return;
+    if (player_under_penance(GOD_HEPLIAKLQANA))
+        return; // no xp for you!
 
     const unsigned int old_exp = you.experience;
 
@@ -3362,6 +3365,16 @@ void level_change(bool skip_attribute_increase)
             _gain_and_note_hp_mp();
 
         xom_is_stimulated(12);
+        if (in_good_standing(GOD_HEPLIAKLQANA))
+        {
+            upgrade_hepliaklqana_ancestor();
+            if (you.experience_level == HEP_SPECIALIZATION_LEVEL
+                && you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY))
+            {
+                god_speaks(you.religion,
+                           "You may now specialize your ancestor.");
+            }
+        }
 
         learned_something_new(HINT_NEW_LEVEL);
     }
@@ -5829,16 +5842,37 @@ void fly_player(int pow, bool already_flying)
         float_player();
 }
 
+static void _enable_emergency_flight()
+{
+    mpr("You can't land here! You focus on prolonging your flight, but the "
+        "process is draining.");
+    you.props[EMERGENCY_FLIGHT_KEY] = true;
+}
+
+/**
+ * Handle the player's flight ending. Apply emergency flight if needed.
+ *
+ * @param quiet         Should we notify the player flight is ending?
+ * @return              If flight was ended.
+ */
 bool land_player(bool quiet)
 {
     // there was another source keeping you aloft
     if (you.airborne())
         return false;
 
+    // Handle landing on (formerly) instakill terrain
+    if (is_feat_dangerous(orig_terrain(you.pos()), true, false))
+    {
+        _enable_emergency_flight();
+        return false;
+    }
+
     if (!quiet)
         mpr("You float gracefully downwards.");
     if (you.species == SP_TENGU)
         you.redraw_evasion = true;
+
     you.attribute[ATTR_FLIGHT_UNCANCELLABLE] = 0;
     // Re-enter the terrain.
     move_player_to_grid(you.pos(), false);
@@ -6301,6 +6335,7 @@ bool player::airborne() const
 
     if (duration[DUR_FLIGHT]
         || you.species == SP_DJINNI
+        || you.props[EMERGENCY_FLIGHT_KEY].get_bool()
         || attribute[ATTR_PERM_FLIGHT]
         || get_form()->enables_flight())
     {
@@ -6326,8 +6361,7 @@ bool player::is_sufficiently_rested() const
 
 bool player::in_water() const
 {
-    return ground_level() && !have_passive(passive_t::water_walk)
-           && feat_is_water(grd(pos()));
+    return ground_level() && !you.can_water_walk() && feat_is_water(grd(pos()));
 }
 
 bool player::in_lava() const
@@ -6348,6 +6382,13 @@ bool player::can_swim(bool permanently) const
             || body_size(PSIZE_BODY) >= SIZE_GIANT
             || !permanently)
                 && form_can_swim();
+}
+
+/// Can the player do a passing imitation of a notorious Palestinian?
+bool player::can_water_walk() const
+{
+    return have_passive(passive_t::water_walk)
+           || you.props.exists(TEMP_WATERWALK_KEY);
 }
 
 int player::visible_igrd(const coord_def &where) const
@@ -6764,6 +6805,22 @@ static int _bone_armour_bonus()
 }
 
 /**
+ * How many points of AC does the player get from their sanguine armour, if
+ * they have any?
+ *
+ * @return      The AC bonus * 100. (For scaling.)
+ */
+int sanguine_armour_bonus()
+{
+    if (!you.duration[DUR_SANGUINE_ARMOUR])
+        return 0;
+
+    const int mut_lev = you.mutation[MUT_SANGUINE_ARMOUR];
+    // like iridescent, but somewhat moreso (when active)
+    return 300 + mut_lev * 300;
+}
+
+/**
  * How much AC does the player get from an unenchanted version of the given
  * armour?
  *
@@ -6877,6 +6934,7 @@ int player::armour_class(bool /*calc_unid*/) const
         AC -= 400 * you.props["corrosion_amount"].get_int();
 
     AC += _bone_armour_bonus();
+    AC += sanguine_armour_bonus();
 
     AC += get_form()->get_ac_bonus();
 
@@ -8005,13 +8063,14 @@ bool player::visible_to(const actor *looker) const
     if (crawl_state.game_is_arena())
         return false;
 
+    const bool invis_to = invisible() && !looker->can_see_invisible()
+                          && !in_water();
     if (this == looker)
-        return can_see_invisible() || !invisible();
+        return !invis_to;
 
     const monster* mon = looker->as_monster();
     return mon->friendly()
-        || (!mon->has_ench(ENCH_BLIND)
-            && (!invisible() || mon->can_see_invisible()));
+        || (!mon->has_ench(ENCH_BLIND) && !invis_to);
 }
 
 /**
@@ -9345,10 +9404,9 @@ string player::hands_act(const string &plural_verb,
  * at BONE_ARMOUR_HIT_RATIO = 50, that's 10% at one corpse, 30% at five,
  * 90% at ten...
  *
- * @param mult    A multiplier to base chance. Used for BONE_ARMOUR_HIT_RATIO.
  * @param trials  The number of times to potentially shed armour.
  */
-void player::maybe_degrade_bone_armour(int mult, int trials)
+void player::maybe_degrade_bone_armour(int trials)
 {
     if (attribute[ATTR_BONE_ARMOUR] <= 0)
         return;
@@ -9358,9 +9416,9 @@ void player::maybe_degrade_bone_armour(int mult, int trials)
     for (int i = 1; i < attribute[ATTR_BONE_ARMOUR]; ++i)
         denom = div_rand_round(denom * 4, 5);
 
-    const int degraded_armour = binomial(trials, mult, denom);
+    const int degraded_armour = binomial(trials, 1, denom);
     dprf("degraded armour? (%d armour, %d/%d in %d trials): %d",
-         attribute[ATTR_BONE_ARMOUR], mult, denom, trials, degraded_armour);
+         attribute[ATTR_BONE_ARMOUR], 1, denom, trials, degraded_armour);
     if (degraded_armour <= 0)
         return;
 
@@ -9609,23 +9667,21 @@ void player_attacked_something(int sp_cost)
 int generic_action_delay(const int skill, const int base, const action_delay_type type)
 {
     const int dex = (you.dex(true) - 10) * 10;
+    const int min_delay_reached_at = 60;
+
+    const int factor = (min_delay_reached_at - 10) * 10;
 
     int benefit = skill + dex;
 
     benefit = max(0, benefit);
-    benefit = min(400, benefit);
-
-    double adjusted_benefit = benefit / 400.0;
-    // square it so it's harder to reach max benefit
-    adjusted_benefit *= adjusted_benefit;
-    adjusted_benefit *= 400;
+    benefit = min(factor, benefit);
 
     if (type == ACTION_DELAY_MAX)
-        adjusted_benefit = 0;
+        benefit = 0;
     if (type == ACTION_DELAY_MIN)
-        adjusted_benefit = 400;
+        benefit = factor;
 
-    int delay = base * (800 - adjusted_benefit) / 800;
+    int delay = base * (factor * 2 - benefit) / (factor * 2);
     delay = player_attack_delay_modifier(delay);
     return delay;
 }
@@ -9656,13 +9712,13 @@ void player_evoked_something()
 void player_moved()
 {
     if (you.peace < 200 && in_quick_mode())
-        dec_sp(4, false, true);
+        dec_sp(3, false, true);
 
     if (you.peace < 50 && you.airborne() && you.cancellable_flight())
-        dec_sp(4, false, true);
+        dec_sp(3, false, true);
 
     if (you.peace < 10 && you.exertion == EXERT_FOCUS)
-        dec_mp(4, false, true);
+        dec_mp(2, false, true);
 }
 
 // factor reduces failure chance by the given percentage (or success chance if fail < 50%)
@@ -10265,12 +10321,10 @@ void _attempt_instant_rest_handle_no_visible_monsters()
 
 void attempt_instant_rest()
 {
-    if (
-        !player_in_hell()
-        && you.where_are_you != BRANCH_ABYSS
-        && (you.monsters_recently_seen > 200 || you.monsters_recently_seen == 0)
-        && i_feel_safe()
-        )
+    const bool not_in_dangerous_branch = !player_in_hell() && you.where_are_you != BRANCH_ABYSS;
+    const bool no_recent_monsters = you.monsters_recently_seen > 200 || you.monsters_recently_seen == 0;
+    const bool safe = i_feel_safe();
+    if (not_in_dangerous_branch && no_recent_monsters && safe)
     {
         you.monsters_recently_seen = 0;
         ldprf(LD_INSTAREST, "Recently_seen hit 0. Checking for nearby monsters...", you.monsters_recently_seen);

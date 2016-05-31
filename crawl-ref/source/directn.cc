@@ -96,7 +96,7 @@ static bool _find_monster(const coord_def& where, targ_mode_type mode,
                           bool need_path, int range, targetter *hitfunc);
 static bool _find_monster_expl(const coord_def& where, targ_mode_type mode,
                                bool need_path, int range, targetter *hitfunc,
-                               aff_type aff);
+                               aff_type mon_aff, aff_type allowed_self_aff);
 static bool _find_shadow_step_mons(const coord_def& where, targ_mode_type mode,
                                    bool need_path, int range,
                                    targetter *hitfunc);
@@ -1038,20 +1038,27 @@ bool direction_chooser::find_default_monster_target(coord_def& result) const
         // We might be able to hit monsters in LOS that are outside of
         // normal range, but inside explosion/cloud range
         if (!success && hitfunc && hitfunc->can_affect_outside_range()
-            && (you.current_vision > range || hitfunc->can_affect_walls()))
+            && (you.current_vision > range
+                // We also piggyback on the same code to find an LRD targetting
+                // spot.
+                || hitfunc->can_affect_walls()))
         {
-            success = _find_square_wrapper(result, 1,
+            for (aff_type mon_aff : { AFF_YES, AFF_MAYBE })
+            {
+                for (aff_type allowed_self_aff : { AFF_NO, AFF_MAYBE, AFF_YES })
+                {
+                    success = _find_square_wrapper(result, 1,
                                            bind(_find_monster_expl,
                                                 placeholders::_1, mode,
                                                 needs_path, range, hitfunc,
-                                                AFF_YES),
-                                           hitfunc)
-                   || _find_square_wrapper(result, 1,
-                                           bind(_find_monster_expl,
-                                                placeholders::_1, mode,
-                                                needs_path, range, hitfunc,
-                                                AFF_MAYBE),
+                                                mon_aff, allowed_self_aff),
                                            hitfunc);
+                    if (success)
+                        break;
+                }
+                if (success)
+                    break;
+            }
         }
 
         // If we couldn't, maybe it was because of line-of-fire issues.
@@ -2474,10 +2481,8 @@ static bool _find_shadow_step_mons(const coord_def& where, targ_mode_type mode,
 
 static bool _find_monster_expl(const coord_def& where, targ_mode_type mode,
                                bool need_path, int range, targetter *hitfunc,
-                               aff_type aff)
+                               aff_type mon_aff, aff_type allowed_self_aff)
 {
-    coord_def jump_pos;
-
     ASSERT(hitfunc);
 
 #ifdef CLUA_BINDINGS
@@ -2509,9 +2514,11 @@ static bool _find_monster_expl(const coord_def& where, targ_mode_type mode,
 
     if (hitfunc->set_aim(where))
     {
+        if (hitfunc->is_affected(you.pos()) > allowed_self_aff)
+            return false;
         for (monster_near_iterator mi(&you); mi; ++mi)
         {
-            if (hitfunc->is_affected(mi->pos()) == aff
+            if (hitfunc->is_affected(mi->pos()) == mon_aff
                 && _mons_is_valid_target(*mi, mode, range)
                 && _want_target_monster(*mi, mode, hitfunc))
             {
@@ -3375,11 +3382,15 @@ string get_monster_equipment_desc(const monster_info& mi,
 
     if (mi.type != MONS_DANCING_WEAPON && mi.type != MONS_SPECTRAL_WEAPON)
         weap = _describe_monster_weapon(mi, level == DESC_IDENTIFIED);
-    else if (level == DESC_IDENTIFIED)
+    else if (level == DESC_IDENTIFIED || level == DESC_WEAPON_WARNING
+             // dancing weapons' names already include this information
+             || level == DESC_WEAPON && mi.type != MONS_DANCING_WEAPON)
+    {
         return " " + mi.full_name(DESC_A);
+    }
 
     // Print the rest of the equipment only for full descriptions.
-    if (level == DESC_WEAPON)
+    if (level == DESC_WEAPON || level == DESC_WEAPON_WARNING)
         return desc + weap;
 
     item_def* mon_arm = mi.inv[MSLOT_ARMOUR].get();

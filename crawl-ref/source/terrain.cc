@@ -24,7 +24,6 @@
 #include "feature.h"
 #include "fprop.h"
 #include "godabil.h"
-#include "godpassive.h" // passive_t::water_walk
 #include "itemprop.h"
 #include "items.h"
 #include "libutil.h"
@@ -33,6 +32,7 @@
 #include "message.h"
 #include "misc.h"
 #include "mon-place.h"
+#include "mon-poly.h"
 #include "mon-util.h"
 #include "ouch.h"
 #include "player.h"
@@ -485,6 +485,8 @@ static const pair<god_type, dungeon_feature_type> _god_altars[] =
     { GOD_QAZLAL, DNGN_ALTAR_QAZLAL },
     { GOD_RU, DNGN_ALTAR_RU },
     { GOD_PAKELLAS, DNGN_ALTAR_PAKELLAS },
+    { GOD_USKAYAW, DNGN_ALTAR_USKAYAW },
+    { GOD_HEPLIAKLQANA, DNGN_ALTAR_HEPLIAKLQANA },
     { GOD_ECUMENICAL, DNGN_ALTAR_ECUMENICAL },
 };
 
@@ -1169,6 +1171,8 @@ void dungeon_terrain_changed(const coord_def &pos,
     _dgn_check_terrain_monsters(pos);
     if (!wizmode)
         _dgn_check_terrain_player(pos);
+    if (!temporary && feature_mimic_at(pos))
+        env.level_map_mask(pos) &= ~MMT_MIMIC;
 
     set_terrain_changed(pos);
 
@@ -1531,7 +1535,7 @@ void fall_into_a_pool(dungeon_feature_type terrain)
 {
     if (terrain == DNGN_DEEP_WATER)
     {
-        if (have_passive(passive_t::water_walk) || form_likes_water())
+        if (you.can_water_walk() || form_likes_water())
             return;
 
         if (species_likes_water(you.species) && !you.transform_uncancellable)

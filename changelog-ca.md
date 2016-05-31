@@ -1,10 +1,15 @@
 ## v1.5.2
 
+* Min attack speed for all weapons achieved when dex + fighting = 60. Removed squaring function, so you get further faster.
+    * At dex + fighting = 30, you'd be halfway to min delay.
+    
+* Min spellcasting speed is achieved when dex + spellcasting = 60.
+
+* In labyrinth, if you are a minotaur, map rot doesn't happen (the map doesn't fade away).
+
 * To Hit Chance and Be Hit Chance now displayed in right stats panel
     * To Hit Chance shows how likely it was for the player to hit the last monster it attempted to hit.
     * Be Hit Chance shows how likely it was for the player to be hit from the last monster who hit the player.
-
-* Min attack speed for all weapons achieved when dex + weapon skill = 50.
 
 * Fighting and Spellcasting factors changed. See cheatsheet under "Fighting" and "Spellcasting"
   for details.

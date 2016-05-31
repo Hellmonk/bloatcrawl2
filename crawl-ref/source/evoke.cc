@@ -236,9 +236,7 @@ static bool _evoke_horn_of_geryon(item_def &item)
         return false;
     }
 
-    if (!you_worship(GOD_PAKELLAS) && you.penance[GOD_PAKELLAS])
-        pakellas_evoke_backfire(SPELL_SUMMON_HELL_BEAST);
-    else if (!pakellas_device_surge())
+    if (!pakellas_device_surge())
         return true;
     surge_power(you.spec_evoke());
     mprf(MSGCH_SOUND, "You produce a hideous howling noise!");
@@ -338,13 +336,11 @@ static void _spray_lightning(int range, int power)
  */
 bool disc_of_storms()
 {
+    if (!pakellas_device_surge())
+        return false;
+
     const int fail_rate =
         30 - player_adjust_evoc_power(you.skill(SK_EVOCATIONS));
-
-    if (!you_worship(GOD_PAKELLAS) && you.penance[GOD_PAKELLAS])
-        pakellas_evoke_backfire(SPELL_CHAIN_LIGHTNING); // approx
-    else if (!pakellas_device_surge())
-        return false;
 
     if (x_chance_in_y(fail_rate, 100))
     {
@@ -363,12 +359,15 @@ bool disc_of_storms()
     }
 
     const int disc_count
-        = roll_dice(2, 1 + you.skill_rdiv(SK_EVOCATIONS, 1, 7));
+        = roll_dice(2, player_adjust_evoc_power(
+                           1 + you.skill_rdiv(SK_EVOCATIONS, 1, 7)));
     ASSERT(disc_count);
 
     mpr("The disc erupts in an explosion of electricity!");
-    const int range = you.skill_rdiv(SK_EVOCATIONS, 1, 3) + 5; // 5--14
-    const int power = 30 + you.skill(SK_EVOCATIONS, 2); // 30-84
+    const int range = player_adjust_evoc_power(
+                          you.skill_rdiv(SK_EVOCATIONS, 1, 3) + 5); // 5--14
+    const int power = player_adjust_evoc_power(
+                          30 + you.skill(SK_EVOCATIONS, 2)); // 30-84
     for (int i = 0; i < disc_count; ++i)
         _spray_lightning(range, power);
 
@@ -479,6 +478,13 @@ void zap_wand(int slot)
         return;
     }
 
+    if (player_under_penance(GOD_PAKELLAS))
+    {
+        simple_god_message("'s wrath prevents you from evoking devices!",
+                           GOD_PAKELLAS);
+        return;
+    }
+
     const int mp_cost = wand_mp_cost();
     if (!enough_mp(mp_cost, false))
         return;
@@ -521,47 +527,36 @@ void zap_wand(int slot)
         return;
     }
 
-    // already know the type
-    const bool alreadyknown = item_type_known(wand);
     // will waste charges
     const bool wasteful     = !item_ident(wand, ISFLAG_KNOW_PLUSES);
           bool invis_enemy  = false;
     const bool dangerous    = player_in_a_dangerous_place(&invis_enemy);
-    targetter *hitfunc      = 0;
+    targetter *hitfunc      = _wand_targetter(&wand);
 
-    if (!alreadyknown)
+    switch (wand.sub_type)
     {
-        beam.effect_known = false;
-        beam.effect_wanton = false;
+    case WAND_DIGGING:
+    case WAND_TELEPORTATION:
+        targ_mode = TARG_ANY;
+        break;
+
+    case WAND_HEAL_WOUNDS:
+    case WAND_HASTING:
+        targ_mode = TARG_FRIEND;
+        break;
+
+    default:
+        targ_mode = TARG_HOSTILE;
+        break;
     }
-    else
-    {
-        switch (wand.sub_type)
-        {
-        case WAND_DIGGING:
-        case WAND_TELEPORTATION:
-            targ_mode = TARG_ANY;
-            break;
 
-        case WAND_HEAL_WOUNDS:
-        case WAND_HASTING:
-            targ_mode = TARG_FRIEND;
-            break;
-
-        default:
-            targ_mode = TARG_HOSTILE;
-            break;
-        }
-
-        hitfunc = _wand_targetter(&wand);
-    }
     const bool randeff = wand.sub_type == WAND_RANDOM_EFFECTS;
 
     int power =
         (15 + you.skill(SK_EVOCATIONS, 5) / 2)
         * (player_mutation_level(MUT_MP_WANDS) + 3) / 3;
-    const int tracer_range = (alreadyknown && !randeff)
-                           ? _wand_range(type_zapped) : _max_wand_range();
+    const int tracer_range = !randeff ? _wand_range(type_zapped)
+                                      : _max_wand_range();
     const string zap_title =
         "Zapping: " + get_menu_colour_prefix_tags(wand, DESC_INVENTORY)
                     + (wasteful ? " <lightred>(will waste charges)</lightred>"
@@ -590,7 +585,7 @@ void zap_wand(int slot)
         return;
     }
 
-    if (alreadyknown && zap_wand.target == you.pos())
+    if (zap_wand.target == you.pos())
     {
         if (wand.sub_type == WAND_TELEPORTATION
             && you.no_tele_print_reason(false, false))
@@ -616,7 +611,7 @@ void zap_wand(int slot)
     if (randeff)
     {
         beam.effect_known = false;
-        beam.effect_wanton = alreadyknown;
+        beam.effect_wanton = true;
     }
 
     beam.source   = you.pos();
@@ -648,7 +643,7 @@ void zap_wand(int slot)
                                      || invis_enemy
                                      || aimed_at_self);
 
-    if (risky && alreadyknown && wand.sub_type == WAND_RANDOM_EFFECTS)
+    if (risky && wand.sub_type == WAND_RANDOM_EFFECTS)
     {
         // Xom loves it when you use a Wand of Random Effects and
         // there is a dangerous monster nearby...
@@ -659,11 +654,9 @@ void zap_wand(int slot)
     beam.range = _wand_range(type_zapped);
 
     dec_mp(mp_cost, false);
-    if (!you_worship(GOD_PAKELLAS) && you.penance[GOD_PAKELLAS])
-        pakellas_evoke_backfire(zap_to_spell(type_zapped));
-    else if (wand.sub_type != WAND_HEAL_WOUNDS
-             && wand.sub_type != WAND_DIGGING
-             && wand.sub_type != WAND_TELEPORTATION)
+    if (wand.sub_type != WAND_HEAL_WOUNDS
+        && wand.sub_type != WAND_DIGGING
+        && wand.sub_type != WAND_TELEPORTATION)
     {
         if (!pakellas_device_surge())
         {
@@ -717,13 +710,6 @@ void zap_wand(int slot)
             wand.used_count += wasted_charges;
     }
 
-    // Identify if unknown.
-    if (!alreadyknown)
-    {
-        set_ident_type(wand, true);
-        mprf_nocap("%s", wand.name(DESC_INVENTORY_EQUIP).c_str());
-    }
-
     if (item_type_known(wand)
         && (item_ident(wand, ISFLAG_KNOW_PLUSES)
             || you.skill_rdiv(SK_EVOCATIONS) > random2(27)))
@@ -747,18 +733,6 @@ void zap_wand(int slot)
     count_action(CACT_EVOKE, EVOC_WAND);
     alert_nearby_monsters();
 
-    if (!alreadyknown && risky)
-    {
-        // Xom loves it when you use an unknown wand and there is a
-        // dangerous monster nearby...
-        xom_is_stimulated(200);
-    }
-
-    // Need to do this down here since auto_assign_item_slot may
-    // move the item in memory.
-    if (!alreadyknown)
-        auto_assign_item_slot(wand);
-
     you.prev_direction.reset();
     you.turn_is_over = true;
 }
@@ -766,11 +740,13 @@ void zap_wand(int slot)
 int recharge_wand(recharge_type rechargeType, bool known, const string &pre_msg, int num, int den)
 {
     int item_slot = -1;
+    bool divine = num > 0 && den > 0;
     do
     {
         if (item_slot == -1)
         {
         	object_selector sel;
+            /*
         	switch(rechargeType)
         	{
         	case RECHARGE_TYPE_BASIC:
@@ -785,6 +761,9 @@ int recharge_wand(recharge_type rechargeType, bool known, const string &pre_msg,
         		sel = OSEL_RECHARGE;
         		break;
         	}
+             */
+            sel = divine ? OSEL_DIVINE_RECHARGE
+                         : OSEL_RECHARGE;
             item_slot = prompt_invent_item(you.inv1, "Charge which item?", MT_INVLIST,
                                             sel, true, true, false);
         }
@@ -865,8 +844,7 @@ int recharge_wand(recharge_type rechargeType, bool known, const string &pre_msg,
             // This is consistent with scrolls of enchant weapon/armour
             const string orig_name = wand.name(DESC_YOUR);
 
-            if (num == 0 && den == 0
-                && wand.charge_cap < MAX_ROD_CHARGE * ROD_CHARGE_MULT)
+            if (!divine && wand.charge_cap < MAX_ROD_CHARGE * ROD_CHARGE_MULT)
             {
                 wand.charge_cap += ROD_CHARGE_MULT * random_range(1, 2);
 
@@ -878,7 +856,7 @@ int recharge_wand(recharge_type rechargeType, bool known, const string &pre_msg,
 
             if (wand.charges < wand.charge_cap)
             {
-                if (num > 0 && den > 0)
+                if (divine)
                 {
                     wand.charges =
                         min<int>(wand.charge_cap,
@@ -891,7 +869,7 @@ int recharge_wand(recharge_type rechargeType, bool known, const string &pre_msg,
                 work = true;
             }
 
-            if (num == 0 && den == 0 && wand.rod_plus < MAX_WPN_ENCHANT)
+            if (!divine && wand.rod_plus < MAX_WPN_ENCHANT)
             {
                 wand.rod_plus += random_range(1, 2);
                 if (wand.rod_plus > MAX_WPN_ENCHANT)
@@ -1039,9 +1017,7 @@ static const pop_entry pop_spiders[] =
 
 static bool _box_of_beasts(item_def &box)
 {
-    if (!you_worship(GOD_PAKELLAS) && you.penance[GOD_PAKELLAS])
-        pakellas_evoke_backfire(SPELL_MONSTROUS_MENAGERIE); // approx
-    else if (!pakellas_device_surge())
+    if (!pakellas_device_surge())
         return false;
     surge_power(you.spec_evoke());
     mpr("You open the lid...");
@@ -1102,9 +1078,7 @@ static bool _sack_of_spiders_veto_mon(monster_type mon)
 
 static bool _sack_of_spiders(item_def &sack)
 {
-    if (!you_worship(GOD_PAKELLAS) && you.penance[GOD_PAKELLAS])
-        pakellas_evoke_backfire(SPELL_SUMMON_VERMIN); // approx
-    else if (!pakellas_device_surge())
+    if (!pakellas_device_surge())
         return false;
     surge_power(you.spec_evoke());
     mpr("You reach into the bag...");
@@ -1404,8 +1378,7 @@ static bool _check_path_overlap(const vector<coord_def> &path1,
 }
 
 static bool _fill_flame_trails(coord_def source, coord_def target,
-                               vector<bolt> &beams, vector<coord_def> &elementals,
-                               int num)
+                               vector<bolt> &beams, int num)
 {
     const int NUM_TRIES = 10;
     vector<vector<coord_def> > paths;
@@ -1434,8 +1407,6 @@ static bool _fill_flame_trails(coord_def source, coord_def target,
             paths.push_back(path);
             beams.push_back(beam1);
             beams.push_back(beam2);
-            if (path.size() > 3)
-                elementals.push_back(path.back());
         }
     }
 
@@ -1448,7 +1419,7 @@ static bool _lamp_of_fire()
     dist target;
 
     const int pow =
-        player_adjust_evoc_power(8 + you.skill_rdiv(SK_EVOCATIONS, 9, 4));
+        player_adjust_evoc_power(8 + you.skill_rdiv(SK_EVOCATIONS, 14, 4));
     direction_chooser_args args;
     args.restricts = DIR_TARGET;
     args.mode = TARG_HOSTILE;
@@ -1459,9 +1430,7 @@ static bool _lamp_of_fire()
         if (you.confused())
             target.confusion_fuzz();
 
-        if (!you_worship(GOD_PAKELLAS) && you.penance[GOD_PAKELLAS])
-            pakellas_evoke_backfire(SPELL_FIRE_ELEMENTALS); // approx
-        else if (!pakellas_device_surge())
+        if (!pakellas_device_surge())
         {
             you.turn_is_over = false;
             return false;
@@ -1473,10 +1442,9 @@ static bool _lamp_of_fire()
         mpr("The flames dance!");
 
         vector<bolt> beams;
-        vector<coord_def> elementals;
         int num_trails = _num_evoker_elementals();
 
-        _fill_flame_trails(you.pos(), target.target, beams, elementals, num_trails);
+        _fill_flame_trails(you.pos(), target.target, beams, num_trails);
 
         for (bolt &beam : beams)
         {
@@ -1491,24 +1459,10 @@ static bool _lamp_of_fire()
             beam.name       = "trail of fire";
             beam.hit        = 10 + (pow/8);
             beam.damage     = dice_def(2, 5 + pow/4);
-            beam.ench_power = 1 + (pow/10);
+            beam.ench_power = 3 + (pow/5);
             beam.loudness   = 5;
             beam.fire();
         }
-
-        beh_type attitude = BEH_FRIENDLY;
-        if (player_will_anger_monster(MONS_FIRE_ELEMENTAL))
-            attitude = BEH_HOSTILE;
-        for (coord_def epos : elementals)
-        {
-            mgen_data mg(MONS_FIRE_ELEMENTAL, attitude, &you, 3, SPELL_NO_SPELL,
-                         epos, 0, MG_FORCE_BEH | MG_FORCE_PLACE, GOD_NO_GOD,
-                         MONS_FIRE_ELEMENTAL, COLOUR_INHERIT,
-                         PROX_CLOSE_TO_PLAYER);
-            mg.hd = 6 + (pow/20);
-            create_monster(mg);
-        }
-
         return true;
     }
 
@@ -1524,10 +1478,9 @@ struct dist_sorter
     }
 };
 
-static int _gale_push_dist(const actor* agent, const actor* victim)
+static int _gale_push_dist(const actor* agent, const actor* victim, int pow)
 {
-    int dist =
-        player_adjust_evoc_power(1 + you.skill_rdiv(SK_EVOCATIONS, 1, 10));
+    int dist = 1 + random2(pow / 20);
 
     if (victim->airborne())
         dist++;
@@ -1599,7 +1552,7 @@ void wind_blast(actor* agent, int pow, coord_def target, bool card)
         wind_beam.target = act->pos();
         wind_beam.fire();
 
-        int push = _gale_push_dist(agent, act);
+        int push = _gale_push_dist(agent, act, pow);
         bool pushed = false;
 
         for (unsigned int j = 0; j < wind_beam.path_taken.size() - 1 && push;
@@ -1750,225 +1703,13 @@ void wind_blast(actor* agent, int pow, coord_def target, bool card)
             it.first->collide(it.second, agent, pow);
 }
 
-static void _fan_of_gales_elementals()
-{
-    int radius =
-        min(6,
-            player_adjust_evoc_power(4 + you.skill_rdiv(SK_EVOCATIONS, 1, 6)));
-
-    vector<coord_def> elementals;
-    for (radius_iterator ri(you.pos(), radius, C_SQUARE, true); ri; ++ri)
-    {
-        if (ri->distance_from(you.pos()) >= 3 && !monster_at(*ri)
-            && !cell_is_solid(*ri)
-            && cell_see_cell(you.pos(), *ri, LOS_NO_TRANS))
-        {
-            elementals.push_back(*ri);
-        }
-    }
-    shuffle_array(elementals);
-
-    int num_elementals = _num_evoker_elementals();
-
-    bool created = false;
-    beh_type attitude = BEH_FRIENDLY;
-    if (player_will_anger_monster(MONS_AIR_ELEMENTAL))
-        attitude = BEH_HOSTILE;
-    for (int n = 0; n < min(num_elementals, (int)elementals.size()); ++n)
-    {
-        mgen_data mg (MONS_AIR_ELEMENTAL, attitude, &you, 3, SPELL_NO_SPELL,
-                      elementals[n], 0, MG_FORCE_BEH | MG_FORCE_PLACE,
-                      GOD_NO_GOD, MONS_AIR_ELEMENTAL, COLOUR_INHERIT,
-                      PROX_CLOSE_TO_PLAYER);
-        mg.hd =
-            player_adjust_evoc_power(6 + you.skill_rdiv(SK_EVOCATIONS, 2, 13));
-        if (create_monster(mg))
-            created = true;
-    }
-    if (created)
-        mpr("The winds coalesce and take form.");
-}
-
-static bool _is_rock(dungeon_feature_type feat)
-{
-    return feat == DNGN_ROCK_WALL || feat == DNGN_CLEAR_ROCK_WALL
-           || feat == DNGN_SLIMY_WALL;
-}
-
-static bool _is_rubble_source(dungeon_feature_type feat)
-{
-    switch (feat)
-    {
-        case DNGN_ROCK_WALL:
-        case DNGN_CLEAR_ROCK_WALL:
-        case DNGN_SLIMY_WALL:
-        case DNGN_STONE_WALL:
-        case DNGN_CLEAR_STONE_WALL:
-        case DNGN_PERMAROCK_WALL:
-            return true;
-
-        default:
-            return false;
-    }
-}
-
-static bool _adjacent_to_rubble_source(coord_def pos)
-{
-    for (adjacent_iterator ai(pos); ai; ++ai)
-    {
-        if (_is_rubble_source(grd(*ai)) && you.see_cell_no_trans(*ai))
-            return true;
-    }
-
-    return false;
-}
-
-static bool _stone_of_tremors()
-{
-    vector<coord_def> wall_pos;
-    vector<coord_def> rubble_pos;
-    vector<coord_def> door_pos;
-
-    for (distance_iterator di(you.pos(), false, true, LOS_RADIUS); di; ++di)
-    {
-        if (_is_rubble_source(grd(*di)))
-            wall_pos.push_back(*di);
-        else if (feat_is_door(grd(*di)))
-            door_pos.push_back(*di);
-        else if (_adjacent_to_rubble_source(*di))
-            rubble_pos.push_back(*di);
-    }
-
-    class targetter_rubble : public targetter
-    {
-    public:
-        vector<coord_def>& rubble;
-
-        targetter_rubble(vector<coord_def>& _rubble) :
-            rubble(_rubble)
-        {
-            origin = you.pos();
-        }
-
-        virtual aff_type is_affected(coord_def loc) override
-        {
-            return find(begin(rubble), end(rubble), loc) != end(rubble)
-                    ? AFF_YES
-                    : AFF_NO;
-        }
-
-        bool valid_aim(coord_def a) override
-        {
-            return true;
-        }
-    };
-
-    targetter_rubble hitfunc(rubble_pos);
-    if (stop_attack_prompt(hitfunc, "attack"))
-        return false;
-
-    if (!you_worship(GOD_PAKELLAS) && you.penance[GOD_PAKELLAS])
-        pakellas_evoke_backfire(SPELL_EARTH_ELEMENTALS); // approx
-    else if (!pakellas_device_surge())
-    {
-        you.turn_is_over = true;
-        return false;
-    }
-    surge_power(you.spec_evoke());
-    mpr("The dungeon trembles and rubble falls from the walls!");
-    noisy(15, you.pos());
-
-    bolt rubble;
-    rubble.name       = "falling rubble";
-    rubble.range      = 1;
-    rubble.hit        = player_adjust_evoc_power(
-                            10 + you.skill_rdiv(SK_EVOCATIONS, 1, 2));
-    rubble.damage     = dice_def(3, player_adjust_evoc_power(
-                                        5 + you.skill(SK_EVOCATIONS)));
-    rubble.source_id  = MID_PLAYER;
-    rubble.glyph      = dchar_glyph(DCHAR_FIRED_MISSILE);
-    rubble.colour     = LIGHTGREY;
-    rubble.flavour    = BEAM_MMISSILE;
-    rubble.thrower    = KILL_YOU;
-    rubble.pierce     = false;
-    rubble.loudness   = 10;
-    rubble.draw_delay = 0;
-
-    // Hit the affected area with falling rubble.
-    for (coord_def pos : rubble_pos)
-    {
-        rubble.source = rubble.target = pos;
-        rubble.fire();
-    }
-    update_screen();
-    delay(200);
-
-    // Possibly shaft some monsters.
-    for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
-    {
-        if (grd(mi->pos()) == DNGN_FLOOR
-            && is_valid_shaft_level()
-            && x_chance_in_y(
-                   player_adjust_evoc_power(75 + you.skill(SK_EVOCATIONS, 2)),
-                   800))
-        {
-            mi->do_shaft();
-        }
-    }
-
-    // Destroy doors.
-    for (coord_def pos : door_pos)
-    {
-        destroy_wall(pos);
-        mpr("The door collapses!");
-    }
-
-    // Collapse some walls and mark collapsed walls as valid elemental positions.
-    int num_elementals = _num_evoker_elementals();
-    for (coord_def pos : wall_pos)
-    {
-        if (_is_rock(grd(pos)) && one_chance_in(3))
-        {
-            destroy_wall(pos);
-            rubble_pos.push_back(pos);
-        }
-    }
-    shuffle_array(rubble_pos);
-
-    // Create elementals.
-    bool created = false;
-    beh_type attitude = BEH_FRIENDLY;
-    if (player_will_anger_monster(MONS_EARTH_ELEMENTAL))
-        attitude = BEH_HOSTILE;
-
-    for (int n = 0; n < min(num_elementals, (int)rubble_pos.size()); ++n)
-    {
-        // Skip occupied positions
-        if (actor_at(rubble_pos[n]))
-            continue;
-
-        mgen_data mg(MONS_EARTH_ELEMENTAL, attitude, &you, 3, SPELL_NO_SPELL,
-                     rubble_pos[n], 0, MG_FORCE_BEH | MG_FORCE_PLACE, GOD_NO_GOD,
-                     MONS_EARTH_ELEMENTAL, COLOUR_INHERIT,
-                     PROX_CLOSE_TO_PLAYER);
-        mg.hd = player_adjust_evoc_power(
-                    6 + you.skill_rdiv(SK_EVOCATIONS, 2, 13));
-        if (create_monster(mg))
-            created = true;
-    }
-    if (created)
-        mpr("The rubble rises up and takes form.");
-
-    return true;
-}
-
 static bool _phial_of_floods()
 {
     dist target;
     bolt beam;
 
     const int power =
-        player_adjust_evoc_power(25 + you.skill(SK_EVOCATIONS, 6));
+        player_adjust_evoc_power(10 + you.skill(SK_EVOCATIONS, 4));
     zappy(ZAP_PRIMAL_WAVE, power, false, beam);
     beam.range = LOS_RADIUS;
     beam.aimed_at_spot = true;
@@ -1984,9 +1725,7 @@ static bool _phial_of_floods()
             target.confusion_fuzz();
             beam.set_target(target);
         }
-        if (!you_worship(GOD_PAKELLAS) && you.penance[GOD_PAKELLAS])
-            pakellas_evoke_backfire(SPELL_WATER_ELEMENTALS); // approx
-        else if (!pakellas_device_surge())
+        if (!pakellas_device_surge())
         {
             you.turn_is_over = true;
             return false;
@@ -2074,7 +1813,10 @@ static spret_type _phantom_mirror()
         return SPRET_ABORT;
     }
 
-    if (!actor_is_illusion_cloneable(victim))
+    // Mirrored monsters (including by Mara, rakshasas) can still be
+    // re-reflected.
+    if (!actor_is_illusion_cloneable(victim)
+        && !victim->has_ench(ENCH_PHANTOM_MIRROR))
     {
         mpr("The mirror can't reflect that.");
         return SPRET_ABORT;
@@ -2096,9 +1838,7 @@ static spret_type _phantom_mirror()
         return SPRET_FAIL;
     }
 
-    if (!you_worship(GOD_PAKELLAS) && you.penance[GOD_PAKELLAS])
-        pakellas_evoke_backfire(SPELL_PHANTOM_MIRROR); // approx
-    else if (!pakellas_device_surge())
+    if (!pakellas_device_surge())
         return SPRET_FAIL;
     surge_power(you.spec_evoke());
     const int power = player_adjust_evoc_power(5 + you.skill(SK_EVOCATIONS, 3));
@@ -2319,6 +2059,13 @@ bool evoke_item(int slot, bool check_range)
             return false;
         }
 
+        if (player_under_penance(GOD_PAKELLAS))
+        {
+            simple_god_message("'s wrath prevents you from evoking devices!",
+                               GOD_PAKELLAS);
+            return false;
+        }
+
         if (!(pract = _rod_spell(you.inv1[slot], check_range)))
             return false;
 
@@ -2373,10 +2120,19 @@ bool evoke_item(int slot, bool check_range)
     case OBJ_MISCELLANY:
         did_work = true; // easier to do it this way for misc items
 
-        if (player_mutation_level(MUT_NO_ARTIFICE)
+        if ((player_mutation_level(MUT_NO_ARTIFICE)
+             || player_under_penance(GOD_PAKELLAS)
+                && !is_deck(item))
             && item.sub_type != MISC_ZIGGURAT)
         {
-            return mpr("You cannot evoke magical items."), false;
+            if (player_mutation_level(MUT_NO_ARTIFICE))
+                mpr("You cannot evoke magical items.");
+            else
+            {
+                simple_god_message("'s wrath prevents you from evoking "
+                                   "devices!", GOD_PAKELLAS);
+            }
+            return false;
         }
 
         if (is_deck(item))
@@ -2401,18 +2157,15 @@ bool evoke_item(int slot, bool check_range)
                 mpr("That is presently inert.");
                 return false;
             }
-            if (!you_worship(GOD_PAKELLAS) && you.penance[GOD_PAKELLAS])
-                pakellas_evoke_backfire(SPELL_AIR_ELEMENTALS); // approx
-            else if (!pakellas_device_surge())
+            if (!pakellas_device_surge())
             {
                 you.turn_is_over = true;
                 break;
             }
             surge_power(you.spec_evoke());
             wind_blast(&you,
-                       player_adjust_evoc_power(you.skill(SK_EVOCATIONS, 10)),
+                       player_adjust_evoc_power(you.skill(SK_EVOCATIONS, 15)),
                        coord_def());
-            _fan_of_gales_elementals();
             expend_xp_evoker(item);
             pract = 1;
             break;
@@ -2433,20 +2186,11 @@ bool evoke_item(int slot, bool check_range)
 
             break;
 
+#if TAG_MAJOR_VERSION == 34
         case MISC_STONE_OF_TREMORS:
-            if (!evoker_is_charged(item))
-            {
-                mpr("That is presently inert.");
-                return false;
-            }
-            if (_stone_of_tremors())
-            {
-                expend_xp_evoker(item);
-                pract = 1;
-            }
-            else
-                return false;
-            break;
+            canned_msg(MSG_NOTHING_HAPPENS);
+            return false;
+#endif
 
         case MISC_PHIAL_OF_FLOODS:
             if (!evoker_is_charged(item))

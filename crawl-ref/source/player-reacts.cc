@@ -84,6 +84,7 @@
 #include "mon-act.h"
 #include "mon-cast.h"
 #include "mon-death.h"
+#include "mon-place.h"
 #include "mon-util.h"
 #include "mutation.h"
 #include "options.h"
@@ -112,6 +113,7 @@
 #include "stash.h"
 #include "state.h"
 #include "status.h"
+#include "stepdown.h"
 #include "stringutil.h"
 #include "tags.h"
 #include "target.h"
@@ -378,6 +380,70 @@ static void _update_cowardice()
         mpr("You feel a twist of horror at the sight of this foe.");
 }
 
+// Uskawyaw piety decays incredibly fast, but only to a baseline level of *.
+// Using Uskayaw abilities can still take you under *.
+static void _handle_uskayaw_piety(int time_taken)
+{
+    if (you.props[USKAYAW_DID_DANCE_ACTION].get_bool()
+            && you.props[USKAYAW_NUM_MONSTERS_HURT].get_int() > 0)
+    {
+        int num_hurt = you.props[USKAYAW_NUM_MONSTERS_HURT];
+        int hurt_val = you.props[USKAYAW_MONSTER_HURT_VALUE];
+        int piety_gain = max(num_hurt, stepdown_value(hurt_val, 5, 10, 20, 40));
+
+        gain_piety(piety_gain);
+        you.props[USKAYAW_AUT_SINCE_PIETY_GAIN] = 0;
+    }
+    else if (you.piety > piety_breakpoint(0))
+    {
+        // If we didn't do a dance action and we can lose piety, we're going
+        // to lose piety proportional to the time since the last time we took
+        // a dance action and hurt a monster.
+        int time_since_gain = you.props[USKAYAW_AUT_SINCE_PIETY_GAIN].get_int();
+
+        int piety_lost = min(you.piety - piety_breakpoint(0),
+                div_rand_round(time_since_gain, 10));
+
+        if (piety_lost > 0)
+            lose_piety(piety_lost);
+
+        you.props[USKAYAW_AUT_SINCE_PIETY_GAIN] = time_since_gain + time_taken;
+    }
+
+    // Re-initialize Uskayaw piety variables
+    you.props[USKAYAW_DID_DANCE_ACTION] = false;
+    you.props[USKAYAW_NUM_MONSTERS_HURT] = 0;
+    you.props[USKAYAW_MONSTER_HURT_VALUE] = 0;
+}
+
+static void _handle_uskayaw_time(int time_taken)
+{
+    _handle_uskayaw_piety(time_taken);
+
+    int audience_timer = you.props[USKAYAW_AUDIENCE_TIMER].get_int();
+    int bond_timer = you.props[USKAYAW_BOND_TIMER].get_int();
+
+    // For the timered abilities, if we set the timer to -1, that means we
+    // need to trigger the abilities this turn. Otherwise we'll decrement the
+    // timer down to a minimum of 0, at which point it becomes eligible to
+    // trigger again.
+    if (audience_timer == -1 || (you.piety >= piety_breakpoint(2)
+            && x_chance_in_y(time_taken, time_taken * 10 + audience_timer)))
+    {
+        uskayaw_prepares_audience();
+    }
+    else
+        you.props[USKAYAW_AUDIENCE_TIMER] = max(0, audience_timer - time_taken);
+
+    if (bond_timer == -1 || (you.piety >= piety_breakpoint(3)
+            && x_chance_in_y(time_taken, time_taken * 10 + bond_timer)))
+    {
+        uskayaw_bonds_audience();
+    }
+    else
+        you.props[USKAYAW_BOND_TIMER] =  max(0, bond_timer - time_taken);
+}
+
 /**
  * Player reactions after monster and cloud activities in the turn are finished.
  */
@@ -407,6 +473,8 @@ void player_reacts_to_monsters()
         you.awake();
     _maybe_melt_armour();
     _update_cowardice();
+    if (you_worship(GOD_USKAYAW))
+        _handle_uskayaw_time(you.time_taken);
 }
 
 static bool _check_recite()
@@ -458,6 +526,22 @@ static void _handle_recitation(int step)
         }
         mprf(MSGCH_DURATION, "You finish reciting %s", speech.c_str());
     }
+}
+
+/**
+ * Try to respawn the player's ancestor, if possible.
+ */
+static void _try_to_respawn_ancestor()
+{
+     monster *ancestor = create_monster(hepliaklqana_ancestor_gen_data());
+     if (!ancestor)
+         return;
+
+    mprf("%s emerges from the mists of memory!",
+         ancestor->name(DESC_YOUR).c_str());
+    add_companion(ancestor);
+    check_place_cloud(CLOUD_MIST, ancestor->pos(), random_range(1,2),
+                      ancestor); // ;)
 }
 
 
@@ -584,27 +668,12 @@ void decrement_durations(int delay)
         }
     }
 
-    // Handle Powered By Death strength and duration
+    // Decrement Powered By Death strength
     int pbd_str = you.props[POWERED_BY_DEATH_KEY].get_int();
-    if (pbd_str > 1)
+    if (pbd_str > 0 && _decrement_a_duration(DUR_POWERED_BY_DEATH, delay))
     {
-        // Roll to decrement (on average) 1 per-10 aut.
-        const int decrement_rolls = div_rand_round(delay, 10);
-        const int dec = binomial(decrement_rolls, 1, 4);
-
-        // We don't want to accidentally terminate the effect after slow actions
-        pbd_str = max(pbd_str - dec, 1);
-        you.props[POWERED_BY_DEATH_KEY] = pbd_str;
-        if (dec > 0)
-            dprf("Decrementing Powered by Death strength to %d", pbd_str);
-    }
-    if (_decrement_a_duration(DUR_POWERED_BY_DEATH, delay))
-    {
-        if (pbd_str > 0)
-        {
-            mprf(MSGCH_DURATION, "You feel less regenerative.");
-            you.props[POWERED_BY_DEATH_KEY] = 0;
-        }
+        you.props[POWERED_BY_DEATH_KEY] = pbd_str - 1;
+        reset_powered_by_death_duration();
     }
 
     dec_ambrosia_player(delay);
@@ -675,12 +744,18 @@ void decrement_durations(int delay)
             {
                 land_player();
             }
+            else
+            {
+                // Disable emergency flight if it was active
+                you.props.erase(EMERGENCY_FLIGHT_KEY);
+            }
         }
         else if ((you.duration[DUR_FLIGHT] -= delay) <= 0)
         {
             // Just time out potions/spells/miscasts.
             you.attribute[ATTR_FLIGHT_UNCANCELLABLE] = 0;
             you.duration[DUR_FLIGHT] = 0;
+            you.props.erase(EMERGENCY_FLIGHT_KEY);
         }
     }
 
@@ -757,10 +832,34 @@ void decrement_durations(int delay)
         doom_howl(min(delay, you.duration[DUR_DOOM_HOWL]));
 
     dec_elixir_player(delay);
-    you.maybe_degrade_bone_armour(1, delay);
+    you.maybe_degrade_bone_armour(delay);
 
     if (!env.sunlight.empty())
         process_sunlights();
+
+    if (!you.duration[DUR_ANCESTOR_DELAY]
+        && in_good_standing(GOD_HEPLIAKLQANA)
+        && hepliaklqana_ancestor() == MID_NOBODY)
+    {
+        _try_to_respawn_ancestor();
+    }
+
+    const bool sanguine_armour_valid
+        = you.hp <= you.hp_max / 2
+          && you.mutation[MUT_SANGUINE_ARMOUR]
+          && mutation_activity_level(MUT_SANGUINE_ARMOUR) == MUTACT_FULL;
+    if (sanguine_armour_valid)
+    {
+        const bool was_active = you.duration[DUR_SANGUINE_ARMOUR];
+        you.duration[DUR_SANGUINE_ARMOUR] = random_range(60, 100);
+        if (!was_active)
+        {
+            mpr("Your blood congeals into armour.");
+            you.redraw_armour_class = true;
+        }
+    }
+    else if (you.duration[DUR_SANGUINE_ARMOUR])
+        you.duration[DUR_SANGUINE_ARMOUR] = 1; // expire
 
     // these should be after decr_ambrosia, transforms, liquefying, etc.
     for (int i = 0; i < NUM_DURATIONS; ++i)
@@ -814,6 +913,23 @@ static void _rot_ghoul_players()
         dprf("rot rate: 1/%d", resilience);
         mprf(MSGCH_WARN, "You feel your flesh rotting away.");
         rot_hp(1);
+    }
+}
+
+static void _handle_emergency_flight()
+{
+    ASSERT(you.props[EMERGENCY_FLIGHT_KEY].get_bool());
+
+    if (!is_feat_dangerous(orig_terrain(you.pos()), true, false))
+    {
+        mpr("You float gracefully downwards.");
+        land_player();
+        you.props.erase(EMERGENCY_FLIGHT_KEY);
+    }
+    else
+    {
+        const int drain = div_rand_round(15 * you.time_taken, BASELINE_DELAY);
+        drain_player(drain, true, true);
     }
 }
 
@@ -1024,6 +1140,9 @@ void player_reacts()
         xom_tick();
     else if (you_worship(GOD_QAZLAL))
         qazlal_storm_clouds();
+
+    if (you.props[EMERGENCY_FLIGHT_KEY].get_bool())
+        _handle_emergency_flight();
 }
 
 void extract_manticore_spikes(const char* endmsg)

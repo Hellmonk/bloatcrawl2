@@ -156,6 +156,8 @@ enum monster_info_flags
     MB_PARTIALLY_CHARGED,
     MB_FULLY_CHARGED,
     MB_GOZAG_INCITED,
+    MB_PAIN_BOND,
+    MB_IDEALISED,
     NUM_MB_FLAGS
 };
 
@@ -285,10 +287,7 @@ struct monster_info : public monster_info_base
 
     vector<string> attributes() const;
 
-    const char *pronoun(pronoun_type variant) const
-    {
-        return mons_pronoun(type, variant, true);
-    }
+    const char *pronoun(pronoun_type variant) const;
 
     string wounds_description_sentence() const;
     string wounds_description(bool colour = false) const;

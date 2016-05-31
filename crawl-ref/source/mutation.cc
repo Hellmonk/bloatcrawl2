@@ -253,7 +253,8 @@ static const mutation_type _all_scales[] =
     MUT_MOLTEN_SCALES,              MUT_ROUGH_BLACK_SCALES,
     MUT_RUGGED_BROWN_SCALES,        MUT_SLIMY_GREEN_SCALES,
     MUT_THIN_METALLIC_SCALES,       MUT_THIN_SKELETAL_STRUCTURE,
-    MUT_YELLOW_SCALES,
+    MUT_YELLOW_SCALES,              MUT_STURDY_FRAME,
+    MUT_SANGUINE_ARMOUR,
 };
 
 static bool _is_covering(mutation_type mut)
@@ -343,6 +344,9 @@ mutation_activity_type mutation_activity_level(mutation_type mut)
     {
         return MUTACT_INACTIVE;
     }
+
+    if (!form_can_bleed(you.form) && mut == MUT_SANGUINE_ARMOUR)
+        return MUTACT_INACTIVE;
 
     return MUTACT_FULL;
 }
@@ -496,6 +500,11 @@ string describe_mutations(bool center_title)
 
     if (have_passive(passive_t::water_walk))
         result += "<green>You can walk on water.</green>\n";
+    else if (you.can_water_walk())
+    {
+        result += "<lightgreen>You can walk on water until reaching land."
+                  "</lightgreen>";
+    }
 
     if (you.duration[DUR_FIRE_SHIELD])
         result += "<green>You are immune to clouds of flame.</green>\n";
@@ -1905,8 +1914,9 @@ string mut_upgrade_summary(mutation_type mut)
     if (!_is_valid_mutation(mut))
         return nullptr;
 
-    string mut_desc = mutation_desc(mut, you.mutation[mut] + 1);
-    strip_suffix(lowercase(mut_desc), ".");
+    string mut_desc =
+        lowercase_first(mutation_desc(mut, you.mutation[mut] + 1));
+    strip_suffix(mut_desc, ".");
     return mut_desc;
 }
 
@@ -1954,11 +1964,20 @@ string mutation_desc(mutation_type mut, int level, bool colour,
     if (mut == MUT_ICEMAIL)
     {
         ostringstream ostr;
-        ostr << mdef.have[0] << player_icemail_armour_class() << ").";
+        ostr << mdef.have[0] << player_icemail_armour_class() << ")";
+        result = ostr.str();
+    }
+    else if (mut == MUT_SANGUINE_ARMOUR && sanguine_armour_bonus())
+    {
+        ostringstream ostr;
+        ostr << mdef.have[0] << " (AC +" << sanguine_armour_bonus() / 100
+                             << ")";
         result = ostr.str();
     }
     else if (!ignore_player && you.species == SP_FELID && mut == MUT_CLAWS)
         result = "You have sharp claws.";
+    else if (have_passive(passive_t::no_mp_regen) && mut == MUT_ANTIMAGIC_BITE)
+        result = "Your bite disrupts the magic of your enemies.";
     else if (result.empty() && level > 0)
         result = mdef.have[level - 1];
 
@@ -2072,6 +2091,8 @@ static const facet_def _demon_facets[] =
       { -33, -33, 0 } },
     { 1, { MUT_STURDY_FRAME, MUT_STURDY_FRAME, MUT_STURDY_FRAME },
       { -33, -33, 0 } },
+    { 1, { MUT_SANGUINE_ARMOUR, MUT_SANGUINE_ARMOUR, MUT_SANGUINE_ARMOUR },
+      { -33, -33, 0 } },
     // Tier 2 facets
     { 2, { MUT_HEAT_RESISTANCE, MUT_FLAME_CLOUD_IMMUNITY, MUT_IGNITE_BLOOD },
       { -33, 0, 0 } },
@@ -2152,7 +2173,6 @@ try_again:
 
     ret.clear();
     int absfacet = 0;
-    int scales = 0;
     int ice_elemental = 0;
     int fire_elemental = 0;
     int cloud_producing = 0;
@@ -2181,9 +2201,6 @@ try_again:
 
                 ret.emplace_back(m, next_facet->when[i], absfacet);
 
-                if (_is_covering(m))
-                    ++scales;
-
                 if (m == MUT_COLD_RESISTANCE)
                     ice_elemental++;
 
@@ -2197,9 +2214,6 @@ try_again:
             ++absfacet;
         }
     }
-
-    if (scales > 3)
-        goto try_again;
 
     if (ice_elemental + fire_elemental > 1)
         goto try_again;
@@ -2575,4 +2589,10 @@ int augmentation_amount()
     }
 
     return amount;
+}
+
+void reset_powered_by_death_duration()
+{
+    const int pbd_dur = random_range(2, 5);
+    you.set_duration(DUR_POWERED_BY_DEATH, pbd_dur);
 }

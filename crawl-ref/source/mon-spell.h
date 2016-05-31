@@ -2025,12 +2025,6 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
-    {  MST_SALAMANDER_STORMCALLER,
-      {
-       { SPELL_FIRE_STORM, 35, MON_SPELL_WIZARD },
-      }
-    },
-
     {  MST_ENTROPY_WEAVER,
       {
        { SPELL_ENTROPIC_WEAVE, 50, MON_SPELL_WIZARD },

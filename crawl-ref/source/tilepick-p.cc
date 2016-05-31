@@ -51,7 +51,9 @@ tileidx_t tilep_equ_weapon(const item_def &item)
         case MISC_BOTTLED_EFREET:             return TILEP_HAND1_BOTTLE;
 #endif
         case MISC_FAN_OF_GALES:               return TILEP_HAND1_FAN;
+#if TAG_MAJOR_VERSION == 34
         case MISC_STONE_OF_TREMORS:           return TILEP_HAND1_STONE;
+#endif
         case MISC_DISC_OF_STORMS:             return TILEP_HAND1_DISC;
 
         case MISC_CRYSTAL_BALL_OF_ENERGY:     return TILEP_HAND1_CRYSTAL;
@@ -67,13 +69,16 @@ tileidx_t tilep_equ_weapon(const item_def &item)
         case MISC_DECK_OF_DESTRUCTION:
 #if TAG_MAJOR_VERSION == 34
         case MISC_DECK_OF_DUNGEONS:
-#endif
         case MISC_DECK_OF_SUMMONING:
         case MISC_DECK_OF_WONDERS:
+#endif
         case MISC_DECK_OF_PUNISHMENT:
         case MISC_DECK_OF_WAR:
+#if TAG_MAJOR_VERSION == 34
         case MISC_DECK_OF_CHANGES:
-        case MISC_DECK_OF_DEFENCE:            return TILEP_HAND1_DECK;
+        case MISC_DECK_OF_DEFENCE:
+#endif
+            return TILEP_HAND1_DECK;
         }
     }
 

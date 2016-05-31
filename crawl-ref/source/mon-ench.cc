@@ -946,6 +946,11 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
             simple_monster_message(this, " seems less brilliant.");
         break;
 
+    case ENCH_IDEALISED:
+        if (!quiet)
+            simple_monster_message(this, " loses the glow of perfection.");
+        break;
+
     default:
         break;
     }
@@ -1152,11 +1157,8 @@ static bool _apply_grasping_roots(monster* mons)
     bool found_hostile = false;
     for (actor_near_iterator ai(mons, LOS_NO_TRANS); ai; ++ai)
     {
-        if (mons_aligned(mons, *ai) || ai->is_insubstantial()
-            || !ai->visible_to(mons))
-        {
+        if (mons_aligned(mons, *ai) || ai->is_insubstantial())
             continue;
-        }
 
         found_hostile = true;
 
@@ -1306,7 +1308,7 @@ static void _merfolk_avatar_song(monster* mons)
     // Only call up drowned souls if we're largely alone; otherwise our
     // mesmerisation can support the present allies well enough.
     int ally_hd = 0;
-    for (monster_near_iterator mi(&you); mi; ++mi)
+    for (monster_near_iterator mi(you.pos()); mi; ++mi)
     {
         if (*mi != mons && mons_aligned(mons, *mi) && mons_is_threatening(*mi)
             && mi->type != MONS_DROWNED_SOUL)
@@ -1437,6 +1439,7 @@ void monster::apply_enchantment(const mon_enchant &me)
     case ENCH_REGENERATION:
     case ENCH_RAISED_MR:
     case ENCH_MAGIC_ARMOUR:
+    case ENCH_IDEALISED:
     case ENCH_FEAR_INSPIRING:
     case ENCH_LIFE_TIMER:
     case ENCH_FLIGHT:
@@ -2168,7 +2171,8 @@ static const char *enchant_names[] =
 #if TAG_MAJOR_VERSION == 34
     "chanting_fire_storm", "chanting_word_of_entropy",
 #endif
-    "aura_of_brilliance", "empowered_spells", "gozag_incite",
+    "aura_of_brilliance", "empowered_spells", "gozag_incite", "pain_bond",
+    "idealised",
     "buggy",
 };
 
@@ -2314,6 +2318,7 @@ int mon_enchant::calc_duration(const monster* mons,
     case ENCH_AGILE:
     case ENCH_BLACK_MARK:
     case ENCH_RESISTANCE:
+    case ENCH_IDEALISED:
         cturn = 1000 / _mod_speed(25, mons->speed);
         break;
     case ENCH_LIQUEFYING:

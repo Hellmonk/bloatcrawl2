@@ -16,6 +16,7 @@
 #include <string>
 
 #include "adjust.h"
+#include "art-enum.h"
 #include "artefact.h"
 #include "branch.h"
 #include "butcher.h"
@@ -767,11 +768,10 @@ static string _describe_mutant_beast_tier(int tier)
     static const string tier_descs[] = {
         "It is of an unusually buggy age.",
         "It is larval and weak, freshly emerged from its mother's pouch.",
-        "It is a juvenile, out of the larval stage but below its mature "
-        "strength.",
+        "It is a juvenile, no longer larval but below its mature strength.",
         "It is mature, stronger than a juvenile but weaker than its elders.",
-        "It is an elder, stronger than most mature beasts.",
-        "It is a primal beast, most powerful of its kind.",
+        "It is an elder, stronger than mature beasts.",
+        "It is a primal beast, the most powerful of its kind.",
     };
     COMPILE_CHECK(ARRAYSZ(tier_descs) == NUM_BEAST_TIERS);
 
@@ -1077,9 +1077,10 @@ static string _describe_weapon(const item_def &item, bool verbose)
                 "animated as a zombie friendly to the killer.";
             break;
         case SPWPN_ANTIMAGIC:
-            description += "It disrupts the flow of magical energy around "
-                    "spellcasters and certain magical creatures (including "
-                    "the wielder).";
+            description += "It reduces the magical energy of the wielder, "
+                    "and disrupts the spells and magical abilities of those "
+                    "hit. Natural abilities and divine invocations are not "
+                    "affected.";
             break;
         case SPWPN_NORMAL:
             ASSERT(enchanted);
@@ -1297,6 +1298,15 @@ static string _describe_ammo(const item_def &item)
     return description;
 }
 
+static string _warlock_mirror_reflect_desc()
+{
+    const int SH = crawl_state.need_save ? player_shield_class() : 0;
+    const int reflect_chance = 100 * SH / omnireflect_chance_denom(SH);
+    return "\n\nWith your current SH, it has a " + to_string(reflect_chance) +
+           "% chance to reflect enchantments and other normally unblockable "
+           "effects.";
+}
+
 static string _describe_armour(const item_def &item, bool verbose)
 {
     string description;
@@ -1324,6 +1334,9 @@ static string _describe_armour(const item_def &item, bool verbose)
                 else
                     description += "\n";
             }
+
+            if (is_unrandom_artefact(item, UNRAND_WARLOCK_MIRROR))
+                description += _warlock_mirror_reflect_desc();
         }
         else
         {
@@ -2375,10 +2388,10 @@ static bool _do_action(item_def &item, const vector<command_type>& actions, int 
     case CMD_REMOVE_ARMOUR:    takeoff_armour(slot);                	break;
     case CMD_EVOKE:            evoke_item(slot);                    	break;
     case CMD_EAT:              eat_food(slot);                      	break;
-    case CMD_READ:             read(slot);                          	break;
+    case CMD_READ:             read(&item);                          	break;
     case CMD_WEAR_JEWELLERY:   puton_ring(slot);                    	break;
     case CMD_REMOVE_JEWELLERY: remove_ring(slot, true);             	break;
-    case CMD_QUAFF:            drink(slot);                         	break;
+    case CMD_QUAFF:            drink(&item);                         	break;
     case CMD_DROP_INVENTORY:   drop_item((*inv), slot, item.quantity);  break;
     case CMD_DROP_CONSUMABLE:  drop_item((*inv), slot, item.quantity);  break;
     case CMD_INSCRIBE_ITEM:    inscribe_item(item);                 	break;
@@ -2964,6 +2977,8 @@ static const char* _get_resist_name(mon_resist_flags res_type)
         return "rotting";
     case MR_RES_NEG:
         return "negative energy";
+    case MR_RES_DAMNATION:
+        return "damnation";
     default:
         return "buggy resistance";
     }
@@ -3227,7 +3242,7 @@ static string _monster_stat_description(const monster_info& mi)
     {
         MR_RES_ELEC,    MR_RES_POISON, MR_RES_FIRE,
         MR_RES_STEAM,   MR_RES_COLD,   MR_RES_ACID,
-        MR_RES_ROTTING, MR_RES_NEG,
+        MR_RES_ROTTING, MR_RES_NEG,    MR_RES_DAMNATION,
     };
 
     vector<string> extreme_resists;
@@ -3242,6 +3257,8 @@ static string _monster_stat_description(const monster_info& mi)
         if (level != 0)
         {
             const char* attackname = _get_resist_name(rflags);
+            if (rflags == MR_RES_DAMNATION)
+                level = 3; // one level is immunity
             level = max(level, -1);
             level = min(level,  3);
             switch (level)
