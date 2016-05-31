@@ -10323,12 +10323,10 @@ void _attempt_instant_rest_handle_no_visible_monsters()
 
 void attempt_instant_rest()
 {
-    if (
-        !player_in_hell()
-        && you.where_are_you != BRANCH_ABYSS
-        && (you.monsters_recently_seen > 200 || you.monsters_recently_seen == 0)
-        && i_feel_safe()
-        )
+    const bool not_in_dangerous_branch = !player_in_hell() && you.where_are_you != BRANCH_ABYSS;
+    const bool no_recent_monsters = you.monsters_recently_seen > 200 || you.monsters_recently_seen == 0;
+    const bool safe = i_feel_safe();
+    if (not_in_dangerous_branch && no_recent_monsters && safe)
     {
         you.monsters_recently_seen = 0;
         ldprf(LD_INSTAREST, "Recently_seen hit 0. Checking for nearby monsters...", you.monsters_recently_seen);
