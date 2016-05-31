@@ -552,7 +552,9 @@ bool wielded_weapon_check(item_def *weapon, bool no_message)
     // melee weapons yet.
     if (!weapon
         && (you.skill(SK_UNARMED_COMBAT) > 0
-            || !any_of(you.inv1.begin(), you.inv1.end(), is_melee_weapon)))
+            || !any_of(you.inv1.begin(), you.inv1.end(),
+                       [](item_def &it)
+                       { return is_melee_weapon(it) && can_wield(&it); })))
     {
         return true;
     }

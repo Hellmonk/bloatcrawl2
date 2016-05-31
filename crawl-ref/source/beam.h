@@ -280,7 +280,6 @@ public:
 private:
     void internal_ouch(int dam);
     // for both
-    void hit_shield(actor* victim) const;
     void knockback_actor(actor *act, int dam);
 
     // tracers
@@ -343,4 +342,6 @@ int explosion_noise(int rad);
 
 bool shoot_through_monster(const bolt& beam, const monster* victim);
 bool dazzle_monster(monster* mons, actor* act);
+
+int omnireflect_chance_denom(int SH);
 #endif

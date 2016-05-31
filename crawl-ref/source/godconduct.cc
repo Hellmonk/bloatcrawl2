@@ -70,7 +70,7 @@ static const char *conducts[] =
     "Souled Friend Died", "Attack In Sanctuary",
     "Kill Artificial", "Destroy Spellbook",
     "Exploration", "Desecrate Holy Remains", "Seen Monster",
-    "Fire", "Kill Fiery", "Sacrificed Love", "Channel",
+    "Fire", "Kill Fiery", "Sacrificed Love", "Channel", "Hurt Foe",
 };
 COMPILE_CHECK(ARRAYSZ(conducts) == NUM_CONDUCTS);
 
@@ -525,6 +525,10 @@ static peeve_map divine_peeves[] =
             1, 1,
         } },
     },
+    // GOD_USKAYAW,
+    peeve_map(),
+    // GOD_HEPLIAKLQANA,
+    peeve_map(),
 };
 
 string get_god_dislikes(god_type which_god)
@@ -1004,6 +1008,25 @@ static like_map divine_likes[] =
         { DID_KILL_DEMON, KILL_DEMON_RESPONSE },
         { DID_KILL_HOLY, KILL_HOLY_RESPONSE },
     },
+    // GOD_USKAYAW
+    {
+        { DID_HURT_FOE, { "you hurt your foes", 1, 1, 1, 0, nullptr, [] (int &piety, int &denom, const monster* /*victim*/)
+            {
+                denom = 1;
+            }
+        } },
+    },
+    // GOD_HEPLIAKLQANA,
+    {
+        { DID_EXPLORATION, {
+            "you explore the world", false, 0, 0, 0, nullptr,
+            [] (int &piety, int &denom, const monster* /*victim*/)
+            {
+                // piety = denom = level at the start of the function
+                piety = 14;
+            }
+        } },
+    },
 };
 
 /**
@@ -1182,15 +1205,20 @@ string get_god_likes(god_type which_god)
         text += " doesn't like anything? This is a bug; please report it.";
     else
     {
-        text += " likes it when ";
-        text += comma_separated_line(likes.begin(), likes.end());
-        text += ".";
+        if (!likes.empty())
+        {
+            text += " likes it when ";
+            text += comma_separated_line(likes.begin(), likes.end());
+            text += ".";
+            if (!really_likes.empty())
+            {
+                text += " ";
+                text += uppercase_first(god_name(which_god));
+            }
+        }
 
         if (!really_likes.empty())
         {
-            text += " ";
-            text += uppercase_first(god_name(which_god));
-
             text += " especially likes it when ";
             text += comma_separated_line(really_likes.begin(),
                                          really_likes.end());
@@ -1204,6 +1232,33 @@ string get_god_likes(god_type which_god)
 bool god_hates_cannibalism(god_type god)
 {
     return divine_peeves[god].count(DID_CANNIBALISM);
+}
+
+/**
+ * Handle god conducts triggered by hurting a monster. Currently set up to only
+ * account for Uskayaw's use pattern; if anyone else uses it, add a second case.
+ *
+ * @param thing_done        The conduct in question.
+ * @param victim            The victim being harmed.
+ * @param damage_done       The amount of damage done.
+ */
+void did_hurt_conduct(conduct_type thing_done,
+                      const monster &victim,
+                      int damage_done)
+{
+    // Currently only used by Uskayaw; initially planned to use god conduct
+    // logic more heavily, but the god seems to need something different.
+
+    if (you_worship(GOD_USKAYAW))
+    {
+        // Give a "value" for the percent of the monster's hp done in damage,
+        // scaled by the monster's threat level.11
+        int value = random2(3) + sqr((mons_threat_level(&victim) + 1) * 2)
+                * damage_done / (victim.max_hit_points);
+
+        you.props[USKAYAW_NUM_MONSTERS_HURT].get_int() += 1;
+        you.props[USKAYAW_MONSTER_HURT_VALUE].get_int() += value;
+    }
 }
 
 /**

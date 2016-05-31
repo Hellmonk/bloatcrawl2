@@ -1126,10 +1126,7 @@ void behaviour_event(monster* mon, mon_event_type event, const actor *src,
         else if (!mons_is_fleeing(mon))
             mon->behaviour = BEH_SEEK;
 
-        if (src == &you
-            && !mon->has_ench(ENCH_INSANE)
-            && !mons_is_avatar(mon->type)
-            && mon->type != MONS_SPELLFORGED_SERVITOR)
+        if (src == &you && mon->angered_by_attacks())
         {
             mon->attitude = ATT_HOSTILE;
             breakCharm    = true;
@@ -1287,9 +1284,7 @@ void behaviour_event(monster* mon, mon_event_type event, const actor *src,
     if (setTarget && src)
     {
         mon->target = src_pos;
-        if (src->is_player()
-            && !mon->has_ench(ENCH_INSANE)
-            && !mons_is_avatar(mon->type))
+        if (src->is_player() && mon->angered_by_attacks())
         {
             // Why only attacks by the player change attitude? -- 1KB
             mon->attitude = ATT_HOSTILE;
@@ -1323,7 +1318,7 @@ void behaviour_event(monster* mon, mon_event_type event, const actor *src,
     if (was_unaware && allow_shout
         && mon->foe == MHITYOU && !mon->wont_attack())
     {
-        handle_monster_shouts(mon);
+        monster_consider_shouting(*mon);
     }
 
     const bool isPacified = mon->pacified();
@@ -1488,7 +1483,10 @@ bool monster_can_hit_monster(monster* mons, const monster* targ)
 // Friendly summons can't attack out of the player's LOS, it's too abusable.
 bool summon_can_attack(const monster* mons)
 {
-    return crawl_state.game_is_arena() || !mons->friendly() || !mons->is_summoned()
+    return crawl_state.game_is_arena()
+           || !mons->friendly()
+           || !mons->is_summoned()
+              && !mons_is_hepliaklqana_ancestor(mons->type)
            || you.see_cell_no_trans(mons->pos());
 }
 
@@ -1510,8 +1508,11 @@ bool summon_can_attack(const monster* mons, const coord_def &p)
         return false;
     }
 
-    if (!mons->friendly() || !mons->is_summoned())
+    if (!mons->friendly()
+        || !mons->is_summoned() && !mons_is_hepliaklqana_ancestor(mons->type))
+    {
         return true;
+    }
 
     return you.see_cell_no_trans(mons->pos()) && you.see_cell_no_trans(p);
 }

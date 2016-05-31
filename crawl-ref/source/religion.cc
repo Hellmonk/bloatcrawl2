@@ -50,6 +50,7 @@
 #include "makeitem.h"
 #include "message.h"
 #include "misc.h"
+#include "mon-gear.h" // give_shield
 #include "mon-place.h"
 #include "mutation.h"
 #include "notes.h"
@@ -76,6 +77,11 @@
 #endif
 
 #define PIETY_HYSTERESIS_LIMIT 1
+
+static weapon_type _hepliaklqana_weapon_type(monster_type mc, int HD);
+static brand_type _hepliaklqana_weapon_brand(monster_type mc, int HD);
+static armour_type _hepliaklqana_shield_type(monster_type mc, int HD);
+static special_armour_type _hepliaklqana_shield_ego(int HD);
 
 const vector<god_power> god_powers[NUM_GODS] =
 {
@@ -289,17 +295,29 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
     // Pakellas
     {
+      { 0, "gain magical power from killing" },
       { 1, ABIL_PAKELLAS_QUICK_CHARGE,
            "spend your magic to charge your devices" },
-      { 2, "Pakellas will collect and distill excess magic from your kills.",
-           "Pakellas no longer collects and distills excess magic from your "
-           "kills." },
       { 3, ABIL_PAKELLAS_DEVICE_SURGE,
            "spend magic to empower your devices" },
       { 7, ABIL_PAKELLAS_SUPERCHARGE,
            "Pakellas will now supercharge a wand or rod... once.",
            "Pakellas is no longer ready to supercharge a wand or rod." },
-    }
+    },
+    // Uskayaw
+    {
+      { 1, ABIL_USKAYAW_STOMP, "stomp with the beat" },
+      { 2, ABIL_USKAYAW_LINE_PASS, "pass through a line of other dancers" },
+      { 5, ABIL_USKAYAW_GRAND_FINALE, "merge with and destroy a victim" },
+    },
+
+    // Hepliaklqana
+    { { 0, ABIL_HEPLIAKLQANA_RECALL, "recall your ancestor" },
+      { 0, ABIL_HEPLIAKLQANA_IDENTITY, "remember your ancestor's identity" },
+      { 3, ABIL_HEPLIAKLQANA_TRANSFERENCE, "swap creatures with your ancestor" },
+      { 4, ABIL_HEPLIAKLQANA_IDEALISE, "heal and protect your ancestor" },
+      { 5, "slow nearby creatures when transferring your ancestor"},
+    },
 };
 
 vector<god_power> get_god_powers(god_type god)
@@ -435,14 +453,15 @@ god_iterator god_iterator::operator++(int)
 
 bool active_penance(god_type god)
 {
-    // Ashenzari's penance isn't active; Nemelex's penance is only active
-    // when the penance counter is above 100; good gods only have active
-    // wrath when they hate your current god.
+    // Nemelex's penance is only active when the penance counter is above 100;
+    // good gods only have active wrath when they hate your current god.
     return player_under_penance(god)
            && !is_unavailable_god(god)
            && god != GOD_ASHENZARI
            && god != GOD_GOZAG
            && god != GOD_RU
+           && god != GOD_HEPLIAKLQANA
+           && god != GOD_PAKELLAS
            && (god != GOD_NEMELEX_XOBEH || you.penance[god] > 100)
            && (god == you.religion && !is_good_god(god)
                || god_hates_your_god(god, you.religion));
@@ -454,7 +473,9 @@ bool xp_penance(god_type god)
     return player_under_penance(god)
            && !is_unavailable_god(god)
            && (god == GOD_ASHENZARI
-               || god == GOD_GOZAG);
+               || god == GOD_GOZAG
+               || god == GOD_HEPLIAKLQANA
+               || god == GOD_PAKELLAS);
 }
 
 void dec_penance(god_type god, int val)
@@ -519,22 +540,24 @@ void dec_penance(god_type god, int val)
             }
 
             // TSO's halo is once more available.
-            if (god == GOD_SHINING_ONE
-                     && you.piety >= piety_breakpoint(0))
+            if (have_passive(passive_t::halo))
             {
                 mprf(MSGCH_GOD, "Your divine halo returns!");
                 invalidate_agrid(true);
             }
-            else if (god == GOD_QAZLAL && you.piety >= piety_breakpoint(0))
+
+            if (have_passive(passive_t::storm_shield))
             {
                 mprf(MSGCH_GOD, "A storm instantly forms around you!");
                 you.redraw_armour_class = true; // also handles shields
             }
             // When you've worked through all your penance, you get
             // another chance to make hostile slimes strict neutral.
-            else if (god == GOD_JIYVA)
+
+            if (have_passive(passive_t::neutral_slimes))
                 add_daction(DACT_SLIME_NEW_ATTEMPT);
-            else if (god == GOD_PAKELLAS)
+
+            if (have_passive(passive_t::identify_devices))
                 pakellas_id_device_charges();
 
             if (have_passive(passive_t::friendly_plants)
@@ -590,10 +613,17 @@ void dec_penance(int val)
     dec_penance(you.religion, val);
 }
 
+// TODO: find out what this is duplicating & deduplicate it
 static bool _need_water_walking()
 {
     return you.ground_level() && you.species != SP_MERFOLK
            && grd(you.pos()) == DNGN_DEEP_WATER;
+}
+
+static void _grant_temporary_waterwalk()
+{
+    mprf("Your water-walking will last only until you reach solid ground.");
+    you.props[TEMP_WATERWALK_KEY] = true;
 }
 
 bool jiyva_is_dead()
@@ -653,7 +683,7 @@ static void _inc_penance(god_type god, int val)
         if (will_have_passive(passive_t::water_walk)
             && _need_water_walking() && !have_passive(passive_t::water_walk))
         {
-            fall_into_a_pool(grd(you.pos()));
+            _grant_temporary_waterwalk();
         }
 
         if (will_have_passive(passive_t::stat_boost))
@@ -697,6 +727,8 @@ static void _inc_penance(god_type god, int val)
         }
         else if (god == GOD_QAZLAL)
         {
+            // Can't use have_passive(passive_t::storm_shield) because we
+            // just gained penance.
             if (you.piety >= piety_breakpoint(0))
             {
                 mprf(MSGCH_GOD, god, "The storm surrounding you dissipates.");
@@ -892,10 +924,9 @@ static bool _give_nemelex_gift(bool forced = false)
     {
 
         misc_item_type gift_type = random_choose_weighted(
-                                        4, MISC_DECK_OF_WAR,
-                                        3, MISC_DECK_OF_DESTRUCTION,
-                                        2, MISC_DECK_OF_ESCAPE,
-                                        1, MISC_DECK_OF_WONDERS, 
+                                        2, MISC_DECK_OF_WAR,
+                                        2, MISC_DECK_OF_DESTRUCTION,
+                                        1, MISC_DECK_OF_ESCAPE,
                                         0);
 
         int thing_created = items(true, OBJ_MISCELLANY, gift_type, 1, 0,
@@ -1018,7 +1049,6 @@ static int _pakellas_high_misc()
     static const vector<int> high_miscs = {
         MISC_FAN_OF_GALES,
         MISC_LAMP_OF_FIRE,
-        MISC_STONE_OF_TREMORS,
         MISC_PHIAL_OF_FLOODS,
         MISC_DISC_OF_STORMS,
     };
@@ -1233,6 +1263,392 @@ static bool _jiyva_mutate()
         return mutate(RANDOM_SLIME_MUTATION, "Jiyva's grace", true, false, true);
     else
         return mutate(RANDOM_GOOD_MUTATION, "Jiyva's grace", true, false, true);
+}
+
+/**
+ * What's the name of the ally Hepliaklqana granted the player?
+ *
+ * @return      The ally's name.
+ */
+string hepliaklqana_ally_name()
+{
+    return you.props[HEPLIAKLQANA_ALLY_NAME_KEY].get_string();
+}
+
+/**
+ * What specialization has the player chosen for their ancestor, if any?
+ *
+ * @return  The appropriate ability_type enum (e.g.
+ *          ABIL_HEPLIAKLQANA_KNIGHT_REACHING), or 0 if no specialization was
+ *          chosen.
+ */
+int hepliaklqana_specialization()
+{
+    // using get_int() without checking for exists would make it exist
+    if (you.props.exists(HEPLIAKLQANA_SPECIALIZATION_KEY))
+        return you.props[HEPLIAKLQANA_SPECIALIZATION_KEY].get_int();
+    return 0;
+}
+
+/**
+ * How much HD should the ally granted by Hepliaklqana have?
+ *
+ * @return      The player's xl * 2/3.
+ */
+static int _hepliaklqana_ally_hd()
+{
+    if (!crawl_state.need_save) // on main menu or otherwise don't have 'you'
+        return 27; // v0v
+    // round up
+    return (you.experience_level - 1) * 2 / 3 + 1;
+}
+
+/**
+ * How much max HP should the ally granted by Hepliaklqana have?
+ *
+ * @return      5/hd from 1-11 HD, 10/hd from 12-18.
+ *              (That is, 5 HP at 1 HD, 120 at 18.)
+ */
+static int _hepliaklqana_ally_hp()
+{
+    const int HD = _hepliaklqana_ally_hd();
+    return HD * 5 + max(0, (HD - 12) * 5);
+}
+
+/**
+ * Creates a mgen_data with the information needed to create the ancestor
+ * granted by Hepliaklqana.
+ *
+ * XXX: should this be populating a mgen_data passed by reference, rather than
+ * returning one on the stack?
+ *
+ * @return    The mgen_data that creates a hepliaklqana ancestor.
+ */
+mgen_data hepliaklqana_ancestor_gen_data()
+{
+    const monster_type type = you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY) ?
+        (monster_type)you.props[HEPLIAKLQANA_ALLY_TYPE_KEY].get_int() :
+        MONS_ANCESTOR;
+    mgen_data mg(type, BEH_FRIENDLY, &you, 0, 0, you.pos(),
+                 MHITYOU, MG_AUTOFOE, GOD_HEPLIAKLQANA);
+    mg.hd = _hepliaklqana_ally_hd();
+    mg.hp = _hepliaklqana_ally_hp();
+    mg.extra_flags |= MF_NO_REWARD;
+    mg.mname = hepliaklqana_ally_name();
+    mg.props[MON_GENDER_KEY]
+        = you.props[HEPLIAKLQANA_ALLY_GENDER_KEY].get_int();
+    return mg;
+}
+
+/// Print a message for an ancestor's *something* being gained.
+static void _regain_memory(const monster &ancestor, string memory)
+{
+    mprf("%s regains the memory of %s %s.",
+         ancestor.name(DESC_YOUR, true).c_str(),
+         ancestor.pronoun(PRONOUN_POSSESSIVE, true).c_str(),
+         memory.c_str());
+}
+
+static string _item_ego_name(object_class_type base_type, int brand)
+{
+    switch (base_type)
+    {
+    case OBJ_WEAPONS:
+    {
+        // 'remembers... draining' reads better than 'drain', but 'flame'
+        // reads better than 'flaming'
+        const bool terse = brand == SPWPN_FLAMING
+                           || brand == SPWPN_ANTIMAGIC;
+        return brand_type_name(brand, terse);
+    }
+    case OBJ_ARMOUR:
+        // XXX: hack
+        return "reflection";
+    default:
+        die("unsupported object type");
+    }
+}
+
+/// Print a message for an ancestor's item being gained/type upgraded.
+static void _regain_item_memory(const monster &ancestor,
+                                object_class_type base_type,
+                                int sub_type,
+                                int brand)
+{
+    const string base_name = item_base_name(base_type, sub_type);
+    if (!brand)
+    {
+        _regain_memory(ancestor, base_name);
+        return;
+    }
+
+    const string ego_name = _item_ego_name(base_type, brand);
+    const string item_name
+        = make_stringf("%s of %s",
+                       item_base_name(base_type, sub_type).c_str(),
+                       ego_name.c_str());
+    _regain_memory(ancestor, item_name);
+}
+
+/**
+ * Update the ancestor's stats after the player levels up. Upgrade HD and HP,
+ * and give appropriate messaging for that and any other notable upgrades
+ * (spells, resists, etc).
+ *
+ * @param quiet_force     Whether to squash messages & force upgrades,
+ *                        even if the HD is unchanged.
+ */
+void upgrade_hepliaklqana_ancestor(bool quiet_force)
+{
+    monster* ancestor = hepliaklqana_ancestor_mon();
+    if (!ancestor || !ancestor->alive())
+        return;
+
+    // housekeeping
+    ancestor->mname = hepliaklqana_ally_name();
+    ancestor->props[MON_GENDER_KEY]
+        = you.props[HEPLIAKLQANA_ALLY_GENDER_KEY].get_int();
+
+    const int old_hd = ancestor->get_experience_level();
+    const int hd = _hepliaklqana_ally_hd();
+    ancestor->set_hit_dice(hd);
+    if (old_hd == hd && !quiet_force)
+        return; // assume nothing changes except at different HD
+
+    const int old_mhp = ancestor->max_hit_points;
+    ancestor->max_hit_points = _hepliaklqana_ally_hp();
+    ancestor->hit_points =
+        div_rand_round(ancestor->hit_points * ancestor->max_hit_points,
+                       old_mhp);
+
+    if (!quiet_force)
+    {
+        mprf("%s remembers more of %s old skill.",
+             ancestor->name(DESC_YOUR, true).c_str(),
+             ancestor->pronoun(PRONOUN_POSSESSIVE, true).c_str());
+    }
+
+    set_ancestor_spells(*ancestor, !quiet_force);
+
+    const bool ancestor_offlevel = companion_is_elsewhere(ancestor->mid);
+    if (ancestor_offlevel)
+        add_daction(DACT_UPGRADE_ANCESTOR);
+
+    // assumption: ancestors can lose weapons (very rarely - tukima's),
+    // and it's weird for them to just reappear, so only upgrade existing ones
+    if (ancestor->weapon())
+    {
+        if (!ancestor_offlevel)
+            upgrade_hepliaklqana_weapon(*ancestor, *ancestor->weapon());
+
+        const weapon_type wpn = _hepliaklqana_weapon_type(ancestor->type, hd);
+        const brand_type brand = _hepliaklqana_weapon_brand(ancestor->type, hd);
+        if (wpn != _hepliaklqana_weapon_type(ancestor->type, old_hd)
+            && !quiet_force)
+        {
+            _regain_item_memory(*ancestor, OBJ_WEAPONS, wpn, brand);
+        }
+        else if (brand != _hepliaklqana_weapon_brand(ancestor->type, old_hd)
+                 && !quiet_force)
+        {
+            mprf("%s remembers %s %s %s.",
+                 ancestor->name(DESC_YOUR, true).c_str(),
+                 ancestor->pronoun(PRONOUN_POSSESSIVE, true).c_str(),
+                 apostrophise(item_base_name(OBJ_WEAPONS, wpn)).c_str(),
+                 brand_type_name(brand, brand != SPWPN_DRAINING));
+        }
+    }
+    // but shields can't be lost, and *can* be gained (knight at hd 5)
+    // so give them out as appropriate
+    if (!ancestor_offlevel)
+    {
+        if (ancestor->shield())
+            upgrade_hepliaklqana_shield(*ancestor, *ancestor->shield());
+        else
+            give_shield(ancestor);
+    }
+
+    const armour_type shld = _hepliaklqana_shield_type(ancestor->type, hd);
+    if (shld != _hepliaklqana_shield_type(ancestor->type, old_hd)
+        && !quiet_force)
+    {
+        // doesn't currently support egos varying separately from shield types
+        _regain_item_memory(*ancestor, OBJ_ARMOUR, shld,
+                            _hepliaklqana_shield_ego(hd));
+    }
+
+    if (quiet_force)
+        return;
+}
+
+/**
+ * For a spellcasting ancestor (e.g. a hexer or battlemage), what spell is
+ * granted by a given specialization?
+ *
+ * @param specialization    The specialization in question; e.g.
+ *                          ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST.
+ * @return                  The appropriate spell type, e.g. SPELL_ICEBLAST.
+ *                          By default, returns NUM_SPELLS.
+ */
+spell_type hepliaklqana_specialization_spell(int specialization)
+{
+    switch (specialization)
+    {
+    case ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST:
+        return SPELL_ICEBLAST;
+    case ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA:
+        return SPELL_BOLT_OF_MAGMA;
+    case ABIL_HEPLIAKLQANA_HEXER_PARALYSE:
+        return SPELL_PARALYSE;
+    case ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION:
+        return SPELL_ENGLACIATION;
+    default:
+        return NUM_SPELLS;
+    }
+}
+
+/**
+ * For an ancestor knight, what weapon is granted by a given specialization?
+ *
+ * @param specialization    The specialization in question; e.g.
+ *                          ABIL_HEPLIAKLQANA_KNIGHT_REACHING.
+ * @return                  The appropriate weapon type, e.g. WPN_BROAD_AXE.
+ *                          By default, returns NUM_WEAPONS.
+ */
+weapon_type hepliaklqana_specialization_weapon(int specialization)
+{
+    switch (specialization)
+    {
+    case ABIL_HEPLIAKLQANA_KNIGHT_REACHING:
+        return WPN_DEMON_TRIDENT;
+    case ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING:
+        return WPN_BROAD_AXE;
+    default:
+        return NUM_WEAPONS;
+    }
+}
+
+/**
+ * What type of weapon should an ancestor of the given HD have?
+ *
+ * @param mc   The type of ancestor in question.
+ * @param HD   The HD of the ancestor in question.
+ * @return     An appropriate weapon_type.
+ */
+static weapon_type _hepliaklqana_weapon_type(monster_type mc, int HD)
+{
+    switch (mc)
+    {
+    case MONS_ANCESTOR_HEXER:
+        return HD < 18 ? WPN_DAGGER : WPN_QUICK_BLADE;
+    case MONS_ANCESTOR_KNIGHT:
+    {
+        const int specialization = hepliaklqana_specialization();
+        return specialization ?
+               hepliaklqana_specialization_weapon(specialization) :
+               WPN_FLAIL;
+    }
+    case MONS_ANCESTOR_BATTLEMAGE:
+        return HD < 14 ? WPN_QUARTERSTAFF : WPN_LAJATANG;
+    default:
+        return NUM_WEAPONS; // should never happen
+    }
+}
+
+/**
+ * What brand should an ancestor of the given HD's weapon have, if any?
+ *
+ * @param mc   The type of ancestor in question.
+ * @param HD   The HD of the ancestor in question.
+ * @return     An appropriate weapon_type.
+ */
+static brand_type _hepliaklqana_weapon_brand(monster_type mc, int HD)
+{
+    switch (mc)
+    {
+        case MONS_ANCESTOR_HEXER:
+            return HD < 18 ?   SPWPN_DRAINING :
+                               SPWPN_ANTIMAGIC;
+        case MONS_ANCESTOR_KNIGHT:
+            return !hepliaklqana_specialization() ?   SPWPN_NORMAL :
+                   HD < 18 ?                          SPWPN_FLAMING :
+                                                      SPWPN_SPEED;
+        case MONS_ANCESTOR_BATTLEMAGE:
+            return HD < 14 ?   SPWPN_NORMAL :
+                               SPWPN_FREEZING;
+        default:
+            return SPWPN_NORMAL;
+    }
+}
+
+/**
+ * Setup an ancestor's weapon after their class is chosen, when the player
+ * levels up, or after they're resummoned (or initially created for wrath).
+ *
+ * @param[in]   ancestor      The ancestor for whom the weapon is intended.
+ * @param[out]  item          The item to be configured.
+ * @param       notify        Whether messages should be printed when something
+ *                            changes. (Weapon type or brand.)
+ */
+void upgrade_hepliaklqana_weapon(const monster &ancestor, item_def &item)
+{
+    ASSERT(mons_is_hepliaklqana_ancestor(ancestor.type));
+    if (ancestor.type == MONS_ANCESTOR)
+        return; // bare-handed!
+
+    item.base_type = OBJ_WEAPONS;
+    item.sub_type = _hepliaklqana_weapon_type(ancestor.type,
+                                              ancestor.get_experience_level());
+    item.brand = _hepliaklqana_weapon_brand(ancestor.type,
+                                            ancestor.get_experience_level());
+    item.plus = 0;
+    item.flags |= ISFLAG_KNOW_TYPE | ISFLAG_SUMMONED;
+}
+
+/**
+ * What kind of shield should an ancestor of the given HD be given?
+ *
+ * @param mc        The type of ancestor in question.
+ * @param HD        The HD (XL) of the ancestor in question.
+ * @return          An appropriate type of shield, or NUM_ARMOURS.
+ */
+static armour_type _hepliaklqana_shield_type(monster_type mc, int HD)
+{
+    if (mc != MONS_ANCESTOR_KNIGHT)
+        return NUM_ARMOURS;
+    if (HD < 14)
+        return ARM_SHIELD;
+    return ARM_LARGE_SHIELD;
+}
+
+static special_armour_type _hepliaklqana_shield_ego(int HD)
+{
+    return HD < 14 ? SPARM_NORMAL : SPARM_REFLECTION;
+}
+
+/**
+ * Setup an ancestor's weapon after their class is chosen, when the player
+ * levels up, or after they're resummoned (or initially created for wrath).
+ *
+ * @param[in]   ancestor      The ancestor for whom the weapon is intended.
+ * @param[out]  item          The item to be configured.
+ * @return                    True iff the ancestor should have a weapon.
+ */
+void upgrade_hepliaklqana_shield(const monster &ancestor, item_def &item)
+{
+    ASSERT(mons_is_hepliaklqana_ancestor(ancestor.type));
+    const int HD = ancestor.get_experience_level();
+    const armour_type shield_type = _hepliaklqana_shield_type(ancestor.type,
+                                                              HD);
+    if (shield_type == NUM_ARMOURS)
+        return; // no shield yet!
+
+    item.base_type = OBJ_ARMOUR;
+    item.sub_type = shield_type;
+    item.brand = _hepliaklqana_shield_ego(HD);
+    item.plus = 0;
+    item.flags |= ISFLAG_KNOW_TYPE | ISFLAG_SUMMONED;
+    item.quantity = 1;
 }
 
 bool vehumet_is_offering(spell_type spell)
@@ -1481,6 +1897,27 @@ bool do_god_gift(bool forced)
             }
             break;
 
+        case GOD_USKAYAW:
+            // Uskayaw's triggered abilities trigger if you set the timer to -1.
+            // We do this so that we trigger at the end of the round instead of
+            // at the time we deal damage.
+            if (you.piety == piety_breakpoint(2)
+                && you.props[USKAYAW_AUDIENCE_TIMER].get_int() == 0)
+            {
+                you.props[USKAYAW_AUDIENCE_TIMER] = -1;
+                success = true;
+            }
+            else if (you.piety == piety_breakpoint(3)
+                && you.props[USKAYAW_BOND_TIMER].get_int() == 0)
+            {
+                you.props[USKAYAW_BOND_TIMER] = -1;
+                success = true;
+            }
+            else
+                success = false;
+
+            break;
+
         case GOD_KIKUBAAQUDGHA:
         case GOD_SIF_MUNA:
         {
@@ -1665,6 +2102,8 @@ string god_name(god_type which_god, bool long_name)
     case GOD_QAZLAL:        return "Qazlal";
     case GOD_RU:            return "Ru";
     case GOD_PAKELLAS:      return "Pakellas";
+    case GOD_USKAYAW:        return "Uskayaw";
+    case GOD_HEPLIAKLQANA:  return "Hepliaklqana";
     case GOD_JIYVA: // This is handled at the beginning of the function
     case GOD_ECUMENICAL:    return "an unknown god";
     case NUM_GODS:          return "Buggy";
@@ -1962,6 +2401,12 @@ static void _gain_piety_point()
 
             you.one_time_ability_used.set(you.religion);
         }
+        if (you_worship(GOD_HEPLIAKLQANA)
+            && rank == 2 && !you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY))
+        {
+           god_speaks(you.religion,
+                      "You may now remember your ancestor's life.");
+        }
     }
 
     // Every piety level change also affects AC.
@@ -2022,7 +2467,7 @@ bool gain_piety(int original_gain, int denominator, bool should_scale_piety)
         return false;
     }
 
-    int pgn = should_scale_piety? piety_scale(original_gain) : original_gain;
+    int pgn = should_scale_piety ? piety_scale(original_gain) : original_gain;
 
     if (crawl_state.game_is_sprint() && should_scale_piety)
         pgn = sprint_modify_piety(pgn);
@@ -2118,7 +2563,7 @@ void lose_piety(int pgn)
     if (will_have_passive(passive_t::water_walk) && _need_water_walking()
         && !have_passive(passive_t::water_walk))
     {
-        fall_into_a_pool(grd(you.pos()));
+        _grant_temporary_waterwalk();
     }
     if (will_have_passive(passive_t::stat_boost)
         && chei_stat_boost(old_piety) > chei_stat_boost())
@@ -2273,7 +2718,7 @@ void excommunication(bool voluntary, god_type new_god)
     }
     // You might have lost water walking at a bad time...
     if (had_water_walk && _need_water_walking())
-        fall_into_a_pool(grd(you.pos()));
+        _grant_temporary_waterwalk();
     if (had_stat_boost)
     {
         redraw_screen();
@@ -2497,6 +2942,16 @@ void excommunication(bool voluntary, god_type new_god)
         _set_penance(old_god, 25);
         break;
 
+    case GOD_HEPLIAKLQANA:
+        add_daction(DACT_ALLY_HEPLIAKLQANA);
+        remove_all_companions(GOD_HEPLIAKLQANA);
+
+        you.exp_docked[old_god] = exp_needed(min<int>(you.max_level, 27) + 1)
+                                    - exp_needed(min<int>(you.max_level, 27));
+        you.exp_docked_total[old_god] = you.exp_docked[old_god];
+        _set_penance(old_god, 50);
+        break;
+
     default:
         _set_penance(old_god, 25);
         break;
@@ -2657,7 +3112,8 @@ bool player_can_join_god(god_type which_god)
     if (player_mutation_level(MUT_NO_LOVE)
         && (which_god == GOD_BEOGH
             ||  which_god == GOD_JIYVA
-            ||  which_god == GOD_ELYVILON))
+            ||  which_god == GOD_ELYVILON
+            ||  which_god == GOD_HEPLIAKLQANA))
     {
         return false;
     }
@@ -2707,7 +3163,7 @@ static void _god_welcome_handle_gear()
         ash_detect_portals(true);
 
     // Give a reminder to remove any disallowed equipment.
-    for (int i = EQ_MIN_ARMOUR; i < EQ_MAX_ARMOUR; i++)
+    for (int i = EQ_WEAPON; i < NUM_EQUIP; i++)
     {
         const item_def* item = you.slot_item(static_cast<equipment_type>(i));
         if (item && god_hates_item(*item))
@@ -2784,6 +3240,8 @@ void set_god_ability_slots()
             // Animate Dead doesn't have its own hotkey; it steals
             // Animate Remains'
             && power.abil != ABIL_YRED_ANIMATE_DEAD
+            // hep ident goes to G, so don't take b for it (hack alert)
+            && power.abil != ABIL_HEPLIAKLQANA_IDENTITY
             && find(begin(you.ability_letter_table),
                     end(you.ability_letter_table), power.abil)
                == end(you.ability_letter_table)
@@ -2810,6 +3268,8 @@ static void _apply_monk_bonus()
     // monks get bonus piety for first god
     if (you_worship(GOD_RU))
         you.props[RU_SACRIFICE_PROGRESS_KEY] = 9999;
+    else if (you_worship(GOD_USKAYAW))  // Gaining piety past this point does nothing
+        gain_piety(15, 1, false); // of value with this god and looks weird.
     else
         gain_piety(35, 1, false);
 }
@@ -2994,6 +3454,49 @@ static void _join_gozag()
     add_daction(DACT_GOLD_ON_TOP);
 }
 
+/**
+ * Choose an antique name for a Hepliaklqana-granted ancestor.
+ *
+ * @param female    Whether the ancestor is female or male.
+ * @return          An appropriate name; e.g. Hrodulf, Citali, Aat.
+ */
+static string _make_ancestor_name(bool female)
+{
+    const string gender_name = female ? "female" : "male";
+    const string suffix = " " + gender_name + " name";
+    const string name = getRandNameString("ancestor", suffix);
+    return name.empty() ? make_name() : name;
+}
+
+/// Setup when joining the devoted followers of Hepliaklqana.
+static void _join_hepliaklqana()
+{
+    // initial setup.
+    if (!you.props.exists(HEPLIAKLQANA_ALLY_NAME_KEY))
+    {
+        const bool female = coinflip();
+        you.props[HEPLIAKLQANA_ALLY_NAME_KEY] = _make_ancestor_name(female);
+        you.props[HEPLIAKLQANA_ALLY_GENDER_KEY] = female ? GENDER_FEMALE
+                                                         : GENDER_MALE;
+    }
+
+    // Complimentary ancestor upon joining.
+    const mgen_data mg = hepliaklqana_ancestor_gen_data();
+    delayed_monster(mg);
+    simple_god_message(make_stringf(" brings forth the memory of your ancestor,"
+                                    " %s!",
+                                    mg.mname.c_str()).c_str());
+
+    // no one will ever run into this.
+    if (you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY)
+        && you.experience_level >= HEP_SPECIALIZATION_LEVEL
+        && !hepliaklqana_specialization())
+    {
+        // TODO: deduplicate this message
+        god_speaks(you.religion, "You may now specialize your ancestor.");
+    }
+}
+
 /// Setup when joining the gelatinous groupies of Jiyva.
 static void _join_jiyva()
 {
@@ -3065,7 +3568,6 @@ static void _join_zin()
 static void _join_pakellas()
 {
     mprf(MSGCH_GOD, "You stop regenerating magic.");
-    mprf(MSGCH_GOD, "You can now gain magical power from killing.");
     pakellas_id_device_charges();
     you.attribute[ATTR_PAKELLAS_EXTRA_MP] = POT_MAGIC_MP;
 }
@@ -3088,6 +3590,7 @@ static const map<god_type, function<void ()>> on_join = {
     }},
     { GOD_GOZAG, _join_gozag },
     { GOD_JIYVA, _join_jiyva },
+    { GOD_HEPLIAKLQANA, _join_hepliaklqana },
     { GOD_LUGONU, []() {
         if (you.worshipped[GOD_LUGONU] == 0)
             gain_piety(20, 1, false);  // allow instant access to first power
@@ -3237,7 +3740,8 @@ void god_pitch(god_type which_god)
         else if (player_mutation_level(MUT_NO_LOVE)
                  && (which_god == GOD_BEOGH
                      || which_god == GOD_ELYVILON
-                     || which_god == GOD_JIYVA))
+                     || which_god == GOD_JIYVA
+                     || which_god == GOD_HEPLIAKLQANA))
         {
             simple_god_message(" does not accept worship from the loveless!",
                                which_god);
@@ -3641,6 +4145,7 @@ void handle_god_time(int /*time_delta*/)
             break;
 
         case GOD_ELYVILON:
+        case GOD_HEPLIAKLQANA:
             if (one_chance_in(50))
                 lose_piety(1);
             break;
@@ -3667,6 +4172,8 @@ void handle_god_time(int /*time_delta*/)
 
             break;
 
+        case GOD_USKAYAW:
+            // We handle Uskayaw elsewhere because this func gets called rarely
         case GOD_FEDHAS:
         case GOD_CHEIBRIADOS:
             // These gods do not lose piety over time.
@@ -3726,9 +4233,11 @@ int god_colour(god_type god) // mv - added
         return GREEN;
 
     case GOD_CHEIBRIADOS:
+    case GOD_HEPLIAKLQANA:
         return LIGHTCYAN;
 
     case GOD_DITHMENOS:
+    case GOD_USKAYAW:
         return MAGENTA;
 
     case GOD_QAZLAL:
@@ -3824,6 +4333,12 @@ colour_t god_message_altar_colour(god_type god)
 
     case GOD_PAKELLAS:
         return random_choose(LIGHTMAGENTA, LIGHTGREEN, LIGHTCYAN);
+
+    case GOD_USKAYAW:
+        return random_choose(RED, MAGENTA);
+
+    case GOD_HEPLIAKLQANA:
+        return coinflip() ? LIGHTGREEN : LIGHTBLUE;
 
     default:
         return YELLOW;
@@ -4100,6 +4615,7 @@ static void _place_delayed_monsters()
         if (mon)
         {
             if (you_worship(GOD_YREDELEMNUL)
+                || you_worship(GOD_HEPLIAKLQANA)
                 || have_passive(passive_t::convert_orcs))
             {
                 add_companion(mon);

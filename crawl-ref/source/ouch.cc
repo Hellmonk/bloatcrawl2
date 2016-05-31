@@ -824,24 +824,12 @@ static void _wizard_restore_life()
 
 static int _apply_extra_harm(int dam, mid_t source)
 {
-    bool do_extra_harm = you.extra_harm();
-
-    if (!do_extra_harm)
-    {
-        monster* damager = monster_by_mid(source);
-        // Don't check for monster amulet if there source isn't a monster
-        if (!damager)
-            return dam;
-        else
-            do_extra_harm = damager->extra_harm();
-    }
-
-    if (do_extra_harm)
-    {
-        if (you.extra_harm())
-            did_god_conduct(DID_UNHOLY, 1); // The amulet is unholy.
-        return dam * 5 / 4;
-    }
+    monster* damager = monster_by_mid(source);
+    // Don't check for monster amulet if there source isn't a monster
+    if (damager && damager->extra_harm())
+        return dam * 13 / 10; // +30% damage when the opponent has harm
+    else if (you.extra_harm())
+        return dam * 6 / 5; // +20% damage when you have harm
 
     return dam;
 }
@@ -995,8 +983,6 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
     if (dam != INSTANT_DEATH)
     {
-        you.maybe_degrade_bone_armour(BONE_ARMOUR_HIT_RATIO);
-
         if (you.spirit_shield() && death_type != KILLED_BY_POISON
             && !(aux && strstr(aux, "flay_damage")))
         {

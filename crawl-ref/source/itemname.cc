@@ -912,9 +912,9 @@ static const char* amulet_secondary_string(uint32_t s)
 static const char* amulet_primary_string(uint32_t p)
 {
     static const char* const primary_strings[] = {
-        "zirconium", "sapphire", "golden", "emerald", "garnet", "bronze",
-        "brass", "copper", "ruby", "ivory", "bone", "platinum", "jade",
-        "fluorescent", "crystal", "cameo", "pearl", "blue", "peridot",
+        "sapphire", "zirconium", "golden", "emerald", "garnet", "bronze",
+        "brass", "copper", "ruby", "citrine", "bone", "platinum", "jade",
+        "fluorescent", "amethyst", "cameo", "pearl", "blue", "peridot",
         "jasper", "diamond", "malachite", "steel", "cabochon", "silver",
         "soapstone", "lapis lazuli", "filigree", "beryl"
     };
@@ -993,8 +993,8 @@ static string misc_type_name(int type, bool known)
 #if TAG_MAJOR_VERSION == 34
     case MISC_BOTTLED_EFREET:            return "empty flask";
     case MISC_RUNE_OF_ZOT:               return "obsolete rune of zot";
+    case MISC_STONE_OF_TREMORS:          return "removed stone of tremors";
 #endif
-    case MISC_STONE_OF_TREMORS:          return "stone of tremors";
     case MISC_QUAD_DAMAGE:               return "quad damage";
     case MISC_PHIAL_OF_FLOODS:           return "phial of floods";
     case MISC_SACK_OF_SPIDERS:           return "sack of spiders";
@@ -2050,6 +2050,9 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
             if (know_type && know_pluses && !basename && !qualname && !dbname)
                 buff << make_stringf("%+d ", special);
 
+            if (!dbname && props.exists(PAKELLAS_SUPERCHARGE_KEY))
+                buff << "supercharged ";
+
             if (item_typ == ROD_LIGHTNING)
                 buff << "lightning rod";
             else if (item_typ == ROD_IRON)
@@ -2057,9 +2060,6 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
             else
                 buff << "rod of " << rod_type_name(item_typ);
         }
-
-        if (know_curse && cursed() && terse)
-            buff << " (curse)";
         break;
 
     case OBJ_STAVES:

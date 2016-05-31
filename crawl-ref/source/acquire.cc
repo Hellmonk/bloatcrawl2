@@ -668,9 +668,9 @@ static int _acquirement_misc_subtype(bool /*divine*/, int & /*quantity*/)
     const vector<pair<int, int> > choices =
     {
         // Decks have lowest weight.
-        {MISC_DECK_OF_WONDERS,                             1 },
-        {MISC_DECK_OF_CHANGES,                             2 },
-        {MISC_DECK_OF_DEFENCE,                             2 },
+        {MISC_DECK_OF_ESCAPE,                              4 },
+        {MISC_DECK_OF_DESTRUCTION,                         4 },
+        {MISC_DECK_OF_WAR,                                 4 },
         // These have charges, so give them a constant weight.
         {MISC_BOX_OF_BEASTS,
             (player_mutation_level(MUT_NO_LOVE) ?     0 :  7)},
@@ -680,15 +680,13 @@ static int _acquirement_misc_subtype(bool /*divine*/, int & /*quantity*/)
             (player_mutation_level(MUT_NO_LOVE) ?     0 :  7)},
         // The player never needs more than one.
         {MISC_DISC_OF_STORMS,
-            (you.seen_misc[MISC_DISC_OF_STORMS] ?     0 :  7)},
+            (you.seen_misc[MISC_DISC_OF_STORMS] ?     0 : 13)},
         {MISC_LAMP_OF_FIRE,
-            (you.seen_misc[MISC_LAMP_OF_FIRE] ?       0 : 15)},
+            (you.seen_misc[MISC_LAMP_OF_FIRE] ?       0 : 18)},
         {MISC_PHIAL_OF_FLOODS,
-            (you.seen_misc[MISC_PHIAL_OF_FLOODS] ?    0 : 15)},
+            (you.seen_misc[MISC_PHIAL_OF_FLOODS] ?    0 : 18)},
         {MISC_FAN_OF_GALES,
-            (you.seen_misc[MISC_FAN_OF_GALES] ?       0 : 15)},
-        {MISC_STONE_OF_TREMORS,
-            (you.seen_misc[MISC_STONE_OF_TREMORS] ?   0 : 15)}
+            (you.seen_misc[MISC_FAN_OF_GALES] ?       0 : 18)},
     };
 
     int result = *random_choose_weighted(choices);

@@ -4181,6 +4181,12 @@ void mons_list::get_zombie_type(string s, mons_spec &spec) const
     trim_string(s);
 
     mons_spec base_monster = mons_by_name(s);
+    if (mons_class_flag(base_monster.type, M_CANT_SPAWN))
+    {
+        spec.type = MONS_PROGRAM_BUG;
+        return;
+    }
+
     if (base_monster.type < 0)
         base_monster.type = MONS_PROGRAM_BUG;
 
@@ -5181,8 +5187,6 @@ bool item_list::parse_single_spec(item_spec& result, string s)
         result.props["ident"].get_int() = id;
     }
 
-    string unrand_str = strip_tag_prefix(s, "unrand:");
-
     if (strip_tag(s, "good_item"))
         result.level = ISPEC_GOOD_ITEM;
     else
@@ -5434,6 +5438,13 @@ bool item_list::parse_single_spec(item_spec& result, string s)
         return parse_corpse_spec(result, s);
     }
 
+    const int unrand_id = get_unrandart_num(s.c_str());
+    if (unrand_id)
+    {
+        result.ego = -unrand_id; // lol
+        return true;
+    }
+
     // Check for "any objclass"
     if (starts_with(s, "any "))
         parse_random_by_class(s.substr(4), result);
@@ -5445,18 +5456,6 @@ bool item_list::parse_single_spec(item_spec& result, string s)
 
     if (!error.empty())
         return false;
-
-    if (!unrand_str.empty())
-    {
-        result.ego = get_unrandart_num(unrand_str.c_str());
-        if (result.ego == SPWPN_NORMAL)
-        {
-            error = make_stringf("Unknown unrand art: %s", unrand_str.c_str());
-            return false;
-        }
-        result.ego = -result.ego;
-        return true;
-    }
 
     if (ego_str.empty())
         return true;

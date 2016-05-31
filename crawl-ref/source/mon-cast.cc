@@ -517,6 +517,7 @@ bolt mons_spell_beam(monster* mons, spell_type spell_cast, int power,
     case SPELL_SHOCK:
     case SPELL_LIGHTNING_BOLT:
     case SPELL_FIREBALL:
+    case SPELL_ICEBLAST:
     case SPELL_LEHUDIBS_CRYSTAL_SPEAR:
     case SPELL_BOLT_OF_DRAINING:
     case SPELL_ISKENDERUNS_MYSTIC_BLAST:
@@ -1575,7 +1576,7 @@ static bool _battle_cry(const monster& chief, bool check_only = false)
     int affected = 0;
 
     vector<monster* > seen_affected;
-    for (monster_near_iterator mi(&chief, LOS_NO_TRANS); mi; ++mi)
+    for (monster_near_iterator mi(chief.pos(), LOS_NO_TRANS); mi; ++mi)
     {
         const monster *mons = *mi;
         // can't buff yourself
@@ -1656,7 +1657,7 @@ static bool _mons_call_of_chaos(const monster& mon, bool check_only = false)
     int affected = 0;
 
     vector<monster* > seen_affected;
-    for (monster_near_iterator mi(&mon, LOS_NO_TRANS); mi; ++mi)
+    for (monster_near_iterator mi(mon.pos(), LOS_NO_TRANS); mi; ++mi)
     {
         const monster *mons = *mi;
         // can't buff yourself
@@ -2098,7 +2099,7 @@ static bool _incite_monsters(const monster* mon, bool actual)
     // Only things both in LOS of the inciter and within radius 3.
     const int radius = 3;
     int goaded = 0;
-    for (monster_near_iterator mi(mon, LOS_NO_TRANS); mi; ++mi)
+    for (monster_near_iterator mi(mon->pos(), LOS_NO_TRANS); mi; ++mi)
     {
         if (*mi == mon || !mi->needs_berserk())
             continue;
@@ -2697,7 +2698,7 @@ static bool _trace_los(monster* agent, bool (*vulnerable)(actor*))
     tracer.foe_ratio = 0;
     for (actor_near_iterator ai(agent, LOS_NO_TRANS); ai; ++ai)
     {
-        if (agent == *ai || !agent->can_see(**ai) || !vulnerable(*ai))
+        if (agent == *ai || !vulnerable(*ai))
             continue;
 
         if (mons_aligned(agent, *ai))
@@ -2750,12 +2751,8 @@ static void _cast_black_mark(monster* agent)
 {
     for (actor_near_iterator ai(agent, LOS_NO_TRANS); ai; ++ai)
     {
-        if (!ai->visible_to(agent)
-            || ai->is_player()
-            || !mons_aligned(*ai, agent))
-        {
+        if (ai->is_player() || !mons_aligned(*ai, agent))
             continue;
-        }
         monster* mon = ai->as_monster();
         if (!mon->has_ench(ENCH_BLACK_MARK) && !mons_is_firewood(mon))
         {
@@ -2770,12 +2767,8 @@ void aura_of_brilliance(monster* agent)
     bool did_something = false;
     for (actor_near_iterator ai(agent, LOS_NO_TRANS); ai; ++ai)
     {
-        if (!ai->visible_to(agent)
-            || ai->is_player()
-            || !mons_aligned(*ai, agent))
-        {
+        if (ai->is_player() || !mons_aligned(*ai, agent))
             continue;
-        }
         monster* mon = ai->as_monster();
         if (_valid_aura_of_brilliance_ally(agent, mon))
         {
@@ -2847,7 +2840,7 @@ bool mons_should_cloud_cone(monster* agent, int power, const coord_def pos)
     tracer.target = pos;
     for (actor_near_iterator ai(agent, LOS_NO_TRANS); ai; ++ai)
     {
-        if (hitfunc.is_affected(ai->pos()) == AFF_NO || !agent->can_see(**ai))
+        if (hitfunc.is_affected(ai->pos()) == AFF_NO)
             continue;
 
         if (mons_aligned(agent, *ai))
@@ -4530,7 +4523,6 @@ static const pop_entry _planerend_lair[] =
 static const pop_entry _planerend_snake[] =
 { // Snake enemies
   {  1,   1,   40, FLAT, MONS_ANACONDA },
-  {  1,   1,   60, FLAT, MONS_SALAMANDER_STORMCALLER },
   {  1,   1,  100, FLAT, MONS_GUARDIAN_SERPENT },
   {  1,   1,  100, FLAT, MONS_GREATER_NAGA },
   { 0,0,0,FLAT,MONS_0 }
@@ -6354,8 +6346,6 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         return;
 
     case SPELL_FIRE_STORM:
-        if (mons->type == MONS_SALAMANDER_STORMCALLER && !_spell_charged(mons))
-            return;
         if (orig_noise)
             mons_cast_noise(mons, pbolt, spell_cast, slot_flags);
         break;
@@ -7432,9 +7422,11 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
     const bool friendly = mon->friendly();
 
     // Keep friendly summoners from spamming summons constantly.
+    // ditto, for non-summoned pals with haste
     if (friendly
         && !foe
-        && spell_typematch(monspell, SPTYP_SUMMONING))
+        && (spell_typematch(monspell, SPTYP_SUMMONING)
+            || !mon->is_summoned() && monspell == SPELL_HASTE))
     {
         return true;
     }
@@ -7987,7 +7979,7 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
         if (!foe)
             return true;
 
-        for (actor_near_iterator ai(foe, LOS_SOLID); ai; ++ai)
+        for (actor_near_iterator ai(foe->pos(), LOS_SOLID); ai; ++ai)
             if (*ai != mon && *ai != foe && !ai->is_stationary()
                 && mon->can_see(**ai))
             {

@@ -35,6 +35,8 @@
 #define REGEN_AMULET_ACTIVE "regen_amulet_active"
 #define MANA_REGEN_AMULET_ACTIVE "mana_regen_amulet_active"
 #define SAP_MAGIC_KEY "sap_magic_amount"
+#define TEMP_WATERWALK_KEY "temp_waterwalk"
+#define EMERGENCY_FLIGHT_KEY "emergency_flight"
 
 // display/messaging breakpoints for penalties from Ru's MUT_HORROR
 #define HORROR_LVL_EXTREME  3
@@ -492,6 +494,7 @@ public:
     bool in_lava() const;
     bool in_liquid() const;
     bool can_swim(bool permanently = false) const;
+    bool can_water_walk() const;
     int visible_igrd(const coord_def&) const;
     bool can_cling_to_walls() const override;
     bool is_banished() const override;
@@ -559,7 +562,7 @@ public:
         override;
 
     int base_ac_from(const item_def &armour, int scale = 1) const;
-    void maybe_degrade_bone_armour(int mult, int trials = 1);
+    void maybe_degrade_bone_armour(int trials);
 
     int inaccuracy() const override;
 
@@ -954,6 +957,7 @@ int player_hunger_rate(bool temp = true);
 int calc_hunger(int food_cost);
 
 int player_icemail_armour_class();
+int sanguine_armour_bonus();
 
 int player_wizardry(spell_type spell);
 

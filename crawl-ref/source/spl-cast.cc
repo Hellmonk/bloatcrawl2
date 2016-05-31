@@ -587,16 +587,16 @@ static int _spell_enhancement(spell_type spell)
         enhanced += player_spec_death();
 
     if (typeflags & SPTYP_FIRE)
-        enhanced += player_spec_fire() - player_spec_cold();
+        enhanced += player_spec_fire();
 
     if (typeflags & SPTYP_ICE)
-        enhanced += player_spec_cold() - player_spec_fire();
+        enhanced += player_spec_cold();
 
     if (typeflags & SPTYP_EARTH)
-        enhanced += player_spec_earth() - player_spec_air();
+        enhanced += player_spec_earth();
 
     if (typeflags & SPTYP_AIR)
-        enhanced += player_spec_air() - player_spec_earth();
+        enhanced += player_spec_air();
 
     if (you.attribute[ATTR_SHADOWS])
         enhanced -= 2;
@@ -1469,11 +1469,8 @@ spret_type your_spells(spell_type spell, int powc,
         args.top_prompt = title;
         if (testbits(flags, SPFLAG_NOT_SELF))
             args.self = CONFIRM_CANCEL;
-        if (testbits(flags, SPFLAG_HELPFUL)
-            || testbits(flags, SPFLAG_ALLOW_SELF))
-        {
+        else
             args.self = CONFIRM_NONE;
-        }
         args.get_desc_func = additional_desc;
         
         msgwin_set_temporary(true);
@@ -1505,8 +1502,6 @@ spret_type your_spells(spell_type spell, int powc,
         }
     }
 
-    if (evoked && !you_worship(GOD_PAKELLAS) && you.penance[GOD_PAKELLAS])
-        pakellas_evoke_backfire(spell);
     if (evoked && !pakellas_device_surge())
         return SPRET_FAIL;
 

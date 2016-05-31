@@ -27,6 +27,7 @@
 #include "exercise.h"
 #include "fineff.h"
 #include "food.h"
+#include "godabil.h" // for USKAYAW_DID_DANCE_ACTION
 #include "godconduct.h"
 #include "goditem.h"
 #include "godpassive.h" // passive_t::convert_orcs
@@ -1309,8 +1310,6 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
 
     count_action(CACT_MELEE, -1, atk); // aux_attack subtype/auxtype
 
-    aux_damage  = player_aux_stat_modify_damage(aux_damage);
-
     aux_damage  = random2(aux_damage);
 
     aux_damage  = player_apply_fighting_skill(aux_damage, true);
@@ -1359,11 +1358,18 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
             const bool spell_user = defender->antimagic_susceptible();
 
             antimagic_affects_defender(damage_done * 32);
-            mprf("You drain %s %s.",
-                 defender->as_monster()->pronoun(PRONOUN_POSSESSIVE).c_str(),
-                 spell_user ? "magic" : "power");
 
-            if (get_mp() != get_mp_max()
+            // MP drain suppressed under Pakellas, but antimagic still applies.
+            if (!have_passive(passive_t::no_mp_regen) || spell_user)
+            {
+                mprf("You %s %s %s.",
+                     have_passive(passive_t::no_mp_regen) ? "disrupt" : "drain",
+                     defender->as_monster()->pronoun(PRONOUN_POSSESSIVE).c_str(),
+                     spell_user ? "magic" : "power");
+            }
+
+            if (!have_passive(passive_t::no_mp_regen)
+                && get_mp() != get_mp_max()
                 && !defender->as_monster()->is_summoned()
                 && !mons_is_firewood(defender->as_monster()))
             {
@@ -1449,21 +1455,6 @@ void melee_attack::player_warn_miss()
     // Upset only non-sleeping non-fleeing monsters if we missed.
     if (!defender->asleep() && !mons_is_fleeing(defender->as_monster()))
         behaviour_event(defender->as_monster(), ME_WHACK, attacker);
-}
-
-int melee_attack::player_aux_stat_modify_damage(int damage)
-{
-    int dammod = 20;
-
-    if (you.strength() > 10)
-        dammod += random2(you.strength() - 9);
-    else if (you.strength() < 10)
-        dammod -= random2(11 - you.strength());
-
-    damage *= dammod;
-    damage /= 20;
-
-    return damage;
 }
 
 // A couple additive modifiers that should be applied to both unarmed and
@@ -1776,6 +1767,8 @@ void melee_attack::player_exercise_combat_skills()
     // Slow down the practice of low-damage weapons.
     if (x_chance_in_y(damage, 20))
         practise(EX_WILL_HIT, wpn_skill);
+
+    you.props[USKAYAW_DID_DANCE_ACTION] = true;
 }
 
 /*
@@ -3277,7 +3270,7 @@ void melee_attack::do_spines()
 
         if (mut && attacker->alive() && coinflip())
         {
-            int dmg = random_range(mut, 3 + ceil(mut * effective_xl() / 4));
+            int dmg = random_range(mut, you.experience_level + mut);
             int hurt = attacker->apply_ac(dmg);
 
             dprf(DIAG_COMBAT, "Spiny: dmg = %d hurt = %d", dmg, hurt);
@@ -3401,7 +3394,6 @@ void melee_attack::do_minotaur_retaliation()
     {
         // Use the same damage formula as a regular headbutt.
         int dmg = 5 + mut * 3;
-        dmg = player_aux_stat_modify_damage(dmg);
         dmg = random2(dmg);
         dmg = player_apply_fighting_skill(dmg, true);
         dmg = player_apply_misc_modifiers(dmg);
@@ -3641,6 +3633,9 @@ int melee_attack::apply_damage_modifiers(int damage, int damage_max)
     // Berserk/mighted monsters get bonus damage.
     if (as_mon->has_ench(ENCH_MIGHT) || as_mon->has_ench(ENCH_BERSERK))
         damage = damage * 3 / 2;
+
+    if (as_mon->has_ench(ENCH_IDEALISED))
+        damage *= 2; // !
 
     if (as_mon->has_ench(ENCH_WEAK))
         damage = damage * 2 / 3;

@@ -2243,10 +2243,12 @@ void fire_tracer(const monster* mons, bolt &pbolt, bool explode_only)
     {
         pbolt.foe_ratio     = 80;        // default - see mons_should_fire()
 
+        if (mons_is_hepliaklqana_ancestor(mons->type))
+            pbolt.foe_ratio = 100; // do not harm the player!
         // Foe ratio for summoning greater demons & undead -- they may be
         // summoned, but they're hostile and would love nothing better
         // than to nuke the player and his minions.
-        if (mons_att_wont_attack(pbolt.attitude)
+        else if (mons_att_wont_attack(pbolt.attitude)
             && !mons_att_wont_attack(mons->attitude))
         {
             pbolt.foe_ratio = 25;
@@ -2446,7 +2448,8 @@ static void _malign_offering_effect(actor* victim, const actor* agent, int damag
     // or invisibility.
     for (actor_near_iterator ai(c, LOS_NO_TRANS); ai; ++ai)
     {
-        if (mons_aligned(agent, *ai) && !(ai->holiness() & MH_NONLIVING))
+        if (mons_aligned(agent, *ai) && !(ai->holiness() & MH_NONLIVING)
+            && *ai != victim)
         {
             if (ai->heal(max(1, damage * 2 / 3)) && you.can_see(**ai))
             {
@@ -2823,7 +2826,8 @@ bool bolt::can_burn_trees() const
            || origin_spell == SPELL_BOLT_OF_FIRE
            || origin_spell == SPELL_BOLT_OF_MAGMA
            || origin_spell == SPELL_FIREBALL
-           || origin_spell == SPELL_EXPLOSIVE_BOLT;
+           || origin_spell == SPELL_EXPLOSIVE_BOLT
+           || origin_spell == SPELL_INNER_FLAME;
 }
 
 bool bolt::can_affect_wall(dungeon_feature_type wall) const
@@ -3284,8 +3288,7 @@ void bolt::tracer_affect_player()
     // Check whether thrower can see player, unless thrower == player.
     if (YOU_KILL(thrower))
     {
-        // Don't ask if we're aiming at ourselves.
-        if (!aimed_at_feet && !dont_stop_player && !harmless_to_player())
+        if (!dont_stop_player && !harmless_to_player())
         {
             string prompt = make_stringf("That %s is likely to hit you. Continue anyway?",
                                          item ? name.c_str() : "beam");
@@ -3294,6 +3297,7 @@ void bolt::tracer_affect_player()
             {
                 friend_info.count++;
                 friend_info.power += effective_xl();
+                // Don't ask about aiming at ourself twice.
                 dont_stop_player = true;
             }
             else
@@ -3370,11 +3374,12 @@ bool bolt::misses_player(int hurted)
 
     bool train_shields_more = false;
 
+    const int SH = player_shield_class();
     if ((player_omnireflects() && is_omnireflectable()
          || is_blockable())
         && you.shielded()
         && !aimed_at_feet
-        && player_shield_class() > 0)
+        && SH > 0)
     {
         // We use the original to-hit here.
         // (so that effects increasing dodge chance don't increase block...?)
@@ -3385,8 +3390,7 @@ bool bolt::misses_player(int hurted)
         // 50% chance of blocking ench-type effects at 20 displayed sh
         const bool omnireflected
             = hit == AUTOMATIC_HIT
-              && x_chance_in_y(player_shield_class(),
-                               player_shield_class() + 40);
+              && x_chance_in_y(SH, omnireflect_chance_denom(SH));
 
         dprf(DIAG_BEAM, "Beamshield: hit: %d, block %d", testhit, block);
         if ((testhit < block && hit != AUTOMATIC_HIT) || omnireflected)
@@ -3427,7 +3431,6 @@ bool bolt::misses_player(int hurted)
                 finish_beam();
             }
             you.shield_block_succeeded(agent());
-            hit_shield(&you);
             if (!penet)
                 return true;
         }
@@ -4620,6 +4623,9 @@ void bolt::monster_post_hit(monster* mon, int dmg)
             mon->put_to_sleep(agent(), 0);
     }
 
+    if (YOU_KILL(thrower) && !mon->wont_attack())
+        you.pet_target = mon->mindex();
+
     // Sticky flame.
     if (origin_spell == SPELL_STICKY_FLAME
         || origin_spell == SPELL_STICKY_FLAME_RANGE
@@ -4787,16 +4793,6 @@ bool bolt::god_cares() const
     return effect_known || effect_wanton;
 }
 
-/** Apply effects of this beam to a blocker.
- *
- *  @param blocker the actor that just blocked.
- */
-void bolt::hit_shield(actor* blocker) const
-{
-    if (blocker->is_player())
-        you.maybe_degrade_bone_armour(BONE_ARMOUR_HIT_RATIO);
-}
-
 // Return true if the block succeeded (including reflections.)
 bool bolt::attempt_block(monster* mon)
 {
@@ -4855,7 +4851,6 @@ bool bolt::attempt_block(monster* mon)
                 finish_beam();
             }
 
-            hit_shield(mon);
             mon->shield_block_succeeded(agent());
         }
     }
@@ -5412,8 +5407,13 @@ mon_resist_type bolt::try_enchant_monster(monster* mon, int &res_margin)
     // Early out if the enchantment is meaningless.
     if (!ench_flavour_affects_monster(flavour, mon))
         return MON_UNAFFECTED;
-    // Check magic resistance. (virulence is special-cased)
-    if (has_saving_throw() && flavour != BEAM_VIRULENCE)
+
+    // Virulence and irresistible confusion cannot be resisted w/ MR.
+    bool irresistible = flavour == BEAM_IRRESISTIBLE_CONFUSION
+                        || flavour == BEAM_VIRULENCE;
+
+    // Check magic resistance.
+    if (has_saving_throw() && !irresistible)
     {
         if (mons_immune_magic(mon))
             return MON_UNAFFECTED;
@@ -5645,20 +5645,29 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
 
         case BEAM_SPORE:
         case BEAM_CONFUSION:
+        case BEAM_IRRESISTIBLE_CONFUSION:
             if (mon->check_clarity(false))
             {
                 if (you.can_see(*mon))
                     obvious_effect = true;
                 return MON_AFFECTED;
             }
-
-            if (mon->add_ench(mon_enchant(ENCH_CONFUSION, 0, agent(),
-                                          ench_power * BASELINE_DELAY)))
             {
-                // FIXME: Put in an exception for things you won't notice
-                // becoming confused.
-                if (simple_monster_message(mon, " appears confused."))
-                    obvious_effect = true;
+                // irresistible confusion has a shorter duration and is weaker
+                // against strong monsters
+                int dur = ench_power;
+                if (flavour == BEAM_IRRESISTIBLE_CONFUSION)
+                    dur = max(10, dur - mon->get_hit_dice());
+                else
+                    dur *= BASELINE_DELAY; // regular confusion is 10x longer
+
+                if (mon->add_ench(mon_enchant(ENCH_CONFUSION, 0, agent(), dur)))
+                {
+                    // FIXME: Put in an exception for things you won't notice
+                    // becoming confused.
+                    if (simple_monster_message(mon, " appears confused."))
+                        obvious_effect = true;
+                }
             }
             return MON_AFFECTED;
 
@@ -5932,7 +5941,7 @@ int bolt::range_used_on_hit() const
     // Non-beams can only affect one thing (player/monster).
     if (!pierce)
         used = BEAM_STOP;
-    else if (is_enchantment())
+    else if (is_enchantment() && name != "line pass")
         used = (flavour == BEAM_DIGGING ? 0 : BEAM_STOP);
         // Hellfire stops for nobody!
     else if (flavour == BEAM_HELLFIRE)
@@ -5971,11 +5980,11 @@ struct explosion_sfx
 // A map from origin_spells to special explosion info for each.
 const map<spell_type, explosion_sfx> spell_explosions = {
     { SPELL_HURL_HELLFIRE, {
-                                "The hellfire unfurls!",
+                                "The sphere of hellfire explodes!",
                                 "the wailing of the damned",
                             } },
     { SPELL_CALL_DOWN_HELLFIRE, {
-                                "The hellfire unfurls!",
+                                "The sphere of hellfire explodes!",
                                 "the wailing of the damned",
                             } },
     { SPELL_FIREBALL, {
@@ -6620,7 +6629,7 @@ static string _beam_type_name(beam_type type)
         case BEAM_MIASMA:                return "miasma";
         case BEAM_SPORE:                 return "spores";
         case BEAM_POISON_ARROW:          return "poison arrow";
-        case BEAM_HELLFIRE:             return "hellfire";
+        case BEAM_HELLFIRE:              return "hellfire";
         case BEAM_STICKY_FLAME:          return "sticky fire";
         case BEAM_STEAM:                 return "steam";
         case BEAM_ENERGY:                return "energy";
@@ -6681,6 +6690,8 @@ static string _beam_type_name(beam_type type)
         case BEAM_RESISTANCE:            return "resistance";
         case BEAM_UNRAVELLING:           return "unravelling";
         case BEAM_UNRAVELLED_MAGIC:      return "unravelled magic";
+        case BEAM_SHARED_PAIN:           return "shared pain";
+        case BEAM_IRRESISTIBLE_CONFUSION:return "confusion";
 
         case NUM_BEAMS:                  die("invalid beam type");
     }
@@ -6769,4 +6780,19 @@ bool shoot_through_monster(const bolt& beam, const monster* victim)
               && beam.origin_spell != SPELL_CHAIN_LIGHTNING
               && (mons_atts_aligned(victim->attitude, origin_attitude)
                   || victim->neutral());
+}
+
+/**
+ * Given some shield value, what is the chance that omnireflect will activate
+ * on an AUTOMATIC_HIT attack?
+ *
+ * E.g., if 40 is returned, there is a SH in 40 chance of a given attack being
+ * reflected.
+ *
+ * @param SH        The SH (shield) value of the omnireflect user.
+ * @return          A denominator to the chance of omnireflect activating.
+ */
+int omnireflect_chance_denom(int SH)
+{
+    return SH + 40;
 }

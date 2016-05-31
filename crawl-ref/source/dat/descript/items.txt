@@ -25,9 +25,10 @@ be divided between the wearer's reserves of health and magic.
 %%%%
 amulet of harm
 
-An unholy amulet containing a vicious spirit that increases damage dealt to and
-by its wearer by one fourth. Removing the amulet will cause the spirit to drain
-the wearer.
+An amulet created to amplify all damage dealt by the wearer. As an unfortunate
+side effect, it also amplifies all damage dealt to the wearer, albeit to a
+lesser degree. When the effects of the amulet are severed by removing it, the
+magical backlash significantly drains the wearer.
 %%%%
 amulet of inaccuracy
 
@@ -367,16 +368,6 @@ decaying skeleton
 
 A decaying skeleton.
 %%%%
-deck of changes
-
-A deck of magical cards which induce changes in the user's environment or in
-the user themself.
-%%%%
-deck of defence
-
-A deck of magical cards, most of which defend the user from harm in various
-ways.
-%%%%
 deck of destruction
 
 A deck of magical cards, most of which hurl death and destruction at one's foes
@@ -395,18 +386,9 @@ deck of punishment
 
 A deck of magical cards which wreak havoc on the user.
 %%%%
-deck of summoning
-
-A deck of magical cards, depicting a range of weird and wondrous creatures.
-%%%%
 deck of war
 
 A deck of magical cards which are useful before and during battle.
-%%%%
-deck of wonders
-
-A deck of highly mysterious and magical cards, which can alter the user's
-physical and mental condition, for better or worse.
 %%%%
 demon blade
 
@@ -460,8 +442,7 @@ A long single-edged sword with a slightly curved blade.
 fan of gales
 
 An enchanted fan inhabited by benevolent air spirits. Swinging the fan
-unleashes a blast of wind around the bearer and sets the spirits free to sweep
-away the bearer's enemies.
+unleashes a powerful blast of wind around the bearer.
 %%%%
 fen folio
 
@@ -615,7 +596,7 @@ half-moon blades at both ends.
 lamp of fire
 
 A magical lamp inhabited by benevolent fire spirits. Unlatching the case sets
-the spirits free to dance about in a blaze upon the bearer's enemies.
+the spirits free to trail clouds of searing flame around the target.
 %%%%
 large rock
 
@@ -741,7 +722,7 @@ weaker than the creature it mirrors.
 phial of floods
 
 An enchanted vessel brimming over with elemental water. Removing the stopper
-unleashes a torrent of water from the phial and sets free the water spirits
+unleashes a torrent of water from the phial and sets free the water elementals
 that dwell within it.
 %%%%
 plate armour
@@ -899,7 +880,7 @@ ring of fire
 
 A ring that brings its wearer more in contact with the powers of fire. It
 grants resistance to heat and enhances fire magic, but causes vulnerability to
-cold and weakens ice magic.
+cold.
 %%%%
 ring of flight
 
@@ -909,8 +890,7 @@ airborne, making it ill-suited for longer trips above deadly liquid.
 ring of ice
 
 A ring that brings its wearer more in contact with the powers of ice. It grants
-resistance to cold and enhances ice magic, but causes vulnerability to heat and
-weakens fire magic.
+resistance to cold and enhances ice magic, but causes vulnerability to heat.
 %%%%
 ring of intelligence
 
@@ -1199,17 +1179,15 @@ fastened on one end.
 %%%%
 staff of air
 
-A staff that increases the power of air spells cast by its wielder, but
-decreases that of earth spells. It insulates the wielder from electricity. If
-the wielder is skilled in Evocations and Air Magic, they can shock those struck
-by it.
+A staff that increases the power of air spells cast by its wielder, and
+insulates them from electricity. If the wielder is skilled in Evocations and
+Air Magic, they can shock those struck by it.
 %%%%
 staff of cold
 
-A staff that increases the power of ice spells cast by its wielder, but
-decreases that of fire spells. It protects the wielder from the effects of
-cold. If the wielder is skilled in Evocations and Ice Magic, they can freeze
-those struck by it.
+A staff that increases the power of ice spells cast by its wielder, and
+protects them from the effects of cold. If the wielder is skilled in Evocations
+and Ice Magic, they can freeze those struck by it.
 %%%%
 staff of conjuration
 
@@ -1223,9 +1201,9 @@ Necromancy, they can inflict great pain on those living souls they strike.
 %%%%
 staff of earth
 
-A staff that increases the power of earth spells cast by its wielder, but
-decreases that of air spells. If the wielder is skilled in Evocations and Earth
-magic, they can crush those struck by it.
+A staff that increases the power of earth spells cast by its wielder. If the
+wielder is skilled in Evocations and Earth magic, they can crush those struck
+by it.
 %%%%
 staff of energy
 
@@ -1235,10 +1213,9 @@ energy to restore their reserves of magic.
 %%%%
 staff of fire
 
-A staff that increases the power of fire spells cast by its wielder, but
-decreases that of cold spells. It protects the wielder from the effects of
-fire. If the wielder is skilled in Evocations and Fire Magic, they can burn
-those struck by it.
+A staff that increases the power of fire spells cast by its wielder, and
+protects them from the effects of fire. If the wielder is skilled in Evocations
+and Fire Magic, they can burn those struck by it.
 %%%%
 staff of poison
 
@@ -1275,14 +1252,6 @@ stone
 
 A small chunk of dense but otherwise unremarkable natural mineral. It can be
 thrown by hand or launched with a sling.
-%%%%
-stone of tremors
-
-A polished stone inhabited by benevolent earth spirits. Raising it aloft will
-send powerful shockwaves through the dungeon as the spirits seek solid form
-within its rock. Those creatures standing near to walls will be pelted with
-falling rubble as the rocky surface heaves and crumbles, while others may be
-swallowed up by cracks in the earth itself.
 %%%%
 shadow dragon armour
 

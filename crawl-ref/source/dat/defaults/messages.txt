@@ -86,6 +86,7 @@ force_more_message += Your scales start
 force_more_message += You fall through a shaft
 force_more_message += You fall into the water!
 force_more_message += You fall into the lava!
+force_more_message += You focus on prolonging your flight
 force_more_message += Marking area around .* as unsafe
 force_more_message += breaks free of your control
 force_more_message += doesn't seem very happy
@@ -112,6 +113,12 @@ force_more_message += press .* to convert to Beogh
 force_more_message += welcomes you( back)?!
 force_more_message += You have lost your religion
 
+# Dangerous weapons
+force_more_message += is wielding.*(distortion|chaos)
+# dancing weapons require special handling...
+force_more_message += there is a.*(distortion|chaos)
+force_more_message += of (distortion|chaos) comes into view.
+
 # Banishment
 force_more_message += You are cast into the Abyss
 force_more_message += You are cast deeper into the Abyss
@@ -135,6 +142,8 @@ force_more_message += With a loud hiss the gate opens wide
 force_more_message += grants you a gift
 force_more_message += offers you knowledge of
 force_more_message += believes you are ready to make a new sacrifice
+force_more_message += may now remember your ancestor
+force_more_message += may now specialize your ancestor
 
 # Show passwall message while still in the starting position
 force_more_message += You finish merging with the rock

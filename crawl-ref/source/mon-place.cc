@@ -1207,7 +1207,7 @@ monster* place_monster(mgen_data mg, bool force_pos, bool dont_place, bool first
 
 monster* get_free_monster()
 {
-    for (auto &mons : menv)
+    for (auto &mons : menv_real)
         if (mons.type == MONS_NO_MONSTER)
         {
             mons.reset();
@@ -1553,6 +1553,15 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         mon->add_ench(mon_enchant(ENCH_TORNADO, 0, 0, INFINITE_DURATION));
     }
 
+    // this MUST follow hd initialization!
+    if (mons_is_hepliaklqana_ancestor(mon->type))
+    {
+        set_ancestor_spells(*mon);
+        if (mg.props.exists(MON_GENDER_KEY)) // move this out?
+            mon->props[MON_GENDER_KEY] = mg.props[MON_GENDER_KEY].get_int();
+        mon->props["dbname"] = mons_class_name(mon->type);
+    }
+
     if (mon->has_spell(SPELL_OZOCUBUS_ARMOUR))
     {
         const int power = (mon->spell_hd(SPELL_OZOCUBUS_ARMOUR) * 15) / 10;
@@ -1613,7 +1622,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     }
     else if (mons_class_itemuse(mg.cls) >= MONUSE_STARTING_EQUIPMENT)
     {
-        give_item(mon, place.absdepth(), summoned, false, mg.props.exists("mercenary items"));
+        give_item(mon, place.absdepth(), summoned, false);
         // Give these monsters a second weapon. - bwr
         if (mons_class_wields_two_weapons(mg.cls))
             give_weapon(mon, place.absdepth());
@@ -2260,7 +2269,6 @@ static const map<monster_type, band_set> bands_by_leader = {
     { MONS_VAMPIRE_KNIGHT,  { {4}, {{ BAND_PHANTASMAL_WARRIORS, {2, 3} }}}},
     { MONS_RAIJU,           { {}, {{ BAND_RAIJU, {2, 4} }}}},
     { MONS_SALAMANDER_MYSTIC, { {}, {{ BAND_SALAMANDERS, {2, 4} }}}},
-    { MONS_SALAMANDER_STORMCALLER, { {2}, {{ BAND_SALAMANDER_ELITES, {3, 5}}}}},
     { MONS_MONSTROUS_DEMONSPAWN, { {2, 0, []() {
         return !player_in_branch(BRANCH_WIZLAB); // hack for wizlab_wucad_mu
     }},                             {{ BAND_MONSTROUS_DEMONSPAWN, {1, 3}}}}},
@@ -2290,7 +2298,7 @@ static const map<monster_type, band_set> bands_by_leader = {
     { MONS_SPARK_WASP,      { {0, 0, []() {
         return you.where_are_you == BRANCH_DEPTHS;
     }},                           {{ BAND_SPARK_WASPS, {1, 4} }}}},
-    { MONS_HOWLER_MONKEY,   { {2, 6}, {{ BAND_HOWLER_MONKEY, {1, 4} }}}},
+    { MONS_HOWLER_MONKEY,   { {2, 6}, {{ BAND_HOWLER_MONKEY, {1, 3} }}}},
     { MONS_GIANT_EYEBALL,   { {0, 0, []() {
         return branch_has_monsters(you.where_are_you)
             || !vault_mon_types.empty();

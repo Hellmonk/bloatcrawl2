@@ -230,7 +230,6 @@ public:
     void ghost_demon_init();
     void uglything_init(bool only_mutate = false);
     void uglything_mutate(colour_t force_colour = COLOUR_UNDEF);
-    void uglything_upgrade();
     void destroy_inventory();
     void load_ghost_spells();
 
@@ -563,6 +562,7 @@ public:
 
     bool has_facet(int facet) const;
     bool is_player_summon() const;
+    bool angered_by_attacks() const;
 
 private:
     int hit_dice;

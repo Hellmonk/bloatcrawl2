@@ -3,6 +3,7 @@
 #include "ng-setup.h"
 
 #include "ability.h"
+#include "adjust.h"
 #include "decks.h"
 #include "dungeon.h"
 #include "end.h"
@@ -451,6 +452,22 @@ static void _setup_hints()
     init_hints();
 }
 
+static void _free_up_slot(bool consumable, char letter)
+{
+    for (int slot = 0; slot < ENDOFPACK; ++slot)
+    {
+        FixedVector<item_def, 52> *inv = &you.inv1;
+        if (consumable)
+            inv = &you.inv2;
+
+        if (!(*inv)[slot].defined())
+        {
+            swap_inv_slots(*inv, letter_to_index(letter), slot, false);
+            break;
+        }
+    }
+}
+
 static void _setup_generic(const newgame_def& ng)
 {
     _init_player();
@@ -506,6 +523,12 @@ static void _setup_generic(const newgame_def& ng)
         newgame_make_item(OBJ_POTIONS, POT_CURING);
         newgame_make_item(OBJ_POTIONS, POT_CURING);
     }
+    // Leave the a/b slots open so if the first thing you pick up is a weapon,
+    // you can use ' to swap between your items.
+    if (you.char_class == JOB_EARTH_ELEMENTALIST)
+        _free_up_slot(false, 'a');
+    if (you.char_class == JOB_ARCANE_MARKSMAN)
+        _free_up_slot(false, 'b');
 
     // Give tutorial skills etc
     if (crawl_state.game_is_tutorial())

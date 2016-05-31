@@ -210,11 +210,10 @@ enum mon_resist_flags
 
     MR_RES_TORMENT       = 1 << 22,
     MR_RES_PETRIFY       = 1 << 23,
+    MR_RES_DAMNATION     = 1 << 24,
 #if TAG_MAJOR_VERSION == 34
-    MR_OLD_RES_ASPHYX    = 1 << 24,
     MR_OLD_RES_ACID      = 1 << 25,
 #else
-    // unused 1 << 24,
     // unused 1 << 25,
 #endif
     MR_RES_STICKY_FLAME  = 1 << 26,
@@ -239,6 +238,7 @@ enum shout_type
     S_ROAR,                 // roar
     S_SCREAM,               // scream
     S_BELLOW,               // bellow (yaks)
+    S_BLEAT,                // bleat (sheep)
     S_TRUMPET,              // trumpets (elephants)
     S_SCREECH,              // screech
     S_BUZZ,                 // buzz
@@ -256,6 +256,7 @@ enum shout_type
     NUM_SHOUTS,
 
     // Loudness setting for shouts that are only defined in dat/shout.txt
+    // Only used for the verb/volume of random demon taunts
     S_VERY_SOFT,
     S_SOFT,
     S_NORMAL,
@@ -294,6 +295,7 @@ enum mon_body_shape
     MON_SHAPE_QUADRUPED_TAILLESS,
     MON_SHAPE_QUADRUPED_WINGED,
     MON_SHAPE_BAT,
+    MON_SHAPE_BIRD,
     MON_SHAPE_SNAKE, // Including eels and worms
     MON_SHAPE_FISH,
     MON_SHAPE_INSECT,

@@ -260,7 +260,7 @@ xx...xxx222xxx...xx
 ENDMAP
 
 NAME:  worms_lemuel
-TAGS:  no_rotate no_monster_gen
+TAGS:  no_rotate no_monster_gen no_pool_fixup
 DEPTH: D:8-, Lair, Spider
 KMONS: 1 = worm
 KMONS: 2| = swamp worm
@@ -272,16 +272,15 @@ SUBST: 1 = 112
 : else
 SUBST: 1 = 1112
 : end
-SUBST: W = W:20 w
 MAP
    WWWWWWW
- WWWWW1WWWWW
-WWWxxxxxxxWWW
+ WWWWw1wWWWW
+WWwxxxxxxxwWW
 WWxx11111xPWW
 W1x|21111PPWW
 WWxx11111xPWW
-WWWxxxxxxxWWW
- WWWWW1WWWWW
+WWwxxxxxxxwWW
+ WWWWw1wWWWW
    WWWWWWW
 ENDMAP
 
@@ -322,23 +321,22 @@ KMONS:   1 = giant leech
 KMONS:   2 = boulder beetle
 KMONS:   3 = redback w:5 / orb spider w:5 / nothing
 KMONS:   4 = thrashing horror
-KITEM:   0.@ = stone no_pickup q:1 w:90 / nothing
-KITEM:   12345 = % w:90 no_pickup / * no_pickup
-SHUFFLE: ABCDEF / ABCDEF / ABCCBA, ABC, 13 / 13 / 31, {`
-SHUFFLE: '.12 / ..12 / .'12 / .'12 / ''12
+KITEM:   ' = stone no_pickup q:1 w:5 / nothing
+KITEM:   01234 = % w:90 no_pickup / * no_pickup
+SHUFFLE: ABCDEF / ABCDEF / ABCCBA, ABC, DEF, 13 / 13 / 31, {`
 :  if you.in_branch("Abyss") then
 SUBST:   G = BEG, C : x:5 cvb, B : x:5 cvbw, A : xcvb w:4
 SUBST:   D: x:5 cvb, E : x:5 cvbw, F : xcvb w:4, { = '
 SUBST:   0 = 4:50 0
 :  else
-SUBST:   { : {[( `:15, ` = '
+SUBST:   { = {[( .:15, ` = '
 NSUBST:  { = 1:{ / 1:}, [ = 1:[ / 1:(, ( = 1:] / 1:)
 SUBST:   G = BEG, C: xc, B : x., A : xxc .:2
 SUBST:   D : xc, E : x .:5, F : xxc .:2
 :    if you.in_branch("Spider") then
 SUBST:   0 = 3:50 0
 :    else
-SUBST: c : cb
+SUBST:   c : cb
 :    end
 :  end
 MAP
@@ -550,8 +548,10 @@ ENDMAP
 
 # This vault can be highly OOD, which is why lindwurms are used in the
 # first place; unlike most dragon-types, lindwurms are flightless.
+# The no_trap_gen tag prevents teleport traps (or shafts) that might set
+# the lindwurms free.
 NAME:   minmay_lindwurm_lava
-TAGS:   no_monster_gen
+TAGS:   no_monster_gen no_trap_gen
 DEPTH:  D:8-, Lair:2-
 KPROP:  '*|1> = no_tele_into
 KMONS:  1 = lindwurm
@@ -1225,7 +1225,7 @@ ENDMAP
 
 # Necromancer has a house with a fridge (and a nice garden) (Eino)
 NAME:  eino_house_with_fridge
-DEPTH: D:9-15, Lair:2-
+DEPTH: D:9-, Lair:2-
 TAGS:  no_monster_gen no_item_gen
 MONS:  patrolling necromancer, plant
 MONS:  river rat simulacrum / wolf simulacrum / \
@@ -1626,8 +1626,7 @@ ITEM:    book of callings w:5 / book of summonings / grand grimoire w:5 / \
          book of beasts / randbook disc:summoning numspells:6
 ITEM:    staff of summoning w:20 / rod of shadows
 ITEM:    amulet of dismissal w:5 ident:type / amulet of dismissal randart
-ITEM:    fan of gales / lamp of fire / \
-         stone of tremors / phial of floods
+ITEM:    fan of gales / lamp of fire / phial of floods
 KITEM:   % = any, any / gold / nothing, any / nothing
 KITEM:   _ = scroll of summoning, scroll of summoning / nothing
 KFEAT:   _ = altar_sif_muna
@@ -1695,45 +1694,6 @@ MAP
 .5xx3xx4xxxxx
 ..xxxxxxxxxxx
 @@xxxxxxxxxxx
-ENDMAP
-
-NAME:    hangedman_elemental_death_ray
-TAGS:    transparent patrolling
-DEPTH:   Depths
-MONS:    necromancer ; wand of iceblast . \
-         staff of fire ident:type w:15 | quarterstaff ego:flaming ident:type w:14 | \
-         rod of ignition w:1 ident:type . \
-         robe ego:fire_resistance w:15 | robe ego:cold_resistance w:14 | \
-         robe ego:resistance w:1
-MONS:    necromancer ; wand of lightning | wand of flame w:5 . \
-         staff of cold ident:type | quarterstaff ego:freezing ident:type | \
-         robe ego:fire_resistance w:15 | robe ego:cold_resistance w:14 | \
-         robe ego:resistance w:1
-MONS:    simulacrum, fire elemental
-ITEM:    nothing, lamp of fire
-SHUFFLE: 12, 3df / 4eF
-FTILE:   fF'@ = floor_pebble_darkgray
-COLOUR:  fF'@ = white
-MARKER:  f = lua:fog_machine {cloud_type = "freezing vapour", \
-             pow_min = 6, pow_max = 6, delay = 150, \
-             size_min = 2, size_max = 2, walk_dist = 1, start_clouds = 1 }
-MARKER:  F = lua:fog_machine {cloud_type = "flame", \
-             pow_min = 6, pow_max = 6, delay = 200, \
-             size_min = 2, size_max = 2, walk_dist = 1, start_clouds = 1 }
-MAP
- ......
-..bbbb..
-.bb31bb..
-.+.3dbfF'fF'
-.b.32bb..  'fF'
-.bbbbb..      'fF@
-.......          'fF'          .......
-                    @fF'      ..bbbbb.
-                       'fF'  ..bb24.b.
-                          'fF'fFbe4.+.
-                             ..bb14bb.
-                              ..bbbb..
-                               ......
 ENDMAP
 
 NAME:  guppyfry_early_elven_hall
@@ -2453,7 +2413,7 @@ ENDMAP
 
 NAME:    hangedman_batty
 TAGS:    patrolling no_monster_gen no_item_gen
-DEPTH:   D:11-15, Crypt, !Crypt:$
+DEPTH:   D:11-, Crypt, !Crypt:$
 WEIGHT:  5
 MONS:    bat, phantom, vampire, unseen horror
 MONS:    phantasmal warrior, vampire knight, jiangshi
@@ -2554,11 +2514,12 @@ MAP
       .....
 ENDMAP
 
-NAME:  minmay_dual_archer_statues
-DEPTH: D:10-,
-MONS:  statue tile:mons_statue_archer name:archer name_adjective; \
-       longbow . arrow q:30
-MONS:  bush
+NAME:   minmay_dual_archer_statues
+DEPTH:  D:10-
+WEIGHT: 2
+MONS:   statue tile:mons_statue_archer name:archer name_adjective; \
+        longbow . arrow q:30
+MONS:   bush
 MAP
 .........
 ...ccc...
@@ -2574,11 +2535,11 @@ ENDMAP
 # Another Ice Statue vault
 NAME:  ice2_lemuel
 TAGS:  no_pool_fixup no_monster_gen
-DEPTH: D:12-, Depths, !Depths:$, Lair, Coc, !Coc:$
+DEPTH: D:12-, Depths, !Depths:$, Lair:2-, Coc, !Coc:$
 KMONS: 1 = ice statue
 KMONS: 2 = white imp / ice beast w:30 / polar bear / nothing w:50
 KMONS: 3 = ice devil / ice dragon / freezing wraith
-KMONS: 4 = ice fiend / blizzard demon / ice dragon w:5
+KMONS: 4 = ice fiend / blizzard demon / shard shrike
 KFEAT: 1 = >
 : if you.absdepth() > 20 then
 SUBST:  3 = 4, 2 = 223
@@ -2891,9 +2852,9 @@ TAGS:    no_monster_gen no_item_gen
 DEPTH:   Depths, !Depths:$
 MONS:    large slime creature, great orb of eyes, eye of draining
 KITEM:   R = royal jelly
-ITEM:    ring of teleportation / scroll of teleportation w:30 q:2
-ITEM:    wand of digging / wand of disintegration
-ITEM:    stone of tremors
+ITEM:    scroll of teleportation q:2
+ITEM:    wand of digging
+ITEM:    wand of disintegration
 ITEM:    scroll of teleportation q:2 w:20 / \
          dagger ego:distortion ident:type
 SUBST:   J = 1111111123
@@ -3469,7 +3430,7 @@ SUBST:   ? = %:10 *:50 |:60
 SUBST:   ! = %:90 *:30 |:10
 KMASK:   x = no_wall_fixup
 ITEM:    wand of digging / wand of disintegration
-ITEM:    ring of teleportation / stone of tremors
+ITEM:    scroll of teleportation q:2
 MAP
 ...........
 .vvnvvvnvv.
@@ -5342,7 +5303,7 @@ cccc+cccc
 ENDMAP
 
 NAME:   kennysheep_inner_square
-DEPTH:  D:$, Depths, !Depths:$
+DEPTH:  D:12-, Depths, !Depths:$
 : ks_random_setup(_G)
 NSUBST: % : 1:|
 SUBST:  % = *
@@ -5392,7 +5353,7 @@ cccccccc++cccccccc
 ENDMAP
 
 NAME:   kennysheep_two_boxes
-DEPTH:  D:$, Depths, !Depths:$
+DEPTH:  D:12-, Depths, !Depths:$
 : ks_random_setup(_G)
 NSUBST: % : 1:|
 SUBST:  % = *
@@ -5524,7 +5485,7 @@ KFEAT:   ^ = known zot trap
 : if you.in_branch("Geh") then
 KMONS:   9 = sun demon / smoke demon / hell knight / \
              red devil w:5 / efreet w:5
-KMONS:   8 = hellion / balrug / salamander stormcaller
+KMONS:   8 = hellion / balrug
 KMONS:   7 = brimstone fiend
 MARKER:  F = lua:fog_machine {cloud_type = "flame", \
              pow_min = 8, pow_max = 10, delay = 100, \
@@ -5604,7 +5565,7 @@ TAGS:   no_monster_gen no_item_gen
 WEIGHT: 3, 1 (Vaults)
 MONS:   patrolling iron troll
 KMONS:  d = patrolling iron dragon
-KITEM:  d = ring of protection unrand:ring_of_robustness no_pickup
+KITEM:  d = ring_of_robustness no_pickup
 MAP
 ...............
 .vvvvv.@.vvvvv.
@@ -5634,7 +5595,7 @@ MONS:   place:Depths:$ zombie / place:Depths:$ skeleton, bone dragon
 : else
 MONS:   place:D:$ zombie / place:D:$ skeleton, bone dragon
 : end
-ITEM:   double sword unrand:sword_of_zonguldrok no_pickup
+ITEM:   sword_of_zonguldrok no_pickup
 MAP
 ...............
 .cc+cccccccccc.
@@ -5659,7 +5620,7 @@ NAME:   minmay_guarded_unrand_curses
 TAGS:   no_monster_gen no_item_gen
 DEPTH:  D:12-, Depths, Crypt
 WEIGHT: 3
-MONS:   reaper, reaper; scythe unrand:scythe_of_curses, mummy, guardian mummy
+MONS:   reaper, reaper; scythe_of_curses, mummy, guardian mummy
 KPROP:  12' = no_tele_into
 MAP
 ..............
@@ -5687,7 +5648,7 @@ DEPTH:  Depths
 WEIGHT: 3
 MONS:   patrolling crystal guardian
 MONS:   orange crystal statue
-ITEM:   hat unrand:crown_of_dyrovepreva no_pickup
+ITEM:   crown_of_dyrovepreva no_pickup
 KPROP:  12d' = no_tele_into
 SUBST:  ' = .
 MAP
@@ -5733,8 +5694,8 @@ WEIGHT: 3
 # However, the player *can see* that the efreet is wielding an artefact.
 KMONS:  l = fire elemental / nothing w:40
 KFEAT:  l = l
-KMONS:  1 = patrolling Azrael; scimitar unrand:scimitar_of_flaming_death, \
-            patrolling efreet; scimitar unrand:scimitar_of_flaming_death
+KMONS:  1 = patrolling Azrael; scimitar_of_flaming_death, \
+            patrolling efreet; scimitar_of_flaming_death
 KPROP:  1' = no_tele_into
 SUBST:  v : vc
 SUBST:  ' = .
@@ -5762,7 +5723,7 @@ DEPTH:  Depths
 WEIGHT: 3
 MONS:   wizard, orange crystal statue / obsidian statue
 KMONS:  3 = lich / ancient lich
-KITEM:  3 = ring of protection from magic unrand:ring_of_the_mage no_pickup
+KITEM:  3 = ring_of_the_mage no_pickup
 KPROP:  32' = no_tele_into
 SUBST:  ' = .
 MAP
@@ -5795,65 +5756,67 @@ MAP
 .......             .......
 ENDMAP
 
-# Sword in stone
-#
 # There's a sword stuck inside a stone. Some knights are milling around
-# wondering how to get it out. If you had Digging and Apportation,
-# you could become the monarch! Or not..... (by Shiori)
+# wondering how to get it out. If you can dig through rock and tame the
+# sword's enchantment, you could become the monarch! Or not..... (by Shiori)
 #
 # This is not about guarding an unrandart, but very close in spirit. (dpeg)
 # If the vault comes up in Orc or Elf, there will be natives around.
 #
+# The dancing weapon is very out of depth early in D, but digging it out
+# is mostly a deliberate action and there are enough system warnings. (r-i)
 NAME:    sword_in_stone
 TAGS:    no_monster_gen patrolling vaults_hard
 DEPTH:   D:5-, Depths, !Depths:$, Vaults, Orc, Elf
-KMONS:   A = Blork the orc / orc warrior ; great sword . chain mail | plate armour, \
+KMONS:   A = gnoll sergeant ; trident . scale mail | chain mail . shield
+KMONS:   B = wight ; falchion | long sword . ring mail | scale mail . shield | nothing
+KMONS:   C = Blork the orc / orc warrior ; great sword . chain mail | plate armour, \
                              orc warrior ; great sword . chain mail | plate armour / nothing
-KMONS:   B = Eustachio / orc warrior ; long sword | falchion . chain mail . shield, \
+KMONS:   D = Eustachio / orc warrior ; long sword | falchion . chain mail . shield, \
                          orc warrior ; long sword | falchion . chain mail . shield / nothing
-KMONS:   C = Urug / orc knight ; rapier | long sword . leather armour . buckler | nothing, \
+KMONS:   E = Urug / orc knight ; rapier | long sword . leather armour . buckler | nothing, \
                     orc knight ; rapier | long sword . leather armour . buckler | nothing / nothing
-KMONS:   D = Joseph / orc knight ; long sword | scimitar . chain mail . shield, \
+KMONS:   F = Joseph / orc knight ; long sword | scimitar . chain mail . shield, \
                       orc knight ; long sword | scimitar . chain mail . shield / nothing
-KMONS:   E = Erica / wizard ; long sword . robe | leather armour . shield, \
+KMONS:   G = Erica / wizard ; long sword . robe | leather armour . shield, \
                      wizard ; long sword . robe | leather armour . shield / nothing
-KMONS:   F = Harold / deep elf knight, deep elf knight / nothing
-KMONS:   G = Maud / ironheart preserver ; great mace . robe | leather armour, \
+KMONS:   H = Harold / deep elf knight, deep elf knight / nothing
+KMONS:   I = Maud / ironheart preserver ; great mace . robe | leather armour, \
                     ironheart preserver ; great mace . robe | leather armour / nothing
-KMONS:   H = Donald / orc warlord, orc warlord / nothing
-KMONS:   I = Louise / hell knight, hell knight / nothing
-KMONS:   J = Frances / hell knight, hell knight / nothing
-KMONS:   K = Agnes / spriggan defender, spriggan defender / nothing
-KMONS:   L = Rupert / vampire knight, vampire knight / nothing
-KMONS:   M = Wiglaf / ancient champion, ancient champion / nothing
-KMONS:   N = Frederick / draconian knight, draconian knight / nothing
-KMONS:   O = Sojobo / tengu reaver, tengu reaver / nothing
-KMONS:   W = gnoll sergeant ; trident . scale mail | chain mail . shield
-KMONS:   X = wight ; falchion | long sword . ring mail | scale mail . shield | nothing
-KITEM:   S = good_item long sword / good_item great sword / good_item demon blade /\
-             good_item triple sword / good_item double sword
-KFEAT:   S = known permanent teleport trap
-NSUBST:  k = 4=k / * = .:19 k:1
+KMONS:   J = Donald / orc warlord, orc warlord / nothing
+KMONS:   K = Louise / hell knight, hell knight / nothing
+KMONS:   L = Frances / hell knight, hell knight / nothing
+KMONS:   M = Agnes / spriggan defender, spriggan defender / nothing
+KMONS:   N = Rupert / vampire knight, vampire knight / nothing
+KMONS:   O = Wiglaf / ancient champion, ancient champion / nothing
+KMONS:   P = Frederick / draconian knight, draconian knight / nothing
+KMONS:   Q = Sojobo / tengu reaver, tengu reaver / nothing
+KMONS:   S = dancing weapon ; long sword good_item | good_item great sword | \
+                              demon blade good_item | triple sword good_item | \
+                              double sword good_item
+KITEM:   s = long sword good_item / good_item great sword / \
+             demon blade good_item / triple sword good_item / double sword good_item
+KMONS:   o = orc warrior / orc knight w:5
+KMONS:   e = deep elf knight
+NSUBST:  k = 4:k / 2 = k. / *:.
 SHUFFLE: bm
 SUBST:   b = cccvvb
 : if you.in_branch("Orc") then
-NSUBST:  k = 1:A / 1:C / *:k
-KMONS:   k = orc warrior / orc knight w:5 / orc w:1
+NSUBST:  k = 1:A / 1:C / *:o
 : elseif you.in_branch("Elf") then
-NSUBST:  k = 2 = EFIJ / *:k
-KMONS:   k = deep elf knight
+NSUBST:  k = 2 = EFIJ / *:e
 : elseif you.absdepth() < 10 then
-SUBST:   k = ABWX
+SUBST:   k = ABCD, S = s
 : elseif you.absdepth() < 13 then
-SUBST:   k = ABCDEF
-: elseif you.absdepth() < 16 then
 SUBST:   k = CDEFGH
+: elseif you.absdepth() < 16 then
+SUBST:   k = EFGHIJ
 : elseif you.absdepth() < 19 then
-SUBST:   k = FGHIJ
+SUBST:   k = HIJKL
 : elseif you.absdepth() < 22 then
-SUBST:   k = IJKLM
+SUBST:   k = KLMNO
 : else
-SUBST:   k = JKLMNO
+SUBST:   k = LMNOPQ
 : end
 MAP
 kkkkkkk
@@ -5880,7 +5843,7 @@ MONS:   ice devil / rust devil / orange demon / red devil / hellwing / \
 KPROP:  ._-cGO12345 = bloody / nothing w:20
 KFEAT:  _ = altar_makhleb
 KFEAT:  - = altar_makhleb
-KITEM:  - = broad axe unrand:obsidian_axe no_pickup
+KITEM:  - = obsidian_axe no_pickup
 MARKER: O = lua:fog_machine { cloud_type = "flame", pow_min = 10, \
                               pow_max = 10, delay = 10, size = 1, \
                               walk_dist = 0, excl_rad = 0}
@@ -5908,7 +5871,7 @@ TAGS:   no_monster_gen no_item_gen patrolling
 DEPTH:  Depths, Crypt
 WEIGHT: 3
 MONS:   death knight ; \
-        great sword unrand:sword_of_the_doom_knight . \
+        sword_of_the_doom_knight . \
         chain mail w:7 | \
         plate armour w:1
 MONS:   profane servitor, bone dragon, ghoul, death cob, skeletal warrior
@@ -5946,7 +5909,7 @@ WEIGHT:  3
 MONS:    minotaur, fire giant, frost giant, spriggan defender, \
          deep elf blademaster
 SHUFFLE: 12345
-ITEM:    demon blade unrand:autumn_katana
+ITEM:    autumn_katana
 SUBST:   u = t.
 TILE:    t = DNGN_TREE_YELLOW / DNGN_TREE_LIGHTRED w:5 / DNGN_TREE_RED / \
              DNGN_TREE_DEAD w:5
@@ -6039,7 +6002,7 @@ KMONS:  8 = w:5 tzitzimitl / w:5 ice fiend / w:5 brimstone fiend / hell sentinel
             iron dragon / tormentor / iron golem / place:Dis
 : elseif you.in_branch("Geh") then
 KMONS:  8 = brimstone fiend / w:5 hell sentinel / hellion / balrug / \
-            fire giant / salamander stormcaller / place:Geh
+            fire giant / place:Geh
 : elseif you.in_branch("Tar") then
 KMONS:  8 = w:15 tzitzimitl / reaper / w:5 soul eater / shadow dragon / lich / \
             ancient lich / w:5 revenant / w:15 place:Tar

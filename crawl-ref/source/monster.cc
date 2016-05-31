@@ -2431,7 +2431,13 @@ string monster::full_name(description_level_type desc, bool use_comma) const
 
 string monster::pronoun(pronoun_type pro, bool force_visible) const
 {
-    return mons_pronoun(type, pro, force_visible || you.can_see(*this));
+    const bool seen = force_visible || you.can_see(*this);
+    if (seen && props.exists(MON_GENDER_KEY))
+    {
+        return decline_pronoun((gender_type)props[MON_GENDER_KEY].get_int(),
+                               pro);
+    }
+    return mons_pronoun(type, pro, seen);
 }
 
 string monster::conj_verb(const string &verb) const
@@ -2484,6 +2490,7 @@ string monster::hand_name(bool plural, bool *can_plural) const
         return foot_name(plural, can_plural);
 
     case MON_SHAPE_BAT:
+    case MON_SHAPE_BIRD:
         str = "wing";
         break;
 
@@ -2625,6 +2632,10 @@ string monster::foot_name(bool plural, bool *can_plural) const
             else
                 str = "talon";
         }
+        break;
+
+    case MON_SHAPE_BIRD:
+        str = "talon";
         break;
 
     case MON_SHAPE_BAT:
@@ -2934,6 +2945,16 @@ void monster::banish(actor *agent, const string &, const int, bool force)
     {
         simple_monster_message(this, " wobbles for a moment.");
         return;
+    }
+
+    if (mons_is_tentacle_or_tentacle_segment(type))
+    {
+        monster* head = monster_by_mid(tentacle_connect);
+        if (head)
+        {
+            head->banish(agent, "", 0, force);
+            return;
+        }
     }
 
     simple_monster_message(this, " is devoured by a tear in reality.",
@@ -3381,6 +3402,14 @@ int monster::base_armour_class() const
     if (type == MONS_ABOMINATION_SMALL)
         return min(10, 3 + get_hit_dice() * 2 / 3);
 
+    // Hepliaklqana ancestors scale with xl.
+    if (mons_is_hepliaklqana_ancestor(type))
+    {
+        if (type == MONS_ANCESTOR_KNIGHT)
+            return get_experience_level() * 3 / 2 + 5;
+        return get_experience_level();
+    }
+
     const int base_ac = get_monster_data(type)->AC;
 
     // demonspawn & draconians combine base & class ac values.
@@ -3441,6 +3470,8 @@ int monster::armour_class(bool calc_unid) const
         ac += ICEMAIL_MAX;
     if (has_ench(ENCH_BONE_ARMOUR))
         ac += 6 + get_hit_dice() / 3;
+    if (has_ench(ENCH_IDEALISED))
+        ac += 4 + get_hit_dice() / 3;
 
     // Penalty due to bad temp mutations.
     if (has_ench(ENCH_WRETCHED))
@@ -3829,7 +3860,7 @@ bool monster::is_insubstantial() const
 
 bool monster::res_hellfire() const
 {
-    return get_mons_resist(this, MR_RES_FIRE) >= 4; // XXX: ???
+    return get_mons_resist(this, MR_RES_HELLFIRE);
 }
 
 int monster::res_fire() const
@@ -4179,6 +4210,10 @@ int monster::res_magic(bool calc_unid) const
                 get_hit_dice() * -type_mr * 4 / 3 :
                 mons_class_res_magic(type, base_monster);
 
+    // Hepliaklqana ancestors scale with xl.
+    if (mons_is_hepliaklqana_ancestor(type))
+        u = get_experience_level() * get_experience_level() / 2; // 0-160ish
+
     // Resistance from artefact properties.
     u += 40 * scan_artefacts(ARTP_MAGIC_RESISTANCE);
 
@@ -4191,13 +4226,13 @@ int monster::res_magic(bool calc_unid) const
     // (remove ", false" and add appropriate flag checks for calc_unid)
 
     if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOUR
-        && (calc_unid || mitm[armour].flags | ISFLAG_KNOW_TYPE))
+        && (calc_unid || (mitm[armour].flags & ISFLAG_KNOW_TYPE)))
     {
         u += get_armour_res_magic(mitm[armour], false);
     }
 
     if (shld != NON_ITEM && mitm[shld].base_type == OBJ_ARMOUR
-        && (calc_unid || mitm[shld].flags | ISFLAG_KNOW_TYPE))
+        && (calc_unid || (mitm[shld].flags & ISFLAG_KNOW_TYPE)))
     {
         u += get_armour_res_magic(mitm[shld], false);
     }
@@ -4538,12 +4573,13 @@ int monster::hurt(const actor *agent, int amount, beam_type flavour,
             return 0;
 
         // Apply damage multipliers for amulet of harm
-        if ((extra_harm() || (agent && agent->extra_harm()))
-             && amount != INSTANT_DEATH)
-        {
-            if (agent && agent->is_player() && you.extra_harm())
-                did_god_conduct(DID_UNHOLY, 1); // The amulet is unholy.
-            amount = amount * 5 / 4;
+        if (amount != INSTANT_DEATH) {
+            // +30% damage when the opponent has harm
+            if (agent && agent->extra_harm())
+                amount = amount * 13 / 10;
+            // +20% damage when self has harm
+            else if (extra_harm())
+                amount = amount * 6 / 5;
         }
 
         // Apply damage multipliers for quad damage
@@ -4572,6 +4608,14 @@ int monster::hurt(const actor *agent, int amount, beam_type flavour,
 
             if (!alive())
                 flags |= MF_EXPLODE_KILL;
+        }
+
+        // Hurt conducts -- pain bond is exempted for balance/gameplay reasons.
+        // Ditto poison DOT, and also for flavor reasons in that case.
+        if (agent && agent->is_player() && mons_gives_xp(this, agent)
+            && flavour != BEAM_SHARED_PAIN)
+        {
+           did_hurt_conduct(DID_HURT_FOE, *this, amount);
         }
 
         // Allow the victim to exhibit passive damage behaviour (e.g.
@@ -4713,12 +4757,6 @@ void monster::uglything_mutate(colour_t force_colour)
 {
     ghost->init_ugly_thing(type == MONS_VERY_UGLY_THING, true, force_colour);
     uglything_init(true);
-}
-
-void monster::uglything_upgrade()
-{
-    ghost->ugly_thing_to_very_ugly_thing();
-    uglything_init();
 }
 
 // Randomise potential damage.
@@ -5474,7 +5512,6 @@ static bool _mons_is_fiery(int mc)
            || mc == MONS_LAVA_SNAKE
            || mc == MONS_SALAMANDER
            || mc == MONS_SALAMANDER_MYSTIC
-           || mc == MONS_SALAMANDER_STORMCALLER
            || mc == MONS_MOLTEN_GARGOYLE
            || mc == MONS_ORB_OF_FIRE;
 }
@@ -5694,7 +5731,7 @@ bool monster::do_shaft()
     if (!is_valid_shaft_level())
         return false;
 
-    // Tentacles are immune to shafting
+    // Tentacles & player ghosts are immune to shafting
     if (mons_is_tentacle_or_tentacle_segment(type)
         || type == MONS_PLAYER_GHOST)
     {
@@ -6120,6 +6157,10 @@ void monster::react_to_damage(const actor *oppressor, int damage,
         else if (heal(damage*2))
             simple_monster_message(this, " seems to be charged up!");
         return;
+    }
+
+    if (has_ench(ENCH_PAIN_BOND)) {
+        radiate_pain_bond(this, damage);
     }
 
     // Don't discharge on small amounts of damage (this helps avoid
@@ -6687,7 +6728,8 @@ bool monster::is_divine_companion() const
     return attitude == ATT_FRIENDLY
            && !is_summoned()
            && (mons_is_god_gift(this, GOD_BEOGH)
-               || mons_is_god_gift(this, GOD_YREDELEMNUL))
+               || mons_is_god_gift(this, GOD_YREDELEMNUL)
+               || mons_is_god_gift(this, GOD_HEPLIAKLQANA))
            && mons_can_use_stairs(this);
 }
 
@@ -6705,7 +6747,14 @@ bool monster::is_jumpy() const
 // Currently only used for Aura of Brilliance.
 int monster::spell_hd(spell_type spell) const
 {
-    return get_hit_dice() + (has_ench(ENCH_EMPOWERED_SPELLS) ? 5 : 0);
+    int hd = get_hit_dice();
+    if (mons_is_hepliaklqana_ancestor(type))
+        hd = max(1, hd * 2 / 3);
+    if (has_ench(ENCH_IDEALISED))
+        hd *= 2;
+    if (has_ench(ENCH_EMPOWERED_SPELLS))
+        hd += 5;
+    return hd;
 }
 
 void monster::align_avatars(bool force_friendly)
@@ -6763,4 +6812,13 @@ bool monster::has_facet(int facet) const
         if (facet_val.get_int() == facet)
             return true;
     return false;
+}
+
+/// If the player attacks this monster, will it become hostile?
+bool monster::angered_by_attacks() const
+{
+    return !has_ench(ENCH_INSANE)
+            && !mons_is_avatar(type)
+            && type != MONS_SPELLFORGED_SERVITOR
+            && !mons_is_hepliaklqana_ancestor(type);
 }

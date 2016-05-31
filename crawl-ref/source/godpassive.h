@@ -239,6 +239,12 @@ enum class passive_t
 
     /// MP usage is less based on invocations
     conserve_mp,
+
+    /// Pakellas identifies wands and rods
+    identify_devices,
+
+    /// Pakellas collects and distills extra MP from your kills
+    bottle_mp,
 };
 
 enum ru_interference
@@ -275,4 +281,7 @@ void shadow_monster_reset(monster *mon);
 void dithmenos_shadow_melee(actor* target);
 void dithmenos_shadow_throw(const dist &d, const item_def &item);
 void dithmenos_shadow_spell(bolt* orig_beam, spell_type spell);
+void uskayaw_prepares_audience();
+void uskayaw_bonds_audience();
+
 #endif

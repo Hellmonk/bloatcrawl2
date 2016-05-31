@@ -663,15 +663,8 @@ void debug_make_monster_shout(monster* mon)
     }
 
     if (type == 's')
-    {
-        if (silenced(you.pos()))
-            mpr("You are silenced and likely won't hear any shouts.");
-        else if (silenced(mon->pos()))
-            mpr("The monster is silenced and likely won't give any shouts.");
-
         for (int i = 0; i < num_times; ++i)
-            handle_monster_shouts(mon, true);
-    }
+            monster_shout(mon, mons_shouts(mon->type, false));
     else
     {
         if (mon->invisible())

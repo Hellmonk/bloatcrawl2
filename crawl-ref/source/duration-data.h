@@ -573,6 +573,10 @@ static const duration_def duration_data[] =
       {{ "The world stops spinning.", []() {
           you.redraw_evasion = true;
       }}}},
+    { DUR_SANGUINE_ARMOUR, LIGHTBLUE, "Blood",
+      "sanguine armour", "",
+      "Your shed blood clings to and protects you.", D_NO_FLAGS,
+        {{ "Your blood armour dries and flakes away.", _redraw_armour }}},
 
     // The following are visible in wizmode only, or are handled
     // specially in the status lights and/or the % or @ screens.
@@ -625,6 +629,7 @@ static const duration_def duration_data[] =
       "Casting a spell costs 0 magic points.", D_NO_FLAGS,
       {{ "Your magic pool becomes finite again."},
           { "Your magic pool is returning to normal.", 1}}, 6},
+    { DUR_ANCESTOR_DELAY, 0, "", "", "ancestor delay", "", D_NO_FLAGS, {{""}}},
 
 #if TAG_MAJOR_VERSION == 34
     // And removed ones
