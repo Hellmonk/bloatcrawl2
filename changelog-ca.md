@@ -1,5 +1,7 @@
 ## v1.5.4
 
+* Can't gain experience in abyss anymore. You can still gain piety, lose drain, etc, though. 
+
 * Added "light" weapon brand, making weapons weigh half as much, allowing them to be swung for half of the SP cost.
 
 * Moving around in focus mode no longer consumes stamina.
