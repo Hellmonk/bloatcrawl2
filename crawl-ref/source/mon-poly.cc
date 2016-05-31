@@ -673,14 +673,24 @@ void seen_monster(monster* mons)
     if (mons->attitude == ATT_HOSTILE)
     {
         monster_pathfind pf;
-        if (pf.init_pathfind(mons, you.pos(), true, false, true))
+        const bool can_reach = pf.init_pathfind(mons, you.pos(), true, false, true);
+        const char* mons_name = mons->name(DESC_A, true).c_str();
+        if (can_reach)
         {
-            you.monsters_recently_seen++;
-            ldprf(LD_INSTAREST, "Saw hostile monster: %s. recently_seen = %d", mons->name(DESC_A, true).c_str(), you.monsters_recently_seen);
+            const bool is_a_threat = mons_is_threatening(mons);
+            if (is_a_threat)
+            {
+                you.monsters_recently_seen++;
+                ldprf(LD_INSTAREST, "Saw hostile monster: %s. recently_seen = %d", mons_name, you.monsters_recently_seen);
+            }
+            else
+            {
+                ldprf(LD_INSTAREST, "Saw hostile monster: %s, but it's not a threat.", mons_name);
+            }
         }
         else
         {
-            ldprf(LD_INSTAREST, "Saw hostile monster: %s, but it can't get to you.", mons->name(DESC_A, true).c_str());
+            ldprf(LD_INSTAREST, "Saw hostile monster: %s, but it can't get to you.", mons_name);
         }
     }
 
