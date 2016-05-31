@@ -6744,6 +6744,19 @@ int ench_power_stepdown(int pow)
     return stepdown_value(pow, 30, 40, 100, 120);
 }
 
+bool _spell_is_explosive(spell_type spell)
+{
+    bool explosive = false;
+    const zap_type zap = spell_to_zap(spell);
+    if (zap != NUM_ZAPS)
+    {
+        const zap_info *const info = _seek_zap(zap);
+        if (info)
+            explosive = info->is_explosion;
+    }
+    return explosive;
+}
+
 // Can a particular beam go through a particular monster?
 // Fedhas worshipers can shoot through non-hostile plants,
 // and players can shoot through their demonic guardians.
@@ -6769,17 +6782,15 @@ bool shoot_through_monster(const bolt& beam, const monster* victim)
         origin_attitude = temp->attitude;
     }
 
-    return (origin_worships_fedhas
-            && fedhas_protects(victim))
-           || originator->is_player()
-               /*
-               && testbits(victim->flags, MF_DEMONIC_GUARDIAN)
-              && victim->mp_freeze
-                */
-              && !beam.is_enchantment()
-              && beam.origin_spell != SPELL_CHAIN_LIGHTNING
-              && (mons_atts_aligned(victim->attitude, origin_attitude)
-                  || victim->neutral());
+    const bool fedhas_protected = origin_worships_fedhas && fedhas_protects(victim);
+    const bool attitude_aligned = mons_atts_aligned(victim->attitude, origin_attitude) || victim->neutral();
+    const bool spell_ok = beam.origin_spell != SPELL_CHAIN_LIGHTNING 
+                          && !_spell_is_explosive(beam.origin_spell)
+                          && !beam.is_enchantment();
+    const bool player_shoot_through_friendlies = originator->is_player()
+                                                 && spell_ok
+                                                 && attitude_aligned;
+    return fedhas_protected || player_shoot_through_friendlies;
 }
 
 /**
