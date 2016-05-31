@@ -9667,23 +9667,21 @@ void player_attacked_something(int sp_cost)
 int generic_action_delay(const int skill, const int base, const action_delay_type type)
 {
     const int dex = (you.dex(true) - 10) * 10;
+    const int min_delay_reached_at = 60;
+
+    const int factor = (min_delay_reached_at - 10) * 10;
 
     int benefit = skill + dex;
 
     benefit = max(0, benefit);
-    benefit = min(400, benefit);
-
-    double adjusted_benefit = benefit / 400.0;
-    // square it so it's harder to reach max benefit
-    adjusted_benefit *= adjusted_benefit;
-    adjusted_benefit *= 400;
+    benefit = min(factor, benefit);
 
     if (type == ACTION_DELAY_MAX)
-        adjusted_benefit = 0;
+        benefit = 0;
     if (type == ACTION_DELAY_MIN)
-        adjusted_benefit = 400;
+        benefit = factor;
 
-    int delay = base * (800 - adjusted_benefit) / 800;
+    int delay = base * (factor * 2 - benefit) / (factor * 2);
     delay = player_attack_delay_modifier(delay);
     return delay;
 }
