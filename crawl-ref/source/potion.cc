@@ -226,7 +226,7 @@ public:
         return true;
     }
 
-    bool effect(bool=true, int power=40, bool is_device=false) const override
+    bool effect(bool=true, int power, bool is_device=false) const override
     {
         if (you.duration[DUR_DEATHS_DOOR])
         {
@@ -244,6 +244,7 @@ public:
         if (is_device)
         {
             amount = you.scale_device_healing(amount);
+            amount = power * amount / 30;
         }
 
         amount = max(20, amount);
