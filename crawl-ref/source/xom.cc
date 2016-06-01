@@ -2696,7 +2696,7 @@ static void _xom_statloss(int /*sever*/)
 
     // Don't kill the player unless Xom is being nasty.
     if (nasty)
-        loss = 1 + random2(3);
+        loss = 1;
     else if (you.stat(stat) <= loss)
         return;
 

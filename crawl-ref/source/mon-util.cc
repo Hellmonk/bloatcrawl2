@@ -2211,7 +2211,7 @@ int exper_value(const monster* mon, bool real)
         // levelling up is visible (although it may happen off-screen), so
         // this is hardly ever a leak. Only Pan lords are unknown in the
         // general.
-        if (m->mc == MONS_PANDEMONIUM_LORD)
+        if (m && m->mc == MONS_PANDEMONIUM_LORD)
             hd = m->HD;
         maxhp = mons_max_hp(mc);
     }
@@ -2758,13 +2758,11 @@ void define_monster(monster* mons, beh_type behavior)
     // Some calculations.
     if (hp == 0)
         hp = hit_points(m->avg_hp_10x);
-    const int hp_max = hp;
 
-    if (behavior == BEH_HOSTILE)
-    {
-        hd = rune_curse_hd_adjust(hd);
-        hp = rune_curse_hp_adjust(hp);
-    }
+    hd = rune_curse_hd_adjust(hd);
+    hp = rune_curse_hp_adjust(hp);
+
+    const int hp_max = hp;
 
     // So let it be written, so let it be done.
     mons->set_hit_dice(hd);

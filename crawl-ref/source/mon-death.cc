@@ -1795,8 +1795,6 @@ item_def* monster_die(monster* mons, killer_type killer,
     if (invalid_monster(mons))
         return nullptr;
 
-    monster_died(mons, killer);
-
     const bool was_visible = you.can_see(*mons);
 
     // If a monster was banished to the Abyss and then killed there,
@@ -2755,6 +2753,7 @@ item_def* monster_die(monster* mons, killer_type killer,
     {
         _give_experience(player_xp, monster_xp, killer, killer_index, pet_kill,
                          was_visible);
+        monster_died(mons, killer);
     }
 
     return corpse;

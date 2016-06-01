@@ -467,6 +467,7 @@ static void _add_randart_weapon_brand(const item_def &item,
         item_props[ARTP_BRAND] = random_choose_weighted(
             2, SPWPN_SPEED,
             4, SPWPN_VORPAL,
+            2, SPWPN_LIGHT,
             /*
             4, SPWPN_VENOM,
             4, SPWPN_FLAMING,
@@ -495,6 +496,7 @@ static void _add_randart_weapon_brand(const item_def &item,
             SPWPN_ELECTROCUTION,
             SPWPN_VAMPIRISM,
             SPWPN_PAIN,
+            SPWPN_LIGHT,
             SPWPN_VENOM);
         // fall back to regular melee brands 2/9 of the time
     }
@@ -506,6 +508,7 @@ static void _add_randart_weapon_brand(const item_def &item,
             34, SPWPN_FREEZING,
             26, SPWPN_VENOM,
             26, SPWPN_DRAINING,
+            26, SPWPN_LIGHT,
             13, SPWPN_HOLY_WRATH,
             13, SPWPN_ELECTROCUTION,
             13, SPWPN_SPEED,

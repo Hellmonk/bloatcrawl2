@@ -322,6 +322,7 @@ bool is_weapon_brand_ok(int type, int brand, bool strict)
     case SPWPN_ELECTROCUTION:
     case SPWPN_FLAMING:
     case SPWPN_FREEZING:
+    case SPWPN_LIGHT:
         break;
 
     // Melee-only brands.

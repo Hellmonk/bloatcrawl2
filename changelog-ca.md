@@ -1,4 +1,20 @@
-## v1.5.2
+## v1.5.4
+
+* Can't gain experience in abyss anymore. You can still gain piety, lose drain, etc, though. 
+
+* Added "light" weapon brand, making weapons weigh half as much, allowing them to be swung for half of the SP cost.
+
+* Moving around in focus mode no longer consumes stamina.
+
+* Moving around in heavy armour with a large shield increases stamina costs.
+    * Only in quick mode, when flying, or in focus mode while sneaking.
+    * Examples:
+        * With no heavy armour or shield penalties, you use 2 SP per movement in quick mode.
+        * With crystal plate armour and a large shield, 8 str, 0 armour skill, 0 shield skill, you use 10 SP per move.
+        * With chain mail, shield, 20 str, 10 armour skill, 10 shield skill, you use 8 SP per move.
+        * With chain mail, 10 str, 0 armour, you use 6 SP per move.
+        * With chain mail, 20 str, 20 armour, you use 4 SP per move. 
+        * With ring mail, 20 str, 10 armour, you use 2 SP per move.
 
 * Min attack speed for all weapons achieved when dex + fighting = 60. Removed squaring function, so you get further faster.
     * At dex + fighting = 30, you'd be halfway to min delay.
@@ -13,6 +29,8 @@
 
 * Fighting and Spellcasting factors changed. See cheatsheet under "Fighting" and "Spellcasting"
   for details.
+
+## v1.5.2
 
 * Simplified spell power calculations
     * Like spell failure, spell power now has equalized factors. 

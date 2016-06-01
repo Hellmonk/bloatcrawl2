@@ -200,7 +200,6 @@ enum mon_resist_flags
     MR_RES_ELEC          = 1 << 0,
     MR_RES_POISON        = 1 << 3,
     MR_RES_FIRE          = 1 << 6,
-    MR_RES_HELLFIRE      = mrd(MR_RES_FIRE, 4), // XXX: ???
     MR_RES_COLD          = 1 << 9,
     MR_RES_NEG           = 1 << 12,
     MR_RES_ROTTING       = 1 << 15,
@@ -210,7 +209,7 @@ enum mon_resist_flags
 
     MR_RES_TORMENT       = 1 << 22,
     MR_RES_PETRIFY       = 1 << 23,
-    MR_RES_DAMNATION     = 1 << 24,
+    MR_RES_HELLFIRE      = 1 << 24,
 #if TAG_MAJOR_VERSION == 34
     MR_OLD_RES_ACID      = 1 << 25,
 #else
