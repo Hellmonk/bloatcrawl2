@@ -2908,7 +2908,7 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
         {
             int loss = div_rand_round(exp_gained * 3 / 2,
                                       max(1, calc_skill_cost(you.skill_cost_level) - 3));
-            you.attribute[ATTR_STAT_LOSS_XP] -= loss;
+            you.attribute[ATTR_STAT_LOSS_XP] -= loss * 2;
             dprf("Stat loss points: %d", you.attribute[ATTR_STAT_LOSS_XP]);
             if (you.attribute[ATTR_STAT_LOSS_XP] <= 0)
                 _recover_stat();
@@ -10247,6 +10247,35 @@ int player_ouch_modifier(int damage)
     damage = max(0, damage);
 
     return damage;
+}
+
+int player_max_stat_loss_allowed(stat_type stat)
+{
+    int max_stat_loss = you.max_stat(stat);
+
+    int percentage_allowed = 20;
+    switch (crawl_state.difficulty)
+    {
+        case DIFFICULTY_EASY:
+            percentage_allowed = 20;
+            break;
+        case DIFFICULTY_STANDARD:
+            percentage_allowed = 30;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            percentage_allowed = 40;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            percentage_allowed = 50;
+            break;
+        default:
+            // should not be possible
+            break;
+    }
+
+    max_stat_loss = percentage_allowed * max_stat_loss / 100;
+
+    return max_stat_loss;
 }
 
 void player_update_last_be_hit_chance(int chance)
