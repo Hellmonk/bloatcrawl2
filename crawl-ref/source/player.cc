@@ -10238,8 +10238,14 @@ int player_ouch_modifier(int damage)
     return damage;
 }
 
+bool instant_resting = false;
+
 void _instant_rest()
 {
+    if (instant_resting)
+        return;
+
+    instant_resting = true;
     if (player_regenerates_hp())
         inc_hp(get_hp_max() - get_hp());
 
@@ -10254,8 +10260,8 @@ void _instant_rest()
     you.peace = 1000;
 
     dec_exhaust_player(1000);
-
     decrement_durations(5000);
+    instant_resting = false;
 }
 
 void _attempt_instant_rest_handle_no_visible_monsters()

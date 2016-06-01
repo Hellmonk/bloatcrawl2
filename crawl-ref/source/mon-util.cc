@@ -2211,7 +2211,7 @@ int exper_value(const monster* mon, bool real)
         // levelling up is visible (although it may happen off-screen), so
         // this is hardly ever a leak. Only Pan lords are unknown in the
         // general.
-        if (m->mc == MONS_PANDEMONIUM_LORD)
+        if (m && m->mc == MONS_PANDEMONIUM_LORD)
             hd = m->HD;
         maxhp = mons_max_hp(mc);
     }
