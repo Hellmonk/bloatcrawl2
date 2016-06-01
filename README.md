@@ -11,12 +11,6 @@ There are two known servers where you can play Circus Animals!
 * http://crawl.homedns.org/ (arizona, USA)
 * https://crawl.project357.org/ (sydney, AUS)
 
-Checkout branch v1.5.2 if you want to try it on your desktop. The master branch is where future, save game breaking features get implemented, and then broken off.
-
-To do so from a git repo, install git on your system, then type:
-
-```git clone https://github.com/jeremygurr/dcssca.git -b v1.5.2```
-
 This fork of DCSS is a playground for some ideas I wanted to try. Many changes center around increasing the richness of the species in DCSS. I take a species that I consider boring to play, then alter that species until it feels like a compelling choice. I am not as experienced as many others are, and likely some of these changes may break important things that I don't yet understand because of that . But because I am having so much fun with this fork, and it doesn't take much effort to share it with others, here it is. Maybe some of my crazy ideas can be merged into the main DCSS repo. You are most welcome to submit changes to this fork, or even make another fork if you don't like the direction of this one. This fork was in sync with the original DCSS repo as of Apr 2016. I intend to keep merging in non-conflicting changes from the [main DCSS project](https://github.com/crawl/crawl).
 
 Check out [FUTURE.md](https://github.com/jeremygurr/dcssca/blob/master/FUTURE.md) for details about further features I'm considering.
@@ -27,8 +21,6 @@ A player made an IRC channel for discussion of this fork. Grab an IRC client and
 Objectives
 
 (My goals aren't necessarily that different from mainstream crawl, just different in exactly how those goals are interpreted and implemented...)
-
-
 
 Major modifications from the original DCSS
 v1.4.2
@@ -41,8 +33,6 @@ Summoning changes
    * The number of summons a player can have is only limited by max mana, with a cap of 20 total summons.
    * When a summon dies, they player gets 1/2 of the mp used for that creature
    * When going up or down stairs, if there are no monsters in sight, summons automatically follow you.
-
-
 
 Pan has been shortened
    * All 4 rune floors are guanteed within the first 25 floors.

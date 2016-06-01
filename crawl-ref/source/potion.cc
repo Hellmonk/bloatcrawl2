@@ -239,37 +239,17 @@ public:
             return false;
         }
 
-        int minimum_healing;
-        switch(crawl_state.difficulty)
-        {
-            case DIFFICULTY_EASY:
-                minimum_healing = 30;
-                break;
-            case DIFFICULTY_STANDARD:
-                minimum_healing = 20;
-                break;
-            case DIFFICULTY_CHALLENGE:
-                minimum_healing = 10;
-                break;
-            case DIFFICULTY_NIGHTMARE:
-                minimum_healing = 5;
-                break;
-            default:
-                // should not be possible
-                break;
-        }
+        int amount = player_potion_recharge_percent() * get_hp_max() / 100;
 
-        int amount = 0;
         if (is_device)
         {
-            amount = you.scale_device_healing(10 + random2avg(28, 3));
-            mprf("You feel better. (hp+%d)", amount);
+            amount = you.scale_device_healing(amount);
+            amount = power * amount / 30;
         }
-        else
-        {
-            amount = minimum_healing + random2avg(28, 3);
-            mprf("You feel better. (hp+%d)", amount);
-        }
+
+        amount = max(20, amount);
+
+        mprf("You feel better. (hp+%d)", amount);
 
         // Pay for rot right off the top.
         amount = unrot_hp(amount);
@@ -717,28 +697,11 @@ public:
             return PotionHealWounds::instance().effect(true, pow, false);
         }
 
-        int amount = 0;
-        switch(crawl_state.difficulty)
-        {
-            case DIFFICULTY_EASY:
-                amount = 60;
-                break;
-            case DIFFICULTY_STANDARD:
-                amount = 40;
-                break;
-            case DIFFICULTY_CHALLENGE:
-                amount = 30;
-                break;
-            case DIFFICULTY_NIGHTMARE:
-                amount = 20;
-                break;
-            default:
-                // should not be possible
-                break;
-        }
+        int amount = player_potion_recharge_percent() * get_mp_max() / 100;
+        amount = max(20, amount);
 
         inc_mp(amount);
-        mprf("Magic courses through your body. (MP+%d)", amount);
+        mprf("Magic courses through your body. (mp+%d)", amount);
         return true;
     }
 };
@@ -779,31 +742,12 @@ public:
 
         int amount = 0;
 
-        /*
-        switch(crawl_state.difficulty)
-        {
-            case DIFFICULTY_EASY:
-                amount = 60;
-                break;
-            case DIFFICULTY_STANDARD:
-                amount = 40;
-                break;
-            case DIFFICULTY_CHALLENGE:
-                amount = 30;
-                break;
-            case DIFFICULTY_NIGHTMARE:
-                amount = 20;
-                break;
-            default:
-                // should not be possible
-                break;
-        }
-         */
-        amount = 20 + random2(50);
+        amount = player_potion_recharge_percent() * get_sp_max() / 100;
         dec_exhaust_player(1000);
+        amount = max(20, amount);
 
         inc_sp(amount);
-        mprf("This potion tastes like fruit juice. Energy courses through your body! (SP+%d)", amount);
+        mprf("Energy courses through your body! (sp+%d)", amount);
         return true;
     }
 };

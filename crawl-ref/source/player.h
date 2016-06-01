@@ -1245,17 +1245,20 @@ int player_stealth_modifier(int old_stealth);
 int player_ev_modifier(int ev);
 int player_sh_modifier(int sh);
 int player_ac_modifier(int ac);
+int player_mr_modifier(int mr);
 int player_item_gen_modifier(int item_count);
+int player_max_stat_loss_allowed(stat_type stat);
 void player_update_last_be_hit_chance(int chance);
 void player_update_last_to_hit_chance(int chance);
 int player_pool_modifier(int amount);
-void summoned_monster_died(monster* mons, bool natural_death);
+void summoned_monster_died(mid_t mons, int mp_freeze, bool natural_death);
 bool player_summoned_monster(spell_type spell, monster* mons, bool first);
 int player_monster_gen_modifier(int amount);
+int player_potion_recharge_percent();
 int player_ouch_modifier(int damage);
 int player_summon_count();
 void attempt_instant_rest();
-void monster_died(monster* mons, killer_type killer);
+void monster_died(mid_t mons_mid, bool was_hostile_and_seen, int mp_freeze, killer_type killer);
 void after_floor_change();
 
 #endif

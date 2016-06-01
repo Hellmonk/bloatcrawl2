@@ -833,32 +833,42 @@ bool player::can_go_berserk(bool intentional, bool potion, bool quiet,
     string msg;
     bool success = false;
 
-    if (berserk())
-        msg = "You're already berserk!";
-    else if (duration[DUR_EXHAUSTED])
-         msg = "You're too exhausted to go berserk.";
-    else if (get_sp() < 50 && !potion)
-        msg = "You are too tired to berserk now.";
-    else if (duration[DUR_DEATHS_DOOR])
-        msg = "You can't enter a blood rage from death's door.";
-    else if (beheld() && !player_equip_unrand(UNRAND_DEMON_AXE))
-        msg = "You are too mesmerised to rage.";
-    else if (afraid())
-        msg = "You are too terrified to rage.";
-    else if (is_lifeless_undead())
-        msg = "You cannot raise a blood rage in your lifeless body.";
-    // Stasis for identified amulets; unided amulets will trigger when the
-    // player attempts to activate berserk.
-    else if (stasis(false))
-        msg = "You cannot go berserk while under stasis.";
-    else if (!intentional && !potion && clarity())
-        msg = "You're too calm and focused to rage.";
-    else if (hunger <= HUNGER_VERY_HUNGRY)
-        msg = "You're too hungry to go berserk.";
-    else
-        success = true;
+    if (!potion)
+    {
+        if (duration[DUR_EXHAUSTED])
+            msg = "You're too exhausted to go berserk.";
+        else if (get_sp() < 50)
+            msg = "You are too tired to berserk now.";
+        else if (!intentional && !potion && clarity())
+            msg = "You're too calm and focused to rage.";
+        else
+            success = true;
+    }
 
-    if (!success)
+    if (success)
+    {
+        success = false;
+        if (berserk())
+            msg = "You're already berserk!";
+        else if (duration[DUR_DEATHS_DOOR])
+            msg = "You can't enter a blood rage from death's door.";
+        else if (beheld() && !player_equip_unrand(UNRAND_DEMON_AXE))
+            msg = "You are too mesmerised to rage.";
+        else if (afraid())
+            msg = "You are too terrified to rage.";
+        else if (is_lifeless_undead())
+            msg = "You cannot raise a blood rage in your lifeless body.";
+            // Stasis for identified amulets; unided amulets will trigger when the
+            // player attempts to activate berserk.
+        else if (stasis(false))
+            msg = "You cannot go berserk while under stasis.";
+        else if (hunger <= HUNGER_VERY_HUNGRY)
+            msg = "You're too hungry to go berserk.";
+        else
+            success = true;
+    }
+
+    if (success)
     {
         if (verbose)
             mpr(msg);

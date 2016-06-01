@@ -468,6 +468,16 @@ static void _free_up_slot(bool consumable, char letter)
     }
 }
 
+void _make_potions(const potion_type &potion)
+{
+    if (crawl_state.difficulty <= DIFFICULTY_EASY)
+                newgame_make_item(OBJ_POTIONS, potion);
+    if (crawl_state.difficulty <= DIFFICULTY_STANDARD)
+                newgame_make_item(OBJ_POTIONS, potion);
+    if (crawl_state.difficulty <= DIFFICULTY_CHALLENGE)
+                newgame_make_item(OBJ_POTIONS, potion);
+}
+
 static void _setup_generic(const newgame_def& ng)
 {
     _init_player();
@@ -508,14 +518,14 @@ static void _setup_generic(const newgame_def& ng)
     if (crawl_state.game_is_sprint())
         _give_bonus_items();
 
-    if (you.species != SP_MUMMY && you.species != SP_VINE_STALKER)
+    if (you.species != SP_MUMMY)
     {
-        if (crawl_state.difficulty <= DIFFICULTY_EASY)
-            newgame_make_item(OBJ_POTIONS, POT_HEAL_WOUNDS);
-        if (crawl_state.difficulty <= DIFFICULTY_STANDARD)
-            newgame_make_item(OBJ_POTIONS, POT_HEAL_WOUNDS);
-        if (crawl_state.difficulty <= DIFFICULTY_CHALLENGE)
-            newgame_make_item(OBJ_POTIONS, POT_HEAL_WOUNDS);
+        if (you.species != SP_VINE_STALKER)
+        {
+            _make_potions(POT_HEAL_WOUNDS);
+        }
+        _make_potions(POT_STAMINA);
+        _make_potions(POT_MAGIC);
     }
 
     if (you.species == SP_FORMICID)

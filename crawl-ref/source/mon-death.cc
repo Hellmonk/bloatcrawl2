@@ -1803,6 +1803,9 @@ item_def* monster_die(monster* mons, killer_type killer,
         mons->flags &= ~MF_BANISHED;
 
     const bool spectralised = testbits(mons->flags, MF_SPECTRALISED);
+    const bool was_hostile_and_seen = mons->flags & MF_SEEN && mons->attitude == ATT_HOSTILE;
+    const int mp_freeze = mons->mp_freeze;
+    const mid_t mons_mid = mons->mid;
 
     if (!silent && !fake
         && _monster_avoided_death(mons, killer, killer_index))
@@ -2753,7 +2756,7 @@ item_def* monster_die(monster* mons, killer_type killer,
     {
         _give_experience(player_xp, monster_xp, killer, killer_index, pet_kill,
                          was_visible);
-        monster_died(mons, killer);
+        monster_died(mons_mid, was_hostile_and_seen, mp_freeze, killer);
     }
 
     return corpse;

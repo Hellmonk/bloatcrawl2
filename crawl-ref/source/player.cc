@@ -2908,7 +2908,7 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
         {
             int loss = div_rand_round(exp_gained * 3 / 2,
                                       max(1, calc_skill_cost(you.skill_cost_level) - 3));
-            you.attribute[ATTR_STAT_LOSS_XP] -= loss;
+            you.attribute[ATTR_STAT_LOSS_XP] -= loss * (2 + player_sust_attr() ? 2 : 0);
             dprf("Stat loss points: %d", you.attribute[ATTR_STAT_LOSS_XP]);
             if (you.attribute[ATTR_STAT_LOSS_XP] <= 0)
                 _recover_stat();
@@ -4438,6 +4438,12 @@ void set_quick_mode(const bool new_quick_mode, const bool manual)
 {
     if (new_quick_mode == in_quick_mode())
         return;
+
+    if (you.religion == GOD_CHEIBRIADOS && new_quick_mode)
+    {
+        mprf("Cheibriados prevents you from entering quick mode.");
+        return;
+    }
 
     if (manual)
     {
@@ -7331,6 +7337,8 @@ int player_res_magic(bool calc_unid, bool temp)
     if (rm < 0)
         rm = 0;
 
+    rm = player_mr_modifier(rm);
+
     return rm;
 }
 
@@ -9580,19 +9588,17 @@ const int rune_curse_depth_adjust(int depth)
     return depth;
 }
 
-void summoned_monster_died(monster* mons, bool natural_death)
+void summoned_monster_died(mid_t mons, int mp_freeze, bool natural_death)
 {
-    const int mp_cost = mons->mp_freeze;
-    unfreeze_summons_mp(mp_cost);
-    mons->mp_freeze = 0;
-    int mp_recovered = mp_cost;
+    unfreeze_summons_mp(mp_freeze);
+    int mp_recovered = mp_freeze;
     if (natural_death)
     {
         mp_recovered = div_rand_round(mp_recovered, 3);
     }
     inc_mp(mp_recovered);
 
-    remove_from_summoned(mons->mid);
+    remove_from_summoned(mons);
 }
 
 void remove_from_summoned(mid_t mid)
@@ -9672,6 +9678,8 @@ int generic_action_delay(const int skill, const int base, const action_delay_typ
 {
     const int dex = (you.dex(true) - 10) * 10;
     const int min_delay_reached_at = 60;
+    // 100 is full amount, 80 = 80% of original
+    const int global_reduction = 80;
 
     const int factor = (min_delay_reached_at - 10) * 10;
 
@@ -9685,7 +9693,7 @@ int generic_action_delay(const int skill, const int base, const action_delay_typ
     if (type == ACTION_DELAY_MIN)
         benefit = factor;
 
-    int delay = base * (factor * 2 - benefit) / (factor * 2);
+    int delay = global_reduction * base * (factor * 2 - benefit) / (factor * 2) / 100;
     delay = player_attack_delay_modifier(delay);
     return delay;
 }
@@ -10005,36 +10013,6 @@ int player_spellpower_modifier(int spellpower)
     return spellpower / base_factor;
 }
 
-int player_spellsuccess_modifier(int force)
-{
-    switch(crawl_state.difficulty)
-    {
-        case DIFFICULTY_EASY:
-            force -= 1;
-            break;
-        case DIFFICULTY_STANDARD:
-            force -= 2;
-            break;
-        case DIFFICULTY_CHALLENGE:
-            force -= 3;
-            break;
-        case DIFFICULTY_NIGHTMARE:
-            force -= 4;
-            break;
-        default:
-            // should not be possible
-            force -= 2;
-            break;
-    }
-
-    if (player_is_exhausted(true))
-        force -= 5;
-    else if (you.exertion == EXERT_FOCUS || Options.exertion_disabled)
-        force += 5;
-
-    return force;
-}
-
 int player_stealth_modifier(int stealth)
 {
     stealth *= _difficulty_mode_multiplier();
@@ -10083,6 +10061,48 @@ int player_sh_modifier(int sh)
     return sh / base_factor;
 }
 
+int player_mr_modifier(int mr)
+{
+    mr *= _difficulty_mode_multiplier();
+
+    if (player_is_exhausted(true))
+        mr = mr * 4 / 5;
+    else if (you.exertion == EXERT_FOCUS && mr > 0)
+        mr = mr * 5 / 4 + 1000;
+
+    return mr / base_factor;
+}
+
+int player_spellsuccess_modifier(int force)
+{
+    switch(crawl_state.difficulty)
+    {
+        case DIFFICULTY_EASY:
+            force -= 1;
+            break;
+        case DIFFICULTY_STANDARD:
+            force -= 2;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            force -= 3;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            force -= 4;
+            break;
+        default:
+            // should not be possible
+            force -= 2;
+            break;
+    }
+
+    if (player_is_exhausted(true))
+        force -= 5;
+    else if (you.exertion == EXERT_FOCUS || Options.exertion_disabled)
+        force += 5;
+
+    return force;
+}
+
 int player_item_gen_modifier(int item_count)
 {
     int x;
@@ -10106,33 +10126,9 @@ int player_item_gen_modifier(int item_count)
             break;
     }
 
-    item_count = item_count * x / 100;
+    item_count = div_rand_round(item_count * x, 100);
 
     return item_count;
-}
-
-void player_update_last_be_hit_chance(int chance)
-{
-    if (chance < 0)
-        chance = 0;
-
-    if (chance > 99)
-        chance = 99;
-
-    you.last_be_hit_chance = chance;
-    you.redraw_hit_chance = true;
-}
-
-void player_update_last_to_hit_chance(int chance)
-{
-    if (chance < 0)
-        chance = 0;
-
-    if (chance > 99)
-        chance = 99;
-
-    you.last_to_hit_chance = chance;
-    you.redraw_hit_chance = true;
 }
 
 // used for pool sizes. Generic way to scale something based on difficulty
@@ -10188,6 +10184,35 @@ int player_monster_gen_modifier(int amount)
     return amount * percent / 100;
 }
 
+int player_potion_recharge_percent()
+{
+    int percent = 60;
+
+    switch (crawl_state.difficulty)
+    {
+        case DIFFICULTY_EASY:
+            percent = 80;
+            break;
+        case DIFFICULTY_STANDARD:
+            percent = 60;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            percent = 40;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            percent = 20;
+            break;
+        default:
+            // should not be possible
+            break;
+    }
+
+    if (you.species == SP_DJINNI)
+        percent /= 3;
+
+    return percent;
+}
+
 // reduce damage to player if it has exceeded protection thresholds (to avoid 1 hit kills for example)
 int player_ouch_modifier(int damage)
 {
@@ -10228,6 +10253,61 @@ int player_ouch_modifier(int damage)
     damage = max(0, damage);
 
     return damage;
+}
+
+int player_max_stat_loss_allowed(stat_type stat)
+{
+    const int max_stat = you.max_stat(stat);
+    int max_stat_loss = max_stat;
+
+    int percentage_allowed = 20;
+    switch (crawl_state.difficulty)
+    {
+        case DIFFICULTY_EASY:
+            percentage_allowed = 20;
+            break;
+        case DIFFICULTY_STANDARD:
+            percentage_allowed = 30;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            percentage_allowed = 40;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            percentage_allowed = 50;
+            break;
+        default:
+            // should not be possible
+            break;
+    }
+
+    max_stat_loss = percentage_allowed * max_stat_loss / 100;
+    max_stat_loss = max(max_stat_loss, max_stat - (9 - crawl_state.difficulty * 2));
+
+    return max_stat_loss;
+}
+
+void player_update_last_be_hit_chance(int chance)
+{
+    if (chance < 0)
+        chance = 0;
+
+    if (chance > 99)
+        chance = 99;
+
+    you.last_be_hit_chance = chance;
+    you.redraw_hit_chance = true;
+}
+
+void player_update_last_to_hit_chance(int chance)
+{
+    if (chance < 0)
+        chance = 0;
+
+    if (chance > 99)
+        chance = 99;
+
+    you.last_to_hit_chance = chance;
+    you.redraw_hit_chance = true;
 }
 
 bool instant_resting = false;
@@ -10371,17 +10451,17 @@ void attempt_instant_rest()
     }
 }
 
-void monster_died(monster* mons, killer_type killer)
+void monster_died(mid_t mons_mid, bool was_hostile_and_seen, int mp_freeze, killer_type killer)
 {
-    if (mons->flags & MF_SEEN && mons->attitude == ATT_HOSTILE)
+    if (was_hostile_and_seen)
     {
         you.monsters_recently_seen--;
         ldprf(LD_INSTAREST, "Hostile seen monster died. recently_seen = %d", you.monsters_recently_seen);
         attempt_instant_rest();
     }
 
-    if (mons->mp_freeze)
-        summoned_monster_died(mons, killer != KILL_RESET);
+    if (mp_freeze)
+        summoned_monster_died(mons_mid, mp_freeze, killer != KILL_RESET);
 }
 
 void after_floor_change()

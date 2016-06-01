@@ -55,7 +55,7 @@
 
 * Quick mode
     * Movement speed is either 0.9 or the normal speed of the species, whichever is faster
-    * Costs 5 SP per movement
+    * Costs 2 SP per movement, but increases if the player is encumbered by heavy armour or a shield
     
 * Slow mode (normal speed)
     * Movement speed is 1.1
@@ -72,4 +72,6 @@
     * Increased accuracy
     * Lower spell failure rate
     * Increased stealth
+    * Increased magic resistance
+    
     

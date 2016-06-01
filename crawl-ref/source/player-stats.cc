@@ -536,8 +536,7 @@ bool lose_stat(stat_type which_stat, int stat_loss, bool force)
 
     if (stat_loss > 0)
     {
-        you.stat_loss[which_stat] = min<int>(100,
-                                        you.stat_loss[which_stat] + stat_loss);
+        you.stat_loss[which_stat] = min<int>(player_max_stat_loss_allowed(which_stat), you.stat_loss[which_stat] + stat_loss);
         if (!you.attribute[ATTR_STAT_LOSS_XP])
             you.attribute[ATTR_STAT_LOSS_XP] = stat_loss_roll();
         _handle_stat_change(which_stat);
