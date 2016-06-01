@@ -1245,6 +1245,7 @@ int player_stealth_modifier(int old_stealth);
 int player_ev_modifier(int ev);
 int player_sh_modifier(int sh);
 int player_ac_modifier(int ac);
+int player_mr_modifier(int mr);
 int player_item_gen_modifier(int item_count);
 void player_update_last_be_hit_chance(int chance);
 void player_update_last_to_hit_chance(int chance);

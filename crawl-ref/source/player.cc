@@ -7331,6 +7331,8 @@ int player_res_magic(bool calc_unid, bool temp)
     if (rm < 0)
         rm = 0;
 
+    rm = player_mr_modifier(rm);
+
     return rm;
 }
 
@@ -10051,6 +10053,18 @@ int player_sh_modifier(int sh)
         sh = sh * 6 / 5 + 500;
 
     return sh / base_factor;
+}
+
+int player_mr_modifier(int mr)
+{
+    mr *= _difficulty_mode_multiplier();
+
+    if (player_is_exhausted(true))
+        mr = mr * 4 / 5;
+    else if (you.exertion == EXERT_FOCUS && mr > 0)
+        mr = mr * 5 / 4 + 1000;
+
+    return mr / base_factor;
 }
 
 int player_spellsuccess_modifier(int force)
