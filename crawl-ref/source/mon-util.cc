@@ -2758,13 +2758,11 @@ void define_monster(monster* mons, beh_type behavior)
     // Some calculations.
     if (hp == 0)
         hp = hit_points(m->avg_hp_10x);
-    const int hp_max = hp;
 
-    if (behavior == BEH_HOSTILE)
-    {
-        hd = rune_curse_hd_adjust(hd);
-        hp = rune_curse_hp_adjust(hp);
-    }
+    hd = rune_curse_hd_adjust(hd);
+    hp = rune_curse_hp_adjust(hp);
+
+    const int hp_max = hp;
 
     // So let it be written, so let it be done.
     mons->set_hit_dice(hd);

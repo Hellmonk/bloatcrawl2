@@ -1210,7 +1210,7 @@ int main(int argc, char* argv[])
         record_resist(c, #x, monsterresistances, monstervulnerabilities, y);   \
     } while (false)
 
-        // Don't record regular rF as damnation vulnerability.
+        // Don't record regular rF as hellfire vulnerability.
         res(RED, FIRE);
         res(RED, HELLFIRE);
         res(BLUE, COLD);
