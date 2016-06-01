@@ -330,7 +330,7 @@ static const ability_def Ability_List[] =
     // use or train Evocations (the others do).  -- bwr
     { ABIL_EVOKE_BLINK, "Evoke Blink",
       1, 0, 50, 0, {FAIL_EVO, 40, 2}, abflag::NONE },
-    { ABIL_RECHARGING_BASIC, "Lesser Device Recharging",
+    { ABIL_RECHARGING_BASIC, "Device Recharging",
       1, 0, 0, 0, {FAIL_XL, 45, 2}, abflag::PERMANENT_MP },
 	{ ABIL_RECHARGING_ADVANCED, "Greater Device Recharging",
 	  3, 0, 0, 0, {FAIL_XL, 45, 2}, abflag::PERMANENT_MP },
@@ -3406,7 +3406,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     if (you.species == SP_DEEP_DWARF)
     {
         _add_talent(talents, ABIL_RECHARGING_BASIC, check_confused);
+        /* Not needed anymore
         _add_talent(talents, ABIL_RECHARGING_ADVANCED, check_confused);
+         */
     }
 
     if (you.species == SP_DJINNI)

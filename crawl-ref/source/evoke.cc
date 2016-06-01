@@ -804,7 +804,10 @@ int recharge_wand(recharge_type rechargeType, bool known, const string &pre_msg,
 
         if (wand.base_type == OBJ_WANDS)
         {
+            /* old way
             const int gain_charges = min(wand_max_charges(wand) / 2 + 1, wand.get_cap() - wand.charges);
+             */
+            const int gain_charges = wand.get_cap() - wand.charges;
             const int new_charges = wand.charges + gain_charges;
 //            if (rechargeType != RECHARGE_TYPE_PAKELLAS)
                 wand.set_cap(max(2, wand.get_cap() - gain_charges / 2));
