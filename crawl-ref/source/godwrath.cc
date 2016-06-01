@@ -860,7 +860,7 @@ static bool _trog_retribution()
 
         case 1:
         case 2:
-            lose_stat(STAT_STR, 1 + random2(you.strength() / 3));
+            lose_stat(STAT_STR, 1 + random2(you.strength() / 8));
             break;
 
         case 3:
