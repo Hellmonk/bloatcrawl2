@@ -9545,7 +9545,7 @@ const int rune_curse_hd_adjust(int hd, bool absolute)
     const game_difficulty_level difficulty = crawl_state.difficulty;
     int multiplier = difficulty + 1;
     
-    hd = hd + div_rand_round(runes * multiplier, 4);
+    hd = hd + div_rand_round(runes * multiplier, 6);
     if (absolute && hd > 1)
     {
         hd = hd + difficulty - 2;
@@ -9558,7 +9558,7 @@ const int rune_curse_hd_adjust(int hd, bool absolute)
 const int rune_curse_hp_adjust(int hp, bool absolute)
 {
     const int runes = runes_in_pack();
-    hp = qpow(hp, 200 + crawl_state.difficulty + 1, 200, runes, false);
+    hp = qpow(hp, 100 + crawl_state.difficulty + 1, 100, runes, false);
     return hp;
 }
 
@@ -9566,7 +9566,7 @@ const int rune_curse_dam_adjust(int dam, bool absolute)
 {
     const int runes = runes_in_pack();
     if (runes > 0 && dam != INSTANT_DEATH)
-        dam = qpow(dam, 200 + crawl_state.difficulty + 1, 200, runes, false);
+        dam = qpow(dam, 100 + crawl_state.difficulty + 1, 100, runes, false);
     return dam;
 }
 
@@ -9878,27 +9878,28 @@ int _difficulty_mode_adder()
 {
     int x = 0;
 
-    if (!Options.exertion_disabled)
-        switch(crawl_state.difficulty)
-        {
-            // yes, easy mode actually gets a boost when exhausted...
-            case DIFFICULTY_EASY:
-                x = 1;
-                break;
-            case DIFFICULTY_STANDARD:
-                x = 0;
-                break;
-            case DIFFICULTY_CHALLENGE:
-                x = -1;
-                break;
-            case DIFFICULTY_NIGHTMARE:
-                x = -2;
-                break;
-            default:
-                // should not be possible
-                x = 0;
-                break;
-        }
+    switch(crawl_state.difficulty)
+    {
+        case DIFFICULTY_EASY:
+            x = 1;
+            break;
+        case DIFFICULTY_STANDARD:
+            x = 0;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            x = -1;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            x = -2;
+            break;
+        default:
+            // should not be possible
+            x = 0;
+            break;
+    }
+
+    if (Options.exertion_disabled)
+        x += 1;
 
     return x;
 }
@@ -9913,7 +9914,6 @@ int _difficulty_mode_multiplier()
 
     switch(crawl_state.difficulty)
     {
-        // yes, easy mode actually gets a boost when exhausted...
         case DIFFICULTY_EASY:
             x = 110;
             break;
@@ -9934,9 +9934,9 @@ int _difficulty_mode_multiplier()
 
     if (Options.exertion_disabled)
     {
-        // bring nightmare mode back to baseline if player isn't
+        // bring challenge mode back to baseline if player isn't
         // using exertion modes
-        x += 20;
+        x += 10;
     }
 
     return x;
@@ -9954,14 +9954,13 @@ int player_tohit_modifier(int tohit, int range)
 
     tohit += _difficulty_mode_adder();
 
-    // worst case, range 7, gives 40% of original tohit, which should give about 80% chance of hitting
     if (range > 1)
-        tohit = tohit - 2 * range;
+        tohit = tohit - 3 * range;
 
     if (player_is_exhausted(true))
-        tohit = tohit - 5;
+        tohit = tohit - 10;
     else if (you.exertion == EXERT_FOCUS)
-        tohit = tohit + 5;
+        tohit = tohit + 10;
 
     return tohit;
 }
@@ -10008,36 +10007,29 @@ int player_spellpower_modifier(int spellpower)
 
 int player_spellsuccess_modifier(int force)
 {
-    if (!Options.exertion_disabled)
-        switch(crawl_state.difficulty)
-        {
-            // yes, easy mode actually gets a boost when exhausted...
-            case DIFFICULTY_EASY:
-                force -= 0;
-                break;
-            case DIFFICULTY_STANDARD:
-                force -= 1;
-                break;
-            case DIFFICULTY_CHALLENGE:
-                force -= 2;
-                break;
-            case DIFFICULTY_NIGHTMARE:
-                force -= 3;
-                break;
-            default:
-                // should not be possible
-                force -= 1;
-                break;
-        }
-    else
+    switch(crawl_state.difficulty)
     {
-        // same as playing challenge mode with focus on
-        force += 3;
+        case DIFFICULTY_EASY:
+            force -= 1;
+            break;
+        case DIFFICULTY_STANDARD:
+            force -= 2;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            force -= 3;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            force -= 4;
+            break;
+        default:
+            // should not be possible
+            force -= 2;
+            break;
     }
 
     if (player_is_exhausted(true))
         force -= 5;
-    else if (you.exertion == EXERT_FOCUS)
+    else if (you.exertion == EXERT_FOCUS || Options.exertion_disabled)
         force += 5;
 
     return force;
@@ -10177,16 +10169,16 @@ int player_monster_gen_modifier(int amount)
     switch (crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            percent = 90;
+            percent = 80;
             break;
         case DIFFICULTY_STANDARD:
-            percent = 100;
+            percent = 90;
             break;
         case DIFFICULTY_CHALLENGE:
-            percent = 110;
+            percent = 100;
             break;
         case DIFFICULTY_NIGHTMARE:
-            percent = 120;
+            percent = 110;
             break;
         default:
             // should not be possible
@@ -10216,7 +10208,7 @@ int player_ouch_modifier(int damage)
             percentage_allowed = 40;
             break;
         case DIFFICULTY_NIGHTMARE:
-            percentage_allowed = 80;
+            percentage_allowed = 50;
             break;
         default:
             // should not be possible
