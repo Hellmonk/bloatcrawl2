@@ -9588,19 +9588,17 @@ const int rune_curse_depth_adjust(int depth)
     return depth;
 }
 
-void summoned_monster_died(monster* mons, bool natural_death)
+void summoned_monster_died(mid_t mons, int mp_freeze, bool natural_death)
 {
-    const int mp_cost = mons->mp_freeze;
-    unfreeze_summons_mp(mp_cost);
-    mons->mp_freeze = 0;
-    int mp_recovered = mp_cost;
+    unfreeze_summons_mp(mp_freeze);
+    int mp_recovered = mp_freeze;
     if (natural_death)
     {
         mp_recovered = div_rand_round(mp_recovered, 3);
     }
     inc_mp(mp_recovered);
 
-    remove_from_summoned(mons->mid);
+    remove_from_summoned(mons);
 }
 
 void remove_from_summoned(mid_t mid)
@@ -10453,17 +10451,17 @@ void attempt_instant_rest()
     }
 }
 
-void monster_died(monster* mons, killer_type killer)
+void monster_died(mid_t mons_mid, bool was_hostile_and_seen, int mp_freeze, killer_type killer)
 {
-    if (mons->flags & MF_SEEN && mons->attitude == ATT_HOSTILE)
+    if (was_hostile_and_seen)
     {
         you.monsters_recently_seen--;
         ldprf(LD_INSTAREST, "Hostile seen monster died. recently_seen = %d", you.monsters_recently_seen);
         attempt_instant_rest();
     }
 
-    if (mons->mp_freeze)
-        summoned_monster_died(mons, killer != KILL_RESET);
+    if (mp_freeze)
+        summoned_monster_died(mons_mid, mp_freeze, killer != KILL_RESET);
 }
 
 void after_floor_change()
