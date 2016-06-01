@@ -10251,7 +10251,8 @@ int player_ouch_modifier(int damage)
 
 int player_max_stat_loss_allowed(stat_type stat)
 {
-    int max_stat_loss = you.max_stat(stat);
+    const int max_stat = you.max_stat(stat);
+    int max_stat_loss = max_stat;
 
     int percentage_allowed = 20;
     switch (crawl_state.difficulty)
@@ -10274,6 +10275,7 @@ int player_max_stat_loss_allowed(stat_type stat)
     }
 
     max_stat_loss = percentage_allowed * max_stat_loss / 100;
+    max_stat_loss = max(max_stat_loss, max_stat - 5);
 
     return max_stat_loss;
 }
