@@ -474,7 +474,6 @@ int raw_spell_fail(spell_type spell)
     const int vertigo = you.duration[DUR_VERTIGO] ? 1 : 0;
     const int wild = player_mutation_level(MUT_WILD_MAGIC);
     const int dex = you.dex(true);
-    const int spellcasting_skill = you.skill(SK_SPELLCASTING, 10);
     const int subdued = player_mutation_level(MUT_SUBDUED_MAGIC);
     const int high_council = player_equip_unrand(UNRAND_HIGH_COUNCIL);
     const int player_success = player_spellsuccess_modifier(0);

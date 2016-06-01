@@ -9915,16 +9915,16 @@ int _difficulty_mode_multiplier()
     switch(crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            x = 110;
-            break;
-        case DIFFICULTY_STANDARD:
             x = 100;
             break;
-        case DIFFICULTY_CHALLENGE:
+        case DIFFICULTY_STANDARD:
             x = 90;
             break;
-        case DIFFICULTY_NIGHTMARE:
+        case DIFFICULTY_CHALLENGE:
             x = 80;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            x = 70;
             break;
         default:
             // should not be possible
@@ -10092,13 +10092,13 @@ int player_item_gen_modifier(int item_count)
             x = 120;
             break;
         case DIFFICULTY_STANDARD:
-            x = 110;
-            break;
-        case DIFFICULTY_CHALLENGE:
             x = 100;
             break;
+        case DIFFICULTY_CHALLENGE:
+            x = 80;
+            break;
         case DIFFICULTY_NIGHTMARE:
-            x = 90;
+            x = 60;
             break;
         default:
             // should not be possible
