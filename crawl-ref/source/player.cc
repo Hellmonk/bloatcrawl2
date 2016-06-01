@@ -10275,7 +10275,7 @@ int player_max_stat_loss_allowed(stat_type stat)
     }
 
     max_stat_loss = percentage_allowed * max_stat_loss / 100;
-    max_stat_loss = max(max_stat_loss, max_stat - 5);
+    max_stat_loss = max(max_stat_loss, max_stat - (9 - crawl_state.difficulty * 2));
 
     return max_stat_loss;
 }
