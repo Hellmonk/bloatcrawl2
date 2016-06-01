@@ -10106,7 +10106,7 @@ int player_item_gen_modifier(int item_count)
             break;
     }
 
-    item_count = item_count * x / 100;
+    item_count = div_rand_round(item_count * x, 100);
 
     return item_count;
 }
