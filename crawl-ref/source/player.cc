@@ -9674,6 +9674,8 @@ int generic_action_delay(const int skill, const int base, const action_delay_typ
 {
     const int dex = (you.dex(true) - 10) * 10;
     const int min_delay_reached_at = 60;
+    // 100 is full amount, 80 = 80% of original
+    const int global_reduction = 80;
 
     const int factor = (min_delay_reached_at - 10) * 10;
 
@@ -9687,7 +9689,7 @@ int generic_action_delay(const int skill, const int base, const action_delay_typ
     if (type == ACTION_DELAY_MIN)
         benefit = factor;
 
-    int delay = base * (factor * 2 - benefit) / (factor * 2);
+    int delay = global_reduction * base * (factor * 2 - benefit) / (factor * 2) / 100;
     delay = player_attack_delay_modifier(delay);
     return delay;
 }
