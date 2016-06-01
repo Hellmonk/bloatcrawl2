@@ -4439,6 +4439,12 @@ void set_quick_mode(const bool new_quick_mode, const bool manual)
     if (new_quick_mode == in_quick_mode())
         return;
 
+    if (you.religion == GOD_CHEIBRIADOS && new_quick_mode)
+    {
+        mprf("Cheibriados prevents you from entering quick mode.");
+        return;
+    }
+
     if (manual)
     {
         if (new_quick_mode)
