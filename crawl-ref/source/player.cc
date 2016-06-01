@@ -10005,36 +10005,6 @@ int player_spellpower_modifier(int spellpower)
     return spellpower / base_factor;
 }
 
-int player_spellsuccess_modifier(int force)
-{
-    switch(crawl_state.difficulty)
-    {
-        case DIFFICULTY_EASY:
-            force -= 1;
-            break;
-        case DIFFICULTY_STANDARD:
-            force -= 2;
-            break;
-        case DIFFICULTY_CHALLENGE:
-            force -= 3;
-            break;
-        case DIFFICULTY_NIGHTMARE:
-            force -= 4;
-            break;
-        default:
-            // should not be possible
-            force -= 2;
-            break;
-    }
-
-    if (player_is_exhausted(true))
-        force -= 5;
-    else if (you.exertion == EXERT_FOCUS || Options.exertion_disabled)
-        force += 5;
-
-    return force;
-}
-
 int player_stealth_modifier(int stealth)
 {
     stealth *= _difficulty_mode_multiplier();
@@ -10083,6 +10053,36 @@ int player_sh_modifier(int sh)
     return sh / base_factor;
 }
 
+int player_spellsuccess_modifier(int force)
+{
+    switch(crawl_state.difficulty)
+    {
+        case DIFFICULTY_EASY:
+            force -= 1;
+            break;
+        case DIFFICULTY_STANDARD:
+            force -= 2;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            force -= 3;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            force -= 4;
+            break;
+        default:
+            // should not be possible
+            force -= 2;
+            break;
+    }
+
+    if (player_is_exhausted(true))
+        force -= 5;
+    else if (you.exertion == EXERT_FOCUS || Options.exertion_disabled)
+        force += 5;
+
+    return force;
+}
+
 int player_item_gen_modifier(int item_count)
 {
     int x;
@@ -10109,30 +10109,6 @@ int player_item_gen_modifier(int item_count)
     item_count = div_rand_round(item_count * x, 100);
 
     return item_count;
-}
-
-void player_update_last_be_hit_chance(int chance)
-{
-    if (chance < 0)
-        chance = 0;
-
-    if (chance > 99)
-        chance = 99;
-
-    you.last_be_hit_chance = chance;
-    you.redraw_hit_chance = true;
-}
-
-void player_update_last_to_hit_chance(int chance)
-{
-    if (chance < 0)
-        chance = 0;
-
-    if (chance > 99)
-        chance = 99;
-
-    you.last_to_hit_chance = chance;
-    you.redraw_hit_chance = true;
 }
 
 // used for pool sizes. Generic way to scale something based on difficulty
@@ -10188,6 +10164,35 @@ int player_monster_gen_modifier(int amount)
     return amount * percent / 100;
 }
 
+int player_potion_recharge_percent()
+{
+    int percent = 60;
+
+    switch (crawl_state.difficulty)
+    {
+        case DIFFICULTY_EASY:
+            percent = 80;
+            break;
+        case DIFFICULTY_STANDARD:
+            percent = 60;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            percent = 40;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            percent = 20;
+            break;
+        default:
+            // should not be possible
+            break;
+    }
+
+    if (you.species == SP_DJINNI)
+        percent /= 3;
+
+    return percent;
+}
+
 // reduce damage to player if it has exceeded protection thresholds (to avoid 1 hit kills for example)
 int player_ouch_modifier(int damage)
 {
@@ -10228,6 +10233,30 @@ int player_ouch_modifier(int damage)
     damage = max(0, damage);
 
     return damage;
+}
+
+void player_update_last_be_hit_chance(int chance)
+{
+    if (chance < 0)
+        chance = 0;
+
+    if (chance > 99)
+        chance = 99;
+
+    you.last_be_hit_chance = chance;
+    you.redraw_hit_chance = true;
+}
+
+void player_update_last_to_hit_chance(int chance)
+{
+    if (chance < 0)
+        chance = 0;
+
+    if (chance > 99)
+        chance = 99;
+
+    you.last_to_hit_chance = chance;
+    you.redraw_hit_chance = true;
 }
 
 bool instant_resting = false;
