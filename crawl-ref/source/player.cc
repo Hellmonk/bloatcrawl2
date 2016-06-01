@@ -2825,6 +2825,9 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
         && !player_in_branch(BRANCH_ABYSS)
         || !from_monster;
 
+    if (!can_gain_experience_here)
+        skip_training = true;
+
     if (can_gain_experience_here)
     {
         int adjusted_gain = exp_gained;
