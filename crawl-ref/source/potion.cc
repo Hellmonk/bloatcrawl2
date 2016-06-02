@@ -700,8 +700,11 @@ public:
         int amount = player_potion_recharge_percent() * get_mp_max() / 100;
         amount = max(20, amount);
 
+        amount = dec_exhaust_player(amount);
+
         inc_mp(amount);
         mprf("Magic courses through your body. (mp+%d)", amount);
+
         return true;
     }
 };
@@ -743,8 +746,9 @@ public:
         int amount = 0;
 
         amount = player_potion_recharge_percent() * get_sp_max() / 100;
-        dec_exhaust_player(1000);
         amount = max(20, amount);
+
+        amount = dec_exhaust_player(amount);
 
         inc_sp(amount);
         mprf("Energy courses through your body! (sp+%d)", amount);

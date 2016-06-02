@@ -5598,25 +5598,28 @@ void dec_slow_player(int delay)
 }
 
 // Exhaustion should last as long as slowing.
-void dec_exhaust_player(int delay)
+int dec_exhaust_player(int amount)
 {
     if (!you.duration[DUR_EXHAUSTED])
-        return;
+        return amount;
 
     if (you.duration[DUR_EXHAUSTED] > BASELINE_DELAY)
     {
         you.duration[DUR_EXHAUSTED] -= you.duration[DUR_HASTE]
-                                       ? haste_mul(delay) : delay;
+                                       ? haste_mul(amount) : amount;
     }
     if (you.duration[DUR_EXHAUSTED] <= BASELINE_DELAY)
     {
         mprf(MSGCH_DURATION, "You feel less exhausted.");
+        amount = max(0, -you.duration[DUR_EXHAUSTED]);
         you.duration[DUR_EXHAUSTED] = 0;
         you.redraw_evasion = true;
         you.redraw_armour_class = true;
 
         _restore_exertion_mode();
     }
+
+    return amount;
 }
 
 bool haste_player(int turns, bool rageext, source_type source)
