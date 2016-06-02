@@ -1627,17 +1627,22 @@ vector<skill_type> get_crosstrain_skills(skill_type sk)
                 return {};
         case SK_SUMMONINGS:
             if (you.species == SP_HUMAN)
-                return {SK_TRANSLOCATIONS, SK_TRANSMUTATIONS};
+                return {SK_TRANSLOCATIONS, SK_TRANSMUTATIONS, SK_NECROMANCY};
             else
                 return {};
         case SK_TRANSLOCATIONS:
             if (you.species == SP_HUMAN)
-                return {SK_SUMMONINGS, SK_TRANSMUTATIONS};
+                return {SK_SUMMONINGS, SK_TRANSMUTATIONS, SK_NECROMANCY};
             else
                 return {};
         case SK_TRANSMUTATIONS:
             if (you.species == SP_HUMAN)
-                return {SK_TRANSLOCATIONS, SK_SUMMONINGS};
+                return {SK_TRANSLOCATIONS, SK_SUMMONINGS, SK_NECROMANCY};
+            else
+                return {};
+        case SK_NECROMANCY:
+            if (you.species == SP_HUMAN)
+                return {SK_TRANSLOCATIONS, SK_SUMMONINGS, SK_TRANSMUTATIONS};
             else
                 return {};
         default:
