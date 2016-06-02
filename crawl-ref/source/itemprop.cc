@@ -407,7 +407,7 @@ static const weapon_def Weapon_prop[] =
         DAMV_CRUSHING | DAM_PIERCE, 1, 10, {} },
 
     // Short Blades
-    { WPN_DAGGER,            "dagger",              4,  6, 10, 3,
+    { WPN_DAGGER,            "dagger",              4,  6, 10, 2,
         SK_SHORT_BLADES, SIZE_LITTLE,  SIZE_LITTLE, MI_NONE,
         DAMV_PIERCING, 10, 10, {
             { SPWPN_VENOM,          28 },
@@ -573,17 +573,17 @@ static const weapon_def Weapon_prop[] =
         }},
 
     // Range weapons
-    { WPN_BLOWGUN,           "blowgun",             0,  2, 10, 3,
+    { WPN_BLOWGUN,           "blowgun",             0,  2, 10, 2,
         SK_THROWING,     SIZE_LITTLE,  SIZE_LITTLE, MI_NEEDLE,
         DAMV_NON_MELEE, 5, 0, {
             { SPWPN_EVASION,  3 },
             { SPWPN_NORMAL,  97 },
         }},
 
-    { WPN_HUNTING_SLING,     "hunting sling",       5,  2, 12, 5,
+    { WPN_HUNTING_SLING,     "hunting sling",       5,  2, 12, 3,
         SK_SLINGS,       SIZE_LITTLE,  SIZE_LITTLE, MI_STONE,
         DAMV_NON_MELEE, 8, 10, RANGED_BRANDS },
-    { WPN_GREATSLING,        "greatsling",          8, -1, 14, 10,
+    { WPN_GREATSLING,        "greatsling",          8, -1, 14, 8,
         SK_SLINGS,       SIZE_LITTLE,  SIZE_SMALL, MI_STONE,
         DAMV_NON_MELEE, 2, 2, RANGED_BRANDS },
 
@@ -597,7 +597,7 @@ static const weapon_def Weapon_prop[] =
         SK_CROSSBOWS,    SIZE_SMALL,  NUM_SIZE_LEVELS, MI_BOLT,
         DAMV_NON_MELEE, 0, 2, RANGED_BRANDS },
 
-    { WPN_SHORTBOW,          "shortbow",            9,  2, 13, 5,
+    { WPN_SHORTBOW,          "shortbow",            9,  2, 13, 3,
         SK_BOWS,         SIZE_LITTLE,  NUM_SIZE_LEVELS, MI_ARROW,
         DAMV_NON_MELEE, 8, 10, RANGED_BRANDS },
     { WPN_LONGBOW,           "longbow",            15,  0, 17, 10,
