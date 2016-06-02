@@ -2756,8 +2756,9 @@ item_def* monster_die(monster* mons, killer_type killer,
     {
         _give_experience(player_xp, monster_xp, killer, killer_index, pet_kill,
                          was_visible);
-        monster_died(mons_mid, was_hostile_and_seen, mp_freeze, killer);
     }
+    
+    monster_died(mons_mid, was_hostile_and_seen, mp_freeze, killer);
 
     return corpse;
 }
