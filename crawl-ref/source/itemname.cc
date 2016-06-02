@@ -2670,10 +2670,6 @@ void check_item_knowledge(bool unknown_items)
         // Missiles
         for (int i = 0; i < NUM_MISSILES; i++)
         {
-#if TAG_MAJOR_VERSION == 34
-            if (i == MI_DART)
-                continue;
-#endif
             _add_fake_item(OBJ_MISSILES, i, selected_items, items_missile);
         }
         // Foods

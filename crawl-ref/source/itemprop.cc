@@ -407,7 +407,7 @@ static const weapon_def Weapon_prop[] =
         DAMV_CRUSHING | DAM_PIERCE, 1, 10, {} },
 
     // Short Blades
-    { WPN_DAGGER,            "dagger",              4,  6, 10, 3,
+    { WPN_DAGGER,            "dagger",              4,  6, 10, 2,
         SK_SHORT_BLADES, SIZE_LITTLE,  SIZE_LITTLE, MI_NONE,
         DAMV_PIERCING, 10, 10, {
             { SPWPN_VENOM,          28 },
@@ -427,7 +427,7 @@ static const weapon_def Weapon_prop[] =
     { WPN_QUICK_BLADE,       "quick blade",         5,  6,  7, 5,
         SK_SHORT_BLADES, SIZE_LITTLE,  SIZE_LITTLE, MI_NONE,
         DAMV_PIERCING, 0, 2, {} },
-    { WPN_SHORT_SWORD,       "short sword",         6,  4, 11, 5,
+    { WPN_SHORT_SWORD,       "short sword",         6,  4, 11, 3,
         SK_SHORT_BLADES, SIZE_LITTLE,  SIZE_LITTLE,  MI_NONE,
         DAMV_PIERCING, 8, 10, SBL_BRANDS },
     { WPN_RAPIER,           "rapier",               7,  4, 12, 5,
@@ -573,34 +573,34 @@ static const weapon_def Weapon_prop[] =
         }},
 
     // Range weapons
-    { WPN_BLOWGUN,           "blowgun",             0,  2, 10, 3,
+    { WPN_BLOWGUN,           "blowgun",             0,  2, 10, 2,
         SK_THROWING,     SIZE_LITTLE,  SIZE_LITTLE, MI_NEEDLE,
         DAMV_NON_MELEE, 5, 0, {
             { SPWPN_EVASION,  3 },
             { SPWPN_NORMAL,  97 },
         }},
 
-    { WPN_HUNTING_SLING,     "hunting sling",       5,  2, 12, 5,
+    { WPN_HUNTING_SLING,     "hunting sling",       5,  2, 12, 3,
         SK_SLINGS,       SIZE_LITTLE,  SIZE_LITTLE, MI_STONE,
         DAMV_NON_MELEE, 8, 10, RANGED_BRANDS },
-    { WPN_GREATSLING,        "greatsling",          8, -1, 14, 10,
+    { WPN_GREATSLING,        "greatsling",          8, -1, 14, 8,
         SK_SLINGS,       SIZE_LITTLE,  SIZE_SMALL, MI_STONE,
         DAMV_NON_MELEE, 2, 2, RANGED_BRANDS },
 
-    { WPN_HAND_CROSSBOW,     "hand crossbow",      12,  5, 15, 10,
+    { WPN_HAND_CROSSBOW,     "hand crossbow",      10,  5, 15, 10,
         SK_CROSSBOWS,    SIZE_LITTLE, SIZE_LITTLE, MI_BOLT,
         DAMV_NON_MELEE, 7, 10, RANGED_BRANDS },
-    { WPN_ARBALEST,          "arbalest",           18,  2, 19, 15,
+    { WPN_ARBALEST,          "arbalest",           15,  2, 19, 15,
         SK_CROSSBOWS,    SIZE_LITTLE, NUM_SIZE_LEVELS, MI_BOLT,
         DAMV_NON_MELEE, 5, 10, RANGED_BRANDS },
-    { WPN_TRIPLE_CROSSBOW,   "triple crossbow",    22,  0, 23, 20,
+    { WPN_TRIPLE_CROSSBOW,   "triple crossbow",    18,  0, 23, 20,
         SK_CROSSBOWS,    SIZE_SMALL,  NUM_SIZE_LEVELS, MI_BOLT,
         DAMV_NON_MELEE, 0, 2, RANGED_BRANDS },
 
-    { WPN_SHORTBOW,          "shortbow",            9,  2, 13, 5,
+    { WPN_SHORTBOW,          "shortbow",            7,  2, 13, 3,
         SK_BOWS,         SIZE_LITTLE,  NUM_SIZE_LEVELS, MI_ARROW,
         DAMV_NON_MELEE, 8, 10, RANGED_BRANDS },
-    { WPN_LONGBOW,           "longbow",            15,  0, 17, 10,
+    { WPN_LONGBOW,           "longbow",            13,  0, 17, 10,
         SK_BOWS,         SIZE_MEDIUM,  NUM_SIZE_LEVELS, MI_ARROW,
         DAMV_NON_MELEE, 2, 10, RANGED_BRANDS },
 };
@@ -618,9 +618,7 @@ struct missile_def
 static int Missile_index[NUM_MISSILES];
 static const missile_def Missile_prop[] =
 {
-#if TAG_MAJOR_VERSION == 34
-    { MI_DART,          "dart",          2, 1,   2, true  },
-#endif
+    { MI_UNUSED0,       "dart",          0, 12,  1, false },
     { MI_NEEDLE,        "needle",        0, 12,  1, false },
     { MI_STONE,         "stone",         2, 8,   3, true  },
     { MI_ARROW,         "arrow",         0, 8,   5, false },
@@ -2179,9 +2177,6 @@ bool has_launcher(const item_def &ammo)
 {
     ASSERT(ammo.base_type == OBJ_MISSILES);
     return ammo.sub_type != MI_LARGE_ROCK
-#if TAG_MAJOR_VERSION == 34
-           && ammo.sub_type != MI_DART
-#endif
            && ammo.sub_type != MI_JAVELIN
            && ammo.sub_type != MI_TOMAHAWK
            && ammo.sub_type != MI_THROWING_NET;

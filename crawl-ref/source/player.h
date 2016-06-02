@@ -1124,7 +1124,7 @@ void dec_napalm_player(int delay);
 bool spell_slow_player(int pow);
 bool slow_player(int turns);
 void dec_slow_player(int delay);
-void dec_exhaust_player(int delay);
+int dec_exhaust_player(int amount);
 
 bool haste_player(int turns, bool rageext = false, source_type source = SRC_UNDEFINED);
 void dec_haste_player(int delay);

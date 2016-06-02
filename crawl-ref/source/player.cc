@@ -5598,25 +5598,28 @@ void dec_slow_player(int delay)
 }
 
 // Exhaustion should last as long as slowing.
-void dec_exhaust_player(int delay)
+int dec_exhaust_player(int amount)
 {
     if (!you.duration[DUR_EXHAUSTED])
-        return;
+        return amount;
 
     if (you.duration[DUR_EXHAUSTED] > BASELINE_DELAY)
     {
         you.duration[DUR_EXHAUSTED] -= you.duration[DUR_HASTE]
-                                       ? haste_mul(delay) : delay;
+                                       ? haste_mul(amount) : amount;
     }
     if (you.duration[DUR_EXHAUSTED] <= BASELINE_DELAY)
     {
         mprf(MSGCH_DURATION, "You feel less exhausted.");
+        amount = max(0, -you.duration[DUR_EXHAUSTED]);
         you.duration[DUR_EXHAUSTED] = 0;
         you.redraw_evasion = true;
         you.redraw_armour_class = true;
 
         _restore_exertion_mode();
     }
+
+    return amount;
 }
 
 bool haste_player(int turns, bool rageext, source_type source)
@@ -9679,7 +9682,7 @@ int generic_action_delay(const int skill, const int base, const action_delay_typ
     const int dex = (you.dex(true) - 10) * 10;
     const int min_delay_reached_at = 60;
     // 100 is full amount, 80 = 80% of original
-    const int global_reduction = 80;
+    const int global_reduction = 90;
 
     const int factor = (min_delay_reached_at - 10) * 10;
 
@@ -9693,8 +9696,8 @@ int generic_action_delay(const int skill, const int base, const action_delay_typ
     if (type == ACTION_DELAY_MIN)
         benefit = factor;
 
-    int delay = global_reduction * base * (factor * 2 - benefit) / (factor * 2) / 100;
-    delay = player_attack_delay_modifier(delay);
+    int delay = global_reduction * base * (factor * 2 - benefit) / (factor * 2) / 10;
+    delay = player_attack_delay_modifier(delay) / 10;
     return delay;
 }
 
@@ -9833,7 +9836,7 @@ int spell_mp_cost(spell_type which_spell)
     if (is_self_transforming_spell(which_spell))
         cost *= 2;
 
-    if (you.exertion != EXERT_NORMAL && you.peace < 50)
+    if (you.exertion != EXERT_NORMAL)
         cost *= 2;
 
     return cost;
@@ -9844,7 +9847,7 @@ int spell_mp_freeze(spell_type which_spell)
     int cost = 0;
     if (is_summon_spell(which_spell))
     {
-        cost = 3 * spell_hunger(which_spell, false, 200);
+        cost = spell_hunger(which_spell, false, 200) / 3;
 
         cost = max(cost, 5);
 
@@ -9978,8 +9981,10 @@ int player_damage_modifier(int damage, bool silent, const int range)
     damage *= _difficulty_mode_multiplier();
 
     // worst case, range 7, gives 80% of original damage
+    /*
     if (range > 1)
         damage = damage * (30 - range + 1) / 30;
+        */
 
     if (player_is_exhausted(true))
         damage = damage * 4 / 5;

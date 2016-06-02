@@ -575,9 +575,6 @@ static special_missile_type _determine_missile_brand(const item_def& item,
                                     nw, SPMSL_NORMAL,
                                     0);
         break;
-#if TAG_MAJOR_VERSION == 34
-    case MI_DART:
-#endif
     case MI_THROWING_NET:
     case MI_STONE:
         // deliberate fall through

@@ -307,9 +307,7 @@ const vector<misc_item_type> misc_types =
 
 enum missile_type
 {
-#if TAG_MAJOR_VERSION == 34
-    MI_DART,
-#endif
+    MI_UNUSED0,
     MI_NEEDLE,
     MI_ARROW,
     MI_BOLT,
