@@ -1570,6 +1570,16 @@ vector<skill_type> get_crosstrain_skills(skill_type sk)
             return {SK_THROWING};
         case SK_THROWING:
             return {SK_SLINGS};
+        case SK_BOWS:
+            if (you.species == SP_HUMAN)
+                return {SK_CROSSBOWS};
+            else
+                return {};
+        case SK_CROSSBOWS:
+            if (you.species == SP_HUMAN)
+                return {SK_BOWS};
+            else
+                return {};
         case SK_SPELLCASTING:
             if (you.species == SP_HUMAN)
                 return {SK_EVOCATIONS, SK_INVOCATIONS};
@@ -1613,6 +1623,21 @@ vector<skill_type> get_crosstrain_skills(skill_type sk)
         case SK_CHARMS:
             if (you.species == SP_HUMAN)
                 return {SK_HEXES};
+            else
+                return {};
+        case SK_SUMMONINGS:
+            if (you.species == SP_HUMAN)
+                return {SK_TRANSLOCATIONS, SK_TRANSMUTATIONS};
+            else
+                return {};
+        case SK_TRANSLOCATIONS:
+            if (you.species == SP_HUMAN)
+                return {SK_SUMMONINGS, SK_TRANSMUTATIONS};
+            else
+                return {};
+        case SK_TRANSMUTATIONS:
+            if (you.species == SP_HUMAN)
+                return {SK_TRANSLOCATIONS, SK_SUMMONINGS};
             else
                 return {};
         default:
