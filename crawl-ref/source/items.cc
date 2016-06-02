@@ -3564,7 +3564,8 @@ colour_t item_def::missile_colour() const
         case NUM_SPECIAL_MISSILES:
         case NUM_REAL_SPECIAL_MISSILES:
         default:
-            die("invalid missile type");
+            dprf("invalid missile type");
+            return GREEN;
     }
 }
 

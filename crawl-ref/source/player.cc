@@ -9833,7 +9833,7 @@ int spell_mp_cost(spell_type which_spell)
     if (is_self_transforming_spell(which_spell))
         cost *= 2;
 
-    if (you.exertion != EXERT_NORMAL && you.peace < 50)
+    if (you.exertion != EXERT_NORMAL)
         cost *= 2;
 
     return cost;
