@@ -123,6 +123,8 @@ bool summons_are_capped(spell_type spell);
 int summons_limit(spell_type spell);
 int count_summons(const actor *summoner, spell_type spell);
 bool spell_produces_minion(spell_type spell);
+bool spell_produces_undead_minion(spell_type spell);
+bool spell_produces_summoned_minion(spell_type spell);
 int unsummon_all();
 void unsummon(monster *mons);
 

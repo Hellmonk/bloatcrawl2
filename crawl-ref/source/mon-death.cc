@@ -420,10 +420,13 @@ static void _gold_pile(item_def &corpse, monster_type corpse_class)
  *          corpse or if the 50% chance is rolled; it may be gold, if the player
  *          worships Gozag, or it may be the corpse.
  */
-item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
+item_def* place_monster_corpse(const monster& mons, bool silent, bool force, bool undead_minion)
 {
-    if (mons.is_summoned()
-        || mons.flags & (MF_BANISHED | MF_HARD_RESET))
+    if (!undead_minion && (
+         mons.is_summoned()
+         || mons.flags & (MF_BANISHED | MF_HARD_RESET)
+                          )
+       )
     {
         return nullptr;
     }
@@ -439,6 +442,7 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
     const bool no_coinflip =
         mons.props.exists("always_corpse")
         || force
+        || undead_minion
         || goldify
         || mons_class_flag(mons.type, M_ALWAYS_CORPSE)
         || mons_is_demonspawn(mons.type)
@@ -532,7 +536,7 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
     if (corpse_remains && in_bounds(mons.pos()))
         move_item_to_grid(&o, mons.pos(), !mons.swimming());
 
-    if (corpse.is_valid())
+    if (corpse.is_valid() && !undead_minion)
     {
         maybe_drop_monster_hide(corpse);
         if (mons_corpse_effect(corpse.mon_type) == CE_MUTAGEN)
@@ -1882,8 +1886,11 @@ item_def* monster_die(monster* mons, killer_type killer,
     const bool was_banished  = (killer == KILL_BANISHED);
     const bool mons_reset    = (killer == KILL_RESET
                                 || killer == KILL_DISMISSED);
+    const mon_enchant summ_ench = mons->get_ench(ENCH_SUMMON);
+    const spell_type summon_spell = summ_ench.ench == ENCH_SUMMON ? (spell_type)summ_ench.degree : SPELL_NO_SPELL;
+    const bool undead_minion = spell_produces_undead_minion(summon_spell);
     const bool leaves_corpse = !summoned && !fake_abjure && !timeout
-                               && !mons_reset;
+                               && !mons_reset || undead_minion;
     // Award experience for suicide if the suicide was caused by the
     // player.
     if (MON_KILL(killer) && monster_killed == killer_index)
