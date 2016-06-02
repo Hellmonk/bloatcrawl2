@@ -427,7 +427,7 @@ static const weapon_def Weapon_prop[] =
     { WPN_QUICK_BLADE,       "quick blade",         5,  6,  7, 5,
         SK_SHORT_BLADES, SIZE_LITTLE,  SIZE_LITTLE, MI_NONE,
         DAMV_PIERCING, 0, 2, {} },
-    { WPN_SHORT_SWORD,       "short sword",         6,  4, 11, 5,
+    { WPN_SHORT_SWORD,       "short sword",         6,  4, 11, 3,
         SK_SHORT_BLADES, SIZE_LITTLE,  SIZE_LITTLE,  MI_NONE,
         DAMV_PIERCING, 8, 10, SBL_BRANDS },
     { WPN_RAPIER,           "rapier",               7,  4, 12, 5,
@@ -618,9 +618,7 @@ struct missile_def
 static int Missile_index[NUM_MISSILES];
 static const missile_def Missile_prop[] =
 {
-#if TAG_MAJOR_VERSION == 34
-    { MI_DART,          "dart",          2, 1,   2, true  },
-#endif
+    { MI_UNUSED0,       "buggy",         0, 12,  1, false },
     { MI_NEEDLE,        "needle",        0, 12,  1, false },
     { MI_STONE,         "stone",         2, 8,   3, true  },
     { MI_ARROW,         "arrow",         0, 8,   5, false },
@@ -2179,9 +2177,6 @@ bool has_launcher(const item_def &ammo)
 {
     ASSERT(ammo.base_type == OBJ_MISSILES);
     return ammo.sub_type != MI_LARGE_ROCK
-#if TAG_MAJOR_VERSION == 34
-           && ammo.sub_type != MI_DART
-#endif
            && ammo.sub_type != MI_JAVELIN
            && ammo.sub_type != MI_TOMAHAWK
            && ammo.sub_type != MI_THROWING_NET;
