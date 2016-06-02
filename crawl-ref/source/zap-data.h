@@ -121,7 +121,7 @@ static const zap_info zap_data[] =
     ZAP_MAGIC_DART,
     "magic dart",
     25,
-    new dicedef_calculator<2, 3, 1, 10>,
+    new dicedef_calculator<1, 6, 1, 8>,
     new tohit_calculator<AUTOMATIC_HIT>,
     new dicedef_calculator<3, 4, 1, 100>,
     new tohit_calculator<AUTOMATIC_HIT>,
