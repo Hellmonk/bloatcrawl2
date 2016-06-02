@@ -9844,7 +9844,7 @@ int spell_mp_freeze(spell_type which_spell)
     int cost = 0;
     if (is_summon_spell(which_spell))
     {
-        cost = 3 * spell_hunger(which_spell, false, 200);
+        cost = spell_hunger(which_spell, false, 200) / 3;
 
         cost = max(cost, 5);
 
