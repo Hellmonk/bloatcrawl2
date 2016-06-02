@@ -9978,8 +9978,10 @@ int player_damage_modifier(int damage, bool silent, const int range)
     damage *= _difficulty_mode_multiplier();
 
     // worst case, range 7, gives 80% of original damage
+    /*
     if (range > 1)
         damage = damage * (30 - range + 1) / 30;
+        */
 
     if (player_is_exhausted(true))
         damage = damage * 4 / 5;
