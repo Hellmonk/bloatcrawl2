@@ -9829,7 +9829,7 @@ int spell_mp_cost(spell_type which_spell)
     cost = max(cost, 2);
 
     if (you.duration[DUR_CHANNELING]
-        || is_summon_spell(which_spell)
+        || spell_produces_minion(which_spell)
         )
         cost = 0;
 
@@ -9845,7 +9845,7 @@ int spell_mp_cost(spell_type which_spell)
 int spell_mp_freeze(spell_type which_spell)
 {
     int cost = 0;
-    if (is_summon_spell(which_spell))
+    if (spell_produces_minion(which_spell))
     {
         cost = spell_hunger(which_spell, false, 200) / 3;
 

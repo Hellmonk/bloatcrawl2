@@ -879,7 +879,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
         return false;
     }
 
-    if (is_summon_spell(spell) && player_summon_count() >= MAX_SUMMONS)
+    if (spell_produces_minion(spell) && player_summon_count() >= MAX_SUMMONS)
     {
         mpr("You can't maintain any more summons.");
         return false;
@@ -1756,6 +1756,15 @@ spret_type _handle_summoning_spells(spell_type spell, int powc,
         case SPELL_SUMMON_FOREST:
             return cast_summon_forest(&you, powc, god, fail);
 
+        case SPELL_ANIMATE_SKELETON:
+            return cast_animate_skeleton(god, fail);
+
+        case SPELL_ANIMATE_DEAD:
+            return cast_animate_dead(powc, god, fail);
+
+        case SPELL_SIMULACRUM:
+            return cast_simulacrum(powc, god, fail);
+
         default:
             return SPRET_NONE;
     }
@@ -1788,7 +1797,7 @@ static spret_type _do_cast(spell_type spell, int powc,
             return SPRET_ABORT;
     }
 
-    if (is_summon_spell(spell))
+    if (spell_produces_minion(spell))
         return _handle_summoning_spells(spell, powc, beam, god, fail);
 
     switch (spell)
@@ -1902,15 +1911,6 @@ static spret_type _do_cast(spell_type spell, int powc,
 
     case SPELL_CONJURE_BALL_LIGHTNING:
         return cast_conjure_ball_lightning(powc, god, fail);
-
-    case SPELL_ANIMATE_SKELETON:
-        return cast_animate_skeleton(god, fail);
-
-    case SPELL_ANIMATE_DEAD:
-        return cast_animate_dead(powc, god, fail);
-
-    case SPELL_SIMULACRUM:
-        return cast_simulacrum(powc, god, fail);
 
     case SPELL_HAUNT:
         return cast_haunt(powc, beam.target, god, fail);
