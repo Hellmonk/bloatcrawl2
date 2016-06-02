@@ -618,7 +618,7 @@ struct missile_def
 static int Missile_index[NUM_MISSILES];
 static const missile_def Missile_prop[] =
 {
-    { MI_UNUSED0,       "buggy",         0, 12,  1, false },
+    { MI_UNUSED0,       "dart",          0, 12,  1, false },
     { MI_NEEDLE,        "needle",        0, 12,  1, false },
     { MI_STONE,         "stone",         2, 8,   3, true  },
     { MI_ARROW,         "arrow",         0, 8,   5, false },
