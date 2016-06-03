@@ -6786,7 +6786,10 @@ bool shoot_through_monster(const bolt& beam, const monster* victim)
     const bool attitude_aligned = mons_atts_aligned(victim->attitude, origin_attitude) || victim->neutral();
     const bool spell_ok = beam.origin_spell != SPELL_CHAIN_LIGHTNING 
                           && !_spell_is_explosive(beam.origin_spell)
-                          && !beam.is_enchantment();
+                          /*
+                          && !beam.is_enchantment()
+                           */
+                           ;
     const bool player_shoot_through_friendlies = originator->is_player()
                                                  && spell_ok
                                                  && attitude_aligned;

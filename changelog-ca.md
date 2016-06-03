@@ -1,5 +1,8 @@
 ## v1.5.4
 
+* Enchantments can pass through friendlies now.
+    * Particularly, pain can go through undead minions to hit your foes. 
+
 * Mummies gain stamina and magic regen at XL 1, 6, and 12. Since they can't use potions, and they don't have the main 
   benefit that they get in vanilla crawl to compensate, this will somewhat make up for it. 
 
