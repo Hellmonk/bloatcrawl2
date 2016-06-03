@@ -10006,7 +10006,7 @@ int player_attack_delay_modifier(int attack_delay)
     return attack_delay / _difficulty_mode_multiplier();
 }
 
-int player_spellpower_modifier(int spellpower)
+double player_spellpower_modifier(double spellpower)
 {
     spellpower *= _difficulty_mode_multiplier();
 
