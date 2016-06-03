@@ -79,11 +79,15 @@
  *                    are checked.
  * @returns whether a corpse could be created.
  */
-static bool _fill_out_corpse(const monster& mons, item_def& corpse)
+static bool _fill_out_corpse(const monster& mons, item_def& corpse, bool undead_minion)
 {
     corpse.clear();
 
     monster_type mtype = mons.type;
+    if (undead_minion)
+    {
+        mtype = mons.base_monster;
+    }
     monster_type corpse_class = mons_species(mtype);
 
     ASSERT(!invalid_monster_type(mtype));
@@ -105,7 +109,7 @@ static bool _fill_out_corpse(const monster& mons, item_def& corpse)
         corpse_class = mons_species(mtype);
     }
 
-    if (!mons_class_can_leave_corpse(corpse_class))
+    if (!mons_class_can_leave_corpse(corpse_class) && !undead_minion)
         return false;
 
     corpse.base_type      = OBJ_CORPSES;
@@ -488,7 +492,7 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force, boo
             return nullptr;
         }
     }
-    else if (!_fill_out_corpse(mons, corpse))
+    else if (!_fill_out_corpse(mons, corpse, undead_minion))
         return nullptr;
 
     origin_set_monster(corpse, &mons);
@@ -2604,7 +2608,7 @@ item_def* monster_die(monster* mons, killer_type killer,
             daddy_corpse = mounted_kill(mons, MONS_WASP, killer, killer_index);
             mons->type = MONS_SPRIGGAN;
         }
-        corpse = place_monster_corpse(*mons, silent);
+        corpse = place_monster_corpse(*mons, silent, false, undead_minion);
         if (!corpse)
             corpse = daddy_corpse;
     }

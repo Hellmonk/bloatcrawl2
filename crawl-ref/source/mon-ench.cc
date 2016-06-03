@@ -1067,7 +1067,7 @@ bool monster::decay_enchantment(enchant_type en, bool decay_degree)
 		}
     }
 
-    if (me.ench == ENCH_ABJ && player_summoned_this_creature && attitude != ATT_HOSTILE)
+    if ((me.ench == ENCH_ABJ || me.ench == ENCH_FAKE_ABJURATION) && player_summoned_this_creature && attitude != ATT_HOSTILE)
     {
         return false;
     }
