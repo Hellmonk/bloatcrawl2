@@ -1138,7 +1138,7 @@ static int _player_bonus_regen()
     }
 
     // Fast heal mutation.
-    rr += player_mutation_level(MUT_REGENERATION) * 20;
+    rr += player_mutation_level(MUT_HEALTH_REGENERATION) * 20;
 
     // Powered By Death mutation, boosts regen by variable strength
     // if the duration of the effect is still active.
