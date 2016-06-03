@@ -1,5 +1,9 @@
 ## v1.5.4
 
+* Added a strategies.md file to explain basic strategies to help people unfamiliar with the many different rules that
+  apply to this fork. It's highly recommended that you read this file and keep up with changes that are made to it, 
+  even if you have been playing on this fork for a while, since things change so quickly here.
+
 * Macros always save when the game is saved. No more extra prompts at random times when trying to save. 
 
 * Undead minions will reduce max mp and follow player down stairs like summons. But if you descend the stairs and hostiles
