@@ -1,5 +1,10 @@
 ## v1.5.4
 
+* Macros always save when the game is saved. No more extra prompts at random times when trying to save. 
+
+* Undead minions will reduce max mp and follow player down stairs like summons. But if you descend the stairs and hostiles
+  are present, then the undead will collapse back into corpses which may be reanimated later. 
+
 * Can't gain experience in abyss anymore. You can still gain piety, lose drain, etc, though. 
 
 * Added "light" weapon brand, making weapons weigh half as much, allowing them to be swung for half of the SP cost.

@@ -356,7 +356,9 @@ NORETURN void end_game(scorefile_entry &se)
     clua.save_persist();
 
     // Prompt for saving macros.
+    /* always save macros
     if (crawl_state.unsaved_macros && yesno("Save macros?", true, 'n'))
+     */
         macro_save();
 
     clrscr();
