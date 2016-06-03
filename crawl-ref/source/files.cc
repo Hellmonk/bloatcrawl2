@@ -968,19 +968,17 @@ static void _grab_followers()
         }
     }
 
-    memset(travel_point_distance, 0, sizeof(travel_distance_grid_t));
     vector<coord_def> places[2] = { { you.pos() }, {} };
     int place_set = 0;
     while (!places[place_set].empty())
     {
         for (const coord_def p : places[place_set])
         {
+            /*
             for (adjacent_iterator ai(p); ai; ++ai)
+             */
+            for (distance_iterator ai(p, false); ai; ++ai)
             {
-                if (travel_point_distance[ai->x][ai->y])
-                    continue;
-
-                travel_point_distance[ai->x][ai->y] = 1;
                 if (_grab_follower_at(*ai, can_follow))
                     places[!place_set].push_back(*ai);
             }

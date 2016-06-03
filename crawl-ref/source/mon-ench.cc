@@ -1019,7 +1019,7 @@ bool monster::is_player_summon() const
 
     const mid_t &source = ench_summon.source;
     const bool from_player = source ? source == MID_PLAYER : false;
-	const bool result = is_summon_spell(spell_used) && from_player;
+	const bool result = spell_produces_minion(spell_used) && from_player;
 	return result;
 }
 
@@ -1067,7 +1067,7 @@ bool monster::decay_enchantment(enchant_type en, bool decay_degree)
 		}
     }
 
-    if (me.ench == ENCH_ABJ && player_summoned_this_creature && attitude != ATT_HOSTILE)
+    if ((me.ench == ENCH_ABJ || me.ench == ENCH_FAKE_ABJURATION) && player_summoned_this_creature && attitude != ATT_HOSTILE)
     {
         return false;
     }

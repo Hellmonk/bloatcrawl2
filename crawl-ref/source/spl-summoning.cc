@@ -1644,7 +1644,7 @@ static void _display_undead_motions(int motions)
 static bool _raise_remains(const coord_def &pos, int corps, beh_type beha,
                            unsigned short hitting, actor *as, string nas,
                            god_type god, bool actual, bool force_beh,
-                           monster **raised, int* motions_r)
+                           monster **raised, int* motions_r, spell_type spell = SPELL_NO_SPELL, int power = 20)
 {
     if (raised)
         *raised = 0;
@@ -1662,8 +1662,10 @@ static bool _raise_remains(const coord_def &pos, int corps, beh_type beha,
     if (zombie_type == MONS_PRINCE_RIBBIT)
         zombie_type = MONS_HUMAN;
 
-    const int hd = (item.props.exists(MONSTER_HIT_DICE)) ?
+    int hd = (item.props.exists(MONSTER_HIT_DICE)) ?
                     item.props[MONSTER_HIT_DICE].get_short() : 0;
+
+    hd += log2(max(power, 1)) - 3;
 
     // Save the corpse name before because it can get destroyed if it is
     // being drained and the raising interrupts it.
@@ -1692,7 +1694,7 @@ static bool _raise_remains(const coord_def &pos, int corps, beh_type beha,
 
     // Use the original monster type as the zombified type here, to get
     // the proper stats from it.
-    mgen_data mg(mon, beha, as, 0, 0, pos, hitting,
+    mgen_data mg(mon, beha, as, 3, spell, pos, hitting,
                  MG_FORCE_BEH|MG_FORCE_PLACE|MG_AUTOFOE,
                  god, monnum);
 
@@ -1799,7 +1801,10 @@ int animate_remains(const coord_def &a, corpse_type class_allowed,
                     actor *as, string nas,
                     god_type god, bool actual,
                     bool quiet, bool force_beh,
-                    monster** mon, int* motions_r)
+                    monster** mon, int* motions_r,
+                    spell_type spell,
+                    int power
+)
 {
     if (is_sanctuary(a))
         return 0;
@@ -1830,7 +1835,7 @@ int animate_remains(const coord_def &a, corpse_type class_allowed,
 
         const bool success = _raise_remains(a, si.index(), beha, hitting,
                                             as, nas, god, actual,
-                                            force_beh, mon, &motions);
+                                            force_beh, mon, &motions, spell, power);
 
         if (actual && success)
         {
@@ -1868,9 +1873,9 @@ int animate_remains(const coord_def &a, corpse_type class_allowed,
     return 1;
 }
 
-int animate_dead(actor *caster, int /*pow*/, beh_type beha,
+int animate_dead(actor *caster, int pow, beh_type beha,
                  unsigned short hitting, actor *as, string nas, god_type god,
-                 bool actual)
+                 bool actual, spell_type spell)
 {
     int number_raised = 0;
     int number_seen   = 0;
@@ -1880,7 +1885,7 @@ int animate_dead(actor *caster, int /*pow*/, beh_type beha,
     {
         // There may be many corpses on the same spot.
         while (animate_remains(*ri, CORPSE_BODY, beha, hitting, as, nas, god,
-                               actual, true, 0, 0, &motions) > 0)
+                               actual, true, 0, 0, &motions, spell, pow) > 0)
         {
             number_raised++;
             if (you.see_cell(*ri))
@@ -1954,7 +1959,7 @@ spret_type cast_animate_skeleton(god_type god, bool fail)
     // this return type is insanely stupid
     const int animate_result = animate_remains(you.pos(), CORPSE_SKELETON,
                                                BEH_FRIENDLY, MHITYOU, &you, "",
-                                               god);
+                                               god, true, false, false, nullptr, nullptr, SPELL_ANIMATE_SKELETON);
     dprf("result: %d", animate_result);
     switch (animate_result)
     {
@@ -1977,7 +1982,7 @@ spret_type cast_animate_dead(int pow, god_type god, bool fail)
     fail_check();
     canned_msg(MSG_CALL_DEAD);
 
-    if (!animate_dead(&you, pow + 1, BEH_FRIENDLY, MHITYOU, &you, "", god))
+    if (!animate_dead(&you, pow + 1, BEH_FRIENDLY, MHITYOU, &you, "", god, true, SPELL_ANIMATE_DEAD))
         canned_msg(MSG_NOTHING_HAPPENS);
 
     return SPRET_SUCCESS;
@@ -2020,7 +2025,7 @@ spret_type cast_simulacrum(int pow, god_type god, bool fail)
     int num_sim  = 1 + random2(max_corpse_chunks(corpse.mon_type));
     num_sim  = stepdown_value(num_sim, 4, 4, 12, 12);
 
-    mgen_data mg(MONS_SIMULACRUM, BEH_FRIENDLY, &you, 0, SPELL_SIMULACRUM,
+    mgen_data mg(MONS_SIMULACRUM, BEH_FRIENDLY, &you, 3, SPELL_SIMULACRUM,
                  you.pos(), MHITYOU, MG_FORCE_BEH | MG_AUTOFOE, god,
                  corpse.mon_type);
 
@@ -3370,7 +3375,7 @@ bool summons_are_capped(spell_type spell)
     return summonsdata.count(spell);
 }
 
-bool is_summon_spell(spell_type spell)
+bool spell_produces_summoned_minion(spell_type spell)
 {
     bool result;
     switch(spell)
@@ -3398,7 +3403,28 @@ bool is_summon_spell(spell_type spell)
         default:
             result = false;
     }
-	return result;
+    return result;
+}
+
+bool spell_produces_undead_minion(spell_type spell)
+{
+    bool result;
+    switch(spell)
+    {
+        case SPELL_ANIMATE_SKELETON:
+        case SPELL_ANIMATE_DEAD:
+        case SPELL_SIMULACRUM:
+            result = true;
+            break;
+        default:
+            result = false;
+    }
+    return result;
+}
+
+bool spell_produces_minion(spell_type spell)
+{
+    return spell_produces_summoned_minion(spell) || spell_produces_undead_minion(spell);
 }
 
 int summons_limit(spell_type spell)

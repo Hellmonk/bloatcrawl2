@@ -9829,7 +9829,7 @@ int spell_mp_cost(spell_type which_spell)
     cost = max(cost, 2);
 
     if (you.duration[DUR_CHANNELING]
-        || is_summon_spell(which_spell)
+        || spell_produces_minion(which_spell)
         )
         cost = 0;
 
@@ -9845,7 +9845,7 @@ int spell_mp_cost(spell_type which_spell)
 int spell_mp_freeze(spell_type which_spell)
 {
     int cost = 0;
-    if (is_summon_spell(which_spell))
+    if (spell_produces_minion(which_spell))
     {
         cost = spell_hunger(which_spell, false, 200) / 3;
 
@@ -10006,7 +10006,7 @@ int player_attack_delay_modifier(int attack_delay)
     return attack_delay / _difficulty_mode_multiplier();
 }
 
-int player_spellpower_modifier(int spellpower)
+double player_spellpower_modifier(double spellpower)
 {
     spellpower *= _difficulty_mode_multiplier();
 
@@ -10286,7 +10286,7 @@ int player_max_stat_loss_allowed(stat_type stat)
     }
 
     max_stat_loss = percentage_allowed * max_stat_loss / 100;
-    max_stat_loss = max(max_stat_loss, max_stat - (9 - crawl_state.difficulty * 2));
+    max_stat_loss = min(max_stat_loss, max_stat - (9 - crawl_state.difficulty * 2));
 
     return max_stat_loss;
 }

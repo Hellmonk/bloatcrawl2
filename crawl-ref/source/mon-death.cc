@@ -79,11 +79,15 @@
  *                    are checked.
  * @returns whether a corpse could be created.
  */
-static bool _fill_out_corpse(const monster& mons, item_def& corpse)
+static bool _fill_out_corpse(const monster& mons, item_def& corpse, bool undead_minion)
 {
     corpse.clear();
 
     monster_type mtype = mons.type;
+    if (undead_minion)
+    {
+        mtype = mons.base_monster;
+    }
     monster_type corpse_class = mons_species(mtype);
 
     ASSERT(!invalid_monster_type(mtype));
@@ -105,7 +109,7 @@ static bool _fill_out_corpse(const monster& mons, item_def& corpse)
         corpse_class = mons_species(mtype);
     }
 
-    if (!mons_class_can_leave_corpse(corpse_class))
+    if (!mons_class_can_leave_corpse(corpse_class) && !undead_minion)
         return false;
 
     corpse.base_type      = OBJ_CORPSES;
@@ -420,10 +424,13 @@ static void _gold_pile(item_def &corpse, monster_type corpse_class)
  *          corpse or if the 50% chance is rolled; it may be gold, if the player
  *          worships Gozag, or it may be the corpse.
  */
-item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
+item_def* place_monster_corpse(const monster& mons, bool silent, bool force, bool undead_minion)
 {
-    if (mons.is_summoned()
-        || mons.flags & (MF_BANISHED | MF_HARD_RESET))
+    if (!undead_minion && (
+         mons.is_summoned()
+         || mons.flags & (MF_BANISHED | MF_HARD_RESET)
+                          )
+       )
     {
         return nullptr;
     }
@@ -439,6 +446,7 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
     const bool no_coinflip =
         mons.props.exists("always_corpse")
         || force
+        || undead_minion
         || goldify
         || mons_class_flag(mons.type, M_ALWAYS_CORPSE)
         || mons_is_demonspawn(mons.type)
@@ -484,7 +492,7 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
             return nullptr;
         }
     }
-    else if (!_fill_out_corpse(mons, corpse))
+    else if (!_fill_out_corpse(mons, corpse, undead_minion))
         return nullptr;
 
     origin_set_monster(corpse, &mons);
@@ -532,7 +540,7 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
     if (corpse_remains && in_bounds(mons.pos()))
         move_item_to_grid(&o, mons.pos(), !mons.swimming());
 
-    if (corpse.is_valid())
+    if (corpse.is_valid() && !undead_minion)
     {
         maybe_drop_monster_hide(corpse);
         if (mons_corpse_effect(corpse.mon_type) == CE_MUTAGEN)
@@ -1882,8 +1890,11 @@ item_def* monster_die(monster* mons, killer_type killer,
     const bool was_banished  = (killer == KILL_BANISHED);
     const bool mons_reset    = (killer == KILL_RESET
                                 || killer == KILL_DISMISSED);
+    const mon_enchant summ_ench = mons->get_ench(ENCH_SUMMON);
+    const spell_type summon_spell = summ_ench.ench == ENCH_SUMMON ? (spell_type)summ_ench.degree : SPELL_NO_SPELL;
+    const bool undead_minion = spell_produces_undead_minion(summon_spell);
     const bool leaves_corpse = !summoned && !fake_abjure && !timeout
-                               && !mons_reset;
+                               && !mons_reset || undead_minion;
     // Award experience for suicide if the suicide was caused by the
     // player.
     if (MON_KILL(killer) && monster_killed == killer_index)
@@ -2597,7 +2608,7 @@ item_def* monster_die(monster* mons, killer_type killer,
             daddy_corpse = mounted_kill(mons, MONS_WASP, killer, killer_index);
             mons->type = MONS_SPRIGGAN;
         }
-        corpse = place_monster_corpse(*mons, silent);
+        corpse = place_monster_corpse(*mons, silent, false, undead_minion);
         if (!corpse)
             corpse = daddy_corpse;
     }
@@ -2756,8 +2767,9 @@ item_def* monster_die(monster* mons, killer_type killer,
     {
         _give_experience(player_xp, monster_xp, killer, killer_index, pet_kill,
                          was_visible);
-        monster_died(mons_mid, was_hostile_and_seen, mp_freeze, killer);
     }
+    
+    monster_died(mons_mid, was_hostile_and_seen, mp_freeze, killer);
 
     return corpse;
 }

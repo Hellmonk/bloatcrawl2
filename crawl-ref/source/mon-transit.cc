@@ -483,13 +483,18 @@ void tag_followers()
     {
         for (const coord_def p : places[place_set])
         {
+            /*
             for (adjacent_iterator ai(p); ai; ++ai)
+             */
+            for (distance_iterator ai(p, false); ai; ++ai)
             {
+                /* reach all friendlies
                 if ((*ai - you.pos()).rdist() > radius
                     || travel_point_distance[ai->x][ai->y])
                 {
                     continue;
                 }
+                 */
                 travel_point_distance[ai->x][ai->y] = 1;
 
                 bool real_follower = false;
