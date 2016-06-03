@@ -1644,7 +1644,7 @@ static void _display_undead_motions(int motions)
 static bool _raise_remains(const coord_def &pos, int corps, beh_type beha,
                            unsigned short hitting, actor *as, string nas,
                            god_type god, bool actual, bool force_beh,
-                           monster **raised, int* motions_r, spell_type spell = SPELL_NO_SPELL)
+                           monster **raised, int* motions_r, spell_type spell = SPELL_NO_SPELL, int power = 20)
 {
     if (raised)
         *raised = 0;
@@ -1662,8 +1662,10 @@ static bool _raise_remains(const coord_def &pos, int corps, beh_type beha,
     if (zombie_type == MONS_PRINCE_RIBBIT)
         zombie_type = MONS_HUMAN;
 
-    const int hd = (item.props.exists(MONSTER_HIT_DICE)) ?
+    int hd = (item.props.exists(MONSTER_HIT_DICE)) ?
                     item.props[MONSTER_HIT_DICE].get_short() : 0;
+
+    hd += log2(max(power, 1)) - 3;
 
     // Save the corpse name before because it can get destroyed if it is
     // being drained and the raising interrupts it.
@@ -1800,7 +1802,8 @@ int animate_remains(const coord_def &a, corpse_type class_allowed,
                     god_type god, bool actual,
                     bool quiet, bool force_beh,
                     monster** mon, int* motions_r,
-                    spell_type spell
+                    spell_type spell,
+                    int power
 )
 {
     if (is_sanctuary(a))
@@ -1832,7 +1835,7 @@ int animate_remains(const coord_def &a, corpse_type class_allowed,
 
         const bool success = _raise_remains(a, si.index(), beha, hitting,
                                             as, nas, god, actual,
-                                            force_beh, mon, &motions, spell);
+                                            force_beh, mon, &motions, spell, power);
 
         if (actual && success)
         {
@@ -1870,7 +1873,7 @@ int animate_remains(const coord_def &a, corpse_type class_allowed,
     return 1;
 }
 
-int animate_dead(actor *caster, int /*pow*/, beh_type beha,
+int animate_dead(actor *caster, int pow, beh_type beha,
                  unsigned short hitting, actor *as, string nas, god_type god,
                  bool actual, spell_type spell)
 {
@@ -1882,7 +1885,7 @@ int animate_dead(actor *caster, int /*pow*/, beh_type beha,
     {
         // There may be many corpses on the same spot.
         while (animate_remains(*ri, CORPSE_BODY, beha, hitting, as, nas, god,
-                               actual, true, 0, 0, &motions, spell) > 0)
+                               actual, true, 0, 0, &motions, spell, pow) > 0)
         {
             number_raised++;
             if (you.see_cell(*ri))
@@ -1956,7 +1959,7 @@ spret_type cast_animate_skeleton(god_type god, bool fail)
     // this return type is insanely stupid
     const int animate_result = animate_remains(you.pos(), CORPSE_SKELETON,
                                                BEH_FRIENDLY, MHITYOU, &you, "",
-                                               god);
+                                               god, true, false, false, nullptr, nullptr, SPELL_ANIMATE_SKELETON);
     dprf("result: %d", animate_result);
     switch (animate_result)
     {
