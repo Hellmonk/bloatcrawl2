@@ -444,7 +444,7 @@ public:
     spell_type current_form_spell;
     int current_form_spell_failure;
 
-    FixedVector<mid_t, MAX_SUMMONS> summoned;
+    FixedVector<mid_t, MAX_MINIONS> summoned;
 
     // used by scrolls of returning
     coord_def returnPosition;

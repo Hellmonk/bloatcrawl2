@@ -55,7 +55,7 @@ enum extra_monster_index_type
 #define MAX_MONS_ALLOC 20
 
 #define MAX_SUBTYPES   60
-#define MAX_SUMMONS    20       // how many summons they player can have at once
+#define MAX_MINIONS    30       // how many summons they player can have at once
 
 // max size of item list {dlb}:
 #define MAX_ITEMS 2000

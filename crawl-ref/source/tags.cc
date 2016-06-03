@@ -1576,8 +1576,8 @@ static void tag_construct_you(writer &th)
     marshallInt(th, you.stamina_flags);
     marshallInt(th, you.current_form_spell);
     marshallInt(th, you.current_form_spell_failure);
-    marshallInt(th, MAX_SUMMONS);
-    for (int i = 0; i < MAX_SUMMONS; ++i)
+    marshallInt(th, MAX_MINIONS);
+    for (int i = 0; i < MAX_MINIONS; ++i)
     {
         marshallInt(th, you.summoned[i]);
     }
