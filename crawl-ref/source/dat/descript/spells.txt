@@ -1363,7 +1363,7 @@ Summon Lightning Spire spell
 Constructs a lightning spire in a nearby location. It can fire bouncing bolts
 of electricity at the caster's foes, but is completely immobile.
 %%%%
-Summon Mana Viper spell
+Summon Mana viper spell
 
 Summons a violet-scaled serpent whose bite can swiftly drain the magical
 reserves of nearly any foe. At higher power, the antimagic properties of the

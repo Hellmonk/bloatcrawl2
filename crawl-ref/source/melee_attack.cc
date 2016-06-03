@@ -1374,8 +1374,8 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
                 && !mons_is_firewood(defender->as_monster()))
             {
                 int drain = random2(damage_done * 2) + 1;
-                //Augment mana drain--1.25 "standard" effectiveness at 0 mp,
-                //.25 at mana == max_mana
+                //Augment magic drain--1.25 "standard" effectiveness at 0 mp,
+                //.25 at magic == max_mana
                 drain = (int)((1.25 - get_mp() / get_mp_max())
                               * drain);
                 if (drain)

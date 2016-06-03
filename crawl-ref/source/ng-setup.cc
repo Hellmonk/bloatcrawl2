@@ -357,7 +357,7 @@ static void _setup_tutorial_miscs()
     // No gold to begin with.
     you.gold = 0;
 
-    // Give them some mana to play around with.
+    // Give them some magic to play around with.
     you.mp_max_adj += 20;
 
     newgame_make_item(OBJ_ARMOUR, ARM_ROBE, 1, 0, 0, true);

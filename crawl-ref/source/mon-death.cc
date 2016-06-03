@@ -2184,7 +2184,7 @@ item_def* monster_die(monster* mons, killer_type killer,
 
             _fire_kill_conducts(*mons, killer, killer_index, gives_player_xp);
 
-            // Divine health and mana restoration doesn't happen when
+            // Divine health and magic restoration doesn't happen when
             // killing born-friendly monsters.
             if (gives_player_xp
                 && (have_passive(passive_t::restore_hp)

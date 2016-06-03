@@ -340,7 +340,7 @@ mutation_activity_type mutation_activity_level(mutation_type mut)
         return MUTACT_INACTIVE;
 
     if ((you_worship(GOD_PAKELLAS) || player_under_penance(GOD_PAKELLAS))
-         && (mut == MUT_MANA_LINK || mut == MUT_MANA_REGENERATION))
+         && (mut == MUT_MAGIC_LINK || mut == MUT_MAGIC_REGENERATION))
     {
         return MUTACT_INACTIVE;
     }
@@ -2110,7 +2110,7 @@ static const facet_def _demon_facets[] =
       { -33, 0, 0 } },
     { 2, { MUT_ROT_IMMUNITY, MUT_FOUL_STENCH, MUT_FOUL_STENCH },
       { -33, 0, 0 } },
-    { 2, { MUT_MANA_SHIELD, MUT_MANA_REGENERATION, MUT_MANA_LINK },
+    { 2, { MUT_MAGIC_SHIELD, MUT_MAGIC_REGENERATION, MUT_MAGIC_LINK },
       { -33, 0, 0 } },
     // Tier 3 facets
     { 3, { MUT_HEAT_RESISTANCE, MUT_FLAME_CLOUD_IMMUNITY, MUT_HURL_HELLFIRE },

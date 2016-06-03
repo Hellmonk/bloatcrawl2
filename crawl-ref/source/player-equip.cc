@@ -237,8 +237,8 @@ static void _equip_artefact_effect(item_def &item, bool *show_msgs, bool unmeld,
 
     if (proprt[ARTP_MAGICAL_POWER] && !known[ARTP_MAGICAL_POWER] && msg)
     {
-        canned_msg(proprt[ARTP_MAGICAL_POWER] > 0 ? MSG_MANA_INCREASE
-                                                  : MSG_MANA_DECREASE);
+        canned_msg(proprt[ARTP_MAGICAL_POWER] > 0 ? MSG_MAGIC_INCREASE
+                                                  : MSG_MAGIC_DECREASE);
     }
 
     if (proprt[ARTP_STAMINA] && !known[ARTP_STAMINA] && msg)
@@ -311,8 +311,8 @@ static void _unequip_artefact_effect(item_def &item,
 
     if (proprt[ARTP_MAGICAL_POWER] && !known[ARTP_MAGICAL_POWER] && msg)
     {
-        canned_msg(proprt[ARTP_MAGICAL_POWER] > 0 ? MSG_MANA_DECREASE
-                                                  : MSG_MANA_INCREASE);
+        canned_msg(proprt[ARTP_MAGICAL_POWER] > 0 ? MSG_MAGIC_DECREASE
+                                                  : MSG_MAGIC_INCREASE);
     }
 
     if (proprt[ARTP_STAMINA] && !known[ARTP_STAMINA] && msg)
@@ -440,7 +440,7 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
 
         if (item.sub_type == STAFF_POWER)
         {
-            canned_msg(MSG_MANA_INCREASE);
+            canned_msg(MSG_MAGIC_INCREASE);
             calc_mp();
         }
 
@@ -778,7 +778,7 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
     else if (item.is_type(OBJ_STAVES, STAFF_POWER))
     {
         calc_mp();
-        canned_msg(MSG_MANA_DECREASE);
+        canned_msg(MSG_MAGIC_DECREASE);
     }
 
     // Unwielding dismisses an active spectral weapon
@@ -804,7 +804,7 @@ static void _spirit_shield_message(bool unmeld)
             mpr("Now linked to your health, your magic stops regenerating.");
         }
     }
-    else if (!unmeld && player_mutation_level(MUT_MANA_SHIELD))
+    else if (!unmeld && player_mutation_level(MUT_MAGIC_SHIELD))
         mpr("You feel the presence of a powerless spirit.");
     else // unmeld or already spirit-shielded
         mpr("You feel spirits watching over you.");
@@ -1160,7 +1160,7 @@ static void _equip_amulet_of_regeneration()
     }
 }
 
-static void _equip_amulet_of_mana_regeneration()
+static void _equip_amulet_of_magic_regeneration()
 {
     if (!player_regenerates_mp())
         mpr("The amulet feels cold and inert.");
@@ -1222,7 +1222,7 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
         break;
 
     case RING_MAGICAL_POWER:
-        canned_msg(MSG_MANA_INCREASE);
+        canned_msg(MSG_MAGIC_INCREASE);
         calc_mp();
         break;
 
@@ -1274,9 +1274,9 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
             _equip_amulet_of_regeneration();
         break;
 
-    case AMU_MANA_REGENERATION:
+    case AMU_MAGIC_REGENERATION:
         if (!unmeld)
-            _equip_amulet_of_mana_regeneration();
+            _equip_amulet_of_magic_regeneration();
         break;
 
     case AMU_STAMINA_REGENERATION:
@@ -1396,7 +1396,7 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
         break;
 
     case RING_MAGICAL_POWER:
-        canned_msg(MSG_MANA_DECREASE);
+        canned_msg(MSG_MAGIC_DECREASE);
         break;
 
     case RING_STAMINA:

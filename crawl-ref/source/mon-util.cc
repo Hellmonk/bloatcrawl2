@@ -4769,7 +4769,7 @@ mon_threat_level_type mons_threat_level(const monster *mon, bool real)
 
     if (tension <= 0)
     {
-        // Conjurators use melee to conserve mana, MDFis switch plates...
+        // Conjurators use melee to conserve magic, MDFis switch plates...
         return MTHRT_TRIVIAL;
     }
     else if (tension <= 5)

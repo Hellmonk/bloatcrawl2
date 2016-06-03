@@ -1495,7 +1495,7 @@ static void _recharge_rod(item_def &rod, int aut, bool in_inv)
     if (rate > rod.charge_cap - rod.charges) // Prevent overflow
         rate = rod.charge_cap - rod.charges;
 
-    // With this, a +0 rod with no skill gets 1 mana per 25.0 turns
+    // With this, a +0 rod with no skill gets 1 magic per 25.0 turns
 
     if (rod.plus / ROD_CHARGE_MULT != (rod.plus + rate) / ROD_CHARGE_MULT)
     {

@@ -186,7 +186,7 @@ enum class passive_t
     /// Jiyva protects you from corrosion
     resist_corrosion,
 
-    /// Items consumed by your fellow slimes restores your mana reserve
+    /// Items consumed by your fellow slimes restores your magic reserve
     slime_mp,
 
     /// Items consumed by your fellow slimes restores your health
@@ -204,7 +204,7 @@ enum class passive_t
     /// Jiyva grants you access to the hidden treasures of the Slime Pits
     unlock_slime_vaults,
 
-    /// You have a chance to gain mana when you kill
+    /// You have a chance to gain magic when you kill
     mp_on_kill,
 
     /// You are less likely to miscat destructive spells
@@ -234,7 +234,7 @@ enum class passive_t
     /// Enemies that inflict damage upon you will sometime receive a detrimental status effect
     upgraded_aura_of_power,
 
-    /// Pakellas prevents you from regenerating your mana reserve
+    /// Pakellas prevents you from regenerating your magic reserve
     no_mp_regen,
 
     /// MP usage is less based on invocations

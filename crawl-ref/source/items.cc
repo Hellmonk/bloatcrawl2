@@ -3127,7 +3127,7 @@ static bool _interesting_explore_pickup(const item_def& item)
 
     case OBJ_RODS:
         // Rods are always interesting, even if you already have one of
-        // the same type, since each rod has its own mana.
+        // the same type, since each rod has its own magic.
         return true;
 
         // Intentional fall-through.

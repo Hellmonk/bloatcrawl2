@@ -118,7 +118,7 @@ static const vector<god_passive> god_passives[NUM_GODS] =
 
     // Vehumet
     {
-        { -1, passive_t::mp_on_kill, "have a chance to gain mana when you kill" },
+        { -1, passive_t::mp_on_kill, "have a chance to gain magic when you kill" },
         {  3, passive_t::spells_success, "are less likely to miscast destructive spells" },
         {  4, passive_t::spells_range, "can cast destructive spells farther" },
     },
@@ -190,7 +190,7 @@ static const vector<god_passive> god_passives[NUM_GODS] =
         { -1, passive_t::fluid_stats, "GOD adjusts your attributes periodically" },
         {  2, passive_t::slime_feed, "items consumed by your fellow slimes feed you" },
         {  3, passive_t::resist_corrosion, "GOD protects your from corrosion" },
-        {  4, passive_t::slime_mp, "items consumed by your fellow slimes restores your mana reserve" },
+        {  4, passive_t::slime_mp, "items consumed by your fellow slimes restores your magic reserve" },
         {  5, passive_t::slime_hp, "items consumed by your fellow slimes restores your health" },
         {  6, passive_t::unlock_slime_vaults, "GOD grants you access to the hidden treasures of the Slime Pits" },
     },
@@ -276,8 +276,8 @@ static const vector<god_passive> god_passives[NUM_GODS] =
 
     // Pakellas
     {
-        { -1, passive_t::no_mp_regen, "GOD prevents you from regenerating your mana reserve" },
-        { -1, passive_t::mp_on_kill, "have a chance to gain mana when you kill" },
+        { -1, passive_t::no_mp_regen, "GOD prevents you from regenerating your magic reserve" },
+        { -1, passive_t::mp_on_kill, "have a chance to gain magic when you kill" },
         {  0, passive_t::identify_devices, "GOD identifies your wands and rods" },
         {  1, passive_t::bottle_mp, "GOD collects and distills excess magic from your kills" },
     },

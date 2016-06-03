@@ -26,11 +26,11 @@ Major modifications from the original DCSS
 v1.4.2
 
 Summoning changes
-   * Summoning simply reduces your mana until the summons are gone, but have no duration.
+   * Summoning simply reduces your magic until the summons are gone, but have no duration.
    * Summons multiply the spell's base cost.
-   * Added a "release summons" ability, so you can free up your mana if you no longer need those summons.
-   * If you release a summon, all of the mana used to summon it is returned.
-   * The number of summons a player can have is only limited by max mana, with a cap of 20 total summons.
+   * Added a "release summons" ability, so you can free up your magic if you no longer need those summons.
+   * If you release a summon, all of the magic used to summon it is returned.
+   * The number of summons a player can have is only limited by max magic, with a cap of 20 total summons.
    * When a summon dies, they player gets 1/2 of the mp used for that creature
    * When going up or down stairs, if there are no monsters in sight, summons automatically follow you.
 
@@ -314,7 +314,7 @@ Sludge Elf
    * Nasty family history - which means they can worship Beogh.
    * subdued magic 3, making it very easy to cast spells, but with quite low spellpower. This enables them to cast high level, low power requirement spells early or even in heavy armour.
    * unusually low starting attributes
-   * they have low mana.
+   * they have low magic.
 
 Naga
    * poison spitting advances to level 2 at XL 6, and to level 3 at XL 12.
@@ -334,7 +334,7 @@ Tengu
    * start with shock resistance
    * start with thin skeletal structure
    * can't wear rings at all
-   * enchantment absorption, which causes some enchantments used on the player to instead be absorbed as mana
+   * enchantment absorption, which causes some enchantments used on the player to instead be absorbed as magic
        * at 6 they get enchantment absorb 1: they absorb 10% of all bad enchantments
        * at 12 they get ench absorb 2: they absorb 40% of all bad enchantments
        * at 18 they get ench absorb 3: absorb 90% of all bad enchantments, making them almost immune.
@@ -353,7 +353,7 @@ Deep Dwarf
 
 Deep Elf
    * increased spellcasting aptitude
-   * increased mana
+   * increased magic
 
 Demigod
    * Gain str/int/dex even faster

@@ -1241,9 +1241,9 @@ void update_regen_amulet_attunement()
 
 // Amulet of magic regeneration needs to be worn while at full magic before it
 // begins to function.
-void update_mana_regen_amulet_attunement()
+void update_magic_regen_amulet_attunement()
 {
-    if (you.wearing(EQ_AMULET, AMU_MANA_REGENERATION)
+    if (you.wearing(EQ_AMULET, AMU_MAGIC_REGENERATION)
         && player_regenerates_mp())
     {
         if (you.mp == you.mp_max

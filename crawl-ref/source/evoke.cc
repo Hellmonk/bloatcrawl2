@@ -1874,7 +1874,7 @@ static bool _rod_spell(item_def& irod, bool check_range)
     ASSERT(irod.base_type == OBJ_RODS);
 
     const spell_type spell = spell_in_rod(static_cast<rod_type>(irod.sub_type));
-    int mana = spell_difficulty(spell) * ROD_CHARGE_MULT;
+    int magic = spell_difficulty(spell) * ROD_CHARGE_MULT;
 
     int power = calc_spell_power(spell, false, true);
 
@@ -1894,15 +1894,15 @@ static bool _rod_spell(item_def& irod, bool check_range)
     if (spell == SPELL_THUNDERBOLT && you.props.exists("thunderbolt_last")
         && you.props["thunderbolt_last"].get_int() + 1 == you.num_turns)
     {
-        // Starting it up takes 2 mana, continuing any amount up to 5.
+        // Starting it up takes 2 magic, continuing any amount up to 5.
         // You don't get to expend less (other than stopping the zap completely).
-        mana = min(5 * ROD_CHARGE_MULT, (int)irod.plus);
+        magic = min(5 * ROD_CHARGE_MULT, (int)irod.plus);
         // Never allow using less than a whole point of charge.
-        mana = max(mana, ROD_CHARGE_MULT);
-        you.props["thunderbolt_mana"].get_int() = mana;
+        magic = max(magic, ROD_CHARGE_MULT);
+        you.props["thunderbolt_mana"].get_int() = magic;
     }
 
-    if (irod.plus < mana)
+    if (irod.plus < magic)
     {
         mpr("The rod doesn't have enough magic points.");
         crawl_state.zero_turns_taken();
@@ -1940,7 +1940,7 @@ static bool _rod_spell(item_def& irod, bool check_range)
     make_hungry(food, true, true);
     if (ret == SPRET_SUCCESS)
     {
-        irod.plus -= mana;
+        irod.plus -= magic;
         you.wield_change = true;
         if (item_is_quivered(irod))
             you.redraw_quiver = true;

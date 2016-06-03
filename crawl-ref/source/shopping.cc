@@ -900,7 +900,7 @@ unsigned int item_value(item_def item, bool ident)
                 case RING_PROTECTION_FROM_COLD:
                 case RING_PROTECTION_FROM_FIRE:
                 case RING_PROTECTION_FROM_MAGIC:
-                case AMU_MANA_REGENERATION:
+                case AMU_MAGIC_REGENERATION:
                 case AMU_REFLECTION:
                     valued += 250;
                     break;

@@ -953,8 +953,8 @@ static void _regenerate_hp_and_mp(int delay)
 
     while (you.hit_points_regeneration >= 100)
     {
-        // at low mp, "mana link" restores mp in place of hp
-        if (player_mutation_level(MUT_MANA_LINK)
+        // at low mp, "magic link" restores mp in place of hp
+        if (player_mutation_level(MUT_MAGIC_LINK)
             && !x_chance_in_y(get_mp(), get_mp_max()))
         {
             inc_mp(3);
@@ -1007,9 +1007,9 @@ static void _regenerate_hp_and_mp(int delay)
         const int base_val = 7 + get_mp_max() / 3;
         int mp_regen_countup = div_rand_round(base_val * delay, BASELINE_DELAY);
 
-        if (int level = player_mutation_level(MUT_MANA_REGENERATION))
+        if (int level = player_mutation_level(MUT_MAGIC_REGENERATION))
             mp_regen_countup <<= level;
-        if (you.wearing(EQ_AMULET, AMU_MANA_REGENERATION))
+        if (you.wearing(EQ_AMULET, AMU_MAGIC_REGENERATION))
             mp_regen_countup <<= 2;
 
         you.magic_points_regeneration += mp_regen_countup;
@@ -1023,7 +1023,7 @@ static void _regenerate_hp_and_mp(int delay)
 
     ASSERT_RANGE(you.magic_points_regeneration, 0, 100);
 
-    update_mana_regen_amulet_attunement();
+    update_magic_regen_amulet_attunement();
 }
 
 void player_reacts()
