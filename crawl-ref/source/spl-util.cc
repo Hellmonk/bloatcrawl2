@@ -430,9 +430,10 @@ int spell_hunger(spell_type which_spell, bool rod, int multiplier)
         }
     }
 
+    // if you change this, also update the display in describe-god.cc: _describe_god_powers for SIF_MUNA
     int hunger = pow(17.0 / 16, x / 10.0) * 10;
 
-    if (hunger < 0 || you.duration[DUR_CHANNELING] != 0 || player_mutation_level(MUT_HUNGERLESS) != 0)
+    if (hunger < 0 || player_mutation_level(MUT_HUNGERLESS) != 0)
         hunger = 0;
 
     return hunger;

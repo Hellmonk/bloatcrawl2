@@ -8,6 +8,7 @@
 #include "describe-god.h"
 
 #include <iomanip>
+#include <cmath>
 
 #include "ability.h"
 #include "branch.h"
@@ -666,6 +667,8 @@ static void _describe_god_powers(god_type which_god)
         textcolour(DARKGREY);
     else
         textcolour(god_colour(which_god));
+    
+    const char* god_name_string = uppercase_first(god_name(which_god)).c_str();
 
     // mv: Some gods can protect you from harm.
     // The god isn't really protecting the player - only sometimes saving
@@ -698,7 +701,7 @@ static void _describe_god_powers(god_type which_god)
                                               : "occasionally";
 
         cprintf("%s %s watches over you%s.\n",
-                uppercase_first(god_name(which_god)).c_str(),
+                god_name_string,
                 how,
                 when);
     }
@@ -715,7 +718,7 @@ static void _describe_god_powers(god_type which_god)
                                              "occasionally";
 
         cprintf("%s %s shields you from chaos.\n",
-                uppercase_first(god_name(which_god)).c_str(), how);
+                god_name_string, how);
         break;
     }
 
@@ -732,7 +735,7 @@ static void _describe_god_powers(god_type which_god)
                                              "partially";
 
         cprintf("%s %s shields you from negative energy.\n",
-                uppercase_first(god_name(which_god)).c_str(), how);
+                god_name_string, how);
 
         const int halo_size = you_worship(which_god) ? you.halo_radius() : -1;
         if (halo_size < 0)
@@ -754,7 +757,7 @@ static void _describe_god_powers(god_type which_god)
         else
             textcolour(DARKGREY);
         cprintf("%s shields you from corrosive effects.\n",
-                uppercase_first(god_name(which_god)).c_str());
+                god_name_string);
 
         if (have_passive(passive_t::slime_feed))
             textcolour(god_colour(which_god));
@@ -783,7 +786,7 @@ static void _describe_god_powers(god_type which_god)
         else
             textcolour(DARKGREY);
         cprintf("%s supports your attributes (+%d).\n",
-                uppercase_first(god_name(which_god)).c_str(),
+                god_name_string,
                 chei_stat_boost(piety));
         break;
 
@@ -823,7 +826,7 @@ static void _describe_god_powers(god_type which_god)
         have_any = true;
         cprintf("You passively detect gold.\n");
         cprintf("%s turns your defeated foes' bodies to gold.\n",
-                uppercase_first(god_name(which_god)).c_str());
+                god_name_string);
         cprintf("Your enemies may become distracted by gold.\n");
         break;
 
@@ -831,7 +834,7 @@ static void _describe_god_powers(god_type which_god)
     {
         have_any = true;
         cprintf("%s identifies device charges for you.\n",
-                uppercase_first(god_name(which_god)).c_str());
+                god_name_string);
         if (!you_foodless_normally())
         {
             if (have_passive(passive_t::bottle_mp))
@@ -841,9 +844,15 @@ static void _describe_god_powers(god_type which_god)
 
             cprintf("%s will collect and distill excess magic from your "
                     "kills.\n",
-                    uppercase_first(god_name(which_god)).c_str());
+                    god_name_string);
         }
         break;
+    }
+    case GOD_SIF_MUNA:
+    {
+        int savings = pow(16.0/17, you.skill(SK_INVOCATIONS, 10) / 10.0) * 100;
+        if (savings < 100)
+            cprintf("%s helps you to conserve magic. (%d%% normal cost)", god_name_string, savings);
     }
 
     default:

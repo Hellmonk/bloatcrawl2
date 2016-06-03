@@ -159,8 +159,10 @@ const vector<god_power> god_powers[NUM_GODS] =
 
     // Sif Muna
     {
+        /*
       { 1, "Sif Muna is helping you to conserve magic.",
            "Sif Muna is no longer helping you to conserve magic." },
+           */
       { 2, "Sif Muna is protecting you from the effects of miscast magic.",
            "Sif Muna no longer protects you from the effects of miscast magic." },
       { 3, ABIL_SIF_MUNA_CHANNEL_ENERGY, "tap ambient magical fields" },
