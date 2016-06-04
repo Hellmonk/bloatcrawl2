@@ -1,5 +1,7 @@
 ## v1.5.4
 
+* Vampires can now bottle blood by using the 'c' key like before over a corpse. 
+
 * Enchantments can pass through friendlies now.
     * Particularly, pain can go through undead minions to hit your foes. 
 

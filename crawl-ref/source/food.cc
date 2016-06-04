@@ -492,6 +492,36 @@ static string _floor_eat_menu_title(const Menu *menu, const string &oldt)
 }
 #endif
 
+bool is_edible_food_here(vector<item_def*> *food_items)
+{
+    bool found_valid = false;
+    for (stack_iterator si(you.pos(), true); si; ++si)
+    {
+        const object_class_type base_type = si->base_type;
+        if (base_type != OBJ_FOOD)
+            continue;
+
+        // Chunks should have been handled before.
+        const food_type sub_type = (food_type)si->sub_type;
+        if (sub_type == FOOD_CHUNK)
+            continue;
+
+        if (is_bad_food(*si))
+            continue;
+
+        if (!can_eat(*si, true))
+        {
+            continue;
+        }
+
+        found_valid = true;
+        if (food_items)
+            (*food_items).push_back(&(*si));
+    }
+
+    return found_valid;
+}
+
 // Returns -1 for cancel, 1 for eaten, 0 for not eaten.
 int eat_from_floor(bool skip_chunks)
 {
@@ -503,7 +533,6 @@ int eat_from_floor(bool skip_chunks)
         return 0;
 
     bool need_more = false;
-    int inedible_food = 0;
     item_def wonteat;
     bool found_valid = false;
 
@@ -512,41 +541,7 @@ int eat_from_floor(bool skip_chunks)
 #else
     vector<item_def*> food_items;
 #endif
-    for (stack_iterator si(you.pos(), true); si; ++si)
-    {
-        if (si->base_type != OBJ_FOOD)
-            continue;
-
-        // Chunks should have been handled before.
-        if (skip_chunks && si->sub_type == FOOD_CHUNK)
-            continue;
-
-        if (is_bad_food(*si))
-            continue;
-
-        if (!can_eat(*si, true))
-        {
-            if (!inedible_food)
-            {
-                wonteat = *si;
-                inedible_food++;
-            }
-            else
-            {
-                // Increase only if we're dealing with different subtypes.
-                // FIXME: Use a common check for herbivorous/carnivorous
-                //        dislikes, for e.g. "Blech! You need blood!"
-                ASSERT(wonteat.defined());
-                if (wonteat.sub_type != si->sub_type)
-                    inedible_food++;
-            }
-
-            continue;
-        }
-
-        found_valid = true;
-        food_items.push_back(&(*si));
-    }
+    found_valid = is_edible_food_here(&food_items);
 
     if (found_valid)
     {
@@ -599,22 +594,6 @@ int eat_from_floor(bool skip_chunks)
             }
         }
 #endif
-    }
-    else if (inedible_food)
-    {
-        if (inedible_food == 1)
-        {
-            ASSERT(wonteat.defined());
-            // Use the normal cannot ingest message.
-            if (can_eat(wonteat, false))
-            {
-                mprf(MSGCH_DIAGNOSTICS, "Error: Can eat %s after all?",
-                     wonteat.name(DESC_PLAIN).c_str());
-            }
-        }
-        else // Several different food items.
-            mpr("You refuse to eat these food items.");
-        need_more = true;
     }
 
     if (need_more)

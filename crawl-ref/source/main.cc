@@ -2320,6 +2320,24 @@ void process_command(command_type cmd)
                     you.prev_direction.reset();
                 break;
             case CMD_EXERT_NORMAL:
+                if (you.species == SP_VAMPIRE)
+                {
+                    bool found_corpse = false;
+                    for (stack_iterator si(you.pos(), true); si; ++si)
+                    {
+                        if (!si->is_type(OBJ_CORPSES, CORPSE_BODY))
+                            continue;
+                        found_corpse = true;
+                        break;
+                    }
+
+                    if (found_corpse)
+                    {
+                        butchery();
+                        break;
+                    }
+                }
+
                 set_exertion(EXERT_NORMAL);
                 break;
             case CMD_EXERT_FOCUS:

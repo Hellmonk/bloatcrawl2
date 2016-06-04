@@ -45,6 +45,8 @@ bool can_eat(const item_def &food, bool suppress_msg, bool check_hunger = true);
 
 bool eat_item(item_def &food);
 
+bool is_edible_food_here(vector<item_def*> *food_items = nullptr);
+
 int eat_from_floor(bool skip_chunks = true);
 bool eat_from_inventory();
 int prompt_eat_chunks(bool only_auto = false);
