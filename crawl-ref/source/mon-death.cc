@@ -543,19 +543,21 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force, boo
     if (corpse.is_valid() && !undead_minion)
     {
         maybe_drop_monster_hide(corpse);
+
+        int blood_potion_count = random2(max_corpse_chunks(corpse.mon_type) + 1);
+
+        if (you.species != SP_VAMPIRE || !can_bottle_blood_from_corpse(corpse.mon_type))
+            blood_potion_count = 0;
+        for (int i = 0; i < blood_potion_count; i++)
+            make_and_place_item(mons.pos(), OBJ_POTIONS, POT_BLOOD);
+
         if (mons_corpse_effect(corpse.mon_type) == CE_MUTAGEN)
         {
-            int weak_mut_potion_count = random2(max_corpse_chunks(corpse.mon_type));
-            weak_mut_potion_count = max(1, weak_mut_potion_count / 2);
-            int blood_potion_count = random2(max_corpse_chunks(corpse.mon_type));
-            blood_potion_count = max(1, blood_potion_count);
-            if (you.species != SP_VAMPIRE || !can_bottle_blood_from_corpse(corpse.mon_type))
-                blood_potion_count = 0;
+            int weak_mut_potion_count = random2(max_corpse_chunks(corpse.mon_type) + 1);
+            weak_mut_potion_count /= 2;
 
             for (int i = 0; i < weak_mut_potion_count; i++)
                 make_and_place_item(mons.pos(), OBJ_POTIONS, POT_WEAK_MUTATION);
-            for (int i = 0; i < blood_potion_count; i++)
-                make_and_place_item(mons.pos(), OBJ_POTIONS, POT_BLOOD);
         }
     }
 
