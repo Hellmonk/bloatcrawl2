@@ -1892,7 +1892,7 @@ item_def* monster_die(monster* mons, killer_type killer,
                                 || killer == KILL_DISMISSED);
     const mon_enchant summ_ench = mons->get_ench(ENCH_SUMMON);
     const spell_type summon_spell = summ_ench.ench == ENCH_SUMMON ? (spell_type)summ_ench.degree : SPELL_NO_SPELL;
-    const bool undead_minion = spell_produces_undead_minion(summon_spell);
+    const bool undead_minion = spell_produces_undead_minion(summon_spell) && mons_reset;
     const bool leaves_corpse = !summoned && !fake_abjure && !timeout
                                && !mons_reset || undead_minion;
     // Award experience for suicide if the suicide was caused by the
