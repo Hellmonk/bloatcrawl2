@@ -475,13 +475,13 @@ void fire_thing(int item)
     bool created_ammo = false;
     if (item == -1)
     {
-        item_def *const weapon = you.weapon();    
+        item_def *const weapon = you.weapon();
+        missile_type missileType = MI_STONE;
+        special_missile_type ego = SPMSL_FORBID_BRAND;
         if (weapon && weapon->isValid())
         {
             if (weapon->base_type == OBJ_WEAPONS)
             {
-                missile_type missileType = MI_STONE;
-                special_missile_type ego = SPMSL_FORBID_BRAND;
 
                 switch(weapon->sub_type)
                 {
@@ -507,24 +507,24 @@ void fire_thing(int item)
                         break;
                 }
 
-                int p = items(false, OBJ_MISSILES, missileType, 0, ego);
-                ammo = &mitm[p];
-                created_ammo = true;
             }
             else if (weapon->base_type == OBJ_MISSILES)
-            {
                 ammo = weapon;
-            }
             else
                 return;
         }
         else
-            return;
+            missileType = MI_STONE;
+
+        if (!ammo)
+        {
+            int p = items(false, OBJ_MISSILES, missileType, 0, ego);
+            ammo = &mitm[p];
+            created_ammo = true;
+        }
     }
     else
-    {
         ammo = &you.inv1[item];
-    }
 
     if (check_warning_inscriptions(*ammo, OPER_FIRE)
         && (!you.weapon()
