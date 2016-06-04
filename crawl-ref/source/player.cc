@@ -9640,7 +9640,7 @@ bool player_summoned_monster(spell_type spell, monster* mons, bool first)
     {
         if (!freeze_summons_mp(cost))
         {
-            mpr("You don't have enough energy to support more minions of this magnitude.");
+            mpr("You don't have enough magic to support more minions of this magnitude.");
             success = false;
             break;
         }
