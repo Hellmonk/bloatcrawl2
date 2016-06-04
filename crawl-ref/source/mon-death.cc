@@ -546,8 +546,9 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force, boo
 
         int blood_potion_count = random2(max_corpse_chunks(corpse.mon_type) + 1);
 
-        if (you.species != SP_VAMPIRE || !can_bottle_blood_from_corpse(corpse.mon_type))
+        if (you.species != SP_VAMPIRE || !can_bottle_blood_from_corpse(corpse.mon_type) || coinflip())
             blood_potion_count = 0;
+
         for (int i = 0; i < blood_potion_count; i++)
             make_and_place_item(mons.pos(), OBJ_POTIONS, POT_BLOOD);
 

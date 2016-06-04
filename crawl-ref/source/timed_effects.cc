@@ -958,22 +958,13 @@ static struct timed_effect timed_effects[] =
     { _hell_effects,                 200,   600, false },
     { _handle_sickness,              100,   300, false },
     { _handle_magic_contamination,   200,   600, false },
-#if TAG_MAJOR_VERSION == 34
-    { nullptr,                         0,     0, false },
-#endif
     { handle_god_time,               100,   300, false },
-#if TAG_MAJOR_VERSION == 34
-    { nullptr,                                0,     0, false },
-#endif
     { rot_inventory_food,            100,   300, false },
     { _wait_practice,                100,   300, false },
     { _lab_change,                  1000,  3000, false },
     { _abyss_speed,                  100,   300, false },
     { _jiyva_effects,                100,   300, false },
     { _evolve,                      5000, 15000, false },
-#if TAG_MAJOR_VERSION == 34
-    { nullptr,                         0,     0, false },
-#endif
 };
 
 // Do various time related actions...
