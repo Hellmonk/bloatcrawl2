@@ -545,26 +545,17 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force, boo
         maybe_drop_monster_hide(corpse);
         if (mons_corpse_effect(corpse.mon_type) == CE_MUTAGEN)
         {
-            int potion_count = random2(max_corpse_chunks(corpse.mon_type));
-            potion_count = max(1, potion_count / 2);
+            int weak_mut_potion_count = random2(max_corpse_chunks(corpse.mon_type));
+            weak_mut_potion_count = max(1, weak_mut_potion_count / 2);
+            int blood_potion_count = random2(max_corpse_chunks(corpse.mon_type));
+            blood_potion_count = max(1, blood_potion_count);
+            if (you.species != SP_VAMPIRE || !can_bottle_blood_from_corpse(corpse.mon_type))
+                blood_potion_count = 0;
 
-            for (int i = 0; i < potion_count; i++)
-            {
-                int id = items(false, OBJ_POTIONS, POT_WEAK_MUTATION, 0);
-                if (id != NON_ITEM)
-                {
-                    item_def& new_potion = mitm[id];
-
-                    // Automatically identify the potion.
-                    set_ident_flags(new_potion, ISFLAG_IDENT_MASK);
-
-                    const coord_def pos = mons.pos();
-                    if (!pos.origin() && in_bounds(pos))
-                        move_item_to_grid(&id, pos);
-                    else
-                        destroy_item(id);
-                }
-            }
+            for (int i = 0; i < weak_mut_potion_count; i++)
+                make_and_place_item(mons.pos(), OBJ_POTIONS, POT_WEAK_MUTATION);
+            for (int i = 0; i < blood_potion_count; i++)
+                make_and_place_item(mons.pos(), OBJ_POTIONS, POT_BLOOD);
         }
     }
 

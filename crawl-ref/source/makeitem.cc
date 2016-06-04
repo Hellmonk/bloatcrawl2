@@ -24,6 +24,7 @@
 #include "state.h"
 #include "stepdown.h"
 #include "stringutil.h"
+#include "coord.h"
 
 int create_item_named(string name, coord_def p, string *error)
 {
@@ -2134,6 +2135,28 @@ int items(bool allow_uniques,
 //            (int)item.base_type, (int)item.sub_type, item.special,
 //            (int)item.get_colour(), (int)item.rnd);
     return p;
+}
+
+bool make_and_place_item(const coord_def &pos, const object_class_type &force_class, const int &force_type)
+{
+    bool success = false;
+    int id = items(false, force_class, force_type, 0);
+    if (id != NON_ITEM)
+    {
+        item_def& new_item = mitm[id];
+
+        // Automatically identify the potion.
+        set_ident_flags(new_item, ISFLAG_IDENT_MASK);
+
+        if (!pos.origin() && in_bounds(pos))
+        {
+            move_item_to_grid(&id, pos);
+            success = true;
+        }
+        else
+            destroy_item(id);
+    }
+    return success;
 }
 
 void reroll_brand(item_def &item, int item_level)
