@@ -1,6 +1,8 @@
 ## v1.5.4
 
-* Blood potions spawn when corpses are dropped for vampires. 
+* Vampire changes
+    * Blood potions spawn when corpses are dropped for vampires. 
+    * Vampires rot instead of mutating if their hunger is below Full.
 
 * Enchantments can pass through friendlies now.
     * Particularly, pain can go through undead minions to hit your foes. 
