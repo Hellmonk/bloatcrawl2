@@ -850,9 +850,9 @@ static void _describe_god_powers(god_type which_god)
     }
     case GOD_SIF_MUNA:
     {
-        int savings = pow(16.0/17, you.skill(SK_INVOCATIONS, 10) / 10.0) * 100;
+        int savings = pow(16.0/17, you.skill(SK_INVOCATIONS, 10) / 20.0) * 100;
         if (savings < 100)
-            cprintf("%s helps you to conserve magic. (%d%% normal cost)", god_name_string, savings);
+            cprintf("%s helps you to conserve magic. (%d%% normal cost)\n", god_name_string, savings);
     }
 
     default:
