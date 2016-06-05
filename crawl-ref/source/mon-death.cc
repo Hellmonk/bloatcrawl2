@@ -453,6 +453,7 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force, boo
            && mons_class_flag(draco_or_demonspawn_subspecies(&mons),
                               M_ALWAYS_CORPSE);
 
+    const bool was_skeleton = mons.is_skeletal();
     int o = get_mitm_slot();
 
     if (o == NON_ITEM)
@@ -567,6 +568,11 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force, boo
         item_was_destroyed(corpse);
         destroy_item(o);
         return nullptr;
+    }
+
+    if (corpse.is_valid() && undead_minion && was_skeleton)
+    {
+        turn_corpse_into_skeleton(corpse);
     }
 
     if (o == NON_ITEM)
