@@ -3,6 +3,7 @@
 * Vampire changes
     * Blood potions spawn when corpses are dropped for vampires. 
     * Vampires rot instead of mutating if their hunger is below Full.
+    * They don't become less hungry when attacking anymore, forcing occasional uses of blood potions.
 
 * Enchantments can pass through friendlies now.
     * Particularly, pain can go through undead minions to hit your foes. 
