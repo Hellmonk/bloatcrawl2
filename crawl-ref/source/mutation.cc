@@ -562,7 +562,7 @@ static void _display_vampire_attributes()
 
     string result;
 
-    const int lines = 12;
+    const int lines = 13;
     string column[lines][7] =
     {
         {"                     ", "<lightgreen>Alive</lightgreen>      ", "<green>Full</green>    ",
