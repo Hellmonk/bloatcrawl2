@@ -124,7 +124,7 @@ static const body_facet_def _body_facets[] =
  */
 static const int conflict[][3] =
 {
-    { MUT_REGENERATION,        MUT_SLOW_REGENERATION,      0},
+    { MUT_HEALTH_REGENERATION,        MUT_SLOW_REGENERATION,      0},
     { MUT_ACUTE_VISION,        MUT_BLURRY_VISION,          0},
     { MUT_FAST,                MUT_SLOW,                   0},
 #if TAG_MAJOR_VERSION == 34
@@ -140,7 +140,7 @@ static const int conflict[][3] =
     { MUT_WILD_MAGIC,          MUT_SUBDUED_MAGIC,          1},
     { MUT_CARNIVOROUS,         MUT_HERBIVOROUS,            1},
     { MUT_SLOW_METABOLISM,     MUT_FAST_METABOLISM,        1},
-    { MUT_REGENERATION,        MUT_SLOW_REGENERATION,      1},
+    { MUT_HEALTH_REGENERATION,        MUT_SLOW_REGENERATION,      1},
     { MUT_ACUTE_VISION,        MUT_BLURRY_VISION,          1},
     { MUT_FAST,                MUT_SLOW,                   1},
     { MUT_GOOD_DNA,            MUT_BAD_DNA,                1},
@@ -340,7 +340,7 @@ mutation_activity_type mutation_activity_level(mutation_type mut)
         return MUTACT_INACTIVE;
 
     if ((you_worship(GOD_PAKELLAS) || player_under_penance(GOD_PAKELLAS))
-         && (mut == MUT_MANA_LINK || mut == MUT_MANA_REGENERATION))
+         && (mut == MUT_MAGIC_LINK || mut == MUT_MAGIC_REGENERATION))
     {
         return MUTACT_INACTIVE;
     }
@@ -562,7 +562,7 @@ static void _display_vampire_attributes()
 
     string result;
 
-    const int lines = 12;
+    const int lines = 13;
     string column[lines][7] =
     {
         {"                     ", "<lightgreen>Alive</lightgreen>      ", "<green>Full</green>    ",
@@ -576,6 +576,8 @@ static void _display_vampire_attributes()
         {"Stealth boost        ", "none       ", "none    ", "none      ", "minor    ", "major    ", "large "},
 
         {"Spell hunger         ", "full       ", "full    ", "full      ", "halved   ", "none     ", "none  "},
+
+        {"Mutation             ", "normal     ", "normal  ", "rot       ", "rot      ", "rot      ", "rot   "},
 
         {"\n<w>Resistances</w>\n"
          "Poison resistance    ", "           ", "        ", "          ", " +       ", " +       ", "immune"},
@@ -1098,7 +1100,7 @@ bool physiology_mutation_conflict(mutation_type mutat)
     // Vampires' healing and thirst rates depend on their blood level.
     if (you.species == SP_VAMPIRE
         && (mutat == MUT_CARNIVOROUS || mutat == MUT_HERBIVOROUS
-            || mutat == MUT_REGENERATION || mutat == MUT_SLOW_REGENERATION
+            || mutat == MUT_HEALTH_REGENERATION || mutat == MUT_SLOW_REGENERATION
             || mutat == MUT_FAST_METABOLISM || mutat == MUT_SLOW_METABOLISM))
     {
         return true;
@@ -2110,7 +2112,7 @@ static const facet_def _demon_facets[] =
       { -33, 0, 0 } },
     { 2, { MUT_ROT_IMMUNITY, MUT_FOUL_STENCH, MUT_FOUL_STENCH },
       { -33, 0, 0 } },
-    { 2, { MUT_MANA_SHIELD, MUT_MANA_REGENERATION, MUT_MANA_LINK },
+    { 2, { MUT_MAGIC_SHIELD, MUT_MAGIC_REGENERATION, MUT_MAGIC_LINK },
       { -33, 0, 0 } },
     // Tier 3 facets
     { 3, { MUT_HEAT_RESISTANCE, MUT_FLAME_CLOUD_IMMUNITY, MUT_HURL_HELLFIRE },

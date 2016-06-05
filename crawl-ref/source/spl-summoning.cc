@@ -1694,7 +1694,7 @@ static bool _raise_remains(const coord_def &pos, int corps, beh_type beha,
 
     // Use the original monster type as the zombified type here, to get
     // the proper stats from it.
-    mgen_data mg(mon, beha, as, 3, spell, pos, hitting,
+    mgen_data mg(mon, beha, as, 0, spell, pos, hitting,
                  MG_FORCE_BEH|MG_FORCE_PLACE|MG_AUTOFOE,
                  god, monnum);
 
@@ -1932,7 +1932,7 @@ spret_type cast_animate_skeleton(god_type god, bool fail)
     // First, we try to animate a skeleton if there is one.
     const int animate_skel_result = animate_remains(you.pos(), CORPSE_SKELETON,
                                                     BEH_FRIENDLY, MHITYOU,
-                                                    &you, "", god);
+                                                    &you, "", god, true, false, false, nullptr, nullptr, SPELL_ANIMATE_SKELETON);
     if (animate_skel_result != -1)
     {
         if (animate_skel_result == 0)

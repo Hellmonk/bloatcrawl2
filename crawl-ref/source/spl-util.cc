@@ -430,9 +430,10 @@ int spell_hunger(spell_type which_spell, bool rod, int multiplier)
         }
     }
 
+    // if you change this, also update the display in describe-god.cc: _describe_god_powers for SIF_MUNA
     int hunger = pow(17.0 / 16, x / 10.0) * 10;
 
-    if (hunger < 0 || you.duration[DUR_CHANNELING] != 0 || player_mutation_level(MUT_HUNGERLESS) != 0)
+    if (hunger < 0 || player_mutation_level(MUT_HUNGERLESS) != 0)
         hunger = 0;
 
     return hunger;
@@ -1116,7 +1117,7 @@ bool spell_is_form(spell_type spell)
  *
  * @param spell      The spell in question.
  * @param temp       Include checks for volatile or temporary states
- *                   (status effects, mana, gods, items, etc.)
+ *                   (status effects, magic, gods, items, etc.)
  * @param prevent    Whether to only check for effects which prevent casting,
  *                   rather than just ones that make it unproductive.
  * @param evoked     Is the spell being evoked from an item? (E.g., a rod)
@@ -1137,7 +1138,7 @@ bool spell_is_useless(spell_type spell, bool temp, bool prevent, bool evoked,
  *
  * @param spell      The spell in question.
  * @param temp       Include checks for volatile or temporary states
- *                   (status effects, mana, gods, items, etc.)
+ *                   (status effects, magic, gods, items, etc.)
  * @param prevent    Whether to only check for effects which prevent casting,
  *                   rather than just ones that make it unproductive.
  * @param evoked     Is the spell being evoked from an item? (E.g., a rod)

@@ -806,7 +806,7 @@ sun
 i-rage AMU_RAGE AMU_ID_FIRST
 i-harm AMU_HARM
 i-dismissal AMU_DISMISSAL
-i-m-regeneration AMU_MANA_REGENERATION
+i-m-regeneration AMU_MAGIC_REGENERATION
 i-m-regeneration AMU_STAMINA_REGENERATION
 i-inaccuracy AMU_INACCURACY
 i-rage AMU_NOTHING

@@ -1138,7 +1138,7 @@ static int _player_bonus_regen()
     }
 
     // Fast heal mutation.
-    rr += player_mutation_level(MUT_REGENERATION) * 20;
+    rr += player_mutation_level(MUT_HEALTH_REGENERATION) * 20;
 
     // Powered By Death mutation, boosts regen by variable strength
     // if the duration of the effect is still active.
@@ -1241,9 +1241,9 @@ void update_regen_amulet_attunement()
 
 // Amulet of magic regeneration needs to be worn while at full magic before it
 // begins to function.
-void update_mana_regen_amulet_attunement()
+void update_magic_regen_amulet_attunement()
 {
-    if (you.wearing(EQ_AMULET, AMU_MANA_REGENERATION)
+    if (you.wearing(EQ_AMULET, AMU_MAGIC_REGENERATION)
         && player_regenerates_mp())
     {
         if (you.mp == you.mp_max
@@ -8143,8 +8143,9 @@ bool player::can_safely_mutate(bool temp) const
     if (!can_mutate())
         return false;
 
-    return undead_state(temp) == US_ALIVE
-           || undead_state(temp) == US_SEMI_UNDEAD;
+    return (undead_state(temp) == US_ALIVE || undead_state(temp) == US_SEMI_UNDEAD)
+        && (you.species != SP_VAMPIRE || you.hunger_state > HS_SATIATED)
+        ;
 }
 
 // Is the player too undead to bleed, rage, or polymorph?
@@ -9640,7 +9641,7 @@ bool player_summoned_monster(spell_type spell, monster* mons, bool first)
     {
         if (!freeze_summons_mp(cost))
         {
-            mpr("You don't have enough energy to support more summons of this magnitude.");
+            mpr("You don't have enough magic to support more minions of this magnitude.");
             success = false;
             break;
         }
@@ -9657,7 +9658,7 @@ bool player_summoned_monster(spell_type spell, monster* mons, bool first)
 
         if (open_slot == -1)
         {
-            mpr("Your mind can't handle so many summons at once.");
+            mpr("Your mind can't handle so many minions at once.");
             success = false;
         }
         else

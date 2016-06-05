@@ -2685,7 +2685,7 @@ void define_monster(monster* mons, beh_type behavior)
 
     case MONS_HYDRA:
         // Hydras start off with 4 to 8 heads.
-        mons->num_heads = random_range(2 + crawl_state.difficulty, 8 + runes_in_pack());
+        mons->num_heads = random_range(2 + crawl_state.difficulty, 7 + crawl_state.difficulty + runes_in_pack());
         break;
 
     case MONS_LERNAEAN_HYDRA:
@@ -4769,7 +4769,7 @@ mon_threat_level_type mons_threat_level(const monster *mon, bool real)
 
     if (tension <= 0)
     {
-        // Conjurators use melee to conserve mana, MDFis switch plates...
+        // Conjurators use melee to conserve magic, MDFis switch plates...
         return MTHRT_TRIVIAL;
     }
     else if (tension <= 5)

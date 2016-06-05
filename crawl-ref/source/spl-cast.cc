@@ -879,7 +879,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
         return false;
     }
 
-    if (spell_produces_minion(spell) && player_summon_count() >= MAX_SUMMONS)
+    if (spell_produces_minion(spell) && player_summon_count() >= MAX_MINIONS)
     {
         mpr("You can't maintain any more summons.");
         return false;

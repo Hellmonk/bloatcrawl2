@@ -1310,6 +1310,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     mon->base_monster = mg.base_type;
 
     mon->summoned_by_spell = (spell_type) mg.summon_type;
+    const bool is_player_summon = spell_produces_minion((spell_type) mg.summon_type) && mg.summoner->is_player();
 
     // Set pos and link monster into monster grid.
     if (!dont_place && !mon->move_to_pos(fpos))
@@ -1597,7 +1598,9 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
 
     // dur should always be 1-6 for monsters that can be abjured.
     const bool summoned = mg.abjuration_duration >= 1
-                       && mg.abjuration_duration <= 6;
+                       && mg.abjuration_duration <= 6
+                       || is_player_summon
+    ;
 
     if (mons_class_is_animated_weapon(mg.cls))
     {

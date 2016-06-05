@@ -1745,13 +1745,13 @@ void canned_msg(canned_message_type which_message, const int amount)
         case MSG_NO_SPELLS:
             mpr("You don't know any spells.");
             break;
-        case MSG_MANA_INCREASE:
+        case MSG_MAGIC_INCREASE:
             mpr("You feel your magic capacity increase.");
             break;
         case MSG_STAMINA_INCREASE:
             mpr("You feel your stamina capacity increase.");
             break;
-        case MSG_MANA_DECREASE:
+        case MSG_MAGIC_DECREASE:
             mpr("You feel your magic capacity decrease.");
             break;
         case MSG_STAMINA_DECREASE:

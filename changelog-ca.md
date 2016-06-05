@@ -1,5 +1,15 @@
 ## v1.5.4
 
+* Vampire changes
+    * Blood potions spawn when corpses are dropped for vampires. 
+    * Vampires rot instead of mutating if their hunger is below Full.
+
+* Enchantments can pass through friendlies now.
+    * Particularly, pain can go through undead minions to hit your foes. 
+
+* Mummies gain stamina and magic regen at XL 1, 6, and 12. Since they can't use potions, and they don't have the main 
+  benefit that they get in vanilla crawl to compensate, this will somewhat make up for it. 
+
 * Added a strategies.md file to explain basic strategies to help people unfamiliar with the many different rules that
   apply to this fork. It's highly recommended that you read this file and keep up with changes that are made to it, 
   even if you have been playing on this fork for a while, since things change so quickly here.

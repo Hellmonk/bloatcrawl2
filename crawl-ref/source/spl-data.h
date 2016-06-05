@@ -3274,7 +3274,7 @@ static const struct spell_desc spelldata[] =
 #endif
 
 {
-    SPELL_SUMMON_MANA_VIPER, "Summon Mana Viper",
+    SPELL_SUMMON_MANA_VIPER, "Summon Mana viper",
     SPTYP_SUMMONING | SPTYP_HEXES,
     SPFLAG_MONS_ABJURE,
     5,

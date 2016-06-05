@@ -444,7 +444,7 @@ public:
     spell_type current_form_spell;
     int current_form_spell_failure;
 
-    FixedVector<mid_t, MAX_SUMMONS> summoned;
+    FixedVector<mid_t, MAX_MINIONS> summoned;
 
     // used by scrolls of returning
     coord_def returnPosition;
@@ -966,7 +966,7 @@ int player_prot_life(bool calc_unid = true, bool temp = true,
 
 int player_regen();
 void update_regen_amulet_attunement();
-void update_mana_regen_amulet_attunement();
+void update_magic_regen_amulet_attunement();
 
 int player_res_cold(bool calc_unid = true, bool temp = true,
                     bool items = true);

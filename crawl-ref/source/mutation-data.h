@@ -205,7 +205,7 @@ static const mutation_def mut_data[] =
   {"You feel less vulnerable to electricity.", "", ""},
 },
 
-{ MUT_REGENERATION, 30, 3, mutflag::GOOD, false,
+{ MUT_HEALTH_REGENERATION, 30, 3, mutflag::GOOD, false,
   "fast health regeneration",
 
   {"Your natural rate of healing is unusually fast.",
@@ -1182,7 +1182,7 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_MANA_SHIELD, 15, 1, mutflag::GOOD, false,
+{ MUT_MAGIC_SHIELD, 15, 1, mutflag::GOOD, false,
   "magic shield",
 
   {"When hurt, damage is shared between your health and your magic reserves.", "", ""},
@@ -1190,7 +1190,7 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_MANA_REGENERATION, 50, 3, mutflag::GOOD, false,
+{ MUT_MAGIC_REGENERATION, 50, 3, mutflag::GOOD, false,
   "magic regeneration",
 
   {"You regenerate magic rapidly.",
@@ -1202,7 +1202,7 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_MANA_LINK, 15, 1, mutflag::GOOD, false,
+{ MUT_MAGIC_LINK, 15, 1, mutflag::GOOD, false,
   "magic link",
 
   {"When low on magic, you restore magic in place of health.", "", ""},

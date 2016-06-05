@@ -318,7 +318,7 @@ static const vector<brand_weight_tuple> HOLY_BRANDS = {
 static int Weapon_index[NUM_WEAPONS];
 static const weapon_def Weapon_prop[] =
 {
-    // Maces & Flails
+    // Maces & Flails                             dam hit speed weight
     { WPN_CLUB,              "club",                7,  3, 13, 10,
         SK_MACES_FLAILS, SIZE_LITTLE,  SIZE_LITTLE, MI_NONE,
         DAMV_CRUSHING, 10, 0, {} },
@@ -424,7 +424,7 @@ static const weapon_def Weapon_prop[] =
             { SPWPN_DISTORTION,      1 },
             { SPWPN_ANTIMAGIC,       1 },
         }},
-    { WPN_QUICK_BLADE,       "quick blade",         5,  6,  7, 5,
+    { WPN_QUICK_BLADE,       "quick blade",         5,  6,  7, 3,
         SK_SHORT_BLADES, SIZE_LITTLE,  SIZE_LITTLE, MI_NONE,
         DAMV_PIERCING, 0, 2, {} },
     { WPN_SHORT_SWORD,       "short sword",         6,  4, 11, 3,
@@ -457,10 +457,10 @@ static const weapon_def Weapon_prop[] =
     { WPN_DOUBLE_SWORD,          "double sword",          15, -1, 15, 15,
         SK_LONG_BLADES,  SIZE_LITTLE,  SIZE_MEDIUM, MI_NONE,
         DAMV_SLICING, 0, 2, LBL_BRANDS },
-    { WPN_GREAT_SWORD,           "great sword",           16, -3, 16, 20,
+    { WPN_GREAT_SWORD,           "great sword",           16, -3, 16, 15,
         SK_LONG_BLADES,  SIZE_MEDIUM,  NUM_SIZE_LEVELS,  MI_NONE,
         DAMV_SLICING, 6, 10, LBL_BRANDS },
-    { WPN_TRIPLE_SWORD,          "triple sword",          19, -4, 19, 25,
+    { WPN_TRIPLE_SWORD,          "triple sword",          19, -4, 19, 20,
         SK_LONG_BLADES,  SIZE_MEDIUM,  NUM_SIZE_LEVELS,  MI_NONE,
         DAMV_SLICING, 0, 2, LBL_BRANDS },
 #if TAG_MAJOR_VERSION == 34

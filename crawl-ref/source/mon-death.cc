@@ -453,6 +453,7 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force, boo
            && mons_class_flag(draco_or_demonspawn_subspecies(&mons),
                               M_ALWAYS_CORPSE);
 
+    const bool was_skeleton = mons.is_skeletal();
     int o = get_mitm_slot();
 
     if (o == NON_ITEM)
@@ -543,28 +544,22 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force, boo
     if (corpse.is_valid() && !undead_minion)
     {
         maybe_drop_monster_hide(corpse);
+
+        int blood_potion_count = random2(max_corpse_chunks(corpse.mon_type) + 1);
+
+        if (you.species != SP_VAMPIRE || !can_bottle_blood_from_corpse(corpse.mon_type) || coinflip())
+            blood_potion_count = 0;
+
+        for (int i = 0; i < blood_potion_count; i++)
+            make_and_place_item(mons.pos(), OBJ_POTIONS, POT_BLOOD);
+
         if (mons_corpse_effect(corpse.mon_type) == CE_MUTAGEN)
         {
-            int potion_count = random2(max_corpse_chunks(corpse.mon_type));
-            potion_count = max(1, potion_count / 2);
+            int weak_mut_potion_count = random2(max_corpse_chunks(corpse.mon_type) + 1);
+            weak_mut_potion_count /= 2;
 
-            for (int i = 0; i < potion_count; i++)
-            {
-                int id = items(false, OBJ_POTIONS, POT_WEAK_MUTATION, 0);
-                if (id != NON_ITEM)
-                {
-                    item_def& new_potion = mitm[id];
-
-                    // Automatically identify the potion.
-                    set_ident_flags(new_potion, ISFLAG_IDENT_MASK);
-
-                    const coord_def pos = mons.pos();
-                    if (!pos.origin() && in_bounds(pos))
-                        move_item_to_grid(&id, pos);
-                    else
-                        destroy_item(id);
-                }
-            }
+            for (int i = 0; i < weak_mut_potion_count; i++)
+                make_and_place_item(mons.pos(), OBJ_POTIONS, POT_WEAK_MUTATION);
         }
     }
 
@@ -573,6 +568,11 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force, boo
         item_was_destroyed(corpse);
         destroy_item(o);
         return nullptr;
+    }
+
+    if (corpse.is_valid() && undead_minion && was_skeleton)
+    {
+        turn_corpse_into_skeleton(corpse);
     }
 
     if (o == NON_ITEM)
@@ -999,16 +999,16 @@ static void _mummy_curse(monster* mons, killer_type killer, int index)
         }
 
         mprf(MSGCH_MONSTER_SPELL, "You feel nervous for a moment...");
+
+        for (int i = 0; i < (x_chance_in_y(1, 10) ? 3 : 1); i ++)
+        {
+            curse_a_slot(pow * 100);
+        }
     }
     else if (you.can_see(*target))
     {
         mprf(MSGCH_MONSTER_SPELL, "A malignant aura surrounds %s.",
              target->name(DESC_THE).c_str());
-    }
-
-    for (int i = 0; i < (x_chance_in_y(1, 10) ? 3 : 1); i ++)
-    {
-        curse_a_slot(pow * 100);
     }
 
     const string cause = make_stringf("%s death curse",
@@ -1892,7 +1892,7 @@ item_def* monster_die(monster* mons, killer_type killer,
                                 || killer == KILL_DISMISSED);
     const mon_enchant summ_ench = mons->get_ench(ENCH_SUMMON);
     const spell_type summon_spell = summ_ench.ench == ENCH_SUMMON ? (spell_type)summ_ench.degree : SPELL_NO_SPELL;
-    const bool undead_minion = spell_produces_undead_minion(summon_spell);
+    const bool undead_minion = spell_produces_undead_minion(summon_spell) && mons_reset;
     const bool leaves_corpse = !summoned && !fake_abjure && !timeout
                                && !mons_reset || undead_minion;
     // Award experience for suicide if the suicide was caused by the
@@ -2184,7 +2184,7 @@ item_def* monster_die(monster* mons, killer_type killer,
 
             _fire_kill_conducts(*mons, killer, killer_index, gives_player_xp);
 
-            // Divine health and mana restoration doesn't happen when
+            // Divine health and magic restoration doesn't happen when
             // killing born-friendly monsters.
             if (gives_player_xp
                 && (have_passive(passive_t::restore_hp)
@@ -2427,7 +2427,7 @@ item_def* monster_die(monster* mons, killer_type killer,
             break;
 
         case KILL_RESET:
-            drop_items = false;
+            drop_items = undead_minion;
             break;
 
         case KILL_TIMEOUT:

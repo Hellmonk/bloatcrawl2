@@ -139,7 +139,7 @@
 # INT:      Intelligence modifier.
 # LIFE:     Negative energy resistance/vulnerability.
 # MAGIC:    Magic resistance/vulnerability.
-# MP:       Mana capacity modifier.
+# MP:       Magic capacity modifier.
 # NAME:     Name of artefact when identified.
 # REGEN:    Provides regeneration (1 = amulet of regen, 2.5 = the spell).
 # STEALTH:  Stealth modifier.

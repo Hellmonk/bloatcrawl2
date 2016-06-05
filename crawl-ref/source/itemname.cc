@@ -775,7 +775,7 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
         case AMU_RAGE:              return "rage";
         case AMU_HARM:              return "harm";
         case AMU_DISMISSAL:         return "dismissal";
-        case AMU_MANA_REGENERATION: return "magic regeneration";
+        case AMU_MAGIC_REGENERATION: return "magic regeneration";
         case AMU_STAMINA_REGENERATION: return "stamina regeneration";
         case AMU_THE_GOURMAND:      return "gourmand";
 #if TAG_MAJOR_VERSION == 34
@@ -3769,7 +3769,7 @@ bool is_useless_item(const item_def &item, bool temp)
                    || temp && you.species == SP_VAMPIRE
                       && you.hunger_state <= HS_STARVING;
 
-        case AMU_MANA_REGENERATION:
+        case AMU_MAGIC_REGENERATION:
             return you_worship(GOD_PAKELLAS);
 
         case RING_SEE_INVISIBLE:
