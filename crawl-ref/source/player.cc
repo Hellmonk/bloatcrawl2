@@ -4104,6 +4104,10 @@ void calc_hp()
 {
     int oldhp = you.hp, oldmax = you.hp_max;
     you.hp_max = get_real_hp(true, false);
+
+    if (you.duration[DUR_BERSERK])
+        you.hp_max = you.hp_max * 3 / 2;
+
     if (you.species == SP_DJINNI)
     {
         you.hp_max += get_real_mp(true);
@@ -5611,8 +5615,10 @@ int dec_exhaust_player(int amount)
 
     if (you.duration[DUR_EXHAUSTED] > BASELINE_DELAY)
     {
+        const int to_lose = min(amount, you.duration[DUR_EXHAUSTED]);
         you.duration[DUR_EXHAUSTED] -= you.duration[DUR_HASTE]
-                                       ? haste_mul(amount) : amount;
+                                       ? haste_mul(to_lose) : to_lose;
+        amount -= to_lose;
     }
     if (you.duration[DUR_EXHAUSTED] <= BASELINE_DELAY)
     {
@@ -9535,7 +9541,6 @@ void player_end_berserk()
     you.hunger = max(HUNGER_STARVING - 100, you.hunger);
 
     // 1KB: No berserk healing.
-    set_hp((you.hp + 1) * 2 / 3);
     calc_hp();
 
     learned_something_new(HINT_POSTBERSERK);
@@ -10340,6 +10345,8 @@ void _instant_rest()
         inc_mp(get_mp_max() - get_mp());
 
     you.duration[DUR_BERSERK] = 0;
+    calc_hp();
+
     player_after_each_turn();
     you.peace = 1000;
 

@@ -793,9 +793,8 @@ bool player::go_berserk(bool intentional, bool potion)
     you.increase_duration(DUR_BERSERK, berserk_duration, 0, nullptr, potion ? SRC_POTION : SRC_UNDEFINED);
 
     calc_hp();
-    set_hp(get_hp() * 3 / 2);
-
-    deflate_hp(get_hp_max(), false);
+    const int hp_gain = get_hp() * 3 / 2;
+    inc_hp(hp_gain);
 
     if (!you.duration[DUR_MIGHT])
         notify_stat_change(STAT_STR, 5, true);
@@ -831,10 +830,11 @@ bool player::can_go_berserk(bool intentional, bool potion, bool quiet,
     COMPILE_CHECK(HUNGER_STARVING - 100 + BERSERK_NUTRITION < HUNGER_VERY_HUNGRY);
     const bool verbose = (intentional || potion) && !quiet;
     string msg;
-    bool success = false;
+    bool success = true;
 
     if (!potion)
     {
+        success = false;
         if (duration[DUR_EXHAUSTED])
             msg = "You're too exhausted to go berserk.";
         else if (get_sp() < 50)
