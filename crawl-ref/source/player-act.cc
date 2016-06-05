@@ -339,10 +339,9 @@ int player::attack_delay(const item_def *projectile, bool rescale, const item_de
         // longer so when Haste speeds it up, only Finesse will apply.
         if (you.duration[DUR_HASTE] && rescale)
             attk_delay = haste_mul(attk_delay);
-        attk_delay = max(2, attk_delay / 2);
     }
 
-    attk_delay = max(attk_delay, 3);
+    attk_delay = max(attk_delay, 2);
 
     // see comment on player.cc:player_speed
     return attk_delay * you.time_taken / 10;
