@@ -57,6 +57,7 @@ game_state::game_state()
       free_stair_escape(false),
       warn_about_experience(true),
       need_floor_exp(false),
+      followers_should_follow(true),
       mon_act(nullptr)
 {
     reset_cmd_repeat();

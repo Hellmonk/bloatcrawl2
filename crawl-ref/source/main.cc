@@ -1830,7 +1830,8 @@ static void _take_stairs(bool down)
     }
     else
     {
-        tag_followers(); // Only those beside us right now can follow.
+        if (crawl_state.followers_should_follow)
+            tag_followers(); // Only those beside us right now can follow.
         start_delay(down ? DELAY_DESCENDING_STAIRS : DELAY_ASCENDING_STAIRS, 1);
     }
 }
