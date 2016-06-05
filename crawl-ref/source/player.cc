@@ -4436,6 +4436,9 @@ bool in_quick_mode()
 
 void set_quick_mode(const bool new_quick_mode, const bool manual)
 {
+    if (crawl_state.sim_mode)
+        return;
+
     if (new_quick_mode == in_quick_mode())
         return;
 
@@ -4475,6 +4478,9 @@ void set_quick_mode(const bool new_quick_mode, const bool manual)
 
 void set_exertion(const exertion_mode new_exertion, const bool manual)
 {
+    if (crawl_state.sim_mode)
+        return;
+
     if (Options.exertion_disabled)
     {
         if (manual)

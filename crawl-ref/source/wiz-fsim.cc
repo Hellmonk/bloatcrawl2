@@ -43,7 +43,7 @@
 #include "version.h"
 #include "wiz-you.h"
 
-#ifdef WIZARD
+// #ifdef WIZARD
 
 fight_data null_fight = {0.0, 0, 0, 0.0, 0, 0.0, 0.0};
 typedef map<skill_type, int8_t> skill_map;
@@ -243,6 +243,7 @@ static bool _fsim_kit_equip(const string &kit, string &error)
 // fight simulator internals
 static monster* _init_fsim()
 {
+    crawl_state.sim_mode = true;
     monster * mon = nullptr;
     monster_type mtype = get_monster_by_name(Options.fsim_mons, true);
 
@@ -325,6 +326,7 @@ static void _uninit_fsim(monster *mon)
 {
     monster_die(mon, KILL_DISMISSED, NON_MONSTER);
     reset_training();
+    crawl_state.sim_mode = false;
 }
 
 static fight_data _get_fight_data(monster &mon, int iter_limit, bool defend)
@@ -344,6 +346,8 @@ static fight_data _get_fight_data(monster &mon, int iter_limit, bool defend)
     you.exp_available = 0;
     const int yhp  = get_hp();
     const int ymhp = get_hp_max();
+    const int original_sp = get_sp();
+    const int original_mp = get_mp();
 
     // disable death and delay, but make sure that these values
     // get reset when the function call ends
@@ -396,6 +400,8 @@ static fight_data _get_fight_data(monster &mon, int iter_limit, bool defend)
                     hits++;
             }
             you.hunger = hunger;
+            you.sp = original_sp;
+            you.mp = original_mp;
             time_taken += you.time_taken * 10;
 
             int damage = (mon.max_hit_points - mon.hit_points);
@@ -715,4 +721,4 @@ void wizard_fight_sim(bool double_scale)
     mpr("Done.");
 }
 
-#endif
+// #endif
