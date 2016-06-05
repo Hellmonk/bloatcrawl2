@@ -1694,7 +1694,7 @@ static bool _raise_remains(const coord_def &pos, int corps, beh_type beha,
 
     // Use the original monster type as the zombified type here, to get
     // the proper stats from it.
-    mgen_data mg(mon, beha, as, 3, spell, pos, hitting,
+    mgen_data mg(mon, beha, as, 0, spell, pos, hitting,
                  MG_FORCE_BEH|MG_FORCE_PLACE|MG_AUTOFOE,
                  god, monnum);
 
