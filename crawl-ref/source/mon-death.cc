@@ -2427,7 +2427,7 @@ item_def* monster_die(monster* mons, killer_type killer,
             break;
 
         case KILL_RESET:
-            drop_items = false;
+            drop_items = undead_minion;
             break;
 
         case KILL_TIMEOUT:
