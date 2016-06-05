@@ -9683,7 +9683,7 @@ int generic_action_delay(const int skill, const int base, const action_delay_typ
     const int dex = (you.dex(true) - 10) * 10;
     const int min_delay_reached_at = 60;
     // 100 is full amount, 80 = 80% of original
-    const int global_reduction = 90;
+    const int global_reduction = 85;
 
     const int factor = (min_delay_reached_at - 10) * 10;
 
@@ -9927,16 +9927,16 @@ int _difficulty_mode_multiplier()
     switch(crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            x = 100;
+            x = 110;
             break;
         case DIFFICULTY_STANDARD:
-            x = 90;
+            x = 100;
             break;
         case DIFFICULTY_CHALLENGE:
-            x = 80;
+            x = 90;
             break;
         case DIFFICULTY_NIGHTMARE:
-            x = 70;
+            x = 80;
             break;
         default:
             // should not be possible
