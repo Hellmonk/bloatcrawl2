@@ -1932,7 +1932,7 @@ spret_type cast_animate_skeleton(god_type god, bool fail)
     // First, we try to animate a skeleton if there is one.
     const int animate_skel_result = animate_remains(you.pos(), CORPSE_SKELETON,
                                                     BEH_FRIENDLY, MHITYOU,
-                                                    &you, "", god);
+                                                    &you, "", god, true, false, false, nullptr, nullptr, SPELL_ANIMATE_SKELETON);
     if (animate_skel_result != -1)
     {
         if (animate_skel_result == 0)
