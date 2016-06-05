@@ -999,16 +999,16 @@ static void _mummy_curse(monster* mons, killer_type killer, int index)
         }
 
         mprf(MSGCH_MONSTER_SPELL, "You feel nervous for a moment...");
+
+        for (int i = 0; i < (x_chance_in_y(1, 10) ? 3 : 1); i ++)
+        {
+            curse_a_slot(pow * 100);
+        }
     }
     else if (you.can_see(*target))
     {
         mprf(MSGCH_MONSTER_SPELL, "A malignant aura surrounds %s.",
              target->name(DESC_THE).c_str());
-    }
-
-    for (int i = 0; i < (x_chance_in_y(1, 10) ? 3 : 1); i ++)
-    {
-        curse_a_slot(pow * 100);
     }
 
     const string cause = make_stringf("%s death curse",
