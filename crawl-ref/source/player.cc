@@ -10472,6 +10472,9 @@ void attempt_instant_rest()
 
 void monster_died(mid_t mons_mid, bool was_hostile_and_seen, int mp_freeze, killer_type killer)
 {
+    if (crawl_state.sim_mode)
+        return;
+
     if (was_hostile_and_seen)
     {
         you.monsters_recently_seen--;

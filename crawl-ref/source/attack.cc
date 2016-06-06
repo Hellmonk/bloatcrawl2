@@ -231,7 +231,7 @@ int attack::calc_to_hit()
 
 int calc_player_to_hit(item_def *weapon, skill_type wpn_skill)
 {
-    int mhit = 150;
+    int mhit = 100;
     const int dex = you.dex();
     mhit += (dex - 10) * 10;
 

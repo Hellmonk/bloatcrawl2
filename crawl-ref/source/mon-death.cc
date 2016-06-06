@@ -2763,7 +2763,7 @@ item_def* monster_die(monster* mons, killer_type killer,
         update_screen();
     }
 
-    if (!mons_reset)
+    if (!mons_reset && !crawl_state.sim_mode)
     {
         _give_experience(player_xp, monster_xp, killer, killer_index, pet_kill,
                          was_visible);
