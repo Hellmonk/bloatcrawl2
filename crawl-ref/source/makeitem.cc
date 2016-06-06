@@ -858,7 +858,7 @@ static special_armour_type _generate_armour_type_ego(armour_type type,
                                       3, SPARM_MAGIC_RESISTANCE,
                                       2, SPARM_INTELLIGENCE,
                                       2, SPARM_SEE_INVISIBLE,
-                                      1, SPARM_SPIRIT_SHIELD,
+                                      1, SPARM_MAGIC_SHIELD,
                                       1, SPARM_STAMINA_SHIELD,
                                       0);
 
@@ -1020,7 +1020,7 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
         return slot == EQ_BODY_ARMOUR || slot == EQ_SHIELD || slot == EQ_CLOAK
                || !strict;
 
-    case SPARM_SPIRIT_SHIELD:
+    case SPARM_MAGIC_SHIELD:
         return type == ARM_HAT ||
                slot == EQ_SHIELD || !strict;
     case SPARM_STAMINA_SHIELD:

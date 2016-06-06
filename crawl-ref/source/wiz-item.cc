@@ -1077,7 +1077,7 @@ static void _debug_acquirement_stats(FILE *ostat)
             "preservation",
 #endif
             "reflection",
-            "spirit shield",
+            "magic shield",
             "archery",
 #if TAG_MAJOR_VERSION == 34
             "jumping",

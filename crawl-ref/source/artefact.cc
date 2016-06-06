@@ -359,7 +359,7 @@ struct jewellery_fake_artp
 
 static map<jewellery_type, vector<jewellery_fake_artp>> jewellery_artps = {
     { AMU_RAGE, { { ARTP_BERSERK, 1 } } },
-    { AMU_REGENERATION, { { ARTP_REGENERATION, 1 } } },
+    { AMU_HEALTH_REGENERATION, { { ARTP_REGENERATION, 1 } } },
     { AMU_REFLECTION, { { ARTP_SHIELDING, 0 } } },
 
     { RING_MAGICAL_POWER, { { ARTP_MAGICAL_POWER, 20 } } },
@@ -1476,7 +1476,7 @@ static bool _randart_is_redundant(const item_def &item,
         provides = ARTP_SLAYING;
         break;
 
-    case AMU_REGENERATION:
+    case AMU_HEALTH_REGENERATION:
         provides = ARTP_REGENERATION;
         break;
 

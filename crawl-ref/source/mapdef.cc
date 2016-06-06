@@ -4809,7 +4809,7 @@ static int _str_to_ego(item_spec &spec, string ego_str)
         "preservation",
 #endif
         "reflection",
-        "spirit_shield",
+        "magic_shield",
         "archery",
 #if TAG_MAJOR_VERSION == 34
         "jumping",

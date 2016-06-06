@@ -559,7 +559,7 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_PRESERVATION:      return "preservation";
 #endif
         case SPARM_REFLECTION:        return "reflection";
-        case SPARM_SPIRIT_SHIELD:     return "spirit shield";
+        case SPARM_MAGIC_SHIELD:     return "magic shield";
         case SPARM_STAMINA_SHIELD:    return "stamina shield";
         case SPARM_ARCHERY:           return "archery";
         default:                      return "bugginess";
@@ -592,7 +592,7 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_PRESERVATION:      return "obsolete";
 #endif
         case SPARM_REFLECTION:        return "reflect";
-        case SPARM_SPIRIT_SHIELD:     return "Spirit";
+        case SPARM_MAGIC_SHIELD:     return "MagicShield";
         case SPARM_STAMINA_SHIELD:    return "StamShield";
         case SPARM_ARCHERY:           return "archery";
         default:                      return "buggy";
@@ -786,11 +786,11 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
 #endif
         case AMU_INACCURACY:        return "inaccuracy";
         case AMU_NOTHING:           return "nothing";
-        case AMU_GUARDIAN_SPIRIT:   return "guardian spirit";
-        case AMU_GUARDIAN_STAMINA:  return "guardian stamina";
+        case AMU_MAGIC_SHIELD:      return "magic shield";
+        case AMU_STAMINA_SHIELD:    return "stamina shield";
         case AMU_FAITH:             return "faith";
         case AMU_REFLECTION:        return "reflection";
-        case AMU_REGENERATION:      return "health regeneration";
+        case AMU_HEALTH_REGENERATION:      return "health regeneration";
         default: return "buggy jewellery";
         }
     }
@@ -822,7 +822,7 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
         case RING_LIFE_PROTECTION:       return "rN+";
         case RING_PROTECTION_FROM_MAGIC: return "MR+";
         case AMU_RAGE:                   return "+Rage";
-        case AMU_REGENERATION:           return "Regen";
+        case AMU_HEALTH_REGENERATION:           return "Regen";
         case AMU_REFLECTION:             return "Reflect";
         default: return "buggy";
         }
@@ -3761,16 +3761,16 @@ bool is_useless_item(const item_def &item, bool temp)
                     || you_worship(GOD_GOZAG)
                     || (you_worship(GOD_RU) && you.piety == piety_breakpoint(5));
 
-        case AMU_GUARDIAN_SPIRIT:
-            return you.spirit_shield(false, false);
+        case AMU_MAGIC_SHIELD:
+            return you.magic_shield(false, false) >= 3;
 
-        case AMU_GUARDIAN_STAMINA:
-            return you.stamina_shield(false, false);
+        case AMU_STAMINA_SHIELD:
+            return you.stamina_shield(false, false) >= 3;
 
         case RING_LIFE_PROTECTION:
             return player_prot_life(false, temp, false) == 3;
 
-        case AMU_REGENERATION:
+        case AMU_HEALTH_REGENERATION:
             return (player_mutation_level(MUT_SLOW_REGENERATION) == 3)
                    || temp && you.species == SP_VAMPIRE
                       && you.hunger_state <= HS_STARVING;

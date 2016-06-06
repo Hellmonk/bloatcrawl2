@@ -138,8 +138,8 @@ const char* jewellery_base_ability_string(int subtype)
     case AMU_CONSERVATION:        return "Cons";
     case AMU_CONTROLLED_FLIGHT:   return "cFly";
 #endif
-    case AMU_GUARDIAN_SPIRIT:     return "Spirit";
-    case AMU_GUARDIAN_STAMINA:    return "StaminaShield";
+    case AMU_MAGIC_SHIELD:        return "MagicShield";
+    case AMU_STAMINA_SHIELD:      return "StaminaShield";
     case AMU_FAITH:               return "Faith";
     case AMU_REFLECTION:          return "Reflect";
     case AMU_INACCURACY:          return "Inacc";
@@ -396,10 +396,10 @@ static const char* _jewellery_base_ability_description(int subtype)
     case AMU_CONSERVATION:
         return "It protects your inventory from destruction.";
 #endif
-    case AMU_GUARDIAN_SPIRIT:
+    case AMU_MAGIC_SHIELD:
         return "It causes incoming damage to be split between your health and "
                "magic.";
-    case AMU_GUARDIAN_STAMINA:
+    case AMU_STAMINA_SHIELD:
         return "It causes incoming damage to be split between your health and "
             "stamina.";
     case AMU_FAITH:
@@ -1467,7 +1467,7 @@ static string _describe_armour(const item_def &item, bool verbose)
                 "of stamina.";
             break;
 
-        case SPARM_SPIRIT_SHIELD:
+        case SPARM_MAGIC_SHIELD:
             description += "It shields its wearer from harm at the cost "
                 "of magical power.";
             break;

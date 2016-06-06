@@ -332,7 +332,7 @@ public:
 
     // Return an int so we know whether an item is the sole source.
     virtual int evokable_flight(bool calc_unid = true) const;
-    virtual int spirit_shield(bool calc_unid = true, bool items = true) const;
+    virtual int magic_shield(bool calc_unid = true, bool items = true) const;
     virtual int stamina_shield(bool calc_unid = true, bool items = true) const;
 
     virtual bool is_wall_clinging() const;

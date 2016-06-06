@@ -1125,7 +1125,7 @@ static int _player_bonus_regen()
 
     // Jewellery.
     if (you.props[REGEN_AMULET_ACTIVE].get_int() == 1)
-        rr += REGEN_PIP * you.wearing(EQ_AMULET, AMU_REGENERATION);
+        rr += REGEN_PIP * you.wearing(EQ_AMULET, AMU_HEALTH_REGENERATION);
 
     // Artefacts
     rr += REGEN_PIP * you.scan_artefacts(ARTP_REGENERATION);
@@ -1224,7 +1224,7 @@ int player_regen()
 // to function.
 void update_regen_amulet_attunement()
 {
-    if (you.wearing(EQ_AMULET, AMU_REGENERATION)
+    if (you.wearing(EQ_AMULET, AMU_HEALTH_REGENERATION)
         && player_mutation_level(MUT_SLOW_REGENERATION) < 3)
     {
         if (you.hp == you.hp_max
@@ -5025,9 +5025,9 @@ bool player_regenerates_sp()
 
 bool player_regenerates_mp()
 {
-    // Don't let DD use guardian spirit for free HP, since their
+    // Don't let DD use magic shield for free HP, since their
     // damage shaving is enough. (due, dpeg)
-    if (you.spirit_shield() && you.species == SP_DEEP_DWARF)
+    if (you.magic_shield() && you.species == SP_DEEP_DWARF)
         return false;
     // Pakellas blocks MP regeneration.
     if (have_passive(passive_t::no_mp_regen) || player_under_penance(GOD_PAKELLAS))
