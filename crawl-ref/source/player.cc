@@ -4492,11 +4492,11 @@ void set_exertion(const exertion_mode new_exertion, const bool manual)
         return;
     }
 
-    if (new_exertion == you.exertion)
-        return;
-
     if (manual)
         you.restore_exertion = new_exertion;
+
+    if (new_exertion == you.exertion)
+        return;
 
     if (you.duration[DUR_BERSERK])
     {
