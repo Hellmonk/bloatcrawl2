@@ -91,9 +91,11 @@ static const map<species_type, species_def> species_data =
       { MUT_TOUGH_SKIN, 3, 1 },
       { MUT_HIGH_STAMINA, 1, 1 },
       { MUT_FAST, 1, 1 },
-      { MUT_DEFORMED, 1, 1 },
+      { MUT_DEFORMED, 2, 1 },
       { MUT_HOOVES, 3, 1 },
+      { MUT_STAMINA_SHIELD, 1, 1 },
       { MUT_HIGH_STAMINA, 1, 6 },
+      { MUT_STAMINA_SHIELD, 1, 8 },
     },
     {},
     {},
@@ -543,7 +545,9 @@ static const map<species_type, species_def> species_data =
     HT_LAND, US_ALIVE, SIZE_MEDIUM,
     7, 11, 10, // 28
     { STAT_INT, STAT_DEX }, 3,
-    { { MUT_FOCUSSED_DNA, 2, 1 }, },
+    {
+        { MUT_FOCUSSED_DNA, 2, 1 },
+    },
     {},
     {},
     { JOB_HUNTER, JOB_SKALD, JOB_WIZARD, JOB_CONJURER, JOB_FIRE_ELEMENTALIST,
