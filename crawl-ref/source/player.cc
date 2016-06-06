@@ -10154,6 +10154,9 @@ int player_item_gen_modifier(int item_count)
 // used for pool sizes. Generic way to scale something based on difficulty
 int player_pool_modifier(int amount)
 {
+    // bypass this for now
+    return amount;
+
     int percent = 100;
 
     switch (crawl_state.difficulty)
