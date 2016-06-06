@@ -9895,7 +9895,7 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
     if (you.exertion != EXERT_NORMAL)
     {
         sp_cost *= 2;
-        sp_cost = max(3, sp_cost);
+        sp_cost = max(3, (int)sp_cost);
     }
 
     return sp_cost;
