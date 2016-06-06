@@ -9568,7 +9568,7 @@ const int rune_curse_hd_adjust(int hd, bool absolute)
     const game_difficulty_level difficulty = crawl_state.difficulty;
     int multiplier = difficulty + 1;
     
-    hd = hd + div_rand_round(runes * multiplier, 6);
+    hd = hd + (runes * multiplier + 3) / 6;
     if (absolute && hd > 1)
     {
         hd = hd + difficulty - 2;
