@@ -350,11 +350,27 @@ int actor::spirit_shield(bool calc_unid, bool items) const
     if (items)
     {
         ss += wearing_ego(EQ_ALL_ARMOUR, SPARM_SPIRIT_SHIELD, calc_unid);
-        ss += wearing(EQ_AMULET, AMU_GUARDIAN_SPIRIT, calc_unid);
+        ss += wearing(EQ_AMULET, AMU_GUARDIAN_SPIRIT, calc_unid) * 2;
     }
 
     if (is_player())
         ss += player_mutation_level(MUT_MAGIC_SHIELD);
+
+    return ss;
+}
+
+int actor::stamina_shield(bool calc_unid, bool items) const
+{
+    int ss = 0;
+
+    if (items)
+    {
+        ss += wearing_ego(EQ_ALL_ARMOUR, SPARM_STAMINA_SHIELD, calc_unid);
+        ss += wearing(EQ_AMULET, AMU_GUARDIAN_STAMINA, calc_unid);
+    }
+
+    if (is_player())
+        ss += player_mutation_level(MUT_STAMINA_SHIELD);
 
     return ss;
 }

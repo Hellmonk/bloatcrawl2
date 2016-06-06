@@ -202,6 +202,7 @@ enum jewellery_type
     AMU_FAITH,
     AMU_REFLECTION,
     AMU_REGENERATION,
+    AMU_GUARDIAN_STAMINA,
 
     NUM_JEWELLERY,
 	// to remove
@@ -425,6 +426,7 @@ enum special_armour_type
 #if TAG_MAJOR_VERSION == 34
     SPARM_JUMPING,
 #endif
+    SPARM_STAMINA_SHIELD,
     NUM_REAL_SPECIAL_ARMOURS,
     NUM_SPECIAL_ARMOURS,
 };

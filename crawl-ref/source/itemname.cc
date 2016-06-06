@@ -560,6 +560,7 @@ const char* armour_ego_name(const item_def& item, bool terse)
 #endif
         case SPARM_REFLECTION:        return "reflection";
         case SPARM_SPIRIT_SHIELD:     return "spirit shield";
+        case SPARM_STAMINA_SHIELD:    return "stamina shield";
         case SPARM_ARCHERY:           return "archery";
         default:                      return "bugginess";
         }
@@ -592,6 +593,7 @@ const char* armour_ego_name(const item_def& item, bool terse)
 #endif
         case SPARM_REFLECTION:        return "reflect";
         case SPARM_SPIRIT_SHIELD:     return "Spirit";
+        case SPARM_STAMINA_SHIELD:    return "StamShield";
         case SPARM_ARCHERY:           return "archery";
         default:                      return "buggy";
         }
@@ -785,6 +787,7 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
         case AMU_INACCURACY:        return "inaccuracy";
         case AMU_NOTHING:           return "nothing";
         case AMU_GUARDIAN_SPIRIT:   return "guardian spirit";
+        case AMU_GUARDIAN_STAMINA:  return "guardian stamina";
         case AMU_FAITH:             return "faith";
         case AMU_REFLECTION:        return "reflection";
         case AMU_REGENERATION:      return "health regeneration";
@@ -3760,6 +3763,9 @@ bool is_useless_item(const item_def &item, bool temp)
 
         case AMU_GUARDIAN_SPIRIT:
             return you.spirit_shield(false, false);
+
+        case AMU_GUARDIAN_STAMINA:
+            return you.stamina_shield(false, false);
 
         case RING_LIFE_PROTECTION:
             return player_prot_life(false, temp, false) == 3;

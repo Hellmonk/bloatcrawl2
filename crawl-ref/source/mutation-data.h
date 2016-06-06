@@ -1182,11 +1182,35 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_MAGIC_SHIELD, 15, 1, mutflag::GOOD, false,
+{ MUT_STAMINA_SHIELD, 15, 3, mutflag::GOOD, false,
+  "stamina shield",
+
+  {
+      "Your stamina protects you from some damage (25% of damage comes from SP)",
+      "Your stamina protects you from some damage (50% of damage comes from SP)",
+      "Your stamina protects you from some damage (75% of damage comes from SP)",
+  },
+  {
+      "You feel your stamina essence form a protective shroud around your flesh.",
+      "Your stamina shroud grows more resilient.",
+      "Your stamina shroud grows more resilient.",
+  },
+  {"", "", ""},
+},
+
+{ MUT_MAGIC_SHIELD, 15, 3, mutflag::GOOD, false,
   "magic shield",
 
-  {"When hurt, damage is shared between your health and your magic reserves.", "", ""},
-  {"You feel your magical essence form a protective shroud around your flesh.", "", ""},
+  {
+  "Your magic protects you from some damage (25% of damage comes from MP)",
+  "Your magic protects you from some damage (50% of damage comes from MP)",
+  "Your magic protects you from some damage (75% of damage comes from MP)",
+  },
+  {
+  "You feel your magical essence form a protective shroud around your flesh.",
+  "Your magic shroud grows more resilient.",
+  "Your magic shroud grows more resilient.",
+  },
   {"", "", ""},
 },
 

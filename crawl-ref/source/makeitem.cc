@@ -859,6 +859,7 @@ static special_armour_type _generate_armour_type_ego(armour_type type,
                                       2, SPARM_INTELLIGENCE,
                                       2, SPARM_SEE_INVISIBLE,
                                       1, SPARM_SPIRIT_SHIELD,
+                                      1, SPARM_STAMINA_SHIELD,
                                       0);
 
     case ARM_HELMET:
@@ -1021,9 +1022,9 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
 
     case SPARM_SPIRIT_SHIELD:
         return type == ARM_HAT ||
-#if TAG_MAJOR_VERSION == 34
-               type == ARM_CAP ||
-#endif
+               slot == EQ_SHIELD || !strict;
+    case SPARM_STAMINA_SHIELD:
+        return type == ARM_HAT ||
                slot == EQ_SHIELD || !strict;
     case NUM_SPECIAL_ARMOURS:
     case NUM_REAL_SPECIAL_ARMOURS:

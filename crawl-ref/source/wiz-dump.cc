@@ -79,6 +79,8 @@ static uint8_t _jewellery_type_from_artefact_prop(const string &s
         return AMU_INACCURACY;
     if (s == "Spirit")
         return AMU_GUARDIAN_SPIRIT;
+    if (s == "StaminaShield")
+        return AMU_GUARDIAN_SPIRIT;
     if (s == "Faith")
         return AMU_FAITH;
     if (s == "Reflect")

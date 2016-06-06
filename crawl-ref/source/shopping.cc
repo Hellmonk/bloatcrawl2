@@ -566,6 +566,7 @@ unsigned int item_value(item_def item, bool ident)
             case SPARM_POISON_RESISTANCE:
             case SPARM_REFLECTION:
             case SPARM_SPIRIT_SHIELD:
+            case SPARM_STAMINA_SHIELD:
                 valued += 20;
                 break;
 
@@ -888,6 +889,7 @@ unsigned int item_value(item_def item, bool ident)
                 case RING_WIZARDRY:
                 case AMU_REGENERATION:
                 case AMU_GUARDIAN_SPIRIT:
+                case AMU_GUARDIAN_STAMINA:
 //                case AMU_THE_GOURMAND:
                 case AMU_DISMISSAL:
                 case AMU_HARM:

@@ -503,7 +503,8 @@ i-preservation BRAND_ARM_PRESERVATION
 i-reflection BRAND_ARM_REFLECTION
 i-spirit BRAND_ARM_SPIRIT_SHIELD
 i-archery BRAND_ARM_ARCHERY
-i-jumping BRAND_ARM_JUMPING BRAND_ARM_LAST
+i-jumping BRAND_ARM_JUMPING
+i-spirit BRAND_ARM_STAMINA_SHIELD BRAND_ARM_LAST
 
 ###########OBJ_WANDS
 %sdir item/wand
@@ -813,7 +814,8 @@ i-rage AMU_NOTHING
 i-spirit AMU_GUARDIAN_SPIRIT
 i-faith AMU_FAITH
 i-reflection AMU_REFLECTION
-i-regeneration AMU_REGENERATION AMU_ID_LAST
+i-regeneration AMU_REGENERATION
+i-spirit AMU_GUARDIAN_STAMINA AMU_ID_LAST
 
 ####################OBJ_POTIONS
 %sdir item/potion
