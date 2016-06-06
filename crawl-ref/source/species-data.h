@@ -86,7 +86,6 @@ static const map<species_type, species_def> species_data =
     10, 7, 4, // 21
     { STAT_STR, STAT_DEX }, 4,
     {
-      { MUT_CLEAN_DNA, 2, 1 },
       { MUT_RESILIENT_DNA, 2, 1 },
       { MUT_TOUGH_SKIN, 3, 1 },
       { MUT_FAST, 1, 1 },
@@ -548,6 +547,7 @@ static const map<species_type, species_def> species_data =
     { STAT_INT, STAT_DEX }, 3,
     {
         { MUT_FOCUSSED_DNA, 2, 1 },
+        { MUT_CLEAN_DNA, 2, 1 },
     },
     {},
     {},
