@@ -610,6 +610,7 @@ void yell(const actor* mon)
         else
             mpr("Stop fighting!");
         you.prev_direction.reset();
+        crawl_state.followers_should_follow = true;
         break;
 
     case 'w':
@@ -622,6 +623,7 @@ void yell(const actor* mon)
         mpr("Wait here!");
         mons_targd = MHITNOT;
         _set_allies_patrol_point();
+        crawl_state.followers_should_follow = false;
         you.prev_direction.reset();
         break;
 

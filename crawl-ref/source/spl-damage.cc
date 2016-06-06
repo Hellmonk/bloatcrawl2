@@ -580,7 +580,7 @@ static void _post_drain_life(actor* agent, bool player,
     {
         if (agent->is_player())
         {
-            mpr("You feel life flooding into your body.");
+            mprf("You feel life flooding into your body. (hp+%d)", total_damage);
             inc_hp(total_damage);
         }
         else
@@ -896,7 +896,7 @@ spret_type vampiric_drain(int pow, monster* mons, bool fail)
 
     if (hp_gain && !mons_was_summoned && !you.duration[DUR_DEATHS_DOOR])
     {
-        mpr("You feel life coursing into your body.");
+        mprf("You feel life coursing into your body. (hp+%d)", hp_gain);
         inc_hp(hp_gain);
     }
 

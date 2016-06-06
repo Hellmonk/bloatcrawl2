@@ -858,7 +858,8 @@ static special_armour_type _generate_armour_type_ego(armour_type type,
                                       3, SPARM_MAGIC_RESISTANCE,
                                       2, SPARM_INTELLIGENCE,
                                       2, SPARM_SEE_INVISIBLE,
-                                      1, SPARM_SPIRIT_SHIELD,
+                                      1, SPARM_MAGIC_SHIELD,
+                                      1, SPARM_STAMINA_SHIELD,
                                       0);
 
     case ARM_HELMET:
@@ -1019,11 +1020,11 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
         return slot == EQ_BODY_ARMOUR || slot == EQ_SHIELD || slot == EQ_CLOAK
                || !strict;
 
-    case SPARM_SPIRIT_SHIELD:
+    case SPARM_MAGIC_SHIELD:
         return type == ARM_HAT ||
-#if TAG_MAJOR_VERSION == 34
-               type == ARM_CAP ||
-#endif
+               slot == EQ_SHIELD || !strict;
+    case SPARM_STAMINA_SHIELD:
+        return type == ARM_HAT ||
                slot == EQ_SHIELD || !strict;
     case NUM_SPECIAL_ARMOURS:
     case NUM_REAL_SPECIAL_ARMOURS:
@@ -1498,7 +1499,7 @@ static void _generate_scroll_item(item_def& item, int force_type,
                  27, (depth_mod < 4 ? NUM_SCROLLS : SCR_VULNERABILITY),
 //                 20, (depth_mod < 4 ? NUM_SCROLLS : SCR_AMPLIFICATION),
                  17, (depth_mod < 4 ? NUM_SCROLLS : SCR_SUMMONING),
-                 15, (depth_mod < 4 ? NUM_SCROLLS : SCR_ACQUIREMENT),
+                 10, (depth_mod < 4 ? NUM_SCROLLS : SCR_ACQUIREMENT),
                  15, (depth_mod < 4 ? NUM_SCROLLS : SCR_SILENCE),
                  15, (depth_mod < 4 ? NUM_SCROLLS : SCR_BRAND_WEAPON),
                  15, (depth_mod < 4 ? NUM_SCROLLS : SCR_TORMENT),

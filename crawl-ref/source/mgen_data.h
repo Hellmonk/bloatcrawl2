@@ -108,6 +108,7 @@ struct mgen_data
 
     // This can eventually be used to store relevant information.
     CrawlHashTable  props;
+    int             freeze_cost;
 
     mgen_data(monster_type mt = RANDOM_MONSTER,
               beh_type beh = BEH_HOSTILE,
@@ -126,14 +127,16 @@ struct mgen_data
               monster_flags_t extflags = MF_NO_FLAGS,
               string monname = "",
               string nas = "",
-              monster_type is = RANDOM_MONSTER)
+              monster_type is = RANDOM_MONSTER,
+              int freeze_mp = -1
+    )
 
         : cls(mt), behaviour(beh), summoner(sner), abjuration_duration(abj),
           summon_type(st), pos(p), foe(mfoe), flags(genflags), god(which_god),
           base_type(base), colour(moncolour),
           proximity(prox), place(_place), hd(mhd), hp(mhp),
           extra_flags(extflags), mname(monname), non_actor_summoner(nas),
-          initial_shifter(is)
+          initial_shifter(is), freeze_cost(freeze_mp)
     {
         ASSERT(summon_type == 0 || (abj >= 1 && abj <= 6)
                || mt == MONS_BALL_LIGHTNING || mt == MONS_ORB_OF_DESTRUCTION

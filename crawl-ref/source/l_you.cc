@@ -123,7 +123,7 @@ LUARET1(you_res_statdrain, boolean, player_sust_attr(false))
 LUARET1(you_res_mutation, number, you.rmut_from_item(false) ? 1 : 0)
 LUARET1(you_see_invisible, boolean, you.can_see_invisible(false))
 // Returning a number so as not to break existing scripts.
-LUARET1(you_spirit_shield, number, you.spirit_shield(false) ? 1 : 0)
+LUARET1(you_magic_shield, number, you.magic_shield(false) ? 1 : 0)
 LUARET1(you_gourmand, boolean, you.gourmand(false))
 LUARET1(you_res_corr, boolean, you.res_corr(false))
 LUARET1(you_like_chunks, number, player_likes_chunks(true))
@@ -567,7 +567,7 @@ static const struct luaL_reg you_clib[] =
     { "res_statdrain", you_res_statdrain },
     { "res_mutation", you_res_mutation },
     { "see_invisible", you_see_invisible },
-    { "spirit_shield", you_spirit_shield },
+    { "magic_shield", you_magic_shield },
     { "like_chunks",  you_like_chunks },
     { "gourmand",     you_gourmand },
     { "res_corr",     you_res_corr },

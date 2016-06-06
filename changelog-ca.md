@@ -1,8 +1,11 @@
 ## v1.5.4
+* Minions will not follow you down stairs if you [t]ell them to [w]ait. Then telling them to [f]ollow will enable them
+  to follow you down the stairs again. 
 
 * Vampire changes
     * Blood potions spawn when corpses are dropped for vampires. 
     * Vampires rot instead of mutating if their hunger is below Full.
+    * They don't become less hungry when attacking anymore, forcing occasional uses of blood potions.
 
 * Enchantments can pass through friendlies now.
     * Particularly, pain can go through undead minions to hit your foes. 

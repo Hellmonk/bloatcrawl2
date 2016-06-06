@@ -705,7 +705,7 @@ PLUS:     +2
 COLOUR:   DARKGREY
 TILE:     urand_bear
 TILE_EQ:  bear
-BRAND:    SPARM_SPIRIT_SHIELD
+BRAND:    SPARM_MAGIC_SHIELD
 BOOL:     berserk
 MAGIC:    2
 LIFE:     1
@@ -1014,7 +1014,7 @@ LIFE:     1
 BOOL:     poison, evil
 
 NAME:     amulet of Vitality
-OBJ:      OBJ_JEWELLERY/AMU_REGENERATION
+OBJ:      OBJ_JEWELLERY/AMU_HEALTH_REGENERATION
 HP:       +15
 COLOUR:   ETC_MUTAGENIC
 TILE:     urand_vitality
@@ -1082,7 +1082,7 @@ NAME:     moon troll leather armour
 OBJ:      OBJ_ARMOUR/ARM_TROLL_LEATHER_ARMOUR
 PLUS:     +4
 COLOUR:   ETC_SHIMMER_BLUE
-BRAND:    SPARM_SPIRIT_SHIELD
+BRAND:    SPARM_MAGIC_SHIELD
 TILE:     urand_moon_troll_leather_armour
 TILE_EQ:  moon_troll_leather_armour
 MP:       +5

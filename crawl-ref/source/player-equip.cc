@@ -791,9 +791,9 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
     }
 }
 
-static void _spirit_shield_message(bool unmeld)
+static void _magic_shield_message(bool unmeld)
 {
-    if (!unmeld && you.spirit_shield() < 2)
+    if (!unmeld && you.magic_shield() < 2)
     {
         dec_mp(get_mp());
         mpr("You feel your power drawn to a protective spirit.");
@@ -916,8 +916,8 @@ static void _equip_armour_effect(item_def& arm, bool unmeld,
                 mpr("You feel powerful.");
             break;
 
-        case SPARM_SPIRIT_SHIELD:
-            _spirit_shield_message(unmeld);
+        case SPARM_MAGIC_SHIELD:
+            _magic_shield_message(unmeld);
             break;
 
         case SPARM_ARCHERY:
@@ -1074,8 +1074,8 @@ static void _unequip_armour_effect(item_def& item, bool meld,
         mpr("You feel strangely numb.");
         break;
 
-    case SPARM_SPIRIT_SHIELD:
-        if (!you.spirit_shield())
+    case SPARM_MAGIC_SHIELD:
+        if (!you.magic_shield())
         {
             mpr("You feel strangely alone.");
             if (you.species == SP_DEEP_DWARF)
@@ -1269,7 +1269,7 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
             _equip_amulet_of_dismissal();
         break;
 
-    case AMU_REGENERATION:
+    case AMU_HEALTH_REGENERATION:
         if (!unmeld)
             _equip_amulet_of_regeneration();
         break;
@@ -1284,8 +1284,8 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
             mpr("You feel your endurance increase.");
         break;
 
-    case AMU_GUARDIAN_SPIRIT:
-        _spirit_shield_message(unmeld);
+    case AMU_MAGIC_SHIELD:
+        _magic_shield_message(unmeld);
         break;
     }
 
@@ -1359,7 +1359,7 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
     case RING_TELEPORTATION:
     case RING_WIZARDRY:
     case AMU_DISMISSAL:
-    case AMU_REGENERATION:
+    case AMU_HEALTH_REGENERATION:
         break;
 
     case RING_SEE_INVISIBLE:
@@ -1418,7 +1418,7 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
             _remove_amulet_of_harm();
         break;
 
-    case AMU_GUARDIAN_SPIRIT:
+    case AMU_MAGIC_SHIELD:
         if (you.species == SP_DEEP_DWARF && player_regenerates_mp())
             mpr("Your magic begins regenerating once more.");
         break;

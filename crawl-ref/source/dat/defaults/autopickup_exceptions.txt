@@ -83,7 +83,7 @@ ae += [^n]identified.*spellbook
 # that means you already have one of it.). Some items may already be excluded
 # as bad_item, e.g. inaccuracy.
 ae += amulet of (nothing|inaccuracy|the gourmand|regeneration|dismissal|harm)
-ae += amulet of (rage|guardian spirit|faith|magic regeneration)
+ae += amulet of (rage|magic shield|faith|magic regeneration)
 
 # Likewise for some rings.
 ae += ring of (see invisible|flight|poison resistance)

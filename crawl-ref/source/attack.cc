@@ -231,7 +231,7 @@ int attack::calc_to_hit()
 
 int calc_player_to_hit(item_def *weapon, skill_type wpn_skill)
 {
-    int mhit = 150;
+    int mhit = 100;
     const int dex = you.dex();
     mhit += (dex - 10) * 10;
 
@@ -1372,8 +1372,8 @@ int attack::calc_damage()
             boost += weapon_skill;
         }
 
-        potential_damage = div_rand_round(potential_damage * (400 + boost), 400);
-        damage = random2(potential_damage+1);
+        potential_damage = div_rand_round(potential_damage * (200 + boost), 200);
+        damage = random2(potential_damage + 1);
 
         damage = player_apply_misc_modifiers(damage);
         damage = player_apply_slaying_bonuses(damage, false);

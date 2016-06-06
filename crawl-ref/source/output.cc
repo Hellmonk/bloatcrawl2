@@ -2425,8 +2425,8 @@ static vector<formatted_string> _get_overview_resistances(
     const int faith = you.faith(calc_unid);
     out += _resist_composer("Faith", cwidth, faith) + "\n";
 
-    const int rspir = you.spirit_shield(calc_unid);
-    out += _resist_composer("Spirit", cwidth, rspir) + "\n";
+    const int rspir = you.magic_shield(calc_unid);
+    out += _resist_composer("MagicShield", cwidth, rspir) + "\n";
 
     const int rward = you.dismissal(calc_unid);
     out += _resist_composer("Dismiss", cwidth, rward) + "\n";

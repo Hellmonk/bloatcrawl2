@@ -1125,7 +1125,7 @@ static int _player_bonus_regen()
 
     // Jewellery.
     if (you.props[REGEN_AMULET_ACTIVE].get_int() == 1)
-        rr += REGEN_PIP * you.wearing(EQ_AMULET, AMU_REGENERATION);
+        rr += REGEN_PIP * you.wearing(EQ_AMULET, AMU_HEALTH_REGENERATION);
 
     // Artefacts
     rr += REGEN_PIP * you.scan_artefacts(ARTP_REGENERATION);
@@ -1224,7 +1224,7 @@ int player_regen()
 // to function.
 void update_regen_amulet_attunement()
 {
-    if (you.wearing(EQ_AMULET, AMU_REGENERATION)
+    if (you.wearing(EQ_AMULET, AMU_HEALTH_REGENERATION)
         && player_mutation_level(MUT_SLOW_REGENERATION) < 3)
     {
         if (you.hp == you.hp_max
@@ -1301,9 +1301,9 @@ int player_hunger_rate(bool temp)
         {
             case HS_FAINTING:
             case HS_STARVING:
-            case HS_NEAR_STARVING:
                 hunger -= 3;
                 break;
+            case HS_NEAR_STARVING:
             case HS_VERY_HUNGRY:
                 hunger -= 2;
                 break;
@@ -4104,6 +4104,10 @@ void calc_hp()
 {
     int oldhp = you.hp, oldmax = you.hp_max;
     you.hp_max = get_real_hp(true, false);
+
+    if (you.duration[DUR_BERSERK])
+        you.hp_max = you.hp_max * 3 / 2;
+
     if (you.species == SP_DJINNI)
     {
         you.hp_max += get_real_mp(true);
@@ -4436,6 +4440,9 @@ bool in_quick_mode()
 
 void set_quick_mode(const bool new_quick_mode, const bool manual)
 {
+    if (crawl_state.sim_mode)
+        return;
+
     if (new_quick_mode == in_quick_mode())
         return;
 
@@ -4475,6 +4482,9 @@ void set_quick_mode(const bool new_quick_mode, const bool manual)
 
 void set_exertion(const exertion_mode new_exertion, const bool manual)
 {
+    if (crawl_state.sim_mode)
+        return;
+
     if (Options.exertion_disabled)
     {
         if (manual)
@@ -4482,11 +4492,11 @@ void set_exertion(const exertion_mode new_exertion, const bool manual)
         return;
     }
 
-    if (new_exertion == you.exertion)
-        return;
-
     if (manual)
         you.restore_exertion = new_exertion;
+
+    if (new_exertion == you.exertion)
+        return;
 
     if (you.duration[DUR_BERSERK])
     {
@@ -5015,9 +5025,9 @@ bool player_regenerates_sp()
 
 bool player_regenerates_mp()
 {
-    // Don't let DD use guardian spirit for free HP, since their
+    // Don't let DD use magic shield for free HP, since their
     // damage shaving is enough. (due, dpeg)
-    if (you.spirit_shield() && you.species == SP_DEEP_DWARF)
+    if (you.magic_shield() && you.species == SP_DEEP_DWARF)
         return false;
     // Pakellas blocks MP regeneration.
     if (have_passive(passive_t::no_mp_regen) || player_under_penance(GOD_PAKELLAS))
@@ -5605,8 +5615,10 @@ int dec_exhaust_player(int amount)
 
     if (you.duration[DUR_EXHAUSTED] > BASELINE_DELAY)
     {
+        const int to_lose = min(amount, you.duration[DUR_EXHAUSTED]);
         you.duration[DUR_EXHAUSTED] -= you.duration[DUR_HASTE]
-                                       ? haste_mul(amount) : amount;
+                                       ? haste_mul(to_lose) : to_lose;
+        amount -= to_lose;
     }
     if (you.duration[DUR_EXHAUSTED] <= BASELINE_DELAY)
     {
@@ -9529,7 +9541,6 @@ void player_end_berserk()
     you.hunger = max(HUNGER_STARVING - 100, you.hunger);
 
     // 1KB: No berserk healing.
-    set_hp((you.hp + 1) * 2 / 3);
     calc_hp();
 
     learned_something_new(HINT_POSTBERSERK);
@@ -9557,7 +9568,7 @@ const int rune_curse_hd_adjust(int hd, bool absolute)
     const game_difficulty_level difficulty = crawl_state.difficulty;
     int multiplier = difficulty + 1;
     
-    hd = hd + div_rand_round(runes * multiplier, 6);
+    hd = hd + (runes * multiplier + 3) / 6;
     if (absolute && hd > 1)
     {
         hd = hd + difficulty - 2;
@@ -9629,10 +9640,13 @@ int player_summon_count()
     return count;
 }
 
-bool player_summoned_monster(spell_type spell, monster* mons, bool first)
+bool player_summoned_monster(spell_type spell, monster* mons, bool first, int freeze_cost)
 {
     bool success = true;
-    int cost = spell_mp_freeze(spell);
+    int cost = freeze_cost;
+    if (cost == -1)
+        cost = spell_mp_freeze(spell);
+
     if (!first)
         cost = div_rand_round(cost, 3);
 
@@ -9697,7 +9711,7 @@ int generic_action_delay(const int skill, const int base, const action_delay_typ
     if (type == ACTION_DELAY_MIN)
         benefit = factor;
 
-    int delay = global_reduction * base * (factor * 2 - benefit) / (factor * 2) / 10;
+    int delay = global_reduction * base * (factor * 3 - benefit * 2) / (factor * 3) / 10;
     delay = player_attack_delay_modifier(delay) / 10;
     return delay;
 }
@@ -9927,16 +9941,16 @@ int _difficulty_mode_multiplier()
     switch(crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            x = 100;
+            x = 110;
             break;
         case DIFFICULTY_STANDARD:
-            x = 90;
+            x = 100;
             break;
         case DIFFICULTY_CHALLENGE:
-            x = 80;
+            x = 90;
             break;
         case DIFFICULTY_NIGHTMARE:
-            x = 70;
+            x = 80;
             break;
         default:
             // should not be possible
@@ -10334,6 +10348,8 @@ void _instant_rest()
         inc_mp(get_mp_max() - get_mp());
 
     you.duration[DUR_BERSERK] = 0;
+    calc_hp();
+
     player_after_each_turn();
     you.peace = 1000;
 
@@ -10459,6 +10475,9 @@ void attempt_instant_rest()
 
 void monster_died(mid_t mons_mid, bool was_hostile_and_seen, int mp_freeze, killer_type killer)
 {
+    if (crawl_state.sim_mode)
+        return;
+
     if (was_hostile_and_seen)
     {
         you.monsters_recently_seen--;

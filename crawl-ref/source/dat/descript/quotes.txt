@@ -812,7 +812,7 @@ amulet of faith
 
 <amulet>
 %%%%
-amulet of guardian spirit
+amulet of magic shield
 
 <amulet>
 %%%%

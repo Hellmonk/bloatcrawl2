@@ -62,9 +62,9 @@ static uint8_t _jewellery_type_from_artefact_prop(const string &s
 {
     if (s == "Regen")
 #if TAG_MAJOR_VERSION == 34
-        return is_amulet ? AMU_REGENERATION : RING_REGENERATION;
+        return is_amulet ? AMU_HEALTH_REGENERATION : RING_REGENERATION;
 #else
-        return AMU_REGENERATION;
+        return AMU_HEALTH_REGENERATION;
 #endif
 
     if (s == "+Rage")
@@ -77,8 +77,10 @@ static uint8_t _jewellery_type_from_artefact_prop(const string &s
         return AMU_THE_GOURMAND;
     if (s == "Inacc")
         return AMU_INACCURACY;
-    if (s == "Spirit")
-        return AMU_GUARDIAN_SPIRIT;
+    if (s == "MagicShield")
+        return AMU_MAGIC_SHIELD;
+    if (s == "StaminaShield")
+        return AMU_MAGIC_SHIELD;
     if (s == "Faith")
         return AMU_FAITH;
     if (s == "Reflect")

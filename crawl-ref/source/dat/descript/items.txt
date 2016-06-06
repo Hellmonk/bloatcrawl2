@@ -18,7 +18,7 @@ attention makes it easier to please your god, but your god will also take more
 notice of your transgressions. The amulet will drain some of your divine favour
 when removed.
 %%%%
-amulet of guardian spirit
+amulet of magic shield
 
 An amulet containing a protective spirit which will cause any damage taken to
 be divided between the wearer's reserves of health and magic.

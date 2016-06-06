@@ -787,7 +787,7 @@ NAME:     items_6
 TAGS:     items_6
 ORIENT:   encompass
 KITEM:    a = amulet of faith randart not_cursed ident:all /\
-    amulet of guardian spirit randart not_cursed ident:all /\
+    amulet of magic shield randart not_cursed ident:all /\
     amulet of magic regeneration randart not_cursed ident:all /\
     amulet of rage randart not_cursed ident:all /\
     amulet of reflection randart not_cursed ident:all /\

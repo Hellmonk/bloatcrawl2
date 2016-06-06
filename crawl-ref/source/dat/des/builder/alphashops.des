@@ -126,7 +126,7 @@
        "fen folio", "ring of flight", "scroll of fog", "fruit", "wand of flame",
        "manual of fighting", "amulet of faith", "manual of fire magic" }
 
-      elseif s == "G" then i = { "amulet of guardian spirit", "giant club",
+      elseif s == "G" then i = { "amulet of magic shield", "giant club",
        "giant spiked club", "book of geomancy",
        "glaive", "gold dragon armour", "grand grimoire", "great mace",
        "greatsling", "great sword", "pair of gloves" }

@@ -501,9 +501,10 @@ i-positive-energy BRAND_ARM_POSITIVE_ENERGY
 i-archmagi BRAND_ARM_ARCHMAGI
 i-preservation BRAND_ARM_PRESERVATION
 i-reflection BRAND_ARM_REFLECTION
-i-spirit BRAND_ARM_SPIRIT_SHIELD
+i-spirit BRAND_ARM_MAGIC_SHIELD
 i-archery BRAND_ARM_ARCHERY
-i-jumping BRAND_ARM_JUMPING BRAND_ARM_LAST
+i-jumping BRAND_ARM_JUMPING
+i-spirit BRAND_ARM_STAMINA_SHIELD BRAND_ARM_LAST
 
 ###########OBJ_WANDS
 %sdir item/wand
@@ -810,10 +811,11 @@ i-m-regeneration AMU_MAGIC_REGENERATION
 i-m-regeneration AMU_STAMINA_REGENERATION
 i-inaccuracy AMU_INACCURACY
 i-rage AMU_NOTHING
-i-spirit AMU_GUARDIAN_SPIRIT
+i-spirit AMU_MAGIC_SHIELD
 i-faith AMU_FAITH
 i-reflection AMU_REFLECTION
-i-regeneration AMU_REGENERATION AMU_ID_LAST
+i-regeneration AMU_HEALTH_REGENERATION
+i-spirit AMU_STAMINA_SHIELD AMU_ID_LAST
 
 ####################OBJ_POTIONS
 %sdir item/potion

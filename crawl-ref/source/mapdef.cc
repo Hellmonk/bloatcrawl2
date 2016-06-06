@@ -4809,11 +4809,12 @@ static int _str_to_ego(item_spec &spec, string ego_str)
         "preservation",
 #endif
         "reflection",
-        "spirit_shield",
+        "magic_shield",
         "archery",
 #if TAG_MAJOR_VERSION == 34
         "jumping",
 #endif
+        "stamina_shield",
         nullptr
     };
     COMPILE_CHECK(ARRAYSZ(armour_egos) == NUM_REAL_SPECIAL_ARMOURS);

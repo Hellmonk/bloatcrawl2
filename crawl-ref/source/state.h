@@ -132,6 +132,8 @@ struct game_state
     bool free_stair_escape;
     bool warn_about_experience;         // currently unused
     bool need_floor_exp;                // means we entered a floor for the first time and we need to give exp for it
+    bool followers_should_follow;
+    bool sim_mode;
 
 protected:
     void reset_cmd_repeat();
