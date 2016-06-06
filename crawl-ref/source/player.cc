@@ -4953,13 +4953,13 @@ int get_real_sp(bool include_items)
 {
     int max_sp = 100;
 
-    max_sp += player_mutation_level(MUT_HIGH_STAMINA) * 20;
-    max_sp -= player_mutation_level(MUT_LOW_STAMINA) * 20;
-    max_sp += you.wearing(EQ_RINGS, RING_STAMINA) * 20;
+    max_sp += player_mutation_level(MUT_HIGH_STAMINA) * 25;
+    max_sp -= player_mutation_level(MUT_LOW_STAMINA) * 25;
+    max_sp += you.wearing(EQ_RINGS, RING_STAMINA) * 25;
     max_sp += you.scan_artefacts(ARTP_STAMINA);
 
     max_sp = player_pool_modifier(max_sp);
-    max_sp = max(max_sp, 20);
+    max_sp = max(max_sp, 25);
 
     return max_sp;
 }
@@ -4969,10 +4969,10 @@ int get_real_mp(bool include_items, bool rotted)
     int max_mp = 100;
 
     // Analogous to ROBUST/FRAIL
-    max_mp += + (player_mutation_level(MUT_HIGH_MAGIC) * 20)
-              + (you.attribute[ATTR_DIVINE_VIGOUR] * 5)
-              - (player_mutation_level(MUT_LOW_MAGIC) * 20)
-              + species_mp_modifier(you.species) * 20
+    max_mp += + (player_mutation_level(MUT_HIGH_MAGIC) * 25)
+              + (you.attribute[ATTR_DIVINE_VIGOUR] * 10)
+              - (player_mutation_level(MUT_LOW_MAGIC) * 25)
+              + species_mp_modifier(you.species) * 25
               ;
 
     // This is our "rotted" base, applied after multipliers
@@ -4983,7 +4983,7 @@ int get_real_mp(bool include_items, bool rotted)
     {
         const int num_magic_rings = you.wearing(EQ_RINGS, RING_MAGICAL_POWER);
         for (int i = 0; i < num_magic_rings; i++)
-            max_mp += 20;
+            max_mp += 25;
         max_mp += you.scan_artefacts(ARTP_MAGICAL_POWER);
 
         if (you.wearing(EQ_STAFF, STAFF_POWER))
@@ -4994,7 +4994,7 @@ int get_real_mp(bool include_items, bool rotted)
         max_mp /= 3;
 
     max_mp = player_pool_modifier(max_mp);
-    max_mp = max(max_mp, 20);
+    max_mp = max(max_mp, 25);
 
     if (!rotted)
         max_mp -= you.mp_frozen_summons;
