@@ -9885,15 +9885,18 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
     // may be negative
     const int benefit = strength + fighting;
 
-    double sp_cost = fpow(weight * 2, 15, 16, benefit / 10.0);
+    double sp_cost = fpow(weight, 15, 16, benefit / 10.0);
 
-    sp_cost = max(2, (int)sp_cost);
+    sp_cost = max(1, (int)sp_cost);
 
     if (weapon && get_weapon_brand(*weapon) == SPWPN_LIGHT)
         sp_cost /= 2;
 
     if (you.exertion != EXERT_NORMAL)
+    {
         sp_cost *= 2;
+        sp_cost = max(3, sp_cost);
+    }
 
     return sp_cost;
 }
