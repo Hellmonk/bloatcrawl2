@@ -983,6 +983,8 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
     if (dam != INSTANT_DEATH)
     {
+        dam = player_ouch_modifier(dam);
+
         const int mp_shield = you.spirit_shield();
         const int sp_shield = you.stamina_shield();
         if ((mp_shield || sp_shield) && death_type != KILLED_BY_POISON
@@ -1019,8 +1021,6 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             inc_hp(-dam);
             return;
         }
-
-        dam = player_ouch_modifier(dam);
 
         you.turn_damage += dam;
         if (you.damage_source != source)
