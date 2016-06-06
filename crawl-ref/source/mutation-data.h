@@ -973,13 +973,13 @@ static const mutation_def mut_data[] =
    "You have a considerably increased reservoir of stamina (+40 SP).",
    "You have a greatly increased reservoir of stamina (+60 SP)."},
 
-  {"You tire less rapidly.",
-   "You tire less rapidly.",
-   "You tire less rapidly."},
+  {"You have greater endurance.",
+   "You have greater endurance.",
+   "You have greater endurance."},
 
-  {"You tire more rapidly.",
-   "You tire more rapidly.",
-   "You tire more rapidly."},
+  {"You have less endurance.",
+   "You have less endurance.",
+   "You have less endurance."},
 },
 
 { MUT_LOW_STAMINA, 20, 3, mutflag::BAD, false,
@@ -989,13 +989,13 @@ static const mutation_def mut_data[] =
    "Your stamina capacity is very low (-40 SP).",
    "Your stamina capacity is extremely low (-60 SP)."},
 
-  {"You tire more rapidly.",
-   "You tire more rapidly.",
-   "You tire more rapidly."},
+  {"You have less endurance.",
+   "You have less endurance.",
+   "You have less endurance."},
 
-  {"You tire less rapidly.",
-   "You tire less rapidly.",
-   "You tire less rapidly."},
+  {"You have greater endurance.",
+   "You have greater endurance.",
+   "You have greater endurance."},
 },
 
 { MUT_WILD_MAGIC, 50, 3, mutflag::DEPENDS, false,
