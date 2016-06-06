@@ -992,7 +992,8 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         {
             if (dam && mp_shield)
             {
-                int mp_shave = (dam * mp_shield + 2) / 4;
+                int mp_shave = (dam * mp_shield + 1) / 2;
+                mp_shave = random2avg(mp_shave + 1, 2);
                 mp_shave = min(mp_shave, get_mp());
                 dec_mp(mp_shave, true);
                 dam -= mp_shave;
@@ -1000,7 +1001,8 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
             if (dam && sp_shield)
             {
-                int sp_shave = (dam * sp_shield + 2) / 4;
+                int sp_shave = (dam * sp_shield + 1) / 2;
+                sp_shave = random2avg(sp_shave + 1, 2);
                 sp_shave = min(sp_shave, get_sp());
                 dec_sp(sp_shave, true);
                 dam -= sp_shave;
