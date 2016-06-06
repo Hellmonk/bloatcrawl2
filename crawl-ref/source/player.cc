@@ -9756,7 +9756,7 @@ void player_moved()
     double slow_down = 0;
     if (movement_cost > 0 && total_penalty > 0)
     {
-        slow_down = log2(total_penalty / 10.0);
+        slow_down = log2((total_penalty + 10) / 10.0);
         movement_cost += slow_down * 10;
     }
 
