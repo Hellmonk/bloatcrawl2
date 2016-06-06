@@ -9640,10 +9640,13 @@ int player_summon_count()
     return count;
 }
 
-bool player_summoned_monster(spell_type spell, monster* mons, bool first)
+bool player_summoned_monster(spell_type spell, monster* mons, bool first, int freeze_cost)
 {
     bool success = true;
-    int cost = spell_mp_freeze(spell);
+    int cost = freeze_cost;
+    if (cost == -1)
+        cost = spell_mp_freeze(spell);
+
     if (!first)
         cost = div_rand_round(cost, 3);
 

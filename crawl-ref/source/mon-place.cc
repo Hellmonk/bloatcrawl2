@@ -847,7 +847,7 @@ void _prep_summoned_monster(const mgen_data &mg, monster* &mon, bool first = tru
     if (mg.summon_type && mon && mon->is_player_summon())
     {
         const spell_type spell = (const spell_type) mg.summon_type;
-        if (!player_summoned_monster(spell, mon, first))
+        if (!player_summoned_monster(spell, mon, first, mg.freeze_cost))
         {
             mons_remove_from_grid(mon);
             mon->destroy_inventory();

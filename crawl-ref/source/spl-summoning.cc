@@ -81,6 +81,7 @@ spret_type cast_summon_butterflies(int pow, god_type god, bool fail)
     bool success = false;
 
     const int how_many = min(8, 3 + random2(3) + random2(pow) / 10);
+    const int freeze_cost = div_rand_round(spell_mp_freeze(SPELL_SUMMON_BUTTERFLIES), how_many);
 
     for (int i = 0; i < how_many; ++i)
     {
@@ -88,7 +89,10 @@ spret_type cast_summon_butterflies(int pow, god_type god, bool fail)
                 mgen_data(MONS_BUTTERFLY, BEH_FRIENDLY, &you,
                           3, SPELL_SUMMON_BUTTERFLIES,
                           you.pos(), MHITYOU,
-                          MG_NONE, god), true, i == 0))
+                          MG_NONE, god,
+                          MONS_NO_MONSTER, COLOUR_INHERIT, PROX_ANYWHERE, level_id::current(),
+                          0, 0, MF_NO_FLAGS, "", "", RANDOM_MONSTER, freeze_cost
+                ), true, i == 0))
         {
             success = true;
         }
@@ -119,6 +123,7 @@ spret_type cast_summon_small_mammal(int pow, god_type god, bool fail)
         how_many++;
     if (x_chance_in_y(1 + random2(pow), 640))
         how_many++;
+    const int freeze_cost = div_rand_round(spell_mp_freeze(SPELL_SIMULACRUM), how_many);
 
     bool success = false;
     for (int i = 0; i < how_many; ++i)
@@ -131,7 +136,10 @@ spret_type cast_summon_small_mammal(int pow, god_type god, bool fail)
         mgen_data mg = mgen_data(mon, BEH_FRIENDLY, &you,
                                         3, SPELL_SUMMON_SMALL_MAMMAL,
                                         you.pos(), MHITYOU,
-                                        MG_AUTOFOE, god);
+                                        MG_AUTOFOE, god,
+                                        MONS_NO_MONSTER, COLOUR_INHERIT, PROX_ANYWHERE, level_id::current(),
+                                        0, 0, MF_NO_FLAGS, "", "", RANDOM_MONSTER, freeze_cost
+        );
 
         if (create_monster(mg))
             success = true;
@@ -2025,13 +2033,16 @@ spret_type cast_simulacrum(int pow, god_type god, bool fail)
     int num_sim  = 1 + random2(max_corpse_chunks(corpse.mon_type));
     num_sim  = stepdown_value(num_sim, 4, 4, 12, 12);
 
-    mgen_data mg(MONS_SIMULACRUM, BEH_FRIENDLY, &you, 3, SPELL_SIMULACRUM,
-                 you.pos(), MHITYOU, MG_FORCE_BEH | MG_AUTOFOE, god,
-                 corpse.mon_type);
-
     // Can't create more than the max for the monster.
     int how_many = min(8, 4 + random2(pow) / 20);
     how_many = min<int>(how_many, num_sim);
+    const int freeze_cost = div_rand_round(spell_mp_freeze(SPELL_SIMULACRUM), how_many);
+    
+    mgen_data mg(MONS_SIMULACRUM, BEH_FRIENDLY, &you, 3, SPELL_SIMULACRUM,
+                 you.pos(), MHITYOU, MG_FORCE_BEH | MG_AUTOFOE, god,
+                 corpse.mon_type, COLOUR_INHERIT, PROX_ANYWHERE, level_id::current(),
+                 0, 0, MF_NO_FLAGS, "", "", RANDOM_MONSTER, freeze_cost
+    );
 
     if (corpse.props.exists(CORPSE_HEADS))
     {
