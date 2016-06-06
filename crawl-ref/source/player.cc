@@ -10338,6 +10338,17 @@ void player_update_last_to_hit_chance(int chance)
 
 bool instant_resting = false;
 
+void _heal_all_monsters()
+{
+    for (auto &mons : menv_real)
+    {
+        if (!mons.alive())
+            continue;
+        if (mons_can_regenerate(&mons))
+            mons.heal(mons.max_hit_points);
+    }
+}
+
 void _instant_rest()
 {
     if (instant_resting)
@@ -10362,6 +10373,8 @@ void _instant_rest()
 
     dec_exhaust_player(1000);
     decrement_durations(5000);
+
+    _heal_all_monsters();
 
     instant_resting = false;
 }
