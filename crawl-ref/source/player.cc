@@ -10348,6 +10348,7 @@ void _instant_rest()
         inc_mp(get_mp_max() - get_mp());
 
     you.duration[DUR_BERSERK] = 0;
+    you.duration[DUR_POISONING] = 0;
     calc_hp();
 
     player_after_each_turn();
@@ -10355,6 +10356,7 @@ void _instant_rest()
 
     dec_exhaust_player(1000);
     decrement_durations(5000);
+
     instant_resting = false;
 }
 
