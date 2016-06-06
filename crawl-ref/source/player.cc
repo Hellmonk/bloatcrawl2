@@ -1301,9 +1301,9 @@ int player_hunger_rate(bool temp)
         {
             case HS_FAINTING:
             case HS_STARVING:
-            case HS_NEAR_STARVING:
                 hunger -= 3;
                 break;
+            case HS_NEAR_STARVING:
             case HS_VERY_HUNGRY:
                 hunger -= 2;
                 break;
