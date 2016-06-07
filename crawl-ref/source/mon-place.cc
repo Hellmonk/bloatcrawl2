@@ -842,13 +842,13 @@ static bool _in_ood_pack_protected_place()
     return env.turns_on_level < 1400 - env.absdepth0 * 117;
 }
 
-void _prep_summoned_monster(const mgen_data &mg, monster* &mon, bool first = true)
+void _prep_summoned_monster(mgen_data &mg, monster* &mon, bool first = true)
 {
     if (mg.summon_type && mon && mon->is_player_summon())
     {
         const spell_type spell = (const spell_type) mg.summon_type;
 
-        if (mg->god != GOD_NO_GOD)
+        if (mg.god != GOD_NO_GOD)
             mg.freeze_cost = 0;
 
         if (!player_summoned_monster(spell, mon, first, mg.freeze_cost))
