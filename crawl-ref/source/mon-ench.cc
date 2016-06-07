@@ -1020,6 +1020,7 @@ bool monster::is_player_summon() const
     const mid_t &source = ench_summon.source;
     const bool from_player = source ? source == MID_PLAYER : false;
 	const bool result = spell_produces_minion(spell_used) && from_player;
+
 	return result;
 }
 
