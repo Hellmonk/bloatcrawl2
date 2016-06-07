@@ -4353,7 +4353,7 @@ int get_sp()
     return you.sp;
 }
 
-int get_sp_max()
+int get_sp_max(bool raw)
 {
     if (you.species == SP_DJINNI)
         return you.hp_max;

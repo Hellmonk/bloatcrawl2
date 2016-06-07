@@ -1164,7 +1164,7 @@ void exert_toggle(exertion_mode new_exertion);
 int get_hp();
 int get_hp_max();
 int get_sp();
-int get_sp_max();
+int get_sp_max(bool raw = false);
 int get_mp();
 int get_mp_max(bool raw = false);
 
