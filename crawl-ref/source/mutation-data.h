@@ -208,13 +208,15 @@ static const mutation_def mut_data[] =
 { MUT_HEALTH_REGENERATION, 30, 3, mutflag::GOOD, false,
   "fast health regeneration",
 
-  {"Your natural rate of healing is unusually fast.",
+  {"You heal quickly.",
    "You heal very quickly.",
-   "You regenerate health."},
+   "You heal extremely quickly."},
 
-  {"You begin to heal more quickly.",
-   "You begin to heal more quickly.",
-   "You begin to regenerate health."},
+  {
+   "You heal more quickly.",
+   "You heal more quickly.",
+   "You heal more quickly.",
+  },
 
   {"Your rate of healing slows.",
    "Your rate of healing slows.",
@@ -224,17 +226,17 @@ static const mutation_def mut_data[] =
 { MUT_SLOW_REGENERATION, 50, 3, mutflag::BAD, false,
   "slow health regeneration",
 
-  {"You regenerate slowly when monsters are visible.",
-   "You do not regenerate naturally when monsters are visible.",
-   "You do not regenerate naturally."},
+  {"You regenerate health slowly when monsters are visible.",
+   "You do not regenerate health naturally when monsters are visible.",
+   "You do not regenerate health naturally."},
 
-  {"Your natural regeneration is weakened.",
-   "Your natural regeneration is weakened.",
-   "You stop regenerating."},
+  {"Your natural health regeneration is weakened.",
+   "Your natural health regeneration is weakened.",
+   "You stop regenerating health."},
 
-  {"Your natural regeneration is strengthened.",
-   "Your natural regeneration is strengthened.",
-   "Your natural regeneration is strengthened."},
+  {"Your natural health regeneration is strengthened.",
+   "Your natural health regeneration is strengthened.",
+   "Your natural health regeneration is strengthened."},
 },
 
 { MUT_FAST_METABOLISM, 20, 3, mutflag::BAD, false,
