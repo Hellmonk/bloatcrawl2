@@ -1,5 +1,8 @@
 ## v1.5.4
 
+* Yred changes
+    * His animated undead timeout after a while, but will follow the player between floors.
+
 * Exhaustion separated from "tired" mode
     * Exhaustion works as it did in vanilla, preventing you from executing an exhausting action again until it's gone.
     * When you drop below 5 sp or mp, you are tired.
