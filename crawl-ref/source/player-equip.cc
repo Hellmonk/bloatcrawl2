@@ -791,6 +791,22 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
     }
 }
 
+static void _stamina_shield_message(bool unmeld)
+{
+    if (!unmeld && you.stamina_shield() < 2)
+    {
+        dec_sp(get_sp());
+        mpr("You feel your power drawn to a protective spirit.");
+        if (!(have_passive(passive_t::no_sp_regen)
+                 || player_under_penance(GOD_PAKELLAS)))
+        {
+            mpr("Now linked to your health, your stamina stops regenerating.");
+        }
+    }
+    else // unmeld or already spirit-shielded
+        mpr("You feel spirits watching over you.");
+}
+
 static void _magic_shield_message(bool unmeld)
 {
     if (!unmeld && you.magic_shield() < 2)
@@ -1286,6 +1302,10 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
 
     case AMU_MAGIC_SHIELD:
         _magic_shield_message(unmeld);
+        break;
+
+    case AMU_STAMINA_SHIELD:
+        _stamina_shield_message(unmeld);
         break;
     }
 

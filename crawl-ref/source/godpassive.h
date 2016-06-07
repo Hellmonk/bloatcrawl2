@@ -245,6 +245,9 @@ enum class passive_t
 
     /// Pakellas collects and distills extra MP from your kills
     bottle_mp,
+
+    /// Not really used yet?
+    no_sp_regen,
 };
 
 enum ru_interference
