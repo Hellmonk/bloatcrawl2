@@ -75,6 +75,9 @@ int ranged_attack::calc_to_hit()
             : 3 * attacker->as_monster()->get_hit_dice();
     }
 
+    // ranged attack always has a more difficult time hitting than melee
+    orig_to_hit -= 5;
+
     int hit = orig_to_hit;
     const int defl = defender->missile_deflection();
     if (defl)
