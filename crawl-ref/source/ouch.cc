@@ -998,6 +998,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
                 mp_shave = min(mp_shave, get_mp());
                 dec_mp(mp_shave, true);
                 dam -= mp_shave;
+                mprf("Your magic shield absorbs %d damage.", mp_shave);
             }
 
             if (dam && sp_shield)
@@ -1007,6 +1008,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
                 sp_shave = min(sp_shave, get_sp());
                 dec_sp(sp_shave, true);
                 dam -= sp_shave;
+                mprf("Your stamina shield absorbs %d damage.", sp_shave);
             }
 
             if (dam <= 0 && get_hp() > 0)
