@@ -991,11 +991,14 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         if ((mp_shield || sp_shield) && death_type != KILLED_BY_POISON
             && !(aux && strstr(aux, "flay_damage")))
         {
+            int mp_shave = (dam * mp_shield + 1) / 2;
+            int sp_shave = (dam * sp_shield + 1) / 2;
+
             if (dam && mp_shield)
             {
-                int mp_shave = (dam * mp_shield + 1) / 2;
                 mp_shave = random2avg(mp_shave + 1, 2);
                 mp_shave = min(mp_shave, get_mp());
+
                 if (mp_shave)
                 {
                     dec_mp(mp_shave, true);
@@ -1006,9 +1009,10 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
             if (dam && sp_shield)
             {
-                int sp_shave = (dam * sp_shield + 1) / 2;
                 sp_shave = random2avg(sp_shave + 1, 2);
                 sp_shave = min(sp_shave, get_sp());
+                sp_shave = min(sp_shave, dam);
+
                 if (sp_shave)
                 {
                     dec_sp(sp_shave, true);
