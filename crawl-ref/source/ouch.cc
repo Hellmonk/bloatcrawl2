@@ -983,9 +983,6 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
     if (dam != INSTANT_DEATH)
     {
-        you.turn_damage += dam;
-        dam = player_ouch_modifier(dam);
-
         const int mp_shield = you.magic_shield();
         const int sp_shield = you.stamina_shield();
         if ((mp_shield || sp_shield) && death_type != KILLED_BY_POISON
@@ -1040,6 +1037,8 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         }
 
         you.source_damage += dam;
+        you.turn_damage += dam;
+        dam = player_ouch_modifier(dam);
 
         if(dam > 0) {
             interrupt_activity(source == MID_NOBODY ? AI_HP_LOSS_FROM_OTHER : AI_HP_LOSS_FROM_MONSTER, &hpl);
