@@ -867,7 +867,7 @@ bool player::can_go_berserk(bool intentional, bool potion, bool quiet,
             success = true;
     }
 
-    if (success)
+    if (!success)
     {
         if (verbose)
             mpr(msg);

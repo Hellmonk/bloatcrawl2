@@ -1,4 +1,15 @@
 ## v1.5.4
+
+* Exhaustion separated from "tired" mode
+    * Exhaustion works as it did in vanilla, preventing you from executing an exhausting action again until it's gone.
+    * When you drop below 5 sp or mp, you are tired.
+    * In tired mode, your basic attributes are a little worse than normal mode. 
+    * You are no longer tired once you have at least 5 mp and 5 sp. 
+    * There is a chance to rot player hp based on amount of sp or mp spent while exhausted.
+    * It should be easy enough to manage SP / MP to avoid being tired. 
+        * If you are having a very hard time not playing in "tired" mode, tell me, that means something is out of balance.
+    * Tired mode won't apply if you have exertion modes disabled (if you have exertion_disabled=true in your rc file).
+
 * Minions will not follow you down stairs if you [t]ell them to [w]ait. Then telling them to [f]ollow will enable them
   to follow you down the stairs again. 
 
@@ -105,12 +116,6 @@
     * Standard: 60%
     * Challenge: 40%
     * Nightmare: 20%
-
-* Exhaustion mode is the same as normal mode before. 
-    * When you drop below 0 sp or mp, you enter exhaustion mode.
-    * In exhaustion mode, your basic attributes are a little lower than normal mode. 
-    * You are no longer exhausted once you have at least 5 mp and 5 sp. 
-    * There is a chance to rot player hp based on amount of sp or mp spent while exhausted.
 
 * Spells may be cast even when mp is empty.
     * Except for spells which reduce max mp instead of consuming mp (like transmutations and summons).

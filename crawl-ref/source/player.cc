@@ -2019,7 +2019,7 @@ int player_movement_speed()
         mv = 900;
     }
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
     {
         mv = 1200;
     }
@@ -4194,13 +4194,15 @@ void flush_mp()
 
 void _handle_overdraft(const int overdraft)
 {
-    you.duration[DUR_EXHAUSTED] += overdraft * 30;
-    if (you.duration[DUR_EXHAUSTED] > 200)
-        you.duration[DUR_EXHAUSTED] = 200;
+    you.duration[DUR_TIRED] = 1;
 
-    /* No more rot :(
-    rot_hp(div_rand_round(overdraft, 50));
-     */
+    mprf(MSGCH_WARN, "You are pushing your body beyond it's limits!");
+    const int rot_amount = div_rand_round(overdraft, 100);
+    if (rot_amount)
+    {
+        mprf(MSGCH_WARN, "Your body breaks down under the strain! (rot+%d)", rot_amount);
+        rot_hp(rot_amount);
+    }
 }
 
 // returns false if there isn't enough mp
@@ -4376,35 +4378,15 @@ int get_mp_max(bool raw)
     return max;
 }
 
-bool player_is_tired(bool silent)
-{
-    const bool is_tired = get_sp() * 100 / (get_sp_max() + 1) < 50;
-
-    if (!silent && is_tired)
-        mpr("You are too tired to exert yourself now.");
-
-    return is_tired;
-}
-
 bool player_is_very_tired(bool silent)
-{
-    const bool is_tired = get_sp() * 100 / (get_sp_max() + 1) < 10;
-
-    if (!silent && is_tired)
-        mpr("You are too tired to exert yourself now.");
-
-    return is_tired;
-}
-
-bool player_is_exhausted(bool silent)
 {
     if (Options.exertion_disabled)
         return false;
 
-    /* old way
     const bool is_tired = player_sp_is_exhausted(true) || player_mp_is_exhausted(true);
-     */
+    /* old way
     const bool is_tired = you.duration[DUR_EXHAUSTED] > 0;
+     */
 
     if (!silent && is_tired)
         mpr("Your are exhausted!");
@@ -4505,7 +4487,7 @@ void set_exertion(const exertion_mode new_exertion, const bool manual)
         return;
     }
 
-    if (player_is_exhausted(true) && new_exertion != EXERT_NORMAL)
+    if (player_is_very_tired(true) && new_exertion != EXERT_NORMAL)
     {
         if (manual)
             mpr("You are too tired to exert yourself now.");
@@ -4624,6 +4606,9 @@ bool dec_sp(int sp_loss, bool silent, bool allow_overdrive)
 
 void _restore_exertion_mode()
 {
+    if (!player_is_very_tired(true))
+        you.duration[DUR_TIRED] = 0;
+
     const int sp_target = get_sp_max() / 2;
     if (get_sp() >= sp_target)
     {
@@ -8524,12 +8509,14 @@ void player::set_gold(int amount)
 
 void player::increase_duration(duration_type dur, int turns, int cap, const char *msg, source_type source)
 {
+    /*
     if (dur == DUR_EXHAUSTED)
     {
         const int sp_loss = turns;
         dec_sp(sp_loss);
         return;
     }
+     */
 
     if (msg)
         mpr(msg);
@@ -9986,8 +9973,8 @@ int player_tohit_modifier(int tohit, int range)
     if (range > 1)
         tohit = tohit - 3 * range;
 
-    if (player_is_exhausted(true))
-        tohit = tohit - 10;
+    if (player_is_very_tired(true))
+        tohit = tohit - 5;
     else if (you.exertion == EXERT_FOCUS)
         tohit = tohit + 10;
 
@@ -10004,7 +9991,7 @@ int player_damage_modifier(int damage, bool silent, const int range)
         damage = damage * (30 - range + 1) / 30;
         */
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         damage = damage * 4 / 5;
     else if (you.exertion == EXERT_POWER)
         damage = damage * 4 / 3 + 20;
@@ -10016,7 +10003,7 @@ int player_attack_delay_modifier(int attack_delay)
 {
     attack_delay *= base_factor;
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         attack_delay = attack_delay * 7 / 6;
     else if (you.exertion == EXERT_POWER)
         attack_delay = attack_delay * 5 / 6 - 50;
@@ -10028,7 +10015,7 @@ double player_spellpower_modifier(double spellpower)
 {
     spellpower *= _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         spellpower = spellpower * 3 / 4;
     else if (you.exertion == EXERT_POWER)
         spellpower = spellpower * 4 / 3 + 100;
@@ -10040,7 +10027,7 @@ int player_stealth_modifier(int stealth)
 {
     stealth *= _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         stealth = stealth * 2 / 3;
     else if (you.exertion == EXERT_FOCUS)
         stealth = stealth * 4 / 3 + 500;
@@ -10052,7 +10039,7 @@ int player_ev_modifier(int ev)
 {
     ev *= _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         ev = ev * 5 / 6;
     else if (you.exertion == EXERT_FOCUS && ev > 0)
         ev = ev * 6 / 5 + 200;
@@ -10064,7 +10051,7 @@ int player_ac_modifier(int ac)
 {
     ac *= _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         ac = ac * 5 / 6;
     else if (you.exertion == EXERT_FOCUS && ac > 0)
         ac = ac * 6 / 5 + 10000;
@@ -10076,7 +10063,7 @@ int player_sh_modifier(int sh)
 {
     sh *= _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         sh = sh * 5 / 6;
     else if (you.exertion == EXERT_FOCUS && sh > 0)
         sh = sh * 6 / 5 + 500;
@@ -10088,7 +10075,7 @@ int player_mr_modifier(int mr)
 {
     mr *= _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         mr = mr * 4 / 5;
     else if (you.exertion == EXERT_FOCUS && mr > 0)
         mr = mr * 5 / 4 + 1000;
@@ -10118,7 +10105,7 @@ int player_spellsuccess_modifier(int force)
             break;
     }
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         force -= 5;
     else if (you.exertion == EXERT_FOCUS || Options.exertion_disabled)
         force += 5;

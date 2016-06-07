@@ -700,7 +700,9 @@ public:
         int amount = player_potion_recharge_percent() * get_mp_max() / 100;
         amount = max(20, amount);
 
+        /*
         dec_exhaust_player(amount * 10);
+         */
 
         inc_mp(amount);
         mprf("Magic courses through your body. (mp+%d)", amount);
@@ -748,7 +750,9 @@ public:
         amount = player_potion_recharge_percent() * get_sp_max() / 100;
         amount = max(20, amount);
 
+        /*
         dec_exhaust_player(amount * 10);
+         */
 
         inc_sp(amount);
         mprf("Energy courses through your body! (sp+%d)", amount);
