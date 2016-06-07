@@ -2273,9 +2273,8 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     case ABIL_YRED_ANIMATE_REMAINS:
         fail_check();
         canned_msg(MSG_ANIMATE_REMAINS);
-        if (animate_remains(you.pos(), CORPSE_SKELETON, BEH_FRIENDLY, MHITYOU, &you, "", GOD_YREDELEMNUL) < 0)
+        if (cast_animate_skeleton(GOD_YREDELEMNUL, false) != SPRET_SUCCESS)
         {
-            mpr("There are no remains here to animate!");
             return SPRET_ABORT;
         }
         break;

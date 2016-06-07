@@ -847,6 +847,10 @@ void _prep_summoned_monster(const mgen_data &mg, monster* &mon, bool first = tru
     if (mg.summon_type && mon && mon->is_player_summon())
     {
         const spell_type spell = (const spell_type) mg.summon_type;
+
+        if (mg->god != GOD_NO_GOD)
+            mg.freeze_cost = 0;
+
         if (!player_summoned_monster(spell, mon, first, mg.freeze_cost))
         {
             mons_remove_from_grid(mon);

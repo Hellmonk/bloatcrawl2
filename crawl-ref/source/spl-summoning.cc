@@ -123,7 +123,7 @@ spret_type cast_summon_small_mammal(int pow, god_type god, bool fail)
         how_many++;
     if (x_chance_in_y(1 + random2(pow), 640))
         how_many++;
-    const int freeze_cost = div_rand_round(spell_mp_freeze(SPELL_SIMULACRUM), how_many);
+    const int freeze_cost = div_rand_round(spell_mp_freeze(SPELL_SUMMON_SMALL_MAMMAL), how_many);
 
     bool success = false;
     for (int i = 0; i < how_many; ++i)
