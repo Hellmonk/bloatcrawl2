@@ -2336,6 +2336,10 @@ static band_type _choose_band(monster_type mon_type, int &band_size,
         const band_info& band_desc = *random_iterator(bands->bands);
         band = band_desc.type;
         band_size = band_desc.range.roll();
+
+        band_size = min(env.absdepth0 - 1 + crawl_state.difficulty * 2, band_size);
+        band_size = max(1, band_size);
+
         natural_leader = band_desc.natural_leader;
     }
 
