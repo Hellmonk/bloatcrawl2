@@ -19,8 +19,8 @@ quite helpful for showing the possibilities, as well as helping those who are st
     
 ### Ranged Fighters
     Bows consume less stamina to fire than crossbows, but do less damage. So if you are a species that has higher fighting
-    aptitudes and/or greater strength, crossbows may be a better choice. If you are a species with particularly low strength,
-    you'd be better off with slings or bows.
+    aptitudes (to make up for the slow attack speed) and/or greater strength (to reduce stamina costs), crossbows may be 
+    a better choice. If you are a species with particularly low strength, you'd be better off with slings or bows.
     
     Since ammo is unlimited, quiver "nothing" most of the time [q-]. Save your limited branded ammo for special enounters
     where they will do the most good. 
