@@ -123,7 +123,7 @@ spret_type cast_summon_small_mammal(int pow, god_type god, bool fail)
         how_many++;
     if (x_chance_in_y(1 + random2(pow), 640))
         how_many++;
-    const int freeze_cost = div_rand_round(spell_mp_freeze(SPELL_SIMULACRUM), how_many);
+    const int freeze_cost = div_rand_round(spell_mp_freeze(SPELL_SUMMON_SMALL_MAMMAL), how_many);
 
     bool success = false;
     for (int i = 0; i < how_many; ++i)
@@ -1736,8 +1736,7 @@ static bool _raise_remains(const coord_def &pos, int corps, beh_type beha,
     if (!mons)
         return false;
 
-    if (god == GOD_NO_GOD) // only Yred dead-raising lasts forever.
-        mons->add_ench(mon_enchant(ENCH_FAKE_ABJURATION, 6));
+    mons->add_ench(mon_enchant(ENCH_FAKE_ABJURATION, 6, 0, 4000));
 
     // If the original monster has been levelled up, its HD might be different
     // from its class HD, in which case its HP should be rerolled to match.

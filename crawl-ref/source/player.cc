@@ -2019,7 +2019,7 @@ int player_movement_speed()
         mv = 900;
     }
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
     {
         mv = 1200;
     }
@@ -4194,13 +4194,15 @@ void flush_mp()
 
 void _handle_overdraft(const int overdraft)
 {
-    you.duration[DUR_EXHAUSTED] += overdraft * 30;
-    if (you.duration[DUR_EXHAUSTED] > 200)
-        you.duration[DUR_EXHAUSTED] = 200;
+    you.duration[DUR_TIRED] = 1;
 
-    /* No more rot :(
-    rot_hp(div_rand_round(overdraft, 50));
-     */
+    mprf(MSGCH_WARN, "You are pushing your body beyond it's limits!");
+    const int rot_amount = div_rand_round(overdraft, 100);
+    if (rot_amount)
+    {
+        mprf(MSGCH_WARN, "Your body breaks down under the strain! (rot+%d)", rot_amount);
+        rot_hp(rot_amount);
+    }
 }
 
 // returns false if there isn't enough mp
@@ -4351,7 +4353,7 @@ int get_sp()
     return you.sp;
 }
 
-int get_sp_max()
+int get_sp_max(bool raw)
 {
     if (you.species == SP_DJINNI)
         return you.hp_max;
@@ -4376,35 +4378,15 @@ int get_mp_max(bool raw)
     return max;
 }
 
-bool player_is_tired(bool silent)
-{
-    const bool is_tired = get_sp() * 100 / (get_sp_max() + 1) < 50;
-
-    if (!silent && is_tired)
-        mpr("You are too tired to exert yourself now.");
-
-    return is_tired;
-}
-
 bool player_is_very_tired(bool silent)
-{
-    const bool is_tired = get_sp() * 100 / (get_sp_max() + 1) < 10;
-
-    if (!silent && is_tired)
-        mpr("You are too tired to exert yourself now.");
-
-    return is_tired;
-}
-
-bool player_is_exhausted(bool silent)
 {
     if (Options.exertion_disabled)
         return false;
 
-    /* old way
     const bool is_tired = player_sp_is_exhausted(true) || player_mp_is_exhausted(true);
-     */
+    /* old way
     const bool is_tired = you.duration[DUR_EXHAUSTED] > 0;
+     */
 
     if (!silent && is_tired)
         mpr("Your are exhausted!");
@@ -4505,7 +4487,7 @@ void set_exertion(const exertion_mode new_exertion, const bool manual)
         return;
     }
 
-    if (player_is_exhausted(true) && new_exertion != EXERT_NORMAL)
+    if (player_is_very_tired(true) && new_exertion != EXERT_NORMAL)
     {
         if (manual)
             mpr("You are too tired to exert yourself now.");
@@ -4624,6 +4606,9 @@ bool dec_sp(int sp_loss, bool silent, bool allow_overdrive)
 
 void _restore_exertion_mode()
 {
+    if (!player_is_very_tired(true))
+        you.duration[DUR_TIRED] = 0;
+
     const int sp_target = get_sp_max() / 2;
     if (get_sp() >= sp_target)
     {
@@ -4953,13 +4938,13 @@ int get_real_sp(bool include_items)
 {
     int max_sp = 100;
 
-    max_sp += player_mutation_level(MUT_HIGH_STAMINA) * 20;
-    max_sp -= player_mutation_level(MUT_LOW_STAMINA) * 20;
-    max_sp += you.wearing(EQ_RINGS, RING_STAMINA) * 20;
+    max_sp += player_mutation_level(MUT_HIGH_STAMINA) * 25;
+    max_sp -= player_mutation_level(MUT_LOW_STAMINA) * 25;
+    max_sp += you.wearing(EQ_RINGS, RING_STAMINA) * 25;
     max_sp += you.scan_artefacts(ARTP_STAMINA);
 
     max_sp = player_pool_modifier(max_sp);
-    max_sp = max(max_sp, 20);
+    max_sp = max(max_sp, 25);
 
     return max_sp;
 }
@@ -4969,10 +4954,10 @@ int get_real_mp(bool include_items, bool rotted)
     int max_mp = 100;
 
     // Analogous to ROBUST/FRAIL
-    max_mp += + (player_mutation_level(MUT_HIGH_MAGIC) * 20)
-              + (you.attribute[ATTR_DIVINE_VIGOUR] * 5)
-              - (player_mutation_level(MUT_LOW_MAGIC) * 20)
-              + species_mp_modifier(you.species) * 20
+    max_mp += + (player_mutation_level(MUT_HIGH_MAGIC) * 25)
+              + (you.attribute[ATTR_DIVINE_VIGOUR] * 10)
+              - (player_mutation_level(MUT_LOW_MAGIC) * 25)
+              + species_mp_modifier(you.species) * 25
               ;
 
     // This is our "rotted" base, applied after multipliers
@@ -4983,7 +4968,7 @@ int get_real_mp(bool include_items, bool rotted)
     {
         const int num_magic_rings = you.wearing(EQ_RINGS, RING_MAGICAL_POWER);
         for (int i = 0; i < num_magic_rings; i++)
-            max_mp += 20;
+            max_mp += 25;
         max_mp += you.scan_artefacts(ARTP_MAGICAL_POWER);
 
         if (you.wearing(EQ_STAFF, STAFF_POWER))
@@ -4994,7 +4979,7 @@ int get_real_mp(bool include_items, bool rotted)
         max_mp /= 3;
 
     max_mp = player_pool_modifier(max_mp);
-    max_mp = max(max_mp, 20);
+    max_mp = max(max_mp, 25);
 
     if (!rotted)
         max_mp -= you.mp_frozen_summons;
@@ -8524,12 +8509,14 @@ void player::set_gold(int amount)
 
 void player::increase_duration(duration_type dur, int turns, int cap, const char *msg, source_type source)
 {
+    /*
     if (dur == DUR_EXHAUSTED)
     {
         const int sp_loss = turns;
         dec_sp(sp_loss);
         return;
     }
+     */
 
     if (msg)
         mpr(msg);
@@ -9756,7 +9743,7 @@ void player_moved()
     double slow_down = 0;
     if (movement_cost > 0 && total_penalty > 0)
     {
-        slow_down = log2(total_penalty / 10.0);
+        slow_down = log2((total_penalty + 10) / 10.0);
         movement_cost += slow_down * 10;
     }
 
@@ -9885,15 +9872,18 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
     // may be negative
     const int benefit = strength + fighting;
 
-    double sp_cost = fpow(weight * 2, 15, 16, benefit / 10.0);
+    double sp_cost = fpow(weight, 15, 16, benefit / 10.0);
 
-    sp_cost = max(2, (int)sp_cost);
+    sp_cost = max(1, (int)sp_cost);
 
     if (weapon && get_weapon_brand(*weapon) == SPWPN_LIGHT)
         sp_cost /= 2;
 
     if (you.exertion != EXERT_NORMAL)
+    {
         sp_cost *= 2;
+        sp_cost = max(3, (int)sp_cost);
+    }
 
     return sp_cost;
 }
@@ -9983,8 +9973,8 @@ int player_tohit_modifier(int tohit, int range)
     if (range > 1)
         tohit = tohit - 3 * range;
 
-    if (player_is_exhausted(true))
-        tohit = tohit - 10;
+    if (player_is_very_tired(true))
+        tohit = tohit - 5;
     else if (you.exertion == EXERT_FOCUS)
         tohit = tohit + 10;
 
@@ -10001,7 +9991,7 @@ int player_damage_modifier(int damage, bool silent, const int range)
         damage = damage * (30 - range + 1) / 30;
         */
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         damage = damage * 4 / 5;
     else if (you.exertion == EXERT_POWER)
         damage = damage * 4 / 3 + 20;
@@ -10013,7 +10003,7 @@ int player_attack_delay_modifier(int attack_delay)
 {
     attack_delay *= base_factor;
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         attack_delay = attack_delay * 7 / 6;
     else if (you.exertion == EXERT_POWER)
         attack_delay = attack_delay * 5 / 6 - 50;
@@ -10025,7 +10015,7 @@ double player_spellpower_modifier(double spellpower)
 {
     spellpower *= _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         spellpower = spellpower * 3 / 4;
     else if (you.exertion == EXERT_POWER)
         spellpower = spellpower * 4 / 3 + 100;
@@ -10037,7 +10027,7 @@ int player_stealth_modifier(int stealth)
 {
     stealth *= _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         stealth = stealth * 2 / 3;
     else if (you.exertion == EXERT_FOCUS)
         stealth = stealth * 4 / 3 + 500;
@@ -10049,7 +10039,7 @@ int player_ev_modifier(int ev)
 {
     ev *= _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         ev = ev * 5 / 6;
     else if (you.exertion == EXERT_FOCUS && ev > 0)
         ev = ev * 6 / 5 + 200;
@@ -10061,7 +10051,7 @@ int player_ac_modifier(int ac)
 {
     ac *= _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         ac = ac * 5 / 6;
     else if (you.exertion == EXERT_FOCUS && ac > 0)
         ac = ac * 6 / 5 + 10000;
@@ -10073,7 +10063,7 @@ int player_sh_modifier(int sh)
 {
     sh *= _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         sh = sh * 5 / 6;
     else if (you.exertion == EXERT_FOCUS && sh > 0)
         sh = sh * 6 / 5 + 500;
@@ -10085,7 +10075,7 @@ int player_mr_modifier(int mr)
 {
     mr *= _difficulty_mode_multiplier();
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         mr = mr * 4 / 5;
     else if (you.exertion == EXERT_FOCUS && mr > 0)
         mr = mr * 5 / 4 + 1000;
@@ -10115,7 +10105,7 @@ int player_spellsuccess_modifier(int force)
             break;
     }
 
-    if (player_is_exhausted(true))
+    if (player_is_very_tired(true))
         force -= 5;
     else if (you.exertion == EXERT_FOCUS || Options.exertion_disabled)
         force += 5;
@@ -10154,6 +10144,9 @@ int player_item_gen_modifier(int item_count)
 // used for pool sizes. Generic way to scale something based on difficulty
 int player_pool_modifier(int amount)
 {
+    // bypass this for now
+    return amount;
+
     int percent = 100;
 
     switch (crawl_state.difficulty)
@@ -10266,13 +10259,13 @@ int player_ouch_modifier(int damage)
     const int max_damage_allowed_per_turn = get_hp_max() * percentage_allowed / 100;
     const int damage_left = max_damage_allowed_per_turn - you.turn_damage;
 
-    if (damage > damage_left)
-        mprf("You were prevented from receiving too much damage! (%d -> %d)", damage, damage_left);
+    int new_damage = min(damage, damage_left);
+    new_damage = max(0, new_damage);
 
-    damage = min(damage, damage_left);
-    damage = max(0, damage);
+    if (damage > new_damage)
+        mprf("You were prevented from receiving too much damage! (%d -> %d)", damage, new_damage);
 
-    return damage;
+    return new_damage;
 }
 
 int player_max_stat_loss_allowed(stat_type stat)
@@ -10332,6 +10325,17 @@ void player_update_last_to_hit_chance(int chance)
 
 bool instant_resting = false;
 
+void _heal_all_monsters()
+{
+    for (auto &mons : menv_real)
+    {
+        if (!mons.alive())
+            continue;
+        if (mons_can_regenerate(&mons))
+            mons.heal(mons.max_hit_points);
+    }
+}
+
 void _instant_rest()
 {
     if (instant_resting)
@@ -10348,6 +10352,7 @@ void _instant_rest()
         inc_mp(get_mp_max() - get_mp());
 
     you.duration[DUR_BERSERK] = 0;
+    you.duration[DUR_POISONING] = 0;
     calc_hp();
 
     player_after_each_turn();
@@ -10355,6 +10360,9 @@ void _instant_rest()
 
     dec_exhaust_player(1000);
     decrement_durations(5000);
+
+    _heal_all_monsters();
+
     instant_resting = false;
 }
 

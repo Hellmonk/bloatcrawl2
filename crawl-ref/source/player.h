@@ -1153,9 +1153,7 @@ bool need_expiration_warning(dungeon_feature_type feat);
 bool need_expiration_warning(duration_type dur, coord_def p = you.pos());
 bool need_expiration_warning(coord_def p = you.pos());
 
-bool player_is_tired(bool silent = false);
 bool player_is_very_tired(bool silent = false);
-bool player_is_exhausted(bool silent = false);
 bool player_mp_is_exhausted(bool silent = false);
 bool player_sp_is_exhausted(bool silent = false);
 bool in_quick_mode();
@@ -1166,7 +1164,7 @@ void exert_toggle(exertion_mode new_exertion);
 int get_hp();
 int get_hp_max();
 int get_sp();
-int get_sp_max();
+int get_sp_max(bool raw = false);
 int get_mp();
 int get_mp_max(bool raw = false);
 

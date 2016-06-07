@@ -983,8 +983,6 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
     if (dam != INSTANT_DEATH)
     {
-        dam = player_ouch_modifier(dam);
-
         const int mp_shield = you.magic_shield();
         const int sp_shield = you.stamina_shield();
         if ((mp_shield || sp_shield) && death_type != KILLED_BY_POISON
@@ -992,20 +990,36 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         {
             if (dam && mp_shield)
             {
-                int mp_shave = (dam * mp_shield + 1) / 2;
+                int mp_shave = dam * mp_shield + 1;
+                mp_shave = mp_shave * get_mp() / get_mp_max(true);
+
                 mp_shave = random2avg(mp_shave + 1, 2);
                 mp_shave = min(mp_shave, get_mp());
-                dec_mp(mp_shave, true);
-                dam -= mp_shave;
+                mp_shave = min(mp_shave, dam);
+
+                if (mp_shave)
+                {
+                    dec_mp(mp_shave, true);
+                    dam -= mp_shave;
+                    mprf("Your magic shield absorbs %d damage.", mp_shave);
+                }
             }
 
             if (dam && sp_shield)
             {
-                int sp_shave = (dam * sp_shield + 1) / 2;
+                int sp_shave = dam * sp_shield + 1;
+                sp_shave = sp_shave * get_sp() / get_sp_max(true);
+
                 sp_shave = random2avg(sp_shave + 1, 2);
                 sp_shave = min(sp_shave, get_sp());
-                dec_sp(sp_shave, true);
-                dam -= sp_shave;
+                sp_shave = min(sp_shave, dam);
+
+                if (sp_shave)
+                {
+                    dec_sp(sp_shave, true);
+                    dam -= sp_shave;
+                    mprf("Your stamina shield absorbs %d damage.", sp_shave);
+                }
             }
 
             if (dam <= 0 && get_hp() > 0)
@@ -1024,7 +1038,6 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             return;
         }
 
-        you.turn_damage += dam;
         if (you.damage_source != source)
         {
             you.damage_source = source;
@@ -1032,6 +1045,8 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         }
 
         you.source_damage += dam;
+        you.turn_damage += dam;
+        dam = player_ouch_modifier(dam);
 
         if(dam > 0) {
             interrupt_activity(source == MID_NOBODY ? AI_HP_LOSS_FROM_OTHER : AI_HP_LOSS_FROM_MONSTER, &hpl);

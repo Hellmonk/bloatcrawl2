@@ -1987,6 +1987,7 @@ enum duration_type
     DUR_CHANNELING,
     DUR_ANCESTOR_DELAY,
     DUR_SANGUINE_ARMOUR,
+    DUR_TIRED,
     NUM_DURATIONS
 };
 

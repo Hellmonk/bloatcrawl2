@@ -497,6 +497,8 @@ NORETURN static void _launch_game()
 
     run_uncancels();
 
+    reset_damage_counters();
+
     cursor_control ccon(!Options.use_fake_player_cursor);
     while (true)
         _input();
@@ -1369,8 +1371,6 @@ static void _input()
 
     // Currently only set if Xom accidentally kills the player.
     you.reset_escaped_death();
-
-    reset_damage_counters();
 
     if (you.dead)
     {
@@ -2710,6 +2710,8 @@ static command_type _get_next_cmd()
     keycode_type keyin = _get_next_keycode();
 
     handle_real_time();
+
+    reset_damage_counters();
 
     if (is_userfunction(keyin))
     {

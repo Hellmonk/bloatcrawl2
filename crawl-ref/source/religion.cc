@@ -126,10 +126,13 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Yredelemnul
-    { { 1, ABIL_YRED_ANIMATE_REMAINS, "animate remains" },
+    {
+        /*
+      { 1, ABIL_YRED_ANIMATE_REMAINS, "animate remains" },
+         */
+      { 1, ABIL_YRED_ANIMATE_DEAD, "animate legions of the dead" },
       { 2, ABIL_YRED_RECALL_UNDEAD_SLAVES, "recall your undead slaves" },
-      { 2, ABIL_YRED_INJURY_MIRROR, "mirror injuries on your foes" },
-      { 3, ABIL_YRED_ANIMATE_DEAD, "animate legions of the dead" },
+      { 3, ABIL_YRED_INJURY_MIRROR, "mirror injuries on your foes" },
       { 4, ABIL_YRED_DRAIN_LIFE, "drain ambient life force" },
       { 5, ABIL_YRED_ENSLAVE_SOUL, "enslave living souls" },
     },
@@ -2366,12 +2369,14 @@ static void _gain_piety_point()
 #endif
                 learned_something_new(HINT_NEW_ABILITY_GOD);
                 // Preserve the old hotkey
+                /*
                 if (power.abil == ABIL_YRED_ANIMATE_DEAD)
                 {
                     replace(begin(you.ability_letter_table),
                             end(you.ability_letter_table),
                             ABIL_YRED_ANIMATE_REMAINS, ABIL_YRED_ANIMATE_DEAD);
                 }
+                 */
             }
         }
         if (rank == rank_for_passive(passive_t::halo))
@@ -2541,12 +2546,14 @@ void lose_piety(int pgn)
             {
                 power.display(false, "You can no longer %s.");
                 // Preserve the old hotkey
+                /*
                 if (power.abil == ABIL_YRED_ANIMATE_DEAD)
                 {
                     replace(begin(you.ability_letter_table),
                             end(you.ability_letter_table),
                             ABIL_YRED_ANIMATE_DEAD, ABIL_YRED_ANIMATE_REMAINS);
                 }
+                 */
             }
         }
 #ifdef USE_TILE_LOCAL
@@ -3241,7 +3248,9 @@ void set_god_ability_slots()
         if (power.abil != ABIL_NON_ABILITY
             // Animate Dead doesn't have its own hotkey; it steals
             // Animate Remains'
+            /*
             && power.abil != ABIL_YRED_ANIMATE_DEAD
+             */
             // hep ident goes to G, so don't take b for it (hack alert)
             && power.abil != ABIL_HEPLIAKLQANA_IDENTITY
             && find(begin(you.ability_letter_table),

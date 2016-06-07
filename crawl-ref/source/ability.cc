@@ -387,14 +387,16 @@ static const ability_def Ability_List[] =
     // Yredelemnul
     { ABIL_YRED_INJURY_MIRROR, "Injury Mirror",
       0, 0, 0, 0, {FAIL_INVO, 40, 4, 20}, abflag::PIETY },
+    /*
     { ABIL_YRED_ANIMATE_REMAINS, "Animate Remains",
-      2, 0, 200, 0, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
+      0, 0, 0, 2, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
+      */
     { ABIL_YRED_RECALL_UNDEAD_SLAVES, "Recall Undead Slaves",
       2, 0, 0, 0, {FAIL_INVO, 50, 4, 20}, abflag::NONE },
     { ABIL_YRED_ANIMATE_DEAD, "Animate Dead",
-      2, 0, 200, 0, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
+      20, 0, 0, 0, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
     { ABIL_YRED_DRAIN_LIFE, "Drain Life",
-      0, 0, 200, 4, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
+      0, 0, 200, 3, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
     { ABIL_YRED_ENSLAVE_SOUL, "Enslave Soul",
       0, 0, 150, 8, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
 
@@ -937,11 +939,13 @@ ability_type fixup_ability(ability_type ability)
 {
     switch (ability)
     {
+        /*
     case ABIL_YRED_ANIMATE_REMAINS:
         // suppress animate remains once animate dead is unlocked (ugh)
         if (in_good_standing(GOD_YREDELEMNUL, 2))
             return ABIL_NON_ABILITY;
         return ability;
+         */
 
     case ABIL_YRED_RECALL_UNDEAD_SLAVES:
     case ABIL_BEOGH_RECALL_ORCISH_FOLLOWERS:
@@ -2271,9 +2275,8 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     case ABIL_YRED_ANIMATE_REMAINS:
         fail_check();
         canned_msg(MSG_ANIMATE_REMAINS);
-        if (animate_remains(you.pos(), CORPSE_BODY, BEH_FRIENDLY, MHITYOU, &you, "", GOD_YREDELEMNUL) < 0)
+        if (cast_animate_skeleton(GOD_YREDELEMNUL, false) != SPRET_SUCCESS)
         {
-            mpr("There are no remains here to animate!");
             return SPRET_ABORT;
         }
         break;
@@ -3894,7 +3897,7 @@ int abil_skill_weight(ability_type ability)
 
 int generic_cost::cost() const
 {
-    return base + (add > 0 ? random2avg(add, rolls) : 0);
+    return base;
 }
 
 int scaling_cost::cost(int max) const

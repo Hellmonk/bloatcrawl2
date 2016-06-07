@@ -1909,7 +1909,7 @@ static string _stealth_bar(int sw)
     string bar;
     //no colouring
     bar += _determine_colour_string(0, 5);
-    bar += "Stlth  ";
+    bar += "Stlth     ";
     const int stealth_num = _stealth_breakpoint(check_stealth());
     for (int i = 0; i < stealth_num; i++)
         bar += "+";
@@ -2368,9 +2368,9 @@ static vector<formatted_string> _get_overview_resistances(
     vector<char> &equip_chars, bool calc_unid, int sw)
 {
     // 3 columns, splits at columns 19, 33
-    column_composer cols(3, 19, 33);
+    column_composer cols(3, 19 + 3, 33 + 3);
     // First column, resist name is 7 chars
-    int cwidth = 7;
+    int cwidth = 7 + 3;
     string out;
 
     const int rfire = player_res_fire(calc_unid);
@@ -2381,6 +2381,12 @@ static vector<formatted_string> _get_overview_resistances(
 
     const int rlife = player_prot_life(calc_unid);
     out += _resist_composer("rNeg", cwidth, rlife, 3) + "\n";
+
+    const int ms = you.magic_shield(calc_unid);
+    out += _resist_composer("MagicSh", cwidth, ms, 3) + "\n";
+
+    const int ss = you.stamina_shield(calc_unid);
+    out += _resist_composer("StaminaSh", cwidth, ss, 3) + "\n";
 
     const int rpois = player_res_poison(calc_unid);
     string rpois_string = _resist_composer("rPois", cwidth, rpois) + "\n";
@@ -2403,9 +2409,6 @@ static vector<formatted_string> _get_overview_resistances(
     if (rmuta)
         out += _resist_composer("rMut", cwidth, rmuta) + "\n";
 
-    const int rsust = player_sust_attr(calc_unid);
-    out += _resist_composer("SustAt", cwidth, rsust) + "\n";
-
     const int rmagi = player_res_magic(calc_unid) / MR_PIP;
     out += _resist_composer("MR", cwidth, rmagi, 5) + "\n";
 
@@ -2415,7 +2418,7 @@ static vector<formatted_string> _get_overview_resistances(
 
     // Second column, resist name is 9 chars
     out.clear();
-    cwidth = 9;
+    cwidth = 10;
     const int rinvi = you.can_see_invisible(calc_unid);
     out += _resist_composer("SeeInvis", cwidth, rinvi) + "\n";
 
@@ -2425,8 +2428,8 @@ static vector<formatted_string> _get_overview_resistances(
     const int faith = you.faith(calc_unid);
     out += _resist_composer("Faith", cwidth, faith) + "\n";
 
-    const int rspir = you.magic_shield(calc_unid);
-    out += _resist_composer("MagicShield", cwidth, rspir) + "\n";
+    const int rsust = player_sust_attr(calc_unid);
+    out += _resist_composer("SustAt", cwidth, rsust) + "\n";
 
     const int rward = you.dismissal(calc_unid);
     out += _resist_composer("Dismiss", cwidth, rward) + "\n";

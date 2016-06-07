@@ -842,11 +842,12 @@ static bool _in_ood_pack_protected_place()
     return env.turns_on_level < 1400 - env.absdepth0 * 117;
 }
 
-void _prep_summoned_monster(const mgen_data &mg, monster* &mon, bool first = true)
+void _prep_summoned_monster(mgen_data &mg, monster* &mon, bool first = true)
 {
-    if (mg.summon_type && mon && mon->is_player_summon())
+    if (mg.summon_type && mon && mon->is_player_summon() && mg.god == GOD_NO_GOD)
     {
         const spell_type spell = (const spell_type) mg.summon_type;
+
         if (!player_summoned_monster(spell, mon, first, mg.freeze_cost))
         {
             mons_remove_from_grid(mon);
@@ -2336,6 +2337,10 @@ static band_type _choose_band(monster_type mon_type, int &band_size,
         const band_info& band_desc = *random_iterator(bands->bands);
         band = band_desc.type;
         band_size = band_desc.range.roll();
+
+        band_size = min(env.absdepth0 - 1 + crawl_state.difficulty * 2, band_size);
+        band_size = max(1, band_size);
+
         natural_leader = band_desc.natural_leader;
     }
 

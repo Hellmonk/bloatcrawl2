@@ -1,4 +1,31 @@
 ## v1.5.4
+
+* Guardian Spirit changes
+    * Renamed to Magic Shield.
+    * Stamina Shield added also, both mutation and amulet.
+    * Three levels instead of one, and it can be seen in the [%] resistance screen.
+    * Amulet gives 1 level of the ability.
+    * Level 1 gives 25% damage shaving, 2 gives 50%, 3 gives 75%, and the value is randomized.
+    * Based on the MP / SP you currently have, instead of max, so it protects you better and consumes more MP / SP
+      when you are full, and when you are low, the shield does very little (making it less likely to force you into
+      tired mode).
+    * You *can* stack them, for example if you have a vine stalker which has spirit shield 2, with a stamina shield
+      amulet. But the amount shaved for the amulet is only a percentage of the damage that remains. So a 50% + 50%
+      savings doesn't give 100% savings, it gives 75% (50% of the remaining 50% damage). 
+
+* Yred changes
+    * His animated undead timeout after a while, but will follow the player between floors.
+
+* Exhaustion separated from "tired" mode
+    * Exhaustion works as it did in vanilla, preventing you from executing an exhausting action again until it's gone.
+    * When you drop below 5 sp or mp, you are tired.
+    * In tired mode, your basic attributes are a little worse than normal mode. 
+    * You are no longer tired once you have at least 5 mp and 5 sp. 
+    * There is a chance to rot player hp based on amount of sp or mp spent while exhausted.
+    * It should be easy enough to manage SP / MP to avoid being tired. 
+        * If you are having a very hard time not playing in "tired" mode, tell me, that means something is out of balance.
+    * Tired mode won't apply if you have exertion modes disabled (if you have exertion_disabled=true in your rc file).
+
 * Minions will not follow you down stairs if you [t]ell them to [w]ait. Then telling them to [f]ollow will enable them
   to follow you down the stairs again. 
 
@@ -105,12 +132,6 @@
     * Standard: 60%
     * Challenge: 40%
     * Nightmare: 20%
-
-* Exhaustion mode is the same as normal mode before. 
-    * When you drop below 0 sp or mp, you enter exhaustion mode.
-    * In exhaustion mode, your basic attributes are a little lower than normal mode. 
-    * You are no longer exhausted once you have at least 5 mp and 5 sp. 
-    * There is a chance to rot player hp based on amount of sp or mp spent while exhausted.
 
 * Spells may be cast even when mp is empty.
     * Except for spells which reduce max mp instead of consuming mp (like transmutations and summons).
