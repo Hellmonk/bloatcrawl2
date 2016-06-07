@@ -3896,7 +3896,7 @@ int abil_skill_weight(ability_type ability)
 
 int generic_cost::cost() const
 {
-    return base + (add > 0 ? random2avg(add, rolls) : 0);
+    return base;
 }
 
 int scaling_cost::cost(int max) const
