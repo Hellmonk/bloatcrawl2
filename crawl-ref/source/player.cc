@@ -10272,13 +10272,13 @@ int player_ouch_modifier(int damage)
     const int max_damage_allowed_per_turn = get_hp_max() * percentage_allowed / 100;
     const int damage_left = max_damage_allowed_per_turn - you.turn_damage;
 
-    if (damage > damage_left)
-        mprf("You were prevented from receiving too much damage! (%d -> %d)", damage, damage_left);
+    int new_damage = min(damage, damage_left);
+    new_damage = max(0, new_damage);
 
-    damage = min(damage, damage_left);
-    damage = max(0, damage);
+    if (damage > new_damage)
+        mprf("You were prevented from receiving too much damage! (%d -> %d)", damage, new_damage);
 
-    return damage;
+    return new_damage;
 }
 
 int player_max_stat_loss_allowed(stat_type stat)
