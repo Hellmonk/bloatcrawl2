@@ -392,7 +392,7 @@ static const ability_def Ability_List[] =
     { ABIL_YRED_RECALL_UNDEAD_SLAVES, "Recall Undead Slaves",
       2, 0, 0, 0, {FAIL_INVO, 50, 4, 20}, abflag::NONE },
     { ABIL_YRED_ANIMATE_DEAD, "Animate Dead",
-      0, 0, 0, 1, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
+      0, 0, 0, 3, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
     { ABIL_YRED_DRAIN_LIFE, "Drain Life",
       0, 0, 200, 4, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
     { ABIL_YRED_ENSLAVE_SOUL, "Enslave Soul",
@@ -937,11 +937,13 @@ ability_type fixup_ability(ability_type ability)
 {
     switch (ability)
     {
+        /*
     case ABIL_YRED_ANIMATE_REMAINS:
         // suppress animate remains once animate dead is unlocked (ugh)
         if (in_good_standing(GOD_YREDELEMNUL, 2))
             return ABIL_NON_ABILITY;
         return ability;
+         */
 
     case ABIL_YRED_RECALL_UNDEAD_SLAVES:
     case ABIL_BEOGH_RECALL_ORCISH_FOLLOWERS:
