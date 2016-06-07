@@ -983,6 +983,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
     if (dam != INSTANT_DEATH)
     {
+        you.turn_damage += dam;
         dam = player_ouch_modifier(dam);
 
         const int mp_shield = you.magic_shield();
@@ -1024,7 +1025,6 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             return;
         }
 
-        you.turn_damage += dam;
         if (you.damage_source != source)
         {
             you.damage_source = source;
