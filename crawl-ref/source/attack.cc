@@ -1365,14 +1365,14 @@ int attack::calc_damage()
             ? weapon_damage() : calc_base_unarmed_damage();
 
         const int strength = you.strength();
-        int boost = (strength - 10) * 10;
+        int boost = (strength - 5) * 10;
         if (using_weapon())
         {
             const int weapon_skill = you.skill(wpn_skill, 10);
             boost += weapon_skill;
         }
 
-        potential_damage = div_rand_round(potential_damage * (200 + boost), 200);
+        potential_damage = div_rand_round(potential_damage * (300 + boost), 300);
         damage = random2(potential_damage + 1);
 
         damage = player_apply_misc_modifiers(damage);
