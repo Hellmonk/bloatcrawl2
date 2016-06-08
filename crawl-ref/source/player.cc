@@ -5777,11 +5777,13 @@ void dec_ambrosia_player(int delay)
     // 3-5 per turn, 9-50 over (3-10) turns
     const int hp_restoration = div_rand_round(delay*(3 + random2(3)), BASELINE_DELAY);
     const int mp_restoration = div_rand_round(delay*(3 + random2(3)), BASELINE_DELAY);
+    const int sp_restoration = div_rand_round(delay*(3 + random2(3)), BASELINE_DELAY);
 
     if (!you.duration[DUR_DEATHS_DOOR])
         inc_hp(you.scale_device_healing(hp_restoration));
 
     inc_mp(mp_restoration * 3);
+    inc_sp(sp_restoration * 3);
 
     if (!you.duration[DUR_AMBROSIA])
         mpr("You feel less invigorated.");
