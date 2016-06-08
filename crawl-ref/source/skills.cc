@@ -1554,100 +1554,58 @@ float species_apt_factor(skill_type sk, species_type sp)
 
 vector<skill_type> get_crosstrain_skills(skill_type sk)
 {
-    switch (sk)
-    {
-        case SK_SHORT_BLADES:
-            return {SK_LONG_BLADES};
-        case SK_LONG_BLADES:
-            return {SK_SHORT_BLADES};
-        case SK_AXES:
-        case SK_STAVES:
-            return {SK_POLEARMS, SK_MACES_FLAILS};
-        case SK_MACES_FLAILS:
-        case SK_POLEARMS:
-            return {SK_AXES, SK_STAVES};
-        case SK_SLINGS:
-            return {SK_THROWING};
-        case SK_THROWING:
-            return {SK_SLINGS};
-        case SK_BOWS:
-            if (you.species == SP_HUMAN)
+    if (you.species == SP_HUMAN)
+        switch (sk)
+        {
+            case SK_SHORT_BLADES:
+                return {SK_LONG_BLADES};
+            case SK_LONG_BLADES:
+                return {SK_SHORT_BLADES};
+            case SK_AXES:
+            case SK_STAVES:
+                return {SK_POLEARMS, SK_MACES_FLAILS};
+            case SK_MACES_FLAILS:
+            case SK_POLEARMS:
+                return {SK_AXES, SK_STAVES};
+            case SK_SLINGS:
+                return {SK_THROWING};
+            case SK_THROWING:
+                return {SK_SLINGS};
+            case SK_BOWS:
                 return {SK_CROSSBOWS};
-            else
-                return {};
-        case SK_CROSSBOWS:
-            if (you.species == SP_HUMAN)
+            case SK_CROSSBOWS:
                 return {SK_BOWS};
-            else
-                return {};
-        case SK_SPELLCASTING:
-            if (you.species == SP_HUMAN)
+            case SK_SPELLCASTING:
                 return {SK_EVOCATIONS, SK_INVOCATIONS};
-            else
-                return {};
-        case SK_INVOCATIONS:
-            if (you.species == SP_HUMAN)
+            case SK_INVOCATIONS:
                 return {SK_EVOCATIONS, SK_SPELLCASTING};
-            else
-                return {};
-        case SK_EVOCATIONS:
-            if (you.species == SP_HUMAN)
+            case SK_EVOCATIONS:
                 return {SK_INVOCATIONS, SK_SPELLCASTING};
-            else
-                return {};
-        case SK_ICE_MAGIC:
-            if (you.species == SP_HUMAN)
+            case SK_ICE_MAGIC:
                 return {SK_FIRE_MAGIC, SK_EARTH_MAGIC, SK_AIR_MAGIC};
-            else
-                return {};
-        case SK_EARTH_MAGIC:
-            if (you.species == SP_HUMAN)
+            case SK_EARTH_MAGIC:
                 return {SK_ICE_MAGIC, SK_FIRE_MAGIC, SK_AIR_MAGIC};
-            else
-                return {};
-        case SK_AIR_MAGIC:
-            if (you.species == SP_HUMAN)
+            case SK_AIR_MAGIC:
                 return {SK_ICE_MAGIC, SK_EARTH_MAGIC, SK_FIRE_MAGIC};
-            else
-                return {};
-        case SK_FIRE_MAGIC:
-            if (you.species == SP_HUMAN)
+            case SK_FIRE_MAGIC:
                 return {SK_ICE_MAGIC, SK_EARTH_MAGIC, SK_AIR_MAGIC};
-            else
-                return {};
-        case SK_HEXES:
-            if (you.species == SP_HUMAN)
+            case SK_HEXES:
                 return {SK_CHARMS};
-            else
-                return {};
-        case SK_CHARMS:
-            if (you.species == SP_HUMAN)
+            case SK_CHARMS:
                 return {SK_HEXES};
-            else
-                return {};
-        case SK_SUMMONINGS:
-            if (you.species == SP_HUMAN)
+            case SK_SUMMONINGS:
                 return {SK_TRANSLOCATIONS, SK_TRANSMUTATIONS, SK_NECROMANCY};
-            else
-                return {};
-        case SK_TRANSLOCATIONS:
-            if (you.species == SP_HUMAN)
+            case SK_TRANSLOCATIONS:
                 return {SK_SUMMONINGS, SK_TRANSMUTATIONS, SK_NECROMANCY};
-            else
-                return {};
-        case SK_TRANSMUTATIONS:
-            if (you.species == SP_HUMAN)
+            case SK_TRANSMUTATIONS:
                 return {SK_TRANSLOCATIONS, SK_SUMMONINGS, SK_NECROMANCY};
-            else
-                return {};
-        case SK_NECROMANCY:
-            if (you.species == SP_HUMAN)
+            case SK_NECROMANCY:
                 return {SK_TRANSLOCATIONS, SK_SUMMONINGS, SK_TRANSMUTATIONS};
-            else
+            default:
                 return {};
-        default:
-            return {};
-    }
+        }
+    else
+        return {};
 }
 
 /**
