@@ -222,7 +222,8 @@ ifdef msys
 	endif
 endif
 ifeq ($(uname_S),Darwin)
-	STRIP := strip -x
+	#STRIP := strip -x
+	STRIP := echo Not stripping...
 	NEED_APPKIT = YesPlease
 	LIBNCURSES_IS_UNICODE = Yes
 	NO_PKGCONFIG = Yes
