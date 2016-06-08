@@ -1,5 +1,7 @@
 ## v1.5.4
 
+* Shield equipping / removal takes 0.5 turn instead of 5, like weapon swaps. 
+
 * Crosstraining removed
     * Now that the fighting skill takes care of a lot of "crosstraining" concepts, there is no need for another
       crosstraining path. This helps to make the weapon skill investment choice more meaningful. 
