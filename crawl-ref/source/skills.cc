@@ -103,6 +103,10 @@ static const char *skill_titles[NUM_SKILLS][6] =
     {"Earth Magic",    "Digger",        "Geomancer",       "Earth Mage",      "Metallomancer",  "Petrodigitator"},
     {"Poison Magic",   "Stinger",       "Tainter",         "Polluter",        "Contaminator",   "Envenomancer"},
 
+    {"Light Magic",    "Candle",        "Torch",           "Star",            "Moon",           "Sun"},
+    {"Darkness Magic", "Quiet",         "Shadow",          "Silent",          "Empty",          "Void"},
+    {"Time",           "Keeper",        "Stretcher",       "Manipulator",     "Chronomancer",   "Time Lord"},
+
     // These titles apply to atheists only, worshippers of the various gods
     // use the god titles instead, depending on piety or, in Gozag's case, gold.
     {"Invocations",    "Unbeliever",    "Agnostic",        "Dissident",       "Heretic",        "Apostate"},

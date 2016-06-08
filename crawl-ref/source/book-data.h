@@ -393,6 +393,7 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_CAUSE_FEAR, // 4
     SPELL_SUMMON_DEMON, // 5
     SPELL_AGONY, // 5
+    SPELL_SILENCE, // 5
 },
 
 {   // Darkness2
@@ -409,7 +410,6 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_SWIFTNESS, // 2
     SPELL_CURE_POISON, // 2
     SPELL_HIBERNATION, // 2
-    SPELL_ABJURATION, // 3
     SPELL_INNER_FLAME, // 3
     SPELL_STICKY_FLAME, // 4
     SPELL_FULMINANT_PRISM, // 4
