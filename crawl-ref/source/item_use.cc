@@ -216,15 +216,19 @@ bool _playerUnequipsShield()
     if (you.delay_queue.size() > 0)
         return true;
 
+    /*
 	if (yesno("Unequip your shield first?", true, 'n', true, false))
 	{
+     */
         takeoff_armour(you.equip[EQ_SHIELD]);
 		return true;
+    /*
 	}
 	else
 	{
 		return false;
 	}
+     */
 }
 
 // Rather messy - we've gathered all the can't-wield logic from wield_weapon()
