@@ -1616,11 +1616,14 @@ bool attack::apply_damage_brand(const char *what)
         {
             special_damage_message =
                 make_stringf(
-                    "%s %s%s (%d)",
+                    "%s %s%s",
                     defender_name(false).c_str(),
                     defender->conj_verb("convulse").c_str(),
-                    attack_strength_punctuation(special_damage).c_str(),
-                    special_damage);
+                    attack_strength_punctuation(special_damage).c_str()
+                    /*
+                    special_damage
+                     */
+                );
         }
         break;
 
@@ -1632,8 +1635,8 @@ bool attack::apply_damage_brand(const char *what)
             special_damage = 8 + random2(13);
             special_damage_message =
                 defender->is_player()?
-                   "You are electrocuted! (" + to_string(special_damage) + ")"
-                :  "There is a sudden explosion of sparks! (" + to_string(special_damage) + ")";
+                   "You are electrocuted!"
+                :  "There is a sudden explosion of sparks!";
             special_damage_flavour = BEAM_ELECTRICITY;
             defender->expose_to_element(BEAM_ELECTRICITY, 2);
         }
@@ -1796,7 +1799,7 @@ bool attack::apply_damage_brand(const char *what)
     default:
         if (using_weapon() && is_unrandom_artefact(*weapon, UNRAND_HELLFIRE))
         {
-            calc_elemental_brand_damage(BEAM_HELLFIRE, "damn", what);
+            calc_elemental_brand_damage(BEAM_HELLFIRE, "hellfire", what);
             defender->expose_to_element(BEAM_HELLFIRE);
             attacker->god_conduct(DID_UNHOLY, 2 + random2(3));
         }
@@ -1862,14 +1865,16 @@ void attack::calc_elemental_brand_damage(beam_type flavour,
     {
         // XXX: assumes "what" is singular
         special_damage_message = make_stringf(
-            "%s %s %s%s (%d)",
+            "%s %s %s%s",
             what ? what : atk_name(DESC_THE).c_str(),
             what ? conjugate_verb(verb, false).c_str()
                  : attacker->conj_verb(verb).c_str(),
             // Don't allow reflexive if the subject wasn't the attacker.
             defender_name(!what).c_str(),
-            attack_strength_punctuation(special_damage).c_str(),
+            attack_strength_punctuation(special_damage).c_str()
+            /*
 			special_damage
+             */
 			);
     }
 }
