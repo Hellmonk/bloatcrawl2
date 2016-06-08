@@ -1,5 +1,9 @@
 ## v1.5.4
 
+* Crosstraining removed
+    * Now that the fighting skill takes care of a lot of "crosstraining" concepts, there is no need for another
+      crosstraining path. This helps to make the weapon skill investment choice more meaningful. 
+
 * Spell school effects are no longer based on an average of spell skills, but instead on the maximum.
     * This decouples spell difficulty from school accessibility.
         * If we want a spell to be harder to train, we just move it up a level.
