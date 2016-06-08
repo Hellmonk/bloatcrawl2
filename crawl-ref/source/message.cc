@@ -73,6 +73,7 @@ static bool _ends_in_punctuation(const string& text)
     case ',':
     case ';':
     case ':':
+    case ')':
         return true;
     default:
         return false;
