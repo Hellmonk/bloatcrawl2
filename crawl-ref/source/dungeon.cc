@@ -1253,7 +1253,7 @@ static int _num_items_wanted(int absdepth0)
         items_wanted = 3 + roll_dice(3, 13);
 
     // because many items have been reduced in quantity, we need to reduce overall counts
-    items_wanted = items_wanted / 3;
+    items_wanted = items_wanted / 2;
     items_wanted = player_item_gen_modifier(items_wanted);
     return items_wanted;
 }

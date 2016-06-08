@@ -1961,7 +1961,7 @@ int items(bool allow_uniques,
                 212, OBJ_WEAPONS,
                 176, OBJ_POTIONS,
             300 / 4, OBJ_MISSILES,
-            320 / 3, OBJ_SCROLLS,
+            320 / 2, OBJ_SCROLLS,
                 440, OBJ_GOLD,
                 0);
 
