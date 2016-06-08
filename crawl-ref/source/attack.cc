@@ -1351,8 +1351,13 @@ int attack::calc_damage()
 
         damage = apply_damage_modifiers(damage, damage_max);
 
+        if (defender->is_player())
+            damage = player_pre_ouch_modifier(damage);
+
         set_attack_verb(damage);
-        return apply_defender_ac(damage, damage_max);
+        damage = apply_defender_ac(damage, damage_max);
+
+        return damage;
     }
     else
     {

@@ -10258,12 +10258,17 @@ int player_potion_recharge_percent()
     return percent;
 }
 
-// reduce damage to player if it has exceeded protection thresholds (to avoid 1 hit kills for example)
-int player_ouch_modifier(int damage)
+int player_pre_ouch_modifier(int damage)
 {
     // global monster damage reduction
     damage = div_rand_round(damage * 2, 3);
 
+    return damage;
+}
+
+// reduce damage to player if it has exceeded protection thresholds (to avoid 1 hit kills for example)
+int player_ouch_modifier(int damage)
+{
     int percentage_allowed = 100;
 
     switch (crawl_state.difficulty)
