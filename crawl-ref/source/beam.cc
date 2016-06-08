@@ -2017,7 +2017,7 @@ static bool _curare_hits_monster(actor *agent, monster* mons, int levels)
 
         if (hurted)
         {
-            monster_message(mons, " convulses. (%d)", hurted);
+            monster_message(mons, " convulses.");
             mons->hurt(agent, hurted, BEAM_POISON);
         }
     }
@@ -5503,7 +5503,7 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
         case BEAM_DISPEL_UNDEAD:
         {
             int hurt = damage.roll();
-            if (monster_message(mon, " convulses! (%d)", hurt))
+            if (monster_message(mon, " convulses!"))
                 obvious_effect = true;
             mon->hurt(agent(), hurt);
             return MON_AFFECTED;
@@ -5531,7 +5531,7 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
             else                    // pain
                 hurt = damage.roll();
 
-            if (monster_message(mon, " convulses in agony! (%d)", hurt))
+            if (monster_message(mon, " convulses in agony!"))
                 obvious_effect = true;
 
             if (origin_spell == SPELL_AGONY)
