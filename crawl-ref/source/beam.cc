@@ -503,10 +503,13 @@ void zappy(zap_type z_type, int power, bool is_monster, bolt &pbolt)
         {
             const int range = grid_distance(pbolt.source, pbolt.target);
             pbolt.hit = player_tohit_modifier(pbolt.hit, range);
-        }
 
-        if (pbolt.hit != AUTOMATIC_HIT && !is_monster)
-            pbolt.hit = max(0, pbolt.hit - 5 * you.inaccuracy());
+            // wands and spells are easier to target than ranged or melee weapons
+            pbolt.hit += 5;
+
+            if (pbolt.hit != AUTOMATIC_HIT)
+                pbolt.hit = max(0, pbolt.hit - 5 * you.inaccuracy());
+        }
     }
 
     dam_deducer* dam_calc = is_monster ? zinfo->monster_damage
