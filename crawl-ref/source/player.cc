@@ -10301,6 +10301,8 @@ int player_ouch_modifier(int damage)
 
     if (damage > new_damage)
         mprf("You were prevented from receiving too much damage! (%d -> %d)", damage, new_damage);
+    else
+        mprf("(hp-%d)", new_damage);
 
     return new_damage;
 }

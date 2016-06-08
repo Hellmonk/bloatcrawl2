@@ -36,6 +36,23 @@
 static void _mpr(string text, msg_channel_type channel=MSGCH_PLAIN, int param=0,
                  bool nojoin=false, bool cap=true);
 
+bool _channels_can_merge(msg_channel_type c1, msg_channel_type c2)
+{
+    bool result = true;
+    if (c1 != c2)
+        switch(c1)
+        {
+            case MSGCH_WARN:
+            case MSGCH_DANGER:
+                result = false;
+                break;
+            default:
+                break;
+        }
+
+    return result;
+}
+
 void mpr(const string &text)
 {
     _mpr(text);
@@ -155,7 +172,7 @@ struct message_line
             return false; // dangerous for hacky code (looks at EOL for '!'...)
         if (!Options.msg_condense_repeats)
             return false;
-        if (other.channel != channel || other.param != param)
+        if (!_channels_can_merge(other.channel, channel) || other.param != param)
             return false;
         if (other.messages.size() > 1)
         {
@@ -169,24 +186,35 @@ struct message_line
             messages.back().repeats += other.last_msg().repeats;
             return true;
         }
-        else if (Options.msg_condense_short
-                 && turn == other.turn
-                 && join && other.join
-                 && _ends_in_punctuation(last_msg().pure_text())
-                  == _ends_in_punctuation(other.last_msg().pure_text()))
-            // punct check is a hack to avoid pickup messages merging with
-            // combat on the same turn - should find a nicer heuristic
+        else
         {
-            // "; " or " "?
-            const int seplen = last_msg().needs_semicolon() ? 2 : 1;
-            const int total_len = pure_len() + seplen + other.pure_len();
-            if (total_len > (int)msgwin_line_length())
-                return false;
+            const bool same_turn = turn == other.turn;
+            const bool joins_good = join && other.join;
+            const bool p1 = _ends_in_punctuation(last_msg().pure_text());
+            const bool p2 = _ends_in_punctuation(other.last_msg().pure_text());
+            const bool punctuation_matches = p1 == p2;
 
-            // merge in other's messages; they'll be delimited when printing.
-            messages.insert(messages.end(),
-                            other.messages.begin(), other.messages.end());
-            return true;
+            if (Options.msg_condense_short
+                && same_turn
+                && joins_good
+                /* not sure we want this.
+                && punctuation_matches
+                 */
+                )
+                    // punct check is a hack to avoid pickup messages merging with
+                    // combat on the same turn - should find a nicer heuristic
+                {
+                    // "; " or " "?
+                    const int seplen = last_msg().needs_semicolon() ? 2 : 1;
+                    const int total_len = pure_len() + seplen + other.pure_len();
+                    if (total_len > (int)msgwin_line_length())
+                        return false;
+        
+                    // merge in other's messages; they'll be delimited when printing.
+                    messages.insert(messages.end(),
+                                    other.messages.begin(), other.messages.end());
+                    return true;
+                }
         }
 
         return false;

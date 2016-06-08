@@ -1060,8 +1060,10 @@ string attack::debug_damage_number()
 {
 //#ifdef DEBUG_DIAGNOSTICS
 	string result = "";
+    /* we'll do this in a better place
 	if(damage_done > 0)
 		result = make_stringf(" (%d)", damage_done);
+     */
     return result;
 //#else
 //    return "";

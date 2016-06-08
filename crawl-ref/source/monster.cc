@@ -4598,6 +4598,8 @@ int monster::hurt(const actor *agent, int amount, beam_type flavour,
         amount = min(amount, hit_points);
         hit_points -= amount;
 
+        mprf("(mon hp-%d)", amount);
+
         if (hit_points > max_hit_points)
         {
             amount    += hit_points - max_hit_points;
