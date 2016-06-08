@@ -3735,6 +3735,9 @@ static void _builder_items()
     {
         items_levels *= 15;
         items_levels /= 10;
+
+        items_wanted *= 15;
+        items_wanted /= 10;
     }
     else if (player_in_branch(BRANCH_ORC))
         specif_type = OBJ_GOLD;  // Lots of gold in the orcish mines.
