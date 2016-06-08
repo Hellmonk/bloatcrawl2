@@ -41,7 +41,6 @@ Shd - Shields                M&F - Maces & Flails        Cha - Charms
 Inv - Invocations            Pla - Polearms              Nec - Necromancy
 Evo - Evocations             Stv - Staves                Trl - Translocations
                              UC  - Unarmed Combat        Trm - Transmutations
-                                                         Tim - Time
 
                              Thr - Throwing              Fir - Fire Magic
 HP  - hit points             Slg - Slings                Ice - Ice Magic
@@ -50,6 +49,7 @@ Exp - experience             Crb - Crossbows             Ear - Earth Magic
                                                          Poi - Poison Magic
                                                          Lig - Light Magic
                                                          Dar - Darkness Magic
+                                                         Tim - Time Magic
 
 
                  Arm Ddg Sth Shd   Inv Evo           HP   MP   Exp
@@ -60,5 +60,5 @@ Exp - experience             Crb - Crossbows             Ear - Earth Magic
 ----------------------------------------------------------------------
 
 
-                 Spc Coj Hex Cha Sum Nec Trl Trm Tim   Fir Ice Air Ear Poi Lig Dar
+                 Spc Coj Hex Cha Sum Nec Trl Trm   Fir Ice Air Ear Poi Lig Dar Tim
 -----------------------------------------------------------------------------------

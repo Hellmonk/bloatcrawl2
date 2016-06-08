@@ -732,7 +732,7 @@ void hints_gained_new_skill(skill_type skill)
     case SK_POISON_MAGIC:
     case SK_LIGHT_MAGIC:
     case SK_DARKNESS_MAGIC:
-    case SK_TIME:
+    case SK_TIME_MAGIC:
         learned_something_new(HINT_GAINED_MAGICAL_SKILL);
         break;
 

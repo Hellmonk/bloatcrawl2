@@ -933,7 +933,7 @@ skill_type spell_type2skill(spschool_flag_type spelltype)
     case SPTYP_AIR:            return SK_AIR_MAGIC;
     case SPTYP_LIGHT:          return SK_LIGHT_MAGIC;
     case SPTYP_DARKNESS:       return SK_DARKNESS_MAGIC;
-    case SPTYP_TIME:           return SK_TIME;
+    case SPTYP_TIME:           return SK_TIME_MAGIC;
 
     default:
     case SPTYP_DIVINATION:
@@ -960,7 +960,7 @@ spschool_flag_type skill2spell_type(skill_type spell_skill)
     case SK_AIR_MAGIC:       return SPTYP_AIR;
     case SK_LIGHT_MAGIC:     return SPTYP_LIGHT;
     case SK_DARKNESS_MAGIC:  return SPTYP_DARKNESS;
-    case SK_TIME:            return SPTYP_TIME;
+    case SK_TIME_MAGIC:            return SPTYP_TIME;
 
     default:
         return SPTYP_NONE;

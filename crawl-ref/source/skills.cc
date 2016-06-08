@@ -105,7 +105,7 @@ static const char *skill_titles[NUM_SKILLS][6] =
 
     {"Light Magic",    "Candle",        "Torch",           "Star",            "Moon",           "Sun"},
     {"Darkness Magic", "Quiet",         "Shadow",          "Silent",          "Empty",          "Void"},
-    {"Time",           "Keeper",        "Stretcher",       "Manipulator",     "Chronomancer",   "Time Lord"},
+    {"Time Magic",     "Keeper",        "Stretcher",       "Manipulator",     "Chronomancer",   "Time Lord"},
 
     // These titles apply to atheists only, worshippers of the various gods
     // use the god titles instead, depending on piety or, in Gozag's case, gold.
@@ -1476,7 +1476,7 @@ bool is_useless_skill(skill_type skill)
         || (skill == SK_STEALTH && player_mutation_level(MUT_NO_STEALTH))
         || (skill == SK_LIGHT_MAGIC && player_mutation_level(MUT_NO_LIGHT_MAGIC))
         || (skill == SK_DARKNESS_MAGIC && player_mutation_level(MUT_NO_DARKNESS_MAGIC))
-        || (skill == SK_TIME && player_mutation_level(MUT_NO_TIME))
+        || (skill == SK_TIME_MAGIC && player_mutation_level(MUT_NO_TIME))
     )
     {
         return true;

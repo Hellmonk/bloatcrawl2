@@ -622,7 +622,7 @@ static int _acquirement_staff_subtype(bool /*divine*/, int & /*quantity*/)
     case SK_SUMMONINGS:   TRY_GIVE(STAFF_SUMMONING);   break;
     case SK_LIGHT_MAGIC:  TRY_GIVE(STAFF_LIGHT);       break;
     case SK_DARKNESS_MAGIC:  TRY_GIVE(STAFF_DARKNESS); break;
-    case SK_TIME:         TRY_GIVE(STAFF_TIME);        break;
+    case SK_TIME_MAGIC:   TRY_GIVE(STAFF_TIME);        break;
 #undef TRY_GIVE
     default:                                           break;
     }

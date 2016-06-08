@@ -4349,7 +4349,7 @@ int monster::skill(skill_type sk, int scale, bool real, bool drained) const
     case SK_AIR_MAGIC:
     case SK_LIGHT_MAGIC:
     case SK_DARKNESS_MAGIC:
-    case SK_TIME:
+    case SK_TIME_MAGIC:
     case SK_SUMMONINGS:
         return is_actual_spellcaster() ? hd : hd / 3;
 
