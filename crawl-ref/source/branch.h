@@ -6,6 +6,7 @@
 #ifndef BRANCH_H
 #define BRANCH_H
 
+#include <vector>
 #include "enum.h"
 #include "itemprop-enum.h"
 

@@ -9581,9 +9581,21 @@ const int get_max_skill_level()
     return MAX_SKILL_LEVEL;
 }
 
+const int active_rune_curses()
+{
+    int curses_active = 0;
+    for (int rune = FIRST_RUNE; rune < NUM_RUNE_TYPES; rune++)
+    {
+        if (you.rune_curse_active[rune])
+            curses_active++;
+    }
+
+    return curses_active;
+}
+
 const int rune_curse_hd_adjust(int hd, bool absolute)
 {
-    const int runes = runes_in_pack();
+    const int runes = active_rune_curses();
     const game_difficulty_level difficulty = crawl_state.difficulty;
     int multiplier = difficulty + 1;
     
@@ -9599,14 +9611,14 @@ const int rune_curse_hd_adjust(int hd, bool absolute)
 
 const int rune_curse_hp_adjust(int hp, bool absolute)
 {
-    const int runes = runes_in_pack();
+    const int runes = active_rune_curses();
     hp = qpow(hp, 100 + crawl_state.difficulty + 1, 100, runes, false);
     return hp;
 }
 
 const int rune_curse_dam_adjust(int dam, bool absolute)
 {
-    const int runes = runes_in_pack();
+    const int runes = active_rune_curses();
     if (runes > 0 && dam != INSTANT_DEATH)
         dam = qpow(dam, 100 + crawl_state.difficulty + 1, 100, runes, false);
     return dam;
@@ -9615,7 +9627,6 @@ const int rune_curse_dam_adjust(int dam, bool absolute)
 const int rune_curse_depth_adjust(int depth)
 {
     /* not ready yet
-    const int runes = runes_in_pack();
     if (runes > 0)
         depth += runes;
         */

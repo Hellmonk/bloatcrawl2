@@ -327,6 +327,7 @@ enum missile_type
 enum rune_type
 {
     RUNE_SWAMP,
+    FIRST_RUNE = RUNE_SWAMP,
     RUNE_SNAKE,
     RUNE_SHOALS,
     RUNE_SLIME,
