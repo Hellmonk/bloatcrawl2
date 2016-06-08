@@ -472,8 +472,9 @@ bool spell_harms_area(spell_type spell)
     return false;
 }
 
-int average_schools(const spschools_type &disciplines, const int scale)
+int max_school_skill(const spschools_type &disciplines, const int scale)
 {
+    /* Old style average
     int multiplier = 0;
     int skillcount = count_bits(disciplines);
     if (skillcount)
@@ -486,6 +487,16 @@ int average_schools(const spschools_type &disciplines, const int scale)
         multiplier /= skillcount;
     }
     return multiplier;
+     */
+
+    int max_skill = 0;
+    for (const auto disc : spschools_type::range())
+    {
+        if (disciplines & disc)
+            max_skill = max(max_skill, you.skill(spell_type2skill(disc), scale));
+    }
+
+    return max_skill;
 }
 
 // applied in naughties (more difficult = higher level knowledge = worse)
@@ -848,6 +859,12 @@ const char* spelltype_short_name(spschool_flag_type which_spelltype)
         return "Erth";
     case SPTYP_AIR:
         return "Air";
+    case SPTYP_LIGHT:
+        return "Light";
+    case SPTYP_DARKNESS:
+        return "Darkness";
+    case SPTYP_TIME:
+        return "Time";
     case SPTYP_RANDOM:
         return "Rndm";
     default:
@@ -885,6 +902,12 @@ const char* spelltype_long_name(spschool_flag_type which_spelltype)
         return "Earth";
     case SPTYP_AIR:
         return "Air";
+    case SPTYP_LIGHT:
+        return "Light";
+    case SPTYP_DARKNESS:
+        return "Darkness";
+    case SPTYP_TIME:
+        return "Time";
     case SPTYP_RANDOM:
         return "Random";
     default:
@@ -908,6 +931,9 @@ skill_type spell_type2skill(spschool_flag_type spelltype)
     case SPTYP_POISON:         return SK_POISON_MAGIC;
     case SPTYP_EARTH:          return SK_EARTH_MAGIC;
     case SPTYP_AIR:            return SK_AIR_MAGIC;
+    case SPTYP_LIGHT:          return SK_LIGHT_MAGIC;
+    case SPTYP_DARKNESS:       return SK_DARKNESS_MAGIC;
+    case SPTYP_TIME:           return SK_TIME;
 
     default:
     case SPTYP_DIVINATION:
@@ -932,6 +958,9 @@ spschool_flag_type skill2spell_type(skill_type spell_skill)
     case SK_POISON_MAGIC:    return SPTYP_POISON;
     case SK_EARTH_MAGIC:     return SPTYP_EARTH;
     case SK_AIR_MAGIC:       return SPTYP_AIR;
+    case SK_LIGHT_MAGIC:     return SPTYP_LIGHT;
+    case SK_DARKNESS_MAGIC:  return SPTYP_DARKNESS;
+    case SK_TIME:            return SPTYP_TIME;
 
     default:
         return SPTYP_NONE;
@@ -1537,7 +1566,10 @@ static const mutation_type arcana_sacrifice_map[] = {
     MUT_NO_TRANSLOCATION_MAGIC,
     MUT_NO_POISON_MAGIC,
     MUT_NO_EARTH_MAGIC,
-    MUT_NO_AIR_MAGIC
+    MUT_NO_AIR_MAGIC,
+    MUT_NO_LIGHT_MAGIC,
+    MUT_NO_DARKNESS_MAGIC,
+    MUT_NO_TIME,
 };
 
 /**

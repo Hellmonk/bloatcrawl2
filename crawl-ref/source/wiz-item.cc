@@ -45,7 +45,6 @@
 #include "unicode.h"
 #include "view.h"
 
-#ifdef WIZARD
 static void _make_all_books()
 {
     for (int i = 0; i < NUM_FIXED_BOOKS; ++i)
@@ -1118,6 +1117,9 @@ static void _debug_acquirement_stats(FILE *ostat)
                 "poison magic",
                 "earth magic",
                 "air magic",
+                "light magic",
+                "darkness magic",
+                "time",
             };
             COMPILE_CHECK(ARRAYSZ(names) == SPTYP_LAST_EXPONENT + 1);
 
@@ -1568,4 +1570,3 @@ void wizard_unidentify_all_items()
     }
 }
 
-#endif

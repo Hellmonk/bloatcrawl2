@@ -1455,28 +1455,24 @@ bool is_useless_skill(skill_type skill)
 
     if ((skill == SK_AIR_MAGIC && player_mutation_level(MUT_NO_AIR_MAGIC))
         || (skill == SK_CHARMS && player_mutation_level(MUT_NO_CHARM_MAGIC))
-        || (skill == SK_CONJURATIONS
-            && player_mutation_level(MUT_NO_CONJURATION_MAGIC))
-        || (skill == SK_EARTH_MAGIC
-            && player_mutation_level(MUT_NO_EARTH_MAGIC))
+        || (skill == SK_CONJURATIONS && player_mutation_level(MUT_NO_CONJURATION_MAGIC))
+        || (skill == SK_EARTH_MAGIC && player_mutation_level(MUT_NO_EARTH_MAGIC))
         || (skill == SK_FIRE_MAGIC && player_mutation_level(MUT_NO_FIRE_MAGIC))
         || (skill == SK_HEXES && player_mutation_level(MUT_NO_HEXES_MAGIC))
         || (skill == SK_ICE_MAGIC && player_mutation_level(MUT_NO_ICE_MAGIC))
-        || (skill == SK_NECROMANCY
-            && player_mutation_level(MUT_NO_NECROMANCY_MAGIC))
-        || (skill == SK_POISON_MAGIC
-            && player_mutation_level(MUT_NO_POISON_MAGIC))
-        || (skill == SK_SUMMONINGS
-            && player_mutation_level(MUT_NO_SUMMONING_MAGIC))
-        || (skill == SK_TRANSLOCATIONS
-            && player_mutation_level(MUT_NO_TRANSLOCATION_MAGIC))
-        || (skill == SK_TRANSMUTATIONS
-            && player_mutation_level(MUT_NO_TRANSMUTATION_MAGIC))
+        || (skill == SK_NECROMANCY && player_mutation_level(MUT_NO_NECROMANCY_MAGIC))
+        || (skill == SK_POISON_MAGIC && player_mutation_level(MUT_NO_POISON_MAGIC))
+        || (skill == SK_SUMMONINGS && player_mutation_level(MUT_NO_SUMMONING_MAGIC))
+        || (skill == SK_TRANSLOCATIONS && player_mutation_level(MUT_NO_TRANSLOCATION_MAGIC))
+        || (skill == SK_TRANSMUTATIONS && player_mutation_level(MUT_NO_TRANSMUTATION_MAGIC))
         || (skill == SK_DODGING && player_mutation_level(MUT_NO_DODGING))
         || (skill == SK_ARMOUR && player_mutation_level(MUT_NO_ARMOUR))
         || (skill == SK_SHIELDS && player_mutation_level(MUT_MISSING_HAND))
         || (skill == SK_EVOCATIONS && player_mutation_level(MUT_NO_ARTIFICE))
         || (skill == SK_STEALTH && player_mutation_level(MUT_NO_STEALTH))
+        || (skill == SK_LIGHT_MAGIC && player_mutation_level(MUT_NO_LIGHT_MAGIC))
+        || (skill == SK_DARKNESS_MAGIC && player_mutation_level(MUT_NO_DARKNESS_MAGIC))
+        || (skill == SK_TIME && player_mutation_level(MUT_NO_TIME))
     )
     {
         return true;
@@ -1659,7 +1655,9 @@ vector<skill_type> get_crosstrain_skills(skill_type sk)
 static bool _skill_is_elemental(skill_type sk)
 {
     return sk == SK_FIRE_MAGIC || sk == SK_EARTH_MAGIC
-           || sk == SK_AIR_MAGIC || sk == SK_ICE_MAGIC;
+           || sk == SK_AIR_MAGIC || sk == SK_ICE_MAGIC
+           || sk == SK_LIGHT_MAGIC || sk == SK_DARKNESS_MAGIC
+         ;
 }
 
 /**

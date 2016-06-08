@@ -1856,6 +1856,36 @@ int player_spec_earth()
     return se;
 }
 
+int player_spec_light()
+{
+    int sa = 0;
+
+    // Staves
+    sa += you.wearing(EQ_STAFF, STAFF_LIGHT);
+
+    return sa;
+}
+
+int player_spec_darkness()
+{
+    int sa = 0;
+
+    // Staves
+    sa += you.wearing(EQ_STAFF, STAFF_DARKNESS);
+
+    return sa;
+}
+
+int player_spec_time()
+{
+    int sa = 0;
+
+    // Staves
+    sa += you.wearing(EQ_STAFF, STAFF_TIME);
+
+    return sa;
+}
+
 int player_spec_air()
 {
     int sa = 0;

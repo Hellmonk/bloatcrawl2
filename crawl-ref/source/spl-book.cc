@@ -142,6 +142,9 @@ int book_rarity(book_type which_book)
     case BOOK_YOUNG_POISONERS:
     case BOOK_BATTLE:
     case BOOK_DEBILITATION:
+    case BOOK_LIGHT:
+    case BOOK_DARKNESS:
+    case BOOK_TIME:
         return 5;
 
     case BOOK_CLOUDS:
@@ -178,6 +181,9 @@ int book_rarity(book_type which_book)
     case BOOK_ENVENOMATIONS:
     case BOOK_WARP:
     case BOOK_DRAGON:
+    case BOOK_LIGHT2:
+    case BOOK_DARKNESS2:
+    case BOOK_TIME2:
         return 15;
 
     case BOOK_ANNIHILATIONS:

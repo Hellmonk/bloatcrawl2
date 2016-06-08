@@ -108,7 +108,7 @@ STDFLAG = -std=c++11
 
 CFOTHERS := -pipe $(EXTERNAL_FLAGS)
 CFWARN := 
-CFWARN_L := -Wall -Wformat-security -Wundef
+CFWARN_L := -Wall -Wformat-security -Wundef -Wno-unused-variable
 
 DEFINES := $(EXTERNAL_DEFINES)
 

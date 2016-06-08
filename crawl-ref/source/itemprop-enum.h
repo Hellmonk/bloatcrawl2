@@ -484,6 +484,9 @@ enum stave_type
     STAFF_SUMMONING,
     STAFF_AIR,
     STAFF_EARTH,
+    STAFF_LIGHT,
+    STAFF_DARKNESS,
+    STAFF_TIME,
 #if TAG_MAJOR_VERSION == 34
     STAFF_CHANNELING,
 #endif

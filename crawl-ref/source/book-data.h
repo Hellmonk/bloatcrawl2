@@ -1,3 +1,5 @@
+#include "enum.h"
+
 // This needs to be re-ordered when TAG_MAJOR_VERSION changes!
 static const vector<spell_type> spellbook_templates[] =
 {
@@ -288,7 +290,7 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_APPORTATION,
     SPELL_TUKIMAS_DANCE,
     SPELL_INTOXICATE,
-    SPELL_INVISIBILITY
+    SPELL_INVISIBILITY,
 },
 
 {   // Akashic Record
@@ -367,6 +369,61 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_BORGNJORS_REVIVIFICATION,
     SPELL_DEATHS_DOOR,
     SPELL_NECROMUTATION,
+},
+
+{   // Light
+    SPELL_CORONA, // 1
+    SPELL_SONG_OF_SLAYING, // 2
+    SPELL_SEARING_RAY, // 2
+    SPELL_DAZZLING_SPRAY, // 3
+    SPELL_OLGREBS_TOXIC_RADIANCE, // 4
+},
+
+{   // Light2
+    SPELL_FIREBALL, // 5
+    SPELL_DISPEL_UNDEAD, // 5
+    SPELL_BATTLESPHERE, // 5
+    SPELL_IRRADIATE, // 5
+},
+
+{   // Darkness
+    SPELL_CALL_IMP, // 2
+    SPELL_CONFUSING_TOUCH, // 2
+    SPELL_CONFUSE, // 3
+    SPELL_CAUSE_FEAR, // 4
+    SPELL_SUMMON_DEMON, // 5
+    SPELL_AGONY, // 5
+},
+
+{   // Darkness2
+    SPELL_INVISIBILITY, // 6
+    SPELL_MASS_CONFUSION, // 6
+    SPELL_SHADOW_CREATURES, // 6
+    SPELL_DARKNESS, // 6
+    SPELL_MALIGN_GATEWAY, // 7
+    SPELL_SUMMON_GREATER_DEMON, // 7
+},
+
+{   // Time
+    SPELL_SLOW, // 2
+    SPELL_SWIFTNESS, // 2
+    SPELL_CURE_POISON, // 2
+    SPELL_HIBERNATION, // 2
+    SPELL_ABJURATION, // 3
+    SPELL_INNER_FLAME, // 3
+    SPELL_STICKY_FLAME, // 4
+    SPELL_FULMINANT_PRISM, // 4
+},
+
+{   // Time2
+    SPELL_AURA_OF_ABJURATION, // 5
+    SPELL_BOLT_OF_DRAINING, // 5
+    SPELL_CIGOTUVIS_EMBRACE, // 5
+    SPELL_STATUE_FORM, // 6
+    SPELL_DELAYED_FIREBALL, // 7
+    SPELL_SPELLFORGED_SERVITOR, // 7
+    SPELL_DISJUNCTION, // 8
+    SPELL_DEATHS_DOOR, // 8
 },
 
 };

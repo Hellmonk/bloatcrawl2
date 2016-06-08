@@ -1886,6 +1886,29 @@ static const mutation_def mut_data[] =
   {"You can once more study and cast Transmutations magic.", "", ""},
 },
 
+{ MUT_NO_LIGHT_MAGIC, 0, 1, mutflag::BAD, false,
+  "no light magic",
+
+  {"You cannot study or cast Light magic.", "", ""},
+  {"You can no longer study or cast Light magic.", "", ""},
+  {"You can once more study and cast Light magic.", "", ""},
+},
+
+{ MUT_NO_DARKNESS_MAGIC, 0, 1, mutflag::BAD, false,
+  "no darkness magic",
+
+  {"You cannot study or cast Darkness magic.", "", ""},
+  {"You can no longer study or cast Darkness magic.", "", ""},
+  {"You can once more study and cast Darkness magic.", "", ""},
+},
+
+{ MUT_NO_TRANSMUTATION_MAGIC, 0, 1, mutflag::BAD, false,
+  "no time magic",
+
+  {"You cannot study or cast Time magic.", "", ""},
+  {"You can no longer study or cast Time magic.", "", ""},
+  {"You can once more study and cast Time magic.", "", ""},
+},
 { MUT_PHYSICAL_VULNERABILITY, 5, 3, mutflag::BAD, false,
   "reduced AC",
 

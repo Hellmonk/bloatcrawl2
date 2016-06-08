@@ -999,6 +999,9 @@ int player_shield_class();
 int player_displayed_shield_class();
 bool player_omnireflects();
 
+int player_spec_light();
+int player_spec_darkness();
+int player_spec_time();
 int player_spec_air();
 int player_spec_cold();
 int player_spec_conj();

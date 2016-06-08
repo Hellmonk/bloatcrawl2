@@ -1063,6 +1063,12 @@ static const char* _book_type_name(int booktype)
     case BOOK_CALLINGS:               return "Callings";
     case BOOK_MALEDICT:               return "Maledictions";
     case BOOK_AIR:                    return "Air";
+    case BOOK_LIGHT:                  return "Light";
+    case BOOK_LIGHT2:                 return "Radiance";
+    case BOOK_DARKNESS:               return "Darkness";
+    case BOOK_DARKNESS2:              return "the Void";
+    case BOOK_TIME:                   return "Time";
+    case BOOK_TIME2:                  return "Eternity";
     case BOOK_SKY:                    return "the Sky";
     case BOOK_WARP:                   return "the Warp";
     case BOOK_ENVENOMATIONS:          return "Envenomations";
@@ -1128,6 +1134,9 @@ static const char* staff_type_name(int stafftype)
     case STAFF_AIR:         return "air";
     case STAFF_EARTH:       return "earth";
     case STAFF_SUMMONING:   return "summoning";
+    case STAFF_LIGHT:       return "light";
+    case STAFF_DARKNESS:    return "darkness";
+    case STAFF_TIME:        return "time";
     default:                return "bugginess";
     }
 }

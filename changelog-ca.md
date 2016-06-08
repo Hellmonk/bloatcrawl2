@@ -1,5 +1,23 @@
 ## v1.5.4
 
+* Spell school effects are no longer based on an average of spell skills, but instead on the maximum.
+    * This decouples spell difficulty from school accessibility.
+        * If we want a spell to be harder to train, we just move it up a level.
+        * If we want a spell to be usable to more spell schools, we add a school to it, which can be done
+          without making it twice as hard to train. 
+    * This makes spellcasting a little more like fighting, where you can easily get away with training one weapon
+      skill, and if you want a little more flexibility you can train another, instead of forcing a player to train
+      multiple skills just to utilize one "weapon". 
+    * Now a spell having more than one school makes it easier = more accessible to mages of different backgrounds. 
+    * High powered spells should be more specialized, so just training one school doesn't allow easy access to all
+      highest level spells. 
+    * Mid level spells should have the highest diversity, so a conjurer, for example, can have easy access to a wide
+      selection of powerful mid level spells. 
+    * Low level spells should also be specialized, giving specialists something to work with early on. 
+    * Added more schools to more spells to take advantage of this new mechanic.
+    * Made all spellcasting a little bit harder to compensate.
+    * Added Light and Darkness spell schools to better fit a variety of spells.
+
 * Guardian Spirit changes
     * Renamed to Magic Shield.
     * Stamina Shield added also, both mutation and amulet.

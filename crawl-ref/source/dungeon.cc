@@ -4252,9 +4252,9 @@ static bool _apply_item_props(item_def &item, const item_spec &spec,
             spells.push_back((spell_type) spell_list[i].get_int());
 
         spschool_flag_type disc1
-            = (spschool_flag_type)props[RANDBK_DISC1_KEY].get_short();
+            = (spschool_flag_type)props[RANDBK_DISC1_KEY].get_int();
         spschool_flag_type disc2
-            = (spschool_flag_type)props[RANDBK_DISC2_KEY].get_short();
+            = (spschool_flag_type)props[RANDBK_DISC2_KEY].get_int();
         if (disc1 == SPTYP_NONE && disc2 == SPTYP_NONE)
         {
             if (spells.size())
