@@ -332,11 +332,9 @@ void MiscastEffect::do_miscast()
     case SPTYP_EARTH:          _earth(severity);          break;
     case SPTYP_AIR:            _air(severity);            break;
     case SPTYP_POISON:         _poison(severity);         break;
-            /* Not implemented yet
     case SPTYP_LIGHT:          _light(severity);          break;
     case SPTYP_DARKNESS:       _darkness(severity);       break;
     case SPTYP_TIME:           _time(severity);           break;
-             */
     case SPTYP_DIVINATION:
         // Divination miscasts have nothing in common between the player
         // and monsters.
@@ -2679,6 +2677,18 @@ void MiscastEffect::_earth(int severity)
         }
         break;
     }
+}
+
+void MiscastEffect::_time(int severity)
+{
+}
+
+void MiscastEffect::_darkness(int severity)
+{
+}
+
+void MiscastEffect::_light(int severity)
+{
 }
 
 void MiscastEffect::_air(int severity)
