@@ -99,8 +99,12 @@ const string rune_curse_description(const rune_type rune)
             break;
 
         case RUNE_SNAKE:
+            message = "Stamina and Magic costs are higher.";
+            break;
 
         case RUNE_SWAMP:
+            break;
+
         case RUNE_SHOALS:
         case RUNE_VAULTS:
         case RUNE_TOMB:

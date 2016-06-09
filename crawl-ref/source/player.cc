@@ -9855,6 +9855,9 @@ int spell_mp_cost(spell_type which_spell)
     if (you.exertion != EXERT_NORMAL)
         cost *= 2;
 
+    if (you.rune_curse_active[RUNE_SNAKE])
+        cost = cost * 5 / 4;
+
     return cost;
 }
 
@@ -9870,6 +9873,9 @@ int spell_mp_freeze(spell_type which_spell)
         if (you.exertion != EXERT_NORMAL && you.peace < 50)
             cost *= 2;
     }
+
+    if (you.rune_curse_active[RUNE_SNAKE])
+        cost = cost * 5 / 4;
 
     return cost;
 }
@@ -9898,6 +9904,9 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
         sp_cost *= 2;
         sp_cost = max(3, (int)sp_cost);
     }
+
+    if (you.rune_curse_active[RUNE_SNAKE])
+        sp_cost = sp_cost * 5 / 4;
 
     return sp_cost;
 }

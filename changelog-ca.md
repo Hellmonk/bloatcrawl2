@@ -5,6 +5,7 @@
       fail 1/3 of the time.
     * abyssal rune: 25% more monsters spawn. Bands are 25% bigger too.
     * gossamer rune: bad effects last 25% longer on player.
+    * serpentine rune: magic and stamina costs are 25% higher.
 
 * Some rune branches will require one or more runes before you can get in. 
     * Randomly chosen at beginnng of game.
