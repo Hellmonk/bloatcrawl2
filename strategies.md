@@ -79,6 +79,17 @@ quite helpful for showing the possibilities, as well as helping those who are st
     skill will increase your attack speed and reduce stamina costs, but attack speed is already pretty low for unarmed
     combat, and stamina costs are also quite low, so training Fighting can be put off until later in the game. 
     
+    It's often a good idea to play much of the early game in focus mode [E], which reduces spell failure rate enabling you
+    to stay in your form for longer. Once you get your failure rates very low even without focus mode, you can switch
+    to power mode [e] to dispatch enemies more quickly. If you are fighting a large group of enemies or a smaller group
+    of enemies that take longer to kill, turn off exertion modes [c] so you can conserve your stamina so you don't get
+    tired in the middle of a battle.
+    
+    Spider form is one of the easiest forms to maintain, because it raises your dexterity so much, and dexterity lowers
+    the spell failure rate. Blade Hands is one of the hardest to maintain, because it has a significant spellcasting
+    penalty, increasing failure rate. It will take a lot of transmutation skill and/or dexterity to be able to maintain
+    Blade Hands for very long. 
+    
 ## Troubleshooting
 
 ### Always running out of stamina (SP) when attacking
