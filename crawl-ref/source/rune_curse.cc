@@ -76,16 +76,22 @@ const int rune_curse_depth_adjust(int depth)
     return depth;
 }
 
-const char* rune_curse_description(const rune_type rune)
+const string rune_curse_description(const rune_type rune)
 {
+    string message = "Coming soon...";
+
     switch (rune)
     {
-        case RUNE_ELF: return "Enemy spell power is increased.";
+        case RUNE_ELF:
+            message = "Enemy spell power is increased.";
+            break;
+        case RUNE_SLIME:
+            message = "Removing mutations is more difficult.";
+            break;
 
         case RUNE_SWAMP:
         case RUNE_SNAKE:
         case RUNE_SHOALS:
-        case RUNE_SLIME:
         case RUNE_VAULTS:
         case RUNE_TOMB:
 
@@ -106,8 +112,11 @@ const char* rune_curse_description(const rune_type rune)
         case RUNE_DWARF:
         case RUNE_CRYPT:
 
-        default: return "Coming soon...";
+        default:
+            break;
     }
+
+    return message;
 }
 
 void list_rune_curses()

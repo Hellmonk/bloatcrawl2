@@ -1,12 +1,14 @@
 ## v1.5.6
 
+* Implemented rune curse for slimy rune: you no longer can lose mutations by getting mutated, even if heavily mutated.
+  Cure mutation potions fail 1/3 of the time.
+
 * Some rune branches will require one or more runes before you can get in. 
     * Randomly chosen at beginnng of game.
 
 ## v1.5.5
 
-* Implemented first specialized rune curse
-    * For elven rune. 
+* Implemented rune curse for elven rune: monster spellpower increased by 33%
     * You can see the list of curses in effect with the ["] key.
     
 ## v1.5.4

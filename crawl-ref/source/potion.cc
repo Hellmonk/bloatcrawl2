@@ -870,8 +870,9 @@ public:
 
     bool effect(bool=true, int=40, bool=true) const override
     {
-        mpr("It has a very clean taste.");
         bool mutated = false;
+
+        mpr("It has a very clean taste.");
         for (int i = 0; i < 7; i++)
         {
             if (random2(9) >= i)
