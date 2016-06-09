@@ -110,6 +110,12 @@ const string rune_curse_description(const rune_type rune)
             message = "Monsters have more energy.";
             break;
 
+        case RUNE_DWARF:
+            message = "Enemy armour is more effective.";
+            break;
+
+        case RUNE_CRYPT:
+
         case RUNE_VAULTS:
         case RUNE_TOMB:
 
@@ -124,9 +130,6 @@ const string rune_curse_description(const rune_type rune)
         case RUNE_LOM_LOBON:
         case RUNE_CEREBOV:
         case RUNE_GLOORX_VLOQ:
-
-        case RUNE_DWARF:
-        case RUNE_CRYPT:
 
         default:
             break;

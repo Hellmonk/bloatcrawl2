@@ -382,6 +382,12 @@ int actor::apply_ac(int damage, int max_damage, ac_type ac_rule,
 {
     int ac = max(armour_class() - stab_bypass, 0);
     int gdr = gdr_perc();
+    if (you.rune_curse_active[RUNE_DWARF])
+    {
+        ac = div_rand_round(ac * 5, 4);
+        gdr = div_rand_round(gdr * 5, 4);
+    }
+
     int saved = 0;
     switch (ac_rule)
     {

@@ -8,6 +8,7 @@
     * serpentine rune: magic and stamina costs are 25% higher.
     * decaying rune: higher chance of rotting when you over exert yourself.
     * barnacled rune: monsters have 25% more energy.
+    * dwarven rune: enemy ac is 25% more effective.
 
 * Some rune branches will require one or more runes before you can get in. 
     * Randomly chosen at beginnng of game.
