@@ -2316,7 +2316,7 @@ static int _player_para_evasion_bonuses(ev_ignore_type evit)
     int evbonus = 0;
 
     if (player_mutation_level(MUT_DISTORTION_FIELD) > 0)
-        evbonus += player_mutation_level(MUT_DISTORTION_FIELD) + 1;
+        evbonus += player_mutation_level(MUT_DISTORTION_FIELD) * 2;
 
     return evbonus;
 }
@@ -2325,7 +2325,7 @@ static int _player_para_evasion_bonuses(ev_ignore_type evit)
 // does not include tengu/merfolk EV bonuses for flight/swimming.
 static int _player_evasion_bonuses(ev_ignore_type evit)
 {
-    int evbonus = _player_para_evasion_bonuses(evit);
+    int evbonus = 0;
 
     if (you.duration[DUR_AGILITY])
         evbonus += AGILITY_BONUS;
@@ -2333,7 +2333,7 @@ static int _player_evasion_bonuses(ev_ignore_type evit)
     evbonus += you.wearing(EQ_RINGS_PLUS, RING_EVASION);
 
     if (you.wearing_ego(EQ_WEAPON, SPWPN_EVASION))
-        evbonus += 5;
+        evbonus += 10;
 
     evbonus += you.scan_artefacts(ARTP_EVASION);
 
@@ -2380,82 +2380,75 @@ static int _player_scale_evasion(int prescaled_ev, const int scale)
  * What is the player's bonus to EV from dodging when not paralyzed, after
  * accounting for size & body armour penalties?
  *
- * First, calculate base dodge bonus (linear with dodging * stepdowned dex),
- * and armour dodge penalty (base armour evp, increased for small races &
- * decreased for large, then with a magic "3" subtracted from it to make the
- * penalties not too harsh).
- *
- * If the player's strength is greater than the armour dodge penalty, return
- *      base dodge * (1 - dodge_pen / (str*2)).
- * E.g., if str is twice dodge penalty, return 3/4 of base dodge. If
- * str = dodge_pen * 4, return 7/8...
- *
- * If str is less than dodge penalty, return
- *      base_dodge * str / (dodge_pen * 2).
- * E.g., if str = dodge_pen / 2, return 1/4 of base dodge. if
- * str = dodge_pen / 4, return 1/8...
- *
- * For either equation, if str = dodge_pen, the result is base_dodge/2.
- *
  * @param scale     A scale to multiply the result by, to avoid precision loss.
  * @return          A bonus to EV, multiplied by the scale.
  */
 static int _player_armour_adjusted_dodge_bonus(int scale)
 {
-    const int ev_dex = stepdown(you.dex(), 18, ROUND_CLOSE, MAX_STAT_VALUE);
+    int ev = 0;
+    const int size_factor = _player_evasion_size_factor();
 
-    const int dodge_bonus =
-        (70 + you.skill(SK_DODGING, 10) * ev_dex) * scale
-        / (20 - _player_evasion_size_factor()) / 10;
+    const int ev_dex = you.dex() - 10;
+    ev += ev_dex * scale / 2;
 
-    const int armour_dodge_penalty = you.unadjusted_body_armour_penalty() - 3;
-    if (armour_dodge_penalty <= 0)
-        return dodge_bonus;
+    const int dodge_bonus = you.skill(SK_DODGING, scale);
+    ev += dodge_bonus / 2;
 
-    const int str = max(1, you.strength());
-    if (armour_dodge_penalty >= str)
-        return dodge_bonus * str / (armour_dodge_penalty * 2);
-    return dodge_bonus - dodge_bonus * armour_dodge_penalty / (str * 2);
+    ev = ev * 10 / (10 + size_factor);
+
+    const int armour_dodge_penalty = you.unadjusted_body_armour_penalty() * 10 / (you.strength() + 1);
+    ev -= armour_dodge_penalty * scale;
+    ev = max(0, ev);
+
+    return ev;
 }
 
 // Total EV for player using the revised 0.6 evasion model.
 static int _player_evasion(ev_ignore_type evit)
 {
+    const int scale = 100;
+
     const int size_factor = _player_evasion_size_factor();
     // Repulsion fields and size are all that matters when paralysed or
     // at 0 dex.
-    if ((you.cannot_move() || you.duration[DUR_CLUMSY] || you.form == TRAN_TREE)
-        && !(evit & EV_IGNORE_HELPLESS))
+    const bool can_not_move = (you.cannot_move() || you.duration[DUR_CLUMSY] || you.form == TRAN_TREE)
+                              && !(evit & EV_IGNORE_HELPLESS);
+
+    int ev = 0;
+    
+    const int repulsion_ev = _player_para_evasion_bonuses(evit) * scale;
+    ev += repulsion_ev;
+
+    if (can_not_move)
     {
         const int paralysed_base_ev = 2 + size_factor / 2;
-        const int repulsion_ev = _player_para_evasion_bonuses(evit);
-        return max(1, paralysed_base_ev + repulsion_ev);
+        ev += paralysed_base_ev * scale;
+    }
+    else
+    {
+        const int size_base_ev = 10 + size_factor;
+        ev += size_base_ev * scale;
     }
 
-    const int scale = 100;
-    const int size_base_ev = (10 + size_factor) * scale;
+    const int vertigo_penalty = you.duration[DUR_VERTIGO] ? 10 : 0;
+    ev -= vertigo_penalty * scale;
 
-    const int vertigo_penalty = you.duration[DUR_VERTIGO] ? 5 * scale : 0;
+    const int dodge_bonus = _player_armour_adjusted_dodge_bonus(scale);
+    ev += dodge_bonus;
 
-    const int prestepdown_evasion =
-        size_base_ev
-        + _player_armour_adjusted_dodge_bonus(scale)
-        - _player_adjusted_evasion_penalty(scale)
-        - you.adjusted_shield_penalty(scale)
-        - vertigo_penalty;
+    const int evasion_penalty = _player_adjusted_evasion_penalty(scale);
+    ev -= evasion_penalty;
 
-    const int poststepdown_evasion =
-        stepdown_value(prestepdown_evasion, 20*scale, 30*scale, 60*scale, -1);
+    const int shield_penalty = you.adjusted_shield_penalty(scale);
+    ev -= shield_penalty;
 
-    const int evasion_bonuses = _player_evasion_bonuses(evit) * scale;
+    const int evasion_bonuses = _player_evasion_bonuses(evit);
+    ev += evasion_bonuses * scale;
 
-    const int prescaled_evasion =
-        poststepdown_evasion + evasion_bonuses;
+    ev = unscale_round_up(ev, scale);
+    ev = max(1, ev);
 
-    const int final_evasion =
-        _player_scale_evasion(prescaled_evasion, scale);
-
-    return unscale_round_up(final_evasion, scale);
+    return ev;
 }
 
 // Returns the spellcasting penalty (increase in spell failure) for the
@@ -6697,7 +6690,8 @@ int player::unadjusted_body_armour_penalty() const
     if (!body_armour)
         return 0;
 
-    return -property(*body_armour, PARM_EVASION) / 10;
+    const int ev_reduction = -property(*body_armour, PARM_EVASION);
+    return ev_reduction / 10;
 }
 
 /**
@@ -9692,7 +9686,7 @@ int generic_action_delay(const int skill, const int base, const action_delay_typ
         benefit = factor;
 
     int delay = global_reduction * base * (factor * 3 - benefit * 2) / (factor * 3) / 10;
-    delay = player_attack_delay_modifier(delay) / 10;
+    delay = (player_attack_delay_modifier(delay) + 5) / 10;
     return delay;
 }
 

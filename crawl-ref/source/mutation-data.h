@@ -1251,7 +1251,7 @@ static const mutation_def mut_data[] =
 },
 
 // Jiyva only mutations
-{ MUT_GELATINOUS_BODY, 3, 3, mutflag::GOOD | mutflag::JIYVA, false,
+{ MUT_GELATINOUS_BODY, 3, 3, mutflag::GOOD | mutflag::JIYVA, true,
   "gelatinous body",
 
   {"Your rubbery body absorbs attacks. (AC +1)",

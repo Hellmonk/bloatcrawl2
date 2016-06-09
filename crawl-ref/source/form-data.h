@@ -1,3 +1,5 @@
+#include "transform.h"
+
 struct form_entry
 {
     // Row 1:
@@ -244,3 +246,4 @@ static const form_entry formdata[] =
 }
 };
 COMPILE_CHECK(ARRAYSZ(formdata) == NUM_TRANSFORMS);
+

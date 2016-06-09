@@ -1,9 +1,7 @@
-//
-// Created by Jeremy Marlin Gurr on 6/8/16.
-//
-
 #ifndef DCSSCA_RUNE_CURSES_H
 #define DCSSCA_RUNE_CURSES_H
+
+#include "itemprop-enum.h"
 
 const int rune_curse_hd_adjust(int hd, bool absolute = true);
 const int rune_curse_hp_adjust(int hp, bool absolute = true);
