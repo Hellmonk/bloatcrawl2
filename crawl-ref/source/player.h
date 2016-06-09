@@ -431,6 +431,7 @@ public:
     exertion_mode restore_exertion;
 
     FixedVector<int, NUM_RUNE_TYPES> rune_charges;
+    FixedVector<int, NUM_BRANCHES> branch_requires_runes;
     FixedBitVector<NUM_RUNE_TYPES> rune_curse_active;
     int first_hit_time;
 

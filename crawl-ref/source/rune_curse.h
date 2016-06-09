@@ -13,5 +13,6 @@ const int rune_curse_depth_adjust(int depth);
 
 void list_rune_curses();
 const char* rune_curse_description(const rune_type rune);
+void choose_branch_rune_requirements();
 
 #endif //DCSSCA_RUNE_CURSES_H

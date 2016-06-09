@@ -106,7 +106,7 @@ const char* rune_curse_description(const rune_type rune)
         case RUNE_DWARF:
         case RUNE_CRYPT:
 
-        default: return "Under construction.";
+        default: return "Coming soon...";
     }
 }
 
@@ -135,4 +135,36 @@ void list_rune_curses()
 
     if (!at_least_one_active)
         mprf(MSGCH_DANGER, "You are not affected by any rune curses.");
+}
+
+void choose_branch_rune_requirements()
+{
+    for (int branch_index = BRANCH_FIRST; branch_index < NUM_BRANCHES; branch_index++)
+    {
+        const bool is_rune_branch = branches[branch_index].runes.size() > 0;
+        if(is_rune_branch)
+        {
+            while (coinflip())
+            {
+                you.branch_requires_runes[branch_index] += random2(3);
+            }
+
+            you.branch_requires_runes[branch_index] = min(you.branch_requires_runes[branch_index], 10);
+        }
+    }
+
+    // make sure a few of them don't have any requirements
+    int cleared = 0;
+    while(cleared < 5)
+    {
+        int branch_index = random2(NUM_BRANCHES);
+        const bool is_rune_branch = branches[branch_index].runes.size() > 0;
+        if (!is_rune_branch)
+        {
+            continue;
+        }
+
+        you.branch_requires_runes[branch_index] = 0;
+        cleared++;
+    }
 }

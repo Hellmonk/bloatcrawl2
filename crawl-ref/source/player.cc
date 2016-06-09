@@ -6266,6 +6266,7 @@ player::player()
 
     rune_charges.init(0);
     rune_curse_active.reset();
+    branch_requires_runes.init(0);
     first_hit_time      = 0;
 
     max_exp             = 0;
