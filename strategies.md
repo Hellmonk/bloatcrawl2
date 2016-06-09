@@ -4,92 +4,97 @@ quite helpful for showing the possibilities, as well as helping those who are st
 ## General strategies
 
 ### Melee Fighters
-    Heavier weapons will consume more stamina, and when you are out of stamina, you will be slower and do less damage. To
-    reduce stamina costs for attacks, you will need to train fighting and increase your strength. This means that sometimes
-    you will be better off using a lighter weapon (a mace instead of a great mace, for example) until you can get your stamina
-    costs low enough to effectively wield the heavier ones. You can often do more damage with a lighter weapon in power mode
-    than you could with a heavier weapon that forces you to frequently fight in an exhausted state.
-    
-    If there is a chance you will need to run away from an encounter, don't use up too much stamina before deciding to do so.
-    Switching to quick mode [g] is necessary to escape most situations, and quick mode consumes stamina for each movement.
-    Once stamina is gone, you can't use quick mode, and will have a more difficult time escaping. 
-    
-    Also keep in mind that heavy armour and shields will increase how much stamina is used while moving in quick mode, so
-    earlier in the game it may increase your survivability to wear lighter armour. 
+
+Heavier weapons will consume more stamina, and when you are out of stamina, you will be slower and do less damage. To
+reduce stamina costs for attacks, you will need to train fighting and increase your strength. This means that sometimes
+you will be better off using a lighter weapon (a mace instead of a great mace, for example) until you can get your stamina
+costs low enough to effectively wield the heavier ones. You can often do more damage with a lighter weapon in power mode
+than you could with a heavier weapon that forces you to frequently fight in an exhausted state.
+
+If there is a chance you will need to run away from an encounter, don't use up too much stamina before deciding to do so.
+Switching to quick mode [g] is necessary to escape most situations, and quick mode consumes stamina for each movement.
+Once stamina is gone, you can't use quick mode, and will have a more difficult time escaping. 
+
+Also keep in mind that heavy armour and shields will increase how much stamina is used while moving in quick mode, so
+earlier in the game it may increase your survivability to wear lighter armour. 
     
 ### Ranged Fighters
-    Bows consume less stamina to fire than crossbows, but do less damage. So if you are a species that has higher fighting
-    aptitudes (to make up for the slow attack speed) and/or greater strength (to reduce stamina costs), crossbows may be 
-    a better choice. If you are a species with particularly low strength, you'd be better off with slings or bows.
-    
-    Since ammo is unlimited, quiver "nothing" most of the time [q-]. Save your limited branded ammo for special enounters
-    where they will do the most good. 
-    
-    Accuracy of ranged attacks drops significantly with distance. So getting your accuracy up is critical for a serious
-    ranged attacker that prefers to take out foes before they can get close. Increase your dexterity and weapon skills
-    to increase your accuracy. 
-    
-    Pay close attention to the stamina cost of different weapons. You can see it in the item description page where it 
-    says "SP Cost". For example, a long bow has a considerbly higher SP cost than a shortbow, and even when you have 
-    a longbow, it can be more effective to use the shortbow until you can get that SP cost down to reasonable levels. 
-    Stamina costs are reduced by increasing strength and fighting skill.
-     
-    For ranged fighters with weak defenses and trouble with ranged accuracy (which applies to most starting hunters), 
-    playing a lot of the game in "focus" mode [E] can be very helpful, since focus mode significantly increases
-    accuracy and all defenses (EV, SH, AC, MR). However, this comes at the cost of doubling your stamina costs, so if
-    you are struggling to not be exhausted for every battle, this may not be an option.
+
+Bows consume less stamina to fire than crossbows, but do less damage. So if you are a species that has higher fighting
+aptitudes (to make up for the slow attack speed) and/or greater strength (to reduce stamina costs), crossbows may be 
+a better choice. If you are a species with particularly low strength, you'd be better off with slings or bows.
+
+Since ammo is unlimited, quiver "nothing" most of the time [q-]. Save your limited branded ammo for special enounters
+where they will do the most good. 
+
+Accuracy of ranged attacks drops significantly with distance. So getting your accuracy up is critical for a serious
+ranged attacker that prefers to take out foes before they can get close. Increase your dexterity and weapon skills
+to increase your accuracy. 
+
+Pay close attention to the stamina cost of different weapons. You can see it in the item description page where it 
+says "SP Cost". For example, a long bow has a considerbly higher SP cost than a shortbow, and even when you have 
+a longbow, it can be more effective to use the shortbow until you can get that SP cost down to reasonable levels. 
+Stamina costs are reduced by increasing strength and fighting skill.
+ 
+For ranged fighters with weak defenses and trouble with ranged accuracy (which applies to most starting hunters), 
+playing a lot of the game in "focus" mode [E] can be very helpful, since focus mode significantly increases
+accuracy and all defenses (EV, SH, AC, MR). However, this comes at the cost of doubling your stamina costs, so if
+you are struggling to not be exhausted for every battle, this may not be an option.
     
 ### General Spellcasters
-    One major difference here is that you can continue to cast spells even when out of magic, and even when exhausted.
-    However, your spell power will be diminished and your failure rates higher, so you want to avoid that situation as
-    much as possible. 
-    
-    If you are often running low on MP, you can reduce your MP costs by increasing intelligence or 
-    spellcasting skill. In the meantime, use lower cost spells. Since spell caps have been effectively removed, even
-    level 1 spells can be viable and useful late in the game, at higher power levels. They are especially valuable early
-    game, when their MP cost is usually quite low compared to higher level spells, and so can be cast with power mode on
-    [e] (increasing spell power and spellcasting speed) for longer without exhausting you.
+
+One major difference here is that you can continue to cast spells even when out of magic, and even when exhausted.
+However, your spell power will be diminished and your failure rates higher, so you want to avoid that situation as
+much as possible. 
+
+If you are often running low on MP, you can reduce your MP costs by increasing intelligence or 
+spellcasting skill. In the meantime, use lower cost spells. Since spell caps have been effectively removed, even
+level 1 spells can be viable and useful late in the game, at higher power levels. They are especially valuable early
+game, when their MP cost is usually quite low compared to higher level spells, and so can be cast with power mode on
+[e] (increasing spell power and spellcasting speed) for longer without exhausting you.
 
 ### Summoners and Necromancers
-    Summoning and raising dead reduces your max mp, which limits the total summons that you can have, based on the MP
-    costs of those spells. In other words, if you want to maintain more summons at once, reduce the costs of those spells.
-    Most significantly, don't cast those spells while in focus or power mode if you can do without, since that will cut
-    the cost in half.
-    
-    If you have a horde of undead skeletons, and you want to raise another skeleton of a more powerful corpse, but don't
-    want to unsummon all of them, you can use [x] to select the one skeleton you want to release/unsummon, and press [q],
-    which will unsummon that one creature, allowing you to raise the skeleton of the new monster. 
-    
-    You can do the same with normal summons. If you want to replace one of your summons with a different one, press [x],
-    select that summon, then press [q] and it will disappear, freeing the magic that was used to summon it. 
-    
-    Summoning works very will with ranged weapons or spells, since they will pass through your summons. This only works
-    well though if you have a low failure rate on the spell that summoned them, because each time your missile passes
-    through them, the failure rate is checked, and the summon will disappear if the spell "fails". It's not a huge
-    deal since you can just recast it, but you may be low on MP in a battle, so keep this in mind.
-    
+
+Summoning and raising dead reduces your max mp, which limits the total summons that you can have, based on the MP
+costs of those spells. In other words, if you want to maintain more summons at once, reduce the costs of those spells.
+Most significantly, don't cast those spells while in focus or power mode if you can do without, since that will cut
+the cost in half.
+
+If you have a horde of undead skeletons, and you want to raise another skeleton of a more powerful corpse, but don't
+want to unsummon all of them, you can use [x] to select the one skeleton you want to release/unsummon, and press [q],
+which will unsummon that one creature, allowing you to raise the skeleton of the new monster. 
+
+You can do the same with normal summons. If you want to replace one of your summons with a different one, press [x],
+select that summon, then press [q] and it will disappear, freeing the magic that was used to summon it. 
+
+Summoning works very will with ranged weapons or spells, since they will pass through your summons. This only works
+well though if you have a low failure rate on the spell that summoned them, because each time your missile passes
+through them, the failure rate is checked, and the summon will disappear if the spell "fails". It's not a huge
+deal since you can just recast it, but you may be low on MP in a battle, so keep this in mind.
+
 ### Transmuters
-    Since transmuting is usually done outside of battles, and MP isn't a significant constraint, nor is spellcasting 
-    speed, you typically don't need to train much spellcasting. Instead, you need to get your failure rate down as low
-    as possible, since each time you attack in a different form, that spell's failure rate is checked, and if it fails,
-    the form degrades. To minimize spell failure, add dexterity and train spell school skill (transmutation in this case).
-    Since multi-school spells now use the maximum skill instead of the average of all the skills, you only need to train
-    transmutation. Soon after you get your failure rates down to reasonable levels, it's a good idea to switch to
-    training Unarmed Combat, which will increase your accuracy, and more importantly your damage significantly. Fighting
-    skill will increase your attack speed and reduce stamina costs, but attack speed is already pretty low for unarmed
-    combat, and stamina costs are also quite low, so training Fighting can be put off until later in the game. 
-    
-    It's often a good idea to play much of the early game in focus mode [E], which reduces spell failure rate enabling you
-    to stay in your form for longer. Once you get your failure rates very low even without focus mode, you can switch
-    to power mode [e] to dispatch enemies more quickly. If you are fighting a large group of enemies or a smaller group
-    of enemies that take longer to kill, turn off exertion modes [c] so you can conserve your stamina so you don't get
-    tired in the middle of a battle.
-    
-    Spider form is one of the easiest forms to maintain, because it raises your dexterity so much, and dexterity lowers
-    the spell failure rate. Blade Hands is one of the hardest to maintain, because it has a significant spellcasting
-    penalty, increasing failure rate. It will take a lot of transmutation skill and/or dexterity to be able to maintain
-    Blade Hands for very long. 
-    
+
+Since transmuting is usually done outside of battles, and MP isn't a significant constraint, nor is spellcasting 
+speed, you typically don't need to train much spellcasting. Instead, you need to get your failure rate down as low
+as possible, since each time you attack in a different form, that spell's failure rate is checked, and if it fails,
+the form degrades. To minimize spell failure, add dexterity and train spell school skill (transmutation in this case).
+Since multi-school spells now use the maximum skill instead of the average of all the skills, you only need to train
+transmutation. Soon after you get your failure rates down to reasonable levels, it's a good idea to switch to
+training Unarmed Combat, which will increase your accuracy, and more importantly your damage significantly. Fighting
+skill will increase your attack speed and reduce stamina costs, but attack speed is already pretty low for unarmed
+combat, and stamina costs are also quite low, so training Fighting can be put off until later in the game. 
+
+It's often a good idea to play much of the early game in focus mode [E], which reduces spell failure rate enabling you
+to stay in your form for longer. Once you get your failure rates very low even without focus mode, you can switch
+to power mode [e] to dispatch enemies more quickly. If you are fighting a large group of enemies or a smaller group
+of enemies that take longer to kill, turn off exertion modes [c] so you can conserve your stamina so you don't get
+tired in the middle of a battle.
+
+Spider form is one of the easiest forms to maintain, because it raises your dexterity so much, and dexterity lowers
+the spell failure rate. Blade Hands is one of the hardest to maintain, because it has a significant spellcasting
+penalty, increasing failure rate. It will take a lot of transmutation skill and/or dexterity to be able to maintain
+Blade Hands for very long. 
+
 ## Troubleshooting
 
 ### Always running out of stamina (SP) when attacking
