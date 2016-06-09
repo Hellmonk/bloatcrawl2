@@ -43,7 +43,7 @@
 #define HORROR_LVL_OVERWHELMING  5
 
 /// Maximum stat value
-static const int MAX_STAT_VALUE = 125;
+static const int MAX_STAT_VALUE = 99;
 /// The standard unit of regen; one level in artifact inscriptions
 static const int REGEN_PIP = 40;
 /// The standard unit of MR; one level in %/@ screens
