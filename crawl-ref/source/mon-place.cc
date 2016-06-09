@@ -55,6 +55,7 @@
 #include "unwind.h"
 #include "viewchar.h"
 #include "view.h"
+#include "rune_curse.h"
 
 band_type active_monster_band = BAND_NO_BAND;
 

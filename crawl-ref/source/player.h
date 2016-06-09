@@ -1217,10 +1217,7 @@ bool can_use(const item_def &item);
 bool player_is_immune_to_curses();
 const int get_max_exp_level();
 const int get_max_skill_level();
-const int rune_curse_hd_adjust(int hd, bool absolute = true);
-const int rune_curse_hp_adjust(int hp, bool absolute = true);
-const int rune_curse_dam_adjust(int dam, bool absolute = true);
-const int rune_curse_depth_adjust(int depth);
+
 void player_summon_was_shot_through(monster* mon);
 void player_was_offensive();
 void player_attacked_something(int sp_cost);

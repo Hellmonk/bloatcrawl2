@@ -39,16 +39,16 @@ static void _mpr(string text, msg_channel_type channel=MSGCH_PLAIN, int param=0,
 bool _channels_can_merge(msg_channel_type c1, msg_channel_type c2)
 {
     bool result = true;
-    if (c1 != c2)
-        switch(c1)
-        {
-            case MSGCH_WARN:
-            case MSGCH_DANGER:
-                result = false;
-                break;
-            default:
-                break;
-        }
+    switch(c1)
+    {
+        case MSGCH_PROMPT:
+        case MSGCH_WARN:
+        case MSGCH_DANGER:
+            result = false;
+            break;
+        default:
+            break;
+    }
 
     return result;
 }

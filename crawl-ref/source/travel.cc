@@ -58,6 +58,7 @@
 #include "unwind.h"
 #include "view.h"
 #include "spl-summoning.h"
+#include "rune_curse.h"
 
 enum IntertravelDestination
 {

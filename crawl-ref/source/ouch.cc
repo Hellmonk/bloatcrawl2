@@ -74,6 +74,7 @@
 #include "tutorial.h"
 #include "view.h"
 #include "xom.h"
+#include "rune_curse.h"
 
 void maybe_melt_player_enchantments(beam_type flavour, int damage)
 {

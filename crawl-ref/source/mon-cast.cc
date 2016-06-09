@@ -50,6 +50,7 @@
 #include "player-stats.h"
 #include "random.h"
 #include "religion.h"
+#include "rune_curse.h"
 #include "shout.h"
 #include "showsymb.h"
 #include "spl-clouds.h"
@@ -383,7 +384,9 @@ int mons_power_for_hd(spell_type spell, int hd, bool random)
  */
 static int _mons_spellpower(spell_type spell, const monster &mons)
 {
-    return mons_power_for_hd(spell, mons.spell_hd(spell));
+    int power = mons_power_for_hd(spell, mons.spell_hd(spell));
+    power = rune_curse_mon_spellpower_adjustment(power);
+    return power;
 }
 
 /**

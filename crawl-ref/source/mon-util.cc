@@ -88,6 +88,7 @@ static vector<monster_type> species_by_habitat[NUM_HABITATS];
 
 #include "mon-spell.h"
 #include "mon-data.h"
+#include "rune_curse.h"
 
 #define MONDATASIZE ARRAYSZ(mondata)
 

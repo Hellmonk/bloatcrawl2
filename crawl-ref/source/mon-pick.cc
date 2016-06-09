@@ -16,6 +16,7 @@
 #include "mon-place.h"
 #include "place.h"
 #include "stringutil.h"
+#include "rune_curse.h"
 
 int branch_ood_cap(branch_type branch)
 {
@@ -40,6 +41,8 @@ int branch_ood_cap(branch_type branch)
     case BRANCH_CRYPT:
     case BRANCH_TOMB:
         cap = 5;
+        break;
+    default:
         break;
     }
 

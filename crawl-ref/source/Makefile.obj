@@ -194,6 +194,7 @@ random-var.o \
 ranged_attack.o \
 ray.o \
 rot.o \
+rune_curse.o \
 religion.o \
 shopping.o \
 shout.o \

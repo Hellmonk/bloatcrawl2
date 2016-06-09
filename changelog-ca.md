@@ -1,5 +1,9 @@
 ## v1.5.4
 
+* Implemented first specialized rune curse
+    * For elven rune. 
+    * You can see the list of curses in effect with the ["] key.
+    
 * Shield equipping / removal takes 0.5 turn instead of 5, like weapon swaps. 
 
 * Crosstraining removed

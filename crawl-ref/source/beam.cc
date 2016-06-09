@@ -416,6 +416,7 @@ struct zap_info
 };
 
 #include "zap-data.h"
+#include "rune_curse.h"
 
 static int zap_index[NUM_ZAPS];
 

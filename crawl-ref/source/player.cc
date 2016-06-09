@@ -57,6 +57,7 @@
 #include "potion.h"
 #include "prompt.h"
 #include "religion.h"
+#include "rune_curse.h"
 #include "shout.h"
 #include "skills.h"
 #include "spl-damage.h"
@@ -9579,58 +9580,6 @@ const int get_max_skill_level()
     if (Options.level_27_cap)
         return 27;
     return MAX_SKILL_LEVEL;
-}
-
-const int active_rune_curses()
-{
-    int curses_active = 0;
-    for (int rune = FIRST_RUNE; rune < NUM_RUNE_TYPES; rune++)
-    {
-        if (you.rune_curse_active[rune])
-            curses_active++;
-    }
-
-    return curses_active;
-}
-
-const int rune_curse_hd_adjust(int hd, bool absolute)
-{
-    const int runes = active_rune_curses();
-    const game_difficulty_level difficulty = crawl_state.difficulty;
-    int multiplier = difficulty + 1;
-    
-    hd = hd + (runes * multiplier + 3) / 6;
-    if (absolute && hd > 1)
-    {
-        hd = hd + difficulty - 2;
-        hd = max(1, hd);
-    }
-
-    return hd;
-}
-
-const int rune_curse_hp_adjust(int hp, bool absolute)
-{
-    const int runes = active_rune_curses();
-    hp = qpow(hp, 100 + crawl_state.difficulty + 1, 100, runes, false);
-    return hp;
-}
-
-const int rune_curse_dam_adjust(int dam, bool absolute)
-{
-    const int runes = active_rune_curses();
-    if (runes > 0 && dam != INSTANT_DEATH)
-        dam = qpow(dam, 100 + crawl_state.difficulty + 1, 100, runes, false);
-    return dam;
-}
-
-const int rune_curse_depth_adjust(int depth)
-{
-    /* not ready yet
-    if (runes > 0)
-        depth += runes;
-        */
-    return depth;
 }
 
 void summoned_monster_died(mid_t mons, int mp_freeze, bool natural_death)

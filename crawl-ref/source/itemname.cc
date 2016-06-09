@@ -42,6 +42,7 @@
 #include "place.h"
 #include "prompt.h"
 #include "religion.h"
+#include "rune_curse.h"
 #include "shopping.h"
 #include "showsymb.h"
 #include "skills.h"

@@ -28,6 +28,7 @@
 #include "traps.h"
 #include "travel.h"
 #include "viewgeom.h"
+#include "rltiles/tiledef_defines.h"
 
 void tile_new_level(bool first_time, bool init_unseen)
 {
@@ -422,6 +423,7 @@ static tileidx_t _pick_dngn_tile_multi(vector<tileidx_t> candidates, int value)
 
     // Should never reach this place
     ASSERT(false);
+    return 0;
 }
 
 static bool _same_door_at(dungeon_feature_type feat, const coord_def &gc)
