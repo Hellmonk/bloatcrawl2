@@ -4530,6 +4530,8 @@ int monster::hurt(const actor *agent, int amount, beam_type flavour,
         return 0;
     }
 
+    int report_amount = 0;
+
     if (alive())
     {
         if (amount != INSTANT_DEATH
@@ -4595,8 +4597,7 @@ int monster::hurt(const actor *agent, int amount, beam_type flavour,
                 flags |= MF_EXPLODE_KILL;
         }
 
-        if (amount > 0)
-            mprf("(mon hp-%d)", amount);
+        report_amount = amount;
 
         amount = min(amount, hit_points);
         hit_points -= amount;
@@ -4638,6 +4639,9 @@ int monster::hurt(const actor *agent, int amount, beam_type flavour,
 
         blame_damage(agent, amount);
     }
+
+    if (report_amount > 0)
+        mprf("(mon hp-%d)", report_amount);
 
     if (cleanup_dead && (hit_points <= 0 || get_hit_dice() <= 0)
         && type != MONS_NO_MONSTER)
