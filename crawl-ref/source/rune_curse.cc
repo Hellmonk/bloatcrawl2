@@ -107,6 +107,9 @@ const string rune_curse_description(const rune_type rune)
             break;
 
         case RUNE_SHOALS:
+            message = "Monsters have more energy.";
+            break;
+
         case RUNE_VAULTS:
         case RUNE_TOMB:
 

@@ -7,6 +7,7 @@
     * gossamer rune: bad effects last 25% longer.
     * serpentine rune: magic and stamina costs are 25% higher.
     * decaying rune: higher chance of rotting when you over exert yourself.
+    * barnacled rune: monsters have 25% more energy.
 
 * Some rune branches will require one or more runes before you can get in. 
     * Randomly chosen at beginnng of game.
