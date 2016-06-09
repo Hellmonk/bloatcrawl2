@@ -4595,10 +4595,11 @@ int monster::hurt(const actor *agent, int amount, beam_type flavour,
                 flags |= MF_EXPLODE_KILL;
         }
 
+        if (amount > 0)
+            mprf("(mon hp-%d)", amount);
+
         amount = min(amount, hit_points);
         hit_points -= amount;
-
-        mprf("(mon hp-%d)", amount);
 
         if (hit_points > max_hit_points)
         {

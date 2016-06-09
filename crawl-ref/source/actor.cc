@@ -726,20 +726,24 @@ void actor::handle_constriction()
 
         if (is_player() || you.can_see(*this))
         {
-            mprf("%s %s %s%s%s",
+            mprf("%s %s %s%s",
                  (is_player() ? "You"
                               : name(DESC_THE).c_str()),
                  conj_verb("constrict").c_str(),
                  defender->name(DESC_THE).c_str(),
+                 /*
                  make_stringf(" (%d)", damage).c_str(),
+                  */
                  exclamations.c_str());
         }
         else if (you.can_see(*defender) || defender->is_player())
         {
-            mprf("%s %s constricted%s%s",
+            mprf("%s %s constricted%s",
                  defender->name(DESC_THE).c_str(),
                  defender->conj_verb("are").c_str(),
+                 /*
                  make_stringf(" (%d)", damage).c_str(),
+                  */
                  exclamations.c_str());
         }
 
