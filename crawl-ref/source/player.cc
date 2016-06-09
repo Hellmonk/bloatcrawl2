@@ -10522,20 +10522,63 @@ void attempt_instant_rest()
     }
 }
 
-void monster_died(mid_t mons_mid, bool was_hostile_and_seen, int mp_freeze, killer_type killer)
+monster_type _pick_random_spirit()
+{
+    return random_choose_weighted(
+        10, MONS_WRAITH,
+        5, MONS_PHANTOM,
+        5, MONS_HUNGRY_GHOST,
+        5, MONS_SHADOW_WRAITH,
+        5, MONS_FREEZING_WRAITH,
+        5, MONS_PHANTASMAL_WARRIOR,
+        5, MONS_GHOST,
+        1, MONS_DROWNED_SOUL,
+        1, MONS_EIDOLON,
+        1, MONS_FLAYED_GHOST,
+        1, MONS_FLYING_SKULL,
+        1, MONS_INSUBSTANTIAL_WISP,
+        1, MONS_LOST_SOUL,
+        1, MONS_SILENT_SPECTRE,
+        0);
+}
+
+void monster_died(mid_t mons_mid, bool was_hostile_and_seen, int mp_freeze, killer_type killer, int dead_monster_hd, bool left_corpse)
 {
     if (crawl_state.sim_mode)
         return;
 
+    bool can_rest = false;
     if (was_hostile_and_seen)
     {
         you.monsters_recently_seen--;
         ldprf(LD_INSTAREST, "Hostile seen monster died. recently_seen = %d", you.monsters_recently_seen);
-        attempt_instant_rest();
+        can_rest = true;
+    }
+
+    if (left_corpse && you.rune_curse_active[RUNE_CRYPT] && x_chance_in_y(1, 2))
+    {
+        const monster_type mon = _pick_random_spirit();
+
+        mgen_data mg = mgen_data(mon, BEH_HOSTILE, &you, 3, SPELL_HAUNT, you.pos(), MHITNOT, MG_FORCE_BEH);
+        mg.hd = dead_monster_hd;
+
+        if (monster *mons = create_monster(mg, true))
+        {
+            can_rest = false;
+            mpr("The creeping rune calls out to the dead to return.");
+
+            mons->add_ench(mon_enchant(ENCH_HAUNTING, 1, &you, INFINITE_DURATION));
+            mons->foe = MHITNOT;
+
+            you.monsters_recently_seen++;
+        }
     }
 
     if (mp_freeze)
         summoned_monster_died(mons_mid, mp_freeze, killer != KILL_RESET);
+
+    if (can_rest)
+        attempt_instant_rest();
 }
 
 void after_floor_change()

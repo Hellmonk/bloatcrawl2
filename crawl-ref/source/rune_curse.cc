@@ -61,7 +61,7 @@ const int rune_curse_mon_spellpower_adjustment(int spellpower)
 {
     if (you.rune_curse_active[RUNE_ELF])
     {
-        spellpower = spellpower * 4 / 3;
+        spellpower = spellpower * 5 / 4;
     }
 
     return spellpower;
@@ -115,6 +115,8 @@ const string rune_curse_description(const rune_type rune)
             break;
 
         case RUNE_CRYPT:
+            message = "Monsters occasionally come back from the dead to haunt you.";
+            break;
 
         case RUNE_VAULTS:
         case RUNE_TOMB:

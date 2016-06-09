@@ -1258,7 +1258,7 @@ int player_pre_ouch_modifier(int damage);
 int player_ouch_modifier(int damage);
 int player_summon_count();
 void attempt_instant_rest();
-void monster_died(mid_t mons_mid, bool was_hostile_and_seen, int mp_freeze, killer_type killer);
+void monster_died(mid_t mons_mid, bool was_hostile_and_seen, int mp_freeze, killer_type killer, int dead_monster_hd, bool left_corpse);
 void after_floor_change();
 
 #endif

@@ -1897,6 +1897,8 @@ item_def* monster_die(monster* mons, killer_type killer,
     const bool undead_minion = spell_produces_undead_minion(summon_spell) && mons_reset;
     const bool leaves_corpse = !summoned && !fake_abjure && !timeout
                                && !mons_reset || undead_minion;
+    const int dead_monster_hd = mons->get_hit_dice();
+
     // Award experience for suicide if the suicide was caused by the
     // player.
     if (MON_KILL(killer) && monster_killed == killer_index)
@@ -2770,8 +2772,8 @@ item_def* monster_die(monster* mons, killer_type killer,
         _give_experience(player_xp, monster_xp, killer, killer_index, pet_kill,
                          was_visible);
     }
-    
-    monster_died(mons_mid, was_hostile_and_seen, mp_freeze, killer);
+
+    monster_died(mons_mid, was_hostile_and_seen, mp_freeze, killer, dead_monster_hd, corpse != nullptr);
 
     return corpse;
 }
