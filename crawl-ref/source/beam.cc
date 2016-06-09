@@ -416,6 +416,7 @@ struct zap_info
 };
 
 #include "zap-data.h"
+#include "rune_curse.h"
 
 static int zap_index[NUM_ZAPS];
 
@@ -503,10 +504,13 @@ void zappy(zap_type z_type, int power, bool is_monster, bolt &pbolt)
         {
             const int range = grid_distance(pbolt.source, pbolt.target);
             pbolt.hit = player_tohit_modifier(pbolt.hit, range);
-        }
 
-        if (pbolt.hit != AUTOMATIC_HIT && !is_monster)
-            pbolt.hit = max(0, pbolt.hit - 5 * you.inaccuracy());
+            // wands and spells are easier to target than ranged or melee weapons
+            pbolt.hit += 5;
+
+            if (pbolt.hit != AUTOMATIC_HIT)
+                pbolt.hit = max(0, pbolt.hit - 5 * you.inaccuracy());
+        }
     }
 
     dam_deducer* dam_calc = is_monster ? zinfo->monster_damage
@@ -2014,7 +2018,7 @@ static bool _curare_hits_monster(actor *agent, monster* mons, int levels)
 
         if (hurted)
         {
-            monster_message(mons, " convulses. (%d)", hurted);
+            monster_message(mons, " convulses.");
             mons->hurt(agent, hurted, BEAM_POISON);
         }
     }
@@ -5500,7 +5504,7 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
         case BEAM_DISPEL_UNDEAD:
         {
             int hurt = damage.roll();
-            if (monster_message(mon, " convulses! (%d)", hurt))
+            if (monster_message(mon, " convulses!"))
                 obvious_effect = true;
             mon->hurt(agent(), hurt);
             return MON_AFFECTED;
@@ -5528,7 +5532,7 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
             else                    // pain
                 hurt = damage.roll();
 
-            if (monster_message(mon, " convulses in agony! (%d)", hurt))
+            if (monster_message(mon, " convulses in agony!"))
                 obvious_effect = true;
 
             if (origin_spell == SPELL_AGONY)

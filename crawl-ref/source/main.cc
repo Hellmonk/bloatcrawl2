@@ -165,6 +165,7 @@
 #include "wiz-mon.h"
 #include "wiz-you.h"
 #include "xom.h" // debug_xom_effects()
+#include "rune_curse.h"
 // #include "android-project/jni/freetype/include/internal/fttrace.h"
 
 // ----------------------------------------------------------------------
@@ -1123,6 +1124,7 @@ static bool _cmd_is_repeatable(command_type cmd, bool is_again = false)
     case CMD_SHOW_TERRAIN:
     case CMD_LIST_ARMOUR:
     case CMD_LIST_JEWELLERY:
+    case CMD_LIST_RUNE_CURSES:
     case CMD_LIST_GOLD:
     case CMD_CHARACTER_DUMP:
     case CMD_DISPLAY_COMMANDS:
@@ -1771,6 +1773,31 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
         return false;
     }
 
+    level_id destination = stair_destination(you.pos());
+    if (destination.is_valid())
+    {
+        const branch_type branch = destination.branch;
+        const bool rune_branch = branches[branch].runes.size() > 0;
+
+        if (rune_branch && down)
+        {
+            const rune_type first_rune = branches[branch].runes[0];
+            if (!you.rune_curse_active[first_rune])
+            {
+                const bool proceed = yesno("This leads to a rune branch. Once you enter, the curse associated with this rune will be permanently activated. Are you sure you want to enter now?", true, 'n');
+                if (proceed)
+                {
+                    for (rune_type rune : branches[branch].runes)
+                        you.rune_curse_active.set(rune, true);
+
+                    return true;
+                }
+                else
+                    return false;
+            }
+        }
+    }
+
     // Escaping.
     if (!down && ygrd == DNGN_EXIT_DUNGEON && !player_has_orb())
     {
@@ -2109,6 +2136,7 @@ void process_command(command_type cmd)
         case CMD_LIST_ARMOUR:              list_armour();                  break;
         case CMD_LIST_GOLD:                _do_list_gold();                break;
         case CMD_LIST_JEWELLERY:           list_jewellery();               break;
+        case CMD_LIST_RUNE_CURSES:         list_rune_curses();             break;
         case CMD_MAKE_NOTE:                make_user_note();               break;
         case CMD_REPLAY_MESSAGES: replay_messages(); redraw_screen();      break;
         case CMD_RESISTS_SCREEN:           print_overview_screen();        break;

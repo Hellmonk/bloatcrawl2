@@ -423,7 +423,7 @@ public:
     // Number of viewport refreshes.
     unsigned int frame_no;
 
-    // normally 1, anything else alters how the next potion or scroll works, amplifying or reversing it's effects.
+    // normally 1000, anything else alters how the next potion or scroll works, amplifying or reversing it's effects.
     int amplification;
 
     // stamina stuff
@@ -999,6 +999,9 @@ int player_shield_class();
 int player_displayed_shield_class();
 bool player_omnireflects();
 
+int player_spec_light();
+int player_spec_darkness();
+int player_spec_time();
 int player_spec_air();
 int player_spec_cold();
 int player_spec_conj();
@@ -1214,10 +1217,7 @@ bool can_use(const item_def &item);
 bool player_is_immune_to_curses();
 const int get_max_exp_level();
 const int get_max_skill_level();
-const int rune_curse_hd_adjust(int hd, bool absolute = true);
-const int rune_curse_hp_adjust(int hp, bool absolute = true);
-const int rune_curse_dam_adjust(int dam, bool absolute = true);
-const int rune_curse_depth_adjust(int depth);
+
 void player_summon_was_shot_through(monster* mon);
 void player_was_offensive();
 void player_attacked_something(int sp_cost);
@@ -1253,6 +1253,7 @@ void summoned_monster_died(mid_t mons, int mp_freeze, bool natural_death);
 bool player_summoned_monster(spell_type spell, monster* mons, bool first, int freeze_cost = -1);
 int player_monster_gen_modifier(int amount);
 int player_potion_recharge_percent();
+int player_pre_ouch_modifier(int damage);
 int player_ouch_modifier(int damage);
 int player_summon_count();
 void attempt_instant_rest();

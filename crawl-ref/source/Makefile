@@ -108,7 +108,7 @@ STDFLAG = -std=c++11
 
 CFOTHERS := -pipe $(EXTERNAL_FLAGS)
 CFWARN := 
-CFWARN_L := -Wall -Wformat-security -Wundef
+CFWARN_L := -Wall -Wformat-security -Wundef -Wno-unused-variable -Wno-missing-declarations -Wno-unused-function
 
 DEFINES := $(EXTERNAL_DEFINES)
 
@@ -222,7 +222,8 @@ ifdef msys
 	endif
 endif
 ifeq ($(uname_S),Darwin)
-	STRIP := strip -x
+	#STRIP := strip -x
+	STRIP := echo Not stripping...
 	NEED_APPKIT = YesPlease
 	LIBNCURSES_IS_UNICODE = Yes
 	NO_PKGCONFIG = Yes

@@ -1,0 +1,138 @@
+//
+// Created by Jeremy Marlin Gurr on 6/8/16.
+//
+
+#include "AppHdr.h"
+
+#include "branch.h"
+#include "command.h"
+#include "itemname.h"
+#include "player.h"
+#include "rune_curse.h"
+#include "state.h"
+#include "stepdown.h"
+#include "unicode.h"
+#include "stringutil.h"
+
+const int active_rune_curses()
+{
+    int curses_active = 0;
+    for (int rune = FIRST_RUNE; rune < NUM_RUNE_TYPES; rune++)
+    {
+        if (you.rune_curse_active[rune])
+            curses_active++;
+    }
+
+    return curses_active;
+}
+
+const int rune_curse_hd_adjust(int hd, bool absolute)
+{
+    const int runes = active_rune_curses();
+    const game_difficulty_level difficulty = crawl_state.difficulty;
+    int multiplier = difficulty + 1;
+
+    hd = hd + (runes * multiplier + 3) / 6;
+    if (absolute && hd > 1)
+    {
+        hd = hd + difficulty - 2;
+        hd = max(1, hd);
+    }
+
+    return hd;
+}
+
+const int rune_curse_hp_adjust(int hp, bool absolute)
+{
+    const int runes = active_rune_curses();
+    hp = qpow(hp, 100 + crawl_state.difficulty + 1, 100, runes, false);
+    return hp;
+}
+
+const int rune_curse_dam_adjust(int dam, bool absolute)
+{
+    const int runes = active_rune_curses();
+    if (runes > 0 && dam != INSTANT_DEATH)
+        dam = qpow(dam, 100 + crawl_state.difficulty + 1, 100, runes, false);
+    return dam;
+}
+
+const int rune_curse_mon_spellpower_adjustment(int spellpower)
+{
+    if (you.rune_curse_active[RUNE_ELF])
+    {
+        spellpower = spellpower * 4 / 3;
+    }
+
+    return spellpower;
+}
+
+const int rune_curse_depth_adjust(int depth)
+{
+    /* not ready yet
+    if (runes > 0)
+        depth += runes;
+        */
+    return depth;
+}
+
+const char* rune_curse_description(const rune_type rune)
+{
+    switch (rune)
+    {
+        case RUNE_ELF: return "Enemy spell power is increased.";
+
+        case RUNE_SWAMP:
+        case RUNE_SNAKE:
+        case RUNE_SHOALS:
+        case RUNE_SLIME:
+        case RUNE_VAULTS:
+        case RUNE_TOMB:
+
+        case RUNE_DIS:
+        case RUNE_GEHENNA:
+        case RUNE_COCYTUS:
+        case RUNE_TARTARUS:
+
+        case RUNE_ABYSSAL:
+        case RUNE_DEMONIC:
+
+        case RUNE_MNOLEG:
+        case RUNE_LOM_LOBON:
+        case RUNE_CEREBOV:
+        case RUNE_GLOORX_VLOQ:
+
+        case RUNE_SPIDER:
+        case RUNE_DWARF:
+        case RUNE_CRYPT:
+
+        default: return "Under construction.";
+    }
+}
+
+void list_rune_curses()
+{
+    int cols = get_number_of_cols() - 1;
+
+    bool at_least_one_active = false;
+    for (int i = FIRST_RUNE; i < NUM_RUNE_TYPES; i++)
+    {
+        if (!you.rune_curse_active[i])
+            continue;
+
+        if (!at_least_one_active)
+        {
+            mprf(MSGCH_DANGER, "Rune curses in effect:");
+        }
+
+        at_least_one_active = true;
+        const char* name = rune_type_name(i);
+        const string curse_description = rune_curse_description((rune_type)i);
+
+        const string output = chop_string(make_stringf("%-10s: %s", name, curse_description.c_str()), cols);
+        mprf(MSGCH_DANGER, output.c_str());
+    }
+
+    if (!at_least_one_active)
+        mprf(MSGCH_DANGER, "You are not affected by any rune curses.");
+}

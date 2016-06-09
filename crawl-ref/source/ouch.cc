@@ -74,6 +74,7 @@
 #include "tutorial.h"
 #include "view.h"
 #include "xom.h"
+#include "rune_curse.h"
 
 void maybe_melt_player_enchantments(beam_type flavour, int damage)
 {
@@ -1045,8 +1046,8 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         }
 
         you.source_damage += dam;
-        you.turn_damage += dam;
         dam = player_ouch_modifier(dam);
+        you.turn_damage += dam;
 
         if(dam > 0) {
             interrupt_activity(source == MID_NOBODY ? AI_HP_LOSS_FROM_OTHER : AI_HP_LOSS_FROM_MONSTER, &hpl);

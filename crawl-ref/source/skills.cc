@@ -103,6 +103,10 @@ static const char *skill_titles[NUM_SKILLS][6] =
     {"Earth Magic",    "Digger",        "Geomancer",       "Earth Mage",      "Metallomancer",  "Petrodigitator"},
     {"Poison Magic",   "Stinger",       "Tainter",         "Polluter",        "Contaminator",   "Envenomancer"},
 
+    {"Light Magic",    "Candle",        "Torch",           "Star",            "Moon",           "Sun"},
+    {"Darkness Magic", "Quiet",         "Shadow",          "Silent",          "Empty",          "Void"},
+    {"Time Magic",     "Keeper",        "Stretcher",       "Manipulator",     "Chronomancer",   "Time Lord"},
+
     // These titles apply to atheists only, worshippers of the various gods
     // use the god titles instead, depending on piety or, in Gozag's case, gold.
     {"Invocations",    "Unbeliever",    "Agnostic",        "Dissident",       "Heretic",        "Apostate"},
@@ -1455,28 +1459,24 @@ bool is_useless_skill(skill_type skill)
 
     if ((skill == SK_AIR_MAGIC && player_mutation_level(MUT_NO_AIR_MAGIC))
         || (skill == SK_CHARMS && player_mutation_level(MUT_NO_CHARM_MAGIC))
-        || (skill == SK_CONJURATIONS
-            && player_mutation_level(MUT_NO_CONJURATION_MAGIC))
-        || (skill == SK_EARTH_MAGIC
-            && player_mutation_level(MUT_NO_EARTH_MAGIC))
+        || (skill == SK_CONJURATIONS && player_mutation_level(MUT_NO_CONJURATION_MAGIC))
+        || (skill == SK_EARTH_MAGIC && player_mutation_level(MUT_NO_EARTH_MAGIC))
         || (skill == SK_FIRE_MAGIC && player_mutation_level(MUT_NO_FIRE_MAGIC))
         || (skill == SK_HEXES && player_mutation_level(MUT_NO_HEXES_MAGIC))
         || (skill == SK_ICE_MAGIC && player_mutation_level(MUT_NO_ICE_MAGIC))
-        || (skill == SK_NECROMANCY
-            && player_mutation_level(MUT_NO_NECROMANCY_MAGIC))
-        || (skill == SK_POISON_MAGIC
-            && player_mutation_level(MUT_NO_POISON_MAGIC))
-        || (skill == SK_SUMMONINGS
-            && player_mutation_level(MUT_NO_SUMMONING_MAGIC))
-        || (skill == SK_TRANSLOCATIONS
-            && player_mutation_level(MUT_NO_TRANSLOCATION_MAGIC))
-        || (skill == SK_TRANSMUTATIONS
-            && player_mutation_level(MUT_NO_TRANSMUTATION_MAGIC))
+        || (skill == SK_NECROMANCY && player_mutation_level(MUT_NO_NECROMANCY_MAGIC))
+        || (skill == SK_POISON_MAGIC && player_mutation_level(MUT_NO_POISON_MAGIC))
+        || (skill == SK_SUMMONINGS && player_mutation_level(MUT_NO_SUMMONING_MAGIC))
+        || (skill == SK_TRANSLOCATIONS && player_mutation_level(MUT_NO_TRANSLOCATION_MAGIC))
+        || (skill == SK_TRANSMUTATIONS && player_mutation_level(MUT_NO_TRANSMUTATION_MAGIC))
         || (skill == SK_DODGING && player_mutation_level(MUT_NO_DODGING))
         || (skill == SK_ARMOUR && player_mutation_level(MUT_NO_ARMOUR))
         || (skill == SK_SHIELDS && player_mutation_level(MUT_MISSING_HAND))
         || (skill == SK_EVOCATIONS && player_mutation_level(MUT_NO_ARTIFICE))
         || (skill == SK_STEALTH && player_mutation_level(MUT_NO_STEALTH))
+        || (skill == SK_LIGHT_MAGIC && player_mutation_level(MUT_NO_LIGHT_MAGIC))
+        || (skill == SK_DARKNESS_MAGIC && player_mutation_level(MUT_NO_DARKNESS_MAGIC))
+        || (skill == SK_TIME_MAGIC && player_mutation_level(MUT_NO_TIME))
     )
     {
         return true;
@@ -1554,100 +1554,58 @@ float species_apt_factor(skill_type sk, species_type sp)
 
 vector<skill_type> get_crosstrain_skills(skill_type sk)
 {
-    switch (sk)
-    {
-        case SK_SHORT_BLADES:
-            return {SK_LONG_BLADES};
-        case SK_LONG_BLADES:
-            return {SK_SHORT_BLADES};
-        case SK_AXES:
-        case SK_STAVES:
-            return {SK_POLEARMS, SK_MACES_FLAILS};
-        case SK_MACES_FLAILS:
-        case SK_POLEARMS:
-            return {SK_AXES, SK_STAVES};
-        case SK_SLINGS:
-            return {SK_THROWING};
-        case SK_THROWING:
-            return {SK_SLINGS};
-        case SK_BOWS:
-            if (you.species == SP_HUMAN)
+    if (you.species == SP_HUMAN)
+        switch (sk)
+        {
+            case SK_SHORT_BLADES:
+                return {SK_LONG_BLADES};
+            case SK_LONG_BLADES:
+                return {SK_SHORT_BLADES};
+            case SK_AXES:
+            case SK_STAVES:
+                return {SK_POLEARMS, SK_MACES_FLAILS};
+            case SK_MACES_FLAILS:
+            case SK_POLEARMS:
+                return {SK_AXES, SK_STAVES};
+            case SK_SLINGS:
+                return {SK_THROWING};
+            case SK_THROWING:
+                return {SK_SLINGS};
+            case SK_BOWS:
                 return {SK_CROSSBOWS};
-            else
-                return {};
-        case SK_CROSSBOWS:
-            if (you.species == SP_HUMAN)
+            case SK_CROSSBOWS:
                 return {SK_BOWS};
-            else
-                return {};
-        case SK_SPELLCASTING:
-            if (you.species == SP_HUMAN)
+            case SK_SPELLCASTING:
                 return {SK_EVOCATIONS, SK_INVOCATIONS};
-            else
-                return {};
-        case SK_INVOCATIONS:
-            if (you.species == SP_HUMAN)
+            case SK_INVOCATIONS:
                 return {SK_EVOCATIONS, SK_SPELLCASTING};
-            else
-                return {};
-        case SK_EVOCATIONS:
-            if (you.species == SP_HUMAN)
+            case SK_EVOCATIONS:
                 return {SK_INVOCATIONS, SK_SPELLCASTING};
-            else
-                return {};
-        case SK_ICE_MAGIC:
-            if (you.species == SP_HUMAN)
+            case SK_ICE_MAGIC:
                 return {SK_FIRE_MAGIC, SK_EARTH_MAGIC, SK_AIR_MAGIC};
-            else
-                return {};
-        case SK_EARTH_MAGIC:
-            if (you.species == SP_HUMAN)
+            case SK_EARTH_MAGIC:
                 return {SK_ICE_MAGIC, SK_FIRE_MAGIC, SK_AIR_MAGIC};
-            else
-                return {};
-        case SK_AIR_MAGIC:
-            if (you.species == SP_HUMAN)
+            case SK_AIR_MAGIC:
                 return {SK_ICE_MAGIC, SK_EARTH_MAGIC, SK_FIRE_MAGIC};
-            else
-                return {};
-        case SK_FIRE_MAGIC:
-            if (you.species == SP_HUMAN)
+            case SK_FIRE_MAGIC:
                 return {SK_ICE_MAGIC, SK_EARTH_MAGIC, SK_AIR_MAGIC};
-            else
-                return {};
-        case SK_HEXES:
-            if (you.species == SP_HUMAN)
+            case SK_HEXES:
                 return {SK_CHARMS};
-            else
-                return {};
-        case SK_CHARMS:
-            if (you.species == SP_HUMAN)
+            case SK_CHARMS:
                 return {SK_HEXES};
-            else
-                return {};
-        case SK_SUMMONINGS:
-            if (you.species == SP_HUMAN)
+            case SK_SUMMONINGS:
                 return {SK_TRANSLOCATIONS, SK_TRANSMUTATIONS, SK_NECROMANCY};
-            else
-                return {};
-        case SK_TRANSLOCATIONS:
-            if (you.species == SP_HUMAN)
+            case SK_TRANSLOCATIONS:
                 return {SK_SUMMONINGS, SK_TRANSMUTATIONS, SK_NECROMANCY};
-            else
-                return {};
-        case SK_TRANSMUTATIONS:
-            if (you.species == SP_HUMAN)
+            case SK_TRANSMUTATIONS:
                 return {SK_TRANSLOCATIONS, SK_SUMMONINGS, SK_NECROMANCY};
-            else
-                return {};
-        case SK_NECROMANCY:
-            if (you.species == SP_HUMAN)
+            case SK_NECROMANCY:
                 return {SK_TRANSLOCATIONS, SK_SUMMONINGS, SK_TRANSMUTATIONS};
-            else
+            default:
                 return {};
-        default:
-            return {};
-    }
+        }
+    else
+        return {};
 }
 
 /**
@@ -1659,7 +1617,9 @@ vector<skill_type> get_crosstrain_skills(skill_type sk)
 static bool _skill_is_elemental(skill_type sk)
 {
     return sk == SK_FIRE_MAGIC || sk == SK_EARTH_MAGIC
-           || sk == SK_AIR_MAGIC || sk == SK_ICE_MAGIC;
+           || sk == SK_AIR_MAGIC || sk == SK_ICE_MAGIC
+           || sk == SK_LIGHT_MAGIC || sk == SK_DARKNESS_MAGIC
+         ;
 }
 
 /**

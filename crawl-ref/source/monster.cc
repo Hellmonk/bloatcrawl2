@@ -4347,6 +4347,9 @@ int monster::skill(skill_type sk, int scale, bool real, bool drained) const
     case SK_ICE_MAGIC:
     case SK_EARTH_MAGIC:
     case SK_AIR_MAGIC:
+    case SK_LIGHT_MAGIC:
+    case SK_DARKNESS_MAGIC:
+    case SK_TIME_MAGIC:
     case SK_SUMMONINGS:
         return is_actual_spellcaster() ? hd : hd / 3;
 
@@ -4594,6 +4597,8 @@ int monster::hurt(const actor *agent, int amount, beam_type flavour,
 
         amount = min(amount, hit_points);
         hit_points -= amount;
+
+        mprf("(mon hp-%d)", amount);
 
         if (hit_points > max_hit_points)
         {

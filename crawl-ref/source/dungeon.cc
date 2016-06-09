@@ -1253,7 +1253,7 @@ static int _num_items_wanted(int absdepth0)
         items_wanted = 3 + roll_dice(3, 13);
 
     // because many items have been reduced in quantity, we need to reduce overall counts
-    items_wanted = items_wanted / 3;
+    items_wanted = items_wanted / 2;
     items_wanted = player_item_gen_modifier(items_wanted);
     return items_wanted;
 }
@@ -3735,6 +3735,9 @@ static void _builder_items()
     {
         items_levels *= 15;
         items_levels /= 10;
+
+        items_wanted *= 15;
+        items_wanted /= 10;
     }
     else if (player_in_branch(BRANCH_ORC))
         specif_type = OBJ_GOLD;  // Lots of gold in the orcish mines.
@@ -4252,9 +4255,9 @@ static bool _apply_item_props(item_def &item, const item_spec &spec,
             spells.push_back((spell_type) spell_list[i].get_int());
 
         spschool_flag_type disc1
-            = (spschool_flag_type)props[RANDBK_DISC1_KEY].get_short();
+            = (spschool_flag_type)props[RANDBK_DISC1_KEY].get_int();
         spschool_flag_type disc2
-            = (spschool_flag_type)props[RANDBK_DISC2_KEY].get_short();
+            = (spschool_flag_type)props[RANDBK_DISC2_KEY].get_int();
         if (disc1 == SPTYP_NONE && disc2 == SPTYP_NONE)
         {
             if (spells.size())

@@ -57,6 +57,7 @@
 #include "potion.h"
 #include "prompt.h"
 #include "religion.h"
+#include "rune_curse.h"
 #include "shout.h"
 #include "skills.h"
 #include "spl-damage.h"
@@ -1854,6 +1855,36 @@ int player_spec_earth()
     	se++;
 
     return se;
+}
+
+int player_spec_light()
+{
+    int sa = 0;
+
+    // Staves
+    sa += you.wearing(EQ_STAFF, STAFF_LIGHT);
+
+    return sa;
+}
+
+int player_spec_darkness()
+{
+    int sa = 0;
+
+    // Staves
+    sa += you.wearing(EQ_STAFF, STAFF_DARKNESS);
+
+    return sa;
+}
+
+int player_spec_time()
+{
+    int sa = 0;
+
+    // Staves
+    sa += you.wearing(EQ_STAFF, STAFF_TIME);
+
+    return sa;
 }
 
 int player_spec_air()
@@ -5747,11 +5778,13 @@ void dec_ambrosia_player(int delay)
     // 3-5 per turn, 9-50 over (3-10) turns
     const int hp_restoration = div_rand_round(delay*(3 + random2(3)), BASELINE_DELAY);
     const int mp_restoration = div_rand_round(delay*(3 + random2(3)), BASELINE_DELAY);
+    const int sp_restoration = div_rand_round(delay*(3 + random2(3)), BASELINE_DELAY);
 
     if (!you.duration[DUR_DEATHS_DOOR])
         inc_hp(you.scale_device_healing(hp_restoration));
 
     inc_mp(mp_restoration * 3);
+    inc_sp(sp_restoration * 3);
 
     if (!you.duration[DUR_AMBROSIA])
         mpr("You feel less invigorated.");
@@ -9549,47 +9582,6 @@ const int get_max_skill_level()
     return MAX_SKILL_LEVEL;
 }
 
-const int rune_curse_hd_adjust(int hd, bool absolute)
-{
-    const int runes = runes_in_pack();
-    const game_difficulty_level difficulty = crawl_state.difficulty;
-    int multiplier = difficulty + 1;
-    
-    hd = hd + (runes * multiplier + 3) / 6;
-    if (absolute && hd > 1)
-    {
-        hd = hd + difficulty - 2;
-        hd = max(1, hd);
-    }
-
-    return hd;
-}
-
-const int rune_curse_hp_adjust(int hp, bool absolute)
-{
-    const int runes = runes_in_pack();
-    hp = qpow(hp, 100 + crawl_state.difficulty + 1, 100, runes, false);
-    return hp;
-}
-
-const int rune_curse_dam_adjust(int dam, bool absolute)
-{
-    const int runes = runes_in_pack();
-    if (runes > 0 && dam != INSTANT_DEATH)
-        dam = qpow(dam, 100 + crawl_state.difficulty + 1, 100, runes, false);
-    return dam;
-}
-
-const int rune_curse_depth_adjust(int depth)
-{
-    /* not ready yet
-    const int runes = runes_in_pack();
-    if (runes > 0)
-        depth += runes;
-        */
-    return depth;
-}
-
 void summoned_monster_died(mid_t mons, int mp_freeze, bool natural_death)
 {
     unfreeze_summons_mp(mp_freeze);
@@ -10226,12 +10218,17 @@ int player_potion_recharge_percent()
     return percent;
 }
 
-// reduce damage to player if it has exceeded protection thresholds (to avoid 1 hit kills for example)
-int player_ouch_modifier(int damage)
+int player_pre_ouch_modifier(int damage)
 {
     // global monster damage reduction
     damage = div_rand_round(damage * 2, 3);
 
+    return damage;
+}
+
+// reduce damage to player if it has exceeded protection thresholds (to avoid 1 hit kills for example)
+int player_ouch_modifier(int damage)
+{
     int percentage_allowed = 100;
 
     switch (crawl_state.difficulty)
@@ -10264,6 +10261,8 @@ int player_ouch_modifier(int damage)
 
     if (damage > new_damage)
         mprf("You were prevented from receiving too much damage! (%d -> %d)", damage, new_damage);
+    else
+        mprf("(hp-%d)", new_damage);
 
     return new_damage;
 }

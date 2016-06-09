@@ -482,7 +482,7 @@ int raw_spell_fail(spell_type spell)
     const int brilliance = you.duration[DUR_BRILLIANCE] > 0;
 
     const spschools_type disciplines = get_spell_disciplines(spell);
-    const int school_average = average_schools(disciplines, 10);
+    const int school_average = max_school_skill(disciplines, global_spell_skill_adjustment);
 
     x += spell_level * -10;
     x += armour_shield_penalty * -0.1;
@@ -491,7 +491,7 @@ int raw_spell_fail(spell_type spell)
     x += vertigo * -5;
     x += wild * -5;
     x += subdued * 5;
-    x += (dex - 10) * 2;
+    x += (dex - 10) * global_spell_skill_adjustment / 5;
     x += school_average / 5.0;
     x += high_council * 5;
     x += player_success * 2;
@@ -517,8 +517,8 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool rod)
     else
     {
         const spschools_type disciplines = get_spell_disciplines(spell);
-        const int school_average = average_schools(disciplines, 10);
-        const int intel = you.intel();
+        const int school_average = max_school_skill(disciplines, global_spell_skill_adjustment);
+        const int intel = you.intel() * global_spell_skill_adjustment;
 
         power = school_average / 20.0;
 
@@ -596,6 +596,15 @@ static int _spell_enhancement(spell_type spell)
 
     if (typeflags & SPTYP_AIR)
         enhanced += player_spec_air();
+
+    if (typeflags & SPTYP_LIGHT)
+        enhanced += player_spec_light();
+
+    if (typeflags & SPTYP_DARKNESS)
+        enhanced += player_spec_darkness();
+
+    if (typeflags & SPTYP_TIME)
+        enhanced += player_spec_time();
 
     if (you.attribute[ATTR_SHADOWS])
         enhanced -= 2;

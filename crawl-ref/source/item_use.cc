@@ -216,15 +216,19 @@ bool _playerUnequipsShield()
     if (you.delay_queue.size() > 0)
         return true;
 
+    /*
 	if (yesno("Unequip your shield first?", true, 'n', true, false))
 	{
+     */
         takeoff_armour(you.equip[EQ_SHIELD]);
 		return true;
+    /*
 	}
 	else
 	{
 		return false;
 	}
+     */
 }
 
 // Rather messy - we've gathered all the can't-wield logic from wield_weapon()
@@ -980,9 +984,27 @@ bool do_wear_armour(int item, bool quiet)
     if (!_safe_to_remove_or_wear(invitem, false))
         return false;
 
-    const int delay = armour_equip_delay(invitem);
-    if (delay)
-        start_delay(DELAY_ARMOUR_ON, delay - (swapping ? 0 : 1), item);
+    if (slot == EQ_SHIELD)
+    {
+        you.time_taken /= 2;
+
+        item_def &arm = you.inv1[item];
+
+        set_ident_flags(arm, ISFLAG_IDENT_MASK);
+        if (is_artefact(arm))
+            arm.flags |= ISFLAG_NOTED_ID;
+
+        equip_item(slot, item);
+        const unsigned int old_talents = your_talents(false).size();
+
+        check_item_hint(you.inv1[item], old_talents);
+    }
+    else
+    {
+        const int delay = armour_equip_delay(invitem);
+        if (delay)
+            start_delay(DELAY_ARMOUR_ON, delay - (swapping ? 0 : 1), item);
+    }
 
     return true;
 }
@@ -1054,8 +1076,16 @@ bool takeoff_armour(int item)
 
     you.turn_is_over = true;
 
-    const int delay = armour_equip_delay(invitem);
-    start_delay(DELAY_ARMOUR_OFF, delay - 1, item);
+    if (slot == EQ_SHIELD)
+    {
+        you.time_taken /= 2;
+        unequip_item(slot);
+    }
+    else
+    {
+        const int delay = armour_equip_delay(invitem);
+        start_delay(DELAY_ARMOUR_OFF, delay - 1, item);
+    }
 
     return true;
 }

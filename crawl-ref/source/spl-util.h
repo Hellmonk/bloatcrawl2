@@ -25,10 +25,14 @@ enum spschool_flag_type
   SPTYP_POISON         = 1<<10,
   SPTYP_EARTH          = 1<<11,
   SPTYP_AIR            = 1<<12,
-  SPTYP_LAST_SCHOOL    = SPTYP_AIR,
+  SPTYP_LIGHT          = 1<<13,
+  SPTYP_DARKNESS       = 1<<14,
+  SPTYP_TIME           = 1<<15,
+  SPTYP_LAST_SCHOOL    = SPTYP_TIME,
   SPTYP_RANDOM         = SPTYP_LAST_SCHOOL << 1,
 };
-DEF_BITFIELD(spschools_type, spschool_flag_type, 12);
+
+DEF_BITFIELD(spschools_type, spschool_flag_type, 15);
 const int SPTYP_LAST_EXPONENT = spschools_type::last_exponent;
 COMPILE_CHECK(spschools_type::exponent(SPTYP_LAST_EXPONENT)
               == SPTYP_LAST_SCHOOL);
@@ -54,7 +58,7 @@ spell_type spell_by_name(string name, bool partial_match = false);
 
 spschool_flag_type school_by_name(string name);
 
-int average_schools(const spschools_type &disciplines, const int scale = 1);
+int max_school_skill(const spschools_type &disciplines, const int scale = 1);
 int get_spell_slot_by_letter(char letter);
 int get_spell_letter(spell_type spell);
 spell_type get_spell_by_letter(char letter);

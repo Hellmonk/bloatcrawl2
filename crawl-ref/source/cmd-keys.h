@@ -4,6 +4,10 @@
 // If there are several keys assigned to the same command, the last one
 // will be the one displayed on the command help screen. Keys assigned
 // via keybindings will take precedence. (jpeg)
+#include "cio.h"
+#include "enum.h"
+#include "defines.h"
+
 #ifdef USE_TILE
 {'-', CMD_EDIT_PLAYER_TILE},
 #endif
@@ -120,7 +124,7 @@
 {'&', CMD_WIZARD},
 {'+', CMD_EXPLORE_MODE},
 #endif
-{'"', CMD_LIST_JEWELLERY},
+{'"', CMD_LIST_RUNE_CURSES},
 {'{', CMD_INSCRIBE_ITEM},
 {'[', CMD_LIST_ARMOUR},
 {'(', CMD_CYCLE_QUIVER_BACKWARD},

@@ -1163,9 +1163,9 @@ void holy_word_monsters(coord_def where, int pow, holy_word_source_type source,
     if (hploss)
     {
         if (source == HOLY_WORD_ZIN)
-            monster_message(mons, " is blasted by Zin's holy word! (%d)", hploss);
+            monster_message(mons, " is blasted by Zin's holy word!");
         else
-            monster_message(mons, " convulses! (%d)", hploss);
+            monster_message(mons, " convulses!");
     }
     mons->hurt(attacker, hploss, BEAM_MISSILE);
 
@@ -1312,7 +1312,7 @@ void torment_cell(coord_def where, actor *attacker, torment_source_type taux)
 
     if (hploss)
     {
-        monster_message(mons, " convulses! (%d)", hploss);
+        monster_message(mons, " convulses!");
 
         // Currently, torment doesn't annoy the monsters it affects
         // because it can't kill them, and because hostile monsters use

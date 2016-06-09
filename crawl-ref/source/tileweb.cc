@@ -1,7 +1,5 @@
 #include "AppHdr.h"
 
-#ifdef USE_TILE_WEB
-
 #include "tileweb.h"
 
 #include <cerrno>
@@ -2130,4 +2128,3 @@ bool is_tiles()
 {
     return tiles.is_controlled_from_web();
 }
-#endif
