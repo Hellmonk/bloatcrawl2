@@ -26,6 +26,7 @@
 #if TAG_MAJOR_VERSION == 34
 # include "shopping.h" // REMOVED_DEAD_SHOPS_KEY
 #endif
+#include "rune_curse.h"
 #include "skills.h"
 #include "spl-book.h"
 #include "spl-util.h"
@@ -481,6 +482,8 @@ void _make_potions(const potion_type &potion)
 static void _setup_generic(const newgame_def& ng)
 {
     _init_player();
+
+    choose_branch_rune_requirements();
 
 #if TAG_MAJOR_VERSION == 34
     // Avoid the remove_dead_shops() Gozag fixup in new games: see

@@ -1567,6 +1567,12 @@ static void tag_construct_you(writer &th)
     {
         marshallInt(th, you.rune_charges[i]);
     }
+
+    for (int i = 0; i < NUM_BRANCHES; ++i)
+    {
+        marshallInt(th, you.branch_requires_runes[i]);
+    }
+
     marshallFixedBitVector<NUM_RUNE_TYPES>(th, you.rune_curse_active);
     // todo
 //    marshallInt(th, you.first_hit_time);
@@ -3238,6 +3244,11 @@ static void tag_read_you(reader &th)
     {
         you.rune_charges[i] = unmarshallInt(th);
     }
+    for (int i = 0; i < NUM_BRANCHES; ++i)
+    {
+        you.branch_requires_runes[i] = unmarshallInt(th);
+    }
+
     unmarshallFixedBitVector<NUM_RUNE_TYPES>(th, you.rune_curse_active);
 
     // todo

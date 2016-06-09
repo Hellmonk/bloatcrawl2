@@ -6266,6 +6266,7 @@ player::player()
 
     rune_charges.init(0);
     rune_curse_active.reset();
+    branch_requires_runes.init(0);
     first_hit_time      = 0;
 
     max_exp             = 0;
@@ -10262,7 +10263,10 @@ int player_ouch_modifier(int damage)
     if (damage > new_damage)
         mprf("You were prevented from receiving too much damage! (%d -> %d)", damage, new_damage);
     else
-        mprf("(hp-%d)", new_damage);
+    {
+        if (new_damage > 0)
+            mprf("(hp-%d)", new_damage);
+    }
 
     return new_damage;
 }

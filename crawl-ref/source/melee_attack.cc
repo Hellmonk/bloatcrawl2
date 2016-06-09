@@ -1325,7 +1325,6 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
     else
         aux_damage = apply_defender_ac(aux_damage);
 
-    aux_damage = inflict_damage(aux_damage, BEAM_MISSILE);
     damage_done = aux_damage;
 
     if (atk == UNAT_CONSTRICT)
@@ -1334,6 +1333,8 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
     if (damage_done > 0 || atk == UNAT_CONSTRICT)
     {
         player_announce_aux_hit();
+
+        damage_done = inflict_damage(damage_done, BEAM_MISSILE);
 
         if (damage_brand == SPWPN_ACID)
         {

@@ -63,6 +63,22 @@ quite helpful for showing the possibilities, as well as helping those who are st
     You can do the same with normal summons. If you want to replace one of your summons with a different one, press [x],
     select that summon, then press [q] and it will disappear, freeing the magic that was used to summon it. 
     
+    Summoning works very will with ranged weapons or spells, since they will pass through your summons. This only works
+    well though if you have a low failure rate on the spell that summoned them, because each time your missile passes
+    through them, the failure rate is checked, and the summon will disappear if the spell "fails". It's not a huge
+    deal since you can just recast it, but you may be low on MP in a battle, so keep this in mind.
+    
+### Transmuters
+    Since transmuting is usually done outside of battles, and MP isn't a significant constraint, nor is spellcasting 
+    speed, you typically don't need to train much spellcasting. Instead, you need to get your failure rate down as low
+    as possible, since each time you attack in a different form, that spell's failure rate is checked, and if it fails,
+    the form degrades. To minimize spell failure, add dexterity and train spell school skill (transmutation in this case).
+    Since multi-school spells now use the maximum skill instead of the average of all the skills, you only need to train
+    transmutation. Soon after you get your failure rates down to reasonable levels, it's a good idea to switch to
+    training Unarmed Combat, which will increase your accuracy, and more importantly your damage significantly. Fighting
+    skill will increase your attack speed and reduce stamina costs, but attack speed is already pretty low for unarmed
+    combat, and stamina costs are also quite low, so training Fighting can be put off until later in the game. 
+    
 ## Troubleshooting
 
 ### Always running out of stamina (SP) when attacking

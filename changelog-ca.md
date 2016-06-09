@@ -1,9 +1,16 @@
-## v1.5.4
+## v1.5.6
+
+* Some rune branches will require one or more runes before you can get in. 
+    * Randomly chosen at beginnng of game.
+
+## v1.5.5
 
 * Implemented first specialized rune curse
     * For elven rune. 
     * You can see the list of curses in effect with the ["] key.
     
+## v1.5.4
+
 * Shield equipping / removal takes 0.5 turn instead of 5, like weapon swaps. 
 
 * Crosstraining removed

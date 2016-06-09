@@ -201,13 +201,18 @@ branch_type parent_branch(branch_type branch)
 
 int runes_for_branch(branch_type branch)
 {
+    int runes_required = 0;
     switch (branch)
     {
-    case BRANCH_VAULTS:   return VAULTS_ENTRY_RUNES;
-    case BRANCH_ZIGGURAT: return ZIG_ENTRY_RUNES;
-    case BRANCH_ZOT:      return ZOT_ENTRY_RUNES;
-    default:              return 0;
+    case BRANCH_VAULTS:   runes_required = VAULTS_ENTRY_RUNES;
+    case BRANCH_ZIGGURAT: runes_required = ZIG_ENTRY_RUNES;
+    case BRANCH_ZOT:      runes_required = ZOT_ENTRY_RUNES;
+    default:              runes_required = 0;
     }
+
+    runes_required += you.branch_requires_runes[branch];
+
+    return runes_required;
 }
 
 /**
