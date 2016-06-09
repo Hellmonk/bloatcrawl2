@@ -517,15 +517,15 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool rod)
     else
     {
         const spschools_type disciplines = get_spell_disciplines(spell);
-        const int school_average = max_school_skill(disciplines, global_spell_skill_adjustment);
+        const int school_max = max_school_skill(disciplines, global_spell_skill_adjustment);
         const int intel = you.intel() * global_spell_skill_adjustment;
 
-        power = school_average / 20.0;
+        power = school_max / 20.0;
 
         if (apply_intel)
-            power += intel / 2;
+            power += intel / 20.0;
         else
-            power += 10;
+            power += global_spell_skill_adjustment;
 
         power += 20;
 
