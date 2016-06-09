@@ -3350,7 +3350,7 @@ bool bolt::misses_player(int hurted)
         if (hit_verb.empty())
             hit_verb = engulfs ? "engulfs" : "hits";
         if (flavour != BEAM_VISUAL && !is_enchantment())
-            mprf("The %s %s you! (%d)", name.c_str(), hit_verb.c_str(), hurted);
+            mprf("The %s %s you!", name.c_str(), hit_verb.c_str());
         return false;
     }
 
@@ -3483,7 +3483,7 @@ bool bolt::misses_player(int hurted)
             hit_verb = engulfs ? "engulfs" : "hits";
 
         if (_test_beam_hit(roll, real_tohit, dodge_more, pierce, defl, from_player, to_player))
-            mprf("The %s %s you! (%d)", name.c_str(), hit_verb.c_str(), hurted);
+            mprf("The %s %s you!", name.c_str(), hit_verb.c_str());
         else
             mprf("Helpless, you fail to dodge the %s.", name.c_str());
 
@@ -4028,7 +4028,7 @@ void bolt::affect_player()
         {
             if (hit_verb.empty())
                 hit_verb = engulfs ? "engulfs" : "hits";
-            mprf("The %s %s you! (%d)", name.c_str(), hit_verb.c_str(), rune_curse_dam_adjust(hurted));
+            mprf("The %s %s you!", name.c_str(), hit_verb.c_str());
         }
 
         // Irresistible portion of resistable effect; must happen before MR
@@ -4979,8 +4979,8 @@ void bolt::affect_monster(monster* mon)
                 hit_verb = engulfs ? "engulfs" : "hits";
             if (you.see_cell(mon->pos()))
             {
-                mprf("The %s %s %s. (%d)", name.c_str(), hit_verb.c_str(),
-                     mon->name(DESC_THE).c_str(), final);
+                mprf("The %s %s %s.", name.c_str(), hit_verb.c_str(),
+                     mon->name(DESC_THE).c_str());
             }
             else if (heard && !hit_noise_msg.empty())
                 mprf(MSGCH_SOUND, "%s", hit_noise_msg.c_str());
@@ -5118,11 +5118,11 @@ void bolt::affect_monster(monster* mon)
         if (hit_verb.empty())
             hit_verb = engulfs ? "engulfs" : "hits";
 
-        mprf("The %s %s %s. (%d)",
+        mprf("The %s %s %s.",
              name.c_str(),
              hit_verb.c_str(),
-             mon->name(DESC_THE).c_str(),
-             final);
+             mon->name(DESC_THE).c_str()
+        );
 
     }
     else if (heard && !hit_noise_msg.empty())
