@@ -8553,6 +8553,33 @@ void player::increase_duration(duration_type dur, int turns, int cap, const char
     duration[dur] += turns * BASELINE_DELAY;
     if (cap && duration[dur] > cap)
         duration[dur] = cap;
+
+    if (you.rune_curse_active[RUNE_SPIDER])
+    {
+        switch(dur)
+        {
+            case DUR_ANCESTOR_DELAY:
+            case DUR_BARBS:
+            case DUR_CONF:
+            case DUR_CORONA:
+            case DUR_EXHAUSTED:
+            case DUR_FLAYED:
+            case DUR_FROZEN:
+            case DUR_GRASPING_ROOTS:
+            case DUR_LIQUID_FLAMES:
+            case DUR_LOWERED_MR:
+            case DUR_PARALYSIS:
+            case DUR_PETRIFIED:
+            case DUR_POISONING:
+            case DUR_SILENCE:
+            case DUR_SLOW:
+            case DUR_VERTIGO:
+                duration[dur] = duration[dur] * 5 / 4;
+                break;
+            default:
+                break;
+        }
+    }
 //    if (dur == DUR_BERSERK || dur == DUR_INVIS || dur == DUR_HASTE)
 //        inc_sp(turns * 8);
 

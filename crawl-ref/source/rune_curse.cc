@@ -94,8 +94,13 @@ const string rune_curse_description(const rune_type rune)
             message = "More monsters are generated. Bands are larger.";
             break;
 
-        case RUNE_SWAMP:
+        case RUNE_SPIDER:
+            message = "Negative effects last longer.";
+            break;
+
         case RUNE_SNAKE:
+
+        case RUNE_SWAMP:
         case RUNE_SHOALS:
         case RUNE_VAULTS:
         case RUNE_TOMB:
@@ -112,7 +117,6 @@ const string rune_curse_description(const rune_type rune)
         case RUNE_CEREBOV:
         case RUNE_GLOORX_VLOQ:
 
-        case RUNE_SPIDER:
         case RUNE_DWARF:
         case RUNE_CRYPT:
 
