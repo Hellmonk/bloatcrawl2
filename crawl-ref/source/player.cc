@@ -4216,12 +4216,17 @@ void flush_mp()
     you.redraw_magic_points = true;
 }
 
-void _handle_overdraft(const int overdraft)
+void _handle_overexertion(const int overdraft)
 {
     you.duration[DUR_TIRED] = 1;
 
     mprf(MSGCH_WARN, "You are pushing your body beyond it's limits!");
-    const int rot_amount = div_rand_round(overdraft, 100);
+
+    int reduction = 50;
+    if (you.rune_curse_active[RUNE_SWAMP])
+        reduction = 10;
+
+    const int rot_amount = div_rand_round(overdraft, reduction);
     if (rot_amount)
     {
         mprf(MSGCH_WARN, "Your body breaks down under the strain! (rot+%d)", rot_amount);
@@ -4247,7 +4252,7 @@ bool dec_mp(int mp_loss, bool silent, bool allow_overdrive)
     {
         const int overdraft = -you.mp;
         if (allow_overdrive)
-            _handle_overdraft(overdraft);
+            _handle_overexertion(overdraft);
 
         you.mp = max(0, you.mp);
         bool sent_message = false;
@@ -4571,7 +4576,7 @@ bool dec_sp(int sp_loss, bool silent, bool allow_overdrive)
     {
         const int overdraft = -you.sp;
         if (allow_overdrive)
-            _handle_overdraft(overdraft);
+            _handle_overexertion(overdraft);
 
         you.sp = 0;
 

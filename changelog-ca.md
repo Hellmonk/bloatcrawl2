@@ -4,8 +4,9 @@
     * slimy rune: you no longer can lose mutations by getting mutated, even if heavily mutated. Cure mutation potions 
       fail 1/3 of the time.
     * abyssal rune: 25% more monsters spawn. Bands are 25% bigger too.
-    * gossamer rune: bad effects last 25% longer on player.
+    * gossamer rune: bad effects last 25% longer.
     * serpentine rune: magic and stamina costs are 25% higher.
+    * decaying rune: higher chance of rotting when you over exert yourself.
 
 * Some rune branches will require one or more runes before you can get in. 
     * Randomly chosen at beginnng of game.

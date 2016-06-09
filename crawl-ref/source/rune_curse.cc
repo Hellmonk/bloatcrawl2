@@ -103,6 +103,7 @@ const string rune_curse_description(const rune_type rune)
             break;
 
         case RUNE_SWAMP:
+            message = "Higher chance of rotting when over-exerting.";
             break;
 
         case RUNE_SHOALS:
