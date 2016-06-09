@@ -935,6 +935,10 @@ monster* place_monster(mgen_data mg, bool force_pos, bool dont_place, bool first
 #endif
         band = _choose_band(mg.cls, band_size, leader);
         band_size++;
+
+        if (you.rune_curse_active[RUNE_ABYSSAL])
+            band_size = div_rand_round(band_size * 5, 4);
+
         for (int i = 1; i < band_size; ++i)
         {
             band_monsters[i] = _band_member(band, i, place, allow_ood);

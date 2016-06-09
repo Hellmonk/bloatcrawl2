@@ -85,8 +85,13 @@ const string rune_curse_description(const rune_type rune)
         case RUNE_ELF:
             message = "Enemy spell power is increased.";
             break;
+
         case RUNE_SLIME:
             message = "Removing mutations is more difficult.";
+            break;
+
+        case RUNE_ABYSSAL:
+            message = "More monsters are generated. Bands are larger.";
             break;
 
         case RUNE_SWAMP:
@@ -100,7 +105,6 @@ const string rune_curse_description(const rune_type rune)
         case RUNE_COCYTUS:
         case RUNE_TARTARUS:
 
-        case RUNE_ABYSSAL:
         case RUNE_DEMONIC:
 
         case RUNE_MNOLEG:

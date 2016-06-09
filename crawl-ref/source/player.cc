@@ -10181,6 +10181,9 @@ int player_monster_gen_modifier(int amount)
             break;
     }
 
+    if (you.rune_curse_active[RUNE_ABYSSAL])
+        percent += 25;
+
     return amount * percent / 100;
 }
 

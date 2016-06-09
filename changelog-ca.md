@@ -1,7 +1,9 @@
 ## v1.5.6
 
-* Implemented rune curse for slimy rune: you no longer can lose mutations by getting mutated, even if heavily mutated.
-  Cure mutation potions fail 1/3 of the time.
+* Implemented more rune curses:
+    * slimy rune: you no longer can lose mutations by getting mutated, even if heavily mutated. Cure mutation potions 
+      fail 1/3 of the time.
+    * abyssal rune: 25% more monsters spawn. Bands are 25% bigger too.
 
 * Some rune branches will require one or more runes before you can get in. 
     * Randomly chosen at beginnng of game.
