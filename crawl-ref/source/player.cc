@@ -2051,9 +2051,10 @@ int player_movement_speed()
     }
 
     if (player_is_very_tired(true))
-    {
-        mv = 1200;
-    }
+        mv += 100;
+
+    if (you.rune_curse_active[RUNE_TOMB])
+        mv += 100;
 
     // transformations
     if (in_quick_mode())

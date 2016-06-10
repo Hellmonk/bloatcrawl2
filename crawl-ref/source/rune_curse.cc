@@ -123,6 +123,8 @@ const string rune_curse_description(const rune_type rune)
             break;
 
         case RUNE_TOMB:
+            message = "Normal movement speed is reduced. Quick mode isn't affected.";
+            break;
 
         case RUNE_DIS:
         case RUNE_GEHENNA:
