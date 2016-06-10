@@ -505,10 +505,9 @@ void zappy(zap_type z_type, int power, bool is_monster, bolt &pbolt)
             const int range = grid_distance(pbolt.source, pbolt.target);
             pbolt.hit = player_tohit_modifier(pbolt.hit, range);
 
-            // wands and spells are easier to target than ranged or melee weapons
-            pbolt.hit += 5;
-
             if (pbolt.hit != AUTOMATIC_HIT)
+                // wands and spells are easier to target than ranged or melee weapons
+                pbolt.hit += 5;
                 pbolt.hit = max(0, pbolt.hit - 5 * you.inaccuracy());
         }
     }
@@ -5027,7 +5026,7 @@ void bolt::affect_monster(monster* mon)
     // Make a copy of the to-hit before we modify it.
     int beam_hit = hit;
 
-    if (beam_hit != AUTOMATIC_HIT)
+    if (beam_hit >= AUTOMATIC_HIT)
     {
         if (mon->invisible() && !can_see_invis)
             beam_hit /= 2;

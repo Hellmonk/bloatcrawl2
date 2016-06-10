@@ -9990,7 +9990,7 @@ int player_tohit_modifier(int tohit, int range)
 {
     ASSERT(range <= LOS_MAX_RANGE);
 
-    if (tohit == AUTOMATIC_HIT)
+    if (tohit >= AUTOMATIC_HIT)
         return tohit;
 
     if (you.duration[DUR_PORTAL_PROJECTILE])
@@ -10364,8 +10364,8 @@ void player_update_last_to_hit_chance(int chance)
     if (chance < 0)
         chance = 0;
 
-    if (chance > 99)
-        chance = 99;
+    if (chance > 100)
+        chance = 100;
 
     you.last_to_hit_chance = chance;
     you.redraw_hit_chance = true;
