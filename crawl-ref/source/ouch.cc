@@ -318,8 +318,8 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         {
             if (doEffects && hurted > 0)
             {
-                you.heal(roll_dice(2, 9));
                 mpr("You are bolstered by the flame.");
+                you.heal(roll_dice(2, 9));
             }
             hurted = 0;
         }

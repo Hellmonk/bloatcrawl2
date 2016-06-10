@@ -3601,7 +3601,7 @@ int monster::evasion(ev_ignore_type evit, const actor* /*act*/) const
     return max(ev, 0);
 }
 
-bool monster::heal(int amount)
+bool monster::heal(int amount, bool silent)
 {
     if (mons_is_statue(type))
         return false;
@@ -3618,7 +3618,7 @@ bool monster::heal(int amount)
         return false;
 
     hit_points += amount;
-    if (amount > 0)
+    if (amount > 0 && !silent)
         mprf("(mon hp+%d)", amount);
 
     bool success = true;

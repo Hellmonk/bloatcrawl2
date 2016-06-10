@@ -10389,7 +10389,7 @@ void _heal_all_monsters()
         if (!mons.alive())
             continue;
         if (mons_can_regenerate(&mons))
-            mons.heal(mons.max_hit_points);
+            mons.heal(mons.max_hit_points, true);
     }
 }
 

@@ -187,10 +187,10 @@ static vector<string> _desc_pacification_potential(const monster_info &mi)
  */
 bool heal_monster(monster& patient, int amount)
 {
+    mprf("You heal %s.", patient.name(DESC_THE).c_str());
+
     if (!patient.heal(amount))
         return false;
-
-    mprf("You heal %s.", patient.name(DESC_THE).c_str());
 
     if (patient.hit_points == patient.max_hit_points)
         simple_monster_message(&patient, " is completely healed.");
