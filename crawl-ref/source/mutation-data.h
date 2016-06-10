@@ -2253,6 +2253,26 @@ static const mutation_def mut_data[] =
    "Your dna gains focus."},
 },
 
+{ MUT_QUICK_CASTING, 20, 3, mutflag::GOOD, false,
+  "quick casting",
+
+  {
+   "Spell casting takes 75% of normal time.",
+   "Spell casting takes 50% of normal time.",
+   "Spell casting takes 25% of normal time.",
+  },
+  {
+   "Your spell casting speeds up.",
+   "Your spell casting speeds up.",
+   "Your spell casting speeds up.",
+  },
+  {
+   "Your spell casting slows down.",
+   "Your spell casting slows down.",
+   "Your spell returns to normal.",
+  },
+},
+
 // deprecated
 { MUT_HUNGERLESS, 0, 1, mutflag::GOOD, false,
   "hungerless",

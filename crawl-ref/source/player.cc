@@ -9704,7 +9704,7 @@ int generic_action_delay(const int skill, const int base, const action_delay_typ
     const int dex = (you.dex(true) - 10) * 10;
     const int min_delay_reached_at = 60;
     // 100 is full amount, 80 = 80% of original
-    const int global_reduction = 90;
+    const int global_reduction = 100;
 
     const int factor = (min_delay_reached_at - 10) * 10;
 
@@ -9726,12 +9726,16 @@ int generic_action_delay(const int skill, const int base, const action_delay_typ
 int spell_cast_delay(const action_delay_type type)
 {
     const int skill = you.skill(SK_SPELLCASTING, 10);
-    const int base = 15;
+    const int base = 20;
 
     int delay = generic_action_delay(skill, base);
 
     if (you.wearing(EQ_AMULET, AMU_QUICK_CAST))
         delay = (delay + 1) / 2;
+
+    const int quick_cast = player_mutation_level(MUT_QUICK_CASTING);
+    if (quick_cast)
+        delay = delay * (4 - quick_cast) / 4;
 
     return delay * you.time_taken / 10;
 }

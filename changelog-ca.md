@@ -1,5 +1,8 @@
 ## v1.5.6
 
+* Added quick casting mutation
+    * Increases spellcasting speed.
+
 * Added amulet of quick casting
     * Doubles casting speed.
 
@@ -28,7 +31,8 @@
 
 * Crosstraining removed
     * Now that the fighting skill takes care of a lot of "crosstraining" concepts, there is no need for another
-      crosstraining path. This helps to make the weapon skill investment choice more meaningful. 
+      crosstraining path. This helps to make the weapon skill investment choice more meaningful. Humans can still
+      crosstrain.
 
 * Spell school effects are no longer based on an average of spell skills, but instead on the maximum.
     * This decouples spell difficulty from school accessibility.
