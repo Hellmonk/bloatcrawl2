@@ -1,4 +1,8 @@
 ## v1.5.6
+* Limit the number of uniques that can be generated on one floor
+    * Easy / Standard mode can only have 1 unique per floor.
+    * Challenge can have 2.
+    * Nightmare doesn't have a limit.
 
 * Added quick casting mutation
     * Increases spellcasting speed.
