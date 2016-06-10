@@ -698,7 +698,7 @@ public:
     void slow_down(actor *, int str) override;
     void confuse(actor *, int strength) override;
     void weaken(actor *attacker, int pow) override;
-    bool heal(int amount) override;
+    bool heal(int amount, bool silent = false) override;
     bool drain_exp(actor *, bool quiet = false, int pow = 3) override;
     bool rot(actor *, int amount, bool quiet = false, bool no_cleanup = false)
         override;

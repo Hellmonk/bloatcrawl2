@@ -2963,8 +2963,14 @@ Ice
 SustAb
   sustain abilities
 
-Regen
-  regeneration
+RegenHP
+  regeneration of health
+
+RegenMP
+  regeneration of magic
+
+RegenSP
+  regeneration of stamina
 
 Wiz
   wizardry

@@ -503,15 +503,14 @@ bool attack::distortion_affects_defender()
     {
     case SMALL_DMG:
         special_damage += 1 + random2avg(7, 2);
-        special_damage_message = make_stringf("Space bends around %s. (%d)",
-                                              defender_name(false).c_str(),
-                                              special_damage);
+        special_damage_message = make_stringf("Space bends around %s.",
+                                              defender_name(false).c_str() );
         break;
     case BIG_DMG:
         special_damage += 3 + random2avg(24, 2);
-        special_damage_message = make_stringf("Space warps horribly around %s! (%d)",
-                                              defender_name(false).c_str(),
-                                              special_damage);
+        special_damage_message = make_stringf("Space warps horribly around %s!",
+                                              defender_name(false).c_str()
+                                              );
         break;
     case BLINK:
         if (defender_visible)
@@ -1051,23 +1050,6 @@ int attack::inflict_damage(int dam, beam_type flavour, bool clean)
     }
     return defender->hurt(responsible, dam, flavour, kill_type,
                           "", aux_source.c_str(), clean);
-}
-
-/* If debug, return formatted damage done
- *
- */
-string attack::debug_damage_number()
-{
-//#ifdef DEBUG_DIAGNOSTICS
-	string result = "";
-    /* we'll do this in a better place
-	if(damage_done > 0)
-		result = make_stringf(" (%d)", damage_done);
-     */
-    return result;
-//#else
-//    return "";
-//#endif
 }
 
 /* Returns standard attack punctuation

@@ -5010,14 +5010,14 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         if (foe->is_player())
         {
             if (you.airborne())
-                mprf("The air twists around and violently strikes you in flight! (%d)", damage_taken);
+                mprf("The air twists around and violently strikes you in flight!");
             else
-                mprf("The air twists around and strikes you! (%d)", damage_taken);
+                mprf("The air twists around and strikes you!");
         }
         else
         {
             monster_message(foe->as_monster(),
-                                   " is struck by the twisting air! (%d)", damage_taken);
+                                   " is struck by the twisting air!");
         }
 
         pbolt.flavour = BEAM_AIR;
@@ -5037,9 +5037,9 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
 		foe->hurt(mons, damage, BEAM_MISSILE, KILLED_BY_BEAM,
                        "", "by divine providence");
         if (foe->is_player())
-            mprf("%s smites you! (%d)", _god_name(god).c_str(), damage);
+            mprf("%s smites you!", _god_name(god).c_str());
         else
-            monster_message(foe->as_monster(), " is smitten. (%d)", damage);
+            monster_message(foe->as_monster(), " is smitten.");
         return;
     }
 

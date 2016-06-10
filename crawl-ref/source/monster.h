@@ -480,7 +480,7 @@ public:
              string aux = "",
              bool cleanup_dead = true,
              bool attacker_effects = true) override;
-    bool heal(int amount) override;
+    bool heal(int amount, bool silent = false) override;
     void blame_damage(const actor *attacker, int amount);
     void blink() override;
     void teleport(bool right_now = false,

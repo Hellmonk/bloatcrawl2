@@ -1,5 +1,20 @@
 ## v1.5.6
 
+* Made carnivore and herbivore mutations more meaningful.
+    * Carnivore increases stamina gained from stamina potions, but reduces magic from magic potions.
+    * Herbivore does the opposite.
+
+* Limit the number of uniques that can be generated on one floor
+    * Easy / Standard mode can only have 1 unique per floor.
+    * Challenge can have 2.
+    * Nightmare doesn't have a limit.
+
+* Added quick casting mutation
+    * Increases spellcasting speed.
+
+* Added amulet of quick casting
+    * Doubles casting speed.
+
 * Implemented more rune curses:
     * You can see the list of curses in effect with the ["] key.
     * elven rune: monster spellpower increased by 25%.
@@ -14,6 +29,7 @@
     * creeping rune: when monsters are killed, they occasionally come back to haunt the player. Only if they drop a
       corpse though, so strategies that reduce the number of corpses will also reduce this effect.
     * silver rune: less items are spawned, but monsters are more likely to be equipped with better items. 
+    * golden rune: slower normal movement speed, quick mode is unaffected.    
 
 * Some rune branches will require one or more runes before you can get in. 
     * Randomly chosen at beginnng of game.
@@ -24,7 +40,8 @@
 
 * Crosstraining removed
     * Now that the fighting skill takes care of a lot of "crosstraining" concepts, there is no need for another
-      crosstraining path. This helps to make the weapon skill investment choice more meaningful. 
+      crosstraining path. This helps to make the weapon skill investment choice more meaningful. Humans can still
+      crosstrain.
 
 * Spell school effects are no longer based on an average of spell skills, but instead on the maximum.
     * This decouples spell difficulty from school accessibility.

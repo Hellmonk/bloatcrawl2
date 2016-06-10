@@ -60,7 +60,7 @@ static uint8_t _jewellery_type_from_artefact_prop(const string &s
 #endif
                                                   )
 {
-    if (s == "Regen")
+    if (s == "RegenHP")
 #if TAG_MAJOR_VERSION == 34
         return is_amulet ? AMU_HEALTH_REGENERATION : RING_REGENERATION;
 #else

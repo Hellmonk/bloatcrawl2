@@ -825,11 +825,10 @@ void ranged_attack::announce_hit()
     if (!needs_message)
         return;
 
-    mprf("%s %s %s%s%s",
+    mprf("%s %s %s%s",
          projectile->name(DESC_THE).c_str(),
          attack_verb.c_str(),
          defender_name(false).c_str(),
-         debug_damage_number().c_str(),
          attack_strength_punctuation(damage_done).c_str());
 }
 

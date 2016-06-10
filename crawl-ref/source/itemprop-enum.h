@@ -203,6 +203,7 @@ enum jewellery_type
     AMU_REFLECTION,
     AMU_HEALTH_REGENERATION,
     AMU_STAMINA_SHIELD,
+    AMU_QUICK_CAST,
 
     NUM_JEWELLERY,
 	// to remove

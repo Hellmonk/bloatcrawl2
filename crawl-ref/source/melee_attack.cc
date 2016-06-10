@@ -1406,10 +1406,9 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
 
 void melee_attack::player_announce_aux_hit()
 {
-    mprf("You %s %s%s%s",
+    mprf("You %s %s%s",
          aux_verb.c_str(),
          defender->name(DESC_THE).c_str(),
-         debug_damage_number().c_str(),
          attack_strength_punctuation(damage_done).c_str());
 }
 
@@ -2100,11 +2099,11 @@ void melee_attack::attacker_sustain_passive_damage()
 
     int hurt = roll_dice(1, acid_strength);
     if (attacker->is_player())
-        mprf(you.hands_act("burn", "! (%d)").c_str(), hurt);
+        mprf(you.hands_act("burn", "!").c_str());
     else
     {
         monster_message(attacker->as_monster(),
-                               " is burned by acid! (%d)", hurt);
+                               " is burned by acid!");
     }
     attacker->hurt(defender, hurt, BEAM_ACID,
                    KILLED_BY_ACID, "", "", false);
@@ -2143,10 +2142,9 @@ void melee_attack::apply_staff_damage()
         if (special_damage)
         {
             special_damage_message =
-                make_stringf("%s %s electrocuted! (%d)",
+                make_stringf("%s %s electrocuted!",
                              defender->name(DESC_THE).c_str(),
-                             defender->conj_verb("are").c_str(),
-							 special_damage
+                             defender->conj_verb("are").c_str()
 							 );
             special_damage_flavour = BEAM_ELECTRICITY;
         }
@@ -2163,11 +2161,10 @@ void melee_attack::apply_staff_damage()
         {
             special_damage_message =
                 make_stringf(
-                    "%s freeze%s %s! (%d)",
+                    "%s freeze%s %s!",
                     attacker->name(DESC_THE).c_str(),
                     attacker->is_player() ? "" : "s",
-                    defender->name(DESC_THE).c_str(),
-					special_damage
+                    defender->name(DESC_THE).c_str()
 					);
             special_damage_flavour = BEAM_COLD;
         }
@@ -2181,11 +2178,10 @@ void melee_attack::apply_staff_damage()
         {
             special_damage_message =
                 make_stringf(
-                    "%s crush%s %s! (%d)",
+                    "%s crush%s %s!",
                     attacker->name(DESC_THE).c_str(),
                     attacker->is_player() ? "" : "es",
-                    defender->name(DESC_THE).c_str(),
-					special_damage
+                    defender->name(DESC_THE).c_str()
 					);
         }
         break;
@@ -2200,11 +2196,10 @@ void melee_attack::apply_staff_damage()
         {
             special_damage_message =
                 make_stringf(
-                    "%s burn%s %s! (%d)",
+                    "%s burn%s %s!",
                     attacker->name(DESC_THE).c_str(),
                     attacker->is_player() ? "" : "s",
-                    defender->name(DESC_THE).c_str(),
-					special_damage);
+                    defender->name(DESC_THE).c_str());
             special_damage_flavour = BEAM_FIRE;
 
             if (defender->is_player())
@@ -2233,10 +2228,9 @@ void melee_attack::apply_staff_damage()
         {
             special_damage_message =
                 make_stringf(
-                    "%s convulse%s in agony! (%d)",
+                    "%s convulse%s in agony!",
                     defender->name(DESC_THE).c_str(),
-                    defender->is_player() ? "" : "s",
-                    special_damage);
+                    defender->is_player() ? "" : "s");
 
             attacker->god_conduct(DID_NECROMANCY, 4);
         }
@@ -2404,11 +2398,10 @@ void melee_attack::announce_hit()
 
     if (attacker->is_monster())
     {
-        mprf("%s %s %s%s%s%s",
+        mprf("%s %s %s%s%s",
              atk_name(DESC_THE).c_str(),
              attacker->conj_verb(mons_attack_verb()).c_str(),
              defender_name(true).c_str(),
-             debug_damage_number().c_str(),
              mons_attack_desc().c_str(),
              attack_strength_punctuation(damage_done).c_str());
     }
@@ -2420,10 +2413,10 @@ void melee_attack::announce_hit()
             verb_degree = " " + verb_degree;
         }
 
-        mprf("You %s %s%s%s%s",
+        mprf("You %s %s%s%s",
              attack_verb.c_str(),
              defender->name(DESC_THE).c_str(),
-             verb_degree.c_str(), debug_damage_number().c_str(),
+             verb_degree.c_str(),
              attack_strength_punctuation(damage_done).c_str());
     }
 }
@@ -2684,12 +2677,10 @@ void melee_attack::mons_apply_attack_flavour()
 
         if (needs_message && base_damage)
         {
-            mprf("%s %s engulfed in flames%s (%d)",
+            mprf("%s %s engulfed in flames%s",
                  defender_name(false).c_str(),
                  defender->conj_verb("are").c_str(),
-                 attack_strength_punctuation(special_damage).c_str(),
-				 special_damage
-				 );
+                 attack_strength_punctuation(special_damage).c_str() );
 
             _print_resist_messages(defender, base_damage, BEAM_FIRE);
         }
@@ -2708,12 +2699,11 @@ void melee_attack::mons_apply_attack_flavour()
 
         if (needs_message && base_damage)
         {
-            mprf("%s %s %s%s (%d)",
+            mprf("%s %s %s%s",
                  atk_name(DESC_THE).c_str(),
                  attacker->conj_verb("freeze").c_str(),
                  defender_name(true).c_str(),
-                 attack_strength_punctuation(special_damage).c_str(),
-				 special_damage
+                 attack_strength_punctuation(special_damage).c_str()
 				 );
 
             _print_resist_messages(defender, base_damage, BEAM_COLD);
@@ -2734,12 +2724,11 @@ void melee_attack::mons_apply_attack_flavour()
 
         if (needs_message && base_damage)
         {
-            mprf("%s %s %s%s (%d)",
+            mprf("%s %s %s%s",
                  atk_name(DESC_THE).c_str(),
                  attacker->conj_verb("shock").c_str(),
                  defender_name(true).c_str(),
-                 attack_strength_punctuation(special_damage).c_str(),
-				 special_damage
+                 attack_strength_punctuation(special_damage).c_str()
 				 );
 
             _print_resist_messages(defender, base_damage, BEAM_ELECTRICITY);
@@ -2772,7 +2761,7 @@ void melee_attack::mons_apply_attack_flavour()
                 {
                     if (needs_message)
                     {
-                        mprf("%s %s strength from %s injuries! (%d)",
+                        mprf("%s %s strength from %s injuries!",
                              atk_name(DESC_THE).c_str(),
                              attacker->conj_verb("draw").c_str(),
                              def_name(DESC_ITS).c_str(),
@@ -2931,12 +2920,11 @@ void melee_attack::mons_apply_attack_flavour()
 
         if (needs_message && special_damage)
         {
-            mprf("%s %s %s%s (%d)",
+            mprf("%s %s %s%s",
                  atk_name(DESC_THE).c_str(),
                  attacker->conj_verb("sear").c_str(),
                  defender_name(true).c_str(),
-                 attack_strength_punctuation(special_damage).c_str(),
-				 special_damage
+                 attack_strength_punctuation(special_damage).c_str()
 				 );
 
         }
@@ -3040,12 +3028,10 @@ void melee_attack::mons_apply_attack_flavour()
 
         if (needs_message && special_damage)
         {
-            mprf("%s %s %s! (%d)",
+            mprf("%s %s %s!",
                     atk_name(DESC_THE).c_str(),
                     attacker->conj_verb("burn").c_str(),
-                    defender_name(true).c_str(),
-                    special_damage
-					);
+                    defender_name(true).c_str());
 
             _print_resist_messages(defender, special_damage, BEAM_FIRE);
         }
@@ -3370,10 +3356,9 @@ void melee_attack::do_minotaur_retaliation()
                 }
                 else
                 {
-                    mprf("%s headbutts %s%s (%d)", defname.c_str(),
+                    mprf("%s headbutts %s%s", defname.c_str(),
                          attacker->name(DESC_THE).c_str(),
-                         attack_strength_punctuation(hurt).c_str(),
-                         hurt
+                         attack_strength_punctuation(hurt).c_str()
                     );
                 }
             }
@@ -3415,11 +3400,9 @@ void melee_attack::do_minotaur_retaliation()
         }
         else
         {
-            mprf("You headbutt %s%s (%d)",
+            mprf("You headbutt %s%s",
                  attacker->name(DESC_THE).c_str(),
-                 attack_strength_punctuation(hurt).c_str(),
-                 hurt
-            );
+                 attack_strength_punctuation(hurt).c_str());
             attacker->hurt(&you, hurt);
         }
     }

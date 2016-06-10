@@ -18,6 +18,9 @@ Once stamina is gone, you can't use quick mode, and will have a more difficult t
 
 Also keep in mind that heavy armour and shields will increase how much stamina is used while moving in quick mode, so
 earlier in the game it may increase your survivability to wear lighter armour. 
+
+If you are a tank type fighter, especially an axe wielder, where you want to go into the middle of a bunch of monsters
+to do the most damage, focus mode [E] can be very helpful, since it increases all of your defenses.
     
 ### Ranged Fighters
 
@@ -53,6 +56,17 @@ spellcasting skill. In the meantime, use lower cost spells. Since spell caps hav
 level 1 spells can be viable and useful late in the game, at higher power levels. They are especially valuable early
 game, when their MP cost is usually quite low compared to higher level spells, and so can be cast with power mode on
 [e] (increasing spell power and spellcasting speed) for longer without exhausting you.
+
+### Conjurers
+
+For spells that are heavily dependent on spell power (such as conjurations), playing in power mode as much as possible
+early in the game will help, since it boost spell power, which increases damage significantly. It also reduces casting
+time, which is vital early in the game when casting spells is slow. Training conjurations will increase spellpower of
+all conjuration spells, as well as reducing fail rate. And putting all points possible into intelligence early in the 
+game will also boost spell power, and give the added advantage of steadily reducing MP cost of spells. This should be
+all you need to train early game, until you start to need more powerful spells. Eventually you'll want to train
+spellcasting too to reduce MP costs and increase your casting speed, but in most cases you are better off wainting
+until you are past the early game stage to train spellcasting. 
 
 ### Summoners and Necromancers
 

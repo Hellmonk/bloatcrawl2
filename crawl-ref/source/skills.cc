@@ -1476,7 +1476,7 @@ bool is_useless_skill(skill_type skill)
         || (skill == SK_STEALTH && player_mutation_level(MUT_NO_STEALTH))
         || (skill == SK_LIGHT_MAGIC && player_mutation_level(MUT_NO_LIGHT_MAGIC))
         || (skill == SK_DARKNESS_MAGIC && player_mutation_level(MUT_NO_DARKNESS_MAGIC))
-        || (skill == SK_TIME_MAGIC && player_mutation_level(MUT_NO_TIME))
+        || (skill == SK_TIME_MAGIC && player_mutation_level(MUT_NO_TIME_MAGIC))
     )
     {
         return true;

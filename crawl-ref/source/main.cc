@@ -1779,12 +1779,19 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
         const branch_type branch = destination.branch;
         const bool rune_branch = branches[branch].runes.size() > 0;
 
-        if (rune_branch && down)
+        if (rune_branch && down && branch != BRANCH_PANDEMONIUM)
         {
             const rune_type first_rune = branches[branch].runes[0];
             if (!you.rune_curse_active[first_rune])
             {
-                const bool proceed = yesno("This leads to a rune branch. Once you enter, the curse associated with this rune will be permanently activated. Are you sure you want to enter now?", true, 'n');
+                mprf(MSGCH_WARN, "This leads to a rune branch. Once you enter, the curse associated with this rune will be permanently activated. ");
+                mprf(MSGCH_PLAIN, "This curse will result in the following: ");
+                for (rune_type rune : branches[branch].runes)
+                {
+                    mprf(MSGCH_PLAIN, rune_curse_description(first_rune).c_str());
+                }
+
+                const bool proceed = yesno("Are you sure you want to enter now?", true, 'n');
                 if (proceed)
                 {
                     for (rune_type rune : branches[branch].runes)

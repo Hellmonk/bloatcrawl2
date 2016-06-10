@@ -616,35 +616,23 @@ static spell_type _choose_mem_spell(spell_list &spells,
     ToggleableMenu spell_menu(MF_SINGLESELECT | MF_ANYPRINTABLE
                     | MF_ALWAYS_SHOW_MORE | MF_ALLOW_FORMATTING,
                     text_only);
+
+    string title1 = "Spells to Memorize:";
+    string title2 = "Spells to Describe:";
+
+    string extra_space = "";
 #ifdef USE_TILE_LOCAL
-    // [enne] Hack. Use a separate title, so the column headers are aligned.
-    spell_menu.set_title(
-        new MenuEntry(" Your Spells - Memorisation  (toggle to descriptions with '!')",
-            MEL_TITLE));
-
-    spell_menu.set_title(
-        new MenuEntry(" Your Spells - Descriptions  (toggle to memorisation with '!')",
-            MEL_TITLE), false);
-
-    {
-        MenuEntry* me =
-            new MenuEntry("     Spells                        Type          "
-                          "                Failure  Level",
-                MEL_ITEM);
-        me->colour = BLUE;
-        spell_menu.add_entry(me);
-    }
-#else
-    spell_menu.set_title(
-        new MenuEntry("     Spells (Memorisation)         Type          "
-                      "                Failure  Level",
-            MEL_TITLE));
-
-    spell_menu.set_title(
-        new MenuEntry("     Spells (Description)          Type          "
-                      "                Failure  Level",
-            MEL_TITLE), false);
+    // stupid hack
+    extra_space = "  ";
 #endif
+
+    const string titlestring1 = " " + make_stringf("%-25.25s", title1.c_str())
+                               + extra_space + "        Power Range      Fail Level MP  Type";
+    const string titlestring2 = " " + make_stringf("%-25.25s", title2.c_str())
+                               +  extra_space + "        Power Range      Fail Level MP  Type";
+
+    spell_menu.set_title(new MenuEntry(titlestring1, MEL_TITLE));
+    spell_menu.set_title(new MenuEntry(titlestring2, MEL_TITLE), false);
 
     spell_menu.set_highlighter(nullptr);
     spell_menu.set_tag("spell");
@@ -666,10 +654,7 @@ static spell_type _choose_mem_spell(spell_list &spells,
                                  num_misc > 1 ? "s" : "");
     }
 
-#ifndef USE_TILE_LOCAL
-    // Tiles menus get this information in the title.
     more_str += "   Toggle display with '<w>!</w>'";
-#endif
 
     spell_menu.set_more(formatted_string::parse_string(more_str));
 
@@ -683,7 +668,10 @@ static spell_type _choose_mem_spell(spell_list &spells,
     for (unsigned int i = 0; i < spells.size(); i++)
     {
         const spell_type spell = spells[i];
+        MenuEntry* me = new MenuEntry(spell_wide_description(spell, true), MEL_ITEM, 1, index_to_letter(i % 52));
 
+
+        /* old way
         ostringstream desc;
 
         int colour = LIGHTGRAY;
@@ -717,6 +705,7 @@ static spell_type _choose_mem_spell(spell_list &spells,
             new MenuEntry(desc.str(), MEL_ITEM, 1,
                           index_to_letter(i % 52));
 
+                          */
 #ifdef USE_TILE
         me->add_tile(tile_def(tileidx_spell(spell), TEX_GUI));
 #endif

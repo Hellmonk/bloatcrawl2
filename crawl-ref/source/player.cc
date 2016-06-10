@@ -2051,9 +2051,10 @@ int player_movement_speed()
     }
 
     if (player_is_very_tired(true))
-    {
-        mv = 1200;
-    }
+        mv += 100;
+
+    if (you.rune_curse_active[RUNE_TOMB])
+        mv += 100;
 
     // transformations
     if (in_quick_mode())
@@ -7087,8 +7088,11 @@ int player::evasion(ev_ignore_type evit, const actor* act) const
     return ev;
 }
 
-bool player::heal(int amount)
+bool player::heal(int amount, bool silent)
 {
+    if (amount > 0 && !silent)
+        mprf("(hp+%d)", amount);
+
     ::inc_hp(amount);
     return true; /* TODO Check whether the player was healed. */
 }
@@ -9703,7 +9707,7 @@ int generic_action_delay(const int skill, const int base, const action_delay_typ
     const int dex = (you.dex(true) - 10) * 10;
     const int min_delay_reached_at = 60;
     // 100 is full amount, 80 = 80% of original
-    const int global_reduction = 90;
+    const int global_reduction = 100;
 
     const int factor = (min_delay_reached_at - 10) * 10;
 
@@ -9725,9 +9729,16 @@ int generic_action_delay(const int skill, const int base, const action_delay_typ
 int spell_cast_delay(const action_delay_type type)
 {
     const int skill = you.skill(SK_SPELLCASTING, 10);
-    const int base = 15;
+    const int base = 20;
 
     int delay = generic_action_delay(skill, base);
+
+    if (you.wearing(EQ_AMULET, AMU_QUICK_CAST))
+        delay = (delay + 1) / 2;
+
+    const int quick_cast = player_mutation_level(MUT_QUICK_CASTING);
+    if (quick_cast)
+        delay = delay * (4 - quick_cast) / 4;
 
     return delay * you.time_taken / 10;
 }
@@ -9990,7 +10001,7 @@ int player_tohit_modifier(int tohit, int range)
 {
     ASSERT(range <= LOS_MAX_RANGE);
 
-    if (tohit == AUTOMATIC_HIT)
+    if (tohit >= AUTOMATIC_HIT)
         return tohit;
 
     if (you.duration[DUR_PORTAL_PROJECTILE])
@@ -10362,8 +10373,8 @@ void player_update_last_to_hit_chance(int chance)
     if (chance < 0)
         chance = 0;
 
-    if (chance > 99)
-        chance = 99;
+    if (chance > 100)
+        chance = 100;
 
     you.last_to_hit_chance = chance;
     you.redraw_hit_chance = true;
@@ -10378,7 +10389,7 @@ void _heal_all_monsters()
         if (!mons.alive())
             continue;
         if (mons_can_regenerate(&mons))
-            mons.heal(mons.max_hit_points);
+            mons.heal(mons.max_hit_points, true);
     }
 }
 

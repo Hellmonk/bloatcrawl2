@@ -167,8 +167,6 @@ protected:
     virtual int inflict_damage(int dam, beam_type flavour = NUM_BEAMS,
                                bool clean = false);
 
-    /* Output */
-    string debug_damage_number();
     string attack_strength_punctuation(int dmg);
     string evasion_margin_adverb();
 

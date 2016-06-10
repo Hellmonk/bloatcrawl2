@@ -5282,6 +5282,9 @@ string get_damage_level_string(mon_holy_type holi, mon_dam_level_type mdam)
 
 void print_wounds(const monster* mons)
 {
+    // this is unecessary now that players are more visibility into damage
+    return;
+
     if (!mons->alive() || mons->hit_points == mons->max_hit_points)
         return;
 

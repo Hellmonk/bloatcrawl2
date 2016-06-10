@@ -140,6 +140,7 @@ const char* jewellery_base_ability_string(int subtype)
 #endif
     case AMU_MAGIC_SHIELD:        return "MagicShield";
     case AMU_STAMINA_SHIELD:      return "StaminaShield";
+    case AMU_QUICK_CAST:          return "QuickCast";
     case AMU_FAITH:               return "Faith";
     case AMU_REFLECTION:          return "Reflect";
     case AMU_INACCURACY:          return "Inacc";
@@ -402,6 +403,8 @@ static const char* _jewellery_base_ability_description(int subtype)
     case AMU_STAMINA_SHIELD:
         return "It causes incoming damage to be split between your health and "
             "stamina.";
+    case AMU_QUICK_CAST:
+        return "It allows you to cast spells more quickly.";
     case AMU_FAITH:
         return "It allows you to gain divine favour quickly.";
     case AMU_REFLECTION:

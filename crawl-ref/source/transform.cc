@@ -2152,6 +2152,7 @@ bool is_self_transforming_spell(spell_type spell)
            && spell != SPELL_STICKS_TO_SNAKES
            && spell != SPELL_PETRIFY
            && spell != SPELL_IGNITE_POISON
+           && spell != SPELL_INVISIBILITY
         ;
 }
 

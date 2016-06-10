@@ -14,6 +14,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <sstream>
 
 #include "areas.h"
 #include "coordit.h"
@@ -75,6 +76,9 @@ struct spell_desc
 };
 
 #include "spl-data.h"
+#include "colour.h"
+#include "unicode.h"
+#include "format.h"
 
 static int spell_list[NUM_SPELLS];
 
@@ -1569,7 +1573,7 @@ static const mutation_type arcana_sacrifice_map[] = {
     MUT_NO_AIR_MAGIC,
     MUT_NO_LIGHT_MAGIC,
     MUT_NO_DARKNESS_MAGIC,
-    MUT_NO_TIME,
+    MUT_NO_TIME_MAGIC,
 };
 
 /**
@@ -1614,4 +1618,58 @@ skill_type arcane_mutation_to_skill(mutation_type mutation)
         if (arcana_sacrifice_map[exp] == mutation)
             return spell_type2skill(spschools_type::exponent(exp));
     return SK_NONE;
+}
+
+string spell_wide_description(spell_type spell, bool viewing)
+{
+    ostringstream desc;
+
+    int colour = LIGHTGRAY;
+    if (vehumet_is_offering(spell))
+        colour = LIGHTBLUE;
+        // Grey out spells for which you lack experience or spell levels.
+    else if (spell_difficulty(spell) > effective_xl()
+             || player_spell_levels() < spell_levels_required(spell))
+        colour = DARKGRAY;
+    else
+        colour = spell_highlight_by_utility(spell);
+
+    desc << "<" << colour_to_str(colour) << ">";
+
+    // spell name
+    desc << chop_string(spell_title(spell), 29);
+    desc << "</" << colour_to_str(colour) <<">";
+
+    const string rangestring = spell_range_string(spell);
+
+    string spell_power;
+    // choose numeric version for now
+    if(true)
+    	spell_power = spell_power_numeric_string(spell);
+    else
+    	spell_power = spell_power_string(spell);
+
+    desc << chop_string(spell_power, 6)
+         << chop_string(rangestring, 11 + tagged_string_tag_length(rangestring));
+
+    // spell fail rate, level
+    colour = failure_rate_colour(spell);
+    desc << "<" << colour_to_str(colour) << ">";
+    const string failure = failure_rate_to_string(raw_spell_fail(spell));
+    desc << chop_string(failure, 5);
+    desc << "</" << colour_to_str(colour) << ">";
+    desc << chop_string(make_stringf("%d", spell_difficulty(spell)), 6);
+
+    int mp_cost = spell_mp_cost(spell);
+    if (mp_cost == 0)
+    {
+        mp_cost = spell_mp_freeze(spell);
+    }
+
+    desc << chop_string(make_stringf("%d", mp_cost), 4);
+
+    // spell schools
+    desc << spell_schools_string(spell);
+
+    return desc.str();
 }

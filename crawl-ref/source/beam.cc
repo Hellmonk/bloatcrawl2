@@ -505,10 +505,9 @@ void zappy(zap_type z_type, int power, bool is_monster, bolt &pbolt)
             const int range = grid_distance(pbolt.source, pbolt.target);
             pbolt.hit = player_tohit_modifier(pbolt.hit, range);
 
-            // wands and spells are easier to target than ranged or melee weapons
-            pbolt.hit += 5;
-
             if (pbolt.hit != AUTOMATIC_HIT)
+                // wands and spells are easier to target than ranged or melee weapons
+                pbolt.hit += 5;
                 pbolt.hit = max(0, pbolt.hit - 5 * you.inaccuracy());
         }
     }
@@ -1508,16 +1507,16 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
         else if (original < hurted && doFlavouredEffects)
         {
             if (mons->is_icy())
-                monster_message(mons, " melts! (%d)", hurted);
+                monster_message(mons, " melts!");
             else if (mons_species(mons->type) == MONS_BUSH
                      && mons->res_fire() < 0)
             {
-                monster_message(mons, " is on fire! (%d)", hurted);
+                monster_message(mons, " is on fire!");
             }
             else if (pbolt.flavour == BEAM_FIRE)
-                monster_message(mons, " is burned terribly! (%d)", hurted);
+                monster_message(mons, " is burned terribly!");
             else
-                monster_message(mons, " is scalded terribly! (%d)", hurted);
+                monster_message(mons, " is scalded terribly!");
         }
         break;
 
@@ -1528,7 +1527,7 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
             if (!hurted)
                 simple_monster_message(mons, " shrugs off the wave.");
             else if (hurted > original)
-                monster_message(mons, " is doused terribly! (%d)", hurted);
+                monster_message(mons, " is doused terribly!");
         }
         break;
 
@@ -1551,7 +1550,7 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
         else if (original < hurted)
         {
             if (doFlavouredEffects)
-                monster_message(mons, " is frozen! (%d)", hurted);
+                monster_message(mons, " is frozen!");
         }
         break;
 
@@ -1574,7 +1573,7 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
         else if (original < hurted)
         {
             if (doFlavouredEffects)
-                monster_message(mons, " is electrocuted! (%d)", hurted);
+                monster_message(mons, " is electrocuted!");
         }
         break;
 
@@ -1646,7 +1645,7 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
             if (original > hurted)
                 simple_monster_message(mons, " resists.");
             else if (original < hurted)
-                monster_message(mons, " is drained terribly! (%d)", hurted);
+                monster_message(mons, " is drained terribly!");
 
             if (mons->observable())
                 pbolt.obvious_effect = true;
@@ -1694,7 +1693,7 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
         {
             monster_message(mons,
                                    hurted == 0 ? " appears unharmed."
-                                               : " writhes in agony! (%d)", hurted);
+                                               : " writhes in agony!");
         }
         break;
     }
@@ -1711,7 +1710,7 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
         else if (hurted > original)
         {
             if (doFlavouredEffects)
-                monster_message(mons, " is frozen! (%d)", hurted);
+                monster_message(mons, " is frozen!");
         }
         break;
 
@@ -1728,12 +1727,12 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
             if (mons->is_icy())
             {
                 if (doFlavouredEffects)
-                    monster_message(mons, " melts! (%d)", hurted);
+                    monster_message(mons, " melts!", hurted);
             }
             else
             {
                 if (doFlavouredEffects)
-                    monster_message(mons, " is burned terribly! (%d)", hurted);
+                    monster_message(mons, " is burned terribly!");
             }
         }
         break;
@@ -1770,7 +1769,7 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
         else if (original < hurted)
         {
             if (doFlavouredEffects)
-                monster_message(mons, " gets badly buffeted. (%d)", hurted);
+                monster_message(mons, " gets badly buffeted.");
         }
         break;
 
@@ -1796,9 +1795,9 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
                                                       : " appears unharmed.");
             }
             else if (hurted < original)
-                monster_message(mons, " partially resists. (%d)", hurted);
+                monster_message(mons, " partially resists.");
             else if (hurted > original)
-                monster_message(mons, " is drained terribly! (%d)", hurted);
+                monster_message(mons, " is drained terribly!");
         }
         break;
 
@@ -2212,7 +2211,7 @@ int silver_damages_victim(actor* victim, int damage, string &dmg_msg)
         return 0;
 
     char buf[80];
-    sprintf(buf, ("The silver sears " + victim->name(DESC_THE) + "! (%d)").c_str(), ret);
+    sprintf(buf, ("The silver sears " + victim->name(DESC_THE) + "!").c_str());
     dmg_msg = string(buf);
 
     return ret;
@@ -3504,7 +3503,7 @@ void bolt::affect_player_enchantment(bool resistible)
         if (x_chance_in_y(absorption_level * absorption_level, 10))
         {
             const int mp_gain = 2 + ench_power / 10;
-            mprf(MSGCH_INTRINSIC_GAIN, "You absorb the magic. (%d)", mp_gain);
+            mprf(MSGCH_INTRINSIC_GAIN, "You absorb the magic. (mp+%d)", mp_gain);
             inc_mp(mp_gain * 3);
             return;
         }
@@ -3689,14 +3688,14 @@ void bolt::affect_player_enchantment(bool resistible)
             }
 
             const int hurt = get_hp() / 2 - 1;
-            mprf("Your body is wracked with pain! (%d)", hurt);
+            mprf("Your body is wracked with pain!");
 
             // On the player, Agony acts like single-target torment.
             internal_ouch(max(0, hurt));
         }
         else {
             const int hurt = damage.roll();
-            mprf("Pain shoots through your body! (%d)", hurt);
+            mprf("Pain shoots through your body!");
 
             internal_ouch(hurt);
         }
@@ -3712,7 +3711,7 @@ void bolt::affect_player_enchantment(bool resistible)
         }
 
         const int hurt = damage.roll();
-        mprf("You convulse! (%d)", hurt);
+        mprf("You convulse!");
 
         if (aux_source.empty())
             aux_source = "by dispel undead";
@@ -3725,7 +3724,7 @@ void bolt::affect_player_enchantment(bool resistible)
     case BEAM_DISINTEGRATION:
     {
         int amt = damage.roll();
-        mprf("You are blasted! (%d)", amt);
+        mprf("You are blasted!");
 
         if (aux_source.empty())
             aux_source = "disintegration bolt";
@@ -5027,7 +5026,7 @@ void bolt::affect_monster(monster* mon)
     // Make a copy of the to-hit before we modify it.
     int beam_hit = hit;
 
-    if (beam_hit != AUTOMATIC_HIT)
+    if (beam_hit >= AUTOMATIC_HIT)
     {
         if (mon->invisible() && !can_see_invis)
             beam_hit /= 2;
@@ -5546,7 +5545,7 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
         case BEAM_DISINTEGRATION:   // disrupt/disintegrate
         {
             int hurt = damage.roll();
-            if (monster_message(mon, " is blasted (%d).", hurt))
+            if (monster_message(mon, " is blasted."))
                 obvious_effect = true;
             mon->hurt(agent(), hurt, flavour);
             return MON_AFFECTED;

@@ -3498,6 +3498,9 @@ static int _place_uniques()
                     uniq_map->name.c_str());
         }
 #endif
+
+        if (num_placed >= crawl_state.difficulty && crawl_state.difficulty != DIFFICULTY_NIGHTMARE)
+            break;
     }
 
 #ifdef DEBUG_UNIQUE_PLACEMENT

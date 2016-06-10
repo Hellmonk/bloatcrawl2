@@ -946,7 +946,7 @@ spret_type cast_freeze(int pow, monster* mons, bool fail)
     int hurted = mons_adjust_flavoured(mons, beam, orig_hurted);
     string name = mons->name(DESC_THE);
     mons->hurt(&you, hurted);
-    mprf("You freeze %s (%d).", name.c_str(), hurted);
+    mprf("You freeze %s.", name.c_str());
 
 
     if (mons->alive())
@@ -1017,9 +1017,9 @@ spret_type cast_airstrike(int pow, const dist &beam, bool fail)
     hurted = mons->apply_ac(mons->beam_resists(pbeam, hurted, false));
     dprf("preac: %d, postac: %d", preac, hurted);
 
-    mprf("The air twists around and %sstrikes %s! (%d)",
+    mprf("The air twists around and %sstrikes %s!",
          mons->airborne() ? "violently " : "",
-         mons->name(DESC_THE).c_str(), hurted);
+         mons->name(DESC_THE).c_str());
 
     mons->hurt(&you, hurted);
     if (mons->alive())
@@ -1641,7 +1641,7 @@ static int _ignite_poison_monsters(coord_def where, int pow, actor *agent)
     if (tracer)
         return mons_aligned(mon, agent) ? -1 * damage : damage;
 
-    monster_message(mon, " seems to burn from within! (%d)", damage);
+    monster_message(mon, " seems to burn from within!");
 
     dprf("Dice: %dd%d; Damage: %d", dam_dice.num, dam_dice.size, damage);
 
@@ -1882,7 +1882,7 @@ int discharge_monsters(coord_def where, int pow, actor *agent)
 
     if (victim->is_player())
     {
-        mprf("You are struck by lightning. (%d)", damage);
+        mprf("You are struck by lightning.");
         damage = 1 + random2(3 + pow / 15);
         dprf("You: static discharge damage: %d", damage);
         damage = check_your_resists(damage, BEAM_ELECTRICITY,
@@ -1907,8 +1907,8 @@ int discharge_monsters(coord_def where, int pow, actor *agent)
 
         if (damage)
         {
-            mprf("%s is struck by lightning. (%d)",
-                 mons->name(DESC_THE).c_str(), damage);
+            mprf("%s is struck by lightning.",
+                 mons->name(DESC_THE).c_str());
             if (agent->is_player())
             {
                 _player_hurt_monster(*mons, damage);
