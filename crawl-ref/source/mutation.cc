@@ -1357,10 +1357,13 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
                 {
                     existing_mutation = static_cast<mutation_type>(random2(NUM_MUTATIONS));
                     mdef = _get_mutation_def(existing_mutation);
-                    const int level = player_mutation_level(existing_mutation);
+                    const int level = player_mutation_level(existing_mutation, false);
 
                     if (level && level < mdef.levels)
                     {
+                        if (you.innate_mutation[existing_mutation] > 0 && x_chance_in_y(3, 4))
+                            continue;
+
                         if (MUT_BAD(mdef) && x_chance_in_y(3 - player_mutation_level(MUT_BAD_DNA), 4))
                             continue;
 
