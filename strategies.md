@@ -18,6 +18,9 @@ Once stamina is gone, you can't use quick mode, and will have a more difficult t
 
 Also keep in mind that heavy armour and shields will increase how much stamina is used while moving in quick mode, so
 earlier in the game it may increase your survivability to wear lighter armour. 
+
+If you are a tank type fighter, especially an axe wielder, where you want to go into the middle of a bunch of monsters
+to do the most damage, focus mode [E] can be very helpful, since it increases all of your defenses.
     
 ### Ranged Fighters
 

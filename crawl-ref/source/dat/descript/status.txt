@@ -54,7 +54,7 @@ Might status
 You are unnaturally strong. This provides bonuses to your strength and damage
 in physical combat.
 %%%%
-Regen status
+RegenHP status
 
 You regenerate health at an unnaturally fast rate. This is only shown for
 temporary regeneration.

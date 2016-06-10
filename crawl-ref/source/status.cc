@@ -322,7 +322,7 @@ bool fill_status_info(int status, status_info* inf)
         if (pbd_str > 0)
         {
             inf->light_colour = LIGHTMAGENTA;
-            inf->light_text   = make_stringf("Regen (%d)", pbd_str);
+            inf->light_text   = make_stringf("RegenHP (%d)", pbd_str);
         }
         break;
     }
@@ -758,7 +758,7 @@ static void _describe_regen(status_info* inf)
             inf->light_colour = _dur_colour(BLUE, dur_expiring(DUR_REGENERATION));
         else
             inf->light_colour = _dur_colour(BLUE, dur_expiring(DUR_TROGS_HAND));
-        inf->light_text   = "Regen";
+        inf->light_text   = "RegenHP";
         if (you.duration[DUR_TROGS_HAND])
             inf->light_text += " MR++";
         else if (no_heal)
