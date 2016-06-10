@@ -1624,12 +1624,21 @@ string spell_wide_description(spell_type spell, bool viewing)
 {
     ostringstream desc;
 
-    int highlight =  spell_highlight_by_utility(spell, COL_UNKNOWN, !viewing);
+    int colour = LIGHTGRAY;
+    if (vehumet_is_offering(spell))
+        colour = LIGHTBLUE;
+        // Grey out spells for which you lack experience or spell levels.
+    else if (spell_difficulty(spell) > effective_xl()
+             || player_spell_levels() < spell_levels_required(spell))
+        colour = DARKGRAY;
+    else
+        colour = spell_highlight_by_utility(spell);
 
-    desc << "<" << colour_to_str(highlight) << ">" << left;
+    desc << "<" << colour_to_str(colour) << ">";
 
     // spell name
     desc << chop_string(spell_title(spell), 29);
+    desc << "</" << colour_to_str(colour) <<">";
 
     const string rangestring = spell_range_string(spell);
 
@@ -1641,20 +1650,14 @@ string spell_wide_description(spell_type spell, bool viewing)
     	spell_power = spell_power_string(spell);
 
     desc << chop_string(spell_power, 6)
-         << chop_string(rangestring, 11 + tagged_string_tag_length(rangestring))
-    /* no longer needed
-         << chop_string(spell_hunger_string(spell), 8)
-         */
-        ;
-
-    desc << "</" << colour_to_str(highlight) <<">";
+         << chop_string(rangestring, 11 + tagged_string_tag_length(rangestring));
 
     // spell fail rate, level
-    highlight = failure_rate_colour(spell);
-    desc << "<" << colour_to_str(highlight) << ">";
+    colour = failure_rate_colour(spell);
+    desc << "<" << colour_to_str(colour) << ">";
     const string failure = failure_rate_to_string(raw_spell_fail(spell));
     desc << chop_string(failure, 5);
-    desc << "</" << colour_to_str(highlight) << ">";
+    desc << "</" << colour_to_str(colour) << ">";
     desc << chop_string(make_stringf("%d", spell_difficulty(spell)), 6);
 
     int mp_cost = spell_mp_cost(spell);

@@ -620,10 +620,16 @@ static spell_type _choose_mem_spell(spell_list &spells,
     string title1 = "Spells to Memorize:";
     string title2 = "Spells to Describe:";
 
+    string extra_space = "";
+#ifdef USE_TILE_LOCAL
+    // stupid hack
+    extra_space = "  ";
+#endif
+
     const string titlestring1 = " " + make_stringf("%-25.25s", title1.c_str())
-                               + "          Power Range      Fail Level MP  Type";
+                               + extra_space + "        Power Range      Fail Level MP  Type";
     const string titlestring2 = " " + make_stringf("%-25.25s", title2.c_str())
-                               + "          Power Range      Fail Level MP  Type";
+                               +  extra_space + "        Power Range      Fail Level MP  Type";
 
     spell_menu.set_title(new MenuEntry(titlestring1, MEL_TITLE));
     spell_menu.set_title(new MenuEntry(titlestring2, MEL_TITLE), false);
