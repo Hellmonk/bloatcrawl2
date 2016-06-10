@@ -3618,6 +3618,8 @@ bool monster::heal(int amount)
         return false;
 
     hit_points += amount;
+    if (amount > 0)
+        mprf("(mon hp+%d)", amount);
 
     bool success = true;
 

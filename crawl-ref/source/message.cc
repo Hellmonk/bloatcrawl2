@@ -1812,13 +1812,13 @@ void canned_msg(canned_message_type which_message, const int amount)
             break;
         case MSG_GAIN_HEALTH:
             if (amount > 0)
-                mprf("You feel better. (%d)", amount);
+                mprf("You feel better. (hp+%d)", amount);
             else
                 mpr("You feel better.");
             break;
         case MSG_GAIN_MAGIC:
             if (amount > 0)
-                mprf("You feel your power returning. (%d)", amount);
+                mprf("You feel your power returning. (mp+%d)", amount);
             else
                 mpr("You feel your power returning.");
             break;

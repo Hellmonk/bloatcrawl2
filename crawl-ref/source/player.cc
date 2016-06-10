@@ -7090,6 +7090,9 @@ int player::evasion(ev_ignore_type evit, const actor* act) const
 
 bool player::heal(int amount)
 {
+    if (amount > 0)
+        mprf("(hp+%d)", amount);
+
     ::inc_hp(amount);
     return true; /* TODO Check whether the player was healed. */
 }

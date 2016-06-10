@@ -1092,9 +1092,9 @@ bool zin_recite_to_single_monster(const coord_def& where)
     {
         int damage = 7 + (random2(spellpower) * 33 / 191);
         if (minor)
-            monster_message(mon, " is smitten by the wrath of Zin. (%d)", damage);
+            monster_message(mon, " is smitten by the wrath of Zin.");
         else
-            monster_message(mon, " is blasted by the fury of Zin! (%d)", damage);
+            monster_message(mon, " is blasted by the fury of Zin!");
         // XXX: This duplicates code in cast_smiting().
         mon->hurt(&you, damage);
         if (mon->alive())
@@ -1172,10 +1172,10 @@ bool zin_recite_to_single_monster(const coord_def& where)
                 if (mon->alive())
                 {
                     monster_message(mon,
-                      (d < 25) ? "'s chaotic flesh sizzles and spatters! (%d)" :
-                      (d < 50) ? "'s chaotic flesh bubbles and boils. (%d)"
-                                    : "'s chaotic flesh runs like molten wax. (%d)"
-                            , d);
+                      (d < 25) ? "'s chaotic flesh sizzles and spatters!" :
+                      (d < 50) ? "'s chaotic flesh bubbles and boils."
+                                    : "'s chaotic flesh runs like molten wax."
+                            );
 
                     print_wounds(mon);
                     behaviour_event(mon, ME_WHACK, &you);
@@ -1184,7 +1184,7 @@ bool zin_recite_to_single_monster(const coord_def& where)
                 else
                 {
                     monster_message(mon,
-                        " melts away into a sizzling puddle of chaotic flesh. (%d)", d);
+                        " melts away into a sizzling puddle of chaotic flesh.");
                     monster_die(mon, KILL_YOU, NON_MONSTER);
                 }
             }

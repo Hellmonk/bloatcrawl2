@@ -168,7 +168,7 @@ int check_your_resists(int hurted, beam_type flavour, string source,
             canned_msg(MSG_YOU_RESIST);
         else if (hurted > original && doEffects)
         {
-            mprf("You feel a terrible chill! (%d)", hurted);
+            mprf("You feel a terrible chill!");
             xom_is_stimulated(200);
         }
         break;
@@ -1070,7 +1070,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         }
 
         else if (dam > 0 && get_hp_max() <= dam * 2)
-            mprf(MSGCH_DANGER, "Ouch! That really hurt! (%d)", dam);
+            mprf(MSGCH_DANGER, "Ouch! That really hurt!");
 
         if (get_hp() > 0 && dam > 0)
         {
@@ -1090,7 +1090,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             // for note taking
             string damage_desc;
             if (!see_source)
-                damage_desc = make_stringf("something (%d)", dam);
+                damage_desc = make_stringf("something");
             else
             {
                 damage_desc = scorefile_entry(dam, source,

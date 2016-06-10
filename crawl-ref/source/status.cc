@@ -180,7 +180,7 @@ bool fill_status_info(int status, status_info* inf)
     {
 
     case DUR_CORROSION:
-        inf->light_text = make_stringf("Corr (%d)",
+        inf->light_text = make_stringf("Corr(%d)",
                           (-4 * you.props["corrosion_amount"].get_int()));
         break;
 
@@ -322,7 +322,7 @@ bool fill_status_info(int status, status_info* inf)
         if (pbd_str > 0)
         {
             inf->light_colour = LIGHTMAGENTA;
-            inf->light_text   = make_stringf("RegenHP (%d)", pbd_str);
+            inf->light_text   = make_stringf("RegenHP(%d)", pbd_str);
         }
         break;
     }
