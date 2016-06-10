@@ -807,15 +807,18 @@ bool cast_a_spell(bool check_range, spell_type spell)
                 }
 
                 msgwin_set_temporary(true);
-                if (you.last_cast_spell == SPELL_NO_SPELL
-                    || !Options.enable_recast_spell)
+
+                if (!is_processing_macro())
                 {
-                    mprf(MSGCH_PROMPT, "Cast which spell? (? or * to list) ");
-                }
-                else
-                {
-                    mprf(MSGCH_PROMPT, "Casting: <w>%s</w>", spell_title(you.last_cast_spell));
-                    mprf(MSGCH_PROMPT, "Confirm with . or Enter, or press ? or * to list all spells.");
+                    if (you.last_cast_spell == SPELL_NO_SPELL || !Options.enable_recast_spell)
+                    {
+                        mprf(MSGCH_PROMPT, "Cast which spell? (? or * to list) ");
+                    }
+                    else
+                    {
+                        mprf(MSGCH_PROMPT, "Casting: <w>%s</w>", spell_title(you.last_cast_spell));
+                        mprf(MSGCH_PROMPT, "Confirm with . or Enter, or press ? or * to list all spells.");
+                    }
                 }
 
                 keyin = get_ch();

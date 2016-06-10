@@ -1900,7 +1900,8 @@ bool direction_chooser::do_main_loop()
 
     const coord_def old_target = target();
     const command_type key_command = behaviour->get_command();
-    behaviour->update_top_prompt(&top_prompt);
+    if (!is_processing_macro())
+        behaviour->update_top_prompt(&top_prompt);
     bool loop_done = false;
 
     switch (key_command)
@@ -2096,7 +2097,7 @@ bool direction_chooser::choose_direction()
     objfind_pos = monsfind_pos = target();
 
     // If requested, show the beam on startup.
-    if (show_beam)
+    if (show_beam && !is_processing_macro())
     {
         have_beam = find_ray(you.pos(), target(), beam,
                              opc_solid_see, you.current_vision);
@@ -2106,7 +2107,8 @@ bool direction_chooser::choose_direction()
         need_beam_redraw = true;
 
     msgwin_set_temporary(true);
-    show_initial_prompt();
+    if (!is_processing_macro())
+        show_initial_prompt();
     need_text_redraw = false;
 
     do_redraws();
