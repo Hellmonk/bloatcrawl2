@@ -890,6 +890,7 @@ unsigned int item_value(item_def item, bool ident)
                 case AMU_HEALTH_REGENERATION:
                 case AMU_MAGIC_SHIELD:
                 case AMU_STAMINA_SHIELD:
+                case AMU_QUICK_CAST:
 //                case AMU_THE_GOURMAND:
                 case AMU_DISMISSAL:
                 case AMU_HARM:

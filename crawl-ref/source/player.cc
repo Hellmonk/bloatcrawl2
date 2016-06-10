@@ -9729,6 +9729,9 @@ int spell_cast_delay(const action_delay_type type)
 
     int delay = generic_action_delay(skill, base);
 
+    if (you.wearing(EQ_AMULET, AMU_QUICK_CAST))
+        delay = (delay + 1) / 2;
+
     return delay * you.time_taken / 10;
 }
 

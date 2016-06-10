@@ -789,6 +789,7 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
         case AMU_NOTHING:           return "nothing";
         case AMU_MAGIC_SHIELD:      return "magic shield";
         case AMU_STAMINA_SHIELD:    return "stamina shield";
+        case AMU_QUICK_CAST:        return "quick casting";
         case AMU_FAITH:             return "faith";
         case AMU_REFLECTION:        return "reflection";
         case AMU_HEALTH_REGENERATION:      return "health regeneration";

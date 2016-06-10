@@ -815,7 +815,8 @@ i-spirit AMU_MAGIC_SHIELD
 i-faith AMU_FAITH
 i-reflection AMU_REFLECTION
 i-regeneration AMU_HEALTH_REGENERATION
-i-spirit AMU_STAMINA_SHIELD AMU_ID_LAST
+i-spirit AMU_STAMINA_SHIELD
+i-spirit AMU_QUICK_CAST AMU_ID_LAST
 
 ####################OBJ_POTIONS
 %sdir item/potion

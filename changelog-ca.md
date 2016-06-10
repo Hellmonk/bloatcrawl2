@@ -1,5 +1,8 @@
 ## v1.5.6
 
+* Added amulet of quick casting
+    * Doubles casting speed.
+
 * Implemented more rune curses:
     * You can see the list of curses in effect with the ["] key.
     * elven rune: monster spellpower increased by 25%.

@@ -1304,8 +1304,8 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
         _magic_shield_message(unmeld);
         break;
 
-    case AMU_STAMINA_SHIELD:
-        _stamina_shield_message(unmeld);
+    case AMU_QUICK_CAST:
+        mpr("Your casting speed increases.");
         break;
     }
 
