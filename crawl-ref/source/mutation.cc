@@ -1332,13 +1332,11 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
             const int unfocussed = player_mutation_level(MUT_UNFOCUSSED_DNA);
 
             const int focus_level = 4 + focussed * 4 - unfocussed;
-            if (x_chance_in_y(random2(mutation_count), 15))
+            if (x_chance_in_y(random2(mutation_count), 15) && !god_gift && !force_mutation)
             {
                 const int clean_dna = player_mutation_level(MUT_CLEAN_DNA);
 
-                // God gifts override mutation loss due to being heavily
-                // mutated.
-                if (x_chance_in_y(2, 3 + clean_dna * clean_dna) && !god_gift && !force_mutation)
+                if (x_chance_in_y(2, 3 + clean_dna * clean_dna) || you.rune_curse_active[RUNE_SLIME])
                     return false;
                 else
                 {
@@ -1350,7 +1348,7 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
                     return delete_mutation(mutation, reason, failMsg, force_mutation, false);
                 }
             }
-            else if (x_chance_in_y(focus_level, 17) && mutation_count > 0)
+            else if (x_chance_in_y(focus_level, 17) && mutation_count > 0 && !god_gift && !force_mutation)
             {
                 int tries2 = 100;
                 bool found = false;
@@ -1766,6 +1764,12 @@ bool delete_mutation(mutation_type which_mutation, const string &reason,
 
         if (undead_mutation_rot())
             return false;
+
+        if (you.rune_curse_active[RUNE_SLIME] && x_chance_in_y(1, 3))
+        {
+            mpr("The slime rune prevented you from losing a mutation.");
+            return false;
+        }
     }
 
     if (which_mutation == RANDOM_MUTATION

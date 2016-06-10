@@ -61,7 +61,7 @@ const int rune_curse_mon_spellpower_adjustment(int spellpower)
 {
     if (you.rune_curse_active[RUNE_ELF])
     {
-        spellpower = spellpower * 4 / 3;
+        spellpower = spellpower * 5 / 4;
     }
 
     return spellpower;
@@ -76,17 +76,52 @@ const int rune_curse_depth_adjust(int depth)
     return depth;
 }
 
-const char* rune_curse_description(const rune_type rune)
+const string rune_curse_description(const rune_type rune)
 {
+    string message = "Coming soon...";
+
     switch (rune)
     {
-        case RUNE_ELF: return "Enemy spell power is increased.";
+        case RUNE_ELF:
+            message = "Enemy spell power is increased.";
+            break;
+
+        case RUNE_SLIME:
+            message = "Removing mutations is more difficult.";
+            break;
+
+        case RUNE_ABYSSAL:
+            message = "More monsters are generated. Bands are larger.";
+            break;
+
+        case RUNE_SPIDER:
+            message = "Negative effects last longer.";
+            break;
+
+        case RUNE_SNAKE:
+            message = "Stamina and Magic costs are higher.";
+            break;
 
         case RUNE_SWAMP:
-        case RUNE_SNAKE:
+            message = "Higher chance of rotting when over-exerting.";
+            break;
+
         case RUNE_SHOALS:
-        case RUNE_SLIME:
+            message = "Monsters have more energy.";
+            break;
+
+        case RUNE_DWARF:
+            message = "Enemy armour is more effective.";
+            break;
+
+        case RUNE_CRYPT:
+            message = "Monsters occasionally come back from the dead to haunt you.";
+            break;
+
         case RUNE_VAULTS:
+            message = "Less items spawn. Monsters are more likely to carry better items.";
+            break;
+
         case RUNE_TOMB:
 
         case RUNE_DIS:
@@ -94,7 +129,6 @@ const char* rune_curse_description(const rune_type rune)
         case RUNE_COCYTUS:
         case RUNE_TARTARUS:
 
-        case RUNE_ABYSSAL:
         case RUNE_DEMONIC:
 
         case RUNE_MNOLEG:
@@ -102,12 +136,11 @@ const char* rune_curse_description(const rune_type rune)
         case RUNE_CEREBOV:
         case RUNE_GLOORX_VLOQ:
 
-        case RUNE_SPIDER:
-        case RUNE_DWARF:
-        case RUNE_CRYPT:
-
-        default: return "Coming soon...";
+        default:
+            break;
     }
+
+    return message;
 }
 
 void list_rune_curses()

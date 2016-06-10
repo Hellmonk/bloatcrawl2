@@ -1578,8 +1578,12 @@ static void _monster_add_energy(monster& mons)
     if (mons.speed > 0)
     {
         // Randomise to make counting off monster moves harder:
-        const int energy_gained =
+        int energy_gained =
             max(1, div_rand_round(mons.speed * you.time_taken, 10));
+
+        if (you.rune_curse_active[RUNE_SHOALS])
+            energy_gained = energy_gained * 5 / 4;
+
         mons.speed_increment += energy_gained;
     }
 }

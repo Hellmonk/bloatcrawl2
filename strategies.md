@@ -1,5 +1,6 @@
-Here are some basic starting strategies for those who are new to this fork. Things are so different here than "vanilla" crawl, that these strategies can be 
-quite helpful for showing the possibilities, as well as helping those who are struggling to survive in this fork.
+Here are some basic starting strategies for those who are new to this fork. Things are so different here than "vanilla" 
+crawl, that these strategies can be quite helpful for showing the possibilities, as well as helping those who are 
+struggling to survive in this fork.
 
 ## General strategies
 
@@ -121,7 +122,9 @@ Blade Hands for very long.
 
 ### Having trouble getting spell failure rates low enough to cast reliably
 * Increase intelligence or spell school skills to reduce failure rate.
-* Turn on focus mode, which significantly lowers failure rate.
+* Turn on focus mode [E], which significantly lowers failure rate.
+* Try sticking with lower level spells which are much easier to cast until you can get the higher level ones online.
+  Lower level spells are much more valuable here than in vanilla crawl, and tend to be useful for much longer. 
 
 ### Can't get up the stairs to escape
 * Turn focus mode on when you reach the stairs, before attempting to ascend, to increase your defenses. If the monsters 

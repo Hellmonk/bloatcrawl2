@@ -1,14 +1,23 @@
 ## v1.5.6
 
+* Implemented more rune curses:
+    * You can see the list of curses in effect with the ["] key.
+    * elven rune: monster spellpower increased by 25%.
+    * slimy rune: you no longer can lose mutations by getting mutated, even if heavily mutated. Cure mutation potions 
+      fail 1/3 of the time.
+    * abyssal rune: 25% more monsters spawn. Bands are 25% bigger too.
+    * gossamer rune: bad effects last 25% longer.
+    * serpentine rune: magic and stamina costs are 25% higher.
+    * decaying rune: higher chance of rotting when you over exert yourself.
+    * barnacled rune: monsters have 25% more energy.
+    * dwarven rune: enemy ac is 25% more effective.
+    * creeping rune: when monsters are killed, they occasionally come back to haunt the player. Only if they drop a
+      corpse though, so strategies that reduce the number of corpses will also reduce this effect.
+    * silver rune: less items are spawned, but monsters are more likely to be equipped with better items. 
+
 * Some rune branches will require one or more runes before you can get in. 
     * Randomly chosen at beginnng of game.
 
-## v1.5.5
-
-* Implemented first specialized rune curse
-    * For elven rune. 
-    * You can see the list of curses in effect with the ["] key.
-    
 ## v1.5.4
 
 * Shield equipping / removal takes 0.5 turn instead of 5, like weapon swaps. 

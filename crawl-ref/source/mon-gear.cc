@@ -2540,11 +2540,25 @@ void give_item(monster *mons, int level_number, bool mons_summoned, bool spectra
     if (mons->type == MONS_MAURICE)
         _give_gold(mons, level_number);
 
+    if (you.rune_curse_active[RUNE_VAULTS])
+        level_number = div_rand_round(level_number * 4, 3);
+
     _give_book(mons, level_number);
-    _give_wand(mons, level_number);
-    _give_potion(mons, level_number);
+
+    int how_many = 1;
+
+    if (you.rune_curse_active[RUNE_VAULTS])
+        how_many = random2(6);
+
+    while (how_many-- > 0)
+    {
+        _give_wand(mons, level_number);
+        _give_potion(mons, level_number);
+    }
+
     _give_weapon(mons, level_number, false, true, spectral_orcs);
     _give_ammo(mons, level_number, mons_summoned);
     _give_armour(mons, 1 + level_number / 2, spectral_orcs);
     _give_shield(mons, 1 + level_number / 2);
 }
+

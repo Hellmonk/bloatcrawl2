@@ -4216,12 +4216,17 @@ void flush_mp()
     you.redraw_magic_points = true;
 }
 
-void _handle_overdraft(const int overdraft)
+void _handle_overexertion(const int overdraft)
 {
     you.duration[DUR_TIRED] = 1;
 
     mprf(MSGCH_WARN, "You are pushing your body beyond it's limits!");
-    const int rot_amount = div_rand_round(overdraft, 100);
+
+    int reduction = 50;
+    if (you.rune_curse_active[RUNE_SWAMP])
+        reduction = 10;
+
+    const int rot_amount = div_rand_round(overdraft, reduction);
     if (rot_amount)
     {
         mprf(MSGCH_WARN, "Your body breaks down under the strain! (rot+%d)", rot_amount);
@@ -4247,7 +4252,7 @@ bool dec_mp(int mp_loss, bool silent, bool allow_overdrive)
     {
         const int overdraft = -you.mp;
         if (allow_overdrive)
-            _handle_overdraft(overdraft);
+            _handle_overexertion(overdraft);
 
         you.mp = max(0, you.mp);
         bool sent_message = false;
@@ -4571,7 +4576,7 @@ bool dec_sp(int sp_loss, bool silent, bool allow_overdrive)
     {
         const int overdraft = -you.sp;
         if (allow_overdrive)
-            _handle_overdraft(overdraft);
+            _handle_overexertion(overdraft);
 
         you.sp = 0;
 
@@ -8553,6 +8558,33 @@ void player::increase_duration(duration_type dur, int turns, int cap, const char
     duration[dur] += turns * BASELINE_DELAY;
     if (cap && duration[dur] > cap)
         duration[dur] = cap;
+
+    if (you.rune_curse_active[RUNE_SPIDER])
+    {
+        switch(dur)
+        {
+            case DUR_ANCESTOR_DELAY:
+            case DUR_BARBS:
+            case DUR_CONF:
+            case DUR_CORONA:
+            case DUR_EXHAUSTED:
+            case DUR_FLAYED:
+            case DUR_FROZEN:
+            case DUR_GRASPING_ROOTS:
+            case DUR_LIQUID_FLAMES:
+            case DUR_LOWERED_MR:
+            case DUR_PARALYSIS:
+            case DUR_PETRIFIED:
+            case DUR_POISONING:
+            case DUR_SILENCE:
+            case DUR_SLOW:
+            case DUR_VERTIGO:
+                duration[dur] = duration[dur] * 5 / 4;
+                break;
+            default:
+                break;
+        }
+    }
 //    if (dur == DUR_BERSERK || dur == DUR_INVIS || dur == DUR_HASTE)
 //        inc_sp(turns * 8);
 
@@ -9773,10 +9805,10 @@ void player_was_offensive()
             if (you.current_form_spell_failure == 2)
                 mprf(MSGCH_WARN, "Your form is beginning to unravel.");
 
-            if (you.current_form_spell_failure == 4)
+            if (you.current_form_spell_failure == 3)
                 mprf(MSGCH_WARN, "You can't maintain your form for much longer!");
 
-            if (you.current_form_spell_failure > 4)
+            if (you.current_form_spell_failure > 3)
                 untransform();
         }
     }
@@ -9823,10 +9855,13 @@ int spell_mp_cost(spell_type which_spell)
         cost = 0;
 
     if (is_self_transforming_spell(which_spell))
-        cost *= 2;
+        cost *= 3;
 
     if (you.exertion != EXERT_NORMAL)
         cost *= 2;
+
+    if (you.rune_curse_active[RUNE_SNAKE])
+        cost = cost * 5 / 4;
 
     return cost;
 }
@@ -9843,6 +9878,9 @@ int spell_mp_freeze(spell_type which_spell)
         if (you.exertion != EXERT_NORMAL && you.peace < 50)
             cost *= 2;
     }
+
+    if (you.rune_curse_active[RUNE_SNAKE])
+        cost = cost * 5 / 4;
 
     return cost;
 }
@@ -9871,6 +9909,9 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
         sp_cost *= 2;
         sp_cost = max(3, (int)sp_cost);
     }
+
+    if (you.rune_curse_active[RUNE_SNAKE])
+        sp_cost = sp_cost * 5 / 4;
 
     return sp_cost;
 }
@@ -10123,6 +10164,11 @@ int player_item_gen_modifier(int item_count)
             break;
     }
 
+    if (you.rune_curse_active[RUNE_VAULTS])
+    {
+        x = x * 3 / 4;
+    }
+
     item_count = div_rand_round(item_count * x, 100);
 
     return item_count;
@@ -10180,6 +10226,9 @@ int player_monster_gen_modifier(int amount)
             // should not be possible
             break;
     }
+
+    if (you.rune_curse_active[RUNE_ABYSSAL])
+        percent += 25;
 
     return amount * percent / 100;
 }
@@ -10478,20 +10527,63 @@ void attempt_instant_rest()
     }
 }
 
-void monster_died(mid_t mons_mid, bool was_hostile_and_seen, int mp_freeze, killer_type killer)
+monster_type _pick_random_spirit()
+{
+    return random_choose_weighted(
+        10, MONS_WRAITH,
+        5, MONS_PHANTOM,
+        5, MONS_HUNGRY_GHOST,
+        5, MONS_SHADOW_WRAITH,
+        5, MONS_FREEZING_WRAITH,
+        5, MONS_PHANTASMAL_WARRIOR,
+        5, MONS_GHOST,
+        1, MONS_DROWNED_SOUL,
+        1, MONS_EIDOLON,
+        1, MONS_FLAYED_GHOST,
+        1, MONS_FLYING_SKULL,
+        1, MONS_INSUBSTANTIAL_WISP,
+        1, MONS_LOST_SOUL,
+        1, MONS_SILENT_SPECTRE,
+        0);
+}
+
+void monster_died(mid_t mons_mid, bool was_hostile_and_seen, int mp_freeze, killer_type killer, int dead_monster_hd, bool left_corpse)
 {
     if (crawl_state.sim_mode)
         return;
 
+    bool can_rest = false;
     if (was_hostile_and_seen)
     {
         you.monsters_recently_seen--;
         ldprf(LD_INSTAREST, "Hostile seen monster died. recently_seen = %d", you.monsters_recently_seen);
-        attempt_instant_rest();
+        can_rest = true;
+    }
+
+    if (left_corpse && you.rune_curse_active[RUNE_CRYPT] && x_chance_in_y(1, 2))
+    {
+        const monster_type mon = _pick_random_spirit();
+
+        mgen_data mg = mgen_data(mon, BEH_HOSTILE, &you, 3, SPELL_HAUNT, you.pos(), MHITNOT, MG_FORCE_BEH);
+        mg.hd = dead_monster_hd;
+
+        if (monster *mons = create_monster(mg, true))
+        {
+            can_rest = false;
+            mpr("The creeping rune calls out to the dead to return.");
+
+            mons->add_ench(mon_enchant(ENCH_HAUNTING, 1, &you, INFINITE_DURATION));
+            mons->foe = MHITNOT;
+
+            you.monsters_recently_seen++;
+        }
     }
 
     if (mp_freeze)
         summoned_monster_died(mons_mid, mp_freeze, killer != KILL_RESET);
+
+    if (can_rest)
+        attempt_instant_rest();
 }
 
 void after_floor_change()

@@ -1247,13 +1247,14 @@ static int _num_items_wanted(int absdepth0)
 
     if (branches[you.where_are_you].branch_flags & BFLAG_NO_ITEMS && you.where_are_you == BRANCH_TEMPLE)
         items_wanted = 0;
-    else if (absdepth0 > 5 && x_chance_in_y(absdepth0, 200))
+    else if (absdepth0 > 5 && x_chance_in_y(absdepth0, 200) || you.where_are_you == BRANCH_VAULTS)
         items_wanted = 10 + random2avg(90, 2); // rich level!
     else
         items_wanted = 3 + roll_dice(3, 13);
 
     // because many items have been reduced in quantity, we need to reduce overall counts
-    items_wanted = items_wanted / 2;
+    items_wanted = items_wanted * 2 / 3;
+
     items_wanted = player_item_gen_modifier(items_wanted);
     return items_wanted;
 }
