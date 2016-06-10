@@ -9805,10 +9805,10 @@ void player_was_offensive()
             if (you.current_form_spell_failure == 2)
                 mprf(MSGCH_WARN, "Your form is beginning to unravel.");
 
-            if (you.current_form_spell_failure == 4)
+            if (you.current_form_spell_failure == 3)
                 mprf(MSGCH_WARN, "You can't maintain your form for much longer!");
 
-            if (you.current_form_spell_failure > 4)
+            if (you.current_form_spell_failure > 3)
                 untransform();
         }
     }
@@ -9855,7 +9855,7 @@ int spell_mp_cost(spell_type which_spell)
         cost = 0;
 
     if (is_self_transforming_spell(which_spell))
-        cost *= 2;
+        cost *= 3;
 
     if (you.exertion != EXERT_NORMAL)
         cost *= 2;
