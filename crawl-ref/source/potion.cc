@@ -700,9 +700,14 @@ public:
         int amount = player_potion_recharge_percent() * get_mp_max() / 100;
         amount = max(20, amount);
 
-        /*
-        dec_exhaust_player(amount * 10);
-         */
+        int nutrition_factor = player_mutation_level(MUT_HERBIVOROUS) - player_mutation_level(MUT_CARNIVOROUS);
+        amount = amount * (10 + nutrition_factor * 2) / 10;
+
+        if (nutrition_factor > 0)
+            mpr("This tastes delicious!");
+
+        if (nutrition_factor < 0)
+            mpr("This is not your favorite flavour.");
 
         inc_mp(amount);
         mprf("Magic courses through your body. (mp+%d)", amount);
@@ -750,9 +755,14 @@ public:
         amount = player_potion_recharge_percent() * get_sp_max() / 100;
         amount = max(20, amount);
 
-        /*
-        dec_exhaust_player(amount * 10);
-         */
+        int nutrition_factor = player_mutation_level(MUT_CARNIVOROUS) - player_mutation_level(MUT_HERBIVOROUS);
+        amount = amount * (10 + nutrition_factor * 2) / 10;
+
+        if (nutrition_factor > 0)
+            mpr("This tastes delicious!");
+
+        if (nutrition_factor < 0)
+            mpr("This is not your favorite flavour.");
 
         inc_sp(amount);
         mprf("Energy courses through your body! (sp+%d)", amount);

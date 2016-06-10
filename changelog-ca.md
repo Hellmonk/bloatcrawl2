@@ -1,4 +1,9 @@
 ## v1.5.6
+
+* Made carnivore and herbivore mutations more meaningful.
+    * Carnivore increases stamina gained from stamina potions, but reduces magic from magic potions.
+    * Herbivore does the opposite.
+
 * Limit the number of uniques that can be generated on one floor
     * Easy / Standard mode can only have 1 unique per floor.
     * Challenge can have 2.

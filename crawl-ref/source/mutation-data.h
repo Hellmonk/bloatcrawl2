@@ -74,28 +74,36 @@ static const mutation_def mut_data[] =
   {"You feel less resistant to poisons.", "", ""},
 },
 
-{ MUT_CARNIVOROUS, 30, 3, mutflag::BAD, false,
+{ MUT_CARNIVOROUS, 40, 3, mutflag::DEPENDS, false,
   "carnivore",
 
-  {"You digest fruit inefficiently.",
-   "You digest fruit very inefficiently.",
-   "You are a carnivore and can only eat meat at any time."},
+  {
+   "Stamina potions give you a little more stamina, and magic potions give a little less magic.",
+   "Stamina potions give you a more stamina, and magic potions give a less magic.",
+   "Stamina potions give you a lot more stamina, and magic potions give a lot less magic.",
+  },
 
-  {"You hunger for flesh.",
+  {
    "You hunger for flesh.",
-   "You hunger for flesh."},
+   "You hunger for flesh.",
+   "You hunger for flesh.",
+  },
 
-  {"You feel able to eat a more balanced diet.",
+  {
    "You feel able to eat a more balanced diet.",
-   "You feel able to eat a more balanced diet."},
+   "You feel able to eat a more balanced diet.",
+   "You feel able to eat a more balanced diet.",
+  },
 },
 
-{ MUT_HERBIVOROUS, 40, 3, mutflag::GOOD, false,
-  "powered by fruit",
+{ MUT_HERBIVOROUS, 40, 3, mutflag::DEPENDS, false,
+  "herbivore",
 
-  {"You digest fruit and juice efficiently.",
-   "You digest fruit and juice very efficiently.",
-   "You gain tons of stamina from non-meat sources."},
+  {
+   "Magic potions give you a little more magic, and stamina potions give a little less stamina.",
+   "Magic potions give you a more magic, and stamina potions give a less stamina.",
+   "Magic potions give you a lot more magic, and stamina potions give a lot less stamina.",
+  },
 
   {"You hunger for vegetation.",
    "You hunger for vegetation.",
