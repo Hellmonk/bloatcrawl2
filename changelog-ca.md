@@ -13,6 +13,7 @@
     * dwarven rune: enemy ac is 25% more effective.
     * creeping rune: when monsters are killed, they occasionally come back to haunt the player. Only if they drop a
       corpse though, so strategies that reduce the number of corpses will also reduce this effect.
+    * silver rune: less items are spawned, but monsters are more likely to be equipped with better items. 
 
 * Some rune branches will require one or more runes before you can get in. 
     * Randomly chosen at beginnng of game.

@@ -119,6 +119,9 @@ const string rune_curse_description(const rune_type rune)
             break;
 
         case RUNE_VAULTS:
+            message = "Less items spawn. Monsters are more likely to carry better items.";
+            break;
+
         case RUNE_TOMB:
 
         case RUNE_DIS:

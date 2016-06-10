@@ -10164,6 +10164,11 @@ int player_item_gen_modifier(int item_count)
             break;
     }
 
+    if (you.rune_curse_active[RUNE_VAULTS])
+    {
+        x = x * 3 / 4;
+    }
+
     item_count = div_rand_round(item_count * x, 100);
 
     return item_count;
