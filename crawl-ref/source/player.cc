@@ -7088,7 +7088,7 @@ int player::evasion(ev_ignore_type evit, const actor* act) const
     return ev;
 }
 
-bool player::heal(int amount, bool silent = false)
+bool player::heal(int amount, bool silent)
 {
     if (amount > 0 && !silent)
         mprf("(hp+%d)", amount);
