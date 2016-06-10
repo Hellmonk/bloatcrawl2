@@ -1910,7 +1910,7 @@ static const mutation_def mut_data[] =
   {"You can once more study and cast Darkness magic.", "", ""},
 },
 
-{ MUT_NO_TRANSMUTATION_MAGIC, 0, 1, mutflag::BAD, false,
+{ MUT_NO_TIME_MAGIC, 0, 1, mutflag::BAD, false,
   "no time magic",
 
   {"You cannot study or cast Time magic.", "", ""},
