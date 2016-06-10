@@ -79,6 +79,7 @@
 #include "unwind.h"
 #include "view.h"
 #include "viewchar.h" // stringize_glyph
+#include "spl-util.h"
 
 static int _spell_enhancement(spell_type spell);
 
@@ -153,57 +154,6 @@ static string _spell_extra_description(spell_type spell, bool viewing)
          << spell_difficulty(spell);
 
     desc << "</" << colour_to_str(highlight) <<">";
-
-    return desc.str();
-}
-
-static string _spell_wide_description(spell_type spell, bool viewing)
-{
-    ostringstream desc;
-
-    int highlight =  spell_highlight_by_utility(spell, COL_UNKNOWN, !viewing);
-
-    desc << "<" << colour_to_str(highlight) << ">" << left;
-
-    // spell name
-    desc << chop_string(spell_title(spell), 29);
-
-    const string rangestring = spell_range_string(spell);
-
-    string spell_power;
-    // choose numeric version for now
-    if(true)
-    	spell_power = spell_power_numeric_string(spell);
-    else
-    	spell_power = spell_power_string(spell);
-
-    desc << chop_string(spell_power, 6)
-         << chop_string(rangestring, 11 + tagged_string_tag_length(rangestring))
-    /* no longer needed
-         << chop_string(spell_hunger_string(spell), 8)
-         */
-        ;
-
-    desc << "</" << colour_to_str(highlight) <<">";
-
-    // spell fail rate, level
-    highlight = failure_rate_colour(spell);
-    desc << "<" << colour_to_str(highlight) << ">";
-    const string failure = failure_rate_to_string(raw_spell_fail(spell));
-    desc << chop_string(failure, 5);
-    desc << "</" << colour_to_str(highlight) << ">";
-    desc << chop_string(make_stringf("%d", spell_difficulty(spell)), 6);
-
-    int mp_cost = spell_mp_cost(spell);
-    if (mp_cost == 0)
-    {
-        mp_cost = spell_mp_freeze(spell);
-    }
-
-    desc << chop_string(make_stringf("%d", mp_cost), 4);
-
-    // spell schools
-    desc << spell_schools_string(spell);
 
     return desc.str();
 }
@@ -360,17 +310,14 @@ int list_spells_wide(bool viewing, bool allow_preselect,
     {
         // [enne] - Hack. Make title an item so that it's aligned.
         MenuEntry* me =
-            new MenuEntry(
-                " " + titlestring + "        Power Range      Fail Level MP  Type",
-                MEL_ITEM);
+            new MenuEntry(" " + titlestring + "        Power Range      Fail Level MP  Type", MEL_ITEM);
         me->colour = BLUE;
         spell_menu.add_entry(me);
     }
 #else
     spell_menu.set_title(
-        new MenuEntry(
-                " " + titlestring + "        Power Range      Fail Level MP  Type",
-            MEL_TITLE));
+        new MenuEntry(" " + titlestring + "        Power Range      Fail Level MP  Type", MEL_TITLE)
+    );
 #endif
     spell_menu.set_highlighter(nullptr);
     spell_menu.set_tag("spell");
@@ -424,10 +371,7 @@ int list_spells_wide(bool viewing, bool allow_preselect,
                           || allow_preselect && you.last_cast_spell == spell);
 
         MenuEntry* me =
-            new MenuEntry(_spell_wide_description(spell, viewing),
-            		//,
-                      //              _spell_extra_description(spell, viewing),
-                                    MEL_ITEM, 1, letter, preselect);
+            new MenuEntry(spell_wide_description(spell, viewing), MEL_ITEM, 1, letter, preselect);
 
 #ifdef USE_TILE
         me->add_tile(tile_def(tileidx_spell(spell), TEX_GUI));
