@@ -34,6 +34,8 @@
 #include "spl-summoning.h"
 #include "spl-wpnench.h"
 #include "xom.h"
+#include "ability.h"
+#include "spl-selfench.h"
 
 static void _mark_unseen_monsters();
 
@@ -1491,3 +1493,32 @@ static void _mark_unseen_monsters()
 
     }
 }
+
+void armour_wear_effects(const int item_slot)
+{
+    const unsigned int old_talents = your_talents(false).size();
+
+    item_def &arm = you.inv1[item_slot];
+
+    set_ident_flags(arm, ISFLAG_IDENT_MASK);
+    if (is_artefact(arm))
+        arm.flags |= ISFLAG_NOTED_ID;
+
+    const equipment_type eq_slot = get_armour_slot(arm);
+
+    mprf("You finish putting on %s.", arm.name(DESC_YOUR).c_str());
+
+    if (eq_slot == EQ_BODY_ARMOUR)
+    {
+        if (you.duration[DUR_ICY_ARMOUR] != 0
+            && !is_effectively_light_armour(&arm))
+        {
+            remove_ice_armour();
+        }
+    }
+
+    equip_item(eq_slot, item_slot);
+
+    check_item_hint(you.inv1[item_slot], old_talents);
+}
+

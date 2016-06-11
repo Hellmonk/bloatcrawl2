@@ -4973,8 +4973,13 @@ static void _vault_grid_glyph(vault_placement &place, const coord_def& where,
             which_depth = 5 + which_depth * 2;
 
         item_made = items(true, which_class, which_type, which_depth);
+
+        item_def &item = mitm[item_made];
+        if (item.base_type == 0)
+            dprf("Debug...");
+
         if (item_made != NON_ITEM)
-            mitm[item_made].pos = where;
+            item.pos = where;
     }
 
     // defghijk - items

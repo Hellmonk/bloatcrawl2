@@ -150,7 +150,7 @@ static void _monster_regenerate(monster* mons)
         || mons->has_ench(ENCH_WITHDRAWN)
         || _mons_natural_regen_roll(mons))
     {
-        mons->heal(1);
+        mons->heal(1, true);
     }
 }
 

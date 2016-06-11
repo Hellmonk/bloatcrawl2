@@ -994,10 +994,11 @@ bool do_wear_armour(int item, bool quiet)
         if (is_artefact(arm))
             arm.flags |= ISFLAG_NOTED_ID;
 
-        equip_item(slot, item);
+        equip_item(slot, item, false);
         const unsigned int old_talents = your_talents(false).size();
 
         check_item_hint(you.inv1[item], old_talents);
+        armour_wear_effects(item);
     }
     else
     {
@@ -1013,11 +1014,13 @@ bool takeoff_armour(int item)
 {
     const item_def& invitem = you.inv1[item];
 
+    /*
     if (invitem.base_type != OBJ_ARMOUR)
     {
         mpr("You aren't wearing that!");
         return false;
     }
+     */
 
     if (you.berserk())
     {

@@ -1779,7 +1779,7 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
         const branch_type branch = destination.branch;
         const bool rune_branch = branches[branch].runes.size() > 0;
 
-        if (rune_branch && down && branch != BRANCH_PANDEMONIUM)
+        if (rune_branch && down && branch != BRANCH_PANDEMONIUM && branch != BRANCH_ABYSS)
         {
             const rune_type first_rune = branches[branch].runes[0];
             if (!you.rune_curse_active[first_rune])
@@ -1796,8 +1796,6 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
                 {
                     for (rune_type rune : branches[branch].runes)
                         you.rune_curse_active.set(rune, true);
-
-                    return true;
                 }
                 else
                     return false;
@@ -1826,6 +1824,9 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
         if (down && shaft) // voluntary shaft usage
             return yesno("Really dive through this shaft in the floor?", true, 'n');
     }
+
+    if (you.species == SP_MINOTAUR && destination.branch == BRANCH_LABYRINTH)
+        mpr("You feel strangely at home here.");
 
     return true;
 }
