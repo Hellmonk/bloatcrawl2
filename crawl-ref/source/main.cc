@@ -1785,7 +1785,7 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
             if (!you.rune_curse_active[first_rune])
             {
                 mprf(MSGCH_WARN, "This leads to a rune branch. Once you enter, the curse associated with this rune will be permanently activated. ");
-                mprf(MSGCH_PLAIN, "This curse will result in the following: ");
+                mprf(MSGCH_PLAIN, "This curse will result in the following effect(s):");
                 for (rune_type rune : branches[branch].runes)
                 {
                     mprf(MSGCH_PLAIN, rune_curse_description(first_rune).c_str());
