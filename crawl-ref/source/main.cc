@@ -1796,8 +1796,6 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
                 {
                     for (rune_type rune : branches[branch].runes)
                         you.rune_curse_active.set(rune, true);
-
-                    return true;
                 }
                 else
                     return false;
@@ -1826,6 +1824,9 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
         if (down && shaft) // voluntary shaft usage
             return yesno("Really dive through this shaft in the floor?", true, 'n');
     }
+
+    if (you.species == SP_MINOTAUR && destination.branch == BRANCH_LABYRINTH)
+        mpr("You feel strangely at home here.");
 
     return true;
 }

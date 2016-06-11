@@ -936,8 +936,11 @@ monster* place_monster(mgen_data mg, bool force_pos, bool dont_place, bool first
         band = _choose_band(mg.cls, band_size, leader);
         band_size++;
 
-        if (you.rune_curse_active[RUNE_ABYSSAL])
-            band_size = div_rand_round(band_size * 5, 4);
+        if (you.rune_curse_active[RUNE_ABYSSAL] && band != BAND_NO_BAND)
+        {
+            band_size = div_rand_round(band_size * 4, 3);
+            band_size = min(BIG_BAND, band_size);
+        }
 
         for (int i = 1; i < band_size; ++i)
         {
