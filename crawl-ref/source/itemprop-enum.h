@@ -358,6 +358,7 @@ enum rune_type
 
 enum scroll_type
 {
+    SCR_RANDOM_USELESSNESS,
     SCR_ACQUIREMENT,
     SCR_AMNESIA,
     SCR_AMPLIFICATION,
@@ -377,7 +378,6 @@ enum scroll_type
     SCR_KARMA,
     SCR_MAGIC_MAPPING,
     SCR_NOISE,
-    SCR_RANDOM_USELESSNESS,
     SCR_RECHARGING,
     SCR_REMOVE_CURSE,
     SCR_REPLICATION,

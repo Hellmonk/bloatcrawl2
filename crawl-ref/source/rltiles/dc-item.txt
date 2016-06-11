@@ -602,8 +602,10 @@ scroll SCROLL UNSEEN_SCROLL
 
 #### These must be in the same order as the enum in itemprop-enum.h!
 %sdir item/scroll
+%back scroll-grey
+i-random_uselessness SCR_RANDOM_USELESSNESS SCR_ID_FIRST
 %back scroll-cyan
-i-acquirement SCR_ACQUIREMENT SCR_ID_FIRST
+i-acquirement SCR_ACQUIREMENT
 %back scroll-yellow
 i-amnesia SCR_AMNESIA
 %back scroll-cyan
@@ -640,8 +642,6 @@ i-karma SCR_KARMA
 i-magic_mapping SCR_MAGIC_MAPPING
 %back scroll-grey
 i-noise SCR_NOISE
-%back scroll-grey
-i-random_uselessness SCR_RANDOM_USELESSNESS
 %back scroll-green
 i-recharging SCR_RECHARGING
 %back scroll-yellow

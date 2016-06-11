@@ -779,7 +779,6 @@ void handle_delay()
     }
 }
 
-static void _armour_wear_effects(const int item_slot);
 
 static void _finish_delay(const delay_queue_item &delay)
 {
@@ -816,7 +815,7 @@ static void _finish_delay(const delay_queue_item &delay)
     }
 
     case DELAY_ARMOUR_ON:
-        _armour_wear_effects(delay.parm1);
+        armour_wear_effects(delay.parm1);
         break;
 
     case DELAY_ARMOUR_OFF:
@@ -1026,34 +1025,6 @@ static void _finish_delay(const delay_queue_item &delay)
 #ifdef USE_TILE
     tiles.update_tabs();
 #endif
-}
-
-static void _armour_wear_effects(const int item_slot)
-{
-    const unsigned int old_talents = your_talents(false).size();
-
-    item_def &arm = you.inv1[item_slot];
-
-    set_ident_flags(arm, ISFLAG_IDENT_MASK);
-    if (is_artefact(arm))
-        arm.flags |= ISFLAG_NOTED_ID;
-
-    const equipment_type eq_slot = get_armour_slot(arm);
-
-    mprf("You finish putting on %s.", arm.name(DESC_YOUR).c_str());
-
-    if (eq_slot == EQ_BODY_ARMOUR)
-    {
-        if (you.duration[DUR_ICY_ARMOUR] != 0
-            && !is_effectively_light_armour(&arm))
-        {
-            remove_ice_armour();
-        }
-    }
-
-    equip_item(eq_slot, item_slot);
-
-    check_item_hint(you.inv1[item_slot], old_talents);
 }
 
 static command_type _get_running_command()

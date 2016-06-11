@@ -1517,6 +1517,9 @@ static void _generate_scroll_item(item_def& item, int force_type,
     else
         item.quantity = 1;
 
+    if (item.sub_type == SCR_ACQUIREMENT)
+        mprf("Generated acquirement");
+
     item.plus = 0;
 }
 
