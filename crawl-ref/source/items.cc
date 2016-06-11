@@ -2171,6 +2171,10 @@ bool move_item_to_grid(int *const obj, const coord_def& p, bool silent)
         return false;
 
     item_def& item(mitm[ob]);
+
+    if (item.base_type == 0)
+        dprf("Debug...");
+
     bool move_below = item_is_stationary(item) && !item_is_stationary_net(item);
 
     if (!silenced(p) && !silent)

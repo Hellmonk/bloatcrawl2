@@ -1517,9 +1517,6 @@ static void _generate_scroll_item(item_def& item, int force_type,
     else
         item.quantity = 1;
 
-    if (item.sub_type == SCR_ACQUIREMENT)
-        mprf("Generated acquirement");
-
     item.plus = 0;
 }
 
@@ -1940,7 +1937,7 @@ int items(bool allow_uniques,
         else
         {
             force_class = OBJ_RANDOM;
-            force_type = 0;
+            force_type = OBJ_RANDOM;
         }
     }
 
@@ -2136,11 +2133,11 @@ int items(bool allow_uniques,
     item.link = NON_ITEM;
 
     // Note that item might be invalidated now, since p could have changed.
-//    ASSERTM(mitm[p].is_valid(),
-//            "idx: %d, qty: %hd, base: %d, sub: %d, spe: %d, col: %d, rnd: %d",
-//            item.index(), item.quantity,
-//            (int)item.base_type, (int)item.sub_type, item.special,
-//            (int)item.get_colour(), (int)item.rnd);
+    ASSERTM(mitm[p].is_valid(),
+            "idx: %d, qty: %hd, base: %d, sub: %d, spe: %d, col: %d, rnd: %d",
+            item.index(), item.quantity,
+            (int)item.base_type, (int)item.sub_type, item.special,
+            (int)item.get_colour(), (int)item.rnd);
     return p;
 }
 
