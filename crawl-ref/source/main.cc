@@ -1779,7 +1779,7 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
         const branch_type branch = destination.branch;
         const bool rune_branch = branches[branch].runes.size() > 0;
 
-        if (rune_branch && down && branch != BRANCH_PANDEMONIUM)
+        if (rune_branch && down && branch != BRANCH_PANDEMONIUM && branch != BRANCH_ABYSS)
         {
             const rune_type first_rune = branches[branch].runes[0];
             if (!you.rune_curse_active[first_rune])

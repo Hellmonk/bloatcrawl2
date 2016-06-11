@@ -1668,6 +1668,9 @@ static void _generate_rune_item(item_def& item, int force_type)
     }
     else
         item.sub_type = force_type;
+
+    if (item.sub_type == RUNE_ABYSSAL)
+        you.rune_curse_active.set(RUNE_ABYSSAL, true);
 }
 
 static bool _try_make_jewellery_unrandart(item_def& item, int force_type,
