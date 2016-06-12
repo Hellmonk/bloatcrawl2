@@ -479,7 +479,9 @@ public:
              string source = "",
              string aux = "",
              bool cleanup_dead = true,
-             bool attacker_effects = true) override;
+             bool attacker_effects = true,
+             bool skip_details = false
+    ) override;
     bool heal(int amount, bool silent = false) override;
     void blame_damage(const actor *attacker, int amount);
     void blink() override;

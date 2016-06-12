@@ -888,7 +888,8 @@ static bool _is_damage_threatening (int damage_fraction_of_hp)
  */
 void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
           bool see_source, const char *death_source_name,
-          const bool skip_rune_curse_damage
+          const bool skip_rune_curse_damage,
+          const bool skip_details
           )
 {
     ASSERT(!crawl_state.game_is_arena());
@@ -1046,7 +1047,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         }
 
         you.source_damage += dam;
-        dam = player_ouch_modifier(dam);
+        dam = player_ouch_modifier(dam, skip_details);
         you.turn_damage += dam;
 
         if(dam > 0) {

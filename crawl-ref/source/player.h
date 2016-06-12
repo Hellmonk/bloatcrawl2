@@ -714,7 +714,9 @@ public:
              string source = "",
              string aux = "",
              bool cleanup_dead = true,
-             bool attacker_effects = true) override;
+             bool attacker_effects = true,
+             bool skip_details = false
+    ) override;
 
     bool wont_attack() const override { return true; };
     mon_attitude_type temp_attitude() const override { return ATT_FRIENDLY; };
@@ -1255,7 +1257,7 @@ bool player_summoned_monster(spell_type spell, monster* mons, bool first, int fr
 int player_monster_gen_modifier(int amount);
 int player_potion_recharge_percent();
 int player_pre_ouch_modifier(int damage);
-int player_ouch_modifier(int damage);
+int player_ouch_modifier(int damage, bool skip_details = false);
 int player_summon_count();
 void attempt_instant_rest();
 void monster_died(mid_t mons_mid, bool was_hostile_and_seen, int mp_freeze, killer_type killer, int dead_monster_hd, bool left_corpse);

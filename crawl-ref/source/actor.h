@@ -203,7 +203,9 @@ public:
                       string source = "",
                       string aux = "",
                       bool cleanup_dead = true,
-                      bool attacker_effects = true) = 0;
+                      bool attacker_effects = true,
+                      bool skip_details = false
+    ) = 0;
     virtual bool heal(int amount, bool silent = false) = 0;
     virtual void banish(actor *agent, const string &who = "",
                         const int power = 0, bool force = false) = 0;
