@@ -532,13 +532,15 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 
     check_item_hint(new_wpn, old_talents);
 
+    you.wield_change  = true;
+    you.m_quiver.on_weapon_changed();
+    /*
     // Time calculations.
     if (adjust_time_taken)
         you.time_taken /= 2;
 
-    you.wield_change  = true;
-    you.m_quiver.on_weapon_changed();
     you.turn_is_over  = true;
+     */
     you.prev_direction.reset();
 
     return true;

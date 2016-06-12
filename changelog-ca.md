@@ -1,5 +1,7 @@
 ## v1.5.6
 
+* Changing weapons no longer takes any time.
+
 * Made carnivore and herbivore mutations more meaningful.
     * Carnivore increases stamina gained from stamina potions, but reduces magic from magic potions.
     * Herbivore does the opposite.
