@@ -555,7 +555,7 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force, boo
                 make_and_place_item(mons.pos(), OBJ_POTIONS, POT_BLOOD);
         }
 
-        if (mons_corpse_effect(corpse.mon_type) == CE_MUTAGEN)
+        if (mons_corpse_effect(corpse.mon_type) == CE_MUTAGEN && coinflip())
         {
             int weak_mut_potion_count = random2(max_corpse_chunks(corpse.mon_type) + 1);
             weak_mut_potion_count /= 2;
