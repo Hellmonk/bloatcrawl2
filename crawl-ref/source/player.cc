@@ -10386,7 +10386,7 @@ void _heal_all_monsters()
 {
     for (auto &mons : menv_real)
     {
-        if (!mons.alive())
+        if (!mons.alive() || mons.wont_attack() || mons.cannot_fight())
             continue;
         if (mons_can_regenerate(&mons))
             mons.heal(mons.max_hit_points, true);

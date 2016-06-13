@@ -4642,7 +4642,7 @@ int monster::hurt(const actor *agent, int amount, beam_type flavour,
         blame_damage(agent, amount);
     }
 
-    if (report_amount > 0 && !skip_details)
+    if (report_amount > 0 && !skip_details && !wont_attack() && !cannot_fight())
         mprf("(mon hp-%d)", report_amount);
 
     if (cleanup_dead && (hit_points <= 0 || get_hit_dice() <= 0)
