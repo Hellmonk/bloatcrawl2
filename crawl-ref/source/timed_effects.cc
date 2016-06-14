@@ -912,9 +912,10 @@ static void _evolve(int time_delta)
     if (int lev = player_mutation_level(MUT_EVOLUTION))
     {
         const int chance = 4 - lev;
-        if (one_chance_in(chance * chance)
-            && you.attribute[ATTR_EVOL_XP] * (1 + random2(10))
-               > (int)exp_needed(you.experience_level + 1) / lev)
+        const bool hit = one_chance_in(chance * chance);
+        const int rand_xp = you.attribute[ATTR_EVOL_XP] * (1 + random2(10));
+        const int needed_xp = (int)exp_needed(you.experience_level + 1) / lev;
+        if (hit && rand_xp > needed_xp)
         {
             you.attribute[ATTR_EVOL_XP] = 0;
             mpr("You feel a genetic drift.");
@@ -964,7 +965,7 @@ static struct timed_effect timed_effects[] =
     { _lab_change,                  1000,  3000, false },
     { _abyss_speed,                  100,   300, false },
     { _jiyva_effects,                100,   300, false },
-    { _evolve,                      5000, 15000, false },
+    { _evolve,                      1000,  3000, false },
 };
 
 // Do various time related actions...
