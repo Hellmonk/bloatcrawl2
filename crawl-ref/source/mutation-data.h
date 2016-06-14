@@ -1645,7 +1645,7 @@ static const mutation_def mut_data[] =
 },
 
 #if true
-{ MUT_TRAMPLE_RESISTANCE, 15, 1, mutflag::GOOD, false,
+{ MUT_TRAMPLE_RESISTANCE, 0, 1, mutflag::GOOD, false,
   "trample resistance",
 
   {"You are resistant to trampling.", "", ""},
@@ -1661,7 +1661,7 @@ static const mutation_def mut_data[] =
   {"You feel slippery.", "", ""},
 },
 
-{ MUT_EXOSKELETON, 10, 2, mutflag::GOOD, false,
+{ MUT_EXOSKELETON, 0, 2, mutflag::GOOD, false,
   "exoskeleton",
 
   {"Your body is surrounded by an exoskeleton. ",
@@ -1677,7 +1677,7 @@ static const mutation_def mut_data[] =
    ""},
 },
 
-{ MUT_FUMES, 30, 2, mutflag::GOOD, false,
+{ MUT_FUMES, 0, 2, mutflag::GOOD, false,
   "fuming",
 
   {"You emit clouds of smoke.", "You frequently emit clouds of smoke.", ""},
