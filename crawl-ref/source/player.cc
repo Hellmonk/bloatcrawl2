@@ -6969,7 +6969,7 @@ int player::armour_class(bool /*calc_unid*/) const
         AC += 200 + you.props[MAGIC_ARMOUR_KEY].get_int() * 5;
 
     if (mutation[MUT_ICEMAIL])
-        AC += 100 * player_icemail_armour_class();
+        AC += 10 * player_icemail_armour_class();
 
     if (duration[DUR_QAZLAL_AC])
         AC += 300;
