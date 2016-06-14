@@ -157,7 +157,7 @@ void list_rune_curses()
 
         if (!at_least_one_active)
         {
-            mprf(MSGCH_DANGER, "Rune curses in effect:");
+            mprf(MSGCH_WARN, "Rune curses in effect:");
         }
 
         at_least_one_active = true;
@@ -165,7 +165,7 @@ void list_rune_curses()
         const string curse_description = rune_curse_description((rune_type)i);
 
         const string output = chop_string(make_stringf("%-10s: %s", name, curse_description.c_str()), cols);
-        mprf(MSGCH_DANGER, output.c_str());
+        mprf(MSGCH_WARN, output.c_str());
     }
 
     if (!at_least_one_active)

@@ -701,13 +701,13 @@ public:
         amount = max(20, amount);
 
         int nutrition_factor = player_mutation_level(MUT_HERBIVOROUS) - player_mutation_level(MUT_CARNIVOROUS);
-        amount = amount * (10 + nutrition_factor * 2) / 10;
+        amount = amount * (10 + nutrition_factor * 3) / 10;
 
         if (nutrition_factor > 0)
             mpr("This tastes delicious!");
 
         if (nutrition_factor < 0)
-            mpr("This is not your favorite flavour.");
+            mpr("That didn't taste very good.");
 
         inc_mp(amount);
         mprf("Magic courses through your body. (mp+%d)", amount);
@@ -756,13 +756,13 @@ public:
         amount = max(20, amount);
 
         int nutrition_factor = player_mutation_level(MUT_CARNIVOROUS) - player_mutation_level(MUT_HERBIVOROUS);
-        amount = amount * (10 + nutrition_factor * 2) / 10;
+        amount = amount * (10 + nutrition_factor * 3) / 10;
 
         if (nutrition_factor > 0)
             mpr("This tastes delicious!");
 
         if (nutrition_factor < 0)
-            mpr("This is not your favorite flavour.");
+            mpr("This doesn't taste very good.");
 
         inc_sp(amount);
         mprf("Energy courses through your body! (sp+%d)", amount);

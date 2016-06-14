@@ -573,17 +573,17 @@ static const weapon_def Weapon_prop[] =
         }},
 
     // Range weapons
-    { WPN_BLOWGUN,           "blowgun",             0,  2, 10, 2,
+    { WPN_BLOWGUN,           "blowgun",             0,  4, 15, 2,
         SK_THROWING,     SIZE_LITTLE,  SIZE_LITTLE, MI_NEEDLE,
         DAMV_NON_MELEE, 5, 0, {
             { SPWPN_EVASION,  3 },
             { SPWPN_NORMAL,  97 },
         }},
 
-    { WPN_HUNTING_SLING,     "hunting sling",       5,  2, 12, 3,
+    { WPN_HUNTING_SLING,     "hunting sling",       5,  0, 12, 3,
         SK_SLINGS,       SIZE_LITTLE,  SIZE_LITTLE, MI_STONE,
         DAMV_NON_MELEE, 8, 10, RANGED_BRANDS },
-    { WPN_GREATSLING,        "greatsling",          8, -1, 14, 8,
+    { WPN_GREATSLING,        "greatsling",          8, -3, 14, 8,
         SK_SLINGS,       SIZE_LITTLE,  SIZE_SMALL, MI_STONE,
         DAMV_NON_MELEE, 2, 2, RANGED_BRANDS },
 
@@ -623,7 +623,7 @@ static const missile_def Missile_prop[] =
     { MI_STONE,         "stone",         2, 8,   3, true  },
     { MI_ARROW,         "arrow",         0, 8,   5, false },
     { MI_BOLT,          "bolt",          0, 8,   5, false },
-    { MI_LARGE_ROCK,    "large rock",   20, 25, 60, true  },
+    { MI_LARGE_ROCK,    "large rock",   20, 25, 20, true  },
     { MI_SLING_BULLET,  "sling bullet",  4, 8,   5, false },
     { MI_JAVELIN,       "javelin",      10, 20, 10, true  },
     { MI_THROWING_NET,  "throwing net",  0, 0,  10, true  },

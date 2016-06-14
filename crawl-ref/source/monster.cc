@@ -4523,7 +4523,7 @@ void monster::splash_with_acid(const actor* evildoer, int /*acid_strength*/,
 
 int monster::hurt(const actor *agent, int amount, beam_type flavour,
                    kill_method_type kill_type, string /*source*/,
-                   string /*aux*/, bool cleanup_dead, bool attacker_effects)
+                   string /*aux*/, bool cleanup_dead, bool attacker_effects, bool skip_details)
 {
     if (mons_is_projectile(type)
         || mid == MID_ANON_FRIEND
@@ -4642,7 +4642,7 @@ int monster::hurt(const actor *agent, int amount, beam_type flavour,
         blame_damage(agent, amount);
     }
 
-    if (report_amount > 0)
+    if (report_amount > 0 && !skip_details && !wont_attack() && !cannot_fight())
         mprf("(mon hp-%d)", report_amount);
 
     if (cleanup_dead && (hit_points <= 0 || get_hit_dice() <= 0)

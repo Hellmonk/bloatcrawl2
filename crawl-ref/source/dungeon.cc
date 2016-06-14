@@ -5528,12 +5528,6 @@ static void _stock_shop_item(int j, shop_type shop_type_,
         object_class_type basetype = item_in_shop(shop_type_);
         int subtype = OBJ_RANDOM;
 
-//        if (spec.gozag && shop_type_ == SHOP_FOOD && you.species == SP_VAMPIRE)
-//        {
-//            basetype = OBJ_POTIONS;
-//            subtype = POT_BLOOD;
-//        }
-
         if (!spec.items.empty() && !spec.use_all)
         {
             // shop spec lists a random set of items; choose one
@@ -5547,11 +5541,6 @@ static void _stock_shop_item(int j, shop_type shop_type_,
             item_index = dgn_place_item(spec.items.get_item(j), coord_def(),
                                         item_level);
         }
-//        else if (spec.gozag && shop_type_ == SHOP_FOOD
-//                 && you.species == SP_GHOUL)
-//        {
-//            item_index = _make_delicious_corpse();
-//        }
         else
         {
             // make an item randomly
@@ -5588,12 +5577,6 @@ static void _stock_shop_item(int j, shop_type shop_type_,
     // (unless it's a randbook)
     if (shop_type_ == SHOP_BOOK && !is_artefact(item))
         stocked[item.sub_type]++;
-
-//    if (spec.gozag && shop_type_ == SHOP_FOOD && you.species == SP_VAMPIRE)
-//    {
-//        ASSERT(is_blood_potion(item));
-//        item.quantity += random2(3); // blood for the vampire friends :)
-//    }
 
     // Identify the item, unless we don't do that.
     if (!_shop_sells_antiques(shop_type_))
@@ -5653,7 +5636,7 @@ object_class_type item_in_shop(shop_type shop_type)
     switch (shop_type)
     {
     case SHOP_WEAPON:
-        if (one_chance_in(5))
+        if (one_chance_in(4))
             return OBJ_MISSILES;
         // *** deliberate fall through here  {dlb} ***
     case SHOP_WEAPON_ANTIQUE:

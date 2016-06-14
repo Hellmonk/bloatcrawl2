@@ -7623,7 +7623,7 @@ void player::teleport(bool now, bool wizard_tele)
 
 int player::hurt(const actor *agent, int amount, beam_type flavour,
                  kill_method_type kill_type, string source, string aux,
-                 bool /*cleanup_dead*/, bool /*attacker_effects*/)
+                 bool /*cleanup_dead*/, bool /*attacker_effects*/, bool skip_details)
 {
     // We ignore cleanup_dead here.
     if (!agent)
@@ -7632,12 +7632,12 @@ int player::hurt(const actor *agent, int amount, beam_type flavour,
         // to a player from a dead monster. We should probably not do that,
         // but it could be tricky to fix, so for now let's at least avoid
         // a crash even if it does mean funny death messages.
-        ouch(amount, kill_type, MID_NOBODY, aux.c_str(), false, source.c_str());
+        ouch(amount, kill_type, MID_NOBODY, aux.c_str(), false, source.c_str(), false, skip_details);
     }
     else
     {
         ouch(amount, kill_type, agent->mid, aux.c_str(),
-             agent->visible_to(this), source.c_str());
+             agent->visible_to(this), source.c_str(), false, skip_details);
     }
 
     if ((flavour == BEAM_DEVASTATION || flavour == BEAM_DISINTEGRATION)
@@ -10282,7 +10282,7 @@ int player_pre_ouch_modifier(int damage)
 }
 
 // reduce damage to player if it has exceeded protection thresholds (to avoid 1 hit kills for example)
-int player_ouch_modifier(int damage)
+int player_ouch_modifier(int damage, bool skip_details)
 {
     int percentage_allowed = 100;
 
@@ -10318,7 +10318,7 @@ int player_ouch_modifier(int damage)
         mprf("You were prevented from receiving too much damage! (%d -> %d)", damage, new_damage);
     else
     {
-        if (new_damage > 0)
+        if (new_damage > 0 && !skip_details)
             mprf("(hp-%d)", new_damage);
     }
 
@@ -10386,7 +10386,7 @@ void _heal_all_monsters()
 {
     for (auto &mons : menv_real)
     {
-        if (!mons.alive())
+        if (!mons.alive() || mons.wont_attack() || mons.cannot_fight())
             continue;
         if (mons_can_regenerate(&mons))
             mons.heal(mons.max_hit_points, true);

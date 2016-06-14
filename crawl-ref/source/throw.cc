@@ -775,7 +775,10 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
     // Making a copy of the item: changed only for venom launchers.
     item_def item = thrown;
     item.quantity = 1;
-    item.slot     = index_to_letter(item.link);
+    if (item.link > ENDOFPACK)
+        item.slot = 0;
+    else
+        item.slot = index_to_letter(item.link);
 
     string ammo_name;
 

@@ -538,7 +538,7 @@ static special_missile_type _determine_missile_brand(const item_def& item,
         rc = random_choose_weighted(30, SPMSL_FLAME,
                                     30, SPMSL_FROST,
                                     20, SPMSL_POISONED,
-                                    15, SPMSL_DISPERSAL,
+                                     5, SPMSL_DISPERSAL,
                                     nw, SPMSL_NORMAL,
                                     0);
         break;
@@ -554,9 +554,6 @@ static special_missile_type _determine_missile_brand(const item_def& item,
         break;
     case MI_JAVELIN:
         rc = random_choose_weighted(
-                                    /*
-                                    30, SPMSL_RETURNING,
-                                     */
                                     32, SPMSL_PENETRATION,
                                     32, SPMSL_POISONED,
                                     21, SPMSL_STEEL,
@@ -568,10 +565,7 @@ static special_missile_type _determine_missile_brand(const item_def& item,
         rc = random_choose_weighted(15, SPMSL_POISONED,
                                     10, SPMSL_SILVER,
                                     10, SPMSL_STEEL,
-                                    12, SPMSL_DISPERSAL,
-                                    /*
-                                    28, SPMSL_RETURNING,
-                                     */
+                                     5, SPMSL_DISPERSAL,
                                     15, SPMSL_EXPLODING,
                                     nw, SPMSL_NORMAL,
                                     0);
@@ -1963,8 +1957,8 @@ int items(bool allow_uniques,
                 212, OBJ_ARMOUR,
                 212, OBJ_WEAPONS,
                 176, OBJ_POTIONS,
-            300 / 4, OBJ_MISSILES,
-            320 / 2, OBJ_SCROLLS,
+                300, OBJ_MISSILES,
+                320, OBJ_SCROLLS,
                 440, OBJ_GOLD,
                 0);
 

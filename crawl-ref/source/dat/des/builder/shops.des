@@ -13,7 +13,7 @@
 lua {{
 require('dlua/vault.lua')
 
-MAX_RANDOM_SHOPS = 5
+MAX_RANDOM_SHOPS = 6
 
 -- If a level gets shops, how many there are.
 -- Just one most of the time; expected value is 1.42.

@@ -905,7 +905,7 @@ static mutation_type _get_random_mutation(mutation_type mutclass)
         {
             const int good_dna = player_mutation_level(MUT_GOOD_DNA);
             const int bad_dna = player_mutation_level(MUT_BAD_DNA);
-            mt = x_chance_in_y(6 + random2(good_dna) - random2(bad_dna), 10)
+            mt = x_chance_in_y(6 + random2(good_dna * 2 + 1) - random2(bad_dna * 2 + 1), 10)
                  ? mutflag::GOOD
                  : (x_chance_in_y(1, 3) ? mutflag::DEPENDS : mutflag::BAD);
         }
@@ -1219,19 +1219,14 @@ static const char* _stat_mut_desc(mutation_type mut, bool gain)
 static bool _resist_mutation(mutation_permanence_class mutclass,
                              bool beneficial)
 {
-    if (player_mutation_level(MUT_MUTATION_RESISTANCE) == 3)
-        return true;
+    int mutation_resist = player_mutation_level(MUT_MUTATION_RESISTANCE);
+    const int mutation_resist_from_item = you.rmut_from_item();
+
+    if (!beneficial && mutation_resist_from_item)
+        mutation_resist++;
 
     const int mut_resist_chance = mutclass == MUTCLASS_TEMPORARY ? 2 : 3;
-    if (player_mutation_level(MUT_MUTATION_RESISTANCE)
-        && !one_chance_in(mut_resist_chance))
-    {
-        return true;
-    }
-
-    // To be nice, beneficial mutations go through removable sources of rMut.
-    if (you.rmut_from_item() && !beneficial
-        && !one_chance_in(mut_resist_chance))
+    if (x_chance_in_y(mut_resist_chance * mutation_resist, 10))
     {
         return true;
     }
