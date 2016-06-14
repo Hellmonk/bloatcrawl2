@@ -1644,7 +1644,7 @@ static const mutation_def mut_data[] =
   {"You briefly stop moving.", "", ""},
 },
 
-#if TAG_MAJOR_VERSION == 34
+#if false
 { MUT_TRAMPLE_RESISTANCE, 15, 1, mutflag::GOOD, false,
   "trample resistance",
 

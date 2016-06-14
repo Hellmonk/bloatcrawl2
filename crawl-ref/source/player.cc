@@ -10419,6 +10419,7 @@ void _instant_rest()
     decrement_durations(5000);
 
     _heal_all_monsters();
+    delete_all_clouds();
 
     instant_resting = false;
 }
