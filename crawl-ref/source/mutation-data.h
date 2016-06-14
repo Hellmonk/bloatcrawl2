@@ -1644,7 +1644,7 @@ static const mutation_def mut_data[] =
   {"You briefly stop moving.", "", ""},
 },
 
-#if false
+#if true
 { MUT_TRAMPLE_RESISTANCE, 15, 1, mutflag::GOOD, false,
   "trample resistance",
 
