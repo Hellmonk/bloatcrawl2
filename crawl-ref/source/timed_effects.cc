@@ -913,8 +913,8 @@ static void _evolve(int time_delta)
     {
         const int chance = 4 - lev;
         const bool hit = one_chance_in(chance * chance);
-        const int rand_xp = you.attribute[ATTR_EVOL_XP] * (1 + random2(10));
-        const int needed_xp = (int)exp_needed(you.experience_level + 1) / lev;
+        const int rand_xp = you.attribute[ATTR_EVOL_XP];
+        const int needed_xp = (exp_needed(you.experience_level + 1) - exp_needed(you.experience_level)) / lev;
         if (hit && rand_xp > needed_xp)
         {
             you.attribute[ATTR_EVOL_XP] = 0;
@@ -965,7 +965,7 @@ static struct timed_effect timed_effects[] =
     { _lab_change,                  1000,  3000, false },
     { _abyss_speed,                  100,   300, false },
     { _jiyva_effects,                100,   300, false },
-    { _evolve,                      1000,  3000, false },
+    { _evolve,                       500,  1000, false },
 };
 
 // Do various time related actions...
