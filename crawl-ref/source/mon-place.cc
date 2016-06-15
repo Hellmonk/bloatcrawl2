@@ -1319,7 +1319,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     mon->base_monster = mg.base_type;
 
     mon->summoned_by_spell = (spell_type) mg.summon_type;
-    const bool is_player_summon = spell_produces_minion((spell_type) mg.summon_type) && mg.summoner->is_player();
+    const bool is_player_summon = spell_produces_minion((spell_type) mg.summon_type) && mg.summoner && mg.summoner->is_player();
 
     // Set pos and link monster into monster grid.
     if (!dont_place && !mon->move_to_pos(fpos))

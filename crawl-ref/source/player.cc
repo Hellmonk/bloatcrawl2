@@ -9910,19 +9910,19 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
 
     double sp_cost = fpow(weight, 15, 16, benefit / 10.0);
 
-    sp_cost = max(1, (int)sp_cost);
-
-    if (weapon && get_weapon_brand(*weapon) == SPWPN_LIGHT)
-        sp_cost /= 2;
-
     if (you.exertion != EXERT_NORMAL)
     {
         sp_cost *= 2;
         sp_cost = max(3, (int)sp_cost);
     }
 
+    if (weapon && get_weapon_brand(*weapon) == SPWPN_LIGHT)
+        sp_cost /= 2;
+
     if (you.rune_curse_active[RUNE_SNAKE])
         sp_cost = sp_cost * 5 / 4;
+
+    sp_cost = max(1, (int)sp_cost);
 
     return sp_cost;
 }
