@@ -499,6 +499,7 @@ void fire_thing(int item)
                         missileType = MI_ARROW;
                         break;
                     case WPN_HUNTING_SLING:
+                    case WPN_GREATSLING:
                         missileType = MI_SLING_BULLET;
                         break;
                     default:
