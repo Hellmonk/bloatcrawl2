@@ -996,7 +996,6 @@ bool do_wear_armour(int item, bool quiet)
         if (is_artefact(arm))
             arm.flags |= ISFLAG_NOTED_ID;
 
-        equip_item(slot, item, false);
         const unsigned int old_talents = your_talents(false).size();
 
         check_item_hint(you.inv1[item], old_talents);
