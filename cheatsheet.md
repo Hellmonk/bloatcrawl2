@@ -61,13 +61,13 @@
     * Movement speed is 1.1
     
 * Power mode
-    * Doubles spell and attack costs
+    * Doubles spell magic and attack stamina costs
     * Increased damage
     * Increased spellpower
     * Increased attack speed and spellcasting speed
     
 * Focus mode
-    * Doubles spell and attack costs
+    * Doubles spell magic and attack stamina costs
     * Increased defenses (AC, EV, SH)
     * Increased accuracy
     * Lower spell failure rate

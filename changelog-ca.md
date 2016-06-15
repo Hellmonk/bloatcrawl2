@@ -1,5 +1,8 @@
 ## v1.5.6
 
+* Vine Stalker nerf
+    * Took max health regen mutation from 3 to 1, so they regen health more slowly than a cave troll. 
+
 * Changing weapons no longer takes any time.
 
 * Made carnivore and herbivore mutations more meaningful.
