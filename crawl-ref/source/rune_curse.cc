@@ -179,9 +179,9 @@ void choose_branch_rune_requirements()
         const bool is_rune_branch = branches[branch_index].runes.size() > 0;
         if(is_rune_branch)
         {
-            while (coinflip())
+            while (x_chance_in_y(2, 3))
             {
-                you.branch_requires_runes[branch_index] += random2(3);
+                you.branch_requires_runes[branch_index] += random2(4);
             }
 
             you.branch_requires_runes[branch_index] = min(you.branch_requires_runes[branch_index], 10);

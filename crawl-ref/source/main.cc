@@ -1788,7 +1788,7 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
                 mprf(MSGCH_PLAIN, "This curse will result in the following effect(s):");
                 for (rune_type rune : branches[branch].runes)
                 {
-                    mprf(MSGCH_PLAIN, rune_curse_description(first_rune).c_str());
+                    mprf(MSGCH_PLAIN, "%s", rune_curse_description(first_rune).c_str());
                 }
 
                 const bool proceed = yesno("Are you sure you want to enter now?", true, 'n');
