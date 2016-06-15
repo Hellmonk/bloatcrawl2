@@ -73,5 +73,4 @@
     * Lower spell failure rate
     * Increased stealth
     * Increased magic resistance
-    
-    
+

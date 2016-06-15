@@ -165,7 +165,7 @@ void list_rune_curses()
         const string curse_description = rune_curse_description((rune_type)i);
 
         const string output = chop_string(make_stringf("%-10s: %s", name, curse_description.c_str()), cols);
-        mprf(MSGCH_WARN, output.c_str());
+        mprf(MSGCH_WARN, "%s", output.c_str());
     }
 
     if (!at_least_one_active)
