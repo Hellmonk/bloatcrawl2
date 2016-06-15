@@ -596,6 +596,8 @@ bool restore_stat(stat_type which_stat, int stat_gain,
         stat_gain = you.stat_loss[which_stat];
 
     you.stat_loss[which_stat] -= stat_gain;
+    if (you.stat_loss[which_stat] < 0)
+        you.stat_loss[which_stat] = 0;
 
     // If we're fully recovered, clear out stat loss recovery timer.
     if (random_lost_stat() == NUM_STATS)
@@ -626,6 +628,9 @@ static void _handle_stat_change(stat_type stat)
         // 2 to 5 turns of paralysis (XXX: decremented right away?)
         you.increase_duration(DUR_PARALYSIS, 2 + random2(3));
     }
+
+    if (you.stat_loss[stat] < 0)
+        you.stat_loss[stat] = 0;
 
     you.redraw_stats[stat] = true;
     _normalize_stat(stat);

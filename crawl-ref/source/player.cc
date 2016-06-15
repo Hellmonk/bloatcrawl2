@@ -2934,6 +2934,7 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
             int loss = div_rand_round(exp_gained * 3 / 2,
                                       max(1, calc_skill_cost(you.skill_cost_level) - 3));
             you.attribute[ATTR_STAT_LOSS_XP] -= loss * (2 + player_sust_attr() ? 2 : 0);
+
             dprf("Stat loss points: %d", you.attribute[ATTR_STAT_LOSS_XP]);
             if (you.attribute[ATTR_STAT_LOSS_XP] <= 0)
                 _recover_stat();
