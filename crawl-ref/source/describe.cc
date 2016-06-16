@@ -1176,10 +1176,38 @@ static string _describe_ammo(const item_def &item)
 {
     string description;
 
-    description.reserve(64);
+    description.reserve(200);
 
     const bool can_launch = has_launcher(item);
     const bool can_throw  = is_throwable(&you, item, true);
+
+    const int base_dam = property(item, PWPN_DAMAGE);
+    const missile_type ammo_type = (missile_type)item.sub_type;
+    const int ammo_dam = ammo_type == MI_NONE ? 0 :
+                         ammo_type_damage(ammo_type);
+    const skill_type skill = item_attack_skill(item);
+
+    const int hit = property(item, PWPN_HIT);
+    const int damage = ammo_dam;
+    const int sp_cost = weapon_sp_cost(&item);
+    const float base_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_MAX) / 10;
+    const float current_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_CURRENT) / 10;
+    const float min_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_MIN) / 10;
+    description += make_stringf(
+        "\n\nBase accuracy: %+d   Base damage: %d   Current SP cost: %d"
+            "\nAttack delay:  Base: %.1f   Current: %.1f   Min: %.1f"
+            "\nBoth dexterity and fighting skill reduce attack delay equally. Weapon skill does not.",
+        /*
+    "\nThis weapon's minimum attack delay (%.1f) is reached at *fighting* skill level %d."
+    "%s",
+         */
+        hit,
+        damage,
+        sp_cost,
+        base_delay,
+        current_delay,
+        min_delay
+    );
 
     if (item.brand && item_type_known(item))
     {
