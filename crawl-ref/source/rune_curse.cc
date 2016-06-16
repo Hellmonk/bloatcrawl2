@@ -30,7 +30,7 @@ const int rune_curse_hd_adjust(int hd, bool absolute)
 {
     const int runes = active_rune_curses();
     const game_difficulty_level difficulty = crawl_state.difficulty;
-    int multiplier = difficulty + 1;
+    int multiplier = difficulty + 2;
 
     hd = hd + (runes * multiplier + 3) / 6;
     if (absolute && hd > 1)
@@ -45,7 +45,7 @@ const int rune_curse_hd_adjust(int hd, bool absolute)
 const int rune_curse_hp_adjust(int hp, bool absolute)
 {
     const int runes = active_rune_curses();
-    hp = qpow(hp, 100 + crawl_state.difficulty + 1, 100, runes, false);
+    hp = hp * (100 + runes * (crawl_state.difficulty + 2)) / 100;
     return hp;
 }
 
@@ -53,7 +53,7 @@ const int rune_curse_dam_adjust(int dam, bool absolute)
 {
     const int runes = active_rune_curses();
     if (runes > 0 && dam != INSTANT_DEATH)
-        dam = qpow(dam, 100 + crawl_state.difficulty + 1, 100, runes, false);
+        dam = dam * (100 + runes * (crawl_state.difficulty + 2)) / 100;
     return dam;
 }
 
@@ -177,7 +177,7 @@ void choose_branch_rune_requirements()
     for (int branch_index = BRANCH_FIRST; branch_index < NUM_BRANCHES; branch_index++)
     {
         const bool is_rune_branch = branches[branch_index].runes.size() > 0;
-        if(is_rune_branch)
+        if(is_rune_branch || branches[branch_index].id == BRANCH_ORC)
         {
             while (x_chance_in_y(2, 3))
             {
