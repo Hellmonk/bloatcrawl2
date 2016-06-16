@@ -30,7 +30,7 @@ void PlaceInfo::assert_validity() const
            || num_visits > 0 && levels_seen > 0);
 
     // global data is NUM_BRANCHES
-    if (branch != NUM_BRANCHES && brdepth[branch] != -1 && is_connected_branch(branch))
+    if (branch != NUM_BRANCHES && brdepth[branch] != -1 && is_connected_branch(branch) && !player_on_orb_run())
         ASSERT((int)levels_seen <= brdepth[branch]);
 
     ASSERT(turns_total == (turns_explore + turns_travel + turns_interlevel
