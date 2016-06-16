@@ -6,6 +6,6 @@ void player_reacts_to_monsters();
 
 // Only function other than decrement_duratons() which uses decrement_a_duration()
 void extract_manticore_spikes(const char* endmsg);
-void decrement_durations(int time_passed = -1);
+void decrement_durations(int time_passed = -1, bool instarest_only_durations = false);
 
 #endif

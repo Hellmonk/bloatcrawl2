@@ -10417,7 +10417,7 @@ void _instant_rest()
     you.peace = 1000;
 
     dec_exhaust_player(1000);
-    decrement_durations(5000);
+    decrement_durations(5000, true);
 
     _heal_all_monsters();
     delete_all_clouds();

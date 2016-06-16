@@ -568,7 +568,7 @@ static void _decrement_simple_duration(duration_type dur, int delay)
 /**
  * Decrement player durations based on how long the player's turn lasted in aut.
  */
-void decrement_durations(int delay)
+void decrement_durations(int delay, bool instarest_only_durations)
 {
     if (delay == -1)
         delay = you.time_taken;
@@ -725,7 +725,7 @@ void decrement_durations(int delay)
         disjunction();
 
     // Should expire before flight.
-    if (you.duration[DUR_TORNADO])
+    if (you.duration[DUR_TORNADO] && !instarest_only_durations)
     {
         tornado_damage(&you, min(delay, you.duration[DUR_TORNADO]));
         if (_decrement_a_duration(DUR_TORNADO, delay,
@@ -735,7 +735,7 @@ void decrement_durations(int delay)
         }
     }
 
-    if (you.duration[DUR_FLIGHT])
+    if (you.duration[DUR_FLIGHT] && !instarest_only_durations)
     {
         if (!you.permanent_flight())
         {
