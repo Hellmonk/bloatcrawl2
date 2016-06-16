@@ -9971,16 +9971,16 @@ int _difficulty_mode_multiplier()
     switch(crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            x = 110;
-            break;
-        case DIFFICULTY_STANDARD:
             x = 100;
             break;
-        case DIFFICULTY_CHALLENGE:
+        case DIFFICULTY_STANDARD:
             x = 90;
             break;
-        case DIFFICULTY_NIGHTMARE:
+        case DIFFICULTY_CHALLENGE:
             x = 80;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            x = 70;
             break;
         default:
             // should not be possible
@@ -9992,7 +9992,7 @@ int _difficulty_mode_multiplier()
     {
         // bring challenge mode back to baseline if player isn't
         // using exertion modes
-        x += 10;
+        x += 20;
     }
 
     return x;
@@ -10008,7 +10008,7 @@ int player_tohit_modifier(int tohit, int range)
     if (you.duration[DUR_PORTAL_PROJECTILE])
         range = 1;
 
-    tohit += _difficulty_mode_adder();
+    tohit += _difficulty_mode_adder() * 2;
 
     if (range > 1)
         tohit = tohit - 3 * range;
@@ -10125,25 +10125,7 @@ int player_mr_modifier(int mr)
 
 int player_spellsuccess_modifier(int force)
 {
-    switch(crawl_state.difficulty)
-    {
-        case DIFFICULTY_EASY:
-            force -= 1;
-            break;
-        case DIFFICULTY_STANDARD:
-            force -= 2;
-            break;
-        case DIFFICULTY_CHALLENGE:
-            force -= 3;
-            break;
-        case DIFFICULTY_NIGHTMARE:
-            force -= 4;
-            break;
-        default:
-            // should not be possible
-            force -= 2;
-            break;
-    }
+    force += _difficulty_mode_adder() * 2 - 2;
 
     if (player_is_very_tired(true))
         force -= 5;
@@ -10178,7 +10160,7 @@ int player_item_gen_modifier(int item_count)
 
     if (you.rune_curse_active[RUNE_VAULTS])
     {
-        x = x * 3 / 4;
+        x = x * 1 / 2;
     }
 
     item_count = div_rand_round(item_count * x, 100);
@@ -10223,16 +10205,16 @@ int player_monster_gen_modifier(int amount)
     switch (crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            percent = 80;
+            percent = 70;
             break;
         case DIFFICULTY_STANDARD:
             percent = 90;
             break;
         case DIFFICULTY_CHALLENGE:
-            percent = 100;
+            percent = 110;
             break;
         case DIFFICULTY_NIGHTMARE:
-            percent = 110;
+            percent = 120;
             break;
         default:
             // should not be possible
@@ -10240,7 +10222,7 @@ int player_monster_gen_modifier(int amount)
     }
 
     if (you.rune_curse_active[RUNE_ABYSSAL])
-        percent += 25;
+        percent += 50;
 
     return amount * percent / 100;
 }
@@ -10287,27 +10269,25 @@ int player_ouch_modifier(int damage, bool skip_details)
 {
     int percentage_allowed = 100;
 
-    switch (crawl_state.difficulty)
-    {
-        case DIFFICULTY_EASY:
-            percentage_allowed = 20;
-            break;
-        case DIFFICULTY_STANDARD:
-            percentage_allowed = 30;
-            break;
-        case DIFFICULTY_CHALLENGE:
-            percentage_allowed = 40;
-            break;
-        case DIFFICULTY_NIGHTMARE:
-            percentage_allowed = 50;
-            break;
-        default:
-            // should not be possible
-            break;
-    }
-
-    if (Options.disable_instakill_protection)
-        percentage_allowed = 1000;
+    if (!Options.disable_instakill_protection)
+        switch (crawl_state.difficulty)
+        {
+            case DIFFICULTY_EASY:
+                percentage_allowed = 20;
+                break;
+            case DIFFICULTY_STANDARD:
+                percentage_allowed = 30;
+                break;
+            case DIFFICULTY_CHALLENGE:
+                percentage_allowed = 40;
+                break;
+            case DIFFICULTY_NIGHTMARE:
+                percentage_allowed = 50;
+                break;
+            default:
+                // should not be possible
+                break;
+        }
 
     const int max_damage_allowed_per_turn = get_hp_max() * percentage_allowed / 100;
     const int damage_left = max_damage_allowed_per_turn - you.turn_damage;
