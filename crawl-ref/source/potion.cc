@@ -383,7 +383,7 @@ public:
              were_mighty ? "mightier" : "very mighty");
         you.increase_duration(DUR_MIGHT, 35 + random2(pow), 80);
         if (!were_mighty)
-            notify_stat_change(STAT_STR, 5, true);
+            notify_stat_change(STAT_STR, 10, true);
         return true;
     }
 };
@@ -407,7 +407,7 @@ public:
              were_brilliant ? "more clever" : "clever");
         you.increase_duration(DUR_BRILLIANCE, 35 + random2(pow), 80);
         if (!were_brilliant)
-            notify_stat_change(STAT_INT, 5, true);
+            notify_stat_change(STAT_INT, 10, true);
         return true;
     }
 };
@@ -450,7 +450,7 @@ public:
         you.increase_duration(DUR_AGILITY, 35 + random2(pow), 80);
 
         if (!were_agile)
-            notify_stat_change(STAT_DEX, 5, true);
+            notify_stat_change(STAT_DEX, 10, true);
         return true;
     }
 };

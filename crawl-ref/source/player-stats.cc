@@ -367,7 +367,7 @@ static int _strength_modifier(bool innate_only)
     if (!innate_only)
     {
         if (you.duration[DUR_MIGHT] || you.duration[DUR_BERSERK])
-            result += 5;
+            result += 10;
 
         if (you.duration[DUR_FORTITUDE])
             result += 10;
@@ -408,7 +408,7 @@ static int _int_modifier(bool innate_only)
     if (!innate_only)
     {
         if (you.duration[DUR_BRILLIANCE])
-            result += 5;
+            result += 10;
 
         if (you.duration[DUR_DIVINE_STAMINA])
             result += you.attribute[ATTR_DIVINE_STAMINA];
@@ -439,7 +439,7 @@ static int _dex_modifier(bool innate_only)
     if (!innate_only)
     {
         if (you.duration[DUR_AGILITY])
-            result += 5;
+            result += 10;
 
         if (you.duration[DUR_DIVINE_STAMINA])
             result += you.attribute[ATTR_DIVINE_STAMINA];
