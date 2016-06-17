@@ -47,6 +47,7 @@
 
 * Implemented more rune curses:
     * You can see the list of curses in effect with the ["] key.
+    * glowing rune: experience gains are cut in half. 
     * demonic rune: shop prices are multiplied by 3.
     * elven rune: monster spellpower increased by 33%.
     * slimy rune: you no longer can lose mutations by getting mutated, even if heavily mutated. Cure mutation potions 

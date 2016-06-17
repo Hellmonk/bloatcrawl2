@@ -130,12 +130,15 @@ const string rune_curse_description(const rune_type rune)
             message = "Stores charge a lot more money for items.";
             break;
 
+        case RUNE_MNOLEG:
+            message = "Experience gains are reduced.";
+            break;
+
         case RUNE_DIS:
         case RUNE_GEHENNA:
         case RUNE_COCYTUS:
         case RUNE_TARTARUS:
 
-        case RUNE_MNOLEG:
         case RUNE_LOM_LOBON:
         case RUNE_CEREBOV:
         case RUNE_GLOORX_VLOQ:
