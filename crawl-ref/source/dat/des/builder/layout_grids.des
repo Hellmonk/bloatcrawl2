@@ -163,7 +163,7 @@ TAGS:   no_hmirror no_vmirror layout_type_open
 # layout_small_grid
 #
 NAME:   layout_small_grid
-DEPTH:  D:9-, Lair, Depths, Pan
+DEPTH:  Lair, Depths, Pan
 WEIGHT: 5 (D), 5 (Lair), 3 (Depths), 10 (Pan)
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand no_rotate no_pool_fixup
@@ -194,7 +194,7 @@ TAGS:   no_hmirror no_vmirror layout_type_passages
 # layout_long_grid
 #
 NAME:   layout_long_grid
-DEPTH:  D:9-, Lair, Depths, Pan
+DEPTH:  Lair, Depths, Pan
 WEIGHT: 10 (D), 5 (Lair), 7 (Depths), 10 (Pan)
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand no_rotate no_pool_fixup
@@ -413,7 +413,7 @@ TAGS:   overwritable layout allow_dup unrand layout_type_open_caves
 #       maybe an Elf version
 #
 NAME:   layout_grid_maze
-DEPTH:  D:9-, Snake, Tar
+DEPTH:  Snake, Tar
 WEIGHT: 5 (D), 10 (Snake), 20 (Tar)
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand layout_type_passages

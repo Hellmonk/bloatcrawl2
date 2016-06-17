@@ -11,7 +11,7 @@
 ##########################################################################
 {{
 function food_weight(e, top)
-  for i = 14, top, -1 do
+  for i = 7, top, -1 do
     e.depth_weight("D:" .. i, 10000 / (15 - i))
   end
 end
@@ -93,7 +93,7 @@ ENDMAP
 
 # 14k
 NAME:   david_nohive_1
-DEPTH:  D:8-14
+DEPTH:  Lair, Orc, Forest
 : food_weight(_G, 8)
 WEIGHT: 15
 TAGS:   uniq_second_food extra chance_second_food
@@ -144,7 +144,7 @@ ENDMAP
 # 23.2k/19.9k/13k
 # Not really a fish farm now that fish are gone...
 NAME:   hangedman_fish_farm
-DEPTH:  D:9-14
+DEPTH:  Lair, Orc, Forest
 : food_weight(_G, 7)
 WEIGHT: 15
 TAGS:   uniq_second_food extra chance_second_food no_monster_gen no_pool_fixup \
@@ -163,7 +163,7 @@ ENDMAP
 
 # 18k/18.8k/16.6k (min 18k/12k/12k), plus perishable 6k/6k/0
 NAME:   hangedman_pestilent_swarm
-DEPTH:  D:8-14
+DEPTH:  Lair, Orc, Forest
 : food_weight(_G, 8)
 WEIGHT: 15
 TAGS:   uniq_second_food extra chance_second_food no_monster_gen patrolling
@@ -182,7 +182,7 @@ ENDMAP
 
 # 25k (min 20k)
 NAME:   hangedman_little_slice_of_home
-DEPTH:  D:8-14
+DEPTH:  Lair, Orc, Forest
 : food_weight(_G, 8)
 WEIGHT: 10
 TAGS:   uniq_second_food extra chance_second_food
@@ -207,7 +207,7 @@ ENDMAP
 
 # 22.3k/18.8k/19k (min 9.6k)
 NAME:     hangedman_ranch
-DEPTH:    D:8-14
+DEPTH:    Lair, Orc, Forest
 : food_weight(_G, 8)
 WEIGHT:   10
 TAGS:     uniq_second_food extra chance_second_food no_monster_gen patrolling
@@ -239,7 +239,7 @@ ENDMAP
 
 # 15.3k/34.2k/0
 NAME:   hangedman_tree_tricks
-DEPTH:  D:8-14
+DEPTH:  Lair, Orc, Forest
 : food_weight(_G, 8)
 WEIGHT: 10
 TAGS:   uniq_second_food extra chance_second_food no_monster_gen
@@ -261,7 +261,7 @@ ENDMAP
 
 # 16.8k/21.3/8k
 NAME:   hangedman_tell_no_tales
-DEPTH:  D:9-14
+DEPTH:  Lair, Orc, Forest
 : food_weight(_G, 9)
 WEIGHT: 10
 TAGS:   uniq_second_food extra chance_second_food
@@ -286,7 +286,7 @@ ENDMAP
 
 # 20.6k/23k/12.5k (min 18k/6k/0)
 NAME:    hangedman_stone_soup
-DEPTH:   D:10-14
+DEPTH:   Orc, Lair
 : food_weight(_G, 8)
 WEIGHT:  10
 TAGS:    uniq_second_food extra chance_second_food patrolling no_rotate no_vmirror
@@ -327,7 +327,7 @@ ENDMAP
 # 22.0k/29.5k/0
 # A tengu has staked out a little piece of the dungeon.
 NAME:   grunt_tengu_nest
-DEPTH:  D:10-14
+DEPTH:  Orc, Lair
 : food_weight(_G, 10)
 WEIGHT: 15
 TAGS:   uniq_second_food extra chance_second_food no_monster_gen patrolling
@@ -387,7 +387,7 @@ ENDMAP
 # Welcome to Pandemonium Pizzeria; is this for carry-out or delivery?
 # (Ideally the cashier would have a silly hat, but they can't wear hats.)
 NAME:   grunt_pizzeria
-DEPTH:  D:8-14
+DEPTH:  Lair, Orc, Forest
 : food_weight(_G, 8)
 WEIGHT: 10
 TAGS:   uniq_second_food extra chance_second_food no_monster_gen no_trap_gen \

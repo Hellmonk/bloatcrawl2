@@ -26,19 +26,15 @@ function abyss_entry(e, glyph)
   e.depth_chance("Depths:1-3", 3333)
   e.depth_chance("Depths:4",   10000)
   e.depth_chance("Depths:5-",  3333)
-  e.depth_chance("D:21-24", 3333)
-  e.depth_chance("D:25",    10000)
-  e.depth_chance("D:26-",   3333)
   e.kfeat(glyph .. ' = enter_abyss')
 end
 }}
 
 ###############################################################################
 # Abyss entries.
-# 1/3 chance to appear on D:21-27, and guaranteed on D:25.
 ###############################################################################
 
-default-depth: Depths, D:21-
+default-depth: Depths
 
 # This one is the backup and the one used in encompass vaults.
 NAME: abyss_entry
@@ -825,7 +821,7 @@ ENDMAP
 
 NAME:    hangedman_abyss_or_decor_clamps
 TAGS:    transparent no_pool_fixup decor
-DEPTH:   D:8-, Depths, Abyss
+DEPTH:   Lair, Orc, Forest, Depths, Abyss
 KFEAT:   @ = +
 SHUFFLE: ABCDEFGH, '"
 : if you.in_branch("Abyss") then

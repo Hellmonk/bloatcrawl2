@@ -78,7 +78,7 @@ end
 # (or destroy it)
 #
 NAME:   boulder_corridor_run
-DEPTH:  D:8-13
+DEPTH:  Orc
 TAGS:   luniq_boulder_trap no_monster_gen
 ORIENT: float
 KFEAT: ^ = pressure plate trap

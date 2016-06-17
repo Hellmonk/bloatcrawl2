@@ -1459,7 +1459,7 @@ ENDMAP
 
 NAME:   wad_woods_minihive
 TAGS:   uniq_beehive
-DEPTH:  D:8-, Lair, Forest
+DEPTH:  Lair, Forest
 ORIENT: float
 COLOUR: a = yellow
 TILE:   a = wall_wax
@@ -1491,7 +1491,7 @@ ENDMAP
 
 NAME:   wad_woods_structure_01
 TAGS:   no_monster_gen
-DEPTH:  D:10-, Lair, Forest
+DEPTH:  Lair, Forest
 ORIENT: float
 : wad_woods_setup(_G, "other", 5, false, 0, 0, 0)
 FTILE:  "2T = floor_grass
