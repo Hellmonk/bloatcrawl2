@@ -2857,13 +2857,13 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
     {
         int adjusted_gain = exp_gained;
         if (crawl_state.difficulty == DIFFICULTY_EASY)
-            adjusted_gain = div_rand_round(adjusted_gain * 5, 3);
+            adjusted_gain <<= 1;
 
-        if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-            adjusted_gain = div_rand_round(adjusted_gain * 4, 3);
+        if (crawl_state.difficulty == DIFFICULTY_CHALLENGE)
+            adjusted_gain >>= 1;
 
         if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-            adjusted_gain = div_rand_round(adjusted_gain * 3, 4);
+            adjusted_gain >>= 2;
 
         if (exp_loss)
         {
