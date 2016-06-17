@@ -1357,7 +1357,7 @@ default-depth:
 
 NAME:    st_orc_town
 TAGS:    no_rotate no_item_gen
-PLACE:   Orc:4
+PLACE:   Orc:$
 ORIENT:  float
 MONS:    orc / nothing
 #
@@ -1398,7 +1398,7 @@ ENDMAP
 ##################################################
 NAME:    st_orc_ogre_mass
 TAGS:    no_item_gen no_monster_gen
-PLACE:   Orc:4
+PLACE:   Orc:$
 ORIENT:  float
 MONS:    ogre / nothing w:5, two-headed ogre / nothing w:5, ogre mage
 KMONS:   S = ogre / nothing w:5
@@ -1423,7 +1423,7 @@ ENDMAP
 ##################################################
 NAME:    st_orc_rangers
 TAGS:    no_rotate no_item_gen no_monster_gen no_pool_fixup
-PLACE:   Orc:4
+PLACE:   Orc:$
 ORIENT:  float
 MONS:    orc warrior w:1 ; arbalest . bolt . halberd | war axe | morningstar /\
          orc w:10 ; arbalest . bolt . trident | hand axe | mace
@@ -1457,7 +1457,7 @@ ENDMAP
 ##################################################
 NAME:    st_orc_mages
 TAGS:    no_item_gen no_monster_gen
-PLACE:   Orc:4
+PLACE:   Orc:$
 ORIENT:  float
 MONS:    orc / nothing, orc wizard / nothing, orc sorcerer
 MONS:    orc priest / nothing, orc high priest, orc warrior
@@ -1490,7 +1490,7 @@ ENDMAP
 ##################################################
 NAME:    st_orc_pillars
 TAGS:    no_item_gen no_monster_gen
-PLACE:   Orc:4
+PLACE:   Orc:$
 ORIENT:  float
 MONS:    orc / nothing, orc warrior / nothing, orc knight / nothing
 MONS:    orc priest / nothing, orc high priest
@@ -1518,7 +1518,7 @@ ENDMAP
 ##################################################
 NAME:    st_orc_congregation
 TAGS:    no_item_gen no_monster_gen
-PLACE:   Orc:4
+PLACE:   Orc:$
 ORIENT:  float
 MONS:    orc / nothing, orc warrior / nothing, orc priest / nothing
 MONS:    orc wizard / nothing, orc knight, orc high priest, orc sorcerer
@@ -1563,7 +1563,7 @@ ENDMAP
 ##################################################
 NAME:    st_orc_open
 TAGS:    no_item_gen no_monster_gen
-PLACE:   Orc:4
+PLACE:   Orc:$
 ORIENT:  float
 MONS:    ogre, two-headed ogre, troll, deep troll w:19 / iron troll w:1
 MONS:    ogre mage, hill giant w:14 / ettin w:1, cyclops w:29 / stone giant w:1
@@ -1584,7 +1584,7 @@ ENDMAP
 ##################################################
 NAME:    st_orc_elflike
 TAGS:    no_item_gen no_monster_gen
-PLACE:   Orc:4
+PLACE:   Orc:$
 ORIENT:  float
 MONS:    orc high priest, orc sorcerer, orc knight
 MONS:    orc warrior, orc priest, orc wizard
@@ -1613,7 +1613,7 @@ ENDMAP
 
 ##################################################
 NAME:   grunt_orc_gardens
-PLACE:  Orc:4
+PLACE:  Orc:$
 ORIENT: float
 {{
   -- There is functionality here for making the enemy sets consist of
@@ -1690,7 +1690,7 @@ ENDMAP
 ##################################################
 NAME:   grunt_orc_community_town_hall
 TAGS:   transparent no_monster_gen no_item_gen
-PLACE:  Orc:4
+PLACE:  Orc:$
 ORIENT: float
 KMONS:  O = Saint Roka band w:3 / orc warlord band, orc warlord band
 MONS:   orc knight / orc warrior w:30, orc sorcerer / orc wizard w:30
@@ -1844,7 +1844,7 @@ ENDMAP
 # The orcs roasted some dungeon creatures, and they're sleeping off the meal.
 NAME:   grunt_orc_tribal_feast
 TAGS:   patrolling no_item_gen no_monster_gen
-PLACE:  Orc:4
+PLACE:  Orc:$
 ORIENT: float
 MONS:   orc knight, orc high priest, orc sorcerer
 MONS:   orc warrior, orc priest, orc wizard, orc
@@ -1877,7 +1877,7 @@ ENDMAP
 # leader; if it seems kind of sparse at first glance, think again.
 NAME:   grunt_orc_cross
 TAGS:   patrolling no_item_gen no_monster_gen
-PLACE:  Orc:4
+PLACE:  Orc:$
 ORIENT: float
 MONS:   orc knight, orc high priest, orc sorcerer
 MONS:   orc warrior, orc wizard, orc priest
@@ -1920,7 +1920,7 @@ ENDMAP
 # Outer shops are for common orc pilgrims, inner shops only for the initiated.
 NAME: pf_orc_diabolical
 TAGS: patrolling no_item_gen no_monster_gen transparent
-PLACE: Orc:4
+PLACE: Orc:$
 ORIENT: float
 MONS: orc / nothing w:5, orc warrior / nothing w:5
 MONS: orc priest / nothing w:5, common demon / nothing w:5
@@ -1969,7 +1969,7 @@ ENDMAP
 ##################################################
 NAME:   kennysheep_orc_mage_school
 TAGS:   patrolling no_item_gen no_monster_gen
-PLACE:  Orc:4
+PLACE:  Orc:$
 ORIENT: float
 MONS:   orc sorcerer / ogre mage w:2, orc wizard, orc / ogre w:3
 KMONS:  4 = Erolcha / ogre mage, ogre mage
@@ -2028,7 +2028,7 @@ ENDMAP
 NAME:   pubby_orc_utopia
 ORIENT: encompass
 TAGS:   patrolling no_item_gen no_monster_gen
-PLACE:  Orc:4
+PLACE:  Orc:$
 WEIGHT: 5
 SUBST:  $ = $:1 .:4
 MONS:   orc w:8 / orc warrior w:1 / nothing w:1

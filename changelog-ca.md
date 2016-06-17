@@ -1,5 +1,30 @@
 ## v1.5.6
 
+* Zot no longer requires any runes to get in. You can beat the game with 0 runes. 
+
+* Branches rearranged a bit:
+    * Dungeon:7
+        * Temple
+    * Lair:7 
+        * Snake
+        * Swamp
+        * Shoals
+    * Orc:7
+        * Spider
+        * Elf
+        * Dwarf
+    * Forest:7
+        * Crypt
+        * Slime
+        * Vaults
+    * Depths:7
+        * Hells
+        * Pan
+        * Abyss
+        * Zig
+        * Tomb
+    * Zot:7
+
 * Vine Stalker nerf
     * Took max health regen mutation from 3 to 1, so they regen health more slowly than a cave troll. 
 
