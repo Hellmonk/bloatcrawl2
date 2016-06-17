@@ -60,7 +60,11 @@ static int _shop_get_item_value(const item_def& item, int greed, bool id)
 
 int item_price(const item_def& item, const shop_struct& shop)
 {
-    return _shop_get_item_value(item, shop.greed, shoptype_identifies_stock(shop.type));
+    int base_value = _shop_get_item_value(item, shop.greed, shoptype_identifies_stock(shop.type));
+    if (you.rune_curse_active[RUNE_DEMONIC])
+        base_value *= 3;
+
+    return base_value;
 }
 
 // This probably still needs some work. Rings used to be the only

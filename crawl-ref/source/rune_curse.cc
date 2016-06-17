@@ -126,12 +126,14 @@ const string rune_curse_description(const rune_type rune)
             message = "Normal movement speed is reduced. Quick mode isn't affected.";
             break;
 
+        case RUNE_DEMONIC:
+            message = "Stores charge a lot more money for items.";
+            break;
+
         case RUNE_DIS:
         case RUNE_GEHENNA:
         case RUNE_COCYTUS:
         case RUNE_TARTARUS:
-
-        case RUNE_DEMONIC:
 
         case RUNE_MNOLEG:
         case RUNE_LOM_LOBON:
