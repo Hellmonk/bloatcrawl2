@@ -61,7 +61,7 @@ const int rune_curse_mon_spellpower_adjustment(int spellpower)
 {
     if (you.rune_curse_active[RUNE_ELF])
     {
-        spellpower = spellpower * 5 / 4;
+        spellpower = spellpower * 4 / 3;
     }
 
     return spellpower;

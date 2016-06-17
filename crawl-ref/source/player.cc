@@ -8584,7 +8584,7 @@ void player::increase_duration(duration_type dur, int turns, int cap, const char
             case DUR_SILENCE:
             case DUR_SLOW:
             case DUR_VERTIGO:
-                duration[dur] = duration[dur] * 5 / 4;
+                duration[dur] = duration[dur] * 4 / 3;
                 break;
             default:
                 break;
@@ -9873,7 +9873,7 @@ int spell_mp_cost(spell_type which_spell)
         cost *= 2;
 
     if (you.rune_curse_active[RUNE_SNAKE])
-        cost = cost * 5 / 4;
+        cost = cost * 4 / 3;
 
     return cost;
 }
@@ -9892,7 +9892,7 @@ int spell_mp_freeze(spell_type which_spell)
     }
 
     if (you.rune_curse_active[RUNE_SNAKE])
-        cost = cost * 5 / 4;
+        cost = cost * 4 / 3;
 
     return cost;
 }
@@ -9921,7 +9921,7 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
         sp_cost /= 2;
 
     if (you.rune_curse_active[RUNE_SNAKE])
-        sp_cost = sp_cost * 5 / 4;
+        sp_cost = sp_cost * 4 / 3;
 
     sp_cost = max(1, (int)sp_cost);
 
@@ -10160,7 +10160,7 @@ int player_item_gen_modifier(int item_count)
 
     if (you.rune_curse_active[RUNE_VAULTS])
     {
-        x = x * 1 / 2;
+        x = x * 2 / 3;
     }
 
     item_count = div_rand_round(item_count * x, 100);
@@ -10553,7 +10553,7 @@ void monster_died(mid_t mons_mid, bool was_hostile_and_seen, int mp_freeze, kill
         can_rest = true;
     }
 
-    if (left_corpse && you.rune_curse_active[RUNE_CRYPT] && x_chance_in_y(1, 2))
+    if (left_corpse && you.rune_curse_active[RUNE_CRYPT] && x_chance_in_y(1, 3))
     {
         const monster_type mon = _pick_random_spirit();
 
