@@ -2984,8 +2984,10 @@ bool fire_battlesphere(monster* mons)
 
             used = true;
             // Decrement # of volleys left and possibly expire the battlesphere.
+            /*
             if (--mons->battlecharge == 0)
                 end_battlesphere(mons, false);
+                */
 
             mons->props.erase("firing");
         }
@@ -3408,6 +3410,7 @@ bool spell_produces_summoned_minion(spell_type spell)
         case SPELL_SUMMON_HORRIBLE_THINGS:
         case SPELL_MALIGN_GATEWAY:
         case SPELL_SUMMON_FOREST:
+        case SPELL_BATTLESPHERE:
             result = true;
             break;
         default:
