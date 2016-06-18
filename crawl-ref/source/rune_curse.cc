@@ -179,14 +179,17 @@ void list_rune_curses()
 
 void choose_branch_rune_requirements()
 {
+    const game_difficulty_level difficulty = crawl_state.difficulty;
     for (int branch_index = BRANCH_FIRST; branch_index < NUM_BRANCHES; branch_index++)
     {
         const bool is_rune_branch = branches[branch_index].runes.size() > 0;
         if(is_rune_branch && branch_index != BRANCH_ABYSS)
         {
-            while (x_chance_in_y(crawl_state.difficulty + 1, 5))
+            you.branch_requires_runes[branch_index] += random2(difficulty * 2 + 3);
+
+            while (coinflip())
             {
-                you.branch_requires_runes[branch_index] += random2(4);
+                you.branch_requires_runes[branch_index] += random2(difficulty * 2 + 3);
             }
 
             you.branch_requires_runes[branch_index] = min(you.branch_requires_runes[branch_index], 10);

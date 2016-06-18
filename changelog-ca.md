@@ -26,7 +26,7 @@
     * Zot:7
 
 * Vine Stalker nerf
-    * Took max health regen mutation from 3 to 1, so they regen health more slowly than a cave troll. 
+    * Took health regen mutation from 3 to 1, so they regen health more slowly than a cave troll. 
 
 * Changing weapons no longer takes any time.
 
