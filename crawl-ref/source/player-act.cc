@@ -836,7 +836,7 @@ bool player::can_go_berserk(bool intentional, bool potion, bool quiet,
         success = false;
         if (duration[DUR_EXHAUSTED])
             msg = "You're too exhausted to go berserk.";
-        else if (get_sp() < 50)
+        else if (player_is_very_tired(true))
             msg = "You are too tired to berserk now.";
         else if (!intentional && !potion && clarity())
             msg = "You're too calm and focused to rage.";
