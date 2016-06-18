@@ -1453,7 +1453,6 @@ void draw_border()
 
     textcolour(Options.status_caption_colour);
 
-    CGOTOXY(1, mp_row, GOTO_STAT);
     CGOTOXY(1, ac_row, GOTO_STAT); CPRINTF("AC:");
     CGOTOXY(1, ev_row, GOTO_STAT); CPRINTF("EV:");
     CGOTOXY(1, sh_row, GOTO_STAT); CPRINTF("SH:");
