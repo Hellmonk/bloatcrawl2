@@ -9,8 +9,7 @@ NAME:    hangedman_slaughterboxes
 TAGS:    no_pool_fixup no_monster_gen no_item_gen patrolling uniq_d_encompass
 ORIENT:  encompass
 DEPTH:   Depths:2-
-PLACE:   D:$, Depths:$
-WEIGHT:  1 (D:$), 2 (Depths:$), 10
+WEIGHT:  2 (Depths:$), 10
 MONS:    fungus, plant
 KMONS:   S = 0 band
 KMONS:   # = 9 band
