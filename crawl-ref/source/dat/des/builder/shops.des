@@ -616,7 +616,7 @@ ENDMAP
 
 # Get away from it all.
 NAME: nicolae_island_escapes
-DEPTH: D:7-, !D:$, Depths, !Depths:$, Shoals, !Shoals:$, Swamp, !Swamp:$
+DEPTH: D:4-, !D:$, Depths, !Depths:$, Shoals, !Shoals:$, Swamp, !Swamp:$
 TAGS: no_trap_gen no_item_gen no_monster_gen water_ok no_tide no_pool_fixup
 WEIGHT: 5
 SHUFFLE: Aa/Bb

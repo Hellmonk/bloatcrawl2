@@ -2009,16 +2009,7 @@ static void _build_overflow_temples()
 
         {
             dgn_map_parameters mp(vault_tag);
-            if (!_dgn_ensure_vault_placed(
-                    _build_secondary_vault(vault),
-                    false))
-            {
-#ifdef DEBUG_TEMPLES
-                mprf(MSGCH_DIAGNOSTICS, "Couldn't place overflow temple '%s', "
-                     "vetoing level.", vault->name.c_str());
-#endif
-                return;
-            }
+            _build_secondary_vault(vault);
         }
 #ifdef DEBUG_TEMPLES
         mprf(MSGCH_DIAGNOSTICS, "Placed overflow temple %s",

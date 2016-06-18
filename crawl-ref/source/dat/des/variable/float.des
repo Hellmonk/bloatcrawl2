@@ -4162,7 +4162,7 @@ ENDMAP
 NAME:    hangedman_cross_stitches
 ORIENT:  float
 TAGS:    transparent no_monster_gen
-DEPTH:   D:6-, !D:$, Depths, !Depths:$, Elf, Snake
+DEPTH:   D:4-, !D:$, Depths, !Depths:$, Elf, Snake
 WEIGHT:  5 (Elf, Snake), 10
 KMONS:   0 = 0
 KMONS:   9 = 9

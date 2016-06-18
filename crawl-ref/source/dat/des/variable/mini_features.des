@@ -956,7 +956,7 @@ ENDMAP
 
 NAME:   minmay_holes
 TAGS:   transparent extra decor
-DEPTH:  D:5-, !D:$, Depths, !Depths:$, Lair, !Lair:$
+DEPTH:  D:3-, !D:$, Depths, !Depths:$, Lair, !Lair:$
 KFEAT:  ^ = known shaft trap
 SUBST:  . = . ^:1, ' = . ^:2, " = . ^:4
 WEIGHT: 15
@@ -3151,7 +3151,7 @@ x.xxx.xxxxxxxxxd..xxxxx.x
 ENDMAP
 
 NAME: nicolae_straight_to_the_point
-DEPTH: D:8-, !D:$
+DEPTH: D:3-, !D:$
 TAGS: no_item_gen
 KITEM: >i = any / any good_item / star_item w:1 / $ / $ good_item w:1
 KFEAT: > = >
@@ -3784,7 +3784,7 @@ ENDMAP
 
 NAME:  minivault_21
 TAGS:  transparent allow_dup extra
-DEPTH: D:8-, !D:$, Depths:2-, !Depths:$
+DEPTH: D:3-, !D:$, Depths:2-, !Depths:$
 MAP
 ............
 ..xxxxxxxx..
@@ -3802,7 +3802,7 @@ ENDMAP
 
 NAME:  minivault_22
 TAGS:  transparent allow_dup extra ruin_abyss
-DEPTH: D:6-, Depths, !Depths:$, Abyss
+DEPTH: D:3-, Depths, !Depths:$, Abyss
 SUBST: $ : $ *:5
 SUBST: ~ : . +:2
 MAP

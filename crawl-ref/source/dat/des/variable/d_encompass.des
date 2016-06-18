@@ -118,9 +118,8 @@ ENDMAP
 NAME:    hangedman_spin_cycle
 TAGS:    no_monster_gen no_item_gen no_trap_gen patrolling uniq_d_encompass
 ORIENT:  encompass
-DEPTH:   Depths:2-
-PLACE:   D:$, Depths:$
-WEIGHT:  1 (D:$), 2 (Depths:$), 10
+PLACE:   Forest:2-
+WEIGHT:  2 (Forest:$), 10
 KMONS:   - = plant
 KMONS:   _ = demonic plant
 KMONS:   no = vault guard
@@ -278,8 +277,7 @@ default-depth:
 
 NAME: grunt_runaround
 TAGS: no_monster_gen uniq_d_encompass
-PLACE: Depths:$
-DEPTH: D:$, Depths:2-
+DEPTH: Depths:2-
 WEIGHT: 1 (D:$), 2 (Depths:$), 10
 ORIENT: encompass
 SUBVAULT: B : grunt_runaround_doors_1
