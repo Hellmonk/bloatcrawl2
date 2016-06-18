@@ -182,7 +182,7 @@ void choose_branch_rune_requirements()
     for (int branch_index = BRANCH_FIRST; branch_index < NUM_BRANCHES; branch_index++)
     {
         const bool is_rune_branch = branches[branch_index].runes.size() > 0;
-        if(is_rune_branch || branches[branch_index].id == BRANCH_ORC)
+        if(is_rune_branch)
         {
             while (x_chance_in_y(2, 3))
             {

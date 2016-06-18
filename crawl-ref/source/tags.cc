@@ -3246,7 +3246,9 @@ static void tag_read_you(reader &th)
     }
     for (int i = 0; i < NUM_BRANCHES; ++i)
     {
-        you.branch_requires_runes[i] = unmarshallInt(th);
+        // temporary repair
+        if ((branch_type)i != BRANCH_ORC)
+            you.branch_requires_runes[i] = unmarshallInt(th);
     }
 
     unmarshallFixedBitVector<NUM_RUNE_TYPES>(th, you.rune_curse_active);
