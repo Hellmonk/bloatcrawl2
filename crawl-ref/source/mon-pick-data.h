@@ -235,10 +235,10 @@ static const pop_entry pop_dwarf[] =
     {  3,  7,  333, FLAT, MONS_STONE_GIANT },
     {  3,  7,  111, FLAT, MONS_FIRE_GIANT },
     {  3,  7,  222, FLAT, MONS_FROST_GIANT },
-    {  1,  3,  333, FLAT, MONS_WRAITH },
-    {  1,  3,  222, FLAT, MONS_SHADOW_WRAITH },
+    {  1,  3,   33, FLAT, MONS_WRAITH },
+    {  1,  3,   22, FLAT, MONS_SHADOW_WRAITH },
     {  2,  7,   33, FLAT, MONS_EIDOLON },
-    {  1,  7,  444, FLAT, MONS_PHANTASMAL_WARRIOR },
+    {  1,  7,   44, FLAT, MONS_PHANTASMAL_WARRIOR },
     { 0,0,0,FLAT,MONS_0 }
 };
 

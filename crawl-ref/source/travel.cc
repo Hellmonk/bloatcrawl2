@@ -2249,6 +2249,13 @@ level_id find_down_level(level_id curr)
 {
     if (curr.depth < brdepth[curr.branch])
         ++curr.depth;
+    else
+    {
+        /* work in progress
+        return feat_is_portal_entrance(grd(where))
+               || grd(where) == DNGN_TRANSIT_PANDEMONIUM;
+               */
+    }
     return curr;
 }
 

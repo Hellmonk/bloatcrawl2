@@ -35,7 +35,7 @@
 
 * *Spell Power* is increased by:
     * Intelligence
-    * Spell School Average
+    * Spell School Maximum
     
 * *Spell Cost* is reduced by:
     * Intelligence
@@ -43,7 +43,7 @@
 
 * *Spell Failure Rate* is reduced by:
     * Dexterity
-    * Spell School Average
+    * Spell School Maximum
 
 * *Spell Casting Speed* is increased by:
     * Dexterity
@@ -64,7 +64,8 @@
     * Doubles spell magic and attack stamina costs
     * Increased damage
     * Increased spellpower
-    * Increased attack speed and spellcasting speed
+    * Increased attack speed
+    * Increased spellcasting speed
     
 * Focus mode
     * Doubles spell magic and attack stamina costs

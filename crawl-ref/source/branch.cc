@@ -150,7 +150,7 @@ bool in_lower_half_of_branch()
 
 bool is_double_deep_branch(branch_type branch)
 {
-    return branch == BRANCH_ORC;
+    return false;
 }
 
 bool player_can_gain_experience_here()

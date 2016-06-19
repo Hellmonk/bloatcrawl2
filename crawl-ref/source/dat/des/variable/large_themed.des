@@ -9,7 +9,7 @@
 # vaults.des.
 ###############################################################################
 
-default-depth: D:12-, !D:$, Depths, !Depths:$
+default-depth: D:4-, !D:$, Depths, !Depths:$
 # be careful to adapt these numbers for new vaults (using DEPTH)
 
 ###############################################################################
@@ -304,7 +304,7 @@ ENDMAP
 NAME:   minmay_ice_pillars
 TAGS:   no_rotate no_pool_fixup no_monster_gen no_tele_into
 ORIENT: north
-DEPTH:  D:11-, !D:$
+DEPTH:  D:4-, !D:$
 WEIGHT: 5
 MONS:   ice beast / nothing w:3, ice statue, ice dragon / nothing
 SUBST:  y : y:48 w:1 W:1, Y : Y:48 W:1 .:1, y = wwW, Y = WW.
@@ -437,7 +437,7 @@ ENDMAP
 NAME:   orc_temple
 ORIENT: southwest
 TAGS:   no_rotate
-DEPTH:  D:12-, !D:$, Orc
+DEPTH:  D:4-, !D:$, Orc
 MONS:   orc warlord, patrolling orc priest, patrolling orc high priest
 MONS:   orc warrior, orc wizard, orc knight, orc sorcerer
 KFEAT:  C = altar_beogh
@@ -474,7 +474,7 @@ ENDMAP
 NAME:   fort_yaktaur
 TAGS:   no_pool_fixup
 ORIENT: southeast
-DEPTH:  D:11-, !D:$
+DEPTH:  D:4-, !D:$
 MONS:   gnoll, yak, death yak, yaktaur, minotaur
 MAP
 .........@....wwwwwwwwwwwwwwwwwxxx
@@ -512,7 +512,7 @@ ENDMAP
 # Rubicon
 #
 NAME:    erik_rubicon_a
-DEPTH:   D:10-, !D:$
+DEPTH:   D:4-, !D:$
 ORIENT:  south
 TAGS:    no_pool_fixup no_rotate uniq_rubicon
 WEIGHT:  6
@@ -543,7 +543,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
 NAME:    erik_rubicon_b
-DEPTH:   D:10-, !D:$
+DEPTH:   D:4-, !D:$
 ORIENT:  south
 TAGS:    no_rotate uniq_rubicon
 WEIGHT:  4
@@ -1767,7 +1767,7 @@ xxxwxxxx......xxxw.xx..xxx..xxx
 ENDMAP
 
 NAME:    kennysheep_kobold_grotto
-DEPTH:   D:13-, !D:$
+DEPTH:   D:3-, !D:$
 TAGS:    no_monster_gen
 ORIENT:  northwest
 MONS:    big kobold, patrolling kobold demonologist, kobold, plant

@@ -286,116 +286,6 @@ xcccccccx
 xxxxxxxxx
 ENDMAP
 
-## Treasure maps
-################################################
-NAME:    dhfh_treasure_sunken_tomb
-TAGS:    dhfh_treasure no_pool_fixup no_wall_fixup
-PLACE:   Dwarf:$
-WEIGHT:  40
-ORIENT:  float
-KITEM:   Z = dwarven rune of Zot
-MONS:    deep dwarf w:30 / elf w:3
-MONS:    deep dwarf w:20 / elf w:3
-MONS:    generate_awake giant centipede / generate_awake redback / \
-generate_awake wolf spider w:8 / generate_awake wolf w:8
-MONS:    generate_awake wight w:20 / generate_awake troll / \
-generate_awake hell rat
-MONS:    deep dwarf w:20 / elf w:3 / wight w:2
-MONS:    deep dwarf / elf w:3 / wight w:2 / troll w:5 / orc priest
-MONS:    orc priest
-SUBST:   p = T:40 V:40 U:20
-SUBST:   . = .:92 ~:5 ^:1 %:1 *:1
-SUBST:   q = q:66 ~:33 ^:1
-KFEAT:   q = alarm trap
-KFEAT:   + = runed_door
-ITEM:    box of beasts
-ITEM:    any weapon
-ITEM:    amulet of faith / \
-         any jewellery / any weapon ego:holy_wrath / any weapon / \
-         potion of experience w:1 / potion of ambrosia / any potion / \
-         scroll of holy word / scroll of torment / any scroll
-ITEM:    potion of ambrosia
-MAP
-        xxxxxxxxxxxxxxxxxxxx
-        xxxxxxxxxxxxgxxxxxxx
-        xxxxxxxxxx1111xxxxxx
-        xxxx.x.x111.Z111xxxx
-        xx...+.........111xx
-xxxxxxxxx....xxxxxxxxx...11x
-xxxxxx.....xxx.......x...1xx
-xxxx.....xxx...xxxx..+...xxx
-x......xxxx....xqxx..x..xxxx
-x..xxxxx55xxx..xe3...xx.xxxx
-x...xx6666xxx+xxxxxxxxccccxx
-xx..x55x+xxxx......q.cc||cxx
-xxx+xxxx....xxxC7.xc+cG4$ccx
- xx..xx.......xx55xc4.C..dcx
- xx..3+........xffxcccG4.4cx
- xxx+xx........xxxx.xccccccx
- x....x.............+q3.xxxx
- xxxxxxxxxx.........xx..exxx
- x........+..........xxxxxxx
- x........x.....p....x
- x..xxxxxxxx.........x
- x..xxxxxxxxx........x
- x..xxxxxxxxxx......xx
- x222222xxxxxx.....xxx
- x22222gxxxxxxx.....xx
- xxxxxxxxxxxxxxx....xx
-               xx.@..x
-ENDMAP
-
-NAME:   dhfh_treasure_vault
-TAGS:   dhfh_treasure no_wall_fixup no_rotate
-PLACE:  Dwarf:$
-ORIENT: float
-WEIGHT: 15
-KITEM:  Z = dwarven rune of Zot
-MONS:   deep dwarf
-MONS:   troll w:20, elf, wight
-MONS:   wight
-MONS:   patrolling deep dwarf
-NSUBST: X = 2:= / *:x
-SUBST:  * = **d
-ITEM:   staff of death / scroll of torment / necronomicon w:1
-MAP
-cccccccccccccccccccc@cccccccccccccccccccc
-c$X...x............x.x............x...X$c
-c*X1...........x.4.x.x.4.x...........2X.c
-cZX*..x........x...G.G...x........x..1X.c
-c.X1..x........x.G.....G.x........x..*X.c
-c.X2........xxxxxx..4..xxxxxx........1X*c
-c$X...x........$$x.....x$$........x...X$c
-cccccccccccccccccccc@cccccccccccccccccccc
-ENDMAP
-
-NAME:   dhfh_treasure_sunken_vault
-TAGS:   dhfh_treasure no_wall_fixup no_rotate
-ORIENT: float
-WEIGHT: 5
-MONS:   wight
-MONS:   necrophage
-MONS:   hell rat
-MONS:   wolf
-SUBST:  $ = $$d
-ITEM:   any weapon ego:draining / any armour ego:positive_energy / \
-        staff of death / scroll of torment / necronomicon w:1
-MAP
-..xxx@<xxxxx
-............
-.xxxxxxxx3x.
-.3.....xx.x.
-.xxxxxx4x.x.
-.xx4x$$xx.x.
-.x.x$22$x.x.
-.x.x$12$x.x.
-.x.xx$$x4xx.
-.x.x4xxxxxx.
-.x.xx.....3.
-.x3xxxxxxxx.
-............
-ENDMAP
-
 ## guardhouses
 ################################################
 NAME:   oh_my_dwarfness
@@ -616,7 +506,6 @@ SUBST:   & = .:15 G H I
 KITEM:   G = griffon corpse
 KITEM:   H = sheep corpse
 KITEM:   I = deep troll corpse
-KFEAT:   + = runed_door
 : dgn.delayed_decay(_G, 'G', 'griffon corpse')
 : dgn.delayed_decay(_G, 'H', 'hell hound corpse')
 : dgn.delayed_decay(_G, 'I', 'deep troll corpse')
@@ -676,7 +565,6 @@ KITEM:   M = manual of Fighting / manual of Dodging / manual of Armour / \
 KITEM:   Q = potion of ambrosia w:2 / potion of mutation
 KFEAT:   ? = any shop
 KFEAT:   & = general shop
-KFEAT:   + = runed_door
 KFEAT:   8 = granite_statue
 MAP
 cccccccccccc.@.ccccc
@@ -697,3 +585,113 @@ ccccccccccsc...cscccccccccc
            c.3.c
            c.@.c
 ENDMAP
+
+NAME:   dhfh_treasure_sunken_vault
+TAGS:   dhfh_treasure no_wall_fixup no_rotate
+ORIENT: float
+WEIGHT: 5
+MONS:   wight
+MONS:   necrophage
+MONS:   hell rat
+MONS:   wolf
+SUBST:  $ = $$d
+ITEM:   any weapon ego:draining / any armour ego:positive_energy / \
+        staff of death / scroll of torment / necronomicon w:1
+MAP
+..xxx@<xxxxx
+............
+.xxxxxxxx3x.
+.3.....xx.x.
+.xxxxxx4x.x.
+.xx4x$$xx.x.
+.x.x$22$x.x.
+.x.x$12$x.x.
+.x.xx$$x4xx.
+.x.x4xxxxxx.
+.x.xx.....3.
+.x3xxxxxxxx.
+............
+ENDMAP
+
+## Treasure maps
+################################################
+NAME:    dhfh_treasure_sunken_tomb
+TAGS:    dhfh_treasure no_pool_fixup no_wall_fixup
+PLACE:   Dwarf:$
+WEIGHT:  40
+ORIENT:  float
+KITEM:   Z = dwarven rune of Zot
+MONS:    deep dwarf w:30 / elf w:3
+MONS:    deep dwarf w:20 / elf w:3
+MONS:    generate_awake giant centipede / generate_awake redback / \
+generate_awake wolf spider w:8 / generate_awake wolf w:8
+MONS:    generate_awake wight w:20 / generate_awake troll / \
+generate_awake hell rat
+MONS:    deep dwarf w:20 / elf w:3 / wight w:2
+MONS:    deep dwarf / elf w:3 / wight w:2 / troll w:5 / orc priest
+MONS:    orc priest
+SUBST:   p = T:40 V:40 U:20
+SUBST:   . = .:92 ~:5 ^:1 %:1 *:1
+SUBST:   q = q:66 ~:33 ^:1
+KFEAT:   q = alarm trap
+ITEM:    box of beasts
+ITEM:    any weapon
+ITEM:    amulet of faith / \
+         any jewellery / any weapon ego:holy_wrath / any weapon / \
+         potion of experience w:1 / potion of ambrosia / any potion / \
+         scroll of holy word / scroll of torment / any scroll
+ITEM:    potion of ambrosia
+MAP
+        xxxxxxxxxxxxxxxxxxxx
+        xxxxxxxxxxxxgxxxxxxx
+        xxxxxxxxxx1111xxxxxx
+        xxxx.x.x111.Z111xxxx
+        xx...+.........111xx
+xxxxxxxxx....xxxxxxxxx...11x
+xxxxxx.....xxx.......x...1xx
+xxxx.....xxx...xxxx..+...xxx
+x......xxxx....xqxx..x..xxxx
+x..xxxxx55xxx..xe3...xx.xxxx
+x...xx6666xxx+xxxxxxxxccccxx
+xx..x55x+xxxx......q.cc||cxx
+xxx+xxxx....xxxC7.xc+cG4$ccx
+ xx..xx.......xx55xc4.C..dcx
+ xx..3+........xffxcccG4.4cx
+ xxx+xx........xxxx.xccccccx
+ x....x.............+q3.xxxx
+ xxxxxxxxxx.........xx..exxx
+ x........+..........xxxxxxx
+ x........x.....p....x
+ x..xxxxxxxx.........x
+ x..xxxxxxxxx........x
+ x..xxxxxxxxxx......xx
+ x222222xxxxxx.....xxx
+ x22222gxxxxxxx.....xx
+ xxxxxxxxxxxxxxx....xx
+               xx.@..x
+ENDMAP
+
+NAME:   dhfh_treasure_vault
+TAGS:   dhfh_treasure no_wall_fixup no_rotate
+PLACE:  Dwarf:$
+ORIENT: float
+WEIGHT: 15
+KITEM:  Z = dwarven rune of Zot
+MONS:   deep dwarf
+MONS:   troll w:20, elf, wight
+MONS:   wight
+MONS:   patrolling deep dwarf
+NSUBST: X = 2:= / *:x
+SUBST:  * = **d
+ITEM:   staff of death / scroll of torment / necronomicon w:1
+MAP
+cccccccccccccccccccc@cccccccccccccccccccc
+c$X...x............x.x............x...X$c
+c*X1...........x.4.x.x.4.x...........2X.c
+cZX*..x........x...G.G...x........x..1X.c
+c.X1..x........x.G.....G.x........x..*X.c
+c.X2........xxxxxx..4..xxxxxx........1X*c
+c$X...x........$$x.....x$$........x...X$c
+cccccccccccccccccccc@cccccccccccccccccccc
+ENDMAP
+

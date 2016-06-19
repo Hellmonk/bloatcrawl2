@@ -276,8 +276,8 @@ ENDMAP
 
 NAME:     d_10
 TAGS:     d_10
-KMONS:    1 = place:D:10
-KMONS:    2 = place:D:13
+KMONS:    1 = place:D:5
+KMONS:    2 = place:D:7
 : line_setup(_G)
 : lua_marker('~', props_marker {
 :           door_description_suffix=" to the Dungeon",

@@ -1582,7 +1582,7 @@ static void _monster_add_energy(monster& mons)
             max(1, div_rand_round(mons.speed * you.time_taken, 10));
 
         if (you.rune_curse_active[RUNE_SHOALS])
-            energy_gained = energy_gained * 5 / 4;
+            energy_gained = energy_gained * 4 / 3;
 
         mons.speed_increment += energy_gained;
     }

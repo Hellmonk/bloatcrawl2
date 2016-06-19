@@ -159,7 +159,7 @@ ENDMAP
 #       "layout_type_open" tag for non-cave version.
 #
 NAME:   layout_cross
-DEPTH:  D:9-, Depths, Pan
+DEPTH:  Depths, Pan
 WEIGHT: 2
 ORIENT: encompass
 TAGS:   overwritable layout unrand uniq_open_layout layout_type_open
@@ -236,7 +236,7 @@ ENDMAP
 # TODO: A better way of preventing small maps
 #
 NAME:   layout_big_octagon
-DEPTH:  D:9-, Depths, Pan
+DEPTH:  Depths, Pan
 WEIGHT: 3
 ORIENT: encompass
 TAGS:   overwritable layout unrand no_primary_vault layout_type_open
@@ -895,7 +895,7 @@ ENDMAP
 # This replaces dungeon.cc:_roguey_level.
 #
 NAME:   layout_roguey
-DEPTH:  D:9-, Lair, Depths
+DEPTH:  Lair, Depths
 WEIGHT: 25 (D), 10 (Lair), 10 (Depths)
 ORIENT: encompass
 TAGS:   overwritable layout no_primary_vault allow_dup unrand layout_type_rooms

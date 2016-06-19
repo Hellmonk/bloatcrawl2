@@ -2845,7 +2845,7 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
     }
 
     const bool can_gain_experience_here =
-        !(is_double_deep_branch(you.where_are_you) && in_lower_half_of_branch())
+        player_can_gain_experience_here()
         && Options.exp_percent_from_monsters
         && !player_in_branch(BRANCH_ABYSS)
         || !from_monster;
@@ -2857,13 +2857,16 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
     {
         int adjusted_gain = exp_gained;
         if (crawl_state.difficulty == DIFFICULTY_EASY)
-            adjusted_gain = div_rand_round(adjusted_gain * 5, 3);
+            adjusted_gain <<= 1;
 
-        if (crawl_state.difficulty == DIFFICULTY_STANDARD)
-            adjusted_gain = div_rand_round(adjusted_gain * 4, 3);
+        if (crawl_state.difficulty == DIFFICULTY_CHALLENGE)
+            adjusted_gain >>= 1;
 
         if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-            adjusted_gain = div_rand_round(adjusted_gain * 3, 4);
+            adjusted_gain >>= 2;
+
+        if (you.rune_curse_active[RUNE_MNOLEG])
+            adjusted_gain <<= 1;
 
         if (exp_loss)
         {
@@ -4715,10 +4718,8 @@ void inc_hp(int hp_gain)
     if (hp_gain < 1 || you.hp == you.hp_max)
         return;
 
-    if (you.species == SP_DJINNI && you.hp > you.hp_max / 2 && (you.restore_exertion == EXERT_POWER || you.restore_exertion == EXERT_FOCUS))
-    {
-        set_exertion(you.restore_exertion, false);
-    }
+    if (you.species == SP_DJINNI)
+        _restore_exertion_mode();
 
     you.hp += hp_gain;
 
@@ -8584,7 +8585,7 @@ void player::increase_duration(duration_type dur, int turns, int cap, const char
             case DUR_SILENCE:
             case DUR_SLOW:
             case DUR_VERTIGO:
-                duration[dur] = duration[dur] * 5 / 4;
+                duration[dur] = duration[dur] * 4 / 3;
                 break;
             default:
                 break;
@@ -9873,7 +9874,7 @@ int spell_mp_cost(spell_type which_spell)
         cost *= 2;
 
     if (you.rune_curse_active[RUNE_SNAKE])
-        cost = cost * 5 / 4;
+        cost = cost * 4 / 3;
 
     return cost;
 }
@@ -9892,7 +9893,7 @@ int spell_mp_freeze(spell_type which_spell)
     }
 
     if (you.rune_curse_active[RUNE_SNAKE])
-        cost = cost * 5 / 4;
+        cost = cost * 4 / 3;
 
     return cost;
 }
@@ -9921,7 +9922,7 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
         sp_cost /= 2;
 
     if (you.rune_curse_active[RUNE_SNAKE])
-        sp_cost = sp_cost * 5 / 4;
+        sp_cost = sp_cost * 4 / 3;
 
     sp_cost = max(1, (int)sp_cost);
 
@@ -9971,16 +9972,16 @@ int _difficulty_mode_multiplier()
     switch(crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            x = 110;
-            break;
-        case DIFFICULTY_STANDARD:
             x = 100;
             break;
-        case DIFFICULTY_CHALLENGE:
+        case DIFFICULTY_STANDARD:
             x = 90;
             break;
-        case DIFFICULTY_NIGHTMARE:
+        case DIFFICULTY_CHALLENGE:
             x = 80;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            x = 70;
             break;
         default:
             // should not be possible
@@ -9992,7 +9993,7 @@ int _difficulty_mode_multiplier()
     {
         // bring challenge mode back to baseline if player isn't
         // using exertion modes
-        x += 10;
+        x += 20;
     }
 
     return x;
@@ -10008,7 +10009,7 @@ int player_tohit_modifier(int tohit, int range)
     if (you.duration[DUR_PORTAL_PROJECTILE])
         range = 1;
 
-    tohit += _difficulty_mode_adder();
+    tohit += _difficulty_mode_adder() * 2;
 
     if (range > 1)
         tohit = tohit - 3 * range;
@@ -10125,25 +10126,7 @@ int player_mr_modifier(int mr)
 
 int player_spellsuccess_modifier(int force)
 {
-    switch(crawl_state.difficulty)
-    {
-        case DIFFICULTY_EASY:
-            force -= 1;
-            break;
-        case DIFFICULTY_STANDARD:
-            force -= 2;
-            break;
-        case DIFFICULTY_CHALLENGE:
-            force -= 3;
-            break;
-        case DIFFICULTY_NIGHTMARE:
-            force -= 4;
-            break;
-        default:
-            // should not be possible
-            force -= 2;
-            break;
-    }
+    force += _difficulty_mode_adder() * 2 - 2;
 
     if (player_is_very_tired(true))
         force -= 5;
@@ -10178,7 +10161,7 @@ int player_item_gen_modifier(int item_count)
 
     if (you.rune_curse_active[RUNE_VAULTS])
     {
-        x = x * 3 / 4;
+        x = x * 2 / 3;
     }
 
     item_count = div_rand_round(item_count * x, 100);
@@ -10223,16 +10206,16 @@ int player_monster_gen_modifier(int amount)
     switch (crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            percent = 80;
+            percent = 70;
             break;
         case DIFFICULTY_STANDARD:
             percent = 90;
             break;
         case DIFFICULTY_CHALLENGE:
-            percent = 100;
+            percent = 110;
             break;
         case DIFFICULTY_NIGHTMARE:
-            percent = 110;
+            percent = 120;
             break;
         default:
             // should not be possible
@@ -10240,7 +10223,7 @@ int player_monster_gen_modifier(int amount)
     }
 
     if (you.rune_curse_active[RUNE_ABYSSAL])
-        percent += 25;
+        percent += 50;
 
     return amount * percent / 100;
 }
@@ -10287,27 +10270,25 @@ int player_ouch_modifier(int damage, bool skip_details)
 {
     int percentage_allowed = 100;
 
-    switch (crawl_state.difficulty)
-    {
-        case DIFFICULTY_EASY:
-            percentage_allowed = 20;
-            break;
-        case DIFFICULTY_STANDARD:
-            percentage_allowed = 30;
-            break;
-        case DIFFICULTY_CHALLENGE:
-            percentage_allowed = 40;
-            break;
-        case DIFFICULTY_NIGHTMARE:
-            percentage_allowed = 50;
-            break;
-        default:
-            // should not be possible
-            break;
-    }
-
-    if (Options.disable_instakill_protection)
-        percentage_allowed = 1000;
+    if (!Options.disable_instakill_protection)
+        switch (crawl_state.difficulty)
+        {
+            case DIFFICULTY_EASY:
+                percentage_allowed = 20;
+                break;
+            case DIFFICULTY_STANDARD:
+                percentage_allowed = 30;
+                break;
+            case DIFFICULTY_CHALLENGE:
+                percentage_allowed = 40;
+                break;
+            case DIFFICULTY_NIGHTMARE:
+                percentage_allowed = 50;
+                break;
+            default:
+                // should not be possible
+                break;
+        }
 
     const int max_damage_allowed_per_turn = get_hp_max() * percentage_allowed / 100;
     const int damage_left = max_damage_allowed_per_turn - you.turn_damage;
@@ -10573,7 +10554,7 @@ void monster_died(mid_t mons_mid, bool was_hostile_and_seen, int mp_freeze, kill
         can_rest = true;
     }
 
-    if (left_corpse && you.rune_curse_active[RUNE_CRYPT] && x_chance_in_y(1, 2))
+    if (left_corpse && you.rune_curse_active[RUNE_CRYPT] && x_chance_in_y(1, 3))
     {
         const monster_type mon = _pick_random_spirit();
 

@@ -2211,7 +2211,7 @@ int silver_damages_victim(actor* victim, int damage, string &dmg_msg)
         return 0;
 
     char buf[80];
-    sprintf(buf, ("The silver sears " + victim->name(DESC_THE) + "!").c_str());
+    sprintf(buf, "The silver sears %s!", victim->name(DESC_THE).c_str());
     dmg_msg = string(buf);
 
     return ret;

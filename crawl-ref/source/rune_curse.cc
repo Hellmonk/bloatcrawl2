@@ -30,7 +30,7 @@ const int rune_curse_hd_adjust(int hd, bool absolute)
 {
     const int runes = active_rune_curses();
     const game_difficulty_level difficulty = crawl_state.difficulty;
-    int multiplier = difficulty + 1;
+    int multiplier = difficulty + 2;
 
     hd = hd + (runes * multiplier + 3) / 6;
     if (absolute && hd > 1)
@@ -45,7 +45,7 @@ const int rune_curse_hd_adjust(int hd, bool absolute)
 const int rune_curse_hp_adjust(int hp, bool absolute)
 {
     const int runes = active_rune_curses();
-    hp = qpow(hp, 100 + crawl_state.difficulty + 1, 100, runes, false);
+    hp = hp * (100 + runes * (crawl_state.difficulty + 2)) / 100;
     return hp;
 }
 
@@ -53,7 +53,7 @@ const int rune_curse_dam_adjust(int dam, bool absolute)
 {
     const int runes = active_rune_curses();
     if (runes > 0 && dam != INSTANT_DEATH)
-        dam = qpow(dam, 100 + crawl_state.difficulty + 1, 100, runes, false);
+        dam = dam * (100 + runes * (crawl_state.difficulty + 2)) / 100;
     return dam;
 }
 
@@ -61,7 +61,7 @@ const int rune_curse_mon_spellpower_adjustment(int spellpower)
 {
     if (you.rune_curse_active[RUNE_ELF])
     {
-        spellpower = spellpower * 5 / 4;
+        spellpower = spellpower * 4 / 3;
     }
 
     return spellpower;
@@ -126,14 +126,19 @@ const string rune_curse_description(const rune_type rune)
             message = "Normal movement speed is reduced. Quick mode isn't affected.";
             break;
 
+        case RUNE_DEMONIC:
+            message = "Stores charge a lot more money for items.";
+            break;
+
+        case RUNE_MNOLEG:
+            message = "Experience gains are reduced.";
+            break;
+
         case RUNE_DIS:
         case RUNE_GEHENNA:
         case RUNE_COCYTUS:
         case RUNE_TARTARUS:
 
-        case RUNE_DEMONIC:
-
-        case RUNE_MNOLEG:
         case RUNE_LOM_LOBON:
         case RUNE_CEREBOV:
         case RUNE_GLOORX_VLOQ:
@@ -174,14 +179,17 @@ void list_rune_curses()
 
 void choose_branch_rune_requirements()
 {
+    const game_difficulty_level difficulty = crawl_state.difficulty;
     for (int branch_index = BRANCH_FIRST; branch_index < NUM_BRANCHES; branch_index++)
     {
         const bool is_rune_branch = branches[branch_index].runes.size() > 0;
-        if(is_rune_branch)
+        if(is_rune_branch && branch_index != BRANCH_ABYSS)
         {
-            while (x_chance_in_y(2, 3))
+            you.branch_requires_runes[branch_index] += random2(difficulty * 2 + 3);
+
+            while (coinflip())
             {
-                you.branch_requires_runes[branch_index] += random2(4);
+                you.branch_requires_runes[branch_index] += random2(difficulty * 2 + 3);
             }
 
             you.branch_requires_runes[branch_index] = min(you.branch_requires_runes[branch_index], 10);
@@ -190,7 +198,7 @@ void choose_branch_rune_requirements()
 
     // make sure a few of them don't have any requirements
     int cleared = 0;
-    while(cleared < 5)
+    while(cleared < 10)
     {
         int branch_index = random2(NUM_BRANCHES);
         const bool is_rune_branch = branches[branch_index].runes.size() > 0;
@@ -203,3 +211,4 @@ void choose_branch_rune_requirements()
         cleared++;
     }
 }
+

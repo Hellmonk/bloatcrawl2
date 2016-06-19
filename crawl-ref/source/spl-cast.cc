@@ -1721,6 +1721,9 @@ spret_type _handle_summoning_spells(spell_type spell, int powc,
         case SPELL_SIMULACRUM:
             return cast_simulacrum(powc, god, fail);
 
+        case SPELL_BATTLESPHERE:
+            return cast_battlesphere(&you, powc, god, fail);
+
         default:
             return SPRET_NONE;
     }
@@ -1879,9 +1882,6 @@ static spret_type _do_cast(spell_type spell, int powc,
 
     case SPELL_SPECTRAL_WEAPON:
         return cast_spectral_weapon(&you, powc, god, fail);
-
-    case SPELL_BATTLESPHERE:
-        return cast_battlesphere(&you, powc, god, fail);
 
     // Enchantments.
     case SPELL_CONFUSING_TOUCH:
