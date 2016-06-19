@@ -1446,7 +1446,7 @@ void update_level(int elapsedTime)
         // XXX: Allow some spellcasting (like Healing and Teleport)? - bwr
         // const bool healthy = (mi->hit_points * 2 > mi->max_hit_points);
 
-        mi->heal(div_rand_round(turns * mi->off_level_regen_rate(), 100));
+        mi->heal(div_rand_round(turns * mi->off_level_regen_rate(), 100), true);
 
         // Handle nets specially to remove the trapping property of the net.
         if (mi->caught())
