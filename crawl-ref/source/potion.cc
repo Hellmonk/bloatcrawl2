@@ -1144,7 +1144,7 @@ public:
 
     bool effect(bool was_known = true, int=40, bool=true) const override
     {
-        return transform(30, TRAN_TREE, !was_known);
+        return transform(60, TRAN_TREE, !was_known);
     }
 
     bool quaff(bool was_known) const override
