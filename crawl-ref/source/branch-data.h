@@ -20,7 +20,7 @@ const Branch branches[NUM_BRANCHES] =
         'J', { RUNE_ABYSSAL }, 0 },
 
     { BRANCH_BAILEY, NUM_BRANCHES, -1, -1, 1, 11,
-        BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
+        BFLAG_NO_ITEMS,
         DNGN_ENTER_BAILEY, DNGN_EXIT_BAILEY, NUM_FEATURES,
         "Bailey", "a bailey", "Bailey",
         "You enter a bailey!",
@@ -28,7 +28,7 @@ const Branch branches[NUM_BRANCHES] =
         '5', {}, 0 },
 
     { BRANCH_BAZAAR, NUM_BRANCHES, -1, -1, 1, 18,
-        BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
+        BFLAG_NO_ITEMS,
         DNGN_ENTER_BAZAAR, DNGN_EXIT_BAZAAR, NUM_FEATURES,
         "Bazaar", "a bazaar", "Bazaar",
         "You enter an inter-dimensional bazaar!",
@@ -108,7 +108,7 @@ const Branch branches[NUM_BRANCHES] =
         'G', { RUNE_GEHENNA }, 0 },
 
     { BRANCH_ICE_CAVE, NUM_BRANCHES, -1, -1, 1, 15,
-        BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
+        BFLAG_NO_ITEMS,
         DNGN_ENTER_ICE_CAVE, DNGN_EXIT_ICE_CAVE, NUM_FEATURES,
         "Ice Cave", "an ice cave", "IceCv",
         "You enter an ice cave!",
@@ -116,7 +116,7 @@ const Branch branches[NUM_BRANCHES] =
         '6', {}, 0 },
 
     { BRANCH_LABYRINTH, NUM_BRANCHES, -1, -1, 1, 15,
-        BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS | BFLAG_NO_MAP,
+        BFLAG_NO_ITEMS | BFLAG_NO_MAP,
         DNGN_ENTER_LABYRINTH, DNGN_EXIT_LABYRINTH, DNGN_EXIT_THROUGH_ABYSS,
         "Labyrinth", "a labyrinth", "Lab",
         // XXX: Ideally, we want to hint at the wall rule (rock > metal),
@@ -144,7 +144,7 @@ const Branch branches[NUM_BRANCHES] =
         'O', {}, 4 },
 
     { BRANCH_OSSUARY, NUM_BRANCHES, -1, -1, 1, 6,
-        BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
+        BFLAG_NO_ITEMS,
         DNGN_ENTER_OSSUARY, DNGN_EXIT_OSSUARY, NUM_FEATURES,
         "Ossuary", "an ossuary", "Ossuary",
         "You enter an ossuary!",
@@ -162,7 +162,7 @@ const Branch branches[NUM_BRANCHES] =
                  RUNE_GLOORX_VLOQ }, 0 },
 
     { BRANCH_SEWER, NUM_BRANCHES, -1, -1, 1, 4,
-        BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
+        BFLAG_NO_ITEMS,
         DNGN_ENTER_SEWER, DNGN_EXIT_SEWER, NUM_FEATURES,
         "Sewer", "a sewer", "Sewer",
         "You enter a sewer!",
@@ -234,7 +234,7 @@ const Branch branches[NUM_BRANCHES] =
         'W', { RUNE_TOMB }, -10 },
 
     { BRANCH_TROVE, NUM_BRANCHES, -1, -1, 1, 18,
-        BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
+        BFLAG_NO_ITEMS,
         DNGN_ENTER_TROVE, DNGN_EXIT_TROVE, NUM_FEATURES,
         "Trove", "a treasure trove", "Trove",
         "You enter a treasure trove!",
@@ -258,7 +258,7 @@ const Branch branches[NUM_BRANCHES] =
         'H', {}, 0 },
 
     { BRANCH_VOLCANO, NUM_BRANCHES, -1, -1, 1, 14,
-        BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
+        BFLAG_NO_ITEMS,
         DNGN_ENTER_VOLCANO, DNGN_EXIT_VOLCANO, NUM_FEATURES,
         "Volcano", "a volcano", "Volcano",
         "You enter a volcano!",
@@ -266,7 +266,7 @@ const Branch branches[NUM_BRANCHES] =
         '7', {}, 0 },
 
     { BRANCH_WIZLAB, NUM_BRANCHES, -1, -1, 1, 24,
-        BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
+        BFLAG_NO_ITEMS,
         DNGN_ENTER_WIZLAB, DNGN_EXIT_WIZLAB, NUM_FEATURES,
         "Wizlab", "a wizard's laboratory", "WizLab",
         "You enter a wizard's laboratory!",
