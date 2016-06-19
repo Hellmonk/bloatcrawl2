@@ -5346,8 +5346,8 @@ bool item_list::parse_single_spec(item_spec& result, string s)
                                             "_", " ");
 
         COMPILE_CHECK(SPTYP_LAST_SCHOOL < LONG_MAX);
-        result.props[RANDBK_DISC1_KEY].get_short() = disc1;
-        result.props[RANDBK_DISC2_KEY].get_short() = disc2;
+        result.props[RANDBK_DISC1_KEY].get_int() = disc1;
+        result.props[RANDBK_DISC2_KEY].get_int() = disc2;
         result.props[RANDBK_NSPELLS_KEY] = num_spells;
         result.props[RANDBK_SLVLS_KEY] = slevels;
         result.props[RANDBK_TITLE_KEY] = title;
