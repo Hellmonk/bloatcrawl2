@@ -386,7 +386,7 @@ static int _banished_depth(const int power)
     // you can do about that.
     const int maxdepth = div_rand_round((power + 5), 6);
     const int mindepth = (4 * power + 7) / 23;
-    return min(5, max(1, random_range(mindepth, maxdepth)));
+    return min(7, max(1, random_range(mindepth, maxdepth)));
 }
 
 void banished(const string &who, const int power)

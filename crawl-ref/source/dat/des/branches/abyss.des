@@ -200,6 +200,8 @@ CHANCE: 0 : 80% (Abyss:2)
 CHANCE: 0 : 70% (Abyss:3)
 CHANCE: 0 : 60% (Abyss:4)
 CHANCE: 0 : 50% (Abyss:5)
+CHANCE: 0 : 40% (Abyss:6)
+CHANCE: 0 : 30% (Abyss:7)
 
 NAME: abyss_rune_dummy
 TAGS: abyss_rune unrand dummy
@@ -213,6 +215,8 @@ CHANCE: 0 : 90% (Abyss:2)
 CHANCE: 0 : 85% (Abyss:3)
 CHANCE: 0 : 80% (Abyss:4)
 CHANCE: 0 : 75% (Abyss:5)
+CHANCE: 0 : 70% (Abyss:6)
+CHANCE: 0 : 65% (Abyss:7)
 
 NAME:    abyss_fake_exit
 TAGS:    allow_dup
@@ -2164,7 +2168,7 @@ ENDMAP
 
 NAME:  bh_abyss_exit_choice
 TAGS:  abyss_exit unrand transparent
-DEPTH: Abyss:1-4
+DEPTH: Abyss:1-6
 KFEAT: <: exit_abyss
 KFEAT: >: abyssal_stair
 MAP

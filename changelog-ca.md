@@ -1,4 +1,6 @@
-## v1.5.6
+## v1.6
+
+* Abyss is now 7 floors
 
 * Zot no longer requires any runes to get in. You can beat the game with 0 runes. 
 
@@ -24,6 +26,8 @@
         * Zig
         * Tomb
     * Zot:7
+
+## v1.5.6
 
 * Vine Stalker nerf
     * Took health regen mutation from 3 to 1, so they regen health more slowly than a cave troll. 

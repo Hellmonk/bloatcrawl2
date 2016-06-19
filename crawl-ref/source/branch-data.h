@@ -11,7 +11,7 @@ const Branch branches[NUM_BRANCHES] =
     //  floor colour, rock colour
     //  travel shortcut, runes, ambient noise level
 
-    { BRANCH_ABYSS, NUM_BRANCHES, -1, -1, 4, 24,
+    { BRANCH_ABYSS, NUM_BRANCHES, -1, -1, 7, 24,
         BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_MAP,
         DNGN_ENTER_ABYSS, DNGN_EXIT_ABYSS, DNGN_FLOOR,
         "Abyss", "the Abyss", "Abyss",
