@@ -2748,8 +2748,14 @@ const int _experience_for_this_floor(int multiplier) {
 
         if (Options.exp_based_on_player_level)
         {
+            /* old way
             exp = exp_needed(you.experience_level + 1, 0) - exp_needed(you.experience_level, 0);
-            exp = min((int)exp_needed(30, 0), exp);
+            const int max_exp_allowed = exp_needed(25, 0);
+            exp = min(max_exp_allowed, exp);
+             */
+
+            const int xl = you.experience_level;
+            exp = xl * xl * xl * 10;
         }
         else
             exp = exp_needed(min(1, how_deep * 2 / 3), 0);

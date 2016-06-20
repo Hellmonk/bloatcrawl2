@@ -650,12 +650,12 @@ public:
 
         if (you.experience_level < you.get_max_xl())
         {
-            mprf(MSGCH_INTRINSIC_GAIN, "You feel more experienced! (exp+%d)", potion_experience_for_this_floor());
+            const int exp_gain = potion_experience_for_this_floor();
+            mprf(MSGCH_INTRINSIC_GAIN, "You feel more experienced! (exp+%d)", exp_gain);
             // Defer calling level_change() until later in drink() to prevent
             // SIGHUP abuse.
 
-            gain_potion_exp();
-            skill_menu(SKMF_EXPERIENCE, 750 * you.experience_level);
+            skill_menu(SKMF_EXPERIENCE, exp_gain);
         }
         else
             mpr("A flood of memories washes over you.");
