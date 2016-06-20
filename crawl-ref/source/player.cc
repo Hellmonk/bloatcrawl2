@@ -2747,7 +2747,16 @@ const int _experience_for_this_floor(int multiplier) {
         int how_deep = absdungeon_depth(you.where_are_you, you.depth);
 
         if (Options.exp_based_on_player_level)
+        {
+            /* old way
             exp = exp_needed(you.experience_level + 1, 0) - exp_needed(you.experience_level, 0);
+            const int max_exp_allowed = exp_needed(25, 0);
+            exp = min(max_exp_allowed, exp);
+             */
+
+            const int xl = you.experience_level;
+            exp = xl * xl * xl * 10;
+        }
         else
             exp = exp_needed(min(1, how_deep * 2 / 3), 0);
 
@@ -2856,17 +2865,30 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
     if (can_gain_experience_here)
     {
         int adjusted_gain = exp_gained;
-        if (crawl_state.difficulty == DIFFICULTY_EASY)
-            adjusted_gain <<= 1;
 
-        if (crawl_state.difficulty == DIFFICULTY_CHALLENGE)
-            adjusted_gain >>= 1;
+        // base adjustment
+        adjusted_gain <<= 1;
 
-        if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-            adjusted_gain >>= 2;
+        switch(crawl_state.difficulty)
+        {
+            case DIFFICULTY_EASY:
+                break;
+            case DIFFICULTY_STANDARD:
+                adjusted_gain >>= 1;
+                break;
+            case DIFFICULTY_CHALLENGE:
+                adjusted_gain >>= 2;
+                break;
+            case DIFFICULTY_NIGHTMARE:
+                adjusted_gain >>= 3;
+                break;
+            default:
+                // should not be possible
+                break;
+        }
 
         if (you.rune_curse_active[RUNE_MNOLEG])
-            adjusted_gain <<= 1;
+            adjusted_gain >>= 1;
 
         if (exp_loss)
         {
@@ -4742,6 +4764,7 @@ void rot_hp(int hp_loss)
 
     // don't allow too much rot
     int min_rot_allowed = 60;
+
     switch(crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:

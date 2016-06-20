@@ -2212,7 +2212,7 @@ ENDMAP
 
 NAME:   trog_butcher_becter
 TAGS:   overflow_altar_trog
-DEPTH:  D:2-9, Orc, !Orc:$
+DEPTH:  D:2-, !D:$, Orc, !Orc:$
 : if you.absdepth() < 6 then
 MONS:   orc ; hand axe . animal skin
 MONS:   giant gecko / rat / giant newt / quokka
