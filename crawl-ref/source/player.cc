@@ -2866,7 +2866,7 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
             adjusted_gain >>= 2;
 
         if (you.rune_curse_active[RUNE_MNOLEG])
-            adjusted_gain <<= 1;
+            adjusted_gain >>= 1;
 
         if (exp_loss)
         {
