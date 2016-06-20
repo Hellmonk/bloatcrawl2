@@ -153,7 +153,7 @@ unsigned int skill_cost_needed(int level)
     return (exp_needed(level, 1) * 13) / 10;
 }
 
-static const int MAX_SKILL_COST_LEVEL = 27;
+static const int MAX_SKILL_COST_LEVEL = 99;
 
 // skill_cost_level makes skills more expensive for more experienced characters
 int calc_skill_cost(int skill_cost_level)
