@@ -2747,7 +2747,10 @@ const int _experience_for_this_floor(int multiplier) {
         int how_deep = absdungeon_depth(you.where_are_you, you.depth);
 
         if (Options.exp_based_on_player_level)
+        {
             exp = exp_needed(you.experience_level + 1, 0) - exp_needed(you.experience_level, 0);
+            exp = min(exp_needed(30, 0), exp);
+        }
         else
             exp = exp_needed(min(1, how_deep * 2 / 3), 0);
 
@@ -2856,6 +2859,10 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
     if (can_gain_experience_here)
     {
         int adjusted_gain = exp_gained;
+
+        // base adjustment
+        adjusted_gain <<= 1;
+
         switch(crawl_state.difficulty)
         {
             case DIFFICULTY_EASY:
