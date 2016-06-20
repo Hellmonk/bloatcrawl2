@@ -3247,8 +3247,11 @@ static void tag_read_you(reader &th)
     for (int i = 0; i < NUM_BRANCHES; ++i)
     {
         // temporary repair
+        const int required = unmarshallInt(th);
         if (i != BRANCH_ORC && i != BRANCH_ABYSS)
-            you.branch_requires_runes[i] = unmarshallInt(th);
+        {
+            you.branch_requires_runes[i] = required;
+        }
         else
             you.branch_requires_runes[i] = false;
     }
