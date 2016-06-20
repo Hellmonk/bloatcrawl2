@@ -2856,14 +2856,23 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
     if (can_gain_experience_here)
     {
         int adjusted_gain = exp_gained;
-        if (crawl_state.difficulty == DIFFICULTY_EASY)
-            adjusted_gain <<= 1;
-
-        if (crawl_state.difficulty == DIFFICULTY_CHALLENGE)
-            adjusted_gain >>= 1;
-
-        if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
-            adjusted_gain >>= 2;
+        switch(crawl_state.difficulty)
+        {
+            case DIFFICULTY_EASY:
+                break;
+            case DIFFICULTY_STANDARD:
+                adjusted_gain >>= 1;
+                break;
+            case DIFFICULTY_CHALLENGE:
+                adjusted_gain >>= 2;
+                break;
+            case DIFFICULTY_NIGHTMARE:
+                adjusted_gain >>= 3;
+                break;
+            default:
+                // should not be possible
+                break;
+        }
 
         if (you.rune_curse_active[RUNE_MNOLEG])
             adjusted_gain >>= 1;
@@ -4742,6 +4751,7 @@ void rot_hp(int hp_loss)
 
     // don't allow too much rot
     int min_rot_allowed = 60;
+
     switch(crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
