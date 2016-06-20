@@ -398,7 +398,7 @@ static const vector<spell_type> spellbook_templates[] =
 
 {   // Darkness2
     SPELL_INVISIBILITY, // 6
-    SPELL_MASS_CONFUSION, // 6
+//    SPELL_MASS_CONFUSION, // 6
     SPELL_SHADOW_CREATURES, // 6
     SPELL_DARKNESS, // 6
     SPELL_MALIGN_GATEWAY, // 7
