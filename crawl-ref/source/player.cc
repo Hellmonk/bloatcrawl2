@@ -2433,7 +2433,8 @@ static int _player_evasion(ev_ignore_type evit)
     }
     else
     {
-        const int size_base_ev = 10 + size_factor;
+        ev = 10 * scale;
+        const int size_base_ev = size_factor * 2;
         ev += size_base_ev * scale;
     }
 
