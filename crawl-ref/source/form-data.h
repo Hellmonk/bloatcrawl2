@@ -112,7 +112,7 @@ static const form_entry formdata[] =
     "a fearsome dragon!",
     EQF_PHYSICAL, MR_RES_POISON,
     DEFAULT_DURATION, 10, 0, SIZE_GIANT, 15, 6,
-    16, 0, 0, true, 0, 10, -1,
+    16, 4, 4, true, 0, 10, -1,
     SPWPN_NORMAL, GREEN, "Teeth and claws", { "hit", "claw", "bite", "maul" },
     FC_ENABLE, FC_FORBID, FC_ENABLE, true, false,
     "roar", 6, "foreclaw", "", "bow your head before", "flesh"
