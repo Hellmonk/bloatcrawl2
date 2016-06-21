@@ -3335,13 +3335,11 @@ int fedhas_check_corpse_spores(bool quiet)
 #endif
     }
 
-    if (yesnoquit("Will you create these spores?", true, 'y') <= 0)
-    {
-        viewwindow(false);
-        return -1;
-    }
+    if (yesno("Will you create these spores?", true, 'y'))
+        return count;
 
-    return count;
+    viewwindow(false);
+    return -1;
 }
 
 // Destroy corpses in the player's LOS (first corpse on a stack only)
@@ -4009,8 +4007,18 @@ void spare_beogh_convert()
     }
 }
 
+#define STATIONARY_CHECK                               \
+    do {                                               \
+        if (you.is_stationary()) {                     \
+            canned_msg(MSG_CANNOT_MOVE);               \
+            return false;                              \
+        }                                              \
+    } while (0)
+
 bool dithmenos_shadow_step()
 {
+    STATIONARY_CHECK;
+
     // You can shadow-step anywhere within your umbra.
     ASSERT(you.umbra_radius() > -1);
     const int range = you.umbra_radius();
@@ -4843,6 +4851,14 @@ spret_type qazlal_upheaval(coord_def target, bool quiet, bool fail)
         args.hitfunc = &tgt;
         if (!spell_direction(spd, beam, &args))
             return SPRET_ABORT;
+
+        if (cell_is_solid(beam.target))
+        {
+            mprf("There is %s there.",
+                 article_a(feat_type_name(grd(beam.target))).c_str());
+            return SPRET_ABORT;
+        }
+
         bolt tempbeam;
         tempbeam.source    = beam.target;
         tempbeam.target    = beam.target;
@@ -5559,12 +5575,8 @@ int get_sacrifice_piety(ability_type sac, bool include_skill)
         case ABIL_RU_SACRIFICE_NIMBLENESS:
             if (player_mutation_level(MUT_NO_ARMOUR))
                 piety_gain += 20;
-            else if (you.species == SP_OCTOPODE
-                    || you.species == SP_FELID
-                    || species_is_draconian(you.species))
-            {
+            else if (species_apt(SK_ARMOUR) == UNUSABLE_SKILL)
                 piety_gain += 28; // this sacrifice is worse for these races
-            }
             break;
         case ABIL_RU_SACRIFICE_DURABILITY:
             if (player_mutation_level(MUT_NO_DODGING))
@@ -5583,6 +5595,13 @@ int get_sacrifice_piety(ability_type sac, bool include_skill)
                 piety_gain -= 10;
             }
             break;
+        case ABIL_RU_SACRIFICE_EXPERIENCE:
+            if (player_mutation_level(MUT_COWARDICE))
+                piety_gain += 15;
+        case ABIL_RU_SACRIFICE_COURAGE:
+            if (player_mutation_level(MUT_INEXPERIENCED))
+                piety_gain += 15;
+
         default:
             break;
     }
@@ -6284,6 +6303,8 @@ bool ru_power_leap()
         return false;
     }
 
+    STATIONARY_CHECK;
+
     // query for location:
     dist beam;
 
@@ -6581,10 +6602,15 @@ int pakellas_effective_hex_power(int pow)
     return total_pow;
 }
 
-bool pakellas_device_surge()
+/**
+ * Trigger a readied Device Surge, spending MP to multiply evocations power.
+ *
+ * @return  A number of enhancers (!) to multiply evo power by.
+ */
+int pakellas_surge_devices()
 {
     if (!you_worship(GOD_PAKELLAS) || !you.duration[DUR_DEVICE_SURGE])
-        return true;
+        return 0;
 
     const int mp = min(get_mp(), min(9, max(3,
                        1 + random2avg(you.piety * 9 / piety_breakpoint(5),
@@ -6592,21 +6618,22 @@ bool pakellas_device_surge()
 
     const int severity = div_rand_round(mp, 3);
     dec_mp(mp);
-
-    you.attribute[ATTR_PAKELLAS_DEVICE_SURGE] = severity;
     you.duration[DUR_DEVICE_SURGE] = 0;
     if (severity == 0)
     {
         mprf(MSGCH_GOD, "The surge fizzles.");
-        return false;
+        return -1;
     }
-
-    return true;
+    return severity;
 }
 
 static int _get_stomped(monster* mons)
 {
     if (mons == nullptr)
+        return 0;
+
+    // Don't hurt your own demonic guardians
+    if (testbits(mons->flags, MF_DEMONIC_GUARDIAN) && mons->friendly())
         return 0;
 
     behaviour_event(mons, ME_ANNOY, &you);
@@ -6647,6 +6674,9 @@ bool uskayaw_line_pass()
         crawl_state.cancel_cmd_repeat();
         return false;
     }
+
+    STATIONARY_CHECK;
+
     // query for location:
     int range = 8;
     int invo_skill = you.skill(SK_INVOCATIONS);
@@ -6816,13 +6846,6 @@ bool uskayaw_grand_finale()
             continue;
         }
 
-        if (mons_intel(mons) < I_ANIMAL)
-        {
-            clear_messages();
-            mpr("The target can't bond with you emotionally!");
-            continue;
-        }
-
         if (mons->has_ench(ENCH_DEATHS_DOOR))
         {
             clear_messages();
@@ -6868,8 +6891,10 @@ bool uskayaw_grand_finale()
     // kill the target
     mprf("%s explodes violently!", mons->name(DESC_THE, false).c_str());
     mons->flags |= MF_EXPLODE_KILL;
-    if (!mons->is_insubstantial())
+    if (!mons->is_insubstantial()) {
+        blood_spray(mons->pos(), mons->mons_species(), mons->hit_points / 5);
         throw_monster_bits(mons); // have some fun while we're at it
+    }
 
     monster_die(mons, KILL_YOU, NON_MONSTER, false);
 
@@ -6941,7 +6966,7 @@ bool hepliaklqana_choose_ancestor_type(int ancestor_choice)
                        ancestor_type_name.c_str());
     mark_milestone("ancestor.class", mile_text);
 
-    if (you.experience_level >= HEP_SPECIALIZATION_LEVEL)
+    if (you.experience_level >= hepliaklqana_specialization_level())
         god_speaks(you.religion, "You may now specialize your ancestor.");
 
     return true;
@@ -7105,9 +7130,11 @@ static coord_def _get_transference_target()
 {
     dist spd;
 
+    targetter_transference tgt(&you);
     direction_chooser_args args;
+    args.hitfunc = &tgt;
     args.restricts = DIR_TARGET;
-    args.mode = TARG_ANY;
+    args.mode = TARG_MOBILE_MONSTER;
     args.range = LOS_RADIUS;
     args.needs_path = false;
     args.may_target_monster = true;
@@ -7122,7 +7149,7 @@ static coord_def _get_transference_target()
     return spd.target;
 }
 
-/// Slow any monsters near the destination of Tranferrence.
+/// Slow any monsters near the destination of Tranference.
 static void _transfer_slow_nearby(coord_def destination)
 {
     for (adjacent_iterator it(destination); it; ++it)
@@ -7177,7 +7204,7 @@ spret_type hepliaklqana_transference(bool fail)
 
     if (victim == ancestor)
     {
-        mpr("You can't transfer your ancestor with themself!");
+        mpr("You can't transfer your ancestor with themself.");
         return SPRET_ABORT;
     }
 
@@ -7216,7 +7243,8 @@ spret_type hepliaklqana_transference(bool fail)
     {
         ancestor->move_to_pos(target, true, true);
         victim->move_to_pos(destination, true, true);
-    } else
+    }
+    else
         ancestor->swap_with(victim->as_monster());
 
     mprf("%s swap%s with %s!",
@@ -7233,7 +7261,7 @@ spret_type hepliaklqana_transference(bool fail)
     ancestor->apply_location_effects(destination);
     victim->apply_location_effects(target);
 
-    if (you.piety >= piety_breakpoint(5))
+    if (have_passive(passive_t::transfer_slow))
         _transfer_slow_nearby(target);
 
     return SPRET_SUCCESS;

@@ -762,7 +762,8 @@ static void _maybe_corrode()
 static void _maybe_confuse()
 {
     int confusion_sources = you.scan_artefacts(ARTP_CONFUSE);
-    if (x_chance_in_y(confusion_sources, 100)) {
+    if (x_chance_in_y(confusion_sources, 100))
+    {
         const bool conf = you.confused();
 
         if (confuse_player(5 + random2(3), true))
@@ -844,21 +845,18 @@ void reset_damage_counters()
 
 bool can_shave_damage()
 {
-    return you.species == SP_DEEP_DWARF || you.duration[DUR_FORTITUDE];
+    return you.species == SP_DEEP_DWARF;
 }
 
 int do_shave_damage(int dam)
 {
-    if (you.species == SP_DEEP_DWARF)
-    {
-        // Deep Dwarves get to shave any hp loss.
-        int shave = 1 + random2(2 + random2(1 + effective_xl() / 3));
-        dprf("HP shaved: %d.", shave);
-        dam -= shave;
-    }
+    if (!can_shave_damage())
+        return dam;
 
-    if (you.duration[DUR_FORTITUDE])
-        dam -= random2(10);
+    // Deep Dwarves get to shave any hp loss.
+    int shave = 1 + random2(2 + random2(1 + you.experience_level / 3));
+    dprf("HP shaved: %d.", shave);
+    dam -= shave;
 
     return dam;
 }
@@ -907,7 +905,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
     // Multiply damage if amulet of harm is in play
     if (dam != INSTANT_DEATH)
-        dam = _apply_extra_harm (dam, source);
+        dam = _apply_extra_harm(dam, source);
 
     if (!skip_rune_curse_damage)
         dam = rune_curse_dam_adjust(dam);
@@ -1108,6 +1106,8 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             _maybe_spawn_monsters(dam, is_torment, death_type, source);
             _maybe_fog(dam);
             _powered_by_pain(dam);
+            if (sanguine_armour_valid())
+                activate_sanguine_armour();
             if (death_type != KILLED_BY_POISON)
             {
                 _maybe_corrode();

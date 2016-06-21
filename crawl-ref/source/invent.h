@@ -29,8 +29,10 @@ enum object_selector
     OSEL_WORN_ARMOUR             = -11,
 //  OSEL_FRUIT                   = -12,
     OSEL_CURSED_WORN             = -13,
+#if TAG_MAJOR_VERSION == 34
     OSEL_UNCURSED_WORN_ARMOUR    = -14,
     OSEL_UNCURSED_WORN_JEWELLERY = -15,
+#endif
     OSEL_BRANDABLE_WEAPON        = -16,
     OSEL_ENCHANTABLE_WEAPON      = -17,
     OSEL_BLESSABLE_WEAPON        = -18,
@@ -154,12 +156,12 @@ public:
     // for each MenuEntry added.
     // NOTE: Does not set menu title, ever! You *must* set the title explicitly
     menu_letter load_items(const vector<const item_def*> &items,
-                           MenuEntry *(*procfn)(MenuEntry *me) = nullptr,
+                           function<MenuEntry* (MenuEntry*)> procfn = nullptr,
                            menu_letter ckey = 'a', bool sort = true);
 
     // Make sure this menu does not outlive items, or mayhem will ensue!
     menu_letter load_items(const vector<item_def>& items,
-                           MenuEntry *(*procfn)(MenuEntry *me) = nullptr,
+                           function<MenuEntry* (MenuEntry*)> procfn = nullptr,
                            menu_letter ckey = 'a', bool sort = true);
 
     // Loads items from the player's inventory into the menu, and sets the
@@ -191,7 +193,7 @@ protected:
 void get_class_hotkeys(const int type, vector<char> &glyphs);
 
 bool item_is_selected(const item_def &item, int selector);
-bool any_items_of_type(FixedVector< item_def, ENDOFPACK > &inv, int type_expect, int excluded_slot = -1);
+bool any_items_of_type(FixedVector< item_def, ENDOFPACK > &inv, int type_expect, int excluded_slot = -1, bool inspect_floor = false);
 string no_selectables_message(int item_selector);
 
 string slot_description(FixedVector< item_def, ENDOFPACK > &inv);
@@ -282,4 +284,5 @@ FixedVector< item_def, ENDOFPACK > *potion_inv();
 FixedVector< item_def, ENDOFPACK > *scroll_inv();
 FixedVector< item_def, ENDOFPACK > *book_inv();
 
+int digit_inscription_to_inv_index(FixedVector< item_def, ENDOFPACK > &inv, char digit, operation_types oper);
 #endif

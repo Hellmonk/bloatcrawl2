@@ -96,7 +96,7 @@ static bool _fill_out_corpse(const monster& mons, item_def& corpse, bool undead_
     if (mons_genus(mtype) == MONS_DRACONIAN
         || mons_genus(mtype) == MONS_DEMONSPAWN)
     {
-        if (mons.type == MONS_TIAMAT)
+        if (mons.type == MONS_TIAMAT || mons.type == MONS_BAI_SUZHEN)
             corpse_class = MONS_DRACONIAN;
         else
             corpse_class = draco_or_demonspawn_subspecies(&mons);
@@ -666,8 +666,10 @@ int exp_rate(int killer)
 {
     // Damage by the spectral weapon is considered to be the player's damage ---
     // so the player does not lose any exp from dealing damage with a spectral weapon summon
+    // ditto hep ancestors (sigh)
     if (!invalid_monster_index(killer)
-        && menv[killer].type == MONS_SPECTRAL_WEAPON
+        && (menv[killer].type == MONS_SPECTRAL_WEAPON
+            || mons_is_hepliaklqana_ancestor(menv[killer].type))
         && menv[killer].summoner == MID_PLAYER)
     {
         return 2;
@@ -1513,11 +1515,17 @@ static string _killer_type_name(killer_type killer)
     die("invalid killer type");
 }
 
-static void _make_spectral_thing(monster* mons, bool quiet)
+/**
+ * Make a spectral thing out of a dying/dead monster.
+ *
+ * @param mons       the monster that died
+ * @param quiet      whether to print flavour messages
+ * @param bound_soul whether the thing is from Bind Souls (true) or DChan
+ */
+static void _make_spectral_thing(monster* mons, bool quiet, bool bound_soul)
 {
     if (mons->holiness() & MH_NATURAL && mons_can_be_zombified(mons))
     {
-        const monster_type spectre_type = mons_species(mons->type);
         enchant_type shapeshift = ENCH_NONE;
         if (mons->has_ench(ENCH_SHAPESHIFTER))
             shapeshift = ENCH_SHAPESHIFTER;
@@ -1526,16 +1534,22 @@ static void _make_spectral_thing(monster* mons, bool quiet)
 
         // Use the original monster type as the zombified type here, to
         // get the proper stats from it.
-        mgen_data mg(MONS_SPECTRAL_THING, BEH_FRIENDLY, &you,
-                     0, SPELL_DEATH_CHANNEL, mons->pos(), MHITYOU,
-                     MG_NONE, static_cast<god_type>(you.attribute[ATTR_DIVINE_DEATH_CHANNEL]),
+        mgen_data mg(MONS_SPECTRAL_THING,
+                     bound_soul ? SAME_ATTITUDE(mons) : BEH_FRIENDLY,
+                     bound_soul ? nullptr : &you,
+                     0,
+                     bound_soul ? SPELL_BIND_SOULS : SPELL_DEATH_CHANNEL,
+                     mons->pos(), MHITYOU, MG_NONE,
+                     bound_soul ?
+                        GOD_NO_GOD : static_cast<god_type>(you.attribute[ATTR_DIVINE_DEATH_CHANNEL]),
                      mons->type);
-        if (spectre_type == MONS_HYDRA)
+        if (mons->mons_species() == MONS_HYDRA)
         {
             // Headless hydras cannot be made spectral hydras, sorry.
             if (mons->heads() == 0)
             {
-                mpr("A glowing mist gathers momentarily, then fades.");
+                if (!quiet)
+                    mpr("A glowing mist gathers momentarily, then fades.");
                 return;
             }
             else
@@ -2294,7 +2308,7 @@ item_def* monster_die(monster* mons, killer_type killer,
             }
 
             if (you.duration[DUR_DEATH_CHANNEL] && gives_player_xp)
-                _make_spectral_thing(mons, !death_message);
+                _make_spectral_thing(mons, !death_message, false);
             break;
         }
 
@@ -2354,7 +2368,7 @@ item_def* monster_die(monster* mons, killer_type killer,
 
             // XXX: shouldn't this be considerably earlier...?
             if (you.duration[DUR_DEATH_CHANNEL] && was_visible)
-                _make_spectral_thing(mons, !death_message);
+                _make_spectral_thing(mons, !death_message, false);
 
             break;
         }
@@ -2616,6 +2630,8 @@ item_def* monster_die(monster* mons, killer_type killer,
         if (!corpse)
             corpse = daddy_corpse;
     }
+    if (corpse && mons->has_ench(ENCH_BOUND_SOUL))
+        _make_spectral_thing(mons, !death_message, true);
 
     const unsigned int player_xp = gives_player_xp
         ? _calc_player_experience(mons) : 0;
@@ -2850,10 +2866,6 @@ void monster_cleanup(monster* mons)
 
     if (mons->has_ench(ENCH_AWAKEN_VINES))
         unawaken_vines(mons, false);
-
-    // So that a message is printed for the effect ending
-    if (mons->has_ench(ENCH_CONTROL_WINDS))
-        mons->del_ench(ENCH_CONTROL_WINDS);
 
     // So proper messages are printed
     if (mons->has_ench(ENCH_GRASPING_ROOTS_SOURCE))

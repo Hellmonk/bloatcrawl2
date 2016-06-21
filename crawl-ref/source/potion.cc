@@ -131,9 +131,16 @@ public:
 
         if (ddoor)
             mpr("You feel queasy.");
-        else if (you.can_device_heal() || you.duration[DUR_POISONING]
-            || you.duration[DUR_CONF] || unrotted)
+        else if (you.can_device_heal()
+                 || !is_device
+                 || you.duration[DUR_POISONING]
+                 || you.duration[DUR_CONF]
+                 || unrotted)
+        {
+            if (is_device)
+                print_device_heal_message();
             canned_msg(MSG_GAIN_HEALTH);
+        }
         else
             mpr("That felt strangely inert.");
         // need to redraw from yellow to green even if no hp was gained
@@ -550,6 +557,7 @@ public:
         const int ambrosia_turns = 3 + random2(12);
         if (confuse_player(ambrosia_turns, false, true))
         {
+            print_device_heal_message();
             mprf("You feel%s invigorated.",
                  you.duration[DUR_AMBROSIA] ? " more" : "");
             you.increase_duration(DUR_AMBROSIA, ambrosia_turns);
@@ -659,7 +667,7 @@ public:
         }
         else
             mpr("A flood of memories washes over you.");
-        
+
         return true;
     }
 };
@@ -788,7 +796,7 @@ public:
 
     bool effect(bool was_known = true, int pow = 40, bool=true) const override
     {
-        if (you.species == SP_VAMPIRE && you.hunger_state <= HS_SATIATED)
+        if (you.species == SP_VAMPIRE && you.hunger_state < HS_SATIATED)
         {
             mpr("You feel slightly irritated.");
             return false;

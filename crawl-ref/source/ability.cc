@@ -177,7 +177,6 @@ static skill_type _invo_skill()
     {
         case GOD_KIKUBAAQUDGHA:
             return SK_NECROMANCY;
-        case GOD_NEMELEX_XOBEH:
         case GOD_PAKELLAS:
             return SK_EVOCATIONS;
         case GOD_ASHENZARI:
@@ -356,9 +355,9 @@ static const ability_def Ability_List[] =
     { ABIL_ZIN_VITALISATION, "Vitalisation",
       0, 0, 0, 2, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_ZIN_IMPRISON, "Imprison",
-      0, 0, 125, 8, {FAIL_INVO, 60, 5, 20}, abflag::NONE },
+      5, 0, 0, 4, {FAIL_INVO, 60, 5, 20}, abflag::NONE },
     { ABIL_ZIN_SANCTUARY, "Sanctuary",
-      0, 0, 150, 30, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
+      7, 0, 0, 15, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
     { ABIL_ZIN_CURE_ALL_MUTATIONS, "Cure All Mutations",
       0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
     { ABIL_ZIN_DONATE_GOLD, "Donate Gold",
@@ -631,11 +630,53 @@ static const ability_def Ability_List[] =
         0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
     { ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING, "Knight: Broad Axe",
         0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
-    { ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST, "Battlemage: Iceblast",
+    { ABIL_HEPLIAKLQANA_BATTLEMAGE_FORCE_LANCE, "Battlemage: Force Lance",
         0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
     { ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA, "Battlemage: Bolt of Magma",
         0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
-    { ABIL_HEPLIAKLQANA_HEXER_PARALYSE, "Hexer: Paralyse",
+    { ABIL_HEPLIAKLQANA_HEXER_MASS_CONFUSION, "Hexer: Mass Confusion",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION, "Hexer: Englaciation",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+
+    { ABIL_HEPLIAKLQANA_IDENTITY,  "Ancestor Identity",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::INSTANT },
+
+    // Uskayaw
+    { ABIL_USKAYAW_STOMP, "Stomp",
+        3, 0, 100, generic_cost::fixed(20), {FAIL_INVO}, abflag::NONE },
+    { ABIL_USKAYAW_LINE_PASS, "Line Pass",
+        4, 0, 200, generic_cost::fixed(20), {FAIL_INVO}, abflag::NONE},
+    { ABIL_USKAYAW_GRAND_FINALE, "Grand Finale",
+        8, 0, 500, generic_cost::fixed(0),
+        {FAIL_INVO, 120 + piety_breakpoint(4), 5, 1}, abflag::NONE},
+
+    // Hepliaklqana
+    { ABIL_HEPLIAKLQANA_RECALL, "Recall Ancestor",
+        2, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_TRANSFERENCE, "Transference",
+        2, 0, 0, generic_cost::range(3, 4), {FAIL_INVO, 40, 5, 20},
+        abflag::NONE },
+    { ABIL_HEPLIAKLQANA_IDEALISE, "Idealise",
+        4, 0, 0, generic_cost::range(5, 6), {FAIL_INVO, 60, 4, 25},
+        abflag::NONE },
+
+    { ABIL_HEPLIAKLQANA_TYPE_KNIGHT,       "Ancestor Life: Knight",
+        0, 0, 0, 0, {FAIL_INVO},abflag::NONE },
+    { ABIL_HEPLIAKLQANA_TYPE_BATTLEMAGE,   "Ancestor Life: Battlemage",
+        0, 0, 0, 0, {FAIL_INVO},abflag::NONE },
+    { ABIL_HEPLIAKLQANA_TYPE_HEXER,        "Ancestor Life: Hexer",
+        0, 0, 0, 0, {FAIL_INVO},abflag::NONE },
+
+    { ABIL_HEPLIAKLQANA_KNIGHT_REACHING, "Knight: Demon Trident",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING, "Knight: Broad Axe",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_BATTLEMAGE_FORCE_LANCE, "Battlemage: Force Lance",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA, "Battlemage: Bolt of Magma",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_HEXER_MASS_CONFUSION, "Hexer: Mass Confusion",
         0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
     { ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION, "Hexer: Englaciation",
         0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
@@ -942,14 +983,19 @@ ability_type fixup_ability(ability_type ability)
         /*
     case ABIL_YRED_ANIMATE_REMAINS:
         // suppress animate remains once animate dead is unlocked (ugh)
-        if (in_good_standing(GOD_YREDELEMNUL, 2))
+        if (player_mutation_level(MUT_NO_LOVE)
+            || in_good_standing(GOD_YREDELEMNUL, 2))
+        {
             return ABIL_NON_ABILITY;
+        }
         return ability;
          */
 
     case ABIL_YRED_RECALL_UNDEAD_SLAVES:
     case ABIL_BEOGH_RECALL_ORCISH_FOLLOWERS:
-        if (!you.recall_list.empty())
+        if (player_mutation_level(MUT_NO_LOVE))
+            return ABIL_NON_ABILITY;
+        else if (!you.recall_list.empty())
             return ABIL_STOP_RECALL;
         return ability;
 
@@ -980,6 +1026,20 @@ ability_type fixup_ability(ability_type ability)
     case ABIL_KIKU_BLESS_WEAPON:
     case ABIL_LUGONU_BLESS_WEAPON:
         if (you.species == SP_FELID)
+            return ABIL_NON_ABILITY;
+        else
+            return ability;
+
+    case ABIL_ELYVILON_HEAL_OTHER:
+    case ABIL_YRED_ANIMATE_DEAD:
+    case ABIL_YRED_ENSLAVE_SOUL:
+    case ABIL_TSO_SUMMON_DIVINE_WARRIOR:
+    case ABIL_MAKHLEB_LESSER_SERVANT_OF_MAKHLEB:
+    case ABIL_MAKHLEB_GREATER_SERVANT_OF_MAKHLEB:
+    case ABIL_TROG_BROTHERS_IN_ARMS:
+    case ABIL_GOZAG_BRIBE_BRANCH:
+    case ABIL_QAZLAL_ELEMENTAL_FORCE:
+        if (player_mutation_level(MUT_NO_LOVE))
             return ABIL_NON_ABILITY;
         else
             return ability;
@@ -1015,7 +1075,7 @@ static int _adjusted_failure_chance(ability_type ability, int base_chance)
                   - effective_xl() / 2;
 
     case ABIL_NEMELEX_DEAL_FOUR:
-        return 70 - (you.piety * 2 / 45) - you.skill(SK_EVOCATIONS, 9) / 2;
+        return 70 - (you.piety * 2 / 45) - you.skill(SK_INVOCATIONS, 9) / 2;
 
     default:
         return base_chance;
@@ -3116,11 +3176,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_HEPLIAKLQANA_KNIGHT_REACHING:
     case ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING:
-    case ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST:
+    case ABIL_HEPLIAKLQANA_BATTLEMAGE_FORCE_LANCE:
     case ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA:
-    case ABIL_HEPLIAKLQANA_HEXER_PARALYSE:
+    case ABIL_HEPLIAKLQANA_HEXER_MASS_CONFUSION:
     case ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION:
-        if (!hepliaklqana_specialize_ancestor(abil.ability))
+       if (!hepliaklqana_specialize_ancestor(abil.ability))
             return SPRET_ABORT;
         break;
 
@@ -3725,9 +3785,9 @@ int find_ability_slot(const ability_type abil, char firstletter)
     case ABIL_HEPLIAKLQANA_IDENTITY: // move this?
     case ABIL_HEPLIAKLQANA_KNIGHT_REACHING:
     case ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING:
-    case ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST:
+    case ABIL_HEPLIAKLQANA_BATTLEMAGE_FORCE_LANCE:
     case ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA:
-    case ABIL_HEPLIAKLQANA_HEXER_PARALYSE:
+    case ABIL_HEPLIAKLQANA_HEXER_MASS_CONFUSION:
     case ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION:
         first_slot = letter_to_index('G');
         break;
@@ -3770,9 +3830,9 @@ static void _add_hep_specialization_choices(vector<ability_type> &abilities)
     static const map<int, vector<ability_type>> specializations = {
         { MONS_ANCESTOR_KNIGHT,     { ABIL_HEPLIAKLQANA_KNIGHT_REACHING,
                                       ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING } },
-        { MONS_ANCESTOR_BATTLEMAGE, { ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST,
+        { MONS_ANCESTOR_BATTLEMAGE, { ABIL_HEPLIAKLQANA_BATTLEMAGE_FORCE_LANCE,
                                       ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA } },
-        { MONS_ANCESTOR_HEXER,      { ABIL_HEPLIAKLQANA_HEXER_PARALYSE,
+        { MONS_ANCESTOR_HEXER,      { ABIL_HEPLIAKLQANA_HEXER_MASS_CONFUSION,
                                       ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION } },
     };
 
@@ -3815,6 +3875,26 @@ vector<ability_type> get_god_abilities(bool ignore_silence, bool ignore_piety,
 
         if (you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY)
             && you.experience_level >= HEP_SPECIALIZATION_LEVEL
+            && !you.props.exists(HEPLIAKLQANA_SPECIALIZATION_KEY))
+        {
+            _add_hep_specialization_choices(abilities);
+        }
+    }
+    if (you_worship(GOD_HEPLIAKLQANA))
+    {
+        // XXX: should we check ignore_piety?
+        if (piety_rank() >= 2 && !you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY))
+        {
+            for (int anc_type = ABIL_HEPLIAKLQANA_FIRST_TYPE;
+                 anc_type <= ABIL_HEPLIAKLQANA_LAST_TYPE;
+                 ++anc_type)
+            {
+                abilities.push_back(static_cast<ability_type>(anc_type));
+            }
+        }
+
+        if (you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY)
+            && you.experience_level >= hepliaklqana_specialization_level()
             && !you.props.exists(HEPLIAKLQANA_SPECIALIZATION_KEY))
         {
             _add_hep_specialization_choices(abilities);

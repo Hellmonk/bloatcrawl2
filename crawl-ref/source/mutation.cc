@@ -419,7 +419,7 @@ string describe_mutations(bool center_title)
               + (you.species == SP_GREY_DRACONIAN ? "very " : "") + "hard";
 
         result += _annotate_form_based(
-                    make_stringf("Your %s (AC +%d).",
+                    make_stringf("Your %s. (AC +%d)",
                        you.species == SP_NAGA ? "serpentine skin is tough" :
                        you.species == SP_GARGOYLE ? "stone body is resilient" :
                                                     scale_clause.c_str(),
@@ -594,7 +594,7 @@ static void _display_vampire_attributes()
          "Bat form             ", "no         ", "no      ", "yes       ", "yes      ", "yes      ", "yes   "},
 
         {"Other forms and \n"
-         "berserk              ", "yes        ", "yes     ", "no        ", "no       ", "no       ", "no    "}
+         "berserk              ", "yes        ", "yes     ", "yes       ", "no       ", "no       ", "no    "}
     };
 
     int current = 0;
@@ -1968,14 +1968,13 @@ string mutation_desc(mutation_type mut, int level, bool colour,
     if (mut == MUT_ICEMAIL)
     {
         ostringstream ostr;
-        ostr << mdef.have[0] << player_icemail_armour_class()/10 << ")";
+        ostr << mdef.have[0] << player_icemail_armour_class() << ")";
         result = ostr.str();
     }
-    else if (mut == MUT_SANGUINE_ARMOUR && sanguine_armour_bonus())
+    else if (mut == MUT_SANGUINE_ARMOUR)
     {
         ostringstream ostr;
-        ostr << mdef.have[0] << " (AC +" << sanguine_armour_bonus() / 100
-                             << ")";
+        ostr << mdef.have[level - 1] << sanguine_armour_bonus() / 100 << ")";
         result = ostr.str();
     }
     else if (!ignore_player && you.species == SP_FELID && mut == MUT_CLAWS)

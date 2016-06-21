@@ -291,16 +291,12 @@ cww.wwc
 ccc+ccc
 ENDMAP
 
-NAME: nicolae_shop_scaring_up_business
-TAGS: allow_dup extra shop
-WEIGHT: 1
-KFEAT: O = general shop
-KMONS: O = patrolling hungry ghost
-MAP
-...
-.O.
-...
-ENDMAP
+###############################################################################
+# <<2>> Themed.
+#       Not tagged shop, but still contains one. Can have threats, and can have
+#       have a specific custom item list. Even if the below examples don't show
+#       it, try to have some restraint with additions here.
+#
 
 ###############################################################################
 # <<2>> Themed.
@@ -614,9 +610,21 @@ MAP
 .......
 ENDMAP
 
+NAME: nicolae_shop_scaring_up_business
+TAGS: extra
+DEPTH: Orc, Forest
+WEIGHT: 1
+KFEAT: O = food shop
+KMONS: O = patrolling hungry ghost
+MAP
+...
+.O.
+...
+ENDMAP
+
 # Get away from it all.
 NAME: nicolae_island_escapes
-DEPTH: D:4-, !D:$, Depths, !Depths:$, Shoals, !Shoals:$, Swamp, !Swamp:$
+DEPTH: D:7-, !D:$, Depths, !Depths:$, Shoals, !Shoals:$, Swamp, !Swamp:$
 TAGS: no_trap_gen no_item_gen no_monster_gen water_ok no_tide no_pool_fixup
 WEIGHT: 5
 SHUFFLE: Aa/Bb
@@ -643,7 +651,7 @@ ENDMAP
 # Eat the purple.
 NAME: nicolae_transmutations_shop
 TAGS: transparent no_item_gen no_monster_gen no_trap_gen
-DEPTH: Depths, Zot
+DEPTH: Orc, Depths, Zot
 COLOUR: m = magenta
 TILE: m = dngn_transparent_wall_magenta
 KFEAT: S = general shop type:Changing suffix:Room count:7 ; \

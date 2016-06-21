@@ -300,11 +300,6 @@ static const vector<brand_weight_tuple> POLEARM_BRANDS = {
 /// brand weights for most ranged weapons.
 static const vector<brand_weight_tuple> RANGED_BRANDS = {
     { SPWPN_NORMAL,   75 },
-    /*
-    { SPWPN_FLAMING,  24 },
-    { SPWPN_FREEZING, 12 },
-     */
-    { SPWPN_EVASION,   8 },
     { SPWPN_LIGHT,     8 },
     { SPWPN_VORPAL,    6 },
 };
@@ -575,10 +570,7 @@ static const weapon_def Weapon_prop[] =
     // Range weapons
     { WPN_BLOWGUN,           "blowgun",             0,  4, 15, 2,
         SK_THROWING,     SIZE_LITTLE,  SIZE_LITTLE, MI_NEEDLE,
-        DAMV_NON_MELEE, 5, 0, {
-            { SPWPN_EVASION,  3 },
-            { SPWPN_NORMAL,  97 },
-        }},
+        DAMV_NON_MELEE, 5, 0, {}, },
 
     { WPN_HUNTING_SLING,     "hunting sling",       5,  0, 12, 3,
         SK_SLINGS,       SIZE_LITTLE,  SIZE_LITTLE, MI_STONE,
@@ -1135,6 +1127,7 @@ static iflags_t _full_ident_mask(const item_def& item)
     case OBJ_MISSILES:
     case OBJ_ORBS:
     case OBJ_RUNES:
+    case OBJ_GOLD:
         flagset = 0;
         break;
     case OBJ_BOOKS:
@@ -2087,6 +2080,7 @@ bool item_skills(const item_def &item, set<skill_type> &skills)
     // Jewellery with evokable abilities, wands and similar unwielded
     // evokers allow training.
     if (item_is_evokable(item, false, false, true, false, true)
+        && !is_deck(item)
         || item.base_type == OBJ_JEWELLERY && gives_ability(item))
     {
         skills.insert(SK_EVOCATIONS);
@@ -2109,6 +2103,7 @@ bool item_skills(const item_def &item, set<skill_type> &skills)
         return !skills.empty();
 
     if (item_is_evokable(item, false, false, false, false, false)
+        && !is_deck(item)
         || staff_uses_evocations(item)
         || item.base_type == OBJ_WEAPONS && gives_ability(item))
     {
@@ -2449,11 +2444,6 @@ int food_turns(const item_def &item)
 {
     ASSERT(item.defined() && item.base_type == OBJ_FOOD);
     return Food_prop[Food_index[item.sub_type]].turns;
-}
-
-bool can_cut_meat(const item_def &item)
-{
-    return _does_damage_type(item, DAM_SLICE);
 }
 
 bool is_fruit(const item_def & item)

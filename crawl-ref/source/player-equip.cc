@@ -529,10 +529,6 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
                     mpr("You feel protected!");
                     break;
 
-                case SPWPN_EVASION:
-                    mpr("You feel nimbler!");
-                    break;
-
                 case SPWPN_LIGHT:
                     mprf("%s feels so light!", item_name.c_str());
                     break;
@@ -614,10 +610,6 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
             {
             case SPWPN_PROTECTION:
                 you.redraw_armour_class = true;
-                break;
-
-            case SPWPN_EVASION:
-                you.redraw_evasion = true;
                 break;
 
             case SPWPN_VAMPIRISM:
@@ -710,12 +702,6 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
                 if (showMsgs)
                     mpr("You feel less protected.");
                 you.redraw_armour_class = true;
-                break;
-
-            case SPWPN_EVASION:
-                if (showMsgs)
-                    mpr("You feel like more of a target.");
-                you.redraw_evasion = true;
                 break;
 
             case SPWPN_VAMPIRISM:

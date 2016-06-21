@@ -334,12 +334,14 @@ C   111111 ww 111111   C
 ENDMAP
 
 NAME:   hangedman_abyss_sting
-TAGS:   no_item_gen no_monster_gen
+TAGS:   no_item_gen no_monster_gen uniq_wasphive
 KMONS:  1 = orange demon
 KMONS:  2 = hornet / wasp / killer bee w:2 / nothing w:2
 KMONS:  3 = death drake / green death
 KFEAT:  123 = W
-KITEM:  23 = royal jelly / nothing
+KITEM:  3 = royal jelly
+COLOUR: x = yellow
+TILE:   x = wall_wax
 MAP
  xxxxxxx
 xx22222xx
@@ -1455,6 +1457,181 @@ KITEM:   4d = scroll of random uselessness w:15 q:1 / fruit q:1 w:4 / \
          mundane animal skin / mundane ring mail / gold q:1
 KITEM:   5 = wand of slowing / wand of confusion / wand of flame w:5 / \
          plain deck w:5 / whip not_cursed w:2 / hat not_cursed mundane w:5
+KITEM:   6e = abyssal rune of zot mimic
+KITEM:   O = abyssal rune of zot
+KFEAT:   A = stone_arch
+SHUFFLE: 12
+SUBST:   X = xxxxc, c = cccvb
+FTILE:   "Ade456O = floor_crystal_squares
+COLOUR:  "de456O = lightmagenta
+########################################
+# Combined abyssal rune vaults, because we were collecting a lot
+# and standardizing difficulty was easier with consolidation.
+NAME:   dshaligram_kb_abyss_rune_zappy_water_cross
+TAGS:   abyss_rune unrand patrolling no_pool_fixup
+MONS:   generate_awake lightning spire, raiju, smoke demon, blizzard demon
+KMONS:  O = merfolk impaler
+KITEM:  O = abyssal rune of Zot
+KFEAT:  O = shallow_water
+KFEAT:  A = stone_arch
+FTILE:  A1234OwW = floor_crystal_squares
+COLOUR: 1 = lightmagenta
+MAP
+www1w1www
+www2w4www
+123WOW321 A
+www4w2www
+www1w1www
+ENDMAP
+
+NAME:   due_evilmike_abyss_rune_seething_liches
+TAGS:   abyss_rune unrand no_monster_gen
+MONS:   fire bat, chaos spawn, fire dragon / ice dragon, ogre mage
+KMONS:  OL = lich / ancient lich w:1
+KITEM:  O = abyssal rune of Zot
+KFEAT:  A = stone_arch
+NSUBST: L = 1:O / *:L
+MARKER: ! = lua:fog_machine { cloud_type = "seething chaos", \
+            pow_min = 8, pow_max = 12, delay_min = 20, delay_max = 30, \
+            size = 1, walk_dist = 1, spread_rate = 16 }
+SUBST:  ! = V, X = x', x = xc, C : c.
+FTILE:  '@A+V1234LOx = floor_crystal_squares
+COLOUR: '@12LO = lightmagenta
+MAP
+  cccccc X
+ ccLccLcc
+cccc+c+cccX
+cLccc1.ccc X
+cc+c2.1+LcX X
+ccc1.2.ccc X X
+cL+.1.++Cxx X X
+cccc+c++.4xx X X
+ cccLcC.c.3xx X X
+X ccccx4.1.2xx X
+  X X xx3.1.2xx X
+   X X xx2.!..xxx
+    X X xx2....xx
+     X X xx....+'
+      X X xx...+'
+       X X xx++x@
+        X X x''@A
+ENDMAP
+
+NAME:  evilmike_abyss_rune_siren_acolytes
+TAGS:  abyss_rune unrand patrolling no_pool_fixup
+# They really should have bend space instead of blink / other.
+MONS:   wizard hd:16 name:mad_acolyte_of_Lugonu n_rpl n_des col:lightgreen \
+        tile:mons_hell_wizard \
+        spells:smiting.20.priest;malign_gateway.20.priest;\
+               blink.10.priest;blink_other.10.priest;\
+               invisibility.10.priest ; \
+        robe good_item . quarterstaff ego:distortion | dagger ego:distortion
+MONS:   generate_awake merfolk avatar, blink frog
+MONS:   tentacled monstrosity / tentacled starspawn / thrashing horror w:6
+KMONS:  O = starcursed mass
+KITEM:  O = abyssal rune of Zot
+KFEAT:  _ = altar_lugonu
+KFEAT:  A = stone_arch
+SUBST:  X = c', c = ccv, N : nb.
+KPROP:  l = no_cloud_gen
+FTILE:  @A1234O+ = floor_crystal_squares
+COLOUR: @1234O = lightmagenta
+MAP
+ XbbbXXXXXXXXXX@
+XXb1bbbbbcccccc+
+XXbblblblccwc..c
+XXbb+......3...c
+Xbb4n.N...llb.cc
+XbOnn.1_.3l2l3wcA
+Xbb4n.N...llb.cc
+XXbb+......3...c
+XXbblblblccwc..c
+XXb1bbbbbcccccc+
+ XbbbXXXXXXXXXX@
+ENDMAP
+
+NAME:    evilmike_abyss_rune_elephants_shrine
+TAGS:    abyss_rune unrand
+KMONS:   1 = elephant
+KMONS:   23 = dire elephant
+KMONS:   45 = hellephant
+KMONS:   67 = generate_awake spatial vortex
+KMONS:   89 = draconian shifter
+KMONS:   _ = patrolling spatial maelstrom
+ITEM:    potion of flight q:1 ident:type
+KITEM:   _ = abyssal rune of Zot
+KFEAT:   _ = altar_lugonu
+KFEAT:   A = stone_arch
+# Two rings of opposite sides on the inside / outside of the octagon lava moat,
+# with one to three (mostly two) pairs of opposite sides made floor or wall.
+SHUFFLE: HIJKL, MNOPQ
+SUBST:   HIMN = l, J : ll. KL = ., O : llP, PQ : xxxxb, c : ccv
+NSUBST:  ' = 1:4 / 1:8 / 1 = 22248 / 10 = 2216 / *:., d = 1:dddd. / *:.
+MARKER:  F = lua:fog_machine { cloud_type = "translocational energy", \
+             pow_max = 2, delay_min = 10, delay_max = 20, walk_dist = 0, size = 1 }
+FTILE:   "AF3579_OG+ = floor_crystal_squares
+COLOUR:  "F3579 = lightmagenta
+MAP
+  l".HIIIIIIIIJ."l
+ l".HllllllllllJ."l
+l"dHlMNNNNNNNNOlJd"l
+".HlMMllllKlllOOlJ."
+.HlMMlJ''''''HlOOlJ.
+HlMMlJ''''G'''HlOOlJ
+KlPlJ'FccccccF'HlPlK
+KlPl''ccG"79cc''lPlK
+KlPII''+"5_7cc'IIPlKA
+KlPl''ccG37"cc''lPlK
+KlPlH'FccccccF'JlPlK
+JlOOlH''''G'''JlMMlH
+.JlOOlH''''''JlMMlH.
+".JlOOllllKlllMMlH."
+l"dJlONNNNNNNNMlHd"l
+ l".JllllllllllH."l
+  l".JIIIIIIIIH."l
+ENDMAP
+
+NAME:   evilmike_nicolae_abyss_rune_containment_curve
+TAGS:   abyss_rune unrand patrolling no_monster_gen no_item_gen
+MONS:   neqoxec w:4 / raiju / worldbinder / thrashing horror / shapeshifter
+MONS:   tormentor / hellion / shadow demon / \
+        bone dragon / iron dragon zombie w:4
+KMONS:  3O = spatial maelstrom
+KITEM:  O = abyssal rune of Zot
+KFEAT:  A = stone_arch
+SUBST:  X : b", x = xv, n = nnnnnc, m = n
+FTILE:  "A123$Onc = floor_crystal_squares
+COLOUR: "123$O = lightmagenta
+MAP
+""xxxxxxxxxxxxxxxx
+.....1xxnnnnnnnnnxxx
+........1nnnnnnnnxxxxx
+....X......xxnnnnnxxxx
+.........2..nnnn33xxxx
+A.....X...x.2$mm3Oxxxx
+.........2..nnnn33xxxx
+....X......xxnnnnnxxxx
+........1nnnnnnnnxxxxx
+.....1xxnnnnnnnnnxxx
+""xxxxxxxxxxxxxxxx
+ENDMAP
+
+NAME:    hangedman_grunt_abyss_rune_horror_hoard
+TAGS:    abyss_rune unrand no_monster_gen no_item_gen patrolling transparent
+WEIGHT:  5
+KMONS:   1 = great orb of eyes perm_ench:shapeshifter
+KMONS:   2 = guardian serpent perm_ench:shapeshifter
+KMONS:   3 = crystal guardian
+KMONS:   4 = unseen horror
+KMONS:   5 = thrashing horror
+KMONS:   6 = lurking horror
+# Note: if anything in these two item sets becomes useful for more then a tiny
+# fraction of characters finding the abyssal rune, remove or replace them.
+KITEM:   4d = scroll of random uselessness w:15 q:1 / fruit q:1 w:4 / \
+         club w:6 / stone q:1 / needle q:1 ego:confusion / \
+         mundane animal skin / mundane ring mail / gold q:1
+KITEM:   5 = wand of slowing / wand of confusion / wand of flame w:5 / \
+         whip not_cursed w:2 / hat not_cursed mundane w:5
 KITEM:   6e = abyssal rune of zot mimic
 KITEM:   O = abyssal rune of zot
 KFEAT:   A = stone_arch

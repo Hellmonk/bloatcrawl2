@@ -325,6 +325,53 @@ static string _describe_ash_skill_boost()
     return desc.str();
 }
 
+/// Build & return a table of Hep's upgrades for your chosen ancestor type.
+static string _describe_ancestor_upgrades()
+{
+    if (!you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY))
+        return "";
+
+    // TODO: don't hardcode this
+    // TODO: higlight upgrades taken
+    // XXX: maybe it'd be nice to let you see other ancestor types'...?
+    switch (you.props[HEPLIAKLQANA_ALLY_TYPE_KEY].get_int())
+    {
+    case MONS_ANCESTOR_KNIGHT:
+        return "XL                      Knight\n"
+               "                        Flail\n"
+               "                        Shield\n"
+               "                   Splint Mail (+AC)\n"
+               "15 (Option A)    Demon Trident (flame)\n"
+               "15 (Option B)      Broad Axe (flame)\n"
+               "21              Large Shield (reflect)\n"
+               "21                      Haste\n"
+               "27                Speed (weapon ego)\n";
+    case MONS_ANCESTOR_BATTLEMAGE:
+        return "XL                    Battlemage\n"
+               "                     Quarterstaff\n"
+               "                      Throw Frost\n"
+               "                      Stone Arrow\n"
+               "                     +Melee Damage\n"
+               "15 (Option A)         Magma Bolt\n"
+               "15 (Option B)         Force Lance\n"
+               "21                  Lajatang (freeze)\n"
+               "21                       Haste\n"
+               "27                   Crystal Spear\n";
+    case MONS_ANCESTOR_HEXER:
+        return "XL                       Hexer\n"
+               "                     Dagger (drain)\n"
+               "                         Slow\n"
+               "                        Confuse\n"
+               "15                     Paralyse\n"
+               "21 (Option A)    Metabolic Englaciation\n"
+               "21 (Option B)        Mass Confusion\n"
+               "21                       Haste\n"
+               "27                Quickblade (antimagic)\n";
+    default:
+        return "";
+    }
+}
+
 // from dgn-overview.cc
 extern map<branch_type, set<level_id> > stair_level;
 
@@ -567,17 +614,15 @@ static string _get_god_misc_info(god_type which_god)
                    "you gain half of the monster's experience value. Pacified "
                    "monsters try to leave the level.";
 
-        case GOD_NEMELEX_XOBEH:
-            return "The power of Nemelex Xobeh's abilities and of the "
-                   "cards' effects is governed by Evocations skill "
-                   "instead of Invocations.";
-
         case GOD_GOZAG:
             return _describe_branch_bribability();
 
         case GOD_PAKELLAS:
             return "The power of Pakellas' abilities is governed by "
                    "Evocations skill instead of Invocations.";
+
+        case GOD_HEPLIAKLQANA:
+            return _describe_ancestor_upgrades();
 
         default:
             return "";
@@ -629,7 +674,7 @@ static string _god_penance_message(god_type which_god)
     const string penance_message =
         (which_god == GOD_NEMELEX_XOBEH
          && which_god_penance > 0 && which_god_penance <= 100)
-            ? "%s doesn't play fair with you." :
+            ? "%s won't play fair with you." :
         (which_god_penance >= 50)   ? "%s's wrath is upon you!" :
         (which_god_penance >= 20)   ? "%s is annoyed with you." :
         (which_god_penance >=  5)   ? "%s well remembers your sins." :
@@ -667,7 +712,7 @@ static void _describe_god_powers(god_type which_god)
         textcolour(DARKGREY);
     else
         textcolour(god_colour(which_god));
-    
+
     const char* god_name_string = uppercase_first(god_name(which_god)).c_str();
 
     // mv: Some gods can protect you from harm.
@@ -757,7 +802,7 @@ static void _describe_god_powers(god_type which_god)
         else
             textcolour(DARKGREY);
         cprintf("%s shields you from corrosive effects.\n",
-                god_name_string);
+                uppercase_first(god_name(which_god)).c_str());
 
         if (have_passive(passive_t::slime_feed))
             textcolour(god_colour(which_god));
@@ -834,7 +879,7 @@ static void _describe_god_powers(god_type which_god)
     {
         have_any = true;
         cprintf("%s identifies device charges for you.\n",
-                god_name_string);
+                uppercase_first(god_name(which_god)).c_str());
         if (!you_foodless_normally())
         {
             if (have_passive(passive_t::bottle_mp))
@@ -844,10 +889,11 @@ static void _describe_god_powers(god_type which_god)
 
             cprintf("%s will collect and distill excess magic from your "
                     "kills.\n",
-                    god_name_string);
+                    uppercase_first(god_name(which_god)).c_str());
         }
         break;
     }
+
     case GOD_SIF_MUNA:
     {
         int savings = pow(16.0/17, you.skill(SK_INVOCATIONS, 10) / 20.0) * 100;

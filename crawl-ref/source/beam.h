@@ -342,6 +342,5 @@ int explosion_noise(int rad);
 
 bool shoot_through_monster(const bolt& beam, const monster* victim);
 bool dazzle_monster(monster* mons, actor* act);
-
 int omnireflect_chance_denom(int SH);
 #endif

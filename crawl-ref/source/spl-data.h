@@ -2747,6 +2747,7 @@ static const struct spell_desc spelldata[] =
     TILEG_AWAKEN_VINES,
 },
 
+#if TAG_MAJOR_VERSION == 34
 {
     SPELL_CONTROL_WINDS, "Control Winds",
     SPTYP_CHARMS | SPTYP_AIR,
@@ -2755,8 +2756,9 @@ static const struct spell_desc spelldata[] =
     200,
     LOS_RADIUS, LOS_RADIUS,
     5, 0,
-    TILEG_CONTROL_WINDS,
+    TILEG_ERROR,
 },
+#endif
 
 {
     SPELL_THORN_VOLLEY, "Volley of Thorns",
@@ -2990,7 +2992,7 @@ static const struct spell_desc spelldata[] =
     SPFLAG_DIR_OR_TARGET | SPFLAG_MONSTER | SPFLAG_NEEDS_TRACER,
     8,
     200,
-    LOS_RADIUS, LOS_RADIUS,
+    5, 5,
     8, 0,
     TILEG_LEGENDARY_DESTRUCTION,
 },
@@ -3323,7 +3325,40 @@ static const struct spell_desc spelldata[] =
 },
 
 {
-    SPELL_SERPENT_OF_HELL_BREATH, "serpent of hell breath",
+    SPELL_SERPENT_OF_HELL_GEH_BREATH, "gehenna serpent of hell breath",
+    SPTYP_CONJURATION,
+    SPFLAG_DIR_OR_TARGET | SPFLAG_MONSTER | SPFLAG_NOISY | SPFLAG_NEEDS_TRACER,
+    5,
+    0,
+    LOS_RADIUS, LOS_RADIUS,
+    5, 0,
+    TILEG_ERROR,
+},
+
+{
+    SPELL_SERPENT_OF_HELL_COC_BREATH, "cocytus serpent of hell breath",
+    SPTYP_CONJURATION,
+    SPFLAG_DIR_OR_TARGET | SPFLAG_MONSTER | SPFLAG_NOISY | SPFLAG_NEEDS_TRACER,
+    5,
+    0,
+    LOS_RADIUS, LOS_RADIUS,
+    5, 0,
+    TILEG_ERROR,
+},
+
+{
+    SPELL_SERPENT_OF_HELL_DIS_BREATH, "dis serpent of hell breath",
+    SPTYP_CONJURATION,
+    SPFLAG_DIR_OR_TARGET | SPFLAG_MONSTER | SPFLAG_NOISY | SPFLAG_NEEDS_TRACER,
+    5,
+    0,
+    LOS_RADIUS, LOS_RADIUS,
+    5, 0,
+    TILEG_ERROR,
+},
+
+{
+    SPELL_SERPENT_OF_HELL_TAR_BREATH, "tartarus serpent of hell breath",
     SPTYP_CONJURATION,
     SPFLAG_DIR_OR_TARGET | SPFLAG_MONSTER | SPFLAG_NOISY | SPFLAG_NEEDS_TRACER,
     5,
@@ -3732,6 +3767,28 @@ static const struct spell_desc spelldata[] =
     -1, -1,
     2, 0,
     TILEG_ERROR,
+},
+
+{
+    SPELL_GREATER_SERVANT_MAKHLEB, "Greater Servant of Makhleb",
+    SPTYP_SUMMONING,
+    SPFLAG_UNHOLY | SPFLAG_BATTLE | SPFLAG_SELFENCH | SPFLAG_MONS_ABJURE,
+    7,
+    200,
+    -1, -1,
+    6, 0,
+    TILEG_ERROR,
+},
+
+{
+    SPELL_BIND_SOULS, "Bind Souls",
+    SPTYP_NECROMANCY,
+    SPFLAG_AREA | SPFLAG_MONSTER,
+    6,
+    200,
+    -1, -1,
+    5, 0,
+    TILEG_DEATH_CHANNEL,
 },
 
 {

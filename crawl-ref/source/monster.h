@@ -418,7 +418,6 @@ public:
     int liquefying_radius() const override;
     int umbra_radius() const override;
     int heat_radius() const override;
-    bool glows_naturally() const override;
     bool petrified() const override;
     bool petrifying() const override;
     bool liquefied_ground() const override;

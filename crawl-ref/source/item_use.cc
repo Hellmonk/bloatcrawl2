@@ -1,6 +1,5 @@
 /**
  * @file
-}
  * @brief Functions for making use of inventory items.
 **/
 
@@ -74,24 +73,26 @@
 
 class UseItemMenu : public InvMenu
 {
-public:
     vector<const item_def*> item_inv;
     vector<const item_def*> item_floor;
 
     void populate_list(int item_type);
     void populate_menu();
+    bool process_key(int key) override;
 
+public:
     // Constructor
     // Requires int for item filter.
     // Accepts:
     //      OBJ_POTIONS
     //      OBJ_SCROLLS
-    UseItemMenu (int);
+    UseItemMenu(int selector, const char* prompt);
 };
 
-UseItemMenu::UseItemMenu(int item_type)
+UseItemMenu::UseItemMenu(int item_type, const char* prompt)
     : InvMenu(MF_SINGLESELECT)
 {
+    set_title(you.inv1, prompt);
     populate_list(item_type);
     populate_menu();
 }
@@ -112,7 +113,7 @@ void UseItemMenu::populate_list(int item_type)
             item_inv.push_back(&item);
     }
     // Load floor items
-    item_list_on_square(item_floor, you.visible_igrd(you.pos()));
+    item_floor = item_list_on_square(you.visible_igrd(you.pos()));
     // Filter
     erase_if(item_floor, [=](const item_def* item)
     {
@@ -128,48 +129,56 @@ void UseItemMenu::populate_menu()
     // Load the inv items first, they have a hotkey
     if (!item_inv.empty())
     {
-        add_entry(new MenuEntry("Inventory Items", MEL_TITLE, 0, 0, false));
+        auto subtitle = new MenuEntry("Inventory Items", MEL_TITLE);
+        subtitle->colour = LIGHTGREY;
+        add_entry(subtitle);
 
-        load_items(item_inv, 0, 0, false);
-
-        // Remove inventory item hotkeys from the tracker
-        for (MenuEntry *entry : items)
-            if (!entry->hotkeys.empty())
-                used_keys.insert(char(entry->hotkeys[0]));
+        load_items(item_inv,
+                   [&](MenuEntry* entry) -> MenuEntry*
+                   {
+                       // Remove inventory item hotkeys from the tracker
+                       if (!entry->hotkeys.empty())
+                           used_keys.insert(char(entry->hotkeys[0]));
+                       return entry;
+                   });
     }
 
     if (!item_floor.empty())
     {
         // Load floor items to menu
-        add_entry(new MenuEntry("Floor Items", MEL_TITLE, 0, 0, false));
-
-        load_items(item_floor, 0, 0, false);
+        auto subtitle = new MenuEntry("Floor Items", MEL_TITLE);
+        subtitle->colour = LIGHTGREY;
+        add_entry(subtitle);
 
         menu_letter hotkey;
-        // Go through each menu item
-        for (MenuEntry* entry : items)
-        {
-            // Make an InvEntry out of it
-            auto ie = dynamic_cast<InvEntry *>(entry);
-            // If this is an inventory item, leave its hotkeys alone
-            if (!entry->hotkeys.empty() && ie && !in_inventory(*(ie->item)))
-            {
-                while (used_keys.count(hotkey))
-                {
-                    // Remove it from used_keys, so the second time through
-                    // we re-use all letters, inventory or not.
-                    used_keys.erase(hotkey);
-                    ++hotkey;
-                }
-                entry->hotkeys[0] = hotkey++;
-            }
-        }
+        load_items(item_floor,
+                   [&](MenuEntry* entry) -> MenuEntry*
+                   {
+                       if (!entry->hotkeys.empty())
+                       {
+                           while (used_keys.count(hotkey))
+                           {
+                               // Remove it from used_keys, so the second time
+                               // through we re-use all letters, inventory or
+                               // not.
+                               used_keys.erase(hotkey);
+                               ++hotkey;
+                           }
+                           entry->hotkeys[0] = hotkey++;
+                       }
+                       return entry;
+                   });
     }
+}
 
-    if (item_inv.empty() && item_floor.empty())
-        add_entry(new MenuEntry("No Items", MEL_TITLE, 0, 0, false));
-
-    return;
+bool UseItemMenu::process_key(int key)
+{
+    if (isadigit(key) || key == '*' || key == '\\')
+    {
+        lastch = key;
+        return false;
+    }
+    return Menu::process_key(key);
 }
 
 /*
@@ -186,23 +195,65 @@ void UseItemMenu::populate_menu()
  * @return                      A chosen item_def*, or nullptr.
  */
 
-item_def* _use_an_item(int item_type)
+static item_def* _use_an_item(int item_type, operation_types oper,
+                              const char* prompt,
+                              function<bool ()> allowcancel = []()
+                              { return true; })
 {
-    // Init the menu
-    UseItemMenu menu (item_type);
+    item_def* target = nullptr;
 
-    vector<MenuEntry*> sel = menu.show(true);
-    redraw_screen();
+    // First handle things that will return nullptr
 
-    if (sel.empty())
+    // No selectable items in inv or floor
+    if (!any_items_of_type(you.inv2, item_type, -1, true))
+    {
+        mprf(MSGCH_PROMPT, "%s",
+             no_selectables_message(item_type).c_str());
         return nullptr;
+    }
 
-    ASSERT(sel.size() == 1);
+    // Init the menu
+    UseItemMenu menu (item_type, prompt);
 
-    auto ie = dynamic_cast<InvEntry *>(sel[0]);
-    item_def* target = const_cast<item_def*>(ie->item);
+    while (true)
+    {
+        vector<MenuEntry*> sel = menu.show(true);
+        int keyin = menu.getkey();
+        redraw_screen();
 
-    return target;
+        // Handle inscribed item keys
+        if (isadigit(keyin))
+        {
+            const int idx = digit_inscription_to_inv_index(you.inv2, keyin, oper);
+            if (idx >= 0)
+                target = &item_from_int(true, true, idx);
+        }
+            // TODO: handle * key
+        else if (keyin == '\\')
+        {
+            check_item_knowledge();
+            continue;
+        }
+        else if (!sel.empty())
+        {
+            ASSERT(sel.size() == 1);
+
+            auto ie = dynamic_cast<InvEntry *>(sel[0]);
+            target = const_cast<item_def*>(ie->item);
+        }
+
+        if (target && !check_warning_inscriptions(*target, oper))
+            target = nullptr;
+        if (target)
+            return target;
+        else if (allowcancel())
+        {
+            prompt_failed(PROMPT_ABORT);
+            return nullptr;
+        }
+        else
+            continue;
+    }
 }
 
 static bool _safe_to_remove_or_wear(const item_def &item, bool remove,
@@ -723,29 +774,25 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
             return false;
         }
 
-        if (ignore_temporary)
+        if (player_mutation_level(MUT_CLAWS, !ignore_temporary) >= 3)
         {
-            // Hooves and talons were already checked by player_has_feet.
-
-            if (player_mutation_level(MUT_CLAWS, false) >= 3)
+            if (verbose)
             {
-                if (verbose)
-                {
-                    mprf("The hauberk won't fit your %s.",
-                         you.hand_name(true).c_str());
-                }
-                return false;
+                mprf("The hauberk won't fit your %s.",
+                     you.hand_name(true).c_str());
             }
-
-            if (player_mutation_level(MUT_HORNS, false) >= 3
-                || player_mutation_level(MUT_ANTENNAE, false) >= 3)
-            {
-                if (verbose)
-                    mpr("The hauberk won't fit your head.");
-                return false;
-            }
+            return false;
         }
-        else
+
+        if (player_mutation_level(MUT_HORNS, !ignore_temporary) >= 3
+            || player_mutation_level(MUT_ANTENNAE, !ignore_temporary) >= 3)
+        {
+            if (verbose)
+                mpr("The hauberk won't fit your head.");
+            return false;
+        }
+
+        if (!ignore_temporary)
         {
             for (int s = EQ_HELMET; s <= EQ_BOOTS; s++)
             {
@@ -1907,16 +1954,12 @@ void drink(item_def* potion)
 
     if (!potion)
     {
-        potion = _use_an_item(OBJ_POTIONS);
+        potion = _use_an_item(OBJ_POTIONS, OPER_QUAFF, "Drink which item?");
 
         if (!potion)
         {
-            int slot = PROMPT_ABORT;
-            if (prompt_failed(slot))
-            {
-                _vampire_corpse_help();
-                return;
-            }
+            _vampire_corpse_help();
+            return;
         }
     }
 
@@ -2023,12 +2066,6 @@ static void _rebrand_weapon(item_def& wpn)
         if (is_range_weapon(wpn))
         {
             new_brand = random_choose_weighted(
-                                    /*
-                                    30, SPWPN_FLAMING,
-                                    30, SPWPN_FREEZING,
-                                    20, SPWPN_VENOM,
-                                    5, SPWPN_ELECTROCUTION,
-                                    */
                                     20, SPWPN_VORPAL,
                                     12, SPWPN_EVASION,
                                     12, SPWPN_LIGHT,
@@ -2077,11 +2114,6 @@ static void _brand_weapon(item_def &wpn)
     case SPWPN_PROTECTION:
         flash_colour = YELLOW;
         mprf("%s projects an invisible shield of force!",itname.c_str());
-        break;
-
-    case SPWPN_EVASION:
-        flash_colour = YELLOW;
-        mprf("%s emits a repelling force!",itname.c_str());
         break;
 
     case SPWPN_LIGHT:
@@ -2242,85 +2274,42 @@ bool enchant_weapon(item_def &wpn, bool quiet)
 // Returns true if the scroll is used up.
 static bool _identify(bool alreadyknown, const string &pre_msg)
 {
-//	FixedVector< item_def, ENDOFPACK > *inv = &you.inv1;
-	vector<SelItem> selected_items;
-	int item_slot = -1;
-    item_def* item;
+    item_def* itemp = _use_an_item(OSEL_UNIDENT, OPER_ID,
+                                   "Identify which item? (\\ to view known items)",
+                                   [=]()
+                                   {
+                                       return alreadyknown
+                                              || crawl_state.seen_hups
+                                              || yesno("Really abort (and waste the scroll)?", false, 0);
+                                   });
 
-    while (true)
+    if (!itemp)
+        return !alreadyknown;
+
+    item_def& item = *itemp;
+    if (alreadyknown)
+        mpr(pre_msg);
+
+    set_ident_type(item, true);
+    set_ident_flags(item, ISFLAG_IDENT_MASK);
+
+    // Output identified item.
+    mprf_nocap("%s", item.name(DESC_INVENTORY_EQUIP).c_str());
+    if (in_inventory(item))
     {
-        if (item_slot == -1)
-        {
-            prompt_invent_item2(
-            		selected_items,
-	                "Identify which item? (\\ to view known items)",
-	                MT_INVLIST, OSEL_UNIDENT, true, true, false, 0,
-	                -1, nullptr, OPER_ANY, true, true);
-            if(selected_items.empty())
-            {
-            	item_slot = PROMPT_ABORT;
-            }
-            else
-            {
-            	item = const_cast<item_def*>(selected_items[0].item);
-            	item_slot = item->slot;
-            }
-        }
-
-//        if (item_slot == PROMPT_NOTHING)
-//            return !alreadyknown;
-
-        if (item_slot == PROMPT_ABORT)
-        {
-            if (alreadyknown
-                || crawl_state.seen_hups
-                || yesno("Really abort (and waste the scroll)?", false, 0))
-            {
-                canned_msg(MSG_OK);
-                return !alreadyknown;
-            }
-            else
-            {
-                item_slot = -1;
-                continue;
-            }
-        }
-
-        if (fully_identified(*item)
-            && (!is_deck(*item) || top_card_is_known(*item)))
-        {
-            mpr("Choose an unidentified item, or Esc to abort.");
-            more();
-            item_slot = -1;
-            continue;
-        }
-
-        if (alreadyknown)
-            mpr(pre_msg);
-
-        set_ident_type(*item, true);
-        set_ident_flags(*item, ISFLAG_IDENT_MASK);
-
-        if (is_deck(*item) && !top_card_is_known(*item))
-            deck_identify_first(*item);
-
-        item_slot = item->link;
-
-        // Output identified item.
-        mprf_nocap("%s", item->name(DESC_INVENTORY_EQUIP).c_str());
-        if (item_slot == you.equip[EQ_WEAPON])
+        if (item.link == you.equip[EQ_WEAPON])
             you.wield_change = true;
 
-        if (item->is_type(OBJ_JEWELLERY, AMU_INACCURACY)
-            && item_slot == you.equip[EQ_AMULET]
-            && !item_known_cursed(*item))
+        if (item.is_type(OBJ_JEWELLERY, AMU_INACCURACY)
+            && item.link == you.equip[EQ_AMULET]
+            && !item_known_cursed(item))
         {
             learned_something_new(HINT_INACCURACY);
         }
 
-        auto_assign_item_slot(*item);
-        return true;
+        auto_assign_item_slot(item);
     }
+    return true;
 }
 
 static bool _handle_enchant_weapon(bool alreadyknown, const string &pre_msg)
@@ -2527,6 +2516,8 @@ static void _handle_read_book(item_def& book)
     }
 #endif
 
+    set_ident_flags(book, ISFLAG_IDENT_MASK);
+    mark_had_book(book);
     read_book(book);
 }
 
@@ -2606,9 +2597,9 @@ bool player_can_read()
  * response to print. Otherwise, if they do have such items, return the empty
  * string.
  */
-static string _no_items_reason(object_selector type)
+static string _no_items_reason(object_selector type, bool check_floor = false)
 {
-    if (!any_items_of_type(you.inv1, type) && !any_items_of_type(you.inv2, type))
+    if (!any_items_of_type(you.inv1, type, -1, check_floor) && !any_items_of_type(you.inv2, type, -1, check_floor))
         return no_selectables_message(type);
     return "";
 }
@@ -2625,7 +2616,7 @@ string cannot_read_item_reason(const item_def &item)
     {
         if (item.sub_type == BOOK_MANUAL)
             return "You can't read that!";
-         
+
         return "";
     }
 
@@ -2647,7 +2638,7 @@ string cannot_read_item_reason(const item_def &item)
     // Prevent hot lava orcs reading scrolls
     if (you.species == SP_LAVA_ORC && temperature_effect(LORC_NO_SCROLLS))
         return "You'd burn any scroll you tried to read!";
-        
+
      if (you.species == SP_DJINNI)
         return "You'd burn any scroll you tried to read!";
 
@@ -2689,7 +2680,7 @@ string cannot_read_item_reason(const item_def &item)
             return _no_items_reason(OSEL_ENCHANTABLE_WEAPON);
 
         case SCR_IDENTIFY:
-            return _no_items_reason(OSEL_UNIDENT);
+            return _no_items_reason(OSEL_UNIDENT, true);
 
         case SCR_RECHARGING:
             return _no_items_reason(OSEL_RECHARGE);
@@ -2723,30 +2714,11 @@ void read(item_def* scroll)
     if (!player_can_read())
         return;
 
-    /* was
-    int item_slot = (slot != -1) ? slot
-                                 : prompt_invent_item(you.inv2, "Read which item?",
-                                                       MT_INVLIST,
-                                                       OBJ_SCROLLS,
-                                                       true, true, true, 0, -1,
-                                                       nullptr, OPER_READ);
-
-    if (prompt_failed(item_slot))
-        return;
-
-    const item_def& scroll = you.inv2[item_slot];
-    const string failure_reason = cannot_read_item_reason(scroll);
-     */
-
     if (!scroll)
     {
-        scroll = _use_an_item(OBJ_SCROLLS);
+        scroll = _use_an_item(OBJ_SCROLLS, OPER_READ, "Read which item?");
         if (!scroll)
-        {
-            int slot = PROMPT_ABORT;
-            if (prompt_failed(slot))
-                return;
-        }
+            return;
     }
 
     const string failure_reason = cannot_read_item_reason(*scroll);

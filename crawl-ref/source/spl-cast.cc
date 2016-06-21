@@ -457,7 +457,7 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool rod)
 {
     double power = 0;
     if (rod)
-        power = player_adjust_evoc_power(5 + you.skill(SK_EVOCATIONS, 3));
+        power = 5 + you.skill(SK_EVOCATIONS, 3); // will be adjusted later
     else
     {
         const spschools_type disciplines = get_spell_disciplines(spell);
@@ -848,7 +848,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
         mpr("You can't see any susceptible monsters within range! "
                     "(Use <w>Z</w> to cast anyway.)");
 
-        if (Options.use_animations & UA_RANGE)
+        if ((Options.use_animations & UA_RANGE) && Options.darken_beyond_range)
         {
             targetter_smite range(&you, calc_spell_range(spell), 0, 0, true);
             range_view_annotator show_range(&range);
@@ -887,23 +887,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
         }
     }
 
-    int severity = fail_severity(spell);
-    if (Options.fail_severity_to_confirm > 0
-        && Options.fail_severity_to_confirm <= severity
-        && !crawl_state.disables[DIS_CONFIRMATIONS])
-    {
-        string prompt = make_stringf("The spell is %s to cast%s "
-                                             "Continue anyway?",
-                                     fail_severity_adjs[severity],
-                                     severity > 1 ? "!" : ".");
-
-        if (!yesno(prompt.c_str(), false, 'n'))
-        {
-            canned_msg(MSG_OK);
-            return false;
-        }
-    }
-
+    const bool staff_energy = player_energy();
     you.last_cast_spell = spell;
     // Silently take MP before the spell.
     const int full_cost = cost + freeze_cost;
@@ -1171,6 +1155,24 @@ static bool _spellcasting_aborted(spell_type spell,
                 }
             }
         }
+
+        int severity = fail_severity(spell);
+        if (Options.fail_severity_to_confirm > 0
+            && Options.fail_severity_to_confirm <= severity
+            && !crawl_state.disables[DIS_CONFIRMATIONS]
+            && !evoked && !fake_spell)
+        {
+            string prompt = make_stringf("The spell is %s to cast%s "
+                                         "Continue anyway?",
+                                         fail_severity_adjs[severity],
+                                         severity > 1 ? "!" : ".");
+
+            if (!yesno(prompt.c_str(), false, 'n'))
+            {
+                canned_msg(MSG_OK);
+                return true;
+            }
+        }
     }
 
     return uncastable;
@@ -1427,7 +1429,7 @@ spret_type your_spells(spell_type spell, int powc,
         else
             args.self = CONFIRM_NONE;
         args.get_desc_func = additional_desc;
-        
+
         msgwin_set_temporary(true);
         const bool direction_chooser_result = !spell_direction(spd, beam, &args);
         if (!crawl_state.doing_prev_cmd_again)
@@ -1457,13 +1459,16 @@ spret_type your_spells(spell_type spell, int powc,
         }
     }
 
-    if (evoked && !pakellas_device_surge())
-        return SPRET_FAIL;
-
+    if (evoked)
+    {
+        const int surge = pakellas_surge_devices();
+        powc = player_adjust_evoc_power(powc, surge);
+        surge_power(you.spec_evoke() + surge);
+    }
+    else if (allow_fail)
+        surge_power(_spell_enhancement(spell));
     // Enhancers only matter for calc_spell_power() and raw_spell_fail().
     // Not sure about this: is it flavour or misleading? (jpeg)
-    if (allow_fail || evoked)
-        surge_power(evoked ? you.spec_evoke() : _spell_enhancement(spell));
 
     const god_type god =
         (crawl_state.is_god_acting()) ? crawl_state.which_god_acting()

@@ -53,8 +53,6 @@ void random_uselessness();
 
 void prompt_inscribe_item(FixedVector< item_def, ENDOFPACK > &inv);
 
-item_def* _use_an_item(int);
-
 #define STASIS_STABILITY_MSG "Your stasis keeps you stable."
 #define NO_HASTE_MSG "You cannot haste."
 

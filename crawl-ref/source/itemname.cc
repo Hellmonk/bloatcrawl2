@@ -422,9 +422,9 @@ static const char *weapon_brands_terse[] =
 #if TAG_MAJOR_VERSION == 34
     "obsolete", "obsolete",
 #endif
-    "chaos", "evade",
+    "chaos",
 #if TAG_MAJOR_VERSION == 34
-    "confuse",
+    "evade", "confuse",
 #endif
     "penet", "reap", "feather", "buggy-num", "acid",
 #if TAG_MAJOR_VERSION > 34
@@ -447,9 +447,9 @@ static const char *weapon_brands_verbose[] =
 #if TAG_MAJOR_VERSION == 34
     "reaching", "returning",
 #endif
-    "chaos", "evasion",
+    "chaos",
 #if TAG_MAJOR_VERSION == 34
-    "confusion",
+    "evasion", "confusion",
 #endif
     "penetration", "reaping", "feathers", "buggy-num", "acid",
 #if TAG_MAJOR_VERSION > 34
@@ -467,6 +467,10 @@ static const char *weapon_brands_verbose[] =
  */
 static const char* _vorpal_brand_name(const item_def &item, bool terse)
 {
+    // Dummy "All Hand Weapons" item from objstat.
+    if (item.sub_type == NUM_WEAPONS)
+        return "vorpal";
+
     if (is_range_weapon(item))
         return "shredding";
 
@@ -2002,14 +2006,7 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
 
         buff << misc_type_name(item_typ, know_type);
 
-        if ((item_typ == MISC_BOX_OF_BEASTS
-                  || item_typ == MISC_SACK_OF_SPIDERS)
-                    && used_count > 0
-                    && !dbname)
-        {
-            buff << " {used: " << used_count << "}";
-        }
-        else if (is_xp_evoker(*this) && !dbname && !evoker_is_charged(*this))
+        if (is_xp_evoker(*this) && !dbname && !evoker_is_charged(*this))
             buff << " (inert)";
 
         break;
@@ -2035,20 +2032,6 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
         break;
 
     case OBJ_RODS:
-        if (know_curse && !terse)
-        {
-            if (super_cursed())
-                buff << "heavily cursed ";
-            else if (cursed())
-                buff << "cursed ";
-            else if (Options.show_uncursed && desc != DESC_PLAIN
-                     && !know_pluses
-                     && (!know_type || !is_artefact(*this)))
-            {
-                buff << "uncursed ";
-            }
-        }
-
         if (!know_type)
         {
             if (!basename)
@@ -3683,7 +3666,7 @@ bool is_useless_item(const item_def &item, bool temp)
         case POT_BERSERK_RAGE:
             return you.undead_state(temp)
                    && (you.species != SP_VAMPIRE
-                       || temp && you.hunger_state <= HS_SATIATED)
+                       || temp && you.hunger_state < HS_SATIATED)
                    || you.species == SP_FORMICID;
         case POT_HASTE:
             return you.species == SP_FORMICID;
@@ -3702,7 +3685,7 @@ bool is_useless_item(const item_def &item, bool temp)
         case POT_LIGNIFY:
             return you.undead_state(temp)
                    && (you.species != SP_VAMPIRE
-                       || temp && you.hunger_state <= HS_SATIATED);
+                       || temp && you.hunger_state < HS_SATIATED);
 
         case POT_FLIGHT:
             return you.permanent_flight();
@@ -3754,7 +3737,7 @@ bool is_useless_item(const item_def &item, bool temp)
         case AMU_RAGE:
             return you.undead_state(temp)
                    && (you.species != SP_VAMPIRE
-                       || temp && you.hunger_state <= HS_SATIATED)
+                       || temp && you.hunger_state < HS_SATIATED)
                    || you.species == SP_FORMICID
                    || player_mutation_level(MUT_NO_ARTIFICE);
 
@@ -3904,10 +3887,10 @@ bool is_useless_item(const item_def &item, bool temp)
         case MISC_HORN_OF_GERYON:
         case MISC_PHANTOM_MIRROR:
             return player_mutation_level(MUT_NO_LOVE)
-                || player_mutation_level(MUT_NO_ARTIFICE);
+                   || player_mutation_level(MUT_NO_ARTIFICE);
 
         default:
-            return player_mutation_level(MUT_NO_ARTIFICE);
+            return player_mutation_level(MUT_NO_ARTIFICE) && !is_deck(item);
         }
 
     case OBJ_BOOKS:

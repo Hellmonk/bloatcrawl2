@@ -336,7 +336,6 @@ unsigned int item_value(item_def item, bool ident)
                 valued *= 15;
                 break;
 
-            case SPWPN_EVASION:
             case SPWPN_LIGHT:
             case SPWPN_PROTECTION:
             case SPWPN_VENOM:

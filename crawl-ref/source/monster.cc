@@ -1473,9 +1473,8 @@ static int _ego_damage_bonus(item_def &item)
     switch (get_weapon_brand(item))
     {
     case SPWPN_NORMAL:      return 0;
-    case SPWPN_VORPAL:      // deliberate
-    case SPWPN_PROTECTION:  // fall through
-    case SPWPN_EVASION:     return 1;
+    case SPWPN_VORPAL:      // deliberate fall through
+    case SPWPN_PROTECTION:  return 1;
     default:                return 2;
     }
 }
@@ -3126,11 +3125,6 @@ bool monster::umbra() const
     return umbraed() && !haloed();
 }
 
-bool monster::glows_naturally() const
-{
-    return mons_class_flag(type, M_GLOWS);
-}
-
 bool monster::caught() const
 {
     return has_ench(ENCH_HELD);
@@ -3406,8 +3400,8 @@ int monster::base_armour_class() const
     if (mons_is_hepliaklqana_ancestor(type))
     {
         if (type == MONS_ANCESTOR_KNIGHT)
-            return get_experience_level() * 3 / 2 + 5;
-        return get_experience_level();
+            return get_experience_level() + 7;
+        return get_experience_level() / 2;
     }
 
     const int base_ac = get_monster_data(type)->AC;
@@ -3462,8 +3456,6 @@ int monster::armour_class(bool calc_unid) const
         ac += 10;
 
     // various enchantments
-    if (has_ench(ENCH_MAGIC_ARMOUR))
-        ac += get_hit_dice() / 2;
     if (has_ench(ENCH_OZOCUBUS_ARMOUR))
         ac += 4 + get_hit_dice() / 3;
     if (has_ench(ENCH_ICEMAIL))
@@ -3558,9 +3550,6 @@ int monster::evasion(ev_ignore_type evit, const actor* /*act*/) const
     const bool calc_unid = !(evit & EV_IGNORE_UNIDED);
 
     int ev = base_evasion();
-
-    // check for evasion-brand weapons
-    ev += 5 * _weapons_with_prop(this, SPWPN_EVASION, calc_unid);
 
     // account for armour
     for (int slot = MSLOT_ARMOUR; slot <= MSLOT_SHIELD; slot++)
@@ -3786,9 +3775,11 @@ int monster::known_chaos(bool check_spells_god) const
         || type == MONS_ABOMINATION_SMALL
         || type == MONS_ABOMINATION_LARGE
         || type == MONS_WRETCHED_STAR
-        || type == MONS_KILLER_KLOWN  // For their random attacks.
-        || type == MONS_TIAMAT        // For her colour-changing.
-        || mons_is_demonspawn(type))  // Like player demonspawn
+        || type == MONS_KILLER_KLOWN      // For their random attacks.
+        || type == MONS_TIAMAT            // For her colour-changing.
+        || type == MONS_BAI_SUZHEN
+        || type == MONS_BAI_SUZHEN_DRAGON // For her transformation.
+        || mons_is_demonspawn(type))      // Like player demonspawn.
     {
         chaotic++;
     }
@@ -4580,7 +4571,8 @@ int monster::hurt(const actor *agent, int amount, beam_type flavour,
             return 0;
 
         // Apply damage multipliers for amulet of harm
-        if (amount != INSTANT_DEATH) {
+        if (amount != INSTANT_DEATH)
+        {
             // +30% damage when the opponent has harm
             if (agent && agent->extra_harm())
                 amount = amount * 13 / 10;
@@ -5351,8 +5343,7 @@ bool monster::visible_to(const actor *looker) const
     bool blind = looker->is_monster()
                  && looker->as_monster()->has_ench(ENCH_BLIND);
 
-    bool vis = (looker->is_player() && (friendly()
-                                        || you.duration[DUR_TELEPATHY]))
+    bool vis = looker->is_player() && friendly()
                || (!blind && (!invisible() || looker->can_see_invisible()));
 
     return vis && (this == looker || !submerged());
@@ -5752,30 +5743,10 @@ bool monster::do_shaft()
 
     // Handle instances of do_shaft() being invoked magically when
     // the monster isn't standing over a shaft.
-    if (get_trap_type(pos()) != TRAP_SHAFT)
+    if (get_trap_type(pos()) != TRAP_SHAFT
+        && !feat_is_shaftable(grd(pos())))
     {
-        switch (grd(pos()))
-        {
-        case DNGN_FLOOR:
-        case DNGN_OPEN_DOOR:
-        // what's the point of this list?
-        case DNGN_TRAP_MECHANICAL:
-        case DNGN_TRAP_TELEPORT:
-        case DNGN_TRAP_ALARM:
-#if TAG_MAJOR_VERSION == 34
-        case DNGN_TRAP_SHADOW:
-        case DNGN_TRAP_SHADOW_DORMANT:
-#endif
-        case DNGN_TRAP_ZOT:
-        case DNGN_TRAP_SHAFT:
-        case DNGN_TRAP_WEB:
-        case DNGN_UNDISCOVERED_TRAP:
-        case DNGN_ENTER_SHOP:
-            break;
-
-        default:
-            return false;
-        }
+        return false;
     }
 
     level_id lev = shaft_dest(false);
@@ -5794,7 +5765,6 @@ bool monster::do_shaft()
 
     const bool reveal = simple_monster_message(this, msg.c_str());
 
-    handle_items_on_shaft(pos(), false);
     place_cloud(CLOUD_DUST_TRAIL, pos(), 1 + random2(3), this);
 
     // Monster is no longer on this level.
@@ -6171,9 +6141,8 @@ void monster::react_to_damage(const actor *oppressor, int damage,
         return;
     }
 
-    if (has_ench(ENCH_PAIN_BOND)) {
+    if (has_ench(ENCH_PAIN_BOND))
         radiate_pain_bond(this, damage);
-    }
 
     // Don't discharge on small amounts of damage (this helps avoid
     // continuously shocking when poisoned or sticky flamed)
@@ -6317,6 +6286,35 @@ void monster::react_to_damage(const actor *oppressor, int damage,
         {
             rakshasa_clone_fineff::schedule(this, pos());
             props["emergency_clone"].get_bool() = true;
+        }
+    }
+
+    else if (type == MONS_BAI_SUZHEN && hit_points < max_hit_points / 2
+                                     && hit_points - damage > 0)
+    {
+        int old_hp                = hit_points;
+        auto old_flags            = flags;
+        mon_enchant_list old_ench = enchantments;
+        FixedBitVector<NUM_ENCHANTMENTS> old_ench_cache = ench_cache;
+        int8_t old_ench_countdown = ench_countdown;
+        string old_name = mname;
+
+        monster_drop_things(this, mons_aligned(oppressor, &you));
+
+        type = MONS_BAI_SUZHEN_DRAGON;
+        define_monster(this);
+        hit_points = min(old_hp, hit_points);
+        flags          = old_flags;
+        enchantments   = old_ench;
+        ench_cache     = old_ench_cache;
+        ench_countdown = old_ench_countdown;
+
+        if (observable())
+        {
+            mprf("%s roars in fury and transforms into a fierce dragon!",
+                 name(DESC_THE).c_str());
+            mprf("%s surrounding storm thunders violently.",
+                 name(DESC_ITS).c_str());
         }
     }
 
@@ -6832,5 +6830,6 @@ bool monster::angered_by_attacks() const
     return !has_ench(ENCH_INSANE)
             && !mons_is_avatar(type)
             && type != MONS_SPELLFORGED_SERVITOR
+            && !testbits(flags, MF_DEMONIC_GUARDIAN)
             && !mons_is_hepliaklqana_ancestor(type);
 }

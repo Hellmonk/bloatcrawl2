@@ -474,6 +474,8 @@ void revive()
         if (dur != DUR_GOURMAND && dur != DUR_PIETY_POOL)
             you.duration[dur] = 0;
 
+    you.props["corrosion_amount"] = 0;
+
     unrot_hp(9999);
     set_hp(9999);
     set_mp(9999);
@@ -759,7 +761,7 @@ void swap_with_monster(monster* mon_to_swap)
         }
         else
         {
-            you.attribute[ATTR_HELD] = 10;
+            you.attribute[ATTR_HELD] = 1;
             if (get_trapping_net(you.pos()) != NON_ITEM)
                 mpr("You become entangled in the net!");
             else
