@@ -1744,7 +1744,7 @@ bool transform(int pow, transformation_type which_trans, bool involuntary,
         merfolk_stop_swimming();
 
     if (which_trans == TRAN_HYDRA)
-        set_hydra_form_heads(div_rand_round(pow, 10));
+        set_hydra_form_heads(pow / 10);
 
     // Give the transformation message.
     mpr(get_form(which_trans)->transform_message(previous_trans));
