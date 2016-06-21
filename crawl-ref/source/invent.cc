@@ -877,7 +877,10 @@ menu_letter InvMenu::load_items(const vector<const item_def*> &mitems,
             }
             do_preselect(ie);
 
+            /*
             add_entry(procfn ? procfn(ie) : ie);
+             */
+            add_entry(ie);
         }
     }
 
