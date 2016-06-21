@@ -16,7 +16,6 @@ int get_success_chance(int diff, int cap = 0, int spread = 16);
 uint32_t get_uint32(int generator = RNG_GAMEPLAY);
 uint64_t get_uint64(int generator = RNG_GAMEPLAY);
 bool coinflip();
-int rand_round(double value);
 int div_rand_round(int num, int den);
 int rand_round(double x);
 int div_round_up(int num, int den);

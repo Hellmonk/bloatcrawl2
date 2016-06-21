@@ -614,7 +614,7 @@ NAME: nicolae_shop_scaring_up_business
 TAGS: extra
 DEPTH: Orc, Forest
 WEIGHT: 1
-KFEAT: O = food shop
+KFEAT: O = distillery shop
 KMONS: O = patrolling hungry ghost
 MAP
 ...
