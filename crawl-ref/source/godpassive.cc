@@ -281,6 +281,12 @@ static const vector<god_passive> god_passives[NUM_GODS] =
         {  0, passive_t::identify_devices, "GOD identifies your wands and rods" },
         {  1, passive_t::bottle_mp, "GOD collects and distills excess magic from your kills" },
     },
+
+    // Uskayaw
+    { },
+
+    // Hepliaklqana
+    { {  5, passive_t::transfer_slow, "slow nearby creatures when transferring your ancestor" }, },
 };
 
 bool have_passive(passive_t passive)
@@ -1380,7 +1386,7 @@ static int _check_for_uskayaw_targets(coord_def where)
     monster* mons = monster_at(where);
     ASSERT(mons);
 
-    if (mons_intel(mons) < I_ANIMAL)
+    if (mons_is_firewood(mons))
         return 0;
 
     return 1;
@@ -1394,13 +1400,10 @@ static int _check_for_uskayaw_targets(coord_def where)
  */
 static int _prepare_audience(coord_def where)
 {
-    if (!cell_has_valid_target(where))
+    if (!_check_for_uskayaw_targets(where))
         return 0;
-    monster* mons = monster_at(where);
-    ASSERT(mons);
 
-    if (mons_intel(mons) < I_ANIMAL)
-        return 0;
+    monster* mons = monster_at(where);
 
     int power =  max(1, random2(1 + you.skill(SK_INVOCATIONS, 2))
                  + you.experience_level - mons->get_hit_dice());
@@ -1419,7 +1422,7 @@ void uskayaw_prepares_audience()
     int count = apply_area_visible(_check_for_uskayaw_targets, you.pos());
     if (count > 0)
     {
-        mprf(MSGCH_GOD, "Uskayaw prepares the audience for your solo!");
+        simple_god_message(" prepares the audience for your solo!");
         apply_area_visible(_prepare_audience, you.pos());
 
         // Increment a delay timer to prevent players from spamming this ability
@@ -1435,17 +1438,14 @@ void uskayaw_prepares_audience()
  */
 static int _bond_audience(coord_def where)
 {
-    if (!cell_has_valid_target(where))
+    if (!_check_for_uskayaw_targets(where))
         return 0;
+
     monster* mons = monster_at(where);
-    ASSERT(mons);
 
-    if (mons_intel(mons) < I_ANIMAL)
-        return 0;
-
-    int power = you.skill(SK_INVOCATIONS, 5) + you.experience_level
+    int power = you.skill(SK_INVOCATIONS, 7) + you.experience_level
                  - mons->get_hit_dice();
-    int duration = 10 + random2(power);
+    int duration = 20 + random2avg(power, 2);
     mons->add_ench(mon_enchant(ENCH_PAIN_BOND, 1, &you, duration));
 
     return 1;
@@ -1459,7 +1459,7 @@ void uskayaw_bonds_audience()
     int count = apply_area_visible(_check_for_uskayaw_targets, you.pos());
     if (count > 1)
     {
-        mprf(MSGCH_GOD, "Uskayaw links your audience in an emotional bond!");
+        simple_god_message(" links your audience in an emotional bond!");
         apply_area_visible(_bond_audience, you.pos());
 
         // Increment a delay timer to prevent players from spamming this ability

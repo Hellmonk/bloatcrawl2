@@ -292,7 +292,8 @@ box of beasts
 A box filled with the bizarre leftovers of a depraved wizard's magical
 experimentations. Opening it might set loose a friendly mutant beast: bizarre
 creatures, each with their own combination of traits. Increased skill with
-Evocations will allow stronger beasts to be released.
+Evocations will allow stronger beasts to be released. There is a one in three
+chance of accidentally destroying the box when using it.
 
 There are six known traits:
  * Bat beasts fly and move very quickly, but erratically.
@@ -377,18 +378,13 @@ deck of escape
 
 A deck of magical cards, mainly dealing with various forms of escape.
 %%%%
-deck of oddities
-
-A deck of magical cards that have the strangest tendency to get mixed in with
-other decks.
-%%%%
 deck of punishment
 
 A deck of magical cards which wreak havoc on the user.
 %%%%
-deck of war
+deck of summoning
 
-A deck of magical cards which are useful before and during battle.
+A deck of magical cards, depicting a range of weird and wonderful creatures.
 %%%%
 demon blade
 
@@ -687,7 +683,7 @@ living or demonic being.
 %%%%
 orb of zot
 
-An invaluable artefact. A field of energy disrupts translocational energies 
+An invaluable artefact. A field of energy disrupts translocational energies
 around the Orb. Stealing it will incur the wrath of foes from multiple
 planes of existence. Once you have escaped to the surface with it, your
 quest is complete!
@@ -1005,8 +1001,9 @@ Beware! Each rune you carry bolsters the resolve of your foes!
 sack of spiders
 
 A woven silk bag. Opening it will release a number of spiders and other
-insects, as well as creating webs nearby. Its effectiveness increases with
-Evocations skill.
+insects, as well as creating webs nearby. Evocations skill increases its
+effectiveness. There is a one in three chance of accidentally destroying the
+sack when using it.
 %%%%
 sacred scourge
 
@@ -1080,8 +1077,6 @@ monsters that are affected.
 scroll of identify
 
 A useful magic scroll which identifies the properties of any unknown object.
-
-If used on a deck of cards, it will also reveal the top card.
 %%%%
 scroll of immolation
 

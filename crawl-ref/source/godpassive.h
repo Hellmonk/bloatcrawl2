@@ -248,6 +248,9 @@ enum class passive_t
 
     /// Not really used yet?
     no_sp_regen,
+
+    /// Hep's transfer slows enemies adjacent to the effect's target
+    transfer_slow,
 };
 
 enum ru_interference

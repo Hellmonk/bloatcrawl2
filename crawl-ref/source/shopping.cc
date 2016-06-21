@@ -336,7 +336,6 @@ unsigned int item_value(item_def item, bool ident)
                 valued *= 15;
                 break;
 
-            case SPWPN_EVASION:
             case SPWPN_LIGHT:
             case SPWPN_PROTECTION:
             case SPWPN_VENOM:
@@ -691,6 +690,7 @@ unsigned int item_value(item_def item, bool ident)
                 valued += 100;
                 break;
 
+            case POT_HEAL_WOUNDS:
             case POT_MAGIC:
             case POT_STAMINA:
             case POT_INVISIBILITY:
@@ -700,7 +700,6 @@ unsigned int item_value(item_def item, bool ident)
                 break;
 
             case POT_BERSERK_RAGE:
-            case POT_HEAL_WOUNDS:
 #if TAG_MAJOR_VERSION == 34
             case POT_RESTORE_ABILITIES:
 #endif

@@ -590,6 +590,8 @@ static void _hydra_devour(monster &victim)
         // feel free to just use the actual creature name if this has buggy
         // edge cases or such
     }
+    if (victim.has_ench(ENCH_STICKY_FLAME))
+        mprf("Spicy!");
 
     // nutrition (maybe)
     if (filling)
@@ -1996,12 +1998,8 @@ bool melee_attack::attack_chops_heads(int dam, int dam_type, int wpn_brand)
     if (dam_type == DVORP_CLAWING && attacker->has_claws() < 3)
         return false;
 
-    // you need to have done at least some damage.
-    if (dam <= 0)
-        return false;
-
-    // usually at least 4 damage, unless you are an unlucky vorpal user.
-    if (dam < 4 && wpn_brand != SPWPN_VORPAL && coinflip())
+    // You need to have done at least some damage.
+    if (dam <= 0 || dam < 4 && coinflip())
         return false;
 
     // ok, good enough!
@@ -2099,7 +2097,7 @@ void melee_attack::attacker_sustain_passive_damage()
 
     int hurt = roll_dice(1, acid_strength);
     if (attacker->is_player())
-        mprf(you.hands_act("burn", "!").c_str());
+        mprf("%s", you.hands_act("burn", "!").c_str());
     else
     {
         monster_message(attacker->as_monster(),
@@ -2764,8 +2762,7 @@ void melee_attack::mons_apply_attack_flavour()
                         mprf("%s %s strength from %s injuries!",
                              atk_name(DESC_THE).c_str(),
                              attacker->conj_verb("draw").c_str(),
-                             def_name(DESC_ITS).c_str(),
-                             healing
+                             def_name(DESC_ITS).c_str()
                         );
                     }
                 }

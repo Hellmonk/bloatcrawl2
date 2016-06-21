@@ -1,5 +1,7 @@
 ## v1.6
 
+* Stop portal timers when you are not on the same floor
+
 * Abyss is now 7 floors
 
 * Zot no longer requires any runes to get in. You can beat the game with 0 runes. 

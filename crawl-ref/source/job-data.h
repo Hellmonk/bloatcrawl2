@@ -192,8 +192,8 @@ static const map<job_type, job_def> job_data =
     { SP_HILL_ORC, SP_CAVE_TROLL, SP_MOON_TROLL, SP_MINOTAUR, SP_GARGOYLE, SP_GHOUL, SP_MERFOLK,
       SP_VAMPIRE, },
     { "robe" },
-    WCHOICE_NONE,
-    { { SK_FIGHTING, 4 }, { SK_UNARMED_COMBAT, 4 }, { SK_DODGING, 3 },
+    WCHOICE_PLAIN,
+    { { SK_FIGHTING, 4 }, { SK_WEAPON, 4 }, { SK_DODGING, 3 },
       { SK_STEALTH, 2 }, },
 } },
 
@@ -283,7 +283,7 @@ static const map<job_type, job_def> job_data =
     { "robe", "hat", "book of Minor Magic" },
     WCHOICE_NONE,
     { { SK_DODGING, 2 }, { SK_STEALTH, 2 }, { SK_SPELLCASTING, 5 },
-      { SK_TRANSLOCATIONS, 1 }, { SK_CONJURATIONS, 1 }, { SK_SUMMONINGS, 1 }, 
+      { SK_TRANSLOCATIONS, 1 }, { SK_CONJURATIONS, 1 }, { SK_SUMMONINGS, 1 },
       { SK_CHARMS, 1 }, { SK_HEXES, 1 }, },
 } },
 #if TAG_MAJOR_VERSION == 34

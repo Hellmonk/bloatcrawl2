@@ -764,10 +764,12 @@ int count_movable_items(int obj)
  * @param[in] obj The location link; an index in mitm.
  * @param exclude_stationary If true, don't include stationary items.
 */
-void item_list_on_square(vector<const item_def*>& items, int obj)
+vector<const item_def*> item_list_on_square(int obj)
 {
+    vector<const item_def*> items;
     for (stack_iterator si(obj); si; ++si)
         items.push_back(& (*si));
+    return items;
 }
 
 bool need_to_autopickup()
@@ -850,9 +852,7 @@ void item_check()
 
     ostream& strm = msg::streams(MSGCH_FLOOR_ITEMS);
 
-    vector<const item_def*> items;
-
-    item_list_on_square(items, you.visible_igrd(you.pos()));
+    auto items = item_list_on_square(you.visible_igrd(you.pos()));
 
     if (items.empty())
         return;
@@ -950,8 +950,7 @@ void pickup_menu(int item_link)
     int n_did_pickup   = 0;
     int n_tried_pickup = 0;
 
-    vector<const item_def*> items;
-    item_list_on_square(items, item_link);
+    auto items = item_list_on_square(item_link);
     ASSERT(items.size());
 
     string prompt = "Pick up what? " + slot_description(you.inv1)
@@ -1483,7 +1482,9 @@ bool is_stackable_item(const item_def &item)
     }
 
     if (item.is_type(OBJ_MISCELLANY, MISC_PHANTOM_MIRROR)
-        || item.is_type(OBJ_MISCELLANY, MISC_ZIGGURAT))
+        || item.is_type(OBJ_MISCELLANY, MISC_ZIGGURAT)
+        || item.is_type(OBJ_MISCELLANY, MISC_SACK_OF_SPIDERS)
+        || item.is_type(OBJ_MISCELLANY, MISC_BOX_OF_BEASTS))
     {
         return true;
     }
@@ -4284,7 +4285,8 @@ static void _deck_from_specs(const char* _specs, item_def &item,
 
     while (item.sub_type == MISC_DECK_UNKNOWN)
     {
-        mprf(MSGCH_PROMPT, "[a] escape [b] destruction [c] war? (ESC to exit)");
+        mprf(MSGCH_PROMPT, "[a] escape [b] destruction [c] summoning? "
+                           "(ESC to exit)");
 
         const int keyin = toalower(get_ch());
 
@@ -4300,7 +4302,7 @@ static void _deck_from_specs(const char* _specs, item_def &item,
         {
             { 'a', MISC_DECK_OF_ESCAPE },
             { 'b', MISC_DECK_OF_DESTRUCTION },
-            { 'c', MISC_DECK_OF_WAR },
+            { 'c', MISC_DECK_OF_SUMMONING },
         };
 
         const misc_item_type *deck_type = map_find(deckmap, keyin);
@@ -4598,14 +4600,6 @@ bool get_item_by_name(item_def *item, const char* specs,
         init_rod_mp(*item);
         break;
 
-    case OBJ_MISCELLANY:
-        if (item->sub_type == MISC_BOX_OF_BEASTS
-            || item->sub_type == MISC_SACK_OF_SPIDERS)
-        {
-            item->charges = 50;
-        }
-        break;
-
     case OBJ_POTIONS:
         item->quantity = 12;
         if (is_blood_potion(*item))
@@ -4827,8 +4821,8 @@ item_info get_item_info(const item_def& item)
             ii.sub_type = item.sub_type;
         else
         {
-            if (item.sub_type >= MISC_DECK_OF_ESCAPE
-                 && item.sub_type <= MISC_DECK_OF_DEFENCE)
+            if (item.sub_type >= MISC_FIRST_DECK
+                 && item.sub_type <= MISC_LAST_DECK)
             {
                 // Needs to be changed if we add other miscellaneous items
                 // that can be non-identified.

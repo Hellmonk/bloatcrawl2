@@ -195,12 +195,12 @@ void init_mon_name_cache()
         const monster_type mon   = monster_type(mtype);
 
         // Deal sensibly with duplicate entries; refuse or allow the
-        // insert, depending on which should take precedence. Mostly we
-        // don't care, except looking up "rakshasa" and getting _FAKE
-        // breaks ?/M rakshasa.
+        // insert, depending on which should take precedence. Some
+        // uniques of multiple forms can get away with this, though.
         if (Mon_Name_Cache.count(name))
         {
             if (mon == MONS_PLAYER_SHADOW
+                || mon == MONS_BAI_SUZHEN_DRAGON
                 || mon != MONS_SERPENT_OF_HELL
                    && mons_species(mon) == MONS_SERPENT_OF_HELL)
             {
@@ -1900,8 +1900,10 @@ static mon_attack_def _hepliaklqana_ancestor_attack(const monster &mon,
 
     const int HD = mon.get_experience_level();
     const int dam = HD + 3; // 4 at 1 HD, 21 at 18 HD (max)
+    // battlemages do double base melee damage (+25-50% including their weapon)
+    const int dam_mult = mon.type == MONS_ANCESTOR_BATTLEMAGE ? 2 : 1;
 
-    return { AT_HIT, AF_PLAIN, dam };
+    return { AT_HIT, AF_PLAIN, dam * dam_mult };
 }
 
 /** Get the attack type, attack flavour and damage for a monster attack.
@@ -2444,7 +2446,7 @@ static vector<mon_spellbook_type> _mons_spellbook_list(monster_type mon_type)
     case MONS_TENGU_REAVER:
         return { MST_TENGU_REAVER_I, MST_TENGU_REAVER_II,
                  MST_TENGU_REAVER_III };
-                 
+
     case MONS_DEEP_DWARF_SCION:
         return { MST_EARTH_WIZ_I, MST_EARTH_WIZ_II, MST_EARTH_WIZ_III };
 
@@ -2566,6 +2568,7 @@ mon_spell_slot drac_breath(monster_type drac_type)
     case MONS_RED_DRACONIAN:     sp = SPELL_SEARING_BREATH; break;
     case MONS_WHITE_DRACONIAN:   sp = SPELL_CHILLING_BREATH; break;
     case MONS_DRACONIAN:
+    case MONS_BAI_SUZHEN:
     case MONS_GREY_DRACONIAN:    sp = SPELL_NO_SPELL; break;
     case MONS_PALE_DRACONIAN:    sp = SPELL_STEAM_BALL; break;
 
@@ -2699,6 +2702,11 @@ void define_monster(monster* mons, beh_type behavior)
         draconian_change_colour(mons);
         monbase = mons->base_monster;
         col = mons->colour;
+        break;
+
+    case MONS_BAI_SUZHEN:
+        // XXX: A hack to keep her an unknown draconian colour.
+        monbase = MONS_BAI_SUZHEN;
         break;
 
     case MONS_STARCURSED_MASS:
@@ -5456,7 +5464,8 @@ int max_mons_charge(monster_type m)
 }
 
 // Deal out damage to nearby pain-bonded monsters based on the distance between them.
-void radiate_pain_bond(const monster* mon, int damage){
+void radiate_pain_bond(const monster* mon, int damage)
+{
     for (actor_near_iterator ai(mon->pos(), LOS_NO_TRANS); ai; ++ai)
     {
         if (!ai->is_monster())
@@ -5480,7 +5489,8 @@ void radiate_pain_bond(const monster* mon, int damage){
 
         damage = max(0, div_rand_round(damage * (4 - distance), 5));
 
-        if (damage > 0) {
+        if (damage > 0)
+        {
             behaviour_event(target, ME_ANNOY, &you, you.pos());
             target->hurt(&you, damage, BEAM_SHARED_PAIN);
         }
@@ -5560,10 +5570,10 @@ void set_ancestor_spells(monster &ancestor, bool notify)
                                              SPELL_STONE_ARROW);
         break;
     case MONS_ANCESTOR_HEXER:
+        _add_ancestor_spell(ancestor.spells, HD >= 10 ? SPELL_PARALYSE
+                                                      : SPELL_SLOW);
         _add_ancestor_spell(ancestor.spells,
-                            _ancestor_custom_spell(SPELL_SLOW));
-        _add_ancestor_spell(ancestor.spells, HD >= 14 ? SPELL_MASS_CONFUSION
-                                                      : SPELL_CONFUSE);
+                            _ancestor_custom_spell(SPELL_CONFUSE));
         break;
     default:
         break;

@@ -1209,7 +1209,7 @@ static void _remove_equipment(const set<equipment_type>& removed,
         {
             if (form_can_wield(you.form))
                 unequip = true;
-            if (!is_weapon(*equip))
+            if (!is_weapon(*equip) && equip->base_type != OBJ_RODS)
                 unequip = true;
         }
 
@@ -1592,7 +1592,7 @@ undead_form_reason lifeless_prevents_form(transformation_type which_trans)
     if (which_trans == TRAN_LICH)
         return UFR_TOO_DEAD; // vampires can never lichform
 
-    if (which_trans == TRAN_BAT) // can batform on low blood
+    if (which_trans == TRAN_BAT) // can batform on satiated or below
         return you.hunger_state <= HS_SATIATED ? UFR_GOOD : UFR_TOO_ALIVE;
 
     // other forms can only be entered when full or above.
@@ -1744,7 +1744,7 @@ bool transform(int pow, transformation_type which_trans, bool involuntary,
         merfolk_stop_swimming();
 
     if (which_trans == TRAN_HYDRA)
-        set_hydra_form_heads(div_rand_round(pow, 10));
+        set_hydra_form_heads(pow / 10);
 
     // Give the transformation message.
     mpr(get_form(which_trans)->transform_message(previous_trans));

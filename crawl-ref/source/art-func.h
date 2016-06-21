@@ -508,7 +508,6 @@ static void _VAMPIRES_TOOTH_equip(item_def *item, bool *show_msgs, bool unmeld)
 
 static void _VARIABILITY_world_reacts(item_def *item)
 {
-    do_uncurse_item(*item, MAX_CURSE_LEVEL);
     if (x_chance_in_y(2, 5))
         item->plus += (coinflip() ? +1 : -1);
 

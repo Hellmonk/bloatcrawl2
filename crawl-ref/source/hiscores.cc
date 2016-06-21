@@ -121,7 +121,10 @@ void hiscores_new_entry(const scorefile_entry &ne)
             break;
 
         // compare points..
-        if (!inserted && ne.get_score() >= hs_list[i]->get_score())
+        const int new_score = ne.get_score();
+        const int old_score = hs_list[i]->get_score();
+
+        if (!inserted && new_score >= old_score)
         {
             newest_entry = i;           // for later printing
             inserted = true;
@@ -1723,7 +1726,6 @@ void scorefile_entry::init(time_t dt)
     zigmax     = you.zig_max;
 
     scrolls_used = 0;
-    dprf("checking %d", caction_compound(OBJ_SCROLLS));
     pair<caction_type, int> p(CACT_USE, caction_compound(OBJ_SCROLLS));
 
     const int maxlev = min<int>(you.max_level, get_max_skill_level());

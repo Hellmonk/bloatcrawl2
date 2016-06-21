@@ -1850,8 +1850,8 @@ int player_spec_earth()
 
     // Staves
     se += you.wearing(EQ_STAFF, STAFF_EARTH);
-    
-    if (you.species == SP_LAVA_ORC && temperature_effect(LORC_LAVA_BOOST)) 
+
+    if (you.species == SP_LAVA_ORC && temperature_effect(LORC_LAVA_BOOST))
     	se++;
 
     return se;
@@ -2142,9 +2142,18 @@ int player_movement_speed()
     return mv;
 }
 
-const int player_adjust_evoc_power(const int power)
+/**
+ * Multiply the power of some evocation per the player's current evocations
+ * enhancers.
+ *
+ * @param power         The base power of the evocation.
+ * @param enhancers     Bonus enhancers to evocations (pak device surge).
+ * @return              A modified power value.
+ */
+const int player_adjust_evoc_power(const int power, int enhancers)
 {
-    return stepdown_spellpower(100*apply_enhancement(power, you.spec_evoke()));
+    const int total_enhancers = you.spec_evoke() + enhancers;
+    return stepdown_spellpower(100 *apply_enhancement(power, total_enhancers));
 }
 
 const int player_adjust_invoc_power(const int power)
@@ -2333,9 +2342,6 @@ static int _player_evasion_bonuses(ev_ignore_type evit)
 
     evbonus += you.wearing(EQ_RINGS_PLUS, RING_EVASION);
 
-    if (you.wearing_ego(EQ_WEAPON, SPWPN_EVASION))
-        evbonus += 10;
-
     evbonus += you.scan_artefacts(ARTP_EVASION);
 
     // mutations
@@ -2416,7 +2422,7 @@ static int _player_evasion(ev_ignore_type evit)
                               && !(evit & EV_IGNORE_HELPLESS);
 
     int ev = 0;
-    
+
     const int repulsion_ev = _player_para_evasion_bonuses(evit) * scale;
     ev += repulsion_ev;
 
@@ -2427,7 +2433,8 @@ static int _player_evasion(ev_ignore_type evit)
     }
     else
     {
-        const int size_base_ev = 10 + size_factor;
+        ev = 10 * scale;
+        const int size_base_ev = size_factor * 2;
         ev += size_base_ev * scale;
     }
 
@@ -2523,8 +2530,6 @@ int player_shield_class()
 
         shield += stat;
     }
-    else if (you.duration[DUR_MAGIC_SHIELD])
-        shield += 900 + player_adjust_evoc_power(you.skill(SK_EVOCATIONS, 75));
 
     // mutations
     // +2, +3, +4 (displayed values)
@@ -2828,6 +2833,9 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
             reduce_xp_penance(god, exp_gained);
         }
 
+        if (player_under_penance(GOD_HEPLIAKLQANA))
+            return; // no xp for you!
+
         dprf("gain_exp: %d", exp_gained);
 
         if (you.transfer_skill_points > 0)
@@ -3053,7 +3061,7 @@ static void _handle_insight(int exp_gain)
     while (you.attribute[ATTR_INSIGHT] > 100)
     {
         you.attribute[ATTR_INSIGHT] -= 100;
-        
+
         int lev = player_mutation_level(MUT_INSIGHT);
         if (x_chance_in_y(1 << (lev * 2), 64)) {
             if (_handle_insight_inv(&you.inv1))
@@ -3423,8 +3431,7 @@ void level_change(bool skip_attribute_increase)
         if (in_good_standing(GOD_HEPLIAKLQANA))
         {
             upgrade_hepliaklqana_ancestor();
-            if (you.experience_level == HEP_SPECIALIZATION_LEVEL
-                && you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY))
+            if (you.experience_level == hepliaklqana_specialization_level())
             {
                 god_speaks(you.religion,
                            "You may now specialize your ancestor.");
@@ -3983,12 +3990,6 @@ bool player::gourmand(bool calc_unid, bool items) const
 {
     return player_mutation_level(MUT_GOURMAND) > 0
            || actor::gourmand(calc_unid, items);
-}
-
-int player::spec_evoke(bool calc_unid, bool items) const
-{
-    return actor::spec_evoke(calc_unid, items)
-           + attribute[ATTR_PAKELLAS_DEVICE_SURGE];
 }
 
 bool player::stasis(bool calc_unid, bool items) const
@@ -5824,10 +5825,12 @@ bool invis_allowed(bool quiet, string *fail_reason)
         msg = "Your halo prevents invisibility.";
         success = false;
     }
-    else if (you.backlit(false))
+    else if (you.backlit())
     {
         msg = "Invisibility will do you no good right now";
-        if (!quiet && !yesno((msg + "; use anyway?").c_str(), false, 'n'))
+        if (quiet)
+            success = false;
+        else if (!quiet && !yesno((msg + "; use anyway?").c_str(), false, 'n'))
         {
             canned_msg(MSG_OK);
             success = false;
@@ -6225,7 +6228,6 @@ player::player()
     // Non-saved UI state:
     prev_targ        = MHITNOT;
     prev_grd_targ.reset();
-    prev_move.reset();
 
     travel_x         = 0;
     travel_y         = 0;
@@ -6324,8 +6326,8 @@ void player::init_skills()
 {
     auto_training = !(Options.default_manual_training);
     skills.init(0);
-    train.init(false);
-    train_alt.init(false);
+    train.init(TRAINING_DISABLED);
+    train_alt.init(TRAINING_DISABLED);
     training.init(0);
     can_train.reset();
     skill_points.init(0);
@@ -6621,7 +6623,6 @@ int player::shield_block_penalty() const
 bool player::shielded() const
 {
     return shield()
-           || duration[DUR_MAGIC_SHIELD]
            || duration[DUR_DIVINE_SHIELD]
            || player_mutation_level(MUT_LARGE_BONE_PLATES) > 0
            || qazlal_sh_boost() > 0
@@ -6989,9 +6990,6 @@ int player::armour_class(bool /*calc_unid*/) const
 
     if (duration[DUR_ICY_ARMOUR])
         AC += 500 + you.props[ICY_ARMOUR_KEY].get_int() * 8;
-
-    if (duration[DUR_MAGIC_ARMOUR])
-        AC += 200 + you.props[MAGIC_ARMOUR_KEY].get_int() * 5;
 
     if (mutation[MUT_ICEMAIL])
         AC += 10 * player_icemail_armour_class();
@@ -8211,7 +8209,7 @@ bool player::can_safely_mutate(bool temp) const
 bool player::is_lifeless_undead(bool temp) const
 {
     if (undead_state() == US_SEMI_UNDEAD)
-        return temp ? hunger_state <= HS_SATIATED : false;
+        return temp ? hunger_state < HS_SATIATED : false;
     else
         return undead_state() != US_ALIVE;
 }
@@ -8321,11 +8319,6 @@ void player::shiftto(const coord_def &c)
     crawl_view.shift_player_to(c);
     set_position(c);
     clear_far_constrictions();
-}
-
-void player::reset_prev_move()
-{
-    prev_move.reset();
 }
 
 bool player::asleep() const
@@ -8444,30 +8437,10 @@ bool player::do_shaft()
 
     // Handle instances of do_shaft() being invoked magically when
     // the player isn't standing over a shaft.
-    if (get_trap_type(pos()) != TRAP_SHAFT)
+    if (get_trap_type(pos()) != TRAP_SHAFT
+        && !feat_is_shaftable(grd(pos())))
     {
-        switch (grd(pos()))
-        {
-        case DNGN_FLOOR:
-        case DNGN_OPEN_DOOR:
-        // what's the point of this list?
-        case DNGN_TRAP_MECHANICAL:
-        case DNGN_TRAP_TELEPORT:
-#if TAG_MAJOR_VERSION == 34
-        case DNGN_TRAP_SHADOW:
-        case DNGN_TRAP_SHADOW_DORMANT:
-#endif
-        case DNGN_TRAP_ALARM:
-        case DNGN_TRAP_ZOT:
-        case DNGN_TRAP_SHAFT:
-        case DNGN_UNDISCOVERED_TRAP:
-        case DNGN_ENTER_SHOP:
-            break;
-
-        default:
-            return false;
-        }
-
+        return false;
     }
 
     down_stairs(DNGN_TRAP_SHAFT);
@@ -8484,19 +8457,17 @@ bool player::can_do_shaft_ability(bool quiet) const
         return false;
     }
 
-    switch (grd(pos()))
+    if (feat_is_shaftable(grd(pos())))
     {
-    case DNGN_FLOOR:
-    case DNGN_OPEN_DOOR:
         if (!is_valid_shaft_level())
         {
             if (!quiet)
                 mpr("You can't shaft yourself on this level.");
             return false;
         }
-        break;
-
-    default:
+    }
+    else
+    {
         if (!quiet)
             mpr("You can't shaft yourself on this terrain.");
         return false;
@@ -8863,6 +8834,26 @@ static int _get_device_heal_factor()
 
     // make sure we don't turn healing negative.
     return max(0, factor);
+}
+
+void print_device_heal_message()
+{
+    // Don't give multiple messages in weird cases with both enhanced
+    // and reduced healing.
+    if (_get_device_heal_factor() > 3)
+    {
+        if (player_equip_unrand(UNRAND_KRYIAS))
+        {
+            item_def* item = you.slot_item(EQ_BODY_ARMOUR);
+            mprf("%s enhances the healing.",
+            item->name(DESC_THE, false, false, false).c_str());
+        }
+        else
+            mpr("The healing is enhanced."); // bad message, but this should
+                                             // never be possible anyway
+    }
+    else if (_get_device_heal_factor() < 3)
+        mpr("Your system partially rejects the healing.");
 }
 
 bool player::can_device_heal()
@@ -9622,6 +9613,30 @@ void player_end_berserk()
     learned_something_new(HINT_POSTBERSERK);
     Hints.hints_events[HINT_YOU_ENCHANTED] = hints_slow;
     you.redraw_quiver = true; // Can throw again.
+}
+
+/**
+ * Does the player have the Sanguine Armour mutation (not suppressed by a form)
+ * while being at a low enough HP (<67%) for its benefits to trigger?
+ *
+ * @return Whether Sanguine Armour should be active.
+ */
+bool sanguine_armour_valid()
+{
+    return you.hp <= you.hp_max * 2 / 3
+           && _mut_level(MUT_SANGUINE_ARMOUR, MUTACT_FULL);
+}
+
+/// Trigger sanguine armour, updating the duration & messaging as appropriate.
+void activate_sanguine_armour()
+{
+    const bool was_active = you.duration[DUR_SANGUINE_ARMOUR];
+    you.duration[DUR_SANGUINE_ARMOUR] = random_range(60, 100);
+    if (!was_active)
+    {
+        mpr("Your blood congeals into armour.");
+        you.redraw_armour_class = true;
+    }
 }
 
 const int get_max_exp_level()

@@ -218,8 +218,8 @@ static bool _try_make_weapon_artefact(item_def& item, int force_type,
                 return true;
         }
 
-        // Small clubs are never randarts.
-        if (item.sub_type == WPN_CLUB)
+        // Clubs and blowguns are never randarts.
+        if (item.sub_type == WPN_CLUB || item.sub_type == WPN_BLOWGUN)
             return false;
 
         // Mean enchantment +6.
@@ -297,18 +297,7 @@ bool is_weapon_brand_ok(int type, int brand, bool strict)
         return false;
 
     if (type == WPN_BLOWGUN)
-    {
-        switch ((brand_type)brand)
-        {
-        case SPWPN_NORMAL:
-        case SPWPN_PROTECTION:
-        case SPWPN_SPEED:
-        case SPWPN_EVASION:
-            return true;
-        default:
-            return false;
-        }
-    }
+        return false;
 
     switch ((brand_type)brand)
     {
@@ -339,7 +328,6 @@ bool is_weapon_brand_ok(int type, int brand, bool strict)
 
     // Ranged-only brands.
     case SPWPN_PENETRATION:
-    case SPWPN_EVASION:
         if (!is_range_weapon(item))
             return false;
         break;
@@ -352,6 +340,7 @@ bool is_weapon_brand_ok(int type, int brand, bool strict)
     case SPWPN_FLAME:
     case SPWPN_FROST:
     case SPWPN_DRAGON_SLAYING:
+    case SPWPN_EVASION:
         return false;
 #endif
 
@@ -1810,8 +1799,6 @@ static void _generate_misc_item(item_def& item, int force_type, int force_ego)
 {
     if (force_type != OBJ_RANDOM)
         item.sub_type = force_type;
-    else if (one_chance_in(3))
-        item.sub_type = random_deck_type();
     else
     {
         item.sub_type = random_choose(MISC_FAN_OF_GALES,
@@ -1822,14 +1809,6 @@ static void _generate_misc_item(item_def& item, int force_type, int force_ego)
                                       MISC_SACK_OF_SPIDERS,
                                       MISC_CRYSTAL_BALL_OF_ENERGY,
                                       MISC_PHANTOM_MIRROR);
-    }
-
-    // set initial charges
-    if (item.sub_type == MISC_BOX_OF_BEASTS
-        || item.sub_type == MISC_SACK_OF_SPIDERS)
-    {
-        item.charges = random_range(5, 15, 2);
-        item.used_count = 0;
     }
 
     if (is_deck(item))
@@ -1963,7 +1942,7 @@ int items(bool allow_uniques,
                 0);
 
         // misc items placement wholly dependent upon current depth {dlb}:
-        if (item_level > 7 && x_chance_in_y(21 + item_level, 3500))
+        if (item_level > 7 && x_chance_in_y(21 + item_level, 5000))
             item.base_type = OBJ_MISCELLANY;
 
         if (item_level < 7
@@ -2025,7 +2004,7 @@ int items(bool allow_uniques,
             force_type = unrand->sub_type;
 
         item_level = ISPEC_RANDART;
-        force_ego = 0;
+        item.brand = 0;
     }
 
     // Determine sub_type accordingly. {dlb}

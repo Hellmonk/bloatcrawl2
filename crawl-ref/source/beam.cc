@@ -2064,13 +2064,20 @@ bool poison_monster(monster* mons, const actor *who, int levels,
     const mon_enchant new_pois = mons->get_ench(ENCH_POISON);
 
     // Actually do the poisoning. The order is important here.
-    if (new_pois.degree > old_pois.degree)
+    if (new_pois.degree > old_pois.degree
+        || new_pois.degree >= MAX_ENCH_DEGREE_DEFAULT)
     {
         if (verbose)
         {
-            simple_monster_message(mons,
-                                   old_pois.degree > 0 ? " looks even sicker."
-                                                       : " is poisoned.");
+            const char* msg;
+            if (new_pois.degree >= MAX_ENCH_DEGREE_DEFAULT)
+                msg = " looks as sick as possible!";
+            else if (old_pois.degree > 0)
+                msg = " looks even sicker.";
+            else
+                msg = " is poisoned.";
+
+            simple_monster_message(mons, msg);
         }
     }
 
@@ -5350,12 +5357,8 @@ bool ench_flavour_affects_monster(beam_type flavour, const monster* mon,
             rc = !(mon->is_summoned() || mon->has_ench(ENCH_INNER_FLAME));
             break;
 
-        case BEAM_CORONA:
-            rc = !mon->glows_naturally();
-            break;
-
-        default:
-            break;
+    default:
+        break;
     }
 
     return rc;
@@ -5646,23 +5649,23 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
             apply_bolt_petrify(mon);
             return MON_AFFECTED;
 
-        case BEAM_SPORE:
-        case BEAM_CONFUSION:
-        case BEAM_IRRESISTIBLE_CONFUSION:
-            if (mon->check_clarity(false))
-            {
-                if (you.can_see(*mon))
-                    obvious_effect = true;
-                return MON_AFFECTED;
-            }
-            {
-                // irresistible confusion has a shorter duration and is weaker
-                // against strong monsters
-                int dur = ench_power;
-                if (flavour == BEAM_IRRESISTIBLE_CONFUSION)
-                    dur = max(10, dur - mon->get_hit_dice());
-                else
-                    dur *= BASELINE_DELAY; // regular confusion is 10x longer
+    case BEAM_SPORE:
+    case BEAM_CONFUSION:
+    case BEAM_IRRESISTIBLE_CONFUSION:
+        if (mon->check_clarity(false))
+        {
+            if (you.can_see(*mon))
+                obvious_effect = true;
+            return MON_AFFECTED;
+        }
+        {
+            // irresistible confusion has a shorter duration and is weaker
+            // against strong monsters
+            int dur = ench_power;
+            if (flavour == BEAM_IRRESISTIBLE_CONFUSION)
+                dur = max(10, dur - mon->get_hit_dice());
+            else
+                dur *= BASELINE_DELAY; // regular confusion is 10x longer
 
                 if (mon->add_ench(mon_enchant(ENCH_CONFUSION, 0, agent(), dur)))
                 {
@@ -5686,10 +5689,6 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
 
         case BEAM_INVISIBILITY:
         {
-            // Already glowing.
-            if (mon->glows_naturally())
-                return MON_UNAFFECTED;
-
             if (enchant_monster_invisible(mon, "flickers and vanishes"))
                 obvious_effect = true;
 
@@ -5718,17 +5717,10 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
                 return MON_AFFECTED;
             }
 
-            if (player_will_anger_monster(mon))
-            {
-                simple_monster_message(mon, " is repulsed!");
-                obvious_effect = true;
-                return MON_OTHER;
-            }
-
-            // Being a puppet on magic strings is a nasty thing.
-            // Mindless creatures shouldn't probably mind, but because of complex
-            // behaviour of enslaved neutrals, let's disallow that for now.
-            mon->attitude = ATT_HOSTILE;
+        // Being a puppet on magic strings is a nasty thing.
+        // Mindless creatures shouldn't probably mind, but because of complex
+        // behaviour of enslaved neutrals, let's disallow that for now.
+        mon->attitude = ATT_HOSTILE;
 
             // XXX: Another hackish thing for Pikel's band neutrality.
             if (mons_is_mons_class(mon, MONS_PIKEL))
@@ -5859,23 +5851,24 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
             }
             return MON_AFFECTED;
 
-        case BEAM_SAP_MAGIC:
-            if (!SAP_MAGIC_CHANCE())
+    case BEAM_SAP_MAGIC:
+        if (!SAP_MAGIC_CHANCE())
+        {
+            if (you.can_see(*mon))
+                canned_msg(MSG_NOTHING_HAPPENS);
+            break;
+        }
+        if (!mon->has_ench(ENCH_SAP_MAGIC)
+            && mon->add_ench(mon_enchant(ENCH_SAP_MAGIC, 0, agent())))
+        {
+            if (you.can_see(*mon))
             {
-                if (you.can_see(*mon))
-                    canned_msg(MSG_NOTHING_HAPPENS);
-                break;
+                mprf("%s seems less certain of %s magic.",
+                     mon->name(DESC_THE).c_str(), mon->pronoun(PRONOUN_POSSESSIVE).c_str());
+                obvious_effect = true;
             }
-            if (!mon->has_ench(ENCH_SAP_MAGIC)
-                && mon->add_ench(mon_enchant(ENCH_SAP_MAGIC, 0, agent())))
-            {
-                if (simple_monster_message(mon, " seems less certain of"
-                    " their magic."))
-                {
-                    obvious_effect = true;
-                }
-            }
-            return MON_AFFECTED;
+        }
+        return MON_AFFECTED;
 
         case BEAM_CORRUPT_BODY:
             mon->corrupt();
@@ -6604,6 +6597,9 @@ string bolt::get_short_name() const
         return "energy";
     }
 
+    if (name == "bolt of dispelling energy")
+        return "dispelling energy";
+
     if (flavour == BEAM_NONE || flavour == BEAM_MISSILE
         || flavour == BEAM_MMISSILE)
     {
@@ -6787,7 +6783,7 @@ bool shoot_through_monster(const bolt& beam, const monster* victim)
 
     const bool fedhas_protected = origin_worships_fedhas && fedhas_protects(victim);
     const bool attitude_aligned = mons_atts_aligned(victim->attitude, origin_attitude) || victim->neutral();
-    const bool spell_ok = beam.origin_spell != SPELL_CHAIN_LIGHTNING 
+    const bool spell_ok = beam.origin_spell != SPELL_CHAIN_LIGHTNING
                           && !_spell_is_explosive(beam.origin_spell)
                           /*
                           && !beam.is_enchantment()
@@ -6813,3 +6809,4 @@ int omnireflect_chance_denom(int SH)
 {
     return SH + 40;
 }
+

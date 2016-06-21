@@ -27,12 +27,6 @@
 
 spret_type cast_cure_poison(int pow, bool fail)
 {
-    if (!you.duration[DUR_POISONING])
-    {
-        canned_msg(MSG_NOTHING_HAPPENS);
-        return SPRET_ABORT;
-    }
-
     fail_check();
     reduce_player_poison((15 + roll_dice(3, pow / 2)) * 1000);
 
@@ -360,12 +354,6 @@ spret_type cast_intoxicate(int pow, bool fail)
 
 spret_type cast_darkness(int pow, bool fail)
 {
-    if (you.haloed())
-    {
-        mpr("It would have no effect in that bright light!");
-        return SPRET_ABORT;
-    }
-
     fail_check();
     if (you.duration[DUR_DARKNESS])
         mprf(MSGCH_DURATION, "It gets a bit darker.");

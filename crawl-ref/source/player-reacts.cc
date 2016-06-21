@@ -400,14 +400,20 @@ static void _handle_uskayaw_piety(int time_taken)
         // to lose piety proportional to the time since the last time we took
         // a dance action and hurt a monster.
         int time_since_gain = you.props[USKAYAW_AUT_SINCE_PIETY_GAIN].get_int();
+        time_since_gain += time_taken;
 
-        int piety_lost = min(you.piety - piety_breakpoint(0),
-                div_rand_round(time_since_gain, 10));
+        // Only start losing piety if it's been a few turns since we gained
+        // piety, in order to give more tolerance for missing in combat.
+        if (time_since_gain > 30)
+        {
+            int piety_lost = min(you.piety - piety_breakpoint(0),
+                    div_rand_round(time_since_gain, 10));
 
-        if (piety_lost > 0)
-            lose_piety(piety_lost);
+            if (piety_lost > 0)
+                lose_piety(piety_lost);
 
-        you.props[USKAYAW_AUT_SINCE_PIETY_GAIN] = time_since_gain + time_taken;
+        }
+        you.props[USKAYAW_AUT_SINCE_PIETY_GAIN] = time_since_gain;
     }
 
     // Re-initialize Uskayaw piety variables
@@ -460,12 +466,6 @@ void player_reacts_to_monsters()
 
     if (have_passive(passive_t::detect_items) || you.mutation[MUT_JELLY_GROWTH])
         detect_items(-1);
-
-    if (you.duration[DUR_TELEPATHY])
-    {
-        detect_creatures(1 + you.duration[DUR_TELEPATHY] /
-                         (2 * BASELINE_DELAY), true);
-    }
 
     _decrement_paralysis(you.time_taken);
     _decrement_petrification(you.time_taken);
@@ -764,8 +764,12 @@ void decrement_durations(int delay, bool instarest_only_durations)
         set_hp(allowed_deaths_door_hp());
         you.redraw_hit_points = true;
     }
-    // XXX: this should probably be changed to be by aut rather than turns vvv
-    _decrement_a_duration(DUR_COLOUR_SMOKE_TRAIL, 1);
+
+    if (_decrement_a_duration(DUR_CLOUD_TRAIL, delay,
+            "Your trail of clouds dissipates."))
+    {
+        you.props.erase(XOM_CLOUD_TRAIL_TYPE_KEY);
+    }
 
     if (you.duration[DUR_DARKNESS] && you.haloed())
     {
@@ -844,21 +848,10 @@ void decrement_durations(int delay, bool instarest_only_durations)
         _try_to_respawn_ancestor();
     }
 
-    const bool sanguine_armour_valid
-        = you.hp <= you.hp_max / 2
-          && you.mutation[MUT_SANGUINE_ARMOUR]
-          && mutation_activity_level(MUT_SANGUINE_ARMOUR) == MUTACT_FULL;
-    if (sanguine_armour_valid)
-    {
-        const bool was_active = you.duration[DUR_SANGUINE_ARMOUR];
-        you.duration[DUR_SANGUINE_ARMOUR] = random_range(60, 100);
-        if (!was_active)
-        {
-            mpr("Your blood congeals into armour.");
-            you.redraw_armour_class = true;
-        }
-    }
-    else if (you.duration[DUR_SANGUINE_ARMOUR])
+    const bool sanguine_armour_is_valid = sanguine_armour_valid();
+    if (sanguine_armour_is_valid)
+        activate_sanguine_armour();
+    else if (!sanguine_armour_is_valid && you.duration[DUR_SANGUINE_ARMOUR])
         you.duration[DUR_SANGUINE_ARMOUR] = 1; // expire
 
     // these should be after decr_ambrosia, transforms, liquefying, etc.
@@ -1063,7 +1056,7 @@ void player_reacts()
     if (you.duration[DUR_SONG_OF_SLAYING])
         noisy(spell_effect_noise(SPELL_SONG_OF_SLAYING), you.pos());
 
-    if (one_chance_in(10))
+    if (x_chance_in_y(you.time_taken, 10 * BASELINE_DELAY))
     {
         const int teleportitis_level = player_teleport();
         // this is instantaneous
@@ -1093,7 +1086,7 @@ void player_reacts()
 
     // Icy shield and armour melt over lava.
     if (grd(you.pos()) == DNGN_LAVA)
-        maybe_melt_player_enchantments(BEAM_FIRE, 10);
+        maybe_melt_player_enchantments(BEAM_FIRE, you.time_taken);
 
     // Handle starvation before subtracting hunger for this turn (including
     // hunger from the berserk duration) and before monsters react, so you

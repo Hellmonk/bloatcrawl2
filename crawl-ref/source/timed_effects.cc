@@ -978,7 +978,9 @@ void handle_time()
     // once every 50 elapsed time units.
 
     // Every 5 turns, spawn random monsters
-    if ((player_in_branch(BRANCH_ABYSS) || player_on_orb_run()) && _div(base_time, 50) > _div(old_time, 50))
+    const bool can_spawn = player_in_branch(BRANCH_ABYSS) || player_on_orb_run();
+    const bool time_to_spawn = _div(base_time, 50) > _div(old_time, 50);
+    if (can_spawn && time_to_spawn)
     {
         spawn_random_monsters();
         if (player_in_branch(BRANCH_ABYSS))
@@ -1307,7 +1309,7 @@ void monster::timeout_enchantments(int levels)
         case ENCH_PETRIFIED: case ENCH_SWIFT: case ENCH_SILENCE:
         case ENCH_LOWERED_MR: case ENCH_SOUL_RIPE: case ENCH_ANTIMAGIC:
         case ENCH_FEAR_INSPIRING: case ENCH_REGENERATION: case ENCH_RAISED_MR:
-        case ENCH_MIRROR_DAMAGE: case ENCH_MAGIC_ARMOUR: case ENCH_LIQUEFYING:
+        case ENCH_MIRROR_DAMAGE: case ENCH_LIQUEFYING:
         case ENCH_SILVER_CORONA: case ENCH_DAZED: case ENCH_FAKE_ABJURATION:
         case ENCH_BREATH_WEAPON: case ENCH_DEATHS_DOOR: case ENCH_WRETCHED:
         case ENCH_SCREAMED: case ENCH_BLIND: case ENCH_WORD_OF_RECALL:
@@ -1316,6 +1318,7 @@ void monster::timeout_enchantments(int levels)
         case ENCH_BLACK_MARK: case ENCH_SAP_MAGIC: case ENCH_NEUTRAL_BRIBED:
         case ENCH_FRIENDLY_BRIBED: case ENCH_CORROSION: case ENCH_GOLD_LUST:
         case ENCH_RESISTANCE: case ENCH_HEXED: case ENCH_IDEALISED:
+        case ENCH_BOUND_SOUL:
             lose_ench_levels(entry.second, levels);
             break;
 

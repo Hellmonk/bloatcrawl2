@@ -313,6 +313,10 @@ const vector<god_power> god_powers[NUM_GODS] =
     {
       { 1, ABIL_USKAYAW_STOMP, "stomp with the beat" },
       { 2, ABIL_USKAYAW_LINE_PASS, "pass through a line of other dancers" },
+      { 3, "Uskayaw will force your foes to helplessly watch your dance.",
+           "Uskayaw will no longer force your foes to helplessly watch your dance."},
+      { 4, "Uskayaw will force your foes to share their pain.",
+           "Uskayaw will no longer force your foes to share their pain."},
       { 5, ABIL_USKAYAW_GRAND_FINALE, "merge with and destroy a victim" },
     },
 
@@ -929,9 +933,9 @@ static bool _give_nemelex_gift(bool forced = false)
     {
 
         misc_item_type gift_type = random_choose_weighted(
-                                        2, MISC_DECK_OF_WAR,
-                                        2, MISC_DECK_OF_DESTRUCTION,
-                                        1, MISC_DECK_OF_ESCAPE,
+                                        5, MISC_DECK_OF_DESTRUCTION,
+                                        4, MISC_DECK_OF_SUMMONING,
+                                        2, MISC_DECK_OF_ESCAPE,
                                         0);
 
         int thing_created = items(true, OBJ_MISCELLANY, gift_type, 1, 0,
@@ -1289,10 +1293,23 @@ string hepliaklqana_ally_name()
  */
 int hepliaklqana_specialization()
 {
+    // sanity & 'save compat' (old hexers specialized at xl 15)
+    if (you.experience_level < hepliaklqana_specialization_level())
+        return 0;
     // using get_int() without checking for exists would make it exist
     if (you.props.exists(HEPLIAKLQANA_SPECIALIZATION_KEY))
         return you.props[HEPLIAKLQANA_SPECIALIZATION_KEY].get_int();
     return 0;
+}
+
+/// At what level will the player be able to specialize their current ancestor?
+int hepliaklqana_specialization_level()
+{
+    if (!you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY))
+        return INT_MAX;
+    if (you.props[HEPLIAKLQANA_ALLY_TYPE_KEY].get_int() == MONS_ANCESTOR_HEXER)
+        return 21;
+    return 15;
 }
 
 /**
@@ -1491,20 +1508,20 @@ void upgrade_hepliaklqana_ancestor(bool quiet_force)
  * granted by a given specialization?
  *
  * @param specialization    The specialization in question; e.g.
- *                          ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST.
- * @return                  The appropriate spell type, e.g. SPELL_ICEBLAST.
+ *                          ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION.
+ * @return                  The appropriate spell type, e.g. SPELL_ENGLACIATION.
  *                          By default, returns NUM_SPELLS.
  */
 spell_type hepliaklqana_specialization_spell(int specialization)
 {
     switch (specialization)
     {
-    case ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST:
-        return SPELL_ICEBLAST;
+    case ABIL_HEPLIAKLQANA_BATTLEMAGE_FORCE_LANCE:
+        return SPELL_FORCE_LANCE;
     case ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA:
         return SPELL_BOLT_OF_MAGMA;
-    case ABIL_HEPLIAKLQANA_HEXER_PARALYSE:
-        return SPELL_PARALYSE;
+    case ABIL_HEPLIAKLQANA_HEXER_MASS_CONFUSION:
+        return SPELL_MASS_CONFUSION;
     case ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION:
         return SPELL_ENGLACIATION;
     default:
@@ -1865,9 +1882,10 @@ bool do_god_gift(bool forced)
         }
 
         case GOD_YREDELEMNUL:
-            if (forced
-                || (random2(you.piety) >= piety_breakpoint(2)
-                    && one_chance_in(4)))
+            if (!player_mutation_level(MUT_NO_LOVE)
+                && (forced
+                    || (random2(you.piety) >= piety_breakpoint(2)
+                        && one_chance_in(4))))
             {
                 unsigned int threshold = MIN_YRED_SERVANT_THRESHOLD
                                          + you.num_current_gifts[you.religion] / 2;
@@ -2296,12 +2314,8 @@ static void _gain_piety_point()
         // no longer have a piety cost for getting them.
         // Jiyva is an exception because there's usually a time-out and
         // the gifts aren't that precious.
-        // Pakellas is an exception because the gift timeout is exceptionally
-        // long and causes extremely slow piety gain above 4* if this isn't
-        // here.
         if (!one_chance_in(4) && !you_worship(GOD_JIYVA)
-            && !you_worship(GOD_NEMELEX_XOBEH)
-            && !you_worship(GOD_PAKELLAS))
+            && !you_worship(GOD_NEMELEX_XOBEH))
         {
 #ifdef DEBUG_PIETY
             mprf(MSGCH_DIAGNOSTICS, "Piety slowdown due to gift timeout.");
@@ -3051,8 +3065,6 @@ static bool _transformed_player_can_join_god(god_type which_god)
     switch (you.form) {
     case TRAN_LICH:
         return !(is_good_god(which_god) || which_god == GOD_FEDHAS);
-    case TRAN_SHADOW:
-        return !is_good_god(which_god);
     case TRAN_STATUE:
         return !(which_god == GOD_YREDELEMNUL);
     default:
@@ -3120,16 +3132,15 @@ bool player_can_join_god(god_type which_god)
 
     if (player_mutation_level(MUT_NO_LOVE)
         && (which_god == GOD_BEOGH
-            ||  which_god == GOD_JIYVA
-            ||  which_god == GOD_ELYVILON
-            ||  which_god == GOD_HEPLIAKLQANA))
+            || which_god == GOD_JIYVA
+            || which_god == GOD_HEPLIAKLQANA
+            || which_god == GOD_FEDHAS))
     {
         return false;
     }
 
     if (player_mutation_level(MUT_NO_ARTIFICE)
-        && (which_god == GOD_NEMELEX_XOBEH
-            || which_god == GOD_PAKELLAS))
+        && which_god == GOD_PAKELLAS)
     {
       return false;
     }
@@ -3307,7 +3318,7 @@ static void _transfer_good_god_piety()
 
         // Some feedback that piety moved over.
         simple_god_message(make_stringf(" says: Farewell. Go and %s with %s.",
-                                        lookup(farewell_messages, old_god,
+                                        lookup(farewell_messages, you.religion,
                                                "become a bug"),
                                         god_name(you.religion).c_str()).c_str(),
 
@@ -3499,8 +3510,7 @@ static void _join_hepliaklqana()
                                     mg.mname.c_str()).c_str());
 
     // no one will ever run into this.
-    if (you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY)
-        && you.experience_level >= HEP_SPECIALIZATION_LEVEL
+    if (you.experience_level >= hepliaklqana_specialization_level()
         && !hepliaklqana_specialization())
     {
         // TODO: deduplicate this message
@@ -3536,8 +3546,7 @@ static void _join_ru()
 static void _join_trog()
 {
     for (int sk = SK_SPELLCASTING; sk <= SK_LAST_MAGIC; ++sk)
-        if (you.skills[sk])
-            you.train[sk] = 0;
+        you.train[sk] = you.train_alt[sk] = TRAINING_DISABLED;
 
     // When you start worshipping Trog, you make all non-hostile magic
     // users hostile.
@@ -3750,7 +3759,6 @@ void god_pitch(god_type which_god)
         }
         else if (player_mutation_level(MUT_NO_LOVE)
                  && (which_god == GOD_BEOGH
-                     || which_god == GOD_ELYVILON
                      || which_god == GOD_JIYVA
                      || which_god == GOD_HEPLIAKLQANA))
         {
