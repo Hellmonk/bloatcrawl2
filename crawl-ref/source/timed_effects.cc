@@ -978,7 +978,9 @@ void handle_time()
     // once every 50 elapsed time units.
 
     // Every 5 turns, spawn random monsters
-    if ((player_in_branch(BRANCH_ABYSS) || player_on_orb_run()) && _div(base_time, 50) > _div(old_time, 50))
+    const bool can_spawn = player_in_branch(BRANCH_ABYSS) || player_on_orb_run();
+    const bool time_to_spawn = _div(base_time, 50) > _div(old_time, 50);
+    if (can_spawn && time_to_spawn)
     {
         spawn_random_monsters();
         if (player_in_branch(BRANCH_ABYSS))

@@ -1244,7 +1244,9 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
     activate_notes(false);
 
 #ifndef SCORE_WIZARD_CHARACTERS
+#ifndef DEBUG
     if (!you.wizard && !you.explore)
+#endif
 #endif
     {
         // Add this highscore to the score file.
