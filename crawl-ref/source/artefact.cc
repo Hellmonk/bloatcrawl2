@@ -362,7 +362,7 @@ static map<jewellery_type, vector<jewellery_fake_artp>> jewellery_artps = {
     { AMU_HEALTH_REGENERATION, { { ARTP_REGENERATION, 1 } } },
     { AMU_REFLECTION, { { ARTP_SHIELDING, 0 } } },
 
-    { RING_MAGICAL_POWER, { { ARTP_MAGICAL_POWER, 20 } } },
+    { RING_MAGICAL_POWER, { { ARTP_MAGICAL_POWER, 25 } } },
     { RING_FLIGHT, { { ARTP_FLY, 1 } } },
     { RING_SEE_INVISIBLE, { { ARTP_SEE_INVISIBLE, 1 } } },
     { RING_STEALTH, { { ARTP_STEALTH, 1 } } },
@@ -383,7 +383,7 @@ static map<jewellery_type, vector<jewellery_fake_artp>> jewellery_artps = {
     { RING_PROTECTION, { { ARTP_AC, 0 } } },
     { RING_EVASION, { { ARTP_EVASION, 0 } } },
     { RING_SLAYING, { { ARTP_SLAYING, 0 } } },
-    { RING_STAMINA, { { ARTP_STAMINA, 20 } } },
+    { RING_STAMINA, { { ARTP_STAMINA, 25 } } },
 };
 
 /**
@@ -1717,7 +1717,7 @@ static void _make_faerie_armour(item_def &item)
         if (one_chance_in(20))
             artefact_set_property(doodad, ARTP_HP, random2(21) - 10);
         if (one_chance_in(20))
-            artefact_set_property(doodad, ARTP_STAMINA, random2(41) - 20);
+            artefact_set_property(doodad, ARTP_STAMINA, 10 * (1+ random2(5));
 
         break;
     }
