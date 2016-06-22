@@ -449,6 +449,7 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force, boo
         || undead_minion
         || goldify
         || mons_class_flag(mons.type, M_ALWAYS_CORPSE)
+        || have_passive(passive_t::auto_animate)
         || mons_is_demonspawn(mons.type)
            && mons_class_flag(draco_or_demonspawn_subspecies(&mons),
                               M_ALWAYS_CORPSE);
