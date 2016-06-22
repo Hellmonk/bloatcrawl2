@@ -1,6 +1,8 @@
 ## v1.6
 
-* Stop portal timers when you are not on the same floor
+* Brilliance potion also boost magic resistance, to give it some value for fighters.
+
+* Stop portal timers when you are not on the same floor.
 
 * Abyss is now 7 floors
 

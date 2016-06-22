@@ -10158,10 +10158,13 @@ int player_mr_modifier(int mr)
 {
     mr *= _difficulty_mode_multiplier();
 
+    if (you.duration[DUR_BRILLIANCE])
+        mr += 8000;
+
     if (player_is_very_tired(true))
         mr = mr * 4 / 5;
     else if (you.exertion == EXERT_FOCUS && mr > 0)
-        mr = mr * 5 / 4 + 1000;
+        mr = mr * 5 / 4 + 4000;
 
     return mr / base_factor;
 }
