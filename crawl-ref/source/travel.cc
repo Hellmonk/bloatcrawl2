@@ -616,7 +616,6 @@ static int _slowest_ally_speed()
 
 static void _start_running()
 {
-
     _userdef_run_startrunning_hook();
     you.running.init_travel_speed();
     if (you.running < 0)
@@ -2988,6 +2987,7 @@ void start_explore(bool grab_items)
 
     you.running.pos.reset();
     you.prev_direction.reset();
+    mprf("Exploring the dungeon...");
     _start_running();
 }
 
