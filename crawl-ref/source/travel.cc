@@ -2534,6 +2534,8 @@ void start_translevel_travel(const level_pos &pos)
         return;
     }
 
+    mpr("Travelling...");
+
     // Remember where we're going so we can easily go back if interrupted.
     you.travel_x = pos.pos.x;
     you.travel_y = pos.pos.y;
