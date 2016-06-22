@@ -1,5 +1,7 @@
 ## v1.6
 
+* Demonspawn mutations are spread over 40 levels now instead of 27. They are also given more to compensate.
+
 * Brilliance potion also boost magic resistance, to give it some value for fighters.
 
 * Stop portal timers when you are not on the same floor.

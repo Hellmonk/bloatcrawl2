@@ -2163,11 +2163,11 @@ static bool _slot_is_unique(const mut_array_t &mut,
 
 static vector<demon_mutation_info> _select_ds_mutations()
 {
-    int ct_of_tier[] = { 1, 1, 2, 1 };
+    int ct_of_tier[] = { 1, 2, 3, 2 };
     // 1 in 10 chance to create a monstrous set
     if (one_chance_in(10))
     {
-        ct_of_tier[0] = 3;
+        ct_of_tier[0] = 4;
         ct_of_tier[1] = 0;
     }
 
@@ -2280,7 +2280,7 @@ _schedule_ds_mutations(vector<mutation_type> muts)
 
     vector<player::demon_trait> out;
 
-    for (int level = 2; level <= get_max_exp_level(); ++level)
+    for (int level = 2; level <= 40; ++level)
         slots_left.push_back(level);
 
     while (!muts_left.empty())

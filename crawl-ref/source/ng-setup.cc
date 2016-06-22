@@ -487,6 +487,7 @@ void _make_potions(const potion_type &potion)
             count = 1;
             break;
         default:
+            count = 3;
             // should not be possible
             break;
     }
