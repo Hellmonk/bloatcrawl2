@@ -80,6 +80,7 @@ int animate_remains(const coord_def &a, corpse_type class_allowed,
                     monster** mon = nullptr, int* motions = nullptr, spell_type spell = SPELL_NO_SPELL,
                     int power = 20
 );
+void display_undead_motions(int motions);
 
 spret_type cast_animate_skeleton(god_type god, bool fail);
 spret_type cast_animate_dead(int pow, god_type god, bool fail);

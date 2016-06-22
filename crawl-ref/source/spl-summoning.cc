@@ -1621,7 +1621,7 @@ static void _equip_undead(const coord_def &a, const item_def& corpse, monster *m
 }
 
 // Displays message when raising dead with Animate Skeleton or Animate Dead.
-static void _display_undead_motions(int motions)
+void display_undead_motions(int motions)
 {
     vector<const char *> motions_list;
 
@@ -1857,7 +1857,7 @@ int animate_remains(const coord_def &a, corpse_type class_allowed,
             }
 
             if (!quiet && you.see_cell(a))
-                _display_undead_motions(motions);
+                display_undead_motions(motions);
 
             if (was_butchering)
                 xom_is_stimulated(200);
@@ -1906,7 +1906,7 @@ int animate_dead(actor *caster, int pow, beh_type beha,
     }
 
     if (actual && number_seen > 0)
-        _display_undead_motions(motions);
+        display_undead_motions(motions);
 
     return number_raised;
 }
