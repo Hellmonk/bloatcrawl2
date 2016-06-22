@@ -2535,8 +2535,8 @@ void start_translevel_travel(const level_pos &pos)
     }
 
     mpr("Travelling...");
-    msgwin_new_cmd();
-    display_message_window();
+    msgwin_new_cmd(true);
+//    display_message_window();
 
     // Remember where we're going so we can easily go back if interrupted.
     you.travel_x = pos.pos.x;
