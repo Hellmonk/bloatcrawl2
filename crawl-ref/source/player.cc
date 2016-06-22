@@ -4262,8 +4262,9 @@ void _handle_overexertion(const int overdraft)
     const int rot_amount = div_rand_round(overdraft, reduction);
     if (rot_amount)
     {
-        mprf(MSGCH_WARN, "Your body breaks down under the strain! (rot+%d)", rot_amount);
-        rot_hp(rot_amount);
+        const bool rotted = you.rot(nullptr, rot_amount);
+        if (rotted)
+            mprf(MSGCH_WARN, "Your body breaks down under the strain! (rot+%d)", rot_amount);
     }
 }
 
