@@ -2882,13 +2882,13 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
             case DIFFICULTY_EASY:
                 break;
             case DIFFICULTY_STANDARD:
-                adjusted_gain >>= 1;
+                adjusted_gain = div_rand_round(adjusted_gain, 2);
                 break;
             case DIFFICULTY_CHALLENGE:
-                adjusted_gain >>= 2;
+                adjusted_gain = div_rand_round(adjusted_gain, 4);
                 break;
             case DIFFICULTY_NIGHTMARE:
-                adjusted_gain >>= 3;
+                adjusted_gain = div_rand_round(adjusted_gain, 8);
                 break;
             default:
                 // should not be possible
@@ -2896,7 +2896,7 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
         }
 
         if (you.rune_curse_active[RUNE_MNOLEG])
-            adjusted_gain >>= 1;
+            adjusted_gain = div_rand_round(adjusted_gain, 2);
 
         if (exp_loss)
         {
@@ -2906,10 +2906,14 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
                 you.experience -= adjusted_gain;
         }
         else
+        {
+            adjusted_gain = max(1, adjusted_gain);
+
             if (you.experience + adjusted_gain > (unsigned int)MAX_EXP_TOTAL)
                 you.experience = MAX_EXP_TOTAL;
             else
                 you.experience += adjusted_gain;
+        }
     }
 
     if (!exp_loss)
@@ -3377,6 +3381,7 @@ void level_change(bool skip_attribute_increase)
                                      "your demonic heritage exerts itself.");
                                 mark_milestone("monstrous", "discovered their "
                                                "monstrous ancestry!");
+                                gave_message = true;
                             }
                             break;
                         }
@@ -10154,10 +10159,13 @@ int player_mr_modifier(int mr)
 {
     mr *= _difficulty_mode_multiplier();
 
+    if (you.duration[DUR_BRILLIANCE])
+        mr += 8000;
+
     if (player_is_very_tired(true))
         mr = mr * 4 / 5;
     else if (you.exertion == EXERT_FOCUS && mr > 0)
-        mr = mr * 5 / 4 + 1000;
+        mr = mr * 5 / 4 + 4000;
 
     return mr / base_factor;
 }

@@ -251,6 +251,9 @@ enum class passive_t
 
     /// Hep's transfer slows enemies adjacent to the effect's target
     transfer_slow,
+
+    /// Yred's animate undead
+    auto_animate,
 };
 
 enum ru_interference

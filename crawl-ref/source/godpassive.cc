@@ -110,6 +110,7 @@ static const vector<god_passive> god_passives[NUM_GODS] =
 
     // Yredelemnul
     {
+        {  1, passive_t::auto_animate, "GOD animates some of your kills" },
         {  3, passive_t::nightvision, "can see well in the dark" },
     },
 

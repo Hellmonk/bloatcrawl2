@@ -180,10 +180,10 @@ int attack::calc_to_hit()
     }
 
     // Penalties for both players and monsters:
-    mhit -= 5 * attacker->inaccuracy();
+    mhit -= 10 * attacker->inaccuracy();
 
     if (attacker->confused())
-        mhit -= 5;
+        mhit -= 10;
 
     if (using_weapon()
         && (is_unrandom_artefact(*weapon, UNRAND_WOE)
@@ -198,25 +198,22 @@ int attack::calc_to_hit()
         return mhit;
 
     if (!defender->visible_to(attacker))
-        if (attacker->is_player())
-            mhit -= 6;
-        else
-            mhit = mhit * 65 / 100;
+        mhit -= 20;
     else
     {
         // This can only help if you're visible!
         const int how_transparent = player_mutation_level(MUT_TRANSLUCENT_SKIN);
         if (defender->is_player() && how_transparent)
-            mhit -= 2 * how_transparent;
+            mhit -= 5 * how_transparent;
 
         if (defender->backlit(false))
         {
-            mhit += 6;
+            mhit += 10;
         }
         else if (!attacker->nightvision()
                  && defender->umbra())
         {
-            mhit -= 4;
+            mhit -= 10;
         }
     }
 

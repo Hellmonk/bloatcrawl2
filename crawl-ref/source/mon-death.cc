@@ -2627,6 +2627,31 @@ item_def* monster_die(monster* mons, killer_type killer,
             mons->type = MONS_SPRIGGAN;
         }
         corpse = place_monster_corpse(*mons, silent, false, undead_minion);
+
+        const int inv_power = player_adjust_invoc_power(you.skill_rdiv(SK_INVOCATIONS) + 1);
+        int chance = 10 + inv_power * 2;
+
+        if (corpse && have_passive(passive_t::auto_animate) && x_chance_in_y(chance, 100))
+        {
+            god_type g = GOD_NO_GOD;
+            if (you.religion == GOD_YREDELEMNUL)
+            {
+                g = you.religion;
+                mpr("Yredelemnul calls the dead to rise!");
+            }
+
+            int motions = 0;
+
+            const coord_def pos = corpse->pos;
+            const int count = animate_remains(pos, CORPSE_BODY, BEH_FRIENDLY, MHITYOU, &you, "", g, true, true, 0, 0, &motions);
+
+            if (motions)
+                display_undead_motions(motions);
+
+            if (count)
+                corpse = nullptr;
+        }
+
         if (!corpse)
             corpse = daddy_corpse;
     }

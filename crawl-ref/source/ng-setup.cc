@@ -471,12 +471,27 @@ static void _free_up_slot(bool consumable, char letter)
 
 void _make_potions(const potion_type &potion)
 {
-    if (crawl_state.difficulty <= DIFFICULTY_EASY)
-                newgame_make_item(OBJ_POTIONS, potion);
-    if (crawl_state.difficulty <= DIFFICULTY_STANDARD)
-                newgame_make_item(OBJ_POTIONS, potion);
-    if (crawl_state.difficulty <= DIFFICULTY_CHALLENGE)
-                newgame_make_item(OBJ_POTIONS, potion);
+    int count;
+    switch (crawl_state.difficulty)
+    {
+        case DIFFICULTY_EASY:
+            count = 4;
+            break;
+        case DIFFICULTY_STANDARD:
+            count = 3;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            count = 2;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            count = 1;
+            break;
+        default:
+            count = 3;
+            // should not be possible
+            break;
+    }
+    newgame_make_item(OBJ_POTIONS, potion, count);
 }
 
 static void _setup_generic(const newgame_def& ng)

@@ -127,10 +127,7 @@ const vector<god_power> god_powers[NUM_GODS] =
 
     // Yredelemnul
     {
-        /*
-      { 1, ABIL_YRED_ANIMATE_REMAINS, "animate remains" },
-         */
-      { 1, ABIL_YRED_ANIMATE_DEAD, "animate legions of the dead" },
+      { 1, "Yredelemnul will sometimes animate remains" },
       { 2, ABIL_YRED_RECALL_UNDEAD_SLAVES, "recall your undead slaves" },
       { 3, ABIL_YRED_INJURY_MIRROR, "mirror injuries on your foes" },
       { 4, ABIL_YRED_DRAIN_LIFE, "drain ambient life force" },
@@ -162,10 +159,8 @@ const vector<god_power> god_powers[NUM_GODS] =
 
     // Sif Muna
     {
-        /*
       { 1, "Sif Muna is helping you to conserve magic.",
            "Sif Muna is no longer helping you to conserve magic." },
-           */
       { 2, "Sif Muna is protecting you from the effects of miscast magic.",
            "Sif Muna no longer protects you from the effects of miscast magic." },
       { 3, ABIL_SIF_MUNA_CHANNEL_ENERGY, "tap ambient magical fields" },
