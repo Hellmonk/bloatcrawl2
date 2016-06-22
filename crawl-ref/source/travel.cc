@@ -2534,8 +2534,8 @@ void start_translevel_travel(const level_pos &pos)
         return;
     }
 
-    mpr("Travelling...");
-    msgwin_new_cmd(true);
+    mprf(MSGCH_PROMPT, "Travelling...");
+//    msgwin_new_cmd(true);
 //    display_message_window();
 
     // Remember where we're going so we can easily go back if interrupted.
