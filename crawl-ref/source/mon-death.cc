@@ -2629,7 +2629,7 @@ item_def* monster_die(monster* mons, killer_type killer,
         corpse = place_monster_corpse(*mons, silent, false, undead_minion);
 
         const int inv_power = player_adjust_invoc_power(you.skill_rdiv(SK_INVOCATIONS) + 1);
-        int chance = 10 + inv_power * 2;
+        int chance = 10 + inv_power * 3;
 
         if (corpse && have_passive(passive_t::auto_animate) && x_chance_in_y(chance, 100))
         {
