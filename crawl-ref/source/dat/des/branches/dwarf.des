@@ -82,7 +82,7 @@ SHUFFLE: CD / c+
 COLOUR:  ' = yellow
 COLOUR:  C = yellow
 COLOUR:  D = yellow
-SUBST:   D = =
+SUBST:   D = +
 SUBST:   C = c
 FTILE:   =GO' = floor_sandstone
 TILE:    c = wall_stone_dark
@@ -681,7 +681,7 @@ MONS:   deep dwarf
 MONS:   troll w:20, elf, wight
 MONS:   wight
 MONS:   patrolling deep dwarf
-NSUBST: X = 2:= / *:x
+NSUBST: X = 2:+ / *:x
 SUBST:  * = **d
 ITEM:   staff of death / scroll of torment / necronomicon w:1
 MAP
