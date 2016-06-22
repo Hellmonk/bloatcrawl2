@@ -2882,13 +2882,13 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
             case DIFFICULTY_EASY:
                 break;
             case DIFFICULTY_STANDARD:
-                adjusted_gain >>= 1;
+                adjusted_gain = div_rand_round(adjusted_gain, 2);
                 break;
             case DIFFICULTY_CHALLENGE:
-                adjusted_gain >>= 2;
+                adjusted_gain = div_rand_round(adjusted_gain, 4);
                 break;
             case DIFFICULTY_NIGHTMARE:
-                adjusted_gain >>= 3;
+                adjusted_gain = div_rand_round(adjusted_gain, 8);
                 break;
             default:
                 // should not be possible
@@ -2896,7 +2896,7 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
         }
 
         if (you.rune_curse_active[RUNE_MNOLEG])
-            adjusted_gain >>= 1;
+            adjusted_gain = div_rand_round(adjusted_gain, 2);
 
         if (exp_loss)
         {
@@ -2906,10 +2906,14 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain, bool from_mons
                 you.experience -= adjusted_gain;
         }
         else
+        {
+            adjusted_gain = max(1, adjusted_gain);
+
             if (you.experience + adjusted_gain > (unsigned int)MAX_EXP_TOTAL)
                 you.experience = MAX_EXP_TOTAL;
             else
                 you.experience += adjusted_gain;
+        }
     }
 
     if (!exp_loss)

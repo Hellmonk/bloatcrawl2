@@ -1717,7 +1717,7 @@ static void _make_faerie_armour(item_def &item)
         if (one_chance_in(20))
             artefact_set_property(doodad, ARTP_HP, random2(21) - 10);
         if (one_chance_in(20))
-            artefact_set_property(doodad, ARTP_STAMINA, 10 * (1+ random2(5));
+            artefact_set_property(doodad, ARTP_STAMINA, 10 * (1 + random2(5)));
 
         break;
     }
