@@ -1449,11 +1449,11 @@ void msgwin_new_turn()
     buffer.new_turn();
 }
 
-void msgwin_new_cmd()
+void msgwin_new_cmd(bool force)
 {
     flush_prev_message();
     bool new_turn = (you.num_turns > _last_msg_turn);
-    msgwin.new_cmdturn(new_turn);
+    msgwin.new_cmdturn(new_turn || force);
 }
 
 unsigned int msgwin_line_length()
