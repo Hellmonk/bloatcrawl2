@@ -2170,6 +2170,14 @@ static vector<demon_mutation_info> _select_ds_mutations()
         ct_of_tier[0] = 4;
         ct_of_tier[1] = 0;
     }
+    // 1 in 10 of specialist set
+    else if (one_chance_in(10))
+    {
+        ct_of_tier[0] = 0;
+        ct_of_tier[1] = 3;
+        ct_of_tier[2] = 0;
+        ct_of_tier[3] = 3;
+    }
 
 try_again:
     vector<demon_mutation_info> ret;

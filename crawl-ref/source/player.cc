@@ -3381,6 +3381,7 @@ void level_change(bool skip_attribute_increase)
                                      "your demonic heritage exerts itself.");
                                 mark_milestone("monstrous", "discovered their "
                                                "monstrous ancestry!");
+                                gave_message = true;
                             }
                             break;
                         }
