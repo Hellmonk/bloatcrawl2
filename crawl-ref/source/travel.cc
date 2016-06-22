@@ -2534,7 +2534,10 @@ void start_translevel_travel(const level_pos &pos)
         return;
     }
 
+    redraw_screen();
+    clear_messages();
     mprf(MSGCH_PRELUDE, "Travelling...");
+    msgwin_got_input();
 //    msgwin_new_cmd(true);
 //    display_message_window();
 
