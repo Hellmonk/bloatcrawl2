@@ -1099,9 +1099,7 @@ bool physiology_mutation_conflict(mutation_type mutat)
 
     // Vampires' healing and thirst rates depend on their blood level.
     if (you.species == SP_VAMPIRE
-        && (mutat == MUT_CARNIVOROUS || mutat == MUT_HERBIVOROUS
-            || mutat == MUT_HEALTH_REGENERATION || mutat == MUT_SLOW_REGENERATION
-            || mutat == MUT_FAST_METABOLISM || mutat == MUT_SLOW_METABOLISM))
+        && (mutat == MUT_HEALTH_REGENERATION || mutat == MUT_SLOW_REGENERATION))
     {
         return true;
     }

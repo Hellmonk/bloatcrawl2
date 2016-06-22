@@ -449,6 +449,7 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force, boo
         || undead_minion
         || goldify
         || mons_class_flag(mons.type, M_ALWAYS_CORPSE)
+        || have_passive(passive_t::auto_animate)
         || mons_is_demonspawn(mons.type)
            && mons_class_flag(draco_or_demonspawn_subspecies(&mons),
                               M_ALWAYS_CORPSE);
@@ -463,7 +464,6 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force, boo
 
     bool corpse_remains = true;
 
-    // 50/50 chance of getting a corpse, usually.
     if (!no_coinflip && one_chance_in(3))
         return nullptr;
 
@@ -2629,7 +2629,7 @@ item_def* monster_die(monster* mons, killer_type killer,
         corpse = place_monster_corpse(*mons, silent, false, undead_minion);
 
         const int inv_power = player_adjust_invoc_power(you.skill_rdiv(SK_INVOCATIONS) + 1);
-        int chance = 10 + inv_power * 2;
+        int chance = 10 + inv_power * 3;
 
         if (corpse && have_passive(passive_t::auto_animate) && x_chance_in_y(chance, 100))
         {

@@ -616,7 +616,6 @@ static int _slowest_ally_speed()
 
 static void _start_running()
 {
-
     _userdef_run_startrunning_hook();
     you.running.init_travel_speed();
     if (you.running < 0)
@@ -2535,6 +2534,9 @@ void start_translevel_travel(const level_pos &pos)
         return;
     }
 
+    mpr("Travelling...");
+    flush_prev_message();
+
     // Remember where we're going so we can easily go back if interrupted.
     you.travel_x = pos.pos.x;
     you.travel_y = pos.pos.y;
@@ -2988,6 +2990,8 @@ void start_explore(bool grab_items)
 
     you.running.pos.reset();
     you.prev_direction.reset();
+    mprf("Exploring the dungeon...");
+    flush_prev_message();
     _start_running();
 }
 
