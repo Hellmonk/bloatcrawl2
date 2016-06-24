@@ -568,7 +568,9 @@ class CrawlWebSocket(tornado.websocket.WebSocketHandler):
             if obj["msg"] in self.message_handlers:
                 handler = self.message_handlers[obj["msg"]]
                 del obj["msg"]
-                if obj is not None:
+                if obj is None:
+                    self.logger.warning("Got None result?")
+                else:
                     handler(**obj)
             elif self.process:
                 self.process.handle_input(message)
