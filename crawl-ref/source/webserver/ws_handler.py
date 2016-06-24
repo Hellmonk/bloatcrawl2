@@ -568,7 +568,8 @@ class CrawlWebSocket(tornado.websocket.WebSocketHandler):
             if obj["msg"] in self.message_handlers:
                 handler = self.message_handlers[obj["msg"]]
                 del obj["msg"]
-                handler(**obj)
+                if obj:
+                    handler(**obj)
             elif self.process:
                 self.process.handle_input(message)
             elif not self.watched_game:
