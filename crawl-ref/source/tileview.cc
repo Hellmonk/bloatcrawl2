@@ -786,7 +786,6 @@ void tile_floor_halo(dungeon_feature_type target, tileidx_t tile)
         }
 }
 
-#ifdef USE_TILE
 static tileidx_t _get_floor_bg(const coord_def& gc)
 {
     tileidx_t bg = TILE_DNGN_UNSEEN | tileidx_unseen_flag(gc);
@@ -1123,7 +1122,6 @@ void tile_apply_animations(tileidx_t bg, tile_flavour *flv)
         if (_is_torch(basetile))
             flv->wall = basetile + (flv->wall - basetile + 1) % tile_dngn_count(basetile);
     }
-#endif
 }
 
 static bool _suppress_blood(const map_cell& mc)
