@@ -1094,7 +1094,6 @@ static bool _is_torch(tileidx_t basetile)
 // Unfortunately, these are all hard-coded for now.
 void tile_apply_animations(tileidx_t bg, tile_flavour *flv)
 {
-#ifndef USE_TILE_WEB
     tileidx_t bg_idx = bg & TILE_FLAG_MASK;
     if (bg_idx == TILE_DNGN_PORTAL_WIZARD_LAB && Options.tile_misc_anim)
         flv->special = (flv->special + 1) % tile_dngn_count(bg_idx);
@@ -1445,4 +1444,4 @@ void tile_apply_properties(const coord_def &gc, packed_cell &cell)
         }
     }
 }
-#endif
+
