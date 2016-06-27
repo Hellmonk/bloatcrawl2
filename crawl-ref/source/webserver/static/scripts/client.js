@@ -669,6 +669,13 @@ function (exports, $, key_conversion, chat, comm) {
         editing_rc = id;
     }
 
+    var editing_macro;
+    function edit_macro(id)
+    {
+        send_message("get_macro", { game_id: id });
+        editing_macro = id;
+    }
+
     function rcfile_contents(data)
     {
         $("#rc_file_contents").val(data.contents);
@@ -676,11 +683,28 @@ function (exports, $, key_conversion, chat, comm) {
         $("#rc_file_contents").focus();
     }
 
+    function macrofile_contents(data)
+    {
+        $("#macro_file_contents").val(data.contents);
+        show_dialog("#macro_edit");
+        $("#macro_file_contents").focus();
+    }
+
     function send_rc()
     {
         send_message("set_rc", {
             game_id: editing_rc,
             contents: $("#rc_file_contents").val()
+        });
+        hide_dialog();
+        return false;
+    }
+
+    function send_macro()
+    {
+        send_message("set_macro", {
+            game_id: editing_macro,
+            contents: $("#macro_file_contents").val()
         });
         hide_dialog();
         return false;
@@ -803,8 +827,11 @@ function (exports, $, key_conversion, chat, comm) {
 
         var username_entry = $(make_watch_link(data));
         username_entry.text(data.username);
+
         set("username", username_entry);
         set("game_id", data.game_id);
+        set("diff", data.diff);
+        set("exp_mode", data.exp_mode);
         set("xl", data.xl);
         set("char", data.char);
         set("place", data.place);
@@ -1021,6 +1048,10 @@ function (exports, $, key_conversion, chat, comm) {
             var id = $(this).data("game_id");
             edit_rc(id);
         });
+        $("#play_now .edit_macro_link").click(function (ev) {
+            var id = $(this).data("game_id");
+            edit_macro(id);
+        });
     }
 
     function set_html(data)
@@ -1164,6 +1195,7 @@ function (exports, $, key_conversion, chat, comm) {
         "watching_started": watching_started,
 
         "rcfile_contents": rcfile_contents,
+        "macrofile_contents": macrofile_contents,
 
         "game_client": receive_game_client,
 
@@ -1197,6 +1229,7 @@ function (exports, $, key_conversion, chat, comm) {
         $("#reg_cancel").bind("click", cancel_register);
 
         $("#rc_edit_form").bind("submit", send_rc);
+        $("#macro_edit_form").bind("submit", send_macro);
 
         $("#force_terminate_no").click(force_terminate_no);
         $("#force_terminate_yes").click(force_terminate_yes);

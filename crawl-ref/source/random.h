@@ -11,6 +11,7 @@
 void seed_rng();
 void seed_rng(uint32_t seed);
 void seed_rng(uint64_t[], int);
+int get_success_chance(int diff, int cap = 0, int spread = 16);
 
 uint32_t get_uint32(int generator = RNG_GAMEPLAY);
 uint64_t get_uint64(int generator = RNG_GAMEPLAY);
@@ -260,5 +261,7 @@ int choose_random_weighted(Iterator beg, const Iterator end)
     ASSERT(result >= 0);
     return result;
 }
+
+int random_diff(int success, int failure, int *chance, defer_rand &r);
 
 #endif

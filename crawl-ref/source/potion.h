@@ -31,7 +31,7 @@ public:
      * @return              Whether or not the potion had an effect.
      */
     virtual bool effect(bool was_known = true, int pow = 40,
-                        bool is_device = true) const = 0;
+                        bool is_device = false) const = 0;
 
     // Quaff also handles god-conduct and potion-specific
     // uncancellability

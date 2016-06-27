@@ -296,7 +296,7 @@ static int _rot_stack(item_def &it, int slot, bool in_inv)
 
     bool all_gone;
     if (in_inv)
-        all_gone = dec_inv_item_quantity(slot, destroyed_count);
+        all_gone = dec_inv_item_quantity(you.inv2, slot, destroyed_count);
     else
         all_gone = dec_mitm_item_quantity(slot, destroyed_count);
 
@@ -347,7 +347,7 @@ void rot_inventory_food(int time_delta)
 
     for (int i = 0; i < ENDOFPACK; i++)
     {
-        item_def &item(you.inv[i]);
+        item_def &item(you.inv2[i]);
 
         if (item.quantity < 1 || !_item_needs_rot_check(item))
             continue;

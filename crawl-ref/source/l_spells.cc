@@ -40,16 +40,16 @@ LUAFN(l_spells_level)
     PLUARET(number, spell_difficulty(spell));
 }
 
-LUAFN(l_spells_mana_cost)
+LUAFN(l_spells_magic_cost)
 {
     spell_type spell = spell_by_name(luaL_checkstring(ls, 1), false);
-    PLUARET(number, spell_mana(spell));
+    PLUARET(number, spell_mp_cost(spell));
 }
 
 LUAFN(l_spells_range)
 {
     spell_type spell = spell_by_name(luaL_checkstring(ls, 1), false);
-    PLUARET(number, spell_range(spell, calc_spell_power(spell, true)));
+    PLUARET(number, spell_range(spell, calc_spell_power(spell, true, false)));
 }
 
 LUAFN(l_spells_max_range)
@@ -84,7 +84,7 @@ LUAFN(l_spells_hunger)
 LUAFN(l_spells_power)
 {
     spell_type spell = spell_by_name(luaL_checkstring(ls, 1), false);
-    PLUARET(number, power_to_barcount(calc_spell_power(spell, true)));
+    PLUARET(number, power_to_barcount(calc_spell_power(spell, true, false)));
 }
 
 LUAFN(l_spells_max_power)
@@ -162,7 +162,7 @@ static const struct luaL_reg spells_clib[] =
     { "memorised"     , l_spells_memorised },
     { "letter"        , l_spells_letter },
     { "level"         , l_spells_level },
-    { "mana_cost"     , l_spells_mana_cost },
+    { "mana_cost"     , l_spells_magic_cost },
     { "range"         , l_spells_range },
     { "max_range"     , l_spells_max_range },
     { "min_range"     , l_spells_min_range },

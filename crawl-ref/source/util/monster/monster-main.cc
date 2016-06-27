@@ -38,8 +38,6 @@
 #include <set>
 #include <unistd.h>
 
-extern const spell_type serpent_of_hell_breaths[4][3];
-
 const coord_def MONSTER_PLACE(20, 20);
 
 const string CANG = "cang";
@@ -268,7 +266,7 @@ static void initialize_crawl()
 
     los_changed();
     you.hp = you.hp_max = PLAYER_MAXHP;
-    you.magic_points = you.max_magic_points = PLAYER_MAXMP;
+    you.mp = you.mp_max = PLAYER_MAXMP;
     you.species = SP_HUMAN;
 }
 
@@ -433,21 +431,15 @@ static void record_spell_set(monster* mp, set<string>& spell_lists,
         spell_type sp = slot.spell;
         if (!ret.empty())
             ret += ", ";
-        if (sp == SPELL_SERPENT_OF_HELL_BREATH)
+        if (spell_is_soh_breath(sp))
         {
-            const int idx =
-                mp->type == MONS_SERPENT_OF_HELL ?              0 :
-                    mp->type == MONS_SERPENT_OF_HELL_COCYTUS ?  1 :
-                    mp->type == MONS_SERPENT_OF_HELL_DIS ?      2 :
-                    mp->type == MONS_SERPENT_OF_HELL_TARTARUS ? 3 :
-                                                               -1;
-            ASSERT(idx >= 0 && idx <= 3);
-            ASSERT(mp->number == ARRAYSZ(serpent_of_hell_breaths[idx]));
+            const vector<spell_type> *breaths = soh_breath_spells(sp);
+            ASSERT(breaths);
 
             ret += "{";
             for (unsigned int k = 0; k < mp->number; ++k)
             {
-                const spell_type breath = serpent_of_hell_breaths[idx][k];
+                const spell_type breath = (*breaths)[k];
                 const string rawname = spell_title(breath);
                 ret += k == 0 ? "" : ", ";
                 ret += make_stringf("head %d: ", k + 1)
@@ -1210,9 +1202,9 @@ int main(int argc, char* argv[])
         record_resist(c, #x, monsterresistances, monstervulnerabilities, y);   \
     } while (false)
 
-        // Don't record regular rF as damnation vulnerability.
+        // Don't record regular rF as hellfire vulnerability.
         res(RED, FIRE);
-        res(RED, DAMNATION);
+        res(RED, HELLFIRE);
         res(BLUE, COLD);
         res(CYAN, ELEC);
         res(GREEN, POISON);

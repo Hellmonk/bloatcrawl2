@@ -465,14 +465,6 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
         calc_speed();
         break;
 
-    case ENCH_MAGIC_ARMOUR:
-        if (!quiet && you.can_see(*this))
-        {
-            mprf("%s magical armour fades away.",
-                 apostrophise(name(DESC_THE)).c_str());
-        }
-        break;
-
     case ENCH_OZOCUBUS_ARMOUR:
         if (!quiet && you.can_see(*this))
         {
@@ -539,7 +531,7 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
         // before being polymorphed into a non-invisible monster.
         if (you.see_cell(pos()) && !you.can_see_invisible() && !backlit()
             && !has_ench(ENCH_SUBMERGED)
-            && !friendly() && !you.duration[DUR_TELEPATHY])
+            && !friendly())
         {
             if (!quiet)
                 mprf("%s appears from thin air!", name(DESC_A, true).c_str());
@@ -839,11 +831,6 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
         unawaken_vines(this, quiet);
         break;
 
-    case ENCH_CONTROL_WINDS:
-        if (!quiet && you.can_see(*this))
-            mprf("The winds cease moving at %s will.", name(DESC_ITS).c_str());
-        break;
-
     case ENCH_TOXIC_RADIANCE:
         if (!quiet && you.can_see(*this))
             mprf("%s toxic aura wanes.", name(DESC_ITS).c_str());
@@ -951,6 +938,11 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
             simple_monster_message(this, " loses the glow of perfection.");
         break;
 
+    case ENCH_BOUND_SOUL:
+        if (!quiet && you.can_see(*this))
+            mprf("%s soul is no longer bound.", name(DESC_ITS).c_str());
+        break;
+
     default:
         break;
     }
@@ -1010,6 +1002,20 @@ string monster::describe_enchantments() const
     return oss.str();
 }
 
+bool monster::is_player_summon() const
+{
+    const mon_enchant& ench_summon(get_ench(ENCH_SUMMON));
+
+    // this could also be summon type if we didn't know for sure this was a creature summoned by the player
+    const spell_type spell_used = (spell_type)ench_summon.degree;
+
+    const mid_t &source = ench_summon.source;
+    const bool from_player = source ? source == MID_PLAYER : false;
+	const bool result = spell_produces_minion(spell_used) && from_player;
+
+	return result;
+}
+
 bool monster::decay_enchantment(enchant_type en, bool decay_degree)
 {
     if (!has_ench(en))
@@ -1041,8 +1047,28 @@ bool monster::decay_enchantment(enchant_type en, bool decay_degree)
             props.erase(TORPOR_SLOWED_KEY);
     }
 
+    bool player_summoned_this_creature = false;
+	player* player_who_summoned_this = 0;
+
+    if (summoner)
+    {
+		actor *sourceAgent = actor_by_mid(summoner);
+		if(sourceAgent && sourceAgent->is_player() && is_player_summon())
+		{
+			player_summoned_this_creature = true;
+			player_who_summoned_this = sourceAgent->as_player();
+		}
+    }
+
+    if ((me.ench == ENCH_ABJ || me.ench == ENCH_FAKE_ABJURATION) && player_summoned_this_creature && attitude != ATT_HOSTILE)
+    {
+        return false;
+    }
+
     if (lose_ench_duration(me, actdur))
+    {
         return true;
+    }
 
     if (!decay_degree)
         return false;
@@ -1139,7 +1165,7 @@ static bool _apply_grasping_roots(monster* mons)
             if (x_chance_in_y(3, 5))
                 continue;
 
-            if (x_chance_in_y(10, 50 - ai->evasion()))
+            if (x_chance_in_y(10, 50 - ai->evasion()) || player_ephemeral_passthrough())
             {
                 if (ai->is_player())
                     mpr("Roots rise up to grasp you, but you nimbly evade.");
@@ -1437,6 +1463,7 @@ void monster::apply_enchantment(const mon_enchant &me)
     case ENCH_BRILLIANCE_AURA:
     case ENCH_EMPOWERED_SPELLS:
     case ENCH_ANTIMAGIC:
+    case ENCH_BOUND_SOUL:
         decay_enchantment(en);
         break;
 
@@ -1513,7 +1540,7 @@ void monster::apply_enchantment(const mon_enchant &me)
             dprf("%s takes poison damage: %d (degree %d)",
                  name(DESC_THE).c_str(), dam, me.degree);
 
-            hurt(me.agent(), dam, BEAM_POISON, KILLED_BY_POISON);
+            hurt(me.agent(), dam, BEAM_POISON, KILLED_BY_POISON, "", "", true, true, true);
         }
 
         decay_enchantment(en, true);
@@ -1538,8 +1565,8 @@ void monster::apply_enchantment(const mon_enchant &me)
 
         if (dam > 0)
         {
-            simple_monster_message(this, " burns!");
-            dprf("sticky flame damage: %d", dam);
+//            simple_monster_message(this, " burns! (" dam ")");
+            mprf("%s burns!", name(DESC_THE).c_str());
 
             if (type == MONS_SHEEP)
             {
@@ -1893,11 +1920,6 @@ void monster::apply_enchantment(const mon_enchant &me)
             del_ench(ENCH_HAUNTING);
         break;
 
-    case ENCH_CONTROL_WINDS:
-        apply_control_winds(this);
-        decay_enchantment(en);
-        break;
-
     case ENCH_TOXIC_RADIANCE:
         toxic_radiance_effect(this, 1);
         decay_enchantment(en);
@@ -1952,17 +1974,27 @@ void monster::apply_enchantment(const mon_enchant &me)
 
         break;
 
+    case ENCH_PAIN_BOND:
+        if (decay_enchantment(en))
+        {
+            const string msg = " is no longer sharing " +
+                               pronoun(PRONOUN_POSSESSIVE, true) +
+                               " pain.";
+            simple_monster_message(this, msg.c_str());
+        }
+        break;
+
     default:
         break;
     }
 }
 
-void monster::mark_summoned(int longevity, bool mark_items, int summon_type, bool abj)
+void monster::mark_summoned(int longevity, bool mark_items, int summon_type, bool abj, const actor* source)
 {
     if (abj)
         add_ench(mon_enchant(ENCH_ABJ, longevity));
     if (summon_type != 0)
-        add_ench(mon_enchant(ENCH_SUMMON, summon_type, 0, INT_MAX));
+        add_ench(mon_enchant(ENCH_SUMMON, summon_type, source, INT_MAX));
 
     if (mark_items)
         for (mon_inv_iterator ii(*this); ii; ++ii)
@@ -2090,7 +2122,11 @@ static const char *enchant_names[] =
     "fading_away", "preparing_resurrect",
 #endif
     "regen",
-    "magic_res", "mirror_dam", "stoneskin", "fear inspiring", "temporarily pacified",
+    "magic_res", "mirror_dam",
+#if TAG_MAJOR_VERSION == 34
+    "stoneskin",
+#endif
+    "fear inspiring", "temporarily pacified",
     "withdrawn",
 #if TAG_MAJOR_VERSION == 34
     "attached",
@@ -2107,9 +2143,9 @@ static const char *enchant_names[] =
 #if TAG_MAJOR_VERSION == 34
     "retching",
 #endif
-    "weak", "dimension_anchor", "awaken vines", "control_winds",
+    "weak", "dimension_anchor", "awaken vines",
 #if TAG_MAJOR_VERSION == 34
-    "wind_aided",
+    "control_winds", "wind_aided",
 #endif
     "summon_capped",
     "toxic_radiance", "grasping_roots_source", "grasping_roots",
@@ -2138,7 +2174,7 @@ static const char *enchant_names[] =
     "chanting_fire_storm", "chanting_word_of_entropy",
 #endif
     "aura_of_brilliance", "empowered_spells", "gozag_incite", "pain_bond",
-    "idealised",
+    "idealised", "bound_soul",
     "buggy",
 };
 
@@ -2209,7 +2245,8 @@ void mon_enchant::cap_degree()
 
     // Hard cap to simulate old enum behaviour, we should really throw this
     // out entirely.
-    const int max = (ench == ENCH_ABJ || ench == ENCH_FAKE_ABJURATION) ? 6 : 4;
+    const int max = (ench == ENCH_ABJ || ench == ENCH_FAKE_ABJURATION) ?
+            MAX_ENCH_DEGREE_ABJURATION : MAX_ENCH_DEGREE_DEFAULT;
     if (degree > max)
         degree = max;
 }
@@ -2280,11 +2317,11 @@ int mon_enchant::calc_duration(const monster* mons,
     case ENCH_MIGHT:
     case ENCH_INVIS:
     case ENCH_FEAR_INSPIRING:
-    case ENCH_MAGIC_ARMOUR:
     case ENCH_AGILE:
     case ENCH_BLACK_MARK:
     case ENCH_RESISTANCE:
     case ENCH_IDEALISED:
+    case ENCH_BOUND_SOUL:
         cturn = 1000 / _mod_speed(25, mons->speed);
         break;
     case ENCH_LIQUEFYING:

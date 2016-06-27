@@ -854,7 +854,7 @@ A glass window
 
 A pockmarked, ultra-hard glass window.
 %%%%
-# due_jungle_book (Lair:8)
+# due_jungle_book (Lair:$)
 An elephant-shaped statue
 
 A worn granite statue depicting an elephant standing guard.

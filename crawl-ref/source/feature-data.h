@@ -425,12 +425,14 @@ BRANCH_EXIT(DNGN_EXIT_SLIME, "staircase back to the Lair", "exit_slime_pits"),
 },
 BRANCH_EXIT(DNGN_EXIT_ORC, "staircase back to the Dungeon", "exit_orcish_mines"),
 
-#if TAG_MAJOR_VERSION == 34
-BRANCH_ENTRANCE(DNGN_ENTER_DWARF, "staircase to the Dwarven Hall", "enter_dwarven_hall"),
+BRANCH_ENTRANCE(DNGN_ENTER_DWARF, "staircase to the Dwarven Fortress", "enter_dwarven_hall"),
+BRANCH_EXIT(DNGN_EXIT_DWARF, "staircase back to the Enchanted Forest", "exit_dwarven_hall"),
+
 BRANCH_ENTRANCE(DNGN_ENTER_FOREST, "staircase to the Enchanted Forest", "enter_forest"),
+BRANCH_EXIT(DNGN_EXIT_FOREST, "staircase back to the Dugeon", "exit_forest"),
+
+#if TAG_MAJOR_VERSION == 34
 BRANCH_ENTRANCE(DNGN_ENTER_BLADE, "staircase to the Hall of Blades", "enter_hall_of_blades"),
-BRANCH_EXIT(DNGN_EXIT_DWARF, "staircase back to the Vaults", "exit_dwarven_hall"),
-BRANCH_EXIT(DNGN_EXIT_FOREST, "staircase back to the Vaults", "exit_forest"),
 BRANCH_EXIT(DNGN_EXIT_BLADE, "staircase back to the Vaults", "exit_hall_of_blades"),
 #endif
 
@@ -438,7 +440,7 @@ BRANCH_ENTRANCE(DNGN_ENTER_LAIR, "staircase to the Lair", "enter_lair"),
 BRANCH_EXIT(DNGN_EXIT_LAIR, "staircase back to the Dungeon", "exit_lair"),
 
 BRANCH_ENTRANCE(DNGN_ENTER_CRYPT, "staircase to the Crypt", "enter_crypt"),
-BRANCH_EXIT(DNGN_EXIT_CRYPT, "staircase back to the Vaults", "exit_crypt"),
+BRANCH_EXIT(DNGN_EXIT_CRYPT, "staircase back to the Enchanted Forest", "exit_crypt"),
 
 BRANCH_ENTRANCE(DNGN_ENTER_TEMPLE, "staircase to the Ecumenical Temple", "enter_temple"),
 BRANCH_EXIT(DNGN_EXIT_TEMPLE, "staircase back to the Dungeon", "exit_temple"),
@@ -447,10 +449,10 @@ BRANCH_ENTRANCE(DNGN_ENTER_SNAKE, "staircase to the Snake Pit", "enter_snake_pit
 BRANCH_EXIT(DNGN_EXIT_SNAKE, "staircase back to the Lair", "exit_snake_pit"),
 
 BRANCH_ENTRANCE(DNGN_ENTER_ELF, "staircase to the Elven Halls", "enter_elven_halls"),
-BRANCH_EXIT(DNGN_EXIT_ELF, "staircase back to the Mines", "exit_elven_halls"),
+BRANCH_EXIT(DNGN_EXIT_ELF, "staircase back to the Enchanted Forest", "exit_elven_halls"),
 
 BRANCH_ENTRANCE(DNGN_ENTER_TOMB, "staircase to the Tomb", "enter_tomb"),
-BRANCH_EXIT(DNGN_EXIT_TOMB, "staircase back to the Crypt", "exit_tomb"),
+BRANCH_EXIT(DNGN_EXIT_TOMB, "staircase back to the Depths", "exit_tomb"),
 
 BRANCH_ENTRANCE(DNGN_ENTER_SWAMP, "staircase to the Swamp", "enter_swamp"),
 BRANCH_EXIT(DNGN_EXIT_SWAMP, "staircase back to the Lair", "exit_swamp"),

@@ -21,6 +21,7 @@
 #include "english.h"
 #include "env.h"
 #include "files.h"
+#include "food.h"
 #include "godabil.h"
 #include "godpassive.h"
 #include "initfile.h"
@@ -47,6 +48,7 @@
 #include "viewchar.h"
 #include "view.h"
 #include "xom.h"
+#include "attack.h"
 
 
 #ifdef USE_TILE_LOCAL
@@ -467,6 +469,7 @@ public:
 
 static colour_bar HP_Bar(LIGHTGREEN, GREEN, RED, DARKGREY);
 static colour_bar EP_Bar(LIGHTMAGENTA, MAGENTA, BLUE, DARKGREY);
+static colour_bar SP_Bar(CYAN, CYAN, LIGHTCYAN, DARKGREY);
 
 #ifdef USE_TILE_LOCAL
 static colour_bar MP_Bar(BLUE, BLUE, LIGHTBLUE, DARKGREY);
@@ -474,8 +477,28 @@ static colour_bar MP_Bar(BLUE, BLUE, LIGHTBLUE, DARKGREY);
 static colour_bar MP_Bar(LIGHTBLUE, BLUE, MAGENTA, DARKGREY);
 #endif
 
-colour_bar Contam_Bar(DARKGREY, DARKGREY, DARKGREY, DARKGREY);
+colour_bar Food_Bar(DARKGREY, DARKGREY, DARKGREY, DARKGREY);
 colour_bar Temp_Bar(RED, LIGHTRED, LIGHTBLUE, DARKGREY);
+
+int hp_row = 0;
+int sp_row = 0;
+int mp_row = 0;
+int temp_row = 0;
+int stat_row = 0;
+int ac_row = 0;
+int ev_row = 0;
+int sh_row = 0;
+int str_row = 0;
+int int_row = 0;
+int dex_row = 0;
+int xl_row = 0;
+int place_row = 0;
+int gold_row = 0;
+int time_row = 0;
+int wield_row = 0;
+int quiver_row = 0;
+int hit_row = 0;
+int status_row = 0;
 
 // ----------------------------------------------------------------------
 // Status display
@@ -487,6 +510,11 @@ static bool _boosted_hp()
            || you.berserk();
 }
 
+static bool _boosted_sp()
+{
+    return you.duration[DUR_TIRELESS];
+}
+
 static bool _boosted_mp()
 {
     return you.duration[DUR_DIVINE_VIGOUR];
@@ -495,9 +523,9 @@ static bool _boosted_mp()
 static bool _boosted_ac()
 {
     return you.duration[DUR_ICY_ARMOUR]
-           || you.duration[DUR_MAGIC_ARMOUR]
            || player_icemail_armour_class()
            || you.duration[DUR_QAZLAL_AC]
+           || temperature_effect(LORC_STONESKIN)
            || sanguine_armour_bonus()
            || you.attribute[ATTR_BONE_ARMOUR] > 0;
 }
@@ -509,8 +537,7 @@ static bool _boosted_ev()
 
 static bool _boosted_sh()
 {
-    return you.duration[DUR_MAGIC_SHIELD]
-           || you.duration[DUR_DIVINE_SHIELD]
+    return you.duration[DUR_DIVINE_SHIELD]
            || qazlal_sh_boost() > 0
            || you.attribute[ATTR_BONE_ARMOUR] > 0;
 }
@@ -545,12 +572,7 @@ void update_turn_count()
         return;
     }
 
-    const int yhack = 0
-#if TAG_MAJOR_VERSION == 34
-                    + (you.species == SP_LAVA_ORC)
-#endif
-                    ;
-    CGOTOXY(19+6, 9 + yhack, GOTO_STAT);
+    CGOTOXY(19+6, time_row, GOTO_STAT);
 
     // Show the turn count starting from 1. You can still quit on turn 0.
     textcolour(HUD_VALUE_COLOUR);
@@ -577,24 +599,68 @@ static int _count_digits(int val)
     return 1;
 }
 
-#if TAG_MAJOR_VERSION == 34
 static void _print_stats_temperature(int x, int y)
 {
-    cgotoxy(x, y, GOTO_STAT);
+    CGOTOXY(x, y, GOTO_STAT);
     textcolour(HUD_CAPTION_COLOUR);
-    cprintf("Temperature: ");
+    CPRINTF("Temperature: ");
 
     Temp_Bar.draw(19, y, temperature(), TEMP_MAX, true);
 }
-#endif
 
-static void _print_stats_mp(int x, int y)
+static void _print_stats_sp(int x, int y)
 {
-#if TAG_MAJOR_VERSION == 34
     if (you.species == SP_DJINNI)
         return;
 
+    // Calculate colour
+    short sp_colour = HUD_VALUE_COLOUR;
+
+    const bool boosted = _boosted_sp();
+
+    if (boosted)
+        sp_colour = LIGHTBLUE;
+    else
+    {
+        int sp_percent = (get_sp_max() == 0
+                          ? 100
+                          : (get_sp() * 100) / get_sp_max());
+
+        for (const auto &entry : Options.sp_colour)
+            if (sp_percent <= entry.first)
+                sp_colour = entry.second;
+    }
+
+    CGOTOXY(x, y, GOTO_STAT);
+    textcolour(HUD_CAPTION_COLOUR);
+    CPRINTF(player_rotted() ? "SP: " : "Stamina: ");
+    textcolour(sp_colour);
+    CPRINTF("%d", get_sp());
+    if (!boosted)
+        textcolour(HUD_VALUE_COLOUR);
+    CPRINTF("/%d", get_sp_max());
+    if (boosted)
+        textcolour(HUD_VALUE_COLOUR);
+
+    int col = _count_digits(get_sp())
+              + _count_digits(get_sp_max()) + 1;
+    for (int i = 11-col; i > 0; i--)
+        CPRINTF(" ");
+
+#ifdef TOUCH_UI
+    if (tiles.is_using_small_layout())
+        SP_Bar.vdraw(6, 10, get_sp(), get_sp_max());
+    else
 #endif
+    SP_Bar.draw(19, y, get_sp(), get_sp_max());
+}
+
+static void _print_stats_mp(int x, int y)
+{
+    int max_max_mp = get_real_mp(true, true);
+    if (you.species == SP_DJINNI)
+        return;
+
     // Calculate colour
     short mp_colour = HUD_VALUE_COLOUR;
 
@@ -604,9 +670,9 @@ static void _print_stats_mp(int x, int y)
         mp_colour = LIGHTBLUE;
     else
     {
-        int mp_percent = (you.max_magic_points == 0
+        int mp_percent = (get_mp_max() == 0
                           ? 100
-                          : (you.magic_points * 100) / you.max_magic_points);
+                          : (get_mp() * 100) / get_mp_max());
 
         for (const auto &entry : Options.mp_colour)
             if (mp_percent <= entry.first)
@@ -617,81 +683,36 @@ static void _print_stats_mp(int x, int y)
     textcolour(HUD_CAPTION_COLOUR);
     CPRINTF(player_rotted() ? "MP: " : "Magic:  ");
     textcolour(mp_colour);
-    CPRINTF("%d", you.magic_points);
+    CPRINTF("%d", get_mp());
     if (!boosted)
         textcolour(HUD_VALUE_COLOUR);
-    CPRINTF("/%d", you.max_magic_points);
+    CPRINTF("/%d", get_mp_max());
     if (boosted)
         textcolour(HUD_VALUE_COLOUR);
+    if (max_max_mp != get_mp_max())
+        CPRINTF(" (%d)", max_max_mp);
 
-    int col = _count_digits(you.magic_points)
-              + _count_digits(you.max_magic_points) + 1;
+    int col = _count_digits(get_mp())
+              + _count_digits(get_mp_max()) + 1;
     for (int i = 11-col; i > 0; i--)
         CPRINTF(" ");
 
 #ifdef TOUCH_UI
     if (tiles.is_using_small_layout())
-        MP_Bar.vdraw(6, 10, you.magic_points, you.max_magic_points);
+        MP_Bar.vdraw(6, 10, get_mp(), get_mp_max());
     else
 #endif
-    MP_Bar.draw(19, y, you.magic_points, you.max_magic_points);
+    MP_Bar.draw(19, y, get_mp(), get_mp_max());
 }
 
-#if TAG_MAJOR_VERSION == 34
-static void _print_stats_contam(int x, int y)
-{
-    if (you.species != SP_DJINNI)
-        return;
-
-    const int max_contam = 8000;
-    int contam = min(you.magic_contamination, max_contam);
-
-    // Calculate colour
-    if (you.magic_contamination > 15000)
-    {
-        Contam_Bar.m_default = RED;
-        Contam_Bar.m_change_pos = Contam_Bar.m_change_neg = RED;
-    }
-    else if (you.magic_contamination > 5000) // harmful
-    {
-        Contam_Bar.m_default = LIGHTRED;
-        Contam_Bar.m_change_pos = Contam_Bar.m_change_neg = RED;
-    }
-    else if (you.magic_contamination > 3333)
-    {
-        Contam_Bar.m_default = YELLOW;
-        Contam_Bar.m_change_pos = Contam_Bar.m_change_neg = BROWN;
-    }
-    else if (you.magic_contamination > 1666)
-    {
-        Contam_Bar.m_default = LIGHTGREY;
-        Contam_Bar.m_change_pos = Contam_Bar.m_change_neg = DARKGREY;
-    }
-    else
-    {
-#ifdef USE_TILE_LOCAL
-        Contam_Bar.m_default = LIGHTGREY;
-#else
-        Contam_Bar.m_default = DARKGREY;
-#endif
-        Contam_Bar.m_change_pos = Contam_Bar.m_change_neg = DARKGREY;
-    }
-
-#ifdef TOUCH_UI
-    if (tiles.is_using_small_layout())
-        Contam_Bar.vdraw(6, 10, contam, max_contam);
-    else
-#endif
-    Contam_Bar.draw(19, y, contam, max_contam);
-}
-#endif
 static void _print_stats_hp(int x, int y)
 {
     int max_max_hp = get_real_hp(true, true);
-#if TAG_MAJOR_VERSION == 34
     if (you.species == SP_DJINNI)
+    {
         max_max_hp += get_real_mp(true);
-#endif
+        max_max_hp += get_real_sp(true);
+    }
 
     // Calculate colour
     short hp_colour = HUD_VALUE_COLOUR;
@@ -703,7 +724,7 @@ static void _print_stats_hp(int x, int y)
     else
     {
         const int hp_percent =
-            (you.hp * 100) / get_real_hp(true, false);
+            (get_hp() * 100) / get_real_hp(true, false);
 
         for (const auto &entry : Options.hp_colour)
             if (hp_percent <= entry.first)
@@ -714,18 +735,18 @@ static void _print_stats_hp(int x, int y)
     // Health: xxx/yyy (zzz)
     CGOTOXY(x, y, GOTO_STAT);
     textcolour(HUD_CAPTION_COLOUR);
-#if TAG_MAJOR_VERSION == 34
+
     if (you.species == SP_DJINNI)
         CPRINTF(player_rotted() ? "EP: " : "Essence: ");
     else
-#endif
-    CPRINTF(player_rotted() ? "HP: " : "Health: ");
+        CPRINTF(player_rotted() ? "HP: " : "Health: ");
+
     textcolour(hp_colour);
-    CPRINTF("%d", you.hp);
+    CPRINTF("%d", get_hp());
     if (!boosted)
         textcolour(HUD_VALUE_COLOUR);
-    CPRINTF("/%d", you.hp_max);
-    if (max_max_hp != you.hp_max)
+    CPRINTF("/%d", get_hp_max());
+    if (max_max_hp != get_hp_max())
         CPRINTF(" (%d)", max_max_hp);
     if (boosted)
         textcolour(HUD_VALUE_COLOUR);
@@ -737,23 +758,17 @@ static void _print_stats_hp(int x, int y)
 #ifdef USE_TILE_LOCAL
     if (tiles.is_using_small_layout())
     {
-#if TAG_MAJOR_VERSION == 34
         if (you.species == SP_DJINNI)
-            EP_Bar.vdraw(2, 10, you.hp, you.hp_max);
+            EP_Bar.vdraw(2, 10, get_hp(), get_hp_max());
         else
-#endif
-        HP_Bar.vdraw(2, 10, you.hp, you.hp_max);
+            HP_Bar.vdraw(2, 10, get_hp(), get_hp_max());
     }
     else
 #endif
-#if TAG_MAJOR_VERSION == 34
     if (you.species == SP_DJINNI)
-        EP_Bar.draw(19, y, you.hp, you.hp_max);
+        EP_Bar.draw(19, y, get_hp(), get_hp_max());
     else
-        HP_Bar.draw(19, y, you.hp, you.hp_max, false, you.hp - max(0, poison_survival()));
-#else
-        HP_Bar.draw(19, y, you.hp, you.hp_max, you.hp - max(0, poison_survival()));
-#endif
+        HP_Bar.draw(19, y, get_hp(), get_hp_max(), false, get_hp() - max(0, poison_survival()));
 }
 
 static short _get_stat_colour(stat_type stat)
@@ -770,7 +785,6 @@ static short _get_stat_colour(stat_type stat)
     if (you.duration[DUR_DIVINE_STAMINA]
         || stat == STAT_STR && you.duration[DUR_MIGHT]
         || stat == STAT_STR && you.duration[DUR_BERSERK]
-        || stat == STAT_STR && you.duration[DUR_FORTITUDE]
         || stat == STAT_INT && you.duration[DUR_BRILLIANCE]
         || stat == STAT_DEX && you.duration[DUR_AGILITY])
     {
@@ -893,7 +907,18 @@ static void _print_stats_wp(int y)
     textcolour(LIGHTGREY);
 }
 
-static void _print_stats_qv(int y)
+static void _print_stats_hit_chance()
+{
+    textcolour(HUD_VALUE_COLOUR);
+
+    CGOTOXY(1 + 15, hit_row, GOTO_STAT);
+    CPRINTF("%2d%%", you.last_be_hit_chance);
+
+    CGOTOXY(19 + 15, hit_row, GOTO_STAT);
+    CPRINTF("%2d%%", you.last_to_hit_chance);
+}
+
+static void _print_stats_qv()
 {
     int col;
     string text;
@@ -903,7 +928,7 @@ static void _print_stats_qv(int y)
     char hud_letter = '-';
     if (q != -1 && !fire_warn_if_impossible(true))
     {
-        const item_def& quiver = you.inv[q];
+        const item_def& quiver = you.inv1[q];
         hud_letter = index_to_letter(quiver.link);
         const string prefix = item_prefix(quiver);
         const int prefcol =
@@ -927,7 +952,7 @@ static void _print_stats_qv(int y)
             text = "Nothing quivered";
         }
     }
-    CGOTOXY(1, y, GOTO_STAT);
+    CGOTOXY(1, quiver_row, GOTO_STAT);
     textcolour(HUD_CAPTION_COLOUR);
     CPRINTF("%c) ", hud_letter);
     textcolour(col);
@@ -1026,7 +1051,7 @@ static void _get_status_lights(vector<status_light>& out)
             _add_status_light_to_out(status, out);
 }
 
-static void _print_status_lights(int y)
+static void _print_status_lights()
 {
     vector<status_light> lights;
     static int last_number_of_lights = 0;
@@ -1035,10 +1060,10 @@ static void _print_status_lights(int y)
         return;
     last_number_of_lights = lights.size();
 
-    size_t line_cur = y;
+    size_t line_cur = status_row;
     const size_t line_end = crawl_view.hudsz.y+1;
 
-    CGOTOXY(1, line_cur, GOTO_STAT);
+    CGOTOXY(1, status_row, GOTO_STAT);
 #ifdef ASSERTS
     if (wherex() != crawl_view.hudp.x)
     {
@@ -1113,6 +1138,7 @@ static bool _need_stats_printed()
 {
     return you.redraw_title
            || you.redraw_hit_points
+           || you.redraw_stamina_points
            || you.redraw_magic_points
            || you.redraw_armour_class
            || you.redraw_evasion
@@ -1129,7 +1155,7 @@ static void _draw_wizmode_flag(const char *word)
 {
     textcolour(LIGHTMAGENTA);
     // 3+ for the " **"
-    CGOTOXY(1 + crawl_view.hudsz.x - (3 + strlen(word)), 1, GOTO_STAT);
+    CGOTOXY(1 + crawl_view.hudsz.x - (3 + strlen(word)) - 2, 1, GOTO_STAT);
     CPRINTF(" *%s*", word);
 }
 
@@ -1170,10 +1196,21 @@ static void _redraw_title()
     CGOTOXY(1, 1, GOTO_STAT);
     textcolour(small_layout && you.wizard ? LIGHTMAGENTA : YELLOW);
     CPRINTF("%s", chop_string(title, WIDTH).c_str());
-    if (you.wizard && !small_layout)
-        _draw_wizmode_flag("WIZARD");
-    else if (you.explore && !small_layout)
-        _draw_wizmode_flag("EXPLORE");
+//    if (!small_layout)
+//    {
+        if (you.wizard)
+            _draw_wizmode_flag("WIZARD");
+        else if (you.explore)
+            _draw_wizmode_flag("EXPLORE");
+        else if (crawl_state.difficulty == DIFFICULTY_EASY)
+            _draw_wizmode_flag("EASY");
+        else if (crawl_state.difficulty == DIFFICULTY_STANDARD)
+            _draw_wizmode_flag("STANDARD");
+        else if (crawl_state.difficulty == DIFFICULTY_CHALLENGE)
+            _draw_wizmode_flag("CHALLENGE");
+        else if (crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
+            _draw_wizmode_flag("NIGHTMARE");
+//    }
 #ifdef DGL_SIMPLE_MESSAGING
     update_message_status();
 #endif
@@ -1191,19 +1228,19 @@ static void _redraw_title()
                                       : god_name(you.religion);
         NOWRAP_EOL_CPRINTF("%s", god.c_str());
 
-        string piety = _god_asterisks();
+        const string piety_stars = _god_asterisks();
         textcolour(_god_status_colour(YELLOW));
-        if ((unsigned int)(strwidth(species) + strwidth(god) + strwidth(piety) + 1)
+        if ((unsigned int)(strwidth(species) + strwidth(god) + 5 + 1)
             <= WIDTH)
         {
-            NOWRAP_EOL_CPRINTF(" %s", piety.c_str());
+            NOWRAP_EOL_CPRINTF(" %d %s", you.piety, piety_stars.c_str());
         }
-        else if ((unsigned int)(strwidth(species) + strwidth(god) + strwidth(piety) + 1)
-                  == (WIDTH + 1))
+        else if ((unsigned int)(strwidth(species) + strwidth(god) + 5 + 1)
+                  > WIDTH)
         {
             //mottled draconian of TSO doesn't fit by one symbol,
             //so we remove leading space.
-            NOWRAP_EOL_CPRINTF("%s", piety.c_str());
+            NOWRAP_EOL_CPRINTF("(%d)", you.piety);
         }
     }
     else if (you.char_class == JOB_MONK && you.species != SP_DEMIGOD
@@ -1222,16 +1259,7 @@ static void _redraw_title()
 
 void print_stats()
 {
-#if TAG_MAJOR_VERSION == 34
-    int temp = (you.species == SP_LAVA_ORC) ? 1 : 0;
-    int temp_pos = 5;
-    int ac_pos = temp_pos + temp;
-    int ev_pos = temp_pos + temp + 1;
-#else
-    int ac_pos = 5;
-    int ev_pos = ac_pos + 1;
-#endif
-
+    update_row_info();
     cursor_control coff(false);
     textcolour(LIGHTGREY);
 
@@ -1244,12 +1272,12 @@ void print_stats()
 
     if (HP_Bar.wants_redraw())
         you.redraw_hit_points = true;
+    if (SP_Bar.wants_redraw())
+        you.redraw_stamina_points = true;
     if (MP_Bar.wants_redraw())
         you.redraw_magic_points = true;
-#if TAG_MAJOR_VERSION == 34
     if (Temp_Bar.wants_redraw() && you.species == SP_LAVA_ORC)
         you.redraw_temperature = true;
-#endif
 
     // Poison display depends on regen rate, so should be redrawn every turn.
     if (you.duration[DUR_POISONING])
@@ -1270,50 +1298,47 @@ void print_stats()
     if (you.redraw_hit_points)
     {
         you.redraw_hit_points = false;
-        _print_stats_hp(1, 3);
+        _print_stats_hp(1, hp_row);
+    }
+    if (you.redraw_stamina_points)
+    {
+        you.redraw_stamina_points = false;
+        _print_stats_sp(1, sp_row);
     }
     if (you.redraw_magic_points)
     {
         you.redraw_magic_points = false;
-        _print_stats_mp(1, 4);
+        _print_stats_mp(1, mp_row);
     }
-#if TAG_MAJOR_VERSION == 34
-    _print_stats_contam(1, 4);
-    if (you.redraw_temperature)
+    if (you.species == SP_LAVA_ORC)
     {
-        you.redraw_temperature = false;
-        _print_stats_temperature(1, temp_pos);
+        if (you.redraw_temperature)
+        {
+            you.redraw_temperature = false;
+            _print_stats_temperature(1, temp_row);
+        }
     }
-#endif
     if (you.redraw_armour_class)
     {
         you.redraw_armour_class = false;
-        _print_stats_ac(1, ac_pos);
+        _print_stats_ac(1, ac_row);
     }
     if (you.redraw_evasion)
     {
         you.redraw_evasion = false;
-        _print_stats_ev(1, ev_pos);
+        _print_stats_ev(1, ev_row);
     }
 
     for (int i = 0; i < NUM_STATS; ++i)
         if (you.redraw_stats[i])
         {
-#if TAG_MAJOR_VERSION == 34
-            _print_stat(static_cast<stat_type>(i), 19, 5 + i + temp);
-#else
-            _print_stat(static_cast<stat_type>(i), 19, 5 + i);
-#endif
+            _print_stat(static_cast<stat_type>(i), 19, stat_row + i);
         }
     you.redraw_stats.init(false);
 
     if (you.redraw_experience)
     {
-#if TAG_MAJOR_VERSION == 34
-        CGOTOXY(1, 8 + temp, GOTO_STAT);
-#else
-        CGOTOXY(1, 8, GOTO_STAT);
-#endif
+        CGOTOXY(1, xl_row, GOTO_STAT);
         textcolour(Options.status_caption_colour);
         CPRINTF("XL: ");
         textcolour(HUD_VALUE_COLOUR);
@@ -1330,20 +1355,12 @@ void print_stats()
         you.redraw_experience = false;
     }
 
-#if TAG_MAJOR_VERSION == 34
-    int yhack = temp;
-#else
-    int yhack = 0;
-#endif
-
-    // Line 9 is Gold and Turns
 #ifdef USE_TILE_LOCAL
     if (!tiles.is_using_small_layout())
 #endif
     {
         // Increase y-value for all following lines.
-        yhack++;
-        CGOTOXY(1+6, 8 + yhack, GOTO_STAT);
+        CGOTOXY(1+6, gold_row, GOTO_STAT);
         if (you.duration[DUR_GOZAG_GOLD_AURA])
             textcolour(LIGHTBLUE);
         else
@@ -1363,25 +1380,29 @@ void print_stats()
         // Also, it's a little bogus to change simulation state in
         // render code. We should find a better place for this.
         you.m_quiver.on_weapon_changed();
-        _print_stats_wp(9 + yhack);
+        _print_stats_wp(wield_row);
     }
     you.wield_change  = false;
 
-    if (you.species == SP_FELID)
+    if (you.redraw_hit_chance)
     {
-        // There are no circumstances under which Felids could quiver something.
-        // Reduce line counter for status display.
-        yhack -= 1;
+        _print_stats_hit_chance();
+        you.redraw_hit_chance = false;
     }
-    else if (you.redraw_quiver || you.wield_change)
-        _print_stats_qv(10 + yhack);
 
-    you.redraw_quiver = false;
+    if (you.species != SP_FELID)
+    {
+        if (you.redraw_quiver || you.wield_change)
+        {
+            _print_stats_qv();
+            you.redraw_quiver = false;
+        }
+    }
 
     if (you.redraw_status_lights)
     {
         you.redraw_status_lights = false;
-        _print_status_lights(11 + yhack);
+        _print_status_lights();
     }
     textcolour(LIGHTGREY);
 
@@ -1408,12 +1429,7 @@ static string _level_description_string_hud()
 
 void print_stats_level()
 {
-    int ypos = 8;
-#if TAG_MAJOR_VERSION == 34
-    if (you.species == SP_LAVA_ORC)
-        ypos++;
-#endif
-    cgotoxy(19, ypos, GOTO_STAT);
+    cgotoxy(19, place_row, GOTO_STAT);
     textcolour(HUD_CAPTION_COLOUR);
     CPRINTF("Place: ");
 
@@ -1427,53 +1443,51 @@ void print_stats_level()
 
 void draw_border()
 {
+    update_row_info();
+
     textcolour(HUD_CAPTION_COLOUR);
     clrscr();
 
     textcolour(Options.status_caption_colour);
 
-#if TAG_MAJOR_VERSION == 34
-    int temp = (you.species == SP_LAVA_ORC) ? 1 : 0;
-#endif
-//    int hp_pos = 3;
-    int mp_pos = 4;
-#if TAG_MAJOR_VERSION == 34
-    int ac_pos = 5 + temp;
-    int ev_pos = 6 + temp;
-    int sh_pos = 7 + temp;
-#else
-    int ac_pos = 5;
-    int ev_pos = 6;
-    int sh_pos = 7;
-#endif
-    int str_pos = ac_pos;
-    int int_pos = ev_pos;
-    int dex_pos = sh_pos;
+    CGOTOXY(1, ac_row, GOTO_STAT); CPRINTF("AC:");
+    CGOTOXY(1, ev_row, GOTO_STAT); CPRINTF("EV:");
+    CGOTOXY(1, sh_row, GOTO_STAT); CPRINTF("SH:");
 
-    //CGOTOXY(1, 3, GOTO_STAT); CPRINTF("Hp:");
-    CGOTOXY(1, mp_pos, GOTO_STAT);
-#if TAG_MAJOR_VERSION == 34
-    if (you.species == SP_DJINNI)
-        CPRINTF("Contam:");
-    else
-#endif
-    CGOTOXY(1, ac_pos, GOTO_STAT); CPRINTF("AC:");
-    CGOTOXY(1, ev_pos, GOTO_STAT); CPRINTF("EV:");
-    CGOTOXY(1, sh_pos, GOTO_STAT); CPRINTF("SH:");
+    CGOTOXY(19, str_row, GOTO_STAT); CPRINTF("Str:");
+    CGOTOXY(19, int_row, GOTO_STAT); CPRINTF("Int:");
+    CGOTOXY(19, dex_row, GOTO_STAT); CPRINTF("Dex:");
 
-    CGOTOXY(19, str_pos, GOTO_STAT); CPRINTF("Str:");
-    CGOTOXY(19, int_pos, GOTO_STAT); CPRINTF("Int:");
-    CGOTOXY(19, dex_pos, GOTO_STAT); CPRINTF("Dex:");
-
-#if TAG_MAJOR_VERSION == 34
-    int yhack = temp;
-#else
-    int yhack = 0;
-#endif
-    CGOTOXY(1, 9 + yhack, GOTO_STAT); CPRINTF("Gold:");
-    CGOTOXY(19, 9 + yhack, GOTO_STAT);
+    CGOTOXY(1, gold_row, GOTO_STAT); CPRINTF("Gold:");
+    CGOTOXY(19, time_row, GOTO_STAT);
     CPRINTF(Options.show_game_turns ? "Time:" : "Turn:");
-    // Line 8 is exp pool, Level
+
+    CGOTOXY(1, hit_row, GOTO_STAT);
+    CPRINTF("Be Hit Chance:");
+    CGOTOXY(19, hit_row, GOTO_STAT);
+    CPRINTF("To Hit Chance:");
+}
+
+void update_row_info()
+{
+    int row = 2;
+    hp_row = ++row;
+    if (you.species != SP_DJINNI)
+    {
+        sp_row = ++row;
+        mp_row = ++row;
+    }
+    if (you.species == SP_LAVA_ORC)
+        temp_row = ++row;
+    ac_row = str_row = stat_row = ++row;
+    ev_row = int_row = ++row;
+    sh_row = dex_row = ++row;
+    xl_row = place_row = ++row;
+    gold_row = time_row = ++row;
+    hit_row = ++row;
+    wield_row = ++row;
+    quiver_row = ++row;
+    status_row = ++row;
 }
 
 void redraw_screen()
@@ -1493,17 +1507,17 @@ void redraw_screen()
 
     you.redraw_title        = true;
     you.redraw_hit_points   = true;
+    you.redraw_stamina_points = true;
     you.redraw_magic_points = true;
-#if TAG_MAJOR_VERSION == 34
     if (you.species == SP_LAVA_ORC)
         you.redraw_temperature = true;
-#endif
     you.redraw_stats.init(true);
     you.redraw_armour_class  = true;
     you.redraw_evasion       = true;
     you.redraw_experience    = true;
     you.wield_change         = true;
     you.redraw_quiver        = true;
+    you.redraw_hit_chance    = true;
     you.redraw_status_lights = true;
 
     print_stats();
@@ -1891,7 +1905,7 @@ static string _stealth_bar(int sw)
     string bar;
     //no colouring
     bar += _determine_colour_string(0, 5);
-    bar += "Stlth  ";
+    bar += "Stlth     ";
     const int stealth_num = _stealth_breakpoint(check_stealth());
     for (int i = 0; i < stealth_num; i++)
         bar += "+";
@@ -1928,7 +1942,7 @@ static void _print_overview_screen_equip(column_composer& cols,
             continue;
         }
 
-        if (you.species != SP_OCTOPODE
+        if (you.species != SP_OCTOPODE && you.species != SP_FELID
             && eqslot >= EQ_RING_ONE && eqslot <= EQ_RING_EIGHT)
         {
             continue;
@@ -2150,7 +2164,7 @@ static vector<formatted_string> _get_overview_stats()
     else
         entry.textcolour(HUD_VALUE_COLOUR);
 
-    entry.cprintf("%d/%d", you.hp, you.hp_max);
+    entry.cprintf("%d/%d", get_hp(), get_hp_max());
     if (player_rotted())
         entry.cprintf(" (%d)", get_real_hp(true, true));
 
@@ -2168,7 +2182,7 @@ static vector<formatted_string> _get_overview_stats()
     else
         entry.textcolour(HUD_VALUE_COLOUR);
 
-    entry.cprintf("%d/%d", you.magic_points, you.max_magic_points);
+    entry.cprintf("%d/%d", get_mp(), get_mp_max());
 
     cols.add_formatted(0, entry.to_colour_string(), false);
     entry.clear();
@@ -2350,9 +2364,9 @@ static vector<formatted_string> _get_overview_resistances(
     vector<char> &equip_chars, bool calc_unid, int sw)
 {
     // 3 columns, splits at columns 19, 33
-    column_composer cols(3, 19, 33);
+    column_composer cols(3, 19 + 3, 33 + 3);
     // First column, resist name is 7 chars
-    int cwidth = 7;
+    int cwidth = 7 + 3;
     string out;
 
     const int rfire = player_res_fire(calc_unid);
@@ -2363,6 +2377,12 @@ static vector<formatted_string> _get_overview_resistances(
 
     const int rlife = player_prot_life(calc_unid);
     out += _resist_composer("rNeg", cwidth, rlife, 3) + "\n";
+
+    const int ms = you.magic_shield(calc_unid);
+    out += _resist_composer("MagicSh", cwidth, ms, 3) + "\n";
+
+    const int ss = you.stamina_shield(calc_unid);
+    out += _resist_composer("StaminaSh", cwidth, ss, 3) + "\n";
 
     const int rpois = player_res_poison(calc_unid);
     string rpois_string = _resist_composer("rPois", cwidth, rpois) + "\n";
@@ -2385,9 +2405,6 @@ static vector<formatted_string> _get_overview_resistances(
     if (rmuta)
         out += _resist_composer("rMut", cwidth, rmuta) + "\n";
 
-    const int rsust = player_sust_attr(calc_unid);
-    out += _resist_composer("SustAt", cwidth, rsust) + "\n";
-
     const int rmagi = player_res_magic(calc_unid) / MR_PIP;
     out += _resist_composer("MR", cwidth, rmagi, 5) + "\n";
 
@@ -2397,7 +2414,7 @@ static vector<formatted_string> _get_overview_resistances(
 
     // Second column, resist name is 9 chars
     out.clear();
-    cwidth = 9;
+    cwidth = 10;
     const int rinvi = you.can_see_invisible(calc_unid);
     out += _resist_composer("SeeInvis", cwidth, rinvi) + "\n";
 
@@ -2407,8 +2424,8 @@ static vector<formatted_string> _get_overview_resistances(
     const int faith = you.faith(calc_unid);
     out += _resist_composer("Faith", cwidth, faith) + "\n";
 
-    const int rspir = you.spirit_shield(calc_unid);
-    out += _resist_composer("Spirit", cwidth, rspir) + "\n";
+    const int rsust = player_sust_attr(calc_unid);
+    out += _resist_composer("SustAt", cwidth, rsust) + "\n";
 
     const int rward = you.dismissal(calc_unid);
     out += _resist_composer("Dismiss", cwidth, rward) + "\n";
@@ -2527,7 +2544,7 @@ void print_overview_screen()
         if (!c)
             break;
 
-        item_def& item = you.inv[letter_to_index(c)];
+        item_def& item = you.inv1[letter_to_index(c)];
         if (!describe_item(item))
             break;
         // loop around for another go.
@@ -2633,7 +2650,7 @@ static string _status_mut_abilities(int sw)
     }
 
     // a bit more stuff
-    if (you.species == SP_OGRE || you.species == SP_TROLL
+    if (you.species == SP_OGRE || you.species == SP_CAVE_TROLL || you.species == SP_MOON_TROLL
         || species_is_draconian(you.species) || you.species == SP_SPRIGGAN)
     {
         mutations.emplace_back("unfitting armour");
@@ -2712,8 +2729,8 @@ static string _status_mut_abilities(int sw)
     {
         text += make_stringf("\n<w>%s:</w> %d/%d rune%s: %s",
                     stringize_glyph(get_item_symbol(SHOW_ITEM_MISCELLANY)).c_str(),
-                    (int)runes.size(), you.obtainable_runes,
-                    you.obtainable_runes == 1 ? "" : "s",
+                    (int)runes.size(), OBTAINABLE_RUNES,
+                    OBTAINABLE_RUNES == 1 ? "" : "s",
                     comma_separated_line(runes.begin(), runes.end(),
                                          ", ", ", ").c_str());
     }

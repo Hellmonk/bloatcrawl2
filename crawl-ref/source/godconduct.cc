@@ -774,7 +774,7 @@ static like_map divine_likes[] =
                     return;
 
                 const int level = denom; // also = piety
-                denom = level / 2 + 6 - you.experience_level / 4;
+                denom = level / 2 + 6 - effective_xl() / 4;
                 piety = denom - 4;
             }
         } },
@@ -838,7 +838,7 @@ static like_map divine_likes[] =
             [] (int &piety, int &denom, const monster* /*victim*/)
             {
                 // piety = denom = level at the start of the function
-                denom = 4;
+                denom = 1;
             }
         } },
     },

@@ -26,19 +26,15 @@ function abyss_entry(e, glyph)
   e.depth_chance("Depths:1-3", 3333)
   e.depth_chance("Depths:4",   10000)
   e.depth_chance("Depths:5-",  3333)
-  e.depth_chance("D:21-24", 3333)
-  e.depth_chance("D:25",    10000)
-  e.depth_chance("D:26-",   3333)
   e.kfeat(glyph .. ' = enter_abyss')
 end
 }}
 
 ###############################################################################
 # Abyss entries.
-# 1/3 chance to appear on D:21-27, and guaranteed on D:25.
 ###############################################################################
 
-default-depth: Depths, D:21-
+default-depth: Depths
 
 # This one is the backup and the one used in encompass vaults.
 NAME: abyss_entry
@@ -204,6 +200,8 @@ CHANCE: 0 : 80% (Abyss:2)
 CHANCE: 0 : 70% (Abyss:3)
 CHANCE: 0 : 60% (Abyss:4)
 CHANCE: 0 : 50% (Abyss:5)
+CHANCE: 0 : 40% (Abyss:6)
+CHANCE: 0 : 30% (Abyss:7)
 
 NAME: abyss_rune_dummy
 TAGS: abyss_rune unrand dummy
@@ -217,6 +215,8 @@ CHANCE: 0 : 90% (Abyss:2)
 CHANCE: 0 : 85% (Abyss:3)
 CHANCE: 0 : 80% (Abyss:4)
 CHANCE: 0 : 75% (Abyss:5)
+CHANCE: 0 : 70% (Abyss:6)
+CHANCE: 0 : 65% (Abyss:7)
 
 NAME:    abyss_fake_exit
 TAGS:    allow_dup
@@ -334,12 +334,14 @@ C   111111 ww 111111   C
 ENDMAP
 
 NAME:   hangedman_abyss_sting
-TAGS:   no_item_gen no_monster_gen
+TAGS:   no_item_gen no_monster_gen uniq_wasphive
 KMONS:  1 = orange demon
 KMONS:  2 = hornet / wasp / killer bee w:2 / nothing w:2
 KMONS:  3 = death drake / green death
 KFEAT:  123 = W
-KITEM:  23 = royal jelly / nothing
+KITEM:  3 = royal jelly
+COLOUR: x = yellow
+TILE:   x = wall_wax
 MAP
  xxxxxxx
 xx22222xx
@@ -825,7 +827,7 @@ ENDMAP
 
 NAME:    hangedman_abyss_or_decor_clamps
 TAGS:    transparent no_pool_fixup decor
-DEPTH:   D:8-, Depths, Abyss
+DEPTH:   Lair, Orc, Forest, Depths, Abyss
 KFEAT:   @ = +
 SHUFFLE: ABCDEFGH, '"
 : if you.in_branch("Abyss") then
@@ -1454,7 +1456,7 @@ KITEM:   4d = scroll of random uselessness w:15 q:1 / fruit q:1 w:4 / \
          club w:6 / stone q:1 / needle q:1 ego:confusion / \
          mundane animal skin / mundane ring mail / gold q:1
 KITEM:   5 = wand of slowing / wand of confusion / wand of flame w:5 / \
-         plain deck w:5 / whip not_cursed w:2 / hat not_cursed mundane w:5
+         whip not_cursed w:2 / hat not_cursed mundane w:5
 KITEM:   6e = abyssal rune of zot mimic
 KITEM:   O = abyssal rune of zot
 KFEAT:   A = stone_arch
@@ -1979,6 +1981,23 @@ cc..2..........cc
        ccc
 ENDMAP
 
+NAME:  evilmike_abyss_exit_disperse
+TAGS:  abyss_exit
+SUBST: . = .:100 2
+MONS:  centaur; shortbow . arrow ego:dispersal, plant
+: init_abyss_exit(_G, "O")
+MAP
+     xxx xxx xxx
+   xxx1xxx1xxx1x
+ xxx....x...x..xxx
+xx...............x
+x1.Ox............+@
+xx...............x
+ xxx....x...x..xxx
+   xxx1xxx1xxx1x
+     xxx xxx xxx
+ENDMAP
+
 NAME:    hangedman_abyss_exit_choices
 TAGS:    abyss_exit unrand no_monster_gen
 MONS:    hell hound, raiju, great orb of eyes
@@ -2151,7 +2170,7 @@ ENDMAP
 
 NAME:  bh_abyss_exit_choice
 TAGS:  abyss_exit unrand transparent
-DEPTH: Abyss:1-4
+DEPTH: Abyss:1-6
 KFEAT: <: exit_abyss
 KFEAT: >: abyssal_stair
 MAP

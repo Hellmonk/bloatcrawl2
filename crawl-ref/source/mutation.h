@@ -47,7 +47,9 @@ string describe_mutations(bool center_title);
 bool delete_mutation(mutation_type which_mutation, const string &reason,
                      bool failMsg = true,
                      bool force_mutation = false, bool god_gift = false,
-                     bool disallow_mismatch = false);
+                     bool disallow_mismatch = false,
+					 bool even_if_innate = false
+					 );
 
 bool delete_all_mutations(const string &reason);
 

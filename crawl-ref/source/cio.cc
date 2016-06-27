@@ -151,9 +151,9 @@ static void wrapcprint_skipping(int skiplines, int wrapcol, const string &buf)
     size_t linestart = 0;
     size_t len = buf.length();
 
+    coord_def pos = cgetpos(region);
     while (linestart < len)
     {
-        const coord_def pos = cgetpos(region);
 
         const int avail = wrapcol - pos.x + 1;
         if (avail > 0)
@@ -162,6 +162,12 @@ static void wrapcprint_skipping(int skiplines, int wrapcol, const string &buf)
             linestart += line.length();
             if (skiplines == 0)
                 cprintf("%s", line.c_str());
+            pos = cgetpos(region);
+        }
+        else
+        {
+            pos.y++;
+            pos.x = crawl_view.msgp.x;
         }
 
         // No room for more lines, quit now.

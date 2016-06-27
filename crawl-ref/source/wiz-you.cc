@@ -109,7 +109,7 @@ static xom_event_type _find_xom_event_from_string(const string &event_name)
 
     xom_event_type x = XOM_DID_NOTHING;
 
-    for (int i = 0; i < XOM_LAST_REAL_ACT; ++i)
+    for (int i = 0; i <= XOM_LAST_REAL_ACT; ++i)
     {
         const xom_event_type xi = static_cast<xom_event_type>(i);
         const string x_name = lowercase_string(xom_effect_to_name(xi));
@@ -208,8 +208,8 @@ void wizard_change_species_to(species_type sp)
             && you.equip[i] != -1)
         {
             mprf("%s fall%s away.",
-                 you.inv[you.equip[i]].name(DESC_YOUR).c_str(),
-                 you.inv[you.equip[i]].quantity > 1 ? "" : "s");
+                 you.inv1[you.equip[i]].name(DESC_YOUR).c_str(),
+                 you.inv1[you.equip[i]].quantity > 1 ? "" : "s");
             // Unwear items without the usual processing.
             you.equip[i] = -1;
             you.melded.set(i, false);
@@ -252,9 +252,7 @@ void wizard_change_species()
 
     wizard_change_species_to(sp);
 }
-#endif
 
-#ifdef WIZARD
 // Casts a specific spell by number or name.
 void wizard_cast_spec_spell()
 {
@@ -315,7 +313,6 @@ void wizard_memorise_spec_spell()
     if (!learn_spell(static_cast<spell_type>(spell), true))
         crawl_state.cancel_cmd_repeat();
 }
-#endif
 
 void wizard_heal(bool super_heal)
 {
@@ -348,8 +345,8 @@ void wizard_heal(bool super_heal)
     you.duration[DUR_CONF]      = 0;
     you.duration[DUR_POISONING] = 0;
     you.duration[DUR_EXHAUSTED] = 0;
-    set_hp(you.hp_max);
-    set_mp(you.max_magic_points);
+    set_hp(get_hp_max());
+    set_mp(get_mp_max());
     set_hunger(HUNGER_VERY_FULL + 100, true);
     you.redraw_hit_points = true;
     you.redraw_armour_class = true;
@@ -492,7 +489,6 @@ void wizard_set_piety()
     wizard_set_piety_to(atoi(buf));
 }
 
-#ifdef WIZARD
 void wizard_exercise_skill()
 {
     skill_type skill = debug_prompt_for_skill("Which skill (by name)? ");
@@ -505,9 +501,7 @@ void wizard_exercise_skill()
         exercise(skill, 10);
     }
 }
-#endif
 
-#ifdef WIZARD
 void wizard_set_skill_level(skill_type skill)
 {
     if (skill == SK_NONE)
@@ -522,7 +516,7 @@ void wizard_set_skill_level(skill_type skill)
     mpr(skill_name(skill));
     double amount = prompt_for_float("To what level? ");
 
-    if (amount < 0 || amount > 27)
+    if (amount < 0 || amount > get_max_exp_level())
     {
         canned_msg(MSG_OK);
         return;
@@ -532,10 +526,10 @@ void wizard_set_skill_level(skill_type skill)
 
     set_skill_level(skill, amount);
 
-    if (amount == 27)
+    if (amount == get_max_exp_level())
     {
-        you.train[skill] = 0;
-        you.train_alt[skill] = 0;
+        you.train[skill] = TRAINING_DISABLED;
+        you.train_alt[skill] = TRAINING_DISABLED;
         reset_training();
         check_selected_skills();
     }
@@ -547,9 +541,7 @@ void wizard_set_skill_level(skill_type skill)
                                                           : "Reset"),
          skill_name(skill), amount);
 }
-#endif
 
-#ifdef WIZARD
 void wizard_set_all_skills()
 {
     double amount = prompt_for_float("Set all skills to what level? ");
@@ -558,8 +550,8 @@ void wizard_set_all_skills()
         canned_msg(MSG_OK);
     else
     {
-        if (amount > 27)
-            amount = 27;
+        if (amount > get_max_skill_level())
+            amount = get_max_skill_level();
 
         for (skill_type sk = SK_FIRST_SKILL; sk < NUM_SKILLS; ++sk)
         {
@@ -568,9 +560,9 @@ void wizard_set_all_skills()
 
             set_skill_level(sk, amount);
 
-            if (amount == 27)
+            if (amount == get_max_skill_level())
             {
-                you.train[sk] = 0;
+                you.train[sk] = TRAINING_DISABLED;
                 you.training[sk] = 0;
             }
         }
@@ -586,9 +578,7 @@ void wizard_set_all_skills()
         you.redraw_evasion = true;
     }
 }
-#endif
 
-#ifdef WIZARD
 bool wizard_add_mutation()
 {
     bool success = false;
@@ -751,7 +741,6 @@ bool wizard_add_mutation()
 
     return success;
 }
-#endif
 
 void wizard_set_abyss()
 {
@@ -928,7 +917,7 @@ static void debug_uptick_xl(int newxl, bool train)
  */
 static void debug_downtick_xl(int newxl)
 {
-    set_hp(you.hp_max);
+    set_hp(get_hp_max());
     // boost maxhp so we don't die if heavily rotted
     you.hp_max_adj_perm += 1000;
     you.experience = exp_needed(newxl);
@@ -938,7 +927,7 @@ static void debug_downtick_xl(int newxl)
     // restore maxhp loss
     you.hp_max_adj_perm -= 1000;
     calc_hp();
-    if (you.hp_max <= 0)
+    if (get_hp_max() <= 0)
     {
         // ... but remove it completely if unviable
         you.hp_max_adj_temp = max(you.hp_max_adj_temp, 0);
@@ -946,7 +935,7 @@ static void debug_downtick_xl(int newxl)
         calc_hp();
     }
 
-    set_hp(max(1, you.hp));
+    set_hp(max(1, get_hp()));
 }
 
 void wizard_set_xl()
@@ -1158,3 +1147,4 @@ void wizard_xom_acts()
     dprf("Okay, Xom is doing '%s'.", xom_effect_to_name(event).c_str());
     xom_take_action(event, severity);
 }
+#endif

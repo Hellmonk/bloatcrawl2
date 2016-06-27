@@ -376,7 +376,7 @@ bool player_in_a_dangerous_place(bool *invis)
     if (invis == nullptr)
         invis = &junk;
 
-    const double logexp = log((double)you.experience);
+    const double logexp = log((double)you.experience + 1);
     double gen_threat = 0.0, hi_threat = 0.0;
     _monster_threat_values(&gen_threat, &hi_threat, invis);
 
@@ -387,6 +387,8 @@ void bring_to_safety()
 {
     if (player_in_branch(BRANCH_ABYSS))
         return abyss_teleport();
+
+
 
     coord_def best_pos, pos;
     double min_threat = DBL_MAX;
@@ -437,7 +439,8 @@ void bring_to_safety()
 // This includes ALL afflictions, unlike wizard/Xom revive.
 void revive()
 {
-    adjust_level(-1);
+    // adjust_level(-1);
+
     // Allow a spare after two levels (we just lost one); the exact value
     // doesn't matter here.
     you.attribute[ATTR_LIFE_GAINED] = 0;
@@ -460,22 +463,30 @@ void revive()
     you.attribute[ATTR_INVIS_UNCANCELLABLE] = 0;
     you.attribute[ATTR_FLIGHT_UNCANCELLABLE] = 0;
     you.attribute[ATTR_XP_DRAIN] = 0;
+    you.attribute[ATTR_INSIGHT] = 0;
     if (you.duration[DUR_SCRYING])
         you.xray_vision = false;
+
+    set_exertion(EXERT_NORMAL, false);
+    set_quick_mode(false);
 
     for (int dur = 0; dur < NUM_DURATIONS; dur++)
         if (dur != DUR_GOURMAND && dur != DUR_PIETY_POOL)
             you.duration[dur] = 0;
 
+    you.props["corrosion_amount"] = 0;
+
     unrot_hp(9999);
     set_hp(9999);
     set_mp(9999);
+    set_sp(9999);
+
     you.dead = false;
 
     // Remove silence.
     invalidate_agrid();
 
-    if (you.hp_max <= 0)
+    if (get_hp_max() <= 0)
     {
         you.lives = 0;
         mpr("You are too frail to live.");
@@ -750,7 +761,7 @@ void swap_with_monster(monster* mon_to_swap)
         }
         else
         {
-            you.attribute[ATTR_HELD] = 10;
+            you.attribute[ATTR_HELD] = 1;
             if (get_trapping_net(you.pos()) != NON_ITEM)
                 mpr("You become entangled in the net!");
             else

@@ -66,8 +66,8 @@ int mons_tracking_range(const monster* mon)
 
 //#define DEBUG_PATHFIND
 monster_pathfind::monster_pathfind()
-    : mons(nullptr), start(), target(), pos(), allow_diagonals(true),
-      traverse_unmapped(false), range(0), min_length(0), max_length(0),
+    : mons(nullptr), start(), target(), pos(), min_length(0), allow_diagonals(true),
+      traverse_unmapped(false), range(0), max_length(0),
       dist(), prev(), hash()
 {
 }

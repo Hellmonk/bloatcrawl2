@@ -80,7 +80,7 @@ end
 }}
 
 NAME:   okawaru_arena_lexackson
-DEPTH:  D:9-
+DEPTH:  Lair, Orc
 WEIGHT: 3
 ORIENT: float
 TAGS:   no_item_gen no_monster_gen generate_awake no_rotate no_hmirror

@@ -271,8 +271,34 @@ void practise(exer_type ex, int param1)
     case EX_WAIT:
         _exercise_passive();
         break;
+
+    case EX_DID_USE_DECK:
+        exercise(SK_INVOCATIONS, 1);
+        break;
+
     default:
         break;
+    }
+
+    // Doing a second switch to reduce code duplication
+    // If we did an action that's plausibly an attack, we might gain Uskayaw
+    // piety, assuming monsters were also damaged.
+    // We handle melee attacks in melee_attack::player_exercise_combat_skills()
+    // because it only calls practice() sometimes.
+    switch (ex)
+    {
+        case EX_DID_ZAP_WAND:
+        case EX_DID_EVOKE_ITEM:
+        case EX_DID_USE_DECK:
+        case EX_DID_CAST:
+        case EX_USED_ABIL:
+        case EX_WILL_THROW_WEAPON:
+        case EX_WILL_THROW_MSL:
+        case EX_WILL_LAUNCH:
+        case EX_WILL_STAB:
+            you.props[USKAYAW_DID_DANCE_ACTION] = true;
+        default:
+            break;
     }
 
     // Doing a second switch to reduce code duplication

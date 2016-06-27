@@ -130,7 +130,7 @@ bool bless_weapon(god_type god, brand_type brand, colour_t colour)
 {
     ASSERT(can_do_capstone_ability(god));
 
-    int item_slot = prompt_invent_item("Brand which weapon?", MT_INVLIST,
+    int item_slot = prompt_invent_item(you.inv1, "Brand which weapon?", MT_INVLIST,
                                        OSEL_BLESSABLE_WEAPON, true, true,
                                        false);
 
@@ -140,7 +140,7 @@ bool bless_weapon(god_type god, brand_type brand, colour_t colour)
         return false;
     }
 
-    item_def& wpn(you.inv[item_slot]);
+    item_def& wpn(you.inv1[item_slot]);
     // Only TSO allows blessing ranged weapons.
     if (!is_brandable_weapon(wpn, brand == SPWPN_HOLY_WRATH, true))
         return false;
@@ -172,7 +172,7 @@ bool bless_weapon(god_type god, brand_type brand, colour_t colour)
     enchant_weapon(wpn, true);
     enchant_weapon(wpn, true);
     if (wpn.cursed())
-        do_uncurse_item(wpn);
+        do_uncurse_item(wpn, MAX_CURSE_LEVEL);
 
     if (god == GOD_SHINING_ONE)
     {
@@ -421,7 +421,7 @@ static const char * const book_of_zin[][3] =
     {
         "To those who would swear an oath of @virtue@ on my altar...",
         "...I bring ye salvation. To the rest, ye @sinners@...",
-        "...and the @sin_adj@, the name of Zin shall be thy damnation.",
+        "...and the @sin_adj@, the name of Zin shall be thy hellfire.",
     },
 
     {
@@ -1089,16 +1089,19 @@ bool zin_recite_to_single_monster(const coord_def& where)
         break;
 
     case ZIN_SMITE:
+    {
+        int damage = 7 + (random2(spellpower) * 33 / 191);
         if (minor)
-            simple_monster_message(mon, " is smitten by the wrath of Zin.");
+            monster_message(mon, " is smitten by the wrath of Zin.");
         else
-            simple_monster_message(mon, " is blasted by the fury of Zin!");
+            monster_message(mon, " is blasted by the fury of Zin!");
         // XXX: This duplicates code in cast_smiting().
-        mon->hurt(&you, 7 + (random2(spellpower) * 33 / 191));
+        mon->hurt(&you, damage);
         if (mon->alive())
             print_wounds(mon);
         affected = true;
         break;
+    }
 
     case ZIN_BLIND:
         if (mon->add_ench(mon_enchant(ENCH_BLIND, degree, &you, INFINITE_DURATION)))
@@ -1160,18 +1163,19 @@ bool zin_recite_to_single_monster(const coord_def& where)
             dice_def dam_dice(0, 5 + spellpower/7);  // Dice added below if applicable.
             dam_dice.num = degree;
 
-            int damage = dam_dice.roll();
-            if (damage > 0)
+            int d = dam_dice.roll();
+            if (d > 0)
             {
-                mon->hurt(&you, damage, BEAM_MISSILE, KILLED_BY_BEAM,
+                mon->hurt(&you, d, BEAM_MISSILE, KILLED_BY_BEAM,
                           "", "", false);
 
                 if (mon->alive())
                 {
-                    simple_monster_message(mon,
-                      (damage < 25) ? "'s chaotic flesh sizzles and spatters!" :
-                      (damage < 50) ? "'s chaotic flesh bubbles and boils."
-                                    : "'s chaotic flesh runs like molten wax.");
+                    monster_message(mon,
+                      (d < 25) ? "'s chaotic flesh sizzles and spatters!" :
+                      (d < 50) ? "'s chaotic flesh bubbles and boils."
+                                    : "'s chaotic flesh runs like molten wax."
+                            );
 
                     print_wounds(mon);
                     behaviour_event(mon, ME_WHACK, &you);
@@ -1179,7 +1183,7 @@ bool zin_recite_to_single_monster(const coord_def& where)
                 }
                 else
                 {
-                    simple_monster_message(mon,
+                    monster_message(mon,
                         " melts away into a sizzling puddle of chaotic flesh.");
                     monster_die(mon, KILL_YOU, NON_MONSTER);
                 }
@@ -1424,21 +1428,22 @@ bool elyvilon_divine_vigour()
 
         const int vigour_amt =
             player_adjust_invoc_power(1 + you.skill_rdiv(SK_INVOCATIONS, 1, 3));
-        const int old_hp_max = you.hp_max;
-        const int old_mp_max = you.max_magic_points;
+        const int old_hp_max = get_hp_max();
+        const int old_mp_max = get_mp_max();
         you.attribute[ATTR_DIVINE_VIGOUR] = vigour_amt;
         you.set_duration(DUR_DIVINE_VIGOUR,
                          player_adjust_invoc_power(
                              40 + you.skill_rdiv(SK_INVOCATIONS, 5, 2)));
 
         calc_hp();
-        inc_hp((you.hp_max * you.hp + old_hp_max - 1)/old_hp_max - you.hp);
+        inc_hp((get_hp_max() * get_hp() + old_hp_max - 1)/old_hp_max - get_hp());
         calc_mp();
         if (old_mp_max > 0)
         {
-            inc_mp((you.max_magic_points * you.magic_points + old_mp_max - 1)
-                     / old_mp_max
-                   - you.magic_points);
+            const int gain = (get_mp_max() * get_mp() + old_mp_max - 1)
+                             / old_mp_max
+                             - get_mp();
+            inc_mp(gain * 3);
         }
 
         success = true;
@@ -1712,7 +1717,12 @@ bool beogh_gift_item()
     if (!beogh_can_gift_items_to(mons, false))
         return false;
 
-    int item_slot = prompt_invent_item("Give which item?",
+    FixedVector< item_def, ENDOFPACK > *inv_to_give_from;
+
+    if (!inv_from_prompt(inv_to_give_from, "Give"))
+        return false;
+
+    int item_slot = prompt_invent_item(*inv_to_give_from, "Give which item?",
                                        MT_INVLIST, OSEL_BEOGH_GIFT, true);
 
     if (item_slot == PROMPT_ABORT || item_slot == PROMPT_NOTHING)
@@ -1721,7 +1731,7 @@ bool beogh_gift_item()
         return false;
     }
 
-    item_def& gift = you.inv[item_slot];
+    item_def& gift = (*inv_to_give_from)[item_slot];
 
     const bool shield = is_shield(gift);
     const bool body_armour = gift.base_type == OBJ_ARMOUR
@@ -1757,16 +1767,15 @@ bool beogh_gift_item()
                                  is_range_weapon(*mons_weapon);
 
     mons->take_item(item_slot, body_armour ? MSLOT_ARMOUR :
-                                    shield ? MSLOT_SHIELD :
-                              use_alt_slot ? MSLOT_ALT_WEAPON :
-                                             MSLOT_WEAPON);
+                               shield ? MSLOT_SHIELD :
+                               use_alt_slot ? MSLOT_ALT_WEAPON :
+                               MSLOT_WEAPON, *inv_to_give_from);
     if (use_alt_slot)
         mons->swap_weapons();
 
     dprf("is_ranged weap: %d", range_weapon);
     if (range_weapon)
         gift_ammo_to_orc(mons, true); // give a small initial ammo freebie
-
 
     if (shield)
         mons->props[BEOGH_SH_GIFT_KEY] = true;
@@ -3037,10 +3046,10 @@ static int _collect_fruit(vector<pair<int,int> >& available_fruit)
 
     for (int i = 0; i < ENDOFPACK; i++)
     {
-        if (you.inv[i].defined() && is_fruit(you.inv[i]))
+        if (you.inv2[i].defined() && is_fruit(you.inv2[i]))
         {
-            total += you.inv[i].quantity;
-            available_fruit.emplace_back(you.inv[i].quantity, i);
+            total += you.inv2[i].quantity;
+            available_fruit.emplace_back(you.inv2[i].quantity, i);
         }
     }
     sort(available_fruit.begin(), available_fruit.end());
@@ -3055,12 +3064,12 @@ static void _decrease_amount(vector<pair<int, int> >& available, int amount)
     {
         const int decrease_amount = min(avail.first, amount);
         amount -= decrease_amount;
-        dec_inv_item_quantity(avail.second, decrease_amount);
+        dec_inv_item_quantity(you.inv2, avail.second, decrease_amount);
     }
     if (total_decrease > 1)
-        mprf("%d pieces of fruit are consumed!", total_decrease);
+        mprf("%d stamina potions are consumed!", total_decrease);
     else
-        mpr("A piece of fruit is consumed!");
+        mpr("A stamina potion is consumed!");
 }
 
 // Create a ring or partial ring around the caster. The user is
@@ -3093,7 +3102,7 @@ bool fedhas_plant_ring_from_fruit()
         if (adjacent.empty())
             mpr("No empty adjacent squares.");
         else
-            mpr("No fruit available.");
+            mpr("No stamina potions available.");
 
         return false;
     }
@@ -3326,13 +3335,11 @@ int fedhas_check_corpse_spores(bool quiet)
 #endif
     }
 
-    if (yesnoquit("Will you create these spores?", true, 'y') <= 0)
-    {
-        viewwindow(false);
-        return -1;
-    }
+    if (yesno("Will you create these spores?", true, 'y'))
+        return count;
 
-    return count;
+    viewwindow(false);
+    return -1;
 }
 
 // Destroy corpses in the player's LOS (first corpse on a stack only)
@@ -3493,7 +3500,7 @@ spret_type fedhas_evolve_flora(bool fail)
 
         if (total_fruit < upgrade.fruit_cost)
         {
-            mpr("Not enough fruit available.");
+            mpr("Not enough stamina potions available.");
             return SPRET_ABORT;
         }
     }
@@ -3898,16 +3905,15 @@ bool ashenzari_curse_item(int num_rc)
 {
     ASSERT(num_rc > 0);
     const string prompt_msg = make_stringf(
-            "Curse which item? (%d remove curse scroll%s left)"
-            " (Esc to abort)",
+            "Curse which item? (%d remove curse scroll%s left)",
             num_rc, num_rc == 1 ? "" : "s");
-    const int item_slot = prompt_invent_item(prompt_msg.c_str(), MT_INVLIST,
+    const int item_slot = prompt_invent_item(you.inv1, prompt_msg.c_str(), MT_INVLIST,
                                              OSEL_CURSABLE,
                                              true, true, false);
     if (prompt_failed(item_slot))
         return false;
 
-    item_def& item(you.inv[item_slot]);
+    item_def& item(you.inv1[item_slot]);
 
     if (!item_is_cursable(item))
     {
@@ -3915,7 +3921,7 @@ bool ashenzari_curse_item(int num_rc)
         return false;
     }
 
-    do_curse_item(item, false);
+    do_curse_item(item, 100, false);
     learned_something_new(HINT_YOU_CURSED);
     return true;
 }
@@ -4001,8 +4007,18 @@ void spare_beogh_convert()
     }
 }
 
+#define STATIONARY_CHECK                               \
+    do {                                               \
+        if (you.is_stationary()) {                     \
+            canned_msg(MSG_CANNOT_MOVE);               \
+            return false;                              \
+        }                                              \
+    } while (0)
+
 bool dithmenos_shadow_step()
 {
+    STATIONARY_CHECK;
+
     // You can shadow-step anywhere within your umbra.
     ASSERT(you.umbra_radius() > -1);
     const int range = you.umbra_radius();
@@ -4094,7 +4110,9 @@ static potion_type _gozag_potion_list[][4] =
     { POT_HEAL_WOUNDS, NUM_POTIONS, NUM_POTIONS, NUM_POTIONS },
     { POT_HEAL_WOUNDS, POT_CURING, NUM_POTIONS, NUM_POTIONS },
     { POT_HEAL_WOUNDS, POT_MAGIC, NUM_POTIONS, NUM_POTIONS, },
+    { POT_HEAL_WOUNDS, POT_STAMINA, NUM_POTIONS, NUM_POTIONS, },
     { POT_CURING, POT_MAGIC, NUM_POTIONS, NUM_POTIONS },
+    { POT_CURING, POT_STAMINA, NUM_POTIONS, NUM_POTIONS },
     { POT_HEAL_WOUNDS, POT_BERSERK_RAGE, NUM_POTIONS, NUM_POTIONS },
     { POT_HASTE, POT_HEAL_WOUNDS, NUM_POTIONS, NUM_POTIONS },
     { POT_HASTE, POT_BRILLIANCE, NUM_POTIONS, NUM_POTIONS },
@@ -4106,6 +4124,7 @@ static potion_type _gozag_potion_list[][4] =
     { POT_RESISTANCE, POT_FLIGHT, NUM_POTIONS, NUM_POTIONS },
     { POT_INVISIBILITY, POT_AGILITY, NUM_POTIONS , NUM_POTIONS },
     { POT_HEAL_WOUNDS, POT_CURING, POT_MAGIC, NUM_POTIONS },
+    { POT_HEAL_WOUNDS, POT_CURING, POT_STAMINA, NUM_POTIONS },
     { POT_HEAL_WOUNDS, POT_CURING, POT_BERSERK_RAGE, NUM_POTIONS },
     { POT_HEAL_WOUNDS, POT_HASTE, POT_AGILITY, NUM_POTIONS },
     { POT_MIGHT, POT_AGILITY, POT_BRILLIANCE, NUM_POTIONS },
@@ -4379,9 +4398,9 @@ static void _setup_gozag_shop(int index, vector<shop_type> &valid_shops)
     ASSERT(!you.props.exists(make_stringf(GOZAG_SHOPKEEPER_NAME_KEY, index)));
 
     shop_type type = NUM_SHOPS;
-    if (index == 0 && !you_foodless_normally())
-        type = SHOP_FOOD;
-    else
+//    if (index == 0 && !you_foodless_normally() && false)
+//        type = SHOP_FOOD;
+//    else
     {
         int choice = random2(valid_shops.size());
         type = valid_shops[choice];
@@ -4415,13 +4434,13 @@ static void _setup_gozag_shop(int index, vector<shop_type> &valid_shops)
  */
 static string _gozag_special_shop_name(shop_type type)
 {
-    if (type == SHOP_FOOD)
-    {
-        if (you.species == SP_VAMPIRE)
-            return "Blood";
-        else if (you.species == SP_GHOUL)
-            return "Carrion"; // yum!
-    }
+//    if (type == SHOP_FOOD)
+//    {
+//        if (you.species == SP_VAMPIRE)
+//            return "Blood";
+//        else if (you.species == SP_GHOUL)
+//            return "Carrion"; // yum!
+//    }
 
     return "";
 }
@@ -4532,7 +4551,7 @@ static void _gozag_place_shop(int index)
     feature_spec feat = kmspec.get_feat();
     shop_spec *spec = feat.shop.get();
     ASSERT(spec);
-    place_spec_shop(you.pos(), *spec, you.experience_level);
+    place_spec_shop(you.pos(), *spec, effective_xl());
 
     link_items();
     env.markers.add(new map_feature_marker(you.pos(), DNGN_ABANDONED_SHOP));
@@ -4561,8 +4580,8 @@ bool gozag_call_merchant()
         shop_type type = static_cast<shop_type>(i);
         // if they are useful to the player, food shops are handled through the
         // first index.
-        if (type == SHOP_FOOD)
-            continue;
+//        if (type == SHOP_FOOD)
+//            continue;
         if (type == SHOP_DISTILLERY && you.species == SP_MUMMY)
             continue;
         if (type == SHOP_EVOKABLES && player_mutation_level(MUT_NO_ARTIFICE))
@@ -4626,6 +4645,8 @@ static const map<branch_type, int> branch_bribability_factor =
     { BRANCH_DUNGEON,     2 },
     { BRANCH_ORC,         2 },
     { BRANCH_ELF,         3 },
+    { BRANCH_DWARF,       3 },
+    { BRANCH_FOREST,      3 },
     { BRANCH_SNAKE,       3 },
     { BRANCH_SHOALS,      3 },
     { BRANCH_CRYPT,       3 },
@@ -4830,6 +4851,14 @@ spret_type qazlal_upheaval(coord_def target, bool quiet, bool fail)
         args.hitfunc = &tgt;
         if (!spell_direction(spd, beam, &args))
             return SPRET_ABORT;
+
+        if (cell_is_solid(beam.target))
+        {
+            mprf("There is %s there.",
+                 article_a(feat_type_name(grd(beam.target))).c_str());
+            return SPRET_ABORT;
+        }
+
         bolt tempbeam;
         tempbeam.source    = beam.target;
         tempbeam.target    = beam.target;
@@ -5209,6 +5238,9 @@ static const vector<mutation_type> _minor_arcane_sacrifices =
     MUT_NO_ICE_MAGIC,
     MUT_NO_EARTH_MAGIC,
     MUT_NO_POISON_MAGIC,
+    MUT_NO_LIGHT_MAGIC,
+    MUT_NO_DARKNESS_MAGIC,
+    MUT_NO_TIME_MAGIC,
 };
 
 /// The list of all lists of arcana sacrifice mutations.
@@ -5543,12 +5575,8 @@ int get_sacrifice_piety(ability_type sac, bool include_skill)
         case ABIL_RU_SACRIFICE_NIMBLENESS:
             if (player_mutation_level(MUT_NO_ARMOUR))
                 piety_gain += 20;
-            else if (you.species == SP_OCTOPODE
-                    || you.species == SP_FELID
-                    || species_is_draconian(you.species))
-            {
+            else if (species_apt(SK_ARMOUR) == UNUSABLE_SKILL)
                 piety_gain += 28; // this sacrifice is worse for these races
-            }
             break;
         case ABIL_RU_SACRIFICE_DURABILITY:
             if (player_mutation_level(MUT_NO_DODGING))
@@ -5567,6 +5595,13 @@ int get_sacrifice_piety(ability_type sac, bool include_skill)
                 piety_gain -= 10;
             }
             break;
+        case ABIL_RU_SACRIFICE_EXPERIENCE:
+            if (player_mutation_level(MUT_COWARDICE))
+                piety_gain += 15;
+        case ABIL_RU_SACRIFICE_COURAGE:
+            if (player_mutation_level(MUT_INEXPERIENCED))
+                piety_gain += 15;
+
         default:
             break;
     }
@@ -5582,10 +5617,12 @@ int get_sacrifice_piety(ability_type sac, bool include_skill)
 
     // Randomize piety gain very slightly to prevent counting.
     // We fuzz the piety gain by up to +-10%, or 5 piety, whichever is smaller.
-    int piety_blur_inc = min(5, piety_gain / 10);
-    int piety_blur = random2((2 * piety_blur_inc) + 1) - piety_blur_inc;
+    // actually, fuck that. what's wrong, we don't trust the player?
+    // we don't want the player to know what's happening with their character?
+    // int piety_blur_inc = min(5, piety_gain / 10);
+    // int piety_blur = random2((2 * piety_blur_inc) + 1) - piety_blur_inc;
 
-    return piety_gain + piety_blur;
+    return piety_gain;
 }
 
 // Remove the offer of sacrifices after they've been offered for sufficient
@@ -5824,6 +5861,8 @@ static void _extra_sacrifice_code(ability_type sac)
 
         if (you.species == SP_OCTOPODE)
             ring_slot = EQ_RING_EIGHT;
+        else if(you.species == SP_FELID)
+        	ring_slot = EQ_RING_FOUR;
         else
             ring_slot = EQ_LEFT_RING;
 
@@ -5866,6 +5905,17 @@ static void _extra_sacrifice_code(ability_type sac)
                     }
                 }
             }
+            else if (you.species == SP_FELID)
+            {
+                for (int eq = EQ_RING_ONE; eq <= EQ_RING_THREE; eq++)
+                {
+                    if (!you.slot_item(static_cast<equipment_type>(eq), true))
+                    {
+                        open_ring_slot = true;
+                        break;
+                    }
+                }
+            }
             else
             {
                 if (!you.slot_item(static_cast<equipment_type>(
@@ -5882,7 +5932,7 @@ static void _extra_sacrifice_code(ability_type sac)
             {
                 mprf("You put %s back on %s %s!",
                      ring->name(DESC_YOUR).c_str(),
-                     (you.species == SP_OCTOPODE ? "another" : "your other"),
+                     (you.species == SP_OCTOPODE || SP_FELID ? "another" : "your other"),
                      you.hand_name(true).c_str());
                 puton_ring(ring_inv_slot, false);
             }
@@ -6235,8 +6285,9 @@ void ru_draw_out_power()
 
     inc_hp(div_rand_round(you.piety, 16)
            + roll_dice(div_rand_round(you.piety, 20), 6));
-    inc_mp(div_rand_round(you.piety, 48)
-           + roll_dice(div_rand_round(you.piety, 40), 4));
+    const int gain = div_rand_round(you.piety, 48)
+                     + roll_dice(div_rand_round(you.piety, 40), 4);
+    inc_mp(gain * 3);
     drain_player(30, false, true);
 }
 
@@ -6251,6 +6302,8 @@ bool ru_power_leap()
         crawl_state.cancel_cmd_repeat();
         return false;
     }
+
+    STATIONARY_CHECK;
 
     // query for location:
     dist beam;
@@ -6379,7 +6432,7 @@ bool ru_power_leap()
 
         //damage scales with XL amd piety
         mon->hurt((actor*)&you, roll_dice(1 + div_rand_round(you.piety *
-            (54 + you.experience_level), 777), 3),
+            (54 + effective_xl()), 777), 3),
             BEAM_ENERGY, KILLED_BY_BEAM, "", "", true);
     }
 
@@ -6443,7 +6496,7 @@ static int _apply_apocalypse(coord_def where)
 
     //damage scales with XL and piety
     const int pow = you.piety;
-    int die_size = 1 + div_rand_round(pow * (54 + you.experience_level), 584);
+    int die_size = 1 + div_rand_round(pow * (54 + effective_xl()), 584);
     int dmg = 10 + roll_dice(num_dice, die_size);
 
     mons->hurt(&you, dmg, BEAM_ENERGY, KILLED_BY_BEAM, "", "", true);
@@ -6479,7 +6532,7 @@ bool pakellas_check_quick_charge(bool quiet)
     if (!enough_mp(1, quiet))
         return false;
 
-    if (!any_items_of_type(OSEL_DIVINE_RECHARGE))
+    if (!any_items_of_type(you.inv1, OSEL_DIVINE_RECHARGE))
     {
         if (!quiet)
             mpr(no_selectables_message(OSEL_DIVINE_RECHARGE));
@@ -6502,7 +6555,7 @@ int pakellas_effective_hex_power(int pow)
     if (!you_worship(GOD_PAKELLAS) || !you.duration[DUR_DEVICE_SURGE])
         return pow;
 
-    if (you.magic_points == 0)
+    if (get_mp() == 0)
         return 0;
 
     const int die_size = you.piety * 9 / piety_breakpoint(5);
@@ -6515,7 +6568,7 @@ int pakellas_effective_hex_power(int pow)
         for (int j = 0; j < die_size; j++)
         {
             // This should be the same as the formula in pakellas_device_surge()
-            int roll = min(you.magic_points,
+            int roll = min(get_mp(),
                               min(9,
                                   max(3,
                                       1 + (i + j) / 2)));
@@ -6523,7 +6576,7 @@ int pakellas_effective_hex_power(int pow)
         }
 
     if (die_size == 0)
-        rolls[min(3, you.magic_points)] = 1;
+        rolls[min(3, get_mp())] = 1;
 
     int total_pow = 0;
     int weight = 0;
@@ -6549,32 +6602,38 @@ int pakellas_effective_hex_power(int pow)
     return total_pow;
 }
 
-bool pakellas_device_surge()
+/**
+ * Trigger a readied Device Surge, spending MP to multiply evocations power.
+ *
+ * @return  A number of enhancers (!) to multiply evo power by.
+ */
+int pakellas_surge_devices()
 {
     if (!you_worship(GOD_PAKELLAS) || !you.duration[DUR_DEVICE_SURGE])
-        return true;
+        return 0;
 
-    const int mp = min(you.magic_points, min(9, max(3,
+    const int mp = min(get_mp(), min(9, max(3,
                        1 + random2avg(you.piety * 9 / piety_breakpoint(5),
                                       2))));
 
     const int severity = div_rand_round(mp, 3);
     dec_mp(mp);
-
-    you.attribute[ATTR_PAKELLAS_DEVICE_SURGE] = severity;
     you.duration[DUR_DEVICE_SURGE] = 0;
     if (severity == 0)
     {
         mprf(MSGCH_GOD, "The surge fizzles.");
-        return false;
+        return -1;
     }
-
-    return true;
+    return severity;
 }
 
 static int _get_stomped(monster* mons)
 {
     if (mons == nullptr)
+        return 0;
+
+    // Don't hurt your own demonic guardians
+    if (testbits(mons->flags, MF_DEMONIC_GUARDIAN) && mons->friendly())
         return 0;
 
     behaviour_event(mons, ME_ANNOY, &you);
@@ -6615,6 +6674,9 @@ bool uskayaw_line_pass()
         crawl_state.cancel_cmd_repeat();
         return false;
     }
+
+    STATIONARY_CHECK;
+
     // query for location:
     int range = 8;
     int invo_skill = you.skill(SK_INVOCATIONS);
@@ -6829,8 +6891,10 @@ bool uskayaw_grand_finale()
     // kill the target
     mprf("%s explodes violently!", mons->name(DESC_THE, false).c_str());
     mons->flags |= MF_EXPLODE_KILL;
-    if (!mons->is_insubstantial())
+    if (!mons->is_insubstantial()) {
+        blood_spray(mons->pos(), mons->mons_species(), mons->hit_points / 5);
         throw_monster_bits(mons); // have some fun while we're at it
+    }
 
     monster_die(mons, KILL_YOU, NON_MONSTER, false);
 
@@ -6902,7 +6966,7 @@ bool hepliaklqana_choose_ancestor_type(int ancestor_choice)
                        ancestor_type_name.c_str());
     mark_milestone("ancestor.class", mile_text);
 
-    if (you.experience_level >= HEP_SPECIALIZATION_LEVEL)
+    if (you.experience_level >= hepliaklqana_specialization_level())
         god_speaks(you.religion, "You may now specialize your ancestor.");
 
     return true;
@@ -7066,9 +7130,11 @@ static coord_def _get_transference_target()
 {
     dist spd;
 
+    targetter_transference tgt(&you);
     direction_chooser_args args;
+    args.hitfunc = &tgt;
     args.restricts = DIR_TARGET;
-    args.mode = TARG_ANY;
+    args.mode = TARG_MOBILE_MONSTER;
     args.range = LOS_RADIUS;
     args.needs_path = false;
     args.may_target_monster = true;
@@ -7083,7 +7149,7 @@ static coord_def _get_transference_target()
     return spd.target;
 }
 
-/// Slow any monsters near the destination of Tranferrence.
+/// Slow any monsters near the destination of Tranference.
 static void _transfer_slow_nearby(coord_def destination)
 {
     for (adjacent_iterator it(destination); it; ++it)
@@ -7138,7 +7204,7 @@ spret_type hepliaklqana_transference(bool fail)
 
     if (victim == ancestor)
     {
-        mpr("You can't transfer your ancestor with themself!");
+        mpr("You can't transfer your ancestor with themself.");
         return SPRET_ABORT;
     }
 
@@ -7177,7 +7243,8 @@ spret_type hepliaklqana_transference(bool fail)
     {
         ancestor->move_to_pos(target, true, true);
         victim->move_to_pos(destination, true, true);
-    } else
+    }
+    else
         ancestor->swap_with(victim->as_monster());
 
     mprf("%s swap%s with %s!",
@@ -7194,7 +7261,7 @@ spret_type hepliaklqana_transference(bool fail)
     ancestor->apply_location_effects(destination);
     victim->apply_location_effects(target);
 
-    if (you.piety >= piety_breakpoint(5))
+    if (have_passive(passive_t::transfer_slow))
         _transfer_slow_nearby(target);
 
     return SPRET_SUCCESS;

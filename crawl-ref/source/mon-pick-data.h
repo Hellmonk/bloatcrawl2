@@ -47,7 +47,7 @@ static const pop_entry pop_d[] =
   {  6, 16,  335, SEMI, MONS_WIGHT },
   {  6, 16,  335, SEMI, MONS_NO_MONSTER }, // Old giant spore weight.
   {  7, 14,  415, SEMI, MONS_BIG_KOBOLD },
-  {  7, 14,  500, SEMI, MONS_KILLER_BEE },
+  {  7, 13,  470, SEMI, MONS_KILLER_BEE },
   {  7, 15,   89, PEAK, MONS_STEAM_DRAGON },
   {  7, 17,  515, SEMI, MONS_HIPPOGRIFF },
   {  7, 17,  350, SEMI, MONS_HUNGRY_GHOST },
@@ -76,7 +76,8 @@ static const pop_entry pop_d[] =
   { 11, 21,  192, PEAK, MONS_DEATH_KNIGHT },
   { 11, 23,  515, SEMI, MONS_HYDRA },
   { 12, 19,  475, SEMI, MONS_DEEP_ELF_MAGE },
-  { 12, 20,  515, SEMI, MONS_VAMPIRE_MOSQUITO },
+  { 12, 20,  150, SEMI, MONS_MELIAI },
+  { 12, 20,  500, SEMI, MONS_VAMPIRE_MOSQUITO },
   { 12, 22,  440, FALL, MONS_SLIME_CREATURE },
   { 13, 21,   89, PEAK, MONS_RAKSHASA },
   { 13, 17,  925, FLAT, MONS_CENTAUR_WARRIOR },
@@ -145,25 +146,44 @@ static const pop_entry pop_temple[] =
 
 static const pop_entry pop_orc[] =
 { // Orcish Mines
-  {  1,  4,  384, FLAT, MONS_NO_MONSTER },
+  {  1,  4, 1000, FLAT, MONS_ORC },
   {  1,  4,  192, FLAT, MONS_ORC_WARRIOR },
-  {  1,  4,   25, FLAT, MONS_ORC_PRIEST },
-  {  1,  4,   25, FLAT, MONS_ORC_WIZARD },
-  {  1,  4,   25, FLAT, MONS_ORC_KNIGHT },
-  {  1,  4,    8, FLAT, MONS_ORC_HIGH_PRIEST },
-  {  1,  4,   25, FLAT, MONS_ORC_SORCERER },
-  {  1,  4,    8, FLAT, MONS_ORC_WARLORD },
+  {  1,  4,   25, SEMI, MONS_ORC_PRIEST },
+  {  1,  5,   25, SEMI, MONS_ORC_WIZARD },
+  {  1,  5,   25, SEMI, MONS_ORC_KNIGHT },
+  {  2,  4,    8, RISE, MONS_ORC_HIGH_PRIEST },
+  {  1,  4,   25, RISE, MONS_ORC_SORCERER },
+  {  4,  4,    8, RISE, MONS_ORC_WARLORD },
   {  1,  4,   40, FLAT, MONS_WARG },
-  {  1,  4,    3, FLAT, MONS_GNOLL },
-  {  1,  4,    1, FLAT, MONS_GNOLL_SHAMAN },
-  {  1,  4,    1, FLAT, MONS_GNOLL_SERGEANT },
+  {  1,  4,  280, FLAT, MONS_NO_MONSTER },
+  {  2,  4,    3, SEMI, MONS_GNOLL },
+  {  4,  4,    1, FLAT, MONS_GNOLL_SHAMAN },
+  {  4,  4,    1, FLAT, MONS_GNOLL_SERGEANT },
   {  1,  4,   89, FLAT, MONS_OGRE },
-  {  1,  4,    8, FLAT, MONS_TWO_HEADED_OGRE },
-  {  1,  4,    1, FLAT, MONS_OGRE_MAGE },
-  {  1,  4,   40, FLAT, MONS_TROLL },
-  {  1,  4,    8, FLAT, MONS_CYCLOPS },
-  {  1,  4,    4, FLAT, MONS_ETTIN },
-  {  1,  4,    4, FLAT, MONS_STONE_GIANT },
+  {  2,  4,    8, RISE, MONS_TWO_HEADED_OGRE },
+  {  4,  4,    1, FLAT, MONS_OGRE_MAGE },
+  {  1,  4,   40, RISE, MONS_TROLL },
+  {  2,  4,    8, RISE, MONS_CYCLOPS },
+  {  3,  4,    4, RISE, MONS_ETTIN },
+  {  3,  4,    4, RISE, MONS_STONE_GIANT },
+  // the following entries populate "extra" floors
+  {  5,  7,   25, FLAT, MONS_ORC_PRIEST },
+  {  5,  7,   40, FLAT, MONS_ORC_WIZARD },
+  {  5,  7,   60, FLAT, MONS_ORC_KNIGHT },
+  {  5,  7,   80, FLAT, MONS_ORC_HIGH_PRIEST },
+  {  5,  7,   25, FLAT, MONS_ORC_SORCERER },
+  {  5,  7,   20, FLAT, MONS_ORC_WARLORD },
+  {  5,  7,   40, FLAT, MONS_WARG },
+  {  5,  7,   30, FLAT, MONS_GNOLL },
+  {  5,  7,   10, FLAT, MONS_GNOLL_SHAMAN },
+  {  5,  7,   10, FLAT, MONS_GNOLL_SERGEANT },
+  {  5,  7,   90, FLAT, MONS_OGRE },
+  {  5,  7,   80, FLAT, MONS_TWO_HEADED_OGRE },
+  {  5,  7,   10, FLAT, MONS_OGRE_MAGE },
+  {  5,  7,   40, FLAT, MONS_TROLL },
+  {  5,  7,   80, FLAT, MONS_CYCLOPS },
+  {  5,  7,   40, FLAT, MONS_ETTIN },
+  {  5,  7,   40, FLAT, MONS_STONE_GIANT },
   { 0,0,0,FLAT,MONS_0 }
 };
 
@@ -191,24 +211,8 @@ static const pop_entry pop_elf[] =
   {  1,  6,   65, SEMI, MONS_GLOWING_SHAPESHIFTER },
   { 0,0,0,FLAT,MONS_0 }
 };
-#if TAG_MAJOR_VERSION == 34
-static const pop_entry pop_dwarf[] =
-{ // Dwarven Hall
-  {  1,  1, 1000, FLAT, MONS_DEEP_DWARF },
-  {  1,  1,  690, FLAT, MONS_DEATH_KNIGHT },
-  {  1,  1,    3, FLAT, MONS_DEEP_TROLL },
-  {  1,  1,    3, FLAT, MONS_DEEP_TROLL_EARTH_MAGE },
-  {  1,  1,    3, FLAT, MONS_DEEP_TROLL_SHAMAN },
-  {  1,  1,    8, FLAT, MONS_STONE_GIANT },
-  {  1,  1,    8, FLAT, MONS_FIRE_GIANT },
-  {  1,  1,    8, FLAT, MONS_FROST_GIANT },
-  {  1,  1,  192, FLAT, MONS_WRAITH },
-  {  1,  1,    3, FLAT, MONS_SHADOW_WRAITH },
-  {  1,  1,    8, FLAT, MONS_EIDOLON },
-  {  1,  1,    8, FLAT, MONS_PHANTASMAL_WARRIOR },
-  { 0,0,0,FLAT,MONS_0 }
-};
 
+#if TAG_MAJOR_VERSION == 34
 static const pop_entry pop_blade[] =
 { // Hall of Blades
   {  1,  1, 1000, FLAT, MONS_DANCING_WEAPON },
@@ -216,43 +220,66 @@ static const pop_entry pop_blade[] =
 };
 #endif
 
+static const pop_entry pop_dwarf[] =
+{ // Dwarven Fortress (OOD cap: 8)
+    {  1,  8, 1111, FLAT, MONS_DEEP_DWARF },
+    {  1,  6,  888, SEMI, MONS_DEEP_DWARF_SCION },
+    {  1,  8,  999, FLAT, MONS_DEEP_DWARF_ARTIFICER },
+    {  1,  5,  666, SEMI, MONS_DEEP_DWARF_NECROMANCER },
+    {  0,  4,  666, SEMI, MONS_DEEP_DWARF_BERSERKER },
+    {  1,  8,  666, FLAT, MONS_DEEP_DWARF_DEATH_KNIGHT },
+    {  2,  8,  333, FLAT, MONS_UNBORN_DEEP_DWARF },
+    {  1,  7,  222, PEAK, MONS_IRON_TROLL },
+    {  1,  7,  222, FLAT, MONS_DEEP_TROLL },
+    {  1,  7,  111, FLAT, MONS_DEEP_TROLL_EARTH_MAGE },
+    {  2,  7,  333, FLAT, MONS_DEEP_TROLL_SHAMAN },
+    {  3,  7,  333, FLAT, MONS_STONE_GIANT },
+    {  3,  7,  111, FLAT, MONS_FIRE_GIANT },
+    {  3,  7,  222, FLAT, MONS_FROST_GIANT },
+    {  1,  3,   33, FLAT, MONS_WRAITH },
+    {  1,  3,   22, FLAT, MONS_SHADOW_WRAITH },
+    {  2,  7,   33, FLAT, MONS_EIDOLON },
+    {  1,  7,   44, FLAT, MONS_PHANTASMAL_WARRIOR },
+    { 0,0,0,FLAT,MONS_0 }
+};
+
 static const pop_entry pop_lair[] =
 { // Lair
-  { -4,  6,  825, SEMI, MONS_IGUANA },
-  { -2,  8,  750, SEMI, MONS_RIVER_RAT },
-  { -1,  5,   52, SEMI, MONS_BLACK_BEAR },
-  {  0,  6,   25, PEAK, MONS_SCORPION },
-  {  0,  8,  260, SEMI, MONS_BASILISK },
-  {  0,  8,  260, SEMI, MONS_WOLF },
-  {  1,  7, 1000, FLAT, MONS_GIANT_FROG },
-  {  1,  7, 1000, FLAT, MONS_PORCUPINE },
-  {  1,  8,  880, FLAT, MONS_SPINY_FROG },
-  {  1,  8,  980, FLAT, MONS_CROCODILE },
-  {  1,  8,  980, FLAT, MONS_WATER_MOCCASIN },
-  {  1,  8,  515, FLAT, MONS_HIPPOGRIFF },
-  {  1,  8,  515, FLAT, MONS_KOMODO_DRAGON },
-  {  1,  8,  515, FLAT, MONS_YAK },
-  {  1,  9,  420, SEMI, MONS_BLINK_FROG },
-  {  1,  9,  275, SEMI, MONS_SHEEP },
-  {  1, 11,  515, SEMI, MONS_HYDRA },
-  {  1, 11,  455, SEMI, MONS_BLACK_MAMBA },
-  {  1, 11,  275, PEAK, MONS_RIME_DRAKE },
-  {  2,  6,    8, PEAK, MONS_WASP },
-  {  2,  8,   25, PEAK, MONS_HELL_RAT },
-  {  2,  8,   25, PEAK, MONS_STEAM_DRAGON },
-  {  2,  8,   52, SEMI, MONS_POLAR_BEAR },
-  {  2, 10,   89, PEAK, MONS_WYVERN },
-  {  2, 12,  275, PEAK, MONS_ELEPHANT },
-  {  2, 12,  192, PEAK, MONS_GRIFFON },
-  {  3,  8,  192, RISE, MONS_DEATH_YAK },
-  {  3,  9,   80, SEMI, MONS_TORPOR_SNAIL },
-  {  3,  9,   52, SEMI, MONS_CATOBLEPAS },
-  {  3,  9,   25, PEAK, MONS_OKLOB_PLANT },
-  {  4,  8,   89, RISE, MONS_BOULDER_BEETLE },
-  {  4, 10,   52, SEMI, MONS_POLAR_BEAR },
-  {  4, 10,   25, PEAK, MONS_LINDWURM },
-  {  5, 12,   66, RISE, MONS_FIRE_CRAB },
-  {  1,  6, 4500, FLAT, MONS_NO_MONSTER }, // Roughly old D:1 chaff weight
+  { -3,  5,  825, SEMI, MONS_IGUANA },
+  { -2,  6,  750, SEMI, MONS_RIVER_RAT },
+  { -1,  4,   52, SEMI, MONS_BLACK_BEAR },
+  {  0,  5,   25, PEAK, MONS_SCORPION },
+  {  0,  6,  260, SEMI, MONS_BASILISK },
+  {  0,  6,  260, SEMI, MONS_WOLF },
+  {  1,  5, 1000, FLAT, MONS_GIANT_FROG },
+  {  1,  5, 1000, FLAT, MONS_PORCUPINE },
+  {  1,  6,  880, FLAT, MONS_SPINY_FROG },
+  {  1,  6,  980, FLAT, MONS_CROCODILE },
+  {  1,  6,  980, FLAT, MONS_WATER_MOCCASIN },
+  {  1,  6,  515, FLAT, MONS_HIPPOGRIFF },
+  {  1,  6,  515, FLAT, MONS_KOMODO_DRAGON },
+  {  1,  6,  515, FLAT, MONS_YAK },
+  {  1,  8,  420, SEMI, MONS_BLINK_FROG },
+  {  1,  8,  275, SEMI, MONS_SHEEP },
+  {  1,  9,  515, SEMI, MONS_HYDRA },
+  {  1,  9,  455, SEMI, MONS_BLACK_MAMBA },
+  {  1,  8,  275, PEAK, MONS_RIME_DRAKE },
+  {  2,  5,    8, PEAK, MONS_WASP },
+  {  2,  6,   25, PEAK, MONS_HELL_RAT },
+  {  2,  6,   25, PEAK, MONS_STEAM_DRAGON },
+  {  2,  6,   52, SEMI, MONS_POLAR_BEAR },
+  {  2,  8,   89, PEAK, MONS_WYVERN },
+  {  2,  9,  275, PEAK, MONS_ELEPHANT },
+  {  2,  9,  192, PEAK, MONS_GRIFFON },
+  {  2,  6,  192, RISE, MONS_DEATH_YAK },
+  {  2,  8,   80, SEMI, MONS_TORPOR_SNAIL },
+  {  2,  8,   52, SEMI, MONS_CATOBLEPAS },
+  {  2,  7,   25, PEAK, MONS_OKLOB_PLANT },
+  {  3,  6,   89, RISE, MONS_BOULDER_BEETLE },
+  {  3,  8,   52, SEMI, MONS_POLAR_BEAR },
+  {  3,  8,   25, PEAK, MONS_LINDWURM },
+  {  4,  9,   66, RISE, MONS_FIRE_CRAB },
+  {  1,  5, 4500, FLAT, MONS_NO_MONSTER }, // Roughly old D:1 chaff weight
   { 0,0,0,FLAT,MONS_0 }
 };
 
@@ -345,25 +372,25 @@ static const pop_entry pop_spider[] =
   {  1,  6,  155, SEMI, MONS_MOTH_OF_WRATH },
   {  1,  9,  300, SEMI, MONS_ENTROPY_WEAVER },
   {  1,  9,  200, PEAK, MONS_GHOST_MOTH },
+  {  2,  4,   12, FLAT, MONS_MELIAI },
   {  2, 10,  260, PEAK, MONS_SPARK_WASP },
   { 0,0,0,FLAT,MONS_0 }
 };
 
 static const pop_entry pop_slime[] =
 { // Slime Pits
-  {  1,  6, 2000, FLAT, MONS_JELLY },
-  {  1,  6, 2000, FLAT, MONS_SLIME_CREATURE },
-  {  1,  6, 1000, FLAT, MONS_ACID_BLOB },
-  {  1,  6,  515, FLAT, MONS_EYE_OF_DRAINING },
-  {  1,  6,  515, FLAT, MONS_AZURE_JELLY },
-  {  1,  6,  515, FLAT, MONS_SHINING_EYE },
-  {  1,  6,  200, FLAT, MONS_GOLDEN_EYE },
-  {  1,  9,  300, SEMI, MONS_EYE_OF_DEVASTATION },
-  {  1,  9,  390, SEMI, MONS_GREAT_ORB_OF_EYES },
-  {  1,  6,  200, RISE, MONS_DEATH_OOZE },
-  {  2,  6,  100, RISE, MONS_GIANT_ORANGE_BRAIN },
-  {  2,  9,   50, SEMI, MONS_GIANT_EYEBALL },
-  {  1,  6,  750, FLAT, MONS_NO_MONSTER }, // Old ooze weight
+  {  1,  5, 2000, FLAT, MONS_SLIME_CREATURE },
+  {  1,  5, 1000, FLAT, MONS_ACID_BLOB },
+  {  1,  5,  515, FLAT, MONS_EYE_OF_DRAINING },
+  {  1,  5,  515, FLAT, MONS_AZURE_JELLY },
+  {  1,  5,  515, FLAT, MONS_SHINING_EYE },
+  {  1,  5,  200, FLAT, MONS_GOLDEN_EYE },
+  {  1,  8,  300, SEMI, MONS_EYE_OF_DEVASTATION },
+  {  1,  8,  390, SEMI, MONS_GREAT_ORB_OF_EYES },
+  {  1,  5,  200, RISE, MONS_DEATH_OOZE },
+  {  2,  5,  100, RISE, MONS_GIANT_ORANGE_BRAIN },
+  {  2,  8,   50, SEMI, MONS_GIANT_EYEBALL },
+  {  1,  5, 2750, FLAT, MONS_NO_MONSTER }, // Old ooze and jelly weight
   { 0,0,0,FLAT,MONS_0 }
 };
 
@@ -423,7 +450,6 @@ static const pop_entry pop_vaults[] =
   {  3, 11,   68, SEMI, MONS_DEEP_TROLL },
   {  3, 11,   66, PEAK, MONS_LICH },
   {  4,  8,   30, PEAK, MONS_ORC_WARLORD },
-  {  4,  8,   30, PEAK, MONS_ENTROPY_WEAVER },
   {  4, 10,   25, PEAK, MONS_HELL_KNIGHT },
   {  4, 12,  155, PEAK, MONS_TENGU_REAVER },
   {  4, 12,   89, PEAK, MONS_STORM_DRAGON },
@@ -670,42 +696,42 @@ static const pop_entry pop_tar[] =
 
 static const pop_entry pop_zot[] =
 { // Zot
-  {  1,  5,  970, FLAT, MONS_MOTH_OF_WRATH },
-  {  1,  5,  192, RISE, MONS_GHOST_MOTH },
-  {  1,  5,   97, FLAT, MONS_BLACK_DRACONIAN },
-  {  1,  5,   97, FLAT, MONS_MOTTLED_DRACONIAN },
-  {  1,  5,   97, FLAT, MONS_YELLOW_DRACONIAN },
-  {  1,  5,   97, FLAT, MONS_GREEN_DRACONIAN },
-  {  1,  5,   97, FLAT, MONS_PURPLE_DRACONIAN },
-  {  1,  5,   97, FLAT, MONS_RED_DRACONIAN },
-  {  1,  5,   97, FLAT, MONS_WHITE_DRACONIAN },
-  {  1,  5,   59, FLAT, MONS_DRACONIAN_CALLER },
-  {  1,  5,   59, FLAT, MONS_DRACONIAN_MONK },
-  {  1,  5,   59, FLAT, MONS_DRACONIAN_ZEALOT },
-  {  1,  5,   59, FLAT, MONS_DRACONIAN_SHIFTER },
-  {  1,  5,   59, FLAT, MONS_DRACONIAN_ANNIHILATOR },
-  {  1,  5,   59, FLAT, MONS_DRACONIAN_KNIGHT },
-  {  1,  5,   59, FLAT, MONS_DRACONIAN_SCORCHER },
-  {  1,  5,  335, FLAT, MONS_FIRE_DRAGON },
-  {  1,  5,  335, FLAT, MONS_ICE_DRAGON },
-  {  1,  5,  192, RISE, MONS_SHADOW_DRAGON },
-  { -4,  5,  515, RISE, MONS_STORM_DRAGON },
+  {  1,  7,  970, FLAT, MONS_MOTH_OF_WRATH },
+  {  1,  7,  192, RISE, MONS_GHOST_MOTH },
+  {  1,  7,   97, FLAT, MONS_BLACK_DRACONIAN },
+  {  1,  7,   97, FLAT, MONS_MOTTLED_DRACONIAN },
+  {  1,  7,   97, FLAT, MONS_YELLOW_DRACONIAN },
+  {  1,  7,   97, FLAT, MONS_GREEN_DRACONIAN },
+  {  1,  7,   97, FLAT, MONS_PURPLE_DRACONIAN },
+  {  1,  7,   97, FLAT, MONS_RED_DRACONIAN },
+  {  1,  7,   97, FLAT, MONS_WHITE_DRACONIAN },
+  {  1,  7,   59, FLAT, MONS_DRACONIAN_CALLER },
+  {  1,  7,   59, FLAT, MONS_DRACONIAN_MONK },
+  {  1,  7,   59, FLAT, MONS_DRACONIAN_ZEALOT },
+  {  1,  7,   59, FLAT, MONS_DRACONIAN_SHIFTER },
+  {  1,  7,   59, FLAT, MONS_DRACONIAN_ANNIHILATOR },
+  {  1,  7,   59, FLAT, MONS_DRACONIAN_KNIGHT },
+  {  1,  7,   59, FLAT, MONS_DRACONIAN_SCORCHER },
+  {  1,  7,  335, FLAT, MONS_FIRE_DRAGON },
+  {  1,  7,  335, FLAT, MONS_ICE_DRAGON },
+  {  1,  7,  192, RISE, MONS_SHADOW_DRAGON },
+  { -4,  7,  515, RISE, MONS_STORM_DRAGON },
   {  1, 11,  365, SEMI, MONS_GOLDEN_DRAGON },
   {  2,  8,   52, SEMI, MONS_KILLER_KLOWN },
-  {  1,  5,  335, FLAT, MONS_DEATH_COB },
-  {  1,  5,  150, RISE, MONS_CURSE_TOE },
-  {  1,  5,  515, FLAT, MONS_TENTACLED_MONSTROSITY },
-  {  1,  5,   89, FALL, MONS_ELECTRIC_GOLEM },
-  {  1,  5,   42, FLAT, MONS_ORB_OF_FIRE },
+  {  1,  7,  335, FLAT, MONS_DEATH_COB },
+  {  1,  7,  150, RISE, MONS_CURSE_TOE },
+  {  1,  7,  515, FLAT, MONS_TENTACLED_MONSTROSITY },
+  {  1,  7,   89, FALL, MONS_ELECTRIC_GOLEM },
+  {  1,  7,   42, FLAT, MONS_ORB_OF_FIRE },
   { 0,0,0,FLAT,MONS_0 }
 };
-#if TAG_MAJOR_VERSION == 34
+
 static const pop_entry pop_forest[] =
 { // Forest
   {  1,  5,  120, FALL, MONS_WOLF },
   {  1,  5,   35, FALL, MONS_BLACK_BEAR },
   {  1,  5,   50, FLAT, MONS_YAK },
-  {  1,  7,  145, SEMI, MONS_DIRE_ELEPHANT },
+  {  3,  7,  145, SEMI, MONS_DIRE_ELEPHANT },
   {  1,  5,   15, FALL, MONS_WASP },
   {  1,  5,   30, FLAT, MONS_HORNET },
   {  1,  6,   75, FALL, MONS_REDBACK },
@@ -718,8 +744,8 @@ static const pop_entry pop_forest[] =
   {  2,  8,   55, SEMI, MONS_SPRIGGAN_DRUID },
   {  1,  6,  155, SEMI, MONS_SPRIGGAN_RIDER },
   {  1,  9,  235, SEMI, MONS_SPRIGGAN_BERSERKER },
-  {  1,  8,  155, SEMI, MONS_SPRIGGAN_AIR_MAGE },
-  {  3,  5,  115, RISE, MONS_SPRIGGAN_DEFENDER },
+  {  4,  8,   80, SEMI, MONS_SPRIGGAN_AIR_MAGE },
+  {  3,  8,  115, RISE, MONS_SPRIGGAN_DEFENDER },
   {  1,  7,   85, PEAK, MONS_APIS },
   {  2,  7,  165, SEMI, MONS_SHAMBLING_MANGROVE },
   {  1,  6,   85, SEMI, MONS_ANACONDA },
@@ -727,7 +753,6 @@ static const pop_entry pop_forest[] =
   {  1,  5,  125, FLAT, MONS_BUTTERFLY },
   { 0,0,0,FLAT,MONS_0 }
 };
-#endif
 
 static const pop_entry pop_abyss[] =
 { // Abyss
@@ -1031,7 +1056,6 @@ static const pop_entry pop_depths[] =
   {  1,  6,  295, FLAT, MONS_FIRE_DRAGON },
   {  1,  6,  295, FLAT, MONS_ICE_DRAGON },
   {  1,  6,  250, FLAT, MONS_VERY_UGLY_THING },
-  {  1,  6,  225, FLAT, MONS_ENTROPY_WEAVER },
   {  1,  6,  225, FLAT, MONS_GREAT_ORB_OF_EYES },
   {  1,  6,  100, FLAT, MONS_GIANT_ORANGE_BRAIN },
   {  1,  7,  100, FALL, MONS_VAMPIRE_MAGE },
@@ -1064,7 +1088,6 @@ static const pop_entry pop_depths[] =
   {  5, 14,   50, FLAT, MONS_JUGGERNAUT },
   {  6, 14,   50, FLAT, MONS_TITAN },
   {  6, 14,   50, FLAT, MONS_CAUSTIC_SHRIKE },
-  {  6, 14,   25, FLAT, MONS_IRON_GIANT },
   { 10, 14,   10, FLAT, MONS_ANCIENT_LICH },
   { 0,0,0,FLAT,MONS_0 }
 };
@@ -1077,52 +1100,40 @@ static const pop_entry pop_depths[] =
 #define POP(x) { pop_##x, ARRAYSZ(pop_##x) - 1 }
 static const struct { const pop_entry *pop; int count; } population[] =
 {
+    POP(abyss),
+    POP(bailey),
+    POP(bazaar),
+    POP(coc),
+    POP(crypt),
+    POP(depths),
+    POP(dis),
     POP(d),
-    POP(temple),
-    POP(orc),
-    POP(elf),
-#if TAG_MAJOR_VERSION == 34
     POP(dwarf),
-#endif
+    POP(elf),
+    POP(forest),
+    POP(geh),
+    POP(icecv),
+    POP(lab),
     POP(lair),
-    POP(swamp),
+    POP(orc),
+    POP(ossuary),
+    POP(pan),
+    POP(sewer),
     POP(shoals),
+    POP(slime),
     POP(snake),
     POP(spider),
-    POP(slime),
-    POP(vaults),
-#if TAG_MAJOR_VERSION == 34
-    POP(blade),
-#endif
-    POP(crypt),
-    POP(tomb),
-#if TAG_MAJOR_VERSION > 34
-    POP(depths),
-#endif
-    POP(hell),
-    POP(dis),
-    POP(geh),
-    POP(coc),
+    POP(swamp),
     POP(tar),
-    POP(zot),
-#if TAG_MAJOR_VERSION == 34
-    POP(forest),
-#endif
-    POP(abyss),
-    POP(pan),
-    POP(zig),
-    POP(lab),
-    POP(bazaar),
+    POP(temple),
+    POP(tomb),
     POP(trove),
-    POP(sewer),
-    POP(ossuary),
-    POP(bailey),
-    POP(icecv),
+    POP(vaults),
+    POP(hell),
     POP(volcano),
     POP(wizlab),
-#if TAG_MAJOR_VERSION == 34
-    POP(depths),
-#endif
+    POP(zig),
+    POP(zot),
 };
 
 // Lists for picking zombies from.
@@ -1185,52 +1196,40 @@ static const pop_entry pop_generic_late_zombie[] =
 
 static const struct { const pop_entry *pop; int count; } population_zombie[] =
 {
+    POP(generic_late_zombie),
+    POP(bailey),
+    POP(bazaar),
+    POP(generic_late_zombie),
+    POP(generic_late_zombie),
+    POP(depths),
+    POP(generic_late_zombie),
     POP(d),
-    POP(temple),
-    POP(orc),
-    POP(elf),
-#if TAG_MAJOR_VERSION == 34
     POP(dwarf),
-#endif
+    POP(elf),
+    POP(forest),
+    POP(generic_late_zombie), // gehenna
+    POP(icecv),
+    POP(lab),
     POP(lair),
-    POP(swamp),
+    POP(orc),
+    POP(ossuary),
+    POP(generic_late_zombie), // pan
+    POP(sewer),
     POP(shoals),
+    POP(slime),
     POP(snake),
     POP(spider),
-    POP(slime),
-    POP(vaults),
-#if TAG_MAJOR_VERSION == 34
-    POP(blade),
-#endif
-    POP(generic_late_zombie),
-    POP(generic_late_zombie),
-#if TAG_MAJOR_VERSION > 34
-    POP(depths),
-#endif
-    POP(generic_late_zombie),
-    POP(generic_late_zombie),
-    POP(generic_late_zombie),
-    POP(generic_late_zombie),
-    POP(generic_late_zombie),
-    POP(zot),
-#if TAG_MAJOR_VERSION == 34
-    POP(forest),
-#endif
-    POP(generic_late_zombie),
-    POP(generic_late_zombie),
-    POP(zig),
-    POP(lab),
-    POP(bazaar),
+    POP(swamp),
+    POP(temple),
+    POP(generic_late_zombie), // tar
+    POP(generic_late_zombie), // tomb
     POP(trove),
-    POP(sewer),
-    POP(ossuary),
-    POP(bailey),
-    POP(icecv),
+    POP(vaults),
+    POP(generic_late_zombie), // vestibule
     POP(volcano),
     POP(wizlab),
-#if TAG_MAJOR_VERSION == 34
-    POP(depths),
-#endif
+    POP(zig),
+    POP(zot),
 };
 
 static const pop_entry pop_water_generic[] =
@@ -1288,52 +1287,40 @@ static const pop_entry pop_water_hell[] =
 // Shoals, Abyss, Pan, Zot, D:1-5 liquid monsters are blocked in dungeon.cc
 static const struct { const pop_entry *pop; int count; } population_water[] =
 {
-    POP(water_d),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-#if TAG_MAJOR_VERSION == 34
-    POP(water_generic),
-#endif
-    POP(water_generic),
-    POP(water_swamp),
-    POP(water_generic),
+    POP(water_generic), // abyss
+    POP(water_generic), // bailey
+    POP(water_generic), // bazaar
+    POP(water_hell),    // coc
+    POP(water_generic), // crypt
+    POP(water_depths),
+    POP(water_hell),    // dis
+    POP(water_generic), // dungeon
+    POP(water_generic), // dwarf
+    POP(water_generic), // elf
+    POP(water_generic), // forest
+    POP(water_hell),    // geh
+    POP(water_generic), // ice
+    POP(water_generic), // lab
+    POP(water_generic), // lair
+    POP(water_generic), // orc
+    POP(water_generic), // ossu
+    POP(water_generic), // pan
+    POP(water_generic), // sewer
+    POP(water_generic), // shoals
+    POP(water_generic), // slime
     POP(water_snake),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-#if TAG_MAJOR_VERSION == 34
-    POP(water_generic),
-#endif
-    POP(water_generic),
-    POP(water_generic),
-#if TAG_MAJOR_VERSION > 34
-    POP(water_depths),
-#endif
-    POP(water_hell),
-    POP(water_hell),
-    POP(water_hell),
-    POP(water_hell),
-    POP(water_hell),
-    POP(water_generic),
-#if TAG_MAJOR_VERSION == 34
-    POP(water_generic), // Forest
-#endif
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-    POP(water_generic),
-#if TAG_MAJOR_VERSION == 34
-    POP(water_depths),
-#endif
+    POP(water_generic), // spider
+    POP(water_swamp),
+    POP(water_hell),    // tar
+    POP(water_generic), // temple
+    POP(water_generic), // tomb
+    POP(water_generic), // trove
+    POP(water_generic), // vaults
+    POP(water_hell),    // vestibule
+    POP(water_generic), // volcano
+    POP(water_generic), // wiz
+    POP(water_generic), // zig
+    POP(water_generic), // zot
 };
 
 static const pop_entry pop_lava_generic[] =
@@ -1389,50 +1376,38 @@ static const pop_entry pop_lava_hell[] =
 
 static const struct { const pop_entry *pop; int count; } population_lava[] =
 {
+    POP(lava_generic), // abyss
+    POP(lava_generic), // bailey
+    POP(lava_generic), // bazaar
+    POP(lava_hell),    // coc
+    POP(lava_generic), // crypt
+    POP(lava_depths),
+    POP(lava_hell),    // dis
     POP(lava_d),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-#if TAG_MAJOR_VERSION == 34
-    POP(lava_generic),
-#endif
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
+    POP(lava_generic), // dwarf
+    POP(lava_generic), // elf
+    POP(lava_generic), // forest
+    POP(lava_hell),    // geh
+    POP(lava_generic), // ice
+    POP(lava_generic), // lab
+    POP(lava_generic), // lair
+    POP(lava_generic), // orc
+    POP(lava_generic), // oss
+    POP(lava_generic), // pan
+    POP(lava_generic), // sewer
+    POP(lava_generic), // shoals
+    POP(lava_generic), // slime
     POP(lava_snake),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-#if TAG_MAJOR_VERSION == 34
-    POP(lava_generic),
-#endif
-    POP(lava_generic),
-    POP(lava_generic),
-#if TAG_MAJOR_VERSION > 34
-    POP(lava_depths),
-#endif
-    POP(lava_hell),
-    POP(lava_hell),
-    POP(lava_hell),
-    POP(lava_hell),
-    POP(lava_hell),
-    POP(lava_generic),
-#if TAG_MAJOR_VERSION == 34
-    POP(lava_generic),
-#endif
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-    POP(lava_generic),
-#if TAG_MAJOR_VERSION == 34
-    POP(lava_depths),
-#endif
+    POP(lava_generic), // spider
+    POP(lava_generic), // swamp
+    POP(lava_hell),    // tar
+    POP(lava_generic), // temple
+    POP(lava_generic), // tomb
+    POP(lava_generic), // trove
+    POP(lava_generic), // vaults
+    POP(lava_hell),    // vestibule
+    POP(lava_generic), // volcano
+    POP(lava_generic), // wizlab
+    POP(lava_generic), // zig
+    POP(lava_generic), // zot
 };

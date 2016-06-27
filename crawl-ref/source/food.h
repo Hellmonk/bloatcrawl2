@@ -25,7 +25,7 @@
 
 bool eat_food(int slot = -1);
 
-void make_hungry(int hunger_amount, bool suppress_msg, bool magic = false);
+bool make_hungry(int hunger_amount, bool suppress_msg, bool magic = false);
 
 void lessen_hunger(int statiated_amount, bool suppress_msg, int max = - 1);
 
@@ -44,6 +44,8 @@ mon_intel_type corpse_intelligence(const item_def &corpse);
 bool can_eat(const item_def &food, bool suppress_msg, bool check_hunger = true);
 
 bool eat_item(item_def &food);
+
+bool is_edible_food_here(vector<item_def*> *food_items = nullptr);
 
 int eat_from_floor(bool skip_chunks = true);
 bool eat_from_inventory();

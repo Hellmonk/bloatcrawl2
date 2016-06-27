@@ -96,7 +96,7 @@ KMONS:     b = Agnes / Aizul / Azrael band / Donald / Frances / Kirke band /\
                Maud / Nergalle / Nessos / Rupert / Saint Roka band / Snorg /\
                Wiglaf
 NSUBST:    b = 1:b. / 1:b.. / 1:ba.. / 1:baa.. / * = .:70 b:1
-KMONS:     c = Louise / Nikola / Norris / Frederick / Boris / Margery band /\
+KMONS:     c = Louise / Nikola / Frederick / Boris / Margery band /\
                Xtahua / Jory / Mennas / Mara
 NSUBST:    c = 2:c. / 2:cb. / 2:cb.. / 2:cbb.. / * = .:69 c:2
 MAP
@@ -276,8 +276,8 @@ ENDMAP
 
 NAME:     d_10
 TAGS:     d_10
-KMONS:    1 = place:D:10
-KMONS:    2 = place:D:13
+KMONS:    1 = place:D:5
+KMONS:    2 = place:D:7
 : line_setup(_G)
 : lua_marker('~', props_marker {
 :           door_description_suffix=" to the Dungeon",
@@ -303,8 +303,8 @@ ENDMAP
 NAME:     lair_1
 TAGS:     lair_1
 KMONS:    1 = place:Lair:1
-KMONS:    2 = place:Lair:4
-KMONS:    3 = place:Lair:7
+KMONS:    2 = place:Lair:3
+KMONS:    3 = place:Lair:5
 COLOUR:   123 = green
 : line_setup(_G)
 : general_item_setup(_G)
@@ -332,7 +332,7 @@ SHUFFLE:  123456
 : line_setup(_G)
 : general_item_setup(_G)
 : lua_marker('~', props_marker {
-:           door_description_suffix=" to Lair:8",
+:           door_description_suffix=" to Lair:$",
 :           })
 MAP
 xxxxxxxxxxxxx
@@ -398,7 +398,7 @@ KFEAT:    S = any shop
 : line_setup(_G)
 : general_item_setup(_G)
 : lua_marker('~', props_marker {
-:           door_description_suffix=" to Orc:2",
+:           door_description_suffix=" to Orc:4",
 :           })
 MAP
 xxxxxxxxxxxxxxxxxx
@@ -466,7 +466,7 @@ ENDMAP
 
 NAME:     d_15
 TAGS:     d_15
-KMONS:    1 = place:D:15
+KMONS:    1 = place:D:$
 KMONS:    2 = place:Depths:1
 : line_setup(_G)
 : general_item_setup(_G)
@@ -551,7 +551,7 @@ ENDMAP
 NAME:     d_20
 TAGS:     d_20
 KMONS:    1 = place:Depths:2
-KMONS:    2 = place:Depths:5
+KMONS:    2 = place:Depths:4
 : line_setup(_G)
 : general_item_setup(_G)
 : lua_marker('~', props_marker {
@@ -585,7 +585,7 @@ ENDMAP
 NAME:     items_5
 TAGS:     items_5
 KITEM:    a = ring of slaying plus:2 ident:all not_cursed /\
-          amulet of regeneration ident:all not_cursed /\
+          amulet of health regeneration ident:all not_cursed /\
           ring of protection plus:4 ident:all not_cursed /\
           ring of evasion plus:4 ident:all not_cursed /\
           ring of strength plus:6 ident:all not_cursed /\
@@ -669,7 +669,7 @@ KITEM:    2 = decaying rune of zot
 : line_setup(_G)
 : general_item_setup(_G)
 : lua_marker('~', props_marker {
-:           door_description_suffix=" to Swamp:5",
+:           door_description_suffix=" to Swamp:4",
 :           })
 MAP
 tttttttttttttt
@@ -688,7 +688,7 @@ KITEM:    2 = barnacled rune of zot
 : line_setup(_G)
 : general_item_setup(_G)
 : lua_marker('~', props_marker {
-:           door_description_suffix=" to Shoals:5",
+:           door_description_suffix=" to Shoals:4",
 :           })
 MAP
 xxxxxxxxxxxxxx
@@ -708,7 +708,7 @@ KITEM:    2 = gossamer rune of zot
 : line_setup(_G)
 : general_item_setup(_G)
 : lua_marker('~', props_marker {
-:           door_description_suffix=" to Spider:5",
+:           door_description_suffix=" to Spider:4",
 :           })
 MAP
 xxxxxxxxxxxxxx
@@ -728,7 +728,7 @@ COLOUR:   # = yellow
 : line_setup(_G)
 : general_item_setup(_G)
 : lua_marker('~', props_marker {
-:           door_description_suffix=" to Snake:5",
+:           door_description_suffix=" to Snake:4",
 :           })
 MAP
 ##############
@@ -766,7 +766,7 @@ ENDMAP
 
 NAME:     d_27
 TAGS:     d_27
-KMONS:    1 = place:D:$
+KMONS:    1 = place:Depths:$
 KMONS:    2 = fire dragon w:20 / ice dragon w:20 / storm dragon /\
               bone dragon / golden dragon / mottled dragon
 KMONS:    3 = base draconian
@@ -787,13 +787,12 @@ NAME:     items_6
 TAGS:     items_6
 ORIENT:   encompass
 KITEM:    a = amulet of faith randart not_cursed ident:all /\
-    amulet of guardian spirit randart not_cursed ident:all /\
+    amulet of magic shield randart not_cursed ident:all /\
     amulet of magic regeneration randart not_cursed ident:all /\
     amulet of rage randart not_cursed ident:all /\
     amulet of reflection randart not_cursed ident:all /\
-    amulet of the gourmand randart not_cursed ident:all /\
     amulet of dismissal randart not_cursed ident:all /\
-    amulet of regeneration randart ident:all not_cursed /\
+    amulet of health regeneration randart ident:all not_cursed /\
     ring of slaying plus:3 randart ident:all not_cursed /\
     any jewellery randart level:27 not_cursed ident:all w:40 /\
     ring of protection from fire randart ident:all not_cursed /\
@@ -1067,7 +1066,7 @@ TAGS:     pan_hell_end
 KMONS:    1 = Dispater
 KITEM:    1 = iron rune of zot
 KMONS:    2 = Ereshkigal
-KITEM:    2 = bone rune of zot
+KITEM:    2 = bony rune of zot
 KMONS:    3 = Asmodeus
 KITEM:    3 = obsidian rune of zot
 KMONS:    4 = Antaeus

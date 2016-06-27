@@ -144,7 +144,7 @@ int maybe_random_div(int nom, int denom, bool random_factor)
     if (random_factor)
         return random2(nom + denom) / denom;
     else
-        return nom / 2 / denom;
+        return (nom + denom) / 2 / denom;
 }
 
 // [num, num*size]
@@ -334,6 +334,74 @@ bool x_chance_in_y(int x, int y)
     return random2(y) < x;
 }
 
+/*
+ * if success == failure, then there's a 50% chance of success
+ * Returns 0 or more for success
+ * Returns -1 or less for failure
+ *
+ * chance is an output containing percent chance of success given the other two parameters
+ */
+int random_diff(int success, int failure, int *chance, defer_rand &r)
+{
+    if (success <= 0)
+    {
+        if (chance)
+            *chance = 0;
+        return -1;
+    }
+    if (failure <= 0)
+    {
+        if (chance)
+            *chance = 100;
+        return 0;
+    }
+
+    // needs the +1 to avoid div by 0 and guarantees a chance of failure or success, however small
+    const int random_success = r[0].random2(success) + 1;
+    const int random_failure = r[1].random2(failure) + 1;
+    int result = random_success - random_failure;
+    if (result == 0)
+    {
+        result = r[2].random2(2) ? 0 : -1;
+    }
+
+    if (chance)
+    {
+        if (success == failure)
+        {
+            *chance = 50;
+        }
+        else
+        {
+            int x = success;
+            int y = failure;
+            const int m = min(success, failure);
+            bool inverted = false;
+
+            if (success < failure)
+            {
+                x = failure;
+                y = success;
+                inverted = true;
+            }
+
+            // number of possibilities where success overcomes failure
+            long long weight = (m * m - m) / 2 + (x - y) * y;
+
+            // add half of the possibilities where success matches failure
+            weight += m / 2;
+
+            const long long total_weight = x * y;
+            *chance = (int) (100 * weight / total_weight);
+
+            if (inverted)
+                *chance = 100 - *chance;
+        }
+    }
+
+    return result;
+}
+
 // [val - lowfuzz, val + highfuzz]
 int fuzz_value(int val, int lowfuzz, int highfuzz, int naverage)
 {
@@ -422,3 +490,17 @@ int defer_rand::random2avg(int max, int rolls)
 
     return sum / rolls;
 }
+
+int get_success_chance(int diff, int cap, int spread)
+{
+    double ratio = pow((spread - 1.0)/spread, abs(diff)) / 2;
+    if (diff > 0)
+        ratio = 1 - ratio;
+
+    int chance = 100 * ratio;
+    chance = min(100 - cap, chance);
+    chance = max(0 + cap, chance);
+
+    return chance;
+}
+

@@ -203,7 +203,6 @@ error CHAOS_BREATH
 %sdir gui/spells/monster
 cold_breath COLD_BREATH
 %sdir misc
-error CONTROL_WINDS
 error CORRUPT_BODY
 error CREATE_TENTACLES
 error CRYSTAL_BOLT
@@ -229,7 +228,7 @@ error GHOSTLY_FIREBALL
 error SPECTRAL_CLOUD
 %sdir gui/spells/monster
 haste_other HASTE_OTHER
-call_down_damnation CALL_DOWN_DAMNATION
+call_down_hellfire CALL_DOWN_HELLFIRE
 %sdir misc
 error HOLY_BREATH
 error HOLY_FLAMES
@@ -307,7 +306,7 @@ error WORD_OF_RECALL
 
 # spells mimicking natural abilities
 %sdir gui/abilities
-hurl_damnation HURL_DAMNATION
+hurl_hellfire HURL_HELLFIRE
 
 # spells mimicking divine abilities
 %sdir gui/invocations

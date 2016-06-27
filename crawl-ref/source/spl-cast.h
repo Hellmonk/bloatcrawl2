@@ -8,6 +8,9 @@
 
 #include "enum.h"
 
+#define SPELL_POWER_CAP			        999
+#define global_spell_skill_adjustment   8
+
 enum spflag_type
 {
     SPFLAG_NONE                 = 0x000000,
@@ -82,11 +85,13 @@ int list_spells(bool toggle_with_I = true, bool viewing = false,
                 bool allow_preselect = true,
                 const string &title = "Your Spells",
                 spell_selector selector = nullptr);
+int list_spells_wide(bool viewing = false,
+                bool allow_preselect = true,
+                const string &title = "Your Spells",
+                spell_selector selector = nullptr);
 int raw_spell_fail(spell_type spell);
 int stepdown_spellpower(int power);
-int calc_spell_power(spell_type spell, bool apply_intel,
-                     bool fail_rate_chk = false, bool cap_power = true,
-                     bool rod = false);
+int calc_spell_power(spell_type spell, bool apply_intel, bool rod);
 int calc_spell_range(spell_type spell, int power = 0, bool rod = false);
 
 bool cast_a_spell(bool check_range, spell_type spell = SPELL_NO_SPELL);
@@ -114,6 +119,7 @@ string failure_rate_to_string(int fail);
 
 int power_to_barcount(int power);
 
+string spell_power_numeric_string(spell_type spell, bool show_cap = false, bool rod = false);
 string spell_power_string(spell_type spell, bool rod = false);
 string spell_range_string(spell_type spell, bool rod = false);
 string range_string(int range, int maxrange, ucs_t caster_char);

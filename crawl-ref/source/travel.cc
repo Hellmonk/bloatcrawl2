@@ -57,6 +57,8 @@
 #include "unicode.h"
 #include "unwind.h"
 #include "view.h"
+#include "spl-summoning.h"
+#include "rune_curse.h"
 
 enum IntertravelDestination
 {
@@ -122,6 +124,7 @@ static bool ignore_player_traversability = false;
 
 // Map of terrain types that are forbidden.
 static FixedVector<int8_t,NUM_FEATURES> forbidden_terrain;
+
 
 /*
  * Warn if interlevel travel is going to take you outside levels in
@@ -615,7 +618,6 @@ static void _start_running()
 {
     _userdef_run_startrunning_hook();
     you.running.init_travel_speed();
-
     if (you.running < 0)
         start_delay(DELAY_TRAVEL, 1);
 }
@@ -1861,7 +1863,7 @@ static void _trackback(vector<level_id> &vec, branch_type branch, int subdepth)
 {
     if (subdepth < 1)
         return;
-    ASSERT(subdepth <= 27);
+    ASSERT(subdepth <= MAX_BRANCH_DEPTH);
 
     vec.emplace_back(branch, subdepth);
 
@@ -2246,6 +2248,13 @@ level_id find_down_level(level_id curr)
 {
     if (curr.depth < brdepth[curr.branch])
         ++curr.depth;
+    else
+    {
+        /* work in progress
+        return feat_is_portal_entrance(grd(where))
+               || grd(where) == DNGN_TRANSIT_PANDEMONIUM;
+               */
+    }
     return curr;
 }
 
@@ -2524,6 +2533,13 @@ void start_translevel_travel(const level_pos &pos)
         mpr("Sorry, I don't know how to get there.");
         return;
     }
+
+    redraw_screen();
+    clear_messages();
+    mprf(MSGCH_PRELUDE, "Travelling...");
+    msgwin_got_input();
+    msgwin_new_cmd(true);
+    display_message_window();
 
     // Remember where we're going so we can easily go back if interrupted.
     you.travel_x = pos.pos.x;
@@ -2939,10 +2955,12 @@ void start_travel(const coord_def& p)
     }
     else
         start_translevel_travel(level_target);
+    you.prev_direction.reset();
 }
 
 void start_explore(bool grab_items)
 {
+    player_before_long_safe_action();
     if (Hints.hints_explored)
         Hints.hints_explored = false;
 
@@ -2975,6 +2993,12 @@ void start_explore(bool grab_items)
             env.map_seen.set(*ri);
 
     you.running.pos.reset();
+    you.prev_direction.reset();
+    mprf("Exploring the dungeon...");
+    flush_prev_message();
+#ifdef USE_TILE_WEB
+    tiles.flush_messages();
+#endif
     _start_running();
 }
 
@@ -2984,8 +3008,8 @@ void do_explore_cmd()
         mpr("You need to eat something NOW!");
     else if (you.berserk())
         mpr("Calm down first, please.");
-    else if (player_in_branch(BRANCH_LABYRINTH))
-        mpr("No exploration algorithm can help you here.");
+//    else if (player_in_branch(BRANCH_LABYRINTH))
+//        mpr("No exploration algorithm can help you here.");
     else                        // Start exploring
         start_explore(Options.explore_greedy);
 }
@@ -3001,7 +3025,8 @@ level_id level_id::current()
 
 int level_id::absdepth() const
 {
-    return absdungeon_depth(branch, depth);
+    const int original = absdungeon_depth(branch, depth);
+    return rune_curse_depth_adjust(original);
 }
 
 level_id level_id::get_next_level_id(const coord_def &pos)
@@ -3919,7 +3944,7 @@ bool can_travel_interlevel()
 // Shift-running and resting.
 
 runrest::runrest()
-    : runmode(0), mp(0), hp(0), pos(0,0)
+    : runmode(0), mp(0), hp(0), sp(0), pos(0,0)
 {
 }
 
@@ -3928,10 +3953,12 @@ runrest::runrest()
 void runrest::initialise(int dir, int mode)
 {
     // Note HP and MP for reference.
-    hp = you.hp;
-    mp = you.magic_points;
+    hp = get_hp();
+    sp = get_sp();
+    mp = get_mp();
     notified_hp_full = false;
     notified_mp_full = false;
+    notified_sp_full = false;
     init_travel_speed();
 
     if (dir == RDIR_REST)
@@ -4126,8 +4153,9 @@ void runrest::clear()
 {
     runmode = RMODE_NOT_RUNNING;
     pos.reset();
-    mp = hp = travel_speed = 0;
+    mp = sp = hp = travel_speed = 0;
     notified_hp_full = false;
+    notified_sp_full = false;
     notified_mp_full = false;
 
     _reset_zigzag_info();
@@ -4464,6 +4492,7 @@ void do_interlevel_travel()
 
     if (you.running)
         clear_messages();
+    you.prev_direction.reset();
 }
 
 #ifdef USE_TILE

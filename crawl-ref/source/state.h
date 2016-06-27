@@ -8,6 +8,7 @@
 
 #include <vector>
 
+#include "enum.h"
 #include "player.h"
 
 class monster;
@@ -125,6 +126,14 @@ struct game_state
     // Git version of the character save. This will be empty unless the
     // character has been loaded from a previous save.
     std::string save_rcs_version;
+
+    game_difficulty_level difficulty;
+    int danger_mode_counter;
+    bool free_stair_escape;
+    bool warn_about_experience;         // currently unused
+    bool need_floor_exp;                // means we entered a floor for the first time and we need to give exp for it
+    bool followers_should_follow;
+    bool sim_mode;
 
 protected:
     void reset_cmd_repeat();

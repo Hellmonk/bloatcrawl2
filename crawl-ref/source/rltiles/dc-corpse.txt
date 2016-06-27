@@ -59,6 +59,7 @@ porcupine CORPSE_PORCUPINE
 
 ## Spiders and insects ('s')
 %back blood_green blood_green1 blood_green2 blood_green3 blood_green4
+giant_centipede CORPSE_GIANT_CENTIPEDE
 scorpion CORPSE_SCORPION
 emperor_scorpion CORPSE_EMPEROR_SCORPION
 tarantella CORPSE_TARANTELLA
@@ -95,6 +96,7 @@ dart_slug CORPSE_DART_SLUG
 killer_bee CORPSE_KILLER_BEE
 queen_bee CORPSE_QUEEN_BEE
 vampire_mosquito CORPSE_VAMPIRE_MOSQUITO
+../meliai CORPSE_MELIAI
 wasp CORPSE_WASP
 hornet CORPSE_HORNET
 spark_wasp CORPSE_SPARK_WASP

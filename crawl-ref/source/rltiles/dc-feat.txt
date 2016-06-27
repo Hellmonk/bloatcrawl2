@@ -282,7 +282,7 @@ sealed_stairs_down DNGN_SEALED_STAIRS_DOWN
 shop_general SHOP_GENERAL
 shop_weapon SHOP_WEAPONS
 shop_armour SHOP_ARMOUR
-shop_food SHOP_FOOD
+# shop_food SHOP_FOOD
 shop_books SHOP_BOOKS
 shop_scrolls SHOP_SCROLLS
 shop_wands SHOP_WANDS
@@ -598,7 +598,6 @@ wall_old_blood07
 wall_old_blood08
 wall_old_blood09
 %sdir misc
-halo HALO
 effect/halo_range HALO_RANGE
 effect/umbra0 UMBRA
 effect/umbra1
@@ -615,6 +614,9 @@ landing LANDING
 effect/heataura0 HEAT_AURA
 effect/heataura1
 effect/heataura2
+halo_friendly HALO_FRIENDLY
+halo_gd_neutral HALO_GD_NEUTRAL
+halo_neutral HALO_NEUTRAL
 ray RAY
 ray_multi RAY_MULTI
 ray_out_of_range RAY_OUT_OF_RANGE

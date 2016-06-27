@@ -624,10 +624,10 @@ bool make_book_level_randart(item_def &book, int level)
     {
         num_spells = spells.size();
 #if defined(DEBUG) || defined(DEBUG_DIAGNOSTICS)
-        mprf(MSGCH_WARN, "More spells requested for fixed level (%d) "
+        dprf("More spells requested for fixed level (%d) "
              "randart spellbook than there are valid spells.",
              level);
-        mprf(MSGCH_WARN, "Discarded %d spells due to being uncastable and "
+        dprf("Discarded %d spells due to being uncastable and "
              "%d spells due to being disliked by %s.",
              uncastable_discard, god_discard, god_name(god).c_str());
 #endif
@@ -1061,7 +1061,7 @@ static int _randbook_spell_weight(spell_type spell, int agent)
 
     // prefer spells roughly approximating the player's overall spellcasting
     // ability (?????)
-    const int Spc = you.skills[SK_SPELLCASTING];
+    const int Spc = div_rand_round(you.skill(SK_SPELLCASTING, 256, true), 256);
     const int difficult_weight = 5 - abs(3 * spell_difficulty(spell) - Spc) / 7;
 
     // prefer spells in disciplines the player is skilled with
@@ -1072,7 +1072,8 @@ static int _randbook_spell_weight(spell_type spell, int agent)
     {
         if (disciplines & disc)
         {
-            total_skill += you.skills[spell_type2skill(disc)];
+            const skill_type sk = spell_type2skill(disc);
+            total_skill += div_rand_round(you.skill(sk, 256, true), 256);
             num_skills++;
         }
     }
@@ -1180,9 +1181,11 @@ static void _choose_themed_randbook_spells(weighted_spells &possible_spells,
     for (int i = 0; i < size; ++i)
     {
         const spell_type *spell = random_choose_weighted(possible_spells);
-        ASSERT(spell);
-        spells.push_back(*spell);
-        possible_spells[*spell] = 0; // don't choose the same one twice!
+        if (spell)
+        {
+            spells.push_back(*spell);
+            possible_spells[*spell] = 0; // don't choose the same one twice!
+        }
     }
 }
 

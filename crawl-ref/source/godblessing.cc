@@ -205,7 +205,7 @@ static string _beogh_bless_melee_weapon(monster* mon)
     {
         if (wpn.cursed())
         {
-            do_uncurse_item(wpn);
+            do_uncurse_item(wpn, MAX_CURSE_LEVEL);
             return "uncursed armament";
         }
 
@@ -533,7 +533,7 @@ static void _beogh_blessing_reinforcements()
     monster_type follower_type;
     for (int i = 0; i < how_many; ++i)
     {
-        if (random2(you.experience_level) >= 9 && coinflip())
+        if (random2(effective_xl()) >= 9 && coinflip())
             follower_type = RANDOM_ELEMENT(high_xl_followers);
         else
             follower_type = RANDOM_ELEMENT(followers);

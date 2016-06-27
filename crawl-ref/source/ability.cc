@@ -177,7 +177,6 @@ static skill_type _invo_skill()
     {
         case GOD_KIKUBAAQUDGHA:
             return SK_NECROMANCY;
-        case GOD_NEMELEX_XOBEH:
         case GOD_PAKELLAS:
             return SK_EVOCATIONS;
         case GOD_ASHENZARI:
@@ -217,7 +216,7 @@ struct failure_info
         switch (basis)
         {
         case FAIL_XL:
-            return base_chance - you.experience_level * variable_fail_mult;
+            return base_chance - effective_xl() * variable_fail_mult;
         case FAIL_EVO:
             return base_chance - you.skill(SK_EVOCATIONS, variable_fail_mult);
         case FAIL_INVO:
@@ -305,9 +304,9 @@ static const ability_def Ability_List[] =
     { ABIL_SPIT_ACID, "Spit Acid",
         0, 0, 125, 0, {FAIL_XL, 30, 1}, abflag::BREATH },
 
-    { ABIL_FLY, "Fly", 3, 0, 100, 0, {FAIL_XL, 42, 3}, abflag::NONE },
-    { ABIL_STOP_FLYING, "Stop Flying", 0, 0, 0, 0, {}, abflag::NONE },
-    { ABIL_DAMNATION, "Damnation",
+    { ABIL_FLY, "Fly", 0, 0, 100, 0, {FAIL_XL, 42, 3}, abflag::NONE },
+    { ABIL_STOP_FLYING, "Stop Flying", 0, 0, 0, 0, {FAIL_XL, 0, 0}, abflag::NONE },
+    { ABIL_HELLFIRE, "Hellfire",
         0, 150, 200, 0, {FAIL_XL, 50, 1}, abflag::NONE },
 
     { ABIL_DELAYED_FIREBALL, "Release Delayed Fireball",
@@ -330,8 +329,10 @@ static const ability_def Ability_List[] =
     // use or train Evocations (the others do).  -- bwr
     { ABIL_EVOKE_BLINK, "Evoke Blink",
       1, 0, 50, 0, {FAIL_EVO, 40, 2}, abflag::NONE },
-    { ABIL_RECHARGING, "Device Recharging",
+    { ABIL_RECHARGING_BASIC, "Device Recharging",
       1, 0, 0, 0, {FAIL_XL, 45, 2}, abflag::PERMANENT_MP },
+	{ ABIL_RECHARGING_ADVANCED, "Greater Device Recharging",
+	  3, 0, 0, 0, {FAIL_XL, 45, 2}, abflag::PERMANENT_MP },
 
     { ABIL_EVOKE_BERSERK, "Evoke Berserk Rage",
       0, 0, 0, 0, {FAIL_EVO, 50, 2}, abflag::NONE },
@@ -352,7 +353,7 @@ static const ability_def Ability_List[] =
     { ABIL_ZIN_RECITE, "Recite",
       0, 0, 0, 0, {FAIL_INVO, 30, 6, 20}, abflag::BREATH },
     { ABIL_ZIN_VITALISATION, "Vitalisation",
-      2, 0, 0, 1, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
+      0, 0, 0, 2, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_ZIN_IMPRISON, "Imprison",
       5, 0, 0, 4, {FAIL_INVO, 60, 5, 20}, abflag::NONE },
     { ABIL_ZIN_SANCTUARY, "Sanctuary",
@@ -364,19 +365,19 @@ static const ability_def Ability_List[] =
 
     // The Shining One
     { ABIL_TSO_DIVINE_SHIELD, "Divine Shield",
-      3, 0, 50, 2, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
+      0, 0, 50, 3, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_TSO_CLEANSING_FLAME, "Cleansing Flame",
-      5, 0, 100, 2, {FAIL_INVO, 70, 4, 25}, abflag::NONE },
+      0, 0, 100, 3, {FAIL_INVO, 70, 4, 25}, abflag::NONE },
     { ABIL_TSO_SUMMON_DIVINE_WARRIOR, "Summon Divine Warrior",
-      8, 0, 150, 5, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
+      0, 0, 150, 8, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
     { ABIL_TSO_BLESS_WEAPON, "Brand Weapon With Holy Wrath", 0, 0, 0, 0,
       {FAIL_INVO}, abflag::NONE },
 
     // Kikubaaqudgha
     { ABIL_KIKU_RECEIVE_CORPSES, "Receive Corpses",
-      3, 0, 200, 2, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
+      0, 0, 50, 4, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_KIKU_TORMENT, "Torment",
-      4, 0, 0, 8, {FAIL_INVO, 60, 5, 20}, abflag::NONE },
+      0, 0, 0, 16, {FAIL_INVO, 60, 5, 20}, abflag::NONE },
     { ABIL_KIKU_GIFT_NECRONOMICON, "Receive Necronomicon", 0, 0, 0, 0,
       {FAIL_INVO}, abflag::NONE },
     { ABIL_KIKU_BLESS_WEAPON, "Brand Weapon With Pain", 0, 0, 0, 0,
@@ -385,106 +386,113 @@ static const ability_def Ability_List[] =
     // Yredelemnul
     { ABIL_YRED_INJURY_MIRROR, "Injury Mirror",
       0, 0, 0, 0, {FAIL_INVO, 40, 4, 20}, abflag::PIETY },
+    /*
     { ABIL_YRED_ANIMATE_REMAINS, "Animate Remains",
-      2, 0, 200, 0, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
+      0, 0, 0, 2, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
+      */
     { ABIL_YRED_RECALL_UNDEAD_SLAVES, "Recall Undead Slaves",
       2, 0, 0, 0, {FAIL_INVO, 50, 4, 20}, abflag::NONE },
     { ABIL_YRED_ANIMATE_DEAD, "Animate Dead",
-      2, 0, 200, 0, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
+      20, 0, 0, 0, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
     { ABIL_YRED_DRAIN_LIFE, "Drain Life",
-      6, 0, 200, 2, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
+      0, 0, 200, 3, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
     { ABIL_YRED_ENSLAVE_SOUL, "Enslave Soul",
-      8, 0, 500, 4, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
+      0, 0, 150, 8, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
 
     // Okawaru
     { ABIL_OKAWARU_HEROISM, "Heroism",
-      2, 0, 0, 1, {FAIL_INVO, 30, 6, 20}, abflag::NONE },
+      0, 0, 50, 2, {FAIL_INVO, 30, 6, 20}, abflag::NONE },
     { ABIL_OKAWARU_FINESSE, "Finesse",
-      5, 0, 0, 3, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
+      0, 0, 100, 6, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
 
     // Makhleb
     { ABIL_MAKHLEB_MINOR_DESTRUCTION, "Minor Destruction",
       0, scaling_cost::fixed(1), 0, 0, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_MAKHLEB_LESSER_SERVANT_OF_MAKHLEB, "Lesser Servant of Makhleb",
-      0, scaling_cost::fixed(4), 0, 2, {FAIL_INVO, 40, 5, 20}, abflag::HOSTILE },
+      0, scaling_cost::fixed(4), 50, 4, {FAIL_INVO, 40, 5, 20}, abflag::HOSTILE },
     { ABIL_MAKHLEB_MAJOR_DESTRUCTION, "Major Destruction",
-      0, scaling_cost::fixed(6), 0, generic_cost::range(0, 1),
+      0, scaling_cost::fixed(6), 100, 2,
       {FAIL_INVO, 60, 4, 25}, abflag::NONE },
     { ABIL_MAKHLEB_GREATER_SERVANT_OF_MAKHLEB, "Greater Servant of Makhleb",
-      0, scaling_cost::fixed(10), 0, 5,
+      0, scaling_cost::fixed(10), 100, 10,
       {FAIL_INVO, 90, 2, 5}, abflag::HOSTILE },
 
     // Sif Muna
     { ABIL_SIF_MUNA_CHANNEL_ENERGY, "Channel Energy",
-      0, 0, 100, 0, {FAIL_INVO, 40, 2, 20}, abflag::NONE },
+      0, 0, 0, 25, {FAIL_INVO, 40, 2, 20}, abflag::NONE },
     { ABIL_SIF_MUNA_FORGET_SPELL, "Forget Spell",
-      5, 0, 0, 8, {FAIL_INVO}, abflag::NONE },
+      0, 0, 0, 8, {FAIL_INVO}, abflag::NONE },
 
     // Trog
     { ABIL_TROG_BURN_SPELLBOOKS, "Burn Spellbooks",
-      0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
-    { ABIL_TROG_BERSERK, "Berserk", 0, 0, 200, 0, {FAIL_INVO}, abflag::NONE },
+      0, 0, 10, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_TROG_BERSERK, "Berserk", 0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
     { ABIL_TROG_REGEN_MR, "Trog's Hand",
-      0, 0, 200, 2, {FAIL_INVO, piety_breakpoint(2), 0, 1}, abflag::NONE },
+      0, 0, 50, 4, {FAIL_INVO, piety_breakpoint(2), 0, 1}, abflag::NONE },
     { ABIL_TROG_BROTHERS_IN_ARMS, "Brothers in Arms",
-      0, 0, 250, generic_cost::range(5, 6),
+      0, 0, 100, 12,
       {FAIL_INVO, piety_breakpoint(5), 0, 1}, abflag::NONE },
 
     // Elyvilon
     { ABIL_ELYVILON_LIFESAVING, "Divine Protection",
       0, 0, 0, 0, {FAIL_INVO}, abflag::PIETY },
-    { ABIL_ELYVILON_LESSER_HEALING, "Lesser Healing", 1, 0, 100,
-      generic_cost::range(0, 1), {FAIL_INVO, 30, 6, 20}, abflag::CONF_OK },
+    { ABIL_ELYVILON_LESSER_HEALING, "Lesser Healing",
+      0, scaling_cost::fixed(1), 0, 1,
+      {FAIL_INVO, 30, 6, 20}, abflag::CONF_OK },
+    /*
     { ABIL_ELYVILON_HEAL_OTHER, "Heal Other",
       2, 0, 250, 2, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
+      */
     { ABIL_ELYVILON_PURIFICATION, "Purification",
-      3, 0, 300, 3, {FAIL_INVO, 20, 5, 20}, abflag::CONF_OK },
+      0, 0, 0, 3, {FAIL_INVO, 20, 5, 20}, abflag::CONF_OK },
     { ABIL_ELYVILON_GREATER_HEALING, "Greater Healing",
-      2, 0, 250, 3, {FAIL_INVO, 40, 5, 20}, abflag::CONF_OK },
+      0, scaling_cost::fixed(3), 0, 3,
+     {FAIL_INVO, 40, 5, 20}, abflag::CONF_OK },
     { ABIL_ELYVILON_DIVINE_VIGOUR, "Divine Vigour",
-      0, 0, 600, 6, {FAIL_INVO, 80, 4, 25}, abflag::CONF_OK },
+      0, 0, 0, 6, {FAIL_INVO, 80, 4, 25}, abflag::CONF_OK },
 
     // Lugonu
     { ABIL_LUGONU_ABYSS_EXIT, "Depart the Abyss",
-      1, 0, 0, 10, {FAIL_INVO, 30, 6, 20}, abflag::NONE },
+      0, 0, 150, 20, {FAIL_INVO, 30, 6, 20}, abflag::NONE },
     { ABIL_LUGONU_BEND_SPACE, "Bend Space",
-      1, 0, 0, 0, {FAIL_INVO, 40, 5, 20}, abflag::PAIN },
-    { ABIL_LUGONU_BANISH, "Banish", 4, 0, 200, generic_cost::range(3, 4),
-      {FAIL_INVO, 85, 7, 20}, abflag::NONE },
-    { ABIL_LUGONU_CORRUPT, "Corrupt", 7, scaling_cost::fixed(5), 500, 10,
-      {FAIL_INVO, 70, 4, 25}, abflag::NONE },
-    { ABIL_LUGONU_ABYSS_ENTER, "Enter the Abyss", 9, 0, 500,
-      generic_cost::fixed(35), {FAIL_INVO, 80, 4, 25}, abflag::PAIN },
-    { ABIL_LUGONU_BLESS_WEAPON, "Brand Weapon With Distortion", 0, 0, 0, 0,
-      {FAIL_INVO}, abflag::NONE },
+      0, 0, 50, 0, {FAIL_INVO, 40, 5, 20}, abflag::PAIN },
+    { ABIL_LUGONU_BANISH, "Banish",
+      0, 0, 200, generic_cost::fixed(4), {FAIL_INVO, 85, 7, 40}, abflag::NONE },
+    { ABIL_LUGONU_CORRUPT, "Corrupt",
+      0, scaling_cost::fixed(5), 500, 10,
+      {FAIL_INVO, 70, 4, 50}, abflag::NONE },
+    { ABIL_LUGONU_ABYSS_ENTER, "Enter the Abyss",
+      0, 0, 500, 70, {FAIL_INVO, 80, 4, 25}, abflag::PAIN },
+    { ABIL_LUGONU_BLESS_WEAPON, "Brand Weapon With Distortion",
+      0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
 
     // Nemelex
     { ABIL_NEMELEX_TRIPLE_DRAW, "Triple Draw",
-      2, 0, 0, 2, {FAIL_INVO, 60, 5, 20}, abflag::NONE },
+      0, 0, 100, 3, {FAIL_INVO, 60, 5, 20}, abflag::NONE },
     { ABIL_NEMELEX_DEAL_FOUR, "Deal Four",
-      8, 0, 0, 8, {FAIL_INVO, -1}, abflag::NONE }, // failure special-cased
+      0, 0, 200, 12, {FAIL_INVO, -1}, abflag::NONE }, // failure special-cased
     { ABIL_NEMELEX_STACK_FIVE, "Stack Five",
-      5, 0, 0, 10, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
+      0, 0, 250, 20, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
 
     // Beogh
     { ABIL_BEOGH_SMITING, "Smiting",
-      3, 0, 0, generic_cost::fixed(3), {FAIL_INVO, 40, 5, 20}, abflag::NONE },
+      0, 0, 80, 6, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_BEOGH_RECALL_ORCISH_FOLLOWERS, "Recall Orcish Followers",
       2, 0, 0, 0, {FAIL_INVO, 30, 6, 20}, abflag::NONE },
     { ABIL_BEOGH_GIFT_ITEM, "Give Item to Named Follower",
       0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
     { ABIL_BEOGH_RESURRECTION, "Resurrection",
-      0, 0, 0, generic_cost::fixed(35), {FAIL_INVO}, abflag::NONE },
+      0, 0, 0, 70, {FAIL_INVO}, abflag::NONE },
 
     // Jiyva
     { ABIL_JIYVA_CALL_JELLY, "Request Jelly",
-      2, 0, 0, 1, {FAIL_INVO}, abflag::NONE },
+      0, 0, 20, 2, {FAIL_INVO}, abflag::NONE },
     { ABIL_JIYVA_JELLY_PARALYSE, "Jelly Paralyse",
       3, 0, 0, 0, {FAIL_INVO}, abflag::PIETY },
     { ABIL_JIYVA_SLIMIFY, "Slimify",
-      4, 0, 0, 8, {FAIL_INVO, 90, 0, 2}, abflag::NONE },
+      0, 0, 100, 16, {FAIL_INVO, 90, 0, 2}, abflag::NONE },
     { ABIL_JIYVA_CURE_BAD_MUTATION, "Cure Bad Mutation",
-      0, 0, 0, 15, {FAIL_INVO}, abflag::NONE },
+      0, 0, 200, 30, {FAIL_INVO}, abflag::NONE },
 
     // Fedhas
     { ABIL_FEDHAS_EVOLUTION, "Evolution",
@@ -494,35 +502,35 @@ static const ability_def Ability_List[] =
     { ABIL_FEDHAS_PLANT_RING, "Growth",
       2, 0, 0, 0, {FAIL_INVO, 40, 5, 20}, abflag::FRUIT },
     { ABIL_FEDHAS_SPAWN_SPORES, "Reproduction",
-      4, 0, 100, 1, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
+      0, 0, 100, 1, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
     { ABIL_FEDHAS_RAIN, "Rain",
-      4, 0, 150, 4, {FAIL_INVO, 70, 4, 25}, abflag::NONE },
+      0, 0, 150, 4, {FAIL_INVO, 70, 4, 25}, abflag::NONE },
 
     // Cheibriados
     { ABIL_CHEIBRIADOS_TIME_BEND, "Bend Time",
-      3, 0, 50, 1, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
+      0, 0, 50, 1, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
     { ABIL_CHEIBRIADOS_DISTORTION, "Temporal Distortion",
-      4, 0, 200, 3, {FAIL_INVO, 60, 5, 20}, abflag::INSTANT },
+      0, 0, 200, 3, {FAIL_INVO, 60, 5, 20}, abflag::INSTANT },
     { ABIL_CHEIBRIADOS_SLOUCH, "Slouch",
-      5, 0, 100, 8, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
+      0, 0, 100, 8, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
     { ABIL_CHEIBRIADOS_TIME_STEP, "Step From Time",
-      10, 0, 200, 10, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
+      0, 0, 200, 10, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
 
     // Ashenzari
     { ABIL_ASHENZARI_CURSE, "Curse Item",
       0, 0, 0, 0, {FAIL_INVO}, abflag::REMOVE_CURSE_SCROLL },
     { ABIL_ASHENZARI_SCRYING, "Scrying",
-      4, 0, 0, 2, {FAIL_INVO}, abflag::INSTANT },
+      0, 0, 50, 3, {FAIL_INVO}, abflag::INSTANT },
     { ABIL_ASHENZARI_TRANSFER_KNOWLEDGE, "Transfer Knowledge",
-      0, 0, 0, 10, {FAIL_INVO}, abflag::NONE },
+      0, 0, 0, 15, {FAIL_INVO}, abflag::NONE },
     { ABIL_ASHENZARI_END_TRANSFER, "End Transfer Knowledge",
       0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
 
     // Dithmenos
     { ABIL_DITHMENOS_SHADOW_STEP, "Shadow Step",
-      4, 0, 0, 4, {FAIL_INVO, 30, 6, 20}, abflag::NONE },
+      0, 0, 0, 8, {FAIL_INVO, 30, 6, 20}, abflag::NONE },
     { ABIL_DITHMENOS_SHADOW_FORM, "Shadow Form",
-      9, 0, 0, 10, {FAIL_INVO, 80, 4, 25}, abflag::SKILL_DRAIN },
+      0, 0, 0, 20, {FAIL_INVO, 80, 4, 25}, abflag::SKILL_DRAIN },
 
     // Ru
     { ABIL_RU_DRAW_OUT_POWER, "Draw Out Power", 0, 0, 0, 0,
@@ -579,18 +587,18 @@ static const ability_def Ability_List[] =
 
     // Qazlal
     { ABIL_QAZLAL_UPHEAVAL, "Upheaval",
-      4, 0, 0, 3, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
+      0, 0, 0, 6, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_QAZLAL_ELEMENTAL_FORCE, "Elemental Force",
-      6, 0, 0, 6, {FAIL_INVO, 60, 5, 20}, abflag::NONE },
+      0, 0, 0, 12, {FAIL_INVO, 60, 5, 20}, abflag::NONE },
     { ABIL_QAZLAL_DISASTER_AREA, "Disaster Area",
-      7, 0, 0, 10, {FAIL_INVO, 70, 4, 25}, abflag::NONE },
+      0, 0, 0, 20, {FAIL_INVO, 70, 4, 25}, abflag::NONE },
 
     // Pakellas
     { ABIL_PAKELLAS_DEVICE_SURGE, "Device Surge",
-      0, 0, 0, generic_cost::fixed(1),
+      0, 0, 100, 2,
       {FAIL_INVO, 40, 5, 20}, abflag::VARIABLE_MP | abflag::INSTANT },
     { ABIL_PAKELLAS_QUICK_CHARGE, "Quick Charge",
-      0, 0, 0, 2, {FAIL_INVO, 40, 5, 25}, abflag::NONE },
+      0, 0, 100, 4, {FAIL_INVO, 40, 5, 25}, abflag::NONE },
     { ABIL_PAKELLAS_SUPERCHARGE, "Supercharge",
       0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
 
@@ -622,11 +630,53 @@ static const ability_def Ability_List[] =
         0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
     { ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING, "Knight: Broad Axe",
         0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
-    { ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST, "Battlemage: Iceblast",
+    { ABIL_HEPLIAKLQANA_BATTLEMAGE_FORCE_LANCE, "Battlemage: Force Lance",
         0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
     { ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA, "Battlemage: Bolt of Magma",
         0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
-    { ABIL_HEPLIAKLQANA_HEXER_PARALYSE, "Hexer: Paralyse",
+    { ABIL_HEPLIAKLQANA_HEXER_MASS_CONFUSION, "Hexer: Mass Confusion",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION, "Hexer: Englaciation",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+
+    { ABIL_HEPLIAKLQANA_IDENTITY,  "Ancestor Identity",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::INSTANT },
+
+    // Uskayaw
+    { ABIL_USKAYAW_STOMP, "Stomp",
+        3, 0, 100, generic_cost::fixed(20), {FAIL_INVO}, abflag::NONE },
+    { ABIL_USKAYAW_LINE_PASS, "Line Pass",
+        4, 0, 200, generic_cost::fixed(20), {FAIL_INVO}, abflag::NONE},
+    { ABIL_USKAYAW_GRAND_FINALE, "Grand Finale",
+        8, 0, 500, generic_cost::fixed(0),
+        {FAIL_INVO, 120 + piety_breakpoint(4), 5, 1}, abflag::NONE},
+
+    // Hepliaklqana
+    { ABIL_HEPLIAKLQANA_RECALL, "Recall Ancestor",
+        2, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_TRANSFERENCE, "Transference",
+        2, 0, 0, generic_cost::range(3, 4), {FAIL_INVO, 40, 5, 20},
+        abflag::NONE },
+    { ABIL_HEPLIAKLQANA_IDEALISE, "Idealise",
+        4, 0, 0, generic_cost::range(5, 6), {FAIL_INVO, 60, 4, 25},
+        abflag::NONE },
+
+    { ABIL_HEPLIAKLQANA_TYPE_KNIGHT,       "Ancestor Life: Knight",
+        0, 0, 0, 0, {FAIL_INVO},abflag::NONE },
+    { ABIL_HEPLIAKLQANA_TYPE_BATTLEMAGE,   "Ancestor Life: Battlemage",
+        0, 0, 0, 0, {FAIL_INVO},abflag::NONE },
+    { ABIL_HEPLIAKLQANA_TYPE_HEXER,        "Ancestor Life: Hexer",
+        0, 0, 0, 0, {FAIL_INVO},abflag::NONE },
+
+    { ABIL_HEPLIAKLQANA_KNIGHT_REACHING, "Knight: Demon Trident",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING, "Knight: Broad Axe",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_BATTLEMAGE_FORCE_LANCE, "Battlemage: Force Lance",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA, "Battlemage: Bolt of Magma",
+        0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+    { ABIL_HEPLIAKLQANA_HEXER_MASS_CONFUSION, "Hexer: Mass Confusion",
         0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
     { ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION, "Hexer: Englaciation",
         0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
@@ -639,6 +689,10 @@ static const ability_def Ability_List[] =
       0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
     { ABIL_CONVERT_TO_BEOGH, "Convert to Beogh",
       0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
+
+	{ ABIL_LIGNIFY, "Lignify", 0, 0, 200, 0, {FAIL_XL, 45, 2}, abflag::NONE },
+	{ ABIL_UNCURSE, "Remove Curse", 1, 0, 0, 0, {FAIL_XL, 45, 2}, abflag::PERMANENT_MP },
+	{ ABIL_RELEASE_SUMMONS, "Release Summoned Creatures", 0, 0, 0, 0, {FAIL_XL, 0, 0}, abflag::NONE },
 };
 
 static const ability_def& get_ability_def(ability_type abil)
@@ -726,7 +780,7 @@ int get_gold_cost(ability_type ability)
 
 static const int _pakellas_quick_charge_mp_cost()
 {
-    return max(1, you.magic_points * 2 / 3);
+    return max(1, get_unfrozen_mp() * 2 / 3);
 }
 
 const string make_cost_description(ability_type ability)
@@ -748,7 +802,7 @@ const string make_cost_description(ability_type ability)
 
     if (abil.hp_cost)
     {
-        ret += make_stringf(", %d %sHP", abil.hp_cost.cost(you.hp_max),
+        ret += make_stringf(", %d %sHP", abil.hp_cost.cost(get_hp_max()),
             abil.flags & abflag::PERMANENT_HP ? "Permanent " : "");
     }
 
@@ -760,7 +814,10 @@ const string make_cost_description(ability_type ability)
     }
 
     if (abil.piety_cost || abil.flags & abflag::PIETY)
-        ret += ", Piety"; // randomised and exact amount hidden from player
+    {
+        const int piety_cost = _scale_piety_cost(abil.ability, abil.piety_cost.cost());
+        ret += make_stringf(", %d Piety", piety_cost);
+    }
 
     if (abil.flags & abflag::BREATH)
         ret += ", Breath";
@@ -778,10 +835,10 @@ const string make_cost_description(ability_type ability)
         ret += ", Instant"; // not really a cost, more of a bonus - bwr
 
     if (abil.flags & abflag::FRUIT)
-        ret += ", Fruit";
+        ret += ", Stamina Potion";
 
     if (abil.flags & abflag::VARIABLE_FRUIT)
-        ret += ", Fruit or Piety";
+        ret += ", Stamina Potion or Piety";
 
     if (abil.flags & abflag::SKILL_DRAIN)
         ret += ", Skill drain";
@@ -848,7 +905,7 @@ static const string _detailed_cost_description(ability_type ability)
             ret << "\nMax HP : ";
         else
             ret << "\nHP     : ";
-        ret << abil.hp_cost.cost(you.hp_max);
+        ret << abil.hp_cost.cost(get_hp_max());
     }
 
     if (abil.food_cost && !you_foodless(true)
@@ -923,15 +980,22 @@ ability_type fixup_ability(ability_type ability)
 {
     switch (ability)
     {
+        /*
     case ABIL_YRED_ANIMATE_REMAINS:
         // suppress animate remains once animate dead is unlocked (ugh)
-        if (in_good_standing(GOD_YREDELEMNUL, 2))
+        if (player_mutation_level(MUT_NO_LOVE)
+            || in_good_standing(GOD_YREDELEMNUL, 2))
+        {
             return ABIL_NON_ABILITY;
+        }
         return ability;
+         */
 
     case ABIL_YRED_RECALL_UNDEAD_SLAVES:
     case ABIL_BEOGH_RECALL_ORCISH_FOLLOWERS:
-        if (!you.recall_list.empty())
+        if (player_mutation_level(MUT_NO_LOVE))
+            return ABIL_NON_ABILITY;
+        else if (!you.recall_list.empty())
             return ABIL_STOP_RECALL;
         return ability;
 
@@ -966,6 +1030,20 @@ ability_type fixup_ability(ability_type ability)
         else
             return ability;
 
+    case ABIL_ELYVILON_HEAL_OTHER:
+    case ABIL_YRED_ANIMATE_DEAD:
+    case ABIL_YRED_ENSLAVE_SOUL:
+    case ABIL_TSO_SUMMON_DIVINE_WARRIOR:
+    case ABIL_MAKHLEB_LESSER_SERVANT_OF_MAKHLEB:
+    case ABIL_MAKHLEB_GREATER_SERVANT_OF_MAKHLEB:
+    case ABIL_TROG_BROTHERS_IN_ARMS:
+    case ABIL_GOZAG_BRIBE_BRANCH:
+    case ABIL_QAZLAL_ELEMENTAL_FORCE:
+        if (player_mutation_level(MUT_NO_LOVE))
+            return ABIL_NON_ABILITY;
+        else
+            return ability;
+
     default:
         return ability;
     }
@@ -994,11 +1072,10 @@ static int _adjusted_failure_chance(ability_type ability, int base_chance)
 
     case ABIL_BLINK:
         return 48 - (17 * player_mutation_level(MUT_BLINK))
-                  - you.experience_level / 2;
-        break;
+                  - effective_xl() / 2;
 
     case ABIL_NEMELEX_DEAL_FOUR:
-        return 70 - (you.piety * 2 / 45) - you.skill(SK_EVOCATIONS, 9) / 2;
+        return 70 - (you.piety * 2 / 45) - you.skill(SK_INVOCATIONS, 9) / 2;
 
     default:
         return base_chance;
@@ -1119,7 +1196,7 @@ void no_ability_msg()
     // Give messages if the character cannot use innate talents right now.
     // * Vampires can't turn into bats when full of blood.
     // * Tengu can't start to fly if already flying.
-    if (you.species == SP_VAMPIRE && you.experience_level >= 3)
+    if (you.species == SP_VAMPIRE && effective_xl() >= 3)
     {
         ASSERT(you.hunger_state > HS_SATIATED);
         mpr("Sorry, you're too full to transform right now.");
@@ -1218,6 +1295,7 @@ bool activate_ability()
         }
     }
 #endif
+    you.prev_direction.reset();
     return activate_talent(talents[selected]);
 }
 
@@ -1496,7 +1574,7 @@ static bool _check_ability_possible(const ability_def& abil,
         return true;
 
     case ABIL_PAKELLAS_DEVICE_SURGE:
-        if (you.magic_points == 0)
+        if (get_mp() == 0)
         {
             if (!quiet)
                 mpr("You have no magic power.");
@@ -1606,6 +1684,7 @@ bool activate_talent(const talent& tal)
         case ABIL_MUMMY_RESTORATION:
         case ABIL_TRAN_BAT:
         case ABIL_ASHENZARI_END_TRANSFER:
+        case ABIL_RELEASE_SUMMONS:
             hungerCheck = false;
             break;
         default:
@@ -1631,7 +1710,7 @@ bool activate_talent(const talent& tal)
         return false;
     }
 
-    const int hpcost = abil.hp_cost.cost(you.hp_max);
+    const int hpcost = abil.hp_cost.cost(get_hp_max());
     if (hpcost > 0 && !enough_hp(hpcost, false))
     {
         crawl_state.zero_turns_taken();
@@ -1652,7 +1731,10 @@ bool activate_talent(const talent& tal)
         case SPRET_SUCCESS:
             ASSERT(!fail || testbits(abil.flags, abflag::HOSTILE));
             practise(EX_USED_ABIL, abil.ability);
-            _pay_ability_costs(abil);
+            if (tal.which != ABIL_ELYVILON_LESSER_HEALING
+                && tal.which != ABIL_ELYVILON_GREATER_HEALING
+                )
+                _pay_ability_costs(abil);
             count_action(tal.is_invocation ? CACT_INVOKE : CACT_ABIL, abil.ability);
             return true;
         case SPRET_FAIL:
@@ -1679,7 +1761,7 @@ static int _calc_breath_ability_range(ability_type ability)
     case ABIL_BREATHE_LIGHTNING:    return 7;
     case ABIL_SPIT_ACID:            return 7;
     case ABIL_BREATHE_POWER:        return 7;
-    case ABIL_BREATHE_STICKY_FLAME: return 1;
+    case ABIL_BREATHE_STICKY_FLAME: return 2;
     case ABIL_BREATHE_STEAM:        return 6;
     case ABIL_BREATHE_POISON:       return 6;
     default:
@@ -1729,9 +1811,9 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         mpr("You infuse your body with magical energy.");
         bool did_restore = restore_stat(STAT_ALL, 0, false);
 
-        const int oldhpmax = you.hp_max;
+        const int oldhpmax = get_hp_max();
         unrot_hp(9999);
-        if (you.hp_max > oldhpmax)
+        if (get_hp_max() > oldhpmax)
             did_restore = true;
 
         // If nothing happened, don't take one max MP, don't use a turn.
@@ -1744,9 +1826,15 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         break;
     }
 
-    case ABIL_RECHARGING:
+    case ABIL_RECHARGING_BASIC:
         fail_check();
-        if (recharge_wand() <= 0)
+        if (recharge_wand(RECHARGE_TYPE_BASIC) <= 0)
+            return SPRET_ABORT; // fail message is already given
+        break;
+
+    case ABIL_RECHARGING_ADVANCED:
+        fail_check();
+        if (recharge_wand(RECHARGE_TYPE_ADVANCED) <= 0)
             return SPRET_ABORT; // fail message is already given
         break;
 
@@ -1754,8 +1842,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         fail_check();
         if (!you.digging)
         {
-            you.digging = true;
-            mpr("You extend your mandibles.");
+            if (!player_is_very_tired())
+            {
+                you.digging = true;
+                mpr("You extend your mandibles.");
+            }
         }
         else
         {
@@ -1781,7 +1872,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     {
         fail_check();
         // Note: Power level of ball calculated at release. - bwr
-        int power = calc_spell_power(SPELL_DELAYED_FIREBALL, true);
+        int power = calc_spell_power(SPELL_DELAYED_FIREBALL, true, false);
         beam.range = spell_range(SPELL_FIREBALL, power);
 
         targetter_beam tgt(&you, beam.range, ZAP_FIREBALL, power, 1, 1);
@@ -1803,7 +1894,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_SPIT_POISON:      // Spit poison mutation
     {
-        int power = you.experience_level
+        int power = effective_xl()
                 + player_mutation_level(MUT_SPIT_POISON) * 5;
         beam.range = 5;         // following Venom Bolt
 
@@ -1823,8 +1914,8 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_BREATHE_STICKY_FLAME:
     {
-        targetter_splash hitfunc(&you);
-        beam.range = 1;
+        beam.range = 2;
+        targetter_splash hitfunc(&you, beam.range);
         direction_chooser_args args;
         args.mode = TARG_HOSTILE;
         args.hitfunc = &hitfunc;
@@ -1836,11 +1927,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
         fail_check();
         zapping(ZAP_BREATHE_STICKY_FLAME, (you.form == TRAN_DRAGON) ?
-                2 * you.experience_level : you.experience_level,
+                2 * effective_xl() : effective_xl(),
             beam, false, "You spit a glob of burning liquid.");
 
         you.increase_duration(DUR_BREATH_WEAPON,
-                      3 + random2(10) + random2(30 - you.experience_level));
+                      3 + random2(10) + random2(30 - effective_xl()));
         break;
     }
 
@@ -1867,7 +1958,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         {
         case ABIL_BREATHE_FIRE:
         {
-            int power = you.experience_level;
+            int power = effective_xl();
 
             if (you.form == TRAN_DRAGON)
                 power += 12;
@@ -1883,7 +1974,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         case ABIL_BREATHE_FROST:
             if (!zapping(ZAP_BREATHE_FROST,
                  (you.form == TRAN_DRAGON) ?
-                     2 * you.experience_level : you.experience_level,
+                     2 * effective_xl() : effective_xl(),
                  beam, true,
                          "You exhale a wave of freezing cold."))
             {
@@ -1892,7 +1983,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             break;
 
         case ABIL_BREATHE_POISON:
-            if (!zapping(ZAP_BREATHE_POISON, you.experience_level, beam, true,
+            if (!zapping(ZAP_BREATHE_POISON, effective_xl(), beam, true,
                          "You exhale a blast of poison gas."))
             {
                 return SPRET_ABORT;
@@ -1907,7 +1998,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         case ABIL_SPIT_ACID:
             if (!zapping(ZAP_BREATHE_ACID,
                 (you.form == TRAN_DRAGON) ?
-                    2 * you.experience_level : you.experience_level,
+                    2 * effective_xl() : effective_xl(),
                 beam, true, "You spit a glob of acid."))
             {
                 return SPRET_ABORT;
@@ -1917,7 +2008,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         case ABIL_BREATHE_POWER:
             if (!zapping(ZAP_BREATHE_POWER,
                 (you.form == TRAN_DRAGON) ?
-                    2 * you.experience_level : you.experience_level,
+                    2 * effective_xl() : effective_xl(),
                 beam, true,
                          "You breathe a bolt of dispelling energy."))
             {
@@ -1928,7 +2019,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         case ABIL_BREATHE_STICKY_FLAME:
             if (!zapping(ZAP_BREATHE_STICKY_FLAME,
                 (you.form == TRAN_DRAGON) ?
-                    2 * you.experience_level : you.experience_level,
+                    2 * effective_xl() : effective_xl(),
                 beam, true,
                          "You spit a glob of burning liquid."))
             {
@@ -1939,7 +2030,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         case ABIL_BREATHE_STEAM:
             if (!zapping(ZAP_BREATHE_STEAM,
                 (you.form == TRAN_DRAGON) ?
-                    2 * you.experience_level : you.experience_level,
+                    2 * effective_xl() : effective_xl(),
                 beam, true,
                          "You exhale a blast of scalding steam."))
             {
@@ -1950,7 +2041,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         case ABIL_BREATHE_MEPHITIC:
             if (!zapping(ZAP_BREATHE_MEPHITIC,
                 (you.form == TRAN_DRAGON) ?
-                    2 * you.experience_level : you.experience_level,
+                    2 * effective_xl() : effective_xl(),
                 beam, true,
                          "You exhale a blast of noxious fumes."))
             {
@@ -1963,7 +2054,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         }
 
         you.increase_duration(DUR_BREATH_WEAPON,
-                      3 + random2(10) + random2(30 - you.experience_level));
+                      3 + random2(10) + random2(30 - effective_xl()));
 
         if (abil.ability == ABIL_BREATHE_STEAM
             || abil.ability == ABIL_SPIT_ACID)
@@ -1996,7 +2087,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         // low level Te
         else
         {
-            int power = you.experience_level * 4;
+            int power = effective_xl() * 4;
             const int dur_change = 25 + random2(power) + random2(power);
 
             you.increase_duration(DUR_FLIGHT, dur_change, 100);
@@ -2009,10 +2100,10 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         break;
 
     // DEMONIC POWERS:
-    case ABIL_DAMNATION:
+    case ABIL_HELLFIRE:
         fail_check();
-        if (your_spells(SPELL_HURL_DAMNATION,
-                        you.experience_level * 10,
+        if (your_spells(SPELL_HURL_HELLFIRE,
+                        effective_xl() * 10,
                         false, false, true) == SPRET_ABORT)
         {
             return SPRET_ABORT;
@@ -2244,10 +2335,8 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     case ABIL_YRED_ANIMATE_REMAINS:
         fail_check();
         canned_msg(MSG_ANIMATE_REMAINS);
-        if (animate_remains(you.pos(), CORPSE_BODY, BEH_FRIENDLY,
-                            MHITYOU, &you, "", GOD_YREDELEMNUL) < 0)
+        if (cast_animate_skeleton(GOD_YREDELEMNUL, false) != SPRET_SUCCESS)
         {
-            mpr("There are no remains here to animate!");
             return SPRET_ABORT;
         }
         break;
@@ -2312,17 +2401,18 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     }
 
     case ABIL_SIF_MUNA_CHANNEL_ENERGY:
-        if (you.magic_points >= you.max_magic_points)
+        if (get_mp() >= get_mp_max())
         {
             mpr("Your reserves of magic are already full.");
             return SPRET_ABORT;
         }
         fail_check();
         surge_power(you.spec_invoc(), "divine");
-        mpr("You channel some magical energy.");
+        mpr("You begin channelling magical energy.");
 
-        inc_mp(player_adjust_invoc_power(
-                   1 + random2(you.skill_rdiv(SK_INVOCATIONS, 1, 4) + 2)));
+        you.increase_duration(DUR_CHANNELING,
+                              player_adjust_invoc_power(20 + random2avg(you.skill(SK_INVOCATIONS, 2), 2)),
+                              100);
         break;
 
     case ABIL_OKAWARU_HEROISM:
@@ -2496,23 +2586,33 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         int pow = 0;
         if (abil.ability == ABIL_ELYVILON_LESSER_HEALING)
         {
-            pow = player_adjust_invoc_power(
-                3 + (you.skill_rdiv(SK_INVOCATIONS, 1, 6)));
+            pow = 3 + (you.skill_rdiv(SK_INVOCATIONS, 1, 6));
         }
         else
         {
-            pow = player_adjust_invoc_power(
-                10 + (you.skill_rdiv(SK_INVOCATIONS, 1, 3)));
+            pow = 10 + (you.skill_rdiv(SK_INVOCATIONS, 1, 3));
         }
-#if TAG_MAJOR_VERSION == 34
-        if (you.species == SP_DJINNI)
-            pow /= 2;
-#endif
+        pow = player_adjust_invoc_power(pow);
         pow = min(50, pow);
+        /*
         const int healed = pow + roll_dice(2, pow) - 2;
-        mpr("You are healed.");
+        mprf("You are healed. (hp+%d)", healed);
         inc_hp(healed);
-        break;
+         */
+        bool healed_self;
+        spret_type result = cast_healing(pow, 50, fail, healed_self);
+        if (healed_self)
+        {
+            const int piety_cost = abil.piety_cost.cost();
+            lose_piety(piety_cost);
+        }
+        else
+        {
+            const int hp_cost = abil.hp_cost.cost(10);
+            dec_hp(hp_cost, false);
+        }
+
+        return result;
     }
 
     case ABIL_ELYVILON_PURIFICATION:
@@ -2520,6 +2620,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         elyvilon_purification();
         break;
 
+            /* no longer used
     case ABIL_ELYVILON_HEAL_OTHER:
     {
         int pow = player_adjust_invoc_power(
@@ -2530,6 +2631,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         max_pow = min(50, max_pow);
         return cast_healing(pow, max_pow, fail);
     }
+             */
 
     case ABIL_ELYVILON_DIVINE_VIGOUR:
         fail_check();
@@ -2584,11 +2686,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     {
         fail_check();
         // Deflate HP.
-        dec_hp(random2avg(you.hp, 2), false);
+        dec_hp(random2avg(get_hp(), 2), false);
 
         // Deflate MP.
-        if (you.magic_points)
-            dec_mp(random2avg(you.magic_points, 2));
+        if (get_mp())
+            dec_mp(random2avg(get_mp(), 2));
 
         no_notes nx; // This banishment shouldn't be noted.
         banished();
@@ -2757,17 +2859,18 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     case ABIL_ASHENZARI_CURSE:
     {
         fail_check();
-        auto iter = find_if(begin(you.inv), end(you.inv),
+        FixedVector<item_def, 52> *const inv = scroll_inv();
+        auto iter = find_if(begin(*inv), end(*inv),
                 [] (const item_def &it) -> bool
                 {
                     return it.defined()
                            && it.is_type(OBJ_SCROLLS, SCR_REMOVE_CURSE)
                            && check_warning_inscriptions(it, OPER_DESTROY);
                 });
-        if (iter != end(you.inv))
+        if (iter != end(*inv))
         {
             if (ashenzari_curse_item(iter->quantity))
-                dec_inv_item_quantity(iter - begin(you.inv), 1);
+                dec_inv_item_quantity(*inv, iter - begin(*inv), 1);
             else
                 return SPRET_ABORT;
         }
@@ -2892,7 +2995,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             mpr("You're too exhausted to draw out your power.");
             return SPRET_ABORT;
         }
-        if (you.hp == you.hp_max && you.magic_points == you.max_magic_points
+        if (get_hp() == get_hp_max() && get_mp() == get_mp_max()
             && !you.duration[DUR_CONF]
             && !you.duration[DUR_SLOW]
             && !you.attribute[ATTR_HELD]
@@ -2955,7 +3058,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             stepdown(random2avg(you.skill(SK_EVOCATIONS, 10), 2) * mp_to_use,
                      den / 3);
 
-        if (recharge_wand(true, "", num, den) <= 0)
+        if (recharge_wand(RECHARGE_TYPE_PAKELLAS, true, "", num, den) <= 0)
         {
             canned_msg(MSG_OK);
             return SPRET_ABORT;
@@ -2972,13 +3075,14 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         simple_god_message(" will supercharge a wand or rod.");
         // included in default force_more_message
 
-        int item_slot = prompt_invent_item("Supercharge what?", MT_INVLIST,
+        FixedVector<item_def, 52> *const inv = evoke_inv();
+        int item_slot = prompt_invent_item(*inv, "Supercharge what?", MT_INVLIST,
                                            OSEL_SUPERCHARGE, true, true, false);
 
         if (item_slot == PROMPT_NOTHING || item_slot == PROMPT_ABORT)
             return SPRET_ABORT;
 
-        item_def& wand(you.inv[item_slot]);
+        item_def& wand((*inv)[item_slot]);
 
         if (!item_is_rechargeable(wand))
         {
@@ -3072,11 +3176,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_HEPLIAKLQANA_KNIGHT_REACHING:
     case ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING:
-    case ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST:
+    case ABIL_HEPLIAKLQANA_BATTLEMAGE_FORCE_LANCE:
     case ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA:
-    case ABIL_HEPLIAKLQANA_HEXER_PARALYSE:
+    case ABIL_HEPLIAKLQANA_HEXER_MASS_CONFUSION:
     case ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION:
-        if (!hepliaklqana_specialize_ancestor(abil.ability))
+       if (!hepliaklqana_specialize_ancestor(abil.ability))
             return SPRET_ABORT;
         break;
 
@@ -3105,6 +3209,25 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             break;
         }
         return SPRET_ABORT;
+
+    case ABIL_UNCURSE:
+        fail_check();
+        if (!selective_remove_curse(500))
+        {
+        	return SPRET_ABORT;
+        }
+        break;
+
+    case ABIL_RELEASE_SUMMONS:
+        fail_check();
+        unsummon_all();
+        break;
+
+    case ABIL_LIGNIFY:
+        fail_check();
+        transform(100, TRAN_TREE, false);
+        you.turn_is_over = true;
+        break;
 
     case ABIL_NON_ABILITY:
         fail_check();
@@ -3143,9 +3266,8 @@ static void _pay_ability_costs(const ability_def& abil)
         you.turn_is_over = true;
 
     const int food_cost  = abil.food_cost + random2avg(abil.food_cost, 2);
-    const int piety_cost =
-        _scale_piety_cost(abil.ability, abil.piety_cost.cost());
-    const int hp_cost    = abil.hp_cost.cost(you.hp_max);
+    const int piety_cost = _scale_piety_cost(abil.ability, abil.piety_cost.cost());
+    const int hp_cost    = abil.hp_cost.cost(get_hp_max());
 
     dprf("Cost: mp=%d; hp=%d; food=%d; piety=%d",
          abil.mp_cost, hp_cost, food_cost, piety_cost);
@@ -3154,7 +3276,7 @@ static void _pay_ability_costs(const ability_def& abil)
     {
         dec_mp(abil.mp_cost);
         if (abil.flags & abflag::PERMANENT_MP)
-            rot_mp(1);
+            rot_mp(abil.mp_cost);
     }
 
     if (abil.hp_cost)
@@ -3344,7 +3466,22 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
         _add_talent(talents, ABIL_MUMMY_RESTORATION, check_confused);
 
     if (you.species == SP_DEEP_DWARF)
-        _add_talent(talents, ABIL_RECHARGING, check_confused);
+    {
+        _add_talent(talents, ABIL_RECHARGING_BASIC, check_confused);
+        /* Not needed anymore
+        _add_talent(talents, ABIL_RECHARGING_ADVANCED, check_confused);
+         */
+    }
+
+    if (you.species == SP_DJINNI)
+        _add_talent(talents, ABIL_UNCURSE, check_confused);
+
+    if (you.species == SP_VINE_STALKER && you.form != TRAN_TREE)
+        _add_talent(talents, ABIL_LIGNIFY, check_confused);
+
+    if (player_summon_count()) {
+        _add_talent(talents, ABIL_RELEASE_SUMMONS, check_confused);
+    }
 
     if (you.species == SP_FORMICID
         && (form_keeps_mutations() || include_unusable))
@@ -3355,7 +3492,7 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     }
 
     // Spit Poison, possibly upgraded to Breathe Poison.
-    if (player_mutation_level(MUT_SPIT_POISON) == 3)
+    if (player_mutation_level(MUT_SPIT_POISON) >= 3)
         _add_talent(talents, ABIL_BREATHE_POISON, check_confused);
     else if (player_mutation_level(MUT_SPIT_POISON))
         _add_talent(talents, ABIL_SPIT_POISON, check_confused);
@@ -3369,7 +3506,7 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
         _add_talent(talents, draconian_breath(you.species), check_confused);
     }
 
-    if (you.species == SP_VAMPIRE && you.experience_level >= 3
+    if (you.species == SP_VAMPIRE && effective_xl() >= 3
         && you.hunger_state <= HS_SATIATED
         && you.form != TRAN_BAT)
     {
@@ -3378,9 +3515,7 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
 
     if (player_mutation_level(MUT_TENGU_FLIGHT) && !you.airborne()
         || you.racial_permanent_flight() && !you.attribute[ATTR_PERM_FLIGHT]
-#if TAG_MAJOR_VERSION == 34
            && you.species != SP_DJINNI
-#endif
            )
     {
         // Tengu can fly, but only from the ground
@@ -3396,8 +3531,8 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
         _add_talent(talents, ABIL_STOP_FLYING, check_confused);
 
     // Mutations
-    if (player_mutation_level(MUT_HURL_DAMNATION))
-        _add_talent(talents, ABIL_DAMNATION, check_confused);
+    if (player_mutation_level(MUT_HURL_HELLFIRE))
+        _add_talent(talents, ABIL_HELLFIRE, check_confused);
 
     if (you.duration[DUR_TRANSFORMATION] && !you.transform_uncancellable)
         _add_talent(talents, ABIL_END_TRANSFORMATION, check_confused);
@@ -3650,9 +3785,9 @@ int find_ability_slot(const ability_type abil, char firstletter)
     case ABIL_HEPLIAKLQANA_IDENTITY: // move this?
     case ABIL_HEPLIAKLQANA_KNIGHT_REACHING:
     case ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING:
-    case ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST:
+    case ABIL_HEPLIAKLQANA_BATTLEMAGE_FORCE_LANCE:
     case ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA:
-    case ABIL_HEPLIAKLQANA_HEXER_PARALYSE:
+    case ABIL_HEPLIAKLQANA_HEXER_MASS_CONFUSION:
     case ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION:
         first_slot = letter_to_index('G');
         break;
@@ -3695,9 +3830,9 @@ static void _add_hep_specialization_choices(vector<ability_type> &abilities)
     static const map<int, vector<ability_type>> specializations = {
         { MONS_ANCESTOR_KNIGHT,     { ABIL_HEPLIAKLQANA_KNIGHT_REACHING,
                                       ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING } },
-        { MONS_ANCESTOR_BATTLEMAGE, { ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST,
+        { MONS_ANCESTOR_BATTLEMAGE, { ABIL_HEPLIAKLQANA_BATTLEMAGE_FORCE_LANCE,
                                       ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA } },
-        { MONS_ANCESTOR_HEXER,      { ABIL_HEPLIAKLQANA_HEXER_PARALYSE,
+        { MONS_ANCESTOR_HEXER,      { ABIL_HEPLIAKLQANA_HEXER_MASS_CONFUSION,
                                       ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION } },
     };
 
@@ -3740,6 +3875,26 @@ vector<ability_type> get_god_abilities(bool ignore_silence, bool ignore_piety,
 
         if (you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY)
             && you.experience_level >= HEP_SPECIALIZATION_LEVEL
+            && !you.props.exists(HEPLIAKLQANA_SPECIALIZATION_KEY))
+        {
+            _add_hep_specialization_choices(abilities);
+        }
+    }
+    if (you_worship(GOD_HEPLIAKLQANA))
+    {
+        // XXX: should we check ignore_piety?
+        if (piety_rank() >= 2 && !you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY))
+        {
+            for (int anc_type = ABIL_HEPLIAKLQANA_FIRST_TYPE;
+                 anc_type <= ABIL_HEPLIAKLQANA_LAST_TYPE;
+                 ++anc_type)
+            {
+                abilities.push_back(static_cast<ability_type>(anc_type));
+            }
+        }
+
+        if (you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY)
+            && you.experience_level >= hepliaklqana_specialization_level()
             && !you.props.exists(HEPLIAKLQANA_SPECIALIZATION_KEY))
         {
             _add_hep_specialization_choices(abilities);
@@ -3822,7 +3977,7 @@ int abil_skill_weight(ability_type ability)
 
 int generic_cost::cost() const
 {
-    return base + (add > 0 ? random2avg(add, rolls) : 0);
+    return base;
 }
 
 int scaling_cost::cost(int max) const

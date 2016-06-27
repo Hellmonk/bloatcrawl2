@@ -176,7 +176,7 @@ static const string message_channel_names[] =
     "friend_spell", "friend_enchant", "monster_damage", "monster_target",
     "banishment", "rotten_meat", "equipment", "floor", "multiturn", "examine",
     "examine_filter", "diagnostic", "error", "tutorial", "orb", "timed_portal",
-    "hell_effect", "monster_warning", "dgl_message",
+    "hell_effect", "monster_warning", "dgl_message", "prelude",
 };
 
 // returns -1 if unmatched else returns 0--(NUM_MESSAGE_CHANNELS-1)
@@ -272,6 +272,23 @@ static string _weapon_to_str(weapon_type wpn_type)
     case WPN_RANDOM:
     default:
         return "random";
+    }
+}
+
+static string _difficulty_to_str(game_difficulty_level diff)
+{
+    switch (diff)
+    {
+    case DIFFICULTY_EASY:
+        return "Easy";
+    case DIFFICULTY_STANDARD:
+        return "Standard";
+    case DIFFICULTY_CHALLENGE:
+        return "Challenge";
+    case DIFFICULTY_NIGHTMARE:
+        return "Nightmare";
+    default:
+        return "Unknown";
     }
 }
 
@@ -556,7 +573,7 @@ void game_options::set_default_activity_interrupts()
         "interrupt_travel = interrupt_butcher, hungry, hit_monster, "
                             "sense_monster",
         "interrupt_run = interrupt_travel, message",
-        "interrupt_rest = interrupt_run, full_hp, full_mp",
+        "interrupt_rest = interrupt_run, full_hp, full_mp, full_sp",
 
         // Stair ascents/descents cannot be interrupted except by
         // teleportation. Attempts to interrupt the delay will just
@@ -640,6 +657,7 @@ static string _resolve_dir(const char* path, const char* suffix)
 {
     return catpath(path, "");
 }
+
 #else
 
 static string _user_home_dir()
@@ -671,6 +689,7 @@ static string _resolve_dir(const char* path, const char* suffix)
     else
         return _user_home_subpath(catpath(path + 1, suffix));
 }
+
 #endif
 
 void game_options::reset_options()
@@ -682,7 +701,7 @@ void game_options::reset_options()
     set_default_activity_interrupts();
 
 #ifdef DEBUG_DIAGNOSTICS
-    quiet_debug_messages.reset();
+    quiet_debug_messages.init(true);
 #ifdef DEBUG_MONSPEAK
     quiet_debug_messages.set(DIAG_SPEECH);
 #endif
@@ -713,6 +732,7 @@ void game_options::reset_options()
     }
 #endif
 
+#if !defined(DGAMELAUNCH)
 #if defined(TARGET_OS_MACOSX)
     UNUSED(_resolve_dir);
     const string tmp_path_base =
@@ -724,6 +744,7 @@ void game_options::reset_options()
 #else
     save_dir   = _resolve_dir(SysEnv.crawl_dir.c_str(), "saves/");
     morgue_dir = _resolve_dir(SysEnv.crawl_dir.c_str(), "morgue/");
+#endif
 #endif
 
 #if defined(SHARED_DIR_PATH)
@@ -762,7 +783,7 @@ void game_options::reset_options()
 
     autopickup_on    = 1;
     autopickup_starting_ammo = true;
-    default_manual_training = false;
+    default_manual_training = true;
     default_show_all_skills = false;
 
     show_newturn_mark = true;
@@ -790,7 +811,7 @@ void game_options::reset_options()
     show_uncursed          = true;
     travel_open_doors      = true;
     easy_unequip           = true;
-    equip_unequip          = false;
+    equip_unequip          = true;
     jewellery_prompt       = false;
     easy_door              = true;
     warn_hatches           = false;
@@ -802,10 +823,11 @@ void game_options::reset_options()
     easy_quit_item_prompts = true;
     allow_self_target      = CONFIRM_PROMPT;
     hp_warning             = 30;
-    autofight_warning      = 0;
+    autofight_warning      = 20;
     magic_point_warning    = 0;
     skill_focus            = SKM_FOCUS_ON;
     cloud_status           = !is_tiles();
+    darken_beyond_range    = true;
 
     user_note_prefix       = "";
     note_all_skill_levels  = false;
@@ -813,7 +835,7 @@ void game_options::reset_options()
     note_xom_effects       = true;
     note_chat_messages     = false;
     note_dgl_messages      = true;
-    note_hp_percent        = 5;
+    note_hp_percent        = 10;
 
     fail_severity_to_confirm = 3;
 
@@ -821,9 +843,9 @@ void game_options::reset_options()
 #ifdef TOUCH_UI
     show_more              = false;
 #else
-    show_more              = true;
+    show_more              = false;
 #endif
-    small_more             = false;
+    small_more             = true;
 
     pickup_thrown          = true;
 
@@ -896,9 +918,9 @@ void game_options::reset_options()
     explore_item_greed     = 10;
     explore_greedy         = true;
 
-    explore_wall_bias      = 0;
-    explore_auto_rest      = false;
-    explore_improved       = false;
+    explore_wall_bias      = 1;
+    explore_auto_rest      = true;
+    explore_improved       = true;
     travel_key_stop        = true;
     auto_sacrifice         = false;
 
@@ -930,6 +952,21 @@ void game_options::reset_options()
 
     regex_search = false;
     autopickup_search = false;
+
+    movement_penalty = 11;
+
+    danger_mode_threshold = 30;
+    live_debug = 0;
+    exertion_disabled = false;
+    disable_instakill_protection = false;
+    level_27_cap = false;
+    exp_potion_on_each_floor = false;
+    uniques_drop_exp_potions = false;
+    exp_percent_from_monsters = 100;
+    exp_percent_from_potions = 100;
+    exp_percent_from_new_branch_floor = 0;
+    exp_based_on_player_level = true;
+    experience_mode = EXP_MODE_CLASSIC;
 
 #ifdef WIZARD
     fsim_rounds = 4000L;
@@ -1106,6 +1143,9 @@ void game_options::reset_options()
     hp_colour.clear();
     hp_colour.emplace_back(50, YELLOW);
     hp_colour.emplace_back(25, RED);
+    sp_colour.clear();
+    sp_colour.emplace_back(50, YELLOW);
+    sp_colour.emplace_back(25, RED);
     mp_colour.clear();
     mp_colour.emplace_back(50, YELLOW);
     mp_colour.emplace_back(25, RED);
@@ -1647,7 +1687,9 @@ static void write_newgame_options(const newgame_def& prefs, FILE *f)
         fprintf(f, "background = %s\n", _job_to_str(prefs.job).c_str());
     if (prefs.weapon != WPN_UNKNOWN)
         fprintf(f, "weapon = %s\n", _weapon_to_str(prefs.weapon).c_str());
-    fprintf(f, "fully_random = %s\n", prefs.fully_random ? "yes" : "no");
+    if (prefs.difficulty != DIFFICULTY_ASK)
+         fprintf(f, "difficulty = %s\n", _difficulty_to_str(prefs.difficulty).c_str());
+     fprintf(f, "fully_random = %s\n", prefs.fully_random ? "yes" : "no");
 }
 #endif // !DISABLE_STICKY_STARTUP_OPTIONS
 
@@ -2317,27 +2359,38 @@ static void _bindkey(string field)
 
     const string key_str = field.substr(start_bracket + 1,
                                         end_bracket - start_bracket - 1);
+    const char *s = key_str.c_str();
+
+    ucs_t wc;
+    vector<ucs_t> wchars;
+    while (int l = utf8towc(&wc, s))
+    {
+        s += l;
+        wchars.push_back(wc);
+    }
 
     int key;
 
     // TODO: Function keys.
-    if (key_str.length() == 0)
+    if (wchars.size() == 0)
     {
         mprf(MSGCH_ERROR, "No key in bindkey directive '%s'",
              field.c_str());
         return;
     }
-    else if (key_str.length() == 1)
-        key = key_str[0];
-    else if (key_str.length() == 2)
+    else if (wchars.size() == 1)
+        key = wchars[0];
+    else if (wchars.size() == 2)
     {
-        if (key_str[0] != '^')
+        // Ctrl + non-ascii is meaningless here.
+        if (wchars[0] != '^' || wchars[1] > 127)
         {
             mprf(MSGCH_ERROR, "Invalid key '%s' in bindkey directive '%s'",
                  key_str.c_str(), field.c_str());
             return;
         }
-        key = CONTROL(key_str[1]);
+
+        key = CONTROL(wchars[0]);
     }
     else
     {
@@ -2876,6 +2929,111 @@ void game_options::read_option_line(const string &str, bool runscript)
                 [](string p) { return !trimmed_string(p).empty(); });
     }
     else BOOL_OPTION(regex_search);
+
+        // disable the option for now.
+//    else INT_OPTION(movement_penalty, 0, 100);
+
+    else BOOL_OPTION(level_27_cap);
+//    else BOOL_OPTION(exp_potion_on_each_floor);
+//    else BOOL_OPTION(uniques_drop_exp_potions);
+//    else BOOL_OPTION(exp_based_on_player_level);
+//    else INT_OPTION(exp_percent_from_monsters, -1000, 1000);
+//    else INT_OPTION(exp_percent_from_potions, -1000, 1000);
+//    else INT_OPTION(exp_percent_from_new_branch_floor, -1000, 1000);
+    else if (key == "experience_mode")
+    {
+        if (field == "classic")
+        {
+            experience_mode = EXP_MODE_CLASSIC;
+            exp_potion_on_each_floor = false;
+            uniques_drop_exp_potions = false;
+            exp_based_on_player_level = true;
+            exp_percent_from_monsters = 100;
+            exp_percent_from_potions = 100;
+            exp_percent_from_new_branch_floor = 0;
+        }
+        else if (field == "simple_xl")
+        {
+            experience_mode = EXP_MODE_SIMPLE_XL;
+            exp_potion_on_each_floor = false;
+            uniques_drop_exp_potions = false;
+            exp_based_on_player_level = true;
+            exp_percent_from_monsters = 0;
+            exp_percent_from_potions = 0;
+            exp_percent_from_new_branch_floor = 40;
+        }
+        else if (field == "simple_depth")
+        {
+            experience_mode = EXP_MODE_SIMPLE_DEPTH;
+            exp_potion_on_each_floor = false;
+            uniques_drop_exp_potions = false;
+            exp_based_on_player_level = false;
+            exp_percent_from_monsters = 0;
+            exp_percent_from_potions = 0;
+            exp_percent_from_new_branch_floor = 40;
+        }
+        else if (field == "balance")
+        {
+            experience_mode = EXP_MODE_BALANCE;
+            exp_potion_on_each_floor = true;
+            uniques_drop_exp_potions = true;
+            exp_based_on_player_level = false;
+            exp_percent_from_monsters = 10;
+            exp_percent_from_potions = 5;
+            exp_percent_from_new_branch_floor = 10;
+        }
+        else if (field == "serenity")
+        {
+            experience_mode = EXP_MODE_SERENITY;
+            exp_potion_on_each_floor = false;
+            uniques_drop_exp_potions = false;
+            exp_based_on_player_level = true;
+            exp_percent_from_monsters = 20;
+            exp_percent_from_potions = 100;
+            exp_percent_from_new_branch_floor = 20;
+        }
+        else if (field == "intensity")
+        {
+            experience_mode = EXP_MODE_INTENSITY;
+            exp_potion_on_each_floor = true;
+            uniques_drop_exp_potions = true;
+            exp_based_on_player_level = false;
+            exp_percent_from_monsters = 0;
+            exp_percent_from_potions = 10;
+            exp_percent_from_new_branch_floor = 0;
+        }
+        else if (field == "pacifist")
+        {
+            experience_mode = EXP_MODE_PACIFIST;
+            exp_potion_on_each_floor = true;
+            uniques_drop_exp_potions = false;
+            exp_based_on_player_level = false;
+            exp_percent_from_monsters = -200;
+            exp_percent_from_potions = 20;
+            exp_percent_from_new_branch_floor = 20;
+        }
+        else if (field == "destroyer")
+        {
+            experience_mode = EXP_MODE_DESTROYER;
+            exp_potion_on_each_floor = false;
+            uniques_drop_exp_potions = true;
+            exp_based_on_player_level = true;
+            exp_percent_from_monsters = 120;
+            exp_percent_from_potions = 20;
+            exp_percent_from_new_branch_floor = -20;
+        }
+        else if (field == "ask")
+        {
+            experience_mode = EXP_MODE_ASK;
+        }
+        else
+            report_error("Unknown experience_mode value: %s\n", field.c_str());
+    }
+
+    else INT_OPTION(danger_mode_threshold, 0, 100);
+    else INT_OPTION(live_debug, 0, 100);
+    else BOOL_OPTION(exertion_disabled);
+    else BOOL_OPTION(disable_instakill_protection);
     else BOOL_OPTION(autopickup_search);
 #if !defined(DGAMELAUNCH) || defined(DGL_REMEMBER_NAME)
     else BOOL_OPTION(remember_name);
@@ -3171,6 +3329,46 @@ void game_options::read_option_line(const string &str, bool runscript)
         }
         stable_sort(hp_colour.begin(), hp_colour.end(), _first_greater);
     }
+    else if (key == "sp_color" || key == "sp_colour")
+    {
+        if (plain)
+            sp_colour.clear();
+
+        vector<string> thesplit = split_string(",", field);
+        for (unsigned i = 0; i < thesplit.size(); ++i)
+        {
+            vector<string> insplit = split_string(":", thesplit[i]);
+            int sp_percent = 100;
+
+            if (insplit.empty() || insplit.size() > 2
+                || insplit.size() == 1 && i != 0)
+            {
+                report_error("Bad sp_colour string: %s\n", field.c_str());
+                break;
+            }
+
+            if (insplit.size() == 2)
+                sp_percent = atoi(insplit[0].c_str());
+
+            const string colstr = insplit[(insplit.size() == 1) ? 0 : 1];
+            const int scolour = str_to_colour(colstr);
+            if (scolour > 0)
+            {
+                pair<int, int> entry(sp_percent, scolour);
+                // We do not treat prepend differently since we will be sorting.
+                if (minus_equal)
+                    remove_matching(sp_colour, entry);
+                else
+                    sp_colour.push_back(entry);
+            }
+            else
+            {
+                report_error("Bad sp_colour: %s", colstr.c_str());
+                break;
+            }
+        }
+        stable_sort(sp_colour.begin(), sp_colour.end(), _first_greater);
+    }
     else if (key == "mp_color" || key == "mp_colour")
     {
         if (plain)
@@ -3301,7 +3499,7 @@ void game_options::read_option_line(const string &str, bool runscript)
         for (unsigned i = 0; i < thesplit.size(); ++i)
         {
             int num = atoi(thesplit[i].c_str());
-            if (num > 0 && num <= 27)
+            if (num > 0 && num <= get_max_skill_level())
                 note_skill_levels.set(num, !minus_equal);
             else
             {
@@ -3617,6 +3815,7 @@ void game_options::read_option_line(const string &str, bool runscript)
     else BOOL_OPTION(rest_wait_both);
     else INT_OPTION(rest_wait_percent, 0, 100);
     else BOOL_OPTION(cloud_status);
+    else BOOL_OPTION(darken_beyond_range);
     else if (key == "dump_message_count")
     {
         // Capping is implicit
@@ -3832,6 +4031,19 @@ void game_options::read_option_line(const string &str, bool runscript)
             report_error("'%s' is already a constant", field.c_str());
         else
             constants.insert(field);
+    }
+    else if (key == "difficulty")
+    {
+    	if (field == "standard")
+    		game.difficulty = DIFFICULTY_STANDARD;
+    	else if (field == "challenge")
+    		game.difficulty = DIFFICULTY_CHALLENGE;
+    	else if (field == "nightmare")
+    		game.difficulty = DIFFICULTY_NIGHTMARE;
+        else if (field == "easy")
+            game.difficulty = DIFFICULTY_EASY;
+    	else
+    		game.difficulty = DIFFICULTY_ASK;
     }
     else INT_OPTION(view_delay, 0, INT_MAX);
     else BOOL_OPTION(arena_dump_msgs);
@@ -4571,6 +4783,7 @@ void game_options::write_webtiles_options(const string& name)
     tiles.json_open_object(name);
 
     _write_colour_list(Options.hp_colour, "hp_colour");
+    _write_colour_list(Options.sp_colour, "sp_colour");
     _write_colour_list(Options.mp_colour, "mp_colour");
     _write_colour_list(Options.stat_colour, "stat_colour");
 

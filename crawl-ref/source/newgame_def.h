@@ -1,6 +1,7 @@
 #ifndef NEWGAME_DEF_H
 #define NEWGAME_DEF_H
 
+#include "enum.h"
 #include "itemprop-enum.h"
 
 // Either a character definition, with real species, job, and
@@ -33,6 +34,8 @@ struct newgame_def
     // If this is true, the species field encodes whether
     // the choice was for a viable character or not.
     bool fully_random;
+
+    game_difficulty_level difficulty;
 
     newgame_def();
     void clear_character();

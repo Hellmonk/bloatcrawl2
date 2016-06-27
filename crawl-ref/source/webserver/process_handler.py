@@ -4,6 +4,8 @@ import datetime, time
 import hashlib
 import logging
 import re
+import pdb
+#pdb.set_trace()
 
 import config
 
@@ -12,8 +14,8 @@ from tornado.ioloop import PeriodicCallback, IOLoop
 
 from terminal import TerminalRecorder
 from connection import WebtilesSocketConnection
-from util import DynamicTemplateLoader, dgl_format_str, parse_where_data
-from game_data_handler import GameDataHandler
+from util import DynamicTemplateLoader, dgl_format_str, parse_where_data, write_to_file, read_from_file
+from game_data_handler import GameDataHandler, MorgueHandler
 from ws_handler import update_all_lobbys, remove_in_lobbys
 from inotify import DirectoryWatcher
 
@@ -77,6 +79,38 @@ def watch_socket_dirs():
         if socket_dir in added_dirs: continue
         watcher.watch(socket_dir, handle_new_socket)
 
+def diff_string(level):
+    result = "Unknown"
+    if level == "0":
+        result = "Easy"
+    if level == "1":
+        result = "Standard"
+    if level == "2":
+        result = "Challenge"
+    if level == "3":
+       result = "Nightmare"
+    return result
+
+def exp_mode_string(mode):
+    result = "Unknown"
+    if mode == "0":
+        result = "Classic"
+    if mode == "1":
+        result = "Simple XL"
+    if mode == "2":
+        result = "Simple Depth"
+    if mode == "3":
+        result = "Balance"
+    if mode == "4":
+        result = "Serenity"
+    if mode == "5":
+        result = "Intensity"
+    if mode == "6":
+        result = "Pacifist"
+    if mode == "7":
+        result = "Destroyer"
+    return result
+
 class CrawlProcessHandlerBase(object):
     def __init__(self, game_params, username, logger, io_loop=None):
         self.game_params = game_params
@@ -88,6 +122,7 @@ class CrawlProcessHandlerBase(object):
 
         self.process = None
         self.client_path = self.config_path("client_path")
+        self.morgue_path = self.config_path("morgue_path")
         self.crawl_version = None
         self.where = {}
         self.wheretime = 0
@@ -240,8 +275,7 @@ class CrawlProcessHandlerBase(object):
         if self.crawl_version:
             h.update(self.crawl_version)
         v = h.hexdigest()
-        GameDataHandler.add_version(v,
-                                    os.path.join(self.client_path, "static"))
+        GameDataHandler.add_version(v, os.path.join(self.client_path, "static"))
 
         templ_path = os.path.join(self.client_path, "templates")
         loader = DynamicTemplateLoader.get(templ_path)
@@ -302,6 +336,17 @@ class CrawlProcessHandlerBase(object):
             "idle_time": (self.idle_time() if self.is_idle() else 0),
             "game_id": self.game_params["id"],
             }
+
+        if "difficulty" in self.where.keys():
+            entry["diff"] = diff_string(self.where["difficulty"])
+        else:
+            entry["diff"] = "Unknown"
+
+        if "experience_mode" in self.where.keys():
+            entry["exp_mode"] = exp_mode_string(self.where["experience_mode"])
+        else:
+            entry["exp_mode"] = "Unknown"
+
         for key in CrawlProcessHandlerBase.interesting_info:
             if key in self.where:
                 entry[key] = self.where[key]
@@ -322,11 +367,11 @@ class CrawlProcessHandlerBase(object):
         self.last_milestone = milestone
         update_all_lobbys(self)
 
-    def _base_call(self):
+    def _base_call(self, binary):
         game = self.game_params
 
 
-        call  = [game["crawl_binary"]]
+        call  = [binary]
 
         if "pre_options" in game:
             call += game["pre_options"]
@@ -336,7 +381,8 @@ class CrawlProcessHandlerBase(object):
                                          self.username + ".rc"),
                  "-macro",  os.path.join(self.config_path("macro_path"),
                                          self.username + ".macro"),
-                 "-morgue", self.config_path("morgue_path")]
+                 "-morgue", self.config_path("morgue_path"),
+                 "-wizard"]
 
         if "options" in game:
             call += game["options"]
@@ -498,12 +544,47 @@ class CrawlProcessHandler(CrawlProcessHandlerBase):
 
         game = self.game_params
 
-        call = self._base_call() + ["-webtiles-socket", self.socketpath,
-                                    "-await-connection"]
+        binary = game["crawl_binary"]
+
+        game_id_file_path = os.path.join(self.config_path("rcfile_path"), self.username + ".gameid")
+        dir_file_path = os.path.join(self.config_path("rcfile_path"), self.username + ".dir")
+
+        launch_dir = os.getcwd()
+        original_launch_dir = launch_dir
+        save_file_path = os.path.join(launch_dir, "." + self.username + ".cs")
+
+        if os.path.exists(dir_file_path):
+            new_launch_dir = read_from_file(dir_file_path).strip()
+            if os.path.exists(launch_dir):
+                print "found previous launch_dir: " + new_launch_dir
+                os.chdir(launch_dir)
+                launch_dir = new_launch_dir
+                save_file_path = os.path.join(launch_dir, "." + self.username + ".cs")
+                self.client_path = os.path.join(launch_dir, "webserver/game_data/")
+                self.crawl_version = launch_dir
+                self.send_client_to_all()
+
+        if os.path.exists(save_file_path):
+            if os.path.exists(game_id_file_path):
+                game["id"] = read_from_file(game_id_file_path)
+                binary = launch_dir + "/bin/crawl"
+        elif original_launch_dir != launch_dir:
+            print "No save file here (looking for " + save_file_path + ")"
+            os.chdir(original_launch_dir)
+            launch_dir = original_launch_dir
+
+        write_to_file(game["id"], game_id_file_path)
+        write_to_file(launch_dir, dir_file_path)
+        print "final launch_dir=" + launch_dir
+
+        call = self._base_call(binary) + ["-webtiles-socket", self.socketpath,
+                                          "-await-connection"]
 
         ttyrec_path = self.config_path("ttyrec_path")
         if ttyrec_path:
             self.ttyrec_filename = os.path.join(ttyrec_path, self.lock_basename)
+            if not os.access(ttyrec_path, os.F_OK):
+                os.makedirs(ttyrec_path)
 
         processes[os.path.abspath(self.socketpath)] = self
 
@@ -516,7 +597,9 @@ class CrawlProcessHandler(CrawlProcessHandlerBase):
             self.process = TerminalRecorder(call, self.ttyrec_filename,
                                             self._ttyrec_id_header(),
                                             self.logger, self.io_loop,
-                                            config.recording_term_size)
+                                            config.recording_term_size,
+                                            launch_dir
+                                            )
             self.process.end_callback = self._on_process_end
             self.process.output_callback = self._on_process_output
             self.process.activity_callback = self.note_activity
@@ -749,7 +832,7 @@ class DGLLessCrawlProcessHandler(CrawlProcessHandler):
                                                          "game",
                                                          logger, io_loop)
 
-    def _base_call(self):
+    def _base_call(self, binary):
         return ["./crawl"]
 
     def check_where(self):

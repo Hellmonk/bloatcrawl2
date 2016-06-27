@@ -14,9 +14,9 @@ struct bolt;
 
 void init_properties();
 
-
 typedef uint32_t armflags_t;
 #define ard(flg, lev) (armflags_t)((flg) * ((lev) & 7))
+#define MAX_CURSE_LEVEL 10000
 
 enum armour_flag
 {
@@ -50,9 +50,12 @@ bool item_type_removed(object_class_type base, int subtype);
 // cursed:
 bool item_known_cursed(const item_def &item) PURE;
 bool item_is_cursable(const item_def &item, bool ignore_holy_wrath = false);
-bool curse_an_item(bool ignore_holy_wrath = false);
-void do_curse_item(item_def &item, bool quiet = true);
-void do_uncurse_item(item_def &item, bool check_bondage = true);
+bool curse_a_slot(int power);
+void curse_slot(int slot_to_curse, int power);
+bool curse_an_item(int power, bool ignore_holy_wrath = false);
+void do_curse_item(item_def &item, int power, bool quiet = true);
+void do_uncurse_item(item_def &item, int power,
+                     bool check_bondage = true);
 inline constexpr bool item_type_has_curses(object_class_type base_type)
 {
         return base_type == OBJ_WEAPONS || base_type == OBJ_ARMOUR
@@ -201,7 +204,6 @@ bool food_is_veggie(int food_type) PURE;
 bool food_is_veggie(const item_def &item) PURE;
 int food_value(const item_def &item) PURE;
 int food_turns(const item_def &item) PURE;
-bool can_cut_meat(const item_def &item) PURE;
 bool is_fruit(const item_def &item) PURE;
 
 // generic item property functions:

@@ -44,11 +44,13 @@ struct player_info
     string god;
     bool under_penance;
     uint8_t piety_rank;
+    uint8_t piety;
 
     uint8_t form;
 
     int hp, hp_max, real_hp_max, poison_survival;
-    int mp, mp_max;
+    int sp, sp_max;
+    int mp, mp_max, real_mp_max;
     int contam;
     int heat;
 
@@ -60,9 +62,13 @@ struct player_info
     int8_t intel, intel_max;
     int8_t dex, dex_max;
 
+    int diff;
+    int exp_mode;
     int experience_level;
     int8_t exp_progress;
     int gold;
+    int last_to_hit_chance;
+    int last_be_hit_chance;
     int zot_points;
     int elapsed_time;
     int num_turns;

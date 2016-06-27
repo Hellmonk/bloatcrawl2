@@ -26,7 +26,7 @@
 #endif
 
 #if defined(DEBUG) && !defined(ASSERTS)
-#define ASSERTS
+//#define ASSERTS
 #endif
 
 #ifdef ASSERTS
@@ -92,6 +92,7 @@ NORETURN void AssertFailed(const char *expr, const char *file, int line,
 #define ASSERT(p)                         ((void) 0)
 #define ASSERTM(p, text,...)              ((void) 0)
 #define ASSERT_RANGE(x, a, b)             ((void) 0)
+#define ASSERT_LESS(x, a)                 ((void) 0)
 
 #endif
 
@@ -103,4 +104,11 @@ NORETURN void die_noline(PRINTF(0, ));
 #ifdef DEBUG
 void debuglog(PRINTF(0, ));
 #endif
+
+enum live_debug_type
+{
+    LD_NONE      = 0,
+    LD_INSTAREST = 1,
+};
+
 #endif

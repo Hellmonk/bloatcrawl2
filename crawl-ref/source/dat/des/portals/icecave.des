@@ -56,7 +56,7 @@ end
 
 -- Figure out if an easy or a hard ice cave should be used. Players
 -- that enter the portal deeper in the dungeon end up in the hard ones.
--- Possible depths for easy ice caves are D:11-15, Lair, Orc. Hard ice caves
+-- Possible depths for easy ice caves are Lair, Orc. Hard ice caves
 -- are in Elf and the Lair roulette branches. Those depths are set in the entry
 -- vault default-depth.
 --
@@ -217,14 +217,16 @@ function ice_cave_caverns_natural_giant_loot(e)
   e.item("book of ice / randbook disc:ice numspells:6 w:2 / \
           arbalest ego:freezing good_item no_uniq ident:type / \
           longbow ego:freezing good_item no_uniq ident:type / nothing w:20")
-  e.item("ring of ice / ring of protection from cold / nothing")
+  e.item("ring of ice / ring of protection from cold / \
+          arrow ego:frost q:25 / bolt ego:frost q:20 / nothing")
 end
 
 }}
 
 # Entries ##########################################
+
 # Not actually used, but useful for reference.
-default-depth: D:11-, Lair, Orc, Elf, Swamp, Shoals, Snake, Spider
+default-depth: Lair, Orc, Elf, Dwarf, Swamp, Shoals, Snake, Spider
 
 # "Easy" ice cave entrances (D, Lair, Orc).
 NAME:   portal_ice_cave_entry_pillars_1
@@ -256,7 +258,7 @@ ENDMAP
 
 NAME:   portal_ice_cave_entry_imps
 TAGS:   patrolling no_monster_gen transparent
-DEPTH:  D:11-, Lair, Orc
+DEPTH:  Lair, Orc
 : ice_cave_portal(_G)
 MONS:   white imp
 MAP
@@ -269,7 +271,7 @@ ENDMAP
 
 NAME:   portal_ice_cave_entry_ice_beasts
 TAGS:   patrolling no_monster_gen transparent
-DEPTH:  D:11-, Lair, Orc
+DEPTH:  Lair, Orc
 : ice_cave_portal(_G)
 MONS:   ice beast
 MAP
@@ -282,7 +284,7 @@ ENDMAP
 
 NAME:   portal_ice_cave_entry_animals_and_master
 TAGS:   patrolling no_monster_gen no_trap_gen
-DEPTH:  D:11-, Lair:4-, Orc
+DEPTH:  Lair:4-, Orc
 WEIGHT: 6
 : ice_cave_portal(_G)
 MONS:   wolf, yak, polar bear, rime drake, ice dragon
@@ -301,7 +303,7 @@ ENDMAP
 
 NAME:   portal_ice_cave_demonic_guard
 TAGS:   patrolling no_monster_gen no_trap_gen
-DEPTH:  D:11-, Lair, Orc
+DEPTH:  Lair, Orc
 : ice_cave_portal(_G)
 MONS:   ice devil
 MAP
@@ -319,7 +321,7 @@ ENDMAP
 
 NAME:   portal_ice_cave_rime
 TAGS:   patrolling no_monster_gen no_pool_fixup
-DEPTH:  D:11-, Lair, Orc
+DEPTH:  Lair, Orc
 : ice_cave_portal(_G)
 MONS:   rime drake
 MAP
@@ -411,7 +413,7 @@ xxXX+XXxx
 ENDMAP
 
 NAME:   portal_ice_cave_entry_ice_statue_two
-DEPTH:  Elf, Swamp, Snake, Shoals, Spider
+DEPTH:  Elf, Dwarf, Swamp, Snake, Shoals, Spider
 WEIGHT: 6
 : ice_cave_portal(_G)
 MONS:   ice statue, patrolling ice dragon
@@ -452,7 +454,7 @@ ENDMAP
 NAME:   portal_ice_cave_entry_frozen_things
 TAGS:   no_monster_gen
 WEIGHT: 6
-DEPTH:  Elf, Swamp, Shoals, Snake, Spider
+DEPTH:  Elf, Dwarf, Swamp, Shoals, Snake, Spider
 MONS:   freezing wraith, azure jelly
 SUBST:  2 = 12.
 : ice_cave_portal(_G)
@@ -471,7 +473,7 @@ ENDMAP
 
 NAME:     portal_ice_cave_entry_ugly_swarm
 TAGS:     no_monster_gen no_item_gen transparent
-DEPTH:    Elf, Swamp, Shoals, Snake, Spider
+DEPTH:    Elf, Dwarf, Swamp, Shoals, Snake, Spider
 WEIGHT:   2
 MONS:     white ugly thing, white very ugly thing
 SHUFFLE:  ABC

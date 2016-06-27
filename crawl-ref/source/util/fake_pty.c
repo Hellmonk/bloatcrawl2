@@ -1,4 +1,9 @@
+#if defined(TARGET_OS_UNIX)
 #include <pty.h>
+#else
+#include <util.h>
+#endif
+
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>

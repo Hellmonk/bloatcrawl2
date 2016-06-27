@@ -18,7 +18,7 @@ The contents of this text are:
                 name, remember_name, weapon, species, background,
                 combo, random_pick, good_random, restart_after_game,
                 restart_after_save, default_manual_training,
-                autopickup_starting_ammo
+                autopickup_starting_ammo, difficulty
 2-  File System and Sound.
                 crawl_dir, morgue_dir, save_dir, macro_dir, sound
 3-  Interface.
@@ -72,7 +72,7 @@ The contents of this text are:
                 messages_at_top, skill_focus, msg_condense_repeats,
                 msg_condense_short, show_travel_trail, monster_list_colour,
                 view_delay, force_more_message, flash_screen_message,
-                use_animations, cloud_status
+                use_animations, darken_beyond_range, cloud_status
 3-i     Colours (messages and menus)
                 menu_colour, message_colour
 3-j     Missiles.
@@ -382,6 +382,10 @@ autopickup_starting_ammo = true
         for Earth Elementalists and arrows for Transmuters). Even when this
         option is set, autopickup of those items can be disabled from the
         \ menu once the game has begun.
+
+difficulty = ask | easy | normal | hard
+        Sets the difficulty of the next game started, or ask when starting a
+        new game. Normal is the unmodified original form of the game. 
 
 2-  File System.
 ================
@@ -1310,6 +1314,13 @@ autopickup_search = false
 3-h     Messages and Display Enhancements.
 ------------------------------------------
 
+danger_mode_threshold = 30
+        if 0, this option is disabled. Gives a special warning, and forces
+        the player to press a key, whenever damage is done to the player
+        which exceeds danger_mode_threshold % of the player's current hp.
+        This warning is only given once until things calm down (after 10
+        turns of not triggering danger mode).
+
 hp_warning = 10
         hp_warning gives "* * * LOW HITPOINT WARNING * * *" on the
         danger channel when the player takes damage and their hitpoints
@@ -1513,6 +1524,11 @@ use_animations -= beam, range, hp, monster_in_sight, pickup, monster, player,
                              ability or casts a spell.
           branch_entry     - Animations that run when you enter a new branch.
                              Currently only the Abyss and Zot have animations.
+
+darken_beyond_range = true
+        If set to true, everything beyond range when targeting will be
+        coloured grey. Setting this to false will also disable the "range"
+        category of the use_animations option.
 
 force_more_message += <regex>, <regex>
         (List option)
@@ -2263,6 +2279,12 @@ note_dgl_messages = true
 
 5-a     All OS.
 ---------------
+
+old_movement = false
+        Use old crawl movement, where all movement directions and states
+        take the same amount of time. New movement costs extra time
+        when direction change happens, and slightly speeds up straight
+        motion, greatly reducing pillar dancing and kiting.
 
 mouse_input = false
         When enabled, the mouse_input option allows the game to use

@@ -98,8 +98,10 @@ static void _place_chance_vaults();
 static void _place_minivaults();
 static int _place_uniques();
 static void _place_traps();
+static void _place_experience_potions();
 static void _prepare_water();
 static void _check_doors();
+static void _randomly_place_item(int item);
 
 static void _add_plant_clumps(int frequency = 10, int clump_density = 12,
                               int clump_radius = 4);
@@ -310,6 +312,14 @@ bool builder(bool enable_random_maps, dungeon_feature_type dest_stairs_type)
             {
                 for (monster_iterator mi; mi; ++mi)
                     gozag_set_bribe(*mi);
+
+                if (Options.exp_potion_on_each_floor
+                    && !is_safe_branch(you.where_are_you)
+                        )
+                {
+                    reset_experience_potion_annotation();
+                    _place_experience_potions();
+                }
 
                 return true;
             }
@@ -1201,13 +1211,15 @@ void dgn_reset_level(bool enable_random_maps)
     }
     else if (player_in_connected_branch()
              || (player_on_orb_run() && !player_in_branch(BRANCH_ABYSS)))
+    {
         env.spawn_random_rate = 240;
+    }
     else if (player_in_branch(BRANCH_ABYSS)
              || player_in_branch(BRANCH_PANDEMONIUM))
     {
         // Abyss spawn rate is set for those characters that start out in the
         // Abyss; otherwise the number is ignored in the Abyss.
-        env.spawn_random_rate = 50;
+        env.spawn_random_rate = 100;
     }
     else
         // No random monsters in Labyrinths and portal vaults if we don't have
@@ -1231,40 +1243,51 @@ void dgn_reset_level(bool enable_random_maps)
 
 static int _num_items_wanted(int absdepth0)
 {
-    if (branches[you.where_are_you].branch_flags & BFLAG_NO_ITEMS)
-        return 0;
-    else if (absdepth0 > 5 && one_chance_in(500 - 5 * absdepth0))
-        return 10 + random2avg(90, 2); // rich level!
+    int items_wanted = 0;
+
+    if (branches[you.where_are_you].branch_flags & BFLAG_NO_ITEMS && you.where_are_you == BRANCH_TEMPLE)
+        items_wanted = 0;
+    else if (absdepth0 > 5 && x_chance_in_y(absdepth0, 200) || you.where_are_you == BRANCH_VAULTS)
+        items_wanted = 10 + random2avg(90, 2); // rich level!
     else
-        return 3 + roll_dice(3, 11);
+        items_wanted = 3 + roll_dice(3, 13);
+
+    // because many items have been reduced in quantity, we need to reduce overall counts
+    items_wanted = items_wanted * 2 / 3;
+
+    items_wanted = player_item_gen_modifier(items_wanted);
+    return items_wanted;
 }
 
 static int _num_mons_wanted()
 {
-    if (player_in_branch(BRANCH_ABYSS))
-        return 0;
-
-    if (player_in_branch(BRANCH_PANDEMONIUM))
-        return random2avg(28, 3);
-
-    // Except for Abyss and Pan, no other portal gets random monsters.
-    if (!player_in_connected_branch())
-        return 0;
-
-    if (!branch_has_monsters(you.where_are_you))
-        return 0;
-
-    if (player_in_branch(BRANCH_CRYPT))
-        return roll_dice(3, 8);
-
     int mon_wanted = roll_dice(3, 10);
 
-    if (player_in_hell())
+    if (player_in_branch(BRANCH_ABYSS))
+        mon_wanted = 0;
+
+    else if (player_in_branch(BRANCH_PANDEMONIUM))
+        mon_wanted = random2avg(28, 3);
+
+    // Except for Abyss and Pan, no other portal gets random monsters.
+    else if (!player_in_connected_branch())
+        mon_wanted = 0;
+
+    else if (!branch_has_monsters(you.where_are_you))
+        mon_wanted = 0;
+
+    else if (player_in_branch(BRANCH_CRYPT))
+        mon_wanted = roll_dice(3, 8);
+
+    else if (player_in_hell())
         mon_wanted += roll_dice(3, 8);
 
-    if (mon_wanted > 60)
+    else if (mon_wanted > 60)
         mon_wanted = 60;
 
+    mon_wanted = player_monster_gen_modifier(mon_wanted);
+
+    // boost monster creation since we don't generate them any more
     return mon_wanted;
 }
 
@@ -1986,16 +2009,7 @@ static void _build_overflow_temples()
 
         {
             dgn_map_parameters mp(vault_tag);
-            if (!_dgn_ensure_vault_placed(
-                    _build_secondary_vault(vault),
-                    false))
-            {
-#ifdef DEBUG_TEMPLES
-                mprf(MSGCH_DIAGNOSTICS, "Couldn't place overflow temple '%s', "
-                     "vetoing level.", vault->name.c_str());
-#endif
-                return;
-            }
+            _build_secondary_vault(vault);
         }
 #ifdef DEBUG_TEMPLES
         mprf(MSGCH_DIAGNOSTICS, "Placed overflow temple %s",
@@ -2157,6 +2171,8 @@ static void _ruin_level(Iterator iter,
 
 static bool _mimic_at_level()
 {
+    return false;
+    /* no more mimics
     return !player_in_branch(BRANCH_TEMPLE)
            && !player_in_branch(BRANCH_VESTIBULE)
            && !player_in_branch(BRANCH_SLIME)
@@ -2164,6 +2180,7 @@ static bool _mimic_at_level()
            && !player_in_branch(BRANCH_PANDEMONIUM)
            && !player_in_hell()
            && !crawl_state.game_is_tutorial();
+           */
 }
 
 static void _place_feature_mimics(dungeon_feature_type dest_stairs_type)
@@ -2445,7 +2462,7 @@ static const map_def *_pick_layout(const map_def *vault)
             }
             layout = random_map_for_tag("layout", true, true);
         }
-        while (layout->has_tag("no_primary_vault")
+        while (!layout || layout->has_tag("no_primary_vault")
                || (tries > 10 && !_vault_can_use_layout(vault, layout)));
     }
 
@@ -2482,7 +2499,15 @@ static bool _pan_level()
     // Unique pan lords become more common as you travel through pandemonium.
     // On average it takes 27 levels to see all four, and you're likely to see
     // your first one after about 10 levels.
-    if (x_chance_in_y(1 + place_info.levels_seen, 65 + place_info.levels_seen * 2)
+    int more_unlikely = 65;
+    if (place_info.levels_seen > 15)
+        more_unlikely = 0;
+    else if (place_info.levels_seen > 10)
+        more_unlikely = 20;
+    else if (place_info.levels_seen > 5)
+        more_unlikely = 40;
+
+    if (x_chance_in_y(1 + place_info.levels_seen, more_unlikely + place_info.levels_seen * 2)
         && !all_demons_generated)
     {
         do
@@ -3041,6 +3066,19 @@ static bool _shaft_known(int depth)
     return coinflip() && x_chance_in_y(3, depth);
 }
 
+static void _place_experience_potions()
+{
+    const int num_potions = 1;
+
+    dprf("attempting to place %d experience potions", num_potions);
+
+    for (int i = 0; i < num_potions; i++)
+    {
+        int item = items(true, OBJ_POTIONS, POT_EXPERIENCE, 99);
+        _randomly_place_item(item);
+    }
+}
+
 static void _place_traps()
 {
     const int num_traps = num_traps_for_place();
@@ -3321,7 +3359,8 @@ static void _place_branch_entrances(bool use_vaults)
     {
         // Vestibule and hells are placed by other means.
         // Likewise, if we already have an entrance, keep going.
-        if (it->id >= BRANCH_VESTIBULE && it->id <= BRANCH_LAST_HELL
+        if (it->id == BRANCH_VESTIBULE
+            || is_hell_subbranch(it->id)
             || branch_entrance_placed[it->id])
         {
             continue;
@@ -3450,6 +3489,9 @@ static int _place_uniques()
                     uniq_map->name.c_str());
         }
 #endif
+
+        if (num_placed >= crawl_state.difficulty && crawl_state.difficulty != DIFFICULTY_NIGHTMARE)
+            break;
     }
 
 #ifdef DEBUG_UNIQUE_PLACEMENT
@@ -3680,6 +3722,7 @@ static void _builder_items()
 {
     int i = 0;
     object_class_type specif_type = OBJ_RANDOM;
+    int specif_sub_type = OBJ_RANDOM;
     int items_levels = env.absdepth0;
     int items_wanted = _num_items_wanted(items_levels);
 
@@ -3687,16 +3730,22 @@ static void _builder_items()
     {
         items_levels *= 15;
         items_levels /= 10;
+
+        items_wanted *= 15;
+        items_wanted /= 10;
     }
     else if (player_in_branch(BRANCH_ORC))
-    {
         specif_type = OBJ_GOLD;  // Lots of gold in the orcish mines.
-        items_levels *= 2;       // Four levels' worth, in fact.
+    else if (player_in_branch(BRANCH_ABYSS))
+    {
+        specif_type = OBJ_POTIONS;
+        specif_sub_type = POT_STAMINA;
+        items_wanted = 20;
     }
 
     for (i = 0; i < items_wanted; i++)
     {
-        int item = items(true, specif_type, OBJ_RANDOM, items_levels);
+        int item = items(true, specif_type, specif_sub_type, items_levels);
 
         _randomly_place_item(item);
     }
@@ -4201,9 +4250,9 @@ static bool _apply_item_props(item_def &item, const item_spec &spec,
             spells.push_back((spell_type) spell_list[i].get_int());
 
         spschool_flag_type disc1
-            = (spschool_flag_type)props[RANDBK_DISC1_KEY].get_short();
+            = (spschool_flag_type)props[RANDBK_DISC1_KEY].get_int();
         spschool_flag_type disc2
-            = (spschool_flag_type)props[RANDBK_DISC2_KEY].get_short();
+            = (spschool_flag_type)props[RANDBK_DISC2_KEY].get_int();
         if (disc1 == SPTYP_NONE && disc2 == SPTYP_NONE)
         {
             if (spells.size())
@@ -4261,9 +4310,9 @@ static bool _apply_item_props(item_def &item, const item_spec &spec,
     }
 
     if (props.exists("cursed"))
-        do_curse_item(item);
+        do_curse_item(item, 100);
     else if (props.exists("uncursed"))
-        do_uncurse_item(item);
+        do_uncurse_item(item, MAX_CURSE_LEVEL);
     if (props.exists("useful") && is_useless_item(item, false)
         && !allow_useless)
     {
@@ -4915,8 +4964,13 @@ static void _vault_grid_glyph(vault_placement &place, const coord_def& where,
             which_depth = 5 + which_depth * 2;
 
         item_made = items(true, which_class, which_type, which_depth);
+
+        item_def &item = mitm[item_made];
+        if (item.base_type == 0)
+            dprf("Debug...");
+
         if (item_made != NON_ITEM)
-            mitm[item_made].pos = where;
+            item.pos = where;
     }
 
     // defghijk - items
@@ -5227,6 +5281,13 @@ static dungeon_feature_type _pick_an_altar()
                 god = GOD_BEOGH;
             break;
 
+        case BRANCH_DWARF:
+            god = random_choose(GOD_KIKUBAAQUDGHA, GOD_YREDELEMNUL,
+                                GOD_MAKHLEB,       GOD_TROG,
+                                GOD_CHEIBRIADOS,   GOD_ELYVILON,
+                                GOD_OKAWARU);
+            break;
+
         case BRANCH_ELF: // magic gods
             god = random_choose(GOD_VEHUMET, GOD_SIF_MUNA, GOD_KIKUBAAQUDGHA);
             break;
@@ -5270,8 +5331,8 @@ void place_spec_shop(const coord_def& where, shop_type force_type)
 
 int greed_for_shop_type(shop_type shop, int level_number)
 {
-    if (shop == SHOP_FOOD)
-        return 10 + random2(5);
+//    if (shop == SHOP_FOOD)
+//        return 10 + random2(5);
     if (_shop_sells_antiques(shop))
         return 15 + random2avg(19, 2) + random2(level_number);
     return 10 + random2(5) + random2(level_number / 2);
@@ -5458,12 +5519,6 @@ static void _stock_shop_item(int j, shop_type shop_type_,
         object_class_type basetype = item_in_shop(shop_type_);
         int subtype = OBJ_RANDOM;
 
-        if (spec.gozag && shop_type_ == SHOP_FOOD && you.species == SP_VAMPIRE)
-        {
-            basetype = OBJ_POTIONS;
-            subtype = POT_BLOOD;
-        }
-
         if (!spec.items.empty() && !spec.use_all)
         {
             // shop spec lists a random set of items; choose one
@@ -5476,11 +5531,6 @@ static void _stock_shop_item(int j, shop_type shop_type_,
             // shop lists ordered items; take the one at the right index
             item_index = dgn_place_item(spec.items.get_item(j), coord_def(),
                                         item_level);
-        }
-        else if (spec.gozag && shop_type_ == SHOP_FOOD
-                 && you.species == SP_GHOUL)
-        {
-            item_index = _make_delicious_corpse();
         }
         else
         {
@@ -5518,12 +5568,6 @@ static void _stock_shop_item(int j, shop_type shop_type_,
     // (unless it's a randbook)
     if (shop_type_ == SHOP_BOOK && !is_artefact(item))
         stocked[item.sub_type]++;
-
-    if (spec.gozag && shop_type_ == SHOP_FOOD && you.species == SP_VAMPIRE)
-    {
-        ASSERT(is_blood_potion(item));
-        item.quantity += random2(3); // blood for the vampire friends :)
-    }
 
     // Identify the item, unless we don't do that.
     if (!_shop_sells_antiques(shop_type_))
@@ -5583,7 +5627,7 @@ object_class_type item_in_shop(shop_type shop_type)
     switch (shop_type)
     {
     case SHOP_WEAPON:
-        if (one_chance_in(5))
+        if (one_chance_in(4))
             return OBJ_MISSILES;
         // *** deliberate fall through here  {dlb} ***
     case SHOP_WEAPON_ANTIQUE:
@@ -5608,9 +5652,9 @@ object_class_type item_in_shop(shop_type shop_type)
     case SHOP_BOOK:
         return OBJ_BOOKS;
 
-    case SHOP_FOOD:
-        return OBJ_FOOD;
-
+//    case SHOP_FOOD:
+//        return OBJ_FOOD;
+//
     case SHOP_DISTILLERY:
         return OBJ_POTIONS;
 
@@ -5636,9 +5680,7 @@ static bool _spotty_seed_ok(const coord_def& p)
 static bool _feat_is_wall_floor_liquid(dungeon_feature_type feat)
 {
     return feat_is_water(feat)
-#if TAG_MAJOR_VERSION == 34
            || player_in_branch(BRANCH_FOREST) && feat == DNGN_TREE
-#endif
            || player_in_branch(BRANCH_SWAMP) && feat == DNGN_TREE
            || feat_is_lava(feat)
            || feat_is_wall(feat)

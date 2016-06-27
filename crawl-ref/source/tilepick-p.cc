@@ -69,17 +69,19 @@ tileidx_t tilep_equ_weapon(const item_def &item)
         case MISC_DECK_OF_DESTRUCTION:
 #if TAG_MAJOR_VERSION == 34
         case MISC_DECK_OF_DUNGEONS:
+#endif
         case MISC_DECK_OF_SUMMONING:
+#if TAG_MAJOR_VERSION == 34
         case MISC_DECK_OF_WONDERS:
 #endif
         case MISC_DECK_OF_PUNISHMENT:
-        case MISC_DECK_OF_WAR:
 #if TAG_MAJOR_VERSION == 34
+        case MISC_DECK_OF_WAR:
         case MISC_DECK_OF_CHANGES:
         case MISC_DECK_OF_DEFENCE:
 #endif
             return TILEP_HAND1_DECK;
-        }
+       }
     }
 
     if (item.base_type != OBJ_WEAPONS)
@@ -571,9 +573,7 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
     case SP_HUMAN:
         return TILEP_BASE_HUMAN;
     case SP_HIGH_ELF:
-#if TAG_MAJOR_VERSION == 34
     case SP_SLUDGE_ELF:
-#endif
         return TILEP_BASE_ELF;
     case SP_DEEP_ELF:
         return TILEP_BASE_DEEP_ELF;
@@ -581,10 +581,8 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
         return TILEP_BASE_HALFLING;
     case SP_HILL_ORC:
         return TILEP_BASE_ORC;
-#if TAG_MAJOR_VERSION == 34
     case SP_LAVA_ORC:
         return TILEP_BASE_LAVA_ORC;
-#endif
     case SP_KOBOLD:
         return TILEP_BASE_KOBOLD;
     case SP_MUMMY:
@@ -593,7 +591,8 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
         return TILEP_BASE_NAGA;
     case SP_OGRE:
         return TILEP_BASE_OGRE;
-    case SP_TROLL:
+    case SP_MOON_TROLL:
+    case SP_CAVE_TROLL:
         return TILEP_BASE_TROLL;
     case SP_BASE_DRACONIAN:
     case SP_RED_DRACONIAN:
@@ -678,9 +677,7 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
     switch (sp)
     {
         case SP_HIGH_ELF:
-#if TAG_MAJOR_VERSION == 34
         case SP_SLUDGE_ELF:
-#endif
             hair = TILEP_HAIR_ELF_YELLOW;
             break;
         case SP_DEEP_ELF:
@@ -689,7 +686,6 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
         case SP_HILL_ORC:
             hair = 0;
             break;
-#if TAG_MAJOR_VERSION == 34
         case SP_LAVA_ORC:
             // This should respect the player's choice of base tile, if possible.
             switch (temperature_colour(you.temperature))
@@ -718,14 +714,14 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
             }
             hair = 0;
             break;
-#endif
         case SP_KOBOLD:
             hair = 0;
             break;
         case SP_MUMMY:
             hair = 0;
             break;
-        case SP_TROLL:
+        case SP_CAVE_TROLL:
+        case SP_MOON_TROLL:
             hair = TILEP_HAIR_TROLL;
             break;
         case SP_BASE_DRACONIAN:

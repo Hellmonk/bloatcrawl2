@@ -35,6 +35,8 @@ static void _choose_gamemode_map(newgame_def& ng, newgame_def& ng_choice,
                                  const newgame_def& defaults);
 static bool _choose_weapon(newgame_def& ng, newgame_def& ng_choice,
                           const newgame_def& defaults);
+static bool _choose_difficulty(newgame_def& ng, newgame_def& ng_choice,
+                           const newgame_def& defaults);
 
 ////////////////////////////////////////////////////////////////////////
 // Remember player's startup options
@@ -44,7 +46,8 @@ newgame_def::newgame_def()
     : name(), type(GAME_TYPE_NORMAL),
       species(SP_UNKNOWN), job(JOB_UNKNOWN),
       weapon(WPN_UNKNOWN),
-      fully_random(false)
+      fully_random(false),
+	  difficulty(DIFFICULTY_ASK)
 {
 }
 
@@ -53,6 +56,7 @@ void newgame_def::clear_character()
     species  = SP_UNKNOWN;
     job      = JOB_UNKNOWN;
     weapon   = WPN_UNKNOWN;
+    difficulty = DIFFICULTY_ASK;
 }
 
 enum MenuOptions
@@ -160,28 +164,43 @@ void choose_tutorial_character(newgame_def& ng_choice)
 static const species_type species_order[] =
 {
     // comparatively human-like looks
-    SP_HUMAN,          SP_HIGH_ELF,
-    SP_DEEP_ELF,       SP_DEEP_DWARF,
+    SP_HUMAN,
+    SP_HIGH_ELF,
+    SP_DEEP_ELF,
+    SP_SLUDGE_ELF,
+    SP_DEEP_DWARF,
     SP_HILL_ORC,
+    SP_LAVA_ORC,
     // small species
-    SP_HALFLING,       SP_KOBOLD,
+    SP_HALFLING,
+    SP_KOBOLD,
     SP_SPRIGGAN,
     // large species
-    SP_OGRE,           SP_TROLL,
+    SP_OGRE,
+    SP_CAVE_TROLL,
+    SP_MOON_TROLL,
     // significantly different body type from human ("monstrous")
-    SP_NAGA,           SP_CENTAUR,
-    SP_MERFOLK,        SP_MINOTAUR,
-    SP_TENGU,          SP_BASE_DRACONIAN,
-    SP_GARGOYLE,       SP_FORMICID,
+    SP_NAGA,
+    SP_CENTAUR,
+    SP_MERFOLK,
+    SP_MINOTAUR,
+    SP_TENGU,
+    SP_BASE_DRACONIAN,
+    SP_GARGOYLE,
+    SP_FORMICID,
     // mostly human shape but made of a strange substance
     SP_VINE_STALKER,
     // celestial species
-    SP_DEMIGOD,        SP_DEMONSPAWN,
+    SP_DEMIGOD,
+    SP_DEMONSPAWN,
     // undead species
-    SP_MUMMY,          SP_GHOUL,
+    SP_MUMMY,
+    SP_GHOUL,
     SP_VAMPIRE,
     // not humanoid at all
-    SP_FELID,          SP_OCTOPODE,
+    SP_FELID,
+    SP_OCTOPODE,
+	SP_DJINNI,
 };
 COMPILE_CHECK(ARRAYSZ(species_order) <= NUM_SPECIES);
 
@@ -439,6 +458,14 @@ static void _choose_char(newgame_def& ng, newgame_def& choice,
     }
 #endif
 
+    if (!_choose_difficulty(ng, choice, defaults))
+    {
+#ifdef USE_TILE_WEB
+        tiles.send_exit_reason("cancel");
+#endif
+        game_ended();
+    }
+
     while (true)
     {
         if (choice.allowed_combos.size())
@@ -568,6 +595,18 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
     // Set these again, since _mark_fully_random may reset ng.
     ng.name = choice.name;
     ng.type = choice.type;
+    switch(choice.difficulty)
+    {
+        case DIFFICULTY_EASY:
+        case DIFFICULTY_STANDARD:
+        case DIFFICULTY_CHALLENGE:
+        case DIFFICULTY_NIGHTMARE:
+            ng.difficulty = choice.difficulty;
+            break;
+        default:
+            ng.difficulty = DIFFICULTY_CHALLENGE;
+            break;
+    }
 
 #ifndef DGAMELAUNCH
     // New: pick name _after_ character choices.
@@ -608,17 +647,20 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
 }
 
 // Set ng_choice to defaults without overwriting name and game type.
-static void _set_default_choice(newgame_def& ng, newgame_def& ng_choice,
-                                const newgame_def& defaults)
+void set_default_choice(newgame_def &ng, newgame_def &ng_choice, const newgame_def &defaults)
 {
     // Reset ng so _resolve_species_job will work properly.
     ng.clear_character();
 
     const string name = ng_choice.name;
     const game_type type   = ng_choice.type;
+    const game_difficulty_level difficulty = ng_choice.difficulty;
+
     ng_choice = defaults;
     ng_choice.name = name;
     ng_choice.type = type;
+    if (difficulty != DIFFICULTY_ASK)
+        ng_choice.difficulty = difficulty;
 }
 
 static void _mark_fully_random(newgame_def& ng, newgame_def& ng_choice,
@@ -965,7 +1007,7 @@ static void _prompt_species(newgame_def& ng, newgame_def& ng_choice,
             case M_DEFAULT_CHOICE:
                 if (_char_defined(defaults))
                 {
-                    _set_default_choice(ng, ng_choice, defaults);
+                    set_default_choice(ng, ng_choice, defaults);
                     return;
                 }
                 else
@@ -1379,7 +1421,7 @@ static void _prompt_job(newgame_def& ng, newgame_def& ng_choice,
             case M_DEFAULT_CHOICE:
                 if (_char_defined(defaults))
                 {
-                    _set_default_choice(ng, ng_choice, defaults);
+                    set_default_choice(ng, ng_choice, defaults);
                     return;
                 }
                 else
@@ -1787,9 +1829,9 @@ static vector<weapon_choice> _get_weapons(const newgame_def& ng)
     }
     else
     {
-        weapon_type startwep[7] = { WPN_UNARMED, WPN_SHORT_SWORD, WPN_MACE,
-                                    WPN_HAND_AXE, WPN_SPEAR, WPN_FALCHION,
-                                    WPN_QUARTERSTAFF};
+        weapon_type startwep[7] = { WPN_SHORT_SWORD, WPN_MACE, WPN_HAND_AXE,
+                                    WPN_SPEAR, WPN_FALCHION, WPN_QUARTERSTAFF,
+                                    WPN_UNARMED };
         for (int i = 0; i < 7; ++i)
         {
             weapon_choice wp;
@@ -1880,6 +1922,129 @@ static bool _choose_weapon(newgame_def& ng, newgame_def& ng_choice,
     }
 
     return true;
+}
+
+static bool _choose_difficulty(newgame_def& ng, newgame_def& ng_choice,
+                           const newgame_def& defaults)
+{
+	if (ng_choice.difficulty != DIFFICULTY_ASK)
+	{
+		return true;
+	}
+
+	PrecisionMenu menu;
+	menu.set_select_type(PrecisionMenu::PRECISION_SINGLESELECT);
+	MenuFreeform* freeform = new MenuFreeform();
+	freeform->init(coord_def(1,1), coord_def(get_number_of_cols(),
+				   get_number_of_lines()), "freeform");
+	menu.attach_object(freeform);
+	menu.set_active_object(freeform);
+
+	static const int ITEMS_START_Y = 5;
+	TextItem* tmp = nullptr;
+	string text;
+
+	for (int difficulty = 0; difficulty < 4; difficulty ++)
+	{
+		coord_def min_coord(0,0);
+		coord_def max_coord(0,0);
+
+		tmp = new TextItem();
+		text.clear();
+
+		tmp->set_highlight_colour(GREEN);
+
+		switch(difficulty)
+		{
+        case 0:
+            tmp->set_fg_colour(GREEN);
+            tmp->add_hotkey('e');
+            tmp->set_id(DIFFICULTY_EASY);
+            text += "e - Easy";
+            break;
+		case 1:
+			tmp->set_fg_colour(WHITE);
+			tmp->add_hotkey('s');
+			tmp->set_id(DIFFICULTY_STANDARD);
+			text += "s - Standard";
+			break;
+		case 2:
+			tmp->set_fg_colour(YELLOW);
+			tmp->add_hotkey('c');
+			tmp->set_id(DIFFICULTY_CHALLENGE);
+			text += "c - Challenge";
+			freeform->set_active_item(tmp);
+			break;
+		case 3:
+			tmp->set_fg_colour(LIGHTRED);
+			tmp->add_hotkey('n');
+			tmp->set_id(DIFFICULTY_NIGHTMARE);
+			text += "n - Nightmare";
+			break;
+		}
+
+	//	tmp->set_fg_colour(LIGHTGRAY);
+	//	tmp->set_highlight_colour(BLUE);
+
+		// Fill to column width to give extra padding for the highlight
+		text.append(WEAPON_COLUMN_WIDTH - text.size() - 1 , ' ');
+		tmp->set_text(text);
+
+		min_coord.x = X_MARGIN;
+		min_coord.y = ITEMS_START_Y + difficulty;
+		max_coord.x = min_coord.x + text.size();
+		max_coord.y = min_coord.y + 1;
+		tmp->set_bounds(min_coord, max_coord);
+
+		freeform->attach_item(tmp);
+		tmp->set_visible(true);
+	}
+
+	BoxMenuHighlighter* highlighter = new BoxMenuHighlighter(&menu);
+	highlighter->init(coord_def(0,0), coord_def(0,0), "highlighter");
+	menu.attach_object(highlighter);
+
+#ifdef USE_TILE_LOCAL
+	tiles.get_crt()->attach_menu(&menu);
+#endif
+
+	freeform->set_visible(true);
+	highlighter->set_visible(true);
+
+	textcolour(CYAN);
+	cprintf("\nWhat difficulty level would you like to play today?  ");
+
+	ng_choice.difficulty = DIFFICULTY_ASK;
+	while (ng_choice.difficulty == DIFFICULTY_ASK)
+	{
+		menu.draw_menu();
+		int keyn = getch_ck();
+        menu.process_key(keyn);
+        if (keyn == '\t')
+        {
+            set_default_choice(ng, ng_choice, defaults);
+            continue;
+        }
+
+        if (keyn == CK_ESCAPE)
+            return false;
+
+		// We have a significant key input!
+		// Construct selection vector
+		vector<MenuItem*> selection = menu.get_selected_items();
+		// There should only be one selection, otherwise something broke
+		if (selection.size() != 1)
+		{
+			// poll a new key
+			continue;
+		}
+
+		// Get the stored id from the selection
+		int selection_ID = selection.at(0)->get_id();
+		ng_choice.difficulty = static_cast<game_difficulty_level> (selection_ID);
+	}
+
+	return true;
 }
 
 static void _construct_gamemode_map_menu(const mapref_vector& maps,
@@ -2142,7 +2307,7 @@ static void _prompt_gamemode_map(newgame_def& ng, newgame_def& ng_choice,
             list_commands('?');
             return _prompt_gamemode_map(ng, ng_choice, defaults, maps);
         case M_DEFAULT_CHOICE:
-            _set_default_choice(ng, ng_choice, defaults);
+            set_default_choice(ng, ng_choice, defaults);
             return;
         case M_RANDOM:
             // FIXME setting this to "random" is broken

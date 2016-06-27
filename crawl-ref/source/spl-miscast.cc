@@ -332,6 +332,9 @@ void MiscastEffect::do_miscast()
     case SPTYP_EARTH:          _earth(severity);          break;
     case SPTYP_AIR:            _air(severity);            break;
     case SPTYP_POISON:         _poison(severity);         break;
+    case SPTYP_LIGHT:          _light(severity);          break;
+    case SPTYP_DARKNESS:       _darkness(severity);       break;
+    case SPTYP_TIME:           _time(severity);           break;
     case SPTYP_DIVINATION:
         // Divination miscasts have nothing in common between the player
         // and monsters.
@@ -593,7 +596,7 @@ bool MiscastEffect::_malign_gateway(bool hostile)
 
 bool MiscastEffect::avoid_lethal(int dam)
 {
-    if (lethality_margin <= 0 || (you.hp - dam) > lethality_margin)
+    if (lethality_margin <= 0 || (get_hp() - dam) > lethality_margin)
         return false;
 
     if (recursion_depth == MAX_RECURSE)
@@ -957,7 +960,7 @@ void MiscastEffect::_hexes(int severity)
             if (target->is_player())
             {
                 mpr("You sense a malignant aura.");
-                curse_an_item();
+                curse_an_item(200);
                 break;
             }
             // Intentional fall-through for monsters.
@@ -1113,7 +1116,7 @@ void MiscastEffect::_charms(int severity)
             if (target->is_player())
             {
                 mpr("You sense a malignant aura.");
-                curse_an_item();
+                curse_an_item(200);
                 break;
             }
             // Intentional fall-through for monsters.
@@ -1152,10 +1155,8 @@ void MiscastEffect::_charms(int severity)
                 if (target->is_player())
                 {
                     debuff_player();
-                    if (you.magic_points > 0
-#if TAG_MAJOR_VERSION == 34
+                    if (get_mp() > 0
                         || you.species == SP_DJINNI
-#endif
                         )
                         {
                             drain_mp(4 + random2(3));
@@ -1617,7 +1618,7 @@ void MiscastEffect::_divination_you(int severity)
         switch (random2(2))
         {
         case 0:
-            if (lose_stat(STAT_INT, 1 + random2(3)))
+            if (lose_stat(STAT_INT, 1))
             {
                 if (you.undead_state())
                     mpr("You suddenly recall your previous life!");
@@ -1629,10 +1630,8 @@ void MiscastEffect::_divination_you(int severity)
             break;
         case 1:
             mpr("You lose your focus.");
-            if (you.magic_points > 0
-#if TAG_MAJOR_VERSION == 34
+            if (get_mp() > 0
                     || you.species == SP_DJINNI
-#endif
                     )
             {
                 drain_mp(3 + random2(10));
@@ -1649,10 +1648,8 @@ void MiscastEffect::_divination_you(int severity)
         {
         case 0:
             mpr("You lose concentration completely!");
-            if (you.magic_points > 0
-#if TAG_MAJOR_VERSION == 34
+            if (get_mp() > 0
                 || you.species == SP_DJINNI
-#endif
                     )
             {
                 drain_mp(5 + random2(20));
@@ -1660,7 +1657,7 @@ void MiscastEffect::_divination_you(int severity)
             }
             break;
         case 1:
-            if (lose_stat(STAT_INT, 3 + random2(3)))
+            if (lose_stat(STAT_INT, 2))
             {
                 if (you.undead_state())
                     mpr("You suddenly recall your previous life!");
@@ -1969,7 +1966,7 @@ void MiscastEffect::_necromancy(int severity)
                 break;
 
         case 5:
-            lose_stat(STAT_RANDOM, 1 + random2avg(7, 2));
+            lose_stat(STAT_RANDOM, 1 + random2avg(3, 2));
             break;
         }
         break;
@@ -2143,8 +2140,8 @@ void MiscastEffect::_transmutation(int severity)
             // HACK: Avoid lethality before deleting mutation, since
             // afterwards a message would already have been given.
             if (lethality_margin > 0
-                && (you.hp - lethality_margin) <= 27
-                && avoid_lethal(you.hp))
+                && (get_hp() - lethality_margin) <= 27
+                && avoid_lethal(get_hp()))
             {
                 return;
             }
@@ -2165,8 +2162,8 @@ void MiscastEffect::_transmutation(int severity)
                 // HACK: Avoid lethality before giving mutation, since
                 // afterwards a message would already have been given.
                 if (lethality_margin > 0
-                    && (you.hp - lethality_margin) <= 27
-                    && avoid_lethal(you.hp))
+                    && (get_hp() - lethality_margin) <= 27
+                    && avoid_lethal(get_hp()))
                 {
                     return;
                 }
@@ -2682,6 +2679,18 @@ void MiscastEffect::_earth(int severity)
     }
 }
 
+void MiscastEffect::_time(int severity)
+{
+}
+
+void MiscastEffect::_darkness(int severity)
+{
+}
+
+void MiscastEffect::_light(int severity)
+{
+}
+
 void MiscastEffect::_air(int severity)
 {
     int num;
@@ -3035,7 +3044,7 @@ void MiscastEffect::_poison(int severity)
             if (player_res_poison() > 0)
                 canned_msg(MSG_NOTHING_HAPPENS);
             else
-                lose_stat(STAT_RANDOM, 1 + random2avg(5, 2));
+                lose_stat(STAT_RANDOM, 1 + random2(2));
             break;
         }
         break;
@@ -3238,7 +3247,7 @@ void MiscastEffect::_zot()
                 target->polymorph(0);
             break;
         case 9:
-            if (you.magic_points > 0)
+            if (get_mp() > 0)
             {
                 dec_mp(10 + random2(21));
                 canned_msg(MSG_MAGIC_DRAIN);
@@ -3249,7 +3258,7 @@ void MiscastEffect::_zot()
                 do_msg(); // For canned_msg(MSG_NOTHING_HAPPENS)
             break;
         case 11:
-            lose_stat(STAT_RANDOM, 1 + random2avg((coinflip() ? 7 : 4), 2));
+            lose_stat(STAT_RANDOM, 1 + random2avg(3, 2));
             break;
         case 12:
             mpr("An unnatural silence engulfs you.");

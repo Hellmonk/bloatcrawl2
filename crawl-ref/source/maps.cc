@@ -937,8 +937,12 @@ static vault_indices _eligible_maps_for_selector(const map_selector &sel)
     if (sel.valid())
     {
         for (unsigned i = 0, size = vdefs.size(); i < size; ++i)
+        {
+            if (vdefs[i].name == "layout_misc_corridors")
+                dprf("Here.");
             if (sel.accept(vdefs[i]))
                 eligible.push_back(i);
+        }
     }
 
     return eligible;

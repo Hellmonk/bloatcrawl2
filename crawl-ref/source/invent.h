@@ -29,8 +29,10 @@ enum object_selector
     OSEL_WORN_ARMOUR             = -11,
 //  OSEL_FRUIT                   = -12,
     OSEL_CURSED_WORN             = -13,
+#if TAG_MAJOR_VERSION == 34
     OSEL_UNCURSED_WORN_ARMOUR    = -14,
     OSEL_UNCURSED_WORN_JEWELLERY = -15,
+#endif
     OSEL_BRANDABLE_WEAPON        = -16,
     OSEL_ENCHANTABLE_WEAPON      = -17,
     OSEL_BLESSABLE_WEAPON        = -18,
@@ -39,7 +41,9 @@ enum object_selector
                                         // known-cursed. Unknown-cursed items
                                         // are included, to prevent information
                                         // leakage.
-    OSEL_DIVINE_RECHARGE         = -21,
+    OSEL_RECHARGE_BASIC          = -21,
+    OSEL_RECHARGE_ADVANCED       = -22,
+    OSEL_DIVINE_RECHARGE         = -23,
 };
 
 #define PROMPT_ABORT         -1
@@ -145,25 +149,28 @@ public:
 
     // Not an override, but an overload. Not virtual!
     void set_title(MenuEntry *title, bool first = true);
-    void set_title(const string &s);
+    void set_title(FixedVector< item_def, ENDOFPACK > &inv, const string &s);
+    void set_title2(const string &s);
 
     // Loads items into the menu. If "procfn" is provided, it'll be called
     // for each MenuEntry added.
     // NOTE: Does not set menu title, ever! You *must* set the title explicitly
     menu_letter load_items(const vector<const item_def*> &items,
-                           MenuEntry *(*procfn)(MenuEntry *me) = nullptr,
+                           function<MenuEntry* (MenuEntry*)> procfn = nullptr,
                            menu_letter ckey = 'a', bool sort = true);
 
     // Make sure this menu does not outlive items, or mayhem will ensue!
     menu_letter load_items(const vector<item_def>& items,
-                           MenuEntry *(*procfn)(MenuEntry *me) = nullptr,
+                           function<MenuEntry* (MenuEntry*)> procfn = nullptr,
                            menu_letter ckey = 'a', bool sort = true);
 
     // Loads items from the player's inventory into the menu, and sets the
     // title to the stock title. If "procfn" is provided, it'll be called for
     // each MenuEntry added, *excluding the title*.
-    void load_inv_items(int item_selector = OSEL_ANY, int excluded_slot = -1,
-                        MenuEntry *(*procfn)(MenuEntry *me) = nullptr);
+    void load_inv_items(FixedVector< item_def, ENDOFPACK > &inv, int item_selector = OSEL_ANY, int excluded_slot = -1,
+                        function<MenuEntry* (MenuEntry*)> procfn = nullptr);
+    void load_inv_items2(int item_selector = OSEL_ANY, int excluded_slot = -1,
+                         function<MenuEntry* (MenuEntry*)> procfn = nullptr);
 
     vector<SelItem> get_selitems() const;
 
@@ -186,12 +193,30 @@ protected:
 void get_class_hotkeys(const int type, vector<char> &glyphs);
 
 bool item_is_selected(const item_def &item, int selector);
-bool any_items_of_type(int type_expect, int excluded_slot = -1, bool inspect_floor = false);
+bool any_items_of_type(FixedVector< item_def, ENDOFPACK > &inv, int type_expect, int excluded_slot = -1, bool inspect_floor = false);
 string no_selectables_message(int item_selector);
 
-string slot_description();
+string slot_description(FixedVector< item_def, ENDOFPACK > &inv);
+string slot_description_both();
 
-int prompt_invent_item(const char *prompt,
+int prompt_invent_item(
+					   FixedVector< item_def, ENDOFPACK > &inv,
+					   const char *prompt,
+                       menu_type type,
+                       int type_expect,
+                       bool must_exist = true,
+                       bool auto_list = true,
+                       bool allow_easy_quit = true,
+                       const char other_valid_char = '\0',
+                       int excluded_slot = -1,
+                       int *const count = nullptr,
+                       operation_types oper = OPER_ANY,
+                       bool allow_list_known = false,
+                       bool do_warning = true);
+
+void prompt_invent_item2(
+		               vector<SelItem> &selected_items,
+					   const char *prompt,
                        menu_type type,
                        int type_expect,
                        bool must_exist = true,
@@ -211,6 +236,7 @@ vector<SelItem> select_items(
                         invtitle_annotator titlefn = nullptr);
 
 vector<SelItem> prompt_invent_items(
+						FixedVector< item_def, ENDOFPACK > &inv,
                         const char *prompt,
                         menu_type type,
                         int type_expect,
@@ -222,10 +248,10 @@ vector<SelItem> prompt_invent_items(
                         Menu::selitem_tfn fn = nullptr,
                         const vector<SelItem> *pre_select = nullptr);
 
-void display_inventory();
+void display_inventory(FixedVector< item_def, ENDOFPACK > &inv, const char* title = nullptr);
 
 bool in_inventory(const item_def &i);
-void identify_inventory();
+bool identify_inventory();
 
 const char *item_class_name(int type, bool terse = false);
 const char *item_slot_name(equipment_type type);
@@ -247,5 +273,16 @@ bool item_is_evokable(const item_def &item, bool reach = true,
 bool nasty_stasis(const item_def &item, operation_types oper);
 bool needs_handle_warning(const item_def &item, operation_types oper,
                           bool &penance);
-int digit_inscription_to_inv_index(char digit, operation_types oper);
+bool is_consumable(object_class_type type);
+bool is_consumable(FixedVector< item_def, ENDOFPACK > &inv);
+void inv_from_item(FixedVector< item_def, ENDOFPACK > *&inv, object_class_type type);
+bool inv_from_prompt(FixedVector< item_def, ENDOFPACK > *&inv, const char* prompt);
+
+FixedVector< item_def, ENDOFPACK > *evoke_inv();
+FixedVector< item_def, ENDOFPACK > *equip_inv();
+FixedVector< item_def, ENDOFPACK > *potion_inv();
+FixedVector< item_def, ENDOFPACK > *scroll_inv();
+FixedVector< item_def, ENDOFPACK > *book_inv();
+
+int digit_inscription_to_inv_index(FixedVector< item_def, ENDOFPACK > &inv, char digit, operation_types oper);
 #endif

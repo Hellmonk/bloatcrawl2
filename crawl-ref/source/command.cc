@@ -216,8 +216,8 @@ void list_armour()
             estr << "    (currently unavailable)";
         else if (armour_id != -1)
         {
-            estr << you.inv[armour_id].name(DESC_INVENTORY);
-            colour = menu_colour(estr.str(), item_prefix(you.inv[armour_id]),
+            estr << you.inv1[armour_id].name(DESC_INVENTORY);
+            colour = menu_colour(estr.str(), item_prefix(you.inv1[armour_id]),
                                  "equip");
         }
         else if (you_can_wear(i) == MB_MAYBE)
@@ -267,8 +267,8 @@ void list_jewellery()
             item = "    (currently unavailable)";
         else if (jewellery_id != -1)
         {
-            item = you.inv[jewellery_id].name(DESC_INVENTORY);
-            string prefix = item_prefix(you.inv[jewellery_id]);
+            item = you.inv1[jewellery_id].name(DESC_INVENTORY);
+            string prefix = item_prefix(you.inv1[jewellery_id]);
             colour = menu_colour(item, prefix, "equip");
         }
         else
@@ -312,6 +312,7 @@ static const char *targeting_help_1 =
     "<w>Tab</w> : cycle through shops and portals\n"
     "<w>r</w> : move cursor to you\n"
     "<w>e</w> : create/remove travel exclusion\n"
+    "<w>q</w> : unsummon target\n"
 #ifndef USE_TILE_LOCAL
     "<w>Ctrl-L</w> : targeting via monster list\n"
 #endif
@@ -905,9 +906,9 @@ static void _add_formatted_keyhelp(column_composer &cols)
                          CMD_CYCLE_QUIVER_BACKWARD, 0);
     _add_insert_commands(cols, 0, "<cyan>[</cyan> : armour (<w>%</w>ear and <w>%</w>ake off)",
                          CMD_WEAR_ARMOUR, CMD_REMOVE_ARMOUR, 0);
-    _add_insert_commands(cols, 0, "<brown>percent</brown> : corpses and food "
-                                  "(<w>%</w>hop up and <w>%</w>at)",
-                         CMD_BUTCHER, CMD_EAT, 0);
+//    _add_insert_commands(cols, 0, "<brown>percent</brown> : corpses and food "
+//                                  "(<w>%</w>hop up and <w>%</w>at)",
+//                         CMD_BUTCHER, CMD_EAT, 0);
     _add_insert_commands(cols, 0, "<w>?</w> : scrolls (<w>%</w>ead)",
                          CMD_READ, 0);
     _add_insert_commands(cols, 0, "<magenta>!</magenta> : potions (<w>%</w>uaff)",
@@ -1008,6 +1009,7 @@ static void _add_formatted_keyhelp(column_composer &cols)
     _add_command(cols, 1, CMD_LIST_JEWELLERY, "display worn jewellery", 2);
     _add_command(cols, 1, CMD_LIST_GOLD, "display gold in possession", 2);
     _add_command(cols, 1, CMD_EXPERIENCE_CHECK, "display experience info", 2);
+    _add_command(cols, 1, CMD_LIST_RUNE_CURSES, "list rune curses in effect", 2);
 
     cols.add_formatted(
             1,
@@ -1040,6 +1042,7 @@ static void _add_formatted_keyhelp(column_composer &cols)
             "<h>Item Interaction (inventory):\n");
 
     _add_command(cols, 1, CMD_DISPLAY_INVENTORY, "show Inventory list", 2);
+    _add_command(cols, 1, CMD_DISPLAY_CONSUMABLES, "show Consumable list", 2);
     _add_command(cols, 1, CMD_INSCRIBE_ITEM, "inscribe item", 2);
     _add_command(cols, 1, CMD_FIRE, "Fire next appropriate item", 2);
     _add_command(cols, 1, CMD_THROW_ITEM_NO_QUIVER, "select an item and Fire it", 2);
@@ -1079,9 +1082,12 @@ static void _add_formatted_keyhelp(column_composer &cols)
             "    (press twice for pick up menu)\n",
             false);
 
-    _add_command(cols, 1, CMD_DROP, "Drop an item", 2);
+    _add_command(cols, 1, CMD_DROP_INVENTORY, "Drop an item", 2);
     _add_insert_commands(cols, 1, "<w>%#</w>: Drop exact number of items",
-                         CMD_DROP, 0);
+                         CMD_DROP_INVENTORY, 0);
+    _add_command(cols, 1, CMD_DROP_CONSUMABLE, "Drop a consumable", 2);
+    _add_insert_commands(cols, 1, "<w>%#</w>: Drop exact number of consumables",
+                         CMD_DROP_CONSUMABLE, 0);
     _add_command(cols, 1, CMD_DROP_LAST, "Drop the last item(s) you picked up", 2);
     {
         const bool vampire = you.species == SP_VAMPIRE;
@@ -1243,8 +1249,10 @@ static void _add_formatted_hints_help(column_composer &cols)
 
     cols.add_formatted(1, " ", false);
     _add_command(cols, 1, CMD_DISPLAY_INVENTORY, "list inventory (select item to view it)", 2);
+    _add_command(cols, 1, CMD_DISPLAY_CONSUMABLES, "list consumables (select item to view it)", 2);
     _add_command(cols, 1, CMD_PICKUP, "pick up item from ground (also <w>g</w>)", 2);
-    _add_command(cols, 1, CMD_DROP, "drop item", 2);
+    _add_command(cols, 1, CMD_DROP_INVENTORY, "drop inventory item", 2);
+    _add_command(cols, 1, CMD_DROP_CONSUMABLE, "drop consumable item", 2);
     _add_command(cols, 1, CMD_DROP_LAST, "drop the last item(s) you picked up", 2);
 
     cols.add_formatted(

@@ -4,6 +4,7 @@
 #include "itemprop-enum.h"
 #include "random-var.h"
 #include "ouch.h"
+#include "enum.h"
 
 #define CLING_KEY "clinging" // 'is creature clinging' property key
 
@@ -96,8 +97,10 @@ public:
     {
         return weapon(0);
     }
-    virtual random_var attack_delay(const item_def *projectile = nullptr,
-                                    bool rescale = true) const = 0;
+    virtual int attack_delay(const item_def *projectile = nullptr,
+                             bool rescale = true,
+                             const item_def* weapon = nullptr,
+                             const action_delay_type adt = ACTION_DELAY_CURRENT) const = 0;
     virtual int has_claws(bool allow_tran = true) const = 0;
     virtual item_def *shield() const = 0;
     virtual item_def *slot_item(equipment_type eq,
@@ -200,8 +203,10 @@ public:
                       string source = "",
                       string aux = "",
                       bool cleanup_dead = true,
-                      bool attacker_effects = true) = 0;
-    virtual bool heal(int amount) = 0;
+                      bool attacker_effects = true,
+                      bool skip_details = false
+    ) = 0;
+    virtual bool heal(int amount, bool silent = false) = 0;
     virtual void banish(actor *agent, const string &who = "",
                         const int power = 0, bool force = false) = 0;
     virtual void blink() = 0;
@@ -283,7 +288,7 @@ public:
     virtual bool is_unbreathing() const = 0;
     virtual bool is_insubstantial() const = 0;
     virtual int res_acid(bool calc_unid = true) const = 0;
-    virtual bool res_damnation() const = 0;
+    virtual bool res_hellfire() const = 0;
     virtual int res_fire() const = 0;
     virtual int res_steam() const = 0;
     virtual int res_cold() const = 0;
@@ -329,7 +334,8 @@ public:
 
     // Return an int so we know whether an item is the sole source.
     virtual int evokable_flight(bool calc_unid = true) const;
-    virtual int spirit_shield(bool calc_unid = true, bool items = true) const;
+    virtual int magic_shield(bool calc_unid = true, bool items = true) const;
+    virtual int stamina_shield(bool calc_unid = true, bool items = true) const;
 
     virtual bool is_wall_clinging() const;
     virtual bool is_banished() const = 0;
@@ -359,10 +365,8 @@ public:
     virtual bool haloed() const;
     // Within an umbra?
     virtual bool umbraed() const;
-#if TAG_MAJOR_VERSION == 34
     // Being heated by a heat aura?
     virtual bool heated() const;
-#endif
     // Halo radius.
     virtual int halo_radius() const = 0;
     // Silence radius.
@@ -370,11 +374,7 @@ public:
     // Liquefying radius.
     virtual int liquefying_radius() const = 0;
     virtual int umbra_radius() const = 0;
-#if TAG_MAJOR_VERSION == 34
     virtual int heat_radius() const = 0;
-#endif
-
-    virtual bool glows_naturally() const { return false; };
 
     virtual bool petrifying() const = 0;
     virtual bool petrified() const = 0;
@@ -449,6 +449,7 @@ public:
 
     void collide(coord_def newpos, const actor *agent, int pow);
 
+    coord_def      prev_direction;
 private:
     void end_constriction(mid_t whom, bool intentional, bool quiet);
 };

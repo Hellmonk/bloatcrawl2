@@ -60,11 +60,11 @@ static uint8_t _jewellery_type_from_artefact_prop(const string &s
 #endif
                                                   )
 {
-    if (s == "Regen")
+    if (s == "RegenHP")
 #if TAG_MAJOR_VERSION == 34
-        return is_amulet ? AMU_REGENERATION : RING_REGENERATION;
+        return is_amulet ? AMU_HEALTH_REGENERATION : RING_REGENERATION;
 #else
-        return AMU_REGENERATION;
+        return AMU_HEALTH_REGENERATION;
 #endif
 
     if (s == "+Rage")
@@ -77,8 +77,10 @@ static uint8_t _jewellery_type_from_artefact_prop(const string &s
         return AMU_THE_GOURMAND;
     if (s == "Inacc")
         return AMU_INACCURACY;
-    if (s == "Spirit")
-        return AMU_GUARDIAN_SPIRIT;
+    if (s == "MagicShield")
+        return AMU_MAGIC_SHIELD;
+    if (s == "StaminaShield")
+        return AMU_MAGIC_SHIELD;
     if (s == "Faith")
         return AMU_FAITH;
     if (s == "Reflect")
@@ -109,6 +111,8 @@ static uint8_t _jewellery_type_from_artefact_prop(const string &s
         return RING_PROTECTION;
     if (s.substr(0, 2) == "MP")
         return RING_MAGICAL_POWER;
+    if (s.substr(0, 2) == "SP")
+        return RING_STAMINA;
     if (s.substr(0, 4) == "Slay")
         return RING_SLAYING;
     if (s.substr(0, 3) == "Str")
@@ -392,11 +396,11 @@ bool chardump_parser::_check_skill(const vector<string> &tokens)
     double amount = atof(tokens[2].c_str());
     set_skill_level(skill, amount);
     if (tokens[0] == "+")
-        you.train[skill] = 1;
+        you.train[skill] = TRAINING_ENABLED;
     else if (tokens[0] == "*")
-        you.train[skill] = 2;
+        you.train[skill] = TRAINING_FOCUSED;
     else
-        you.train[skill] = 0;
+        you.train[skill] = TRAINING_DISABLED;
 
     redraw_skill(skill);
 

@@ -26,6 +26,7 @@
 #if TAG_MAJOR_VERSION == 34
 # include "shopping.h" // REMOVED_DEAD_SHOPS_KEY
 #endif
+#include "rune_curse.h"
 #include "skills.h"
 #include "spl-book.h"
 #include "spl-util.h"
@@ -96,6 +97,9 @@ item_def* newgame_make_item(object_class_type base,
                             int sub_type, int qty, int plus,
                             int force_ego, bool force_tutorial)
 {
+	FixedVector< item_def, ENDOFPACK > *inv;
+	inv_from_item(inv, base);
+
     // Don't set normal equipment in the tutorial.
     if (!force_tutorial && crawl_state.game_is_tutorial())
         return nullptr;
@@ -110,7 +114,7 @@ item_def* newgame_make_item(object_class_type base,
         if (base == OBJ_FOOD && slot == letter_to_index('e'))
             continue;
 
-        item_def& item = you.inv[slot];
+        item_def &item = (*inv)[slot];
         if (!item.defined())
             break;
 
@@ -122,12 +126,17 @@ item_def* newgame_make_item(object_class_type base,
         }
     }
 
-    item_def &item(you.inv[slot]);
+    item_def &item((*inv)[slot]);
     item.base_type = base;
     item.sub_type  = sub_type;
     item.quantity  = qty;
     item.plus      = plus;
     item.brand     = force_ego;
+
+    if (item.base_type == OBJ_WANDS)
+    {
+        item.set_cap(wand_max_charges(item));
+    }
 
     // If the character is restricted in wearing the requested armour,
     // hand out a replacement instead.
@@ -211,21 +220,21 @@ static void _give_ammo(weapon_type weapon, int plus)
     {
     case WPN_THROWN:
         if (species_can_throw_large_rocks(you.species))
-            newgame_make_item(OBJ_MISSILES, MI_LARGE_ROCK, 4 + plus);
+            newgame_make_item(OBJ_MISSILES, MI_LARGE_ROCK, 12 + 2 * plus);
         else if (you.body_size(PSIZE_TORSO) <= SIZE_SMALL)
-            newgame_make_item(OBJ_MISSILES, MI_TOMAHAWK, 8 + 2 * plus);
+            newgame_make_item(OBJ_MISSILES, MI_TOMAHAWK, 24 + 4 * plus);
         else
-            newgame_make_item(OBJ_MISSILES, MI_JAVELIN, 5 + plus);
-        newgame_make_item(OBJ_MISSILES, MI_THROWING_NET, 2);
+            newgame_make_item(OBJ_MISSILES, MI_JAVELIN, 15 + 2 * plus);
+        newgame_make_item(OBJ_MISSILES, MI_THROWING_NET, 4);
         break;
     case WPN_SHORTBOW:
-        newgame_make_item(OBJ_MISSILES, MI_ARROW, 20);
+        newgame_make_item(OBJ_MISSILES, MI_ARROW, 20, 0, SPMSL_FLAME);
         break;
     case WPN_HAND_CROSSBOW:
-        newgame_make_item(OBJ_MISSILES, MI_BOLT, 20);
+        newgame_make_item(OBJ_MISSILES, MI_BOLT, 20, 0, SPMSL_PENETRATION);
         break;
     case WPN_HUNTING_SLING:
-        newgame_make_item(OBJ_MISSILES, MI_SLING_BULLET, 20);
+        newgame_make_item(OBJ_MISSILES, MI_SLING_BULLET, 20, SPMSL_EXPLODING);
         break;
     default:
         break;
@@ -297,9 +306,9 @@ static void _give_items_skills(const newgame_def& ng)
     if (job_gets_ranged_weapons(you.char_class))
         _give_ammo(ng.weapon, you.char_class == JOB_HUNTER ? 1 : 0);
 
-    // Deep Dwarves get a wand of heal wounds (5).
+    // Deep Dwarves get a wand of heal wounds (9).
     if (you.species == SP_DEEP_DWARF)
-        newgame_make_item(OBJ_WANDS, WAND_HEAL_WOUNDS, 1, 5);
+        newgame_make_item(OBJ_WANDS, WAND_HEAL_WOUNDS, 1, 9);
 
     if (you.species == SP_FELID)
     {
@@ -319,7 +328,7 @@ static void _give_items_skills(const newgame_def& ng)
 static void _give_starting_food()
 {
     // No food for those who don't need it.
-    if (you_foodless())
+    if (you.species != SP_VAMPIRE || you_foodless())
         return;
 
     object_class_type base_type = OBJ_FOOD;
@@ -349,8 +358,8 @@ static void _setup_tutorial_miscs()
     // No gold to begin with.
     you.gold = 0;
 
-    // Give them some mana to play around with.
-    you.mp_max_adj += 2;
+    // Give them some magic to play around with.
+    you.mp_max_adj += 20;
 
     newgame_make_item(OBJ_ARMOUR, ARM_ROBE, 1, 0, 0, true);
 
@@ -366,7 +375,7 @@ static void _give_basic_knowledge()
 {
     identify_inventory();
 
-    for (const item_def& i : you.inv)
+    for (const item_def& i : you.inv1)
         if (i.base_type == OBJ_BOOKS)
             mark_had_book(i);
 
@@ -386,6 +395,7 @@ static void _setup_generic(const newgame_def& ng);
 void setup_game(const newgame_def& ng)
 {
     crawl_state.type = ng.type;
+    crawl_state.difficulty = ng.difficulty;
     crawl_state.map  = ng.map;
 
     switch (crawl_state.type)
@@ -443,22 +453,52 @@ static void _setup_hints()
     init_hints();
 }
 
-static void _free_up_slot(char letter)
+static void _free_up_slot(bool consumable, char letter)
 {
     for (int slot = 0; slot < ENDOFPACK; ++slot)
     {
-        if (!you.inv[slot].defined())
+        FixedVector<item_def, 52> *inv = &you.inv1;
+        if (consumable)
+            inv = &you.inv2;
+
+        if (!(*inv)[slot].defined())
         {
-            swap_inv_slots(letter_to_index(letter),
-                           slot, false);
+            swap_inv_slots(*inv, letter_to_index(letter), slot, false);
             break;
         }
     }
 }
 
+void _make_potions(const potion_type &potion)
+{
+    int count;
+    switch (crawl_state.difficulty)
+    {
+        case DIFFICULTY_EASY:
+            count = 4;
+            break;
+        case DIFFICULTY_STANDARD:
+            count = 3;
+            break;
+        case DIFFICULTY_CHALLENGE:
+            count = 2;
+            break;
+        case DIFFICULTY_NIGHTMARE:
+            count = 1;
+            break;
+        default:
+            count = 3;
+            // should not be possible
+            break;
+    }
+    newgame_make_item(OBJ_POTIONS, potion, count);
+}
+
 static void _setup_generic(const newgame_def& ng)
 {
     _init_player();
+
+    choose_branch_rune_requirements();
 
 #if TAG_MAJOR_VERSION == 34
     // Avoid the remove_dead_shops() Gozag fixup in new games: see
@@ -496,12 +536,27 @@ static void _setup_generic(const newgame_def& ng)
     if (crawl_state.game_is_sprint())
         _give_bonus_items();
 
+    if (you.species != SP_MUMMY)
+    {
+        if (you.species != SP_VINE_STALKER)
+        {
+            _make_potions(POT_HEAL_WOUNDS);
+        }
+        _make_potions(POT_STAMINA);
+        _make_potions(POT_MAGIC);
+    }
+
+    if (you.species == SP_FORMICID)
+    {
+        newgame_make_item(OBJ_POTIONS, POT_CURING);
+        newgame_make_item(OBJ_POTIONS, POT_CURING);
+    }
     // Leave the a/b slots open so if the first thing you pick up is a weapon,
     // you can use ' to swap between your items.
     if (you.char_class == JOB_EARTH_ELEMENTALIST)
-        _free_up_slot('a');
+        _free_up_slot(false, 'a');
     if (you.char_class == JOB_ARCANE_MARKSMAN)
-        _free_up_slot('b');
+        _free_up_slot(false, 'b');
 
     // Give tutorial skills etc
     if (crawl_state.game_is_tutorial())
@@ -511,10 +566,22 @@ static void _setup_generic(const newgame_def& ng)
 
     initialise_item_descriptions();
 
+    if (you.species == SP_TENGU)
+    {
+    	for (int ring = 0; ring < NUM_RINGS; ring++)
+    	{
+            you.force_autopickup[OBJ_JEWELLERY][ring] = -1;
+    	}
+    }
+
+    // potions of experience are always identified
+    if (Options.exp_potion_on_each_floor || Options.uniques_drop_exp_potions)
+        set_ident_type(OBJ_POTIONS, POT_EXPERIENCE, true);
+
     // A first pass to link the items properly.
     for (int i = 0; i < ENDOFPACK; ++i)
     {
-        auto &item = you.inv[i];
+        auto &item = you.inv1[i];
         if (!item.defined())
             continue;
         item.pos = ITEM_IN_INVENTORY;
@@ -524,7 +591,31 @@ static void _setup_generic(const newgame_def& ng)
     }
 
     // A second pass to apply the item_slot option.
-    for (auto &item : you.inv)
+    for (auto &item : you.inv1)
+    {
+        if (!item.defined())
+            continue;
+        if (!item.props.exists("adjusted"))
+        {
+            item.props["adjusted"] = true;
+            auto_assign_item_slot(item);
+        }
+    }
+
+    // A first pass to link the items properly.
+    for (int i = 0; i < ENDOFPACK; ++i)
+    {
+        auto &item = you.inv2[i];
+        if (!item.defined())
+            continue;
+        item.pos = ITEM_IN_INVENTORY;
+        item.link = i;
+        item.slot = index_to_letter(item.link);
+        item_colour(item);  // set correct special and colour
+    }
+
+    // A second pass to apply the item_slot option.
+    for (auto &item : you.inv2)
     {
         if (!item.defined())
             continue;
@@ -548,11 +639,13 @@ static void _setup_generic(const newgame_def& ng)
     // We calculate hp and mp here; all relevant factors should be
     // finalised by now. (GDL)
     calc_hp();
+    calc_sp();
     calc_mp();
 
     // Make sure the starting player is fully charged up.
-    set_hp(you.hp_max);
-    set_mp(you.max_magic_points);
+    set_hp(get_hp_max());
+    set_sp(get_sp_max());
+    set_mp(get_mp_max());
 
     initialise_branch_depths();
     initialise_temples();
@@ -563,6 +656,10 @@ static void _setup_generic(const newgame_def& ng)
 
     // Get rid of god companions left from previous games
     init_companions();
+
+    if(you.species == SP_FELID) {
+    	you.lives = 9;
+    }
 
     // Create the save file.
     if (Options.no_save)

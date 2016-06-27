@@ -4247,7 +4247,7 @@ mons_spec mons_list::get_hydra_spec(const string &name) const
     else if (nheads > 20)
     {
 #if defined(DEBUG) || defined(DEBUG_DIAGNOSTICS)
-        mprf(MSGCH_DIAGNOSTICS, "Hydra spec wants %d heads, clamping to 20.",
+        dprf("Hydra spec wants %d heads, clamping to 20.",
              nheads);
 #endif
         nheads = 20;
@@ -4275,7 +4275,7 @@ mons_spec mons_list::get_slime_spec(const string &name) const
     else
     {
 #if defined(DEBUG) || defined(DEBUG_DIAGNOSTICS)
-        mprf(MSGCH_DIAGNOSTICS, "Slime spec wants invalid size '%s'",
+        dprf("Slime spec wants invalid size '%s'",
              prefix.c_str());
 #endif
     }
@@ -4592,6 +4592,10 @@ mons_spec mons_list::mons_by_name(string name) const
     if (name.find("serpent of hell ") != string::npos)
         return soh_monspec(name);
 
+    // Allow access to her second form, which shares display names.
+    if (name == "bai suzhen dragon")
+        return MONS_BAI_SUZHEN_DRAGON;
+
     return get_monster_by_name(name);
 }
 
@@ -4809,11 +4813,12 @@ static int _str_to_ego(item_spec &spec, string ego_str)
         "preservation",
 #endif
         "reflection",
-        "spirit_shield",
+        "magic_shield",
         "archery",
 #if TAG_MAJOR_VERSION == 34
         "jumping",
 #endif
+        "stamina_shield",
         nullptr
     };
     COMPILE_CHECK(ARRAYSZ(armour_egos) == NUM_REAL_SPECIAL_ARMOURS);
@@ -4852,6 +4857,7 @@ static int _str_to_ego(item_spec &spec, string ego_str)
 #endif
         "penetration",
         "reaping",
+        "light",
         nullptr
     };
     COMPILE_CHECK(ARRAYSZ(weapon_brands) == NUM_REAL_SPECIAL_WEAPONS);
@@ -5343,9 +5349,9 @@ bool item_list::parse_single_spec(item_spec& result, string s)
         const string owner = replace_all_of(strip_tag_prefix(s, "owner:"),
                                             "_", " ");
 
-        COMPILE_CHECK(SPTYP_LAST_SCHOOL < SHRT_MAX);
-        result.props[RANDBK_DISC1_KEY].get_short() = disc1;
-        result.props[RANDBK_DISC2_KEY].get_short() = disc2;
+        COMPILE_CHECK(SPTYP_LAST_SCHOOL < LONG_MAX);
+        result.props[RANDBK_DISC1_KEY].get_int() = disc1;
+        result.props[RANDBK_DISC2_KEY].get_int() = disc2;
         result.props[RANDBK_NSPELLS_KEY] = num_spells;
         result.props[RANDBK_SLVLS_KEY] = slevels;
         result.props[RANDBK_TITLE_KEY] = title;

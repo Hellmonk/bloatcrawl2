@@ -53,7 +53,13 @@ game_state::game_state()
 #endif
       invisible_targeting(false),
       darken_range(nullptr), unsaved_macros(false), disables(),
-      minor_version(-1), save_rcs_version(), mon_act(nullptr)
+      minor_version(-1), save_rcs_version(), danger_mode_counter(0),
+      free_stair_escape(false),
+      warn_about_experience(true),
+      need_floor_exp(false),
+      followers_should_follow(true),
+      sim_mode(false),
+      mon_act(nullptr)
 {
     reset_cmd_repeat();
     reset_cmd_again();
@@ -203,7 +209,8 @@ bool interrupt_cmd_repeat(activity_interrupt_type ai,
     case AI_HUNGRY:
     case AI_TELEPORT:
     case AI_FORCE_INTERRUPT:
-    case AI_HP_LOSS:
+    case AI_HP_LOSS_FROM_MONSTER:
+    case AI_HP_LOSS_FROM_OTHER:
     case AI_MONSTER_ATTACKS:
     case AI_MIMIC:
         crawl_state.cancel_cmd_repeat("Command repetition interrupted.");

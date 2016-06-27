@@ -99,6 +99,8 @@ public:
 
     bool went_unseen_this_turn;
     coord_def unseen_pos;
+    int mp_freeze;
+    spell_type summoned_by_spell;
 
 public:
     void set_new_monster_id();
@@ -124,7 +126,7 @@ public:
     void init_experience();
 
     void mark_summoned(int longevity, bool mark_items_summoned,
-                       int summon_type = 0, bool abj = true);
+                       int summon_type = 0, bool abj = true, const actor* source = nullptr);
     bool is_summoned(int* duration = nullptr, int* summon_type = nullptr) const
         override;
     bool is_perm_summoned() const override;
@@ -257,8 +259,10 @@ public:
                           bool base = false) const override;
     brand_type  damage_brand(int which_attack = -1) override;
     int         damage_type(int which_attack = -1) override;
-    random_var  attack_delay(const item_def *projectile = nullptr,
-                             bool rescale = true) const override;
+    int         attack_delay(const item_def *projectile = nullptr,
+                             bool rescale = true,
+                             const item_def* weapon = nullptr,
+                             action_delay_type adt = ACTION_DELAY_CURRENT) const override;
     int         has_claws(bool allow_tran = true) const override;
 
     int wearing(equipment_type slot, int type, bool calc_unid = true) const
@@ -298,7 +302,7 @@ public:
     bool      drop_item(mon_inv_type eslot, bool msg);
     bool      unequip(item_def &item, bool msg, bool force = false);
     void      steal_item_from_player();
-    item_def* take_item(int steal_what, mon_inv_type mslot);
+    item_def *take_item(int steal_what, mon_inv_type mslot, FixedVector< item_def, ENDOFPACK > &inv);
     item_def* disarm();
 
     bool      can_use_missile(const item_def &item) const;
@@ -361,7 +365,7 @@ public:
     bool is_artificial(bool temp = true) const override;
     bool is_unbreathing() const override;
     bool is_insubstantial() const override;
-    bool res_damnation() const override;
+    bool res_hellfire() const override;
     int res_fire() const override;
     int res_steam() const override;
     int res_cold() const override;
@@ -413,10 +417,7 @@ public:
     int silence_radius() const override;
     int liquefying_radius() const override;
     int umbra_radius() const override;
-#if TAG_MAJOR_VERSION == 34
     int heat_radius() const override;
-#endif
-    bool glows_naturally() const override;
     bool petrified() const override;
     bool petrifying() const override;
     bool liquefied_ground() const override;
@@ -477,8 +478,10 @@ public:
              string source = "",
              string aux = "",
              bool cleanup_dead = true,
-             bool attacker_effects = true) override;
-    bool heal(int amount) override;
+             bool attacker_effects = true,
+             bool skip_details = false
+    ) override;
+    bool heal(int amount, bool silent = false) override;
     void blame_damage(const actor *attacker, int amount);
     void blink() override;
     void teleport(bool right_now = false,
@@ -559,6 +562,7 @@ public:
     bool search_slots(function<bool (const mon_spell_slot &)> func) const;
 
     bool has_facet(int facet) const;
+    bool is_player_summon() const;
     bool angered_by_attacks() const;
 
 private:

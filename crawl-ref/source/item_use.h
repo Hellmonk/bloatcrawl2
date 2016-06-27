@@ -51,7 +51,7 @@ bool enchant_weapon(item_def &wpn, bool quiet);
 bool enchant_armour(int &ac_change, bool quiet, item_def &arm);
 void random_uselessness();
 
-void prompt_inscribe_item();
+void prompt_inscribe_item(FixedVector< item_def, ENDOFPACK > &inv);
 
 #define STASIS_STABILITY_MSG "Your stasis keeps you stable."
 #define NO_HASTE_MSG "You cannot haste."
@@ -61,9 +61,9 @@ bool check_stasis(const char *msg = STASIS_STABILITY_MSG);
 #ifdef USE_TILE
 void tile_item_use_floor(int idx);
 void tile_item_pickup(int idx, bool part);
-void tile_item_drop(int idx, bool partdrop);
+void tile_item_drop(FixedVector< item_def, ENDOFPACK > &inv, int idx, bool partdrop);
 void tile_item_eat_floor(int idx);
-void tile_item_use(int idx);
+void tile_item_use(FixedVector< item_def, ENDOFPACK > &inv, int idx);
 void tile_item_use_secondary(int idx);
 #endif
 

@@ -92,8 +92,8 @@ LUARET1(you_evil_god, boolean,
 function one_time_ability_used() */
 LUARET1(you_one_time_ability_used, boolean,
         you.one_time_ability_used[you.religion])
-LUARET2(you_hp, number, you.hp, you.hp_max)
-LUARET2(you_mp, number, you.magic_points, you.max_magic_points)
+LUARET2(you_hp, number, get_hp(), get_hp_max())
+LUARET2(you_mp, number, get_mp(), get_mp_max())
 LUARET1(you_base_mp, number, get_real_mp(false))
 LUARET1(you_rot, number, player_rotted())
 LUARET1(you_poison_survival, number, poison_survival())
@@ -123,7 +123,7 @@ LUARET1(you_res_statdrain, boolean, player_sust_attr(false))
 LUARET1(you_res_mutation, number, you.rmut_from_item(false) ? 1 : 0)
 LUARET1(you_see_invisible, boolean, you.can_see_invisible(false))
 // Returning a number so as not to break existing scripts.
-LUARET1(you_spirit_shield, number, you.spirit_shield(false) ? 1 : 0)
+LUARET1(you_magic_shield, number, you.magic_shield(false) ? 1 : 0)
 LUARET1(you_gourmand, boolean, you.gourmand(false))
 LUARET1(you_res_corr, boolean, you.res_corr(false))
 LUARET1(you_like_chunks, number, player_likes_chunks(true))
@@ -481,11 +481,25 @@ LUAFN(you_train_skill)
     skill_type sk = str_to_skill(luaL_checkstring(ls, 1));
     if (lua_gettop(ls) >= 2 && you.can_train[sk])
     {
-        you.train[sk] = min(max(luaL_checkint(ls, 2), 0), 2);
+        you.train[sk] = min(max((training_status)luaL_checkint(ls, 2),
+                                                 TRAINING_DISABLED),
+                                             TRAINING_FOCUSED);
         reset_training();
     }
 
     PLUARET(number, you.train[sk]);
+}
+
+LUAFN(you_skill_cost)
+{
+    skill_type sk = str_to_skill(luaL_checkstring(ls, 1));
+    float cost = scaled_skill_cost(sk);
+    if (cost == 0)
+    {
+        lua_pushnil(ls);
+        return 1;
+    }
+    PLUARET(number, max(1, (int)(10.0 * cost + 0.5)) * 0.1);
 }
 
 LUAFN(you_status)
@@ -557,6 +571,7 @@ static const struct luaL_reg you_clib[] =
     { "can_train_skill", you_can_train_skill },
     { "best_skill",   you_best_skill },
     { "train_skill",  you_train_skill },
+    { "skill_cost"  , you_skill_cost },
     { "xl"          , you_xl },
     { "xl_progress" , you_xl_progress },
     { "res_poison"  , you_res_poison },
@@ -567,7 +582,7 @@ static const struct luaL_reg you_clib[] =
     { "res_statdrain", you_res_statdrain },
     { "res_mutation", you_res_mutation },
     { "see_invisible", you_see_invisible },
-    { "spirit_shield", you_spirit_shield },
+    { "magic_shield", you_magic_shield },
     { "like_chunks",  you_like_chunks },
     { "gourmand",     you_gourmand },
     { "res_corr",     you_res_corr },

@@ -69,7 +69,7 @@ function random_stair(e, symbol)
 end
 }}
 
-default-depth: D:9-, Depths, Elf
+default-depth: D:9-, Depths, Elf, Dwarf
 
 ###############################################################################
 #
@@ -94,42 +94,59 @@ MAP
 ENDMAP
 
 NAME:    eino_jars
-TAGS:    extra
+TAGS:    patrolling uniq_beehive
 DEPTH:   D:7-14
-SHUFFLE: 11%
-MONS:    killer bee / nothing w:5
-SUBST:   % = %*
+KMONS:   1 = killer bee
+KMONS:   2 = meliai
+KITEM:   1 = %
+KITEM:   2 = *
+: if you.absdepth() < 12 then
+NSUBST:  1 = 1:1 / * = 11.
+: else
+NSUBST:  1 = 1:2 / 2 = 21 / 1:. / * = 11.
+: end
 MAP
-xxxxxx
-x1111x
-x1111x
-x++++x
-@....@
+ xxxxx
+ x111x
+ x1x1x.@.
+ x+++x.x.
+...........
+  .x.x+++x
+  .@.x1x1x
+     x111x
+     xxxxx
 ENDMAP
 
-# Beehive which needs digging to access
+# Beehive which needs digging to access.
 NAME:   hive_lemuel
-TAGS:   uniq_beehive
+TAGS:   no_trap_gen
 DEPTH:  D:9-, Spider
-MONS:   killer bee, wasp, hornet
+MONS:   killer bee, meliai, queen bee, wasp, hornet
 KMONS:  *R = worm
-SUBST:  ? : .w
-SUBST:  1 = 1 a:2, 1 : 1:15 2 3:2
-SUBST:  * : * R:3
 KITEM:  * = *
 KITEM:  R = royal jelly
+SUBST:  ? : .w
+SUBST:  * : * R:3
+# Since one has to dig the bees out, early meliai are fine.
+: if crawl.x_chance_in_y(15, 27) then
+TAGS:   uniq_beehive
+NSUBST: 1 = 1:3 / 1:1 / * = 1 x:2
+: else
+TAGS:   uniq_wasphive
+SUBST:  1 : 4 5:4
+: end
 COLOUR: x = yellow
 TILE:   x = wall_wax
 MAP
   ????????
  ??????????
 ???xxxxxx???
-??xmxxxxmx??
+??xmxxxxxx??
 ??xx1111xx??
 ??xx1**1xx??
 ??xx1**1xx??
 ??xx1111xx??
-??xmxxxxmx??
+??xxxxxxmx??
 ???xxxxxx???
  ??????????
   ????????
@@ -137,23 +154,26 @@ ENDMAP
 
 # Beehive minivault
 NAME:   minivault_7
-TAGS:   uniq_beehive
+TAGS:   uniq_beehive patrolling
 DEPTH:  D:9-
-MONS:   patrolling queen bee, patrolling killer bee
+MONS:   queen bee, meliai, killer bee
 KITEM:  R = royal jelly
 COLOUR: x = yellow
 TILE:   x = wall_wax
+: if you.absdepth() < 12 then
+SUBST:  2 = 3
+: end
 MAP
 ............
 ....xxxx....
-..x2x2xxxx..
-..xxRx2x2x..
-.xx2xRx2xxx.
-.x2xRx1xRx2.
-.xx2xRxRx2x.
-.xxx2x2x2xx.
-..x2xRx2xx..
-...xx2xx2x..
+..x3x3xxxx..
+..xxRx3x2x..
+.xx3xRx3xxx.
+.x2xRx1xRx3.
+.xx3xRxRx3x.
+.xxx3x3x3xx.
+..x3xRx3xx..
+...xx2xx3x..
 ....xxxx....
 ............
 ENDMAP
@@ -162,7 +182,7 @@ ENDMAP
 NAME:   not_door_vault_mu
 TAGS:   extra allow_dup luniq
 WEIGHT: 1
-DEPTH:  Depths, Elf
+DEPTH:  Depths, Elf, Dwarf
 MONS:   butterfly
 MARKER: X = lua: props_marker { connected_exclude="true" }
 MARKER: Y = lua: props_marker { stop_explore="strange structure made of doors" }
@@ -358,14 +378,19 @@ MAP
 ENDMAP
 
 NAME:   nicolae_looking_at_the_future
-TAGS:   no_monster_gen no_trap_gen uniq_beehive
+TAGS:   no_monster_gen no_trap_gen uniq_beehive patrolling
 DEPTH:  D:8-, Spider
-KMONS:  B = patrolling queen bee
-KMONS:  b = patrolling killer bee
+KMONS:  B = queen bee
+KMONS:  b = killer bee
+KMONS:  M = meliai
 KMONS:  p = plant
-NSUBST: b = 1:B / 1:b / * = bb.
 : if you.in_branch("Spider") then
 SUBST:  + = .
+: end
+: if you.absdepth() > 12 then
+NSUBST: b = 1:B / 3:M / *:b
+: else
+NSUBST: b = 1:B / 1:b / * = bb.
 : end
 MAP
 xxxxx++xxxxx
@@ -827,7 +852,7 @@ ITEM:   Young Poisoner's Handbook / book of Changes / \
         randbook numspells:5 title:Nature \
         spells:beastly_appendage&sting&sticks_to_snakes&cure_poison&spider_form w:245
 : if crawl.coinflip() then
-KITEM:  f = javelin ego:poisoned q:4-6 / tomahawk ego:poisoned
+KITEM:  f = arrow ego:poisoned / javelin ego:poisoned q:4-6 / tomahawk ego:poisoned
 : else
 KITEM:  f = blowgun / w:5 nothing, needle ego:poisoned / needle ego:curare / needle ego:paralysis
 : end
@@ -882,7 +907,7 @@ ITEM:   Young Poisoner's Handbook / book of Changes / \
         randbook numspells:5 title:Nature \
         spells:beastly_appendage&sting&sticks_to_snakes&cure_poison&spider_form w:245
 : if crawl.coinflip() then
-KITEM:  f = javelin ego:poisoned q:4-6 / tomahawk ego:poisoned
+KITEM:  f = arrow ego:poisoned / javelin ego:poisoned q:4-6 / tomahawk ego:poisoned
 : else
 KITEM:  f = blowgun / w:5 nothing, needle ego:poisoned / needle ego:curare / needle ego:paralysis
 : end
@@ -1022,10 +1047,60 @@ MAP
 ............
 ENDMAP
 
+NAME:   argonaut_fire_from_heaven
+DEPTH:  Depths:2-
+KMONS:  T = titan
+KMONS:  2 = caustic shrike
+KFEAT:  m = iron_grate
+KITEM:  T = randbook disc:fire, lamp of fire / gold good_item
+KFEAT:  T = <
+NSUBST: 2 = 1:2 / 1:. / * = 2.
+KPROP:  T = no_tele_into
+MAP
+..xxxxxxx.@
+..........x
+xxxxx2....x
+xcccx...2.x
+xcTm..2..Cx
+xcccx...2.x
+xxxxx2....x
+..........x
+..xxxxxxx.@
+ENDMAP
+
+# Medium trappings still informed by Topsell, I guess.
+NAME:   argonaut_gorgonesque
+TAGS:   no_monster_gen
+DEPTH:  D:12-, Shoals
+MONS:   harpy, basilisk, catoblepas
+KMONS:  P = withered plant
+ITEM:   shield ego:reflection ident:type / \
+        buckler ego:reflection ident:type w:1 / \
+        large shield ego:reflection ident:type w:1
+ITEM:   stone
+NSUBST: H = 4:G / 2:G. / *:e
+MAP
+     xxxxxxx
+   xxxx1x.xxx
+  xxxxxx2xxxxxx
+ xxx.H.....H.xxx
+xxx.....H.....xxx
+x.x.....3.....x1x
+xx2.....H.....2xx
+x1x..H..d..H..x.x
+xxx.....G.....xxx
+ xxx.........xxx
+  xxxxHx.xHxxxx
+   xxxxx.xxxxxx
+    xxx.Gxxxx
+      xxPxx
+       @..
+ENDMAP
+
 ###############################################################################
 #
 # <<3>> Humanoids
-#       Goblins, gnolls, orcs, ogres etc. We include spriggans and centaurs.
+#       Goblins, gnolls, orcs, ogres etc. We include e.g. spriggans, centaurs.
 #
 ###############################################################################
 
@@ -1185,7 +1260,7 @@ ENDMAP
 # Elven Outpost
 #   50-50 chance of spiral arms, 50-50 chance of a moat
 NAME:    elves_outpost_lemuel
-DEPTH:   D:11-, Orc, Elf
+DEPTH:   D:11-, Orc:3-, Elf
 MONS:    deep elf mage
 SHUFFLE: ?_/bb, _'/ww
 SUBST:   ?_' = .
@@ -1340,7 +1415,7 @@ ENDMAP
 # Inspired by the Jorge Luis Borges' story "The Library of Babel".
 NAME:    bh_hangedman_babel_library
 TAGS:    transparent no_monster_gen no_item_gen
-DEPTH:   D:10-, !D:$, Elf, !Elf:$
+DEPTH:   D:3-, !D:$, Elf, !Elf:$
 MONS:    wizard / deep elf mage
 ITEM:    bread ration
 ITEM:    randbook numspells:2 title:Dhcmrlchtdj
@@ -1410,7 +1485,7 @@ NAME:   corexii_shack
 TAGS:   no_monster_gen no_item_gen allow_dup extra
 DEPTH:  D:2-6
 NSUBST: + = 1:+ / *:x, m = 1:m / *:x, - = 1:1 / *:d
-ITEM:   w:20 any food / any weapon / any armour / w:5 any potion / w:20 nothing
+ITEM:   w:20 potion of stamina / any weapon / any armour / w:5 any potion / w:20 nothing
 MONS:   goblin / hobgoblin / kobold / orc, plant / w:100 nothing
 MAP
 ........
@@ -1700,7 +1775,7 @@ NAME:  guppyfry_early_elven_hall
 DEPTH: D:6-9
 TAGS:  patrolling no_monster_gen transparent
 MONS:  deep elf mage, plant
-ITEM:  any scroll / any food / any book
+ITEM:  any scroll / potion of stamina / any book
 SUBST: - = 2....GTd$%
 MARKER: H = lua:props_marker { stop_explore = "statue" }
 SUBST: HI = G
@@ -1899,7 +1974,7 @@ ENDMAP
 NAME: sigmund_edmund_badplayer
 TAGS: no_item_gen no_monster_gen no_pool_fixup no_trap_gen
 DEPTH: D:4-7
-ITEM: any food
+ITEM: potion of stamina
 KITEM: ( = flail / any armour
 KITEM: s = scythe / robe
 KMONS: S = Sigmund
@@ -1980,47 +2055,6 @@ bb......bb
  bb....bb
   bb..bb
    b++b
-ENDMAP
-
-NAME: amalloy_card_club
-TAGS: no_item_gen no_monster_gen
-DEPTH: D:2-, Orc, Elf
-# a pair of 2s, playing against a pair of either 1(hard) or 3(easy)
-SHUFFLE: 12
-SUBST: 1 : 13
-# We want this vault to be placeable in a large range of depths, but can't just
-# use auto-scaling monster placement because we want:
-# - two pairs of identical monsters (sitting in pairs across the table)
-# - monsters who would plausibly be playing cards (ie, not beetles)
-# So instead we hand-pick monster sets for elf, orc, and early/mid/late D, and
-# scale the deck quality accordingly - it's mostly for theming, but we might as
-# well make it depth-appropriate loot too.
-: if you.in_branch("Elf") then
-MONS: deep elf mage, deep elf mage, deep elf mage
-ITEM: legendary deck
-: elseif you.in_branch("Orc") then
-MONS: orc warrior, orc wizard, orc
-ITEM: ornate deck / w:5 legendary deck
-: elseif you.depth() >= 12 then
-MONS: hill giant, two-headed ogre, ogre
-ITEM: ornate deck
-: elseif you.depth() >= 6 then
-MONS: crimson imp / shadow imp, orc wizard, orc
-ITEM: plain deck / w:5 ornate deck
-: else
-MONS: gnoll, hobgoblin, goblin
-ITEM: plain deck
-: end
-# Occasionally one of them brings a snack to the table.
-NSUBST: . = 1:e
-ITEM: nothing / w:2 bread ration / w:2 meat ration / w:2 fruit q:1\
-      / w:1 potion of ambrosia
-MAP
-xx+xx
-x.1.x
-x2d2x
-x.1.x
-xxxxx
 ENDMAP
 
 ################################################################################
@@ -2203,7 +2237,7 @@ ENDMAP
 # Bad water, a lot of carrion and feeders around, yuck!
 NAME:   roderic_carrion_pond
 TAGS:   no_monster_gen no_trap_gen
-DEPTH:  Lair:2-7, Swamp
+DEPTH:  Lair:2-, !Lair:$, Swamp
 MONS:   necrophage
 SUBST:  ' = 111.
 SUBST:  ? = %%.
@@ -2539,14 +2573,15 @@ DEPTH: D:12-, Depths, !Depths:$, Lair:2-, Coc, !Coc:$
 KMONS: 1 = ice statue
 KMONS: 2 = white imp / ice beast w:30 / polar bear / nothing w:50
 KMONS: 3 = ice devil / ice dragon / freezing wraith
-KMONS: 4 = ice fiend / blizzard demon / shard shrike
+KMONS: 4 = ice fiend / blizzard demon
+KMONS: 5 = shard shrike
 KFEAT: 1 = >
 : if you.absdepth() > 20 then
 SUBST:  3 = 4, 2 = 223
 NSUBST: | = 1:1 / *:|
 : end
 : if you.in_branch("Cocytus") then
-SUBST: | = .
+SUBST:  4 = 445, | = .
 : else
 SUBST: | = ||****%%%%
 SUBST: T = TU
@@ -3063,7 +3098,7 @@ MONS:    jelly, slime creature
 dgn.delayed_decay_extra(_G, 'A', 'human corpse', 'damaged shield ident:pluses / nothing, '
                         .. 'damaged helmet ident:pluses / nothing, % / nothing, '
                         .. '% / nothing, % / nothing, any damaged armour ident:pluses, '
-                        .. 'any damaged weapon good_item ident:pluses')
+                        .. 'any weapon good_item ident:pluses')
 }}
 KMONS:   A = toadstool
 KFEAT:   B = altar_jiyva
@@ -3320,7 +3355,7 @@ ENDMAP
 # Small chamber for a nice item (Eino)
 NAME:   small_chamber_with_monster
 TAGS:   extra
-DEPTH:  D:8-, Depths, Elf, Crypt
+DEPTH:  D:8-, Depths, Elf, Dwarf, Crypt
 MAP
 xxxxxxx
 xxG.Gxx
@@ -3423,7 +3458,7 @@ ENDMAP
 
 NAME:    onia_ninara_dug_in_and_dangerous
 TAGS:    ruin_abyss
-DEPTH:   D:8-, !D:$, Depths:2-, !Depths:$, Abyss
+DEPTH:   D:3-, !D:$, Depths:2-, !Depths:$, Abyss
 SHUFFLE: vcb, AB?/CD!, d<>, de
 SUBST:   A=9, B=8, C=1, D=9
 SUBST:   ? = %:10 *:50 |:60
@@ -3477,7 +3512,7 @@ ENDMAP
 
 NAME:   nooodl_food_tri
 TAGS:   no_rotate
-ITEM:   any food
+ITEM:   potion of stamina
 NSUBST: R = 1:0 / 1:d / * = 0d$...
 MAP
        x
@@ -4846,7 +4881,7 @@ ENDMAP
 
 NAME:    kennysheep_island_fort
 TAGS:    no_pool_fixup
-DEPTH:   D:8-, Depths:2-, !D:$, !Depths:$
+DEPTH:   D:3-, Depths:2-, !D:$, !Depths:$
 SHUFFLE: {}'
 KFEAT:   ' = .
 : if crawl.coinflip() then
@@ -4876,7 +4911,7 @@ wwwcc....ccwww
 ENDMAP
 
 NAME:   kennysheep_just_a_vault
-DEPTH:  D:8-, Depths, !D:$, !Depths:$
+DEPTH:  D:3-, Depths, !D:$, !Depths:$
 SUBST:  c : ccxxv
 SUBST:  x : ccxxvbm
 MAP
@@ -4890,7 +4925,7 @@ cc...cc
 ENDMAP
 
 NAME:   kennysheep_orc_chapel
-DEPTH:  D:3-4, Orc
+DEPTH:  D:3-4, Orc:2-
 SUBST:  $ = $.
 : if you.in_branch("Orc") then
 KMONS:  1 = orc high priest band
@@ -5255,7 +5290,7 @@ cccccccFccccccc
 ENDMAP
 
 NAME:  kennysheep_small_circle
-DEPTH: D:4-, Depths, !D:$, !Depths:$
+DEPTH: D:3-, Depths, !D:$, !Depths:$
 : ks_random_setup(_G)
 : if crawl.coinflip() then
 SUBST: * : %
@@ -5279,7 +5314,7 @@ ccww0wwcc
 ENDMAP
 
 NAME:  kennysheep_small_square
-DEPTH: D:4-, Depths, !D:$, !Depths:$
+DEPTH: D:3-, Depths, !D:$, !Depths:$
 : ks_random_setup(_G)
 : if crawl.coinflip() then
 SUBST: * : %
@@ -5303,7 +5338,7 @@ cccc+cccc
 ENDMAP
 
 NAME:   kennysheep_inner_square
-DEPTH:  D:14-, Depths, !Depths:$
+DEPTH:  D:3-, Depths, !Depths:$
 : ks_random_setup(_G)
 NSUBST: % : 1:|
 SUBST:  % = *
@@ -5329,7 +5364,7 @@ ENDMAP
 NAME:   kennysheep_dice
 SUBST:  % = %$.
 SUBST:  0 = 0.
-DEPTH:  D:4-, Depths, !D:$, !Depths:$
+DEPTH:  D:3-, Depths, !D:$, !Depths:$
 : ks_random_setup(_G)
 MAP
 ccccccccDDcccccccc
@@ -5353,7 +5388,7 @@ cccccccc++cccccccc
 ENDMAP
 
 NAME:   kennysheep_two_boxes
-DEPTH:  D:14-, Depths, !Depths:$
+DEPTH:  Depths, !Depths:$
 : ks_random_setup(_G)
 NSUBST: % : 1:|
 SUBST:  % = *
@@ -5560,7 +5595,7 @@ ENDMAP
 # Robustness
 #
 NAME:   minmay_guarded_unrand_robustness
-DEPTH:  D:$, Depths, Vaults
+DEPTH:  Depths, Vaults
 TAGS:   no_monster_gen no_item_gen
 WEIGHT: 3, 1 (Vaults)
 MONS:   patrolling iron troll
@@ -5587,7 +5622,7 @@ ENDMAP
 # Zonguldrok
 #
 NAME:   minmay_guarded_unrand_zonguldrok
-DEPTH:  D:12-, Depths, Crypt
+DEPTH:  D:2-, Depths, Crypt
 TAGS:   no_monster_gen no_item_gen
 WEIGHT: 3
 : if you.in_branch("Depths") then
@@ -6060,7 +6095,7 @@ ENDMAP
 
 # Closed-box minivault
 NAME:  minivault_12
-DEPTH: D:8-, Depths, !Depths:$
+DEPTH: D:3-, Depths, !Depths:$
 MAP
 ............
 .nccccxcccn.
@@ -6079,7 +6114,7 @@ ENDMAP
 # Little trap spiral
 NAME: minivault_13
 TAGS: ruin_abyss
-DEPTH: D:9-, Elf, Abyss
+DEPTH: D:3-, Elf, Abyss
 SHUFFLE: AB, CD, EH/FG
 KITEM: ABCD = gold / nothing
 SUBST: F = G:99 F:1
@@ -6146,7 +6181,7 @@ ENDMAP
 
 NAME: minivault_20
 TAGS: allow_dup extra ruin_abyss
-DEPTH: D:9-, Elf, Abyss
+DEPTH: D:3-, Elf, Abyss
 MAP
 ............
 .xxxx..xxxx.
@@ -6164,7 +6199,7 @@ ENDMAP
 
 NAME:    minivault_25_ag
 TAGS:    allow_dup extra ruin_abyss
-DEPTH:   D:9-, Elf, Abyss
+DEPTH:   D:3-, Elf, Abyss
 SHUFFLE: XY, ABCDE
 SUBST:   X=x, Y=+
 SUBST:   A=?, B=%%%*, C=T, D=0009, E=89
@@ -6185,7 +6220,7 @@ ENDMAP
 
 NAME:  minivault_28
 TAGS:  allow_dup ruin_abyss misc_elf_vault
-DEPTH: D:9-, Elf, Abyss
+DEPTH: D:3-, Elf, Abyss
 MAP
 ...........
 .xxxx.xxxx.
@@ -6205,7 +6240,7 @@ TAGS: allow_dup luniq no_item_gen ruin_spider ruin_slime
 TAGS: no_monster_gen layout_rooms layout_corridors layout_passages
 TAGS: layout_narrow_caves layout_open_caves
 CHANCE: 0.5% (Slime), 1% (Geh, Coc, Dis, Tar), 2% (Orc, Spider), 3%
-DEPTH: D:8-, Depths, Orc, Elf, Lair, Snake, Spider, Slime, Crypt, \
+DEPTH: D:3-, Depths, Orc, Elf, Lair, Snake, Spider, Slime, Crypt, \
        Geh, !Geh:$, Coc, !Coc:$, Dis, !Dis:$, Geh, !Geh:$
 {{
     -- An incredibly ugly kludge to avoid duplicating the list of valid

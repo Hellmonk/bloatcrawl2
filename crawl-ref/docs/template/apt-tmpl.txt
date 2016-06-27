@@ -47,6 +47,9 @@ HP  - hit points             Slg - Slings                Ice - Ice Magic
 MP  - magic points           Bws - Bows                  Air - Air Magic
 Exp - experience             Crb - Crossbows             Ear - Earth Magic
                                                          Poi - Poison Magic
+                                                         Lig - Light Magic
+                                                         Dar - Darkness Magic
+                                                         Tim - Time Magic
 
 
                  Arm Ddg Sth Shd   Inv Evo           HP   MP   Exp
@@ -57,5 +60,5 @@ Exp - experience             Crb - Crossbows             Ear - Earth Magic
 ----------------------------------------------------------------------
 
 
-                 Spc Coj Hex Cha Sum Nec Trl Trm   Fir Ice Air Ear Poi
-----------------------------------------------------------------------
+                 Spc Coj Hex Cha Sum Nec Trl Trm   Fir Ice Air Ear Poi Lig Dar Tim
+-----------------------------------------------------------------------------------

@@ -56,7 +56,7 @@
 #include "unwind.h"
 #include "version.h"
 
-#define SCORE_VERSION "0.1"
+#define SCORE_VERSION "dcssca-0.1"
 
 // enough memory allocated to snarf in the scorefile entries
 static unique_ptr<scorefile_entry> hs_list[SCORE_FILE_ENTRIES];
@@ -121,7 +121,10 @@ void hiscores_new_entry(const scorefile_entry &ne)
             break;
 
         // compare points..
-        if (!inserted && ne.get_score() >= hs_list[i]->get_score())
+        const int new_score = ne.get_score();
+        const int old_score = hs_list[i]->get_score();
+
+        if (!inserted && new_score >= old_score)
         {
             newest_entry = i;           // for later printing
             inserted = true;
@@ -746,6 +749,8 @@ void scorefile_entry::init_from(const scorefile_entry &se)
     zigmax             = se.zigmax;
     scrolls_used       = se.scrolls_used;
     potions_used       = se.potions_used;
+    difficulty		   = se.difficulty;
+    experience_mode    = se.experience_mode;
     fixup_char_name();
 
     // We could just reset raw_line to "" instead.
@@ -1049,6 +1054,9 @@ void scorefile_entry::init_with_fields()
     scrolls_used = fields->int_field("scrollsused");
     potions_used = fields->int_field("potionsused");
 
+    difficulty = (game_difficulty_level) fields->int_field("difficulty");
+    experience_mode = (exp_mode) fields->int_field("exp_mode");
+
     fixup_char_name();
 }
 
@@ -1146,6 +1154,8 @@ void scorefile_entry::set_base_xlog_fields() const
         fields->add_field("zigdeepest", "%d", zigmax);
     fields->add_field("scrollsused", "%d", scrolls_used);
     fields->add_field("potionsused", "%d", potions_used);
+    fields->add_field("difficulty", "%d", difficulty);
+    fields->add_field("experience_mode", "%d", experience_mode);
 }
 
 void scorefile_entry::set_score_fields() const
@@ -1315,7 +1325,7 @@ void scorefile_entry::init_death_cause(int dam, mid_t dsrc,
             // [ds] The highscore entry may be constructed while the player
             // is alive (for notes), so make sure we don't reveal info we
             // shouldn't.
-            if (you.hp <= 0)
+            if (get_hp() <= 0)
             {
                 set_ident_flags(mitm[mons->inv[MSLOT_WEAPON]],
                                  ISFLAG_IDENT_MASK);
@@ -1327,7 +1337,7 @@ void scorefile_entry::init_death_cause(int dam, mid_t dsrc,
                 auxkilldata = mitm[mons->inv[MSLOT_WEAPON]].name(DESC_A);
         }
 
-        const bool death = (you.hp <= 0 || death_type == KILLED_BY_DRAINING);
+        const bool death = (get_hp() <= 0 || death_type == KILLED_BY_DRAINING);
 
         const description_level_type desc =
             death_type == KILLED_BY_SPORE ? DESC_PLAIN : DESC_A;
@@ -1483,6 +1493,8 @@ void scorefile_entry::reset()
     zigmax               = 0;
     scrolls_used         = 0;
     potions_used         = 0;
+    difficulty			 = DIFFICULTY_CHALLENGE;
+    experience_mode      = EXP_MODE_CLASSIC;
 }
 
 static int _award_modified_experience()
@@ -1603,6 +1615,13 @@ void scorefile_entry::init(time_t dt)
         pt += num_runes * 10000;
         pt += num_runes * (num_runes + 2) * 1000;
 
+        if(crawl_state.difficulty == DIFFICULTY_NIGHTMARE)
+            pt <<= 2;
+        if(crawl_state.difficulty == DIFFICULTY_STANDARD)
+            pt >>= 2;
+        if(crawl_state.difficulty == DIFFICULTY_EASY)
+            pt >>= 4;
+
         points = pt;
     }
     else
@@ -1623,7 +1642,7 @@ void scorefile_entry::init(time_t dt)
     // Note all skills at level 27, and also all skills at level >= 15.
     for (skill_type sk = SK_FIRST_SKILL; sk < NUM_SKILLS; ++sk)
     {
-        if (you.skills[sk] == 27)
+        if (you.skills[sk] == get_max_skill_level())
         {
             if (!maxed_skills.empty())
                 maxed_skills += ",";
@@ -1650,12 +1669,12 @@ void scorefile_entry::init(time_t dt)
 
     kills            = you.kills.total_kills();
 
-    final_hp         = you.hp;
-    final_max_hp     = you.hp_max;
+    final_hp         = get_hp();
+    final_max_hp     = get_hp_max();
     final_max_max_hp = get_real_hp(true, true);
 
-    final_mp          = you.magic_points;
-    final_max_mp      = you.max_magic_points;
+    final_mp          = get_mp();
+    final_max_mp      = get_mp_max();
     final_base_max_mp = get_real_mp(false);
 
     source_damage    = you.source_damage;
@@ -1707,10 +1726,9 @@ void scorefile_entry::init(time_t dt)
     zigmax     = you.zig_max;
 
     scrolls_used = 0;
-    dprf("checking %d", caction_compound(OBJ_SCROLLS));
     pair<caction_type, int> p(CACT_USE, caction_compound(OBJ_SCROLLS));
 
-    const int maxlev = min<int>(you.max_level, 27);
+    const int maxlev = min<int>(you.max_level, get_max_skill_level());
     if (you.action_count.count(p))
         for (int i = 0; i < maxlev; i++)
             scrolls_used += you.action_count[p][i];
@@ -1723,6 +1741,8 @@ void scorefile_entry::init(time_t dt)
 
     wiz_mode = (you.wizard ? 1 : 0);
     explore_mode = (you.explore ? 1 : 0);
+    difficulty = crawl_state.difficulty;
+    experience_mode = Options.experience_mode;
 }
 
 string scorefile_entry::hiscore_line(death_desc_verbosity verbosity) const
@@ -1859,9 +1879,30 @@ string scorefile_entry::single_cdesc() const
     string scname;
     scname = chop_string(name, 10);
 
-    return make_stringf("%8d %s %s-%02d%s", points, scname.c_str(),
-                        race_class_name.c_str(), lvl,
-                        (wiz_mode == 1) ? "W" : (explore_mode == 1) ? "E" : "");
+    return make_stringf("%8d %s %s %s-%02d%s", points, scname.c_str(), difficulty_name().c_str(),
+                         race_class_name.c_str(), lvl, (wiz_mode == 1) ? "W" : (explore_mode == 1) ? "E" : "");
+}
+
+string scorefile_entry::difficulty_name() const
+{
+	string result;
+	switch(difficulty)
+	{
+    case DIFFICULTY_EASY:
+        result = "EASY";
+        break;
+	case DIFFICULTY_STANDARD:
+		result = "STANDARD";
+		break;
+	case DIFFICULTY_NIGHTMARE:
+		result = "NIGHTMARE";
+		break;
+	default:
+		result = "CHALLENGE";
+		break;
+	}
+
+	return result;
 }
 
 static string _append_sentence_delimiter(const string &sentence,
@@ -1912,7 +1953,12 @@ scorefile_entry::character_description(death_desc_verbosity verbosity) const
         desc += " HPs";
     }
 
-    desc += wiz_mode ? ") *WIZ*" : explore_mode ? ") *EXPLORE*" : ")";
+    desc += wiz_mode ? ") *WIZ*" :
+    		explore_mode ? ") *EXPLORE*" :
+            difficulty == DIFFICULTY_EASY ? ") *EASY*" :
+    		difficulty == DIFFICULTY_STANDARD ? ") *STANDARD*" :
+            difficulty == DIFFICULTY_CHALLENGE ? ") *CHALLENGE*" :
+    		difficulty == DIFFICULTY_NIGHTMARE ? ") *NIGHTMARE*" : ")";
     desc += _hiscore_newline_string();
 
     if (verbose)
@@ -2659,7 +2705,7 @@ string scorefile_entry::death_description(death_desc_verbosity verbosity) const
             {
                 if (!semiverbose)
                 {
-                    desc += auxkilldata == "damnation" ? "... with " :
+                    desc += auxkilldata == "hellfire" ? "... with " :
                             (is_vowel(auxkilldata[0])) ? "... with an "
                                                        : "... with a ";
                     desc += auxkilldata;
@@ -2903,7 +2949,7 @@ void mark_milestone(const string &type, const string &milestone,
     lastturn      = you.num_turns;
 
     const string milestone_file =
-        (Options.save_dir + "milestones" + crawl_state.game_type_qualifier());
+        (Options.shared_dir + "milestones" + crawl_state.game_type_qualifier());
     const scorefile_entry se(0, MID_NOBODY, KILL_MISC, nullptr);
     se.set_base_xlog_fields();
     xlog_fields xl = se.get_fields();

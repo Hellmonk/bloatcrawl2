@@ -107,8 +107,7 @@ void player::set_position(const coord_def &c)
 
     if (real_move)
     {
-        reset_prev_move();
-
+        prev_grd_targ.reset();
         if (duration[DUR_QUAD_DAMAGE])
             invalidate_agrid(true);
 
@@ -160,7 +159,12 @@ int player::get_experience_level() const
 
 int player::get_max_xl() const
 {
-    return 27 - player_mutation_level(MUT_INEXPERIENCED) * RU_SAC_XP_LEVELS;
+    const int inexperienced = player_mutation_level(MUT_INEXPERIENCED);
+    int max_xl = 27 - inexperienced * RU_SAC_XP_LEVELS;
+    bool cap = Options.level_27_cap;
+    if (!cap)
+        max_xl = get_max_exp_level();
+    return max_xl;
 }
 
 bool player::can_pass_through_feat(dungeon_feature_type grid) const
@@ -174,18 +178,14 @@ bool player::is_habitable_feat(dungeon_feature_type actual_grid) const
         return false;
 
     if (airborne()
-#if TAG_MAJOR_VERSION == 34
             || species == SP_DJINNI
-#endif
             )
     {
         return true;
     }
 
     if (
-#if TAG_MAJOR_VERSION == 34
         actual_grid == DNGN_LAVA && species != SP_LAVA_ORC ||
-#endif
         actual_grid == DNGN_DEEP_WATER && !can_swim())
     {
         return false;
@@ -228,15 +228,18 @@ brand_type player::damage_brand(int)
     const int wpn = equip[EQ_WEAPON];
     if (wpn != -1 && !melded[EQ_WEAPON])
     {
-        if (is_range_weapon(inv[wpn]))
+        if (is_range_weapon(inv1[wpn]))
             return SPWPN_NORMAL; // XXX: check !is_melee_weapon instead?
-        return get_weapon_brand(inv[wpn]);
+        return get_weapon_brand(inv1[wpn]);
     }
 
     // unarmed
 
     if (duration[DUR_CONFUSING_TOUCH])
         return SPWPN_CONFUSE;
+
+    if (you.species == SP_DJINNI)
+    	return SPWPN_FLAMING;
 
     return get_form()->get_uc_brand();
 }
@@ -248,71 +251,85 @@ brand_type player::damage_brand(int)
  * @param projectile  The projectile to be fired/thrown, if any.
  * @param rescale     Whether to re-scale the time to account for the fact that
  *                    finesse doesn't stack with haste.
- * @return            A random_var representing the range of possible values of
- *                    attack delay. It can be casted to an int, in which case
- *                    its value is determined by the appropriate rolls.
+ * @return            The attack delay.
  */
-random_var player::attack_delay(const item_def *projectile, bool rescale) const
+int player::attack_delay(const item_def *projectile, bool rescale, const item_def *weapon, const action_delay_type adt) const
 {
-    const item_def* weap = weapon();
-    random_var attk_delay(15);
+    if (!weapon)
+        weapon = you.weapon();
+
+    int attk_delay = 15;
     // a semi-arbitrary multiplier, to minimize loss of precision from integer
     // math.
     const int DELAY_SCALE = 20;
     const int base_shield_penalty = adjusted_shield_penalty(DELAY_SCALE);
 
-    if (projectile && is_launched(this, weap, *projectile) == LRET_THROWN)
+    if (projectile && is_launched(this, weapon, *projectile) == LRET_THROWN)
     {
         // Thrown weapons use 10 + projectile damage to determine base delay.
+        /*
         const skill_type wpn_skill = SK_THROWING;
+         */
         const int projectile_delay = 10 + property(*projectile, PWPN_DAMAGE) / 2;
-        attk_delay = random_var(projectile_delay);
-        attk_delay -= div_rand_round(random_var(you.skill(wpn_skill, 10)),
-                                     DELAY_SCALE);
+        attk_delay = projectile_delay;
+
+        /* Using fighting instead
+        attk_delay -= you.skill(wpn_skill, 10) / DELAY_SCALE;
+         */
 
         // apply minimum to weapon skill modification
-        attk_delay = rv::max(attk_delay,
-                random_var(FASTEST_PLAYER_THROWING_SPEED));
+        /* This is happening elsewhere now
+        attk_delay = max(attk_delay, FASTEST_PLAYER_THROWING_SPEED);
+         */
     }
-    else if (!weap)
+    else if (!weapon)
     {
+        /*
         int sk = form_uses_xl() ? experience_level * 10 :
                                   skill(SK_UNARMED_COMBAT, 10);
-        attk_delay = random_var(10) - div_rand_round(random_var(sk), 27*2);
+                                  */
+        attk_delay = 10;
 
         // Bats are faster (for whatever good it does them).
         if (you.form == TRAN_BAT && !projectile)
-            attk_delay = div_rand_round(attk_delay * 3, 5);
+            attk_delay = attk_delay * 3 / 5;
     }
-    else if (weap &&
-             (projectile ? projectile->launched_by(*weap)
-                         : is_melee_weapon(*weap)))
+    else if (weapon
+             && (projectile ? projectile->launched_by(*weapon)
+                         : is_melee_weapon(*weapon))
+        )
     {
-        const skill_type wpn_skill = item_attack_skill(*weap);
+        /*
+        const skill_type wpn_skill = item_attack_skill(*weapon);
+         */
         // Cap skill contribution to mindelay skill, so that rounding
         // doesn't make speed brand benefit from higher skill.
-        const int wpn_sklev = min(you.skill(wpn_skill, 10),
-                                  10 * weapon_min_delay_skill(*weap));
+        /*
+        int wpn_sklev = you.skill(wpn_skill, 10);
+        wpn_sklev = min(wpn_sklev, 10 * weapon_min_delay_skill(*weapon));
+         */
 
-        attk_delay = random_var(property(*weap, PWPN_SPEED));
-        attk_delay -= div_rand_round(random_var(wpn_sklev), DELAY_SCALE);
-        if (get_weapon_brand(*weap) == SPWPN_SPEED)
-            attk_delay = div_rand_round(attk_delay * 2, 3);
+        attk_delay = property(*weapon, PWPN_SPEED);
     }
 
-    // At the moment it never gets this low anyway.
-    attk_delay = rv::max(attk_delay, random_var(3));
+    attk_delay = generic_action_delay(you.skill(SK_FIGHTING, 10), attk_delay, adt);
 
     if (base_shield_penalty)
     {
         // Calculate this separately to avoid overflowing the weights in
         // the random_var.
-        random_var shield_penalty =
-            div_rand_round(rv::min(rv::roll_dice(1, base_shield_penalty),
-                                   rv::roll_dice(1, base_shield_penalty)),
-                           DELAY_SCALE);
+        int shield_penalty = base_shield_penalty / DELAY_SCALE;
         attk_delay += shield_penalty;
     }
+
+    brand_type brand;
+    if (weapon)
+        brand = get_weapon_brand(*weapon);
+    else
+        brand = SPWPN_NORMAL;
+
+    if (weapon && brand == SPWPN_SPEED)
+        attk_delay = attk_delay * 2 / 3;
 
     if (you.duration[DUR_FINESSE])
     {
@@ -321,11 +338,12 @@ random_var player::attack_delay(const item_def *projectile, bool rescale) const
         // longer so when Haste speeds it up, only Finesse will apply.
         if (you.duration[DUR_HASTE] && rescale)
             attk_delay = haste_mul(attk_delay);
-        attk_delay = rv::max(random_var(2), div_rand_round(attk_delay, 2));
     }
 
+    attk_delay = max(attk_delay, 2);
+
     // see comment on player.cc:player_speed
-    return div_rand_round(attk_delay * you.time_taken, 10);
+    return attk_delay * you.time_taken / 10;
 }
 
 // Returns the item in the given equipment slot, nullptr if the slot is empty.
@@ -337,7 +355,7 @@ item_def *player::slot_item(equipment_type eq, bool include_melded) const
     const int item = equip[eq];
     if (item == -1 || !include_melded && melded[eq])
         return nullptr;
-    return const_cast<item_def *>(&inv[item]);
+    return const_cast<item_def *>(&inv1[item]);
 }
 
 // Returns the item in the player's weapon slot.
@@ -364,7 +382,7 @@ bool player::can_wield(const item_def& item, bool ignore_curse,
 {
     if (equip[EQ_WEAPON] != -1 && !ignore_curse)
     {
-        if (inv[equip[EQ_WEAPON]].cursed())
+        if (inv1[equip[EQ_WEAPON]].cursed())
             return false;
     }
 
@@ -395,7 +413,7 @@ bool player::could_wield(const item_def &item, bool ignore_brand,
                          bool ignore_transform, bool quiet) const
 {
     // Only ogres and trolls can wield large rocks (for sandblast).
-    if (!species_can_throw_large_rocks(you.species)
+    if (!you.can_throw_large_rocks()
         && item.is_type(OBJ_MISSILES, MI_LARGE_ROCK))
     {
         if (!quiet)
@@ -770,12 +788,11 @@ bool player::go_berserk(bool intentional, bool potion)
 
     int berserk_duration = (20 + random2avg(19,2)) / 2;
 
-    you.increase_duration(DUR_BERSERK, berserk_duration);
+    you.increase_duration(DUR_BERSERK, berserk_duration, 0, nullptr, potion ? SRC_POTION : SRC_UNDEFINED);
 
     calc_hp();
-    set_hp(you.hp * 3 / 2);
-
-    deflate_hp(you.hp_max, false);
+    const int hp_gain = get_hp() * 3 / 2;
+    inc_hp(hp_gain);
 
     if (!you.duration[DUR_MIGHT])
         notify_stat_change(STAT_STR, 5, true);
@@ -785,14 +802,12 @@ bool player::go_berserk(bool intentional, bool potion)
 
     you.redraw_quiver = true; // Account for no firing.
 
-#if TAG_MAJOR_VERSION == 34
     if (you.species == SP_LAVA_ORC)
     {
         mpr("You burn with rage!");
         // This will get sqrt'd later, so.
         you.temperature = TEMP_MAX;
     }
-#endif
 
     if (player_equip_unrand(UNRAND_JIHAD))
         for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
@@ -813,34 +828,43 @@ bool player::can_go_berserk(bool intentional, bool potion, bool quiet,
     COMPILE_CHECK(HUNGER_STARVING - 100 + BERSERK_NUTRITION < HUNGER_VERY_HUNGRY);
     const bool verbose = (intentional || potion) && !quiet;
     string msg;
-    bool success = false;
+    bool success = true;
 
-    if (berserk())
-        msg = "You're already berserk!";
-    else if (duration[DUR_EXHAUSTED])
-         msg = "You're too exhausted to go berserk.";
-    else if (duration[DUR_DEATHS_DOOR])
-        msg = "You can't enter a blood rage from death's door.";
-    else if (beheld() && !player_equip_unrand(UNRAND_DEMON_AXE))
-        msg = "You are too mesmerised to rage.";
-    else if (afraid())
-        msg = "You are too terrified to rage.";
-#if TAG_MAJOR_VERSION == 34
-    else if (you.species == SP_DJINNI)
-        msg = "Only creatures of flesh and blood can berserk.";
-#endif
-    else if (is_lifeless_undead())
-        msg = "You cannot raise a blood rage in your lifeless body.";
-    // Stasis for identified amulets; unided amulets will trigger when the
-    // player attempts to activate berserk.
-    else if (stasis(false))
-        msg = "You cannot go berserk while under stasis.";
-    else if (!intentional && !potion && clarity())
-        msg = "You're too calm and focused to rage.";
-    else if (hunger <= HUNGER_VERY_HUNGRY)
-        msg = "You're too hungry to go berserk.";
-    else
-        success = true;
+    if (!potion)
+    {
+        success = false;
+        if (duration[DUR_EXHAUSTED])
+            msg = "You're too exhausted to go berserk.";
+        else if (player_is_very_tired(true))
+            msg = "You are too tired to berserk now.";
+        else if (!intentional && !potion && clarity())
+            msg = "You're too calm and focused to rage.";
+        else
+            success = true;
+    }
+
+    if (success)
+    {
+        success = false;
+        if (berserk())
+            msg = "You're already berserk!";
+        else if (duration[DUR_DEATHS_DOOR])
+            msg = "You can't enter a blood rage from death's door.";
+        else if (beheld() && !player_equip_unrand(UNRAND_DEMON_AXE))
+            msg = "You are too mesmerised to rage.";
+        else if (afraid())
+            msg = "You are too terrified to rage.";
+        else if (is_lifeless_undead())
+            msg = "You cannot raise a blood rage in your lifeless body.";
+            // Stasis for identified amulets; unided amulets will trigger when the
+            // player attempts to activate berserk.
+        else if (stasis(false))
+            msg = "You cannot go berserk while under stasis.";
+        else if (hunger <= HUNGER_VERY_HUNGRY)
+            msg = "You're too hungry to go berserk.";
+        else
+            success = true;
+    }
 
     if (!success)
     {

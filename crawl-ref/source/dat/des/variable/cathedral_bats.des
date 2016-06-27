@@ -33,7 +33,7 @@ end
 
 NAME:   due_megacathedral
 ORIENT: float
-DEPTH:  D:8-14
+DEPTH:  Forest
 MONS:   wraith / shadow w:2
 MONS:   flayed ghost
 TAGS:   no_rotate no_vmirror no_hmirror

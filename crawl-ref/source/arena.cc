@@ -478,7 +478,7 @@ namespace arena
     {
         you.species = SP_HUMAN;
         you.char_class = JOB_FIGHTER;
-        you.experience_level = 27;
+        you.experience_level = get_max_exp_level();
 
         you.position.y = -1;
         coord_def yplace(dgn_find_feature_marker(DNGN_ESCAPE_HATCH_UP));

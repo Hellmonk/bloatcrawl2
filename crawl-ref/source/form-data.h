@@ -1,3 +1,5 @@
+#include "transform.h"
+
 struct form_entry
 {
     // Row 1:
@@ -110,7 +112,7 @@ static const form_entry formdata[] =
     "a fearsome dragon!",
     EQF_PHYSICAL, MR_RES_POISON,
     DEFAULT_DURATION, 10, 0, SIZE_GIANT, 15, 6,
-    16, 0, 0, true, 0, 10, -1,
+    16, 4, 4, true, 0, 10, -1,
     SPWPN_NORMAL, GREEN, "Teeth and claws", { "hit", "claw", "bite", "maul" },
     FC_ENABLE, FC_FORBID, FC_ENABLE, true, false,
     "roar", 6, "foreclaw", "", "bow your head before", "flesh"
@@ -163,9 +165,9 @@ static const form_entry formdata[] =
 {
     TRAN_TREE, MONS_ANIMATED_TREE, "Tree", "tree-form", "tree",
     "a tree.",
-    EQF_LEAR | SLOTF(EQ_CLOAK), MR_RES_POISON | mrd(MR_RES_NEG, 3),
+    EQF_NONE, MR_RES_POISON | mrd(MR_RES_NEG, 3),
     BAD_DURATION, 0, 0, SIZE_CHARACTER, 15, 27,
-    20, 0, 50, true, 0, 10, 12,
+    15, 0, 70, true, 0, 5, 8,
     SPWPN_NORMAL, BROWN, "Branches", { "hit", "smack", "pummel", "thrash" },
     FC_FORBID, FC_FORBID, FC_FORBID, false, false,
     "creak", 0, "branch", "root", "sway towards", "wood"
@@ -244,3 +246,4 @@ static const form_entry formdata[] =
 }
 };
 COMPILE_CHECK(ARRAYSZ(formdata) == NUM_TRANSFORMS);
+

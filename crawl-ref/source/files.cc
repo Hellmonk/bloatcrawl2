@@ -100,6 +100,7 @@ const int GHOST_LIMIT = 27; // max number of ghost files per level
 static void _redraw_all()
 {
     you.redraw_hit_points    = true;
+    you.redraw_stamina_points= true;
     you.redraw_magic_points  = true;
     you.redraw_stats.init(true);
     you.redraw_armour_class  = true;
@@ -891,7 +892,7 @@ static bool _grab_follower_at(const coord_def &pos, bool can_follow)
 
 static void _grab_followers()
 {
-    const bool can_follow = branch_allows_followers(you.where_are_you);
+    const bool can_follow = true || branch_allows_followers(you.where_are_you);
 
     int non_stair_using_allies = 0;
     int non_stair_using_summons = 0;
@@ -967,25 +968,34 @@ static void _grab_followers()
         }
     }
 
-    memset(travel_point_distance, 0, sizeof(travel_distance_grid_t));
     vector<coord_def> places[2] = { { you.pos() }, {} };
     int place_set = 0;
     while (!places[place_set].empty())
     {
         for (const coord_def p : places[place_set])
         {
+            /*
             for (adjacent_iterator ai(p); ai; ++ai)
+             */
+            for (distance_iterator ai(p, false); ai; ++ai)
             {
-                if (travel_point_distance[ai->x][ai->y])
-                    continue;
-
-                travel_point_distance[ai->x][ai->y] = 1;
                 if (_grab_follower_at(*ai, can_follow))
                     places[!place_set].push_back(*ai);
             }
         }
         places[place_set].clear();
         place_set = !place_set;
+    }
+
+    for (const mid_t &mid : you.summoned)
+    {
+        if (mid != MID_NOBODY)
+        {
+            monster *const fol = monster_by_mid(mid, true);
+
+            if (fol)
+                _grab_follower_at(fol->pos(), true);
+        }
     }
 
     // Clear flags of monsters that didn't follow.
@@ -1122,7 +1132,8 @@ static void _make_level(dungeon_feature_type stair_taken,
     _clear_env_map();
     builder(true, stair_type);
 
-    if (!crawl_state.game_is_tutorial()
+    // deactivate ghosts for now
+    if (false && !crawl_state.game_is_tutorial()
         && !Options.seed
         && !player_in_branch(BRANCH_ABYSS)
         && (!player_in_branch(BRANCH_DUNGEON) || you.depth > 2)
@@ -1134,6 +1145,8 @@ static void _make_level(dungeon_feature_type stair_taken,
     // sanctuary
     env.sanctuary_pos  = coord_def(-1, -1);
     env.sanctuary_time = 0;
+
+    crawl_state.need_floor_exp = true;
 }
 
 /**
@@ -1226,10 +1239,6 @@ bool load_level(dungeon_feature_type stair_taken, load_mode_type load_mode,
     // Save position for hatches to place a marker on the destination level.
     coord_def dest_pos = you.pos();
 
-    // Going up/down stairs, going through a portal, or being banished
-    // means the previous x/y movement direction is no longer valid.
-    you.reset_prev_move();
-
     you.prev_targ     = MHITNOT;
     you.prev_grd_targ.reset();
 
@@ -1277,7 +1286,7 @@ bool load_level(dungeon_feature_type stair_taken, load_mode_type load_mode,
     bool just_created_level = false;
 
     // GENERATE new level when the file can't be opened:
-    if (!you.save->has_chunk(level_name))
+    if (!you.save->has_chunk(level_name) || player_on_orb_run() && load_mode != LOAD_RESTART_GAME)
     {
         ASSERT(load_mode != LOAD_VISITOR);
         dprf("Generating new level for '%s'.", level_name.c_str());
@@ -2279,9 +2288,10 @@ void save_ghost(bool force)
         return;
     }
 
-    // No ghosts on D:1, D:2, or the Temple.
+    // No ghosts on D:1, D:2, the Temple, or the Abyss.
     if (!force && (you.depth < 3 && player_in_branch(BRANCH_DUNGEON)
-                   || player_in_branch(BRANCH_TEMPLE)))
+                   || player_in_branch(BRANCH_TEMPLE)
+                   || player_in_branch(BRANCH_ABYSS)))
     {
         return;
     }

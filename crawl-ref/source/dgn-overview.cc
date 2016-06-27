@@ -37,6 +37,7 @@ typedef map<level_pos, branch_type> portal_map_type;
 typedef map<level_pos, string> portal_note_map_type;
 typedef map<level_id, string> annotation_map_type;
 typedef pair<string, level_id> monster_annotation;
+typedef map<level_id, int> experience_map_type;
 
 stair_map_type stair_level;
 shop_map_type shops_present;
@@ -46,6 +47,8 @@ portal_note_map_type portal_notes;
 annotation_map_type level_annotations;
 annotation_map_type level_exclusions;
 annotation_map_type level_uniques;
+experience_map_type level_experience;
+
 // FIXME: this should really be a multiset, in case you get multiple
 // ghosts with the same name, combo, and XL on the same level.
 set<monster_annotation> auto_unique_annotations;
@@ -75,6 +78,7 @@ void overview_clear()
     level_exclusions.clear();
     level_uniques.clear();
     auto_unique_annotations.clear();
+    level_experience.clear();
 }
 
 void seen_notable_thing(dungeon_feature_type which_thing, const coord_def& pos)
@@ -142,7 +146,7 @@ static string shoptype_to_string(shop_type s)
     case SHOP_JEWELLERY:       return "<w>=</w>";
     case SHOP_EVOKABLES:       return "<w>}</w>";
     case SHOP_BOOK:            return "<w>:</w>";
-    case SHOP_FOOD:            return "<w>%</w>";
+//    case SHOP_FOOD:            return "<w>%</w>";
     case SHOP_DISTILLERY:      return "<w>!</w>";
     case SHOP_SCROLL:          return "<w>?</w>";
     default:                   return "<w>x</w>";
@@ -291,7 +295,7 @@ static string _get_unseen_branches()
 
     for (branch_iterator it; it; ++it)
     {
-        if (it->id < BRANCH_FIRST_NON_DUNGEON)
+        if (it->id == BRANCH_DUNGEON)
             continue;
 
         const branch_type branch = it->id;
@@ -862,7 +866,38 @@ string get_level_annotation(level_id li, bool skip_excl, bool skip_uniq,
             note += *uniq;
         }
 
+    if (Options.exp_potion_on_each_floor)
+    {
+        auto it = level_experience.find(li);
+
+        if (it != level_experience.end() && it->second > 0)
+        {
+            if (note.length() > 0)
+                note += ", ";
+            note += "exp potion";
+        }
+    }
+
     return note;
+}
+
+void reset_experience_potion_annotation(level_id li)
+{
+    level_experience[li] = 0;
+}
+
+void add_experience_potion_annotation(level_id li, int count)
+{
+    int potions = 0;
+    if (level_experience.find(li) != level_experience.end())
+    {
+        potions = *map_find(level_experience, li);
+    }
+    potions += count;
+    if (potions < 0)
+        potions = 0;
+
+    level_experience[li] = potions;
 }
 
 static const string _get_coloured_level_annotation(level_id li)
@@ -977,13 +1012,13 @@ void unmarshallUniqueAnnotations(reader& inf)
 */
 bool connected_branch_can_exist(branch_type br)
 {
-    if (br == BRANCH_SPIDER && stair_level.count(BRANCH_SNAKE)
-        || br == BRANCH_SNAKE && stair_level.count(BRANCH_SPIDER)
-        || br == BRANCH_SWAMP && stair_level.count(BRANCH_SHOALS)
-        || br == BRANCH_SHOALS && stair_level.count(BRANCH_SWAMP))
-    {
-        return false;
-    }
+//    if (br == BRANCH_SPIDER && stair_level.count(BRANCH_SNAKE)
+//        || br == BRANCH_SNAKE && stair_level.count(BRANCH_SPIDER)
+//        || br == BRANCH_SWAMP && stair_level.count(BRANCH_SHOALS)
+//        || br == BRANCH_SHOALS && stair_level.count(BRANCH_SWAMP))
+//    {
+//        return false;
+//    }
 
     return true;
 }

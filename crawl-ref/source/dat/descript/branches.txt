@@ -85,7 +85,7 @@ every noise echoes worryingly, violating the overbearing silence of the grave.
 %%%%
 Tomb
 
-The Tomb of the Ancients is a place of damnation, of horrors animated by the
+The Tomb of the Ancients is a place of hellfire, of horrors animated by the
 vilest necromancy. The list of those who have returned from this place of pure
 death is exceedingly short.
 %%%%
@@ -104,7 +104,7 @@ opposing them.
 %%%%
 Gehenna
 
-Gehenna is a realm of lava, flames and damnation. Those who linger will have
+Gehenna is a realm of lava, flames and hellfire. Those who linger will have
 fire and brimstone rained down upon them.
 %%%%
 Cocytus
@@ -254,3 +254,19 @@ Depths
 The Depths are the deepest part of the dungeon proper, subject to the
 corrupting influence of the Realm of Zot without being considered a part of it.
 %%%%
+Dwarven Fortress
+
+Not much is known about this yet. Maybe you can be the first to survive and tell
+others about it!
+%%%%
+Depths
+
+The Depths are the deepest part of the dungeon proper, subject to the
+corrupting influence of the Realm of Zot without being considered a part of it.
+%%%%
+Enchanted Forest
+
+Not much is known about this yet. Maybe you can be the first to survive and tell
+others about it!
+%%%%
+

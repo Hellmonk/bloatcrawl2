@@ -45,7 +45,6 @@
 #include "unicode.h"
 #include "view.h"
 
-#ifdef WIZARD
 static void _make_all_books()
 {
     for (int i = 0; i < NUM_FIXED_BOOKS; ++i)
@@ -353,7 +352,11 @@ void wizard_tweak_object()
     char specs[50];
     int keyin;
 
-    int item = prompt_invent_item("Tweak which item? ", MT_INVLIST, -1);
+	FixedVector< item_def, ENDOFPACK > *inv;
+	if (!inv_from_prompt(inv, "Do you want to tweak"))
+		return;
+
+    int item = prompt_invent_item(*inv, "Tweak which item? ", MT_INVLIST, -1);
 
     if (prompt_failed(item))
         return;
@@ -361,7 +364,7 @@ void wizard_tweak_object()
     if (item == you.equip[EQ_WEAPON])
         you.wield_change = true;
 
-    const bool is_art = is_artefact(you.inv[item]);
+    const bool is_art = is_artefact((*inv)[item]);
 
     while (true)
     {
@@ -369,7 +372,7 @@ void wizard_tweak_object()
 
         while (true)
         {
-            mprf_nocap("%s", you.inv[item].name(DESC_INVENTORY_EQUIP).c_str());
+            mprf_nocap("%s", (*inv)[item].name(DESC_INVENTORY_EQUIP).c_str());
 
             mprf_nocap(MSGCH_PROMPT, "a - plus  b - plus2  c - %s  "
                                      "d - quantity  e - flags  ESC - exit",
@@ -380,15 +383,15 @@ void wizard_tweak_object()
             keyin = toalower(get_ch());
 
             if (keyin == 'a')
-                old_val = you.inv[item].plus;
+                old_val = (*inv)[item].plus;
             else if (keyin == 'b')
-                old_val = you.inv[item].plus2;
+                old_val = (*inv)[item].plus2;
             else if (keyin == 'c')
-                old_val = you.inv[item].special;
+                old_val = (*inv)[item].special;
             else if (keyin == 'd')
-                old_val = you.inv[item].quantity;
+                old_val = (*inv)[item].quantity;
             else if (keyin == 'e')
-                old_val = you.inv[item].flags;
+                old_val = (*inv)[item].flags;
             else if (key_is_escape(keyin) || keyin == ' '
                     || keyin == '\r' || keyin == '\n')
             {
@@ -402,7 +405,7 @@ void wizard_tweak_object()
 
         if (is_art && keyin == 'c')
         {
-            _tweak_randart(you.inv[item]);
+            _tweak_randart((*inv)[item]);
             continue;
         }
 
@@ -423,8 +426,8 @@ void wizard_tweak_object()
         int64_t new_val = strtoll(specs, &end, hex ? 16 : 0);
 
         if (keyin == 'e' && new_val & ISFLAG_ARTEFACT_MASK
-            && (!you.inv[item].props.exists(KNOWN_PROPS_KEY)
-             || !you.inv[item].props.exists(ARTEFACT_PROPS_KEY)))
+            && (!(*inv)[item].props.exists(KNOWN_PROPS_KEY)
+             || !(*inv)[item].props.exists(ARTEFACT_PROPS_KEY)))
         {
             mpr("You can't set this flag on a non-artefact.");
             continue;
@@ -437,15 +440,15 @@ void wizard_tweak_object()
         }
 
         if (keyin == 'a')
-            you.inv[item].plus = new_val;
+            (*inv)[item].plus = new_val;
         else if (keyin == 'b')
-            you.inv[item].plus2 = new_val;
+            (*inv)[item].plus2 = new_val;
         else if (keyin == 'c')
-            you.inv[item].special = new_val;
+            (*inv)[item].special = new_val;
         else if (keyin == 'd')
-            you.inv[item].quantity = new_val;
+            (*inv)[item].quantity = new_val;
         else if (keyin == 'e')
-            you.inv[item].flags = new_val;
+            (*inv)[item].flags = new_val;
         else
             die("unhandled keyin");
 
@@ -481,11 +484,11 @@ static bool _make_book_randart(item_def &book)
 
 void wizard_value_artefact()
 {
-    int i = prompt_invent_item("Value of which artefact?", MT_INVLIST, -1);
+    int i = prompt_invent_item(you.inv1, "Value of which artefact?", MT_INVLIST, -1);
 
     if (!prompt_failed(i))
     {
-        const item_def& item(you.inv[i]);
+        const item_def& item(you.inv1[i]);
         if (!is_artefact(item))
             mpr("That item is not an artefact!");
         else
@@ -548,13 +551,13 @@ void wizard_create_all_artefacts()
 
 void wizard_make_object_randart()
 {
-    int i = prompt_invent_item("Make an artefact out of which item?",
+    int i = prompt_invent_item(you.inv1, "Make an artefact out of which item?",
                                 MT_INVLIST, -1);
 
     if (prompt_failed(i))
         return;
 
-    item_def &item(you.inv[i]);
+    item_def &item(you.inv1[i]);
 
     if (is_unrandom_artefact(item))
     {
@@ -619,9 +622,9 @@ void wizard_make_object_randart()
 
     // Remove curse flag from item, unless worshipping Ashenzari.
     if (have_passive(passive_t::want_curses))
-        do_curse_item(item, true);
+        do_curse_item(item, 100, true);
     else
-        do_uncurse_item(item);
+        do_uncurse_item(item, MAX_CURSE_LEVEL);
 
     // If it was equipped, requip the item.
     if (eq != EQ_NONE)
@@ -639,23 +642,24 @@ static bool _item_type_can_be_cursed(int type)
 
 void wizard_uncurse_item()
 {
-    const int i = prompt_invent_item("(Un)curse which item?", MT_INVLIST, -1);
+    const int i = prompt_invent_item(you.inv1, "(Un)curse which item?", MT_INVLIST, -1);
 
     if (!prompt_failed(i))
     {
-        item_def& item(you.inv[i]);
-
-        if (item.cursed())
-            do_uncurse_item(item);
-        else
+        item_def& item(you.inv1[i]);
+        const int curse_level = prompt_for_quantity("What curse level (>1000 = heavy curse, 100 = standard light curse, 0 = uncursed)? ");
+        if (curse_level == 0)
+            do_uncurse_item(item, MAX_CURSE_LEVEL);
+        if (curse_level > 0)
         {
             if (!_item_type_can_be_cursed(item.base_type))
             {
                 mpr("That type of item cannot be cursed.");
                 return;
             }
-            do_curse_item(item);
+            do_curse_item(item, curse_level);
         }
+
         mprf_nocap("%s", item.name(DESC_INVENTORY_EQUIP).c_str());
     }
 }
@@ -679,7 +683,10 @@ static void _forget_item(item_def &item)
 void wizard_unidentify_pack()
 {
     mpr("You feel a rush of antiknowledge.");
-    for (auto &item : you.inv)
+    for (auto &item : you.inv1)
+        if (item.defined())
+            _forget_item(item);
+    for (auto &item : you.inv2)
         if (item.defined())
             _forget_item(item);
 
@@ -721,6 +728,57 @@ void wizard_list_items()
                  mitm[item].flags & ISFLAG_MIMIC ? " mimic" : "");
         }
     }
+}
+
+static int _subtype_index(int acq_type, const item_def &item)
+{
+    // Certain acquirement types can acquire different classes of items than
+    // they claim to, so... pack them in at the end, as a hack.
+    switch (acq_type)
+    {
+        case OBJ_MISCELLANY:
+            if (item.base_type == OBJ_RODS)
+                return NUM_MISCELLANY + item.sub_type;
+            break;
+        case OBJ_STAVES:
+            if (item.base_type == OBJ_WEAPONS) // unrand staff
+                return NUM_STAVES;
+            break;
+        default:
+            break;
+    }
+
+    return item.sub_type;
+}
+
+/// Reverse the _subtype_index() hack.
+static void _fill_item_from_subtype(object_class_type acq_type, int subtype,
+                                    item_def &item)
+{
+    switch (acq_type)
+    {
+        case OBJ_MISCELLANY:
+            if (subtype >= NUM_MISCELLANY)
+            {
+                item.base_type = OBJ_RODS;
+                item.sub_type = subtype - NUM_MISCELLANY;
+                return;
+            }
+            break;
+        case OBJ_STAVES:
+            if (subtype == NUM_STAVES) // unrand staff
+            {
+                item.base_type = OBJ_WEAPONS;
+                item.sub_type = WPN_STAFF;
+                return;
+            }
+            break;
+        default:
+            break;
+    }
+
+    item.base_type = acq_type;
+    item.sub_type = subtype;
 }
 
 static void _debug_acquirement_stats(FILE *ostat)
@@ -800,11 +858,9 @@ static void _debug_acquirement_stats(FILE *ostat)
 
         acq_calls++;
         total_quant += item.quantity;
-        // hack alert: put rods & unrands into the end of staff acq
-        const int subtype_index
-            = item.base_type == OBJ_STAVES ? item.sub_type :
-              item.base_type == OBJ_RODS ? NUM_STAVES + item.sub_type :
-              NUM_STAVES + NUM_RODS; // an unrand, WPN_STAFF
+        // hack alert: put unrands into the end of staff acq
+        // and rods into the end of misc acq
+        const int subtype_index = _subtype_index(type, item);
         subtype_quants[subtype_index] += item.quantity;
 
         max_plus    = max(max_plus, item.plus);
@@ -902,7 +958,7 @@ static void _debug_acquirement_stats(FILE *ostat)
         {
             // The player has something equipped.
             const int item_idx   = you.equip[e_order[i]];
-            const item_def& item = you.inv[item_idx];
+            const item_def& item = you.inv1[item_idx];
 
             fprintf(ostat, "%-7s: %s %s\n", equip_slot_to_name(eqslot),
                     item.name(DESC_PLAIN, true).c_str(),
@@ -1018,6 +1074,7 @@ static void _debug_acquirement_stats(FILE *ostat)
 #endif
             "penetration",
             "reaping",
+            "light",
             "INVALID",
             "acid",
 #if TAG_MAJOR_VERSION > 34
@@ -1068,7 +1125,7 @@ static void _debug_acquirement_stats(FILE *ostat)
             "preservation",
 #endif
             "reflection",
-            "spirit shield",
+            "magic shield",
             "archery",
 #if TAG_MAJOR_VERSION == 34
             "jumping",
@@ -1109,6 +1166,9 @@ static void _debug_acquirement_stats(FILE *ostat)
                 "poison magic",
                 "earth magic",
                 "air magic",
+                "light magic",
+                "darkness magic",
+                "time",
             };
             COMPILE_CHECK(ARRAYSZ(names) == SPTYP_LAST_EXPONENT + 1);
 
@@ -1157,8 +1217,6 @@ static void _debug_acquirement_stats(FILE *ostat)
     item.quantity  = 1;
     item.base_type = type;
 
-    const description_level_type desc = (type == OBJ_BOOKS ? DESC_PLAIN
-                                                           : DESC_DBNAME);
     const bool terse = (type == OBJ_BOOKS ? false : true);
 
     // First, get the maximum name length.
@@ -1172,7 +1230,7 @@ static void _debug_acquirement_stats(FILE *ostat)
             continue;
 
         item.sub_type = i;
-        string name = item.name(desc, terse, true);
+        string name = item.name(DESC_DBNAME, terse, true);
 
         max_width = max(max_width, strwidth(name));
     }
@@ -1189,25 +1247,9 @@ static void _debug_acquirement_stats(FILE *ostat)
         if (subtype_quants[i] == 0)
             continue;
 
-        item.sub_type = i;
+        _fill_item_from_subtype(type, i, item);
 
-        if (type == OBJ_STAVES)
-        {
-            if (i == NUM_STAVES + NUM_RODS) // unrand
-            {
-                item.base_type = OBJ_WEAPONS;
-                item.sub_type = WPN_STAFF;
-            }
-            else if (i >= NUM_STAVES) // rod
-            {
-                item.base_type = OBJ_RODS;
-                item.sub_type = i - NUM_STAVES;
-            }
-            else
-                item.base_type = OBJ_STAVES; // actual staff
-        }
-
-        const string name = item.name(desc, terse, true);
+        const string name = item.name(DESC_DBNAME, terse, true);
 
         fprintf(ostat, format_str, name.c_str(),
                 (float) subtype_quants[i] * 100.0 / (float) total_quant);
@@ -1230,7 +1272,7 @@ static int _median(vector<int> &counts)
 static void _debug_rap_stats(FILE *ostat)
 {
     const int inv_index
-        = prompt_invent_item("Generate randart stats on which item?",
+        = prompt_invent_item(you.inv1, "Generate randart stats on which item?",
                              MT_INVLIST, -1);
 
     if (prompt_failed(inv_index))
@@ -1238,7 +1280,7 @@ static void _debug_rap_stats(FILE *ostat)
 
     // A copy of the item, rather than a reference to the inventory item,
     // so we can fiddle with the item at will.
-    item_def item(you.inv[inv_index]);
+    item_def item(you.inv1[inv_index]);
 
     // Start off with a non-artefact item.
     item.flags  &= ~ISFLAG_ARTEFACT_MASK;
@@ -1435,6 +1477,8 @@ static void _debug_rap_stats(FILE *ostat)
         "ARTP_CONFUSE",
         "ARTP_FRAGILE",
         "ARTP_SHIELDING",
+        "ARTP_STAMINA",
+        "ARTP_RUNNING",
     };
     COMPILE_CHECK(ARRAYSZ(rap_names) == ARTP_NUM_PROPERTIES);
 
@@ -1557,4 +1601,3 @@ void wizard_unidentify_all_items()
     }
 }
 
-#endif

@@ -184,12 +184,13 @@ void mirror_damage_fineff::fire()
 
     if (att == MID_PLAYER)
     {
-        mpr("Your damage is reflected back at you!");
+        mprf("Your damage is reflected back at you!");
         ouch(damage, KILLED_BY_MIRROR_DAMAGE);
     }
     else if (def == MID_PLAYER)
     {
-        simple_god_message(" mirrors your injury!");
+        std::string message = " mirrors your injury!";
+        simple_god_message(message.c_str());
 #ifndef USE_TILE_LOCAL
         flash_monster_colour(monster_by_mid(att), RED, 200);
 #endif
@@ -203,7 +204,7 @@ void mirror_damage_fineff::fire()
     }
     else
     {
-        simple_monster_message(monster_by_mid(att), " suffers a backlash!");
+        monster_message(monster_by_mid(att), " suffers a backlash!");
         attack->hurt(defender(), damage);
     }
 }
@@ -334,7 +335,7 @@ void deferred_damage_fineff::fire()
             // FIXME: Consider adding a 'fatal' parameter to ::hurt
             //        to better interact with damage reduction/boosts
             //        which may be applied later.
-            int df_hp = df->is_player() ? you.hp
+            int df_hp = df->is_player() ? get_hp()
                                         : df->as_monster()->hit_points;
             damage = min(damage, df_hp - 1);
         }

@@ -47,6 +47,7 @@ enum msg_channel_type
     MSGCH_HELL_EFFECT,      // hell effects
     MSGCH_MONSTER_WARNING,  // "Foo comes into view", et al
     MSGCH_DGL_MESSAGE,      // dgamelaunch messages
+    MSGCH_PRELUDE,          // dgamelaunch messages
 
     NUM_MESSAGE_CHANNELS    // always last
 };
@@ -101,6 +102,9 @@ msg_colour_type msg_colour(int colour);
 void mpr(const string &text);
 void mpr_nojoin(msg_channel_type channel, string text);
 
+// for live debugging
+void ldprf(live_debug_type type, const char *format, ...);
+
 // 4.1-style mpr, currently named mprf for minimal disruption.
 void mprf(msg_channel_type channel, int param, PRINTF(2, ));
 void mprf(msg_channel_type channel, PRINTF(1, ));
@@ -111,6 +115,8 @@ void mprf_nojoin(PRINTF(0,));
 void mprf_nocap(msg_channel_type channel, int param, PRINTF(2, ));
 void mprf_nocap(msg_channel_type channel, PRINTF(1, ));
 void mprf_nocap(PRINTF(0, ));
+
+void wprf(PRINTF(0, ));
 
 #ifdef DEBUG_DIAGNOSTICS
 void dprf(PRINTF(0, ));

@@ -159,7 +159,7 @@ ENDMAP
 #       "layout_type_open" tag for non-cave version.
 #
 NAME:   layout_cross
-DEPTH:  D:9-, Depths, Pan
+DEPTH:  Depths, Pan
 WEIGHT: 2
 ORIENT: encompass
 TAGS:   overwritable layout unrand uniq_open_layout layout_type_open
@@ -236,7 +236,7 @@ ENDMAP
 # TODO: A better way of preventing small maps
 #
 NAME:   layout_big_octagon
-DEPTH:  D:9-, Depths, Pan
+DEPTH:  Depths, Pan
 WEIGHT: 3
 ORIENT: encompass
 TAGS:   overwritable layout unrand no_primary_vault layout_type_open
@@ -606,7 +606,7 @@ TAGS:   no_rotate no_vmirror no_hmirror
     if you.in_branch("Lair") then
         wall_type = 'x'
         percent_thickness_2 = 50 + you.depth_fraction() * 150 -- 100% at Lair:4
-        percent_thickness_3 = 20 + you.depth_fraction() * 80  -- 100% at Lair:8
+        percent_thickness_3 = 20 + you.depth_fraction() * 80  -- 100% at Lair:$
         percent_thickness_4 = 10 + you.depth_fraction() * 40
         percent_inner_new_wall = 0
         percent_inner_box   = 0
@@ -768,7 +768,7 @@ ENDMAP
 # Previously named "layout_misc".
 #
 NAME:   layout_misc_corridors
-DEPTH:  Lair, Snake, Crypt, Zot
+DEPTH:  Lair, Snake, Crypt, Zot, Dwarf
 WEIGHT: 20, 5 (Lair)
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand layout_type_corridors
@@ -895,7 +895,7 @@ ENDMAP
 # This replaces dungeon.cc:_roguey_level.
 #
 NAME:   layout_roguey
-DEPTH:  D:9-, Lair, Depths
+DEPTH:  Lair, Depths
 WEIGHT: 25 (D), 10 (Lair), 10 (Depths)
 ORIENT: encompass
 TAGS:   overwritable layout no_primary_vault allow_dup unrand layout_type_rooms

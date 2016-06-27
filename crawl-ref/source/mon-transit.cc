@@ -19,6 +19,8 @@
 #include "libutil.h" // map_find
 #include "mon-place.h"
 #include "religion.h"
+#include "spl-summoning.h"
+#include "misc.h"
 
 #define MAX_LOST 100
 
@@ -169,19 +171,22 @@ static bool place_lost_monster(follower &f)
 
 static void level_place_lost_monsters(m_transit_list &m)
 {
-    for (auto i = m.begin(); i != m.end(); )
+    for (auto i = m.begin(); i != m.end();)
     {
         auto mon = i++;
 
         // Monsters transiting to the Abyss have a 50% chance of being
         // placed, otherwise a 100% chance.
         if (player_in_branch(BRANCH_ABYSS) && coinflip())
+        {
+            unsummon(&mon->mons);
             continue;
+        }
 
         if (place_lost_monster(*mon))
         {
             // Now that the monster is onlevel, we can safely apply traps to it.
-            if (monster* new_mon = monster_by_mid(mon->mons.mid))
+            if (monster *new_mon = monster_by_mid(mon->mons.mid))
                 // old loc isn't really meaningful
                 new_mon->apply_location_effects(new_mon->pos());
             m.erase(mon);
@@ -194,7 +199,10 @@ static void level_place_followers(m_transit_list &m)
     for (auto i = m.begin(); i != m.end();)
     {
         auto mon = i++;
-        if ((mon->mons.flags & MF_TAKING_STAIRS) && mon->place(true))
+        if (
+            (mon->mons.flags & MF_TAKING_STAIRS)
+            && mon->place(true)
+            )
         {
             if (mon->mons.is_divine_companion())
                 move_companion_to(monster_by_mid(mon->mons.mid), level_id::current());
@@ -326,6 +334,7 @@ bool follower::place(bool near_player)
     }
 
     m->reset();
+
     return false;
 }
 
@@ -380,16 +389,19 @@ static bool _tag_follower_at(const coord_def &pos, bool &real_follower)
 
     // Only non-wandering friendly monsters or those actively
     // seeking the player will follow up/down stairs.
-    if (!fol->friendly()
-          && (!mons_is_seeking(fol) || fol->foe != MHITYOU)
-        || fol->foe == MHITNOT)
+    /* old way
+    if (!fol->friendly() && (!mons_is_seeking(fol) || fol->foe != MHITYOU) || fol->foe == MHITNOT)
+     */
+    if (!fol->friendly())
     {
         return false;
     }
 
     // Unfriendly monsters must be directly adjacent to follow.
+    /* not used here
     if (!fol->friendly() && (pos - you.pos()).rdist() > 1)
         return false;
+        */
 
     // Monsters that can't use stairs can still be marked as followers
     // (though they'll be ignored for transit), so any adjacent real
@@ -438,6 +450,27 @@ static int follower_tag_radius()
 
 void tag_followers()
 {
+    for (const mid_t &mid : you.summoned)
+    {
+        if (mid != MID_NOBODY)
+        {
+            monster *const fol = monster_by_mid(mid, true);
+
+            if (fol && fol->attitude != ATT_HOSTILE)
+            {
+                // Monster is chasing player through stairs.
+                fol->flags |= MF_TAKING_STAIRS;
+
+                // Clear patrolling/travel markers.
+                fol->patrol_point.reset();
+                fol->travel_path.clear();
+                fol->travel_target = MTRAV_NONE;
+
+                fol->clear_clinging();
+            }
+        }
+    }
+
     const int radius = follower_tag_radius();
     int n_followers = 18;
 
@@ -450,13 +483,18 @@ void tag_followers()
     {
         for (const coord_def p : places[place_set])
         {
+            /*
             for (adjacent_iterator ai(p); ai; ++ai)
+             */
+            for (distance_iterator ai(p, false); ai; ++ai)
             {
+                /* reach all friendlies
                 if ((*ai - you.pos()).rdist() > radius
                     || travel_point_distance[ai->x][ai->y])
                 {
                     continue;
                 }
+                 */
                 travel_point_distance[ai->x][ai->y] = 1;
 
                 bool real_follower = false;

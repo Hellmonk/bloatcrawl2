@@ -88,7 +88,7 @@ void beogh_follower_convert(monster* mons, bool orc_hit)
         const int hd = mons->get_experience_level();
 
         if (have_passive(passive_t::convert_orcs)
-            && random2(you.piety / 15) + random2(4 + you.experience_level / 3)
+            && random2(you.piety / 15) + random2(4 + effective_xl() / 3)
                  > random2(hd) + hd + random2(5))
         {
             beogh_convert_orc(mons, orc_hit || !mons->alive() ? conv_t::DEATHBED

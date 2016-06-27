@@ -171,6 +171,18 @@ const random_var& operator-=(random_var& x, const random_var& y)
     return x;
 }
 
+const random_var& operator*=(random_var& x, int y)
+{
+    x = x * y;
+    return x;
+}
+
+const random_var& operator/=(random_var& x, int y)
+{
+    x = x / y;
+    return x;
+}
+
 random_var operator/(const random_var& x, int d)
 {
     const int start = x.min() / d;

@@ -15,7 +15,7 @@ struct skill_state
     FixedVector<uint8_t, NUM_SKILLS>      skills;
     FixedVector<int, NUM_SKILLS>          real_skills;    // Those two are
     FixedVector<int, NUM_SKILLS>          changed_skills; // scaled by 10.
-    FixedVector<int8_t, NUM_SKILLS>       train;
+    FixedVector<training_status, NUM_SKILLS>       train;
     FixedVector<unsigned int, NUM_SKILLS> training;
     FixedVector<unsigned int, NUM_SKILLS> skill_points;
     FixedVector<unsigned int, NUM_SKILLS> ct_skill_points;
@@ -37,6 +37,7 @@ string skill_names(const skill_set &skills);
 
 int skill_cost_baseline();
 int one_level_cost(skill_type sk);
+float scaled_skill_cost(skill_type sk);
 
 unsigned int skill_cost_needed(int level);
 int calc_skill_cost(int skill_cost_level);
@@ -109,29 +110,8 @@ void fixup_skills();
 
 static const skill_type skill_display_order[] =
 {
-    SK_TITLE,
-    SK_FIGHTING, SK_SHORT_BLADES, SK_LONG_BLADES, SK_AXES,
-    SK_MACES_FLAILS, SK_POLEARMS, SK_STAVES, SK_UNARMED_COMBAT,
-
-    SK_BLANK_LINE,
-
-    SK_BOWS, SK_CROSSBOWS, SK_THROWING, SK_SLINGS,
-
-    SK_BLANK_LINE,
-
-    SK_ARMOUR, SK_DODGING, SK_SHIELDS,
-
-    SK_COLUMN_BREAK, SK_TITLE,
-
-    SK_SPELLCASTING, SK_CONJURATIONS, SK_HEXES, SK_CHARMS, SK_SUMMONINGS,
-    SK_NECROMANCY, SK_TRANSLOCATIONS, SK_TRANSMUTATIONS,
-    SK_FIRE_MAGIC, SK_ICE_MAGIC, SK_AIR_MAGIC, SK_EARTH_MAGIC, SK_POISON_MAGIC,
-
-    SK_BLANK_LINE,
-
-    SK_INVOCATIONS, SK_EVOCATIONS, SK_STEALTH,
-
-    SK_COLUMN_BREAK,
+    SK_TITLE, SK_FIGHTING,     SK_SHORT_BLADES, SK_LONG_BLADES,  SK_AXES,  SK_MACES_FLAILS, SK_POLEARMS,     SK_STAVES,      SK_UNARMED_COMBAT, SK_BOWS,           SK_CROSSBOWS,  SK_THROWING,   SK_SLINGS,     SK_ARMOUR,      SK_DODGING,      SK_SHIELDS,      SK_INVOCATIONS,    SK_EVOCATIONS,     SK_STEALTH,        SK_COLUMN_BREAK,
+    SK_TITLE, SK_SPELLCASTING, SK_BLANK_LINE,   SK_CONJURATIONS, SK_HEXES, SK_CHARMS,       SK_SUMMONINGS,   SK_NECROMANCY,  SK_TRANSLOCATIONS, SK_TRANSMUTATIONS, SK_BLANK_LINE, SK_FIRE_MAGIC, SK_ICE_MAGIC,  SK_AIR_MAGIC,   SK_EARTH_MAGIC,  SK_POISON_MAGIC, SK_LIGHT_MAGIC,    SK_DARKNESS_MAGIC, SK_TIME_MAGIC,     SK_COLUMN_BREAK,
 };
 
 static const int ndisplayed_skills = ARRAYSZ(skill_display_order);

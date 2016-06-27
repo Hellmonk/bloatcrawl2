@@ -25,7 +25,6 @@
 #endif
 
 #define ICY_ARMOUR_KEY "ozocubu's_armour_pow"
-#define MAGIC_ARMOUR_KEY "magic_armour_pow"
 #define TRANSFORM_POW_KEY "transform_pow"
 #define BARBS_MOVE_KEY "moved_with_barbs_status"
 #define HORROR_PENALTY_KEY "horror_penalty"
@@ -43,7 +42,7 @@
 #define HORROR_LVL_OVERWHELMING  5
 
 /// Maximum stat value
-static const int MAX_STAT_VALUE = 125;
+static const int MAX_STAT_VALUE = 99;
 /// The standard unit of regen; one level in artifact inscriptions
 static const int REGEN_PIP = 40;
 /// The standard unit of MR; one level in %/@ screens
@@ -55,15 +54,27 @@ static const int STEALTH_PIP = 50;
 static const int BONE_ARMOUR_HIT_RATIO = 50;
 
 /// The minimum aut cost for a player move (before haste)
-static const int FASTEST_PLAYER_MOVE_SPEED = 6;
+static const int FASTEST_PLAYER_MOVE_SPEED = 3;
 // relevant for swiftness, etc
 
 // Min delay for thrown projectiles.
-static const int FASTEST_PLAYER_THROWING_SPEED = 7;
+static const int FASTEST_PLAYER_THROWING_SPEED = 5;
 
 class targetter;
 
 int check_stealth();
+
+/// used for you.train[] & for rendering skill tiles (tileidx_skill)
+enum training_status
+{
+    TRAINING_DISABLED = 0,
+    TRAINING_ENABLED,
+    TRAINING_FOCUSED,
+    NUM_TRAINING_STATUSES,
+    // the below are only used for display purposes, not training.
+    TRAINING_MASTERED,
+    TRAINING_INACTIVE, ///< enabled but not used (in auto mode)
+};
 
 // needed for assert in is_player()
 #ifdef DEBUG_GLOBALS
@@ -109,19 +120,25 @@ public:
     int hp_max_adj_temp;        // temporary max HP loss (rotting)
     int hp_max_adj_perm;        // base HPs from background (and permanent loss)
 
-    int magic_points;
-    int max_magic_points;
+    int sp;
+    int sp_max;
+
+    int mp;
+    int mp_max;
     int mp_max_adj;             // max MP loss (ability costs, tutorial bonus)
+    int mp_frozen_summons;
 
     FixedVector<int8_t, NUM_STATS> stat_loss;
     FixedVector<int8_t, NUM_STATS> base_stats;
 
+    motion_type motion;
     int hunger;
     int disease;
     hunger_state_t hunger_state;
     uint8_t max_level;
     int hit_points_regeneration;
     int magic_points_regeneration;
+    int stamina_points_regeneration;
     unsigned int experience;
     unsigned int total_experience; // Unaffected by draining. Used for skill cost.
     int experience_level;
@@ -129,6 +146,7 @@ public:
     int zigs_completed, zig_max;
 
     FixedVector<int8_t, NUM_EQUIP> equip;
+    FixedVector<int, NUM_EQUIP> equip_slot_cursed_level;
     FixedBitVector<NUM_EQUIP> melded;
     // Whether these are unrands that we should run the _*_world_reacts func for
     FixedBitVector<NUM_EQUIP> unrand_reacts;
@@ -139,7 +157,8 @@ public:
     monster_type symbol;
     transformation_type form;
 
-    FixedVector< item_def, ENDOFPACK > inv;
+    FixedVector< item_def, ENDOFPACK > inv1;
+    FixedVector< item_def, ENDOFPACK > inv2;
     FixedBitVector<NUM_RUNE_TYPES> runes;
     int obtainable_runes; // can be != 15 in Sprint
 
@@ -155,6 +174,8 @@ public:
     unsigned short pet_target;
 
     durations_t duration;
+    FixedVector<source_type, NUM_DURATIONS> duration_source;
+
     int rotting;
     bool apply_berserk_penalty;         // Whether to apply the berserk penalty at
     // end of the turn.
@@ -168,14 +189,12 @@ public:
     bool dead; // ... but pending revival
     int lives;
     int deaths;
-#if TAG_MAJOR_VERSION == 34
     float temperature; // For lava orcs.
     float temperature_last;
-#endif
 
     FixedVector<uint8_t, NUM_SKILLS> skills; ///< skill level
-    FixedVector<int8_t, NUM_SKILLS> train; ///< 0: disabled, 1: normal, 2: focus
-    FixedVector<int8_t, NUM_SKILLS> train_alt; ///< config of the other mode
+    FixedVector<training_status, NUM_SKILLS> train; ///< see enum def
+    FixedVector<training_status, NUM_SKILLS> train_alt; ///< config of other mode
     FixedVector<unsigned int, NUM_SKILLS>  training; ///< percentage of XP used
     FixedBitVector<NUM_SKILLS> can_train; ///< Is training this skill allowed?
     FixedVector<unsigned int, NUM_SKILLS> skill_points;
@@ -221,7 +240,7 @@ public:
     string jiyva_second_name;       // Random second name of Jiyva
     uint8_t piety;
     uint8_t piety_hysteresis;       // amount of stored-up docking
-    uint8_t gift_timeout;
+    int gift_timeout;
     uint8_t saved_good_god_piety;   // for if you "switch" between E/Z/1 by abandoning one first
     god_type previous_good_god;
     FixedVector<uint8_t, NUM_GODS>  penance;
@@ -310,7 +329,7 @@ public:
     mid_t last_mid;
 
     // Count of various types of actions made.
-    map<pair<caction_type, int>, FixedVector<int, 27> > action_count;
+    map<pair<caction_type, int>, FixedVector<int, MAX_EXP_LEVEL> > action_count;
 
     // Which branches have been noted to have been left during this game.
     FixedBitVector<NUM_BRANCHES> branches_left;
@@ -333,7 +352,6 @@ public:
     // -------------------
     unsigned short prev_targ;
     coord_def      prev_grd_targ;
-    coord_def      prev_move;
 
     // Coordinates of last travel target; note that this is never used by
     // travel itself, only by the level-map to remember the last travel target.
@@ -359,8 +377,7 @@ public:
 
     // The last spell cast by the player.
     spell_type last_cast_spell;
-    map<int,int> last_pickup;
-
+    map<item_def*,int> last_pickup;
 
     // ---------------------------
     // Volatile (same-turn) state:
@@ -377,15 +394,15 @@ public:
 
     bool redraw_title;
     bool redraw_hit_points;
+    bool redraw_stamina_points;
     bool redraw_magic_points;
-#if TAG_MAJOR_VERSION == 34
     bool redraw_temperature;
-#endif
     FixedVector<bool, NUM_STATS> redraw_stats;
     bool redraw_experience;
     bool redraw_armour_class;
     bool redraw_evasion;
     bool redraw_status_lights;
+    bool redraw_hit_chance;
 
     colour_t flash_colour;
     targetter *flash_where;
@@ -416,11 +433,43 @@ public:
     // Number of viewport refreshes.
     unsigned int frame_no;
 
+    // normally 1000, anything else alters how the next potion or scroll works, amplifying or reversing it's effects.
+    int amplification;
+
+    // stamina stuff
+    exertion_mode exertion;
+    exertion_mode restore_exertion;
+
+    FixedVector<int, NUM_RUNE_TYPES> rune_charges;
+    FixedVector<int, NUM_BRANCHES> branch_requires_runes;
+    FixedBitVector<NUM_RUNE_TYPES> rune_curse_active;
+    int first_hit_time;
+
+    int stamina_flags;
+    int peace;
+
+    // the deepest the player has been
+    int max_exp;
+
+    // mp given back to the player. Used to be used by transformations.
+    spell_type current_form_spell;
+    int current_form_spell_failure;
+
+    FixedVector<mid_t, MAX_MINIONS> summoned;
+
+    // used by scrolls of returning
+    coord_def returnPosition;
 
     // ---------------------
     // The save file itself.
     // ---------------------
     package *save;
+    int last_hit_resistance;
+    int last_to_hit_chance;
+    int last_be_hit_chance;
+    int last_damage_resist;
+    int last_damage;
+    uint8_t monsters_recently_seen;
 
 protected:
     FixedVector<PlaceInfo, NUM_BRANCHES> branch_info;
@@ -440,8 +489,6 @@ public:
     // Move the player during an abyss shift.
     void shiftto(const coord_def &c);
     bool blink_to(const coord_def& c, bool quiet = false) override;
-
-    void reset_prev_move();
 
     int stat(stat_type stat, bool nonneg = true) const;
     int strength(bool nonneg = true) const;
@@ -563,8 +610,10 @@ public:
                           bool base = false) const override;
     brand_type  damage_brand(int which_attack = -1) override;
     int         damage_type(int which_attack = -1) override;
-    random_var  attack_delay(const item_def *projectile = nullptr,
-                             bool rescale = true) const override;
+    int         attack_delay(const item_def *projectile = nullptr,
+                             bool rescale = true,
+                             const item_def *weapon = nullptr,
+                             const action_delay_type adt = ACTION_DELAY_CURRENT) const override;
     int         constriction_damage() const override;
 
     int       has_claws(bool allow_tran = true) const override;
@@ -657,7 +706,7 @@ public:
     void slow_down(actor *, int str) override;
     void confuse(actor *, int strength) override;
     void weaken(actor *attacker, int pow) override;
-    bool heal(int amount) override;
+    bool heal(int amount, bool silent = false) override;
     bool drain_exp(actor *, bool quiet = false, int pow = 3) override;
     bool rot(actor *, int amount, bool quiet = false, bool no_cleanup = false)
         override;
@@ -673,7 +722,9 @@ public:
              string source = "",
              string aux = "",
              bool cleanup_dead = true,
-             bool attacker_effects = true) override;
+             bool attacker_effects = true,
+             bool skip_details = false
+    ) override;
 
     bool wont_attack() const override { return true; };
     mon_attitude_type temp_attitude() const override { return ATT_FRIENDLY; };
@@ -691,7 +742,7 @@ public:
     bool is_unbreathing() const override;
     bool is_insubstantial() const override;
     int res_acid(bool calc_unid = true) const override;
-    bool res_damnation() const override { return false; };
+    bool res_hellfire() const override { return false; };
     int res_fire() const override;
     int res_steam() const override;
     int res_cold() const override;
@@ -716,7 +767,6 @@ public:
     bool gourmand(bool calc_unid = true, bool items = true) const override;
     bool res_corr(bool calc_unid = true, bool items = true) const override;
     bool clarity(bool calc_unid = true, bool items = true) const override;
-    int spec_evoke(bool calc_unid = true, bool items = true) const override;
     bool stasis(bool calc_unid = true, bool items = true) const override;
 
     bool airborne() const override;
@@ -735,9 +785,7 @@ public:
     int silence_radius() const override;
     int liquefying_radius() const override;
     int umbra_radius() const override;
-#if TAG_MAJOR_VERSION == 34
     int heat_radius() const override;
-#endif
     bool petrifying() const override;
     bool petrified() const override;
     bool liquefied_ground() const override;
@@ -798,6 +846,7 @@ public:
                                 killer_type killer = KILL_NONE,
                                 int killernum = -1) override;
 
+
     ////////////////////////////////////////////////////////////////
 
     PlaceInfo& get_place_info() const ; // Current place info
@@ -819,10 +868,8 @@ public:
     void del_gold(int delta);
     void set_gold(int amount);
 
-    void increase_duration(duration_type dur, int turns, int cap = 0,
-                           const char* msg = nullptr);
-    void set_duration(duration_type dur, int turns, int cap = 0,
-                      const char *msg = nullptr);
+    void increase_duration(duration_type dur, int turns, int cap = 0, const char *msg = nullptr, source_type source = SRC_UNDEFINED);
+    void set_duration(duration_type dur, int turns, int cap = 0, const char *msg = nullptr, source_type source = SRC_UNDEFINED);
 
     bool attempt_escape(int attempts = 1);
     int usable_tentacles() const;
@@ -929,7 +976,7 @@ int player_prot_life(bool calc_unid = true, bool temp = true,
 
 int player_regen();
 void update_regen_amulet_attunement();
-void update_mana_regen_amulet_attunement();
+void update_magic_regen_amulet_attunement();
 
 int player_res_cold(bool calc_unid = true, bool temp = true,
                     bool items = true);
@@ -962,6 +1009,9 @@ int player_shield_class();
 int player_displayed_shield_class();
 bool player_omnireflects();
 
+int player_spec_light();
+int player_spec_darkness();
+int player_spec_time();
 int player_spec_air();
 int player_spec_cold();
 int player_spec_conj();
@@ -973,7 +1023,7 @@ int player_spec_charm();
 int player_spec_poison();
 int player_spec_summ();
 
-const int player_adjust_evoc_power(const int power);
+const int player_adjust_evoc_power(const int power, int enhancers = 0);
 const int player_adjust_invoc_power(const int power);
 
 int player_speed();
@@ -993,11 +1043,16 @@ bool will_gain_life(int lev);
 
 bool dur_expiring(duration_type dur);
 void display_char_status();
+void remove_from_summoned(mid_t mid);
 
 void forget_map(bool rot = false);
 
 int get_exp_progress();
-void gain_exp(unsigned int exp_gained, unsigned int* actual_gain = nullptr);
+void gain_exp(unsigned int exp_gained, unsigned int* actual_gain = nullptr, bool from_monster = true, bool exp_loss = false, bool skip_training = false);
+const int potion_experience_for_this_floor();
+const int floor_experience_for_this_floor();
+void gain_potion_exp(bool skip_training=false);
+void gain_floor_exp();
 
 bool player_can_open_doors();
 
@@ -1016,13 +1071,16 @@ bool enough_hp(int minimum, bool suppress_msg, bool abort_macros = true);
 bool enough_mp(int minimum, bool suppress_msg, bool abort_macros = true);
 
 void calc_hp();
+void calc_sp();
 void calc_mp();
 void recalc_and_scale_hp();
 
-void dec_hp(int hp_loss, bool fatal, const char *aux = nullptr);
-void dec_mp(int mp_loss, bool silent = false);
-void drain_mp(int mp_loss);
+bool dec_hp(int hp_loss, bool fatal, const char *aux = nullptr);
+bool dec_mp(int mp_loss, bool silent = false, bool allow_overdrive = false);
+bool dec_sp(int sp_loss = 1, bool silent = false, bool allow_overdrive = false);
+bool drain_mp(int mp_loss);
 
+void inc_sp(int sp_gain = 1, bool silent = false, bool manual = true);
 void inc_mp(int mp_gain, bool silent = false);
 void inc_hp(int hp_gain);
 void flush_mp();
@@ -1032,6 +1090,8 @@ void rot_hp(int hp_loss);
 int unrot_hp(int hp_recovered);
 int player_rotted();
 void rot_mp(int mp_loss);
+bool freeze_summons_mp(int mp_loss);
+void unfreeze_summons_mp(int amount = -1);
 
 void inc_max_hp(int hp_gain);
 void dec_max_hp(int hp_loss);
@@ -1039,16 +1099,27 @@ void dec_max_hp(int hp_loss);
 void deflate_hp(int new_level, bool floor);
 void set_hp(int new_amount);
 
-int get_real_hp(bool trans, bool rotted = false);
-int get_real_mp(bool include_items);
+int effective_xl();
+int get_real_hp(bool trans, bool rotted = false, bool adjust_for_difficulty = true);
+int get_real_sp(bool include_items = true);
+int get_real_mp(bool include_items = true, bool rotted = false);
 
 int get_contamination_level();
 string describe_contamination(int level);
 
+bool sanguine_armour_valid();
+void activate_sanguine_armour();
+
+void set_sp(int new_amount);
 void set_mp(int new_amount);
 
+int get_unfrozen_mp();
+
 bool player_regenerates_hp();
+bool player_regenerates_sp();
 bool player_regenerates_mp();
+
+void print_device_heal_message();
 
 void contaminate_player(int change, bool controlled = false, bool msg = true);
 
@@ -1071,9 +1142,9 @@ void dec_napalm_player(int delay);
 bool spell_slow_player(int pow);
 bool slow_player(int turns);
 void dec_slow_player(int delay);
-void dec_exhaust_player(int delay);
+int dec_exhaust_player(int amount);
 
-bool haste_player(int turns, bool rageext = false);
+bool haste_player(int turns, bool rageext = false, source_type source = SRC_UNDEFINED);
 void dec_haste_player(int delay);
 void dec_elixir_player(int delay);
 void dec_ambrosia_player(int delay);
@@ -1100,10 +1171,24 @@ bool need_expiration_warning(dungeon_feature_type feat);
 bool need_expiration_warning(duration_type dur, coord_def p = you.pos());
 bool need_expiration_warning(coord_def p = you.pos());
 
+bool player_is_very_tired(bool silent = false);
+bool player_mp_is_exhausted(bool silent = false);
+bool player_sp_is_exhausted(bool silent = false);
+bool in_quick_mode();
+void set_quick_mode(const bool new_quick_mode, const bool manual = true);
+void set_exertion(const exertion_mode new_exertion, const bool manual = true);
+void exert_toggle(exertion_mode new_exertion);
+
+int get_hp();
+int get_hp_max();
+int get_sp();
+int get_sp_max(bool raw = false);
+int get_mp();
+int get_mp_max(bool raw = false);
+
 bool player_has_orb();
 bool player_on_orb_run();
 
-#if TAG_MAJOR_VERSION == 34
 enum temperature_level
 {
     TEMP_MIN = 1, // Minimum (and starting) temperature. Not any warmer than bare rock.
@@ -1142,6 +1227,52 @@ bool temperature_effect(int which);
 int temperature_colour(int temp);
 string temperature_string(int temp);
 string temperature_text(int temp);
-#endif
+bool player_ephemeral_passthrough(const string &whatIsAttacking = "", bool showMessage = false);
+bool can_use(const item_def &item);
+bool player_is_immune_to_curses();
+const int get_max_exp_level();
+const int get_max_skill_level();
+
+void player_summon_was_shot_through(monster* mon);
+void player_was_offensive();
+void player_attacked_something(int sp_cost);
+void player_used_magic(int mp_cost, spell_type spell);
+void player_evoked_something();
+void player_moved();
+void player_before_long_safe_action();
+void player_after_long_safe_action(int turns);
+void player_after_each_turn();
+
+int generic_action_delay(const int skill, const int base, const action_delay_type type = ACTION_DELAY_CURRENT);
+int spell_cast_delay(const action_delay_type type = ACTION_DELAY_CURRENT);
+
+int spell_mp_cost(spell_type which_spell);
+int spell_mp_freeze(spell_type which_spell);
+int weapon_sp_cost(const item_def* weapon, const item_def* ammo = nullptr);
+int player_tohit_modifier(const int old_tohit, int range = 1);
+int player_damage_modifier(int old_damage, bool silent = false, const int range = 1);
+double player_spellpower_modifier(double old_spellpower);
+int player_spellsuccess_modifier(int force);
+int player_attack_delay_modifier(int attk_delay);
+int player_stealth_modifier(int old_stealth);
+int player_ev_modifier(int ev);
+int player_sh_modifier(int sh);
+int player_ac_modifier(int ac);
+int player_mr_modifier(int mr);
+int player_item_gen_modifier(int item_count);
+int player_max_stat_loss_allowed(stat_type stat);
+void player_update_last_be_hit_chance(int chance);
+void player_update_last_to_hit_chance(int chance);
+int player_pool_modifier(int amount);
+void summoned_monster_died(mid_t mons, int mp_freeze, bool natural_death);
+bool player_summoned_monster(spell_type spell, monster* mons, bool first, int freeze_cost = -1);
+int player_monster_gen_modifier(int amount);
+int player_potion_recharge_percent();
+int player_pre_ouch_modifier(int damage);
+int player_ouch_modifier(int damage, bool skip_details = false);
+int player_summon_count();
+void attempt_instant_rest();
+void monster_died(mid_t mons_mid, bool was_hostile_and_seen, int mp_freeze, killer_type killer, int dead_monster_hd, bool left_corpse);
+void after_floor_change();
 
 #endif

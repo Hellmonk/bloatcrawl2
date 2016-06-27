@@ -142,6 +142,9 @@ private:
     void _earth(int severity);
     void _air(int severity);
     void _poison(int severity);
+    void _time(int severity);
+    void _darkness(int severity);
+    void _light(int severity);
 
     void _zot();
 };

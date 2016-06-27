@@ -34,6 +34,8 @@
 #include "spl-summoning.h"
 #include "spl-wpnench.h"
 #include "xom.h"
+#include "ability.h"
+#include "spl-selfench.h"
 
 static void _mark_unseen_monsters();
 
@@ -45,7 +47,7 @@ static void _mark_unseen_monsters();
 static void _calc_hp_artefact()
 {
     recalc_and_scale_hp();
-    if (you.hp_max <= 0) // Borgnjor's abusers...
+    if (get_hp_max() <= 0) // Borgnjor's abusers...
         ouch(0, KILLED_BY_DRAINING);
 }
 
@@ -57,10 +59,16 @@ void equip_item(equipment_type slot, int item_slot, bool msg)
     ASSERT(!you.melded[slot]);
 
     you.equip[slot] = item_slot;
+    const int slot_curse = you.equip_slot_cursed_level[slot];
+    if (slot_curse > 0)
+    {
+        you.inv1[item_slot].curse_weight = slot_curse;
+        you.equip_slot_cursed_level[slot] = 0;
+    }
 
     equip_effect(slot, item_slot, false, msg);
     ash_check_bondage();
-    if (you.equip[slot] != -1 && you.inv[you.equip[slot]].cursed())
+    if (you.equip[slot] != -1 && you.inv1[you.equip[slot]].cursed())
         auto_id_inventory();
 }
 
@@ -138,6 +146,8 @@ static void _assert_valid_slot(equipment_type eq, equipment_type slot)
     equipment_type r1 = EQ_LEFT_RING, r2 = EQ_RIGHT_RING;
     if (you.species == SP_OCTOPODE)
         r1 = EQ_RING_ONE, r2 = EQ_RING_EIGHT;
+    if (you.species == SP_FELID)
+        r1 = EQ_RING_ONE, r2 = EQ_RING_FOUR;
     if (slot >= r1 && slot <= r2)
         return;
     if (const item_def* amu = you.slot_item(EQ_AMULET, true))
@@ -149,7 +159,7 @@ static void _assert_valid_slot(equipment_type eq, equipment_type slot)
 
 void equip_effect(equipment_type slot, int item_slot, bool unmeld, bool msg)
 {
-    item_def& item = you.inv[item_slot];
+    item_def& item = you.inv1[item_slot];
     equipment_type eq = get_item_slot(item);
 
     if (slot == EQ_WEAPON && eq != EQ_WEAPON)
@@ -170,7 +180,7 @@ void equip_effect(equipment_type slot, int item_slot, bool unmeld, bool msg)
 
 void unequip_effect(equipment_type slot, int item_slot, bool meld, bool msg)
 {
-    item_def& item = you.inv[item_slot];
+    item_def& item = you.inv1[item_slot];
     equipment_type eq = get_item_slot(item);
 
     if (slot == EQ_WEAPON && eq != EQ_WEAPON)
@@ -229,8 +239,14 @@ static void _equip_artefact_effect(item_def &item, bool *show_msgs, bool unmeld,
 
     if (proprt[ARTP_MAGICAL_POWER] && !known[ARTP_MAGICAL_POWER] && msg)
     {
-        canned_msg(proprt[ARTP_MAGICAL_POWER] > 0 ? MSG_MANA_INCREASE
-                                                  : MSG_MANA_DECREASE);
+        canned_msg(proprt[ARTP_MAGICAL_POWER] > 0 ? MSG_MAGIC_INCREASE
+                                                  : MSG_MAGIC_DECREASE);
+    }
+
+    if (proprt[ARTP_STAMINA] && !known[ARTP_STAMINA] && msg)
+    {
+        mprf(proprt[ARTP_STAMINA] > 0 ? "You feel your stamina capacity increase."
+                                      : "You feel your stamina capacity decrease.");
     }
 
     // Modify ability scores.
@@ -264,6 +280,9 @@ static void _equip_artefact_effect(item_def &item, bool *show_msgs, bool unmeld,
     if (proprt[ARTP_MAGICAL_POWER])
         calc_mp();
 
+    if (proprt[ARTP_STAMINA])
+        calc_sp();
+
     if (!fully_identified(item))
     {
         set_ident_type(item, true);
@@ -294,8 +313,14 @@ static void _unequip_artefact_effect(item_def &item,
 
     if (proprt[ARTP_MAGICAL_POWER] && !known[ARTP_MAGICAL_POWER] && msg)
     {
-        canned_msg(proprt[ARTP_MAGICAL_POWER] > 0 ? MSG_MANA_DECREASE
-                                                  : MSG_MANA_INCREASE);
+        canned_msg(proprt[ARTP_MAGICAL_POWER] > 0 ? MSG_MAGIC_DECREASE
+                                                  : MSG_MAGIC_INCREASE);
+    }
+
+    if (proprt[ARTP_STAMINA] && !known[ARTP_STAMINA] && msg)
+    {
+        mprf(proprt[ARTP_STAMINA] < 0 ? "You feel your stamina capacity increase."
+                                      : "You feel your stamina capacity decrease.");
     }
 
     notify_stat_change(STAT_STR, -proprt[ARTP_STRENGTH],     true);
@@ -319,6 +344,9 @@ static void _unequip_artefact_effect(item_def &item,
 
     if (proprt[ARTP_MAGICAL_POWER])
         calc_mp();
+
+    if (proprt[ARTP_STAMINA])
+        calc_sp();
 
     if (proprt[ARTP_CONTAM] && !meld)
     {
@@ -347,7 +375,7 @@ static void _unequip_artefact_effect(item_def &item,
     if (proprt[ARTP_FRAGILE] && !meld)
     {
         mprf("%s crumbles to dust!", item.name(DESC_THE).c_str());
-        dec_inv_item_quantity(item.link, 1);
+        dec_inv_item_quantity(you.inv1, item.link, 1);
     }
 }
 
@@ -414,7 +442,7 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
 
         if (item.sub_type == STAFF_POWER)
         {
-            canned_msg(MSG_MANA_INCREASE);
+            canned_msg(MSG_MAGIC_INCREASE);
             calc_mp();
         }
 
@@ -501,8 +529,8 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
                     mpr("You feel protected!");
                     break;
 
-                case SPWPN_EVASION:
-                    mpr("You feel nimbler!");
+                case SPWPN_LIGHT:
+                    mprf("%s feels so light!", item_name.c_str());
                     break;
 
                 case SPWPN_DRAINING:
@@ -517,7 +545,7 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
                     if (you.species == SP_VAMPIRE)
                         mpr("You feel a bloodthirsty glee!");
                     else if (you.undead_state() == US_ALIVE && !you_foodless())
-                        mpr("You feel a dreadful hunger.");
+                    	mpr("You feel a dreadful hunger.");
                     else
                         mpr("You feel an empty sense of dread.");
                     break;
@@ -584,11 +612,8 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
                 you.redraw_armour_class = true;
                 break;
 
-            case SPWPN_EVASION:
-                you.redraw_evasion = true;
-                break;
-
             case SPWPN_VAMPIRISM:
+                /*
                 if (you.species != SP_VAMPIRE
                     && you.undead_state() == US_ALIVE
                     && !you_foodless()
@@ -596,6 +621,7 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
                 {
                     make_hungry(4500, false, false);
                 }
+                 */
                 break;
 
             case SPWPN_DISTORTION:
@@ -678,12 +704,6 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
                 you.redraw_armour_class = true;
                 break;
 
-            case SPWPN_EVASION:
-                if (showMsgs)
-                    mpr("You feel like more of a target.");
-                you.redraw_evasion = true;
-                break;
-
             case SPWPN_VAMPIRISM:
                 if (showMsgs)
                 {
@@ -746,7 +766,7 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
     else if (item.is_type(OBJ_STAVES, STAFF_POWER))
     {
         calc_mp();
-        canned_msg(MSG_MANA_DECREASE);
+        canned_msg(MSG_MAGIC_DECREASE);
     }
 
     // Unwielding dismisses an active spectral weapon
@@ -759,11 +779,27 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
     }
 }
 
-static void _spirit_shield_message(bool unmeld)
+static void _stamina_shield_message(bool unmeld)
 {
-    if (!unmeld && you.spirit_shield() < 2)
+    if (!unmeld && you.stamina_shield() < 2)
     {
-        dec_mp(you.magic_points);
+        dec_sp(get_sp());
+        mpr("You feel your power drawn to a protective spirit.");
+        if (!(have_passive(passive_t::no_sp_regen)
+                 || player_under_penance(GOD_PAKELLAS)))
+        {
+            mpr("Now linked to your health, your stamina stops regenerating.");
+        }
+    }
+    else // unmeld or already spirit-shielded
+        mpr("You feel spirits watching over you.");
+}
+
+static void _magic_shield_message(bool unmeld)
+{
+    if (!unmeld && you.magic_shield() < 2)
+    {
+        dec_mp(get_mp());
         mpr("You feel your power drawn to a protective spirit.");
         if (you.species == SP_DEEP_DWARF
             && !(have_passive(passive_t::no_mp_regen)
@@ -772,7 +808,7 @@ static void _spirit_shield_message(bool unmeld)
             mpr("Now linked to your health, your magic stops regenerating.");
         }
     }
-    else if (!unmeld && player_mutation_level(MUT_MANA_SHIELD))
+    else if (!unmeld && player_mutation_level(MUT_MAGIC_SHIELD))
         mpr("You feel the presence of a powerless spirit.");
     else // unmeld or already spirit-shielded
         mpr("You feel spirits watching over you.");
@@ -884,8 +920,8 @@ static void _equip_armour_effect(item_def& arm, bool unmeld,
                 mpr("You feel powerful.");
             break;
 
-        case SPARM_SPIRIT_SHIELD:
-            _spirit_shield_message(unmeld);
+        case SPARM_MAGIC_SHIELD:
+            _magic_shield_message(unmeld);
             break;
 
         case SPARM_ARCHERY:
@@ -1042,8 +1078,8 @@ static void _unequip_armour_effect(item_def& item, bool meld,
         mpr("You feel strangely numb.");
         break;
 
-    case SPARM_SPIRIT_SHIELD:
-        if (!you.spirit_shield())
+    case SPARM_MAGIC_SHIELD:
+        if (!you.magic_shield())
         {
             mpr("You feel strangely alone.");
             if (you.species == SP_DEEP_DWARF)
@@ -1115,7 +1151,7 @@ static void _equip_amulet_of_regeneration()
 {
     if (player_mutation_level(MUT_SLOW_REGENERATION) == 3)
         mpr("The amulet feels cold and inert.");
-    else if (you.hp == you.hp_max)
+    else if (get_hp() == get_hp_max())
     {
         you.props[REGEN_AMULET_ACTIVE] = 1;
         mpr("The amulet throbs as it attunes itself to your uninjured body.");
@@ -1128,11 +1164,11 @@ static void _equip_amulet_of_regeneration()
     }
 }
 
-static void _equip_amulet_of_mana_regeneration()
+static void _equip_amulet_of_magic_regeneration()
 {
     if (!player_regenerates_mp())
         mpr("The amulet feels cold and inert.");
-    else if (you.magic_points == you.max_magic_points)
+    else if (get_mp() == get_mp_max())
     {
         you.props[MANA_REGEN_AMULET_ACTIVE] = 1;
         mpr("The amulet hums as it attunes itself to your energized body.");
@@ -1190,8 +1226,13 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
         break;
 
     case RING_MAGICAL_POWER:
-        canned_msg(MSG_MANA_INCREASE);
+        canned_msg(MSG_MAGIC_INCREASE);
         calc_mp();
+        break;
+
+    case RING_STAMINA:
+        canned_msg(MSG_STAMINA_INCREASE);
+        calc_sp();
         break;
 
     case RING_TELEPORTATION:
@@ -1232,18 +1273,27 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
             _equip_amulet_of_dismissal();
         break;
 
-    case AMU_REGENERATION:
+    case AMU_HEALTH_REGENERATION:
         if (!unmeld)
             _equip_amulet_of_regeneration();
         break;
 
-    case AMU_MANA_REGENERATION:
+    case AMU_MAGIC_REGENERATION:
         if (!unmeld)
-            _equip_amulet_of_mana_regeneration();
+            _equip_amulet_of_magic_regeneration();
         break;
 
-    case AMU_GUARDIAN_SPIRIT:
-        _spirit_shield_message(unmeld);
+    case AMU_STAMINA_REGENERATION:
+        if (!unmeld)
+            mpr("You feel your endurance increase.");
+        break;
+
+    case AMU_MAGIC_SHIELD:
+        _magic_shield_message(unmeld);
+        break;
+
+    case AMU_QUICK_CAST:
+        mpr("Your casting speed increases.");
         break;
     }
 
@@ -1317,7 +1367,7 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
     case RING_TELEPORTATION:
     case RING_WIZARDRY:
     case AMU_DISMISSAL:
-    case AMU_REGENERATION:
+    case AMU_HEALTH_REGENERATION:
         break;
 
     case RING_SEE_INVISIBLE:
@@ -1354,7 +1404,12 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
         break;
 
     case RING_MAGICAL_POWER:
-        canned_msg(MSG_MANA_DECREASE);
+        canned_msg(MSG_MAGIC_DECREASE);
+        break;
+
+    case RING_STAMINA:
+        canned_msg(MSG_STAMINA_DECREASE);
+        calc_sp();
         break;
 
     case AMU_THE_GOURMAND:
@@ -1371,7 +1426,7 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
             _remove_amulet_of_harm();
         break;
 
-    case AMU_GUARDIAN_SPIRIT:
+    case AMU_MAGIC_SHIELD:
         if (you.species == SP_DEEP_DWARF && player_regenerates_mp())
             mpr("Your magic begins regenerating once more.");
         break;
@@ -1424,3 +1479,32 @@ static void _mark_unseen_monsters()
 
     }
 }
+
+void armour_wear_effects(const int item_slot)
+{
+    const unsigned int old_talents = your_talents(false).size();
+
+    item_def &arm = you.inv1[item_slot];
+
+    set_ident_flags(arm, ISFLAG_IDENT_MASK);
+    if (is_artefact(arm))
+        arm.flags |= ISFLAG_NOTED_ID;
+
+    const equipment_type eq_slot = get_armour_slot(arm);
+
+    mprf("You finish putting on %s.", arm.name(DESC_YOUR).c_str());
+
+    if (eq_slot == EQ_BODY_ARMOUR)
+    {
+        if (you.duration[DUR_ICY_ARMOUR] != 0
+            && !is_effectively_light_armour(&arm))
+        {
+            remove_ice_armour();
+        }
+    }
+
+    equip_item(eq_slot, item_slot);
+
+    check_item_hint(you.inv1[item_slot], old_talents);
+}
+

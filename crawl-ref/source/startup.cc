@@ -72,6 +72,11 @@ static void _initialize()
     Options.fixup_options();
 
     you.symbol = MONS_PLAYER;
+    you.last_hit_resistance  = 0;
+    you.last_damage_resist   = 0;
+    you.last_damage          = 0;
+    you.last_to_hit_chance   = 0;
+    you.last_be_hit_chance   = 0;
 
     seed_rng();
 
@@ -253,6 +258,7 @@ static void _post_init(bool newc)
     destroy_abyss();
 
     calc_hp();
+    calc_sp();
     calc_mp();
     if (you.form != TRAN_LICH)
         food_change(true);
@@ -295,14 +301,14 @@ static void _post_init(bool newc)
 
     you.redraw_stats.init(true);
     you.redraw_hit_points   = true;
+    you.redraw_stamina_points = true;
     you.redraw_magic_points = true;
     you.redraw_armour_class = true;
     you.redraw_evasion      = true;
+    you.redraw_hit_chance   = true;
     you.redraw_experience   = true;
-#if TAG_MAJOR_VERSION == 34
     if (you.species == SP_LAVA_ORC)
         you.redraw_temperature = true;
-#endif
     you.redraw_quiver       = true;
     you.wield_change        = true;
 
@@ -580,7 +586,7 @@ static const int NUM_MISC_LINES     = 5;
 /**
  * Saves game mode and player name to ng_choice.
  */
-static void _show_startup_menu(newgame_def& ng_choice,
+static void _show_startup_menu(newgame_def &ng, newgame_def& ng_choice,
                                const newgame_def& defaults)
 {
     // Initialise before the loop so that ? doesn't forget the typed name.
@@ -760,7 +766,7 @@ again:
         }
         else if (keyn == '\t' && _game_defined(defaults))
         {
-            ng_choice = defaults;
+            set_default_choice(ng, ng_choice, defaults);
             return;
         }
         else if (keyn == '?')
@@ -987,6 +993,7 @@ bool startup_step()
     if (!SysEnv.crawl_name.empty())
         choice.name = SysEnv.crawl_name;
 
+    newgame_def ng;
 #ifndef DGAMELAUNCH
     if (crawl_state.last_type == GAME_TYPE_TUTORIAL
         || crawl_state.last_type == GAME_TYPE_SPRINT)
@@ -1004,7 +1011,7 @@ bool startup_step()
     else if (!is_good_name(choice.name, false, false)
         && choice.type != GAME_TYPE_ARENA)
     {
-        _show_startup_menu(choice, defaults);
+        _show_startup_menu(ng, choice, defaults);
         // [ds] Must set game type here, or we won't be able to load
         // Sprint saves.
         crawl_state.type = choice.type;
@@ -1022,7 +1029,6 @@ bool startup_step()
     }
 
     bool newchar = false;
-    newgame_def ng;
     if (choice.filename.empty() && !choice.name.empty())
         choice.filename = get_save_filename(choice.name);
 
@@ -1043,8 +1049,6 @@ bool startup_step()
 
     return newchar;
 }
-
-
 
 static void _cio_init()
 {

@@ -20,6 +20,7 @@
 #include "cloud.h"
 #include "coordit.h"
 #include "decks.h"
+#include "delay.h"
 #include "directn.h"
 #include "dungeon.h"
 #include "english.h"
@@ -60,6 +61,7 @@
 #include "spl-util.h"
 #include "spl-zap.h"
 #include "state.h"
+#include "stepdown.h"
 #include "stringutil.h"
 #include "target.h"
 #include "terrain.h"
@@ -137,7 +139,7 @@ static bool _reaching_weapon_attack(const item_def& wpn)
     }
 
     // Calculate attack delay now in case we have to apply it.
-    const int attack_delay = you.attack_delay().roll();
+    const int attack_delay = you.attack_delay();
 
     if (!feat_is_reachable_past(grd(first_middle))
         && !feat_is_reachable_past(grd(second_middle)))
@@ -234,14 +236,13 @@ static bool _evoke_horn_of_geryon(item_def &item)
         return false;
     }
 
-    if (!pakellas_device_surge())
-        return true;
-    surge_power(you.spec_evoke());
+    const int surge = pakellas_surge_devices();
+    surge_power(you.spec_evoke() + surge);
     mprf(MSGCH_SOUND, "You produce a hideous howling noise!");
     did_god_conduct(DID_UNHOLY, 3);
     int num = 1;
     const int adjusted_power =
-        player_adjust_evoc_power(you.skill(SK_EVOCATIONS, 10));
+        player_adjust_evoc_power(you.skill(SK_EVOCATIONS, 10), surge);
     if (adjusted_power + random2(90) > 130)
         ++num;
     if (adjusted_power + random2(90) > 180)
@@ -275,15 +276,6 @@ static bool _evoke_horn_of_geryon(item_def &item)
 
 static bool _check_crystal_ball()
 {
-#if TAG_MAJOR_VERSION == 34
-    if (you.species == SP_DJINNI)
-    {
-        mpr("These balls have not yet been approved for use by djinn. "
-            "(OOC: they're supposed to work, but need a redesign.)");
-        return false;
-    }
-#endif
-
     if (you.confused())
     {
         mpr("You are unable to concentrate on the shapes in the crystal ball.");
@@ -297,7 +289,7 @@ static bool _check_crystal_ball()
         return false;
     }
 
-    if (you.magic_points == you.max_magic_points)
+    if (get_mp() == get_mp_max())
     {
         mpr("Your reserves of magic are already full.");
         return false;
@@ -343,11 +335,11 @@ static void _spray_lightning(int range, int power)
  */
 bool disc_of_storms()
 {
-    if (!pakellas_device_surge())
-        return false;
+    const int surge = pakellas_surge_devices();
+    surge_power(you.spec_evoke() + surge);
 
     const int fail_rate =
-        30 - player_adjust_evoc_power(you.skill(SK_EVOCATIONS));
+        30 - player_adjust_evoc_power(you.skill(SK_EVOCATIONS), surge);
 
     if (x_chance_in_y(fail_rate, 100))
     {
@@ -367,14 +359,14 @@ bool disc_of_storms()
 
     const int disc_count
         = roll_dice(2, player_adjust_evoc_power(
-                           1 + you.skill_rdiv(SK_EVOCATIONS, 1, 7)));
+                           1 + you.skill_rdiv(SK_EVOCATIONS, 1, 7), surge));
     ASSERT(disc_count);
 
     mpr("The disc erupts in an explosion of electricity!");
     const int range = player_adjust_evoc_power(
-                          you.skill_rdiv(SK_EVOCATIONS, 1, 3) + 5); // 5--14
+                          you.skill_rdiv(SK_EVOCATIONS, 1, 3) + 5, surge); // 5--14
     const int power = player_adjust_evoc_power(
-                          30 + you.skill(SK_EVOCATIONS, 2)); // 30-84
+                          30 + you.skill(SK_EVOCATIONS, 2), surge); // 30-84
     for (int i = 0; i < disc_count; ++i)
         _spray_lightning(range, power);
 
@@ -401,9 +393,9 @@ bool disc_of_storms()
  */
 void black_drac_breath()
 {
-    const int num_shots = roll_dice(2, 1 + you.experience_level / 7);
-    const int range = you.experience_level / 3 + 5; // 5--14
-    const int power = 25 + you.experience_level; // 25-52
+    const int num_shots = roll_dice(2, 1 + effective_xl() / 7);
+    const int range = effective_xl() / 3 + 5; // 5--14
+    const int power = 25 + effective_xl(); // 25-52
     for (int i = 0; i < num_shots; ++i)
         _spray_lightning(range, power);
 }
@@ -467,7 +459,7 @@ void zap_wand(int slot)
     beam.set_agent(&you);
     beam.source_name = "you";
 
-    if (inv_count() < 1)
+    if (inv_count(you.inv1) < 1)
     {
         canned_msg(MSG_NOTHING_CARRIED);
         return;
@@ -500,7 +492,7 @@ void zap_wand(int slot)
         item_slot = slot;
     else
     {
-        item_slot = prompt_invent_item("Zap which item?",
+        item_slot = prompt_invent_item(you.inv1, "Zap which item?",
                                        MT_INVLIST,
                                        OBJ_WANDS,
                                        true, true, true, 0, -1, nullptr,
@@ -510,7 +502,7 @@ void zap_wand(int slot)
     if (prompt_failed(item_slot))
         return;
 
-    item_def& wand = you.inv[item_slot];
+    item_def& wand = you.inv1[item_slot];
     if (wand.base_type != OBJ_WANDS)
     {
         mpr("You can't zap that!");
@@ -662,20 +654,26 @@ void zap_wand(int slot)
 
     dec_mp(mp_cost, false);
     if (wand.sub_type != WAND_HEAL_WOUNDS
-        && wand.sub_type != WAND_DIGGING
         && wand.sub_type != WAND_TELEPORTATION)
     {
-        if (!pakellas_device_surge())
-        {
-            you.turn_is_over = true;
-            return;
-        }
-        surge_power(you.spec_evoke());
-        power = player_adjust_evoc_power(power);
+        const int surge = pakellas_surge_devices();
+        surge_power(you.spec_evoke() + surge);
+        power = player_adjust_evoc_power(power, surge);
     }
 
-    // zapping() updates beam.
-    zapping(type_zapped, power, beam);
+    /*
+	if(wand.sub_type == WAND_HEAL_WOUNDS && aimed_at_self)
+	{
+        start_delay(DELAY_WAND_HEAL, 1, power);
+	}
+	else
+	{
+     */
+	    // zapping() updates beam.
+	    zapping(type_zapped, power, beam);
+    /*
+	}
+     */
 
     // Take off a charge.
     wand.charges--;
@@ -732,7 +730,7 @@ void zap_wand(int slot)
     you.turn_is_over = true;
 }
 
-int recharge_wand(bool known, const string &pre_msg, int num, int den)
+int recharge_wand(recharge_type rechargeType, bool known, const string &pre_msg, int num, int den)
 {
     int item_slot = -1;
     bool divine = num > 0 && den > 0;
@@ -740,7 +738,7 @@ int recharge_wand(bool known, const string &pre_msg, int num, int den)
     {
         if (item_slot == -1)
         {
-            item_slot = prompt_invent_item("Charge which item?", MT_INVLIST,
+            item_slot = prompt_invent_item(you.inv1, "Charge which item?", MT_INVLIST,
                                             divine ? OSEL_DIVINE_RECHARGE
                                                    : OSEL_RECHARGE,
                                             true, true, false);
@@ -765,7 +763,7 @@ int recharge_wand(bool known, const string &pre_msg, int num, int den)
             }
         }
 
-        item_def &wand = you.inv[ item_slot ];
+        item_def &wand = you.inv1[ item_slot ];
 
         if (!item_is_rechargeable(wand, known))
         {
@@ -782,18 +780,13 @@ int recharge_wand(bool known, const string &pre_msg, int num, int den)
 
         if (wand.base_type == OBJ_WANDS)
         {
-            int charge_gain = wand_max_charges(wand) / 3;
-
-            const int new_charges =
-                divine
-                ? min<int>(charge_gain * 3,
-                           max<int>(wand.charges + 1,
-                                    wand.charges + 3 * charge_gain * num / den))
-                : max<int>(wand.charges,
-                           min(charge_gain * 3,
-                               wand.charges +
-                               1 + random2avg(((charge_gain - 1) * 3) + 1, 3)));
-
+            /* old way
+            const int gain_charges = min(wand_max_charges(wand) / 2 + 1, wand.get_cap() - wand.charges);
+             */
+            const int gain_charges = wand.get_cap() - wand.charges;
+            const int new_charges = wand.charges + gain_charges;
+//            if (rechargeType != RECHARGE_TYPE_PAKELLAS)
+                wand.set_cap(max(2, wand.get_cap() - gain_charges / 2));
             const bool charged = (new_charges > wand.plus);
 
             string desc;
@@ -888,8 +881,11 @@ int manual_slot_for_skill(skill_type skill)
     int slot = -1;
     int charges = -1;
 
-    FixedVector<item_def,ENDOFPACK>::const_pointer iter = you.inv.begin();
-    for (;iter!=you.inv.end(); ++iter)
+    FixedVector<item_def, 52> *inv;
+    inv_from_item(inv, OBJ_BOOKS);
+
+    FixedVector<item_def,ENDOFPACK>::const_pointer iter = inv->begin();
+    for (; iter != inv->end(); ++iter)
     {
         if (iter->base_type != OBJ_BOOKS || iter->sub_type != BOOK_MANUAL)
             continue;
@@ -900,7 +896,7 @@ int manual_slot_for_skill(skill_type skill)
         if (slot != -1 && iter->skill_points > charges)
             continue;
 
-        slot = iter - you.inv.begin();
+        slot = iter - inv->begin();
         charges = iter->skill_points;
     }
 
@@ -914,20 +910,23 @@ bool skill_has_manual(skill_type skill)
 
 void finish_manual(int slot)
 {
-    item_def& manual(you.inv[slot]);
+    FixedVector<item_def, 52> *const inv = book_inv();
+    item_def& manual((*inv)[slot]);
     const skill_type skill = static_cast<skill_type>(manual.plus);
 
     mprf("You have finished your manual of %s and toss it away.",
          skill_name(skill));
-    dec_inv_item_quantity(slot, 1);
+    dec_inv_item_quantity((*inv), slot, 1);
 }
 
 void get_all_manual_charges(vector<int> &charges)
 {
     charges.clear();
 
-    FixedVector<item_def,ENDOFPACK>::const_pointer iter = you.inv.begin();
-    for (;iter!=you.inv.end(); ++iter)
+    FixedVector<item_def, 52> *const inv = book_inv();
+
+    FixedVector<item_def,ENDOFPACK>::const_pointer iter = (*inv).begin();
+    for (;iter!=(*inv).end(); ++iter)
     {
         if (iter->base_type != OBJ_BOOKS || iter->sub_type != BOOK_MANUAL)
             continue;
@@ -938,8 +937,10 @@ void get_all_manual_charges(vector<int> &charges)
 
 void set_all_manual_charges(const vector<int> &charges)
 {
+    FixedVector<item_def, 52> *const inv = book_inv();
+
     auto charge_iter = charges.begin();
-    for (item_def &item : you.inv)
+    for (item_def &item : (*inv))
     {
         if (item.base_type != OBJ_BOOKS || item.sub_type != BOOK_MANUAL)
             continue;
@@ -954,9 +955,10 @@ void set_all_manual_charges(const vector<int> &charges)
 string manual_skill_names(bool short_text)
 {
     skill_set skills;
+    FixedVector<item_def, 52> *const inv = book_inv();
 
-    FixedVector<item_def,ENDOFPACK>::const_pointer iter = you.inv.begin();
-    for (;iter!=you.inv.end(); ++iter)
+    FixedVector<item_def,ENDOFPACK>::const_pointer iter = (*inv).begin();
+    for (;iter!=(*inv).end(); ++iter)
     {
         if (iter->base_type != OBJ_BOOKS
             || iter->sub_type != BOOK_MANUAL
@@ -994,24 +996,15 @@ static const pop_entry pop_spiders[] =
 
 static bool _box_of_beasts(item_def &box)
 {
-    if (!pakellas_device_surge())
-        return false;
-    surge_power(you.spec_evoke());
+    const int surge = pakellas_surge_devices() + you.spec_evoke();
+    surge_power(surge);
     mpr("You open the lid...");
 
-    if (!box.plus)
-    {
-        mpr("...but the box appears empty, and falls apart.");
-        ASSERT(in_inventory(box));
-        dec_inv_item_quantity(box.link, 1);
-        return false;
-    }
-
     // two rolls to reduce std deviation - +-6 so can get < max even at 27 sk
-    const int hd_min = min(27,
+    const int hd_min = min(get_max_skill_level(),
                            player_adjust_evoc_power(
                                you.skill(SK_EVOCATIONS)
-                               + random2(7) - random2(7)));
+                               + random2(7) - random2(7), surge));
     const int tier = mutant_beast_tier(hd_min);
     ASSERT(tier < NUM_BEAST_TIERS);
 
@@ -1040,9 +1033,15 @@ static bool _box_of_beasts(item_def &box)
          mons->name(DESC_A).c_str(), mons->airborne() ? "flies" : "leaps");
     xom_is_stimulated(10); // dubious
     did_god_conduct(DID_CHAOS, random_range(5,10));
-    // Decrease charges
-    box.charges--;
-    box.used_count++;
+
+    // After unboxing a beast, chance to break.
+    if (one_chance_in(3))
+    {
+        mpr("The now-empty box falls apart.");
+        ASSERT(in_inventory(box));
+        dec_inv_item_quantity(you.inv1, box.link, 1);
+    }
+
     return true;
 }
 
@@ -1055,37 +1054,31 @@ static bool _sack_of_spiders_veto_mon(monster_type mon)
 
 static bool _sack_of_spiders(item_def &sack)
 {
-    if (!pakellas_device_surge())
-        return false;
-    surge_power(you.spec_evoke());
+    const int surge = pakellas_surge_devices() + you.spec_evoke();
+    surge_power(surge);
     mpr("You reach into the bag...");
 
-    if (!sack.charges)
-    {
-        mpr("...but the bag is empty, and unravels at your touch.");
-        ASSERT(in_inventory(sack));
-        dec_inv_item_quantity(sack.link, 1);
-        return false;
-    }
+    const int evo_skill = you.skill(SK_EVOCATIONS);
+    int count = player_adjust_evoc_power(
+            1 + random2(2) + random2(div_rand_round(evo_skill * 10, 30)), surge);
+    const int power = player_adjust_evoc_power(evo_skill, surge);
 
-    if (one_chance_in(5))
+    if (x_chance_in_y(5, 10 + power))
     {
         mpr("...but nothing happens.");
         return false;
     }
 
     bool success = false;
-    int count =
-        player_adjust_evoc_power(
-            1 + random2(2)
-            + random2(div_rand_round(you.skill(SK_EVOCATIONS, 10), 30)));
+
     for (int n = 0; n < count; n++)
     {
         // Invoke mon-pick with our custom list
         monster_type mon = pick_monster_from(pop_spiders,
-                                             max(1, min(27,
+                                             max(1, min(get_max_skill_level(),
                                              player_adjust_evoc_power(
-                                                 you.skill(SK_EVOCATIONS)))),
+                                                 you.skill(SK_EVOCATIONS),
+                                                 surge))),
                                              _sack_of_spiders_veto_mon);
         mgen_data mg = mgen_data(mon,
                                  BEH_FRIENDLY, &you,
@@ -1100,7 +1093,7 @@ static bool _sack_of_spiders(item_def &sack)
     {
         mpr("...and things crawl out!");
         // Also generate webs on hostile monsters and trap them.
-        int rad = LOS_RADIUS / 2 + 2;
+        const int rad = LOS_RADIUS / 2 + 2;
         for (monster_near_iterator mi(you.pos(), LOS_SOLID); mi; ++mi)
         {
             trap_def *trap = trap_at((*mi)->pos());
@@ -1115,9 +1108,14 @@ static bool _sack_of_spiders(item_def &sack)
                 continue;
             }
 
-            int chance = 100 - (100 * (you.pos().distance_from((*mi)->pos()) - 1) / rad)
-                - player_adjust_evoc_power(2 * (27 - you.skill(SK_EVOCATIONS)));
-            if (x_chance_in_y(chance, 100))
+            // web chance increases with proximity & evo skill
+            // code here uses double negatives; sorry! i blame the other guy
+            // don't try to make surge affect web chance; too messy.
+            const int web_dist_factor
+                = 100 * (you.pos().distance_from((*mi)->pos()) - 1) / rad;
+            const int web_skill_factor = 2 * (27 - you.skill(SK_EVOCATIONS));
+            const int web_chance = 100 - web_dist_factor - web_skill_factor;
+            if (x_chance_in_y(web_chance, 100))
             {
                 if (trap && trap->type == TRAP_WEB)
                     destroy_trap((*mi)->pos());
@@ -1128,10 +1126,15 @@ static bool _sack_of_spiders(item_def &sack)
                 trap = trap_at((*mi)->pos());
                 trap->trigger(**mi);
             }
+
         }
-        // Decrease charges
-        sack.charges--;
-        sack.used_count++;
+        // After gettin' some bugs, check for destruction.
+        if (one_chance_in(3))
+        {
+            mpr("The now-empty bag unravels in your hand.");
+            ASSERT(in_inventory(sack));
+            dec_inv_item_quantity(you.inv1, sack.link, 1);
+        }
     }
     else
         // Failed to create monster for some reason
@@ -1158,7 +1161,7 @@ static bool _make_zig(item_def &zig)
     }
 
     ASSERT(in_inventory(zig));
-    dec_inv_item_quantity(zig.link, 1);
+    dec_inv_item_quantity(you.inv1, zig.link, 1);
     dungeon_terrain_changed(you.pos(), DNGN_ENTER_ZIGGURAT);
     mpr("You set the figurine down, and a mystic portal to a ziggurat forms.");
     return true;
@@ -1169,37 +1172,40 @@ static bool _ball_of_energy()
     bool ret = false;
 
     mpr("You gaze into the crystal ball.");
-    surge_power(you.spec_evoke());
+    const int surge = pakellas_surge_devices();
+    surge_power(you.spec_evoke() + surge);
 
-    int use = player_adjust_evoc_power(random2(you.skill(SK_EVOCATIONS, 6)));
+    int use = player_adjust_evoc_power(random2(you.skill(SK_EVOCATIONS, 6)),
+                                       surge);
 
     if (use < 2)
-        lose_stat(STAT_INT, 1 + random2avg(7, 2));
+        lose_stat(STAT_INT, 1 + random2avg(3, 2));
     else if (use < 5 && enough_mp(1, true))
     {
         mpr("You feel your power drain away!");
-        dec_mp(you.magic_points);
+        dec_mp(get_mp());
     }
     else if (use < 10)
         confuse_player(10 + random2(10));
     else
     {
-        int proportional = (you.magic_points * 100) / you.max_magic_points;
+        int proportional = (get_mp() * 100) / get_mp_max();
 
         if (random2avg(
-                77 - player_adjust_evoc_power(you.skill(SK_EVOCATIONS, 2)), 4)
+                77 - player_adjust_evoc_power(you.skill(SK_EVOCATIONS, 2),
+                                              surge), 4)
             > proportional
             || one_chance_in(25))
         {
             mpr("You feel your power drain away!");
-            dec_mp(you.magic_points);
+            dec_mp(get_mp());
         }
         else
         {
             mpr("You are suffused with power!");
             inc_mp(
                 player_adjust_evoc_power(
-                    5 + random2avg(you.skill(SK_EVOCATIONS), 2)));
+                    5 + random2avg(you.skill(SK_EVOCATIONS), 2), surge));
 
             ret = true;
         }
@@ -1210,11 +1216,11 @@ static bool _ball_of_energy()
     return ret;
 }
 
-static int _num_evoker_elementals()
+static int _num_evoker_elementals(int surge)
 {
     int n = 1;
     const int adjusted_power =
-        player_adjust_evoc_power(you.skill(SK_EVOCATIONS, 10));
+        player_adjust_evoc_power(you.skill(SK_EVOCATIONS, 10), surge);
     if (adjusted_power + random2(70) > 110)
         ++n;
     if (adjusted_power + random2(70) > 170)
@@ -1394,9 +1400,6 @@ static bool _lamp_of_fire()
 {
     bolt base_beam;
     dist target;
-
-    const int pow =
-        player_adjust_evoc_power(8 + you.skill_rdiv(SK_EVOCATIONS, 14, 4));
     direction_chooser_args args;
     args.restricts = DIR_TARGET;
     args.mode = TARG_HOSTILE;
@@ -1407,22 +1410,20 @@ static bool _lamp_of_fire()
         if (you.confused())
             target.confusion_fuzz();
 
-        if (!pakellas_device_surge())
-        {
-            you.turn_is_over = false;
-            return false;
-        }
-
-        surge_power(you.spec_evoke());
+        const int surge = pakellas_surge_devices();
+        surge_power(you.spec_evoke() + surge);
         did_god_conduct(DID_FIRE, 6 + random2(3));
 
         mpr("The flames dance!");
 
         vector<bolt> beams;
-        int num_trails = _num_evoker_elementals();
+        int num_trails = _num_evoker_elementals(surge);
 
         _fill_flame_trails(you.pos(), target.target, beams, num_trails);
 
+        const int pow =
+            player_adjust_evoc_power(8 + you.skill_rdiv(SK_EVOCATIONS, 14, 4),
+                                     surge);
         for (bolt &beam : beams)
         {
             if (beam.source == beam.target)
@@ -1685,9 +1686,8 @@ static bool _phial_of_floods()
     dist target;
     bolt beam;
 
-    const int power =
-        player_adjust_evoc_power(10 + you.skill(SK_EVOCATIONS, 4));
-    zappy(ZAP_PRIMAL_WAVE, power, false, beam);
+    const int base_pow = 10 + you.skill(SK_EVOCATIONS, 4); // placeholder?
+    zappy(ZAP_PRIMAL_WAVE, base_pow, false, beam);
     beam.range = LOS_RADIUS;
     beam.aimed_at_spot = true;
 
@@ -1695,28 +1695,31 @@ static bool _phial_of_floods()
     args.mode = TARG_HOSTILE;
     args.top_prompt = "Aim the phial where?";
     if (spell_direction(target, beam, &args)
-        && player_tracer(ZAP_PRIMAL_WAVE, power, beam))
+        && player_tracer(ZAP_PRIMAL_WAVE, base_pow, beam))
     {
         if (you.confused())
         {
             target.confusion_fuzz();
             beam.set_target(target);
         }
-        if (!pakellas_device_surge())
-        {
-            you.turn_is_over = true;
-            return false;
-        }
-        surge_power(you.spec_evoke());
+
+        const int surge = pakellas_surge_devices();
+        surge_power(you.spec_evoke() + surge);
+        const int power = player_adjust_evoc_power(base_pow, surge);
+        // use real power to recalc hit/dam
+        zappy(ZAP_PRIMAL_WAVE, power, false, beam);
+
         beam.fire();
 
         vector<coord_def> elementals;
         // Flood the endpoint
         coord_def center = beam.path_taken.back();
         int num = player_adjust_evoc_power(
-                      5 + you.skill_rdiv(SK_EVOCATIONS, 3, 5) + random2(7));
+                      5 + you.skill_rdiv(SK_EVOCATIONS, 3, 5) + random2(7),
+                      surge);
         int dur = player_adjust_evoc_power(
-                      40 + you.skill_rdiv(SK_EVOCATIONS, 8, 3));
+                      40 + you.skill_rdiv(SK_EVOCATIONS, 8, 3),
+                      surge);
         for (distance_iterator di(center, true, false, 2); di && num > 0; ++di)
         {
             const dungeon_feature_type feat = grd(*di);
@@ -1731,7 +1734,7 @@ static bool _phial_of_floods()
             }
         }
 
-        int num_elementals = _num_evoker_elementals();
+        int num_elementals = _num_evoker_elementals(surge);
 
         bool created = false;
         num = min(num_elementals,
@@ -1747,7 +1750,7 @@ static bool _phial_of_floods()
                           MONS_WATER_ELEMENTAL, COLOUR_INHERIT,
                           PROX_CLOSE_TO_PLAYER);
             mg.hd = player_adjust_evoc_power(
-                        6 + you.skill_rdiv(SK_EVOCATIONS, 2, 15));
+                        6 + you.skill_rdiv(SK_EVOCATIONS, 2, 15), surge);
             if (create_monster(mg))
                 created = true;
         }
@@ -1808,20 +1811,21 @@ static spret_type _phantom_mirror()
         return SPRET_ABORT;
     }
 
+    const int surge = pakellas_surge_devices();
+    surge_power(you.spec_evoke() + surge);
+
     monster* mon = clone_mons(victim, true);
     if (!mon)
     {
         canned_msg(MSG_NOTHING_HAPPENS);
         return SPRET_FAIL;
     }
-
-    if (!pakellas_device_surge())
-        return SPRET_FAIL;
-    surge_power(you.spec_evoke());
-    const int power = player_adjust_evoc_power(5 + you.skill(SK_EVOCATIONS, 3));
+    const int power = player_adjust_evoc_power(5 + you.skill(SK_EVOCATIONS, 3),
+                                               surge);
     int dur = min(6, max(1,
                          player_adjust_evoc_power(
-                             you.skill(SK_EVOCATIONS, 1) / 4 + 1)
+                             you.skill(SK_EVOCATIONS, 1) / 4 + 1,
+                             surge)
                          * (100 - victim->check_res_magic(power)) / 100));
 
     mon->attitude = ATT_FRIENDLY;
@@ -1848,8 +1852,9 @@ static bool _rod_spell(item_def& irod, bool check_range)
     ASSERT(irod.base_type == OBJ_RODS);
 
     const spell_type spell = spell_in_rod(static_cast<rod_type>(irod.sub_type));
-    int mana = spell_mana(spell) * ROD_CHARGE_MULT;
-    int power = calc_spell_power(spell, false, false, true, true);
+    int magic = spell_difficulty(spell) * ROD_CHARGE_MULT;
+
+    int power = calc_spell_power(spell, false, true);
 
     int food = spell_hunger(spell, true);
 
@@ -1867,15 +1872,15 @@ static bool _rod_spell(item_def& irod, bool check_range)
     if (spell == SPELL_THUNDERBOLT && you.props.exists("thunderbolt_last")
         && you.props["thunderbolt_last"].get_int() + 1 == you.num_turns)
     {
-        // Starting it up takes 2 mana, continuing any amount up to 5.
+        // Starting it up takes 2 magic, continuing any amount up to 5.
         // You don't get to expend less (other than stopping the zap completely).
-        mana = min(5 * ROD_CHARGE_MULT, (int)irod.plus);
+        magic = min(5 * ROD_CHARGE_MULT, (int)irod.plus);
         // Never allow using less than a whole point of charge.
-        mana = max(mana, ROD_CHARGE_MULT);
-        you.props["thunderbolt_mana"].get_int() = mana;
+        magic = max(magic, ROD_CHARGE_MULT);
+        you.props["thunderbolt_mana"].get_int() = magic;
     }
 
-    if (irod.plus < mana)
+    if (irod.plus < magic)
     {
         mpr("The rod doesn't have enough magic points.");
         crawl_state.zero_turns_taken();
@@ -1891,7 +1896,7 @@ static bool _rod_spell(item_def& irod, bool check_range)
         mpr("You can't see any susceptible monsters within range! "
             "(Use <w>V</w> to cast anyway.)");
 
-        if (Options.use_animations & UA_RANGE)
+        if ((Options.use_animations & UA_RANGE) && Options.darken_beyond_range)
         {
             targetter_smite range(&you, calc_spell_range(spell, 0, true), 0, 0, true);
             range_view_annotator show_range(&range);
@@ -1913,7 +1918,7 @@ static bool _rod_spell(item_def& irod, bool check_range)
     make_hungry(food, true, true);
     if (ret == SPRET_SUCCESS)
     {
-        irod.plus -= mana;
+        irod.plus -= magic;
         you.wield_change = true;
         if (item_is_quivered(irod))
             you.redraw_quiver = true;
@@ -1952,7 +1957,7 @@ bool evoke_item(int slot, bool check_range)
 
     if (slot == -1)
     {
-        slot = prompt_invent_item("Evoke which item? (* to show all)",
+        slot = prompt_invent_item(you.inv1, "Evoke which item? (* to show all)",
                                    MT_INVLIST,
                                    OSEL_EVOKABLE, true, true, true, 0, -1,
                                    nullptr, OPER_EVOKE);
@@ -1960,7 +1965,7 @@ bool evoke_item(int slot, bool check_range)
         if (prompt_failed(slot))
             return false;
     }
-    else if (!check_warning_inscriptions(you.inv[slot], OPER_EVOKE))
+    else if (!check_warning_inscriptions(you.inv1[slot], OPER_EVOKE))
         return false;
 
     ASSERT(slot >= 0);
@@ -1969,7 +1974,7 @@ bool evoke_item(int slot, bool check_range)
     const bool wielded = (you.equip[EQ_WEAPON] == slot);
 #endif /* DEBUG */
 
-    item_def& item = you.inv[slot];
+    item_def& item = you.inv1[slot];
     // Also handles messages.
     if (!item_is_evokable(item, true, false, false, true))
         return false;
@@ -1980,8 +1985,6 @@ bool evoke_item(int slot, bool check_range)
 
     const unrandart_entry *entry = is_unrandom_artefact(item)
         ? get_unrand_entry(item.unrand_idx) : nullptr;
-
-    you.attribute[ATTR_PAKELLAS_DEVICE_SURGE] = 0; // set later if needed
 
     if (entry && entry->evoke_func)
     {
@@ -2041,7 +2044,7 @@ bool evoke_item(int slot, bool check_range)
             return false;
         }
 
-        if (!(pract = _rod_spell(you.inv[slot], check_range)))
+        if (!(pract = _rod_spell(you.inv1[slot], check_range)))
             return false;
 
         did_work = true;  // _rod_spell() handled messages
@@ -2068,10 +2071,8 @@ bool evoke_item(int slot, bool check_range)
             canned_msg(MSG_TOO_HUNGRY);
             return false;
         }
-        else if (you.magic_points >= you.max_magic_points
-#if TAG_MAJOR_VERSION == 34
-                 && (you.species != SP_DJINNI || you.hp == you.hp_max)
-#endif
+        else if (get_mp() >= get_mp_max()
+                 && (you.species != SP_DJINNI || get_hp() == get_hp_max())
                 )
         {
             mpr("Your reserves of magic are already full.");
@@ -2083,7 +2084,8 @@ bool evoke_item(int slot, bool check_range)
                                4000))
         {
             mpr("You channel some magical energy.");
-            inc_mp(1 + random2(3));
+            const int gain = 1 + random2(3);
+            inc_mp(gain * 3);
             make_hungry(50, false, true);
             pract = 1;
             did_work = true;
@@ -2097,8 +2099,8 @@ bool evoke_item(int slot, bool check_range)
         did_work = true; // easier to do it this way for misc items
 
         if ((player_mutation_level(MUT_NO_ARTIFICE)
-             || player_under_penance(GOD_PAKELLAS)
-                && !is_deck(item))
+             || player_under_penance(GOD_PAKELLAS))
+            && !is_deck(item)
             && item.sub_type != MISC_ZIGGURAT)
         {
             if (player_mutation_level(MUT_NO_ARTIFICE))
@@ -2114,7 +2116,7 @@ bool evoke_item(int slot, bool check_range)
         if (is_deck(item))
         {
             evoke_deck(item);
-            pract = 1;
+            practise(EX_DID_USE_DECK);
             count_action(CACT_EVOKE, EVOC_DECK);
             break;
         }
@@ -2128,23 +2130,23 @@ bool evoke_item(int slot, bool check_range)
 #endif
 
         case MISC_FAN_OF_GALES:
+        {
             if (!evoker_is_charged(item))
             {
                 mpr("That is presently inert.");
                 return false;
             }
-            if (!pakellas_device_surge())
-            {
-                you.turn_is_over = true;
-                break;
-            }
-            surge_power(you.spec_evoke());
+
+            const int surge = pakellas_surge_devices();
+            surge_power(you.spec_evoke() + surge);
             wind_blast(&you,
-                       player_adjust_evoc_power(you.skill(SK_EVOCATIONS, 15)),
+                       player_adjust_evoc_power(you.skill(SK_EVOCATIONS, 15),
+                                                surge),
                        coord_def());
             expend_xp_evoker(item);
             pract = 1;
             break;
+        }
 
         case MISC_LAMP_OF_FIRE:
             if (!evoker_is_charged(item))
@@ -2224,7 +2226,7 @@ bool evoke_item(int slot, bool check_range)
             mpr("QUAD DAMAGE!");
             you.duration[DUR_QUAD_DAMAGE] = 30 * BASELINE_DELAY;
             ASSERT(in_inventory(item));
-            dec_inv_item_quantity(item.link, 1);
+            dec_inv_item_quantity(you.inv1, item.link, 1);
             invalidate_agrid(true);
             break;
 
@@ -2237,7 +2239,7 @@ bool evoke_item(int slot, bool check_range)
 
                 case SPRET_SUCCESS:
                     ASSERT(in_inventory(item));
-                    dec_inv_item_quantity(item.link, 1);
+                    dec_inv_item_quantity(you.inv1, item.link, 1);
                     // deliberate fall-through
                 case SPRET_FAIL:
                     pract = 1;
@@ -2274,5 +2276,6 @@ bool evoke_item(int slot, bool check_range)
     else
         crawl_state.zero_turns_taken();
 
+    you.prev_direction.reset();
     return did_work;
 }

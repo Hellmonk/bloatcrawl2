@@ -205,7 +205,8 @@ i-evasion BRAND_EVASION
 # Move i-confusion down to missile-only brands when TAG_MAJOR_VERSION > 34
 i-confusion BRAND_CONFUSION
 i-penetration BRAND_PENETRATION
-i-reaping BRAND_REAPING BRAND_WEP_LAST
+i-reaping BRAND_REAPING
+i-speed BRAND_LIGHT BRAND_WEP_LAST
 # missile-only brands, order doesn't matter
 i-dispersal BRAND_DISPERSAL
 i-explosion BRAND_EXPLOSION
@@ -500,9 +501,10 @@ i-positive-energy BRAND_ARM_POSITIVE_ENERGY
 i-archmagi BRAND_ARM_ARCHMAGI
 i-preservation BRAND_ARM_PRESERVATION
 i-reflection BRAND_ARM_REFLECTION
-i-spirit BRAND_ARM_SPIRIT_SHIELD
+i-spirit BRAND_ARM_MAGIC_SHIELD
 i-archery BRAND_ARM_ARCHERY
-i-jumping BRAND_ARM_JUMPING BRAND_ARM_LAST
+i-jumping BRAND_ARM_JUMPING
+i-spirit BRAND_ARM_STAMINA_SHIELD BRAND_ARM_LAST
 
 ###########OBJ_WANDS
 %sdir item/wand
@@ -578,15 +580,11 @@ bone3
 bone4
 %rim 1
 chunk FOOD_CHUNK
-chunk_rotten FOOD_CHUNK_ROTTEN
 %back chunk
 chunk_brands/i-mutation FOOD_CHUNK_MUTAGENIC
 chunk_brands/i-decay FOOD_CHUNK_ROTTING
 chunk_brands/i-forbidden FOOD_CHUNK_FORBIDDEN
-%back chunk_rotten
-chunk_brands/i-mutation FOOD_CHUNK_ROTTEN_MUTAGENIC
-chunk_brands/i-decay FOOD_CHUNK_ROTTEN_ROTTING
-chunk_brands/i-forbidden FOOD_CHUNK_ROTTEN_FORBIDDEN
+chunk_brands/i-inedible FOOD_CHUNK_INEDIBLE
 %back none
 chunk_brands/i-mutation FOOD_MUTAGENIC
 chunk_brands/i-decay FOOD_ROTTING
@@ -600,54 +598,78 @@ scroll SCROLL UNSEEN_SCROLL
 
 #### These must be in the same order as the enum in itemprop-enum.h!
 %sdir item/scroll
-%back scroll-yellow
-i-identify SCR_IDENTIFY SCR_ID_FIRST
-%back scroll-purple
-i-teleportation SCR_TELEPORTATION
-%back scroll-blue
-i-fear SCR_FEAR
 %back scroll-grey
-i-noise SCR_NOISE
+i-random_uselessness SCR_RANDOM_USELESSNESS SCR_ID_FIRST
+%back scroll-cyan
+i-acquirement SCR_ACQUIREMENT
 %back scroll-yellow
-i-remove_curse SCR_REMOVE_CURSE
-%back scroll-brown
-i-unholy_creation SCR_UNHOLY_CREATION
+i-amnesia SCR_AMNESIA
+%back scroll-cyan
+i-amplification SCR_AMPLIFICATION
+%back scroll-purple
+i-blinking SCR_BLINKING
+%back scroll-green
+i-brand-weapon SCR_BRAND_WEAPON
+%back scroll-purple
+i-briars SCR_BRIARS
+%back scroll-purple
+i-displacement SCR_DISPLACEMENT
+%back scroll-green
+i-enchant_armour SCR_ENCHANT_ARMOUR
 %back scroll-green
 i-enchant-weapon SCR_ENCHANT_WEAPON
-i-enchant_armour SCR_ENCHANT_ARMOUR
+%back scroll-blue
+i-fear SCR_FEAR
+%back scroll-blue
+i-fog SCR_FOG
+%back scroll-red
+i-holy_word SCR_HOLY_WORD
+%back scroll-yellow
+i-identify SCR_IDENTIFY
+%back scroll-grey
+i-immolation SCR_IMMOLATION
+%back scroll-cyan
+i-infinity SCR_INFINITY
+%back scroll-grey
+i-inversion SCR_INVERSION
+%back scroll-grey
+i-karma SCR_KARMA
+%back scroll-yellow
+i-magic_mapping SCR_MAGIC_MAPPING
+%back scroll-grey
+i-noise SCR_NOISE
+%back scroll-green
+i-recharging SCR_RECHARGING
+%back scroll-yellow
+i-remove_curse SCR_REMOVE_CURSE
+%back scroll-cyan
+i-replication SCR_REPLICATION
+%back scroll-cyan
+i-returning SCR_RETURNING
+%back scroll-red
+i-silence SCR_SILENCE
+%back scroll-purple
+i-teleportation SCR_TELEPORTATION
+%back scroll-brown
+#### summoning?
+i-unholy_creation SCR_UNHOLY_CREATION
 %back scroll-red
 i-torment SCR_TORMENT
 %back scroll-grey
-i-random_uselessness SCR_RANDOM_USELESSNESS
-%back scroll-grey
 #### Remove curse foo when TAG_MAJOR_VERSION > 34
 i-curse_weapon SCR_CURSE_WEAPON
+%back scroll-grey
 i-curse_armour SCR_CURSE_ARMOUR
-i-immolation SCR_IMMOLATION
-%back scroll-purple
-i-blinking SCR_BLINKING
-%back scroll-yellow
-i-magic_mapping SCR_MAGIC_MAPPING
-%back scroll-blue
-i-fog SCR_FOG
-%back scroll-cyan
-i-acquirement SCR_ACQUIREMENT
 %back scroll-green
 #if TAG_MAJOR_VERSION == 34 # Remove the two i-enchant-weapon
 i-enchant-weapon SCR_ENCHANT_WEAPON_II
-i-brand-weapon SCR_BRAND_WEAPON
-i-recharging SCR_RECHARGING
+%back scroll-green
 i-enchant-weapon SCR_ENCHANT_WEAPON_III
-%back scroll-red
-i-holy_word SCR_HOLY_WORD
-i-vulnerability SCR_VULNERABILITY
-%back scroll-red
-i-silence SCR_SILENCE
-%back scroll-yellow
-i-amnesia SCR_AMNESIA
 %back scroll-grey
 #### Remove curse foo when TAG_MAJOR_VERSION > 34
-i-curse-jewellery SCR_CURSE_JEWELLERY SCR_ID_LAST
+i-curse-jewellery SCR_CURSE_JEWELLERY
+%back scroll-red
+i-vulnerability SCR_VULNERABILITY SCR_ID_LAST
 %back none
 
 ##################OBJ_JEWELLERY
@@ -706,8 +728,7 @@ snake
 %sdir item/ring
 #### These must be in the same order as the enum in itemprop-enum.h!
 # Remove regeneration when TAG_MAJOR_VERSION > 34 (and mark protection as 1st)
-i-protection RING_REGENERATION RING_ID_FIRST
-i-protection RING_PROTECTION
+i-protection RING_PROTECTION RING_ID_FIRST
 i-r-fire RING_PROTECTION_FROM_FIRE
 i-r-poison RING_POISON_RESISTANCE
 i-r-cold RING_PROTECTION_FROM_COLD
@@ -729,8 +750,7 @@ i-life-protection RING_LIFE_PROTECTION
 i-r-magic RING_PROTECTION_FROM_MAGIC
 i-fire RING_FIRE
 i-ice RING_ICE
-# remove teleport control when TAG_MAJOR_VERSION > 34 and mark ice as last
-i-c-teleport RING_TELEPORT_CONTROL RING_ID_LAST
+i-magical-power RING_STAMINA RING_ID_LAST
 
 ############amulets
 %sdir item/amulet
@@ -782,16 +802,16 @@ sun
 i-rage AMU_RAGE AMU_ID_FIRST
 i-harm AMU_HARM
 i-dismissal AMU_DISMISSAL
-i-m-regeneration AMU_MANA_REGENERATION
-i-gourmand AMU_THE_GOURMAND
-i-rage AMU_REMOVEME1
-i-rage AMU_REMOVEME2
+i-m-regeneration AMU_MAGIC_REGENERATION
+i-m-regeneration AMU_STAMINA_REGENERATION
 i-inaccuracy AMU_INACCURACY
 i-rage AMU_NOTHING
-i-spirit AMU_GUARDIAN_SPIRIT
+i-spirit AMU_MAGIC_SHIELD
 i-faith AMU_FAITH
 i-reflection AMU_REFLECTION
-i-regeneration AMU_REGENERATION AMU_ID_LAST
+i-regeneration AMU_HEALTH_REGENERATION
+i-spirit AMU_STAMINA_SHIELD
+i-spirit AMU_QUICK_CAST AMU_ID_LAST
 
 ####################OBJ_POTIONS
 %sdir item/potion
@@ -822,41 +842,43 @@ sky_blue
 %sdir item/potion
 %back i-label
 # These must be in the same order as the enum in enum.h!
-i-curing POT_CURING POT_ID_FIRST
-i-heal-wounds POT_HEAL_WOUNDS
-i-haste POT_HASTE
-i-might POT_MIGHT
+i-agility POT_AGILITY POT_ID_FIRST
+i-ambrosia POT_AMBROSIA
+i-good-mutation POT_BENEFICIAL_MUTATION
+i-berserk-rage POT_BERSERK_RAGE
+i-blood POT_BLOOD
 i-brilliance POT_BRILLIANCE
-i-agility POT_AGILITY
-# please remove these 3 when TAG_MAJOR_VERSION is bumped
+i-poison POT_BURNING
+i-cancel POT_CANCELLATION
+i-cure-mutation POT_CURE_MUTATION
+i-curing POT_CURING
+i-curing POT_DARKNESS
+i-degeneration POT_DEGENERATION
+i-experience POT_EXPERIENCE
+i-flight POT_FLIGHT
+i-haste POT_HASTE
+i-heal-wounds POT_HEAL_WOUNDS
+i-invisibility POT_INVISIBILITY
+i-lignify POT_LIGNIFY
+i-magic POT_MAGIC
+i-might POT_MIGHT
+i-mutation POT_MUTATION
+i-mutation POT_PATIENCE
+i-poison POT_POISON_VULNERABILITY
+i-resistance POT_RESISTANCE
+i-mutation POT_WEAK_MUTATION
+i-magic POT_STAMINA
+# please remove when TAG_MAJOR_VERSION is bumped
+i-slowing POT_SLOWING
+i-porridge POT_PORRIDGE
 i-gain-strength POT_REMOVEME2
 i-gain-dexterity POT_REMOVEME3
 i-gain-intelligence POT_REMOVEME4
-i-flight POT_FLIGHT
-# please remove POT_POISON when TAG_MAJOR_VERSION is bumped
-i-poison POT_POISON
-i-slowing POT_SLOWING
-i-cancel POT_CANCELLATION
-i-ambrosia POT_AMBROSIA
-i-invisibility POT_INVISIBILITY
-i-porridge POT_PORRIDGE
-i-degeneration POT_DEGENERATION
-# please remove these 2 when TAG_MAJOR_VERSION is bumped
+i-restore-abilities POT_REMOVEME6
 i-decay POT_REMOVEME5
 i-confusion POT_REMOVE_ME
-i-experience POT_EXPERIENCE
-i-magic POT_MAGIC
-# remove these 2 when TAG_MAJOR_VERSION is bumped
-i-restore-abilities POT_REMOVEME6
-i-strong-poison POT_REMOVEME7
-i-berserk-rage POT_BERSERK_RAGE
-i-cure-mutation POT_CURE_MUTATION
-i-mutation POT_MUTATION
-i-resistance POT_RESISTANCE
-i-blood POT_BLOOD
 i-coagulated-blood POT_BLOOD_COAGULATED
-i-lignify POT_LIGNIFY
-i-good-mutation POT_BENEFICIAL_MUTATION POT_ID_LAST
+i-strong-poison POT_REMOVEME7 POT_ID_LAST
 %back none
 %rim 1
 
@@ -933,6 +955,9 @@ i-staff_enchantment STAFF_ENCHANTMENT
 i-staff_summoning STAFF_SUMMONING
 i-staff_air STAFF_AIR
 i-staff_earth STAFF_EARTH
+i-staff_earth STAFF_LIGHT
+i-staff_earth STAFF_DARKNESS
+i-staff_earth STAFF_TIME
 %rim 0
 i-staff_channeling STAFF_CHANNELING STAFF_ID_LAST
 
@@ -1002,7 +1027,7 @@ misc_deck MISC_DECK
 %compose misc_deck
 %compose i-deck_destruction
 %finish
-# Remove dungeons, summoning and wonders when TAG_MAJOR_VERSION > 34
+# Remove when TAG_MAJOR_VERSION > 34
 %start
 %compose misc_deck
 %compose i-deck_dungeons
@@ -1012,6 +1037,7 @@ misc_deck MISC_DECK
 %compose i-deck_summoning
 %finish
 %start
+# Remove when TAG_MAJOR_VERSION > 34
 %compose misc_deck
 %compose i-deck_wonders
 %finish
@@ -1019,6 +1045,7 @@ misc_deck MISC_DECK
 %compose misc_deck
 %compose i-deck_punishment
 %finish
+# Remove war, changes and defense when TAG_MAJOR_VERSION > 34
 %start
 %compose misc_deck
 %compose i-deck_war
@@ -1136,6 +1163,8 @@ rune_demonic_4
 rune_demonic_5
 rune_demonic_6
 rune_elven RUNE_ELVEN
+generic RUNE_DWARF
+generic RUNE_CRYPT
 
 #OBJ_CORPSES
 #handled in dc-corpse.txt

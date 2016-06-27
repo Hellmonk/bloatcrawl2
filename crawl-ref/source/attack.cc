@@ -32,6 +32,7 @@
 #include "mon-clone.h"
 #include "mon-death.h"
 #include "mon-poly.h"
+#include "ranged_attack.h"
 #include "religion.h"
 #include "spl-miscast.h"
 #include "state.h"
@@ -52,7 +53,7 @@ attack::attack(actor *attk, actor *defn, actor *blame)
       perceived_attack(false), obvious_effect(false), to_hit(0),
       damage_done(0), special_damage(0), aux_damage(0), min_delay(0),
       final_attack_delay(0), special_damage_flavour(BEAM_NONE),
-      stab_attempt(false), stab_bonus(0), ev_margin(0), weapon(nullptr),
+      stab_attempt(false), stab_bonus(0), hit_margin(0), weapon(nullptr),
       damage_brand(SPWPN_NORMAL), wpn_skill(SK_UNARMED_COMBAT),
       shield(nullptr), art_props(0), unrand_entry(nullptr),
       attacker_to_hit_penalty(0), attack_verb("bug"), verb_degree(),
@@ -132,6 +133,9 @@ bool attack::handle_phase_end()
     // This may invalidate both the attacker and defender.
     fire_final_effects();
 
+    if (attacker->is_player())
+        player_attacked_something(sp_cost);
+
     return true;
 }
 
@@ -140,15 +144,11 @@ bool attack::handle_phase_end()
  *
  * @param random If false, calculate average to-hit deterministically.
  */
-int attack::calc_to_hit(bool random)
+int attack::calc_to_hit()
 {
     int mhit = attacker->is_player() ?
-                15 + (you.dex() / 2)
+               0
               : calc_mon_to_hit_base();
-
-#ifdef DEBUG_DIAGNOSTICS
-    const int base_hit = mhit;
-#endif
 
     // This if statement is temporary, it should be removed when the
     // implementation of a more universal (and elegant) to-hit calculation
@@ -156,67 +156,13 @@ int attack::calc_to_hit(bool random)
     // player_to_hit methods.
     if (attacker->is_player())
     {
-        // fighting contribution
-        mhit += maybe_random_div(you.skill(SK_FIGHTING, 100), 100, random);
+        mhit = calc_player_to_hit(weapon, wpn_skill);
 
-        // weapon skill contribution
-        if (using_weapon())
-        {
-            if (wpn_skill != SK_FIGHTING)
-            {
-                if (you.skill(wpn_skill) < 1 && player_in_a_dangerous_place())
-                    xom_is_stimulated(10); // Xom thinks that is mildly amusing.
+        int range = 1;
+        if (attacker && defender)
+            range = grid_distance(attacker->pos(), defender->pos());
 
-                mhit += maybe_random_div(you.skill(wpn_skill, 100), 100,
-                                         random);
-            }
-        }
-        else if (you.form_uses_xl())
-            mhit += maybe_random_div(you.experience_level * 100, 100, random);
-        else
-        {
-            // Claws give a slight bonus to accuracy when active
-            mhit += (player_mutation_level(MUT_CLAWS) > 0
-                     && wpn_skill == SK_UNARMED_COMBAT) ? 4 : 2;
-
-            mhit += maybe_random_div(you.skill(wpn_skill, 100), 100,
-                                     random);
-        }
-
-        // weapon bonus contribution
-        if (using_weapon())
-        {
-            if (weapon->base_type == OBJ_WEAPONS)
-            {
-                mhit += weapon->plus;
-                mhit += property(*weapon, PWPN_HIT);
-            }
-            else if (weapon->base_type == OBJ_STAVES)
-                mhit += property(*weapon, PWPN_HIT);
-        }
-
-        // slaying bonus
-        mhit += slaying_bonus(wpn_skill == SK_THROWING
-                              || (weapon && is_range_weapon(*weapon)
-                                         && using_weapon()));
-
-        // hunger penalty
-        if (you.hunger_state <= HS_STARVING)
-            mhit -= 3;
-
-        // armour penalty
-        mhit -= (attacker_armour_tohit_penalty + attacker_shield_tohit_penalty);
-
-        // vertigo penalty
-        if (you.duration[DUR_VERTIGO])
-            mhit -= 5;
-
-        // mutation
-        if (player_mutation_level(MUT_EYEBALLS))
-            mhit += 2 * player_mutation_level(MUT_EYEBALLS) + 1;
-
-        // hit roll
-        mhit = maybe_random2(mhit, random);
+        mhit = player_tohit_modifier(mhit, range);
     }
     else    // Monster to-hit.
     {
@@ -234,10 +180,10 @@ int attack::calc_to_hit(bool random)
     }
 
     // Penalties for both players and monsters:
-    mhit -= 5 * attacker->inaccuracy();
+    mhit -= 10 * attacker->inaccuracy();
 
     if (attacker->confused())
-        mhit -= 5;
+        mhit -= 10;
 
     if (using_weapon()
         && (is_unrandom_artefact(*weapon, UNRAND_WOE)
@@ -252,32 +198,96 @@ int attack::calc_to_hit(bool random)
         return mhit;
 
     if (!defender->visible_to(attacker))
-        if (attacker->is_player())
-            mhit -= 6;
-        else
-            mhit = mhit * 65 / 100;
+        mhit -= 20;
     else
     {
         // This can only help if you're visible!
         const int how_transparent = player_mutation_level(MUT_TRANSLUCENT_SKIN);
         if (defender->is_player() && how_transparent)
-            mhit -= 2 * how_transparent;
+            mhit -= 5 * how_transparent;
 
         if (defender->backlit(false))
-            mhit += 2 + random2(8);
+        {
+            mhit += 10;
+        }
         else if (!attacker->nightvision()
                  && defender->umbra())
-            mhit -= 2 + random2(4);
+        {
+            mhit -= 10;
+        }
     }
+
     // Don't delay doing this roll until test_hit().
     if (!attacker->is_player())
-        mhit = random2(mhit + 1);
-
-    dprf(DIAG_COMBAT, "%s: Base to-hit: %d, Final to-hit: %d",
-         attacker->name(DESC_PLAIN).c_str(),
-         base_hit, mhit);
+    {
+        mhit /= 2;
+    }
 
     return mhit;
+}
+
+int calc_player_to_hit(item_def *weapon, skill_type wpn_skill)
+{
+    int mhit = 100;
+    const int dex = you.dex();
+    mhit += (dex - 10) * 10;
+
+    // weapon skill contribution
+    if (weapon)
+    {
+        if (wpn_skill != SK_FIGHTING)
+        {
+            if (you.skill(wpn_skill) < 1 && player_in_a_dangerous_place())
+                xom_is_stimulated(10); // Xom thinks that is mildly amusing.
+
+            mhit += you.skill(wpn_skill, 10);
+        }
+    }
+    else if (you.form_uses_xl())
+        mhit += effective_xl();
+    else
+    {
+        // Claws give a slight bonus to accuracy when active
+        mhit += (player_mutation_level(MUT_CLAWS) > 0
+                 && wpn_skill == SK_UNARMED_COMBAT) ? 40 : 20;
+
+        mhit += you.skill(wpn_skill, 10);
+    }
+
+    // weapon bonus contribution
+    if (weapon && !weapon->super_cursed())
+    {
+        if (weapon->base_type == OBJ_WEAPONS)
+        {
+            mhit += weapon->plus * 10;
+            mhit += property(*weapon, PWPN_HIT) * 10;
+        }
+        else if (weapon->base_type == OBJ_STAVES)
+            mhit += property(*weapon, PWPN_HIT) * 10;
+    }
+
+    // slaying bonus
+    mhit += slaying_bonus(wpn_skill == SK_THROWING
+                          || (weapon && is_range_weapon(*weapon))) * 10;
+
+    // hunger penalty
+    if (you.hunger_state <= HS_STARVING)
+            mhit -= 30;
+
+    const int attacker_armour_tohit_penalty = you.armour_tohit_penalty(true, 10);
+    const int attacker_shield_tohit_penalty = you.shield_tohit_penalty(true, 10);
+
+    // armour penalty
+    mhit -= (attacker_armour_tohit_penalty + attacker_shield_tohit_penalty);
+
+    // vertigo penalty
+    if (you.duration[DUR_VERTIGO])
+            mhit -= 50;
+
+    // mutation
+    if (player_mutation_level(MUT_EYEBALLS))
+            mhit += 20 * player_mutation_level(MUT_EYEBALLS) + 10;
+    return mhit / 10;
 }
 
 /* Returns an actor's name
@@ -356,7 +366,7 @@ void attack::init_attack(skill_type unarmed_skill, int attack_number)
         div_rand_round(attacker->armour_tohit_penalty(true, 20), 20);
     attacker_shield_tohit_penalty =
         div_rand_round(attacker->shield_tohit_penalty(true, 20), 20);
-    to_hit          = calc_to_hit(true);
+    to_hit          = calc_to_hit();
 
     shield = attacker->shield();
     defender_shield = defender ? defender->shield() : defender_shield;
@@ -489,14 +499,15 @@ bool attack::distortion_affects_defender()
     switch (choice)
     {
     case SMALL_DMG:
-        special_damage_message = make_stringf("Space bends around %s.",
-                                              defender_name(false).c_str());
         special_damage += 1 + random2avg(7, 2);
+        special_damage_message = make_stringf("Space bends around %s.",
+                                              defender_name(false).c_str() );
         break;
     case BIG_DMG:
-        special_damage_message = make_stringf("Space warps horribly around %s!",
-                                              defender_name(false).c_str());
         special_damage += 3 + random2avg(24, 2);
+        special_damage_message = make_stringf("Space warps horribly around %s!",
+                                              defender_name(false).c_str()
+                                              );
         break;
     case BLINK:
         if (defender_visible)
@@ -1038,18 +1049,6 @@ int attack::inflict_damage(int dam, beam_type flavour, bool clean)
                           "", aux_source.c_str(), clean);
 }
 
-/* If debug, return formatted damage done
- *
- */
-string attack::debug_damage_number()
-{
-#ifdef DEBUG_DIAGNOSTICS
-    return make_stringf(" for %d", damage_done);
-#else
-    return "";
-#endif
-}
-
 /* Returns standard attack punctuation
  *
  * Used in player / monster (both primary and aux) attacks
@@ -1080,10 +1079,10 @@ string attack::attack_strength_punctuation(int dmg)
  */
 string attack::evasion_margin_adverb()
 {
-    return (ev_margin <= -20) ? " completely" :
-           (ev_margin <= -12) ? "" :
-           (ev_margin <= -6)  ? " closely"
-                              : " barely";
+    return (hit_margin <= -20) ? " completely" :
+           (hit_margin <= -12) ? "" :
+           (hit_margin <= -6)  ? " closely"
+                               : " barely";
 }
 
 void attack::stab_message()
@@ -1195,32 +1194,6 @@ string attack::defender_name(bool allow_reflexive)
         return def_name(DESC_THE);
 }
 
-int attack::player_stat_modify_damage(int damage)
-{
-    int dammod = 39;
-
-    if (you.strength() > 10)
-        dammod += (random2(you.strength() - 10) * 2);
-    else if (you.strength() < 10)
-        dammod -= (random2(10 - you.strength()) * 3);
-
-    damage *= dammod;
-    damage /= 39;
-
-    return damage;
-}
-
-int attack::player_apply_weapon_skill(int damage)
-{
-    if (using_weapon())
-    {
-        damage *= 2500 + (random2(you.skill(wpn_skill, 100) + 1));
-        damage /= 2500;
-    }
-
-    return damage;
-}
-
 int attack::player_apply_fighting_skill(int damage, bool aux)
 {
     const int base = aux? 40 : 30;
@@ -1274,6 +1247,9 @@ int attack::player_apply_final_multipliers(int damage)
     if (you.form == TRAN_SHADOW)
         damage = div_rand_round(damage, 2);
 
+    const int range = grid_distance(attacker->pos(), defender->pos());
+    damage = player_damage_modifier(damage, false, range);
+
     return damage;
 }
 
@@ -1304,7 +1280,7 @@ int attack::calc_base_unarmed_damage()
         damage += you.has_claws() * 2;
 
     if (you.form_uses_xl())
-        damage += you.experience_level;
+        damage += effective_xl();
     else if (you.form == TRAN_BAT || you.form == TRAN_PORCUPINE)
     {
         // Bats really don't do a lot of damage.
@@ -1356,22 +1332,35 @@ int attack::calc_damage()
 
         damage = apply_damage_modifiers(damage, damage_max);
 
+        if (defender->is_player())
+            damage = player_pre_ouch_modifier(damage);
+
         set_attack_verb(damage);
-        return apply_defender_ac(damage, damage_max);
+        damage = apply_defender_ac(damage, damage_max);
+
+        return damage;
     }
     else
     {
+        if (!defender->alive())
+            return 0;
+
         int potential_damage, damage;
 
         potential_damage = using_weapon() || wpn_skill == SK_THROWING
             ? weapon_damage() : calc_base_unarmed_damage();
 
-        potential_damage = player_stat_modify_damage(potential_damage);
+        const int strength = you.strength();
+        int boost = (strength - 5) * 10;
+        if (using_weapon())
+        {
+            const int weapon_skill = you.skill(wpn_skill, 10);
+            boost += weapon_skill;
+        }
 
-        damage = random2(potential_damage+1);
+        potential_damage = div_rand_round(potential_damage * (300 + boost), 300);
+        damage = random2(potential_damage + 1);
 
-        damage = player_apply_weapon_skill(damage);
-        damage = player_apply_fighting_skill(damage, false);
         damage = player_apply_misc_modifiers(damage);
         damage = player_apply_slaying_bonuses(damage, false);
         damage = player_stab(damage);
@@ -1381,13 +1370,14 @@ int attack::calc_damage()
         // The correct thing to do would be either to delay the call to
         // alert_nearby_monsters (currently in player_stab) until later
         // in the attack; or to avoid removing monsters in handle_behaviour.
-        if (!defender->alive())
-            return 0;
         damage = player_apply_final_multipliers(damage);
+
         damage = apply_defender_ac(damage);
 
         damage = max(0, damage);
         set_attack_verb(damage);
+
+        you.last_damage = damage;
 
         return damage;
     }
@@ -1395,22 +1385,21 @@ int attack::calc_damage()
     return 0;
 }
 
-int attack::test_hit(int to_land, int ev, bool randomise_ev)
+int attack::test_hit(int to_land, int ev)
 {
     int margin = AUTOMATIC_HIT;
-    if (randomise_ev)
-        ev = random2avg(2*ev, 2);
-    if (to_land >= AUTOMATIC_HIT)
-        return true;
-    else if (x_chance_in_y(MIN_HIT_MISS_PERCENTAGE, 100))
-        margin = (random2(2) ? 1 : -1) * AUTOMATIC_HIT;
-    else
-        margin = to_land - ev;
 
-#ifdef DEBUG_DIAGNOSTICS
-    dprf(DIAG_COMBAT, "to hit: %d; ev: %d; result: %s (%d)",
-         to_hit, ev, (margin >= 0) ? "hit" : "miss", margin);
-#endif
+    if (to_land < AUTOMATIC_HIT)
+    {
+        const int chance = get_success_chance(to_land - ev, 5);
+        if (attacker->is_player())
+            player_update_last_to_hit_chance(chance);
+        else if (defender->is_player())
+            player_update_last_be_hit_chance(chance);
+
+        const int r = random2(101);
+        margin = chance - r;
+    }
 
     return margin;
 }
@@ -1545,34 +1534,6 @@ attack_flavour attack::random_chaos_attack_flavour()
     return flavour;
 }
 
-bool attack::apply_poison_damage_brand()
-{
-    if (!one_chance_in(4))
-    {
-        int old_poison;
-
-        if (defender->is_player())
-            old_poison = you.duration[DUR_POISONING];
-        else
-        {
-            old_poison =
-                (defender->as_monster()->get_ench(ENCH_POISON)).degree;
-        }
-
-        defender->poison(attacker, 6 + random2(8) + random2(damage_done * 3 / 2));
-
-        if (defender->is_player()
-               && old_poison < you.duration[DUR_POISONING]
-            || !defender->is_player()
-               && old_poison <
-                  (defender->as_monster()->get_ench(ENCH_POISON)).degree)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 bool attack::apply_damage_brand(const char *what)
 {
     bool brand_was_known = false;
@@ -1637,7 +1598,11 @@ bool attack::apply_damage_brand(const char *what)
                     "%s %s%s",
                     defender_name(false).c_str(),
                     defender->conj_verb("convulse").c_str(),
-                    attack_strength_punctuation(special_damage).c_str());
+                    attack_strength_punctuation(special_damage).c_str()
+                    /*
+                    special_damage
+                     */
+                );
         }
         break;
 
@@ -1646,11 +1611,11 @@ bool attack::apply_damage_brand(const char *what)
             break;
         else if (one_chance_in(3))
         {
+            special_damage = 8 + random2(13);
             special_damage_message =
                 defender->is_player()?
                    "You are electrocuted!"
                 :  "There is a sudden explosion of sparks!";
-            special_damage = 8 + random2(13);
             special_damage_flavour = BEAM_ELECTRICITY;
             defender->expose_to_element(BEAM_ELECTRICITY, 2);
         }
@@ -1658,7 +1623,30 @@ bool attack::apply_damage_brand(const char *what)
         break;
 
     case SPWPN_VENOM:
-        obvious_effect = apply_poison_damage_brand();
+        if (!one_chance_in(4))
+        {
+            int old_poison;
+
+            if (defender->is_player())
+                old_poison = you.duration[DUR_POISONING];
+            else
+            {
+                old_poison =
+                    (defender->as_monster()->get_ench(ENCH_POISON)).degree;
+            }
+
+            defender->poison(attacker, 6 + random2(8) + random2(damage_done * 3 / 2));
+
+            if (defender->is_player()
+                   && old_poison < you.duration[DUR_POISONING]
+                || !defender->is_player()
+                   && old_poison <
+                      (defender->as_monster()->get_ench(ENCH_POISON)).degree)
+            {
+                obvious_effect = true;
+            }
+
+        }
         break;
 
     case SPWPN_DRAINING:
@@ -1680,6 +1668,7 @@ bool attack::apply_damage_brand(const char *what)
             || !defender->is_player()
                && defender->as_monster()->is_summoned()
             || attacker->is_player() && you.duration[DUR_DEATHS_DOOR]
+            || attacker->is_player() && player_is_very_tired(true)
             || !attacker->is_player()
                && attacker->as_monster()->has_ench(ENCH_DEATHS_DOOR)
             || x_chance_in_y(2, 5) && !is_unrandom_artefact(*weapon, UNRAND_LEECH))
@@ -1689,11 +1678,20 @@ bool attack::apply_damage_brand(const char *what)
 
         obvious_effect = true;
 
+        int hp_boost = is_unrandom_artefact(*weapon, UNRAND_VAMPIRES_TOOTH)
+                       ? damage_done : 1 + random2(damage_done);
+
+        dprf(DIAG_COMBAT, "Vampiric Healing: damage %d, healed %d",
+             damage_done, hp_boost);
+        attacker->heal(hp_boost);
+
         // Handle weapon effects.
         // We only get here if we've done base damage, so no
         // worries on that score.
         if (attacker->is_player())
-            canned_msg(MSG_GAIN_HEALTH);
+        {
+            canned_msg(MSG_GAIN_HEALTH, hp_boost);
+        }
         else if (attacker_visible)
         {
             if (defender->is_player())
@@ -1707,13 +1705,6 @@ bool attack::apply_damage_brand(const char *what)
                      attacker->name(DESC_THE).c_str());
             }
         }
-
-        int hp_boost = is_unrandom_artefact(*weapon, UNRAND_VAMPIRES_TOOTH)
-                       ? damage_done : 1 + random2(damage_done);
-
-        dprf(DIAG_COMBAT, "Vampiric Healing: damage %d, healed %d",
-             damage_done, hp_boost);
-        attacker->heal(hp_boost);
 
         attacker->god_conduct(DID_NECROMANCY, 2);
         break;
@@ -1785,10 +1776,10 @@ bool attack::apply_damage_brand(const char *what)
         break;
 
     default:
-        if (using_weapon() && is_unrandom_artefact(*weapon, UNRAND_DAMNATION))
+        if (using_weapon() && is_unrandom_artefact(*weapon, UNRAND_HELLFIRE))
         {
-            calc_elemental_brand_damage(BEAM_DAMNATION, "damn", what);
-            defender->expose_to_element(BEAM_DAMNATION);
+            calc_elemental_brand_damage(BEAM_HELLFIRE, "hellfire", what);
+            defender->expose_to_element(BEAM_HELLFIRE);
             attacker->god_conduct(DID_UNHOLY, 2 + random2(3));
         }
         break;
@@ -1821,11 +1812,6 @@ bool attack::apply_damage_brand(const char *what)
         if (miscast_level == 0)
             miscast_level = -1;
     }
-
-    // Preserve Nessos's brand stacking in a hacky way -- but to be fair, it
-    // was always a bit of a hack.
-    if (attacker->type == MONS_NESSOS && weapon && is_range_weapon(*weapon))
-        apply_poison_damage_brand();
 
     if (special_damage > 0)
         inflict_damage(special_damage, special_damage_flavour);
@@ -1864,7 +1850,11 @@ void attack::calc_elemental_brand_damage(beam_type flavour,
                  : attacker->conj_verb(verb).c_str(),
             // Don't allow reflexive if the subject wasn't the attacker.
             defender_name(!what).c_str(),
-            attack_strength_punctuation(special_damage).c_str());
+            attack_strength_punctuation(special_damage).c_str()
+            /*
+			special_damage
+             */
+			);
     }
 }
 
@@ -1981,3 +1971,7 @@ void attack::player_stab_check()
     if (stab_attempt)
         count_action(CACT_STAB, st);
 }
+
+const item_def * attack::get_weapon_used(bool launcher)
+{ return nullptr; }
+
