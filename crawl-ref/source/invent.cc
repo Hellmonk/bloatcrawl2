@@ -478,7 +478,7 @@ void InvMenu::load_inv_items(FixedVector< item_def, ENDOFPACK > &inv,
 							 int item_selector, int excluded_slot,
                              function<MenuEntry* (MenuEntry*)> procfn)
 {
-    const vector<const item_def *> tobeshown;
+    vector<const item_def *> tobeshown;
     _get_inv_items_to_show(inv, tobeshown, item_selector, excluded_slot);
 
     load_items(tobeshown, procfn);
