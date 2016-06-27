@@ -2467,7 +2467,7 @@ void MiscastEffect::_ice(int severity)
             mon_msg = "Heat is drained from @the_monster@.";
             if (_ouch(5 + random2(6) + random2(7), BEAM_COLD) && target->alive())
                 target->expose_to_element(BEAM_COLD, 4);
-            if (target->is_player() && you_foodless(false))
+            if (target->is_player() && !you_foodless(false))
                 you.increase_duration(DUR_NO_POTIONS, 10 + random2(11), 50);
             break;
 
@@ -2860,20 +2860,22 @@ void MiscastEffect::_air(int severity)
         break;
 
     case 3:         // even less harmless stuff
-        switch (random2(3))
+        switch (random2(5))
         {
         case 0:
+        case 1:
             if (_create_monster(MONS_BALL_LIGHTNING, 3))
                 all_msg = "A ball of electricity appears!";
             do_msg();
             break;
-        case 1:
+        case 2:
+        case 3:
             you_msg        = "The air twists around and strikes you!";
             mon_msg_seen   = "@The_monster@ is struck by twisting air!";
             mon_msg_unseen = "The air madly twists around a spot.";
             _ouch(12 + random2avg(29, 2), BEAM_AIR);
             break;
-        case 2:
+        case 4:
             if (_create_monster(MONS_TWISTER, 1))
                 all_msg = "A huge vortex of air appears!";
             do_msg();

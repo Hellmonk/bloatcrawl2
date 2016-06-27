@@ -129,7 +129,7 @@ const char* jewellery_base_ability_string(int subtype)
 #if TAG_MAJOR_VERSION == 34
     case RING_TELEPORT_CONTROL:   return "+cTele";
 #endif
-    case AMU_HARM:                return "Harm *Drain";
+    case AMU_HARM:                return "Harm";
     case AMU_DISMISSAL:           return "Dismiss";
     case AMU_MANA_REGENERATION:   return "RegenMP";
     case AMU_THE_GOURMAND:        return "Gourm";
@@ -898,8 +898,8 @@ static string _describe_weapon(const item_def &item, bool verbose)
             description += "\n\nIt can be evoked to extend its reach.";
             break;
         case SK_AXES:
-            description += "\n\nIt can hit multiple enemies in an arc"
-                           " around the wielder.";
+            description += "\n\nIt hits all enemies adjacent to the wielder, "
+                           "dealing less damage to those not targeted.";
             break;
         case SK_SHORT_BLADES:
             {
@@ -1003,9 +1003,6 @@ static string _describe_weapon(const item_def &item, bool verbose)
             description += "It protects the one who wields it against "
                 "injury (+5 to AC).";
             break;
-        case SPWPN_EVASION:
-            description += "It affects your evasion (+5 to EV).";
-            break;
         case SPWPN_DRAINING:
             description += "A truly terrible weapon, it drains the "
                 "life of those it strikes.";
@@ -1029,9 +1026,8 @@ static string _describe_weapon(const item_def &item, bool verbose)
         case SPWPN_CHAOS:
             if (is_range_weapon(item))
             {
-                description += "Each time it fires, it turns the "
-                    "launched projectile into a different, random type "
-                    "of bolt.";
+                description += "Each projectile launched from it has a "
+                               "different, random effect.";
             }
             else
             {
@@ -1192,7 +1188,7 @@ static string _describe_ammo(const item_def &item)
             if (can_launch)
                 description += "fired from an appropriate launcher, ";
 
-            description += "it turns into a bolt of a random type.";
+            description += "it has a random effect.";
             break;
         case SPMSL_POISONED:
             description += "It is coated with poison.";
@@ -2532,21 +2528,6 @@ string get_skill_description(skill_type skill, bool need_title)
                 result += "Note that Trog doesn't use Invocations, due to its "
                           "close connection to magic.";
             }
-            else if (you_worship(GOD_NEMELEX_XOBEH))
-            {
-                result += "\n";
-                result += "Note that Nemelex uses Evocations rather than "
-                          "Invocations.";
-            }
-            break;
-
-        case SK_EVOCATIONS:
-            if (you_worship(GOD_NEMELEX_XOBEH))
-            {
-                result += "\n";
-                result += "This is the skill all of Nemelex's abilities rely "
-                          "on.";
-            }
             break;
 
         case SK_SPELLCASTING:
@@ -3297,9 +3278,6 @@ static string _monster_stat_description(const monster_info& mi)
         result << uppercase_first(pronoun) << " is cold-blooded and may be "
                                               "slowed by cold attacks.\n";
     }
-
-    if (mons_class_flag(mi.type, M_GLOWS))
-        result << uppercase_first(pronoun) << " is outlined in light.\n";
 
     // Seeing invisible.
     if (mi.can_see_invisible())

@@ -176,9 +176,7 @@ LUARET1(you_depth_fraction, number,
 // [1KB] FIXME: eventually eliminate the notion of absolute depth at all.
 LUARET1(you_absdepth, number, env.absdepth0 + 1)
 LUAWRAP(you_stop_activity, interrupt_activity(AI_FORCE_INTERRUPT))
-LUARET1(you_taking_stairs, boolean,
-        current_delay_action() == DELAY_ASCENDING_STAIRS
-        || current_delay_action() == DELAY_DESCENDING_STAIRS)
+LUARET1(you_taking_stairs, boolean, player_stair_delay())
 LUARET1(you_turns, number, you.num_turns)
 LUARET1(you_time, number, you.elapsed_time)
 LUARET1(you_spell_levels, number, player_spell_levels())
@@ -481,11 +479,25 @@ LUAFN(you_train_skill)
     skill_type sk = str_to_skill(luaL_checkstring(ls, 1));
     if (lua_gettop(ls) >= 2 && you.can_train[sk])
     {
-        you.train[sk] = min(max(luaL_checkint(ls, 2), 0), 2);
+        you.train[sk] = min(max((training_status)luaL_checkint(ls, 2),
+                                                 TRAINING_DISABLED),
+                                             TRAINING_FOCUSED);
         reset_training();
     }
 
     PLUARET(number, you.train[sk]);
+}
+
+LUAFN(you_skill_cost)
+{
+    skill_type sk = str_to_skill(luaL_checkstring(ls, 1));
+    float cost = scaled_skill_cost(sk);
+    if (cost == 0)
+    {
+        lua_pushnil(ls);
+        return 1;
+    }
+    PLUARET(number, max(1, (int)(10.0 * cost + 0.5)) * 0.1);
 }
 
 LUAFN(you_status)
@@ -557,6 +569,7 @@ static const struct luaL_reg you_clib[] =
     { "can_train_skill", you_can_train_skill },
     { "best_skill",   you_best_skill },
     { "train_skill",  you_train_skill },
+    { "skill_cost"  , you_skill_cost },
     { "xl"          , you_xl },
     { "xl_progress" , you_xl_progress },
     { "res_poison"  , you_res_poison },

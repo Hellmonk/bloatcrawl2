@@ -155,8 +155,6 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_WALL_PERMAROCK;
     case DNGN_SLIMY_WALL:
         return TILE_WALL_SLIME;
-    case DNGN_OPEN_SEA:
-        return TILE_DNGN_OPEN_SEA;
     case DNGN_RUNED_DOOR:
         return TILE_DNGN_RUNED_DOOR;
     case DNGN_SEALED_DOOR:
@@ -183,13 +181,16 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return player_in_branch(BRANCH_SWAMP) ? TILE_DNGN_MANGROVE : TILE_DNGN_TREE;
     case DNGN_GRANITE_STATUE:
         return TILE_DNGN_GRANITE_STATUE;
-    case DNGN_LAVA_SEA: // FIXME
     case DNGN_LAVA:
         return TILE_DNGN_LAVA;
+    case DNGN_LAVA_SEA:
+        return TILE_DNGN_LAVA_SEA;
     case DNGN_DEEP_WATER:
         return TILE_DNGN_DEEP_WATER;
     case DNGN_SHALLOW_WATER:
         return TILE_DNGN_SHALLOW_WATER;
+    case DNGN_OPEN_SEA:
+        return TILE_DNGN_OPEN_SEA;
     case DNGN_FLOOR:
     case DNGN_UNDISCOVERED_TRAP:
         return TILE_FLOOR_NORMAL;
@@ -920,6 +921,7 @@ static tileidx_t _zombie_tile_to_spectral(const tileidx_t z_tile)
     case TILEP_MONS_ZOMBIE_TURTLE:
         return TILEP_MONS_SPECTRAL_QUADRUPED_SMALL;
     case TILEP_MONS_ZOMBIE_QUADRUPED_LARGE:
+    case TILEP_MONS_ZOMBIE_ELEPHANT:
         return TILEP_MONS_SPECTRAL_QUADRUPED_LARGE;
     case TILEP_MONS_ZOMBIE_TOAD:
         return TILEP_MONS_SPECTRAL_TOAD;
@@ -995,6 +997,7 @@ static tileidx_t _zombie_tile_to_simulacrum(const tileidx_t z_tile)
         return TILEP_MONS_SIMULACRUM_QUADRUPED_SMALL;
     case TILEP_MONS_ZOMBIE_QUADRUPED_LARGE:
     case TILEP_MONS_ZOMBIE_TOAD:
+    case TILEP_MONS_ZOMBIE_ELEPHANT:
         return TILEP_MONS_SIMULACRUM_QUADRUPED_LARGE;
     case TILEP_MONS_ZOMBIE_BAT:
         return TILEP_MONS_SIMULACRUM_BAT;
@@ -1075,6 +1078,7 @@ static tileidx_t _zombie_tile_to_skeleton(const tileidx_t z_tile)
     case TILEP_MONS_ZOMBIE_TURTLE:
         return TILEP_MONS_SKELETON_TURTLE;
     case TILEP_MONS_ZOMBIE_QUADRUPED_LARGE:
+    case TILEP_MONS_ZOMBIE_ELEPHANT:
         return TILEP_MONS_SKELETON_QUADRUPED_LARGE;
     case TILEP_MONS_ZOMBIE_TOAD:
         return TILEP_MONS_SKELETON_TOAD;
@@ -1173,7 +1177,7 @@ static tileidx_t _mon_to_zombie_tile(const monster_info &mon)
         { MONS_DRACONIAN,               TILEP_MONS_ZOMBIE_DRACONIAN },
         { MONS_GRIFFON,                 TILEP_MONS_ZOMBIE_GRIFFON },
         { MONS_DRAGON,                  TILEP_MONS_ZOMBIE_DRAGON },
-        { MONS_WYVERN,                  TILEP_MONS_ZOMBIE_DRAGON },
+        { MONS_WYVERN,                  TILEP_MONS_ZOMBIE_DRAKE },
         { MONS_DRAKE,                   TILEP_MONS_ZOMBIE_DRAKE },
         { MONS_GIANT_LIZARD,            TILEP_MONS_ZOMBIE_LIZARD },
         { MONS_CROCODILE,               TILEP_MONS_ZOMBIE_LIZARD },
@@ -1752,6 +1756,8 @@ tileidx_t tileidx_monster(const monster_info& mons)
         ch |= TILE_FLAG_DRAIN;
     if (mons.is(MB_IDEALISED))
         ch |= TILE_FLAG_IDEALISED;
+    if (mons.is(MB_BOUND_SOUL))
+       ch |= TILE_FLAG_BOUND_SOUL;
 
     if (mons.attitude == ATT_FRIENDLY)
         ch |= TILE_FLAG_PET;
@@ -2181,7 +2187,7 @@ static tileidx_t _tileidx_armour(const item_def &item)
 static tileidx_t _tileidx_chunk(const item_def &item)
 {
     if (is_inedible(item))
-        return TILE_FOOD_CHUNK;
+        return TILE_FOOD_CHUNK_INEDIBLE;
 
     if (is_mutagenic(item))
         return TILE_FOOD_CHUNK_MUTAGENIC;
@@ -2334,7 +2340,7 @@ static tileidx_t _tileidx_misc(const item_def &item)
             )
         {
             // NOTE: order of tiles must be identical to order of decks.
-            int offset = item.sub_type - MISC_DECK_OF_ESCAPE + 1;
+            int offset = item.sub_type - MISC_FIRST_DECK + 1;
             ch += offset;
         }
         return ch;
@@ -2749,7 +2755,7 @@ tileidx_t tileidx_cloud(const cloud_info &cl)
                 break;
 
             case CLOUD_MIASMA:
-                ch = TILE_CLOUD_MIASMA;
+                ch = TILE_CLOUD_MIASMA_0 + dur;
                 break;
 
             case CLOUD_BLACK_SMOKE:
@@ -2978,6 +2984,13 @@ tileidx_t tileidx_spell(spell_type spell)
     return get_spell_tile(spell);
 }
 
+/**
+ * Get the appropriate tile for the given skill @ the given training level.
+ *
+ * @param skill     The skill in question; e.g. SK_FIGHTING.
+ * @param train     The training_status to render at; e.g. TRAINING_DISABLED.
+ * @return          An appropriate tile; e.g. TILEG_FIGHTING_OFF>
+ */
 tileidx_t tileidx_skill(skill_type skill, int train)
 {
     tileidx_t ch;
@@ -3084,17 +3097,20 @@ tileidx_t tileidx_skill(skill_type skill, int train)
 
     switch (train)
     {
-    case 0: // disabled
+    case TRAINING_DISABLED:
         return ch + TILEG_FIGHTING_OFF - TILEG_FIGHTING_ON;
-    case 1: // enabled
+    case TRAINING_INACTIVE:
+        return ch + TILEG_FIGHTING_INACTIVE - TILEG_FIGHTING_ON;
+    case TRAINING_ENABLED:
         return ch;
-    case 2: // focused
+    case TRAINING_FOCUSED:
         return ch + TILEG_FIGHTING_FOCUS - TILEG_FIGHTING_ON;
-    case -1: // mastered
+    case TRAINING_MASTERED:
         return ch + TILEG_FIGHTING_MAX - TILEG_FIGHTING_ON;
+    default:
+        die("invalid skill tile type");
     }
 
-    die("invalid skill tile type");
 }
 
 tileidx_t tileidx_command(const command_type cmd)
@@ -3541,22 +3557,10 @@ tileidx_t tileidx_ability(const ability_type ability)
         return TILEG_ABILITY_HEP_IDENTITY;
     case ABIL_HEPLIAKLQANA_TYPE_KNIGHT:
         return TILEG_ABILITY_HEP_KNIGHT;
-    case ABIL_HEPLIAKLQANA_KNIGHT_REACHING:
-        return TILEG_ABILITY_HEP_REACHING;
-    case ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING:
-        return TILEG_ABILITY_HEP_CLEAVING;
     case ABIL_HEPLIAKLQANA_TYPE_BATTLEMAGE:
         return TILEG_ABILITY_HEP_BATTLEMAGE;
-    case ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST:
-        return TILEG_ABILITY_HEP_ICEBLAST;
-    case ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA:
-        return TILEG_ABILITY_HEP_MAGMA;
     case ABIL_HEPLIAKLQANA_TYPE_HEXER:
         return TILEG_ABILITY_HEP_HEXER;
-    case ABIL_HEPLIAKLQANA_HEXER_PARALYSE:
-        return TILEG_ABILITY_HEP_PARALYSE;
-    case ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION:
-        return TILEG_ABILITY_HEP_ENGLACIATE;
 
     // General divine (pseudo) abilities.
     case ABIL_RENOUNCE_RELIGION:

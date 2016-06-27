@@ -285,7 +285,7 @@ static const vector<god_passive> god_passives[NUM_GODS] =
     { },
 
     // Hepliaklqana
-    { },
+    { {  5, passive_t::transfer_drain, "drain nearby creatures when transferring your ancestor" }, },
 };
 
 bool have_passive(passive_t passive)
@@ -1442,9 +1442,9 @@ static int _bond_audience(coord_def where)
 
     monster* mons = monster_at(where);
 
-    int power = you.skill(SK_INVOCATIONS, 5) + you.experience_level
+    int power = you.skill(SK_INVOCATIONS, 7) + you.experience_level
                  - mons->get_hit_dice();
-    int duration = 10 + random2(power);
+    int duration = 20 + random2avg(power, 2);
     mons->add_ench(mon_enchant(ENCH_PAIN_BOND, 1, &you, duration));
 
     return 1;

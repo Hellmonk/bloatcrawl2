@@ -554,7 +554,7 @@ bool melee_attack::handle_phase_aux()
 }
 
 /**
- * Devour a monster whole!.
+ * Devour a monster whole!
  *
  * @param defender  The monster in question.
  */
@@ -584,6 +584,8 @@ static void _hydra_devour(monster &victim)
         // feel free to just use the actual creature name if this has buggy
         // edge cases or such
     }
+    if (victim.has_ench(ENCH_STICKY_FLAME))
+        mprf("Spicy!");
 
     // nutrition (maybe)
     if (filling)
@@ -652,12 +654,6 @@ static void _hydra_consider_devouring(monster &defender)
     }
 
     dprf("corpse ok");
-
-    // or monsters as large as you are!
-    if (defender.body_size() >= you.body_size())
-        return;
-
-    dprf("size ok");
 
     // chow down.
     _hydra_devour(defender);
@@ -1982,12 +1978,8 @@ bool melee_attack::attack_chops_heads(int dam, int dam_type, int wpn_brand)
     if (dam_type == DVORP_CLAWING && attacker->has_claws() < 3)
         return false;
 
-    // you need to have done at least some damage.
-    if (dam <= 0)
-        return false;
-
-    // usually at least 4 damage, unless you are an unlucky vorpal user.
-    if (dam < 4 && wpn_brand != SPWPN_VORPAL && coinflip())
+    // You need to have done at least some damage.
+    if (dam <= 0 || dam < 4 && coinflip())
         return false;
 
     // ok, good enough!

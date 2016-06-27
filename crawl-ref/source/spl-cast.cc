@@ -416,7 +416,7 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
 {
     int power = 0;
     if (rod)
-        power = player_adjust_evoc_power(5 + you.skill(SK_EVOCATIONS, 3));
+        power = 5 + you.skill(SK_EVOCATIONS, 3); // will be adjusted later
     else
     {
         const spschools_type disciplines = get_spell_disciplines(spell);
@@ -782,7 +782,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
         mpr("You can't see any susceptible monsters within range! "
             "(Use <w>Z</w> to cast anyway.)");
 
-        if (Options.use_animations & UA_RANGE)
+        if ((Options.use_animations & UA_RANGE) && Options.darken_beyond_range)
         {
             targetter_smite range(&you, calc_spell_range(spell), 0, 0, true);
             range_view_annotator show_range(&range);
@@ -817,23 +817,6 @@ bool cast_a_spell(bool check_range, spell_type spell)
         {
             canned_msg(MSG_OK);
             crawl_state.zero_turns_taken();
-            return false;
-        }
-    }
-
-    int severity = fail_severity(spell);
-    if (Options.fail_severity_to_confirm > 0
-        && Options.fail_severity_to_confirm <= severity
-        && !crawl_state.disables[DIS_CONFIRMATIONS])
-    {
-        string prompt = make_stringf("The spell is %s to cast%s "
-                                     "Continue anyway?",
-                                     fail_severity_adjs[severity],
-                                     severity > 1 ? "!" : ".");
-
-        if (!yesno(prompt.c_str(), false, 'n'))
-        {
-            canned_msg(MSG_OK);
             return false;
         }
     }
@@ -1058,8 +1041,18 @@ static spret_type _do_cast(spell_type spell, int powc,
                            god_type god, int potion,
                            bool fail);
 
+/**
+ * Should this spell be aborted before casting properly starts, either because
+ * it can't legally be cast in this circumstance, or because the player opts
+ * to cancel it in response to a prompt?
+ *
+ * @param spell         The spell to be checked.
+ * @param evoked        Whether the spell is being evoked from a rod.
+ * @param fake_spell    Whether the spell is some other kind of fake spell
+ *                      (such as an innate or divine ability).
+ * @return              Whether the spellcasting should be aborted.
+ */
 static bool _spellcasting_aborted(spell_type spell,
-                                  bool wiz_cast,
                                   bool evoked,
                                   bool fake_spell)
 {
@@ -1077,33 +1070,50 @@ static bool _spellcasting_aborted(spell_type spell,
         msg = spell_uselessness_reason(spell, true, true, evoked, fake_spell);
     }
 
-    bool uncastable = !wiz_cast && msg != "";
-
-    if (uncastable)
-        mpr(msg);
-    else
+    if (msg != "")
     {
-        vector<text_pattern> &actions = Options.confirm_action;
-        if (!actions.empty())
+        mpr(msg);
+        return true;
+    }
+
+    vector<text_pattern> &actions = Options.confirm_action;
+    if (!actions.empty())
+    {
+        const char* name = spell_title(spell);
+        for (const text_pattern &action : actions)
         {
-            const char* name = spell_title(spell);
-            for (const text_pattern &action : actions)
+            if (!action.matches(name))
+                continue;
+
+            string prompt = "Really cast " + string(name) + "?";
+            if (!yesno(prompt.c_str(), false, 'n'))
             {
-                if (action.matches(name))
-                {
-                    string prompt = "Really cast " + string(name) + "?";
-                    if (!yesno(prompt.c_str(), false, 'n'))
-                    {
-                        canned_msg(MSG_OK);
-                        return true;
-                    }
-                    break;
-                }
+                canned_msg(MSG_OK);
+                return true;
             }
+            break;
         }
     }
 
-    return uncastable;
+    const int severity = fail_severity(spell);
+    if (Options.fail_severity_to_confirm > 0
+        && Options.fail_severity_to_confirm <= severity
+        && !crawl_state.disables[DIS_CONFIRMATIONS]
+        && !evoked && !fake_spell)
+    {
+        string prompt = make_stringf("The spell is %s to cast%s "
+                                     "Continue anyway?",
+                                     fail_severity_adjs[severity],
+                                     severity > 1 ? "!" : ".");
+
+        if (!yesno(prompt.c_str(), false, 'n'))
+        {
+            canned_msg(MSG_OK);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 static unique_ptr<targetter> _spell_targetter(spell_type spell, int pow,
@@ -1112,12 +1122,14 @@ static unique_ptr<targetter> _spell_targetter(spell_type spell, int pow,
     switch (spell)
     {
     case SPELL_FIREBALL:
-        return make_unique<targetter_beam>(&you, range, ZAP_FIREBALL, pow, 1, 1);
+        return make_unique<targetter_beam>(&you, range, ZAP_FIREBALL, pow,
+                                           1, 1);
     case SPELL_HURL_DAMNATION:
-        return make_unique<targetter_beam>(&you, range, ZAP_DAMNATION, pow, 1, 1);
+        return make_unique<targetter_beam>(&you, range, ZAP_DAMNATION, pow,
+                                           1, 1);
     case SPELL_MEPHITIC_CLOUD:
-        return make_unique<targetter_beam>(&you, range, ZAP_BREATHE_MEPHITIC, pow,
-                                           pow >= 100 ? 1 : 0, 1);
+        return make_unique<targetter_beam>(&you, range, ZAP_BREATHE_MEPHITIC,
+                                           pow, pow >= 100 ? 1 : 0, 1);
     case SPELL_ISKENDERUNS_MYSTIC_BLAST:
         return make_unique<targetter_imb>(&you, pow, range);
     case SPELL_FIRE_STORM:
@@ -1142,16 +1154,25 @@ static unique_ptr<targetter> _spell_targetter(spell_type spell, int pow,
     case SPELL_GLACIATE:
         return make_unique<targetter_cone>(&you, range);
     case SPELL_CLOUD_CONE:
-        return make_unique<targetter_shotgun>(&you, CLOUD_CONE_BEAM_COUNT, range);
+        return make_unique<targetter_shotgun>(&you, CLOUD_CONE_BEAM_COUNT,
+                                              range);
     case SPELL_SCATTERSHOT:
-        return make_unique<targetter_shotgun>(&you, shotgun_beam_count(pow), range);
+        return make_unique<targetter_shotgun>(&you, shotgun_beam_count(pow),
+                                              range);
     case SPELL_GRAVITAS:
-        return make_unique<targetter_smite>(&you, range, gravitas_range(pow, 2),
+        return make_unique<targetter_smite>(&you, range,
+                                            gravitas_range(pow, 2),
                                             gravitas_range(pow));
     case SPELL_VIOLENT_UNRAVELLING:
         return make_unique<targetter_unravelling>(&you, range, pow);
     case SPELL_RANDOM_BOLT:
-        return make_unique<targetter_beam>(&you, range, ZAP_CRYSTAL_BOLT, pow, 0, 0);
+        return make_unique<targetter_beam>(&you, range, ZAP_CRYSTAL_BOLT, pow,
+                                           0, 0);
+    case SPELL_INFESTATION:
+        return make_unique<targetter_smite>(&you, range, 2, 2, false,
+                                            [](const coord_def& p) -> bool {
+                                                return you.pos() != p; });
+
     default:
         break;
     }
@@ -1279,7 +1300,7 @@ spret_type your_spells(spell_type spell, int powc,
 
     // [dshaligram] Any action that depends on the spellcasting attempt to have
     // succeeded must be performed after the switch.
-    if (_spellcasting_aborted(spell, wiz_cast, evoked, fake_spell))
+    if (!wiz_cast && _spellcasting_aborted(spell, evoked, fake_spell))
         return SPRET_ABORT;
 
     const unsigned int flags = get_spell_flags(spell);
@@ -1377,13 +1398,16 @@ spret_type your_spells(spell_type spell, int powc,
         }
     }
 
-    if (evoked && !pakellas_device_surge())
-        return SPRET_FAIL;
-
+    if (evoked)
+    {
+        const int surge = pakellas_surge_devices();
+        powc = player_adjust_evoc_power(powc, surge);
+        surge_power(you.spec_evoke() + surge);
+    }
+    else if (allow_fail)
+        surge_power(_spell_enhancement(spell));
     // Enhancers only matter for calc_spell_power() and raw_spell_fail().
     // Not sure about this: is it flavour or misleading? (jpeg)
-    if (allow_fail || evoked)
-        surge_power(evoked ? you.spec_evoke() : _spell_enhancement(spell));
 
     const god_type god =
         (crawl_state.is_god_acting()) ? crawl_state.which_god_acting()
@@ -1772,6 +1796,9 @@ static spret_type _do_cast(spell_type spell, int powc,
     case SPELL_BATTLESPHERE:
         return cast_battlesphere(&you, powc, god, fail);
 
+    case SPELL_INFESTATION:
+        return cast_infestation(powc, beam, fail);
+
     // Enchantments.
     case SPELL_CONFUSING_TOUCH:
         return cast_confusing_touch(powc, fail);
@@ -1808,10 +1835,6 @@ static spret_type _do_cast(spell_type spell, int powc,
             place.depth = level;
         return cast_shadow_creatures(spell, god, place, fail);
     }
-
-    // Healing.
-    case SPELL_CURE_POISON:
-        return cast_cure_poison(powc, fail);
 
     case SPELL_EXCRUCIATING_WOUNDS:
         return brand_weapon(SPWPN_PAIN, powc, fail);
@@ -1965,6 +1988,7 @@ static spret_type _do_cast(spell_type spell, int powc,
     case SPELL_SUMMON_SWARM:
     case SPELL_PHASE_SHIFT:
     case SPELL_MASS_CONFUSION:
+    case SPELL_CURE_POISON:
         mpr("Sorry, this spell is gone!");
         return SPRET_ABORT;
 #endif

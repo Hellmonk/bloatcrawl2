@@ -14,6 +14,7 @@
 #include "libutil.h"
 #include "los_def.h"
 #include "losglobal.h"
+#include "mon-tentacle.h"
 #include "spl-damage.h"
 #include "spl-goditem.h" // player_is_debuffable
 #include "terrain.h"
@@ -38,11 +39,6 @@ bool targetter::set_aim(coord_def a)
 }
 
 bool targetter::can_affect_outside_range()
-{
-    return false;
-}
-
-bool targetter::can_affect_walls()
 {
     return false;
 }
@@ -455,6 +451,33 @@ aff_type targetter_smite::is_affected(coord_def loc)
     return AFF_NO;
 }
 
+targetter_transference::targetter_transference(const actor* act) :
+    targetter_smite(act, LOS_RADIUS, 0, 0, false, nullptr)
+{
+}
+
+bool targetter_transference::valid_aim(coord_def a)
+{
+    if (!targetter_smite::valid_aim(a))
+        return false;
+
+    const actor *victim = actor_at(a);
+    if (victim && you.can_see(*victim))
+    {
+        if (mons_is_hepliaklqana_ancestor(victim->type))
+        {
+            return notify_fail("You can't transfer your ancestor with "
+                               "themself.");
+        }
+        if (mons_is_tentacle_or_tentacle_segment(victim->type)
+            || victim->is_stationary())
+        {
+            return notify_fail("You can't transfer that.");
+        }
+    }
+    return true;
+}
+
 targetter_fragment::targetter_fragment(const actor* act, int power, int ran) :
     targetter_smite(act, ran, 1, 1, true, nullptr),
     pow(power)
@@ -509,11 +532,6 @@ bool targetter_fragment::set_aim(coord_def a)
     beam.determine_affected_cells(exp_map_max, coord_def(), 0,
                                   exp_range_max, false, false);
 
-    return true;
-}
-
-bool targetter_fragment::can_affect_walls()
-{
     return true;
 }
 

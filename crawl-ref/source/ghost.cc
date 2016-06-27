@@ -23,6 +23,7 @@
 #include "skills.h"
 #include "spl-util.h"
 #include "stringutil.h"
+#include "unwind.h"
 
 #define MAX_GHOST_DAMAGE     50
 #define MAX_GHOST_HP        400
@@ -75,8 +76,6 @@ static spell_type search_order_selfench[] =
 {
     SPELL_HASTE,
     SPELL_SILENCE,
-    SPELL_BATTLESPHERE,
-    SPELL_SPELLFORGED_SERVITOR,
     SPELL_INVISIBILITY,
     SPELL_BLINK,
     SPELL_BLINKBOLT,
@@ -111,8 +110,6 @@ static spell_type search_order_misc[] =
     SPELL_SLOW,
     SPELL_NO_SPELL, // end of list
 };
-
-// Last slot (emergency) can only be Teleport Self or Blink.
 
 ghost_demon::ghost_demon()
 {
@@ -256,10 +253,6 @@ void ghost_demon::init_pandemonium_lord()
 
     if (spellcaster)
     {
-        // This bit uses the list of player spells to find appropriate
-        // spells for the demon, then converts those spells to the monster
-        // spell indices. Some special monster-only spells are at the end.
-
         ADD_SPELL(RANDOM_ELEMENT(search_order_conj));
 
         if (coinflip())
@@ -309,10 +302,17 @@ static int _player_ghost_movement_energy()
 
 void ghost_demon::init_player_ghost(bool actual_ghost)
 {
+    // don't preserve transformations for ghosty purposes
+    unwind_var<transformation_type> form(you.form, TRAN_NONE);
+    unwind_var<FixedBitVector<NUM_EQUIP>> melded(you.melded,
+                                                 FixedBitVector<NUM_EQUIP>());
+    unwind_var<bool> fishtail(you.fishtail, false);
+
     name   = you.your_name;
     max_hp = min(get_real_hp(false), MAX_GHOST_HP);
     ev     = min(you.evasion(EV_IGNORE_HELPLESS), MAX_GHOST_EVASION);
     ac     = you.armour_class();
+    dprf("ghost ac: %d, ev: %d", ac, ev);
 
     see_invis      = you.can_see_invisible();
     resists        = 0;

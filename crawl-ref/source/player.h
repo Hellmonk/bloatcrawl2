@@ -25,7 +25,6 @@
 #endif
 
 #define ICY_ARMOUR_KEY "ozocubu's_armour_pow"
-#define MAGIC_ARMOUR_KEY "magic_armour_pow"
 #define TRANSFORM_POW_KEY "transform_pow"
 #define BARBS_MOVE_KEY "moved_with_barbs_status"
 #define HORROR_PENALTY_KEY "horror_penalty"
@@ -62,8 +61,21 @@ static const int FASTEST_PLAYER_MOVE_SPEED = 6;
 static const int FASTEST_PLAYER_THROWING_SPEED = 7;
 
 class targetter;
+class Delay;
 
 int check_stealth();
+
+/// used for you.train[] & for rendering skill tiles (tileidx_skill)
+enum training_status
+{
+    TRAINING_DISABLED = 0,
+    TRAINING_ENABLED,
+    TRAINING_FOCUSED,
+    NUM_TRAINING_STATUSES,
+    // the below are only used for display purposes, not training.
+    TRAINING_MASTERED,
+    TRAINING_INACTIVE, ///< enabled but not used (in auto mode)
+};
 
 // needed for assert in is_player()
 #ifdef DEBUG_GLOBALS
@@ -174,8 +186,8 @@ public:
 #endif
 
     FixedVector<uint8_t, NUM_SKILLS> skills; ///< skill level
-    FixedVector<int8_t, NUM_SKILLS> train; ///< 0: disabled, 1: normal, 2: focus
-    FixedVector<int8_t, NUM_SKILLS> train_alt; ///< config of the other mode
+    FixedVector<training_status, NUM_SKILLS> train; ///< see enum def
+    FixedVector<training_status, NUM_SKILLS> train_alt; ///< config of other mode
     FixedVector<unsigned int, NUM_SKILLS>  training; ///< percentage of XP used
     FixedBitVector<NUM_SKILLS> can_train; ///< Is training this skill allowed?
     FixedVector<unsigned int, NUM_SKILLS> skill_points;
@@ -333,7 +345,6 @@ public:
     // -------------------
     unsigned short prev_targ;
     coord_def      prev_grd_targ;
-    coord_def      prev_move;
 
     // Coordinates of last travel target; note that this is never used by
     // travel itself, only by the level-map to remember the last travel target.
@@ -347,7 +358,9 @@ public:
     bool received_noskill_warning;
     bool wizmode_teleported_into_rock;
 
-    delay_queue_type delay_queue;       // pending actions
+    // This should really be unique_ptr, but that causes issues since files.cc
+    // uses the default constructor of `player`.
+    vector<shared_ptr<Delay>> delay_queue; // pending actions
 
     chrono::time_point<chrono::system_clock> last_keypress_time;
 
@@ -440,8 +453,6 @@ public:
     // Move the player during an abyss shift.
     void shiftto(const coord_def &c);
     bool blink_to(const coord_def& c, bool quiet = false) override;
-
-    void reset_prev_move();
 
     int stat(stat_type stat, bool nonneg = true) const;
     int strength(bool nonneg = true) const;
@@ -716,7 +727,6 @@ public:
     bool gourmand(bool calc_unid = true, bool items = true) const override;
     bool res_corr(bool calc_unid = true, bool items = true) const override;
     bool clarity(bool calc_unid = true, bool items = true) const override;
-    int spec_evoke(bool calc_unid = true, bool items = true) const override;
     bool stasis(bool calc_unid = true, bool items = true) const override;
 
     bool airborne() const override;
@@ -973,7 +983,7 @@ int player_spec_charm();
 int player_spec_poison();
 int player_spec_summ();
 
-const int player_adjust_evoc_power(const int power);
+const int player_adjust_evoc_power(const int power, int enhancers = 0);
 const int player_adjust_invoc_power(const int power);
 
 int player_speed();
@@ -1045,10 +1055,15 @@ int get_real_mp(bool include_items);
 int get_contamination_level();
 string describe_contamination(int level);
 
+bool sanguine_armour_valid();
+void activate_sanguine_armour();
+
 void set_mp(int new_amount);
 
 bool player_regenerates_hp();
 bool player_regenerates_mp();
+
+void print_device_heal_message();
 
 void contaminate_player(int change, bool controlled = false, bool msg = true);
 

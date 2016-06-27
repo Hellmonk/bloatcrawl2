@@ -194,12 +194,12 @@ void init_mon_name_cache()
         const monster_type mon   = monster_type(mtype);
 
         // Deal sensibly with duplicate entries; refuse or allow the
-        // insert, depending on which should take precedence. Mostly we
-        // don't care, except looking up "rakshasa" and getting _FAKE
-        // breaks ?/M rakshasa.
+        // insert, depending on which should take precedence. Some
+        // uniques of multiple forms can get away with this, though.
         if (Mon_Name_Cache.count(name))
         {
             if (mon == MONS_PLAYER_SHADOW
+                || mon == MONS_BAI_SUZHEN_DRAGON
                 || mon != MONS_SERPENT_OF_HELL
                    && mons_species(mon) == MONS_SERPENT_OF_HELL)
             {
@@ -1346,8 +1346,7 @@ int get_shout_noise_level(const shout_type shout)
         return 6;
     case S_LOUD:
         return 10;
-    case S_SHOUT2:
-    case S_ROAR:
+    case S_LOUD_ROAR:
     case S_VERY_LOUD:
         return 12;
     case S_RUMBLE:
@@ -1409,6 +1408,14 @@ shout_type mons_shouts(monster_type mc, bool demon_shout)
     }
 
     return u;
+}
+
+/// Is the given monster type ever capable of shouting?
+bool mons_can_shout(monster_type mc)
+{
+    // don't use mons_shouts() to avoid S_RANDOM randomization.
+    ASSERT_smc();
+    return smc->shouts != S_SILENT;
 }
 
 bool mons_is_ghost_demon(monster_type mc)
@@ -1893,8 +1900,10 @@ static mon_attack_def _hepliaklqana_ancestor_attack(const monster &mon,
 
     const int HD = mon.get_experience_level();
     const int dam = HD + 3; // 4 at 1 HD, 21 at 18 HD (max)
+    // battlemages do double base melee damage (+25-50% including their weapon)
+    const int dam_mult = mon.type == MONS_ANCESTOR_BATTLEMAGE ? 2 : 1;
 
-    return { AT_HIT, AF_PLAIN, dam };
+    return { AT_HIT, AF_PLAIN, dam * dam_mult };
 }
 
 /** Get the attack type, attack flavour and damage for a monster attack.
@@ -4503,11 +4512,10 @@ string do_mon_str_replacements(const string &in_msg, const monster* mons,
         "growls",
         "hisses",
         "sneers",       // S_DEMON_TAUNT
-#if TAG_MAJOR_VERSION == 34
-        "caws",
-#endif
         "says",         // S_CHERUB -- they just speak normally.
         "rumbles",
+        "squeals",
+        "roars",
         "buggily says", // NUM_SHOUTS
         "breathes",     // S_VERY_SOFT
         "whispers",     // S_SOFT
@@ -5501,14 +5509,6 @@ void throw_monster_bits(const monster* mon)
     }
 }
 
-/// What spell should an ancestor have in their customizeable slot?
-static spell_type _ancestor_custom_spell(spell_type default_spell)
-{
-    const int specialization = hepliaklqana_specialization();
-    return specialization ? hepliaklqana_specialization_spell(specialization) :
-                            default_spell;
-}
-
 /// Add an ancestor spell to the given list.
 static void _add_ancestor_spell(monster_spells &spells, spell_type spell)
 {
@@ -5535,23 +5535,24 @@ void set_ancestor_spells(monster &ancestor, bool notify)
     switch (ancestor.type)
     {
     case MONS_ANCESTOR_BATTLEMAGE:
-        _add_ancestor_spell(ancestor.spells,
-                            _ancestor_custom_spell(SPELL_THROW_FROST));
-        _add_ancestor_spell(ancestor.spells, HD >= 18 ?
+        _add_ancestor_spell(ancestor.spells, HD >= 10 ?
+                                             SPELL_BOLT_OF_MAGMA :
+                                             SPELL_THROW_FROST);
+        _add_ancestor_spell(ancestor.spells, HD >= 16 ?
                                              SPELL_LEHUDIBS_CRYSTAL_SPEAR :
                                              SPELL_STONE_ARROW);
         break;
     case MONS_ANCESTOR_HEXER:
-        _add_ancestor_spell(ancestor.spells,
-                            _ancestor_custom_spell(SPELL_SLOW));
-        _add_ancestor_spell(ancestor.spells, HD >= 14 ? SPELL_MASS_CONFUSION
+        _add_ancestor_spell(ancestor.spells, HD >= 10 ? SPELL_PARALYSE
+                                                      : SPELL_SLOW);
+        _add_ancestor_spell(ancestor.spells, HD >= 13 ? SPELL_MASS_CONFUSION
                                                       : SPELL_CONFUSE);
         break;
     default:
         break;
     }
 
-    if (HD >= 14)
+    if (HD >= 13)
         ancestor.spells.emplace_back(SPELL_HASTE, 40, MON_SPELL_WIZARD);
 
     if (ancestor.spells.size())

@@ -303,6 +303,10 @@ const vector<god_power> god_powers[NUM_GODS] =
     {
       { 1, ABIL_USKAYAW_STOMP, "stomp with the beat" },
       { 2, ABIL_USKAYAW_LINE_PASS, "pass through a line of other dancers" },
+      { 3, "Uskayaw will force your foes to helplessly watch your dance.",
+           "Uskayaw will no longer force your foes to helplessly watch your dance."},
+      { 4, "Uskayaw will force your foes to share their pain.",
+           "Uskayaw will no longer force your foes to share their pain."},
       { 5, ABIL_USKAYAW_GRAND_FINALE, "merge with and destroy a victim" },
     },
 
@@ -509,6 +513,7 @@ void dec_penance(god_type god, int val)
             // redraw the god title.
             you.redraw_title = true;
 
+            // TSO's halo is once more available.
             if (!had_halo && have_passive(passive_t::halo))
             {
                 mprf(MSGCH_GOD, "Your divine halo returns!");
@@ -533,14 +538,6 @@ void dec_penance(god_type god, int val)
                 redraw_screen();
                 notify_stat_change();
             }
-
-            // TSO's halo is once more available.
-            if (have_passive(passive_t::halo))
-            {
-                mprf(MSGCH_GOD, "Your divine halo returns!");
-                invalidate_agrid(true);
-            }
-
             if (have_passive(passive_t::storm_shield))
             {
                 mprf(MSGCH_GOD, "A storm instantly forms around you!");
@@ -914,9 +911,9 @@ static bool _give_nemelex_gift(bool forced = false)
     {
 
         misc_item_type gift_type = random_choose_weighted(
-                                        2, MISC_DECK_OF_WAR,
-                                        2, MISC_DECK_OF_DESTRUCTION,
-                                        1, MISC_DECK_OF_ESCAPE,
+                                        5, MISC_DECK_OF_DESTRUCTION,
+                                        4, MISC_DECK_OF_SUMMONING,
+                                        2, MISC_DECK_OF_ESCAPE,
                                         0);
 
         int thing_created = items(true, OBJ_MISCELLANY, gift_type, 1, 0,
@@ -1268,21 +1265,6 @@ string hepliaklqana_ally_name()
 }
 
 /**
- * What specialization has the player chosen for their ancestor, if any?
- *
- * @return  The appropriate ability_type enum (e.g.
- *          ABIL_HEPLIAKLQANA_KNIGHT_REACHING), or 0 if no specialization was
- *          chosen.
- */
-int hepliaklqana_specialization()
-{
-    // using get_int() without checking for exists would make it exist
-    if (you.props.exists(HEPLIAKLQANA_SPECIALIZATION_KEY))
-        return you.props[HEPLIAKLQANA_SPECIALIZATION_KEY].get_int();
-    return 0;
-}
-
-/**
  * How much HD should the ally granted by Hepliaklqana have?
  *
  * @return      The player's xl * 2/3.
@@ -1474,53 +1456,6 @@ void upgrade_hepliaklqana_ancestor(bool quiet_force)
 }
 
 /**
- * For a spellcasting ancestor (e.g. a hexer or battlemage), what spell is
- * granted by a given specialization?
- *
- * @param specialization    The specialization in question; e.g.
- *                          ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST.
- * @return                  The appropriate spell type, e.g. SPELL_ICEBLAST.
- *                          By default, returns NUM_SPELLS.
- */
-spell_type hepliaklqana_specialization_spell(int specialization)
-{
-    switch (specialization)
-    {
-    case ABIL_HEPLIAKLQANA_BATTLEMAGE_ICEBLAST:
-        return SPELL_ICEBLAST;
-    case ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA:
-        return SPELL_BOLT_OF_MAGMA;
-    case ABIL_HEPLIAKLQANA_HEXER_PARALYSE:
-        return SPELL_PARALYSE;
-    case ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION:
-        return SPELL_ENGLACIATION;
-    default:
-        return NUM_SPELLS;
-    }
-}
-
-/**
- * For an ancestor knight, what weapon is granted by a given specialization?
- *
- * @param specialization    The specialization in question; e.g.
- *                          ABIL_HEPLIAKLQANA_KNIGHT_REACHING.
- * @return                  The appropriate weapon type, e.g. WPN_BROAD_AXE.
- *                          By default, returns NUM_WEAPONS.
- */
-weapon_type hepliaklqana_specialization_weapon(int specialization)
-{
-    switch (specialization)
-    {
-    case ABIL_HEPLIAKLQANA_KNIGHT_REACHING:
-        return WPN_DEMON_TRIDENT;
-    case ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING:
-        return WPN_BROAD_AXE;
-    default:
-        return NUM_WEAPONS;
-    }
-}
-
-/**
  * What type of weapon should an ancestor of the given HD have?
  *
  * @param mc   The type of ancestor in question.
@@ -1532,16 +1467,11 @@ static weapon_type _hepliaklqana_weapon_type(monster_type mc, int HD)
     switch (mc)
     {
     case MONS_ANCESTOR_HEXER:
-        return HD < 18 ? WPN_DAGGER : WPN_QUICK_BLADE;
+        return HD < 16 ? WPN_DAGGER : WPN_QUICK_BLADE;
     case MONS_ANCESTOR_KNIGHT:
-    {
-        const int specialization = hepliaklqana_specialization();
-        return specialization ?
-               hepliaklqana_specialization_weapon(specialization) :
-               WPN_FLAIL;
-    }
+        return HD < 10 ? WPN_FLAIL : WPN_BROAD_AXE;
     case MONS_ANCESTOR_BATTLEMAGE:
-        return HD < 14 ? WPN_QUARTERSTAFF : WPN_LAJATANG;
+        return HD < 13 ? WPN_QUARTERSTAFF : WPN_LAJATANG;
     default:
         return NUM_WEAPONS; // should never happen
     }
@@ -1559,14 +1489,14 @@ static brand_type _hepliaklqana_weapon_brand(monster_type mc, int HD)
     switch (mc)
     {
         case MONS_ANCESTOR_HEXER:
-            return HD < 18 ?   SPWPN_DRAINING :
+            return HD < 16 ?   SPWPN_DRAINING :
                                SPWPN_ANTIMAGIC;
         case MONS_ANCESTOR_KNIGHT:
-            return !hepliaklqana_specialization() ?   SPWPN_NORMAL :
-                   HD < 18 ?                          SPWPN_FLAMING :
-                                                      SPWPN_SPEED;
+            return HD < 10 ?   SPWPN_NORMAL :
+                   HD < 16 ?   SPWPN_FLAMING :
+                               SPWPN_SPEED;
         case MONS_ANCESTOR_BATTLEMAGE:
-            return HD < 14 ?   SPWPN_NORMAL :
+            return HD < 13 ?   SPWPN_NORMAL :
                                SPWPN_FREEZING;
         default:
             return SPWPN_NORMAL;
@@ -1608,14 +1538,14 @@ static armour_type _hepliaklqana_shield_type(monster_type mc, int HD)
 {
     if (mc != MONS_ANCESTOR_KNIGHT)
         return NUM_ARMOURS;
-    if (HD < 14)
+    if (HD < 13)
         return ARM_SHIELD;
     return ARM_LARGE_SHIELD;
 }
 
 static special_armour_type _hepliaklqana_shield_ego(int HD)
 {
-    return HD < 14 ? SPARM_NORMAL : SPARM_REFLECTION;
+    return HD < 13 ? SPARM_NORMAL : SPARM_REFLECTION;
 }
 
 /**
@@ -1852,9 +1782,10 @@ bool do_god_gift(bool forced)
         }
 
         case GOD_YREDELEMNUL:
-            if (forced
-                || (random2(you.piety) >= piety_breakpoint(2)
-                    && one_chance_in(4)))
+            if (!player_mutation_level(MUT_NO_LOVE)
+                && (forced
+                    || (random2(you.piety) >= piety_breakpoint(2)
+                        && one_chance_in(4))))
             {
                 unsigned int threshold = MIN_YRED_SERVANT_THRESHOLD
                                          + you.num_current_gifts[you.religion] / 2;
@@ -2284,12 +2215,8 @@ static void _gain_piety_point()
         // no longer have a piety cost for getting them.
         // Jiyva is an exception because there's usually a time-out and
         // the gifts aren't that precious.
-        // Pakellas is an exception because the gift timeout is exceptionally
-        // long and causes extremely slow piety gain above 4* if this isn't
-        // here.
         if (!one_chance_in(4) && !you_worship(GOD_JIYVA)
-            && !you_worship(GOD_NEMELEX_XOBEH)
-            && !you_worship(GOD_PAKELLAS))
+            && !you_worship(GOD_NEMELEX_XOBEH))
         {
 #ifdef DEBUG_PIETY
             mprf(MSGCH_DIAGNOSTICS, "Piety slowdown due to gift timeout.");
@@ -3035,8 +2962,6 @@ static bool _transformed_player_can_join_god(god_type which_god)
     switch (you.form) {
     case TRAN_LICH:
         return !(is_good_god(which_god) || which_god == GOD_FEDHAS);
-    case TRAN_SHADOW:
-        return !is_good_god(which_god);
     case TRAN_STATUE:
         return !(which_god == GOD_YREDELEMNUL);
     default:
@@ -3092,15 +3017,15 @@ bool player_can_join_god(god_type which_god)
 
     if (player_mutation_level(MUT_NO_LOVE)
         && (which_god == GOD_BEOGH
-            ||  which_god == GOD_JIYVA
-            ||  which_god == GOD_HEPLIAKLQANA))
+            || which_god == GOD_JIYVA
+            || which_god == GOD_HEPLIAKLQANA
+            || which_god == GOD_FEDHAS))
     {
         return false;
     }
 
     if (player_mutation_level(MUT_NO_ARTIFICE)
-        && (which_god == GOD_NEMELEX_XOBEH
-            || which_god == GOD_PAKELLAS))
+        && which_god == GOD_PAKELLAS)
     {
       return false;
     }
@@ -3276,7 +3201,7 @@ static void _transfer_good_god_piety()
 
         // Some feedback that piety moved over.
         simple_god_message(make_stringf(" says: Farewell. Go and %s with %s.",
-                                        lookup(farewell_messages, old_god,
+                                        lookup(farewell_messages, you.religion,
                                                "become a bug"),
                                         god_name(you.religion).c_str()).c_str(),
 
@@ -3466,15 +3391,6 @@ static void _join_hepliaklqana()
     simple_god_message(make_stringf(" brings forth the memory of your ancestor,"
                                     " %s!",
                                     mg.mname.c_str()).c_str());
-
-    // no one will ever run into this.
-    if (you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY)
-        && you.experience_level >= HEP_SPECIALIZATION_LEVEL
-        && !hepliaklqana_specialization())
-    {
-        // TODO: deduplicate this message
-        god_speaks(you.religion, "You may now specialize your ancestor.");
-    }
 }
 
 /// Setup when joining the gelatinous groupies of Jiyva.
@@ -3505,8 +3421,7 @@ static void _join_ru()
 static void _join_trog()
 {
     for (int sk = SK_SPELLCASTING; sk <= SK_LAST_MAGIC; ++sk)
-        if (you.skills[sk])
-            you.train[sk] = 0;
+        you.train[sk] = you.train_alt[sk] = TRAINING_DISABLED;
 
     // When you start worshipping Trog, you make all non-hostile magic
     // users hostile.
@@ -3950,8 +3865,8 @@ bool god_hates_spell(spell_type spell, god_type god, bool rod_spell)
     switch (god)
     {
     case GOD_SHINING_ONE:
-        // TSO hates using poison, but is fine with curing it.
-        if ((disciplines & SPTYP_POISON) && spell != SPELL_CURE_POISON)
+        // TSO hates using poison.
+        if (disciplines & SPTYP_POISON)
             return true;
         break;
     case GOD_CHEIBRIADOS:

@@ -356,16 +356,6 @@ struct shop_struct
     bool defined() const { return type != SHOP_UNASSIGNED; }
 };
 
-struct delay_queue_item
-{
-    delay_type  type;
-    int         duration;
-    int         parm1;
-    int         parm2;
-    int         parm3;
-    bool        started;
-};
-
 /// Exception indicating a bad level_id, level_range, or depth_range.
 struct bad_level_id : public runtime_error
 {
@@ -716,7 +706,7 @@ public:
     void clear();
 
     // Stops running.
-    void stop();
+    void stop(bool clear_delays = true);
 
     // Take one off the rest counter.
     void rest();
@@ -730,7 +720,7 @@ private:
     bool run_should_stop() const;
 };
 
-typedef vector<delay_queue_item> delay_queue_type;
+class delay;
 
 enum mon_spell_slot_flag
 {

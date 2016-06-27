@@ -1234,7 +1234,7 @@ bool zin_recite_to_single_monster(const coord_def& where)
     if (affected
         && one_chance_in(3)
         && mon->alive()
-        && mons_shouts(mon->type, false) != S_SILENT)
+        && mons_can_shout(mon->type))
     {
         monster_attempt_shout(*mon);
     }
@@ -3326,13 +3326,11 @@ int fedhas_check_corpse_spores(bool quiet)
 #endif
     }
 
-    if (yesnoquit("Will you create these spores?", true, 'y') <= 0)
-    {
-        viewwindow(false);
-        return -1;
-    }
+    if (yesno("Will you create these spores?", true, 'y'))
+        return count;
 
-    return count;
+    viewwindow(false);
+    return -1;
 }
 
 // Destroy corpses in the player's LOS (first corpse on a stack only)
@@ -4001,8 +3999,18 @@ void spare_beogh_convert()
     }
 }
 
+#define STATIONARY_CHECK                               \
+    do {                                               \
+        if (you.is_stationary()) {                     \
+            canned_msg(MSG_CANNOT_MOVE);               \
+            return false;                              \
+        }                                              \
+    } while (0)
+
 bool dithmenos_shadow_step()
 {
+    STATIONARY_CHECK;
+
     // You can shadow-step anywhere within your umbra.
     ASSERT(you.umbra_radius() > -1);
     const int range = you.umbra_radius();
@@ -4830,6 +4838,14 @@ spret_type qazlal_upheaval(coord_def target, bool quiet, bool fail)
         args.hitfunc = &tgt;
         if (!spell_direction(spd, beam, &args))
             return SPRET_ABORT;
+
+        if (cell_is_solid(beam.target))
+        {
+            mprf("There is %s there.",
+                 article_a(feat_type_name(grd(beam.target))).c_str());
+            return SPRET_ABORT;
+        }
+
         bolt tempbeam;
         tempbeam.source    = beam.target;
         tempbeam.target    = beam.target;
@@ -5543,12 +5559,8 @@ int get_sacrifice_piety(ability_type sac, bool include_skill)
         case ABIL_RU_SACRIFICE_NIMBLENESS:
             if (player_mutation_level(MUT_NO_ARMOUR))
                 piety_gain += 20;
-            else if (you.species == SP_OCTOPODE
-                    || you.species == SP_FELID
-                    || species_is_draconian(you.species))
-            {
+            else if (species_apt(SK_ARMOUR) == UNUSABLE_SKILL)
                 piety_gain += 28; // this sacrifice is worse for these races
-            }
             break;
         case ABIL_RU_SACRIFICE_DURABILITY:
             if (player_mutation_level(MUT_NO_DODGING))
@@ -5567,6 +5579,13 @@ int get_sacrifice_piety(ability_type sac, bool include_skill)
                 piety_gain -= 10;
             }
             break;
+        case ABIL_RU_SACRIFICE_EXPERIENCE:
+            if (player_mutation_level(MUT_COWARDICE))
+                piety_gain += 15;
+        case ABIL_RU_SACRIFICE_COURAGE:
+            if (player_mutation_level(MUT_INEXPERIENCED))
+                piety_gain += 15;
+
         default:
             break;
     }
@@ -6252,6 +6271,8 @@ bool ru_power_leap()
         return false;
     }
 
+    STATIONARY_CHECK;
+
     // query for location:
     dist beam;
 
@@ -6329,12 +6350,12 @@ bool ru_power_leap()
         else if (you.trans_wall_blocking(beam.target))
         {
             clear_messages();
-            mpr("There's something in the way!");
+            canned_msg(MSG_SOMETHING_IN_WAY);
         }
         else
         {
             clear_messages();
-            mpr("You can only leap to visible locations.");
+            canned_msg(MSG_CANNOT_SEE);
         }
     }
 
@@ -6549,10 +6570,15 @@ int pakellas_effective_hex_power(int pow)
     return total_pow;
 }
 
-bool pakellas_device_surge()
+/**
+ * Trigger a readied Device Surge, spending MP to multiply evocations power.
+ *
+ * @return  A number of enhancers (!) to multiply evo power by.
+ */
+int pakellas_surge_devices()
 {
     if (!you_worship(GOD_PAKELLAS) || !you.duration[DUR_DEVICE_SURGE])
-        return true;
+        return 0;
 
     const int mp = min(you.magic_points, min(9, max(3,
                        1 + random2avg(you.piety * 9 / piety_breakpoint(5),
@@ -6560,21 +6586,22 @@ bool pakellas_device_surge()
 
     const int severity = div_rand_round(mp, 3);
     dec_mp(mp);
-
-    you.attribute[ATTR_PAKELLAS_DEVICE_SURGE] = severity;
     you.duration[DUR_DEVICE_SURGE] = 0;
     if (severity == 0)
     {
         mprf(MSGCH_GOD, "The surge fizzles.");
-        return false;
+        return -1;
     }
-
-    return true;
+    return severity;
 }
 
 static int _get_stomped(monster* mons)
 {
     if (mons == nullptr)
+        return 0;
+
+    // Don't hurt your own demonic guardians
+    if (testbits(mons->flags, MF_DEMONIC_GUARDIAN) && mons->friendly())
         return 0;
 
     behaviour_event(mons, ME_ANNOY, &you);
@@ -6615,6 +6642,9 @@ bool uskayaw_line_pass()
         crawl_state.cancel_cmd_repeat();
         return false;
     }
+
+    STATIONARY_CHECK;
+
     // query for location:
     int range = 8;
     int invo_skill = you.skill(SK_INVOCATIONS);
@@ -6714,12 +6744,12 @@ bool uskayaw_line_pass()
         else if (you.trans_wall_blocking(beam.target))
         {
             clear_messages();
-            mpr("There's something in the way!");
+            canned_msg(MSG_SOMETHING_IN_WAY);
         }
         else
         {
             clear_messages();
-            mpr("You can only travel to visible locations.");
+            canned_msg(MSG_CANNOT_SEE);
         }
     }
 
@@ -6815,12 +6845,12 @@ bool uskayaw_grand_finale()
         else if (you.trans_wall_blocking(beam.target))
         {
             clear_messages();
-            mpr("There's something in the way!");
+            canned_msg(MSG_SOMETHING_IN_WAY);
         }
         else
         {
             clear_messages();
-            mpr("You can only target visible locations.");
+            canned_msg(MSG_CANNOT_SEE);
         }
     }
 
@@ -6829,8 +6859,10 @@ bool uskayaw_grand_finale()
     // kill the target
     mprf("%s explodes violently!", mons->name(DESC_THE, false).c_str());
     mons->flags |= MF_EXPLODE_KILL;
-    if (!mons->is_insubstantial())
+    if (!mons->is_insubstantial()) {
+        blood_spray(mons->pos(), mons->mons_species(), mons->hit_points / 5);
         throw_monster_bits(mons); // have some fun while we're at it
+    }
 
     monster_die(mons, KILL_YOU, NON_MONSTER, false);
 
@@ -6902,98 +6934,9 @@ bool hepliaklqana_choose_ancestor_type(int ancestor_choice)
                        ancestor_type_name.c_str());
     mark_milestone("ancestor.class", mile_text);
 
-    if (you.experience_level >= HEP_SPECIALIZATION_LEVEL)
-        god_speaks(you.religion, "You may now specialize your ancestor.");
-
     return true;
 }
 
-/**
- * Describe the effect of a given ancestor specialization.
- *
- * @param specialization    The specialization in question.
- *                          E.g. ABIL_HEPLIAKLQANA_KNIGHT_REACHING.
- * @return                  A short description of what the ancestor will do;
- *                          e.g. "wielding a broad axe", or "casting Iceblast".
- */
-static string _specialization_description(int specialization)
-{
-    const int ancestor_type = you.props[HEPLIAKLQANA_ALLY_TYPE_KEY].get_int();
-    if (ancestor_type == MONS_ANCESTOR_KNIGHT)
-    {
-        const int weapon = hepliaklqana_specialization_weapon(specialization);
-        const string base_name = item_base_name(OBJ_WEAPONS, weapon);
-        return make_stringf("wielding a %s", base_name.c_str());
-    }
-
-    const spell_type spell = hepliaklqana_specialization_spell(specialization);
-    return make_stringf("casting %s", spell_title(spell));
-}
-
-
-/**
- * Build a prompt for a given ancestor specialization.
- *
- * @param specialization    The specialization in question.
- *                          E.g. ABIL_HEPLIAKLQANA_KNIGHT_REACHING.
- * @return                  A confirmation prompt for the player before
- *                          finalizing the specialization; e.g.
- *                          "Are you sure you want to remember your ancestor
- *                          wielding a broad axe of flaming?"
- */
-static string _ancestor_specialization_prompt(int specialization)
-{
-    string spec_desc = _specialization_description(specialization);
-    // we want this in the prompt, but it's clutter in notes/milestones
-    if (you.props[HEPLIAKLQANA_ALLY_TYPE_KEY].get_int() == MONS_ANCESTOR_KNIGHT)
-    {
-        // the following is hacky on several levels
-        const string ego = you.experience_level < 27 ? "flaming" : "speed";
-        spec_desc += " of " + ego;
-    }
-    return make_stringf("Are you sure you want to remember your ancestor %s?",
-                        spec_desc.c_str());
-}
-
-/**
- * Permanently specialize the player's companion,
- * after prompting to make sure the player is certain.
- *
- * @param specialization   The specialization; should be an ability enum.
- *                         E.g. ABIL_HEPLIAKLQANA_KNIGHT_REACHING.
- * @return                 Whether the player went through with the choice.
- */
-bool hepliaklqana_specialize_ancestor(int specialization)
-{
-    if (hepliaklqana_ancestor()
-        && companion_is_elsewhere(hepliaklqana_ancestor()))
-    {
-        // ugly hack to avoid dealing with upgrading offlevel ancestors
-        mpr("You can't make this choice while your ancestor is elsewhere.");
-        return false;
-    }
-
-    const string prompt = _ancestor_specialization_prompt(specialization);
-    if (!yesno(prompt.c_str(), false, 'n'))
-    {
-        canned_msg(MSG_OK);
-        return false;
-    }
-
-    you.props[HEPLIAKLQANA_SPECIALIZATION_KEY] = specialization;
-    upgrade_hepliaklqana_ancestor(true);
-    god_speaks(you.religion, "It is so.");
-
-    const string spec_desc = _specialization_description(specialization);
-    take_note(Note(NOTE_ANCESTOR_SPECIALIZATION, 0, 0, spec_desc));
-    const string mile_text
-        = make_stringf("remembered their ancestor %s %s.",
-                       hepliaklqana_ally_name().c_str(),
-                       spec_desc.c_str());
-    mark_milestone("ancestor.special", mile_text);
-
-    return true;
-}
 
 /**
  * Heal the player's ancestor, remove a variety of detrimental status effects,
@@ -7066,9 +7009,11 @@ static coord_def _get_transference_target()
 {
     dist spd;
 
+    targetter_transference tgt(&you);
     direction_chooser_args args;
+    args.hitfunc = &tgt;
     args.restricts = DIR_TARGET;
-    args.mode = TARG_ANY;
+    args.mode = TARG_MOBILE_MONSTER;
     args.range = LOS_RADIUS;
     args.needs_path = false;
     args.may_target_monster = true;
@@ -7083,8 +7028,8 @@ static coord_def _get_transference_target()
     return spd.target;
 }
 
-/// Slow any monsters near the destination of Tranferrence.
-static void _transfer_slow_nearby(coord_def destination)
+/// Drain any monsters near the destination of Tranference.
+static void _transfer_drain_nearby(coord_def destination)
 {
     for (adjacent_iterator it(destination); it; ++it)
     {
@@ -7092,13 +7037,13 @@ static void _transfer_slow_nearby(coord_def destination)
         if (!mon || mons_is_hepliaklqana_ancestor(mon->type))
             continue;
 
-        // ~3-6 turns at 0 invo, ~6-20 turns at 27 invo
-        const int dur = random_range(30 + you.skill(SK_INVOCATIONS, 1),
-                                     60 + you.skill(SK_INVOCATIONS, 5));
-        // XXX: player_adjust_invoc_power?
-        // XXX: consider adjusting by target HD?
-        if (mon->add_ench(mon_enchant(ENCH_SLOW, 0, &you, dur)))
-            simple_monster_message(mon, " is slowed by nostalgia.");
+        const int dur = random_range(60, 150);
+        // 1-2 at 0 skill, 2-6 at 27 skill.
+        const int degree
+            = random_range(1 + you.skill_rdiv(SK_INVOCATIONS, 1, 27),
+                           2 + you.skill_rdiv(SK_INVOCATIONS, 4, 27));
+        if (mon->add_ench(mon_enchant(ENCH_DRAINED, degree, &you, dur)))
+            simple_monster_message(mon, " is drained by nostalgia.");
     }
 }
 
@@ -7138,7 +7083,7 @@ spret_type hepliaklqana_transference(bool fail)
 
     if (victim == ancestor)
     {
-        mpr("You can't transfer your ancestor with themself!");
+        mpr("You can't transfer your ancestor with themself.");
         return SPRET_ABORT;
     }
 
@@ -7177,7 +7122,8 @@ spret_type hepliaklqana_transference(bool fail)
     {
         ancestor->move_to_pos(target, true, true);
         victim->move_to_pos(destination, true, true);
-    } else
+    }
+    else
         ancestor->swap_with(victim->as_monster());
 
     mprf("%s swap%s with %s!",
@@ -7194,8 +7140,8 @@ spret_type hepliaklqana_transference(bool fail)
     ancestor->apply_location_effects(destination);
     victim->apply_location_effects(target);
 
-    if (you.piety >= piety_breakpoint(5))
-        _transfer_slow_nearby(target);
+    if (have_passive(passive_t::transfer_drain))
+        _transfer_drain_nearby(target);
 
     return SPRET_SUCCESS;
 }

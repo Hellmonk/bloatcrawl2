@@ -324,6 +324,50 @@ static string _describe_ash_skill_boost()
     return desc.str();
 }
 
+/// Build & return a table of Hep's upgrades for your chosen ancestor type.
+static string _describe_ancestor_upgrades()
+{
+    if (!you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY))
+        return "";
+
+    // TODO: don't hardcode this
+    // TODO: higlight upgrades taken
+    // XXX: maybe it'd be nice to let you see other ancestor types'...?
+    switch (you.props[HEPLIAKLQANA_ALLY_TYPE_KEY].get_int())
+    {
+    case MONS_ANCESTOR_KNIGHT:
+        return "XL                      Knight\n"
+               "                        Flail\n"
+               "                        Shield\n"
+               "                   Splint Mail (+AC)\n"
+               "15                 Broad Axe (flame)\n"
+               "19              Large Shield (reflect)\n"
+               "19                      Haste\n"
+               "24                Speed (weapon ego)\n";
+    case MONS_ANCESTOR_BATTLEMAGE:
+        return "XL                    Battlemage\n"
+               "                     Quarterstaff\n"
+               "                      Throw Frost\n"
+               "                      Stone Arrow\n"
+               "                     +Melee Damage\n"
+               "15                    Magma Bolt\n"
+               "19                  Lajatang (freeze)\n"
+               "19                       Haste\n"
+               "24                   Crystal Spear\n";
+    case MONS_ANCESTOR_HEXER:
+        return "XL                       Hexer\n"
+               "                     Dagger (drain)\n"
+               "                         Slow\n"
+               "                        Confuse\n"
+               "15                     Paralyse\n"
+               "19                   Mass Confusion\n"
+               "19                       Haste\n"
+               "24                Quickblade (antimagic)\n";
+    default:
+        return "";
+    }
+}
+
 // from dgn-overview.cc
 extern map<branch_type, set<level_id> > stair_level;
 
@@ -566,17 +610,15 @@ static string _get_god_misc_info(god_type which_god)
                    "you gain half of the monster's experience value. Pacified "
                    "monsters try to leave the level.";
 
-        case GOD_NEMELEX_XOBEH:
-            return "The power of Nemelex Xobeh's abilities and of the "
-                   "cards' effects is governed by Evocations skill "
-                   "instead of Invocations.";
-
         case GOD_GOZAG:
             return _describe_branch_bribability();
 
         case GOD_PAKELLAS:
             return "The power of Pakellas' abilities is governed by "
                    "Evocations skill instead of Invocations.";
+
+        case GOD_HEPLIAKLQANA:
+            return _describe_ancestor_upgrades();
 
         default:
             return "";
@@ -628,7 +670,7 @@ static string _god_penance_message(god_type which_god)
     const string penance_message =
         (which_god == GOD_NEMELEX_XOBEH
          && which_god_penance > 0 && which_god_penance <= 100)
-            ? "%s doesn't play fair with you." :
+            ? "%s won't play fair with you." :
         (which_god_penance >= 50)   ? "%s's wrath is upon you!" :
         (which_god_penance >= 20)   ? "%s is annoyed with you." :
         (which_god_penance >=  5)   ? "%s well remembers your sins." :

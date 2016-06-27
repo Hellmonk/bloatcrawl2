@@ -1289,8 +1289,8 @@ static void _update_place_info()
         // as a resting turn, rather than "other".
         static bool prev_was_rest = false;
 
-        if (!you.delay_queue.empty()
-            && you.delay_queue.front().type == DELAY_REST)
+        if (you_are_delayed()
+            && current_delay()->is_resting())
         {
             prev_was_rest = true;
         }
@@ -1306,8 +1306,8 @@ static void _update_place_info()
             delta.elapsed_other += you.time_taken;
         }
 
-        if (you.delay_queue.empty()
-            || you.delay_queue.front().type != DELAY_REST)
+        if (!you_are_delayed()
+            || !current_delay()->is_resting())
         {
             prev_was_rest = false;
         }
@@ -1406,7 +1406,8 @@ static void _input()
     if (need_to_autoinscribe())
         autoinscribe();
 
-    if (you_are_delayed() && current_delay_action() != DELAY_MACRO_PROCESS_KEY)
+    if (you_are_delayed()
+        && !dynamic_cast<MacroProcessKeyDelay*>(current_delay().get()))
     {
         end_searing_ray();
         handle_delay();
@@ -1516,8 +1517,10 @@ static void _input()
     if (need_to_autoinscribe())
         autoinscribe();
 
+#ifdef WIZARD
     if (you.props.exists(FREEZE_TIME_KEY))
         you.turn_is_over = false;
+#endif
 
     if (you.turn_is_over)
     {
@@ -1773,7 +1776,7 @@ static void _take_stairs(bool down)
     you.stop_being_constricted();
 
     if (shaft)
-        start_delay(DELAY_DESCENDING_STAIRS, 0);
+        start_delay<DescendingStairsDelay>(0);
     else if (get_trap_type(you.pos()) == TRAP_GOLUBRIA)
     {
         coord_def old_pos = you.pos();
@@ -1787,7 +1790,10 @@ static void _take_stairs(bool down)
     else
     {
         tag_followers(); // Only those beside us right now can follow.
-        start_delay(down ? DELAY_DESCENDING_STAIRS : DELAY_ASCENDING_STAIRS, 1);
+        if (down)
+            start_delay<DescendingStairsDelay>(1);
+        else
+            start_delay<AscendingStairsDelay>(1);
     }
 }
 
@@ -2251,7 +2257,7 @@ void process_command(command_type cmd)
                 if (you.see_cell(dest))
                     full_describe_square(dest);
                 else
-                    mpr("You can't see that place.");
+                    canned_msg(MSG_CANNOT_SEE);
             }
         }
         break;
@@ -2385,19 +2391,6 @@ static void _check_banished()
     }
 }
 
-static void _check_shafts()
-{
-    for (auto& entry : env.trap)
-    {
-        if (entry.second.type != TRAP_SHAFT)
-            continue;
-
-        ASSERT_IN_BOUNDS(entry.first);
-
-        handle_items_on_shaft(entry.first, true);
-    }
-}
-
 static void _check_sanctuary()
 {
     if (env.sanctuary_time <= 0)
@@ -2512,7 +2505,6 @@ void world_reacts()
 #endif
 
     _check_banished();
-    _check_shafts();
     _check_sanctuary();
 
     run_environment_effects();
@@ -3048,8 +3040,7 @@ static void _close_door(coord_def move)
 static void _do_berserk_no_combat_penalty()
 {
     // Butchering/eating a corpse will maintain a blood rage.
-    const int delay = current_delay_action();
-    if (delay == DELAY_BUTCHER || delay == DELAY_EAT)
+    if (you_are_delayed() && current_delay()->berserk_ok())
         return;
 
     if (you.berserk_penalty == NO_BERSERK_PENALTY)
@@ -3202,7 +3193,6 @@ static void _move_player(coord_def move)
         {
             move.x = random2(3) - 1;
             move.y = random2(3) - 1;
-            you.reset_prev_move();
             if (move.origin())
             {
                 mpr("You're too confused to move!");
@@ -3459,20 +3449,24 @@ static void _move_player(coord_def move)
 
         if (swap)
             _swap_places(targ_monst, mon_swap_dest);
-        else if (you.duration[DUR_COLOUR_SMOKE_TRAIL])
+        else if (you.duration[DUR_CLOUD_TRAIL])
         {
             if (cell_is_solid(you.pos()))
                 ASSERT(you.wizmode_teleported_into_rock);
             else
             {
-                check_place_cloud(CLOUD_MAGIC_TRAIL, you.pos(),
-                                  random_range(3, 10), &you, 0, ETC_RANDOM);
+                auto cloud = static_cast<cloud_type>(
+                    you.props[XOM_CLOUD_TRAIL_TYPE_KEY].get_int());
+                ASSERT(cloud != CLOUD_NONE);
+                check_place_cloud(cloud,you.pos(), random_range(3, 10), &you,
+                                  0, -1);
             }
         }
 
-        if (delay_is_run(current_delay_action()) && env.travel_trail.empty())
+        const bool running = you_are_delayed() && current_delay()->is_run();
+        if (running && env.travel_trail.empty())
             env.travel_trail.push_back(you.pos());
-        else if (!delay_is_run(current_delay_action()))
+        else if (!running)
             clear_travel_trail();
 
         // clear constriction data
@@ -3500,7 +3494,7 @@ static void _move_player(coord_def move)
                 extract_manticore_spikes("The manticore spikes snap loose.");
         }
 
-        if (delay_is_run(current_delay_action()))
+        if (you_are_delayed() && current_delay()->is_run())
             env.travel_trail.push_back(you.pos());
 
         you.time_taken *= player_movement_speed();
@@ -3513,7 +3507,6 @@ static void _move_player(coord_def move)
                                  div_round_up(100, you.running.travel_speed));
         }
 
-        you.prev_move = move;
         move.reset();
         you.turn_is_over = true;
         request_autopickup();
@@ -3525,7 +3518,6 @@ static void _move_player(coord_def move)
         && feat_is_closed_door(targ_grid))
     {
         _open_door(move);
-        you.prev_move = move;
     }
     else if (!targ_pass && grd(targ) == DNGN_MALIGN_GATEWAY
              && !attacking && !you.is_stationary())
@@ -3536,7 +3528,6 @@ static void _move_player(coord_def move)
             return;
         }
 
-        you.prev_move = move;
         move.reset();
         you.turn_is_over = true;
 

@@ -169,14 +169,13 @@ string ru_sacrifice_vector(ability_type sac);
 
 bool pakellas_check_quick_charge(bool quiet);
 int pakellas_effective_hex_power(int pow);
-bool pakellas_device_surge();
+int pakellas_surge_devices();
 
 bool uskayaw_stomp();
 bool uskayaw_line_pass();
 bool uskayaw_grand_finale();
 
 bool hepliaklqana_choose_ancestor_type(int ancestor_type);
-bool hepliaklqana_specialize_ancestor(int specialization);
 spret_type hepliaklqana_idealise(bool fail);
 spret_type hepliaklqana_transference(bool fail);
 void hepliaklqana_choose_identity();
