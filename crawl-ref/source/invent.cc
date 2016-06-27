@@ -476,7 +476,7 @@ string no_selectables_message(int item_selector)
 
 void InvMenu::load_inv_items(FixedVector< item_def, ENDOFPACK > &inv,
 							 int item_selector, int excluded_slot,
-                             MenuEntry *(*procfn)(MenuEntry *me))
+                             function<MenuEntry* (MenuEntry*)> procfn)
 {
     vector<const item_def *> tobeshown;
     _get_inv_items_to_show(inv, tobeshown, item_selector, excluded_slot);
@@ -491,7 +491,7 @@ void InvMenu::load_inv_items(FixedVector< item_def, ENDOFPACK > &inv,
 
 void InvMenu::load_inv_items2(
 							 int item_selector, int excluded_slot,
-                             MenuEntry *(*procfn)(MenuEntry *me))
+                             function<MenuEntry* (MenuEntry*)> procfn)
 {
     vector<const item_def *> tobeshown;
     _get_inv_items_to_show(you.inv1, tobeshown, item_selector, excluded_slot);
@@ -877,10 +877,7 @@ menu_letter InvMenu::load_items(const vector<const item_def*> &mitems,
             }
             do_preselect(ie);
 
-            /*
             add_entry(procfn ? procfn(ie) : ie);
-             */
-            add_entry(ie);
         }
     }
 

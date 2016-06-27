@@ -47,6 +47,7 @@ enum msg_channel_type
     MSGCH_HELL_EFFECT,      // hell effects
     MSGCH_MONSTER_WARNING,  // "Foo comes into view", et al
     MSGCH_DGL_MESSAGE,      // dgamelaunch messages
+    MSGCH_PRELUDE,          // dgamelaunch messages
 
     NUM_MESSAGE_CHANNELS    // always last
 };

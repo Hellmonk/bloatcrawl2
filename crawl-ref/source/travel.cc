@@ -2534,8 +2534,12 @@ void start_translevel_travel(const level_pos &pos)
         return;
     }
 
-    mpr("Travelling...");
-    flush_prev_message();
+    redraw_screen();
+    clear_messages();
+    mprf(MSGCH_PRELUDE, "Travelling...");
+    msgwin_got_input();
+    msgwin_new_cmd(true);
+    display_message_window();
 
     // Remember where we're going so we can easily go back if interrupted.
     you.travel_x = pos.pos.x;
@@ -2992,6 +2996,9 @@ void start_explore(bool grab_items)
     you.prev_direction.reset();
     mprf("Exploring the dungeon...");
     flush_prev_message();
+#ifdef USE_TILE_WEB
+    tiles.flush_messages();
+#endif
     _start_running();
 }
 
