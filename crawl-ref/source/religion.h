@@ -125,7 +125,6 @@ void vehumet_accept_gift(spell_type spell);
 mgen_data hepliaklqana_ancestor_gen_data();
 string hepliaklqana_ally_name();
 int hepliaklqana_specialization();
-int hepliaklqana_specialization_level();
 weapon_type hepliaklqana_specialization_weapon(int specialization);
 spell_type hepliaklqana_specialization_spell(int specialization);
 
@@ -149,7 +148,6 @@ void delayed_monster_done(string success, string failure,
                           delayed_callback callback = nullptr);
 
 bool do_god_gift(bool forced = false);
-bool poor_god_choice_for_player(god_type which_god);
 
 vector<god_type> temple_god_list();
 vector<god_type> nontemple_god_list();

@@ -29,7 +29,7 @@ ranged_attack::ranged_attack(actor *attk, actor *defn, item_def *proj,
                              bool tele, actor *blame)
     : ::attack(attk, defn, blame), range_used(0), reflected(false),
       projectile(proj), teleport(tele), orig_to_hit(0),
-      should_alert_defender(true), launch_type(LRET_BUGGY)
+      should_alert_defender(true), launch_type(LRET_FUMBLED)
 {
     init_attack(SK_THROWING, 0);
     kill_type = KILLED_BY_BEAM;
@@ -64,28 +64,26 @@ ranged_attack::ranged_attack(actor *attk, actor *defn, item_def *proj,
         wpn_skill = SK_THROWING;
 }
 
-int ranged_attack::calc_to_hit()
+int ranged_attack::calc_to_hit(bool random)
 {
-    orig_to_hit = attack::calc_to_hit();
-
-    if (orig_to_hit == AUTOMATIC_HIT)
-        return AUTOMATIC_HIT;
-
+    orig_to_hit = attack::calc_to_hit(random);
     if (teleport)
     {
         orig_to_hit +=
             (attacker->is_player())
-            ? you.attribute[ATTR_PORTAL_PROJECTILE] / 8
+            ? maybe_random2(you.attribute[ATTR_PORTAL_PROJECTILE] / 4, random)
             : 3 * attacker->as_monster()->get_hit_dice();
     }
-
-    // ranged attack always has a more difficult time hitting than melee
-    orig_to_hit -= 5;
 
     int hit = orig_to_hit;
     const int defl = defender->missile_deflection();
     if (defl)
-        hit = (hit - 1) / (2 * defl);
+    {
+        if (random)
+            hit = random2(hit / defl);
+        else
+            hit = (hit - 1) / (2 * defl);
+    }
 
     return hit;
 }
@@ -103,12 +101,8 @@ bool ranged_attack::attack()
         return true;
     }
 
-    if(defender->is_player() && player_ephemeral_passthrough(projectile->name(DESC_THE), true)) {
-    	return false;
-    }
-
     const int ev = defender->evasion(EV_IGNORE_NONE, attacker);
-    hit_margin = test_hit(to_hit, ev);
+    ev_margin = test_hit(to_hit, ev, !attacker->is_player());
     bool shield_blocked = attack_shield_blocked(false);
 
     god_conduct_trigger conducts[3];
@@ -121,7 +115,7 @@ bool ranged_attack::attack()
         handle_phase_blocked();
     else
     {
-        if (hit_margin >= 0)
+        if (ev_margin >= 0)
         {
             if (!handle_phase_hit())
             {
@@ -150,7 +144,7 @@ bool ranged_attack::attack()
         handle_phase_killed();
 
     if (attacker->is_player() && defender->is_monster()
-        && !shield_blocked && hit_margin >= 0)
+        && !shield_blocked && ev_margin >= 0)
     {
         print_wounds(defender->as_monster());
     }
@@ -162,15 +156,11 @@ bool ranged_attack::attack()
     return attack_occurred;
 }
 
+// XXX: Are there any cases where this might fail?
 bool ranged_attack::handle_phase_attempted()
 {
     attacker->attacking(defender, true);
     attack_occurred = true;
-
-    /* I think this is happening twice
-    if (sp_cost && attacker->is_player())
-        dec_sp(sp_cost, true, false);
-        */
 
     return true;
 }
@@ -232,7 +222,7 @@ bool ranged_attack::handle_phase_dodged()
     const int ev = defender->evasion(EV_IGNORE_NONE, attacker);
 
     const int orig_ev_margin =
-        test_hit(orig_to_hit, ev);
+        test_hit(orig_to_hit, ev, !attacker->is_player());
 
     if (defender->missile_deflection() && orig_ev_margin >= 0)
     {
@@ -334,9 +324,7 @@ bool ranged_attack::handle_phase_hit()
 
 bool ranged_attack::using_weapon()
 {
-    return weapon && (launch_type == LRET_LAUNCHED
-                     || launch_type == LRET_BUGGY // not initialized
-                         && is_launched(attacker, weapon, *projectile));
+    return weapon && launch_type == LRET_LAUNCHED;
 }
 
 int ranged_attack::weapon_damage()
@@ -392,7 +380,6 @@ int ranged_attack::apply_damage_modifiers(int damage, int damage_max)
         const int bonus = attacker->get_hit_dice() * 4 / 3;
         damage += random2avg(bonus, 2);
     }
-
     return damage;
 }
 
@@ -420,9 +407,8 @@ bool ranged_attack::apply_damage_brand(const char *what)
 
     const brand_type brand = get_weapon_brand(*weapon);
 
-    // No stacking elemental brands, unless you're Nessos.
-    if (attacker->type != MONS_NESSOS
-        && projectile->base_type == OBJ_MISSILES
+    // No stacking elemental brands.
+    if (projectile->base_type == OBJ_MISSILES
         && get_ammo_brand(*projectile) != SPMSL_NORMAL
         && get_ammo_brand(*projectile) != SPMSL_PENETRATION
         && (brand == SPWPN_FLAMING
@@ -679,8 +665,8 @@ bool ranged_attack::apply_missile_brand()
         break;
     case SPMSL_POISONED:
         if (projectile->is_type(OBJ_MISSILES, MI_NEEDLE)
-                && using_weapon()
-                && damage_done > 0
+            && using_weapon()
+            && damage_done > 0
             || !one_chance_in(4))
         {
             int old_poison;
@@ -831,18 +817,10 @@ void ranged_attack::announce_hit()
     if (!needs_message)
         return;
 
-    mprf("%s %s %s%s",
+    mprf("%s %s %s%s%s",
          projectile->name(DESC_THE).c_str(),
          attack_verb.c_str(),
          defender_name(false).c_str(),
+         debug_damage_number().c_str(),
          attack_strength_punctuation(damage_done).c_str());
 }
-
-const item_def* ranged_attack::get_weapon_used(bool launcher)
-{
-    if (launcher)
-        return weapon;
-    else
-        return projectile;
-}
-

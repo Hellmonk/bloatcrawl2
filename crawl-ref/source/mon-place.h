@@ -18,13 +18,13 @@ struct mgen_data;
  * position like a summon.
  * Returns -1 on failure, index into env.mons otherwise.
  * *********************************************************************** */
-monster* create_monster(mgen_data mg, bool fail_msg = true, bool first = true);
+monster* create_monster(mgen_data mg, bool fail_msg = true);
 
 /* ***********************************************************************
  * Primary function to create monsters. See mgen_data for details on monster
  * placement.
  * *********************************************************************** */
-monster* mons_place(mgen_data mg, bool first = true);
+monster* mons_place(mgen_data mg);
 
 bool needs_resolution(monster_type mon_type);
 
@@ -47,7 +47,7 @@ const monster_type fixup_zombie_type(const monster_type cls,
  * mons_place(). If you need to put a monster somewhere, use mons_place().
  * Summoned creatures can be created with create_monster().
  * *********************************************************************** */
-monster* place_monster(mgen_data mg, bool force_pos = false, bool dont_place = false, bool first = true);
+monster* place_monster(mgen_data mg, bool force_pos = false, bool dont_place = false);
 
 /* ***********************************************************************
  * Returns a monster class type of a zombie for generation

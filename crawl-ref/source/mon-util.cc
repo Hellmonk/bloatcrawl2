@@ -88,7 +88,6 @@ static vector<monster_type> species_by_habitat[NUM_HABITATS];
 
 #include "mon-spell.h"
 #include "mon-data.h"
-#include "rune_curse.h"
 
 #define MONDATASIZE ARRAYSZ(mondata)
 
@@ -195,12 +194,12 @@ void init_mon_name_cache()
         const monster_type mon   = monster_type(mtype);
 
         // Deal sensibly with duplicate entries; refuse or allow the
-        // insert, depending on which should take precedence. Some
-        // uniques of multiple forms can get away with this, though.
+        // insert, depending on which should take precedence. Mostly we
+        // don't care, except looking up "rakshasa" and getting _FAKE
+        // breaks ?/M rakshasa.
         if (Mon_Name_Cache.count(name))
         {
             if (mon == MONS_PLAYER_SHADOW
-                || mon == MONS_BAI_SUZHEN_DRAGON
                 || mon != MONS_SERPENT_OF_HELL
                    && mons_species(mon) == MONS_SERPENT_OF_HELL)
             {
@@ -935,9 +934,6 @@ bool mons_is_native_in_branch(const monster* mons,
 
     case BRANCH_ORC:
         return mons_genus(mons->type) == MONS_ORC;
-
-    case BRANCH_DWARF:
-        return (mons_genus(mons->type) == MONS_DWARF);
 
     case BRANCH_SHOALS:
         return mons_species(mons->type) == MONS_CYCLOPS
@@ -1711,9 +1707,6 @@ bool mons_class_can_use_stairs(monster_type mc)
 
 bool mons_can_use_stairs(const monster* mon, dungeon_feature_type stair)
 {
-    // in this version, almost nothing uses stairs, but if we get to this point, then it definitely does.
-    return true;
-
     if (!mons_class_can_use_stairs(mon->type))
         return false;
 
@@ -1900,10 +1893,8 @@ static mon_attack_def _hepliaklqana_ancestor_attack(const monster &mon,
 
     const int HD = mon.get_experience_level();
     const int dam = HD + 3; // 4 at 1 HD, 21 at 18 HD (max)
-    // battlemages do double base melee damage (+25-50% including their weapon)
-    const int dam_mult = mon.type == MONS_ANCESTOR_BATTLEMAGE ? 2 : 1;
 
-    return { AT_HIT, AF_PLAIN, dam * dam_mult };
+    return { AT_HIT, AF_PLAIN, dam };
 }
 
 /** Get the attack type, attack flavour and damage for a monster attack.
@@ -2214,7 +2205,7 @@ int exper_value(const monster* mon, bool real)
         // levelling up is visible (although it may happen off-screen), so
         // this is hardly ever a leak. Only Pan lords are unknown in the
         // general.
-        if (m && m->mc == MONS_PANDEMONIUM_LORD)
+        if (m->mc == MONS_PANDEMONIUM_LORD)
             hd = m->HD;
         maxhp = mons_max_hp(mc);
     }
@@ -2252,8 +2243,8 @@ int exper_value(const monster* mon, bool real)
             case SPELL_PARALYSE:
             case SPELL_SMITING:
             case SPELL_SUMMON_EYEBALLS:
-            case SPELL_CALL_DOWN_HELLFIRE:
-            case SPELL_HURL_HELLFIRE:
+            case SPELL_CALL_DOWN_DAMNATION:
+            case SPELL_HURL_DAMNATION:
             case SPELL_SYMBOL_OF_TORMENT:
             case SPELL_GLACIATE:
             case SPELL_FIRE_STORM:
@@ -2447,9 +2438,6 @@ static vector<mon_spellbook_type> _mons_spellbook_list(monster_type mon_type)
         return { MST_TENGU_REAVER_I, MST_TENGU_REAVER_II,
                  MST_TENGU_REAVER_III };
 
-    case MONS_DEEP_DWARF_SCION:
-        return { MST_EARTH_WIZ_I, MST_EARTH_WIZ_II, MST_EARTH_WIZ_III };
-
     case MONS_DEEP_ELF_MAGE:
         return { MST_DEEP_ELF_MAGE_I, MST_DEEP_ELF_MAGE_II,
                  MST_DEEP_ELF_MAGE_III, MST_DEEP_ELF_MAGE_IV,
@@ -2568,7 +2556,6 @@ mon_spell_slot drac_breath(monster_type drac_type)
     case MONS_RED_DRACONIAN:     sp = SPELL_SEARING_BREATH; break;
     case MONS_WHITE_DRACONIAN:   sp = SPELL_CHILLING_BREATH; break;
     case MONS_DRACONIAN:
-    case MONS_BAI_SUZHEN:
     case MONS_GREY_DRACONIAN:    sp = SPELL_NO_SPELL; break;
     case MONS_PALE_DRACONIAN:    sp = SPELL_STEAM_BALL; break;
 
@@ -2652,7 +2639,7 @@ bool init_abomination(monster* mon, int hd)
 }
 
 // Generate a shiny, new and unscarred monster.
-void define_monster(monster* mons, beh_type behavior)
+void define_monster(monster* mons)
 {
     monster_type mcls         = mons->type;
     ASSERT(!mons_class_is_zombified(mcls)); // should have called define_zombie
@@ -2689,7 +2676,7 @@ void define_monster(monster* mons, beh_type behavior)
 
     case MONS_HYDRA:
         // Hydras start off with 4 to 8 heads.
-        mons->num_heads = random_range(2 + crawl_state.difficulty, 6 + crawl_state.difficulty + runes_in_pack());
+        mons->num_heads = random_range(4, 8);
         break;
 
     case MONS_LERNAEAN_HYDRA:
@@ -2702,11 +2689,6 @@ void define_monster(monster* mons, beh_type behavior)
         draconian_change_colour(mons);
         monbase = mons->base_monster;
         col = mons->colour;
-        break;
-
-    case MONS_BAI_SUZHEN:
-        // XXX: A hack to keep her an unknown draconian colour.
-        monbase = MONS_BAI_SUZHEN;
         break;
 
     case MONS_STARCURSED_MASS:
@@ -2767,10 +2749,6 @@ void define_monster(monster* mons, beh_type behavior)
     // Some calculations.
     if (hp == 0)
         hp = hit_points(m->avg_hp_10x);
-
-    hd = rune_curse_hd_adjust(hd);
-    hp = rune_curse_hp_adjust(hp);
-
     const int hp_max = hp;
 
     // So let it be written, so let it be done.
@@ -3750,7 +3728,6 @@ static bool _mons_starts_with_ranged_weapon(monster_type mc)
     case MONS_YAKTAUR:
     case MONS_YAKTAUR_CAPTAIN:
     case MONS_CHERUB:
-    case MONS_DEEP_DWARF_ARTIFICER:
     case MONS_SONJA:
     case MONS_HAROLD:
     case MONS_POLYPHEMUS:
@@ -3823,7 +3800,7 @@ static const spell_type smitey_spells[] = {
     SPELL_SMITING,
     SPELL_AIRSTRIKE,
     SPELL_SYMBOL_OF_TORMENT,
-    SPELL_CALL_DOWN_HELLFIRE,
+    SPELL_CALL_DOWN_DAMNATION,
     SPELL_FIRE_STORM,
     SPELL_SHATTER,
     SPELL_TORNADO,          // dubious
@@ -4778,7 +4755,7 @@ mon_threat_level_type mons_threat_level(const monster *mon, bool real)
 
     if (tension <= 0)
     {
-        // Conjurators use melee to conserve magic, MDFis switch plates...
+        // Conjurators use melee to conserve mana, MDFis switch plates...
         return MTHRT_TRIVIAL;
     }
     else if (tension <= 5)
@@ -5290,9 +5267,6 @@ string get_damage_level_string(mon_holy_type holi, mon_dam_level_type mdam)
 
 void print_wounds(const monster* mons)
 {
-    // this is unecessary now that players are more visibility into damage
-    return;
-
     if (!mons->alive() || mons->hit_points == mons->max_hit_points)
         return;
 
@@ -5304,10 +5278,8 @@ void print_wounds(const monster* mons)
 
     desc.insert(0, " is ");
     desc += ".";
-    /* this really isn't necessary
     simple_monster_message(mons, desc.c_str(), MSGCH_MONSTER_DAMAGE,
                            dam_level);
-                           */
 }
 
 // (true == 'damaged') [constructs, undead, etc.]
@@ -5570,10 +5542,10 @@ void set_ancestor_spells(monster &ancestor, bool notify)
                                              SPELL_STONE_ARROW);
         break;
     case MONS_ANCESTOR_HEXER:
-        _add_ancestor_spell(ancestor.spells, HD >= 10 ? SPELL_PARALYSE
-                                                      : SPELL_SLOW);
         _add_ancestor_spell(ancestor.spells,
-                            _ancestor_custom_spell(SPELL_CONFUSE));
+                            _ancestor_custom_spell(SPELL_SLOW));
+        _add_ancestor_spell(ancestor.spells, HD >= 14 ? SPELL_MASS_CONFUSION
+                                                      : SPELL_CONFUSE);
         break;
     default:
         break;

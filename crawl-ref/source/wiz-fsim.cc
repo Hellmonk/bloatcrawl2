@@ -43,7 +43,7 @@
 #include "version.h"
 #include "wiz-you.h"
 
-// #ifdef WIZARD
+#ifdef WIZARD
 
 fight_data null_fight = {0.0, 0, 0, 0.0, 0, 0.0, 0.0};
 typedef map<skill_type, int8_t> skill_map;
@@ -66,7 +66,7 @@ static string _fight_string(fight_data fdata, bool csv)
 static skill_type _equipped_skill()
 {
     const int weapon = you.equip[EQ_WEAPON];
-    const item_def * iweap = weapon != -1 ? &you.inv1[weapon] : nullptr;
+    const item_def * iweap = weapon != -1 ? &you.inv[weapon] : nullptr;
 
     if (iweap && iweap->base_type == OBJ_WEAPONS)
         return item_attack_skill(*iweap);
@@ -80,7 +80,7 @@ static skill_type _equipped_skill()
 static string _equipped_weapon_name()
 {
     const int weapon = you.equip[EQ_WEAPON];
-    const item_def * iweap = weapon != -1 ? &you.inv1[weapon] : nullptr;
+    const item_def * iweap = weapon != -1 ? &you.inv[weapon] : nullptr;
     const int missile = you.m_quiver.get_fire_item();
 
     if (iweap)
@@ -88,12 +88,12 @@ static string _equipped_weapon_name()
         string item_buf = iweap->name(DESC_PLAIN);
         // If it's a ranged weapon, add the description of the missile
         if (is_range_weapon(*iweap) && missile < ENDOFPACK && missile >= 0)
-            item_buf += " with " + you.inv1[missile].name(DESC_PLAIN);
+            item_buf += " with " + you.inv[missile].name(DESC_PLAIN);
         return "Wielding: " + item_buf;
     }
 
     if (missile != -1)
-        return "Quivering: " + you.inv1[missile].name(DESC_PLAIN);
+        return "Quivering: " + you.inv[missile].name(DESC_PLAIN);
 
     return "Unarmed";
 }
@@ -162,10 +162,10 @@ static bool _equip_weapon(const string &weapon, bool &abort)
 {
     for (int i = 0; i < ENDOFPACK; ++i)
     {
-        if (!you.inv1[i].defined())
+        if (!you.inv[i].defined())
             continue;
 
-        if (you.inv1[i].name(DESC_PLAIN).find(weapon) != string::npos)
+        if (you.inv[i].name(DESC_PLAIN).find(weapon) != string::npos)
         {
             if (i != you.equip[EQ_WEAPON])
             {
@@ -224,10 +224,10 @@ static bool _fsim_kit_equip(const string &kit, string &error)
     {
         for (int i = 0; i < ENDOFPACK; ++i)
         {
-            if (!you.inv1[i].defined())
+            if (!you.inv[i].defined())
                 continue;
 
-            if (you.inv1[i].name(DESC_PLAIN).find(missile) != string::npos)
+            if (you.inv[i].name(DESC_PLAIN).find(missile) != string::npos)
             {
                 quiver_item(i);
                 you.redraw_quiver = true;
@@ -243,7 +243,6 @@ static bool _fsim_kit_equip(const string &kit, string &error)
 // fight simulator internals
 static monster* _init_fsim()
 {
-    crawl_state.sim_mode = true;
     monster * mon = nullptr;
     monster_type mtype = get_monster_by_name(Options.fsim_mons, true);
 
@@ -326,7 +325,6 @@ static void _uninit_fsim(monster *mon)
 {
     monster_die(mon, KILL_DISMISSED, NON_MONSTER);
     reset_training();
-    crawl_state.sim_mode = false;
 }
 
 static fight_data _get_fight_data(monster &mon, int iter_limit, bool defend)
@@ -339,15 +337,13 @@ static fight_data _get_fight_data(monster &mon, int iter_limit, bool defend)
     fdata.max_dam = 0;
 
     const int weapon = you.equip[EQ_WEAPON];
-    const item_def *iweap = weapon != -1 ? &you.inv1[weapon] : nullptr;
+    const item_def *iweap = weapon != -1 ? &you.inv[weapon] : nullptr;
     const int missile = you.m_quiver.get_fire_item();
 
     // now make sure the player is ready
     you.exp_available = 0;
-    const int yhp  = get_hp();
-    const int ymhp = get_hp_max();
-    const int original_sp = get_sp();
-    const int original_mp = get_mp();
+    const int yhp  = you.hp;
+    const int ymhp = you.hp_max;
 
     // disable death and delay, but make sure that these values
     // get reset when the function call ends
@@ -385,12 +381,12 @@ static fight_data _get_fight_data(monster &mon, int iter_limit, bool defend)
                         is_range_weapon(*iweap))
                 || (!iweap && missile != -1))
             {
-                ranged_attack attk(&you, &mon, &you.inv1[missile], false);
+                ranged_attack attk(&you, &mon, &you.inv[missile], false);
                 attk.simu = true;
                 attk.attack();
-                if (attk.hit_margin >= 0)
+                if (attk.ev_margin >= 0)
                     hits++;
-                you.time_taken = you.attack_delay(&you.inv1[missile]);
+                you.time_taken = you.attack_delay(&you.inv[missile]).roll();
             }
             else // otherwise, melee combat
             {
@@ -400,8 +396,6 @@ static fight_data _get_fight_data(monster &mon, int iter_limit, bool defend)
                     hits++;
             }
             you.hunger = hunger;
-            you.sp = original_sp;
-            you.mp = original_mp;
             time_taken += you.time_taken * 10;
 
             int damage = (mon.max_hit_points - mon.hit_points);
@@ -421,7 +415,7 @@ static fight_data _get_fight_data(monster &mon, int iter_limit, bool defend)
 
             time_taken += 1000 / (mon.speed ? mon.speed : 10);
 
-            int damage = get_hp_max() - get_hp();
+            int damage = you.hp_max - you.hp;
             if (did_hit)
                 hits++;
             cumulative_damage += damage;
@@ -542,7 +536,7 @@ static void _fsim_simple_scale(FILE * o, monster* mon, bool defense)
     mpr(title);
 
     const int iter_limit = Options.fsim_rounds;
-    for (int i = xl_mode ? 1 : 0; i <= 30; i++)
+    for (int i = xl_mode ? 1 : 0; i <= 27; i++)
     {
         clear_messages();
 
@@ -721,4 +715,4 @@ void wizard_fight_sim(bool double_scale)
     mpr("Done.");
 }
 
-// #endif
+#endif

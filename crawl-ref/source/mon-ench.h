@@ -2,8 +2,6 @@
 #define MON_ENCH_H
 
 #define INFINITE_DURATION  30000
-#define MAX_ENCH_DEGREE_DEFAULT  4
-#define MAX_ENCH_DEGREE_ABJURATION  6
 
 class actor;
 
@@ -19,11 +17,9 @@ public:
     mid_t         source;   // Who set this enchantment?
 
 public:
-    mon_enchant(
-    			enchant_type e = ENCH_NONE, int deg = 0,
+    mon_enchant(enchant_type e = ENCH_NONE, int deg = 0,
                 const actor *whose = 0,
-                int dur = 0
-				);
+                int dur = 0);
 
     killer_type killer() const;
     int kill_agent() const;

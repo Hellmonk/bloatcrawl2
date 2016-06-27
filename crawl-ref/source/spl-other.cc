@@ -27,6 +27,12 @@
 
 spret_type cast_cure_poison(int pow, bool fail)
 {
+    if (!you.duration[DUR_POISONING])
+    {
+        canned_msg(MSG_NOTHING_HAPPENS);
+        return SPRET_ABORT;
+    }
+
     fail_check();
     reduce_player_poison((15 + roll_dice(3, pow / 2)) * 1000);
 
@@ -55,17 +61,17 @@ spret_type cast_sublimation_of_blood(int pow, bool fail)
     else
     {
         // Take at most 90% of currhp.
-        const int minhp = max(div_rand_round(get_hp(), 10), 1);
+        const int minhp = max(div_rand_round(you.hp, 10), 1);
 
-        while (get_mp() < get_mp_max() && get_hp() > minhp)
+        while (you.magic_points < you.max_magic_points && you.hp > minhp)
         {
             fail_check();
             success = true;
 
-            inc_mp(3);
+            inc_mp(1);
             dec_hp(1, false);
 
-            for (int i = 0; i < (get_hp() > minhp ? 3 : 0); ++i)
+            for (int i = 0; i < (you.hp > minhp ? 3 : 0); ++i)
                 if (x_chance_in_y(6, pow))
                     dec_hp(1, false);
 
@@ -354,6 +360,12 @@ spret_type cast_intoxicate(int pow, bool fail)
 
 spret_type cast_darkness(int pow, bool fail)
 {
+    if (you.haloed())
+    {
+        mpr("It would have no effect in that bright light!");
+        return SPRET_ABORT;
+    }
+
     fail_check();
     if (you.duration[DUR_DARKNESS])
         mprf(MSGCH_DURATION, "It gets a bit darker.");

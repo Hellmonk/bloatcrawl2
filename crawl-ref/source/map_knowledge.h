@@ -53,7 +53,9 @@ struct cloud_info
 #define MAP_UMBRAED        0x1000000
 #define MAP_QUAD_HALOED    0X4000000
 #define MAP_DISJUNCT       0X8000000
+#if TAG_MAJOR_VERSION == 34
 #define MAP_HOT           0x10000000
+#endif
 
 /*
  * A map_cell stores what the player knows about a cell.
@@ -267,8 +269,6 @@ struct map_cell
         }
     }
 
-    bool update_cloud_state();
-
     bool known() const
     {
         return !!(flags & MAP_GRID_KNOWN);
@@ -317,8 +317,6 @@ void set_terrain_visible(const coord_def c);
 void clear_terrain_visibility();
 
 int count_detected_mons();
-
-void update_cloud_knowledge();
 
 void clear_map(bool clear_items = true, bool clear_mons = true);
 

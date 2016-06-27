@@ -193,7 +193,7 @@ NORETURN void end(int exit_code, bool print_error, const char *format, ...)
 static void _delete_files()
 {
     crawl_state.need_save = false;
-    you.save->unlink(true);
+    you.save->unlink();
     delete you.save;
     you.save = 0;
 }
@@ -221,11 +221,7 @@ NORETURN void screen_end_game(string text)
 
 NORETURN void end_game(scorefile_entry &se)
 {
-    for (auto &item : you.inv1)
-        if (item.defined() && item_type_unknown(item))
-            add_inscription(item, "unknown");
-
-    for (auto &item : you.inv2)
+    for (auto &item : you.inv)
         if (item.defined() && item_type_unknown(item))
             add_inscription(item, "unknown");
 
@@ -347,18 +343,13 @@ NORETURN void end_game(scorefile_entry &se)
         more();
 
     if (!crawl_state.disables[DIS_CONFIRMATIONS])
-    {
-        display_inventory(you.inv1);
-        display_inventory(you.inv2);
-    }
+        display_inventory();
     textcolour(LIGHTGREY);
 
     clua.save_persist();
 
     // Prompt for saving macros.
-    /* always save macros
     if (crawl_state.unsaved_macros && yesno("Save macros?", true, 'n'))
-     */
         macro_save();
 
     clrscr();

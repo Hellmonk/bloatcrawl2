@@ -142,9 +142,6 @@ int book_rarity(book_type which_book)
     case BOOK_YOUNG_POISONERS:
     case BOOK_BATTLE:
     case BOOK_DEBILITATION:
-    case BOOK_LIGHT:
-    case BOOK_DARKNESS:
-    case BOOK_TIME:
         return 5;
 
     case BOOK_CLOUDS:
@@ -181,9 +178,6 @@ int book_rarity(book_type which_book)
     case BOOK_ENVENOMATIONS:
     case BOOK_WARP:
     case BOOK_DRAGON:
-    case BOOK_LIGHT2:
-    case BOOK_DARKNESS2:
-    case BOOK_TIME2:
         return 15;
 
     case BOOK_ANNIHILATIONS:
@@ -334,7 +328,7 @@ bool player_can_memorise(const item_def &book)
     for (spell_type stype : spells_in_book(book))
     {
         // Easiest spell already too difficult?
-        if (spell_difficulty(stype) > effective_xl()
+        if (spell_difficulty(stype) > you.experience_level
             || player_spell_levels() < spell_levels_required(stype))
         {
             return false;
@@ -385,9 +379,8 @@ static bool _get_mem_list(spell_list &mem_spells,
     unsigned int  num_books      = 0;
     unsigned int  num_unknown    = 0;
 
-    FixedVector<item_def, 52> *const inv = book_inv();
     // Collect the list of all spells in all available spellbooks.
-    for (auto &book : (*inv))
+    for (auto &book : you.inv)
     {
         if (!book.defined() || !item_is_spellbook(book))
             continue;
@@ -477,7 +470,7 @@ static bool _get_mem_list(spell_list &mem_spells,
             if (current_spell != SPELL_NO_SPELL)
                 avail_slots -= spell_levels_required(current_spell);
 
-            if (spell_difficulty(spell) > effective_xl())
+            if (spell_difficulty(spell) > you.experience_level)
                 num_low_xl++;
             else if (avail_slots < spell_levels_required(spell))
                 num_low_levels++;
@@ -615,23 +608,35 @@ static spell_type _choose_mem_spell(spell_list &spells,
     ToggleableMenu spell_menu(MF_SINGLESELECT | MF_ANYPRINTABLE
                     | MF_ALWAYS_SHOW_MORE | MF_ALLOW_FORMATTING,
                     text_only);
-
-    string title1 = "Spells to Memorize:";
-    string title2 = "Spells to Describe:";
-
-    string extra_space = "";
 #ifdef USE_TILE_LOCAL
-    // stupid hack
-    extra_space = "  ";
+    // [enne] Hack. Use a separate title, so the column headers are aligned.
+    spell_menu.set_title(
+        new MenuEntry(" Your Spells - Memorisation  (toggle to descriptions with '!')",
+            MEL_TITLE));
+
+    spell_menu.set_title(
+        new MenuEntry(" Your Spells - Descriptions  (toggle to memorisation with '!')",
+            MEL_TITLE), false);
+
+    {
+        MenuEntry* me =
+            new MenuEntry("     Spells                        Type          "
+                          "                Failure  Level",
+                MEL_ITEM);
+        me->colour = BLUE;
+        spell_menu.add_entry(me);
+    }
+#else
+    spell_menu.set_title(
+        new MenuEntry("     Spells (Memorisation)         Type          "
+                      "                Failure  Level",
+            MEL_TITLE));
+
+    spell_menu.set_title(
+        new MenuEntry("     Spells (Description)          Type          "
+                      "                Failure  Level",
+            MEL_TITLE), false);
 #endif
-
-    const string titlestring1 = " " + make_stringf("%-25.25s", title1.c_str())
-                               + extra_space + "        Power Range      Fail Level MP  Type";
-    const string titlestring2 = " " + make_stringf("%-25.25s", title2.c_str())
-                               +  extra_space + "        Power Range      Fail Level MP  Type";
-
-    spell_menu.set_title(new MenuEntry(titlestring1, MEL_TITLE));
-    spell_menu.set_title(new MenuEntry(titlestring2, MEL_TITLE), false);
 
     spell_menu.set_highlighter(nullptr);
     spell_menu.set_tag("spell");
@@ -653,7 +658,10 @@ static spell_type _choose_mem_spell(spell_list &spells,
                                  num_misc > 1 ? "s" : "");
     }
 
+#ifndef USE_TILE_LOCAL
+    // Tiles menus get this information in the title.
     more_str += "   Toggle display with '<w>!</w>'";
+#endif
 
     spell_menu.set_more(formatted_string::parse_string(more_str));
 
@@ -667,17 +675,14 @@ static spell_type _choose_mem_spell(spell_list &spells,
     for (unsigned int i = 0; i < spells.size(); i++)
     {
         const spell_type spell = spells[i];
-        MenuEntry* me = new MenuEntry(spell_wide_description(spell, true), MEL_ITEM, 1, index_to_letter(i % 52));
 
-
-        /* old way
         ostringstream desc;
 
         int colour = LIGHTGRAY;
         if (vehumet_is_offering(spell))
             colour = LIGHTBLUE;
         // Grey out spells for which you lack experience or spell levels.
-        else if (spell_difficulty(spell) > effective_xl()
+        else if (spell_difficulty(spell) > you.experience_level
                  || player_spell_levels() < spell_levels_required(spell))
             colour = DARKGRAY;
         else
@@ -704,7 +709,6 @@ static spell_type _choose_mem_spell(spell_list &spells,
             new MenuEntry(desc.str(), MEL_ITEM, 1,
                           index_to_letter(i % 52));
 
-                          */
 #ifdef USE_TILE
         me->add_tile(tile_def(tileidx_spell(spell), TEX_GUI));
 #endif
@@ -782,7 +786,6 @@ bool learn_spell()
         return false;
     }
 
-    you.prev_direction.reset();
     return learn_spell(specspell);
 }
 
@@ -832,7 +835,7 @@ static bool _learn_spell_checks(spell_type specspell, bool wizard = false)
         return false;
     }
 
-    if (effective_xl() < spell_difficulty(specspell) && !wizard)
+    if (you.experience_level < spell_difficulty(specspell) && !wizard)
     {
         mpr("You're too inexperienced to learn that spell!");
         return false;
@@ -927,8 +930,7 @@ bool forget_spell_from_book(spell_type spell, const item_def* book)
     {
         item_was_destroyed(*book);
         destroy_spellbook(*book);
-        FixedVector<item_def, 52> *const inv = book_inv();
-        dec_inv_item_quantity((*inv), book->link, 1);
+        dec_inv_item_quantity(book->link, 1);
         you.turn_is_over = true;
         return true;
     }

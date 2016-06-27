@@ -322,10 +322,7 @@ void butchery(item_def* specific_corpse)
     // delay.cc:_push_delay should handle them OK.
 done:
     if (butchered_any)
-    {
-        you.prev_direction.reset();
         handle_delay();
-    }
 
     return;
 }
@@ -348,7 +345,7 @@ static void _create_monster_hide(const item_def &corpse)
         return;
     item_def& item = mitm[o];
 
-    do_uncurse_item(item, MAX_CURSE_LEVEL);
+    do_uncurse_item(item);
 
     // Automatically identify the created hide.
     set_ident_flags(item, ISFLAG_IDENT_MASK);
@@ -361,8 +358,6 @@ static void _create_monster_hide(const item_def &corpse)
     const coord_def pos = item_pos(corpse);
     if (!pos.origin())
         move_item_to_grid(&o, pos);
-    else
-        destroy_item(o);
 }
 
 void maybe_drop_monster_hide(const item_def &corpse)

@@ -1,23 +1,24 @@
 %%%%
 Fighting
 
-Fighting skill increases your attack speed and reduces stamina costs of attacks.
+Fighting skill increases your accuracy and damage in hand-to-hand combat, and
+also increases your maximum health.
 %%%%
 Short Blades
 
 Short Blades are more effective than any other weapon type at stabbing helpless
 foes.
 
-Being skilled with Short Blades will allow you to do more damage with all
-weapons of this type, as well as increasing your accuracy with them.
+Being skilled with Short Blades will allow you to attack more quickly with all
+weapons of this type, as well as increasing your accuracy and damage with them.
 
 Being skilled with Short Blades increases your effectiveness with Long Blades,
 and vice versa.
 %%%%
 Long Blades
 
-Being skilled with Long Blades will allow you to do more damage with all
-weapons of this type, as well as increasing your accuracy with them.
+Being skilled with Long Blades will allow you to attack more quickly with all
+weapons of this type, as well as increasing your accuracy and damage with them.
 
 Being skilled with Long Blades increases your effectiveness with Short Blades,
 and vice versa.
@@ -27,16 +28,16 @@ Axes
 Axes cleave through multiple enemies with a single swing, hitting foes in an
 arc around the wielder.
 
-Being skilled with Axes will allow you to do more damage with all weapons
-of this type, as well as increasing your accuracy with them.
+Being skilled with Axes will allow you to attack more quickly with all weapons
+of this type, as well as increasing your accuracy and damage with them.
 
 Being skilled with Axes increases your effectiveness with Maces & Flails and
 Polearms, and vice versa.
 %%%%
 Maces & Flails
 
-Being skilled with Maces & Flails will allow you to do more damage with
-all weapons of this type, as well as increasing your accuracy with
+Being skilled with Maces & Flails will allow you to attack more quickly with
+all weapons of this type, as well as increasing your accuracy and damage with
 them.
 
 Being skilled with Maces & Flails increases your effectiveness with Axes and
@@ -46,8 +47,8 @@ Polearms
 
 Polearms can be evoked with ‘v’ to attack enemies from two spaces away.
 
-Being skilled with Polearms will allow you to do more damage with all
-weapons of this type, as well as increasing your accuracy with them.
+Being skilled with Polearms will allow you to attack more quickly with all
+weapons of this type, as well as increasing your accuracy and damage with them.
 
 Being skilled with Polearms increases your effectiveness with Axes and Staves,
 and vice versa.
@@ -57,8 +58,8 @@ Staves
 Staves require a relatively low amount of skill to be used most effectively,
 although they lack the high damage potential of some other weapon classes.
 
-Being skilled with Staves will allow you to do more damage with all
-weapons of this type, as well as increasing your accuracy with them.
+Being skilled with Staves will allow you to attack more quickly with all
+weapons of this type, as well as increasing your accuracy and damage with them.
 
 Being skilled with Staves increases your effectiveness with Maces & Flails and
 Polearms, and vice versa.
@@ -66,21 +67,20 @@ Polearms, and vice versa.
 Slings
 
 Being skilled with Slings will let you deal more damage when using the
-appropriate launcher and ammunition. It also will increase your accuracy with
-slings.
+appropriate launcher and ammunition.
 
 Being skilled with Slings increases your effectiveness in Throwing, and vice
 versa.
 %%%%
 Bows
 
-Being skilled with Bows will let you deal more damage and hit more often when
-using the appropriate launcher and ammunition.
+Being skilled with Bows will let you deal more damage when using the
+appropriate launcher and ammunition.
 %%%%
 Crossbows
 
-Being skilled with Crossbows will let you deal more damage and hit more often
-when using the appropriate launcher and ammunition.
+Being skilled with Crossbows will let you deal more damage when using the
+appropriate launcher and ammunition.
 %%%%
 Throwing
 
@@ -122,15 +122,16 @@ bolts, cannot be blocked at all.
 %%%%
 Unarmed Combat
 
-Being skilled in Unarmed Combat increases your accuracy and damage
-in melee combat when barehanded. It also allows you to occasionally punch
+Being skilled in Unarmed Combat increases your accuracy, damage and attack
+speed in melee combat when barehanded. It also allows you to occasionally punch
 with your off hand as an additional melee attack, provided your hand is free to
 do so.
 %%%%
 Spellcasting
 
-Being skilled in Spellcasting increases the speed at which you can cast spells,
-as well as reducing the cost of spells.
+Being skilled in Spellcasting slightly increases the success rate and spell
+power of all spells, along with increasing your magical reserves and reducing
+the effects of spell hunger.
 
 Training Spellcasting also gives you more spell slots to spend on new spells.
 %%%%
@@ -144,7 +145,7 @@ affected.
 
 Being skilled in Conjurations increases the success rate and spell power of
 spells in this school. Many spells belong to a combination of several schools,
-in which case spellcasting success and power will depend on the max skill
+in which case spellcasting success and power will depend on the average skill
 in these schools.
 %%%%
 Hexes
@@ -157,7 +158,7 @@ resistance.
 
 Being skilled in Hexes increases the success rate and spell power of spells in
 this school. Many spells belong to a combination of several schools, in which
-case spellcasting success and power will depend on the max skill in these
+case spellcasting success and power will depend on the average skill in these
 schools.
 %%%%
 Charms
@@ -167,7 +168,7 @@ will often increase the duration or effectiveness of these auras.
 
 Being skilled in Charms increases the success rate and spell power of spells in
 this school. Many spells belong to a combination of several schools, in which
-case spellcasting success and power will depend on the max skill in these
+case spellcasting success and power will depend on the average skill in these
 schools.
 %%%%
 Summonings
@@ -181,7 +182,7 @@ equipment is as ephemeral as they are.
 
 Being skilled in Summonings increases the success rate and spell power of
 spells in this school. Many spells belong to a combination of several schools,
-in which case spellcasting success and power will depend on the max skill
+in which case spellcasting success and power will depend on the average skill
 in these schools.
 %%%%
 Necromancy
@@ -193,7 +194,7 @@ spells granting unholy healing in various forms.
 
 Being skilled in Necromancy increases the success rate and spell power of
 spells in this school. Many spells belong to a combination of several schools,
-in which case spellcasting success and power will depend on the max skill
+in which case spellcasting success and power will depend on the average skill
 in these schools.
 %%%%
 Translocations
@@ -204,7 +205,7 @@ transport your enemies away from you.
 
 Being skilled in Translocations increases the success rate and spell power of
 spells in this school. Many spells belong to a combination of several schools,
-in which case spellcasting success and power will depend on the max skill
+in which case spellcasting success and power will depend on the average skill
 in these schools.
 %%%%
 Transmutations
@@ -215,7 +216,7 @@ enemies, or to transform objects around you.
 
 Being skilled in Transmutations increases the success rate and spell power of
 spells in this school. Many spells belong to a combination of several schools,
-in which case spellcasting success and power will depend on the max skill
+in which case spellcasting success and power will depend on the average skill
 in these schools.
 %%%%
 Fire Magic
@@ -225,7 +226,7 @@ effective Conjurations.
 
 Being skilled in Fire Magic increases the success rate and spell power of
 spells in this school. Many spells belong to a combination of several schools,
-in which case spellcasting success and power will depend on the max skill
+in which case spellcasting success and power will depend on the average skill
 in these schools.
 %%%%
 Ice Magic
@@ -235,7 +236,7 @@ effects such as spells to craft temporary shields and armour from ice.
 
 Being skilled in Ice Magic increases the success rate and spell power of spells
 in this school. Many spells belong to a combination of several schools, in
-which case spellcasting success and power will depend on the max skill in
+which case spellcasting success and power will depend on the average skill in
 these schools.
 %%%%
 Air Magic
@@ -247,7 +248,7 @@ from projectile attacks.
 
 Being skilled in Air Magic increases the success rate and spell power of spells
 in this school. Many spells belong to a combination of several schools, in
-which case spellcasting success and power will depend on the max skill in
+which case spellcasting success and power will depend on the average skill in
 these schools.
 %%%%
 Earth Magic
@@ -259,7 +260,7 @@ around you, or to turn your enemies to stone.
 
 Being skilled in Earth Magic increases the success rate and spell power of
 spells in this school. Many spells belong to a combination of several schools,
-in which case spellcasting success and power will depend on the max skill
+in which case spellcasting success and power will depend on the average skill
 in these schools.
 %%%%
 Poison Magic
@@ -269,40 +270,7 @@ creatures.
 
 Being skilled in Poison Magic increases the success rate and spell power of
 spells in this school. Many spells belong to a combination of several schools,
-in which case spellcasting success and power will depend on the max skill
-in these schools.
-%%%%
-Light Magic
-
-Light Magic provides spells which reveal things. For example, a spell that
-makes it easier to target an opponent, or a skill that overwhelms their
-senses, dizzying them.
-
-Being skilled in Light Magic increases the success rate and spell power of
-spells in this school. Many spells belong to a combination of several schools,
-in which case spellcasting success and power will depend on the max skill
-in these schools.
-%%%%
-Darkness Magic
-
-Darkness Magic provides spells which conceal things. It not only can be used
-to hide a player visually, but can also silence the surroundings. Darkness
-magic has a particularly strong connection with demonic forces.
-
-Being skilled in Darkness Magic increases the success rate and spell power of
-spells in this school. Many spells belong to a combination of several schools,
-in which case spellcasting success and power will depend on the max skill
-in these schools.
-%%%%
-Time Magic
-
-Time Magic provides spells which alter the flow of time. Not only does it
-include speeding up or slowing down targets, but it also can delay or extend
-effects.
-
-Being skilled in Time Magic increases the success rate and spell power of
-spells in this school. Many spells belong to a combination of several schools,
-in which case spellcasting success and power will depend on the max skill
+in which case spellcasting success and power will depend on the average skill
 in these schools.
 %%%%
 Invocations

@@ -52,7 +52,7 @@ function damage_tally()
   damt.boost_monster_hp()
   damt.turns   = you.turns()
   damt.time    = you.time()
-  damt.magic    = you.mp()
+  damt.mana    = you.mp()
   damt.enabled = true
 end
 
@@ -60,7 +60,7 @@ function damt.show()
   local dam = damt.calc_total_damage()
   local cnt = damt.calc_num_damaged()
   local t = you.time()-damt.time;
-  local m = damt.magic-you.mp();
+  local m = damt.mana-you.mp();
   local out = "<green>Turns: </green><lightgreen>" ..
                   (you.turns()-damt.turns) .. "</lightgreen>" ..
               "<green>, time: </green><lightgreen>" ..

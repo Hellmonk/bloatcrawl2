@@ -31,7 +31,6 @@ enum exer_type
     EX_DID_ZAP_WAND,
     EX_WILL_READ_TOME,
     EX_WAIT,
-    EX_DID_USE_DECK,
 };
 
 void practise(exer_type ex, int param1 = 0);

@@ -32,7 +32,6 @@
 #include "traps.h"
 #include "view.h"
 #include "xom.h"
-#include "mon-pathfind.h"
 
 bool feature_mimic_at(const coord_def &c)
 {
@@ -95,15 +94,7 @@ void monster_drop_things(monster* mons,
             }
 
             mons->inv[i] = NON_ITEM;
-
-
         }
-    }
-
-    if (Options.uniques_drop_exp_potions && (mons_is_unique(mons->type) || mons_is_pghost(mons->type)))
-    {
-        int item = items(true, OBJ_POTIONS, POT_EXPERIENCE, 99);
-        move_item_to_grid(&item, mons->pos(), mons->swimming());
     }
 }
 
@@ -669,30 +660,6 @@ void seen_monster(monster* mons)
 
     // First time we've seen this particular monster.
     mons->flags |= MF_SEEN;
-
-    if (mons->attitude == ATT_HOSTILE)
-    {
-        monster_pathfind pf;
-        const bool can_reach = pf.init_pathfind(mons, you.pos(), true, false, true);
-        const char* mons_name = mons->name(DESC_A, true).c_str();
-        if (can_reach)
-        {
-            const bool is_a_threat = mons_is_threatening(mons);
-            if (is_a_threat)
-            {
-                you.monsters_recently_seen++;
-                ldprf(LD_INSTAREST, "Saw hostile monster: %s. recently_seen = %d", mons_name, you.monsters_recently_seen);
-            }
-            else
-            {
-                ldprf(LD_INSTAREST, "Saw hostile monster: %s, but it's not a threat.", mons_name);
-            }
-        }
-        else
-        {
-            ldprf(LD_INSTAREST, "Saw hostile monster: %s, but it can't get to you.", mons_name);
-        }
-    }
 
     if (crawl_state.game_is_hints())
         hints_monster_seen(*mons);

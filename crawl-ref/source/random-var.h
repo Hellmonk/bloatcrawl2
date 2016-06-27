@@ -42,8 +42,6 @@ const random_var& operator+=(random_var& x, const random_var& y);
 const random_var& operator-=(random_var& x, const random_var& y);
 random_var operator/(const random_var& x, int d);
 random_var operator*(const random_var& x, int d);
-const random_var& operator*=(random_var& x, int y);
-const random_var& operator/=(random_var& x, int y);
 random_var div_rand_round(const random_var& x, int d);
 
 namespace rv

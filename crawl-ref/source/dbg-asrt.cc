@@ -125,7 +125,7 @@ static void _dump_player(FILE *file)
     // Only dump player info during arena mode if the player is likely
     // the cause of the crash.
     if ((crawl_state.game_is_arena() || crawl_state.arena_suspended)
-        && !in_bounds(you.pos()) && get_hp() > 0 && get_hp_max() > 0
+        && !in_bounds(you.pos()) && you.hp > 0 && you.hp_max > 0
         && you.strength() > 0 && you.intel() > 0 && you.dex() > 0)
     {
         // Arena mode can change behavior of the rest of the code and/or lead
@@ -146,10 +146,10 @@ static void _dump_player(FILE *file)
     fprintf(file, "Species: %s\n", species_name(you.species).c_str());
     fprintf(file, "Job:     %s\n\n", get_job_name(you.char_class));
 
-    fprintf(file, "HP: %d/%d; mods: %d/%d\n", get_hp(), get_hp_max(),
+    fprintf(file, "HP: %d/%d; mods: %d/%d\n", you.hp, you.hp_max,
             you.hp_max_adj_temp, you.hp_max_adj_perm);
     fprintf(file, "MP: %d/%d; mod: %d\n",
-            get_mp(), get_mp_max(),
+            you.magic_points, you.max_magic_points,
             you.mp_max_adj);
     fprintf(file, "Stats: %d (%d) %d (%d) %d (%d)\n",
             you.strength(false), you.max_strength(),
@@ -175,7 +175,6 @@ static void _dump_player(FILE *file)
         fprintf(file, "Runrest:\n");
         fprintf(file, "    mode: %d\n", you.running.runmode);
         fprintf(file, "      mp: %d\n", you.running.mp);
-        fprintf(file, "      sp: %d\n", you.running.sp);
         fprintf(file, "      hp: %d\n", you.running.hp);
         fprintf(file, "     pos: %s\n\n",
                 debug_coord_str(you.running.pos).c_str());
@@ -208,9 +207,9 @@ static void _dump_player(FILE *file)
             continue;
 
         int needed_min = 0, needed_max = 0;
-        if (sk >= 0 && you.skills[sk] <= get_max_skill_level())
+        if (sk >= 0 && you.skills[sk] <= 27)
             needed_min = skill_exp_needed(you.skills[sk], sk);
-        if (sk >= 0 && you.skills[sk] < get_max_skill_level())
+        if (sk >= 0 && you.skills[sk] < 27)
             needed_max = skill_exp_needed(you.skills[sk] + 1, sk);
 
         fprintf(file, "%-16s|     %c     |   %u   |   %3u    |   %2d  | %6d | %d/%d\n",
@@ -312,52 +311,7 @@ static void _dump_player(FILE *file)
     fprintf(file, "Inventory bugs:\n");
     for (int i = 0; i < ENDOFPACK; ++i)
     {
-        item_def &item(you.inv1[i]);
-
-        if (item.base_type == OBJ_UNASSIGNED && item.quantity != 0)
-        {
-            fprintf(file, "    slot #%d: unassigned item has quant %d\n",
-                    i, item.quantity);
-            continue;
-        }
-        else if (item.base_type != OBJ_UNASSIGNED && item.quantity < 1)
-        {
-            const int orig_quant = item.quantity;
-            item.quantity = 1;
-
-            fprintf(file, "    slot #%d: otherwise valid item '%s' has "
-                          "invalid quantity %d\n",
-                    i, item.name(DESC_PLAIN, false, true).c_str(),
-                    orig_quant);
-            item.quantity = orig_quant;
-            continue;
-        }
-        else if (!item.defined())
-            continue;
-
-        const string name = item.name(DESC_PLAIN, false, true);
-
-        if (item.link != i)
-        {
-            fprintf(file, "    slot #%d: item '%s' has invalid link %d\n",
-                    i, name.c_str(), item.link);
-        }
-
-        if (item.slot < 0 || item.slot > 127)
-        {
-            fprintf(file, "    slot #%d: item '%s' has invalid slot %d\n",
-                    i, name.c_str(), item.slot);
-        }
-
-        if (!item.pos.equals(-1, -1))
-        {
-            fprintf(file, "    slot #%d: item '%s' has invalid pos %s\n",
-                    i, name.c_str(), debug_coord_str(item.pos).c_str());
-        }
-    }
-    for (int i = 0; i < ENDOFPACK; ++i)
-    {
-        item_def &item(you.inv2[i]);
+        item_def &item(you.inv[i]);
 
         if (item.base_type == OBJ_UNASSIGNED && item.quantity != 0)
         {
@@ -416,7 +370,7 @@ static void _dump_player(FILE *file)
             fprintf(file, " <invalid>\n");
             continue;
         }
-        const bool unknown = !item_type_known(you.inv1[eq]);
+        const bool unknown = !item_type_known(you.inv[eq]);
         const bool melded  = you.melded[i];
         string suffix = "";
         if (unknown || melded)
@@ -433,7 +387,7 @@ static void _dump_player(FILE *file)
             suffix += ")";
         }
         fprintf(file, ": %s%s\n",
-                you.inv1[eq].name(DESC_PLAIN, false, true).c_str(), suffix.c_str());
+                you.inv[eq].name(DESC_PLAIN, false, true).c_str(), suffix.c_str());
     }
     fprintf(file, "\n");
 

@@ -51,7 +51,6 @@
 #include "output.h"
 #include "player-equip.h"
 #include "player.h"
-#include "potion.h"
 #include "prompt.h"
 #include "random.h"
 #include "religion.h"
@@ -246,8 +245,6 @@ void stop_delay(bool stop_stair_travel, bool force_unsafe)
         if (delay_is_run(delay.type) && you.running)
             stop_running();
 
-        player_after_long_safe_action(you.time_taken);
-
         // There's no special action needed for macros - if we don't call out
         // to the Lua function, it can't do damage.
         break;
@@ -273,7 +270,7 @@ void stop_delay(bool stop_stair_travel, bool force_unsafe)
 
         _xom_check_corpse_waste();
 
-        item_def &item = (delay.parm1 ? you.inv2[delay.parm2]
+        item_def &item = (delay.parm1 ? you.inv[delay.parm2]
                                       : mitm[delay.parm2]);
 
         const bool was_orc = (mons_genus(item.mon_type) == MONS_ORC);
@@ -294,7 +291,7 @@ void stop_delay(bool stop_stair_travel, bool force_unsafe)
             else
             {
                 if (delay.parm1)
-                    dec_inv_item_quantity(you.inv2, delay.parm2, 1);
+                    dec_inv_item_quantity(delay.parm2, 1);
                 else
                     dec_mitm_item_quantity(delay.parm2, 1);
             }
@@ -348,7 +345,7 @@ void stop_delay(bool stop_stair_travel, bool force_unsafe)
 
     case DELAY_ASCENDING_STAIRS:  // short... and probably what people want
     case DELAY_DESCENDING_STAIRS: // short... and probably what people want
-        if (stop_stair_travel && !crawl_state.free_stair_escape && (you.where_are_you != BRANCH_ABYSS || crawl_state.difficulty == DIFFICULTY_NIGHTMARE))
+        if (stop_stair_travel)
         {
             mprf("You stop %s the stairs.",
                  delay.type == DELAY_ASCENDING_STAIRS ? "ascending"
@@ -357,9 +354,22 @@ void stop_delay(bool stop_stair_travel, bool force_unsafe)
         }
         break;
 
-    case DELAY_SHAFT_SELF:
     case DELAY_PASSWALL:
-    case DELAY_WAND_HEAL:
+        if (stop_stair_travel)
+        {
+            mpr("Your meditation is interrupted.");
+            _pop_delay();
+        }
+        break;
+
+    case DELAY_SHAFT_SELF:
+        if (stop_stair_travel)
+        {
+            mpr("You stop digging.");
+            _pop_delay();
+        }
+        break;
+
     case DELAY_DROP_ITEM:         // one turn... only used for easy armour drops
     case DELAY_JEWELLERY_ON:      // one turn
     case DELAY_UNINTERRUPTIBLE:   // never stoppable
@@ -572,10 +582,6 @@ void handle_delay()
             mprf(MSGCH_MULTITURN_ACTION, "You begin reading the scroll.");
             break;
 
-        case DELAY_WAND_HEAL:
-            mprf(MSGCH_MULTITURN_ACTION, "You begin healing.");
-            break;
-
         default:
             break;
         }
@@ -600,7 +606,7 @@ void handle_delay()
     // XXX: need to handle passwall when monster digs -- bwr
     if (delay.type == DELAY_FEED_VAMPIRE)
     {
-        item_def &corpse = delay.parm1 ? you.inv2[delay.parm2]
+        item_def &corpse = delay.parm1 ? you.inv[delay.parm2]
                                        : mitm[delay.parm2];
         // Vampires stop feeding if ...
         // * engorged ("alive")
@@ -659,14 +665,8 @@ void handle_delay()
         while (!items_for_multidrop.empty()
                // Don't look for gold in inventory
                && items_for_multidrop[0].slot != PROMPT_GOT_SPECIAL
-               )
+               && !you.inv[items_for_multidrop[0].slot].defined())
         {
-        	FixedVector< item_def, ENDOFPACK > *inv;
-        	inv_from_item(inv, items_for_multidrop[0].item->base_type);
-
-        	if((*inv)[items_for_multidrop[0].slot].defined()) {
-        		break;
-        	}
             items_for_multidrop.erase(items_for_multidrop.begin());
         }
 
@@ -681,7 +681,7 @@ void handle_delay()
     }
     else if (delay.type == DELAY_BLURRY_SCROLL)
     {
-        if (!_can_read_scroll(item_from_int(true, delay.parm2, delay.parm1)))
+        if (!_can_read_scroll(item_from_int(delay.parm2, delay.parm1)))
         {
             _pop_delay();
             you.time_taken = 0;
@@ -705,12 +705,12 @@ void handle_delay()
         {
         case DELAY_ARMOUR_ON:
             mprf(MSGCH_MULTITURN_ACTION, "You continue putting on %s.",
-                 you.inv1[delay.parm1].name(DESC_YOUR).c_str());
+                 you.inv[delay.parm1].name(DESC_YOUR).c_str());
             break;
 
         case DELAY_ARMOUR_OFF:
             mprf(MSGCH_MULTITURN_ACTION, "You continue taking off %s.",
-                 you.inv1[delay.parm1].name(DESC_YOUR).c_str());
+                 you.inv[delay.parm1].name(DESC_YOUR).c_str());
             break;
 
         case DELAY_DROP_ITEM:
@@ -738,10 +738,7 @@ void handle_delay()
             break;
 
         case DELAY_MULTIDROP:
-        	FixedVector< item_def, ENDOFPACK > *inv;
-        	inv_from_item(inv, items_for_multidrop[0].item->base_type);
-
-            if (!drop_item(*inv, items_for_multidrop[0].slot,
+            if (!drop_item(items_for_multidrop[0].slot,
                            items_for_multidrop[0].quantity))
             {
                 you.turn_is_over = false;
@@ -756,16 +753,12 @@ void handle_delay()
 
         case DELAY_FEED_VAMPIRE:
         {
-            item_def &corpse = (delay.parm1 ? you.inv2[delay.parm2]
+            item_def &corpse = (delay.parm1 ? you.inv[delay.parm2]
                                             : mitm[delay.parm2]);
             mprf(MSGCH_MULTITURN_ACTION, "You continue drinking.");
             vampire_nutrition_per_turn(corpse, 0);
             break;
         }
-
-        case DELAY_WAND_HEAL:
-            mprf(MSGCH_MULTITURN_ACTION, "You continue healing.");
-            break;
 
         default:
             break;
@@ -779,6 +772,7 @@ void handle_delay()
     }
 }
 
+static void _armour_wear_effects(const int item_slot);
 
 static void _finish_delay(const delay_queue_item &delay)
 {
@@ -786,7 +780,7 @@ static void _finish_delay(const delay_queue_item &delay)
     {
     case DELAY_JEWELLERY_ON:
     {
-        const item_def &item = you.inv1[delay.parm1];
+        const item_def &item = you.inv[delay.parm1];
 
         // recheck stasis here, since our condition may have changed since
         // starting the amulet swap process
@@ -815,16 +809,16 @@ static void _finish_delay(const delay_queue_item &delay)
     }
 
     case DELAY_ARMOUR_ON:
-        armour_wear_effects(delay.parm1);
+        _armour_wear_effects(delay.parm1);
         break;
 
     case DELAY_ARMOUR_OFF:
     {
-        const equipment_type slot = get_armour_slot(you.inv1[delay.parm1]);
+        const equipment_type slot = get_armour_slot(you.inv[delay.parm1]);
         ASSERT(you.equip[slot] == delay.parm1);
 
         mprf("You finish taking off %s.",
-             you.inv1[delay.parm1].name(DESC_YOUR).c_str());
+             you.inv[delay.parm1].name(DESC_YOUR).c_str());
         unequip_item(slot);
 
         break;
@@ -847,7 +841,7 @@ static void _finish_delay(const delay_queue_item &delay)
 
         did_god_conduct(DID_DRINK_BLOOD, 8);
 
-        item_def &item = (delay.parm1 ? you.inv2[delay.parm2]
+        item_def &item = (delay.parm1 ? you.inv[delay.parm2]
                                       : mitm[delay.parm2]);
 
         const bool was_orc = (mons_genus(item.mon_type) == MONS_ORC);
@@ -869,7 +863,7 @@ static void _finish_delay(const delay_queue_item &delay)
             else
             {
                 if (delay.parm1)
-                    dec_inv_item_quantity(you.inv2, delay.parm2, 1);
+                    dec_inv_item_quantity(delay.parm2, 1);
                 else
                     dec_mitm_item_quantity(delay.parm2, 1);
             }
@@ -954,10 +948,10 @@ static void _finish_delay(const delay_queue_item &delay)
         break;
 
     case DELAY_BLURRY_SCROLL:
-            // Make sure the scroll still exists, the player isn't confused, etc
-        if (_can_read_scroll(item_from_int(true, delay.parm2, delay.parm1)))
-            read_scroll(item_from_int(true, delay.parm2, delay.parm1));
-            break;
+        // Make sure the scroll still exists, the player isn't confused, etc
+        if (_can_read_scroll(item_from_int(delay.parm2, delay.parm1)))
+            read_scroll(item_from_int(delay.parm2, delay.parm1));
+        break;
 
     case DELAY_BUTCHER:
     case DELAY_BOTTLE_BLOOD:
@@ -983,10 +977,10 @@ static void _finish_delay(const delay_queue_item &delay)
         // immediately.
 
         // Make sure item still exists.
-        if (!you.inv1[delay.parm1].defined())
+        if (!you.inv[delay.parm1].defined())
             break;
 
-        if (!drop_item(you.inv1, delay.parm1, delay.parm2))
+        if (!drop_item(delay.parm1, delay.parm2))
         {
             you.turn_is_over = false;
             you.time_taken = 0;
@@ -1000,13 +994,6 @@ static void _finish_delay(const delay_queue_item &delay)
     case DELAY_DESCENDING_STAIRS:
         down_stairs();
         break;
-
-    case DELAY_WAND_HEAL:
-    {
-    	const PotionEffect* potion = get_potion_effect(POT_HEAL_WOUNDS);
-    	potion->effect(true, delay.parm1, true);
-        break;
-    }
 
     case DELAY_INTERRUPTIBLE:
     case DELAY_UNINTERRUPTIBLE:
@@ -1027,6 +1014,34 @@ static void _finish_delay(const delay_queue_item &delay)
 #endif
 }
 
+static void _armour_wear_effects(const int item_slot)
+{
+    const unsigned int old_talents = your_talents(false).size();
+
+    item_def &arm = you.inv[item_slot];
+
+    set_ident_flags(arm, ISFLAG_IDENT_MASK);
+    if (is_artefact(arm))
+        arm.flags |= ISFLAG_NOTED_ID;
+
+    const equipment_type eq_slot = get_armour_slot(arm);
+
+    mprf("You finish putting on %s.", arm.name(DESC_YOUR).c_str());
+
+    if (eq_slot == EQ_BODY_ARMOUR)
+    {
+        if (you.duration[DUR_ICY_ARMOUR] != 0
+            && !is_effectively_light_armour(&arm))
+        {
+            remove_ice_armour();
+        }
+    }
+
+    equip_item(eq_slot, item_slot);
+
+    check_item_hint(you.inv[item_slot], old_talents);
+}
+
 static command_type _get_running_command()
 {
     if (Options.travel_key_stop && kbhit()
@@ -1045,9 +1060,8 @@ static command_type _get_running_command()
             tiles.redraw();
 #endif
 
-        if (!is_resting() && you.running.hp == get_hp()
-            && you.running.sp == get_sp()
-            && you.running.mp == get_mp())
+        if (!is_resting() && you.running.hp == you.hp
+            && you.running.mp == you.magic_points)
         {
             mpr("Done waiting.");
         }
@@ -1282,9 +1296,6 @@ static bool _should_stop_activity(const delay_queue_item &item,
         return false;
     }
 
-    if (ai == AI_HP_LOSS_FROM_MONSTER && player_stair_delay())
-        return true;
-
     // No monster will attack you inside a sanctuary,
     // so presence of monsters won't matter.
     if (ai == AI_SEE_MONSTER && is_sanctuary(you.pos()))
@@ -1295,10 +1306,9 @@ static bool _should_stop_activity(const delay_queue_item &item,
     if ((ai == AI_SEE_MONSTER || ai == AI_MIMIC) && player_stair_delay())
         return false;
 
-    if (ai == AI_FULL_HP || ai == AI_FULL_MP || ai == AI_FULL_SP)
+    if (ai == AI_FULL_HP || ai == AI_FULL_MP)
     {
-        if (Options.rest_wait_both
-            && curr == DELAY_REST
+        if (Options.rest_wait_both && curr == DELAY_REST
             && !you.is_sufficiently_rested())
         {
             return false;
@@ -1461,8 +1471,6 @@ static inline bool _monster_warning(activity_interrupt_type ai,
 
         monster_info mi(mon);
 
-        text += make_stringf(" (hp=%d, hd=%d)", mon->hit_points, mon->get_hit_dice());
-
         const string mweap = get_monster_equipment_desc(mi,
                                                         ash_id ? DESC_IDENTIFIED
                                                                : DESC_WEAPON,
@@ -1501,7 +1509,7 @@ static inline bool _monster_warning(activity_interrupt_type ai,
             {
                 if (coinflip()
                     && mon->get_experience_level() >=
-                       random2(effective_xl()))
+                       random2(you.experience_level))
                 {
                     mprf(MSGCH_GOD, GOD_GOZAG, "Gozag incites %s against you.",
                          mon->name(DESC_THE).c_str());
@@ -1601,17 +1609,12 @@ bool interrupt_activity(activity_interrupt_type ai,
         you.running.notified_mp_full = true;
         mpr("Magic restored.");
     }
-    else if (ai == AI_FULL_SP && !you.running.notified_sp_full)
-    {
-        you.running.notified_sp_full = true;
-        mpr("Stamina restored.");
-    }
 
     if (_should_stop_activity(item, ai, at))
     {
         _monster_warning(ai, at, item.type, msgs_buf);
-        // Teleport or hp loss stops stair delays.
-        stop_delay(ai == AI_TELEPORT || ai == AI_HP_LOSS_FROM_MONSTER, ai == AI_MONSTER_ATTACKS);
+        // Teleport stops stair delays.
+        stop_delay(ai == AI_TELEPORT, ai == AI_MONSTER_ATTACKS);
 
         return true;
     }
@@ -1650,8 +1653,8 @@ bool interrupt_activity(activity_interrupt_type ai,
 // Must match the order of activity_interrupt_type in enum.h!
 static const char *activity_interrupt_names[] =
 {
-    "force", "keypress", "full_hp", "full_sp", "full_mp", "hungry", "message",
-    "hp_loss_other", "hp_loss", "stat", "monster", "monster_attack", "teleport", "hit_monster",
+    "force", "keypress", "full_hp", "full_mp", "hungry", "message",
+    "hp_loss", "stat", "monster", "monster_attack", "teleport", "hit_monster",
     "sense_monster", "mimic"
 };
 
@@ -1690,7 +1693,7 @@ static const char *delay_names[] =
 #endif
     "run", "rest", "travel", "macro",
     "macro_process_key", "interruptible", "uninterruptible", "shaft self",
-    "blurry vision", "healing"
+    "blurry vision",
 };
 
 // Gets a delay given its name.

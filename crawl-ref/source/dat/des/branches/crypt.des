@@ -71,7 +71,7 @@ function crypt_loot_plus(e)
   local vamp = "ego:vampirism ident:type"
   local book = "randbook disc:necromancy numspells:6 spells:"
   local ring = "ring of positive energy randart good_item"
-  local amulet = "amulet of health regeneration randart good_item"
+  local amulet = "amulet of regeneration randart good_item"
   -- One drop-off of these,
   e.kitem("d = double sword w:5 " .. drain .." / triple sword w:5 " .. drain ..
           " / quick blade " .. drain .. " / executioner's axe " .. drain ..
@@ -326,7 +326,7 @@ MONS:    shadow wraith / wraith / wight w:5
 : crypt_entry(_G)
 MAP
 cccc@cccc
-c1.....1c
+c.......c
 c.ccccc.c
 c.c.2.c.c
 @.c.O.c.@
@@ -1083,7 +1083,7 @@ KMONS:   0 = zombie
 ITEM:    any weapon good_item ego:draining, any weapon ego:pain
 ITEM:    scroll of torment ident:type, randbook disc:necromancy numspells:3
 ITEM:    staff of death ident:type
-ITEM:    amulet of health regeneration randart good_item
+ITEM:    amulet of regeneration randart good_item
 KITEM:   $ = $ no_pickup
 KFEAT:   D = altar_yredelemnul
 KFEAT:   E = altar_kikubaaqudgha
@@ -1305,7 +1305,6 @@ NAME:   church_of_pain_bobbens
 ORIENT: northwest
 TAGS:   no_monster_gen no_item_gen layout_city
 PLACE:  Crypt:$
-KITEM:  Z = creeping rune of Zot
 KMONS:  0 = lost soul / nothing
 # MONSTER LAYOUT
 # boss (1)
@@ -1369,7 +1368,7 @@ MAP
 cccccccccccccccvvvvvvvvvvvvvvvvvccccccccccccccc
 ccccccccccccccvv..WWWWWWWWWWW..vvcccccccccccccc
 cccccccccccccvv..WWWWWWWWWWWWW..vvccccccccccccc
-cccccccccccccv...WWWb.bZb.bWWW...vccccccccccccc
+cccccccccccccv...WWWb.b.b.bWWW...vccccccccccccc
 cccccccccccccv...WWb$$|*|$$bWW...vccccccccccccc
 cccccccccccccv...WW.$/|1|/$.WW...vccccccccccccc
 cccccccccccccv...WWb$$|*|$$bWW...vccccccccccccc
@@ -1422,7 +1421,6 @@ NAME:   cryptofortress_bobbens
 ORIENT: encompass
 TAGS:   no_monster_gen no_item_gen no_pool_fixup no_rotate no_vmirror
 PLACE:  Crypt:$
-KITEM:  Z = creeping rune of Zot
 KFEAT:  A = w
 KMONS:  A = flying skull
 KMONS:  B = ancient lich
@@ -1455,6 +1453,7 @@ NSUBST: P = 1:> / *:|**
 NSUBST: O = 1:>
 SUBST:  P = |**
 : end
+KFEAT:  > = enter_tomb
 # Loot randomisation
 SUBST:  % = %$, * = *%, / = |**
 NSUBST: *| = 1:d / 1:h
@@ -1471,7 +1470,7 @@ vwwwwwwwwwwwwwwv.........r//||//r.........vAAAAAAwwwwwwwwv
 vwwwwwwvvvv?vvvv......rr=rr*/O*rr=rr......v?v?v?v?vwwwwwwv
 vwwwwwwv.......v......r$$*rr++rr*$$r......v.......vwwwwwwv
 vwwwwww?....H..v.....rrrrOr$$$$rOrrrr.....v.......?wwwwwwv
-vwwwwwwv....H..+........rrr$Z$$rrr........+.Q..H..vwwwwwwv
+vwwwwwwv....H..+........rrr$$$$rrr........+.Q..H..vwwwwwwv
 vwwwwww?....H..v......L...r$$$$r...L......v....H..?wwwwwwv
 vwwwwwwv.Q.vvvvv...rrr....rr++rr....rrr...v....H..vwwwwwwv
 vwwwwww?...v...vv....rr.rrrU..Urrr.rr....vvv+v....?wwwwwwv
@@ -1535,7 +1534,6 @@ NAME:   david_glass_crypt
 ORIENT: float
 TAGS:   no_item_gen no_rotate transparent
 PLACE:  Crypt:$
-KITEM:  Z = creeping rune of Zot
 MARKER: m = lua:portal_desc {wall_phase = 1}
 KFEAT:  m = iron_grate
 KMASK:  1 = opaque
@@ -1565,7 +1563,7 @@ MAP
 ..vllll.%|||%.llllv..
 .4vll..%|||||%..llv4.
 ..vl....%|||%....lv..
-..vmm.....Z.....mmv..
+..vmm...........mmv..
 ..v1m..F.vvv.F..m1v..
 ..v1m...^^^^^...m1v..
 ..vvvvvvv+++vvvvvvv..
@@ -1584,7 +1582,6 @@ NAME:   quadcrypt_mu
 ORIENT: encompass
 TAGS:   no_monster_gen no_item_gen no_pool_fixup no_rotate no_vmirror no_hmirror
 PLACE:  Crypt:$
-KITEM:  Z = creeping rune of Zot
 KMONS:  0 = lost soul / nothing
 ####### chapel garden
 SUBST:  F = f ?
@@ -1618,12 +1615,12 @@ KMONS:  P = skeleton / mummy
 : end
 ####### SE monsters (catacombs). Either corporeal or incorporeal undead.
 : if crawl.coinflip() then
-KMONS:  Y = patrolling curse skull
+KMONS:  Z = patrolling curse skull
 KMONS:  Q = bone dragon
 KMONS:  R = skeletal warrior
 KMONS:  S = zombie / skeleton
 : else
-KMONS:  Y = patrolling curse skull
+KMONS:  Z = patrolling curse skull
 KMONS:  Q = eidolon
 KMONS:  R = phantasmal warrior / flayed ghost w:8
 KMONS:  S = shadow / wraith / freezing wraith / shadow wraith / wight
@@ -1644,21 +1641,24 @@ NSUBST: . = 8:0 / *:.
 NSUBST: *| = 1:d / 1:h
 ####### Tomb entrance
 : if crawl.one_chance_in(4) then
+KFEAT:  L = enter_tomb
 KFEAT:  _ = altar_kikubaaqudgha
 SUBST:  O = $
 : elseif crawl.one_chance_in(3) then
+KFEAT:  _ = enter_tomb
 SUBST:  O = $
 : else
 KFEAT:  _ = altar_kikubaaqudgha
 NSUBST: O = 1:> / *:$
+KFEAT:  > = enter_tomb
 : end
 SUBST:  ? = $ % * |:1
 : crypt_loot_plus(_G)
 MAP
 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 vccccccccccccccccccccccccc......"...Bvvvvvvvvvvvvvvvvvvvvvv
-vc..D..c.....c....Bc..+..c.ffff.vvvBYvvvvvvvvvvvvvvvvvvvvvv
-vc.c.c.+.....+....cc..+..c.ffFf.vvvv"vvvvvvvvvvvvvnP+....Zv
+vc..D..c.....c....Bc..+..c.ffff.vvvBLvvvvvvvvvvvvvvvvvvvvvv
+vc.c.c.+.....+....cc..+..c.ffFf.vvvv"vvvvvvvvvvvvvnP+.....v
 vc.._..+...D.c....Bc..c..m.ffFf.vO???||$$$.vvvvv..nPn|????v
 vc.c.c.c.....c....cc..c..c.ffff.v?$$$$$$$$.vvvv...nPn$$$$$v
 vc.....ccc+ccc....Bc..cGGc.ffff.vnnnnnnnnn+vvv..H.nPn$$O$$v
@@ -1684,7 +1684,7 @@ vvvvvvvvvvvvv....v??llv??llv??llvvvvvvo.ovvvWWWWWWW.......v
 vvvvvlllvvvvv....v?.tlv?.tlv?.tlvvvv.......vvWWWWWW%.mmmm.v
 vvv.......vvv....v....v....v....vvv.........vvWWWWWWWm*|m.v
 vv.........vv....v....v....v....vv...........vWWWWWmWW*|m.v
-v..ccc.ccc..vv++vvv++vvv++vvv++vvv...R.Q.R...vvWWWWmWWY|m.v
+v..ccc.ccc..vv++vvv++vvv++vvv++vvv...R.Q.R...vvWWWWmWWZ|m.v
 v...lc.cl...v...................vo...........ovWWWWmmmmmm.v
 v..t.c.c.t..+...................+......U......+...........v
 v...........v...................vo...........ov...........v
@@ -1731,7 +1731,6 @@ NAME:   evilmike_haunted_forest
 ORIENT: encompass
 PLACE:  Crypt:$
 TAGS:   no_monster_gen no_item_gen no_pool_fixup no_rotate
-KITEM:  Z = creeping rune of Zot
 SUBST:  T = t.
 SUBST:  v = cccc.-
 COLOUR: t = w:5 lightgrey / w:5 darkgrey / brown
@@ -1747,6 +1746,7 @@ SUBST:  x: c, -'": ., ?: |
 SUBST:  D = +, d = cc+
 NSUBST: * = 12:* / 12:% / *:$
 KFEAT:  m = iron_grate
+KFEAT:  > = enter_tomb
 MONS:   w:3 patrolling lich / w:1 patrolling revenant
 MONS:   patrolling zombie / nothing
 MONS:   jumping spider / wolf spider / redback / w:19 nothing
@@ -1814,7 +1814,7 @@ ttttTt.....n-B--cccmmcccccc-c--'''--c-ccccccmmcccEEE-n..T..v44vT....Tttttttttttt
 ttttT..T..ccEEE-ccc00cc-----cc--'--cc-----cc00ccc-EEEcc....v--v....t.Ttttttttttt
 tttTt.T....n----cc--cc--ccccccc---ccccccc--cc--cc-E--n.....-vvv...t...Tttttttttt
 ttT.......ccc+ccc*-cc--ccccccccc+ccccccccc--cc-*ccc+ccc.........T....tTttttttttt
-ttT..t555..cc-cc**cc--ccccccc---Z---ccccccc--cc**cc-cc....T.......T....Ttttttttt
+ttT..t555..cc-cc**cc--ccccccc-------ccccccc--cc**cc-cc....T.......T....Ttttttttt
 tttT.55T..ccc-c<*ccc+cc-------AV-VA-------cc+ccc*<c-ccc.............t...Tttttttt
 ttttT5t....cc-cccc-EE-c-B-xxxx'''''xxxx-B-c----cccc-cc...vvvvvvv..T...t.Tttttttt
 tttttT....ccc+ccccEEEEc---xxxx'''''xxxx---c0--0cccc+ccc..v---4--v....t.Ttttttttt
@@ -1825,7 +1825,7 @@ ttttttTt...cccdcccccccccc-xxx--'''--xxx-ccccccccccdccc...v%---4-v........Ttttttt
 tttttttT..............ccc-xxx--'''--xxx-ccc..............vvvvvvvv....T.t.tTttttt
 ttttttttTt....xxxxx....n-------'''-------n...555....T..............--v....Tttttt
 tttttttT......x*1*x....n---B---'''---B---n..555......ccccccccc....--Tv..t.Tttttt
-ttttttT.t..T..x*|*x...ccc-xxx--'''--xxx-ccc...T......c$$$Z$$$c...--44vT...tTtttt
+ttttttT.t..T..x*|*x...ccc-xxx--'''--xxx-ccc...T......c$$$>$$$c...--44vT...tTtttt
 ttttttT.......x***x...ccc-xxx--'''--xxx-ccc.T........c$$$$$$$c..vvvvvvvvvv.Ttttt
 tttttttT.t.T..xx-xx....n-------'''-------n.......T...c$$$7$$$c..--4--vT..t.Ttttt
 ttttttttT......x+x.....n-------'''-------n.....t..t..c**666**c....---v..t...Tttt
@@ -1881,7 +1881,6 @@ PLACE:  Crypt:$
 ORIENT: north
 TAGS:   no_monster_gen no_item_gen no_pool_fixup no_rotate no_trap_gen
 TAGS:   layout_city
-KITEM:  Z = creeping rune of Zot
 NSUBST: A = 1:+ / *:c
 NSUBST: B = 1:+ / *:c
 NSUBST: C = 1:6 / *:5
@@ -1932,7 +1931,7 @@ NSUBST:  %*| = 1:d / 1:h
 MAP
                 ccccccccccccccccccccccccccccccc
                 ccccccccccccccccccccccccccccccc
-                cc*$*c|%*...Z...**|c.........cc
+                cc*$*c|%*.......**|c.........cc
                 cc$3$c|*...'2'...%|c..G.3.G..cc
                 cc...c|%|.......|%|c.........cc
                 ccc+cccccc.....ccccccc+cccBBBcc
@@ -1985,7 +1984,6 @@ NAME:    grunt_crypt_end_deaths_head
 TAGS:    patrolling no_monster_gen no_rotate no_hmirror no_vmirror
 PLACE:   Crypt:$
 ORIENT:  encompass
-KITEM:   Z = creeping rune of Zot
 MONS:    skeletal warrior / jiangshi, flying skull band
 SHUFFLE: 34 / 56 / 78 / 90, AB / CD / EF / HI / JK / LM / NO / PQ
 
@@ -2033,6 +2031,7 @@ KMONS:   S = ancient champion
 KMONS:   T = skeletal warrior
 : end
 
+KFEAT:   R = enter_tomb
 KFEAT:   _ = altar_yredelemnul / altar_kikubaaqudgha
 SHUFFLE: {[(<
 
@@ -2041,7 +2040,7 @@ NSUBST:  *| = 1:d / 1:h
 MAP
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-ccccccccccccccccccccccccc|*$$...Z...$$*|ccccccccccccccccccccccccc
+ccccccccccccccccccccccccc|*$$...R...$$*|ccccccccccccccccccccccccc
 cccccccccccccccccccccc..cc*$$.T...T.$$*cc..cccccccccccccccccccccc
 cccccccccccccccccccc....ccc$$...T...$$ccc....cccccccccccccccccccc
 ccccccccccccccccccc.G.G.c.ccccc+++ccccc.c.G.G.ccccccccccccccccccc
@@ -2104,7 +2103,6 @@ NAME:    lightli_unholy_cathedral
 TAGS:    no_monster_gen layout_city
 PLACE:   Crypt:$
 ORIENT:  north
-KITEM:   Z = creeping rune of Zot
 MONS:    ancient champion, lich / revenant, jiangshi / ghoul w:2
 MONS:    profane servitor / bone dragon / curse toe / \
          greater mummy w:2 / ancient lich w:2
@@ -2124,7 +2122,7 @@ NSUBST:  *| = 1:d / 1:h
 MAP
 cccccccccccccccccccccccc
 ccccccccccc$$ccccccccccc
-cccccccccc$$Z$cccccccccc
+cccccccccc$$$$cccccccccc
 cccccccccc$$$$cccccccccc
 ccccccccccc++ccccccccccc
 ccccccc..........ccccccc

@@ -1,5 +1,7 @@
 #include "AppHdr.h"
 
+#ifdef USE_TILE_LOCAL
+
 #include "tilesdl.h"
 
 #include "ability.h"
@@ -866,7 +868,7 @@ int TilesFramework::getch_ck()
 
 static const int map_margin      = 2;
 static const int map_stat_margin = 4;
-static const int min_stat_height = 15;
+static const int min_stat_height = 12;
 static const int min_inv_height  = 4;
 static const int max_inv_height  = 6;
 static const int max_mon_height  = 3;
@@ -988,16 +990,8 @@ void TilesFramework::do_layout()
             // message overlay.
             if (available_height_in_tiles < ENV_SHOW_DIAMETER)
             {
-            	// just kidding, don't actually do the overlay
-//            	if(false)
-//            	{
-                    message_y_divider = m_windowsz.y;
-                    message_overlay = true;
-//            	}
-//            	else
-//            	{
-//                    message_y_divider = available_height_in_tiles * m_region_tile->dy;
-//            	}
+                message_y_divider = m_windowsz.y;
+                message_overlay = true;
 
                 // If using message_overlay isn't enough, scale the dungeon region
                 // tiles to fit full LOS into the available space.
@@ -1581,4 +1575,4 @@ int TilesFramework::to_lines(int num_tiles, int tile_height)
 {
     return num_tiles * tile_height / get_crt_font()->char_height();
 }
-
+#endif

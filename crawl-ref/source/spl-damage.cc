@@ -71,6 +71,12 @@
 //
 spret_type cast_delayed_fireball(bool fail)
 {
+    if (you.attribute[ATTR_DELAYED_FIREBALL])
+    {
+        mpr("You are already charged.");
+        return SPRET_ABORT;
+    }
+
     fail_check();
     // Okay, this message is weak but functional. - bwr
     mpr("You feel magically charged.");
@@ -134,14 +140,14 @@ spret_type cast_fire_storm(int pow, bolt &beam, bool fail)
     return SPRET_SUCCESS;
 }
 
-// No setup/cast split here as monster hellfire is completely different.
+// No setup/cast split here as monster damnation is completely different.
 // XXX make this not true
-bool cast_smitey_hellfire(int pow, bolt &beam)
+bool cast_smitey_damnation(int pow, bolt &beam)
 {
-    beam.name              = "hellfire";
-    beam.aux_source        = "hellfire";
+    beam.name              = "damnation";
+    beam.aux_source        = "damnation";
     beam.ex_size           = 1;
-    beam.flavour           = BEAM_HELLFIRE;
+    beam.flavour           = BEAM_DAMNATION;
     beam.real_flavour      = beam.flavour;
     beam.glyph             = dchar_glyph(DCHAR_FIRED_BURST);
     beam.colour            = LIGHTRED;
@@ -165,7 +171,7 @@ bool cast_smitey_hellfire(int pow, bolt &beam)
         return false;
     }
 
-    mpr("You call forth a pillar of hellfire!");
+    mpr("You call forth a pillar of damnation!");
 
     beam.is_tracer = false;
     beam.in_explosion_phase = false;
@@ -574,7 +580,7 @@ static void _post_drain_life(actor* agent, bool player,
     {
         if (agent->is_player())
         {
-            mprf("You feel life flooding into your body. (hp+%d)", total_damage);
+            mpr("You feel life flooding into your body.");
             inc_hp(total_damage);
         }
         else
@@ -802,7 +808,7 @@ void sonic_damage(bool scream)
         int cap = scream ? mi->max_hit_points / 2 : mi->max_hit_points * 3 / 10;
         hurt = min(hurt, max(cap, 1));
         // not so much damage if you're a n00b
-        hurt = div_rand_round(hurt * effective_xl(), 27);
+        hurt = div_rand_round(hurt * you.experience_level, 27);
         /* per dpeg:
          * damage is universal (well, only to those who can hear, but not sure
            we can determine that in-game), i.e. smiting, no resists
@@ -871,7 +877,7 @@ spret_type vampiric_drain(int pow, monster* mons, bool fail)
     int hp_gain = 3 + random2avg(9, 2) + random2(pow) / 7;
 
     hp_gain = min(mons->hit_points, hp_gain);
-    hp_gain = min(get_hp_max() - get_hp(), hp_gain);
+    hp_gain = min(you.hp_max - you.hp, hp_gain);
 
     if (!hp_gain)
     {
@@ -890,7 +896,7 @@ spret_type vampiric_drain(int pow, monster* mons, bool fail)
 
     if (hp_gain && !mons_was_summoned && !you.duration[DUR_DEATHS_DOOR])
     {
-        mprf("You feel life coursing into your body. (hp+%d)", hp_gain);
+        mpr("You feel life coursing into your body.");
         inc_hp(hp_gain);
     }
 
@@ -919,6 +925,8 @@ spret_type cast_freeze(int pow, monster* mons, bool fail)
     {
         set_attack_conducts(conducts, mons);
 
+        mprf("You freeze %s.", mons->name(DESC_THE).c_str());
+
         behaviour_event(mons, ME_ANNOY, &you);
     }
 
@@ -938,10 +946,7 @@ spret_type cast_freeze(int pow, monster* mons, bool fail)
 
     const int orig_hurted = roll_dice(1, 3 + pow / 3);
     int hurted = mons_adjust_flavoured(mons, beam, orig_hurted);
-    string name = mons->name(DESC_THE);
     mons->hurt(&you, hurted);
-    mprf("You freeze %s.", name.c_str());
-
 
     if (mons->alive())
     {
@@ -993,14 +998,17 @@ spret_type cast_airstrike(int pow, const dist &beam, bool fail)
     fail_check();
     set_attack_conducts(conducts, mons);
 
-    int hurted = 8 + random2(random2(4) + (random2(pow) / 6)
-                             + (random2(pow) / 7));
-
+    mprf("The air twists around and %sstrikes %s!",
+         mons->airborne() ? "violently " : "",
+         mons->name(DESC_THE).c_str());
     noisy(spell_effect_noise(SPELL_AIRSTRIKE), beam.target);
 
     behaviour_event(mons, ME_ANNOY, &you);
 
     enable_attack_conducts(conducts);
+
+    int hurted = 8 + random2(random2(4) + (random2(pow) / 6)
+                   + (random2(pow) / 7));
 
     bolt pbeam;
     pbeam.flavour = BEAM_AIR;
@@ -1010,10 +1018,6 @@ spret_type cast_airstrike(int pow, const dist &beam, bool fail)
 #endif
     hurted = mons->apply_ac(mons->beam_resists(pbeam, hurted, false));
     dprf("preac: %d, postac: %d", preac, hurted);
-
-    mprf("The air twists around and %sstrikes %s!",
-         mons->airborne() ? "violently " : "",
-         mons->name(DESC_THE).c_str());
 
     mons->hurt(&you, hurted);
     if (mons->alive())
@@ -1635,7 +1639,7 @@ static int _ignite_poison_monsters(coord_def where, int pow, actor *agent)
     if (tracer)
         return mons_aligned(mon, agent) ? -1 * damage : damage;
 
-    monster_message(mon, " seems to burn from within!");
+    simple_monster_message(mon, " seems to burn from within!");
 
     dprf("Dice: %dd%d; Damage: %d", dam_dice.num, dam_dice.size, damage);
 
@@ -1876,7 +1880,7 @@ int discharge_monsters(coord_def where, int pow, actor *agent)
 
     if (victim->is_player())
     {
-        mprf("You are struck by lightning.");
+        mpr("You are struck by lightning.");
         damage = 1 + random2(3 + pow / 15);
         dprf("You: static discharge damage: %d", damage);
         damage = check_your_resists(damage, BEAM_ELECTRICITY,
@@ -1959,23 +1963,6 @@ static bool _safe_discharge(coord_def where, vector<const monster *> &exclude)
     }
 
     return true;
-}
-
-spret_type cast_inner_flame(int powc, monster* mon, actor* agent, bool fail)
-{
-    fail_check();
-
-    spret_type result = SPRET_ABORT;
-    if (mon
-        && !mon->has_ench(ENCH_INNER_FLAME)
-        && !mon->is_summoned()
-        && mon->add_ench(mon_enchant(ENCH_INNER_FLAME, 0, agent))
-        )
-    {
-        result = SPRET_SUCCESS;
-    }
-
-    return result;
 }
 
 spret_type cast_discharge(int pow, bool fail)
@@ -2418,7 +2405,7 @@ spret_type cast_sandblast(int pow, bolt &beam, bool fail)
     const spret_type ret = zapping(zap, pow, beam, true, nullptr, fail);
 
     if (ret == SPRET_SUCCESS && zap != ZAP_SMALL_SANDBLAST)
-        dec_inv_item_quantity(you.inv1, you.equip[EQ_WEAPON], 1);
+        dec_inv_item_quantity(you.equip[EQ_WEAPON], 1);
 
     return ret;
 }
@@ -2809,7 +2796,7 @@ void toxic_radiance_effect(actor* agent, int mult)
 {
     int pow;
     if (agent->is_player())
-        pow = calc_spell_power(SPELL_OLGREBS_TOXIC_RADIANCE, true, false);
+        pow = calc_spell_power(SPELL_OLGREBS_TOXIC_RADIANCE, true);
     else
         pow = agent->as_monster()->get_hit_dice() * 8;
 
@@ -2896,7 +2883,7 @@ void handle_searing_ray()
     }
 
     const zap_type zap = zap_type(ZAP_SEARING_RAY_I + (you.attribute[ATTR_SEARING_RAY]-1));
-    const int pow = calc_spell_power(SPELL_SEARING_RAY, true, false);
+    const int pow = calc_spell_power(SPELL_SEARING_RAY, true);
 
     bolt beam;
     beam.thrower = KILL_YOU_MISSILE;

@@ -39,7 +39,7 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_PORKALATOR, ZAP_PORKALATOR },
     // Should only be available from Staff of Dispater and Sceptre
     // of Asmodeus.
-    { SPELL_HURL_HELLFIRE, ZAP_HELLFIRE },
+    { SPELL_HURL_DAMNATION, ZAP_DAMNATION },
     { SPELL_CORONA, ZAP_CORONA },
     { SPELL_ENSLAVEMENT, ZAP_ENSLAVEMENT },
     { SPELL_BANISHMENT, ZAP_BANISHMENT },
@@ -51,9 +51,7 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_PETRIFY, ZAP_PETRIFY },
     { SPELL_POLYMORPH, ZAP_POLYMORPH },
     { SPELL_TELEPORT_OTHER, ZAP_TELEPORT_OTHER },
-    /*
     { SPELL_INNER_FLAME, ZAP_INNER_FLAME },
-     */
     { SPELL_HASTE, ZAP_HASTE },
     { SPELL_INVISIBILITY, ZAP_INVISIBILITY },
     { SPELL_DIG, ZAP_DIG },

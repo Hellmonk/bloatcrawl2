@@ -60,11 +60,7 @@ static int _shop_get_item_value(const item_def& item, int greed, bool id)
 
 int item_price(const item_def& item, const shop_struct& shop)
 {
-    int base_value = _shop_get_item_value(item, shop.greed, shoptype_identifies_stock(shop.type));
-    if (you.rune_curse_active[RUNE_DEMONIC])
-        base_value *= 3;
-
-    return base_value;
+    return _shop_get_item_value(item, shop.greed, shoptype_identifies_stock(shop.type));
 }
 
 // This probably still needs some work. Rings used to be the only
@@ -151,7 +147,7 @@ int artefact_value(const item_def &item)
         ret -= 3;
 
     if (prop[ ARTP_CAUSE_TELEPORTATION ])
-        ret -= 8;
+        ret -= 3;
 
     if (prop[ ARTP_NOISE ])
         ret -= 5;
@@ -336,7 +332,7 @@ unsigned int item_value(item_def item, bool ident)
                 valued *= 15;
                 break;
 
-            case SPWPN_LIGHT:
+            case SPWPN_EVASION:
             case SPWPN_PROTECTION:
             case SPWPN_VENOM:
                 valued *= 12;
@@ -568,8 +564,7 @@ unsigned int item_value(item_def item, bool ident)
             case SPARM_POSITIVE_ENERGY:
             case SPARM_POISON_RESISTANCE:
             case SPARM_REFLECTION:
-            case SPARM_MAGIC_SHIELD:
-            case SPARM_STAMINA_SHIELD:
+            case SPARM_SPIRIT_SHIELD:
                 valued += 20;
                 break;
 
@@ -690,9 +685,7 @@ unsigned int item_value(item_def item, bool ident)
                 valued += 100;
                 break;
 
-            case POT_HEAL_WOUNDS:
             case POT_MAGIC:
-            case POT_STAMINA:
             case POT_INVISIBILITY:
             case POT_CANCELLATION:
             case POT_AMBROSIA:
@@ -700,6 +693,7 @@ unsigned int item_value(item_def item, bool ident)
                 break;
 
             case POT_BERSERK_RAGE:
+            case POT_HEAL_WOUNDS:
 #if TAG_MAJOR_VERSION == 34
             case POT_RESTORE_ABILITIES:
 #endif
@@ -719,12 +713,11 @@ unsigned int item_value(item_def item, bool ident)
                 break;
 
             case POT_MUTATION:
-            case POT_WEAK_MUTATION:
                 valued += 25;
                 break;
 
 #if TAG_MAJOR_VERSION == 34
-            case POT_POISON_VULNERABILITY:
+            case POT_POISON:
             case POT_STRONG_POISON:
             case POT_PORRIDGE:
             case POT_SLOWING:
@@ -778,7 +771,6 @@ unsigned int item_value(item_def item, bool ident)
         {
             switch (item.sub_type)
             {
-            case SCR_AMPLIFICATION:
             case SCR_ACQUIREMENT:
                 valued += 520;
                 break;
@@ -787,7 +779,6 @@ unsigned int item_value(item_def item, bool ident)
                 valued += 200;
                 break;
 
-            case SCR_INVERSION:
             case SCR_RECHARGING:
             case SCR_SUMMONING:
                 valued += 95;
@@ -890,14 +881,12 @@ unsigned int item_value(item_def item, bool ident)
                     break;
 
                 case RING_WIZARDRY:
-                case AMU_HEALTH_REGENERATION:
-                case AMU_MAGIC_SHIELD:
-                case AMU_STAMINA_SHIELD:
-                case AMU_QUICK_CAST:
-//                case AMU_THE_GOURMAND:
+                case AMU_REGENERATION:
+                case AMU_GUARDIAN_SPIRIT:
+                case AMU_THE_GOURMAND:
                 case AMU_DISMISSAL:
                 case AMU_HARM:
-                case AMU_STAMINA_REGENERATION:
+                case AMU_MANA_REGENERATION:
                     valued += 300;
                     break;
 
@@ -906,13 +895,11 @@ unsigned int item_value(item_def item, bool ident)
                 case RING_PROTECTION_FROM_COLD:
                 case RING_PROTECTION_FROM_FIRE:
                 case RING_PROTECTION_FROM_MAGIC:
-                case AMU_MAGIC_REGENERATION:
                 case AMU_REFLECTION:
                     valued += 250;
                     break;
 
                 case RING_MAGICAL_POWER:
-                case RING_STAMINA:
                 case RING_LIFE_PROTECTION:
                 case RING_POISON_RESISTANCE:
                 case RING_RESIST_CORROSION:
@@ -971,14 +958,13 @@ unsigned int item_value(item_def item, bool ident)
             valued += 400;
             break;
 
-        case MISC_STONE_OF_TREMORS:
-        case MISC_SACK_OF_SPIDERS:
         case MISC_PHANTOM_MIRROR:
             valued += 300;
             break;
 
         case MISC_BOX_OF_BEASTS:
         case MISC_DISC_OF_STORMS:
+        case MISC_SACK_OF_SPIDERS:
             valued += 200;
             break;
 
@@ -1077,7 +1063,7 @@ bool is_worthless_consumable(const item_def &item)
         case POT_BLOOD_COAGULATED:
         case POT_SLOWING:
         case POT_DECAY:
-        case POT_POISON_VULNERABILITY:
+        case POT_POISON:
 #endif
         case POT_DEGENERATION:
             return true;
@@ -1313,7 +1299,7 @@ ShopMenu::ShopMenu(shop_struct& _shop, const level_pos& _pos, bool _can_purchase
 
     update_help();
 
-    set_title(you.inv1, "Welcome to " + shop_name(shop) + "! What would you "
+    set_title("Welcome to " + shop_name(shop) + "! What would you "
               "like to do?");
 }
 
@@ -1444,7 +1430,7 @@ void ShopMenu::purchase_selected()
 
     // Store last_pickup in case we need to restore it.
     // Then clear it to fill with items purchased.
-    map<item_def*,int> tmp_l_p = you.last_pickup;
+    map<int,int> tmp_l_p = you.last_pickup;
     you.last_pickup.clear();
 
     // Will iterate backwards through the shop (because of the earlier sort).
@@ -1732,8 +1718,8 @@ string shop_type_name(shop_type type)
             return "Gadget";
         case SHOP_BOOK:
             return "Book";
-//        case SHOP_FOOD:
-//            return "Food";
+        case SHOP_FOOD:
+            return "Food";
         case SHOP_SCROLL:
             return "Magic Scroll";
         case SHOP_GENERAL_ANTIQUE:
@@ -1832,7 +1818,7 @@ static const char *shop_types[] =
     "jewellery",
     "gadget",
     "book",
-//    "food",
+    "food",
     "distillery",
     "scroll",
     "general",

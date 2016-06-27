@@ -263,9 +263,9 @@ void DungeonRegion::render()
  */
 void DungeonRegion::draw_minibars()
 {
-    if (Options.tile_show_minihealthbar && get_hp() < get_hp_max()
+    if (Options.tile_show_minihealthbar && you.hp < you.hp_max
         || Options.tile_show_minimagicbar
-           && get_mp() < get_mp_max())
+           && you.magic_points < you.max_magic_points)
     {
         // Tiles are 32x32 pixels; 1/32 = 0.03125.
         // The bars are two pixels high each.
@@ -285,13 +285,13 @@ void DungeonRegion::draw_minibars()
         player_on_screen.x = (player_on_screen.x-sx)/dx;
         player_on_screen.y = (player_on_screen.y-sy)/dy;
 
-        if (Options.tile_show_minimagicbar && get_mp_max() > 0)
+        if (Options.tile_show_minimagicbar && you.max_magic_points > 0)
         {
             static const VColour magic(0, 114, 159, 207);      // lightblue
             static const VColour magic_spent(0, 0, 0, 255);  // black
 
-            const float magic_divider = (float) get_mp()
-                                        / (float) get_mp_max();
+            const float magic_divider = (float) you.magic_points
+                                        / (float) you.max_magic_points;
 
             buff.add(player_on_screen.x,
                      player_on_screen.y + healthbar_offset + bar_height,
@@ -309,10 +309,10 @@ void DungeonRegion::draw_minibars()
 
         if (Options.tile_show_minihealthbar)
         {
-            const float min_hp = max(0, get_hp());
-            const float health_divider = min_hp / (float) get_hp_max();
+            const float min_hp = max(0, you.hp);
+            const float health_divider = min_hp / (float) you.hp_max;
 
-            const int hp_percent = (get_hp() * 100) / get_hp_max();
+            const int hp_percent = (you.hp * 100) / you.hp_max;
 
             int hp_colour = GREEN;
             for (const auto &entry : Options.hp_colour)
@@ -399,7 +399,7 @@ static bool _is_appropriate_spell(spell_type spell, const actor* target)
     {
         switch (spell)
         {
-        case SPELL_CALL_DOWN_HELLFIRE:
+        case SPELL_CALL_DOWN_DAMNATION:
         case SPELL_SMITING:
         case SPELL_HAUNT:
         case SPELL_FIRE_STORM:
@@ -464,7 +464,7 @@ static bool _is_appropriate_evokable(const item_def& item,
 
 static bool _have_appropriate_evokable(const actor* target)
 {
-    return any_of(begin(you.inv1), end(you.inv1),
+    return any_of(begin(you.inv), end(you.inv),
                   [target] (const item_def &item) -> bool
                   {
                       return item.defined()
@@ -476,7 +476,7 @@ static item_def* _get_evokable_item(const actor* target)
 {
     vector<const item_def*> list;
 
-    for (const auto &item : you.inv1)
+    for (const auto &item : you.inv)
         if (item.defined() && _is_appropriate_evokable(item, target))
             list.push_back(&item);
 
@@ -485,7 +485,7 @@ static item_def* _get_evokable_item(const actor* target)
     InvMenu menu(MF_SINGLESELECT | MF_ANYPRINTABLE
                  | MF_ALLOW_FORMATTING | MF_SELECT_BY_PAGE);
     menu.set_type(MT_ANY);
-    menu.set_title(you.inv1, "Wand to zap?");
+    menu.set_title("Wand to zap?");
     menu.load_items(list);
     menu.show();
     vector<SelItem> sel = menu.get_selitems();
@@ -595,7 +595,7 @@ static bool _cast_spell_on_target(actor* target)
         return true;
     }
 
-    if (spell_mp_cost(spell) > get_mp())
+    if (spell_mana(spell) > you.magic_points)
     {
         mpr("You don't have enough magic to cast that spell.");
         return true;

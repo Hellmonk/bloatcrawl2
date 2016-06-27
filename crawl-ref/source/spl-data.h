@@ -4,11 +4,6 @@
  *        spl-util.cc.
 **/
 
-#include "enum.h"
-#include "spl-util.h"
-#include "spl-cast.h"
-#include "rltiles/tiledef-gui.h"
-
 /*
 struct spell_desc
 {
@@ -39,7 +34,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_CAUSE_FEAR, "Cause Fear",
-    SPTYP_HEXES | SPTYP_DARKNESS,
+    SPTYP_HEXES,
     SPFLAG_AREA | SPFLAG_MR_CHECK,
     4,
     200,
@@ -61,7 +56,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_FIREBALL, "Fireball",
-    SPTYP_CONJURATION | SPTYP_FIRE | SPTYP_LIGHT,
+    SPTYP_CONJURATION | SPTYP_FIRE,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
     5,
     200,
@@ -83,7 +78,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_DELAYED_FIREBALL, "Delayed Fireball",
-    SPTYP_FIRE | SPTYP_CONJURATION | SPTYP_TIME,
+    SPTYP_FIRE | SPTYP_CONJURATION,
     SPFLAG_UTILITY,
     7,
     0,
@@ -182,7 +177,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SLOW, "Slow",
-    SPTYP_HEXES | SPTYP_TIME,
+    SPTYP_HEXES,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER | SPFLAG_MR_CHECK,
     2,
     200,
@@ -193,7 +188,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_HASTE, "Haste",
-    SPTYP_CHARMS | SPTYP_AIR | SPTYP_TIME,
+    SPTYP_CHARMS,
     SPFLAG_DIR_OR_TARGET | SPFLAG_HELPFUL | SPFLAG_HASTY | SPFLAG_SELFENCH
         | SPFLAG_UTILITY,
     6,
@@ -216,7 +211,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_CONFUSE, "Confuse",
-    SPTYP_HEXES | SPTYP_DARKNESS,
+    SPTYP_HEXES,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER | SPFLAG_MR_CHECK,
     3,
     200,
@@ -227,7 +222,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_INVISIBILITY, "Invisibility",
-    SPTYP_CHARMS | SPTYP_TRANSMUTATION | SPTYP_DARKNESS,
+    SPTYP_HEXES,
     SPFLAG_DIR_OR_TARGET | SPFLAG_HELPFUL | SPFLAG_SELFENCH
         | SPFLAG_EMERGENCY | SPFLAG_NEEDS_TRACER,
     6,
@@ -273,7 +268,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_DISJUNCTION, "Disjunction",
-    SPTYP_TRANSLOCATION | SPTYP_TIME,
+    SPTYP_TRANSLOCATION,
     SPFLAG_ESCAPE | SPFLAG_UTILITY,
     8,
     200,
@@ -330,7 +325,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_OLGREBS_TOXIC_RADIANCE, "Olgreb's Toxic Radiance",
-    SPTYP_POISON | SPTYP_LIGHT,
+    SPTYP_POISON,
     SPFLAG_AREA | SPFLAG_BATTLE,
     4,
     100,
@@ -341,7 +336,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_TELEPORT_OTHER, "Teleport Other",
-    SPTYP_TRANSLOCATION | SPTYP_HEXES,
+    SPTYP_TRANSLOCATION,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF | SPFLAG_ESCAPE
         | SPFLAG_EMERGENCY | SPFLAG_NEEDS_TRACER | SPFLAG_MR_CHECK,
     3,
@@ -353,7 +348,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_DEATHS_DOOR, "Death's Door",
-    SPTYP_CHARMS | SPTYP_NECROMANCY | SPTYP_TIME,
+    SPTYP_CHARMS | SPTYP_NECROMANCY,
     SPFLAG_EMERGENCY | SPFLAG_UTILITY | SPFLAG_NO_GHOST,
     8,
     200,
@@ -364,7 +359,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_MASS_CONFUSION, "Mass Confusion",
-    SPTYP_HEXES | SPTYP_ICE | SPTYP_DARKNESS,
+    SPTYP_HEXES,
     SPFLAG_AREA | SPFLAG_MR_CHECK,
     6,
     200,
@@ -398,7 +393,7 @@ static const struct spell_desc spelldata[] =
 // Used indirectly, by monsters abjuring via other summon spells.
 {
     SPELL_ABJURATION, "Abjuration",
-    SPTYP_SUMMONING | SPTYP_TIME,
+    SPTYP_SUMMONING,
     SPFLAG_ESCAPE | SPFLAG_NEEDS_TRACER | SPFLAG_MONSTER,
     3,
     200,
@@ -409,7 +404,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_AURA_OF_ABJURATION, "Aura of Abjuration",
-    SPTYP_SUMMONING | SPTYP_POISON | SPTYP_TIME,
+    SPTYP_SUMMONING,
     SPFLAG_AREA | SPFLAG_NEUTRAL | SPFLAG_ESCAPE,
     5,
     200,
@@ -433,7 +428,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_BOLT_OF_DRAINING, "Bolt of Draining",
-    SPTYP_CONJURATION | SPTYP_NECROMANCY | SPTYP_TIME,
+    SPTYP_CONJURATION | SPTYP_NECROMANCY,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
     5,
     200,
@@ -444,7 +439,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_LEHUDIBS_CRYSTAL_SPEAR, "Lehudib's Crystal Spear",
-    SPTYP_CONJURATION | SPTYP_EARTH | SPTYP_ICE,
+    SPTYP_CONJURATION | SPTYP_EARTH,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
     8,
     200,
@@ -488,7 +483,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_FIRE_STORM, "Fire Storm",
-    SPTYP_FIRE,
+    SPTYP_CONJURATION | SPTYP_FIRE,
     SPFLAG_TARGET | SPFLAG_AREA | SPFLAG_NEEDS_TRACER,
     9,
     200,
@@ -498,14 +493,14 @@ static const struct spell_desc spelldata[] =
 },
 
 {
-    SPELL_CALL_DOWN_HELLFIRE, "Call Down Hellfire",
+    SPELL_CALL_DOWN_DAMNATION, "Call Down Damnation",
     SPTYP_CONJURATION,
     SPFLAG_TARGET | SPFLAG_AREA | SPFLAG_UNHOLY | SPFLAG_NEEDS_TRACER,
     9,
     200,
     LOS_RADIUS, LOS_RADIUS,
     9, 0,
-    TILEG_CALL_DOWN_HELLFIRE,
+    TILEG_CALL_DOWN_DAMNATION,
 },
 
 {
@@ -556,7 +551,7 @@ static const struct spell_desc spelldata[] =
 // of PCHACK - credit goes to its creator (whoever that may be):
 {
     SPELL_ISKENDERUNS_MYSTIC_BLAST, "Iskenderun's Mystic Blast",
-    SPTYP_CONJURATION | SPTYP_ICE,
+    SPTYP_CONJURATION,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
     4,
     100,
@@ -591,7 +586,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_MALIGN_GATEWAY, "Malign Gateway",
-    SPTYP_SUMMONING | SPTYP_TRANSLOCATION | SPTYP_DARKNESS,
+    SPTYP_SUMMONING | SPTYP_TRANSLOCATION,
     SPFLAG_UNHOLY | SPFLAG_BATTLE | SPFLAG_CHAOTIC,
     7,
     200,
@@ -614,7 +609,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_ANIMATE_DEAD, "Animate Dead",
-    SPTYP_NECROMANCY | SPTYP_TRANSMUTATION,
+    SPTYP_NECROMANCY,
     SPFLAG_AREA | SPFLAG_NEUTRAL | SPFLAG_CORPSE_VIOLATING | SPFLAG_UTILITY,
     4,
     0,
@@ -636,7 +631,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_CONTROL_UNDEAD, "Control Undead",
-    SPTYP_NECROMANCY | SPTYP_HEXES,
+    SPTYP_NECROMANCY,
     SPFLAG_MR_CHECK,
     4,
     200,
@@ -658,7 +653,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_VAMPIRIC_DRAINING, "Vampiric Draining",
-    SPTYP_NECROMANCY | SPTYP_HEXES,
+    SPTYP_NECROMANCY,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF | SPFLAG_BATTLE | SPFLAG_EMERGENCY
         | SPFLAG_SELFENCH,
     3,
@@ -716,7 +711,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_OZOCUBUS_REFRIGERATION, "Ozocubu's Refrigeration",
-    SPTYP_ICE | SPTYP_HEXES,
+    SPTYP_ICE,
     SPFLAG_AREA,
     6,
     200,
@@ -727,7 +722,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_STICKY_FLAME, "Sticky Flame",
-    SPTYP_CONJURATION | SPTYP_FIRE | SPTYP_TIME,
+    SPTYP_CONJURATION | SPTYP_FIRE,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
     4,
     100,
@@ -760,7 +755,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_CALL_IMP, "Call Imp",
-    SPTYP_SUMMONING | SPTYP_DARKNESS,
+    SPTYP_SUMMONING,
     SPFLAG_UNHOLY | SPFLAG_BATTLE | SPFLAG_SELFENCH,
     2,
     100,
@@ -806,7 +801,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_DISPEL_UNDEAD, "Dispel Undead",
-    SPTYP_NECROMANCY | SPTYP_TRANSMUTATION | SPTYP_LIGHT,
+    SPTYP_NECROMANCY,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
     5,
     100,
@@ -841,7 +836,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_TWISTED_RESURRECTION, "Twisted Resurrection",
-    SPTYP_NECROMANCY | SPTYP_CHARMS,
+    SPTYP_NECROMANCY,
     SPFLAG_CHAOTIC | SPFLAG_CORPSE_VIOLATING | SPFLAG_UTILITY | SPFLAG_MONSTER,
     5,
     200,
@@ -911,7 +906,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_TUKIMAS_DANCE, "Tukima's Dance",
-    SPTYP_HEXES | SPTYP_SUMMONING,
+    SPTYP_HEXES,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER | SPFLAG_MR_CHECK
         | SPFLAG_NOT_SELF,
     3,
@@ -923,7 +918,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SUMMON_DEMON, "Summon Demon",
-    SPTYP_SUMMONING | SPTYP_DARKNESS,
+    SPTYP_SUMMONING,
     SPFLAG_UNHOLY | SPFLAG_BATTLE | SPFLAG_SELFENCH | SPFLAG_MONS_ABJURE,
     5,
     200,
@@ -947,7 +942,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SUMMON_GREATER_DEMON, "Summon Greater Demon",
-    SPTYP_SUMMONING | SPTYP_DARKNESS,
+    SPTYP_SUMMONING,
     SPFLAG_UNHOLY | SPFLAG_BATTLE | SPFLAG_SELFENCH | SPFLAG_MONS_ABJURE,
     7,
     200,
@@ -958,7 +953,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_CORPSE_ROT, "Corpse Rot",
-    SPTYP_NECROMANCY | SPTYP_TRANSMUTATION,
+    SPTYP_NECROMANCY,
     SPFLAG_AREA | SPFLAG_NEUTRAL | SPFLAG_UNCLEAN,
     2,
     0,
@@ -1015,9 +1010,9 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_STONE_ARROW, "Stone Arrow",
-    SPTYP_EARTH,
+    SPTYP_CONJURATION | SPTYP_EARTH,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
-    2,
+    3,
     50,
     4, 4,
     3, 0,
@@ -1026,7 +1021,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SHOCK, "Shock",
-    SPTYP_AIR,
+    SPTYP_CONJURATION | SPTYP_AIR,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
     1,
     25,
@@ -1037,7 +1032,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SWIFTNESS, "Swiftness",
-    SPTYP_CHARMS | SPTYP_AIR | SPTYP_TIME,
+    SPTYP_CHARMS | SPTYP_AIR,
     SPFLAG_HASTY | SPFLAG_SELFENCH | SPFLAG_UTILITY,
     2,
     100,
@@ -1072,7 +1067,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_CURE_POISON, "Cure Poison",
-    SPTYP_POISON | SPTYP_CHARMS | SPTYP_TIME,
+    SPTYP_POISON,
     SPFLAG_RECOVERY | SPFLAG_HELPFUL | SPFLAG_UTILITY,
     2,
     200,
@@ -1129,7 +1124,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_AGONY, "Agony",
-    SPTYP_NECROMANCY | SPTYP_HEXES | SPTYP_DARKNESS,
+    SPTYP_NECROMANCY,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEEDS_TRACER | SPFLAG_MR_CHECK,
     5,
     200,
@@ -1162,7 +1157,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_BLADE_HANDS, "Blade Hands",
-    SPTYP_TRANSMUTATION | SPTYP_EARTH,
+    SPTYP_TRANSMUTATION,
     SPFLAG_HELPFUL | SPFLAG_BATTLE | SPFLAG_CHAOTIC | SPFLAG_UTILITY,
     5,
     200,
@@ -1173,7 +1168,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_STATUE_FORM, "Statue Form",
-    SPTYP_TRANSMUTATION | SPTYP_EARTH | SPTYP_TIME,
+    SPTYP_TRANSMUTATION | SPTYP_EARTH,
     SPFLAG_HELPFUL | SPFLAG_CHAOTIC | SPFLAG_UTILITY,
     6,
     150,
@@ -1195,7 +1190,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_DRAGON_FORM, "Dragon Form",
-    SPTYP_TRANSMUTATION | SPTYP_FIRE,
+    SPTYP_TRANSMUTATION,
     SPFLAG_HELPFUL | SPFLAG_CHAOTIC | SPFLAG_UTILITY,
     7,
     200,
@@ -1206,7 +1201,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_HYDRA_FORM, "Hydra Form",
-    SPTYP_TRANSMUTATION | SPTYP_AIR,
+    SPTYP_TRANSMUTATION,
     SPFLAG_HELPFUL | SPFLAG_CHAOTIC | SPFLAG_UTILITY,
     6,
     200,
@@ -1228,7 +1223,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_DEATH_CHANNEL, "Death Channel",
-    SPTYP_NECROMANCY | SPTYP_SUMMONING,
+    SPTYP_NECROMANCY,
     SPFLAG_HELPFUL | SPFLAG_UTILITY,
     6,
     200,
@@ -1284,7 +1279,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SHADOW_CREATURES, "Shadow Creatures",
-    SPTYP_SUMMONING | SPTYP_DARKNESS,
+    SPTYP_SUMMONING,
     SPFLAG_MONS_ABJURE,
     6,
     0,
@@ -1295,7 +1290,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_CONFUSING_TOUCH, "Confusing Touch",
-    SPTYP_DARKNESS,
+    SPTYP_HEXES,
     SPFLAG_NONE,
     2,
     50,
@@ -1318,11 +1313,11 @@ static const struct spell_desc spelldata[] =
 #endif
 {
     SPELL_FLAME_TONGUE, "Flame Tongue",
-    SPTYP_FIRE,
+    SPTYP_CONJURATION | SPTYP_FIRE,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEEDS_TRACER,
     1,
-    40,
-    2, 9,
+    40, // cap for range; damage cap is at 25
+    2, 5,
     1, 0,
     TILEG_FLAME_TONGUE,
 },
@@ -1351,7 +1346,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_STICKS_TO_SNAKES, "Sticks to Snakes",
-    SPTYP_TRANSMUTATION | SPTYP_SUMMONING,
+    SPTYP_TRANSMUTATION,
     SPFLAG_BATTLE | SPFLAG_NO_GHOST,
     2,
     100,
@@ -1362,7 +1357,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_CALL_CANINE_FAMILIAR, "Call Canine Familiar",
-    SPTYP_SUMMONING | SPTYP_EARTH,
+    SPTYP_SUMMONING,
     SPFLAG_NONE,
     3,
     100,
@@ -1373,7 +1368,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SUMMON_DRAGON, "Summon Dragon",
-    SPTYP_SUMMONING | SPTYP_FIRE,
+    SPTYP_SUMMONING,
     SPFLAG_MONS_ABJURE,
     9,
     200,
@@ -1384,7 +1379,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_HIBERNATION, "Ensorcelled Hibernation",
-    SPTYP_HEXES | SPTYP_ICE | SPTYP_TIME,
+    SPTYP_HEXES | SPTYP_ICE,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEEDS_TRACER | SPFLAG_MR_CHECK,
     2,
     56,
@@ -1430,7 +1425,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SUMMON_BUTTERFLIES, "Summon Butterflies",
-    SPTYP_SUMMONING | SPTYP_AIR,
+    SPTYP_SUMMONING,
     SPFLAG_NONE,
     1,
     100,
@@ -1452,7 +1447,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SILENCE, "Silence",
-    SPTYP_HEXES | SPTYP_AIR | SPTYP_DARKNESS,
+    SPTYP_HEXES | SPTYP_AIR,
     SPFLAG_AREA,
     5,
     200,
@@ -1474,7 +1469,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_DISPERSAL, "Dispersal",
-    SPTYP_TRANSLOCATION | SPTYP_AIR,
+    SPTYP_TRANSLOCATION,
     SPFLAG_AREA | SPFLAG_ESCAPE,
     6,
     200,
@@ -1496,7 +1491,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_CORONA, "Corona",
-    SPTYP_HEXES | SPTYP_LIGHT,
+    SPTYP_HEXES,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEEDS_TRACER | SPFLAG_MR_CHECK,
     1,
     200,
@@ -1507,7 +1502,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_INTOXICATE, "Alistair's Intoxication",
-    SPTYP_TRANSMUTATION | SPTYP_POISON | SPTYP_HEXES,
+    SPTYP_TRANSMUTATION | SPTYP_POISON,
     SPFLAG_NONE,
     5,
     100,
@@ -1531,7 +1526,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_LRD, "Lee's Rapid Deconstruction",
-    SPTYP_EARTH | SPTYP_TRANSMUTATION,
+    SPTYP_EARTH,
     SPFLAG_TARGET,
     5,
     200,
@@ -1577,7 +1572,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SIMULACRUM, "Simulacrum",
-    SPTYP_ICE | SPTYP_NECROMANCY | SPTYP_SUMMONING,
+    SPTYP_ICE | SPTYP_NECROMANCY,
     SPFLAG_CORPSE_VIOLATING,
     6,
     200,
@@ -1588,7 +1583,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_CONJURE_BALL_LIGHTNING, "Conjure Ball Lightning",
-    SPTYP_AIR | SPTYP_CONJURATION | SPTYP_TRANSLOCATION,
+    SPTYP_AIR | SPTYP_CONJURATION,
     SPFLAG_SELFENCH,
     6,
     200,
@@ -1621,7 +1616,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_PORTAL_PROJECTILE, "Portal Projectile",
-    SPTYP_TRANSLOCATION | SPTYP_AIR,
+    SPTYP_TRANSLOCATION,
     SPFLAG_BATTLE,
     3,
     50,
@@ -1643,7 +1638,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_GOLUBRIAS_PASSAGE, "Passage of Golubria",
-    SPTYP_TRANSLOCATION | SPTYP_AIR,
+    SPTYP_TRANSLOCATION,
     SPFLAG_TARGET | SPFLAG_NEUTRAL | SPFLAG_ESCAPE | SPFLAG_SELFENCH,
     4,
     0,
@@ -1654,7 +1649,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_FULMINANT_PRISM, "Fulminant Prism",
-    SPTYP_CONJURATION | SPTYP_HEXES | SPTYP_TIME,
+    SPTYP_CONJURATION | SPTYP_HEXES,
     SPFLAG_TARGET | SPFLAG_AREA | SPFLAG_NOT_SELF,
     4,
     200,
@@ -1678,7 +1673,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_PARALYSE, "Paralyse",
-    SPTYP_HEXES | SPTYP_TIME,
+    SPTYP_HEXES,
     SPFLAG_DIR_OR_TARGET | SPFLAG_MONSTER | SPFLAG_NEEDS_TRACER | SPFLAG_MR_CHECK,
     4,
     200,
@@ -1712,7 +1707,7 @@ static const struct spell_desc spelldata[] =
 },
 
 {
-    SPELL_HURL_HELLFIRE, "Hurl Hellfire",
+    SPELL_HURL_DAMNATION, "Hurl Damnation",
     SPTYP_CONJURATION,
     SPFLAG_DIR_OR_TARGET | SPFLAG_UNHOLY | SPFLAG_MONSTER | SPFLAG_NEEDS_TRACER,
     // plus DS ability, staff of Dispater & Sceptre of Asmodeus
@@ -1720,7 +1715,7 @@ static const struct spell_desc spelldata[] =
     200,
     6, 6,
     9, 0,
-    TILEG_HURL_HELLFIRE,
+    TILEG_HURL_DAMNATION,
 },
 
 #if TAG_MAJOR_VERSION == 34
@@ -2146,7 +2141,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SLEEP, "Sleep",
-    SPTYP_HEXES | SPTYP_TIME,
+    SPTYP_HEXES,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEEDS_TRACER | SPFLAG_MR_CHECK,
     5,
     200,
@@ -2284,7 +2279,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_AWAKEN_FOREST, "Awaken Forest",
-    SPTYP_HEXES | SPTYP_SUMMONING | SPTYP_EARTH,
+    SPTYP_HEXES | SPTYP_SUMMONING,
     SPFLAG_AREA,
     6,
     200,
@@ -2443,7 +2438,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_DARKNESS, "Darkness",
-    SPTYP_HEXES | SPTYP_DARKNESS,
+    SPTYP_HEXES,
     SPFLAG_NONE,
     6,
     200,
@@ -2454,7 +2449,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_MESMERISE, "Mesmerise",
-    SPTYP_HEXES | SPTYP_DARKNESS,
+    SPTYP_HEXES,
     SPFLAG_AREA | SPFLAG_MR_CHECK,
     5,
     200,
@@ -2511,8 +2506,8 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_INNER_FLAME, "Inner Flame",
-    SPTYP_HEXES | SPTYP_FIRE | SPTYP_TIME,
-    SPFLAG_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEUTRAL | SPFLAG_MR_CHECK,
+    SPTYP_HEXES | SPTYP_FIRE,
+    SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEUTRAL | SPFLAG_MR_CHECK,
     3,
     200,
     LOS_RADIUS, LOS_RADIUS,
@@ -2568,7 +2563,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_BATTLESPHERE, "Iskenderun's Battlesphere",
-    SPTYP_CONJURATION | SPTYP_CHARMS | SPTYP_LIGHT,
+    SPTYP_CONJURATION | SPTYP_CHARMS,
     SPFLAG_UTILITY,
     5,
     100,
@@ -2614,7 +2609,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_DAZZLING_SPRAY, "Dazzling Spray",
-    SPTYP_CONJURATION | SPTYP_HEXES | SPTYP_LIGHT,
+    SPTYP_CONJURATION | SPTYP_HEXES,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF,
     3,
     50,
@@ -2747,7 +2742,6 @@ static const struct spell_desc spelldata[] =
     TILEG_AWAKEN_VINES,
 },
 
-#if TAG_MAJOR_VERSION == 34
 {
     SPELL_CONTROL_WINDS, "Control Winds",
     SPTYP_CHARMS | SPTYP_AIR,
@@ -2756,9 +2750,8 @@ static const struct spell_desc spelldata[] =
     200,
     LOS_RADIUS, LOS_RADIUS,
     5, 0,
-    TILEG_ERROR,
+    TILEG_CONTROL_WINDS,
 },
-#endif
 
 {
     SPELL_THORN_VOLLEY, "Volley of Thorns",
@@ -2841,7 +2834,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SONG_OF_SLAYING, "Song of Slaying",
-    SPTYP_CHARMS | SPTYP_LIGHT,
+    SPTYP_CHARMS,
     SPFLAG_BATTLE | SPFLAG_UTILITY,
     2,
     100,
@@ -2898,7 +2891,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SEARING_RAY, "Searing Ray",
-    SPTYP_CONJURATION | SPTYP_LIGHT,
+    SPTYP_CONJURATION,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
     2,
     50,
@@ -2992,7 +2985,7 @@ static const struct spell_desc spelldata[] =
     SPFLAG_DIR_OR_TARGET | SPFLAG_MONSTER | SPFLAG_NEEDS_TRACER,
     8,
     200,
-    5, 5,
+    LOS_RADIUS, LOS_RADIUS,
     8, 0,
     TILEG_LEGENDARY_DESTRUCTION,
 },
@@ -3137,7 +3130,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SUMMON_FOREST, "Summon Forest",
-    SPTYP_SUMMONING | SPTYP_TRANSLOCATION | SPTYP_EARTH,
+    SPTYP_SUMMONING | SPTYP_TRANSLOCATION,
     SPFLAG_NONE,
     5,
     200,
@@ -3150,16 +3143,16 @@ static const struct spell_desc spelldata[] =
     SPELL_SUMMON_LIGHTNING_SPIRE, "Summon Lightning Spire",
     SPTYP_SUMMONING | SPTYP_AIR,
     SPFLAG_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEUTRAL,
-    5,
+    4,
     100,
-    1, 5,
+    2, 2,
     2, 0,
     TILEG_SUMMON_LIGHTNING_SPIRE,
 },
 
 {
     SPELL_SUMMON_GUARDIAN_GOLEM, "Summon Guardian Golem",
-    SPTYP_SUMMONING | SPTYP_HEXES | SPTYP_EARTH,
+    SPTYP_SUMMONING | SPTYP_HEXES,
     SPFLAG_NONE,
     3,
     100,
@@ -3214,7 +3207,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_GLACIATE, "Glaciate",
-    SPTYP_ICE,
+    SPTYP_CONJURATION | SPTYP_ICE,
     SPFLAG_DIR_OR_TARGET | SPFLAG_AREA | SPFLAG_NOT_SELF,
     9,
     200,
@@ -3236,7 +3229,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_WEAVE_SHADOWS, "Weave Shadows",
-    SPTYP_SUMMONING | SPTYP_DARKNESS,
+    SPTYP_SUMMONING,
     SPFLAG_NONE,
     5,
     0,
@@ -3258,7 +3251,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SPELLFORGED_SERVITOR, "Spellforged Servitor",
-    SPTYP_CONJURATION | SPTYP_SUMMONING | SPTYP_TIME,
+    SPTYP_CONJURATION | SPTYP_SUMMONING,
     SPFLAG_NONE,
     7,
     200,
@@ -3281,7 +3274,7 @@ static const struct spell_desc spelldata[] =
 #endif
 
 {
-    SPELL_SUMMON_MANA_VIPER, "Summon Mana viper",
+    SPELL_SUMMON_MANA_VIPER, "Summon Mana Viper",
     SPTYP_SUMMONING | SPTYP_HEXES,
     SPFLAG_MONS_ABJURE,
     5,
@@ -3325,40 +3318,7 @@ static const struct spell_desc spelldata[] =
 },
 
 {
-    SPELL_SERPENT_OF_HELL_GEH_BREATH, "gehenna serpent of hell breath",
-    SPTYP_CONJURATION,
-    SPFLAG_DIR_OR_TARGET | SPFLAG_MONSTER | SPFLAG_NOISY | SPFLAG_NEEDS_TRACER,
-    5,
-    0,
-    LOS_RADIUS, LOS_RADIUS,
-    5, 0,
-    TILEG_ERROR,
-},
-
-{
-    SPELL_SERPENT_OF_HELL_COC_BREATH, "cocytus serpent of hell breath",
-    SPTYP_CONJURATION,
-    SPFLAG_DIR_OR_TARGET | SPFLAG_MONSTER | SPFLAG_NOISY | SPFLAG_NEEDS_TRACER,
-    5,
-    0,
-    LOS_RADIUS, LOS_RADIUS,
-    5, 0,
-    TILEG_ERROR,
-},
-
-{
-    SPELL_SERPENT_OF_HELL_DIS_BREATH, "dis serpent of hell breath",
-    SPTYP_CONJURATION,
-    SPFLAG_DIR_OR_TARGET | SPFLAG_MONSTER | SPFLAG_NOISY | SPFLAG_NEEDS_TRACER,
-    5,
-    0,
-    LOS_RADIUS, LOS_RADIUS,
-    5, 0,
-    TILEG_ERROR,
-},
-
-{
-    SPELL_SERPENT_OF_HELL_TAR_BREATH, "tartarus serpent of hell breath",
+    SPELL_SERPENT_OF_HELL_BREATH, "serpent of hell breath",
     SPTYP_CONJURATION,
     SPFLAG_DIR_OR_TARGET | SPFLAG_MONSTER | SPFLAG_NOISY | SPFLAG_NEEDS_TRACER,
     5,
@@ -3381,7 +3341,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_IRRADIATE, "Irradiate",
-    SPTYP_CONJURATION | SPTYP_LIGHT,
+    SPTYP_CONJURATION | SPTYP_TRANSMUTATION,
     SPFLAG_AREA | SPFLAG_CHAOTIC,
     5,
     200,
@@ -3637,7 +3597,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_CIGOTUVIS_EMBRACE, "Cigotuvi's Embrace",
-    SPTYP_NECROMANCY | SPTYP_TIME,
+    SPTYP_NECROMANCY,
     SPFLAG_CHAOTIC | SPFLAG_CORPSE_VIOLATING | SPFLAG_UTILITY | SPFLAG_NO_GHOST,
     5,
     200,
@@ -3767,28 +3727,6 @@ static const struct spell_desc spelldata[] =
     -1, -1,
     2, 0,
     TILEG_ERROR,
-},
-
-{
-    SPELL_GREATER_SERVANT_MAKHLEB, "Greater Servant of Makhleb",
-    SPTYP_SUMMONING,
-    SPFLAG_UNHOLY | SPFLAG_BATTLE | SPFLAG_SELFENCH | SPFLAG_MONS_ABJURE,
-    7,
-    200,
-    -1, -1,
-    6, 0,
-    TILEG_ERROR,
-},
-
-{
-    SPELL_BIND_SOULS, "Bind Souls",
-    SPTYP_NECROMANCY,
-    SPFLAG_AREA | SPFLAG_MONSTER,
-    6,
-    200,
-    -1, -1,
-    5, 0,
-    TILEG_DEATH_CHANNEL,
 },
 
 {

@@ -734,18 +734,13 @@ void wizard_give_monster_item(monster* mon)
         return;
     }
 
-    FixedVector< item_def, ENDOFPACK > *inv_to_give_from;
-
-    if (!inv_from_prompt(inv_to_give_from, "Give"))
-        return;
-
-    int player_slot = prompt_invent_item(*inv_to_give_from, "Give which item to monster?",
+    int player_slot = prompt_invent_item("Give which item to monster?",
                                           MT_DROP, -1);
 
     if (prompt_failed(player_slot))
         return;
 
-    item_def &item = (*inv_to_give_from)[player_slot];
+    item_def &item = you.inv[player_slot];
 
     if (item_is_equipped(item))
     {
@@ -767,7 +762,7 @@ void wizard_give_monster_item(monster* mon)
         mon_slot = MSLOT_ALT_WEAPON;
     }
 
-    if (!mon->take_item(player_slot, mon_slot, *inv_to_give_from))
+    if (!mon->take_item(player_slot, mon_slot))
         mpr("Error: monster failed to take item.");
 }
 

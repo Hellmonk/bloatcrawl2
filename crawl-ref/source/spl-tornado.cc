@@ -252,7 +252,7 @@ void tornado_damage(actor *caster, int dur)
     int pow;
     // Not stored so unwielding that staff will reduce damage.
     if (caster->is_player())
-        pow = calc_spell_power(SPELL_TORNADO, true, false);
+        pow = calc_spell_power(SPELL_TORNADO, true);
     else
         pow = caster->as_monster()->get_hit_dice() * 4;
     dprf("Doing tornado, dur %d, effective power %d", dur, pow);

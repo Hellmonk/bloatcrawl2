@@ -102,11 +102,6 @@ Berserk Other spell
 Causes a nearby ally to fly into a berserk rage. Going berserk temporarily
 increases health, speed, and damage dealt in melee.
 %%%%
-Bind Souls spell
-
-Bestows an enchantment on other nearby living creatures that may cause them to
-rise as spectral things after being slain.
-%%%%
 Black Mark spell
 
 Empowers the caster and any nearby allies to debilitate their foes on a
@@ -551,7 +546,7 @@ short-lived fire vortices.
 %%%%
 Fire Summon spell
 
-Summons demons of flame and hellfire.
+Summons demons of flame and damnation.
 %%%%
 Fireball spell
 
@@ -639,17 +634,17 @@ Heal Other spell
 
 Heals a nearby ally.
 %%%%
-Call Down Hellfire spell
+Call Down Damnation spell
 
-Blasts a targeted enemy with hellfire, with no direct line of fire required.
+Blasts a targeted enemy with damnation, with no direct line of fire required.
 These unholy forces harm the victim and anyone adjacent, and are not affected
 by any means of protection, such as armour or resistances. However, certain
-creatures, usually those able to invoke hellfire themselves, are entirely
-unscathed by hellfire.
+creatures, usually those able to invoke damnation themselves, are entirely
+unscathed by damnation.
 %%%%
-Hurl Hellfire spell
+Hurl Damnation spell
 
-<Hellfire ability>
+<Damnation ability>
 %%%%
 Holy Breath spell
 
@@ -774,8 +769,9 @@ destroyed at any power level.
 %%%%
 Legendary Destruction spell
 
-Conjures two explosive magical effects in instant succession. The effects can
-be any mix of Fireball, Iceblast, and Ghostly Fireball.
+Conjures forth one of several powerful magical effects. It may have the effects
+of Orb of Electricity, Lehudib's Crystal Spear, Orb of Destruction, Ghostly
+Fireball, Fireball, or Flash Freeze.
 %%%%
 Lehudib's Crystal Spear spell
 
@@ -1367,7 +1363,7 @@ Summon Lightning Spire spell
 Constructs a lightning spire in a nearby location. It can fire bouncing bolts
 of electricity at the caster's foes, but is completely immobile.
 %%%%
-Summon Mana viper spell
+Summon Mana Viper spell
 
 Summons a violet-scaled serpent whose bite can swiftly drain the magical
 reserves of nearly any foe. At higher power, the antimagic properties of the

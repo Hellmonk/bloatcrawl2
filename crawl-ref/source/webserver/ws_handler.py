@@ -116,8 +116,6 @@ class CrawlWebSocket(tornado.websocket.WebSocketHandler):
         self.process = None
         self.game_id = None
         self.received_pong = None
-        self.diff = None
-        self.exp_mode = None
 
         self.ioloop = tornado.ioloop.IOLoop.instance()
 
@@ -152,8 +150,6 @@ class CrawlWebSocket(tornado.websocket.WebSocketHandler):
             "go_lobby": self.go_lobby,
             "get_rc": self.get_rc,
             "set_rc": self.set_rc,
-            "get_macro": self.get_macro,
-            "set_macro": self.set_macro,
             }
 
     client_closed = property(lambda self: (not self.ws_connection) or self.ws_connection.client_terminated)
@@ -439,13 +435,6 @@ class CrawlWebSocket(tornado.websocket.WebSocketHandler):
                                      self.username, config.games[game_id])
         return os.path.join(path, self.username + ".rc")
 
-    def macrofile_path(self, game_id):
-        if game_id not in config.games: return None
-        if not self.username: return None
-        path = dgl_format_str(config.games[game_id]["rcfile_path"],
-                              self.username, config.games[game_id])
-        return os.path.join(path, self.username + ".macro")
-
     def send_json_options(self, game_id, player_name):
         def do_send(data, returncode):
             if returncode != 0:
@@ -546,19 +535,6 @@ class CrawlWebSocket(tornado.websocket.WebSocketHandler):
         rcfile_path = dgl_format_str(config.games[game_id]["rcfile_path"],
                                      self.username, config.games[game_id])
         rcfile_path = os.path.join(rcfile_path, self.username + ".rc")
-        with open(rcfile_path, 'w') as f:
-            f.write(contents.encode("utf8"))
-
-    def get_macro(self, game_id):
-        if game_id not in config.games: return
-        with open(self.macrofile_path(game_id), 'r') as f:
-            contents = f.read()
-        self.send_message("macrofile_contents", contents = contents)
-
-    def set_macro(self, game_id, contents):
-        rcfile_path = dgl_format_str(config.games[game_id]["rcfile_path"],
-                                     self.username, config.games[game_id])
-        rcfile_path = os.path.join(rcfile_path, self.username + ".macro")
         with open(rcfile_path, 'w') as f:
             f.write(contents.encode("utf8"))
 

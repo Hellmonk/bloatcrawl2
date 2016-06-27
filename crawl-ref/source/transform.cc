@@ -38,7 +38,32 @@
 #include "traps.h"
 #include "xom.h"
 
-// Class form_entry and the formdata array
+// transform slot enums into flags
+#define SLOTF(s) (1 << s)
+
+static const int EQF_NONE = 0;
+// "hand" slots (not rings)
+static const int EQF_HANDS = SLOTF(EQ_WEAPON) | SLOTF(EQ_SHIELD)
+                             | SLOTF(EQ_GLOVES);
+// core body slots (statue form)
+static const int EQF_STATUE = SLOTF(EQ_GLOVES) | SLOTF(EQ_BOOTS)
+                              | SLOTF(EQ_BODY_ARMOUR);
+// more core body slots (Lear's Hauberk)
+static const int EQF_LEAR = EQF_STATUE | SLOTF(EQ_HELMET);
+// everything you can (W)ear
+static const int EQF_WEAR = EQF_LEAR | SLOTF(EQ_CLOAK) | SLOTF(EQ_SHIELD);
+// everything but jewellery
+static const int EQF_PHYSICAL = EQF_HANDS | EQF_WEAR;
+// all rings (except for the macabre finger amulet's)
+static const int EQF_RINGS = SLOTF(EQ_LEFT_RING) | SLOTF(EQ_RIGHT_RING)
+                             | SLOTF(EQ_RING_ONE) | SLOTF(EQ_RING_TWO)
+                             | SLOTF(EQ_RING_THREE) | SLOTF(EQ_RING_FOUR)
+                             | SLOTF(EQ_RING_FIVE) | SLOTF(EQ_RING_SIX)
+                             | SLOTF(EQ_RING_SEVEN) | SLOTF(EQ_RING_EIGHT);
+// amulet & pal
+static const int EQF_AMULETS = SLOTF(EQ_AMULET) | SLOTF(EQ_RING_AMULET);
+// everything
+static const int EQF_ALL = EQF_PHYSICAL | EQF_RINGS | EQF_AMULETS;
 
 static const FormAttackVerbs DEFAULT_VERBS = FormAttackVerbs(nullptr, nullptr,
                                                              nullptr, nullptr);
@@ -46,8 +71,10 @@ static const FormAttackVerbs ANIMAL_VERBS = FormAttackVerbs("hit", "bite",
                                                             "maul", "maul");
 
 static const FormDuration DEFAULT_DURATION = FormDuration(20, PS_DOUBLE, 100);
-static const FormDuration BAD_DURATION = FormDuration(15, PS_ONE_AND_A_HALF, 100);
+static const FormDuration BAD_DURATION = FormDuration(15, PS_ONE_AND_A_HALF,
+                                                      100);
 
+// Class form_entry and the formdata array
 #include "form-data.h"
 
 static const form_entry &_find_form_entry(transformation_type form)
@@ -226,7 +253,7 @@ int Form::get_ac_bonus() const
 {
     return flat_ac * 100
            + power_ac * you.props[TRANSFORM_POW_KEY].get_int()
-           + xl_ac * effective_xl();
+           + xl_ac * you.experience_level;
 }
 
 /**
@@ -568,15 +595,21 @@ public:
     {
         // This only handles lava orcs going statue -> stoneskin.
         if (
+#if TAG_MAJOR_VERSION == 34
             you.species == SP_LAVA_ORC && temperature_effect(LORC_STONESKIN)
             ||
+#endif
             you.species == SP_GARGOYLE)
         {
             return "You revert to a slightly less stony form.";
         }
+#if TAG_MAJOR_VERSION == 34
         if (you.species != SP_LAVA_ORC)
+#endif
             return "You revert to your normal fleshy form.";
+#if TAG_MAJOR_VERSION == 34
         return Form::get_untransform_message();
+#endif
     }
 
     /**
@@ -607,9 +640,11 @@ public:
      */
     string get_untransform_message() const override
     {
+#if TAG_MAJOR_VERSION == 34
         if (you.species == SP_LAVA_ORC && !temperature_effect(LORC_STONESKIN))
             return "Your icy form melts away into molten rock.";
         else
+#endif
             return "You warm up again.";
     }
 
@@ -1131,12 +1166,16 @@ bool form_likes_water(transformation_type form)
 
 bool form_likes_lava(transformation_type form)
 {
+#if TAG_MAJOR_VERSION == 34
     // Lava orcs can only swim in non-phys-change forms.
     // However, ice beast & statue form will melt back to lava, so they're OK
     return you.species == SP_LAVA_ORC
            && (!form_changed_physiology(form)
                || form == TRAN_ICE_BEAST
                || form == TRAN_STATUE);
+#else
+    return false;
+#endif
 }
 
 // Used to mark transformations which override species intrinsics.
@@ -1209,7 +1248,7 @@ static void _remove_equipment(const set<equipment_type>& removed,
         {
             if (form_can_wield(you.form))
                 unequip = true;
-            if (!is_weapon(*equip) && equip->base_type != OBJ_RODS)
+            if (!is_weapon(*equip))
                 unequip = true;
         }
 
@@ -1249,7 +1288,7 @@ static void _remove_equipment(const set<equipment_type>& removed,
 
 static void _unmeld_equipment_type(equipment_type e)
 {
-    item_def& item = you.inv1[you.equip[e]];
+    item_def& item = you.inv[you.equip[e]];
     bool force_remove = false;
 
     if (e == EQ_WEAPON)
@@ -1478,8 +1517,10 @@ static bool _transformation_is_safe(transformation_type which_trans,
                                     dungeon_feature_type feat,
                                     string *fail_reason)
 {
+#if TAG_MAJOR_VERSION == 34
     if (which_trans == TRAN_ICE_BEAST && you.species == SP_DJINNI)
         return false; // melting is fatal...
+#endif
     if (!feat_dangerous_for_form(which_trans, feat))
         return true;
 
@@ -1540,27 +1581,27 @@ static int _beastly_appendage_level(int appendage)
  * Print an appropriate message when the number of heads the player has
  * changes during a refresh of hydra form.
  */
-//static void _print_head_change_message(int old_heads, int new_heads)
-//{
-//    if (old_heads == new_heads)
-//        return;
+static void _print_head_change_message(int old_heads, int new_heads)
+{
+    if (old_heads == new_heads)
+        return;
 
-//    const int delta = abs(old_heads - new_heads);
-//    const bool plural = delta != 1;
-//    if (old_heads > new_heads)
-//    {
-//        if (plural)
-//            mprf("%d of your heads shrink away.", delta);
-//        else
-//            mpr("One of your heads shrinks away.");
-//        return;
-//    }
+    const int delta = abs(old_heads - new_heads);
+    const bool plural = delta != 1;
+    if (old_heads > new_heads)
+    {
+        if (plural)
+            mprf("%d of your heads shrink away.", delta);
+        else
+            mpr("One of your heads shrinks away.");
+        return;
+    }
 
-//    if (plural)
-//        mprf("%d new heads grow.", delta);
-//    else
-//        mpr("A new head grows.");
-//}
+    if (plural)
+        mprf("%d new heads grow.", delta);
+    else
+        mpr("A new head grows.");
+}
 
 /**
  * Is the player alive enough to become the given form?
@@ -1586,20 +1627,17 @@ undead_form_reason lifeless_prevents_form(transformation_type which_trans)
     if (which_trans == TRAN_SHADOW)
         return UFR_GOOD; // even the undead can use dith's shadow form
 
-//    if (you.species != SP_VAMPIRE)
-//        return UFR_TOO_DEAD; // ghouls & mummies can't become anything else
+    if (you.species != SP_VAMPIRE)
+        return UFR_TOO_DEAD; // ghouls & mummies can't become anything else
 
     if (which_trans == TRAN_LICH)
         return UFR_TOO_DEAD; // vampires can never lichform
 
-    if (which_trans == TRAN_BAT) // can batform on satiated or below
+    if (which_trans == TRAN_BAT) // can batform on low blood
         return you.hunger_state <= HS_SATIATED ? UFR_GOOD : UFR_TOO_ALIVE;
 
     // other forms can only be entered when full or above.
-    if (you.species == SP_VAMPIRE)
-        return you.hunger_state > HS_SATIATED ? UFR_GOOD : UFR_TOO_DEAD;
-
-    return UFR_GOOD;
+    return you.hunger_state > HS_SATIATED ? UFR_GOOD : UFR_TOO_DEAD;
 }
 
 /**
@@ -1630,16 +1668,13 @@ bool transform(int pow, transformation_type which_trans, bool involuntary,
                bool just_check, string *fail_reason)
 {
     const transformation_type previous_trans = you.form;
-
     const bool was_flying = you.airborne();
     bool success = true;
     string msg;
 
     // Zin's protection.
     if (!just_check && have_passive(passive_t::resist_polymorph)
-        && x_chance_in_y(you.piety, MAX_PIETY) && which_trans != TRAN_NONE
-        && !(you.species == SP_VINE_STALKER && which_trans == TRAN_TREE)
-        )
+        && x_chance_in_y(you.piety, MAX_PIETY) && which_trans != TRAN_NONE)
     {
         simple_god_message(" protects your body from unnatural transformation!");
         return false;
@@ -1669,17 +1704,36 @@ bool transform(int pow, transformation_type which_trans, bool involuntary,
     // This must occur before the untransform() and the undead_state() check.
     if (previous_trans == which_trans)
     {
-        if (you.current_form_spell_failure > 0)
-        {
-            you.current_form_spell_failure = 0;
-            mpr("Your form becomes more stable.");
+        if (just_check)
             return true;
-        }
-        else
+
+        // update power
+        if (which_trans != TRAN_NONE)
         {
-            mpr("You are already in that form, and it's as stable as it can get.");
-            return false;
+            you.props[TRANSFORM_POW_KEY] = pow;
+            you.redraw_armour_class = true;
+            // ^ could check more carefully for the exact cases, but I'm
+            // worried about making the code too fragile
+
+            if (which_trans == TRAN_HYDRA)
+            {
+                const int heads = you.heads();
+                set_hydra_form_heads(div_rand_round(pow, 10));
+                _print_head_change_message(heads, you.heads());
+            }
         }
+
+        int dur = _transform_duration(which_trans, pow);
+        if (you.duration[DUR_TRANSFORMATION] < dur * BASELINE_DELAY)
+        {
+            mpr("You extend your transformation's duration.");
+            you.duration[DUR_TRANSFORMATION] = dur * BASELINE_DELAY;
+
+        }
+        else if (!involuntary && which_trans != TRAN_NONE)
+            mpr("You fail to extend your transformation any further.");
+
+        return true;
     }
 
     // the undead cannot enter most forms.
@@ -1693,12 +1747,14 @@ bool transform(int pow, transformation_type which_trans, bool involuntary,
         msg = "You cannot become a lich while in Death's Door.";
         success = false;
     }
+#if TAG_MAJOR_VERSION == 34
     else if (you.species == SP_LAVA_ORC && !temperature_effect(LORC_STONESKIN)
              && (which_trans == TRAN_ICE_BEAST || which_trans == TRAN_STATUE))
     {
         msg =  "Your temperature is too high to benefit from that spell.";
         success = false;
     }
+#endif
 
     if (!just_check && previous_trans != TRAN_NONE)
         untransform(true);
@@ -1744,7 +1800,7 @@ bool transform(int pow, transformation_type which_trans, bool involuntary,
         merfolk_stop_swimming();
 
     if (which_trans == TRAN_HYDRA)
-        set_hydra_form_heads(pow / 10);
+        set_hydra_form_heads(div_rand_round(pow, 10));
 
     // Give the transformation message.
     mpr(get_form(which_trans)->transform_message(previous_trans));
@@ -1909,7 +1965,7 @@ bool transform(int pow, transformation_type which_trans, bool involuntary,
     if (you.species == SP_MERFOLK)
         merfolk_check_swimming(false);
 
-    if (get_hp() <= 0)
+    if (you.hp <= 0)
     {
         ouch(0, KILLED_BY_FRAILTY, MID_NOBODY,
              make_stringf("gaining the %s transformation",
@@ -1928,9 +1984,6 @@ bool transform(int pow, transformation_type which_trans, bool involuntary,
 void untransform(bool skip_move)
 {
     const bool was_flying = you.airborne();
-
-    you.current_form_spell_failure      = 0;
-    you.current_form_spell = SPELL_NO_SPELL;
 
     you.redraw_quiver           = true;
     you.redraw_evasion          = true;
@@ -2019,7 +2072,7 @@ void untransform(bool skip_move)
     {
         const int arm = you.equip[EQ_BOOTS];
 
-        if (arm != -1 && you.inv1[arm].sub_type == ARM_BOOTS)
+        if (arm != -1 && you.inv[arm].sub_type == ARM_BOOTS)
             remove_one_equip(EQ_BOOTS);
     }
 
@@ -2034,19 +2087,18 @@ void untransform(bool skip_move)
              armour->name(DESC_YOUR).c_str());
     }
 
-    if (hp_downscale != 10 && get_hp() != get_hp_max())
+    if (hp_downscale != 10 && you.hp != you.hp_max)
     {
-        int hp = get_hp() * 10 / hp_downscale;
+        int hp = you.hp * 10 / hp_downscale;
         if (hp < 1)
             hp = 1;
-        else if (hp > get_hp_max())
-            hp = get_hp_max();
+        else if (hp > you.hp_max)
+            hp = you.hp_max;
         set_hp(hp);
     }
     calc_hp();
-    calc_sp();
 
-    if (get_hp() <= 0)
+    if (you.hp <= 0)
     {
         ouch(0, KILLED_BY_FRAILTY, MID_NOBODY,
              make_stringf("losing the %s form",
@@ -2061,11 +2113,6 @@ void untransform(bool skip_move)
             you.stop_being_constricted();
     }
 
-    if(old_form == TRAN_TREE) {
-    	// it takes some time to delignify
-        start_delay(DELAY_UNINTERRUPTIBLE, 2);
-    }
-
     you.turn_is_over = true;
     if (you.transform_uncancellable)
         you.transform_uncancellable = false;
@@ -2078,7 +2125,7 @@ static void _extra_hp(int amount_extra) // must also set in calc_hp
     you.hp *= amount_extra;
     you.hp /= 10;
 
-    deflate_hp(get_hp_max(), false);
+    deflate_hp(you.hp_max, false);
 }
 
 void emergency_untransform()
@@ -2145,14 +2192,3 @@ void merfolk_stop_swimming()
     init_player_doll();
 #endif
 }
-
-bool is_self_transforming_spell(spell_type spell)
-{
-    return get_spell_disciplines(spell) & SPTYP_TRANSMUTATION
-           && spell != SPELL_STICKS_TO_SNAKES
-           && spell != SPELL_PETRIFY
-           && spell != SPELL_IGNITE_POISON
-           && spell != SPELL_INVISIBILITY
-        ;
-}
-

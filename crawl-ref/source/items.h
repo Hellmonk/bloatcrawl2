@@ -30,15 +30,15 @@ enum item_source_type
 #define FORCED_ITEM_COLOUR_KEY "forced_item_colour"
 
 pair<bool, int> item_int(item_def &item);
-item_def& item_from_int(bool consumable, bool inv, int);
+item_def& item_from_int(bool, int);
 
 int get_max_subtype(object_class_type base_type);
 bool item_type_has_unidentified(object_class_type base_type);
 
-bool dec_inv_item_quantity(FixedVector< item_def, ENDOFPACK > &inv, int obj, int amount);
+bool dec_inv_item_quantity(int obj, int amount);
 bool dec_mitm_item_quantity(int obj, int amount);
 
-void inc_inv_item_quantity(FixedVector< item_def, ENDOFPACK > &inv, int obj, int amount);
+void inc_inv_item_quantity(int obj, int amount);
 void inc_mitm_item_quantity(int obj, int amount);
 
 bool move_item_to_grid(int *const obj, const coord_def& p,
@@ -55,7 +55,6 @@ bool items_similar(const item_def &item1, const item_def &item2);
 bool items_stack(const item_def &item1, const item_def &item2);
 void merge_item_stacks(const item_def &source, item_def &dest, int quant = -1);
 void get_gold(const item_def& item, int quant, bool quiet);
-bool isValidItem(FixedVector< item_def, ENDOFPACK > &inv, int obj);
 
 item_def *find_floor_item(object_class_type cls, int sub_type = -1);
 int item_on_floor(const item_def &item, const coord_def& where);
@@ -97,16 +96,14 @@ const item_def* top_item_at(const coord_def& where);
 // Returns whether there is more than one item in a given cell.
 bool multiple_items_at(const coord_def& where);
 
-void drop(FixedVector< item_def, ENDOFPACK > &inv);
-void drop_inventory();
-void drop_consumable();
+void drop();
 
-int inv_count(FixedVector< item_def, ENDOFPACK > &inv);
+int inv_count();
 int runes_in_pack();
 
 bool pickup_single_item(int link, int qty);
 
-bool drop_item(FixedVector< item_def, ENDOFPACK > &inv, int item_dropped, int quant_drop);
+bool drop_item(int item_dropped, int quant_drop);
 void drop_last();
 
 int          get_equip_slot(const item_def *item);

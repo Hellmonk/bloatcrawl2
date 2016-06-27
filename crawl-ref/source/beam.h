@@ -274,7 +274,7 @@ private:
     void monster_post_hit(monster* mon, int dmg);
     // for players
     void affect_player();
-    bool misses_player(int hurted);
+    bool misses_player();
 public:
     void affect_player_enchantment(bool resistible = true);
 private:
@@ -341,6 +341,6 @@ void bolt_parent_init(const bolt &parent, bolt &child);
 int explosion_noise(int rad);
 
 bool shoot_through_monster(const bolt& beam, const monster* victim);
-bool dazzle_monster(monster* mons, actor* act);
+
 int omnireflect_chance_denom(int SH);
 #endif

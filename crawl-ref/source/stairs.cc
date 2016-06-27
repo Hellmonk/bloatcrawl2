@@ -46,7 +46,6 @@
 #include "travel.h"
 #include "view.h"
 #include "xom.h"
-#include "spl-summoning.h"
 
 bool check_annotation_exclusion_warning()
 {
@@ -103,10 +102,10 @@ static bool _marker_vetoes_level_change()
     return marker_vetoes_operation("veto_level_change");
 }
 
-static void _maybe_destroy_shaft(const coord_def &p)
+static void _maybe_destroy_trap(const coord_def &p)
 {
     trap_def* trap = trap_at(p);
-    if (trap && trap->type == TRAP_SHAFT)
+    if (trap)
         trap->destroy(true);
 }
 
@@ -443,7 +442,7 @@ static level_id _travel_destination(const dungeon_feature_type how,
         {
             if (known_shaft)
                 mpr("The shaft disappears in a puff of logic!");
-            _maybe_destroy_shaft(you.pos());
+            _maybe_destroy_trap(you.pos());
             return dest;
         }
 
@@ -483,7 +482,7 @@ static level_id _travel_destination(const dungeon_feature_type how,
                 mpr("The strain on the space-time continuum destroys the "
                     "shaft!");
             }
-            _maybe_destroy_shaft(you.pos());
+            _maybe_destroy_trap(you.pos());
             return dest;
         }
 
@@ -492,6 +491,8 @@ static level_id _travel_destination(const dungeon_feature_type how,
             mark_milestone("shaft", "fell down a shaft to "
                                     + shaft_dest.describe() + ".");
         }
+
+        handle_items_on_shaft(you.pos(), false);
 
         string howfar;
         if (shaft_depth > 1)
@@ -503,7 +504,7 @@ static level_id _travel_destination(const dungeon_feature_type how,
 
         // Shafts are one-time-use.
         mpr("The shaft crumbles and collapses.");
-        _maybe_destroy_shaft(you.pos());
+        _maybe_destroy_trap(you.pos());
     }
 
     // Maybe perform the entry sequence (we check that they have enough runes
@@ -583,7 +584,7 @@ void floor_transition(dungeon_feature_type how,
 
     const coord_def stair_pos = you.pos();
 
-    if (how == DNGN_EXIT_DUNGEON || how == DNGN_EXIT_ZOT)
+    if (how == DNGN_EXIT_DUNGEON)
     {
         you.depth = 0;
         mpr("You have escaped!");
@@ -767,7 +768,7 @@ void floor_transition(dungeon_feature_type how,
     if (you.where_are_you == BRANCH_ABYSS)
         generate_random_blood_spatter_on_level();
 
-//    you.turn_is_over = true;
+    you.turn_is_over = true;
 
     save_game_state();
 
@@ -802,52 +803,6 @@ void floor_transition(dungeon_feature_type how,
     else
         maybe_update_stashes();
 
-    if ((Options.exp_potion_on_each_floor || Options.uniques_drop_exp_potions) && you.species != SP_MUMMY && !Options.exp_based_on_player_level)
-        mprf("Quaffing an experience potion here would give %d exp.", potion_experience_for_this_floor());
-
-    if (!player_can_gain_experience_here())
-        mprf(MSGCH_WARN, "Warning: you can't gain experience on this floor. But you can gain piety, reduce drain, etc.");
-
-    // refresh experience annotations
-    // shouldn't be needed, but something wonky is slipping by and so this hack keeps it clean for now
-    if (Options.exp_potion_on_each_floor)
-    {
-        reset_experience_potion_annotation();
-        const level_id &li = level_id::current();
-        for (const item_def &item : mitm)
-        {
-            if(item.base_type == OBJ_POTIONS
-               && item.sub_type == POT_EXPERIENCE
-                    )
-            {
-                add_experience_potion_annotation(li, 1);
-            }
-        }
-    }
-
-    const int dangerous = get_nearby_monsters(false, true, true).size();
-    if (dangerous && player_summon_count())
-    {
-        mpr("Your summoned creatures have suddenly lost their courage!");
-        unsummon_all();
-    }
-
-    if (crawl_state.need_floor_exp)
-    {
-        int exp = floor_experience_for_this_floor();
-        if (Options.exp_percent_from_new_branch_floor && exp)
-        {
-            const string change = exp > 0 ? "gained" : "lost";
-            const msg_channel_type channel = exp > 0 ? MSGCH_INTRINSIC_GAIN : MSGCH_WARN;
-            if (exp < 0)
-                exp = -exp;
-
-            mprf(channel, "You %s %d exp for entering this floor.", change.c_str(), exp);
-            gain_floor_exp();
-        }
-        crawl_state.need_floor_exp = false;
-    }
-
     request_autopickup();
 }
 
@@ -874,8 +829,6 @@ void take_stairs(dungeon_feature_type force_stair, bool going_up,
 
     floor_transition(how, old_feat, whither,
                      bool(force_stair), going_up, shaft, wizard);
-
-    after_floor_change();
 }
 
 void up_stairs(dungeon_feature_type force_stair, bool wizard)

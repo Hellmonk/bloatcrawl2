@@ -39,7 +39,7 @@ bool is_pproj_active();
 void fire_thing(int item = -1);
 void throw_item_no_quiver();
 
-bool throw_it(bolt &pbolt, item_def &throw_2, dist *target = nullptr);
+bool throw_it(bolt &pbolt, int throw_2, dist *target = nullptr);
 
 bool thrown_object_destroyed(item_def *item, const coord_def& where);
 

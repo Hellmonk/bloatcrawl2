@@ -1,6 +1,8 @@
 
 #include "AppHdr.h"
 
+#ifdef USE_TILE_WEB
+
 #include "tileweb-text.h"
 
 #include "stringutil.h"
@@ -196,3 +198,4 @@ void WebTextArea::send(bool force)
 void WebTextArea::on_resize()
 {
 }
+#endif

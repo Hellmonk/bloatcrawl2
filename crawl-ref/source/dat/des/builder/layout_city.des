@@ -58,7 +58,7 @@
 #       weight 10.
 #
 NAME:   layout_stronghold
-DEPTH:  Pan
+DEPTH:  D:9-, Pan
 WEIGHT: 10
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand layout_type_city
@@ -247,7 +247,7 @@ TAGS:   overwritable layout allow_dup unrand layout_type_city
 #  many as 5000, although 4000 is more likely.
 #
 NAME:   layout_irregular_city
-DEPTH:  Pan
+DEPTH:  D:9-, Pan
 WEIGHT: 15 (D), 10 (Pan)
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand layout_type_city

@@ -10,7 +10,7 @@
 # post-lair.
 
 NAME:     evilmike_ambush
-DEPTH:    Depths, !Depths:$, Elf, !Elf:$, Dwarf, !Dwarf:$, Snake, !Snake:$, \
+DEPTH:    Depths, !Depths:$, Elf, !Elf:$, Snake, !Snake:$, \
           Dis, !Dis:$, Geh, !Geh:$, Tar, !Tar:$, Coc, !Coc:$, \
           Zot, !Zot:$, Crypt, !Crypt:$
 TAGS:     allow_dup

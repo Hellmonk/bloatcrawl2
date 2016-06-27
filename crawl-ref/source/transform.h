@@ -12,34 +12,7 @@
 #include "player.h"
 
 #define HYDRA_FORM_HEADS_KEY "hydra_form_heads"
-#define MAX_HYDRA_HEADS 40
-
-// transform slot enums into flags
-#define SLOTF(s) (1 << s)
-
-static const int EQF_NONE = 0;
-// "hand" slots (not rings)
-static const int EQF_HANDS = SLOTF(EQ_WEAPON) | SLOTF(EQ_SHIELD)
-                             | SLOTF(EQ_GLOVES);
-// core body slots (statue form)
-static const int EQF_STATUE = SLOTF(EQ_GLOVES) | SLOTF(EQ_BOOTS)
-                              | SLOTF(EQ_BODY_ARMOUR);
-// more core body slots (Lear's Hauberk)
-static const int EQF_LEAR = EQF_STATUE | SLOTF(EQ_HELMET);
-// everything you can (W)ear
-static const int EQF_WEAR = EQF_LEAR | SLOTF(EQ_CLOAK) | SLOTF(EQ_SHIELD);
-// everything but jewellery
-static const int EQF_PHYSICAL = EQF_HANDS | EQF_WEAR;
-// all rings (except for the macabre finger amulet's)
-static const int EQF_RINGS = SLOTF(EQ_LEFT_RING) | SLOTF(EQ_RIGHT_RING)
-                             | SLOTF(EQ_RING_ONE) | SLOTF(EQ_RING_TWO)
-                             | SLOTF(EQ_RING_THREE) | SLOTF(EQ_RING_FOUR)
-                             | SLOTF(EQ_RING_FIVE) | SLOTF(EQ_RING_SIX)
-                             | SLOTF(EQ_RING_SEVEN) | SLOTF(EQ_RING_EIGHT);
-// amulet & pal
-static const int EQF_AMULETS = SLOTF(EQ_AMULET) | SLOTF(EQ_RING_AMULET);
-// everything
-static const int EQF_ALL = EQF_PHYSICAL | EQF_RINGS | EQF_AMULETS;
+#define MAX_HYDRA_HEADS 20
 
 enum form_capability
 {
@@ -339,6 +312,5 @@ void emergency_untransform();
 void merfolk_check_swimming(bool stepped = false);
 void merfolk_start_swimming(bool step = false);
 void merfolk_stop_swimming();
-bool is_self_transforming_spell(spell_type spell);
 
 #endif

@@ -236,7 +236,7 @@ function arena_sprint_get_monster_set(round, boss)
             mon_set = {
                 -- Branches: D, Orc, Elf, Lair, Shoals, Swamp, Spider, Snake, Slime,
                 -- Hive, Crypt, Pan, Tomb
-                "place:D:6 w:15 / w:2 edmund / w:2 maurice /\
+                "place:D:6 w:15 / place:D:10 w:15 / w:2 edmund / w:2 maurice /\
                     w:1 psyche / w:1 joseph",
                 "w:30 place:Orc / orc wizard / orc warrior / w:3 orc knight /\
                     orc priest / orc high priest w:1 / blork the orc w:3 / urug w:1",
@@ -253,7 +253,6 @@ function arena_sprint_get_monster_set(round, boss)
                     w:1 naga mage / w:1 naga warrior",
                 "jelly / w:5 ooze / giant eyeball / w:2 shining eye",
                 "killer bee w:20 / w:5 queen bee",
-                "deep dwarf scion / deep dwarf artificer / deep dwarf",
                 "zombie / skeleton / wight / necrophage /\
                     phantom w:5 / w:1 josephine",
                 "w:7 ice devil / rust devil w:5 / orange demon / red devil w:5 /\
@@ -281,13 +280,13 @@ function arena_sprint_get_monster_set(round, boss)
             mon_set = {
                 -- Branches: D, Orc, Elf, Lair, Shoals, Swamp, Spider, Snake, Slime,
                 -- Hive, Crypt, Pan, Tomb
-                "w:2 erica / w:2 harold /\
+                "place:D:11 w:15 / place:D:14 w:15 / w:2 erica / w:2 harold /\
                     w:1 rupert",
                 "w:20 place:Orc:$ / orc wizard / orc warrior / orc knight /\
                     orc priest / orc high priest w:3 / orc sorcerer w:2 /\
                     orc warlord w:1 / urug w:2",
                 "place:Elf",
-                "place:Lair:4 w:30 / rupert w:1",
+                "place:Lair:5 w:30 / rupert w:1",
                 "place:Shoals",
                 "place:Swamp",
                 "place:Spider",
@@ -295,8 +294,6 @@ function arena_sprint_get_monster_set(round, boss)
                 "jelly / giant eyeball / w:2 shining eye /\
                     w:2 golden eye / w:2 eye of draining / w:1 slime creature",
                 "killer bee w:15 / w:5 queen bee / w:1 oklob plant",
-                "deep dwarf scion / deep dwarf artificer / w:3 deep dwarf death knight /\
-                    w:5 deep dwarf berserker",
                 "w:3 skeletal warrior / wight / necrophage / zombie w:5 /\
                     skeleton w:5 / flayed ghost w:5 / phantom w:5 /\
                     shadow w:3 / silent spectre / w:4 josephine",
@@ -343,8 +340,6 @@ function arena_sprint_get_monster_set(round, boss)
                 "place:Snake:$ w:20 / w:5 naga mage / w:5 naga warrior / w:5 greater naga",
                 "place:Slime",
                 "killer bee / queen bee / w:1 oklob plant",
-                "deep dwarf scion / deep dwarf artificer / deep dwarf death knight /\
-                    w:5 deep dwarf berserker / w:2 unborn deep dwarf",
                 "place:Crypt / w:2 josephine",
                 "common demon w:30 / kobold demonologist w:5 / frances w:3",
                 "mummy / w:5 guardian mummy / w:2 mummy priest / w:1 sphinx",
@@ -397,8 +392,6 @@ function arena_sprint_get_monster_set(round, boss)
                 "place:Slime:$",
                 "dancing weapon",
                 "place:Forest",
-                "deep dwarf artificer / deep dwarf death knight / wiglaf w:2 /\
-                    deep dwarf berserker / w:5 unborn deep dwarf",
                 "place:Crypt:$",
                 "common demon w:30 / greater demon w:5",
                 "mummy / w:5 guardian mummy / w:2 mummy priest / w:5 sphinx",
@@ -470,8 +463,6 @@ function arena_sprint_get_monster_set(round, boss)
                 "dancing weapon",
                 "place:Forest:$ w:20 / spriggan defender / spriggan rider /\
                     spriggan air mage / spriggan druid w:3 / spriggan berserker",
-                "w:5 deep dwarf artificer / deep dwarf death knight / wiglaf w:2 /\
-                    deep dwarf berserker / unborn deep dwarf",
                 "place:Crypt:$ w:25 / w:3 lich / w:5 vampire knight /\
                     w:2 boris / w:2 curse skull",
                 "any demon w:30 / pandemonium lord",
@@ -546,7 +537,6 @@ function arena_sprint_get_monster_set(round, boss)
                 "dancing weapon ; bardiche",
                 "spriggan defender / spriggan air mage / spriggan druid /\
                     spriggan berserker / spriggan rider",
-                "deep dwarf death knight / w:20 deep dwarf berserker / unborn deep dwarf",
                 "lich / w:5 ancient lich / w:1 curse skull / w:5 curse toe",
                 "any demon w:20 / pandemonium lord",
                 "place:Tomb:$ w:30 / sphinx w:20 / greater mummy",
@@ -619,7 +609,6 @@ function arena_sprint_get_monster_set(round, boss)
                 "w:30 acid blob / azure jelly / giant eyeball / eye of draining",
                 "dancing weapon ; bardiche ego:speed",
                 "spriggan air mage",
-                "deep dwarf death knight / deep dwarf berserker / unborn deep dwarf",
                 "w:15 ancient lich / w:6 curse toe",
                 "greater demon / pandemonium lord",
                 "sphinx w:20 / greater mummy",
@@ -1080,7 +1069,7 @@ KFEAT:  L = armour shop count:17 greed:12 type:Basic suffix:Armour use_all ; \
             mundane not_cursed centaur barding | mundane not_cursed cloak |\
             mundane not_cursed buckler | mundane not_cursed pair of gloves |\
             mundane not_cursed helmet
-KFEAT:  M = any shop count:17 greed:4
+KFEAT:  M = food shop count:17 type:Bee suffix:Food greed:4 ; royal jelly q:3
 KFEAT:  N = weapon shop type:Staff suffix:Store count:9 use_all greed:30 ; \
             staff of summoning | staff of wizardry |\
             staff of fire | staff of air | staff of earth | staff of cold |\
@@ -1109,8 +1098,8 @@ KFEAT:  J = general shop type:Miscellaneous suffix:Merchandise count:14 greed:15
             fruit q:100 | potion of blood q:5 | potion of blood q:5 |\
             potion of blood q:5 | potion of blood q:5 | ring of poison resistance |\
             ring of protection from fire | ring of protection from cold |\
-            ring of protection from magic | amulet of health regeneration |\
-            amulet of harm | amulet of reflection |\
+            ring of protection from magic | amulet of regeneration |\
+            amulet of the gourmand | amulet of harm | amulet of reflection |\
             ring of see invisible
 SUBST:  b : cb
 TILE:   c = wall_marble

@@ -142,7 +142,7 @@ void MemoriseRegion::update()
         desc.quantity = spell_difficulty(spell);
 
         if (!can_learn_spell(true)
-            || spell_difficulty(spell) > effective_xl()
+            || spell_difficulty(spell) > you.experience_level
             || player_spell_levels() < spell_levels_required(spell))
         {
             desc.flag |= TILEI_FLAG_INVALID;

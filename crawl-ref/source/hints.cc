@@ -377,32 +377,32 @@ void hints_new_turn()
             // We don't want those "Whew, it's safe to rest now" messages
             // if you were just cast into the Abyss. Right?
 
-            if (2 * get_hp() < get_hp_max()
-                || 2 * get_mp() < get_mp_max())
+            if (2 * you.hp < you.hp_max
+                || 2 * you.magic_points < you.max_magic_points)
             {
                 _hints_healing_reminder();
             }
             else if (!you.running
                      && Hints.hints_events[HINT_SHIFT_RUN]
                      && you.num_turns >= 200
-                     && get_hp() == get_hp_max()
-                     && get_mp() == get_mp_max())
+                     && you.hp == you.hp_max
+                     && you.magic_points == you.max_magic_points)
             {
                 learned_something_new(HINT_SHIFT_RUN);
             }
             else if (!you.running
                      && Hints.hints_events[HINT_MAP_VIEW]
                      && you.num_turns >= 500
-                     && get_hp() == get_hp_max()
-                     && get_mp() == get_mp_max())
+                     && you.hp == you.hp_max
+                     && you.magic_points == you.max_magic_points)
             {
                 learned_something_new(HINT_MAP_VIEW);
             }
             else if (!you.running
                      && Hints.hints_events[HINT_AUTO_EXPLORE]
                      && you.num_turns >= 700
-                     && get_hp() == get_hp_max()
-                     && get_mp() == get_mp_max())
+                     && you.hp == you.hp_max
+                     && you.magic_points == you.max_magic_points)
             {
                 learned_something_new(HINT_AUTO_EXPLORE);
             }
@@ -414,10 +414,10 @@ void hints_new_turn()
                 if (Hints.hints_events[HINT_NEED_POISON_HEALING])
                     learned_something_new(HINT_NEED_POISON_HEALING);
             }
-            else if (2*get_hp() < get_hp_max())
+            else if (2*you.hp < you.hp_max)
                 learned_something_new(HINT_RUN_AWAY);
 
-            if (Hints.hints_type == HINT_MAGIC_CHAR && get_mp() < 1)
+            if (Hints.hints_type == HINT_MAGIC_CHAR && you.magic_points < 1)
                 learned_something_new(HINT_RETREAT_CASTER);
         }
     }
@@ -555,7 +555,7 @@ void hints_dissection_reminder()
 
 static bool _advise_use_healing_potion()
 {
-    for (auto &obj : you.inv2)
+    for (auto &obj : you.inv)
     {
         if (!obj.defined())
             continue;
@@ -578,7 +578,7 @@ static bool _advise_use_healing_potion()
 
 void hints_healing_check()
 {
-    if (2*get_hp() <= get_hp_max()
+    if (2*you.hp <= you.hp_max
         && _advise_use_healing_potion())
     {
         learned_something_new(HINT_HEALING_POTIONS);
@@ -622,7 +622,7 @@ static void _hints_healing_reminder()
                     "<tiles>, or <w>click on the stat area</w> with your mouse</tiles>"
                     ".";
 
-            if (get_hp() < get_hp_max() && you_worship(GOD_TROG)
+            if (you.hp < you.hp_max && you_worship(GOD_TROG)
                 && you.can_go_berserk())
             {
                 text += "\nAlso, berserking might help you not to lose so much "
@@ -730,9 +730,6 @@ void hints_gained_new_skill(skill_type skill)
     case SK_AIR_MAGIC:
     case SK_EARTH_MAGIC:
     case SK_POISON_MAGIC:
-    case SK_LIGHT_MAGIC:
-    case SK_DARKNESS_MAGIC:
-    case SK_TIME_MAGIC:
         learned_something_new(HINT_GAINED_MAGICAL_SKILL);
         break;
 
@@ -782,7 +779,7 @@ static bool _mons_is_highlighted(const monster* mons)
 
 static bool _advise_use_wand()
 {
-    for (auto &obj : you.inv1)
+    for (auto &obj : you.inv)
     {
         if (!obj.defined())
             continue;
@@ -1935,7 +1932,7 @@ void learned_something_new(hints_event_type seen_what, coord_def gc)
             "appears your knapsack is full.";
         text << " However, this is easy enough to rectify: simply "
                 "<w>%</w>rop some of the stuff you don't need right now.";
-        cmd.push_back(CMD_DROP_INVENTORY);
+        cmd.push_back(CMD_DROP);
 
 #ifdef USE_TILE
         text << " In the drop menu you can then comfortably select which "
@@ -2402,8 +2399,8 @@ void learned_something_new(hints_event_type seen_what, coord_def gc)
     {
         int wpn = you.equip[EQ_WEAPON];
         if (wpn != -1
-            && you.inv1[wpn].base_type == OBJ_WEAPONS
-            && you.inv1[wpn].cursed())
+            && you.inv[wpn].base_type == OBJ_WEAPONS
+            && you.inv[wpn].cursed())
         {
             // Don't trigger if the wielded weapon is cursed.
             Hints.hints_events[seen_what] = true;
@@ -2411,7 +2408,7 @@ void learned_something_new(hints_event_type seen_what, coord_def gc)
         }
 
         if (Hints.hints_type == HINT_RANGER_CHAR && wpn != -1
-            && you.inv1[wpn].is_type(OBJ_WEAPONS, WPN_SHORTBOW))
+            && you.inv[wpn].is_type(OBJ_WEAPONS, WPN_SHORTBOW))
         {
             text << "You can easily switch between weapons in slots a and "
                     "b by pressing <w>%</w>.";
@@ -2598,7 +2595,7 @@ void learned_something_new(hints_event_type seen_what, coord_def gc)
     case HINT_SPELL_MISCAST:
     {
         // Don't give at the beginning of your spellcasting career.
-        if (get_mp_max() <= 2)
+        if (you.max_magic_points <= 2)
             DELAY_EVENT;
 
         if (!crawl_state.game_is_hints())
@@ -3506,7 +3503,7 @@ string hints_describe_item(const item_def &item)
                     "using the <w>%</w>hop prompt where <w>c</w> is a "
                     "valid synonym for <w>y</w>es or you can directly chop "
                     "<w>a</w>ll corpses.";
-            cmd.push_back(CMD_DROP_INVENTORY);
+            cmd.push_back(CMD_DROP);
             cmd.push_back(CMD_BUTCHER);
             break;
 
@@ -3561,7 +3558,7 @@ string hints_describe_item(const item_def &item)
                      << " frowns upon the use of magic, this staff will be "
                         "of little use to you and you might just as well "
                         "<w>%</w>rop it now.";
-                cmd.push_back(CMD_DROP_INVENTORY);
+                cmd.push_back(CMD_DROP);
             }
             Hints.hints_events[HINT_SEEN_STAFF] = false;
             break;

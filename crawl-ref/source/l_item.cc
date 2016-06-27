@@ -93,15 +93,7 @@ static void _lua_push_inv_items(lua_State *ls = nullptr)
         ls = clua.state();
     lua_newtable(ls);
     int index = 0;
-    for (item_def &item : you.inv1)
-    {
-        if (item.defined())
-        {
-            clua_push_item(ls, &item);
-            lua_rawseti(ls, -2, ++index);
-        }
-    }
-    for (item_def &item : you.inv2)
+    for (item_def &item : you.inv)
     {
         if (item.defined())
         {
@@ -239,7 +231,7 @@ static int l_item_do_drop(lua_State *ls)
         if (q >= 1 && q <= item->quantity)
             qty = q;
     }
-    lua_pushboolean(ls, drop_item(you.inv1, item->link, qty));
+    lua_pushboolean(ls, drop_item(item->link, qty));
     return 1;
 }
 
@@ -421,18 +413,11 @@ static int l_item_do_stacks(lua_State *ls)
     {
         const bool any_stack =
             is_stackable_item(*first)
-            && (any_of(begin(you.inv1), end(you.inv1),
+            && any_of(begin(you.inv), end(you.inv),
                       [&] (const item_def &item) -> bool
                       {
                           return items_stack(*first, item);
-                      })
-            		||
-				any_of(begin(you.inv2), end(you.inv2),
-				      [&] (const item_def &item) -> bool
-				      {
-				          return items_stack(*first, item);
-				      })
-					);
+                      });
         lua_pushboolean(ls, any_stack);
     }
     else if (ITEM(second, 1))
@@ -550,6 +535,16 @@ IDEF(is_melded)
         return 0;
 
     lua_pushboolean(ls, item_is_melded(*item));
+
+    return 1;
+}
+
+IDEF(can_cut_meat)
+{
+    if (!item || !item->defined())
+        return 0;
+
+    lua_pushboolean(ls, can_cut_meat(*item));
 
     return 1;
 }
@@ -892,7 +887,7 @@ static int l_item_do_dec_quantity(lua_State *ls)
     bool destroyed = false;
 
     if (in_inventory(*item))
-        destroyed = dec_inv_item_quantity(you.inv1, item->link, quantity);
+        destroyed = dec_inv_item_quantity(item->link, quantity);
     else
         destroyed = dec_mitm_item_quantity(item->index(), quantity);
 
@@ -918,7 +913,7 @@ static int l_item_do_inc_quantity(lua_State *ls)
     int quantity = luaL_checkint(ls, 1);
 
     if (in_inventory(*item))
-        inc_inv_item_quantity(you.inv1, item->link, quantity);
+        inc_inv_item_quantity(item->link, quantity);
     else
         inc_mitm_item_quantity(item->index(), quantity);
 
@@ -1079,12 +1074,12 @@ static int l_item_swap_slots(lua_State *ls)
     bool verbose = lua_toboolean(ls, 3);
     if (slot1 < 0 || slot1 >= ENDOFPACK
         || slot2 < 0 || slot2 >= ENDOFPACK
-        || slot1 == slot2 || !you.inv1[slot1].defined())
+        || slot1 == slot2 || !you.inv[slot1].defined())
     {
         return 0;
     }
 
-    swap_inv_slots(you.inv1, slot1, slot2, verbose);
+    swap_inv_slots(slot1, slot2, verbose);
 
     return 0;
 }
@@ -1192,7 +1187,7 @@ static int l_item_equipped_at(lua_State *ls)
         return 0;
 
     if (you.equip[eq] != -1)
-        clua_push_item(ls, &you.inv1[you.equip[eq]]);
+        clua_push_item(ls, &you.inv[you.equip[eq]]);
     else
         lua_pushnil(ls);
 
@@ -1207,7 +1202,7 @@ static int l_item_fired_item(lua_State *ls)
         return 0;
 
     if (q != -1 && !fire_warn_if_impossible(true))
-        clua_push_item(ls, &you.inv1[q]);
+        clua_push_item(ls, &you.inv[q]);
     else
         lua_pushnil(ls);
 
@@ -1217,8 +1212,8 @@ static int l_item_fired_item(lua_State *ls)
 static int l_item_inslot(lua_State *ls)
 {
     int index = luaL_checkint(ls, 1);
-    if (index >= 0 && index < 52 && you.inv1[index].defined())
-        clua_push_item(ls, &you.inv1[index]);
+    if (index >= 0 && index < 52 && you.inv[index].defined())
+        clua_push_item(ls, &you.inv[index]);
     else
         lua_pushnil(ls);
     return 1;
@@ -1311,6 +1306,7 @@ static ItemAccessor item_attrs[] =
     { "is_throwable",      l_item_is_throwable },
     { "dropped",           l_item_dropped },
     { "is_melded",         l_item_is_melded },
+    { "can_cut_meat",      l_item_can_cut_meat },
     { "is_skeleton",       l_item_is_skeleton },
     { "is_corpse",         l_item_is_corpse },
     { "has_skeleton",      l_item_has_skeleton },

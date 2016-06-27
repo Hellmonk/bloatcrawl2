@@ -45,10 +45,9 @@ public:
     bool attack();
 
     // To-hit is a function of attacker/defender, inherited from attack
-    int calc_to_hit() override;
+    int calc_to_hit(bool random = true) override;
 
     static void chaos_affect_actor(actor *victim);
-    const item_def* get_weapon_used(bool launcher = false) override;
 
 private:
     /* Attack phases */
@@ -85,7 +84,9 @@ private:
     /* Mutation Effects */
     void do_spines();
     void do_passive_freeze();
+#if TAG_MAJOR_VERSION == 34
     void do_passive_heat();
+#endif
     void emit_foul_stench();
     /* Race Effects */
     void do_minotaur_retaliation();

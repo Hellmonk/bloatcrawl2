@@ -390,7 +390,7 @@ string Stash::stash_item_name(const item_def &item)
 
     if (in_inventory(item))
     {
-        name.insert(0, " (carried) ");
+        name.insert(0, "(carried) ");
         return name;
     }
 
@@ -1255,10 +1255,10 @@ static bool _compare_by_name(const stash_search_result& lhs,
         return false;
 }
 
-static vector<stash_search_result> _inventory_search(FixedVector< item_def, ENDOFPACK > &inv, const base_pattern &search)
+static vector<stash_search_result> _inventory_search(const base_pattern &search)
 {
     vector<stash_search_result> results;
-    for (const item_def &item : inv)
+    for (const item_def &item : you.inv)
     {
         if (!item.defined())
             continue;
@@ -1366,7 +1366,7 @@ void StashTracker::search_stashes()
 
     vector<stash_search_result> results;
     if (!curr_lev)
-        results = _inventory_search(you.inv1, *search);
+        results = _inventory_search(*search);
     get_matching_stashes(*search, results, curr_lev);
 
     if (results.empty())
@@ -1564,9 +1564,7 @@ bool StashTracker::display_search_results(
 
         matchtitle << res.match;
 
-        MenuEntry *me = new MenuEntry(matchtitle.str(), MEL_ITEM, 1,
-                                      res.in_inventory ? 0
-                                                       : (int)hotkey);
+        MenuEntry *me = new MenuEntry(matchtitle.str(), MEL_ITEM, 1, hotkey);
         me->data = &res;
 
         if (res.shop && !res.shop->is_visited())
@@ -1581,8 +1579,7 @@ bool StashTracker::display_search_results(
         }
 
         stashmenu.add_entry(me);
-        if (!res.in_inventory)
-            ++hotkey;
+        ++hotkey;
     }
 
     stashmenu.set_flags(MF_SINGLESELECT | MF_ALLOW_FORMATTING);

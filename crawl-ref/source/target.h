@@ -28,6 +28,7 @@ public:
     virtual bool set_aim(coord_def a);
     virtual bool valid_aim(coord_def a) = 0;
     virtual bool can_affect_outside_range();
+    virtual bool can_affect_walls();
 
     virtual aff_type is_affected(coord_def loc) = 0;
     virtual bool has_additional_sites(coord_def a);
@@ -104,20 +105,13 @@ private:
     bool (*affects_pos)(const coord_def &);
 };
 
-class targetter_transference : public targetter_smite
-{
-public:
-    targetter_transference(const actor *act);
-    bool valid_aim(coord_def a) override;
-};
-
-
 class targetter_fragment : public targetter_smite
 {
 public:
     targetter_fragment(const actor *act, int power, int range = LOS_RADIUS);
     bool set_aim(coord_def a) override;
     bool valid_aim(coord_def a) override;
+    bool can_affect_walls() override;
 private:
     int pow;
 };
@@ -160,11 +154,9 @@ public:
 class targetter_splash : public targetter
 {
 public:
-    targetter_splash(const actor *act, int r);
-    bool can_affect_outside_range() override;
+    targetter_splash(const actor *act);
     bool valid_aim(coord_def a) override;
     aff_type is_affected(coord_def loc) override;
-    int range;
 };
 
 class targetter_los : public targetter

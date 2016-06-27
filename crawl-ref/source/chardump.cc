@@ -665,17 +665,7 @@ static void _sdump_inventory(dump_params &par)
     int inv_class2[NUM_OBJECT_CLASSES] = { 0, };
     int inv_count = 0;
 
-    for (const auto &item : you.inv1)
-    {
-        if (item.defined())
-        {
-            // adds up number of each class in invent.
-            inv_class2[item.base_type]++;
-            inv_count++;
-        }
-    }
-
-    for (const auto &item : you.inv2)
+    for (const auto &item : you.inv)
     {
         if (item.defined())
         {
@@ -704,36 +694,13 @@ static void _sdump_inventory(dump_params &par)
             text += item_class_name(i);
             text += "\n";
 
-            for (const auto &item : you.inv1)
+            for (const auto &item : you.inv)
             {
                 if (!item.defined() || item.base_type != i)
                     continue;
 
                 text += " ";
                 text += item.name(DESC_INVENTORY_EQUIP);
-
-                inv_count--;
-
-                if (origin_describable(item) && _dump_item_origin(item))
-                    text += "\n" "   (" + origin_desc(item) + ")";
-
-                if (is_dumpable_artefact(item)
-                    || Options.dump_book_spells
-                       && item.base_type == OBJ_BOOKS)
-                {
-                    text += chardump_desc(item);
-                }
-                else
-                    text += "\n";
-            }
-
-            for (const auto &item : you.inv2)
-            {
-                if (!item.defined() || item.base_type != i)
-                    continue;
-
-                text += " ";
-                text += item.name(DESC_INVENTORY);
 
                 inv_count--;
 
@@ -998,10 +965,10 @@ static void _sdump_vault_list(dump_params &par)
     }
 }
 
-static bool _sort_by_first(pair<int, FixedVector<int, MAX_EXP_LEVEL+1> > a,
-                           pair<int, FixedVector<int, MAX_EXP_LEVEL+1> > b)
+static bool _sort_by_first(pair<int, FixedVector<int, 28> > a,
+                           pair<int, FixedVector<int, 28> > b)
 {
-    for (int i = 0; i < get_max_exp_level(); i++)
+    for (int i = 0; i < 27; i++)
     {
         if (a.second[i] > b.second[i])
             return true;
@@ -1016,7 +983,7 @@ static void _count_action(caction_type type, int subtype)
     pair<caction_type, int> pair(type, subtype);
     if (!you.action_count.count(pair))
         you.action_count[pair].init(0);
-    you.action_count[pair][effective_xl() - 1]++;
+    you.action_count[pair][you.experience_level - 1]++;
 }
 
 /**
@@ -1227,7 +1194,7 @@ static void _sdump_action_counts(dump_params &par)
 {
     if (you.action_count.empty())
         return;
-    int max_lt = (min<int>(you.max_level, get_max_exp_level()) - 1) / 3;
+    int max_lt = (min<int>(you.max_level, 27) - 1) / 3;
 
     // Don't show both a total and 1..3 when there's only one tier.
     if (max_lt)
@@ -1244,17 +1211,17 @@ static void _sdump_action_counts(dump_params &par)
 
     for (int cact = 0; cact < NUM_CACTIONS; cact++)
     {
-        vector<pair<int, FixedVector<int, MAX_EXP_LEVEL+1> > > action_vec;
+        vector<pair<int, FixedVector<int, 28> > > action_vec;
         for (const auto &entry : you.action_count)
         {
             if (entry.first.first != cact)
                 continue;
-            FixedVector<int, MAX_EXP_LEVEL+1> v;
-            v[get_max_exp_level()] = 0;
-            for (int i = 0; i < get_max_exp_level(); i++)
+            FixedVector<int, 28> v;
+            v[27] = 0;
+            for (int i = 0; i < 27; i++)
             {
                 v[i] = entry.second[i];
-                v[get_max_exp_level()] += v[i];
+                v[27] += v[i];
             }
             action_vec.emplace_back(entry.first.second, v);
         }
@@ -1280,7 +1247,7 @@ static void _sdump_action_counts(dump_params &par)
                 else
                     par.text += " |      ";
             }
-            par.text += make_stringf(" ||%6d", ac->second[get_max_exp_level()]);
+            par.text += make_stringf(" ||%6d", ac->second[27]);
             par.text += "\n";
         }
     }

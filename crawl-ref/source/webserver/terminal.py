@@ -11,7 +11,7 @@ import time
 BUFSIZ = 2048
 
 class TerminalRecorder(object):
-    def __init__(self, command, filename, id_header, logger, io_loop, termsize, launch_dir):
+    def __init__(self, command, filename, id_header, logger, io_loop, termsize):
         self.io_loop = io_loop
         self.command = command
         if filename:
@@ -22,7 +22,6 @@ class TerminalRecorder(object):
         self.returncode = None
         self.output_buffer = ""
         self.termsize = termsize
-        self.launch_dir = launch_dir
 
         self.pid = None
         self.child_fd = None
@@ -74,7 +73,6 @@ class TerminalRecorder(object):
             env["COLUMNS"] = str(cols)
             env["LINES"]   = str(lines)
             env["TERM"]    = "linux"
-            os.chdir(self.launch_dir)
             try:
                 os.execvpe(self.command[0], self.command, env)
             except OSError:

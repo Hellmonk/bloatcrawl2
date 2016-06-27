@@ -236,7 +236,7 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
     {
     case MONS_KOBOLD:
         // A few of the smarter kobolds have blowguns.
-        if (one_chance_in(10) && level > 3)
+        if (one_chance_in(10) && level > 1)
         {
             item.base_type = OBJ_WEAPONS;
             item.sub_type  = WPN_BLOWGUN;
@@ -298,6 +298,7 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         break;
 
     case MONS_WIGHT:
+    case MONS_NORRIS:
         item.base_type = OBJ_WEAPONS;
 
         if (one_chance_in(6))
@@ -324,7 +325,7 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         }
 
         if (one_chance_in(3))
-            do_curse_item(item, 100);
+            do_curse_item(item);
         break;
 
     case MONS_EDMUND:
@@ -346,48 +347,6 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         {
             force_item = true;
             item.plus += 1 + random2(4);
-        }
-        break;
-
-    case MONS_DWARF:
-    case MONS_DEEP_DWARF:
-        if (one_chance_in(9))
-        {
-            item.base_type = OBJ_WEAPONS;
-            item.sub_type  = WPN_ARBALEST;
-            break;
-        }
-        // deliberate fall through
-    case MONS_DEEP_DWARF_SCION:
-    case MONS_DEEP_DWARF_BERSERKER:
-        item.base_type = OBJ_WEAPONS;
-
-        if (one_chance_in(6))
-        {
-            item.sub_type = random_choose_weighted(5, WPN_MORNINGSTAR, 5, WPN_GREAT_MACE,
-                                                   5, WPN_GREAT_SWORD, 10, WPN_BROAD_AXE,
-                                                   15, WPN_BATTLEAXE, 0);
-        }
-        else
-        {
-            item.sub_type = random_choose_weighted(5, WPN_FLAIL, 5, WPN_MACE,
-                                                   5, WPN_SPEAR, 5, WPN_HALBERD,
-                                                   5, WPN_GREAT_SWORD, 10, WPN_WAR_AXE,
-                                                   15, WPN_HAND_AXE, 0);
-        }
-
-        if (coinflip() || mon->type == MONS_DEEP_DWARF_BERSERKER
-            || mon->type == MONS_DEEP_DWARF_SCION)
-        {
-            force_item  = true;
-            item.plus  += 1 + random2(4);
-            item.plus2 += 1 + random2(4);
-
-            if (one_chance_in(30) && (mon->type == MONS_DEEP_DWARF_BERSERKER
-                                      || mon->type == MONS_DEEP_DWARF_SCION))
-            {
-                level = ISPEC_GOOD_ITEM;
-            }
         }
         break;
 
@@ -757,6 +716,7 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
             item.sub_type  = WPN_ARBALEST;
             break;
         }
+
         item.base_type = OBJ_WEAPONS;
 
         item.sub_type = random_choose_weighted(
@@ -1104,37 +1064,7 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         item.sub_type  = WPN_DAGGER;
         break;
 
-    case MONS_UNBORN_DEEP_DWARF:
-        if (one_chance_in(6))
-            level = ISPEC_GOOD_ITEM;
-        // deliberate fallthrough
-
-    case MONS_DEEP_DWARF_NECROMANCER:
-        item.base_type = OBJ_WEAPONS;
-        item.sub_type  = WPN_HAND_AXE;
-        break;
-
-    case MONS_DEEP_DWARF_ARTIFICER:
-        if (one_chance_in(25))
-        {
-            dprf(DIAG_MONPLACE, "generating a rare rod");
-            item.base_type = OBJ_RODS;
-            item.sub_type  = random2(NUM_RODS);
-        }
-        else
-        {
-            item.base_type = OBJ_WANDS;
-            item.sub_type  = random_choose_weighted(10, WAND_ACID,
-                                                    10, WAND_FLAME,
-                                                    8, WAND_CONFUSION,
-                                                    4, WAND_LIGHTNING,
-                                                    4, WAND_HEAL_WOUNDS,
-                                                    4, WAND_ICEBLAST,
-                                                    0);
-        }
-        break;
-
-        case MONS_DOWAN:
+    case MONS_DOWAN:
         item.base_type = OBJ_WEAPONS;
         item.sub_type  = WPN_DAGGER;
         break;
@@ -1327,7 +1257,6 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         break;
 
     case MONS_SPRIGGAN_DRUID:
-    case MONS_BAI_SUZHEN:
         item.base_type = OBJ_WEAPONS;
         item.sub_type  = WPN_QUARTERSTAFF;
         break;
@@ -1527,15 +1456,6 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         }
         break;
 
-    case MONS_MELIAI:
-        // labrys
-        item.base_type = OBJ_WEAPONS;
-        item.sub_type  = random_choose_weighted(12, WPN_HAND_AXE,
-                                                 7, WPN_WAR_AXE,
-                                                 1, WPN_BROAD_AXE,
-                                                 0);
-        break;
-
     case MONS_ANCESTOR_HEXER:
     case MONS_ANCESTOR_BATTLEMAGE:
     case MONS_ANCESTOR_KNIGHT:
@@ -1590,7 +1510,7 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         item_set_appearance(i);
 
     if (force_uncursed)
-        do_uncurse_item(i, MAX_CURSE_LEVEL);
+        do_uncurse_item(i);
 
     if (!is_artefact(mitm[thing_created]) && !floor_tile.empty())
     {
@@ -1678,10 +1598,6 @@ static void _give_ammo(monster* mon, int level, bool mons_summoned)
             case MONS_DEEP_ELF_MASTER_ARCHER:
                 // Master archers get double ammo - archery is their only attack
                 mitm[thing_created].quantity *= 2;
-                break;
-
-            case MONS_NESSOS:
-                mitm[thing_created].brand = SPMSL_POISONED;
                 break;
 
             case MONS_JOSEPH:
@@ -1934,6 +1850,11 @@ static void _give_shield(monster* mon, int level)
         }
         break;
 
+    case MONS_NORRIS:
+        make_item_for_monster(mon, OBJ_ARMOUR, ARM_BUCKLER,
+                              level * 2 + 1, 1);
+        break;
+
     case MONS_WIGLAF:
         make_item_for_monster(mon, OBJ_ARMOUR, ARM_SHIELD,
                               level * 2 + 1, 1);
@@ -2086,7 +2007,6 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
         break;
 
     case MONS_GNOLL_SHAMAN:
-    case MONS_MELIAI:
         item.base_type = OBJ_ARMOUR;
         item.sub_type  = coinflip() ? ARM_ROBE : ARM_LEATHER_ARMOUR;
         break;
@@ -2202,10 +2122,6 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
         item.sub_type  = ARM_ROBE;
         break;
 
-    case MONS_DEEP_DWARF:
-    case MONS_DEEP_DWARF_SCION:
-    case MONS_DEEP_DWARF_DEATH_KNIGHT:
-    case MONS_DEEP_DWARF_BERSERKER:
     case MONS_DEATH_KNIGHT:
         item.base_type = OBJ_ARMOUR;
         item.sub_type  = random_choose_weighted(7, ARM_CHAIN_MAIL,
@@ -2359,7 +2275,6 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
     case MONS_DRACONIAN_MONK:
     case MONS_DRACONIAN_ZEALOT:
     case MONS_DRACONIAN_KNIGHT:
-    case MONS_BAI_SUZHEN:
         item.base_type = OBJ_ARMOUR;
         item.sub_type  = ARM_CLOAK;
         break;
@@ -2546,25 +2461,11 @@ void give_item(monster *mons, int level_number, bool mons_summoned, bool spectra
     if (mons->type == MONS_MAURICE)
         _give_gold(mons, level_number);
 
-    if (you.rune_curse_active[RUNE_VAULTS])
-        level_number = div_rand_round(level_number * 4, 3);
-
     _give_book(mons, level_number);
-
-    int how_many = 1;
-
-    if (you.rune_curse_active[RUNE_VAULTS])
-        how_many = random2(6);
-
-    while (how_many-- > 0)
-    {
-        _give_wand(mons, level_number);
-        _give_potion(mons, level_number);
-    }
-
+    _give_wand(mons, level_number);
+    _give_potion(mons, level_number);
     _give_weapon(mons, level_number, false, true, spectral_orcs);
     _give_ammo(mons, level_number, mons_summoned);
     _give_armour(mons, 1 + level_number / 2, spectral_orcs);
     _give_shield(mons, 1 + level_number / 2);
 }
-

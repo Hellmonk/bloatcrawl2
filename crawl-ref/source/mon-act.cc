@@ -71,7 +71,9 @@
 
 static bool _handle_pickup(monster* mons);
 static void _mons_in_cloud(monster& mons);
+#if TAG_MAJOR_VERSION == 34
 static void _heated_area(monster& mons);
+#endif
 static bool _monster_move(monster* mons);
 
 // [dshaligram] Doesn't need to be extern.
@@ -150,7 +152,7 @@ static void _monster_regenerate(monster* mons)
         || mons->has_ench(ENCH_WITHDRAWN)
         || _mons_natural_regen_roll(mons))
     {
-        mons->heal(1, true);
+        mons->heal(1);
     }
 }
 
@@ -268,13 +270,13 @@ static bool _do_mon_spell(monster* mons, bolt &beem)
     return false;
 }
 
-static void _swim_or_move_energy(monster& mon, int factor = 100)
+static void _swim_or_move_energy(monster& mon)
 {
     const dungeon_feature_type feat = grd(mon.pos());
 
     // FIXME: Replace check with mons_is_swimming()?
     mon.lose_energy(((feat_is_lava(feat) || feat_is_water(feat))
-                     && mon.ground_level()) ? EUT_SWIM : EUT_MOVE, 100, factor);
+                     && mon.ground_level()) ? EUT_SWIM : EUT_MOVE);
 }
 
 static bool _unfriendly_or_insane(const monster& mon)
@@ -1578,12 +1580,8 @@ static void _monster_add_energy(monster& mons)
     if (mons.speed > 0)
     {
         // Randomise to make counting off monster moves harder:
-        int energy_gained =
+        const int energy_gained =
             max(1, div_rand_round(mons.speed * you.time_taken, 10));
-
-        if (you.rune_curse_active[RUNE_SHOALS])
-            energy_gained = energy_gained * 4 / 3;
-
         mons.speed_increment += energy_gained;
     }
 }
@@ -1591,7 +1589,8 @@ static void _monster_add_energy(monster& mons)
 #ifdef DEBUG
 #    define DEBUG_ENERGY_USE(problem) \
     if (mons->speed_increment == old_energy && mons->alive()) \
-             dprf(problem " for monster '%s' consumed no energy", \
+             mprf(MSGCH_DIAGNOSTICS, \
+                  problem " for monster '%s' consumed no energy", \
                   mons->name(DESC_PLAIN).c_str());
 #else
 #    define DEBUG_ENERGY_USE(problem) ((void) 0)
@@ -1720,7 +1719,9 @@ static void _pre_monster_move(monster& mons)
         // Update constriction durations
         mons.accum_has_constricted();
 
+#if TAG_MAJOR_VERSION == 34
         _heated_area(mons);
+#endif
         if (mons.type == MONS_NO_MONSTER)
             return;
     }
@@ -1864,7 +1865,9 @@ void handle_monster_move(monster* mons)
     mons->shield_blocks = 0;
 
     _mons_in_cloud(*mons);
+#if TAG_MAJOR_VERSION == 34
     _heated_area(*mons);
+#endif
     if (!mons->alive())
         return;
 
@@ -1887,21 +1890,6 @@ void handle_monster_move(monster* mons)
     {
         mons->speed_increment -= non_move_energy;
         return;
-    }
-
-    if (player_mutation_level(MUT_GLOW) >= 3 && !mons->friendly())
-    {
-    	if(one_chance_in(20))
-    	{
-    		if(one_chance_in(3))
-        		dazzle_monster(mons, &you);
-    		else
-    		{
-                const int daze_time = 10 * BASELINE_DELAY;
-                mons->add_ench(mon_enchant(ENCH_DAZED, 0, &you, daze_time));
-                simple_monster_message(mons, " is dazed by your brightness.");
-    		}
-    	}
     }
 
     if (mons->has_ench(ENCH_DAZED) && one_chance_in(4))
@@ -2366,45 +2354,113 @@ void monster::struggle_against_net()
                 }
                 return;
             }
-            simple_monster_message(this, " pulls away from the web.");
-
+            maybe_destroy_web(this);
         }
         del_ench(ENCH_HELD);
         return;
     }
 
-    if (you.see_cell(pos()))
-    {
-        if (!visible_to(&you))
-            mpr("Something wriggles in the net.");
-        else
-            simple_monster_message(this, " struggles against the net.");
-    }
+    // The more corroded the net gets, the more easily it will break.
+    const int hold = mitm[net].net_durability; // This will usually be negative.
+    const int mon_size = body_size(PSIZE_BODY);
 
-    int damage = 1 + random2(2);
-
-    // Faster monsters can damage the net more often per
-    // time period.
-    if (speed != 0)
-        damage = div_rand_round(damage * speed, 10);
-
-    mitm[net].net_durability -= damage;
-
-    if (mitm[net].net_durability < NET_MIN_DURABILITY)
+    // Smaller monsters can escape more quickly.
+    if (mon_size < random2(SIZE_BIG)  // BIG = 5
+        && !berserk_or_insane() && type != MONS_DANCING_WEAPON)
     {
         if (you.see_cell(pos()))
         {
-            if (visible_to(&you))
-            {
-                mprf("The net rips apart, and %s comes free!",
-                     name(DESC_THE).c_str());
-            }
+            if (!visible_to(&you))
+                mpr("Something wriggles in the net.");
             else
-                mpr("All of a sudden the net rips apart!");
+                simple_monster_message(this, " struggles to escape the net.");
         }
-        destroy_item(net);
 
-        del_ench(ENCH_HELD, true);
+        // Confused monsters have trouble finding the exit.
+        if (has_ench(ENCH_CONFUSION) && !one_chance_in(5))
+            return;
+
+        decay_enchantment(ENCH_HELD, 2*(NUM_SIZE_LEVELS - mon_size) - hold);
+
+        // Frayed nets are easier to escape.
+        if (mon_size <= -(hold-1)/2)
+            decay_enchantment(ENCH_HELD, (NUM_SIZE_LEVELS - mon_size));
+    }
+    else // Large (and above) monsters always thrash the net and destroy it
+    {    // e.g. ogre, large zombie (large); centaur, naga, hydra (big).
+
+        if (you.see_cell(pos()))
+        {
+            if (!visible_to(&you))
+                mpr("Something wriggles in the net.");
+            else
+                simple_monster_message(this, " struggles against the net.");
+        }
+
+        // Confused monsters more likely to struggle without result.
+        if (has_ench(ENCH_CONFUSION) && one_chance_in(3))
+            return;
+
+        // Nets get destroyed more quickly for larger monsters
+        // and if already strongly frayed.
+        int damage = 0;
+
+        // tiny: 1/6, little: 2/5, small: 3/4, medium and above: always
+        if (x_chance_in_y(mon_size + 1, SIZE_GIANT - mon_size))
+            damage++;
+
+        // Handled specially to make up for its small size.
+        if (type == MONS_DANCING_WEAPON)
+        {
+            damage += one_chance_in(3);
+
+            if (can_cut_meat(mitm[inv[MSLOT_WEAPON]]))
+                damage++;
+        }
+
+        // Extra damage for large (50%) and big (always).
+        if (mon_size == SIZE_BIG || mon_size == SIZE_LARGE && coinflip())
+            damage++;
+
+        // overall damage per struggle:
+        // tiny   -> 1/6
+        // little -> 2/5
+        // small  -> 3/4
+        // medium -> 1
+        // large  -> 1,5
+        // big    -> 2
+
+        // extra damage if already damaged
+        if (random2(body_size(PSIZE_BODY) - hold + 1) >= 4)
+            damage++;
+
+        // Berserking doubles damage dealt.
+        if (berserk())
+            damage *= 2;
+
+        // Faster monsters can damage the net more often per
+        // time period.
+        if (speed != 0)
+            damage = div_rand_round(damage * speed, 10);
+
+        mitm[net].net_durability -= damage;
+
+        if (mitm[net].net_durability < -7)
+        {
+            if (you.see_cell(pos()))
+            {
+                if (visible_to(&you))
+                {
+                    mprf("The net rips apart, and %s comes free!",
+                         name(DESC_THE).c_str());
+                }
+                else
+                    mpr("All of a sudden the net rips apart!");
+            }
+            destroy_item(net);
+
+            del_ench(ENCH_HELD, true);
+        }
     }
 }
 
@@ -2557,23 +2613,6 @@ static void _post_monster_move(monster* mons)
             if (mi->type == MONS_RAKSHASA && mi->summoner == mons->mid)
                 mi->del_ench(ENCH_ABJ);
         }
-    }
-
-    if (mons->type == MONS_BAI_SUZHEN || mons->type == MONS_BAI_SUZHEN_DRAGON)
-    {
-        cloud_type ctype = CLOUD_RAIN;
-
-        if (mons->type == MONS_BAI_SUZHEN_DRAGON)
-            ctype = CLOUD_STORM;
-
-        for (adjacent_iterator ai(mons->pos()); ai; ++ai)
-            if (!cell_is_solid(*ai)
-                && (!cloud_at(*ai)
-                    || cloud_at(*ai)->type == ctype
-                    || cloud_at(*ai)->type == CLOUD_RAIN))
-            {
-                place_cloud(ctype, *ai, 2 + random2(3), mons);
-            }
     }
 
     if (mons->type != MONS_NO_MONSTER && mons->hit_points < 1)
@@ -3603,9 +3642,7 @@ static bool _do_move_monster(monster& mons, const coord_def& delta)
     mons.seen_context = SC_NONE;
 
     // This appears to be the real one, ie where the movement occurs:
-    int energy = 100;
-    _swim_or_move_energy(mons, energy);
-    mons.prev_direction = delta;
+    _swim_or_move_energy(mons);
 
     _escape_water_hold(mons);
 
@@ -3950,7 +3987,7 @@ static bool _monster_move(monster* mons)
             place_cloud(CLOUD_FIRE, mons->pos(), 2 + random2(4), mons);
         }
 
-        if (mons->type == MONS_CURSE_TOE)
+        if (mons->type == MONS_CURSE_TOE || mons->type == MONS_DEATH_SCARAB)
             place_cloud(CLOUD_MIASMA, mons->pos(), 2 + random2(3), mons);
     }
     else
@@ -3998,6 +4035,7 @@ static void _mons_in_cloud(monster& mons)
     actor_apply_cloud(&mons);
 }
 
+#if TAG_MAJOR_VERSION == 34
 static void _heated_area(monster& mons)
 {
     if (!heated(mons.pos()))
@@ -4047,3 +4085,4 @@ static void _heated_area(monster& mons)
             print_wounds(&mons);
     }
 }
+#endif

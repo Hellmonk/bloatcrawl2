@@ -25,6 +25,7 @@ struct monster_level_up
     }
 };
 
+const int MAX_MONS_HD = 27;
 class mons_experience_levels
 {
 public:
@@ -34,7 +35,7 @@ public:
         return mexp[xl];
     }
 private:
-    FixedVector<unsigned, MAX_MONS_LEVEL + 1> mexp;
+    FixedVector<unsigned, MAX_MONS_HD + 1> mexp;
 };
 
 #endif

@@ -55,7 +55,6 @@
 #include "unwind.h"
 #include "viewchar.h"
 #include "view.h"
-#include "rune_curse.h"
 
 band_type active_monster_band = BAND_NO_BAND;
 
@@ -278,8 +277,7 @@ static void _apply_ood(level_id &place)
 
     if (place.branch == BRANCH_DUNGEON
         && (place.depth == 1 && env.turns_on_level < 701
-         || place.depth == 2 && (env.turns_on_level < 584 || one_chance_in(4)))
-        )
+         || place.depth == 2 && (env.turns_on_level < 584 || one_chance_in(4))))
     {
         return;
     }
@@ -288,7 +286,8 @@ static void _apply_ood(level_id &place)
     level_id old_place = place;
 #endif
 
-    if (x_chance_in_y(_scale_spawn_parameter(140, 1000, 1000, 3000, 4800), 1000))
+    if (x_chance_in_y(_scale_spawn_parameter(140, 1000, 1000, 3000, 4800),
+                      1000))
     {
         const int fuzzspan = 5;
         const int fuzz = max(0, random_range(-fuzzspan, fuzzspan, 2));
@@ -303,9 +302,9 @@ static void _apply_ood(level_id &place)
     }
 
     // On D:13 and deeper, and for those who tarry, something extreme:
-    const bool super_chance = x_chance_in_y(_scale_spawn_parameter(2, 10000, 10000, 3000, 9000), 10000);
-    if (Options.exp_percent_from_monsters > 0 && env.turns_on_level > 1400 - place.absdepth() * 117
-        && super_chance)
+    if (env.turns_on_level > 1400 - place.absdepth() * 117
+        && x_chance_in_y(_scale_spawn_parameter(2, 10000, 10000, 3000, 9000),
+                         10000))
     {
         // this maxes depth most of the time
         place.depth += random2avg(27, 2);
@@ -371,10 +370,6 @@ void spawn_random_monsters()
     else if (!player_in_starting_abyss())
         rate = _scale_spawn_parameter(rate, 6 * rate, 0);
 
-    // scale back the orb run monster gen since floors are already being populated with monsters
-    if (player_on_orb_run())
-        rate *= 3;
-
     if (rate == 0)
     {
         dprf(DIAG_MONPLACE, "random monster gen scaled off, %d turns on level",
@@ -385,7 +380,7 @@ void spawn_random_monsters()
     if (player_in_branch(BRANCH_ABYSS))
     {
         if (!player_in_starting_abyss())
-            rate = 40;
+            rate = 5;
         if (have_passive(passive_t::slow_abyss))
             rate *= 2;
     }
@@ -472,7 +467,6 @@ monster_type pick_random_monster(level_id place,
     if (allow_ood)
         _apply_ood(place);
 
-    place.depth = rune_curse_depth_adjust(place.depth);
     place.depth = min(place.depth, branch_ood_cap(place.branch));
 
     if (final_place)
@@ -689,14 +683,7 @@ monster_type resolve_monster_type(monster_type mon_type,
                    || mon_type == RANDOM_COMPATIBLE_MONSTER
                       && _is_incompatible_monster((monster_type)type)
                    || mon_type == RANDOM_BANDLESS_MONSTER
-                      && _is_banded_monster((monster_type)type)
-                   || mon_type == MONS_PLAYER_GHOST
-                      /* skip player ghosts for now
-                      && place->branch == BRANCH_DUNGEON
-                      &&   (crawl_state.difficulty == DIFFICULTY_STANDARD && place->depth < 10
-                         || crawl_state.difficulty == DIFFICULTY_CHALLENGE && place->depth < 5)
-                         */
-                );
+                      && _is_banded_monster((monster_type)type));
 
             int base = vault_mon_bases[i];
             bool banded = vault_mon_bands[i];
@@ -843,23 +830,7 @@ static bool _in_ood_pack_protected_place()
     return env.turns_on_level < 1400 - env.absdepth0 * 117;
 }
 
-void _prep_summoned_monster(mgen_data &mg, monster* &mon, bool first = true)
-{
-    if (mg.summon_type && mon && mon->is_player_summon() && mg.god == GOD_NO_GOD)
-    {
-        const spell_type spell = (const spell_type) mg.summon_type;
-
-        if (!player_summoned_monster(spell, mon, first, mg.freeze_cost))
-        {
-            mons_remove_from_grid(mon);
-            mon->destroy_inventory();
-            monster_cleanup(mon);
-            mon = 0;
-        }
-    }
-}
-
-monster* place_monster(mgen_data mg, bool force_pos, bool dont_place, bool first)
+monster* place_monster(mgen_data mg, bool force_pos, bool dont_place)
 {
 #ifdef DEBUG_MON_CREATION
     mprf(MSGCH_DIAGNOSTICS, "in place_monster()");
@@ -935,13 +906,6 @@ monster* place_monster(mgen_data mg, bool force_pos, bool dont_place, bool first
 #endif
         band = _choose_band(mg.cls, band_size, leader);
         band_size++;
-
-        if (you.rune_curse_active[RUNE_ABYSSAL] && band != BAND_NO_BAND)
-        {
-            band_size = div_rand_round(band_size * 4, 3);
-            band_size = min(BIG_BAND, band_size);
-        }
-
         for (int i = 1; i < band_size; ++i)
         {
             band_monsters[i] = _band_member(band, i, place, allow_ood);
@@ -1090,8 +1054,6 @@ monster* place_monster(mgen_data mg, bool force_pos, bool dont_place, bool first
 
     monster* mon = _place_monster_aux(mg, 0, place, force_pos, dont_place);
 
-    _prep_summoned_monster(mg, mon, first);
-
     // Bail out now if we failed.
     if (!mon)
         return 0;
@@ -1205,12 +1167,10 @@ monster* place_monster(mgen_data mg, bool force_pos, bool dont_place, bool first
             }
             else if (mon->type == MONS_KIRKE)
                 member->props["kirke_band"] = true;
-
-            _prep_summoned_monster(band_template, member, false);
         }
     }
 
-    // Placement if first monster, at least, was a success.
+    // Placement of first monster, at least, was a success.
     return mon;
 }
 
@@ -1318,9 +1278,6 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     mon->type         = mg.cls;
     mon->base_monster = mg.base_type;
 
-    mon->summoned_by_spell = (spell_type) mg.summon_type;
-    const bool is_player_summon = spell_produces_minion((spell_type) mg.summon_type) && mg.summoner && mg.summoner->is_player();
-
     // Set pos and link monster into monster grid.
     if (!dont_place && !mon->move_to_pos(fpos))
     {
@@ -1358,7 +1315,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         define_zombie(mon, ztype, mg.cls);
     }
     else
-        define_monster(mon, mg.behaviour);
+        define_monster(mon);
 
     if (mon->type == MONS_MUTANT_BEAST)
     {
@@ -1382,8 +1339,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     else if (mon->is_priest())
     {
         // Berserkers belong to Trog.
-        if (mg.cls == MONS_DEEP_DWARF_BERSERKER
-            || mg.cls == MONS_SPRIGGAN_BERSERKER)
+        if (mg.cls == MONS_SPRIGGAN_BERSERKER)
             mon->god = GOD_TROG;
         // Death knights belong to Yredelemnul.
         else if (mg.cls == MONS_DEATH_KNIGHT)
@@ -1489,6 +1445,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
                 get_monster_data(draco_or_demonspawn_subspecies(mon));
             bonus_hp = mbase->avg_hp_10x;
         }
+        mon->set_hit_dice(mg.hd);
         // Re-roll HP.
         const int base_avg_hp = m_ent->avg_hp_10x + bonus_hp;
         const int new_avg_hp = div_rand_round(base_avg_hp * mg.hd, m_ent->HD);
@@ -1510,7 +1467,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     if (!crawl_state.game_is_arena())
     {
         mon->max_hit_points = min(mon->max_hit_points, MAX_MONSTER_HP);
-        mon->hit_points = mon->max_hit_points;
+        mon->hit_points = min(mon->hit_points, MAX_MONSTER_HP);
     }
 
     // Store the extra flags here.
@@ -1572,12 +1529,6 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         mon->props["dbname"] = mons_class_name(mon->type);
     }
 
-    if (mon->type == MONS_HELLBINDER || mon->type == MONS_CLOUD_MAGE)
-    {
-        mon->props[MON_GENDER_KEY] = random_choose(GENDER_FEMALE, GENDER_MALE,
-                                                   GENDER_NEUTER);
-    }
-
     if (mon->has_spell(SPELL_OZOCUBUS_ARMOUR))
     {
         const int power = (mon->spell_hd(SPELL_OZOCUBUS_ARMOUR) * 15) / 10;
@@ -1613,9 +1564,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
 
     // dur should always be 1-6 for monsters that can be abjured.
     const bool summoned = mg.abjuration_duration >= 1
-                       && mg.abjuration_duration <= 6
-                       || is_player_summon
-    ;
+                       && mg.abjuration_duration <= 6;
 
     if (mons_class_is_animated_weapon(mg.cls))
     {
@@ -1697,10 +1646,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         // Dancing weapons can be created with shadow creatures. {due}
         mon->mark_summoned(mg.abjuration_duration,
                            mg.summon_type != SPELL_TUKIMAS_DANCE,
-                           mg.summon_type,
-                           true,
-                           mg.summoner
-        );
+                           mg.summon_type);
 
         if (mg.summon_type > 0 && mg.summoner && !(mg.flags & MG_DONT_CAP))
         {
@@ -2184,9 +2130,6 @@ static const map<monster_type, band_set> bands_by_leader = {
     { MONS_GNOLL_SERGEANT,  { {}, {{ BAND_GNOLLS, {3, 6} }}}},
     { MONS_DEATH_KNIGHT,    { {0, 0, []() { return x_chance_in_y(2, 3); }},
                                   {{ BAND_DEATH_KNIGHT, {3, 5}, true }}}},
-    { MONS_DEEP_DWARF_SCION,{ {}, {{ BAND_DEEP_DWARF, {2, 5} }}}},
-    { MONS_DEEP_DWARF_ARTIFICER,{ {}, {{ BAND_DEEP_DWARF, {2, 5} }}}},
-    { MONS_DEEP_DWARF_DEATH_KNIGHT,{ {}, {{ BAND_DEEP_DWARF, {2, 5} }}}},
     { MONS_GRUM,            { {}, {{ BAND_WOLVES, {2, 5}, true }}}},
     { MONS_WOLF,            { {}, {{ BAND_WOLVES, {2, 6} }}}},
     { MONS_CENTAUR_WARRIOR, { centaur_band_condition,
@@ -2312,8 +2255,7 @@ static const map<monster_type, band_set> bands_by_leader = {
     { MONS_DEATH_SCARAB,    { {}, {{ BAND_DEATH_SCARABS, {3, 6} }}}},
     { MONS_ANUBIS_GUARD,    { {2}, {{ BAND_ANUBIS_GUARD, {1, 2} }}}},
     { MONS_SERAPH,          { {}, {{ BAND_HOLIES, {1, 4}, true }}}},
-    { MONS_IRON_GIANT,      { {}, {{ BAND_STONE_GIANTS, {2, 3}, true },
-                                   { BAND_ANCIENT_CHAMPIONS, {2, 3}, true }}}},
+    { MONS_IRON_GIANT,      { {}, {{ BAND_IRON_GIANT, {2, 5}, true }}}},
     { MONS_SPARK_WASP,      { {0, 0, []() {
         return you.where_are_you == BRANCH_DEPTHS;
     }},                           {{ BAND_SPARK_WASPS, {1, 4} }}}},
@@ -2326,7 +2268,7 @@ static const map<monster_type, band_set> bands_by_leader = {
         return branch_has_monsters(you.where_are_you)
             || !vault_mon_types.empty();
     }},                           {{ BAND_RANDOM_SINGLE, {1, 2} }}}},
-    { MONS_MELIAI,          { {}, {{ BAND_MELIAI, {2, 3} }}}},
+
 
     // special-cased band-sizes
     { MONS_SPRIGGAN_DRUID,  { {3}, {{ BAND_SPRIGGAN_DRUID, {0, 1} }}}},
@@ -2352,10 +2294,6 @@ static band_type _choose_band(monster_type mon_type, int &band_size,
         const band_info& band_desc = *random_iterator(bands->bands);
         band = band_desc.type;
         band_size = band_desc.range.roll();
-
-        band_size = min(env.absdepth0 - 1 + crawl_state.difficulty * 2, band_size);
-        band_size = max(1, band_size);
-
         natural_leader = band_desc.natural_leader;
     }
 
@@ -2467,7 +2405,6 @@ static const map<band_type, vector<member_possibilites>> band_membership = {
     { BAND_JACKALS,             {{{MONS_JACKAL, 1}}}},
     { BAND_KOBOLDS,             {{{MONS_KOBOLD, 1}}}},
     { BAND_JOSEPHINE,           {{{MONS_WRAITH, 1}}}},
-    { BAND_MELIAI,              {{{MONS_MELIAI, 1}}}},
     { BAND_BOGGARTS,            {{{MONS_BOGGART, 1}}}},
     { BAND_CENTAURS,            {{{MONS_CENTAUR, 1}}}},
     { BAND_YAKTAURS,            {{{MONS_YAKTAUR, 1}}}},
@@ -2488,7 +2425,6 @@ static const map<band_type, vector<member_possibilites>> band_membership = {
     { BAND_SALAMANDERS,         {{{MONS_SALAMANDER, 1}}}},
     { BAND_SPARK_WASPS,         {{{MONS_SPARK_WASP, 1}}}},
     { BAND_UGLY_THINGS,         {{{MONS_UGLY_THING, 1}}}},
-    { BAND_STONE_GIANTS,        {{{MONS_STONE_GIANT, 1}}}},
     { BAND_ANUBIS_GUARD,        {{{MONS_ANUBIS_GUARD, 1}}}},
     { BAND_DEATH_SCARABS,       {{{MONS_DEATH_SCARAB, 1}}}},
     { BAND_FLYING_SKULLS,       {{{MONS_FLYING_SKULL, 1}}}},
@@ -2502,7 +2438,6 @@ static const map<band_type, vector<member_possibilites>> band_membership = {
     { BAND_SKELETAL_WARRIORS,   {{{MONS_SKELETAL_WARRIOR, 1}}}},
     { BAND_THRASHING_HORRORS,   {{{MONS_THRASHING_HORROR, 1}}}},
     { BAND_VAMPIRE_MOSQUITOES,  {{{MONS_VAMPIRE_MOSQUITO, 1}}}},
-    { BAND_ANCIENT_CHAMPIONS,   {{{MONS_ANCIENT_CHAMPION, 1}}}},
     { BAND_EXECUTIONER,         {{{MONS_ABOMINATION_LARGE, 1}}}},
     { BAND_VASHNIA,             {{{MONS_NAGA_SHARPSHOOTER, 1}}}},
     { BAND_INSUBSTANTIAL_WISPS, {{{MONS_INSUBSTANTIAL_WISP, 1}}}},
@@ -2521,12 +2456,6 @@ static const map<band_type, vector<member_possibilites>> band_membership = {
                                    {MONS_DEEP_ELF_ANNIHILATOR, 1},
                                    {MONS_DEEP_ELF_SORCERER, 1},
                                    {MONS_DEEP_ELF_DEATH_MAGE, 1}}}},
-    { BAND_DEEP_DWARF,          {{
-                                     {MONS_DEEP_DWARF, 31},
-                                     {MONS_DEEP_DWARF_NECROMANCER, 6},
-                                     {MONS_DEEP_DWARF_BERSERKER, 2},
-                                     {MONS_DEEP_DWARF_DEATH_KNIGHT, 1},
-                                 }}},
     { BAND_BALRUG,              {{{MONS_SUN_DEMON, 1},
                                   {MONS_RED_DEVIL, 1}}}},
     { BAND_HELLWING,            {{{MONS_HELLWING, 1},
@@ -2705,6 +2634,10 @@ static const map<band_type, vector<member_possibilites>> band_membership = {
                                   {MONS_CHERUB, 80},
                                   {MONS_DAEVA, 50},
                                   {MONS_OPHAN, 1}}}}, // !?
+
+    { BAND_IRON_GIANT,          {{{MONS_STONE_GIANT, 10},
+                                  {MONS_FIRE_GIANT, 1},
+                                  {MONS_FROST_GIANT, 1}}}},
 };
 
 /**
@@ -2988,7 +2921,7 @@ static monster_type _pick_zot_exit_defender()
         0);
 }
 
-monster* mons_place(mgen_data mg, bool first)
+monster* mons_place(mgen_data mg)
 {
 #ifdef DEBUG_MON_CREATION
     mprf(MSGCH_DIAGNOSTICS, "in mons_place()");
@@ -3033,7 +2966,7 @@ monster* mons_place(mgen_data mg, bool first)
                         : SAME_ATTITUDE(mg.summoner->as_monster());
     }
 
-    monster* creation = place_monster(mg, false, false, first);
+    monster* creation = place_monster(mg);
     if (!creation)
         return 0;
 
@@ -3318,7 +3251,7 @@ bool player_angers_monster(monster* mon)
     return false;
 }
 
-monster* create_monster(mgen_data mg, bool fail_msg, bool first)
+monster* create_monster(mgen_data mg, bool fail_msg)
 {
     ASSERT(in_bounds(mg.pos)); // otherwise it's a guaranteed fail
 
@@ -3359,7 +3292,7 @@ monster* create_monster(mgen_data mg, bool fail_msg, bool first)
 
     if (in_bounds(mg.pos))
     {
-        summd = mons_place(mg, first);
+        summd = mons_place(mg);
         // If the arena vetoed the placement then give no fail message.
         if (crawl_state.game_is_arena())
             fail_msg = false;

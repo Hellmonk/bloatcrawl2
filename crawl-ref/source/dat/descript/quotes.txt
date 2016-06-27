@@ -628,6 +628,12 @@ settle the battles of the near future.”
     -Nikola Tesla, “The Transmission of Electrical Energy Without Wires As a
 Means for Furthering Peace”, _Electrical World and Engineer_. January 7, 1905.
 %%%%
+Norris
+
+“Death and death alone gives meaning to life and this meaning is entirely
+negative.”
+    -Georges Poulet
+%%%%
 Orcish Mines
 
 “You load sixteen tons, what do you get
@@ -806,7 +812,7 @@ amulet of faith
 
 <amulet>
 %%%%
-amulet of magic shield
+amulet of guardian spirit
 
 <amulet>
 %%%%
@@ -822,7 +828,7 @@ amulet of rage
 
 <amulet>
 %%%%
-amulet of health regeneration
+amulet of regeneration
 
 <amulet>
 %%%%
@@ -1358,14 +1364,6 @@ ghoul
  And because it is my heart.’”
     -Stephen Crane, _The Black Riders and Other Lines_. 1895.
 %%%%
-giant centipede
-
-“Traffickers in the Black Meat, flesh of the giant black centipede—sometimes
-attaining a length of six feet—found in a lane of black rocks and iridescent,
-brown lagoons, exhibit paralyzed crustaceans in camouflage pockets of the Plaza
-visible only to the Meat Eaters.”
-    -William S. Burroughs, _Naked Lunch_. 1959.
-%%%%
 giant club
 
 “Therewith the gyant buckled him to fight,
@@ -1684,8 +1682,8 @@ deeply-felt respect for any object in the universe than this here shotgun...”
 %%%%
 Iskenderun's Battlesphere spell
 
-“Maxim 4: Close air support covereth a multitude of sins.”
-    -Howard Tayler, _The Seventy Maxims of Maximally Effective Mercenaries_,
+“Rule 4: Close air support covereth a multitude of sins.”
+    -Howard Tayler, _The Seven Habits of Highly Effective Pirates_,
      in _Schlock Mercenary_. 2008.
 %%%%
 jackal

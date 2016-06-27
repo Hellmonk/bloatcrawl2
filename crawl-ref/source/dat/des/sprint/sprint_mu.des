@@ -454,7 +454,7 @@ KMONS: 2 = queen bee
 KITEM: 2 = royal jelly
 KMONS: 3 = generate_awake Nellie
 KITEM: 3 = demonic rune of zot
-: acq_on_sight(_G, '3', {"potion","misc","wand"})
+: acq_on_sight(_G, '3', {"food","misc","wand"})
 NSUBST: 1 = 1:2 / *:1
 COLOUR: # = yellow
 KFEAT: # = closed_door
@@ -606,7 +606,7 @@ SUBST: 5 = 5..
 SUBST: 5 = 5678
 KFEAT: A = antique armour shop / antique weapon shop
 KFEAT: B = book shop / jewellery shop / gadget shop
-KFEAT: C = distillery shop / scroll shop
+KFEAT: C = distillery shop / food shop / scroll shop
 NSUBST: * = 1:A / 1:B / 1:C
 KITEM: $ = serpentine rune of zot
 COLOUR: #c = yellow
@@ -645,7 +645,7 @@ MONS: Polyphemus, sheep, sea snake, Ilsuiw, merfolk javelineer
 KITEM: $ = barnacled rune of zot
 KFEAT: A = antique armour shop / antique weapon shop
 KFEAT: B = book shop / jewellery shop / gadget shop
-KFEAT: C = distillery shop / scroll shop
+KFEAT: C = distillery shop / food shop / scroll shop
 NSUBST: * = 1:A / 1:B / 1:C
 MARKER: X = lua:portal_desc { desc="open sea?" }
 COLOUR: X = blue
@@ -690,7 +690,7 @@ NSUBST: w = 2:? / *:w
 KITEM: $ = barnacled rune of zot
 KFEAT: A = antique armour shop / antique weapon shop
 KFEAT: B = book shop / jewellery shop / gadget shop
-KFEAT: C = distillery shop / scroll shop
+KFEAT: C = distillery shop / food shop / scroll shop
 NSUBST: * = 1:A / 1:B / 1:C
 MARKER: X = lua:portal_desc { desc="open sea?" }
 COLOUR: X = blue
@@ -764,7 +764,7 @@ SUBST: W = WWWW......p2
 KFEAT: ! = deep_water
 KFEAT: A = antique armour shop / antique weapon shop
 KFEAT: B = book shop / jewellery shop / gadget shop
-KFEAT: C = distillery shop / scroll shop
+KFEAT: C = distillery shop / food shop / scroll shop
 NSUBST: * = 1:A / 1:B / 1:C
 KITEM: $ = decaying rune of zot
 COLOUR: # = yellow
@@ -858,7 +858,7 @@ KFEAT: i = antique weapon shop
 KFEAT: d = antique armour shop
 KFEAT: e = gadget shop
 KFEAT: f = book shop
-KFEAT: g = general shop
+KFEAT: g = food shop
 KFEAT: h = jewellery shop
 KFEAT: j = distillery shop
 KFEAT: k = scroll shop
@@ -924,7 +924,7 @@ MONS: stone giant / shadow dragon / quicksilver dragon / golden dragon /\
 MONS: skeletal warrior
 KMONS: 8 = obsidian statue
 KMONS: f = butterfly
-KMONS: U = Sojobo ; morningstar ego:vorpal . large shield ego:reflection / \
+KMONS: U = Norris ; morningstar ego:vorpal . large shield ego:reflection / \
            Frederick ; trident ego:freezing . large shield ego:reflection
 KMONS: C = generate_awake Chuck
 KMONS: k = yaktaur captain ; arbalest ego:chaos . bolt
@@ -1188,8 +1188,8 @@ KMONS: t = col:white generate_awake statue name:pristine name_adjective \
 KMONS: u = Mennas
 KMONS: y = generate_awake roxanne
 KMONS: z = oklob plant
-KFEAT: ! = gadget shop / armour shop / distillery shop
-KITEM: $ = any potion / wand of disintegration w:2 / potion of curing / star_item
+KFEAT: ! = gadget shop / armour shop / distillery shop / food shop
+KITEM: $ = any food / wand of disintegration w:2 / potion of curing / star_item
 KMONS: C = patrolling ice devil
 KMONS: D = patrolling hell beast
 KMONS: E = patrolling sun demon
@@ -1407,7 +1407,7 @@ KMONS: 6 = orange crystal statue
 KMONS: 7 = ghost moth
 KMONS: & = gloorx vloq
 NSUBST: & = 1:& / 1:.
-KITEM: 1 = bony rune of zot
+KITEM: 1 = bone rune of zot
 KMONS: % = patrolling greater mummy
 KITEM: % = superb_item, superb_item, star_item, star_item, any, any
 KMONS: ? = patrolling greater mummy

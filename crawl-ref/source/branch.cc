@@ -14,7 +14,7 @@ FixedVector<int, NUM_BRANCHES> branch_bribe;
 branch_type root_branch;
 
 branch_iterator::branch_iterator() :
-    i(BRANCH_FIRST)
+    i(BRANCH_DUNGEON)
 {
 }
 
@@ -26,40 +26,45 @@ branch_iterator::operator bool() const
 const Branch* branch_iterator::operator*() const
 {
     static const branch_type branch_order[] = {
-        BRANCH_ABYSS,
-        BRANCH_BAILEY,
-        BRANCH_BAZAAR,
-        BRANCH_COCYTUS,
-        BRANCH_CRYPT,
-        BRANCH_DEPTHS,
-        BRANCH_DIS,
         BRANCH_DUNGEON,
-        BRANCH_DWARF,
-        BRANCH_ELF,
-        BRANCH_FOREST,
-        BRANCH_GEHENNA,
-        BRANCH_ICE_CAVE,
-        BRANCH_LABYRINTH,
+        BRANCH_TEMPLE,
         BRANCH_LAIR,
-        BRANCH_ORC,
-        BRANCH_OSSUARY,
-        BRANCH_PANDEMONIUM,
-        BRANCH_SEWER,
+        BRANCH_SWAMP,
         BRANCH_SHOALS,
-        BRANCH_SLIME,
         BRANCH_SNAKE,
         BRANCH_SPIDER,
-        BRANCH_SWAMP,
-        BRANCH_TARTARUS,
-        BRANCH_TEMPLE,
-        BRANCH_TOMB,
-        BRANCH_TROVE,
+        BRANCH_SLIME,
+        BRANCH_ORC,
+        BRANCH_ELF,
+#if TAG_MAJOR_VERSION == 34
+        BRANCH_DWARF,
+#endif
         BRANCH_VAULTS,
+#if TAG_MAJOR_VERSION == 34
+        BRANCH_BLADE,
+        BRANCH_FOREST,
+#endif
+        BRANCH_CRYPT,
+        BRANCH_TOMB,
+        BRANCH_DEPTHS,
         BRANCH_VESTIBULE,
-        BRANCH_VOLCANO,
-        BRANCH_WIZLAB,
-        BRANCH_ZIGGURAT,
+        BRANCH_DIS,
+        BRANCH_GEHENNA,
+        BRANCH_COCYTUS,
+        BRANCH_TARTARUS,
         BRANCH_ZOT,
+        BRANCH_ABYSS,
+        BRANCH_PANDEMONIUM,
+        BRANCH_ZIGGURAT,
+        BRANCH_LABYRINTH,
+        BRANCH_BAZAAR,
+        BRANCH_TROVE,
+        BRANCH_SEWER,
+        BRANCH_OSSUARY,
+        BRANCH_BAILEY,
+        BRANCH_ICE_CAVE,
+        BRANCH_VOLCANO,
+        BRANCH_WIZLAB
     };
     COMPILE_CHECK(ARRAYSZ(branch_order) == NUM_BRANCHES);
 
@@ -87,13 +92,6 @@ branch_iterator branch_iterator::operator++(int)
     return copy;
 }
 
-bool is_safe_branch(branch_type branch)
-{
-    return branch == BRANCH_TROVE
-           || branch == BRANCH_BAZAAR
-           || branch == BRANCH_TEMPLE;
-}
-
 const Branch& your_branch()
 {
     return branches[you.where_are_you];
@@ -115,10 +113,9 @@ level_id current_level_parent()
 
 bool is_hell_subbranch(branch_type branch)
 {
-    return branch == BRANCH_COCYTUS
-           || branch == BRANCH_TARTARUS
-           || branch == BRANCH_DIS
-           || branch == BRANCH_GEHENNA;
+    return branch >= BRANCH_FIRST_HELL
+           && branch <= BRANCH_LAST_HELL
+           && branch != BRANCH_VESTIBULE;
 }
 
 bool is_random_subbranch(branch_type branch)
@@ -141,21 +138,6 @@ bool is_connected_branch(branch_type branch)
 bool is_connected_branch(level_id place)
 {
     return is_connected_branch(place.branch);
-}
-
-bool in_lower_half_of_branch()
-{
-    return you.depth > (brdepth[you.where_are_you] + 1) / 2;
-}
-
-bool is_double_deep_branch(branch_type branch)
-{
-    return false;
-}
-
-bool player_can_gain_experience_here()
-{
-    return !is_double_deep_branch(you.where_are_you) || !in_lower_half_of_branch();
 }
 
 branch_type branch_by_abbrevname(const string &branch, branch_type err)
@@ -188,6 +170,14 @@ branch_type get_branch_at(const coord_def& pos)
 
 bool branch_is_unfinished(branch_type branch)
 {
+#if TAG_MAJOR_VERSION == 34
+    if (branch == BRANCH_DWARF
+        || branch == BRANCH_FOREST
+        || branch == BRANCH_BLADE)
+    {
+        return true;
+    }
+#endif
     return false;
 }
 
@@ -201,18 +191,13 @@ branch_type parent_branch(branch_type branch)
 
 int runes_for_branch(branch_type branch)
 {
-    int runes_required = 0;
     switch (branch)
     {
-    case BRANCH_VAULTS:   runes_required = VAULTS_ENTRY_RUNES;
-    case BRANCH_ZIGGURAT: runes_required = ZIG_ENTRY_RUNES;
-    case BRANCH_ZOT:      runes_required = ZOT_ENTRY_RUNES;
-    default:              runes_required = 0;
+    case BRANCH_VAULTS:   return VAULTS_ENTRY_RUNES;
+    case BRANCH_ZIGGURAT: return ZIG_ENTRY_RUNES;
+    case BRANCH_ZOT:      return ZOT_ENTRY_RUNES;
+    default:              return 0;
     }
-
-    runes_required += you.branch_requires_runes[branch];
-
-    return runes_required;
 }
 
 /**

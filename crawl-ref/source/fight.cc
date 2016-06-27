@@ -47,7 +47,6 @@
 #include "transform.h"
 #include "traps.h"
 #include "travel.h"
-#include "skills.h"
 
 /**
  * Switch from a bad weapon to melee.
@@ -72,7 +71,7 @@ static bool _autoswitch_to_melee()
     else
         return false;
 
-    if (!is_melee_weapon(you.inv1[item_slot]))
+    if (!is_melee_weapon(you.inv[item_slot]))
         return false;
 
     return wield_weapon(true, item_slot);
@@ -436,8 +435,8 @@ static int _beam_to_resist(const actor* defender, beam_type flavour)
         case BEAM_FIRE:
         case BEAM_LAVA:
             return defender->res_fire();
-        case BEAM_HELLFIRE:
-            return defender->res_hellfire();
+        case BEAM_DAMNATION:
+            return defender->res_damnation();
         case BEAM_STEAM:
             return defender->res_steam();
         case BEAM_COLD:
@@ -481,8 +480,8 @@ static int _beam_to_resist(const actor* defender, beam_type flavour)
 int resist_adjust_damage(const actor* defender, beam_type flavour, int rawdamage)
 {
     const int res = _beam_to_resist(defender, flavour);
-//    if (!res)
-//        return rawdamage;
+    if (!res)
+        return rawdamage;
 
     const bool is_mon = defender->is_monster();
 
@@ -518,20 +517,7 @@ int resist_adjust_damage(const actor* defender, beam_type flavour, int rawdamage
     else if (res < 0)
         resistible = resistible * 15 / 10;
 
-    if (!is_mon && you.species == SP_DJINNI)
-    {
-    	if (flavour == BEAM_FIRE || flavour == BEAM_LAVA || flavour == BEAM_STEAM || flavour == BEAM_STICKY_FLAME)
-		{
-        	resistible = -(resistible >> 3);
-    	}
-    	else if (flavour == BEAM_COLD || flavour == BEAM_WATER)
-    	{
-        	resistible = resistible << 2;
-    	}
-    }
-
-//    return max(resistible + irresistible, 0);
-    return resistible + irresistible;
+    return max(resistible + irresistible, 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -552,7 +538,7 @@ bool wielded_weapon_check(item_def *weapon, bool no_message)
     // melee weapons yet.
     if (!weapon
         && (you.skill(SK_UNARMED_COMBAT) > 0
-            || !any_of(you.inv1.begin(), you.inv1.end(),
+            || !any_of(you.inv.begin(), you.inv.end(),
                        [](item_def &it)
                        { return is_melee_weapon(it) && can_wield(&it); })))
     {
@@ -713,22 +699,20 @@ int weapon_min_delay(const item_def &weapon, bool check_speed)
     int min_delay = base/2;
 
     // Short blades can get up to at least unarmed speed.
-    if (item_attack_skill(weapon) == SK_SHORT_BLADES && min_delay > 4)
-        min_delay = 4;
+    if (item_attack_skill(weapon) == SK_SHORT_BLADES && min_delay > 5)
+        min_delay = 5;
 
-    // All weapons have min delay 6 or better
-    if (min_delay > 6)
-        min_delay = 6;
+    // All weapons have min delay 7 or better
+    if (min_delay > 7)
+        min_delay = 7;
 
     // ...except crossbows...
-    if (item_attack_skill(weapon) == SK_CROSSBOWS && min_delay < 8)
-        min_delay = 8;
+    if (item_attack_skill(weapon) == SK_CROSSBOWS && min_delay < 10)
+        min_delay = 10;
 
     // ... and unless it would take more than skill 27 to get there.
     // Round up the reduction from skill, so that min delay is rounded down.
-    /* level caps are gone so this is no longer relevant
-    min_delay = max(min_delay, base - (get_max_skill_level() + 1)/2);
-     */
+    min_delay = max(min_delay, base - (MAX_SKILL_LEVEL + 1)/2);
 
     if (check_speed && get_weapon_brand(weapon) == SPWPN_SPEED)
     {

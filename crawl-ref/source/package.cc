@@ -616,18 +616,12 @@ void package::abort()
     aborted = true;
 }
 
-void package::unlink(bool backup)
+void package::unlink()
 {
     abort();
     close(fd);
     fd = -1;
-
-    if (backup)
-    {
-        ::rename_u(filename.c_str(), (filename + ".bak").c_str());
-    }
-    else
-        ::unlink_u(filename.c_str());
+    ::unlink_u(filename.c_str());
 }
 
 // the amount of free space not at the end of file

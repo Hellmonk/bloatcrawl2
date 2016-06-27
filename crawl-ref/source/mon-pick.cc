@@ -16,38 +16,27 @@
 #include "mon-place.h"
 #include "place.h"
 #include "stringutil.h"
-#include "rune_curse.h"
 
 int branch_ood_cap(branch_type branch)
 {
     ASSERT(branch < NUM_BRANCHES);
 
-    int cap = branches[branch].numlevels;
-
     switch (branch)
     {
     case BRANCH_DUNGEON:
-        cap = 27;
-        break;
+        return 27;
     case BRANCH_DEPTHS:
-        cap = 14;
-        break;
+        return 14;
     case BRANCH_VAULTS:
-        cap = 12;
-        break;
+        return 12;
     case BRANCH_ELF:
-        cap = 7;
-        break;
+        return 7;
     case BRANCH_CRYPT:
     case BRANCH_TOMB:
-        cap = 5;
-        break;
+        return 5;
     default:
-        break;
+        return branches[branch].numlevels;
     }
-
-    cap = rune_curse_depth_adjust(cap);
-    return cap;
 }
 
 // only Pan currently

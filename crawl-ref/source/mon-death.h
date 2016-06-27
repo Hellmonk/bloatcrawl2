@@ -41,8 +41,7 @@ item_def* mounted_kill(monster* daddy, monster_type mc, killer_type killer,
                        int killer_index);
 
 item_def* place_monster_corpse(const monster& mons, bool silent,
-                                                    bool force = false,
-                                                    bool undead_minion = false);
+                                                    bool force = false);
 
 void monster_cleanup(monster* mons);
 void setup_spore_explosion(bolt & beam, const monster& origin);

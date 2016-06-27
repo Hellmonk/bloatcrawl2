@@ -194,7 +194,6 @@ random-var.o \
 ranged_attack.o \
 ray.o \
 rot.o \
-rune_curse.o \
 religion.o \
 shopping.o \
 shout.o \
@@ -308,6 +307,4 @@ ALL_OBJECTS = $(OBJECTS) $(TILES_OBJECTS) $(GLTILES_OBJECTS) \
 $(WEBTILES_OBJECTS) $(YACC_OBJECTS) $(TILEDEFOBJS) \
 libw32c.o \
 libunix.o \
-main.o \
-util/monster/monster-main.o \
 version.o

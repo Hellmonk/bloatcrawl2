@@ -37,9 +37,6 @@ string get_level_annotation(level_id li = level_id::current(),
                             bool use_colour = false, int colour = LIGHTRED);
 
 bool level_annotation_has(string str, level_id li = level_id::current());
-void add_level_annotation(string str, level_id li = level_id::current());
-void reset_experience_potion_annotation(level_id li = level_id::current());
-void add_experience_potion_annotation(level_id li, int count);
 
 void annotate_level();
 void do_annotate(level_id& li);

@@ -182,9 +182,11 @@ static void _dungeon_places()
     {
         if (brdepth[it->id] == -1)
             continue;
+#if TAG_MAJOR_VERSION == 34
         // Don't want to include Forest since it doesn't generate
         if (it->id == BRANCH_FOREST)
             continue;
+#endif
 
         bool new_branch = true;
         for (int depth = 1; depth <= brdepth[it->id]; ++depth)
@@ -207,13 +209,14 @@ static bool _build_dungeon()
         you.where_are_you = lid.branch;
         you.depth = lid.depth;
 
+#if TAG_MAJOR_VERSION == 34
         // An unholy hack, FIXME!
         if (!brentry[BRANCH_FOREST].is_valid()
             && lid.branch == BRANCH_FOREST && lid.depth == 5)
         {
             you.unique_creatures.set(MONS_THE_ENCHANTRESS, false);
         }
-
+#endif
         if (!_do_build_level())
             return false;
     }

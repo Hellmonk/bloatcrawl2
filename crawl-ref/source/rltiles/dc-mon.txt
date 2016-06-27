@@ -100,10 +100,9 @@ natasha MONS_NATASHA
 %rim 1
 %sdir mon/animals
 
-## Bees ('y')
+## Bees ('k')
 killer_bee MONS_KILLER_BEE
 queen_bee MONS_QUEEN_BEE
-../meliai MONS_MELIAI
 
 ## Lizards ('l')
 giant_newt MONS_GIANT_NEWT
@@ -112,7 +111,7 @@ iguana MONS_IGUANA
 basilisk MONS_BASILISK
 komodo_dragon MONS_KOMODO_DRAGON
 
-## Slugs ('w')
+## Slugs ('j')
 %sdir mon/unique
 gastronok MONS_GASTRONOK
 
@@ -128,7 +127,6 @@ quokka MONS_QUOKKA
 %sdir mon/animals
 
 ## Spiders and insects ('s')
-giant_centipede MONS_GIANT_CENTIPEDE
 scorpion MONS_SCORPION
 emperor_scorpion MONS_EMPEROR_SCORPION
 tarantella MONS_TARANTELLA
@@ -220,7 +218,7 @@ sea_snake MONS_SEA_SNAKE
 shock_serpent MONS_SHOCK_SERPENT
 mana_viper MONS_MANA_VIPER
 
-## Bears ('h' again)
+## Bears ('U')
 black_bear MONS_BLACK_BEAR
 polar_bear MONS_POLAR_BEAR
 
@@ -523,6 +521,8 @@ maud MONS_MAUD
 maurice MONS_MAURICE
 %rim 0
 nikola MONS_NIKOLA
+%rim 1
+norris MONS_NORRIS
 %rim 0
 psyche MONS_PSYCHE
 rupert MONS_RUPERT
@@ -841,7 +841,6 @@ bush_burning MONS_BUSH_BURNING
 oklob_sapling MONS_OKLOB_SAPLING
 oklob_plant MONS_OKLOB_PLANT
 %rim 0
-thorn_lotus MONS_THORN_LOTUS
 thorn_hunter MONS_THORN_HUNTER
 treant MONS_TREANT
 briar_patch MONS_BRIAR_PATCH
@@ -1052,14 +1051,6 @@ insubstantial_wisp MONS_INSUBSTANTIAL_WISP
 %sdir mon
 dwarf MONS_DWARF
 deep_dwarf MONS_DEEP_DWARF
-deep_dwarf_scion MONS_DEEP_DWARF_SCION
-deep_dwarf_artificer MONS_DEEP_DWARF_ARTIFICER
-deep_dwarf_berserker MONS_DEEP_DWARF_BERSERKER
-deep_dwarf_necromancer MONS_DEEP_DWARF_NECROMANCER
-deep_dwarf_death_knight MONS_DEEP_DWARF_DEATH_KNIGHT
-%rim 0
-undead/unborn_deep_dwarf MONS_UNBORN_DEEP_DWARF
-%rim 1
 %sdir mon/unique
 jorgrun MONS_JORGRUN
 
@@ -1103,8 +1094,6 @@ tiamat_pale
 tiamat_purple
 tiamat_red
 tiamat_white
-bai_suizhen MONS_BAI_SUZHEN
-bai_suizhen_dragon MONS_BAI_SUZHEN_DRAGON
 %sdir mon/draco
 # must match monster_type enum order.
 draco-base-brown DRACO_BASE

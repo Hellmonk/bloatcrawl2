@@ -28,7 +28,6 @@
 #include "traps.h"
 #include "travel.h"
 #include "viewgeom.h"
-#include "rltiles/tiledef_defines.h"
 
 void tile_new_level(bool first_time, bool init_unseen)
 {
@@ -104,11 +103,16 @@ void tile_default_flv(branch_type br, int depth, tile_flavour &flv)
         flv.floor = TILE_FLOOR_VINES;
         return;
 
+#if TAG_MAJOR_VERSION == 34
     case BRANCH_DWARF:
         flv.wall  = TILE_WALL_HALL;
         flv.floor = TILE_FLOOR_LIMESTONE;
         return;
+#endif
 
+#if TAG_MAJOR_VERSION == 34
+    case BRANCH_BLADE:
+#endif
     case BRANCH_ELF:
         flv.wall  = TILE_WALL_HALL;
         flv.floor = TILE_FLOOR_HALL;
@@ -189,11 +193,12 @@ void tile_default_flv(branch_type br, int depth, tile_flavour &flv)
         flv.floor = TILE_FLOOR_TOMB;
         return;
 
+#if TAG_MAJOR_VERSION == 34
     case BRANCH_FOREST:
         flv.wall  = TILE_WALL_LAIR;
         flv.floor = TILE_FLOOR_GRASS;
         return;
-
+#endif
     case BRANCH_ABYSS:
         flv.floor = tile_dngn_coloured(TILE_FLOOR_NERVES, env.floor_colour);
         switch (random2(6))
@@ -423,7 +428,6 @@ static tileidx_t _pick_dngn_tile_multi(vector<tileidx_t> candidates, int value)
 
     // Should never reach this place
     ASSERT(false);
-    return 0;
 }
 
 static bool _same_door_at(dungeon_feature_type feat, const coord_def &gc)
@@ -786,6 +790,7 @@ void tile_floor_halo(dungeon_feature_type target, tileidx_t tile)
         }
 }
 
+#ifdef USE_TILE
 static tileidx_t _get_floor_bg(const coord_def& gc)
 {
     tileidx_t bg = TILE_DNGN_UNSEEN | tileidx_unseen_flag(gc);
@@ -1094,6 +1099,7 @@ static bool _is_torch(tileidx_t basetile)
 // Unfortunately, these are all hard-coded for now.
 void tile_apply_animations(tileidx_t bg, tile_flavour *flv)
 {
+#ifndef USE_TILE_WEB
     tileidx_t bg_idx = bg & TILE_FLAG_MASK;
     if (bg_idx == TILE_DNGN_PORTAL_WIZARD_LAB && Options.tile_misc_anim)
         flv->special = (flv->special + 1) % tile_dngn_count(bg_idx);
@@ -1121,6 +1127,7 @@ void tile_apply_animations(tileidx_t bg, tile_flavour *flv)
         if (_is_torch(basetile))
             flv->wall = basetile + (flv->wall - basetile + 1) % tile_dngn_count(basetile);
     }
+#endif
 }
 
 static bool _suppress_blood(const map_cell& mc)
@@ -1371,7 +1378,16 @@ void tile_apply_properties(const coord_def &gc, packed_cell &cell)
     if (mc.flags & MAP_UMBRAED)
         cell.halo = HALO_UMBRA;
     else if (mc.flags & MAP_HALOED)
-        cell.halo = HALO_RANGE;
+    {
+        monster_info* mon = mc.monsterinfo();
+        if (mon && mons_class_gives_xp(mon->type))
+        {
+            cell.halo = HALO_MONSTER;
+            print_blood = false;
+        }
+        else
+            cell.halo = HALO_RANGE;
+    }
     else
         cell.halo = HALO_NONE;
 
@@ -1444,4 +1460,4 @@ void tile_apply_properties(const coord_def &gc, packed_cell &cell)
         }
     }
 }
-
+#endif

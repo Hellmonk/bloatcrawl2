@@ -102,7 +102,7 @@ function ch_stash_search_annotate_item(it)
 
   if it.class(true) == "armour" and not it.artefact then
     local props = {
-      ["troll"] = "RegenHP+",
+      ["troll"] = "Regen+",
       ["steam"] = "rSteam",
       ["mottled"] = "rNapalm",
       ["quicksilver"] = "MR+",

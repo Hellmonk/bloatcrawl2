@@ -10,11 +10,9 @@
 #include <algorithm>
 #include <cctype>
 #include <climits>
-#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <sstream>
 
 #include "areas.h"
 #include "coordit.h"
@@ -23,7 +21,6 @@
 #include "env.h"
 #include "godpassive.h"
 #include "godabil.h"
-#include "itemprop.h"
 #include "libutil.h"
 #include "message.h"
 #include "notes.h"
@@ -35,7 +32,6 @@
 #include "spl-damage.h"
 #include "spl-summoning.h"
 #include "spl-zap.h"
-#include "stepdown.h"
 #include "stringutil.h"
 #include "target.h"
 #include "terrain.h"
@@ -77,9 +73,6 @@ struct spell_desc
 };
 
 #include "spl-data.h"
-#include "colour.h"
-#include "unicode.h"
-#include "format.h"
 
 static int spell_list[NUM_SPELLS];
 
@@ -410,35 +403,31 @@ bool del_spell_from_memory(spell_type spell)
         return del_spell_from_memory_by_slot(i);
 }
 
-int spell_hunger(spell_type which_spell, bool rod, int multiplier)
+int spell_hunger(spell_type which_spell, bool rod)
 {
+    if (player_energy())
+        return 0;
+
     const int level = spell_difficulty(which_spell);
-    int x = 300;
-    x += level * 50;
+
+    const int basehunger[] = { 50, 100, 150, 250, 400, 550, 700, 850, 1000 };
+
+    int hunger;
+
+    if (level < 10 && level > 0)
+        hunger = basehunger[level-1];
+    else
+        hunger = (basehunger[0] * level * level) / 4;
 
     if (rod)
     {
-        const int evo = you.skill(SK_EVOCATIONS, 10);
-        x -= evo;
-        x -= 250;
+        hunger -= you.skill(SK_EVOCATIONS, 10);
+        hunger = max(hunger, level * 5);
     }
     else
-    {
-        const int spellcasting = you.skill(SK_SPELLCASTING, 10);
-        const int intel = you.intel() * 10;
-        x -= spellcasting / 2;
-        x -= intel / 2;
-        if (have_passive(passive_t::conserve_mp))
-        {
-            const int invo = you.skill(SK_INVOCATIONS, 10);
-            x -= invo / 2;
-        }
-    }
+        hunger -= you.skill(SK_SPELLCASTING, you.intel());
 
-    // if you change this, also update the display in describe-god.cc: _describe_god_powers for SIF_MUNA
-    int hunger = pow(17.0 / 16, x / 10.0) * 10;
-
-    if (hunger < 0 || player_mutation_level(MUT_HUNGERLESS) != 0)
+    if (hunger < 0)
         hunger = 0;
 
     return hunger;
@@ -448,7 +437,7 @@ int spell_hunger(spell_type which_spell, bool rod, int multiplier)
 // an unobstructed beam path, such as fire storm.
 bool spell_is_direct_explosion(spell_type spell)
 {
-    return spell == SPELL_FIRE_STORM || spell == SPELL_CALL_DOWN_HELLFIRE;
+    return spell == SPELL_FIRE_STORM || spell == SPELL_CALL_DOWN_DAMNATION;
 }
 
 bool spell_harms_target(spell_type spell)
@@ -477,31 +466,11 @@ bool spell_harms_area(spell_type spell)
     return false;
 }
 
-int max_school_skill(const spschools_type &disciplines, const int scale)
+// applied to spell misfires (more power = worse) and triggers
+// for Xom acting (more power = more likely to grab his attention) {dlb}
+int spell_mana(spell_type which_spell)
 {
-    /* Old style average
-    int multiplier = 0;
-    int skillcount = count_bits(disciplines);
-    if (skillcount)
-    {
-        for (const auto disc : spschools_type::range())
-        {
-            if (disciplines & disc)
-                multiplier += you.skill(spell_type2skill(disc), scale);
-        }
-        multiplier /= skillcount;
-    }
-    return multiplier;
-     */
-
-    int max_skill = 0;
-    for (const auto disc : spschools_type::range())
-    {
-        if (disciplines & disc)
-            max_skill = max(max_skill, you.skill(spell_type2skill(disc), scale));
-    }
-
-    return max_skill;
+    return _seekspell(which_spell)->level;
 }
 
 // applied in naughties (more difficult = higher level knowledge = worse)
@@ -864,12 +833,6 @@ const char* spelltype_short_name(spschool_flag_type which_spelltype)
         return "Erth";
     case SPTYP_AIR:
         return "Air";
-    case SPTYP_LIGHT:
-        return "Light";
-    case SPTYP_DARKNESS:
-        return "Darkness";
-    case SPTYP_TIME:
-        return "Time";
     case SPTYP_RANDOM:
         return "Rndm";
     default:
@@ -907,12 +870,6 @@ const char* spelltype_long_name(spschool_flag_type which_spelltype)
         return "Earth";
     case SPTYP_AIR:
         return "Air";
-    case SPTYP_LIGHT:
-        return "Light";
-    case SPTYP_DARKNESS:
-        return "Darkness";
-    case SPTYP_TIME:
-        return "Time";
     case SPTYP_RANDOM:
         return "Random";
     default:
@@ -936,9 +893,6 @@ skill_type spell_type2skill(spschool_flag_type spelltype)
     case SPTYP_POISON:         return SK_POISON_MAGIC;
     case SPTYP_EARTH:          return SK_EARTH_MAGIC;
     case SPTYP_AIR:            return SK_AIR_MAGIC;
-    case SPTYP_LIGHT:          return SK_LIGHT_MAGIC;
-    case SPTYP_DARKNESS:       return SK_DARKNESS_MAGIC;
-    case SPTYP_TIME:           return SK_TIME_MAGIC;
 
     default:
     case SPTYP_DIVINATION:
@@ -963,9 +917,6 @@ spschool_flag_type skill2spell_type(skill_type spell_skill)
     case SK_POISON_MAGIC:    return SPTYP_POISON;
     case SK_EARTH_MAGIC:     return SPTYP_EARTH;
     case SK_AIR_MAGIC:       return SPTYP_AIR;
-    case SK_LIGHT_MAGIC:     return SPTYP_LIGHT;
-    case SK_DARKNESS_MAGIC:  return SPTYP_DARKNESS;
-    case SK_TIME_MAGIC:            return SPTYP_TIME;
 
     default:
         return SPTYP_NONE;
@@ -1006,7 +957,6 @@ static bool _spell_range_varies(spell_type spell)
 
 int spell_power_cap(spell_type spell)
 {
-    return SPELL_POWER_CAP;
     const int scap = _seekspell(spell)->power_cap;
     const int zcap = spell_zap_power_cap(spell);
 
@@ -1061,13 +1011,8 @@ int spell_range(spell_type spell, int pow, bool player_spell)
         return min(maxrange, (int)you.current_vision);
 
     // Round appropriately.
-    int range = max(1, pow);
-    range = (log2(range) - 3) * 20;
-    range = max(range, 0);
-    range = (range * (maxrange - minrange) / 100) + minrange + 0.5;
-    range = min((int)you.current_vision, range);
-    range = min(range, maxrange);
-    return range;
+    return min((int)you.current_vision,
+           (pow * (maxrange - minrange) + powercap / 2) / powercap + minrange);
 }
 
 /**
@@ -1151,7 +1096,7 @@ bool spell_is_form(spell_type spell)
  *
  * @param spell      The spell in question.
  * @param temp       Include checks for volatile or temporary states
- *                   (status effects, magic, gods, items, etc.)
+ *                   (status effects, mana, gods, items, etc.)
  * @param prevent    Whether to only check for effects which prevent casting,
  *                   rather than just ones that make it unproductive.
  * @param evoked     Is the spell being evoked from an item? (E.g., a rod)
@@ -1172,7 +1117,7 @@ bool spell_is_useless(spell_type spell, bool temp, bool prevent, bool evoked,
  *
  * @param spell      The spell in question.
  * @param temp       Include checks for volatile or temporary states
- *                   (status effects, magic, gods, items, etc.)
+ *                   (status effects, mana, gods, items, etc.)
  * @param prevent    Whether to only check for effects which prevent casting,
  *                   rather than just ones that make it unproductive.
  * @param evoked     Is the spell being evoked from an item? (E.g., a rod)
@@ -1190,7 +1135,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     {
         if (!fake_spell && you.duration[DUR_CONF] > 0)
             return "you're too confused.";
-        if (!enough_mp(spell_mp_cost(spell), true, false)
+        if (!enough_mp(spell_mana(spell), true, false)
             && !evoked && !fake_spell)
         {
             return "you don't have enough magic.";
@@ -1207,6 +1152,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     }
 
 
+#if TAG_MAJOR_VERSION == 34
     if (you.species == SP_DJINNI)
     {
         if (spell == SPELL_ICE_FORM  || spell == SPELL_OZOCUBUS_ARMOUR)
@@ -1234,6 +1180,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         }
 
     }
+#endif
 
     switch (spell)
     {
@@ -1249,10 +1196,8 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 
     case SPELL_SWIFTNESS:
-        if (temp)
+        if (temp && !prevent)
         {
-            if (you.duration[DUR_SWIFTNESS])
-                return "this spell is already in effect.";
             if (player_movement_speed() <= FASTEST_PLAYER_MOVE_SPEED)
                 return "you're already traveling as fast as you can.";
             if (you.is_stationary())
@@ -1267,23 +1212,16 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
 
     case SPELL_DARKNESS:
         // mere corona is not enough, but divine light blocks it completely
-        if (temp && (you.haloed() || !prevent && have_passive(passive_t::halo)))
+        if (!prevent && temp && (you.haloed() || have_passive(passive_t::halo)))
             return "darkness is useless against divine light.";
         break;
 
     case SPELL_REPEL_MISSILES:
         if (temp && (player_mutation_level(MUT_DISTORTION_FIELD) == 3
-                     || you.scan_artefacts(ARTP_RMSL, true)
-                     || you.attribute[ATTR_REPEL_MISSILES]
-                     || you.attribute[ATTR_DEFLECT_MISSILES]))
+                        || you.scan_artefacts(ARTP_RMSL, true)))
         {
             return "you're already repelling missiles.";
         }
-        break;
-
-    case SPELL_DEFLECT_MISSILES:
-        if (temp && you.attribute[ATTR_DEFLECT_MISSILES])
-            return "you're already deflecting missiles.";
         break;
 
     case SPELL_STATUE_FORM:
@@ -1297,13 +1235,13 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_HYDRA_FORM:
     case SPELL_ICE_FORM:
     case SPELL_SPIDER_FORM:
-//        if (you.undead_state(temp) == US_UNDEAD
-//            || you.undead_state(temp) == US_HUNGRY_DEAD)
-//        {
-//            return "your undead flesh cannot be transformed.";
-//        }
-//        if (temp && you.is_lifeless_undead())
-//            return "your current blood level is not sufficient.";
+        if (you.undead_state(temp) == US_UNDEAD
+            || you.undead_state(temp) == US_HUNGRY_DEAD)
+        {
+            return "your undead flesh cannot be transformed.";
+        }
+        if (temp && you.is_lifeless_undead())
+            return "your current blood level is not sufficient.";
         break;
 
     case SPELL_REGENERATION:
@@ -1316,14 +1254,6 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_PORTAL_PROJECTILE:
     case SPELL_WARP_BRAND:
     case SPELL_EXCRUCIATING_WOUNDS:
-        if (temp
-            && (!you.weapon()
-                || you.weapon()->base_type != OBJ_WEAPONS
-                || !is_brandable_weapon(*you.weapon(), true)))
-        {
-            return "you aren't wielding an enchantable weapon.";
-        }
-        // intentional fallthrough
     case SPELL_SPECTRAL_WEAPON:
         if (you.species == SP_FELID)
             return "this spell is useless without hands.";
@@ -1331,8 +1261,8 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
 
     case SPELL_LEDAS_LIQUEFACTION:
         if (temp && (!you.stand_on_solid_ground()
-                     || you.duration[DUR_LIQUEFYING]
-                     || liquefied(you.pos())))
+                        || you.duration[DUR_LIQUEFYING]
+                        || liquefied(you.pos())))
         {
             return "you must stand on solid ground to cast this.";
         }
@@ -1344,22 +1274,10 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 
     case SPELL_BORGNJORS_REVIVIFICATION:
-        if (temp && you.hp == you.hp_max)
-            return "you cannot be healed further.";
-        if (temp && you.hp_max < 21)
-            return "you lack the resilience to cast this spell.";
+    case SPELL_DEATHS_DOOR:
         // Prohibited to all undead.
         if (you.undead_state(temp))
             return "you're too dead.";
-        break;
-    case SPELL_DEATHS_DOOR:
-        if (temp && you.duration[DUR_EXHAUSTED])
-            return "you are too exhausted to enter Death's door!";
-        if (temp && you.duration[DUR_DEATHS_DOOR])
-            return "your appeal for an extension has been denied.";
-        // Prohibited to all undead.
-//        if (you.undead_state(temp))
-//            return "you're too dead.";
         break;
     case SPELL_NECROMUTATION:
         // only prohibted to actual undead, not lichformed players
@@ -1375,24 +1293,6 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         {
             return "you can't be poisoned.";
         }
-        if (temp && !you.duration[DUR_POISONING])
-            return "you aren't poisoned right now.";
-        break;
-
-    case SPELL_OZOCUBUS_ARMOUR:
-        if (temp && !player_effectively_in_light_armour())
-            return "your body armour is too heavy.";
-        if (temp && you.form == TRAN_STATUE)
-            return "the film of ice won't work on stone.";
-        if (temp && you.duration[DUR_FIRE_SHIELD])
-            return "your ring of flames would instantly melt the ice.";
-        break;
-
-    case SPELL_CIGOTUVIS_EMBRACE:
-        if (temp && you.form == TRAN_STATUE)
-            return "the corpses won't embrace your stony flesh.";
-        if (temp && you.duration[DUR_ICY_ARMOUR])
-            return "the corpses won't embrace your icy flesh.";
         break;
 
     case SPELL_SUBLIMATION_OF_BLOOD:
@@ -1404,7 +1304,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         {
             return "you have no blood to sublime.";
         }
-        if (get_mp() == get_mp_max() && temp)
+        if (you.magic_points == you.max_magic_points && temp)
             return "your magic capacity is already full.";
         break;
 
@@ -1427,11 +1327,6 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_SUMMON_FOREST:
         if (temp && you.duration[DUR_FORESTED])
             return "you can only summon one forest at a time.";
-        break;
-
-    case SPELL_PASSWALL:
-        if (temp && you.is_stationary())
-            return "you can't move";
         break;
 
     case SPELL_ANIMATE_DEAD:
@@ -1564,7 +1459,7 @@ bool spell_no_hostile_in_range(spell_type spell, bool rod)
     if (zap != NUM_ZAPS)
     {
         beam.thrower = KILL_YOU_MISSILE;
-        zappy(zap, calc_spell_power(spell, true, rod), false,
+        zappy(zap, calc_spell_power(spell, true, false, true, rod), false,
               beam);
         if (spell == SPELL_MEPHITIC_CLOUD)
             beam.damage = dice_def(1, 1); // so that foe_info is populated
@@ -1623,10 +1518,7 @@ static const mutation_type arcana_sacrifice_map[] = {
     MUT_NO_TRANSLOCATION_MAGIC,
     MUT_NO_POISON_MAGIC,
     MUT_NO_EARTH_MAGIC,
-    MUT_NO_AIR_MAGIC,
-    MUT_NO_LIGHT_MAGIC,
-    MUT_NO_DARKNESS_MAGIC,
-    MUT_NO_TIME_MAGIC,
+    MUT_NO_AIR_MAGIC
 };
 
 /**
@@ -1671,90 +1563,4 @@ skill_type arcane_mutation_to_skill(mutation_type mutation)
         if (arcana_sacrifice_map[exp] == mutation)
             return spell_type2skill(spschools_type::exponent(exp));
     return SK_NONE;
-}
-
-string spell_wide_description(spell_type spell, bool viewing)
-{
-    ostringstream desc;
-
-    int colour = LIGHTGRAY;
-    if (vehumet_is_offering(spell))
-        colour = LIGHTBLUE;
-        // Grey out spells for which you lack experience or spell levels.
-    else if (spell_difficulty(spell) > effective_xl()
-             || player_spell_levels() < spell_levels_required(spell))
-        colour = DARKGRAY;
-    else
-        colour = spell_highlight_by_utility(spell);
-
-    desc << "<" << colour_to_str(colour) << ">";
-
-    // spell name
-    desc << chop_string(spell_title(spell), 29);
-    desc << "</" << colour_to_str(colour) <<">";
-
-    const string rangestring = spell_range_string(spell);
-
-    string spell_power;
-    // choose numeric version for now
-    if(true)
-    	spell_power = spell_power_numeric_string(spell);
-    else
-    	spell_power = spell_power_string(spell);
-
-    desc << chop_string(spell_power, 6)
-         << chop_string(rangestring, 11 + tagged_string_tag_length(rangestring));
-
-    // spell fail rate, level
-    colour = failure_rate_colour(spell);
-    desc << "<" << colour_to_str(colour) << ">";
-    const string failure = failure_rate_to_string(raw_spell_fail(spell));
-    desc << chop_string(failure, 5);
-    desc << "</" << colour_to_str(colour) << ">";
-    desc << chop_string(make_stringf("%d", spell_difficulty(spell)), 6);
-
-    int mp_cost = spell_mp_cost(spell);
-    if (mp_cost == 0)
-    {
-        mp_cost = spell_mp_freeze(spell);
-    }
-
-    desc << chop_string(make_stringf("%d", mp_cost), 4);
-
-    // spell schools
-    desc << spell_schools_string(spell);
-
-    return desc.str();
-}
-
-bool spell_is_soh_breath(spell_type spell)
-{
-    return spell == SPELL_SERPENT_OF_HELL_GEH_BREATH
-        || spell == SPELL_SERPENT_OF_HELL_COC_BREATH
-        || spell == SPELL_SERPENT_OF_HELL_DIS_BREATH
-        || spell == SPELL_SERPENT_OF_HELL_TAR_BREATH;
-}
-
-const vector<spell_type> *soh_breath_spells(spell_type spell)
-{
-    static const map<spell_type, vector<spell_type>> soh_breaths = {
-        { SPELL_SERPENT_OF_HELL_GEH_BREATH,
-            { SPELL_FIRE_BREATH,
-              SPELL_FLAMING_CLOUD,
-              SPELL_FIREBALL } },
-        { SPELL_SERPENT_OF_HELL_COC_BREATH,
-            { SPELL_COLD_BREATH,
-              SPELL_FREEZING_CLOUD,
-              SPELL_FLASH_FREEZE } },
-        { SPELL_SERPENT_OF_HELL_DIS_BREATH,
-            { SPELL_METAL_SPLINTERS,
-              SPELL_QUICKSILVER_BOLT,
-              SPELL_LEHUDIBS_CRYSTAL_SPEAR } },
-        { SPELL_SERPENT_OF_HELL_TAR_BREATH,
-            { SPELL_BOLT_OF_DRAINING,
-              SPELL_MIASMA_BREATH,
-              SPELL_CORROSIVE_BOLT } },
-    };
-
-    return map_find(soh_breaths, spell);
 }

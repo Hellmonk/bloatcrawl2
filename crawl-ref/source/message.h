@@ -25,9 +25,7 @@ void flush_prev_message();
 
 void more(bool user_forced = false);
 
-void canned_msg(canned_message_type which_message, const int amount = 0);
-
-bool monster_message(const monster* mons, const char *event, ...);
+void canned_msg(canned_message_type which_message);
 
 bool simple_monster_message(const monster* mons, const char *event,
                             msg_channel_type channel = MSGCH_PLAIN,
@@ -88,7 +86,7 @@ template<int> static int msgwin_get_line_autohist_temp(string prompt,
 
 // Tell the message window that the game is about to read a new
 // command from the player.
-void msgwin_new_cmd(bool force = false);
+void msgwin_new_cmd();
 // Tell the message window that a new turn has started.
 void msgwin_new_turn();
 

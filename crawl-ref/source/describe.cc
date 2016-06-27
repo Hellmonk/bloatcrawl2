@@ -131,16 +131,13 @@ const char* jewellery_base_ability_string(int subtype)
 #endif
     case AMU_HARM:                return "Harm *Drain";
     case AMU_DISMISSAL:           return "Dismiss";
-    case AMU_MAGIC_REGENERATION:   return "RegenMP";
-    case AMU_STAMINA_REGENERATION:return "RegenSP";
+    case AMU_MANA_REGENERATION:   return "RegenMP";
     case AMU_THE_GOURMAND:        return "Gourm";
 #if TAG_MAJOR_VERSION == 34
     case AMU_CONSERVATION:        return "Cons";
     case AMU_CONTROLLED_FLIGHT:   return "cFly";
 #endif
-    case AMU_MAGIC_SHIELD:        return "MagicShield";
-    case AMU_STAMINA_SHIELD:      return "StaminaShield";
-    case AMU_QUICK_CAST:          return "QuickCast";
+    case AMU_GUARDIAN_SPIRIT:     return "Spirit";
     case AMU_FAITH:               return "Faith";
     case AMU_REFLECTION:          return "Reflect";
     case AMU_INACCURACY:          return "Inacc";
@@ -172,8 +169,6 @@ static vector<string> _randart_propnames(const item_def& item,
 {
     artefact_properties_t  proprt;
     artefact_known_props_t known;
-    proprt.init(0);
-    known.init(0);
     artefact_desc_properties(item, proprt, known);
 
     vector<string> propnames;
@@ -222,7 +217,6 @@ static vector<string> _randart_propnames(const item_def& item,
         { ARTP_DEXTERITY,             PROPN_NUMERAL },
         { ARTP_SLAYING,               PROPN_NUMERAL },
         { ARTP_SHIELDING,             PROPN_NUMERAL },
-        { ARTP_STAMINA,               PROPN_NUMERAL },
 
         // Qualitative attributes (and Stealth)
         { ARTP_SEE_INVISIBLE,         PROPN_PLAIN },
@@ -387,24 +381,17 @@ static const char* _jewellery_base_ability_description(int subtype)
         return "It increases damage dealt and taken.";
     case AMU_DISMISSAL:
         return "It may teleport away creatures that harm you.";
-    case AMU_MAGIC_REGENERATION:
+    case AMU_MANA_REGENERATION:
         return "It increases your magic regeneration.";
-    case AMU_STAMINA_REGENERATION:
-        return "It increases your stamina regeneration.";
     case AMU_THE_GOURMAND:
         return "It allows you to eat raw meat even when not hungry.";
 #if TAG_MAJOR_VERSION == 34
     case AMU_CONSERVATION:
         return "It protects your inventory from destruction.";
 #endif
-    case AMU_MAGIC_SHIELD:
+    case AMU_GUARDIAN_SPIRIT:
         return "It causes incoming damage to be split between your health and "
                "magic.";
-    case AMU_STAMINA_SHIELD:
-        return "It causes incoming damage to be split between your health and "
-            "stamina.";
-    case AMU_QUICK_CAST:
-        return "It allows you to cast spells more quickly.";
     case AMU_FAITH:
         return "It allows you to gain divine favour quickly.";
     case AMU_REFLECTION:
@@ -428,9 +415,6 @@ static string _randart_descrip(const item_def &item)
 
     artefact_properties_t  proprt;
     artefact_known_props_t known;
-    proprt.init(0);
-    known.init(0);
-
     artefact_desc_properties(item, proprt, known);
 
     const property_descriptor propdescs[] =
@@ -452,7 +436,6 @@ static string _randart_descrip(const item_def &item)
                                  "enchantments.", false},
         { ARTP_HP, "It affects your health (%d).", false},
         { ARTP_MAGICAL_POWER, "It affects your magic capacity (%d).", false},
-        { ARTP_STAMINA, "It affects your stamina capacity (%d).", false},
         { ARTP_SEE_INVISIBLE, "It lets you see invisible.", false},
         { ARTP_INVISIBLE, "It lets you turn invisible.", false},
         { ARTP_FLY, "It lets you fly.", false},
@@ -723,7 +706,7 @@ static string _describe_demon(const string& name, bool flying)
         " It is difficult to look away.",
         " It is constantly speaking in tongues.",
         " It babbles unendingly.",
-        " Its body is scourged by hellfire.",
+        " Its body is scourged by damnation.",
         " Its body is extensively scarred.",
         " You find it difficult to look away.",
     };
@@ -848,29 +831,18 @@ static void _append_weapon_stats(string &description, const item_def &item)
     const skill_type skill = item_attack_skill(item);
 
     const string your_skill = crawl_state.need_save ?
-      make_stringf("\n (Your skill: %.1f)", (float) you.skill(SK_FIGHTING, 10) / 10)
+      make_stringf("\n (Your skill: %.1f)", (float) you.skill(skill, 10) / 10)
       : "";
-    const int hit = property(item, PWPN_HIT);
-    const int damage = base_dam + ammo_dam;
-    const int sp_cost = weapon_sp_cost(&item);
-    const float base_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_MAX) / 10;
-    const float current_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_CURRENT) / 10;
-    const float min_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_MIN) / 10;
     description += make_stringf(
-    "\nBase accuracy: %+d   Base damage: %d   Current SP cost: %d"
-    "\nAttack delay:  Base: %.1f   Current: %.1f   Min: %.1f"
-    "\nBoth dexterity and fighting skill reduce attack delay equally. Weapon skill does not.",
-        /*
-    "\nThis weapon's minimum attack delay (%.1f) is reached at *fighting* skill level %d."
+    "\nBase accuracy: %+d  Base damage: %d  Base attack delay: %.1f"
+    "\nThis weapon's minimum attack delay (%.1f) is reached at skill level %d."
     "%s",
-         */
-    hit,
-    damage,
-    sp_cost,
-    base_delay,
-    current_delay,
-    min_delay
-     );
+     property(item, PWPN_HIT),
+     base_dam + ammo_dam,
+     (float) property(item, PWPN_SPEED) / 10,
+     (float) weapon_min_delay(item) / 10,
+     weapon_min_delay_skill(item),
+     your_skill.c_str());
 
     if (skill == SK_SLINGS)
     {
@@ -926,8 +898,8 @@ static string _describe_weapon(const item_def &item, bool verbose)
             description += "\n\nIt can be evoked to extend its reach.";
             break;
         case SK_AXES:
-            description += "\n\nIt hits all enemies adjacent to the wielder, "
-                           "dealing less damage to those not targeted.";
+            description += "\n\nIt can hit multiple enemies in an arc"
+                           " around the wielder.";
             break;
         case SK_SHORT_BLADES:
             {
@@ -1031,8 +1003,8 @@ static string _describe_weapon(const item_def &item, bool verbose)
             description += "It protects the one who wields it against "
                 "injury (+5 to AC).";
             break;
-        case SPWPN_LIGHT:
-            description += "It is lighter than normal, reducing stamina cost when using it.";
+        case SPWPN_EVASION:
+            description += "It affects your evasion (+5 to EV).";
             break;
         case SPWPN_DRAINING:
             description += "A truly terrible weapon, it drains the "
@@ -1057,8 +1029,9 @@ static string _describe_weapon(const item_def &item, bool verbose)
         case SPWPN_CHAOS:
             if (is_range_weapon(item))
             {
-                description += "Each projectile launched from it has a "
-                               "different, random effect.";
+                description += "Each time it fires, it turns the "
+                    "launched projectile into a different, random type "
+                    "of bolt.";
             }
             else
             {
@@ -1172,38 +1145,10 @@ static string _describe_ammo(const item_def &item)
 {
     string description;
 
-    description.reserve(200);
+    description.reserve(64);
 
     const bool can_launch = has_launcher(item);
     const bool can_throw  = is_throwable(&you, item, true);
-
-    const int base_dam = property(item, PWPN_DAMAGE);
-    const missile_type ammo_type = (missile_type)item.sub_type;
-    const int ammo_dam = ammo_type == MI_NONE ? 0 :
-                         ammo_type_damage(ammo_type);
-    const skill_type skill = item_attack_skill(item);
-
-    const int hit = property(item, PWPN_HIT);
-    const int damage = ammo_dam;
-    const int sp_cost = weapon_sp_cost(&item);
-    const float base_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_MAX) / 10;
-    const float current_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_CURRENT) / 10;
-    const float min_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_MIN) / 10;
-    description += make_stringf(
-        "\n\nBase accuracy: %+d   Base damage: %d   Current SP cost: %d"
-            "\nAttack delay:  Base: %.1f   Current: %.1f   Min: %.1f"
-            "\nBoth dexterity and fighting skill reduce attack delay equally. Weapon skill does not.",
-        /*
-    "\nThis weapon's minimum attack delay (%.1f) is reached at *fighting* skill level %d."
-    "%s",
-         */
-        hit,
-        damage,
-        sp_cost,
-        base_delay,
-        current_delay,
-        min_delay
-    );
 
     if (item.brand && item_type_known(item))
     {
@@ -1247,13 +1192,14 @@ static string _describe_ammo(const item_def &item)
             if (can_launch)
                 description += "fired from an appropriate launcher, ";
 
-            description += "it has a random effect.";
+            description += "it turns into a bolt of a random type.";
             break;
         case SPMSL_POISONED:
             description += "It is coated with poison.";
             break;
         case SPMSL_CURARE:
-            description += "It is tipped with impact poison.";
+            description += "It is tipped with impact poison. It is twice as "
+                           "likely to be destroyed on impact as other needles.";
             break;
         case SPMSL_PARALYSIS:
             description += "It is tipped with a paralysing substance.";
@@ -1489,12 +1435,7 @@ static string _describe_armour(const item_def &item, bool verbose)
                 "direction they came from.";
             break;
 
-        case SPARM_STAMINA_SHIELD:
-            description += "It shields its wearer from harm at the cost "
-                "of stamina.";
-            break;
-
-        case SPARM_MAGIC_SHIELD:
+        case SPARM_SPIRIT_SHIELD:
             description += "It shields its wearer from harm at the cost "
                 "of magical power.";
             break;
@@ -1821,8 +1762,7 @@ string get_item_description(const item_def &item, bool verbose,
                 if (item_type_known(item))
                 {
                     description << "[ERROR: no desc for item name '" << db_name
-                                << "']. Please let us know about this at "
-                                << "http://github.com/jeremygurr/dcssca/issues\n";
+                                << "']. Perhaps this item has been removed?\n";
                 }
                 else
                 {
@@ -1902,7 +1842,7 @@ string get_item_description(const item_def &item, bool verbose,
 
         if (item_type_known(item) && !item_ident(item, ISFLAG_KNOW_PLUSES))
         {
-            description << "\nIt can have at most " << item.get_cap()
+            description << "\nIt can have at most " << wand_max_charges(item)
                         << " charges.";
         }
 
@@ -2046,14 +1986,6 @@ string get_item_description(const item_def &item, bool verbose,
         break;
 
     case OBJ_POTIONS:
-    {
-        if (item.sub_type == POT_EXPERIENCE && Options.exp_percent_from_potions > 0
-            && (Options.exp_potion_on_each_floor || Options.uniques_drop_exp_potions))
-        {
-            description << "\n\nDrinking this on this level will give "
-                        << potion_experience_for_this_floor()
-                        << " experience.";
-        }
 #ifdef DEBUG_BLOOD_POTIONS
         // List content of timer vector for blood potions.
         if (!dump && is_blood_potion(item))
@@ -2075,7 +2007,6 @@ string get_item_description(const item_def &item, bool verbose,
             }
         }
 #endif
-    }
 
     case OBJ_SCROLLS:
     case OBJ_ORBS:
@@ -2089,7 +2020,7 @@ string get_item_description(const item_def &item, bool verbose,
     }
 
     if (!verbose && item_known_cursed(item))
-        description << "\nIt has a curse placed upon it. (" << item.curse_weight << ") ";
+        description << "\nIt has a curse placed upon it.";
     else
     {
         if (verbose)
@@ -2097,7 +2028,7 @@ string get_item_description(const item_def &item, bool verbose,
             if (need_extra_line)
                 description << "\n";
             if (item_known_cursed(item))
-                description << "\nIt has a curse placed upon it. (" << item.curse_weight << ") ";
+                description << "\nIt has a curse placed upon it.";
 
             if (is_artefact(item))
             {
@@ -2324,17 +2255,7 @@ static vector<command_type> _allowed_actions(const item_def& item)
     if (item_is_evokable(item))
         actions.push_back(CMD_EVOKE);
 
-    switch (item.base_type)
-    {
-    case OBJ_FOOD:
-    case OBJ_SCROLLS:
-    case OBJ_POTIONS:
-        actions.push_back(CMD_DROP_CONSUMABLE);
-        break;
-    default:
-        actions.push_back(CMD_DROP_INVENTORY);
-        ;
-    }
+    actions.push_back(CMD_DROP);
 
     if (!crawl_state.game_is_tutorial())
         actions.push_back(CMD_INSCRIBE_ITEM);
@@ -2357,8 +2278,7 @@ static string _actions_desc(const vector<command_type>& actions, const item_def&
         { CMD_WEAR_JEWELLERY, "(p)ut on" },
         { CMD_REMOVE_JEWELLERY, "(r)emove" },
         { CMD_QUAFF, "(q)uaff" },
-        { CMD_DROP_INVENTORY, "(d)rop" },
-        { CMD_DROP_CONSUMABLE, "(d)rop" },
+        { CMD_DROP, "(d)rop" },
         { CMD_INSCRIBE_ITEM, "(i)nscribe" },
         { CMD_ADJUST_INVENTORY, "(=)adjust" },
     };
@@ -2390,8 +2310,7 @@ static command_type _get_action(int key, vector<command_type> actions)
         { CMD_WEAR_JEWELLERY,   'p' },
         { CMD_REMOVE_JEWELLERY, 'r' },
         { CMD_QUAFF,            'q' },
-        { CMD_DROP_INVENTORY,   'd' },
-        { CMD_DROP_CONSUMABLE,  'd' },
+        { CMD_DROP,             'd' },
         { CMD_INSCRIBE_ITEM,    'i' },
         { CMD_ADJUST_INVENTORY, '=' },
     };
@@ -2420,27 +2339,23 @@ static bool _do_action(item_def &item, const vector<command_type>& actions, int 
     const int slot = item.link;
     ASSERT_RANGE(slot, 0, ENDOFPACK);
 
-	FixedVector< item_def, ENDOFPACK > *inv;
-	inv_from_item(inv, item.base_type);
-
-	redraw_screen();
+    redraw_screen();
     switch (action)
     {
-    case CMD_WIELD_WEAPON:     wield_weapon(true, slot);            	break;
-    case CMD_UNWIELD_WEAPON:   wield_weapon(true, SLOT_BARE_HANDS); 	break;
-    case CMD_QUIVER_ITEM:      quiver_item(slot);                   	break;
-    case CMD_WEAR_ARMOUR:      wear_armour(slot);                   	break;
-    case CMD_REMOVE_ARMOUR:    takeoff_armour(slot);                	break;
-    case CMD_EVOKE:            evoke_item(slot);                    	break;
-    case CMD_EAT:              eat_food(slot);                      	break;
-    case CMD_READ:             read(&item);                          	break;
-    case CMD_WEAR_JEWELLERY:   puton_ring(slot);                    	break;
-    case CMD_REMOVE_JEWELLERY: remove_ring(slot, true);             	break;
-    case CMD_QUAFF:            drink(&item);                         	break;
-    case CMD_DROP_INVENTORY:   drop_item((*inv), slot, item.quantity);  break;
-    case CMD_DROP_CONSUMABLE:  drop_item((*inv), slot, item.quantity);  break;
-    case CMD_INSCRIBE_ITEM:    inscribe_item(item);                 	break;
-    case CMD_ADJUST_INVENTORY: adjust_item((*inv), slot);               break;
+    case CMD_WIELD_WEAPON:     wield_weapon(true, slot);            break;
+    case CMD_UNWIELD_WEAPON:   wield_weapon(true, SLOT_BARE_HANDS); break;
+    case CMD_QUIVER_ITEM:      quiver_item(slot);                   break;
+    case CMD_WEAR_ARMOUR:      wear_armour(slot);                   break;
+    case CMD_REMOVE_ARMOUR:    takeoff_armour(slot);                break;
+    case CMD_EVOKE:            evoke_item(slot);                    break;
+    case CMD_EAT:              eat_food(slot);                      break;
+    case CMD_READ:             read(&item);                         break;
+    case CMD_WEAR_JEWELLERY:   puton_ring(slot);                    break;
+    case CMD_REMOVE_JEWELLERY: remove_ring(slot, true);             break;
+    case CMD_QUAFF:            drink(&item);                        break;
+    case CMD_DROP:             drop_item(slot, item.quantity);      break;
+    case CMD_INSCRIBE_ITEM:    inscribe_item(item);                 break;
+    case CMD_ADJUST_INVENTORY: adjust_item(slot);                   break;
     default:
         die("illegal inventory cmd %d", action);
     }
@@ -2617,6 +2532,21 @@ string get_skill_description(skill_type skill, bool need_title)
                 result += "Note that Trog doesn't use Invocations, due to its "
                           "close connection to magic.";
             }
+            else if (you_worship(GOD_NEMELEX_XOBEH))
+            {
+                result += "\n";
+                result += "Note that Nemelex uses Evocations rather than "
+                          "Invocations.";
+            }
+            break;
+
+        case SK_EVOCATIONS:
+            if (you_worship(GOD_NEMELEX_XOBEH))
+            {
+                result += "\n";
+                result += "This is the skill all of Nemelex's abilities rely "
+                          "on.";
+            }
             break;
 
         case SK_SPELLCASTING:
@@ -2670,7 +2600,7 @@ static string _player_spell_desc(spell_type spell, const item_def* item)
 
     // Report summon cap
     const int limit = summons_limit(spell);
-    if (false && limit)
+    if (limit)
     {
         description += "You can sustain at most " + number_in_words(limit)
                         + " creature" + (limit > 1 ? "s" : "")
@@ -3007,8 +2937,8 @@ static const char* _get_resist_name(mon_resist_flags res_type)
         return "rotting";
     case MR_RES_NEG:
         return "negative energy";
-    case MR_RES_HELLFIRE:
-        return "hellfire";
+    case MR_RES_DAMNATION:
+        return "damnation";
     default:
         return "buggy resistance";
     }
@@ -3272,7 +3202,7 @@ static string _monster_stat_description(const monster_info& mi)
     {
         MR_RES_ELEC,    MR_RES_POISON, MR_RES_FIRE,
         MR_RES_STEAM,   MR_RES_COLD,   MR_RES_ACID,
-        MR_RES_ROTTING, MR_RES_NEG,    MR_RES_HELLFIRE,
+        MR_RES_ROTTING, MR_RES_NEG,    MR_RES_DAMNATION,
     };
 
     vector<string> extreme_resists;
@@ -3287,7 +3217,7 @@ static string _monster_stat_description(const monster_info& mi)
         if (level != 0)
         {
             const char* attackname = _get_resist_name(rflags);
-            if (rflags == MR_RES_HELLFIRE)
+            if (rflags == MR_RES_DAMNATION)
                 level = 3; // one level is immunity
             level = max(level, -1);
             level = min(level,  3);
@@ -3367,6 +3297,9 @@ static string _monster_stat_description(const monster_info& mi)
         result << uppercase_first(pronoun) << " is cold-blooded and may be "
                                               "slowed by cold attacks.\n";
     }
+
+    if (mons_class_flag(mi.type, M_GLOWS))
+        result << uppercase_first(pronoun) << " is outlined in light.\n";
 
     // Seeing invisible.
     if (mi.can_see_invisible())

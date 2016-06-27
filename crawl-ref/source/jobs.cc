@@ -106,11 +106,6 @@ bool job_gets_ranged_weapons(job_type job)
     return _job_def(job).wchoice == WCHOICE_RANGED;
 }
 
-bool job_gets_poverty_weapons(job_type job)
-{
-    return _job_def(job).wchoice == WCHOICE_POVERTY;
-}
-
 void give_job_equipment(job_type job)
 {
     item_list items;

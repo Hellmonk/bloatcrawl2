@@ -1282,7 +1282,7 @@ Sharkskin
 Terra Cotta
 
 # these don't really fit
-Magic
+Mana
 
 Yeast
 

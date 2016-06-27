@@ -73,6 +73,7 @@
 
 class UseItemMenu : public InvMenu
 {
+public:
     vector<const item_def*> item_inv;
     vector<const item_def*> item_floor;
 
@@ -80,19 +81,17 @@ class UseItemMenu : public InvMenu
     void populate_menu();
     bool process_key(int key) override;
 
-public:
     // Constructor
     // Requires int for item filter.
     // Accepts:
     //      OBJ_POTIONS
     //      OBJ_SCROLLS
-    UseItemMenu(int selector, const char* prompt);
+    UseItemMenu (int);
 };
 
-UseItemMenu::UseItemMenu(int item_type, const char* prompt)
+UseItemMenu::UseItemMenu(int item_type)
     : InvMenu(MF_SINGLESELECT)
 {
-    set_title(you.inv1, prompt);
     populate_list(item_type);
     populate_menu();
 }
@@ -100,17 +99,11 @@ UseItemMenu::UseItemMenu(int item_type, const char* prompt)
 void UseItemMenu::populate_list(int item_type)
 {
     // Load inv items first
-    for (const auto &item : you.inv1)
+    for (const auto &item : you.inv)
     {
         // Populate the vector with filter
         if (item.defined() && item_is_selected(item, item_type))
                 item_inv.push_back(&item);
-    }
-    for (const auto &item : you.inv2)
-    {
-        // Populate the vector with filter
-        if (item.defined() && item_is_selected(item, item_type))
-            item_inv.push_back(&item);
     }
     // Load floor items
     item_floor = item_list_on_square(you.visible_igrd(you.pos()));
@@ -129,46 +122,48 @@ void UseItemMenu::populate_menu()
     // Load the inv items first, they have a hotkey
     if (!item_inv.empty())
     {
-        auto subtitle = new MenuEntry("Inventory Items", MEL_TITLE);
-        subtitle->colour = LIGHTGREY;
-        add_entry(subtitle);
+        add_entry(new MenuEntry("Inventory Items", MEL_TITLE, 0, 0, false));
 
-        load_items(item_inv,
-                   [&](MenuEntry* entry) -> MenuEntry*
-                   {
-                       // Remove inventory item hotkeys from the tracker
-                       if (!entry->hotkeys.empty())
-                           used_keys.insert(char(entry->hotkeys[0]));
-                       return entry;
-                   });
+        load_items(item_inv, 0, 0, false);
+
+        // Remove inventory item hotkeys from the tracker
+        for (MenuEntry *entry : items)
+            if (!entry->hotkeys.empty())
+                used_keys.insert(char(entry->hotkeys[0]));
     }
 
     if (!item_floor.empty())
     {
         // Load floor items to menu
-        auto subtitle = new MenuEntry("Floor Items", MEL_TITLE);
-        subtitle->colour = LIGHTGREY;
-        add_entry(subtitle);
+        add_entry(new MenuEntry("Floor Items", MEL_TITLE, 0, 0, false));
+
+        load_items(item_floor, 0, 0, false);
 
         menu_letter hotkey;
-        load_items(item_floor,
-                   [&](MenuEntry* entry) -> MenuEntry*
-                   {
-                       if (!entry->hotkeys.empty())
-                       {
-                           while (used_keys.count(hotkey))
-                           {
-                               // Remove it from used_keys, so the second time
-                               // through we re-use all letters, inventory or
-                               // not.
-                               used_keys.erase(hotkey);
-                               ++hotkey;
-                           }
-                           entry->hotkeys[0] = hotkey++;
-                       }
-                       return entry;
-                   });
+        // Go through each menu item
+        for (MenuEntry* entry : items)
+        {
+            // Make an InvEntry out of it
+            auto ie = dynamic_cast<InvEntry *>(entry);
+            // If this is an inventory item, leave its hotkeys alone
+            if (!entry->hotkeys.empty() && ie && !in_inventory(*(ie->item)))
+            {
+                while (used_keys.count(hotkey))
+                {
+                    // Remove it from used_keys, so the second time through
+                    // we re-use all letters, inventory or not.
+                    used_keys.erase(hotkey);
+                    ++hotkey;
+                }
+                entry->hotkeys[0] = hotkey++;
+            }
+        }
     }
+
+    if (item_inv.empty() && item_floor.empty())
+        add_entry(new MenuEntry("No Items", MEL_TITLE, 0, 0, false));
+
+    return;
 }
 
 bool UseItemMenu::process_key(int key)
@@ -189,23 +184,20 @@ bool UseItemMenu::process_key(int key)
  * items in inventory, then items on the floor. If player cancels out of menu,
  * nullptr is returned.
  *
- * @param object_class_type     The desired command which will decide item types.
- *                              OBJ_POTIONS and OBJ_SCROLLS are valid.
+ * @param object_class_type The object class or OSEL_* of items to list.
+ * @param oper The operation being done to the selected item.
  *
- * @return                      A chosen item_def*, or nullptr.
+ * @return a pointer to the chosen item, or nullptr if none was chosen.
  */
 
-static item_def* _use_an_item(int item_type, operation_types oper,
-                              const char* prompt,
-                              function<bool ()> allowcancel = []()
-                              { return true; })
+static item_def* _use_an_item(int item_type, operation_types oper)
 {
     item_def* target = nullptr;
 
     // First handle things that will return nullptr
 
     // No selectable items in inv or floor
-    if (!any_items_of_type(you.inv2, item_type, -1, true))
+    if (!any_items_of_type(item_type, 0, true))
     {
         mprf(MSGCH_PROMPT, "%s",
              no_selectables_message(item_type).c_str());
@@ -213,7 +205,7 @@ static item_def* _use_an_item(int item_type, operation_types oper,
     }
 
     // Init the menu
-    UseItemMenu menu (item_type, prompt);
+    UseItemMenu menu (item_type);
 
     while (true)
     {
@@ -224,63 +216,45 @@ static item_def* _use_an_item(int item_type, operation_types oper,
         // Handle inscribed item keys
         if (isadigit(keyin))
         {
-            const int idx = digit_inscription_to_inv_index(you.inv2, keyin, oper);
-            if (idx >= 0)
-                target = &item_from_int(true, true, idx);
+            int idx = digit_inscription_to_inv_index(keyin, oper);
+            // No such item.
+            if (idx < 0)
+                return nullptr;
+
+            target = &item_from_int(true, idx);
+            if (!check_warning_inscriptions(*target, oper))
+            {
+                prompt_failed(PROMPT_ABORT);
+                return nullptr;
+            }
+            break;
         }
-            // TODO: handle * key
         else if (keyin == '\\')
-        {
             check_item_knowledge();
-            continue;
-        }
-        else if (!sel.empty())
+        // TODO: handle * key
+        else if (sel.empty())
+            return nullptr;
+        else
         {
             ASSERT(sel.size() == 1);
 
             auto ie = dynamic_cast<InvEntry *>(sel[0]);
             target = const_cast<item_def*>(ie->item);
-        }
 
-        if (target && !check_warning_inscriptions(*target, oper))
-            target = nullptr;
-        if (target)
-            return target;
-        else if (allowcancel())
-        {
-            prompt_failed(PROMPT_ABORT);
-            return nullptr;
+            if (!check_warning_inscriptions(*target, oper))
+            {
+                prompt_failed(PROMPT_ABORT);
+                return nullptr;
+            }
+            break;
         }
-        else
-            continue;
     }
+
+    return target;
 }
 
 static bool _safe_to_remove_or_wear(const item_def &item, bool remove,
                                     bool quiet = false);
-
-bool _playerUnequipsShield();
-
-bool _playerUnequipsShield()
-{
-    // are we already removing our shield?
-    if (you.delay_queue.size() > 0)
-        return true;
-
-    /*
-	if (yesno("Unequip your shield first?", true, 'n', true, false))
-	{
-     */
-        takeoff_armour(you.equip[EQ_SHIELD]);
-		return true;
-    /*
-	}
-	else
-	{
-		return false;
-	}
-     */
-}
 
 // Rather messy - we've gathered all the can't-wield logic from wield_weapon()
 // here.
@@ -309,8 +283,7 @@ bool can_wield(const item_def *weapon, bool say_reason,
     if (!ignore_temporary_disability
         && you.weapon()
         && is_weapon(*you.weapon())
-        && you.weapon()->cursed()
-        && !player_is_immune_to_curses())
+        && you.weapon()->cursed())
     {
         SAY(mprf("You can't unwield your weapon%s!",
                  !unwield ? " to draw a new one" : ""));
@@ -330,7 +303,7 @@ bool can_wield(const item_def *weapon, bool say_reason,
 
     for (int i = EQ_MIN_ARMOUR; i <= EQ_MAX_WORN; i++)
     {
-        if (you.equip[i] != -1 && &you.inv1[you.equip[i]] == weapon)
+        if (you.equip[i] != -1 && &you.inv[you.equip[i]] == weapon)
         {
             SAY(mpr("You are wearing that object!"));
             return false;
@@ -345,15 +318,8 @@ bool can_wield(const item_def *weapon, bool say_reason,
     {
         if (!ignore_temporary_disability && is_shield_incompatible(*weapon))
         {
-        	if (_playerUnequipsShield())
-        	{
-        		return true;
-        	}
-        	else
-        	{
-                SAY(mpr("You can't wield that with a shield."));
-                return false;
-        	}
+            SAY(mpr("You can't wield that with a shield."));
+            return false;
         }
         else
             return true;
@@ -372,7 +338,7 @@ bool can_wield(const item_def *weapon, bool say_reason,
         else
             return false;
     }
-    else if (false && !ignore_temporary_disability
+    else if (!ignore_temporary_disability
              && you.hunger_state < HS_FULL
              && get_weapon_brand(*weapon) == SPWPN_VAMPIRISM
              && you.undead_state() == US_ALIVE
@@ -387,6 +353,7 @@ bool can_wield(const item_def *weapon, bool say_reason,
         else
             return false;
     }
+#if TAG_MAJOR_VERSION == 34
     else if (you.species == SP_DJINNI
              && get_weapon_brand(*weapon) == SPWPN_ANTIMAGIC
              && (item_type_known(*weapon) || !only_known))
@@ -399,6 +366,7 @@ bool can_wield(const item_def *weapon, bool say_reason,
         else
             return false;
     }
+#endif
 
     if (id_brand)
     {
@@ -417,15 +385,8 @@ bool can_wield(const item_def *weapon, bool say_reason,
 
     if (!ignore_temporary_disability && is_shield_incompatible(*weapon))
     {
-    	if (_playerUnequipsShield())
-    	{
-    		return true;
-    	}
-    	else
-    	{
-            SAY(mpr("You can't wield that with a shield."));
-            return false;
-    	}
+        SAY(mpr("You can't wield that with a shield."));
+        return false;
     }
 
     // We can wield this weapon. Phew!
@@ -442,7 +403,7 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
                   bool force, bool show_unwield_msg, bool show_wield_msg,
                   bool adjust_time_taken)
 {
-    if (inv_count(you.inv1) < 1)
+    if (inv_count() < 1)
     {
         canned_msg(MSG_NOTHING_CARRIED);
         return false;
@@ -459,7 +420,7 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
     {
         if (item_slot == you.equip[EQ_WEAPON]
             || you.equip[EQ_WEAPON] == -1
-               && !item_is_wieldable(you.inv1[item_slot]))
+               && !item_is_wieldable(you.inv[item_slot]))
         {
             item_slot = 1;      // backup is 'b'
         }
@@ -471,16 +432,16 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
     // If the swap slot has a bad (but valid) item in it,
     // the swap will be to bare hands.
     const bool good_swap = (item_slot == SLOT_BARE_HANDS
-                            || item_is_wieldable(you.inv1[item_slot]));
+                            || item_is_wieldable(you.inv[item_slot]));
 
     // Prompt if not using the auto swap command, or if the swap slot
     // is empty.
     if (item_slot != SLOT_BARE_HANDS
-        && (!auto_wield || !you.inv1[item_slot].defined() || !good_swap))
+        && (!auto_wield || !you.inv[item_slot].defined() || !good_swap))
     {
         if (!auto_wield)
         {
-            item_slot = prompt_invent_item(you.inv1,
+            item_slot = prompt_invent_item(
                             "Wield which item (- for none, * to show all)?",
                             MT_INVLIST, OSEL_WIELD,
                             true, true, true, '-', -1, nullptr, OPER_WIELD);
@@ -544,7 +505,7 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
         return true;
     }
 
-    item_def& new_wpn(you.inv1[item_slot]);
+    item_def& new_wpn(you.inv[item_slot]);
 
     // Non-auto_wield cases are checked below.
     if (auto_wield && !force
@@ -583,16 +544,13 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 
     check_item_hint(new_wpn, old_talents);
 
-    you.wield_change  = true;
-    you.m_quiver.on_weapon_changed();
-    /*
     // Time calculations.
     if (adjust_time_taken)
         you.time_taken /= 2;
 
+    you.wield_change  = true;
+    you.m_quiver.on_weapon_changed();
     you.turn_is_over  = true;
-     */
-    you.prev_direction.reset();
 
     return true;
 }
@@ -620,7 +578,7 @@ bool armour_prompt(const string & mesg, int *index, operation_types oper)
 {
     ASSERT(index != nullptr);
 
-    if (inv_count(you.inv1) < 1)
+    if (inv_count() < 1)
         canned_msg(MSG_NOTHING_CARRIED);
     else if (you.berserk())
         canned_msg(MSG_TOO_BERSERK);
@@ -629,7 +587,7 @@ bool armour_prompt(const string & mesg, int *index, operation_types oper)
         int selector = OBJ_ARMOUR;
         if (oper == OPER_TAKEOFF && !Options.equip_unequip)
             selector = OSEL_WORN_ARMOUR;
-        int slot = prompt_invent_item(you.inv1, mesg.c_str(), MT_INVLIST, selector,
+        int slot = prompt_invent_item(mesg.c_str(), MT_INVLIST, selector,
                                       true, true, true, 0, -1, nullptr,
                                       oper);
 
@@ -646,6 +604,12 @@ bool armour_prompt(const string & mesg, int *index, operation_types oper)
 
 void wear_armour(int slot) // slot is for tiles
 {
+    if (you.species == SP_FELID)
+    {
+        mpr("You can't wear anything.");
+        return;
+    }
+
     if (!form_can_wear())
     {
         mpr("You can't wear anything in your present form.");
@@ -660,7 +624,6 @@ void wear_armour(int slot) // slot is for tiles
         return;
 
     do_wear_armour(armour_wear_2, false);
-    you.prev_direction.reset();
 }
 
 /**
@@ -691,8 +654,7 @@ static int armour_equip_delay(const item_def &item)
 bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
 {
     const object_class_type base_type = item.base_type;
-    const int sub_type = item.sub_type;
-    if (base_type != OBJ_ARMOUR || you.species == SP_FELID && sub_type != ARM_CLOAK)
+    if (base_type != OBJ_ARMOUR || you.species == SP_FELID)
     {
         if (verbose)
             mpr("You can't wear that.");
@@ -700,9 +662,10 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         return false;
     }
 
+    const int sub_type = item.sub_type;
     const equipment_type slot = get_armour_slot(item);
 
-    if (you.species == SP_OCTOPODE && slot != EQ_HELMET && slot != EQ_SHIELD && slot != EQ_CLOAK)
+    if (you.species == SP_OCTOPODE && slot != EQ_HELMET && slot != EQ_SHIELD)
     {
         if (verbose)
             mpr("You can't wear that!");
@@ -897,7 +860,9 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         }
 
         if (you.species == SP_NAGA
+#if TAG_MAJOR_VERSION == 34
             || you.species == SP_DJINNI
+#endif
            )
         {
             if (verbose)
@@ -983,7 +948,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
 
 bool do_wear_armour(int item, bool quiet)
 {
-    const item_def &invitem = you.inv1[item];
+    const item_def &invitem = you.inv[item];
     if (!invitem.defined())
     {
         if (!quiet)
@@ -1033,42 +998,22 @@ bool do_wear_armour(int item, bool quiet)
     if (!_safe_to_remove_or_wear(invitem, false))
         return false;
 
-    if (slot == EQ_SHIELD)
-    {
-        you.time_taken /= 2;
-
-        item_def &arm = you.inv1[item];
-
-        set_ident_flags(arm, ISFLAG_IDENT_MASK);
-        if (is_artefact(arm))
-            arm.flags |= ISFLAG_NOTED_ID;
-
-        const unsigned int old_talents = your_talents(false).size();
-
-        check_item_hint(you.inv1[item], old_talents);
-        armour_wear_effects(item);
-    }
-    else
-    {
-        const int delay = armour_equip_delay(invitem);
-        if (delay)
-            start_delay(DELAY_ARMOUR_ON, delay - (swapping ? 0 : 1), item);
-    }
+    const int delay = armour_equip_delay(invitem);
+    if (delay)
+        start_delay(DELAY_ARMOUR_ON, delay - (swapping ? 0 : 1), item);
 
     return true;
 }
 
 bool takeoff_armour(int item)
 {
-    const item_def& invitem = you.inv1[item];
+    const item_def& invitem = you.inv[item];
 
-    /*
     if (invitem.base_type != OBJ_ARMOUR)
     {
         mpr("You aren't wearing that!");
         return false;
     }
-     */
 
     if (you.berserk())
     {
@@ -1096,7 +1041,7 @@ bool takeoff_armour(int item)
     }
 
     // If we get here, we're wearing the item.
-    if (invitem.cursed() && !player_is_immune_to_curses())
+    if (invitem.cursed())
     {
         mprf("%s is stuck to your body!", invitem.name(DESC_YOUR).c_str());
         return false;
@@ -1127,16 +1072,8 @@ bool takeoff_armour(int item)
 
     you.turn_is_over = true;
 
-    if (slot == EQ_SHIELD)
-    {
-        you.time_taken /= 2;
-        unequip_item(slot);
-    }
-    else
-    {
-        const int delay = armour_equip_delay(invitem);
-        start_delay(DELAY_ARMOUR_OFF, delay - 1, item);
-    }
+    const int delay = armour_equip_delay(invitem);
+    start_delay(DELAY_ARMOUR_OFF, delay - 1, item);
 
     return true;
 }
@@ -1161,22 +1098,7 @@ static vector<equipment_type> _current_ring_types()
                 ret.push_back(slot);
         }
     }
-    else if (you.species == SP_FELID)
-    {
-        for (int i = 0; i < 4; ++i)
-        {
-            const equipment_type slot = (equipment_type)(EQ_RING_ONE + i);
-
-            if (player_mutation_level(MUT_MISSING_HAND)
-                && slot == EQ_RING_FOUR)
-            {
-                continue;
-            }
-
-            if (get_form()->slot_available(slot))
-                ret.push_back(slot);
-        }
-    }    else
+    else
     {
         if (player_mutation_level(MUT_MISSING_HAND) == 0)
             ret.push_back(EQ_LEFT_RING);
@@ -1415,7 +1337,7 @@ bool safe_to_remove(const item_def &item, bool quiet)
 }
 
 // Assumptions:
-// you.inv1[ring_slot] is a valid ring.
+// you.inv[ring_slot] is a valid ring.
 // EQ_LEFT_RING and EQ_RIGHT_RING are both occupied, and ring_slot is not
 // one of the worn rings.
 //
@@ -1451,7 +1373,7 @@ static bool _swap_rings(int ring_slot)
                 }
             }
 
-            if (ring->cursed() && !player_is_immune_to_curses())
+            if (ring->cursed())
                 cursed++;
             else if (strstr(ring->inscription.c_str(), "=R"))
             {
@@ -1580,7 +1502,7 @@ static equipment_type _choose_ring_slot()
 
 static bool _puton_item(int item_slot, bool prompt_slot)
 {
-    item_def& item = you.inv1[item_slot];
+    item_def& item = you.inv[item_slot];
 
     for (int eq = EQ_LEFT_RING; eq < NUM_EQUIP; eq++)
         if (item_slot == you.equip[eq])
@@ -1695,7 +1617,7 @@ static bool _puton_item(int item_slot, bool prompt_slot)
     // Actually equip the item.
     equip_item(hand_used, item_slot);
 
-    check_item_hint(you.inv1[item_slot], old_talents);
+    check_item_hint(you.inv[item_slot], old_talents);
 #ifdef USE_TILE_LOCAL
     if (your_talents(false).size() != old_talents)
     {
@@ -1715,7 +1637,7 @@ bool puton_ring(int slot, bool allow_prompt)
 {
     int item_slot;
 
-    if (inv_count(you.inv1) < 1)
+    if (inv_count() < 1)
     {
         canned_msg(MSG_NOTHING_CARRIED);
         return false;
@@ -1731,7 +1653,7 @@ bool puton_ring(int slot, bool allow_prompt)
         item_slot = slot;
     else
     {
-        item_slot = prompt_invent_item(you.inv1, "Put on which piece of jewellery?",
+        item_slot = prompt_invent_item("Put on which piece of jewellery?",
                                         MT_INVLIST, OBJ_JEWELLERY, true, true,
                                         true, 0, -1, nullptr, OPER_PUTON);
     }
@@ -1741,7 +1663,6 @@ bool puton_ring(int slot, bool allow_prompt)
 
     bool prompt = allow_prompt ? Options.jewellery_prompt : false;
 
-    you.prev_direction.reset();
     return _puton_item(item_slot, prompt);
 }
 
@@ -1790,7 +1711,7 @@ bool remove_ring(int slot, bool announce)
     if (hand_used == EQ_NONE)
     {
         const int equipn =
-            (slot == -1)? prompt_invent_item(you.inv1, "Remove which piece of jewellery?",
+            (slot == -1)? prompt_invent_item("Remove which piece of jewellery?",
                                              MT_INVLIST,
                                              OBJ_JEWELLERY, true, true, true,
                                              0, -1, nullptr, OPER_REMOVE,
@@ -1800,13 +1721,13 @@ bool remove_ring(int slot, bool announce)
         if (prompt_failed(equipn))
             return false;
 
-        hand_used = item_equip_slot(you.inv1[equipn]);
+        hand_used = item_equip_slot(you.inv[equipn]);
         if (hand_used == EQ_NONE)
         {
             mpr("You aren't wearing that.");
             return false;
         }
-        else if (you.inv1[equipn].base_type != OBJ_JEWELLERY)
+        else if (you.inv[equipn].base_type != OBJ_JEWELLERY)
         {
             mpr("That isn't a piece of jewellery.");
             return false;
@@ -1833,34 +1754,34 @@ bool remove_ring(int slot, bool announce)
         return false;
     }
 
-    if (!check_warning_inscriptions(you.inv1[you.equip[hand_used]],
+    if (!check_warning_inscriptions(you.inv[you.equip[hand_used]],
                                     OPER_REMOVE))
     {
         canned_msg(MSG_OK);
         return false;
     }
 
-    if (you.inv1[you.equip[hand_used]].cursed() && !player_is_immune_to_curses())
+    if (you.inv[you.equip[hand_used]].cursed())
     {
         if (announce)
         {
             mprf("%s is stuck to you!",
-                 you.inv1[you.equip[hand_used]].name(DESC_YOUR).c_str());
+                 you.inv[you.equip[hand_used]].name(DESC_YOUR).c_str());
         }
         else
             mpr("It's stuck to you!");
 
-        set_ident_flags(you.inv1[you.equip[hand_used]], ISFLAG_KNOW_CURSE);
+        set_ident_flags(you.inv[you.equip[hand_used]], ISFLAG_KNOW_CURSE);
         return false;
     }
 
     ring_wear_2 = you.equip[hand_used];
 
     // Remove the ring.
-    if (!_safe_to_remove_or_wear(you.inv1[ring_wear_2], true))
+    if (!_safe_to_remove_or_wear(you.inv[ring_wear_2], true))
         return false;
 
-    mprf("You remove %s.", you.inv1[ring_wear_2].name(DESC_YOUR).c_str());
+    mprf("You remove %s.", you.inv[ring_wear_2].name(DESC_YOUR).c_str());
 #ifdef USE_TILE_LOCAL
     const unsigned int old_talents = your_talents(false).size();
 #endif
@@ -1879,21 +1800,21 @@ bool remove_ring(int slot, bool announce)
     return true;
 }
 
-void prompt_inscribe_item(FixedVector< item_def, ENDOFPACK > &inv)
+void prompt_inscribe_item()
 {
-    if (inv_count(inv) < 1)
+    if (inv_count() < 1)
     {
         mpr("You don't have anything to inscribe.");
         return;
     }
 
-    int item_slot = prompt_invent_item(inv, "Inscribe which item?",
+    int item_slot = prompt_invent_item("Inscribe which item?",
                                        MT_INVLIST, OSEL_ANY);
 
     if (prompt_failed(item_slot))
         return;
 
-    inscribe_item(inv[item_slot]);
+    inscribe_item(you.inv[item_slot]);
 }
 
 static bool _check_blood_corpses_on_ground()
@@ -1926,7 +1847,7 @@ void drink(item_def* potion)
         return;
     }
 
-    if (inv_count(you.inv2) == 0)
+    if (inv_count() == 0)
     {
         canned_msg(MSG_NOTHING_CARRIED);
         _vampire_corpse_help();
@@ -1954,12 +1875,16 @@ void drink(item_def* potion)
 
     if (!potion)
     {
-        potion = _use_an_item(OBJ_POTIONS, OPER_QUAFF, "Drink which item?");
+        potion = _use_an_item(OBJ_POTIONS, OPER_QUAFF);
 
         if (!potion)
         {
-            _vampire_corpse_help();
-            return;
+            int slot = PROMPT_ABORT;
+            if (prompt_failed(slot))
+            {
+                _vampire_corpse_help();
+                return;
+            }
         }
     }
 
@@ -2006,7 +1931,7 @@ void drink(item_def* potion)
     }
     if (in_inventory(*potion))
     {
-        dec_inv_item_quantity(you.inv2, potion->link, 1);
+        dec_inv_item_quantity(potion->link, 1);
         auto_assign_item_slot(*potion);
     }
     else
@@ -2016,7 +1941,6 @@ void drink(item_def* potion)
     // This got deferred from PotionExperience::effect to prevent SIGHUP abuse.
     if (potion->sub_type == POT_EXPERIENCE)
         level_change();
-    you.prev_direction.reset();
 }
 
 // XXX: there's probably a nicer way of doing this.
@@ -2066,9 +1990,12 @@ static void _rebrand_weapon(item_def& wpn)
         if (is_range_weapon(wpn))
         {
             new_brand = random_choose_weighted(
+                                    30, SPWPN_FLAMING,
+                                    30, SPWPN_FREEZING,
+                                    20, SPWPN_VENOM,
                                     20, SPWPN_VORPAL,
                                     12, SPWPN_EVASION,
-                                    12, SPWPN_LIGHT,
+                                    5, SPWPN_ELECTROCUTION,
                                     3, SPWPN_CHAOS,
                                     0);
         }
@@ -2082,7 +2009,6 @@ static void _rebrand_weapon(item_def& wpn)
                                     15, SPWPN_DRAINING,
                                     15, SPWPN_ELECTROCUTION,
                                     12, SPWPN_PROTECTION,
-                                    12, SPWPN_LIGHT,
                                     8, SPWPN_VAMPIRISM,
                                     3, SPWPN_CHAOS,
                                     0);
@@ -2116,9 +2042,9 @@ static void _brand_weapon(item_def &wpn)
         mprf("%s projects an invisible shield of force!",itname.c_str());
         break;
 
-    case SPWPN_LIGHT:
+    case SPWPN_EVASION:
         flash_colour = YELLOW;
-        mprf("%s feels so light!",itname.c_str());
+        mprf("%s emits a repelling force!",itname.c_str());
         break;
 
     case SPWPN_FLAMING:
@@ -2196,7 +2122,7 @@ static item_def* _scroll_choose_weapon(bool alreadyknown, const string &pre_msg,
 
     while (true)
     {
-        item_slot = prompt_invent_item(you.inv1, branding ? "Brand which weapon?"
+        item_slot = prompt_invent_item(branding ? "Brand which weapon?"
                                                 : "Enchant which weapon?",
                                        MT_INVLIST, selector,
                                        true, true, false);
@@ -2217,7 +2143,7 @@ static item_def* _scroll_choose_weapon(bool alreadyknown, const string &pre_msg,
                 continue;
         }
 
-        item_def* wpn = &you.inv1[item_slot];
+        item_def* wpn = &you.inv[item_slot];
         if (!item_is_selected(*wpn, selector))
         {
             mpr("Choose a valid weapon, or Esc to abort.");
@@ -2274,42 +2200,70 @@ bool enchant_weapon(item_def &wpn, bool quiet)
 // Returns true if the scroll is used up.
 static bool _identify(bool alreadyknown, const string &pre_msg)
 {
-    item_def* itemp = _use_an_item(OSEL_UNIDENT, OPER_ID,
-                                   "Identify which item? (\\ to view known items)",
-                                   [=]()
-                                   {
-                                       return alreadyknown
-                                              || crawl_state.seen_hups
-                                              || yesno("Really abort (and waste the scroll)?", false, 0);
-                                   });
-
-    if (!itemp)
-        return !alreadyknown;
-
-    item_def& item = *itemp;
-    if (alreadyknown)
-        mpr(pre_msg);
-
-    set_ident_type(item, true);
-    set_ident_flags(item, ISFLAG_IDENT_MASK);
-
-    // Output identified item.
-    mprf_nocap("%s", item.name(DESC_INVENTORY_EQUIP).c_str());
-    if (in_inventory(item))
+    int item_slot = -1;
+    while (true)
     {
-        if (item.link == you.equip[EQ_WEAPON])
+        if (item_slot == -1)
+        {
+            item_slot = prompt_invent_item(
+                "Identify which item? (\\ to view known items)",
+                MT_INVLIST, OSEL_UNIDENT, true, true, false, 0,
+                -1, nullptr, OPER_ANY, true);
+        }
+
+        if (item_slot == PROMPT_NOTHING)
+            return !alreadyknown;
+
+        if (item_slot == PROMPT_ABORT)
+        {
+            if (alreadyknown
+                || crawl_state.seen_hups
+                || yesno("Really abort (and waste the scroll)?", false, 0))
+            {
+                canned_msg(MSG_OK);
+                return !alreadyknown;
+            }
+            else
+            {
+                item_slot = -1;
+                continue;
+            }
+        }
+
+        item_def& item(you.inv[item_slot]);
+        if (fully_identified(item)
+            && (!is_deck(item) || top_card_is_known(item)))
+        {
+            mpr("Choose an unidentified item, or Esc to abort.");
+            more();
+            item_slot = -1;
+            continue;
+        }
+
+        if (alreadyknown)
+            mpr(pre_msg);
+
+        set_ident_type(item, true);
+        set_ident_flags(item, ISFLAG_IDENT_MASK);
+
+        if (is_deck(item) && !top_card_is_known(item))
+            deck_identify_first(item_slot);
+
+        // Output identified item.
+        mprf_nocap("%s", item.name(DESC_INVENTORY_EQUIP).c_str());
+        if (item_slot == you.equip[EQ_WEAPON])
             you.wield_change = true;
 
         if (item.is_type(OBJ_JEWELLERY, AMU_INACCURACY)
-            && item.link == you.equip[EQ_AMULET]
+            && item_slot == you.equip[EQ_AMULET]
             && !item_known_cursed(item))
         {
             learned_something_new(HINT_INACCURACY);
         }
 
         auto_assign_item_slot(item);
+        return true;
     }
-    return true;
 }
 
 static bool _handle_enchant_weapon(bool alreadyknown, const string &pre_msg)
@@ -2377,7 +2331,7 @@ static int _handle_enchant_armour(bool alreadyknown, const string &pre_msg)
     {
         if (item_slot == -1)
         {
-            item_slot = prompt_invent_item(you.inv1, "Enchant which item?", MT_INVLIST,
+            item_slot = prompt_invent_item("Enchant which item?", MT_INVLIST,
                                            OSEL_ENCH_ARM, true, true, false);
         }
 
@@ -2400,7 +2354,7 @@ static int _handle_enchant_armour(bool alreadyknown, const string &pre_msg)
             }
         }
 
-        item_def& arm(you.inv1[item_slot]);
+        item_def& arm(you.inv[item_slot]);
 
         if (!is_enchantable_armour(arm, true))
         {
@@ -2493,12 +2447,6 @@ static void _handle_read_book(item_def& book)
         canned_msg(MSG_TOO_BERSERK);
         return;
     }
-	    // Prevent hot lava orcs reading books
-	if (you.species == SP_LAVA_ORC && temperature_effect(LORC_NO_SCROLLS))
-    {
-        mpr("You'd burn any book you tried to read!");
-        return;
-    }
 
     if (you.duration[DUR_BRAINLESS])
     {
@@ -2516,8 +2464,6 @@ static void _handle_read_book(item_def& book)
     }
 #endif
 
-    set_ident_flags(book, ISFLAG_IDENT_MASK);
-    mark_had_book(book);
     read_book(book);
 }
 
@@ -2547,8 +2493,6 @@ static bool _is_cancellable_scroll(scroll_type scroll)
 {
     return scroll == SCR_IDENTIFY
            || scroll == SCR_BLINKING
-           || scroll == SCR_AMPLIFICATION
-           || scroll == SCR_INVERSION
            || scroll == SCR_RECHARGING
            || scroll == SCR_ENCHANT_ARMOUR
            || scroll == SCR_AMNESIA
@@ -2583,7 +2527,7 @@ bool player_can_read()
         return false;
     }
 
-    if (inv_count(you.inv2) < 1 && inv_count(you.inv1) < 1)
+    if (inv_count() < 1)
     {
         canned_msg(MSG_NOTHING_CARRIED);
         return false;
@@ -2597,9 +2541,9 @@ bool player_can_read()
  * response to print. Otherwise, if they do have such items, return the empty
  * string.
  */
-static string _no_items_reason(object_selector type, bool check_floor = false)
+static string _no_items_reason(object_selector type)
 {
-    if (!any_items_of_type(you.inv1, type, -1, check_floor) && !any_items_of_type(you.inv2, type, -1, check_floor))
+    if (!any_items_of_type(type))
         return no_selectables_message(type);
     return "";
 }
@@ -2616,13 +2560,15 @@ string cannot_read_item_reason(const item_def &item)
     {
         if (item.sub_type == BOOK_MANUAL)
             return "You can't read that!";
-
         return "";
     }
 
     // and scrolls - but nothing else.
     if (item.base_type != OBJ_SCROLLS)
         return "You can't read that!";
+
+    // the below only applies to scrolls. (it's easier to read books, since
+    // that's just a UI/strategic thing.)
 
     if (silenced(you.pos()))
         return "Magic scrolls do not work when you're silenced!";
@@ -2635,12 +2581,11 @@ string cannot_read_item_reason(const item_def &item)
     if (you.duration[DUR_NO_SCROLLS])
         return "You cannot read scrolls in your current state!";
 
+#if TAG_MAJOR_VERSION == 34
     // Prevent hot lava orcs reading scrolls
     if (you.species == SP_LAVA_ORC && temperature_effect(LORC_NO_SCROLLS))
         return "You'd burn any scroll you tried to read!";
-
-     if (you.species == SP_DJINNI)
-        return "You'd burn any scroll you tried to read!";
+#endif
 
     // don't waste the player's time reading known scrolls in situations where
     // they'd be useless
@@ -2680,7 +2625,7 @@ string cannot_read_item_reason(const item_def &item)
             return _no_items_reason(OSEL_ENCHANTABLE_WEAPON);
 
         case SCR_IDENTIFY:
-            return _no_items_reason(OSEL_UNIDENT, true);
+            return _no_items_reason(OSEL_UNIDENT);
 
         case SCR_RECHARGING:
             return _no_items_reason(OSEL_RECHARGE);
@@ -2716,9 +2661,13 @@ void read(item_def* scroll)
 
     if (!scroll)
     {
-        scroll = _use_an_item(OBJ_SCROLLS, OPER_READ, "Read which item?");
+        scroll = _use_an_item(OBJ_SCROLLS, OPER_READ);
         if (!scroll)
-            return;
+        {
+            int slot = PROMPT_ABORT;
+            if (prompt_failed(slot))
+                return;
+        }
     }
 
     const string failure_reason = cannot_read_item_reason(*scroll);
@@ -2755,7 +2704,6 @@ void read(item_def* scroll)
 
     // Ok - now we FINALLY get to read a scroll !!! {dlb}
     you.turn_is_over = true;
-    you.prev_direction.reset();
 
     if (you.duration[DUR_BRAINLESS] && !one_chance_in(5))
     {
@@ -2847,77 +2795,19 @@ void read_scroll(item_def& scroll)
     }
         break;
 
-    case SCR_AMPLIFICATION:
-    {
-        if (!alreadyknown)
-        {
-            mpr(pre_succ_msg);
-            mpr("It is a scroll of amplification!");
-        }
-        else
-        {
-        	if(you.amplification > 0)
-        		cancel_scroll = !yesno("This will amplify the next scroll or potion used. Are you sure you want to use this now?", false, 'n');
-        	else
-        		cancel_scroll = !yesno("You recently used an inversion scroll. Reading this scroll now will reduce the effect of the next scroll, potion, or wand used. Are you sure you want to use this now?", false, 'n');
-        }
-
-        if (!cancel_scroll)
-        {
-        	if(you.amplification > 0)
-            	you.amplification *= 3;
-        	else
-        		you.amplification /= 3;
-
-            mpr(pre_succ_msg); // ordering is iffy but w/e
-        }
-    }
-        break;
-
-    case SCR_INVERSION:
-    {
-        if (!alreadyknown)
-        {
-            mpr(pre_succ_msg);
-            mpr("It is a scroll of inversion!");
-        }
-        else
-        {
-        	if(you.amplification > 0)
-        		cancel_scroll = !yesno("This will reverse the effect of the next scroll or potion used. Are you sure you want to use this now?", false, 'n');
-        	else
-        	{
-        		cancel_scroll = !yesno("Since you've already read a scroll of inversion recently, reading this scroll would just invert the inversion. Are you sure you want to do that?", false, 'n');
-        	}
-        }
-
-        if (!cancel_scroll)
-        {
-           	you.amplification *= -1;
-
-            mpr(pre_succ_msg); // ordering is iffy but w/e
-        }
-    }
-        break;
-
     case SCR_TELEPORTATION:
         you_teleport();
         break;
 
     case SCR_REMOVE_CURSE:
-    {
-        int power = (100 + max(you.skill(SK_INVOCATIONS) * 50, you.piety * 5)) * you.amplification;
         if (!alreadyknown)
         {
             mpr(pre_succ_msg);
-            remove_curse(power, false);
+            remove_curse(false);
         }
         else
-            cancel_scroll = !remove_curse(power, true, pre_succ_msg);
-        if (!cancel_scroll)
-            you.amplification = 1;
+            cancel_scroll = !remove_curse(true, pre_succ_msg);
         break;
-    }
 
     case SCR_ACQUIREMENT:
         mpr("This is a scroll of acquirement!");
@@ -3054,7 +2944,7 @@ void read_scroll(item_def& scroll)
             mpr("It is a scroll of recharging.");
             // included in default force_more_message (to show it before menu)
         }
-        cancel_scroll = (recharge_wand(RECHARGE_TYPE_EITHER, alreadyknown, pre_succ_msg) == -1);
+        cancel_scroll = (recharge_wand(alreadyknown, pre_succ_msg) == -1);
         break;
 
     case SCR_ENCHANT_ARMOUR:
@@ -3128,7 +3018,7 @@ void read_scroll(item_def& scroll)
     if (!cancel_scroll)
     {
         if (in_inventory(scroll))
-            dec_inv_item_quantity(you.inv2, scroll.link, 1);
+            dec_inv_item_quantity(scroll.link, 1);
         else
             dec_mitm_item_quantity(scroll.index(), 1);
         count_action(CACT_USE, OBJ_SCROLLS);
@@ -3194,9 +3084,9 @@ void tile_item_pickup(int idx, bool part)
     pickup_single_item(idx, -1);
 }
 
-void tile_item_drop(FixedVector< item_def, ENDOFPACK > &inv, int idx, bool partdrop)
+void tile_item_drop(int idx, bool partdrop)
 {
-    int quantity = inv[idx].quantity;
+    int quantity = you.inv[idx].quantity;
     if (partdrop && quantity > 1)
     {
         quantity = prompt_for_int("Drop how many? ", true);
@@ -3205,10 +3095,10 @@ void tile_item_drop(FixedVector< item_def, ENDOFPACK > &inv, int idx, bool partd
             canned_msg(MSG_OK);
             return;
         }
-        if (quantity > inv[idx].quantity)
-            quantity = inv[idx].quantity;
+        if (quantity > you.inv[idx].quantity)
+            quantity = you.inv[idx].quantity;
     }
-    drop_item(inv, idx, quantity);
+    drop_item(idx, quantity);
 }
 
 void tile_item_eat_floor(int idx)
@@ -3226,7 +3116,7 @@ void tile_item_eat_floor(int idx)
 
 void tile_item_use_secondary(int idx)
 {
-    const item_def item = you.inv1[idx];
+    const item_def item = you.inv[idx];
 
     if (item.base_type == OBJ_WEAPONS && is_throwable(&you, item))
     {
@@ -3242,9 +3132,9 @@ void tile_item_use_secondary(int idx)
     }
 }
 
-void tile_item_use(FixedVector< item_def, ENDOFPACK > &inv, int idx)
+void tile_item_use(int idx)
 {
-    const item_def item = inv[idx];
+    const item_def item = you.inv[idx];
 
     // Equipped?
     bool equipped = false;
@@ -3337,7 +3227,7 @@ void tile_item_use(FixedVector< item_def, ENDOFPACK > &inv, int idx)
             if (!item_is_spellbook(item) || !you.skill(SK_SPELLCASTING))
             {
                 if (check_warning_inscriptions(item, OPER_READ))
-                    _handle_read_book(you.inv2[idx]);
+                    _handle_read_book(you.inv[idx]);
             } // else it's a spellbook
             else if (check_warning_inscriptions(item, OPER_MEMORISE))
                 learn_spell(); // offers all spells, might not be what we want
@@ -3345,7 +3235,7 @@ void tile_item_use(FixedVector< item_def, ENDOFPACK > &inv, int idx)
 
         case OBJ_SCROLLS:
             if (check_warning_inscriptions(item, OPER_READ))
-                read(&you.inv2[idx]);
+                read(&you.inv[idx]);
             return;
 
         case OBJ_JEWELLERY:
@@ -3357,7 +3247,7 @@ void tile_item_use(FixedVector< item_def, ENDOFPACK > &inv, int idx)
 
         case OBJ_POTIONS:
             if (check_warning_inscriptions(item, OPER_QUAFF))
-                drink(&you.inv2[idx]);
+                drink(&you.inv[idx]);
             return;
 
         default:

@@ -1,9 +1,4 @@
 %%%%
-Cave Troll
-
-Cave Trolls are large brutes with powerful claws, always hungering for raw meat.
-They regenerate health rapidly.
-%%%%
 Centaur
 
 Swift, strong and bulky, Centaurs are particularly skilled with ranged
@@ -28,11 +23,6 @@ Demonspawn
 Demonspawn are half human, half demon. They acquire strong demonic mutations as
 they grow.
 %%%%
-Djinni
-
-The Djinn are spirits of fire, for whom magic is the very essence of life. They
-can't read scrolls.
-%%%%
 Draconian
 
 Draconians are versatile hybrids. They mature when reaching level 7 and develop
@@ -40,13 +30,13 @@ a colour.
 %%%%
 Formicid
 
-Formicids are humanoid ants, masters of tunnels and digging. Their limbs are
-exceptionally strong and they live in a state of permanent stasis.
+Formicids are humanoid ants adept at digging. Their limbs are exceptionally
+strong and they live in a state of permanent stasis.
 %%%%
 Felid
 
-Felids are nine-lived cats possessing sentience. They are incapable of advanced
-item manipulation or the use of armour or weapons, but can wear four rings.
+Felids are many-lived cats possessing sentience. They are incapable of advanced
+item manipulation or the use of armour or weapons.
 %%%%
 Ghoul
 
@@ -86,10 +76,6 @@ Kobold
 
 Kobolds are small, mischievous and a little fragile, but multi-talented.
 %%%%
-Lava Orc
-
-These masters of earth and fire magic come from deep below the Dungeon. Their abilities change with their temperature.
-%%%%
 Merfolk
 
 Half fish, half human, Merfolk are citizens of both water and land. They are
@@ -100,15 +86,10 @@ Minotaur
 Minotaurs are large muscular humans with bovine heads. They excel at all forms
 of close and ranged combat.
 %%%%
-Moon Troll
-
-Stunted versions of their Cave Troll cousins, Moon Trolls like to dabble in dark
-magic. They regenerate health, and later, magic, rapidly.
-%%%%
 Mummy
 
 Compelled to walk by an ancient curse, Mummies are adept at Necromancy but
-learn other skills very slowly. They are unable to consume any potions.
+learn other skills very slowly. They are unable to consume any food or potions.
 %%%%
 Naga
 
@@ -118,23 +99,22 @@ trailing off like that of a snake. They move slowly but are naturally resilient.
 Octopode
 
 A species of amphibious cephalopods. They can wear eight rings, but almost no
-armour fits them. They possess mysterious power when they are uninjured.
+armour fits them.
 %%%%
 Ogre
 
 Large and strong, Ogres are mostly seen as brutes. They are very comfortable
 with the basics of magic, however.
 %%%%
-Sludge Elf
-
-A depraved type of elf, who prefers cunning to fair fighting, and dark magic to
-other wizardry. They can't obtain much magical power, but can easily cast even
-very complex spells. They are rumored to have orcish blood in their lineage.
-%%%%
 Spriggan
 
-Very small, very frail and very fast, Spriggans make highly competent stabbers,
-chefs, and spellcasters.
+Very small, very frail and very fast, Spriggans make highly competent stabbers
+and spellcasters.
+%%%%
+Troll
+
+Trolls are large brutes with powerful claws, always hungering for raw meat.
+They regenerate health rapidly.
 %%%%
 Vampire
 

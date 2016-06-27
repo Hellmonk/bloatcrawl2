@@ -272,25 +272,14 @@ function ($, comm, enums, map_knowledge, messages, options) {
             $("#stats_" + name).addClass("colour_" + colour);
     }
 
-    var simple_stats = ["hp", "hp_max", "sp", "sp_max", "mp", "mp_max", "xl", "progress", "gold", "to_hit_chance", "be_hit_chance"];
+    var simple_stats = ["hp", "hp_max", "mp", "mp_max", "xl", "progress", "gold"];
     /**
      * Update the stats pane area based on the player's current properties.
      */
     function update_stats_pane()
     {
         $("#stats_titleline").text(player.name + " " + player.title);
-        if (player.wizard)
-            $("#stats_wizmode").text("-WIZARD-");
-        else if (player.diff == "0")
-            $("#stats_wizmode").text("-EASY-");
-        else if (player.diff == "1")
-            $("#stats_wizmode").text("-STANDARD-");
-        else if (player.diff == "2")
-            $("#stats_wizmode").text("-CHALLENGE-");
-        else if (player.diff == "3")
-            $("#stats_wizmode").text("-NIGHTMARE-");
-        else
-            $("#stats_wizmode").text("");
+        $("#stats_wizmode").text(player.wizard ? "*WIZARD*" : "");
 
         var do_temperature = false;
         var do_contam = false;
@@ -318,24 +307,12 @@ function ($, comm, enums, map_knowledge, messages, options) {
         switch (player.species)
         {
             case "Djinni":
-                // do_contam = true;
+                do_contam = true;
                 break;
             case "Lava Orc":
                 do_temperature = true;
                 break;
         }
-
-        var mp_cap;
-        if (player.real_mp_max != player.mp_max)
-        {
-            mp_cap = "MP";
-        }
-        else
-        {
-            mp_cap = "Magic";
-        }
-
-        $("#stats_mpline > .stats_caption").text(mp_cap+":");
 
         var species_god = player.species;
         if (player.god != "")
@@ -353,15 +330,11 @@ function ($, comm, enums, map_knowledge, messages, options) {
         else if ((player.piety_rank > 0 || player.god != "")
                  && player.god != "Gozag")
         {
-            $("#stats_piety").text(" " + player.piety + " " 
-                + repeat_string("*", player.piety_rank)
-                + repeat_string(".", 6-player.piety_rank));
+            $("#stats_piety").text(repeat_string("*", player.piety_rank)
+                                   + repeat_string(".", 6-player.piety_rank));
         }
         else
-        {
             $("#stats_piety").text("");
-        }
-
         $("#stats_species_god").text(species_god);
         $("#stats_piety").toggleClass("penance", !!player.penance);
         $("#stats_piety").toggleClass("monk", player.god == "");
@@ -376,20 +349,13 @@ function ($, comm, enums, map_knowledge, messages, options) {
         else
             $("#stats_real_hp_max").text("");
 
-        if (player.real_mp_max != player.mp_max)
-            $("#stats_real_mp_max").text("(" + player.real_mp_max + ")");
-        else
-            $("#stats_real_mp_max").text("");
-        
         percentage_color("hp");
-        percentage_color("sp");
         percentage_color("mp");
         update_bar("hp");
-        if (player.species != "Djinni")
-        {
-            update_bar("sp");
+        if (do_contam)
+            update_bar_contam();
+        else
             update_bar("mp");
-        }
         if (do_temperature)
             update_bar_heat();
 
@@ -413,9 +379,6 @@ function ($, comm, enums, map_knowledge, messages, options) {
             $("#stats_time_caption").text("Turn:");
             $("#stats_time").text(player.turn);
         }
-        
-        $("#stats_be_hit_chance").text(player.be_hit_chance + "%");
-        $("#stats_to_hit_chance").text(player.to_hit_chance + "%");
 
         var place_desc = player.place;
         if (player.depth) place_desc += ":" + player.depth;
@@ -467,9 +430,7 @@ function ($, comm, enums, map_knowledge, messages, options) {
         update_stats_pane();
 
         if ("hp" in data || "hp_max" in data ||
-            "sp" in data || "sp_max" in data ||
-            "mp" in data || "mp_max" in data 
-        )
+            "mp" in data || "mp_max" in data)
         {
             map_knowledge.touch(player.pos);
             $("#dungeon").trigger("update_cells", [[player.pos]]);
@@ -506,17 +467,14 @@ function ($, comm, enums, map_knowledge, messages, options) {
             $.extend(player, {
                 name: "", god: "", title: "", species: "",
                 hp: 0, hp_max: 0, real_hp_max: 0, poison_survival: 0,
-                sp: 0, sp_max: 0,
-                mp: 0, mp_max: 0, real_mp_max: 0,
+                mp: 0, mp_max: 0,
                 ac: 0, ev: 0, sh: 0,
-                diff: 0,
-                exp_mode: 0,
                 xl: 0, progress: 0,
                 time: 0, time_delta: 0,
                 gold: 0,
                 str: 0, int: 0, dex: 0,
                 str_max: 0, int_max: 0, dex_max: 0,
-                piety: 0, piety_rank: 0, penance: false,
+                piety_rank: 0, penance: false,
                 status: [],
                 inv: {}, equip: {}, quiver_item: -1,
                 unarmed_attack: "",
@@ -524,9 +482,7 @@ function ($, comm, enums, map_knowledge, messages, options) {
                 wizard: 0,
                 depth: 0, place: "",
                 contam: 0,
-                heat: 0,
-                to_hit_chance: 0,
-                be_hit_chance: 0
+                heat: 0
             });
             delete player["old_hp"];
             delete player["old_mp"];

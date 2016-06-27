@@ -44,8 +44,8 @@
 // Note that they don't have to be equal, but it is important to make
 // sure that they're set so that the spending limit will always allow
 // for 1 skill point to be earned.
-#define MAX_COST_LIMIT           26500
-#define MAX_SPENDING_LIMIT       26500
+#define MAX_COST_LIMIT           265
+#define MAX_SPENDING_LIMIT       265
 
 static int _train(skill_type exsk, int &max_exp, bool simu = false);
 static void _train_skills(int exp, const int cost, const bool simu);
@@ -103,13 +103,8 @@ static const char *skill_titles[NUM_SKILLS][6] =
     {"Earth Magic",    "Digger",        "Geomancer",       "Earth Mage",      "Metallomancer",  "Petrodigitator"},
     {"Poison Magic",   "Stinger",       "Tainter",         "Polluter",        "Contaminator",   "Envenomancer"},
 
-    {"Light Magic",    "Candle",        "Torch",           "Star",            "Moon",           "Sun"},
-    {"Darkness Magic", "Quiet",         "Shadow",          "Silent",          "Empty",          "Void"},
-    {"Time Magic",     "Keeper",        "Stretcher",       "Manipulator",     "Chronomancer",   "Time Lord"},
-
     // These titles apply to atheists only, worshippers of the various gods
     // use the god titles instead, depending on piety or, in Gozag's case, gold.
-    // or, in U's case, invocations skill.
     {"Invocations",    "Unbeliever",    "Agnostic",        "Dissident",       "Heretic",        "Apostate"},
     {"Evocations",     "Charlatan",     "Prestidigitator", "Fetichist",       "Evocator",       "Talismancer"},
 };
@@ -134,8 +129,6 @@ struct species_skill_aptitude
 };
 
 #include "aptitudes.h"
-#include "stepdown.h"
-#include "invent.h"
 
 // Traditionally, Spellcasting and In/Evocations formed the exceptions here:
 // Spellcasting skill was more expensive with about 130%, the other two got
@@ -154,80 +147,32 @@ unsigned int skill_cost_needed(int level)
     return (exp_needed(level, 1) * 13) / 10;
 }
 
-static const int MAX_SKILL_COST_LEVEL = 99;
+static const int MAX_SKILL_COST_LEVEL = 27;
 
 // skill_cost_level makes skills more expensive for more experienced characters
 int calc_skill_cost(int skill_cost_level)
 {
-    int cost;
+    const int cost[] = { 1, 2, 3, 4, 5,            // 1-5
+                         7, 8, 9, 13, 22,         // 6-10
+                         37, 48, 73, 98, 125,      // 11-15
+                         145, 170, 190, 212, 225,  // 16-20
+                         240, 255, 260, 265, 265,  // 21-25
+                         265, 265 };
+    COMPILE_CHECK(ARRAYSZ(cost) == MAX_SKILL_COST_LEVEL);
 
-    if (Options.level_27_cap)
-    {
-        if (skill_cost_level >= MAX_SKILL_COST_LEVEL)
-        {
-            cost = 265;
-        }
-        else
-        {
-            const int cost_array[] = {1, 2, 3, 4, 5,            // 1-5
-                                      7, 8, 9, 13, 22,         // 6-10
-                                      37, 48, 73, 98, 125,      // 11-15
-                                      145, 170, 190, 212, 225,  // 16-20
-                                      240, 255, 260, 265, 265,  // 21-25
-                                      265, 265};
-            COMPILE_CHECK(ARRAYSZ(cost_array) == 27);
-            ASSERT_RANGE(skill_cost_level, 1, 27 + 1);
-            cost = cost_array[skill_cost_level - 1];
-        }
-    }
-    else
-    {
-        cost = stepup2(skill_cost_level, 6, 2, 14) + 1;
-    }
-
-    return cost;
-}
-
-unsigned int skill_exp_needed(int lev, skill_type sk, species_type sp)
-{
-    if (lev <= 0)
-        return 0;
-
-    ASSERT_RANGE(lev, 0, MAX_SKILL_LEVEL + 1);
-
-    int result;
-    if (Options.level_27_cap)
-    {
-        const int exp[28] = {0, 50, 150, 300, 500, 750,         // 0-5
-                             1050, 1400, 1800, 2250, 2800,      // 6-10
-                             3450, 4200, 5050, 6000, 7050,      // 11-15
-                             8200, 9450, 10800, 12300, 13950,   // 16-20
-                             15750, 17700, 19800, 22050, 24450, // 21-25
-                             27000, 29750};
-        if (lev > 27)
-            result = INT_MAX;
-        else
-            result = exp[lev] * species_apt_factor(sk, sp);
-    }
-    else
-    {
-        const int exp_needed = stepup2(lev, 1, 2, 40) + 10;
-        const float apt = species_apt_factor(sk, sp);
-        result = exp_needed * apt;
-    }
-
-    return result;
+    ASSERT_RANGE(skill_cost_level, 1, MAX_SKILL_COST_LEVEL + 1);
+    return cost[skill_cost_level - 1];
 }
 
 /**
  * The baseline skill cost for the 'cost' interface on the m screen.
  *
- * @returns the XP needed to go from level 1 to level 2 with +0 apt.
+ * @returns the XP needed to go from level 0 to level 1 with +0 apt.
  */
 int skill_cost_baseline()
 {
-    return skill_exp_needed(2, SK_SHORT_BLADES, SP_HUMAN)
-           - skill_exp_needed(1, SK_SHORT_BLADES, SP_HUMAN);
+    return skill_exp_needed(1, SK_FIGHTING, SP_HUMAN)
+           - skill_exp_needed(0, SK_FIGHTING, SP_HUMAN);
 }
 
 /**
@@ -238,29 +183,10 @@ int skill_cost_baseline()
  */
 int one_level_cost(skill_type sk)
 {
-    if (you.skills[sk] >= get_max_skill_level())
+    if (you.skills[sk] >= MAX_SKILL_LEVEL)
         return 0;
     return skill_exp_needed(you.skills[sk] + 1, sk)
            - skill_exp_needed(you.skills[sk], sk);
-}
-
-/**
- * The number displayed in the 'cost' interface on the m screen.
- *
- * @param sk the skill to compute the cost of
- * @returns the cost of raising sk from floor(level) to ceiling(level),
- *          as a multiple of skill_cost_baseline()
- */
-float scaled_skill_cost(skill_type sk)
-{
-    if (you.skills[sk] == MAX_SKILL_LEVEL || is_useless_skill(sk))
-        return 0;
-    int baseline = skill_cost_baseline();
-    int next_level = one_level_cost(sk);
-    if (skill_has_manual(sk))
-        baseline *= 2;
-
-    return (float)next_level / baseline;
 }
 
 // Characters are actually granted skill points, not skill levels.
@@ -336,7 +262,7 @@ static void _change_skill_level(skill_type exsk, int n)
 
     // are you drained/crosstrained/ash'd in the relevant skill?
     const bool specify_base = you.skill(exsk, 1) != you.skill(exsk, 1, true);
-    if (you.skills[exsk] == get_max_skill_level())
+    if (you.skills[exsk] == MAX_SKILL_LEVEL)
         mprf(MSGCH_INTRINSIC_GAIN, "You have mastered %s!", skill_name(exsk));
     else if (abs(n) == 1 && you.num_turns)
     {
@@ -361,9 +287,9 @@ static void _change_skill_level(skill_type exsk, int n)
     if (n > 0 && you.num_turns)
         learned_something_new(HINT_SKILL_RAISE);
 
-    if (you.skills[exsk] - n == get_max_skill_level())
+    if (you.skills[exsk] - n == MAX_SKILL_LEVEL)
     {
-        you.train[exsk] = TRAINING_ENABLED;
+        you.train[exsk] = 1;
         need_reset = true;
     }
 
@@ -425,7 +351,7 @@ void check_skill_level_change(skill_type sk, bool do_level_up)
     int new_level = you.skills[sk];
     while (1)
     {
-        if (new_level < get_max_skill_level()
+        if (new_level < MAX_SKILL_LEVEL
             && you.skill_points[sk] >= skill_exp_needed(new_level + 1, sk))
         {
             ++new_level;
@@ -479,7 +405,7 @@ static void _erase_from_stop_train(const skill_set &can_train)
  */
 static void _check_inventory_skills()
 {
-    for (const auto &item : you.inv1)
+    for (const auto &item : you.inv)
     {
         // Exit early if there's no more skill to check.
         if (you.stop_train.empty())
@@ -644,12 +570,12 @@ void init_train()
 {
     for (int i = 0; i < NUM_SKILLS; ++i)
         if (you.can_train[i] && you.skill_points[i])
-            you.train[i] = you.train_alt[i] = TRAINING_ENABLED;
+            you.train[i] = you.train_alt[i] = true;
         else
         {
             // Skills are on by default in auto mode and off in manual.
-            you.train[i] = (training_status)you.auto_training;
-            you.train_alt[i] = (training_status)!you.auto_training;
+            you.train[i] = you.auto_training;
+            you.train_alt[i] = !you.auto_training;
         }
 }
 
@@ -750,7 +676,7 @@ bool check_selected_skills()
         if (skill_trained(sk))
             return false;
         if (is_useless_skill(sk) || is_harmful_skill(sk)
-            || you.skill_points[sk] >= skill_exp_needed(get_max_skill_level(), sk))
+            || you.skill_points[sk] >= skill_exp_needed(MAX_SKILL_LEVEL, sk))
         {
             continue;
         }
@@ -846,7 +772,7 @@ void reset_training()
 
 void exercise(skill_type exsk, int deg)
 {
-    if (you.skills[exsk] >= get_max_skill_level())
+    if (you.skills[exsk] >= MAX_SKILL_LEVEL)
         return;
 
     dprf(DIAG_SKILLS, "Exercise %s by %d.", skill_name(exsk), deg);
@@ -871,13 +797,13 @@ void exercise(skill_type exsk, int deg)
 static bool _level_up_check(skill_type sk, bool simu)
 {
     // Don't train past level 27.
-    if (you.skill_points[sk] >= skill_exp_needed(get_max_skill_level(), sk))
+    if (you.skill_points[sk] >= skill_exp_needed(MAX_SKILL_LEVEL, sk))
     {
         you.training[sk] = 0;
         if (!simu)
         {
-            you.train[sk] = TRAINING_DISABLED;
-            you.train_alt[sk] = TRAINING_DISABLED;
+            you.train[sk] = 0;
+            you.train_alt[sk] = 0;
         }
         return true;
     }
@@ -897,7 +823,7 @@ void train_skills(bool simu)
     {
         cost = calc_skill_cost(you.skill_cost_level);
         exp = you.exp_available;
-        if (you.skill_cost_level >= MAX_SKILL_COST_LEVEL)
+        if (you.skill_cost_level == MAX_SKILL_COST_LEVEL)
             _train_skills(exp, cost, simu);
         else
         {
@@ -1096,12 +1022,11 @@ static int _train(skill_type exsk, int &max_exp, bool simu)
         return 0;
 
     // Bonus from manual
-    FixedVector<item_def, 52> *const inv = book_inv();
     int slot;
     int bonus_left = skill_inc;
     while (bonus_left > 0 && (slot = manual_slot_for_skill(exsk)) != -1)
     {
-        item_def& manual((*inv)[slot]);
+        item_def& manual(you.inv[slot]);
         const int bonus = min<int>(bonus_left, manual.skill_points);
         skill_inc += bonus;
         bonus_left -= bonus;
@@ -1135,9 +1060,9 @@ void set_skill_level(skill_type skill, double amount)
     you.ct_skill_points[skill] = 0;
     you.skills[skill] = level;
 
-    if (level >= get_max_skill_level())
+    if (level >= MAX_SKILL_LEVEL)
     {
-        level = get_max_skill_level();
+        level = MAX_SKILL_LEVEL;
         fractional = 0;
     }
 
@@ -1199,7 +1124,7 @@ void set_skill_level(skill_type skill, double amount)
 
 int get_skill_progress(skill_type sk, int level, int points, int scale)
 {
-    if (level >= get_max_skill_level())
+    if (level >= MAX_SKILL_LEVEL)
         return 0;
 
     const int needed = skill_exp_needed(level + 1, sk);
@@ -1358,7 +1283,7 @@ string skill_title_by_rank(skill_type best_skill, uint8_t skill_rank,
             break;
 
         case SK_EVOCATIONS:
-            if (god == GOD_PAKELLAS)
+            if (god == GOD_NEMELEX_XOBEH || god == GOD_PAKELLAS)
                 result = god_title(god, species, piety);
             break;
 
@@ -1479,24 +1404,28 @@ bool is_useless_skill(skill_type skill)
 
     if ((skill == SK_AIR_MAGIC && player_mutation_level(MUT_NO_AIR_MAGIC))
         || (skill == SK_CHARMS && player_mutation_level(MUT_NO_CHARM_MAGIC))
-        || (skill == SK_CONJURATIONS && player_mutation_level(MUT_NO_CONJURATION_MAGIC))
-        || (skill == SK_EARTH_MAGIC && player_mutation_level(MUT_NO_EARTH_MAGIC))
+        || (skill == SK_CONJURATIONS
+            && player_mutation_level(MUT_NO_CONJURATION_MAGIC))
+        || (skill == SK_EARTH_MAGIC
+            && player_mutation_level(MUT_NO_EARTH_MAGIC))
         || (skill == SK_FIRE_MAGIC && player_mutation_level(MUT_NO_FIRE_MAGIC))
         || (skill == SK_HEXES && player_mutation_level(MUT_NO_HEXES_MAGIC))
         || (skill == SK_ICE_MAGIC && player_mutation_level(MUT_NO_ICE_MAGIC))
-        || (skill == SK_NECROMANCY && player_mutation_level(MUT_NO_NECROMANCY_MAGIC))
-        || (skill == SK_POISON_MAGIC && player_mutation_level(MUT_NO_POISON_MAGIC))
-        || (skill == SK_SUMMONINGS && player_mutation_level(MUT_NO_SUMMONING_MAGIC))
-        || (skill == SK_TRANSLOCATIONS && player_mutation_level(MUT_NO_TRANSLOCATION_MAGIC))
-        || (skill == SK_TRANSMUTATIONS && player_mutation_level(MUT_NO_TRANSMUTATION_MAGIC))
+        || (skill == SK_NECROMANCY
+            && player_mutation_level(MUT_NO_NECROMANCY_MAGIC))
+        || (skill == SK_POISON_MAGIC
+            && player_mutation_level(MUT_NO_POISON_MAGIC))
+        || (skill == SK_SUMMONINGS
+            && player_mutation_level(MUT_NO_SUMMONING_MAGIC))
+        || (skill == SK_TRANSLOCATIONS
+            && player_mutation_level(MUT_NO_TRANSLOCATION_MAGIC))
+        || (skill == SK_TRANSMUTATIONS
+            && player_mutation_level(MUT_NO_TRANSMUTATION_MAGIC))
         || (skill == SK_DODGING && player_mutation_level(MUT_NO_DODGING))
         || (skill == SK_ARMOUR && player_mutation_level(MUT_NO_ARMOUR))
         || (skill == SK_SHIELDS && player_mutation_level(MUT_MISSING_HAND))
         || (skill == SK_EVOCATIONS && player_mutation_level(MUT_NO_ARTIFICE))
         || (skill == SK_STEALTH && player_mutation_level(MUT_NO_STEALTH))
-        || (skill == SK_LIGHT_MAGIC && player_mutation_level(MUT_NO_LIGHT_MAGIC))
-        || (skill == SK_DARKNESS_MAGIC && player_mutation_level(MUT_NO_DARKNESS_MAGIC))
-        || (skill == SK_TIME_MAGIC && player_mutation_level(MUT_NO_TIME_MAGIC))
     )
     {
         return true;
@@ -1520,7 +1449,7 @@ bool all_skills_maxed(bool really_all)
 {
     for (skill_type i = SK_FIRST_SKILL; i < NUM_SKILLS; ++i)
     {
-        if (you.skills[i] < get_max_skill_level() && !is_useless_skill(i)
+        if (you.skills[i] < MAX_SKILL_LEVEL && !is_useless_skill(i)
             && (really_all || you.can_train[i] && !is_harmful_skill(i)))
         {
             return false;
@@ -1543,6 +1472,19 @@ int skill_bump(skill_type skill, int scale)
 float apt_to_factor(int apt)
 {
     return 1 / exp(log(2) * apt / APT_DOUBLE);
+}
+
+unsigned int skill_exp_needed(int lev, skill_type sk, species_type sp)
+{
+    const int exp[28] = { 0, 50, 150, 300, 500, 750,         // 0-5
+                          1050, 1400, 1800, 2250, 2800,      // 6-10
+                          3450, 4200, 5050, 6000, 7050,      // 11-15
+                          8200, 9450, 10800, 12300, 13950,   // 16-20
+                          15750, 17700, 19800, 22050, 24450, // 21-25
+                          27000, 29750 };
+
+    ASSERT_RANGE(lev, 0, MAX_SKILL_LEVEL + 1);
+    return exp[lev] * species_apt_factor(sk, sp);
 }
 
 int species_apt(skill_type skill, species_type species)
@@ -1574,58 +1516,25 @@ float species_apt_factor(skill_type sk, species_type sp)
 
 vector<skill_type> get_crosstrain_skills(skill_type sk)
 {
-    if (you.species == SP_HUMAN)
-        switch (sk)
-        {
-            case SK_SHORT_BLADES:
-                return {SK_LONG_BLADES};
-            case SK_LONG_BLADES:
-                return {SK_SHORT_BLADES};
-            case SK_AXES:
-            case SK_STAVES:
-                return {SK_POLEARMS, SK_MACES_FLAILS};
-            case SK_MACES_FLAILS:
-            case SK_POLEARMS:
-                return {SK_AXES, SK_STAVES};
-            case SK_SLINGS:
-                return {SK_THROWING};
-            case SK_THROWING:
-                return {SK_SLINGS};
-            case SK_BOWS:
-                return {SK_CROSSBOWS};
-            case SK_CROSSBOWS:
-                return {SK_BOWS};
-            case SK_SPELLCASTING:
-                return {SK_EVOCATIONS, SK_INVOCATIONS};
-            case SK_INVOCATIONS:
-                return {SK_EVOCATIONS, SK_SPELLCASTING};
-            case SK_EVOCATIONS:
-                return {SK_INVOCATIONS, SK_SPELLCASTING};
-            case SK_ICE_MAGIC:
-                return {SK_FIRE_MAGIC, SK_EARTH_MAGIC, SK_AIR_MAGIC};
-            case SK_EARTH_MAGIC:
-                return {SK_ICE_MAGIC, SK_FIRE_MAGIC, SK_AIR_MAGIC};
-            case SK_AIR_MAGIC:
-                return {SK_ICE_MAGIC, SK_EARTH_MAGIC, SK_FIRE_MAGIC};
-            case SK_FIRE_MAGIC:
-                return {SK_ICE_MAGIC, SK_EARTH_MAGIC, SK_AIR_MAGIC};
-            case SK_HEXES:
-                return {SK_CHARMS};
-            case SK_CHARMS:
-                return {SK_HEXES};
-            case SK_SUMMONINGS:
-                return {SK_TRANSLOCATIONS, SK_TRANSMUTATIONS, SK_NECROMANCY};
-            case SK_TRANSLOCATIONS:
-                return {SK_SUMMONINGS, SK_TRANSMUTATIONS, SK_NECROMANCY};
-            case SK_TRANSMUTATIONS:
-                return {SK_TRANSLOCATIONS, SK_SUMMONINGS, SK_NECROMANCY};
-            case SK_NECROMANCY:
-                return {SK_TRANSLOCATIONS, SK_SUMMONINGS, SK_TRANSMUTATIONS};
-            default:
-                return {};
-        }
-    else
+    switch (sk)
+    {
+    case SK_SHORT_BLADES:
+        return { SK_LONG_BLADES };
+    case SK_LONG_BLADES:
+        return { SK_SHORT_BLADES };
+    case SK_AXES:
+    case SK_STAVES:
+        return { SK_POLEARMS, SK_MACES_FLAILS };
+    case SK_MACES_FLAILS:
+    case SK_POLEARMS:
+        return { SK_AXES, SK_STAVES };
+    case SK_SLINGS:
+        return { SK_THROWING };
+    case SK_THROWING:
+        return { SK_SLINGS };
+    default:
         return {};
+    }
 }
 
 /**
@@ -1637,9 +1546,7 @@ vector<skill_type> get_crosstrain_skills(skill_type sk)
 static bool _skill_is_elemental(skill_type sk)
 {
     return sk == SK_FIRE_MAGIC || sk == SK_EARTH_MAGIC
-           || sk == SK_AIR_MAGIC || sk == SK_ICE_MAGIC
-           || sk == SK_LIGHT_MAGIC || sk == SK_DARKNESS_MAGIC
-         ;
+           || sk == SK_AIR_MAGIC || sk == SK_ICE_MAGIC;
 }
 
 /**
@@ -1781,7 +1688,7 @@ int transfer_skill_points(skill_type fsk, skill_type tsk, int skp_max,
         if (fsk != tsk)
         {
             change_skill_points(tsk, skp_gained, false);
-            if (you.skills[tsk] == get_max_skill_level())
+            if (you.skills[tsk] == MAX_SKILL_LEVEL)
                 break;
         }
     }
@@ -1819,7 +1726,7 @@ int transfer_skill_points(skill_type fsk, skill_type tsk, int skp_max,
         }
 
         if (you.transfer_skill_points == 0
-            || you.skills[tsk] == get_max_skill_level())
+            || you.skills[tsk] == MAX_SKILL_LEVEL)
         {
             ashenzari_end_transfer(true);
         }
@@ -1868,7 +1775,7 @@ void skill_state::restore_levels()
 void skill_state::restore_training()
 {
     for (skill_type sk = SK_FIRST_SKILL; sk < NUM_SKILLS; ++sk)
-        if (you.skills[sk] < get_max_skill_level())
+        if (you.skills[sk] < MAX_SKILL_LEVEL)
             you.train[sk] = train[sk];
 
     you.can_train                   = can_train;
@@ -1884,13 +1791,10 @@ void fixup_skills()
         if (is_useless_skill(sk))
             you.skill_points[sk] = 0;
         you.skill_points[sk] = min(you.skill_points[sk],
-                                   skill_exp_needed(get_max_skill_level(), sk));
+                                   skill_exp_needed(MAX_SKILL_LEVEL, sk));
         check_skill_level_change(sk);
     }
     init_can_train();
-
-    if (you.skill_cost_level == 0)
-        you.skill_cost_level = 1;
 
     if (you.exp_available >= calc_skill_cost(you.skill_cost_level))
         skill_menu(SKMF_EXPERIENCE);

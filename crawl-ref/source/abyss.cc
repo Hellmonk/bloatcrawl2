@@ -356,7 +356,7 @@ static int _abyss_create_items(const map_bitmask &abyss_genlevel_mask,
     {
         if (_abyss_square_accepts_items(abyss_genlevel_mask, place))
         {
-            int thing_created = items(true, OBJ_POTIONS, POT_STAMINA,
+            int thing_created = items(true, OBJ_RANDOM, OBJ_RANDOM,
                                       items_level);
             move_item_to_grid(&thing_created, place);
             if (thing_created != NON_ITEM)
@@ -386,7 +386,7 @@ static int _banished_depth(const int power)
     // you can do about that.
     const int maxdepth = div_rand_round((power + 5), 6);
     const int mindepth = (4 * power + 7) / 23;
-    return min(7, max(1, random_range(mindepth, maxdepth)));
+    return min(5, max(1, random_range(mindepth, maxdepth)));
 }
 
 void banished(const string &who, const int power)

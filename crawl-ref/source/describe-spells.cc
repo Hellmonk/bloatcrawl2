@@ -25,6 +25,8 @@
 #include "state.h"
 #include "unicode.h"
 
+extern const spell_type serpent_of_hell_breaths[4][3];
+
 /**
  * Returns a spellset containing the spells for the given item.
  *
@@ -170,7 +172,7 @@ static void _monster_spellbooks(const monster_info &mi,
         for (const auto& slot : book_slots)
         {
             const spell_type spell = slot.spell;
-            if (!spell_is_soh_breath(spell))
+            if (spell != SPELL_SERPENT_OF_HELL_BREATH)
             {
                 output_book.spells.emplace_back(spell);
                 if (get_spell_flags(spell) & SPFLAG_MONS_ABJURE)
@@ -178,9 +180,22 @@ static void _monster_spellbooks(const monster_info &mi,
                 continue;
             }
 
-            const vector<spell_type> *breaths = soh_breath_spells(spell);
-            ASSERT(breaths);
-            for (auto breath : *breaths)
+            static map<monster_type, size_t> serpent_indices =
+            {
+                { MONS_SERPENT_OF_HELL, 0 },
+                { MONS_SERPENT_OF_HELL_COCYTUS, 1 },
+                { MONS_SERPENT_OF_HELL_DIS, 2 },
+                { MONS_SERPENT_OF_HELL_TARTARUS, 3 },
+            };
+
+            const monster_type serpent_type
+                = mons_class_is_zombified(mi.type) ? mi.base_type : mi.type;
+            const size_t *s_i_ptr = map_find(serpent_indices, serpent_type);
+            ASSERT(s_i_ptr);
+            const size_t serpent_index = *s_i_ptr;
+            ASSERT_LESS(serpent_index, ARRAYSZ(serpent_of_hell_breaths));
+
+            for (auto breath : serpent_of_hell_breaths[serpent_index])
                 output_book.spells.emplace_back(breath);
         }
 
@@ -273,7 +288,7 @@ static int _spell_colour(spell_type spell, const item_def* const source_item)
 
     // this is kind of ugly.
     if (!you_can_memorise(spell)
-        || effective_xl() < spell_difficulty(spell)
+        || you.experience_level < spell_difficulty(spell)
         || player_spell_levels() < spell_levels_required(spell))
     {
         return COL_USELESS;

@@ -8,6 +8,7 @@
 function hell_entry_feature(e, glyph)
     e.tags("extra luniq_enter_hell chance_enter_hell")
     e.depth_chance("Depths", 10000)
+    e.depth_chance("D:21-", 10000)
     e.kfeat(glyph .. " = enter_hell")
 end
 
@@ -48,7 +49,7 @@ function hell_lava_spawns(e)
 end
 }}
 
-default-depth: Depths
+default-depth: Depths, D:21-
 
 ##############################################################################
 # Vestibule entries

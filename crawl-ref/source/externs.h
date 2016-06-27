@@ -28,8 +28,6 @@
 #include "store.h"
 #include "tiledef_defines.h"
 
-#define WAND_CAP "wand_cap"
-
 struct tile_flavour
 {
     unsigned short floor_idx;
@@ -238,30 +236,6 @@ struct coord_def
     bool equals(const int xi, const int yi) const
     {
         return xi == x && yi == y;
-    }
-
-    bool is_orthagonal() const
-    {
-    	return (x == 0) || (y == 0);
-    }
-
-    bool is_diagonal() const
-    {
-    	return !is_orthagonal();
-    }
-
-    bool is_sharp_turn(const coord_def other) const
-    {
-        int dx = x - other.x;
-        int dy = y - other.y;
-        dx = (dx < 0 ? -dx : dx);
-        dy = (dy < 0 ? -dy : dy);
-        return dx + dy >= 2;
-    }
-
-    bool is_reversal(const coord_def other) const
-    {
-        return x == -other.x && y == -other.y && (x > 0 || y > 0);
     }
 };
 
@@ -590,8 +564,6 @@ struct item_def
                                    /// random cosmetics. 0 = uninitialized
     short          quantity;       ///< number of items
     iflags_t       flags;          ///< item status flags
-    int 		   curse_weight;    ///< how hard it is to remove this curse
-    int			   id_complexity;   ///< how much identification work is left
 
     /// The location of the item. Items in player inventory are indicated by
     /// pos (-1, -1), items in monster inventory by (-2, -2), and items
@@ -618,7 +590,6 @@ struct item_def
 public:
     item_def() : base_type(OBJ_UNASSIGNED), sub_type(0), plus(0), plus2(0),
                  special(0), rnd(0), quantity(0), flags(0),
-				 curse_weight(0), id_complexity(0),
                  pos(), link(NON_ITEM), slot(0), orig_place(),
                  orig_monnum(0), inscription()
     {
@@ -627,29 +598,15 @@ public:
     string name(description_level_type descrip, bool terse = false,
                 bool ident = false, bool with_inscription = true,
                 bool quantity_in_words = false,
-                iflags_t ignore_flags = 0x0, bool ignore_cursed = false) const;
+                iflags_t ignore_flags = 0x0) const;
     bool has_spells() const;
     bool cursed() const;
-    bool super_cursed() const;
     colour_t get_colour() const;
     zap_type zap() const; ///< what kind of beam it shoots (if wand).
 
     bool is_type(int base, int sub) const
     {
         return base_type == base && sub_type == sub;
-    }
-
-    int get_cap() const
-    {
-        if (props.exists(WAND_CAP))
-            return props[WAND_CAP].get_int();
-        else
-            return 0;
-    }
-
-    void set_cap(int max_charges)
-    {
-        props[WAND_CAP].get_int() = max_charges;
     }
 
     /**
@@ -671,11 +628,6 @@ public:
         *this = item_def();
     }
 
-    bool in_player_inventory()
-    {
-        return pos.x == -1 && pos.y == -1;
-    }
-
     /**
      * Sets this item as being held by a given monster.
      *
@@ -694,7 +646,6 @@ public:
     bool held_by_monster() const;
 
     bool defined() const;
-    bool isValid() const;
     bool appearance_initialized() const;
     bool is_valid(bool info = false) const;
 
@@ -706,7 +657,7 @@ public:
 
 private:
     string name_aux(description_level_type desc, bool terse, bool ident,
-                    bool with_inscription, iflags_t ignore_flags, bool ignore_curse = false) const;
+                    bool with_inscription, iflags_t ignore_flags) const;
 
     colour_t randart_colour() const;
 
@@ -736,9 +687,7 @@ public:
     int runmode;
     int mp;
     int hp;
-    int sp;
     bool notified_mp_full;
-    bool notified_sp_full;
     bool notified_hp_full;
     coord_def pos;
     int travel_speed;

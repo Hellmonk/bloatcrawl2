@@ -119,19 +119,15 @@ enum brand_type // item_def.special
     SPWPN_RETURNING,
 #endif
     SPWPN_CHAOS,
-#if TAG_MAJOR_VERSION == 34
     SPWPN_EVASION,
+
     MAX_GHOST_BRAND = SPWPN_EVASION,
-#else
-    MAX_GHOST_BRAND = SPWPN_CHAOS,
-#endif
 
 #if TAG_MAJOR_VERSION == 34
     SPWPN_CONFUSE, // XXX not a real weapon brand, only for Confusing Touch
 #endif
     SPWPN_PENETRATION,
     SPWPN_REAPING,
-    SPWPN_LIGHT,
 
 // From this point on save compat is irrelevant.
     NUM_REAL_SPECIAL_WEAPONS,
@@ -158,6 +154,9 @@ enum hands_reqd_type
 
 enum jewellery_type
 {
+#if TAG_MAJOR_VERSION == 34
+    RING_REGENERATION,
+#endif
     RING_PROTECTION,
     RING_FIRST_RING = RING_PROTECTION,
     RING_PROTECTION_FROM_FIRE,
@@ -181,13 +180,9 @@ enum jewellery_type
     RING_PROTECTION_FROM_MAGIC,
     RING_FIRE,
     RING_ICE,
-    RING_STAMINA,
+    RING_TELEPORT_CONTROL,
     NUM_RINGS,                         //   keep as last ring; should not overlap
                                        //   with amulets!
-	// remove:
-	RING_TELEPORT_CONTROL,
-	RING_REGENERATION,
-
     // RINGS after num_rings are for unique types for artefacts
     //   (no non-artefact version).
     // Currently none.
@@ -197,27 +192,24 @@ enum jewellery_type
     AMU_FIRST_AMULET = AMU_RAGE,
     AMU_HARM,
     AMU_DISMISSAL,
-    AMU_MAGIC_REGENERATION,
-	AMU_STAMINA_REGENERATION,
+    AMU_MANA_REGENERATION,
+    AMU_THE_GOURMAND,
+#if TAG_MAJOR_VERSION == 34
+    AMU_CONSERVATION,
+    AMU_CONTROLLED_FLIGHT,
+#endif
     AMU_INACCURACY,
     AMU_NOTHING,
-    AMU_MAGIC_SHIELD,
+    AMU_GUARDIAN_SPIRIT,
     AMU_FAITH,
     AMU_REFLECTION,
-    AMU_HEALTH_REGENERATION,
-    AMU_STAMINA_SHIELD,
-    AMU_QUICK_CAST,
+    AMU_REGENERATION,
 
-    NUM_JEWELLERY,
-	// to remove
-	AMU_THE_GOURMAND,
-	AMU_CONSERVATION,
-	AMU_CONTROLLED_FLIGHT,
+    NUM_JEWELLERY
 };
 
 enum launch_retval
 {
-    LRET_BUGGY = -1, // could be 0 maybe? TODO: test
     LRET_FUMBLED,
     LRET_LAUNCHED,
     LRET_THROWN,
@@ -243,24 +235,23 @@ enum misc_item_type
     MISC_DISC_OF_STORMS,
 
     MISC_DECK_OF_ESCAPE,
-    MISC_FIRST_DECK = MISC_DECK_OF_ESCAPE,
     MISC_DECK_OF_DESTRUCTION,
 #if TAG_MAJOR_VERSION == 34
     MISC_DECK_OF_DUNGEONS,
     MISC_DECK_OF_SUMMONING,
     MISC_DECK_OF_WONDERS,
 #endif
+#if TAG_MAJOR_VERSION > 34
+    MISC_DECK_OF_ODDITIES,
+#endif
     MISC_DECK_OF_PUNISHMENT,
 
-#if TAG_MAJOR_VERSION == 34
     MISC_DECK_OF_WAR,
+#if TAG_MAJOR_VERSION == 34
     MISC_DECK_OF_CHANGES,
     MISC_DECK_OF_DEFENCE,
-    MISC_LAST_DECK = MISC_DECK_OF_DEFENCE,
 
     MISC_RUNE_OF_ZOT,
-#else
-    MISC_LAST_DECK = MISC_DECK_OF_PUNISHMENT,
 #endif
 
     MISC_QUAD_DAMAGE, // Sprint only
@@ -284,9 +275,9 @@ const vector<misc_item_type> deck_types =
 {
     MISC_DECK_OF_ESCAPE, MISC_DECK_OF_DESTRUCTION,
 #if TAG_MAJOR_VERSION == 34
-    MISC_DECK_OF_SUMMONING, MISC_DECK_OF_WONDERS, MISC_DECK_OF_ODDITIES,
+    MISC_DECK_OF_SUMMONING, MISC_DECK_OF_WONDERS,
 #endif
-    MISC_DECK_OF_PUNISHMENT, MISC_DECK_OF_WAR,
+    MISC_DECK_OF_ODDITIES, MISC_DECK_OF_PUNISHMENT, MISC_DECK_OF_WAR,
 #if TAG_MAJOR_VERSION == 34
     MISC_DECK_OF_CHANGES, MISC_DECK_OF_DEFENCE, MISC_DECK_OF_DUNGEONS,
 #endif
@@ -314,7 +305,9 @@ const vector<misc_item_type> misc_types =
 
 enum missile_type
 {
-    MI_UNUSED0,
+#if TAG_MAJOR_VERSION == 34
+    MI_DART,
+#endif
     MI_NEEDLE,
     MI_ARROW,
     MI_BOLT,
@@ -333,11 +326,10 @@ enum missile_type
 enum rune_type
 {
     RUNE_SWAMP,
-    FIRST_RUNE = RUNE_SWAMP,
     RUNE_SNAKE,
     RUNE_SHOALS,
     RUNE_SLIME,
-    RUNE_ELF,
+    RUNE_ELF, // unused
     RUNE_VAULTS,
     RUNE_TOMB,
 
@@ -347,6 +339,7 @@ enum rune_type
     RUNE_TARTARUS,
 
     RUNE_ABYSSAL,
+
     RUNE_DEMONIC,
 
     // order must match monsters
@@ -356,49 +349,46 @@ enum rune_type
     RUNE_GLOORX_VLOQ,
 
     RUNE_SPIDER,
-    RUNE_DWARF,
-    RUNE_CRYPT,
+    RUNE_FOREST, // unused
     NUM_RUNE_TYPES
 };
 
 enum scroll_type
 {
-    SCR_RANDOM_USELESSNESS,
-    SCR_ACQUIREMENT,
-    SCR_AMNESIA,
-    SCR_AMPLIFICATION,
-    SCR_BLINKING,
-    SCR_BRAND_WEAPON,
-    SCR_BRIARS,
-    SCR_DISPLACEMENT,
-    SCR_ENCHANT_ARMOUR,
-    SCR_ENCHANT_WEAPON,
-    SCR_FEAR,
-    SCR_FOG,
-    SCR_HOLY_WORD,
     SCR_IDENTIFY,
-    SCR_IMMOLATION,
-	SCR_INFINITY,
-    SCR_INVERSION,
-    SCR_KARMA,
-    SCR_MAGIC_MAPPING,
-    SCR_NOISE,
-    SCR_RECHARGING,
-    SCR_REMOVE_CURSE,
-    SCR_REPLICATION,
-    SCR_RETURNING,
-    SCR_SILENCE,
-    SCR_SUMMONING,
     SCR_TELEPORTATION,
+    SCR_FEAR,
+    SCR_NOISE,
+    SCR_REMOVE_CURSE,
+    SCR_SUMMONING,
+    SCR_ENCHANT_WEAPON,
+    SCR_ENCHANT_ARMOUR,
     SCR_TORMENT,
+    SCR_RANDOM_USELESSNESS,
 #if TAG_MAJOR_VERSION == 34
-    SCR_CURSE_ARMOUR,
-    SCR_CURSE_JEWELLERY,
     SCR_CURSE_WEAPON,
+    SCR_CURSE_ARMOUR,
+#endif
+    SCR_IMMOLATION,
+    SCR_BLINKING,
+    SCR_MAGIC_MAPPING,
+    SCR_FOG,
+    SCR_ACQUIREMENT,
+#if TAG_MAJOR_VERSION == 34
     SCR_ENCHANT_WEAPON_II,
+#endif
+    SCR_BRAND_WEAPON,
+    SCR_RECHARGING,
+#if TAG_MAJOR_VERSION == 34
     SCR_ENCHANT_WEAPON_III,
 #endif
+    SCR_HOLY_WORD,
     SCR_VULNERABILITY,
+    SCR_SILENCE,
+    SCR_AMNESIA,
+#if TAG_MAJOR_VERSION == 34
+    SCR_CURSE_JEWELLERY,
+#endif
     NUM_SCROLLS
 };
 
@@ -428,12 +418,11 @@ enum special_armour_type
     SPARM_PRESERVATION,
 #endif
     SPARM_REFLECTION,
-    SPARM_MAGIC_SHIELD,
+    SPARM_SPIRIT_SHIELD,
     SPARM_ARCHERY,
 #if TAG_MAJOR_VERSION == 34
     SPARM_JUMPING,
 #endif
-    SPARM_STAMINA_SHIELD,
     NUM_REAL_SPECIAL_ARMOURS,
     NUM_SPECIAL_ARMOURS,
 };
@@ -491,9 +480,6 @@ enum stave_type
     STAFF_SUMMONING,
     STAFF_AIR,
     STAFF_EARTH,
-    STAFF_LIGHT,
-    STAFF_DARKNESS,
-    STAFF_TIME,
 #if TAG_MAJOR_VERSION == 34
     STAFF_CHANNELING,
 #endif
@@ -640,7 +626,6 @@ enum weapon_property_type
     PWPN_HIT,
     PWPN_SPEED,
     PWPN_ACQ_WEIGHT,
-    PWPN_WEIGHT,
 };
 
 enum vorpal_damage_type

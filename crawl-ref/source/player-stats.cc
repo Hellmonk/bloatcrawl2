@@ -367,6 +367,9 @@ static int _strength_modifier(bool innate_only)
     if (!innate_only)
     {
         if (you.duration[DUR_MIGHT] || you.duration[DUR_BERSERK])
+            result += 5;
+
+        if (you.duration[DUR_FORTITUDE])
             result += 10;
 
         if (you.duration[DUR_DIVINE_STAMINA])
@@ -405,7 +408,7 @@ static int _int_modifier(bool innate_only)
     if (!innate_only)
     {
         if (you.duration[DUR_BRILLIANCE])
-            result += 10;
+            result += 5;
 
         if (you.duration[DUR_DIVINE_STAMINA])
             result += you.attribute[ATTR_DIVINE_STAMINA];
@@ -436,7 +439,7 @@ static int _dex_modifier(bool innate_only)
     if (!innate_only)
     {
         if (you.duration[DUR_AGILITY])
-            result += 10;
+            result += 5;
 
         if (you.duration[DUR_DIVINE_STAMINA])
             result += you.attribute[ATTR_DIVINE_STAMINA];
@@ -533,7 +536,8 @@ bool lose_stat(stat_type which_stat, int stat_loss, bool force)
 
     if (stat_loss > 0)
     {
-        you.stat_loss[which_stat] = min<int>(player_max_stat_loss_allowed(which_stat), you.stat_loss[which_stat] + stat_loss);
+        you.stat_loss[which_stat] = min<int>(100,
+                                        you.stat_loss[which_stat] + stat_loss);
         if (!you.attribute[ATTR_STAT_LOSS_XP])
             you.attribute[ATTR_STAT_LOSS_XP] = stat_loss_roll();
         _handle_stat_change(which_stat);
@@ -593,8 +597,6 @@ bool restore_stat(stat_type which_stat, int stat_gain,
         stat_gain = you.stat_loss[which_stat];
 
     you.stat_loss[which_stat] -= stat_gain;
-    if (you.stat_loss[which_stat] < 0)
-        you.stat_loss[which_stat] = 0;
 
     // If we're fully recovered, clear out stat loss recovery timer.
     if (random_lost_stat() == NUM_STATS)
@@ -625,9 +627,6 @@ static void _handle_stat_change(stat_type stat)
         // 2 to 5 turns of paralysis (XXX: decremented right away?)
         you.increase_duration(DUR_PARALYSIS, 2 + random2(3));
     }
-
-    if (you.stat_loss[stat] < 0)
-        you.stat_loss[stat] = 0;
 
     you.redraw_stats[stat] = true;
     _normalize_stat(stat);

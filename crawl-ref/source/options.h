@@ -3,7 +3,6 @@
 
 #include <algorithm>
 
-#include "enum.h"
 #include "feature.h"
 #include "newgame_def.h"
 #include "pattern.h"
@@ -232,7 +231,6 @@ public:
     int         background_colour; // select default background colour
     msg_colour_type channels[NUM_MESSAGE_CHANNELS];  // msg channel colouring
     use_animations_type use_animations; // which animations to show
-    bool        darken_beyond_range; // whether to darken squares out of range
 
     int         hp_warning;      // percentage hp for danger warning
     int         magic_point_warning;    // percentage mp for danger warning
@@ -272,7 +270,6 @@ public:
     int         sc_format;       // Format for score entries
 
     vector<pair<int, int> > hp_colour;
-    vector<pair<int, int> > sp_colour;
     vector<pair<int, int> > mp_colour;
     vector<pair<int, int> > stat_colour;
     vector<int> enemy_hp_colour;
@@ -426,24 +423,6 @@ public:
     bool        regex_search; // whether to default to regex search for ^F
     bool        autopickup_search; // whether to annotate stash items with
                                    // autopickup status
-
-    int         movement_penalty;           // original crawl movement, where direction changes aren't penalized
-
-    bool        level_27_cap;               // prevent player level and skills from exceeding level 27, and use old style progression steps
-
-    exp_mode    experience_mode;
-    bool        exp_potion_on_each_floor;   // give experience from exp potions dropped on each floor
-    bool        uniques_drop_exp_potions;   // uniques and ghosts will always drop exp potions
-    bool        exp_based_on_player_level;  // exp is relative to player level instead of floor the player is on
-
-    int         exp_percent_from_monsters;  // what percent of normal monster experience to give on monster kill
-    int         exp_percent_from_potions;   // what percent of normal experience potion experience to give when drinking
-    int         exp_percent_from_new_branch_floor;     // what percent of normal experience potion experience to give when drinking
-
-    int         danger_mode_threshold;      // enter danger mode if player's health is less than this percentage of the last damage done.
-    int         live_debug;                // gives additional messages based on debug flags
-    bool        exertion_disabled;         // don't allow exertion mode changes
-    bool        disable_instakill_protection;   // removes protection from player receiving more than a certain % of damage in a round
 
     lang_t              language;         // Translation to use.
     const char*         lang_name;        // Database name of the language.
@@ -633,43 +612,6 @@ object_class_type item_class_by_sym(ucs_t c);
 #define Options (*real_Options)
 #endif
 extern game_options  Options;
-
-static inline string get_exp_mode_string()
-{
-    string result;
-    switch(Options.experience_mode)
-    {
-        case EXP_MODE_CLASSIC:
-            result = "Classic";
-            break;
-        case EXP_MODE_SIMPLE_DEPTH:
-            result = "Simple Depth";
-            break;
-        case EXP_MODE_SIMPLE_XL:
-            result = "Simple XL";
-            break;
-        case EXP_MODE_BALANCE:
-            result = "Balance";
-            break;
-        case EXP_MODE_SERENITY:
-            result = "Serenity";
-            break;
-        case EXP_MODE_INTENSITY:
-            result = "Intensity";
-            break;
-        case EXP_MODE_PACIFIST:
-            result = "Pacifist";
-            break;
-        case EXP_MODE_DESTROYER:
-            result = "Destroyer";
-            break;
-        default:
-            result = "Unknown";
-            break;
-    }
-
-    return result;
-}
 
 static inline short macro_colour(short col)
 {

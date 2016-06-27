@@ -4,16 +4,11 @@
 // If there are several keys assigned to the same command, the last one
 // will be the one displayed on the command help screen. Keys assigned
 // via keybindings will take precedence. (jpeg)
-#include "cio.h"
-#include "enum.h"
-#include "defines.h"
-
 #ifdef USE_TILE
 {'-', CMD_EDIT_PLAYER_TILE},
 #endif
 // movement keys
-
-//{'s', CMD_WAIT},
+{'s', CMD_WAIT},
 {CK_CLEAR, CMD_WAIT},
 {'.', CMD_WAIT},
 {CK_END, CMD_MOVE_DOWN_LEFT},
@@ -43,16 +38,12 @@
 {'y', CMD_MOVE_UP_LEFT},
 // other commands
 {'a', CMD_USE_ABILITY},
-//{'c', CMD_BUTCHER},
-{'c', CMD_EXERT_NORMAL},
-{'d', CMD_DROP_INVENTORY},
-//{'e', CMD_EAT},
-{'e', CMD_EXERT_POWER},
-{'E', CMD_EXERT_FOCUS},
+{'c', CMD_BUTCHER},
+{'d', CMD_DROP},
+{'e', CMD_EAT},
 {'f', CMD_FIRE},
-{'g', CMD_EXERT_FAST},
+{'g', CMD_PICKUP},
 {'i', CMD_DISPLAY_INVENTORY},
-{'I', CMD_DISPLAY_CONSUMABLES},
 {'m', CMD_DISPLAY_SKILLS},
 {'o', CMD_EXPLORE},
 {'p', CMD_PRAY},
@@ -83,20 +74,18 @@
 {'Y', CMD_RUN_UP_LEFT},
 {'A', CMD_DISPLAY_MUTATIONS},
 {'C', CMD_CLOSE_DOOR},
-{CONTROL('D'), CMD_DROP_CONSUMABLE},
 {'D', CMD_DROP_LAST},
-// {'E', CMD_EXPERIENCE_CHECK},
+{'E', CMD_EXPERIENCE_CHECK},
 {'F', CMD_THROW_ITEM_NO_QUIVER},
 {CONTROL('G'), CMD_INTERLEVEL_TRAVEL},
 {'G', CMD_INTERLEVEL_TRAVEL},
-{'S', CMD_DISPLAY_SPELLS},
-{'s', CMD_EXERT_SLOW},
+{'I', CMD_DISPLAY_SPELLS},
 {'M', CMD_MEMORISE_SPELL},
 {'O', CMD_OPEN_DOOR},
 {'P', CMD_WEAR_JEWELLERY},
 {'Q', CMD_QUIVER_ITEM},
 {'R', CMD_REMOVE_JEWELLERY},
-//{'S', CMD_SAVE_GAME},
+{'S', CMD_SAVE_GAME},
 {CONTROL('S'), CMD_SAVE_GAME_NOW},
 {'T', CMD_REMOVE_ARMOUR},
 {'W', CMD_WEAR_ARMOUR},
@@ -118,13 +107,13 @@
 {'?', CMD_DISPLAY_COMMANDS},
 {'!', CMD_ANNOTATE_LEVEL},
 {'$', CMD_LIST_GOLD},
-//{CONTROL('D'), CMD_MACRO_ADD},
+{CONTROL('D'), CMD_MACRO_ADD},
 {'~', CMD_MACRO_ADD},
 #ifdef WIZARD
 {'&', CMD_WIZARD},
 {'+', CMD_EXPLORE_MODE},
 #endif
-{'"', CMD_LIST_RUNE_CURSES},
+{'"', CMD_LIST_JEWELLERY},
 {'{', CMD_INSCRIBE_ITEM},
 {'[', CMD_LIST_ARMOUR},
 {'(', CMD_CYCLE_QUIVER_BACKWARD},
@@ -206,7 +195,6 @@
 {'<', CMD_TARGET_FIND_UPSTAIR},
 {'>', CMD_TARGET_FIND_DOWNSTAIR},
 {'r', CMD_TARGET_FIND_YOU},
-{'q', CMD_TARGET_UNSUMMON},
 {CONTROL('L'), CMD_TARGET_TOGGLE_MLIST},
 {'p', CMD_TARGET_PREV_TARGET},
 //{'f', CMD_TARGET_SELECT}, // HACK: Moved to be the downmost for tutorial key

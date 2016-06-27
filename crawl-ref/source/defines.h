@@ -31,8 +31,6 @@ typedef uint32_t ucs_t;
 // max size of inventory array {dlb}:
 #define ENDOFPACK 52
 
-#define OBTAINABLE_RUNES 20
-
 // Max ghosts on a level.
 const int MAX_GHOSTS = 10;
 
@@ -55,7 +53,6 @@ enum extra_monster_index_type
 #define MAX_MONS_ALLOC 20
 
 #define MAX_SUBTYPES   60
-#define MAX_MINIONS    30       // how many summons they player can have at once
 
 // max size of item list {dlb}:
 #define MAX_ITEMS 2000
@@ -102,7 +99,7 @@ const int LABYRINTH_BORDER = 4;
 #define Y_BOUND_2               (GYM - BOUNDARY_BORDER)
 #define Y_WIDTH                 (Y_BOUND_2 - Y_BOUND_1 + 1)
 
-// normal LOS radius
+// maximal LOS radius
 #define LOS_RADIUS 7
 
 // maximal horizontal or vertical LOS range:
@@ -126,11 +123,8 @@ const int LABYRINTH_BORDER = 4;
 // This value is used to make test_hit checks always succeed
 #define AUTOMATIC_HIT           1500
 
-const int MAX_EXP_LEVEL = 99;
-const int MAX_SKILL_LEVEL = 99;
-const int MAX_ITEM_PLUS = 99;
-const int MAX_EXP_TOTAL = 2000000000;
-const int MAX_MONS_LEVEL = 99;
+const int MAX_SKILL_LEVEL = 27;
+const int MAX_EXP_TOTAL = 8999999;
 const int HIGH_EXP_POOL = 20000;
 const int EXERCISE_QUEUE_SIZE = 100;
 
@@ -152,7 +146,7 @@ const int GOURMAND_NUTRITION_BASE = 10  * BASELINE_DELAY;
 
 const int CHUNK_BASE_NUTRITION    = 1000;
 
-const int ICEMAIL_MAX  = 20;
+const int ICEMAIL_MAX  = 10;
 const int ICEMAIL_TIME = 30 * BASELINE_DELAY;
 
 // This value is used to mark immune levels of MR
@@ -187,7 +181,7 @@ const int AGILITY_BONUS = 5;
 #define TORNADO_RADIUS 5
 
 #define VAULTS_ENTRY_RUNES 1
-#define ZOT_ENTRY_RUNES 0
+#define ZOT_ENTRY_RUNES 3
 #define ZIG_ENTRY_RUNES 2
 
 // Size of unique_items in player class
@@ -199,7 +193,7 @@ const int AGILITY_BONUS = 5;
 #define berserk_mul(x) div_rand_round((x) * 3, 2)
 #define berserk_div(x) div_rand_round((x) * 2, 3)
 
-#define MAX_MONSTER_HP 32000
+#define MAX_MONSTER_HP 10000
 
 // some shortcuts:
 #define menv   env.mons

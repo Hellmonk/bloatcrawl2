@@ -36,24 +36,6 @@
 static void _mpr(string text, msg_channel_type channel=MSGCH_PLAIN, int param=0,
                  bool nojoin=false, bool cap=true);
 
-bool _channels_can_merge(msg_channel_type c1, msg_channel_type c2)
-{
-    bool result = true;
-    switch(c1)
-    {
-        case MSGCH_PROMPT:
-        case MSGCH_WARN:
-        case MSGCH_DANGER:
-        case MSGCH_PRELUDE:
-            result = false;
-            break;
-        default:
-            break;
-    }
-
-    return result;
-}
-
 void mpr(const string &text)
 {
     _mpr(text);
@@ -74,7 +56,6 @@ static bool _ends_in_punctuation(const string& text)
     case ',':
     case ';':
     case ':':
-    case ')':
         return true;
     default:
         return false;
@@ -136,7 +117,7 @@ struct message_line
     {
         messages = { { msg, 1 } };
         // Don't join long messages.
-        join = jn && strwidth(last_msg().pure_text()) < msgwin_line_length();
+        join = jn && strwidth(last_msg().pure_text()) < 40;
     }
 
     // Constructor for restored messages.
@@ -174,7 +155,7 @@ struct message_line
             return false; // dangerous for hacky code (looks at EOL for '!'...)
         if (!Options.msg_condense_repeats)
             return false;
-        if (!_channels_can_merge(other.channel, channel) || other.param != param)
+        if (other.channel != channel || other.param != param)
             return false;
         if (other.messages.size() > 1)
         {
@@ -188,35 +169,24 @@ struct message_line
             messages.back().repeats += other.last_msg().repeats;
             return true;
         }
-        else
+        else if (Options.msg_condense_short
+                 && turn == other.turn
+                 && join && other.join
+                 && _ends_in_punctuation(last_msg().pure_text())
+                  == _ends_in_punctuation(other.last_msg().pure_text()))
+            // punct check is a hack to avoid pickup messages merging with
+            // combat on the same turn - should find a nicer heuristic
         {
-            const bool same_turn = turn == other.turn;
-            const bool joins_good = join && other.join;
-            const bool p1 = _ends_in_punctuation(last_msg().pure_text());
-            const bool p2 = _ends_in_punctuation(other.last_msg().pure_text());
-            const bool punctuation_matches = p1 == p2;
+            // "; " or " "?
+            const int seplen = last_msg().needs_semicolon() ? 2 : 1;
+            const int total_len = pure_len() + seplen + other.pure_len();
+            if (total_len > (int)msgwin_line_length())
+                return false;
 
-            if (Options.msg_condense_short
-                && same_turn
-                && joins_good
-                /* not sure we want this.
-                && punctuation_matches
-                 */
-                )
-                    // punct check is a hack to avoid pickup messages merging with
-                    // combat on the same turn - should find a nicer heuristic
-                {
-                    // "; " or " "?
-                    const int seplen = last_msg().needs_semicolon() ? 2 : 1;
-                    const int total_len = pure_len() + seplen + other.pure_len();
-                    if (total_len > (int)msgwin_line_length())
-                        return false;
-        
-                    // merge in other's messages; they'll be delimited when printing.
-                    messages.insert(messages.end(),
-                                    other.messages.begin(), other.messages.end());
-                    return true;
-                }
+            // merge in other's messages; they'll be delimited when printing.
+            messages.insert(messages.end(),
+                            other.messages.begin(), other.messages.end());
+            return true;
         }
 
         return false;
@@ -761,11 +731,11 @@ public:
 
     void add(const message_line& msg)
     {
-        if (msg.channel != MSGCH_PROMPT && msg.channel != MSGCH_PRELUDE && prev_msg.merge(msg))
+        if (msg.channel != MSGCH_PROMPT && prev_msg.merge(msg))
             return;
         flush_prev();
         prev_msg = msg;
-        if (msg.channel == MSGCH_PROMPT || msg.channel == MSGCH_PRELUDE || _temporary)
+        if (msg.channel == MSGCH_PROMPT || _temporary)
             flush_prev();
     }
 
@@ -1021,7 +991,6 @@ static msg_colour_type channel_to_msgcol(msg_channel_type channel, int param)
 
         case MSGCH_DIAGNOSTICS:
         case MSGCH_MULTITURN_ACTION:
-        case MSGCH_PRELUDE:
             ret = MSGCOL_DARKGREY; // makes it easier to ignore at times -- bwr
             break;
 
@@ -1131,30 +1100,10 @@ void mprf(msg_channel_type channel, const char *format, ...)
     va_end(argp);
 }
 
-void ldprf(live_debug_type type, const char *format, ...)
-{
-    if (Options.live_debug != (int)type)
-        return;
-
-    va_list argp;
-    va_start(argp, format);
-    do_message_print(MSGCH_DIAGNOSTICS, 0, true, false, format, argp);
-    va_end(argp);
-}
-
 void mprf(const char *format, ...)
 {
     va_list argp;
     va_start(argp, format);
-    do_message_print(MSGCH_PLAIN, 0, true, false, format, argp);
-    va_end(argp);
-}
-
-void wprf(const char *format, ...)
-{
-    va_list argp;
-    va_start(argp, format);
-    if (you.wizard)
     do_message_print(MSGCH_PLAIN, 0, true, false, format, argp);
     va_end(argp);
 }
@@ -1366,7 +1315,7 @@ static void _mpr(string text, msg_channel_type channel, int param, bool nojoin,
 
     if (colour == MSGCOL_MUTED)
     {
-        if (channel == MSGCH_PROMPT || channel == MSGCH_PRELUDE)
+        if (channel == MSGCH_PROMPT)
             msgwin.show();
         return;
     }
@@ -1396,7 +1345,7 @@ static void _mpr(string text, msg_channel_type channel, int param, bool nojoin,
     if (channel == MSGCH_ERROR)
         interrupt_activity(AI_FORCE_INTERRUPT);
 
-    if (channel == MSGCH_PROMPT || channel == MSGCH_ERROR || channel == MSGCH_PRELUDE)
+    if (channel == MSGCH_PROMPT || channel == MSGCH_ERROR)
         set_more_autoclear(false);
 
     if (domore)
@@ -1451,11 +1400,11 @@ void msgwin_new_turn()
     buffer.new_turn();
 }
 
-void msgwin_new_cmd(bool force)
+void msgwin_new_cmd()
 {
     flush_prev_message();
     bool new_turn = (you.num_turns > _last_msg_turn);
-    msgwin.new_cmdturn(new_turn || force);
+    msgwin.new_cmdturn(new_turn);
 }
 
 unsigned int msgwin_line_length()
@@ -1540,7 +1489,6 @@ static bool channel_message_history(msg_channel_type channel)
     case MSGCH_PROMPT:
     case MSGCH_EQUIPMENT:
     case MSGCH_EXAMINE_FILTER:
-    case MSGCH_PRELUDE:
         return false;
     default:
         return true;
@@ -1685,7 +1633,7 @@ void more(bool user_forced)
     clear_messages();
 }
 
-void canned_msg(canned_message_type which_message, const int amount)
+void canned_msg(canned_message_type which_message)
 {
     switch (which_message)
     {
@@ -1777,17 +1725,11 @@ void canned_msg(canned_message_type which_message, const int amount)
         case MSG_NO_SPELLS:
             mpr("You don't know any spells.");
             break;
-        case MSG_MAGIC_INCREASE:
+        case MSG_MANA_INCREASE:
             mpr("You feel your magic capacity increase.");
             break;
-        case MSG_STAMINA_INCREASE:
-            mpr("You feel your stamina capacity increase.");
-            break;
-        case MSG_MAGIC_DECREASE:
+        case MSG_MANA_DECREASE:
             mpr("You feel your magic capacity decrease.");
-            break;
-        case MSG_STAMINA_DECREASE:
-            mpr("You feel your stamina capacity decrease.");
             break;
         case MSG_DISORIENTED:
             mpr("You feel momentarily disoriented.");
@@ -1814,53 +1756,15 @@ void canned_msg(canned_message_type which_message, const int amount)
             mpr("You see a ghostly outline there, and the spell fizzles.");
             break;
         case MSG_GAIN_HEALTH:
-            if (amount > 0)
-                mprf("You feel better. (hp+%d)", amount);
-            else
-                mpr("You feel better.");
+            mpr("You feel better.");
             break;
         case MSG_GAIN_MAGIC:
-            if (amount > 0)
-                mprf("You feel your power returning. (mp+%d)", amount);
-            else
-                mpr("You feel your power returning.");
+            mpr("You feel your power returning.");
             break;
         case MSG_MAGIC_DRAIN:
             mprf(MSGCH_WARN, "You suddenly feel drained of magical energy!");
             break;
-        case MSG_DJINNI_CANT_READ:
-            mprf(MSGCH_WARN, "Djinni can't read!");
-        	break;
     }
-}
-
-// Note that this function *completely* blocks messaging for monsters
-// distant or invisible to the player ... look elsewhere for a function
-// permitting output of "It" messages for the invisible {dlb}
-// Intentionally avoids info and str_pass now. - bwr
-bool monster_message(const monster* mons, const char *event, ...)
-{
-    msg_channel_type channel = MSGCH_PLAIN;
-    const description_level_type descrip = DESC_THE;
-
-    if (you.see_cell(mons->pos()))
-    {
-        string msg = mons->name(descrip);
-        msg += event;
-
-        if (channel == MSGCH_PLAIN && mons->wont_attack())
-            channel = MSGCH_FRIEND_ACTION;
-
-        va_list argp;
-        va_start(argp, event);
-        do_message_print(channel, 0, true, false, msg.c_str(), argp);
-        va_end(argp);
-
-        return true;
-    }
-
-
-    return false;
 }
 
 // Note that this function *completely* blocks messaging for monsters

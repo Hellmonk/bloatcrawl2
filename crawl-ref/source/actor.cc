@@ -49,7 +49,9 @@ level_id actor::shaft_dest(bool known = false) const
 bool actor::ground_level() const
 {
     return !airborne() && !is_wall_clinging()
+#if TAG_MAJOR_VERSION == 34
         && mons_species() != MONS_DJINNI
+#endif
         ;
 }
 
@@ -343,37 +345,19 @@ int actor::evokable_flight(bool calc_unid) const
            + scan_artefacts(ARTP_FLY, calc_unid);
 }
 
-int actor::magic_shield(bool calc_unid, bool items) const
+int actor::spirit_shield(bool calc_unid, bool items) const
 {
     int ss = 0;
 
     if (items)
     {
-        ss += wearing_ego(EQ_ALL_ARMOUR, SPARM_MAGIC_SHIELD, calc_unid);
-        ss += wearing(EQ_AMULET, AMU_MAGIC_SHIELD, calc_unid);
+        ss += wearing_ego(EQ_ALL_ARMOUR, SPARM_SPIRIT_SHIELD, calc_unid);
+        ss += wearing(EQ_AMULET, AMU_GUARDIAN_SPIRIT, calc_unid);
     }
 
     if (is_player())
-        ss += player_mutation_level(MUT_MAGIC_SHIELD);
+        ss += player_mutation_level(MUT_MANA_SHIELD);
 
-    ss = min(3, ss);
-    return ss;
-}
-
-int actor::stamina_shield(bool calc_unid, bool items) const
-{
-    int ss = 0;
-
-    if (items)
-    {
-        ss += wearing_ego(EQ_ALL_ARMOUR, SPARM_STAMINA_SHIELD, calc_unid);
-        ss += wearing(EQ_AMULET, AMU_STAMINA_SHIELD, calc_unid);
-    }
-
-    if (is_player())
-        ss += player_mutation_level(MUT_STAMINA_SHIELD);
-
-    ss = min(3, ss);
     return ss;
 }
 
@@ -382,12 +366,6 @@ int actor::apply_ac(int damage, int max_damage, ac_type ac_rule,
 {
     int ac = max(armour_class() - stab_bypass, 0);
     int gdr = gdr_perc();
-    if (you.rune_curse_active[RUNE_DWARF])
-    {
-        ac = div_rand_round(ac * 4, 3);
-        gdr = div_rand_round(gdr * 4, 3);
-    }
-
     int saved = 0;
     switch (ac_rule)
     {
@@ -695,14 +673,13 @@ void actor::handle_constriction()
         damage += div_rand_round(damage * stepdown((float)duration, 50.0),
                                  BASELINE_DELAY * 5);
         if (is_player())
-            damage = div_rand_round(damage * (27 + 2 * effective_xl()), 81);
+            damage = div_rand_round(damage * (27 + 2 * you.experience_level), 81);
         DIAG_ONLY(const int durdam = damage);
         damage -= random2(1 + (defender->armour_class() / 2));
         DIAG_ONLY(const int acdam = damage);
         damage = timescale_damage(this, damage);
         DIAG_ONLY(const int timescale_dam = damage);
 
-        damage = max(0, damage);
         damage = defender->hurt(this, damage, BEAM_MISSILE,
                                 KILLED_BY_MONSTER, "", "", false);
         DIAG_ONLY(const int infdam = damage);
@@ -732,18 +709,28 @@ void actor::handle_constriction()
 
         if (is_player() || you.can_see(*this))
         {
-            mprf("%s %s %s%s",
+            mprf("%s %s %s%s%s",
                  (is_player() ? "You"
                               : name(DESC_THE).c_str()),
                  conj_verb("constrict").c_str(),
                  defender->name(DESC_THE).c_str(),
+#ifdef DEBUG_DIAGNOSTICS
+                 make_stringf(" for %d", damage).c_str(),
+#else
+                 "",
+#endif
                  exclamations.c_str());
         }
         else if (you.can_see(*defender) || defender->is_player())
         {
-            mprf("%s %s constricted%s",
+            mprf("%s %s constricted%s%s",
                  defender->name(DESC_THE).c_str(),
                  defender->conj_verb("are").c_str(),
+#ifdef DEBUG_DIAGNOSTICS
+                 make_stringf(" for %d", damage).c_str(),
+#else
+                 "",
+#endif
                  exclamations.c_str());
         }
 

@@ -359,10 +359,10 @@ struct jewellery_fake_artp
 
 static map<jewellery_type, vector<jewellery_fake_artp>> jewellery_artps = {
     { AMU_RAGE, { { ARTP_BERSERK, 1 } } },
-    { AMU_HEALTH_REGENERATION, { { ARTP_REGENERATION, 1 } } },
+    { AMU_REGENERATION, { { ARTP_REGENERATION, 1 } } },
     { AMU_REFLECTION, { { ARTP_SHIELDING, 0 } } },
 
-    { RING_MAGICAL_POWER, { { ARTP_MAGICAL_POWER, 25 } } },
+    { RING_MAGICAL_POWER, { { ARTP_MAGICAL_POWER, 9 } } },
     { RING_FLIGHT, { { ARTP_FLY, 1 } } },
     { RING_SEE_INVISIBLE, { { ARTP_SEE_INVISIBLE, 1 } } },
     { RING_STEALTH, { { ARTP_STEALTH, 1 } } },
@@ -383,7 +383,6 @@ static map<jewellery_type, vector<jewellery_fake_artp>> jewellery_artps = {
     { RING_PROTECTION, { { ARTP_AC, 0 } } },
     { RING_EVASION, { { ARTP_EVASION, 0 } } },
     { RING_SLAYING, { { ARTP_SLAYING, 0 } } },
-    { RING_STAMINA, { { ARTP_STAMINA, 25 } } },
 };
 
 /**
@@ -425,9 +424,6 @@ static void _populate_item_intrinsic_artps(const item_def &item,
                                              artefact_properties_t &proprt,
                                              artefact_known_props_t &known)
 {
-    if (item.super_cursed())
-        return;
-
     switch (item.base_type)
     {
         case OBJ_ARMOUR:
@@ -466,16 +462,15 @@ static void _add_randart_weapon_brand(const item_def &item,
     {
         item_props[ARTP_BRAND] = random_choose_weighted(
             2, SPWPN_SPEED,
-            4, SPWPN_VORPAL,
-            2, SPWPN_LIGHT,
-            /*
             4, SPWPN_VENOM,
+            4, SPWPN_VORPAL,
             4, SPWPN_FLAMING,
             4, SPWPN_FREEZING,
-             */
             0);
 
-        if (item_attack_skill(item) == SK_CROSSBOWS)
+        if (item_type == WPN_BLOWGUN)
+            item_props[ARTP_BRAND] = coinflip() ? SPWPN_SPEED : SPWPN_EVASION;
+        else if (item_attack_skill(item) == SK_CROSSBOWS)
         {
             // Penetration and electrocution are only allowed on
             // crossbows. This may change in future.
@@ -494,7 +489,6 @@ static void _add_randart_weapon_brand(const item_def &item,
             SPWPN_ELECTROCUTION,
             SPWPN_VAMPIRISM,
             SPWPN_PAIN,
-            SPWPN_LIGHT,
             SPWPN_VENOM);
         // fall back to regular melee brands 2/9 of the time
     }
@@ -506,7 +500,6 @@ static void _add_randart_weapon_brand(const item_def &item,
             34, SPWPN_FREEZING,
             26, SPWPN_VENOM,
             26, SPWPN_DRAINING,
-            26, SPWPN_LIGHT,
             13, SPWPN_HOLY_WRATH,
             13, SPWPN_ELECTROCUTION,
             13, SPWPN_SPEED,
@@ -582,15 +575,8 @@ static bool _artp_can_go_on_item(artefact_prop_type prop, const item_def &item,
             return item_class != OBJ_WEAPONS
                    || get_weapon_brand(item) != SPWPN_ANTIMAGIC;
             // not quite as interesting on armour, since you swap it less
-            // rings have 2 slots, so little swap pressure
         case ARTP_FRAGILE:
-            return item_class != OBJ_ARMOUR
-                   && (item_class != OBJ_JEWELLERY
-                       || jewellery_is_amulet(item));
-        case ARTP_STAMINA:
-            return item_class != OBJ_WEAPONS;
-        case ARTP_RUNNING:
-            return item_class == OBJ_ARMOUR && item.sub_type == ARM_BOOTS;
+            return item_class != OBJ_ARMOUR;
         default:
             return true;
     }
@@ -616,10 +602,10 @@ struct artefact_prop_data
 };
 
 /// Generate 'good' values for stat artps (e.g. ARTP_STRENGTH)
-static int _gen_good_stat_artp() { return 1 + random2(2); }
+static int _gen_good_stat_artp() { return 1 + random2(3); }
 
 /// Generate 'bad' values for stat artps (e.g. ARTP_STRENGTH)
-static int _gen_bad_stat_artp() { return -2 - random2(2); }
+static int _gen_bad_stat_artp() { return -2 - random2(4); }
 
 /// Generate 'good' values for resist-ish artps (e.g. ARTP_FIRE)
 static int _gen_good_res_artp() { return 1; }
@@ -628,16 +614,10 @@ static int _gen_good_res_artp() { return 1; }
 static int _gen_bad_res_artp() { return -1; }
 
 /// Generate 'good' values for ARTP_HP/ARTP_MAGICAL_POWER
-static int _gen_good_hpmp_artp() { return 25; }
+static int _gen_good_hpmp_artp() { return 9; }
 
 /// Generate 'bad' values for ARTP_HP/ARTP_MAGICAL_POWER
 static int _gen_bad_hpmp_artp() { return -_gen_good_hpmp_artp(); }
-
-/// Generate 'good' values for ARTP_HP/ARTP_MAGICAL_POWER
-static int _gen_good_sp_artp() { return 25; }
-
-/// Generate 'bad' values for ARTP_HP/ARTP_MAGICAL_POWER
-static int _gen_bad_sp_artp() { return -_gen_good_hpmp_artp(); }
 
 /// Generation info for artefact properties.
 static const artefact_prop_data artp_data[] =
@@ -646,11 +626,11 @@ static const artefact_prop_data artp_data[] =
     { "AC", ARTP_VAL_ANY, 0, nullptr, nullptr, 0, 0}, // ARTP_AC,
     { "EV", ARTP_VAL_ANY, 0, nullptr, nullptr, 0, 0 }, // ARTP_EVASION,
     { "Str", ARTP_VAL_ANY, 100,     // ARTP_STRENGTH,
-        _gen_good_stat_artp, _gen_bad_stat_artp, 4, 1 },
+        _gen_good_stat_artp, _gen_bad_stat_artp, 7, 1 },
     { "Int", ARTP_VAL_ANY, 100,     // ARTP_INTELLIGENCE,
-        _gen_good_stat_artp, _gen_bad_stat_artp, 4, 1 },
+        _gen_good_stat_artp, _gen_bad_stat_artp, 7, 1 },
     { "Dex", ARTP_VAL_ANY, 100,     // ARTP_DEXTERITY,
-        _gen_good_stat_artp, _gen_bad_stat_artp, 4, 1 },
+        _gen_good_stat_artp, _gen_bad_stat_artp, 7, 1 },
     { "rF", ARTP_VAL_ANY, 60,       // ARTP_FIRE,
         _gen_good_res_artp, _gen_bad_res_artp, 2, 4},
     { "rC", ARTP_VAL_ANY, 60,       // ARTP_COLD,
@@ -700,7 +680,7 @@ static const artefact_prop_data artp_data[] =
     { "*Curse", ARTP_VAL_POS, 0, nullptr, nullptr, 0 }, // ARTP_CURSE,
     { "Stlth", ARTP_VAL_ANY, 40,    // ARTP_STEALTH,
         _gen_good_res_artp, _gen_bad_res_artp, 0, 0 },
-    { "MP", ARTP_VAL_ANY, 15,       // ARTP_MAGICAL_POWER,
+    { "MP", ARTP_VAL_ANY, 30,       // ARTP_MAGICAL_POWER,
         _gen_good_hpmp_artp, _gen_bad_hpmp_artp, 0, 0 },
     { "Delay", ARTP_VAL_ANY, 0, nullptr, nullptr, 0, 0 }, // ARTP_BASE_DELAY,
     { "HP", ARTP_VAL_ANY, 0,       // ARTP_HP,
@@ -712,7 +692,7 @@ static const artefact_prop_data artp_data[] =
 #if TAG_MAJOR_VERSION == 34
     { "+Fog", ARTP_VAL_BOOL, 0, nullptr, nullptr, 0, 0 }, // ARTP_FOG,
 #endif
-    { "RegenHP", ARTP_VAL_BOOL, 35,   // ARTP_REGENERATION,
+    { "Regen", ARTP_VAL_BOOL, 35,   // ARTP_REGENERATION,
         []() { return 1; }, nullptr, 0, 0 },
     { "SustAt", ARTP_VAL_BOOL, 0, nullptr, nullptr, 0, 0 }, // ARTP_SUSTAT,
     { "nupgr", ARTP_VAL_BOOL, 0, nullptr, nullptr, 0, 0 },// ARTP_NO_UPGRADE,
@@ -732,8 +712,6 @@ static const artefact_prop_data artp_data[] =
     { "Fragile", ARTP_VAL_BOOL, 25, // ARTP_FRAGILE,
         nullptr, []() { return 1; }, 0, 0 },
     { "SH", ARTP_VAL_ANY, 0, nullptr, nullptr, 0, 0 }, // ARTP_SHIELDING,
-    { "SP", ARTP_VAL_ANY, 30, _gen_good_sp_artp, _gen_bad_sp_artp, 0, 0 },
-    { "Running", ARTP_VAL_ANY, 30, []() { return 1; }, nullptr, 0, 0 },
 };
 COMPILE_CHECK(ARRAYSZ(artp_data) == ARTP_NUM_PROPERTIES);
 // weights sum to 1000
@@ -818,41 +796,16 @@ static void _add_good_randart_prop(artefact_prop_type prop,
     item_props[prop] += artp_data[prop].gen_good_value();
 }
 
-/**
- * Generate the properties for a randart. We start with a quality level, then
- * determine number of good and bad properties from that level. The more good
- * properties we have, the more likely we are to add some bad properties in
- * to make it a bit more interesting.
- *
- * For each "good" and "bad" property we want, we randomly pick from the total
- * list of good or bad properties; if the picked property already exists and
- * can have variable levels, we increment the levels by a certain amount. There
- * is a maximum number of distinct properties that can be applied to a randart
- * (for legibility, mostly), so overflow gets picked as increments to
- * variable-level properties when possible.
- *
- * @param item          The item to apply properties to.
- * @param item_props    The properties of that item.
- * @param quality       How high quality the randart will be, measured in number
-                        of rolls for good property boosts.
- * @param max_bad_props The maximum number of bad properties this artefact can
-                        be given.
- */
 static void _get_randart_properties(const item_def &item,
-                                    artefact_properties_t &item_props,
-                                    int quality = 0,
-                                    const int max_bad_props = 2)
+                                    artefact_properties_t &item_props)
 {
     const object_class_type item_class = item.base_type;
 
-    // If we didn't receive a quality level, figure out how good we want the
-    // artefact to be. The default calculation range is 1 to 7.
-    if (quality < 1)
-        quality = max(1, binomial(7, 30));
-
+    // first figure out how good we want the artefact to be, range 1 to 7.
+    const int quality = max(1, binomial(7, 30));
     // then consider adding bad properties. the better the artefact, the more
     // likely we add a bad property, up to a max of 2.
-    int bad = min(binomial(1 + div_rand_round(quality, 5), 30), max_bad_props);
+    int bad = min(binomial(1 + div_rand_round(quality, 5), 30), 2);
     // we start by assuming we'll allow one good property per quality level
     // and an additional one for each bad property.
     int good = quality + bad;
@@ -978,7 +931,7 @@ static bool _init_artefact_properties(item_def &item)
     {
         if (i == ARTP_CURSE && prop[i] < 0)
         {
-            do_curse_item(item, 100);
+            do_curse_item(item);
             continue;
         }
         rap[i] = static_cast<short>(prop[i]);
@@ -991,9 +944,6 @@ void artefact_properties(const item_def &item,
                          artefact_properties_t  &proprt,
                          artefact_known_props_t &known)
 {
-    if (item.super_cursed())
-        return;
-
     ASSERT(is_artefact(item));
     if (!item.props.exists(KNOWN_PROPS_KEY))
         return;
@@ -1478,10 +1428,6 @@ static bool _randart_is_redundant(const item_def &item,
         provides = ARTP_MAGICAL_POWER;
         break;
 
-    case RING_STAMINA:
-        provides = ARTP_STAMINA;
-        break;
-
     case RING_FLIGHT:
         provides = ARTP_FLY;
         break;
@@ -1502,7 +1448,7 @@ static bool _randart_is_redundant(const item_def &item,
         provides = ARTP_SLAYING;
         break;
 
-    case AMU_HEALTH_REGENERATION:
+    case AMU_REGENERATION:
         provides = ARTP_REGENERATION;
         break;
 
@@ -1713,11 +1659,9 @@ static void _make_faerie_armour(item_def &item)
             artefact_set_property(doodad, ARTP_CLARITY, 1);
         }
         if (one_chance_in(20))
-            artefact_set_property(doodad, ARTP_MAGICAL_POWER, 10 * (1 + random2(5)));
+            artefact_set_property(doodad, ARTP_MAGICAL_POWER, 1 + random2(10));
         if (one_chance_in(20))
             artefact_set_property(doodad, ARTP_HP, random2(21) - 10);
-        if (one_chance_in(20))
-            artefact_set_property(doodad, ARTP_STAMINA, 10 * (1 + random2(5)));
 
         break;
     }
@@ -1775,7 +1719,7 @@ bool make_item_unrandart(item_def &item, int unrand_index)
     _init_artefact_properties(item);
 
     if (unrand->prpty[ARTP_CURSE] != 0)
-        do_curse_item(item, 300);
+        do_curse_item(item);
 
     // get artefact appearance
     ASSERT(!item.props.exists(ARTEFACT_APPEAR_KEY));
@@ -1821,7 +1765,7 @@ void unrand_reacts()
     {
         if (you.unrand_reacts[i])
         {
-            item_def&        item  = you.inv1[you.equip[i]];
+            item_def&        item  = you.inv[you.equip[i]];
             const unrandart_entry* entry = get_unrand_entry(item.unrand_idx);
 
             entry->world_reacts_func(&item);

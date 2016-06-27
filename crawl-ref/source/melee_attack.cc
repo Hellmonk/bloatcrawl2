@@ -11,7 +11,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <cmath>
 
 #include "areas.h"
 #include "art-enum.h"
@@ -147,14 +146,7 @@ bool melee_attack::handle_phase_attempted()
     if (attacker->is_player())
     {
         // Set delay now that we know the attack won't be cancelled.
-        you.time_taken = you.attack_delay();
-
-        const item_def *weapon_used = get_weapon_used();
-        const int sp_cost = weapon_sp_cost(weapon_used);
-
-        if (sp_cost)
-            dec_sp(sp_cost, true, true);
-
+        you.time_taken = you.attack_delay().roll();
         if (weapon)
         {
             if (weapon->base_type == OBJ_WEAPONS)
@@ -177,7 +169,7 @@ bool melee_attack::handle_phase_attempted()
         if (!effective_attack_number)
         {
             int energy = attacker->as_monster()->action_energy(EUT_ATTACK);
-            int delay = attacker->attack_delay();
+            int delay = attacker->attack_delay().roll();
             dprf(DIAG_COMBAT, "Attack delay %d, multiplier %1.1f", delay, energy * 0.1);
             ASSERT(energy > 0);
             ASSERT(delay > 0);
@@ -201,7 +193,7 @@ bool melee_attack::handle_phase_attempted()
     }
 
     // The attacker loses nutrition.
-//    attacker->make_hungry(3, true);
+    attacker->make_hungry(3, true);
 
     // Xom thinks fumbles are funny...
     if (attacker->fumbles_attack())
@@ -473,7 +465,9 @@ bool melee_attack::handle_phase_hit()
         // the player is hit, each of them will verify their own required
         // parameters.
         do_passive_freeze();
+#if TAG_MAJOR_VERSION == 34
         do_passive_heat();
+#endif
         emit_foul_stench();
     }
 
@@ -590,8 +584,6 @@ static void _hydra_devour(monster &victim)
         // feel free to just use the actual creature name if this has buggy
         // edge cases or such
     }
-    if (victim.has_ench(ENCH_STICKY_FLAME))
-        mprf("Spicy!");
 
     // nutrition (maybe)
     if (filling)
@@ -608,7 +600,7 @@ static void _hydra_devour(monster &victim)
                               + random2(victim.get_experience_level() * 3 / 4);
         you.heal(healing);
         calc_hp();
-        canned_msg(MSG_GAIN_HEALTH, healing);
+        canned_msg(MSG_GAIN_HEALTH);
         dprf("healed for %d (%d hd)", healing, victim.get_experience_level());
     }
 
@@ -784,8 +776,7 @@ bool melee_attack::attack()
     // Calculate various ev values and begin to check them to determine the
     // correct handle_phase_ handler.
     const int ev = defender->evasion(EV_IGNORE_NONE, attacker);
-    you.last_hit_resistance = ev;
-    hit_margin = test_hit(to_hit, ev);
+    ev_margin = test_hit(to_hit, ev, !attacker->is_player());
     bool shield_blocked = attack_shield_blocked(true);
 
     // Stuff for god conduct, this has to remain here for scope reasons.
@@ -798,7 +789,7 @@ bool melee_attack::attack()
 
         if (player_under_penance(GOD_ELYVILON)
             && god_hates_your_god(GOD_ELYVILON)
-            && hit_margin >= 0
+            && ev_margin >= 0
             && one_chance_in(20))
         {
             simple_god_message(" blocks your attack.", GOD_ELYVILON);
@@ -810,13 +801,9 @@ bool melee_attack::attack()
         // Make sure we hit if we passed the stab check.
         if (stab_attempt && stab_bonus > 0)
         {
-            hit_margin = AUTOMATIC_HIT;
+            ev_margin = AUTOMATIC_HIT;
             shield_blocked = false;
         }
-    }
-
-    if(defender->is_player() && player_ephemeral_passthrough(atk_name(DESC_THE), true)) {
-    	return false;
     }
 
     if (shield_blocked)
@@ -833,7 +820,7 @@ bool melee_attack::attack()
                 return false;
         }
 
-        if (hit_margin >= 0)
+        if (ev_margin >= 0)
         {
             bool cont = handle_phase_hit();
 
@@ -1224,11 +1211,10 @@ bool melee_attack::player_aux_test_hit()
     did_hit = false;
 
     const int evasion = defender->evasion(EV_IGNORE_NONE, attacker);
-    const int hit = test_hit(to_hit, evasion);
 
     if (player_under_penance(GOD_ELYVILON)
         && god_hates_your_god(GOD_ELYVILON)
-        && hit > 0
+        && to_hit >= evasion
         && one_chance_in(20))
     {
         simple_god_message(" blocks your attack.", GOD_ELYVILON);
@@ -1237,7 +1223,7 @@ bool melee_attack::player_aux_test_hit()
 
     bool auto_hit = one_chance_in(30);
 
-    if (hit > 0 || auto_hit)
+    if (to_hit >= evasion || auto_hit)
         return true;
 
     mprf("Your %s misses %s.", aux_attack.c_str(),
@@ -1312,6 +1298,8 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
 
     count_action(CACT_MELEE, -1, atk); // aux_attack subtype/auxtype
 
+    aux_damage  = player_stat_modify_damage(aux_damage);
+
     aux_damage  = random2(aux_damage);
 
     aux_damage  = player_apply_fighting_skill(aux_damage, true);
@@ -1327,6 +1315,7 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
     else
         aux_damage = apply_defender_ac(aux_damage);
 
+    aux_damage = inflict_damage(aux_damage, BEAM_MISSILE);
     damage_done = aux_damage;
 
     if (atk == UNAT_CONSTRICT)
@@ -1335,8 +1324,6 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
     if (damage_done > 0 || atk == UNAT_CONSTRICT)
     {
         player_announce_aux_hit();
-
-        damage_done = inflict_damage(damage_done, BEAM_MISSILE);
 
         if (damage_brand == SPWPN_ACID)
         {
@@ -1372,19 +1359,19 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
             }
 
             if (!have_passive(passive_t::no_mp_regen)
-                && get_mp() != get_mp_max()
+                && you.magic_points != you.max_magic_points
                 && !defender->as_monster()->is_summoned()
                 && !mons_is_firewood(defender->as_monster()))
             {
                 int drain = random2(damage_done * 2) + 1;
-                //Augment magic drain--1.25 "standard" effectiveness at 0 mp,
-                //.25 at magic == max_mana
-                drain = (int)((1.25 - get_mp() / get_mp_max())
+                // Augment mana drain--1.25 "standard" effectiveness at 0 mp,
+                // 0.25 at mana == max_mana
+                drain = (int)((1.25 - you.magic_points / you.max_magic_points)
                               * drain);
                 if (drain)
                 {
                     mpr("You feel invigorated.");
-                    inc_mp(drain * 3);
+                    inc_mp(drain);
                 }
             }
         }
@@ -1408,15 +1395,15 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
 
 void melee_attack::player_announce_aux_hit()
 {
-    mprf("You %s %s%s",
+    mprf("You %s %s%s%s",
          aux_verb.c_str(),
          defender->name(DESC_THE).c_str(),
+         debug_damage_number().c_str(),
          attack_strength_punctuation(damage_done).c_str());
 }
 
 string melee_attack::player_why_missed()
 {
-    /* todo: catch this up to new hit mechanics
     const int ev = defender->evasion(EV_IGNORE_NONE, attacker);
     const int combined_penalty =
         attacker_armour_tohit_penalty + attacker_shield_tohit_penalty;
@@ -1441,7 +1428,6 @@ string melee_attack::player_why_missed()
             return "Your shield and " + armour_name
                    + " prevent you from hitting ";
     }
-     */
 
     return "You" + evasion_margin_adverb() + " miss ";
 }
@@ -1497,8 +1483,6 @@ int melee_attack::player_apply_final_multipliers(int damage)
 
     if (you.duration[DUR_CONFUSING_TOUCH] && wpn_skill == SK_UNARMED_COMBAT)
         return 0;
-
-    damage = player_damage_modifier(damage);
 
     return damage;
 }
@@ -1998,8 +1982,12 @@ bool melee_attack::attack_chops_heads(int dam, int dam_type, int wpn_brand)
     if (dam_type == DVORP_CLAWING && attacker->has_claws() < 3)
         return false;
 
-    // You need to have done at least some damage.
-    if (dam <= 0 || dam < 4 && coinflip())
+    // you need to have done at least some damage.
+    if (dam <= 0)
+        return false;
+
+    // usually at least 4 damage, unless you are an unlucky vorpal user.
+    if (dam < 4 && wpn_brand != SPWPN_VORPAL && coinflip())
         return false;
 
     // ok, good enough!
@@ -2095,15 +2083,14 @@ void melee_attack::attacker_sustain_passive_damage()
             attacker->corrode_equipment();
     }
 
-    int hurt = roll_dice(1, acid_strength);
     if (attacker->is_player())
-        mprf("%s", you.hands_act("burn", "!").c_str());
+        mpr(you.hands_act("burn", "!"));
     else
     {
-        monster_message(attacker->as_monster(),
+        simple_monster_message(attacker->as_monster(),
                                " is burned by acid!");
     }
-    attacker->hurt(defender, hurt, BEAM_ACID,
+    attacker->hurt(defender, roll_dice(1, acid_strength), BEAM_ACID,
                    KILLED_BY_ACID, "", "", false);
 }
 
@@ -2142,8 +2129,7 @@ void melee_attack::apply_staff_damage()
             special_damage_message =
                 make_stringf("%s %s electrocuted!",
                              defender->name(DESC_THE).c_str(),
-                             defender->conj_verb("are").c_str()
-							 );
+                             defender->conj_verb("are").c_str());
             special_damage_flavour = BEAM_ELECTRICITY;
         }
 
@@ -2162,8 +2148,7 @@ void melee_attack::apply_staff_damage()
                     "%s freeze%s %s!",
                     attacker->name(DESC_THE).c_str(),
                     attacker->is_player() ? "" : "s",
-                    defender->name(DESC_THE).c_str()
-					);
+                    defender->name(DESC_THE).c_str());
             special_damage_flavour = BEAM_COLD;
         }
         break;
@@ -2179,8 +2164,7 @@ void melee_attack::apply_staff_damage()
                     "%s crush%s %s!",
                     attacker->name(DESC_THE).c_str(),
                     attacker->is_player() ? "" : "es",
-                    defender->name(DESC_THE).c_str()
-					);
+                    defender->name(DESC_THE).c_str());
         }
         break;
 
@@ -2235,9 +2219,6 @@ void melee_attack::apply_staff_damage()
         break;
 
     case STAFF_SUMMONING:
-    case STAFF_LIGHT:
-    case STAFF_DARKNESS:
-    case STAFF_TIME:
     case STAFF_POWER:
     case STAFF_CONJURATION:
 #if TAG_MAJOR_VERSION == 34
@@ -2257,19 +2238,19 @@ void melee_attack::apply_staff_damage()
  *
  * @param random If false, calculate average to-hit deterministically.
  */
-int melee_attack::calc_to_hit()
+int melee_attack::calc_to_hit(bool random)
 {
-    int mhit = attack::calc_to_hit();
+    int mhit = attack::calc_to_hit(random);
 
     if (attacker->is_player() && !weapon)
     {
         // Just trying to touch is easier than trying to damage.
         if (you.duration[DUR_CONFUSING_TOUCH])
-            mhit += you.dex() / 2;
+            mhit += maybe_random2(you.dex(), random);
 
         // TODO: Review this later (transformations getting extra hit
         // almost across the board seems bad) - Cryp71c
-        mhit += get_form()->unarmed_hit_bonus / 2;
+        mhit += maybe_random2(get_form()->unarmed_hit_bonus, random);
     }
 
     return mhit;
@@ -2396,10 +2377,11 @@ void melee_attack::announce_hit()
 
     if (attacker->is_monster())
     {
-        mprf("%s %s %s%s%s",
+        mprf("%s %s %s%s%s%s",
              atk_name(DESC_THE).c_str(),
              attacker->conj_verb(mons_attack_verb()).c_str(),
              defender_name(true).c_str(),
+             debug_damage_number().c_str(),
              mons_attack_desc().c_str(),
              attack_strength_punctuation(damage_done).c_str());
     }
@@ -2411,10 +2393,10 @@ void melee_attack::announce_hit()
             verb_degree = " " + verb_degree;
         }
 
-        mprf("You %s %s%s%s",
+        mprf("You %s %s%s%s%s",
              attack_verb.c_str(),
              defender->name(DESC_THE).c_str(),
-             verb_degree.c_str(),
+             verb_degree.c_str(), debug_damage_number().c_str(),
              attack_strength_punctuation(damage_done).c_str());
     }
 }
@@ -2571,7 +2553,7 @@ bool melee_attack::mons_attack_effects()
         return false;
     }
 
-    if (attacker != defender && attk_flavour == AF_TRAMPLE && you.mutation[MUT_TRAMPLE_RESISTANCE] < 1)
+    if (attacker != defender && attk_flavour == AF_TRAMPLE)
         do_knockback();
 
     special_damage = 0;
@@ -2678,7 +2660,7 @@ void melee_attack::mons_apply_attack_flavour()
             mprf("%s %s engulfed in flames%s",
                  defender_name(false).c_str(),
                  defender->conj_verb("are").c_str(),
-                 attack_strength_punctuation(special_damage).c_str() );
+                 attack_strength_punctuation(special_damage).c_str());
 
             _print_resist_messages(defender, base_damage, BEAM_FIRE);
         }
@@ -2701,8 +2683,7 @@ void melee_attack::mons_apply_attack_flavour()
                  atk_name(DESC_THE).c_str(),
                  attacker->conj_verb("freeze").c_str(),
                  defender_name(true).c_str(),
-                 attack_strength_punctuation(special_damage).c_str()
-				 );
+                 attack_strength_punctuation(special_damage).c_str());
 
             _print_resist_messages(defender, base_damage, BEAM_COLD);
         }
@@ -2726,8 +2707,7 @@ void melee_attack::mons_apply_attack_flavour()
                  atk_name(DESC_THE).c_str(),
                  attacker->conj_verb("shock").c_str(),
                  defender_name(true).c_str(),
-                 attack_strength_punctuation(special_damage).c_str()
-				 );
+                 attack_strength_punctuation(special_damage).c_str());
 
             _print_resist_messages(defender, base_damage, BEAM_ELECTRICITY);
         }
@@ -2747,28 +2727,22 @@ void melee_attack::mons_apply_attack_flavour()
         if (!defender->can_bleed())
             break;
 
+        // Disallow draining of summoned monsters since they can't bleed.
+        // XXX: Is this too harsh?
+        if (defender->is_summoned())
+            break;
+
         if (defender->res_negative_energy())
             break;
 
         if (defender->stat_hp() < defender->stat_maxhp())
         {
-            if (!attacker->is_player() || !player_is_very_tired())
+            if (attacker->heal(1 + random2(damage_done)) && needs_message)
             {
-                const int healing = 1 + random2(damage_done);
-                if (attacker->heal(healing))
-                {
-                    if (needs_message)
-                    {
-                        mprf("%s %s strength from %s injuries!",
-                             atk_name(DESC_THE).c_str(),
-                             attacker->conj_verb("draw").c_str(),
-                             def_name(DESC_ITS).c_str()
-                        );
-                    }
-                }
-
-                if (attacker->is_player())
-                    dec_sp(healing / 2, true);
+                mprf("%s %s strength from %s injuries!",
+                     atk_name(DESC_THE).c_str(),
+                     attacker->conj_verb("draw").c_str(),
+                     def_name(DESC_ITS).c_str());
             }
         }
         break;
@@ -2921,8 +2895,7 @@ void melee_attack::mons_apply_attack_flavour()
                  atk_name(DESC_THE).c_str(),
                  attacker->conj_verb("sear").c_str(),
                  defender_name(true).c_str(),
-                 attack_strength_punctuation(special_damage).c_str()
-				 );
+                 attack_strength_punctuation(special_damage).c_str());
 
         }
         break;
@@ -3164,6 +3137,7 @@ void melee_attack::do_passive_freeze()
     }
 }
 
+#if TAG_MAJOR_VERSION == 34
 void melee_attack::do_passive_heat()
 {
     if (you.species == SP_LAVA_ORC && temperature_effect(LORC_PASSIVE_HEAT)
@@ -3197,6 +3171,7 @@ void melee_attack::do_passive_heat()
         }
     }
 }
+#endif
 
 void melee_attack::mons_do_eyeball_confusion()
 {
@@ -3313,10 +3288,10 @@ void melee_attack::emit_foul_stench()
     {
         const int mut = player_mutation_level(MUT_FOUL_STENCH);
 
-        if (x_chance_in_y(2, 5))
+        if (one_chance_in(3))
             mon->sicken(50 + random2(100));
 
-        if (damage_done > 4 && x_chance_in_y(mut, 4)
+        if (damage_done > 4 && x_chance_in_y(mut, 5)
             && !cell_is_solid(mon->pos())
             && !cloud_at(mon->pos()))
         {
@@ -3355,8 +3330,7 @@ void melee_attack::do_minotaur_retaliation()
                 {
                     mprf("%s headbutts %s%s", defname.c_str(),
                          attacker->name(DESC_THE).c_str(),
-                         attack_strength_punctuation(hurt).c_str()
-                    );
+                         attack_strength_punctuation(hurt).c_str());
                 }
             }
             if (hurt > 0)
@@ -3380,6 +3354,7 @@ void melee_attack::do_minotaur_retaliation()
     {
         // Use the same damage formula as a regular headbutt.
         int dmg = 5 + mut * 3;
+        dmg = player_stat_modify_damage(dmg);
         dmg = random2(dmg);
         dmg = player_apply_fighting_skill(dmg, true);
         dmg = player_apply_misc_modifiers(dmg);
@@ -3478,13 +3453,12 @@ void melee_attack::cleave_setup()
     cleave_targets.pop_front();
 }
 
-// cleave damage modifier for additional attacks (was 70%)
+// cleave damage modifier for additional attacks: 70% of base damage
 int melee_attack::cleave_damage_mod(int dam)
 {
-    const int percentage_of_damage = 100;
     if (weapon && is_unrandom_artefact(*weapon, UNRAND_GYRE))
         return dam;
-    return div_rand_round(dam * percentage_of_damage, 100);
+    return div_rand_round(dam * 7, 10);
 }
 
 void melee_attack::chaos_affect_actor(actor *victim)
@@ -3686,26 +3660,24 @@ bool melee_attack::_player_vampire_draws_blood(const monster* mon, const int dam
     }
 
     // Regain hp.
-    if (get_hp() < get_hp_max())
+    if (you.hp < you.hp_max)
     {
         int heal = 2 + random2(damage) + random2(damage);
-        if (heal > effective_xl())
-            heal = effective_xl();
+        if (heal > you.experience_level)
+            heal = you.experience_level;
 
         if (heal > 0 && !you.duration[DUR_DEATHS_DOOR])
         {
             inc_hp(heal);
-            canned_msg(MSG_GAIN_HEALTH, heal);
+            canned_msg(MSG_GAIN_HEALTH);
         }
     }
 
     // Gain nutrition.
-    /*
     if (you.hunger_state != HS_ENGORGED)
         lessen_hunger(30 + random2avg(59, 2), false);
 
     did_god_conduct(DID_DRINK_BLOOD, 5 + random2(4));
-        */
 
     return true;
 }
@@ -3718,9 +3690,3 @@ bool melee_attack::_vamp_wants_blood_from_monster(const monster* mon)
            && mons_has_blood(mon->type)
            && !testbits(mon->flags, MF_SPECTRALISED);
 }
-
-const item_def* melee_attack::get_weapon_used(bool launcher)
-{
-    return weapon;
-}
-

@@ -7,7 +7,6 @@
 #define QUIVER_H
 
 #include <vector>
-#include "externs.h"
 
 class reader;
 class writer;
@@ -31,8 +30,8 @@ public:
     player_quiver();
 
     // Queries from engine -- don't affect state
-    void get_desired_item(item_def **item_out, int* slot_out);
-    int get_fire_item(string* no_item_reason = 0);
+    void get_desired_item(const item_def** item_out, int* slot_out) const;
+    int get_fire_item(string* no_item_reason = 0) const;
     void get_fire_order(vector<int>& v, bool manual) const;
 
     // Callbacks from engine

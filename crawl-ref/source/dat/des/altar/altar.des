@@ -49,7 +49,7 @@ default-depth: D, Depths
 NAME:    jmf_multi_god_temple
 SHUFFLE: abc
 SUBST:   a:+, b:x, c:x
-DEPTH:   Vaults
+DEPTH:   D:8-, Vaults
 MAP
 ............
 .axxxxxxxxa.
@@ -66,7 +66,7 @@ MAP
 ENDMAP
 
 NAME:  jmf_multi_god_temple2
-DEPTH: Vaults
+DEPTH: D:8-, Vaults
 MAP
 ............
 ..vvvvvvvv..
@@ -283,7 +283,7 @@ ENDMAP
 #       access the altar early.
 #
 NAME:  lemuel_hellish_altar
-DEPTH: Crypt, Geh
+DEPTH: D:8-, Crypt, Geh
 TAGS:  no_monster_gen
 MONS:  rust devil / orange demon
 MONS:  hell beast / red devil
@@ -380,7 +380,7 @@ ENDMAP
 ### Altars to Jiyva ##########################################################
 
 NAME:   jiyva_altar_1
-DEPTH:  Lair, Orc, Forest
+DEPTH:  D:8-
 KFEAT:  _ = altar_jiyva
 : if you.depth() > 9 then
 NSUBST: 1 = 3:1 / *:2
@@ -401,47 +401,29 @@ ENDMAP
 ### Ecumenical altars ########################################################
 
 NAME:   ecumenical_altar_1
-DEPTH:  D:4-5
+DEPTH:  D:2-3
 TAGS:  uniq_ecumenical_altar chance_ecumenical_altar
 KFEAT:  _ = altar_ecumenical
-CHANCE: 25 : 33%
+CHANCE: 50 : 10%
 MAP
-  .  
- .x. 
+.....
+..x..
 .x_x.
- .x. 
-  .  
+..x..
+.....
 ENDMAP
 
 NAME: ecumenical_altar_2
-DEPTH:  D:4-5
+DEPTH: D:2-3
 TAGS:  uniq_ecumenical_altar chance_ecumenical_altar
 KFEAT:  _ = altar_ecumenical
-CHANCE: 25 : 33%
+CHANCE: 50 : 10%
 MAP
- ..... 
+.......
 ...G...
 ..G.G..
 .G._.G.
 ..G.G..
 ...G...
- ..... 
-ENDMAP
-
-# a 3% chance that this will be just 4 ecu altars, won't happen often 
-# if player is willing to suffer wrath, can reroll on the spot. (if 2 ecu's exist)
-
-NAME:   ecumenical_altar_touched_by_chaotic_gods
-DEPTH:  D:4-5
-ORIENT: float
-TAGS:  uniq_ecumenical_altar chance_ecumenical_altar 
-LFLOORCOL:  random
-KFEAT:  2 = altar_ecumenical
-KFEAT:  _ = w:2 altar_ecumenical / w:5 altar_xom / w:2 altar_jiyva / w:1 altar_lugonu
-CHANCE: 50 : 33%
-MONS: butterfly
-MAP
-.2.
-_G_
-._.
+.......
 ENDMAP

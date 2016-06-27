@@ -40,7 +40,9 @@ enum class areaprop
     QUAD          = (1 << 8),
     DISJUNCTION   = (1 << 9),
     SOUL_AURA     = (1 << 10),
+#if TAG_MAJOR_VERSION == 34
     HOT           = (1 << 11),
+#endif
 };
 DEF_BITFIELD(areaprops, areaprop);
 
@@ -84,7 +86,9 @@ void areas_actor_moved(const actor* act, const coord_def& oldpos)
         (you.entering_level
          || act->halo_radius() > -1 || act->silence_radius() > -1
          || act->liquefying_radius() > -1 || act->umbra_radius() > -1
+#if TAG_MAJOR_VERSION == 34
          || act->heat_radius() > -1
+#endif
          ))
     {
         // Not necessarily new, but certainly potentially interesting.
@@ -139,6 +143,7 @@ static void _actor_areas(actor *a)
         no_areas = false;
     }
 
+#if TAG_MAJOR_VERSION == 34
     if ((r = a->heat_radius()) >= 0)
     {
         _agrid_centres.emplace_back(AREA_HOT, a->pos(), r);
@@ -147,6 +152,7 @@ static void _actor_areas(actor *a)
             _set_agrid_flag(*ri, areaprop::HOT);
         no_areas = false;
     }
+#endif
 }
 
 /**
@@ -228,8 +234,10 @@ static area_centre_type _get_first_area(const coord_def& f)
         return AREA_SANCTUARY;
     if (a & areaprop::SILENCE)
         return AREA_SILENCE;
+#if TAG_MAJOR_VERSION == 34
     if (a & areaprop::HOT)
         return AREA_HOT;
+#endif
     if (a & areaprop::HALO)
         return AREA_HALO;
     if (a & areaprop::UMBRA)
@@ -744,6 +752,7 @@ int monster::umbra_radius() const
     }
 }
 
+#if TAG_MAJOR_VERSION == 34
 /////////////
 // Heat aura (lava orcs).
 
@@ -780,3 +789,4 @@ bool actor::heated() const
 {
     return ::heated(pos());
 }
+#endif

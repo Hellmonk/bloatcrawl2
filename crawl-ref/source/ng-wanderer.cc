@@ -190,7 +190,7 @@ static skill_type _wanderer_role_weapon_select(stat_type role)
         { SK_SUMMONINGS, SK_NECROMANCY, SK_TRANSLOCATIONS,
           SK_TRANSMUTATIONS, SK_POISON_MAGIC, SK_CONJURATIONS,
           SK_HEXES, SK_CHARMS, SK_FIRE_MAGIC, SK_ICE_MAGIC,
-          SK_AIR_MAGIC, SK_EARTH_MAGIC, SK_LIGHT_MAGIC, SK_DARKNESS_MAGIC, SK_TIME_MAGIC };
+          SK_AIR_MAGIC, SK_EARTH_MAGIC };
 
     int casting_size = ARRAYSZ(casting_schools);
 
@@ -300,18 +300,6 @@ static void _give_wanderer_book(skill_type skill)
 
     case SK_POISON_MAGIC:
         book = BOOK_YOUNG_POISONERS;
-        break;
-
-    case SK_LIGHT_MAGIC:
-        book = BOOK_LIGHT;
-        break;
-
-    case SK_DARKNESS_MAGIC:
-        book = BOOK_DARKNESS;
-        break;
-
-    case SK_TIME_MAGIC:
-        book = BOOK_TIME;
         break;
 
     case SK_HEXES:
@@ -561,9 +549,6 @@ static void _wanderer_good_equipment(skill_type & skill)
     case SK_AIR_MAGIC:
     case SK_EARTH_MAGIC:
     case SK_POISON_MAGIC:
-    case SK_LIGHT_MAGIC:
-    case SK_DARKNESS_MAGIC:
-    case SK_TIME_MAGIC:
     case SK_HEXES:
     case SK_CHARMS:
         _give_wanderer_book(skill);
@@ -653,9 +638,6 @@ static void _wanderer_decent_equipment(skill_type & skill,
     case SK_AIR_MAGIC:
     case SK_EARTH_MAGIC:
     case SK_POISON_MAGIC:
-    case SK_LIGHT_MAGIC:
-    case SK_DARKNESS_MAGIC:
-    case SK_TIME_MAGIC:
         _give_wanderer_minor_book(skill);
         break;
 
@@ -694,7 +676,7 @@ static void _wanderer_cover_equip_holes()
     {
         bool has_dagger = false;
 
-        for (const item_def& i : you.inv1)
+        for (const item_def& i : you.inv)
         {
             if (i.is_type(OBJ_WEAPONS, WPN_DAGGER))
             {

@@ -37,7 +37,8 @@ define(function () {
     // Halo flags
     exports.HALO_NONE = 0;
     exports.HALO_RANGE = 1;
-    exports.HALO_UMBRA = 2;
+    exports.HALO_MONSTER = 2;
+    exports.HALO_UMBRA = 3;
 
     // equipment_type
     exports.equip = {};
@@ -188,8 +189,6 @@ define(function () {
     fg_flags.flags.DEATHS_DOOR  = [0, 0x20000];
     fg_flags.flags.RECALL       = [0, 0x40000];
     fg_flags.flags.DRAIN        = [0, 0x80000];
-    fg_flags.flags.IDEALISED    = [0, 0x100000];
-    fg_flags.flags.BOUND_SOUL   = [0, 0x200000];
 
     // MDAM has 5 possibilities, so uses 3 bits.
     fg_flags.exclusive_flags.push({

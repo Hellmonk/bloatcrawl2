@@ -44,7 +44,6 @@
 #include "traps.h"
 #include "viewchar.h"
 #include "view.h"
-#include "makeitem.h"
 
 static int  _fire_prompt_for_item();
 static bool _fire_validate_item(int selected, string& err);
@@ -135,7 +134,7 @@ const item_def* fire_target_behaviour::active_item() const
     if (m_slot == -1)
         return nullptr;
     else
-        return &you.inv1[m_slot];
+        return &you.inv[m_slot];
 }
 
 void fire_target_behaviour::set_prompt()
@@ -161,7 +160,6 @@ void fire_target_behaviour::set_prompt()
         case LRET_FUMBLED:  msg << "Tossing away "; break;
         case LRET_LAUNCHED: msg << "Firing ";             break;
         case LRET_THROWN:   msg << "Throwing ";           break;
-        case LRET_BUGGY:    msg << "Bugging "; break;
         }
     }
 
@@ -293,6 +291,7 @@ static bool _fire_choose_item_and_target(int& slot, dist& target,
 
     if (!beh.active_item())
     {
+        canned_msg(MSG_OK);
         return false;
     }
     if (!target.isValid)
@@ -320,10 +319,10 @@ static bool _fire_choose_item_and_target(int& slot, dist& target,
 // On failure, returns error text, if any.
 static int _fire_prompt_for_item()
 {
-    if (inv_count(you.inv1) < 1)
+    if (inv_count() < 1)
         return -1;
 
-    int slot = prompt_invent_item(you.inv1, "Fire/throw which item? (* to show all)",
+    int slot = prompt_invent_item("Fire/throw which item? (* to show all)",
                                    MT_INVLIST,
                                    OSEL_THROWABLE, true, true, true, 0, -1,
                                    nullptr, OPER_FIRE);
@@ -338,8 +337,8 @@ static int _fire_prompt_for_item()
 static bool _fire_validate_item(int slot, string &err)
 {
     if (slot == you.equip[EQ_WEAPON]
-        && is_weapon(you.inv1[slot])
-        && you.inv1[slot].cursed())
+        && is_weapon(you.inv[slot])
+        && you.inv[slot].cursed())
     {
         err = "That weapon is stuck to your " + you.hand_name(false) + "!";
         return false;
@@ -409,10 +408,10 @@ static bool _autoswitch_to_ranged()
     else
         return false;
 
-    const item_def& launcher = you.inv1[item_slot];
+    const item_def& launcher = you.inv[item_slot];
     if (!is_range_weapon(launcher))
         return false;
-    if (none_of(you.inv1.begin(), you.inv1.end(), [&launcher](const item_def& it)
+    if (none_of(you.inv.begin(), you.inv.end(), [&launcher](const item_def& it)
                 { return it.launched_by(launcher);}))
     {
         return false;
@@ -435,13 +434,11 @@ int get_ammo_to_shoot(int item, dist &target, bool teleport)
         return -1;
     }
 
-    /*
     if (Options.auto_switch && you.m_quiver.get_fire_item() == -1
        && _autoswitch_to_ranged())
     {
         return -1;
     }
-     */
 
     if (!_fire_choose_item_and_target(item, target, teleport))
         return -1;
@@ -468,78 +465,17 @@ void fire_thing(int item)
 {
     dist target;
     item = get_ammo_to_shoot(item, target, is_pproj_active());
-
-    if (!target.isValid)
+    if (item == -1)
         return;
 
-    item_def *ammo = nullptr;
-    bool created_ammo = false;
-    if (item == -1)
-    {
-        item_def *const weapon = you.weapon();
-        missile_type missileType = MI_STONE;
-        special_missile_type ego = SPMSL_FORBID_BRAND;
-        if (weapon && weapon->isValid())
-        {
-            if (weapon->base_type == OBJ_WEAPONS)
-            {
-
-                switch(weapon->sub_type)
-                {
-                    case WPN_BLOWGUN:
-                        missileType = MI_NEEDLE;
-                        ego = SPMSL_POISONED;
-                        break;
-                    case WPN_HAND_CROSSBOW:
-                    case WPN_TRIPLE_CROSSBOW:
-                    case WPN_ARBALEST:
-                        missileType = MI_BOLT;
-                        break;
-                    case WPN_SHORTBOW:
-                    case WPN_LONGBOW:
-                        missileType = MI_ARROW;
-                        break;
-                    case WPN_HUNTING_SLING:
-                    case WPN_GREATSLING:
-                        missileType = MI_SLING_BULLET;
-                        break;
-                    default:
-                        // should not happen
-                        missileType = MI_STONE;
-                        break;
-                }
-
-            }
-            else if (weapon->base_type == OBJ_MISSILES)
-                ammo = weapon;
-            else
-                return;
-        }
-        else
-            missileType = MI_STONE;
-
-        if (!ammo)
-        {
-            int p = items(false, OBJ_MISSILES, missileType, 0, ego);
-            ammo = &mitm[p];
-            created_ammo = true;
-        }
-    }
-    else
-        ammo = &you.inv1[item];
-
-    if (check_warning_inscriptions(*ammo, OPER_FIRE)
+    if (check_warning_inscriptions(you.inv[item], OPER_FIRE)
         && (!you.weapon()
-            || is_launched(&you, you.weapon(), *ammo) != LRET_LAUNCHED
+            || is_launched(&you, you.weapon(), you.inv[item]) != LRET_LAUNCHED
             || check_warning_inscriptions(*you.weapon(), OPER_FIRE)))
     {
         bolt beam;
-        throw_it(beam, *ammo, &target);
+        throw_it(beam, item, &target);
     }
-    you.prev_direction.reset();
-
-    if (created_ammo && ammo && ammo->isValid())
-        destroy_item(*ammo);
 }
 
 // Basically does what throwing used to do: throw an item without changing
@@ -552,7 +488,7 @@ void throw_item_no_quiver()
         return;
     }
 
-    if (inv_count(you.inv1) < 1)
+    if (inv_count() < 1)
     {
         canned_msg(MSG_NOTHING_CARRIED);
         return;
@@ -574,9 +510,7 @@ void throw_item_no_quiver()
     }
 
     bolt beam;
-    item_def &item = you.inv1[slot];
-    throw_it(beam, item);
-    you.prev_direction.reset();
+    throw_it(beam, slot);
 }
 
 static bool _setup_missile_beam(const actor *agent, bolt &beam, item_def &item,
@@ -739,7 +673,7 @@ static void _throw_noise(actor* act, const bolt &pbolt, const item_def &ammo)
 //
 // Return value is only relevant if dummy_target is non-nullptr, and returns
 // true if dummy_target is hit.
-bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
+bool throw_it(bolt &pbolt, int throw_2, dist *target)
 {
     dist thr;
     bool returning   = false;    // Item can return to pack.
@@ -769,6 +703,7 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
     }
     pbolt.set_target(thr);
 
+    item_def& thrown = you.inv[throw_2];
     ASSERT(thrown.defined());
 
     // Figure out if we're thrown or launched.
@@ -777,10 +712,7 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
     // Making a copy of the item: changed only for venom launchers.
     item_def item = thrown;
     item.quantity = 1;
-    if (item.link > ENDOFPACK)
-        item.slot = 0;
-    else
-        item.slot = index_to_letter(item.link);
+    item.slot     = index_to_letter(item.link);
 
     string ammo_name;
 
@@ -844,7 +776,6 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
     pbolt.is_tracer = false;
 
     bool unwielded = false;
-    /* outdated
     if (throw_2 == you.equip[EQ_WEAPON] && thrown.quantity == 1)
     {
         if (!wield_weapon(true, SLOT_BARE_HANDS, true, false, false, true, false))
@@ -855,7 +786,6 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
 
         unwielded = true;
     }
-     */
 
     // Now start real firing!
     origin_set_unknown(item);
@@ -903,9 +833,6 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
     case LRET_FUMBLED:
         practise(EX_WILL_THROW_OTHER);
         break;
-    case LRET_BUGGY:
-        dprf("Unknown launch type for weapon."); // should never happen :)
-        break;
     }
 
     // check for returning ammo
@@ -921,7 +848,7 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
             did_return = true;
     }
 
-    you.time_taken = you.attack_delay(&item);
+    you.time_taken = you.attack_delay(&item).roll();
 
     // Create message.
     mprf("You %s%s %s.",
@@ -964,28 +891,14 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
             Hints.hints_throw_counter++;
 
         // Dropping item copy, since the launched item might be different.
-        pbolt.drop_item = false;
-
-        if (pbolt.source_id == MID_PLAYER)
-        {
-            const item_def *weapon_used = you.weapon();
-            const item_def *ammo_used = pbolt.item;
-
-            const int sp_cost = weapon_sp_cost(weapon_used, ammo_used);
-
-            if (sp_cost)
-                dec_sp(sp_cost, true, true);
-        }
-
+        pbolt.drop_item = !did_return;
         pbolt.fire();
 
         hit = !pbolt.hit_verb.empty();
 
-        /* no longer applies
         // The item can be destroyed before returning.
         if (did_return && thrown_object_destroyed(&item, pbolt.target))
             did_return = false;
-            */
     }
 
     if (bow_brand == SPWPN_CHAOS || ammo_brand == SPMSL_CHAOS)
@@ -1008,22 +921,18 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
                     << endl;
 
         // Player saw the item return.
-        if (!is_artefact(thrown))
-            set_ident_flags(thrown, ISFLAG_KNOW_TYPE);
+        if (!is_artefact(you.inv[throw_2]))
+            set_ident_flags(you.inv[throw_2], ISFLAG_KNOW_TYPE);
     }
     else
     {
         // Should have returned but didn't.
-        if (returning && item_type_known(thrown))
+        if (returning && item_type_known(you.inv[throw_2]))
         {
             msg::stream << item.name(DESC_THE)
                         << " fails to return to your pack!" << endl;
         }
-        if (thrown.in_player_inventory())
-            dec_inv_item_quantity(you.inv1, thrown.link, 1);
-        else
-            destroy_item(thrown);
-
+        dec_inv_item_quantity(throw_2, 1);
         if (unwielded)
             canned_msg(MSG_EMPTY_HANDED_NOW);
     }
@@ -1083,7 +992,7 @@ bool mons_throw(monster* mons, bolt &beam, int msl, bool teleport)
     if (!teleport)
     {
         const int energy = mons->action_energy(EUT_MISSILE);
-        const int delay = mons->attack_delay(&mitm[msl]);
+        const int delay = mons->attack_delay(&mitm[msl]).roll();
         ASSERT(energy > 0);
         ASSERT(delay > 0);
         mons->speed_increment -= div_rand_round(energy * delay, 10);
@@ -1212,9 +1121,6 @@ bool thrown_object_destroyed(item_def *item, const coord_def& where)
 
     if (item->base_type != OBJ_MISSILES)
         return false;
-
-    // always mulch
-    return true;
 
     if (ammo_always_destroyed(*item))
         return true;

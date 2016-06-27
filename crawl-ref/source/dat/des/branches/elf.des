@@ -781,7 +781,7 @@ MONS:  deep elf mage
 MONS:  deep elf annihilator / deep elf death mage / deep elf demonologist
 KFEAT: v = general shop type:Elven suffix:Fire count:7 ; \
        w:10 ring of fire | w:5 scroll of immolation | w:10 ring of protection from fire | \
-       w:4 any weapon ego:flaming | w:4 shortbow ego:flaming | w:12 arrow ego:flame | \
+       w:4 any weapon ego:flaming | w:4 shortbow ego:flaming | \
        w:7 wand of flame | w:9 any armour ego:fire_resistance | \
        w:4 staff of fire | w:17 randbook disc:fire | w:6 robe ego:fire_resistance
 SUBST: ? = .l1
@@ -1298,6 +1298,10 @@ NSUBST:   . = 6:1 / 3:2 / 1:34 / 4 = 4 / 2 = 42 / 6 = 14...
 SUBVAULT: A : elf_blade_entry
 SUBST:    A : x"", ' = .
 CLEAR:    "
+veto {{
+  return crawl.game_started()
+         and (dgn.br_exists("Blade"))
+}}
 MAP
                                 "
                                 "
@@ -1364,6 +1368,10 @@ NSUBST:   . = 6:1 / 3:2 / 1:34 / 4 = 4 / 2 = 42 / 6 = 14...
 SUBVAULT: A : elf_blade_entry
 SUBST:    A : x"", ' = .
 CLEAR:    "
+veto {{
+  return crawl.game_started()
+         and (dgn.br_exists("Blade"))
+}}
 MAP
                                   "
                                   "
@@ -1403,6 +1411,7 @@ NAME:     elven_hall_of_blades_dummy
 TAGS:     no_dump
 PLACE:    Elf:2
 ORIENT:   float
+veto {{ return crawl.game_started() and not dgn.br_exists("Blade") }}
 MAP
 .
 ENDMAP
@@ -1755,7 +1764,6 @@ TAGS:    nolayout_halls
 PLACE:   Elf:$
 WEIGHT:  30
 ORIENT:  northwest
-KITEM:   Z = elven rune of Zot
 : elf_setup(_G)
 : elf_monsters(_G)
 SUBST:   1=1., 2=2., 3=3., 4=4., 5=5.
@@ -1768,7 +1776,7 @@ MAP
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxcccccccccccccccccxxxxx
-xxxxxxxxxxxxcc*|*|*|Z*|||||c$ccxxxx
+xxxxxxxxxxxxcc*|*|*|**|||||c$ccxxxx
 xxxxxxxxxxxcc*$*|*|*|*|||||c$$ccxxx
 xxxxxxxxxxcc*$|*$***$$|||||c|$$ccxx
 xxxxxxxxxcc*$*|**ccccccccccc$$$$ccx
@@ -1808,7 +1816,6 @@ TAGS:    nolayout_halls
 PLACE:   Elf:$
 ORIENT:  float
 TAGS:    no_pool_fixup
-KITEM:   Z = elven rune of Zot
 : elf_setup(_G)
 : elf_monsters(_G)
 SHUFFLE: 345
@@ -1827,7 +1834,7 @@ KMONS:   B = deep elf blademaster
 KFEAT:   B = |
 MAP
 cccccccccccccccccccccccccc
-c2ccccccc...Z....ccccccccc
+c2ccccccc........ccccccccc
 c.cccc2...5....5...2cccccc
 c.cc..................cccc
 c.c....3....45....3....c3c
@@ -1856,7 +1863,6 @@ TAGS:    nolayout_halls
 PLACE:   Elf:$
 ORIENT:  float
 TAGS:    no_pool_fixup
-KITEM:   Z = elven rune of Zot
 : elf_setup(_G)
 : elf_monsters(_G)
 SHUFFLE: 345
@@ -1880,7 +1886,7 @@ KFEAT:   6 = 6
 KFEAT:   7 = 7
 MAP
 ccccccccccccccccccccccccc
-c2ccccccc...Z...ccccccccc
+c2ccccccc.......ccccccccc
 c.cccc2...5...5...2cccccc
 c.cc.................cc6c
 c.c....3....45...3....c3c
@@ -1912,7 +1918,6 @@ NAME:    minmay_elf_hall
 TAGS:    nolayout_halls
 PLACE:   Elf:$
 ORIENT:  southwest
-KITEM:   Z = elven rune of Zot
 : elf_setup(_G)
 : elf_monsters(_G)
 SUBST:   1=11., 2=22., 3=33., 4=44., 5=543, 6=66., 7=77.
@@ -1951,7 +1956,7 @@ xxxxxxxxxxxxxxxxxc.cxxxxxxxxxxxxxxxxx
 xxxxxxxcccccxxxccc.cccxxxcccccxxxxxxx
 xxxxcccc|$*ccccc6...6ccccc*||ccccxxxx
 xxccc*|$*|$$|+....U....+|$$|*$*$cccxx
-xcc*$$*|$$|$$ccc7.Z.7ccc|*|$$$||*$ccx
+xcc*$$*|$$|$$ccc7...7ccc|*|$$$||*$ccx
 cc$*|*|*|*|cccxcccccccxccc$*$$*$$$|cc
 c|*|$$|*ccccxxxxxxxxxxxxxcccc|*$||$*c
 cccccccccxxxxxxxxxxxxxxxxxxxccccccccc
@@ -1963,7 +1968,6 @@ ENDMAP
 NAME:    minmay_elf_hall_circle
 PLACE:   Elf:$
 ORIENT:  float
-KITEM:   Z = elven rune of Zot
 : elf_setup(_G)
 : elf_monsters(_G)
 SHUFFLE: 12345, 67
@@ -1975,7 +1979,7 @@ SUBST:   v : xvb
 MAP
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxcccccccccccxxxxxxxxxxx
-xxxxxxxxccc$|$|Z|$|$cccxxxxxxxxx
+xxxxxxxxccc$|$|$|$|$cccxxxxxxxxx
 xxxxxxccc***$|$|$|$|$|cccxxxxxxx
 xxxxxcc******$|$|$|$|$|$ccxxxxxx
 xxxxcc**cc+cc|$|$|$|$|$|$ccxxxxx
@@ -2013,7 +2017,6 @@ NAME:    minmay_elf_hall_hex
 TAGS:    nolayout_halls
 PLACE:   Elf:$
 ORIENT:  northwest
-KITEM:   Z = elven rune of Zot
 : elf_setup(_G)
 : elf_monsters(_G)
 SUBST:   1=11., 2=22., 3=33., 4=44., 5=543, 6=66., 7=77.
@@ -2025,7 +2028,7 @@ SUBST:   v : xvb
 MAP
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxcccxxxxxxxxxxcccxxxxxxxxxxcccxxxxxx
-xxxxccc*cccxxxxxxcccZcccxxxxxxccc$cccxxxx
+xxxxccc*cccxxxxxxccc.cccxxxxxxccc$cccxxxx
 xxxcc*****ccxxxxcc.....ccxxxxcc|$|$|ccxxx
 xccc**ccc$|cccccc....5..cccccc|$ccc$|cccx
 xc***ccccc$|$c.............c$|$ccccc$|$cx
@@ -2072,7 +2075,6 @@ NAME:    minmay_elf_hall_dome
 TAGS:    nolayout_halls
 PLACE:   Elf:$
 ORIENT:  northwest
-KITEM:   Z = elven rune of Zot
 : elf_setup(_G)
 : elf_monsters(_G)
 SUBST:   1=11., 2=22., 3=33., 4=44., 5=543, 6=66., 7=77.
@@ -2081,7 +2083,7 @@ SHUFFLE: 12, 34, 67
 : elf_loot_randomisation(_G)
 MAP
 cccccccccccccccccccccccccccccc
-ccccccccccc4..Z.5..ccccccccccc
+ccccccccccc4....5..ccccccccccc
 cccccccc..............cccccccc
 cccccc......1....3......cccccc
 ccccc...............5....ccccc
@@ -2111,7 +2113,6 @@ NAME:    minmay_elf_hall_spiked
 TAGS:    nolayout_halls
 PLACE:   Elf:$
 ORIENT:  northwest
-KITEM:   Z = elven rune of Zot
 : elf_setup(_G)
 : elf_monsters(_G)
 SUBST:   1=11., 2=22., 3=33., 4=44., 5=543, 6=66., 7=77.
@@ -2124,7 +2125,7 @@ SUBST:   v : xvb
 MAP
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxccccxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxccccZ|ccccxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxcccc*|ccccxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxccc|$|$**|$cccxxxxxxxxxxxxxx
 xxxxxxxxxxxxxcc$|$||*$*$|$*ccxxxxxxxxxxxxx
 xxxxxxxxxxxxxc$|$|**$*$|$|$*cxxxxxxxxxxxxx
@@ -2155,7 +2156,6 @@ NAME:    minmay_elf_hall_quartered_circle
 TAGS:    nolayout_halls
 PLACE:   Elf:$
 ORIENT:  northwest
-KITEM:   Z = elven rune of Zot
 : elf_setup(_G)
 : elf_monsters(_G)
 SUBST:   1=11., 2=22., 3=33., 4=44., 5=543, 6=66., 7=77.
@@ -2166,7 +2166,7 @@ MAP
 xxxxxxxxxxcccccccccccxxxxxxxxxxx
 xxxxxxxxccc*|*|+...1cccxxxxxxxxx
 xxxxxxccc*$|*||c.....6cccxxxxxxx
-xxxxxccZ*|*|cccc........ccxxxxxx
+xxxxxcc$*|*|cccc........ccxxxxxx
 xxxxcc*|$|ccc*|c....3....ccxxxxx
 xxxcc|$*ccc|$*$+......5...ccxxxx
 xxcc$||cc*$*|$*c..6........ccxxx
@@ -2203,7 +2203,6 @@ NAME:    minmay_elf_hall_golems
 TAGS:    nolayout_halls
 PLACE:   Elf:$
 ORIENT:  northwest
-KITEM:   Z = elven rune of Zot
 : elf_setup(_G)
 : elf_monsters(_G)
 KMONS:   8 = crystal guardian
@@ -2214,7 +2213,7 @@ SUBST:   b : bc
 : elf_loot_randomisation(_G)
 MAP
 xxxxxcccccccccccccccccccccccccxxxxx
-xxxxxc$*|$$$|*$$*Z$*$|$|$|$*$cxxxxx
+xxxxxc$*|$$$|*$$*$$*$|$|$|$*$cxxxxx
 xxxxcc+cc|*$$*$$$$|$$$|$*$cc+ccxxxx
 xxxcc8.8ccccccccccccccccccc8.8ccxxx
 xccc8.......4.......6......4..8cccx
@@ -2249,7 +2248,6 @@ PLACE:   Elf:$
 ORIENT:  northwest
 : elf_setup(_G)
 : elf_monsters(_G)
-KITEM:   Z = elven rune of Zot
 SUBST:   1=11., 2=22., 3=33., 4=44., 5=543, 6=66., 7=77.
 SHUFFLE: 12, 34, 67
 : elf_loot_defenders(_G)
@@ -2258,7 +2256,7 @@ SUBST:   n : nnnb
 MAP
 xxccccccccccccccccccccx
 xcc||*$**cc||$|*$|*|ccx
-xc*|*|$|*Zcc$|$*$||$|cx
+xc*|*|$|**cc$|$*$||$|cx
 xc$$|$*cc+ccc*$|$*$|*cx
 xc||$|cc2.54cc*$|$*||cx
 xc$*|cc...U..+*$*|*$*cx
@@ -2292,7 +2290,6 @@ NAME:    minmay_elf_hall_four_x
 TAGS:    nolayout_halls
 PLACE:   Elf:$
 ORIENT:  northwest
-KITEM:   Z = elven rune of Zot
 : elf_setup(_G)
 : elf_monsters(_G)
 SUBST:   1=11., 2=22., 3=33., 4=44., 5=543, 6=66., 7=77.
@@ -2302,7 +2299,7 @@ SHUFFLE: 12, 34, 67
 MAP
 xxxcccccccccccccccccccccccccccccxxxx
 xxxc$||*$|$$|*$+c2c+*$|*$$$|*||cxxxx
-xxccc|$|*$*|*|cc4Z.cc*|*|**|$*cccxxx
+xxccc|$|*$*|*|cc4..cc*|*|**|$*cccxxx
 xcc.cc|*||*|$cc...3.cc*|$|||*cc4ccxx
 cc...cc||*||cc.......cc*||$|cc...ccx
 c..5..cc*$$cc..6...5..cc*|*cc.....cx
@@ -2339,7 +2336,6 @@ ENDMAP
 NAME:   grunt_elf_hall_spiral
 PLACE:  Elf:$
 ORIENT: centre
-KITEM:   Z = elven rune of Zot
 : elf_setup(_G)
 : elf_monsters(_G)
 SUBST:   1=1., 2=2., 3=3., 4=4., 5=5.
@@ -2362,7 +2358,7 @@ xcc.....4.b$|*bb|*$|$|bb..2..ccx
 xc..3.....b|*bbb+bb*|$*bb.....cx
 xc.....1..b$bb|*$|bb*$|$bb.3..cx
 xc...5..U.b*b*$|*$|bbbb+bb....cc
-cc.......6b|+$|Z$|*bbb5.4b.....@
+cc.......6b|+$|*$|*bbb5.4b.....@
 @.....b4.5bbb|*$|*$+|b6.......cc
 cc....bb+bbbb*$|*|$b*b.U..5...cx
 xc..3.bb$|$*bb$*|$bb$b..1.....cx
@@ -2386,7 +2382,6 @@ NAME:    nooodl_elf_gasket
 TAGS:    nolayout_halls
 PLACE:   Elf:$
 ORIENT:  northwest
-KITEM:   Z = elven rune of Zot
 : elf_setup(_G)
 : elf_monsters(_G)
 SUBST:   1=11., 2=22., 3=33., 4=44., 5=543, 6=66., 7=77.
@@ -2413,7 +2408,7 @@ xxxxxxxxxxxxxxxxcccccccccccccxxxxxxxxxxxxx
 xxxxxxxxxxxxxxcccccc$|$|$ccccccxxxxxxxxxxx
 xxxxxxxxxxxcccccccc.|$|$|.ccccccccxxxxxxxx
 xxxxxxxxxccccccccc+.$|*|$.+cccccccccxxxxxx
-xxxxxxxxcc.......7c.|$Z$|.c7.......ccxxxxx
+xxxxxxxxcc.......7c.|$|$|.c7.......ccxxxxx
 xxxxxxccc.........cc$|$|$cc.........cccxxx
 xxxxxxc.....3.3....ccccccc....1.1.....cxxx
 xxxxxcc..............cxc..............ccxx
@@ -2455,7 +2450,6 @@ NAME:   grunt_elf_hall_branching
 TAGS:   nolayout_halls
 PLACE:  Elf:$
 ORIENT: north
-KITEM:   Z = elven rune of Zot
 : elf_setup(_G)
 : elf_monsters(_G)
 SUBST:   1=1., 2=2., 3=3., 4=4., 5=5.
@@ -2482,7 +2476,7 @@ c$*c261.5.cccc...cccc.4.173c*$c
 c$.+...4U....c.2.c....U5...+.$c
 ccccccc...5..3...3..4...ccccccc
 c..............b..............c
-@.bbb.2..3..2.bZb.2..2..3.bbb.@
+@.bbb.2..3..2.bbb.2..2..3.bbb.@
 c..............b..............c
 ccccccc...4..3...3..5...ccccccc
 c$.+...5U....c.2.c....U4...+.$c
@@ -2499,7 +2493,6 @@ NAME:   grunt_elf_hall_diamonds
 TAGS:   nolayout_halls
 PLACE:  Elf:$
 ORIENT: north
-KITEM:   Z = elven rune of Zot
 : elf_setup(_G)
 : elf_monsters(_G)
 SUBST:   1=1., 2=2., 3=3., 4=4., 5=5.
@@ -2523,7 +2516,7 @@ xxcc.4...6.cc.3.2.cc.7...4.ccxx
 xxxcc..........5..........ccxxx
 xxxccc.2.c.1..2.3..1.c.3.cccxxx
 xxcc.cc.cc..b..4..b..cc.cc.ccxx
-xcc.3.ccc....bbZbb....ccc.2.ccx
+xcc.3.ccc....bb.bb....ccc.2.ccx
 cc.....c...3.bbbbb.2...c.....cc
 @...U.....4.5.bbb.5.4.....U...@
 cc.....c...2.bbbbb.3...c.....cc
@@ -2549,7 +2542,6 @@ PLACE:  Elf:$
 ORIENT: northeast
 : elf_setup(_G)
 : elf_monsters(_G)
-KITEM:   Z = elven rune of Zot
 SUBST:   1=1., 2=2., 3=3., 4=4., 5=5.
 SHUFFLE: 23, 45, 67
 SHUFFLE: AB, CD, EFGH, IJKL, MNOP
@@ -2561,7 +2553,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxcccccxxxxxxxxxxx
-xxxxxxxxcc|Z|ccxxxxxxxxxx
+xxxxxxxxcc|*|ccxxxxxxxxxx
 xxxxxxxcc|*|*|ccxxxxxxxxx
 xxxxxxccO*|*|*Pccxxxxxxxx
 xxxxxccOOO*|*PPPccxxxxxxx

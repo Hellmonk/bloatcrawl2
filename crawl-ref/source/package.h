@@ -76,7 +76,7 @@ public:
     bool has_chunk(const string &name);
     vector<string> list_chunks();
     void abort();
-    void unlink(bool backup=false);
+    void unlink();
 
     // statistics
     plen_t get_slack();

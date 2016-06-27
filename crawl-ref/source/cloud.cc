@@ -190,7 +190,7 @@ static const cloud_data clouds[] = {
     { "thunder", "a thunderstorm",              // terse, verbose name
       ETC_DARK,                                 // colour
       BEAM_ELECTRICITY,                         // beam_effect
-      40, 40,                                   // base, random expected damage
+      60, 46,                                   // base, random expected damage
     },
     // CLOUD_NEGATIVE_ENERGY,
     { "negative energy", nullptr,               // terse, verbose name
@@ -400,14 +400,9 @@ static int _cloud_dissipation_rate(const cloud_struct &cloud)
 {
     int dissipate = you.time_taken;
 
-    // Player-created non-opaque clouds vanish instantly when outside LOS.
-    // (Opaque clouds don't to prevent cloud suicide.)
+    // If a player-created cloud is out of LOS, it dissipates much faster.
     if (cloud.source == MID_PLAYER && !you.see_cell_no_trans(cloud.pos))
-    {
-        if (!is_opaque_cloud(cloud.type))
-            return cloud.decay;
-        dissipate *= 4; // dubious...
-    }
+        dissipate *= 4;
 
     switch (cloud.type)
     {
@@ -427,7 +422,7 @@ static int _cloud_dissipation_rate(const cloud_struct &cloud)
         // Ink cloud shouldn't appear outside of water.
         case CLOUD_INK:
             if (!feat_is_watery(grd(cloud.pos)))
-                return cloud.decay;
+                return dissipate * 40;
             break;
         default:
             break;
@@ -529,8 +524,6 @@ void manage_clouds()
 
         _dissipate_cloud(cloud);
     }
-
-    update_cloud_knowledge();
 }
 
 static void _maybe_leave_water(const coord_def pos)
@@ -779,11 +772,11 @@ static int _cloud_base_damage(const actor *act,
             return _cloud_damage_calc(16, 3, 6, maximum_damage);
 
     case CLOUD_STORM:
-        // Roughly three times the damage, because it's a third as often.
+        // Four times the damage, because it's a quarter as often.
         if (act->is_player())
-            return _cloud_damage_calc(45, 3, 35, maximum_damage);
+            return _cloud_damage_calc(92, 3, 40, maximum_damage);
         else
-            return _cloud_damage_calc(40, 3, 21, maximum_damage);
+            return _cloud_damage_calc(64, 3, 24, maximum_damage);
 
     case CLOUD_MEPHITIC:
         return _cloud_damage_calc(3, 1, 0, maximum_damage);
@@ -827,6 +820,16 @@ bool actor_cloud_immune(const actor *act, const cloud_struct &cloud)
     // Qazlalites get immunity to their own clouds.
     if (player && YOU_KILL(cloud.killer) && have_passive(passive_t::resist_own_clouds))
         return true;
+#if TAG_MAJOR_VERSION == 34
+
+    if (player && you.species == SP_DJINNI
+        && (cloud.type == CLOUD_FIRE
+            || cloud.type == CLOUD_FOREST_FIRE
+            || cloud.type == CLOUD_HOLY_FLAMES))
+    {
+        return true;
+    }
+#endif
 
     switch (cloud.type)
     {
@@ -950,7 +953,7 @@ static bool _actor_apply_cloud_side_effects(actor *act,
     {
         if (player)
         {
-            if (1 + random2(27) >= effective_xl())
+            if (1 + random2(27) >= you.experience_level)
             {
                 mpr("You choke on the stench!");
                 // effectively one or two turns, since it will be
@@ -981,7 +984,7 @@ static bool _actor_apply_cloud_side_effects(actor *act,
     {
         if (player)
         {
-            if (random2(55) - 13 >= effective_xl())
+            if (random2(55) - 13 >= you.experience_level)
             {
                 you.petrify(act);
                 return true;
@@ -1098,8 +1101,7 @@ static int _cloud_damage_output(const actor *actor,
 
     int dam = actor->apply_ac(base_damage);
     dam = resist_adjust_damage(actor, flavour, dam);
-    return dam;
-//    return max(0, dam);
+    return max(0, dam);
 }
 
 /**
@@ -1152,7 +1154,7 @@ static int _actor_cloud_damage(const actor *act,
         if (!maximum_damage)
             cloud.announce_actor_engulfed(act);
 
-        const int turns_per_lightning = 3;
+        const int turns_per_lightning = 4;
         const int aut_per_lightning = turns_per_lightning * BASELINE_DELAY;
 
         // if we fail our lightning roll, again, just rain.
@@ -1177,14 +1179,15 @@ static int _actor_cloud_damage(const actor *act,
         }
 
         if (act->is_player())
-            mprf("You are struck by lightning!");
+            mpr("You are struck by lightning!");
         else if (you.can_see(*act))
         {
-            mprf("%s is struck by lightning.", act->as_monster()->name(DESC_THE).c_str());
+            simple_monster_message(act->as_monster(),
+                                   " is struck by lightning.");
         }
         else if (you.see_cell(act->pos()))
         {
-            mprf("Lightning from the thunderstorm strikes something you cannot "
+            mpr("Lightning from the thunderstorm strikes something you cannot "
                 "see.");
         }
         noisy(spell_effect_noise(SPELL_LIGHTNING_BOLT), act->pos(),
@@ -1207,7 +1210,7 @@ static int _actor_cloud_damage(const actor *act,
 // the damage dealt.
 int actor_apply_cloud(actor *act)
 {
-    cloud_struct* cl = cloud_at(act->pos());
+    const cloud_struct* cl = cloud_at(act->pos());
     if (!cl)
         return 0;
 
@@ -1226,14 +1229,12 @@ int actor_apply_cloud(actor *act)
 
     if ((player || final_damage > 0
          || _cloud_has_negative_side_effects(cloud.type))
-        && cloud.type != CLOUD_STORM
-		&& final_damage > 0) // handled elsewhere
+        && cloud.type != CLOUD_STORM) // handled elsewhere
     {
-        cloud.announce_actor_engulfed(act, final_damage < 0);
+        cloud.announce_actor_engulfed(act);
     }
     if (player && cloud_max_base_damage > 0 && resist > 0
-        && (cloud.type != CLOUD_STORM || final_damage > 0)
-		&& you.species != SP_DJINNI)
+        && (cloud.type != CLOUD_STORM || final_damage > 0))
     {
         canned_msg(MSG_YOU_RESIST);
     }
@@ -1259,13 +1260,6 @@ int actor_apply_cloud(actor *act)
         act->hurt(oppressor, final_damage, BEAM_MISSILE,
                   KILLED_BY_CLOUD, "", cloud.cloud_name(true));
     }
-
-    /*
-    if (final_damage < 0) {
-    	// cloud dissipates twice as fast if we are healing from it
-    	cl->decay -= _cloud_dissipation_rate(cloud);
-    }
-     */
 
     return final_damage;
 }
@@ -1664,15 +1658,9 @@ void remove_tornado_clouds(mid_t whose)
     // example, this approach doesn't work if we ever make Tornado a monster
     // spell (excluding immobile and mindless casters).
 
-    // We can't iterate over env.cloud directly because delete_cloud
-    // will remove this cloud and invalidate our iterator.
-    vector<coord_def> tornados;
     for (auto& entry : env.cloud)
         if (entry.second.type == CLOUD_TORNADO && entry.second.source == whose)
-            tornados.push_back(entry.first);
-
-    for (auto pos : tornados)
-        delete_cloud(pos);
+            delete_cloud(entry.first);
 }
 
 static void _spread_cloud(coord_def pos, cloud_type type, int radius, int pow,

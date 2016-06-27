@@ -141,7 +141,7 @@ static void _CEREBOV_melee_effects(item_def* weapon, actor* attacker,
         }
         if (defender->is_monster()
             && !mondied
-            && !defender->as_monster()->res_hellfire() // XXX: ???
+            && !defender->as_monster()->res_damnation() // XXX: ???
             && !defender->as_monster()->has_ench(ENCH_FIRE_VULN))
         {
             if (you.can_see(*attacker))
@@ -216,7 +216,7 @@ static bool _DISPATER_evoke(item_def *item, int* pract, bool* did_work,
     *did_work = true;
     int power = you.skill(SK_EVOCATIONS, 8);
 
-    if (your_spells(SPELL_HURL_HELLFIRE, power, false, false, true)
+    if (your_spells(SPELL_HURL_DAMNATION, power, false, false, true)
         == SPRET_ABORT)
     {
         *unevokable = true;
@@ -298,7 +298,7 @@ static void _OLGREB_melee_effects(item_def* weapon, actor* attacker,
 
 static void _power_pluses(item_def *item)
 {
-    item->plus  = min(get_hp() / 10, MAX_ITEM_PLUS);
+    item->plus  = min(you.hp / 10, 27);
 }
 
 static void _POWER_equip(item_def *item, bool *show_msgs, bool unmeld)
@@ -448,6 +448,7 @@ static void _wucad_miscast(actor* victim, int power,int fail)
 static bool _WUCAD_MU_evoke(item_def *item, int* pract, bool* did_work,
                             bool* unevokable)
 {
+#if TAG_MAJOR_VERSION == 34
     if (you.species == SP_DJINNI)
     {
         mpr("The staff is unable to affect your essence.");
@@ -455,7 +456,8 @@ static bool _WUCAD_MU_evoke(item_def *item, int* pract, bool* did_work,
         return true;
     }
 
-    if (get_mp() == get_mp_max())
+#endif
+    if (you.magic_points == you.max_magic_points)
     {
         mpr("Your reserves of magic are full.");
         *unevokable = true;
@@ -474,7 +476,7 @@ static bool _WUCAD_MU_evoke(item_def *item, int* pract, bool* did_work,
 
     mpr("Magical energy flows into your mind!");
 
-    inc_mp((3 + random2(5) + you.skill_rdiv(SK_EVOCATIONS, 1, 3)) * 3);
+    inc_mp(3 + random2(5) + you.skill_rdiv(SK_EVOCATIONS, 1, 3));
     make_hungry(50, false, true);
 
     *pract    = 1;
@@ -905,30 +907,30 @@ static void _WOE_melee_effects(item_def* weapon, actor* attacker,
 
 ///////////////////////////////////////////////////
 
-static void _HELLFIRE_equip(item_def *item, bool *show_msgs, bool unmeld)
+static void _DAMNATION_equip(item_def *item, bool *show_msgs, bool unmeld)
 {
     _equip_mpr(show_msgs, you.hands_act("smoulder", "for a moment.").c_str());
 }
 
-static setup_missile_type _HELLFIRE_launch(item_def* item, bolt* beam,
+static setup_missile_type _DAMNATION_launch(item_def* item, bolt* beam,
                                            string* ammo_name, bool* returning)
 {
     ASSERT(beam->item
            && beam->item->base_type == OBJ_MISSILES
            && !is_artefact(*(beam->item)));
     beam->item->special = SPMSL_EXPLODING; // so that it mulches
-    beam->item->props[HELLFIRE_BOLT_KEY].get_bool() = true;
+    beam->item->props[DAMNATION_BOLT_KEY].get_bool() = true;
 
-    beam->name    = "hellfire bolt";
-    *ammo_name    = "a hellfire bolt";
+    beam->name    = "damnation bolt";
+    *ammo_name    = "a damnation bolt";
     beam->colour  = LIGHTRED;
     beam->glyph   = DCHAR_FIRED_ZAP;
 
     bolt *expl   = new bolt(*beam);
-    expl->flavour = BEAM_HELLFIRE;
+    expl->flavour = BEAM_DAMNATION;
     expl->is_explosion = true;
     expl->damage = dice_def(3, 12);
-    expl->name   = "hellfire";
+    expl->name   = "damnation";
 
     beam->special_explosion = expl;
     return SM_FINISHED;
@@ -1198,7 +1200,7 @@ static void _FLAMING_DEATH_melee_effects(item_def* weapon, actor* attacker,
 
 static void _MAJIN_equip(item_def *item, bool *show_msgs, bool unmeld)
 {
-    if (!get_mp_max())
+    if (!you.max_magic_points)
         return;
 
     const bool should_msg = !show_msgs || *show_msgs;
@@ -1215,7 +1217,7 @@ static void _MAJIN_equip(item_def *item, bool *show_msgs, bool unmeld)
 
 static void _MAJIN_unequip(item_def *item, bool *show_msgs)
 {
-    if (get_mp_max())
+    if (you.max_magic_points)
     {
         _equip_mpr(show_msgs,
                    "The darkness slowly releases its grasp on your magic.");
@@ -1233,7 +1235,7 @@ static int _octorings_worn()
         if (you.melded[i] || you.equip[i] == -1)
             continue;
 
-        item_def& ring = you.inv1[you.equip[i]];
+        item_def& ring = you.inv[you.equip[i]];
         if (is_unrandom_artefact(ring, UNRAND_OCTOPUS_KING_RING))
             worn++;
     }
@@ -1320,7 +1322,7 @@ static void _ETHERIC_CAGE_world_reacts(item_def *item)
 
     // coinflip() chance of 1 MP per turn.
     if (player_regenerates_mp())
-        inc_mp(binomial(div_rand_round(delay, BASELINE_DELAY), 1, 2) * 3);
+        inc_mp(binomial(div_rand_round(delay, BASELINE_DELAY), 1, 2));
 }
 
 ///////////////////////////////////////////////////

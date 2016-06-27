@@ -110,7 +110,6 @@ static const vector<god_passive> god_passives[NUM_GODS] =
 
     // Yredelemnul
     {
-        {  1, passive_t::auto_animate, "GOD animates some of your kills" },
         {  3, passive_t::nightvision, "can see well in the dark" },
     },
 
@@ -119,7 +118,7 @@ static const vector<god_passive> god_passives[NUM_GODS] =
 
     // Vehumet
     {
-        { -1, passive_t::mp_on_kill, "have a chance to gain magic when you kill" },
+        { -1, passive_t::mp_on_kill, "have a chance to gain mana when you kill" },
         {  3, passive_t::spells_success, "are less likely to miscast destructive spells" },
         {  4, passive_t::spells_range, "can cast destructive spells farther" },
     },
@@ -136,7 +135,6 @@ static const vector<god_passive> god_passives[NUM_GODS] =
 
     // Sif Muna
     {
-        {  1, passive_t::conserve_mp, "GOD helps you conserve magic while casting spells" },
         {  2, passive_t::miscast_protection, "GOD protects you from miscasts" },
     },
 
@@ -191,7 +189,7 @@ static const vector<god_passive> god_passives[NUM_GODS] =
         { -1, passive_t::fluid_stats, "GOD adjusts your attributes periodically" },
         {  2, passive_t::slime_feed, "items consumed by your fellow slimes feed you" },
         {  3, passive_t::resist_corrosion, "GOD protects your from corrosion" },
-        {  4, passive_t::slime_mp, "items consumed by your fellow slimes restores your magic reserve" },
+        {  4, passive_t::slime_mp, "items consumed by your fellow slimes restores your mana reserve" },
         {  5, passive_t::slime_hp, "items consumed by your fellow slimes restores your health" },
         {  6, passive_t::unlock_slime_vaults, "GOD grants you access to the hidden treasures of the Slime Pits" },
     },
@@ -277,8 +275,8 @@ static const vector<god_passive> god_passives[NUM_GODS] =
 
     // Pakellas
     {
-        { -1, passive_t::no_mp_regen, "GOD prevents you from regenerating your magic reserve" },
-        { -1, passive_t::mp_on_kill, "have a chance to gain magic when you kill" },
+        { -1, passive_t::no_mp_regen, "GOD prevents you from regenerating your mana reserve" },
+        { -1, passive_t::mp_on_kill, "have a chance to gain mana when you kill" },
         {  0, passive_t::identify_devices, "GOD identifies your wands and rods" },
         {  1, passive_t::bottle_mp, "GOD collects and distills excess magic from your kills" },
     },
@@ -287,7 +285,7 @@ static const vector<god_passive> god_passives[NUM_GODS] =
     { },
 
     // Hepliaklqana
-    { {  5, passive_t::transfer_slow, "slow nearby creatures when transferring your ancestor" }, },
+    { },
 };
 
 bool have_passive(passive_t passive)
@@ -331,8 +329,8 @@ int chei_stat_boost(int piety)
     if (piety < piety_breakpoint(0))  // Since you've already begun to slow down.
         return 1;
     if (piety >= piety_breakpoint(5))
-        return 10;
-    return piety / 20;
+        return 15;
+    return (piety - 10) / 10;
 }
 
 // Eat from one random off-level item stack.
@@ -434,13 +432,13 @@ void ash_check_bondage(bool msg)
         else if (i <= EQ_MAX_ARMOUR)
             s = ET_ARMOUR;
         // Missing hands mean fewer rings
-        else if (you.species != SP_OCTOPODE && you.species != SP_FELID && i == EQ_LEFT_RING
+        else if (you.species != SP_OCTOPODE && i == EQ_LEFT_RING
                  && player_mutation_level(MUT_MISSING_HAND))
         {
             continue;
         }
         // Octopodes don't count these slots:
-        else if ((you.species == SP_OCTOPODE || you.species == SP_FELID)
+        else if (you.species == SP_OCTOPODE
                  && ((i == EQ_LEFT_RING || i == EQ_RIGHT_RING)
                      || (i == EQ_RING_EIGHT
                          && player_mutation_level(MUT_MISSING_HAND))))
@@ -448,7 +446,7 @@ void ash_check_bondage(bool msg)
             continue;
         }
         // *Only* octopodes count these slots:
-        else if (you.species != SP_OCTOPODE && you.species != SP_FELID
+        else if (you.species != SP_OCTOPODE
                  && i >= EQ_RING_ONE && i <= EQ_RING_EIGHT)
         {
             continue;
@@ -468,7 +466,7 @@ void ash_check_bondage(bool msg)
             slots[s]++;
             if (you.equip[i] != -1)
             {
-                const item_def& item = you.inv1[you.equip[i]];
+                const item_def& item = you.inv[you.equip[i]];
                 if (item.cursed() && (i != EQ_WEAPON || is_weapon(item)))
                 {
                     if (s == ET_WEAPON
@@ -511,7 +509,7 @@ void ash_check_bondage(bool msg)
     if (you.species == SP_FELID)
     {
         for (int i = EQ_LEFT_RING; i <= EQ_AMULET; ++i)
-            if (you.equip[i] != -1 && you.inv1[you.equip[i]].cursed())
+            if (you.equip[i] != -1 && you.inv[you.equip[i]].cursed())
                 ++you.bondage_level;
 
         // Allow full bondage when all available slots are cursed.
@@ -915,12 +913,12 @@ int ash_skill_boost(skill_type sk, int scale)
                     * max(you.skill(sk, 10, true), 1) * species_apt_factor(sk);
 
     int level = you.skills[sk];
-    while (level < get_max_skill_level() && skill_points >= skill_exp_needed(level + 1, sk))
+    while (level < 27 && skill_points >= skill_exp_needed(level + 1, sk))
         ++level;
 
     level = level * scale + get_skill_progress(sk, level, skill_points, scale);
 
-    return min(level, get_max_skill_level() * scale);
+    return min(level, 27 * scale);
 }
 
 int gozag_gold_in_los(actor *whom)
@@ -1151,19 +1149,19 @@ void pakellas_id_device_charges()
 {
     for (int which_item = 0; which_item < ENDOFPACK; which_item++)
     {
-        if (!you.inv1[which_item].defined()
-            || !(you.inv1[which_item].base_type == OBJ_WANDS
-                 || you.inv1[which_item].base_type == OBJ_RODS)
-            || item_ident(you.inv1[which_item], ISFLAG_KNOW_PLUSES)
-               && item_ident(you.inv1[which_item], ISFLAG_KNOW_TYPE))
+        if (!you.inv[which_item].defined()
+            || !(you.inv[which_item].base_type == OBJ_WANDS
+                 || you.inv[which_item].base_type == OBJ_RODS)
+            || item_ident(you.inv[which_item], ISFLAG_KNOW_PLUSES)
+               && item_ident(you.inv[which_item], ISFLAG_KNOW_TYPE))
         {
             continue;
         }
-        if (you.inv1[which_item].base_type == OBJ_RODS)
-            set_ident_flags(you.inv1[which_item], ISFLAG_KNOW_TYPE);
-        set_ident_flags(you.inv1[which_item], ISFLAG_KNOW_PLUSES);
+        if (you.inv[which_item].base_type == OBJ_RODS)
+            set_ident_flags(you.inv[which_item], ISFLAG_KNOW_TYPE);
+        set_ident_flags(you.inv[which_item], ISFLAG_KNOW_PLUSES);
         mprf_nocap("%s",
-                   get_menu_colour_prefix_tags(you.inv1[which_item],
+                   get_menu_colour_prefix_tags(you.inv[which_item],
                                                DESC_INVENTORY).c_str());
     }
 }
@@ -1231,8 +1229,8 @@ monster* shadow_monster(bool equip)
     mon->attitude   = ATT_FRIENDLY;
     mon->flags      = MF_NO_REWARD | MF_JUST_SUMMONED | MF_SEEN
                     | MF_WAS_IN_VIEW | MF_HARD_RESET;
-    mon->hit_points = get_hp();
-    mon->set_hit_dice(min(MAX_MONS_LEVEL, max(1,
+    mon->hit_points = you.hp;
+    mon->set_hit_dice(min(27, max(1,
                                   you.skill_rdiv(wpn_index != NON_ITEM
                                                  ? item_attack_skill(mitm[wpn_index])
                                                  : SK_UNARMED_COMBAT, 10, 20)
@@ -1353,7 +1351,7 @@ void dithmenos_shadow_spell(bolt* orig_beam, spell_type spell)
     // Don't let shadow spells get too powerful.
     mon->set_hit_dice(max(1,
                           min(3 * spell_difficulty(spell),
-                              effective_xl()) / 2));
+                              you.experience_level) / 2));
 
     mon->target = clamp_in_bounds(target);
     if (actor_at(target))
@@ -1444,9 +1442,9 @@ static int _bond_audience(coord_def where)
 
     monster* mons = monster_at(where);
 
-    int power = you.skill(SK_INVOCATIONS, 7) + you.experience_level
+    int power = you.skill(SK_INVOCATIONS, 5) + you.experience_level
                  - mons->get_hit_dice();
-    int duration = 20 + random2avg(power, 2);
+    int duration = 10 + random2(power);
     mons->add_ench(mon_enchant(ENCH_PAIN_BOND, 1, &you, duration));
 
     return 1;

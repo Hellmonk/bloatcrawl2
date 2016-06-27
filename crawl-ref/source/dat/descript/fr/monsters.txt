@@ -287,6 +287,12 @@ Un brillant scientifique obsédé par l'électricité. Depuis un terrible accide
 survenu lors d'une de ses tentatives pour parfaire son ire s d'électricité, il
 lui arrive de se déphaser de la réalité.
 %%%%
+Norris
+
+Un cultiste détendu avec une voix saine et douce, cherchant la paix dans la
+mort. Il s'en fiche un peu que ça soit vous ou lui qui meure — « les deux »
+serait probablement la meilleure option.
+%%%%
 Polyphemus
 
 Un berger cyclope, il protège énormément son troupeau, qu'il regarde d'une
@@ -718,15 +724,6 @@ deep dwarf death knight
 Un guerrier-prêtre nain des profondeurs de Yredelemnul, qui chante des hommages
 impies à la gloire du dieu sombre et évoque la mort.
 %%%%
-deep dwarf necromancer
-
-Un vile nain de profondeurs qui a vendu son âme en échange de la maitrise des
-arts occultes de la mort et de la douleur.
-%%%%
-deep dwarf scion
-
-Un nain des profondeurs en armure, formidable combattant au corps-à-corps.
-%%%%
 deep troll
 
 Un troll voûté à la peau sombre, les trolls vivants dans les grottes voyagent
@@ -947,12 +944,6 @@ Un vil prédateur interdimentionnel qui se nourrit de l'énergie vitale des êtr
 vivants. Le peu qui l'ont vu et qui lui ont survécu disent qu'il ressemble a
 une énorme mite épineuse. Son cycle de vie étrange consiste à produire de
 l'ambroisie, très prisée chez les dieux et les magiciens.
-%%%%
-giant centipede
-
-Un chilopode d'une taille plutôt inhabituelle, le mille-pattes géant vient
-souvent chasser lorsqu'il fait sombre. Physiquement faible, il se fie à son
-poison désagréable pour expédier ses victimes.
 %%%%
 giant cockroach
 
@@ -1953,14 +1944,6 @@ titan
 
 Cet énorme humanoïde, portant des éclairs à la main, est inhabituellement grand
 et cela même pour des géants.
-%%%%
-thorn lotus
-
-Un grand et vif floraison dérive tranquillement à la surface de l'eau.
-Méfiez-vous, car sa beauté est trompeuse ; maintenu l'intérieur de ses pétales
-se trouve une stigmatisation hérissée d'épines aiguille, pleinement capables
-d'empaler les prédateurs et les aventuriers inconscients avant même qu'ils
-soient suffisamment proche pour la menacer.
 %%%%
 toadstool
 

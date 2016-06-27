@@ -19,59 +19,27 @@ double log2(double n)
 }
 #endif
 
-double _stepup2(double value, double divisor, double exponent, double multiplier);
-
-double _stepup2(double value, double divisor, double exponent, double multiplier)
+double stepdown(double value, double step)
 {
-    return multiplier * pow(value / divisor, exponent);
+    return step * log2(1 + value / step);
 }
 
-double _stepup(double multiplier, double base, double value, double divisor);
-
-double _stepup(double multiplier, double base, double value, double divisor)
+int stepdown(int value, int step, rounding_type rounding, int max)
 {
-    return multiplier * pow(base, value / divisor);
-}
-
-int stepup(int value, int multiplier, int base, int divisor)
-{
-    return _stepup(multiplier, base, value, divisor);
-}
-
-int stepup2(double value, int divisor, int exponent, int multiplier)
-{
-    return _stepup2(value, divisor, exponent, multiplier);
-}
-
-double stepdown(double value, double step, double base)
-{
-    return step * log(1 + value / step) / log(base);
-}
-
-int qpow(int value, int num, int denom, int power, bool random_rounding)
-{
-    double v = (double)value * pow((double)num / (double)denom, power);
-    int result = v;
-    if (random_rounding)
-        result = rand_round(v);
-    return result;
-}
-
-double fpow(double value, double num, double denom, double power)
-{
-    return value * pow(num/denom, power);
-}
-
-int stepdown(int value, int step, rounding_type rounding, int max, double base)
-{
-    double ret = stepdown((double) value, double(step), double(base));
+    double ret = stepdown((double) value, double(step));
 
     if (max > 0 && ret > max)
         return max;
 
     // Randomised rounding
     if (rounding == ROUND_RANDOM)
-        return rand_round(ret);
+    {
+        double intpart;
+        double fracpart = modf(ret, &intpart);
+        if (decimal_chance(fracpart))
+            ++intpart;
+        return intpart;
+    }
 
     return ret + (rounding == ROUND_CLOSE ? 0.5 : 0);
 }

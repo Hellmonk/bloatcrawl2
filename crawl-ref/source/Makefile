@@ -108,7 +108,7 @@ STDFLAG = -std=c++11
 
 CFOTHERS := -pipe $(EXTERNAL_FLAGS)
 CFWARN := 
-CFWARN_L := -Wall -Wformat-security -Wundef -Wno-unused-variable -Wno-missing-declarations -Wno-unused-function
+CFWARN_L := -Wall -Wformat-security -Wundef
 
 DEFINES := $(EXTERNAL_DEFINES)
 
@@ -125,10 +125,8 @@ CC = $(GCC)
 CXX = $(GXX)
 RM = rm -f
 COPY = cp
-#COPY_R = cp -r
-COPY_R = rsync -a
-#STRIP = strip -s
-STRIP = echo "Not stripping: "
+COPY_R = cp -r
+STRIP = strip -s
 WINDRES = windres
 CHMOD = chmod 2>/dev/null
 CHOWN = chown 2>/dev/null
@@ -222,8 +220,7 @@ ifdef msys
 	endif
 endif
 ifeq ($(uname_S),Darwin)
-	#STRIP := strip -x
-	STRIP := echo Not stripping...
+	STRIP := strip -x
 	NEED_APPKIT = YesPlease
 	LIBNCURSES_IS_UNICODE = Yes
 	NO_PKGCONFIG = Yes
@@ -644,18 +641,14 @@ ifndef BUILD_LUA
   else
     ifneq ($(shell $(PKGCONFIG) lua5.1 --exists || echo no),)
       ifneq ($(shell $(PKGCONFIG) lua-5.1 --exists || echo no),)
-        ifneq ($(shell $(PKGCONFIG) lua51 --exists || echo no),)
-          ifneq ($(shell $(PKGCONFIG) lua --exists || echo no),)
-            BUILD_LUA = yes
-          else
-            ifeq ($(shell $(PKGCONFIG) lua --modversion | head -c 3),5.1)
-              LUA_PACKAGE = lua
-            else
-              BUILD_LUA = yes
-            endif
-          endif
+        ifneq ($(shell $(PKGCONFIG) lua --exists || echo no),)
+          BUILD_LUA = yes
         else
-          LUA_PACKAGE = lua51
+          ifeq ($(shell $(PKGCONFIG) lua --modversion | head -c 3),5.1)
+            LUA_PACKAGE = lua
+          else
+            BUILD_LUA = yes
+          endif
         endif
       else
         LUA_PACKAGE = lua-5.1
@@ -1263,8 +1256,11 @@ else
 webserver:
 endif
 
-GAME_OBJS=$(OBJECTS) main.o $(EXTRA_OBJECTS)
-MONSTER_OBJS=$(OBJECTS) util/monster/monster-main.o $(EXTRA_OBJECTS)
+ifeq (,$(filter monster,$(MAKECMDGOALS)))
+OBJECTS += main.o
+else
+OBJECTS += util/monster/monster-main.o
+endif
 
 # There might not have been any goals passed on the commandline, so...
 GOALS = $(or $(MAKECMDGOALS),$(.DEFAULT_GOAL))
@@ -1339,10 +1335,10 @@ endif
 
 # This information is included in crash reports, and is printed with
 # "crawl -version"
-compflag.h: $(OBJECTS:.o=.cc) main.cc util/gen-cflg.pl .cflags
+compflag.h: $(OBJECTS:.o=.cc) util/gen-cflg.pl .cflags
 	$(QUIET_GEN)util/gen-cflg.pl compflag.h "$(ALL_CFLAGS)" "$(LDFLAGS)" "$(HOST)" "$(ARCH)"
 
-build.h: $(OBJECTS:.o=.cc) main.cc util/gen_ver.pl
+build.h: $(OBJECTS:.o=.cc) util/gen_ver.pl
 	$(QUIET_GEN)util/gen_ver.pl $@ $(MERGE_BASE)
 
 version.o: build.h compflag.h
@@ -1535,16 +1531,17 @@ distclean: clean clean-contrib clean-rltiles
 	$(RM) -r mac-app-zips
 	$(RM) -r $(DOXYGEN_HTML_GEN)
 
-$(GAME): $(GAME_OBJS) $(CONTRIB_LIBS) dat/dlua/tags.lua
-	+$(QUIET_LINK)$(CXX) $(LDFLAGS) $(GAME_OBJS) -o $(GAME) $(LIBS)
+$(GAME): $(OBJECTS) $(EXTRA_OBJECTS) $(CONTRIB_LIBS) dat/dlua/tags.lua
+	+$(QUIET_LINK)$(CXX) $(LDFLAGS) $(EXTRA_OBJECTS) $(OBJECTS) -o $(GAME) $(LIBS)
 
 util/monster/vault_monster_data.h: dat/des util/gather_mons
 	util/gather_mons -v > $@
 
 util/monster/monster-main.o: util/monster/vault_monster_data.h
 
-util/monster/monster: $(MONSTER_OBJS) $(CONTRIB_LIBS) dat/dlua/tags.lua
-	+$(QUIET_LINK)$(CXX) $(LDFLAGS) $(MONSTER_OBJS) -o $@ $(LIBS)
+util/monster/monster: $(OBJECTS) $(EXTRA_OBJECTS) $(CONTRIB_LIBS) dat/dlua/tags.lua
+	+$(QUIET_LINK)$(CXX) $(LDFLAGS) $(EXTRA_OBJECTS) $(OBJECTS) \
+	 -o $@ $(LIBS)
 
 monster: util/monster/monster
 
@@ -1597,7 +1594,7 @@ endif
 # Plain old compilation
 #
 
-$(OBJECTS:%.o=%.cc) main.cc: $(CONTRIB_LIBS)
+$(OBJECTS:%.o=%.cc): $(CONTRIB_LIBS)
 
 $(UTIL)%.o: ALL_CFLAGS=$(YACC_CFLAGS)
 $(TILEDEFOBJS): ALL_CFLAGS=$(RLTILES_CFLAGS)

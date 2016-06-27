@@ -54,7 +54,7 @@ Might status
 You are unnaturally strong. This provides bonuses to your strength and damage
 in physical combat.
 %%%%
-RegenHP status
+Regen status
 
 You regenerate health at an unnaturally fast rate. This is only shown for
 temporary regeneration.
@@ -316,6 +316,10 @@ You are covering ground swiftly.
 -Swift status
 
 You are covering ground slowly.
+%%%%
+Emp status
+
+You are telepathically detecting nearby creatures.
 %%%%
 DDoor status
 

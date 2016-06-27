@@ -78,6 +78,7 @@ static map<enchant_type, monster_info_flags> trivial_ench_mb_mappings = {
     { ENCH_BREATH_WEAPON,   MB_BREATH_WEAPON },
     { ENCH_DEATHS_DOOR,     MB_DEATHS_DOOR },
     { ENCH_ROLLING,         MB_ROLLING },
+    { ENCH_MAGIC_ARMOUR,    MB_MAGIC_ARMOUR },
     { ENCH_OZOCUBUS_ARMOUR, MB_OZOCUBUS_ARMOUR },
     { ENCH_WRETCHED,        MB_WRETCHED },
     { ENCH_SCREAMED,        MB_SCREAMED },
@@ -86,6 +87,7 @@ static map<enchant_type, monster_info_flags> trivial_ench_mb_mappings = {
     { ENCH_FLAYED,          MB_FLAYED },
     { ENCH_WEAK,            MB_WEAK },
     { ENCH_DIMENSION_ANCHOR, MB_DIMENSION_ANCHOR },
+    { ENCH_CONTROL_WINDS,   MB_CONTROL_WINDS },
     { ENCH_TOXIC_RADIANCE,  MB_TOXIC_RADIANCE },
     { ENCH_GRASPING_ROOTS,  MB_GRASPING_ROOTS },
     { ENCH_FIRE_VULN,       MB_FIRE_VULN },
@@ -110,7 +112,6 @@ static map<enchant_type, monster_info_flags> trivial_ench_mb_mappings = {
     { ENCH_GOZAG_INCITE,    MB_GOZAG_INCITED },
     { ENCH_PAIN_BOND,       MB_PAIN_BOND },
     { ENCH_IDEALISED,       MB_IDEALISED },
-    { ENCH_BOUND_SOUL,      MB_BOUND_SOUL },
 };
 
 static monster_info_flags ench_to_mb(const monster& mons, enchant_type ench)
@@ -1076,11 +1077,6 @@ bool monster_info::less_than_wrapper(const monster_info& m1,
 bool monster_info::less_than(const monster_info& m1, const monster_info& m2,
                              bool zombified, bool fullname)
 {
-    if (mons_is_hepliaklqana_ancestor(m1.type))
-        return true;
-    else if (mons_is_hepliaklqana_ancestor(m2.type))
-        return false;
-
     if (m1.attitude < m2.attitude)
         return true;
     else if (m1.attitude > m2.attitude)
@@ -1446,6 +1442,8 @@ vector<string> monster_info::attributes() const
         v.emplace_back("regenerating");
     if (is(MB_ROLLING))
         v.emplace_back("rolling");
+    if (is(MB_MAGIC_ARMOUR))
+        v.emplace_back("magically armoured");
     if (is(MB_OZOCUBUS_ARMOUR))
         v.emplace_back("covered in an icy film");
     if (is(MB_WRETCHED))
@@ -1467,6 +1465,8 @@ vector<string> monster_info::attributes() const
         v.emplace_back("weak");
     if (is(MB_DIMENSION_ANCHOR))
         v.emplace_back("unable to translocate");
+    if (is(MB_CONTROL_WINDS))
+        v.emplace_back("controlling the winds");
     if (is(MB_TOXIC_RADIANCE))
         v.emplace_back("radiating toxic energy");
     if (is(MB_GRASPING_ROOTS))
@@ -1520,14 +1520,9 @@ vector<string> monster_info::attributes() const
     if (is(MB_GOZAG_INCITED))
         v.emplace_back("incited by Gozag");
     if (is(MB_PAIN_BOND))
-    {
-        v.push_back(string("sharing ")
-                    + pronoun(PRONOUN_POSSESSIVE) + " pain");
-    }
+        v.emplace_back("sharing its pain");
     if (is(MB_IDEALISED))
         v.emplace_back("idealised");
-    if (is(MB_BOUND_SOUL))
-        v.emplace_back("bound soul");
     return v;
 }
 

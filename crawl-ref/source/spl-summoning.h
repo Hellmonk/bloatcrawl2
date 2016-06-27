@@ -77,16 +77,13 @@ int animate_remains(const coord_def &a, corpse_type class_allowed,
                     actor *as = nullptr, string nas = "",
                     god_type god = GOD_NO_GOD, bool actual = true,
                     bool quiet = false, bool force_beh = false,
-                    monster** mon = nullptr, int* motions = nullptr, spell_type spell = SPELL_NO_SPELL,
-                    int power = 20
-);
-void display_undead_motions(int motions);
+                    monster** mon = nullptr, int* motions = nullptr);
 
 spret_type cast_animate_skeleton(god_type god, bool fail);
 spret_type cast_animate_dead(int pow, god_type god, bool fail);
 int animate_dead(actor *caster, int /*pow*/, beh_type beha,
                  unsigned short hitting, actor *as = nullptr, string nas = "",
-                 god_type god = GOD_NO_GOD, bool actual = true, spell_type spell = SPELL_NO_SPELL);
+                 god_type god = GOD_NO_GOD, bool actual = true);
 
 spret_type cast_simulacrum(int pow, god_type god, bool fail);
 bool monster_simulacrum(monster *caster, bool actual);
@@ -125,10 +122,5 @@ void summoned_monster(const monster* mons, const actor* caster,
 bool summons_are_capped(spell_type spell);
 int summons_limit(spell_type spell);
 int count_summons(const actor *summoner, spell_type spell);
-bool spell_produces_minion(spell_type spell);
-bool spell_produces_undead_minion(spell_type spell);
-bool spell_produces_summoned_minion(spell_type spell);
-int unsummon_all();
-void unsummon(monster *mons);
 
 #endif

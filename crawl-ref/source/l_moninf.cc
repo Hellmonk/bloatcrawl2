@@ -252,7 +252,7 @@ LUAFN(moninf_get_can_be_constricted)
     if (!mi->constrictor_name.empty()
         || !form_keeps_mutations()
         || (you.species != SP_NAGA
-            || effective_xl() <= 12
+            || you.experience_level <= 12
             || you.is_constricting())
          && (you.species != SP_OCTOPODE || !you.has_usable_tentacle()))
     {

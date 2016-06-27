@@ -165,8 +165,6 @@
 #include "wiz-mon.h"
 #include "wiz-you.h"
 #include "xom.h" // debug_xom_effects()
-#include "rune_curse.h"
-// #include "android-project/jni/freetype/include/internal/fttrace.h"
 
 // ----------------------------------------------------------------------
 // Globals whose construction/destruction order needs to be managed
@@ -432,28 +430,6 @@ NORETURN static void _launch_game()
                     << species_name(you.species)
                     << " " << get_job_name(you.char_class) << ".</yellow>"
                     << endl;
-
-        msg::stream << "<white>You are playing the ";
-
-        switch(crawl_state.difficulty)
-        {
-        case DIFFICULTY_EASY:
-            msg::stream << "Easy";
-            break;
-        case DIFFICULTY_STANDARD:
-            msg::stream << "Standard";
-        	break;
-        case DIFFICULTY_CHALLENGE:
-            msg::stream << "Challenge";
-        	break;
-        case DIFFICULTY_NIGHTMARE:
-            msg::stream << "Nightmare";
-        	break;
-        default:
-        	break;
-        }
-
-        msg::stream << " difficulty mode, " << get_exp_mode_string() << " experience mode</white> <yellow></yellow>" << endl;
     }
 
 #ifdef USE_TILE
@@ -497,8 +473,6 @@ NORETURN static void _launch_game()
 #endif
 
     run_uncancels();
-
-    reset_damage_counters();
 
     cursor_control ccon(!Options.use_fake_player_cursor);
     while (true)
@@ -613,16 +587,11 @@ static void _wanderer_note_items()
 {
     const string equip_str =
         you.your_name + " set off with: "
-        + comma_separated_fn(begin(you.inv1), end(you.inv1),
+        + comma_separated_fn(begin(you.inv), end(you.inv),
                              [] (const item_def &item) -> string
                              {
                                  return item.name(DESC_A, false, true);
-                             }, ", ", ", ", mem_fn(&item_def::defined))
-		 + comma_separated_fn(begin(you.inv2), end(you.inv2),
-									  [] (const item_def &item) -> string
-									  {
-										  return item.name(DESC_A, false, true);
-									  }, ", ", ", ", mem_fn(&item_def::defined))							 ;
+                             }, ", ", ", ", mem_fn(&item_def::defined));
     take_note(Note(NOTE_MESSAGE, 0, 0, equip_str));
 }
 
@@ -700,8 +669,8 @@ static void _take_starting_note()
     if (you.char_class == JOB_WANDERER)
         _wanderer_note_items();
 
-    notestr << "HP: " << get_hp() << "/" << get_hp_max()
-            << " MP: " << get_mp() << "/" << get_mp_max();
+    notestr << "HP: " << you.hp << "/" << you.hp_max
+            << " MP: " << you.magic_points << "/" << you.max_magic_points;
 
     take_note(Note(NOTE_XP_LEVEL_CHANGE, you.experience_level, 0,
                    notestr.str().c_str()));
@@ -1124,12 +1093,10 @@ static bool _cmd_is_repeatable(command_type cmd, bool is_again = false)
     case CMD_SHOW_TERRAIN:
     case CMD_LIST_ARMOUR:
     case CMD_LIST_JEWELLERY:
-    case CMD_LIST_RUNE_CURSES:
     case CMD_LIST_GOLD:
     case CMD_CHARACTER_DUMP:
     case CMD_DISPLAY_COMMANDS:
     case CMD_DISPLAY_INVENTORY:
-    case CMD_DISPLAY_CONSUMABLES:
     case CMD_DISPLAY_KNOWN_OBJECTS:
     case CMD_DISPLAY_MUTATIONS:
     case CMD_DISPLAY_SKILLS:
@@ -1148,8 +1115,7 @@ static bool _cmd_is_repeatable(command_type cmd, bool is_again = false)
 
     // Multi-turn commands
     case CMD_PICKUP:
-    case CMD_DROP_INVENTORY:
-    case CMD_DROP_CONSUMABLE:
+    case CMD_DROP:
     case CMD_DROP_LAST:
     case CMD_BUTCHER:
     case CMD_GO_UPSTAIRS:
@@ -1374,6 +1340,8 @@ static void _input()
     // Currently only set if Xom accidentally kills the player.
     you.reset_escaped_death();
 
+    reset_damage_counters();
+
     if (you.dead)
     {
         revive();
@@ -1382,7 +1350,7 @@ static void _input()
     }
 
     // Unhandled things that should have caused death.
-    ASSERT(get_hp() > 0);
+    ASSERT(you.hp > 0);
 
     if (crawl_state.is_replaying_keys() && crawl_state.is_repeating_cmd()
         && kbhit())
@@ -1548,10 +1516,8 @@ static void _input()
     if (need_to_autoinscribe())
         autoinscribe();
 
-#ifdef WIZARD
     if (you.props.exists(FREEZE_TIME_KEY))
         you.turn_is_over = false;
-#endif
 
     if (you.turn_is_over)
     {
@@ -1561,8 +1527,6 @@ static void _input()
         _do_searing_ray();
 
         world_reacts();
-
-        player_after_each_turn();
     }
 
     update_can_train();
@@ -1763,48 +1727,6 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
         }
       }
 
-    if (ygrd == DNGN_EXIT_ZOT && !down && !player_has_orb())
-    {
-        mpr("Sorry, you can't leave Zot without the orb.");
-        return false;
-    }
-
-    if (ygrd == DNGN_ENTER_ZOT && down && !yesno("Once you enter Zot, you can't return without the orb. Are you sure you want to enter?", false, 'n'))
-    {
-        canned_msg(MSG_OK);
-        return false;
-    }
-
-    level_id destination = stair_destination(you.pos());
-    if (destination.is_valid())
-    {
-        const branch_type branch = destination.branch;
-        const bool rune_branch = branches[branch].runes.size() > 0;
-
-        if (rune_branch && down && branch != BRANCH_PANDEMONIUM && branch != BRANCH_ABYSS)
-        {
-            const rune_type first_rune = branches[branch].runes[0];
-            if (!you.rune_curse_active[first_rune])
-            {
-                mprf(MSGCH_WARN, "This leads to a rune branch. Once you enter, the curse associated with this rune will be permanently activated. ");
-                mprf(MSGCH_PLAIN, "This curse will result in the following effect(s):");
-                for (rune_type rune : branches[branch].runes)
-                {
-                    mprf(MSGCH_PLAIN, "%s", rune_curse_description(first_rune).c_str());
-                }
-
-                const bool proceed = yesno("Are you sure you want to enter now?", true, 'n');
-                if (proceed)
-                {
-                    for (rune_type rune : branches[branch].runes)
-                        you.rune_curse_active.set(rune, true);
-                }
-                else
-                    return false;
-            }
-        }
-    }
-
     // Escaping.
     if (!down && ygrd == DNGN_EXIT_DUNGEON && !player_has_orb())
     {
@@ -1826,9 +1748,6 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
         if (down && shaft) // voluntary shaft usage
             return yesno("Really dive through this shaft in the floor?", true, 'n');
     }
-
-    if (you.species == SP_MINOTAUR && destination.branch == BRANCH_LABYRINTH)
-        mpr("You feel strangely at home here.");
 
     return true;
 }
@@ -1867,8 +1786,7 @@ static void _take_stairs(bool down)
     }
     else
     {
-        if (crawl_state.followers_should_follow)
-            tag_followers(); // Only those beside us right now can follow.
+        tag_followers(); // Only those beside us right now can follow.
         start_delay(down ? DELAY_DESCENDING_STAIRS : DELAY_ASCENDING_STAIRS, 1);
     }
 }
@@ -1944,8 +1862,7 @@ static void _do_remove_armour()
 
     int index = 0;
     if (armour_prompt("Take off which item?", &index, OPER_TAKEOFF))
-        if (takeoff_armour(index))
-            you.prev_direction.reset();
+        takeoff_armour(index);
 }
 
 static void _toggle_travel_speed()
@@ -1968,17 +1885,13 @@ static void _do_rest()
         return;
     }
 
-    you.prev_direction.reset();
     if (i_feel_safe())
     {
-        player_before_long_safe_action();
-        if ((get_hp() == get_hp_max() || !player_regenerates_hp())
-            && (get_mp() == get_mp_max()
-                || !player_regenerates_mp())
-            && (get_sp() == get_sp_max() || !player_regenerates_sp()))
+        if ((you.hp == you.hp_max || !player_regenerates_hp())
+            && (you.magic_points == you.max_magic_points
+                || !player_regenerates_mp()))
         {
             mpr("You start waiting.");
-
             _start_running(RDIR_REST, RMODE_WAIT_DURATION);
             return;
         }
@@ -2039,12 +1952,12 @@ static void _do_cycle_quiver(int dir)
     const int next = get_next_fire_item(cur, dir);
 #ifdef DEBUG_QUIVER
     mprf(MSGCH_DIAGNOSTICS, "next slot: %d, item: %s", next,
-         next == -1 ? "none" : you.inv1[next].name(DESC_PLAIN).c_str());
+         next == -1 ? "none" : you.inv[next].name(DESC_PLAIN).c_str());
 #endif
     if (next != -1)
     {
         // Kind of a hacky way to get quiver to change.
-        you.m_quiver.on_item_fired(you.inv1[next], true);
+        you.m_quiver.on_item_fired(you.inv[next], true);
 
         if (next == cur)
             mpr("No other missiles available. Use F to throw any item.");
@@ -2065,202 +1978,63 @@ static void _do_list_gold()
 // e.g. list_jewellery, etc.
 void process_command(command_type cmd)
 {
-    if (crawl_state.free_stair_escape
-        && cmd != CMD_GO_UPSTAIRS
-        && cmd != CMD_GO_DOWNSTAIRS)
-        crawl_state.free_stair_escape = false;
-
     you.apply_berserk_penalty = true;
-    bool player_moved = true;
-    switch (cmd) {
+    switch (cmd)
+    {
 #ifdef USE_TILE
         // Tiles-specific commands.
-        case CMD_EDIT_PLAYER_TILE: tiles.draw_doll_edit(); break;
+    case CMD_EDIT_PLAYER_TILE: tiles.draw_doll_edit(); break;
 #endif
 
         // Movement and running commands.
-        case CMD_MOVE_DOWN_LEFT: _move_player({-1, 1}); break;
-        case CMD_MOVE_DOWN: _move_player({0, 1}); break;
-        case CMD_MOVE_UP_RIGHT: _move_player({1, -1}); break;
-        case CMD_MOVE_UP: _move_player({0, -1}); break;
-        case CMD_MOVE_UP_LEFT: _move_player({-1, -1}); break;
-        case CMD_MOVE_LEFT: _move_player({-1, 0}); break;
-        case CMD_MOVE_DOWN_RIGHT: _move_player({1, 1}); break;
-        case CMD_MOVE_RIGHT: _move_player({1, 0}); break;
+    case CMD_ATTACK_DOWN_LEFT:  _swing_at_target({-1,  1}); break;
+    case CMD_ATTACK_DOWN:       _swing_at_target({ 0,  1}); break;
+    case CMD_ATTACK_UP_RIGHT:   _swing_at_target({ 1, -1}); break;
+    case CMD_ATTACK_UP:         _swing_at_target({ 0, -1}); break;
+    case CMD_ATTACK_UP_LEFT:    _swing_at_target({-1, -1}); break;
+    case CMD_ATTACK_LEFT:       _swing_at_target({-1,  0}); break;
+    case CMD_ATTACK_DOWN_RIGHT: _swing_at_target({ 1,  1}); break;
+    case CMD_ATTACK_RIGHT:      _swing_at_target({ 1,  0}); break;
 
-        case CMD_SAFE_MOVE_DOWN_LEFT: _safe_move_player({-1, 1}); break;
-        case CMD_SAFE_MOVE_DOWN: _safe_move_player({0, 1}); break;
-        case CMD_SAFE_MOVE_UP_RIGHT: _safe_move_player({1, -1}); break;
-        case CMD_SAFE_MOVE_UP: _safe_move_player({0, -1}); break;
-        case CMD_SAFE_MOVE_UP_LEFT: _safe_move_player({-1, -1}); break;
-        case CMD_SAFE_MOVE_LEFT: _safe_move_player({-1, 0}); break;
-        case CMD_SAFE_MOVE_DOWN_RIGHT: _safe_move_player({1, 1}); break;
-        case CMD_SAFE_MOVE_RIGHT: _safe_move_player({1, 0}); break;
+    case CMD_MOVE_DOWN_LEFT:  _move_player({-1,  1}); break;
+    case CMD_MOVE_DOWN:       _move_player({ 0,  1}); break;
+    case CMD_MOVE_UP_RIGHT:   _move_player({ 1, -1}); break;
+    case CMD_MOVE_UP:         _move_player({ 0, -1}); break;
+    case CMD_MOVE_UP_LEFT:    _move_player({-1, -1}); break;
+    case CMD_MOVE_LEFT:       _move_player({-1,  0}); break;
+    case CMD_MOVE_DOWN_RIGHT: _move_player({ 1,  1}); break;
+    case CMD_MOVE_RIGHT:      _move_player({ 1,  0}); break;
 
-        case CMD_RUN_DOWN_LEFT: _start_running(RDIR_DOWN_LEFT, RMODE_START); break;
-        case CMD_RUN_DOWN: _start_running(RDIR_DOWN, RMODE_START); break;
-        case CMD_RUN_UP_RIGHT: _start_running(RDIR_UP_RIGHT, RMODE_START); break;
-        case CMD_RUN_UP: _start_running(RDIR_UP, RMODE_START); break;
-        case CMD_RUN_UP_LEFT: _start_running(RDIR_UP_LEFT, RMODE_START); break;
-        case CMD_RUN_LEFT: _start_running(RDIR_LEFT, RMODE_START); break;
-        case CMD_RUN_DOWN_RIGHT: _start_running(RDIR_DOWN_RIGHT, RMODE_START); break;
-        case CMD_RUN_RIGHT: _start_running(RDIR_RIGHT, RMODE_START); break;
+    case CMD_SAFE_MOVE_DOWN_LEFT:  _safe_move_player({-1,  1}); break;
+    case CMD_SAFE_MOVE_DOWN:       _safe_move_player({ 0,  1}); break;
+    case CMD_SAFE_MOVE_UP_RIGHT:   _safe_move_player({ 1, -1}); break;
+    case CMD_SAFE_MOVE_UP:         _safe_move_player({ 0, -1}); break;
+    case CMD_SAFE_MOVE_UP_LEFT:    _safe_move_player({-1, -1}); break;
+    case CMD_SAFE_MOVE_LEFT:       _safe_move_player({-1,  0}); break;
+    case CMD_SAFE_MOVE_DOWN_RIGHT: _safe_move_player({ 1,  1}); break;
+    case CMD_SAFE_MOVE_RIGHT:      _safe_move_player({ 1,  0}); break;
 
-        case CMD_REPEAT_CMD:     _do_cmd_repeat();  break;
-        case CMD_PREV_CMD_AGAIN: _do_prev_cmd_again(); break;
-            // Repeat commands.
-        case CMD_MACRO_ADD:      macro_add_query();    break;
-            // Toggle commands.
-        case CMD_DISABLE_MORE: crawl_state.show_more_prompt = false; break;
-        case CMD_ENABLE_MORE:  crawl_state.show_more_prompt = true;  break;
+    case CMD_CLOSE_DOOR_DOWN_LEFT:  _close_door({-1,  1}); break;
+    case CMD_CLOSE_DOOR_DOWN:       _close_door({ 0,  1}); break;
+    case CMD_CLOSE_DOOR_UP_RIGHT:   _close_door({ 1, -1}); break;
+    case CMD_CLOSE_DOOR_UP:         _close_door({ 0, -1}); break;
+    case CMD_CLOSE_DOOR_UP_LEFT:    _close_door({-1, -1}); break;
+    case CMD_CLOSE_DOOR_LEFT:       _close_door({-1,  0}); break;
+    case CMD_CLOSE_DOOR_DOWN_RIGHT: _close_door({ 1,  1}); break;
+    case CMD_CLOSE_DOOR_RIGHT:      _close_door({ 1,  0}); break;
+    case CMD_CLOSE_DOOR:            _close_door({ 0,  0}); break;
 
-        case CMD_TOGGLE_AUTOPICKUP:
-            if (Options.autopickup_on < 1)
-                Options.autopickup_on = 1;
-            else
-                Options.autopickup_on = 0;
-            mprf("Autopickup is now %s.", Options.autopickup_on > 0 ? "on" : "off");
-            break;
-
-        case CMD_TOGGLE_TRAVEL_SPEED:        _toggle_travel_speed(); break;
-
-            // Map commands.
-        case CMD_CLEAR_MAP:       _do_clear_map();   break;
-        case CMD_DISPLAY_OVERMAP: display_overview(); break;
-        case CMD_DISPLAY_MAP:     _do_display_map(); break;
-
-        case CMD_SHOW_TERRAIN: toggle_show_terrain(); break;
-        case CMD_ADJUST_INVENTORY: adjust(); break;
-        case CMD_DISPLAY_SPELLS:       inspect_spells();         break;
-        case CMD_DISPLAY_CHARACTER_STATUS: display_char_status();          break;
-        case CMD_DISPLAY_COMMANDS:         list_commands(0, true);         break;
-        case CMD_DISPLAY_INVENTORY:        display_inventory(you.inv1, "Inventory: ");    break;
-        case CMD_DISPLAY_CONSUMABLES:      display_inventory(you.inv2, "Consumables: ");    break;
-        case CMD_DISPLAY_KNOWN_OBJECTS: check_item_knowledge(); redraw_screen(); break;
-        case CMD_DISPLAY_MUTATIONS: display_mutations(); redraw_screen();  break;
-        case CMD_DISPLAY_RUNES: display_runes(); redraw_screen();          break;
-        case CMD_DISPLAY_SKILLS:           skill_menu(); redraw_screen();  break;
-        case CMD_EXPERIENCE_CHECK:         _experience_check();            break;
-        case CMD_FULL_VIEW:                full_describe_view();           break;
-        case CMD_INSCRIBE_ITEM:            prompt_inscribe_item(you.inv1); break;
-        case CMD_LIST_ARMOUR:              list_armour();                  break;
-        case CMD_LIST_GOLD:                _do_list_gold();                break;
-        case CMD_LIST_JEWELLERY:           list_jewellery();               break;
-        case CMD_LIST_RUNE_CURSES:         list_rune_curses();             break;
-        case CMD_MAKE_NOTE:                make_user_note();               break;
-        case CMD_REPLAY_MESSAGES: replay_messages(); redraw_screen();      break;
-        case CMD_RESISTS_SCREEN:           print_overview_screen();        break;
-        case CMD_LOOKUP_HELP:           keyhelp_query_descriptions();      break;
-
-        case CMD_DISPLAY_RELIGION:
-        {
-#ifdef USE_TILE_WEB
-            tiles_crt_control show_as_menu(CRT_MENU, "describe_god");
-#endif
-            describe_god(you.religion, true);
-            redraw_screen();
-            break;
-        }
-
-        case CMD_READ_MESSAGES:
-#ifdef DGL_SIMPLE_MESSAGING
-            if (SysEnv.have_messages)
-            read_messages();
-#endif
-            break;
-
-        case CMD_CHARACTER_DUMP:
-            if (!dump_char(you.your_name))
-                mpr("Char dump unsuccessful! Sorry about that.");
-#ifdef USE_TILE_WEB
-        else
-            tiles.send_dump_info("command", you.your_name);
-#endif
-            break;
-
-            // Travel commands.
-        case CMD_FIX_WAYPOINT:      travel_cache.add_waypoint(); break;
-
-            // Mouse commands.
-        case CMD_MOUSE_MOVE:
-        {
-            const coord_def dest = crawl_view.screen2grid(crawl_view.mousep);
-            if (in_bounds(dest))
-                terse_describe_square(dest);
-            break;
-        }
-
-            // Quiver commands.
-        case CMD_QUIVER_ITEM:           choose_item_for_quiver(); break;
-        case CMD_CYCLE_QUIVER_FORWARD:  _do_cycle_quiver(+1);     break;
-        case CMD_CYCLE_QUIVER_BACKWARD: _do_cycle_quiver(-1);     break;
-
-#ifdef WIZARD
-        case CMD_WIZARD: _handle_wizard_command(); break;
-    case CMD_EXPLORE_MODE: _enter_explore_mode(); break;
-#endif
-
-            // Game commands.
-        case CMD_REDRAW_SCREEN: redraw_screen(); break;
-
-#ifdef USE_UNIX_SIGNALS
-        case CMD_SUSPEND_GAME:
-            // CTRL-Z suspend behaviour is implemented here,
-            // because we want to have CTRL-Y available...
-            // and unfortunately they tend to be stuck together.
-            clrscr();
-#if !defined(USE_TILE_LOCAL) && !defined(TARGET_OS_WINDOWS)
-            console_shutdown();
-            kill(0, SIGTSTP);
-            console_startup();
-#endif
-            redraw_screen();
-            break;
-#endif
-
-        case CMD_SAVE_GAME:
-        {
-            const char * const prompt
-                = (Options.restart_after_game && Options.restart_after_save)
-                  ? "Save game and return to main menu?"
-                  : "Save game and exit?";
-            explicit_keymap map;
-            map['S'] = 'y';
-            if (yesno(prompt, true, 'n', true, true, false, &map))
-                save_game(true);
-            else
-                canned_msg(MSG_OK);
-            break;
-        }
-
-        case CMD_SAVE_GAME_NOW:
-            mpr("Saving game... please wait.");
-            save_game(true);
-            break;
-
-        case CMD_QUIT:
-            if (crawl_state.disables[DIS_CONFIRMATIONS]
-                || yes_or_no("Are you sure you want to abandon this character and quit the game?"))
-            {
-                ouch(INSTANT_DEATH, KILLED_BY_QUITTING);
-            }
-            else
-                canned_msg(MSG_OK);
-            break;
-
-        case CMD_LUA_CONSOLE:
-            debug_terp_dlua(clua);
-            break;
-
-#ifdef TOUCH_UI
-        case CMD_SHOW_KEYBOARD:
-        ASSERT(wm);
-        wm->show_keyboard();
-        break;
-#endif
+    case CMD_RUN_DOWN_LEFT: _start_running(RDIR_DOWN_LEFT, RMODE_START); break;
+    case CMD_RUN_DOWN:      _start_running(RDIR_DOWN, RMODE_START);      break;
+    case CMD_RUN_UP_RIGHT:  _start_running(RDIR_UP_RIGHT, RMODE_START);  break;
+    case CMD_RUN_UP:        _start_running(RDIR_UP, RMODE_START);        break;
+    case CMD_RUN_UP_LEFT:   _start_running(RDIR_UP_LEFT, RMODE_START);   break;
+    case CMD_RUN_LEFT:      _start_running(RDIR_LEFT, RMODE_START);      break;
+    case CMD_RUN_DOWN_RIGHT:_start_running(RDIR_DOWN_RIGHT, RMODE_START); break;
+    case CMD_RUN_RIGHT:     _start_running(RDIR_RIGHT, RMODE_START);     break;
 
 #ifdef CLUA_BINDINGS
-        case CMD_AUTOFIGHT:
+    case CMD_AUTOFIGHT:
     case CMD_AUTOFIGHT_NOMOVE:
     {
         const char * const fnname = cmd == CMD_AUTOFIGHT ? "hit_closest"
@@ -2279,195 +2053,288 @@ void process_command(command_type cmd)
         break;
     }
 #endif
-        default: player_moved = false; break;
-    }
+    case CMD_REST:            _do_rest(); break;
 
-    // if movement is broken by any other action, then there is no abrupt direction change penalties
-    if (!player_moved)
-    {
+    case CMD_GO_UPSTAIRS:
+    case CMD_GO_DOWNSTAIRS:
+        _take_stairs(cmd == CMD_GO_DOWNSTAIRS);
+        break;
 
-        switch (cmd) {
+    case CMD_OPEN_DOOR:      _open_door(); break;
 
-            case CMD_ATTACK_DOWN_LEFT:  _swing_at_target({-1,  1}); break;
-            case CMD_ATTACK_DOWN:       _swing_at_target({ 0,  1}); break;
-            case CMD_ATTACK_UP_RIGHT:   _swing_at_target({ 1, -1}); break;
-            case CMD_ATTACK_UP:         _swing_at_target({ 0, -1}); break;
-            case CMD_ATTACK_UP_LEFT:    _swing_at_target({-1, -1}); break;
-            case CMD_ATTACK_LEFT:       _swing_at_target({-1,  0}); break;
-            case CMD_ATTACK_DOWN_RIGHT: _swing_at_target({ 1,  1}); break;
-            case CMD_ATTACK_RIGHT:      _swing_at_target({ 1,  0}); break;
+    // Repeat commands.
+    case CMD_REPEAT_CMD:     _do_cmd_repeat();  break;
+    case CMD_PREV_CMD_AGAIN: _do_prev_cmd_again(); break;
+    case CMD_MACRO_ADD:      macro_add_query();    break;
 
-            case CMD_CLOSE_DOOR_DOWN_LEFT:  _close_door({-1,  1}); break;
-            case CMD_CLOSE_DOOR_DOWN:       _close_door({ 0,  1}); break;
-            case CMD_CLOSE_DOOR_UP_RIGHT:   _close_door({ 1, -1}); break;
-            case CMD_CLOSE_DOOR_UP:         _close_door({ 0, -1}); break;
-            case CMD_CLOSE_DOOR_UP_LEFT:    _close_door({-1, -1}); break;
-            case CMD_CLOSE_DOOR_LEFT:       _close_door({-1,  0}); break;
-            case CMD_CLOSE_DOOR_DOWN_RIGHT: _close_door({ 1,  1}); break;
-            case CMD_CLOSE_DOOR_RIGHT:      _close_door({ 1,  0}); break;
-            case CMD_CLOSE_DOOR:            _close_door({ 0,  0}); break;
+    // Toggle commands.
+    case CMD_DISABLE_MORE: crawl_state.show_more_prompt = false; break;
+    case CMD_ENABLE_MORE:  crawl_state.show_more_prompt = true;  break;
 
-            case CMD_REST:            _do_rest(); break;
+    case CMD_TOGGLE_AUTOPICKUP:
+        if (Options.autopickup_on < 1)
+            Options.autopickup_on = 1;
+        else
+            Options.autopickup_on = 0;
+        mprf("Autopickup is now %s.", Options.autopickup_on > 0 ? "on" : "off");
+        break;
 
-            case CMD_GO_UPSTAIRS:
-            case CMD_GO_DOWNSTAIRS:
-                _take_stairs(cmd == CMD_GO_DOWNSTAIRS);
-                break;
+    case CMD_TOGGLE_TRAVEL_SPEED:        _toggle_travel_speed(); break;
 
-            case CMD_OPEN_DOOR:      _open_door(); break;
+        // Map commands.
+    case CMD_CLEAR_MAP:       _do_clear_map();   break;
+    case CMD_DISPLAY_OVERMAP: display_overview(); break;
+    case CMD_DISPLAY_MAP:     _do_display_map(); break;
 
 #ifdef TOUCH_UI
-            // zoom commands
+        // zoom commands
     case CMD_ZOOM_IN:   tiles.zoom_dungeon(true); break;
     case CMD_ZOOM_OUT:  tiles.zoom_dungeon(false); break;
 #endif
 
-                // Stash commands.
-            case CMD_SEARCH_STASHES:
-                if (Hints.hints_stashes)
-                    Hints.hints_stashes = 0;
-                StashTrack.search_stashes();
-                break;
+        // Stash commands.
+    case CMD_SEARCH_STASHES:
+        if (Hints.hints_stashes)
+            Hints.hints_stashes = 0;
+        StashTrack.search_stashes();
+        break;
 
-            case CMD_INSPECT_FLOOR:
-                request_autopickup();
-                if (player_on_single_stack() && !you.running)
-                    pickup(true);
-                break;
-            case CMD_SAFE_WAIT:
-                if (!i_feel_safe(true))
-                    break;
-                // else fall-through
-            case CMD_WAIT:
-                you.turn_is_over = true;
-                extract_manticore_spikes("You carefully extract the manticore spikes "
-                                                 "from your body.");
-                you.prev_direction.reset();
-                break;
+    case CMD_INSPECT_FLOOR:
+        request_autopickup();
+        if (player_on_single_stack() && !you.running)
+            pickup(true);
+        break;
+    case CMD_SHOW_TERRAIN: toggle_show_terrain(); break;
+    case CMD_ADJUST_INVENTORY: adjust(); break;
 
-            case CMD_PICKUP:
-            case CMD_PICKUP_QUANTITY:
-                you.prev_direction.reset();
-                pickup(cmd != CMD_PICKUP);
-                break;
+    case CMD_SAFE_WAIT:
+        if (!i_feel_safe(true))
+            break;
+        // else fall-through
+    case CMD_WAIT:
+        you.turn_is_over = true;
+        extract_manticore_spikes("You carefully extract the manticore spikes "
+                                 "from your body.");
+        break;
 
-                // Action commands.
-            case CMD_BUTCHER:              butchery();               break;
-            case CMD_CAST_SPELL:           do_cast_spell_cmd(false); break;
-            case CMD_EAT:
-                if (eat_food())
-                    you.prev_direction.reset();
-                break;
-            case CMD_EXERT_NORMAL:
-                set_exertion(EXERT_NORMAL);
-                break;
-            case CMD_EXERT_FOCUS:
-                set_exertion(EXERT_FOCUS);
-                break;
-            case CMD_EXERT_POWER:
-                set_exertion(EXERT_POWER);
-                break;
-            case CMD_EXERT_FAST:
-                set_quick_mode(true);
-                break;
-            case CMD_EXERT_SLOW:
-                set_quick_mode(false);
-                break;
-            case CMD_FIRE:                 fire_thing();             break;
-            case CMD_FORCE_CAST_SPELL:     do_cast_spell_cmd(true);  break;
-            case CMD_LOOK_AROUND:          do_look_around();         break;
-            case CMD_PRAY:                 pray();                   break;
-            case CMD_QUAFF:                drink();                  break;
-            case CMD_READ:                 read();                   break;
-            case CMD_REMOVE_ARMOUR:        _do_remove_armour();      break;
-            case CMD_REMOVE_JEWELLERY:
-                if(remove_ring())
-                    you.prev_direction.reset();
-                break;
-            case CMD_SHOUT:                yell();                   break;
-            case CMD_THROW_ITEM_NO_QUIVER: throw_item_no_quiver();   break;
-            case CMD_WEAPON_SWAP:
-                if(wield_weapon(true))
-                    you.prev_direction.reset();
-                break;
-            case CMD_WEAR_ARMOUR:          wear_armour();            break;
-            case CMD_WEAR_JEWELLERY:       puton_ring(-1);           break;
-            case CMD_WIELD_WEAPON:         wield_weapon(false);      break;
-            case CMD_ZAP_WAND:             zap_wand();               break;
+    case CMD_PICKUP:
+    case CMD_PICKUP_QUANTITY:
+        pickup(cmd != CMD_PICKUP);
+        break;
 
-            case CMD_DROP_INVENTORY:
-                drop_inventory();
-                break;
+        // Action commands.
+    case CMD_BUTCHER:              butchery();               break;
+    case CMD_CAST_SPELL:           do_cast_spell_cmd(false); break;
+    case CMD_DISPLAY_SPELLS:       inspect_spells();         break;
+    case CMD_EAT:                  eat_food();               break;
+    case CMD_FIRE:                 fire_thing();             break;
+    case CMD_FORCE_CAST_SPELL:     do_cast_spell_cmd(true);  break;
+    case CMD_LOOK_AROUND:          do_look_around();         break;
+    case CMD_PRAY:                 pray();                   break;
+    case CMD_QUAFF:                drink();                  break;
+    case CMD_READ:                 read();                   break;
+    case CMD_REMOVE_ARMOUR:        _do_remove_armour();      break;
+    case CMD_REMOVE_JEWELLERY:     remove_ring();            break;
+    case CMD_SHOUT:                yell();                   break;
+    case CMD_THROW_ITEM_NO_QUIVER: throw_item_no_quiver();   break;
+    case CMD_WEAPON_SWAP:          wield_weapon(true);       break;
+    case CMD_WEAR_ARMOUR:          wear_armour();            break;
+    case CMD_WEAR_JEWELLERY:       puton_ring(-1);           break;
+    case CMD_WIELD_WEAPON:         wield_weapon(false);      break;
+    case CMD_ZAP_WAND:             zap_wand();               break;
 
-            case CMD_DROP_CONSUMABLE:
-                drop_consumable();
-                break;
+    case CMD_DROP:
+        drop();
+        break;
 
-            case CMD_DROP_LAST:
-                drop_last();
-                break;
+    case CMD_DROP_LAST:
+        drop_last();
+        break;
 
-            case CMD_EVOKE:
-                if (!evoke_item())
-                    flush_input_buffer(FLUSH_ON_FAILURE);
-                break;
+    case CMD_EVOKE:
+        if (!evoke_item())
+            flush_input_buffer(FLUSH_ON_FAILURE);
+        break;
 
-            case CMD_EVOKE_WIELDED:
-            case CMD_FORCE_EVOKE_WIELDED:
-                if (!evoke_item(you.equip[EQ_WEAPON], cmd != CMD_FORCE_EVOKE_WIELDED))
-                    flush_input_buffer(FLUSH_ON_FAILURE);
-                break;
+    case CMD_EVOKE_WIELDED:
+    case CMD_FORCE_EVOKE_WIELDED:
+        if (!evoke_item(you.equip[EQ_WEAPON], cmd != CMD_FORCE_EVOKE_WIELDED))
+            flush_input_buffer(FLUSH_ON_FAILURE);
+        break;
 
-            case CMD_MEMORISE_SPELL:
-                if (!learn_spell())
-                    flush_input_buffer(FLUSH_ON_FAILURE);
-                break;
+    case CMD_MEMORISE_SPELL:
+        if (!learn_spell())
+            flush_input_buffer(FLUSH_ON_FAILURE);
+        break;
 
-            case CMD_USE_ABILITY:
-                if (!activate_ability())
-                    flush_input_buffer(FLUSH_ON_FAILURE);
-                break;
+    case CMD_USE_ABILITY:
+        if (!activate_ability())
+            flush_input_buffer(FLUSH_ON_FAILURE);
+        break;
 
-                // Informational commands.
-            case CMD_INTERLEVEL_TRAVEL: do_interlevel_travel();      break;
-            case CMD_ANNOTATE_LEVEL:    annotate_level();            break;
-            case CMD_EXPLORE:           do_explore_cmd();            break;
+        // Informational commands.
+    case CMD_DISPLAY_CHARACTER_STATUS: display_char_status();          break;
+    case CMD_DISPLAY_COMMANDS:         list_commands(0, true);         break;
+    case CMD_DISPLAY_INVENTORY:        display_inventory();            break;
+    case CMD_DISPLAY_KNOWN_OBJECTS: check_item_knowledge(); redraw_screen(); break;
+    case CMD_DISPLAY_MUTATIONS: display_mutations(); redraw_screen();  break;
+    case CMD_DISPLAY_RUNES: display_runes(); redraw_screen();          break;
+    case CMD_DISPLAY_SKILLS:           skill_menu(); redraw_screen();  break;
+    case CMD_EXPERIENCE_CHECK:         _experience_check();            break;
+    case CMD_FULL_VIEW:                full_describe_view();           break;
+    case CMD_INSCRIBE_ITEM:            prompt_inscribe_item();         break;
+    case CMD_LIST_ARMOUR:              list_armour();                  break;
+    case CMD_LIST_GOLD:                _do_list_gold();                break;
+    case CMD_LIST_JEWELLERY:           list_jewellery();               break;
+    case CMD_MAKE_NOTE:                make_user_note();               break;
+    case CMD_REPLAY_MESSAGES: replay_messages(); redraw_screen();      break;
+    case CMD_RESISTS_SCREEN:           print_overview_screen();        break;
+    case CMD_LOOKUP_HELP:           keyhelp_query_descriptions();      break;
 
-            case CMD_MOUSE_CLICK:
+    case CMD_DISPLAY_RELIGION:
+    {
+#ifdef USE_TILE_WEB
+        tiles_crt_control show_as_menu(CRT_MENU, "describe_god");
+#endif
+        describe_god(you.religion, true);
+        redraw_screen();
+        break;
+    }
+
+    case CMD_READ_MESSAGES:
+#ifdef DGL_SIMPLE_MESSAGING
+        if (SysEnv.have_messages)
+            read_messages();
+#endif
+        break;
+
+    case CMD_CHARACTER_DUMP:
+        if (!dump_char(you.your_name))
+            mpr("Char dump unsuccessful! Sorry about that.");
+#ifdef USE_TILE_WEB
+        else
+            tiles.send_dump_info("command", you.your_name);
+#endif
+        break;
+
+        // Travel commands.
+    case CMD_FIX_WAYPOINT:      travel_cache.add_waypoint(); break;
+    case CMD_INTERLEVEL_TRAVEL: do_interlevel_travel();      break;
+    case CMD_ANNOTATE_LEVEL:    annotate_level();            break;
+    case CMD_EXPLORE:           do_explore_cmd();            break;
+
+        // Mouse commands.
+    case CMD_MOUSE_MOVE:
+    {
+        const coord_def dest = crawl_view.screen2grid(crawl_view.mousep);
+        if (in_bounds(dest))
+            terse_describe_square(dest);
+        break;
+    }
+
+    case CMD_MOUSE_CLICK:
+    {
+        // XXX: We should probably use specific commands such as
+        // CMD_MOUSE_TRAVEL and get rid of CMD_MOUSE_CLICK and
+        // CMD_MOUSE_MOVE.
+        c_mouse_event cme = get_mouse_event();
+        if (cme && crawl_view.in_viewport_s(cme.pos))
+        {
+            const coord_def dest = crawl_view.screen2grid(cme.pos);
+            if (cme.left_clicked())
             {
-                // XXX: We should probably use specific commands such as
-                // CMD_MOUSE_TRAVEL and get rid of CMD_MOUSE_CLICK and
-                // CMD_MOUSE_MOVE.
-                c_mouse_event cme = get_mouse_event();
-                if (cme && crawl_view.in_viewport_s(cme.pos))
-                {
-                    const coord_def dest = crawl_view.screen2grid(cme.pos);
-                    if (cme.left_clicked())
-                    {
-                        if (in_bounds(dest))
-                            start_travel(dest);
-                    }
-                    else if (cme.right_clicked())
-                    {
-                        if (you.see_cell(dest))
-                            full_describe_square(dest);
-                        else
-                            mpr("You can't see that place.");
-                    }
-                }
-                break;
+                if (in_bounds(dest))
+                    start_travel(dest);
             }
-
-            case CMD_NO_CMD:
-            default:
-                // The backslash in ?\? is there so it doesn't start a trigraph.
-                if (crawl_state.game_is_hints())
-                    mpr("Unknown command. (For a list of commands type <w>?\?</w>.)");
-                else // well, not examine, but...
-                    mprf(MSGCH_EXAMINE_FILTER, "Unknown command.");
-
-                break;
+            else if (cme.right_clicked())
+            {
+                if (you.see_cell(dest))
+                    full_describe_square(dest);
+                else
+                    mpr("You can't see that place.");
+            }
         }
+        break;
+    }
+
+        // Quiver commands.
+    case CMD_QUIVER_ITEM:           choose_item_for_quiver(); break;
+    case CMD_CYCLE_QUIVER_FORWARD:  _do_cycle_quiver(+1);     break;
+    case CMD_CYCLE_QUIVER_BACKWARD: _do_cycle_quiver(-1);     break;
+
+#ifdef WIZARD
+    case CMD_WIZARD: _handle_wizard_command(); break;
+    case CMD_EXPLORE_MODE: _enter_explore_mode(); break;
+#endif
+
+        // Game commands.
+    case CMD_REDRAW_SCREEN: redraw_screen(); break;
+
+#ifdef USE_UNIX_SIGNALS
+    case CMD_SUSPEND_GAME:
+        // CTRL-Z suspend behaviour is implemented here,
+        // because we want to have CTRL-Y available...
+        // and unfortunately they tend to be stuck together.
+        clrscr();
+#if !defined(USE_TILE_LOCAL) && !defined(TARGET_OS_WINDOWS)
+        console_shutdown();
+        kill(0, SIGTSTP);
+        console_startup();
+#endif
+        redraw_screen();
+        break;
+#endif
+
+    case CMD_SAVE_GAME:
+    {
+        const char * const prompt
+            = (Options.restart_after_game && Options.restart_after_save)
+              ? "Save game and return to main menu?"
+              : "Save game and exit?";
+        explicit_keymap map;
+        map['S'] = 'y';
+        if (yesno(prompt, true, 'n', true, true, false, &map))
+            save_game(true);
+        else
+            canned_msg(MSG_OK);
+        break;
+    }
+
+    case CMD_SAVE_GAME_NOW:
+        mpr("Saving game... please wait.");
+        save_game(true);
+        break;
+
+    case CMD_QUIT:
+        if (crawl_state.disables[DIS_CONFIRMATIONS]
+            || yes_or_no("Are you sure you want to abandon this character and quit the game?"))
+        {
+            ouch(INSTANT_DEATH, KILLED_BY_QUITTING);
+        }
+        else
+            canned_msg(MSG_OK);
+        break;
+
+    case CMD_LUA_CONSOLE:
+        debug_terp_dlua(clua);
+        break;
+
+#ifdef TOUCH_UI
+    case CMD_SHOW_KEYBOARD:
+        ASSERT(wm);
+        wm->show_keyboard();
+        break;
+#endif
+
+    case CMD_NO_CMD:
+    default:
+        // The backslash in ?\? is there so it doesn't start a trigraph.
+        if (crawl_state.game_is_hints())
+            mpr("Unknown command. (For a list of commands type <w>?\?</w>.)");
+        else // well, not examine, but...
+            mprf(MSGCH_EXAMINE_FILTER, "Unknown command.");
+
+        break;
     }
 
 }
@@ -2515,6 +2382,19 @@ static void _check_banished()
             mprf(MSGCH_BANISHMENT, "The Abyss bends around you!");
         // these are included in default force_more_message
         banished(you.banished_by, you.banished_power);
+    }
+}
+
+static void _check_shafts()
+{
+    for (auto& entry : env.trap)
+    {
+        if (entry.second.type != TRAP_SHAFT)
+            continue;
+
+        ASSERT_IN_BOUNDS(entry.first);
+
+        handle_items_on_shaft(entry.first, true);
     }
 }
 
@@ -2632,6 +2512,7 @@ void world_reacts()
 #endif
 
     _check_banished();
+    _check_shafts();
     _check_sanctuary();
 
     run_environment_effects();
@@ -2734,8 +2615,6 @@ static command_type _get_next_cmd()
     keycode_type keyin = _get_next_keycode();
 
     handle_real_time();
-
-    reset_damage_counters();
 
     if (is_userfunction(keyin))
     {
@@ -2899,7 +2778,6 @@ static bool _cancel_confused_move(bool stationary)
 
 static void _swing_at_target(coord_def move)
 {
-    you.prev_direction.reset();
     if (you.attribute[ATTR_HELD])
     {
         free_self_from_net();
@@ -2964,8 +2842,9 @@ static void _swing_at_target(coord_def move)
         }
         else if (!you.fumbles_attack())
             mpr("You swing at nothing.");
+        make_hungry(3, true);
         // Take the usual attack delay.
-        you.time_taken = you.attack_delay();
+        you.time_taken = you.attack_delay().roll();
     }
     you.turn_is_over = true;
     return;
@@ -3084,7 +2963,6 @@ static void _open_door(coord_def move)
 
 static void _close_door(coord_def move)
 {
-    you.prev_direction.reset();
     if (!player_can_open_doors())
     {
         mpr("You can't close doors in your present form.");
@@ -3324,6 +3202,7 @@ static void _move_player(coord_def move)
         {
             move.x = random2(3) - 1;
             move.y = random2(3) - 1;
+            you.reset_prev_move();
             if (move.origin())
             {
                 mpr("You're too confused to move!");
@@ -3574,23 +3453,20 @@ static void _move_player(coord_def move)
                  DESC_THE, false).c_str());
             destroy_wall(targ);
             noisy(6, you.pos());
-            make_hungry(60, true);
+            make_hungry(50, true);
             additional_time_taken += BASELINE_DELAY / 5;
         }
 
         if (swap)
             _swap_places(targ_monst, mon_swap_dest);
-        else if (you.duration[DUR_CLOUD_TRAIL])
+        else if (you.duration[DUR_COLOUR_SMOKE_TRAIL])
         {
             if (cell_is_solid(you.pos()))
                 ASSERT(you.wizmode_teleported_into_rock);
             else
             {
-                auto cloud = static_cast<cloud_type>(
-                    you.props[XOM_CLOUD_TRAIL_TYPE_KEY].get_int());
-                ASSERT(cloud != CLOUD_NONE);
-                check_place_cloud(cloud,you.pos(), random_range(3, 10), &you,
-                                  0, -1);
+                check_place_cloud(CLOUD_MAGIC_TRAIL, you.pos(),
+                                  random_range(3, 10), &you, 0, ETC_RANDOM);
             }
         }
 
@@ -3628,21 +3504,6 @@ static void _move_player(coord_def move)
             env.travel_trail.push_back(you.pos());
 
         you.time_taken *= player_movement_speed();
-
-        // remove movement penalty for now
-        /*
-        if (Options.movement_penalty && in_quick_mode())
-        {
-            if (you.prev_direction.x == 0 && you.prev_direction.y == 0 || move.is_sharp_turn(you.prev_direction))
-            {
-                if (!(you.stamina_flags & STAMF_SKIP_MOVEMENT_PENALTY))
-                    you.time_taken = max(you.time_taken, Options.movement_penalty * 10);
-                you.prev_direction = move;
-                you.stamina_flags &= ~STAMF_SKIP_MOVEMENT_PENALTY;
-            }
-        }
-         */
-
         you.time_taken = div_rand_round(you.time_taken, 10);
         you.time_taken += additional_time_taken;
 
@@ -3652,6 +3513,7 @@ static void _move_player(coord_def move)
                                  div_round_up(100, you.running.travel_speed));
         }
 
+        you.prev_move = move;
         move.reset();
         you.turn_is_over = true;
         request_autopickup();
@@ -3663,6 +3525,7 @@ static void _move_player(coord_def move)
         && feat_is_closed_door(targ_grid))
     {
         _open_door(move);
+        you.prev_move = move;
     }
     else if (!targ_pass && grd(targ) == DNGN_MALIGN_GATEWAY
              && !attacking && !you.is_stationary())
@@ -3673,6 +3536,7 @@ static void _move_player(coord_def move)
             return;
         }
 
+        you.prev_move = move;
         move.reset();
         you.turn_is_over = true;
 
@@ -3724,9 +3588,6 @@ static void _move_player(coord_def move)
     {
         did_god_conduct(DID_HASTY, 1, true);
     }
-
-    if (!attacking)
-        player_moved();
 }
 
 static int _get_num_and_char_keyfun(int &ch)

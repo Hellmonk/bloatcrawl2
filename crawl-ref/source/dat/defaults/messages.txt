@@ -79,10 +79,6 @@ msc += $boring:nimbly evade
 msc += $boring:waved at by a branch
 msc += $boring:lunges up near
 
-# Ignore Uskayaw *** and **** power loss messages by default; they're spammy.
-msc += mute:Uskayaw will no longer force your foes to helplessly watch your dance\.
-msc += mute:Uskayaw will no longer force your foes to share their pain\.
-
 ## Messages so important to require a --more--
 
 force_more_message += You have reached level
@@ -118,18 +114,15 @@ force_more_message += welcomes you( back)?!
 force_more_message += You have lost your religion
 
 # Dangerous weapons
-force_more_message += is wielding.*distortion
+force_more_message += is wielding.*(distortion|chaos)
 # dancing weapons require special handling...
-force_more_message += there is a.*distortion
-force_more_message += of distortion comes into view.
+force_more_message += there is a.*(distortion|chaos)
+force_more_message += of (distortion|chaos) comes into view.
 
 # Banishment
 force_more_message += You are cast into the Abyss
 force_more_message += You are cast deeper into the Abyss
 force_more_message += The Abyss bends around you
-
-# Petrification
-force_more_message += You are slowing down
 
 # Abyss exits and rune
 force_more_message += Found a gateway leading out of the Abyss

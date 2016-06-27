@@ -432,7 +432,7 @@ static void _maybe_gozag_incite(vector<monster*> monsters)
         }
 
         if (coinflip()
-            && mon->get_experience_level() >= random2(effective_xl()))
+            && mon->get_experience_level() >= random2(you.experience_level))
         {
             mon_count.add(mon);
             incited.push_back(mon);

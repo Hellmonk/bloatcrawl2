@@ -69,7 +69,7 @@ static god_type _altar_identify_ecumenical_altar()
     {
         god = random_god();
     }
-    while (!player_can_join_god(god) || (poor_god_choice_for_player(god) && crawl_state.difficulty != DIFFICULTY_NIGHTMARE));
+    while (!player_can_join_god(god));
     dungeon_terrain_changed(you.pos(), altar_for_god(god));
     return god;
 }
@@ -95,10 +95,7 @@ static bool _pray_ecumenical_altar()
         if (you_worship(GOD_RU))
             you.props[RU_SACRIFICE_PROGRESS_KEY] = 9999;
         else
-            if (you.faith())
-            gain_piety(50, 1, false);
-                else
-                gain_piety(20, 1, false);
+            gain_piety(20, 1, false);
 
         mark_milestone("god.ecumenical", "prayed at an ecumenical altar.");
         return true;
@@ -202,7 +199,6 @@ void pray(bool allow_conversion)
         mprf(MSGCH_PRAY, you.religion, "%s", god_prayer_reaction().c_str());
 
     dprf("piety: %d (-%d)", you.piety, you.piety_hysteresis);
-    you.prev_direction.reset();
 }
 
 int zin_tithe(const item_def& item, int quant, bool quiet, bool converting)
@@ -277,10 +273,9 @@ struct slurp_gain
 {
     int jiyva_bonus;
     piety_gain_t piety_gain;
-    int amount;
 
     slurp_gain(int bonus, piety_gain_t gain)
-        : jiyva_bonus(bonus), piety_gain(gain), amount(0)
+        : jiyva_bonus(bonus), piety_gain(gain)
     {
     }
 };
@@ -324,23 +319,19 @@ static slurp_gain _sacrifice_one_item_noncount(const item_def& item)
 
     if (have_passive(passive_t::slime_mp)
         && x_chance_in_y(you.piety, MAX_PIETY)
-        && get_mp() < get_mp_max())
+        && you.magic_points < you.max_magic_points)
     {
-        const int mp_gain = max(random2(item_value), 1);
-        inc_mp(mp_gain * 3);
+        inc_mp(max(random2(item_value), 1));
         gain.jiyva_bonus |= JS_MP;
-        gain.amount = mp_gain;
     }
 
     if (have_passive(passive_t::slime_hp)
         && x_chance_in_y(you.piety, MAX_PIETY)
-        && get_hp() < get_hp_max()
+        && you.hp < you.hp_max
         && !you.duration[DUR_DEATHS_DOOR])
     {
-        const int hp_gain = max(random2(item_value), 1);
-        inc_hp(hp_gain);
+        inc_hp(max(random2(item_value), 1));
         gain.jiyva_bonus |= JS_HP;
-        gain.amount = hp_gain;
     }
 
     return gain;
@@ -362,8 +353,10 @@ void jiyva_slurp_item_stack(const item_def& item, int quantity)
 
     if (gain.piety_gain > PIETY_NONE)
         simple_god_message(" appreciates your sacrifice.");
+    if (gain.jiyva_bonus & JS_FOOD)
+        mpr("You feel a little less hungry.");
     if (gain.jiyva_bonus & JS_MP)
-        canned_msg(MSG_GAIN_MAGIC, gain.amount);
+        canned_msg(MSG_GAIN_MAGIC);
     if (gain.jiyva_bonus & JS_HP)
-        canned_msg(MSG_GAIN_HEALTH, gain.amount);
+        canned_msg(MSG_GAIN_HEALTH);
 }

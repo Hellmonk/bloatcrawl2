@@ -53,7 +53,7 @@ player_quiver::player_quiver()
 //
 // This is the item that will be displayed in Qv:
 //
-void player_quiver::get_desired_item(item_def **item_out, int *slot_out)
+void player_quiver::get_desired_item(const item_def** item_out, int* slot_out) const
 {
     const int slot = _get_pack_slot(m_last_used_of_type[m_last_used_type]);
     if (slot == -1)
@@ -66,7 +66,7 @@ void player_quiver::get_desired_item(item_def **item_out, int *slot_out)
     {
         // Return the item in inv, since it will have an accurate count.
         if (item_out)
-            *item_out = &you.inv1[slot];
+            *item_out = &you.inv[slot];
     }
 
     if (slot_out)
@@ -77,7 +77,7 @@ void player_quiver::get_desired_item(item_def **item_out, int *slot_out)
 // This differs from get_desired_item; that method can return
 // an item that is not in inventory, while this one cannot.
 // If no item can be found, return the reason why.
-int player_quiver::get_fire_item(string* no_item_reason)
+int player_quiver::get_fire_item(string* no_item_reason) const
 {
     // Felids have no use for the quiver.
     if (you.species == SP_FELID)
@@ -87,12 +87,11 @@ int player_quiver::get_fire_item(string* no_item_reason)
         return -1;
     }
     int slot;
-    item_def* desired_item;
+    const item_def* desired_item;
 
     get_desired_item(&desired_item, &slot);
 
     // If not in inv, try the head of the fire order.
-    /* don't auto select ammo here. Players need to be able to unselect ammo so that the standard ammo is fired.
     if (slot == -1)
     {
         vector<int> order;
@@ -100,14 +99,12 @@ int player_quiver::get_fire_item(string* no_item_reason)
         if (!order.empty())
             slot = order[0];
     }
-     */
 
     // If we can't find anything, tell caller why.
     if (slot == -1)
     {
         vector<int> full_fire_order;
         _get_fire_order(full_fire_order, true, you.weapon(), false);
-        /*
         if (no_item_reason == nullptr)
         {
             // nothing
@@ -130,7 +127,6 @@ int player_quiver::get_fire_item(string* no_item_reason)
                     index_to_letter(skipped_item));
             }
         }
-         */
     }
 
     return slot;
@@ -154,7 +150,7 @@ void player_quiver::empty_quiver(ammo_t ammo_type)
 
 void quiver_item(int slot)
 {
-    const item_def item = you.inv1[slot];
+    const item_def item = you.inv[slot];
     ASSERT(item.defined());
 
     ammo_t t = AMMO_THROW;
@@ -162,8 +158,8 @@ void quiver_item(int slot)
     if (weapon && item.launched_by(*weapon))
         t = _get_weapon_ammo_type(weapon);
 
-    you.m_quiver.set_quiver(you.inv1[slot], t);
-    mprf("Quivering %s for %s.", you.inv1[slot].name(DESC_INVENTORY).c_str(),
+    you.m_quiver.set_quiver(you.inv[slot], t);
+    mprf("Quivering %s for %s.", you.inv[slot].name(DESC_INVENTORY).c_str(),
          t == AMMO_THROW    ? "throwing" :
          t == AMMO_BLOWGUN  ? "blowguns" :
          t == AMMO_SLING    ? "slings" :
@@ -179,7 +175,7 @@ void choose_item_for_quiver()
         return;
     }
 
-    int slot = prompt_invent_item(you.inv1, "Quiver which item? (- for none, * to show all)",
+    int slot = prompt_invent_item("Quiver which item? (- for none, * to show all)",
                                   MT_INVLIST,
                                   OSEL_THROWABLE, true, true, true, '-',
                                   -1, nullptr, OPER_QUIVER, false);
@@ -288,14 +284,11 @@ void player_quiver::on_weapon_changed()
         }
     }
 
-    /* we don't want this anymore
     _maybe_fill_empty_slot();
-     */
 }
 
 void player_quiver::on_inv_quantity_changed(int slot, int amt)
 {
-    /*
     if (m_last_used_of_type[m_last_used_type].base_type == OBJ_UNASSIGNED)
     {
         // Empty quiver. Maybe we can fill it now?
@@ -304,14 +297,11 @@ void player_quiver::on_inv_quantity_changed(int slot, int amt)
     }
     else
     {
-     */
         // We might need to update the quiver...
         int qv_slot = get_fire_item();
         if (qv_slot == slot)
             you.redraw_quiver = true;
-    /*
     }
-     */
 }
 
 // If current quiver slot is empty, fill it with something useful.
@@ -368,9 +358,9 @@ void player_quiver::_maybe_fill_empty_slot()
     {
         for (int ord : order)
         {
-            if (is_launched(&you, weapon, you.inv1[ord]) == desired_ret)
+            if (is_launched(&you, weapon, you.inv[ord]) == desired_ret)
             {
-                m_last_used_of_type[slot] = you.inv1[ord];
+                m_last_used_of_type[slot] = you.inv[ord];
                 m_last_used_of_type[slot].quantity = 1;
                 break;
             }
@@ -404,8 +394,8 @@ void player_quiver::_get_fire_order(vector<int>& order,
         if (launcher && launcher->sub_type == WPN_BLOWGUN)
         {
             for (int i_inv = inv_start; i_inv < ENDOFPACK; i_inv++)
-                if (you.inv1[i_inv].defined()
-                    && you.inv1[i_inv].launched_by(*launcher))
+                if (you.inv[i_inv].defined()
+                    && you.inv[i_inv].launched_by(*launcher))
                 {
                     order.push_back(i_inv);
                 }
@@ -415,7 +405,7 @@ void player_quiver::_get_fire_order(vector<int>& order,
 
     for (int i_inv = inv_start; i_inv < ENDOFPACK; i_inv++)
     {
-        const item_def& item = you.inv1[i_inv];
+        const item_def& item = you.inv[i_inv];
         if (!item.defined())
             continue;
 
@@ -504,7 +494,7 @@ preserve_quiver_slots::~preserve_quiver_slots()
         const int slot = m_last_used_of_type[i];
         if (slot != -1)
         {
-            you.m_quiver.m_last_used_of_type[i] = you.inv1[slot];
+            you.m_quiver.m_last_used_of_type[i] = you.inv[slot];
             you.m_quiver.m_last_used_of_type[i].quantity = 1;
         }
     }
@@ -556,13 +546,13 @@ static int _get_pack_slot(const item_def& item)
     if (!item.defined())
         return -1;
 
-    if (in_inventory(item) && _items_similar(item, you.inv1[item.link], false))
+    if (in_inventory(item) && _items_similar(item, you.inv[item.link], false))
         return item.link;
 
     // First try to find the exact same item.
     for (int i = 0; i < ENDOFPACK; i++)
     {
-        const item_def &inv_item = you.inv1[i];
+        const item_def &inv_item = you.inv[i];
         if (inv_item.quantity && _items_similar(item, inv_item, false))
             return i;
     }
@@ -570,7 +560,7 @@ static int _get_pack_slot(const item_def& item)
     // If that fails, try to find an item sufficiently similar.
     for (int i = 0; i < ENDOFPACK; i++)
     {
-        const item_def &inv_item = you.inv1[i];
+        const item_def &inv_item = you.inv[i];
         if (inv_item.quantity && _items_similar(item, inv_item, true))
         {
             // =f prevents item from being in fire order.

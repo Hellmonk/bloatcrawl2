@@ -263,8 +263,8 @@ function mag_attack(allow_movement)
   elseif mp_is_low() then
     if AUTOMAGIC_FIGHT then
       attack(allow_movement)
---    else
---      crawl.mpr("You are too depleted to cast spells recklessly!")
+    else
+      crawl.mpr("You are too depleted to cast spells recklessly!")
     end
   elseif info.attack_type == 1 then
     spell_attack(x,y)

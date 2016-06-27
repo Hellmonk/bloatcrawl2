@@ -17,7 +17,7 @@
 // define VIEW_MIN_WIDTH defined elsewhere
 // define VIEW_MAX_WIDTH use Options.view_max_width
 #define HUD_WIDTH  42
-#define HUD_HEIGHT 14
+#define HUD_HEIGHT 13
 #define MSG_MAX_HEIGHT Options.msg_max_height
 #define MLIST_MIN_HEIGHT Options.mlist_min_height
 #define MLIST_MIN_WIDTH 25  // non-inline layout only
@@ -363,7 +363,9 @@ void crawl_view_geometry::init_geometry()
     termsz = coord_def(get_number_of_cols(), get_number_of_lines());
     hudsz  = coord_def(HUD_WIDTH,
                        HUD_HEIGHT
+#if TAG_MAJOR_VERSION == 34
                                   + ((you.species == SP_LAVA_ORC) ? 1 : 0)
+#endif
                                   );
 
     const _inline_layout lay_inline(termsz, hudsz);
@@ -374,7 +376,7 @@ void crawl_view_geometry::init_geometry()
     {
         if (termsz.x < MIN_COLS || termsz.y < MIN_LINES)
         {
-            dprf("Terminal too small (%d,%d); need at least (%d,%d)",
+            end(1, false, "Terminal too small (%d,%d); need at least (%d,%d)",
                 termsz.x, termsz.y, MIN_COLS, MIN_LINES);
         }
         else if (!lay_inline.valid)
@@ -382,7 +384,7 @@ void crawl_view_geometry::init_geometry()
             const int x_left = lay_inline.leftover_x();
             const int y_left = lay_inline.leftover_y();
 
-            dprf("Terminal too small (%d,%d); layout needs (%d,%d)",
+            end(1, false, "Terminal too small (%d,%d); layout needs (%d,%d)",
                 termsz.x, termsz.y,
                 x_left < 0 ? termsz.x - x_left : MIN_COLS,
                 y_left < 0 ? termsz.y - y_left : MIN_LINES);

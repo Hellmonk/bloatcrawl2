@@ -38,7 +38,7 @@ function wad_woods_setup(e, uniq, weight, mist, delaynum, sizenum, spreadnum)
         end
     end
 
-    e.ftile(".t+%*|q012345678COGTU = floor_grass")
+    e.ftile(".t+%*|q01234567COGTU = floor_grass")
 
     e.kfeat("O = shallow_water")
     if mist then
@@ -525,7 +525,7 @@ ENDMAP
 #
 NAME:    pond_and_an_island_with_a_cottage
 ORIENT:  float
-DEPTH:   Lair:3-, !Lair:$
+DEPTH:   Lair:3-7
 SUBST:   % = %%%%%$$$**|
 MONS:    patrolling necromancer / necromancer
 SHUFFLE: 23
@@ -762,7 +762,7 @@ ENDMAP
 #
 NAME:   pf_torpor_hydra
 TAGS:   no_monster_gen no_item_gen
-DEPTH:  Lair:3-, !Lair:$
+DEPTH:  Lair:3-7
 MONS:   torpor snail, hydra
 # A decent item visible from the door, a superb item not visible, and a couple
 # of floor items anywhere
@@ -931,7 +931,7 @@ ENDMAP
 ###############################################################################
 # Catoblepas lookout (blackcustard)
 NAME: lookout_lair_type
-DEPTH: Lair:4-
+DEPTH: Lair:6-
 TAGS: extra no_pool_fixup
 MONS: w:1 generate_awake patrolling catoblepas / w:4 nothing
 SUBST: a = w W .
@@ -979,7 +979,7 @@ ENDMAP
 # A polar bear lost in the jungle, how odd
 NAME:  roderic_lost_polar_bear
 TAGS:  no_monster_gen
-DEPTH: Lair:3-, !Lair:$
+DEPTH: Lair:3-7
 MONS:  plant, polar_bear, bush
 SUBST: ? = 1t
 SUBST: ' = .:80 1 3:3
@@ -1459,19 +1459,13 @@ ENDMAP
 
 NAME:   wad_woods_minihive
 TAGS:   uniq_beehive
-DEPTH:  Lair, Forest
+DEPTH:  D:8-, Lair, Forest
 ORIENT: float
 COLOUR: a = yellow
 TILE:   a = wall_wax
 SUBST:  a = x
 : wad_woods_setup(_G, "med", 5, false, 0, 0, 0)
 MONS:   killer bee, queen bee
-KMONS:  8 = meliai
-KITEM:  8 = %
-: if (you.in_branch("Lair") and you.absdepth() > 14) or
-:     you.absdepth() > 12 then
-NSUBST: 6 = 3:8 / *:6
-: end
 KMASK:  W = no_monster_gen
 MAP
         ttttttt..t    tt.
@@ -1497,7 +1491,7 @@ ENDMAP
 
 NAME:   wad_woods_structure_01
 TAGS:   no_monster_gen
-DEPTH:  Lair, Forest
+DEPTH:  D:10-, Lair, Forest
 ORIENT: float
 : wad_woods_setup(_G, "other", 5, false, 0, 0, 0)
 FTILE:  "2T = floor_grass
@@ -1554,7 +1548,7 @@ xxxWWWWWxx
      @  @
 ENDMAP
 
-# contains one ok item to make the hell rats a little more worth it
+# contains food and one ok item to make the hell rats a little more worth it
 NAME:   kennysheep_abandoned_house
 TAGS:   ruin
 DEPTH:  Lair
@@ -1585,7 +1579,7 @@ ENDMAP
 # contains one catoblepas, three other monsters and four items
 # the walls are usually thick enough to make this only accessible from the floor below
 NAME: kennysheep_catoblepas_arena
-DEPTH: Lair:4-, !Lair:$
+DEPTH: Lair:5-7
 TAGS:  no_monster_gen ruin
 MONS:  catoblepas
 NSUBST: d = 4=%* / 3:0 / *:.
@@ -1679,7 +1673,7 @@ ENDMAP
 
 ## A hidden river runs under a mountain, feeding into an enchanted lake.
 NAME:   gammafunk_lair_enchanted_lake
-DEPTH:  Lair:3-, !Lair:$
+DEPTH:  Lair:3-7
 ORIENT: north
 TAGS:   no_pool_fixup no_rotate patrolling
 SUBST:  1 = 1:30 ., 2 = 2:30 W, 3 = 3:30 W, 4 = 4w, R = tx, * = *|
@@ -1836,7 +1830,7 @@ __________________
 ENDMAP
 
 NAME: nicolae_lair_yak_garden
-DEPTH: Lair:4-
+DEPTH: Lair:6-
 TAGS: no_monster_gen no_item_gen no_trap_gen
 SUBST: P = P.
 NSUBST: D = 1:D / *:.
@@ -1903,6 +1897,32 @@ t..Q.Q..t
 .tt...tt.
 ENDMAP
 
+# A secluded grove.
+NAME:   forest_entry_grove
+DEPTH:  Lair:2-, !Lair:$
+MONS:   centaur w:4 / spriggan
+MONS:   wolf, black bear, polar bear
+KMONS:  P = plant / bush
+NSUBST: Q = 2:1 / *:.
+NSUBST: R = 3:2 / 1:3 / 1:4 / *:.
+MAP
+   xxxxxxxxx
+  xxxttttxxxx
+ xxxttttttttxx
+xxtttt...tttxxx
+xttt..Q.Q..ttxx
+xttt.Q.R.Q.tttx
+xtt.........ttx
+xtt.R..)..R.ttx
+xtt..R...R..ttx
+xttt..R.R..tttx
+xttt.......tttx
+xxtttt...ttttxx
+ xxxtt..ttxxxx
+  xxxtt..ttxx
+   xxtt@@ttx
+ENDMAP
+
 NAME:    bh_autumn_forest_stairs
 TAGS:    extra luniq_staircase decor
 ORIENT:  float
@@ -1957,6 +1977,24 @@ t.......t
  tt@@@tt
 ENDMAP
 
+NAME: grunt_forest_small_clearing_treed
+TAGS: transparent patrolling
+DEPTH: Lair
+MONS: plant / bush
+SUBST: t = t..
+KPROP: * = no_tele_into
+MAP
+ tt@@@tt
+t.......t
+t.1...1.t
+@..ttt..@
+@..t*t..@
+@..ttt..@
+t.1...1.t
+t.......t
+ tt@@@tt
+ENDMAP
+
 # Prviously large_clearing_fruit, _statues, _slash, _guards
 NAME:    grunt_forest_large_clearings
 TAGS:    transparent
@@ -1989,6 +2027,36 @@ tt.........w"w...tt
  t.......'..www..t
  tt..........wwwtt
   t...........wwt
+  ttt.........ttt
+    ttt.....ttt
+      tt@@@tt
+ENDMAP
+
+NAME:  grunt_forest_large_clearing_hut
+TAGS:  transparent
+DEPTH: Lair
+MONS:  plant / bush, spriggan / centaur w:2
+SUBST: t = t..
+SUBST: . = 1 .:90
+COLOUR: -*29 = lightgrey
+FTILE:  -*29 = floor_normal
+MAP
+      tt@@@tt
+    ttt.....ttt
+  ttt.........ttt
+  t.............t
+ tt.............tt
+ t...............t
+tt...............tt
+t......ccccc......t
+@......c-9*c......@
+@......+-*2c......@
+@......c-9*c......@
+t......ccccc......t
+tt...............tt
+ t...............t
+ tt.............tt
+  t.............t
   ttt.........ttt
     ttt.....ttt
       tt@@@tt
@@ -2740,8 +2808,8 @@ SUBST:  ? = 145*
 MAP
 @..@..@..xxxxxxxxxxxxxxxxx
 x3WW-3.xxxxttttttttttxxxxx
-xttWW-tttttttt3WW-..ttxxxx
-xtttW-tt.tttt-WwwW3..ttxxx
+xttWW-tttt.ttt3WW-..ttxxxx
+x3ttW-tt.ttt--WwwW3..ttxxx
 xtttWWtt...t--WwwwW-.tttxx
 xtt1Wttt1.tt.WWtt3WW..tttx
 xttWw-t3.t..Wttt--WWW.tttx

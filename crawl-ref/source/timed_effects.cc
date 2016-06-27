@@ -15,7 +15,6 @@
 #include "cloud.h"
 #include "coordit.h"
 #include "database.h"
-#include "decks.h"
 #include "dgn-shoals.h"
 #include "dgnevent.h"
 #include "dungeon.h"
@@ -25,8 +24,6 @@
 #include "fprop.h"
 #include "godpassive.h"
 #include "items.h"
-#include "itemprop.h"
-#include "invent.h"
 #include "libutil.h"
 #include "mapmark.h"
 #include "message.h"
@@ -56,7 +53,6 @@
 #include "travel.h"
 #include "viewchar.h"
 #include "unwind.h"
-#include "stepdown.h"
 
 /**
  * Choose a random, spooky hell effect message, print it, and make a loud noise
@@ -725,6 +721,10 @@ static void _handle_magic_contamination()
     if (you.duration[DUR_HASTE])
         added_contamination += 30;
 
+#if TAG_MAJOR_VERSION == 34
+    if (you.duration[DUR_REGENERATION] && you.species == SP_DJINNI)
+        added_contamination += 20;
+#endif
     // The Orb halves dissipation (well a bit more, I had to round it),
     // but won't cause glow on its own -- otherwise it'd spam the player
     // with messages about contamination oscillating near zero.
@@ -776,9 +776,13 @@ static void _magic_contamination_effects()
         beam.explode();
     }
 
+#if TAG_MAJOR_VERSION == 34
     const mutation_permanence_class mutclass = you.species == SP_DJINNI
         ? MUTCLASS_TEMPORARY
         : MUTCLASS_NORMAL;
+#else
+    const mutation_permanence_class mutclass = MUTCLASS_NORMAL;
+#endif
 
     // We want to warp the player, not do good stuff!
     mutate(one_chance_in(5) ? RANDOM_MUTATION : RANDOM_BAD_MUTATION,
@@ -910,17 +914,14 @@ static void _jiyva_effects(int /*time_delta*/)
 static void _evolve(int time_delta)
 {
     if (int lev = player_mutation_level(MUT_EVOLUTION))
-    {
-        const int chance = 4 - lev;
-        const bool hit = one_chance_in(chance * chance);
-        const int rand_xp = you.attribute[ATTR_EVOL_XP];
-        const int needed_xp = (exp_needed(you.experience_level + 1) - exp_needed(you.experience_level)) / lev;
-        if (hit && rand_xp > needed_xp)
+        if (one_chance_in(2 / lev)
+            && you.attribute[ATTR_EVOL_XP] * (1 + random2(10))
+               > (int)exp_needed(you.experience_level + 1))
         {
             you.attribute[ATTR_EVOL_XP] = 0;
             mpr("You feel a genetic drift.");
-            bool evol = one_chance_in(5 - player_mutation_level(MUT_CLEAN_DNA)) ?
-                delete_mutation(RANDOM_BAD_MUTATION, "evolution", false, false, false, true) :
+            bool evol = one_chance_in(5) ?
+                delete_mutation(RANDOM_BAD_MUTATION, "evolution", false) :
                 mutate(coinflip() ? RANDOM_GOOD_MUTATION : RANDOM_MUTATION,
                        "evolution", false, false, false, false, MUTCLASS_NORMAL,
                        true);
@@ -935,7 +936,6 @@ static void _evolve(int time_delta)
             if (evol)
                 more();
         }
-    }
 }
 
 // Get around C++ dividing integers towards 0.
@@ -959,13 +959,22 @@ static struct timed_effect timed_effects[] =
     { _hell_effects,                 200,   600, false },
     { _handle_sickness,              100,   300, false },
     { _handle_magic_contamination,   200,   600, false },
+#if TAG_MAJOR_VERSION == 34
+    { nullptr,                         0,     0, false },
+#endif
     { handle_god_time,               100,   300, false },
+#if TAG_MAJOR_VERSION == 34
+    { nullptr,                                0,     0, false },
+#endif
     { rot_inventory_food,            100,   300, false },
     { _wait_practice,                100,   300, false },
     { _lab_change,                  1000,  3000, false },
     { _abyss_speed,                  100,   300, false },
     { _jiyva_effects,                100,   300, false },
-    { _evolve,                       500,  1000, false },
+    { _evolve,                      5000, 15000, false },
+#if TAG_MAJOR_VERSION == 34
+    { nullptr,                         0,     0, false },
+#endif
 };
 
 // Do various time related actions...
@@ -978,9 +987,7 @@ void handle_time()
     // once every 50 elapsed time units.
 
     // Every 5 turns, spawn random monsters
-    const bool can_spawn = player_in_branch(BRANCH_ABYSS) || player_on_orb_run();
-    const bool time_to_spawn = _div(base_time, 50) > _div(old_time, 50);
-    if (can_spawn && time_to_spawn)
+    if (_div(base_time, 50) > _div(old_time, 50))
     {
         spawn_random_monsters();
         if (player_in_branch(BRANCH_ABYSS))
@@ -990,10 +997,7 @@ void handle_time()
     }
 
     // Labyrinth and Abyss maprot.
-    if (player_in_branch(BRANCH_ABYSS))
-        forget_map(true);
-
-    if (player_in_branch(BRANCH_LABYRINTH) && you.species != SP_MINOTAUR)
+    if (player_in_branch(BRANCH_LABYRINTH) || player_in_branch(BRANCH_ABYSS))
         forget_map(true);
 
     // Magic contamination from spells and Orb.
@@ -1309,7 +1313,7 @@ void monster::timeout_enchantments(int levels)
         case ENCH_PETRIFIED: case ENCH_SWIFT: case ENCH_SILENCE:
         case ENCH_LOWERED_MR: case ENCH_SOUL_RIPE: case ENCH_ANTIMAGIC:
         case ENCH_FEAR_INSPIRING: case ENCH_REGENERATION: case ENCH_RAISED_MR:
-        case ENCH_MIRROR_DAMAGE: case ENCH_LIQUEFYING:
+        case ENCH_MIRROR_DAMAGE: case ENCH_MAGIC_ARMOUR: case ENCH_LIQUEFYING:
         case ENCH_SILVER_CORONA: case ENCH_DAZED: case ENCH_FAKE_ABJURATION:
         case ENCH_BREATH_WEAPON: case ENCH_DEATHS_DOOR: case ENCH_WRETCHED:
         case ENCH_SCREAMED: case ENCH_BLIND: case ENCH_WORD_OF_RECALL:
@@ -1318,7 +1322,6 @@ void monster::timeout_enchantments(int levels)
         case ENCH_BLACK_MARK: case ENCH_SAP_MAGIC: case ENCH_NEUTRAL_BRIBED:
         case ENCH_FRIENDLY_BRIBED: case ENCH_CORROSION: case ENCH_GOLD_LUST:
         case ENCH_RESISTANCE: case ENCH_HEXED: case ENCH_IDEALISED:
-        case ENCH_BOUND_SOUL:
             lose_ench_levels(entry.second, levels);
             break;
 
@@ -1449,7 +1452,7 @@ void update_level(int elapsedTime)
         // XXX: Allow some spellcasting (like Healing and Teleport)? - bwr
         // const bool healthy = (mi->hit_points * 2 > mi->max_hit_points);
 
-        mi->heal(div_rand_round(turns * mi->off_level_regen_rate(), 100), true);
+        mi->heal(div_rand_round(turns * mi->off_level_regen_rate(), 100));
 
         // Handle nets specially to remove the trapping property of the net.
         if (mi->caught())
@@ -1490,7 +1493,7 @@ static void _recharge_rod(item_def &rod, int aut, bool in_inv)
     if (rate > rod.charge_cap - rod.charges) // Prevent overflow
         rate = rod.charge_cap - rod.charges;
 
-    // With this, a +0 rod with no skill gets 1 magic per 25.0 turns
+    // With this, a +0 rod with no skill gets 1 mana per 25.0 turns
 
     if (rod.plus / ROD_CHARGE_MULT != (rod.plus + rate) / ROD_CHARGE_MULT)
     {
@@ -1517,7 +1520,7 @@ void recharge_rods(int aut, bool level_only)
 {
     if (!level_only)
     {
-        for (auto &item : you.inv1)
+        for (auto &item : you.inv)
             _recharge_rod(item, aut, true);
     }
 
