@@ -411,7 +411,7 @@ static const vector<spell_type> spellbook_templates[] =
 {   // Time
     SPELL_SLOW, // 2
     SPELL_SWIFTNESS, // 2
-    SPELL_CURE_POISON, // 2
+//    SPELL_CURE_POISON, // 2
     SPELL_HIBERNATION, // 2
     SPELL_INNER_FLAME, // 3
     SPELL_STICKY_FLAME, // 4
