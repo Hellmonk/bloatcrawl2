@@ -943,6 +943,11 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
             mprf("%s soul is no longer bound.", name(DESC_ITS).c_str());
         break;
 
+    case ENCH_INFESTATION:
+        if (!quiet)
+            simple_monster_message(this, " is no longer infested.");
+        break;
+
     default:
         break;
     }
@@ -1431,7 +1436,6 @@ void monster::apply_enchantment(const mon_enchant &me)
     case ENCH_TIDE:
     case ENCH_REGENERATION:
     case ENCH_RAISED_MR:
-    case ENCH_MAGIC_ARMOUR:
     case ENCH_IDEALISED:
     case ENCH_FEAR_INSPIRING:
     case ENCH_LIFE_TIMER:
@@ -1464,6 +1468,7 @@ void monster::apply_enchantment(const mon_enchant &me)
     case ENCH_EMPOWERED_SPELLS:
     case ENCH_ANTIMAGIC:
     case ENCH_BOUND_SOUL:
+    case ENCH_INFESTATION:
         decay_enchantment(en);
         break;
 
@@ -2081,8 +2086,8 @@ void monster::apply_enchantments()
 static inline int _mod_speed(int val, int speed)
 {
     if (!speed)
-        speed = 10;
-    const int modded = val * 10 / speed;
+        speed = BASELINE_DELAY;
+    const int modded = val * BASELINE_DELAY / speed;
     return modded? modded : 1;
 }
 
@@ -2174,7 +2179,7 @@ static const char *enchant_names[] =
     "chanting_fire_storm", "chanting_word_of_entropy",
 #endif
     "aura_of_brilliance", "empowered_spells", "gozag_incite", "pain_bond",
-    "idealised", "bound_soul",
+    "idealised", "bound_soul", "infestation",
     "buggy",
 };
 

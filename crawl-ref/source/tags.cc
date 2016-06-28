@@ -1384,7 +1384,9 @@ static void tag_construct_you(writer &th)
     marshallUByte(th, you.mp_max);
 
     marshallUByte(th, you.monsters_recently_seen);
-    marshallUByte(th, you.motion);
+
+    // SAVE_COMPAT: kept only for compatibility for now.
+    marshallUByte(th, 0);
 
     COMPILE_CHECK(NUM_STATS == 3);
     for (int i = 0; i < NUM_STATS; ++i)
@@ -2389,7 +2391,9 @@ static void tag_read_you(reader &th)
     you.mp_max          = unmarshallUByte(th);
 
     you.monsters_recently_seen    = unmarshallUByte(th);
-    you.motion                    = (motion_type) unmarshallUByte(th);
+
+    // SAVE_COMPAT: kept only for compatibility for now.
+    unmarshallUByte(th);
 
     you.last_damage_resist        = 0;
     you.last_hit_resistance       = 0;

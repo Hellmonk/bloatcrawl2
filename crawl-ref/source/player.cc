@@ -3434,14 +3434,7 @@ void level_change(bool skip_attribute_increase)
 
         xom_is_stimulated(12);
         if (in_good_standing(GOD_HEPLIAKLQANA))
-        {
             upgrade_hepliaklqana_ancestor();
-            if (you.experience_level == hepliaklqana_specialization_level())
-            {
-                god_speaks(you.religion,
-                           "You may now specialize your ancestor.");
-            }
-        }
 
         learned_something_new(HINT_NEW_LEVEL);
     }
@@ -4949,11 +4942,6 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
         hitp  = effective_xl() * 7 + 8;
 
     hitp += you.hp_max_adj_perm;
-    /*
-    // Important: we shouldn't add Heroism boosts here.
-    hitp += effective_xl() * you.skill(SK_FIGHTING, 5, true) / 70
-          + (you.skill(SK_FIGHTING, 3, true) + 1) / 2;
-          */
 
     // Racial modifier.
     hitp *= 10 + species_hp_modifier(you.species);
@@ -5004,8 +4992,12 @@ int get_real_sp(bool include_items)
     max_sp -= player_mutation_level(MUT_LOW_STAMINA) * 25;
     max_sp += you.wearing(EQ_RINGS, RING_STAMINA) * 25;
     max_sp += you.scan_artefacts(ARTP_STAMINA);
+    max_sp += species_sp_modifier(you.species) * 25;
 
+
+    /*
     max_sp = player_pool_modifier(max_sp);
+     */
     max_sp = max(max_sp, 25);
 
     return max_sp;
@@ -5040,7 +5032,9 @@ int get_real_mp(bool include_items, bool rotted)
     if (include_items && you.wearing_ego(EQ_WEAPON, SPWPN_ANTIMAGIC))
         max_mp /= 3;
 
+    /*
     max_mp = player_pool_modifier(max_mp);
+     */
     max_mp = max(max_mp, 25);
 
     if (!rotted)
@@ -5353,7 +5347,8 @@ void handle_player_poison(int delay)
     // If Cheibriados has slowed your life processes, poison affects you less
     // quickly (you take the same total damage, but spread out over a longer
     // period of time).
-    const double delay_scaling = (GOD_CHEIBRIADOS == you.religion && you.piety >= piety_breakpoint(0)) ? 2.0 / 3.0 : 1.0;
+    const double delay_scaling = have_passive(passive_t::slow_metabolism)
+                               ? 2.0 / 3.0 : 1.0;
 
     const double new_aut = cur_aut - ((double) delay) * delay_scaling;
     const double new_dur = _poison_aut_to_dur(new_aut);
@@ -9547,7 +9542,7 @@ int player::inaccuracy() const
 
 bool can_use(const item_def &item)
 {
-    if (you.species == SP_TENGU && item.base_type == OBJ_JEWELLERY && item.sub_type < NUM_RINGS)
+    if (you.species == SP_TENGU && item.base_type == OBJ_JEWELLERY && item.sub_type <= NUM_RINGS)
     	return false;
 
     return true;
@@ -10219,9 +10214,6 @@ int player_item_gen_modifier(int item_count)
 // used for pool sizes. Generic way to scale something based on difficulty
 int player_pool_modifier(int amount)
 {
-    // bypass this for now
-    return amount;
-
     int percent = 100;
 
     switch (crawl_state.difficulty)
@@ -10250,24 +10242,25 @@ int player_monster_gen_modifier(int amount)
 {
     int percent = 100;
 
-    switch (crawl_state.difficulty)
-    {
-        case DIFFICULTY_EASY:
-            percent = 70;
-            break;
-        case DIFFICULTY_STANDARD:
-            percent = 90;
-            break;
-        case DIFFICULTY_CHALLENGE:
-            percent = 110;
-            break;
-        case DIFFICULTY_NIGHTMARE:
-            percent = 120;
-            break;
-        default:
-            // should not be possible
-            break;
-    }
+    if (Options.exp_percent_from_monsters == 0)
+        switch (crawl_state.difficulty)
+        {
+            case DIFFICULTY_EASY:
+                percent = 70;
+                break;
+            case DIFFICULTY_STANDARD:
+                percent = 90;
+                break;
+            case DIFFICULTY_CHALLENGE:
+                percent = 110;
+                break;
+            case DIFFICULTY_NIGHTMARE:
+                percent = 120;
+                break;
+            default:
+                // should not be possible
+                break;
+        }
 
     if (you.rune_curse_active[RUNE_ABYSSAL])
         percent += 50;

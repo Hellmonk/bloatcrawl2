@@ -1112,8 +1112,18 @@ static spret_type _do_cast(spell_type spell, int powc,
                            god_type god, int potion,
                            bool fail);
 
+/**
+ * Should this spell be aborted before casting properly starts, either because
+ * it can't legally be cast in this circumstance, or because the player opts
+ * to cancel it in response to a prompt?
+ *
+ * @param spell         The spell to be checked.
+ * @param evoked        Whether the spell is being evoked from a rod.
+ * @param fake_spell    Whether the spell is some other kind of fake spell
+ *                      (such as an innate or divine ability).
+ * @return              Whether the spellcasting should be aborted.
+ */
 static bool _spellcasting_aborted(spell_type spell,
-                                  bool wiz_cast,
                                   bool evoked,
                                   bool fake_spell)
 {
@@ -1131,29 +1141,46 @@ static bool _spellcasting_aborted(spell_type spell,
         msg = spell_uselessness_reason(spell, true, true, evoked, fake_spell);
     }
 
-    bool uncastable = !wiz_cast && msg != "";
-
-    if (uncastable)
-        mpr(msg);
-    else
+    if (msg != "")
     {
-        vector<text_pattern> &actions = Options.confirm_action;
-        if (!actions.empty())
+        mpr(msg);
+        return true;
+    }
+
+    vector<text_pattern> &actions = Options.confirm_action;
+    if (!actions.empty())
+    {
+        const char* name = spell_title(spell);
+        for (const text_pattern &action : actions)
         {
-            const char* name = spell_title(spell);
-            for (const text_pattern &action : actions)
+            if (!action.matches(name))
+                continue;
+
+            string prompt = "Really cast " + string(name) + "?";
+            if (!yesno(prompt.c_str(), false, 'n'))
             {
-                if (action.matches(name))
-                {
-                    string prompt = "Really cast " + string(name) + "?";
-                    if (!yesno(prompt.c_str(), false, 'n'))
-                    {
-                        canned_msg(MSG_OK);
-                        return true;
-                    }
-                    break;
-                }
+                canned_msg(MSG_OK);
+                return true;
             }
+            break;
+        }
+    }
+
+    const int severity = fail_severity(spell);
+    if (Options.fail_severity_to_confirm > 0
+        && Options.fail_severity_to_confirm <= severity
+        && !crawl_state.disables[DIS_CONFIRMATIONS]
+        && !evoked && !fake_spell)
+    {
+        string prompt = make_stringf("The spell is %s to cast%s "
+                                     "Continue anyway?",
+                                     fail_severity_adjs[severity],
+                                     severity > 1 ? "!" : ".");
+
+        if (!yesno(prompt.c_str(), false, 'n'))
+        {
+            canned_msg(MSG_OK);
+            return true;
         }
 
         int severity = fail_severity(spell);
@@ -1175,7 +1202,7 @@ static bool _spellcasting_aborted(spell_type spell,
         }
     }
 
-    return uncastable;
+    return false;
 }
 
 static unique_ptr<targetter> _spell_targetter(spell_type spell, int pow,
@@ -1183,49 +1210,59 @@ static unique_ptr<targetter> _spell_targetter(spell_type spell, int pow,
 {
     switch (spell)
     {
-        case SPELL_FIREBALL:
-            return make_unique<targetter_beam>(&you, range, ZAP_FIREBALL, pow, 1, 1);
+    case SPELL_FIREBALL:
+        return make_unique<targetter_beam>(&you, range, ZAP_FIREBALL, pow,
+                                           1, 1);
         case SPELL_HURL_HELLFIRE:
             return make_unique<targetter_beam>(&you, range, ZAP_HELLFIRE, pow, 1, 1);
-        case SPELL_MEPHITIC_CLOUD:
-            return make_unique<targetter_beam>(&you, range, ZAP_BREATHE_MEPHITIC, pow,
-                                               pow >= 100 ? 1 : 0, 1);
-        case SPELL_ISKENDERUNS_MYSTIC_BLAST:
-            return make_unique<targetter_imb>(&you, pow, range);
-        case SPELL_FIRE_STORM:
-            return make_unique<targetter_smite>(&you, range, 2, pow > 76 ? 3 : 2);
-        case SPELL_FREEZING_CLOUD:
-        case SPELL_POISONOUS_CLOUD:
-        case SPELL_HOLY_BREATH:
-            return make_unique<targetter_cloud>(&you, range);
-        case SPELL_THUNDERBOLT:
-            return make_unique<targetter_thunderbolt>(&you, range,
-                                                      (you.props.exists("thunderbolt_last")
-                                                       && you.props["thunderbolt_last"].get_int() + 1 == you.num_turns) ?
-                                                      you.props["thunderbolt_aim"].get_coord() : coord_def());
-        case SPELL_LRD:
-            return make_unique<targetter_fragment>(&you, pow, range);
-        case SPELL_FULMINANT_PRISM:
-            return make_unique<targetter_smite>(&you, range, 0, 2);
-        case SPELL_DAZZLING_SPRAY:
-            return make_unique<targetter_spray>(&you, range, ZAP_DAZZLING_SPRAY);
-        case SPELL_EXPLOSIVE_BOLT:
-            return make_unique<targetter_explosive_bolt>(&you, pow, range);
-        case SPELL_GLACIATE:
-            return make_unique<targetter_cone>(&you, range);
-        case SPELL_CLOUD_CONE:
-            return make_unique<targetter_shotgun>(&you, CLOUD_CONE_BEAM_COUNT, range);
-        case SPELL_SCATTERSHOT:
-            return make_unique<targetter_shotgun>(&you, shotgun_beam_count(pow), range);
-        case SPELL_GRAVITAS:
-            return make_unique<targetter_smite>(&you, range, gravitas_range(pow, 2),
-                                                gravitas_range(pow));
-        case SPELL_VIOLENT_UNRAVELLING:
-            return make_unique<targetter_unravelling>(&you, range, pow);
-        case SPELL_RANDOM_BOLT:
-            return make_unique<targetter_beam>(&you, range, ZAP_CRYSTAL_BOLT, pow, 0, 0);
-        default:
-            break;
+    case SPELL_MEPHITIC_CLOUD:
+        return make_unique<targetter_beam>(&you, range, ZAP_BREATHE_MEPHITIC,
+                                           pow, pow >= 100 ? 1 : 0, 1);
+    case SPELL_ISKENDERUNS_MYSTIC_BLAST:
+        return make_unique<targetter_imb>(&you, pow, range);
+    case SPELL_FIRE_STORM:
+        return make_unique<targetter_smite>(&you, range, 2, pow > 76 ? 3 : 2);
+    case SPELL_FREEZING_CLOUD:
+    case SPELL_POISONOUS_CLOUD:
+    case SPELL_HOLY_BREATH:
+        return make_unique<targetter_cloud>(&you, range);
+    case SPELL_THUNDERBOLT:
+        return make_unique<targetter_thunderbolt>(&you, range,
+            (you.props.exists("thunderbolt_last")
+             && you.props["thunderbolt_last"].get_int() + 1 == you.num_turns) ?
+                you.props["thunderbolt_aim"].get_coord() : coord_def());
+    case SPELL_LRD:
+        return make_unique<targetter_fragment>(&you, pow, range);
+    case SPELL_FULMINANT_PRISM:
+        return make_unique<targetter_smite>(&you, range, 0, 2);
+    case SPELL_DAZZLING_SPRAY:
+        return make_unique<targetter_spray>(&you, range, ZAP_DAZZLING_SPRAY);
+    case SPELL_EXPLOSIVE_BOLT:
+        return make_unique<targetter_explosive_bolt>(&you, pow, range);
+    case SPELL_GLACIATE:
+        return make_unique<targetter_cone>(&you, range);
+    case SPELL_CLOUD_CONE:
+        return make_unique<targetter_shotgun>(&you, CLOUD_CONE_BEAM_COUNT,
+                                              range);
+    case SPELL_SCATTERSHOT:
+        return make_unique<targetter_shotgun>(&you, shotgun_beam_count(pow),
+                                              range);
+    case SPELL_GRAVITAS:
+        return make_unique<targetter_smite>(&you, range,
+                                            gravitas_range(pow, 2),
+                                            gravitas_range(pow));
+    case SPELL_VIOLENT_UNRAVELLING:
+        return make_unique<targetter_unravelling>(&you, range, pow);
+    case SPELL_RANDOM_BOLT:
+        return make_unique<targetter_beam>(&you, range, ZAP_CRYSTAL_BOLT, pow,
+                                           0, 0);
+    case SPELL_INFESTATION:
+        return make_unique<targetter_smite>(&you, range, 2, 2, false,
+                                            [](const coord_def& p) -> bool {
+                                                return you.pos() != p; });
+
+    default:
+        break;
     }
 
     if (spell_to_zap(spell) != NUM_ZAPS)
@@ -1354,7 +1391,7 @@ spret_type your_spells(spell_type spell, int powc,
 
     // [dshaligram] Any action that depends on the spellcasting attempt to have
     // succeeded must be performed after the switch.
-    if (_spellcasting_aborted(spell, wiz_cast, evoked, fake_spell))
+    if (!wiz_cast && _spellcasting_aborted(spell, evoked, fake_spell))
         return SPRET_ABORT;
 
     const unsigned int flags = get_spell_flags(spell);
@@ -1888,6 +1925,9 @@ static spret_type _do_cast(spell_type spell, int powc,
     case SPELL_SPECTRAL_WEAPON:
         return cast_spectral_weapon(&you, powc, god, fail);
 
+    case SPELL_INFESTATION:
+        return cast_infestation(powc, beam, fail);
+
     // Enchantments.
     case SPELL_CONFUSING_TOUCH:
         return cast_confusing_touch(powc, fail);
@@ -1909,10 +1949,6 @@ static spret_type _do_cast(spell_type spell, int powc,
 
     case SPELL_AURA_OF_ABJURATION:
         return cast_aura_of_abjuration(powc, fail);
-
-    // Healing.
-    case SPELL_CURE_POISON:
-        return cast_cure_poison(powc, fail);
 
     case SPELL_EXCRUCIATING_WOUNDS:
         return brand_weapon(SPWPN_PAIN, powc, fail);
@@ -2066,6 +2102,7 @@ static spret_type _do_cast(spell_type spell, int powc,
     case SPELL_SUMMON_SWARM:
     case SPELL_PHASE_SHIFT:
     case SPELL_MASS_CONFUSION:
+    case SPELL_CURE_POISON:
         mpr("Sorry, this spell is gone!");
         return SPRET_ABORT;
 #endif

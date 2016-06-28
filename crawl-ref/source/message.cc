@@ -44,6 +44,7 @@ bool _channels_can_merge(msg_channel_type c1, msg_channel_type c2)
         case MSGCH_PROMPT:
         case MSGCH_WARN:
         case MSGCH_DANGER:
+        case MSGCH_PRELUDE:
             result = false;
             break;
         default:
@@ -210,7 +211,7 @@ struct message_line
                     const int total_len = pure_len() + seplen + other.pure_len();
                     if (total_len > (int)msgwin_line_length())
                         return false;
-        
+
                     // merge in other's messages; they'll be delimited when printing.
                     messages.insert(messages.end(),
                                     other.messages.begin(), other.messages.end());
@@ -760,11 +761,11 @@ public:
 
     void add(const message_line& msg)
     {
-        if (msg.channel != MSGCH_PROMPT && prev_msg.merge(msg))
+        if (msg.channel != MSGCH_PROMPT && msg.channel != MSGCH_PRELUDE && prev_msg.merge(msg))
             return;
         flush_prev();
         prev_msg = msg;
-        if (msg.channel == MSGCH_PROMPT || _temporary)
+        if (msg.channel == MSGCH_PROMPT || msg.channel == MSGCH_PRELUDE || _temporary)
             flush_prev();
     }
 
@@ -1020,6 +1021,7 @@ static msg_colour_type channel_to_msgcol(msg_channel_type channel, int param)
 
         case MSGCH_DIAGNOSTICS:
         case MSGCH_MULTITURN_ACTION:
+        case MSGCH_PRELUDE:
             ret = MSGCOL_DARKGREY; // makes it easier to ignore at times -- bwr
             break;
 
@@ -1364,7 +1366,7 @@ static void _mpr(string text, msg_channel_type channel, int param, bool nojoin,
 
     if (colour == MSGCOL_MUTED)
     {
-        if (channel == MSGCH_PROMPT)
+        if (channel == MSGCH_PROMPT || channel == MSGCH_PRELUDE)
             msgwin.show();
         return;
     }
@@ -1394,7 +1396,7 @@ static void _mpr(string text, msg_channel_type channel, int param, bool nojoin,
     if (channel == MSGCH_ERROR)
         interrupt_activity(AI_FORCE_INTERRUPT);
 
-    if (channel == MSGCH_PROMPT || channel == MSGCH_ERROR)
+    if (channel == MSGCH_PROMPT || channel == MSGCH_ERROR || channel == MSGCH_PRELUDE)
         set_more_autoclear(false);
 
     if (domore)
@@ -1449,11 +1451,11 @@ void msgwin_new_turn()
     buffer.new_turn();
 }
 
-void msgwin_new_cmd()
+void msgwin_new_cmd(bool force)
 {
     flush_prev_message();
     bool new_turn = (you.num_turns > _last_msg_turn);
-    msgwin.new_cmdturn(new_turn);
+    msgwin.new_cmdturn(new_turn || force);
 }
 
 unsigned int msgwin_line_length()
@@ -1538,6 +1540,7 @@ static bool channel_message_history(msg_channel_type channel)
     case MSGCH_PROMPT:
     case MSGCH_EQUIPMENT:
     case MSGCH_EXAMINE_FILTER:
+    case MSGCH_PRELUDE:
         return false;
     default:
         return true;
@@ -1828,6 +1831,11 @@ void canned_msg(canned_message_type which_message, const int amount)
         case MSG_DJINNI_CANT_READ:
             mprf(MSGCH_WARN, "Djinni can't read!");
         	break;
+        case MSG_SOMETHING_IN_WAY:
+            mpr("There's something in the way.");
+        case MSG_CANNOT_SEE:
+            mpr("You can't see that place.");
+            break;
     }
 }
 

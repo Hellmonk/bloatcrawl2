@@ -109,6 +109,7 @@ static JsonNode *_species_modifiers(species_type sp)
     JsonNode *modifiers(json_mkobject());
     json_append_member(modifiers, "xp", json_mknumber(species_exp_modifier(sp)));
     json_append_member(modifiers, "hp", json_mknumber(species_hp_modifier(sp)));
+    json_append_member(modifiers, "hp", json_mknumber(species_sp_modifier(sp)));
     json_append_member(modifiers, "mp", json_mknumber(species_mp_modifier(sp)));
     json_append_member(modifiers, "stealth", json_mknumber(species_stealth_modifier(sp)));
     json_append_member(modifiers, "mr", json_mknumber(species_mr_modifier(sp)));

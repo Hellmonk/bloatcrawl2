@@ -129,7 +129,7 @@ const char* jewellery_base_ability_string(int subtype)
 #if TAG_MAJOR_VERSION == 34
     case RING_TELEPORT_CONTROL:   return "+cTele";
 #endif
-    case AMU_HARM:                return "Harm *Drain";
+    case AMU_HARM:                return "Harm";
     case AMU_DISMISSAL:           return "Dismiss";
     case AMU_MAGIC_REGENERATION:   return "RegenMP";
     case AMU_STAMINA_REGENERATION:return "RegenSP";
@@ -2421,7 +2421,7 @@ static bool _do_action(item_def &item, const vector<command_type>& actions, int 
     ASSERT_RANGE(slot, 0, ENDOFPACK);
 
 	FixedVector< item_def, ENDOFPACK > *inv;
-	inv_from_item(inv, item.base_type);
+    inv_from_item_type(inv, item.base_type);
 
 	redraw_screen();
     switch (action)

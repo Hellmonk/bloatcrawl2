@@ -1313,7 +1313,6 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "you're too dead to regenerate.";
         break;
 
-    case SPELL_PORTAL_PROJECTILE:
     case SPELL_WARP_BRAND:
     case SPELL_EXCRUCIATING_WOUNDS:
         if (temp
@@ -1324,6 +1323,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "you aren't wielding an enchantable weapon.";
         }
         // intentional fallthrough
+    case SPELL_PORTAL_PROJECTILE:
     case SPELL_SPECTRAL_WEAPON:
         if (you.species == SP_FELID)
             return "this spell is useless without hands.";
@@ -1365,18 +1365,6 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         // only prohibted to actual undead, not lichformed players
         if (you.undead_state(false))
             return "you're too dead.";
-        break;
-
-    case SPELL_CURE_POISON:
-        // no good for poison-immune species (ghoul, mummy, garg)
-        if (player_res_poison(false, temp, temp) == 3
-            // allow starving vampires to memorize cpois
-            && you.undead_state() != US_SEMI_UNDEAD)
-        {
-            return "you can't be poisoned.";
-        }
-        if (temp && !you.duration[DUR_POISONING])
-            return "you aren't poisoned right now.";
         break;
 
     case SPELL_OZOCUBUS_ARMOUR:
@@ -1440,6 +1428,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_CONTROL_UNDEAD:
     case SPELL_DEATH_CHANNEL:
     case SPELL_SIMULACRUM:
+    case SPELL_INFESTATION:
         if (player_mutation_level(MUT_NO_LOVE))
             return "you cannot coerce anything to obey you.";
         break;

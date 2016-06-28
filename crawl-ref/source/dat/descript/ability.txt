@@ -32,7 +32,7 @@ Breathe Fire ability
 %%%%
 Breathe Frost ability
 
-Breathes a blast of frost at a targeted creature.
+<Chilling Breath spell>
 %%%%
 Breathe Poison Gas ability
 
@@ -828,85 +828,6 @@ Idealise ability
 
 Restores your ancestor to an idyllic vision of their best self. Their wounds
 are forgotten, harmful effects are wiped away, and a glow of perfection infuses
-them, giving them a short-lived but dramatic increase in strength and armour.
-The quality of the healing and duration of the idealisation granted are both
-improved by the Invocations skill.
-%%%%
-Transference ability
-
-Forces a targeted creature to pass through the realms of memory and exchange
-places with your ancestor.
-
-With great piety, those near the target will be slowed for a duration depending
-on Invocations skill.
-%%%%
-Ancestor Life: Knight ability
-
-Remembers your ancestor as a knight, a strong melee combatant with superior
-defenses. This choice is permanent and cannot be undone.
-%%%%
-Ancestor Life: Battlemage ability
-
-Remembers your ancestor as a battlemage, a warrior equipped with powerful
-conjurations. This choice is permanent and cannot be undone.
-%%%%
-Ancestor Life: Hexer ability
-
-Remembers your ancestor as a hexer, a cunning rogue capable of skilled
-knifework and debilitating spellcasting. This choice is permanent and cannot be
-undone.
-%%%%
-Ancestor Identity ability
-
-Recalls who your ancestor preferred to be known as, correcting their name and
-gender. This does not take any time.
-%%%%
-Knight: Demon Trident ability
-
-Remembers your ancestor as wielding an enchanted demon trident, a weapon
-capable of reaching past allies (such as yourself) to attack foes. This choice
-is permanent and cannot be undone.
-%%%%
-Knight: Broad Axe ability
-
-Remembers your ancestor as wielding an enchanted broad axe, a weapon capable of
-cleaving through many surrounding foes with each blow. This choice is permanent
-and cannot be undone.
-%%%%
-Battlemage: Iceblast ability
-
-Remembers your ancestor as casting Iceblast, which conjures a noisy explosion
-of cold and physical damage. The blast radius can often hit multiple foes, but
-may be ineffective if you are in melee yourself, since your ancestor will avoid
-affecting you with the blast. This choice is permanent and cannot be undone.
-%%%%
-Battlemage: Bolt of Magma ability
-
-Remembers your ancestor as casting Bolt of Magma, which conjures a penetrating
-beam of fire and physical damage. This choice is permanent and cannot be
-undone.
-%%%%
-Hexer: Paralyse ability
-
-Remembers your ancestor as casting Paralyse, which targets single enemies and,
-if they fail to resist, leaves them completely helpless for the next several
-turns. This choice is permanent and cannot be undone.
-%%%%
-Hexer: Englaciation ability
-
-Remembers your ancestor as casting Metabolic Englaciation, which slows all
-non-cold-resistant nearby foes for several turns. This choice is permanent and
-cannot be undone.
-%%%%
-Recall Ancestor ability
-
-Recalls your ancestor from anywhere in the dungeon to your immediate
-surroundings.
-%%%%
-Idealise ability
-
-Restores your ancestor to an idyllic vision of their best self. Their wounds
-are forgotten, harmful effects are wiped away, and a glow of perfection infuses
 them, giving them a short-lived but dramatic increase in strength, spellcasting,
 and armour. The quality of the healing and duration of the idealisation granted
 are both improved by the Invocations skill.
@@ -916,7 +837,7 @@ Transference ability
 Forces a targeted creature to pass through the realms of memory and exchange
 places with your ancestor.
 
-With great piety, those near the target will be slowed for a duration depending
+With great piety, those near the target will be drained to a degree depending
 on Invocations skill.
 %%%%
 Ancestor Life: Knight ability
@@ -939,39 +860,3 @@ Ancestor Identity ability
 
 Recalls who your ancestor preferred to be known as, correcting their name and
 gender. This does not take any time.
-%%%%
-Knight: Demon Trident ability
-
-Remembers your ancestor as wielding an enchanted demon trident, a weapon
-capable of reaching past allies (such as yourself) to attack foes. This choice
-is permanent and cannot be undone.
-%%%%
-Knight: Broad Axe ability
-
-Remembers your ancestor as wielding an enchanted broad axe, a weapon capable of
-cleaving through many surrounding foes with each blow. This choice is permanent
-and cannot be undone.
-%%%%
-Battlemage: Force Lance ability
-
-Remembers your ancestor as casting Force Lance, which knocks targets back and
-does extra damage to those slammed into walls or other creatures. This choice
-is permanent and cannot be undone.
-%%%%
-Battlemage: Bolt of Magma ability
-
-Remembers your ancestor as casting Bolt of Magma, which conjures a penetrating
-beam of fire and physical damage. This choice is permanent and cannot be
-undone.
-%%%%
-Hexer: Mass Confusion ability
-
-Remembers your ancestor as casting Mass Confusion, which confuses all nearby
-foes which fail to resist the magic. This choice is permanent and cannot be
-undone.
-%%%%
-Hexer: Englaciation ability
-
-Remembers your ancestor as casting Metabolic Englaciation, which slows all
-non-cold-resistant nearby foes for several turns. This choice is permanent and
-cannot be undone.

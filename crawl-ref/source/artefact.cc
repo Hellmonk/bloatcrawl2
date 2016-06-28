@@ -361,6 +361,7 @@ static map<jewellery_type, vector<jewellery_fake_artp>> jewellery_artps = {
     { AMU_RAGE, { { ARTP_BERSERK, 1 } } },
     { AMU_HEALTH_REGENERATION, { { ARTP_REGENERATION, 1 } } },
     { AMU_REFLECTION, { { ARTP_SHIELDING, 0 } } },
+    { AMU_HARM, { { ARTP_DRAIN, 1 } } },
 
     { RING_MAGICAL_POWER, { { ARTP_MAGICAL_POWER, 25 } } },
     { RING_FLIGHT, { { ARTP_FLY, 1 } } },

@@ -168,9 +168,9 @@ public:
     // title to the stock title. If "procfn" is provided, it'll be called for
     // each MenuEntry added, *excluding the title*.
     void load_inv_items(FixedVector< item_def, ENDOFPACK > &inv, int item_selector = OSEL_ANY, int excluded_slot = -1,
-                        MenuEntry *(*procfn)(MenuEntry *me) = nullptr);
+                        function<MenuEntry* (MenuEntry*)> procfn = nullptr);
     void load_inv_items2(int item_selector = OSEL_ANY, int excluded_slot = -1,
-                        MenuEntry *(*procfn)(MenuEntry *me) = nullptr);
+                         function<MenuEntry* (MenuEntry*)> procfn = nullptr);
 
     vector<SelItem> get_selitems() const;
 
@@ -275,7 +275,8 @@ bool needs_handle_warning(const item_def &item, operation_types oper,
                           bool &penance);
 bool is_consumable(object_class_type type);
 bool is_consumable(FixedVector< item_def, ENDOFPACK > &inv);
-void inv_from_item(FixedVector< item_def, ENDOFPACK > *&inv, object_class_type type);
+void inv_from_item_type(FixedVector <item_def, ENDOFPACK> *&inv, object_class_type type);
+FixedVector< item_def, ENDOFPACK > &inv_from_item_type(object_class_type type);
 bool inv_from_prompt(FixedVector< item_def, ENDOFPACK > *&inv, const char* prompt);
 
 FixedVector< item_def, ENDOFPACK > *evoke_inv();

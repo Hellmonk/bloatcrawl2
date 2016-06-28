@@ -786,7 +786,6 @@ void tile_floor_halo(dungeon_feature_type target, tileidx_t tile)
         }
 }
 
-#ifdef USE_TILE
 static tileidx_t _get_floor_bg(const coord_def& gc)
 {
     tileidx_t bg = TILE_DNGN_UNSEEN | tileidx_unseen_flag(gc);
@@ -1095,7 +1094,6 @@ static bool _is_torch(tileidx_t basetile)
 // Unfortunately, these are all hard-coded for now.
 void tile_apply_animations(tileidx_t bg, tile_flavour *flv)
 {
-#ifndef USE_TILE_WEB
     tileidx_t bg_idx = bg & TILE_FLAG_MASK;
     if (bg_idx == TILE_DNGN_PORTAL_WIZARD_LAB && Options.tile_misc_anim)
         flv->special = (flv->special + 1) % tile_dngn_count(bg_idx);
@@ -1123,7 +1121,6 @@ void tile_apply_animations(tileidx_t bg, tile_flavour *flv)
         if (_is_torch(basetile))
             flv->wall = basetile + (flv->wall - basetile + 1) % tile_dngn_count(basetile);
     }
-#endif
 }
 
 static bool _suppress_blood(const map_cell& mc)
@@ -1447,4 +1444,4 @@ void tile_apply_properties(const coord_def &gc, packed_cell &cell)
         }
     }
 }
-#endif
+

@@ -64,12 +64,11 @@ A powerful, belligerent efreet. (Is there any other kind?)
 %%%%
 Bai Suzhen
 
-A weary draconian with foreign and watery scales, followed by a turbulent storm.
-She has come to the Dungeon in hopes of resurrecting her mortal husband; a
-noble cause, for a being once known for quarreling with saints and flooding
-unfortunate temples. If pressed to her limits, she will reveal her true form,
-the mere sight of which struck her husband dead. Adventurers may wish they were
-so lucky!
+A weary draconian with foreign and watery scales. She has come to the Dungeon
+in hopes of resurrecting her mortal husband; a noble cause, for a being once
+known for quarreling with saints and flooding unfortunate temples. If pressed
+to her limits, she will reveal her true form, the mere sight of which struck
+her husband dead. Adventurers may wish they were so lucky!
 %%%%
 Blork the orc
 
@@ -1417,13 +1416,6 @@ hellwing
 A hideous skeletal demon, known for armouring itself with the remains of its
 victims. It swoops through the air on powerful wings of ancient withered skin,
 taking sadistic joy from harrying those who would try to flee its grasp.
-%%%%
-hexer
-
-A humanoid construct of insubstantial memory, floating through the air. Though
-perhaps somewhat changed in shape and bearing few discernable features, still
-it seems somehow to resemble a warrior from the distantly remembered past,
-ready with debilitating spells and deadly knifework.
 %%%%
 hexer
 
@@ -3084,12 +3076,6 @@ water elementalist statue
 A smooth, charming statue of a beautiful merfolk bathing in a fountain,
 sculpted from creamy, faintly pinkish travertine. It glistens softly in the
 light, as if sprinkled in actual water.
-%%%%
-young spriggan druid
-
-A junior member of the order of spriggans sworn to protect nature. While less
-dangerous than the elders, this one is perfectly capable of dealing with
-trespassers like you.
 %%%%
 witch
 
