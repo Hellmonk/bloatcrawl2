@@ -151,6 +151,7 @@ static map<misc_item_type, deck_type_data> all_decks =
     { MISC_DECK_OF_DUNGEONS, {
         "dungeons", &removed_deck,
     } },
+#endif
     { MISC_DECK_OF_SUMMONING, {
         "summoning", &deck_of_summoning,
     } },
@@ -158,7 +159,6 @@ static map<misc_item_type, deck_type_data> all_decks =
     { MISC_DECK_OF_WONDERS, {
         "wonders", &removed_deck,
     } },
-#endif
     { MISC_DECK_OF_ODDITIES, {
         "oddities", &removed_deck,
     } },
@@ -1544,89 +1544,89 @@ static void _damaging_card(card_type card, int power, deck_rarity_type rarity,
 
     switch (card)
     {
-        case CARD_VITRIOL:
-            if (power_level == 2)
+    case CARD_VITRIOL:
+        if (power_level == 2)
+        {
+            done_prompt = true;
+            mpr(prompt);
+            mpr("You radiate a wave of entropy!");
+            for (radius_iterator di(you.pos(), LOS_NO_TRANS); di; ++di)
             {
-                done_prompt = true;
-                mpr(prompt);
-                mpr("You radiate a wave of entropy!");
-                for (radius_iterator di(you.pos(), LOS_NO_TRANS); di; ++di)
+                monster *mons = monster_at(*di);
+
+                if (!mons || mons->wont_attack() || !mons_is_threatening(mons))
+                    continue;
+
+                if (coinflip())
+                    mons->corrode_equipment();
+            }
+        }
+        ztype = acidzaps[power_level];
+        break;
+
+    case CARD_ORB:
+        ztype = orbzaps[power_level];
+        break;
+
+    case CARD_PAIN:
+        if (power_level == 2)
+        {
+            if (is_good_god(you.religion))
+            {
+                _suppressed_card_message(you.religion, DID_NECROMANCY);
+                return;
+            }
+
+            mpr(prompt);
+
+            if (monster *ghost = _friendly(MONS_FLAYED_GHOST, 3))
+            {
+                bool msg = true;
+                bolt beem;
+                int dam = 5;
+
+                beem.origin_spell = SPELL_FLAY;
+                beem.source = ghost->pos();
+                beem.source_id = ghost->mid;
+                beem.range = 0;
+
+                if (!you.res_torment())
+                {
+                    if (can_shave_damage())
+                        dam = do_shave_damage(dam);
+
+                    if (dam > 0)
+                        dec_hp(dam, false);
+                }
+
+                for (radius_iterator di(ghost->pos(), LOS_NO_TRANS); di; ++di)
                 {
                     monster *mons = monster_at(*di);
 
-                    if (!mons || mons->wont_attack() || !mons_is_threatening(mons))
+                    if (!mons || mons->wont_attack()
+                        || !(mons->holiness() & MH_NATURAL))
+                    {
                         continue;
-
-                    if (coinflip())
-                        mons->corrode_equipment();
-                }
-            }
-            ztype = acidzaps[power_level];
-            break;
-
-        case CARD_ORB:
-            ztype = orbzaps[power_level];
-            break;
-
-        case CARD_PAIN:
-            if (power_level == 2)
-            {
-                if (is_good_god(you.religion))
-                {
-                    _suppressed_card_message(you.religion, DID_NECROMANCY);
-                    return;
-                }
-
-                mpr(prompt);
-
-                if (monster *ghost = _friendly(MONS_FLAYED_GHOST, 3))
-                {
-                    bool msg = true;
-                    bolt beem;
-                    int dam = 5;
-
-                    beem.origin_spell = SPELL_FLAY;
-                    beem.source = ghost->pos();
-                    beem.source_id = ghost->mid;
-                    beem.range = 0;
-
-                    if (!you.res_torment())
-                    {
-                        if (can_shave_damage())
-                            dam = do_shave_damage(dam);
-
-                        if (dam > 0)
-                            dec_hp(dam, false);
                     }
 
-                    for (radius_iterator di(ghost->pos(), LOS_NO_TRANS); di; ++di)
-                    {
-                        monster *mons = monster_at(*di);
-
-                        if (!mons || mons->wont_attack()
-                            || !(mons->holiness() & MH_NATURAL))
-                        {
-                            continue;
-                        }
-
-                        beem.target = mons->pos();
-                        ghost->foe = mons->mindex();
-                        mons_cast(ghost, beem, SPELL_FLAY,
-                                  ghost->spell_slot_flags(SPELL_FLAY), msg);
-                        msg = false;
-                    }
-
-                    ghost->foe = MHITYOU;
+                    beem.target = mons->pos();
+                    ghost->foe = mons->mindex();
+                    mons_cast(ghost, beem, SPELL_FLAY,
+                              ghost->spell_slot_flags(SPELL_FLAY), msg);
+                    msg = false;
                 }
 
-                return;
+                ghost->foe = MHITYOU;
             }
-            else
-                ztype = painzaps[power_level];
-            break;
 
-        default:
-            break;
+            return;
+        }
+        else
+            ztype = painzaps[power_level];
+        break;
+
+    default:
+        break;
     }
 
     bolt beam;
@@ -1659,7 +1659,7 @@ static void _damaging_card(card_type card, int power, deck_rarity_type rarity,
                 cast_iood_burst(power / 6, beam.target);
         }
         else
-            zapping(ztype, power / 6, beam);
+            zapping(ztype, power/6, beam);
     }
     else if (ztype == ZAP_IOOD && power_level == 2)
     {
@@ -1732,7 +1732,8 @@ static void _godly_wrath()
 static void _summon_demon_card(int power, deck_rarity_type rarity)
 {
     const int power_level = _get_power_level(power, rarity);
-    // one demon, and one other demonic creature
+    // one demon (potentially hostile), and one other demonic creature (always
+    // friendly)
     monster_type dct, dct2;
     if (power_level >= 2)
     {
@@ -1769,8 +1770,21 @@ static void _summon_demon_card(int power, deck_rarity_type rarity)
     // will never manage to give a position which isn't (-1,-1)
     // and thus not print the message.
     // This hack appears later in this file as well.
-    if (!_friendly(dct, 5 - power_level))
+
+    const bool friendly = !one_chance_in(power_level + 4);
+
+    if (!create_monster(mgen_data(dct, friendly ? BEH_FRIENDLY : BEH_HOSTILE,
+                                  &you, 5 - power_level, 0, you.pos(), MHITYOU,
+                                  MG_AUTOFOE)))
+    {
         mpr("You see a puff of smoke.");
+    }
+    else if (mons_class_flag(dct, M_INVIS)
+             && !you.can_see_invisible()
+             && !friendly)
+    {
+        mpr("You sense the presence of something unfriendly.");
+    }
 
     _friendly(dct2, 5 - power_level);
 }

@@ -155,8 +155,6 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_WALL_PERMAROCK;
     case DNGN_SLIMY_WALL:
         return TILE_WALL_SLIME;
-    case DNGN_OPEN_SEA:
-        return TILE_DNGN_OPEN_SEA;
     case DNGN_RUNED_DOOR:
         return TILE_DNGN_RUNED_DOOR;
     case DNGN_SEALED_DOOR:
@@ -183,13 +181,16 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return player_in_branch(BRANCH_SWAMP) ? TILE_DNGN_MANGROVE : TILE_DNGN_TREE;
     case DNGN_GRANITE_STATUE:
         return TILE_DNGN_GRANITE_STATUE;
-    case DNGN_LAVA_SEA: // FIXME
     case DNGN_LAVA:
         return TILE_DNGN_LAVA;
+    case DNGN_LAVA_SEA:
+        return TILE_DNGN_LAVA_SEA;
     case DNGN_DEEP_WATER:
         return TILE_DNGN_DEEP_WATER;
     case DNGN_SHALLOW_WATER:
         return TILE_DNGN_SHALLOW_WATER;
+    case DNGN_OPEN_SEA:
+        return TILE_DNGN_OPEN_SEA;
     case DNGN_FLOOR:
     case DNGN_UNDISCOVERED_TRAP:
         return TILE_FLOOR_NORMAL;
@@ -3558,22 +3559,10 @@ tileidx_t tileidx_ability(const ability_type ability)
         return TILEG_ABILITY_HEP_IDENTITY;
     case ABIL_HEPLIAKLQANA_TYPE_KNIGHT:
         return TILEG_ABILITY_HEP_KNIGHT;
-    case ABIL_HEPLIAKLQANA_KNIGHT_REACHING:
-        return TILEG_ABILITY_HEP_REACHING;
-    case ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING:
-        return TILEG_ABILITY_HEP_CLEAVING;
     case ABIL_HEPLIAKLQANA_TYPE_BATTLEMAGE:
         return TILEG_ABILITY_HEP_BATTLEMAGE;
-    case ABIL_HEPLIAKLQANA_BATTLEMAGE_FORCE_LANCE:
-        return TILEG_ABILITY_HEP_FORCE_LANCE;
-    case ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA:
-        return TILEG_ABILITY_HEP_MAGMA;
     case ABIL_HEPLIAKLQANA_TYPE_HEXER:
         return TILEG_ABILITY_HEP_HEXER;
-    case ABIL_HEPLIAKLQANA_HEXER_MASS_CONFUSION:
-        return TILEG_ABILITY_HEP_MASS_CONFUSION;
-    case ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION:
-        return TILEG_ABILITY_HEP_ENGLACIATE;
 
     // General divine (pseudo) abilities.
     case ABIL_RENOUNCE_RELIGION:

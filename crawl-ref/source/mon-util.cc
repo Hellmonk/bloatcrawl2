@@ -1350,8 +1350,7 @@ int get_shout_noise_level(const shout_type shout)
         return 6;
     case S_LOUD:
         return 10;
-    case S_SHOUT2:
-    case S_ROAR:
+    case S_LOUD_ROAR:
     case S_VERY_LOUD:
         return 12;
     case S_RUMBLE:
@@ -1413,6 +1412,14 @@ shout_type mons_shouts(monster_type mc, bool demon_shout)
     }
 
     return u;
+}
+
+/// Is the given monster type ever capable of shouting?
+bool mons_can_shout(monster_type mc)
+{
+    // don't use mons_shouts() to avoid S_RANDOM randomization.
+    ASSERT_smc();
+    return smc->shouts != S_SILENT;
 }
 
 bool mons_is_ghost_demon(monster_type mc)
@@ -4526,11 +4533,10 @@ string do_mon_str_replacements(const string &in_msg, const monster* mons,
         "growls",
         "hisses",
         "sneers",       // S_DEMON_TAUNT
-#if TAG_MAJOR_VERSION == 34
-        "caws",
-#endif
         "says",         // S_CHERUB -- they just speak normally.
         "rumbles",
+        "squeals",
+        "roars",
         "buggily says", // NUM_SHOUTS
         "breathes",     // S_VERY_SOFT
         "whispers",     // S_SOFT
@@ -5529,14 +5535,6 @@ void throw_monster_bits(const monster* mon)
     }
 }
 
-/// What spell should an ancestor have in their customizeable slot?
-static spell_type _ancestor_custom_spell(spell_type default_spell)
-{
-    const int specialization = hepliaklqana_specialization();
-    return specialization ? hepliaklqana_specialization_spell(specialization) :
-                            default_spell;
-}
-
 /// Add an ancestor spell to the given list.
 static void _add_ancestor_spell(monster_spells &spells, spell_type spell)
 {
@@ -5563,23 +5561,24 @@ void set_ancestor_spells(monster &ancestor, bool notify)
     switch (ancestor.type)
     {
     case MONS_ANCESTOR_BATTLEMAGE:
-        _add_ancestor_spell(ancestor.spells,
-                            _ancestor_custom_spell(SPELL_THROW_FROST));
-        _add_ancestor_spell(ancestor.spells, HD >= 18 ?
+        _add_ancestor_spell(ancestor.spells, HD >= 10 ?
+                                             SPELL_BOLT_OF_MAGMA :
+                                             SPELL_THROW_FROST);
+        _add_ancestor_spell(ancestor.spells, HD >= 16 ?
                                              SPELL_LEHUDIBS_CRYSTAL_SPEAR :
                                              SPELL_STONE_ARROW);
         break;
     case MONS_ANCESTOR_HEXER:
         _add_ancestor_spell(ancestor.spells, HD >= 10 ? SPELL_PARALYSE
                                                       : SPELL_SLOW);
-        _add_ancestor_spell(ancestor.spells,
-                            _ancestor_custom_spell(SPELL_CONFUSE));
+        _add_ancestor_spell(ancestor.spells, HD >= 13 ? SPELL_MASS_CONFUSION
+                                                      : SPELL_CONFUSE);
         break;
     default:
         break;
     }
 
-    if (HD >= 14)
+    if (HD >= 13)
         ancestor.spells.emplace_back(SPELL_HASTE, 40, MON_SPELL_WIZARD);
 
     if (ancestor.spells.size())

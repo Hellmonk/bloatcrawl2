@@ -518,6 +518,7 @@ void dec_penance(god_type god, int val)
             // redraw the god title.
             you.redraw_title = true;
 
+            // TSO's halo is once more available.
             if (!had_halo && have_passive(passive_t::halo))
             {
                 mprf(MSGCH_GOD, "Your divine halo returns!");
@@ -542,14 +543,6 @@ void dec_penance(god_type god, int val)
                 redraw_screen();
                 notify_stat_change();
             }
-
-            // TSO's halo is once more available.
-            if (have_passive(passive_t::halo))
-            {
-                mprf(MSGCH_GOD, "Your divine halo returns!");
-                invalidate_agrid(true);
-            }
-
             if (have_passive(passive_t::storm_shield))
             {
                 mprf(MSGCH_GOD, "A storm instantly forms around you!");
@@ -1280,34 +1273,6 @@ string hepliaklqana_ally_name()
 }
 
 /**
- * What specialization has the player chosen for their ancestor, if any?
- *
- * @return  The appropriate ability_type enum (e.g.
- *          ABIL_HEPLIAKLQANA_KNIGHT_REACHING), or 0 if no specialization was
- *          chosen.
- */
-int hepliaklqana_specialization()
-{
-    // sanity & 'save compat' (old hexers specialized at xl 15)
-    if (you.experience_level < hepliaklqana_specialization_level())
-        return 0;
-    // using get_int() without checking for exists would make it exist
-    if (you.props.exists(HEPLIAKLQANA_SPECIALIZATION_KEY))
-        return you.props[HEPLIAKLQANA_SPECIALIZATION_KEY].get_int();
-    return 0;
-}
-
-/// At what level will the player be able to specialize their current ancestor?
-int hepliaklqana_specialization_level()
-{
-    if (!you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY))
-        return INT_MAX;
-    if (you.props[HEPLIAKLQANA_ALLY_TYPE_KEY].get_int() == MONS_ANCESTOR_HEXER)
-        return 21;
-    return 15;
-}
-
-/**
  * How much HD should the ally granted by Hepliaklqana have?
  *
  * @return      The player's xl * 2/3.
@@ -1499,53 +1464,6 @@ void upgrade_hepliaklqana_ancestor(bool quiet_force)
 }
 
 /**
- * For a spellcasting ancestor (e.g. a hexer or battlemage), what spell is
- * granted by a given specialization?
- *
- * @param specialization    The specialization in question; e.g.
- *                          ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION.
- * @return                  The appropriate spell type, e.g. SPELL_ENGLACIATION.
- *                          By default, returns NUM_SPELLS.
- */
-spell_type hepliaklqana_specialization_spell(int specialization)
-{
-    switch (specialization)
-    {
-    case ABIL_HEPLIAKLQANA_BATTLEMAGE_FORCE_LANCE:
-        return SPELL_FORCE_LANCE;
-    case ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA:
-        return SPELL_BOLT_OF_MAGMA;
-    case ABIL_HEPLIAKLQANA_HEXER_MASS_CONFUSION:
-        return SPELL_MASS_CONFUSION;
-    case ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION:
-        return SPELL_ENGLACIATION;
-    default:
-        return NUM_SPELLS;
-    }
-}
-
-/**
- * For an ancestor knight, what weapon is granted by a given specialization?
- *
- * @param specialization    The specialization in question; e.g.
- *                          ABIL_HEPLIAKLQANA_KNIGHT_REACHING.
- * @return                  The appropriate weapon type, e.g. WPN_BROAD_AXE.
- *                          By default, returns NUM_WEAPONS.
- */
-weapon_type hepliaklqana_specialization_weapon(int specialization)
-{
-    switch (specialization)
-    {
-    case ABIL_HEPLIAKLQANA_KNIGHT_REACHING:
-        return WPN_DEMON_TRIDENT;
-    case ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING:
-        return WPN_BROAD_AXE;
-    default:
-        return NUM_WEAPONS;
-    }
-}
-
-/**
  * What type of weapon should an ancestor of the given HD have?
  *
  * @param mc   The type of ancestor in question.
@@ -1557,16 +1475,11 @@ static weapon_type _hepliaklqana_weapon_type(monster_type mc, int HD)
     switch (mc)
     {
     case MONS_ANCESTOR_HEXER:
-        return HD < 18 ? WPN_DAGGER : WPN_QUICK_BLADE;
+        return HD < 16 ? WPN_DAGGER : WPN_QUICK_BLADE;
     case MONS_ANCESTOR_KNIGHT:
-    {
-        const int specialization = hepliaklqana_specialization();
-        return specialization ?
-               hepliaklqana_specialization_weapon(specialization) :
-               WPN_FLAIL;
-    }
+        return HD < 10 ? WPN_FLAIL : WPN_BROAD_AXE;
     case MONS_ANCESTOR_BATTLEMAGE:
-        return HD < 14 ? WPN_QUARTERSTAFF : WPN_LAJATANG;
+        return HD < 13 ? WPN_QUARTERSTAFF : WPN_LAJATANG;
     default:
         return NUM_WEAPONS; // should never happen
     }
@@ -1584,14 +1497,14 @@ static brand_type _hepliaklqana_weapon_brand(monster_type mc, int HD)
     switch (mc)
     {
         case MONS_ANCESTOR_HEXER:
-            return HD < 18 ?   SPWPN_DRAINING :
+            return HD < 16 ?   SPWPN_DRAINING :
                                SPWPN_ANTIMAGIC;
         case MONS_ANCESTOR_KNIGHT:
-            return !hepliaklqana_specialization() ?   SPWPN_NORMAL :
-                   HD < 18 ?                          SPWPN_FLAMING :
-                                                      SPWPN_SPEED;
+            return HD < 10 ?   SPWPN_NORMAL :
+                   HD < 16 ?   SPWPN_FLAMING :
+                               SPWPN_SPEED;
         case MONS_ANCESTOR_BATTLEMAGE:
-            return HD < 14 ?   SPWPN_NORMAL :
+            return HD < 13 ?   SPWPN_NORMAL :
                                SPWPN_FREEZING;
         default:
             return SPWPN_NORMAL;
@@ -1633,14 +1546,14 @@ static armour_type _hepliaklqana_shield_type(monster_type mc, int HD)
 {
     if (mc != MONS_ANCESTOR_KNIGHT)
         return NUM_ARMOURS;
-    if (HD < 14)
+    if (HD < 13)
         return ARM_SHIELD;
     return ARM_LARGE_SHIELD;
 }
 
 static special_armour_type _hepliaklqana_shield_ego(int HD)
 {
-    return HD < 14 ? SPARM_NORMAL : SPARM_REFLECTION;
+    return HD < 13 ? SPARM_NORMAL : SPARM_REFLECTION;
 }
 
 /**
@@ -3503,14 +3416,6 @@ static void _join_hepliaklqana()
     simple_god_message(make_stringf(" brings forth the memory of your ancestor,"
                                     " %s!",
                                     mg.mname.c_str()).c_str());
-
-    // no one will ever run into this.
-    if (you.experience_level >= hepliaklqana_specialization_level()
-        && !hepliaklqana_specialization())
-    {
-        // TODO: deduplicate this message
-        god_speaks(you.religion, "You may now specialize your ancestor.");
-    }
 }
 
 /// Setup when joining the gelatinous groupies of Jiyva.
@@ -3985,8 +3890,8 @@ bool god_hates_spell(spell_type spell, god_type god, bool rod_spell)
     switch (god)
     {
     case GOD_SHINING_ONE:
-        // TSO hates using poison, but is fine with curing it.
-        if ((disciplines & SPTYP_POISON) && spell != SPELL_CURE_POISON)
+        // TSO hates using poison.
+        if (disciplines & SPTYP_POISON)
             return true;
         break;
     case GOD_CHEIBRIADOS:

@@ -681,11 +681,8 @@ bool monster::can_speak()
         return true;
 
     // Silent or non-sentient monsters can't use the original speech.
-    if (mons_intel(this) < I_HUMAN
-        || mons_shouts(type) == S_SILENT)
-    {
+    if (mons_intel(this) < I_HUMAN || !mons_can_shout(type))
         return false;
-    }
 
     // Does it have the proper vocal equipment?
     return mon_shape_is_humanoid(get_mon_shape(this));
@@ -4269,6 +4266,9 @@ bool monster::no_tele(bool calc_unid, bool permit_id, bool blinking) const
     if (has_notele_item(calc_unid))
         return true;
 
+    if (has_ench(ENCH_DIMENSION_ANCHOR))
+        return true;
+
     return false;
 }
 
@@ -6309,12 +6309,22 @@ void monster::react_to_damage(const actor *oppressor, int damage,
         ench_cache     = old_ench_cache;
         ench_countdown = old_ench_countdown;
 
+        cloud_type ctype = CLOUD_STORM;
+
+        for (adjacent_iterator ai(pos()); ai; ++ai)
+            if (!cell_is_solid(*ai)
+                && (!cloud_at(*ai)
+                   || cloud_at(*ai)->type == ctype))
+            {
+                place_cloud(ctype, *ai, 2 + random2(3), this);
+            }
+
         if (observable())
         {
-            mprf("%s roars in fury and transforms into a fierce dragon!",
+            mprf(MSGCH_WARN, "%s roars in fury and transforms into a fierce dragon!",
                  name(DESC_THE).c_str());
-            mprf("%s surrounding storm thunders violently.",
-                 name(DESC_ITS).c_str());
+            mprf(MSGCH_WARN, "A violent storm begins to rage around %s.",
+                 name(DESC_THE).c_str());
         }
     }
 

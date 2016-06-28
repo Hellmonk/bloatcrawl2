@@ -1604,7 +1604,7 @@ static int _userdef_find_free_slot(const item_def &i)
 int find_free_slot(const item_def &i)
 {
 	FixedVector< item_def, ENDOFPACK > *inv;
-	inv_from_item(inv, i.base_type);
+    inv_from_item_type(inv, i.base_type);
 
 #define slotisfree(s) \
             ((s) >= 0 && (s) < ENDOFPACK && !(*inv)[s].defined())
@@ -1881,7 +1881,7 @@ static bool _merge_stackable_item_into_inv(const item_def &it, int quant_got,
                                            int &inv_slot, bool quiet)
 {
 	FixedVector< item_def, ENDOFPACK > *inv;
-	inv_from_item(inv, it.base_type);
+    inv_from_item_type(inv, it.base_type);
 
     for (inv_slot = 0; inv_slot < ENDOFPACK; inv_slot++)
     {
@@ -1930,7 +1930,7 @@ static bool _merge_stackable_item_into_inv(const item_def &it, int quant_got,
 item_def *auto_assign_item_slot(item_def& item)
 {
 	FixedVector< item_def, ENDOFPACK > *inv;
-	inv_from_item(inv, item.base_type);
+    inv_from_item_type(inv, item.base_type);
 
     if (!item.defined())
         return nullptr;
@@ -1994,7 +1994,7 @@ static int _place_item_in_free_slot(item_def &it, int quant_got,
 {
 	ASSERT(it.isValid());
 	FixedVector< item_def, ENDOFPACK > *inv;
-	inv_from_item(inv, it.base_type);
+    inv_from_item_type(inv, it.base_type);
 
     int freeslot = find_free_slot(it);
     ASSERT_RANGE(freeslot, 0, ENDOFPACK);
@@ -2109,7 +2109,7 @@ static bool _merge_items_into_inv(item_def &it, int quant_got,
     }
 
     FixedVector< item_def, ENDOFPACK > *inv;
-    inv_from_item(inv, it.base_type);
+    inv_from_item_type(inv, it.base_type);
 
     // Can't combine, check for slot space.
     if (inv_count(*inv) >= ENDOFPACK)
@@ -2465,7 +2465,7 @@ bool drop_item(FixedVector< item_def, ENDOFPACK > &inv, int item_dropped, int qu
             else if (remove_ring(item_dropped, true))
             {
                 // The delay handles the case where the item disappeared.
-                start_delay(DELAY_DROP_ITEM, 1, item_dropped, 1);
+                start_delay<DropItemDelay>(1, item);
                 // We didn't actually succeed yet, but remove_ring took time,
                 // so return true anyway.
                 return true;
@@ -2482,27 +2482,27 @@ bool drop_item(FixedVector< item_def, ENDOFPACK > &inv, int item_dropped, int qu
             return false;
         }
 
-        for (int i = EQ_MIN_ARMOUR; i <= EQ_MAX_ARMOUR; i++)
+    for (int i = EQ_MIN_ARMOUR; i <= EQ_MAX_ARMOUR; i++)
+    {
+        if (item_dropped == you.equip[i] && you.equip[i] != -1)
         {
-            if (item_dropped == you.equip[i] && you.equip[i] != -1)
+            if (!Options.easy_unequip)
+                mpr("You will have to take that off first.");
+            else if (check_warning_inscriptions(item, OPER_TAKEOFF))
             {
-                if (!Options.easy_unequip)
-                    mpr("You will have to take that off first.");
-                else if (check_warning_inscriptions(item, OPER_TAKEOFF))
+                // If we take off the item, cue up the item being dropped
+                if (takeoff_armour(item_dropped))
                 {
-                    // If we take off the item, cue up the item being dropped
-                    if (takeoff_armour(item_dropped))
-                    {
-                        // The delay handles the case where the item disappeared.
-                        start_delay(DELAY_DROP_ITEM, 1, item_dropped, 1);
-                        // We didn't actually succeed yet, but takeoff_armour
-                        // took a turn to start up, so return true anyway.
-                        return true;
-                    }
+                    // The delay handles the case where the item disappeared.
+                    start_delay<DropItemDelay>(1, item);
+                    // We didn't actually succeed yet, but takeoff_armour
+                    // took a turn to start up, so return true anyway.
+                    return true;
                 }
-                return false;
             }
+            return false;
         }
+    }
 
         // [ds] easy_unequip does not apply to weapons.
         //
@@ -2633,7 +2633,9 @@ static string _drop_selitem_text(const vector<MenuEntry*> *s)
                s->size() > 1? "s" : "");
 }
 
-vector<SelItem> items_for_multidrop;
+// This has to be of static storage class, so that the value isn't lost when a
+// MultidropDelay is interrupted.
+static vector<SelItem> items_for_multidrop;
 
 // Arrange items that have been selected for multidrop so that
 // equipped items are dropped after other items, and equipped items
@@ -2752,13 +2754,13 @@ static void _multidrop(vector<SelItem> tmp_items)
     if (items_for_multidrop.size() == 1) // only one item
     {
     	FixedVector< item_def, ENDOFPACK > *inv;
-    	inv_from_item(inv, items_for_multidrop[0].item->base_type);
+        inv_from_item_type(inv, items_for_multidrop[0].item->base_type);
 
         drop_item(*inv, items_for_multidrop[0].slot, items_for_multidrop[0].quantity);
         items_for_multidrop.clear();
     }
     else
-        start_delay(DELAY_MULTIDROP, items_for_multidrop.size());
+        start_delay<MultidropDelay>(items_for_multidrop.size(), items_for_multidrop);
 }
 
 static void _autoinscribe_item(item_def& item)

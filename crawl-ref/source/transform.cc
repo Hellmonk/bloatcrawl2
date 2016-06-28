@@ -2063,7 +2063,7 @@ void untransform(bool skip_move)
 
     if(old_form == TRAN_TREE) {
     	// it takes some time to delignify
-        start_delay(DELAY_UNINTERRUPTIBLE, 2);
+        start_delay<GenericDelay>(2);
     }
 
     you.turn_is_over = true;

@@ -619,13 +619,13 @@ static void _start_running()
     _userdef_run_startrunning_hook();
     you.running.init_travel_speed();
     if (you.running < 0)
-        start_delay(DELAY_TRAVEL, 1);
+        start_delay<TravelDelay>();
 }
 
 // Stops shift+running and all forms of travel.
-void stop_running()
+void stop_running(bool clear_delays)
 {
-    you.running.stop();
+    you.running.stop(clear_delays);
 }
 
 static bool _is_valid_explore_target(const coord_def& where)
@@ -3984,9 +3984,9 @@ void runrest::initialise(int dir, int mode)
     }
 
     if (runmode == RMODE_REST_DURATION || runmode == RMODE_WAIT_DURATION)
-        start_delay(DELAY_REST, 1);
+        start_delay<RestDelay>();
     else
-        start_delay(DELAY_RUN, 1);
+        start_delay<RunDelay>();
 }
 
 void runrest::init_travel_speed()
@@ -4079,7 +4079,7 @@ bool runrest::run_should_stop() const
     return false;
 }
 
-void runrest::stop()
+void runrest::stop(bool clear_delays)
 {
     bool need_redraw =
         (runmode > 0 || runmode < 0 && Options.travel_delay == -1);
@@ -4088,7 +4088,8 @@ void runrest::stop()
 
     // Kill the delay; this is fine because it's not possible to stack
     // run/rest/travel on top of other delays.
-    stop_delay();
+    if (clear_delays)
+        stop_delay();
 
 #ifdef USE_TILE_LOCAL
     if (Options.tile_runrest_rate > 0)

@@ -1070,6 +1070,7 @@ static const struct spell_desc spelldata[] =
 },
 #endif
 
+#if TAG_MAJOR_VERSION == 34
 {
     SPELL_CURE_POISON, "Cure Poison",
     SPTYP_POISON | SPTYP_CHARMS | SPTYP_TIME,
@@ -1078,8 +1079,9 @@ static const struct spell_desc spelldata[] =
     200,
     -1, -1,
     1, 0,
-    TILEG_CURE_POISON,
+    TILEG_ERROR,
 },
+#endif
 
 #if TAG_MAJOR_VERSION == 34
 {
@@ -1297,7 +1299,7 @@ static const struct spell_desc spelldata[] =
     SPELL_CONFUSING_TOUCH, "Confusing Touch",
     SPTYP_DARKNESS,
     SPFLAG_NONE,
-    2,
+    1,
     50,
     -1, -1,
     2, 0,
@@ -3789,6 +3791,17 @@ static const struct spell_desc spelldata[] =
     -1, -1,
     5, 0,
     TILEG_DEATH_CHANNEL,
+},
+
+{
+    SPELL_INFESTATION, "Infestation",
+    SPTYP_NECROMANCY,
+    SPFLAG_TARGET | SPFLAG_UNCLEAN,
+    8,
+    200,
+    LOS_RADIUS, LOS_RADIUS,
+    8, 4,
+    TILEG_INFESTATION,
 },
 
 {

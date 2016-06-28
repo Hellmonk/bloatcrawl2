@@ -1077,7 +1077,9 @@ static const char* _book_type_name(int booktype)
     case BOOK_TIME2:                  return "Eternity";
     case BOOK_SKY:                    return "the Sky";
     case BOOK_WARP:                   return "the Warp";
+#if TAG_MAJOR_VERSION == 34
     case BOOK_ENVENOMATIONS:          return "Envenomations";
+#endif
     case BOOK_ANNIHILATIONS:          return "Annihilations";
     case BOOK_UNLIFE:                 return "Unlife";
 #if TAG_MAJOR_VERSION == 34
@@ -3484,8 +3486,7 @@ static bool _invisibility_is_useless(const bool temp)
  * Is an item (more or less) useless to the player? Uselessness includes
  * but is not limited to situations such as:
  * \li The item cannot be used.
- * \li Using the item would have no effect, or would have a negligible effect
- *     such as random uselessness.
+ * \li Using the item would have no effect.
  * \li Using the item would have purely negative effects (<tt>is_bad_item</tt>).
  * \li Using the item is expected to produce no benefit for a player of their
  *     religious standing. For example, magic enhancers for Trog worshippers

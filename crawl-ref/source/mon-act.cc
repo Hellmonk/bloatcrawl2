@@ -2559,18 +2559,14 @@ static void _post_monster_move(monster* mons)
         }
     }
 
-    if (mons->type == MONS_BAI_SUZHEN || mons->type == MONS_BAI_SUZHEN_DRAGON)
+    if (mons->type == MONS_BAI_SUZHEN_DRAGON)
     {
-        cloud_type ctype = CLOUD_RAIN;
-
-        if (mons->type == MONS_BAI_SUZHEN_DRAGON)
-            ctype = CLOUD_STORM;
+        cloud_type ctype = CLOUD_STORM;
 
         for (adjacent_iterator ai(mons->pos()); ai; ++ai)
             if (!cell_is_solid(*ai)
                 && (!cloud_at(*ai)
-                    || cloud_at(*ai)->type == ctype
-                    || cloud_at(*ai)->type == CLOUD_RAIN))
+                    || cloud_at(*ai)->type == ctype))
             {
                 place_cloud(ctype, *ai, 2 + random2(3), mons);
             }
@@ -3898,9 +3894,7 @@ static bool _monster_move(monster* mons)
         // movement is towards the player. -- bwr
         if (testbits(mons->flags, MF_TAKING_STAIRS))
         {
-            const delay_type delay = current_delay_action();
-            if (delay != DELAY_ASCENDING_STAIRS
-                && delay != DELAY_DESCENDING_STAIRS)
+            if (!player_stair_delay())
             {
                 mons->flags &= ~MF_TAKING_STAIRS;
 
