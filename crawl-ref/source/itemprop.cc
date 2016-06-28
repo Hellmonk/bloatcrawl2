@@ -517,7 +517,7 @@ static const weapon_def Weapon_prop[] =
     { WPN_HALBERD,           "halberd",            13, -3, 15, 15,
         SK_POLEARMS,     SIZE_MEDIUM,  NUM_SIZE_LEVELS,  MI_NONE,
         DAMV_CHOPPING | DAM_PIERCE, 5, 10, POLEARM_BRANDS },
-    { WPN_SCYTHE,            "scythe",             14, -4, 20, 10,
+    { WPN_SCYTHE,            "scythe",             15, -4, 18, 15,
         SK_POLEARMS,     SIZE_MEDIUM,  NUM_SIZE_LEVELS,  MI_NONE,
         DAMV_SLICING, 2, 0, POLEARM_BRANDS },
     { WPN_DEMON_TRIDENT,     "demon trident",      12,  1, 13, 10,
