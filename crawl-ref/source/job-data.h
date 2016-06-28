@@ -52,7 +52,7 @@ static const map<job_type, job_def> job_data =
     { "spear", "robe", "book of Light", "book of Time" },
     WCHOICE_RANGED,
     { { SK_FIGHTING, 2 }, { SK_DODGING, 2 }, { SK_SPELLCASTING, 3 },
-      { SK_HEXES, 3 }, { SK_WEAPON, 3 }, },
+      { SK_LIGHT, 2 }, { SK_TIME, 2 }, { SK_WEAPON, 3 }, },
 } },
 
 { JOB_ARTIFICER, {
