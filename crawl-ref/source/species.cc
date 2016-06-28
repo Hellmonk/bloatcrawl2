@@ -345,6 +345,11 @@ int species_mp_modifier(species_type species)
     return _species_def(species).mp_mod;
 }
 
+int species_sp_modifier(species_type species)
+{
+    return _species_def(species).sp_mod;
+}
+
 int species_stealth_modifier(species_type species)
 {
     return _species_def(species).stealth_mod;

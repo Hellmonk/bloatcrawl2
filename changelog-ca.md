@@ -1,5 +1,7 @@
 ## v1.6
 
+* Added species specific stamina aptitudes, alongside health and magic aptitudes that already existed.
+
 * Yred's animate undead and remains ability are converted to passive abilities. When monsters are killed and leave a
   corpse, they occasionally come back to life as an undead servant with a temporary lifespan. 
 

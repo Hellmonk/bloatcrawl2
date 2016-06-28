@@ -4992,6 +4992,8 @@ int get_real_sp(bool include_items)
     max_sp -= player_mutation_level(MUT_LOW_STAMINA) * 25;
     max_sp += you.wearing(EQ_RINGS, RING_STAMINA) * 25;
     max_sp += you.scan_artefacts(ARTP_STAMINA);
+    max_sp += species_sp_modifier(you.species) * 25;
+
 
     /*
     max_sp = player_pool_modifier(max_sp);
