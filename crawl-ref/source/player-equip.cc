@@ -1289,7 +1289,13 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
         break;
 
     case AMU_MAGIC_SHIELD:
+        dec_mp(get_mp_max(), true);
         _magic_shield_message(unmeld);
+        break;
+
+    case AMU_STAMINA_SHIELD:
+        dec_sp(get_sp_max(), true);
+        _stamina_shield_message(unmeld);
         break;
 
     case AMU_QUICK_CAST:
