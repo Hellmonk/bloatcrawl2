@@ -43,10 +43,10 @@ Evo - Evocations             Stv - Staves                Trl - Translocations
                              UC  - Unarmed Combat        Trm - Transmutations
 
                              Thr - Throwing              Fir - Fire Magic
-HP  - health aptitude        Slg - Slings                Ice - Ice Magic
-SP  - stamina aptitude       Bws - Bows                  Air - Air Magic
-MP  - magic aptitude         Crb - Crossbows             Ear - Earth Magic
-Exp - experience                                         Poi - Poison Magic
+HP  - Health Points          Slg - Slings                Ice - Ice Magic
+SP  - Stamina Points         Bws - Bows                  Air - Air Magic
+MP  - Magic Points           Crb - Crossbows             Ear - Earth Magic
+Exp - Experience                                         Poi - Poison Magic
                                                          Lig - Light Magic
                                                          Dar - Darkness Magic
                                                          Tim - Time Magic
