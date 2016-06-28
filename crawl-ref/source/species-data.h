@@ -700,7 +700,7 @@ static const map<species_type, species_def> species_data =
     },
     {},
     {},
-    { JOB_FIGHTER, JOB_MONK, JOB_HUNTER, JOB_BERSERKER, JOB_WARPER, JOB_NECROMANCER,
+    { JOB_FIGHTER, JOB_MONK, JOB_HUNTER, JOB_WARPER, JOB_NECROMANCER,
       JOB_EARTH_ELEMENTALIST, JOB_WIZARD },
     { SK_UNARMED_COMBAT, SK_MACES_FLAILS },
 } },

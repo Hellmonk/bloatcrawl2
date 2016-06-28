@@ -2942,7 +2942,9 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             mpr("You're too exhausted to draw out your power.");
             return SPRET_ABORT;
         }
-        if (get_hp() == get_hp_max() && get_mp() == get_mp_max()
+        if (get_hp() == get_hp_max()
+            && get_sp() == get_sp_max()
+            && get_mp() == get_mp_max()
             && !you.duration[DUR_CONF]
             && !you.duration[DUR_SLOW]
             && !you.attribute[ATTR_HELD]

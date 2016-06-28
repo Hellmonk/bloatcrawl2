@@ -6283,11 +6283,11 @@ void ru_draw_out_power()
     you.redraw_quiver = true;
     you.redraw_evasion = true;
 
-    inc_hp(div_rand_round(you.piety, 16)
-           + roll_dice(div_rand_round(you.piety, 20), 6));
-    const int gain = div_rand_round(you.piety, 48)
-                     + roll_dice(div_rand_round(you.piety, 40), 4);
-    inc_mp(gain * 3);
+    const int gain = div_rand_round(you.piety, 16)
+                        + roll_dice(div_rand_round(you.piety, 20), 6);
+    inc_hp(gain);
+    inc_sp(gain);
+    inc_mp(gain);
     drain_player(30, false, true);
 }
 
