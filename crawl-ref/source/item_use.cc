@@ -189,8 +189,12 @@ bool UseItemMenu::process_key(int key)
  * items in inventory, then items on the floor. If player cancels out of menu,
  * nullptr is returned.
  *
- * @param object_class_type     The desired command which will decide item types.
- *                              OBJ_POTIONS and OBJ_SCROLLS are valid.
+ * @param item_type The object_class_type or OSEL_* of items to list.
+ * @param oper The operation being done to the selected item.
+ * @param prompt The prompt on the menu title
+ * @param allowcancel If the user tries to cancel out of the prompt, run this
+ *                    function. If it returns false, continue the prompt rather
+ *                    than returning null.
  *
  * @return                      A chosen item_def*, or nullptr.
  */
@@ -983,7 +987,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
 
 bool do_wear_armour(int item, bool quiet)
 {
-    const item_def &invitem = you.inv1[item];
+    item_def &invitem = you.inv1[item];
     if (!invitem.defined())
     {
         if (!quiet)
@@ -1052,7 +1056,7 @@ bool do_wear_armour(int item, bool quiet)
     {
         const int delay = armour_equip_delay(invitem);
         if (delay)
-            start_delay(DELAY_ARMOUR_ON, delay - (swapping ? 0 : 1), item);
+            start_delay<ArmourOnDelay>(delay - (swapping ? 0 : 1), invitem);
     }
 
     return true;
@@ -1060,7 +1064,7 @@ bool do_wear_armour(int item, bool quiet)
 
 bool takeoff_armour(int item)
 {
-    const item_def& invitem = you.inv1[item];
+    item_def& invitem = you.inv1[item];
 
     /*
     if (invitem.base_type != OBJ_ARMOUR)
@@ -1135,7 +1139,7 @@ bool takeoff_armour(int item)
     else
     {
         const int delay = armour_equip_delay(invitem);
-        start_delay(DELAY_ARMOUR_OFF, delay - 1, item);
+        start_delay<ArmourOffDelay>(delay - 1, invitem);
     }
 
     return true;
@@ -1517,7 +1521,7 @@ static bool _swap_rings(int ring_slot)
     }
 
     // Put on the new ring.
-    start_delay(DELAY_JEWELLERY_ON, 1, ring_slot);
+    start_delay<JewelleryOnDelay>(1, you.inv1[ring_slot]);
 
     return true;
 }
@@ -1644,7 +1648,7 @@ static bool _puton_item(int item_slot, bool prompt_slot)
             return false;
 
         // Put on the new amulet.
-        start_delay(DELAY_JEWELLERY_ON, 1, item_slot);
+        start_delay<JewelleryOnDelay>(1, item);
 
         // Assume it's going to succeed.
         return true;
@@ -1674,7 +1678,7 @@ static bool _puton_item(int item_slot, bool prompt_slot)
             if (!remove_ring(you.equip[hand_used], false))
                 return false;
 
-            start_delay(DELAY_JEWELLERY_ON, 1, item_slot);
+            start_delay<JewelleryOnDelay>(1, item);
             return true;
         }
     }
@@ -2275,13 +2279,13 @@ bool enchant_weapon(item_def &wpn, bool quiet)
 static bool _identify(bool alreadyknown, const string &pre_msg)
 {
     item_def* itemp = _use_an_item(OSEL_UNIDENT, OPER_ID,
-                                   "Identify which item? (\\ to view known items)",
-                                   [=]()
-                                   {
-                                       return alreadyknown
-                                              || crawl_state.seen_hups
-                                              || yesno("Really abort (and waste the scroll)?", false, 0);
-                                   });
+                        "Identify which item? (\\ to view known items)",
+                        [=]()
+                        {
+                            return alreadyknown
+                                   || crawl_state.seen_hups
+                                   || yesno("Really abort (and waste the scroll)?", false, 0);
+                        });
 
     if (!itemp)
         return !alreadyknown;
@@ -2474,11 +2478,6 @@ void random_uselessness()
         break;
 
     case 6:
-        mprf(MSGCH_SOUND, "You hear the tinkle of a tiny bell.");
-        noisy(2, you.pos());
-        cast_summon_butterflies(100);
-        break;
-
     case 7:
         mprf(MSGCH_SOUND, "You hear %s.", weird_sound().c_str());
         noisy(2, you.pos());
@@ -2770,8 +2769,7 @@ void read(item_def* scroll)
     {
         // takes 0.5, 1, 2 extra turns
         const int turns = max(1, player_mutation_level(MUT_BLURRY_VISION) - 1);
-        const pair<bool, int> item = item_int(*scroll);
-        start_delay(DELAY_BLURRY_SCROLL, turns, item.second, item.first);
+        start_delay<BlurryScrollDelay>(turns, *scroll);
         if (player_mutation_level(MUT_BLURRY_VISION) == 1)
             you.time_taken /= 2;
     }

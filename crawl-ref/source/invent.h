@@ -275,7 +275,8 @@ bool needs_handle_warning(const item_def &item, operation_types oper,
                           bool &penance);
 bool is_consumable(object_class_type type);
 bool is_consumable(FixedVector< item_def, ENDOFPACK > &inv);
-void inv_from_item(FixedVector< item_def, ENDOFPACK > *&inv, object_class_type type);
+void inv_from_item_type(FixedVector <item_def, ENDOFPACK> *&inv, object_class_type type);
+FixedVector< item_def, ENDOFPACK > &inv_from_item_type(object_class_type type);
 bool inv_from_prompt(FixedVector< item_def, ENDOFPACK > *&inv, const char* prompt);
 
 FixedVector< item_def, ENDOFPACK > *evoke_inv();

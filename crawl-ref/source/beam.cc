@@ -197,6 +197,7 @@ static void _ench_animation(int flavour, const monster* mon, bool force)
     case BEAM_HEALING:
         elem = ETC_HEAL;
         break;
+    case BEAM_INFESTATION:
     case BEAM_PAIN:
         elem = ETC_UNHOLY;
         break;
@@ -3555,6 +3556,10 @@ void bolt::affect_player_enchantment(bool resistible)
         return;
     }
 
+    // Never affects the player.
+    if (flavour == BEAM_INFESTATION)
+        return;
+
     // You didn't resist it.
     if (animate)
         _ench_animation(effect_known ? real_flavour : BEAM_MAGIC);
@@ -4188,7 +4193,7 @@ void bolt::affect_player()
         else
         {
             mprf(MSGCH_WARN, "You are encased in ice.");
-            you.duration[DUR_FROZEN] = 3 * BASELINE_DELAY;
+            you.duration[DUR_FROZEN] = (2 + random2(3)) * BASELINE_DELAY;
         }
     }
     else if (origin_spell == SPELL_DAZZLING_SPRAY
@@ -4557,7 +4562,8 @@ bool dazzle_monster(monster* mons, actor* act)
     if (x_chance_in_y(95 - mons->get_hit_dice() * 5 , 100))
     {
         simple_monster_message(mons, " is dazzled.");
-        mons->add_ench(mon_enchant(ENCH_BLIND, 1, act, 40 + random2(40)));
+        mons->add_ench(mon_enchant(ENCH_BLIND, 1, act,
+                       random_range(4, 8) * BASELINE_DELAY));
         return true;
     }
 
@@ -5265,30 +5271,31 @@ bool bolt::has_saving_throw() const
 
     switch (flavour)
     {
-        case BEAM_HASTE:
-        case BEAM_MIGHT:
-        case BEAM_BERSERK:
-        case BEAM_HEALING:
-        case BEAM_INVISIBILITY:
-        case BEAM_DISPEL_UNDEAD:
-        case BEAM_ENSLAVE_SOUL:     // has a different saving throw
-        case BEAM_BLINK_CLOSE:
-        case BEAM_BLINK:
-        case BEAM_MALIGN_OFFERING:
-        case BEAM_AGILITY:
-        case BEAM_RESISTANCE:
-        case BEAM_MALMUTATE:
-        case BEAM_CORRUPT_BODY:
-        case BEAM_SAP_MAGIC:
-        case BEAM_UNRAVELLING:
-        case BEAM_UNRAVELLED_MAGIC:
-            return false;
-        case BEAM_VULNERABILITY:
-            return !one_chance_in(3);  // Ignores MR 1/3 of the time
-        case BEAM_PARALYSIS:        // Giant eyeball paralysis is irresistible
-            return !(agent() && agent()->type == MONS_GIANT_EYEBALL);
-        default:
-            return true;
+    case BEAM_HASTE:
+    case BEAM_MIGHT:
+    case BEAM_BERSERK:
+    case BEAM_HEALING:
+    case BEAM_INVISIBILITY:
+    case BEAM_DISPEL_UNDEAD:
+    case BEAM_ENSLAVE_SOUL:
+    case BEAM_BLINK_CLOSE:
+    case BEAM_BLINK:
+    case BEAM_MALIGN_OFFERING:
+    case BEAM_AGILITY:
+    case BEAM_RESISTANCE:
+    case BEAM_MALMUTATE:
+    case BEAM_CORRUPT_BODY:
+    case BEAM_SAP_MAGIC:
+    case BEAM_UNRAVELLING:
+    case BEAM_UNRAVELLED_MAGIC:
+    case BEAM_INFESTATION:
+        return false;
+    case BEAM_VULNERABILITY:
+        return !one_chance_in(3);  // Ignores MR 1/3 of the time
+    case BEAM_PARALYSIS:        // Giant eyeball paralysis is irresistible
+        return !(agent() && agent()->type == MONS_GIANT_EYEBALL);
+    default:
+        return true;
     }
 }
 
@@ -5356,6 +5363,10 @@ bool ench_flavour_affects_monster(beam_type flavour, const monster* mon,
         case BEAM_INNER_FLAME:
             rc = !(mon->is_summoned() || mon->has_ench(ENCH_INNER_FLAME));
             break;
+
+    case BEAM_INFESTATION:
+        rc = mons_gives_xp(mon, &you) && !mon->has_ench(ENCH_INFESTATION);
+        break;
 
     default:
         break;
@@ -5922,8 +5933,17 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
             _unravelling_explode(*this);
             return MON_AFFECTED;
 
-        default:
-            break;
+    case BEAM_INFESTATION:
+    {
+        const int dur = (5 + random2avg(ench_power / 2, 2)) * BASELINE_DELAY;
+        mon->add_ench(mon_enchant(ENCH_INFESTATION, 0, &you, dur));
+        if (simple_monster_message(mon, " is infested!"))
+            obvious_effect = true;
+        return MON_AFFECTED;
+    }
+
+    default:
+        break;
     }
 
     return MON_AFFECTED;
@@ -6167,6 +6187,10 @@ bool bolt::explode(bool show_more, bool hole_in_the_middle)
     {
         loudness = explosion_noise(r);
 
+        // Not an "explosion", but still a bit noisy at the target location.
+        if (origin_spell == SPELL_INFESTATION)
+            loudness = spell_effect_noise(SPELL_INFESTATION);
+
         // Lee's Rapid Deconstruction can target the tiles on the map
         // boundary.
         const coord_def noise_position = clamp_in_bounds(pos());
@@ -6400,8 +6424,7 @@ bool bolt::nasty_to(const monster* mon) const
     if (flavour == BEAM_TELEPORT)
         return !mon->wont_attack();
 
-    // enslave soul
-    if (flavour == BEAM_ENSLAVE_SOUL)
+    if (flavour == BEAM_ENSLAVE_SOUL || flavour == BEAM_INFESTATION)
         return ench_flavour_affects_monster(flavour, mon);
 
     // sleep
@@ -6613,86 +6636,87 @@ static string _beam_type_name(beam_type type)
 {
     switch (type)
     {
-        case BEAM_NONE:                  return "none";
-        case BEAM_MISSILE:               return "missile";
-        case BEAM_MMISSILE:              return "magic missile";
-        case BEAM_FIRE:                  return "fire";
-        case BEAM_COLD:                  return "cold";
-        case BEAM_WATER:                 return "water";
-        case BEAM_MAGIC:                 return "magic";
-        case BEAM_ELECTRICITY:           return "electricity";
-        case BEAM_MEPHITIC:              return "noxious fumes";
-        case BEAM_POISON:                return "poison";
-        case BEAM_NEG:                   return "negative energy";
-        case BEAM_ACID:                  return "acid";
-        case BEAM_MIASMA:                return "miasma";
-        case BEAM_SPORE:                 return "spores";
-        case BEAM_POISON_ARROW:          return "poison arrow";
-        case BEAM_HELLFIRE:              return "hellfire";
-        case BEAM_STICKY_FLAME:          return "sticky fire";
-        case BEAM_STEAM:                 return "steam";
-        case BEAM_ENERGY:                return "energy";
-        case BEAM_HOLY:                  return "holy energy";
-        case BEAM_FRAG:                  return "fragments";
-        case BEAM_LAVA:                  return "magma";
-        case BEAM_ICE:                   return "ice";
-        case BEAM_DEVASTATION:           return "devastation";
-        case BEAM_RANDOM:                return "random";
-        case BEAM_CHAOS:                 return "chaos";
-        case BEAM_GHOSTLY_FLAME:         return "ghostly flame";
-        case BEAM_SLOW:                  return "slow";
-        case BEAM_HASTE:                 return "haste";
-        case BEAM_MIGHT:                 return "might";
-        case BEAM_HEALING:               return "healing";
-        case BEAM_PARALYSIS:             return "paralysis";
-        case BEAM_CONFUSION:             return "confusion";
-        case BEAM_INVISIBILITY:          return "invisibility";
-        case BEAM_DIGGING:               return "digging";
-        case BEAM_TELEPORT:              return "teleportation";
-        case BEAM_POLYMORPH:             return "polymorph";
-        case BEAM_MALMUTATE:             return "malmutation";
-        case BEAM_ENSLAVE:               return "enslave";
-        case BEAM_BANISH:                return "banishment";
-        case BEAM_ENSLAVE_SOUL:          return "enslave soul";
-        case BEAM_PAIN:                  return "pain";
-        case BEAM_DISPEL_UNDEAD:         return "dispel undead";
-        case BEAM_DISINTEGRATION:        return "disintegration";
-        case BEAM_BLINK:                 return "blink";
-        case BEAM_BLINK_CLOSE:           return "blink close";
-        case BEAM_PETRIFY:               return "petrify";
-        case BEAM_CORONA:                return "backlight";
-        case BEAM_PORKALATOR:            return "porkalator";
-        case BEAM_HIBERNATION:           return "hibernation";
-        case BEAM_SLEEP:                 return "sleep";
-        case BEAM_BERSERK:               return "berserk";
-        case BEAM_VISUAL:                return "visual effects";
-        case BEAM_TORMENT_DAMAGE:        return "torment damage";
-        case BEAM_INK:                   return "ink";
-        case BEAM_HOLY_FLAME:            return "cleansing flame";
-        case BEAM_AIR:                   return "air";
-        case BEAM_INNER_FLAME:           return "inner flame";
-        case BEAM_PETRIFYING_CLOUD:      return "calcifying dust";
-        case BEAM_ENSNARE:               return "magic web";
-        case BEAM_SENTINEL_MARK:         return "sentinel's mark";
-        case BEAM_DIMENSION_ANCHOR:      return "dimension anchor";
-        case BEAM_VULNERABILITY:         return "vulnerability";
-        case BEAM_MALIGN_OFFERING:       return "malign offering";
-        case BEAM_VIRULENCE:             return "virulence";
-        case BEAM_AGILITY:               return "agility";
-        case BEAM_SAP_MAGIC:             return "sap magic";
-        case BEAM_CORRUPT_BODY:          return "corrupt body";
-        case BEAM_CRYSTAL:               return "crystal bolt";
-        case BEAM_DRAIN_MAGIC:           return "drain magic";
-        case BEAM_TUKIMAS_DANCE:         return "tukima's dance";
-        case BEAM_BOUNCY_TRACER:         return "bouncy tracer";
-        case BEAM_DEATH_RATTLE:          return "breath of the dead";
-        case BEAM_RESISTANCE:            return "resistance";
-        case BEAM_UNRAVELLING:           return "unravelling";
-        case BEAM_UNRAVELLED_MAGIC:      return "unravelled magic";
-        case BEAM_SHARED_PAIN:           return "shared pain";
-        case BEAM_IRRESISTIBLE_CONFUSION:return "confusion";
+    case BEAM_NONE:                  return "none";
+    case BEAM_MISSILE:               return "missile";
+    case BEAM_MMISSILE:              return "magic missile";
+    case BEAM_FIRE:                  return "fire";
+    case BEAM_COLD:                  return "cold";
+    case BEAM_WATER:                 return "water";
+    case BEAM_MAGIC:                 return "magic";
+    case BEAM_ELECTRICITY:           return "electricity";
+    case BEAM_MEPHITIC:              return "noxious fumes";
+    case BEAM_POISON:                return "poison";
+    case BEAM_NEG:                   return "negative energy";
+    case BEAM_ACID:                  return "acid";
+    case BEAM_MIASMA:                return "miasma";
+    case BEAM_SPORE:                 return "spores";
+    case BEAM_POISON_ARROW:          return "poison arrow";
+    case BEAM_HELLFIRE:              return "hellfire";
+    case BEAM_STICKY_FLAME:          return "sticky fire";
+    case BEAM_STEAM:                 return "steam";
+    case BEAM_ENERGY:                return "energy";
+    case BEAM_HOLY:                  return "holy energy";
+    case BEAM_FRAG:                  return "fragments";
+    case BEAM_LAVA:                  return "magma";
+    case BEAM_ICE:                   return "ice";
+    case BEAM_DEVASTATION:           return "devastation";
+    case BEAM_RANDOM:                return "random";
+    case BEAM_CHAOS:                 return "chaos";
+    case BEAM_GHOSTLY_FLAME:         return "ghostly flame";
+    case BEAM_SLOW:                  return "slow";
+    case BEAM_HASTE:                 return "haste";
+    case BEAM_MIGHT:                 return "might";
+    case BEAM_HEALING:               return "healing";
+    case BEAM_PARALYSIS:             return "paralysis";
+    case BEAM_CONFUSION:             return "confusion";
+    case BEAM_INVISIBILITY:          return "invisibility";
+    case BEAM_DIGGING:               return "digging";
+    case BEAM_TELEPORT:              return "teleportation";
+    case BEAM_POLYMORPH:             return "polymorph";
+    case BEAM_MALMUTATE:             return "malmutation";
+    case BEAM_ENSLAVE:               return "enslave";
+    case BEAM_BANISH:                return "banishment";
+    case BEAM_ENSLAVE_SOUL:          return "enslave soul";
+    case BEAM_PAIN:                  return "pain";
+    case BEAM_DISPEL_UNDEAD:         return "dispel undead";
+    case BEAM_DISINTEGRATION:        return "disintegration";
+    case BEAM_BLINK:                 return "blink";
+    case BEAM_BLINK_CLOSE:           return "blink close";
+    case BEAM_PETRIFY:               return "petrify";
+    case BEAM_CORONA:                return "backlight";
+    case BEAM_PORKALATOR:            return "porkalator";
+    case BEAM_HIBERNATION:           return "hibernation";
+    case BEAM_SLEEP:                 return "sleep";
+    case BEAM_BERSERK:               return "berserk";
+    case BEAM_VISUAL:                return "visual effects";
+    case BEAM_TORMENT_DAMAGE:        return "torment damage";
+    case BEAM_INK:                   return "ink";
+    case BEAM_HOLY_FLAME:            return "cleansing flame";
+    case BEAM_AIR:                   return "air";
+    case BEAM_INNER_FLAME:           return "inner flame";
+    case BEAM_PETRIFYING_CLOUD:      return "calcifying dust";
+    case BEAM_ENSNARE:               return "magic web";
+    case BEAM_SENTINEL_MARK:         return "sentinel's mark";
+    case BEAM_DIMENSION_ANCHOR:      return "dimension anchor";
+    case BEAM_VULNERABILITY:         return "vulnerability";
+    case BEAM_MALIGN_OFFERING:       return "malign offering";
+    case BEAM_VIRULENCE:             return "virulence";
+    case BEAM_AGILITY:               return "agility";
+    case BEAM_SAP_MAGIC:             return "sap magic";
+    case BEAM_CORRUPT_BODY:          return "corrupt body";
+    case BEAM_CRYSTAL:               return "crystal bolt";
+    case BEAM_DRAIN_MAGIC:           return "drain magic";
+    case BEAM_TUKIMAS_DANCE:         return "tukima's dance";
+    case BEAM_BOUNCY_TRACER:         return "bouncy tracer";
+    case BEAM_DEATH_RATTLE:          return "breath of the dead";
+    case BEAM_RESISTANCE:            return "resistance";
+    case BEAM_UNRAVELLING:           return "unravelling";
+    case BEAM_UNRAVELLED_MAGIC:      return "unravelled magic";
+    case BEAM_SHARED_PAIN:           return "shared pain";
+    case BEAM_IRRESISTIBLE_CONFUSION:return "confusion";
+    case BEAM_INFESTATION:           return "infestation";
 
-        case NUM_BEAMS:                  die("invalid beam type");
+    case NUM_BEAMS:                  die("invalid beam type");
     }
     die("unknown beam type");
 }

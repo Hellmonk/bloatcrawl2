@@ -3434,14 +3434,7 @@ void level_change(bool skip_attribute_increase)
 
         xom_is_stimulated(12);
         if (in_good_standing(GOD_HEPLIAKLQANA))
-        {
             upgrade_hepliaklqana_ancestor();
-            if (you.experience_level == hepliaklqana_specialization_level())
-            {
-                god_speaks(you.religion,
-                           "You may now specialize your ancestor.");
-            }
-        }
 
         learned_something_new(HINT_NEW_LEVEL);
     }
@@ -5353,7 +5346,8 @@ void handle_player_poison(int delay)
     // If Cheibriados has slowed your life processes, poison affects you less
     // quickly (you take the same total damage, but spread out over a longer
     // period of time).
-    const double delay_scaling = (GOD_CHEIBRIADOS == you.religion && you.piety >= piety_breakpoint(0)) ? 2.0 / 3.0 : 1.0;
+    const double delay_scaling = have_passive(passive_t::slow_metabolism)
+                               ? 2.0 / 3.0 : 1.0;
 
     const double new_aut = cur_aut - ((double) delay) * delay_scaling;
     const double new_dur = _poison_aut_to_dur(new_aut);

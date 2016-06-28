@@ -1012,7 +1012,7 @@ vector<SelItem> select_items(
     if (!items.empty())
     {
     	FixedVector< item_def, ENDOFPACK > *inv;
-    	inv_from_item(inv, items[0]->base_type);
+    	inv_from_item_type(inv, items[0]->base_type);
 
         InvMenu menu;
         menu.set_type(mtype);
@@ -2474,35 +2474,35 @@ bool is_consumable(object_class_type type)
 FixedVector< item_def, ENDOFPACK > *evoke_inv()
 {
     FixedVector< item_def, ENDOFPACK > *inv;
-    inv_from_item(inv, OBJ_WANDS);
+    inv_from_item_type(inv, OBJ_WANDS);
     return inv;
 }
 
 FixedVector< item_def, ENDOFPACK > *equip_inv()
 {
     FixedVector< item_def, ENDOFPACK > *inv;
-    inv_from_item(inv, OBJ_WEAPONS);
+    inv_from_item_type(inv, OBJ_WEAPONS);
     return inv;
 }
 
 FixedVector< item_def, ENDOFPACK > *potion_inv()
 {
     FixedVector< item_def, ENDOFPACK > *inv;
-    inv_from_item(inv, OBJ_POTIONS);
+    inv_from_item_type(inv, OBJ_POTIONS);
     return inv;
 }
 
 FixedVector< item_def, ENDOFPACK > *scroll_inv()
 {
     FixedVector< item_def, ENDOFPACK > *inv;
-    inv_from_item(inv, OBJ_SCROLLS);
+    inv_from_item_type(inv, OBJ_SCROLLS);
     return inv;
 }
 
 FixedVector< item_def, ENDOFPACK > *book_inv()
 {
     FixedVector< item_def, ENDOFPACK > *inv;
-    inv_from_item(inv, OBJ_BOOKS);
+    inv_from_item_type(inv, OBJ_BOOKS);
     return inv;
 }
 
@@ -2511,12 +2511,21 @@ bool is_consumable(FixedVector< item_def, ENDOFPACK > &inv)
 	return (&inv == &you.inv2);
 }
 
-void inv_from_item(FixedVector< item_def, ENDOFPACK > *&inv, object_class_type type)
+void inv_from_item_type(FixedVector< item_def, ENDOFPACK > *&inv, object_class_type type)
+{
+    if(is_consumable(type)) {
+        inv = &you.inv2;
+    } else {
+        inv = &you.inv1;
+    }
+}
+
+FixedVector< item_def, ENDOFPACK > &inv_from_item_type(object_class_type type)
 {
 	if(is_consumable(type)) {
-		inv = &you.inv2;
+		return you.inv2;
 	} else {
-		inv = &you.inv1;
+        return you.inv1;
 	}
 }
 

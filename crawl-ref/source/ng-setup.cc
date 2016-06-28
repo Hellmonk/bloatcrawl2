@@ -98,7 +98,7 @@ item_def* newgame_make_item(object_class_type base,
                             int force_ego, bool force_tutorial)
 {
 	FixedVector< item_def, ENDOFPACK > *inv;
-	inv_from_item(inv, base);
+    inv_from_item_type(inv, base);
 
     // Don't set normal equipment in the tutorial.
     if (!force_tutorial && crawl_state.game_is_tutorial())

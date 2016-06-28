@@ -1050,7 +1050,6 @@ misc_deck MISC_DECK
 %compose misc_deck
 %compose i-deck_war
 %finish
-# Remove changes and defense when TAG_MAJOR_VERSION > 34
 %start
 %compose misc_deck
 %compose i-deck_changes

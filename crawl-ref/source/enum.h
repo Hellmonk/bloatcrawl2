@@ -467,12 +467,14 @@ enum ability_type
 
     ABIL_HEPLIAKLQANA_IDENTITY,
 
+#if TAG_MAJOR_VERSION == 34
     ABIL_HEPLIAKLQANA_KNIGHT_REACHING,
     ABIL_HEPLIAKLQANA_KNIGHT_CLEAVING,
     ABIL_HEPLIAKLQANA_BATTLEMAGE_FORCE_LANCE,
     ABIL_HEPLIAKLQANA_BATTLEMAGE_MAGMA,
     ABIL_HEPLIAKLQANA_HEXER_MASS_CONFUSION,
     ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION,
+#endif
 
     // For both Yred and Beogh
     ABIL_STOP_RECALL = 1500,
@@ -702,7 +704,8 @@ enum beam_type                  // bolt::flavour
     BEAM_UNRAVELLING,
     BEAM_SHARED_PAIN,
     BEAM_IRRESISTIBLE_CONFUSION,
-    BEAM_LAST_ENCHANTMENT = BEAM_IRRESISTIBLE_CONFUSION,
+    BEAM_INFESTATION,
+    BEAM_LAST_ENCHANTMENT = BEAM_INFESTATION,
 
     BEAM_MEPHITIC,
     BEAM_INK,
@@ -755,7 +758,9 @@ enum book_type
     BOOK_AIR,
     BOOK_SKY,
     BOOK_WARP,
+#if TAG_MAJOR_VERSION == 34
     BOOK_ENVENOMATIONS,
+#endif
     BOOK_UNLIFE,
 #if TAG_MAJOR_VERSION == 34
     BOOK_CONTROL,
@@ -912,6 +917,8 @@ enum canned_message_type
 	MSG_DJINNI_CANT_READ,
     MSG_STAMINA_INCREASE,
     MSG_STAMINA_DECREASE,
+    MSG_SOMETHING_IN_WAY,
+    MSG_CANNOT_SEE,
 };
 
 enum char_set_type
@@ -1384,53 +1391,6 @@ enum confirm_level_type
     CONFIRM_NONE_EASY,
     CONFIRM_SAFE_EASY,
     CONFIRM_ALL_EASY,
-};
-
-// When adding new delays, update their names in delay.cc
-enum delay_type
-{
-    DELAY_NOT_DELAYED,
-    DELAY_EAT,
-    DELAY_FEED_VAMPIRE,
-    DELAY_ARMOUR_ON,
-    DELAY_ARMOUR_OFF,
-    DELAY_JEWELLERY_ON,
-    DELAY_MEMORISE,
-    DELAY_BUTCHER,
-    DELAY_BOTTLE_BLOOD,
-#if TAG_MAJOR_VERSION == 34
-    DELAY_WEAPON_SWAP,
-#endif
-    DELAY_PASSWALL,
-    DELAY_DROP_ITEM,
-    DELAY_MULTIDROP,
-    DELAY_ASCENDING_STAIRS,
-    DELAY_DESCENDING_STAIRS,
-#if TAG_MAJOR_VERSION == 34
-    DELAY_UNUSED, // was DELAY_RECITE
-#endif
-
-    // [dshaligram] Shift-running, resting, travel and macros are now
-    // also handled as delays.
-    DELAY_RUN,
-    DELAY_REST,
-    DELAY_TRAVEL,
-
-    DELAY_MACRO,
-
-    // In a macro delay, a stacked delay to tell Crawl to read and act on
-    // one input command.
-    DELAY_MACRO_PROCESS_KEY,
-
-    DELAY_INTERRUPTIBLE,                // simple interruptible delay
-    DELAY_UNINTERRUPTIBLE,              // simple uninterruptible delay
-
-    DELAY_SHAFT_SELF, // Formicid ability
-    DELAY_BLURRY_SCROLL,
-
-    DELAY_WAND_HEAL,
-
-    NUM_DELAYS
 };
 
 enum description_level_type
@@ -2168,6 +2128,7 @@ enum enchant_type
     ENCH_PAIN_BOND, // affected by above
     ENCH_IDEALISED,
     ENCH_BOUND_SOUL,
+    ENCH_INFESTATION,
     // Update enchant_names[] in mon-ench.cc when adding or removing
     // enchantments.
     NUM_ENCHANTMENTS
@@ -2328,13 +2289,6 @@ enum holy_word_source_type
     HOLY_WORD_ZIN,     // sanctuary
     HOLY_WORD_TSO,     // weapon blessing
     HOLY_WORD_CARD,    // Nemelex wrath
-};
-
-enum motion_type
-{
-    MOTION_SNEAKING,
-    MOTION_WALKING,
-    MOTION_RUNNING,
 };
 
 enum hunger_state_t                    // you.hunger_state
@@ -3611,9 +3565,7 @@ enum monster_type                      // menv[].type
 
     MONS_SHARD_SHRIKE,
     MONS_SINGULARITY,
-#if TAG_MAJOR_VERSION == 34
     MONS_SALAMANDER_STORMCALLER,
-#endif
     MONS_ENTROPY_WEAVER,
     MONS_MOON_TROLL,
     MONS_MUTANT_BEAST,
@@ -4017,6 +3969,7 @@ enum operation_types
     OPER_QUIVER   = 'Q',
     OPER_ATTACK   = 'a',
     OPER_ID       = 'i',
+    OPER_BUTCHER  = 'c',
     OPER_ANY      = 0,
 };
 
@@ -4462,9 +4415,7 @@ enum spell_type
 #if TAG_MAJOR_VERSION == 34
     SPELL_FLY,
     SPELL_INSULATION,
-#endif
     SPELL_CURE_POISON,
-#if TAG_MAJOR_VERSION == 34
     SPELL_CONTROL_TELEPORT,
     SPELL_POISON_WEAPON,
 #endif
@@ -4792,6 +4743,7 @@ enum spell_type
     SPELL_SERPENT_OF_HELL_TAR_BREATH,
     SPELL_SERPENT_OF_HELL_DIS_BREATH,
     SPELL_BIND_SOULS,
+    SPELL_INFESTATION,
     NUM_SPELLS
 };
 

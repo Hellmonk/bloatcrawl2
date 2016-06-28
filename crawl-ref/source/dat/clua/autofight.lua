@@ -237,9 +237,6 @@ local function is_candidate_for_attack(x,y)
       or m:name() == "orb of destruction" then
     return false
   end
-  if not (have_ranged() or will_tab(0,0,x,y)) then
-    return false
-  end
   if m:is_firewood() then
   --crawl.mpr("... is firewood.")
     if string.find(m:name(), "ballistomycete") then

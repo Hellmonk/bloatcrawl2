@@ -211,7 +211,7 @@ struct message_line
                     const int total_len = pure_len() + seplen + other.pure_len();
                     if (total_len > (int)msgwin_line_length())
                         return false;
-        
+
                     // merge in other's messages; they'll be delimited when printing.
                     messages.insert(messages.end(),
                                     other.messages.begin(), other.messages.end());
@@ -1831,6 +1831,11 @@ void canned_msg(canned_message_type which_message, const int amount)
         case MSG_DJINNI_CANT_READ:
             mprf(MSGCH_WARN, "Djinni can't read!");
         	break;
+        case MSG_SOMETHING_IN_WAY:
+            mpr("There's something in the way.");
+        case MSG_CANNOT_SEE:
+            mpr("You can't see that place.");
+            break;
     }
 }
 
