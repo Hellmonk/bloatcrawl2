@@ -10238,6 +10238,13 @@ int player_pool_modifier(int amount)
     return amount * percent / 100;
 }
 
+int monster_danger_modifier(int danger)
+{
+    danger *= (100 - _difficulty_mode_multiplier()) * 2 + 80;
+    danger *= (10 + runes_in_pack()) / 10;
+    return danger / 100;
+}
+
 int player_monster_gen_modifier(int amount)
 {
     int percent = 100;

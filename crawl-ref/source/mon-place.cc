@@ -1358,7 +1358,11 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         define_zombie(mon, ztype, mg.cls);
     }
     else
-        define_monster(mon, mg.behaviour);
+    {
+        int danger = place.absdepth();
+        danger = monster_danger_modifier(danger);
+        define_monster(mon, mg.behaviour, danger);
+    }
 
     if (mon->type == MONS_MUTANT_BEAST)
     {
