@@ -1798,7 +1798,7 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
                 if (proceed)
                 {
                     for (rune_type rune : branches[branch].runes)
-                        you.rune_curse_active.set(rune, true);
+                        activate_rune_curse(rune);
                 }
                 else
                     return false;

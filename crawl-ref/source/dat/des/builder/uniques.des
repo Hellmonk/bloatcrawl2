@@ -101,17 +101,17 @@ DEPTH:  Orc:$, Elf, !Elf:$, Snake, !Snake:$, Spider, !Spider:$, Dwarf
 : place_unique(_G, "Azrael band")
 
 NAME:   uniq_blork_the_orc
-DEPTH:  D:4-6
+DEPTH:  D:4-7
 : place_unique(_G, "Blork the orc")
 
 # Crazy Yuif's hut is bottom of this file.
 
 NAME:   uniq_duvessa
-DEPTH:  D:4-7
+DEPTH:  D:4-7, Lair
 : place_unique(_G, "Duvessa band")
 
 NAME:   uniq_edmund
-DEPTH:  D:4-6
+DEPTH:  D:4-6, Lair:1-3
 : place_unique(_G, "Edmund")
 
 NAME:   uniq_erica
@@ -123,7 +123,7 @@ DEPTH:  Orc, !Orc:$
 : place_unique(_G, "Erolcha")
 
 NAME:   uniq_eustachio
-DEPTH:  D:4-6
+DEPTH:  D:4-6, Lair:1-3
 : place_unique(_G, "Eustachio")
 
 NAME:   uniq_frances
@@ -140,11 +140,11 @@ WEIGHT: 5, 15(Lair)
 : place_unique(_G, "Gastronok")
 
 NAME:   uniq_grum
-DEPTH:  Lair:1
+DEPTH:  Lair:1-4
 : place_unique(_G, "Grum band")
 
 NAME:   uniq_grinder
-DEPTH:  D:3-6
+DEPTH:  D:3-7
 : place_unique(_G, "Grinder")
 
 NAME:   uniq_harold
@@ -152,11 +152,11 @@ DEPTH:  Orc, !Orc:$, Lair:1-4
 : place_unique(_G, "Harold")
 
 NAME:   uniq_iyjb
-DEPTH:  D:2-3
+DEPTH:  D:2-4
 : place_unique(_G, "Ijyb")
 
 NAME:   uniq_jessica
-DEPTH:  D:2-3
+DEPTH:  D:2-4
 : place_unique(_G, "Jessica")
 
 NAME:   uniq_joseph
@@ -251,11 +251,11 @@ DEPTH:  Orc:2-, Lair:1-4
 : place_unique(_G, "Sonja")
 
 NAME:   uniq_terence
-DEPTH:  D:2-3
+DEPTH:  D:2-4
 : place_unique(_G, "Terence")
 
 NAME:   uniq_robin
-DEPTH:  D:2-4
+DEPTH:  D:2-5
 : place_unique(_G, "Robin band")
 
 NAME:   uniq_urug

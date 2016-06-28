@@ -13,6 +13,7 @@
 #include "stepdown.h"
 #include "unicode.h"
 #include "stringutil.h"
+#include "dungeon.h"
 
 const int active_rune_curses()
 {
@@ -69,11 +70,20 @@ const int rune_curse_mon_spellpower_adjustment(int spellpower)
 
 const int rune_curse_depth_adjust(int depth)
 {
-    /* not ready yet
+    const int runes = active_rune_curses();
     if (runes > 0)
-        depth += runes;
-        */
+        depth += random2(runes);
     return depth;
+}
+
+void activate_rune_curse(const rune_type rune)
+{
+    you.rune_curse_active.set(rune, true);
+    if (rune == RUNE_TOMB)
+    {
+        you.unique_creatures.reset();
+        dgn_flush_map_memory();
+    }
 }
 
 const string rune_curse_description(const rune_type rune)
@@ -123,7 +133,7 @@ const string rune_curse_description(const rune_type rune)
             break;
 
         case RUNE_TOMB:
-            message = "Normal movement speed is reduced. Quick mode isn't affected.";
+            message = "Unique monsters spawn more often, and are more dangerous.";
             break;
 
         case RUNE_DEMONIC:
@@ -134,9 +144,12 @@ const string rune_curse_description(const rune_type rune)
             message = "Experience gains are reduced.";
             break;
 
+        case RUNE_COCYTUS:
+            message = "Normal movement speed is reduced. Quick mode isn't affected.";
+            break;
+
         case RUNE_DIS:
         case RUNE_GEHENNA:
-        case RUNE_COCYTUS:
         case RUNE_TARTARUS:
 
         case RUNE_LOM_LOBON:
