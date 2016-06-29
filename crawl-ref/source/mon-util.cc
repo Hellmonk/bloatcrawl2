@@ -2696,8 +2696,8 @@ void define_monster(monster* mons, beh_type behavior, int danger)
 
     case MONS_HYDRA:
     {
-        int heads = 2;
-        while(heads < 20 && random2avg(danger, 2) > 3)
+        int heads = 2 + crawl_state.difficulty;
+        while(heads < 20 && random2avg(danger, 2) > 6)
         {
             heads++;
         }
