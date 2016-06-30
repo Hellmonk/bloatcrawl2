@@ -206,7 +206,8 @@ i-evasion BRAND_EVASION
 i-confusion BRAND_CONFUSION
 i-penetration BRAND_PENETRATION
 i-reaping BRAND_REAPING
-i-speed BRAND_LIGHT BRAND_WEP_LAST
+i-speed BRAND_LIGHT
+i-speed BRAND_ACID BRAND_WEP_LAST
 # missile-only brands, order doesn't matter
 i-dispersal BRAND_DISPERSAL
 i-explosion BRAND_EXPLOSION

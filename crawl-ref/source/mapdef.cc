@@ -4852,12 +4852,11 @@ static int _str_to_ego(item_spec &spec, string ego_str)
 #endif
         "chaos",
         "evasion",
-#if TAG_MAJOR_VERSION == 34
         "confuse",
-#endif
         "penetration",
         "reaping",
         "light",
+        "acid",
         nullptr
     };
     COMPILE_CHECK(ARRAYSZ(weapon_brands) == NUM_REAL_SPECIAL_WEAPONS);

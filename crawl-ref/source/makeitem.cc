@@ -313,6 +313,8 @@ bool is_weapon_brand_ok(int type, int brand, bool strict)
     case SPWPN_FLAMING:
     case SPWPN_FREEZING:
     case SPWPN_LIGHT:
+    case SPWPN_ACID:
+    case SPWPN_CONFUSE:
         break;
 
     // Melee-only brands.
@@ -344,8 +346,6 @@ bool is_weapon_brand_ok(int type, int brand, bool strict)
         return false;
 #endif
 
-    case SPWPN_ACID:
-    case SPWPN_CONFUSE:
     case SPWPN_FORBID_BRAND:
     case SPWPN_DEBUG_RANDART:
     case NUM_SPECIAL_WEAPONS:
