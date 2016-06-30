@@ -1,3 +1,5 @@
+#include "enum.h"
+
 enum weapon_choice
 {
     WCHOICE_NONE,   ///< No weapon choice
@@ -49,10 +51,10 @@ static const map<job_type, job_def> job_data =
     "AM", "Arcane Marksman",
     3, 5, 4,
     { SP_HIGH_ELF, SP_DEEP_ELF, SP_KOBOLD, SP_SPRIGGAN, SP_CAVE_TROLL, SP_CENTAUR, },
-    { "spear", "robe", "book of Debilitation" },
+    { "spear", "robe", "book of Light", "book of Time" },
     WCHOICE_RANGED,
     { { SK_FIGHTING, 2 }, { SK_DODGING, 2 }, { SK_SPELLCASTING, 3 },
-      { SK_HEXES, 3 }, { SK_WEAPON, 3 }, },
+      { SK_LIGHT_MAGIC, 2 }, { SK_TIME_MAGIC, 2 }, { SK_WEAPON, 3 }, },
 } },
 
 { JOB_ARTIFICER, {

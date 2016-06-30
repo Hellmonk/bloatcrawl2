@@ -250,14 +250,14 @@ sub load_mods
 
     foreach (@SPECIES)
     {
-        my $sp = $_;
-        $sp =~ s/Base //;
-        my ($xp, $hp, $sp, $mp) = $file =~ /$sp.*\n.*\n *(-?\d), (-?\d), (-?\d), (-?\d),/;
+        my $species = $_;
+        $species =~ s/Base //;
+        my ($xp, $hp, $sp, $mp) = $file =~ /$species.*\n.*\n *(-?\d), (-?\d), (-?\d), (-?\d),/;
 
         $SPECIES_SKILLS{$_}{"Experience"} = $xp;
-        $SPECIES_SKILLS{$_}{"Health Aptitude"} = $hp;
-        $SPECIES_SKILLS{$_}{"Stamina Aptitude"} = $sp;
-        $SPECIES_SKILLS{$_}{"Magic Aptitude"} = $mp;
+        $SPECIES_SKILLS{$_}{"Health Points"} = $hp;
+        $SPECIES_SKILLS{$_}{"Stamina Points"} = $sp;
+        $SPECIES_SKILLS{$_}{"Magic Points"} = $mp;
         die "couldn't parse mods for $_" unless defined $xp
                                                 && defined $hp
                                                 && defined $sp

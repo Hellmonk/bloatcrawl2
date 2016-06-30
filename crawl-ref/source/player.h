@@ -1268,6 +1268,7 @@ void player_update_last_to_hit_chance(int chance);
 int player_pool_modifier(int amount);
 void summoned_monster_died(mid_t mons, int mp_freeze, bool natural_death);
 bool player_summoned_monster(spell_type spell, monster* mons, bool first, int freeze_cost = -1);
+int monster_danger_modifier(int amount);
 int player_monster_gen_modifier(int amount);
 int player_potion_recharge_percent();
 int player_pre_ouch_modifier(int damage);

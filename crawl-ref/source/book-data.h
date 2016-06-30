@@ -142,15 +142,6 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_SUMMON_HYDRA,
 },
 
-#if TAG_MAJOR_VERSION > 34
-{   // Book of Battle
-    SPELL_INFUSION,
-    SPELL_SHROUD_OF_GOLUBRIA,
-    SPELL_SONG_OF_SLAYING,
-    SPELL_SPECTRAL_WEAPON,
-    SPELL_REGENERATION,
-},
-#endif
 {   // Book of Clouds
     SPELL_MEPHITIC_CLOUD,
     SPELL_CONJURE_FLAME,
@@ -211,14 +202,12 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_SUMMON_FOREST,
 },
 
-#if TAG_MAJOR_VERSION == 34
 {   // Book of Envenomations
     SPELL_SPIDER_FORM,
     SPELL_OLGREBS_TOXIC_RADIANCE,
     SPELL_INTOXICATE,
     SPELL_POISONOUS_CLOUD,
 },
-#endif
 
 {   // Book of Unlife
     SPELL_RECALL,
@@ -229,12 +218,6 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_SIMULACRUM,
 },
 
-#if TAG_MAJOR_VERSION == 34
-{   // Book of Control
-    SPELL_CONTROL_UNDEAD,
-    SPELL_ENGLACIATION,
-},
-
 {   // Book of Battle (replacing Morphology)
     SPELL_INFUSION,
     SPELL_SHROUD_OF_GOLUBRIA,
@@ -242,7 +225,6 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_SPECTRAL_WEAPON,
     SPELL_REGENERATION,
 },
-#endif
 
 {   // Book of Geomancy
     SPELL_SANDBLAST,
@@ -259,16 +241,6 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_IRON_SHOT,
     SPELL_SHATTER,
 },
-
-#if TAG_MAJOR_VERSION == 34
-{   // Book of Wizardry
-    SPELL_FORCE_LANCE,
-    SPELL_AGONY,
-//    SPELL_HASTE,
-    SPELL_INVISIBILITY,
-    SPELL_SPELLFORGED_SERVITOR,
-},
-#endif
 
 {   // Book of Power
     SPELL_FULMINANT_PRISM,
@@ -411,7 +383,7 @@ static const vector<spell_type> spellbook_templates[] =
 {   // Time
     SPELL_SLOW, // 2
     SPELL_SWIFTNESS, // 2
-    SPELL_CURE_POISON, // 2
+//    SPELL_CURE_POISON, // 2
     SPELL_HIBERNATION, // 2
     SPELL_INNER_FLAME, // 3
     SPELL_STICKY_FLAME, // 4

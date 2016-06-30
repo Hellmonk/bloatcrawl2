@@ -655,10 +655,9 @@ skill increases both damage and area affected.
 # Ru
 Draw Out Power ability
 
-Taps into your inner power to restore health and magic, as well as freeing your
-body and mind from external constraints, including nets, webs, constriction,
-petrification, slowness, and confusion. The amount of health and magic restored
-increases with piety.
+Taps into your inner power to restore health, stamina, and magic, as well as freeing
+your body and mind from external constraints, including nets, webs, constriction,
+petrification, slowness, and confusion. The amount restored increases with piety.
 
 Using this ability exhausts and slightly drains you.
 %%%%

@@ -9,6 +9,7 @@ const int rune_curse_dam_adjust(int dam, bool absolute = true);
 const int rune_curse_mon_spellpower_adjustment(int spellpower);
 const int rune_curse_depth_adjust(int depth);
 
+void activate_rune_curse(const rune_type rune);
 void list_rune_curses();
 const string rune_curse_description(const rune_type rune);
 void choose_branch_rune_requirements();

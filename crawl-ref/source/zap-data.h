@@ -3,16 +3,62 @@
  * @brief Zap definitions. See zap_info struct in beam.cc.
 **/
 
-/*
+#include "colour.h"
+#include "defines.h"
+#include "enum.h"
+#include "random.h"
+
+template<typename T>
+class power_deducer
+{
+public:
+    virtual T operator()(int pow) const = 0;
+    virtual ~power_deducer() {}
+};
+
+typedef power_deducer<int> tohit_deducer;
+
+template<int adder, int mult_num = 0, int mult_denom = 1>
+class tohit_calculator : public tohit_deducer
+{
+public:
+    int operator()(int pow) const override
+    {
+        return adder + pow * mult_num / mult_denom;
+    }
+};
+
+typedef power_deducer<dice_def> dam_deducer;
+
+template<int numdice, int adder, int mult_num, int mult_denom>
+class dicedef_calculator : public dam_deducer
+{
+public:
+    dice_def operator()(int pow) const override
+    {
+        return dice_def(numdice, adder + pow * mult_num / mult_denom);
+    }
+};
+
+template<int numdice, int adder, int mult_num, int mult_denom>
+class calcdice_calculator : public dam_deducer
+{
+public:
+    dice_def operator()(int pow) const override
+    {
+        return calc_dice(numdice, adder + pow * mult_num / mult_denom);
+    }
+};
+
 struct zap_info
 {
     zap_type ztype;
-    const char* name;
+    const char* name;           // nullptr means handled specially
     int player_power_cap;
     dam_deducer* player_damage;
-    tohit_deducer* player_tohit;       // Enchantments have power modifier here
+    tohit_deducer* player_tohit;    // Enchantments have power modifier here
     dam_deducer* monster_damage;
-    tohit_deducer* monster_tohit;      // Enchantments have power modifier here
+    tohit_deducer* monster_tohit;
     colour_t colour;
     bool is_enchantment;
     beam_type flavour;
@@ -21,8 +67,7 @@ struct zap_info
     bool can_beam;
     bool is_explosion;
     int hit_loudness;
-}
-*/
+};
 
 static const zap_info zap_data[] =
 {

@@ -4937,9 +4937,9 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
     int hitp;
 
     if (you.species == SP_MOON_TROLL)
-        hitp  = 80;
+        hitp  = 120;
     else
-        hitp  = effective_xl() * 7 + 8;
+        hitp  = effective_xl() * 10 + 3 * (5 - crawl_state.difficulty);
 
     hitp += you.hp_max_adj_perm;
 
@@ -6839,11 +6839,6 @@ int player::skill(skill_type sk, int scale, bool real, bool drained) const
         {
             level = ash_skill_boost(sk, scale);
         }
-    }
-    if ((sk == SK_LONG_BLADES || sk == SK_SHORT_BLADES)
-        && player_equip_unrand(UNRAND_FENCERS))
-    {
-        level = min(level + 4 * scale, get_max_skill_level() * scale);
     }
     if (duration[DUR_HEROISM] && sk <= SK_LAST_MUNDANE)
         level = min(level + 5 * scale, get_max_skill_level() * scale);
@@ -10011,16 +10006,16 @@ int _difficulty_mode_multiplier()
     switch(crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            x = 100;
+            x = 110;
             break;
         case DIFFICULTY_STANDARD:
-            x = 90;
+            x = 100;
             break;
         case DIFFICULTY_CHALLENGE:
-            x = 80;
+            x = 90;
             break;
         case DIFFICULTY_NIGHTMARE:
-            x = 70;
+            x = 80;
             break;
         default:
             // should not be possible
@@ -10238,6 +10233,13 @@ int player_pool_modifier(int amount)
     return amount * percent / 100;
 }
 
+int monster_danger_modifier(int danger)
+{
+    danger *= (100 - _difficulty_mode_multiplier()) * 2 + 80;
+    danger *= (10 + runes_in_pack()) / 10;
+    return danger / 100;
+}
+
 int player_monster_gen_modifier(int amount)
 {
     int percent = 100;
@@ -10300,7 +10302,7 @@ int player_potion_recharge_percent()
 int player_pre_ouch_modifier(int damage)
 {
     // global monster damage reduction
-    damage = div_rand_round(damage * 2, 3);
+//    damage = div_rand_round(damage * 2, 3);
 
     return damage;
 }

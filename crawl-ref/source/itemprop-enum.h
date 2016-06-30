@@ -126,20 +126,15 @@ enum brand_type // item_def.special
     MAX_GHOST_BRAND = SPWPN_CHAOS,
 #endif
 
-#if TAG_MAJOR_VERSION == 34
-    SPWPN_CONFUSE, // XXX not a real weapon brand, only for Confusing Touch
-#endif
+    SPWPN_CONFUSE,
     SPWPN_PENETRATION,
     SPWPN_REAPING,
     SPWPN_LIGHT,
+    SPWPN_ACID,
 
 // From this point on save compat is irrelevant.
     NUM_REAL_SPECIAL_WEAPONS,
 
-    SPWPN_ACID,    // acid bite only for the moment
-#if TAG_MAJOR_VERSION > 34
-    SPWPN_CONFUSE, // Confusing Touch only for the moment
-#endif
     SPWPN_DEBUG_RANDART,
     NUM_SPECIAL_WEAPONS,
 };

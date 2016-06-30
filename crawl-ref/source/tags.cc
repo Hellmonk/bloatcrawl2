@@ -4373,11 +4373,6 @@ void unmarshallItem(reader &th, item_def &item)
     {
         // Replace War Chants with Battle to avoid empty-book errors.
 
-        // Moved under TAG_MINOR_NO_POT_FOOD because it was formerly
-        // not restricted to a particular range of minor tags.
-        if (item.is_type(OBJ_BOOKS, BOOK_WAR_CHANTS))
-            item.sub_type = BOOK_BATTLE;
-
         if (item.base_type == OBJ_FOOD && (item.sub_type == FOOD_UNUSED
                                            || item.sub_type == FOOD_AMBROSIA))
         {

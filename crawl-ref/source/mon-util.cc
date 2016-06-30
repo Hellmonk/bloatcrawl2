@@ -2659,7 +2659,7 @@ bool init_abomination(monster* mon, int hd)
 }
 
 // Generate a shiny, new and unscarred monster.
-void define_monster(monster* mons, beh_type behavior)
+void define_monster(monster* mons, beh_type behavior, int danger)
 {
     monster_type mcls         = mons->type;
     ASSERT(!mons_class_is_zombified(mcls)); // should have called define_zombie
@@ -2678,26 +2678,32 @@ void define_monster(monster* mons, beh_type behavior)
     switch (mcls)
     {
     case MONS_ABOMINATION_SMALL:
-        hd = 4 + random2(4);
+        hd = 4 + random2(danger / 4);
         mons->props[MON_SPEED_KEY] = 7 + random2avg(9, 2);
         init_abomination(mons, hd);
         break;
 
     case MONS_ABOMINATION_LARGE:
-        hd = 8 + random2(4);
+        hd = 8 + random2(danger / 2);
         mons->props[MON_SPEED_KEY] = 6 + random2avg(7, 2);
         init_abomination(mons, hd);
         break;
 
     case MONS_SLIME_CREATURE:
         // Slime creatures start off as only single un-merged blobs.
-        mons->blob_size = 1;
+        mons->blob_size = 1 + random2(danger / 10);
         break;
 
     case MONS_HYDRA:
-        // Hydras start off with 4 to 8 heads.
-        mons->num_heads = random_range(2 + crawl_state.difficulty, 6 + crawl_state.difficulty + runes_in_pack());
+    {
+        int heads = 2 + crawl_state.difficulty;
+        while(heads < 20 && random2avg(danger, 2) > 6)
+        {
+            heads++;
+        }
+        mons->num_heads = heads;
         break;
+    }
 
     case MONS_LERNAEAN_HYDRA:
         // The Lernaean hydra starts off with 27 heads.
