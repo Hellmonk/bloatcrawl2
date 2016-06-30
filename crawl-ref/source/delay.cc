@@ -1223,7 +1223,7 @@ static inline bool _monster_warning(activity_interrupt_type ai,
         return false;
     if (delay && !delay->is_run() && !delay->is_butcher())
         return false;
-    if (at.context != SC_NEWLY_SEEN && delay)
+    if (at.context != SC_NEWLY_SEEN && !delay)
         return false;
 
     ASSERT(at.apt == AIP_MONSTER);
@@ -1439,15 +1439,18 @@ bool interrupt_activity(activity_interrupt_type ai,
             return false;
     }
 
+    const auto delay = current_delay();
+
     // If we get hungry while traveling, let's try to auto-eat a chunk.
-    if (ai == AI_HUNGRY && _auto_eat() && prompt_eat_chunks(true) == 1)
+    if (ai == AI_HUNGRY && delay->want_autoeat() && _auto_eat()
+        && prompt_eat_chunks(true) == 1)
+    {
         return false;
+    }
 
     dprf("Activity interrupt: %s", _activity_interrupt_name(ai));
 
     // First try to stop the current delay.
-    const auto delay = current_delay();
-
     if (ai == AI_FULL_HP && !you.running.notified_hp_full)
     {
         you.running.notified_hp_full = true;
