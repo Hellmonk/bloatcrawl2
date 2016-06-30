@@ -153,7 +153,7 @@ bool melee_attack::handle_phase_attempted()
         const item_def *weapon_used = get_weapon_used();
         const int sp_cost = weapon_sp_cost(weapon_used);
 
-        if (sp_cost)
+        if (sp_cost && !is_riposte)
             dec_sp(sp_cost, true, true);
 
         if (weapon)
