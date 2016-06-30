@@ -4939,7 +4939,7 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
     if (you.species == SP_MOON_TROLL)
         hitp  = 120;
     else
-        hitp  = effective_xl() * 7 + 8;
+        hitp  = effective_xl() * 10 + 3 * (5 - crawl_state.difficulty);
 
     hitp += you.hp_max_adj_perm;
 
@@ -10011,16 +10011,16 @@ int _difficulty_mode_multiplier()
     switch(crawl_state.difficulty)
     {
         case DIFFICULTY_EASY:
-            x = 100;
+            x = 110;
             break;
         case DIFFICULTY_STANDARD:
-            x = 90;
+            x = 100;
             break;
         case DIFFICULTY_CHALLENGE:
-            x = 80;
+            x = 90;
             break;
         case DIFFICULTY_NIGHTMARE:
-            x = 70;
+            x = 80;
             break;
         default:
             // should not be possible
@@ -10307,7 +10307,7 @@ int player_potion_recharge_percent()
 int player_pre_ouch_modifier(int damage)
 {
     // global monster damage reduction
-    damage = div_rand_round(damage * 2, 3);
+//    damage = div_rand_round(damage * 2, 3);
 
     return damage;
 }
