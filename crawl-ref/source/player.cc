@@ -10301,8 +10301,13 @@ int player_potion_recharge_percent()
 
 int player_pre_ouch_modifier(int damage)
 {
+    damage *= 100;
+
     // global monster damage reduction
     damage = div_rand_round(damage * 3, 4);
+
+    // adjust for difficulty
+    damage /= _difficulty_mode_multiplier();
 
     return damage;
 }
