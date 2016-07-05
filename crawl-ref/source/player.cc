@@ -10302,7 +10302,7 @@ int player_potion_recharge_percent()
 int player_pre_ouch_modifier(int damage)
 {
     // global monster damage reduction
-//    damage = div_rand_round(damage * 2, 3);
+    damage = div_rand_round(damage * 3, 4);
 
     return damage;
 }
