@@ -697,7 +697,8 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
 {
     const object_class_type base_type = item.base_type;
     const int sub_type = item.sub_type;
-    if (base_type != OBJ_ARMOUR || you.species == SP_FELID && sub_type != ARM_CLOAK)
+    if (base_type != OBJ_ARMOUR
+        || you.species == SP_FELID && sub_type != ARM_CLOAK && sub_type != ARM_HAT)
     {
         if (verbose)
             mpr("You can't wear that.");
