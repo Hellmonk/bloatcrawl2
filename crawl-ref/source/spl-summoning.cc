@@ -110,19 +110,7 @@ spret_type cast_summon_small_mammal(int pow, god_type god, bool fail)
 
     monster_type mon = MONS_PROGRAM_BUG;
 
-    int how_many = 1;
-    if (x_chance_in_y(1 + random2(pow), 20))
-        how_many++;
-    if (x_chance_in_y(1 + random2(pow), 40))
-        how_many++;
-    if (x_chance_in_y(1 + random2(pow), 80))
-        how_many++;
-    if (x_chance_in_y(1 + random2(pow), 160))
-        how_many++;
-    if (x_chance_in_y(1 + random2(pow), 320))
-        how_many++;
-    if (x_chance_in_y(1 + random2(pow), 640))
-        how_many++;
+    const int how_many = log2(max(1, pow / 5)) + 1;
     const int freeze_cost = div_rand_round(spell_mp_freeze(SPELL_SUMMON_SMALL_MAMMAL), how_many);
 
     bool success = false;
