@@ -433,8 +433,8 @@ int raw_spell_fail(spell_type spell)
     x += spellcasting_penalty * -0.3;
     x += anti_wizardry * -3;
     x += vertigo * -5;
-    x += wild * -5;
-    x += subdued * 5;
+    x += wild * -10;
+    x += subdued * 10;
     x += (dex - 10) * global_spell_skill_adjustment / 5;
     x += school_average / 5.0;
     x += high_council * 5;

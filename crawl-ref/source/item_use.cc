@@ -209,7 +209,7 @@ static item_def* _use_an_item(int item_type, operation_types oper,
     // First handle things that will return nullptr
 
     // No selectable items in inv or floor
-    if (!any_items_of_type(you.inv2, item_type, -1, true))
+    if (!any_items_of_type(you.inv2, item_type, -1, true) && !any_items_of_type(you.inv1, item_type, -1, true))
     {
         mprf(MSGCH_PROMPT, "%s",
              no_selectables_message(item_type).c_str());
@@ -697,7 +697,8 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
 {
     const object_class_type base_type = item.base_type;
     const int sub_type = item.sub_type;
-    if (base_type != OBJ_ARMOUR || you.species == SP_FELID && sub_type != ARM_CLOAK)
+    if (base_type != OBJ_ARMOUR
+        || you.species == SP_FELID && sub_type != ARM_CLOAK && sub_type != ARM_HAT)
     {
         if (verbose)
             mpr("You can't wear that.");
