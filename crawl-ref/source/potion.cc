@@ -708,8 +708,8 @@ public:
         int amount = player_potion_recharge_percent() * get_mp_max() / 100;
         amount = max(20, amount);
 
-        int nutrition_factor = player_mutation_level(MUT_HERBIVOROUS) - player_mutation_level(MUT_CARNIVOROUS);
-        amount = amount * (10 + nutrition_factor * 3) / 10;
+        int nutrition_factor = player_mutation_level(MUT_HERBIVOROUS) * 5 - player_mutation_level(MUT_CARNIVOROUS) * 2;
+        amount = amount * (10 + nutrition_factor) / 10;
 
         if (nutrition_factor > 0)
             mpr("This tastes delicious!");
@@ -763,8 +763,8 @@ public:
         amount = player_potion_recharge_percent() * get_sp_max() / 100;
         amount = max(20, amount);
 
-        int nutrition_factor = player_mutation_level(MUT_CARNIVOROUS) - player_mutation_level(MUT_HERBIVOROUS);
-        amount = amount * (10 + nutrition_factor * 3) / 10;
+        int nutrition_factor = player_mutation_level(MUT_CARNIVOROUS) * 5 - player_mutation_level(MUT_HERBIVOROUS) * 2;
+        amount = amount * (10 + nutrition_factor) / 10;
 
         if (nutrition_factor > 0)
             mpr("This tastes delicious!");
