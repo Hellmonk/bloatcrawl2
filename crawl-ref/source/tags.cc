@@ -3632,6 +3632,12 @@ static void tag_read_you_items(reader &th)
     unmarshallFixedBitVector<NUM_RUNE_TYPES>(th, you.runes);
     you.obtainable_runes = unmarshallByte(th);
 
+    // retro bug fix
+    for (int i = FIRST_RUNE; i < NUM_RUNE_TYPES; i++)
+    {
+        you.rune_curse_active[i] |= you.runes[i];
+    }
+
     // Item descrip for each type & subtype.
     // how many types?
     count = unmarshallUByte(th);

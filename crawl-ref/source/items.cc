@@ -1817,7 +1817,10 @@ bool move_item_to_inv(int obj, int quant_got, bool quiet)
 static void _get_rune(const item_def& it, bool quiet)
 {
     if (!you.runes[it.sub_type])
+    {
         you.runes.set(it.sub_type);
+        you.rune_curse_active.set(it.sub_type, true);
+    }
 
     if (!quiet)
     {
