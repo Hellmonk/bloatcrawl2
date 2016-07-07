@@ -1,6 +1,8 @@
 ## v1.6
-* Added fiery rune curse (for cerebov)
-    * occasionally your fire resistance is ignored.
+
+* Added rune curses
+    * Fiery rune (for cerebov): occasionally your fire resistance is ignored.
+    * Magical rune (for lom lobon): occasionally your spells fizzle.
 
 * Added species specific stamina aptitudes, alongside health and magic aptitudes that already existed.
 
