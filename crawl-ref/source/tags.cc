@@ -3635,7 +3635,8 @@ static void tag_read_you_items(reader &th)
     // retro bug fix
     for (int i = FIRST_RUNE; i < NUM_RUNE_TYPES; i++)
     {
-        you.rune_curse_active[i] |= you.runes[i];
+        if (you.runes[i])
+            you.rune_curse_active.set(i, true);
     }
 
     // Item descrip for each type & subtype.
