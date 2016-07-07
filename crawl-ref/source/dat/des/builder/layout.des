@@ -582,7 +582,7 @@ ENDMAP
 # Previously named "layout_city".
 #
 NAME:   layout_regular_city
-DEPTH:  Lair, Crypt, !Crypt:$, Dis, !Dis:$
+DEPTH:  Lair, Crypt, !Crypt:$, Dis, !Dis:$, Tomb:1
 WEIGHT: 10, 15 (Lair)
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand layout_type_city
@@ -768,7 +768,7 @@ ENDMAP
 # Previously named "layout_misc".
 #
 NAME:   layout_misc_corridors
-DEPTH:  Lair, Snake, Crypt, Zot, Dwarf
+DEPTH:  Lair, Snake, Crypt, Zot, Dwarf, Tomb:1
 WEIGHT: 20, 5 (Lair)
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand layout_type_corridors
@@ -848,7 +848,7 @@ ENDMAP
 # TODO: Take out special case for non-Orc non-Slime.
 #
 NAME:   layout_caves
-DEPTH:  Orc, Slime
+DEPTH:  Orc, Slime, Tomb:1
 WEIGHT: 10
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand layout_type_open_caves
@@ -895,7 +895,7 @@ ENDMAP
 # This replaces dungeon.cc:_roguey_level.
 #
 NAME:   layout_roguey
-DEPTH:  Lair, Depths
+DEPTH:  Lair, Depths, Tomb:1
 WEIGHT: 25 (D), 10 (Lair), 10 (Depths)
 ORIENT: encompass
 TAGS:   overwritable layout no_primary_vault allow_dup unrand layout_type_rooms
@@ -1448,7 +1448,7 @@ ENDMAP
 #  than just giving each room a chance of appearing.
 #
 NAME:   layout_diamond_mine
-DEPTH:  Orc
+DEPTH:  Orc, Tomb:1
 WEIGHT: 5
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand layout_type_narrow_caves
