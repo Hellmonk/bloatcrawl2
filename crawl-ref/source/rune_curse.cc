@@ -148,12 +148,15 @@ const string rune_curse_description(const rune_type rune)
             message = "Normal movement speed is reduced. Quick mode isn't affected.";
             break;
 
+        case RUNE_CEREBOV:
+            message = "Your fire resistance is occasionally ignored.";
+            break;
+
         case RUNE_DIS:
         case RUNE_GEHENNA:
         case RUNE_TARTARUS:
 
         case RUNE_LOM_LOBON:
-        case RUNE_CEREBOV:
         case RUNE_GLOORX_VLOQ:
 
         default:

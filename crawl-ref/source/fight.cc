@@ -480,7 +480,14 @@ static int _beam_to_resist(const actor* defender, beam_type flavour)
  */
 int resist_adjust_damage(const actor* defender, beam_type flavour, int rawdamage)
 {
-    const int res = _beam_to_resist(defender, flavour);
+    int res = _beam_to_resist(defender, flavour);
+
+    if ((flavour == BEAM_FIRE || flavour == BEAM_LAVA || flavour == BEAM_STICKY_FLAME)
+        && res > 0 && you.rune_curse_active[RUNE_CEREBOV] && x_chance_in_y(1, 10))
+    {
+        res = 0;
+    }
+
 //    if (!res)
 //        return rawdamage;
 

@@ -1,4 +1,6 @@
 ## v1.6
+* Added fiery rune curse (for cerebov)
+    * occasionally your fire resistance is ignored.
 
 * Added species specific stamina aptitudes, alongside health and magic aptitudes that already existed.
 
