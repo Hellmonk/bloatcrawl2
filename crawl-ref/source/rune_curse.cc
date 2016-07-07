@@ -157,7 +157,7 @@ const string rune_curse_description(const rune_type rune)
             break;
 
         case RUNE_GLOORX_VLOQ:
-            message = "Monsters are occasionally hidden.";
+            message = "Monsters are occasionally hidden from view.";
             break;
 
         case RUNE_DIS:

@@ -4211,7 +4211,7 @@ bool dec_hp(int hp_loss, bool fatal, const char *aux)
 
     you.redraw_hit_points = true;
 
-    you.peace = 0;
+    you.peace = min(you.peace, 0);
 
     return result;
 }

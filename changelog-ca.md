@@ -3,7 +3,7 @@
 * Added rune curses
     * Fiery rune (for cerebov): occasionally your fire resistance is ignored.
     * Magical rune (for lom lobon): occasionally your spells fizzle.
-    * Dark rune (for gloorx vloq): monsters occasionally become invisible to the player, even with see invisible.
+    * Dark rune (for gloorx vloq): see invisible takes a few turns to kick in. 
 
 * Added species specific stamina aptitudes, alongside health and magic aptitudes that already existed.
 

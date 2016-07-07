@@ -962,7 +962,7 @@ static void _regenerate_hp_and_mp(int delay)
     update_regen_amulet_attunement();
 
     if (!i_feel_safe(false, false, true))
-        you.peace = 0;
+        you.peace = min(0, you.peace - you.time_taken);
     else
     {
         you.peace += you.time_taken;
