@@ -60,10 +60,18 @@ void equip_item(equipment_type slot, int item_slot, bool msg)
 
     you.equip[slot] = item_slot;
     const int slot_curse = you.equip_slot_cursed_level[slot];
+    item_def &item = you.inv1[item_slot];
     if (slot_curse > 0)
     {
-        you.inv1[item_slot].curse_weight = slot_curse;
-        you.equip_slot_cursed_level[slot] = 0;
+        if (get_weapon_brand(item) == SPWPN_HOLY_WRATH)
+        {
+            mprf("%s resists the curse on your equipment slot", item.name(DESC_YOUR, true));
+        }
+        else
+        {
+            item.curse_weight = slot_curse;
+            you.equip_slot_cursed_level[slot] = 0;
+        }
     }
 
     equip_effect(slot, item_slot, false, msg);
