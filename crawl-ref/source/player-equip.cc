@@ -785,7 +785,8 @@ static void _stamina_shield_message(bool unmeld)
     {
         dec_sp(get_sp());
         mpr("You feel your power drawn to a protective spirit.");
-        if (!(have_passive(passive_t::no_sp_regen)
+        if (you.species == SP_DEEP_DWARF
+            && !(have_passive(passive_t::no_sp_regen)
                  || player_under_penance(GOD_PAKELLAS)))
         {
             mpr("Now linked to your health, your stamina stops regenerating.");
