@@ -157,7 +157,7 @@ const string rune_curse_description(const rune_type rune)
             break;
 
         case RUNE_GLOORX_VLOQ:
-            message = "Your memory slowly fades.";
+            message = "Monsters are occasionally hidden.";
             break;
 
         case RUNE_DIS:
