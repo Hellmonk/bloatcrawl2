@@ -144,10 +144,6 @@ const string rune_curse_description(const rune_type rune)
             message = "Experience gains are reduced.";
             break;
 
-        case RUNE_COCYTUS:
-            message = "Normal movement speed is reduced. Quick mode isn't affected.";
-            break;
-
         case RUNE_CEREBOV:
             message = "Your fire resistance is occasionally ignored.";
             break;
@@ -157,7 +153,11 @@ const string rune_curse_description(const rune_type rune)
             break;
 
         case RUNE_GLOORX_VLOQ:
-            message = "Monsters are occasionally hidden from view.";
+            message = "'See invisible' takes many turns before it is effective.";
+            break;
+
+        case RUNE_COCYTUS:
+            message = "Normal movement speed is reduced. Quick mode isn't affected.";
             break;
 
         case RUNE_DIS:
