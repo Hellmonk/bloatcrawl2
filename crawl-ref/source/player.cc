@@ -4211,7 +4211,7 @@ bool dec_hp(int hp_loss, bool fatal, const char *aux)
 
     you.redraw_hit_points = true;
 
-    you.peace = 0;
+    you.peace = min(you.peace, 0);
 
     return result;
 }
@@ -4452,7 +4452,7 @@ bool player_is_very_tired(bool silent)
 
 bool player_mp_is_exhausted(bool silent)
 {
-    const bool is_tired = get_mp() < 5 && get_mp() * 100 / get_mp_max() < 50;
+    const bool is_tired = get_mp() < 5 && get_mp() * 100 / max(1, get_mp_max()) < 50;
 
     if (!silent && is_tired)
         mpr("Your energy is low!");
@@ -4463,7 +4463,7 @@ bool player_mp_is_exhausted(bool silent)
 /* used to give stamina penalties such as lower melee / ranged damage */
 bool player_sp_is_exhausted(bool silent)
 {
-    const bool is_tired = get_sp() < 5 && get_sp() * 100 / get_sp_max() < 50;
+    const bool is_tired = get_sp() < 5 && get_sp() * 100 / max(1, get_sp_max()) < 50;
 
     if (!silent && is_tired)
         mpr("You are exhausted!");

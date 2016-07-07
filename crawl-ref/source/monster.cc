@@ -5346,6 +5346,11 @@ bool monster::visible_to(const actor *looker) const
     bool vis = looker->is_player() && friendly()
                || (!blind && (!invisible() || looker->can_see_invisible()));
 
+    if (looker->is_player() && you.rune_curse_active[RUNE_GLOORX_VLOQ] && invisible() && vis && you.peace > -random2avg(1000, 3))
+    {
+        vis = false;
+    }
+
     return vis && (this == looker || !submerged());
 }
 

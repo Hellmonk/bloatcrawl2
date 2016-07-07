@@ -1798,6 +1798,12 @@ static spret_type _do_cast(spell_type spell, int powc,
             return SPRET_ABORT;
     }
 
+    if (you.rune_curse_active[RUNE_LOM_LOBON] && x_chance_in_y(1, 10))
+    {
+        mpr("The magical rune causes you to fumble your spell.");
+        return SPRET_ABORT;
+    }
+
     if (spell_produces_minion(spell))
         return _handle_summoning_spells(spell, powc, beam, god, fail);
 
