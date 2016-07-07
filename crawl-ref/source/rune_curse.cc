@@ -153,14 +153,16 @@ const string rune_curse_description(const rune_type rune)
             break;
 
         case RUNE_LOM_LOBON:
-            message = "Spells occasionally fail entirely, even if they would have otherwise succeeded.";
+            message = "Spells occasionally fizzle.";
+            break;
+
+        case RUNE_GLOORX_VLOQ:
+            message = "Your memory slowly fades.";
             break;
 
         case RUNE_DIS:
         case RUNE_GEHENNA:
         case RUNE_TARTARUS:
-
-        case RUNE_GLOORX_VLOQ:
 
         default:
             break;

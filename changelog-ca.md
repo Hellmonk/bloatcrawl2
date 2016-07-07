@@ -3,6 +3,7 @@
 * Added rune curses
     * Fiery rune (for cerebov): occasionally your fire resistance is ignored.
     * Magical rune (for lom lobon): occasionally your spells fizzle.
+    * Dark rune (for gloorx vloq): you slowly forget maps of any floor you are on.
 
 * Added species specific stamina aptitudes, alongside health and magic aptitudes that already existed.
 
