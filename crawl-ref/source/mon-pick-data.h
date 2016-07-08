@@ -751,6 +751,7 @@ static const pop_entry pop_forest[] =
   {  1,  6,   85, SEMI, MONS_ANACONDA },
   {  1,  9,  100, PEAK, MONS_THORN_HUNTER },
   {  1,  5,  125, FLAT, MONS_BUTTERFLY },
+  {  3, 10,   40, RISE, MONS_GIANT_CENTIPEDE },
   { 0,0,0,FLAT,MONS_0 }
 };
 
@@ -888,6 +889,7 @@ static const pop_entry pop_abyss[] =
   {  1,  5,   11, FLAT, MONS_ANGEL },
   {  1,  5,   14, FLAT, MONS_DAEVA },
   {  1,  5,    8, FLAT, MONS_OPHAN },
+  {  1, 10,   40, RISE, MONS_GIANT_CENTIPEDE },
   { 0,0,0,FLAT,MONS_0 }
 };
 
@@ -1089,6 +1091,7 @@ static const pop_entry pop_depths[] =
   {  6, 14,   50, FLAT, MONS_TITAN },
   {  6, 14,   50, FLAT, MONS_CAUSTIC_SHRIKE },
   { 10, 14,   10, FLAT, MONS_ANCIENT_LICH },
+  {  1, 10,   40, RISE, MONS_GIANT_CENTIPEDE },
   { 0,0,0,FLAT,MONS_0 }
 };
 
@@ -1166,6 +1169,7 @@ static const pop_entry pop_generic_late_zombie[] =
   {  1,  27,   30, FLAT, MONS_MANTICORE },
   {  1,  27,   80, FLAT, MONS_WOLF_SPIDER },
   {  1,  27,   35, FLAT, MONS_EMPEROR_SCORPION },
+  {  1,  27,   35, FLAT, MONS_GIANT_CENTIPEDE },
   {  1,  27,   35, FLAT, MONS_GHOST_MOTH },
   {  1,  27,   10, FLAT, MONS_CENTAUR },
   {  1,  27,   12, FLAT, MONS_ELF },
