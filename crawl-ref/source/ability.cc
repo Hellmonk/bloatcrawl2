@@ -414,10 +414,14 @@ static const ability_def Ability_List[] =
       {FAIL_INVO, 90, 2, 5}, abflag::HOSTILE },
 
     // Sif Muna
-    { ABIL_SIF_MUNA_CHANNEL_ENERGY, "Channel Energy",
-      0, 0, 100, 0, {FAIL_INVO, 40, 2, 20}, abflag::NONE },
+    { ABIL_SIF_MUNA_DIVINE_ENERGY, "Divine Energy",
+      0, 0, 0, 0, {FAIL_INVO}, abflag::INSTANT },
+    { ABIL_SIF_MUNA_STOP_DIVINE_ENERGY, "Stop Divine Energy",
+      0, 0, 0, 0, {FAIL_INVO}, abflag::INSTANT },
     { ABIL_SIF_MUNA_FORGET_SPELL, "Forget Spell",
       5, 0, 0, 8, {FAIL_INVO}, abflag::NONE },
+    { ABIL_SIF_MUNA_CHANNEL_ENERGY, "Channel Magic",
+      0, 0, 200, 2, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
 
     // Trog
     { ABIL_TROG_BURN_SPELLBOOKS, "Burn Spellbooks",
@@ -972,6 +976,11 @@ ability_type fixup_ability(ability_type ability)
             return ABIL_NON_ABILITY;
         else
             return ability;
+
+    case ABIL_SIF_MUNA_DIVINE_ENERGY:
+        if (you.attribute[ATTR_DIVINE_ENERGY])
+            return ABIL_SIF_MUNA_STOP_DIVINE_ENERGY;
+        return ability;
 
     default:
         return ability;
@@ -1610,9 +1619,16 @@ bool activate_talent(const talent& tal)
         case ABIL_END_TRANSFORMATION:
         case ABIL_DELAYED_FIREBALL:
         case ABIL_STOP_SINGING:
+        case ABIL_STOP_RECALL:
         case ABIL_MUMMY_RESTORATION:
         case ABIL_TRAN_BAT:
         case ABIL_ASHENZARI_END_TRANSFER:
+        case ABIL_HEPLIAKLQANA_IDENTITY:
+        case ABIL_HEPLIAKLQANA_TYPE_KNIGHT:
+        case ABIL_HEPLIAKLQANA_TYPE_BATTLEMAGE:
+        case ABIL_HEPLIAKLQANA_TYPE_HEXER:
+        case ABIL_SIF_MUNA_DIVINE_ENERGY:
+        case ABIL_SIF_MUNA_STOP_DIVINE_ENERGY:
             hungerCheck = false;
             break;
         default:
@@ -1805,6 +1821,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
         // Only one allowed, since this is instantaneous. - bwr
         you.attribute[ATTR_DELAYED_FIREBALL] = 0;
+        viewwindow();
         break;
     }
 
@@ -2091,7 +2108,6 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     case ABIL_ZIN_RECITE:
     {
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
         if (zin_check_recite_to_monsters() == 1)
         {
             you.attribute[ATTR_RECITE_TYPE] = (recite_type) random2(NUM_RECITE_TYPES); // This is just flavor
@@ -2151,8 +2167,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
         fail_check();
 
-        int power = player_adjust_invoc_power(
-            3 + (roll_dice(5, you.skill(SK_INVOCATIONS, 5) + 12) / 26));
+        int power = 3 + (roll_dice(5, you.skill(SK_INVOCATIONS, 5) + 12) / 26);
 
         if (!cast_imprison(power, mons, -GOD_ZIN))
             return SPRET_ABORT;
@@ -2182,17 +2197,13 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_TSO_CLEANSING_FLAME:
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
-        cleansing_flame(
-            player_adjust_invoc_power(10 + you.skill_rdiv(SK_INVOCATIONS, 7, 6)),
-            CLEANSING_FLAME_INVOCATION, you.pos(), &you);
+        cleansing_flame(10 + you.skill_rdiv(SK_INVOCATIONS, 7, 6),
+                        CLEANSING_FLAME_INVOCATION, you.pos(), &you);
         break;
 
     case ABIL_TSO_SUMMON_DIVINE_WARRIOR:
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
-        summon_holy_warrior(
-            player_adjust_invoc_power(you.skill(SK_INVOCATIONS, 4)), false);
+        summon_holy_warrior(you.skill(SK_INVOCATIONS, 4), false);
         break;
 
     case ABIL_TSO_BLESS_WEAPON:
@@ -2261,12 +2272,8 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_YRED_ANIMATE_DEAD:
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
         canned_msg(MSG_CALL_DEAD);
-
-        animate_dead(&you,
-                     player_adjust_invoc_power(
-                         you.skill_rdiv(SK_INVOCATIONS) + 1),
+        animate_dead(&you, you.skill_rdiv(SK_INVOCATIONS) + 1,
                      BEH_FRIENDLY, MHITYOU, &you, "", GOD_YREDELEMNUL);
         break;
 
@@ -2277,17 +2284,15 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_YRED_DRAIN_LIFE:
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
-        cast_los_attack_spell(
-            SPELL_DRAIN_LIFE,
-            player_adjust_invoc_power(you.skill_rdiv(SK_INVOCATIONS)),
-            &you, true);
+        cast_los_attack_spell(SPELL_DRAIN_LIFE,
+                              you.skill_rdiv(SK_INVOCATIONS),
+                              &you, true);
         break;
 
     case ABIL_YRED_ENSLAVE_SOUL:
     {
         god_acting gdact;
-        int power = player_adjust_invoc_power(you.skill(SK_INVOCATIONS, 4));
+        int power = you.skill(SK_INVOCATIONS, 4);
         beam.range = LOS_RADIUS;
 
         if (!spell_direction(spd, beam))
@@ -2314,42 +2319,24 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             return SPRET_ABORT;
         }
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
         return zapping(ZAP_ENSLAVE_SOUL, power, beam, false, nullptr, fail);
     }
 
-    case ABIL_SIF_MUNA_CHANNEL_ENERGY:
-        if (you.magic_points >= you.max_magic_points)
-        {
-            mpr("Your reserves of magic are already full.");
-            return SPRET_ABORT;
-        }
-        fail_check();
-        surge_power(you.spec_invoc(), "divine");
-        mpr("You channel some magical energy.");
-
-        inc_mp(player_adjust_invoc_power(
-                   1 + random2(you.skill_rdiv(SK_INVOCATIONS, 1, 4) + 2)));
-        break;
-
     case ABIL_OKAWARU_HEROISM:
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
         mprf(MSGCH_DURATION, you.duration[DUR_HEROISM]
              ? "You feel more confident with your borrowed prowess."
              : "You gain the combat prowess of a mighty hero.");
 
         you.increase_duration(DUR_HEROISM,
-            player_adjust_invoc_power(
-                10 + random2avg(you.skill(SK_INVOCATIONS, 6), 2)),
-            100);
+                              10 + random2avg(you.skill(SK_INVOCATIONS, 6), 2),
+                              100);
         you.redraw_evasion      = true;
         you.redraw_armour_class = true;
         break;
 
     case ABIL_OKAWARU_FINESSE:
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
         if (you.duration[DUR_FINESSE])
         {
             // "Your [hand(s)] get{s} new energy."
@@ -2360,9 +2347,8 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             mprf(MSGCH_DURATION, "You can now deal lightning-fast blows.");
 
         you.increase_duration(DUR_FINESSE,
-            player_adjust_invoc_power(
-                10 + random2avg(you.skill(SK_INVOCATIONS, 6), 2)),
-            100);
+                              10 + random2avg(you.skill(SK_INVOCATIONS, 6), 2),
+                              100);
 
         did_god_conduct(DID_HASTY, 8); // Currently irrelevant.
         break;
@@ -2374,10 +2360,9 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         if (!spell_direction(spd, beam))
             return SPRET_ABORT;
 
-        int power = player_adjust_invoc_power(
-                    you.skill(SK_INVOCATIONS, 1)
+        int power = you.skill(SK_INVOCATIONS, 1)
                     + random2(1 + you.skill(SK_INVOCATIONS, 1))
-                    + random2(1 + you.skill(SK_INVOCATIONS, 1)));
+                    + random2(1 + you.skill(SK_INVOCATIONS, 1));
 
         // Since the actual beam is random, check with BEAM_MMISSILE and the
         // highest range possible.
@@ -2385,7 +2370,6 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             return SPRET_ABORT;
 
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
 
         switch (random2(5))
         {
@@ -2399,11 +2383,10 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     }
 
     case ABIL_MAKHLEB_LESSER_SERVANT_OF_MAKHLEB:
-        surge_power(you.spec_invoc(), "divine");
         summon_demon_type(random_choose(MONS_HELLWING, MONS_NEQOXEC,
-                          MONS_ORANGE_DEMON, MONS_SMOKE_DEMON, MONS_YNOXINUL),
-                          player_adjust_invoc_power(
-                              20 + you.skill(SK_INVOCATIONS, 3)),
+                                        MONS_ORANGE_DEMON, MONS_SMOKE_DEMON,
+                                        MONS_YNOXINUL),
+                          20 + you.skill(SK_INVOCATIONS, 3),
                           GOD_MAKHLEB, 0, !fail);
         break;
 
@@ -2414,10 +2397,9 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         if (!spell_direction(spd, beam))
             return SPRET_ABORT;
 
-        int power = player_adjust_invoc_power(
-                    you.skill(SK_INVOCATIONS, 1)
+        int power = you.skill(SK_INVOCATIONS, 1)
                     + random2(1 + you.skill(SK_INVOCATIONS, 1))
-                    + random2(1 + you.skill(SK_INVOCATIONS, 1)));
+                    + random2(1 + you.skill(SK_INVOCATIONS, 1));
 
         // Since the actual beam is random, check with BEAM_MMISSILE and the
         // highest range possible.
@@ -2425,7 +2407,6 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             return SPRET_ABORT;
 
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
         {
             zap_type ztype =
                 random_choose(ZAP_BOLT_OF_FIRE,
@@ -2441,11 +2422,10 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     }
 
     case ABIL_MAKHLEB_GREATER_SERVANT_OF_MAKHLEB:
-        surge_power(you.spec_invoc(), "divine");
         summon_demon_type(random_choose(MONS_EXECUTIONER, MONS_GREEN_DEATH,
-                          MONS_BLIZZARD_DEMON, MONS_BALRUG, MONS_CACODEMON),
-                          player_adjust_invoc_power(
-                              20 + you.skill(SK_INVOCATIONS, 3)),
+                                        MONS_BLIZZARD_DEMON, MONS_BALRUG,
+                                        MONS_CACODEMON),
+                          20 + you.skill(SK_INVOCATIONS, 3),
                           GOD_MAKHLEB, 0, !fail);
         break;
 
@@ -2475,11 +2455,32 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
                          &you);
         break;
 
+    case ABIL_SIF_MUNA_DIVINE_ENERGY:
+        simple_god_message(" will now grant you divine energy when your "
+                           "reserves of magic are depleted.");
+        mpr("You will briefly lose access to your magic after casting a "
+            "spell in this manner.");
+        you.attribute[ATTR_DIVINE_ENERGY] = 1;
+        break;
+
+    case ABIL_SIF_MUNA_STOP_DIVINE_ENERGY:
+        simple_god_message(" stops granting you divine energy.");
+        you.attribute[ATTR_DIVINE_ENERGY] = 0;
+        break;
+
     case ABIL_SIF_MUNA_FORGET_SPELL:
         fail_check();
         if (cast_selective_amnesia() <= 0)
             return SPRET_ABORT;
         break;
+
+    case ABIL_SIF_MUNA_CHANNEL_ENERGY:
+    {
+        fail_check();
+        you.increase_duration(DUR_CHANNEL_ENERGY,
+            4 + random2avg(you.skill_rdiv(SK_INVOCATIONS, 2, 3), 2), 100);
+        break;
+    }
 
     case ABIL_ELYVILON_LIFESAVING:
         fail_check();
@@ -2499,18 +2500,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     case ABIL_ELYVILON_GREATER_HEALING:
     {
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
         int pow = 0;
         if (abil.ability == ABIL_ELYVILON_LESSER_HEALING)
-        {
-            pow = player_adjust_invoc_power(
-                3 + (you.skill_rdiv(SK_INVOCATIONS, 1, 6)));
-        }
+            pow = 3 + you.skill_rdiv(SK_INVOCATIONS, 1, 6);
         else
-        {
-            pow = player_adjust_invoc_power(
-                10 + (you.skill_rdiv(SK_INVOCATIONS, 1, 3)));
-        }
+            pow = 10 + you.skill_rdiv(SK_INVOCATIONS, 1, 3);
 #if TAG_MAJOR_VERSION == 34
         if (you.species == SP_DJINNI)
             pow /= 2;
@@ -2529,11 +2523,9 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_ELYVILON_HEAL_OTHER:
     {
-        int pow = player_adjust_invoc_power(
-            10 + (you.skill_rdiv(SK_INVOCATIONS, 1, 3)));
+        int pow = 10 + you.skill_rdiv(SK_INVOCATIONS, 1, 3);
         pow = min(50, pow);
-        int max_pow = player_adjust_invoc_power(
-            10 + (int) ceil(you.skill(SK_INVOCATIONS, 1) / 3.0));
+        int max_pow = 10 + (int) ceil(you.skill(SK_INVOCATIONS, 1) / 3.0);
         max_pow = min(50, max_pow);
         return cast_healing(pow, max_pow, fail);
     }
@@ -2557,8 +2549,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     case ABIL_LUGONU_BANISH:
     {
         beam.range = LOS_RADIUS;
-        const int pow =
-            player_adjust_invoc_power(68 + you.skill(SK_INVOCATIONS, 3));
+        const int pow = 68 + you.skill(SK_INVOCATIONS, 3);
 
         direction_chooser_args args;
         args.mode = TARG_HOSTILE;
@@ -2575,14 +2566,12 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         }
 
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
 
         return zapping(ZAP_BANISHMENT, pow, beam, true, nullptr, fail);
     }
 
     case ABIL_LUGONU_CORRUPT:
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
         if (!lugonu_corrupt_level(300 + you.skill(SK_INVOCATIONS, 15)))
             return SPRET_ABORT;
         break;
@@ -2631,10 +2620,8 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_BEOGH_SMITING:
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
         if (your_spells(SPELL_SMITING,
-                        player_adjust_invoc_power(
-                            12 + skill_bump(SK_INVOCATIONS, 6)),
+                        12 + skill_bump(SK_INVOCATIONS, 6),
                         false, false, true) == SPRET_ABORT)
         {
             return SPRET_ABORT;
@@ -2737,17 +2724,12 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_CHEIBRIADOS_TIME_STEP:
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
-        cheibriados_time_step(
-            player_adjust_invoc_power(
-                you.skill(SK_INVOCATIONS, 10) * you.piety / 100));
+        cheibriados_time_step(you.skill(SK_INVOCATIONS, 10) * you.piety / 100);
         break;
 
     case ABIL_CHEIBRIADOS_TIME_BEND:
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
-        cheibriados_time_bend(
-            player_adjust_invoc_power(16 + you.skill(SK_INVOCATIONS, 8)));
+        cheibriados_time_bend(16 + you.skill(SK_INVOCATIONS, 8));
         break;
 
     case ABIL_CHEIBRIADOS_DISTORTION:
@@ -2826,10 +2808,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_DITHMENOS_SHADOW_FORM:
         fail_check();
-        surge_power(you.spec_invoc(), "divine");
-        if (!transform(
-                player_adjust_invoc_power(you.skill(SK_INVOCATIONS, 2)),
-                TRAN_SHADOW))
+        if (!transform(you.skill(SK_INVOCATIONS, 2), TRAN_SHADOW))
         {
             crawl_state.zero_turns_taken();
             return SPRET_ABORT;
@@ -3075,7 +3054,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_HEPLIAKLQANA_IDENTITY:
         hepliaklqana_choose_identity();
-        return SPRET_ABORT; // always free
+        break;
 
     case ABIL_RENOUNCE_RELIGION:
         fail_check();

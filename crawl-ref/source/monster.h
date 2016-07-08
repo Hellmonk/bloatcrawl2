@@ -353,8 +353,6 @@ public:
     bool undead_or_demonic() const override;
     bool holy_wrath_susceptible() const override;
     bool is_holy(bool check_spells = true) const override;
-    bool is_unholy(bool check_spells = true) const override;
-    bool is_evil(bool check_spells = true) const override;
     int how_unclean(bool check_god = true) const;
     int known_chaos(bool check_spells_god = false) const;
     int how_chaotic(bool check_spells_god = false) const override;
@@ -434,8 +432,6 @@ public:
     bool has_spells() const;
     bool has_spell(spell_type spell) const override;
     mon_spell_slot_flags spell_slot_flags(spell_type spell) const;
-    bool has_unholy_spell() const;
-    bool has_evil_spell() const;
     bool has_unclean_spell() const;
     bool has_chaotic_spell() const;
     bool has_corpse_violating_spell() const;

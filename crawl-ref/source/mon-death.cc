@@ -850,9 +850,28 @@ void fire_monster_death_event(monster* mons,
     }
 }
 
-static void _mummy_curse(monster* mons, killer_type killer, int index)
+int mummy_curse_power(monster_type type)
 {
-    int pow;
+    // Plain mummies (and Menkaure) are too weak to curse you!
+    switch (type)
+    {
+        case MONS_GUARDIAN_MUMMY:
+            return 3;
+        case MONS_MUMMY_PRIEST:
+            return 8;
+        case MONS_GREATER_MUMMY:
+            return 11;
+        case MONS_KHUFU:
+            return 15;
+        default:
+            return 0;
+    }
+}
+
+static void _mummy_curse(monster* mons, int pow, killer_type killer, int index)
+{
+    if (pow <= 0)
+        return;
 
     switch (killer)
     {
@@ -867,22 +886,6 @@ static void _mummy_curse(monster* mons, killer_type killer, int index)
 
         default:
             break;
-    }
-
-    switch (mons->type)
-    {
-        case MONS_MENKAURE:
-        case MONS_MUMMY:
-            return;
-
-        case MONS_GUARDIAN_MUMMY: pow = 3; break;
-        case MONS_MUMMY_PRIEST:   pow = 8; break;
-        case MONS_GREATER_MUMMY:  pow = 11; break;
-        case MONS_KHUFU:          pow = 15; break;
-
-        default:
-            mprf(MSGCH_DIAGNOSTICS, "Unknown mummy type.");
-            return;
     }
 
     actor* target;
@@ -1605,8 +1608,8 @@ static bool _god_will_bless_follower(monster* victim)
 {
     return have_passive(passive_t::bless_followers)
            && random2(you.piety) >= piety_breakpoint(2)
-           || have_passive(passive_t::bless_followers_vs_unholy)
-              && (victim->is_evil() || victim->is_unholy())
+           || have_passive(passive_t::bless_followers_vs_evil)
+              && victim->evil()
               && random2(you.piety) >= piety_breakpoint(0);
 }
 
@@ -1655,9 +1658,7 @@ static void _fire_kill_conducts(monster &mons, killer_type killer,
         did_kill_conduct(DID_KILL_LIVING, mons);
 
         // TSO hates natural evil and unholy beings.
-        if (mons.is_unholy())
-            did_kill_conduct(DID_KILL_NATURAL_UNHOLY, mons);
-        else if (mons.is_evil())
+        if (mons.evil())
             did_kill_conduct(DID_KILL_NATURAL_EVIL, mons);
     }
     else if (holiness & MH_UNDEAD)
@@ -2163,8 +2164,8 @@ item_def* monster_die(monster* mons, killer_type killer,
             if (gives_player_xp
                 && (have_passive(passive_t::restore_hp)
                     || have_passive(passive_t::mp_on_kill)
-                    || have_passive(passive_t::restore_hp_mp_vs_unholy)
-                       && (mons->is_evil() || mons->is_unholy()))
+                    || have_passive(passive_t::restore_hp_mp_vs_evil)
+                       && mons->evil())
                 && !mons_is_object(mons->type)
                 && !player_under_penance()
                 && (you_worship(GOD_PAKELLAS)
@@ -2177,7 +2178,7 @@ item_def* monster_die(monster* mons, killer_type killer,
                     hp_heal = mons->get_experience_level()
                         + random2(mons->get_experience_level());
                 }
-                if (have_passive(passive_t::restore_hp_mp_vs_unholy))
+                if (have_passive(passive_t::restore_hp_mp_vs_evil))
                 {
                     hp_heal = random2(1 + 2 * mons->get_experience_level());
                     mp_heal = random2(2 + mons->get_experience_level() / 3);
@@ -2264,9 +2265,6 @@ item_def* monster_die(monster* mons, killer_type killer,
             {
                 bless_follower();
             }
-
-            if (you.duration[DUR_DEATH_CHANNEL] && gives_player_xp)
-                _make_spectral_thing(mons, !death_message, false);
             break;
         }
 
@@ -2323,11 +2321,6 @@ item_def* monster_die(monster* mons, killer_type killer,
                 // Randomly bless the follower who killed.
                 bless_follower(killer_mon);
             }
-
-            // XXX: shouldn't this be considerably earlier...?
-            if (you.duration[DUR_DEATH_CHANNEL] && was_visible)
-                _make_spectral_thing(mons, !death_message, false);
-
             break;
         }
 
@@ -2556,11 +2549,8 @@ item_def* monster_die(monster* mons, killer_type killer,
 
         bennu_revive_fineff::schedule(mons->pos(), revives, att, mons->foe);
     }
-    else if (!mons->is_summoned())
-    {
-        if (mons_genus(mons->type) == MONS_MUMMY)
-            _mummy_curse(mons, killer, killer_index);
-    }
+    else if (!mons->is_summoned() && mummy_curse_power(mons->type) > 0)
+        _mummy_curse(mons, mummy_curse_power(mons->type), killer, killer_index);
 
     if (mons->has_ench(ENCH_INFESTATION) && !was_banished && !mons_reset)
         _infestation_create_scarab(mons);
@@ -2594,6 +2584,8 @@ item_def* monster_die(monster* mons, killer_type killer,
     }
     if (corpse && mons->has_ench(ENCH_BOUND_SOUL))
         _make_spectral_thing(mons, !death_message, true);
+    if (you.duration[DUR_DEATH_CHANNEL] && was_visible && gives_player_xp)
+        _make_spectral_thing(mons, !death_message, false);
 
     const unsigned int player_xp = gives_player_xp
         ? _calc_player_experience(mons) : 0;
@@ -2806,13 +2798,24 @@ void monster_cleanup(monster* mons)
     if (mons_is_tentacle_head(mons_base_type(mons)))
         destroy_tentacles(mons);
 
-    env.mid_cache.erase(mons->mid);
+    const mid_t mid = mons->mid;
+    env.mid_cache.erase(mid);
     unsigned int monster_killed = mons->mindex();
     mons->reset();
 
     for (monster_iterator mi; mi; ++mi)
+    {
         if (mi->foe == monster_killed)
             mi->foe = MHITNOT;
+
+        int sumtype = 0;
+        if (mi->summoner == mid
+            && (mi->is_summoned(nullptr, &sumtype)
+                || sumtype == MON_SUMM_CLONE))
+        {
+            mi->del_ench(ENCH_ABJ);
+        }
+    }
 
     if (you.pet_target == monster_killed)
         you.pet_target = MHITNOT;
@@ -3267,9 +3270,9 @@ void elven_twin_died(monster* twin, bool in_transit, killer_type killer, int kil
     // may not be called due to lack of visibility.
     if (mons_is_mons_class(mons, MONS_DOWAN))
     {
-        mons->spells[0].spell = SPELL_THROW_ICICLE;
-        mons->spells[1].spell = SPELL_BLINK;
-        mons->spells[3].spell = SPELL_STONE_ARROW;
+        mons->spells[0].spell = SPELL_STONE_ARROW;
+        mons->spells[1].spell = SPELL_THROW_ICICLE;
+        mons->spells[3].spell = SPELL_BLINK;
         mons->spells[4].spell = SPELL_HASTE;
         // Nothing with 6.
 

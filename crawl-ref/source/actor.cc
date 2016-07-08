@@ -290,18 +290,6 @@ int actor::spec_evoke(bool calc_unid, bool items) const
     return 0;
 }
 
-/**
- * Indicates if the actor has an active invocations enhancer.
- *
- * @param calc_unid Whether to identify unknown items that enhance invocations.
- * @param items Whether to count item powers.
- * @return The number of levels of invocations enhancement this actor has.
- */
-int actor::spec_invoc(bool calc_unid, bool items) const
-{
-    return 0;
-}
-
 bool actor::no_cast(bool calc_unid, bool items) const
 {
     return items && scan_artefacts(ARTP_PREVENT_SPELLCASTING, calc_unid);
@@ -917,4 +905,10 @@ void actor::collide(coord_def newpos, const actor *agent, int pow)
     hurt(agent, apply_ac(damage.roll()), BEAM_MISSILE,
          KILLED_BY_COLLISION, "",
          feature_description_at(newpos, false, DESC_A, false));
+}
+
+/// Is this creature despised by the so-called 'good gods'?
+bool actor::evil() const
+{
+    return bool(holiness() & (MH_UNDEAD | MH_DEMONIC | MH_EVIL));
 }

@@ -3166,39 +3166,52 @@ conduct_type player_will_anger_monster(monster_type type)
     else
         define_monster(&dummy);
 
-    return player_will_anger_monster(&dummy);
+    return player_will_anger_monster(dummy);
 }
 
-conduct_type player_will_anger_monster(monster* mon)
+/**
+ * Does the player's current religion conflict with the given monster? If so,
+ * why?
+ *
+ * XXX: this should ideally return a list of conducts that can be filtered by
+ *      callers by god; we're duplicating godconduct.cc right now.
+ *
+ * @param mon   The monster in question.
+ * @return      The reason the player's religion conflicts with the monster
+ *              (e.g. DID_EVIL for evil monsters), or DID_NOTHING.
+ */
+conduct_type player_will_anger_monster(const monster &mon)
 {
-    if (player_mutation_level(MUT_NO_LOVE)
-        && !mons_is_conjured(mon->type))
+    if (player_mutation_level(MUT_NO_LOVE) && !mons_is_conjured(mon.type))
     {
         // Player angers all real monsters
         return DID_SACRIFICE_LOVE;
     }
-    if (is_good_god(you.religion) && mon->is_unholy())
-        return DID_UNHOLY;
-    if (is_good_god(you.religion) && mon->is_evil())
-        return DID_NECROMANCY;
+
+    if (is_good_god(you.religion) && mon.evil())
+        return DID_EVIL;
+
     if (you_worship(GOD_FEDHAS)
-        && ((mon->holiness() & MH_UNDEAD && !mon->is_insubstantial())
-            || mon->has_corpse_violating_spell()))
+        && ((mon.holiness() & MH_UNDEAD && !mon.is_insubstantial())
+            || mon.has_corpse_violating_spell()))
     {
         return DID_CORPSE_VIOLATION;
     }
-    if (is_evil_god(you.religion) && mon->is_holy())
+
+    if (is_evil_god(you.religion) && mon.is_holy())
         return DID_HOLY;
+
     if (you_worship(GOD_ZIN))
     {
-        if (mon->how_unclean())
+        if (mon.how_unclean())
             return DID_UNCLEAN;
-        if (mon->how_chaotic())
+        if (mon.how_chaotic())
             return DID_CHAOS;
     }
-    if (god_hates_spellcasting(you.religion) && mon->is_actual_spellcaster())
+    if (god_hates_spellcasting(you.religion) && mon.is_actual_spellcaster())
         return DID_SPELL_CASTING;
-    if (you_worship(GOD_DITHMENOS) && mons_is_fiery(mon))
+
+    if (you_worship(GOD_DITHMENOS) && mons_is_fiery(&mon))
         return DID_FIRE;
 
     return DID_NOTHING;
@@ -3209,7 +3222,7 @@ bool player_angers_monster(monster* mon)
     ASSERT(mon); // XXX: change to monster &mon
 
     // Get the drawbacks, not the benefits... (to prevent e.g. demon-scumming).
-    conduct_type why = player_will_anger_monster(mon);
+    conduct_type why = player_will_anger_monster(*mon);
     if (why && mon->wont_attack())
     {
         mon->attitude = ATT_HOSTILE;
@@ -3222,8 +3235,7 @@ bool player_angers_monster(monster* mon)
 
             switch (why)
             {
-            case DID_UNHOLY:
-            case DID_NECROMANCY:
+            case DID_EVIL:
                 mprf("%s is enraged by your holy aura!", mname.c_str());
                 break;
             case DID_CORPSE_VIOLATION:

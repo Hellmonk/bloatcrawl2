@@ -158,9 +158,12 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Sif Muna
-    { { 1, ABIL_SIF_MUNA_CHANNEL_ENERGY, "tap ambient magical fields" },
+    { { 1, ABIL_SIF_MUNA_DIVINE_ENERGY, "request divine energy to cast spells "
+                                        "with insufficient magic",
+           "request divine energy" },
       { 2, "Sif Muna is protecting you from the effects of miscast magic.",
            "Sif Muna no longer protects you from the effects of miscast magic." },
+      { 3, ABIL_SIF_MUNA_CHANNEL_ENERGY, "call upon Sif Muna for magical energy"},
       { 4, ABIL_SIF_MUNA_FORGET_SPELL, "freely open your mind to new spells",
           "forget spells at will" },
     },
@@ -752,6 +755,11 @@ static void _inc_penance(god_type god, int val)
             if (you.duration[DUR_DEVICE_SURGE])
                 you.duration[DUR_DEVICE_SURGE] = 0;
         }
+        else if (god == GOD_SIF_MUNA)
+        {
+            if (you.duration[DUR_CHANNEL_ENERGY])
+                you.duration[DUR_CHANNEL_ENERGY] = 0;
+        }
 
         if (you_worship(god))
         {
@@ -1226,6 +1234,7 @@ static void _delayed_gift_callback(const mgen_data &mg, monster *&mon,
 {
     if (placed <= 0)
         return;
+    ASSERT(mon);
 
     // Make sure monsters are shown.
     viewwindow();
@@ -1233,7 +1242,16 @@ static void _delayed_gift_callback(const mgen_data &mg, monster *&mon,
     _inc_gift_timeout(4 + random2avg(7, 2));
     you.num_current_gifts[you.religion]++;
     you.num_total_gifts[you.religion]++;
-    take_note(Note(NOTE_GOD_GIFT, you.religion));
+    string gift;
+    if (placed == 1)
+        gift = mon->name(DESC_A);
+    else
+    {
+        gift = make_stringf("%d %s", placed,
+                            pluralise(mon->name(DESC_PLAIN)).c_str());
+    }
+
+    take_note(Note(NOTE_GOD_GIFT, you.religion, 0, gift));
 }
 
 static bool _jiyva_mutate()
@@ -1796,8 +1814,8 @@ bool do_god_gift(bool forced)
 
                 if (yred_random_servants(threshold) != -1)
                 {
-                    delayed_monster_done(" grants you @an@ undead servant@s@!",
-                                          "", _delayed_gift_callback);
+                    delayed_monster_done(" grants you @servant@!",
+                                         _delayed_gift_callback);
                     success = true;
                 }
             }
@@ -2226,22 +2244,11 @@ static void _gain_piety_point()
     }
 
     // slow down gain at upper levels of piety
-    if (!you_worship(GOD_SIF_MUNA) && !you_worship(GOD_RU))
+    if (!you_worship(GOD_RU))
     {
         if (you.piety >= MAX_PIETY
             || you.piety >= piety_breakpoint(5) && one_chance_in(3)
             || you.piety >= piety_breakpoint(3) && one_chance_in(3))
-        {
-            do_god_gift();
-            return;
-        }
-    }
-    else if (you_worship(GOD_SIF_MUNA))
-    {
-        // Sif Muna has a gentler taper off because training becomes
-        // naturally slower as the player gains in spell skills.
-        if (you.piety >= MAX_PIETY
-            || you.piety >= piety_breakpoint(5) && one_chance_in(5))
         {
             do_god_gift();
             return;
@@ -2368,8 +2375,7 @@ static void _gain_piety_point()
  *
  * @param original_gain The numerator of the nominal piety gain.
  * @param denominator The denominator of the nominal piety gain.
- * @param should_scale_piety Should the piety gain be scaled by faith,
- *   forlorn, and Sprint?
+ * @param should_scale_piety Should the piety gain be scaled by faith/Sprint?
  * @return True if something happened, or if another call with the same
  *   arguments might cause something to happen (because of random number
  *   rolls).
@@ -2465,6 +2471,9 @@ void lose_piety(int pgn)
                             end(you.ability_letter_table),
                             ABIL_YRED_ANIMATE_DEAD, ABIL_YRED_ANIMATE_REMAINS);
                 }
+                // Deactivate the toggle
+                if (power.abil == ABIL_SIF_MUNA_DIVINE_ENERGY)
+                    you.attribute[ATTR_DIVINE_ENERGY] = 0;
             }
         }
 #ifdef USE_TILE_LOCAL
@@ -2705,6 +2714,10 @@ void excommunication(bool voluntary, god_type new_god)
         break;
 
     case GOD_SIF_MUNA:
+        if (you.duration[DUR_CHANNEL_ENERGY])
+            you.duration[DUR_CHANNEL_ENERGY] = 0;
+        if (you.attribute[ATTR_DIVINE_ENERGY])
+            you.attribute[ATTR_DIVINE_ENERGY] = 0;
         _set_penance(old_god, 50);
         break;
 
@@ -4011,6 +4024,7 @@ void handle_god_time(int /*time_delta*/)
                 lose_piety(1);
             break;
 
+        case GOD_SIF_MUNA:
         case GOD_SHINING_ONE:
         case GOD_NEMELEX_XOBEH:
             if (one_chance_in(35))
@@ -4020,11 +4034,6 @@ void handle_god_time(int /*time_delta*/)
         case GOD_ELYVILON:
         case GOD_HEPLIAKLQANA:
             if (one_chance_in(50))
-                lose_piety(1);
-            break;
-
-        case GOD_SIF_MUNA:
-            if (one_chance_in(100))
                 lose_piety(1);
             break;
 
@@ -4444,7 +4453,6 @@ static deque<delayed_callback> _delayed_callbacks;
 static deque<unsigned int>     _delayed_done_trigger_pos;
 static deque<delayed_callback> _delayed_done_callbacks;
 static deque<string>      _delayed_success;
-static deque<string>      _delayed_failure;
 
 void delayed_monster(const mgen_data &mg, delayed_callback callback)
 {
@@ -4452,22 +4460,23 @@ void delayed_monster(const mgen_data &mg, delayed_callback callback)
     _delayed_callbacks.push_back(callback);
 }
 
-void delayed_monster_done(string success, string failure,
-                                  delayed_callback callback)
+void delayed_monster_done(string success, delayed_callback callback)
 {
     const unsigned int size = _delayed_data.size();
     ASSERT(size > 0);
 
     _delayed_done_trigger_pos.push_back(size - 1);
     _delayed_success.push_back(success);
-    _delayed_failure.push_back(failure);
     _delayed_done_callbacks.push_back(callback);
 }
 
 static void _place_delayed_monsters()
 {
+    // Last monster that was successfully placed (so far).
+    monster *lastmon  = nullptr;
     int      placed   = 0;
     god_type prev_god = GOD_NO_GOD;
+
     for (unsigned int i = 0; i < _delayed_data.size(); i++)
     {
         mgen_data &mg          = _delayed_data[i];
@@ -4475,6 +4484,7 @@ static void _place_delayed_monsters()
 
         if (prev_god != mg.god)
         {
+            lastmon  = nullptr;
             placed   = 0;
             prev_god = mg.god;
         }
@@ -4492,6 +4502,7 @@ static void _place_delayed_monsters()
             {
                 add_companion(mon);
             }
+            lastmon = mon;
             placed++;
         }
 
@@ -4501,37 +4512,26 @@ static void _place_delayed_monsters()
             cback = _delayed_done_callbacks[0];
 
             string msg;
-            if (placed > 0)
-                msg = _delayed_success[0];
-            else
-                msg = _delayed_failure[0];
-
-            if (placed == 1)
+            if (lastmon)
             {
-                msg = replace_all(msg, "@a@", "a");
-                msg = replace_all(msg, "@an@", "an");
+                ASSERT(placed > 0);
+                msg = replace_all(_delayed_success[0], "@servant@",
+                                  placed == 1
+                                      ? lastmon->name(DESC_A)
+                                      : pluralise(lastmon->name(DESC_PLAIN)));
             }
             else
-            {
-                msg = replace_all(msg, " @a@", "");
-                msg = replace_all(msg, " @an@", "");
-            }
-
-            if (placed == 1)
-                msg = replace_all(msg, "@s@", "");
-            else
-                msg = replace_all(msg, "@s@", "s");
+                ASSERT(placed == 0);
 
             prev_god = GOD_NO_GOD;
             _delayed_done_trigger_pos.pop_front();
             _delayed_success.pop_front();
-            _delayed_failure.pop_front();
             _delayed_done_callbacks.pop_front();
 
             if (msg == "")
             {
                 if (cback)
-                    (*cback)(mg, mon, placed);
+                    (*cback)(mg, lastmon, placed);
                 continue;
             }
 
@@ -4544,7 +4544,7 @@ static void _place_delayed_monsters()
             god_speaks(mg.god, msg.c_str());
 
             if (cback)
-                (*cback)(mg, mon, placed);
+                (*cback)(mg, lastmon, placed);
         }
     }
 
@@ -4552,7 +4552,6 @@ static void _place_delayed_monsters()
     _delayed_callbacks.clear();
     _delayed_done_trigger_pos.clear();
     _delayed_success.clear();
-    _delayed_failure.clear();
 }
 
 static bool _is_god(god_type god)

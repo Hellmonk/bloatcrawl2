@@ -212,9 +212,8 @@ without taking damage.
 %%%%
 Sick status
 
-You have been sickened. Your health will no longer regenerate and your
-attributes may be drained temporarily. Sickness can be cured immediately by
-potions of curing.
+You have been sickened, and your health will no longer regenerate. Sickness can
+be cured immediately by potions of curing.
 %%%%
 Vertigo status
 
@@ -395,7 +394,7 @@ attacks which increase every time you slay a foe in combat.
 Toxic status
 
 You are radiating toxic energy, and will continously inflict poison on all
-nearby creatures (including yourself).
+nearby creatures.
 %%%%
 Recite status
 
@@ -446,11 +445,6 @@ rElec+ status
 
 You are more resistant to electricity.
 %%%%
-Fort status
-
-You have greatly increased fortitude, enhancing your strength and reducing all
-damage taken.
-%%%%
 Horr status
 
 You are terrified of nearby monsters, reducing your damage and accuracy in
@@ -483,4 +477,17 @@ Blood status
 
 Your body is covered in congealed blood, serving as armour for as long as you
 remain seriously injured.
+%%%%
+-Cast status
+
+You are unable to cast spells.
+%%%%
+Channel status
+
+You are channeling magical energy.
+%%%%
++Cast status
+
+You may cast spells with insufficient reserves of magic, but doing so will
+cause you to briefly lose access to your magic after the spell is cast.
 %%%%

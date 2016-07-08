@@ -321,6 +321,8 @@ enum ability_type
     // Sif Muna
     ABIL_SIF_MUNA_CHANNEL_ENERGY = 1070,
     ABIL_SIF_MUNA_FORGET_SPELL,
+    ABIL_SIF_MUNA_DIVINE_ENERGY,
+    ABIL_SIF_MUNA_STOP_DIVINE_ENERGY,
     // Trog
     ABIL_TROG_BURN_SPELLBOOKS = 1080,
     ABIL_TROG_BERSERK,
@@ -567,6 +569,7 @@ enum attribute_type
     ATTR_SURGE_REMOVED,        // Was surge power applied to next evocation.
 #endif
     ATTR_PAKELLAS_EXTRA_MP,    // MP to be collected to get a !magic from P
+    ATTR_DIVINE_ENERGY,        // Divine energy from Sif to cast with no MP.
     NUM_ATTRIBUTES
 };
 
@@ -1282,9 +1285,8 @@ enum command_type
 enum conduct_type
 {
     DID_NOTHING,
-    DID_NECROMANCY,                       // vamp/drain/pain/reap, Zong/Curses
+    DID_EVIL,                             // hated by good gods
     DID_HOLY,                             // holy wrath, holy word scrolls
-    DID_UNHOLY,                           // demon weapons, demon spells
     DID_ATTACK_HOLY,
     DID_ATTACK_NEUTRAL,
     DID_ATTACK_FRIEND,
@@ -1294,7 +1296,6 @@ enum conduct_type
     DID_KILL_LIVING,
     DID_KILL_UNDEAD,
     DID_KILL_DEMON,
-    DID_KILL_NATURAL_UNHOLY,              // TSO
     DID_KILL_NATURAL_EVIL,                // TSO
     DID_KILL_UNCLEAN,                     // Zin
     DID_KILL_CHAOTIC,                     // Zin
@@ -1306,7 +1307,6 @@ enum conduct_type
     DID_SPELL_MEMORISE,
     DID_SPELL_CASTING,
     DID_SPELL_PRACTISE,
-    DID_DRINK_BLOOD,
     DID_CANNIBALISM,
     DID_DESECRATE_SOULED_BEING,           // Zin
     DID_DELIBERATE_MUTATING,              // Zin
@@ -1924,6 +1924,8 @@ enum duration_type
     DUR_VERTIGO,
     DUR_ANCESTOR_DELAY,
     DUR_SANGUINE_ARMOUR,
+    DUR_NO_CAST,
+    DUR_CHANNEL_ENERGY,
     NUM_DURATIONS
 };
 
@@ -2494,7 +2496,6 @@ enum mon_holy_type_flags
     MH_NONLIVING         = 1<<4, // golems and other constructs
     MH_PLANT             = 1<<5,
     MH_EVIL              = 1<<6, // priests/wizards with evil spells
-    MH_UNHOLY            = 1<<7, // ditto, unholy spells
 };
 DEF_BITFIELD(mon_holy_type, mon_holy_type_flags, 7);
 
@@ -5068,6 +5069,7 @@ enum tile_flags ENUM_INT64
     TILE_FLAG_DRAIN =      0x8000000000000ULL,
     TILE_FLAG_IDEALISED =  0x10000000000000ULL,
     TILE_FLAG_BOUND_SOUL=  0x20000000000000ULL,
+    TILE_FLAG_INFESTED  =  0x40000000000000ULL,
 
     // MDAM has 5 possibilities, so uses 3 bits.
     TILE_FLAG_MDAM_MASK  = 0x1C0000000ULL,
@@ -5201,9 +5203,13 @@ enum timed_effect_type
 {
     TIMER_CORPSES,
     TIMER_HELL_EFFECTS,
+#if TAG_MAJOR_VERSION == 34
     TIMER_SICKNESS,
+#endif
     TIMER_CONTAM,
+#if TAG_MAJOR_VERSION == 34
     TIMER_DETERIORATION,
+#endif
     TIMER_GOD_EFFECTS,
 #if TAG_MAJOR_VERSION == 34
     TIMER_SCREAM,
