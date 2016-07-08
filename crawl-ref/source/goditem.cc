@@ -82,37 +82,6 @@ bool is_holy_item(const item_def& item)
     return retval;
 }
 
-bool is_unholy_item(const item_def& item)
-{
-    bool retval = false;
-
-    if (is_unrandom_artefact(item))
-    {
-        const unrandart_entry* entry = get_unrand_entry(item.unrand_idx);
-
-        if (entry->flags & UNRAND_FLAG_UNHOLY)
-            return true;
-    }
-
-    switch (item.base_type)
-    {
-    case OBJ_WEAPONS:
-        retval = is_demonic(item);
-        break;
-    case OBJ_BOOKS:
-    case OBJ_RODS:
-        retval = _is_bookrod_type(item, is_unholy_spell);
-        break;
-    case OBJ_MISCELLANY:
-        retval = item.sub_type == MISC_HORN_OF_GERYON;
-        break;
-    default:
-        break;
-    }
-
-    return retval;
-}
-
 bool is_potentially_evil_item(const item_def& item)
 {
     switch (item.base_type)
@@ -178,6 +147,12 @@ bool is_corpse_violating_item(const item_def& item)
     return retval;
 }
 
+/**
+ * Do good gods always hate use of this item?
+ *
+ * @param item      The item in question.
+ * @return          Whether the Good Gods will always frown on this item's use.
+ */
 bool is_evil_item(const item_def& item)
 {
     if (is_unrandom_artefact(item))
@@ -191,6 +166,8 @@ bool is_evil_item(const item_def& item)
     switch (item.base_type)
     {
     case OBJ_WEAPONS:
+        if (is_demonic(item))
+            return true;
         {
         const int item_brand = get_weapon_brand(item);
         return item_brand == SPWPN_DRAINING
@@ -208,6 +185,8 @@ bool is_evil_item(const item_def& item)
     case OBJ_BOOKS:
     case OBJ_RODS:
         return _is_bookrod_type(item, is_evil_spell);
+    case OBJ_MISCELLANY:
+        return item.sub_type == MISC_HORN_OF_GERYON;
     default:
         return false;
     }
@@ -459,13 +438,6 @@ bool is_channeling_item(const item_def& item)
               && item.sub_type == MISC_CRYSTAL_BALL_OF_ENERGY;
 }
 
-bool is_unholy_spell(spell_type spell)
-{
-    unsigned int flags = get_spell_flags(spell);
-
-    return flags & SPFLAG_UNHOLY;
-}
-
 bool is_corpse_violating_spell(spell_type spell)
 {
     unsigned int flags = get_spell_flags(spell);
@@ -473,11 +445,19 @@ bool is_corpse_violating_spell(spell_type spell)
     return flags & SPFLAG_CORPSE_VIOLATING;
 }
 
+/**
+ * Do the good gods hate use of this spell?
+ *
+ * @param spell     The spell in question; e.g. SPELL_CORPSE_ROT.
+ * @return          Whether the Good Gods hate this spell.
+ */
 bool is_evil_spell(spell_type spell)
 {
     const spschools_type disciplines = get_spell_disciplines(spell);
     unsigned int flags = get_spell_flags(spell);
 
+    if (flags & SPFLAG_UNHOLY)
+        return true;
     return bool(disciplines & SPTYP_NECROMANCY)
            && !bool(flags & SPFLAG_NOT_EVIL);
 }
@@ -520,32 +500,41 @@ static bool _your_god_hates_rod_spell(spell_type spell)
     return god_hates_spell(spell, you.religion, true);
 }
 
-static conduct_type good_god_hates_item_handling(const item_def &item)
+/**
+ * Do the good gods dislike players using this item? If so, why?
+ *
+ * @param item  The item in question.
+ * @return      Whether using the item counts as DID_EVIL.
+ */
+static bool item_handling_is_evil(const item_def &item)
 {
-    if (!is_good_god(you.religion)
-        || (!is_unholy_item(item) && !is_evil_item(item)))
-    {
-        return DID_NOTHING;
-    }
-
-    if (item_type_known(item) || is_unrandom_artefact(item))
-    {
-        if (is_evil_item(item))
-            return DID_NECROMANCY;
-        else
-            return DID_UNHOLY;
-    }
-
     if (is_demonic(item))
-        return DID_UNHOLY;
+        return true;
 
-    return DID_NOTHING;
+    if ((item_type_known(item) || is_unrandom_artefact(item))
+        && is_evil_item(item))
+    {
+        return true;
+    }
+
+    return false;
 }
 
+/**
+ * Does the player's god hate them using the given item? If so, why?
+ *
+ * XXX: We should really be returning a list of all possible conducts for the
+ * item and potentially letting callers filter them by the current god; this
+ * is duplicating godconduct.cc otherwise.
+ *
+ * @param item  The item in question.
+ * @return      Why the player's god hates the item, e.g. DID_HOLY for holy
+ *              wrath items under Yredremnul; else DID_NOTHING.
+ */
 conduct_type god_hates_item_handling(const item_def &item)
 {
-    if (good_god_hates_item_handling(item) != DID_NOTHING)
-        return good_god_hates_item_handling(item);
+    if (is_good_god(you.religion) && item_handling_is_evil(item))
+        return DID_EVIL;
 
     switch (you.religion)
     {
@@ -628,7 +617,7 @@ conduct_type god_hates_item_handling(const item_def &item)
     if (item_type_known(item) && is_potentially_evil_item(item)
         && is_good_god(you.religion))
     {
-        return DID_NECROMANCY;
+        return DID_EVIL;
     }
 
     if (item_type_known(item) && _is_bookrod_type(item,

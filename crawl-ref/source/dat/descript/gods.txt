@@ -149,11 +149,11 @@ foes.
 Sif Muna
 
 Sif Muna the Loreminder is a contemplative but powerful deity, served by those
-who seek magical knowledge. The Loreminder appreciates the training of
-spellcasting skills, and will reward faithful followers with a supply of
-spellbooks taken directly from Sif Muna's legendary library.
-%%%%
-the Shining One
+who seek magical knowledge. The Loreminder appreciates followers who triumph
+over their foes and especially the training of spellcasting skills in order to
+do so. The faithful can expect to recieve a supply of spellbooks taken directly
+from Sif Muna's legendary library.
+%%%% the Shining One
 
 Followers of the Shining One are bound to the code of the honourable warrior,
 soldiers in their god's eternal crusade against evil. For forsaking dark magic
@@ -254,8 +254,9 @@ Elyvilon powers
 
 The Healer offers followers means to heal themselves from damage and other ill
 effects. Elyvilon also allows healing of hostile monsters, trying to turn them
-neutral. Elyvilon may directly intervene to save a follower's life, especially
-when called upon; highly pious followers can be sure of such aid.
+neutral. Elyvilon may directly intervene to save a follower's life, and may
+also occasionally protect the follower's allies from death. Especially pious
+followers can be sure of aid when calling upon Elyvilon for protection.
 %%%%
 Fedhas powers
 
@@ -378,10 +379,12 @@ three sacrifices which you can make in order to achieve greater power.
 %%%%
 Sif Muna powers
 
-Followers of Sif Muna can channel magical energy when they need it the most,
-and they gain a power to forget any spell at will, so as to learn new ones. Sif
-Muna protects spellcasters against the negative effects of miscasting a spell.
-Over time, followers will receive spellbooks containing a vast range of spells.
+Sif Muna will grant followers divine energy, allowing them to occasionally cast
+spells even with insufficient reserves of magic. Eventually worshippers will
+gain the ability to rapidly restore their magical energy, and to forget spells
+at will, so as to learn new ones. Sif Muna protects spellcasters against the
+negative effects of miscasting spells. Over time, followers will receive
+spellbooks containing a vast range of spells.
 %%%%
 the Shining One powers
 
