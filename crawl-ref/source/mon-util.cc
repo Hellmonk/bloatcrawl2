@@ -638,8 +638,6 @@ const char * holiness_name(mon_holy_type_flags which_holiness)
         return "plant";
     case MH_EVIL:
         return "evil";
-    case MH_UNHOLY:
-        return "unholy";
     default:
         return "bug";
     }
@@ -2443,8 +2441,7 @@ static vector<mon_spellbook_type> _mons_spellbook_list(monster_type mon_type)
                  MST_OGRE_MAGE_IV, MST_OGRE_MAGE_V };
 
     case MONS_ANCIENT_CHAMPION:
-        return { MST_ANCIENT_CHAMPION_I, MST_ANCIENT_CHAMPION_II,
-                 MST_ANCIENT_CHAMPION_III };
+        return { MST_ANCIENT_CHAMPION_I, MST_ANCIENT_CHAMPION_II };
 
     case MONS_TENGU_CONJURER:
         return { MST_TENGU_CONJURER_I, MST_TENGU_CONJURER_II,
@@ -3995,8 +3992,9 @@ bool mons_can_open_door(const monster* mon, const coord_def& pos)
     if (!_mons_can_open_doors(mon))
         return false;
 
-    // Creatures allied with the player can't open sealed doors either
-    if (mon->friendly() && grd(pos) == DNGN_SEALED_DOOR)
+    // Creatures allied with the player can't open doors.
+    // (to prevent sabotaging the player accidentally.)
+    if (mon->friendly())
         return false;
 
     if (env.markers.property_at(pos, MAT_ANY, "door_restrict") == "veto")

@@ -480,6 +480,13 @@ void moveto_location_effects(dungeon_feature_type old_feat,
                         mpr("...and don't expect to remain undetected.");
                 }
             }
+
+            if (you.species == SP_OCTOPODE
+                && !feat_is_water(old_feat)
+                && you.invisible())
+            {
+                mpr("Don't expect to remain undetected while in the water.");
+            }
         }
         else if (you.props.exists(TEMP_WATERWALK_KEY))
             you.props.erase(TEMP_WATERWALK_KEY);
@@ -2154,11 +2161,6 @@ const int player_adjust_evoc_power(const int power, int enhancers)
 {
     const int total_enhancers = you.spec_evoke() + enhancers;
     return stepdown_spellpower(100 *apply_enhancement(power, total_enhancers));
-}
-
-const int player_adjust_invoc_power(const int power)
-{
-    return apply_enhancement(power, you.spec_invoc());
 }
 
 // This function differs from the above in that it's used to set the
@@ -5816,6 +5818,23 @@ void dec_ambrosia_player(int delay)
         mpr("You feel less invigorated.");
 }
 
+void dec_channel_player(int delay)
+{
+    if (!you.duration[DUR_CHANNEL_ENERGY])
+        return;
+
+    you.duration[DUR_CHANNEL_ENERGY] =
+        max(0, you.duration[DUR_CHANNEL_ENERGY] - delay);
+
+    // 3-5 per turn, 9-50 over (3-10) turns
+    const int mp_restoration = div_rand_round(delay*(3 + random2(3)),
+                                              BASELINE_DELAY);
+    inc_mp(mp_restoration);
+
+    if (!you.duration[DUR_CHANNEL_ENERGY])
+        mpr("You feel less invigorated.");
+}
+
 bool invis_allowed(bool quiet, string *fail_reason)
 {
     string msg;
@@ -7137,13 +7156,10 @@ mon_holy_type player::holiness(bool temp) const
     if (undead_state(temp))
         holi = MH_UNDEAD;
 
-    if (species == SP_DEMONSPAWN)
-        holi |= MH_UNHOLY;
-
     if (is_good_god(religion))
         holi |= MH_HOLY;
 
-    if (is_evil_god(religion))
+    if (is_evil_god(religion) || species == SP_DEMONSPAWN)
         holi |= MH_EVIL;
 
     // possible XXX: Monsters get evil/unholy bits set on spell selection
@@ -7165,16 +7181,6 @@ bool player::holy_wrath_susceptible() const
 bool player::is_holy(bool check_spells) const
 {
     return bool(holiness() & MH_HOLY);
-}
-
-bool player::is_unholy(bool check_spells) const
-{
-    return bool(holiness() & (MH_DEMONIC | MH_UNHOLY));
-}
-
-bool player::is_evil(bool check_spells) const
-{
-    return bool(holiness() & (MH_UNDEAD | MH_EVIL));
 }
 
 // This is a stub. Check is used only for silver damage. Worship of chaotic
@@ -7303,7 +7309,7 @@ int player::res_holy_energy(const actor *attacker) const
     if (undead_or_demonic())
         return -2;
 
-    if (is_evil())
+    if (evil()) // following evil god
         return -1;
 
     if (is_holy())

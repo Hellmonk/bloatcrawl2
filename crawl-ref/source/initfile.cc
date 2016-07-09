@@ -893,6 +893,7 @@ void game_options::reset_options()
 
     easy_exit_menu         = false;
     ability_menu           = true;
+    easy_floor_use         = true;
     dos_use_background_intensity = true;
 
     assign_item_slot       = SS_FORWARD;
@@ -1560,7 +1561,7 @@ string find_crawlrc()
 static const char* lua_builtins[] =
 {
     "clua/stash.lua",
-    "clua/runrest.lua",
+    "clua/delays.lua",
     "clua/autofight.lua",
     "clua/automagic.lua",
     "clua/kills.lua",
@@ -2393,7 +2394,7 @@ static void _bindkey(string field)
             return;
         }
 
-        key = CONTROL(wchars[0]);
+        key = CONTROL(wchars[1]);
     }
     else
     {
@@ -3659,6 +3660,7 @@ void game_options::read_option_line(const string &str, bool runscript)
     else LIST_OPTION(auto_exclude);
     else BOOL_OPTION(easy_exit_menu);
     else BOOL_OPTION(ability_menu);
+    else BOOL_OPTION(easy_floor_use);
     else BOOL_OPTION(dos_use_background_intensity);
     else if (key == "item_stack_summary_minimum")
         item_stack_summary_minimum = atoi(field.c_str());

@@ -1541,11 +1541,10 @@ bool acquirement(object_class_type class_wanted, int agent,
         { OBJ_ARMOUR,     "Armour" },
         { OBJ_JEWELLERY,  "Jewellery" },
         { OBJ_BOOKS,      "Book" },
-        { OBJ_STAVES,     "Staff" },
+        { OBJ_STAVES,     "Staff " },
         { OBJ_WANDS,      "Wand" },
         { OBJ_MISCELLANY, "Misc. Evocable" },
         { OBJ_GOLD,       "Gold" },
-        { OBJ_MISSILES,   "Ammunition" },
     };
 //    ASSERT(acq_classes[7].type == OBJ_FOOD);
 //    acq_classes[7].name = you_worship(GOD_FEDHAS) ? "Fruit":

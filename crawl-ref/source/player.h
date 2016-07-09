@@ -737,8 +737,6 @@ public:
     bool undead_or_demonic() const override;
     bool holy_wrath_susceptible() const override;
     bool is_holy(bool spells = true) const override;
-    bool is_unholy(bool spells = true) const override;
-    bool is_evil(bool spells = true) const override;
     int how_chaotic(bool check_spells_god) const override;
     bool is_artificial(bool temp = true) const override;
     bool is_unbreathing() const override;
@@ -1026,7 +1024,6 @@ int player_spec_poison();
 int player_spec_summ();
 
 const int player_adjust_evoc_power(const int power, int enhancers = 0);
-const int player_adjust_invoc_power(const int power);
 
 int player_speed();
 
@@ -1150,6 +1147,7 @@ bool haste_player(int turns, bool rageext = false, source_type source = SRC_UNDE
 void dec_haste_player(int delay);
 void dec_elixir_player(int delay);
 void dec_ambrosia_player(int delay);
+void dec_channel_player(int delay);
 bool invis_allowed(bool quiet = false, string *fail_reason = nullptr);
 bool flight_allowed(bool quiet = false, string *fail_reason = nullptr);
 void fly_player(int pow, bool already_flying = false);

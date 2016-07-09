@@ -652,7 +652,7 @@ void bolt::apply_beam_conducts()
         switch (flavour)
         {
         case BEAM_HELLFIRE:
-            did_god_conduct(DID_UNHOLY, 2 + random2(3), god_cares());
+            did_god_conduct(DID_EVIL, 2 + random2(3), god_cares());
             break;
         case BEAM_FIRE:
         case BEAM_HOLY_FLAME:
@@ -1593,7 +1593,7 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
             mons->drain_exp(pbolt.agent());
 
             if (YOU_KILL(pbolt.thrower))
-                did_god_conduct(DID_NECROMANCY, 2, pbolt.god_cares());
+                did_god_conduct(DID_EVIL, 2, pbolt.god_cares());
         }
         break;
 
@@ -1685,6 +1685,20 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
                 simple_monster_message(mons,
                                        hurted ? " completely resists."
                                               : " appears unharmed.");
+            }
+
+            hurted = 0;
+        }
+        break;
+
+    case BEAM_MEPHITIC:
+        if (mons->res_poison() > 0)
+        {
+            if (doFlavouredEffects)
+            {
+                simple_monster_message(mons,
+                                        hurted ? " completely resists."
+                                               : " appears unharmed.");
             }
 
             hurted = 0;
@@ -2044,7 +2058,7 @@ bool miasma_monster(monster* mons, const actor* who)
         && is_good_god(you.religion)
         && !(success && you_worship(GOD_SHINING_ONE))) // already penalized
     {
-        did_god_conduct(DID_NECROMANCY, 5 + random2(3));
+        did_god_conduct(DID_EVIL, 5 + random2(3));
     }
 
     if (mons->max_hit_points > 4 && coinflip())
@@ -4578,7 +4592,7 @@ void bolt::monster_post_hit(monster* mon, int dmg)
             mon->put_to_sleep(agent(), 0);
     }
 
-    if (YOU_KILL(thrower) && !mon->wont_attack())
+    if (YOU_KILL(thrower) && !mon->wont_attack() && !mons_is_firewood(mon))
         you.pet_target = mon->mindex();
 
     // Sticky flame.
@@ -5468,8 +5482,7 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
                 return MON_UNAFFECTED;
 
             obvious_effect = true;
-            const int duration =
-                player_adjust_invoc_power(you.skill_rdiv(SK_INVOCATIONS, 3, 4) + 2);
+            const int duration = you.skill_rdiv(SK_INVOCATIONS, 3, 4) + 2;
             mon->add_ench(mon_enchant(ENCH_SOUL_RIPE, 0, agent(),
                                       duration * BASELINE_DELAY));
             simple_monster_message(mon, "'s soul is now ripe for the taking.");
