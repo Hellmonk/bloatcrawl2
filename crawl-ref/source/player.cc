@@ -10085,7 +10085,7 @@ int player_damage_modifier(int damage, bool silent, const int range)
  */
 int monster_beam_damage_modifier(int damage)
 {
-    damage = damage * 3 / 2;
+    damage = damage * 2;
     return damage;
 }
 
