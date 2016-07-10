@@ -4286,6 +4286,8 @@ bool bolt::determine_damage(monster* mon, int& preac, int& postac, int& final,
     else if (!freeze_immune)
         preac = damage.roll();
 
+    preac = monster_beam_damage_modifier(preac);
+
     int tracer_postac_max = preac_max_damage;
 
     postac = apply_AC(mon, preac);

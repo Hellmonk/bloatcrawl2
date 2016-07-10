@@ -10080,6 +10080,15 @@ int player_damage_modifier(int damage, bool silent, const int range)
     return damage / base_factor;
 }
 
+/*
+ * increase damage of player conjuring spells against monsters, since they can't be cast as often as before.
+ */
+int monster_beam_damage_modifier(int damage)
+{
+    damage = damage * 3 / 2;
+    return damage;
+}
+
 int player_attack_delay_modifier(int attack_delay)
 {
     attack_delay *= base_factor;

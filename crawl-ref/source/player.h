@@ -1250,6 +1250,7 @@ int spell_mp_cost(spell_type which_spell);
 int spell_mp_freeze(spell_type which_spell);
 int weapon_sp_cost(const item_def* weapon, const item_def* ammo = nullptr);
 int player_tohit_modifier(const int old_tohit, int range = 1);
+int monster_beam_damage_modifier(int damage);
 int player_damage_modifier(int old_damage, bool silent = false, const int range = 1);
 double player_spellpower_modifier(double old_spellpower);
 int player_spellsuccess_modifier(int force);
