@@ -4939,9 +4939,9 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
     int hitp;
 
     if (you.species == SP_MOON_TROLL)
-        hitp  = 120;
+        hitp = 120;
     else
-        hitp  = effective_xl() * 10 + 3 * (5 - crawl_state.difficulty);
+        hitp = effective_xl() * 10 + 3 * (5 - crawl_state.difficulty);
 
     hitp += you.hp_max_adj_perm;
 
@@ -4981,7 +4981,7 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
         hitp = player_pool_modifier(hitp);
     }
 
-    hitp = max(10, hitp);
+    hitp += 10;
 
     return hitp;
 }
