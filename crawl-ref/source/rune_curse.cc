@@ -70,9 +70,11 @@ const int rune_curse_mon_spellpower_adjustment(int spellpower)
 
 const int rune_curse_depth_adjust(int depth)
 {
+    /* doesn't work yet
     const int runes = active_rune_curses();
     if (runes > 0)
         depth += random2(runes);
+        */
     return depth;
 }
 

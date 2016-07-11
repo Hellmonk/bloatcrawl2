@@ -571,7 +571,7 @@ bool needs_resolution(monster_type mon_type)
            || _is_random_monster(mon_type);
 }
 
-monster_type resolve_monster_type(monster_type mon_type,
+monster_type resolve_monster_type(monster_type mon_type_origin,
                                   monster_type &base_type,
                                   proximity_type proximity,
                                   coord_def *pos,
@@ -581,6 +581,8 @@ monster_type resolve_monster_type(monster_type mon_type,
                                   bool *want_band,
                                   bool allow_ood)
 {
+    monster_type mon_type = mon_type_origin;
+
     if (want_band)
         *want_band = false;
 
@@ -670,6 +672,9 @@ monster_type resolve_monster_type(monster_type mon_type,
                                            vault_mon_weights.end());
                 type = vault_mon_types[i];
 
+                if (type == MONS_PROGRAM_BUG)
+                    die("Problem.");
+
                 // Give up after enough attempts: for example, a Yred
                 // worshipper casting Shadow Creatures in holy Pan.
                 if (tries++ >= 300)
@@ -717,6 +722,9 @@ monster_type resolve_monster_type(monster_type mon_type,
                                              stair_type, place,
                                              want_band, allow_ood);
                 }
+                if (mon_type == MONS_PROGRAM_BUG)
+                    die("Problem.");
+
                 return mon_type;
             }
         }
@@ -728,6 +736,9 @@ monster_type resolve_monster_type(monster_type mon_type,
 
             // Now pick a monster of the given branch and level.
             mon_type = pick_random_monster(*place, mon_type, place, allow_ood);
+
+            if (mon_type == MONS_PROGRAM_BUG)
+                die("Problem.");
 
             // Don't allow monsters too stupid to use stairs (e.g.
             // non-spectral zombified undead) to be placed near
@@ -743,6 +754,10 @@ monster_type resolve_monster_type(monster_type mon_type,
 
         if (proximity == PROX_NEAR_STAIRS && tries >= 300)
             mon_type = pick_random_monster(*place, mon_type, place, allow_ood);
+
+        if (mon_type == MONS_PROGRAM_BUG)
+            die("Problem.");
+
     }
     return mon_type;
 }
@@ -945,6 +960,10 @@ monster* place_monster(mgen_data mg, bool force_pos, bool dont_place, bool first
         for (int i = 1; i < band_size; ++i)
         {
             band_monsters[i] = _band_member(band, i, place, allow_ood);
+
+            if (band_monsters[i] == MONS_PROGRAM_BUG)
+                die("Problem!");
+
             if (band_monsters[i] == NUM_MONSTERS)
                 die("Unhandled band type %d", band);
 
@@ -2928,9 +2947,10 @@ static monster_type _band_member(band_type band, int which,
         monster_type tmptype = MONS_PROGRAM_BUG;
         coord_def tmppos;
         dungeon_char_type tmpfeat;
-        return resolve_monster_type(RANDOM_BANDLESS_MONSTER, tmptype,
-                                    PROX_ANYWHERE, &tmppos, 0, &tmpfeat,
-                                    &parent_place, nullptr, allow_ood);
+        monster_type result = resolve_monster_type(RANDOM_BANDLESS_MONSTER, tmptype,
+                                                   PROX_ANYWHERE, &tmppos, 0, &tmpfeat,
+                                                   &parent_place, nullptr, allow_ood);
+        return result;
     }
 
     default:
