@@ -722,8 +722,6 @@ monster_type resolve_monster_type(monster_type mon_type_origin,
                                              stair_type, place,
                                              want_band, allow_ood);
                 }
-                if (mon_type == MONS_PROGRAM_BUG)
-                    die("Problem.");
 
                 return mon_type;
             }
@@ -736,9 +734,6 @@ monster_type resolve_monster_type(monster_type mon_type_origin,
 
             // Now pick a monster of the given branch and level.
             mon_type = pick_random_monster(*place, mon_type, place, allow_ood);
-
-            if (mon_type == MONS_PROGRAM_BUG)
-                die("Problem.");
 
             // Don't allow monsters too stupid to use stairs (e.g.
             // non-spectral zombified undead) to be placed near
@@ -754,9 +749,6 @@ monster_type resolve_monster_type(monster_type mon_type_origin,
 
         if (proximity == PROX_NEAR_STAIRS && tries >= 300)
             mon_type = pick_random_monster(*place, mon_type, place, allow_ood);
-
-        if (mon_type == MONS_PROGRAM_BUG)
-            die("Problem.");
 
     }
     return mon_type;
