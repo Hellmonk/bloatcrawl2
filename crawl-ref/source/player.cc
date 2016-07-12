@@ -480,6 +480,13 @@ void moveto_location_effects(dungeon_feature_type old_feat,
                         mpr("...and don't expect to remain undetected.");
                 }
             }
+
+            if (you.species == SP_OCTOPODE
+                && !feat_is_water(old_feat)
+                && you.invisible())
+            {
+                mpr("Don't expect to remain undetected while in the water.");
+            }
         }
         else if (you.props.exists(TEMP_WATERWALK_KEY))
             you.props.erase(TEMP_WATERWALK_KEY);
@@ -1139,7 +1146,7 @@ static int _player_bonus_regen()
     }
 
     // Fast heal mutation.
-    rr += player_mutation_level(MUT_HEALTH_REGENERATION) * 20;
+    rr += player_mutation_level(MUT_FAST_HEALTH_REGENERATION) * 20;
 
     // Powered By Death mutation, boosts regen by variable strength
     // if the duration of the effect is still active.
@@ -1153,7 +1160,7 @@ static int _player_bonus_regen()
 // visible at level 1 or 2 respectively, stops regeneration at level 3.
 static int _slow_regeneration_rate()
 {
-    if (player_mutation_level(MUT_SLOW_REGENERATION) == 3)
+    if (player_mutation_level(MUT_SLOW_HEALTH_REGENERATION) == 3)
         return 0;
 
     for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
@@ -1162,7 +1169,7 @@ static int _slow_regeneration_rate()
             && !mi->wont_attack()
             && !mi->neutral())
         {
-            return 2 - player_mutation_level(MUT_SLOW_REGENERATION);
+            return 2 - player_mutation_level(MUT_SLOW_HEALTH_REGENERATION);
         }
     }
     return 2;
@@ -1197,7 +1204,7 @@ int player_regen()
     }
 
     // Slow regeneration mutation.
-    if (player_mutation_level(MUT_SLOW_REGENERATION) > 0)
+    if (player_mutation_level(MUT_SLOW_HEALTH_REGENERATION) > 0)
     {
         rr *= _slow_regeneration_rate();
         rr /= 2;
@@ -1226,7 +1233,7 @@ int player_regen()
 void update_regen_amulet_attunement()
 {
     if (you.wearing(EQ_AMULET, AMU_HEALTH_REGENERATION)
-        && player_mutation_level(MUT_SLOW_REGENERATION) < 3)
+        && player_mutation_level(MUT_SLOW_HEALTH_REGENERATION) < 3)
     {
         if (you.hp == you.hp_max
             && you.props[REGEN_AMULET_ACTIVE].get_int() == 0)
@@ -2154,11 +2161,6 @@ const int player_adjust_evoc_power(const int power, int enhancers)
 {
     const int total_enhancers = you.spec_evoke() + enhancers;
     return stepdown_spellpower(100 *apply_enhancement(power, total_enhancers));
-}
-
-const int player_adjust_invoc_power(const int power)
-{
-    return apply_enhancement(power, you.spec_invoc());
 }
 
 // This function differs from the above in that it's used to set the
@@ -4937,9 +4939,9 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
     int hitp;
 
     if (you.species == SP_MOON_TROLL)
-        hitp  = 120;
+        hitp = 120;
     else
-        hitp  = effective_xl() * 10 + 3 * (5 - crawl_state.difficulty);
+        hitp = effective_xl() * 10 + 3 * (5 - crawl_state.difficulty);
 
     hitp += you.hp_max_adj_perm;
 
@@ -4979,7 +4981,7 @@ int get_real_hp(bool trans, bool rotted, bool adjust_for_difficulty)
         hitp = player_pool_modifier(hitp);
     }
 
-    hitp = max(10, hitp);
+    hitp += 10;
 
     return hitp;
 }
@@ -5052,7 +5054,7 @@ int get_unfrozen_mp()
 
 bool player_regenerates_hp()
 {
-    if (player_mutation_level(MUT_SLOW_REGENERATION) == 3)
+    if (player_mutation_level(MUT_SLOW_HEALTH_REGENERATION) == 3)
         return false;
     if (you.species == SP_VAMPIRE && you.hunger_state <= HS_STARVING)
         return false;
@@ -5813,6 +5815,23 @@ void dec_ambrosia_player(int delay)
     inc_sp(sp_restoration * 3);
 
     if (!you.duration[DUR_AMBROSIA])
+        mpr("You feel less invigorated.");
+}
+
+void dec_channel_player(int delay)
+{
+    if (!you.duration[DUR_CHANNEL_ENERGY])
+        return;
+
+    you.duration[DUR_CHANNEL_ENERGY] =
+        max(0, you.duration[DUR_CHANNEL_ENERGY] - delay);
+
+    // 3-5 per turn, 9-50 over (3-10) turns
+    const int mp_restoration = div_rand_round(delay*(3 + random2(3)),
+                                              BASELINE_DELAY);
+    inc_mp(mp_restoration);
+
+    if (!you.duration[DUR_CHANNEL_ENERGY])
         mpr("You feel less invigorated.");
 }
 
@@ -7137,13 +7156,10 @@ mon_holy_type player::holiness(bool temp) const
     if (undead_state(temp))
         holi = MH_UNDEAD;
 
-    if (species == SP_DEMONSPAWN)
-        holi |= MH_UNHOLY;
-
     if (is_good_god(religion))
         holi |= MH_HOLY;
 
-    if (is_evil_god(religion))
+    if (is_evil_god(religion) || species == SP_DEMONSPAWN)
         holi |= MH_EVIL;
 
     // possible XXX: Monsters get evil/unholy bits set on spell selection
@@ -7165,16 +7181,6 @@ bool player::holy_wrath_susceptible() const
 bool player::is_holy(bool check_spells) const
 {
     return bool(holiness() & MH_HOLY);
-}
-
-bool player::is_unholy(bool check_spells) const
-{
-    return bool(holiness() & (MH_DEMONIC | MH_UNHOLY));
-}
-
-bool player::is_evil(bool check_spells) const
-{
-    return bool(holiness() & (MH_UNDEAD | MH_EVIL));
 }
 
 // This is a stub. Check is used only for silver damage. Worship of chaotic
@@ -7303,7 +7309,7 @@ int player::res_holy_energy(const actor *attacker) const
     if (undead_or_demonic())
         return -2;
 
-    if (is_evil())
+    if (evil()) // following evil god
         return -1;
 
     if (is_holy())
@@ -10074,6 +10080,23 @@ int player_damage_modifier(int damage, bool silent, const int range)
     return damage / base_factor;
 }
 
+int player_elemental_damage_modifier(int damage, brand_type brand)
+{
+    int result = damage;
+    if (you.rune_curse_active[RUNE_GEHENNA] && brand == SPWPN_FLAME)
+        result = div_rand_round(damage * 2, 3);
+    return result;
+}
+
+/*
+ * increase damage of player conjuring spells against monsters, since they can't be cast as often as before.
+ */
+int monster_beam_damage_modifier(int damage)
+{
+    damage = damage * 3 / 2;
+    return damage;
+}
+
 int player_attack_delay_modifier(int attack_delay)
 {
     attack_delay *= base_factor;
@@ -10130,6 +10153,9 @@ int player_ac_modifier(int ac)
         ac = ac * 5 / 6;
     else if (you.exertion == EXERT_FOCUS && ac > 0)
         ac = ac * 6 / 5 + 10000;
+
+    if (you.rune_curse_active[RUNE_DIS])
+        ac = ac * 4 / 5;
 
     return ac / base_factor;
 }

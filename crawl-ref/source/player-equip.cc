@@ -60,10 +60,18 @@ void equip_item(equipment_type slot, int item_slot, bool msg)
 
     you.equip[slot] = item_slot;
     const int slot_curse = you.equip_slot_cursed_level[slot];
+    item_def &item = you.inv1[item_slot];
     if (slot_curse > 0)
     {
-        you.inv1[item_slot].curse_weight = slot_curse;
-        you.equip_slot_cursed_level[slot] = 0;
+        if (get_weapon_brand(item) == SPWPN_HOLY_WRATH)
+        {
+            mprf("%s resists the curse on your equipment slot", item.name(DESC_YOUR, true).c_str());
+        }
+        else
+        {
+            item.curse_weight = slot_curse;
+            you.equip_slot_cursed_level[slot] = 0;
+        }
     }
 
     equip_effect(slot, item_slot, false, msg);
@@ -383,8 +391,6 @@ static void _equip_use_warning(const item_def& item)
 {
     if (is_holy_item(item) && you_worship(GOD_YREDELEMNUL))
         mpr("You really shouldn't be using a holy item like this.");
-    else if (is_unholy_item(item) && is_good_god(you.religion))
-        mpr("You really shouldn't be using an unholy item like this.");
     else if (is_corpse_violating_item(item) && you_worship(GOD_FEDHAS))
         mpr("You really shouldn't be using a corpse-violating item like this.");
     else if (is_evil_item(item) && is_good_god(you.religion))
@@ -1107,7 +1113,9 @@ static void _remove_amulet_of_faith(item_def &item)
         // next sacrifice is going to be delaaaayed.
         if (you.piety < piety_breakpoint(5))
         {
+#ifdef DEBUG_DIAGNOSTICS
             const int cur_delay = you.props[RU_SACRIFICE_DELAY_KEY].get_int();
+#endif
             ru_reject_sacrifices(true);
             dprf("prev delay %d, new delay %d", cur_delay,
                  you.props[RU_SACRIFICE_DELAY_KEY].get_int());
@@ -1150,7 +1158,7 @@ static void _equip_amulet_of_dismissal()
 
 static void _equip_amulet_of_regeneration()
 {
-    if (player_mutation_level(MUT_SLOW_REGENERATION) == 3)
+    if (player_mutation_level(MUT_SLOW_HEALTH_REGENERATION) == 3)
         mpr("The amulet feels cold and inert.");
     else if (get_hp() == get_hp_max())
     {

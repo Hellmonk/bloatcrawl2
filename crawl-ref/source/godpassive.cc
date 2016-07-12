@@ -90,11 +90,11 @@ static const vector<god_passive> god_passives[NUM_GODS] =
         { -1, passive_t::protect_from_harm, "GOD sometimes watches over you" },
         { -1, passive_t::abjuration_protection_hd,
               "GOD protects your summons from abjuration" },
-        { -1, passive_t::bless_followers_vs_unholy,
-              "GOD blesses your followers when they kill evil or unholy beings"
+        { -1, passive_t::bless_followers_vs_evil,
+              "GOD blesses your followers when they kill evil beings"
         },
-        { -1, passive_t::restore_hp_mp_vs_unholy,
-              "gain health and magic from killing evil or unholy beings" },
+        { -1, passive_t::restore_hp_mp_vs_evil,
+              "gain health and magic from killing evil beings" },
         {  0, passive_t::halo, "are surrounded by divine halo" },
     },
 
@@ -593,10 +593,11 @@ string ash_describe_bondage(int flags, bool level)
         && you.bondage[ET_ARMOUR] == you.bondage[ET_JEWELS]
         && you.bondage[ET_ARMOUR] != -1)
     {
-        desc += make_stringf("You are %s bound in armour and magic.\n",
+        desc += make_stringf("You are %s bound in armour %s jewellery.\n",
                              you.bondage[ET_ARMOUR] == 0 ? "not" :
                              you.bondage[ET_ARMOUR] == 1 ? "partially"
-                                                         : "fully");
+                                                         : "fully",
+                             you.bondage[ET_ARMOUR] == 0 ? "or" : "and");
     }
     else
     {
@@ -610,7 +611,7 @@ string ash_describe_bondage(int flags, bool level)
 
         if (flags & ETF_JEWELS && you.bondage[ET_JEWELS] != -1)
         {
-            desc += make_stringf("You are %s bound in magic.\n",
+            desc += make_stringf("You are %s bound in jewellery.\n",
                                  you.bondage[ET_JEWELS] == 0 ? "not" :
                                  you.bondage[ET_JEWELS] == 1 ? "partially"
                                                              : "fully");

@@ -1249,6 +1249,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
     // Prevent bogus notes.
     activate_notes(false);
 
+    int hiscore_index = -1;
 #ifndef SCORE_WIZARD_CHARACTERS
 #ifndef DEBUG
     if (!you.wizard && !you.explore)
@@ -1256,7 +1257,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 #endif
     {
         // Add this highscore to the score file.
-        hiscores_new_entry(se);
+        hiscore_index = hiscores_new_entry(se);
         logfile_new_entry(se);
     }
 
@@ -1264,7 +1265,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
     if (!non_death && !crawl_state.game_is_tutorial() && !you.wizard)
         save_ghost();
 
-    end_game(se);
+    end_game(se, hiscore_index);
 }
 
 string morgue_name(string char_name, time_t when_crawl_got_even)

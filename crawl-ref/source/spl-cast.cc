@@ -83,14 +83,10 @@
 
 static int _spell_enhancement(spell_type spell);
 
-void surge_power(const int enhanced, const string adj)
+void surge_power(const int enhanced)
 {
     if (enhanced)               // one way or the other {dlb}
     {
-        const string surge_power =
-            make_stringf("surge of %s%spower!",
-                         adj.length() ? adj.c_str() : "",
-                         adj.length() ? " " : "");
         const string modifier = (enhanced  < -2) ? "extraordinarily" :
                                 (enhanced == -2) ? "extremely" :
                                 (enhanced ==  2) ? "strong" :
@@ -100,7 +96,7 @@ void surge_power(const int enhanced, const string adj)
              !modifier.length() ? "a"
                                 : article_a(modifier).c_str(),
              (enhanced < 0) ? "numb sensation."
-                            : surge_power.c_str());
+                            : "surge of power!");
     }
 }
 
@@ -671,13 +667,18 @@ static bool _can_cast()
         return false;
     }
 
+    if (you.duration[DUR_NO_CAST])
+    {
+        mpr("You are unable to access your magic!");
+        return false;
+    }
+
     if (!you.undead_state() && !you_foodless()
         && you.hunger_state <= HS_STARVING)
     {
         canned_msg(MSG_NO_ENERGY);
         return false;
     }
-
 
     return true;
 }
@@ -830,9 +831,21 @@ bool cast_a_spell(bool check_range, spell_type spell)
     // now we allow casting without mp, unless freezing mp
     if (!enough_mp(freeze_cost, true))
     {
-        mpr("You don't have enough magic to cast that spell.");
-        crawl_state.zero_turns_taken();
-        return false;
+        /*
+        if (you.attribute[ATTR_DIVINE_ENERGY])
+        {
+            sifcast_amount = cost - you.magic_points;
+            cost = you.magic_points;
+        }
+        else
+        {
+         */
+            mpr("You don't have enough magic to cast that spell.");
+            crawl_state.zero_turns_taken();
+            return false;
+        /*
+        }
+         */
     }
 
     if (spell_produces_minion(spell) && player_summon_count() >= MAX_MINIONS)
@@ -934,6 +947,15 @@ bool cast_a_spell(bool check_range, spell_type spell)
     }
      */
 
+    /*
+    if (sifcast_amount)
+    {
+        simple_god_message(" grants you divine energy.");
+        mpr("You briefly lose access to your magic!");
+        you.set_duration(DUR_NO_CAST, 3 + random2avg(sifcast_amount * 2, 2));
+    }
+     */
+
     you.turn_is_over = true;
     alert_nearby_monsters();
 
@@ -958,8 +980,8 @@ static void _spellcasting_god_conduct(spell_type spell)
 
     const int conduct_level = 10 + spell_difficulty(spell);
 
-    if (is_unholy_spell(spell) || you.spellcasting_unholy())
-        did_god_conduct(DID_UNHOLY, conduct_level);
+    if (is_evil_spell(spell) || you.spellcasting_unholy())
+        did_god_conduct(DID_EVIL, conduct_level);
 
     if (is_unclean_spell(spell))
         did_god_conduct(DID_UNCLEAN, conduct_level);
@@ -969,9 +991,6 @@ static void _spellcasting_god_conduct(spell_type spell)
 
     if (is_corpse_violating_spell(spell))
         did_god_conduct(DID_CORPSE_VIOLATION, conduct_level);
-
-    if (is_evil_spell(spell))
-        did_god_conduct(DID_NECROMANCY, conduct_level);
 
     // not is_hasty_spell since the other ones handle the conduct themselves.
     if (spell == SPELL_SWIFTNESS)

@@ -122,11 +122,11 @@ enum brand_type // item_def.special
 #if TAG_MAJOR_VERSION == 34
     SPWPN_EVASION,
     MAX_GHOST_BRAND = SPWPN_EVASION,
+    SPWPN_CONFUSE,
 #else
     MAX_GHOST_BRAND = SPWPN_CHAOS,
 #endif
 
-    SPWPN_CONFUSE,
     SPWPN_PENETRATION,
     SPWPN_REAPING,
     SPWPN_LIGHT,

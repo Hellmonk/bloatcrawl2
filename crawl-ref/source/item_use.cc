@@ -73,20 +73,24 @@
 
 class UseItemMenu : public InvMenu
 {
-    vector<const item_def*> item_inv;
-    vector<const item_def*> item_floor;
+    bool is_inventory = true;
 
     void populate_list(int item_type);
     void populate_menu();
     bool process_key(int key) override;
 
 public:
+    vector<const item_def*> item_inv;
+    vector<const item_def*> item_floor;
+
     // Constructor
     // Requires int for item filter.
     // Accepts:
     //      OBJ_POTIONS
     //      OBJ_SCROLLS
     UseItemMenu(int selector, const char* prompt);
+
+    void toggle();
 };
 
 UseItemMenu::UseItemMenu(int item_type, const char* prompt)
@@ -104,7 +108,7 @@ void UseItemMenu::populate_list(int item_type)
     {
         // Populate the vector with filter
         if (item.defined() && item_is_selected(item, item_type))
-                item_inv.push_back(&item);
+            item_inv.push_back(&item);
     }
     for (const auto &item : you.inv2)
     {
@@ -123,57 +127,74 @@ void UseItemMenu::populate_list(int item_type)
 
 void UseItemMenu::populate_menu()
 {
-    // Need a tracker for inv item hotkeys and floor item hotkeys
-    set<char> used_keys;
+    if (item_inv.empty())
+        is_inventory = false;
+    else if (item_floor.empty())
+        is_inventory = true;
 
-    // Load the inv items first, they have a hotkey
     if (!item_inv.empty())
     {
-        auto subtitle = new MenuEntry("Inventory Items", MEL_TITLE);
-        subtitle->colour = LIGHTGREY;
-        add_entry(subtitle);
+        // Only clarify that these are inventory items if there are also floor
+        // items.
+        if (!item_floor.empty())
+        {
+            string subtitle_text = "Inventory Items";
+            if (!is_inventory)
+                subtitle_text += " (',' to select)";
+            auto subtitle = new MenuEntry(subtitle_text, MEL_TITLE);
+            subtitle->colour = LIGHTGREY;
+            add_entry(subtitle);
+        }
 
-        load_items(item_inv,
-                   [&](MenuEntry* entry) -> MenuEntry*
-                   {
-                       // Remove inventory item hotkeys from the tracker
-                       if (!entry->hotkeys.empty())
-                           used_keys.insert(char(entry->hotkeys[0]));
-                       return entry;
-                   });
+        // nullptr means using the items' normal hotkeys
+        if (is_inventory)
+            load_items(item_inv);
+        else
+        {
+            load_items(item_inv,
+                        [&](MenuEntry* entry) -> MenuEntry*
+                        {
+                            entry->hotkeys.clear();
+                            return entry;
+                        });
+        }
     }
 
     if (!item_floor.empty())
     {
         // Load floor items to menu
-        auto subtitle = new MenuEntry("Floor Items", MEL_TITLE);
+        string subtitle_text = "Floor Items";
+        if (is_inventory)
+            subtitle_text += " (',' to select)";
+        auto subtitle = new MenuEntry(subtitle_text, MEL_TITLE);
         subtitle->colour = LIGHTGREY;
         add_entry(subtitle);
 
-        menu_letter hotkey;
-        load_items(item_floor,
-                   [&](MenuEntry* entry) -> MenuEntry*
-                   {
-                       if (!entry->hotkeys.empty())
-                       {
-                           while (used_keys.count(hotkey))
-                           {
-                               // Remove it from used_keys, so the second time
-                               // through we re-use all letters, inventory or
-                               // not.
-                               used_keys.erase(hotkey);
-                               ++hotkey;
-                           }
-                           entry->hotkeys[0] = hotkey++;
-                       }
-                       return entry;
-                   });
+        // nullptr means using a-zA-Z
+        if (is_inventory)
+        {
+            load_items(item_floor,
+                        [&](MenuEntry* entry) -> MenuEntry*
+                        {
+                            entry->hotkeys.clear();
+                            return entry;
+                        });
+        }
+        else
+            load_items(item_floor);
     }
+}
+
+void UseItemMenu::toggle()
+{
+    is_inventory = !is_inventory;
+    deleteAll(items);
+    populate_menu();
 }
 
 bool UseItemMenu::process_key(int key)
 {
-    if (isadigit(key) || key == '*' || key == '\\')
+    if (isadigit(key) || key == '*' || key == '\\' || key == ',')
     {
         lastch = key;
         return false;
@@ -181,7 +202,7 @@ bool UseItemMenu::process_key(int key)
     return Menu::process_key(key);
 }
 
-/*
+/**
  * Prompt use of a consumable from either player inventory or the floor.
  *
  * This function generates a menu containing type_expect items based on the
@@ -198,11 +219,8 @@ bool UseItemMenu::process_key(int key)
  *
  * @return                      A chosen item_def*, or nullptr.
  */
-
-static item_def* _use_an_item(int item_type, operation_types oper,
-                              const char* prompt,
-                              function<bool ()> allowcancel = []()
-                              { return true; })
+item_def* use_an_item(int item_type, operation_types oper, const char* prompt,
+                      function<bool ()> allowcancel)
 {
     item_def* target = nullptr;
 
@@ -217,13 +235,12 @@ static item_def* _use_an_item(int item_type, operation_types oper,
     }
 
     // Init the menu
-    UseItemMenu menu (item_type, prompt);
+    UseItemMenu menu(item_type, prompt);
 
     while (true)
     {
         vector<MenuEntry*> sel = menu.show(true);
         int keyin = menu.getkey();
-        redraw_screen();
 
         // Handle inscribed item keys
         if (isadigit(keyin))
@@ -232,7 +249,17 @@ static item_def* _use_an_item(int item_type, operation_types oper,
             if (idx >= 0)
                 target = &item_from_int(true, true, idx);
         }
-            // TODO: handle * key
+        // TODO: handle * key
+        else if (keyin == ',')
+        {
+            if (Options.easy_floor_use && menu.item_floor.size() == 1)
+                target = const_cast<item_def*>(menu.item_floor[0]);
+            else
+            {
+                menu.toggle();
+                continue;
+            }
+        }
         else if (keyin == '\\')
         {
             check_item_knowledge();
@@ -246,6 +273,7 @@ static item_def* _use_an_item(int item_type, operation_types oper,
             target = const_cast<item_def*>(ie->item);
         }
 
+        redraw_screen();
         if (target && !check_warning_inscriptions(*target, oper))
             target = nullptr;
         if (target)
@@ -1960,7 +1988,7 @@ void drink(item_def* potion)
 
     if (!potion)
     {
-        potion = _use_an_item(OBJ_POTIONS, OPER_QUAFF, "Drink which item?");
+        potion = use_an_item(OBJ_POTIONS, OPER_QUAFF, "Drink which item?");
 
         if (!potion)
         {
@@ -2280,14 +2308,14 @@ bool enchant_weapon(item_def &wpn, bool quiet)
 // Returns true if the scroll is used up.
 static bool _identify(bool alreadyknown, const string &pre_msg)
 {
-    item_def* itemp = _use_an_item(OSEL_UNIDENT, OPER_ID,
-                        "Identify which item? (\\ to view known items)",
-                        [=]()
-                        {
-                            return alreadyknown
-                                   || crawl_state.seen_hups
-                                   || yesno("Really abort (and waste the scroll)?", false, 0);
-                        });
+    item_def* itemp = use_an_item(OSEL_UNIDENT, OPER_ID,
+                       "Identify which item? (\\ to view known items)",
+                       [=]()
+                       {
+                           return alreadyknown
+                                  || crawl_state.seen_hups
+                                  || yesno("Really abort (and waste the scroll)?", false, 0);
+                       });
 
     if (!itemp)
         return !alreadyknown;
@@ -2717,7 +2745,7 @@ void read(item_def* scroll)
 
     if (!scroll)
     {
-        scroll = _use_an_item(OBJ_SCROLLS, OPER_READ, "Read which item?");
+        scroll = use_an_item(OBJ_SCROLLS, OPER_READ, "Read which item?");
         if (!scroll)
             return;
     }
@@ -2960,7 +2988,7 @@ void read_scroll(item_def& scroll)
         torment(&you, TORMENT_SCROLL, you.pos());
 
         // This is only naughty if you know you're doing it.
-        did_god_conduct(DID_NECROMANCY, 10, item_type_known(scroll));
+        did_god_conduct(DID_EVIL, 10, item_type_known(scroll));
         bad_effect = true;
         break;
 

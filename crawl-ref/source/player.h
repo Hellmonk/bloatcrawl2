@@ -737,8 +737,6 @@ public:
     bool undead_or_demonic() const override;
     bool holy_wrath_susceptible() const override;
     bool is_holy(bool spells = true) const override;
-    bool is_unholy(bool spells = true) const override;
-    bool is_evil(bool spells = true) const override;
     int how_chaotic(bool check_spells_god) const override;
     bool is_artificial(bool temp = true) const override;
     bool is_unbreathing() const override;
@@ -1026,7 +1024,6 @@ int player_spec_poison();
 int player_spec_summ();
 
 const int player_adjust_evoc_power(const int power, int enhancers = 0);
-const int player_adjust_invoc_power(const int power);
 
 int player_speed();
 
@@ -1150,6 +1147,7 @@ bool haste_player(int turns, bool rageext = false, source_type source = SRC_UNDE
 void dec_haste_player(int delay);
 void dec_elixir_player(int delay);
 void dec_ambrosia_player(int delay);
+void dec_channel_player(int delay);
 bool invis_allowed(bool quiet = false, string *fail_reason = nullptr);
 bool flight_allowed(bool quiet = false, string *fail_reason = nullptr);
 void fly_player(int pow, bool already_flying = false);
@@ -1252,7 +1250,9 @@ int spell_mp_cost(spell_type which_spell);
 int spell_mp_freeze(spell_type which_spell);
 int weapon_sp_cost(const item_def* weapon, const item_def* ammo = nullptr);
 int player_tohit_modifier(const int old_tohit, int range = 1);
+int monster_beam_damage_modifier(int damage);
 int player_damage_modifier(int old_damage, bool silent = false, const int range = 1);
+int player_elemental_damage_modifier(int damage, brand_type brand);
 double player_spellpower_modifier(double old_spellpower);
 int player_spellsuccess_modifier(int force);
 int player_attack_delay_modifier(int attk_delay);

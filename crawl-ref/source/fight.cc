@@ -137,7 +137,7 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit, bool simu)
             return false;
         }
 
-        if (Options.auto_switch
+        if (!simu && Options.auto_switch
             && you.weapon()
             && _autoswitch_to_melee())
         {
@@ -154,7 +154,7 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit, bool simu)
 
         // Check if the player is fighting with something unsuitable,
         // or someone unsuitable.
-        if (you.can_see(*defender)
+        if (you.can_see(*defender) && !simu
             && !wielded_weapon_check(attk.weapon))
         {
             you.turn_is_over = false;
@@ -543,7 +543,7 @@ int resist_adjust_damage(const actor* defender, beam_type flavour, int rawdamage
 
 ///////////////////////////////////////////////////////////////////////////
 
-bool wielded_weapon_check(item_def *weapon, bool no_message)
+bool wielded_weapon_check(item_def *weapon)
 {
     bool penance = false;
     if (you.received_weapon_warning
@@ -565,9 +565,6 @@ bool wielded_weapon_check(item_def *weapon, bool no_message)
     {
         return true;
     }
-
-    if (no_message)
-        return false;
 
     string prompt;
     if (weapon)

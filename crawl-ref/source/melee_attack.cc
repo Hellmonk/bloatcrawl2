@@ -1793,17 +1793,10 @@ void melee_attack::player_exercise_combat_skills()
  */
 void melee_attack::player_weapon_upsets_god()
 {
-    if (weapon && weapon->base_type == OBJ_WEAPONS)
+    if (weapon && weapon->base_type == OBJ_WEAPONS
+        && god_hates_item_handling(*weapon))
     {
-        if (is_holy_item(*weapon))
-            did_god_conduct(DID_HOLY, 1);
-        else if (is_demonic(*weapon))
-            did_god_conduct(DID_UNHOLY, 1);
-        else if (get_weapon_brand(*weapon) == SPWPN_SPEED
-                || weapon->sub_type == WPN_QUICK_BLADE)
-        {
-            did_god_conduct(DID_HASTY, 1);
-        }
+        did_god_conduct(god_hates_item_handling(*weapon), 2);
     }
     else if (weapon && weapon->is_type(OBJ_STAVES, STAFF_FIRE))
         did_god_conduct(DID_FIRE, 1);
@@ -1985,6 +1978,10 @@ bool melee_attack::attack_chops_heads(int dam, int dam_type, int wpn_brand)
 {
     // hydras and hydra-like things only.
     if (!actor_can_lose_heads(defender))
+        return false;
+
+    // no decapitate on riposte (Problematic)
+    if (is_riposte)
         return false;
 
     // Monster attackers+defenders have only a 25% chance of making the
@@ -2243,7 +2240,7 @@ void melee_attack::apply_staff_damage()
                     defender->name(DESC_THE).c_str(),
                     defender->is_player() ? "" : "s");
 
-            attacker->god_conduct(DID_NECROMANCY, 4);
+            attacker->god_conduct(DID_EVIL, 4);
         }
         break;
 
@@ -2533,6 +2530,12 @@ static void _print_resist_messages(actor* defender, int base_damage,
 
 bool melee_attack::mons_attack_effects()
 {
+    // may have died earlier, due to e.g. pain bond
+    // we could continue with the rest of their attack, but it's a minefield
+    // of potential crashes. so, let's not.
+    if (attacker->is_monster() && invalid_monster(attacker->as_monster()))
+        return false;
+
     // Monsters attacking themselves don't get attack flavour.
     // The message sequences look too weird. Also, stealing
     // attacks aren't handled until after the damage msg. Also,
@@ -3461,7 +3464,9 @@ bool melee_attack::do_knockback(bool trample)
 
     if (needs_message)
     {
-        const string verb = defender->airborne() ? "are shoved" : "stumble";
+        const bool can_stumble = !defender->airborne()
+                                  && !defender->incapacitated();
+        const string verb = can_stumble ? "stumble" : "are shoved";
         mprf("%s %s backwards!",
              defender_name(false).c_str(),
              defender->conj_verb(verb).c_str());
@@ -3727,8 +3732,6 @@ bool melee_attack::_player_vampire_draws_blood(const monster* mon, const int dam
     /*
     if (you.hunger_state != HS_ENGORGED)
         lessen_hunger(30 + random2avg(59, 2), false);
-
-    did_god_conduct(DID_DRINK_BLOOD, 5 + random2(4));
         */
 
     return true;

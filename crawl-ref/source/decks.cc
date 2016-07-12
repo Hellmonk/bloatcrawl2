@@ -1279,8 +1279,7 @@ static void _suppressed_card_message(god_type god, conduct_type done)
 
     switch (done)
     {
-        case DID_NECROMANCY:
-        case DID_UNHOLY: forbidden_act = "evil"; break;
+        case DID_EVIL: forbidden_act = "evil"; break;
 
         case DID_POISON: forbidden_act = "poisonous"; break;
 
@@ -1573,7 +1572,7 @@ static void _damaging_card(card_type card, int power, deck_rarity_type rarity,
         {
             if (is_good_god(you.religion))
             {
-                _suppressed_card_message(you.religion, DID_NECROMANCY);
+                _suppressed_card_message(you.religion, DID_EVIL);
                 return;
             }
 
@@ -1634,7 +1633,7 @@ static void _damaging_card(card_type card, int power, deck_rarity_type rarity,
 
     if (card == CARD_PAIN && is_good_god(you.religion))
     {
-        _suppressed_card_message(you.religion, DID_NECROMANCY);
+        _suppressed_card_message(you.religion, DID_EVIL);
         return;
     }
 
@@ -1760,7 +1759,7 @@ static void _summon_demon_card(int power, deck_rarity_type rarity)
 
     if (is_good_god(you.religion))
     {
-        _suppressed_card_message(you.religion, DID_UNHOLY);
+        _suppressed_card_message(you.religion, DID_EVIL);
         return;
     }
 

@@ -281,8 +281,7 @@ public:
     virtual bool undead_or_demonic() const = 0;
     virtual bool holy_wrath_susceptible() const = 0;
     virtual bool is_holy(bool spells = true) const = 0;
-    virtual bool is_unholy(bool spells = true) const = 0;
-    virtual bool is_evil(bool spells = true) const = 0;
+    bool evil() const;
     virtual int  how_chaotic(bool check_spells_god = false) const = 0;
     virtual bool is_artificial(bool temp = true) const = 0;
     virtual bool is_unbreathing() const = 0;
@@ -323,7 +322,6 @@ public:
     virtual bool dismissal(bool calc_unid = true, bool items = true) const;
     virtual int archmagi(bool calc_unid = true, bool items = true) const;
     virtual int spec_evoke(bool calc_unid = true, bool items = true) const;
-    virtual int spec_invoc(bool calc_unid = true, bool items = true) const;
     virtual bool no_cast(bool calc_unid = true, bool items = true) const;
     virtual bool reflection(bool calc_unid = true, bool items = true) const;
     virtual bool extra_harm(bool calc_unid = true, bool items = true) const;

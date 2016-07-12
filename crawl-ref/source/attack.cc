@@ -585,8 +585,6 @@ void attack::pain_affects_defender()
         }
         special_damage += random2(1 + user->skill_rdiv(SK_NECROMANCY));
     }
-
-    user->god_conduct(DID_NECROMANCY, 4);
 }
 
 // TODO: Move this somewhere sane
@@ -1032,8 +1030,6 @@ void attack::drain_defender()
                     attacker->conj_verb("drain").c_str(),
                     defender_name(true).c_str());
         }
-
-        attacker->god_conduct(DID_NECROMANCY, 2);
     }
 }
 
@@ -1723,7 +1719,6 @@ bool attack::apply_damage_brand(const char *what)
             }
         }
 
-        attacker->god_conduct(DID_NECROMANCY, 2);
         break;
     }
     case SPWPN_PAIN:
@@ -1797,7 +1792,7 @@ bool attack::apply_damage_brand(const char *what)
         {
             calc_elemental_brand_damage(BEAM_HELLFIRE, "hellfire", what);
             defender->expose_to_element(BEAM_HELLFIRE);
-            attacker->god_conduct(DID_UNHOLY, 2 + random2(3));
+            attacker->god_conduct(DID_EVIL, 2 + random2(3));
         }
         break;
     }
@@ -1828,6 +1823,11 @@ bool attack::apply_damage_brand(const char *what)
         // damage message.
         if (miscast_level == 0)
             miscast_level = -1;
+    }
+
+    if (attacker->is_player())
+    {
+        special_damage = player_elemental_damage_modifier(special_damage, (brand_type) brand);
     }
 
     if (special_damage > 0)

@@ -70,9 +70,11 @@ const int rune_curse_mon_spellpower_adjustment(int spellpower)
 
 const int rune_curse_depth_adjust(int depth)
 {
+    /* doesn't work yet
     const int runes = active_rune_curses();
     if (runes > 0)
         depth += random2(runes);
+        */
     return depth;
 }
 
@@ -161,8 +163,16 @@ const string rune_curse_description(const rune_type rune)
             break;
 
         case RUNE_DIS:
+            message = "Your armour will be weaker.";
+            break;
+
         case RUNE_GEHENNA:
+            message = "Fire causes less damage to enemies.";
+            break;
+
         case RUNE_TARTARUS:
+            message = "Piety costs go up.";
+            break;
 
         default:
             break;

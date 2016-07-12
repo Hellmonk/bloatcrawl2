@@ -571,7 +571,7 @@ bool needs_resolution(monster_type mon_type)
            || _is_random_monster(mon_type);
 }
 
-monster_type resolve_monster_type(monster_type mon_type,
+monster_type resolve_monster_type(monster_type mon_type_origin,
                                   monster_type &base_type,
                                   proximity_type proximity,
                                   coord_def *pos,
@@ -581,6 +581,8 @@ monster_type resolve_monster_type(monster_type mon_type,
                                   bool *want_band,
                                   bool allow_ood)
 {
+    monster_type mon_type = mon_type_origin;
+
     if (want_band)
         *want_band = false;
 
@@ -670,6 +672,9 @@ monster_type resolve_monster_type(monster_type mon_type,
                                            vault_mon_weights.end());
                 type = vault_mon_types[i];
 
+                if (type == MONS_PROGRAM_BUG)
+                    die("Problem.");
+
                 // Give up after enough attempts: for example, a Yred
                 // worshipper casting Shadow Creatures in holy Pan.
                 if (tries++ >= 300)
@@ -717,6 +722,7 @@ monster_type resolve_monster_type(monster_type mon_type,
                                              stair_type, place,
                                              want_band, allow_ood);
                 }
+
                 return mon_type;
             }
         }
@@ -743,6 +749,7 @@ monster_type resolve_monster_type(monster_type mon_type,
 
         if (proximity == PROX_NEAR_STAIRS && tries >= 300)
             mon_type = pick_random_monster(*place, mon_type, place, allow_ood);
+
     }
     return mon_type;
 }
@@ -945,6 +952,10 @@ monster* place_monster(mgen_data mg, bool force_pos, bool dont_place, bool first
         for (int i = 1; i < band_size; ++i)
         {
             band_monsters[i] = _band_member(band, i, place, allow_ood);
+
+            if (band_monsters[i] == MONS_PROGRAM_BUG)
+                die("Problem!");
+
             if (band_monsters[i] == NUM_MONSTERS)
                 die("Unhandled band type %d", band);
 
@@ -2928,9 +2939,10 @@ static monster_type _band_member(band_type band, int which,
         monster_type tmptype = MONS_PROGRAM_BUG;
         coord_def tmppos;
         dungeon_char_type tmpfeat;
-        return resolve_monster_type(RANDOM_BANDLESS_MONSTER, tmptype,
-                                    PROX_ANYWHERE, &tmppos, 0, &tmpfeat,
-                                    &parent_place, nullptr, allow_ood);
+        monster_type result = resolve_monster_type(RANDOM_BANDLESS_MONSTER, tmptype,
+                                                   PROX_ANYWHERE, &tmppos, 0, &tmpfeat,
+                                                   &parent_place, nullptr, allow_ood);
+        return result;
     }
 
     default:
@@ -3231,39 +3243,52 @@ conduct_type player_will_anger_monster(monster_type type)
     else
         define_monster(&dummy);
 
-    return player_will_anger_monster(&dummy);
+    return player_will_anger_monster(dummy);
 }
 
-conduct_type player_will_anger_monster(monster* mon)
+/**
+ * Does the player's current religion conflict with the given monster? If so,
+ * why?
+ *
+ * XXX: this should ideally return a list of conducts that can be filtered by
+ *      callers by god; we're duplicating godconduct.cc right now.
+ *
+ * @param mon   The monster in question.
+ * @return      The reason the player's religion conflicts with the monster
+ *              (e.g. DID_EVIL for evil monsters), or DID_NOTHING.
+ */
+conduct_type player_will_anger_monster(const monster &mon)
 {
-    if (player_mutation_level(MUT_NO_LOVE)
-        && !mons_is_conjured(mon->type))
+    if (player_mutation_level(MUT_NO_LOVE) && !mons_is_conjured(mon.type))
     {
         // Player angers all real monsters
         return DID_SACRIFICE_LOVE;
     }
-    if (is_good_god(you.religion) && mon->is_unholy())
-        return DID_UNHOLY;
-    if (is_good_god(you.religion) && mon->is_evil())
-        return DID_NECROMANCY;
+
+    if (is_good_god(you.religion) && mon.evil())
+        return DID_EVIL;
+
     if (you_worship(GOD_FEDHAS)
-        && ((mon->holiness() & MH_UNDEAD && !mon->is_insubstantial())
-            || mon->has_corpse_violating_spell()))
+        && ((mon.holiness() & MH_UNDEAD && !mon.is_insubstantial())
+            || mon.has_corpse_violating_spell()))
     {
         return DID_CORPSE_VIOLATION;
     }
-    if (is_evil_god(you.religion) && mon->is_holy())
+
+    if (is_evil_god(you.religion) && mon.is_holy())
         return DID_HOLY;
+
     if (you_worship(GOD_ZIN))
     {
-        if (mon->how_unclean())
+        if (mon.how_unclean())
             return DID_UNCLEAN;
-        if (mon->how_chaotic())
+        if (mon.how_chaotic())
             return DID_CHAOS;
     }
-    if (god_hates_spellcasting(you.religion) && mon->is_actual_spellcaster())
+    if (god_hates_spellcasting(you.religion) && mon.is_actual_spellcaster())
         return DID_SPELL_CASTING;
-    if (you_worship(GOD_DITHMENOS) && mons_is_fiery(mon))
+
+    if (you_worship(GOD_DITHMENOS) && mons_is_fiery(&mon))
         return DID_FIRE;
 
     return DID_NOTHING;
@@ -3274,7 +3299,7 @@ bool player_angers_monster(monster* mon)
     ASSERT(mon); // XXX: change to monster &mon
 
     // Get the drawbacks, not the benefits... (to prevent e.g. demon-scumming).
-    conduct_type why = player_will_anger_monster(mon);
+    conduct_type why = player_will_anger_monster(*mon);
     if (why && mon->wont_attack())
     {
         mon->attitude = ATT_HOSTILE;
@@ -3287,8 +3312,7 @@ bool player_angers_monster(monster* mon)
 
             switch (why)
             {
-            case DID_UNHOLY:
-            case DID_NECROMANCY:
+            case DID_EVIL:
                 mprf("%s is enraged by your holy aura!", mname.c_str());
                 break;
             case DID_CORPSE_VIOLATION:

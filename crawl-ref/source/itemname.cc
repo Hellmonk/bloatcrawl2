@@ -426,10 +426,11 @@ static const char *weapon_brands_terse[] =
 #if TAG_MAJOR_VERSION == 34
     "evade", "confuse",
 #endif
-    "penet", "reap", "feather", "buggy-num", "acid",
+    "penet", "reap", "feather", "acid",
 #if TAG_MAJOR_VERSION > 34
     "confuse",
 #endif
+    "buggy",
     "debug",
 };
 
@@ -451,10 +452,11 @@ static const char *weapon_brands_verbose[] =
 #if TAG_MAJOR_VERSION == 34
     "evasion", "confusion",
 #endif
-    "penetration", "reaping", "feathers", "buggy-num", "acid",
+    "penetration", "reaping", "feathers", "acid",
 #if TAG_MAJOR_VERSION > 34
     "confusion",
 #endif
+    "buggy",
     "debug",
 };
 
@@ -3758,7 +3760,7 @@ bool is_useless_item(const item_def &item, bool temp)
             return player_prot_life(false, temp, false) == 3;
 
         case AMU_HEALTH_REGENERATION:
-            return (player_mutation_level(MUT_SLOW_REGENERATION) == 3)
+            return (player_mutation_level(MUT_SLOW_HEALTH_REGENERATION) == 3)
                    || temp && you.species == SP_VAMPIRE
                       && you.hunger_state <= HS_STARVING;
 

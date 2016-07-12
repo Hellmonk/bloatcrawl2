@@ -57,6 +57,13 @@ level 1 spells can be viable and useful late in the game, at higher power levels
 game, when their MP cost is usually quite low compared to higher level spells, and so can be cast with power mode on
 [e] (increasing spell power and spellcasting speed) for longer without exhausting you.
 
+Beware that casting spells takes 2.0 aut unlike in vanilla crawl. So increasing casting speed should be a major concern
+for beginning spellcasters. You can increase spellcasting speed by training spellcasting, increasing dexterity, or 
+wearing an amulet of quick casting. This is a big deal for conjurer type spell casters, since you can't just rapid fire
+attack spells without giving monsters a lot of time to do damage. So at the beginning it's a good idea to have a dagger
+at least (preferrably electric or venom) to attack monsters that are close, since it's so much faster than firing off
+a magic missile and taking 2 turns to do it each time. 
+
 ### Conjurers
 
 For spells that are heavily dependent on spell power (such as conjurations), playing in power mode as much as possible
