@@ -2390,7 +2390,7 @@ static string _regen_bar(const char* title, int regen, int spacing)
     //no colouring
     bar += _determine_colour_string(regen, 100, 10, 60);
     bar += chop_string(title, spacing);
-    int count = log2(regen) - 3;
+    int count = 1.5 * log2(regen) - 4;
     count = min(10, count);
 
     for (int i = 0; i < count; i++)
