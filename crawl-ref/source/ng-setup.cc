@@ -542,8 +542,17 @@ static void _setup_generic(const newgame_def& ng)
         {
             _make_potions(POT_HEAL_WOUNDS);
         }
+        else
+        {
+            _make_potions(POT_STAMINA);
+            _make_potions(POT_MAGIC);
+        }
         _make_potions(POT_STAMINA);
         _make_potions(POT_MAGIC);
+    }
+    else
+    {
+        newgame_make_item(OBJ_SCROLLS, SCR_BLINKING);
     }
 
     if (you.species == SP_FORMICID)
