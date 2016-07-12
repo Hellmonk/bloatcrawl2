@@ -2387,8 +2387,9 @@ static string _resist_composer_numeric(
 static string _regen_bar(const char* title, int regen, int spacing)
 {
     string bar;
-    //no colouring
-    bar += _determine_colour_string(regen, 100, 10, 60);
+
+//    bar += _determine_colour_string(regen, 100, 10, 60);
+    bar += _determine_colour_string(0, 5);
     bar += chop_string(title, spacing);
     int count = 1.5 * log2(regen) - 4;
     count = min(10, count);
