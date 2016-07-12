@@ -1825,6 +1825,11 @@ bool attack::apply_damage_brand(const char *what)
             miscast_level = -1;
     }
 
+    if (attacker->is_player())
+    {
+        special_damage = player_elemental_damage_modifier(special_damage, (brand_type) brand);
+    }
+
     if (special_damage > 0)
         inflict_damage(special_damage, special_damage_flavour);
 

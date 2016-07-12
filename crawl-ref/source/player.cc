@@ -10080,6 +10080,14 @@ int player_damage_modifier(int damage, bool silent, const int range)
     return damage / base_factor;
 }
 
+int player_elemental_damage_modifier(int damage, brand_type brand)
+{
+    int result = damage;
+    if (you.rune_curse_active[RUNE_GEHENNA] && brand == SPWPN_FLAME)
+        result = div_rand_round(damage * 2, 3);
+    return result;
+}
+
 /*
  * increase damage of player conjuring spells against monsters, since they can't be cast as often as before.
  */

@@ -167,7 +167,12 @@ const string rune_curse_description(const rune_type rune)
             break;
 
         case RUNE_GEHENNA:
+            message = "Fire causes less damage to enemies.";
+            break;
+
         case RUNE_TARTARUS:
+            message = ".";
+            break;
 
         default:
             break;
