@@ -4,6 +4,7 @@
     * Fiery rune (for cerebov): occasionally your fire resistance is ignored.
     * Magical rune (for lom lobon): occasionally your spells fizzle.
     * Dark rune (for gloorx vloq): see invisible takes a few turns to kick in. 
+    * Iron rune (for Dis): armour becomes less effective.
 
 * Added species specific stamina aptitudes, alongside health and magic aptitudes that already existed.
 

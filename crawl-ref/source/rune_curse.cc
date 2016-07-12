@@ -163,6 +163,9 @@ const string rune_curse_description(const rune_type rune)
             break;
 
         case RUNE_DIS:
+            message = "Your armour will be weaker.";
+            break;
+
         case RUNE_GEHENNA:
         case RUNE_TARTARUS:
 

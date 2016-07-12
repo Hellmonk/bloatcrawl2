@@ -3406,7 +3406,7 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     if (you.species == SP_DJINNI)
         _add_talent(talents, ABIL_UNCURSE, check_confused);
 
-    /* this just feels tedious. Disabling for now. 
+    /* this just feels tedious. Disabling for now.
     if (you.species == SP_VINE_STALKER && you.form != TRAN_TREE)
         _add_talent(talents, ABIL_LIGNIFY, check_confused);
         */

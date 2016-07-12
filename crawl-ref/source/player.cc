@@ -10146,6 +10146,9 @@ int player_ac_modifier(int ac)
     else if (you.exertion == EXERT_FOCUS && ac > 0)
         ac = ac * 6 / 5 + 10000;
 
+    if (you.rune_curse_active[RUNE_DIS])
+        ac = ac * 4 / 5;
+
     return ac / base_factor;
 }
 
