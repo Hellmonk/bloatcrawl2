@@ -1861,30 +1861,43 @@ int equip_name_to_slot(const char *s)
 
 // Colour the string according to the level of an ability/resistance.
 // Take maximum possible level into account.
-static const char* _determine_colour_string(int level, int max_level)
+static const char* _determine_colour_string(int level, int max_level, int neutral = 0, int green = 0)
 {
-    // No colouring for larger bars.
-    if (max_level > 3)
-        return "<lightgrey>";
-
-    switch (level)
+    if (green)
     {
-    case 3:
-    case 2:
-        if (max_level > 1)
-            return "<lightgreen>";
-        // else fall-through
-    case 1:
-        return "<green>";
-    case -2:
-    case -3:
-        if (max_level > 1)
-            return "<lightred>";
-        // else fall-through
-    case -1:
-        return "<red>";
-    default:
-        return "<lightgrey>";
+        string result = "<red>";
+        if (level > neutral)
+            result = "<lightgrey>";
+        if (level > green)
+            result = "<green>";
+
+        return result.c_str();
+    }
+    else
+    {
+        // No colouring for larger bars.
+        if (max_level > 3)
+            return "<lightgrey>";
+
+        switch (level)
+        {
+            case 3:
+            case 2:
+                if (max_level > 1)
+                    return "<lightgreen>";
+                // else fall-through
+            case 1:
+                return "<green>";
+            case -2:
+            case -3:
+                if (max_level > 1)
+                    return "<lightred>";
+                // else fall-through
+            case -1:
+                return "<red>";
+            default:
+                return "<lightgrey>";
+        }
     }
 }
 
@@ -2360,6 +2373,34 @@ static string _resist_composer(
     return out;
 }
 
+static string _resist_composer_numeric(
+    const char * name, int spacing, int value, int max = 1, bool pos_resist = true, int neutral = 0, int green = 0)
+{
+    string out;
+    out += _determine_colour_string(pos_resist ? value : -value, max, neutral, green);
+    out += chop_string(name, spacing);
+    out += to_string(value);
+
+    return out;
+}
+
+static string _regen_bar(const char* title, int regen, int spacing)
+{
+    string bar;
+    //no colouring
+    bar += _determine_colour_string(regen, 100, 10, 60);
+    bar += chop_string(title, spacing);
+    int count = log2(regen) - 3;
+    count = min(10, count);
+
+    for (int i = 0; i < count; i++)
+        bar += "+";
+    for (int i = 0; i < 10 - count; i++)
+        bar += ".";
+    bar += "\n";
+    return bar;
+}
+
 static vector<formatted_string> _get_overview_resistances(
     vector<char> &equip_chars, bool calc_unid, int sw)
 {
@@ -2384,6 +2425,25 @@ static vector<formatted_string> _get_overview_resistances(
     const int ss = you.stamina_shield(calc_unid);
     out += _resist_composer("StaminaSh", cwidth, ss, 3) + "\n";
 
+    const int hp_regen = player_hp_regen();
+    out += _regen_bar("RegenHP", hp_regen, cwidth);
+
+    const int sp_regen = player_sp_regen();
+    out += _regen_bar("RegenSP", sp_regen, cwidth);
+
+    const int mp_regen = player_mp_regen();
+    out += _regen_bar("RegenMP", mp_regen, cwidth);
+
+    const int rmagi = player_res_magic(calc_unid) / MR_PIP;
+    out += _resist_composer("MR", cwidth, rmagi, 5) + "\n";
+
+    out += _stealth_bar(get_number_of_cols()) + "\n";
+
+    cols.add_formatted(0, out, false);
+
+    // Second column, resist name is 9 chars
+    out.clear();
+    cwidth = 10;
     const int rpois = player_res_poison(calc_unid);
     string rpois_string = _resist_composer("rPois", cwidth, rpois) + "\n";
     //XXX
@@ -2400,26 +2460,13 @@ static vector<formatted_string> _get_overview_resistances(
     const int rcorr = you.res_corr(calc_unid);
     out += _resist_composer("rCorr", cwidth, rcorr) + "\n";
 
-    const int rmuta = (you.rmut_from_item(calc_unid)
-                       || player_mutation_level(MUT_MUTATION_RESISTANCE) == 3);
-    if (rmuta)
-        out += _resist_composer("rMut", cwidth, rmuta) + "\n";
-
-    const int rmagi = player_res_magic(calc_unid) / MR_PIP;
-    out += _resist_composer("MR", cwidth, rmagi, 5) + "\n";
-
-    out += _stealth_bar(get_number_of_cols()) + "\n";
-
-    cols.add_formatted(0, out, false);
-
-    // Second column, resist name is 9 chars
-    out.clear();
-    cwidth = 10;
     const int rinvi = you.can_see_invisible(calc_unid);
     out += _resist_composer("SeeInvis", cwidth, rinvi) + "\n";
 
+    /* meaningless now
     const int gourmand = you.gourmand(calc_unid);
     out += _resist_composer("Gourm", cwidth, gourmand, 1) + "\n";
+     */
 
     const int faith = you.faith(calc_unid);
     out += _resist_composer("Faith", cwidth, faith) + "\n";
@@ -2437,6 +2484,11 @@ static vector<formatted_string> _get_overview_resistances(
 
     const int harm = you.extra_harm(calc_unid);
     out += _resist_composer("Harm", cwidth, harm) + "\n";
+
+    const int rmuta = (you.rmut_from_item(calc_unid)
+                       || player_mutation_level(MUT_MUTATION_RESISTANCE) == 3);
+    if (rmuta)
+        out += _resist_composer("rMut", cwidth, rmuta) + "\n";
 
     const int rclar = you.clarity(calc_unid);
     const int stasis = you.stasis(calc_unid);
