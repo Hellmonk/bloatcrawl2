@@ -5176,7 +5176,7 @@ static map<const char*, vector<mutation_type>> sacrifice_vector_map =
     /// Mutations granted by ABIL_RU_SACRIFICE_PURITY
     { PURITY_SAC_KEY, {
         MUT_SCREAM,
-        MUT_SLOW_REGENERATION,
+        MUT_SLOW_HEALTH_REGENERATION,
         MUT_NO_DEVICE_HEAL,
         MUT_DOPEY,
         MUT_CLUMSY,
@@ -5248,7 +5248,7 @@ static mutation_type _random_valid_sacrifice(const vector<mutation_type> &muts)
         // special case a few weird interactions
         // vampires can't get slow regeneration for some reason related to
         // their existing regen silliness
-        if (you.species == SP_VAMPIRE && mut == MUT_SLOW_REGENERATION)
+        if (you.species == SP_VAMPIRE && mut == MUT_SLOW_HEALTH_REGENERATION)
             continue;
 
         // demonspawn can't get frail if they have a robust facet

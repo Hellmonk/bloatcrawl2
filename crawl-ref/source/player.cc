@@ -1146,7 +1146,7 @@ static int _player_bonus_regen()
     }
 
     // Fast heal mutation.
-    rr += player_mutation_level(MUT_HEALTH_REGENERATION) * 20;
+    rr += player_mutation_level(MUT_FAST_HEALTH_REGENERATION) * 20;
 
     // Powered By Death mutation, boosts regen by variable strength
     // if the duration of the effect is still active.
@@ -1160,7 +1160,7 @@ static int _player_bonus_regen()
 // visible at level 1 or 2 respectively, stops regeneration at level 3.
 static int _slow_regeneration_rate()
 {
-    if (player_mutation_level(MUT_SLOW_REGENERATION) == 3)
+    if (player_mutation_level(MUT_SLOW_HEALTH_REGENERATION) == 3)
         return 0;
 
     for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
@@ -1169,7 +1169,7 @@ static int _slow_regeneration_rate()
             && !mi->wont_attack()
             && !mi->neutral())
         {
-            return 2 - player_mutation_level(MUT_SLOW_REGENERATION);
+            return 2 - player_mutation_level(MUT_SLOW_HEALTH_REGENERATION);
         }
     }
     return 2;
@@ -1204,7 +1204,7 @@ int player_regen()
     }
 
     // Slow regeneration mutation.
-    if (player_mutation_level(MUT_SLOW_REGENERATION) > 0)
+    if (player_mutation_level(MUT_SLOW_HEALTH_REGENERATION) > 0)
     {
         rr *= _slow_regeneration_rate();
         rr /= 2;
@@ -1233,7 +1233,7 @@ int player_regen()
 void update_regen_amulet_attunement()
 {
     if (you.wearing(EQ_AMULET, AMU_HEALTH_REGENERATION)
-        && player_mutation_level(MUT_SLOW_REGENERATION) < 3)
+        && player_mutation_level(MUT_SLOW_HEALTH_REGENERATION) < 3)
     {
         if (you.hp == you.hp_max
             && you.props[REGEN_AMULET_ACTIVE].get_int() == 0)
@@ -5054,7 +5054,7 @@ int get_unfrozen_mp()
 
 bool player_regenerates_hp()
 {
-    if (player_mutation_level(MUT_SLOW_REGENERATION) == 3)
+    if (player_mutation_level(MUT_SLOW_HEALTH_REGENERATION) == 3)
         return false;
     if (you.species == SP_VAMPIRE && you.hunger_state <= HS_STARVING)
         return false;

@@ -1158,7 +1158,7 @@ static void _equip_amulet_of_dismissal()
 
 static void _equip_amulet_of_regeneration()
 {
-    if (player_mutation_level(MUT_SLOW_REGENERATION) == 3)
+    if (player_mutation_level(MUT_SLOW_HEALTH_REGENERATION) == 3)
         mpr("The amulet feels cold and inert.");
     else if (get_hp() == get_hp_max())
     {

@@ -124,45 +124,46 @@ static const body_facet_def _body_facets[] =
  */
 static const int conflict[][3] =
 {
-    { MUT_HEALTH_REGENERATION,        MUT_SLOW_REGENERATION,      0},
-    { MUT_ACUTE_VISION,        MUT_BLURRY_VISION,          0},
-    { MUT_FAST,                MUT_SLOW,                   0},
-#if TAG_MAJOR_VERSION == 34
-    { MUT_STRONG_STIFF,        MUT_FLEXIBLE_WEAK,          1},
-#endif
-    { MUT_STRONG,              MUT_WEAK,                   1},
-    { MUT_CLEVER,              MUT_DOPEY,                  1},
-    { MUT_AGILE,               MUT_CLUMSY,                 1},
-    { MUT_SLOW_REGENERATION,   MUT_NO_DEVICE_HEAL,         1},
-    { MUT_ROBUST,              MUT_FRAIL,                  1},
-    { MUT_HIGH_MAGIC,          MUT_LOW_MAGIC,              1},
-    { MUT_HIGH_STAMINA,        MUT_LOW_STAMINA,            1},
-    { MUT_WILD_MAGIC,          MUT_SUBDUED_MAGIC,          1},
-    { MUT_CARNIVOROUS,         MUT_HERBIVOROUS,            1},
-    { MUT_SLOW_METABOLISM,     MUT_FAST_METABOLISM,        1},
-    { MUT_HEALTH_REGENERATION,        MUT_SLOW_REGENERATION,      1},
-    { MUT_ACUTE_VISION,        MUT_BLURRY_VISION,          1},
-    { MUT_FAST,                MUT_SLOW,                   1},
-    { MUT_GOOD_DNA,            MUT_BAD_DNA,                1},
-    { MUT_RESILIENT_DNA,       MUT_WEAK_DNA,               1},
-    { MUT_LONG_DNA,            MUT_SHORT_DNA,              1},
-    { MUT_FOCUSSED_DNA,        MUT_UNFOCUSSED_DNA,         1},
-    { MUT_SUSTAIN_ATTRIBUTES,  MUT_DETERIORATION,         -1},
-    { MUT_FANGS,               MUT_BEAK,                  -1},
-    { MUT_ANTENNAE,            MUT_HORNS,                 -1},
-    { MUT_HOOVES,              MUT_TALONS,                -1},
-    { MUT_TRANSLUCENT_SKIN,    MUT_CAMOUFLAGE,            -1},
-    { MUT_MUTATION_RESISTANCE, MUT_EVOLUTION,             -1},
-    { MUT_ANTIMAGIC_BITE,      MUT_ACIDIC_BITE,           -1},
-    { MUT_HEAT_RESISTANCE,     MUT_HEAT_VULNERABILITY,    -1},
-    { MUT_COLD_RESISTANCE,     MUT_COLD_VULNERABILITY,    -1},
-    { MUT_SHOCK_RESISTANCE,    MUT_SHOCK_VULNERABILITY,   -1},
-    { MUT_MAGIC_RESISTANCE,    MUT_MAGICAL_VULNERABILITY, -1},
-    { MUT_CAMOUFLAGE,    	   MUT_GLOW, 				  -1},
-    { MUT_NIGHTSTALKER,    	   MUT_GLOW, 				  -1},
-    { MUT_POISON_RESISTANCE,   MUT_POISON_VULNERABILITY,  -1},
-    { MUT_FLAME_CLOUD_IMMUNITY,  MUT_HEAT_VULNERABILITY,  -1},
-    { MUT_FREEZING_CLOUD_IMMUNITY, MUT_COLD_VULNERABILITY,-1},
+    { MUT_FAST_HEALTH_REGENERATION,        MUT_SLOW_HEALTH_REGENERATION,      0},
+    { MUT_FAST_MAGIC_REGENERATION,         MUT_SLOW_MAGIC_REGENERATION,       0},
+    { MUT_FAST_STAMINA_REGENERATION,       MUT_SLOW_STAMINA_REGENERATION,     0},
+    { MUT_ACUTE_VISION,                    MUT_BLURRY_VISION,                 0},
+    { MUT_FAST,                            MUT_SLOW,                          0},
+    { MUT_STRONG,                          MUT_WEAK,                          1},
+    { MUT_CLEVER,                          MUT_DOPEY,                         1},
+    { MUT_AGILE,                           MUT_CLUMSY,                        1},
+    { MUT_SLOW_HEALTH_REGENERATION,        MUT_NO_DEVICE_HEAL,                1},
+    { MUT_ROBUST,                          MUT_FRAIL,                         1},
+    { MUT_HIGH_MAGIC,                      MUT_LOW_MAGIC,                     1},
+    { MUT_HIGH_STAMINA,                    MUT_LOW_STAMINA,                   1},
+    { MUT_WILD_MAGIC,                      MUT_SUBDUED_MAGIC,                 1},
+    { MUT_CARNIVOROUS,                     MUT_HERBIVOROUS,                   1},
+    { MUT_SLOW_METABOLISM,                 MUT_FAST_METABOLISM,               1},
+    { MUT_FAST_HEALTH_REGENERATION,        MUT_SLOW_HEALTH_REGENERATION,      1},
+    { MUT_FAST_MAGIC_REGENERATION,         MUT_SLOW_MAGIC_REGENERATION,       1},
+    { MUT_FAST_STAMINA_REGENERATION,       MUT_SLOW_STAMINA_REGENERATION,     1},
+    { MUT_ACUTE_VISION,                    MUT_BLURRY_VISION,                 1},
+    { MUT_FAST,                            MUT_SLOW,                          1},
+    { MUT_GOOD_DNA,                        MUT_BAD_DNA,                       1},
+    { MUT_RESILIENT_DNA,                   MUT_WEAK_DNA,                      1},
+    { MUT_LONG_DNA,                        MUT_SHORT_DNA,                     1},
+    { MUT_FOCUSSED_DNA,                    MUT_UNFOCUSSED_DNA,                1},
+    { MUT_SUSTAIN_ATTRIBUTES,              MUT_DETERIORATION,                -1},
+    { MUT_FANGS,                           MUT_BEAK,                         -1},
+    { MUT_ANTENNAE,                        MUT_HORNS,                        -1},
+    { MUT_HOOVES,                          MUT_TALONS,                       -1},
+    { MUT_TRANSLUCENT_SKIN,                MUT_CAMOUFLAGE,                   -1},
+    { MUT_MUTATION_RESISTANCE,             MUT_EVOLUTION,                    -1},
+    { MUT_ANTIMAGIC_BITE,                  MUT_ACIDIC_BITE,                  -1},
+    { MUT_HEAT_RESISTANCE,                 MUT_HEAT_VULNERABILITY,           -1},
+    { MUT_COLD_RESISTANCE,                 MUT_COLD_VULNERABILITY,           -1},
+    { MUT_SHOCK_RESISTANCE,                MUT_SHOCK_VULNERABILITY,          -1},
+    { MUT_MAGIC_RESISTANCE,                MUT_MAGICAL_VULNERABILITY,        -1},
+    { MUT_CAMOUFLAGE,    	               MUT_GLOW, 				         -1},
+    { MUT_NIGHTSTALKER,    	               MUT_GLOW, 				         -1},
+    { MUT_POISON_RESISTANCE,               MUT_POISON_VULNERABILITY,         -1},
+    { MUT_FLAME_CLOUD_IMMUNITY,            MUT_HEAT_VULNERABILITY,           -1},
+    { MUT_FREEZING_CLOUD_IMMUNITY,         MUT_COLD_VULNERABILITY,           -1},
 };
 
 equipment_type beastly_slot(int mut)
@@ -340,7 +341,7 @@ mutation_activity_type mutation_activity_level(mutation_type mut)
         return MUTACT_INACTIVE;
 
     if ((you_worship(GOD_PAKELLAS) || player_under_penance(GOD_PAKELLAS))
-         && (mut == MUT_MAGIC_LINK || mut == MUT_MAGIC_REGENERATION))
+         && (mut == MUT_MAGIC_LINK || mut == MUT_FAST_MAGIC_REGENERATION))
     {
         return MUTACT_INACTIVE;
     }
@@ -1099,7 +1100,7 @@ bool physiology_mutation_conflict(mutation_type mutat)
 
     // Vampires' healing and thirst rates depend on their blood level.
     if (you.species == SP_VAMPIRE
-        && (mutat == MUT_HEALTH_REGENERATION || mutat == MUT_SLOW_REGENERATION))
+        && (mutat == MUT_FAST_HEALTH_REGENERATION || mutat == MUT_SLOW_HEALTH_REGENERATION))
     {
         return true;
     }
@@ -2111,7 +2112,7 @@ static const facet_def _demon_facets[] =
       { -33, 0, 0 } },
     { 2, { MUT_ROT_IMMUNITY, MUT_FOUL_STENCH, MUT_FOUL_STENCH },
       { -33, 0, 0 } },
-    { 2, { MUT_MAGIC_SHIELD, MUT_MAGIC_REGENERATION, MUT_MAGIC_LINK },
+    { 2, { MUT_MAGIC_SHIELD, MUT_FAST_MAGIC_REGENERATION, MUT_MAGIC_LINK },
       { -33, 0, 0 } },
     // Tier 3 facets
     { 3, { MUT_HEAT_RESISTANCE, MUT_FLAME_CLOUD_IMMUNITY, MUT_HURL_HELLFIRE },

@@ -213,7 +213,7 @@ static const mutation_def mut_data[] =
   {"You feel less vulnerable to electricity.", "", ""},
 },
 
-{ MUT_HEALTH_REGENERATION, 30, 3, mutflag::GOOD, false,
+{ MUT_FAST_HEALTH_REGENERATION, 30, 3, mutflag::GOOD, false,
   "fast health regeneration",
 
   {"You heal quickly.",
@@ -231,7 +231,7 @@ static const mutation_def mut_data[] =
    "Your rate of healing slows."},
 },
 
-{ MUT_SLOW_REGENERATION, 50, 3, mutflag::BAD, false,
+{ MUT_SLOW_HEALTH_REGENERATION, 50, 3, mutflag::BAD, false,
   "slow health regeneration",
 
   {"You regenerate health slowly when monsters are visible.",
@@ -245,6 +245,62 @@ static const mutation_def mut_data[] =
   {"Your natural health regeneration is strengthened.",
    "Your natural health regeneration is strengthened.",
    "Your natural health regeneration is strengthened."},
+},
+
+{ MUT_FAST_MAGIC_REGENERATION, 50, 3, mutflag::GOOD, false,
+  "fast magic regeneration",
+
+  {"You regenerate magic rapidly.",
+   "You regenerate magic very rapidly.",
+   "You regenerate magic extremely rapidly."},
+  {"Your natural magic regeneration is strengthened.",
+   "Your natural magic regeneration is strengthened.",
+   "Your natural magic regeneration is strengthened."},
+  {"Your natural magic regeneration is weakened.",
+   "Your natural magic regeneration is weakened.",
+   "Your natural magic regeneration is weakened."},
+},
+
+{ MUT_SLOW_MAGIC_REGENERATION, 50, 3, mutflag::BAD, false,
+  "slow magic regeneration",
+
+  {"You regenerate magic slowly.",
+   "You regenerate magic very slowly.",
+   "You regenerate magic extremely slowly."},
+  {"Your natural magic regeneration is weakened.",
+   "Your natural magic regeneration is weakened.",
+   "Your natural magic regeneration is weakened."},
+  {"Your natural magic regeneration is strengthened.",
+   "Your natural magic regeneration is strengthened.",
+   "Your natural magic regeneration is strengthened."},
+},
+
+{ MUT_FAST_STAMINA_REGENERATION, 50, 3, mutflag::GOOD, false,
+  "fast stamina regeneration",
+
+  {"You regenerate stamina rapidly.",
+   "You regenerate stamina very rapidly.",
+   "You regenerate stamina extremely rapidly."},
+  {"Your natural stamina regeneration is strengthened.",
+   "Your natural stamina regeneration is strengthened.",
+   "Your natural stamina regeneration is strengthened."},
+  {"Your natural stamina regeneration is weakened.",
+   "Your natural stamina regeneration is weakened.",
+   "Your natural stamina regeneration is weakened."},
+},
+
+{ MUT_SLOW_STAMINA_REGENERATION, 50, 3, mutflag::BAD, false,
+  "slow stamina regeneration",
+
+  {"You regenerate stamina slowly.",
+   "You regenerate stamina very slowly.",
+   "You regenerate stamina extremely slowly."},
+  {"Your natural stamina regeneration is weakened.",
+   "Your natural stamina regeneration is weakened.",
+   "Your natural stamina regeneration is weakened."},
+  {"Your natural stamina regeneration is strengthened.",
+   "Your natural stamina regeneration is strengthened.",
+   "Your natural stamina regeneration is strengthened."},
 },
 
 { MUT_FAST_METABOLISM, 20, 3, mutflag::BAD, false,
@@ -1224,38 +1280,12 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_MAGIC_REGENERATION, 50, 3, mutflag::GOOD, false,
-  "magic regeneration",
-
-  {"You regenerate magic rapidly.",
-		  "You regenerate magic very rapidly.",
-		  "You regenerate magic extremely rapidly."},
-  {"You feel your magic shroud grow more resilient.",
-		  "You feel your magic shroud grow more resilient.",
-		  "You feel your magic shroud grow more resilient."},
-  {"", "", ""},
-},
-
 { MUT_MAGIC_LINK, 15, 1, mutflag::GOOD, false,
   "magic link",
 
   {"When low on magic, you restore magic in place of health.", "", ""},
   {"You feel your life force and your magical essence meld.", "", ""},
   {"", "", ""},
-},
-
-{ MUT_STAMINA_REGENERATION, 50, 3, mutflag::GOOD, false,
-  "stamina regeneration",
-
-  {"You regenerate stamina rapidly.",
-   "You regenerate stamina very rapidly.",
-   "You regenerate stamina extremely rapidly."},
-  {"You feel less tired.",
-   "You feel less tired.",
-   "You feel less tired."},
-  {"You feel more tired.",
-   "You feel more tired.",
-   "You feel more tired."},
 },
 
 // Jiyva only mutations
