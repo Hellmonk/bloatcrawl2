@@ -1293,8 +1293,8 @@ static const mutation_def mut_data[] =
 
   {
       "Your stamina protects you from some damage (25% of damage comes from SP)",
-      "Your stamina protects you from some damage (50% of damage comes from SP)",
-      "Your stamina protects you from some damage (75% of damage comes from SP)",
+      "Your stamina protects you from a lot of damage (50% of damage comes from SP)",
+      "Your stamina protects you from most damage (75% of damage comes from SP)",
   },
   {
       "You feel your stamina essence form a protective shroud around your flesh.",
@@ -1309,8 +1309,8 @@ static const mutation_def mut_data[] =
 
   {
   "Your magic protects you from some damage (25% of damage comes from MP)",
-  "Your magic protects you from some damage (50% of damage comes from MP)",
-  "Your magic protects you from some damage (75% of damage comes from MP)",
+  "Your magic protects you from a lot of damage (50% of damage comes from MP)",
+  "Your magic protects you from most damage (75% of damage comes from MP)",
   },
   {
   "You feel your magical essence form a protective shroud around your flesh.",
