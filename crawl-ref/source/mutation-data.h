@@ -1043,9 +1043,9 @@ static const mutation_def mut_data[] =
 { MUT_HIGH_MAGIC, 50, 3, mutflag::GOOD, false,
   "high mp",
 
-  {"You have an increased reservoir of magic (+20 MP).",
-   "You have a considerably increased reservoir of magic (+40 MP).",
-   "You have a greatly increased reservoir of magic (+60 MP)."},
+  {"You have an increased reservoir of magic (+25 MP).",
+   "You have a considerably increased reservoir of magic (+50 MP).",
+   "You have a greatly increased reservoir of magic (+75 MP)."},
 
   {"You feel more energetic.",
    "You feel more energetic.",
@@ -1059,9 +1059,9 @@ static const mutation_def mut_data[] =
 { MUT_LOW_MAGIC, 20, 3, mutflag::BAD, false,
   "low mp",
 
-  {"Your magical capacity is low (-20 MP).",
-   "Your magical capacity is very low (-40 MP).",
-   "Your magical capacity is extremely low (-60 MP)."},
+  {"Your magical capacity is low (-25 MP).",
+   "Your magical capacity is very low (-50 MP).",
+   "Your magical capacity is extremely low (-75 MP)."},
 
   {"You feel less energetic.",
    "You feel less energetic.",
@@ -1075,9 +1075,9 @@ static const mutation_def mut_data[] =
 { MUT_HIGH_STAMINA, 50, 3, mutflag::GOOD, false,
   "high sp",
 
-  {"You have an increased reservoir of stamina (+20 SP).",
-   "You have a considerably increased reservoir of stamina (+40 SP).",
-   "You have a greatly increased reservoir of stamina (+60 SP)."},
+  {"You have an increased reservoir of stamina (+25 SP).",
+   "You have a considerably increased reservoir of stamina (+50 SP).",
+   "You have a greatly increased reservoir of stamina (+75 SP)."},
 
   {"You have greater endurance.",
    "You have greater endurance.",
@@ -1091,9 +1091,9 @@ static const mutation_def mut_data[] =
 { MUT_LOW_STAMINA, 20, 3, mutflag::BAD, false,
   "low sp",
 
-  {"Your stamina capacity is low (-20 SP).",
-   "Your stamina capacity is very low (-40 SP).",
-   "Your stamina capacity is extremely low (-60 SP)."},
+  {"Your stamina capacity is low (-25 SP).",
+   "Your stamina capacity is very low (-50 SP).",
+   "Your stamina capacity is extremely low (-75 SP)."},
 
   {"You have less endurance.",
    "You have less endurance.",

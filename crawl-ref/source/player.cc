@@ -1239,7 +1239,7 @@ int player_sp_regen()
 
 int player_mp_regen()
 {
-    int regen = 7 + get_mp_max() / 3;
+    int regen = 7 + get_mp_max(true) / 3;
 
     if (int level = player_mutation_level(MUT_FAST_MAGIC_REGENERATION))
         regen <<= level;
