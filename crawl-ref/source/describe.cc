@@ -853,7 +853,7 @@ static void _append_weapon_stats(string &description, const item_def &item)
       : "";
     const int hit = property(item, PWPN_HIT);
     const int damage = base_dam + ammo_dam;
-    const int sp_cost = weapon_sp_cost(&item);
+    const int sp_cost = (weapon_sp_cost(&item) + 5) / 10;
     const float base_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_MAX) / 10;
     const float current_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_CURRENT) / 10;
     const float min_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_MIN) / 10;
@@ -1190,7 +1190,7 @@ static string _describe_ammo(const item_def &item)
 
     const int hit = property(item, PWPN_HIT);
     const int damage = ammo_dam;
-    const int sp_cost = weapon_sp_cost(&item);
+    const int sp_cost = (weapon_sp_cost(&item) + 5) / 10;
     const float base_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_MAX) / 10;
     const float current_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_CURRENT) / 10;
     const float min_delay = (float) you.attack_delay(nullptr, true, &item, ACTION_DELAY_MIN) / 10;

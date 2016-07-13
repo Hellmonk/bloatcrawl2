@@ -151,7 +151,7 @@ bool melee_attack::handle_phase_attempted()
             you.time_taken = you.attack_delay();
 
         const item_def *weapon_used = get_weapon_used();
-        const int sp_cost = weapon_sp_cost(weapon_used);
+        const int sp_cost = div_rand_round(weapon_sp_cost(weapon_used), 10);
 
         if (sp_cost && !is_riposte)
             dec_sp(sp_cost, true, true);

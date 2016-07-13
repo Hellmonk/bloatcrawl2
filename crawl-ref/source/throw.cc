@@ -971,7 +971,7 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
             const item_def *weapon_used = you.weapon();
             const item_def *ammo_used = pbolt.item;
 
-            const int sp_cost = weapon_sp_cost(weapon_used, ammo_used);
+            const int sp_cost = div_rand_round(weapon_sp_cost(weapon_used, ammo_used), 10);
 
             if (sp_cost)
                 dec_sp(sp_cost, true, true);

@@ -9964,6 +9964,7 @@ int spell_mp_freeze(spell_type which_spell)
     return cost;
 }
 
+// returns sp cost x10
 int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
 {
     int weight = weapon ? max(1, property(*weapon, PWPN_WEIGHT)) : 3;
@@ -9981,7 +9982,7 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
     if (you.exertion != EXERT_NORMAL)
     {
         sp_cost *= 2;
-        sp_cost = max(3, (int)sp_cost);
+        sp_cost = max(2, (int)sp_cost);
     }
 
     if (weapon && get_weapon_brand(*weapon) == SPWPN_LIGHT)
@@ -9990,9 +9991,9 @@ int weapon_sp_cost(const item_def* weapon, const item_def* ammo)
     if (you.rune_curse_active[RUNE_SNAKE])
         sp_cost = sp_cost * 4 / 3;
 
-    sp_cost = max(1, (int)sp_cost);
+    sp_cost = max(0.5, sp_cost);
 
-    return sp_cost;
+    return (int)(sp_cost * 10);
 }
 
 const int base_factor = 100;
