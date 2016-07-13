@@ -234,17 +234,29 @@ static const mutation_def mut_data[] =
 { MUT_SLOW_HEALTH_REGENERATION, 50, 3, mutflag::BAD, false,
   "slow health regeneration",
 
-  {"You regenerate health slowly when monsters are visible.",
-   "You do not regenerate health naturally when monsters are visible.",
-   "You do not regenerate health naturally."},
-
+  {"You regenerate health slowly.",
+   "You regenerate health very slowly.",
+   "You regenerate health extremely slowly."},
   {"Your health regeneration is weakened.",
    "Your health regeneration is weakened.",
-   "You stop regenerating health."},
-
+   "Your health regeneration is weakened."},
   {"Your health regeneration is strengthened.",
    "Your health regeneration is strengthened.",
    "Your health regeneration is strengthened."},
+},
+
+{ MUT_NO_HEALTH_REGENERATION, 1, 1, mutflag::BAD, false,
+  "no health regeneration",
+
+  {"You don't regenerate health.",
+   "",
+   ""},
+  {"You stop regenerating health.",
+   "",
+   ""},
+  {"You start regenerating health.",
+   "",
+   ""},
 },
 
 { MUT_FAST_MAGIC_REGENERATION, 50, 3, mutflag::GOOD, false,
@@ -275,6 +287,20 @@ static const mutation_def mut_data[] =
    "Your magic regeneration is strengthened."},
 },
 
+{ MUT_NO_MAGIC_REGENERATION, 1, 1, mutflag::BAD, false,
+  "no magic regeneration",
+
+  {"You don't regenerate magic.",
+   "",
+   ""},
+  {"You stop regenerating magic.",
+   "",
+   ""},
+  {"You start regenerating magic.",
+   "",
+   ""},
+},
+
 { MUT_FAST_STAMINA_REGENERATION, 50, 3, mutflag::GOOD, false,
   "fast stamina regeneration",
 
@@ -301,6 +327,20 @@ static const mutation_def mut_data[] =
   {"Your stamina regeneration is strengthened.",
    "Your stamina regeneration is strengthened.",
    "Your stamina regeneration is strengthened."},
+},
+
+{ MUT_NO_STAMINA_REGENERATION, 1, 1, mutflag::BAD, false,
+  "no stamina regeneration",
+
+  {"You don't regenerate stamina.",
+   "",
+   ""},
+  {"You stop regenerating stamina.",
+   "",
+   ""},
+  {"You start regenerating stamina.",
+   "",
+   ""},
 },
 
 { MUT_FAST_METABOLISM, 20, 3, mutflag::BAD, false,

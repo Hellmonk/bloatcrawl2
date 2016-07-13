@@ -140,8 +140,11 @@ static const int conflict[][3] =
     { MUT_CARNIVOROUS,                     MUT_HERBIVOROUS,                   1},
     { MUT_SLOW_METABOLISM,                 MUT_FAST_METABOLISM,               1},
     { MUT_FAST_HEALTH_REGENERATION,        MUT_SLOW_HEALTH_REGENERATION,      1},
+    { MUT_FAST_HEALTH_REGENERATION,        MUT_NO_HEALTH_REGENERATION,        1},
     { MUT_FAST_MAGIC_REGENERATION,         MUT_SLOW_MAGIC_REGENERATION,       1},
+    { MUT_FAST_MAGIC_REGENERATION,         MUT_NO_MAGIC_REGENERATION,         1},
     { MUT_FAST_STAMINA_REGENERATION,       MUT_SLOW_STAMINA_REGENERATION,     1},
+    { MUT_FAST_STAMINA_REGENERATION,       MUT_NO_STAMINA_REGENERATION,       1},
     { MUT_ACUTE_VISION,                    MUT_BLURRY_VISION,                 1},
     { MUT_FAST,                            MUT_SLOW,                          1},
     { MUT_GOOD_DNA,                        MUT_BAD_DNA,                       1},
@@ -1316,62 +1319,57 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
 
     while (tries--)
     {
-        if (mutclass == MUTCLASS_NORMAL
-            && (which_mutation == RANDOM_MUTATION || which_mutation == RANDOM_XOM_MUTATION)
-            )
+        const int long_dna = player_mutation_level(MUT_LONG_DNA) - player_mutation_level(MUT_SHORT_DNA);
+        const int mutation_count = qpow(how_mutated(false, true) * 2, 1, 2, long_dna);
+        const int focussed = player_mutation_level(MUT_FOCUSSED_DNA);
+        const int unfocussed = player_mutation_level(MUT_UNFOCUSSED_DNA);
+
+        const int focus_level = 4 + focussed * 4 - unfocussed;
+        if (x_chance_in_y(random2(mutation_count), 15) && !god_gift && !force_mutation)
         {
-            const int long_dna = player_mutation_level(MUT_LONG_DNA) - player_mutation_level(MUT_SHORT_DNA);
-            const int mutation_count = qpow(how_mutated(false, true) * 2, 1, 2, long_dna);
-            const int focussed = player_mutation_level(MUT_FOCUSSED_DNA);
-            const int unfocussed = player_mutation_level(MUT_UNFOCUSSED_DNA);
+            const int clean_dna = player_mutation_level(MUT_CLEAN_DNA);
 
-            const int focus_level = 4 + focussed * 4 - unfocussed;
-            if (x_chance_in_y(random2(mutation_count), 15) && !god_gift && !force_mutation)
+            if (x_chance_in_y(2, 3 + clean_dna * clean_dna) || you.rune_curse_active[RUNE_SLIME])
+                return false;
+            else
             {
-                const int clean_dna = player_mutation_level(MUT_CLEAN_DNA);
+                const int resilient_dna = player_mutation_level(MUT_RESILIENT_DNA) - player_mutation_level(MUT_WEAK_DNA);
+                mutation_type mutation = x_chance_in_y(resilient_dna + 1, 5) ? RANDOM_BAD_MUTATION : RANDOM_MUTATION;
+                if (resilient_dna < 0)
+                    mutation = x_chance_in_y(-resilient_dna, 4) ? RANDOM_GOOD_MUTATION : RANDOM_MUTATION;
 
-                if (x_chance_in_y(2, 3 + clean_dna * clean_dna) || you.rune_curse_active[RUNE_SLIME])
-                    return false;
-                else
+                return delete_mutation(mutation, reason, failMsg, force_mutation, false);
+            }
+        }
+        else if (x_chance_in_y(focus_level, 17) && mutation_count > 0 && !god_gift && !force_mutation)
+        {
+            int tries2 = 100;
+            bool found = false;
+            mutation_type existing_mutation;
+            while(tries2--)
+            {
+                existing_mutation = static_cast<mutation_type>(random2(NUM_MUTATIONS));
+                mdef = _get_mutation_def(existing_mutation);
+                const int level = player_mutation_level(existing_mutation, false);
+
+                if (level && level < mdef.levels)
                 {
-                    const int resilient_dna = player_mutation_level(MUT_RESILIENT_DNA) - player_mutation_level(MUT_WEAK_DNA);
-                    mutation_type mutation = x_chance_in_y(resilient_dna + 1, 5) ? RANDOM_BAD_MUTATION : RANDOM_MUTATION;
-                    if (resilient_dna < 0)
-                        mutation = x_chance_in_y(-resilient_dna, 4) ? RANDOM_GOOD_MUTATION : RANDOM_MUTATION;
+                    if (you.innate_mutation[existing_mutation] > 0 && x_chance_in_y(3, 4))
+                        continue;
 
-                    return delete_mutation(mutation, reason, failMsg, force_mutation, false);
+                    if (MUT_BAD(mdef) && x_chance_in_y(3 - player_mutation_level(MUT_BAD_DNA), 4))
+                        continue;
+
+                    if (MUT_DEPENDS(mdef) && x_chance_in_y(3 - player_mutation_level(MUT_BAD_DNA), 6))
+                        continue;
+
+                    found = true;
+                    break;
                 }
             }
-            else if (x_chance_in_y(focus_level, 17) && mutation_count > 0 && !god_gift && !force_mutation)
-            {
-                int tries2 = 100;
-                bool found = false;
-                mutation_type existing_mutation;
-                while(tries2--)
-                {
-                    existing_mutation = static_cast<mutation_type>(random2(NUM_MUTATIONS));
-                    mdef = _get_mutation_def(existing_mutation);
-                    const int level = player_mutation_level(existing_mutation, false);
 
-                    if (level && level < mdef.levels)
-                    {
-                        if (you.innate_mutation[existing_mutation] > 0 && x_chance_in_y(3, 4))
-                            continue;
-
-                        if (MUT_BAD(mdef) && x_chance_in_y(3 - player_mutation_level(MUT_BAD_DNA), 4))
-                            continue;
-
-                        if (MUT_DEPENDS(mdef) && x_chance_in_y(3 - player_mutation_level(MUT_BAD_DNA), 6))
-                            continue;
-
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (found)
-                    mutat = existing_mutation;
-            }
+            if (found)
+                mutat = existing_mutation;
         }
 
         bool mutation_randomized = true;

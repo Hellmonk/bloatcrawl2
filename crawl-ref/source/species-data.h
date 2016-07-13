@@ -112,7 +112,7 @@ static const map<species_type, species_def> species_data =
     11, 8, 8, // 27
     { STAT_STR, STAT_INT }, 4,
     {
-      { MUT_SLOW_HEALTH_REGENERATION, 3, 1 },
+      { MUT_NO_HEALTH_REGENERATION, 1, 1 },
       { MUT_STAMINA_SHIELD, 1, 1 },
       { MUT_PASSIVE_MAPPING, 1, 1 },
       { MUT_PASSIVE_MAPPING, 1, 6 },

@@ -1128,12 +1128,12 @@ static int _player_bonus_regen()
     if (you.duration[DUR_REGENERATION]
         && !you.duration[DUR_TROGS_HAND])
     {
-        rr += 100;
+        rr += REGEN_PIP * 3;
     }
 
     // Jewellery.
     if (you.props[REGEN_AMULET_ACTIVE].get_int() == 1)
-        rr += REGEN_PIP * you.wearing(EQ_AMULET, AMU_HEALTH_REGENERATION);
+        rr += 2 * REGEN_PIP * you.wearing(EQ_AMULET, AMU_HEALTH_REGENERATION);
 
     // Artefacts
     rr += REGEN_PIP * you.scan_artefacts(ARTP_REGENERATION);
@@ -1142,16 +1142,16 @@ static int _player_bonus_regen()
     if (you.wearing(EQ_BODY_ARMOUR, ARM_TROLL_LEATHER_ARMOUR)
         || you.wearing(EQ_BODY_ARMOUR, ARM_TROLL_HIDE))
     {
-        rr += REGEN_PIP;
+        rr += 2 * REGEN_PIP;
     }
 
     // Fast heal mutation.
-    rr += player_mutation_level(MUT_FAST_HEALTH_REGENERATION) * 20;
+    rr += player_mutation_level(MUT_FAST_HEALTH_REGENERATION) * REGEN_PIP;
 
     // Powered By Death mutation, boosts regen by variable strength
     // if the duration of the effect is still active.
     if (you.duration[DUR_POWERED_BY_DEATH])
-        rr += you.props[POWERED_BY_DEATH_KEY].get_int() * 100;
+        rr += you.props[POWERED_BY_DEATH_KEY].get_int() * REGEN_PIP * 3;
 
     return rr;
 }
@@ -1177,81 +1177,81 @@ static int _slow_regeneration_rate()
 
 int player_hp_regen()
 {
-    // Note: if some condition can set rr = 0, can't be rested off, and
-    // would allow travel, please update is_sufficiently_rested.
-
-    int rr = you.hp_max / 3;
+    int regen = 7 + get_hp_max() / 3;
 
     // Add in miscellaneous bonuses
-    rr += _player_bonus_regen();
+    regen += _player_bonus_regen();
 
     // Before applying other effects, make sure that there's something
     // to heal.
-    rr = max(1, rr);
+    regen = max(1, regen);
 
     // Healing depending on satiation.
     // The better-fed you are, the faster you heal.
     if (you.species == SP_VAMPIRE)
     {
         if (you.hunger_state <= HS_STARVING)
-            rr = 0;   // No regeneration for starving vampires.
+            regen = 0;   // No regeneration for starving vampires.
         else if (you.hunger_state == HS_ENGORGED)
-            rr += 20; // More bonus regeneration for engorged vampires.
+            regen += 20; // More bonus regeneration for engorged vampires.
         else if (you.hunger_state < HS_SATIATED)
-            rr /= 2;  // Halved regeneration for hungry vampires.
+            regen /= 2;  // Halved regeneration for hungry vampires.
         else if (you.hunger_state >= HS_FULL)
-            rr += 10; // Bonus regeneration for full vampires.
+            regen += 10; // Bonus regeneration for full vampires.
     }
 
     // Slow regeneration mutation.
-    if (player_mutation_level(MUT_SLOW_HEALTH_REGENERATION) > 0)
-    {
-        rr *= _slow_regeneration_rate();
-        rr /= 2;
-    }
-    if (you.duration[DUR_COLLAPSE])
-        rr /= 4;
+    regen -= player_mutation_level(MUT_SLOW_HEALTH_REGENERATION) * REGEN_PIP;
 
-    if (you.disease)
-        rr = 0;
+    if (you.duration[DUR_COLLAPSE])
+        regen /= 4;
+
+    if (you.disease || player_mutation_level(MUT_NO_STAMINA_REGENERATION))
+        regen = 0;
 
     // Trog's Hand. This circumvents the slow regeneration mutation.
     if (you.duration[DUR_TROGS_HAND])
     {
-        rr += 100;
+        regen += 100;
         if(you.species == SP_DEEP_DWARF)
-        {
-            rr <<= 1;
-        }
+            regen <<= 1;
     }
 
-    return rr;
+    return regen;
 }
 
 int player_sp_regen()
 {
-    int base_val = 7 + get_sp_max() / 3;
+    int regen = 7 + get_sp_max() / 3;
 
     if (int level = player_mutation_level(MUT_FAST_STAMINA_REGENERATION))
-        base_val <<= level;
+        regen <<= level;
     if (int level = player_mutation_level(MUT_SLOW_STAMINA_REGENERATION))
-        base_val = div_rand_round(base_val, 1 << level);
+        regen = div_rand_round(regen, 1 << level);
     if (you.wearing(EQ_AMULET, AMU_STAMINA_REGENERATION))
-        base_val <<= 2;
-    return base_val;
+        regen <<= 2;
+
+    if (player_mutation_level(MUT_NO_STAMINA_REGENERATION))
+        regen = 0;
+
+    return regen;
 }
 
 int player_mp_regen()
 {
-    int base_val = 7 + get_mp_max() / 3;
+    int regen = 7 + get_mp_max() / 3;
 
     if (int level = player_mutation_level(MUT_FAST_MAGIC_REGENERATION))
-        base_val <<= level;
+        regen <<= level;
     if (int level = player_mutation_level(MUT_SLOW_MAGIC_REGENERATION))
-        base_val = div_rand_round(base_val, 1 << level);
+        regen = div_rand_round(regen, 1 << level);
     if (you.wearing(EQ_AMULET, AMU_MAGIC_REGENERATION))
-        base_val <<= 2;
-    return base_val;
+        regen <<= 2;
+
+    if (player_mutation_level(MUT_NO_MAGIC_REGENERATION))
+        regen = 0;
+
+    return regen;
 }
 
 // Amulet of regeneration needs to be worn while at full health before it begins
