@@ -1888,10 +1888,10 @@ KITEM:   Z = elven rune of Zot
 SHUFFLE: 345
 SUBST:   4=4., 2=2., 5=5., 3=3.
 SHUFFLE: lww
-SHUFFLE: nN / yY / zZ
+SHUFFLE: nN / yY / zT
 SUBST:   N=@, n=., Y=c, y=c
-SHUFFLE: zZ / nN
-SUBST:   N=@, n=., Z=c, z=c
+SHUFFLE: zT / nN
+SUBST:   N=@, n=., T=c, z=c
 KMONS:   $ = weight:115 nothing / deep elf annihilator
 KMONS:   * = weight:105 nothing / deep elf death mage
 KMONS:   | = weight:290 nothing / deep elf sorcerer
@@ -1928,7 +1928,7 @@ xc|**|*||7*cc.cc7$|$|$|$2cx
 xcccccccccccc.ccccccccccccx
 xccccccccccc...cccccccccccx
 xcccccccccc..c..ccccccccccx
-Yyyyyyyyyyy.ccc.zzzzzzzzzzZ
+Yyyyyyyyyyy.ccc.zzzzzzzzzzT
 xxxxxxxxxxxNncnNxxxxxxxxxxx
 ENDMAP
 
