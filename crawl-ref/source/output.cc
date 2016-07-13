@@ -2391,8 +2391,9 @@ static string _regen_bar(const char* title, int regen, int spacing)
 //    bar += _determine_colour_string(regen, 100, 10, 60);
     bar += _determine_colour_string(0, 5);
     bar += chop_string(title, spacing);
-    int count = 1.5 * log2(regen) - 4;
+    int count = 1.5 * log2(regen + 1) - 3;
     count = min(10, count);
+    count = max(0, count);
 
     for (int i = 0; i < count; i++)
         bar += "+";

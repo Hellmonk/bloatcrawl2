@@ -1201,12 +1201,12 @@ int player_hp_regen()
     }
 
     // Slow regeneration mutation.
-    regen -= player_mutation_level(MUT_SLOW_HEALTH_REGENERATION) * REGEN_PIP;
+    regen = qpow(regen, 2, 3, player_mutation_level(MUT_SLOW_HEALTH_REGENERATION));
 
     if (you.duration[DUR_COLLAPSE])
         regen /= 4;
 
-    if (you.disease || player_mutation_level(MUT_NO_STAMINA_REGENERATION))
+    if (you.disease || player_mutation_level(MUT_NO_HEALTH_REGENERATION))
         regen = 0;
 
     // Trog's Hand. This circumvents the slow regeneration mutation.
