@@ -132,6 +132,12 @@ Blade Hands for very long.
     * For physical fighters (ranged or melee), train fighting and add strength points to reduce cost.
     * For magic users: train spellcasting and add intelligence points to reduce spell costs.
     * Using wands and evocables can be a life saver since they don't use your health to cause damage.
+* Since Djinni can't read scrolls, wear or wield-id'ing is usually a bad idea. You can sacrifice a permanent essence
+  point, or wait until the curse expires on it's own, but it's usually best to wait for the item to id itself through
+  the "insight" mutation, which gets better as a Djinni levels up.
+* Immolation and inner flame are your friends. Use liberally.
+    * You are permitted to hex through enemies, unlike in vanilla crawl, so you can cast a few strategically placed
+      inner fires, then watch the fireworks.
 
 ## Troubleshooting
 
