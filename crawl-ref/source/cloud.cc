@@ -807,7 +807,14 @@ bool actor_cloud_immune(const actor *act, const cloud_struct &cloud)
     }
 
     // Qazlalites get immunity to their own clouds.
-    if (player && YOU_KILL(cloud.killer) && have_passive(passive_t::resist_own_clouds))
+    if (player && YOU_KILL(cloud.killer) && have_passive(passive_t::resist_own_clouds)
+        && !(you.species == SP_DJINNI && (
+               cloud.type == CLOUD_FIRE
+            || cloud.type == CLOUD_HOLY_FLAMES
+            || cloud.type == CLOUD_FOREST_FIRE
+            || cloud.type == CLOUD_STEAM
+            )
+        ))
         return true;
 
     switch (cloud.type)

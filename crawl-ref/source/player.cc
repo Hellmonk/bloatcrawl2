@@ -1476,7 +1476,7 @@ int player_res_fire(bool calc_unid, bool temp, bool items)
         if (you.duration[DUR_FIRE_SHIELD])
             rf += 2;
 
-        if (you.duration[DUR_QAZLAL_FIRE_RES])
+        if (you.duration[DUR_QAZLAL_FIRE_RES] && you.species != SP_DJINNI)
             rf++;
 
         rf += get_form()->res_fire();
