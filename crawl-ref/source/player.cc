@@ -10492,6 +10492,7 @@ void _instant_rest()
 
     you.duration[DUR_BERSERK] = 0;
     you.duration[DUR_POISONING] = 0;
+    you.duration[DUR_LIQUID_FLAMES] = 0;
     calc_hp();
 
     player_after_each_turn();
