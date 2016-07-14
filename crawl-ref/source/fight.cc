@@ -557,7 +557,7 @@ bool wielded_weapon_check(item_def *weapon)
 
     // this overrides the next block. Don't care about unarmed attacks.
     if (!weapon)
-        return false;
+        return true;
 
     // Don't pester the player if they're using UC or if they don't have any
     // melee weapons yet.
