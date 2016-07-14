@@ -117,6 +117,22 @@ the spell failure rate. Blade Hands is one of the hardest to maintain, because i
 penalty, increasing failure rate. It will take a lot of transmutation skill and/or dexterity to be able to maintain
 Blade Hands for very long. 
 
+## Species strategies
+
+### Djinni
+
+* Although it may feel overpowered at first, they are actually a significant challenge to play, at least after the very
+  beginning.
+    * All attacks, physical or magical, "damage" the player, since stamina and magic costs come directly from it's
+      health.
+* Magic, stamina, and healing potions restore "essence", so basically are the same as healing potions.
+* Since fire damage actually heals Djinni, fire resistance actually works against you (by reducing the healing), 
+  and hence, if you are lucky enough to come across a rF- item, it's quite valuable.
+* Since physical and magical attacks take from health, reducing those costs as much as possible is critical.
+    * For physical fighters (ranged or melee), train fighting and add strength points to reduce cost.
+    * For magic users: train spellcasting and add intelligence points to reduce spell costs.
+    * Using wands and evocables can be a life saver since they don't use your health to cause damage.
+
 ## Troubleshooting
 
 ### Always running out of stamina (SP) when attacking
