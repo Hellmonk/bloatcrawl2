@@ -3751,10 +3751,10 @@ bool is_useless_item(const item_def &item, bool temp)
                     || (you_worship(GOD_RU) && you.piety == piety_breakpoint(5));
 
         case AMU_MAGIC_SHIELD:
-            return you.magic_shield(false, false) >= 3;
+            return you.species == SP_DJINNI || you.magic_shield(false, false) >= 3;
 
         case AMU_STAMINA_SHIELD:
-            return you.stamina_shield(false, false) >= 3;
+            return you.species == SP_DJINNI || you.stamina_shield(false, false) >= 3;
 
         case RING_LIFE_PROTECTION:
             return player_prot_life(false, temp, false) == 3;
