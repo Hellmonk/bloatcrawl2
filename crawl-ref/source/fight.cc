@@ -529,7 +529,7 @@ int resist_adjust_damage(const actor* defender, beam_type flavour, int rawdamage
     {
     	if (flavour == BEAM_FIRE || flavour == BEAM_LAVA || flavour == BEAM_STEAM || flavour == BEAM_STICKY_FLAME)
 		{
-        	resistible = -(resistible >> 3);
+        	resistible = -(resistible >> 2);
     	}
     	else if (flavour == BEAM_COLD || flavour == BEAM_WATER)
     	{
