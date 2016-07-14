@@ -1,5 +1,9 @@
 ## v1.6
 
+* Removed temple. 
+    * Makes choosing from a spawned altar much more significant.
+    * There are no guarantees that a guardian will ever spawn in a game.
+
 * Added rune curses
     * Fiery rune (for cerebov): occasionally your fire resistance is ignored.
     * Magical rune (for lom lobon): occasionally your spells fizzle.
