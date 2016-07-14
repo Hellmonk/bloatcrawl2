@@ -50,7 +50,7 @@ static const mon_spellbook mspell_list[] =
     // Electric eels and lightning spires.
     {  MST_ZAPPER,
       {
-       { SPELL_ELECTRICAL_BOLT, 100, MON_SPELL_NATURAL },
+       { SPELL_ELECTRICAL_BOLT, 130, MON_SPELL_NATURAL },
       }
     },
 
