@@ -10399,7 +10399,11 @@ int player_ouch_modifier(int damage, bool skip_details)
                 break;
         }
 
-    const int max_damage_allowed_per_turn = get_hp_max() * percentage_allowed / 100;
+    int max_damage_allowed_per_turn = get_hp_max() * percentage_allowed / 100;
+
+    if (you.species == SP_DJINNI)
+        max_damage_allowed_per_turn /= 3;
+
     const int damage_left = max_damage_allowed_per_turn - you.turn_damage;
 
     int new_damage = min(damage, damage_left);

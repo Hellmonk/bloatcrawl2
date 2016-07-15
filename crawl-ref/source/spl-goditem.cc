@@ -1201,6 +1201,10 @@ void torment_player(actor *attacker, torment_source_type taux)
     {
         // Negative energy resistance can alleviate torment.
         hploss = max(0, get_hp() * (50 - player_prot_life() * 5) / 100 - 1);
+
+        if (you.species == SP_DJINNI)
+            hploss /= 3;
+
         // Statue form is only partial petrification.
         if (you.form == TRAN_STATUE || you.species == SP_GARGOYLE)
             hploss /= 2;
