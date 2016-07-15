@@ -140,6 +140,7 @@ Blade Hands for very long.
 * Immolation and inner flame are your friends. Use liberally.
     * You are permitted to hex through enemies, unlike in vanilla crawl, so you can cast a few strategically placed
       inner fires, then watch the fireworks.
+* Since cold damage does vast amounts of damage to a djinni, getting cold resistance should be a top priority. 
 
 ## Troubleshooting
 
