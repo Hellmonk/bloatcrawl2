@@ -1040,8 +1040,10 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
         if (dam < 0)
         {
+            int old_hp = get_hp();
             inc_hp(-dam);
-            mprf("(hp+%d)", -dam);
+            if (old_hp != get_hp())
+                mprf("(hp+%d)", -dam);
             return;
         }
 
