@@ -489,7 +489,7 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool rod)
         // Each level of horror reduces spellpower by 10%
         if (you.duration[DUR_HORROR])
         {
-            power -= 10;
+            power -= 5;
         }
 
         power = fpow(5, 9, 8, power);

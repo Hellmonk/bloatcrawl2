@@ -9,7 +9,7 @@
 #include "enum.h"
 
 #define SPELL_POWER_CAP			        999
-#define global_spell_skill_adjustment   8
+#define global_spell_skill_adjustment   10
 
 enum spflag_type
 {
