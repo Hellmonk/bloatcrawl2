@@ -4308,7 +4308,11 @@ bool dec_mp(int mp_loss, bool silent, bool allow_overdrive)
         return true;
 
     if (you.species == SP_DJINNI)
-        dec_hp(mp_loss, false);
+    if (you.species == SP_DJINNI)
+    {
+        if (get_hp() * 3 > get_hp_max())
+            dec_hp(mp_loss, false);
+    }
     else
         you.mp -= mp_loss;
 
@@ -4632,7 +4636,10 @@ bool dec_sp(int sp_loss, bool silent, bool allow_overdrive)
     }
 
     if (you.species == SP_DJINNI)
+    {
+        if (get_hp() * 3 > get_hp_max())
         dec_hp(sp_loss, false);
+    }
     else
         you.sp -= sp_loss;
 

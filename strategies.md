@@ -126,14 +126,16 @@ Blade Hands for very long.
     * All attacks, physical or magical, "damage" the player, since stamina and magic costs come directly from it's
       health.
 * Magic, stamina, and healing potions restore "essence", so basically are the same as healing potions.
-* Ambrosia is the ultimate healing for Djinni, since it rapidly charges health, mp, and sp, which means it basically
-  is a triple healing potion.
+    * Ambrosia is the ultimate healing for Djinni, since it rapidly charges health, mp, and sp, which means it basically
+      is a triple healing potion.
 * Since fire damage actually heals Djinni, fire resistance actually works against you (by reducing the healing), 
   and hence, if you are lucky enough to come across a rF- item, it's quite valuable.
 * Since physical and magical attacks take from health, reducing those costs as much as possible is critical.
     * For physical fighters (ranged or melee), train fighting and add strength points to reduce cost.
     * For magic users: train spellcasting and add intelligence points to reduce spell costs.
     * Using wands and evocables can be a life saver since they don't use your health to cause damage.
+    * Don't use exertion modes (power and focus) until you can significantly reduce the SP / MP costs of your attacks,
+      since they double your costs.
 * Since Djinni can't read scrolls, wear or wield-id'ing is usually a bad idea. You can sacrifice a permanent essence
   point, or wait until the curse expires on it's own, but it's usually best to wait for the item to id itself through
   the "insight" mutation, which gets better as a Djinni levels up.
