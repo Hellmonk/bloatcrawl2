@@ -437,7 +437,6 @@ KMONS:    2 = shadow wraith / freezing wraith / troll / deep troll w:5 / \
 {{
   hook("post_place", function()
     dgn.place_maps{tag="dhfh_arrival"}
-    dgn.place_maps{tag="dhfh_treasure"}
   end)
 }}
 MAP
