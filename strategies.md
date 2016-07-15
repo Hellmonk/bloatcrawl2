@@ -126,6 +126,8 @@ Blade Hands for very long.
     * All attacks, physical or magical, "damage" the player, since stamina and magic costs come directly from it's
       health.
 * Magic, stamina, and healing potions restore "essence", so basically are the same as healing potions.
+* Ambrosia is the ultimate healing for Djinni, since it rapidly charges health, mp, and sp, which means it basically
+  is a triple healing potion.
 * Since fire damage actually heals Djinni, fire resistance actually works against you (by reducing the healing), 
   and hence, if you are lucky enough to come across a rF- item, it's quite valuable.
 * Since physical and magical attacks take from health, reducing those costs as much as possible is critical.

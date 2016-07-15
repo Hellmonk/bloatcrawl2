@@ -458,7 +458,7 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool rod)
     {
         const spschools_type disciplines = get_spell_disciplines(spell);
         const int school_max = max_school_skill(disciplines, global_spell_skill_adjustment);
-        const int intel = you.intel() * global_spell_skill_adjustment;
+        const int intel = (you.intel() - 10) * global_spell_skill_adjustment;
 
         power = school_max / 20.0;
 
@@ -467,7 +467,7 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool rod)
         else
             power += global_spell_skill_adjustment;
 
-        power += 20;
+        power += 10;
 
         // Brilliance boosts spell power a bit (equivalent to three
         // spell school levels).
@@ -492,7 +492,7 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool rod)
             power -= 10;
         }
 
-        power = fpow(5, 17, 16, power);
+        power = fpow(5, 9, 8, power);
     }
 
     power = player_spellpower_modifier(power);
