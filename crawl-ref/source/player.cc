@@ -1179,6 +1179,9 @@ int player_hp_regen()
 {
     int regen = 7 + get_hp_max() / 3;
 
+    if (you.species == SP_DJINNI)
+        regen = 7 + get_hp_max() / 3 / 3;
+
     // Add in miscellaneous bonuses
     regen += _player_bonus_regen();
 
@@ -1224,6 +1227,9 @@ int player_sp_regen()
 {
     int regen = 7 + get_sp_max() / 3;
 
+    if (you.species == SP_DJINNI)
+        regen = 7 + get_hp_max() / 3 / 3;
+
     if (int level = player_mutation_level(MUT_FAST_STAMINA_REGENERATION))
         regen <<= level;
     if (int level = player_mutation_level(MUT_SLOW_STAMINA_REGENERATION))
@@ -1240,6 +1246,9 @@ int player_sp_regen()
 int player_mp_regen()
 {
     int regen = 7 + get_mp_max(true) / 3;
+
+    if (you.species == SP_DJINNI)
+        regen = 7 + get_hp_max() / 3 / 3;
 
     if (int level = player_mutation_level(MUT_FAST_MAGIC_REGENERATION))
         regen <<= level;
@@ -1261,7 +1270,7 @@ void update_regen_amulet_attunement()
     if (you.wearing(EQ_AMULET, AMU_HEALTH_REGENERATION)
         && player_mutation_level(MUT_SLOW_HEALTH_REGENERATION) < 3)
     {
-        if (you.hp == you.hp_max
+        if (get_hp() == get_hp_max()
             && you.props[REGEN_AMULET_ACTIVE].get_int() == 0)
         {
             you.props[REGEN_AMULET_ACTIVE] = 1;
@@ -1305,7 +1314,7 @@ int player_hunger_rate(bool temp)
     if (temp
         && (you.duration[DUR_REGENERATION]
             || you.duration[DUR_TROGS_HAND])
-        && you.hp < you.hp_max)
+        && get_hp() < get_hp_max())
     {
         hunger += 4;
     }
