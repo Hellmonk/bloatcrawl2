@@ -6,7 +6,7 @@ NOTICE: The [changelog-ca](https://github.com/jeremygurr/dcssca/blob/master/chan
 
 ---
 
-Be sure to check out the [cheatsheet][https://github.com/jeremygurr/dcssca/blob/master/cheatsheat.md] and [strategy guide][https://github.com/jeremygurr/dcssca/blob/master/strategies.md] for vital information about this fork.
+Be sure to check out the [cheatsheet](https://github.com/jeremygurr/dcssca/blob/master/cheatsheet.md) and [strategy guide](https://github.com/jeremygurr/dcssca/blob/master/strategies.md) for vital information about this fork.
 
 There are two known servers where you can play Circus Animals!
 
