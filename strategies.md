@@ -143,6 +143,8 @@ Blade Hands for very long.
     * You are permitted to hex through enemies, unlike in vanilla crawl, so you can cast a few strategically placed
       inner fires, then watch the fireworks.
 * Since cold damage does vast amounts of damage to a djinni, getting cold resistance should be a top priority. 
+    * Any cold damage that gets past a Djinni's resistance is multiplied by 4. 
+    * Avoid ice caves unless you have significant cold resistance. 
 
 ## Troubleshooting
 

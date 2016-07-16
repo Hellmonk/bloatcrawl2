@@ -2,9 +2,11 @@
 
 ---
 
-NOTICE: The [changelog-ca](https://github.com/jeremygurr/dcssca/blob/master/README.md) file contains the latest detailed changes. We'll try to keep this file as a high level summary of the fork. If you want specifics, check out the changelog!_
+NOTICE: The [changelog-ca](https://github.com/jeremygurr/dcssca/blob/master/changelog-ca.md) file contains the latest detailed changes. We'll try to keep this file as a high level summary of the fork. If you want specifics, check out the changelog!_
 
 ---
+
+Be sure to check out the [cheatsheet][https://github.com/jeremygurr/dcssca/blob/master/cheatsheat.md] and [strategy guide][https://github.com/jeremygurr/dcssca/blob/master/strategies.md] for vital information about this fork.
 
 There are two known servers where you can play Circus Animals!
 
@@ -12,8 +14,6 @@ There are two known servers where you can play Circus Animals!
 * https://crawl.project357.org/ (sydney, AUS)
 
 This fork of DCSS is a playground for some ideas I wanted to try. Many changes center around increasing the richness of the species in DCSS. I take a species that I consider boring to play, then alter that species until it feels like a compelling choice. I am not as experienced as many others are, and likely some of these changes may break important things that I don't yet understand because of that . But because I am having so much fun with this fork, and it doesn't take much effort to share it with others, here it is. Maybe some of my crazy ideas can be merged into the main DCSS repo. You are most welcome to submit changes to this fork, or even make another fork if you don't like the direction of this one. This fork was in sync with the original DCSS repo as of Apr 2016. I intend to keep merging in non-conflicting changes from the [main DCSS project](https://github.com/crawl/crawl).
-
-Check out [FUTURE.md](https://github.com/jeremygurr/dcssca/blob/master/FUTURE.md) for details about further features I'm considering.
 
 Feel free to create "issues" here on github for any problems with the crawl.homedns.org server or bugs in the game itself. Ideas you have that you think are in line with my goals are also welcome, or concerns you have about future plans.
 
