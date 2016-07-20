@@ -1325,7 +1325,7 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
 
     count_action(CACT_MELEE, -1, atk); // aux_attack subtype/auxtype
 
-    aux_damage  = random2(aux_damage);
+    aux_damage  = max(aux_damage/4, random2(aux_damage));
 
     aux_damage  = player_apply_fighting_skill(aux_damage, true);
 
@@ -3388,7 +3388,7 @@ void melee_attack::do_minotaur_retaliation()
     {
         // Use the same damage formula as a regular headbutt.
         int dmg = 5 + mut * 3;
-        dmg = random2(dmg);
+        dmg = max(dmg/4, random2(dmg));
         dmg = player_apply_fighting_skill(dmg, true);
         dmg = player_apply_misc_modifiers(dmg);
         dmg = player_apply_slaying_bonuses(dmg, true);

@@ -1372,7 +1372,7 @@ int attack::calc_damage()
         }
 
         potential_damage = div_rand_round(potential_damage * (300 + boost), 300);
-        damage = random2(potential_damage + 1);
+        damage = max(potential_damage / 4, random2(potential_damage + 1));
 
         damage = player_apply_misc_modifiers(damage);
         damage = player_apply_slaying_bonuses(damage, false);

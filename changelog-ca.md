@@ -2,7 +2,8 @@
 
 * Removed temple. 
     * Makes choosing from a spawned altar much more significant.
-    * There are no guarantees that a guardian will ever spawn in a game.
+    * There are no guarantees that a guardian will ever spawn in a game, so holding out too long for one can be a bad
+      decision.
 
 * Added rune curses
     * Fiery rune (for cerebov): occasionally your fire resistance is ignored.
