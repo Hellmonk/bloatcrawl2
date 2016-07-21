@@ -73,9 +73,9 @@ COMPILE_CHECK(ITEM_IN_SHOP > NON_ITEM + MAX_MONSTERS);
 #endif
 
 // max x-bound for level generation {dlb}
-#define GXM 80
+#define GXM 100
 // max y-bound for level generation {dlb}
-#define GYM 70
+#define GYM 100
 
 const int INFINITE_DISTANCE = 30000;
 // max distance on a map
