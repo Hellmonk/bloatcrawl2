@@ -1175,94 +1175,6 @@ static int _slow_regeneration_rate()
     return 2;
 }
 
-int player_hp_regen()
-{
-    int regen = 7 + get_hp_max() / 3;
-
-    if (you.species == SP_DJINNI)
-        regen = 7 + get_hp_max() / 3 / 3;
-
-    // Add in miscellaneous bonuses
-    regen += _player_bonus_regen();
-
-    // Before applying other effects, make sure that there's something
-    // to heal.
-    regen = max(1, regen);
-
-    // Healing depending on satiation.
-    // The better-fed you are, the faster you heal.
-    if (you.species == SP_VAMPIRE)
-    {
-        if (you.hunger_state <= HS_STARVING)
-            regen = 0;   // No regeneration for starving vampires.
-        else if (you.hunger_state == HS_ENGORGED)
-            regen += 20; // More bonus regeneration for engorged vampires.
-        else if (you.hunger_state < HS_SATIATED)
-            regen /= 2;  // Halved regeneration for hungry vampires.
-        else if (you.hunger_state >= HS_FULL)
-            regen += 10; // Bonus regeneration for full vampires.
-    }
-
-    // Slow regeneration mutation.
-    regen = qpow(regen, 2, 3, player_mutation_level(MUT_SLOW_HEALTH_REGENERATION));
-
-    if (you.duration[DUR_COLLAPSE])
-        regen /= 4;
-
-    if (you.disease || player_mutation_level(MUT_NO_HEALTH_REGENERATION))
-        regen = 0;
-
-    // Trog's Hand. This circumvents the slow regeneration mutation.
-    if (you.duration[DUR_TROGS_HAND])
-    {
-        regen += 100;
-        if(you.species == SP_DEEP_DWARF)
-            regen <<= 1;
-    }
-
-    return regen;
-}
-
-int player_sp_regen()
-{
-    int regen = 7 + get_sp_max() / 3;
-
-    if (you.species == SP_DJINNI)
-        regen = 7 + get_hp_max() / 3 / 3;
-
-    if (int level = player_mutation_level(MUT_FAST_STAMINA_REGENERATION))
-        regen <<= level;
-    if (int level = player_mutation_level(MUT_SLOW_STAMINA_REGENERATION))
-        regen = div_rand_round(regen, 1 << level);
-    if (you.wearing(EQ_AMULET, AMU_STAMINA_REGENERATION))
-        regen <<= 2;
-
-    if (player_mutation_level(MUT_NO_STAMINA_REGENERATION))
-        regen = 0;
-
-    return regen;
-}
-
-int player_mp_regen()
-{
-    int regen = 7 + get_mp_max(true) / 3;
-
-    if (you.species == SP_DJINNI)
-        regen = 7 + get_hp_max() / 3 / 3;
-
-    if (int level = player_mutation_level(MUT_FAST_MAGIC_REGENERATION))
-        regen <<= level;
-    if (int level = player_mutation_level(MUT_SLOW_MAGIC_REGENERATION))
-        regen = div_rand_round(regen, 1 << level);
-    if (you.wearing(EQ_AMULET, AMU_MAGIC_REGENERATION))
-        regen <<= 2;
-
-    if (player_mutation_level(MUT_NO_MAGIC_REGENERATION))
-        regen = 0;
-
-    return regen;
-}
-
 // Amulet of regeneration needs to be worn while at full health before it begins
 // to function.
 void update_regen_amulet_attunement()
@@ -9806,7 +9718,8 @@ int generic_action_delay(const int skill, const int base, const action_delay_typ
         benefit = factor;
 
     int delay = global_reduction * base * (factor * 3 - benefit * 2) / (factor * 3) / 10;
-    delay = (player_attack_delay_modifier(delay) + 5) / 10;
+    delay = player_attack_delay_modifier(delay);
+    delay = (delay + 5) / 10;
     return delay;
 }
 
@@ -10425,6 +10338,106 @@ int player_ouch_modifier(int damage, bool skip_details)
     }
 
     return new_damage;
+}
+
+int player_hp_regen()
+{
+    int regen = 7 + get_hp_max() / 3;
+
+    if (you.species == SP_DJINNI)
+        regen = 7 + get_hp_max() / 3 / 3;
+
+    // Add in miscellaneous bonuses
+    regen += _player_bonus_regen();
+
+    // Before applying other effects, make sure that there's something
+    // to heal.
+    regen = max(1, regen);
+
+    // Healing depending on satiation.
+    // The better-fed you are, the faster you heal.
+    if (you.species == SP_VAMPIRE)
+    {
+        if (you.hunger_state <= HS_STARVING)
+            regen = 0;   // No regeneration for starving vampires.
+        else if (you.hunger_state == HS_ENGORGED)
+            regen += 20; // More bonus regeneration for engorged vampires.
+        else if (you.hunger_state < HS_SATIATED)
+            regen /= 2;  // Halved regeneration for hungry vampires.
+        else if (you.hunger_state >= HS_FULL)
+            regen += 10; // Bonus regeneration for full vampires.
+    }
+
+    // Slow regeneration mutation.
+    regen = qpow(regen, 2, 3, player_mutation_level(MUT_SLOW_HEALTH_REGENERATION));
+
+    if (you.duration[DUR_COLLAPSE])
+        regen /= 4;
+
+    // do this twice
+    regen = regen * _difficulty_mode_multiplier() / 100;
+    regen = regen * _difficulty_mode_multiplier() / 100;
+
+    if (you.disease || player_mutation_level(MUT_NO_HEALTH_REGENERATION))
+        regen = 0;
+
+    // Trog's Hand. This circumvents the slow regeneration mutation.
+    if (you.duration[DUR_TROGS_HAND])
+    {
+        regen += 100;
+        if(you.species == SP_DEEP_DWARF)
+            regen <<= 1;
+    }
+
+    return regen;
+}
+
+int player_sp_regen()
+{
+    int regen = 7 + get_sp_max() / 3;
+
+    if (you.species == SP_DJINNI)
+        regen = 7 + get_hp_max() / 3 / 3;
+
+    if (int level = player_mutation_level(MUT_FAST_STAMINA_REGENERATION))
+        regen <<= level;
+    if (int level = player_mutation_level(MUT_SLOW_STAMINA_REGENERATION))
+        regen = div_rand_round(regen, 1 << level);
+    if (you.wearing(EQ_AMULET, AMU_STAMINA_REGENERATION))
+        regen <<= 2;
+
+    // do this twice
+    regen = regen * _difficulty_mode_multiplier() / 100;
+    regen = regen * _difficulty_mode_multiplier() / 100;
+
+    if (player_mutation_level(MUT_NO_STAMINA_REGENERATION))
+        regen = 0;
+
+    return regen;
+}
+
+int player_mp_regen()
+{
+    int regen = 7 + get_mp_max(true) / 3;
+
+    if (you.species == SP_DJINNI)
+        regen = 7 + get_hp_max() / 3 / 3;
+
+    if (int level = player_mutation_level(MUT_FAST_MAGIC_REGENERATION))
+        regen <<= level;
+    if (int level = player_mutation_level(MUT_SLOW_MAGIC_REGENERATION))
+        regen = div_rand_round(regen, 1 << level);
+    if (you.wearing(EQ_AMULET, AMU_MAGIC_REGENERATION))
+        regen <<= 2;
+
+    // do this twice
+    regen = regen * _difficulty_mode_multiplier() / 100;
+    regen = regen * _difficulty_mode_multiplier() / 100;
+
+    if (player_mutation_level(MUT_NO_MAGIC_REGENERATION))
+        regen = 0;
+
+    return regen;
 }
 
 int player_max_stat_loss_allowed(stat_type stat)
