@@ -10079,14 +10079,19 @@ double player_spellpower_modifier(double spellpower)
 
 int player_stealth_modifier(int stealth)
 {
-    stealth *= _difficulty_mode_multiplier();
+    if (stealth > 0)
+    {
+        stealth *= _difficulty_mode_multiplier();
 
-    if (player_is_very_tired(true))
-        stealth = stealth * 2 / 3;
-    else if (you.exertion == EXERT_FOCUS)
-        stealth = stealth * 4 / 3 + 500;
+        if (player_is_very_tired(true))
+            stealth = stealth * 2 / 3;
+        else if (you.exertion == EXERT_FOCUS)
+            stealth = stealth * 4 / 3 + 500;
 
-    return stealth / base_factor;
+        stealth = stealth / base_factor;
+    }
+
+    return stealth;
 }
 
 int player_ev_modifier(int ev)
