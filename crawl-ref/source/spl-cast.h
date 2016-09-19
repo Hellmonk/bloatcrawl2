@@ -119,8 +119,7 @@ int power_to_barcount(int power);
 string spell_power_string(spell_type spell);
 string spell_reserved_mp_string(spell_type spell);
 string spell_range_string(spell_type spell);
-string range_string(int range, int maxrange, ucs_t caster_char);
-
+string range_string(int range, int maxrange, char32_t caster_char);
 string spell_schools_string(spell_type spell);
 string spell_hunger_string(spell_type spell);
 string spell_failure_rate_string(spell_type spell);

@@ -735,7 +735,7 @@ int SDLWrapper::wait_event(wm_event *event)
     {
         event->type = WME_KEYPRESS;
         // XXX: handle multiple keys?
-        ucs_t wc;
+        char32_t wc;
         utf8towc(&wc, sdlevent.text.text);
         if (prev_keycode && _key_suppresses_textinput(prev_keycode) == wc)
         {

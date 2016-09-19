@@ -1138,7 +1138,7 @@ void TilesFramework::_send_cell(const coord_def &gc,
         json_write_int("mf", mf);
 
     // Glyph and colour
-    ucs_t glyph = next_sc.glyph;
+    char32_t glyph = next_sc.glyph;
     if (current_sc.glyph != glyph)
     {
         char buf[5];
@@ -1913,7 +1913,7 @@ void TilesFramework::textbackground(int col)
     m_print_bg = col;
 }
 
-void TilesFramework::put_ucs_string(ucs_t *str)
+void TilesFramework::put_ucs_string(char32_t *str)
 {
     if (m_print_area == nullptr)
         return;
