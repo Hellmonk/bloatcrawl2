@@ -41,6 +41,8 @@
 #define HORROR_LVL_EXTREME  3
 #define HORROR_LVL_OVERWHELMING  5
 
+#define SEVERE_CONTAM_LEVEL 3
+
 /// Maximum stat value
 static const int MAX_STAT_VALUE = 125;
 /// The standard unit of regen; one level in artifact inscriptions
@@ -1078,6 +1080,7 @@ int get_real_hp(bool trans, bool rotted = false);
 int get_real_mp(bool include_items, bool frozen = false);
 
 int get_contamination_level();
+bool player_severe_contamination();
 string describe_contamination(int level);
 
 bool sanguine_armour_valid();
