@@ -2896,14 +2896,6 @@ static void _open_door(coord_def move)
         return;
     }
 
-    // If we get here, the player either hasn't picked a direction yet,
-    // or the chosen direction actually contains a closed door.
-    if (!player_can_open_doors())
-    {
-        mpr("You can't open doors in your present form.");
-        return;
-    }
-
     if (you.confused())
     {
         canned_msg(MSG_TOO_CONFUSED);
@@ -2994,12 +2986,6 @@ static void _open_door(coord_def move)
 
 static void _close_door(coord_def move)
 {
-    if (!player_can_open_doors())
-    {
-        mpr("You can't close doors in your present form.");
-        return;
-    }
-
     if (you.attribute[ATTR_HELD])
     {
         mprf("You can't close doors while %s.", held_status());
