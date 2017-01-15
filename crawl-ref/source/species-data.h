@@ -298,7 +298,7 @@ static const map<species_type, species_def> species_data =
     { STAT_STR }, 5,
     { { MUT_NEGATIVE_ENERGY_RESISTANCE, 3, 1 },
       { MUT_TORMENT_RESISTANCE, 1, 1 },
-      { MUT_SLOW_REGENERATION, 2, 1 }, { MUT_COLD_RESISTANCE, 1, 1 },
+      { MUT_INHIBITED_REGENERATION, 1, 1 }, { MUT_COLD_RESISTANCE, 1, 1 },
       { MUT_CLAWS, 1, 1 }, { MUT_UNBREATHING, 1, 1 }, },
     { "You restore health by killing enemies." },
     { "hp from kills" },
@@ -664,7 +664,7 @@ static const map<species_type, species_def> species_data =
     HT_LAND, US_ALIVE, SIZE_MEDIUM,
     11, 8, 8, // 27
     { STAT_STR, STAT_INT }, 4,
-    { { MUT_SLOW_REGENERATION, 3, 1 }, { MUT_PASSIVE_MAPPING, 1, 1 },
+    { { MUT_NO_REGENERATION, 1, 1 }, { MUT_PASSIVE_MAPPING, 1, 1 },
       { MUT_PASSIVE_MAPPING, 1, 9 }, { MUT_PASSIVE_MAPPING, 1, 18 },
       { MUT_NEGATIVE_ENERGY_RESISTANCE, 1, 14 }, },
     { "You are resistant to damage.",
