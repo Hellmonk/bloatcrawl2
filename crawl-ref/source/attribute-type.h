@@ -96,5 +96,6 @@ enum attribute_type
     ATTR_WALL_JUMP_READY,      // Ready to perform a wall jump.
     ATTR_PLAYING_HARP,         // Playing the harp of healing
     ATTR_TIME_STOP,            // How many turns of Time Stop are left.
+    ATTR_REAPING,              // Skeleton reaping.
     NUM_ATTRIBUTES
 };

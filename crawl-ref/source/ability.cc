@@ -329,6 +329,7 @@ static const ability_def Ability_List[] =
     { ABIL_HOP, "Hop", 0, 0, 0, 0, {}, abflag::none },
     { ABIL_END_PERMABUFFS, "Release Permanent Buffs",
       0, 0, 0, 0, {}, abflag::none },
+    { ABIL_REAP, "Reap", 0, 0, 0, 0, {}, abflag::none },
 
     // EVOKE abilities use Evocations and come from items.
     // Teleportation and Blink can also come from mutations
@@ -1861,6 +1862,12 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             return frog_hop(fail);
         else
             return SPRET_ABORT;
+        break;
+
+    case ABIL_REAP:
+        fail_check();
+        return cast_reap(fail);
+        break;
 
     case ABIL_SPIT_POISON:      // Naga poison spit
     {
@@ -3351,6 +3358,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
         _add_talent(talents, ABIL_RECHARGING, check_confused);
         _add_talent(talents, ABIL_HEAL_WOUNDS, check_confused);
     }
+
+    if (you.species == SP_SKELETON)
+        _add_talent(talents, ABIL_REAP, check_confused);
 
     if (you.species == SP_FORMICID
         && (form_keeps_mutations() || include_unusable))

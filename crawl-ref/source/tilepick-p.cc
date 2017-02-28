@@ -642,6 +642,8 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
         return TILEP_BASE_GNOLL;
     case SP_FAERIE_DRAGON:
         return TILEP_BASE_FAERIE_DRAGON;
+    case SP_SKELETON:
+        return TILEP_BASE_SKELETON;
     default:
         return TILEP_BASE_HUMAN;
     }
@@ -680,9 +682,7 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
     switch (sp)
     {
         case SP_HIGH_ELF:
-#if TAG_MAJOR_VERSION == 34
         case SP_SLUDGE_ELF:
-#endif
             hair = TILEP_HAIR_ELF_YELLOW;
             break;
         case SP_DEEP_ELF:
@@ -776,6 +776,9 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
             break;
         case SP_DJINNI:
             hair = TILEP_HAIR_DJINN2;
+            break;
+        case SP_SKELETON:
+            hair = 0;
             break;
         default:
             // nothing to do

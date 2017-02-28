@@ -51,24 +51,6 @@ static bool _banned_combination(job_type job, species_type species)
             return true;
         }
         break;
-    case SP_MUMMY:
-        if (job == JOB_HEALER)
-        {
-            return true;
-        }
-        break;
-    case SP_GHOUL:
-        if (job == JOB_HEALER)
-        {
-            return true;
-        }
-        break;
-    case SP_VAMPIRE:
-        if (job == JOB_HEALER)
-        {
-            return true;
-        }
-        break;
     case SP_DEMONSPAWN:
         if (job == JOB_PRIEST
             || job == JOB_HEALER)
@@ -81,7 +63,9 @@ static bool _banned_combination(job_type job, species_type species)
     }
 
     if ((job == JOB_TRANSMUTER
-        || job == JOB_SLIME_APOSTLE)
+        || job == JOB_SLIME_APOSTLE
+        || job == JOB_PRIEST
+        || job == JOB_HEALER) // Ban undead from both Jiyva/transmutations and good gods
         && (species_undead_type(species) == US_UNDEAD
            || species_undead_type(species) == US_HUNGRY_DEAD))
     {
@@ -159,6 +143,11 @@ char_choice_restriction weapon_restriction(weapon_type wpn,
     {
         return CC_BANNED;
     }
+
+    // Skeletons are much better at Xbows and Bows than they are at throwing,
+    // so they shouldn't be recommended javelins.
+    if (wpn == WPN_THROWN && ng.species == SP_SKELETON)
+       return CC_RESTRICTED;
 
     // Javelins are always good, tomahawks not so much.
     if (wpn == WPN_THROWN)

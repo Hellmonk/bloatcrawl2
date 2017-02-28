@@ -56,7 +56,9 @@ enum ability_type
     ABIL_END_PERMABUFFS,
     // Also Deep Dwarves (again, trying to avoid save breaks)
     ABIL_RECHARGING,
-    ABIL_MAX_INTRINSIC = ABIL_RECHARGING,
+    // Skeletons
+    ABIL_REAP,
+    ABIL_MAX_INTRINSIC = ABIL_REAP,
 
     // Evoking items.
     ABIL_EVOKE_BERSERK = 40,

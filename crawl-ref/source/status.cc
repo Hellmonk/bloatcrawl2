@@ -462,6 +462,16 @@ bool fill_status_info(int status, status_info& inf)
                              "accuracy.";
         }
         break;
+
+    case STATUS_REAP:
+        if (you.attribute[ATTR_REAPING] > 0)
+        {
+            inf.light_colour = WHITE;
+            inf.light_text = "Reap";
+            inf.short_text = "reap";
+            inf.long_text = "You relentlessly reap the living.";
+        }
+        break;
 #if TAG_MAJOR_VERSION == 34
     case DUR_SONG_OF_SLAYING:
         inf.light_text

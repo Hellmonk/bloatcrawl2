@@ -43,3 +43,5 @@ spret_type cast_passwall(const coord_def& delta, int pow, bool fail);
 spret_type cast_intoxicate(int pow, bool fail);
 spret_type cast_darkness(int pow, bool fail);
 spret_type cast_phase_shift(int pow, bool fail);
+spret_type cast_reap(bool fail);
+bool renew_reap();
