@@ -5099,6 +5099,7 @@ player::player()
     runes.reset();
     obtainable_runes = 15;
 
+    spell_library.reset();
     spells.init(SPELL_NO_SPELL);
     old_vehumet_gifts.clear();
     spell_no        = 0;
