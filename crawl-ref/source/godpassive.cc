@@ -227,7 +227,6 @@ static const vector<god_passive> god_passives[] =
         { -1, passive_t::detect_portals, "sense portals" },
         { -1, passive_t::identify_items, "sense the properties of items" },
         {  0, passive_t::auto_map, "have improved mapping abilities" },
-        {  0, passive_t::detect_montier, "sense threats" },
         {  0, passive_t::detect_items, "sense items" },
         {  0, passive_t::bondage_skill_boost,
               "get a skill boost from cursed items" },
@@ -240,6 +239,7 @@ static const vector<god_passive> god_passives[] =
         {  1, passive_t::nightvision, "can see well in the dark" },
         {  1, passive_t::umbra, "are surrounded by an umbra" },
         // TODO: this one should work regardless of penance.
+        {  2, passive_t::detect_montier, "sense threats" },
         {  3, passive_t::hit_smoke, "emit smoke when hit" },
         {  4, passive_t::shadow_attacks,
               "Your attacks are mimicked by a shadow.",
