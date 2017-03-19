@@ -230,7 +230,6 @@ static const vector<god_passive> god_passives[] =
         {  0, passive_t::detect_items, "sense items" },
         {  0, passive_t::bondage_skill_boost,
               "get a skill boost from cursed items" },
-        {  2, passive_t::sinv, "are clear of vision" },
         {  4, passive_t::clarity, "are clear of mind" },
     },
 
@@ -249,6 +248,7 @@ static const vector<god_passive> god_passives[] =
               "Your attack spells are mimicked by a shadow.",
               "Your attack spells are no longer mimicked by a shadow."
         },
+        {  5, passive_t::sinv, "can sense those who lurk" },
     },
 
     // Gozag
