@@ -1519,8 +1519,6 @@ void StashTracker::get_matching_stashes(
         if (curr_lev && curr != entry.first)
             continue;
         entry.second.get_matching_stashes(search, results);
-        if (results.size() > SEARCH_SPAM_THRESHOLD)
-            return;
     }
 
     for (stash_search_result &result : results)
