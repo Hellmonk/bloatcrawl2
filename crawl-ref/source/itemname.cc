@@ -1658,11 +1658,11 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
     {
         special_missile_type msl_brand = get_ammo_brand(*this);
 
-        if (!terse && !dbname)
+        if (!terse && !dbname && !basename)
         {
             if (props.exists(DAMNATION_BOLT_KEY)) // hack alert
                 buff << "damnation ";
-            else if (_missile_brand_is_prefix(msl_brand))
+            else if (_missile_brand_is_prefix(msl_brand)) // see below for postfix brands
                 buff << missile_brand_name(*this, MBN_NAME) << ' ';
         }
 
@@ -1672,7 +1672,7 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
 #if TAG_MAJOR_VERSION == 34
             && msl_brand != SPMSL_BLINDING
 #endif
-            && !basename && !qualname && !dbname)
+            && !basename && !dbname)
         {
             if (terse)
             {
@@ -1681,7 +1681,7 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
                 else
                     buff << " (" <<  missile_brand_name(*this, MBN_TERSE) << ")";
             }
-            else if (_missile_brand_is_postfix(msl_brand))
+            else if (_missile_brand_is_postfix(msl_brand)) // see above for prefix brands
                 buff << " of " << missile_brand_name(*this, MBN_NAME);
         }
 
