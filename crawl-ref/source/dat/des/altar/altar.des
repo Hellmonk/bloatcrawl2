@@ -395,18 +395,21 @@ MAP
 .......
 ENDMAP
 
-## this altar will provide a chance at jiyva in 10% of all games total
-## this altar will provide a chance at lugo in 8% of all games total
-## that's 18% total for kids at home, factoring in that the vault only
-## shows up in 20% of all games
-NAME:   ecumenical_altar_of_chaos
+NAME:   ecumenical_temple_of_chaos
 DEPTH:  D:2-3
 TAGS:  uniq_ecumenical_altar chance_ecumenical_altar 
+CHANCE: 60%
+WEIGHT: 30
 KFEAT:  _ = w:3 altar_ecumenical / w:4 altar_xom
 KFEAT:  1 = w:5 altar_jiyva / w:4 altar_lugonu / w:1 altar_xom
-CHANCE: 40 : 50%
+KFEAT:  C = C mimic:10
+NSUBST:	_ = 1:1
+SUBST:	- = .:60 K V d l
+ITEM:	  = % / w:30 dagger ego:chaos / hunting sling ego:chaos / war axe ego:chaos
 MAP
-.1.
-_G_
-._.
+   _
+_-_-
+ _C_
+ -_-_
+ _
 ENDMAP
