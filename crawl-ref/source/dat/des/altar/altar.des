@@ -371,7 +371,7 @@ NAME:   ecumenical_altar_1
 DEPTH:  D:2-3
 TAGS:  uniq_ecumenical_altar chance_ecumenical_altar
 KFEAT:  _ = altar_ecumenical
-CHANCE: 50 : 10%
+CHANCE: 30 : 50%
 MAP
 .....
 ..x..
@@ -384,7 +384,7 @@ NAME: ecumenical_altar_2
 DEPTH: D:2-3
 TAGS:  uniq_ecumenical_altar chance_ecumenical_altar
 KFEAT:  _ = altar_ecumenical
-CHANCE: 50 : 10%
+CHANCE: 30 : 50%
 MAP
 .......
 ...G...
@@ -393,4 +393,20 @@ MAP
 ..G.G..
 ...G...
 .......
+ENDMAP
+
+## this altar will provide a chance at jiyva in 10% of all games total
+## this altar will provide a chance at lugo in 8% of all games total
+## that's 18% total for kids at home, factoring in that the vault only
+## shows up in 20% of all games
+NAME:   ecumenical_altar_of_chaos
+DEPTH:  D:2-3
+TAGS:  uniq_ecumenical_altar chance_ecumenical_altar 
+KFEAT:  _ = w:3 altar_ecumenical / w:4 altar_xom
+KFEAT:  1 = w:5 altar_jiyva / w:4 altar_lugonu / w:1 altar_xom
+CHANCE: 40 : 50%
+MAP
+.1.
+_G_
+._.
 ENDMAP
