@@ -708,6 +708,13 @@ static int _acquirement_wand_subtype(bool /*divine*/, int & /*quantity*/)
     return *wand;
 }
 
+static int _acquirement_book_subtype(bool /*divine*/, int & /*quantity*/)
+{
+    return BOOK_MINOR_MAGIC;
+    //this gets overwritten later, but needs to be a sane value
+    //or asserts will get set off
+}
+
 typedef int (*acquirement_subtype_finder)(bool divine, int &quantity);
 static const acquirement_subtype_finder _subtype_finders[] =
 {
@@ -719,7 +726,7 @@ static const acquirement_subtype_finder _subtype_finders[] =
     0, // no scrolls
     _acquirement_jewellery_subtype,
     _acquirement_food_subtype, // potion acquirement = food for vampires
-    0, // books handled elsewhere
+    _acquirement_book_subtype,
     _acquirement_staff_subtype,
     0, // no, you can't acquire the orb
     _acquirement_misc_subtype,
@@ -858,6 +865,9 @@ static bool _skill_useless_with_god(int skill)
  */
 static bool _should_acquire_manual(int agent)
 {
+    if (you_worship(GOD_TROG)) // always give a manual for Trog worshippers
+        return true;
+
     // Manuals are too useful for Xom, and useless when gifted from Sif Muna.
     if (agent == GOD_XOM || agent == GOD_SIF_MUNA)
         return false;
@@ -874,9 +884,6 @@ static bool _should_acquire_manual(int agent)
         else
             other_weights += weight;
     }
-
-    if (you_worship(GOD_TROG))
-        magic_weights = 0;
 
     // If someone has 25% or more magic skills, never give manuals.
     // Otherwise, count magic skills double to bias against manuals
@@ -984,6 +991,23 @@ static bool _do_book_acquirement(item_def &book, int agent)
         break;
     }
     } // switch book choice
+	
+    // If we couldn't make a useful book, try to make a manual instead.
+    // We have to temporarily identify the book for this.
+    if (agent != GOD_XOM)
+    {
+        int oldflags = book.flags;
+        book.flags |= ISFLAG_KNOW_TYPE;
+        bool useless = is_useless_item(book);
+        book.flags = oldflags;
+        if (useless && agent != GOD_SIF_MUNA)
+        {
+            destroy_item(book);
+            book.base_type = OBJ_BOOKS;
+            book.quantity = 1;
+            return _acquire_manual(book);
+        }
+    }
     return true;
 }
 

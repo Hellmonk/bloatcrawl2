@@ -5163,7 +5163,7 @@ player::player()
     runes.reset();
     obtainable_runes = 15;
 
-	books_in_inventory.clear();
+    spell_library.reset();
 	
     spells.init(SPELL_NO_SPELL);
     old_vehumet_gifts.clear();

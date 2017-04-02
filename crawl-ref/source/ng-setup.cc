@@ -345,19 +345,9 @@ static void _give_basic_knowledge()
 {
     identify_inventory();
 
-    int count = 0;
     for (const item_def& i : you.inv)
-    {
-         if (i.base_type == OBJ_BOOKS)
-             mark_had_book(i);
-        // An awful hack - after placing book in inventory, remove and goldify it
-        if(i.base_type == OBJ_BOOKS)
-        {
-            you.books_in_inventory.push_back(i);
-            dec_inv_item_quantity(count, 1);
-        }
-        count++;
-    }
+        if (i.base_type == OBJ_BOOKS)
+            mark_had_book(i);
 
     // Removed item types are handled in _set_removed_types_as_identified.
 }
@@ -474,6 +464,8 @@ static void _setup_generic(const newgame_def& ng)
 
     // This function depends on stats and mutations being finalised.
     _give_items_skills(ng);
+	
+    add_held_books_to_library();
 
     if (you.species == SP_DEMONSPAWN)
         roll_demonspawn_mutations();

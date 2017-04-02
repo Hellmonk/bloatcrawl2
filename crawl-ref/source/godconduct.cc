@@ -1095,9 +1095,6 @@ string get_god_likes(god_type which_god)
         likes.emplace_back("you promote the decay of nearby corpses by "
                            "<w>p</w>raying");
         break;
-    case GOD_TROG:
-        likes.emplace_back("you destroy spellbooks via the <w>a</w> command");
-        break;
     case GOD_JIYVA:
         likes.emplace_back("you sacrifice items by allowing slimes to consume "
                            "them");
