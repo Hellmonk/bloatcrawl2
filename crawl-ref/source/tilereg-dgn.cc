@@ -438,7 +438,7 @@ static bool _is_appropriate_evokable(const item_def& item,
     if (!item_type_known(item))
         return true;
 
-	spell_type spell = spell_in_wand(static_cast<wand_type>(item.sub_type));
+    spell_type spell = spell_in_wand(static_cast<wand_type>(item.sub_type));
 
     return _is_appropriate_spell(spell, target);
 }
