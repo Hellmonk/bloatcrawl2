@@ -1018,6 +1018,7 @@ void game_options::reset_options()
     autopickups.set(OBJ_JEWELLERY);
     autopickups.set(OBJ_WANDS);
     autopickups.set(OBJ_FOOD);
+    autopickups.set(OBJ_MISSILES);
 
     confirm_butcher        = CONFIRM_AUTO;
     easy_confirm           = CONFIRM_SAFE_EASY;
