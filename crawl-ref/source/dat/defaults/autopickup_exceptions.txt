@@ -69,12 +69,3 @@ ae += forbidden
 : add_autopickup_func(function (it, name)
 :   return it.stacks() or nil
 : end)
-
-# Excluding amulets as you only need one of each. (If you know the subtype
-# that means you already have one of it.). Some items may already be excluded
-# as bad_item.
-ae += amulet of (nothing|regeneration)
-ae += amulet of (rage|guardian spirit|faith|magic regeneration)
-
-# Likewise for some rings.
-ae += ring of (see invisible|flight|poison resistance|resist corrosion)
