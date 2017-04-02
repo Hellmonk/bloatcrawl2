@@ -3156,7 +3156,14 @@ void melee_attack::emit_foul_stench()
 
 void melee_attack::do_minotaur_retaliation()
 {
-    if (!defender->is_player())
+	// no retaliating while in bad terrain
+    if(grd(defender->pos()) == DNGN_DEEP_WATER || grd(defender->pos()) == DNGN_LAVA)
+    {
+		if(!defender->airborne())
+            return;
+	}
+	
+	if (!defender->is_player())
     {
         // monsters have no STR or DEX
         if (x_chance_in_y(2, 5))
