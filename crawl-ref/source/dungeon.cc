@@ -1142,23 +1142,8 @@ static bool _has_connected_downstairs_from(const coord_def &c)
     return where.x || !ff.did_leave_vault();
 }
 
-static bool _is_level_stair_connected(dungeon_feature_type feat)
-{
-    coord_def up = _find_level_feature(feat);
-    if (up.x && up.y)
-        return _has_connected_downstairs_from(up);
-
-    return false;
-}
-
 static bool _valid_dungeon_level()
 {
-    // D:1 only.
-    // Also, what's the point of this check?  Regular connectivity should
-    // do that already.
-    if (player_in_branch(BRANCH_DUNGEON) && you.depth == 1)
-        return _is_level_stair_connected(branches[BRANCH_DUNGEON].exit_stairs);
-
     return true;
 }
 
@@ -1419,7 +1404,7 @@ static void _fixup_branch_stairs()
     const bool bottom = at_branch_bottom();
 
     const dungeon_feature_type exit =
-        root ? DNGN_EXIT_DUNGEON
+        root ? DNGN_STONE_ARCH
              : branch.exit_stairs;
     const dungeon_feature_type escape =
         branch.escape_feature == NUM_FEATURES ? DNGN_ESCAPE_HATCH_UP :
