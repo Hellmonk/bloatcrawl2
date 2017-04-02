@@ -2582,19 +2582,10 @@ void check_item_knowledge(bool unknown_items)
         for (int i = 0; i < NUM_MISSILES; i++)
         {
 #if TAG_MAJOR_VERSION == 34
-            if (i == MI_DART)
+            if (i == MI_DART || i == MI_NEEDLE)
                 continue;
 #endif
             _add_fake_item(OBJ_MISSILES, i, selected_items, items_missile);
-        }
-        // Foods
-        for (int i = 0; i < NUM_FOODS; i++)
-        {
-#if TAG_MAJOR_VERSION == 34
-            if (!is_real_food(static_cast<food_type>(i)))
-                continue;
-#endif
-            _add_fake_item(OBJ_FOOD, i, selected_items, items_food);
         }
 
         // Misc.
