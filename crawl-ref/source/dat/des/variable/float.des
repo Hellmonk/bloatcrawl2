@@ -1072,94 +1072,6 @@ ENDMAP
 ###############################################################################
 
 ##############################################################################
-# Earth elementals (formerly Stone Golems)
-#
-NAME:   minmay_stone_box
-DEPTH:  D:10-
-ORIENT: float
-WEIGHT: 5
-KMONS:  " = earth elemental
-KITEM:  " = any scroll / any potion
-MAP
-cccccccccc
-c{......>c
-c........c
-c........c
-c...""...c
-c...""...c
-c........c
-c........c
-c<......}c
-cccccccccc
-ENDMAP
-
-##############################################################################
-# Skeleton sneak attack
-#
-NAME:   minmay_skeletal_surprise
-TAGS:   no_monster_gen no_item_gen
-DEPTH:  Depths, !Depths:$
-ORIENT: float
-MONS:   skeletal warrior
-KMONS:  $ = skeletal warrior / skeleton / bone dragon w:1 / nothing w:40
-KITEM:  $ = $
-MAP
-ccccccccccccc
-c$$$ccccc$$$c
-c$$$ccccc$$$c
-c$$$ccccc$$$c
-cccc1ccc1cccc
-ccccc...ccccc
-ccccc.}.ccccc
-ccccc...ccccc
-cccc1ccc1cccc
-c$$$ccccc$$$c
-c$$$ccccc$$$c
-c$$$ccccc$$$c
-ccccccccccccc
-ENDMAP
-
-##############################################################################
-# Cavepeople
-#
-NAME:   erik_cavepeople
-TAGS:   no_monster_gen
-DEPTH:  D:7-11
-ORIENT: float
-WEIGHT: 5
-MONS:   jackal / hound, yak, human
-# XXX: Use some function to cover for used uniques,
-# like in kennysheep_goblin_castle.
-MONS:   Edmund / Jessica / Sigmund / Psyche
-SUBST:  1 = 11., 3 = 3., 4 = 34, 5 = 35
-# Guarantee two winding tunnel into the center in this mess.
-SHUFFLE: rR / sS / uU / vV / wW / yY / zZ, uU / nN
-SUBST:   rsn = . RSN = @, uUvVwWyYzZ = x
-MAP
-         xSxxxxx    xxxxxxxxxxUx
-         xxssxxx    xx1xxxxxxuxx
-xxxxxxxxxxxxxssx    x111xxxxxuxx
-xxxzzzxxxxxxxxxsxxxxxx1xxxxxxuxx
-Zzzxzxzxx222xxsxxxxxxx1xxxxxuxxx
-xxxxxxxzxx2xxx.xxx..x1xxxxxuxxxx
-   xxxxzxx2xxxx......xxxxxuuxxxx
-   xxxzxxxx2xx...3...ccccxxux
-   xxxzxxxx....3335..+$$cxuxx
-   xxxxz.......3ll33.ccccxxux
-   xxxxxx......4333.xxxxxxuxxxxxxxxx
-   xxxxxxyxxxx3.......xxuuxxvvvvxxxx
-   xxxxxyxxxx.......xx..vxvvxxxxvxxx
-xxxxxxyyxxxxxrxxxxx.xxwxxvxxxxxxxvvx
-xxxyxyxxxxxxrxxrxxxx%xxwxxxxxxxxxvxx
-xyyyyxxxxxxxxrrxrrxxxxxxwxxxxxxxvxxx
-xyxxxx     xxxxrxrrxxxxxxwwxxxxxxvvxxxxx
-Yxxxxx     xxxxxxxrxxxxxxxxwxxxxxxxvvxvV
-xxxxxx   xxxxxxxrrx       xxwxxxxxxxxvxx
-         xxxrrrrxxx       xxwxxxxxxxxxxx
-         xxRxxxxxxx       xxWxx
-ENDMAP
-
-##############################################################################
 # Old Forge (1KB)
 #
 NAME:    old_forge
@@ -1205,7 +1117,7 @@ ENDMAP
 # The slime creature may seem too tough for the level where this appears, but
 # since it is a normal speed monster with no range attacks, it can be escaped.
 NAME:   lemuel_slime
-DEPTH:  D:6-, Lair
+DEPTH:  D:8-
 ORIENT: float
 MONS:   w:20 ooze / jelly / fungus
 MONS:   slime creature / oklob plant
@@ -1224,7 +1136,7 @@ ENDMAP
 #
 NAME:    lemuel_minitomb
 ORIENT:  float
-DEPTH:   Depths, !Depths:$, Crypt
+DEPTH:   Depths, !Depths:$
 MONS:    zombie / nothing
 MONS:    mummy, patrolling guardian mummy, patrolling greater mummy
 MONS:    zombie
@@ -1897,7 +1809,7 @@ ENDMAP
 #
 NAME:    nrook_guardian_serpent_snake_passage
 ORIENT:  float
-DEPTH:   D:9-, Snake
+DEPTH:   D:10-, Snake
 TAGS:    no_monster_gen no_rotate
 MONS:    patrolling guardian serpent
 SHUFFLE: yY/zZ
@@ -1965,31 +1877,6 @@ m.....................m
 m....................1m
 mf..1..e..f..e..f..e..m
 mmmmmmmmmmmmmmmmmmmmmmm
-ENDMAP
-
-# Wait for the freezing cloud to disappear, then run to the next gap,
-# then wait. It creates an agreeable sense of tension. -LP
-#
-NAME:    lemuel_ice_spiral_2
-ORIENT:  float
-DEPTH:   D:5-
-TAGS:    no_item_gen no_monster_gen uniq_spiral layout_rooms layout_city
-MONS:    nothing
-ITEM:    nothing, nothing
-SUBST:   M=. , m=n, B=.
-SUBST:   * : *$
-MARKER:  1 = lua:fog_machine { cloud_type = "freezing vapour", \
-              pow_min = 5, pow_max = 5, delay = 120, start_clouds = 1, \
-              size = 2, walk_dist = 0, spread_rate= 0 }
-MARKER:  e = lua:fog_machine { cloud_type = "freezing vapour", \
-              pow_min = 9, pow_max = 9, delay = 200, start_clouds = 1, \
-              size = 2, walk_dist = 0, spread_rate= 0 }
-MAP
-mG+Gmmmmmmmmmmmmmmmmm
-mBBB111B111BeeeeeeeBm
-mmmmmmmmmmmmmmmmmmmBm
-m*****eeeeeee111B111m
-mmmmmmmmmmmmmmmmmmmmm
 ENDMAP
 
 ##############################################################################
@@ -2886,62 +2773,6 @@ MAP
                  .@.
 ENDMAP
 
-NAME: cheibrodos_poisonous_passages
-DEPTH: Depths, !Depths:$
-TAGS: no_item_gen no_monster_gen
-ORIENT: float
-: local brnd = crawl.random2(15)
-: if brnd >= 10 then
-MONS: mana viper / naga warrior / naga mage
-MONS: greater naga / naga ritualist / w:8 green death
-: elseif brnd >= 5 then
-MONS: jumping spider / wolf spider / tarantella
-MONS: emperor scorpion / w:8 green death / w:3 ghost moth
-: else
-MONS: skeletal warrior ; long sword ego:venom | broad axe ego:venom \
-      | halberd ego:venom
-MONS: reaper ; scythe ego:venom / w:8 green death \
-      / ancient champion ; great mace ego:venom | battleaxe ego:venom \
-      | glaive ego:venom
-: end
-KMONS: A = lich
-KFEAT: A = stone_arch
-KPROP: '? = no_tele_into
-NSUBST: - = 4:| / 4:* / 4:% / *:.
-MARKER:  ? = lua:fog_machine { cloud_type = "poison gas", pow_min = 2, \
-        pow_max = 7, delay = 30, start_clouds = 1, size_min = 1, \
-        size_max = 7, spread_rate = 1 }
-MAP
-                  ccccccc
-                cccc'?'cccc
-              ccc'''''''''ccc
-             cc?'''nnnnn'''?cc
-            cc'''nnn---nnn'''cc
-           cc'''nn...1...nn'''cc
-           c'''nn-..2A2..-nn'''c
-           c''nn-..1.2.1..-nn''c
-           c'''nn-.......-nn'''c
-           cc?''nn.......nnn'?cc
-            cc'''nn.....nn'''cc
-             cc'''nn...nn'''cc
-              cc'''n...n'''cc
-     ccccc     cc''n...n''cc     ccccc
-   ccc'''ccc  cc?''n...n''?cc  ccc'''ccc
-  cc?'''''?cccc'''ccc+ccc'''cccc?'''''?cc
- cc'''nnn''''''''cc.....cc''''''''nnn'''cc
- c''nnn-nnn''''ccc.......ccc''''nnn-nnn''c
-cc'nn-...-nnnnnc...cncnc...cnnnnn-...-nn'cc
-c''n..2.1......c...n'''n...c......1.2..n''c
-c?'n..A1.......+...c'?'c...+.......1A..n'?c
-c''n..2.1......c...n'''n...c......1.2..n''c
-cc'nn-...-nnnnnc...cncnc...cnnnnn-...-nn'cc
- c''nnn-nnn''''ccc.......ccc''''nnn-nnn''c
- cc'''nnn'''''cc cc.....cc cc'''''nnn'''cc
-  cc?'''''?cccc   ccc+ccc   cccc?'''''?cc
-   ccc'''ccc                   ccc'''ccc
-     ccccc                       ccccc
-ENDMAP
-
 NAME: cheibrodos_magma_flow
 DEPTH: D:11-, !D:$, Lair:3-, !Lair:$
 ORIENT: float
@@ -3462,33 +3293,6 @@ MAP
   ......xxx......
        ..x..
         ...
-ENDMAP
-
-NAME: cheibrodos_iron_armory
-DEPTH: D:5-10
-TAGS: no_item_gen no_monster_gen
-ORIENT: float
-MONS: rust devil, orc warrior
-ITEM: scimitar / w:1 scimitar good_item, halberd / w:1 halberd good_item
-ITEM: war axe / w:1 war axe good_item, morningstar / w:1 morningstar good_item
-ITEM: plate armour / w:1 plate armour good_item
-ITEM: chain mail / w:1 chain mail good_item
-NSUBST: " = 1:h / 1:i
-NSUBST: - = 1:d / 1:e / 1:f / 1:g
-MAP
-    .....
-  ...vvv...
- ..nvvAvvn..
- .vvt1.1tvv.
-..v-.....-v..
-.vvv.....vvv.
-.v"+.2G2.+"v.
-.vvv.....vvv.
-..v-.....-v..
- .vvt...tvv.
- ..nvv)vvn..
-  ...vvv...
-    .....
 ENDMAP
 
 NAME: cheibrodos_quashed
@@ -5448,35 +5252,6 @@ MAP
       .....................
 ENDMAP
 
-NAME:   minmay_diamond_stairs
-DEPTH:  D:8-, !D:$, Depths:2-, !Depths:$
-ORIENT: float
-SUBST:  x : x:7 c:3, c : c:8 v:1 b:1
-SUBST:  F : .:40 GTUb
-SUBST:  9 = 9.
-: if you.absdepth() < 12 then
-SUBST:  8 = 9
-: end
-MAP
-            .......
-          ....9x9....
-        .....ccccc.....
-      .....xxc<.>cxx.....
-    .....xxx.c.8.c.xxx.....
-  .....xxx...c...c...xxx.....
-.....xxx...F.c...c.F...xxx.....
-..9xxx.......c...c.......xxx9..
-.xxx{........+...+........}xxx.
-..9xxx.......c...c.......xxx9..
-.....xxx...F.c...c.F...xxx.....
-  .....xxx...c...c...xxx.....
-    .....xxx.c.8.c.xxx.....
-      .....xxc<.>cxx.....
-        .....ccccc.....
-          ....9x9....
-            .......
-ENDMAP
-
 NAME:   minmay_octo_star
 DEPTH:  D:12-, Depths
 ORIENT: float
@@ -6546,37 +6321,6 @@ xxpp.pppxx
 xx@@@@@@xx
 ENDMAP
 
-NAME:   kennysheep_funnel
-ORIENT: float
-TAGS:   no_trap_gen no_monster_gen
-DEPTH:  D:12-, !D:$, Depths:2-, !Depths:$
-MAP
-    ccc
-   cc.cc
-   c.}.c
-   c...c
-   cG.Gc
-   cc8cc
-   cG.Gc
-   cc.cc
-   cG.Gc
-   cc.cc
-   cG.Gc
-   cc.cc
-   cG.Gc
-   cc.cc
-   cG.Gc
-   cc.cc
-   cG.Gc
-  cc...cc
- ccG...Gcc
-cc.......cc
-cG...{...Gc
-cc.......cc
- ccG...Gcc
-  ccccccc
-ENDMAP
-
 NAME:   kennysheep_six_static_rooms
 TAGS:   transparent
 ORIENT: float
@@ -7399,7 +7143,7 @@ cc88cxxxxx
 ENDMAP
 
 NAME:    minmay_shrinking_squares
-DEPTH:   D:9-, Depths
+DEPTH:   Depths
 ORIENT:  float
 NSUBST:  9 = 1:9 / 1:. / * = 9.
 NSUBST:  8 = 1:8 / 1:. / * = 8.
@@ -7418,7 +7162,7 @@ xxxxxxxxxx
 ENDMAP
 
 NAME:   minmay_chopped_fan
-DEPTH:  D:9-, Depths
+DEPTH:  Depths
 ORIENT: float
 SUBST:  x : cvb
 MAP

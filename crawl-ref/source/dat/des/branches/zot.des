@@ -984,41 +984,6 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
-###################################################
-# Based on zotdef III. Idea from kilobyte.
-NAME:   evilmike_crystal_ball_defense
-TAGS:   no_rotate no_monster_gen
-DEPTH:  Zot, !Zot:$
-ORIENT: float
-WEIGHT: 5
-MONS:   oklob plant w:4 / lightning spire w:3
-MONS:   obsidian statue / curse skull
-# Not quite the orb, but but close enough
-ITEM:   crystal ball of energy
-NSUBST: 1 = 1:1 / 6 = 11. / *:., 3 = 1:1 / 4 = 11....... / *:.
-SUBST:  } = }:80 >, ) = ):80 >, ] = ]:80 >
-MAP
-        xxxxxxxxx
-        xxx.2.xxx
-        xxx...xxx
-        xx..1..xx
-xxxxxxxxx1.....1xxxxxxxxx
-xxxxxxx.....).....xxxxxxx
-xxx.....1..}d]..1.....xxx
-xx...xx.....>.....xx...xx
-@x..xxxxx1.....1xxxxx..x@
-.x.3xxxxxx..1..xxxxxx3.x.
-.x..xxxxxxx...xxxxxxx..x.
-.x..xxxxxxx...xxxxxxx..x.
-.x..xxxxxxxx.xxxxxxxx..x.
-.x..xxxxxxxx2xxxxxxxx..x.
-.x..xxxxxxxx.xxxxxxxx..x.
-.xx3.................3xx.
-...x.................x...
-...x......3.3.3......x...
-xxxxxxxxxxxxxxxxxxxxxxxxx
-ENDMAP
-
 ################################################################################
 # A highlight reel of Xom's many altar vault gimmicks.
 NAME:    hangedman_xom_zot_hilarity
@@ -1353,29 +1318,6 @@ x0.........0x
 x0.........0x
 xx..0...0..xx
 xxx...0...xxx
- xxxxxxxxxxx
-ENDMAP
-
-# Based on orb_monky_inset
-NAME:    zot_minivault_2
-TAGS:    transparent
-WEIGHT:  5
-DEPTH:   Zot, !Zot:$
-SUBST:   > = }]}
-MAP
- xxxxxxxxxxx
-xxx0.....0xxx
-xx....0....xx
-x0...xxx...0x
-@...xxxxx...@
-x0...xxx...0x
-xx....0....xx
-xxx0.....0xxx
- xxxxx.xxxxx
-xx...0.0...xx
-x...........x
-x.....>.....x
-xx.........xx
  xxxxxxxxxxx
 ENDMAP
 

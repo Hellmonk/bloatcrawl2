@@ -105,13 +105,6 @@ T.T
 T.T
 ENDMAP
 
-NAME:   shop_statue
-TAGS:   allow_dup extra shop no_tele_into
-KFEAT:  O = any shop
-MAP
-@G..O..G@
-ENDMAP
-
 NAME:   shop_coins
 TAGS:   allow_dup extra shop transparent
 WEIGHT: 3

@@ -117,41 +117,6 @@ MAP
      xxxxx
 ENDMAP
 
-# Beehive which needs digging to access.
-NAME:   hive_lemuel
-TAGS:   no_trap_gen
-DEPTH:  D:9-, Spider
-MONS:   killer bee, meliai, queen bee, wasp, hornet
-KMONS:  *R = dart slug
-KITEM:  * = *
-KITEM:  R = stone
-SUBST:  ? : .w
-SUBST:  * : * R:3
-# Since one has to dig the bees out, early meliai are fine.
-: if crawl.x_chance_in_y(15, 27) then
-TAGS:   uniq_beehive
-NSUBST: 1 = 1:3 / 1:1 / * = 1 x:2
-: else
-TAGS:   uniq_wasphive
-SUBST:  1 : 4 5:4
-: end
-COLOUR: x = yellow
-TILE:   x = wall_wax
-MAP
-  ????????
- ??????????
-???xxxxxx???
-??xmxxxxxx??
-??xx1111xx??
-??xx1**1xx??
-??xx1**1xx??
-??xx1111xx??
-??xxxxxxmx??
-???xxxxxx???
- ??????????
-  ????????
-ENDMAP
-
 # Beehive minivault
 NAME:   minivault_7
 TAGS:   uniq_beehive patrolling
@@ -176,29 +141,6 @@ MAP
 ...xx2xx3x..
 ....xxxx....
 ............
-ENDMAP
-
-# Not Minivault 9 (by Mu.)
-NAME:   not_door_vault_mu
-TAGS:   extra allow_dup luniq
-WEIGHT: 1
-DEPTH:  Depths, Elf
-MONS:   butterfly
-MARKER: X = lua: props_marker { connected_exclude="true" }
-MARKER: Y = lua: props_marker { stop_explore="strange structure made of doors" }
-KFEAT:  X = +
-KFEAT:  Y = runed_door
-MAP
-YYYYYYYYYY
-YXXXXXXXXY
-YXXXXXXXXY
-YXX1111XXY
-YXX1111XXY
-YXX1111XXY
-YXX1111XXY
-YXXXXXXXXY
-YXXXXXXXXY
-YYYYYYYYYY
 ENDMAP
 
 # Anthill origins
@@ -592,7 +534,7 @@ ENDMAP
 # the lindwurms free.
 NAME:   minmay_lindwurm_lava
 TAGS:   no_monster_gen no_trap_gen
-DEPTH:  D:8-, Lair:2-
+DEPTH:  D:10-, Lair:2-
 KPROP:  '*|1> = no_tele_into
 KMONS:  1 = lindwurm
 KITEM:  1 = *
@@ -2677,32 +2619,6 @@ I.*.....d|bx
 xbbbbbb..1bx
 xxxxxxbbbbbx
 xxxxxxxxxxxx
-ENDMAP
-
-# Rather shallow depth but you cannot randomly teleport in there.
-NAME:    minmay_crystal_box
-TAGS:    no_monster_gen patrolling
-DEPTH:   D:12-, Depths, !Depths:$
-MONS:    crystal guardian, obsidian statue
-SUBST:   . = .:80 %$*|
-KPROP:   .012 = no_tele_into
-: if you.absdepth() > 16 then
-SUBST:   0 = 1
-: end
-MAP
-WWWWWWWWWWWWWW
-WbbbbbbbbbbbbW
-Wbb1.......0bW
-Wbb.........bW
-Wbb.........bW
-Wnn.........bW
-WW=....2....bW
-Wnn.........bW
-Wbb.........bW
-Wbb.........bW
-Wbb1.......0bW
-WbbbbbbbbbbbbW
-WWWWWWWWWWWWWW
 ENDMAP
 
 NAME:  minmay_more_statues
@@ -5876,74 +5792,6 @@ MAP
 .......             .......
 ENDMAP
 
-# There's a sword stuck inside a stone. Some knights are milling around
-# wondering how to get it out. If you can dig through rock and tame the
-# sword's enchantment, you could become the monarch! Or not..... (by Shiori)
-#
-# This is not about guarding an unrandart, but very close in spirit. (dpeg)
-# If the vault comes up in Orc or Elf, there will be natives around.
-#
-# The dancing weapon is very out of depth early in D, but digging it out
-# is mostly a deliberate action and there are enough system warnings. (r-i)
-NAME:    sword_in_stone
-TAGS:    no_monster_gen patrolling vaults_hard
-DEPTH:   D:5-, Depths, !Depths:$, Vaults, Orc, Elf
-KMONS:   A = gnoll sergeant ; trident . scale mail | chain mail . shield
-KMONS:   B = wight ; falchion | long sword . ring mail | scale mail . shield | nothing
-KMONS:   C = Blork the orc / orc warrior ; great sword . chain mail | plate armour, \
-                             orc warrior ; great sword . chain mail | plate armour / nothing
-KMONS:   D = Eustachio / orc warrior ; long sword | falchion . chain mail . shield, \
-                         orc warrior ; long sword | falchion . chain mail . shield / nothing
-KMONS:   E = Joseph / orc knight ; long sword | scimitar . chain mail . shield, \
-                      orc knight ; long sword | scimitar . chain mail . shield / nothing
-KMONS:   F = Urug / orc knight ; rapier | long sword . leather armour . buckler | nothing, \
-                    orc knight ; rapier | long sword . leather armour . buckler | nothing / nothing
-KMONS:   G = Erica / wizard ; long sword . robe | leather armour . shield, \
-                     wizard ; long sword . robe | leather armour . shield / nothing
-KMONS:   H = Harold / deep elf knight, deep elf knight / nothing
-KMONS:   I = Donald / orc warlord, orc warlord / nothing
-KMONS:   J = Louise / hell knight, hell knight / nothing
-KMONS:   K = Frances / hell knight, hell knight / nothing
-KMONS:   L = Agnes / spriggan defender, spriggan defender / nothing
-KMONS:   M = Rupert / vampire knight, vampire knight / nothing
-KMONS:   N = Asterion / ancient champion, ancient champion / nothing
-KMONS:   O = Frederick / iron giant / nothing
-KMONS:   P = Sojobo / tengu reaver, tengu reaver / nothing
-KMONS:   S = dancing weapon ; long sword good_item | good_item great sword | \
-                              demon blade good_item | triple sword good_item | \
-                              double sword good_item
-KITEM:   s = long sword good_item / good_item great sword / \
-             demon blade good_item / triple sword good_item / double sword good_item
-KMONS:   o = orc warrior / orc knight w:5
-KMONS:   e = deep elf knight
-NSUBST:  k = 4:k / 2 = k. / *:.
-SHUFFLE: bm
-SUBST:   b = cccvvb
-: if you.in_branch("Orc") then
-NSUBST:  k = 1:A / 1 = CF / *:o
-: elseif you.in_branch("Elf") then
-NSUBST:  k = 2 = IJKL / *:e
-: elseif you.absdepth() < 10 then
-SUBST:   k = ABCD, S = s
-: elseif you.absdepth() < 13 then
-SUBST:   k = EFGH
-: elseif you.absdepth() < 16 then
-SUBST:   k = FGHJ
-: elseif you.absdepth() < 19 then
-SUBST:   k = HIJKL
-: else
-SUBST:   k = LMNOP
-: end
-MAP
-kkkkkkk
-kkkkkkk
-kkmbmkk
-kkbSbkk
-kkmbmkk
-kkkkkkk
-kkkkkkk
-ENDMAP
-
 # obsidian axe
 # A mini-temple of Makhleb; demons ahoy!
 NAME:   grunt_guarded_unrand_obsidian_axe
@@ -6397,24 +6245,6 @@ YXX8888XXY
 YXXXXXXXXY
 YXXXXXXXXY
 YYYYYYYYYY
-ENDMAP
-
-# Closed-box minivault
-NAME:  minivault_12
-DEPTH: D:8-, Depths, !Depths:$
-MAP
-............
-.nccccxcccn.
-.c>9$9$9$<c.
-.c.$9$9$.$c.
-.c$.****$.c.
-.c.$*||*.$x.
-.x$.*||*$.c.
-.c.$****.$c.
-.c$9$9$9$.c.
-.c<$9$9$9>c.
-.ncccxccccn.
-............
 ENDMAP
 
 # Little trap spiral

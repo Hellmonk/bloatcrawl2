@@ -290,43 +290,6 @@ xxxxxxxxx++xwwww1xx**xxxx++xxxxxxxxxxx
    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
-# Spider Trap Map by 7hm
-# Small winding map leading to a treasure room.  In the room is a
-# basket of spiders trap.
-NAME:   spiders_nest_spider_trap
-TAGS:   no_item_gen no_monster_gen no_pool_fixup
-DEPTH:  Spider
-NSUBST: * = 1:z / *:*
-KMONS:  M = fungus
-{{
- local tm = TriggerableFunction:new{func="callback.spider_nest_trap"}
- local wm = TriggerableFunction:new{func="callback.spider_trap_warn"}
- tm:add_triggerer(DgnTriggerer:new{type="player_move"})
- wm:add_triggerer(DgnTriggerer:new{type="player_move"})
- lua_marker('z', tm)
- lua_marker('Z', wm)
-}}
-SUBST:  W = Ww , z : * , * = %%$*..M , . = WW.
-MONS:   wolf spider / redback w:15 / tarantella w:2 / nothing w:5
-MAP
-  xxxxx    xxxx
- xxxxxxx xxxxxxx
-xx1....xxxWWWWxxx
-xxW.1xW.x......1xx
-xxW.xxxW..xxxxW.xx
- xxW.xx1xxxWWxx.xx
- xxxW.xxxxW....Wx
-  xx1..xxxW.xx11xx
-   xxxx.Wx1.Wxxxxx
-    xxx.Wxxx.Wxxx
-  xxxxW.xxxxx.W1xx
-   xx1..x***xx.Wxx
- xxxx.Wxx****xx.xx
-.....xxx******Z.xx
-..xxxx xxxxxxxxxx
-@..xx   xxxxxxxx
-ENDMAP
-
 NAME:   spiders_nest_the_unseen
 TAGS:   no_item_gen no_monster_gen
 DEPTH:  Spider:3-
@@ -533,30 +496,6 @@ xxx....12x'''''xx42%%%24xxx''''x21....xxx
 ''xxx'' '''x2x''''''xxx''   ..........
  '''''   ''xdx''  ''''''     . .  . .
   ' '     'xxx'     ' '
-ENDMAP
-
-# Some wasp vaults. Wasps eat spiders (and players).
-NAME:   spiders_nest_wasp_nest
-TAGS:   no_trap_gen uniq_wasphive
-DEPTH:  Spider
-MONS:   hornet / w:5 wasp
-NSUBST: 1 = 1:% / 1:1 / * = %1
-SUBST:  a = .a, A = a
-COLOUR: a = brown
-TILE:   a = wall_wax
-SUBST:  a = x
-KPROP:  1% = no_tele_into
-MAP
-  ......
- ..aaaa..
-..aAAAAA..
-.amA111Aa.
-.aA1111Aa.
-.aA1111Aa.
-.aAA11Ama.
-..aAAAAa..
- ..aaaa..
-  ......
 ENDMAP
 
 NAME:   lemuel_wasp_nest

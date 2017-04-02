@@ -123,7 +123,7 @@ NAME:   black_bear_nest_1
 ORIENT: northwest
 WEIGHT: 5
 TAGS:   uniq_black_bear_nest
-DEPTH:  D:4-8
+DEPTH:  D:5-8
 NSUBST: ' = 1:1 / 2:R / *:.
 KITEM:  R = stone
 MONS:   patrolling black bear
@@ -141,7 +141,7 @@ NAME:   black_bear_nest_2
 ORIENT: southeast
 WEIGHT: 5
 TAGS:   uniq_black_bear_nest
-DEPTH:  D:4-8
+DEPTH:  D:5-8
 NSUBST: ' = 1:1 / 2:R / *:.
 KITEM:  R = stone
 MONS:   patrolling black bear
@@ -1655,61 +1655,6 @@ xwwwx.....xwwwwwww
 xwwwxx+++xxwwwwww
   wwww...wwww
     ww@@@ww
-ENDMAP
-
-NAME:   kennysheep_tiny_hell
-TAGS:   no_monster_gen
-ORIENT: centre
-DEPTH:  D:13-14
-WEIGHT: 5
-FTILE:  *|c.12${} = floor_infernal_blank
-TILE:   c = dngn_stone_dark
-SUBST:  *=*|
-MONS:   ice devil w:1 / hellwing w:3 / rust devil w:1 / orange demon w:1 /\
-        demonic crawler / sixfirhy w:1
-MONS:   lesser demon, iguana / giant cockroach
-NSUBST: . = 6:3 / 6:! / 56:' / .
-KPROP:  !' = bloody
-: dgn.delayed_decay(_G, '!', 'human corpse / human skeleton')
-MAP
-              cccccccccc
-              c...$$...c
-              c...**...c
-              c....1...c
-              c2..2..2.c
-              c........c
-              c........c
-              c........c
-              c........c
-              c....2...c
-             cc........cc
-            cc..........cc
-           cc............cc
-          cc..............cc
-ccccccccccc................ccccccccccc
-c................................2...c
-c...2................................c
-c....................................c
-c$*1.....2........{.........2....2.*$c
-c$*.2..............}..............1*$c
-c....................................c
-c................................2...c
-c...2................................c
-ccccccccccc................ccccccccccc
-          cc..............cc
-           cc............cc
-            cc..........cc
-             cc........cc
-              c...2....c
-              c........c
-              c........c
-              c........c
-              c........c
-              c.2..2..2c
-              c...1....c
-              c...**...c
-              c...$$...c
-              cccccccccc
 ENDMAP
 
 NAME:   kennysheep_housing_project

@@ -671,71 +671,6 @@ MAP
 xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
-NAME:    minmay_isolated_rectangles_in_corner
-ORIENT:  southeast
-DEPTH:   D:12-, !D:$, Depths, !Depths:$
-SHUFFLE: ([{)]}, *$
-SUBST:   * = %**|$....
-SUBST:   $ = $$$$%
-SUBST:   G = GTUV
-SUBST:   c : cv
-MAP
-.............................x
-.............................x
-..ccccccccccccccccccccccccc..x
-..c(.c........0..ccc...c**c..x
-..c..c.0.0.......cc..9.+**c..x
-..c..c.....c0.G.0c.....c**c..x
-..c..+.0..cc.......9.9.c**c..x
-..c..c...ccc..0........c**c..x
-..ccccccccccccccccccccccccc..x
-.............................x
-.............................x
-..ccccccccccccccccccccccccc..x
-..c$$c999ccc......0....c..c..x
-..c$$c...ccc...........+..c..x
-..c$$c....0...G...0....c..c..x
-..c$$+...........ccc...c..c..x
-..c$$c....0......ccc000c.[c..x
-..ccccccccccccccccccccccccc..x
-.............................x
-.............................x
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-ENDMAP
-
-NAME:    minmay_connected_triangles_in_corner
-ORIENT:  southeast
-DEPTH:   D:12-, !D:$, Depths, !Depths:$
-SHUFFLE: ([{)]}, 890, |*%$
-SUBST:   c : cv
-MAP
-........................x
-........................x
-..cccccccccccc..........x
-..c|*%9.9.9cc...........x
-..c*%.....cc............x
-..c%.....cc.............x
-..c9....cc..............x
-..c.....cc..............x
-..c9..cc.cc.............x
-..c..cccc.cc............x
-..c9cc..cc.cc........c..x
-..ccc....cc.cc......cc..x
-..cc......cc.cc....ccc..x
-..c........cc.cc..cc0c..x
-............cc.cccc..c..x
-.............cc.cc..0c..x
-..............cc.....c..x
-..............cc....0c..x
-.............cc......c..x
-............cc.......c..x
-...........cc0.0.0..(c..x
-..........cccccccccccc..x
-........................x
-........................x
-xxxxxxxxxxxxxxxxxxxxxxxxx
-ENDMAP
-
 NAME:   minmay_expanding_squares
 ORIENT: southeast
 DEPTH:  D:12-, !D:$, Depths
@@ -822,56 +757,6 @@ c.....c..0..c..0..c
 c.0.0.c..0..c..0..c
 cG...GcG...GcG...Gc
 ccccccccccccccccccc
-ENDMAP
-
-NAME:    minmay_nested_s
-ORIENT:  southwest
-DEPTH:   D:12-, !D:$, Depths, !Depths:$
-SUBST:   c : cv
-SHUFFLE: ([{, )]}
-MAP
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxx....0..........0..........0
-xxx............................@
-xx..............................
-xx.......0..........0..........0
-x........xxxxxxxxxxxxxxxxxxxxxxx
-x......xxxccccccccccccccccccccxx
-x.....xxxcc......0...........ccx
-x.....xxxc.......0...........)cx
-x0..0xxxxc..cccccccccccccccccccx
-x....xxxxc..ccccccccccccccccccxx
-x....xxxxc..0.........0......ccx
-x....xxxxcc.0.........0.......cx
-x....xxxxccccccccccccccccccc..cx
-x0..0xxxxccccccccccccccccccc..cx
-x.....xxxc|*9....0.........0..cx
-x.....xxxcc*9....0.........0.ccx
-x......xxxccccccccccccccccccccxx
-x........xxxxxxxxxxxxxxxxxxxxxxx
-xx.......0....0..0....0....xxxxx
-xx...........................xxx
-xxx...........................xx
-xxxxx....0....0..0....0.......xx
-xxxxxxxxxxxxxxxxxxxxxxx........x
-xcccccccccccccccccccccxxx......x
-xcc.0.........0....9*ccxxx.....x
-xc..0.........0....9*|cxxx.....x
-xc..cccccccccccccccccccxxxx0..0x
-xc..ccccccccccccccccccxxxxx....x
-xc.......0.........0.ccxxxx....x
-xcc......0.........0..cxxxx....x
-xccccccccccccccccccc..cxxxx....x
-xccccccccccccccccccc..cxxxx0..0x
-xc(...........0.......cxxx.....x
-xcc...........0......ccxxx.....x
-xxccccccccccccccccccccxxx......x
-xxxxxxxxxxxxxxxxxxxxxxx........x
-xx|*$$$$..8...9.......0.......xx
-x|**$$$$8...9.................xx
-x|**$$$$8...9................xxx
-xx|*$$$$..8...9.......0....xxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
 ################################################################################
@@ -1341,42 +1226,6 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
 ###############################################################################
-NAME:   kennysheep_green_arena
-ORIENT: north
-TAGS:   no_trap_gen no_monster_gen
-MAP
-   bbbbbbbbbbb
-  bb9...8...9bb
- bb...........bb
-bb..G.......G..bb
-b...*.......*...b
-b.......|.......b
-b9......G......9b
-b.......|.......b
-b...............b
-b0..*.......*..0b
-bb..G.......G..bb
- bb...........bb
-  bb0.......0bb
-   bbbbb.bbbbb
-   bbb.....bbb
-  bb0.......0bb
- bb...G...G...bb
-bb....%...%....bb
-b0.............0b
-b.G%.........%G.b
-b...............b
-b.......9.......b
-b...............b
-b.G%.........%G.b
-b0.............0b
-bb....%...%....bb
- bb...G...G...bb
-  bb0.......0bb
-   bbb.....bbb
-     bbb+bbb
-ENDMAP
-
 NAME:   kennysheep_snake
 ORIENT: west
 TAGS:   no_trap_gen no_monster_gen

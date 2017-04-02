@@ -2857,31 +2857,6 @@ wwxdxwwxcxww
   wwwwwwww
 ENDMAP
 
-# Transporter accident (mumra)
-NAME:   mumra_transporter_accident
-TAGS:   extra
-WEIGHT: 1
-DEPTH:  D:5-, Depths, Lair, Elf, !Elf:$, Orc
-SUBST:  X = m.
- : dgn.delayed_decay(_G,'B', 'human skeleton')
-KITEM:  A : wand of digging charges:0
-# Prevent random teleportation getting you stuck
-KPROP:  AB = no_tele_into
-KFEAT:  AB = floor
-MAP
-     ....
-    .XXXX.
-   .XmmmmX.
-  .XmmmmmmX.
-  .XmmABmmX.
-  .XmmmmmmX.
-   .XmmmmX.
-    .XXXX.
-     ....
-ENDMAP
-
-
-
 ####################################################################
 #
 # <<3>> Supply closet vaults
@@ -2975,19 +2950,6 @@ MAP
 1$$$1
 1$$$1
 11111
-ENDMAP
-
-NAME:   corexii_mini_fake_secret_closet
-DEPTH:  D:4-, Depths
-WEIGHT: 1
-TAGS:   no_monster_gen no_item_gen allow_dup extra
-NSUBST: + = 1:+ / *:x, = = 1:+ / *:x
-SUBST:  d = %%%., e = **%.
-MAP
-xxxxxxx
-+dd=eex
-xdd=eem@
-xxxxxxx
 ENDMAP
 
 NAME:   evilmike_butchery
@@ -3227,27 +3189,6 @@ cw.xxxxxxx.wc
 cw.........ED
 cwHwwwwwwwwwc
 ccFcccccccccc
-ENDMAP
-
-NAME:  bh_chokoban
-TAGS:  extra decor no_exits
-TAGS:  no_rotate no_hmirror no_vmirror
-DEPTH: D:2-, !D:$, Depths:2-, !Depths:$, Lair:2-, !Lair:$
-ITEM:  large rock q:1
-MAP
-cccccc  ccccc
-c....c  c...c
-c.d..cccc.d.c
-c.d......d..c
-c..ccc(cccd.c
-cccccccccc.ccc
-c.....)c.....c
-c..cccccd....c
-cc.c   c.d...c
- c.ccccc.d...c
- c......d.d..c
- c%%cccccccccc
- cccc
 ENDMAP
 
 ##########################################################################
@@ -3708,24 +3649,6 @@ MAP
 ..xxx..xxx..
 .xxx....xxx.
 .xx......xx.
-............
-ENDMAP
-
-NAME:  minivault_21
-TAGS:  transparent allow_dup extra
-DEPTH: D:8-, !D:$, Depths:2-, !Depths:$
-MAP
-............
-..xxxxxxxx..
-.x........x.
-.x.ccnccc.x.
-.x.c|..<c.x.
-.x.c.**.n.x.
-.x.n.**.c.x.
-.x.c>..|c.x.
-.x.cccncc.x.
-.x........x.
-..xxxxxxxx..
 ............
 ENDMAP
 

@@ -1341,30 +1341,6 @@ MAP
  ----@----
 ENDMAP
 
-NAME:  nicolae_qazlal_eye_of_the_storm
-TAGS:  temple_overflow_qazlal temple_overflow_1 uniq_altar_qazlal
-TAGS:  no_trap_gen no_item_gen no_monster_gen
-DEPTH: D:2-
-KPROP: 'd = no_tele_into
-KMONS: d = diamond obelisk
-KFEAT: _ = altar_qazlal
-: interest_check(_G)
-MAP
- ccccccccccccc
- c'''''''''''c
- c'''''''''''c
- c'''''''''''c
- c'''''''''''c
-@nnnnnn''''''c
-@...._nd'''''c
-@nnnnnn''''''c
- c'''''''''''c
- c'''''''''''c
- c'''''''''''c
- c'''''''''''c
- ccccccccccccc
-ENDMAP
-
 NAME:    nicolae_qazlal_style_of_elements
 TAGS:    temple_overflow_qazlal temple_overflow_1 uniq_altar_qazlal
 TAGS:    no_trap_gen no_item_gen no_monster_gen
@@ -2369,37 +2345,6 @@ xct...tcx
 xccc+cccx
 ENDMAP
 
-NAME:    tso_metal_star
-TAGS:    no_monster_gen no_trap_gen no_pool_fixup no_item_gen decor
-TAGS:    temple_overflow_1 temple_overflow_the_shining_one transparent
-TAGS:    uniq_altar_the_shining_one
-KFEAT:   _ = altar_the_shining_one
-SUBST:   ! : vmmTG..
-: interest_check(_G)
-MAP
-          @
-          .
-         ...
-         .v.
-        ..v..
-       ..vvv..
-      ..vv.vv..
-     ..vv...vv..
-    ..vm..!..mv..
-  ...vv..!.!..vv...
-@..vvv..!._.!..vvv..@
-  ...vv..!.!..vv...
-    ..vm..!..+v..
-     ..vv...vv..
-      ..vv.vv..
-       ..vvv..
-        ..v..
-         .v.
-         ...
-          .
-          @
-ENDMAP
-
 NAME:   tso_oasis_becter
 TAGS:   temple_overflow_1 temple_overflow_the_shining_one transparent
 TAGS:   no_item_gen no_monster_gen
@@ -2521,7 +2466,7 @@ ENDMAP
 # they get tags temple_overflow_N and temple_overflow_<god>.
 
 NAME:    good_gods_temple_1
-DEPTH:   D:2-, Depths, Lair
+DEPTH:   D:2-, Depths
 TAGS:    temple_overflow_3 temple_overflow_elyvilon
 TAGS:    temple_overflow_zin temple_overflow_the_shining_one
 TAGS:    no_monster_gen no_trap_gen uniq_good_god_temple
@@ -2546,7 +2491,7 @@ tt...1...tt
 ENDMAP
 
 NAME:    good_gods_mini_temple
-DEPTH:   D:2-, Depths, Lair
+DEPTH:   D:2-, Depths
 TAGS:    temple_overflow_3 temple_overflow_elyvilon
 TAGS:    temple_overflow_zin temple_overflow_the_shining_one
 TAGS:    no_monster_gen no_trap_gen no_pool_fixup uniq_good_god_temple

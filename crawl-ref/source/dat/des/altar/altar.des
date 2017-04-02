@@ -46,25 +46,6 @@ default-depth: D, Depths
 # I    Temples (Multi-altar vaults, containing two or more C)
 ##############################################################################
 
-NAME:    jmf_multi_god_temple
-SHUFFLE: abc
-SUBST:   a:+, b:x, c:x
-DEPTH:   D:8-, Vaults
-MAP
-............
-.axxxxxxxxa.
-.x9......9x.
-.bT......Tb.
-.x..C..C..x.
-.cT......Tc.
-.xxxxmmxxxx.
-.xxx$$$$xxx.
-.xx8....8xx.
-..xx....xx..
-...xG..Gx...
-............
-ENDMAP
-
 NAME:  jmf_multi_god_temple2
 DEPTH: D:8-, Vaults
 MAP
@@ -131,7 +112,7 @@ ENDMAP
 
 NAME:   lemuel_altar_in_water2
 TAGS:   no_pool_fixup no_monster_gen
-DEPTH:  D:2-, Lair, Snake, Swamp, Shoals
+DEPTH:  D:2-, Snake, Swamp, Shoals
 WEIGHT: 1
 : interest_check(_G)
 MAP
@@ -145,7 +126,7 @@ MAP
 ENDMAP
 
 NAME:  lemuel_oklob_altar
-DEPTH: D:6-, Lair, Snake, Shoals
+DEPTH: D:6-, Snake, Shoals
 MONS:  oklob plant, plant
 MAP
  2
@@ -173,28 +154,6 @@ MAP
 ...........
 ENDMAP
 
-NAME:  lemuel_statue_altar
-TAGS:  transparent decor
-DEPTH: D:2-, Orc, Depths, Vaults, Elf, Crypt
-: if you.absdepth() < 10 then
-SUBST: F = G
-: end
-SUBST: F = G:99 F:1
-: if you.in_branch("D") or you.in_branch("Orc") then
-KMONS: F = obsidian statue / ice statue
-: else
-KMONS: F = obsidian statue
-: end
-: interest_check(_G)
-KMASK: _>C = opaque
-MAP
-.........
-.ccccccc.
-.F___>Cc.
-.ccccccc.
-.........
-ENDMAP
-
 # This is the generic version. A special version may occur for Orc, almost always
 # to Beogh. Only one of these can come up.
 NAME:  david_defended_altar_elf
@@ -212,7 +171,7 @@ ENDMAP
 # The mix of deep and shallow water is intended to keep the centaurs from
 # escaping without requiring the player to be able to cross deep water.
 NAME:  lemuel_centaur_altar
-DEPTH: D:7-15, Shoals, Lair
+DEPTH: D:7-15, Shoals
 TAGS:  no_pool_fixup no_monster_gen
 MONS:  patrolling centaur
 MAP
@@ -267,7 +226,7 @@ ENDMAP
 #       access the altar early.
 #
 NAME:  lemuel_hellish_altar
-DEPTH: D:8-, Crypt, Geh
+DEPTH: D:8-, Geh
 TAGS:  no_monster_gen
 MONS:  rust devil / orange demon
 MONS:  hell beast
