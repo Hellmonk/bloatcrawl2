@@ -756,6 +756,24 @@ static bool _dgn_fill_zone(
     return ret;
 }
 
+static bool _is_perm_down_stair(const coord_def &c)
+{
+    switch (grd(c))
+    {
+    case DNGN_STONE_STAIRS_DOWN_I:
+    case DNGN_STONE_STAIRS_DOWN_II:
+    case DNGN_STONE_STAIRS_DOWN_III:
+    case DNGN_EXIT_HELL:
+    case DNGN_EXIT_PANDEMONIUM:
+    case DNGN_TRANSIT_PANDEMONIUM:
+    case DNGN_EXIT_ABYSS:
+    case DNGN_ABYSSAL_STAIR:
+        return true;
+    default:
+        return false;
+    }
+}
+
 static bool _is_upwards_exit_stair(const coord_def &c)
 {
     // Is this a valid upwards or exit stair out of a branch? In general,
@@ -1087,6 +1105,17 @@ static bool _ensure_vault_placed_ex(bool vault_success, const map_def *vault)
                                      && vault->orient == MAP_ENCOMPASS));
 }
 
+static coord_def _find_level_feature(int feat)
+{
+    for (rectangle_iterator ri(1); ri; ++ri)
+    {
+        if (grd(*ri) == feat)
+            return *ri;
+    }
+
+    return coord_def(0, 0);
+}
+
 static bool _has_connected_stone_stairs_from(const coord_def &c)
 {
     flood_find<feature_grid, coord_predicate> ff(env.grid, in_bounds);
@@ -1096,6 +1125,18 @@ static bool _has_connected_stone_stairs_from(const coord_def &c)
     ff.add_feat(DNGN_STONE_STAIRS_UP_I);
     ff.add_feat(DNGN_STONE_STAIRS_UP_II);
     ff.add_feat(DNGN_STONE_STAIRS_UP_III);
+
+    coord_def where = ff.find_first_from(c, env.level_map_mask);
+    return where.x || !ff.did_leave_vault();
+}
+
+static bool _has_connected_downstairs_from(const coord_def &c)
+{
+    flood_find<feature_grid, coord_predicate> ff(env.grid, in_bounds);
+    ff.add_feat(DNGN_STONE_STAIRS_DOWN_I);
+    ff.add_feat(DNGN_STONE_STAIRS_DOWN_II);
+    ff.add_feat(DNGN_STONE_STAIRS_DOWN_III);
+    ff.add_feat(DNGN_ESCAPE_HATCH_DOWN);
 
     coord_def where = ff.find_first_from(c, env.level_map_mask);
     return where.x || !ff.did_leave_vault();
@@ -1715,6 +1756,93 @@ static bool _fixup_stone_stairs(bool preserve_vault_stairs)
     const bool downstairs_fixed = _fixup_stone_stairs(preserve_vault_stairs,
                                                       false);
     return upstairs_fixed && downstairs_fixed;
+}
+
+static bool _add_feat_if_missing(bool (*iswanted)(const coord_def &),
+                                 dungeon_feature_type feat)
+{
+    memset(travel_point_distance, 0, sizeof(travel_distance_grid_t));
+    int nzones = 0;
+    for (int y = 0; y < GYM; ++y)
+        for (int x = 0; x < GXM; ++x)
+        {
+            // [ds] Use dgn_square_is_passable instead of
+            // dgn_square_travel_ok here, for we'll otherwise
+            // fail on floorless isolated pocket in vaults (like the
+            // altar surrounded by deep water), and trigger the assert
+            // downstairs.
+            const coord_def gc(x, y);
+            if (!map_bounds(x, y)
+                || travel_point_distance[x][y] // already covered previously
+                || !_dgn_square_is_passable(gc))
+            {
+                continue;
+            }
+
+            if (_dgn_fill_zone(gc, ++nzones, _dgn_point_record_stub,
+                               _dgn_square_is_passable, iswanted))
+            {
+                continue;
+            }
+
+            bool found_feature = false;
+            for (rectangle_iterator ri(0); ri; ++ri)
+            {
+                if (grd(*ri) == feat
+                    && travel_point_distance[ri->x][ri->y] == nzones)
+                {
+                    found_feature = true;
+                    break;
+                }
+            }
+
+            if (found_feature)
+                continue;
+
+            int i = 0;
+            while (i++ < 2000)
+            {
+                coord_def rnd(random2(GXM), random2(GYM));
+                if (grd(rnd) != DNGN_FLOOR)
+                    continue;
+
+                if (travel_point_distance[rnd.x][rnd.y] != nzones)
+                    continue;
+
+                _set_grd(rnd, feat);
+                found_feature = true;
+                break;
+            }
+
+            if (found_feature)
+                continue;
+
+            for (rectangle_iterator ri(0); ri; ++ri)
+            {
+                if (grd(*ri) != DNGN_FLOOR)
+                    continue;
+
+                if (travel_point_distance[ri->x][ri->y] != nzones)
+                    continue;
+
+                _set_grd(*ri, feat);
+                found_feature = true;
+                break;
+            }
+
+            if (found_feature)
+                continue;
+
+#ifdef DEBUG_DIAGNOSTICS
+            dump_map("debug.map", true, true);
+#endif
+            // [ds] Too many normal cases trigger this ASSERT, including
+            // rivers that surround a stair with deep water.
+            // die("Couldn't find region.");
+            return false;
+        }
+
+    return true;
 }
 
 static bool _add_connecting_escape_hatches()
