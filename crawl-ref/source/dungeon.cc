@@ -1105,17 +1105,6 @@ static bool _ensure_vault_placed_ex(bool vault_success, const map_def *vault)
                                      && vault->orient == MAP_ENCOMPASS));
 }
 
-static coord_def _find_level_feature(int feat)
-{
-    for (rectangle_iterator ri(1); ri; ++ri)
-    {
-        if (grd(*ri) == feat)
-            return *ri;
-    }
-
-    return coord_def(0, 0);
-}
-
 static bool _has_connected_stone_stairs_from(const coord_def &c)
 {
     flood_find<feature_grid, coord_predicate> ff(env.grid, in_bounds);
@@ -1125,18 +1114,6 @@ static bool _has_connected_stone_stairs_from(const coord_def &c)
     ff.add_feat(DNGN_STONE_STAIRS_UP_I);
     ff.add_feat(DNGN_STONE_STAIRS_UP_II);
     ff.add_feat(DNGN_STONE_STAIRS_UP_III);
-
-    coord_def where = ff.find_first_from(c, env.level_map_mask);
-    return where.x || !ff.did_leave_vault();
-}
-
-static bool _has_connected_downstairs_from(const coord_def &c)
-{
-    flood_find<feature_grid, coord_predicate> ff(env.grid, in_bounds);
-    ff.add_feat(DNGN_STONE_STAIRS_DOWN_I);
-    ff.add_feat(DNGN_STONE_STAIRS_DOWN_II);
-    ff.add_feat(DNGN_STONE_STAIRS_DOWN_III);
-    ff.add_feat(DNGN_ESCAPE_HATCH_DOWN);
 
     coord_def where = ff.find_first_from(c, env.level_map_mask);
     return where.x || !ff.did_leave_vault();
@@ -1853,18 +1830,8 @@ static bool _add_connecting_escape_hatches()
     if (branches[you.where_are_you].branch_flags & BFLAG_ISLANDED)
         return true;
 
-    // Veto Dungeon, Vaults, Depths, Orc, Sbranches, Zot, or Pan if there are disconnected areas.
-	// Disconnected Slime is ok for now (doesn't affect loot, just exp)
-    if (player_in_branch(BRANCH_PANDEMONIUM)
-        || player_in_branch(BRANCH_DUNGEON)
-        || player_in_branch(BRANCH_VAULTS)
-        || player_in_branch(BRANCH_DEPTHS)
-        || player_in_branch(BRANCH_ORC)
-		|| player_in_branch(BRANCH_SWAMP)
-        || player_in_branch(BRANCH_SNAKE)
-        || player_in_branch(BRANCH_SHOALS)
-        || player_in_branch(BRANCH_SPIDER)
-        || player_in_branch(BRANCH_ZOT))
+    // Veto non-abyss levels if they are disconnected.
+    if (!player_in_branch(BRANCH_ABYSS))
     {
         // Allow == 0 in case the entire level is one opaque vault.
         return dgn_count_disconnected_zones(false) <= 1;
@@ -1878,10 +1845,6 @@ static bool _add_connecting_escape_hatches()
 
     if (!_add_feat_if_missing(_is_perm_down_stair, DNGN_ESCAPE_HATCH_DOWN))
         return false;
-
-    // FIXME: shouldn't depend on branch.
-    if (!player_in_branch(BRANCH_ORC))
-        return true;
 
     return _add_feat_if_missing(_is_upwards_exit_stair, DNGN_ESCAPE_HATCH_UP);
 }
