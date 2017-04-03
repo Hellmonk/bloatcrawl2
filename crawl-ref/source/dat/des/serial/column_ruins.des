@@ -55,25 +55,11 @@ end
 
 function init_column_ruins_portal(e)
   e.subst('? = ???-')
-  if crawl.one_chance_in(3) then
-    e.kfeat('O = enter_abyss')
-    e.kfeat('P = enter_abyss')
-    e.ftile('- = floor_nerves')
-    e.ftile('? = floor_nerves')
-    e.ftile('O = floor_nerves')
-  elseif crawl.one_chance_in(2) then
-    e.kfeat('O = enter_hell')
-    e.kfeat('P = enter_hell')
-    e.ftile('- = floor_infernal')
-    e.ftile('? = floor_infernal')
-    e.ftile('O = floor_infernal')
-  else
-    e.kfeat('O = enter_pandemonium')
-    e.kfeat('P = enter_pandemonium')
-    e.ftile('- = floor_demonic')
-    e.ftile('? = floor_demonic')
-    e.ftile('O = floor_demonic')
-  end
+  e.kfeat('O = enter_pandemonium')
+  e.kfeat('P = enter_pandemonium')
+  e.ftile('- = floor_demonic')
+  e.ftile('? = floor_demonic')
+  e.ftile('O = floor_demonic')
   e.ftile('P = floor_rough_brown')
   e.tile('? = dngn_crumbled_column')
   e.kprop('- = no_tele_into')
