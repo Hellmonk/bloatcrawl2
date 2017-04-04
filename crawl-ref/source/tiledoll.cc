@@ -396,7 +396,7 @@ void fill_doll_equipment(dolls_data &result)
         const int item = you.melded[EQ_HELMET] ? -1 : you.equip[EQ_HELMET];
         if (item != -1)
             result.parts[TILEP_PART_HELM] = tilep_equ_helm(you.inv[item]);
-        else if (player_mutation_level(MUT_HORNS) > 0)
+        else if (you.get_mutation_level(MUT_HORNS) > 0)
         {
             if (you.species == SP_FELID)
             {
@@ -414,7 +414,7 @@ void fill_doll_equipment(dolls_data &result)
                 }
             }
             else
-                switch (player_mutation_level(MUT_HORNS))
+                switch (you.get_mutation_level(MUT_HORNS))
                 {
                     case 1:
                         result.parts[TILEP_PART_HELM] = TILEP_HELM_HORNS1;
@@ -440,7 +440,7 @@ void fill_doll_equipment(dolls_data &result)
         const int item = you.melded[EQ_BOOTS] ? -1 : you.equip[EQ_BOOTS];
         if (item != -1)
             result.parts[TILEP_PART_BOOTS] = tilep_equ_boots(you.inv[item]);
-        else if (player_mutation_level(MUT_HOOVES) >= 3)
+        else if (you.get_mutation_level(MUT_HOOVES) >= 3)
             result.parts[TILEP_PART_BOOTS] = TILEP_BOOTS_HOOVES;
         else
             result.parts[TILEP_PART_BOOTS] = 0;
@@ -451,7 +451,7 @@ void fill_doll_equipment(dolls_data &result)
         const int item = you.melded[EQ_GLOVES] ? -1 : you.equip[EQ_GLOVES];
         if (item != -1)
             result.parts[TILEP_PART_ARM] = tilep_equ_gloves(you.inv[item]);
-        else if (player_mutation_level(MUT_TENTACLE_SPIKE))
+        else if (you.has_mutation(MUT_TENTACLE_SPIKE))
             result.parts[TILEP_PART_ARM] = TILEP_ARM_OCTOPODE_SPIKE;
         else if (you.has_claws(false) >= 3)
             result.parts[TILEP_PART_ARM] = TILEP_ARM_CLAWS;

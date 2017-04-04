@@ -501,7 +501,7 @@ int detect_items(int pow)
         map_radius = 7 + random2(7) + pow;
     else
     {
-        if (you.mutation[MUT_JELLY_GROWTH])
+        if (you.has_mutation(MUT_JELLY_GROWTH))
             map_radius = 5;
         if (have_passive(passive_t::detect_items))
         {

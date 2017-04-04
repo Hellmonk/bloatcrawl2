@@ -894,7 +894,7 @@ static void _jiyva_effects(int /*time_delta*/)
 
 static void _evolve(int time_delta)
 {
-    if (player_mutation_level(MUT_EVOLUTION))
+    if (you.get_mutation_level(MUT_EVOLUTION))
         if (x_chance_in_y(3, 4)
             && you.attribute[ATTR_EVOL_XP] * (1 + random2(10))
                > (int)exp_needed(you.experience_level + 1))

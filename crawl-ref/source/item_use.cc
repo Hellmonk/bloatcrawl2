@@ -335,7 +335,7 @@ bool can_wield(const item_def *weapon, bool say_reason,
     if (!weapon)
         return true;
 
-    if (player_mutation_level(MUT_MISSING_HAND)
+    if (you.get_mutation_level(MUT_MISSING_HAND)
             && you.hands_reqd(*weapon) == HANDS_TWO)
     {
         SAY(mpr("You can't wield that without your missing limb."));
@@ -683,7 +683,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
     {
         if (verbose)
         {
-            mprf("Your wings%s won't fit in that.", you.mutation[MUT_BIG_WINGS]
+            mprf("Your wings%s won't fit in that.", you.has_mutation(MUT_BIG_WINGS)
                  ? "" : ", even vestigial as they are,");
         }
         return false;
@@ -703,7 +703,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         return false;
     }
 
-    if (player_mutation_level(MUT_MISSING_HAND) && is_shield(item))
+    if (you.get_mutation_level(MUT_MISSING_HAND) && is_shield(item))
     {
         if (verbose)
         {
@@ -743,7 +743,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
             return false;
         }
 
-        if (player_mutation_level(MUT_CLAWS, !ignore_temporary) >= 3)
+        if (you.get_mutation_level(MUT_CLAWS, !ignore_temporary) >= 3)
         {
             if (verbose)
             {
@@ -753,8 +753,8 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
             return false;
         }
 
-        if (player_mutation_level(MUT_HORNS, !ignore_temporary) >= 3
-            || player_mutation_level(MUT_ANTENNAE, !ignore_temporary) >= 3)
+        if (you.get_mutation_level(MUT_HORNS, !ignore_temporary) >= 3
+            || you.get_mutation_level(MUT_ANTENNAE, !ignore_temporary) >= 3)
         {
             if (verbose)
                 mpr("The hauberk won't fit your head.");
@@ -829,7 +829,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
     if (you.form == TRAN_APPENDAGE
         && ignore_temporary
         && slot == beastly_slot(you.attribute[ATTR_APPENDAGE])
-        && you.mutation[you.attribute[ATTR_APPENDAGE]])
+        && you.has_mutation(static_cast<mutation_type>(you.attribute[ATTR_APPENDAGE])))
     {
         unwind_var<uint8_t> mutv(you.mutation[you.attribute[ATTR_APPENDAGE]], 0);
         // disable the mutation then check again
@@ -843,7 +843,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
             if (verbose)
             {
                 mprf("You can't wear a glove with your huge claw%s!",
-                     player_mutation_level(MUT_MISSING_HAND) ? "" : "s");
+                     you.get_mutation_level(MUT_MISSING_HAND) ? "" : "s");
             }
             return false;
         }
@@ -851,7 +851,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
 
     if (sub_type == ARM_BOOTS)
     {
-        if (player_mutation_level(MUT_HOOVES, false) == 3)
+        if (you.get_mutation_level(MUT_HOOVES, false) == 3)
         {
             if (verbose)
                 mpr("You can't wear boots with hooves!");
@@ -887,14 +887,14 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
     if (slot == EQ_HELMET)
     {
         // Horns 3 & Antennae 3 mutations disallow all headgear
-        if (player_mutation_level(MUT_HORNS, false) == 3)
+        if (you.get_mutation_level(MUT_HORNS, false) == 3)
         {
             if (verbose)
                 mpr("You can't wear any headgear with your large horns!");
             return false;
         }
 
-        if (player_mutation_level(MUT_ANTENNAE, false) == 3)
+        if (you.get_mutation_level(MUT_ANTENNAE, false) == 3)
         {
             if (verbose)
                 mpr("You can't wear any headgear with your large antennae!");
@@ -904,21 +904,21 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         // Soft helmets (caps and wizard hats) always fit, otherwise.
         if (is_hard_helmet(item))
         {
-            if (player_mutation_level(MUT_HORNS, false))
+            if (you.get_mutation_level(MUT_HORNS, false))
             {
                 if (verbose)
                     mpr("You can't wear that with your horns!");
                 return false;
             }
 
-            if (player_mutation_level(MUT_BEAK, false))
+            if (you.get_mutation_level(MUT_BEAK, false))
             {
                 if (verbose)
                     mpr("You can't wear that with your beak!");
                 return false;
             }
 
-            if (player_mutation_level(MUT_ANTENNAE, false))
+            if (you.get_mutation_level(MUT_ANTENNAE, false))
             {
                 if (verbose)
                     mpr("You can't wear that with your antennae!");
@@ -1172,7 +1172,7 @@ static vector<equipment_type> _current_ring_types()
         {
             const equipment_type slot = (equipment_type)(EQ_RING_ONE + i);
 
-            if (player_mutation_level(MUT_MISSING_HAND)
+            if (you.get_mutation_level(MUT_MISSING_HAND)
                 && slot == EQ_RING_EIGHT)
             {
                 continue;
@@ -1184,7 +1184,7 @@ static vector<equipment_type> _current_ring_types()
     }
     else
     {
-        if (player_mutation_level(MUT_MISSING_HAND) == 0)
+        if (you.get_mutation_level(MUT_MISSING_HAND) == 0)
             ret.push_back(EQ_LEFT_RING);
         ret.push_back(EQ_RIGHT_RING);
     }
@@ -2467,7 +2467,7 @@ void random_uselessness()
         break;
 
     case 5:
-        if (player_mutation_level(MUT_BEAK) || one_chance_in(3))
+        if (you.get_mutation_level(MUT_BEAK) || one_chance_in(3))
             mpr("Your brain hurts!");
         else if (you.species == SP_MUMMY || coinflip())
             mpr("Your ears itch!");
@@ -2730,7 +2730,7 @@ void read(item_def* scroll)
         return;
     }
 
-    if (player_mutation_level(MUT_BLURRY_VISION)
+    if (you.get_mutation_level(MUT_BLURRY_VISION)
         && !i_feel_safe(false, false, true)
         && !yesno("Really read with blurry vision while enemies are nearby?",
                   false, 'n'))
@@ -2751,12 +2751,12 @@ void read(item_def* scroll)
 
     // if we have blurry vision, we need to start a delay before the actual
     // scroll effect kicks in.
-    if (player_mutation_level(MUT_BLURRY_VISION))
+    if (you.get_mutation_level(MUT_BLURRY_VISION))
     {
         // takes 0.5, 1, 2 extra turns
-        const int turns = max(1, player_mutation_level(MUT_BLURRY_VISION) - 1);
+        const int turns = max(1, you.get_mutation_level(MUT_BLURRY_VISION) - 1);
         start_delay<BlurryScrollDelay>(turns, *scroll);
-        if (player_mutation_level(MUT_BLURRY_VISION) == 1)
+        if (you.get_mutation_level(MUT_BLURRY_VISION) == 1)
             you.time_taken /= 2;
     }
     else
@@ -2814,7 +2814,7 @@ void read_scroll(item_def& scroll)
         }
 
         const bool safely_cancellable
-            = alreadyknown && !player_mutation_level(MUT_BLURRY_VISION);
+            = alreadyknown && !you.get_mutation_level(MUT_BLURRY_VISION);
 
         if (player_has_orb())
         {

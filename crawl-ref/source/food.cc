@@ -423,8 +423,8 @@ bool eat_item(item_def &food)
 // Some food types may not get a message.
 static void _finished_eating_message(food_type type)
 {
-    bool herbivorous = player_mutation_level(MUT_HERBIVOROUS) > 0;
-    bool carnivorous = player_mutation_level(MUT_CARNIVOROUS) > 0;
+    bool herbivorous = you.get_mutation_level(MUT_HERBIVOROUS) > 0;
+    bool carnivorous = you.get_mutation_level(MUT_CARNIVOROUS) > 0;
 
     if (herbivorous)
     {
@@ -571,7 +571,7 @@ int prompt_eat_chunks(bool only_auto)
 {
 	return 0;
     // Full herbivores cannot eat chunks.
-    if (player_mutation_level(MUT_HERBIVOROUS) == 3)
+    if (you.get_mutation_level(MUT_HERBIVOROUS) == 3)
         return 0;
 
     // If we *know* the player can eat chunks, doesn't have the gourmand
@@ -733,7 +733,7 @@ static void _chunk_nutrition_message(int nutrition)
 
 static int _apply_herbivore_nutrition_effects(int nutrition)
 {
-    int how_herbivorous = player_mutation_level(MUT_HERBIVOROUS);
+    int how_herbivorous = you.get_mutation_level(MUT_HERBIVOROUS);
 
     while (how_herbivorous--)
         nutrition = nutrition * 75 / 100;
@@ -978,7 +978,7 @@ bool is_preferred_food(const item_def &food)
         && you.species != SP_DJINNI
         )
     {
-        return !player_mutation_level(MUT_CARNIVOROUS);
+        return !you.get_mutation_level(MUT_CARNIVOROUS);
     }
 #endif
 
@@ -989,10 +989,10 @@ bool is_preferred_food(const item_def &food)
     if (is_bad_food(food))
         return false;
 
-    if (player_mutation_level(MUT_CARNIVOROUS) == 3)
+    if (you.get_mutation_level(MUT_CARNIVOROUS) == 3)
         return food_is_meaty(food.sub_type);
 
-    if (player_mutation_level(MUT_HERBIVOROUS) == 3)
+    if (you.get_mutation_level(MUT_HERBIVOROUS) == 3)
         return food_is_veggie(food.sub_type);
 
     // No food preference.

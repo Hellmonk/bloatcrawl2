@@ -439,7 +439,7 @@ static targetter *_wand_targetter(const item_def *wand)
 int wand_mp_cost()
 {
     // Update mutation-data.h when updating this value.
-    return player_mutation_level(MUT_MP_WANDS) * 3;
+    return you.get_mutation_level(MUT_MP_WANDS) * 3;
 }
 
 void zap_wand(int slot)
@@ -473,7 +473,7 @@ void zap_wand(int slot)
         return;
     }
 
-    if (player_mutation_level(MUT_NO_ARTIFICE))
+    if (you.get_mutation_level(MUT_NO_ARTIFICE))
     {
         mpr("You cannot evoke magical items.");
         return;
@@ -528,7 +528,7 @@ void zap_wand(int slot)
     // Will waste charges.
     const bool wasteful = !item_ident(wand, ISFLAG_KNOW_PLUSES);
     int power = (15 + you.skill(SK_EVOCATIONS, 7) / 2)
-                * (player_mutation_level(MUT_MP_WANDS) + 3) / 3;
+                * (you.get_mutation_level(MUT_MP_WANDS) + 3) / 3;
 
     const spell_type spell =
         spell_in_wand(static_cast<wand_type>(wand.sub_type));
@@ -1697,7 +1697,7 @@ static spret_type _phantom_mirror()
 
     if (player_will_anger_monster(*victim))
     {
-        if (player_mutation_level(MUT_NO_LOVE))
+        if (you.get_mutation_level(MUT_NO_LOVE))
             mpr("The reflection would only feel hate for you!");
         else
             simple_god_message(" forbids your reflecting this monster.");
@@ -1836,12 +1836,12 @@ bool evoke_item(int slot, bool check_range)
     case OBJ_MISCELLANY:
         did_work = true; // easier to do it this way for misc items
 
-        if ((player_mutation_level(MUT_NO_ARTIFICE)
+        if ((you.get_mutation_level(MUT_NO_ARTIFICE)
              || player_under_penance(GOD_PAKELLAS))
             && !is_deck(item)
             && item.sub_type != MISC_ZIGGURAT)
         {
-            if (player_mutation_level(MUT_NO_ARTIFICE))
+            if (you.get_mutation_level(MUT_NO_ARTIFICE))
                 mpr("You cannot evoke magical items.");
             else
             {

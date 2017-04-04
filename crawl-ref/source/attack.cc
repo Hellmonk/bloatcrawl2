@@ -177,7 +177,7 @@ int attack::calc_to_hit(bool random)
         else
         {
             // Claws give a slight bonus to accuracy when active
-            mhit += (player_mutation_level(MUT_CLAWS) > 0
+            mhit += (you.get_mutation_level(MUT_CLAWS) > 0
                      && wpn_skill == SK_UNARMED_COMBAT) ? 4 : 2;
 
             mhit += maybe_random_div(you.skill(wpn_skill, 100), 100,
@@ -213,8 +213,8 @@ int attack::calc_to_hit(bool random)
             mhit -= 5;
 
         // mutation
-        if (player_mutation_level(MUT_EYEBALLS))
-            mhit += 2 * player_mutation_level(MUT_EYEBALLS) + 1;
+        if (you.get_mutation_level(MUT_EYEBALLS))
+            mhit += 2 * you.get_mutation_level(MUT_EYEBALLS) + 1;
 
         // hit roll
         mhit = maybe_random2(mhit, random);
@@ -262,7 +262,7 @@ int attack::calc_to_hit(bool random)
     else
     {
         // This can only help if you're visible!
-        const int how_transparent = player_mutation_level(MUT_TRANSLUCENT_SKIN);
+        const int how_transparent = you.get_mutation_level(MUT_TRANSLUCENT_SKIN);
         if (defender->is_player() && how_transparent)
             mhit -= 2 * how_transparent;
 
