@@ -2538,7 +2538,6 @@ void check_item_knowledge(bool unknown_items)
 {
     vector<const item_def*> items;
     vector<const item_def*> items_missile; //List of missiles should go after normal items
-    vector<const item_def*> items_food;    //List of foods should come next
     vector<const item_def*> items_other;   //List of other items should go after everything
     vector<SelItem> selected_items;
 
@@ -2602,7 +2601,6 @@ void check_item_knowledge(bool unknown_items)
 
     sort(items.begin(), items.end(), _identified_item_names);
     sort(items_missile.begin(), items_missile.end(), _identified_item_names);
-    sort(items_food.begin(), items_food.end(), _identified_item_names);
 
     KnownMenu menu;
     string stitle;
@@ -2630,7 +2628,7 @@ void check_item_knowledge(bool unknown_items)
                                               : known_item_mangle, 'a', false);
 
     ml = menu.load_items(items_missile, known_item_mangle, ml, false);
-    ml = menu.load_items(items_food, known_item_mangle, ml, false);
+	
     if (!items_other.empty())
     {
         menu.add_entry(new MenuEntry("Other Items", MEL_SUBTITLE));
@@ -2644,7 +2642,6 @@ void check_item_knowledge(bool unknown_items)
 
     deleteAll(items);
     deleteAll(items_missile);
-    deleteAll(items_food);
     deleteAll(items_other);
 
     if (!all_items_known && (last_char == '\\' || last_char == '-'))
@@ -3744,7 +3741,9 @@ bool is_useless_item(const item_def &item, bool temp)
 
     case OBJ_BOOKS:
         if (!item_type_known(item) && item.sub_type != BOOK_MANUAL)
-             return false;
+            return false;
+        if (item.sub_type == NUM_BOOKS) //hack a crash away
+            return false;
         if (item_type_known(item) && item.sub_type != BOOK_MANUAL)
         {
             //Spellbooks are useless if all spells are either in the library
