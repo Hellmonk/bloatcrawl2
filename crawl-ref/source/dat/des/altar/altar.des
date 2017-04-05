@@ -510,10 +510,15 @@ WEIGHT: 30
 KFEAT:  E = altar_ecumenical
 KFEAT:  _ = altar_xom
 KFEAT:  1 = w:5 altar_jiyva / w:4 altar_lugonu / w:1 C
-KFEAT:  C = C / C mimic w:1
+KFEAT:  C = C / w:1 C mimic
 NSUBST: _ = 1:1 / 1:C
-SUBST:  - : .:60 K V d l
-ITEM:   = % / w:30 dagger ego:chaos / hunting sling ego:chaos / war axe ego:chaos
+SUBST:  - : .:60 A w d l
+SUBST:  . = . F:1 
+MARKER: F = lua:fog_machine { cloud_type = "translocational energy", \
+            pow_max = 10, delay_min = 10, delay_max = 40, walk_dist = 2, \
+            size = 1, spread_rate=3, start_clouds=2 }
+COLOUR: F = lightmagenta
+ITEM:     = % / w:30 dagger ego:chaos / hunting sling ego:chaos / mace ego:chaos
 MAP
     .
   .._
