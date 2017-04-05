@@ -399,8 +399,8 @@ ENDMAP
 
 NAME:   chequers_ecumenical_altar_grove
 DEPTH:  D:2-3
-TAGS:   uniq_ecumenical_altar chance_ecumenical_altar
-# Disconnected regions can spawn in the trees
+TAGS:   uniq_ecumenical_altar chance_ecumenical_altar no_tele_into
+# Disconnected regions probably cannot spawn in the trees now -yrm
 CHANCE: 60%
 WEIGHT: 5
 KFEAT:  _ = altar_ecumenical
@@ -422,11 +422,11 @@ MAP
 .-t-...t.---.
 .tt.-tt.-t--.
 -t--.-t--t-.
-  tt-.ttt-t-.
+  tt-.ttt.t-.
 -t.t.-.-t-t.
  -tt_tttt-@.
--ttttt--tt.
--ttt--.---.
+-.tttt--tt.
+-t.t--.---.
 ...........
 ENDMAP
 
