@@ -207,12 +207,12 @@ static void _hell_effects(int /*time_delta*/)
 
     _hell_effect_noise();
 
-    if (one_chance_in(3))
+    if (one_chance_in(5))
         _random_hell_miscast();
-    else if (x_chance_in_y(5, 9))
+    else if (x_chance_in_y(4, 11))
         _themed_hell_summon_or_miscast();
 
-    if (one_chance_in(3))   // NB: No "else"
+    if (one_chance_in(4))   // NB: No "else"
         _minor_hell_summons();
 }
 
