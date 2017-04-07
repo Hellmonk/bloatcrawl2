@@ -63,9 +63,9 @@ function ch_stash_search_annotate_item(it)
     if it.class(true) == "jewellery" then
       annot = annot .. "{" .. it.ego_type_terse
       if it.ego_type_terse == "Ice" then
-        annot = annot .. " rC+ rF-"
+        annot = annot .. " rC+"
       elseif it.ego_type_terse == "Fire" then
-        annot = annot .. " rF+ rC-"
+        annot = annot .. " rF+"
       elseif it.ego_type_terse == "Str" or it.ego_type_terse == "Int"
          or it.ego_type_terse == "Dex" or it.ego_type_terse == "Slay"
          or it.ego_type_terse == "EV" or it.ego_type_terse == "AC" then
