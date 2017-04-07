@@ -898,7 +898,7 @@ TAGS:   no_item_gen no_monster_gen no_rotate no_pool_fixup
 ORIENT: encompass
 WEIGHT: 5
 MONS:   rat w:4 / nothing w:1, rat / iguana w:5
-KMONS:  G = electric eel
+KMONS:  G = bullfrog
 KMONS:  H = nothing
 KMONS:  hJ = frilled lizard / ball python / adder / nothing w:2
 KMONS:  g = frilled lizard / ball python / giant cockroach / \
