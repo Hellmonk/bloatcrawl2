@@ -1752,11 +1752,15 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
         }
     }
 
-    // Leaving runes behind.
-    if (!_prompt_unique_rune(ygrd))
+    // Leaving runes behind. Make sure it's not a side-portal to prevent unnecessary warnings.
+	// Currently, only icecaves and bazaars can spawn on rune floors.
+    if (ygrd != DNGN_ENTER_ICE_CAVE && ygrd != DNGN_ENTER_BAZAAR)
     {
-        canned_msg(MSG_OK);
-        return false;
+        if (!_prompt_unique_rune(ygrd))
+        {
+            canned_msg(MSG_OK);
+            return false;
+        }
     }
 	
     // Prompt if the player is skipping branches.
