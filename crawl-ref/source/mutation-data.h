@@ -1243,7 +1243,7 @@ static const mutation_def mut_data[] =
 },
 
 // Scale mutations
-{ MUT_DISTORTION_FIELD, 2, 3, mutflag::GOOD, false,
+{ MUT_DISTORTION_FIELD, 0, 3, mutflag::GOOD, false,
   "repulsion field",
 
   {"You are surrounded by a mild repulsion field. (EV +2)",
@@ -1259,7 +1259,7 @@ static const mutation_def mut_data[] =
    "You feel less repulsive."},
 },
 
-{ MUT_ICY_BLUE_SCALES, 2, 3, mutflag::GOOD, true,
+{ MUT_ICY_BLUE_SCALES, 0, 3, mutflag::GOOD, true,
   "icy blue scales",
 
   {"You are partially covered in icy blue scales. (AC +2)",
@@ -1275,7 +1275,7 @@ static const mutation_def mut_data[] =
    "Your icy blue scales recede somewhat."},
 },
 
-{ MUT_IRIDESCENT_SCALES, 2, 3, mutflag::GOOD, true,
+{ MUT_IRIDESCENT_SCALES, 0, 3, mutflag::GOOD, true,
   "iridescent scales",
 
   {"You are partially covered in iridescent scales. (AC +2)",
@@ -1291,7 +1291,7 @@ static const mutation_def mut_data[] =
    "Your iridescent scales recede somewhat."},
 },
 
-{ MUT_LARGE_BONE_PLATES, 2, 3, mutflag::GOOD, true,
+{ MUT_LARGE_BONE_PLATES, 0, 3, mutflag::GOOD, true,
   "large bone plates",
 
   {"You are partially covered in large bone plates. (SH +4)",
@@ -1307,7 +1307,7 @@ static const mutation_def mut_data[] =
    "Your large bone plates recede somewhat."},
 },
 
-{ MUT_MOLTEN_SCALES, 2, 3, mutflag::GOOD, true,
+{ MUT_MOLTEN_SCALES, 0, 3, mutflag::GOOD, true,
   "molten scales",
 
   {"You are partially covered in molten scales. (AC +2)",
@@ -1341,7 +1341,7 @@ static const mutation_def mut_data[] =
 },
 #endif
 
-{ MUT_RUGGED_BROWN_SCALES, 2, 3, mutflag::GOOD, true,
+{ MUT_RUGGED_BROWN_SCALES, 0, 3, mutflag::GOOD, true,
   "rugged brown scales",
 
   {"You are partially covered in rugged brown scales. (AC +1, +3% HP)",
@@ -1357,7 +1357,7 @@ static const mutation_def mut_data[] =
    "Your rugged brown scales recede somewhat."},
 },
 
-{ MUT_SLIMY_GREEN_SCALES, 2, 3, mutflag::GOOD, true,
+{ MUT_SLIMY_GREEN_SCALES, 0, 3, mutflag::GOOD, true,
   "slimy green scales",
 
   {"You are partially covered in slimy green scales. (AC +2)",
@@ -1373,7 +1373,7 @@ static const mutation_def mut_data[] =
    "Your slimy green scales recede somewhat."},
 },
 
-{ MUT_THIN_METALLIC_SCALES, 2, 3, mutflag::GOOD, true,
+{ MUT_THIN_METALLIC_SCALES, 0, 3, mutflag::GOOD, true,
   "thin metallic scales",
 
   {"You are partially covered in thin metallic scales. (AC +2)",
@@ -1389,7 +1389,7 @@ static const mutation_def mut_data[] =
    "Your thin metallic scales recede somewhat."},
 },
 
-{ MUT_THIN_SKELETAL_STRUCTURE, 2, 3, mutflag::GOOD, false,
+{ MUT_THIN_SKELETAL_STRUCTURE, 0, 3, mutflag::GOOD, false,
   "thin skeletal structure",
 
   {"You have a somewhat thin skeletal structure. (Dex +2, Stealth)",
@@ -1405,7 +1405,7 @@ static const mutation_def mut_data[] =
    "Your skeletal structure densifies."},
 },
 
-{ MUT_YELLOW_SCALES, 2, 3, mutflag::GOOD, true,
+{ MUT_YELLOW_SCALES, 0, 3, mutflag::GOOD, true,
   "yellow scales",
 
   {"You are partially covered in yellow scales. (AC +2)",
@@ -1421,7 +1421,7 @@ static const mutation_def mut_data[] =
    "Your yellow scales recede somewhat."},
 },
 
-{ MUT_STURDY_FRAME, 2, 3, mutflag::GOOD, true,
+{ MUT_STURDY_FRAME, 0, 3, mutflag::GOOD, true,
   "sturdy frame",
 
   {"Your movements are slightly less encumbered by armour. (ER -2)",
