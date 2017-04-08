@@ -2762,7 +2762,11 @@ static void tag_read_you(reader &th)
         if(you.mutation[MUT_TENTACLE_SPIKE] > 1)
         {
             you.mutation[MUT_TENTACLE_SPIKE] = 1;	
-        }				
+        }
+        if(you.mutation[MUT_STURDY_FRAME] > 1)
+        {
+            you.mutation[MUT_STURDY_FRAME] = 1;	
+        }		
     }
 #endif
     }

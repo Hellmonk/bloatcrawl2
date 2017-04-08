@@ -1421,20 +1421,15 @@ static const mutation_def mut_data[] =
    "Your yellow scales recede somewhat."},
 },
 
-{ MUT_STURDY_FRAME, 0, 3, mutflag::GOOD, true,
+//No longer a covering mutation
+{ MUT_STURDY_FRAME, 4, 1, mutflag::GOOD, true,
   "sturdy frame",
 
-  {"Your movements are slightly less encumbered by armour. (ER -2)",
-   "Your movements are less encumbered by armour. (ER -4)",
-   "Your movements are significantly less encumbered by armour. (ER -6)"},
+  {"Your movements are less encumbered by armour. (ER -6)", "", ""},
 
-  {"You feel less encumbered by your armour.",
-   "You feel less encumbered by your armour.",
-   "You feel less encumbered by your armour."},
+  {"You feel less encumbered by your armour.", "", ""},
 
-  {"You feel more encumbered by your armour.",
-   "You feel more encumbered by your armour.",
-   "You feel more encumbered by your armour."},
+  {"You feel more encumbered by your armour.", "", ""},
 },
 
 { MUT_SANGUINE_ARMOUR, 0, 3, mutflag::GOOD, false,
