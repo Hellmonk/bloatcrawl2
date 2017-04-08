@@ -247,7 +247,7 @@ provided the shadow is still enough to do so. Dithmenos protects followers by
 occasionally shrouding those struck by attacks in dark smoke. Sufficiently
 pious followers of Dithmenos will find their own shadow will begin to attack on
 its own, and eventually gain the ability to assume the form of a shadow
-themself.
+themself. (HELLCRAWL: Dithmenos will let you see through walls and invisibility)
 %%%%
 Elyvilon powers
 

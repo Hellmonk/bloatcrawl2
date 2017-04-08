@@ -258,6 +258,8 @@ const vector<god_power> god_powers[NUM_GODS] =
            "You no longer bleed smoke." },
       { 4, "Your shadow now sometimes tangibly mimics your actions.",
            "Your shadow no longer tangibly mimics your actions." },
+      { 5, "None can hide from Dithmenos - or you.",
+           "Dithmenos no longer shows you the hidden." },
       { 5, ABIL_DITHMENOS_SHADOW_FORM, "transform into a swirling mass of shadows" },
     },
 

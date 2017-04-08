@@ -29,7 +29,7 @@ notifications:
 #        recipients:
 #          - crawl-ref-commits@lists.sourceforge.net
     irc:
-        channels: "chat.freenode.net##crawl-forks"
+        channels: chat.freenode.net##crawl-forks
         on_success: always
         on_failure: always
         use_notice: true

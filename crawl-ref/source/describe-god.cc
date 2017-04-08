@@ -893,6 +893,11 @@ static void _describe_god_powers(god_type which_god)
                 umbra_size > 5 ? " large" :
                 umbra_size > 3 ? "n" :
                                  " small");
+        if (have_passive(passive_t::detect_montier))
+            textcolour(god_colour(which_god));
+        else
+            textcolour(DARKGREY);
+        cprintf("You can sense threats.\n");
         break;
     }
 
