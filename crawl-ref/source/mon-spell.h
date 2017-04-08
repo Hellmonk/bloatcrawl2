@@ -1641,8 +1641,8 @@ static const mon_spellbook mspell_list[] =
     // ('*') Concentrated orbs.
     {  MST_WRETCHED_STAR,
       {
-       { SPELL_ISKENDERUNS_MYSTIC_BLAST, 60, MON_SPELL_MAGICAL },
-       { SPELL_CORRUPTING_PULSE, 40, MON_SPELL_MAGICAL },
+       { SPELL_ISKENDERUNS_MYSTIC_BLAST, 80, MON_SPELL_MAGICAL },
+       { SPELL_MALMUTATE, 20, MON_SPELL_MAGICAL },
       }
     },
 
