@@ -94,6 +94,7 @@ class no_messages
 {
 public:
     no_messages();
+    no_messages(bool really_suppress);
     ~no_messages();
 private:
     bool msuppressed;
