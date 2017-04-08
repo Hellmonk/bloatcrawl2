@@ -2733,6 +2733,33 @@ static void tag_read_you(reader &th)
             you.mutation[MUT_INHIBITED_REGENERATION] = 1;
         }
     }
+        //other mutations are flattened
+    {
+        if(you.mutation[MUT_AGILE] > 1)
+        {
+            you.mutation[MUT_AGILE] = 1;
+        }
+        if(you.mutation[MUT_CLUMSY] > 1)
+        {
+            you.mutation[MUT_CLUMSY] = 1;			
+        }	
+        if(you.mutation[MUT_CLEVER] > 1)
+        {
+            you.mutation[MUT_CLEVER] = 1;			
+        }
+        if(you.mutation[MUT_DOPEY] > 1)
+        {
+            you.mutation[MUT_DOPEY] = 1;			
+        }
+        if(you.mutation[MUT_STRONG] > 1)
+        {
+            you.mutation[MUT_STRONG] = 1;			
+        }
+        if(you.mutation[MUT_WEAK] > 1)
+        {
+            you.mutation[MUT_WEAK] = 1;	
+        }		
+    }
 #endif
     }
 

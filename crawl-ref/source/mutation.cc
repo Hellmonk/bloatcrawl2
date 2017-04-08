@@ -1863,7 +1863,7 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         || mut == MUT_AGILE || mut == MUT_WEAK
         || mut == MUT_DOPEY || mut == MUT_CLUMSY)
     {
-        level = min(level, 2);
+        level = min(level, 1);
     }
     if (mut == MUT_ICEMAIL)
     {

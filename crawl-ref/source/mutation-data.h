@@ -32,29 +32,26 @@ static const mutation_def mut_data[] =
    "Your skin feels delicate."},
 },
 
-{ MUT_STRONG, 7, 2, mutflag::GOOD, false,
+{ MUT_STRONG, 7, 1, mutflag::GOOD, false,
   "strong",
 
-  {"Your muscles are strong. (Str +2)",
-   "Your muscles are very strong. (Str +4)", ""},
+  {"Your muscles are strong. (Str +5)", "", ""},
   {"", "", ""},
   {"", "", ""},
 },
 
-{ MUT_CLEVER, 7, 2, mutflag::GOOD, false,
+{ MUT_CLEVER, 7, 1, mutflag::GOOD, false,
   "clever",
 
-  {"Your mind is acute. (Int +2)",
-   "Your mind is very acute. (Int +4)", ""},
+  {"Your mind is acute. (Int +5)", "", ""},
   {"", "", ""},
   {"", "", ""},
 },
 
-{ MUT_AGILE, 7, 2, mutflag::GOOD, false,
+{ MUT_AGILE, 7, 1, mutflag::GOOD, false,
   "agile",
 
-  {"You are agile. (Dex +2)",
-   "You are very agile. (Dex +4)", ""},
+  {"You are agile. (Dex +5)", "", ""},
   {"", "", ""},
   {"", "", ""},
 },
@@ -256,29 +253,26 @@ static const mutation_def mut_data[] =
    ""},
 },
 
-{ MUT_WEAK, 8, 2, mutflag::BAD | mutflag::XOM, false,
+{ MUT_WEAK, 8, 1, mutflag::BAD | mutflag::XOM, false,
   "weak",
 
-  {"You are weak. (Str -2)",
-   "You are very weak. (Str -4)", ""},
+  {"You are weak. (Str -5)", "", ""},
   {"", "", ""},
   {"", "", ""},
 },
 
-{ MUT_DOPEY, 8, 2, mutflag::BAD | mutflag::XOM, false,
+{ MUT_DOPEY, 8, 1, mutflag::BAD | mutflag::XOM, false,
   "dopey",
 
-  {"You are dopey. (Int -2)",
-   "You are very dopey. (Int -4)", ""},
+  {"You are dopey. (Int -5)", "", ""},
   {"", "", ""},
   {"", "", ""},
 },
 
-{ MUT_CLUMSY, 8, 2, mutflag::BAD | mutflag::XOM, false,
+{ MUT_CLUMSY, 8, 1, mutflag::BAD | mutflag::XOM, false,
   "clumsy",
 
-  {"You are clumsy. (Dex -2)",
-   "You are very clumsy. (Dex -4)", ""},
+  {"You are clumsy. (Dex -5)", "", ""},
   {"", "", ""},
   {"", "", ""},
 },
