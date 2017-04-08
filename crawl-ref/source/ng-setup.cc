@@ -147,11 +147,15 @@ item_def* newgame_make_item(object_class_type base,
     // Make sure we didn't get a stack of shields or such nonsense.
     ASSERT(item.quantity == 1 || is_stackable_item(item));
 
-    // If that didn't help, nothing will.
-    if (is_useless_item(item))
+    // if that didn't help, nothing will. 
+    // Don't check useless books because it causes an assert failure.
+    if (item.base_type != OBJ_BOOKS)
     {
-        item = item_def();
-        return nullptr;
+	    if (is_useless_item(item))
+	    {
+		    item = item_def();
+		    return nullptr;
+	    }
     }
 
     if ((item.base_type == OBJ_WEAPONS && can_wield(&item, false, false)
