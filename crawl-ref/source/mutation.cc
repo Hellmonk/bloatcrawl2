@@ -1386,8 +1386,7 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
 
     const unsigned int old_talents = your_talents(false).size();
 
-    int count = (which_mutation == RANDOM_CORRUPT_MUTATION
-                 || which_mutation == RANDOM_QAZLAL_MUTATION)
+    int count = (which_mutation == RANDOM_QAZLAL_MUTATION)
                 ? min(2, mdef.levels - you.mutation[mutat])
                 : 1;
 
