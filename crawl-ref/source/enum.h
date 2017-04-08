@@ -3930,6 +3930,7 @@ enum mutation_type
     MUT_SANGUINE_ARMOUR,
 #endif
     MUT_HOP,
+    MUT_NO_REGENERATION,
     NUM_MUTATIONS,
 
     RANDOM_MUTATION,
