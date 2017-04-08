@@ -3243,7 +3243,7 @@ int check_stealth()
     stealth += STEALTH_PIP * player_mutation_level(MUT_NIGHTSTALKER);
     stealth += (STEALTH_PIP / 2)
                 * player_mutation_level(MUT_THIN_SKELETAL_STRUCTURE);
-    stealth += STEALTH_PIP * player_mutation_level(MUT_CAMOUFLAGE);
+    stealth += STEALTH_PIP * player_mutation_level(MUT_CAMOUFLAGE) * 3;
     const int how_transparent = player_mutation_level(MUT_TRANSLUCENT_SKIN);
     if (how_transparent)
         stealth += 15 * (how_transparent);

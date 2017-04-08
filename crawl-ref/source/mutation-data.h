@@ -1448,20 +1448,14 @@ static const mutation_def mut_data[] =
    "You feel your blood thin."},
 },
 
-{ MUT_CAMOUFLAGE, 1, 3, mutflag::GOOD, true,
+{ MUT_CAMOUFLAGE, 3, 1, mutflag::GOOD, true,
   "camouflage",
 
-  {"Your skin changes colour to match your surroundings (Stealth+).",
-   "Your skin blends seamlessly with your surroundings (Stealth++).",
-   "Your skin perfectly mimics your surroundings (Stealth+++)."},
+  {"Your skin blends seamlessly with your surroundings (Stealth+++).", "", ""},
 
-  {"Your skin functions as natural camouflage.",
-   "Your natural camouflage becomes more effective.",
-   "Your natural camouflage becomes more effective."},
+  {"Your skin functions as natural camouflage.", "", ""},
 
-  {"Your skin no longer functions as natural camouflage.",
-   "Your natural camouflage becomes less effective.",
-   "Your natural camouflage becomes less effective."},
+  {"Your skin no longer functions as natural camouflage.", "", ""},
 },
 
 { MUT_IGNITE_BLOOD, 0, 1, mutflag::GOOD, false,
