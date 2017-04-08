@@ -984,7 +984,7 @@ public:
 
         // Max spike damage: 8.
         // ... yes, apparently tentacle spikes are "kicks".
-        return player_mutation_level(MUT_TENTACLE_SPIKE);
+        return player_mutation_level(MUT_TENTACLE_SPIKE) * 3;
     }
 
     string get_verb() const override

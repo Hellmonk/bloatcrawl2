@@ -785,20 +785,14 @@ static const mutation_def mut_data[] =
 },
 
 // Octopode only
-{ MUT_TENTACLE_SPIKE, 10, 3, mutflag::GOOD, true,
+{ MUT_TENTACLE_SPIKE, 10, 1, mutflag::GOOD, true,
   "tentacle spike",
 
-  {"One of your tentacles bears a spike.",
-   "One of your tentacles bears a nasty spike.",
-   "One of your tentacles bears a large vicious spike."},
+  {"One of your tentacles bears a nasty spike.", "", ""},
 
-  {"One of your lower tentacles grows a sharp spike.",
-   "Your tentacle spike grows bigger.",
-   "Your tentacle spike grows even bigger."},
+  {"One of your lower tentacles grows a sharp spike.", "", ""},
 
-  {"Your tentacle spike disappears.",
-   "Your tentacle spike becomes smaller.",
-   "Your tentacle spike recedes somewhat."},
+  {"Your tentacle spike disappears.", "", ""},
 },
 #if TAG_MAJOR_VERSION == 34
 
