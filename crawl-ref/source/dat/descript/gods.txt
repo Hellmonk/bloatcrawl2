@@ -243,11 +243,13 @@ Dithmenos powers
 Followers of Dithmenos are constantly surrounded in an aura of shadow, the
 extent of which is reflective of their level of devotion. Dithmenos grants
 followers the ability to instantly step into the shadow of nearby creatures,
-provided the shadow is still enough to do so. Dithmenos protects followers by
+provided the shadow is still enough to do so. Dithmenos reveals the presence
+of creatures lurking out of sight; for the especially devout, Dithmenos will
+also reveal invisible creatures. Dithmenos protects followers by
 occasionally shrouding those struck by attacks in dark smoke. Sufficiently
 pious followers of Dithmenos will find their own shadow will begin to attack on
 its own, and eventually gain the ability to assume the form of a shadow
-themself. (HELLCRAWL: Dithmenos will let you see through walls and invisibility)
+themselves.
 %%%%
 Elyvilon powers
 
