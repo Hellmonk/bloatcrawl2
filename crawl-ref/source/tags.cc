@@ -2720,19 +2720,19 @@ static void tag_read_you(reader &th)
 #if TAG_MAJOR_VERSION == 34
         // Slow regeneration split into two single-level muts:
         // * Inhibited regeneration (no regen in los of monsters)
-        // * No regeneration (what DDs get)
-        if (you.mutation[MUT_INHIBITED_REGENERATION] > 1)
+        // * No regeneration
+    {
+        if (you.species == SP_GHOUL
+                 && you.mutation[MUT_INHIBITED_REGENERATION] > 1)
         {
-            if (you.species == SP_DEEP_DWARF)
-            {
-                you.mutation[MUT_NO_REGENERATION] = 1;
-            }
-            else
-            {
-                you.mutation[MUT_NO_REGENERATION] = 0;
-                you.mutation[MUT_INHIBITED_REGENERATION] = 1;
-            }
+            you.innate_mutation[MUT_INHIBITED_REGENERATION] = 1;
+            you.mutation[MUT_INHIBITED_REGENERATION] = 1;
         }
+        else if (you.mutation[MUT_INHIBITED_REGENERATION] > 1)
+        {
+            you.mutation[MUT_INHIBITED_REGENERATION] = 1;
+        }
+    }
 #endif
     }
 
