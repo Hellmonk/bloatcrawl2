@@ -1569,7 +1569,6 @@ int player_res_cold(bool calc_unid, bool temp, bool items)
     rc -= player_mutation_level(MUT_COLD_VULNERABILITY, temp);
     rc -= player_mutation_level(MUT_TEMPERATURE_SENSITIVITY, temp);
     rc += player_mutation_level(MUT_ICY_BLUE_SCALES, temp) == 3 ? 1 : 0;
-    rc += player_mutation_level(MUT_SHAGGY_FUR, temp) == 3 ? 1 : 0;
 
     if (rc < -3)
         rc = -3;
@@ -6093,8 +6092,8 @@ int player::armour_class(bool /*calc_unid*/) const
           ? player_mutation_level(MUT_TOUGH_SKIN) * 100 : 0;
               // +1, +2, +3
     AC += player_mutation_level(MUT_SHAGGY_FUR)
-          ? player_mutation_level(MUT_SHAGGY_FUR) * 100 : 0;
-              // +1, +2, +3
+          ? player_mutation_level(MUT_SHAGGY_FUR) * 400 : 0;
+              // +4
     AC += player_mutation_level(MUT_GELATINOUS_BODY)
           ? player_mutation_level(MUT_GELATINOUS_BODY) * 100 : 0;
               // +1, +2, +3

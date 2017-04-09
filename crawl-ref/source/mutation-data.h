@@ -548,20 +548,16 @@ static const mutation_def mut_data[] =
    "You feel genetically unstable."},
 },
 
-{ MUT_EVOLUTION, 4, 2, mutflag::GOOD, false,
+{ MUT_EVOLUTION, 4, 1, mutflag::GOOD, false,
   "evolution",
 
-  {"You evolve.",
-   "You rapidly evolve.",
-   ""},
+  {"You evolve.", ""},
 
   {"You feel nature experimenting on you. Don't worry, failures die fast.",
-   "Your genes go into a fast flux.",
+   "", 
    ""},
 
-  {"Nature stops experimenting on you.",
-   "Your wild genetic ride slows down.",
-   ""},
+  {"Nature stops experimenting on you.", "", ""},
 },
 
 { MUT_FRAIL, 10, 3,
@@ -886,21 +882,14 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-
-{ MUT_SHAGGY_FUR, 2, 3, mutflag::GOOD, true,
+{ MUT_SHAGGY_FUR, 4, 1, mutflag::GOOD, true,
   "shaggy fur",
 
-  {"You are covered in fur. (AC +1)",
-   "You are covered in thick fur. (AC +2)",
-   "Your thick and shaggy fur keeps you warm. (AC +3, rC+)"},
+  {"You are covered in thick fur. (AC +4)", "", ""},
 
-  {"Fur sprouts all over your body.",
-   "Your fur grows into a thick mane.",
-   "Your thick fur grows shaggy and warm."},
+  {"Fur sprouts all over your body.", "", ""},
 
-  {"You shed all your fur.",
-   "Your thick fur recedes somewhat.",
-   "Your shaggy fur recedes somewhat."},
+  {"You shed all your fur.", "", ""},
 },
 
 { MUT_HIGH_MAGIC, 2, 3, mutflag::GOOD, false,

@@ -2770,6 +2770,14 @@ static void tag_read_you(reader &th)
         if(you.mutation[MUT_CAMOUFLAGE] > 1)
         {
             you.mutation[MUT_CAMOUFLAGE] = 1;	
+        }
+        if(you.mutation[MUT_EVOLUTION] > 1)
+        {
+            you.mutation[MUT_EVOLUTION] = 1;	
+        }
+        if(you.mutation[MUT_SHAGGY_FUR] > 1)
+        {
+            you.mutation[MUT_SHAGGY_FUR] = 1;	
         }		
     }
 #endif
