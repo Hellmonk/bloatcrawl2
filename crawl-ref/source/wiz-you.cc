@@ -192,6 +192,8 @@ void wizard_change_species_to(species_type sp)
             ++you.innate_mutation[m];
         }
     }
+	
+    update_vision_range(); // for DS with Nightstalker
 
     if ((old_sp == SP_OCTOPODE) != (sp == SP_OCTOPODE))
     {

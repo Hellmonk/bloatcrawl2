@@ -882,6 +882,16 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
+{ MUT_DAYWALKER, 4, 1, mutflag::BAD, true,
+  "repel shadows",
+
+  {"Shadows flee at your approach. (+LOS)", "", ""},
+
+  {"The shadows flee from you.", "", ""},
+
+  {"You feel the shadows return.", "", ""},
+},
+
 { MUT_SHAGGY_FUR, 4, 1, mutflag::GOOD, true,
   "shaggy fur",
 

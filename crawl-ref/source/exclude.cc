@@ -73,7 +73,8 @@ static bool _need_auto_exclude(const monster* mon, bool sleepy = false)
 // when gaining/losing nightstalker.
 static int _get_full_exclusion_radius()
 {
-    return LOS_DEFAULT_RANGE - player_mutation_level(MUT_NIGHTSTALKER);
+    return LOS_DEFAULT_RANGE - player_mutation_level(MUT_NIGHTSTALKER)
+        + player_mutation_level(MUT_DAYWALKER);
 }
 
 // If the monster is in the auto_exclude list, automatically set an

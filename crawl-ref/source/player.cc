@@ -701,7 +701,14 @@ void update_vision_range()
     int nom   = 1;
     int denom = 1;
 
-    // Nightstalker gives -1/-2/-3.
+    // Daywalker gives +1
+    if (player_mutation_level(MUT_DAYWALKER))
+    {
+        nom *= LOS_DEFAULT_RANGE + 1;
+        denom *= LOS_DEFAULT_RANGE;
+    }
+	
+	// Nightstalker gives -1/-2/-3.
     if (player_mutation_level(MUT_NIGHTSTALKER))
     {
         nom *= LOS_DEFAULT_RANGE - player_mutation_level(MUT_NIGHTSTALKER);
