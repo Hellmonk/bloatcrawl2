@@ -1063,9 +1063,9 @@ static void _ensure_entry(branch_type br)
         if (grd(*ri) == entry)
             return;
 
-    // Find primary upstairs.
+    // Find zot entry and try to place it near there.
     for (rectangle_iterator ri(1); ri; ++ri)
-        if (grd(*ri) == DNGN_STONE_STAIRS_UP_I)
+        if (grd(*ri) == DNGN_ENTER_ZOT)
         {
             for (distance_iterator di(*ri); di; ++di)
                 if (in_bounds(*di) && grd(*di) == DNGN_FLOOR)
@@ -1078,7 +1078,7 @@ static void _ensure_entry(branch_type br)
                 }
             die("no floor to place a branch entrance");
         }
-    die("no upstairs on %s???", level_id::current().describe().c_str());
+    return;
 }
 
 static void _add_missing_branches()
@@ -1088,8 +1088,6 @@ static void _add_missing_branches()
     // Could do all just in case, but this seems safer:
     if (lc == level_id(BRANCH_DEPTHS, 3) || lc == level_id(BRANCH_DUNGEON, 24))
         _ensure_entry(BRANCH_PANDEMONIUM);
-    if (lc == level_id(BRANCH_DEPTHS, 3) || lc == level_id(BRANCH_DUNGEON, 25))
-        _ensure_entry(BRANCH_ABYSS);
     if (player_in_branch(BRANCH_VESTIBULE))
     {
         for (rectangle_iterator ri(0); ri; ++ri)
