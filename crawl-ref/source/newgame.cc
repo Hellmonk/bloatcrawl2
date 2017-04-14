@@ -1099,7 +1099,7 @@ static job_group jobs_order[] =
     {
         "Mage",
         coord_def(56, 0), 22,
-        { JOB_WIZARD, JOB_CONJURER, JOB_SUMMONER, JOB_NECROMANCER,
+        { JOB_WIZARD, JOB_SUMMONER, JOB_NECROMANCER,
           JOB_FIRE_ELEMENTALIST, JOB_ICE_ELEMENTALIST,
           JOB_AIR_ELEMENTALIST, JOB_EARTH_ELEMENTALIST}
     }

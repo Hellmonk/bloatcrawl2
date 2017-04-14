@@ -34,10 +34,6 @@ Chaos Knight
 
 Kaosriddere er den utilregnelige Xoms legetøj og underkaster sig gudens
 konstant skiftende humør.
-%%%%
-Conjurer
-
-Fremmanere løser problemer med skadelige besværgelser fra Bogen om
 fremmaninger.
 %%%%
 Death Knight

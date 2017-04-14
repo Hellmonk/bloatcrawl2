@@ -98,16 +98,6 @@ static const map<job_type, job_def> job_data =
       { SK_WEAPON, 3 } },
 } },
 
-{ JOB_CONJURER, {
-    "Cj", "Conjurer",
-    0, 7, 5,
-    { SP_DEEP_ELF, SP_NAGA, SP_TENGU, SP_BASE_DRACONIAN, SP_DEMIGOD, },
-    { "robe", "book of Conjurations" },
-    WCHOICE_NONE,
-    { { SK_CONJURATIONS, 4 }, { SK_SPELLCASTING, 2 }, { SK_DODGING, 2 },
-      { SK_STEALTH, 2 }, },
-} },
-
 { JOB_EARTH_ELEMENTALIST, {
     "EE", "Earth Elementalist",
     0, 7, 5,
@@ -254,6 +244,15 @@ static const map<job_type, job_def> job_data =
       { SK_TRANSLOCATIONS, 1 }, { SK_CONJURATIONS, 1 }, { SK_SUMMONINGS, 1 }, },
 } },
 #if TAG_MAJOR_VERSION == 34
+{ JOB_CONJURER, {
+    "Cj", "Conjurer",
+    0, 0, 0,
+    { },
+    { },
+    WCHOICE_NONE,
+    { },
+} },
+
 { JOB_DEATH_KNIGHT, {
     "DK", "Death Knight",
     0, 0, 0,

@@ -34,10 +34,6 @@ Chaos Knight
 
 I cavalieri del caos sono burattini dell'imprevedibile divinità Xom e sono
 soggetti al suo continuo cambio di umore.
-%%%%
-Conjurer
-
-I maghi della comparizione affrontano i problemi con incantesimi potenti di
 danno diretto dal Libro della Comparizione.
 %%%%
 Death Knight
