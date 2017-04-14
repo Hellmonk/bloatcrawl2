@@ -12,14 +12,15 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_MEPHITIC_CLOUD,
 },
 
+#if TAG_MAJOR_VERSION == 34
 {   // Book of Conjurations
     SPELL_MAGIC_DART,
     SPELL_SEARING_RAY,
     SPELL_DAZZLING_SPRAY,
     SPELL_FULMINANT_PRISM,
-    SPELL_ISKENDERUNS_MYSTIC_BLAST,
     SPELL_BATTLESPHERE,
 },
+#endif
 
 {   // Book of Flames
     SPELL_FLAME_TONGUE,
@@ -267,7 +268,7 @@ static const vector<spell_type> spellbook_templates[] =
 
 {   // Book of Power
     SPELL_FULMINANT_PRISM,
-    SPELL_ISKENDERUNS_MYSTIC_BLAST,
+    SPELL_BATTLESPHERE,
     SPELL_BOLT_OF_MAGMA,
     SPELL_IRON_SHOT,
     SPELL_IOOD,
@@ -309,7 +310,7 @@ static const vector<spell_type> spellbook_templates[] =
 },
 
 {   // Book of the Dragon
-    SPELL_FLAME_TONGUE,
+    SPELL_SEARING_RAY,
     SPELL_CAUSE_FEAR,
     SPELL_BOLT_OF_FIRE,
     SPELL_DRAGON_FORM,
