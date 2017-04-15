@@ -480,13 +480,13 @@ void you_teleport()
 
         if (player_in_branch(BRANCH_ABYSS))
         {
-            mpr("You feel the power of the Abyss delaying your translocation!");
+            mpr("You feel the power of the Abyss greatly delaying your translocation!");
             teleport_delay += 5 + random2(10);
         }
         else if (player_has_orb())
         {
             mprf(MSGCH_ORB, "You feel the Orb delaying your translocation!");
-            teleport_delay += 5 + random2(5);
+            teleport_delay += 2 + random2(3);
         }
 
         you.set_duration(DUR_TELEPORT, teleport_delay);
