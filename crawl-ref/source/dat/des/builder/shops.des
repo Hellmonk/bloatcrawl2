@@ -62,7 +62,8 @@ end
 # Gozag code uses it to find out where shops can normally place.
 NAME: serial_shops
 TAGS: allow_dup extra luniq
-DEPTH:  Depths, Orc, Shoals, Snake, Vaults
+DEPTH:  D:10-, Depths, Orc, Shoals, Snake, Vaults
+CHANCE: 20% (D)
 CHANCE: 40% (Depths)
 CHANCE: 40% (Orc)
 CHANCE: 60% (Vaults)
