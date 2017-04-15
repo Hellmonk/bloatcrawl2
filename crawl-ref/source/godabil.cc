@@ -5300,7 +5300,7 @@ int get_sacrifice_piety(ability_type sac, bool include_skill)
                                      : mut == MUT_CLUMSY ? STAT_DEX
                                      : mut == MUT_DOPEY  ? STAT_INT
                                                          : NUM_STATS;
-                piety_gain += 4 + _get_stat_piety(stat, 4);
+                piety_gain += 8 + _get_stat_piety(stat, 8);
             }
             // the other sacrifices get sharply worse if you already
             // have levels of them.
