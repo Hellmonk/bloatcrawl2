@@ -909,13 +909,6 @@ void PasswallDelay::finish()
     switch (grd(dest))
     {
     default:
-        if (!you.is_habitable(dest))
-        {
-            mpr("...yet there is something new on the other side. "
-                "You quickly turn back.");
-            redraw_screen();
-            return;
-        }
         break;
 
     case DNGN_CLOSED_DOOR:      // open the door
