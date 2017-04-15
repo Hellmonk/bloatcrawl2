@@ -1072,6 +1072,15 @@ bool physiology_mutation_conflict(mutation_type mutat)
     {
         return true;
     }
+	
+    // Kobolds aren't allowed to get stat mutations.
+	// It interferes with their gimmick and also is too likely to statzero them.
+	if (you.species == SP_KOBOLD
+        && (mutat == MUT_STRONG || mutat == MUT_WEAK || mutat == MUT_AGILE || mutat == MUT_CLUMSY
+            || mutat == MUT_CLEVER || mutat == MUT_DOPEY))
+    {
+        return true;		
+    }
 
     // No feet.
     if (!player_has_feet(false)
