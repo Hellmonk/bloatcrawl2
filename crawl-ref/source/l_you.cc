@@ -894,7 +894,7 @@ LUAFN(you_change_species)
         PLUARET(boolean, false);
     }
 
-    change_species_to(sp);
+    wizard_change_species_to(sp);
     PLUARET(boolean, true);
 }
 
