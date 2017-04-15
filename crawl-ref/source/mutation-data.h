@@ -810,20 +810,14 @@ static const mutation_def mut_data[] =
 },
 
 // Naga and Draconian only
-{ MUT_STINGER, 8, 3, mutflag::GOOD, true,
+{ MUT_STINGER, 8, 1, mutflag::GOOD, true,
   "stinger",
 
-  {"Your tail ends in a poisonous barb.",
-   "Your tail ends in a sharp poisonous barb.",
-   "Your tail ends in a wickedly sharp and poisonous barb."},
+  {"Your tail ends in a sharp poisonous barb.", "", ""},
 
-  {"A poisonous barb forms on the end of your tail.",
-   "The barb on your tail looks sharper.",
-   "The barb on your tail looks very sharp."},
+  {"A poisonous barb forms on the end of your tail.", "", ""},
 
-  {"The barb on your tail disappears.",
-   "The barb on your tail seems less sharp.",
-   "The barb on your tail seems less sharp."},
+  {"The barb on your tail disappears.", "", ""},
 },
 
 // Draconian only

@@ -2776,7 +2776,11 @@ static void tag_read_you(reader &th)
         if(you.mutation[MUT_SHAGGY_FUR] > 1)
         {
             you.mutation[MUT_SHAGGY_FUR] = 1;	
-        }		
+        }
+        if(you.mutation[MUT_STINGER] > 1)
+        {
+            you.mutation[MUT_STINGER] = 1;	
+        }			
     }
 #endif
     }
