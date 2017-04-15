@@ -929,11 +929,11 @@ MAGIC:   1
 ANGRY:   5
 SLAY:    3
 
-NAME:    ring of Shaolin
+NAME:    ring of Dodge City
 OBJ:     OBJ_JEWELLERY/RING_EVASION
 PLUS:    +8
 COLOUR:  ETC_POISON
-TILE:    urand_shaolin
+TILE:    urand_dodge_city
 
 NAME:    ring of Robustness
 OBJ:     OBJ_JEWELLERY/RING_PROTECTION
