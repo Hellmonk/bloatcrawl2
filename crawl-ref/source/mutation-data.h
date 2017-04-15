@@ -179,7 +179,7 @@ static const mutation_def mut_data[] =
    "Your demonic guardian is weakened."},
 },
 
-{ MUT_SHOCK_RESISTANCE, 2, 1, mutflag::GOOD, true,
+{ MUT_SHOCK_RESISTANCE, 3, 1, mutflag::GOOD, true,
   "electricity resistance",
 
   {"You are resistant to electric shocks. (rElec)", "", ""},
