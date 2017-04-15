@@ -5794,7 +5794,7 @@ int player::adjusted_body_armour_penalty(int scale) const
 {
     const int base_ev_penalty =
         max(0, unadjusted_body_armour_penalty()
-                   - get_mutation_level[MUT_STURDY_FRAME] * 6);
+                   - get_mutation_level(MUT_STURDY_FRAME) * 6);
 
     // New formula for effect of str on aevp: (2/5) * evp^2 / (str+3)
     return 2 * base_ev_penalty * base_ev_penalty * (450 - skill(SK_ARMOUR, 10))
@@ -6097,32 +6097,6 @@ int player::armour_class(bool /*calc_unid*/) const
     return AC / 100;
 }
 
-int player::armour_class(bool /*calc_unid*/) const
-{
-    const int scale = 100;
-    int AC = base_ac(scale);
-
-    if (duration[DUR_ICY_ARMOUR])
-        AC += 500 + you.props[ICY_ARMOUR_KEY].get_int() * 8;
-
-    if (has_mutation(MUT_ICEMAIL))
-        AC += 100 * player_icemail_armour_class();
-
-    if (duration[DUR_QAZLAL_AC])
-        AC += 300;
-
-    if (duration[DUR_SPWPN_PROTECTION])
-        AC += 700;
-
-    if (duration[DUR_CORROSION])
-        AC -= 400 * you.props["corrosion_amount"].get_int();
-
-    AC += _bone_armour_bonus();
-    AC += sanguine_armour_bonus();
-
-    return AC / scale;
->>>>>>> f20264c... Rework the mutation api and add lua bindings
-}
  /**
   * Guaranteed damage reduction.
   *
