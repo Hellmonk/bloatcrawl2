@@ -978,20 +978,14 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_PASSIVE_MAPPING, 3, 3, mutflag::GOOD, false,
+{ MUT_PASSIVE_MAPPING, 3, 1, mutflag::GOOD, false,
   "sense surroundings",
 
-  {"You passively map a small area around you.",
-   "You passively map the area around you.",
-   "You passively map a large area around you."},
+  {"You passively map the area around you.", "", ""},
 
-  {"You feel a strange attunement to the structure of the dungeons.",
-   "Your attunement to dungeon structure grows.",
-   "Your attunement to dungeon structure grows further."},
+  {"You feel a strange attunement to the structure of the dungeons.", "", ""},
 
-  {"You feel slightly disoriented.",
-   "You feel slightly disoriented.",
-   "You feel slightly disoriented."},
+  {"You feel slightly disoriented.", "", ""},
 },
 
 { MUT_ICEMAIL, 0, 1, mutflag::GOOD, false,

@@ -664,7 +664,6 @@ static const map<species_type, species_def> species_data =
     11, 8, 8, // 27
     { STAT_STR, STAT_INT }, 4,
     { { MUT_NO_REGENERATION, 1, 1 }, { MUT_PASSIVE_MAPPING, 1, 1 },
-      { MUT_PASSIVE_MAPPING, 1, 9 }, { MUT_PASSIVE_MAPPING, 1, 18 },
       { MUT_NEGATIVE_ENERGY_RESISTANCE, 1, 14 }, },
     { "You are resistant to damage.",
       "You can recharge devices by infusing magical energy." },
