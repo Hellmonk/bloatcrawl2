@@ -609,7 +609,7 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_NEGATIVE_ENERGY_RESISTANCE, 0, 3, mutflag::GOOD, false,
+{ MUT_NEGATIVE_ENERGY_RESISTANCE, 4, 3, mutflag::GOOD, false,
   "negative energy resistance",
 
   {"You resist negative energy. (rN+)",
