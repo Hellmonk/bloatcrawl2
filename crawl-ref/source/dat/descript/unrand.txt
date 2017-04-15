@@ -495,8 +495,9 @@ A jewelled amulet famed for its powers of resilience and recuperation.
 %%%%
 autumn katana
 
-An exotic sword, enchanted to provide both mental and physical strength to the
-wielder.
+A blade composed of 1000 times folded Hanzo steel. It is almost indestructible 
+and has been further enchanted to provide both mental and physical strength 
+to the wielder.
 %%%%
 shillelagh "Devastator"
 
