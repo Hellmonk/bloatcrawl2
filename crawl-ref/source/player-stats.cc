@@ -613,8 +613,6 @@ static void _handle_stat_change(stat_type stat)
         mprf(MSGCH_WARN, "You have lost your %s.", stat_desc(stat, SD_NAME));
         take_note(Note(NOTE_MESSAGE, 0, 0, make_stringf("Lost %s.",
             stat_desc(stat, SD_NAME)).c_str()), true);
-        // 2 to 5 turns of paralysis (XXX: decremented right away?)
-        you.increase_duration(DUR_PARALYSIS, 2 + random2(3));
     }
 
     you.redraw_stats[stat] = true;
