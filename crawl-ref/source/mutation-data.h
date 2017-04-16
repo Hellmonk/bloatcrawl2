@@ -626,7 +626,9 @@ static const mutation_def mut_data[] =
    "You feel more resistant to negative energy.",
    "You feel more resistant to negative energy."},
 
-  {"", "", ""},
+  {"You no longer feel resistant to negative energy.",
+   "You feel less resistant to negative energy.",
+   "You feel less resistant to negative energy."},
 },
 
 #if TAG_MAJOR_VERSION == 34
