@@ -94,9 +94,6 @@ const vector<god_power> god_powers[NUM_GODS] =
       { 3, ABIL_ZIN_IMPRISON, "call upon Zin to imprison the lawless" },
       { 5, ABIL_ZIN_SANCTUARY, "call upon Zin to create a sanctuary" },
       {-1, ABIL_ZIN_DONATE_GOLD, "donate money to Zin" },
-      { 7, ABIL_ZIN_CURE_ALL_MUTATIONS,
-           "Zin will cure all your mutations... once.",
-           "Zin is no longer ready to cure all your mutations." },
     },
 
     // TSO
@@ -1721,6 +1718,26 @@ bool do_god_gift(bool forced)
         case GOD_PAKELLAS:
             success = _give_pakellas_gift();
             break;
+			
+        case GOD_ZIN:
+        {
+			if(forced || you.piety >= piety_breakpoint(3))
+            {
+			    if (!you.how_mutated())
+                    break;
+                simple_god_message(" grants you a gift!");
+                success = delete_mutation(RANDOM_MUTATION, "Zin's grace", true,
+                                       true, true);
+                if(success)
+                {
+                    _inc_gift_timeout(12 + roll_dice(2, 6));
+                    mpr("You feel purified.");
+                }
+                else
+                    mpr("You feel as though nothing has changed.");
+			}
+			break;
+        }
 
         case GOD_OKAWARU:
         case GOD_TROG:
