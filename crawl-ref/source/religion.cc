@@ -1721,9 +1721,9 @@ bool do_god_gift(bool forced)
 			
         case GOD_ZIN:
         {
-			if(forced || you.piety >= piety_breakpoint(3))
+            if(forced || you.piety >= piety_breakpoint(3))
             {
-			    if (!you.how_mutated())
+                if (!you.how_mutated())
                     break;
                 simple_god_message(" grants you a gift!");
                 success = delete_mutation(RANDOM_MUTATION, "Zin's grace", true,
@@ -1735,8 +1735,8 @@ bool do_god_gift(bool forced)
                 }
                 else
                     mpr("You feel as though nothing has changed.");
-			}
-			break;
+            }
+            break;
         }
 
         case GOD_OKAWARU:
