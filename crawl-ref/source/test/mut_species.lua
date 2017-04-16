@@ -65,9 +65,9 @@ local function test_random_mutations_species(species, tries, iterations, chance_
     end
 end
 
-species = {"hill orc", "minotaur", "merfolk", "gargoyle", "draconian", "halfling", "troll", "ghoul", 
-            "human", "kobold", "centaur", "spriggan", "tengu", "deep elf", "ogre", "deep dwarf",
-            "vine stalker", "vampire", "demigod", "formicid", "naga", "octopode", "felid", "barachi",
+species = {"hill orc", "minotaur", "merfolk", "gargoyle", "draconian", "troll", "ghoul", 
+            "human", "kobold", "spriggan", "tengu", "deep elf", "ogre",
+            "vine stalker", "vampire", "demigod", "formicid", "naga", "octopode",
             "mummy"}
 
 test_random_mutations_species("demonspawn", ds_tries, ds_mut_iterations, chance_temporary, chance_clear)
