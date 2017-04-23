@@ -1585,7 +1585,8 @@ void scorefile_entry::init(time_t dt)
             pt += ((1+num_runes) * (1 + num_runes) * 1000);
             pt *= 1000;
             pt *= 1000;
-            pt *= 1000 / (1+you.num_turns);
+            pt *= 1000; 
+            pt = pt / (1+you.num_turns);
         }
         else
         {
@@ -1594,7 +1595,7 @@ void scorefile_entry::init(time_t dt)
             pt += _award_modified_experience();     
         }
 		if (crawl_state.difficulty == DIFFICULTY_CASUAL)
-            pt = pt / 1000;
+            pt = pt / 100;
 		
         points = pt;
     }
