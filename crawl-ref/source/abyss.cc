@@ -240,9 +240,9 @@ static int _banished_depth(const int power)
     // always
     // Ancient Liches are sending you to A:5 and there's nothing
     // you can do about that.
-    const int maxdepth = div_rand_round((power + 5), 6);
-    const int mindepth = (4 * power + 7) / 23;
-    return min(5, max(1, random_range(mindepth, maxdepth)));
+    const int maxdepth = div_rand_round((power + 5), 12);
+    const int mindepth = (4 * power + 7) / 46;
+    return min(3, max(1, random_range(mindepth, maxdepth)));
 }
 
 void banished(const string &who, const int power)
