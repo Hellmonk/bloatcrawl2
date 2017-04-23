@@ -293,17 +293,6 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         { WPN_SCIMITAR,         17 },
         { WPN_SHORTBOW,         17 },
         { WPN_LONGBOW,          5 }, };
-    static const weapon_list DE_MAGE_WEAPONS =
-    {   { WPN_LONG_SWORD,       2 },
-        { WPN_SHORT_SWORD,      1 },
-        { WPN_RAPIER,           1 },
-        { WPN_DAGGER,           1 }, };
-    static const weapon_list DRAC_MAGE_WEAPONS = // XXX: merge with DE? ^
-    {   { WPN_LONG_SWORD,       2 },
-        { WPN_SHORT_SWORD,      1 },
-        { WPN_RAPIER,           1 },
-        { WPN_DAGGER,           1 },
-        { WPN_WHIP,             1 }, };
     static const weapon_list NAGA_WEAPONS = // total 120
     {   { WPN_LONG_SWORD,       10 },
         { WPN_SHORT_SWORD,      10 },
@@ -348,10 +337,6 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         { WPN_GIANT_SPIKED_CLUB, 30 },
         { WPN_DIRE_FLAIL,        9 },
         { WPN_GREAT_MACE,        1 }, };
-    static const weapon_list FAUN_WEAPONS =
-    {   { WPN_SPEAR,            2 },
-        { WPN_CLUB,             1 },
-        { WPN_QUARTERSTAFF,     1 }, };
     static const mon_weapon_spec EFREET_WSPEC =
     { { { WPN_SCIMITAR,         1 } },
       { 1, 0, 4 },
@@ -467,10 +452,6 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         { MONS_OGRE_MAGE,               { GNOLL_WEAPONS } },
         { MONS_NAGA_MAGE,               { GNOLL_WEAPONS } },
         { MONS_GREATER_NAGA,            { GNOLL_WEAPONS } },
-        { MONS_GNOLL_SHAMAN,
-            { { { WPN_CLUB,             1 },
-                { WPN_WHIP,             1 },
-        } } },
         { MONS_GNOLL_SERGEANT,
             { { { WPN_SPEAR,            2 },
                 { WPN_TRIDENT,          1 },
@@ -490,7 +471,6 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
             { 1, 2, 4 },
             { { SPWPN_CHAOS, 1 } } } },
         { MONS_JOSEPH, { { { WPN_QUARTERSTAFF, 1 } } } },
-        { MONS_SPRIGGAN_DRUID, { { { WPN_QUARTERSTAFF, 1 } } } },
         { MONS_BAI_SUZHEN, { { { WPN_QUARTERSTAFF, 1 } } } },
         { MONS_ORC,                     { ORC_WEAPONS } },
         { MONS_ORC_PRIEST,              { ORC_WEAPONS } },
@@ -538,27 +518,15 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
                 { WPN_DAGGER,           1 },
         } } },
         { MONS_DEEP_ELF_MASTER_ARCHER, { { { WPN_LONGBOW, 1 } } } },
-        { MONS_DEEP_ELF_MAGE,           { DE_MAGE_WEAPONS } },
-        { MONS_DEEP_ELF_ANNIHILATOR,    { DE_MAGE_WEAPONS } },
-        { MONS_DEEP_ELF_DEATH_MAGE,     { DE_MAGE_WEAPONS } },
-        { MONS_DEEP_ELF_DEMONOLOGIST,   { DE_MAGE_WEAPONS } },
-        { MONS_DEEP_ELF_SORCERER,       { DE_MAGE_WEAPONS } },
-        { MONS_DEEP_ELF_ELEMENTALIST,   { DE_MAGE_WEAPONS } },
-        { MONS_DRACONIAN_SHIFTER,       { DRAC_MAGE_WEAPONS } },
-        { MONS_DRACONIAN_SCORCHER,      { DRAC_MAGE_WEAPONS } },
-        { MONS_DRACONIAN_ANNIHILATOR,   { DRAC_MAGE_WEAPONS } },
-        { MONS_DRACONIAN_STORMCALLER,   { DRAC_MAGE_WEAPONS } },
 		{ MONS_ANTIMATTER_ELF, 
 			{ { { WPN_LAJATANG,         1 },
                 { WPN_DOUBLE_SWORD,     1 },
 		  } } },
-        { MONS_RAGGED_HIEROPHANT,       { DRAC_MAGE_WEAPONS } },
         { MONS_VASHNIA,                 { NAGA_WEAPONS, {}, {}, 1 } },
         { MONS_NAGA_SHARPSHOOTER,       { NAGA_WEAPONS } },
         { MONS_NAGA,                    { NAGA_WEAPONS } },
         { MONS_NAGA_WARRIOR,            { NAGA_WEAPONS } },
         { MONS_ORC_WARRIOR,             { NAGA_WEAPONS } },
-        { MONS_ORC_HIGH_PRIEST,         { NAGA_WEAPONS } },
         { MONS_BLORK_THE_ORC,           { NAGA_WEAPONS } },
         { MONS_DANCING_WEAPON,          { NAGA_WEAPONS, {}, {}, 1 } },
         { MONS_SPECTRAL_WEAPON,         { NAGA_WEAPONS } }, // for mspec placement
@@ -626,8 +594,6 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
             { { { WPN_TRIDENT,          20 },
                 { WPN_DEMON_TRIDENT,    3 },
         } } },
-        { MONS_MERFOLK_AQUAMANCER, { { { WPN_RAPIER, 1 } }, {}, {}, 2 } },
-        { MONS_MERFOLK_JAVELINEER, { { { WPN_SPEAR, 1 } } } },
         { MONS_SPRIGGAN_RIDER, { { { WPN_SPEAR, 1 } } } },
         { MONS_MERFOLK, { { { WPN_TRIDENT, 1 } } } },
         { MONS_SIREN,
@@ -639,9 +605,6 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
             { { { WPN_SHORTBOW,         2 },
                 { WPN_LONGBOW,          1 },
         } } },
-        { MONS_FAUN,                    { FAUN_WEAPONS } },
-        { MONS_SATYR,                   { FAUN_WEAPONS } },
-        { MONS_SERVANT_OF_WHISPERS,     { FAUN_WEAPONS } },
         { MONS_NESSOS, {
             { { WPN_LONGBOW,            1 } },
             { 1, 1, 3 },
@@ -736,12 +699,8 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
             { { SPWPN_FREEZING, 1 } },
         } },
         { MONS_ORC_WIZARD,      { { { WPN_DAGGER, 1 } } } },
-        { MONS_ORC_SORCERER,    { { { WPN_DAGGER, 1 } } } },
         { MONS_NERGALLE,        { { { WPN_DAGGER, 1 } } } },
         { MONS_DOWAN,           { { { WPN_DAGGER, 1 } } } },
-        { MONS_KOBOLD_DEMONOLOGIST, { { { WPN_DAGGER, 1 } } } },
-        { MONS_NECROMANCER,      { { { WPN_DAGGER, 1 } } } },
-        { MONS_WIZARD,          { { { WPN_DAGGER, 1 } } } },
         { MONS_JOSEPHINE,       { { { WPN_DAGGER, 1 } } } },
         { MONS_PSYCHE, {
             { { WPN_DAGGER,             1 }, },
@@ -819,10 +778,6 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         { MONS_TORTUROUS_DEMONSPAWN,    { DS_WEAPONS } },
         { MONS_CORRUPTER,               { DS_WEAPONS } },
         { MONS_BLACK_SUN,               { DS_WEAPONS } },
-        { MONS_BLOOD_SAINT, {
-            { { WPN_DAGGER,             4 },
-              { WPN_QUARTERSTAFF,       1 } },
-        } },
         { MONS_WARMONGER, {
             { { WPN_DEMON_BLADE,        10 },
               { WPN_DEMON_WHIP,         10 },
@@ -853,9 +808,9 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
               { WPN_BROAD_AXE,          1 }, },
         } },
         { MONS_IMPERIAL_MYRMIDON, {
-            { { WPN_SCIMITAR,           20 },
+            { { WPN_SCIMITAR,           16 },
               { WPN_DEMON_BLADE,        4 },
-              { WPN_DOUBLE_SWORD,       1 }, },
+              { WPN_DOUBLE_SWORD,       2 }, },
         } },
     };
 
@@ -988,8 +943,6 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
                 set_item_ego_type(item, OBJ_WEAPONS, SPWPN_FREEZING);
         }
 
-        if (one_chance_in(3))
-            do_curse_item(item);
         break;
 
     case MONS_DEEP_ELF_BLADEMASTER:
@@ -1629,38 +1582,8 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
 
     switch (type)
     {
-    case MONS_DEEP_ELF_ARCHER:
-    case MONS_DEEP_ELF_BLADEMASTER:
-    case MONS_DEEP_ELF_MASTER_ARCHER:
-        item.base_type = OBJ_ARMOUR;
-        item.sub_type  = ARM_LEATHER_ARMOUR;
-        break;
 
     case MONS_DUVESSA:
-    case MONS_DEEP_ELF_ANNIHILATOR:
-    case MONS_DEEP_ELF_DEATH_MAGE:
-    case MONS_DEEP_ELF_DEMONOLOGIST:
-    case MONS_DEEP_ELF_HIGH_PRIEST:
-    case MONS_DEEP_ELF_KNIGHT:
-    case MONS_DEEP_ELF_MAGE:
-    case MONS_DEEP_ELF_SORCERER:
-    case MONS_DEEP_ELF_ELEMENTALIST:
-	case MONS_ANTIMATTER_ELF:
-    case MONS_ORC:
-    case MONS_ORC_HIGH_PRIEST:
-    case MONS_ORC_PRIEST:
-        if (x_chance_in_y(2, 5))
-        {
-            item.base_type = OBJ_ARMOUR;
-            item.sub_type  = random_choose_weighted(4, ARM_LEATHER_ARMOUR,
-                                                    2, ARM_RING_MAIL,
-                                                    1, ARM_SCALE_MAIL,
-                                                    1, ARM_CHAIN_MAIL);
-        }
-        else
-            return;
-        break;
-
     case MONS_ERICA:
     case MONS_JOSEPHINE:
     case MONS_PSYCHE:
@@ -1675,25 +1598,17 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
         item.sub_type  = ARM_RING_MAIL;
         break;
 
-    case MONS_GNOLL_SHAMAN:
-    case MONS_MELIAI:
-        item.base_type = OBJ_ARMOUR;
-        item.sub_type  = coinflip() ? ARM_ROBE : ARM_LEATHER_ARMOUR;
-        break;
-
     case MONS_SOJOBO:
         level = ISPEC_GOOD_ITEM;
         // deliberate fall-through
-    case MONS_GNOLL_SERGEANT:
     case MONS_TENGU_REAVER:
         item.base_type = OBJ_ARMOUR;
         item.sub_type  = coinflip() ? ARM_RING_MAIL : ARM_SCALE_MAIL;
-        if (type == MONS_TENGU_REAVER && one_chance_in(3))
+        if (type == MONS_TENGU_REAVER && x_chance_in_y(2,3))
             level = ISPEC_GOOD_ITEM;
         break;
 
     case MONS_JOSEPH:
-    case MONS_IMPERIAL_MYRMIDON:
         item.base_type = OBJ_ARMOUR;
         item.sub_type  = random_choose_weighted(3, ARM_LEATHER_ARMOUR,
                                                 2, ARM_RING_MAIL);
@@ -1707,9 +1622,7 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
                                                 2, ARM_CHAIN_MAIL);
         break;
 
-    case MONS_SLAVE:
     case MONS_GRUM:
-    case MONS_SPRIGGAN_BERSERKER:
         item.base_type = OBJ_ARMOUR;
         item.sub_type  = ARM_ANIMAL_SKIN;
         break;
@@ -1726,8 +1639,7 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
     }
 
     case MONS_DONALD:
-        if (one_chance_in(3))
-            level = ISPEC_GOOD_ITEM;
+        level = ISPEC_GOOD_ITEM;
         item.base_type = OBJ_ARMOUR;
         item.sub_type = random_choose_weighted(10, ARM_CHAIN_MAIL,
                                                9, ARM_PLATE_ARMOUR,
@@ -1735,7 +1647,7 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
         break;
 
     case MONS_JORGRUN:
-        if (one_chance_in(3))
+        if (x_chance_in_y(3,4))
             level = ISPEC_GOOD_ITEM;
         item.base_type = OBJ_ARMOUR;
         item.sub_type  = ARM_ROBE;
@@ -1750,68 +1662,35 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
     case MONS_ORC_WARLORD:
     case MONS_SAINT_ROKA:
         // Being at the top has its privileges. :)
-        if (one_chance_in(3))
+        if (one_chance_in(2))
             level = ISPEC_GOOD_ITEM;
         // deliberate fall through
 
-    case MONS_ORC_KNIGHT:
-    case MONS_ORC_WARRIOR:
-    case MONS_HELL_KNIGHT:
     case MONS_LOUISE:
-    case MONS_VAMPIRE_KNIGHT:
     case MONS_JORY:
     case MONS_FREDERICK:
-    case MONS_VAULT_GUARD:
-    case MONS_VAULT_WARDEN:
-    case MONS_ANCIENT_CHAMPION:
         item.base_type = OBJ_ARMOUR;
         item.sub_type  = random_choose(ARM_CHAIN_MAIL, ARM_PLATE_ARMOUR);
         break;
 
-    case MONS_VAULT_SENTINEL:
-    case MONS_IRONBRAND_CONVOKER:
-        item.base_type = OBJ_ARMOUR;
-        item.sub_type  = random_choose(ARM_RING_MAIL,   ARM_SCALE_MAIL);
-        break;
-
     case MONS_MARGERY:
         item.base_type = OBJ_ARMOUR;
-        item.sub_type = random_choose_weighted(3, ARM_ACID_DRAGON_ARMOUR,
-                                               1, ARM_SWAMP_DRAGON_ARMOUR,
-                                               6, ARM_FIRE_DRAGON_ARMOUR);
+        item.sub_type = random_choose_weighted(20, ARM_STEAM_DRAGON_ARMOUR,
+                                               30, ARM_ACID_DRAGON_ARMOUR,
+                                               20, ARM_SWAMP_DRAGON_ARMOUR,
+                                               60, ARM_FIRE_DRAGON_ARMOUR,
+                                               10, ARM_STORM_DRAGON_ARMOUR,
+                                               10, ARM_SHADOW_DRAGON_ARMOUR,
+                                               5, ARM_PEARL_DRAGON_ARMOUR,
+                                               5, ARM_GOLD_DRAGON_ARMOUR);
         break;
 
     case MONS_HELLBINDER:
-    case MONS_SALAMANDER_MYSTIC:
-    case MONS_SERVANT_OF_WHISPERS:
-    case MONS_RAGGED_HIEROPHANT:
         item.base_type = OBJ_ARMOUR;
         item.sub_type  = ARM_ROBE;
         break;
 
-    case MONS_DEATH_KNIGHT:
-        item.base_type = OBJ_ARMOUR;
-        item.sub_type  = random_choose_weighted(7, ARM_CHAIN_MAIL,
-                                                1, ARM_PLATE_ARMOUR);
-        break;
-
-    case MONS_MERFOLK_IMPALER:
-        item.base_type = OBJ_ARMOUR;
-        item.sub_type = random_choose_weighted(6, ARM_ROBE,
-                                               4, ARM_LEATHER_ARMOUR);
-        if (one_chance_in(16))
-            level = ISPEC_GOOD_ITEM;
-        break;
-
-    case MONS_MERFOLK_JAVELINEER:
-        item.base_type = OBJ_ARMOUR;
-        item.sub_type  = ARM_LEATHER_ARMOUR;
-        break;
-
-    case MONS_ANGEL:
-    case MONS_CHERUB:
     case MONS_SIGMUND:
-    case MONS_WIGHT:
         item.base_type = OBJ_ARMOUR;
         item.sub_type  = ARM_ROBE;
         break;
@@ -1830,20 +1709,13 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
     case MONS_NAGA_SHARPSHOOTER:
     case MONS_NAGA_WARRIOR:
     case MONS_GREATER_NAGA:
-        if (one_chance_in(type == MONS_NAGA         ?  800 :
-                          type == MONS_NAGA_WARRIOR ?  300 :
-                          type == MONS_GREATER_NAGA ?  100
-                                                    :  200))
+        if (one_chance_in(type == MONS_NAGA         ?  400 :
+                          type == MONS_NAGA_WARRIOR ?  200 :
+                          type == MONS_GREATER_NAGA ?  50
+                                                    :  100))
         {
             item.base_type = OBJ_ARMOUR;
             item.sub_type  = ARM_NAGA_BARDING;
-        }
-        else if (type == MONS_GREATER_NAGA
-                 || type == MONS_NAGA_RITUALIST
-                 || one_chance_in(3))
-        {
-            item.base_type = OBJ_ARMOUR;
-            item.sub_type  = ARM_ROBE;
         }
         else
             return;
@@ -1853,12 +1725,6 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
         item.base_type = OBJ_ARMOUR;
         item.sub_type  = ARM_NAGA_BARDING;
         level = ISPEC_GOOD_ITEM;
-        break;
-
-    case MONS_TENGU_WARRIOR:
-    case MONS_IRONHEART_PRESERVER:
-        item.base_type = OBJ_ARMOUR;
-        item.sub_type  = coinflip() ? ARM_LEATHER_ARMOUR : ARM_RING_MAIL;
         break;
 
     case MONS_GASTRONOK:
@@ -1895,17 +1761,11 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
 
     case MONS_DOWAN:
     case MONS_JESSICA:
-    case MONS_KOBOLD_DEMONOLOGIST:
-    case MONS_OGRE_MAGE:
     case MONS_EROLCHA:
-    case MONS_WIZARD:
     case MONS_ILSUIW:
     case MONS_MARA:
-    case MONS_RAKSHASA:
-    case MONS_MERFOLK_AQUAMANCER:
-    case MONS_SPRIGGAN:
-    case MONS_SPRIGGAN_AIR_MAGE:
-    case MONS_SPRIGGAN_DEFENDER:
+        if (one_chance_in(2))
+            level = ISPEC_GOOD_ITEM;
         item.base_type = OBJ_ARMOUR;
         item.sub_type  = ARM_ROBE;
         break;
@@ -1915,20 +1775,9 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
         item.sub_type  = ARM_ANIMAL_SKIN;
         break;
 
-    case MONS_DRACONIAN_SHIFTER:
-    case MONS_DRACONIAN_SCORCHER:
-    case MONS_DRACONIAN_ANNIHILATOR:
-    case MONS_DRACONIAN_STORMCALLER:
-    case MONS_DRACONIAN_MONK:
-    case MONS_DRACONIAN_KNIGHT:
     case MONS_BAI_SUZHEN:
         item.base_type = OBJ_ARMOUR;
         item.sub_type  = ARM_CLOAK;
-        break;
-
-    case MONS_SPRIGGAN_DRUID:
-        item.base_type = OBJ_ARMOUR;
-        item.sub_type  = ARM_ROBE;
         break;
 
     case MONS_THE_ENCHANTRESS:
@@ -1936,15 +1785,10 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
         make_item_unrandart(item, UNRAND_FAERIE);
         break;
 
-    case MONS_TIAMAT:
-        force_item = true;
-        make_item_unrandart(item, UNRAND_DRAGONSKIN);
-        break;
-
     case MONS_ORC_SORCERER:
-        if (one_chance_in(3))
+    case MONS_AGNES:
+        if (one_chance_in(2))
             level = ISPEC_GOOD_ITEM;
-    case MONS_ORC_WIZARD:
     case MONS_BLORK_THE_ORC:
     case MONS_NERGALLE:
         item.base_type = OBJ_ARMOUR;
@@ -1954,15 +1798,14 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
     case MONS_BORIS:
         level = ISPEC_GOOD_ITEM;
         // fall-through
-    case MONS_AGNES:
-    case MONS_NECROMANCER:
-    case MONS_VAMPIRE_MAGE:
     case MONS_PIKEL:
         item.base_type = OBJ_ARMOUR;
         item.sub_type  = ARM_ROBE;
         break;
 
     case MONS_EUSTACHIO:
+        if (one_chance_in(9))
+            level = ISPEC_GOOD_ITEM;
         item.base_type = OBJ_ARMOUR;
         item.sub_type  = ARM_LEATHER_ARMOUR;
         break;
@@ -1972,32 +1815,11 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
         item.sub_type  = ARM_CLOAK;
         break;
 
-    case MONS_MONSTROUS_DEMONSPAWN:
-    case MONS_GELID_DEMONSPAWN:
-    case MONS_INFERNAL_DEMONSPAWN:
-    case MONS_PUTRID_DEMONSPAWN:
-    case MONS_TORTUROUS_DEMONSPAWN:
-    case MONS_CORRUPTER:
-    case MONS_BLACK_SUN:
-        item.base_type = OBJ_ARMOUR;
-        item.sub_type  = random_choose_weighted(2, ARM_LEATHER_ARMOUR,
-                                                3, ARM_RING_MAIL,
-                                                5, ARM_SCALE_MAIL,
-                                                3, ARM_CHAIN_MAIL,
-                                                2, ARM_PLATE_ARMOUR);
-        break;
-
-    case MONS_BLOOD_SAINT:
-        if (one_chance_in(3))
-            level = ISPEC_GOOD_ITEM;
-        item.base_type = OBJ_ARMOUR;
-        item.sub_type  = ARM_ROBE;
-        break;
-
     case MONS_CHAOS_CHAMPION:
         item.base_type = OBJ_ARMOUR;
         if (one_chance_in(30))
         {
+			level = ISPEC_GOOD_ITEM;
             item.sub_type  = random_choose(ARM_TROLL_LEATHER_ARMOUR,
                                            ARM_FIRE_DRAGON_ARMOUR,
                                            ARM_ICE_DRAGON_ARMOUR,
@@ -2007,29 +1829,9 @@ static void _give_armour(monster* mon, int level, bool spectral_orcs)
                                            ARM_SWAMP_DRAGON_ARMOUR);
         }
         else
-        {
-            item.sub_type  = random_choose(ARM_ROBE,         ARM_LEATHER_ARMOUR,
-                                           ARM_RING_MAIL,    ARM_SCALE_MAIL,
-                                           ARM_CHAIN_MAIL,   ARM_PLATE_ARMOUR);
-        }
+            return;
         // Yes, this overrides the spec. Xom thinks this is hilarious!
         level = random2(150);
-        break;
-
-    case MONS_WARMONGER:
-        if (coinflip())
-            level = ISPEC_GOOD_ITEM;
-        item.base_type = OBJ_ARMOUR;
-        item.sub_type  = random_choose_weighted( 50, ARM_CHAIN_MAIL,
-                                                100, ARM_PLATE_ARMOUR,
-                                                  5, ARM_FIRE_DRAGON_ARMOUR,
-                                                  5, ARM_ICE_DRAGON_ARMOUR,
-                                                  5, ARM_ACID_DRAGON_ARMOUR);
-        break;
-
-    case MONS_HALAZID_WARLOCK:
-        item.base_type = OBJ_ARMOUR;
-        item.sub_type  = coinflip() ? ARM_LEATHER_ARMOUR : ARM_ROBE;
         break;
 
     default:

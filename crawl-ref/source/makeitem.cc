@@ -1729,13 +1729,12 @@ int items(bool allow_uniques,
                                     50, OBJ_BOOKS,
                                     50, OBJ_JEWELLERY,
                                     50, OBJ_WANDS,
-                                   212, OBJ_ARMOUR,
+                                   262, OBJ_ARMOUR,
                                    212, OBJ_WEAPONS,
                                    176, OBJ_POTIONS,
-                                   420, OBJ_MISSILES,
-				   202, OBJ_SCROLLS, // reallocate weight from
-				   578, OBJ_GOLD); // scrolls to gold for
-	                                           // id/curse removal --mps
+                                   400, OBJ_MISSILES,
+			                       202, OBJ_SCROLLS,
+                                   548, OBJ_GOLD); 
 
         // misc items placement wholly dependent upon current depth {dlb}:
         if (item_level > 7 && x_chance_in_y(21 + item_level, 5000))
