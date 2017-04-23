@@ -1127,6 +1127,21 @@ static bool _give_pakellas_gift()
     return false;
 }
 
+static bool _give_zin_gift()
+{
+    if (!you.how_mutated()) {
+        return false;
+    }
+    bool success = delete_mutation(RANDOM_MUTATION, "Zin's grace", true,
+                              true, true);
+    if (success) {
+        mpr("Zin's grace purifies you.");
+        _inc_gift_timeout(15 + roll_dice(2, 4));
+    }
+    return true;
+}
+
+
 void mons_make_god_gift(monster& mon, god_type god)
 {
     const god_type acting_god =
@@ -1720,24 +1735,9 @@ bool do_god_gift(bool forced)
             break;
 			
         case GOD_ZIN:
-        {
-            if(forced || you.piety >= piety_breakpoint(3))
-            {
-                if (!you.how_mutated())
-                    break;
-                simple_god_message(" grants you a gift!");
-                success = delete_mutation(RANDOM_MUTATION, "Zin's grace", true,
-                                       true, true);
-                if(success)
-                {
-                    _inc_gift_timeout(12 + roll_dice(2, 6));
-                    mpr("You feel purified.");
-                }
-                else
-                    mpr("You feel as though nothing has changed.");
-            }
-            break;
-        }
+		    if (forced || you.piety >= piety_breakpoint(3))
+                success = _give_zin_gift();
+            break;  
 
         case GOD_OKAWARU:
         case GOD_TROG:
