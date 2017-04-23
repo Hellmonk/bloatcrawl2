@@ -489,6 +489,21 @@ void zap_close_monsters()
 
             // Do a hard reset so the monster's items will be discarded.
             mon->flags |= MF_HARD_RESET;
+			
+            //make sure the twins remove each other regardless of distance
+            if (mon->type == MONS_DUVESSA || mon->type == MONS_DOWAN)
+                for (radius_iterator rj(you.pos(), LOS_SOLID); rj; ++rj)
+                {
+                    monster* monj = monster_at(*rj);
+                    if((monj->type == MONS_DUVESSA || monj->type == MONS_DOWAN)
+                        && mon->type != monj->type)
+                    {
+                        monj->flags |= MF_HARD_RESET;
+                        monster_die(monj, KILL_DISMISSED, NON_MONSTER, true, true);
+                        break;
+                    }
+				}
+			
             // Do a silent, wizard-mode monster_die() just to be extra sure the
             // player sees nothing.
             monster_die(mon, KILL_DISMISSED, NON_MONSTER, true, true);
