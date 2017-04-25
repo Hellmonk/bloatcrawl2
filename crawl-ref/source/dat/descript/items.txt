@@ -309,12 +309,6 @@ cloak
 
 A cloth cloak.
 %%%%
-club
-
-A heavy piece of wood. While clubs are rather primitive weapons, bashing
-someone's skull in with one remains a very popular and effective means of
-dispute resolution.
-%%%%
 corpse
 
 A corpse. You can butcher it to produce chunks of meat.

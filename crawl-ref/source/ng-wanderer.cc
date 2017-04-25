@@ -625,8 +625,7 @@ static void _wanderer_cover_equip_holes()
 
     if (you.equip[EQ_WEAPON] == -1)
     {
-        newgame_make_item(OBJ_WEAPONS,
-                          you.dex() > you.strength() ? WPN_DAGGER : WPN_CLUB);
+        newgame_make_item(OBJ_WEAPONS, WPN_DAGGER);
     }
 
     // Give a dagger if you have stealth skill. Maybe this is

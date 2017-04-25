@@ -176,7 +176,6 @@ static weapon_type _determine_weapon_subtype(int item_level)
                              WPN_MACE,
                              // Not worth _weighted for one doubled type.
                              WPN_DAGGER, WPN_DAGGER,
-                             WPN_CLUB,
                              WPN_WHIP,
                              WPN_SHORT_SWORD);
     }
@@ -214,10 +213,6 @@ static bool _try_make_weapon_artefact(item_def& item, int force_type,
             if (_try_make_item_unrand(item, force_type, agent))
                 return true;
         }
-
-        // Clubs are never randarts.
-        if (item.sub_type == WPN_CLUB)
-            return false;
 
         // Mean enchantment +6.
         item.plus = 12 - biased_random2(7,2) - biased_random2(7,2) - biased_random2(7,2);
@@ -414,10 +409,6 @@ static void _generate_weapon_item(item_def& item, bool allow_uniques,
 
     if (no_brand)
         set_item_ego_type(item, OBJ_WEAPONS, SPWPN_NORMAL);
-
-    // If it's forced to be a good item, reroll clubs.
-    while (force_good && force_type == OBJ_RANDOM && item.sub_type == WPN_CLUB)
-        _roll_weapon_type(item, item_level);
 
     item.plus = 0;
 

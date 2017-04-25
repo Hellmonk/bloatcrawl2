@@ -911,7 +911,7 @@ static bool _beogh_retribution()
         for (int i = 0; i < num_to_create; ++i)
         {
             const int wpn_type =
-                random_choose(WPN_CLUB,        WPN_MACE,      WPN_FLAIL,
+                random_choose(WPN_WHIP,        WPN_MACE,      WPN_FLAIL,
                               WPN_MORNINGSTAR, WPN_DAGGER,    WPN_SHORT_SWORD,
                               WPN_LONG_SWORD,  WPN_SCIMITAR,  WPN_GREAT_SWORD,
                               WPN_HAND_AXE,    WPN_BATTLEAXE, WPN_SPEAR,

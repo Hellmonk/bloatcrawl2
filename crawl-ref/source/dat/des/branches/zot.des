@@ -846,7 +846,7 @@ ORIENT: float
 TAGS:   no_rotate no_hmirror no_monster_gen
 MONS:   killer klown
 MONS:   dire elephant / w:5 hellephant
-MONS:   human ; club
+MONS:   human ; whip
 SUBST:  1 = 1 2:5 3:20
 SUBST:  2 = 2 2 .
 SUBST:  % = !:20 ?:5 .:20

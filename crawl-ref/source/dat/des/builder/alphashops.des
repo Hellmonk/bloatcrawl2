@@ -98,7 +98,7 @@
        "potion of brilliance", "scroll of blinking", "scroll of brand weapon",
        "manual of bows", "buckler" }
 
-      elseif s == "C" then i = { "book of callings", "book of cantrips", "club",
+      elseif s == "C" then i = { "book of callings", "book of cantrips",
        "book of changes", "book of conjurations", "potion of cure mutation",
        "chain mail", "crystal ball of energy", "cloak",
        "crystal plate armour", "potion of cancellation", "wand of clouds",

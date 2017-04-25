@@ -1017,7 +1017,7 @@ TAGS:    overflow_altar_nemelex_xobeh transparent
 TAGS:    no_rotate no_vmirror no_monster_gen no_item_gen
 DEPTH:   D:2-9
 : if you.depth() <= 4 then
-MONS:    orc ; club
+MONS:    orc ; mace
 : else
 MONS:    ogre ; giant club
 : end
@@ -1720,7 +1720,7 @@ KMONS:  2 = ogre god:trog ; giant club ego:antimagic ident:type | w:3 giant club
 KMONS:  2 = orc god:trog ; spear ego:antimagic ident:type | hand axe ego:antimagic ident:type | \
         war axe ego:antimagic ident:type | any weapon / \
         kobold god:trog ; short sword ego:antimagic ident:type | hand axe ego:antimagic ident:type | \
-        club ego:antimagic ident:type | whip ego:antimagic ident:type | any weapon / \
+        whip ego:antimagic ident:type | any weapon / \
         goblin god:trog ; dagger ego:antimagic ident:type | short sword ego:antimagic ident:type / \
         gnoll god:trog ; spear ego:antimagic ident:type | trident ego:antimagic ident:type | \
         halberd ego:antimagic ident:type | whip ego:antimagic ident:type | halberd | any weapon
@@ -1910,8 +1910,8 @@ TAGS:   no_item_gen no_monster_gen temple_overflow_1 temple_overflow_xom
 TAGS:   uniq_altar_xom
 KFEAT:  _ = altar_xom
 MONS:   place:D:1
-MONS:   orc ; club ego:chaos | dagger ego:chaos | spear ego:chaos
-MONS:   gnoll ; club ego:chaos | dagger ego:chaos | spear ego:chaos
+MONS:   orc ; dagger ego:chaos | spear ego:chaos
+MONS:   gnoll ; dagger ego:chaos | spear ego:chaos
 MONS:   boggart ; flail ego:chaos | long sword ego:chaos | trident ego:chaos
 MONS:   rakshasa ; flail ego:chaos | long sword ego:chaos | trident ego:chaos
 :  if you.depth() == dgn.br_depth(you.branch()) then
@@ -2654,11 +2654,11 @@ KFEAT:  A = altar_okawaru
 KFEAT:  B = altar_trog
 KPROP:  . = bloody / nothing
 : if you.absdepth() < 8 then
-MONS:   gnoll ; club | spear | nothing . potion of berserk rage / \
-        orc ; club | hand axe | short sword . \
+MONS:   gnoll ; spear | nothing . potion of berserk rage / \
+        orc ; whip | hand axe | short sword . \
               leather armour | nothing . potion of berserk rage
 : else
-MONS:   orc warrior ; club | hand axe | short sword . \
+MONS:   orc warrior ; whip | hand axe | short sword . \
                       leather armour | ring mail . \
                       potion of berserk rage
 : end

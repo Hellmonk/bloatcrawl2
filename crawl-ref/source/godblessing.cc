@@ -128,7 +128,7 @@ static int _orc_weapon_gift_type(monster_type mon_type)
                                           1, WPN_SPEAR);
             // give a lower tier of polearms; reaching is good on followers
         default:
-            return WPN_CLUB; // shouldn't ever come up?
+            return WPN_WHIP; // shouldn't ever come up?
     }
 }
 

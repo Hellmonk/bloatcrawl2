@@ -4140,8 +4140,7 @@ bool item_def::is_mundane() const
     switch (base_type)
     {
     case OBJ_WEAPONS:
-        if (sub_type == WPN_CLUB
-            || is_giant_club_type(sub_type))
+        if (is_giant_club_type(sub_type))
         {
             return true;
         }

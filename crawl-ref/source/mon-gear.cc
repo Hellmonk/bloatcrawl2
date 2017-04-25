@@ -264,21 +264,18 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
                          bool give_aux_melee = true, bool spectral_orcs = false)
 {
     static const weapon_list GOBLIN_WEAPONS = // total 10
-    {   { WPN_DAGGER,           3 },
-        { WPN_CLUB,             3 },
+    {   { WPN_DAGGER,           6 },
         { NUM_WEAPONS,          4 }, };   // 60% chance of weapon
     static const weapon_list GNOLL_WEAPONS = // total 30
     {   { WPN_SPEAR,            8 },
         { WPN_HALBERD,          4 },
-        { WPN_CLUB,             4 },
-        { WPN_WHIP,             4 },
+        { WPN_WHIP,             8 },
         { WPN_FLAIL,            4 },
         { NUM_WEAPONS,          6 } };    // 80% chance of weapon
     static const weapon_list ORC_WEAPONS = // total 525 (!)
-    {   { WPN_CLUB,             70 },
-        { WPN_DAGGER,           60 },
-        { WPN_FLAIL,            60 },
-        { WPN_HAND_AXE,         60 },
+    {   { WPN_DAGGER,           90 },
+        { WPN_FLAIL,            70 },
+        { WPN_HAND_AXE,         90 },
         { WPN_SHORT_SWORD,      40 },
         { WPN_MACE,             40 },
         { WPN_WHIP,             30 },
@@ -402,16 +399,15 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
 
     static const map<monster_type, mon_weapon_spec> primary_weapon_specs = {
         { MONS_HOBGOBLIN,
-            { { { WPN_CLUB,             3 },
+            { { { WPN_DAGGER,           3 },
                 { NUM_WEAPONS,          2 },
         } } },
         { MONS_ROBIN,
-            { { { WPN_CLUB,             35 },
-                { WPN_DAGGER,           30 },
-                { WPN_SPEAR,            30 },
-                { WPN_SHORT_SWORD,      20 },
+            { { { WPN_DAGGER,           40 },
+                { WPN_SPEAR,            40 },
+                { WPN_SHORT_SWORD,      30 },
                 { WPN_MACE,             20 },
-                { WPN_WHIP,             15 },
+                { WPN_WHIP,             20 },
                 { WPN_TRIDENT,          10 },
                 { WPN_FALCHION,         10 },
         } } },
@@ -914,7 +910,7 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
             item.base_type = OBJ_WEAPONS;
             item.sub_type  = random_choose(WPN_DAGGER,      WPN_DAGGER,
                                            WPN_SHORT_SWORD, WPN_SHORT_SWORD,
-                                           WPN_CLUB,        WPN_WHIP);
+                                           WPN_MACE,        WPN_WHIP);
         }
         else if (one_chance_in(30) && level > 2)
         {

@@ -556,7 +556,9 @@ enum rod_type
 
 enum weapon_type
 {
+#if TAG_MAJOR_VERSION == 34
     WPN_CLUB,
+#endif
     WPN_WHIP,
 #if TAG_MAJOR_VERSION == 34
     WPN_HAMMER,

@@ -115,11 +115,11 @@ DEPTH:  D, !D:$, Depths, !Depths:$
 ORIENT: float
 WEIGHT: 5
 : if you.absdepth() > 8 then
-KITEM:  " = club, quarterstaff, quarterstaff good_item
+KITEM:  " = quarterstaff, quarterstaff good_item
 : else
-KITEM:  " = club, quarterstaff, quarterstaff
+KITEM:  " = quarterstaff, quarterstaff
 : end
-KITEM:  ' = club, any magical staff
+KITEM:  ' = any magical staff
 MAP
 xxxxx
 x"']x
@@ -3511,8 +3511,8 @@ DEPTH: D:3-6
 TAGS: no_item_gen no_monster_gen
 ORIENT: float
 KPROP: w;W = no_tele_into
-MONS: kobold ; club / kobold ; dagger, hobgoblin ; club
-MONS: big kobold ; club | w:3 dagger ego:venom | w:3 dagger ego: draining \
+MONS: kobold ; whip / kobold ; dagger, hobgoblin ; whip
+MONS: big kobold ; whip | w:3 dagger ego:venom | w:3 dagger ego: draining \
                    | w:3 dagger ego:speed
 NSUBST: - = 2:1 / 2=12., " = 3:1 / 3=12., ' = 1:3 / 1=3. / 1=1., ` = 1=*% / *:%
 SUBST: ; = WWWw
