@@ -68,7 +68,7 @@ static const char *skill_titles[NUM_SKILLS][6] =
     {"Short Blades",   "Cutter",        "Slicer",          "Swashbuckler",    "Cutthroat",      "Politician"},
     {"Long Blades",    "Slasher",       "Carver",          "Fencer",          "@Adj@ Blade",    "Swordmaster"},
     {"Axes",           "Chopper",       "Cleaver",         "Severer",         "Executioner",    "Axe Maniac"},
-    {"Maces & Flails", "Cudgeler",      "Basher",          "Bludgeoner",      "Shatterer",      "Skullcrusher"},
+    {"Maces & Staves", "Cudgeler",      "Basher",          "Bludgeoner",      "Shatterer",      "Skullcrusher"},
     {"Polearms",       "Poker",         "Spear-Bearer",    "Impaler",         "Phalangite",     "@Adj@ Porcupine"},
     {"Staves",         "Twirler",       "Cruncher",        "Stickfighter",    "Pulveriser",     "Chief of Staff"},
     {"Slings",         "Vandal",        "Slinger",         "Whirler",         "Slingshot",      "@Adj@ Catapult"},
@@ -1428,11 +1428,10 @@ vector<skill_type> get_crosstrain_skills(skill_type sk)
     case SK_LONG_BLADES:
         return { SK_SHORT_BLADES };
     case SK_AXES:
-    case SK_STAVES:
         return { SK_POLEARMS, SK_MACES_FLAILS };
     case SK_MACES_FLAILS:
     case SK_POLEARMS:
-        return { SK_AXES, SK_STAVES };
+        return { SK_AXES };
     case SK_SLINGS:
         return { SK_THROWING };
     case SK_THROWING:

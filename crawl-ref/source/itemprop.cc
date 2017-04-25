@@ -354,7 +354,7 @@ static const vector<brand_weight_tuple> HOLY_BRANDS = {
 static int Weapon_index[NUM_WEAPONS];
 static const weapon_def Weapon_prop[] =
 {
-    // Maces & Flails
+    // Maces & Staves
     { WPN_CLUB,              "club",                5,  3, 13,
         SK_MACES_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_CRUSHING, 10, 0, 10, {} },
@@ -574,10 +574,10 @@ static const weapon_def Weapon_prop[] =
     // Staves
     // WPN_STAFF is for weapon stats for magical staves only.
     { WPN_STAFF,             "staff",               5,  5, 12,
-        SK_STAVES,       SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
+        SK_MACES_FLAILS,       SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
         DAMV_CRUSHING, 0, 0, 15, {} },
     { WPN_QUARTERSTAFF,      "quarterstaff",        10, 3, 13,
-        SK_STAVES,       SIZE_LITTLE, NUM_SIZE_LEVELS,  MI_NONE,
+        SK_MACES_FLAILS,       SIZE_LITTLE, NUM_SIZE_LEVELS,  MI_NONE,
         DAMV_CRUSHING, 8, 10, 40, {
             { SPWPN_NORMAL,     50 },
             { SPWPN_PROTECTION, 18 },
@@ -590,7 +590,7 @@ static const weapon_def Weapon_prop[] =
             { SPWPN_ANTIMAGIC,   2 },
         }},
     { WPN_LAJATANG,          "lajatang",            16,-3, 14,
-        SK_STAVES,       SIZE_LITTLE, NUM_SIZE_LEVELS, MI_NONE,
+        SK_MACES_FLAILS,       SIZE_LITTLE, NUM_SIZE_LEVELS, MI_NONE,
         DAMV_SLICING, 2, 2, 150, {
             { SPWPN_NORMAL,         34 },
             { SPWPN_SPEED,          12 },
@@ -1936,7 +1936,7 @@ skill_type item_attack_skill(const item_def &item)
     if (item.base_type == OBJ_WEAPONS)
         return Weapon_prop[ Weapon_index[item.sub_type] ].skill;
     else if (item.base_type == OBJ_STAVES)
-        return SK_STAVES;
+        return SK_MACES_FLAILS;
     else if (item.base_type == OBJ_MISSILES && !has_launcher(item))
         return SK_THROWING;
 

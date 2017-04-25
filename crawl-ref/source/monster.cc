@@ -4176,7 +4176,6 @@ int monster::skill(skill_type sk, int scale, bool real, bool drained) const
     case SK_AXES:
     case SK_MACES_FLAILS:
     case SK_POLEARMS:
-    case SK_STAVES:
         ret = hd;
         if (weapon()
             && sk == item_attack_skill(*weapon())

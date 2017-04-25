@@ -4222,7 +4222,9 @@ enum skill_type
     SK_AXES,
     SK_MACES_FLAILS,
     SK_POLEARMS,
+#if TAG_MAJOR_VERSION == 34
     SK_STAVES,
+#endif
     SK_SLINGS,
     SK_BOWS,
     SK_CROSSBOWS,
