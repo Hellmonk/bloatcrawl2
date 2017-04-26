@@ -351,7 +351,7 @@ static const map<monster_type, vector<ancestor_upgrade> > ancestor_data =
         { 1,  "Stone Arrow" },
         { 1,  "Increased melee damage" },
         { 15, "Bolt of Magma" },
-        { 19, "Lajatang (freeze)" },
+        { 19, "Great mace (freeze)" },
         { 19, "Haste" },
         { 24, "Lehudib's Crystal Spear" },
       }

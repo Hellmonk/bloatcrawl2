@@ -535,11 +535,6 @@ A lightweight spear, designed for throwing.
     end
 }}
 %%%%
-lajatang
-
-A very rare and extremely effective weapon, featuring a pole with half-moon
-blades at both ends.
-%%%%
 lamp of fire
 
 A magical lamp inhabited by benevolent fire spirits. Unlatching the case sets

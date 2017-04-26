@@ -2849,7 +2849,7 @@ MONS:    fire giant ; battleaxe ego:freezing
 MONS:    frost giant ; great sword ego:flaming
 MONS:    ettin simulacrum, efreet, deep elf mage
 KITEM:   d = lamp of fire, *
-KITEM:   e = lajatang ego:freezing ident:type, *
+KITEM:   e = demon whip ego:freezing ident:type, *
 SHUFFLE: 12, 34, 5df / 6eF, {[(<
 FTILE:   fF'@{[(< = floor_pebble_darkgray
 COLOUR:  fF'@ = white
@@ -2897,7 +2897,7 @@ KMONS:  7 = spriggan defender ; staff of fire | staff of cold | \
                                 staff of air | staff of earth . \
                                 robe ego:resistance good_item ident:type
 KMONS:  8 = tengu reaver ; battleaxe ego:flaming | great sword ego:freezing | \
-                           halberd ego:electrocution | lajatang ego:vorpal . \
+                           halberd ego:electrocution | morningstar ego:vorpal . \
                            fire dragon scales | ice dragon scales
 KMONS:  9 = zotling
 KMONS:  0 = THE GIAGGOSTUONO / orb child / electric golem
@@ -3162,7 +3162,7 @@ MONS:    necromancer / vampire mage
 MONS:    lich / ancient lich w:5
 : if you.unrands("majin-bo") then
 ITEM:    quarterstaff randart ego:vampirism ident:type no_pickup \
-         / good_item lajatang no_pickup
+         / good_item morningstar no_pickup
 : else
 ITEM:    majin-bo no_pickup
 : end

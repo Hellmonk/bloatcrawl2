@@ -368,11 +368,6 @@ Verwundungen .
     end
 }}
 %%%%
-lajatang
-
-Eine sehr seltene und extrem effektive importierte Waffe aus einem Stab mit
-halbmondförmigen Klingen an beiden Enden.
-%%%%
 lamp of fire
 
 Eine magische Lampe von wohlwollenden Feuergeistern bewohnt. Entriegeln des

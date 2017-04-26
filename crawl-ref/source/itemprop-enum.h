@@ -633,7 +633,9 @@ enum weapon_type
 
     WPN_STAFF,          // Just used for the weapon stats for magical staves.
     WPN_QUARTERSTAFF,
+#if TAG_MAJOR_VERSION == 34
     WPN_LAJATANG,
+#endif
 
 #if TAG_MAJOR_VERSION == 34
     WPN_HUNTING_SLING,

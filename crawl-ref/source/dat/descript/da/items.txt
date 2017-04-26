@@ -385,11 +385,6 @@ skader.
     end
 }}
 %%%%
-lajatang
-
-Et meget sjældent og ekstremt effektivt eksotisk våben, bestående af en stav
-med halvmåneformede klinger i begge ender.
-%%%%
 lamp of fire
 
 En magisk lampe, som er beboet af venligtsindede ildånder. Åbner du dens hægte,

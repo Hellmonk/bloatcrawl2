@@ -218,13 +218,9 @@ struct weapon_def
      staves and short blades getting better brands as partial compensation for
      their other drawbacks, for instance. It is true that we have other knobs
      that we also use to balance different weapon types, but they don't all
-     affect things in the same way. For instance, lajatangs having very good
-     brands on average partially compensates for the rarity of good staves in a
-     different way from how raising their base damage would - it means that
-     finding a really great staff is of more comparable rarity to finding a
-     really great axe. (This is important because finding a really great weapon
-     like a lajatang of speed or elec or pain is one of the ways that players
-     decide to use a weapon type in the first place.) Having this knob isn't
+     affect things in the same way. For instance, having very good
+     brands on average partially compensates for rarity in a
+     different way from how base damage would. Having this knob isn't
      redundant with having base damage and delay to modify - it is similar to
      being able to adjust the rarity of different base types of weapons.
 
@@ -590,9 +586,10 @@ static const weapon_def Weapon_prop[] =
             { SPWPN_HOLY_WRATH,  2 },
             { SPWPN_ANTIMAGIC,   2 },
         }},
+#if TAG_MAJOR_VERSION == 34
     { WPN_LAJATANG,          "lajatang",            16,-3, 14,
         SK_MACES_FLAILS,       SIZE_LITTLE, NUM_SIZE_LEVELS, MI_NONE,
-        DAMV_SLICING, 2, 2, 150, {
+        DAMV_SLICING, 0, 0, 0, {
             { SPWPN_NORMAL,         34 },
             { SPWPN_SPEED,          12 },
             { SPWPN_ELECTROCUTION,  12 },
@@ -603,6 +600,7 @@ static const weapon_def Weapon_prop[] =
             { SPWPN_ANTIMAGIC,       4 },
             { SPWPN_DISTORTION,      3 },
         }},
+#endif
 
     // Range weapons
     #if TAG_MAJOR_VERSION == 34

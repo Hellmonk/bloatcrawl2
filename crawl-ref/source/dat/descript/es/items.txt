@@ -292,11 +292,6 @@ incapaz de usarla."
     end
 }}
 %%%%
-lajatang
-
-Una exótica y muy efectiva arma de importación. Consiste en una garrocha, con
-cuchillas en forma de media luna en ambos extremos.
-%%%%
 large rock
 
 Un piedra, usada por los gigantes como proyectil. {{

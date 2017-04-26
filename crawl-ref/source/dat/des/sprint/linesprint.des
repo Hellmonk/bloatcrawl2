@@ -242,7 +242,7 @@ KITEM:    e = rapier plus:2 ego:electrocution ident:all not_cursed /\
            halberd plus:2 ego:protection ident:all not_cursed /\
            halberd plus:2 ego:venom ident:all not_cursed /\
            halberd plus:2 good_item ident:all not_cursed w:5, \
-           lajatang plus:0 ident:all not_cursed /\
+           quarterstaff plus:0 ident:all not_cursed /\
            quarterstaff plus:4 ego:speed ident:all not_cursed w:15 /\
            quarterstaff plus:4 good_item ident:all not_cursed w:5, \
            scimitar plus:2 ego:flaming ident:all not_cursed /\
@@ -427,7 +427,7 @@ KITEM:    b = any weapon level:27 ident:all /\
           double sword plus:1 not_cursed ident:all /\
           demon blade plus:1 not_cursed ident:all w:3 /\
           triple sword plus:0 not_cursed ident:all w:3 /\
-          lajatang plus:1 not_cursed ident:all /\
+          quarterstaff plus:1 not_cursed ident:all /\
           longbow plus:1 not_cursed ident:all /\
           triple crossbow plus:0 not_cursed ident:all /\
           any weapon good_item ident:all w:30
@@ -616,8 +616,8 @@ KITEM:    b = battleaxe plus:4 ego:none not_cursed ident:all /\
     demon blade plus:1 good_item not_cursed ident:all /\
     great sword plus:4 ego:none not_cursed ident:all /\
     great sword plus:1 good_item not_cursed ident:all /\
-    lajatang plus:4 ego:none not_cursed ident:all /\
-    lajatang plus:1 good_item not_cursed ident:all /\
+    quarterstaff plus:4 ego:none not_cursed ident:all /\
+    quarterstaff plus:1 good_item not_cursed ident:all /\
     longbow plus:3 good_item not_cursed ident:all w:15 /\
     triple crossbow plus:0 good_item not_cursed ident:all w:15
 KITEM:    d = plate armour plus:5 not_cursed ident:all /\
@@ -831,8 +831,8 @@ KITEM:    b = battleaxe plus:5 good_item not_cursed ident:all /\
     demon blade plus:5 randart not_cursed ident:all w:5 /\
     great sword plus:5 good_item not_cursed ident:all /\
     great sword plus:5 randart not_cursed ident:all w:5 /\
-    lajatang plus:5 good_item not_cursed ident:all /\
-    lajatang plus:5 randart not_cursed ident:all w:5 /\
+    quarterstaff plus:5 good_item not_cursed ident:all /\
+    quarterstaff plus:5 randart not_cursed ident:all w:5 /\
     longbow plus:5 ego:vorpal not_cursed ident:all w:15 /\
     triple crossbow plus:5 good_item not_cursed ident:all w:15
 KITEM:    d = plate armour plus:6 not_cursed ident:all /\

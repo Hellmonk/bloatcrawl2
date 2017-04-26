@@ -1482,7 +1482,7 @@ static weapon_type _hepliaklqana_weapon_type(monster_type mc, int HD)
     case MONS_ANCESTOR_KNIGHT:
         return HD < 10 ? WPN_FLAIL : WPN_BROAD_AXE;
     case MONS_ANCESTOR_BATTLEMAGE:
-        return HD < 13 ? WPN_QUARTERSTAFF : WPN_LAJATANG;
+        return HD < 13 ? WPN_QUARTERSTAFF : WPN_GREAT_MACE;
     default:
         return NUM_WEAPONS; // should never happen
     }

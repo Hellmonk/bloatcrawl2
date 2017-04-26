@@ -74,7 +74,7 @@ function crypt_loot_plus(e)
   e.kitem("d = double sword w:5 " .. drain .." / triple sword w:5 " .. drain ..
           " / quick blade " .. drain .. " / executioner's axe " .. drain ..
           " / morningstar " .. drain .. " / bardiche " .. drain ..
-          " / lajatang " .. drain)
+          " / demon whip " .. drain)
   e.kitem("e = great sword " .. pain .." / battleaxe " .. pain ..
           " / great mace " .. pain .. " / glaive " .. pain ..
           " / quarterstaff " .. pain)
