@@ -340,7 +340,7 @@ MAGIC:   1
 
 # TAG_MAJOR_VERSION == 34
 NAME:    eveningstar "Brilliance"
-OBJ:     OBJ_WEAPONS/WPN_EVENINGSTAR
+OBJ:     OBJ_WEAPONS/WPN_MORNINGSTAR
 PLUS:    +1
 COLOUR:  ETC_HOLY
 TILE:    urand_brilliance

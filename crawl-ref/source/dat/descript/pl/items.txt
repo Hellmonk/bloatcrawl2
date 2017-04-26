@@ -226,10 +226,6 @@ eudemon blade
 Wspaniałe ostrze wykute w kuźniach Niebios, opętane przez dobrego ducha. Jest
 to ulubiona broń sług Świetlistego.
 %%%%
-eveningstar
-
-Wariant morgenszterna.
-%%%%
 fan of gales
 
 Ten zaklęty wachlarz jest zamieszkały przez przyjazne duchy powietrza.

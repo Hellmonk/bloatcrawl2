@@ -394,10 +394,6 @@ A sacred blade from the forges of Heaven, inhabited by a good spirit. It is a
 favoured weapon of the Shining One's servants, and cannot be wielded by the
 forces of evil.
 %%%%
-eveningstar
-
-The opposite of a morningstar.
-%%%%
 executioner's axe
 
 A fearsome weapon covered in dried blood and crude engravings of torture and

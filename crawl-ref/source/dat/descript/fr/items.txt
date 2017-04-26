@@ -439,10 +439,6 @@ Une lame sacrée tout droit sortie des forges du paradis, et habitée par une
 présence bienveillante. C'est l'arme favorite des serviteurs de L'Étincelant,
 et elle ne peut être manipulée par les forces du mal.
 %%%%
-eveningstar
-
-L'opposé d'une étoile du matin.
-%%%%
 fan of gales
 
 Un éventail enchanté habité par des esprits de l'air bienveillants. Agiter

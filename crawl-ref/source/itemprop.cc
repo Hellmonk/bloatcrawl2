@@ -417,7 +417,7 @@ static const weapon_def Weapon_prop[] =
         DAMV_CRUSHING | DAM_PIERCE, 2, 10, 40, M_AND_F_BRANDS },
     { WPN_EVENINGSTAR,       "eveningstar",        15, -1, 15,
         SK_MACES_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
-        DAMV_CRUSHING | DAM_PIERCE, 0, 2, 150, {
+        DAMV_CRUSHING | DAM_PIERCE, 0, 0, 0, {
             { SPWPN_PROTECTION,     30 },
             { SPWPN_DRAINING,       19 },
             { SPWPN_HOLY_WRATH,     15 },

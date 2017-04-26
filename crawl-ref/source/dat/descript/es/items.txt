@@ -223,10 +223,6 @@ Una gloriosa cuchilla creada en los forjas del Cielo, y poseída por un espírit
 benigno. Es una de las armas preferidas de los sirvientes de El
 Resplandeciente.
 %%%%
-eveningstar
-
-Lo contrario del lucero del alba.
-%%%%
 fire dragon scales
 
 Una armadura mágica confeccionada a partir de las escamas de un dragón que

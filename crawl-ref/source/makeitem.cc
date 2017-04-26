@@ -140,7 +140,6 @@ static weapon_type _determine_weapon_subtype(int item_level)
                              WPN_DEMON_BLADE,
                              WPN_DEMON_TRIDENT,
                              WPN_DOUBLE_SWORD,
-                             WPN_EVENINGSTAR,
                              WPN_EXECUTIONERS_AXE,
                              WPN_QUICK_BLADE,
                              WPN_TRIPLE_SWORD);

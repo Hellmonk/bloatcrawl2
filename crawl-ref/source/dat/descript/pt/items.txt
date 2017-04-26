@@ -157,10 +157,6 @@ demon whip
 
 Uma arma terrível, tramada nas profundezas do Inferno.
 %%%%
-eveningstar
-
-O oposto de uma maça-estrela.
-%%%%
 giant spiked club
 
 Uma tora de madeira gigante com espinhos afiados em um extremo.

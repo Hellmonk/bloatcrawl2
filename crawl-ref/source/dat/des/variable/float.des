@@ -1081,7 +1081,7 @@ KITEM:   ? = singing_sword, damaged short sword, \
              damaged long sword, damaged hand axe
 KITEM:   ! = damaged executioner's axe, damaged short sword, \
              damaged long sword, damaged morningstar
-KITEM:   + = damaged eveningstar, damaged short sword, \
+KITEM:   + = damaged morningstar, damaged short sword, \
              damaged long sword, damaged war axe
 KITEM:   & = damaged mace / nothing
 MONS:    fungus, plant
@@ -3062,7 +3062,7 @@ ITEM:   book of geomancy / book of the earth / manual of earth magic / \
         staff of earth ident:type / ring of protection ident:type / \
         wand of disintegration ident:type / crystal plate armour w:5
 : if you.unrands("devastator") then
-KITEM:  2 = eveningstar randart
+KITEM:  2 = morningstar randart
 : else
 KITEM:  2 = devastator
 : end

@@ -1189,15 +1189,6 @@ eudemon blade
 
 <demon blade>
 %%%%
-eveningstar
-
-“It is said to have been the favourite weapon of the Norman priest, who,
-objecting to the shedding of blood, had no scruple about the dashing out of
-brains.”
-    -T. M. Allison, “The Flail and Kindred Tools (from a historical and
-     literary standpoint)”, _Archaeologia Aeliana_, Third Series, vol. IV.
-     1908.
-%%%%
 executioner's axe
 
 “She danced, and was compelled to dance—to dance in the dark night. The shoes

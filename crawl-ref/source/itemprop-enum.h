@@ -570,7 +570,9 @@ enum weapon_type
     WPN_SPIKED_FLAIL,
 #endif
     WPN_DIRE_FLAIL,
+#if TAG_MAJOR_VERSION == 34
     WPN_EVENINGSTAR,
+#endif
     WPN_GREAT_MACE,
 
     WPN_DAGGER,
