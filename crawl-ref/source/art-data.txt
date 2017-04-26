@@ -1130,11 +1130,11 @@ MAGIC:    1
 
 NAME:    lajatang of Order
 INSCRIP: silver,
-OBJ:     OBJ_WEAPONS/WPN_LAJATANG
+OBJ:     OBJ_WEAPONS/WPN_QUARTERSTAFF
 COLOUR:  ETC_SILVER
 TILE:    urand_order
 TILE_EQ: order
-PLUS:    +7
+PLUS:    +12
 BOOL:    rMut
 
 ENUM:     FIRESTARTER
