@@ -577,7 +577,7 @@ static const weapon_def Weapon_prop[] =
         DAMV_CRUSHING, 0, 0, 15, {} },
     { WPN_QUARTERSTAFF,      "quarterstaff",        12, 3, 13,
         SK_MACES_FLAILS,       SIZE_LITTLE, NUM_SIZE_LEVELS,  MI_NONE,
-        DAMV_CRUSHING, 4, 10, 40, {
+        DAMV_CRUSHING, 5, 10, 40, {
             { SPWPN_NORMAL,     50 },
             { SPWPN_PROTECTION, 18 },
             { SPWPN_DRAINING,    8 },
