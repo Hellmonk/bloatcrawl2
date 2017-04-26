@@ -370,10 +370,6 @@ demon whip
 
 A terrible weapon, woven in the depths of the inferno.
 %%%%
-dire flail
-
-A flail with long spikes and a heavy head.
-%%%%
 disc of storms
 
 A crackling disc which can unleash a destructive storm of electricity. Its

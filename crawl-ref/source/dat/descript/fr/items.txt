@@ -423,10 +423,6 @@ demon whip
 
 Une arme redoutable, tissée dans les profondeurs de l'enfer.
 %%%%
-dire flail
-
-Un fléau d'arme avec des pointes plus longues, et une tête plus lourde.
-%%%%
 disc of storms
 
 Cet objet, extrêmement puissant, peut déchaîner des tempêtes d'électricité

@@ -108,7 +108,7 @@
 
       elseif s == "D" then i = { "book of death", "book of arcane marksmanship",
        "book of dreams", "book of the dragon", "dagger", "demon blade",
-       "demon trident", "demon whip", "dire flail", "disc of storms",
+       "demon trident", "demon whip", "disc of storms",
        "double sword", "ring of dexterity",
        "manual of dodging", "wand of disintegration", "staff of death",
        "wand of digging" }

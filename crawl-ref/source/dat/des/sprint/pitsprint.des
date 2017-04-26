@@ -416,7 +416,7 @@ function armoury_setup(e)
           executioner's axe plus:1 not_cursed ident:all w:3 /\
           glaive plus:3 not_cursed ident:all /\
           bardiche plus:1 not_cursed ident:all w:3 /\
-          dire flail plus:5 not_cursed ident:all /\
+          quarterstaff plus:5 not_cursed ident:all /\
           great mace plus:3 not_cursed ident:all /\
           demon whip plus:3 not_cursed ident:all w:5 /\
           giant spiked club plus:3 not_cursed ident:all /\
@@ -648,9 +648,9 @@ KITEM: f = war axe plus:2 ego:freezing ident:all not_cursed /\
        broad axe plus:1 ego:freezing ident:all not_cursed /\
        broad axe plus:1 ego:vorpal ident:all not_cursed /\
        broad axe plus:1 good_item ident:all not_cursed w:5
-KITEM: g = dire flail plus:2 ego:protection ident:all not_cursed /\
-       dire flail plus:2 ego:vorpal ident:all not_cursed /\
-       dire flail plus:2 good_item ident:all not_cursed w:5 /\
+KITEM: g = quarterstaff plus:2 ego:protection ident:all not_cursed /\
+       quarterstaff plus:2 ego:vorpal ident:all not_cursed /\
+       quarterstaff plus:2 good_item ident:all not_cursed w:5 /\
        morningstar plus:2 ego:protection ident:all not_cursed /\
        morningstar plus:2 ego:vorpal ident:all not_cursed /\
        morningstar plus:2 good_item ident:all not_cursed w:5

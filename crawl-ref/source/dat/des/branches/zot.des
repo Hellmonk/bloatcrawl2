@@ -991,10 +991,10 @@ TAGS:    no_monster_gen no_trap_gen no_pool_fixup patrolling transparent
 DEPTH:   Zot, !Zot:$
 WEIGHT:  3
 # Gifts, too.
-KMONS:   1 = guardian mummy ; randart dire flail ego:chaos | \
+KMONS:   1 = guardian mummy ; randart quarterstaff ego:chaos | \
              randart great mace ego:chaos | randart battleaxe ego:chaos| \
              randart great sword ego:chaos | randart glaive ego:chaos | \
-             randart scythe ego:chaos | randart dire flail | \
+             randart scythe ego:chaos | randart morningstar | \
              randart great mace | randart battleaxe | randart great sword | \
              randart glaive | randart scythe
 KMONS:   3 = guardian mummy ; randart fustibalus ego:chaos . sling bullet / \
@@ -2116,7 +2116,7 @@ ITEM:   quick blade ego:electrocution good_item ident:type w:5 / \
         demon trident ego:electrocution good_item ident:type w:5 / \
         rapier ego:electrocution good_item ident:type / \
         scimitar ego:electrocution good_item ident:type / \
-        dire flail ego:electrocution good_item ident:type / \
+        morningstar ego:electrocution good_item ident:type / \
         trident ego:electrocution good_item ident:type / \
         quarterstaff ego:electrocution good_item ident:type
 ITEM:   scroll of blinking q:1 / scroll of blinking q:2 / \

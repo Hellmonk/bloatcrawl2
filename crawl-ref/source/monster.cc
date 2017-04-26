@@ -1321,7 +1321,7 @@ static bool _is_signature_weapon(const monster* mons, const item_def &weapon)
             return wtype == WPN_DEMON_WHIP;
 
         if (mons->type == MONS_EDMUND)
-            return wtype == WPN_FLAIL || wtype == WPN_DIRE_FLAIL;
+            return wtype == WPN_FLAIL || wtype == WPN_QUARTERSTAFF;
 
         // Pikel's got MONUSE_STARTING_EQUIPMENT right now, but,
         // in case that ever changes, we don't want him to switch away

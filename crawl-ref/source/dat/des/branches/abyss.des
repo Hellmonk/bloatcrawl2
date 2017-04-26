@@ -171,7 +171,7 @@ NSUBST: 1 = 1111111112 / .
 :  "ego:distortion | rapier ego:distortion | dagger ego:distortion"
 : local louiseweapon = "long sword ego:distortion | short sword " ..
 :  "ego:distortion | battleaxe ego:distortion | hand axe ego:distortion | " ..
-:  "mace ego:distortion | dire flail ego:distortion | glaive ego:distortion w:2"
+:  "mace ego:distortion | flail ego:distortion | glaive ego:distortion w:2"
 KMONS: 1 = Louise, deep elf demonologist / deep elf sorcerer w:5
 : kmons( "2 = Louise ; " .. louiseweapon .. " , deep elf demonologist ; " ..
 : elfweapon .. " / deep elf sorcerer w:5 ; " .. elfweapon)

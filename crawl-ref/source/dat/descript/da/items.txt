@@ -289,10 +289,6 @@ demon whip
 
 Et grufuldt våben, som er vævet i infernoets dybder.
 %%%%
-dire flail
-
-En stridsplejl med lange pigge og et tungere hoved.
-%%%%
 disc of storms
 
 Denne ekstremt kraftulde genstand kan udløse en altødelæggende storm af

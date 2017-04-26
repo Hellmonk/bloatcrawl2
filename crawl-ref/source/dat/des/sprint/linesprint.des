@@ -233,9 +233,6 @@ KITEM:    e = rapier plus:2 ego:electrocution ident:all not_cursed /\
            broad axe plus:1 ego:freezing ident:all not_cursed /\
            broad axe plus:1 ego:vorpal ident:all not_cursed /\
            broad axe plus:1 good_item ident:all not_cursed w:5, \
-           dire flail plus:2 ego:protection ident:all not_cursed /\
-           dire flail plus:2 ego:vorpal ident:all not_cursed /\
-           dire flail plus:2 good_item ident:all not_cursed w:5 /\
            morningstar plus:2 ego:protection ident:all not_cursed /\
            morningstar plus:2 ego:vorpal ident:all not_cursed /\
            morningstar plus:2 good_item ident:all not_cursed w:5, \
@@ -418,7 +415,6 @@ KITEM:    b = any weapon level:27 ident:all /\
           executioner's axe plus:0 not_cursed ident:all w:3 /\
           glaive plus:1 not_cursed ident:all /\
           bardiche plus:0 not_cursed ident:all w:3 /\
-          dire flail plus:3 not_cursed ident:all /\
           great mace plus:1 not_cursed ident:all /\
           demon whip plus:1 not_cursed ident:all w:5 /\
           giant spiked club plus:1 not_cursed ident:all /\

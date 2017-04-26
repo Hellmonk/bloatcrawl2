@@ -820,7 +820,7 @@ KMONS: b = patrolling Duvessa hp:150 ; great sword ego:freezing \
 KMONS: a = patrolling Harold hd:15 hp:100 \
  spells:poison_arrow.16.wizard;teleport_other.16.wizard;\
         minor_healing.16.wizard;slow.16.wizard \
- ; dire flail ego:distortion
+ ; quarterstaff ego:distortion
 KMONS: b = patrolling Joseph hd:5 hp:150 ; quarterstaff ego:freezing \
  . curare dart q:7
 : else
@@ -906,7 +906,7 @@ NAME: sprint_mu_vaults_butterflies
 TAGS: sprint_mu_vaults no_rotate no_hmirror no_vmirror
 MONS: centaur warrior, lich, shadow dragon, ogre mage
 MONS: vault guard ; short sword ego:electrocution | long sword ego:flaming |\
-      dire flail ego:vampirism | war axe ego:freezing | spear ego:vorpal |\
+      quarterstaff ego:vampirism | war axe ego:freezing | spear ego:vorpal |\
       great mace ego:pain | great sword ego:venom .\
       chain mail ego:poison_resistance | chain mail ego:cold_resistance |\
       scale mail ego:poison_resistance | scale mail ego:cold_resistance |\

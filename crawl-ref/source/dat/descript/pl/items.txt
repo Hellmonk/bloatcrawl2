@@ -211,10 +211,6 @@ demon whip
 
 Straszliwa broń, wypleciona na dnie piekieł.
 %%%%
-dire flail
-
-Cep z kolczastymi odważnikami po obu stronach.
-%%%%
 disc of storms
 
 Ten potężny przedmiot potrafi wypuścić niszczące elektryczne wyładowanie,
