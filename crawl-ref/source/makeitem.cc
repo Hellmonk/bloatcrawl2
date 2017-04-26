@@ -1407,6 +1407,8 @@ static void _generate_book_item(item_def& item, bool allow_uniques,
                 item.skill = SK_UNARMED_COMBAT;
             if (item.skill == SK_TRAPS)
                 item.skill = SK_STEALTH;
+            if (item.skill == SK_STAVES)
+                item.skill = SK_STEALTH;
         }
 #else
             item.plus = random2(SK_UNARMED_COMBAT + 1);
