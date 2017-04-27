@@ -65,8 +65,8 @@ static const char *skill_titles[NUM_SKILLS][6] =
 {
   //  Skill name        levels 1-7       levels 8-14        levels 15-20       levels 21-26      level 27
     {"Fighting",       "Skirmisher",    "Fighter",         "Warrior",         "Slayer",         "Conqueror"},
-    {"Short Blades",   "Cutter",        "Slicer",          "Swashbuckler",    "Cutthroat",      "Politician"},
     {"Blades",         "Slasher",       "Carver",          "Fencer",          "@Adj@ Blade",    "Swordmaster"},
+    {"Long Blades",    "Slasher",       "Carver",          "Fencer",          "@Adj@ Blade",    "Swordmaster"},
     {"Axes",           "Chopper",       "Cleaver",         "Severer",         "Executioner",    "Axe Maniac"},
     {"Maces & Staves", "Cudgeler",      "Basher",          "Bludgeoner",      "Shatterer",      "Skullcrusher"},
     {"Polearms",       "Poker",         "Spear-Bearer",    "Impaler",         "Phalangite",     "@Adj@ Porcupine"},

@@ -215,8 +215,8 @@ struct weapon_def
 
   1) The main purpose of weapon brand distribution varying across weapon type
      is to help to balance the different weapon skills against each other -
-     staves and short blades getting better brands as partial compensation for
-     their other drawbacks, for instance. It is true that we have other knobs
+     getting better brands as partial compensation for
+     other drawbacks, for instance. It is true that we have other knobs
      that we also use to balance different weapon types, but they don't all
      affect things in the same way. For instance, having very good
      brands on average partially compensates for rarity in a

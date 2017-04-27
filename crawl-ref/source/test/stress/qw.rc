@@ -1356,7 +1356,7 @@ function intrinsic_like_dex()
 end
 
 function want_buckler()
-  if wskill() == "Short Blades" or wskill() == "Unarmed Combat" then
+  if wskill() == "Blades" or wskill() == "Unarmed Combat" then
     return true
   end
   if you.race() == "Formicid"
@@ -1383,7 +1383,7 @@ function weapon_choice()
   elseif sp == "Merfolk" then
     return "Polearms"
   elseif sp == "Spriggan" then
-    return "Short Blades"
+    return "Blades"
   else
     return "Axes"
   end
@@ -1395,7 +1395,7 @@ function wskill()
     return c_persist.cached_wskill
   end
   weap = items.equipped_at("Weapon")
-  if weap and weap.weap_skill ~= "Short Blades" then
+  if weap and weap.weap_skill ~= "Blades" then
     c_persist.cached_wskill = weap.weap_skill
   else
     c_persist.cached_wskill = weapon_choice()
@@ -2155,7 +2155,7 @@ function min_delay_skill()
   if not weap then
     return 26
   end
-  if weap.weap_skill == "Short Blades" and weap.delay == 12 then
+  if weap.weap_skill == "Blades" and weap.delay == 12 then
     return 14
   end
   local mindelay = math.floor(weap.delay / 2)
@@ -5104,7 +5104,7 @@ plan_abyss_move = cascade {
 
 function choose_single_skill(sk)
   you.train_skill(sk, 1)
-  skill_list = {"Fighting","Short Blades","Axes","Maces & Flails",
+  skill_list = {"Fighting","Blades","Axes","Maces & Staves",
                 "Polearms","Unarmed Combat","Bows","Crossbows",
                 "Throwing","Slings","Armour","Dodging","Shields","Spellcasting",
                 "Conjurations","Hexes","Charms","Summonings","Necromancy",

@@ -4,12 +4,12 @@ Fighting
 Fighting skill increases your accuracy and damage in hand-to-hand combat, and
 also increases your maximum health.
 %%%%
-Short Blades
+Blades
 
 Short Blades are more effective than any other weapon type at stabbing helpless
 foes.
 
-Being skilled with Short Blades will allow you to attack more quickly with all
+Being skilled with Blades will allow you to attack more quickly with all
 weapons of this type, as well as increasing your accuracy and damage with them.
 %%%%
 Axes
