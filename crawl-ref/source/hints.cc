@@ -728,7 +728,6 @@ void hints_gained_new_skill(skill_type skill)
 
     // Melee skills.
     case SK_SHORT_BLADES:
-    case SK_LONG_BLADES:
     case SK_AXES:
     case SK_MACES_FLAILS:
     case SK_POLEARMS:
@@ -1789,7 +1788,7 @@ void learned_something_new(hints_event_type seen_what, coord_def gc)
                 "concentrate your efforts on one or two weapon types to become "
                 "more powerful in them. Some weapons are closely related, and "
                 "being trained in one will ease training the other. This is "
-                "true for the following pairs: Short Blades/Long Blades, "
+                "true for the following pairs: "
                 "Axes/Polearms, Polearms/Staves, Axes/Maces and Maces/Staves.";
         break;
 

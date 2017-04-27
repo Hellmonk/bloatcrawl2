@@ -145,7 +145,7 @@
 
       elseif s == "K" then i = { "any" }
 
-      elseif s == "L" then i = { "lamp of fire", "manual of long blades",
+      elseif s == "L" then i = { "lamp of fire",
        "large rock", "large shield", "leather armour", "long sword",
        "potion of lignification", "wand of lightning",
        "longbow" }

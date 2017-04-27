@@ -111,7 +111,7 @@ void fixup_skills();
 static const skill_type skill_display_order[] =
 {
     SK_TITLE,
-    SK_FIGHTING, SK_SHORT_BLADES, SK_LONG_BLADES, SK_AXES,
+    SK_FIGHTING, SK_SHORT_BLADES, SK_AXES,
     SK_MACES_FLAILS, SK_POLEARMS, SK_UNARMED_COMBAT,
 
     SK_BLANK_LINE,

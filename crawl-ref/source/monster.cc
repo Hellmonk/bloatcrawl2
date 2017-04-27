@@ -1334,8 +1334,7 @@ static bool _is_signature_weapon(const monster* mons, const item_def &weapon)
 
         if (mons->type == MONS_DUVESSA)
         {
-            return item_attack_skill(weapon) == SK_SHORT_BLADES
-                   || item_attack_skill(weapon) == SK_LONG_BLADES;
+            return item_attack_skill(weapon) == SK_SHORT_BLADES;
         }
 
         if (mons->type == MONS_IGNACIO)
@@ -1368,7 +1367,7 @@ static bool _is_signature_weapon(const monster* mons, const item_def &weapon)
             return item_attack_skill(weapon) == SK_SHORT_BLADES;
 
         if (mons->type == MONS_IMPERIAL_MYRMIDON)
-            return item_attack_skill(weapon) == SK_LONG_BLADES;
+            return item_attack_skill(weapon) == SK_SHORT_BLADES;
     }
 
     if (mons->is_holy())
@@ -4172,7 +4171,6 @@ int monster::skill(skill_type sk, int scale, bool real, bool drained) const
 
     // Weapon skills for spectral weapon
     case SK_SHORT_BLADES:
-    case SK_LONG_BLADES:
     case SK_AXES:
     case SK_MACES_FLAILS:
     case SK_POLEARMS:

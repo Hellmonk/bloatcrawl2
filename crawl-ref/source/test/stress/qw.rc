@@ -1378,10 +1378,8 @@ function weapon_choice()
   sp = you.race()
   if sp == "Troll" or sp == "Ghoul" then
     return "Unarmed Combat"
-  elseif  sp == "High Elf" then
-    return "Long Blades"
   elseif sp == "Ogre" or sp == "Kobold" then
-    return "Maces & Flails"
+    return "Maces & Staves"
   elseif sp == "Merfolk" then
     return "Polearms"
   elseif sp == "Spriggan" then
@@ -5106,7 +5104,7 @@ plan_abyss_move = cascade {
 
 function choose_single_skill(sk)
   you.train_skill(sk, 1)
-  skill_list = {"Fighting","Short Blades","Long Blades","Axes","Maces & Flails",
+  skill_list = {"Fighting","Short Blades","Axes","Maces & Flails",
                 "Polearms","Unarmed Combat","Bows","Crossbows",
                 "Throwing","Slings","Armour","Dodging","Shields","Spellcasting",
                 "Conjurations","Hexes","Charms","Summonings","Necromancy",

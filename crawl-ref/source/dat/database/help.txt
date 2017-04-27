@@ -118,7 +118,7 @@ you can throw, <w>stick</w> will find items that can be used with Sticks to Snak
 shops, and (if the autopickup_search option is enabled) <w>autopickup</w> will find
 items that would be automatically picked up.
 
-Skill names (such as <w>Polearms</w> or <w>Long Blades</w>) will find all weapons that
+Skill names (such as <w>Polearms</w>) will find all weapons that
 train that skill. You can also look for <w>melee weapon</w> and <w>ranged weapon</w>.
 
 You can also search by item types such as <w>book</w> or <w>manual</w> or <w>jewellery</w>.

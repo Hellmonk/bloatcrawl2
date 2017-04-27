@@ -77,7 +77,7 @@ static const map<species_type, species_def> species_data =
     {},
     { JOB_TRANSMUTER, JOB_CONJURER, JOB_FIRE_ELEMENTALIST, JOB_ICE_ELEMENTALIST,
       JOB_AIR_ELEMENTALIST, JOB_EARTH_ELEMENTALIST },
-    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_LONG_BLADES,
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
       SK_BOWS, SK_CROSSBOWS, SK_SLINGS },
 } },
 
@@ -95,7 +95,7 @@ static const map<species_type, species_def> species_data =
     {},
     { JOB_BERSERKER, JOB_TRANSMUTER, JOB_CONJURER, JOB_FIRE_ELEMENTALIST,
       JOB_ICE_ELEMENTALIST, JOB_AIR_ELEMENTALIST, JOB_EARTH_ELEMENTALIST },
-    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_LONG_BLADES,
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
       SK_BOWS, SK_CROSSBOWS, SK_SLINGS },
 } },
 
@@ -263,7 +263,7 @@ static const map<species_type, species_def> species_data =
     {},
     { JOB_GLADIATOR, JOB_BERSERKER, JOB_ABYSSAL_KNIGHT, JOB_WIZARD,
       JOB_NECROMANCER, JOB_FIRE_ELEMENTALIST, JOB_ICE_ELEMENTALIST },
-    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_LONG_BLADES,
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
       SK_BOWS, SK_CROSSBOWS, SK_SLINGS },
 } },
 
@@ -283,7 +283,7 @@ static const map<species_type, species_def> species_data =
     { "permanent stasis", "dig shafts and tunnels", "four strong arms" },
     { JOB_FIGHTER, JOB_HUNTER, JOB_ABYSSAL_KNIGHT,
       JOB_EARTH_ELEMENTALIST },
-    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_LONG_BLADES,
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
       SK_CROSSBOWS, SK_SLINGS },
 } },
 
@@ -340,7 +340,7 @@ static const map<species_type, species_def> species_data =
     {},
     { JOB_FIGHTER, JOB_MONK, JOB_BERSERKER, JOB_ABYSSAL_KNIGHT,
       JOB_NECROMANCER, JOB_FIRE_ELEMENTALIST },
-    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_LONG_BLADES },
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS },
 } },
 
 { SP_HUMAN, {
@@ -357,7 +357,7 @@ static const map<species_type, species_def> species_data =
     {},
     { JOB_BERSERKER, JOB_CONJURER, JOB_NECROMANCER, JOB_FIRE_ELEMENTALIST,
       JOB_ICE_ELEMENTALIST },
-    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_LONG_BLADES,
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
       SK_BOWS, SK_CROSSBOWS, SK_SLINGS },
 } },
 
@@ -394,7 +394,7 @@ static const map<species_type, species_def> species_data =
     { "change form in water", "swift swim", "stealthy swim" },
     { JOB_GLADIATOR, JOB_BERSERKER, JOB_SKALD, JOB_TRANSMUTER, JOB_SUMMONER,
       JOB_ICE_ELEMENTALIST },
-    { SK_POLEARMS, SK_LONG_BLADES },
+    { SK_POLEARMS },
 } },
 
 { SP_MINOTAUR, {
@@ -411,7 +411,7 @@ static const map<species_type, species_def> species_data =
     { "retaliatory headbutt" },
     { JOB_FIGHTER, JOB_GLADIATOR, JOB_MONK, JOB_HUNTER, JOB_BERSERKER,
       JOB_ABYSSAL_KNIGHT },
-    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_LONG_BLADES,
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
       SK_BOWS, SK_CROSSBOWS, SK_SLINGS },
 } },
 
@@ -433,7 +433,7 @@ static const map<species_type, species_def> species_data =
     { "no food or potions", "fire vulnerability" },
     { JOB_WIZARD, JOB_CONJURER, JOB_NECROMANCER, JOB_ICE_ELEMENTALIST,
       JOB_FIRE_ELEMENTALIST, JOB_SUMMONER },
-    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_LONG_BLADES,
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
       SK_BOWS, SK_CROSSBOWS, SK_SLINGS },
 } },
 
@@ -453,7 +453,7 @@ static const map<species_type, species_def> species_data =
     {},
     { JOB_BERSERKER, JOB_TRANSMUTER, JOB_ENCHANTER, JOB_FIRE_ELEMENTALIST,
       JOB_ICE_ELEMENTALIST, JOB_WIZARD },
-    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_LONG_BLADES, SK_BOWS,
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_BOWS,
       SK_CROSSBOWS, SK_SLINGS },
 } },
 
@@ -489,7 +489,7 @@ static const map<species_type, species_def> species_data =
     { "almost no armour", "stealthy swim" },
     { JOB_TRANSMUTER, JOB_WIZARD, JOB_CONJURER, JOB_ASSASSIN,
       JOB_FIRE_ELEMENTALIST, JOB_ICE_ELEMENTALIST, JOB_EARTH_ELEMENTALIST },
-    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_LONG_BLADES,
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
       SK_BOWS, SK_CROSSBOWS, SK_SLINGS },
 } },
 
@@ -525,7 +525,7 @@ static const map<species_type, species_def> species_data =
     {},
     { JOB_BERSERKER, JOB_WIZARD, JOB_CONJURER, JOB_SUMMONER,
       JOB_FIRE_ELEMENTALIST, JOB_AIR_ELEMENTALIST },
-    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_LONG_BLADES,
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
       SK_BOWS, SK_CROSSBOWS },
 } },
 
@@ -561,7 +561,7 @@ static const map<species_type, species_def> species_data =
     {},
     { JOB_GLADIATOR, JOB_ASSASSIN, JOB_ENCHANTER, JOB_EARTH_ELEMENTALIST,
       JOB_NECROMANCER, JOB_ICE_ELEMENTALIST },
-    { SK_SHORT_BLADES, SK_AXES, SK_LONG_BLADES, SK_BOWS, SK_CROSSBOWS,
+    { SK_SHORT_BLADES, SK_AXES, SK_BOWS, SK_CROSSBOWS,
       SK_SLINGS },
 } },
 
@@ -582,7 +582,7 @@ static const map<species_type, species_def> species_data =
     {},
     { JOB_FIGHTER, JOB_ASSASSIN, JOB_BERSERKER, JOB_ENCHANTER, JOB_CONJURER,
       JOB_NECROMANCER, JOB_ICE_ELEMENTALIST },
-    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_LONG_BLADES,
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
       SK_BOWS, SK_CROSSBOWS, SK_SLINGS },
 } },
 #if TAG_MAJOR_VERSION == 34
@@ -651,7 +651,7 @@ static const map<species_type, species_def> species_data =
     {},
     { JOB_HUNTER, JOB_SKALD, JOB_WIZARD, JOB_CONJURER, JOB_FIRE_ELEMENTALIST,
       JOB_ICE_ELEMENTALIST, JOB_AIR_ELEMENTALIST },
-    { SK_SHORT_BLADES, SK_LONG_BLADES, SK_BOWS },
+    { SK_SHORT_BLADES, SK_BOWS },
 } },
 
 { SP_DEEP_DWARF, {
@@ -670,7 +670,7 @@ static const map<species_type, species_def> species_data =
     { "damage resistance", "recharge devices" },
     { JOB_FIGHTER, JOB_HUNTER, JOB_BERSERKER, JOB_NECROMANCER,
       JOB_EARTH_ELEMENTALIST },
-    { SK_MACES_FLAILS, SK_AXES, SK_LONG_BLADES, SK_CROSSBOWS, SK_SLINGS },
+    { SK_MACES_FLAILS, SK_AXES, SK_CROSSBOWS, SK_SLINGS },
 } },
 
 { SP_FELID, {
@@ -707,7 +707,7 @@ static const map<species_type, species_def> species_data =
     {},
     {},
     { JOB_FIGHTER, JOB_GLADIATOR, JOB_HUNTER, JOB_ARCANE_MARKSMAN},
-    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_LONG_BLADES,
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, 
       SK_BOWS, SK_CROSSBOWS, SK_SLINGS },
 } },
 
@@ -724,7 +724,7 @@ static const map<species_type, species_def> species_data =
     {},
     {},
     { JOB_FIGHTER, JOB_HUNTER, JOB_BERSERKER, JOB_ABYSSAL_KNIGHT, JOB_SKALD },
-    { SK_SHORT_BLADES, SK_LONG_BLADES, SK_AXES, SK_SLINGS },
+    { SK_SHORT_BLADES, SK_AXES, SK_SLINGS },
 } },
 
 { SP_FROGTAUR, {
@@ -740,7 +740,7 @@ static const map<species_type, species_def> species_data =
     { "You can swim through water.", },
     { "swims", },
     { JOB_FIGHTER, JOB_BERSERKER, JOB_SKALD, JOB_SUMMONER, JOB_ICE_ELEMENTALIST },
-    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_LONG_BLADES,
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
       SK_BOWS, SK_CROSSBOWS, SK_SLINGS },
 } },
 #endif

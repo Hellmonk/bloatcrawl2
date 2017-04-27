@@ -11,17 +11,6 @@ foes.
 
 Being skilled with Short Blades will allow you to attack more quickly with all
 weapons of this type, as well as increasing your accuracy and damage with them.
-
-Being skilled with Short Blades increases your effectiveness with Long Blades,
-and vice versa.
-%%%%
-Long Blades
-
-Being skilled with Long Blades will allow you to attack more quickly with all
-weapons of this type, as well as increasing your accuracy and damage with them.
-
-Being skilled with Long Blades increases your effectiveness with Short Blades,
-and vice versa.
 %%%%
 Axes
 

@@ -15,7 +15,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_HUMAN
     APT(SP_HUMAN,           SK_FIGHTING,        0),
     APT(SP_HUMAN,           SK_SHORT_BLADES,    0),
-    APT(SP_HUMAN,           SK_LONG_BLADES,     0),
+    APT(SP_HUMAN,           SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_HUMAN,           SK_AXES,            0),
     APT(SP_HUMAN,           SK_MACES_FLAILS,    0),
     APT(SP_HUMAN,           SK_POLEARMS,        0),
@@ -57,7 +57,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_HIGH_ELF
     APT(SP_HIGH_ELF,        SK_FIGHTING,        0),
     APT(SP_HIGH_ELF,        SK_SHORT_BLADES,    2),
-    APT(SP_HIGH_ELF,        SK_LONG_BLADES,     2),
+    APT(SP_HIGH_ELF,        SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_HIGH_ELF,        SK_AXES,           -2),
     APT(SP_HIGH_ELF,        SK_MACES_FLAILS,   -2),
     APT(SP_HIGH_ELF,        SK_POLEARMS,       -2),
@@ -93,7 +93,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_DEEP_ELF
     APT(SP_DEEP_ELF,        SK_FIGHTING,       -2),
     APT(SP_DEEP_ELF,        SK_SHORT_BLADES,    0),
-    APT(SP_DEEP_ELF,        SK_LONG_BLADES,    -1),
+    APT(SP_DEEP_ELF,        SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_DEEP_ELF,        SK_AXES,           -2),
     APT(SP_DEEP_ELF,        SK_MACES_FLAILS,   -3),
     APT(SP_DEEP_ELF,        SK_POLEARMS,       -3),
@@ -135,7 +135,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_SLUDGE_ELF
     APT(SP_SLUDGE_ELF,      SK_FIGHTING,        1),
     APT(SP_SLUDGE_ELF,      SK_SHORT_BLADES,   -1),
-    APT(SP_SLUDGE_ELF,      SK_LONG_BLADES,    -1),
+    APT(SP_SLUDGE_ELF,      SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_SLUDGE_ELF,      SK_AXES,           -2),
     APT(SP_SLUDGE_ELF,      SK_MACES_FLAILS,   -2),
     APT(SP_SLUDGE_ELF,      SK_POLEARMS,       -2),
@@ -171,7 +171,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_HALFLING
     APT(SP_HALFLING,        SK_FIGHTING,       -1),
     APT(SP_HALFLING,        SK_SHORT_BLADES,    2),
-    APT(SP_HALFLING,        SK_LONG_BLADES,     0),
+    APT(SP_HALFLING,        SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_HALFLING,        SK_AXES,            0),
     APT(SP_HALFLING,        SK_MACES_FLAILS,   -1),
     APT(SP_HALFLING,        SK_POLEARMS,       -1),
@@ -208,7 +208,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_HILL_ORC
     APT(SP_HILL_ORC,        SK_FIGHTING,        2),
     APT(SP_HILL_ORC,        SK_SHORT_BLADES,    0),
-    APT(SP_HILL_ORC,        SK_LONG_BLADES,     1),
+    APT(SP_HILL_ORC,        SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_HILL_ORC,        SK_AXES,            3),
     APT(SP_HILL_ORC,        SK_MACES_FLAILS,    1),
     APT(SP_HILL_ORC,        SK_POLEARMS,        1),
@@ -249,7 +249,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_KOBOLD
     APT(SP_KOBOLD,          SK_FIGHTING,        1),
     APT(SP_KOBOLD,          SK_SHORT_BLADES,    5),
-    APT(SP_KOBOLD,          SK_LONG_BLADES,     1),
+    APT(SP_KOBOLD,          SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_KOBOLD,          SK_AXES,            1),
     APT(SP_KOBOLD,          SK_MACES_FLAILS,    2),
     APT(SP_KOBOLD,          SK_POLEARMS,        1),
@@ -290,7 +290,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_MUMMY
     APT(SP_MUMMY,           SK_FIGHTING,        0),
     APT(SP_MUMMY,           SK_SHORT_BLADES,   -2),
-    APT(SP_MUMMY,           SK_LONG_BLADES,    -2),
+    APT(SP_MUMMY,           SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_MUMMY,           SK_AXES,           -2),
     APT(SP_MUMMY,           SK_MACES_FLAILS,   -2),
     APT(SP_MUMMY,           SK_POLEARMS,       -2),
@@ -331,7 +331,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_NAGA
     APT(SP_NAGA,            SK_FIGHTING,        0),
     APT(SP_NAGA,            SK_SHORT_BLADES,    0),
-    APT(SP_NAGA,            SK_LONG_BLADES,     0),
+    APT(SP_NAGA,            SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_NAGA,            SK_AXES,            0),
     APT(SP_NAGA,            SK_MACES_FLAILS,    0),
     APT(SP_NAGA,            SK_POLEARMS,        0),
@@ -372,7 +372,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_OGRE
     APT(SP_OGRE,            SK_FIGHTING,        3),
     APT(SP_OGRE,            SK_SHORT_BLADES,   -4),
-    APT(SP_OGRE,            SK_LONG_BLADES,    -3),
+    APT(SP_OGRE,            SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_OGRE,            SK_AXES,           -3),
     APT(SP_OGRE,            SK_MACES_FLAILS,    3),
     APT(SP_OGRE,            SK_POLEARMS,        0),
@@ -413,7 +413,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_TROLL
     APT(SP_TROLL,           SK_FIGHTING,       -2),
     APT(SP_TROLL,           SK_SHORT_BLADES,   -2),
-    APT(SP_TROLL,           SK_LONG_BLADES,    -2),
+    APT(SP_TROLL,           SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_TROLL,           SK_AXES,           -2),
     APT(SP_TROLL,           SK_MACES_FLAILS,   -1),
     APT(SP_TROLL,           SK_POLEARMS,       -2),
@@ -454,7 +454,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_RED_DRACONIAN
     APT(SP_RED_DRACONIAN,   SK_FIGHTING,        1),
     APT(SP_RED_DRACONIAN,   SK_SHORT_BLADES,    0),
-    APT(SP_RED_DRACONIAN,   SK_LONG_BLADES,     0),
+    APT(SP_RED_DRACONIAN,   SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_RED_DRACONIAN,   SK_AXES,            0),
     APT(SP_RED_DRACONIAN,   SK_MACES_FLAILS,    0),
     APT(SP_RED_DRACONIAN,   SK_POLEARMS,        0),
@@ -495,7 +495,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_WHITE_DRACONIAN
     APT(SP_WHITE_DRACONIAN, SK_FIGHTING,        1),
     APT(SP_WHITE_DRACONIAN, SK_SHORT_BLADES,    0),
-    APT(SP_WHITE_DRACONIAN, SK_LONG_BLADES,     0),
+    APT(SP_WHITE_DRACONIAN, SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_WHITE_DRACONIAN, SK_AXES,            0),
     APT(SP_WHITE_DRACONIAN, SK_MACES_FLAILS,    0),
     APT(SP_WHITE_DRACONIAN, SK_POLEARMS,        0),
@@ -536,7 +536,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_GREEN_DRACONIAN
     APT(SP_GREEN_DRACONIAN, SK_FIGHTING,        1),
     APT(SP_GREEN_DRACONIAN, SK_SHORT_BLADES,    0),
-    APT(SP_GREEN_DRACONIAN, SK_LONG_BLADES,     0),
+    APT(SP_GREEN_DRACONIAN, SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_GREEN_DRACONIAN, SK_AXES,            0),
     APT(SP_GREEN_DRACONIAN, SK_MACES_FLAILS,    0),
     APT(SP_GREEN_DRACONIAN, SK_POLEARMS,        0),
@@ -577,7 +577,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_YELLOW_DRACONIAN
     APT(SP_YELLOW_DRACONIAN,SK_FIGHTING,        1),
     APT(SP_YELLOW_DRACONIAN,SK_SHORT_BLADES,    0),
-    APT(SP_YELLOW_DRACONIAN,SK_LONG_BLADES,     0),
+    APT(SP_YELLOW_DRACONIAN,SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_YELLOW_DRACONIAN,SK_AXES,            0),
     APT(SP_YELLOW_DRACONIAN,SK_MACES_FLAILS,    0),
     APT(SP_YELLOW_DRACONIAN,SK_POLEARMS,        0),
@@ -618,7 +618,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_GREY_DRACONIAN
     APT(SP_GREY_DRACONIAN,  SK_FIGHTING,        1),
     APT(SP_GREY_DRACONIAN,  SK_SHORT_BLADES,    0),
-    APT(SP_GREY_DRACONIAN,  SK_LONG_BLADES,     0),
+    APT(SP_GREY_DRACONIAN,  SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_GREY_DRACONIAN,  SK_AXES,            0),
     APT(SP_GREY_DRACONIAN,  SK_MACES_FLAILS,    0),
     APT(SP_GREY_DRACONIAN,  SK_POLEARMS,        0),
@@ -659,7 +659,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_BLACK_DRACONIAN
     APT(SP_BLACK_DRACONIAN, SK_FIGHTING,        1),
     APT(SP_BLACK_DRACONIAN, SK_SHORT_BLADES,    0),
-    APT(SP_BLACK_DRACONIAN, SK_LONG_BLADES,     0),
+    APT(SP_BLACK_DRACONIAN, SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_BLACK_DRACONIAN, SK_AXES,            0),
     APT(SP_BLACK_DRACONIAN, SK_MACES_FLAILS,    0),
     APT(SP_BLACK_DRACONIAN, SK_POLEARMS,        0),
@@ -700,7 +700,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_PURPLE_DRACONIAN
     APT(SP_PURPLE_DRACONIAN,SK_FIGHTING,        1),
     APT(SP_PURPLE_DRACONIAN,SK_SHORT_BLADES,    0),
-    APT(SP_PURPLE_DRACONIAN,SK_LONG_BLADES,     0),
+    APT(SP_PURPLE_DRACONIAN,SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_PURPLE_DRACONIAN,SK_AXES,            0),
     APT(SP_PURPLE_DRACONIAN,SK_MACES_FLAILS,    0),
     APT(SP_PURPLE_DRACONIAN,SK_POLEARMS,        0),
@@ -742,7 +742,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_MOTTLED_DRACONIAN
     APT(SP_MOTTLED_DRACONIAN,SK_FIGHTING,        1),
     APT(SP_MOTTLED_DRACONIAN,SK_SHORT_BLADES,    0),
-    APT(SP_MOTTLED_DRACONIAN,SK_LONG_BLADES,     0),
+    APT(SP_MOTTLED_DRACONIAN,SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_MOTTLED_DRACONIAN,SK_AXES,            0),
     APT(SP_MOTTLED_DRACONIAN,SK_MACES_FLAILS,    0),
     APT(SP_MOTTLED_DRACONIAN,SK_POLEARMS,        0),
@@ -778,7 +778,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_PALE_DRACONIAN
     APT(SP_PALE_DRACONIAN,  SK_FIGHTING,        1),
     APT(SP_PALE_DRACONIAN,  SK_SHORT_BLADES,    0),
-    APT(SP_PALE_DRACONIAN,  SK_LONG_BLADES,     0),
+    APT(SP_PALE_DRACONIAN,  SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_PALE_DRACONIAN,  SK_AXES,            0),
     APT(SP_PALE_DRACONIAN,  SK_MACES_FLAILS,    0),
     APT(SP_PALE_DRACONIAN,  SK_POLEARMS,        0),
@@ -819,7 +819,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_BASE_DRACONIAN
     APT(SP_BASE_DRACONIAN,  SK_FIGHTING,        1),
     APT(SP_BASE_DRACONIAN,  SK_SHORT_BLADES,    0),
-    APT(SP_BASE_DRACONIAN,  SK_LONG_BLADES,     0),
+    APT(SP_BASE_DRACONIAN,  SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_BASE_DRACONIAN,  SK_AXES,            0),
     APT(SP_BASE_DRACONIAN,  SK_MACES_FLAILS,    0),
     APT(SP_BASE_DRACONIAN,  SK_POLEARMS,        0),
@@ -860,7 +860,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
 #if TAG_MAJOR_VERSION == 34
     APT(SP_CENTAUR,         SK_FIGHTING,        0),
     APT(SP_CENTAUR,         SK_SHORT_BLADES,   -1),
-    APT(SP_CENTAUR,         SK_LONG_BLADES,    -1),
+    APT(SP_CENTAUR,         SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_CENTAUR,         SK_AXES,           -1),
     APT(SP_CENTAUR,         SK_MACES_FLAILS,   -1),
     APT(SP_CENTAUR,         SK_POLEARMS,       -1),
@@ -896,7 +896,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_DEMIGOD
     APT(SP_DEMIGOD,         SK_FIGHTING,       -1),
     APT(SP_DEMIGOD,         SK_SHORT_BLADES,   -1),
-    APT(SP_DEMIGOD,         SK_LONG_BLADES,    -1),
+    APT(SP_DEMIGOD,         SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_DEMIGOD,         SK_AXES,           -1),
     APT(SP_DEMIGOD,         SK_MACES_FLAILS,   -1),
     APT(SP_DEMIGOD,         SK_POLEARMS,       -1),
@@ -937,7 +937,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_SPRIGGAN
     APT(SP_SPRIGGAN,        SK_FIGHTING,       -2),
     APT(SP_SPRIGGAN,        SK_SHORT_BLADES,    1),
-    APT(SP_SPRIGGAN,        SK_LONG_BLADES,    -2),
+    APT(SP_SPRIGGAN,        SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_SPRIGGAN,        SK_AXES,           -2),
     APT(SP_SPRIGGAN,        SK_MACES_FLAILS,   -3),
     APT(SP_SPRIGGAN,        SK_POLEARMS,       -3),
@@ -978,7 +978,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_MINOTAUR
     APT(SP_MINOTAUR,        SK_FIGHTING,        2),
     APT(SP_MINOTAUR,        SK_SHORT_BLADES,    1),
-    APT(SP_MINOTAUR,        SK_LONG_BLADES,     2),
+    APT(SP_MINOTAUR,        SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_MINOTAUR,        SK_AXES,            2),
     APT(SP_MINOTAUR,        SK_MACES_FLAILS,    2),
     APT(SP_MINOTAUR,        SK_POLEARMS,        2),
@@ -1019,7 +1019,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_GARGOYLE
     APT(SP_GARGOYLE,         SK_FIGHTING,        1),
     APT(SP_GARGOYLE,         SK_SHORT_BLADES,   -1),
-    APT(SP_GARGOYLE,         SK_LONG_BLADES,    -1),
+    APT(SP_GARGOYLE,         SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_GARGOYLE,         SK_AXES,           -1),
     APT(SP_GARGOYLE,         SK_MACES_FLAILS,    0),
     APT(SP_GARGOYLE,         SK_POLEARMS,       -1),
@@ -1060,7 +1060,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_DEMONSPAWN
     APT(SP_DEMONSPAWN,      SK_FIGHTING,        0),
     APT(SP_DEMONSPAWN,      SK_SHORT_BLADES,   -1),
-    APT(SP_DEMONSPAWN,      SK_LONG_BLADES,    -1),
+    APT(SP_DEMONSPAWN,      SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_DEMONSPAWN,      SK_AXES,           -1),
     APT(SP_DEMONSPAWN,      SK_MACES_FLAILS,   -1),
     APT(SP_DEMONSPAWN,      SK_POLEARMS,       -1),
@@ -1101,7 +1101,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_GHOUL
     APT(SP_GHOUL,           SK_FIGHTING,        1),
     APT(SP_GHOUL,           SK_SHORT_BLADES,   -1),
-    APT(SP_GHOUL,           SK_LONG_BLADES,    -1),
+    APT(SP_GHOUL,           SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_GHOUL,           SK_AXES,           -1),
     APT(SP_GHOUL,           SK_MACES_FLAILS,   -1),
     APT(SP_GHOUL,           SK_POLEARMS,       -1),
@@ -1142,7 +1142,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_TENGU
     APT(SP_TENGU,           SK_FIGHTING,        0),
     APT(SP_TENGU,           SK_SHORT_BLADES,    1),
-    APT(SP_TENGU,           SK_LONG_BLADES,     1),
+    APT(SP_TENGU,           SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_TENGU,           SK_AXES,            1),
     APT(SP_TENGU,           SK_MACES_FLAILS,    1),
     APT(SP_TENGU,           SK_POLEARMS,        1),
@@ -1183,7 +1183,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_MERFOLK
     APT(SP_MERFOLK,         SK_FIGHTING,        1),
     APT(SP_MERFOLK,         SK_SHORT_BLADES,    2),
-    APT(SP_MERFOLK,         SK_LONG_BLADES,     1),
+    APT(SP_MERFOLK,         SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_MERFOLK,         SK_AXES,           -2),
     APT(SP_MERFOLK,         SK_MACES_FLAILS,   -2),
     APT(SP_MERFOLK,         SK_POLEARMS,        4),
@@ -1224,7 +1224,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_VAMPIRE
     APT(SP_VAMPIRE,         SK_FIGHTING,       -1),
     APT(SP_VAMPIRE,         SK_SHORT_BLADES,    1),
-    APT(SP_VAMPIRE,         SK_LONG_BLADES,     0),
+    APT(SP_VAMPIRE,         SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_VAMPIRE,         SK_AXES,           -1),
     APT(SP_VAMPIRE,         SK_MACES_FLAILS,   -2),
     APT(SP_VAMPIRE,         SK_POLEARMS,       -1),
@@ -1266,7 +1266,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_DEEP_DWARF
     APT(SP_DEEP_DWARF,      SK_FIGHTING,       -1),
     APT(SP_DEEP_DWARF,      SK_SHORT_BLADES,   -1),
-    APT(SP_DEEP_DWARF,      SK_LONG_BLADES,     0),
+    APT(SP_DEEP_DWARF,      SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_DEEP_DWARF,      SK_AXES,            1),
     APT(SP_DEEP_DWARF,      SK_MACES_FLAILS,    0),
     APT(SP_DEEP_DWARF,      SK_POLEARMS,       -1),
@@ -1337,7 +1337,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_OCTOPODE
     APT(SP_OCTOPODE,        SK_FIGHTING,        0),
     APT(SP_OCTOPODE,        SK_SHORT_BLADES,    0),
-    APT(SP_OCTOPODE,        SK_LONG_BLADES,     0),
+    APT(SP_OCTOPODE,        SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_OCTOPODE,        SK_AXES,            0),
     APT(SP_OCTOPODE,        SK_MACES_FLAILS,    0),
     APT(SP_OCTOPODE,        SK_POLEARMS,        0),
@@ -1379,7 +1379,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_DJINNI
     APT(SP_DJINNI,          SK_FIGHTING,       -1),
     APT(SP_DJINNI,          SK_SHORT_BLADES,   -2),
-    APT(SP_DJINNI,          SK_LONG_BLADES,     0),
+    APT(SP_DJINNI,          SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_DJINNI,          SK_AXES,           -1),
     APT(SP_DJINNI,          SK_MACES_FLAILS,    0),
     APT(SP_DJINNI,          SK_POLEARMS,        0),
@@ -1414,7 +1414,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_LAVA_ORC
     APT(SP_LAVA_ORC,        SK_FIGHTING,        2),
     APT(SP_LAVA_ORC,        SK_SHORT_BLADES,    0),
-    APT(SP_LAVA_ORC,        SK_LONG_BLADES,     1),
+    APT(SP_LAVA_ORC,        SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_LAVA_ORC,        SK_AXES,            2),
     APT(SP_LAVA_ORC,        SK_MACES_FLAILS,    1),
     APT(SP_LAVA_ORC,        SK_POLEARMS,        1),
@@ -1450,7 +1450,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_FORMICID
     APT(SP_FORMICID,        SK_FIGHTING,        1),
     APT(SP_FORMICID,        SK_SHORT_BLADES,    0),
-    APT(SP_FORMICID,        SK_LONG_BLADES,     0),
+    APT(SP_FORMICID,        SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_FORMICID,        SK_AXES,            0),
     APT(SP_FORMICID,        SK_MACES_FLAILS,    0),
     APT(SP_FORMICID,        SK_POLEARMS,        0),
@@ -1491,7 +1491,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_VINE_STALKER
     APT(SP_VINE_STALKER,    SK_FIGHTING,        -1),
     APT(SP_VINE_STALKER,    SK_SHORT_BLADES,    -1),
-    APT(SP_VINE_STALKER,    SK_LONG_BLADES,     -1),
+    APT(SP_VINE_STALKER,    SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_VINE_STALKER,    SK_AXES,            -1),
     APT(SP_VINE_STALKER,    SK_MACES_FLAILS,    -1),
     APT(SP_VINE_STALKER,    SK_POLEARMS,        -1),
@@ -1533,7 +1533,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     // SP_FROGTAUR
     APT(SP_FROGTAUR,           SK_FIGHTING,        1),
     APT(SP_FROGTAUR,           SK_SHORT_BLADES,    0),
-    APT(SP_FROGTAUR,           SK_LONG_BLADES,     1),
+    APT(SP_FROGTAUR,           SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_FROGTAUR,           SK_AXES,            0),
     APT(SP_FROGTAUR,           SK_MACES_FLAILS,    0),
     APT(SP_FROGTAUR,           SK_POLEARMS,       -1),
