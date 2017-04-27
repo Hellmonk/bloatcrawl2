@@ -977,10 +977,6 @@ shortbow
 
 A curved piece of wood and string, for shooting arrows.
 %%%%
-short sword
-
-A personal stabbing weapon with a short grip.
-%%%%
 slice of pizza
 
 A slice of pizza: a flatbread with tomato sauce, mozzarella di bufala, and

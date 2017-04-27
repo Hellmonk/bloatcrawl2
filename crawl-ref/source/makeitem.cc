@@ -173,8 +173,7 @@ static weapon_type _determine_weapon_subtype(int item_level)
                              WPN_MACE,
                              // Not worth _weighted for one doubled type.
                              WPN_DAGGER, WPN_DAGGER,
-                             WPN_WHIP,
-                             WPN_SHORT_SWORD);
+                             WPN_WHIP);
     }
 }
 

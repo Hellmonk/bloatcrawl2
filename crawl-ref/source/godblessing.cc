@@ -41,7 +41,6 @@ static int _upgrade_weapon_type(int old_type, bool has_shield, bool highlevel)
                                       WPN_DEMON_WHIP;
 
         case WPN_DAGGER:      return WPN_FALCHION;
-        case WPN_SHORT_SWORD: return WPN_LONG_SWORD;
         case WPN_RAPIER:      return WPN_SCIMITAR;
         case WPN_FALCHION:    return WPN_LONG_SWORD;
         case WPN_LONG_SWORD:  return WPN_SCIMITAR;
@@ -115,7 +114,7 @@ static int _orc_weapon_gift_type(monster_type mon_type)
         case MONS_ORC_HIGH_PRIEST:
         case MONS_ORC_SORCERER:
             return random_choose_weighted(2, WPN_HAND_AXE, // orcs love axes
-                                          1, WPN_SHORT_SWORD,
+                                          1, WPN_RAPIER,
                                           1, WPN_MACE);
         case MONS_ORC_WARRIOR:
         case MONS_ORC_KNIGHT:

@@ -839,7 +839,7 @@ ITEM:    scroll of enchant armour q:2 / scroll of enchant weapon q:3 /\
          any good_item book w:30 /\
          book of annihilations w:1 / grand grimoire w:1 / necronomicon w:1
 MONS:    deep elf mage
-MONS:    deep elf knight ; short sword . leather armour /\
+MONS:    deep elf knight ; rapier . leather armour /\
          deep elf archer ; shortbow . arrow . leather armour
 : bailey_setup(_G)
 MAP

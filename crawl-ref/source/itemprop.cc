@@ -462,7 +462,7 @@ static const weapon_def Weapon_prop[] =
         DAMV_PIERCING, 0, 2, 150, {} },
     { WPN_SHORT_SWORD,       "short sword",         6,  4, 11,
         SK_SHORT_BLADES, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
-        DAMV_PIERCING, 8, 10, 30, SBL_BRANDS },
+        DAMV_PIERCING, 0, 0, 0, SBL_BRANDS },
     { WPN_RAPIER,           "rapier",               8,  4, 12,
         SK_SHORT_BLADES, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_PIERCING, 8, 10, 40, SBL_BRANDS },

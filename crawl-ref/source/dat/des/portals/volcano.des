@@ -244,7 +244,7 @@ function fiery_guardians (e, intelligent, village)
         local centaurstuff = "robe " .. res
                              .. " . shortbow ego:flaming ident:type . arrow"
         local elfstuff = "long sword " .. flame
-                         .. " | short sword " .. flame
+                         .. " | rapier " .. flame
                          .. " . leather armour " .. res
                          .. " | ring mail " .. res
         local dracstuff = "scimitar " .. flame

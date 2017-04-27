@@ -2403,13 +2403,6 @@ shortbow
 “You are the bows from which your children as living arrows are sent forth.”
     -Khalil Ghibran, _The Prophet_, “On Children”. 1923.
 %%%%
-short sword
-
-“Who was the first that forged the deadly blade?
- Of rugged steel his savage soul was made”
-    -Albius Tibullus, _Elegies_ I, xi. ca. 25 B.C.
-     trans. James Grainger, 1822.
-%%%%
 silent spectre
 
 “There is a silence where hath been no sound,

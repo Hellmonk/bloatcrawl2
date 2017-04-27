@@ -176,7 +176,7 @@
        "potion of resistance", "robe",
        "ring mail" }
 
-      elseif s == "S" then i = { "scimitar", "short sword",
+      elseif s == "S" then i = { "scimitar",
        "sling bullet", "scale mail", "book of summonings", "book of the sky",
        "ring of see invisible", "ring of slaying", "spear",
        "ring of strength", "manual of stealth", "sack of spiders",

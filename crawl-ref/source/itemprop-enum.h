@@ -575,7 +575,9 @@ enum weapon_type
 
     WPN_DAGGER,
     WPN_QUICK_BLADE,
+#if TAG_MAJOR_VERSION == 34
     WPN_SHORT_SWORD,
+#endif
     WPN_RAPIER,
 #if TAG_MAJOR_VERSION > 34
     WPN_CUTLASS,

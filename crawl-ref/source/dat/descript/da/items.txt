@@ -764,10 +764,6 @@ Et stykke træ og metal, som spændes på den ene arm til beskyttelse. Det er
 uhåndterligt at gå med, og uden træning vil det få dig til at angribe
 langsommere.
 %%%%
-short sword
-
-En lille, tveægget klinge med et kort greb.
-%%%%
 slice of pizza
 
 Et stykke pizza: et fladbrød med tomatsauce, mozzarella di bufala og basilikum.

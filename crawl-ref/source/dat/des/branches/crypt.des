@@ -1547,7 +1547,7 @@ SUBST:  f = p:1 .:1
 KFEAT:  p = .
 KMONS:  p = withered plant
 ####### hidden skeleton; sometimes good pain weapon, or draining short sword
-KMONS:  ! = skeletal warrior ; w:2 dagger ego:pain | short sword ego:draining |\
+KMONS:  ! = skeletal warrior ; w:2 dagger ego:pain | rapier ego:draining |\
                                w:2 rapier ego:pain | w:1 quick blade ego:pain
 KFEAT:  o = granite_statue
 SUBST:  B = b %

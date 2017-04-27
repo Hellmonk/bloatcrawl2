@@ -1714,14 +1714,14 @@ KMONS:  2 = ogre god:trog ; giant club ego:antimagic ident:type | w:3 giant club
         ogre god:trog ; giant spiked club ego:antimagic ident:type | w:5 giant spiked club / \
         orc warrior god:trog ; halberd ego:antimagic ident:type | war axe ego:antimagic ident:type | \
         flail ego:antimagic ident:type | great mace ego:antimagic ident:type | any weapon / \
-        big kobold god:trog ; short sword ego:antimagic ident:type | dagger ego:antimagic ident:type | \
+        big kobold god:trog ; dagger ego:antimagic ident:type | dagger ego:antimagic ident:type | \
         rapier ego:antimagic ident:type | rapier
 : else
 KMONS:  2 = orc god:trog ; spear ego:antimagic ident:type | hand axe ego:antimagic ident:type | \
         war axe ego:antimagic ident:type | any weapon / \
-        kobold god:trog ; short sword ego:antimagic ident:type | hand axe ego:antimagic ident:type | \
+        kobold god:trog ; dagger ego:antimagic ident:type | hand axe ego:antimagic ident:type | \
         whip ego:antimagic ident:type | any weapon / \
-        goblin god:trog ; dagger ego:antimagic ident:type | short sword ego:antimagic ident:type / \
+        goblin god:trog ; dagger ego:antimagic ident:type | dagger ego:antimagic ident:type / \
         gnoll god:trog ; spear ego:antimagic ident:type | trident ego:antimagic ident:type | \
         halberd ego:antimagic ident:type | whip ego:antimagic ident:type | halberd | any weapon
 : end
@@ -2655,10 +2655,10 @@ KFEAT:  B = altar_trog
 KPROP:  . = bloody / nothing
 : if you.absdepth() < 8 then
 MONS:   gnoll ; spear | nothing . potion of berserk rage / \
-        orc ; whip | hand axe | short sword . \
+        orc ; whip | hand axe | dagger . \
               leather armour | nothing . potion of berserk rage
 : else
-MONS:   orc warrior ; whip | hand axe | short sword . \
+MONS:   orc warrior ; whip | hand axe | rapier . \
                       leather armour | ring mail . \
                       potion of berserk rage
 : end

@@ -34,7 +34,7 @@ KFEAT:   _ = altar_trog
 ITEM:    mace mundane not_cursed
 ITEM:    book of clouds
 MONS:    rat always_corpse
-MONS:    hobgoblin ; short sword ego:none not_cursed | w:5 mace ego:none not_cursed
+MONS:    hobgoblin ; rapier ego:none not_cursed | w:5 mace ego:none not_cursed
 MONS:    gnoll ; mace ego:none not_cursed
 MONS:    orc wizard spells:magic_dart.35.wizard;blink.18.wizard
 MARKER:  A = lua:tutorial5.msg("dungeon_overview")

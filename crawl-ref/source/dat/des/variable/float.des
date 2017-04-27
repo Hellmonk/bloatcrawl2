@@ -1077,11 +1077,11 @@ ENDMAP
 NAME:    old_forge
 DEPTH:   D:4-12
 ORIENT:  float
-KITEM:   ? = singing_sword, damaged short sword, \
+KITEM:   ? = singing_sword, damaged rapier, \
              damaged long sword, damaged hand axe
-KITEM:   ! = damaged executioner's axe, damaged short sword, \
+KITEM:   ! = damaged executioner's axe, damaged rapier, \
              damaged long sword, damaged morningstar
-KITEM:   + = damaged morningstar, damaged short sword, \
+KITEM:   + = damaged morningstar, damaged rapier, \
              damaged long sword, damaged war axe
 KITEM:   & = damaged mace / nothing
 MONS:    fungus, plant

@@ -1,7 +1,7 @@
 -- Test handling of not_cursed in item curse status generation.
 
 local niters = 2500
-local item_type = "short sword not_cursed"
+local item_type = "dagger not_cursed"
 local place = dgn.point(20, 20)
 local curse_count = 0
 
