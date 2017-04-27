@@ -1658,8 +1658,6 @@ static weapon_type _starting_weapon_upgrade(weapon_type wp, job_type job,
     // TODO: actually query itemprop for one-handedness.
     switch (wp)
     {
-    case WPN_SHORT_SWORD:
-        return WPN_RAPIER;
     case WPN_MACE:
         return WPN_FLAIL;
     case WPN_HAND_AXE:
@@ -1696,9 +1694,9 @@ static vector<weapon_choice> _get_weapons(const newgame_def& ng)
     }
     else
     {
-        weapon_type startwep[7] = { WPN_SHORT_SWORD, WPN_MACE, WPN_HAND_AXE,
+        weapon_type startwep[5] = { WPN_MACE, WPN_HAND_AXE,
                                     WPN_SPEAR, WPN_FALCHION, WPN_UNARMED };
-        for (int i = 0; i < 7; ++i)
+        for (int i = 0; i < 5; ++i)
         {
             weapon_choice wp;
             wp.first = startwep[i];
