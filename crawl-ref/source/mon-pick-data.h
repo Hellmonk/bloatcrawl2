@@ -1190,8 +1190,8 @@ static const pop_entry pop_water_generic[] =
 
 static const pop_entry pop_water_d[] =
 { // Dungeon water monsters
-  {  5,  16,   60, FLAT, MONS_ELECTRIC_EEL },
-  {  7,  16,  185, PEAK, MONS_ELECTRIC_EEL },
+  {  6,  16,   60, FLAT, MONS_ELECTRIC_EEL },
+  {  8,  16,  185, PEAK, MONS_ELECTRIC_EEL },
   {  11, 27,  600, RISE, MONS_WATER_ELEMENTAL },
   {  5,  22,  130, FLAT, MONS_NO_MONSTER },
   {  9,  32,  250, SEMI, MONS_NO_MONSTER },
