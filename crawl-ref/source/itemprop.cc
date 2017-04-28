@@ -493,7 +493,7 @@ static const weapon_def Weapon_prop[] =
     { WPN_GREAT_SWORD,           "great sword",           14, -3, 16,
         SK_SHORT_BLADES,  SIZE_MEDIUM, NUM_SIZE_LEVELS, MI_NONE,
         DAMV_SLICING, 0, 0, 0, LBL_BRANDS },
-    { WPN_TRIPLE_SWORD,          "triple sword",          17, -4, 19,
+    { WPN_TRIPLE_SWORD,          "triple sword",          18, -4, 19,
         SK_SHORT_BLADES,  SIZE_MEDIUM, NUM_SIZE_LEVELS, MI_NONE,
         DAMV_SLICING, 0, 2, 100, LBL_BRANDS },
 #if TAG_MAJOR_VERSION == 34
