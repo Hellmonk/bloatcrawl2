@@ -388,7 +388,7 @@ static const weapon_def Weapon_prop[] =
         DAMV_CRUSHING, 8, 10, 35, M_AND_F_BRANDS },
     { WPN_MORNINGSTAR,       "morningstar",        14, -2, 15,
         SK_MACES_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
-        DAMV_CRUSHING | DAM_PIERCE, 3, 10, 40, {
+        DAMV_CRUSHING | DAM_PIERCE, 3, 10, 70, {
             { SPWPN_PROTECTION,     30 },
             { SPWPN_NORMAL,         15 },
             { SPWPN_HOLY_WRATH,     15 },
@@ -487,9 +487,9 @@ static const weapon_def Weapon_prop[] =
     { WPN_EUDEMON_BLADE,         "eudemon blade",         13, -2, 12,
         SK_SHORT_BLADES,  SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_SLICING, 0, 0, 200, HOLY_BRANDS },
-    { WPN_DOUBLE_SWORD,          "double sword",          14, -1, 15,
+    { WPN_DOUBLE_SWORD,          "double sword",          14, -2, 16,
         SK_SHORT_BLADES,  SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
-        DAMV_SLICING, 0, 2, 150, LBL_BRANDS },
+        DAMV_SLICING, 4, 10, 100, LBL_BRANDS },
     { WPN_GREAT_SWORD,           "great sword",           14, -3, 16,
         SK_SHORT_BLADES,  SIZE_MEDIUM, NUM_SIZE_LEVELS, MI_NONE,
         DAMV_SLICING, 0, 0, 0, LBL_BRANDS },
@@ -577,7 +577,7 @@ static const weapon_def Weapon_prop[] =
         DAMV_CRUSHING, 0, 0, 15, {} },
     { WPN_QUARTERSTAFF,      "quarterstaff",        12, 3, 13,
         SK_MACES_FLAILS,       SIZE_LITTLE, NUM_SIZE_LEVELS,  MI_NONE,
-        DAMV_CRUSHING, 5, 10, 40, {
+        DAMV_CRUSHING, 5, 10, 50, {
             { SPWPN_NORMAL,     50 },
             { SPWPN_PROTECTION, 18 },
             { SPWPN_DRAINING,    8 },
