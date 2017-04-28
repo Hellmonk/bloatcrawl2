@@ -586,7 +586,9 @@ enum weapon_type
     WPN_FALCHION,
     WPN_LONG_SWORD,
     WPN_SCIMITAR,
+#if TAG_MAJOR_VERSION == 34
     WPN_GREAT_SWORD,
+#endif
 
     WPN_HAND_AXE,
     WPN_WAR_AXE,

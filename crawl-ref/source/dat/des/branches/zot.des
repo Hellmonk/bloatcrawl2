@@ -993,9 +993,9 @@ WEIGHT:  3
 # Gifts, too.
 KMONS:   1 = guardian mummy ; randart quarterstaff ego:chaos | \
              randart great mace ego:chaos | randart battleaxe ego:chaos| \
-             randart great sword ego:chaos | randart glaive ego:chaos | \
+             randart double sword ego:chaos | randart glaive ego:chaos | \
              randart trident ego:chaos | randart morningstar | \
-             randart great mace | randart battleaxe | randart great sword | \
+             randart great mace | randart battleaxe | randart double sword | \
              randart glaive | randart trident
 KMONS:   3 = guardian mummy ; randart fustibalus ego:chaos . sling bullet / \
              guardian mummy ; randart longbow ego:chaos . arrow / \

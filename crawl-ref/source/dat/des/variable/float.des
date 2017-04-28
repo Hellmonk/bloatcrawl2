@@ -2814,7 +2814,7 @@ MONS:    necromancer ; wand of lightning . \
          robe ego:fire_resistance w:15 | robe ego:cold_resistance w:14 | \
          robe ego:resistance w:1
 MONS:    fire giant ; battleaxe ego:freezing
-MONS:    frost giant ; great sword ego:flaming
+MONS:    frost giant ; great mace ego:flaming
 MONS:    ettin simulacrum, efreet, deep elf mage
 KITEM:   d = lamp of fire, *
 KITEM:   e = demon whip ego:freezing ident:type, *
@@ -2864,7 +2864,7 @@ KMONS:  6 = storm dragon / iron dragon / titan / war gargoyle
 KMONS:  7 = spriggan defender ; staff of fire | staff of cold | \
                                 staff of air | staff of earth . \
                                 robe ego:resistance good_item ident:type
-KMONS:  8 = tengu reaver ; battleaxe ego:flaming | great sword ego:freezing | \
+KMONS:  8 = tengu reaver ; battleaxe ego:flaming | double sword ego:freezing | \
                            halberd ego:electrocution | morningstar ego:vorpal . \
                            fire dragon scales | ice dragon scales
 KMONS:  9 = zotling

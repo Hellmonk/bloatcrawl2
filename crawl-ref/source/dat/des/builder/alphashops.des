@@ -128,7 +128,7 @@
       elseif s == "G" then i = { "amulet of guardian spirit", "giant club",
        "giant spiked club", "book of geomancy",
        "glaive", "gold dragon scales", "grand grimoire", "great mace",
-       "fustibalus", "great sword", "pair of gloves" }
+       "fustibalus", "pair of gloves" }
 
       elseif s == "H" then i = { "halberd",
        "hand axe", "hand crossbow", "hunting sling",
