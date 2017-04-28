@@ -126,10 +126,6 @@ dagger "Morg"
 An ugly rusty dagger. Many years ago it was the property of a powerful mage
 called Boris. He got lost in the Dungeon while seeking the Orb.
 %%%%
-scythe "Finisher"
-
-A long and sharp scythe, specially modified to be quickly swung in combat.
-%%%%
 sling "Punk"
 
 A sling made of weird green leather, oozing corrosive slime. Originally the

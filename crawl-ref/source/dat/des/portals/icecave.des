@@ -759,7 +759,7 @@ dgn.set_random_mon_list("white imp w:35 / ufetubus w:35 / ice devil w:30")
 MONS:    white imp / ufetubus
 MONS:    ice devil
 MONS:    ice statue
-MONS:    patrolling reaper ; scythe ego:freezing
+MONS:    patrolling reaper
 MONS:    blizzard demon
 MONS:    ice fiend
 : if dgn.persist.ice_cave_hard then

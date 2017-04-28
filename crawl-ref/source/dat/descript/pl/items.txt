@@ -598,10 +598,6 @@ scroll of teleportation
 
 Odczytanie tego zwoju przeniesie cię w przypadkowe miejsce.
 %%%%
-scythe
-
-Narzędzie rolnicze, niezbyt przydatne do walki.
-%%%%
 shield
 
 Kawał metalu, z uchwytem i paskami umożliwiającymi przyczepienie do ramienia.

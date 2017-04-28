@@ -60,10 +60,6 @@ dagger of Chilly Death
 
 Ein aus einem riesigen Saphir hergestellter Dolch.
 %%%%
-scythe "Finisher"
-
-Eine lange und scharfe Sense, speziell für Kampfzwecke modifiziert.
-%%%%
 sling "Punk"
 
 Eine Schleuder, gemacht aus sonderbarem blauen Leder.

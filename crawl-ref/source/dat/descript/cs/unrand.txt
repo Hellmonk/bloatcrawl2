@@ -64,10 +64,6 @@ dagger of Chilly Death
 
 Dýka z jednoho velkého kusu safíru.
 %%%%
-scythe "Finisher"
-
-Dlouhá a ostrá kosa, speciálně upravená pro bojové účely.
-%%%%
 sling "Punk"
 
 Závěs z podivné modré kůže.

@@ -635,11 +635,6 @@ scroll of teleportation
 Liest man die Worte auf dieser Schriftrolle wird sie dich nach kurzer Zeit an
 eine zufällige Position teleportieren.
 %%%%
-scythe
-
-Ein Farm-Werkzeug, das gewöhnlich nur durch ungeschulte Mengen im Kampf
-verwendet ist.
-%%%%
 shield
 
 Ein Stück von Holz und Metall, um auf einem Arm für die Verteidigung

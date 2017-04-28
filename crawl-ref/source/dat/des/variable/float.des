@@ -2976,7 +2976,7 @@ DEPTH:   Depths:2-, !Depths:$
 ORIENT:  float
 # The dances of angels and devils, of blessed birds and antagonist serpents...
 # and perhaps the stinger plunging into the poor toro de lidia?
-MONS:    dancing weapon ; scythe ego:antimagic
+MONS:    dancing weapon ; glaive ego:antimagic
 MONS:    cherub, rakshasa, angel / daeva, balrug / blizzard demon
 MONS:    acid robin, shadow dragon
 KMONS:   8 = tengu reaver

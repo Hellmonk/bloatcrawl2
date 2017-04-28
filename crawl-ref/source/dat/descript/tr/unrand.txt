@@ -3,10 +3,6 @@ scimitar of Flaming Death
 
 Smokin'!
 %%%%
-scythe "Finisher"
-
-Uzun ve keskin tırpan. Savaşlar için özel olarak modifiye edilmiş
-%%%%
 sling "Punk"
 
 Garip mavi deriden yapılmış sapan.

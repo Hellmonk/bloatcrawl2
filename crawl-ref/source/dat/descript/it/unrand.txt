@@ -63,10 +63,6 @@ dagger of Chilly Death
 
 Un pugnale fatto di un enorme pezzo di zaffiro.
 %%%%
-scythe "Finisher"
-
-Una lunga e affilata falce, modificata apposta per il combattimento.
-%%%%
 sling "Punk"
 
 Una fionda fatta di uno strano cuoio blu.

@@ -80,10 +80,6 @@ dagger of Chilly Death
 
 En dolk, som er lavet af et kæmpe stykke safir.
 %%%%
-scythe "Finisher"
-
-En lang og skarp le, som er særligt modificeret til brug i kamp.
-%%%%
 sling "Punk"
 
 En slynge, som er lavet af noget underligt, blåt læder.

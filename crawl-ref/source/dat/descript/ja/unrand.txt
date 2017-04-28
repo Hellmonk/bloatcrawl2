@@ -76,10 +76,6 @@ dagger of Chilly Death
 
 サファイアでできているダガーだ。
 %%%%
-scythe "Finisher"
-
-戦闘を目的に特別に造られた、長く鋭い大鎌だ。
-%%%%
 sling "Punk"
 
 奇妙な青い皮で作られたスリングだ。

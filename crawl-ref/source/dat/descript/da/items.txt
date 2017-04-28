@@ -754,10 +754,6 @@ i nærheden. Magisk modstandskraft hos læseren og andre væsener i nærheden vi
 også blive halveret i en kort periode. Sidstnævnte effekt påvirker dog ikke
 væsener som er komplet immune over for magi.
 %%%%
-scythe
-
-Et landbrugsredskab, der som regel bruges af utrænet bærme i kamp.
-%%%%
 shield
 
 Et stykke træ og metal, som spændes på den ene arm til beskyttelse. Det er

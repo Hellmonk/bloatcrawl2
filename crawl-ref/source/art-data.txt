@@ -385,6 +385,7 @@ BRAND:    SPWPN_PAIN
 INT:      5
 MAGIC:    1
 
+# TAG_MAJOR_VERSION == 34
 NAME:    scythe "Finisher"
 OBJ:     OBJ_WEAPONS/WPN_SCYTHE
 PLUS:    +5
@@ -393,6 +394,7 @@ TILE:    urand_finisher
 TILE_EQ: finisher
 BRAND:   SPWPN_SPEED
 STR:     3
+BOOL:    nogen
 
 NAME:    sling "Punk"
 OBJ:     OBJ_WEAPONS/WPN_FUSTIBALUS

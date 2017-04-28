@@ -196,8 +196,6 @@ function general_item_setup(e)
     broad axe plus:9 randart not_cursed ident:all /\
     glaive plus:9 good_item not_cursed ident:all /\
     glaive plus:7 randart not_cursed ident:all /\
-    scythe plus:11 good_item not_cursed ident:all /\
-    scythe plus:9 randart not_cursed ident:all /\
     bardiche plus:7 good_item not_cursed ident:all /\
     bardiche plus:5 randart not_cursed ident:all /\
     demon trident plus:9 good_item not_cursed ident:all /\
@@ -259,8 +257,6 @@ function general_item_setup(e)
     broad axe plus:6 good_item not_cursed ident:all /\
     glaive plus:6 ego:none not_cursed ident:all /\
     glaive plus:3 good_item not_cursed ident:all /\
-    scythe plus:9 ego:none not_cursed ident:all /\
-    scythe plus:6 good_item not_cursed ident:all /\
     bardiche plus:3 ego:none not_cursed ident:all /\
     bardiche plus:0 good_item not_cursed ident:all /\
     demon trident plus:6 ego:none not_cursed ident:all /\

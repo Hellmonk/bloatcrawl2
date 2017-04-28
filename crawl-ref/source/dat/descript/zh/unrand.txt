@@ -58,10 +58,6 @@ dagger of Chilly Death
 
 这把匕首是用一大块巨型蓝宝石制成的。
 %%%%
-scythe "Finisher"
-
-一把锋利的长镰刀，专门为战斗而改造过。
-%%%%
 sling "Punk"
 
 用某种奇怪的蓝色皮革制成的一条投石索。

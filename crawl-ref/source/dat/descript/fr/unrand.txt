@@ -115,10 +115,6 @@ Un poignard rouillé d'une rare laideur. Il y a de nombreuses années, il était
 la propriété d'un puissant mage nommé Boris. Il l'a perdu dans le donjon alors
 qu'il cherchait l'Orbe.
 %%%%
-scythe "Finisher"
-
-Une longue et tranchante faux, spécialement modifiée pour le combat.
-%%%%
 sling "Punk"
 
 Une fronde faite à partir d'un cuir bleu étrange.

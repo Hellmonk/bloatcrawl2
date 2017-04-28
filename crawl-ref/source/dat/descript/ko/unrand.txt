@@ -77,10 +77,6 @@ dagger of Chilly Death
 
 거대한 사파이어 조각으로 만들어진 단검이다.
 %%%%
-scythe "Finisher"
-
-특별히 전투용으로 만들어진, 길고 날카로운 대형 낫이다.
-%%%%
 sling "Punk"
 
 기묘한 푸른빛 가죽으로 만들어진 투석구다.

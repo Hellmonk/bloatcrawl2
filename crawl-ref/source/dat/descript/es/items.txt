@@ -540,10 +540,6 @@ scroll of teleportation
 Cuando leas este pergamino seras transportado a un lugar aleatorio tras esperar
 un poco.
 %%%%
-scythe
-
-Un ápero de granja, normalmente no apto para el combate.
-%%%%
 shield
 
 Una pieza de metal diseñada para llevarse atada en un brazo. Es pesada de

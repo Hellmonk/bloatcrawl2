@@ -587,7 +587,7 @@ KFEAT:   Z = known zot trap
 # Standard floor spawn equipment drops, not real loot.
 KITEM:   d = battleaxe no_pickup / great mace no_pickup      / \
              great sword no_pickup / glaive no_pickup        / \
-             scythe good_item no_pickup w:5
+             trident good_item no_pickup w:5
 NSUBST:  > = 1 = ((<d / 1 = ))>e / 2 = >:1 .:49 / * = ...de
 # Always place at least one door per room, possibly wider or multiplied.
 # Variation provided across either half of the vault and per-room.

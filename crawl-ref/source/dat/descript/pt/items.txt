@@ -269,10 +269,6 @@ scale mail
 
 Uma armadura de couro coberta de pequenas placas de metal.
 %%%%
-scythe
-
-Uma ferramenta do campo, normalmente inútil em combate.
-%%%%
 slice of pizza
 
 Uma fatia de pizza: massa de pão achatada com molho de tomate, muzarela de
