@@ -158,8 +158,7 @@ static weapon_type _determine_weapon_subtype(int item_level)
     }
     else if (x_chance_in_y(item_level, item_level+7))
     {
-        return random_choose(WPN_FALCHION,
-                             WPN_LONG_SWORD,
+        return random_choose(WPN_LONG_SWORD,
                              WPN_WAR_AXE,
                              WPN_TRIDENT,
                              WPN_FLAIL,

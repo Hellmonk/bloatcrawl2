@@ -120,7 +120,7 @@
        "scroll of enchant weapon", "manual of earth magic" }
 
       elseif s == "F" then i = { "book of fire", "book of flames", "flail",
-       "book of frost", "falchion", "fan of gales", "fire dragon scales",
+       "book of frost", "fan of gales", "fire dragon scales",
        "potion of flight", "ring of fire", "scroll of fear", "staff of fire",
        "fen folio", "scroll of fog", "wand of flame",
        "manual of fighting", "amulet of faith", "manual of fire magic" }

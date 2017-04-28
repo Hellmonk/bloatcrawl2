@@ -716,7 +716,7 @@ KITEM: b = hand axe plus:2 ident:all not_cursed
 KITEM: c = mace plus:2 ident:all not_cursed
 KITEM: d = trident plus:2 ident:all not_cursed
 KITEM: e = quarterstaff plus:2 ident:all not_cursed
-KITEM: f = falchion plus:2 ident:all not_cursed
+KITEM: f = rapier plus:2 ident:all not_cursed
 SHUFFLE: abcdef
 : general_setup(_G)
 : general_item_setup(_G)

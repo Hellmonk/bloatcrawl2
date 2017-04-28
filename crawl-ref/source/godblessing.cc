@@ -40,9 +40,8 @@ static int _upgrade_weapon_type(int old_type, bool has_shield, bool highlevel)
         case WPN_MORNINGSTAR: return !has_shield ? WPN_GREAT_MACE  :
                                       WPN_DEMON_WHIP;
 
-        case WPN_DAGGER:      return WPN_FALCHION;
+        case WPN_DAGGER:      return WPN_RAPIER;
         case WPN_RAPIER:      return WPN_SCIMITAR;
-        case WPN_FALCHION:    return WPN_LONG_SWORD;
         case WPN_LONG_SWORD:  return WPN_SCIMITAR;
         case WPN_SCIMITAR:    return !has_shield ? WPN_GREAT_SWORD   :
                                      highlevel   ? WPN_DOUBLE_SWORD :

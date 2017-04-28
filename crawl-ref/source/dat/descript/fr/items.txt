@@ -97,10 +97,6 @@ blessed triple sword
 
 Une épée massive, améliorée par l'Étincelant.
 %%%%
-blessed falchion
-
-Une épée à large tranchant. Elle a été améliorée par L'Étincelant.
-%%%%
 blessed great sword
 
 Une épée avec une une très longue et lourde lame, et une longue garde. Elle a

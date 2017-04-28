@@ -1186,7 +1186,7 @@ ENDMAP
 NAME:  okawaru_ov_weapons_minmay
 TAGS:  temple_overflow_1 temple_overflow_okawaru uniq_altar_okawaru
 TAGS:  transparent decor
-ITEM:  hand axe, falchion, mace, spear
+ITEM:  hand axe, rapier, mace, spear
 KFEAT: _ = altar_okawaru
 : interest_check(_G)
 MAP

@@ -30,7 +30,7 @@ static void _give_wanderer_weapon(skill_type wpn_skill, int plus)
     switch (wpn_skill)
     {
     case SK_SHORT_BLADES:
-        sub_type = WPN_FALCHION;
+        sub_type = WPN_RAPIER;
         break;
 
     case SK_MACES_FLAILS:

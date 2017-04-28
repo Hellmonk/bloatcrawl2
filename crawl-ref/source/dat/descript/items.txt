@@ -395,10 +395,6 @@ executioner's axe
 A fearsome weapon covered in dried blood and crude engravings of torture and
 death, bearing an enormous axehead.
 %%%%
-falchion
-
-A long single-edged sword with a slightly curved blade.
-%%%%
 fan of gales
 
 An enchanted fan inhabited by benevolent air spirits. Swinging the fan

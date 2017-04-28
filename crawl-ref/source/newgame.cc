@@ -1666,7 +1666,7 @@ static weapon_type _starting_weapon_upgrade(weapon_type wp, job_type job,
     case WPN_SPEAR:
         // Small fighters can't use tridents with a shield.
         return fighter && size <= SIZE_SMALL  ? wp : WPN_TRIDENT;
-    case WPN_FALCHION:
+    case WPN_RAPIER:
         // Little fighters can't use long swords with a shield.
         return fighter && size <= SIZE_LITTLE ? wp : WPN_LONG_SWORD;
     default:
@@ -1695,7 +1695,7 @@ static vector<weapon_choice> _get_weapons(const newgame_def& ng)
     else
     {
         weapon_type startwep[5] = { WPN_MACE, WPN_HAND_AXE,
-                                    WPN_SPEAR, WPN_FALCHION, WPN_UNARMED };
+                                    WPN_SPEAR, WPN_RAPIER, WPN_UNARMED };
         for (int i = 0; i < 5; ++i)
         {
             weapon_choice wp;
