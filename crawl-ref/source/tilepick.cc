@@ -1674,8 +1674,15 @@ static tileidx_t _tileidx_monster_no_props(const monster_info& mon)
             const item_def& item = *mon.inv[MSLOT_WEAPON];
             switch (item_attack_skill(item))
             {
-            case SK_LONG_BLADES:
-                return TILEP_MONS_SPECTRAL_LBL;
+            case SK_SHORT_BLADES:
+			    {
+                    const weapon_type wt = (weapon_type)item.sub_type;
+					if (wt == WPN_DAGGER || wt == WPN_RAPIER
+	                    || wt == WPN_QUICK_BLADE)
+                        return TILEP_MONS_SPECTRAL_SBL
+                    else
+                        return TILEP_MONS_SPECTRAL_LBL;
+			    }
             case SK_AXES:
                 return TILEP_MONS_SPECTRAL_AXE;
             case SK_POLEARMS:
