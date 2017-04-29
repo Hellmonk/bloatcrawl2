@@ -1063,7 +1063,7 @@ KFEAT:  Q = weapon shop type:Weapon suffix:Rack count:17 use_all greed:30 ; \
             mundane not_cursed quick blade | mundane not_cursed demon blade |\
             mundane not_cursed triple sword | mundane not_cursed broad axe |\
             mundane not_cursed executioner's axe | mundane not_cursed demon whip |\
-            mundane not_cursed great mace | mundane not_cursed giant spiked club |\
+            mundane not_cursed great mace | mundane not_cursed giant club |\
             mundane not_cursed demon trident | mundane not_cursed bardiche |\
             mundane not_cursed quarterstaff | mundane not_cursed longbow |\
             mundane not_cursed triple crossbow \

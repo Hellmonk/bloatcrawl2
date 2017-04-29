@@ -6044,7 +6044,7 @@ NSUBST:  d = 1:d / *:%
 : end
 : if you.unrands("skullcrusher") then
 ITEM:    giant club randart ego:speed ident:type no_pickup / \
-         giant spiked club randart no_pickup
+         giant club randart no_pickup
 : else
 ITEM:    skullcrusher no_pickup
 : end

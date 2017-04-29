@@ -283,7 +283,7 @@ dgn.delayed_decay_extra(_G, 'L', 'kobold skeleton', 'tomahawk ego:dispersal / st
 
  -- Ogre, maybe an ogre mage of some kind. 4-5 items.
 dgn.delayed_decay_extra(_G, 'M', 'ogre skeleton', 'giant club good_item / '
-   .. 'giant spiked club good_item, robe, large rock, '
+   .. 'giant club good_item, robe, large rock, '
    .. 'any book / nothing' )
 }}
 MAP

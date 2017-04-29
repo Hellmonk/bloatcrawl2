@@ -538,7 +538,7 @@ MONS:    polar bear w:3 generate_awake / wolf generate_awake / \
 MONS:    polar bear, rime drake
 MONS:    frost giant ; battleaxe ego:freezing
 MONS:    ice statue
-ITEM:    giant club / giant spiked club / great mace w:9 / \
+ITEM:    giant club / great mace w:9 / \
          battleaxe w:7 / glaive w:8 / halberd w:8 / double sword w:6 / \
          nothing w:58
 ITEM:    great mace good_item / battleaxe good_item / glaive good_item / \
@@ -777,13 +777,13 @@ SUBST:   ` = .
 : item("battleaxe " .. freezeweap .. " / executioner's axe " .. freezeweap ..
 :   " / glaive " .. freezeweap .. " / bardiche " .. freezeweap ..
 :   " / quick blade " .. freezeweap .. " / double sword " .. freezeweap ..
-:   " / triple sword " .. freezeweap .. " / giant spiked club " .. freezeweap ..
+:   " / triple sword " .. freezeweap .. " / giant club " .. freezeweap ..
 :   " / demon trident " .. freezeweap)
 : item("battleaxe " .. goodfreezeweap .. " / executioner's axe " .. goodfreezeweap ..
 :   " / glaive " .. goodfreezeweap .. " / halberd " .. goodfreezeweap ..
 :   " / double sword " .. goodfreezeweap .. " / quick blade " .. goodfreezeweap ..
 :   " / triple sword " .. goodfreezeweap .. " / demon trident " .. goodfreezeweap ..
-:   " / giant spiked club " .. goodfreezeweap)
+:   " / giant club " .. goodfreezeweap)
 ITEM: demon whip good_item / demon blade good_item / demon trident good_item
 : item("cloak " .. coldres .. " / hat good_item / pair of gloves good_item / " ..
 :   " / pair of boots good_item / buckler " .. coldres)

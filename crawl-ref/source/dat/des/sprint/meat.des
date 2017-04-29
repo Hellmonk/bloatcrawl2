@@ -43,7 +43,7 @@
     "n_spe n_zom  col:red generate_awake perm_ench:inner_flame " ..
     "; ring of slaying plus:100 not_cursed ident:all " ..
     "no_pickup . " ..
-    "giant spiked club plus:9 not_cursed ego:none " ..
+    "giant club plus:9 not_cursed ego:none " ..
     "ident:all no_pickup"
 
   local destroyer =

@@ -624,7 +624,9 @@ enum weapon_type
 
     WPN_DEMON_WHIP,
     WPN_GIANT_CLUB,
+#if TAG_MAJOR_VERSION == 34
     WPN_GIANT_SPIKED_CLUB,
+#endif
 
     WPN_DEMON_BLADE,
     WPN_DOUBLE_SWORD,

@@ -323,13 +323,12 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         { WPN_MORNINGSTAR,      2 },
         { WPN_MACE,             1 }, };
     static const weapon_list OGRE_WEAPONS =
-    {   { WPN_GIANT_CLUB,        2 },
-        { WPN_GIANT_SPIKED_CLUB, 1 }, };
+    {   { WPN_GIANT_CLUB,       200 },
+        { WPN_GREAT_MACE,         1 }, };
     static const weapon_list DOUBLE_OGRE_WEAPONS = // total 100
-    {   { WPN_GIANT_CLUB,        60 },
-        { WPN_GIANT_SPIKED_CLUB, 30 },
+    {   { WPN_GIANT_CLUB,        90 },
         { WPN_QUARTERSTAFF,       9 },
-        { WPN_GREAT_MACE,        1 }, };
+        { WPN_GREAT_MACE,         1 }, };
     static const mon_weapon_spec EFREET_WSPEC =
     { { { WPN_SCIMITAR,         1 } },
       { 1, 0, 4 },

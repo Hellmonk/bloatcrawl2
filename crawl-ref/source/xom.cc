@@ -1287,7 +1287,6 @@ static int _xom_random_stickable(const int HD)
         WPN_SPEAR,    WPN_SPEAR,      WPN_TRIDENT,      WPN_HALBERD,
         WPN_GLAIVE,     WPN_QUARTERSTAFF,
         WPN_SHORTBOW,   WPN_LONGBOW,      WPN_GIANT_CLUB,
-        WPN_GIANT_SPIKED_CLUB
     };
 
     // Maximum snake hd is 11 (anaconda) so random2(hd) gives us 0-10, and

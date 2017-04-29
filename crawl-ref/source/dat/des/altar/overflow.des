@@ -1711,7 +1711,7 @@ WEIGHT: 4
 MONS:   eye of draining
 : if you.absdepth() > 5 and crawl.coinflip() then
 KMONS:  2 = ogre god:trog ; giant club ego:antimagic ident:type | w:3 giant club / \
-        ogre god:trog ; giant spiked club ego:antimagic ident:type | w:5 giant spiked club / \
+        ogre god:trog ; giant club ego:antimagic ident:type | w:5 giant club / \
         orc warrior god:trog ; halberd ego:antimagic ident:type | war axe ego:antimagic ident:type | \
         flail ego:antimagic ident:type | great mace ego:antimagic ident:type | any weapon / \
         big kobold god:trog ; dagger ego:antimagic ident:type | dagger ego:antimagic ident:type | \
