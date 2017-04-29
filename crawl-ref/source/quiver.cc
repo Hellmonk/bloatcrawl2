@@ -560,9 +560,6 @@ static ammo_t _get_weapon_ammo_type(const item_def* weapon)
 
     switch (weapon->sub_type)
     {
-        case WPN_HUNTING_SLING:
-        case WPN_FUSTIBALUS:
-            return AMMO_SLING;
         case WPN_SHORTBOW:
         case WPN_LONGBOW:
             return AMMO_BOW;

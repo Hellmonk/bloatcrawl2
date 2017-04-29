@@ -795,7 +795,7 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         { NUM_WEAPONS,                  8 }, }; // 1/9 chance of ranged weapon
 
     static const map<monster_type, mon_weapon_spec> secondary_weapon_specs = {
-        { MONS_JOSEPH, { { { WPN_HUNTING_SLING, 1 } } } },
+        { MONS_JOSEPH, { { { WPN_SHORTBOW, 1 } } } },
         { MONS_DEEP_ELF_ARCHER, // XXX: merge w/centaur warrior primary?
             { { { WPN_SHORTBOW,         2 },
                 { WPN_LONGBOW,          1 },
@@ -822,15 +822,13 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
             { { { WPN_ARBALEST,                 1 },
                 { NUM_WEAPONS,                  2 },
         } } },
-        { MONS_FAUN, { { { WPN_HUNTING_SLING, 1 } } } },
+        { MONS_FAUN, { { { WPN_SHORTBOW, 1 } } } },
         { MONS_SATYR,
-            { { { WPN_FUSTIBALUS,               1 },
+            { { { WPN_SHORTBOW,                 1 },
                 { WPN_LONGBOW,                  2 },
         } } },
         { MONS_CHERUB,
-            { { { WPN_HUNTING_SLING,            1 },
-                { WPN_FUSTIBALUS,               1 },
-                { WPN_SHORTBOW,                 1 },
+            { { { WPN_SHORTBOW,                 1 },
                 { WPN_LONGBOW,                  1 },
         } } },
         // salamanders only have secondary weapons; melee or bow, not both
@@ -896,15 +894,6 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         {
             item.base_type = OBJ_WEAPONS;
             item.sub_type  = WPN_HAND_CROSSBOW;
-            break;
-        }
-        break;
-
-    case MONS_GOBLIN:
-        if (!melee_only && one_chance_in(12) && level)
-        {
-            item.base_type = OBJ_WEAPONS;
-            item.sub_type  = WPN_HUNTING_SLING;
             break;
         }
         break;

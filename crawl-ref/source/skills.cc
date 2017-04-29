@@ -1430,10 +1430,8 @@ vector<skill_type> get_crosstrain_skills(skill_type sk)
     case SK_MACES_FLAILS:
     case SK_POLEARMS:
         return { SK_AXES };
-    case SK_SLINGS:
-        return { SK_THROWING };
     case SK_THROWING:
-        return { SK_SLINGS };
+        return {};
     default:
         return {};
     }

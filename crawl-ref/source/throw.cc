@@ -618,14 +618,6 @@ static void _throw_noise(actor* act, const bolt &pbolt, const item_def &ammo)
 
     switch (launcher->sub_type)
     {
-    case WPN_HUNTING_SLING:
-        level = 1;
-        msg   = "You hear a whirring sound.";
-        break;
-    case WPN_FUSTIBALUS:
-        level = 3;
-        msg   = "You hear a loud whirring sound.";
-        break;
     case WPN_SHORTBOW:
         level = 5;
         msg   = "You hear a twanging sound.";

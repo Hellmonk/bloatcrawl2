@@ -1403,8 +1403,7 @@ static void _construct_weapon_menu(const newgame_def& ng,
             if (is_ranged_weapon_type(wpn_type))
             {
                 text += " and ";
-                text += wpn_type == WPN_HUNTING_SLING ? ammo_name(MI_SLING_BULLET)
-                                                      : ammo_name(wpn_type);
+                text += ammo_name(wpn_type);
                 text += "s";
             }
             break;
@@ -1679,10 +1678,10 @@ static vector<weapon_choice> _get_weapons(const newgame_def& ng)
     vector<weapon_choice> weapons;
     if (job_gets_ranged_weapons(ng.job))
     {
-        weapon_type startwep[4] = { WPN_THROWN, WPN_HUNTING_SLING,
+        weapon_type startwep[3] = { WPN_THROWN,
                                     WPN_SHORTBOW, WPN_HAND_CROSSBOW };
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 3; i++)
         {
             weapon_choice wp;
             wp.first = startwep[i];

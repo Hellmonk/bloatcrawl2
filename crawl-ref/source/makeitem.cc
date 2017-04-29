@@ -133,8 +133,7 @@ static weapon_type _determine_weapon_subtype(int item_level)
     if (item_level > 6 && one_chance_in(30)
         && x_chance_in_y(10 + item_level, 100))
     {
-        return random_choose(WPN_FUSTIBALUS,
-                             WPN_TRIPLE_CROSSBOW,
+        return random_choose(WPN_TRIPLE_CROSSBOW,
                              WPN_DEMON_WHIP,
                              WPN_DEMON_BLADE,
                              WPN_DEMON_TRIDENT,
@@ -166,8 +165,7 @@ static weapon_type _determine_weapon_subtype(int item_level)
     }
     else
     {
-        return random_choose(WPN_HUNTING_SLING,
-                             WPN_SPEAR,
+        return random_choose(WPN_SPEAR,
                              WPN_HAND_AXE,
                              WPN_MACE,
                              // Not worth _weighted for one doubled type.

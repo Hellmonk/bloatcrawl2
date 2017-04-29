@@ -128,10 +128,10 @@
       elseif s == "G" then i = { "amulet of guardian spirit", "giant club",
        "giant spiked club", "book of geomancy",
        "glaive", "gold dragon scales", "grand grimoire", "great mace",
-       "fustibalus", "pair of gloves" }
+       "pair of gloves" }
 
       elseif s == "H" then i = { "halberd",
-       "hand axe", "hand crossbow", "hunting sling",
+       "hand axe", "hand crossbow",
        "potion of heal wounds", "potion of haste", "scroll of holy word",
        "manual of hexes", "hat", "helmet" }
 
@@ -177,7 +177,7 @@
        "ring mail" }
 
       elseif s == "S" then i = { "scimitar",
-       "sling bullet", "scale mail", "book of summonings", "book of the sky",
+       "scale mail", "book of summonings", "book of the sky",
        "ring of see invisible", "ring of slaying", "spear",
        "ring of strength", "manual of stealth", "sack of spiders",
        "scroll of summoning", "book of spatial translocations",

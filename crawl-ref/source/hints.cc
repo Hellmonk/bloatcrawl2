@@ -735,7 +735,6 @@ void hints_gained_new_skill(skill_type skill)
         break;
 
     // Ranged skills.
-    case SK_SLINGS:
     case SK_BOWS:
     case SK_CROSSBOWS:
         learned_something_new(HINT_GAINED_RANGED_SKILL);

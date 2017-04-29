@@ -403,7 +403,7 @@ COLOUR:  ETC_SLIME
 TILE:    urand_punk
 TILE_EQ: punk
 BRAND:   SPWPN_ACID
-BOOL:    rCorr
+BOOL:    rCorr, nogen
 
 ENUM:     ZEPHYR
 NAME:     longbow "Zephyr"
