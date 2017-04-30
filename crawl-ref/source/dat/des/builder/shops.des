@@ -62,7 +62,8 @@ end
 # Gozag code uses it to find out where shops can normally place.
 NAME: serial_shops
 TAGS: allow_dup extra luniq
-DEPTH:  Depths, Orc, Shoals, Snake, Vaults
+DEPTH:  D:10-, Depths, Orc, Shoals, Snake, Vaults
+CHANCE: 20% (D)
 CHANCE: 40% (Depths)
 CHANCE: 40% (Orc)
 CHANCE: 60% (Vaults)
@@ -300,8 +301,7 @@ KMONS:   2 = stone giant / catoblepas / deep troll earth mage / \
              iron dragon w:4
 ITEM:    stone
 KFEAT:   v = general shop type:Pet suffix:Rocks count:7 ; \
-         w:15 stone | w:15 large rock | w:8 hunting sling | w:1 fustibalus | \
-         w:8 sling bullet | \
+         w:15 stone | w:15 large rock | \
          w:7 crystal ball of energy | \
          w:4 wand of digging | w:5 randbook disc:earth | \
          w:2 book of the earth | w:2 book of geomancy | w:4 staff of earth | \

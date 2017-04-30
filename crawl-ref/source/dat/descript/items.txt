@@ -309,12 +309,6 @@ cloak
 
 A cloth cloak.
 %%%%
-club
-
-A heavy piece of wood. While clubs are rather primitive weapons, bashing
-someone's skull in with one remains a very popular and effective means of
-dispute resolution.
-%%%%
 corpse
 
 A corpse. You can butcher it to produce chunks of meat.
@@ -376,10 +370,6 @@ demon whip
 
 A terrible weapon, woven in the depths of the inferno.
 %%%%
-dire flail
-
-A flail with long spikes and a heavy head.
-%%%%
 disc of storms
 
 A crackling disc which can unleash a destructive storm of electricity. Its
@@ -400,18 +390,10 @@ A sacred blade from the forges of Heaven, inhabited by a good spirit. It is a
 favoured weapon of the Shining One's servants, and cannot be wielded by the
 forces of evil.
 %%%%
-eveningstar
-
-The opposite of a morningstar.
-%%%%
 executioner's axe
 
 A fearsome weapon covered in dried blood and crude engravings of torture and
 death, bearing an enormous axehead.
-%%%%
-falchion
-
-A long single-edged sword with a slightly curved blade.
 %%%%
 fan of gales
 
@@ -544,11 +526,6 @@ A lightweight spear, designed for throwing.
         return ""
     end
 }}
-%%%%
-lajatang
-
-A very rare and extremely effective imported weapon, featuring a pole with
-half-moon blades at both ends.
 %%%%
 lamp of fire
 
@@ -995,10 +972,6 @@ speed of an unskilled wearer.
 shortbow
 
 A curved piece of wood and string, for shooting arrows.
-%%%%
-short sword
-
-A personal stabbing weapon with a short grip.
 %%%%
 slice of pizza
 

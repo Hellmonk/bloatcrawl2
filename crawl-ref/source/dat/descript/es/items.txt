@@ -223,10 +223,6 @@ Una gloriosa cuchilla creada en los forjas del Cielo, y poseída por un espírit
 benigno. Es una de las armas preferidas de los sirvientes de El
 Resplandeciente.
 %%%%
-eveningstar
-
-Lo contrario del lucero del alba.
-%%%%
 fire dragon scales
 
 Una armadura mágica confeccionada a partir de las escamas de un dragón que
@@ -295,11 +291,6 @@ incapaz de usarla."
         return ""
     end
 }}
-%%%%
-lajatang
-
-Una exótica y muy efectiva arma de importación. Consiste en una garrocha, con
-cuchillas en forma de media luna en ambos extremos.
 %%%%
 large rock
 
@@ -548,10 +539,6 @@ scroll of teleportation
 
 Cuando leas este pergamino seras transportado a un lugar aleatorio tras esperar
 un poco.
-%%%%
-scythe
-
-Un ápero de granja, normalmente no apto para el combate.
 %%%%
 shield
 

@@ -4,24 +4,13 @@ Fighting
 Fighting skill increases your accuracy and damage in hand-to-hand combat, and
 also increases your maximum health.
 %%%%
-Short Blades
+Blades
 
 Short Blades are more effective than any other weapon type at stabbing helpless
 foes.
 
-Being skilled with Short Blades will allow you to attack more quickly with all
+Being skilled with Blades will allow you to attack more quickly with all
 weapons of this type, as well as increasing your accuracy and damage with them.
-
-Being skilled with Short Blades increases your effectiveness with Long Blades,
-and vice versa.
-%%%%
-Long Blades
-
-Being skilled with Long Blades will allow you to attack more quickly with all
-weapons of this type, as well as increasing your accuracy and damage with them.
-
-Being skilled with Long Blades increases your effectiveness with Short Blades,
-and vice versa.
 %%%%
 Axes
 
@@ -31,17 +20,17 @@ arc around the wielder.
 Being skilled with Axes will allow you to attack more quickly with all weapons
 of this type, as well as increasing your accuracy and damage with them.
 
-Being skilled with Axes increases your effectiveness with Maces & Flails and
+Being skilled with Axes increases your effectiveness with Maces & Staves and
 Polearms, and vice versa.
 %%%%
-Maces & Flails
+Maces & Staves
 
-Being skilled with Maces & Flails will allow you to attack more quickly with
+Being skilled with Maces & Staves will allow you to attack more quickly with
 all weapons of this type, as well as increasing your accuracy and damage with
 them.
 
-Being skilled with Maces & Flails increases your effectiveness with Axes and
-Staves, and vice versa.
+Being skilled with Maces & Staves increases your effectiveness with Axes, 
+and vice versa.
 %%%%
 Polearms
 
@@ -52,17 +41,6 @@ weapons of this type, as well as increasing your accuracy and damage with them.
 
 Being skilled with Polearms increases your effectiveness with Axes and Staves,
 and vice versa.
-%%%%
-Staves
-
-Staves require a relatively low amount of skill to be used most effectively,
-although they lack the high damage potential of some other weapon classes.
-
-Being skilled with Staves will allow you to attack more quickly with all
-weapons of this type, as well as increasing your accuracy and damage with them.
-
-Being skilled with Staves increases your effectiveness with Maces & Flails and
-Polearms, and vice versa.
 %%%%
 Slings
 

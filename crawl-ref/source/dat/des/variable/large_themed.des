@@ -44,11 +44,10 @@ NAME:    minmay_goblin_kobold_castle
 TAGS:    no_rotate
 ORIENT:  north
 DEPTH:   D:3-6
-MONS:    goblin; hunting sling . stone / hobgoblin w:2; hunting sling . sling \
-         bullet / nothing
-MONS:    goblin; club / hobgoblin; club / gnoll w:3; club | spear / nothing
+MONS:    goblin; stone / hobgoblin w:2; stone
+MONS:    goblin; whip / hobgoblin; whip / gnoll w:3; whip | spear / nothing
 MONS:    kobold; stone / nothing
-MONS:    kobold; club / big kobold w:1; club | short sword w:2 / nothing
+MONS:    kobold; whip / big kobold w:1; whip | rapier w:2 / nothing
 SUBST:   y : y:48 w:1 W:1, Y : Y:48 W:1 .:1, y = wWW, Y = WW.
 SUBST:   5 = 2 1:2 .:24
 SHUFFLE: ABCD
@@ -1159,7 +1158,7 @@ KFEAT:   _ = altar_okawaru
 # Lots of loot in this one. In true Okawaru fashion, most of it is junk!
 ITEM:    any armour, any armour good_item / acquire armour
 ITEM:    any weapon, any weapon good_item / acquire weapon
-ITEM:    arrow, bolt, sling bullet, gold
+ITEM:    arrow, bolt, stone, gold
 SHUFFLE: df, hi, jk, eg
 NSUBST:  d = 1:e / *:d, f = 1:g / *:f
 SUBST:   n = nv, 5 = 2221'
@@ -1634,7 +1633,7 @@ DEPTH:  D:2-4
   end
   kmons("O = " .. boss)
 }}
-MONS:   goblin, goblin ; hunting sling . stone, jackal
+MONS:   goblin, goblin ; stone, jackal
 NSUBST: . = 1:0 / 3:3 / *:.
 MAP
 xxxxxxxxxxxxxxxxxxx

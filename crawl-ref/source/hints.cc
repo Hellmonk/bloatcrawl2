@@ -728,16 +728,13 @@ void hints_gained_new_skill(skill_type skill)
 
     // Melee skills.
     case SK_SHORT_BLADES:
-    case SK_LONG_BLADES:
     case SK_AXES:
     case SK_MACES_FLAILS:
     case SK_POLEARMS:
-    case SK_STAVES:
         learned_something_new(HINT_GAINED_MELEE_SKILL);
         break;
 
     // Ranged skills.
-    case SK_SLINGS:
     case SK_BOWS:
     case SK_CROSSBOWS:
         learned_something_new(HINT_GAINED_RANGED_SKILL);
@@ -1790,7 +1787,7 @@ void learned_something_new(hints_event_type seen_what, coord_def gc)
                 "concentrate your efforts on one or two weapon types to become "
                 "more powerful in them. Some weapons are closely related, and "
                 "being trained in one will ease training the other. This is "
-                "true for the following pairs: Short Blades/Long Blades, "
+                "true for the following pairs: "
                 "Axes/Polearms, Polearms/Staves, Axes/Maces and Maces/Staves.";
         break;
 
@@ -2721,7 +2718,7 @@ void learned_something_new(hints_event_type seen_what, coord_def gc)
             listed.push_back("your <w>%</w>bilities");
             cmd.push_back(CMD_USE_ABILITY);
         }
-        if (Hints.hints_type != HINT_MAGIC_CHAR || how_mutated())
+        if (Hints.hints_type != HINT_MAGIC_CHAR || you.how_mutated())
         {
             listed.push_back("your set of mutations (<w>%</w>)");
             cmd.push_back(CMD_DISPLAY_MUTATIONS);
@@ -3024,7 +3021,7 @@ string hints_describe_item(const item_def &item)
                 if (is_range_weapon(item))
                     best_wpskill = best_skill(SK_SLINGS, SK_THROWING);
                 else
-                    best_wpskill = best_skill(SK_SHORT_BLADES, SK_STAVES);
+                    best_wpskill = best_skill(SK_SHORT_BLADES, SK_MACES_FLAILS);
 
                 // Maybe unarmed is better.
                 if (you.skills[SK_UNARMED_COMBAT] > you.skills[best_wpskill])

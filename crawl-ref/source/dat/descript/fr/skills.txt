@@ -4,7 +4,7 @@ Fighting
 La compétence Combat accroit votre précision et les dégâts en combat au corps à
 corps et, accroitre aussi votre maximum de points de vie.
 %%%%
-Short Blades
+Blades
 
 Les Épées Courtes ont la réputation d’être le meilleur outil pour poignarder.
 

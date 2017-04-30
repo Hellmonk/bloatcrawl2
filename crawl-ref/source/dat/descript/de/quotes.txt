@@ -333,16 +333,6 @@ cloak
     Weil ich einen neuen Umhang über mich haben werde.“
     -Anonym, „Der Alte Umhang“. Das 16. Jahrhundert.
 %%%%
-club
-
-„Ich habe immer das westafrikanische Sprichwort geliebt: ‚Sprechen Sie weich
-und tragen Sie einen großen Stock; Sie werden weit gehen.‘ Wenn ich den großen
-Stock nicht getragen hätte, wäre die Organisation ich nicht zurückgeblieben,
-und wenn ich gebrüllt und, als Pankhurst und die ähnlichen unehrlichen
-gewünschten Wahnsinnigen gebraust hätte, hätte ich zehn Stimmen nicht gehabt.“
-    -Theodore Roosevelt, in einem Brief an Henry L. Sprague. Am 26. Januar
-1900.
-%%%%
 crossbow
 
 „(Tell, geht mit seiner Armbrust herein)
@@ -408,23 +398,6 @@ und, ist ergriffen eitel am Stein gefallen, und ist in den Abgrund geglitten.“
     -J.R.R. Tolkien, _The Kameradschaft des Ring_. II, 5, „Die Brücke von
 Khazad-dûm“. 1954.
 %%%%
-dire flail
-
-„‚Ah! ah! ah!‘ gelacht seine zwei Männer, ‚wie die normannischen Bengel
-demütigt werden, wenn sie den Schädel ihres tapferen Ritters sehen, der in
-durch unseren tapferen Landsmann geschlagen ist.’“
-    -_Tales der Ritterlichkeit; oder, Risikos durch die Überschwemmung und den
-Field_. 1830.
-%%%%
-eveningstar
-
-„Es wird gesagt, dass die bevorzugte Waffe der normannischen Priester, der,
-seine Einwände gegen das Vergießen von Blut, hatte keine Skrupel über den
-schneidigen aus der Gehirne haben.“
-    -T. M. Allison, „Der Flegel und Kindred Werkzeuge (aus einer historischen
-und literarischen Standpunkt)“, _Archaeologia Aeliana_, Third Series, vol. IV.
-Jahr 1908.
-%%%%
 executioner's axe
 
 „Sie hat getanzt und wurde dazu gezwungen zu tanzen — um in der dunklen Nacht
@@ -448,13 +421,6 @@ einen Psalm unterrichtet, den die Verbrecher immer singen; und sie hat die Hand
 geküsst, die die Axt gehalten hatte, und über das Moor weggegangen ist.“
     -Hans Christian Andersen, „Die Roten Schuhe“, _Nye Eventyr. Første Binden.
 Tredie Samling._. 1845.
-%%%%
-falchion
-
-„Ich habe den Tag gesehen, mit meinem guten scharfen falchion
- hätte ich sie hüpfen lassen: Ich bin jetzt,
- alt, Und diese dieselben Kreuze verderben mich.“
-    -William Shakespeare, _King Lear _, V, iii. 1608.
 %%%%
 flail
 
@@ -520,14 +486,6 @@ javelin
 Speer durch die Beiden. Sie würden gerichtet werden, und die Beiden würden für
 ihre Sünden zu büßen und in das Reich Gottes aufgenommen werden.“
     -Brigham Young, _Journal of Discourses_, 3:247. 1856.
-%%%%
-lajatang
-
-„Eine Waffe die zur Ruhe kommt
- Wie Schneeflocken auf das Gras;
- Aber wenn er eines freien Mannes Willen tut,
- Tut er es wie ein Blitz den Willen Gottes.“
-    -John Pierpont, „The Ballot“. ca. 1850.
 %%%%
 large rock
 
@@ -751,9 +709,7 @@ einfach nur der Sache wegen, das war alles. Er lachte über die Sense in seinen
 großen Händen. Dann, pfeifend, nahm er sie zum Lager- und Wartefeld und tat die
 Arbeit. Er hielt sich für ein wenig verrückt. Zur Hölle, es war ein
 durchschnittlich-gewöhnliches Weizenfeld, wirklich, nicht wahr?“
-    -Ray Bradbury, _The Scythe_/Die Sense. 1943.
-%%%%
-short sword
+    -Ray Bradbury, _The Scythe_/Die Sense. 1943.short sword
 
 „Wer hat bloß als erster die schrecklichen Schwerter erfunden?
  Wie grausam und wahrhaft hartherzig war der!“

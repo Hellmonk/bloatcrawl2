@@ -993,7 +993,7 @@ static void _describe_missiles(status_info* inf)
     }
     else
     {
-        bool perm = player_mutation_level(MUT_DISTORTION_FIELD) == 3
+        bool perm = you.get_mutation_level(MUT_DISTORTION_FIELD) == 3
                     || you.scan_artefacts(ARTP_RMSL)
                     || have_passive(passive_t::upgraded_storm_shield);
         inf->light_colour = perm ? WHITE : LIGHTBLUE;

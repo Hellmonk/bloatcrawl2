@@ -204,11 +204,11 @@ outside of it.
 Zin
 
 Zin is a god of discipline. Followers must remain pure of body and soul,
-refraining from dark magic and chaotic acts, and never consuming the flesh of
-intelligent beings. They must also tithe a fraction of all gold gained,
-preferably followed by donations of more. In exchange, worshippers may invoke
-Zin's wrath upon sinners, and eventually gain various divine protections. Zin's
-followers can convert to Elyvilon or the Shining One while keeping some piety.
+refraining from dark magic and chaotic acts. They must also tithe a fraction 
+of all gold gained, preferably followed by donations of more. In exchange, 
+worshippers may invoke Zin's wrath upon sinners, and eventually gain various 
+divine protections. Zin's followers can convert to Elyvilon or the Shining One 
+while keeping some piety.
 %%%%
 Ashenzari powers
 
@@ -453,9 +453,9 @@ Zin powers
 Zin grants followers the ability to preach to the unenlightened masses, and
 powers to vitalise their bodies, protecting them from various afflictions.
 Later, followers gain the ability to imprison their foes temporarily. Followers
-can eventually find temporary safety in a divine refuge. As piety grows,
-followers will be protected from mutation, and Zin may even occasionally
-directly intervene to save a follower's life.
+can eventually find temporary safety in a divine refuge. Devout followers are
+gradually cleansed of their mutations and are protected from additional mutation.
+Zin may occasionally directly intervene to save a follower's life.
 %%%%
 Ashenzari wrath
 
@@ -634,6 +634,6 @@ also afflict those stricken by Yredremnul's wrath.
 Zin wrath
 
 Those under Zin's wrath will find their beneficial mutations stripped away,
-their bellies emptied, their enemies alerted, and their senses confounded by the
-axioms of Law; confusion, fainting and complete paralysis will be their lot.
+their enemies alerted, and their senses confounded by the axioms of Law; 
+confusion, fainting and complete paralysis will be their lot.
 %%%%

@@ -846,7 +846,7 @@ ORIENT: float
 TAGS:   no_rotate no_hmirror no_monster_gen
 MONS:   killer klown
 MONS:   dire elephant / w:5 hellephant
-MONS:   human ; club
+MONS:   human ; whip
 SUBST:  1 = 1 2:5 3:20
 SUBST:  2 = 2 2 .
 SUBST:  % = !:20 ?:5 .:20
@@ -991,16 +991,16 @@ TAGS:    no_monster_gen no_trap_gen no_pool_fixup patrolling transparent
 DEPTH:   Zot, !Zot:$
 WEIGHT:  3
 # Gifts, too.
-KMONS:   1 = guardian mummy ; randart dire flail ego:chaos | \
+KMONS:   1 = guardian mummy ; randart quarterstaff ego:chaos | \
              randart great mace ego:chaos | randart battleaxe ego:chaos| \
-             randart great sword ego:chaos | randart glaive ego:chaos | \
-             randart scythe ego:chaos | randart dire flail | \
-             randart great mace | randart battleaxe | randart great sword | \
-             randart glaive | randart scythe
-KMONS:   3 = guardian mummy ; randart fustibalus ego:chaos . sling bullet / \
+             randart double sword ego:chaos | randart glaive ego:chaos | \
+             randart trident ego:chaos | randart morningstar | \
+             randart great mace | randart battleaxe | randart double sword | \
+             randart glaive | randart trident
+KMONS:   3 = guardian mummy ; randart shortbow ego:chaos . arrow / \
              guardian mummy ; randart longbow ego:chaos . arrow / \
              guardian mummy ; randart triple crossbow . bolt / \
-             guardian mummy ; randart fustibalus . sling bullet / \
+             guardian mummy ; randart shortbow . arrow / \
              guardian mummy ; randart longbow . arrow / \
              guardian mummy ; randart arbalest . bolt
 KMONS:   5 = guardian mummy ; wand of lightning | scroll of summoning
@@ -2008,7 +2008,7 @@ MONS:    very ugly thing w:20 / deep elf annihilator w:15 / \
 MONS:    curse skull w:15 / apocalypse crab / lorocyproca / acid blob
 MONS:    butterfly
 ITEM:    stone q:1 no_pickup, large rock q:1 no_pickup
-ITEM:    sling bullet q:1 no_pickup, crystal ball of energy no_pickup
+ITEM:    stone q:1 no_pickup, crystal ball of energy no_pickup
 # Altars obliquely refer to those temple maps.
 KFEAT:   D = altar_lugonu / altar_jiyva / C w:20
 KFEAT:   ~ = known zot trap
@@ -2111,12 +2111,12 @@ ITEM:   disc of storms, book of the sky
 ITEM:   quick blade ego:electrocution good_item ident:type w:5 / \
         double sword ego:electrocution good_item ident:type w:5 / \
         executioner's axe ego:electrocution good_item ident:type w:5 / \
-        eveningstar ego:electrocution good_item ident:type w:5 / \
+        demon whip ego:electrocution good_item ident:type w:5 / \
         bardiche ego:electrocution good_item ident:type w:5 / \
-        lajatang ego:electrocution good_item ident:type w:5 / \
+        demon trident ego:electrocution good_item ident:type w:5 / \
         rapier ego:electrocution good_item ident:type / \
         scimitar ego:electrocution good_item ident:type / \
-        dire flail ego:electrocution good_item ident:type / \
+        morningstar ego:electrocution good_item ident:type / \
         trident ego:electrocution good_item ident:type / \
         quarterstaff ego:electrocution good_item ident:type
 ITEM:   scroll of blinking q:1 / scroll of blinking q:2 / \

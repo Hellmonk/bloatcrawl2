@@ -1403,8 +1403,7 @@ static void _construct_weapon_menu(const newgame_def& ng,
             if (is_ranged_weapon_type(wpn_type))
             {
                 text += " and ";
-                text += wpn_type == WPN_HUNTING_SLING ? ammo_name(MI_SLING_BULLET)
-                                                      : ammo_name(wpn_type);
+                text += ammo_name(wpn_type);
                 text += "s";
             }
             break;
@@ -1658,8 +1657,6 @@ static weapon_type _starting_weapon_upgrade(weapon_type wp, job_type job,
     // TODO: actually query itemprop for one-handedness.
     switch (wp)
     {
-    case WPN_SHORT_SWORD:
-        return WPN_RAPIER;
     case WPN_MACE:
         return WPN_FLAIL;
     case WPN_HAND_AXE:
@@ -1668,7 +1665,7 @@ static weapon_type _starting_weapon_upgrade(weapon_type wp, job_type job,
     case WPN_SPEAR:
         // Small fighters can't use tridents with a shield.
         return fighter && size <= SIZE_SMALL  ? wp : WPN_TRIDENT;
-    case WPN_FALCHION:
+    case WPN_RAPIER:
         // Little fighters can't use long swords with a shield.
         return fighter && size <= SIZE_LITTLE ? wp : WPN_LONG_SWORD;
     default:
@@ -1681,10 +1678,10 @@ static vector<weapon_choice> _get_weapons(const newgame_def& ng)
     vector<weapon_choice> weapons;
     if (job_gets_ranged_weapons(ng.job))
     {
-        weapon_type startwep[4] = { WPN_THROWN, WPN_HUNTING_SLING,
+        weapon_type startwep[3] = { WPN_THROWN,
                                     WPN_SHORTBOW, WPN_HAND_CROSSBOW };
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 3; i++)
         {
             weapon_choice wp;
             wp.first = startwep[i];
@@ -1696,10 +1693,9 @@ static vector<weapon_choice> _get_weapons(const newgame_def& ng)
     }
     else
     {
-        weapon_type startwep[7] = { WPN_SHORT_SWORD, WPN_MACE, WPN_HAND_AXE,
-                                    WPN_SPEAR, WPN_FALCHION, WPN_QUARTERSTAFF,
-                                    WPN_UNARMED };
-        for (int i = 0; i < 7; ++i)
+        weapon_type startwep[5] = { WPN_MACE, WPN_HAND_AXE,
+                                    WPN_SPEAR, WPN_RAPIER, WPN_UNARMED };
+        for (int i = 0; i < 5; ++i)
         {
             weapon_choice wp;
             wp.first = startwep[i];

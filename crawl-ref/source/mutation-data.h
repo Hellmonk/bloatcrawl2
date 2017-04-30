@@ -13,6 +13,12 @@ struct mutation_def
     const char* lose[3];    ///< Message when you lose the mutation.
 };
 
+struct mutation_category_def
+{
+  mutation_type mutation;
+  const char* short_desc;
+};
+
 static const mutation_def mut_data[] =
 {
 
@@ -179,7 +185,7 @@ static const mutation_def mut_data[] =
    "Your demonic guardian is weakened."},
 },
 
-{ MUT_SHOCK_RESISTANCE, 2, 1, mutflag::GOOD, true,
+{ MUT_SHOCK_RESISTANCE, 3, 1, mutflag::GOOD, true,
   "electricity resistance",
 
   {"You are resistant to electric shocks. (rElec)", "", ""},
@@ -484,7 +490,7 @@ static const mutation_def mut_data[] =
   {"Your thinking seems confused.", "", ""},
 },
 
-{ MUT_BERSERK, 7, 3, mutflag::BAD, false,
+{ MUT_BERSERK, 0, 3, mutflag::BAD, false,
   "berserk",
 
   {"You tend to lose your temper in combat.",
@@ -609,7 +615,7 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_NEGATIVE_ENERGY_RESISTANCE, 0, 3, mutflag::GOOD, false,
+{ MUT_NEGATIVE_ENERGY_RESISTANCE, 4, 3, mutflag::GOOD, false,
   "negative energy resistance",
 
   {"You resist negative energy. (rN+)",
@@ -620,7 +626,9 @@ static const mutation_def mut_data[] =
    "You feel more resistant to negative energy.",
    "You feel more resistant to negative energy."},
 
-  {"", "", ""},
+  {"You no longer feel resistant to negative energy.",
+   "You feel less resistant to negative energy.",
+   "You feel less resistant to negative energy."},
 },
 
 #if TAG_MAJOR_VERSION == 34
@@ -651,6 +659,18 @@ static const mutation_def mut_data[] =
    ""},
 
   {"", "", ""},
+},
+
+{ MUT_HEX_ENHANCER, 2, 1, mutflag::GOOD, false,
+  "powerful hexes",
+
+  {"Your tricky nature makes your hexes more powerful.",
+   "",
+   ""},
+
+  {"You feel extremely tricky.", "", ""},
+
+  {"You feel less tricky.", "", ""},
 },
 
 { MUT_TENGU_FLIGHT, 0, 2, mutflag::GOOD, false,
@@ -810,20 +830,14 @@ static const mutation_def mut_data[] =
 },
 
 // Naga and Draconian only
-{ MUT_STINGER, 8, 3, mutflag::GOOD, true,
+{ MUT_STINGER, 8, 1, mutflag::GOOD, true,
   "stinger",
 
-  {"Your tail ends in a poisonous barb.",
-   "Your tail ends in a sharp poisonous barb.",
-   "Your tail ends in a wickedly sharp and poisonous barb."},
+  {"Your tail ends in a sharp poisonous barb.", "", ""},
 
-  {"A poisonous barb forms on the end of your tail.",
-   "The barb on your tail looks sharper.",
-   "The barb on your tail looks very sharp."},
+  {"A poisonous barb forms on the end of your tail.", "", ""},
 
-  {"The barb on your tail disappears.",
-   "The barb on your tail seems less sharp.",
-   "The barb on your tail seems less sharp."},
+  {"The barb on your tail disappears.", "", ""},
 },
 
 // Draconian only
@@ -984,20 +998,14 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_PASSIVE_MAPPING, 3, 3, mutflag::GOOD, false,
+{ MUT_PASSIVE_MAPPING, 3, 1, mutflag::GOOD, false,
   "sense surroundings",
 
-  {"You passively map a small area around you.",
-   "You passively map the area around you.",
-   "You passively map a large area around you."},
+  {"You passively map the area around you.", "", ""},
 
-  {"You feel a strange attunement to the structure of the dungeons.",
-   "Your attunement to dungeon structure grows.",
-   "Your attunement to dungeon structure grows further."},
+  {"You feel a strange attunement to the structure of the dungeons.", "", ""},
 
-  {"You feel slightly disoriented.",
-   "You feel slightly disoriented.",
-   "You feel slightly disoriented."},
+  {"You feel slightly disoriented.", "", ""},
 },
 
 { MUT_ICEMAIL, 0, 1, mutflag::GOOD, false,
@@ -1886,4 +1894,16 @@ static const mutation_def mut_data[] =
   {"You stop regenerating.", "", ""},
   {"You start regenerating.", "", ""},
 },
+};
+
+static const mutation_category_def category_mut_data[] =
+{
+  { RANDOM_MUTATION, "any"},
+  { RANDOM_XOM_MUTATION, "xom"},
+  { RANDOM_GOOD_MUTATION, "good"},
+  { RANDOM_BAD_MUTATION, "bad"},
+  { RANDOM_SLIME_MUTATION, "slime"},
+  { RANDOM_NON_SLIME_MUTATION, "nonslime"},
+  { RANDOM_CORRUPT_MUTATION, "corrupt"},
+  { RANDOM_QAZLAL_MUTATION, "qazlal"},
 };

@@ -211,10 +211,6 @@ demon whip
 
 Straszliwa broń, wypleciona na dnie piekieł.
 %%%%
-dire flail
-
-Cep z kolczastymi odważnikami po obu stronach.
-%%%%
 disc of storms
 
 Ten potężny przedmiot potrafi wypuścić niszczące elektryczne wyładowanie,
@@ -225,10 +221,6 @@ eudemon blade
 
 Wspaniałe ostrze wykute w kuźniach Niebios, opętane przez dobrego ducha. Jest
 to ulubiona broń sług Świetlistego.
-%%%%
-eveningstar
-
-Wariant morgenszterna.
 %%%%
 fan of gales
 
@@ -301,13 +293,6 @@ Długi, lekki patyk do rzucania. {{
         return ""
     end
 }}
-%%%%
-lajatang
-
-Bardzo rzadka i wyjątkowo efektywna zamorska broń, składająca się z dwóch ostrz
-kosy osadzonych na sztorc na obu końcach drzewca. Wymaga ona pewnych
-umiejętności aby jej dobrze użyć, jednak w rękach zręcznego wojownika walka
-stanowi morderczy dla wrogów taniec.
 %%%%
 lamp of fire
 
@@ -612,10 +597,6 @@ stworzeń zwykle żyjących w okolicy w której zwój ten zostanie odczytany.
 scroll of teleportation
 
 Odczytanie tego zwoju przeniesie cię w przypadkowe miejsce.
-%%%%
-scythe
-
-Narzędzie rolnicze, niezbyt przydatne do walki.
 %%%%
 shield
 

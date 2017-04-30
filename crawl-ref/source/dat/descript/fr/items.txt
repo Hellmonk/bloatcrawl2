@@ -97,10 +97,6 @@ blessed triple sword
 
 Une épée massive, améliorée par l'Étincelant.
 %%%%
-blessed falchion
-
-Une épée à large tranchant. Elle a été améliorée par L'Étincelant.
-%%%%
 blessed great sword
 
 Une épée avec une une très longue et lourde lame, et une longue garde. Elle a
@@ -423,10 +419,6 @@ demon whip
 
 Une arme redoutable, tissée dans les profondeurs de l'enfer.
 %%%%
-dire flail
-
-Un fléau d'arme avec des pointes plus longues, et une tête plus lourde.
-%%%%
 disc of storms
 
 Cet objet, extrêmement puissant, peut déchaîner des tempêtes d'électricité
@@ -438,10 +430,6 @@ eudemon blade
 Une lame sacrée tout droit sortie des forges du paradis, et habitée par une
 présence bienveillante. C'est l'arme favorite des serviteurs de L'Étincelant,
 et elle ne peut être manipulée par les forces du mal.
-%%%%
-eveningstar
-
-L'opposé d'une étoile du matin.
 %%%%
 fan of gales
 
@@ -537,11 +525,6 @@ blessures.
         return ""
     end
 }}
-%%%%
-lajatang
-
-Une arme exotique très rare et extremement efficace, ce baton présente une lame
-en croissant de lune à chaque extrémité.
 %%%%
 lamp of fire
 
@@ -896,11 +879,6 @@ scroll of teleportation
 
 Lire les mots inscrits sur ce parchemin vous translocalise à retardement dans
 un lieu aléatoire.
-%%%%
-scythe
-
-Un outil agricole, généralement utilisée au combat par des gens
-inexpérimentées.
 %%%%
 shield
 

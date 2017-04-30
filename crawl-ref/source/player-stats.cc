@@ -57,15 +57,15 @@ static int _stat_modifier(stat_type stat, bool innate_only);
  * What's the player's current maximum for a stat, before ability damage is
  * applied?
  *
- * @param s     The stat in question (e.g. STAT_STR).
- * @param base  Whether to disregard stat modifiers other than those from
- *              mutations.
+ * @param s      The stat in question (e.g. STAT_STR).
+ * @param innate Whether to disregard stat modifiers other than those from
+ *               innate mutations.
  * @return      The player's maximum for the given stat; capped at
  *              MAX_STAT_VALUE.
  */
-int player::max_stat(stat_type s, bool base) const
+int player::max_stat(stat_type s, bool innate) const
 {
-    return min(base_stats[s] + _stat_modifier(s, base), MAX_STAT_VALUE);
+    return min(base_stats[s] + _stat_modifier(s, innate), MAX_STAT_VALUE);
 }
 
 int player::max_strength() const
@@ -358,9 +358,9 @@ void notify_stat_change()
         _handle_stat_change(static_cast<stat_type>(i));
 }
 
-static int _mut_level(mutation_type mut, bool innate)
+static int _mut_level(mutation_type mut, bool innate_only)
 {
-    return innate ? you.innate_mutation[mut] : player_mutation_level(mut);
+    return you.get_base_mutation_level(mut, true, !innate_only, !innate_only);
 }
 
 static int _strength_modifier(bool innate_only)
@@ -613,8 +613,6 @@ static void _handle_stat_change(stat_type stat)
         mprf(MSGCH_WARN, "You have lost your %s.", stat_desc(stat, SD_NAME));
         take_note(Note(NOTE_MESSAGE, 0, 0, make_stringf("Lost %s.",
             stat_desc(stat, SD_NAME)).c_str()), true);
-        // 2 to 5 turns of paralysis (XXX: decremented right away?)
-        you.increase_duration(DUR_PARALYSIS, 2 + random2(3));
     }
 
     you.redraw_stats[stat] = true;

@@ -1284,10 +1284,9 @@ static int _xom_random_stickable(const int HD)
 
     static const int arr[] =
     {
-        WPN_CLUB,    WPN_SPEAR,      WPN_TRIDENT,      WPN_HALBERD,
-        WPN_SCYTHE,  WPN_GLAIVE,     WPN_QUARTERSTAFF,
+        WPN_SPEAR,    WPN_SPEAR,      WPN_TRIDENT,      WPN_HALBERD,
+        WPN_GLAIVE,     WPN_QUARTERSTAFF,
         WPN_SHORTBOW,   WPN_LONGBOW,      WPN_GIANT_CLUB,
-        WPN_GIANT_SPIKED_CLUB
     };
 
     // Maximum snake hd is 11 (anaconda) so random2(hd) gives us 0-10, and
@@ -2145,7 +2144,7 @@ static void _get_hand_type(string &hand, bool &can_plural)
         plural_vec.push_back(true);
     }
     else if (you.species != SP_MUMMY && you.species != SP_OCTOPODE
-             && !player_mutation_level(MUT_BEAK)
+             && !you.get_mutation_level(MUT_BEAK)
           || form_changed_physiology())
     {
         hand_vec.emplace_back("nose");
@@ -2962,7 +2961,7 @@ static xom_event_type _xom_choose_good_action(int sever, int tension)
     }
 
     if (tension > random2(5) && x_chance_in_y(7, sever)
-        && !player_mutation_level(MUT_NO_LOVE))
+        && !you.get_mutation_level(MUT_NO_LOVE))
     {
         return XOM_GOOD_SINGLE_ALLY;
     }
@@ -2976,13 +2975,13 @@ static xom_event_type _xom_choose_good_action(int sever, int tension)
         return XOM_GOOD_SNAKES;
 
     if (tension > random2(10) && x_chance_in_y(10, sever)
-        && !player_mutation_level(MUT_NO_LOVE))
+        && !you.get_mutation_level(MUT_NO_LOVE))
     {
         return XOM_GOOD_ALLIES;
     }
     if (tension > random2(8) && x_chance_in_y(11, sever)
         && _find_monster_with_animateable_weapon()
-        && !player_mutation_level(MUT_NO_LOVE))
+        && !you.get_mutation_level(MUT_NO_LOVE))
     {
         return XOM_GOOD_ANIMATE_MON_WPN;
     }
@@ -3037,7 +3036,7 @@ static xom_event_type _xom_choose_good_action(int sever, int tension)
     }
 
     if (random2(tension) < 5 && x_chance_in_y(19, sever)
-        && x_chance_in_y(16, how_mutated())
+        && x_chance_in_y(16, you.how_mutated())
         && you.can_safely_mutate())
     {
         return XOM_GOOD_MUTATION;

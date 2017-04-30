@@ -894,7 +894,7 @@ static void _jiyva_effects(int /*time_delta*/)
 
 static void _evolve(int time_delta)
 {
-    if (player_mutation_level(MUT_EVOLUTION))
+    if (you.get_mutation_level(MUT_EVOLUTION))
         if (x_chance_in_y(3, 4)
             && you.attribute[ATTR_EVOL_XP] * (1 + random2(10))
                > (int)exp_needed(you.experience_level + 1))
@@ -1648,6 +1648,12 @@ void timeout_terrain_changes(int duration, bool force)
         if (marker->change_type == TERRAIN_CHANGE_DOOR_SEAL
             && !feat_is_sealed(grd(marker->pos)))
         {
+            // TODO: could this be done inside `revert_terrain_change`? The
+            // two things to test are corrupting sealed doors, and destroying
+            // sealed doors. See 7aedcd24e1be3ed58fef9542786c1a194e4c07d0 and
+            // 6c286a4f22bcba4cfcb36053eb066367874be752.
+            if (marker->duration <= 0)
+                env.markers.remove(marker); // deletes `marker`
             continue;
         }
 
@@ -1658,6 +1664,7 @@ void timeout_terrain_changes(int duration, bool force)
         {
             if (you.see_cell(marker->pos))
                 num_seen[marker->change_type]++;
+            // will delete `marker`.
             revert_terrain_change(marker->pos, marker->change_type);
         }
     }

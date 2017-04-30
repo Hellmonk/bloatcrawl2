@@ -230,10 +230,6 @@ eudemon blade
 一把在天堂中锻成的圣剑，剑中住着一个圣灵。光明神的信徒们常常使用这种剑，
 而邪恶生物则完全不能使用它。
 %%%%
-eveningstar
-
-这种流星锤上的刺特别长，因此被它打到也特别痛。
-%%%%
 fire dragon scales
 
 一副用火龙鳞片制成的魔法护甲。它赋予穿戴者对火焰的抗性，
@@ -296,10 +292,6 @@ javelin
         return ""
     end
 }}
-%%%%
-lajatang
-
-这根木棍的两头各绑着一片月牙形刃。这是一种极为罕见也极为强力的外国武器。
 %%%%
 large rock
 
@@ -539,10 +531,6 @@ scroll of magic mapping
 scroll of teleportation
 
 阅读这个卷轴上的文字后过一段时间，你会被传送到一个随机地点。
-%%%%
-scythe
-
-这只是一件农具；只有没受过训练的家伙才会拿它当武器用。
 %%%%
 shield
 

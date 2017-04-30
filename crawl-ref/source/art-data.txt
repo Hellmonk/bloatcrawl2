@@ -340,7 +340,7 @@ MAGIC:   1
 
 # TAG_MAJOR_VERSION == 34
 NAME:    eveningstar "Brilliance"
-OBJ:     OBJ_WEAPONS/WPN_EVENINGSTAR
+OBJ:     OBJ_WEAPONS/WPN_MORNINGSTAR
 PLUS:    +1
 COLOUR:  ETC_HOLY
 TILE:    urand_brilliance
@@ -385,6 +385,7 @@ BRAND:    SPWPN_PAIN
 INT:      5
 MAGIC:    1
 
+# TAG_MAJOR_VERSION == 34
 NAME:    scythe "Finisher"
 OBJ:     OBJ_WEAPONS/WPN_SCYTHE
 PLUS:    +5
@@ -393,23 +394,24 @@ TILE:    urand_finisher
 TILE_EQ: finisher
 BRAND:   SPWPN_SPEED
 STR:     3
+BOOL:    nogen
 
-NAME:    sling "Punk"
-OBJ:     OBJ_WEAPONS/WPN_FUSTIBALUS
-PLUS:    +3
+NAME:    hand crossbow "Punk"
+OBJ:     OBJ_WEAPONS/WPN_HAND_CROSSBOW
+PLUS:    +8
 COLOUR:  ETC_SLIME
 TILE:    urand_punk
 TILE_EQ: punk
 BRAND:   SPWPN_ACID
 BOOL:    rCorr
 
-ENUM:     KRISHNA
-NAME:     bow of Krishna "Sharnga"
+ENUM:     ZEPHYR
+NAME:     longbow "Zephyr"
 OBJ:      OBJ_WEAPONS/WPN_LONGBOW
 PLUS:     +8
 COLOUR:   ETC_GOLD
-TILE:     urand_krishna
-TILE_EQ:  krishna
+TILE:     urand_zephyr
+TILE_EQ:  zephyr
 BRAND:    SPWPN_SPEED
 DEX:      3
 BOOL:     seeinv
@@ -929,11 +931,11 @@ MAGIC:   1
 ANGRY:   5
 SLAY:    3
 
-NAME:    ring of Shaolin
+NAME:    ring of Dodge City
 OBJ:     OBJ_JEWELLERY/RING_EVASION
 PLUS:    +8
 COLOUR:  ETC_POISON
-TILE:    urand_shaolin
+TILE:    urand_dodge_city
 
 NAME:    ring of Robustness
 OBJ:     OBJ_JEWELLERY/RING_PROTECTION
@@ -1130,11 +1132,11 @@ MAGIC:    1
 
 NAME:    lajatang of Order
 INSCRIP: silver,
-OBJ:     OBJ_WEAPONS/WPN_LAJATANG
+OBJ:     OBJ_WEAPONS/WPN_QUARTERSTAFF
 COLOUR:  ETC_SILVER
 TILE:    urand_order
 TILE_EQ: order
-PLUS:    +7
+PLUS:    +12
 BOOL:    rMut
 
 ENUM:     FIRESTARTER

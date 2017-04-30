@@ -3605,8 +3605,6 @@ VISUAL:@The_monster@ shakes @possessive@ head.
 
 @The_monster@ says, "I think I hate rivers, but I can't remember why."
 
-@The_monster@ says, "That guy with the scythe is really mean."
-
 w:1
 @The_monster@ says, "What kind of a name is Fauntleroy?"
 
@@ -3884,8 +3882,6 @@ VISUAL:@The_monster@ grinds @possessive@ teeth, and then sighs.
 
 w:1
 VISUAL:@The_monster@ looks rather jealous.
-
-@The_monster@ says, "A flail is better than a scythe, any day of the week!"
 
 w:5
 @The_monster@ says, "What use are spells, anyway?"

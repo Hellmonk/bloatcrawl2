@@ -364,16 +364,6 @@ Bat Form ability
  The victims have been bled”
     -Bauhaus, “Bela Lugosi's Dead”. 1979.
 %%%%
-bow of Krishna "Sharnga"
-
-“What will you do if Karna is able to kill me?” Arjun asked Krishna. Krishna
-smiled and replied, “The sun will fall, the earth shatter into a thousand
-fragments, and fire lose its heat before he kills you. But if he does, it is a
-sign that the end of the world has come. As for me, I shall kill him with my
-bare hands.
-    -Vyasa, _Mahabharata_, Book Eight: Karna.
-     trans. P. Lal, 1986.
-%%%%
 Call Canine Familiar spell
 
 “There seemed a strange stillness over everything. But as I listened, I heard
@@ -1016,15 +1006,6 @@ cloak
    For I’ll have a new cloak about me.”
     -Anonymous, “The Old Cloak”. 16th Century.
 %%%%
-club
-
-“I have always been fond of the West African proverb: ‘Speak softly and carry a
-big stick; you will go far.’ If I had not carried the big stick, the
-organization would not have gotten behind me, and if I had yelled and
-blustered, as Pankhurst and the similar dishonest lunatics desired, I would not
-have had ten votes.”
-    -Theodore Roosevelt, in a letter to Henry L. Sprague. January 26, 1900.
-%%%%
 crimson imp
 
 “The Devil, too, sometimes steals human children; it is not infrequent for him
@@ -1099,12 +1080,6 @@ curled about the wizard's knees, dragging him to the brink. He staggered, and
 fell, grasped vainly at the stone, and slid into the abyss.”
     -J.R.R. Tolkien, _The Fellowship of the Ring_. II, 5, “The Bridge of
      Khazad-dûm”. 1954.
-%%%%
-dire flail
-
-“‘Ah! ah! ah!’ laughed his two men, ‘how the Norman villains will be humbled
-when they see their doughty knight's skull beaten in by our brave countryman.’”
-    -_Tales of Chivalry; or, Perils by Flood and Field_. 1830.
 %%%%
 doom hound
 
@@ -1208,15 +1183,6 @@ eudemon blade
 
 <demon blade>
 %%%%
-eveningstar
-
-“It is said to have been the favourite weapon of the Norman priest, who,
-objecting to the shedding of blood, had no scruple about the dashing out of
-brains.”
-    -T. M. Allison, “The Flail and Kindred Tools (from a historical and
-     literary standpoint)”, _Archaeologia Aeliana_, Third Series, vol. IV.
-     1908.
-%%%%
 executioner's axe
 
 “She danced, and was compelled to dance—to dance in the dark night. The shoes
@@ -1236,13 +1202,6 @@ which the criminals always sing; and she kissed the hand that had held the axe,
 and went away across the heath.”
     -Hans Christian Andersen, “The Red Shoes”, _Nye Eventyr. Første Bind.
      Tredie Samling._. 1845.
-%%%%
-falchion
-
-“I have seen the day, with my good biting falchion
- I would have made them skip: I am old now,
- And these same crosses spoil me.”
-    -William Shakespeare, _King Lear_, V, iii. 1608.
 %%%%
 fire crab
 
@@ -1643,14 +1602,6 @@ uniquely guilty and ashamed animals, were trying to foist on it. So we got it
 all straight back at us, as if reflected in the mirror of its single
 unwavering and disinterested eye.”
     -Douglas Adams, “Last Chance to See”. 1990.
-%%%%
-lajatang
-
-“A weapon that comes down as still
- As snowflakes fall upon the sod;
- But executes a freeman’s will,
- As lightning does the will of God.”
-    -John Pierpont, “The Ballot”. ca. 1850.
 %%%%
 large rock
 
@@ -2444,13 +2395,6 @@ shortbow
 
 “You are the bows from which your children as living arrows are sent forth.”
     -Khalil Ghibran, _The Prophet_, “On Children”. 1923.
-%%%%
-short sword
-
-“Who was the first that forged the deadly blade?
- Of rugged steel his savage soul was made”
-    -Albius Tibullus, _Elegies_ I, xi. ca. 25 B.C.
-     trans. James Grainger, 1822.
 %%%%
 silent spectre
 

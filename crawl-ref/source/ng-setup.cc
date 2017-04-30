@@ -202,7 +202,6 @@ static void _give_ranged_weapon(weapon_type weapon, int plus)
     {
     case WPN_SHORTBOW:
     case WPN_HAND_CROSSBOW:
-    case WPN_HUNTING_SLING:
         newgame_make_item(OBJ_WEAPONS, weapon, 1, plus);
         break;
     default:
@@ -229,9 +228,6 @@ static void _give_ammo(weapon_type weapon, int plus)
         break;
     case WPN_HAND_CROSSBOW:
         newgame_make_item(OBJ_MISSILES, MI_BOLT, 160);
-        break;
-    case WPN_HUNTING_SLING:
-        newgame_make_item(OBJ_MISSILES, MI_SLING_BULLET, 160);
         break;
     default:
         break;

@@ -36,7 +36,7 @@ KMONS:   N = spriggan ; robe . quarterstaff
 KMONS:   O = dire elephant / death yak / emperor scorpion / anaconda w:5
 KMONS:   Q = bush
 KMONS:   R = plant
-ITEM:    dagger / short sword / rapier / flail / whip / shortbow
+ITEM:    dagger / rapier / flail / whip / shortbow
 ITEM:    robe / cloak / hat / buckler / steam dragon scales w:1
 ITEM:    stone q:30
 KFEAT:   _ = altar_trog
@@ -205,7 +205,7 @@ MONS:   tengu conjurer ; quarterstaff . robe . longbow . arrow / \
         robe . potion of berserk rage q:1 ident:type
 KMONS:  L = water nymph
 KMONS:  P = plant
-ITEM:   lajatang / nothing w:180
+ITEM:   quarterstaff / nothing w:180
 ITEM:   any potion / nothing w:30
 KFEAT:  L = deep_water
 NSUBST: w = 2:L / *:w

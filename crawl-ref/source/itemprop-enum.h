@@ -352,8 +352,8 @@ enum missile_type
 
     MI_STONE,
     MI_LARGE_ROCK,
-    MI_SLING_BULLET,
 #if TAG_MAJOR_VERSION == 34
+    MI_SLING_BULLET,
     MI_THROWING_NET,
 #endif
     MI_TOMAHAWK,
@@ -556,7 +556,9 @@ enum rod_type
 
 enum weapon_type
 {
+#if TAG_MAJOR_VERSION == 34
     WPN_CLUB,
+#endif
     WPN_WHIP,
 #if TAG_MAJOR_VERSION == 34
     WPN_HAMMER,
@@ -566,14 +568,16 @@ enum weapon_type
     WPN_MORNINGSTAR,
 #if TAG_MAJOR_VERSION == 34
     WPN_SPIKED_FLAIL,
-#endif
     WPN_DIRE_FLAIL,
     WPN_EVENINGSTAR,
+#endif
     WPN_GREAT_MACE,
 
     WPN_DAGGER,
     WPN_QUICK_BLADE,
+#if TAG_MAJOR_VERSION == 34
     WPN_SHORT_SWORD,
+#endif
     WPN_RAPIER,
 #if TAG_MAJOR_VERSION > 34
     WPN_CUTLASS,
@@ -582,7 +586,9 @@ enum weapon_type
     WPN_FALCHION,
     WPN_LONG_SWORD,
     WPN_SCIMITAR,
+#if TAG_MAJOR_VERSION == 34
     WPN_GREAT_SWORD,
+#endif
 
     WPN_HAND_AXE,
     WPN_WAR_AXE,
@@ -618,7 +624,9 @@ enum weapon_type
 
     WPN_DEMON_WHIP,
     WPN_GIANT_CLUB,
+#if TAG_MAJOR_VERSION == 34
     WPN_GIANT_SPIKED_CLUB,
+#endif
 
     WPN_DEMON_BLADE,
     WPN_DOUBLE_SWORD,
@@ -629,7 +637,9 @@ enum weapon_type
 
     WPN_STAFF,          // Just used for the weapon stats for magical staves.
     WPN_QUARTERSTAFF,
+#if TAG_MAJOR_VERSION == 34
     WPN_LAJATANG,
+#endif
 
 #if TAG_MAJOR_VERSION == 34
     WPN_HUNTING_SLING,

@@ -37,21 +37,16 @@ static int _upgrade_weapon_type(int old_type, bool has_shield, bool highlevel)
         case WPN_WHIP:
         case WPN_MACE:        return WPN_FLAIL;
         case WPN_FLAIL:       return WPN_MORNINGSTAR;
-        case WPN_MORNINGSTAR: return !has_shield ? WPN_DIRE_FLAIL  :
-                                     highlevel   ? WPN_EVENINGSTAR :
-                                                   WPN_MORNINGSTAR;
-        case WPN_DIRE_FLAIL:  return WPN_GREAT_MACE;
+        case WPN_MORNINGSTAR: return !has_shield ? WPN_GREAT_MACE  :
+                                      WPN_DEMON_WHIP;
 
-        case WPN_DAGGER:      return WPN_FALCHION;
-        case WPN_SHORT_SWORD: return WPN_LONG_SWORD;
+        case WPN_DAGGER:      return WPN_RAPIER;
         case WPN_RAPIER:      return WPN_SCIMITAR;
-        case WPN_FALCHION:    return WPN_LONG_SWORD;
         case WPN_LONG_SWORD:  return WPN_SCIMITAR;
-        case WPN_SCIMITAR:    return !has_shield ? WPN_GREAT_SWORD   :
-                                     highlevel   ? WPN_DOUBLE_SWORD :
+        case WPN_SCIMITAR:    return highlevel   ? WPN_DOUBLE_SWORD :
                                                    WPN_SCIMITAR;
-        case WPN_GREAT_SWORD: return highlevel ? WPN_TRIPLE_SWORD :
-                                                 WPN_GREAT_SWORD;
+        case WPN_DOUBLE_SWORD: return highlevel ? WPN_TRIPLE_SWORD :
+                                                 WPN_DOUBLE_SWORD;
 
         case WPN_HAND_AXE:    return WPN_WAR_AXE;
             // Low level orcs shouldn't get fairly rare items.
@@ -66,7 +61,6 @@ static int _upgrade_weapon_type(int old_type, bool has_shield, bool highlevel)
         case WPN_HALBERD:     return WPN_GLAIVE;
         case WPN_GLAIVE:      return highlevel ? WPN_BARDICHE : WPN_GLAIVE;
 
-        case WPN_HUNTING_SLING: return WPN_FUSTIBALUS;
         case WPN_HAND_CROSSBOW: return !has_shield ? WPN_ARBALEST :
                                                      WPN_HAND_CROSSBOW;
         case WPN_ARBALEST:      return highlevel ? WPN_TRIPLE_CROSSBOW :
@@ -117,7 +111,7 @@ static int _orc_weapon_gift_type(monster_type mon_type)
         case MONS_ORC_HIGH_PRIEST:
         case MONS_ORC_SORCERER:
             return random_choose_weighted(2, WPN_HAND_AXE, // orcs love axes
-                                          1, WPN_SHORT_SWORD,
+                                          1, WPN_RAPIER,
                                           1, WPN_MACE);
         case MONS_ORC_WARRIOR:
         case MONS_ORC_KNIGHT:
@@ -128,7 +122,7 @@ static int _orc_weapon_gift_type(monster_type mon_type)
                                           1, WPN_SPEAR);
             // give a lower tier of polearms; reaching is good on followers
         default:
-            return WPN_CLUB; // shouldn't ever come up?
+            return WPN_WHIP; // shouldn't ever come up?
     }
 }
 
@@ -168,9 +162,6 @@ void gift_ammo_to_orc(monster* orc, bool initial_gift)
         ammo.sub_type = MI_TOMAHAWK;
     else
         ammo.sub_type = fires_ammo_type(*launcher);
-
-    if (ammo.sub_type == MI_STONE)
-        ammo.sub_type = MI_SLING_BULLET; // ugly special case
 
     ammo.quantity = 30 + random2(10);
     if (initial_gift || !launcher)

@@ -30,11 +30,7 @@ static void _give_wanderer_weapon(skill_type wpn_skill, int plus)
     switch (wpn_skill)
     {
     case SK_SHORT_BLADES:
-        sub_type = WPN_SHORT_SWORD;
-        break;
-
-    case SK_LONG_BLADES:
-        sub_type = WPN_FALCHION;
+        sub_type = WPN_RAPIER;
         break;
 
     case SK_MACES_FLAILS:
@@ -47,10 +43,6 @@ static void _give_wanderer_weapon(skill_type wpn_skill, int plus)
 
     case SK_POLEARMS:
         sub_type = WPN_SPEAR;
-        break;
-
-    case SK_STAVES:
-        sub_type = WPN_QUARTERSTAFF;
         break;
 
     case SK_BOWS:
@@ -166,7 +158,7 @@ static skill_type _wanderer_role_weapon_select(stat_type role)
     int str_size = ARRAYSZ(str_weapons);
 
     const skill_type dex_weapons[] =
-        { SK_SHORT_BLADES, SK_LONG_BLADES, SK_STAVES, SK_UNARMED_COMBAT,
+        { SK_SHORT_BLADES, SK_UNARMED_COMBAT,
           SK_POLEARMS };
 
     int dex_size = ARRAYSZ(dex_weapons);
@@ -449,8 +441,7 @@ static void _wanderer_good_equipment(skill_type & skill)
 
     const skill_type combined_weapon_skills[] =
         { SK_AXES, SK_MACES_FLAILS, SK_BOWS, SK_CROSSBOWS,
-          SK_SHORT_BLADES, SK_LONG_BLADES, SK_STAVES, SK_UNARMED_COMBAT,
-          SK_POLEARMS };
+          SK_SHORT_BLADES, SK_UNARMED_COMBAT, SK_POLEARMS };
 
     int total_weapons = ARRAYSZ(combined_weapon_skills);
 
@@ -478,9 +469,7 @@ static void _wanderer_good_equipment(skill_type & skill)
     case SK_POLEARMS:
     case SK_THROWING:
     case SK_SHORT_BLADES:
-    case SK_LONG_BLADES:
     case SK_BOWS:
-    case SK_STAVES:
     case SK_CROSSBOWS:
         _give_wanderer_weapon(skill, 2);
         break;
@@ -542,8 +531,7 @@ static void _wanderer_decent_equipment(skill_type & skill,
 {
     const skill_type combined_weapon_skills[] =
         { SK_AXES, SK_MACES_FLAILS, SK_BOWS, SK_CROSSBOWS,
-          SK_SHORT_BLADES, SK_LONG_BLADES, SK_STAVES, SK_UNARMED_COMBAT,
-          SK_POLEARMS };
+          SK_SHORT_BLADES, SK_UNARMED_COMBAT, SK_POLEARMS };
 
     int total_weapons = ARRAYSZ(combined_weapon_skills);
 
@@ -579,9 +567,7 @@ static void _wanderer_decent_equipment(skill_type & skill,
     case SK_BOWS:
     case SK_CROSSBOWS:
     case SK_THROWING:
-    case SK_STAVES:
     case SK_SHORT_BLADES:
-    case SK_LONG_BLADES:
         _give_wanderer_weapon(skill, 0);
         break;
 
@@ -631,8 +617,7 @@ static void _wanderer_cover_equip_holes()
 
     if (you.equip[EQ_WEAPON] == -1)
     {
-        newgame_make_item(OBJ_WEAPONS,
-                          you.dex() > you.strength() ? WPN_DAGGER : WPN_CLUB);
+        newgame_make_item(OBJ_WEAPONS, WPN_DAGGER);
     }
 
     // Give a dagger if you have stealth skill. Maybe this is

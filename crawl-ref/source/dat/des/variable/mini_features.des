@@ -1352,7 +1352,7 @@ TAGS:    transparent extra decor
 DEPTH:   D, Depths, Elf
 WEIGHT:  1
 SHUFFLE: defgh
-ITEM:    q:1 $, large rock, tomahawk q:1, sling bullet q:1, stone q:1
+ITEM:    q:1 $, large rock, tomahawk q:1, bolt q:1, stone q:1
 NSUBST:  ' = 9:d / *:.
 MAP
 '.......'.......'
@@ -1379,7 +1379,7 @@ NAME:   roderic_three_in_a_row
 TAGS:   transparent extra decor
 DEPTH:  D, Depths, Elf
 WEIGHT: 1
-ITEM:   q:1 $, sling bullet q:1, stone, tomahawk q:1
+ITEM:   q:1 $, arrow q:1, stone, tomahawk q:1
 SUBST:  ' : TUdefg
 MAP
 @xxxx@xxxx@
@@ -2867,7 +2867,7 @@ ENDMAP
 NAME:   supply_closet_lemuel
 DEPTH:  D:1-9
 TAGS:   no_monster_gen extra
-ITEM:   sling bullet / arrow /\
+ITEM:   stone / arrow /\
         bolt / spear / any potion w:5
 MAP
 x+xx

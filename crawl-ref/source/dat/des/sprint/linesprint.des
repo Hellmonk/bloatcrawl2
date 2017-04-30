@@ -233,16 +233,13 @@ KITEM:    e = rapier plus:2 ego:electrocution ident:all not_cursed /\
            broad axe plus:1 ego:freezing ident:all not_cursed /\
            broad axe plus:1 ego:vorpal ident:all not_cursed /\
            broad axe plus:1 good_item ident:all not_cursed w:5, \
-           dire flail plus:2 ego:protection ident:all not_cursed /\
-           dire flail plus:2 ego:vorpal ident:all not_cursed /\
-           dire flail plus:2 good_item ident:all not_cursed w:5 /\
            morningstar plus:2 ego:protection ident:all not_cursed /\
            morningstar plus:2 ego:vorpal ident:all not_cursed /\
            morningstar plus:2 good_item ident:all not_cursed w:5, \
            halberd plus:2 ego:protection ident:all not_cursed /\
            halberd plus:2 ego:venom ident:all not_cursed /\
            halberd plus:2 good_item ident:all not_cursed w:5, \
-           lajatang plus:0 ident:all not_cursed /\
+           quarterstaff plus:0 ident:all not_cursed /\
            quarterstaff plus:4 ego:speed ident:all not_cursed w:15 /\
            quarterstaff plus:4 good_item ident:all not_cursed w:5, \
            scimitar plus:2 ego:flaming ident:all not_cursed /\
@@ -418,16 +415,13 @@ KITEM:    b = any weapon level:27 ident:all /\
           executioner's axe plus:0 not_cursed ident:all w:3 /\
           glaive plus:1 not_cursed ident:all /\
           bardiche plus:0 not_cursed ident:all w:3 /\
-          dire flail plus:3 not_cursed ident:all /\
           great mace plus:1 not_cursed ident:all /\
           demon whip plus:1 not_cursed ident:all w:5 /\
-          giant spiked club plus:1 not_cursed ident:all /\
           quick blade plus:3 not_cursed ident:all /\
-          great sword plus:1 not_cursed ident:all /\
           double sword plus:1 not_cursed ident:all /\
           demon blade plus:1 not_cursed ident:all w:3 /\
           triple sword plus:0 not_cursed ident:all w:3 /\
-          lajatang plus:1 not_cursed ident:all /\
+          quarterstaff plus:1 not_cursed ident:all /\
           longbow plus:1 not_cursed ident:all /\
           triple crossbow plus:0 not_cursed ident:all /\
           any weapon good_item ident:all w:30
@@ -596,16 +590,12 @@ KITEM:    b = battleaxe plus:4 ego:none not_cursed ident:all /\
     broad axe plus:3 good_item not_cursed ident:all /\
     glaive plus:4 ego:none not_cursed ident:all /\
     glaive plus:2 good_item not_cursed ident:all /\
-    scythe plus:9 ego:none not_cursed ident:all /\
-    scythe plus:6 good_item not_cursed ident:all /\
     bardiche plus:2 ego:none not_cursed ident:all /\
     bardiche plus:0 good_item not_cursed ident:all /\
     demon trident plus:4 ego:none not_cursed ident:all /\
     demon trident plus:1 good_item not_cursed ident:all /\
     great mace plus:4 ego:none not_cursed ident:all /\
     great mace plus:1 good_item not_cursed ident:all /\
-    giant spiked club plus:4 ego:none not_cursed ident:all /\
-    giant spiked club plus:1 good_item not_cursed ident:all /\
     demon whip plus:4 ego:none not_cursed ident:all /\
     demon whip plus:1 good_item not_cursed ident:all /\
     double sword plus:4 ego:none not_cursed ident:all /\
@@ -614,10 +604,8 @@ KITEM:    b = battleaxe plus:4 ego:none not_cursed ident:all /\
     triple sword plus:0 good_item not_cursed ident:all /\
     demon blade plus:4 ego:none not_cursed ident:all /\
     demon blade plus:1 good_item not_cursed ident:all /\
-    great sword plus:4 ego:none not_cursed ident:all /\
-    great sword plus:1 good_item not_cursed ident:all /\
-    lajatang plus:4 ego:none not_cursed ident:all /\
-    lajatang plus:1 good_item not_cursed ident:all /\
+    quarterstaff plus:4 ego:none not_cursed ident:all /\
+    quarterstaff plus:1 good_item not_cursed ident:all /\
     longbow plus:3 good_item not_cursed ident:all w:15 /\
     triple crossbow plus:0 good_item not_cursed ident:all w:15
 KITEM:    d = plate armour plus:5 not_cursed ident:all /\
@@ -811,16 +799,12 @@ KITEM:    b = battleaxe plus:5 good_item not_cursed ident:all /\
     broad axe plus:5 randart not_cursed ident:all w:5 /\
     glaive plus:5 good_item not_cursed ident:all /\
     glaive plus:5 randart not_cursed ident:all w:5 /\
-    scythe plus:11 good_item not_cursed ident:all /\
-    scythe plus:11 randart not_cursed ident:all w:5 /\
     bardiche plus:5 good_item not_cursed ident:all /\
     bardiche plus:5 randart not_cursed ident:all w:5 /\
     demon trident plus:5 good_item not_cursed ident:all /\
     demon trident plus:5 randart not_cursed ident:all w:5 /\
     great mace plus:5 good_item not_cursed ident:all /\
     great mace plus:5 randart not_cursed ident:all w:5 /\
-    giant spiked club plus:5 good_item not_cursed ident:all /\
-    giant spiked club plus:5 randart not_cursed ident:all w:5 /\
     demon whip plus:5 good_item not_cursed ident:all /\
     demon whip plus:5 randart not_cursed ident:all w:5 /\
     double sword plus:5 good_item not_cursed ident:all /\
@@ -829,10 +813,8 @@ KITEM:    b = battleaxe plus:5 good_item not_cursed ident:all /\
     triple sword plus:5 randart not_cursed ident:all w:5 /\
     demon blade plus:5 good_item not_cursed ident:all /\
     demon blade plus:5 randart not_cursed ident:all w:5 /\
-    great sword plus:5 good_item not_cursed ident:all /\
-    great sword plus:5 randart not_cursed ident:all w:5 /\
-    lajatang plus:5 good_item not_cursed ident:all /\
-    lajatang plus:5 randart not_cursed ident:all w:5 /\
+    quarterstaff plus:5 good_item not_cursed ident:all /\
+    quarterstaff plus:5 randart not_cursed ident:all w:5 /\
     longbow plus:5 ego:vorpal not_cursed ident:all w:15 /\
     triple crossbow plus:5 good_item not_cursed ident:all w:15
 KITEM:    d = plate armour plus:6 not_cursed ident:all /\

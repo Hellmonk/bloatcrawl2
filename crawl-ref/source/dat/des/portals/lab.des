@@ -226,7 +226,7 @@ SHUFFLE: bxvc, ABCDEFHIJKLM
 {{
  -- Dwarven fighter. Maybe the minotaur got the last MD. 3 items.
 dgn.delayed_decay_extra(_G, 'A', 'dwarf skeleton', 'battleaxe / '
-   .. "eveningstar / executioner's axe w:2 / "
+   .. "morningstar / executioner's axe w:2 / "
    .. 'great mace w:2, helmet good_item / '
    .. 'pair of gloves good_item / pair of boots good_item, '
    .. 'plate armour / crystal plate armour w:2' )
@@ -267,7 +267,7 @@ dgn.delayed_decay_extra(_G, 'I', 'human skeleton', 'any armour, any weapon, '
 
  -- Orc fighter. 3 items.
 dgn.delayed_decay_extra(_G, 'J', 'orc skeleton', 'shield / large shield w:2, '
-   .. 'long sword / eveningstar / broad axe / demon blade, '
+   .. 'long sword / demon whip / broad axe / demon blade, '
    .. 'plate armour / crystal plate armour w:2' )
 
  -- Dwarven heavy armour earth elementalist. 3-4 items.
@@ -276,14 +276,14 @@ dgn.delayed_decay_extra(_G, 'K', 'dwarf skeleton', 'plate armour, '
    .. 'ring of wizardry / any jewellery / nothing w:20' )
 
  -- Kobold warper. 4-5 items.
-dgn.delayed_decay_extra(_G, 'L', 'kobold skeleton', 'tomahawk ego:dispersal / sling bullet, '
+dgn.delayed_decay_extra(_G, 'L', 'kobold skeleton', 'tomahawk ego:dispersal / stone, '
    .. 'randbook disc:translocation / any book, scroll of blinking / '
    .. 'scroll of teleportation / nothing w:45, '
-   .. 'robe / leather armour, short sword good_item' )
+   .. 'robe / leather armour, rapier good_item' )
 
  -- Ogre, maybe an ogre mage of some kind. 4-5 items.
 dgn.delayed_decay_extra(_G, 'M', 'ogre skeleton', 'giant club good_item / '
-   .. 'giant spiked club good_item, robe, large rock, '
+   .. 'giant club good_item, robe, large rock, '
    .. 'any book / nothing' )
 }}
 MAP

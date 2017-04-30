@@ -318,7 +318,7 @@ static coord_def _fuzz_hop_destination(coord_def target)
  */
 spret_type frog_hop(bool fail)
 {
-    const int hop_range = 3 + player_mutation_level(MUT_HOP); // 4-5
+    const int hop_range = 3 + you.get_mutation_level(MUT_HOP); // 4-5
     coord_def target;
     targetter_smite tgt(&you, hop_range, 0, HOP_FUZZ_RADIUS);
     while (true)
@@ -480,13 +480,13 @@ void you_teleport()
 
         if (player_in_branch(BRANCH_ABYSS))
         {
-            mpr("You feel the power of the Abyss delaying your translocation!");
+            mpr("You feel the power of the Abyss greatly delaying your translocation!");
             teleport_delay += 5 + random2(10);
         }
         else if (player_has_orb())
         {
             mprf(MSGCH_ORB, "You feel the Orb delaying your translocation!");
-            teleport_delay += 5 + random2(5);
+            teleport_delay += 2 + random2(3);
         }
 
         you.set_duration(DUR_TELEPORT, teleport_delay);

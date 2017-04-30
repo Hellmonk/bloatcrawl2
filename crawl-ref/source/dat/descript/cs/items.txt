@@ -119,11 +119,6 @@ helmet
 
 Část kovové pokrývky hlavy.
 %%%%
-lajatang
-
-Velmi vzácná a velmi efektivní dovážená zbraň. Představuje jí tyč s
-půlměsícovým ostřím na obou koncích.
-%%%%
 lemon
 
 Žluté ovoce.

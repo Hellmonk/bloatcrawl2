@@ -157,10 +157,6 @@ demon whip
 
 Uma arma terrível, tramada nas profundezas do Inferno.
 %%%%
-eveningstar
-
-O oposto de uma maça-estrela.
-%%%%
 giant spiked club
 
 Uma tora de madeira gigante com espinhos afiados em um extremo.
@@ -272,10 +268,6 @@ Uma deliciosa e suculenta fruta.
 scale mail
 
 Uma armadura de couro coberta de pequenas placas de metal.
-%%%%
-scythe
-
-Uma ferramenta do campo, normalmente inútil em combate.
 %%%%
 slice of pizza
 

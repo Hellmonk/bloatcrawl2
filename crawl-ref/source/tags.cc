@@ -2776,7 +2776,15 @@ static void tag_read_you(reader &th)
         if(you.mutation[MUT_SHAGGY_FUR] > 1)
         {
             you.mutation[MUT_SHAGGY_FUR] = 1;	
-        }		
+        }
+        if(you.mutation[MUT_STINGER] > 1)
+        {
+            you.mutation[MUT_STINGER] = 1;	
+        }
+        if(you.mutation[MUT_PASSIVE_MAPPING] > 1)
+        {
+            you.mutation[MUT_PASSIVE_MAPPING] = 1;	
+        }			
     }
 #endif
     }
@@ -4549,7 +4557,7 @@ void unmarshallItem(reader &th, item_def &item)
         const int initial_type = item.sub_type;
         switch (item.sub_type)
         {
-        case WPN_BLESSED_FALCHION:     item.sub_type = WPN_FALCHION; break;
+        case WPN_BLESSED_FALCHION:     item.sub_type = WPN_RAPIER; break;
         case WPN_BLESSED_LONG_SWORD:   item.sub_type = WPN_LONG_SWORD; break;
         case WPN_BLESSED_SCIMITAR:     item.sub_type = WPN_SCIMITAR; break;
         case WPN_BLESSED_DOUBLE_SWORD: item.sub_type = WPN_DOUBLE_SWORD; break;

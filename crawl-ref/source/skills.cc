@@ -65,10 +65,10 @@ static const char *skill_titles[NUM_SKILLS][6] =
 {
   //  Skill name        levels 1-7       levels 8-14        levels 15-20       levels 21-26      level 27
     {"Fighting",       "Skirmisher",    "Fighter",         "Warrior",         "Slayer",         "Conqueror"},
-    {"Short Blades",   "Cutter",        "Slicer",          "Swashbuckler",    "Cutthroat",      "Politician"},
+    {"Blades",         "Slasher",       "Carver",          "Fencer",          "@Adj@ Blade",    "Swordmaster"},
     {"Long Blades",    "Slasher",       "Carver",          "Fencer",          "@Adj@ Blade",    "Swordmaster"},
     {"Axes",           "Chopper",       "Cleaver",         "Severer",         "Executioner",    "Axe Maniac"},
-    {"Maces & Flails", "Cudgeler",      "Basher",          "Bludgeoner",      "Shatterer",      "Skullcrusher"},
+    {"Maces & Staves", "Cudgeler",      "Basher",          "Bludgeoner",      "Shatterer",      "Skullcrusher"},
     {"Polearms",       "Poker",         "Spear-Bearer",    "Impaler",         "Phalangite",     "@Adj@ Porcupine"},
     {"Staves",         "Twirler",       "Cruncher",        "Stickfighter",    "Pulveriser",     "Chief of Staff"},
     {"Slings",         "Vandal",        "Slinger",         "Whirler",         "Slingshot",      "@Adj@ Catapult"},
@@ -1309,28 +1309,28 @@ bool is_useless_skill(skill_type skill)
         return true;
 #endif
 
-    if ((skill == SK_AIR_MAGIC && player_mutation_level(MUT_NO_AIR_MAGIC))
-        || (skill == SK_CHARMS && player_mutation_level(MUT_NO_CHARM_MAGIC))
+    if ((skill == SK_AIR_MAGIC && you.get_mutation_level(MUT_NO_AIR_MAGIC))
+        || (skill == SK_CHARMS && you.get_mutation_level(MUT_NO_CHARM_MAGIC))
         || (skill == SK_CONJURATIONS
-            && player_mutation_level(MUT_NO_CONJURATION_MAGIC))
+            && you.get_mutation_level(MUT_NO_CONJURATION_MAGIC))
         || (skill == SK_EARTH_MAGIC
-            && player_mutation_level(MUT_NO_EARTH_MAGIC))
-        || (skill == SK_FIRE_MAGIC && player_mutation_level(MUT_NO_FIRE_MAGIC))
-        || (skill == SK_HEXES && player_mutation_level(MUT_NO_HEXES_MAGIC))
-        || (skill == SK_ICE_MAGIC && player_mutation_level(MUT_NO_ICE_MAGIC))
+            && you.get_mutation_level(MUT_NO_EARTH_MAGIC))
+        || (skill == SK_FIRE_MAGIC && you.get_mutation_level(MUT_NO_FIRE_MAGIC))
+        || (skill == SK_HEXES && you.get_mutation_level(MUT_NO_HEXES_MAGIC))
+        || (skill == SK_ICE_MAGIC && you.get_mutation_level(MUT_NO_ICE_MAGIC))
         || (skill == SK_NECROMANCY
-            && player_mutation_level(MUT_NO_NECROMANCY_MAGIC))
+            && you.get_mutation_level(MUT_NO_NECROMANCY_MAGIC))
         || (skill == SK_SUMMONINGS
-            && player_mutation_level(MUT_NO_SUMMONING_MAGIC))
+            && you.get_mutation_level(MUT_NO_SUMMONING_MAGIC))
         || (skill == SK_TRANSLOCATIONS
-            && player_mutation_level(MUT_NO_TRANSLOCATION_MAGIC))
+            && you.get_mutation_level(MUT_NO_TRANSLOCATION_MAGIC))
         || (skill == SK_TRANSMUTATIONS
-            && player_mutation_level(MUT_NO_TRANSMUTATION_MAGIC))
-        || (skill == SK_DODGING && player_mutation_level(MUT_NO_DODGING))
-        || (skill == SK_ARMOUR && player_mutation_level(MUT_NO_ARMOUR))
-        || (skill == SK_SHIELDS && player_mutation_level(MUT_MISSING_HAND))
-        || (skill == SK_EVOCATIONS && player_mutation_level(MUT_NO_ARTIFICE))
-        || (skill == SK_STEALTH && player_mutation_level(MUT_NO_STEALTH))
+            && you.get_mutation_level(MUT_NO_TRANSMUTATION_MAGIC))
+        || (skill == SK_DODGING && you.get_mutation_level(MUT_NO_DODGING))
+        || (skill == SK_ARMOUR && you.get_mutation_level(MUT_NO_ARMOUR))
+        || (skill == SK_SHIELDS && you.get_mutation_level(MUT_MISSING_HAND))
+        || (skill == SK_EVOCATIONS && you.get_mutation_level(MUT_NO_ARTIFICE))
+        || (skill == SK_STEALTH && you.get_mutation_level(MUT_NO_STEALTH))
     )
     {
         return true;
@@ -1411,7 +1411,7 @@ int species_apt(skill_type skill, species_type species)
     }
 
     return max(UNUSABLE_SKILL, _spec_skills[species][skill]
-                               - player_mutation_level(MUT_UNSKILLED));
+                               - you.get_mutation_level(MUT_UNSKILLED));
 }
 
 float species_apt_factor(skill_type sk, species_type sp)
@@ -1424,19 +1424,14 @@ vector<skill_type> get_crosstrain_skills(skill_type sk)
     switch (sk)
     {
     case SK_SHORT_BLADES:
-        return { SK_LONG_BLADES };
-    case SK_LONG_BLADES:
-        return { SK_SHORT_BLADES };
+        return {};
     case SK_AXES:
-    case SK_STAVES:
         return { SK_POLEARMS, SK_MACES_FLAILS };
     case SK_MACES_FLAILS:
     case SK_POLEARMS:
-        return { SK_AXES, SK_STAVES };
-    case SK_SLINGS:
-        return { SK_THROWING };
+        return { SK_AXES };
     case SK_THROWING:
-        return { SK_SLINGS };
+        return {};
     default:
         return {};
     }

@@ -291,11 +291,6 @@ Eine heilige Klinge von den Schmieden des Himmels, der durch einen guten Geist
 bewohnt ist. Es ist eine begünstigte Waffe des Polierens von Jemandes Dienern,
 und kann durch die Kräfte des Übels nicht ausgeübt werden.
 %%%%
-eveningstar
-
-Die Stacheln dieser Art von Morgenstern sind besonders lang und ermöglichen
-ihm, gemeine Wunden zu verursachen.
-%%%%
 fan of gales
 
 Ein verzauberter Fächer von wohlwollenden Luftgeistern bewohnt. Schwingen
@@ -372,11 +367,6 @@ Verwundungen .
         return ""
     end
 }}
-%%%%
-lajatang
-
-Eine sehr seltene und extrem effektive importierte Waffe aus einem Stab mit
-halbmondförmigen Klingen an beiden Enden.
 %%%%
 lamp of fire
 
@@ -644,11 +634,6 @@ scroll of teleportation
 
 Liest man die Worte auf dieser Schriftrolle wird sie dich nach kurzer Zeit an
 eine zufällige Position teleportieren.
-%%%%
-scythe
-
-Ein Farm-Werkzeug, das gewöhnlich nur durch ungeschulte Mengen im Kampf
-verwendet ist.
 %%%%
 shield
 

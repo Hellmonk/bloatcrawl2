@@ -1189,8 +1189,7 @@ ENDMAP
 NAME: grunt_lady_of_the_lake
 SUBST: w = w:50 t:10
 SUBST: W = w
-KITEM: O = great sword good_item w:20 / \
-           double sword good_item w:2 / \
+KITEM: O = double sword good_item w:2 / \
            triple sword good_item w:1
 KFEAT: K = deep_water
 KPROP: wK = no_tele_into

@@ -80,10 +80,6 @@ dagger of Chilly Death
 
 En dolk, som er lavet af et kæmpe stykke safir.
 %%%%
-scythe "Finisher"
-
-En lang og skarp le, som er særligt modificeret til brug i kamp.
-%%%%
 sling "Punk"
 
 En slynge, som er lavet af noget underligt, blåt læder.
@@ -304,11 +300,6 @@ necklace of Bloodlust
 Du undrer dig over hvilket brutalt bæst, der ville gå med en blodindsmurt
 halskæde af menneske- og dyretænder og noget, der ser ud til at være en flækket
 ryghvirvel.
-%%%%
-ring of Shaolin
-
-En jadering uden udsmykning, som giver bæreren en forbløffende viden om sin
-egen krop, hvilket giver mulighed for imponerende behændighedspræstationer.
 %%%%
 ring of Robustness
 

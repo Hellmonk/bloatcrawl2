@@ -64,10 +64,6 @@ dagger of Chilly Death
 
 Dýka z jednoho velkého kusu safíru.
 %%%%
-scythe "Finisher"
-
-Dlouhá a ostrá kosa, speciálně upravená pro bojové účely.
-%%%%
 sling "Punk"
 
 Závěs z podivné modré kůže.
@@ -246,12 +242,6 @@ necklace of Bloodlust
 Říkáš si, že jen nevkusný hrubián by nosil tento krví zbrocený náhrdelník,
 vyrobený z lidských a zvířecích zubů, a něčeho, co vypadá jako vytržený kus
 páteře.
-%%%%
-ring of Shaolin
-
-Nezdobený nefritový kroužek, který nositeli dává do vínku až neuvěřitelnou
-kontrolu nad vlastním tělem, a umožňuje mu tak se v boji pohybovat nanejvýš
-obratně.
 %%%%
 ring of Robustness
 

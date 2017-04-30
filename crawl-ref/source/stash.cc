@@ -1455,7 +1455,7 @@ void StashTracker::search_stashes()
     vector<stash_search_result> results;
     if (!curr_lev)
         results = _inventory_search(*search);
-    get_matching_stashes(*search, results, curr_lev);
+    get_matching_stashes(*search, results, true);
 
     if (results.empty())
     {

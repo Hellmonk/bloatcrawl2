@@ -63,10 +63,6 @@ dagger of Chilly Death
 
 Un pugnale fatto di un enorme pezzo di zaffiro.
 %%%%
-scythe "Finisher"
-
-Una lunga e affilata falce, modificata apposta per il combattimento.
-%%%%
 sling "Punk"
 
 Una fionda fatta di uno strano cuoio blu.
@@ -255,12 +251,6 @@ necklace of Bloodlust
 Ti domandi quale bruto possa indossare una collana macchiata di sangue fatta di
 denti animali ed umani insieme a qualcosa che sembra essere un pezzo di colonna
 vertebrale fatta a pezzi.
-%%%%
-ring of Shaolin
-
-Un disadorno anello di giada che da al suo indossatore un'inspiegabile
-conoscenza del proprio corpo, premettendo di fare grande prodezze con la
-propria destrezza.
 %%%%
 ring of Robustness
 

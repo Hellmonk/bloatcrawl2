@@ -850,13 +850,6 @@ static void _append_weapon_stats(string &description, const item_def &item)
      (float) weapon_min_delay(item) / 10,
      weapon_min_delay_skill(item),
      your_skill.c_str());
-
-    if (skill == SK_SLINGS)
-    {
-        description += make_stringf("\nFiring bullets:    Base damage: %d",
-                                    base_dam +
-                                    ammo_type_damage(MI_SLING_BULLET));
-    }
 }
 
 static string _handedness_string(const item_def &item)
@@ -906,10 +899,6 @@ static string _describe_weapon(const item_def &item, bool verbose)
         case SK_AXES:
             description += "\n\nIt hits all enemies adjacent to the wielder, "
                            "dealing less damage to those not targeted.";
-            break;
-        case SK_LONG_BLADES:
-            description += "\n\nIt can be used to riposte, swiftly "
-                           "retaliating against a missed attack.";
             break;
         case SK_SHORT_BLADES:
             {

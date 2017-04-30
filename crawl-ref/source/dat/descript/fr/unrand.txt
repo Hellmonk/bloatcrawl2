@@ -115,10 +115,6 @@ Un poignard rouillé d'une rare laideur. Il y a de nombreuses années, il était
 la propriété d'un puissant mage nommé Boris. Il l'a perdu dans le donjon alors
 qu'il cherchait l'Orbe.
 %%%%
-scythe "Finisher"
-
-Une longue et tranchante faux, spécialement modifiée pour le combat.
-%%%%
 sling "Punk"
 
 Une fronde faite à partir d'un cuir bleu étrange.
@@ -394,11 +390,6 @@ necklace of Bloodlust
 Vous vous demandez quelle genre de brute épaisse pourrait bien porter un
 collier sanguinolent de dents humaines et animales et, ce qui ressemble à un
 morceau de colonne vertébrale.
-%%%%
-ring of Shaolin
-
-Un anneau de jade sans fioriture qui accorde à son porteur une étonnante
-conscience de son corps, lui permettant des exploits d'agilité incroyables.
 %%%%
 ring of Robustness
 

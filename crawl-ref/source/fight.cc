@@ -783,10 +783,6 @@ int weapon_min_delay(const item_def &weapon, bool check_speed)
     const int base = property(weapon, PWPN_SPEED);
     int min_delay = base/2;
 
-    // Short blades can get up to at least unarmed speed.
-    if (item_attack_skill(weapon) == SK_SHORT_BLADES && min_delay > 5)
-        min_delay = 5;
-
     // All weapons have min delay 7 or better
     if (min_delay > 7)
         min_delay = 7;

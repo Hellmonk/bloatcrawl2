@@ -133,14 +133,11 @@ static weapon_type _determine_weapon_subtype(int item_level)
     if (item_level > 6 && one_chance_in(30)
         && x_chance_in_y(10 + item_level, 100))
     {
-        return random_choose(WPN_LAJATANG,
-                             WPN_FUSTIBALUS,
-                             WPN_TRIPLE_CROSSBOW,
+        return random_choose(WPN_TRIPLE_CROSSBOW,
                              WPN_DEMON_WHIP,
                              WPN_DEMON_BLADE,
                              WPN_DEMON_TRIDENT,
                              WPN_DOUBLE_SWORD,
-                             WPN_EVENINGSTAR,
                              WPN_EXECUTIONERS_AXE,
                              WPN_QUICK_BLADE,
                              WPN_TRIPLE_SWORD);
@@ -160,9 +157,7 @@ static weapon_type _determine_weapon_subtype(int item_level)
     }
     else if (x_chance_in_y(item_level, item_level+7))
     {
-        return random_choose(WPN_QUARTERSTAFF,
-                             WPN_FALCHION,
-                             WPN_LONG_SWORD,
+        return random_choose(WPN_LONG_SWORD,
                              WPN_WAR_AXE,
                              WPN_TRIDENT,
                              WPN_FLAIL,
@@ -170,15 +165,12 @@ static weapon_type _determine_weapon_subtype(int item_level)
     }
     else
     {
-        return random_choose(WPN_HUNTING_SLING,
-                             WPN_SPEAR,
+        return random_choose(WPN_SPEAR,
                              WPN_HAND_AXE,
                              WPN_MACE,
                              // Not worth _weighted for one doubled type.
                              WPN_DAGGER, WPN_DAGGER,
-                             WPN_CLUB,
-                             WPN_WHIP,
-                             WPN_SHORT_SWORD);
+                             WPN_WHIP);
     }
 }
 
@@ -214,10 +206,6 @@ static bool _try_make_weapon_artefact(item_def& item, int force_type,
             if (_try_make_item_unrand(item, force_type, agent))
                 return true;
         }
-
-        // Clubs are never randarts.
-        if (item.sub_type == WPN_CLUB)
-            return false;
 
         // Mean enchantment +6.
         item.plus = 12 - biased_random2(7,2) - biased_random2(7,2) - biased_random2(7,2);
@@ -414,10 +402,6 @@ static void _generate_weapon_item(item_def& item, bool allow_uniques,
 
     if (no_brand)
         set_item_ego_type(item, OBJ_WEAPONS, SPWPN_NORMAL);
-
-    // If it's forced to be a good item, reroll clubs.
-    while (force_good && force_type == OBJ_RANDOM && item.sub_type == WPN_CLUB)
-        _roll_weapon_type(item, item_level);
 
     item.plus = 0;
 
@@ -652,7 +636,6 @@ static void _generate_missile_item(item_def& item, int force_type,
             random_choose_weighted(56, MI_STONE,
                                    20, MI_ARROW,
                                    12, MI_BOLT,
-                                   12, MI_SLING_BULLET,
                                    4,  MI_DART_POISONED,
                                    3,  MI_TOMAHAWK,
                                    2,  MI_JAVELIN,
@@ -1403,19 +1386,20 @@ static void _generate_book_item(item_def& item, bool allow_uniques,
         {
 		    while(item.skill == SK_POISON_MAGIC)
 			{
-            item.skill = static_cast<skill_type>(SK_SPELLCASTING +
+                item.skill = static_cast<skill_type>(SK_SPELLCASTING +
                                                  random2(NUM_SKILLS -
                                                          SK_SPELLCASTING));
 			}
         }
         else
 #if TAG_MAJOR_VERSION == 34
-        {
-            item.skill = static_cast<skill_type>(random2(SK_UNARMED_COMBAT));
-            if (item.skill == SK_STABBING)
-                item.skill = SK_UNARMED_COMBAT;
-            if (item.skill == SK_TRAPS)
-                item.skill = SK_STEALTH;
+        {     
+			while(item.skill == SK_STABBING || item.skill == SK_TRAPS
+                || item.skill == SK_STAVES || item.skill == SK_LONG_BLADES
+                || item.skill == SK_SLINGS)
+            {
+			    item.skill = static_cast<skill_type>(random2(SK_UNARMED_COMBAT));
+            }
         }
 #else
             item.plus = random2(SK_UNARMED_COMBAT + 1);
@@ -1729,13 +1713,12 @@ int items(bool allow_uniques,
                                     50, OBJ_BOOKS,
                                     50, OBJ_JEWELLERY,
                                     50, OBJ_WANDS,
-                                   212, OBJ_ARMOUR,
+                                   262, OBJ_ARMOUR,
                                    212, OBJ_WEAPONS,
                                    176, OBJ_POTIONS,
-                                   420, OBJ_MISSILES,
-				   202, OBJ_SCROLLS, // reallocate weight from
-				   578, OBJ_GOLD); // scrolls to gold for
-	                                           // id/curse removal --mps
+                                   400, OBJ_MISSILES,
+			                       202, OBJ_SCROLLS,
+                                   548, OBJ_GOLD); 
 
         // misc items placement wholly dependent upon current depth {dlb}:
         if (item_level > 7 && x_chance_in_y(21 + item_level, 5000))

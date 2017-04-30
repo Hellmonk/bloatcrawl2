@@ -3,10 +3,6 @@ Sword of Power
 
 Tās atalgo spēcīgos ar spēku un vāros ar vārumu.
 %%%%
-scythe "Finisher"
-
-Gara un asa izkapts, kas īpaši pielāgota kaujai.
-%%%%
 mithril axe "Arga"
 
 Skaists mitrila cirvis, ko visdrīzāk pazaudējis kāds rūķu varonis.

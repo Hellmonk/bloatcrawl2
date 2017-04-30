@@ -122,7 +122,7 @@ ITEM:    wand of flame charges:9 ident:all
 ITEM:    wand of digging charges:15 ident:all
 ITEM:    amulet of rage mundane cursed
 ITEM:    scroll of noise q:1 ident:all
-MONS:    goblin ; hunting sling ego:none not_cursed . stone q:30 . dagger \
+MONS:    goblin ; dagger \
          ego:none not_cursed
 MONS:    gnoll ; spear mundane
 MARKER:  A = lua:tutorial3.msg("trap")

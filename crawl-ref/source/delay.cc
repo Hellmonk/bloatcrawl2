@@ -909,13 +909,6 @@ void PasswallDelay::finish()
     switch (grd(dest))
     {
     default:
-        if (!you.is_habitable(dest))
-        {
-            mpr("...yet there is something new on the other side. "
-                "You quickly turn back.");
-            redraw_screen();
-            return;
-        }
         break;
 
     case DNGN_CLOSED_DOOR:      // open the door
@@ -1339,8 +1332,8 @@ static inline bool _monster_warning(activity_interrupt_type ai,
                 }
             }
         }
-        if (player_mutation_level(MUT_SCREAM)
-            && x_chance_in_y(3 + player_mutation_level(MUT_SCREAM) * 3, 100))
+        if (you.has_mutation(MUT_SCREAM)
+            && x_chance_in_y(3 + you.get_mutation_level(MUT_SCREAM) * 3, 100))
         {
             yell(mon);
         }

@@ -806,7 +806,7 @@ SUBST: P = PPPPPPPPP.
 KMONS: a = patrolling Sigmund hd:15 hp:100 \
  spells:bolt_of_fire.16.wizard;confuse.16.wizard;invisibility.16.wizard;\
         iskenderun's_mystic_blast.16.wizard \
- ; scythe ego:distortion
+ ; trident ego:distortion
 KMONS: b = patrolling Edmund hp:150 ; great mace ego:freezing \
  . curare dart q:7
 : elseif d2rnd == 1 then
@@ -814,13 +814,13 @@ KMONS: a = patrolling Dowan hd:15 hp:100 \
  spells:bolt_of_cold.11.wizard;corona.11.wizard;blink_range.11.wizard;\
         bolt_of_fire.11.wizard;;haste_other.11.wizard;minor_healing.11.wizard \
  ; morningstar ego:distortion
-KMONS: b = patrolling Duvessa hp:150 ; great sword ego:freezing \
+KMONS: b = patrolling Duvessa hp:150 ; double sword ego:freezing \
  . curare dart q:7
 : elseif d2rnd == 2 then
 KMONS: a = patrolling Harold hd:15 hp:100 \
  spells:poison_arrow.16.wizard;teleport_other.16.wizard;\
         minor_healing.16.wizard;slow.16.wizard \
- ; dire flail ego:distortion
+ ; quarterstaff ego:distortion
 KMONS: b = patrolling Joseph hd:5 hp:150 ; quarterstaff ego:freezing \
  . curare dart q:7
 : else
@@ -905,9 +905,9 @@ ENDMAP
 NAME: sprint_mu_vaults_butterflies
 TAGS: sprint_mu_vaults no_rotate no_hmirror no_vmirror
 MONS: centaur warrior, lich, shadow dragon, ogre mage
-MONS: vault guard ; short sword ego:electrocution | long sword ego:flaming |\
-      dire flail ego:vampirism | war axe ego:freezing | spear ego:vorpal |\
-      great mace ego:pain | great sword ego:venom .\
+MONS: vault guard ; rapier ego:electrocution | long sword ego:flaming |\
+      quarterstaff ego:vampirism | war axe ego:freezing | spear ego:vorpal |\
+      great mace ego:pain | double sword ego:venom .\
       chain mail ego:poison_resistance | chain mail ego:cold_resistance |\
       scale mail ego:poison_resistance | scale mail ego:cold_resistance |\
       plate armour ego:fire_resistance . large shield ego:reflection |\

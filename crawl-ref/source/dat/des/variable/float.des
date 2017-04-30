@@ -115,11 +115,11 @@ DEPTH:  D, !D:$, Depths, !Depths:$
 ORIENT: float
 WEIGHT: 5
 : if you.absdepth() > 8 then
-KITEM:  " = club, quarterstaff, quarterstaff good_item
+KITEM:  " = quarterstaff, quarterstaff good_item
 : else
-KITEM:  " = club, quarterstaff, quarterstaff
+KITEM:  " = quarterstaff, quarterstaff
 : end
-KITEM:  ' = club, any magical staff
+KITEM:  ' = any magical staff
 MAP
 xxxxx
 x"']x
@@ -1077,11 +1077,11 @@ ENDMAP
 NAME:    old_forge
 DEPTH:   D:4-12
 ORIENT:  float
-KITEM:   ? = singing_sword, damaged short sword, \
+KITEM:   ? = singing_sword, damaged rapier, \
              damaged long sword, damaged hand axe
-KITEM:   ! = damaged executioner's axe, damaged short sword, \
+KITEM:   ! = damaged executioner's axe, damaged rapier, \
              damaged long sword, damaged morningstar
-KITEM:   + = damaged eveningstar, damaged short sword, \
+KITEM:   + = damaged morningstar, damaged rapier, \
              damaged long sword, damaged war axe
 KITEM:   & = damaged mace / nothing
 MONS:    fungus, plant
@@ -2801,38 +2801,6 @@ xxl.lll...xx...lllxx..llxxxx..xxlllxx
                         xxxxx
 ENDMAP
 
-NAME:   kennysheep_slugbush
-DEPTH:  D:3-7
-ORIENT: float
-MONS:   dart slug
-NSUBST: w = 15:xxc
-NSUBST: . = 1:[GG.. / 1:(GG.. / 1:G. / 5:%
-SUBST:  G:GtT
-SUBST:  1 = 11111..
-KPROP:  w = no_tele_into
-MAP
-         @
-    @  WW1WW  @
-     1wWwwwww1
-    wwwWwwwwwww
- @ wwwwWWWwwwwww @
-  1wwwwwwWWwwwww1
-  wwwwwwwwWwwwwww
- wwww.wwwWWwwwwwww
- www.www...w...www
-@1ww.....{.....ww1@
- www..ww...ww.wwww
- wwwwwwwWWwwwwwwww
-  wwwwwwWwwwwwwww
-  1wwwwwWwwwwwww1
- @ wwwwwWWwwwwww @
-    wwwwwWWwwww
-     1wwwwwWw1
-    @  WW1WW  @
-         @
-ENDMAP
-
-
 NAME:    hangedman_elemental_death_ray
 TAGS:    transparent patrolling
 DEPTH:   Depths, !Depths:$
@@ -2846,10 +2814,10 @@ MONS:    necromancer ; wand of lightning . \
          robe ego:fire_resistance w:15 | robe ego:cold_resistance w:14 | \
          robe ego:resistance w:1
 MONS:    fire giant ; battleaxe ego:freezing
-MONS:    frost giant ; great sword ego:flaming
+MONS:    frost giant ; great mace ego:flaming
 MONS:    ettin simulacrum, efreet, deep elf mage
 KITEM:   d = lamp of fire, *
-KITEM:   e = lajatang ego:freezing ident:type, *
+KITEM:   e = demon whip ego:freezing ident:type, *
 SHUFFLE: 12, 34, 5df / 6eF, {[(<
 FTILE:   fF'@{[(< = floor_pebble_darkgray
 COLOUR:  fF'@ = white
@@ -2896,8 +2864,8 @@ KMONS:  6 = storm dragon / iron dragon / titan / war gargoyle
 KMONS:  7 = spriggan defender ; staff of fire | staff of cold | \
                                 staff of air | staff of earth . \
                                 robe ego:resistance good_item ident:type
-KMONS:  8 = tengu reaver ; battleaxe ego:flaming | great sword ego:freezing | \
-                           halberd ego:electrocution | lajatang ego:vorpal . \
+KMONS:  8 = tengu reaver ; battleaxe ego:flaming | double sword ego:freezing | \
+                           halberd ego:electrocution | morningstar ego:vorpal . \
                            fire dragon scales | ice dragon scales
 KMONS:  9 = zotling
 KMONS:  0 = THE GIAGGOSTUONO / orb child / electric golem
@@ -2976,7 +2944,7 @@ DEPTH:   Depths:2-, !Depths:$
 ORIENT:  float
 # The dances of angels and devils, of blessed birds and antagonist serpents...
 # and perhaps the stinger plunging into the poor toro de lidia?
-MONS:    dancing weapon ; scythe ego:antimagic
+MONS:    dancing weapon ; glaive ego:antimagic
 MONS:    cherub, rakshasa, angel / daeva, balrug / blizzard demon
 MONS:    acid robin, shadow dragon
 KMONS:   8 = tengu reaver
@@ -3062,7 +3030,7 @@ ITEM:   book of geomancy / book of the earth / manual of earth magic / \
         staff of earth ident:type / ring of protection ident:type / \
         wand of disintegration ident:type / crystal plate armour w:5
 : if you.unrands("devastator") then
-KITEM:  2 = eveningstar randart
+KITEM:  2 = morningstar randart
 : else
 KITEM:  2 = devastator
 : end
@@ -3162,7 +3130,7 @@ MONS:    necromancer / vampire mage
 MONS:    lich / ancient lich w:5
 : if you.unrands("majin-bo") then
 ITEM:    quarterstaff randart ego:vampirism ident:type no_pickup \
-         / good_item lajatang no_pickup
+         / good_item morningstar no_pickup
 : else
 ITEM:    majin-bo no_pickup
 : end
@@ -3511,8 +3479,8 @@ DEPTH: D:3-6
 TAGS: no_item_gen no_monster_gen
 ORIENT: float
 KPROP: w;W = no_tele_into
-MONS: kobold ; club / kobold ; dagger, hobgoblin ; club
-MONS: big kobold ; club | w:3 dagger ego:venom | w:3 dagger ego: draining \
+MONS: kobold ; whip / kobold ; dagger, hobgoblin ; whip
+MONS: big kobold ; whip | w:3 dagger ego:venom | w:3 dagger ego: draining \
                    | w:3 dagger ego:speed
 NSUBST: - = 2:1 / 2=12., " = 3:1 / 3=12., ' = 1:3 / 1=3. / 1=1., ` = 1=*% / *:%
 SUBST: ; = WWWw

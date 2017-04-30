@@ -1287,11 +1287,6 @@ static bool _is_signature_weapon(const monster* mons, const item_def &weapon)
         weapon_type wtype = (weapon.base_type == OBJ_WEAPONS) ?
             (weapon_type)weapon.sub_type : NUM_WEAPONS;
 
-        // We might allow Sigmund to pick up a better scythe if he finds
-        // one...
-        if (mons->type == MONS_SIGMUND)
-            return wtype == WPN_SCYTHE;
-
         // Crazy Yiuf's got MONUSE_STARTING_EQUIPMENT right now, but
         // in case that ever changes we don't want him to switch away
         // from his quarterstaff of chaos.
@@ -1318,10 +1313,10 @@ static bool _is_signature_weapon(const monster* mons, const item_def &weapon)
         }
 
         if (mons->type == MONS_AGNES)
-            return wtype == WPN_LAJATANG;
+            return wtype == WPN_DEMON_WHIP;
 
         if (mons->type == MONS_EDMUND)
-            return wtype == WPN_FLAIL || wtype == WPN_DIRE_FLAIL;
+            return wtype == WPN_FLAIL || wtype == WPN_QUARTERSTAFF;
 
         // Pikel's got MONUSE_STARTING_EQUIPMENT right now, but,
         // in case that ever changes, we don't want him to switch away
@@ -1334,8 +1329,7 @@ static bool _is_signature_weapon(const monster* mons, const item_def &weapon)
 
         if (mons->type == MONS_DUVESSA)
         {
-            return item_attack_skill(weapon) == SK_SHORT_BLADES
-                   || item_attack_skill(weapon) == SK_LONG_BLADES;
+            return item_attack_skill(weapon) == SK_SHORT_BLADES;
         }
 
         if (mons->type == MONS_IGNACIO)
@@ -1368,7 +1362,7 @@ static bool _is_signature_weapon(const monster* mons, const item_def &weapon)
             return item_attack_skill(weapon) == SK_SHORT_BLADES;
 
         if (mons->type == MONS_IMPERIAL_MYRMIDON)
-            return item_attack_skill(weapon) == SK_LONG_BLADES;
+            return item_attack_skill(weapon) == SK_SHORT_BLADES;
     }
 
     if (mons->is_holy())
@@ -4172,11 +4166,9 @@ int monster::skill(skill_type sk, int scale, bool real, bool drained) const
 
     // Weapon skills for spectral weapon
     case SK_SHORT_BLADES:
-    case SK_LONG_BLADES:
     case SK_AXES:
     case SK_MACES_FLAILS:
     case SK_POLEARMS:
-    case SK_STAVES:
         ret = hd;
         if (weapon()
             && sk == item_attack_skill(*weapon())

@@ -289,10 +289,6 @@ demon whip
 
 Et grufuldt våben, som er vævet i infernoets dybder.
 %%%%
-dire flail
-
-En stridsplejl med lange pigge og et tungere hoved.
-%%%%
 disc of storms
 
 Denne ekstremt kraftulde genstand kan udløse en altødelæggende storm af
@@ -304,11 +300,6 @@ eudemon blade
 En hellig klinge, som er frembragt af Himmelens smedjer og beboet af en god
 ånd. Det er Den Strålendes tjeneres yndlingsvåben, og det kan ikke bruges af
 ondskabens styrker.
-%%%%
-eveningstar
-
-Piggene på denne morgenstjerne er exceptionelt lange, hvilket lader den
-forårsage odiøse sår.
 %%%%
 fan of gales
 
@@ -389,11 +380,6 @@ skader.
         return ""
     end
 }}
-%%%%
-lajatang
-
-Et meget sjældent og ekstremt effektivt eksotisk våben, bestående af en stav
-med halvmåneformede klinger i begge ender.
 %%%%
 lamp of fire
 
@@ -768,19 +754,11 @@ i nærheden. Magisk modstandskraft hos læseren og andre væsener i nærheden vi
 også blive halveret i en kort periode. Sidstnævnte effekt påvirker dog ikke
 væsener som er komplet immune over for magi.
 %%%%
-scythe
-
-Et landbrugsredskab, der som regel bruges af utrænet bærme i kamp.
-%%%%
 shield
 
 Et stykke træ og metal, som spændes på den ene arm til beskyttelse. Det er
 uhåndterligt at gå med, og uden træning vil det få dig til at angribe
 langsommere.
-%%%%
-short sword
-
-En lille, tveægget klinge med et kort greb.
 %%%%
 slice of pizza
 

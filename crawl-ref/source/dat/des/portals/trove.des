@@ -238,7 +238,7 @@ function trove.place_fog(e, type, strength)
 end
 
 function trove.weapon_skills (e)
-  local weapon_skills = {"Short Blades", "Long Blades", "Axes", "Maces & Flails", "Polearms", "Staves"}
+  local weapon_skills = {"Blades", "Axes", "Maces & Staves", "Polearms"}
   local skill_total = 0
   local nonzero_skills = 0
   for _, skill in ipairs(weapon_skills) do

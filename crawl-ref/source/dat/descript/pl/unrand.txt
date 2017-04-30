@@ -63,10 +63,6 @@ dagger of Chilly Death
 
 Sztylet zrobiony z jednego wielkiego odłamka szafiru.
 %%%%
-scythe "Finisher"
-
-Długa ostra kosa osadzona na sztorc.
-%%%%
 sling "Punk"
 
 Proca zrobiona z kawałka dziwnej niebieskiej skóry.

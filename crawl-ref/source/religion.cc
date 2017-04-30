@@ -94,9 +94,6 @@ const vector<god_power> god_powers[NUM_GODS] =
       { 3, ABIL_ZIN_IMPRISON, "call upon Zin to imprison the lawless" },
       { 5, ABIL_ZIN_SANCTUARY, "call upon Zin to create a sanctuary" },
       {-1, ABIL_ZIN_DONATE_GOLD, "donate money to Zin" },
-      { 7, ABIL_ZIN_CURE_ALL_MUTATIONS,
-           "Zin will cure all your mutations... once.",
-           "Zin is no longer ready to cure all your mutations." },
     },
 
     // TSO
@@ -1014,7 +1011,7 @@ static int _pakellas_high_wand()
         WAND_ICEBLAST,
         WAND_ACID,
     };
-    if (!player_mutation_level(MUT_NO_LOVE))
+    if (!you.get_mutation_level(MUT_NO_LOVE))
         high_wands.emplace_back(WAND_ENSLAVEMENT);
 
     return _preferably_unseen_item(high_wands, _seen_wand);
@@ -1066,7 +1063,7 @@ static bool _give_pakellas_gift()
     {
         // All the evoker options here are summon-based, so give another
         // low-level wand instead under Sacrifice Love.
-        if (player_mutation_level(MUT_NO_LOVE))
+        if (you.get_mutation_level(MUT_NO_LOVE))
         {
             basetype = OBJ_WANDS;
             subtype = _pakellas_low_wand();
@@ -1129,6 +1126,21 @@ static bool _give_pakellas_gift()
 
     return false;
 }
+
+static bool _give_zin_gift()
+{
+    if (!you.how_mutated()) {
+        return false;
+    }
+    bool success = delete_mutation(RANDOM_MUTATION, "Zin's grace", true,
+                              true, true);
+    if (success) {
+        mpr("Zin's grace purifies you.");
+        _inc_gift_timeout(15 + roll_dice(2, 4));
+    }
+    return true;
+}
+
 
 void mons_make_god_gift(monster& mon, god_type god)
 {
@@ -1470,7 +1482,7 @@ static weapon_type _hepliaklqana_weapon_type(monster_type mc, int HD)
     case MONS_ANCESTOR_KNIGHT:
         return HD < 10 ? WPN_FLAIL : WPN_BROAD_AXE;
     case MONS_ANCESTOR_BATTLEMAGE:
-        return HD < 13 ? WPN_QUARTERSTAFF : WPN_LAJATANG;
+        return HD < 13 ? WPN_QUARTERSTAFF : WPN_GREAT_MACE;
     default:
         return NUM_WEAPONS; // should never happen
     }
@@ -1721,6 +1733,11 @@ bool do_god_gift(bool forced)
         case GOD_PAKELLAS:
             success = _give_pakellas_gift();
             break;
+			
+        case GOD_ZIN:
+		    if (forced || you.piety >= piety_breakpoint(3))
+                success = _give_zin_gift();
+            break;  
 
         case GOD_OKAWARU:
         case GOD_TROG:
@@ -1777,7 +1794,7 @@ bool do_god_gift(bool forced)
         }
 
         case GOD_YREDELEMNUL:
-            if (!player_mutation_level(MUT_NO_LOVE)
+            if (!you.get_mutation_level(MUT_NO_LOVE)
                 && (forced
                     || (random2(you.piety) >= piety_breakpoint(2)
                         && one_chance_in(4))))
@@ -2998,7 +3015,7 @@ bool player_can_join_god(god_type which_god)
     if (which_god == GOD_GOZAG && you.gold < gozag_service_fee())
         return false;
 
-    if (player_mutation_level(MUT_NO_LOVE)
+    if (you.get_mutation_level(MUT_NO_LOVE)
         && (which_god == GOD_BEOGH
             || which_god == GOD_JIYVA
             || which_god == GOD_HEPLIAKLQANA
@@ -3007,7 +3024,7 @@ bool player_can_join_god(god_type which_god)
         return false;
     }
 
-    if (player_mutation_level(MUT_NO_ARTIFICE)
+    if (you.get_mutation_level(MUT_NO_ARTIFICE)
         && which_god == GOD_PAKELLAS)
     {
       return false;
@@ -3600,7 +3617,7 @@ void god_pitch(god_type which_god)
                      " have %d.", fee, you.gold);
             }
         }
-        else if (player_mutation_level(MUT_NO_LOVE)
+        else if (you.get_mutation_level(MUT_NO_LOVE)
                  && (which_god == GOD_BEOGH
                      || which_god == GOD_JIYVA
                      || which_god == GOD_HEPLIAKLQANA))
@@ -3608,7 +3625,7 @@ void god_pitch(god_type which_god)
             simple_god_message(" does not accept worship from the loveless!",
                                which_god);
         }
-        else if (player_mutation_level(MUT_NO_ARTIFICE)
+        else if (you.get_mutation_level(MUT_NO_ARTIFICE)
                  && which_god == GOD_PAKELLAS)
         {
             simple_god_message(" does not accept worship from those who are "
