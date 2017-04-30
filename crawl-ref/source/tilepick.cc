@@ -1679,7 +1679,7 @@ static tileidx_t _tileidx_monster_no_props(const monster_info& mon)
                     const weapon_type wt = (weapon_type)item.sub_type;
 					if (wt == WPN_DAGGER || wt == WPN_RAPIER
 	                    || wt == WPN_QUICK_BLADE)
-                        return TILEP_MONS_SPECTRAL_SBL
+                        return TILEP_MONS_SPECTRAL_SBL;
                     else
                         return TILEP_MONS_SPECTRAL_LBL;
 			    }
