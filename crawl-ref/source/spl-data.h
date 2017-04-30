@@ -236,7 +236,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_THROW_FLAME, "Throw Flame",
     SPTYP_FIRE,
-    SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
+    SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER | SPFLAG_MONSTER,
     2,
     50,
     LOS_RADIUS, LOS_RADIUS,
@@ -1024,7 +1024,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_SHOCK, "Shock",
     SPTYP_AIR,
-    SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
+    SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER | SPFLAG_MONSTER,
     1,
     25,
     LOS_RADIUS, LOS_RADIUS,
