@@ -490,7 +490,7 @@ static const mutation_def mut_data[] =
   {"Your thinking seems confused.", "", ""},
 },
 
-{ MUT_BERSERK, 7, 3, mutflag::BAD, false,
+{ MUT_BERSERK, 0, 3, mutflag::BAD, false,
   "berserk",
 
   {"You tend to lose your temper in combat.",
