@@ -5949,12 +5949,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
 		
         if (foe->is_player())
         {
-            if (you.airborne())
-                mprf("The air twists around and violently strikes you in flight (%d)!",
-					damage_taken);
-            else
-                mprf("The air twists around and strikes you (%d)!",
-					damage_taken);
+            mprf("The air twists around and strikes you (%d)!", damage_taken);
         }
         else
         {
