@@ -184,7 +184,7 @@
        "scroll of silence", "shield", "shortbow", "wand of slowing",
        "steam dragon scales", "shadow dragon scales",
        "storm dragon scales", "swamp dragon scales",
-       "staff of summoning", "manual of slings", "manual of shields",
+       "staff of summoning", "manual of shields",
        "manual of spellcasting", "manual of summonings", "stone" }
 
       elseif s == "T" then i = { "book of the tempests", "scroll of torment",

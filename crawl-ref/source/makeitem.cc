@@ -1386,21 +1386,20 @@ static void _generate_book_item(item_def& item, bool allow_uniques,
         {
 		    while(item.skill == SK_POISON_MAGIC)
 			{
-            item.skill = static_cast<skill_type>(SK_SPELLCASTING +
+                item.skill = static_cast<skill_type>(SK_SPELLCASTING +
                                                  random2(NUM_SKILLS -
                                                          SK_SPELLCASTING));
 			}
         }
         else
 #if TAG_MAJOR_VERSION == 34
-        {
-            item.skill = static_cast<skill_type>(random2(SK_UNARMED_COMBAT));
-            if (item.skill == SK_STABBING)
-                item.skill = SK_UNARMED_COMBAT;
-            if (item.skill == SK_TRAPS)
-                item.skill = SK_STEALTH;
-            if (item.skill == SK_STAVES)
-                item.skill = SK_STEALTH;
+        {     
+			while(item.skill == SK_STABBING || item.skill == SK_TRAPS
+                || item.skill == SK_STAVES || item.skill == SK_LONG_BLADES
+                || item.skill == SK_SLINGS)
+            {
+			    item.skill = static_cast<skill_type>(random2(SK_UNARMED_COMBAT));
+            }
         }
 #else
             item.plus = random2(SK_UNARMED_COMBAT + 1);
