@@ -1897,7 +1897,12 @@ int player_spec_conj()
 
 int player_spec_hex()
 {
-    return 0;
+    int sh = 0;
+	 
+    // Hex enhancer goodmut
+    sh += you.get_mutation_level(MUT_HEX_ENHANCER);
+
+    return sh;
 }
 
 int player_spec_charm()

@@ -661,6 +661,18 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
+{ MUT_HEX_ENHANCER, 2, 1, mutflag::GOOD, false,
+  "powerful hexes",
+
+  {"Your tricky nature makes your hexes more powerful.",
+   "",
+   ""},
+
+  {"You feel extremely tricky.", "", ""},
+
+  {"You feel less tricky.", "", ""},
+},
+
 { MUT_TENGU_FLIGHT, 0, 2, mutflag::GOOD, false,
   "able to fly",
 
