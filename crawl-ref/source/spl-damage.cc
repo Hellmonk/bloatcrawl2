@@ -3002,6 +3002,7 @@ void handle_searing_ray()
     const int pow = calc_spell_power(SPELL_SEARING_RAY, true);
 
     bolt beam;
+	beam.flavour = BEAM_FIRE; 
     beam.thrower = KILL_YOU_MISSILE;
     beam.range   = calc_spell_range(SPELL_SEARING_RAY, pow);
     beam.source  = you.pos();
