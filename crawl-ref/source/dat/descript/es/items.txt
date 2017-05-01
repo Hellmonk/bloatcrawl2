@@ -565,10 +565,6 @@ snozzcumber
 
 Un vegetal repulsivo en forma de pepino.
 %%%%
-staff of conjuration
-
-Este bastón aumenta el poder de los conjuros lanzados por su portador.
-%%%%
 strawberry
 
 Una pequeña pero deliciosa fruta roja.

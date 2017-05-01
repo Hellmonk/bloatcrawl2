@@ -1058,7 +1058,7 @@ KFEAT:  M = dry_fountain
 KFEAT:  N = weapon shop type:Staff suffix:Store count:9 use_all greed:30 ; \
             staff of summoning | staff of wizardry |\
             staff of fire | staff of air | staff of earth | staff of cold |\
-            staff of death | staff of conjuration
+            staff of death
 KFEAT:  Q = weapon shop type:Weapon suffix:Rack count:17 use_all greed:30 ; \
             mundane not_cursed quick blade | mundane not_cursed demon blade |\
             mundane not_cursed triple sword | mundane not_cursed broad axe |\

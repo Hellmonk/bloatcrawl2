@@ -1885,32 +1885,6 @@ cccc+.......+cccc
     cc..@..cc
 ENDMAP
 
-NAME:  grunt_absolute_annihilation
-DEPTH: Depths
-MONS:    ancient lich
-MONS:    deep elf annihilator / titan w:5 / lich
-MONS:    deep elf mage / tengu conjurer / wizard / orc sorcerer / \
-         naga mage / ogre mage
-ITEM:    book of annihilations, book of power, book of conjurations
-ITEM:    randbook disc:conjuration, staff of conjuration
-KFEAT:   _ = altar_vehumet
-SHUFFLE: efgh
-MAP
-   xxxxxxxxxxx
-  xxcccccccccxxxxxxxxx
-  xcc2ccccc2cccccccccxx
-  xc.c.ccc.c.ccbbbbbccx
- @xc.c.ccc.c.cbbe.fbbcx
-.3.c.c.ccc.c.cb.2...bcx
-@U..3.3...3.3.=.._1dbcx
-.3.cccc.c.ccccb.2...bcx
- @xcccc.c.ccccbbg.hbbcx
-  xcccc.c.cccccbbbbbccx
-  xccccc2ccccccccccccxx
-  xxcccccccccxxxxxxxxx
-   xxxxxxxxxxx
-ENDMAP
-
 NAME: sigmund_edmund_badplayer
 TAGS: no_item_gen no_monster_gen no_pool_fixup no_trap_gen
 DEPTH: D:4-7

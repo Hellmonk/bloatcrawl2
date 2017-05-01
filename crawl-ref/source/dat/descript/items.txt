@@ -1000,10 +1000,6 @@ A staff that increases the power of ice spells cast by its wielder, and
 protects them from the effects of cold. If the wielder is skilled in Evocations
 and Ice Magic, they can freeze those struck by it.
 %%%%
-staff of conjuration
-
-A staff that increases the power of conjurations cast by its wielder.
-%%%%
 staff of death
 
 A staff that increases the power of necromantic spells cast by its wielder, and

@@ -1887,12 +1887,7 @@ int player_spec_air()
 
 int player_spec_conj()
 {
-    int sc = 0;
-
-    // Staves
-    sc += you.wearing(EQ_STAFF, STAFF_CONJURATION);
-
-    return sc;
+    return 0;
 }
 
 int player_spec_hex()

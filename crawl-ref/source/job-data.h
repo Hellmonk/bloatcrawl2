@@ -39,7 +39,7 @@ static const map<job_type, job_def> job_data =
     { SP_DEEP_ELF, SP_TENGU, SP_BASE_DRACONIAN, SP_NAGA, SP_VINE_STALKER, },
     { "robe", "book of Air" },
     WCHOICE_NONE,
-    { { SK_CONJURATIONS, 1 }, { SK_AIR_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
+    { { SK_AIR_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
       { SK_DODGING, 2 }, { SK_STEALTH, 2 }, },
 } },
 
@@ -135,7 +135,7 @@ static const map<job_type, job_def> job_data =
     { SP_DEEP_ELF, SP_HILL_ORC, SP_NAGA, SP_TENGU, SP_DEMIGOD, SP_GARGOYLE, },
     { "robe", "book of Flames" },
     WCHOICE_NONE,
-    { { SK_CONJURATIONS, 1 }, { SK_FIRE_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
+    { { SK_FIRE_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
       { SK_DODGING, 2 }, { SK_STEALTH, 2 }, },
 } },
 
@@ -166,7 +166,7 @@ static const map<job_type, job_def> job_data =
       SP_GARGOYLE, },
     { "robe", "book of Frost" },
     WCHOICE_NONE,
-    { { SK_CONJURATIONS, 1 }, { SK_ICE_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
+    { { SK_ICE_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
       { SK_DODGING, 2 }, { SK_STEALTH, 2 }, },
 } },
 
@@ -241,7 +241,7 @@ static const map<job_type, job_def> job_data =
     { "robe", "hat", "book of Minor Magic" },
     WCHOICE_NONE,
     { { SK_DODGING, 2 }, { SK_STEALTH, 2 }, { SK_SPELLCASTING, 3 },
-      { SK_TRANSLOCATIONS, 1 }, { SK_CONJURATIONS, 1 }, { SK_SUMMONINGS, 1 }, },
+      { SK_TRANSLOCATIONS, 1 }, { SK_SUMMONINGS, 1 }, },
 } },
 #if TAG_MAJOR_VERSION == 34
 { JOB_CONJURER, {

@@ -1137,8 +1137,8 @@ static const char* staff_type_name(int stafftype)
     case STAFF_ENERGY:      return "energy";
 #endif
     case STAFF_DEATH:       return "death";
-    case STAFF_CONJURATION: return "conjuration";
 #if TAG_MAJOR_VERSION == 34
+    case STAFF_CONJURATION: return "conjuration";
     case STAFF_ENCHANTMENT: return "enchantment";
 #endif
     case STAFF_AIR:         return "air";
@@ -3680,7 +3680,9 @@ bool is_useless_item(const item_def &item, bool temp)
         switch (item.sub_type)
         {
         case STAFF_WIZARDRY:
+#if TAG_MAJOR_VERSION == 34
         case STAFF_CONJURATION:
+#endif
         case STAFF_SUMMONING:
             return you_worship(GOD_TROG);
         }

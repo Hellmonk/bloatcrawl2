@@ -910,10 +910,6 @@ spear
 Une arme de chasse composée d'un manche en bois avec une tête métallique
 pointue fixée au bout.
 %%%%
-staff of conjuration
-
-Ce bâton accroit la puissance des conjurations de son porteur.
-%%%%
 staff of wizardry
 
 Ce bâton accroit significativement l'aptitude de son porteur à lancer des

@@ -595,10 +595,6 @@ snozzcumber
 
 ひどく不快なキュウリの形をした野菜だ。
 %%%%
-staff of conjuration
-
-この杖は手にしている者が唱えた妖術の呪文の威力を強化する。
-%%%%
 steam dragon hide
 
 蒸気ドラゴンの柔らかくしなやかな皮だ。

@@ -278,10 +278,6 @@ snozzcumber
 
 Um vegetal repulsivo no formato de um pepino.
 %%%%
-staff of conjuration
-
-Este cajado aumenta o poder das magias de conjuração lançadas pelo seu usuário.
-%%%%
 stone
 
 Uma pedra. Pode ser arremessada à mão ou com uma funda.

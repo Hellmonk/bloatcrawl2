@@ -904,9 +904,9 @@ MONS:       obsidian statue hd:12 spells:orb_of_destruction.62.magical \
             tile:mons_statue_mage col:vehumet name:conjurer_statue n_rpl n_des
 KMONS:      3DEF = quicksilver dragon
 KITEM:      D = robe ego:archmagi ident:type, star_item / superb_item, star_item
-KITEM:      E = any book, randbook disc:conjuration owner:Iskenderun \
-                spells:iskenderun's_mystic_blast&iskenderun's_battlesphere, \
-                randbook disc:conjuration owner:Iskenderun
+KITEM:      E = any book, randbook disc:earth owner:Iskenderun \
+                spells:iskenderun's_battlesphere, \
+                randbook disc:air owner:Iskenderun
 KITEM:      F = any book good_item, any book good_item, any book
 KMONS:      DEF = rakshasa
 COLOUR:     v = magenta

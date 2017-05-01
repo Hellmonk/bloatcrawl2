@@ -2603,10 +2603,6 @@ staff of cold
 
 <staff>
 %%%%
-staff of conjuration
-
-<staff>
-%%%%
 staff of death
 
 “'I am Aed Abaid of Ess Rúaid, that is, the good god of wizardry of the Tuatha

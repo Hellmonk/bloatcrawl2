@@ -181,7 +181,7 @@ ENDMAP
 NAME:  portal_elf_entry_minmay_elf_sorcery
 MONS:  deep elf mage w:30 / nothing
 KMONS: 2 = deep elf sorcerer w:90 / deep elf annihilator / deep elf demonologist
-KITEM: 2 = randbook disc:conjuration disc2:summoning slevels:16
+KITEM: 2 = randbook disc:charms disc2:summoning slevels:16
 SUBST: x : xxc, m : mmcxb
 : elf_portal(_G)
 MAP

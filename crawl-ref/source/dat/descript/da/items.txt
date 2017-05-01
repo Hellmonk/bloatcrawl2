@@ -797,10 +797,6 @@ ildbesværgelser. Den beskytter brugeren mod virkningerne af kulde. Hvis
 brugeren er kyndig i vækkelser og ismagi kan staven fryse de fjender, den
 rammer.
 %%%%
-staff of conjuration
-
-Denne stav øger brugerens fremmaningers kraft.
-%%%%
 staff of death
 
 Denne stav øger brugerens nekromantiske besværgelsers kraft og beskytter mod

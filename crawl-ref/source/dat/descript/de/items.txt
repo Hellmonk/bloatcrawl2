@@ -662,11 +662,6 @@ snozzcumber
 
 Eine widerwärtige gurkenförmige Frucht.
 %%%%
-staff of conjuration
-
-Dieser Personal vergrößert die Macht von durch seinen Besitzer geworfenen
-Beschwörungsformeln.
-%%%%
 steam dragon hide
 
 Die weiche und geschmeidige schuppige Haut eines Dampfdrachen. Es kann in die
