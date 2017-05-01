@@ -1442,9 +1442,6 @@ void elyvilon_remove_divine_vigour()
 
 bool vehumet_supports_spell(spell_type spell)
 {
-    if (spell_typematch(spell, SPTYP_CONJURATION))
-        return true;
-
     // Conjurations work by conjuring up a chunk of short-lived matter and
     // propelling it towards the victim. This is the most popular way, but
     // by no means it has a monopoly for being destructive.
@@ -1460,7 +1457,37 @@ bool vehumet_supports_spell(spell_type spell)
         || spell == SPELL_OLGREBS_TOXIC_RADIANCE
         || spell == SPELL_VIOLENT_UNRAVELLING
         || spell == SPELL_INNER_FLAME
-        || spell == SPELL_IGNITION)
+        || spell == SPELL_IGNITION
+        || spell == SPELL_FIREBALL
+        || spell == SPELL_CONJURE_FLAME      
+        || spell == SPELL_BOLT_OF_FIRE
+        || spell == SPELL_BOLT_OF_COLD
+        || spell == SPELL_LIGHTNING_BOLT
+        || spell == SPELL_BOLT_OF_MAGMA
+        || spell == SPELL_THROW_FROST
+        || spell == SPELL_FREEZING_CLOUD
+        || spell == SPELL_MEPHITIC_CLOUD
+        || spell == SPELL_BOLT_OF_DRAINING
+        || spell == SPELL_LEHUDIBS_CRYSTAL_SPEAR
+        || spell == SPELL_FIRE_STORM
+        || spell == SPELL_STICKY_FLAME
+        || spell == SPELL_IRON_SHOT
+        || spell == SPELL_STONE_ARROW
+        || spell == SPELL_THROW_ICICLE
+        || spell == SPELL_FLAME_TONGUE
+        || spell == SPELL_DISCHARGE
+        || spell == SPELL_CONJURE_BALL_LIGHTNING
+        || spell == SPELL_CHAIN_LIGHTNING
+        || spell == SPELL_FULMINANT_PRISM
+        || spell == SPELL_BATTLESPHERE
+        || spell == SPELL_DAZZLING_SPRAY
+        || spell == SPELL_FORCE_LANCE
+        || spell == SPELL_GLACIATE
+        || spell == SPELL_SPELLFORGED_SERVITOR
+        || spell == SPELL_IRRADIATE
+        || spell == SPELL_MAGIC_DART
+        || spell == SPELL_IOOD
+        || spell == SPELL_SEARING_RAY)
     {
         return true;
     }
