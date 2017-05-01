@@ -103,7 +103,7 @@
        "chain mail", "crystal ball of energy", "cloak",
        "crystal plate armour", "potion of cancellation", "wand of clouds",
        "book of clouds", "staff of cold", "wand of confusion", "cutlass",
-       "staff of conjuration", "manual of crossbows", "manual of conjurations",
+       "staff of conjuration", "manual of crossbows",
        "manual of charms", "potion of curing" }
 
       elseif s == "D" then i = { "book of death", "book of arcane marksmanship",

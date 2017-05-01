@@ -1384,7 +1384,7 @@ static void _generate_book_item(item_def& item, bool allow_uniques,
     {
         if (one_chance_in(4))
         {
-		    while(item.skill == SK_POISON_MAGIC)
+		    while(item.skill == SK_POISON_MAGIC || item.skill == SK_CONJURATIONS)
 			{
                 item.skill = static_cast<skill_type>(SK_SPELLCASTING +
                                                  random2(NUM_SKILLS -
