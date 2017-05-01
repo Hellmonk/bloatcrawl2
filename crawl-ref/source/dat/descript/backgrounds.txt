@@ -33,10 +33,6 @@ Chaos Knight
 Chaos Knights are playthings of the unpredictable Xom, and are subject to the
 god's constantly changing moods.
 %%%%
-Conjurer
-
-Conjurers confront problems with damaging spells from the book of Conjurations.
-%%%%
 Earth Elementalist
 
 Earth Elementalists know the Sandblast spell, and carry stones to fuel the

@@ -28,10 +28,6 @@ Chaos Knight
 
 Kaaosritarit ovat arvaamattoman Xomin leikkikaluja ja joutuvat jumalansa
 jatkuvasti vaihtuvan mielialan koetukselle.
-%%%%
-Conjurer
-
-Taistelumaagit kohtaavat ongelmansa Konjuraatioiden kirjan vahingoittavilla
 taioilla.
 %%%%
 Death Knight

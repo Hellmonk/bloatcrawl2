@@ -124,7 +124,6 @@ int book_rarity(book_type which_book)
     case BOOK_MALEDICT:
         return 2;
 
-    case BOOK_CONJURATIONS:
     case BOOK_NECROMANCY:
     case BOOK_CALLINGS:
         return 3;

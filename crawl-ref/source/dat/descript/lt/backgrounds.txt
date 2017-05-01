@@ -28,10 +28,6 @@ Chaos Knight
 Sumaišties riteriai yra neprognozuojamo Xom žaisliukai ir priklauso nuo jo
 nuolat besimainančių nuotaikų.
 %%%%
-Conjurer
-
-Magai problemas sprendžia naikinančiais Būrimų knygos burtais.
-%%%%
 Death Knight
 
 Mirties riteriai yra kariai, valdantys nemirėlius Tamsiojo Yredelemnul vardu.

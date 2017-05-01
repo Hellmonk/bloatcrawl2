@@ -35,10 +35,6 @@ Chaos Knight
 
 Les Chevaliers du Chaos sont les jouets de l'imprévisible dieu Xom, et
 subissent les effets de ses constants changements d'humeur.
-%%%%
-Conjurer
-
-Les Conjurateurs résolvent les problèmes auquel ils sont confrontés avec les
 sorts destructeurs tirés du livre des Conjurations.
 %%%%
 Death Knight

@@ -34,10 +34,6 @@ Chaos Knight
 
 Chaosritter sind Spielzeuge des unberechenbaren Xom, und sind den ständig
 wechselnden Gefühlen des Gottes ausgesetzt.
-%%%%
-Conjurer
-
-Elementbeschwörer konfrontieren Probleme mit schädlichen Zaubersprüchen aus dem
 Buch der Elementbeschwörungen.
 %%%%
 Death Knight

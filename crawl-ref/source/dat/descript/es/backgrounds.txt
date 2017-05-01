@@ -35,10 +35,6 @@ Chaos Knight
 
 Los Caballeros Caóticos son juguetes del impredecible Xom, y están sujetos a
 los constantes cambios de humor del dios.
-%%%%
-Conjurer
-
-Los Conjuradores afrontan los problemas con hechizos destructivos de su Libro
 de los Conjuros
 %%%%
 Death Knight
