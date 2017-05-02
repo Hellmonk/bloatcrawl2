@@ -578,7 +578,7 @@ target's movement. It has no effect on targets that are already frozen.
 %%%%
 Force Lance spell
 
-Fires a shaft of earth imbued with translocational force. If the impact 
+Fires a shaft of metal imbued with translocational force. If the impact 
 deals damage, it may knock the target back.
 %%%%
 Forceful Invitation spell
