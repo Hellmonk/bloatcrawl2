@@ -465,7 +465,7 @@ move_again:
 
     if (!no_trail)
     {
-        place_cloud(iood ? CLOUD_MAGIC_TRAIL : CLOUD_DUST_TRAIL, mon.pos(),
+        place_cloud(CLOUD_DUST_TRAIL, mon.pos(),
                     2 + random2(3), &mon);
     }
 
