@@ -269,7 +269,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_KOBOLD,          SK_TRAPS,         UNUSABLE_SKILL),
 #endif
     APT(SP_KOBOLD,          SK_UNARMED_COMBAT,  3),
-    APT(SP_KOBOLD,          SK_SPELLCASTING,    0),
+    APT(SP_KOBOLD,          SK_SPELLCASTING,   -1),
     APT(SP_KOBOLD,          SK_CONJURATIONS,  UNUSABLE_SKILL),
     APT(SP_KOBOLD,          SK_HEXES,           3),
     APT(SP_KOBOLD,          SK_CHARMS,          1),
@@ -916,7 +916,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_DEMIGOD,         SK_TRAPS,         UNUSABLE_SKILL),
 #endif
     APT(SP_DEMIGOD,         SK_UNARMED_COMBAT, -1),
-    APT(SP_DEMIGOD,         SK_SPELLCASTING,   -2),
+    APT(SP_DEMIGOD,         SK_SPELLCASTING,   -1),
     APT(SP_DEMIGOD,         SK_CONJURATIONS,  UNUSABLE_SKILL),
     APT(SP_DEMIGOD,         SK_HEXES,          -1),
     APT(SP_DEMIGOD,         SK_CHARMS,         -1),
@@ -998,7 +998,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_MINOTAUR,        SK_TRAPS,         UNUSABLE_SKILL),
 #endif
     APT(SP_MINOTAUR,        SK_UNARMED_COMBAT,  1),
-    APT(SP_MINOTAUR,        SK_SPELLCASTING,   -4),
+    APT(SP_MINOTAUR,        SK_SPELLCASTING,   -3),
     APT(SP_MINOTAUR,        SK_CONJURATIONS,  UNUSABLE_SKILL),
     APT(SP_MINOTAUR,        SK_HEXES,          -4),
     APT(SP_MINOTAUR,        SK_CHARMS,         -4),
@@ -1121,7 +1121,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_GHOUL,           SK_TRAPS,         UNUSABLE_SKILL),
 #endif
     APT(SP_GHOUL,           SK_UNARMED_COMBAT,  1),
-    APT(SP_GHOUL,           SK_SPELLCASTING,   -2),
+    APT(SP_GHOUL,           SK_SPELLCASTING,   -1),
     APT(SP_GHOUL,           SK_CONJURATIONS,  UNUSABLE_SKILL),
     APT(SP_GHOUL,           SK_HEXES,          -2),
     APT(SP_GHOUL,           SK_CHARMS,         -1),
@@ -1470,7 +1470,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_FORMICID,        SK_TRAPS,         UNUSABLE_SKILL),
 #endif
     APT(SP_FORMICID,        SK_UNARMED_COMBAT,  0),
-    APT(SP_FORMICID,        SK_SPELLCASTING,    0),
+    APT(SP_FORMICID,        SK_SPELLCASTING,    1),
     APT(SP_FORMICID,        SK_CONJURATIONS,  UNUSABLE_SKILL),
     APT(SP_FORMICID,        SK_HEXES,           2),
     APT(SP_FORMICID,        SK_CHARMS,          0),
@@ -1511,7 +1511,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_VINE_STALKER,    SK_TRAPS,         UNUSABLE_SKILL),
 #endif
     APT(SP_VINE_STALKER,    SK_UNARMED_COMBAT,  0),
-    APT(SP_VINE_STALKER,    SK_SPELLCASTING,    0),
+    APT(SP_VINE_STALKER,    SK_SPELLCASTING,   -1),
     APT(SP_VINE_STALKER,    SK_CONJURATIONS,  UNUSABLE_SKILL),
     APT(SP_VINE_STALKER,    SK_HEXES,           0),
     APT(SP_VINE_STALKER,    SK_CHARMS,          0),
