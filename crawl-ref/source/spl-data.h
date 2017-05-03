@@ -2626,7 +2626,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_DAZZLING_SPRAY, "Dazzling Spray",
-    SPTYP_HEXES,
+    SPTYP_FIRE | SPTYP_HEXES,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF,
     3,
     50,

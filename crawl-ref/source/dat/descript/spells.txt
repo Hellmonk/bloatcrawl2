@@ -372,8 +372,8 @@ Dims the light of the dungeon, reducing the range of vision.
 %%%%
 Dazzling Spray spell
 
-Fires a spread of scintillating energy bolts from the caster's fingertips. Any
-living creature they strike may be dazzled and left stumbling blindly.
+Fires a spread of scintillating fiery bolts from the caster's fingertips. The 
+bolts may blind living creatures, even those that fully resist fire.
 %%%%
 Death Channel spell
 
