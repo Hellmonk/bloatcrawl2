@@ -1591,7 +1591,7 @@ static const struct spell_desc spelldata[] =
     SPELL_CONJURE_BALL_LIGHTNING, "Conjure Ball Lightning",
     SPTYP_AIR,
     SPFLAG_SELFENCH,
-    6,
+    7,
     200,
     -1, -1,
     6, 0,
