@@ -2384,7 +2384,6 @@ spret_type cast_fragmentation(int pow, const actor *caster,
     bool should_destroy_wall = false;
     bool hole                = true;
     const char *what         = nullptr;
-    const dungeon_feature_type grid = grd(target);
 
     bolt beam;
 
