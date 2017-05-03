@@ -1098,16 +1098,16 @@ static int _shatter_monsters(coord_def where, int pow, actor *agent)
 
     if (agent->is_player())
     {
+        mprf("%s shudders (%d).", mon->name(DESC_THE).c_str(), damage);
         _player_hurt_monster(*mon, damage);
-		mprf("%s shudders (%d).", mon->name(DESC_THE).c_str(), damage);
 
         if (is_sanctuary(you.pos()) || is_sanctuary(mon->pos()))
             remove_sanctuary(true);
     }
     else
 	{
+        mprf("%s shudders (%d).", mon->name(DESC_THE).c_str(), damage);
         mon->hurt(agent, damage);
-		mprf("%s shudders (%d).", mon->name(DESC_THE).c_str(), damage);
 	}
 
     return damage;
