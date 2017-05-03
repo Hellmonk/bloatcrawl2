@@ -769,7 +769,7 @@ Iskenderun's Battlesphere spell
 Conjures a small globe of magical energy linked to the caster's own magical
 reserves. While the battlesphere cannot take independent action, it will fire
 volleys of energy at the caster's enemies in sync with its creator's own
-destructive conjurations. With increasing power, the battlesphere lasts longer
+destructive magic. With increasing power, the battlesphere lasts longer
 and deals more damage per volley.
 %%%%
 Iskenderun's Mystic Blast spell
