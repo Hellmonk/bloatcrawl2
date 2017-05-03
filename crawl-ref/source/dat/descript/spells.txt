@@ -598,7 +598,7 @@ Conjures up a large cloud of lethally cold vapour.
 %%%%
 Fulminant Prism spell
 
-Conjures a prism which unleashes a violent explosion of arcane force after a
+Conjures a prism which unleashes a violent electrical explosion after a
 short duration. The prism is extremely fragile and any damage caused to it may
 result in premature detonation.
 %%%%

@@ -1462,7 +1462,6 @@ bool vehumet_supports_spell(spell_type spell)
         || spell == SPELL_CONJURE_FLAME      
         || spell == SPELL_BOLT_OF_FIRE
         || spell == SPELL_BOLT_OF_COLD
-        || spell == SPELL_LIGHTNING_BOLT
         || spell == SPELL_BOLT_OF_MAGMA
         || spell == SPELL_THROW_FROST
         || spell == SPELL_FREEZING_CLOUD
@@ -1472,7 +1471,6 @@ bool vehumet_supports_spell(spell_type spell)
         || spell == SPELL_FIRE_STORM
         || spell == SPELL_STICKY_FLAME
         || spell == SPELL_IRON_SHOT
-        || spell == SPELL_STONE_ARROW
         || spell == SPELL_THROW_ICICLE
         || spell == SPELL_FLAME_TONGUE
         || spell == SPELL_DISCHARGE

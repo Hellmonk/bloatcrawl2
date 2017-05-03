@@ -1223,12 +1223,12 @@ static void _setup_lightning_explosion(bolt & beam, const monster& origin)
 static void _setup_prism_explosion(bolt& beam, const monster& origin)
 {
     _setup_base_explosion(beam, origin);
-    beam.flavour = BEAM_MMISSILE;
+    beam.flavour = BEAM_ELECTRICITY;
     beam.damage  = (origin.prism_charge == 2 ?
                         dice_def(3, 6 + origin.get_hit_dice() * 7 / 4)
                         : dice_def(2, 6 + origin.get_hit_dice() * 7 / 4));
-    beam.name    = "blast of energy";
-    beam.colour  = MAGENTA;
+    beam.name    = "blast of electricity";
+    beam.colour  = LIGHTCYAN;
     beam.ex_size = origin.prism_charge;
 }
 

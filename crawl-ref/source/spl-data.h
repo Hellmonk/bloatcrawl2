@@ -135,7 +135,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_LIGHTNING_BOLT, "Lightning Bolt",
     SPTYP_AIR,
-    SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
+    SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER | SPFLAG_MONSTER,
     5,
     200,
     4, 11, // capped at LOS, yet this 11 matters since range increases linearly
@@ -1655,9 +1655,9 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_FULMINANT_PRISM, "Fulminant Prism",
-    SPTYP_HEXES,
+    SPTYP_AIR,
     SPFLAG_TARGET | SPFLAG_AREA | SPFLAG_NOT_SELF,
-    4,
+    5,
     200,
     4, 4,
     4, 0,
