@@ -135,8 +135,7 @@ clouds the author spotted while writing.
 %%%%
 book of conjurations
 
-A book containing an introduction to the destructive magical arts of
-Conjurations.
+A book containing an introduction to destructive elemental magic.
 %%%%
 book of death
 

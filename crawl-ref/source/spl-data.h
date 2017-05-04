@@ -157,7 +157,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_BOLT_OF_MAGMA, "Bolt of Magma",
     SPTYP_FIRE | SPTYP_EARTH,
-    SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
+    SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER | SPFLAG_MONSTER,
     5,
     200,
     4, 4,

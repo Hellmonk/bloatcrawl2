@@ -14,10 +14,10 @@ static const vector<spell_type> spellbook_templates[] =
 
 #if TAG_MAJOR_VERSION == 34
 {   // Book of Conjurations
-    SPELL_MAGIC_DART,
+    SPELL_SANDBLAST,
     SPELL_SEARING_RAY,
-    SPELL_DAZZLING_SPRAY,
-    SPELL_FULMINANT_PRISM,
+    SPELL_DISCHARGE,
+    SPELL_THROW_ICICLE,
     SPELL_BATTLESPHERE,
 },
 #endif
@@ -249,9 +249,9 @@ static const vector<spell_type> spellbook_templates[] =
 
 {   // Book of Earth
     SPELL_LEDAS_LIQUEFACTION,
-    SPELL_BOLT_OF_MAGMA,
     SPELL_STATUE_FORM,
     SPELL_IRON_SHOT,
+    SPELL_IOOD,
     SPELL_SHATTER,
 },
 
@@ -268,8 +268,7 @@ static const vector<spell_type> spellbook_templates[] =
 {   // Book of Power
     SPELL_FULMINANT_PRISM,
     SPELL_BATTLESPHERE,
-    SPELL_BOLT_OF_MAGMA,
-    SPELL_IRON_SHOT,
+    SPELL_BOLT_OF_FIRE,
     SPELL_IOOD,
     SPELL_SPELLFORGED_SERVITOR,
 },

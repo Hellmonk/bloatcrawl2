@@ -2638,14 +2638,23 @@ void end_battlesphere(monster* mons, bool killed)
 
 bool battlesphere_can_mirror(spell_type spell)
 {
-    return (spell_typematch(spell, SPTYP_CONJURATION)
-           && spell_to_zap(spell) != NUM_ZAPS)
-           || spell == SPELL_FREEZE
-           || spell == SPELL_STICKY_FLAME
-           || spell == SPELL_SANDBLAST
-           || spell == SPELL_AIRSTRIKE
-           || spell == SPELL_DAZZLING_SPRAY
-           || spell == SPELL_SEARING_RAY;
+    return spell == SPELL_SANDBLAST
+        || spell == SPELL_AIRSTRIKE
+        || spell == SPELL_FREEZE
+        || spell == SPELL_FIREBALL     
+        || spell == SPELL_BOLT_OF_FIRE
+        || spell == SPELL_THROW_FROST
+        || spell == SPELL_MEPHITIC_CLOUD
+        || spell == SPELL_BOLT_OF_DRAINING
+        || spell == SPELL_LEHUDIBS_CRYSTAL_SPEAR
+        || spell == SPELL_STICKY_FLAME
+        || spell == SPELL_IRON_SHOT
+        || spell == SPELL_THROW_ICICLE
+        || spell == SPELL_FLAME_TONGUE
+        || spell == SPELL_DAZZLING_SPRAY
+        || spell == SPELL_FORCE_LANCE
+        || spell == SPELL_MAGIC_DART
+        || spell == SPELL_SEARING_RAY;
 }
 
 bool aim_battlesphere(actor* agent, spell_type spell, int powc, bolt& beam)
