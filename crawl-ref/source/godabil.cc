@@ -1461,7 +1461,6 @@ bool vehumet_supports_spell(spell_type spell)
         || spell == SPELL_FIREBALL
         || spell == SPELL_CONJURE_FLAME      
         || spell == SPELL_BOLT_OF_FIRE
-        || spell == SPELL_BOLT_OF_COLD
         || spell == SPELL_BOLT_OF_MAGMA
         || spell == SPELL_THROW_FROST
         || spell == SPELL_FREEZING_CLOUD

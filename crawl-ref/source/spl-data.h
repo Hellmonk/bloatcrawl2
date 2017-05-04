@@ -124,7 +124,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_BOLT_OF_COLD, "Bolt of Cold",
     SPTYP_ICE,
-    SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
+    SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER | SPFLAG_MONSTER,
     6,
     200,
     5, 5,
