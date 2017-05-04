@@ -431,7 +431,7 @@ static const struct spell_desc spelldata[] =
     SPELL_BOLT_OF_DRAINING, "Bolt of Draining",
     SPTYP_NECROMANCY,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
-    5,
+    6,
     200,
     5, 5,
     2, 0, //the beam is silent
