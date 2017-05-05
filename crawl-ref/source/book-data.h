@@ -348,8 +348,8 @@ static const vector<spell_type> spellbook_templates[] =
 },
 
 {   // Book of Annihilations
+    SPELL_IOOD,
     SPELL_CHAIN_LIGHTNING,
-    SPELL_LEHUDIBS_CRYSTAL_SPEAR,
     SPELL_GLACIATE,
     SPELL_FIRE_STORM,
 },

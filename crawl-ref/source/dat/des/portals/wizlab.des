@@ -1581,12 +1581,7 @@ set_random_mon_list ("rust devil w:20 / eye of devastation / stone giant " ..
 }}
 ITEM:       potion of mutation q:3
 ITEM:       acquire any
-ITEM:       randbook owner:Lehudib disc:earth disc2:transmutation \
-                     spells:lehudib's_crystal_spear\
-            / randbook owner:Lehudib disc:earth disc2:translocation \
-                     spells:lehudib's_crystal_spear\
-            / randbook owner:Lehudib disc:earth disc2:conjuration \
-                     spells:lehudib's_crystal_spear
+ITEM:       randbook owner:Lehudib disc:earth
 KFEAT:      PQ = teleporter
 KFEAT:      K = crystal_wall
 TILE:       c = wall_volcanic_blue

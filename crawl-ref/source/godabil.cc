@@ -1465,7 +1465,6 @@ bool vehumet_supports_spell(spell_type spell)
         || spell == SPELL_FREEZING_CLOUD
         || spell == SPELL_MEPHITIC_CLOUD
         || spell == SPELL_BOLT_OF_DRAINING
-        || spell == SPELL_LEHUDIBS_CRYSTAL_SPEAR
         || spell == SPELL_FIRE_STORM
         || spell == SPELL_STICKY_FLAME
         || spell == SPELL_IRON_SHOT

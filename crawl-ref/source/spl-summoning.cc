@@ -2332,7 +2332,6 @@ spret_type cast_haunt(int pow, const coord_def& where, god_type god, bool fail)
 static spell_type servitor_spells[] =
 {
     // primary spells
-    SPELL_LEHUDIBS_CRYSTAL_SPEAR,
     SPELL_IOOD,
     SPELL_IRON_SHOT,
     SPELL_BOLT_OF_FIRE,
