@@ -5,11 +5,10 @@ static const vector<spell_type> spellbook_templates[] =
 {   // Book of Minor Magic
     SPELL_MAGIC_DART,
     SPELL_BLINK,
-    SPELL_CALL_IMP,
     SPELL_PASSWALL,
     SPELL_SLOW,
     SPELL_CONJURE_FLAME,
-    SPELL_MEPHITIC_CLOUD,
+    SPELL_CALL_CANINE_FAMILIAR,
 },
 
 #if TAG_MAJOR_VERSION == 34
@@ -186,6 +185,7 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_SWIFTNESS,
     SPELL_REPEL_MISSILES,
     SPELL_DISCHARGE,
+	SPELL_MEPHITIC_CLOUD,
     SPELL_FULMINANT_PRISM,
 },
 
