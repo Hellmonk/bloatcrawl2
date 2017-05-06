@@ -2736,6 +2736,10 @@ vector<bolt> get_spray_rays(const actor *caster, coord_def aim, int range,
             if (mons_aligned(caster, monster_at(*di)))
                 continue;
 
+            //Don't aim at fire immune enemies
+            if(monster_at(*di)->res_fire() >= 3)
+                continue;
+
             if (!caster->can_see(*monster_at(*di)))
                 continue;
 
