@@ -1382,24 +1382,26 @@ static void _generate_book_item(item_def& item, bool allow_uniques,
     // Determine which skill for a manual.
     if (item.sub_type == BOOK_MANUAL)
     {
-        if (one_chance_in(4))
+        if (x_chance_in_y(2,5))
         {
-		    while(item.skill == SK_POISON_MAGIC || item.skill == SK_CONJURATIONS)
+            do
 			{
                 item.skill = static_cast<skill_type>(SK_SPELLCASTING +
                                                  random2(NUM_SKILLS -
                                                          SK_SPELLCASTING));
 			}
+		    while(item.skill == SK_POISON_MAGIC || item.skill == SK_CONJURATIONS);
         }
         else
 #if TAG_MAJOR_VERSION == 34
-        {     
+        {
+            do
+            {
+                item.skill = static_cast<skill_type>(random2(SK_UNARMED_COMBAT + 1));
+			}			
 			while(item.skill == SK_STABBING || item.skill == SK_TRAPS
                 || item.skill == SK_STAVES || item.skill == SK_LONG_BLADES
-                || item.skill == SK_SLINGS)
-            {
-			    item.skill = static_cast<skill_type>(random2(SK_UNARMED_COMBAT));
-            }
+                || item.skill == SK_SLINGS);
         }
 #else
             item.plus = random2(SK_UNARMED_COMBAT + 1);
