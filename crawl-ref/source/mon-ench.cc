@@ -1545,7 +1545,7 @@ void monster::apply_enchantment(const mon_enchant &me)
             break;
         }
         const int dam = resist_adjust_damage(this, BEAM_FIRE,
-                                             roll_dice(2, 4) - 1);
+                                             roll_dice(2, 3) - 1);
 
         if (dam > 0)
         {
