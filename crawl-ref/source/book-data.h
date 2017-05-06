@@ -269,6 +269,7 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_FULMINANT_PRISM,
     SPELL_BATTLESPHERE,
     SPELL_BOLT_OF_FIRE,
+    SPELL_OZOCUBUS_REFRIGERATION,
     SPELL_IOOD,
     SPELL_SPELLFORGED_SERVITOR,
 },
