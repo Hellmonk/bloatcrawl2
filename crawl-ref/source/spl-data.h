@@ -295,7 +295,7 @@ static const struct spell_desc spelldata[] =
     SPTYP_HEXES | SPTYP_AIR,
     SPFLAG_DIR_OR_TARGET | SPFLAG_AREA
         | SPFLAG_NEEDS_TRACER | SPFLAG_CLOUD,
-    3,
+    4,
     100,
     4, 4,
     3, 0,
