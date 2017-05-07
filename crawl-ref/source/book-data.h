@@ -7,6 +7,7 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_BLINK,
     SPELL_PASSWALL,
     SPELL_SLOW,
+    SPELL_SUBLIMATION_OF_BLOOD,
     SPELL_CONJURE_FLAME,
     SPELL_CALL_CANINE_FAMILIAR,
 },
