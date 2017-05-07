@@ -984,7 +984,7 @@ COLOUR:   ETC_UNHOLY
 TILE:     spwpn_demon_axe
 TILE_EQ:  demon_axe
 BRAND:    SPWPN_VORPAL
-BOOL:     evil, seeinv, fly
+BOOL:     evil, seeinv, fly, drain
 
 NAME:     lightning scales
 OBJ:      OBJ_ARMOUR/ARM_NAGA_BARDING
