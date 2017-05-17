@@ -3093,8 +3093,8 @@ void melee_attack::do_spines()
             if (hurt <= 0)
                 return;
 
-            simple_monster_message(*attacker->as_monster(),
-                                   " is struck by your spines.");
+            mprf("%s is struck by your spines (%d)", attacker->name(DESC_THE).c_str(),
+                 hurt);
 
             attacker->hurt(&you, hurt);
         }
@@ -3120,11 +3120,12 @@ void melee_attack::do_spines()
                 return;
             if (you.can_see(*defender) || attacker->is_player())
             {
-                mprf("%s %s struck by %s %s.", attacker->name(DESC_THE).c_str(),
+                mprf("%s %s struck by %s %s (%d).", attacker->name(DESC_THE).c_str(),
                      attacker->conj_verb("are").c_str(),
                      defender->name(DESC_ITS).c_str(),
                      defender->type == MONS_BRIAR_PATCH ? "thorns"
-                                                        : "spines");
+                                                        : "spines",
+                     hurt);
             }
             attacker->hurt(defender, hurt, BEAM_MISSILE, KILLED_BY_SPINES);
         }
