@@ -1641,7 +1641,7 @@ static tileidx_t _tileidx_monster_no_props(const monster_info& mon)
         {
             // For if Agnes loses her lajatang
             const item_def* weapon = mon.inv[MSLOT_WEAPON].get();
-            if (weapon->is_type(OBJ_WEAPONS, WPN_LAJATANG))
+            if (weapon && weapon->is_type(OBJ_WEAPONS, WPN_LAJATANG))
                 return TILEP_MONS_AGNES;
             else
                 return TILEP_MONS_AGNES_STAVELESS;
