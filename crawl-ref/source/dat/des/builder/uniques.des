@@ -214,7 +214,7 @@ WEIGHT: 3
 
 NAME:   uniq_robin
 DEPTH:  D:2-4
-: place_unique(_G, "Robin band")
+: place_unique(_G, "Samantha band")
 
 NAME:   uniq_roxanne
 DEPTH:  D:14-, Swamp, Snake, Shoals, Spider

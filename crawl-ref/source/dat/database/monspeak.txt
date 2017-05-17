@@ -5161,16 +5161,16 @@ confused Natasha permanently killed
 
 @Natasha permanently killed@
 %%%%
-############ ROBIN ### A hobgoblin with a plan.
-Robin
+############ SAMANTHA ### A hobgoblin with a plan.
+Samantha
 
-@_Robin_common_@
+@_Samantha_common_@
 
 w:5
-@_Robin_rare_@
+@_Samantha_rare_@
 
 %%%%
-_Robin_common_
+_Samantha_common_
 @The_monster@ says, "Kneel, worm!"
 
 @The_monster@ says, "My army is invincible!"
@@ -5191,7 +5191,7 @@ VISUAL:@The_monster@ flexes a bicep menacingly.
 @The_monster@ points @at_foe@. "Kill!"
 
 %%%%
-_Robin_rare_
+_Samantha_rare_
 @The_monster@ says, "A pitiful @player_genus@ like you will never find the ORB!"
 
 # You can be the slave of me, the Spider Queen!

@@ -1608,26 +1608,26 @@ DEPTH:  D:2-4
 {{
   -- Default for when we're only map validating.
   if not crawl.game_started() then
-    kmons("O = Robin / hobgoblin w:1")
+    kmons("O = Samantha / hobgoblin w:1")
     subst("B = 1")
     return
   end
 
   -- possible hobgoblin bosses and their weights
-  bossw = {hobgoblin = 1, Robin = 10}
+  bossw = {hobgoblin = 1, Samantha = 10}
   bosses = {hobgoblin = 1}
 
   -- Find out which hobgoblin unique we can use
-  if not you.uniques("Robin") then
-    bosses["Robin"] = bossw["Robin"]
+  if not you.uniques("Samantha") then
+    bosses["Samantha"] = bossw["Samantha"]
   end
 
   -- Choose a boss, and remove the supporting goblins if we select Robin, since
   -- she has her own band.
   boss = crawl.random_element(bosses)
-  if boss == "Robin" then
+  if boss == "Samantha" then
     subst("B = .")
-    boss = "Robin band"
+    boss = "Samantha band"
   else
     subst("B = 1")
   end
