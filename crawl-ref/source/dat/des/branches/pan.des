@@ -491,6 +491,8 @@ ENDMAP
 ###########################################################################
 # Mnoleg
 #
+default-depth: Pan
+
 NAME:      mnoleg
 ORIENT:    northeast
 TAGS:      mnoleg uniq_mnoleg
