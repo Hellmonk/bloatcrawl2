@@ -492,15 +492,14 @@ void zap_close_monsters()
 			
             //make sure the twins remove each other regardless of distance
             if (mon->type == MONS_DUVESSA || mon->type == MONS_DOWAN)
-                for (radius_iterator rj(you.pos(), LOS_SOLID); rj; ++rj)
+                for (radius_iterator rj(you.pos(), LOS_NONE); rj; ++rj)
                 {
                     monster* monj = monster_at(*rj);
-                    if((monj->type == MONS_DUVESSA || monj->type == MONS_DOWAN)
+                    if((monj && (monj->type == MONS_DUVESSA || monj->type == MONS_DOWAN))
                         && mon->type != monj->type)
                     {
                         monj->flags |= MF_HARD_RESET;
                         monster_die(monj, KILL_DISMISSED, NON_MONSTER, true, true);
-                        break;
                     }
 				}
 			
