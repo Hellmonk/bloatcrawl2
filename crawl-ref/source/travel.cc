@@ -4318,12 +4318,19 @@ void do_interlevel_travel()
     }
     else if (!you.running.pos.x || !you.running.pos.y)
     {
-        mpr("Sorry, you can't auto-travel out of here.");
+        if (you.travel_x && you.travel_y
+           && you.travel_z == level_id::current())
+            start_travel(coord_def(you.travel_x, you.travel_y));
+        else
+            mpr("Sorry, you can't auto-travel with no destination.");
         return;
     }
 
         // Don't ask for a destination if you can only travel
         // within level anyway.
+		you.travel_x = you.running.pos.x;
+		you.travel_y = you.running.pos.y;
+        you.travel_z = level_id::current();
         start_travel(you.running.pos);
 
     if (you.running)
