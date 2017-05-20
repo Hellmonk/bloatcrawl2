@@ -3148,6 +3148,39 @@ cccB.....GcccG.....Bccc
            @
 ENDMAP
 
+NAME: hellmonk_temple_overflow_isosceles
+TAGS: temple_overflow_generic_3
+MAP
+ xx
+ xxx
+ xBxx
+ x..xx
+ x...xx
+ x...Bxx
+ x.....xx
+ x......xx
+ x......Bxx
+@+xxxxxxxxxx
+ @
+ENDMAP
+
+NAME: hellmonk_temple_overflow_circles
+TAGS: temple_overflow_generic_3
+SHUFFLE: fgh
+SUBST: f = c, g = x, h = b
+MAP
+  fff
+ ffBff   
+ff...ff g@g
+ff...ffgg.gg
+ ff.ffgg...gg hhh
+  f@f gg...gghhBhh
+       ggBgghh...hh
+        ggg hh...hh
+             hh.hh
+              h@h
+ENDMAP
+
 NAME:   gammafunk_temple_overflow_forgotten
 TAGS:   temple_overflow_generic_3
 SUBST:  p = x:50 . 1, T = V:30 T, + = +:20 .
@@ -3226,6 +3259,32 @@ cc...cc.cc...cc
  ccccc.@.ccccc
 ENDMAP
 
+NAME: hellmonk_temple_overflow_mini_doorsquare
+TAGS: temple_overflow_generic_4
+MAP
+......
+.++++.
+.+BB+.
+.+BB+.
+.++++.
+......
+ENDMAP
+
+NAME: hellmonk_temple_overflow_flooded
+TAGS: temple_overflow_generic_4
+KMASK:  wW = no_monster_gen
+MAP
+ ccccccccccc
+ccccWWWWWcccc
+cccBWWWWWBccc
+ccWWWwwwWWWcc
+ccWWWwTwWWWcc
+ccWWWwwwWWWcc
+cccBWWWWWBccc
+ccccWWWWWcccc
+ ccccc@ccccc
+ENDMAP
+
 NAME: nicolae_overflow_quartered_altars
 TAGS: temple_overflow_generic_4
 SHUFFLE: fgh/ijk, pq/rs
@@ -3270,6 +3329,28 @@ cccccccc...G...cccccccc
           .@.
 ENDMAP
 
+NAME: hellmonk_temple_overflow_trees
+TAGS: temple_overflow_generic_5
+NSUBST: f = 5:B / *:t
+NSUBST: g = 20:t / *:.
+MAP
+.....................
+.tgtgtgtgtgtgtgtgtgt.
+.g.................g.
+.t.f.f.f.f.f.f.f.f.t.
+.g.................g.
+.t.f.f.f.f.f.f.f.f.t.
+.g.................g.
+.t.f.f.f.f.f.f.f.f.t.
+.g.................g.
+.t.f.f.f.f.f.f.f.f.t.
+.g.................g.
+.t.f.f.f.f.f.f.f.f.t.
+.g.................g.
+.tgtgtgtgtgtgtgtgtgt.
+.....................
+ENDMAP
+
 NAME:   minmay_overflow_temple_hex
 TAGS:   temple_overflow_generic_6
 MAP
@@ -3291,6 +3372,26 @@ cc............cc
       ....
       ....
       .@@.
+ENDMAP
+
+NAME: hellmonk_temple_overflow_huts
+TAGS: temple_overflow_generic_6
+NSUBST: f = 1:+ / *:x
+NSUBST: g = 1:+ / *:x
+NSUBST: h = 1:+ / *:x
+NSUBST: j = 1:+ / *:x
+NSUBST: k = 1:+ / *:x
+NSUBST: n = 1:+ / *:x
+MAP
+.............
+.fff.ggg.hhh.
+.fBf.gBg.hBh.
+.fff.ggg.hhh.
+.............
+.jjj.kkk.nnn.
+.jBj.kBk.nBn.
+.jjj.kkk.nnn.
+.............
 ENDMAP
 
 NAME:  grunt_temple_overflow_octagram
@@ -3318,6 +3419,49 @@ ccB.+..T..T..T..+.Bcc
         cc.cc
          c.c
           @
+ENDMAP
+
+NAME: hellmonk_temple_overflow_closet
+TAGS: temple_overflow_generic_7
+MAP
+ xxxxxxxxx
+@+BBBBBBB+@
+ xxxxxxxxx
+ENDMAP
+
+NAME: hellmonk_temple_overflow_doorsquare
+TAGS: temple_overflow_generic_8
+MAP
+++++++
++B..B+
++.BB.+
++.BB.+
++B..B+
+++++++
+ENDMAP
+
+NAME: hellmonk_temple_overflow_snakey
+TAGS: temple_overflow_generic_9
+MAP
+         @
+xxxxxxxxx+x
+xB.BxB.Bx.x
+x.x.xBx.x.x
+x.xB.BxB.Bx
+x+xxxxxxxxx
+ @
+ENDMAP
+
+NAME: hellmonk_temple_overflow_statues
+TAGS: temple_overflow_generic_12
+MAP
+G......G
+.BB..BB.
+.BG..GB.
+........
+.BG..GB.
+.BB..BB.
+G......G
 ENDMAP
 
 NAME:    grunt_temple_overflow_open
