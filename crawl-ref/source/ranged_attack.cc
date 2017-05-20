@@ -276,9 +276,11 @@ bool ranged_attack::handle_phase_hit()
         || projectile->is_type(OBJ_MISSILES, MI_DART_CURARE)
         || projectile->is_type(OBJ_MISSILES, MI_DART_FRENZY))
     {
-        damage_done = dart_duration_roll(projectile->sub_type);
+        //hack to fix dart damage messaging
+        damage_done = 0;
         set_attack_verb(0);
         announce_hit();
+        damage_done = dart_duration_roll(projectile->sub_type);
     }
     else
     {
