@@ -3380,8 +3380,7 @@ TAGS:  temple_overflow_generic_10 temple_overflow_generic_9
 TAGS:  temple_overflow_generic_8 temple_overflow_generic_7
 TAGS:  temple_overflow_generic_6 temple_overflow_generic_5
 TAGS:  temple_overflow_generic_4 temple_overflow_generic_3
-TAGS:  temple_overflow_generic_2
-# The original vault had allow_dup; I think that's overkill.
+TAGS:  temple_overflow_generic_2 allow_dup
 {{
   local altarcount = 1
   if is_validating() then
