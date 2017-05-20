@@ -657,7 +657,7 @@ xcc*|cc**cc...5bbb7.......4...ccx
 xc$|*c|**c..1bbbbbbb..........2cx
 xc|$cc*|cc..bbbbbbbbb..4.......cx
 xc*|c|**c..6bbbbbbbbb..........cx
-xc|*c$$|c..bbbbbbbbbbb..........@
+xc|*c$$|c..bbbbbbbbbbb..........x
 xc+ccc+cc6.bbbbbbbbbbb...1..3cccx
 xc..1......bbbbbbbbbbb......2cxxx
 xc..........bbbbbbbbb.......ccxxx
@@ -702,8 +702,8 @@ KMONS:   8 = crystal guardian
 SUBST:   1=11., 2=22., 3=33., 4=44., 5=543, 6=66., 7=77., 8=8.
 SHUFFLE: 12, 34, 67
 SUBST:   b : bc
-SHUFFLE: A>
 KFEAT:   > = exit_elven_halls
+SHUFFLE: A>
 : elf_loot_defenders(_G)
 : elf_loot_randomisation(_G)
 MAP
@@ -755,8 +755,8 @@ PLACE:   Elf:$
 : elf_monsters(_G)
 SUBST:   1=11., 2=22., 3=33., 4=44., 5=543, 6=66., 7=77.
 SHUFFLE: 12, 34, 67
-SHUFFLE: A>
 KFEAT: > = exit_elven_halls
+SHUFFLE: A>
 : elf_loot_defenders(_G)
 : elf_loot_randomisation(_G)
 MAP
@@ -794,7 +794,7 @@ xxxxxxxxxxxxxxxxcc.ccxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxc.cxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxc2cxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxx.xxxxxxxxxxxxxxxxxx
-xxxxx....xx.....xx..xx.....xx...xxxxx
+xxxxx....xx.....xx..xx.....xx....xxxx
 xxxx..A..xx..xx.xx..xx.xx..xx..>..xxx
 xxxxx........xx........xx........xxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -819,6 +819,7 @@ SUBST:   A : cvb, B : cvb, C : cvb
 SHUFFLE: st
 SUBST:   s = +, t = c
 SUBST:   U = +c
+KFEAT: Z = stone_arch
 KFEAT: > = exit_elven_halls
 : elf_loot_defenders(_G)
 : elf_loot_randomisation(_G)
@@ -870,7 +871,7 @@ xxxxxxxxxxxx....................xxxxxxxxxx
 xxxxxxxxxx........................xxxxxxxx
 xxxxxxxxx.......xxxxxxxxxxxx.......xxxxxxx
 xxxxxxxxx.....xxxccccccccccxxx.....xxxxxxx
-xxxxxxxx....xxxccc...A.>..cccxxx....xxxxxx
+xxxxxxxx....xxxccc...Z.>..cccxxx....xxxxxx
 xxxxxxxx...xxccc............cccxx...xxxxxx
 xxxxxxxx..xxcc................ccxx..xxxxxx
 xxxxxxxxx..........................xxxxxxx
