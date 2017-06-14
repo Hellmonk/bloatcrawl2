@@ -4982,7 +4982,6 @@ static map<const char*, vector<mutation_type>> sacrifice_vector_map =
 static const vector<mutation_type> _major_arcane_sacrifices =
 {
     MUT_NO_CHARM_MAGIC,
-    MUT_NO_CONJURATION_MAGIC,
     MUT_NO_SUMMONING_MAGIC,
     MUT_NO_TRANSLOCATION_MAGIC,
 };
