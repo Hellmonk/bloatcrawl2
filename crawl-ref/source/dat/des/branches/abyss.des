@@ -38,7 +38,7 @@ end
 # 1/3 chance to appear on Depths floors and guaranteed on Depths:4.
 ###############################################################################
 
-default-depth: Depths, D:21-
+default-depth: Depths:4-, D:21-
 
 # This one is the backup and the one used in encompass vaults.
 NAME: abyss_entry
