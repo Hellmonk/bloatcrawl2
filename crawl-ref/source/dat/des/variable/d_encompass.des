@@ -9,8 +9,8 @@ NAME:    hangedman_slaughterboxes
 TAGS:    no_pool_fixup no_monster_gen no_item_gen patrolling uniq_d_encompass
 ORIENT:  encompass
 DEPTH:   Depths:2-
-PLACE:   D:$, Depths:$
-WEIGHT:  1 (D:$), 2 (Depths:$), 10
+PLACE:   Depths:$
+WEIGHT:  2 (Depths:$), 10
 MONS:    fungus, plant
 KMONS:   S = 0 band
 KMONS:   # = 9 band
@@ -116,8 +116,8 @@ default-depth:
 NAME: grunt_runaround
 TAGS: no_monster_gen uniq_d_encompass
 PLACE: Depths:$
-DEPTH: D:$, Depths:2-
-WEIGHT: 1 (D:$), 2 (Depths:$), 10
+DEPTH: Depths:2-
+WEIGHT: 2 (Depths:$), 10
 ORIENT: encompass
 SUBVAULT: B : grunt_runaround_doors_1
 SUBVAULT: C : grunt_runaround_doors_2
