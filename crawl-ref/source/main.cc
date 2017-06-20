@@ -3381,7 +3381,8 @@ static void _move_player(coord_def move)
         {
             // Non-swimmers cannot attack while in deep water
             if (grd(you.pos()) == DNGN_DEEP_WATER
-                && !you.can_swim() && !you.airborne())
+                && !you.can_swim() && (!species_likes_water(you.species) || !form_likes_water())
+				&& !you.airborne())
             {
                 mpr("You cannot attack while swimming in deep water!");
                 return;
