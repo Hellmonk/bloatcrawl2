@@ -1287,16 +1287,6 @@ static void _ETHERIC_CAGE_equip(item_def *item, bool *show_msgs, bool unmeld)
     _equip_mpr(show_msgs, "You sense a greater flux of ambient magical fields.");
 }
 
-static void _ETHERIC_CAGE_world_reacts(item_def *item)
-{
-    const int delay = you.time_taken;
-    ASSERT(delay > 0);
-
-    // coinflip() chance of 1 MP per turn.
-    if (player_regenerates_mp())
-        inc_mp(binomial(div_rand_round(delay, BASELINE_DELAY), 1, 2));
-}
-
 ///////////////////////////////////////////////////
 
 static void _ETERNAL_TORMENT_equip(item_def *item, bool *show_msgs, bool unmeld)

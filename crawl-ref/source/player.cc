@@ -1241,7 +1241,9 @@ int player_mp_regen()
         multiplier += 100;
     if (you.wearing(EQ_AMULET, AMU_MANA_REGENERATION)
 		&& you.props[MANA_REGEN_AMULET_ACTIVE].get_int() == 1)
-        multiplier += 165;
+        multiplier += 175;
+    if (player_equip_unrand(UNRAND_ETHERIC_CAGE))
+        multiplier += 175;
 
     return regen_amount * multiplier / 100;
 }

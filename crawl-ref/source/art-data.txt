@@ -1191,7 +1191,7 @@ COLOUR:  ETC_ELECTRICITY
 TILE:    urand_etheric_cage
 TILE_EQ: etheric_cage
 INSCRIP: RegenMP+
-PLUS:    +0
+PLUS:    +2
 MP:      +4
 BOOL:    mutate, elec, chaotic
 
