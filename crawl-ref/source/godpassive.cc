@@ -944,8 +944,11 @@ int qazlal_sh_boost(int piety)
 {
     if (!have_passive(passive_t::storm_shield))
         return 0;
+	
+    if (piety < 30)
+        return 0;
 
-    return min(piety, piety_breakpoint(5)) / 10;
+    return min(piety, piety_breakpoint(5)) / 4;
 }
 
 // Not actually passive, but placing it here so that it can be easily compared

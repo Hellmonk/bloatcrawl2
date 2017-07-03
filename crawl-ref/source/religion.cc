@@ -2491,8 +2491,7 @@ void lose_piety(int pgn)
         notify_stat_change();
     }
 
-    if (you_worship(GOD_QAZLAL)
-        && qazlal_sh_boost(old_piety) != qazlal_sh_boost())
+    if (you_worship(GOD_QAZLAL))
     {
         you.redraw_armour_class = true;
     }
