@@ -3278,7 +3278,7 @@ static const map<spell_type, summon_cap> summonsdata =
     { SPELL_SUMMON_HYDRA,               { 3, 2 } },
     { SPELL_SUMMON_MANA_VIPER,          { 2, 2 } },
     // Demons
-    { SPELL_CALL_IMP,                   { 3, 3 } },
+    { SPELL_CALL_IMP,                   { 1, 2 } },
     { SPELL_SUMMON_DEMON,               { 3, 2 } },
     { SPELL_SUMMON_GREATER_DEMON,       { 3, 2 } },
     // General monsters
