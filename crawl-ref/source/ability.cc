@@ -582,7 +582,7 @@ static const ability_def Ability_List[] =
 
     // Qazlal
     { ABIL_QAZLAL_UPHEAVAL, "Upheaval",
-      4, 0, 0, 3, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
+      4, 0, 0, 2, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_QAZLAL_CLOUD_SURGE, "Cloud Surge",
       6, 0, 0, 4, {FAIL_INVO, 50, 5, 20}, abflag::NONE },
     { ABIL_QAZLAL_DISASTER_AREA, "Disaster Area",
