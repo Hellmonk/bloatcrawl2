@@ -21,6 +21,7 @@ show_more = false
 :     crawl.call_dlua("require('dlua/stress.lua');" ..
 :                     "stress.entomb();" ..
 :                     "stress.awaken_level()")
+:     crawl.sendkeys("&l27" .. eol .. esc)
 :     crawl.sendkeys("5")
 :   elseif you.turns() < 1000 then
 :     crawl.sendkeys("5")
