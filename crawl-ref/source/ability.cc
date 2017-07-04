@@ -584,9 +584,9 @@ static const ability_def Ability_List[] =
     { ABIL_QAZLAL_UPHEAVAL, "Upheaval",
       4, 0, 0, 3, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_QAZLAL_CLOUD_SURGE, "Cloud Surge",
-      6, 0, 0, 6, {FAIL_INVO, 60, 5, 20}, abflag::NONE },
+      6, 0, 0, 4, {FAIL_INVO, 50, 5, 20}, abflag::NONE },
     { ABIL_QAZLAL_DISASTER_AREA, "Disaster Area",
-      7, 0, 0, 10, {FAIL_INVO, 70, 4, 25}, abflag::NONE },
+      7, 0, 0, 8, {FAIL_INVO, 70, 4, 25}, abflag::NONE },
 
     // Pakellas
     { ABIL_PAKELLAS_DEVICE_SURGE, "Device Surge",
