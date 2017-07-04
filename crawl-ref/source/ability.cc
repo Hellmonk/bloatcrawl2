@@ -583,7 +583,7 @@ static const ability_def Ability_List[] =
     // Qazlal
     { ABIL_QAZLAL_UPHEAVAL, "Upheaval",
       4, 0, 0, 3, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
-    { ABIL_QAZLAL_ELEMENTAL_FORCE, "Elemental Force",
+    { ABIL_QAZLAL_CLOUD_SURGE, "Cloud Surge",
       6, 0, 0, 6, {FAIL_INVO, 60, 5, 20}, abflag::NONE },
     { ABIL_QAZLAL_DISASTER_AREA, "Disaster Area",
       7, 0, 0, 10, {FAIL_INVO, 70, 4, 25}, abflag::NONE },
@@ -966,7 +966,6 @@ ability_type fixup_ability(ability_type ability)
     case ABIL_MAKHLEB_GREATER_SERVANT_OF_MAKHLEB:
     case ABIL_TROG_BROTHERS_IN_ARMS:
     case ABIL_GOZAG_BRIBE_BRANCH:
-    case ABIL_QAZLAL_ELEMENTAL_FORCE:
         if (you.get_mutation_level(MUT_NO_LOVE))
             return ABIL_NON_ABILITY;
         else
@@ -2833,8 +2832,8 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     case ABIL_QAZLAL_UPHEAVAL:
         return qazlal_upheaval(coord_def(), false, fail);
 
-    case ABIL_QAZLAL_ELEMENTAL_FORCE:
-        return qazlal_elemental_force(fail);
+    case ABIL_QAZLAL_CLOUD_SURGE:
+        return qazlal_cloud_surge(fail);
 
     case ABIL_QAZLAL_DISASTER_AREA:
         fail_check();

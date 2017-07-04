@@ -640,12 +640,11 @@ Upheaval ability
 Calls on the forces of nature to blast a small area with magma, ice, wind,
 or rubble. Invocations skill increases both damage and area affected.
 %%%%
-Elemental Force ability
+Cloud Surge ability
 
-Causes elemental clouds around you to coalesce into elementals. Your own
-clouds create friendly elementals; hostile clouds create hostile elementals;
-natural clouds create neutral elementals. Invocations skill increases the
-maximum number of elementals that can be created with one use of the ability.
+Calls forth flame, freezing, and storm clouds in a ring around you. Invocations skill 
+increases the area affected. Clouds already present in the affected area have their 
+durations greatly extended.
 %%%%
 Disaster Area ability
 

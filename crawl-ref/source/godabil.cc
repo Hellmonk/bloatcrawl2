@@ -4861,6 +4861,46 @@ spret_type qazlal_elemental_force(bool fail)
     return SPRET_SUCCESS;
 }
 
+spret_type qazlal_cloud_surge(bool fail)
+{
+	fail_check();
+	
+    const int pow = you.skill(SK_INVOCATIONS, 10);
+    int radius = max(1, min(7,random2(div_rand_round(pow, 25))));
+    bool placed = false;
+    bool extended = false;
+
+    for (radius_iterator ri(you.pos(), radius, C_SQUARE, LOS_SOLID, true);
+         ri; ++ri)
+    {
+        if (cell_is_solid(*ri))
+            continue;
+        if (cloud_at(*ri))
+		{
+            cloud_struct* cloud = cloud_at(*ri);
+			cloud->decay += 100 + random2(pow*2);
+			cloud->set_whose(KC_YOU);
+            extended = true;
+        }
+        else
+        {
+            cloud_type ctype;
+            ctype = random_choose(CLOUD_FIRE, CLOUD_COLD, CLOUD_STORM);
+            place_cloud(ctype, *ri, 10 + random2(div_rand_round(pow,5)), &you);	
+            placed = true;			
+        }     
+    }
+
+    if (placed)
+        mprf(MSGCH_GOD, "Clouds surge forth around you!");
+    else if (extended)
+        mprf(MSGCH_GOD, "Your clouds seem like they will last longer.");
+    else
+        canned_msg(MSG_NOTHING_HAPPENS);
+
+    return SPRET_SUCCESS;
+}
+
 bool qazlal_disaster_area()
 {
     bool friendlies = false;
