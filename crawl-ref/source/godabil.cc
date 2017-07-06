@@ -4866,7 +4866,7 @@ spret_type qazlal_cloud_surge(bool fail)
 	fail_check();
 	
     const int pow = you.skill(SK_INVOCATIONS, 10);
-    int radius = max(1, min(7,random2avg(div_rand_round(pow, 22),2)));
+    int radius = 2 + min(5,random2avg(div_rand_round(pow, 33),2));
     bool placed = false;
     bool extended = false;
 
