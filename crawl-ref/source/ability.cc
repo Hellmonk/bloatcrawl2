@@ -406,9 +406,8 @@ static const ability_def Ability_List[] =
       0, scaling_cost::fixed(1), 0, 0, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_MAKHLEB_LESSER_SERVANT_OF_MAKHLEB, "Lesser Servant of Makhleb",
       0, scaling_cost::fixed(4), 0, 2, {FAIL_INVO, 40, 5, 20}, abflag::HOSTILE },
-    { ABIL_MAKHLEB_MAJOR_DESTRUCTION, "Major Destruction",
-      0, scaling_cost::fixed(6), 0, generic_cost::range(0, 1),
-      {FAIL_INVO, 60, 4, 25}, abflag::NONE },
+    { ABIL_MAKHLEB_HURL_DAMNATION, "Hurl Damnation",
+      0, scaling_cost::fixed(10), 0, 5, {FAIL_INVO, 70, 4, 25}, abflag::NONE },
     { ABIL_MAKHLEB_GREATER_SERVANT_OF_MAKHLEB, "Greater Servant of Makhleb",
       0, scaling_cost::fixed(10), 0, 5,
       {FAIL_INVO, 90, 2, 5}, abflag::HOSTILE },
@@ -2387,33 +2386,15 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
                           GOD_MAKHLEB, 0, !fail);
         break;
 
-    case ABIL_MAKHLEB_MAJOR_DESTRUCTION:
+    case ABIL_MAKHLEB_HURL_DAMNATION:
     {
-        beam.range = 5;
-
-        if (!spell_direction(spd, beam))
-            return SPRET_ABORT;
-
-        int power = you.skill(SK_INVOCATIONS, 1)
-                    + random2(1 + you.skill(SK_INVOCATIONS, 1))
-                    + random2(1 + you.skill(SK_INVOCATIONS, 1));
-
-        // Since the actual beam is random, check with BEAM_MMISSILE and the
-        // highest range possible.
-        if (!player_tracer(ZAP_DEBUGGING_RAY, power, beam, LOS_RADIUS))
-            return SPRET_ABORT;
-
         fail_check();
+        int power = you.skill(SK_INVOCATIONS, 10);
+        if (your_spells(SPELL_HURL_DAMNATION,
+                        power,
+                        false) == SPRET_ABORT)
         {
-            zap_type ztype =
-                random_choose(ZAP_BOLT_OF_FIRE,
-                              ZAP_FIREBALL,
-                              ZAP_LIGHTNING_BOLT,
-                              ZAP_STICKY_FLAME,
-                              ZAP_IRON_SHOT,
-                              ZAP_BOLT_OF_DRAINING,
-                              ZAP_ORB_OF_ELECTRICITY);
-            zapping(ztype, power, beam);
+            return SPRET_ABORT;
         }
         break;
     }
