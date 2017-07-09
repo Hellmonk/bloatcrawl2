@@ -405,7 +405,7 @@ static const ability_def Ability_List[] =
     { ABIL_MAKHLEB_MINOR_DESTRUCTION, "Minor Destruction",
       0, scaling_cost::fixed(1), 0, 0, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_MAKHLEB_LESSER_SERVANT_OF_MAKHLEB, "Lesser Servant of Makhleb",
-      0, scaling_cost::fixed(4), 0, 2, {FAIL_INVO, 40, 5, 20}, abflag::HOSTILE },
+      0, scaling_cost::fixed(5), 0, 3, {FAIL_INVO, 40, 5, 20}, abflag::HOSTILE },
     { ABIL_MAKHLEB_HURL_DAMNATION, "Hurl Damnation",
       0, scaling_cost::fixed(10), 0, 5, {FAIL_INVO, 70, 4, 25}, abflag::NONE },
     { ABIL_MAKHLEB_GREATER_SERVANT_OF_MAKHLEB, "Greater Servant of Makhleb",
