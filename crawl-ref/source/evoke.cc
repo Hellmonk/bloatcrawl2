@@ -704,7 +704,11 @@ void zap_wand(int slot)
     }
     // Mark as empty if necessary.
     if (wand.charges == 0 && wand.flags & ISFLAG_KNOW_PLUSES)
+    {
         wand.used_count = ZAPCOUNT_EMPTY;
+        mpr("The wand breaks as it expends its last charge.");
+		dec_inv_item_quantity(wand.link, 1);
+    }
 
     practise_evoking(1);
     count_action(CACT_EVOKE, EVOC_WAND);
