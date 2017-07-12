@@ -136,18 +136,16 @@ void ghost_demon::reset()
  */
 static brand_type _random_special_pan_lord_brand()
 {
-    return random_choose_weighted(10, SPWPN_FLAMING,
-                                  10, SPWPN_FREEZING,
-                                  10, SPWPN_ELECTROCUTION,
+    return random_choose_weighted(15, SPWPN_FLAMING,
+                                  15, SPWPN_FREEZING,
+                                  15, SPWPN_ELECTROCUTION,
                                   10, SPWPN_VENOM,
-                                  // Lower chance
-                                  5, SPWPN_DRAINING,
+                                  10, SPWPN_DRAINING,
                                   // Higher chance
                                   20, SPWPN_VAMPIRISM,
                                   20, SPWPN_PAIN,
                                   20, SPWPN_ANTIMAGIC,
-                                  20, SPWPN_DISTORTION,
-                                  20, SPWPN_CHAOS);
+                                  20, SPWPN_DISTORTION);
 }
 
 #define ADD_SPELL(which_spell) \
