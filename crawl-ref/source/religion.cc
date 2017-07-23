@@ -4348,7 +4348,7 @@ int get_tension(god_type god)
         tension /= 2;
     }
 
-    if (you.duration[DUR_HASTE])
+    if (you.duration[DUR_HASTE] || you.attribute[ATTR_PERMAHASTE])
     {
         tension *= 2;
         tension /= 3;

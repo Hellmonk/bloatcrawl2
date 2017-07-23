@@ -190,9 +190,9 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_HASTE, "Haste",
     SPTYP_CHARMS,
-    SPFLAG_DIR_OR_TARGET | SPFLAG_HELPFUL | SPFLAG_HASTY | SPFLAG_SELFENCH
-        | SPFLAG_UTILITY,
-    6,
+    SPFLAG_HELPFUL | SPFLAG_HASTY | SPFLAG_SELFENCH
+        | SPFLAG_UTILITY | SPFLAG_PERMABUFF,
+    9,
     200,
     LOS_RADIUS, LOS_RADIUS,
     5, 0,
@@ -224,8 +224,8 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_INVISIBILITY, "Invisibility",
     SPTYP_HEXES,
-    SPFLAG_DIR_OR_TARGET | SPFLAG_HELPFUL | SPFLAG_SELFENCH
-        | SPFLAG_EMERGENCY | SPFLAG_NEEDS_TRACER,
+    SPFLAG_HELPFUL | SPFLAG_SELFENCH
+        | SPFLAG_EMERGENCY | SPFLAG_NEEDS_TRACER | SPFLAG_PERMABUFF,
     6,
     200,
     LOS_RADIUS, LOS_RADIUS,
@@ -305,7 +305,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_RING_OF_FLAMES, "Ring of Flames",
     SPTYP_CHARMS | SPTYP_FIRE,
-    SPFLAG_AREA,
+    SPFLAG_AREA | SPFLAG_PERMABUFF,
     7,
     200,
     -1, -1,
@@ -406,7 +406,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_AURA_OF_ABJURATION, "Aura of Abjuration",
     SPTYP_SUMMONING,
-    SPFLAG_AREA | SPFLAG_NEUTRAL | SPFLAG_ESCAPE,
+    SPFLAG_AREA | SPFLAG_NEUTRAL | SPFLAG_ESCAPE | SPFLAG_PERMABUFF,
     5,
     200,
     -1, -1,
@@ -747,8 +747,8 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_OZOCUBUS_ARMOUR, "Ozocubu's Armour",
     SPTYP_CHARMS | SPTYP_ICE,
-    SPFLAG_NO_GHOST,
-    3,
+    SPFLAG_NO_GHOST | SPFLAG_PERMABUFF,
+    4,
     100,
     -1, -1,
     3, 0,
@@ -769,7 +769,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_REPEL_MISSILES, "Repel Missiles",
     SPTYP_CHARMS | SPTYP_AIR,
-    SPFLAG_NONE,
+    SPFLAG_PERMABUFF,
     2,
     50,
     -1, -1,
@@ -850,7 +850,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_REGENERATION, "Regeneration",
     SPTYP_CHARMS | SPTYP_NECROMANCY,
-    SPFLAG_SELFENCH | SPFLAG_UTILITY,
+    SPFLAG_SELFENCH | SPFLAG_UTILITY | SPFLAG_PERMABUFF,
     3,
     200,
     -1, -1,
@@ -1228,7 +1228,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_DEATH_CHANNEL, "Death Channel",
     SPTYP_NECROMANCY,
-    SPFLAG_HELPFUL | SPFLAG_UTILITY,
+    SPFLAG_HELPFUL | SPFLAG_UTILITY | SPFLAG_PERMABUFF,
     6,
     200,
     -1, -1,
@@ -1251,7 +1251,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_DEFLECT_MISSILES, "Deflect Missiles",
     SPTYP_CHARMS | SPTYP_AIR,
-    SPFLAG_HELPFUL | SPFLAG_UTILITY,
+    SPFLAG_HELPFUL | SPFLAG_UTILITY | SPFLAG_PERMABUFF,
     6,
     200,
     -1, -1,
@@ -2456,7 +2456,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_DARKNESS, "Darkness",
     SPTYP_HEXES,
-    SPFLAG_NONE,
+    SPFLAG_NONE | SPFLAG_PERMABUFF,
     6,
     200,
     -1, -1,
@@ -2854,7 +2854,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_SONG_OF_SLAYING, "Song of Slaying",
     SPTYP_CHARMS,
-    SPFLAG_UTILITY,
+    SPFLAG_UTILITY | SPFLAG_PERMABUFF,
     2,
     100,
     -1, -1,
@@ -3656,7 +3656,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_CIGOTUVIS_EMBRACE, "Cigotuvi's Embrace",
     SPTYP_NECROMANCY,
-    SPFLAG_CHAOTIC | SPFLAG_CORPSE_VIOLATING | SPFLAG_UTILITY | SPFLAG_NO_GHOST,
+    SPFLAG_CHAOTIC | SPFLAG_CORPSE_VIOLATING | SPFLAG_UTILITY | SPFLAG_NO_GHOST | SPFLAG_PERMABUFF,
     5,
     200,
     -1, -1,

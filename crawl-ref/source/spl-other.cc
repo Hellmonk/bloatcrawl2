@@ -72,16 +72,10 @@ spret_type cast_sublimation_of_blood(int pow, bool fail)
 
 spret_type cast_death_channel(int pow, god_type god, bool fail)
 {
-    if (you.duration[DUR_DEATH_CHANNEL] >= 60 * BASELINE_DELAY)
-    {
-        canned_msg(MSG_NOTHING_HAPPENS);
-        return SPRET_ABORT;
-    }
-
     fail_check();
     mpr("Malign forces permeate your being, awaiting release.");
 
-    you.increase_duration(DUR_DEATH_CHANNEL, 30 + random2(1 + 2*pow/3), 200);
+    you.attribute[ATTR_DEATH_CHANNEL] = 1;
 
     if (god != GOD_NO_GOD)
         you.attribute[ATTR_DIVINE_DEATH_CHANNEL] = static_cast<int>(god);
@@ -349,11 +343,8 @@ spret_type cast_intoxicate(int pow, bool fail)
 spret_type cast_darkness(int pow, bool fail)
 {
     fail_check();
-    if (you.duration[DUR_DARKNESS])
-        mprf(MSGCH_DURATION, "It gets a bit darker.");
-    else
-        mprf(MSGCH_DURATION, "It gets dark.");
-    you.increase_duration(DUR_DARKNESS, 15 + random2(1 + pow/3), 100);
+    you.attribute[ATTR_DARKNESS] = 1;
+    mpr("It gets dark.");
     update_vision_range();
 
     return SPRET_SUCCESS;

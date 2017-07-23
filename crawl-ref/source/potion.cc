@@ -515,14 +515,14 @@ public:
             mprf(MSGCH_DURATION,
                  "You become %stransparent, but the glow from %s "
                  "%s prevents you from becoming completely invisible.",
-                 you.duration[DUR_INVIS] ? "more " : "",
+                 you.duration[DUR_INVIS] || you.attribute[ATTR_PERMAINVIS] ? "more " : "",
                  you.haloed() && you.halo_radius() == -1 ? "the" : "your",
                  comma_separated_line(afflictions.begin(),
                                       afflictions.end()).c_str());
         }
         else
         {
-            mprf(MSGCH_DURATION, !you.duration[DUR_INVIS]
+            mprf(MSGCH_DURATION, !you.duration[DUR_INVIS] && !you.attribute[ATTR_PERMAINVIS]
                  ? "You fade into invisibility!"
                  : "You fade further into invisibility.");
         }

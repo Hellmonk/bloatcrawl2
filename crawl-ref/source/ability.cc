@@ -313,6 +313,8 @@ static const ability_def Ability_List[] =
 #endif
     { ABIL_STOP_SINGING, "Stop Singing",
       0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_BUFFS, "Release Buffs",
+      0, 0, 0, 0, {}, abflag::NONE },
 
     { ABIL_DIG, "Dig", 0, 0, 0, 0, {}, abflag::INSTANT },
     { ABIL_SHAFT_SELF, "Shaft Self", 0, 0, 250, 0, {}, abflag::DELAY },
@@ -2081,6 +2083,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         fail_check();
         untransform();
         break;
+		
+    case ABIL_END_BUFFS:
+        fail_check();
+        dispel_permanent_buffs();
+        break;
 
     // INVOCATIONS:
     case ABIL_ZIN_RECITE:
@@ -3340,6 +3347,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
 
     if (you.attribute[ATTR_PERM_FLIGHT] && you.racial_permanent_flight())
         _add_talent(talents, ABIL_STOP_FLYING, check_confused);
+	
+    if (you.mp_frozen > 0)
+        _add_talent(talents, ABIL_END_BUFFS, check_confused);
 
     // Mutations
     if (you.get_mutation_level(MUT_HURL_DAMNATION))
@@ -3375,9 +3385,6 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     if (you.attribute[ ATTR_DELAYED_FIREBALL ])
         _add_talent(talents, ABIL_DELAYED_FIREBALL, check_confused);
 #endif
-
-    if (you.duration[DUR_SONG_OF_SLAYING])
-        _add_talent(talents, ABIL_STOP_SINGING, check_confused);
 
     // Evocations from items.
     if (you.scan_artefacts(ARTP_BLINK)

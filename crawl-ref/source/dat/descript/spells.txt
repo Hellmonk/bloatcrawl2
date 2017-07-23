@@ -262,11 +262,10 @@ may knock back airborne targets.
 %%%%
 Cigotuvi's Embrace spell
 
-Violently mutilates all nearby corpses, wrapping them around the caster to
-serve as both armour and shield. The carrion will fall away over time, faster
-and faster as more is piled on, though increased power will tighten its grasp
-on the caster's body. It has no effect on casters in Statue Form, or with
-Ozocubu's Armour active.
+Brings forth a chunk of bone to serve as armour and shield for the caster.
+The bone relentlessly calls carrion from the freshly slain to further enhance
+the caster's defenses, though the additional armour will decay with time. 
+It has no effect on casters in Statue Form, or with Ozocubu's Armour active.
 %%%%
 Cleansing Flame spell
 
@@ -368,7 +367,7 @@ Removes poison from the caster's system.
 %%%%
 Darkness spell
 
-Dims the light of the dungeon, reducing the range of vision.
+Dims the light of the dungeon, reducing the range of vision. 
 %%%%
 Dazzling Spray spell
 
@@ -378,7 +377,9 @@ bolts may blind living creatures, even those that fully resist fire.
 Death Channel spell
 
 Raises living creatures slain by the caster and their allies, reducing them to
-a state of spectral slavery.
+a state of spectral slavery. The chance of successfully raising a spectral being 
+increases with spellpower. The spell may be sustained indefinitely as long
+as the caster can reserve a sufficient portion of their magic. 
 %%%%
 Death Rattle spell
 
@@ -403,8 +404,7 @@ Deflect Missiles spell
 
 Protects the caster from all kinds of projectile attacks, making them
 significantly easier to dodge. It is highly effective against both
-single-target and penetrating attacks. Each time a missile is deflected the
-spell has a chance of expiring, with a lower chance of expiry at high power.
+single-target and penetrating attacks.
 %%%%
 Delayed Fireball spell
 
@@ -642,8 +642,10 @@ Speeds the actions of a nearby ally.
 %%%%
 Haste spell
 
-Speeds the actions of a targeted creature. While hasted you will gain magical
-contamination.
+Speeds the actions of the caster. The perfected version of this spell never expires,
+so long as the caster can reserve enough magical power to sustain it, but requires
+such immense skill to maintain that few are capable of casting it at all. Many of
+the dungeon's denizens know an inferior, temporary version of the spell. 
 %%%%
 Haunt spell
 
@@ -1055,16 +1057,15 @@ caster, over a short duration.
 %%%%
 Regeneration spell
 
-Reanimates parts of the caster's wounds. This unnatural act dramatically but
-temporarily increases the caster's health regeneration, while also speeding
-their metabolism.
+Reanimates parts of the caster's wounds. This unnatural act dramatically 
+increases the caster's health regeneration, but requires a portion of their
+magic to be held in reserve to sustain the effect.
 %%%%
 Repel Missiles spell
 
 Reduces the chance of projectile attacks striking the caster, making them
 easier to dodge. Single-target attacks are much easier to repel than
-penetrating attacks. Each time a missile is repelled the spell has a chance of
-expiring, with a lower chance of expiry at high power.
+penetrating attacks.
 %%%%
 Resonance Strike spell
 
@@ -1199,10 +1200,11 @@ Smiting spell
 %%%%
 Song of Slaying spell
 
-Recites ancient verses of battle. Each non-summoned enemy the caster slays in
-combat during this recitation temporarily enhances their melee and ranged
-skills. The bonus only lasts for the duration of the song; casting this spell
-while already singing will start a new song, not extend an existing one.
+Recites ancient verses of battle, boosting the caster's slaying abilities. 
+Each non-summoned enemy the caster slays in combat during this recitation 
+further enhances their melee and ranged skills for a short time. The song
+continues as long as the caster can reserve a portion of their 
+magical power to sustain it. 
 %%%%
 Spawn Tentacles spell
 

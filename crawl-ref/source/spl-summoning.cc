@@ -2495,20 +2495,17 @@ spret_type cast_aura_of_abjuration(int pow, bool fail)
 {
     fail_check();
 
-    if (!you.duration[DUR_ABJURATION_AURA])
-        mpr("You begin to abjure the creatures around you!");
-    else
-        mpr("You extend your aura of abjuration.");
-
-    you.increase_duration(DUR_ABJURATION_AURA,  6 + roll_dice(2, pow / 12), 50);
-    you.props["abj_aura_pow"].get_int() = pow;
-
+    mpr("You begin to abjure the creatures around you!");
+    you.attribute[ATTR_ABJURATION_AURA] = 1;
     return SPRET_SUCCESS;
 }
 
 void do_aura_of_abjuration(int delay)
 {
-    const int pow = you.props["abj_aura_pow"].get_int() * delay / 10;
+    if (!you.attribute[ATTR_ABJURATION_AURA])
+        return;
+    const int raw_pow = calc_spell_power(SPELL_AURA_OF_ABJURATION, true);
+    const int pow = raw_pow * delay / 10;
     for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
         _abjuration(pow / 2, *mi);
 }

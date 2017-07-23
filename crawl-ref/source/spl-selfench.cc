@@ -58,16 +58,14 @@ void remove_ice_armour()
 {
     mprf(MSGCH_DURATION, "Your icy armour melts away.");
     you.redraw_armour_class = true;
-    you.duration[DUR_ICY_ARMOUR] = 0;
+    you.attribute[ATTR_OZO_ARMOUR] = 0;
 }
 
 spret_type ice_armour(int pow, bool fail)
 {
     fail_check();
 
-    if (you.duration[DUR_ICY_ARMOUR])
-        mpr("Your icy armour thickens.");
-    else if (you.form == TRAN_ICE_BEAST)
+    if (you.form == TRAN_ICE_BEAST)
         mpr("Your icy body feels more resilient.");
     else
         mpr("A film of ice covers your body!");
@@ -78,8 +76,7 @@ spret_type ice_armour(int pow, bool fail)
         mpr("Your corpse armour falls away.");
     }
 
-    you.increase_duration(DUR_ICY_ARMOUR, random_range(40, 50), 50);
-    you.props[ICY_ARMOUR_KEY] = pow;
+    you.attribute[ATTR_OZO_ARMOUR] = 1;
     you.redraw_armour_class = true;
 
     return SPRET_SUCCESS;
@@ -147,29 +144,9 @@ int harvest_corpses(const actor &harvester, bool dry_run)
  */
 spret_type corpse_armour(int pow, bool fail)
 {
-    // Could check carefully to see if it's even possible that there are any
-    // valid corpses/skeletons in LOS (any piles with stuff under them, etc)
-    // before failing, but it's better to be simple + predictable from the
-    // player's perspective.
     fail_check();
-
-    const int harvested = harvest_corpses(you);
-    dprf("Harvested: %d", harvested);
-
-    if (!harvested)
-    {
-        canned_msg(MSG_NOTHING_HAPPENS);
-        return SPRET_SUCCESS; // still takes a turn, etc
-    }
-
-    if (you.attribute[ATTR_BONE_ARMOUR] <= 0)
-        mpr("The bodies of the dead rush to embrace you!");
-    else
-        mpr("Your shell of carrion and bone grows thicker.");
-
-    // value of ATTR_BONE_ARMOUR will be sqrt(9*harvested), rounded randomly
-    int squared = sqr(you.attribute[ATTR_BONE_ARMOUR]) + 9 * harvested;
-    you.attribute[ATTR_BONE_ARMOUR] = sqrt(squared) + random_real();
+    you.attribute[ATTR_BONE_ARMOUR] = 1;
+    mpr("The dead rush to embrace you!");
     you.redraw_armour_class = true;
 
     return SPRET_SUCCESS;
@@ -199,9 +176,8 @@ spret_type deflection(int pow, bool fail)
 spret_type cast_regen(int pow, bool fail)
 {
     fail_check();
-    you.increase_duration(DUR_REGENERATION, 5 + roll_dice(2, pow / 3 + 1), 100,
-                          "Your skin crawls.");
-
+    you.attribute[ATTR_SPELL_REGEN] = 1;
+    mpr("Your skin crawls.");
     return SPRET_SUCCESS;
 }
 
@@ -322,15 +298,8 @@ spret_type cast_infusion(int pow, bool fail)
 spret_type cast_song_of_slaying(int pow, bool fail)
 {
     fail_check();
-
-    if (you.duration[DUR_SONG_OF_SLAYING])
-        mpr("You start a new song!");
-    else
-        mpr("You start singing a song of slaying.");
-
-    you.set_duration(DUR_SONG_OF_SLAYING, 20 + random2avg(pow, 2));
-
-    you.props[SONG_OF_SLAYING_KEY] = 0;
+    you.attribute[ATTR_SONG_OF_SLAYING] = 1;
+    mpr("You start singing a song of slaying.");
     return SPRET_SUCCESS;
 }
 
@@ -386,4 +355,101 @@ spret_type cast_transform(int pow, transformation_type which_trans, bool fail)
     fail_check();
     transform(pow, which_trans);
     return SPRET_SUCCESS;
+}
+
+spret_type cast_haste(int pow, bool fail)
+{
+    fail_check();
+    you.attribute[ATTR_PERMAHASTE] = 1;
+    if(you.duration[DUR_HASTE])
+        mpr("You feel as though you will remain fast.");
+    else
+        mpr("You feel yourself speed up.");
+    return SPRET_SUCCESS;
+}
+
+spret_type cast_invisibility(int pow, bool fail)
+{
+    fail_check();
+    you.attribute[ATTR_PERMAINVIS] = 1;
+    if(you.duration[DUR_INVIS] || you.form == TRAN_SHADOW)
+        mpr("You feel more invisible than before");
+    else
+        mpr("You fade into invisibility.");
+    return SPRET_SUCCESS;
+}
+
+//return the total amount of mp the player has frozen using a really ugly 
+//chain of ifs, probably should, like, use a real data structure
+int calculate_frozen_mp()
+{
+    double frozen_mp = 0;
+	if (you.attribute[ATTR_OZO_ARMOUR] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_OZOCUBUS_ARMOUR);
+	}
+	if (you.attribute[ATTR_SPELL_REGEN] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_REGENERATION);
+	}
+	if (you.attribute[ATTR_SONG_OF_SLAYING] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_SONG_OF_SLAYING);
+	}
+	if (you.attribute[ATTR_DEATH_CHANNEL] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_DEATH_CHANNEL);
+	}
+    if (you.attribute[ATTR_DARKNESS] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_DARKNESS);
+	}
+    if (you.attribute[ATTR_ABJURATION_AURA] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_AURA_OF_ABJURATION);
+	}
+    if (you.attribute[ATTR_DEFLECT_MISSILES] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_DEFLECT_MISSILES);
+	}
+    if (you.attribute[ATTR_REPEL_MISSILES] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_REPEL_MISSILES);
+	}
+    if (you.attribute[ATTR_PERMAHASTE] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_HASTE);
+	}
+    if (you.attribute[ATTR_PERMAINVIS] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_INVISIBILITY);
+	}
+    if (you.attribute[ATTR_BONE_ARMOUR] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_CIGOTUVIS_EMBRACE);
+	}
+    if (you.attribute[ATTR_FIRE_SHIELD] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_RING_OF_FLAMES);
+	}
+    return (int) frozen_mp;
+}
+
+void dispel_permanent_buffs()
+{
+	you.attribute[ATTR_OZO_ARMOUR] = 0;
+	you.attribute[ATTR_SPELL_REGEN] = 0;
+    you.attribute[ATTR_SONG_OF_SLAYING] = 0;
+    you.attribute[ATTR_DEATH_CHANNEL] = 0;
+    you.attribute[ATTR_DARKNESS] = 0;
+    you.attribute[ATTR_DEFLECT_MISSILES] = 0;
+    you.attribute[ATTR_REPEL_MISSILES] = 0;
+    you.attribute[ATTR_ABJURATION_AURA] = 0;
+    you.attribute[ATTR_PERMAHASTE] = 0;
+    you.attribute[ATTR_PERMAINVIS] = 0;
+    you.attribute[ATTR_BONE_ARMOUR] = 0;
+    you.attribute[ATTR_FIRE_SHIELD] = 0;
+    you.redraw_armour_class = true;
+    unfreeze_mp();
+	mpr("Your buffs unravel");
 }

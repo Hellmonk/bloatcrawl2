@@ -720,7 +720,7 @@ void update_vision_range()
         nom *= 3, denom *= 4;
 
     // the Darkness spell.
-    if (you.duration[DUR_DARKNESS])
+    if (you.attribute[ATTR_DARKNESS])
         nom *= 3, denom *= 4;
 
     // robe of Night.
@@ -1126,10 +1126,10 @@ static int _player_bonus_regen()
 
     // Trog's Hand is handled separately so that it will bypass slow
     // regeneration, and it overrides the spell.
-    if (you.duration[DUR_REGENERATION]
+    if (you.attribute[ATTR_SPELL_REGEN]
         && !you.duration[DUR_TROGS_HAND])
     {
-        rr += 100;
+        rr += 40 + calc_spell_power(SPELL_REGENERATION, true) / 2;
     }
 
     // Jewellery.
@@ -1288,68 +1288,7 @@ void update_mana_regen_amulet_attunement()
 
 int player_hunger_rate(bool temp)
 {
-    int hunger = 3;
-
-    if (you.species == SP_TROLL)
-        hunger += 3;            // in addition to the +3 for fast metabolism
-
-    if (temp
-        && (you.duration[DUR_REGENERATION]
-            || you.duration[DUR_TROGS_HAND])
-        && you.hp < you.hp_max)
-    {
-        hunger += 4;
-    }
-
-    if (temp)
-    {
-        if (you.duration[DUR_INVIS])
-            hunger += 5;
-
-        // Berserk has its own food penalty - excluding berserk haste.
-        // Doubling the hunger cost for haste so that the per turn hunger
-        // is consistent now that a hasted turn causes 50% the normal hunger
-        // -cao
-        if (you.duration[DUR_HASTE])
-            hunger += haste_mul(5);
-    }
-
-    if (you.species == SP_VAMPIRE)
-    {
-        switch (you.hunger_state)
-        {
-        case HS_FAINTING:
-        case HS_STARVING:
-            hunger -= 3;
-            break;
-        case HS_NEAR_STARVING:
-        case HS_VERY_HUNGRY:
-        case HS_HUNGRY:
-            hunger--;
-            break;
-        case HS_SATIATED:
-            break;
-        case HS_FULL:
-        case HS_VERY_FULL:
-        case HS_ENGORGED:
-            hunger += 2;
-            break;
-        }
-    }
-    else
-    {
-        hunger += you.get_mutation_level(MUT_FAST_METABOLISM)
-                - you.get_mutation_level(MUT_SLOW_METABOLISM);
-    }
-
-    // If Cheibriados has slowed your life processes, you will hunger less.
-    if (have_passive(passive_t::slow_metabolism))
-        hunger /= 2;
-
-    if (hunger < 1)
-        hunger = 1;
-
-    return hunger;
+    return 0;
 }
 
 /**
@@ -1472,6 +1411,9 @@ int player_res_fire(bool calc_unid, bool temp, bool items)
             rf++;
 
         if (you.duration[DUR_FIRE_SHIELD])
+            rf += 2;
+		
+        if (you.attribute[ATTR_FIRE_SHIELD])
             rf += 2;
 
         if (you.duration[DUR_QAZLAL_FIRE_RES])
@@ -1841,6 +1783,9 @@ int player_spec_fire()
 
     if (you.duration[DUR_FIRE_SHIELD])
         sf++;
+	
+    if (you.attribute[ATTR_FIRE_SHIELD])
+        sf++;
 
     return sf;
 }
@@ -2129,7 +2074,7 @@ int player_speed()
 
     if (you.duration[DUR_BERSERK] && !have_passive(passive_t::no_haste))
         ps = berserk_div(ps);
-    else if (you.duration[DUR_HASTE])
+    else if (you.duration[DUR_HASTE] || you.attribute[ATTR_PERMAHASTE])
         ps = haste_div(ps);
 
     if (you.form == TRAN_STATUE || you.duration[DUR_PETRIFYING])
@@ -3641,8 +3586,8 @@ int slaying_bonus(bool ranged)
 
     ret += 4 * augmentation_amount();
 
-    if (you.duration[DUR_SONG_OF_SLAYING])
-        ret += you.props[SONG_OF_SLAYING_KEY].get_int();
+    if (you.attribute[ATTR_SONG_OF_SLAYING])
+        ret += you.attribute[ATTR_SONG_OF_SLAYING];
 
     if (you.duration[DUR_HORROR])
         ret -= you.props[HORROR_PENALTY_KEY].get_int();
@@ -3959,6 +3904,20 @@ void rot_mp(int mp_loss)
     you.redraw_magic_points = true;
 }
 
+void freeze_mp(int mp_loss)
+{
+    you.mp_frozen = mp_loss;
+    calc_mp();
+    you.redraw_magic_points = true;
+}
+
+void unfreeze_mp()
+{
+    you.mp_frozen = 0;
+    calc_mp();
+    you.redraw_magic_points = true;
+}
+
 void inc_max_hp(int hp_gain)
 {
     you.hp += hp_gain;
@@ -4071,7 +4030,7 @@ int get_real_hp(bool trans, bool rotted)
     return max(1, hitp);
 }
 
-int get_real_mp(bool include_items)
+int get_real_mp(bool include_items, bool frozen)
 {
     const int scale = 100;
     int spellcasting = you.skill(SK_SPELLCASTING, 1 * scale, true);
@@ -4110,7 +4069,9 @@ int get_real_mp(bool include_items)
 
     if (include_items && you.wearing_ego(EQ_WEAPON, SPWPN_ANTIMAGIC))
         enp /= 3;
-
+	
+    if (!frozen)
+        enp -= you.mp_frozen;
     enp = max(enp, 0);
 
     return enp;
@@ -4669,7 +4630,8 @@ void dec_slow_player(int delay)
     if (you.duration    [DUR_SLOW] > BASELINE_DELAY)
     {
         // Make slowing and hasting effects last as long.
-        you.duration[DUR_SLOW] -= you.duration[DUR_HASTE]
+        !you.attribute[ATTR_PERMAHASTE] 
+            && (you.duration[DUR_SLOW] -= you.duration[DUR_HASTE])
             ? haste_mul(delay) : delay;
     }
 
@@ -4696,7 +4658,8 @@ void dec_exhaust_player(int delay)
 
     if (you.duration[DUR_EXHAUSTED] > BASELINE_DELAY)
     {
-        you.duration[DUR_EXHAUSTED] -= you.duration[DUR_HASTE]
+        !you.attribute[ATTR_PERMAHASTE] 
+            && (you.duration[DUR_EXHAUSTED] -= you.duration[DUR_HASTE])
                                        ? haste_mul(delay) : delay;
     }
     if (you.duration[DUR_EXHAUSTED] <= BASELINE_DELAY)
@@ -4721,9 +4684,10 @@ bool haste_player(int turns, bool rageext)
     turns = haste_div(turns);
     const int threshold = 40;
 
-    if (!you.duration[DUR_HASTE])
+    if (!you.duration[DUR_HASTE] && !you.attribute[ATTR_PERMAHASTE])
         mpr("You feel yourself speed up.");
-    else if (you.duration[DUR_HASTE] > threshold * BASELINE_DELAY)
+    else if ((you.duration[DUR_HASTE] > threshold * BASELINE_DELAY)
+        || you.attribute[ATTR_PERMAHASTE])
         mpr("You already have as much speed as you can handle.");
     else if (!rageext)
     {
@@ -4749,7 +4713,8 @@ void dec_haste_player(int delay)
 
         int threshold = 6 * BASELINE_DELAY;
         // message if we cross the threshold
-        if (old_dur > threshold && you.duration[DUR_HASTE] <= threshold)
+        if (old_dur > threshold && you.duration[DUR_HASTE] <= threshold
+            && !you.attribute[ATTR_PERMAHASTE])
         {
             mprf(MSGCH_DURATION, "Your extra speed is starting to run out.");
             if (coinflip())
@@ -4758,7 +4723,7 @@ void dec_haste_player(int delay)
     }
     else if (you.duration[DUR_HASTE] <= BASELINE_DELAY)
     {
-        if (!you.duration[DUR_BERSERK])
+        if (!you.duration[DUR_BERSERK] && !you.attribute[ATTR_PERMAHASTE])
             mprf(MSGCH_DURATION, "You feel yourself slow down.");
         you.duration[DUR_HASTE] = 0;
     }
@@ -5108,6 +5073,7 @@ player::player()
     magic_points     = 0;
     max_magic_points = 0;
     mp_max_adj       = 0;
+    mp_frozen        = 0;
 
     stat_loss.init(0);
     base_stats.init(0);
@@ -5736,36 +5702,7 @@ int player::missile_deflection() const
 
 void player::ablate_deflection()
 {
-    const int orig_defl = missile_deflection();
-
-    bool did_something = false;
-    if (attribute[ATTR_DEFLECT_MISSILES])
-    {
-        const int power = calc_spell_power(SPELL_DEFLECT_MISSILES, true);
-        if (one_chance_in(2 + power / 8))
-        {
-            attribute[ATTR_DEFLECT_MISSILES] = 0;
-            did_something = true;
-        }
-    }
-    else if (attribute[ATTR_REPEL_MISSILES])
-    {
-        const int power = calc_spell_power(SPELL_REPEL_MISSILES, true);
-        if (one_chance_in(2 + power / 8))
-        {
-            attribute[ATTR_REPEL_MISSILES] = 0;
-            did_something = true;
-        }
-    }
-
-    if (did_something)
-    {
-        // We might also have the effect from a non-expiring source.
-        mprf(MSGCH_DURATION, "You feel %s from missiles.",
-                             missile_deflection() < orig_defl
-                                 ? "less protected"
-                                 : "your spell is no longer protecting you");
-    }
+    return;
 }
 
 /**
@@ -6040,8 +5977,8 @@ int player::armour_class(bool /*calc_unid*/) const
 
     AC += scan_artefacts(ARTP_AC) * 100;
 
-    if (duration[DUR_ICY_ARMOUR])
-        AC += 500 + you.props[ICY_ARMOUR_KEY].get_int() * 8;
+    if (you.attribute[ATTR_OZO_ARMOUR])
+        AC += 500 + calc_spell_power(SPELL_OZOCUBUS_ARMOUR, true) * 8;
 
     if (mutation[MUT_ICEMAIL])
         AC += 100 * player_icemail_armour_class();
@@ -7109,7 +7046,8 @@ bool player::innate_sinv() const
 
 bool player::invisible() const
 {
-    return (duration[DUR_INVIS] || form == TRAN_SHADOW)
+    return (attribute[ATTR_PERMAINVIS] || duration[DUR_INVIS] 
+        || form == TRAN_SHADOW)
            && !backlit();
 }
 
@@ -7151,7 +7089,8 @@ bool player::umbra() const
 // This is the imperative version.
 void player::backlight()
 {
-    if (!duration[DUR_INVIS] && form != TRAN_SHADOW)
+    if (!attribute[ATTR_PERMAINVIS] && !duration[DUR_INVIS]
+        && form != TRAN_SHADOW)
     {
         if (duration[DUR_CORONA])
             mpr("You glow brighter.");
@@ -8427,22 +8366,7 @@ string player::hands_act(const string &plural_verb,
 }
 
 /**
- * Possibly drop a point of bone armour (from Cigotuvi's Embrace) when hit,
- * or over time.
- *
- * Chance of losing a point of ac/sh increases with current number of corpses
- * (ATTR_BONE_ARMOUR). Each added corpse increases the chance of losing a bit
- * by 5/4x. (So ten corpses are a 9x chance, twenty are 87x...)
- *
- * Base chance is 1/500 (per aut) - 2% per turn, 63% within 50 turns.
- * At 10 corpses, that becomes a 17% per-turn chance, 61% within 5 turns.
- * At 20 corpses, that's 20% per-aut, 90% per-turn...
- *
- * Getting hit/blocking has a higher (BONE_ARMOUR_HIT_RATIO *) chance;
- * at BONE_ARMOUR_HIT_RATIO = 50, that's 10% at one corpse, 30% at five,
- * 90% at ten...
- *
- * @param trials  The number of times to potentially shed armour.
+ * this is overcomplicated shit so it's not used anymore
  */
 void player::maybe_degrade_bone_armour(int trials)
 {
@@ -8461,7 +8385,7 @@ void player::maybe_degrade_bone_armour(int trials)
         return;
 
     you.attribute[ATTR_BONE_ARMOUR]
-        = max(0, you.attribute[ATTR_BONE_ARMOUR] - degraded_armour);
+        = max(1, you.attribute[ATTR_BONE_ARMOUR] - degraded_armour);
 
     if (!you.attribute[ATTR_BONE_ARMOUR])
         mpr("The last of your corpse armour falls away.");

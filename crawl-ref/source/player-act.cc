@@ -318,7 +318,7 @@ random_var player::attack_delay(const item_def *projectile, bool rescale) const
         ASSERT(!you.duration[DUR_BERSERK]);
         // Finesse shouldn't stack with Haste, so we make this attack take
         // longer so when Haste speeds it up, only Finesse will apply.
-        if (you.duration[DUR_HASTE] && rescale)
+        if ((you.duration[DUR_HASTE] || you.attribute[ATTR_PERMAHASTE]) && rescale)
             attk_delay = haste_mul(attk_delay);
         attk_delay = div_rand_round(attk_delay, 2);
     }

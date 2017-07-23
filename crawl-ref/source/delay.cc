@@ -841,10 +841,12 @@ void ArmourOnDelay::finish()
 
     if (eq_slot == EQ_BODY_ARMOUR)
     {
-        if (you.duration[DUR_ICY_ARMOUR] != 0
+        if (you.attribute[ATTR_OZO_ARMOUR] != 0
             && !is_effectively_light_armour(&armour))
         {
             remove_ice_armour();
+            //occurs after the calc in player-reacts
+            freeze_mp(calculate_frozen_mp());
         }
     }
 

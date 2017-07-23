@@ -2173,13 +2173,27 @@ item_def* monster_die(monster* mons, killer_type killer,
 
     // Adjust song of slaying bonus. Kills by relevant avatars are adjusted by
     // now to KILL_YOU and are counted.
-    if (you.duration[DUR_SONG_OF_SLAYING]
+    if (you.attribute[ATTR_SONG_OF_SLAYING]
         && killer == KILL_YOU
         && gives_player_xp)
     {
-        const int sos_bonus = you.props[SONG_OF_SLAYING_KEY].get_int();
-        if (sos_bonus <= 8) // cap at +9 slay
-            you.props[SONG_OF_SLAYING_KEY] = sos_bonus + 1;
+        const int sos_bonus = you.attribute[ATTR_SONG_OF_SLAYING];
+        if (sos_bonus < 12) // cap at +12 slay
+            you.attribute[ATTR_SONG_OF_SLAYING] = sos_bonus + 1;
+    }
+	
+    // Ditto, but for new cigotuvi's embrace
+    if (you.attribute[ATTR_BONE_ARMOUR]
+        && killer == KILL_YOU
+        && gives_player_xp
+        && leaves_corpse)
+    {
+        const int bone_armour = you.attribute[ATTR_BONE_ARMOUR];
+        if (bone_armour < 30) // cap at 30
+		{
+            you.attribute[ATTR_BONE_ARMOUR] = min(30, bone_armour + 1 + random2(3));
+            you.redraw_armour_class = true;
+        }
     }
 
     switch (killer)
@@ -2664,7 +2678,8 @@ item_def* monster_die(monster* mons, killer_type killer,
     }
     if (corpse && mons->has_ench(ENCH_BOUND_SOUL))
         _make_derived_undead(mons, !death_message, true);
-    if (you.duration[DUR_DEATH_CHANNEL] && was_visible && gives_player_xp)
+    if (you.attribute[ATTR_DEATH_CHANNEL] && was_visible && gives_player_xp
+        && x_chance_in_y(200 + calc_spell_power(SPELL_DEATH_CHANNEL, true), 400))
         _make_derived_undead(mons, !death_message, false);
 
     const unsigned int player_xp = gives_player_xp

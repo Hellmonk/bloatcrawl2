@@ -1734,7 +1734,8 @@ static int _ignite_ally_harm(const coord_def &where)
 static bool maybe_abort_ignite()
 {
     // Fire cloud immunity.
-    if (you.duration[DUR_FIRE_SHIELD] || you.has_mutation(MUT_IGNITE_BLOOD))
+    if (you.duration[DUR_FIRE_SHIELD] || you.has_mutation(MUT_IGNITE_BLOOD)
+        || you.attribute[ATTR_FIRE_SHIELD])
         return false;
 
     string prompt = "You are standing ";

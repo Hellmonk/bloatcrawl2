@@ -786,7 +786,7 @@ static void _equip_armour_effect(item_def& arm, bool unmeld,
             break;
 
         case SPARM_INVISIBILITY:
-            if (!you.duration[DUR_INVIS])
+            if (!you.duration[DUR_INVIS] && !you.attribute[ATTR_PERMAINVIS])
                 mpr("You become transparent for a moment.");
             break;
 

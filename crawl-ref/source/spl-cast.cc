@@ -143,9 +143,10 @@ static string _spell_extra_description(spell_type spell, bool viewing)
     // spell power, spell range, hunger level, noise
     const string rangestring = spell_range_string(spell);
 
-    desc << chop_string(spell_power_string(spell), 13)
+    desc << chop_string(spell_power_string(spell), 9)
          << chop_string(rangestring, 9 + tagged_string_tag_length(rangestring))
-         << chop_string(spell_noise_string(spell, 10), 15);
+         << chop_string(spell_noise_string(spell, 10), 15)
+         << chop_string(spell_reserved_mp_string(spell), 8);
 
     desc << "</" << colour_to_str(highlight) <<">";
 
@@ -178,7 +179,7 @@ int list_spells(bool toggle_with_I, bool viewing, bool allow_preselect,
             new ToggleableMenuEntry(
                 " " + titlestring + "         Type          "
                 "                Failure  Level",
-                " " + titlestring + "         Power        "
+                " " + titlestring + "         Power    "
                 "Range    " + "Noise          ",
                 MEL_ITEM);
         me->colour = BLUE;
@@ -189,8 +190,8 @@ int list_spells(bool toggle_with_I, bool viewing, bool allow_preselect,
         new ToggleableMenuEntry(
             " " + titlestring + "         Type          "
             "                Failure  Level",
-            " " + titlestring + "         Power        "
-            "Range    " + "Noise          ",
+            " " + titlestring + "         Power    "
+            "Range    " + "Noise          " + "ReservedMP",
             MEL_TITLE));
 #endif
     spell_menu.set_highlighter(nullptr);
@@ -804,7 +805,9 @@ bool cast_a_spell(bool check_range, spell_type spell)
 
     int cost = spell_mana(spell);
     int sifcast_amount = 0;
-    if (!enough_mp(cost, true))
+    double freeze_cost = spell_mp_freeze(spell);
+    int true_cost = freeze_cost > cost ? (int) freeze_cost + 1 : cost;
+    if (!enough_mp(true_cost, true))
     {
         if (you.attribute[ATTR_DIVINE_ENERGY])
         {
@@ -1133,20 +1136,23 @@ static bool _spellcasting_aborted(spell_type spell, bool fake_spell)
     }
 
     const int severity = fail_severity(spell);
-    if (Options.fail_severity_to_confirm > 0
+    if(!is_buff_spell(spell))
+    {
+        if (Options.fail_severity_to_confirm > 0
         && Options.fail_severity_to_confirm <= severity
         && !crawl_state.disables[DIS_CONFIRMATIONS]
         && !fake_spell)
-    {
-        string prompt = make_stringf("The spell is %s to cast%s "
+        {
+            string prompt = make_stringf("The spell is %s to cast%s "
                                      "Continue anyway?",
                                      fail_severity_adjs[severity],
                                      severity > 1 ? "!" : ".");
 
-        if (!yesno(prompt.c_str(), false, 'n'))
-        {
-            canned_msg(MSG_OK);
-            return true;
+            if (!yesno(prompt.c_str(), false, 'n'))
+            {
+                canned_msg(MSG_OK);
+                return true;
+            }
         }
     }
 
@@ -1617,6 +1623,46 @@ static void _spell_zap_effect(spell_type spell)
     }
 }
 
+bool is_buff_spell(spell_type spell)
+{
+    unsigned int flags = get_spell_flags(spell);
+
+    return bool(flags & SPFLAG_PERMABUFF);
+}
+
+static spret_type _handle_buff_spells(spell_type spell, int powc, bolt& beam, god_type god, bool fail)
+{
+	switch(spell)
+    {
+        case SPELL_REGENERATION:
+            return cast_regen(powc, false);
+        case SPELL_OZOCUBUS_ARMOUR:
+            return ice_armour(powc, false);
+        case SPELL_SONG_OF_SLAYING:
+            return cast_song_of_slaying(powc, false);  
+        case SPELL_DEATH_CHANNEL:
+            return cast_death_channel(powc, god, false);
+        case SPELL_DARKNESS:
+            return cast_darkness(powc, false);
+        case SPELL_AURA_OF_ABJURATION:
+            return cast_aura_of_abjuration(powc, false);      
+        case SPELL_REPEL_MISSILES:
+            return missile_prot(powc, false);
+        case SPELL_DEFLECT_MISSILES:
+            return deflection(powc, false);
+        case SPELL_HASTE:
+            return cast_haste(powc, false);
+        case SPELL_INVISIBILITY:
+            return cast_invisibility(powc, false);
+        case SPELL_CIGOTUVIS_EMBRACE:
+            return corpse_armour(powc, false);  
+		case SPELL_RING_OF_FLAMES:
+            return cast_ring_of_flames(powc, false);
+        default:
+		    return SPRET_NONE;
+    }
+}
+
 // Returns SPRET_SUCCESS, SPRET_ABORT, SPRET_FAIL
 // or SPRET_NONE (not a player spell).
 static spret_type _do_cast(spell_type spell, int powc,
@@ -1630,6 +1676,9 @@ static spret_type _do_cast(spell_type spell, int powc,
         if (!adjacent(you.pos(), target))
             return SPRET_ABORT;
     }
+	
+    if (is_buff_spell(spell))
+        return _handle_buff_spells(spell, powc, beam, god, fail);
 
     switch (spell)
     {
@@ -1800,9 +1849,6 @@ static spret_type _do_cast(spell_type spell, int powc,
     case SPELL_HAUNT:
         return cast_haunt(powc, beam.target, god, fail);
 
-    case SPELL_DEATH_CHANNEL:
-        return cast_death_channel(powc, god, fail);
-
     case SPELL_SPELLFORGED_SERVITOR:
         return cast_spellforged_servitor(powc, god, fail);
 
@@ -1834,9 +1880,6 @@ static spret_type _do_cast(spell_type spell, int powc,
     case SPELL_CONTROL_UNDEAD:
         return mass_enchantment(ENCH_CHARM, powc, fail);
 
-    case SPELL_AURA_OF_ABJURATION:
-        return cast_aura_of_abjuration(powc, fail);
-
     case SPELL_EXCRUCIATING_WOUNDS:
         return cast_excruciating_wounds(powc, fail);
 
@@ -1866,32 +1909,15 @@ static spret_type _do_cast(spell_type spell, int powc,
         return cast_transform(powc, TRAN_LICH, fail);
 
     // General enhancement.
-    case SPELL_REGENERATION:
-        return cast_regen(powc, fail);
-
-    case SPELL_REPEL_MISSILES:
-        return missile_prot(powc, fail);
-
-    case SPELL_DEFLECT_MISSILES:
-        return deflection(powc, fail);
 
     case SPELL_SWIFTNESS:
         return cast_swiftness(powc, fail);
-
-    case SPELL_OZOCUBUS_ARMOUR:
-        return ice_armour(powc, fail);
-
-    case SPELL_CIGOTUVIS_EMBRACE:
-        return corpse_armour(powc, fail);
 
     case SPELL_SILENCE:
         return cast_silence(powc, fail);
 
     case SPELL_INFUSION:
         return cast_infusion(powc, fail);
-
-    case SPELL_SONG_OF_SLAYING:
-        return cast_song_of_slaying(powc, fail);
 
     case SPELL_PORTAL_PROJECTILE:
         return cast_portal_projectile(powc, fail);
@@ -1905,9 +1931,6 @@ static spret_type _do_cast(spell_type spell, int powc,
 
     case SPELL_DEATHS_DOOR:
         return cast_deaths_door(powc, fail);
-
-    case SPELL_RING_OF_FLAMES:
-        return cast_ring_of_flames(powc, fail);
 
     // Escape spells.
     case SPELL_BLINK:
@@ -1936,9 +1959,6 @@ static spret_type _do_cast(spell_type spell, int powc,
 
     case SPELL_GOLUBRIAS_PASSAGE:
         return cast_golubrias_passage(beam.target, fail);
-
-    case SPELL_DARKNESS:
-        return cast_darkness(powc, fail);
 
     case SPELL_SHROUD_OF_GOLUBRIA:
         return cast_shroud_of_golubria(powc, fail);
@@ -2057,6 +2077,23 @@ static double _get_true_fail_rate(int raw_fail)
     // The random2avg distribution is symmetric, so the last interval is
     // essentially the same as the first interval.
     return double(outcomes - _tetrahedral_number(300 - target)) / outcomes;
+}
+
+double spell_mp_freeze (spell_type spell)
+{
+    //no need to freeze mp if it's not a buff spell
+    if (!is_buff_spell(spell))
+	    return 0;
+    else 
+    {
+        // divide by the square of the success rate to prevent dumb shit like casting 99% fail charms
+		double success = 1 - _get_true_fail_rate(raw_spell_fail(spell));
+        // and max out an absurdly high value to avoid weird behaviors 
+        if (success < 0.1)
+            return 1000;
+		double mp_to_freeze = spell_difficulty(spell) / (success * success);
+        return mp_to_freeze;
+    }
 }
 
 /**
@@ -2218,6 +2255,16 @@ static string _wizard_spell_power_numeric_string(spell_type spell)
 string spell_power_string(spell_type spell)
 {
         return _wizard_spell_power_numeric_string(spell);
+}
+
+string spell_reserved_mp_string(spell_type spell)
+{
+	if (! is_buff_spell(spell))
+        return "N/A";
+    else 
+    {
+        return make_stringf("%d", (int) spell_mp_freeze(spell));    
+    }
 }
 
 int calc_spell_range(spell_type spell, int power)

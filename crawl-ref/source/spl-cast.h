@@ -48,6 +48,7 @@ enum spflag_type
                                                  // good gods
     SPFLAG_HOLY               = 0x40000000,      // considered holy (can't be
                                                  // used by Yred enslaved souls)
+    SPFLAG_PERMABUFF          = 0x80000000,      // permabuff that reserves max mp
 };
 
 enum spret_type
@@ -101,8 +102,10 @@ class targetter;
 vector<string> desc_success_chance(const monster_info& mi, int pow, bool evoked,
                                    targetter* hitfunc);
 spret_type your_spells(spell_type spell, int powc = 0, bool allow_fail = true,
-                       const item_def* const evoked_item = nullptr);
-
+                       const item_def* const evoked_item = nullptr);				   
+					   
+double spell_mp_freeze(spell_type spell);
+bool is_buff_spell (spell_type spell);
 extern const char *fail_severity_adjs[];
 
 double get_miscast_chance(spell_type spell, int severity = 2);
@@ -114,6 +117,7 @@ string failure_rate_to_string(int fail);
 int power_to_barcount(int power);
 
 string spell_power_string(spell_type spell);
+string spell_reserved_mp_string(spell_type spell);
 string spell_range_string(spell_type spell);
 string range_string(int range, int maxrange, ucs_t caster_char);
 

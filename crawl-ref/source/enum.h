@@ -247,6 +247,7 @@ enum ability_type
 #endif
     ABIL_END_TRANSFORMATION,
     ABIL_STOP_SINGING, // From song of slaying
+    ABIL_END_BUFFS,
 
     // Species-specific abilities.
     // Demonspawn-only
@@ -590,6 +591,15 @@ enum attribute_type
 #endif
     ATTR_PAKELLAS_EXTRA_MP,    // MP to be collected to get a !magic from P
     ATTR_DIVINE_ENERGY,        // Divine energy from Sif to cast with no MP.
+    ATTR_SPELL_REGEN,          // Regeneration spell
+    ATTR_OZO_ARMOUR,           // Ozos
+    ATTR_SONG_OF_SLAYING,      // Song of Slaying
+    ATTR_DEATH_CHANNEL,        // Dchan
+    ATTR_DARKNESS,             // Darkness
+    ATTR_ABJURATION_AURA,      // Aura of Abjuration
+    ATTR_PERMAHASTE,           // Sanic.wav
+    ATTR_PERMAINVIS,           // Where we're going we won't need eyes to see
+    ATTR_FIRE_SHIELD,          // ring of flames
     NUM_ATTRIBUTES
 };
 

@@ -280,7 +280,7 @@ bool fill_status_info(int status, status_info* inf)
         break;
 
     case STATUS_REGENERATION:
-        // DUR_REGENERATION + some vampire and non-healing stuff
+        // ATTR_REGENERATION + some vampire and non-healing stuff
         _describe_regen(inf);
         break;
 
@@ -315,6 +315,18 @@ bool fill_status_info(int status, status_info* inf)
                                              : BLUE;
 
             inf->light_text = "Aug";
+        }
+        break;
+    }
+
+    case STATUS_RING_OF_FLAMES:
+    {
+		if (you.attribute[ATTR_FIRE_SHIELD])
+        {
+            inf->light_colour = LIGHTMAGENTA;
+            inf->light_text = "RoF";
+			inf->long_text += "You are surrounded by a ring of flames.\n";
+            inf->long_text += "You are immune to clouds of flame.";
         }
         break;
     }
@@ -438,11 +450,39 @@ bool fill_status_info(int status, status_info* inf)
             inf->light_text = "Sil";
         }
         break;
+		
+    case STATUS_DEATH_CHANNEL:
+        if(you.attribute[ATTR_DEATH_CHANNEL])
+        {
+            inf->light_colour = LIGHTMAGENTA;
+            inf->light_text = "DChan";
+        }
+        break;
 
-    case DUR_SONG_OF_SLAYING:
-        inf->light_text
-            = make_stringf("Slay (%u)",
-                           you.props[SONG_OF_SLAYING_KEY].get_int());
+    case STATUS_SONG_OF_SLAYING:
+        if(you.attribute[ATTR_SONG_OF_SLAYING])
+        {
+            inf->light_colour = WHITE;
+            inf->light_text
+                = make_stringf("Slay (%u)",
+                           you.attribute[ATTR_SONG_OF_SLAYING]);
+        }
+        break;
+		
+    case STATUS_DARKNESS:
+        if(you.attribute[ATTR_DARKNESS])
+        {
+            inf->light_colour = LIGHTMAGENTA;
+            inf->light_text = "Dark";
+        }
+        break;
+
+    case STATUS_ABJURATION:
+        if(you.attribute[ATTR_ABJURATION_AURA])
+        {
+            inf->light_colour = LIGHTMAGENTA;
+            inf->light_text = "Abj";
+		}
         break;
 
     case STATUS_BEOGH:
@@ -786,7 +826,8 @@ static void _describe_glow(status_info* inf)
 static void _describe_regen(status_info* inf)
 {
     const bool regen = (you.duration[DUR_REGENERATION] > 0
-                        || you.duration[DUR_TROGS_HAND] > 0);
+                        || you.duration[DUR_TROGS_HAND] > 0
+                        || you.attribute[ATTR_SPELL_REGEN]);
     const bool no_heal = !player_regenerates_hp();
     // Does vampire hunger level affect regeneration rate significantly?
     const bool vampmod = !no_heal && !regen && you.species == SP_VAMPIRE
@@ -794,7 +835,9 @@ static void _describe_regen(status_info* inf)
 
     if (regen)
     {
-        if (you.duration[DUR_REGENERATION] > you.duration[DUR_TROGS_HAND])
+        if (you.attribute[ATTR_SPELL_REGEN])
+            inf->light_colour = WHITE;
+        else if (you.duration[DUR_REGENERATION] > you.duration[DUR_TROGS_HAND])
             inf->light_colour = _dur_colour(BLUE, dur_expiring(DUR_REGENERATION));
         else
             inf->light_colour = _dur_colour(BLUE, dur_expiring(DUR_TROGS_HAND));
@@ -855,7 +898,7 @@ static void _describe_poison(status_info* inf)
 static void _describe_speed(status_info* inf)
 {
     bool slow = you.duration[DUR_SLOW] || have_stat_zero();
-    bool fast = you.duration[DUR_HASTE];
+    bool fast = you.duration[DUR_HASTE] || you.attribute[ATTR_PERMAHASTE];
 
     if (slow && fast)
     {
@@ -873,7 +916,11 @@ static void _describe_speed(status_info* inf)
     }
     else if (fast)
     {
-        inf->light_colour = _dur_colour(BLUE, dur_expiring(DUR_HASTE));
+        if(you.attribute[ATTR_PERMAHASTE])
+            inf->light_colour = WHITE;
+        else
+            inf->light_colour = _dur_colour(BLUE, dur_expiring(DUR_HASTE));
+
         inf->light_text   = "Fast";
         inf->short_text = "hasted";
         inf->long_text = "Your actions are hasted.";
@@ -1005,10 +1052,14 @@ static void _describe_missiles(status_info* inf)
 
 static void _describe_invisible(status_info* inf)
 {
-    if (!you.duration[DUR_INVIS] && you.form != TRAN_SHADOW)
+    if (!you.attribute[ATTR_PERMAINVIS] && !you.duration[DUR_INVIS] && you.form != TRAN_SHADOW)
         return;
 
-    if (you.form == TRAN_SHADOW)
+    if(you.attribute[ATTR_PERMAINVIS])
+    {
+        inf->light_colour = WHITE;
+    }
+    else if (you.form == TRAN_SHADOW)
     {
         inf->light_colour = _dur_colour(WHITE,
                                         dur_expiring(DUR_TRANSFORMATION));

@@ -77,8 +77,8 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_SILENCE,
     SPELL_VIOLENT_UNRAVELLING,
     SPELL_DEFLECT_MISSILES,
-    SPELL_HASTE,
     SPELL_DISCORD,
+    SPELL_HASTE,
 },
 
 #if TAG_MAJOR_VERSION == 34
@@ -260,9 +260,9 @@ static const vector<spell_type> spellbook_templates[] =
 {   // Book of Wizardry
     SPELL_FORCE_LANCE,
     SPELL_AGONY,
-    SPELL_HASTE,
     SPELL_INVISIBILITY,
     SPELL_SPELLFORGED_SERVITOR,
+    SPELL_HASTE,
 },
 #endif
 

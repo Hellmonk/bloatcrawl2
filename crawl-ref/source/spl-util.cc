@@ -1167,12 +1167,16 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_INVISIBILITY:
         if (!prevent && temp && you.backlit())
             return "invisibility won't help you when you glow in the dark.";
+        if (you.attribute[ATTR_PERMAINVIS])
+            return "you are already as invisible as you can get, sorry.";
         break;
 
     case SPELL_DARKNESS:
         // mere corona is not enough, but divine light blocks it completely
         if (temp && (you.haloed() || !prevent && have_passive(passive_t::halo)))
             return "darkness is useless against divine light.";
+        if(you.attribute[ATTR_DARKNESS])
+            return "it's already dark.";
         break;
 
     case SPELL_REPEL_MISSILES:
@@ -1215,6 +1219,8 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "you can't regenerate without divine aid.";
         if (you.undead_state(temp) == US_UNDEAD)
             return "you're too dead to regenerate.";
+        if(you.attribute[ATTR_SPELL_REGEN])
+            return "you're already regenerating.";
         break;
 
     case SPELL_EXCRUCIATING_WOUNDS:
@@ -1267,21 +1273,37 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         if (you.undead_state(false))
             return "you're too dead.";
         break;
+		
+    case SPELL_SONG_OF_SLAYING:
+        if (you.attribute[ATTR_SONG_OF_SLAYING])
+            return "you're already singing.";
+        break;
 
     case SPELL_OZOCUBUS_ARMOUR:
         if (temp && !player_effectively_in_light_armour())
             return "your body armour is too heavy.";
         if (temp && you.form == TRAN_STATUE)
             return "the film of ice won't work on stone.";
-        if (temp && you.duration[DUR_FIRE_SHIELD])
+        if (you.attribute[ATTR_FIRE_SHIELD])
             return "your ring of flames would instantly melt the ice.";
+        if (you.attribute[ATTR_OZO_ARMOUR])
+            return "you are already covered in icy armour.";
+        if (you.attribute[ATTR_BONE_ARMOUR])
+            return "the film of ice won't work on corpses.";
+        break;
+		
+    case SPELL_RING_OF_FLAMES:
+        if (you.attribute[ATTR_FIRE_SHIELD])
+            return "you are already surrounded by a ring of flames";
         break;
 
     case SPELL_CIGOTUVIS_EMBRACE:
         if (temp && you.form == TRAN_STATUE)
             return "the corpses won't embrace your stony flesh.";
-        if (temp && you.duration[DUR_ICY_ARMOUR])
+        if (you.attribute[ATTR_OZO_ARMOUR])
             return "the corpses won't embrace your icy flesh.";
+        if (you.attribute[ATTR_BONE_ARMOUR])
+			return "you are already converting the dead into corpse armour.";
         break;
 
     case SPELL_SUBLIMATION_OF_BLOOD:
@@ -1323,11 +1345,17 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "you can't move";
         break;
 
+    case SPELL_DEATH_CHANNEL:
+        if (you.attribute[ATTR_DEATH_CHANNEL])
+            return "you are already channeling malign forces.";
+        if (you.get_mutation_level(MUT_NO_LOVE))
+            return "you cannot coerce anything to obey you.";
+        break;
+
     case SPELL_ANIMATE_DEAD:
     case SPELL_ANIMATE_SKELETON:
     case SPELL_TWISTED_RESURRECTION:
     case SPELL_CONTROL_UNDEAD:
-    case SPELL_DEATH_CHANNEL:
     case SPELL_SIMULACRUM:
     case SPELL_INFESTATION:
         if (you.get_mutation_level(MUT_NO_LOVE))
@@ -1341,6 +1369,16 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_MEPHITIC_CLOUD:
         if (env.level_state & LSTATE_STILL_WINDS)
             return "the air is too still for clouds to form.";
+        break;
+    
+    case SPELL_AURA_OF_ABJURATION:
+        if (you.attribute[ATTR_ABJURATION_AURA])
+            return "you are already abjuring hostile summons.";
+        break;
+
+    case SPELL_HASTE:
+        if (you.attribute[ATTR_PERMAHASTE])
+            return "you are already going fast.";
         break;
 
     default:
