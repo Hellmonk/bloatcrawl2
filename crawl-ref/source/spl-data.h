@@ -226,7 +226,7 @@ static const struct spell_desc spelldata[] =
     SPTYP_HEXES,
     SPFLAG_HELPFUL | SPFLAG_SELFENCH
         | SPFLAG_EMERGENCY | SPFLAG_NEEDS_TRACER | SPFLAG_PERMABUFF,
-    6,
+    7,
     200,
     LOS_RADIUS, LOS_RADIUS,
     0, 0,

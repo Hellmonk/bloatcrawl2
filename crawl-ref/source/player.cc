@@ -4630,8 +4630,7 @@ void dec_slow_player(int delay)
     if (you.duration    [DUR_SLOW] > BASELINE_DELAY)
     {
         // Make slowing and hasting effects last as long.
-        !you.attribute[ATTR_PERMAHASTE] 
-            && (you.duration[DUR_SLOW] -= you.duration[DUR_HASTE])
+        you.duration[DUR_SLOW] -= you.duration[DUR_HASTE]
             ? haste_mul(delay) : delay;
     }
 
@@ -4658,8 +4657,7 @@ void dec_exhaust_player(int delay)
 
     if (you.duration[DUR_EXHAUSTED] > BASELINE_DELAY)
     {
-        !you.attribute[ATTR_PERMAHASTE] 
-            && (you.duration[DUR_EXHAUSTED] -= you.duration[DUR_HASTE])
+        you.duration[DUR_EXHAUSTED] -= you.duration[DUR_HASTE]
                                        ? haste_mul(delay) : delay;
     }
     if (you.duration[DUR_EXHAUSTED] <= BASELINE_DELAY)
