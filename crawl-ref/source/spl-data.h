@@ -2513,7 +2513,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_SHROUD_OF_GOLUBRIA, "Shroud of Golubria",
     SPTYP_CHARMS | SPTYP_TRANSLOCATION,
-    SPFLAG_SELFENCH,
+    SPFLAG_SELFENCH | SPFLAG_MONSTER,
     2,
     200,
     -1, -1,
