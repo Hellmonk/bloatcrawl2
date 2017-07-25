@@ -2843,7 +2843,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_INFUSION, "Infusion",
     SPTYP_CHARMS,
-    SPFLAG_UTILITY,
+    SPFLAG_UTILITY | SPFLAG_PERMABUFF,
     1,
     25,
     -1, -1,

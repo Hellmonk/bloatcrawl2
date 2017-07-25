@@ -600,6 +600,7 @@ enum attribute_type
     ATTR_PERMAHASTE,           // Sanic.wav
     ATTR_PERMAINVIS,           // Where we're going we won't need eyes to see
     ATTR_FIRE_SHIELD,          // ring of flames
+    ATTR_INFUSION,             // infusion
     NUM_ATTRIBUTES
 };
 

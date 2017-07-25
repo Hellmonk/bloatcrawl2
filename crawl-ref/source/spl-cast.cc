@@ -1657,7 +1657,9 @@ static spret_type _handle_buff_spells(spell_type spell, int powc, bolt& beam, go
         case SPELL_CIGOTUVIS_EMBRACE:
             return corpse_armour(powc, false);  
 		case SPELL_RING_OF_FLAMES:
-            return cast_ring_of_flames(powc, false);
+            return cast_ring_of_flames(powc, false);     
+        case SPELL_INFUSION:
+            return cast_infusion(powc, false);
         default:
 		    return SPRET_NONE;
     }
@@ -1915,9 +1917,6 @@ static spret_type _do_cast(spell_type spell, int powc,
 
     case SPELL_SILENCE:
         return cast_silence(powc, fail);
-
-    case SPELL_INFUSION:
-        return cast_infusion(powc, fail);
 
     case SPELL_PORTAL_PROJECTILE:
         return cast_portal_projectile(powc, fail);

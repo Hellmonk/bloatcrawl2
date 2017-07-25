@@ -1279,6 +1279,11 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "you're already singing.";
         break;
 
+    case SPELL_INFUSION:
+        if(you.attribute[ATTR_INFUSION])
+            return "you are already infusing your attacks with magic.";
+        break;
+
     case SPELL_OZOCUBUS_ARMOUR:
         if (temp && !player_effectively_in_light_armour())
             return "your body armour is too heavy.";
