@@ -3333,6 +3333,9 @@ monster* mons_find_elven_twin_of(const monster* mons)
 **/
 void elven_twin_died(monster* twin, bool in_transit, killer_type killer, int killer_index)
 {
+    //do nothing if no turns spent on this floor; twins were killed by monster cleanup on level gen.
+    if (env.turns_on_level <= 0)
+        return;
     // Sometimes, if you pacify one twin near a staircase, they leave
     // in the same turn. Convert, in those instances.
     if (twin->neutral() && !twin->has_ench(ENCH_INSANE))
