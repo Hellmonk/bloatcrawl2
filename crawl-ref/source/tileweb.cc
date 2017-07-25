@@ -766,6 +766,7 @@ void TilesFramework::_send_player(bool force_full)
     _update_int(force_full, c.real_hp_max, max_max_hp, "real_hp_max");
     _update_int(force_full, c.mp, you.magic_points, "mp");
     _update_int(force_full, c.mp_max, you.max_magic_points, "mp_max");
+    _update_int(force_full, c.mp_frozen, you.mp_frozen, "frozen_mp");
 #endif
     _update_int(force_full, c.poison_survival, max(0, poison_survival()),
                 "poison_survival");
@@ -776,6 +777,7 @@ void TilesFramework::_send_player(bool force_full)
 #endif
 
     _update_int(force_full, c.armour_class, you.armour_class(), "ac");
+    _update_int(force_full, c.gdr, you.gdr_perc(), "gdr");
     _update_int(force_full, c.evasion, you.evasion(), "ev");
     _update_int(force_full, c.shield_class, player_displayed_shield_class(),
                 "sh");

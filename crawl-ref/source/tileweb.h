@@ -48,13 +48,13 @@ struct player_info
     uint8_t form;
 
     int hp, hp_max, real_hp_max, poison_survival;
-    int mp, mp_max;
+    int mp, mp_max, mp_frozen;
     int contam;
     int heat;
     int noise;
     int adjusted_noise;
 
-    int armour_class;
+    int armour_class, gdr;
     int evasion;
     int shield_class;
 
