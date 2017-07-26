@@ -2178,9 +2178,8 @@ item_def* monster_die(monster* mons, killer_type killer,
         && gives_player_xp)
     {
         const int sos_bonus = you.attribute[ATTR_SONG_OF_SLAYING];
-        // spellpower dependent cap, slightly randomized. 
-        // Always can get to at least 6, getting higher is hard and spellpower dependent.
-        if (sos_bonus < 6 + min(6,random2(1 + div_rand_round(calc_spell_power(SPELL_SONG_OF_SLAYING, true),10)))) 
+        // spellpower dependent cap. Not guaranteed the last point, but it will roll for it every kill.
+        if (sos_bonus < 6 + div_rand_round(calc_spell_power(SPELL_SONG_OF_SLAYING, true),17)) 
             you.attribute[ATTR_SONG_OF_SLAYING] = sos_bonus + 1;
     }
 	
@@ -2191,9 +2190,10 @@ item_def* monster_die(monster* mons, killer_type killer,
         && leaves_corpse)
     {
         const int bone_armour = you.attribute[ATTR_BONE_ARMOUR];
-        if (bone_armour < 16) // cap at 16
+        const int max_bone_armour = 9 + div_rand_round(calc_spell_power(SPELL_CIGOTUVIS_EMBRACE, true),20);
+        if (bone_armour < max_bone_armour) // spellpower dependent cap
 		{
-            you.attribute[ATTR_BONE_ARMOUR] = min(16, bone_armour + 1 + random2(2));
+            you.attribute[ATTR_BONE_ARMOUR] = min(max_bone_armour, bone_armour + 1 + random2(2));
             you.redraw_armour_class = true;
         }
     }
