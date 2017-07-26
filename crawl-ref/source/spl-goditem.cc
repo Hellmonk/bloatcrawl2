@@ -331,8 +331,6 @@ static void _dispellable_player_buffs(player_debuff_effects &buffs)
         ATTR_DELAYED_FIREBALL,
 #endif
         ATTR_SWIFTNESS,
-        ATTR_REPEL_MISSILES,
-        ATTR_DEFLECT_MISSILES,
     };
 
     for (auto attribute : dispellable_attributes)
