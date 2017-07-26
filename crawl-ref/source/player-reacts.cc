@@ -1053,8 +1053,8 @@ void player_reacts()
     if (mp_to_freeze > get_real_mp(true,true))
     {
         set_mp(0);
+        mpr("Your magical reserves can no longer sustain your buffs.");
         dispel_permanent_buffs();
-		mpr("Your buffs unravel, as your magical reserves can no longer sustain them.");
 		unfreeze_mp();
     }
     // so we don't redraw every turn if nothing changed
