@@ -949,7 +949,7 @@ void player_reacts()
     //chance to decrement is spellpower dependent
     if (you.attribute[ATTR_SONG_OF_SLAYING]
         && x_chance_in_y(you.time_taken * 50, 
-           (50 + calc_spell_power(SPELL_SONG_OF_SLAYING, true)) * 10 * BASELINE_DELAY))
+           (50 + calc_spell_power(SPELL_SONG_OF_SLAYING, true)) * 8 * BASELINE_DELAY))
     {
         const int sos_bonus = you.attribute[ATTR_SONG_OF_SLAYING];
 		if (sos_bonus > 1)
@@ -958,7 +958,7 @@ void player_reacts()
 
     //decrement cigotuvi's embrace
     if (you.attribute[ATTR_BONE_ARMOUR]
-        && x_chance_in_y(you.time_taken, 20 * BASELINE_DELAY))
+        && x_chance_in_y(you.time_taken, 14 * BASELINE_DELAY))
     {
         const int bone_armour = you.attribute[ATTR_BONE_ARMOUR];
 		if (bone_armour > 1)

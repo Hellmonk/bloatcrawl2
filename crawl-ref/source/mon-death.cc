@@ -2178,7 +2178,9 @@ item_def* monster_die(monster* mons, killer_type killer,
         && gives_player_xp)
     {
         const int sos_bonus = you.attribute[ATTR_SONG_OF_SLAYING];
-        if (sos_bonus < 12) // cap at +12 slay
+        // spellpower dependent cap, slightly randomized. 
+        // Always can get to at least 6, getting higher is hard and spellpower dependent.
+        if (sos_bonus < 6 + min(6,random2(div_rand_round(calc_spell_power(SPELL_SONG_OF_SLAYING, true),10)))) 
             you.attribute[ATTR_SONG_OF_SLAYING] = sos_bonus + 1;
     }
 	
@@ -2189,9 +2191,9 @@ item_def* monster_die(monster* mons, killer_type killer,
         && leaves_corpse)
     {
         const int bone_armour = you.attribute[ATTR_BONE_ARMOUR];
-        if (bone_armour < 30) // cap at 30
+        if (bone_armour < 16) // cap at 16
 		{
-            you.attribute[ATTR_BONE_ARMOUR] = min(30, bone_armour + 1 + random2(3));
+            you.attribute[ATTR_BONE_ARMOUR] = min(16, bone_armour + 1 + random2(2));
             you.redraw_armour_class = true;
         }
     }
