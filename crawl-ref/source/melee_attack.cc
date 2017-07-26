@@ -864,6 +864,17 @@ bool melee_attack::attack()
     {
         noisy_equipment();
     }
+    //excruciating wounds sometimes makes noise, spellpower-dependent chance
+    if(attacker->is_player()
+        && weapon
+        && you.attribute[ATTR_EXCRUCIATING_WOUNDS] > 0)
+    {
+		if(x_chance_in_y(1, 10 + div_rand_round(calc_spell_power(SPELL_EXCRUCIATING_WOUNDS, true),2)))
+        {
+            string msg = "@Your_weapon@ shrieks terribly!";
+            item_noise(*weapon, msg, 15);
+        }
+    }
 
     alert_defender();
 

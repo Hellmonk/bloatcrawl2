@@ -1612,7 +1612,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_EXCRUCIATING_WOUNDS, "Excruciating Wounds",
     SPTYP_CHARMS | SPTYP_NECROMANCY,
-    SPFLAG_HELPFUL,
+    SPFLAG_HELPFUL | SPFLAG_PERMABUFF,
     5,
     200,
     -1, -1,

@@ -1231,6 +1231,10 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         {
             return "you aren't wielding a brandable weapon.";
         }
+        if (you.attribute[ATTR_EXCRUCIATING_WOUNDS])
+        {
+            return "your weapon is already branded with pain";
+		}
         // intentional fallthrough
     case SPELL_PORTAL_PROJECTILE:
     case SPELL_SPECTRAL_WEAPON:

@@ -4,7 +4,7 @@
 
 static void _end_weapon_brand()
 {
-    you.duration[DUR_EXCRUCIATING_WOUNDS] = 1;
+    you.attribute[ATTR_EXCRUCIATING_WOUNDS] = 0;
     ASSERT(you.weapon());
     end_weapon_brand(*you.weapon(), true);
 }

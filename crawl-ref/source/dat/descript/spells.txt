@@ -535,8 +535,12 @@ Corrodes the target, with no direct line of fire required.
 %%%%
 Excruciating Wounds spell
 
-Temporarily infuses the weapon held by the caster with the essence of pain
-itself. It will not affect artefact weapons.
+Infuses the weapon held by the caster with the essence of pain
+itself. It will not affect artefact weapons. A weapon thus infused
+will sometimes shriek uncontrollably when swung, but high spellpower 
+will help keep it quiet. The weapon will remain branded as long as it is
+the caster can reserve sufficient magic to sustain the spell and keeps
+the weapon wielded.
 %%%%
 Flay spell
 

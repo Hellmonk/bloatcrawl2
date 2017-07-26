@@ -161,7 +161,7 @@ bool bless_weapon(god_type god, brand_type brand, colour_t colour)
         return false;
     }
 
-    if (you.duration[DUR_EXCRUCIATING_WOUNDS]) // just in case
+    if (you.attribute[ATTR_EXCRUCIATING_WOUNDS]) // just in case
     {
         ASSERT(you.weapon());
         end_weapon_brand(*you.weapon());

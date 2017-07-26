@@ -717,7 +717,7 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
                 break;
             }
 
-            if (you.duration[DUR_EXCRUCIATING_WOUNDS])
+            if (you.attribute[ATTR_EXCRUCIATING_WOUNDS])
             {
                 ASSERT(real_item.defined());
                 end_weapon_brand(real_item, true);

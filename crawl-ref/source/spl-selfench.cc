@@ -25,6 +25,7 @@
 #include "showsymb.h"
 #include "spl-transloc.h"
 #include "spl-util.h"
+#include "spl-wpnench.h"
 #include "transform.h"
 #include "tilepick.h"
 #include "view.h"
@@ -430,6 +431,10 @@ int calculate_frozen_mp()
     {
 		frozen_mp += spell_mp_freeze(SPELL_INFUSION);
 	}
+    if (you.attribute[ATTR_EXCRUCIATING_WOUNDS] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_EXCRUCIATING_WOUNDS);
+	}
     return (int) frozen_mp;
 }
 
@@ -448,7 +453,12 @@ void dispel_permanent_buffs()
     you.attribute[ATTR_BONE_ARMOUR] = 0;
     you.attribute[ATTR_FIRE_SHIELD] = 0;
     you.attribute[ATTR_INFUSION] = 0;
+    if(you.attribute[ATTR_EXCRUCIATING_WOUNDS])
+    {
+        item_def *wpn = you.weapon();
+        end_weapon_brand(*wpn,true);
+    }
     you.redraw_armour_class = true;
     unfreeze_mp();
-	mpr("Your buffs unravel");
+	mpr("Your buffs unravel.");
 }
