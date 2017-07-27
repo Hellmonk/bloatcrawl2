@@ -749,6 +749,8 @@ void TilesFramework::_send_player(bool force_full)
     {
         _update_int(force_full, c.mp, you.magic_points, "mp");
         _update_int(force_full, c.mp_max, you.max_magic_points, "mp_max");
+        int real_mp_max = get_real_mp(true, true);
+        _update_int(force_full, c.real_mp_max, real_mp_max, "real_mp_max");
     }
 
     if (you.species == SP_DJINNI)
