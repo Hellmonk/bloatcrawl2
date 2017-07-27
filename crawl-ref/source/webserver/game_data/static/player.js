@@ -440,7 +440,7 @@ function ($, comm, enums, map_knowledge, messages, options) {
             $("#stats_real_hp_max").text("(" + player.real_hp_max + ")");
         else
             $("#stats_real_hp_max").text("");
-        if (player.mp_max != player.real_mp_max)
+        if (player.real_mp_max != player.mp_max)
             $("#stats_real_mp_max").text("(" + player.real_mp_max + ")");
         else
             $("#stats_real_mp_max").text("");
@@ -455,7 +455,8 @@ function ($, comm, enums, map_knowledge, messages, options) {
         if (do_temperature)
             update_bar_heat();
 
-        update_defense("ac");     
+        update_defense("ac"); 
+        $("#stats_gdr").text("("player.gdr"%)");		
         update_defense("ev");
         update_defense("sh");
         update_stat("str");
