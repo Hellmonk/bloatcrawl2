@@ -456,11 +456,9 @@ function ($, comm, enums, map_knowledge, messages, options) {
         if (do_temperature)
             update_bar_heat();
 
-        update_defense("ac");
-        
+        update_defense("ac");     
         update_defense("ev");
         update_defense("sh");
-        $("#stats_gdr").text("("player.gdr"%)");
         update_stat("str");
         update_stat("int");
         update_stat("dex");
@@ -566,7 +564,7 @@ function ($, comm, enums, map_knowledge, messages, options) {
             $.extend(player, {
                 name: "", god: "", title: "", species: "",
                 hp: 0, hp_max: 0, real_hp_max: 0, poison_survival: 0,
-                mp: 0, mp_max: 0, mp_frozen: 0,
+                mp: 0, mp_max: 0, frozen_mp: 0,
                 ac: 0, gdr: 0, ev: 0, sh: 0,
                 diff: 0,
                 xl: 0, progress: 0,
