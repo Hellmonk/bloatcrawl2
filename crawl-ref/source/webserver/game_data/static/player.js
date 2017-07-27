@@ -440,9 +440,8 @@ function ($, comm, enums, map_knowledge, messages, options) {
             $("#stats_real_hp_max").text("(" + player.real_hp_max + ")");
         else
             $("#stats_real_hp_max").text("");
-        var real_mp_max = player.mp_max + player.mp_frozen;
-        if (player.mp_max != real_mp_max)
-            $("#stats_real_mp_max").text("(" + real_mp_max + ")");
+        if (player.mp_max != player.real_mp_max)
+            $("#stats_real_mp_max").text("(" + player.real_mp_max + ")");
         else
             $("#stats_real_mp_max").text("");
    
@@ -564,7 +563,7 @@ function ($, comm, enums, map_knowledge, messages, options) {
             $.extend(player, {
                 name: "", god: "", title: "", species: "",
                 hp: 0, hp_max: 0, real_hp_max: 0, poison_survival: 0,
-                mp: 0, mp_max: 0, frozen_mp: 0,
+                mp: 0, mp_max: 0, frozen_mp: 0, real_mp_max: 0,
                 ac: 0, gdr: 0, ev: 0, sh: 0,
                 diff: 0,
                 xl: 0, progress: 0,

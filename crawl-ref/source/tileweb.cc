@@ -767,6 +767,7 @@ void TilesFramework::_send_player(bool force_full)
     _update_int(force_full, c.mp, you.magic_points, "mp");
     _update_int(force_full, c.mp_max, you.max_magic_points, "mp_max");
     _update_int(force_full, c.mp_frozen, you.mp_frozen, "frozen_mp");
+    _update_int(force_full, c.real_mp_max, you.max_magic_points + you.mp_frozen, "real_mp_max");
 #endif
     _update_int(force_full, c.poison_survival, max(0, poison_survival()),
                 "poison_survival");
