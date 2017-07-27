@@ -455,8 +455,7 @@ function ($, comm, enums, map_knowledge, messages, options) {
         if (do_temperature)
             update_bar_heat();
 
-        update_defense("ac"); 
-        $("#stats_gdr").text("("player.gdr"%)");		
+        update_defense("ac"); 		
         update_defense("ev");
         update_defense("sh");
         update_stat("str");
