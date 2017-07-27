@@ -1815,17 +1815,17 @@ static bool _choose_difficulty(newgame_def& ng, newgame_def& ng_choice,
 		switch(difficulty)
 		{
 		case 0:
-			tmp->set_fg_colour(GREEN);
-			tmp->add_hotkey('c');
-			tmp->set_id(DIFFICULTY_CASUAL);
-			text += "c - Casual";
-			break;
-		case 1:
 			tmp->set_fg_colour(WHITE);
 			tmp->add_hotkey('n');
 			tmp->set_id(DIFFICULTY_NORMAL);
 			text += "n - Normal";
 			freeform->set_active_item(tmp);
+			break;
+		case 1:
+			tmp->set_fg_colour(GREEN);
+			tmp->add_hotkey('c');
+			tmp->set_id(DIFFICULTY_CASUAL);
+			text += "c - Casual";
 			break;
 		}
 
