@@ -627,10 +627,13 @@ static void _decrement_durations()
             you.props.erase(EMERGENCY_FLIGHT_KEY);
         }
 
-        if (_decrement_a_duration(DUR_TRANSFORMATION, delay, nullptr, random2(3),
-                                  "Your transformation is almost over."))
+        if(you.transform_uncancellable || you.form == TRAN_SHADOW)
         {
-            untransform();
+            if (_decrement_a_duration(DUR_TRANSFORMATION, delay, nullptr, random2(3),
+                                "Your transformation is almost over."))
+            {
+                untransform();
+            }
         }
     }
 
