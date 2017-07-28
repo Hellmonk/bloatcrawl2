@@ -3340,8 +3340,6 @@ bool is_dangerous_item(const item_def &item, bool temp)
     case OBJ_POTIONS:
         switch (item.sub_type)
         {
-        case POT_LIGNIFY:
-            return true;
         default:
             return false;
         }
