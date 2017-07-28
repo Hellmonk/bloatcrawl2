@@ -5684,16 +5684,26 @@ void player::shield_block_succeeded(actor *foe)
 
 int player::missile_deflection() const
 {
+    //power-dependent chance of getting the full effect, otherwise as rmsl
     if (attribute[ATTR_DEFLECT_MISSILES])
-        return 2;
-
-    if (attribute[ATTR_REPEL_MISSILES]
-        || you.get_mutation_level(MUT_DISTORTION_FIELD) == 3
+    {
+        if (x_chance_in_y(200 + calc_spell_power(SPELL_DEFLECT_MISSILES, true), 400))
+	        return 2;
+        else return 1;
+    }
+	
+    // non-spell version of rmsl always triggers
+    if (you.get_mutation_level(MUT_DISTORTION_FIELD) == 3
         || scan_artefacts(ARTP_RMSL, true)
         || have_passive(passive_t::upgraded_storm_shield))
     {
         return 1;
     }
+
+	// spell version has a chance to do nothing, depending on power
+    if (attribute[ATTR_REPEL_MISSILES]
+        && x_chance_in_y(100 + calc_spell_power(SPELL_REPEL_MISSILES, true), 200))
+        return 1;
 
     return 0;
 }

@@ -1033,10 +1033,10 @@ static void _describe_terrain(status_info* inf)
 static void _describe_missiles(status_info* inf)
 {
     const int level = you.missile_deflection();
-    if (!level)
+    if (!level && !you.attribute[ATTR_REPEL_MISSILES])
         return;
 
-    if (level > 1)
+    if (you.attribute[ATTR_DEFLECT_MISSILES])
     {
         bool perm = false;
         inf->light_colour = perm ? WHITE : LIGHTMAGENTA;
