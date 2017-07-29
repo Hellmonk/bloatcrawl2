@@ -463,7 +463,7 @@ NAME:   ecumenical_temple_of_chaos
 DEPTH:  D:2-3
 TAGS:  uniq_ecumenical_altar chance_ecumenical_altar 
 CHANCE: 60%
-WEIGHT: 30
+WEIGHT: 2
 KFEAT:  E = altar_ecumenical
 KFEAT:  _ = altar_xom
 KFEAT:  1 = w:5 altar_jiyva / w:4 altar_lugonu / w:1 C
