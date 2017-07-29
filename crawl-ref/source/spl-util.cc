@@ -1056,6 +1056,41 @@ bool spell_is_form(spell_type spell)
     }
 }
 
+bool _already_in_form(spell_type spell)
+{
+    if(!you.form)
+        return false;
+	switch (spell)
+    {
+        case SPELL_BEASTLY_APPENDAGE:
+            return you.form == TRAN_APPENDAGE;
+            break;
+        case SPELL_BLADE_HANDS:
+            return you.form == TRAN_BLADE_HANDS;
+            break;
+        case SPELL_DRAGON_FORM:
+            return you.form == TRAN_DRAGON;
+            break;
+        case SPELL_HYDRA_FORM:
+            return you.form == TRAN_HYDRA;
+            break;
+        case SPELL_ICE_FORM:
+            return you.form == TRAN_ICE_BEAST;
+            break;
+        case SPELL_SPIDER_FORM:
+            return you.form == TRAN_SPIDER;
+            break;
+        case SPELL_STATUE_FORM:
+            return you.form == TRAN_STATUE;
+            break;
+        case SPELL_NECROMUTATION:
+            return you.form == TRAN_LICH;
+            break;
+        default:
+            return false;
+    }
+}
+
 /**
  * This function attempts to determine if a given spell is useless to the
  * player.
@@ -1212,6 +1247,8 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         }
         if (temp && you.is_lifeless_undead())
             return "your current blood level is not sufficient.";
+        if (_already_in_form(spell))
+            return "you're already in that form.";
         break;
 
     case SPELL_REGENERATION:

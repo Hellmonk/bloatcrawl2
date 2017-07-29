@@ -3196,8 +3196,18 @@ tileidx_t tileidx_ability(const ability_type ability)
     case ABIL_STOP_RECALL:
         return TILEG_ABILITY_STOP_RECALL;
     case ABIL_STOP_SINGING:
-        return TILEG_ABILITY_STOP_SINGING;
     case ABIL_END_BUFFS:
+    case ABIL_END_PERMAHASTE:
+    case ABIL_END_PERMAINVIS:
+    case ABIL_END_MISSILE_DEFLECTION:
+    case ABIL_END_RING_OF_FLAMES:
+    case ABIL_END_REGENERATION:
+    case ABIL_END_DARKNESS:
+    case ABIL_END_OZOS:
+    case ABIL_END_CIGOTUVIS:
+    case ABIL_END_DCHAN:
+    case ABIL_END_ABJURATION:
+    case ABIL_END_INFUSION:
         return TILEG_ABILITY_END_TRANSFORMATION;
 
     // Species-specific abilities.

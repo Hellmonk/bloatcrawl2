@@ -1667,6 +1667,39 @@ static spret_type _handle_buff_spells(spell_type spell, int powc, bolt& beam, go
     }
 }
 
+static spret_type _handle_form_spells(spell_type spell, int powc, bolt& beam, god_type god, bool fail)
+{
+    switch(spell)
+    {
+    // Transformations.
+        case SPELL_BEASTLY_APPENDAGE:
+            return cast_transform(powc, TRAN_APPENDAGE, fail);
+
+        case SPELL_BLADE_HANDS:
+            return cast_transform(powc, TRAN_BLADE_HANDS, fail);
+
+        case SPELL_SPIDER_FORM:
+            return cast_transform(powc, TRAN_SPIDER, fail);
+
+        case SPELL_STATUE_FORM:
+            return cast_transform(powc, TRAN_STATUE, fail);
+
+        case SPELL_ICE_FORM:
+            return cast_transform(powc, TRAN_ICE_BEAST, fail);
+
+        case SPELL_HYDRA_FORM:
+            return cast_transform(powc, TRAN_HYDRA, fail);
+
+        case SPELL_DRAGON_FORM:
+            return cast_transform(powc, TRAN_DRAGON, fail);
+
+        case SPELL_NECROMUTATION:
+            return cast_transform(powc, TRAN_LICH, fail);
+        default:
+            return SPRET_NONE;
+    }
+}
+
 // Returns SPRET_SUCCESS, SPRET_ABORT, SPRET_FAIL
 // or SPRET_NONE (not a player spell).
 static spret_type _do_cast(spell_type spell, int powc,
@@ -1683,6 +1716,9 @@ static spret_type _do_cast(spell_type spell, int powc,
 	
     if (is_buff_spell(spell))
         return _handle_buff_spells(spell, powc, beam, god, fail);
+    
+    if(spell_is_form(spell))
+        return _handle_form_spells(spell, powc, beam, god, fail);
 
     switch (spell)
     {
@@ -1884,31 +1920,6 @@ static spret_type _do_cast(spell_type spell, int powc,
     case SPELL_CONTROL_UNDEAD:
         return mass_enchantment(ENCH_CHARM, powc, fail);
 
-    // Transformations.
-    case SPELL_BEASTLY_APPENDAGE:
-        return cast_transform(powc, TRAN_APPENDAGE, fail);
-
-    case SPELL_BLADE_HANDS:
-        return cast_transform(powc, TRAN_BLADE_HANDS, fail);
-
-    case SPELL_SPIDER_FORM:
-        return cast_transform(powc, TRAN_SPIDER, fail);
-
-    case SPELL_STATUE_FORM:
-        return cast_transform(powc, TRAN_STATUE, fail);
-
-    case SPELL_ICE_FORM:
-        return cast_transform(powc, TRAN_ICE_BEAST, fail);
-
-    case SPELL_HYDRA_FORM:
-        return cast_transform(powc, TRAN_HYDRA, fail);
-
-    case SPELL_DRAGON_FORM:
-        return cast_transform(powc, TRAN_DRAGON, fail);
-
-    case SPELL_NECROMUTATION:
-        return cast_transform(powc, TRAN_LICH, fail);
-
     // General enhancement.
 
     case SPELL_SWIFTNESS:
@@ -2080,15 +2091,15 @@ static double _get_true_fail_rate(int raw_fail)
 double spell_mp_freeze (spell_type spell)
 {
     //no need to freeze mp if it's not a buff spell
-    if (!is_buff_spell(spell))
+    if (!is_buff_spell(spell) && !spell_is_form(spell))
 	    return 0;
     else 
     {
         // divide by the square of the success rate to prevent dumb shit like casting 99% fail charms
 		double success = 1 - _get_true_fail_rate(raw_spell_fail(spell));
         // and max out an absurdly high value to avoid weird behaviors 
-        if (success < 0.1)
-            return 1000;
+        if (success < 0.05)
+            return 400;
 		double mp_to_freeze = spell_difficulty(spell) / (success * success);
         return mp_to_freeze;
     }
@@ -2257,11 +2268,14 @@ string spell_power_string(spell_type spell)
 
 string spell_reserved_mp_string(spell_type spell)
 {
-	if (! is_buff_spell(spell))
+	if (!is_buff_spell(spell) && !spell_is_form(spell))
         return "N/A";
     else 
     {
-        return make_stringf("%d", (int) spell_mp_freeze(spell));    
+        int mp_to_freeze = (int) spell_mp_freeze(spell);
+        if (mp_to_freeze == 400)
+            return make_stringf(">400");
+        return make_stringf("%d", mp_to_freeze);    
     }
 }
 

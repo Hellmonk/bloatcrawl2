@@ -1056,8 +1056,11 @@ void player_reacts()
     if (mp_to_freeze > get_real_mp(true,true))
     {
         set_mp(0);
-        mpr("Your magical reserves can no longer sustain your buffs.");
+        mpr("Your magical reserves are completely exhausted.");
         dispel_permanent_buffs();
+        if(you.form && !you.transform_uncancellable
+        && you.form != TRAN_SHADOW && you.form != TRAN_BAT)
+            untransform();
 		unfreeze_mp();
     }
     // so we don't redraw every turn if nothing changed

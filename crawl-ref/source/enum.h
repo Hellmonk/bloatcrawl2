@@ -472,6 +472,18 @@ enum ability_type
     // General divine (pseudo) abilities.
     ABIL_RENOUNCE_RELIGION,
     ABIL_CONVERT_TO_BEOGH,
+    //abilities that end specific permanent buffs
+    ABIL_END_PERMAHASTE,
+    ABIL_END_PERMAINVIS,
+    ABIL_END_MISSILE_DEFLECTION,
+    ABIL_END_RING_OF_FLAMES,
+    ABIL_END_REGENERATION,
+    ABIL_END_DARKNESS,
+    ABIL_END_OZOS,
+    ABIL_END_CIGOTUVIS,
+    ABIL_END_DCHAN,
+    ABIL_END_ABJURATION,
+    ABIL_END_INFUSION,
     NUM_ABILITIES
 };
 

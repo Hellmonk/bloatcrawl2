@@ -435,30 +435,118 @@ int calculate_frozen_mp()
     {
 		frozen_mp += spell_mp_freeze(SPELL_EXCRUCIATING_WOUNDS);
 	}
+    // Forms. Only check for cancelable forms here; uncancellable goodforms shouldn't reserve mp.
+    if (you.form && !you.transform_uncancellable)
+    {
+        switch (you.form)
+        {
+            case TRAN_SPIDER:
+                frozen_mp += spell_mp_freeze(SPELL_SPIDER_FORM);
+                break;
+            case TRAN_ICE_BEAST:
+                frozen_mp += spell_mp_freeze(SPELL_ICE_FORM);
+                break;
+            case TRAN_BLADE_HANDS:
+                frozen_mp += spell_mp_freeze(SPELL_BLADE_HANDS);
+                break;
+            case TRAN_STATUE:
+                frozen_mp += spell_mp_freeze(SPELL_STATUE_FORM);
+                break;
+            case TRAN_LICH:
+                frozen_mp += spell_mp_freeze(SPELL_NECROMUTATION);
+                break;
+            case TRAN_HYDRA:
+                frozen_mp += spell_mp_freeze(SPELL_HYDRA_FORM);
+                break;
+            case TRAN_DRAGON:
+                frozen_mp += spell_mp_freeze(SPELL_DRAGON_FORM);
+                break;
+            case TRAN_APPENDAGE:
+                frozen_mp += spell_mp_freeze(SPELL_BEASTLY_APPENDAGE);
+                break;
+            default:
+                break;
+        }
+    }
     return (int) frozen_mp;
 }
 
 void dispel_permanent_buffs()
 {
-	you.attribute[ATTR_OZO_ARMOUR] = 0;
-	you.attribute[ATTR_SPELL_REGEN] = 0;
-    you.attribute[ATTR_SONG_OF_SLAYING] = 0;
-    you.attribute[ATTR_DEATH_CHANNEL] = 0;
-    you.attribute[ATTR_DARKNESS] = 0;
-    you.attribute[ATTR_DEFLECT_MISSILES] = 0;
-    you.attribute[ATTR_REPEL_MISSILES] = 0;
-    you.attribute[ATTR_ABJURATION_AURA] = 0;
-    you.attribute[ATTR_PERMAHASTE] = 0;
-    you.attribute[ATTR_PERMAINVIS] = 0;
-    you.attribute[ATTR_BONE_ARMOUR] = 0;
-    you.attribute[ATTR_FIRE_SHIELD] = 0;
-    you.attribute[ATTR_INFUSION] = 0;
+    bool dispelled = false;
+    if(you.attribute[ATTR_OZO_ARMOUR])
+    {
+	    you.attribute[ATTR_OZO_ARMOUR] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_SPELL_REGEN])
+    {
+	    you.attribute[ATTR_SPELL_REGEN] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_SONG_OF_SLAYING])
+    {
+        you.attribute[ATTR_SONG_OF_SLAYING] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_DEATH_CHANNEL])
+    {
+        you.attribute[ATTR_DEATH_CHANNEL] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_DARKNESS])
+    {
+        you.attribute[ATTR_DARKNESS] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_DEFLECT_MISSILES])
+    {
+        you.attribute[ATTR_DEFLECT_MISSILES] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_REPEL_MISSILES])
+    {
+        you.attribute[ATTR_REPEL_MISSILES] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_ABJURATION_AURA])
+    {
+        you.attribute[ATTR_ABJURATION_AURA] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_PERMAHASTE])
+    {
+        you.attribute[ATTR_PERMAHASTE] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_PERMAINVIS])
+    {
+        you.attribute[ATTR_PERMAINVIS] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_BONE_ARMOUR])
+    {
+        you.attribute[ATTR_BONE_ARMOUR] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_FIRE_SHIELD])
+    {
+        you.attribute[ATTR_FIRE_SHIELD] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_INFUSION])
+    {
+        you.attribute[ATTR_INFUSION] = 0;
+        dispelled = true;
+    }
     if(you.attribute[ATTR_EXCRUCIATING_WOUNDS])
     {
         item_def *wpn = you.weapon();
         end_weapon_brand(*wpn,true);
+        dispelled = true;
     }
     you.redraw_armour_class = true;
     unfreeze_mp();
-	mpr("Your buffs unravel.");
+    if (dispelled)
+        mpr("Your buffs unravel.");
 }

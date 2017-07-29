@@ -315,6 +315,28 @@ static const ability_def Ability_List[] =
       0, 0, 0, 0, {}, abflag::NONE },
     { ABIL_END_BUFFS, "Release Buffs",
       0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_PERMAHASTE, "End Haste",
+      0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_PERMAINVIS, "End Invisibility",
+      0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_MISSILE_DEFLECTION, "Stop Repelling Missiles",
+      0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_RING_OF_FLAMES, "End Ring of Flames",
+      0, 0, 0, 0, {}, abflag::NONE },
+	{ ABIL_END_REGENERATION, "End Regeneration",
+      0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_DARKNESS, "End Darkness",
+      0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_OZOS, "End Ozocubu's Armour",
+      0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_CIGOTUVIS, "End Cigotuvi's Embrace",
+      0, 0, 0, 0, {}, abflag::NONE },  
+	{ ABIL_END_DCHAN, "End Death Channel",
+      0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_ABJURATION, "End Aura of Abjuration",
+      0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_INFUSION, "End Infusion",
+      0, 0, 0, 0, {}, abflag::NONE },
 
     { ABIL_DIG, "Dig", 0, 0, 0, 0, {}, abflag::INSTANT },
     { ABIL_SHAFT_SELF, "Shaft Self", 0, 0, 250, 0, {}, abflag::DELAY },
@@ -2068,8 +2090,65 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_STOP_SINGING:
         fail_check();
-        you.duration[DUR_SONG_OF_SLAYING] = 0;
+        you.attribute[ATTR_SONG_OF_SLAYING] = 0;
         mpr("You stop singing.");
+        break;
+
+    case ABIL_END_PERMAHASTE:
+        fail_check();
+        you.attribute[ATTR_PERMAHASTE] = 0;
+        mpr("You cease having the attribute of going fast.");
+        break;
+    case ABIL_END_PERMAINVIS:
+        fail_check();
+        you.attribute[ATTR_PERMAINVIS] = 0;
+        mpr("You cease being permanently invisible.");
+        break;
+    case ABIL_END_MISSILE_DEFLECTION:
+        fail_check();
+        you.attribute[ATTR_REPEL_MISSILES] = 0;
+        you.attribute[ATTR_DEFLECT_MISSILES] = 0;
+        mpr("You stop protecting yourself from missiles.");
+        break;
+    case ABIL_END_RING_OF_FLAMES:
+        fail_check();
+        you.attribute[ATTR_FIRE_SHIELD] = 0;
+        mpr("Your ring of flames gutters out.");
+        break;
+    case ABIL_END_REGENERATION:
+        fail_check();
+        you.attribute[ATTR_SPELL_REGEN] = 0;
+        mpr("You stop magically regenerating.");
+        break;
+    case ABIL_END_DARKNESS:
+        fail_check();
+        you.attribute[ATTR_DARKNESS] = 0;
+        mpr("You stop making your surroundings dark.");
+        break;
+    case ABIL_END_OZOS:
+        fail_check();
+        you.attribute[ATTR_OZO_ARMOUR] = 0;
+        mpr("You allow your icy armour to melt away.");
+        break;
+    case ABIL_END_CIGOTUVIS:
+        fail_check();
+        you.attribute[ATTR_BONE_ARMOUR] = 0;
+        mpr("You allow your bone armour to fall away.");
+        break;
+    case ABIL_END_DCHAN:
+        fail_check();
+        you.attribute[ATTR_DEATH_CHANNEL] = 0;
+        mpr("You stop channeling the dead.");
+        break;
+    case ABIL_END_ABJURATION:
+        fail_check();
+        you.attribute[ATTR_ABJURATION_AURA] = 0;
+        mpr("You stop abjuring hostile summons.");
+        break;
+    case ABIL_END_INFUSION:
+        fail_check();
+        you.attribute[ATTR_INFUSION] = 0;
+        mpr("You stop infusing your attacks.");
         break;
 
     case ABIL_STOP_FLYING:
@@ -3348,9 +3427,42 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     if (you.attribute[ATTR_PERM_FLIGHT] && you.racial_permanent_flight())
         _add_talent(talents, ABIL_STOP_FLYING, check_confused);
 	
-    if (you.mp_frozen > 0)
-        _add_talent(talents, ABIL_END_BUFFS, check_confused);
+    if (you.attribute[ATTR_SPELL_REGEN])
+       _add_talent(talents, ABIL_END_REGENERATION, check_confused);
 
+    if (you.attribute[ATTR_OZO_ARMOUR])
+       _add_talent(talents, ABIL_END_OZOS, check_confused);
+   
+    if (you.attribute[ATTR_SONG_OF_SLAYING])
+       _add_talent(talents, ABIL_STOP_SINGING, check_confused);
+   
+    if (you.attribute[ATTR_DEATH_CHANNEL])
+       _add_talent(talents, ABIL_END_DCHAN, check_confused);
+
+    if (you.attribute[ATTR_DARKNESS])
+       _add_talent(talents, ABIL_END_DARKNESS, check_confused);
+
+    if (you.attribute[ATTR_ABJURATION_AURA])
+       _add_talent(talents, ABIL_END_ABJURATION, check_confused);
+
+    if (you.attribute[ATTR_PERMAHASTE])
+       _add_talent(talents, ABIL_END_PERMAHASTE, check_confused);
+   
+    if (you.attribute[ATTR_PERMAINVIS])
+       _add_talent(talents, ABIL_END_PERMAINVIS, check_confused);
+
+    if (you.attribute[ATTR_FIRE_SHIELD])
+       _add_talent(talents, ABIL_END_RING_OF_FLAMES, check_confused);   
+   
+    if (you.attribute[ATTR_INFUSION])
+       _add_talent(talents, ABIL_END_INFUSION, check_confused);
+  
+    if (you.attribute[ATTR_BONE_ARMOUR])
+       _add_talent(talents, ABIL_END_CIGOTUVIS, check_confused);
+   
+    if (you.attribute[ATTR_REPEL_MISSILES] || you.attribute[ATTR_DEFLECT_MISSILES])
+       _add_talent(talents, ABIL_END_MISSILE_DEFLECTION, check_confused);
+   
     // Mutations
     if (you.get_mutation_level(MUT_HURL_DAMNATION))
         _add_talent(talents, ABIL_DAMNATION, check_confused);
@@ -3601,7 +3713,21 @@ int find_ability_slot(const ability_type abil, char firstletter)
     case ABIL_HEPLIAKLQANA_TYPE_BATTLEMAGE:
     case ABIL_HEPLIAKLQANA_TYPE_HEXER:
     case ABIL_HEPLIAKLQANA_IDENTITY: // move this?
-        first_slot = letter_to_index('G');
+        first_slot = letter_to_index('Q');
+        break;
+    case ABIL_STOP_SINGING:
+    case ABIL_END_ABJURATION:
+    case ABIL_END_CIGOTUVIS:
+    case ABIL_END_DARKNESS:
+    case ABIL_END_DCHAN:
+    case ABIL_END_INFUSION:
+    case ABIL_END_MISSILE_DEFLECTION:
+    case ABIL_END_OZOS:
+    case ABIL_END_PERMAHASTE:
+    case ABIL_END_PERMAINVIS:
+    case ABIL_END_REGENERATION:
+    case ABIL_END_RING_OF_FLAMES:
+        first_slot = letter_to_index('A');
         break;
     default:
         break;
