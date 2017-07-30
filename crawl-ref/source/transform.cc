@@ -1145,7 +1145,9 @@ bool form_can_bleed(transformation_type form)
 
 bool form_can_use_wand(transformation_type form)
 {
-    return form_can_wield(form) || form == TRAN_DRAGON;
+    return form_can_wield(form) || form == TRAN_DRAGON
+        || form == TRAN_BLADE_HANDS || form == TRAN_ICE_BEAST
+        || form == TRAN_SPIDER || form == TRAN_HYDRA;
 }
 
 // Used to mark forms which keep most form-based mutations.
