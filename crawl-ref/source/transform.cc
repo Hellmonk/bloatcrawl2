@@ -1528,7 +1528,7 @@ static int _beastly_appendage_level(int appendage)
  * Print an appropriate message when the number of heads the player has
  * changes during a refresh of hydra form.
  */
-static void _print_head_change_message(int old_heads, int new_heads)
+void print_head_change_message(int old_heads, int new_heads)
 {
     if (old_heads == new_heads)
         return;
@@ -1665,8 +1665,8 @@ bool transform(int pow, transformation_type which_trans, bool involuntary,
             if (which_trans == TRAN_HYDRA)
             {
                 const int heads = you.heads();
-                set_hydra_form_heads(div_rand_round(pow, 10));
-                _print_head_change_message(heads, you.heads());
+                set_hydra_form_heads(1 + pow / 10);
+                print_head_change_message(heads, you.heads());
             }
         }
 
@@ -1759,7 +1759,7 @@ bool transform(int pow, transformation_type which_trans, bool involuntary,
         merfolk_stop_swimming();
 
     if (which_trans == TRAN_HYDRA)
-        set_hydra_form_heads(div_rand_round(pow, 10));
+        set_hydra_form_heads(1 + pow / 10);
 
     // Give the transformation message.
     mpr(get_form(which_trans)->transform_message(previous_trans));

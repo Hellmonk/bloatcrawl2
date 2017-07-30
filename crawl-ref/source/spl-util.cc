@@ -1056,11 +1056,11 @@ bool spell_is_form(spell_type spell)
     }
 }
 
-bool _already_in_form(spell_type spell)
+bool already_in_form(spell_type spell)
 {
     if(!you.form)
         return false;
-	switch (spell)
+    switch (spell)
     {
         case SPELL_BEASTLY_APPENDAGE:
             return you.form == TRAN_APPENDAGE;
@@ -1247,7 +1247,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         }
         if (temp && you.is_lifeless_undead())
             return "your current blood level is not sufficient.";
-        if (_already_in_form(spell))
+        if (already_in_form(spell))
             return "you're already in that form.";
         break;
 

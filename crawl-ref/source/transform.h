@@ -294,6 +294,7 @@ void unmeld_one_equip(equipment_type eq);
 monster_type transform_mons();
 string blade_parts(bool terse = false);
 void set_hydra_form_heads(int heads);
+void print_head_change_message(int old_heads, int new_heads);
 const char* transform_name(transformation_type form = you.form);
 
 int form_hp_mod();

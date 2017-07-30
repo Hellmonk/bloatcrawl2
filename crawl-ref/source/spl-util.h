@@ -120,6 +120,7 @@ skill_type arcane_mutation_to_skill(mutation_type mutation);
 bool cannot_use_schools(spschools_type schools);
 
 bool spell_is_form(spell_type spell) PURE;
+bool already_in_form(spell_type spell);
 
 bool spell_is_useless(spell_type spell, bool temp = true,
                       bool prevent = false, bool fake_spell = false) PURE;

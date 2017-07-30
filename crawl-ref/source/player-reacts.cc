@@ -635,6 +635,12 @@ static void _decrement_durations()
                 untransform();
             }
         }
+        if(you.form == TRAN_HYDRA)
+        {
+            const int heads = you.heads();
+            set_hydra_form_heads(1 + calc_spell_power(SPELL_HYDRA_FORM, true) / 10);
+            print_head_change_message(heads, you.heads());
+        }
     }
 
     if (you.attribute[ATTR_SWIFTNESS] >= 0)
