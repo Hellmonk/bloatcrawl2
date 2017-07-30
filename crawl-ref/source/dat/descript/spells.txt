@@ -123,7 +123,8 @@ Causes long, scythe-shaped blades to grow from the caster's hands, increasing
 melee damage significantly.
 
 While transformed, any equipped weapons are melded. The caster also becomes
-unable to evoke wands, and casting spells becomes somewhat more difficult.
+unable to evoke wands, and casting spells -aside from other form-changing 
+spells- becomes somewhat more difficult.
 %%%%
 Blink Allies Away spell
 
@@ -1242,7 +1243,8 @@ Spider Form spell
 
 Transforms the caster into a venomous, spider-like creature. The caster becomes
 highly evasive and gains a poisonous bite, but gains vulnerability to poison
-and cannot evoke wands. It makes spellcasting slightly more difficult.
+and cannot evoke wands. It makes spellcasting -aside from casting other form-changing
+spells- slightly more difficult.
 %%%%
 Spit Acid spell
 
