@@ -94,6 +94,50 @@ Stop Singing ability
 
 Stops singing your Song of Slaying.
 %%%%
+End Haste ability
+
+Ends your Haste spell.
+%%%%
+End invisibility ability
+
+Ends your Invisibility spell.
+%%%%
+Stop Repelling Missiles ability
+
+Ends your Repel Missiles or Deflect Missiles spell.
+%%%%
+End Ring of Flames ability
+
+Ends your Ring of Flames spell.
+%%%%
+End Regeneration ability
+
+Ends your Regeneration spell.
+%%%%
+End Darkness ability
+
+Ends your Darkness spell.
+%%%%
+End Ozocubu's Armour ability
+
+Ends your Ozocubu's Armour spell.
+%%%%
+End Cigotuvi's Embrace ability
+
+Ends your Cigotuvi's Embrace spell.
+%%%%
+End Death Channel ability
+
+Ends your Death Channel spell.
+%%%%
+End Aura of Abjuration ability
+
+Ends your Aura of Abjuration spell.
+%%%%
+End Infusion ability
+
+Ends your Infusion spell.
+%%%%
 Self-Restoration ability
 
 Restores your strength, dexterity and intelligence and heals any rotted health,
