@@ -3645,6 +3645,7 @@ MONS_ANTIMATTER_ELF,
 	MONS_GIANT_GIANT,
 	MONS_MUTATATOTOT,
 	MONS_ZOTBOT,
+    MONS_ELEVENGU,
 #endif
 
     NUM_MONSTERS,               // used for polymorph

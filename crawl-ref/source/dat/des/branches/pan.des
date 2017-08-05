@@ -175,10 +175,9 @@ end
 function pan_lord_vault_contents(e, anyglyph, commonglyph, greaterglyph)
     e.tags('allow_dup')
     e.orient('float')
-    e.kmons(anyglyph .. " = any demon w:17 / base demonspawn w:2 / \
-                            nonbase demonspawn w:1")
-    e.kmons(commonglyph .. " = common demon / base demonspawn w:2")
-    e.kmons(greaterglyph .. " = greater demon / nonbase demonspawn w:1")
+    e.kmons(anyglyph .. " = any demon w:17 / elevengu w:2")
+    e.kmons(commonglyph .. " = common demon / elevengu w:2")
+    e.kmons(greaterglyph .. " = greater demon / elevengu w:1")
     e.kfeat('< = {')
 end
 
@@ -194,7 +193,7 @@ end
 
 function pan_entry_vault_contents(e, glyph)
     e.tags("patrolling no_monster_gen nolayout_encompass")
-    e.mons("common demon / base demonspawn w:2")
+    e.mons("common demon")
     e.mons("lesser demon")
     if crawl.x_chance_in_y(you.depth() + 3, you.depth() + 5) then
         e.tags("luniq_hellpanabyss_threat_entry")
@@ -2723,7 +2722,7 @@ NAME:   grunt_pan_frozen_over
 TAGS:   pan_fixed_rune_frozen pan_fixed_lure_frozen
 TAGS:   no_pool_fixup no_monster_gen transparent
 ORIENT: float
-MONS:   blizzard demon, nonbase gelid demonspawn
+MONS:   blizzard demon, blizzard demon
 MONS:   juggernaut simulacrum, ice devil
 KMONS:  56 = ice statue
 KMONS:  P = pandemonium lord

@@ -758,6 +758,7 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         { MONS_TORTUROUS_DEMONSPAWN,    { DS_WEAPONS } },
         { MONS_CORRUPTER,               { DS_WEAPONS } },
         { MONS_BLACK_SUN,               { DS_WEAPONS } },
+        { MONS_ELEVENGU,                { DS_WEAPONS } },
         { MONS_WARMONGER, {
             { { WPN_DEMON_BLADE,        10 },
               { WPN_DEMON_WHIP,         10 },

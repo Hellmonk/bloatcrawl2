@@ -679,6 +679,7 @@ tengu MONS_TENGU
 tengu_conjurer MONS_TENGU_CONJURER
 tengu_warrior MONS_TENGU_WARRIOR
 tengu_reaver MONS_TENGU_REAVER
+elevengu MONS_ELEVENGU
 %sdir mon/mutantbeast
 %rim 0
 base1 MUTANT_BEAST_BASE

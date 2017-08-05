@@ -1231,6 +1231,14 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
+    {  MST_ELEVENGU,
+      {
+       { SPELL_LEGENDARY_DESTRUCTION, 36, MON_SPELL_WIZARD },
+       { SPELL_SAP_MAGIC, 12, MON_SPELL_WIZARD },
+       { SPELL_RANDOM_BOLT, 24, MON_SPELL_WIZARD },
+      }
+    },
+
     // ('R') Spirituals.
     {  MST_RAKSHASA,
       {

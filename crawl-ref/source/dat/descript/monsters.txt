@@ -2212,6 +2212,11 @@ tengu warrior
 A particularly bloodthirsty tengu who has opted to hone its skill in fighting
 and weaponry instead of spellcasting.
 %%%%
+elevengu
+
+A terrifyingly powerful humanoid with the head and talons of a bird and 
+the destructive magics of demonkind. It makes a tengu look like a sevengu.
+%%%%
 tentacle
 
 The mighty tentacle of a kraken. Any damage dealt to it hurts the whole

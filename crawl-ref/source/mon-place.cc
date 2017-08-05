@@ -2156,6 +2156,7 @@ static const map<monster_type, band_set> bands_by_leader = {
     { MONS_IRON_GIANT,      { {}, {{ BAND_ANCIENT_CHAMPIONS, {2, 3}, true }}}},
 	{ MONS_ZOTLING,         { {}, {{ BAND_ZOTLINGS, {3, 6} }}}},
 	{ MONS_ANTIMATTER_ELF,  { {}, {{ BAND_ANTIMATTER_ELF, {1, 2} }}}},
+    { MONS_ELEVENGU,        { {}, {{ BAND_ELEVENGU, {1, 2} }}}},
 	{ MONS_SUBTRACTOR_SNAKE, { {}, {{ BAND_SUBTRACTOR_SNAKE, {1, 4} }}}},
 	{ MONS_MUTATATOTOT,     { {}, {{ BAND_MUTATATOTOT, {1, 2} }}}},
     { MONS_SPARK_WASP,      { {0, 0, []() {
@@ -2572,6 +2573,7 @@ static const map<band_type, vector<member_possibilites>> band_membership = {
                                   {MONS_GIANT_GIANT, 30},
                                   {MONS_CURSE_SKULL, 15},
                                   {MONS_ANCIENT_LICH, 5}}}},
+    { BAND_ELEVENGU,            {{{MONS_ELEVENGU, 1}}}},
 	{ BAND_MUTATATOTOT,         {{{MONS_MUTATATOTOT, 1}}}},
 	{ BAND_SUBTRACTOR_SNAKE,    {{{MONS_GOLDEN_DRAGON, 5},{MONS_SHADOW_DRAGON, 5},{MONS_QUICKSILVER_DRAGON, 2}},
 
