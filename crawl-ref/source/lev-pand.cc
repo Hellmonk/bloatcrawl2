@@ -90,7 +90,7 @@ void init_pandemonium()
         env.mons_alloc[7 + random2(3)] = MONS_HELL_SENTINEL;
 
     if (one_chance_in(10))
-        env.mons_alloc[7 + random2(3)] = MONS_CHAOS_CHAMPION;
+        env.mons_alloc[7 + random2(3)] = MONS_ELEVENGU;
 
     env.floor_colour = _pan_floor_colour();
     env.rock_colour  = _pan_rock_colour();

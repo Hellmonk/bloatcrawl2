@@ -458,11 +458,11 @@ end), { weight = 2 }))
 
 local pan_lord_fn = zig_monster_fn("pandemonium lord")
 local pan_critter_fn = zig_monster_fn("place:Pan w:" .. math.max(10, 100 - you.zigs_completed() * 4) ..
-                                      " / greater demon w:100 / nonbase demonspawn w:40")
+                                      " / greater demon w:100 / elevengu w:40")
 
 local function mons_panlord_gen(x, y, nth)
   if nth == 1 then
-    dgn.set_random_mon_list("place:Pan / greater demon / nonbase demonspawn w:4")
+    dgn.set_random_mon_list("place:Pan / greater demon / elevengu w:4")
     return pan_lord_fn(x, y)
   else
     return pan_critter_fn(x, y)

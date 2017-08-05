@@ -319,7 +319,7 @@ function sroom_demon_pit(e)
     end
 
     lord_mon = "brimstone fiend / ice fiend / shadow fiend / " ..
-               "hell sentinel / nonbase demonspawn w:20"
+               "hell sentinel / elevengu w:20"
 
     fill_special_room(e, mons, lord_mon, true)
 
