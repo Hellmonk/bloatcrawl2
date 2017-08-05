@@ -1585,7 +1585,7 @@ void scorefile_entry::init(time_t dt)
             pt += ((1+num_runes) * (1 + num_runes) * 1000);
             pt *= 1000;
             pt *= 1000;
-            pt *= 1000; 
+            pt *= 69; 
             pt = pt / (1+you.num_turns);
         }
         else
