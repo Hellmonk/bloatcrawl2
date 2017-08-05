@@ -849,9 +849,19 @@ void ArmourOnDelay::finish()
             freeze_mp(calculate_frozen_mp());
         }
     }
-
+	
     equip_item(eq_slot, armour.link);
-
+	
+    if (you.no_cast() && you.mp_frozen > 0)
+    {
+        mpr("Something interferes with your magic!");
+        dispel_permanent_buffs();
+        if(you.form && !you.transform_uncancellable
+        && you.form != TRAN_SHADOW && you.form != TRAN_BAT)
+            untransform();
+        unfreeze_mp();
+    }	
+	
     check_item_hint(armour, old_talents);
 }
 

@@ -1057,7 +1057,16 @@ void player_reacts()
 
     if (you.props[EMERGENCY_FLIGHT_KEY].get_bool())
         _handle_emergency_flight();
-
+    //-cast disrupts permabuffs and voluntary transformations
+    if (you.no_cast() && you.mp_frozen > 0)
+    {
+        mpr("Something interferes with your magic!");
+        dispel_permanent_buffs();
+        if(you.form && !you.transform_uncancellable
+        && you.form != TRAN_SHADOW && you.form != TRAN_BAT)
+            untransform();
+        unfreeze_mp();
+    }	
     const int mp_to_freeze = calculate_frozen_mp();
     if (mp_to_freeze > get_real_mp(true,true))
     {
@@ -1067,7 +1076,7 @@ void player_reacts()
         if(you.form && !you.transform_uncancellable
         && you.form != TRAN_SHADOW && you.form != TRAN_BAT)
             untransform();
-		unfreeze_mp();
+        unfreeze_mp();
     }
     // so we don't redraw every turn if nothing changed
     else if (mp_to_freeze != you.mp_frozen)
