@@ -854,16 +854,6 @@ static const pop_entry pop_pan[] =
   {  1,  1,  335, FLAT, MONS_HELL_SENTINEL },
   {  1,  1,  335, FLAT, MONS_TZITZIMITL },
   {  1,  1,    8, FLAT, MONS_PROFANE_SERVITOR },
-  {  1,  1,  200, FLAT, MONS_MONSTROUS_DEMONSPAWN },
-  {  1,  1,  200, FLAT, MONS_GELID_DEMONSPAWN },
-  {  1,  1,  200, FLAT, MONS_INFERNAL_DEMONSPAWN },
-  {  1,  1,  200, FLAT, MONS_PUTRID_DEMONSPAWN },
-  {  1,  1,  200, FLAT, MONS_TORTUROUS_DEMONSPAWN },
-  {  1,  1,  500, FLAT, MONS_BLOOD_SAINT },
-  {  1,  1,  500, FLAT, MONS_CHAOS_CHAMPION },
-  {  1,  1,  500, FLAT, MONS_WARMONGER },
-  {  1,  1,  500, FLAT, MONS_CORRUPTER },
-  {  1,  1,  500, FLAT, MONS_BLACK_SUN },
   {  1,  1,   50, FLAT, MONS_ANGEL },
   {  1,  1,   40, FLAT, MONS_CHERUB },
   {  1,  1,   25, FLAT, MONS_DAEVA },
@@ -1122,11 +1112,6 @@ static const pop_entry pop_generic_late_zombie[] =
   {  1,  27,   10, FLAT, MONS_TENGU },
   {  1,  27,   10, FLAT, MONS_TROLL },
   {  1,  27,    5, FLAT, MONS_MINOTAUR },
-  {  1,  27,    1, FLAT, MONS_MONSTROUS_DEMONSPAWN },
-  {  1,  27,    1, FLAT, MONS_INFERNAL_DEMONSPAWN },
-  {  1,  27,    1, FLAT, MONS_GELID_DEMONSPAWN },
-  {  1,  27,    1, FLAT, MONS_PUTRID_DEMONSPAWN },
-  {  1,  27,    1, FLAT, MONS_TORTUROUS_DEMONSPAWN },
   { 0,0,0,FLAT,MONS_0 }
 };
 
