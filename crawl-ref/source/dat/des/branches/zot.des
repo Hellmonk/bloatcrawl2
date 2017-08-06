@@ -908,6 +908,39 @@ xWWWWWWWWWx
 xxxxxxxxxxx
 ENDMAP
 
+######################################
+NAME: hellmonk_shrikenado
+DEPTH: Zot
+KMONS: M = diesel robin / acid robin / cool robin / ghost robin
+MAP
+                     @@@
+ xxxxxxxxxxxxxxxxxxxx...xx
+ xxxxxxxxxxxxxxxxxx...xxxx
+@.xxxxxxxxxxxxxxx...xxxxxx
+@.xxxxxxxxxxxxxx..xxxxxxxx
+@..xxxxxxxxxxxx..xxxxxxxxx
+ x.xxxxxxxxxxx..xxxxxxxxxx
+ x..xxxxxxxxx..xxxxxxxxxxx
+ xx.xxxxxxxxx.xxxxxxxxxxxx
+ xx..xxxxxxx...xxxxxxxxxxx
+ xxx..xxxxx..M..xxxxxxxxxx
+ xxxx..xxx.M...M.xxxxxxxxx
+ xxxxx..x....M....xxxxxxxx
+ xxxxxx...M.....M...xxxxxx
+ xxxxxxxx....M....x..xxxxx
+ xxxxxxxxx.M...M.xxx..xxxx
+ xxxxxxxxxx..M..xxxxx..xxx
+ xxxxxxxxxxx...xxxxxxx..xx
+ xxxxxxxxxxxx.xxxxxxxxx.xx
+ xxxxxxxxxxx..xxxxxxxxx..x
+ xxxxxxxxxx..xxxxxxxxxxx.x
+ xxxxxxxxx..xxxxxxxxxxxx..@
+ xxxxxxxx..xxxxxxxxxxxxxx.@
+ xxxxxx...xxxxxxxxxxxxxxx.@
+ xxxx...xxxxxxxxxxxxxxxxxx
+ xx...xxxxxxxxxxxxxxxxxxxx
+   @@@
+ENDMAP
 ###################################################
 # Minmay's Elemental castle
 # 50% electricity, 25% fire, 25% ice
@@ -930,7 +963,7 @@ SUBST:   w = l
 SUBST:   W = l..
 : else
 MONS:    fire giant, fire dragon
-KMONS:   F = balrug
+KMONS:   F = diesel robin
 MARKER:  F = lua:fog_machine { cloud_type = "flame", pow_min = 5, \
               pow_max = 15, delay = 10, size = 2, walk_dist = 0, \
               spread_rate= 0 }
