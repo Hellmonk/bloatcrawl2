@@ -1614,19 +1614,20 @@ int monster_info::res_magic() const
 
 string monster_info::speed_description() const
 {
+    std::string s = std::to_string(mbase_speed);
     if (mbase_speed < 7)
-        return "very slow";
+        return "very slow (speed " + s + ")";
     else if (mbase_speed < 10)
-        return "slow";
+        return "slow (speed " + s + ")";
     else if (mbase_speed > 20)
-        return "extremely fast";
+        return "extremely fast (speed " + s + ")";
     else if (mbase_speed > 15)
-        return "very fast";
+        return "very fast (speed " + s + ")";
     else if (mbase_speed > 10)
-        return "fast";
+        return "fast (speed " + s + ")";
 
     // This only ever displays through Lua.
-    return "normal";
+    return "normal (speed " + s + ")";
 }
 
 bool monster_info::wields_two_weapons() const
