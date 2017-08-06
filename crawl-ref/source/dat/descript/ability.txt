@@ -138,6 +138,10 @@ End Infusion ability
 
 Ends your Infusion spell.
 %%%%
+End Animate Dead ability
+
+Ends your Animate Dead spell.
+%%%%
 Self-Restoration ability
 
 Restores your strength, dexterity and intelligence and heals any rotted health,

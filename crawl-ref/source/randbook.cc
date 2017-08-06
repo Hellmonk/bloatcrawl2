@@ -981,16 +981,12 @@ void make_book_kiku_gift(item_def &book, bool first)
         bool can_bleed = you.species != SP_GARGOYLE
             && you.species != SP_GHOUL
             && you.species != SP_MUMMY;
-        bool can_regen = you.species != SP_MUMMY;
-        bool pain = coinflip();
 
-        chosen_spells[0] = pain ? SPELL_PAIN : SPELL_ANIMATE_SKELETON;
+        chosen_spells[0] = SPELL_PAIN;
         chosen_spells[1] = SPELL_CORPSE_ROT;
         chosen_spells[2] = (can_bleed ? SPELL_SUBLIMATION_OF_BLOOD
-                            : pain ? SPELL_ANIMATE_SKELETON
-                            : SPELL_PAIN);
-        chosen_spells[3] = (!can_regen || coinflip())
-            ? SPELL_VAMPIRIC_DRAINING : SPELL_REGENERATION;
+                            : SPELL_REGENERATION);
+        chosen_spells[3] = SPELL_VAMPIRIC_DRAINING;
         chosen_spells[4] = SPELL_CONTROL_UNDEAD;
 
     }
