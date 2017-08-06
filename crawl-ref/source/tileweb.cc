@@ -733,6 +733,10 @@ void TilesFramework::_send_player(bool force_full)
         prank = 2;
     }
     _update_int(force_full, c.piety_rank, prank, "piety_rank");
+    int piety = -1;
+    if (!you_worship(GOD_NO_GOD) && !you_worship(GOD_GOZAG))
+        piety = you.piety;
+    _update_int(force_full, c.piety, piety, "piety");
 
     _update_int(force_full, c.form, (uint8_t) you.form, "form");
 

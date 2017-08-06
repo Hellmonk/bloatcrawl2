@@ -411,8 +411,10 @@ function ($, comm, enums, map_knowledge, messages, options) {
         else if ((player.piety_rank > 0 || player.god != "")
                  && player.god != "Gozag")
         {
-            $("#stats_piety").text(repeat_string("*", player.piety_rank)
-                                   + repeat_string(".", 6-player.piety_rank));
+            if (player.piety > 0)
+                $("#stats_piety").text(player.piety_rank + "*[" + player.piety + "]");
+            else
+                $("#stats_piety").text(player.piety_rank + "*");
         }
         else
             $("#stats_piety").text("");
@@ -571,7 +573,7 @@ function ($, comm, enums, map_knowledge, messages, options) {
                 gold: 0,
                 str: 0, int: 0, dex: 0,
                 str_max: 0, int_max: 0, dex_max: 0,
-                piety_rank: 0, penance: false,
+                piety_rank: 0, piety: 0 penance: false,
                 status: [],
                 inv: {}, equip: {}, quiver_item: -1,
                 unarmed_attack: "",
