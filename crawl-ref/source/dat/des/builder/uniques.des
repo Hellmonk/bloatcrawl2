@@ -368,6 +368,11 @@ DEPTH:  Spider:1-
 WEIGHT: 50
 : place_unique(_G, "Arachne")
 
+NAME: uniq_combo_robin
+DEPTH:  Zot:1-
+WEIGHT: 50
+: place_unique(_G, "the Combo Robin band")
+
 NAME:   uniq_dissolution
 DEPTH:  Slime:1-
 WEIGHT: 100
