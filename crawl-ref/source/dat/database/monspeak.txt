@@ -6338,6 +6338,8 @@ VISUAL:@The_monster@ looks tired but strong.
 @The_monster@ says @to_foe@, "Made it through another week. Big shout out to drugs and alcohol."
 
 @The_monster@ says @to_foe@, "Hell is on fire. Please donate what you can."
+
+@The_monster@ says @to_foe@, "Hell is full bitch 1-800-273-8255 National suicide prevention hotline."
 %%%%
 ################## Tormentor ###############################
 # A cruel demon
