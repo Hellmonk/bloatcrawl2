@@ -903,6 +903,11 @@ diamond obelisk
 
 A towering obelisk surrounded by a powerful storm.
 %%%%
+diesel robin
+
+A swift, nightmarish bird powered by the fuel of tomorrow. Its razor-sharp
+metallic feathers burn with a brilliant flame.
+%%%%
 dire elephant
 
 A huge pachyderm, wilder and fiercer than normal elephants, with a very thick

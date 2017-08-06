@@ -2031,6 +2031,7 @@ static const map<monster_type, band_set> bands_by_leader = {
     { MONS_CAUSTIC_SHRIKE,  { {}, {{ BAND_CAUSTIC_SHRIKE, {2, 5} }}}},
     { MONS_SHARD_SHRIKE,    { {}, {{ BAND_SHARD_SHRIKE, {1, 4} }}}},
 	{ MONS_GHOST_ROBIN,     { {}, {{ BAND_GHOST_ROBIN, {1, 4} }}}},
+    { MONS_DIESEL_ROBIN,     { {}, {{ BAND_DIESEL_ROBIN, {1, 4} }}}},
     { MONS_FLYING_SKULL,    { {}, {{ BAND_FLYING_SKULLS, {2, 6} }}}},
     { MONS_SLIME_CREATURE,  { {}, {{ BAND_SLIME_CREATURES, {2, 6} }}}},
     { MONS_YAK,             { {}, {{ BAND_YAKS, {2, 6} }}}},
@@ -2563,6 +2564,7 @@ static const map<band_type, vector<member_possibilites>> band_membership = {
                                   {MONS_GUARDIAN_SERPENT, 2},
                                   {MONS_IMPERIAL_MYRMIDON, 2}}}},
 	{ BAND_GHOST_ROBIN,         {{{MONS_GHOST_ROBIN, 1}}}},
+    { BAND_DIESEL_ROBIN,         {{{MONS_DIESEL_ROBIN, 1}}}},
 	{ BAND_ZOTLINGS,            {{{MONS_SUBTRACTOR_SNAKE, 1}, 
                                   {MONS_PLUTONIUM_CRAB, 1}, 
 								  {MONS_ZOTBOT, 1},
@@ -2577,7 +2579,7 @@ static const map<band_type, vector<member_possibilites>> band_membership = {
 	{ BAND_MUTATATOTOT,         {{{MONS_MUTATATOTOT, 1}}}},
 	{ BAND_SUBTRACTOR_SNAKE,    {{{MONS_GOLDEN_DRAGON, 5},{MONS_SHADOW_DRAGON, 5},{MONS_QUICKSILVER_DRAGON, 2}},
 
-	                            {{MONS_CAUSTIC_SHRIKE, 10}, {MONS_GHOST_ROBIN, 10}, {MONS_SHARD_SHRIKE, 7}}}},
+	                            {{MONS_CAUSTIC_SHRIKE, 10}, {MONS_GHOST_ROBIN, 10}, {MONS_SHARD_SHRIKE, 7}, {MONS_DIESEL_ROBIN, 10}}}},
 };
 
 /**

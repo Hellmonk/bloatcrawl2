@@ -566,6 +566,7 @@ static const pop_entry pop_geh[] =
   {  3,  7,    8, PEAK, MONS_BRIMSTONE_FIEND },
   {  2,  6,    8, PEAK, MONS_FIRE_CRAB },
   {  2,  6,    8, PEAK, MONS_THE_GIAGGOSTUONO },
+  {  2,  6,    8, RISE, MONS_DIESEL_ROBIN },
   {  1,  7,   30, FLAT, MONS_NO_MONSTER },
   { 0,0,0,FLAT,MONS_0 }
 };
@@ -640,6 +641,7 @@ static const pop_entry pop_zot[] =
   {  1,  5,   50, FLAT, MONS_GHOST_ROBIN },
   {  1,  5,   50, FLAT, MONS_CAUSTIC_SHRIKE },
   {  1,  5,   50, RISE, MONS_SHARD_SHRIKE },
+  {  1,  5,   50, RISE, MONS_DIESEL_ROBIN },
   {  1,  5,  140, FLAT, MONS_MUTATATOTOT },
   {  1,  5,  113, FLAT, MONS_GIANT_GIANT },
   {  1,  5,  140, FLAT, MONS_PLUTONIUM_CRAB },
@@ -1008,6 +1010,7 @@ static const pop_entry pop_depths[] =
   {  5, 14,   50, FLAT, MONS_TITAN },
   {  5, 14,   50, FLAT, MONS_CAUSTIC_SHRIKE },
   {  5, 14,   50, FLAT, MONS_GHOST_ROBIN },
+  {  5, 14,   50, FLAT, MONS_DIESEL_ROBIN },
   {  8, 14,   10, FLAT, MONS_ANCIENT_LICH },
   {  8, 14,   10, FLAT, MONS_SHARD_SHRIKE},
   { 0,0,0,FLAT,MONS_0 }

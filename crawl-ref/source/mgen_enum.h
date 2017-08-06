@@ -119,6 +119,7 @@ enum band_type
     BAND_MUTATATOTOT,
     BAND_SUBTRACTOR_SNAKE,
     BAND_ELEVENGU,
+    BAND_DIESEL_ROBIN,
     NUM_BANDS                   // always last
 };
 
