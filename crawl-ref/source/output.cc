@@ -1371,7 +1371,7 @@ static void _redraw_title()
     else if (you.char_class == JOB_MONK && you.species != SP_DEMIGOD
              && !had_gods())
     {
-        string godpiety = "**....";
+        string godpiety = "2*";
         textcolour(DARKGREY);
         if ((unsigned int)(strwidth(species) + strwidth(godpiety) + 1) <= WIDTH)
             NOWRAP_EOL_CPRINTF(" %s", godpiety.c_str());
@@ -2227,7 +2227,7 @@ static string _god_asterisks()
     else
     {
         const int prank = piety_rank();
-        return string(prank, '*') + string(NUM_PIETY_STARS - prank, '.');
+        return make_stringf("%d*[%d]", prank, you.piety);
     }
 }
 
