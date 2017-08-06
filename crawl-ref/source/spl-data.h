@@ -613,9 +613,10 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_ANIMATE_DEAD, "Animate Dead",
     SPTYP_NECROMANCY,
-    SPFLAG_AREA | SPFLAG_NEUTRAL | SPFLAG_CORPSE_VIOLATING | SPFLAG_UTILITY,
+    SPFLAG_AREA | SPFLAG_NEUTRAL | SPFLAG_CORPSE_VIOLATING 
+        | SPFLAG_UTILITY | SPFLAG_PERMABUFF,
     4,
-    0,
+    200,
     -1, -1,
     3, 0,
     TILEG_ANIMATE_DEAD,

@@ -3208,6 +3208,7 @@ tileidx_t tileidx_ability(const ability_type ability)
     case ABIL_END_DCHAN:
     case ABIL_END_ABJURATION:
     case ABIL_END_INFUSION:
+    case ABIL_END_ANIMATE_DEAD:
         return TILEG_ABILITY_END_TRANSFORMATION;
 
     // Species-specific abilities.

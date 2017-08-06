@@ -1907,10 +1907,9 @@ spret_type cast_animate_skeleton(god_type god, bool fail)
 spret_type cast_animate_dead(int pow, god_type god, bool fail)
 {
     fail_check();
-    canned_msg(MSG_CALL_DEAD);
-
-    if (!animate_dead(&you, pow + 1, BEH_FRIENDLY, MHITYOU, &you, "", god))
-        canned_msg(MSG_NOTHING_HAPPENS);
+    mpr("You call on the dead to rise!");
+    
+    you.attribute[ATTR_ANIMATE_DEAD] = 1;
 
     return SPRET_SUCCESS;
 }

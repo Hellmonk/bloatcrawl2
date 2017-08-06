@@ -435,6 +435,10 @@ int calculate_frozen_mp()
     {
 		frozen_mp += spell_mp_freeze(SPELL_EXCRUCIATING_WOUNDS);
 	}
+    if (you.attribute[ATTR_ANIMATE_DEAD] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_ANIMATE_DEAD);
+	}
     // Forms. Only check for cancelable forms here; uncancellable goodforms shouldn't reserve mp.
     if (you.form && !you.transform_uncancellable)
     {
@@ -537,6 +541,11 @@ void dispel_permanent_buffs()
     if(you.attribute[ATTR_INFUSION])
     {
         you.attribute[ATTR_INFUSION] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_ANIMATE_DEAD])
+    {
+        you.attribute[ATTR_ANIMATE_DEAD] = 0;
         dispelled = true;
     }
     if(you.attribute[ATTR_EXCRUCIATING_WOUNDS])

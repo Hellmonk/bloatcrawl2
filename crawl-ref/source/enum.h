@@ -484,6 +484,7 @@ enum ability_type
     ABIL_END_DCHAN,
     ABIL_END_ABJURATION,
     ABIL_END_INFUSION,
+    ABIL_END_ANIMATE_DEAD,
     NUM_ABILITIES
 };
 
@@ -614,6 +615,7 @@ enum attribute_type
     ATTR_FIRE_SHIELD,          // ring of flames
     ATTR_INFUSION,             // infusion
     ATTR_EXCRUCIATING_WOUNDS,  // excruciating wounds
+    ATTR_ANIMATE_DEAD,         // animate dead
     NUM_ATTRIBUTES
 };
 

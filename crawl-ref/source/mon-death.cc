@@ -1671,6 +1671,17 @@ static bool _reaping(monster *mons)
     return false;
 }
 
+static bool _reap_dead(monster *mons)
+{
+	if(! you.attribute[ATTR_ANIMATE_DEAD])
+        return false;
+	
+    int rd = calc_spell_power(SPELL_ANIMATE_DEAD, true);
+    if(!x_chance_in_y(100 + rd, 300))
+        return false;
+    return _mons_reaped(&you, mons);
+}
+
 static bool _god_will_bless_follower(monster* victim)
 {
     return have_passive(passive_t::bless_followers)
@@ -2748,6 +2759,8 @@ item_def* monster_die(monster* mons, killer_type killer,
     {
         if (corpse && _reaping(mons))
             corpse = nullptr;
+        if (corpse && _reap_dead(mons))
+            corpse = nullptr;
         _give_experience(player_xp, monster_xp, killer, killer_index,
                          pet_kill, was_visible);
         crawl_state.dec_mon_acting(mons);
@@ -2825,6 +2838,9 @@ item_def* monster_die(monster* mons, killer_type killer,
     }
 
     if (corpse && _reaping(mons))
+        corpse = nullptr;
+	
+    if(corpse && _reap_dead(mons))
         corpse = nullptr;
 
     crawl_state.dec_mon_acting(mons);

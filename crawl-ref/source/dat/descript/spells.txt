@@ -28,9 +28,10 @@ icebreaker at wizard parties.
 %%%%
 Animate Dead spell
 
-Reanimates all corpses and skeletons in the vicinity as followers. This magic
-is unstable, so eventually those reanimated will crumble to dust. Zombies and
-skeletons cannot leave the level they were created on.
+Reanimates corpses of monsters slain by the caster as mindless zombies. 
+This magic is unstable, so eventually those reanimated will crumble to dust. 
+Zombies cannot leave the level they were created on. High spellpower will
+increase the chance of reanimating a slain monster.
 %%%%
 Animate Skeleton spell
 

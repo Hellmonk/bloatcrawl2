@@ -337,6 +337,8 @@ static const ability_def Ability_List[] =
       0, 0, 0, 0, {}, abflag::NONE },
     { ABIL_END_INFUSION, "End Infusion",
       0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_ANIMATE_DEAD, "End Animate Dead",
+      0, 0, 0, 0, {}, abflag::NONE },
 
     { ABIL_DIG, "Dig", 0, 0, 0, 0, {}, abflag::INSTANT },
     { ABIL_SHAFT_SELF, "Shaft Self", 0, 0, 250, 0, {}, abflag::DELAY },
@@ -2150,6 +2152,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         you.attribute[ATTR_INFUSION] = 0;
         mpr("You stop infusing your attacks.");
         break;
+    case ABIL_END_ANIMATE_DEAD:
+        fail_check();
+        you.attribute[ATTR_ANIMATE_DEAD] = 0;
+        mpr("You stop reaping the dead.");
+        break;
 
     case ABIL_STOP_FLYING:
         fail_check();
@@ -3457,6 +3464,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     if (you.attribute[ATTR_INFUSION])
        _add_talent(talents, ABIL_END_INFUSION, check_confused);
   
+    if (you.attribute[ATTR_ANIMATE_DEAD])
+       _add_talent(talents, ABIL_END_ANIMATE_DEAD, check_confused);
+  
     if (you.attribute[ATTR_BONE_ARMOUR])
        _add_talent(talents, ABIL_END_CIGOTUVIS, check_confused);
    
@@ -3727,6 +3737,7 @@ int find_ability_slot(const ability_type abil, char firstletter)
     case ABIL_END_PERMAINVIS:
     case ABIL_END_REGENERATION:
     case ABIL_END_RING_OF_FLAMES:
+    case ABIL_END_ANIMATE_DEAD:
         first_slot = letter_to_index('A');
         break;
     default:

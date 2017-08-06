@@ -1665,6 +1665,8 @@ static spret_type _handle_buff_spells(spell_type spell, int powc, bolt& beam, go
             return cast_infusion(powc, false);   
         case SPELL_EXCRUCIATING_WOUNDS:
             return cast_excruciating_wounds(powc, false);
+        case SPELL_ANIMATE_DEAD:
+            return cast_animate_dead(powc, god, false);
         default:
 		    return SPRET_NONE;
     }
@@ -1882,9 +1884,6 @@ static spret_type _do_cast(spell_type spell, int powc,
 
     case SPELL_ANIMATE_SKELETON:
         return cast_animate_skeleton(god, fail);
-
-    case SPELL_ANIMATE_DEAD:
-        return cast_animate_dead(powc, god, fail);
 
     case SPELL_SIMULACRUM:
         return cast_simulacrum(powc, god, fail);
