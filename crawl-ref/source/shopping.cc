@@ -507,8 +507,8 @@ unsigned int item_value(item_def item, bool ident)
             case POT_MIGHT:
 #if TAG_MAJOR_VERSION == 34
             case POT_AGILITY:
-#endif
             case POT_BRILLIANCE:
+#endif
                 valued += 40;
                 break;
 

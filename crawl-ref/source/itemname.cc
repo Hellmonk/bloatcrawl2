@@ -650,12 +650,10 @@ const char* potion_type_name(int potiontype)
     case POT_CURING:            return "curing";
     case POT_HEAL_WOUNDS:       return "heal wounds";
     case POT_HASTE:             return "haste";
-    case POT_MIGHT:             return "might";
+    case POT_MIGHT:             return "augmentation";
 #if TAG_MAJOR_VERSION == 34
     case POT_AGILITY:           return "agility";
-#endif
     case POT_BRILLIANCE:        return "brilliance";
-#if TAG_MAJOR_VERSION == 34
     case POT_GAIN_STRENGTH:     return "gain strength";
     case POT_GAIN_DEXTERITY:    return "gain dexterity";
     case POT_GAIN_INTELLIGENCE: return "gain intelligence";

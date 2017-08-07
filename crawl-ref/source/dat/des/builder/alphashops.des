@@ -89,13 +89,13 @@
       if s == "A" then i = { "arbalest", "book of alchemy", "book of air",
        "manual of air magic", "book of annihilations", "arrow",
        "potion of ambrosia", "scroll of acquirement q:1",
-       "scroll of amnesia", "staff of air", "manual of axes",
+       "scroll of amnesia", "staff of air", "manual of axes", "potion of augmentation",
        "manual of armour", "wand of acid", "acid dragon scales" }
 
       elseif s == "B" then i = { "bardiche", "battleaxe", "bolt",
        "book of battle", "book of beasts", "book of burglary", "box of beasts",
        "broad axe", "pair of boots", "potion of berserk rage",
-       "potion of brilliance", "scroll of blinking", "scroll of brand weapon",
+       "scroll of blinking", "scroll of brand weapon",
        "manual of bows", "manual of blades", "buckler" }
 
       elseif s == "C" then i = { "book of callings", "book of cantrips",
@@ -153,7 +153,7 @@
       elseif s == "M" then i = { "manual of maces & staves",
        "book of minor magic", "book of misfortune", "book of maledictions",
        "morningstar", "mace", "potion of magic",
-       "ring of magical power", "amulet of magic regeneration", "potion of might",
+       "ring of magical power", "amulet of magic regeneration", 
        "potion of mutation", "scroll of magic mapping", }
 
       elseif s == "N" then i = { "book of necromancy", "naga barding",

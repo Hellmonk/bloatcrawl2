@@ -1292,7 +1292,7 @@ MARKER:     ! = lua:fog_machine { \
                 size_buildup_time = 25, cloud_type = "white fluffiness" \
             }
 ITEM:       w:20 potion of flight / potion of magic / potion of haste / \
-            potion of resistance / gold / potion of brilliance
+            potion of resistance / gold
 ITEM:       wand of lightning / staff of air / \
             gold / scroll of silence / quick blade / ring of evasion / \
             ring of see invisible / book of clouds / any book w:15 / \

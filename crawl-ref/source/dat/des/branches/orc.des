@@ -189,7 +189,7 @@ MONS:    orc, orc priest / orc wizard
 MONS:    w:50 orc warrior / ogre, swamp drake
 # The drake's name is Bobby. Since you did ask.
 KITEM:   1 = nothing / animal skin / potion of mutation w:20 /\
-             w:2 potion of haste / w:2 potion of might
+             w:2 potion of haste / w:2 potion of augmentation
 KFEAT:   1 = 1
 ITEM:    whip, potion of mutation ident:type
 ITEM:    stone / weight:40 nothing, potion of mutation ident:type

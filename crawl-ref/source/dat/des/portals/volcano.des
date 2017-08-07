@@ -183,8 +183,8 @@ function setup_loot (e)
                                  "pair of gloves good_item w:6 / helmet good_item w:4 / " ..
                                  "hat good_item w:2 / pair of boots good_item w:6 / " ..
                                  "fire dragon scales w:8")
-    e.item([[potion of berserk rage w:22 / potion of might w:5 /
-             potion of brilliance w:5 /
+    e.item([[potion of berserk rage w:22 / potion of augmentation w:5 /
+             potion of heal wounds w:5 /
              potion of beneficial mutation q:1 w:1 / potion of resistance]])
     e.item(make_fiery_weapon(e, {"rapier w:20", "morningstar w:20", "demon whip w:1",
                                   "demon whip w:1", "great mace w:3",

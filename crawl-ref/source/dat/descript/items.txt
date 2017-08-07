@@ -693,9 +693,9 @@ potion of magic
 
 A valuable potion which grants an infusion of magical energy.
 %%%%
-potion of might
+potion of augmentation
 
-A potion which greatly increases the strength and physical power of one who
+A potion which greatly increases the physical and mental power of one who
 drinks it.
 %%%%
 potion of mutation

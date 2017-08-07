@@ -342,8 +342,7 @@ MONS:   kobold / big kobold w:1
 MONS:   ball python / adder w:5 / frilled lizard w:2 / ooze w:1
 SUBST:   y : yyyyyyW., Y : YYYYYYWw
 SUBST:   y = W., Y = Ww
-ITEM:   potion of curing / potion of heal wounds / potion of might w:4 /\
-        potion of brilliance w:4 /\
+ITEM:   potion of curing / potion of heal wounds / potion of augmentation w:4 /\
         potion of flight w:4 / any scroll w:7 / any armour w:2 / any weapon w:2
 : sewer_setup(_G)
 : set_feature_name("clear_stone_wall", "large window")
@@ -396,8 +395,7 @@ MONS:    bat / rat / ooze w:5 / ball python / frilled lizard w:5 /\
 KMONS:   . = plant w:1 / fungus w:1 / nothing w:80
 KMONS:   p = plant
 SUBST:   p = ppW
-ITEM:    potion of curing / potion of heal wounds / potion of might w:4 /\
-         potion of brilliance w:4 / \
+ITEM:    potion of curing / potion of heal wounds / potion of augmentation w:4 /\
          potion of flight w:4 / any scroll w:7 / any armour w:2 / \
          any weapon w:2
 SHUFFLE: DEFH
@@ -554,8 +552,8 @@ SHUFFLE: de
 MONS:    rat / iguana w:2
 MONS:    ball python / adder w:5 / frilled lizard w:2 / ooze w:1
 MONS:    bullfrog
-ITEM:    potion of curing / potion of heal wounds / potion of might /\
-         potion of magic / potion of haste w:5 / potion of brilliance w:5
+ITEM:    potion of curing / potion of heal wounds / potion of augmentation /\
+         potion of magic / potion of haste w:5
 ITEM:    scroll of teleportation / scroll of blinking w:5 /\
          scroll of fear w:5 / scroll of magic mapping /\
          scroll of summoning / scroll of fog
@@ -717,8 +715,8 @@ KMONS:   1 = frilled lizard / ball python w:5 / \
 #      loot
 SUBST:   e = !!!!????%
 KITEM:   ? = potion of flight q:2 w:15 / potion of curing /\
-         potion of heal wounds / potion of might / potion of magic /\
-         potion of haste w:5 / potion of brilliance w:5
+         potion of heal wounds / potion of augmentation / potion of magic /\
+         potion of haste w:5
 KITEM:   ! =  scroll of teleportation / scroll of fear w:5 /\
          scroll of blinking w:3 / scroll of magic mapping w:3 /\
          scroll of silence w:2 / scroll of fog w:3
@@ -848,15 +846,15 @@ SHUFFLE:  de
 ITEM:     scroll of fear / scroll of fog / scroll of teleportation w:50 / \
           scroll of blinking / scroll of noise / nothing
 ITEM:     potion of flight w:50 / potion of invisibility / \
-          potion of might w:3 / \
-          potion of brilliance w:3 / nothing
+          potion of augmentation w:3 / \
+          nothing
 #       possibly rather generous loot, if you get to the center
 ITEM:     scroll of vulnerability / scroll of noise / hat / \
-          potion of magic / potion of brilliance / potion of resistance
+          potion of magic / potion of resistance
 ITEM:     scroll of noise / potion of invisibility / \
           pair of gloves w:5 / pair of boots w:5 / nothing
 ITEM:     scroll of noise / scroll of torment / \
-          potion of resistance / potion of might / potion of berserk rage / \
+          potion of resistance / potion of augmentation / potion of berserk rage / \
           buckler / nothing
 KITEM:    ' = scroll of immolation w:30 / \
               scroll of noise / scroll of teleportation / \
@@ -985,8 +983,8 @@ SUBST:   hVZzSsUuTgY = W
 #      loot
 SUBST:   e = !!!!?????
 KITEM:   ? = potion of flight w:5 / potion of flight q:2 w:5 /\
-         potion of curing / potion of heal wounds / potion of might /\
-         potion of magic / potion of haste w:5 / potion of brilliance w:5
+         potion of curing / potion of heal wounds / potion of augmentation /\
+         potion of magic / potion of haste w:5
 KITEM:   ! =  scroll of teleportation / scroll of fear w:5 /\
          scroll of blinking w:3 / scroll of magic mapping w:3 /\
          scroll of torment w:2 / scroll of fog w:3
@@ -1048,8 +1046,8 @@ SUBST:  ~ = WWWW.
 SUBST:  - = WW...
 SUBST:  " = W...
 NSUBST: ? = 4=ef / *=112233
-KITEM:  e = potion of curing / potion of heal wounds / potion of might /\
-        potion of magic / potion of haste w:5 / potion of brilliance w:5
+KITEM:  e = potion of curing / potion of heal wounds / potion of augmentation /\
+        potion of magic / potion of haste w:5
 KITEM:  f = scroll of teleportation / scroll of fear w:5 /\
         scroll of blinking w:3 / scroll of magic mapping w:3 /\
         scroll of torment w:2 / scroll of fog w:3
@@ -1143,8 +1141,8 @@ KMONS:   " = nothing w:50 / rat w:15 / iguana w:7
 KPROP:   w = no_tele_into
 #      loot
 SUBST:   e = !!!!!?????%
-KITEM:   ? = potion of curing / potion of heal wounds / potion of might /\
-         potion of magic / potion of haste w:5 / potion of brilliance w:5
+KITEM:   ? = potion of curing / potion of heal wounds / potion of augmentation /\
+         potion of magic / potion of haste w:5
 KITEM:   ! =  scroll of teleportation / scroll of fear w:5 /\
          scroll of blinking w:3 / scroll of magic mapping w:3 /\
          scroll of torment w:2 / scroll of fog w:3
@@ -1203,8 +1201,8 @@ SUBST:   2 = 222222W.
 SUBST:   e = !!!?????%WWW
 KFEAT:   !?% = W
 COLOUR:  !?% = lightgreen
-KITEM:   ? = potion of curing / potion of heal wounds / potion of might /\
-         potion of magic / potion of haste w:5 / potion of brilliance w:5
+KITEM:   ? = potion of curing / potion of heal wounds / potion of augmentation /\
+         potion of magic / potion of haste w:5
 KITEM:   ! =  scroll of teleportation / scroll of fear w:5 /\
          scroll of blinking w:3 / scroll of magic mapping w:3 /\
          scroll of vulnerability w:2 / scroll of fog w:3
@@ -1297,7 +1295,7 @@ SUBST:   - = wwwW-
 COLOUR:  w- = green
 COLOUR:  W = lightgreen
 ITEM:    potion of curing / potion of heal wounds / \
-         potion of might w:2 / potion of brilliance w:2 / \
+         potion of augmentation w:2 / \
          potion of flight w:14 / \
          any scroll w:7 / any armour w:2 / any weapon w:2
 NSUBST:  d = 1:*

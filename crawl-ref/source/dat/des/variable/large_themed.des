@@ -741,7 +741,7 @@ ORIENT: west
 DEPTH:  Depths, !Depths:$
 MONS:   crystal guardian
 ITEM:   any magical staff / any book / any jewellery w:15 / \
-        any scroll w:20 / potion of magic / potion of brilliance / \
+        any scroll w:20 / potion of magic / potion of augmentation / \
         fan of gales w:1 / lamp of fire w:1 / phial of floods w:1 / gold w:30
 KFEAT:  _ = altar_sif_muna
 MAP

@@ -123,7 +123,7 @@ static const map<job_type, job_def> job_data =
     "Fi", "Fighter",
     8, 0, 4,
     { SP_HILL_ORC, SP_TROLL, SP_MINOTAUR, SP_GARGOYLE, },
-    { "scale mail", "shield", "potion of might" },
+    { "scale mail", "shield", "potion of augmentation" },
     WCHOICE_GOOD,
     { { SK_FIGHTING, 3 }, { SK_SHIELDS, 3 }, { SK_ARMOUR, 3 },
       { SK_WEAPON, 2 } },
