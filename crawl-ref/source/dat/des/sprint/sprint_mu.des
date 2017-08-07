@@ -1360,7 +1360,7 @@ NSUBST: g = 1:+ / *:c
 KITEM: 1 = icy rune of zot
 KITEM: 2 = superb_item, star_item
 KMONS: ! = patrolling ice fiend
-KITEM: ! = potion of resistance ident:all q:3, potion of agility ident:all q:3, \
+KITEM: ! = potion of resistance ident:all q:3, \
            wand of acid ident:type
 COLOUR: #c = lightcyan
 KFEAT: # = closed_door

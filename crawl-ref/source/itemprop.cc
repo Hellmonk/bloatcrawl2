@@ -779,6 +779,7 @@ const set<pair<object_class_type, int> > removed_items =
 	{ OBJ_POTIONS, 	 POT_DEGENERATION },
     { OBJ_POTIONS,   POT_CURE_MUTATION },
     { OBJ_POTIONS,   POT_BENEFICIAL_MUTATION },
+    { OBJ_POTIONS,   POT_AGILITY },
 	{ OBJ_BOOKS, 	 BOOK_YOUNG_POISONERS },
     { OBJ_BOOKS,     BOOK_WIZARDRY },
     { OBJ_BOOKS,     BOOK_CONTROL },
