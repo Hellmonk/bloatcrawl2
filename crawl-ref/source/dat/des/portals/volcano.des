@@ -185,7 +185,7 @@ function setup_loot (e)
                                  "fire dragon scales w:8")
     e.item([[potion of berserk rage w:22 / potion of augmentation w:5 /
              potion of heal wounds w:5 /
-             potion of beneficial mutation q:1 w:1 / potion of resistance]])
+             potion of mutation q:3 w:1 / potion of resistance]])
     e.item(make_fiery_weapon(e, {"rapier w:20", "morningstar w:20", "demon whip w:1",
                                   "demon whip w:1", "great mace w:3",
                                   "scimitar w:20", "double sword", "demon blade w:1",

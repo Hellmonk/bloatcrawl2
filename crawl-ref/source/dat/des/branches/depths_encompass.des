@@ -127,7 +127,7 @@ KMONS:   W = patrolling water elemental w:40 / \
              patrolling snapping turtle zombie
 ITEM:    any scroll
 KITEM:   e = any / any good_item w:4
-KITEM:   8B = potion of beneficial mutation ident:type q:1 / any good_item
+KITEM:   8B = potion of mutation ident:type q:3 / any good_item
 KITEM:   9 = |
 KITEM:   0 = potion of augmentation ident:type
 KFEAT:   8e = >
