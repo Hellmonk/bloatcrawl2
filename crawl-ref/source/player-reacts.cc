@@ -1057,6 +1057,12 @@ void player_reacts()
 
     if (you.props[EMERGENCY_FLIGHT_KEY].get_bool())
         _handle_emergency_flight();
+    // Trog doesn't like it when you sustain spells
+    if (you_worship(GOD_TROG) && you.mp_frozen > 0)
+    {
+        did_god_conduct(DID_SPELL_CASTING, 1 + random2(5));
+		redraw_screen();
+    }
     //-cast disrupts permabuffs and voluntary transformations
     if (you.no_cast() && you.mp_frozen > 0)
     {
