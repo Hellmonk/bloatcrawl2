@@ -2990,11 +2990,14 @@ bool player_can_join_god(god_type which_god)
 {
     if (you.species == SP_DEMIGOD)
         return false;
+	
+    if (which_god == GOD_TROG && you.mp_frozen > 0)
+        return false;
 
     if (is_good_god(which_god) && you.undead_or_demonic())
         return false;
 
-    if (which_god == GOD_BEOGH && !species_is_orcish(you.species))
+    if (which_god == GOD_BEOGH)
         return false;
 
     // Fedhas hates undead, but will accept demonspawn.
@@ -3616,6 +3619,9 @@ void god_pitch(god_type which_god)
                      " have %d.", fee, you.gold);
             }
         }
+        else if (which_god == GOD_TROG && you.mp_frozen > 0)
+            simple_god_message(" demands that you end your permanent spells first!",
+                               which_god);
         else if (you.get_mutation_level(MUT_NO_LOVE)
                  && (which_god == GOD_BEOGH
                      || which_god == GOD_JIYVA
