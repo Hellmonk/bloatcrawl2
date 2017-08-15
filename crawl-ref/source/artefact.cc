@@ -97,8 +97,7 @@ static bool _god_fits_artefact(const god_type which_god, const item_def &item,
         if (item.base_type == OBJ_WEAPONS && brand != SPWPN_HOLY_WRATH)
             return false;
 
-        if (artefact_property(item, ARTP_INVISIBLE)
-            || artefact_property(item, ARTP_STEALTH) > 0)
+        if (artefact_property(item, ARTP_STEALTH) > 0)
         {
             return false;
         }
@@ -641,8 +640,9 @@ static const artefact_prop_data artp_data[] =
         _gen_good_res_artp, _gen_bad_res_artp, 2, 4 },
     { "SInv", ARTP_VAL_BOOL, 30,    // ARTP_SEE_INVISIBLE,
         []() { return 1; }, nullptr, 0, 0 },
-    { "+Inv", ARTP_VAL_BOOL, 15,    // ARTP_INVISIBLE,
-        []() { return 1; }, nullptr, 0, 0 },
+#if TAG_MAJOR_VERSION == 34
+    { "+Inv", ARTP_VAL_BOOL, 0, nullptr, nullptr, 0, 0 }, //ARTP_INVISIBLE,
+#endif
     { "+Fly", ARTP_VAL_BOOL, 15,    // ARTP_FLY,
         []() { return 1; }, nullptr, 0, 0 },
 #if TAG_MAJOR_VERSION > 34

@@ -300,8 +300,7 @@ bool actor::evokable_berserk(bool calc_unid) const
 
 bool actor::evokable_invis(bool calc_unid) const
 {
-    return wearing_ego(EQ_CLOAK, SPARM_INVISIBILITY, calc_unid)
-           || scan_artefacts(ARTP_INVISIBLE, calc_unid);
+    return false;
 }
 
 // Return an int so we know whether an item is the sole source.

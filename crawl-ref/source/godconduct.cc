@@ -363,7 +363,7 @@ static peeve_map divine_peeves[] =
             10, 10
         } },
         { DID_SPELL_CASTING, {
-            "you attempt to cast spells", true,
+            "you attempt to cast spells or sustain spells", true,
             1, 5,
         } },
         { DID_SPELL_PRACTISE, {

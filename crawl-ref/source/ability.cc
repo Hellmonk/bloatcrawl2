@@ -3524,19 +3524,6 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     if (you.evokable_berserk() && !you.get_mutation_level(MUT_NO_ARTIFICE))
         _add_talent(talents, ABIL_EVOKE_BERSERK, check_confused);
 
-    if (you.evokable_invis()
-        && !you.get_mutation_level(MUT_NO_ARTIFICE)
-        && !you.duration[DUR_INVIS])
-    {
-        // Now you can only turn invisibility off if you have an
-        // activatable item. Wands and potions will have to time
-        // out. -- bwr
-        if (you.duration[DUR_INVIS])
-            _add_talent(talents, ABIL_EVOKE_TURN_VISIBLE, check_confused);
-        else
-            _add_talent(talents, ABIL_EVOKE_TURN_INVISIBLE, check_confused);
-    }
-
     if (you.evokable_flight() && !you.get_mutation_level(MUT_NO_ARTIFICE))
     {
         // Has no effect on permanently flying Tengu.

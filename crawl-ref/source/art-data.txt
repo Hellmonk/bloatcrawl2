@@ -902,7 +902,7 @@ INSCRIP: Umbra
 OBJ:     OBJ_JEWELLERY/RING_EVASION
 COLOUR:  ETC_DARK
 TILE:    urand_shadows
-BOOL:    inv
+DEX:     13
 
 # TAG_MAJOR_VERSION == 34
 NAME:    amulet of Cekugob

@@ -311,8 +311,7 @@ static void _unequip_artefact_effect(item_def &item,
 
     if (proprt[ARTP_INVISIBLE] != 0
         && you.duration[DUR_INVIS] > 1
-        && !you.attribute[ATTR_INVIS_UNCANCELLABLE]
-        && !you.evokable_invis())
+        && !you.attribute[ATTR_INVIS_UNCANCELLABLE])
     {
         you.duration[DUR_INVIS] = 1;
     }
@@ -962,15 +961,6 @@ static void _unequip_armour_effect(item_def& item, bool meld,
         {
             mpr("You feel less perceptive.");
             _mark_unseen_monsters();
-        }
-        break;
-
-    case SPARM_INVISIBILITY:
-        if (you.duration[DUR_INVIS]
-            && !you.attribute[ATTR_INVIS_UNCANCELLABLE]
-            && !you.evokable_invis())
-        {
-            you.duration[DUR_INVIS] = 1;
         }
         break;
 

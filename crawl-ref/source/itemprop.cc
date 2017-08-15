@@ -2724,7 +2724,7 @@ bool gives_ability(const item_def &item)
         return false;
 
     // Check for evokable randart properties.
-    for (int rap = ARTP_INVISIBLE; rap <= ARTP_BERSERK; rap++)
+    for (int rap = ARTP_FLY; rap <= ARTP_BERSERK; rap++)
         if (artefact_property(item, static_cast<artefact_prop_type>(rap)))
             return true;
 
