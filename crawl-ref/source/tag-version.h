@@ -201,6 +201,7 @@ enum tag_minor_version
     TAG_MINOR_SLIME_WALL_CLEAR,    // Turn existing Slime:$ walls clear, so they'll be removed on TRJ death.
 	TAG_MINOR_GOLDIFY_BOOKS,       // Don't make books take up an inventory slot
     TAG_MINOR_PERMABUFFS,          // Permanent buffs reserve max mp
+    TAG_MINOR_TRAINING_TARGETS,    // training targets for skills
 #endif
     NUM_TAG_MINORS,
     TAG_MINOR_VERSION = NUM_TAG_MINORS - 1
