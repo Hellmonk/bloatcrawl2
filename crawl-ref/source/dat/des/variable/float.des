@@ -3980,27 +3980,6 @@ ENDMAP
 
 ##############################################################################
 
-NAME:    hangedman_arrow_trap
-ORIENT:  float
-DEPTH:   D:12-, !D:$, Depths:2-, !Depths:$
-MAP
-xxxxxxxxxxxxxxxxxx
-xcccccccxxcccccccx
-x*xxxx*c[]c*xxxx*x
-x..x9x9c..c9x9x..x
-xc..x9xc..cx9x..cx
-xcc..x0c00c0x..ccx
-xxcc..xc00cx..ccxx
-xxxcc..c++c..ccxxx
-xxxxcc......ccxxxx
-xxxxxcc....ccxxxxx
-xxxxxxcc**ccxxxxxx
-xxxxxxxccccxxxxxxx
-       .@@.
-ENDMAP
-
-##############################################################################
-
 NAME:   wad_guarded_room
 DEPTH:  D:6-, !D:$, Depths:2-, !Depths:$
 ORIENT: float
