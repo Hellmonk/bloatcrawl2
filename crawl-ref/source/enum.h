@@ -1966,6 +1966,7 @@ enum duration_type
     DUR_NO_CAST,
     DUR_CHANNEL_ENERGY,
     DUR_NO_HOP,
+    DUR_CONFUSION_IMMUNITY,
     NUM_DURATIONS
 };
 

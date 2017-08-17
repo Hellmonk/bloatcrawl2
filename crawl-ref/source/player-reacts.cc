@@ -257,6 +257,24 @@ static void _decrement_paralysis(int delay)
     }
 }
 
+static void _decrement_confusion(int delay)
+{
+    _decrement_a_duration(DUR_CONFUSION_IMMUNITY, delay);
+
+    if (you.duration[DUR_CONF])
+    {
+        _decrement_a_duration(DUR_CONF, delay);
+
+        if (!you.duration[DUR_CONF])
+        {
+            mprf(MSGCH_DURATION, "You feel less confused.");
+            you.redraw_armour_class = true;
+            you.duration[DUR_CONFUSION_IMMUNITY] = roll_dice(1, 3)
+            * BASELINE_DELAY;
+        }
+    }
+}
+
 /**
  * Check whether the player's ice (Ozocubu's) armour was melted this turn.
  * If so, print the appropriate message and clear the flag.
@@ -571,16 +589,7 @@ static void _decrement_durations()
 {
     const int delay = you.time_taken;
 
-    if (you.gourmand())
-    {
-        // Innate gourmand is always fully active.
-        if (you.has_mutation(MUT_GOURMAND))
-            you.duration[DUR_GOURMAND] = GOURMAND_MAX;
-        else if (you.duration[DUR_GOURMAND] < GOURMAND_MAX && coinflip())
-            you.duration[DUR_GOURMAND] += delay;
-    }
-    else
-        you.duration[DUR_GOURMAND] = 0;
+    _decrement_confusion(delay);
 
     if (you.duration[DUR_LIQUID_FLAMES])
         dec_napalm_player(delay);

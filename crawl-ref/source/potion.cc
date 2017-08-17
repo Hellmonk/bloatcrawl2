@@ -75,8 +75,7 @@ public:
     bool can_quaff(string *reason = nullptr) const override
     {
         // cure status effects
-        if (you.duration[DUR_CONF]
-            || you.duration[DUR_POISONING]
+        if (you.duration[DUR_POISONING]
             || you.disease
             || player_rotted())
         {
@@ -145,7 +144,6 @@ public:
             you.redraw_hit_points = true;
         you.duration[DUR_POISONING] = 0;
         you.disease = 0;
-        you.duration[DUR_CONF] = 0;
         return true;
     }
 };

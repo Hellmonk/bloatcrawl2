@@ -4218,6 +4218,12 @@ bool confuse_player(int amount, bool quiet, bool force)
 
     if (amount <= 0)
         return false;
+	
+    if (you.duration[DUR_CONF] || you.duration[DUR_CONFUSION_IMMUNITY])
+    {
+        mpr("You shrug off the repeated confusion!");
+        return false;
+    }
 
     if (!force && you.clarity())
     {
@@ -4225,7 +4231,7 @@ bool confuse_player(int amount, bool quiet, bool force)
             mpr("You feel momentarily confused.");
         return false;
     }
-
+	
     if (!force && you.duration[DUR_DIVINE_STAMINA] > 0)
     {
         if (!quiet)
@@ -4233,25 +4239,19 @@ bool confuse_player(int amount, bool quiet, bool force)
         return false;
     }
 
-    const int old_value = you.duration[DUR_CONF];
-    you.increase_duration(DUR_CONF, amount, 40);
+    you.increase_duration(DUR_CONF, amount, 15);
+    you.check_awaken(500);
 
-    if (you.duration[DUR_CONF] > old_value)
+    if (!quiet)
     {
-        you.check_awaken(500);
-
-        if (!quiet)
-        {
-            mprf(MSGCH_WARN, "You are %sconfused.",
-                 old_value > 0 ? "more " : "");
-        }
-
-        learned_something_new(HINT_YOU_ENCHANTED);
-
-        xom_is_stimulated((you.duration[DUR_CONF] - old_value)
-                           / BASELINE_DELAY);
+        mprf(MSGCH_WARN, "You are confused.");
     }
 
+    learned_something_new(HINT_YOU_ENCHANTED);
+
+    xom_is_stimulated((you.duration[DUR_CONF])
+                       / BASELINE_DELAY);
+    
     return true;
 }
 
