@@ -1822,6 +1822,8 @@ static void _get_book(const item_def& it, bool quiet)
             useless = !you_can_memorise(st);
             if (!quiet && !useless)
                 mprf("You add the spell %s to your library.", spell_title(st));
+            else if (!quiet)
+                mprf(MSGCH_DIAGNOSTICS, "You add the spell %s to your library.", spell_title(st));
         }
 //        else if (!quiet)
 //            mprf("Your library already contains %s.", spell_title(st));
