@@ -501,6 +501,7 @@ void dispel_permanent_buffs()
     if(you.attribute[ATTR_DARKNESS])
     {
         you.attribute[ATTR_DARKNESS] = 0;
+        update_vision_range();
         dispelled = true;
     }
     if(you.attribute[ATTR_DEFLECT_MISSILES])

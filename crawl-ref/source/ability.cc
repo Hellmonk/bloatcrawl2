@@ -2125,6 +2125,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     case ABIL_END_DARKNESS:
         fail_check();
         you.attribute[ATTR_DARKNESS] = 0;
+        update_vision_range();
         mpr("You stop making your surroundings dark.");
         break;
     case ABIL_END_OZOS:

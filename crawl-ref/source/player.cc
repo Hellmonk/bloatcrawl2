@@ -720,7 +720,7 @@ void update_vision_range()
         nom *= 3, denom *= 4;
 
     // the Darkness spell.
-    if (you.attribute[ATTR_DARKNESS])
+    if (you.attribute[ATTR_DARKNESS] > 0)
         nom *= 3, denom *= 4;
 
     // robe of Night.
