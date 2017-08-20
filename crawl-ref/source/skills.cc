@@ -254,13 +254,6 @@ void reassess_starting_skills()
             you.skill_points[sk] = skill_exp_needed(1, sk);
             you.skills[sk] = 1;
         }
-
-        // Spellcasters should always have Spellcasting skill.
-        if (sk == SK_SPELLCASTING && you.skills[sk] < 1)
-        {
-            you.skill_points[sk] = skill_exp_needed(1, sk);
-            you.skills[sk] = 1;
-        }
     }
 }
 
@@ -311,9 +304,6 @@ static void _change_skill_level(skill_type exsk, int n)
         need_reset = true;
     }
 
-    if (exsk == SK_SPELLCASTING && you.skills[exsk] == n && n > 0)
-        learned_something_new(HINT_GAINED_SPELLCASTING);
-
     if (need_reset)
         reset_training();
 
@@ -328,9 +318,6 @@ void redraw_skill(skill_type exsk, skill_type old_best_skill)
 {
     if (exsk == SK_FIGHTING)
         recalc_and_scale_hp();
-
-    if (exsk == SK_INVOCATIONS || exsk == SK_SPELLCASTING || exsk == SK_EVOCATIONS)
-        calc_mp();
 
     if (exsk == SK_DODGING || exsk == SK_ARMOUR)
         you.redraw_evasion = true;
@@ -1177,11 +1164,6 @@ string skill_title_by_rank(skill_type best_skill, uint8_t skill_rank,
             }
             break;
 
-        case SK_SPELLCASTING:
-            if (species == SP_OGRE)
-                result = "Ogre Mage";
-            break;
-
         case SK_NECROMANCY:
             if (species == SP_SPRIGGAN && skill_rank == 5)
                 result = "Petite Mort";
@@ -1305,8 +1287,11 @@ void init_skill_order()
 bool is_useless_skill(skill_type skill)
 {
 #if TAG_MAJOR_VERSION == 34
-    if (skill == SK_STABBING || skill == SK_TRAPS || skill == SK_POISON_MAGIC)
+    if (skill == SK_STABBING || skill == SK_TRAPS
+        || skill == SK_POISON_MAGIC || skill == SK_SPELLCASTING)
+    {
         return true;
+    }
 #endif
 
     if ((skill == SK_AIR_MAGIC && you.get_mutation_level(MUT_NO_AIR_MAGIC))
@@ -1698,4 +1683,9 @@ void fixup_skills()
 
     if (you.exp_available >= calc_skill_cost(you.skill_cost_level))
         skill_menu(SKMF_EXPERIENCE);
+}
+
+skill_type best_magic_skill()
+{
+    return best_skill(SK_FIRST_MAGIC_SCHOOL, SK_LAST_MAGIC);
 }

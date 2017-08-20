@@ -107,6 +107,7 @@ int transfer_skill_points(skill_type fsk, skill_type tsk, int skp_max,
                           bool simu, bool boost = false);
 int skill_bump(skill_type skill, int scale = 1);
 void fixup_skills();
+skill_type best_magic_skill();
 
 static const skill_type skill_display_order[] =
 {

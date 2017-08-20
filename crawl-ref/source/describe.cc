@@ -2435,15 +2435,6 @@ string get_skill_description(skill_type skill, bool need_title)
                           "close connection to magic.";
             }
             break;
-
-        case SK_SPELLCASTING:
-            if (you_worship(GOD_TROG))
-            {
-                result += "\n";
-                result += "Keep in mind, though, that Trog will greatly "
-                          "disapprove of this.";
-            }
-            break;
         default:
             // No further information.
             break;

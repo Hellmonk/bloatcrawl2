@@ -705,7 +705,6 @@ void hints_gained_new_skill(skill_type skill)
     case SK_DODGING:
     case SK_SHIELDS:
     case SK_THROWING:
-    case SK_SPELLCASTING:
     {
         mprf(MSGCH_TUTORIAL, "%s", get_skill_description(skill).c_str());
         stop_running();
@@ -1716,31 +1715,12 @@ void learned_something_new(hints_event_type seen_what, coord_def gc)
         break;
 
     case HINT_NEW_LEVEL:
-        if (you.skills[SK_SPELLCASTING])
-        {
-            if (!crawl_state.game_is_hints())
-            {
-                text << "Gaining an experience level allows you to learn more "
-                        "difficult spells. However, you don't have any level "
-                        "two spells in your current spellbook, so you'll just "
-                        "have to keep exploring!";
-                break;
-            }
-            text << "Gaining an experience level allows you to learn more "
-                    "difficult spells. Time to memorise your second spell "
-                    "with <w>%</w>"
-#ifdef USE_TILE
-                 << " or by <w>clicking</w> on it in the memorisation tab"
-#endif
-                 << ".";
-            cmd.push_back(CMD_MEMORISE_SPELL);
-        }
-        else
         {
             text << "Well done! Reaching a new experience level is always a "
                     "nice event: you get more health and magic points, and "
                     "occasionally increases to your attributes (strength, "
-                    "intelligence, dexterity).";
+                    "intelligence, dexterity). You're also able to memorise "
+                    "more spells.";
         }
 
         if (Hints.hints_type == HINT_MAGIC_CHAR)

@@ -1385,12 +1385,13 @@ static void _generate_book_item(item_def& item, bool allow_uniques,
         if (x_chance_in_y(2,5))
         {
             do
-			{
+            {
                 item.skill = static_cast<skill_type>(SK_SPELLCASTING +
-                                                 random2(NUM_SKILLS -
-                                                         SK_SPELLCASTING));
-			}
-		    while(item.skill == SK_POISON_MAGIC || item.skill == SK_CONJURATIONS);
+                                                     random2(NUM_SKILLS -
+                                                             SK_SPELLCASTING));
+            }
+		        while (item.skill == SK_POISON_MAGIC
+                   || item.skill == SK_CONJURATIONS);
         }
         else
 #if TAG_MAJOR_VERSION == 34

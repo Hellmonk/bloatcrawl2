@@ -139,7 +139,7 @@ static skill_type _wanderer_role_skill_select(stat_type selected_role,
         break;
 
     case STAT_INT:
-        selected_skill = random_choose(SK_SPELLCASTING, sk_1, sk_2);
+        selected_skill = random_choose(sk_1, sk_2);
         break;
 
     default:
@@ -233,7 +233,6 @@ static void _give_wanderer_book(skill_type skill)
     switch (skill)
     {
     default:
-    case SK_SPELLCASTING:
         book = BOOK_MINOR_MAGIC;
         break;
 

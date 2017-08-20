@@ -838,9 +838,6 @@ map<skill_type, int8_t> ash_get_boosted_skills(eq_type type)
         {
             boost[SK_EVOCATIONS] = 2;
         }
-        // Other magical staves.
-        else if (wpn->base_type == OBJ_STAVES)
-            boost[SK_SPELLCASTING] = 2;
         break;
 
     case (ET_SHIELD):

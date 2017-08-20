@@ -688,7 +688,7 @@ monster_type player_mons(bool transform)
     else if (mons == MONS_OGRE)
     {
         const skill_type sk = best_skill(SK_FIRST_SKILL, SK_LAST_SKILL);
-        if (sk >= SK_SPELLCASTING && sk <= SK_LAST_MAGIC)
+        if (sk >= SK_FIRST_MAGIC_SCHOOL && sk <= SK_LAST_MAGIC)
             mons = MONS_OGRE_MAGE;
     }
 
@@ -1297,7 +1297,8 @@ int player_hunger_rate(bool temp)
  */
 int player_total_spell_levels()
 {
-    return you.experience_level - 1 + you.skill(SK_SPELLCASTING, 2, true);
+    return you.experience_level
+           + (max(0, you.intel()) * you.experience_level) / 27;
 }
 
 /**
@@ -4032,19 +4033,11 @@ int get_real_hp(bool trans, bool rotted)
 
 int get_real_mp(bool include_items, bool frozen)
 {
+    // Base formula for Hellcrawl is XL + int*(xl/27)
+    // you.intel() * you.experience_level / 27;
     const int scale = 100;
-    int spellcasting = you.skill(SK_SPELLCASTING, 1 * scale, true);
-    int scaled_xl = you.experience_level * scale;
-
-    // the first 4 experience levels give an extra .5 mp up to your spellcasting
-    // the last 4 give no mp
-    int enp = min(23 * scale, scaled_xl);
-
-    int spell_extra = spellcasting; // 100%
-    int invoc_extra = you.skill(SK_INVOCATIONS, 1 * scale, true) / 2; // 50%
-    int evoc_extra = you.skill(SK_EVOCATIONS, 1 * scale, true) / 2; // 50%
-    int highest_skill = max(spell_extra, max(invoc_extra, evoc_extra));
-    enp += highest_skill + min(8 * scale, min(highest_skill, scaled_xl)) / 2;
+    int enp = (1 + you.experience_level) * scale
+              + (max(0, you.intel()) * you.experience_level * scale / 27);
 
     // Analogous to ROBUST/FRAIL
     enp *= 100  + (you.get_mutation_level(MUT_HIGH_MAGIC) * 10)
@@ -5843,8 +5836,7 @@ int player::skill(skill_type sk, int scale, bool real, bool drained) const
     }
 	else if (have_passive(passive_t::magic_skill_boost))
 	{
-		if(sk >= SK_FIRST_MAGIC_SCHOOL && sk < SK_LAST_MAGIC 
-			|| sk == SK_SPELLCASTING)
+		if(sk >= SK_FIRST_MAGIC_SCHOOL && sk <= SK_LAST_MAGIC )
 		{
 			level = sif_magic_boost(sk, scale);
 		}

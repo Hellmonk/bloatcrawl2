@@ -39,7 +39,7 @@ static const map<job_type, job_def> job_data =
     { SP_DEEP_ELF, SP_TENGU, SP_BASE_DRACONIAN, SP_NAGA, SP_VINE_STALKER, },
     { "robe", "book of Air" },
     WCHOICE_NONE,
-    { { SK_AIR_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
+    { { SK_AIR_MAGIC, 4 },
       { SK_DODGING, 2 }, { SK_STEALTH, 2 }, },
 } },
 
@@ -49,8 +49,8 @@ static const map<job_type, job_def> job_data =
     { SP_FORMICID, SP_DEEP_ELF, SP_KOBOLD, SP_SPRIGGAN, SP_TROLL, SP_CENTAUR, },
     { "robe", "book of Arcane Marksmanship" },
     WCHOICE_RANGED,
-    { { SK_FIGHTING, 1 }, { SK_DODGING, 2 }, { SK_SPELLCASTING, 1 },
-      { SK_HEXES, 3 }, { SK_WEAPON, 2 }, },
+    { { SK_FIGHTING, 1 }, { SK_DODGING, 2 },
+      { SK_HEXES, 4 }, { SK_WEAPON, 2 }, },
 } },
 
 { JOB_ARTIFICER, {
@@ -105,7 +105,7 @@ static const map<job_type, job_def> job_data =
       SP_GHOUL, SP_OCTOPODE, },
     { "book of Geomancy", "stone q:240", "robe", },
     WCHOICE_NONE,
-    { { SK_TRANSMUTATIONS, 1 }, { SK_EARTH_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
+    { { SK_TRANSMUTATIONS, 2 }, { SK_EARTH_MAGIC, 4 },
       { SK_DODGING, 2 }, { SK_STEALTH, 2 }, }
 } },
 
@@ -115,7 +115,7 @@ static const map<job_type, job_def> job_data =
     { SP_DEEP_ELF, SP_KOBOLD, SP_SPRIGGAN, SP_NAGA, SP_VAMPIRE, },
     { "dagger plus:1", "robe plus:1", "book of Maledictions" },
     WCHOICE_NONE,
-    { { SK_WEAPON, 1 }, { SK_HEXES, 3 }, { SK_SPELLCASTING, 2 },
+    { { SK_WEAPON, 1 }, { SK_HEXES, 4 },
       { SK_DODGING, 2 }, { SK_STEALTH, 3 }, },
 } },
 
@@ -135,7 +135,7 @@ static const map<job_type, job_def> job_data =
     { SP_DEEP_ELF, SP_HILL_ORC, SP_NAGA, SP_TENGU, SP_DEMIGOD, SP_GARGOYLE, },
     { "robe", "book of Flames" },
     WCHOICE_NONE,
-    { { SK_FIRE_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
+    { { SK_FIRE_MAGIC, 4 },
       { SK_DODGING, 2 }, { SK_STEALTH, 2 }, },
 } },
 
@@ -166,7 +166,7 @@ static const map<job_type, job_def> job_data =
       SP_GARGOYLE, },
     { "robe", "book of Frost" },
     WCHOICE_NONE,
-    { { SK_ICE_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
+    { { SK_ICE_MAGIC, 4 },
       { SK_DODGING, 2 }, { SK_STEALTH, 2 }, },
 } },
 
@@ -187,7 +187,7 @@ static const map<job_type, job_def> job_data =
       SP_VAMPIRE, },
     { "robe", "book of Necromancy" },
     WCHOICE_NONE,
-    { { SK_SPELLCASTING, 2 }, { SK_NECROMANCY, 4 }, { SK_DODGING, 2 },
+    { { SK_NECROMANCY, 5 }, { SK_DODGING, 2 },
       { SK_STEALTH, 2 }, },
 } },
 
@@ -198,7 +198,7 @@ static const map<job_type, job_def> job_data =
     { "leather armour", "book of Battle" },
     WCHOICE_PLAIN,
     { { SK_FIGHTING, 2 }, { SK_ARMOUR, 1 }, { SK_DODGING, 1 },
-      { SK_SPELLCASTING, 2 }, { SK_CHARMS, 3 }, { SK_WEAPON, 2 }, },
+      { SK_CHARMS, 4 }, { SK_WEAPON, 2 }, },
 } },
 
 { JOB_SUMMONER, {
@@ -208,7 +208,7 @@ static const map<job_type, job_def> job_data =
       SP_VAMPIRE, },
     { "robe", "book of Callings" },
     WCHOICE_NONE,
-    { { SK_SUMMONINGS, 4 }, { SK_SPELLCASTING, 2 }, { SK_DODGING, 2 },
+    { { SK_SUMMONINGS, 5 }, { SK_DODGING, 2 },
       { SK_STEALTH, 2 }, },
 } },
 
@@ -220,7 +220,7 @@ static const map<job_type, job_def> job_data =
     { "arrow q:96", "robe", "book of Changes" },
     WCHOICE_NONE,
     { { SK_FIGHTING, 1 }, { SK_UNARMED_COMBAT, 3 }, { SK_DODGING, 2 },
-      { SK_SPELLCASTING, 2 }, { SK_TRANSMUTATIONS, 2 }, },
+      { SK_TRANSMUTATIONS, 3 }, },
 } },
 
 { JOB_WANDERER, {
@@ -240,8 +240,11 @@ static const map<job_type, job_def> job_data =
       SP_MUMMY, },
     { "robe", "hat", "book of Minor Magic" },
     WCHOICE_NONE,
-    { { SK_DODGING, 2 }, { SK_STEALTH, 2 }, { SK_SPELLCASTING, 3 },
-      { SK_TRANSLOCATIONS, 1 }, { SK_SUMMONINGS, 1 }, { SK_AIR_MAGIC, 1 }, },
+    { { SK_DODGING, 2 }, { SK_STEALTH, 2 },
+      { SK_TRANSLOCATIONS, 1 }, { SK_SUMMONINGS, 1 }, { SK_AIR_MAGIC, 1 },
+      { SK_TRANSMUTATIONS, 1 }, { SK_EARTH_MAGIC, 1 }, { SK_HEXES, 1 },
+      { SK_NECROMANCY, 1 }, { SK_FIRE_MAGIC, 1 },
+    },
 } },
 #if TAG_MAJOR_VERSION == 34
 { JOB_CONJURER, {

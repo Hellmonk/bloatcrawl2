@@ -335,10 +335,6 @@ static void _setup_tutorial_miscs()
 
     // No need for Shields skill without shield.
     you.skills[SK_SHIELDS] = 0;
-
-    // Some spellcasting for the magic tutorial.
-    if (crawl_state.map.find("tutorial_lesson4") != string::npos)
-        you.skills[SK_SPELLCASTING] = 1;
 }
 
 static void _give_basic_knowledge()

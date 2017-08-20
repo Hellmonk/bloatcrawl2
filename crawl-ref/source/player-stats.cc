@@ -232,7 +232,7 @@ void jiyva_stat_action()
         {
             int weight = you.skills[sk];
 
-            if (sk >= SK_SPELLCASTING && sk < SK_INVOCATIONS)
+            if (sk >= SK_FIRST_MAGIC_SCHOOL && sk <= SK_LAST_MAGIC)
                 magic_weights += weight;
             else
                 other_weights += weight;

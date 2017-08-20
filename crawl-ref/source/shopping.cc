@@ -186,7 +186,7 @@ int artefact_value(const item_def &item)
 const set<int> removed_shops =
 {
 #if TAG_MAJOR_VERSION == 34
-	{SHOP_FOOD},
+	{SHOP_FOOD, },
 	#endif
 };
 

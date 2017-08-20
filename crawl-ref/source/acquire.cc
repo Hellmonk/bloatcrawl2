@@ -260,9 +260,8 @@ static armour_type _acquirement_body_armour(bool divine)
 {
     // Using an arbitrary legacy formula, do we think the player doesn't care
     // about armour EVP?
-    const bool warrior = random2(_skill_rdiv(SK_SPELLCASTING, 3)
-                                + _skill_rdiv(SK_DODGING))
-                         < random2(_skill_rdiv(SK_ARMOUR, 2));
+    const bool warrior = random2(_skill_rdiv(SK_DODGING))
+                         < random2(_skill_rdiv(SK_ARMOUR));
 
     vector<pair<armour_type, int>> weights;
     for (int i = ARM_FIRST_MUNDANE_BODY; i < NUM_ARMOURS; ++i)
@@ -592,7 +591,7 @@ static int _acquirement_jewellery_subtype(bool /*divine*/, int & /*quantity*/)
 static int _acquirement_staff_subtype(bool /*divine*/, int & /*quantity*/)
 {
     // Try to pick an enhancer staff matching the player's best skill.
-    skill_type best_spell_skill = best_skill(SK_SPELLCASTING, SK_EVOCATIONS);
+    const skill_type best_spell_skill = best_magic_skill();
     bool found_enhancer = false;
     int result = 0;
     do
@@ -632,10 +631,11 @@ static int _acquirement_staff_subtype(bool /*divine*/, int & /*quantity*/)
  */
 static int _acquirement_misc_subtype(bool /*divine*/, int & /*quantity*/)
 {
-    // Give a crystal ball based on both evocations and either spellcasting or
-    // invocations if we haven't seen one.
+    // Give a crystal ball based on both evocations and either best spell 
+    // school or invocations if we haven't seen one.
+    const skill_type best_spell_skill = best_magic_skill();
     int skills = _skill_rdiv(SK_EVOCATIONS)
-        * max(_skill_rdiv(SK_SPELLCASTING), _skill_rdiv(SK_INVOCATIONS));
+        * max(_skill_rdiv(best_spell_skill), _skill_rdiv(SK_INVOCATIONS));
     if (x_chance_in_y(skills, MAX_SKILL_LEVEL * MAX_SKILL_LEVEL)
         && !you.seen_misc[MISC_CRYSTAL_BALL_OF_ENERGY])
     {
@@ -826,7 +826,7 @@ static int _book_weight(book_type book)
 
 static bool _is_magic_skill(int skill)
 {
-    return skill >= SK_SPELLCASTING && skill < SK_INVOCATIONS;
+    return skill >= SK_FIRST_MAGIC_SCHOOL && skill <= SK_LAST_MAGIC;
 }
 
 static bool _skill_useless_with_god(int skill)
@@ -979,9 +979,10 @@ static bool _do_book_acquirement(item_def &book, int agent)
 
     case BOOK_RANDART_LEVEL:
     {
+        const skill_type best_spell_skill = best_magic_skill();
         const int level = agent == GOD_XOM ?
             random_range(1, 9) :
-            max(1, (_skill_rdiv(SK_SPELLCASTING) + 2) / 3);
+            max(1, (_skill_rdiv(best_spell_skill) + 2) / 3);
 
         book.sub_type  = BOOK_RANDART_LEVEL;
         if (!make_book_level_randart(book, level))
