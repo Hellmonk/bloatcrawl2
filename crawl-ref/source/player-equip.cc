@@ -832,6 +832,11 @@ static void _equip_armour_effect(item_def& arm, bool unmeld,
         case SPARM_PROTECTION:
             mpr("You feel protected.");
             break;
+			
+        case SPARM_MAGICAL_POWER:
+            canned_msg(MSG_MANA_INCREASE);
+            calc_mp();
+            break;
 
         case SPARM_STEALTH:
             if (!you.get_mutation_level(MUT_NO_STEALTH))
@@ -983,6 +988,11 @@ static void _unequip_armour_effect(item_def& item, bool meld,
 
     case SPARM_PROTECTION:
         mpr("You feel less protected.");
+        break;
+		
+    case SPARM_MAGICAL_POWER:
+        canned_msg(MSG_MANA_DECREASE);
+        calc_mp();
         break;
 
     case SPARM_STEALTH:

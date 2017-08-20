@@ -352,6 +352,8 @@ unsigned int item_value(item_def item, bool ident)
             case SPARM_INTELLIGENCE:
             case SPARM_FLYING:
             case SPARM_STEALTH:
+            case SPARM_MAGICAL_POWER:
+            case SPARM_SPIRIT_SHIELD:
             case SPARM_STRENGTH:
 #if TAG_MAJOR_VERSION == 34
             case SPARM_INVISIBILITY:
@@ -365,7 +367,6 @@ unsigned int item_value(item_def item, bool ident)
             case SPARM_POSITIVE_ENERGY:
             case SPARM_POISON_RESISTANCE:
             case SPARM_REFLECTION:
-            case SPARM_SPIRIT_SHIELD:
                 valued += 20;
                 break;
 

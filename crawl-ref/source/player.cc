@@ -4060,7 +4060,11 @@ int get_real_mp(bool include_items, bool frozen)
     // Now applied after scaling so that power items are more useful -- bwr
     if (include_items)
     {
-        enp +=      you.scan_artefacts(ARTP_MAGICAL_POWER);
+        if(you.wearing_ego(EQ_CLOAK, SPARM_MAGICAL_POWER))
+            enp += 9;
+        if(you.wearing_ego(EQ_HELMET, SPARM_MAGICAL_POWER))
+            enp += 9;
+        enp +=      you.scan_artefacts(ARTP_MAGICAL_POWER);  
     }
 
     if (include_items && you.wearing_ego(EQ_WEAPON, SPWPN_ANTIMAGIC))

@@ -1399,6 +1399,9 @@ static string _describe_armour(const item_def &item, bool verbose)
         case SPARM_STEALTH:
             description += "It enhances the stealth of its wearer.";
             break;
+        case SPARM_MAGICAL_POWER:
+            description += "It increases the magical reserves of its wearer.";
+            break;
         case SPARM_RESISTANCE:
             description += "It protects its wearer from the effects "
                 "of both cold and heat.";

@@ -472,6 +472,7 @@ enum special_armour_type
 #if TAG_MAJOR_VERSION == 34
     SPARM_JUMPING,
 #endif
+    SPARM_MAGICAL_POWER,
     NUM_REAL_SPECIAL_ARMOURS,
     NUM_SPECIAL_ARMOURS,
 };
