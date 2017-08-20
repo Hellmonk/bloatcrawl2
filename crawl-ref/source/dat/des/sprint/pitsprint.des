@@ -491,8 +491,8 @@ function coven_setup(e)
   e.kitem("e = wand of digging charges:5 ident:all")
   e.kitem("d = potion of heal wounds q:5 ident:all")
   e.kitem("f = any wand good_item ident:all")
-  e.kitem("g = staff of power ident:all")
-  e.kitem("h = staff of power ident:all")
+  e.kitem("g = staff of wizardry ident:all")
+  e.kitem("h = staff of wizardry ident:all")
   e.kitem("i = crystal ball of energy")
   e.kitem("j = potion of mutation ident:all")
   e.lua_marker('~', props_marker {
@@ -617,7 +617,7 @@ KITEM: a = stone, \
 KITEM: b = scroll of summoning ident:all q:1, \
        scroll of amnesia q:5 ident:all, \
        scroll of vulnerability q:2 ident:all
-KITEM: c = staff of power ident:all, \
+KITEM: c = staff of wizardry ident:all, \
        stone q:10
 KITEM: d = potion of invisibility ident:all q:2, \
        potion of berserk rage ident:all q:2, \

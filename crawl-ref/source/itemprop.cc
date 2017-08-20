@@ -764,6 +764,7 @@ const set<pair<object_class_type, int> > removed_items =
     { OBJ_STAVES,    STAFF_CHANNELING },
 	{ OBJ_STAVES, 	 STAFF_ENERGY },
     { OBJ_STAVES, 	 STAFF_CONJURATION },
+    { OBJ_STAVES, 	 STAFF_POWER },
     { OBJ_POTIONS,   POT_GAIN_STRENGTH },
     { OBJ_POTIONS,   POT_GAIN_DEXTERITY },
     { OBJ_POTIONS,   POT_GAIN_INTELLIGENCE },

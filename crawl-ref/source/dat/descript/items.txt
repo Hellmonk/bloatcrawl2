@@ -1013,10 +1013,6 @@ A staff that increases the power of fire spells cast by its wielder, and
 protects them from the effects of fire. If the wielder is skilled in Evocations
 and Fire Magic, they can burn those struck by it.
 %%%%
-staff of power
-
-A staff that provides an increased reservoir of magical power to its wielder.
-%%%%
 staff of summoning
 
 A staff that increases the power of summonings cast by its wielder.

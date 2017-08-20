@@ -614,15 +614,11 @@ static int _acquirement_staff_subtype(bool /*divine*/, int & /*quantity*/)
 #undef TRY_GIVE
     default:                                           break;
     }
-    if (one_chance_in(found_enhancer ? 2 : 3))
+    if (x_chance_in_y(2,found_enhancer ? 3 : 5))
         return result;
 
-    // Otherwise pick a non-enhancer staff.
-    switch (random2(3))
-    {
-    case 0: case 1: result = STAFF_WIZARDRY;   break;
-    case 2: result = STAFF_POWER;              break;
-    }
+    // Otherwise pick a staff of fuckin wizardry.
+    result = STAFF_WIZARDRY;
     return result;
 }
 

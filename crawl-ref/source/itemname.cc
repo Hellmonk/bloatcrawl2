@@ -1133,7 +1133,9 @@ static const char* staff_type_name(int stafftype)
     switch ((stave_type)stafftype)
     {
     case STAFF_WIZARDRY:    return "wizardry";
+#if TAG_MAJOR_VERSION == 34
     case STAFF_POWER:       return "power";
+#endif
     case STAFF_FIRE:        return "fire";
     case STAFF_COLD:        return "cold";
 #if TAG_MAJOR_VERSION == 34

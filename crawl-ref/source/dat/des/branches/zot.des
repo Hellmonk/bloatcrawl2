@@ -2154,7 +2154,7 @@ ITEM:   quick blade ego:electrocution good_item ident:type w:5 / \
         quarterstaff ego:electrocution good_item ident:type
 ITEM:   scroll of blinking q:1 / scroll of blinking q:2 / \
         scroll of teleportation q:1 / scroll of teleportation q:2 / \
-        any scroll good_item / staff of power ident:type / \
+        any scroll good_item / staff of wizardry ident:type / \
         wand of lightning ident:type
 KFEAT:  yz = w
 KFEAT:  YZ" = W

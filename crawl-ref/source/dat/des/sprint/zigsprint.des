@@ -763,7 +763,7 @@ KITEM:    N = wand of acid ident:all charges:5, \
               wand of lightning ident:all charges:5, \
               wand of iceblast ident:all charges:5, \
           wand of disintegration ident:all charges:7
-KITEM:    O = crystal ball of energy ident:all, staff of power not_cursed ident:all
+KITEM:    O = crystal ball of energy ident:all, staff of wizardry not_cursed ident:all
 KITEM:    P = ring of strength not_cursed ident:all plus:6, \
               ring of strength not_cursed ident:all plus:6, \
               ring of intelligence not_cursed ident:all plus:6, \

@@ -811,10 +811,6 @@ Denne stav øger brugerens ildbesværgelsers kraft, men nedsætter den for
 isbesværgelser. Den beskytter brugeren mod virkningerne af ild. Hvis brugeren
 er kyndig i vækkelser og ildmagi kan staven fryse de fjender, den rammer.
 %%%%
-staff of power
-
-Denne stav øger brugerens reservoir af magisk energi.
-%%%%
 staff of summoning
 
 Denne stav øger brugerens hidkaldelsers kraft og beskytter mod hidkaldte
