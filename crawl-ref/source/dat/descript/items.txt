@@ -667,7 +667,7 @@ it. It also reduces magical contamination.
 %%%%
 potion of curing
 
-A potion which heals some wounds, clears the mind and cures poison and disease.
+A potion which heals some wounds and cures poison and disease.
 It can also slightly repair rotting.
 %%%%
 potion of flight
