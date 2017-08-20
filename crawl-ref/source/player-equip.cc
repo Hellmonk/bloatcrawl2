@@ -1146,11 +1146,6 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
         notify_stat_change(STAT_INT, item.plus, false);
         break;
 
-    case RING_MAGICAL_POWER:
-        canned_msg(MSG_MANA_INCREASE);
-        calc_mp();
-        break;
-
     case AMU_FAITH:
         if (you.species == SP_DEMIGOD)
             mpr("You feel a surge of self-confidence.");
@@ -1265,10 +1260,6 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
 
     case RING_INTELLIGENCE:
         notify_stat_change(STAT_INT, -item.plus, false);
-        break;
-
-    case RING_MAGICAL_POWER:
-        canned_msg(MSG_MANA_DECREASE);
         break;
 
     case AMU_FAITH:

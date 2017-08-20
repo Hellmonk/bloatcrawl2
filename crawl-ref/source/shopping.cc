@@ -676,8 +676,9 @@ unsigned int item_value(item_def item, bool ident)
                 case RING_PROTECTION_FROM_MAGIC:
                     valued += 250;
                     break;
-
+#if TAG_MAJOR_VERSION == 34
                 case RING_MAGICAL_POWER:
+#endif
                 case RING_LIFE_PROTECTION:
                 case RING_POISON_RESISTANCE:
                 case RING_RESIST_CORROSION:

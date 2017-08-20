@@ -61,7 +61,6 @@ ae += forbidden
 :   or itsubtype == "ring of wizardry"
 :   or itsubtype == "ring of resist corrosion"
 :   or itsubtype == "ring of see invisible"
-:   or itsubtype == "ring of magical power"
 :   or itsubtype == "ring of ice"
 :   or itsubtype == "ring of fire") then
 :    for inv in iter.invent_iterator:new(items.inventory()) do

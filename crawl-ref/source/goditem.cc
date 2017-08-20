@@ -582,7 +582,7 @@ bool god_likes_item_type(const item_def &item, god_type which_god)
             if (item.base_type == OBJ_JEWELLERY
                 && (item.sub_type == RING_WIZARDRY
                     || item.sub_type == RING_ICE
-                    || item.sub_type == RING_MAGICAL_POWER))
+                    || item.sub_type == RING_FIRE))
             {
                 return false;
             }

@@ -437,10 +437,6 @@ ring of intelligence
 Este anillo aumenta o reduce la habilidad mental de su portador, en función de
 su grado de encantamiento.
 %%%%
-ring of magical power
-
-Este anillo incrementa las reservas mágicas de su portador.
-%%%%
 ring of poison resistance
 
 Este anillo proporciona protección ante los efectos de los venenos.

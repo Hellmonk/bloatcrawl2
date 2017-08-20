@@ -553,10 +553,6 @@ ring of intelligence
 Denne ring øger eller mindsker sin bærers mentale evner, afhængigt af hvor
 meget den er fortryllet.
 %%%%
-ring of magical power
-
-Denne ring øger sin bærers reserver af magisk energi.
-%%%%
 ring of poison resistance
 
 Denne ring beskytter sin bærer mod effekterne af gifte og edder.

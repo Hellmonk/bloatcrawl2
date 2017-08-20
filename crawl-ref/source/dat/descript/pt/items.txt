@@ -241,10 +241,6 @@ quarterstaff
 
 Uma haste de madeira robusta feita para combate.
 %%%%
-ring of magical power
-
-Este anel aumenta as reservas de poder mágico daquele que o veste.
-%%%%
 ring of protection from cold
 
 Este anel oferece proteção contra o frio.

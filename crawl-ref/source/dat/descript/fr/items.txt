@@ -721,10 +721,6 @@ ring of intelligence
 Cet anneau augmente ou diminue la capacité mentale de son porteur, en fonction
 de son degré d'enchantement.
 %%%%
-ring of magical power
-
-Cet anneau augmente les réserves de pouvoir magique de son porteur.
-%%%%
 ring of poison resistance
 
 Cet anneau offre une protection contre les poisons et venins.

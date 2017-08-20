@@ -519,10 +519,6 @@ ring of intelligence
 Dieser Ring vergrößert oder vermindert die geistige Fähigkeit seines Trägers
 abhängig vom Grad, zu dem es verzaubert worden ist.
 %%%%
-ring of magical power
-
-Dieser Ring erhöht die Magiereserven seines Trägers.
-%%%%
 ring of poison resistance
 
 Dieser Ring liefert Schutz vor den Effekten von Vergiftung und Gift.

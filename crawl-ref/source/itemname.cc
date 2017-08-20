@@ -777,8 +777,8 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
         case RING_DEXTERITY:             return "dexterity";
         case RING_INTELLIGENCE:          return "intelligence";
         case RING_WIZARDRY:              return "wizardry";
-        case RING_MAGICAL_POWER:         return "magical power";
 #if TAG_MAJOR_VERSION == 34
+        case RING_MAGICAL_POWER:         return "magical power";
         case RING_FLIGHT:                return "flight";
 #endif
         case RING_LIFE_PROTECTION:       return "positive energy";

@@ -153,7 +153,7 @@
       elseif s == "M" then i = { "manual of maces & staves",
        "book of minor magic", "book of misfortune", "book of maledictions",
        "morningstar", "mace", "potion of magic",
-       "ring of magical power", "amulet of magic regeneration", 
+       "amulet of magic regeneration", 
        "potion of mutation", "scroll of magic mapping", }
 
       elseif s == "N" then i = { "book of necromancy", "naga barding",

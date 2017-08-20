@@ -430,10 +430,6 @@ ring of intelligence
 
 这个戒指能改变佩戴者的智力。至于是加强还是弱化，就要看它上面附着的魔法了。
 %%%%
-ring of magical power
-
-佩戴这个戒指会增加佩戴者的魔力储量。
-%%%%
 ring of poison resistance
 
 这个戒指保护佩戴者不受毒药和毒液攻击的影响。

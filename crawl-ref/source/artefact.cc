@@ -363,7 +363,6 @@ static map<jewellery_type, vector<jewellery_fake_artp>> jewellery_artps = {
     { AMU_REGENERATION, { { ARTP_REGENERATION, 1 } } },
     { AMU_REFLECTION, { { ARTP_SHIELDING, 0 } } },
 
-    { RING_MAGICAL_POWER, { { ARTP_MAGICAL_POWER, 9 } } },
     { RING_SEE_INVISIBLE, { { ARTP_SEE_INVISIBLE, 1 } } },
 
     { RING_POISON_RESISTANCE, { { ARTP_POISON, 1 } } },
@@ -1437,10 +1436,6 @@ static bool _randart_is_redundant(const item_def &item,
         provides = ARTP_INTELLIGENCE;
         break;
 
-    case RING_MAGICAL_POWER:
-        provides = ARTP_MAGICAL_POWER;
-        break;
-
     case RING_LIFE_PROTECTION:
         provides = ARTP_NEGATIVE_ENERGY;
         break;
@@ -1496,7 +1491,6 @@ static bool _randart_is_conflicting(const item_def &item,
     case RING_FIRE:
     case RING_ICE:
     case RING_WIZARDRY:
-    case RING_MAGICAL_POWER:
         conflicts = ARTP_PREVENT_SPELLCASTING;
         break;
 
@@ -1674,7 +1668,7 @@ static jewellery_type octoring_types[8] =
 {
     RING_SEE_INVISIBLE, RING_FIRE, RING_ICE,
     RING_RESIST_CORROSION, RING_PROTECTION_FROM_MAGIC, RING_WIZARDRY, 
-    RING_MAGICAL_POWER, RING_LIFE_PROTECTION
+    RING_WIZARDRY, RING_LIFE_PROTECTION
 };
 
 static void _make_octoring(item_def &item)

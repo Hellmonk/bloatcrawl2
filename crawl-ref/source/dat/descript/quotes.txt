@@ -2129,10 +2129,6 @@ ring of resist corrosion
 
 <ring>
 %%%%
-ring of magical power
-
-<ring>
-%%%%
 ring of poison resistance
 
 <ring>
