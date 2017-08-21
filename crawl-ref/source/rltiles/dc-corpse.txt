@@ -266,7 +266,6 @@ harpy CORPSE_HARPY
 minotaur CORPSE_MINOTAUR
 sphinx CORPSE_SPHINX
 tengu CORPSE_TENGU
-elevengu CORPSE_ELEVENGU
 unique/arachne_staveless CORPSE_ARACHNE
 %sdir mon/mutantbeast
 base3 CORPSE_MUTANT_BEAST
