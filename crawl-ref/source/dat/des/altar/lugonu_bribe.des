@@ -38,8 +38,6 @@ function callback.tgw_lugonu_bribe_lugonu_item (data, triggerable,
          Fedhas="randbook owner:Lugonu spells:necromutation numspells:1 /\
               randbook owner:Lugonu spells:simulacrum&cigotuvi's_embrace \
                        numspells:2",
-         Gozag="rat skeleton ident:type /\
-              randbook owner:Lugonu spells:corpse_rot&animate_dead numspells:2",
          Jiyva="stone q:10-20 / large rock q:2-4",
          Kikubaaqudgha="randbook owner:Lugonu spells:control_undead&dispel_undead \
                        numspells:2 /\
