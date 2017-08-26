@@ -1580,7 +1580,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_SIMULACRUM, "Simulacrum",
     SPTYP_ICE | SPTYP_NECROMANCY,
-    SPFLAG_CORPSE_VIOLATING,
+    SPFLAG_CORPSE_VIOLATING | SPFLAG_MONSTER,
     6,
     200,
     -1, -1,

@@ -991,7 +991,7 @@ void make_book_kiku_gift(item_def &book, bool first)
         chosen_spells[1] = coinflip()
             ? SPELL_AGONY : SPELL_EXCRUCIATING_WOUNDS;
         chosen_spells[2] = random_choose(SPELL_BOLT_OF_DRAINING,
-                                         SPELL_SIMULACRUM,
+                                         SPELL_AGONY,
                                          SPELL_DEATH_CHANNEL);
         spell_type extra_spell;
         do
@@ -1001,7 +1001,6 @@ void make_book_kiku_gift(item_def &book, bool first)
                                         SPELL_AGONY,
                                         SPELL_EXCRUCIATING_WOUNDS,
                                         SPELL_BOLT_OF_DRAINING,
-                                        SPELL_SIMULACRUM,
                                         SPELL_DEATH_CHANNEL);
             for (int i = 0; i < 3; i++)
                 if (extra_spell == chosen_spells[i])

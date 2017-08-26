@@ -61,7 +61,6 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_ENGLACIATION,
     SPELL_OZOCUBUS_REFRIGERATION,
     SPELL_FREEZING_CLOUD,
-    SPELL_SIMULACRUM,
 },
 
 {   // Book of Spatial Translocations
@@ -218,7 +217,6 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_CONTROL_UNDEAD,
     SPELL_CIGOTUVIS_EMBRACE,
     SPELL_DEATH_CHANNEL,
-    SPELL_SIMULACRUM,
 },
 
 #if TAG_MAJOR_VERSION == 34

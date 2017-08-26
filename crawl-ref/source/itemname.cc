@@ -3716,11 +3716,7 @@ bool is_useless_item(const item_def &item, bool temp)
         return true;
 
     case OBJ_CORPSES:
-        if (item.sub_type != CORPSE_SKELETON && !you_foodless())
-            return false;
-
-        if (you.has_spell(SPELL_SIMULACRUM)
-            || you_worship(GOD_YREDELEMNUL) && !you.penance[GOD_YREDELEMNUL]
+        if (you_worship(GOD_YREDELEMNUL) && !you.penance[GOD_YREDELEMNUL]
                && you.piety >= piety_breakpoint(0))
         {
             return false;
