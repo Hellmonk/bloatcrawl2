@@ -337,6 +337,8 @@ static const ability_def Ability_List[] =
       0, 0, 0, 0, {}, abflag::NONE },
     { ABIL_END_INFUSION, "End Infusion",
       0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_SPECTRAL_WEAPON, "End Spectral Weapon",
+      0, 0, 0, 0, {}, abflag::NONE },
     { ABIL_END_ANIMATE_DEAD, "End Animate Dead",
       0, 0, 0, 0, {}, abflag::NONE },
 
@@ -2158,6 +2160,16 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         you.attribute[ATTR_ANIMATE_DEAD] = 0;
         mpr("You stop reaping the dead.");
         break;
+    case ABIL_END_SPECTRAL_WEAPON:
+    {
+        fail_check();
+        monster* old_spectral = find_spectral_weapon(&you);
+        if(old_spectral)
+            end_spectral_weapon(old_spectral, false);
+        you.attribute[ATTR_SPECTRAL_WEAPON] = 0;
+        mpr("You stop readying your spectral weapon.");
+        break;
+    }
 
     case ABIL_STOP_FLYING:
         fail_check();
@@ -3464,6 +3476,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
    
     if (you.attribute[ATTR_INFUSION])
        _add_talent(talents, ABIL_END_INFUSION, check_confused);
+   
+    if (you.attribute[ATTR_SPECTRAL_WEAPON])
+       _add_talent(talents, ABIL_END_SPECTRAL_WEAPON, check_confused);
   
     if (you.attribute[ATTR_ANIMATE_DEAD])
        _add_talent(talents, ABIL_END_ANIMATE_DEAD, check_confused);
@@ -3726,6 +3741,7 @@ int find_ability_slot(const ability_type abil, char firstletter)
     case ABIL_END_REGENERATION:
     case ABIL_END_RING_OF_FLAMES:
     case ABIL_END_ANIMATE_DEAD:
+    case ABIL_END_SPECTRAL_WEAPON:
         first_slot = letter_to_index('A');
         break;
     default:

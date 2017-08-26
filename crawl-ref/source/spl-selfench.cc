@@ -23,6 +23,7 @@
 #include "output.h"
 #include "religion.h"
 #include "showsymb.h"
+#include "spl-summoning.h"
 #include "spl-transloc.h"
 #include "spl-util.h"
 #include "spl-wpnench.h"
@@ -439,6 +440,10 @@ int calculate_frozen_mp()
     {
 		frozen_mp += spell_mp_freeze(SPELL_ANIMATE_DEAD);
 	}
+    if (you.attribute[ATTR_SPECTRAL_WEAPON] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_SPECTRAL_WEAPON);
+	}
     // Forms. Only check for cancelable forms here; uncancellable goodforms shouldn't reserve mp.
     if (you.form && !you.transform_uncancellable)
     {
@@ -547,6 +552,14 @@ void dispel_permanent_buffs()
     if(you.attribute[ATTR_ANIMATE_DEAD])
     {
         you.attribute[ATTR_ANIMATE_DEAD] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_SPECTRAL_WEAPON])
+    {
+        monster* old_weap = find_spectral_weapon(&you);
+        if(old_weap)
+            end_spectral_weapon(old_weap, false);
+        you.attribute[ATTR_SPECTRAL_WEAPON] = 0;
         dispelled = true;
     }
     if(you.attribute[ATTR_EXCRUCIATING_WOUNDS])

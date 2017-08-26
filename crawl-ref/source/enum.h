@@ -485,6 +485,7 @@ enum ability_type
     ABIL_END_ABJURATION,
     ABIL_END_INFUSION,
     ABIL_END_ANIMATE_DEAD,
+    ABIL_END_SPECTRAL_WEAPON,
     NUM_ABILITIES
 };
 
@@ -616,6 +617,7 @@ enum attribute_type
     ATTR_INFUSION,             // infusion
     ATTR_EXCRUCIATING_WOUNDS,  // excruciating wounds
     ATTR_ANIMATE_DEAD,         // animate dead
+    ATTR_SPECTRAL_WEAPON,      // spectral weapon
     NUM_ATTRIBUTES
 };
 

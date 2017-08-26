@@ -6400,10 +6400,6 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         cast_battlesphere(mons, min(splpow, 200), mons->god, false);
         return;
 
-    case SPELL_SPECTRAL_WEAPON:
-        cast_spectral_weapon(mons, min(splpow, 200), mons->god, false);
-        return;
-
     case SPELL_TORNADO:
     {
         int dur = 60;

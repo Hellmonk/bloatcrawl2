@@ -1667,6 +1667,8 @@ static spret_type _handle_buff_spells(spell_type spell, int powc, bolt& beam, go
             return cast_excruciating_wounds(powc, false);
         case SPELL_ANIMATE_DEAD:
             return cast_animate_dead(powc, god, false);
+        case SPELL_SPECTRAL_WEAPON:
+            return cast_spectral_weapon(&you, powc, god, false);
         default:
 		    return SPRET_NONE;
     }
@@ -1893,9 +1895,6 @@ static spret_type _do_cast(spell_type spell, int powc,
 
     case SPELL_SPELLFORGED_SERVITOR:
         return cast_spellforged_servitor(powc, god, fail);
-
-    case SPELL_SPECTRAL_WEAPON:
-        return cast_spectral_weapon(&you, powc, god, fail);
 
     case SPELL_BATTLESPHERE:
         return cast_battlesphere(&you, powc, god, fail);

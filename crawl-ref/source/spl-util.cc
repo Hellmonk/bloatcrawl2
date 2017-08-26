@@ -1273,8 +1273,12 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "your weapon is already branded with pain";
 		}
         // intentional fallthrough
-    case SPELL_PORTAL_PROJECTILE:
     case SPELL_SPECTRAL_WEAPON:
+        if(you.attribute[ATTR_SPECTRAL_WEAPON])
+        {
+            return "you already have your spectral weapon prepared";
+        }
+    case SPELL_PORTAL_PROJECTILE:
         break;
 
     case SPELL_LEDAS_LIQUEFACTION:
