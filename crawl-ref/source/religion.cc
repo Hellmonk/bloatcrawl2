@@ -112,7 +112,7 @@ const vector<god_power> god_powers[NUM_GODS] =
            "Kikubaaqudgha no longer protects you from necromantic miscasts or death curses." },
       { 4, "Kikubaaqudgha is protecting you from unholy torment.",
            "Kikubaaqudgha will no longer protect you from unholy torment." },
-      { 5, ABIL_KIKU_TORMENT, "invoke torment by sacrificing a corpse" },
+      { 5, ABIL_KIKU_TORMENT, "invoke torment" },
       { 7, ABIL_KIKU_BLESS_WEAPON,
            "Kikubaaqudgha will grant you a Necronomicon or bloody your weapon with pain... once.",
            "Kikubaaqudgha is no longer ready to enhance your necromancy." },

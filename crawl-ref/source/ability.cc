@@ -2312,11 +2312,6 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_KIKU_TORMENT:
         fail_check();
-        if (!kiku_take_corpse())
-        {
-            mpr("There are no corpses to sacrifice!");
-            return SPRET_ABORT;
-        }
         simple_god_message(" torments the living!");
         torment(&you, TORMENT_KIKUBAAQUDGHA, you.pos());
         break;
