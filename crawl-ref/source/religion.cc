@@ -108,8 +108,7 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Kikubaaqudgha
-    { { 1, ABIL_KIKU_RECEIVE_CORPSES, "receive cadavers from Kikubaaqudgha" },
-      { 2, "Kikubaaqudgha is protecting you from necromantic miscasts and death curses.",
+    { { 2, "Kikubaaqudgha is protecting you from necromantic miscasts and death curses.",
            "Kikubaaqudgha no longer protects you from necromantic miscasts or death curses." },
       { 4, "Kikubaaqudgha is protecting you from unholy torment.",
            "Kikubaaqudgha will no longer protect you from unholy torment." },
@@ -123,10 +122,8 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Yredelemnul
-    { { 1, ABIL_YRED_ANIMATE_REMAINS, "animate remains" },
-      { 2, ABIL_YRED_RECALL_UNDEAD_SLAVES, "recall your undead slaves" },
+    { { 2, ABIL_YRED_RECALL_UNDEAD_SLAVES, "recall your undead slaves" },
       { 2, ABIL_YRED_INJURY_MIRROR, "mirror injuries on your foes" },
-      { 3, ABIL_YRED_ANIMATE_DEAD, "animate legions of the dead" },
       { 4, ABIL_YRED_DRAIN_LIFE, "drain ambient life force" },
       { 5, ABIL_YRED_ENSLAVE_SOUL, "enslave living souls" },
     },
