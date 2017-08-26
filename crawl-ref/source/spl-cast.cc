@@ -808,8 +808,8 @@ bool cast_a_spell(bool check_range, spell_type spell)
 
     int cost = spell_mana(spell);
     int sifcast_amount = 0;
-    double freeze_cost = spell_mp_freeze(spell);
-    int true_cost = freeze_cost > cost ? (int) freeze_cost + 1 : cost;
+    int freeze_cost = spell_mp_freeze(spell);
+    int true_cost = freeze_cost > cost ? freeze_cost : cost;
     if (!enough_mp(true_cost, true))
     {
         if (you.attribute[ATTR_DIVINE_ENERGY])
@@ -2090,7 +2090,7 @@ static double _get_true_fail_rate(int raw_fail)
     return double(outcomes - _tetrahedral_number(300 - target)) / outcomes;
 }
 
-double spell_mp_freeze (spell_type spell)
+int spell_mp_freeze (spell_type spell)
 {
     //no need to freeze mp if it's not a buff spell
     if (!is_buff_spell(spell) && !spell_is_form(spell))
@@ -2103,7 +2103,7 @@ double spell_mp_freeze (spell_type spell)
         if (success < 0.05)
             return 400;
 		double mp_to_freeze = spell_difficulty(spell) / (success * success);
-        return mp_to_freeze;
+        return (int) mp_to_freeze;
     }
 }
 
@@ -2274,7 +2274,7 @@ string spell_reserved_mp_string(spell_type spell)
         return "N/A";
     else 
     {
-        int mp_to_freeze = (int) spell_mp_freeze(spell);
+        int mp_to_freeze = spell_mp_freeze(spell);
         if (mp_to_freeze == 400)
             return make_stringf(">400");
         return make_stringf("%d", mp_to_freeze);    

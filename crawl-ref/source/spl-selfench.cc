@@ -378,7 +378,7 @@ spret_type cast_invisibility(int pow, bool fail)
 //chain of ifs, probably should, like, use a real data structure
 int calculate_frozen_mp()
 {
-    double frozen_mp = 0;
+    int frozen_mp = 0;
 	if (you.attribute[ATTR_OZO_ARMOUR] > 0)
     {
 		frozen_mp += spell_mp_freeze(SPELL_OZOCUBUS_ARMOUR);
@@ -472,7 +472,7 @@ int calculate_frozen_mp()
                 break;
         }
     }
-    return (int) frozen_mp;
+    return frozen_mp;
 }
 
 void dispel_permanent_buffs()

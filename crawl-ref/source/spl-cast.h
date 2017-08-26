@@ -104,7 +104,7 @@ vector<string> desc_success_chance(const monster_info& mi, int pow, bool evoked,
 spret_type your_spells(spell_type spell, int powc = 0, bool allow_fail = true,
                        const item_def* const evoked_item = nullptr);				   
 					   
-double spell_mp_freeze(spell_type spell);
+int spell_mp_freeze(spell_type spell);
 bool is_buff_spell (spell_type spell);
 extern const char *fail_severity_adjs[];
 
