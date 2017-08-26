@@ -465,6 +465,7 @@ bool fill_status_info(int status, status_info* inf)
             inf->light_colour = LIGHTMAGENTA;
             inf->light_text = "Reap";
         }
+        break;
 
     case STATUS_SONG_OF_SLAYING:
         if(you.attribute[ATTR_SONG_OF_SLAYING])
