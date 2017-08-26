@@ -143,6 +143,7 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_INFUSION,
     SPELL_SONG_OF_SLAYING,
     SPELL_REGENERATION,
+    SPELL_OZOCUBUS_ARMOUR,
     SPELL_SPECTRAL_WEAPON,
 },
 #endif
@@ -232,6 +233,7 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_INFUSION,
     SPELL_SONG_OF_SLAYING,
     SPELL_REGENERATION,
+    SPELL_OZOCUBUS_ARMOUR,
     SPELL_SPECTRAL_WEAPON,
 },
 #endif
