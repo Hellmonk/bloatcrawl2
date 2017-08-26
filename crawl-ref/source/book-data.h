@@ -97,7 +97,6 @@ static const vector<spell_type> spellbook_templates[] =
 },
 
 {   // Book of Death
-    SPELL_CORPSE_ROT,
     SPELL_SUBLIMATION_OF_BLOOD,
     SPELL_AGONY,
     SPELL_DISPEL_UNDEAD,
@@ -130,7 +129,6 @@ static const vector<spell_type> spellbook_templates[] =
 },
 
 {   // Fen Folio
-    SPELL_CORPSE_ROT,
     SPELL_LEDAS_LIQUEFACTION,
     SPELL_OLGREBS_TOXIC_RADIANCE,
     SPELL_SUMMON_FOREST,

@@ -378,7 +378,7 @@ bool is_corpse_violating_spell(spell_type spell)
 /**
  * Do the good gods hate use of this spell?
  *
- * @param spell     The spell in question; e.g. SPELL_CORPSE_ROT.
+ * @param spell     The spell in question; e.g. SPELL_PAIN.
  * @return          Whether the Good Gods hate this spell.
  */
 bool is_evil_spell(spell_type spell)

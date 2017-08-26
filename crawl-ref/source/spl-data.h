@@ -957,7 +957,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_CORPSE_ROT, "Corpse Rot",
     SPTYP_NECROMANCY,
-    SPFLAG_AREA | SPFLAG_NEUTRAL | SPFLAG_UNCLEAN,
+    SPFLAG_AREA | SPFLAG_NEUTRAL | SPFLAG_UNCLEAN | SPFLAG_MONSTER,
     2,
     0,
     -1, -1,
