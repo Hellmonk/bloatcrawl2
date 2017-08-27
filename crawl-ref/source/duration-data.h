@@ -325,6 +325,11 @@ static const duration_def duration_data[] =
       {{ "", []() {
           mprf(MSGCH_DURATION, "%s", you.hands_act("slow", "down.").c_str());
       }}}},
+    { DUR_MIASMATA,
+      LIGHTBLUE, "Miasma",
+      "miasmata", "",
+      "Your attacks sometimes engulf foes in miasma.", D_NO_FLAGS,
+      {{ "You are no longer imbuing your attacks with miasma."}}},
     { DUR_LIFESAVING,
       LIGHTGREY, "Prot",
       "protection", "lifesaving",

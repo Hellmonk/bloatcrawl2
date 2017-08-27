@@ -261,10 +261,12 @@ One. Demon weapons will be converted into a more powerful sacred weapon. This
 blessing may only be used once, and it cannot be used on artefact weapons.
 %%%%
 # Kikubaaqudgha
-Receive Corpses ability
+Miasmata ability
 
-Creates one or more reanimatable monster corpses nearby. The number and
-freshness of these are dependent on Necromancy skill.
+Imbues your attacks with putrescent vapours. Enemies you strike
+may be engulfed in miasma for a brief time. High levels of 
+necromancy skill will increase the chance of a cloud forming as well as the
+duration of the ability.
 %%%%
 Torment ability
 

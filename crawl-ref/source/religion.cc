@@ -108,7 +108,8 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Kikubaaqudgha
-    { { 2, "Kikubaaqudgha is protecting you from necromantic miscasts and death curses.",
+    { { 1, ABIL_KIKU_MIASMA, "imbue your attacks with miasma"},
+      { 2, "Kikubaaqudgha is protecting you from necromantic miscasts and death curses.",
            "Kikubaaqudgha no longer protects you from necromantic miscasts or death curses." },
       { 4, "Kikubaaqudgha is protecting you from unholy torment.",
            "Kikubaaqudgha will no longer protect you from unholy torment." },

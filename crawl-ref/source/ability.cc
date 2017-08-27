@@ -400,7 +400,7 @@ static const ability_def Ability_List[] =
       {FAIL_INVO}, abflag::NONE },
 
     // Kikubaaqudgha
-    { ABIL_KIKU_RECEIVE_CORPSES, "Receive Corpses",
+    { ABIL_KIKU_MIASMA, "Miasmata",
       3, 0, 200, 2, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_KIKU_TORMENT, "Torment",
       4, 0, 0, 8, {FAIL_INVO, 60, 5, 20}, abflag::NONE },
@@ -2305,9 +2305,13 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             return SPRET_ABORT;
         break;
 
-    case ABIL_KIKU_RECEIVE_CORPSES:
+    case ABIL_KIKU_MIASMA:
         fail_check();
-        kiku_receive_corpses(you.skill(SK_NECROMANCY, 4));
+        mprf(MSGCH_DURATION, you.duration[DUR_MIASMATA]
+             ? "You feel the putrescence grow stronger."
+             : "Your attacks are imbued with putrescent vapours.");
+        you.increase_duration(DUR_MIASMATA, 
+            10 + random2avg(you.skill(SK_NECROMANCY, 5), 3), 50);
         break;
 
     case ABIL_KIKU_TORMENT:

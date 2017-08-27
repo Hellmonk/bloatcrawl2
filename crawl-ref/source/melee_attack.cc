@@ -378,6 +378,22 @@ bool melee_attack::handle_phase_hit()
 
         return false;
     }
+	
+	if (attacker->is_player() && you.attribute[ATTR_SPECTRAL_WEAPON])
+    {
+        summon_spectral_weapon(&you, calc_spell_power(SPELL_SPECTRAL_WEAPON,true),you.religion);         
+	}
+	
+    if (attacker->is_player() && you.duration[DUR_MIASMATA])
+    {
+		//scale the chance to do anything with necro skill
+        if(x_chance_in_y(10 + you.skill_rdiv(SK_NECROMANCY, 2, 3), 50))
+        {
+            mprf("You engulf %s in miasma!", 
+                you.can_see(*defender)? defender->name(DESC_THE).c_str() : "something");
+            place_cloud(CLOUD_MIASMA, defender->pos(), 5 + random2(6), &you);
+		}
+    }
 
     if (attacker->is_player() && you.attribute[ATTR_INFUSION])
     {
@@ -397,11 +413,6 @@ bool melee_attack::handle_phase_hit()
             }
         }
     }
-	
-    if (attacker->is_player() && you.attribute[ATTR_SPECTRAL_WEAPON])
-    {
-        summon_spectral_weapon(&you, calc_spell_power(SPELL_SPECTRAL_WEAPON,true),you.religion);         
-	}
 
     // This does more than just calculate the damage, it also sets up
     // messages, etc. It also wakes nearby creatures on a failed stab,
