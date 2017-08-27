@@ -1788,7 +1788,7 @@ bool jiyva_remove_bad_mutation()
 
 bool yred_injury_mirror()
 {
-    return in_good_standing(GOD_YREDELEMNUL, 1)
+    return in_good_standing(GOD_YREDELEMNUL, 0)
            && you.duration[DUR_MIRROR_DAMAGE]
            && crawl_state.which_god_acting() != GOD_YREDELEMNUL;
 }
