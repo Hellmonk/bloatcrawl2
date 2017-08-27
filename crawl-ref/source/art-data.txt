@@ -240,6 +240,7 @@ TILE:    spwpn_vampires_tooth
 TILE_EQ: vampires_tooth
 BRAND:   SPWPN_VAMPIRISM
 VALUE:   1000
+BOOL:    nogen
 
 NAME:    scythe of Curses
 OBJ:     OBJ_WEAPONS/WPN_SCYTHE
@@ -257,7 +258,7 @@ COLOUR:  ETC_GOLD
 TILE:    spwpn_sceptre_of_torment
 TILE_EQ: mace_ruby
 VALUE:   1200
-BOOL:    special, evil
+BOOL:    special, evil, nogen
 
 NAME:    sword of Zonguldrok
 OBJ:     OBJ_WEAPONS/WPN_DOUBLE_SWORD
@@ -325,6 +326,7 @@ ANGRY:   5
 BOOL:    berserk
 STEALTH: -1
 
+# TAG_MAJOR_VERSION == 34
 NAME:    scimitar of Flaming Death
 OBJ:     OBJ_WEAPONS/WPN_SCIMITAR
 INSCRIP: sticky flame,
@@ -335,7 +337,7 @@ TILE_EQ: flaming_death
 BRAND:   SPWPN_FLAMING
 FIRE:    2
 COLD:    -1
-BOOL:    poison, skip_ego
+BOOL:    poison, skip_ego, nogen
 MAGIC:   1
 
 # TAG_MAJOR_VERSION == 34
@@ -362,6 +364,7 @@ AC:      -3
 EV:      -3
 LIFE:     1
 
+# TAG_MAJOR_VERSION == 34
 NAME:    dagger of Chilly Death
 OBJ:     OBJ_WEAPONS/WPN_DAGGER
 INSCRIP: flash freeze,
@@ -373,7 +376,7 @@ BRAND:   SPWPN_FREEZING
 FIRE:    -1
 COLD:    2
 MAGIC:   1
-BOOL:    poison, skip_ego
+BOOL:    poison, skip_ego, nogen
 
 NAME:     dagger "Morg"
 OBJ:      OBJ_WEAPONS/WPN_DAGGER
@@ -712,6 +715,7 @@ BOOL:     berserk
 MAGIC:    2
 LIFE:     1
 
+# TAG_MAJOR_VERSION == 34
 NAME:     robe of Misfortune
 OBJ:      OBJ_ARMOUR/ARM_ROBE
 PLUS:     -5
@@ -720,7 +724,7 @@ TILE:     urand_misfortune
 TILE_EQ:  robe_misfortune
 EV:       -5
 STEALTH:  -2
-BOOL:     nospell, rnd_tele, randapp, unided, mutate, drain
+BOOL:     nospell, rnd_tele, randapp, unided, mutate, drain, nogen
 
 # TAG_MAJOR_VERSION == 34
 NAME:     cloak of Flash
@@ -751,6 +755,7 @@ TILE:    urand_lear
 TILE_EQ: lears_hauberk
 BOOL:    special
 
+# TAG_MAJOR_VERSION == 34
 NAME:    skin of Zhor
 OBJ:     OBJ_ARMOUR/ARM_ANIMAL_SKIN
 PLUS:    +4
@@ -758,7 +763,9 @@ COLOUR:  BROWN
 TILE:    urand_zhor
 TILE_EQ: zhor
 COLD:    3
+BOOL:    nogen
 
+# TAG_MAJOR_VERSION == 34
 ENUM:    SALAMANDER
 NAME:    salamander hide armour
 OBJ:     OBJ_ARMOUR/ARM_LEATHER_ARMOUR
@@ -767,7 +774,7 @@ COLOUR:  ETC_FIRE
 TILE:    urand_salamander
 TILE_EQ: leather_red
 FIRE:    2
-BOOL:    berserk
+BOOL:    berserk, nogen
 
 NAME:    gauntlets of War
 OBJ:     OBJ_ARMOUR/ARM_GLOVES
@@ -868,6 +875,7 @@ COLD:     1
 STEALTH:  -2
 BOOL:     elec
 
+# TAG_MAJOR_VERSION == 34
 NAME:     ratskin cloak
 OBJ:      OBJ_ARMOUR/ARM_CLOAK
 PLUS:     +2
@@ -877,7 +885,7 @@ TILE_EQ:  ratskin
 INT:      -1
 DEX:      -1
 LIFE:     1
-BOOL:     poison
+BOOL:     poison, nogen
 
 NAME:     shield of the Gong
 OBJ:      OBJ_ARMOUR/ARM_SHIELD

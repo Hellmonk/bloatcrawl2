@@ -360,7 +360,7 @@ SUBST: G : YlG
 :   demon whip w:5 | scroll of torment | staff of death | \
 :   book of necromancy | book of death | \
 :   book of unlife | randbook disc:necromancy w:5 | necronomicon w:1 | \
-:   grand grimoire w:1 | sceptre_of_torment w:1 | \
+:   grand grimoire w:1 | \
 :   scythe_of_curses w:1 | majin-bo w:1 | \
 :   obsidian_axe w:1 | damnation w:1 | \
 :   sword_of_zonguldrok w:1")

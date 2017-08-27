@@ -5579,7 +5579,7 @@ ENDMAP
 # Zonguldrok
 #
 NAME:   minmay_guarded_unrand_zonguldrok
-DEPTH:  D:12-, Depths, Crypt
+DEPTH:  D:12-, Depths
 TAGS:   no_monster_gen no_item_gen
 WEIGHT: 3
 : if you.in_branch("Depths") then
@@ -5610,7 +5610,7 @@ ENDMAP
 #
 NAME:   minmay_guarded_unrand_curses
 TAGS:   no_monster_gen no_item_gen
-DEPTH:  D:12-, Depths, Crypt
+DEPTH:  D:12-, Depths
 WEIGHT: 3
 MONS:   reaper, reaper; scythe_of_curses, mummy, guardian mummy
 KPROP:  12' = no_tele_into
@@ -5673,38 +5673,6 @@ MAP
       ...bb.......bb...
        ...............
         .............
-ENDMAP
-
-# Flaming Death
-#
-NAME:   minmay_guarded_unrand_flaming_death
-TAGS:   no_monster_gen no_item_gen
-DEPTH:  D:10-, Depths, !Depths:$
-WEIGHT: 3
-# Fire elementals are speed 13, but can't open the doors.
-# The player may kill the efreet over the lava, losing the scimitar.
-# However, the player *can see* that the efreet is wielding an artefact.
-KMONS:  l = fire elemental / nothing w:40
-KFEAT:  l = l
-KMONS:  1 = patrolling Azrael; scimitar_of_flaming_death, \
-            patrolling efreet; scimitar_of_flaming_death
-KPROP:  1' = no_tele_into
-SUBST:  v : vc
-SUBST:  ' = .
-MAP
- ...........
-..vvvv+vvvv..
-.vvlllllllvv.
-.vlllllllllv.
-.vlllvvvlllv.
-.vllvv'vvllv.
-.vll+'1'+llv.
-.vllvv'vvllv.
-.vlllvvvlllv.
-.vlllllllllv.
-.vvlllllllvv.
-..vvvv+vvvv..
- ...........
 ENDMAP
 
 # Ring of the Mage
@@ -5917,27 +5885,6 @@ MAP
    .........
 ENDMAP
 
-
-NAME:    minmay_guarded_unrand_vampires_tooth
-DEPTH:   D:4-6
-MONS:    bat, vampire bat
-: if you.unrands("vampires_tooth") then
-ITEM:    dagger randart no_pickup
-: else
-ITEM:    vampires_tooth no_pickup
-: end
-MAP
-.........
-.ccc.ccc.
-.1c...c1.
-.cc...cc.
-.1c2Y2c1.
-.ccd..cc.
-.1c...c1.
-.ccccccc.
-.........
-ENDMAP
-
 NAME:    minmay_guarded_unrand_wrath_of_trog
 DEPTH:   D:14-, Depths
 MONS:    spriggan berserker
@@ -5961,49 +5908,6 @@ MAP
 .."tt"111"tt"..
  .."".. ..""..
   ....   ....
-ENDMAP
-
-NAME:    minmay_guarded_unrand_chilly_death
-DEPTH:   D:9-13, Lair
-MONS:    ice beast, rime drake, ice dragon
-: if you.unrands("dagger_of_chilly_death") then
-# note: randart is an especially big nerf here since it means you can't rebrand
-# to something good like pain/distortion/etc. This is intended.
-ITEM:    quick blade randart ego:freezing ident:type no_pickup
-: else
-ITEM:    dagger_of_chilly_death no_pickup
-: end
-NSUBST:  1 = 12:1 / 12=1... / .
-SUBST:   2 = 2., 3 = 3..
-MAP
-      .1.             .1.
-      .x.             .x.
-     .1x..1.       .1..x1.
-   ..1xx..x.       .x..xx1..
-   1xxxxx1x.       .x1xxxxx1
-   ....xxxx.       .xxxx....
-     ..1xxx1.     .1xxx1..
-     1xxxxxx1.....1xxxxxx1
-     ....1xxxxx2xxxxx1....
-   .......1xdxx.xx*x1......
-...1xx....xxx3...3xxx....xx1...
-1xx..xx1..2....x....2..1xx..xx1
-..xx.1xx1xxx.x...x.xxx1xx1.xx..
-..1xxxxxxxx....x....xxxxxxxx1.
-..1xxxxxxxx....x....xxxxxxxx1.
-..xx.1xx1xxx.x...x.xxx1xx1.xx..
-1xx..xx1..2....x....2..1xx..xx1
-...1xx....xxx3...3xxx....xx1...
-   .......1x*xx.xx*x1.......
-     ....1xxxxx2xxxxx1....
-     1xxxxxx1.....1xxxxxx1
-     ..1xxx1.     .1xxx1..
-   ....xxxx.       .xxxx....
-   1xxxxx1x.       .x1xxxxx1
-   ..1xx..x.       .x..xx1..
-     .1x..1.       .1..x1.
-      .x.             .x.
-      .1.             .1.
 ENDMAP
 
 NAME:    minmay_guarded_unrand_skullcrusher

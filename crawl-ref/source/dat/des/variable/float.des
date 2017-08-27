@@ -3158,30 +3158,6 @@ ccdcccccccccdcc
  ccc       ccc
 ENDMAP
 
-NAME:    minmay_guarded_unrand_sceptre_of_torment
-ORIENT:  float
-DEPTH:   Depths, Crypt
-MONS:    mummy priest, greater mummy
-: if you.unrands("sceptre_of_torment") then
-KITEM:   d = any weapon good_item randart no_pickup
-: else
-KITEM:   d = sceptre_of_torment no_pickup
-: end
-KMONS:   d = greater mummy
-MAP
-ccccccccccc@ccccccccccc
- cc2.....cc..c.....1cc
-  cc..cc..cc...cc..cc
-   cc..cc..cc1cc..cc
-    cc..cc..ccc..cc
-     cc..cc..c..cc
-      cc..cc...cc
-       cc..cc2cc
-        cc..ccc
-         ccdcc
-          ccc
-ENDMAP
-
 NAME:    minmay_guarded_unrand_sword_of_power
 ORIENT:  float
 DEPTH:   D:13-
