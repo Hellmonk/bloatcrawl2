@@ -690,18 +690,6 @@ static void _decrement_durations()
     if (you.duration[DUR_LIQUEFYING] && !you.stand_on_solid_ground())
         you.duration[DUR_LIQUEFYING] = 1;
 
-    for (int i = 0; i < NUM_STATS; ++i)
-    {
-        stat_type s = static_cast<stat_type>(i);
-        if (you.stat(s) > 0
-            && _decrement_a_duration(stat_zero_duration(s), delay))
-        {
-            mprf(MSGCH_RECOVERY, "Your %s has recovered.", stat_desc(s, SD_NAME));
-            you.redraw_stats[s] = true;
-        }
-    }
-
-
     if (you.duration[DUR_BERSERK]
         && you.hunger + 100 <= HUNGER_STARVING + BERSERK_NUTRITION)
     {

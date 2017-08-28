@@ -164,7 +164,6 @@ static void _describe_sickness(status_info* inf);
 static void _describe_speed(status_info* inf);
 static void _describe_poison(status_info* inf);
 static void _describe_transform(status_info* inf);
-static void _describe_stat_zero(status_info* inf, stat_type st);
 static void _describe_terrain(status_info* inf);
 static void _describe_missiles(status_info* inf);
 static void _describe_invisible(status_info* inf);
@@ -386,16 +385,6 @@ bool fill_status_info(int status, status_info* inf)
 
     case DUR_TRANSFORMATION:
         _describe_transform(inf);
-        break;
-
-    case STATUS_STR_ZERO:
-        _describe_stat_zero(inf, STAT_STR);
-        break;
-    case STATUS_INT_ZERO:
-        _describe_stat_zero(inf, STAT_INT);
-        break;
-    case STATUS_DEX_ZERO:
-        _describe_stat_zero(inf, STAT_DEX);
         break;
 
 #if TAG_MAJOR_VERSION == 34
@@ -933,7 +922,7 @@ static void _describe_poison(status_info* inf)
 
 static void _describe_speed(status_info* inf)
 {
-    bool slow = you.duration[DUR_SLOW] || have_stat_zero();
+    bool slow = you.duration[DUR_SLOW];
     bool fast = you.duration[DUR_HASTE] || you.attribute[ATTR_PERMAHASTE];
 
     if (slow && fast)
@@ -1022,21 +1011,6 @@ static void _describe_transform(status_info* inf)
 
     inf->light_colour = _dur_colour(GREEN, expire);
     _mark_expiring(inf, expire);
-}
-
-static const char* s0_names[NUM_STATS] = { "Collapse", "Brainless", "Clumsy", };
-
-static void _describe_stat_zero(status_info* inf, stat_type st)
-{
-    if (you.duration[stat_zero_duration(st)])
-    {
-        inf->light_colour = you.stat(st) ? LIGHTRED : RED;
-        inf->light_text   = s0_names[st];
-        inf->short_text   = make_stringf("lost %s", stat_desc(st, SD_NAME));
-        inf->long_text    = make_stringf(you.stat(st) ?
-                "You are recovering from loss of %s." : "You have no %s!",
-                stat_desc(st, SD_NAME));
-    }
 }
 
 static void _describe_terrain(status_info* inf)

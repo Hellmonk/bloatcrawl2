@@ -2069,7 +2069,7 @@ int player_speed()
     if (you.cannot_act())
         return ps;
 
-    if (you.duration[DUR_SLOW] || have_stat_zero())
+    if (you.duration[DUR_SLOW])
         ps = haste_mul(ps);
 
     if (you.duration[DUR_BERSERK] && !have_passive(passive_t::no_haste))
