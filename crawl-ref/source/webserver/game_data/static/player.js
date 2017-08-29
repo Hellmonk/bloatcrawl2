@@ -573,7 +573,7 @@ function ($, comm, enums, map_knowledge, messages, options) {
                 gold: 0,
                 str: 0, int: 0, dex: 0,
                 str_max: 0, int_max: 0, dex_max: 0,
-                piety_rank: 0, piety: 0 penance: false,
+                piety_rank: 0, piety: 0, penance: false,
                 status: [],
                 inv: {}, equip: {}, quiver_item: -1,
                 unarmed_attack: "",
