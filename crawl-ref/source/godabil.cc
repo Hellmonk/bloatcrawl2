@@ -5602,20 +5602,6 @@ string ru_sacrifice_vector(ability_type sac)
     return sac_def.sacrifice_vector ? sac_def.sacrifice_vector : "";
 }
 
-static const char* _describe_sacrifice_piety_gain(int piety_gain)
-{
-    if (piety_gain >= 40)
-        return "an incredible";
-    else if (piety_gain >= 29)
-        return "a major";
-    else if (piety_gain >= 21)
-        return "a significant";
-    else if (piety_gain >= 13)
-        return "a modest";
-    else
-        return "a trivial";
-}
-
 static const string _piety_asterisks(int piety)
 {
     const int prank = piety_rank(piety);
@@ -5803,8 +5789,8 @@ static int _ru_get_sac_piety_gain(ability_type sac)
 string ru_sacrifice_description(ability_type sac)
 {
     const int piety_gain = _ru_get_sac_piety_gain(sac);
-    return make_stringf("This is %s sacrifice. Piety after sacrifice: %s",
-                        _describe_sacrifice_piety_gain(piety_gain),
+    return make_stringf("This sacrifice gives %d piety. Piety after sacrifice: %s",
+                        piety_gain,
                         _piety_asterisks(you.piety + piety_gain).c_str());
 }
 
