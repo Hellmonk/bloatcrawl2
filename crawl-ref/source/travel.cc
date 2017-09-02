@@ -2823,25 +2823,6 @@ void start_explore(bool grab_items)
     if (!i_feel_safe(true, true))
         return;
 
-    if (you_worship(GOD_FEDHAS))
-    {
-        bool corpse_on_pos = false;
-        for (radius_iterator i(you.pos(), LOS_NO_TRANS); i && !corpse_on_pos; ++i)
-        {
-            for (stack_iterator j(*i); j; ++j)
-            {
-                if (j->is_type(OBJ_CORPSES, CORPSE_BODY))
-                {
-                    corpse_on_pos = true;
-                    break;
-                }
-            }
-        }
-
-        if (corpse_on_pos && Options.auto_sacrifice)
-            pray(false);
-    }
-
     you.running = (grab_items ? RMODE_EXPLORE_GREEDY : RMODE_EXPLORE);
 
     for (rectangle_iterator ri(0); ri; ++ri)
@@ -2854,12 +2835,8 @@ void start_explore(bool grab_items)
 
 void do_explore_cmd()
 {
-    if (you.hunger_state <= HS_STARVING && !you_min_hunger())
-        mpr("You need to eat something NOW!");
-    else if (you.berserk())
+    if (you.berserk())
         mpr("Calm down first, please.");
-    else if (player_in_branch(BRANCH_LABYRINTH))
-        mpr("No exploration algorithm can help you here.");
     else                        // Start exploring
         start_explore(Options.explore_greedy);
 }
