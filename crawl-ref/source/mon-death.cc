@@ -1677,7 +1677,7 @@ static bool _reap_dead(monster *mons)
         return false;
 	
     int rd = calc_spell_power(SPELL_ANIMATE_DEAD, true);
-    if(!x_chance_in_y(100 + rd, 300))
+    if(!x_chance_in_y(200 + rd, 400))
         return false;
     return _mons_reaped(&you, mons);
 }
