@@ -726,15 +726,6 @@ string describe_mutations(bool center_title)
     return result;
 }
 
-static const string _vampire_Ascreen_footer = (
-#ifdef USE_TILE_LOCAL
-    "<w>Right-click</w> or press '<w>!</w>'"
-#else
-    "Press '<w>!</w>'"
-#endif
-    " to toggle between mutations and properties depending on your blood\n"
-    "level.\n");
-
 #if TAG_MAJOR_VERSION == 34
 static const string _lava_orc_Ascreen_footer = (
 #ifndef USE_TILE_LOCAL
@@ -745,91 +736,6 @@ static const string _lava_orc_Ascreen_footer = (
     " to toggle between mutations and properties depending on your\n"
     "temperature.\n");
 #endif
-
-static void _display_vampire_attributes()
-{
-    ASSERT(you.species == SP_VAMPIRE);
-
-    string result;
-
-    const int lines = 12;
-    string column[lines][5] =
-    {
-        {"                     ", "<green>Full</green>       ", "Satiated   ", "<yellow>Thirsty</yellow>    ", "<lightred>Bloodless</lightred>"},
-                                 //Full       Satiated      Thirsty         Bloodless
-        {"Metabolism           ", "fast       ", "normal     ", "slow       ", "none  "},
-
-        {"Regeneration         ", "fast       ", "normal     ", "slow       ", "none  "},
-
-        {"Stealth boost        ", "none       ", "none       ", "minor      ", "major "},
-
-        {"Hunger costs         ", "full       ", "full       ", "halved     ", "none  "},
-
-        {"\n<w>Resistances</w>\n"
-         "Poison resistance    ", "           ", "           ", "+          ", "immune"},
-
-        {"Cold resistance      ", "           ", "           ", "+          ", "++    "},
-
-        {"Negative resistance  ", "           ", " +         ", "++         ", "+++   "},
-
-        {"Rotting resistance   ", "           ", "           ", "+          ", "+     "},
-
-        {"Torment resistance   ", "           ", "           ", "           ", "+     "},
-
-        {"\n<w>Transformations</w>\n"
-         "Bat form             ", "no         ", "yes        ", "yes        ", "yes   "},
-
-        {"Other forms and \n"
-         "berserk              ", "yes        ", "yes        ", "no         ", "no    "}
-    };
-
-    int current = 0;
-    switch (you.hunger_state)
-    {
-    case HS_ENGORGED:
-    case HS_VERY_FULL:
-    case HS_FULL:
-        current = 1;
-        break;
-    case HS_SATIATED:
-        current = 2;
-        break;
-    case HS_HUNGRY:
-    case HS_VERY_HUNGRY:
-    case HS_NEAR_STARVING:
-        current = 3;
-        break;
-    case HS_STARVING:
-    case HS_FAINTING:
-        current = 4;
-    }
-
-    for (int y = 0; y < lines; y++)  // lines   (properties)
-    {
-        for (int x = 0; x < 5; x++)  // columns (hunger states)
-        {
-            if (y > 0 && x == current)
-                result += "<w>";
-            result += column[y][x];
-            if (y > 0 && x == current)
-                result += "</w>";
-        }
-        result += "\n";
-    }
-
-    result += "\n";
-    result += _vampire_Ascreen_footer;
-
-    formatted_scroller attrib_menu;
-    attrib_menu.add_text(result);
-
-    attrib_menu.show();
-    if (attrib_menu.getkey() == '!'
-        || attrib_menu.getkey() == CK_MOUSE_CMD)
-    {
-        display_mutations();
-    }
-}
 
 #if TAG_MAJOR_VERSION == 34
 static void _display_temperature()
@@ -924,13 +830,6 @@ void display_mutations()
         extra += "<darkgrey>(())</darkgrey>: Completely suppressed.\n";
     if (_num_transient)
         extra += "<magenta>[]</magenta>   : Transient mutations.";
-    if (you.species == SP_VAMPIRE)
-    {
-        if (!extra.empty())
-            extra += "\n";
-
-        extra += _vampire_Ascreen_footer;
-    }
 
 #if TAG_MAJOR_VERSION == 34
     if (you.species == SP_LAVA_ORC)
@@ -955,12 +854,6 @@ void display_mutations()
 
     mutation_menu.show();
 
-    if (you.species == SP_VAMPIRE
-        && (mutation_menu.getkey() == '!'
-            || mutation_menu.getkey() == CK_MOUSE_CMD))
-    {
-        _display_vampire_attributes();
-    }
 #if TAG_MAJOR_VERSION == 34
     if (you.species == SP_LAVA_ORC
         && (mutation_menu.getkey() == '!'
