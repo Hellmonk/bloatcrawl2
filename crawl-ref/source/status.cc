@@ -492,6 +492,16 @@ bool fill_status_info(int status, status_info* inf)
             inf->light_text = "Abj";
 		}
         break;
+		
+    case STATUS_OZO_ARMOUR:
+        if(you.attribute[ATTR_OZO_ARMOUR])
+        {
+            inf->light_colour = LIGHTBLUE;
+            inf->light_text = "";
+            inf->short_text   = "icy armour";
+            inf->long_text    = "You are protected by icy armour.";
+		}
+        break;
 
     case STATUS_BEOGH:
         if (env.level_state & LSTATE_BEOGH && can_convert_to_beogh())
