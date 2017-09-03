@@ -3191,6 +3191,30 @@ cwHwwwwwwwwwc
 ccFcccccccccc
 ENDMAP
 
+NAME: hellmonk_loss
+TAGS: extra decor
+DEPTH: D, Depths, Zot
+KFEAT: ' = open_door
+MAP
+        @
+ .......c.......
+ .......c.......
+ .......c.x.....
+ .'x'...c.x...x.
+ .'x'...c.x...x.
+ .'x'...c.x...x.
+ .'x'...c.....x.
+@ccccccccccccccc@
+ .......c.......
+ .......c..x....
+ ..x..x.c..x....
+ ..x..x.c..x....
+ ..x..x.c..x....
+ ..x..x.c..xxxx.
+ .......c.......
+        @
+ENDMAP
+
 ##########################################################################
 #
 # <<4>> Fog generator vaults.
