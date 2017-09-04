@@ -7,6 +7,7 @@ before_install:
     - perl .travis/apt.pl
     - if [ "$CXX" = "g++" ]; then export CXX="g++-4.7" CC="gcc-4.7"; fi
 sudo: required
+dist: precise
 env:
     - NOTHING=1
     - FULLDEBUG=1
