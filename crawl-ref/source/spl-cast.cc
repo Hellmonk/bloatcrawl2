@@ -1122,6 +1122,7 @@ static bool _spellcasting_aborted(spell_type spell, bool fake_spell)
     }
 
     const int severity = fail_severity(spell);
+
     if(!is_buff_spell(spell))
     {
         if (Options.fail_severity_to_confirm > 0
@@ -1130,8 +1131,10 @@ static bool _spellcasting_aborted(spell_type spell, bool fake_spell)
         && !fake_spell)
         {
             string prompt = make_stringf("The spell is %s to cast%s "
+                                     "(%s risk of failure)%s "
                                      "Continue anyway?",
                                      fail_severity_adjs[severity],
+                                     failure_rate.c_str(),
                                      severity > 1 ? "!" : ".");
 
             if (!yesno(prompt.c_str(), false, 'n'))
