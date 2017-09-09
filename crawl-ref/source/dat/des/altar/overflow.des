@@ -3302,6 +3302,29 @@ f.qp.c.pq.f
   ffghgff
 ENDMAP
 
+
+NAME: hellmonk_temple_overflow_moretrees
+TAGS: temple_overflow_generic_4
+MAP
+     .......
+    ...ttt...
+   ...t...t...
+  ...t..B..t...
+   ...t...t... 
+ ......ttt......
+..ttt.......ttt..
+.t...t.....t...t.
+t..B..t.G.t..B..t
+.t...t.....t...t.
+..ttt.......ttt..
+ ......ttt......
+   ...t...t...
+  ...t..B..t...
+   ...t...t...
+    ...ttt...
+     .......
+ENDMAP
+
 NAME:   minmay_overflow_temple_star_hex
 TAGS:   temple_overflow_generic_5
 KMASK:  T = no_monster_gen
@@ -3462,6 +3485,120 @@ G......G
 G......G
 ENDMAP
 
+NAME: hellmonk_temple_overflow_hourglass
+TAGS: temple_overflow_generic_12 temple_overflow_generic_11
+TAGS: temple_overflow_generic_10 temple_overflow_generic_9
+TAGS: temple_overflow_generic_8 temple_overflow_generic_7
+TAGS: temple_overflow_generic_6 temple_overflow_generic_5
+TAGS: temple_overflow_generic_4 temple_overflow_generic_3
+TAGS: temple_overflow_generic_2
+{{
+  local altarcount = 1
+  if is_validating() then
+    altarcount = 12
+  else
+    altarcount = get_overflow_altar_count(_G)
+  end
+  if altarcount == "1" then
+    subst("h = B")
+    subst("defg = .")
+  elseif altarcount == "2" then
+    subst("e = B")
+    subst("dfgh = .")
+  elseif altarcount == "3" then
+    subst("d = B")
+    subst("efgh = .")
+  elseif altarcount == "4" then
+    subst("dh = B")
+    subst("efg = .")
+  elseif altarcount == "5" then
+    subst("de = B")
+    subst("fgh = .")
+  elseif altarcount == "6" then
+    subst("df = B")
+    subst("egh = .")
+  elseif altarcount == "7" then
+    subst("dfh = B")
+    subst("eg = .")
+  elseif altarcount == "8" then
+    subst("dfe = B")
+    subst("gh = .")
+  elseif altarcount == "9" then
+    subst("dfg = B")
+    subst("eh = .")
+  elseif altarcount == "10" then
+    subst("dfgh = B")
+    subst("e = .")  
+  elseif altarcount == "11" then
+    subst("defg = B")
+    subst("h = .")
+  else
+    subst("defgh = B")
+  end
+}}
+MAP
+ccccccccc
+c.......c
+ccdghgdcc
+cccfefccc
+ccccdcccc
+ccc.e.ccc
+cc..g..cc
+c...f...c
+cccc+cccc
+    @
+ENDMAP
+
+NAME: hellmonk_temple_overflow_bars
+TAGS:    temple_overflow_generic_8 temple_overflow_generic_7
+TAGS:    temple_overflow_generic_6 temple_overflow_generic_5
+TAGS:    temple_overflow_generic_4 temple_overflow_generic_3
+TAGS:    temple_overflow_generic_2
+SHUFFLE: defghijk
+{{
+  local altarcount = 1
+  if is_validating() then
+    altarcount = 8
+  else
+    altarcount = get_overflow_altar_count(_G)
+  end
+  if altarcount == "1" then
+    subst("d = B")
+    subst("efghijk = .")
+  elseif altarcount == "2" then
+    subst("dh = B")
+    subst("efgijk = .")
+  elseif altarcount == "3" then
+    subst("dgi = B")
+    subst("efhjk = .")
+  elseif altarcount == "4" then
+    subst("dfhj = B")
+    subst("egik = .")
+  elseif altarcount == "5" then
+    subst("dfgij = B")
+    subst("ehk = .")
+  elseif altarcount == "6" then
+    subst("defhij = B")
+    subst("gk = .")
+  elseif altarcount == "7" then
+    subst("defghij = B")
+    subst("k = .")
+  else
+    subst("defghijk = B")
+  end
+}}
+MAP
+@d..........
+.c........e.
+.c..f.....c.
+.c..c..g..c.
+.c..c..c..c.
+.h..c..c..c.
+....c..c..i.
+....j..c....
+.......k...@
+ENDMAP
+
 NAME:    grunt_temple_overflow_open
 TAGS:    temple_overflow_generic_8 temple_overflow_generic_7
 TAGS:    temple_overflow_generic_6 temple_overflow_generic_5
@@ -3516,6 +3653,7 @@ ENDMAP
 
 # Formerly minivault_3; resurrected after being removed way back in late 2009.
 NAME:  minitemple
+WEIGHT:  2
 TAGS:  temple_overflow_generic_14 temple_overflow_generic_13
 TAGS:  temple_overflow_generic_12 temple_overflow_generic_11
 TAGS:  temple_overflow_generic_10 temple_overflow_generic_9
