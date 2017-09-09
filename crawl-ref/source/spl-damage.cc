@@ -2653,30 +2653,22 @@ void forest_damage(const actor *mon)
 
                 if (!apply_chunked_AC(1, foe->evasion(EV_IGNORE_NONE, mon)))
                 {
-                    msg = random_choose(
-                            "@foe@ @is@ waved at by a branch.",
-                            "A tree reaches out but misses @foe@.",
-                            "A root lunges up near @foe@.");
+                    msg = "A tree reaches out but misses @foe@.";
                 }
                 else if (!(dmg = foe->apply_ac(hd + random2(hd), hd * 2 - 1,
                                                AC_PROPORTIONAL)))
                 {
-                    msg = random_choose(
-                            "@foe@ @is@ scraped by a branch!",
-                            "A tree reaches out and scrapes @foe@!",
-                            "A root barely touches @foe@ from below.");
+                    msg = "A tree reaches out and scrapes @foe@!";
                 }
                 else
                 {
-                    msg = random_choose(
-                        "@foe@ @is@ hit by a branch!",
-                        "A tree reaches out and hits @foe@!",
-                        "A root smacks @foe@ from below.");
+                    msg = "A tree reaches out and hits @foe@ (@dmg@)!";
                 }
 
+                std::string d = to_string(dmg);
                 msg = replace_all(replace_all(msg,
                     "@foe@", foe->name(DESC_THE)),
-                    "@is@", foe->conj_verb("be"));
+                    "@dmg@", d);
                 if (you.see_cell(foe->pos()))
                     mpr(msg);
 
