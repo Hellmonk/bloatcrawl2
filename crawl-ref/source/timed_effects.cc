@@ -32,6 +32,7 @@
 #include "mon-behv.h"
 #include "mon-death.h"
 #include "mon-pathfind.h"
+#include "mon-pick.h"
 #include "mon-place.h"
 #include "mon-project.h"
 #include "mutation.h"
@@ -927,6 +928,47 @@ static int _div(int num, int denom)
     return res.rem >= 0 ? res.quot : res.quot - 1;
 }
 
+static const pop_entry _antiscum_summons[] =
+{ // reeeeeemove scummers
+  {  1,  5,   2, FLAT, MONS_CENTAUR },
+  {  4, 12,   2, FLAT, MONS_ORC_SORCERER },
+  { 10, 18,   2, FLAT, MONS_DEEP_ELF_HIGH_PRIEST },
+  { 15, 24,   2, FLAT, MONS_TITAN },
+  { 21, 27,   2, FLAT, MONS_ANCIENT_LICH },
+  { 26, 27,   2, FLAT, MONS_PANDEMONIUM_LORD },
+  { 0,0,0,FLAT,MONS_0 }
+};
+
+static bool _antiscumming_summon()
+{
+	monster_type mtyp = pick_monster_from(_antiscum_summons,
+                                              you.experience_level);
+	mgen_data mg = mgen_data::hostile_at(mtyp, true, you.pos())
+                    .set_summoned(nullptr, 0, 0)
+                    .set_non_actor_summoner("The dungeon");
+    mg.extra_flags |= (MF_NO_REWARD | MF_HARD_RESET);
+	return create_monster(mg, false);
+}
+
+static void _antiscumming(int /*time_delta*/)
+{
+	if(env.turns_on_level < 2200)
+        return;
+	if (env.turns_on_level < 2500)
+	{
+        mprf(MSGCH_WARN, "You feel the dungeon grow hostile. Better move on quickly!");
+        return;
+    }
+    //make it loud
+    noisy(30, you.pos());
+    mprf(MSGCH_WARN, "The dungeon lashes out against you!");
+	int num_summons = 2 + random2(4);
+    for(int i = 1; i <= num_summons; ++i)
+    {
+        _antiscumming_summon();
+    }
+}
+
 struct timed_effect
 {
     void              (*trigger)(int);
@@ -950,14 +992,14 @@ static struct timed_effect timed_effects[] =
 #if TAG_MAJOR_VERSION == 34
     { nullptr,                                0,     0, false },
 #endif
-    { rot_inventory_food,            100,   300, false },
+    { _antiscumming,                 200,   600, false },
     { _wait_practice,                100,   300, false },
     { _lab_change,                  1000,  3000, false },
     { _abyss_speed,                  100,   300, false },
     { _jiyva_effects,                100,   300, false },
     { _evolve,                      5000, 15000, false },
 #if TAG_MAJOR_VERSION == 34
-    { nullptr,                         0,     0, false },
+	{  nullptr,                        0,     0, false },
 #endif
 };
 

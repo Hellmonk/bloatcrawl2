@@ -163,7 +163,6 @@ static const pop_entry _okawaru_servants[] =
   { 11, 27,   2, FLAT, MONS_FROST_GIANT },
   { 13, 27,   1, FLAT, MONS_DEEP_ELF_BLADEMASTER },
   { 13, 27,   1, FLAT, MONS_DEEP_ELF_MASTER_ARCHER },
-  { 13, 27,   1, FLAT, RANDOM_BASE_DRACONIAN },
   { 15, 27,   2, FLAT, MONS_TITAN },
   { 0,0,0,FLAT,MONS_0 }
 };

@@ -29,6 +29,7 @@ msc += $danger:You feel a build-up of mutagenic energy
 msc += $danger:place you under penance
 msc += $danger:acid corrodes
 msc += $danger:rotting away
+msc += $danger:Better move on
 
 # Less urgent, but still significant messages
 #
@@ -106,6 +107,7 @@ force_more_message += You cannot cast spells when silenced
 force_more_message += You don't have the energy to cast that spell
 force_more_message += This is a scroll of acquirement
 force_more_message += You will only be able to enter Pandemonium once
+force_more_message += dungeon lashes out
 
 ## Reduce chance of drowning because flight or form runs out:
 force_more_message += Careful!
