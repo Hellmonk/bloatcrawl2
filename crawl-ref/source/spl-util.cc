@@ -1546,6 +1546,8 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 
     case SPELL_ANIMATE_DEAD:
+        if(temp && you.attribute[ATTR_ANIMATE_DEAD])
+            return "you are already reaping the dead.";
     case SPELL_TWISTED_RESURRECTION:
     case SPELL_CONTROL_UNDEAD:
     case SPELL_SIMULACRUM:
