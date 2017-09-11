@@ -32,6 +32,7 @@
 #include "spl-book.h"
 #include "spl-damage.h"
 #include "spl-summoning.h"
+#include "spl-wpnench.h"
 #include "spl-zap.h"
 #include "stringutil.h"
 #include "target.h"
@@ -365,6 +366,144 @@ static void _remove_spell_attributes(spell_type spell)
         }
         break;
 #endif
+
+    case SPELL_OZOCUBUS_ARMOUR:
+        if (you.attribute[ATTR_OZO_ARMOUR])
+        {
+            you.attribute[ATTR_OZO_ARMOUR] = 0;
+            you.redraw_armour_class = true;
+            mprf(MSGCH_DURATION, "Your icy armour evaporates.");
+        }
+        break;
+	
+	case SPELL_REGENERATION:
+	    if (you.attribute[ATTR_SPELL_REGEN])
+        {
+            you.attribute[ATTR_SPELL_REGEN] = 0;
+            mprf(MSGCH_DURATION, "Your regeneration ceases.");
+        }
+        break;
+	case SPELL_SONG_OF_SLAYING:
+	    if (you.attribute[ATTR_SONG_OF_SLAYING])
+        {
+            you.attribute[ATTR_SONG_OF_SLAYING] = 0;
+            mprf(MSGCH_DURATION, "Your song of slaying ends.");
+        }
+        break;
+	case SPELL_DEATH_CHANNEL:
+        if (you.attribute[ATTR_DEATH_CHANNEL])
+        {
+            you.attribute[ATTR_DEATH_CHANNEL] = 0;
+            mprf(MSGCH_DURATION, "Your unholy channeling expires.");
+        }
+        break;
+    case SPELL_DARKNESS:
+	    if (you.attribute[ATTR_DARKNESS])
+        {
+            you.attribute[ATTR_DARKNESS] = 0;
+            update_vision_range();
+            mprf(MSGCH_DURATION, "The darkness lifts.");
+        }
+        break;
+    case SPELL_AURA_OF_ABJURATION:
+        if (you.attribute[ATTR_ABJURATION_AURA])
+        {
+            you.attribute[ATTR_ABJURATION_AURA] = 0;
+            mprf(MSGCH_DURATION, "Your aura of abjuration dissipates.");
+        }
+        break;
+    case SPELL_HASTE:
+        if (you.attribute[ATTR_PERMAHASTE])
+        {
+            you.attribute[ATTR_PERMAHASTE] = 0;
+            mprf(MSGCH_DURATION, "Your unnatural speed expires.");
+        }
+        break;
+    case SPELL_INVISIBILITY:
+	    if (you.attribute[ATTR_PERMAINVIS])
+        {
+            you.attribute[ATTR_PERMAINVIS] = 0;
+            mprf(MSGCH_DURATION, "Your permanent invisibility ends.");
+        }
+        break;
+    case SPELL_CIGOTUVIS_EMBRACE:
+	    if (you.attribute[ATTR_BONE_ARMOUR])
+        {
+            you.attribute[ATTR_BONE_ARMOUR] = 0;
+            you.redraw_armour_class = true;
+            mprf(MSGCH_DURATION, "Your bone armour crumbles away.");
+        }
+        break;
+    case SPELL_RING_OF_FLAMES:
+	    if (you.attribute[ATTR_FIRE_SHIELD])
+        {
+            you.attribute[ATTR_FIRE_SHIELD] = 0;
+            mprf(MSGCH_DURATION, "Your ring of flames gutters out.");
+        }
+        break;
+    case SPELL_INFUSION: 
+        if (you.attribute[ATTR_INFUSION])
+        {
+            you.attribute[ATTR_INFUSION] = 0;
+            mprf(MSGCH_DURATION, "Your attacks are no longer infused with magic.");
+        }
+        break;
+    case SPELL_EXCRUCIATING_WOUNDS:
+        if(you.attribute[ATTR_EXCRUCIATING_WOUNDS])
+        {
+            you.attribute[ATTR_EXCRUCIATING_WOUNDS] = 0;
+		    item_def *wpn = you.weapon();
+            end_weapon_brand(*wpn,true);
+            mprf(MSGCH_DURATION, "Your weapon looks less painful.");
+        }
+        break;
+    case SPELL_ANIMATE_DEAD:
+        if (you.attribute[ATTR_ANIMATE_DEAD])
+        {
+            you.attribute[ATTR_ANIMATE_DEAD] = 0;
+            mprf(MSGCH_DURATION, "You are no longer reaping the dead.");
+        }
+        break;
+    case SPELL_SPECTRAL_WEAPON:
+        if (you.attribute[ATTR_SPECTRAL_WEAPON])
+        {
+            you.attribute[ATTR_SPECTRAL_WEAPON] = 0;
+            mprf(MSGCH_DURATION, "You are no longer ready to draw out your spectral weapon.");
+        }
+        break;
+    // Forms
+    case SPELL_SPIDER_FORM:
+        if (you.form && !you.transform_uncancellable && you.form == TRAN_SPIDER)
+            untransform();
+        break;
+    case SPELL_ICE_FORM:
+        if (you.form && !you.transform_uncancellable && you.form == TRAN_ICE_BEAST)
+            untransform();
+        break;
+    case SPELL_BLADE_HANDS:
+        if (you.form && !you.transform_uncancellable && you.form == TRAN_BLADE_HANDS)
+            untransform();
+        break;
+    case SPELL_STATUE_FORM:
+        if (you.form && !you.transform_uncancellable && you.form == TRAN_STATUE)
+            untransform();
+        break;
+    case SPELL_NECROMUTATION:
+        if (you.form && !you.transform_uncancellable && you.form == TRAN_LICH)
+            untransform();
+        break;
+    case SPELL_HYDRA_FORM:
+        if (you.form && !you.transform_uncancellable && you.form == TRAN_HYDRA)
+            untransform();
+        break;
+    case SPELL_DRAGON_FORM:
+        if (you.form && !you.transform_uncancellable && you.form == TRAN_DRAGON)
+            untransform();
+        break;
+    case SPELL_BEASTLY_APPENDAGE:
+        if (you.form && !you.transform_uncancellable && you.form == TRAN_APPENDAGE)
+            untransform();
+        break;
     default:
         break;
     }
