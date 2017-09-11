@@ -1230,6 +1230,10 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 
     case SPELL_STATUE_FORM:
+        if (temp && you.attribute[ATTR_OZO_ARMOUR] > 0)
+            return "you can't become a statue while covered in ice.";
+        if (temp && you.attribute[ATTR_BONE_ARMOUR] > 0)
+            return "you can't become a statue while covered in skeletons.";
         if (SP_GARGOYLE == you.species)
             return "you're already a statue.";
         // fallthrough to other forms
