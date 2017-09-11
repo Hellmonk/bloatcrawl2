@@ -2133,11 +2133,13 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     case ABIL_END_OZOS:
         fail_check();
         you.attribute[ATTR_OZO_ARMOUR] = 0;
+        you.redraw_armour_class = true;
         mpr("You allow your icy armour to melt away.");
         break;
     case ABIL_END_CIGOTUVIS:
         fail_check();
         you.attribute[ATTR_BONE_ARMOUR] = 0;
+         you.redraw_armour_class = true;
         mpr("You allow your bone armour to fall away.");
         break;
     case ABIL_END_DCHAN:
