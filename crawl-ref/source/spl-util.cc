@@ -1202,7 +1202,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_INVISIBILITY:
         if (!prevent && temp && you.backlit())
             return "invisibility won't help you when you glow in the dark.";
-        if (you.attribute[ATTR_PERMAINVIS])
+        if (temp && you.attribute[ATTR_PERMAINVIS])
             return "you are already as invisible as you can get, sorry.";
         break;
 
@@ -1210,7 +1210,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         // mere corona is not enough, but divine light blocks it completely
         if (temp && (you.haloed() || !prevent && have_passive(passive_t::halo)))
             return "darkness is useless against divine light.";
-        if(you.attribute[ATTR_DARKNESS])
+        if(temp && you.attribute[ATTR_DARKNESS])
             return "it's already dark.";
         break;
 
@@ -1251,7 +1251,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         }
         if (temp && you.is_lifeless_undead())
             return "your current blood level is not sufficient.";
-        if (already_in_form(spell))
+        if (temp && already_in_form(spell))
             return "you're already in that form.";
         break;
 
@@ -1260,7 +1260,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "you can't regenerate without divine aid.";
         if (you.undead_state(temp) == US_UNDEAD)
             return "you're too dead to regenerate.";
-        if(you.attribute[ATTR_SPELL_REGEN])
+        if(temp && you.attribute[ATTR_SPELL_REGEN])
             return "you're already regenerating.";
         break;
 
@@ -1272,13 +1272,13 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         {
             return "you aren't wielding a brandable weapon.";
         }
-        if (you.attribute[ATTR_EXCRUCIATING_WOUNDS])
+        if (temp && you.attribute[ATTR_EXCRUCIATING_WOUNDS])
         {
             return "your weapon is already branded with pain";
 		}
         // intentional fallthrough
     case SPELL_SPECTRAL_WEAPON:
-        if(you.attribute[ATTR_SPECTRAL_WEAPON])
+        if(temp && you.attribute[ATTR_SPECTRAL_WEAPON])
         {
             return "you already have your spectral weapon prepared";
         }
@@ -1324,12 +1324,12 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 		
     case SPELL_SONG_OF_SLAYING:
-        if (you.attribute[ATTR_SONG_OF_SLAYING])
+        if (temp && you.attribute[ATTR_SONG_OF_SLAYING])
             return "you're already singing.";
         break;
 
     case SPELL_INFUSION:
-        if(you.attribute[ATTR_INFUSION])
+        if(temp && you.attribute[ATTR_INFUSION])
             return "you are already infusing your attacks with magic.";
         break;
 
@@ -1338,25 +1338,25 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "your body armour is too heavy.";
         if (temp && you.form == TRAN_STATUE)
             return "the film of ice won't work on stone.";
-        if (you.attribute[ATTR_FIRE_SHIELD])
+        if (temp && you.attribute[ATTR_FIRE_SHIELD])
             return "your ring of flames would instantly melt the ice.";
-        if (you.attribute[ATTR_OZO_ARMOUR])
+        if (temp && you.attribute[ATTR_OZO_ARMOUR])
             return "you are already covered in icy armour.";
-        if (you.attribute[ATTR_BONE_ARMOUR])
+        if (temp && you.attribute[ATTR_BONE_ARMOUR])
             return "the film of ice won't work on corpses.";
         break;
 		
     case SPELL_RING_OF_FLAMES:
-        if (you.attribute[ATTR_FIRE_SHIELD])
+        if (temp && you.attribute[ATTR_FIRE_SHIELD])
             return "you are already surrounded by a ring of flames";
         break;
 
     case SPELL_CIGOTUVIS_EMBRACE:
         if (temp && you.form == TRAN_STATUE)
             return "the corpses won't embrace your stony flesh.";
-        if (you.attribute[ATTR_OZO_ARMOUR])
+        if (temp && you.attribute[ATTR_OZO_ARMOUR])
             return "the corpses won't embrace your icy flesh.";
-        if (you.attribute[ATTR_BONE_ARMOUR])
+        if (temp && you.attribute[ATTR_BONE_ARMOUR])
 			return "you are already converting the dead into corpse armour.";
         break;
 
@@ -1400,7 +1400,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 
     case SPELL_DEATH_CHANNEL:
-        if (you.attribute[ATTR_DEATH_CHANNEL])
+        if (temp && you.attribute[ATTR_DEATH_CHANNEL])
             return "you are already channeling malign forces.";
         if (you.get_mutation_level(MUT_NO_LOVE))
             return "you cannot coerce anything to obey you.";
@@ -1425,12 +1425,12 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
     
     case SPELL_AURA_OF_ABJURATION:
-        if (you.attribute[ATTR_ABJURATION_AURA])
+        if (temp && you.attribute[ATTR_ABJURATION_AURA])
             return "you are already abjuring hostile summons.";
         break;
 
     case SPELL_HASTE:
-        if (you.attribute[ATTR_PERMAHASTE])
+        if (temp && you.attribute[ATTR_PERMAHASTE])
             return "you are already going fast.";
         break;
 
