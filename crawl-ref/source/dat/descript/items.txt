@@ -644,8 +644,8 @@ drinks it.
 potion of ambrosia
 
 A strange substance, produced by ghost moths. Consuming it causes regeneration
-of health and magic, along with total befuddlement. The two effects are
-fundamentally linked – the regeneration ends the moment the confusion does.
+of health and magic, but also slows you. The two effects are
+fundamentally linked – the regeneration ends the moment the slowing does.
 %%%%
 potion of berserk rage
 
