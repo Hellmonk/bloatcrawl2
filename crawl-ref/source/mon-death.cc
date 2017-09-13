@@ -1868,11 +1868,7 @@ item_def* monster_die(monster* mons, killer_type killer,
         && _monster_avoided_death(mons, killer, killer_index))
     {
         mons->flags &= ~MF_EXPLODE_KILL;
-
-        // revived by a lost soul?
-        if (!spectralised && testbits(mons->flags, MF_SPECTRALISED))
-            return place_monster_corpse(*mons, silent);
-        return nullptr;
+        return nullptr;	
     }
 
     // If the monster was calling the tide, let go now.
