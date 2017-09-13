@@ -4787,8 +4787,8 @@ void dec_ambrosia_player(int delay)
     if (!you.duration[DUR_AMBROSIA])
         return;
 
-    // ambrosia ends when confusion does.
-    if (!you.confused())
+    // ambrosia ends when slow does.
+    if (!you.duration[DUR_SLOW])
         you.duration[DUR_AMBROSIA] = 0;
 
     you.duration[DUR_AMBROSIA] = max(0, you.duration[DUR_AMBROSIA] - delay);

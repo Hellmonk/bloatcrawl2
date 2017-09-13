@@ -681,9 +681,9 @@ static void _decrement_durations()
         reset_powered_by_death_duration();
     }
 
-    dec_ambrosia_player(delay);
     dec_channel_player(delay);
     dec_slow_player(delay);
+    dec_ambrosia_player(delay);
     dec_exhaust_player(delay);
     dec_haste_player(delay);
 

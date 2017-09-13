@@ -3579,8 +3579,9 @@ bool is_useless_item(const item_def &item, bool temp)
             // If you're poison resistant, poison is only useless.
             return !is_bad_item(item, temp);
         case POT_SLOWING:
-            return you.species == SP_FORMICID;
 #endif
+        case POT_AMBROSIA:
+            return you.species == SP_FORMICID;
         case POT_HEAL_WOUNDS:
             return !you.can_device_heal();
         case POT_INVISIBILITY:

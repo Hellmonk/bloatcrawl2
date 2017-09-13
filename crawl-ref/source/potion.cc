@@ -475,8 +475,8 @@ public:
 
     bool effect(bool=true, int=40, bool=true) const override
     {
-        const int ambrosia_turns = 3 + random2(8);
-        if (confuse_player(ambrosia_turns, false, true))
+        const int ambrosia_turns = 5 + random2(6);
+        if (slow_player(ambrosia_turns * 2 / 3))
         {
             print_device_heal_message();
             mprf("You feel%s invigorated.",
