@@ -1197,7 +1197,6 @@ static int _random_wand_subtype()
     return random_choose_weighted(9, WAND_FLAME,
                                   9, WAND_LIGHTNING,
                                   9, WAND_ICEBLAST,
-                                  6, WAND_SLOWING,
                                   6, WAND_PARALYSIS,
                                   6, WAND_CONFUSION,
                                   6, WAND_POLYMORPH,

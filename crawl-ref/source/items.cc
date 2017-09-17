@@ -3361,7 +3361,6 @@ zap_type item_def::zap() const
     switch (wand_sub_type)
     {
     case WAND_FLAME:           result = ZAP_THROW_FLAME;     break;
-    case WAND_SLOWING:         result = ZAP_SLOW;            break;
     case WAND_PARALYSIS:       result = ZAP_PARALYSE;        break;
     case WAND_CONFUSION:       result = ZAP_CONFUSE;         break;
     case WAND_DIGGING:         result = ZAP_DIG;             break;
@@ -3383,6 +3382,7 @@ zap_type item_def::zap() const
     case WAND_COLD_REMOVED:
     case WAND_FROST_REMOVED:
     case WAND_HEAL_WOUNDS_REMOVED:
+    case WAND_SLOWING:
     case WAND_RANDOM_EFFECTS:  /* impossible */
 #endif
         break;

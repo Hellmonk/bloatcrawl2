@@ -810,6 +810,7 @@ const set<pair<object_class_type, int> > removed_items =
 	{ OBJ_WANDS,     WAND_TELEPORTATION },
     { OBJ_WANDS,     WAND_HEAL_WOUNDS_REMOVED },
     { OBJ_WANDS,     WAND_RANDOM_EFFECTS },
+    { OBJ_WANDS,     WAND_SLOWING },
     { OBJ_SCROLLS,   SCR_CURSE_WEAPON },
     { OBJ_SCROLLS,   SCR_CURSE_ARMOUR },
     { OBJ_SCROLLS,   SCR_CURSE_JEWELLERY },
@@ -1604,7 +1605,6 @@ int wand_charge_value(int type)
         return 5; 
 
     case WAND_FLAME:
-    case WAND_SLOWING:
     case WAND_CONFUSION:
         return 6; 
     }
@@ -1659,7 +1659,6 @@ bool is_offensive_wand(const item_def& item)
 		return false;
 
     case WAND_FLAME:
-    case WAND_SLOWING:
     case WAND_PARALYSIS:
     case WAND_CONFUSION:
     case WAND_ICEBLAST:

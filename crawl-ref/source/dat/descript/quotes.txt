@@ -2990,10 +2990,6 @@ wand of polymorph
 
 <wand>
 %%%%
-wand of slowing
-
-<wand>
-%%%%
 wandering mushroom
 
 “Telimena, wearied with the prolonged wrangling, wanted to go out into the
