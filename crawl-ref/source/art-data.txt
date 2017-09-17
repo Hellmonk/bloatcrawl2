@@ -205,7 +205,7 @@ BOOL:    chaotic
 BRAND:   SPWPN_VORPAL
 
 NAME:    sword of Power
-OBJ:     OBJ_WEAPONS/WPN_GREAT_SWORD
+OBJ:     OBJ_WEAPONS/WPN_DOUBLE_SWORD
 PLUS:    +0 # Set on wield
 COLOUR:  RED
 TILE:    spwpn_sword_of_power
