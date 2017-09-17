@@ -347,22 +347,11 @@ bool melee_attack::handle_phase_hit()
 {
     did_hit = true;
     perceived_attack = true;
-    bool hit_woke_orc = false;
 
     if (attacker->is_player())
     {
         if (crawl_state.game_is_hints())
             Hints.hints_melee_counter++;
-
-        // TODO: Remove this (placed here so I can get rid of player_attack)
-        if (have_passive(passive_t::convert_orcs)
-            && mons_genus(defender->mons_species()) == MONS_ORC
-            && !defender->is_summoned()
-            && !defender->as_monster()->is_shapeshifter()
-            && you.see_cell(defender->pos()) && defender->asleep())
-        {
-            hit_woke_orc = true;
-        }
     }
 
     damage_done = 0;
@@ -437,14 +426,6 @@ bool melee_attack::handle_phase_hit()
     {
         if (!handle_phase_damaged())
             return false;
-
-        // TODO: Remove this, (placed here to remove player_attack)
-        if (attacker->is_player() && hit_woke_orc)
-        {
-            // Call function of orcs first noticing you, but with
-            // beaten-up conversion messages (if applicable).
-            beogh_follower_convert(defender->as_monster(), true);
-        }
     }
     else if (needs_message)
     {
