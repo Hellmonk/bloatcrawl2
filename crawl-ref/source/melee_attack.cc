@@ -1409,31 +1409,8 @@ void melee_attack::player_announce_aux_hit()
 
 string melee_attack::player_why_missed()
 {
-    const int ev = defender->evasion(EV_IGNORE_NONE, attacker);
-    const int combined_penalty =
-        attacker_armour_tohit_penalty + attacker_shield_tohit_penalty;
-    if (to_hit < ev && to_hit + combined_penalty >= ev)
-    {
-        const bool armour_miss =
-            (attacker_armour_tohit_penalty
-             && to_hit + attacker_armour_tohit_penalty >= ev);
-        const bool shield_miss =
-            (attacker_shield_tohit_penalty
-             && to_hit + attacker_shield_tohit_penalty >= ev);
-
-        const item_def *armour = you.slot_item(EQ_BODY_ARMOUR, false);
-        const string armour_name = armour ? armour->name(DESC_BASENAME)
-                                          : string("armour");
-
-        if (armour_miss && !shield_miss)
-            return "Your " + armour_name + " prevents you from hitting ";
-        else if (shield_miss && !armour_miss)
-            return "Your shield prevents you from hitting ";
-        else
-            return "Your shield and " + armour_name
-                   + " prevent you from hitting ";
-    }
-
+    //roses are red, violets are blue, 
+    //the code that was here before was misleading, and it was useless too
     return "You" + evasion_margin_adverb() + " miss ";
 }
 
