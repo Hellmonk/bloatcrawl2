@@ -810,7 +810,7 @@ public:
     float get_shield_skill_to_offset_penalty(const item_def &item);
     int armour_tohit_penalty(bool random_factor, int scale = 1) const override;
     int shield_tohit_penalty(bool random_factor, int scale = 1) const override;
-
+   
     bool wearing_light_armour(bool with_skill = false) const;
     int  skill(skill_type skill, int scale =1,
                bool real = false, bool drained = true) const override;

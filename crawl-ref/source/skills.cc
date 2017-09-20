@@ -731,6 +731,8 @@ bool is_magic_skill(skill_type sk)
 void train_skills(bool simu)
 {
     int cost, exp;
+    if (you.species == SP_GNOLL || you.species == SP_KOBOLD)
+       return;
     do
     {
         cost = calc_skill_cost(you.skill_cost_level);
