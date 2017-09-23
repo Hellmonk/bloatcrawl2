@@ -197,6 +197,7 @@ void SkillMenuEntry::set_display()
     case SKM_VIEW_TRANSFER:  set_reskill_progress(); break;
     case SKM_VIEW_NEW_LEVEL: set_new_level();        break;
     case SKM_VIEW_POINTS:    set_points();           break;
+    case SKM_VIEW_KOBOLD: break;
     default: die("Invalid view state.");
     }
 }
@@ -341,11 +342,11 @@ void SkillMenuEntry::set_aptitude()
     // Manuals aptitude bonus.
     int manual_bonus = manual ? 4 : 0;
 
+
     if (apt != 0)
         text += make_stringf("%+d", apt);
     else
         text += make_stringf(" %d", apt);
-
     text += "</white> ";
 
     if (manual_bonus)
@@ -486,6 +487,7 @@ void SkillMenuEntry::set_title()
     case SKM_VIEW_POINTS:    m_progress->set_text("Points");break;
     case SKM_VIEW_COST:      m_progress->set_text("Cost");  break;
     case SKM_VIEW_NEW_LEVEL: m_progress->set_text("> New"); break;
+    case SKM_VIEW_KOBOLD:    m_progress->set_text(""); break;
     default: die("Invalid view state.");
     }
 }
@@ -641,6 +643,9 @@ string SkillMenuSwitch::get_help()
         result += ".\n";
         return result;
     }
+    case SKM_VIEW_KOBOLD:
+        return "Beginning at experience level 4, kobolds gain 0.5 levels in all "
+		"skills each time they level up. They do not train skills normally. ";
     default: return "";
     }
 }
@@ -667,6 +672,7 @@ string SkillMenuSwitch::get_name(skill_menu_state state)
     case SKM_VIEW_POINTS:    return "points";
     case SKM_VIEW_NEW_LEVEL: return "new level";
     case SKM_VIEW_COST:      return "cost";
+    case SKM_VIEW_KOBOLD:      return "kobold";
     default: die ("Invalid switch state.");
     }
 }
@@ -914,7 +920,7 @@ bool SkillMenu::exit()
         }
     }
 
-    if (!enabled_skill && !all_skills_maxed())
+    if (!enabled_skill && !all_skills_maxed() && you.species != SP_KOBOLD)
     {
         set_help("<lightred>You need to enable at least one skill.</lightred>");
         return false;
@@ -1138,6 +1144,24 @@ void SkillMenu::init_help()
 void SkillMenu::init_switches()
 {
     SkillMenuSwitch* sw;
+	
+    sw = new SkillMenuSwitch("skills", '*');
+    m_switches[SKM_SHOW] = sw;
+    sw->add(SKM_SHOW_DEFAULT);
+    sw->update();
+    sw->set_id(SKM_SHOW);
+    add_item(sw, sw->size(), m_pos);
+
+    if(you.species == SP_KOBOLD)
+    {
+        sw = new SkillMenuSwitch("Ko", '*');
+        m_switches[SKM_VIEW] = sw;
+        sw->add(SKM_VIEW_KOBOLD);
+        sw->set_state(SKM_VIEW_KOBOLD);
+        add_item(sw, sw->size(), m_pos);
+    }
+    else
+    {
     sw = new SkillMenuSwitch("mode", '/');
     m_switches[SKM_MODE] = sw;
     sw->add(SKM_MODE_AUTO);
@@ -1167,19 +1191,6 @@ void SkillMenu::init_switches()
     sw->set_id(SKM_DO);
     add_item(sw, sw->size(), m_pos);
 
-    sw = new SkillMenuSwitch("skills", '*');
-    m_switches[SKM_SHOW] = sw;
-    sw->add(SKM_SHOW_DEFAULT);
-    if (!is_set(SKMF_SIMPLE) && !is_set(SKMF_EXPERIENCE))
-    {
-        sw->add(SKM_SHOW_ALL);
-        if (Options.default_show_all_skills)
-            sw->set_state(SKM_SHOW_ALL);
-    }
-    sw->update();
-    sw->set_id(SKM_SHOW);
-    add_item(sw, sw->size(), m_pos);
-
     if (is_set(SKMF_CHANGED))
     {
         sw = new SkillMenuSwitch("level", '_');
@@ -1190,7 +1201,7 @@ void SkillMenu::init_switches()
         sw->set_id(SKM_LEVEL);
         add_item(sw, sw->size(), m_pos);
     }
-
+    
     sw = new SkillMenuSwitch("", '!');
     m_switches[SKM_VIEW] = sw;
     const bool transferring = !is_invalid_skill(you.transfer_to_skill);
@@ -1223,10 +1234,10 @@ void SkillMenu::init_switches()
     }
     else
         sw->set_state(you.skill_menu_view);
-
     sw->update();
     sw->set_id(SKM_VIEW);
     add_item(sw, sw->size(), m_pos);
+    }
 }
 
 void SkillMenu::refresh_display()
