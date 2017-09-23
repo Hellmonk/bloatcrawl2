@@ -1145,13 +1145,6 @@ void SkillMenu::init_switches()
 {
     SkillMenuSwitch* sw;
 	
-    sw = new SkillMenuSwitch("skills", '*');
-    m_switches[SKM_SHOW] = sw;
-    sw->add(SKM_SHOW_DEFAULT);
-    sw->update();
-    sw->set_id(SKM_SHOW);
-    add_item(sw, sw->size(), m_pos);
-
     if(you.species == SP_KOBOLD)
     {
         sw = new SkillMenuSwitch("Ko", '*');
@@ -1162,35 +1155,79 @@ void SkillMenu::init_switches()
     }
     else
     {
-    sw = new SkillMenuSwitch("mode", '/');
-    m_switches[SKM_MODE] = sw;
-    sw->add(SKM_MODE_AUTO);
-    if (!is_set(SKMF_SPECIAL) && !is_set(SKMF_SIMPLE))
-        sw->add(SKM_MODE_MANUAL);
-    if (!you.auto_training)
-        sw->set_state(SKM_MODE_MANUAL);
-    sw->update();
-    sw->set_id(SKM_MODE);
-    add_item(sw, sw->size(), m_pos);
+        sw = new SkillMenuSwitch("mode", '/');
+        m_switches[SKM_MODE] = sw;
+        sw->add(SKM_MODE_AUTO);
+        if (!is_set(SKMF_SPECIAL) && !is_set(SKMF_SIMPLE))
+            sw->add(SKM_MODE_MANUAL);
+        if (!you.auto_training)
+            sw->set_state(SKM_MODE_MANUAL);
+        sw->update();
+        sw->set_id(SKM_MODE);
+        add_item(sw, sw->size(), m_pos);
 
-    sw = new SkillMenuSwitch("skill", '|');
-    m_switches[SKM_DO] = sw;
-    if (!is_set(SKMF_EXPERIENCE)
-        && (is_set(SKMF_SIMPLE) || Options.skill_focus != SKM_FOCUS_ON))
-    {
-        sw->add(SKM_DO_PRACTISE);
-    }
-    if (!is_set(SKMF_RESKILLING) && !is_set(SKMF_SIMPLE)
-        && Options.skill_focus != SKM_FOCUS_OFF)
-    {
-        sw->add(SKM_DO_FOCUS);
-    }
-    sw->set_state(you.skill_menu_do);
-    sw->add_hotkey('\t');
-    sw->update();
-    sw->set_id(SKM_DO);
-    add_item(sw, sw->size(), m_pos);
+        sw = new SkillMenuSwitch("skill", '|');
+        m_switches[SKM_DO] = sw;
+        if (!is_set(SKMF_EXPERIENCE)
+            && (is_set(SKMF_SIMPLE) || Options.skill_focus != SKM_FOCUS_ON))
+        {
+            sw->add(SKM_DO_PRACTISE);
+        }
+        if (!is_set(SKMF_RESKILLING) && !is_set(SKMF_SIMPLE)
+        &&     Options.skill_focus != SKM_FOCUS_OFF)
+        {
+            sw->add(SKM_DO_FOCUS);
+        }
+        sw->set_state(you.skill_menu_do);
+        sw->add_hotkey('\t');
+        sw->update();
+        sw->set_id(SKM_DO);
+        add_item(sw, sw->size(), m_pos);
+    
+        sw = new SkillMenuSwitch("", '!');
+        m_switches[SKM_VIEW] = sw;
+        const bool transferring = !is_invalid_skill(you.transfer_to_skill);
+        if (!is_set(SKMF_SPECIAL) || you.wizard)
+        {
+            sw->add(SKM_VIEW_TRAINING);
 
+            if (transferring)
+            {
+                sw->add(SKM_VIEW_TRANSFER);
+                sw->set_state(SKM_VIEW_TRANSFER);
+            }
+
+            sw->add(SKM_VIEW_COST);
+
+            if (!you.auto_training)
+                sw->set_state(SKM_VIEW_COST);
+        }
+
+        if (you.wizard)
+        {
+            sw->add(SKM_VIEW_PROGRESS);
+            sw->add(SKM_VIEW_POINTS);
+        }
+
+        if (is_set(SKMF_SPECIAL))
+        {
+            sw->add(SKM_VIEW_NEW_LEVEL);
+            sw->set_state(SKM_VIEW_NEW_LEVEL);
+        }
+        else
+            sw->set_state(you.skill_menu_view);
+        sw->update();
+        sw->set_id(SKM_VIEW);
+        add_item(sw, sw->size(), m_pos);
+    }
+
+    sw = new SkillMenuSwitch("skills", '*');
+    m_switches[SKM_SHOW] = sw;
+    sw->add(SKM_SHOW_DEFAULT);
+    sw->update();
+    sw->set_id(SKM_SHOW);
+    add_item(sw, sw->size(), m_pos);
+	
     if (is_set(SKMF_CHANGED))
     {
         sw = new SkillMenuSwitch("level", '_');
@@ -1201,43 +1238,7 @@ void SkillMenu::init_switches()
         sw->set_id(SKM_LEVEL);
         add_item(sw, sw->size(), m_pos);
     }
-    
-    sw = new SkillMenuSwitch("", '!');
-    m_switches[SKM_VIEW] = sw;
-    const bool transferring = !is_invalid_skill(you.transfer_to_skill);
-    if (!is_set(SKMF_SPECIAL) || you.wizard)
-    {
-        sw->add(SKM_VIEW_TRAINING);
 
-        if (transferring)
-        {
-            sw->add(SKM_VIEW_TRANSFER);
-            sw->set_state(SKM_VIEW_TRANSFER);
-        }
-
-        sw->add(SKM_VIEW_COST);
-
-        if (!you.auto_training)
-            sw->set_state(SKM_VIEW_COST);
-    }
-
-    if (you.wizard)
-    {
-        sw->add(SKM_VIEW_PROGRESS);
-        sw->add(SKM_VIEW_POINTS);
-    }
-
-    if (is_set(SKMF_SPECIAL))
-    {
-        sw->add(SKM_VIEW_NEW_LEVEL);
-        sw->set_state(SKM_VIEW_NEW_LEVEL);
-    }
-    else
-        sw->set_state(you.skill_menu_view);
-    sw->update();
-    sw->set_id(SKM_VIEW);
-    add_item(sw, sw->size(), m_pos);
-    }
 }
 
 void SkillMenu::refresh_display()
