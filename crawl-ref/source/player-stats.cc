@@ -32,7 +32,7 @@
 
 int player::stat(stat_type s, bool nonneg) const
 {
-    const int val = max_stat(s) - stat_loss[s];
+    const int val = max(1, max_stat(s) - stat_loss[s]);
     return nonneg ? max(val, 0) : val;
 }
 
@@ -605,16 +605,6 @@ static void _handle_stat_change(stat_type stat)
 {
     ASSERT_RANGE(stat, 0, NUM_STATS);
 
-    if (you.stat(stat) <= 0 && !you.duration[stat_zero_duration(stat)])
-    {
-        // Time required for recovery once the stat is restored, randomised slightly.
-        you.duration[stat_zero_duration(stat)] =
-            (20 + random2(20)) * BASELINE_DELAY;
-        mprf(MSGCH_WARN, "You have lost your %s.", stat_desc(stat, SD_NAME));
-        take_note(Note(NOTE_MESSAGE, 0, 0, make_stringf("Lost %s.",
-            stat_desc(stat, SD_NAME)).c_str()), true);
-    }
-
     you.redraw_stats[stat] = true;
     _normalize_stat(stat);
 
@@ -636,28 +626,4 @@ static void _handle_stat_change(stat_type stat)
     default:
         break;
     }
-}
-
-duration_type stat_zero_duration(stat_type stat)
-{
-    switch (stat)
-    {
-    case STAT_STR:
-        return DUR_COLLAPSE;
-    case STAT_INT:
-        return DUR_BRAINLESS;
-    case STAT_DEX:
-        return DUR_CLUMSY;
-    default:
-        die("invalid stat");
-    }
-}
-
-bool have_stat_zero()
-{
-    for (int i = 0; i < NUM_STATS; ++i)
-        if (you.duration[stat_zero_duration(static_cast<stat_type> (i))])
-            return true;
-
-    return false;
 }

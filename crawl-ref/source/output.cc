@@ -915,9 +915,6 @@ static void _print_stats_hp(int x, int y)
 
 static short _get_stat_colour(stat_type stat)
 {
-    if (you.duration[stat_zero_duration(stat)])
-        return LIGHTRED;
-
     // Check the stat_colour option for warning thresholds.
     for (const auto &entry : Options.stat_colour)
         if (you.stat(stat) <= entry.first)
