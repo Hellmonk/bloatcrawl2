@@ -930,7 +930,7 @@ static int _div(int num, int denom)
 
 static const pop_entry _antiscum_summons[] =
 { // reeeeeemove scummers
-  {  1,  5,   2, FLAT, MONS_CENTAUR },
+  {  1,  7,   2, FLAT, MONS_CENTAUR },
   {  4, 12,   2, FLAT, MONS_ORC_SORCERER },
   { 10, 18,   2, FLAT, MONS_DEEP_ELF_HIGH_PRIEST },
   { 15, 24,   2, FLAT, MONS_TITAN },
@@ -952,11 +952,16 @@ static bool _antiscumming_summon()
 
 static void _antiscumming(int /*time_delta*/)
 {
-	if(env.turns_on_level < 2200)
+	if(env.turns_on_level < 2500)
         return;
-	if (env.turns_on_level < 2500)
+	if (env.turns_on_level < 2800)
 	{
-        mprf(MSGCH_WARN, "You feel the dungeon grow hostile. Better move on quickly!");
+        mprf(MSGCH_WARN, "You feel the dungeon grow hostile. You need to descend quickly!");
+        return;
+    }
+    if (env.turns_on_level < 3000)
+    {
+		mprf(MSGCH_WARN, "You feel the dungeon grow incredibly hostile! You need to descend to the next floor now!");
         return;
     }
     //make it loud
@@ -992,7 +997,7 @@ static struct timed_effect timed_effects[] =
 #if TAG_MAJOR_VERSION == 34
     { nullptr,                                0,     0, false },
 #endif
-    { _antiscumming,                 200,   600, false },
+    { _antiscumming,                 400,   700, false },
     { _wait_practice,                100,   300, false },
     { _lab_change,                  1000,  3000, false },
     { _abyss_speed,                  100,   300, false },
