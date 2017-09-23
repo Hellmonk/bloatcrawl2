@@ -981,18 +981,18 @@ public:
         if (you.has_usable_hooves())
         {
             // Max hoof damage: 10.
-            return you.get_mutation_level(MUT_HOOVES) * 5 / 3;
+            return damage + you.get_mutation_level(MUT_HOOVES) * 5 / 3;
         }
 
         if (you.has_usable_talons())
         {
             // Max talon damage: 9.
-            return 1 + you.get_mutation_level(MUT_TALONS);
+            return damage + 1 + you.get_mutation_level(MUT_TALONS);
         }
 
         // Max spike damage: 8.
         // ... yes, apparently tentacle spikes are "kicks".
-        return you.get_mutation_level(MUT_TENTACLE_SPIKE) * 3;
+        return damage + you.get_mutation_level(MUT_TENTACLE_SPIKE) * 3;
     }
 
     string get_verb() const override
