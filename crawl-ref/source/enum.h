@@ -4390,6 +4390,7 @@ enum species_type
 #if TAG_MAJOR_VERSION == 34
     SP_FROGTAUR,
 #endif
+    SP_GNOLL,
     NUM_SPECIES,
 
     SP_UNKNOWN  = 100,
