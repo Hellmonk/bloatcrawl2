@@ -373,8 +373,8 @@ static const map<species_type, species_def> species_data =
     {{ MUT_EVOLUTION, 1, 2 }, },
     {},
     {},
-    { JOB_HUNTER, JOB_BERSERKER, JOB_ARCANE_MARKSMAN, JOB_ENCHANTER,
-      JOB_SUMMONER },
+    { JOB_ARCANE_MARKSMAN, JOB_ENCHANTER,
+      JOB_SUMMONER, JOB_WIZARD },
     { SK_SHORT_BLADES, SK_MACES_FLAILS, SK_CROSSBOWS },
 } },
 
