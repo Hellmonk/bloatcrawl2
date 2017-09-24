@@ -5830,7 +5830,7 @@ int player::skill(skill_type sk, int scale, bool real, bool drained) const
     }*/
 
     if (you.species == SP_GNOLL || you.species == SP_KOBOLD)
-       level = level + max(you.experience_level - 3, 0)*scale/2;;
+       level = level + max(you.experience_level - 3, 0)*scale/2;
 
     // apply gnoll/kobold before returning for "real" switch
     if (real)
@@ -5844,22 +5844,12 @@ int player::skill(skill_type sk, int scale, bool real, bool drained) const
         return max(0, (level - 30 * scale * you.attribute[ATTR_XP_DRAIN]) / (30 * 100));
     }
 
-    if (penance[GOD_ASHENZARI])
-        level = max(level - 4 * scale, level / 2);
-    else if (have_passive(passive_t::bondage_skill_boost))
-    {
-        if (skill_boost.count(sk)
-            && skill_boost.find(sk)->second)
-        {
-            level = ash_skill_boost(sk, scale);
-        }
-    }
-	else if (have_passive(passive_t::magic_skill_boost))
+    if (have_passive(passive_t::magic_skill_boost))
 	{
 		if(sk >= SK_FIRST_MAGIC_SCHOOL && sk < SK_LAST_MAGIC 
 			|| sk == SK_SPELLCASTING)
 		{
-			level = sif_magic_boost(sk, scale);
+			level = min(level + (50 + you.piety) * scale / 100, 27 * scale);
 		}
 	}
 

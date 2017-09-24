@@ -903,23 +903,6 @@ int ash_skill_boost(skill_type sk, int scale)
     return min(level, 27 * scale);
 }
 
-int sif_magic_boost(skill_type sk, int scale)
-{
-	//directly modeled off of ashenzari, but using a single factor
-	unsigned int skill_points = you.skill_points[sk];
-	
-	skill_points += 3 * (piety_rank() + 1)
-                    * max(you.skill(sk, 10, true), 1) * species_apt_factor(sk);
-					
-	int level = you.skills[sk];
-    while (level < 27 && skill_points >= skill_exp_needed(level + 1, sk))
-        ++level;
-
-    level = level * scale + get_skill_progress(sk, level, skill_points, scale);
-
-    return min(level, 27 * scale);				
-}
-
 int gozag_gold_in_los(actor *whom)
 {
     if (!have_passive(passive_t::gold_aura))
