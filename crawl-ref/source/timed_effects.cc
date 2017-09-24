@@ -12,6 +12,7 @@
 #include "areas.h"
 #include "beam.h"
 #include "bloodspatter.h"
+#include "branch.h"
 #include "cloud.h"
 #include "coordit.h"
 #include "database.h"
@@ -954,7 +955,9 @@ static void _antiscumming(int /*time_delta*/)
 {
 	if(env.turns_on_level < 2500)
         return;
-	if (env.turns_on_level < 2800)
+    if(!is_connected_branch(level_id::current().branch))
+        return;
+    if (env.turns_on_level < 2800)
 	{
         mprf(MSGCH_WARN, "You feel the dungeon grow hostile. You need to descend quickly!");
         return;
