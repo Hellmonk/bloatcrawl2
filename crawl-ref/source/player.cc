@@ -4324,11 +4324,13 @@ bool poison_player(int amount, string source, string source_aux, bool force)
     return amount;
 }
 
+// Amount of damage poison will do to the player
+// Capped at their current HP minus one.
 int get_player_poisoning()
 {
     if (player_res_poison() < 3)
     {
-        return you.duration[DUR_POISONING] / 1000;
+        return min(you.duration[DUR_POISONING] / 1000, you.hp - 1);
     }
     else
         return 0;
@@ -4396,7 +4398,9 @@ void handle_player_poison(int delay)
 
     int dmg = (you.duration[DUR_POISONING] / 1000)
                - ((you.duration[DUR_POISONING] - decrease) / 1000);
-
+    // Never lethal
+    dmg = min(you.hp - 1, dmg);
+    dprf("Poison damage is %d", dmg);
 
     msg_channel_type channel = MSGCH_PLAIN;
     const char *adj = "";
