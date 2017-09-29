@@ -1078,6 +1078,7 @@ skill_diff skill_level_to_diffs(skill_type skill, double amount,
                             bool base_only)
 {
     // TODO: should this use skill_state?
+    // TODO: can `amount` be converted to fixed point?
     double level;
     double fractional = modf(amount, &level);
     if (level >= MAX_SKILL_LEVEL)
@@ -1104,12 +1105,6 @@ skill_diff skill_level_to_diffs(skill_type skill, double amount,
         // This will not address the case where some cross-training skills are
         // also being trained.
         you_skill += get_crosstrain_points(skill);
-
-        // Estimate the ash bonus, based on current skill levels and piety.
-        // This isn't perfectly accurate, because the boost changes as
-        // skill increases. TODO: exact solution.
-        // It also assumes that piety won't change.
-        you_skill += ash_skill_point_boost(skill, you.skills[skill] * 10);
 
         if (skill_has_manual(skill))
             target = you_skill + (target - you_skill) / 2;

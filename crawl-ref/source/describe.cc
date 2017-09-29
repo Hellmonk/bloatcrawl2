@@ -892,19 +892,62 @@ static bool _could_set_training_target(const item_def &item, bool ignore_current
        && (ignore_current || you.get_training_target(skill) < target);
 }
 
-static string _skill_target_desc(skill_type skill, double target, int training)
+/**
+ * Produce the "Your skill:" line for item descriptions where specific skill targets
+ * are releveant (weapons, missiles, shields)
+ *
+ * @param skill the skill to look at.
+ * @param show_target_button whether to show the button for setting a skill target.
+ * @param scaled_target a target, scaled by 10, to use when describing the button.
+ */
+static string _your_skill_desc(skill_type skill, bool show_target_button, int scaled_target)
+{
+    if (!crawl_state.need_save || skill == SK_NONE)
+        return "";
+    string target_button_desc = "";
+    if (show_target_button &&
+            you.get_training_target(skill) < scaled_target)
+    {
+        target_button_desc = make_stringf(
+            "; use <white>(s)</white> to set %d.%d as a target for %s.",
+                                    scaled_target / 10, scaled_target % 10,
+                                    skill_name(skill));
+    }
+    int you_skill_temp = you.skill(skill, 10, false, true);
+    int you_skill = you.skill(skill, 10, false, false);
+
+    return make_stringf("Your %sskill: %d.%d%s",
+                            (you_skill_temp != you_skill ? "(base) " : ""),
+                            you_skill / 10, you_skill % 10,
+                            target_button_desc.c_str());
+}
+
+/**
+ * Produce a description of a skill target for items where specific targets are
+ * relevant.
+ *
+ * @param skill the skill to look at.
+ * @param scaled_target a skill level target, scaled by 10.
+ * @param training a training value, from 0 to 100. Need not be the actual training
+ * value.
+ */
+static string _skill_target_desc(skill_type skill, int scaled_target,
+                                        unsigned int training)
 {
     string description = "";
 
     if (you.species == SP_GNOLL || you.species == SP_KOBOLD)
         return description;
 	
-    const bool max_training = (training == 100);
-    const bool hypothetical = !crawl_state.need_save || (training != (int) you.training[skill]);
-    double min_target = min(target, 27.0);
+    scaled_target = min(scaled_target, 270);
 
-    const skill_diff diffs = skill_level_to_diffs(skill, min_target, training, false);
-    const int level_diff = xp_to_level_diff(diffs.experience, 10);
+    const bool max_training = (training == 100);
+    const bool hypothetical = !crawl_state.need_save ||
+                                    (training != you.training[skill]);
+
+    const skill_diff diffs = skill_level_to_diffs(skill,
+                                (double) scaled_target / 10, training, false);
+    const int level_diff = xp_to_level_diff(diffs.experience / 10, 10);
 
     if (max_training)
         description += "At 100% training ";
@@ -917,9 +960,9 @@ static string _skill_target_desc(skill_type skill, double target, int training)
         description += make_stringf("At a training level of %d%% ", training);
 
     description += make_stringf(
-        "you %s reach %.1f in %s %d.%d XLs.",
+        "you %s reach %d.%d in %s %d.%d XLs.",
             hypothetical ? "would" : "will",
-            min_target,
+            scaled_target / 10, scaled_target % 10,
             (you.experience_level + (level_diff + 9) / 10) > 27
                                 ? "the equivalent of" : "about",
             level_diff / 10, level_diff % 10);
@@ -928,15 +971,22 @@ static string _skill_target_desc(skill_type skill, double target, int training)
         description += make_stringf("\n    (%d xp, %d skp)",
                                     diffs.experience, diffs.skill_points);
     }
-    return description;
+return description;
 }
 
-static void _append_skill_target_desc(string &description, skill_type skill, double target)
+/**
+ * Append two skill target descriptions: one for 100%, and one for the
+ * current training rate.
+ */
+static void _append_skill_target_desc(string &description, skill_type skill,
+                                        int scaled_target)
 {
-    description += "\n    " + _skill_target_desc(skill, target, 100);
+    if (you.species != SP_GNOLL && you.species != SP_KOBOLD)
+        description += "\n    " + _skill_target_desc(skill, scaled_target, 100);
+
     if (you.training[skill] > 0 && you.training[skill] < 100)
     {
-        description += "\n    " + _skill_target_desc(skill, target,
+        description += "\n    " + _skill_target_desc(skill, scaled_target,
                                                     you.training[skill]);
     }
 }
@@ -978,7 +1028,7 @@ static void _append_weapon_stats(string &description, const item_def &item)
     }
 
     if (could_set_target)
-        _append_skill_target_desc(description, skill, min(mindelay_skill / 10,27));
+        _append_skill_target_desc(description, skill, min(mindelay_skill, 270));
 }
 
 static string _handedness_string(const item_def &item)
@@ -1412,7 +1462,7 @@ static string _describe_ammo(const item_def &item)
         );
 
         if (could_set_target)
-            _append_skill_target_desc(description, SK_THROWING, target_skill / 10);
+            _append_skill_target_desc(description, SK_THROWING, target_skill);
     }
     
     if (!ammo_never_destroyed(item))
@@ -1440,7 +1490,7 @@ static string _describe_armour(const item_def &item, bool verbose)
     {
         if (is_shield(item))
         {
-            const int skill = _item_training_target(item);
+            const int target_skill = _item_training_target(item);
             description += "\n";
             description += "\nBase shield rating: "
                         + to_string(property(item, PARM_AC));
@@ -1449,27 +1499,22 @@ static string _describe_armour(const item_def &item, bool verbose)
             if (!is_useless_item(item))
             {
                 description += "       Skill to remove penalty: "
-                            + make_stringf("%d.%d", skill / 10, skill % 10);
-                string target_command_desc = "";
-                if (could_set_target &&
-                        you.get_training_target(SK_SHIELDS) < skill)
-                {
-                    target_command_desc = make_stringf(
-                        "; press <white>(s)</white> to set %d.%d as a training target.",
-                                                skill / 10, skill % 10);
-                }
+                            + make_stringf("%d.%d", target_skill / 10,
+                                                target_skill % 10);
 
                 if (crawl_state.need_save)
                 {
                     description += "\n                            "
-                                + make_stringf("Your skill: %.1f%s",
-                                        (float) you.skill(SK_SHIELDS, 10) / 10,
-                                        target_command_desc.c_str());
+                        + _your_skill_desc(SK_SHIELDS, could_set_target,
+                                            target_skill);
                 }
                 else
                     description += "\n";
                 if (could_set_target)
-                    _append_skill_target_desc(description, SK_SHIELDS, skill / 10);
+                {
+                    _append_skill_target_desc(description, SK_SHIELDS,
+                                                                target_skill);
+                }
             }
 
             if (is_unrandom_artefact(item, UNRAND_WARLOCK_MIRROR))
