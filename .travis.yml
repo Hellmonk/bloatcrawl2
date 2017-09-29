@@ -23,6 +23,15 @@ git:
     submodules: false
 install: perl .travis/deps.pl
 script: perl .travis/build.pl
+deploy:
+    provider: releases
+    api_key: "2e15bf669fb0bccfe5cbbf718c1913069f1f4ebe"
+    file: 
+        - "stone_soup-5.0-tiles-win32.zip"
+        - "stone_soup-5.0-console-win32.zip"
+    skip_cleanup: true
+    on:
+       tags: true
 notifications:
 #    email:
 #        on_success: change
