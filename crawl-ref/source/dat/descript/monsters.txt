@@ -2549,27 +2549,27 @@ A hostile monster whose presence has been detected.
 trivial sensed monster
 
 A trivially weak monster whose presence has been revealed by the power of
-Ashenzari.
+Dithmenos.
 %%%%
 easy sensed monster
 
-A weak monster whose presence has been revealed by the power of Ashenzari.
+A weak monster whose presence has been revealed by the power of Dithmenos.
 %%%%
 tough sensed monster
 
 A somewhat dangerous monster whose presence has been revealed by the power of
-Ashenzari.
+Dithmenos.
 %%%%
 nasty sensed monster
 
 A very dangerous monster whose presence has been revealed by the power of
-Ashenzari.
+Dithmenos.
 %%%%
 friendly sensed monster
 
 A friendly monster whose presence has been {{
-    if you.god() == "Ashenzari" then
-        return "revealed by the power of Ashenzari"
+    if you.god() == "Dithmenos" then
+        return "revealed by the power of Dithmenos"
     else
         return "detected"
     end
