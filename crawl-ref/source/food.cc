@@ -44,7 +44,6 @@
 #include "xom.h"
 
 static void _eat_chunk(item_def& food);
-static void _describe_food_change(int hunger_increment);
 static bool _vampire_consume_corpse(item_def& corpse);
 static void _heal_from_food(int hp_amt);
 
@@ -81,12 +80,6 @@ void make_hungry(int hunger_amount, bool suppress_msg,
 
     if (you.hunger < 0)
         you.hunger = 0;
-
-    // So we don't get two messages, ever.
-    bool state_message = food_change();
-
-    if (!suppress_msg && !state_message)
-        _describe_food_change(-hunger_amount);
 }
 
 // Must match the order of hunger_state_t enums
@@ -121,12 +114,6 @@ void lessen_hunger(int satiated_amount, bool suppress_msg, int max)
                                hunger_threshold[max_hunger_state]);
     if (you.hunger > max_hunger)
         you.hunger = max_hunger;
-
-    // So we don't get two messages, ever.
-    const bool state_message = food_change();
-
-    if (!suppress_msg && !state_message)
-        _describe_food_change(satiated_amount);
 }
 
 void set_hunger(int new_hunger_level, bool suppress_msg)
@@ -232,22 +219,12 @@ bool eat_food(int slot)
     return prompt_eat_item(slot);
 }
 
-static string _how_hungry()
-{
-    if (you.hunger_state > HS_SATIATED)
-        return "full";
-    else if (you.species == SP_VAMPIRE)
-        return "thirsty";
-    return "hungry";
-}
-
 // "initial" is true when setting the player's initial hunger state on game
 // start or load: in that case it's not really a change, so we suppress the
 // state change message and don't identify rings or stimulate Xom.
 bool food_change(bool initial)
 {
     bool state_changed = false;
-    bool less_hungry   = false;
 
     you.hunger = max(you_min_hunger(), you.hunger);
     you.hunger = min(you_max_hunger(), you.hunger);
@@ -260,9 +237,6 @@ bool food_change(bool initial)
     if (newstate != you.hunger_state)
     {
         state_changed = true;
-        if (newstate > you.hunger_state)
-            less_hungry = true;
-
         you.hunger_state = newstate;
         you.redraw_status_lights = true;
 
@@ -307,90 +281,8 @@ bool food_change(bool initial)
                 }
             }
         }
-
-        if (!initial)
-        {
-            string msg = "You ";
-            switch (you.hunger_state)
-            {
-            case HS_FAINTING:
-                msg += "are fainting from starvation!";
-                mprf(MSGCH_FOOD, less_hungry, "%s", msg.c_str());
-                break;
-
-            case HS_STARVING:
-                if (you.species == SP_VAMPIRE)
-                    msg += "feel devoid of blood!";
-                else
-                    msg += "are starving!";
-
-                mprf(MSGCH_FOOD, less_hungry, "%s", msg.c_str());
-
-                learned_something_new(HINT_YOU_STARVING);
-                you.check_awaken(500);
-                break;
-
-            case HS_NEAR_STARVING:
-                if (you.species == SP_VAMPIRE)
-                    msg += "feel almost devoid of blood!";
-                else
-                    msg += "are near starving!";
-
-                mprf(MSGCH_FOOD, less_hungry, "%s", msg.c_str());
-
-                learned_something_new(HINT_YOU_HUNGRY);
-                break;
-
-            case HS_VERY_HUNGRY:
-            case HS_HUNGRY:
-                msg += "are feeling ";
-                if (you.hunger_state == HS_VERY_HUNGRY)
-                    msg += "very ";
-                msg += _how_hungry();
-                msg += ".";
-
-                mprf(MSGCH_FOOD, less_hungry, "%s", msg.c_str());
-
-                learned_something_new(HINT_YOU_HUNGRY);
-                break;
-
-            default:
-                return state_changed;
-            }
-        }
     }
-
     return state_changed;
-}
-
-// food_increment is positive for eating, negative for hungering
-static void _describe_food_change(int food_increment)
-{
-    const int magnitude = abs(food_increment);
-    string msg;
-
-    if (magnitude == 0)
-        return;
-
-    msg = "You feel ";
-
-    if (magnitude <= 100)
-        msg += "slightly ";
-    else if (magnitude <= 350)
-        msg += "somewhat ";
-    else if (magnitude <= 800)
-        msg += "quite a bit ";
-    else
-        msg += "a lot ";
-
-    if ((you.hunger_state > HS_SATIATED) ^ (food_increment < 0))
-        msg += "more ";
-    else
-        msg += "less ";
-
-    msg += _how_hungry().c_str();
-    msg += ".";
-    mpr(msg);
 }
 
 bool eat_item(item_def &food)
