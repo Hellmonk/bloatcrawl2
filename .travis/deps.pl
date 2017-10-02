@@ -14,6 +14,7 @@ if ($ENV{BUILD_ALL}) {
        libasound2-dev
        libxss-dev
        mingw-w64
+       gcc-mingw-w64
     );
 }
 else {
@@ -21,6 +22,7 @@ else {
         liblua5.1-0-dev
         liblua5.1-0-dbg
         mingw-w64
+        gcc-mingw-w64
     );
 
     push @deps, qw(
