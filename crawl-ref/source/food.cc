@@ -146,34 +146,6 @@ bool you_foodless_normally()
         ;
 }
 
-static bool _eat_check(bool check_hunger = true, bool silent = false)
-{
-    if (you_foodless(true))
-    {
-        if (!silent)
-        {
-            mpr("You can't eat.");
-            crawl_state.zero_turns_taken();
-        }
-        return false;
-    }
-
-    if (!check_hunger)
-        return true;
-
-    if (you.hunger_state >= HS_ENGORGED)
-    {
-        if (!silent)
-        {
-            mprf("You're too full to %s anything.",
-                 you.species == SP_VAMPIRE ? "drain" : "eat");
-            crawl_state.zero_turns_taken();
-        }
-        return false;
-    }
-    return true;
-}
-
 // [ds] Returns true if something was eaten.
 bool eat_food(int slot)
 {
@@ -361,36 +333,6 @@ void finish_eating_item(item_def& food)
         dec_inv_item_quantity(food.link, 1);
     else
         dec_mitm_item_quantity(food.index(), 1);
-}
-
-// Returns which of two food items is older (true for first, else false).
-static bool _compare_by_freshness(const item_def *food1, const item_def *food2)
-{
-    ASSERT(food1->base_type == OBJ_CORPSES || food1->base_type == OBJ_FOOD);
-    ASSERT(food2->base_type == OBJ_CORPSES || food2->base_type == OBJ_FOOD);
-    ASSERT(food1->base_type == food2->base_type);
-
-    if (is_inedible(*food1))
-        return false;
-
-    if (is_inedible(*food2))
-        return true;
-
-    // Permafood can last longest, skip it if possible.
-    if (food1->base_type == OBJ_FOOD && food1->sub_type != FOOD_CHUNK)
-        return false;
-    if (food2->base_type == OBJ_FOOD && food2->sub_type != FOOD_CHUNK)
-        return true;
-
-    // At this point, we know both are corpses or chunks, edible
-
-    // Always offer poisonous/mutagenic chunks last.
-    if (is_bad_food(*food1) && !is_bad_food(*food2))
-        return false;
-    if (is_bad_food(*food2) && !is_bad_food(*food1))
-        return true;
-
-    return food1->freshness < food2->freshness;
 }
 
 static const char *_chunk_flavour_phrase(bool likes_chunks)

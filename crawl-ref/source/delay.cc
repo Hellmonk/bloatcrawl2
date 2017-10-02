@@ -474,16 +474,6 @@ static void _xom_check_corpse_waste()
     xom_is_stimulated(50 + (151 * food_need / 6000));
 }
 
-static bool _auto_eat()
-{
-    return Options.auto_eat_chunks
-           && Options.autopickup_on > 0
-           && (player_likes_chunks(true)
-               || !you.gourmand()
-               || you.duration[DUR_GOURMAND] >= GOURMAND_MAX / 4
-               || you.hunger_state < HS_SATIATED);
-}
-
 void clear_macro_process_key_delay()
 {
     if (dynamic_cast<MacroProcessKeyDelay*>(current_delay().get()))
