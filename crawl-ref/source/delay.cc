@@ -563,13 +563,6 @@ void BaseRunDelay::handle()
         stop_running();
     else
     {
-        if (want_autoeat() && _auto_eat())
-        {
-            const interrupt_block block_interrupts;
-            if (prompt_eat_chunks(true) == 1)
-                return;
-        }
-
         cmd = move_cmd();
     }
 
@@ -1416,13 +1409,6 @@ bool interrupt_activity(activity_interrupt_type ai,
     }
 
     const auto delay = current_delay();
-
-    // If we get hungry while traveling, let's try to auto-eat a chunk.
-    if (ai == AI_HUNGRY && delay->want_autoeat() && _auto_eat()
-        && prompt_eat_chunks(true) == 1)
-    {
-        return false;
-    }
 
     dprf("Activity interrupt: %s", _activity_interrupt_name(ai));
 

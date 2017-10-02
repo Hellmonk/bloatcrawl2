@@ -146,11 +146,6 @@ bool you_foodless_normally()
         ;
 }
 
-bool prompt_eat_item(int slot)
-{
-    return false;
-}
-
 static bool _eat_check(bool check_hunger = true, bool silent = false)
 {
     if (you_foodless(true))
@@ -182,23 +177,7 @@ static bool _eat_check(bool check_hunger = true, bool silent = false)
 // [ds] Returns true if something was eaten.
 bool eat_food(int slot)
 {
-    if (!_eat_check())
-        return false;
-
-    // Skip the prompts if we already know what we're eating.
-    if (slot == -1)
-    {
-        int result = prompt_eat_chunks();
-        if (result == 1)
-            return true;
-        else if (result == -1)
-            return false;
-    }
-
-    if (you.species == SP_VAMPIRE)
-        mpr("You can't drain a corpse.");
-
-    return prompt_eat_item(slot);
+    return false;
 }
 
 // "initial" is true when setting the player's initial hunger state on game
@@ -412,140 +391,6 @@ static bool _compare_by_freshness(const item_def *food1, const item_def *food2)
         return true;
 
     return food1->freshness < food2->freshness;
-}
-
-/** Make the prompt for chunk eating/corpse draining.
- *
- *  @param only_auto Don't actually make a prompt: if there are
- *                   things to auto_eat, eat them, and exit otherwise.
- *  @returns -1 for cancel, 1 for eaten, 0 for not eaten,
- */
-int prompt_eat_chunks(bool only_auto)
-{
-	return 0;
-    // Full herbivores cannot eat chunks.
-    if (you.get_mutation_level(MUT_HERBIVOROUS) == 3)
-        return 0;
-
-    // If we *know* the player can eat chunks, doesn't have the gourmand
-    // effect and isn't hungry, don't prompt for chunks.
-    if (you.species != SP_VAMPIRE
-        && you.hunger_state >= HS_SATIATED + player_likes_chunks())
-    {
-        return 0;
-    }
-
-    bool found_valid = false;
-    vector<item_def *> chunks;
-
-    for (stack_iterator si(you.pos(), true); si; ++si)
-    {
-        if (you.species == SP_VAMPIRE)
-        {
-            if (si->base_type != OBJ_CORPSES || si->sub_type != CORPSE_BODY)
-                continue;
-
-            if (!mons_has_blood(si->mon_type))
-                continue;
-        }
-        else if (si->base_type != OBJ_FOOD
-                 || si->sub_type != FOOD_CHUNK
-                 || is_bad_food(*si))
-        {
-            continue;
-        }
-
-        found_valid = true;
-        chunks.push_back(&(*si));
-    }
-
-    // Then search through the inventory.
-    for (auto &item : you.inv)
-    {
-        if (!item.defined())
-            continue;
-
-        // Vampires can't eat anything in their inventory.
-        if (you.species == SP_VAMPIRE)
-            continue;
-
-        if (item.base_type != OBJ_FOOD || item.sub_type != FOOD_CHUNK)
-            continue;
-
-        // Don't prompt for bad food types.
-        if (is_bad_food(item))
-            continue;
-
-        found_valid = true;
-        chunks.push_back(&item);
-    }
-
-    const bool easy_eat = Options.easy_eat_chunks || only_auto;
-
-    if (found_valid)
-    {
-        sort(chunks.begin(), chunks.end(), _compare_by_freshness);
-        for (item_def *item : chunks)
-        {
-            bool autoeat = false;
-            string item_name = get_menu_colour_prefix_tags(*item, DESC_A);
-
-            const bool bad = is_bad_food(*item);
-
-            // Allow undead to use easy_eat, but not auto_eat, since the player
-            // might not want to drink blood as a vampire and might want to save
-            // chunks as a ghoul. Ghouls can auto_eat if they have rotted hp.
-            const bool no_auto = you.undead_state()
-                && !(you.species == SP_GHOUL && player_rotted());
-
-            // If this chunk is safe to eat, just do so without prompting.
-            if (easy_eat && !bad && i_feel_safe() && !(only_auto && no_auto))
-                autoeat = true;
-            else if (only_auto)
-                return 0;
-            else
-            {
-                mprf(MSGCH_PROMPT, "%s %s%s? (ye/n/q)",
-                     (you.species == SP_VAMPIRE ? "Drink blood from" : "Eat"),
-                     ((item->quantity > 1) ? "one of " : ""),
-                     item_name.c_str());
-            }
-
-            int keyin = autoeat ? 'y' : toalower(getchm(KMC_CONFIRM));
-            switch (keyin)
-            {
-            case 'q':
-            CASE_ESCAPE
-                canned_msg(MSG_OK);
-                return -1;
-            case 'i':
-            case '?':
-                // Skip ahead to the inventory.
-                return 0;
-            case 'e':
-            case 'y':
-                if (can_eat(*item, false))
-                {
-                    if (autoeat)
-                    {
-                        mprf("%s %s%s.",
-                             (you.species == SP_VAMPIRE ? "Drinking blood from"
-                                                        : "Eating"),
-                             ((item->quantity > 1) ? "one of " : ""),
-                             item_name.c_str());
-                    }
-
-                    return 0;
-                }
-                break;
-            default:
-                // Else no: try next one.
-                break;
-            }
-        }
-    }
-
-    return 0;
 }
 
 static const char *_chunk_flavour_phrase(bool likes_chunks)

@@ -22,11 +22,7 @@ static int food_do_eat(lua_State *ls)
 
 static int food_prompt_eat_chunks(lua_State *ls)
 {
-    int eaten = 0;
-    if (!you.turn_is_over)
-        eaten = prompt_eat_chunks();
-
-    lua_pushboolean(ls, (eaten != 0));
+    lua_pushboolean(ls, (false));
     return 1;
 }
 
