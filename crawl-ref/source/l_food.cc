@@ -32,10 +32,7 @@ static int food_prompt_eat_chunks(lua_State *ls)
 
 static int food_prompt_inventory_menu(lua_State *ls)
 {
-    bool eaten = false;
-    if (!you.turn_is_over)
-        eaten = prompt_eat_item();
-    lua_pushboolean(ls, eaten);
+    lua_pushboolean(ls, false);
     return 1;
 }
 

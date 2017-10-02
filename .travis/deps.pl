@@ -17,6 +17,8 @@ if ($ENV{BUILD_ALL}) {
        gcc-mingw-w64
        gcc-mingw-w64-i686
        gcc-mingw-w64-x86-64
+       binutils-mingw-w64-i686
+       binutils-mingw-w64-x86-64
     );
 }
 else {
@@ -27,6 +29,8 @@ else {
         gcc-mingw-w64
         gcc-mingw-w64-i686
         gcc-mingw-w64-x86-64
+        binutils-mingw-w64-i686
+        binutils-mingw-w64-x86-64
     );
 
     push @deps, qw(
