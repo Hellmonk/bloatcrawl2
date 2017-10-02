@@ -578,14 +578,10 @@ string SkillMenuSwitch::get_help()
         if (skm.is_set(SKMF_ENHANCED))
         {
             vector<string> causes;
-            if (you.duration[DUR_HEROISM])
-                causes.push_back("Heroism");
-
-            if (!you.skill_boost.empty()
-                && have_passive(passive_t::bondage_skill_boost))
+            if (have_passive(passive_t::heroism))
             {
                 causes.push_back(apostrophise(god_name(you.religion))
-                                 + " power");
+                                 + " heroism");
             }
 			if(have_passive(passive_t::magic_skill_boost))
 			{

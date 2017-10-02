@@ -125,7 +125,7 @@ static const vector<god_passive> god_passives[] =
 
     // Okawaru
     {
-        // None
+        {  2, passive_t::heroism, "GOD improves your combat prowess" },
     },
 
     // Makhleb

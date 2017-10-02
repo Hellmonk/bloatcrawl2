@@ -21,7 +21,7 @@ if ($ENV{FULLDEBUG}) {
     try("make -j2 debug monster");
 }
 else {
-    try("make -j2 all monster");
+    try("make CROSSHOST=i686-w64-mingw32 package-windows-zips");
 }
 
 if (!$ENV{TILES}) {

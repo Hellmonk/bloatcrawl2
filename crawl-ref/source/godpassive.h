@@ -249,6 +249,8 @@ enum class passive_t
 	///sif muna improves your magical skills
 	magic_skill_boost,
 	
+    ///heroism
+    heroism,
 };
 
 enum ru_interference

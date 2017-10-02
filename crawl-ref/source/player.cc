@@ -5867,8 +5867,8 @@ int player::skill(skill_type sk, int scale, bool real, bool drained) const
 	}
 
 
-    if (duration[DUR_HEROISM] && sk <= SK_LAST_MUNDANE)
-        level = min(level + 5 * scale, 27 * scale);
+    if (have_passive(passive_t::heroism) && sk <= SK_LAST_MUNDANE)
+        level = min(level + (piety_rank() - 1) * scale, 27 * scale);
     return level;
 }
 

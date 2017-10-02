@@ -140,7 +140,8 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Okawaru
-    { { 1, ABIL_OKAWARU_HEROISM, "gain great but temporary skills" },
+    { { 2, "Okawaru improves your combat prowess.", 
+		   "Okawaru no longer improves your combat prowess."},
       { 5, ABIL_OKAWARU_FINESSE, "speed up your combat" },
     },
 

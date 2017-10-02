@@ -13,12 +13,14 @@ if ($ENV{BUILD_ALL}) {
        libegl1-mesa-dev
        libasound2-dev
        libxss-dev
+       mingw-w64
     );
 }
 else {
     push @deps, qw(
         liblua5.1-0-dev
         liblua5.1-0-dbg
+        mingw-w64
     );
 
     push @deps, qw(
