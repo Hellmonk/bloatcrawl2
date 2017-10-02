@@ -15,6 +15,8 @@ if ($ENV{BUILD_ALL}) {
        libxss-dev
        mingw-w64
        gcc-mingw-w64
+       gcc-mingw-w64-i686
+       gcc-mingw-w64-x86-64
     );
 }
 else {
@@ -23,6 +25,8 @@ else {
         liblua5.1-0-dbg
         mingw-w64
         gcc-mingw-w64
+        gcc-mingw-w64-i686
+        gcc-mingw-w64-x86-64
     );
 
     push @deps, qw(

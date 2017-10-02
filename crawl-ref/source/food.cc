@@ -44,7 +44,6 @@
 #include "xom.h"
 
 static void _eat_chunk(item_def& food);
-static bool _vampire_consume_corpse(item_def& corpse);
 static void _heal_from_food(int hp_amt);
 
 void make_hungry(int hunger_amount, bool suppress_msg,
@@ -149,24 +148,7 @@ bool you_foodless_normally()
 
 bool prompt_eat_item(int slot)
 {
-    // There's nothing in inventory that a vampire can 'e', and floor corpses
-    // are handled by prompt_eat_chunks.
-    if (you.species == SP_VAMPIRE)
-        return false;
-
-    item_def* item = nullptr;
-    if (slot == -1)
-    {
-        item = use_an_item(OBJ_FOOD, OPER_EAT, "Eat which item?");
-        if (!item)
-            return false;
-    }
-    else
-        item = &you.inv[slot];
-
-    eat_item(*item);
-
-    return true;
+    return false;
 }
 
 static bool _eat_check(bool check_hunger = true, bool silent = false)
@@ -288,27 +270,6 @@ bool food_change(bool initial)
 bool eat_item(item_def &food)
 {
 	return false;
-    if (food.is_type(OBJ_CORPSES, CORPSE_BODY))
-    {
-        if (you.species != SP_VAMPIRE)
-            return false;
-
-        if (_vampire_consume_corpse(food))
-        {
-            count_action(CACT_EAT, -1); // subtype Corpse
-            you.turn_is_over = true;
-            return true;
-        }
-        else
-            return false;
-    }
-    else
-        start_delay<EatDelay>(food_turns(food) - 1, food);
-
-    mprf("You start eating %s%s.", food.quantity > 1 ? "one of " : "",
-                                   food.name(DESC_THE).c_str());
-    you.turn_is_over = true;
-    return true;
 }
 
 // Handle messaging at the end of eating.
@@ -574,7 +535,7 @@ int prompt_eat_chunks(bool only_auto)
                              item_name.c_str());
                     }
 
-                    return eat_item(*item) ? 1 : 0;
+                    return 0;
                 }
                 break;
             default:
@@ -968,36 +929,6 @@ corpse_effect_type determine_chunk_effect(corpse_effect_type chunktype)
     return chunktype;
 }
 
-static bool _vampire_consume_corpse(item_def& corpse)
-{
-    ASSERT(you.species == SP_VAMPIRE);
-    ASSERT(corpse.base_type == OBJ_CORPSES);
-    ASSERT(corpse.sub_type == CORPSE_BODY);
-
-    if (!mons_has_blood(corpse.mon_type))
-    {
-        mpr("There is no blood in this body!");
-        return false;
-    }
-
-    // The delay for eating a chunk (mass 1000) is 2
-    // Here the base nutrition value equals that of chunks,
-    // but the delay should be smaller.
-    const int max_chunks = max_corpse_chunks(corpse.mon_type);
-    int duration = 1 + max_chunks / 3;
-    duration = stepdown_value(duration, 6, 6, 12, 12);
-
-    // Get some nutrition right away, in case we're interrupted.
-    // (-1 for the starting message.)
-    vampire_nutrition_per_turn(corpse, -1);
-
-    // The draining delay doesn't have a start action, and we only need
-    // the continue/finish messages if it takes longer than 1 turn.
-    start_delay<FeedVampireDelay>(duration, corpse);
-
-    return true;
-}
-
 static void _heal_from_food(int hp_amt)
 {
     if (hp_amt > 0)
@@ -1040,49 +971,7 @@ int you_min_hunger()
 
 void handle_starvation()
 {
-    // Don't faint or die while eating.
-    if (current_delay() && current_delay()->is_being_used(nullptr, OPER_EAT))
-        return;
-
-    if (!you_foodless() && you.hunger <= HUNGER_FAINTING)
-    {
-        if (!you.cannot_act() && one_chance_in(40))
-        {
-            mprf(MSGCH_FOOD, "You lose consciousness!");
-            stop_running();
-
-            int turns = 5 + random2(8);
-            if (!you.duration[DUR_PARALYSIS])
-                take_note(Note(NOTE_PARALYSIS, min(turns, 13), 0, "fainting"));
-            you.increase_duration(DUR_PARALYSIS, turns, 13);
-            if (you_worship(GOD_XOM))
-                xom_is_stimulated(get_tension() > 0 ? 200 : 100);
-        }
-
-        if (you.hunger <= 0 && !you.duration[DUR_DEATHS_DOOR])
-        {
-            auto it = min_element(begin(you.inv), end(you.inv),
-                [](const item_def& a, const item_def& b) -> bool
-                {
-                    return (a.base_type == OBJ_FOOD && can_eat(a, true)
-                                ? food_turns(a) : INT_MAX)
-                        < (b.base_type == OBJ_FOOD && can_eat(b, true)
-                                ? food_turns(b) : INT_MAX);
-                });
-            if (it != end(you.inv)
-                && it->base_type == OBJ_FOOD && can_eat(*it, true))
-            {
-                mpr("As you are about to starve, you manage to eat something.");
-                eat_item(*it);
-                return;
-            }
-
-            mprf(MSGCH_FOOD, "You have starved to death.");
-            ouch(INSTANT_DEATH, KILLED_BY_STARVATION);
-            if (!you.pending_revival) // if we're still here...
-                set_hunger(HUNGER_DEFAULT, true);
-        }
-    }
+    return;
 }
 
 static const int hunger_breakpoints[] = { 1, 21, 61, 121, 201, 301, 421 };
