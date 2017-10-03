@@ -53,8 +53,6 @@ void vampire_nutrition_per_turn(const item_def &corpse, int feeding = 0);
 int you_max_hunger();
 int you_min_hunger();
 bool you_foodless(bool can_eat = false);
-// Is the player always foodless or just because of a temporary change?
-bool you_foodless_normally();
 
 void handle_starvation();
 int hunger_bars(const int hunger);

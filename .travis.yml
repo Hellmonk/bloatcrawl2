@@ -22,6 +22,8 @@ env:
 git:
   submodules: false
 install: perl .travis/deps.pl
+ before_script:
+  - git submodule update --init
 script: perl .travis/build.pl
 deploy:
   provider: releases

@@ -921,17 +921,6 @@ static void _describe_god_powers(god_type which_god)
                 uppercase_first(god_name(which_god)).c_str());
         cprintf("%s identifies device charges for you.\n",
                 uppercase_first(god_name(which_god)).c_str());
-        if (!you_foodless_normally())
-        {
-            if (have_passive(passive_t::bottle_mp))
-                textcolour(god_colour(which_god));
-            else
-                textcolour(DARKGREY);
-
-            cprintf("%s will collect and distill excess magic from your "
-                    "kills.\n",
-                    uppercase_first(god_name(which_god)).c_str());
-        }
         break;
     }
 
