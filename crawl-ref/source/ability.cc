@@ -744,13 +744,6 @@ const string make_cost_description(ability_type ability)
             abil.flags & abflag::PERMANENT_HP ? "Permanent " : "");
     }
 
-    if (abil.food_cost && !you_foodless(true)
-        && (you.undead_state() != US_SEMI_UNDEAD
-            || you.hunger_state > HS_STARVING))
-    {
-        ret += ""; // removed fam, food costs are bad
-    }
-
     if (abil.piety_cost)
         ret += make_stringf(", %d Piety", abil.piety_cost).c_str();
 
@@ -836,13 +829,6 @@ static const string _detailed_cost_description(ability_type ability)
         else
             ret << "\nHP     : ";
         ret << abil.hp_cost.cost(you.hp_max);
-    }
-
-    if (abil.food_cost && !you_foodless(true)
-        && (you.undead_state() != US_SEMI_UNDEAD
-            || you.hunger_state > HS_STARVING))
-    {
-        ret << ""; //remove food remove food remove food
     }
 
     if (abil.piety_cost || abil.flags & abflag::PIETY)
@@ -1612,14 +1598,6 @@ bool activate_talent(const talent& tal)
             break;
         default:
             break;
-    }
-
-    if (hungerCheck && !you.undead_state() && !you_foodless()
-        && you.hunger_state <= HS_STARVING)
-    {
-        canned_msg(MSG_TOO_HUNGRY);
-        crawl_state.zero_turns_taken();
-        return false;
     }
 
     const ability_def& abil = get_ability_def(tal.which);

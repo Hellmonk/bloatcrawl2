@@ -494,7 +494,7 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
                 case SPWPN_VAMPIRISM:
                     if (you.species == SP_VAMPIRE)
                         mpr("You feel a bloodthirsty glee!");
-                    else if (you.undead_state() == US_ALIVE && !you_foodless())
+                    else if (you.undead_state() == US_ALIVE)
                         mpr("You feel a dreadful hunger.");
                     else
                         mpr("You feel an empty sense of dread.");
@@ -567,13 +567,6 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
                 break;
 
             case SPWPN_VAMPIRISM:
-                if (you.species != SP_VAMPIRE
-                    && you.undead_state() == US_ALIVE
-                    && !you_foodless()
-                    && !unmeld)
-                {
-                    make_hungry(4500, false, false);
-                }
                 break;
 
             case SPWPN_DISTORTION:

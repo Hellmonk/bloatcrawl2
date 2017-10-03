@@ -308,14 +308,6 @@ static slurp_gain _sacrifice_one_item_noncount(const item_def& item)
         return gain;
 
     int item_value = div_rand_round(stepped, 50);
-    if (have_passive(passive_t::slime_feed)
-        && x_chance_in_y(you.piety, MAX_PIETY)
-        && !you_foodless())
-    {
-        //same as a sultana
-        lessen_hunger(70, true);
-        gain.jiyva_bonus |= JS_FOOD;
-    }
 
     if (have_passive(passive_t::slime_mp)
         && x_chance_in_y(you.piety, MAX_PIETY)

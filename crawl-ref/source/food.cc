@@ -50,35 +50,6 @@ void make_hungry(int hunger_amount, bool suppress_msg,
                  bool magic)
 {
 	return;
-    if (crawl_state.disables[DIS_HUNGER])
-        return;
-
-#if TAG_MAJOR_VERSION == 34
-    // Lich/tree form djinn don't get exempted from food costs: infinite
-    // healing from channeling would be just too good.
-    if (you.species == SP_DJINNI)
-    {
-        if (!magic)
-            return;
-
-        contaminate_player(hunger_amount * 4 / 3, true);
-        return;
-    }
-#endif
-
-    if (you_foodless())
-        return;
-
-    if (magic)
-        hunger_amount = calc_hunger(hunger_amount);
-
-    if (hunger_amount == 0 && !suppress_msg)
-        return;
-
-    you.hunger -= hunger_amount;
-
-    if (you.hunger < 0)
-        you.hunger = 0;
 }
 
 // Must match the order of hunger_state_t enums
@@ -101,31 +72,11 @@ static constexpr int hunger_threshold[HS_ENGORGED + 1] =
 void lessen_hunger(int satiated_amount, bool suppress_msg, int max)
 {
 	return;
-    if (you_foodless())
-        return;
-
-    you.hunger += satiated_amount;
-
-    const hunger_state_t max_hunger_state = max == -1 ? HS_ENGORGED
-                                                      : (hunger_state_t) max;
-    ASSERT_RANGE(max_hunger_state, 0, HS_ENGORGED + 1);
-    const int max_hunger = min(HUNGER_MAXIMUM,
-                               hunger_threshold[max_hunger_state]);
-    if (you.hunger > max_hunger)
-        you.hunger = max_hunger;
 }
 
 void set_hunger(int new_hunger_level, bool suppress_msg)
 {
-    if (you_foodless())
-        return;
-
-    int hunger_difference = (new_hunger_level - you.hunger);
-
-    if (hunger_difference < 0)
-        make_hungry(-hunger_difference, suppress_msg);
-    else if (hunger_difference > 0)
-        lessen_hunger(hunger_difference, suppress_msg);
+    return;
 }
 
 bool you_foodless(bool can_eat)
@@ -556,37 +507,7 @@ bool is_noxious(const item_def &food)
 // be eaten (respecting species and mutations set).
 bool is_inedible(const item_def &item)
 {
-    // Mummies and liches don't eat.
-    if (you_foodless(true))
-        return true;
-
-    if (item.base_type == OBJ_FOOD
-        && !can_eat(item, true, false))
-    {
-        return true;
-    }
-
-    if (item.base_type == OBJ_CORPSES)
-    {
-        if (item.sub_type == CORPSE_SKELETON)
-            return true;
-
-        if (you.species == SP_VAMPIRE)
-        {
-            if (!mons_has_blood(item.mon_type))
-                return true;
-        }
-        else
-        {
-            item_def chunk = item;
-            chunk.base_type = OBJ_FOOD;
-            chunk.sub_type  = FOOD_CHUNK;
-            if (is_inedible(chunk))
-                return true;
-        }
-    }
-
-    return false;
+    return true;
 }
 
 // As we want to avoid autocolouring the entire food selection, this should
@@ -594,39 +515,6 @@ bool is_inedible(const item_def &item)
 // still be edible or even delicious.
 bool is_preferred_food(const item_def &food)
 {
-    // Mummies and liches don't eat.
-    if (you_foodless(true))
-        return false;
-
-    // Vampires don't really have a preferred food type, but they really
-    // like blood potions.
-    if (you.species == SP_VAMPIRE)
-        return is_blood_potion(food);
-
-#if TAG_MAJOR_VERSION == 34
-    if (food.is_type(OBJ_POTIONS, POT_PORRIDGE)
-        && item_type_known(food)
-        && you.species != SP_DJINNI
-        )
-    {
-        return !you.get_mutation_level(MUT_CARNIVOROUS);
-    }
-#endif
-
-    if (food.base_type != OBJ_FOOD)
-        return false;
-
-    // Poisoned, mutagenic, etc. food should never be marked as "preferred".
-    if (is_bad_food(food))
-        return false;
-
-    if (you.get_mutation_level(MUT_CARNIVOROUS) == 3)
-        return food_is_meaty(food.sub_type);
-
-    if (you.get_mutation_level(MUT_HERBIVOROUS) == 3)
-        return food_is_veggie(food.sub_type);
-
-    // No food preference.
     return false;
 }
 
@@ -724,27 +612,12 @@ static void _heal_from_food(int hp_amt)
 
 int you_max_hunger()
 {
-    if (you_foodless())
-        return HUNGER_DEFAULT;
-
-    // Ghouls can never be full or above.
-    if (you.species == SP_GHOUL)
-        return hunger_threshold[HS_SATIATED];
-
-    return hunger_threshold[HS_ENGORGED];
+    return HUNGER_DEFAULT;
 }
 
 int you_min_hunger()
 {
-    // This case shouldn't actually happen.
-    if (you_foodless())
-        return HUNGER_DEFAULT;
-
-    // Vampires can never starve to death. Ghouls will just rot much faster.
-    if (you.undead_state() != US_ALIVE)
-        return (HUNGER_FAINTING + HUNGER_STARVING) / 2; // midpoint
-
-    return 0;
+    return HUNGER_DEFAULT;
 }
 
 void handle_starvation()
@@ -762,21 +635,5 @@ int hunger_bars(const int hunger)
 
 string hunger_cost_string(const int hunger)
 {
-    if (you_foodless(true))
-        return "N/A";
-
-#ifdef WIZARD
-    if (you.wizard)
-        return to_string(hunger);
-#endif
-
-    const int numbars = hunger_bars(hunger);
-
-    if (numbars > 0)
-    {
-        return string(numbars, '#')
-               + string(ARRAYSZ(hunger_breakpoints) - numbars, '.');
-    }
-    else
-        return "None";
+    return "N/A";
 }

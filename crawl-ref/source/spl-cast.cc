@@ -667,13 +667,6 @@ static bool _can_cast()
         return false;
     }
 
-    if (!you.undead_state() && !you_foodless()
-        && you.hunger_state <= HS_STARVING)
-    {
-        canned_msg(MSG_NO_ENERGY);
-        return false;
-    }
-
     return true;
 }
 
@@ -838,14 +831,6 @@ bool cast_a_spell(bool check_range, spell_type spell)
             range_view_annotator show_range(&range);
             delay(50);
         }
-        crawl_state.zero_turns_taken();
-        return false;
-    }
-
-    if (you.undead_state() == US_ALIVE && !you_foodless()
-        && you.hunger <= spell_hunger(spell))
-    {
-        canned_msg(MSG_NO_ENERGY);
         crawl_state.zero_turns_taken();
         return false;
     }

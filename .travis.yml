@@ -20,10 +20,8 @@ env:
 - TILES=1 BUILD_ALL=1 SOUND=1
 - WEBTILES=1 BUILD_ALL=1
 git:
-  submodules: false
+  submodules: true
 install: perl .travis/deps.pl
- before_script:
-  - git submodule update --init
 script: perl .travis/build.pl
 deploy:
   provider: releases
