@@ -101,8 +101,6 @@ static int _corpse_quality(const item_def &item, bool bottle_blood)
     if (bottle_blood && !can_bottle_blood_from_corpse(item.mon_type))
         badness += 4000;
 
-    if (is_forbidden_food(item))
-        badness += 10000;
     return -badness;
 }
 

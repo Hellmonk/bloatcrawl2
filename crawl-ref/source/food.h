@@ -33,7 +33,6 @@ bool is_mutagenic(const item_def &food);
 bool is_noxious(const item_def &food);
 bool is_inedible(const item_def &item);
 bool is_preferred_food(const item_def &food);
-bool is_forbidden_food(const item_def &food);
 corpse_effect_type determine_chunk_effect(const item_def &carrion);
 corpse_effect_type determine_chunk_effect(corpse_effect_type chunktype);
 mon_intel_type corpse_intelligence(const item_def &corpse);

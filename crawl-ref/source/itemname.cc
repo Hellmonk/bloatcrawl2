@@ -3842,9 +3842,6 @@ string item_prefix(const item_def &item, bool temp)
         else if (is_preferred_food(item))
             prefixes.push_back("preferred");
 
-        if (is_forbidden_food(item))
-            prefixes.push_back("forbidden");
-
         if (is_mutagenic(item))
             prefixes.push_back("mutagenic");
         else if (is_noxious(item))

@@ -187,12 +187,6 @@ static bool _explode_corpse(item_def& corpse, const coord_def& where)
     if (corpse.base_type != OBJ_GOLD)
         blood_spray(where, corpse.mon_type, nchunks * 3); // spray some blood
 
-    // Don't let the player evade food conducts by using OOD (!) or /disint
-    // Spray blood, but no chunks. (The mighty hand of your God squashes them
-    // in mid-flight...!)
-    if (is_forbidden_food(corpse))
-        return true;
-
     // turn the corpse into chunks
     if (corpse.base_type != OBJ_GOLD)
     {

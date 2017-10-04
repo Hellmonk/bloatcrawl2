@@ -440,30 +440,6 @@ bool is_preferred_food(const item_def &food)
     return false;
 }
 
-/**
- * Is the given food item forbidden to the player by their god?
- *
- * @param food  The food item in question.
- * @return      Whether your god hates you eating it.
- */
-bool is_forbidden_food(const item_def &food)
-{
-    // no food is forbidden to the player who does not yet exist
-    if (!crawl_state.need_save)
-        return false;
-
-    // Only corpses are only forbidden, now.
-    if (food.base_type != OBJ_CORPSES)
-        return false;
-
-    // Specific handling for intelligent monsters like Gastronok and Xtahua
-    // of a normally unintelligent class.
-    if (you_worship(GOD_ZIN) && corpse_intelligence(food) >= I_HUMAN)
-        return true;
-
-    return god_hates_eating(you.religion, food.mon_type);
-}
-
 /** Can the player eat this item?
  *
  *  @param food the item (must be a corpse or food item)
