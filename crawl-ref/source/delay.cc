@@ -861,7 +861,6 @@ void EatDelay::finish()
 {
     if (food_turns(food) > 1) // If duration was just one turn, don't print.
         mpr("You finish eating.");
-    finish_eating_item(food);
 }
 
 void FeedVampireDelay::finish()

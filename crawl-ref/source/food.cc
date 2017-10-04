@@ -240,28 +240,6 @@ static void _finished_eating_message(food_type type)
     }
 }
 
-
-void finish_eating_item(item_def& food)
-{
-    if (food.sub_type == FOOD_CHUNK)
-        _eat_chunk(food);
-    else
-    {
-        int value = food_value(food);
-        ASSERT(value > 0);
-        _finished_eating_message(static_cast<food_type>(food.sub_type));
-    }
-
-    count_action(CACT_EAT, food.sub_type);
-
-    if (is_perishable_stack(food)) // chunks
-        remove_oldest_perishable_item(food);
-    if (in_inventory(food))
-        dec_inv_item_quantity(food.link, 1);
-    else
-        dec_mitm_item_quantity(food.index(), 1);
-}
-
 static const char *_chunk_flavour_phrase(bool likes_chunks)
 {
     const char *phrase = "tastes terrible.";

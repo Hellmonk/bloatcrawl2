@@ -7,6 +7,8 @@ run(qw(sudo add-apt-repository ppa:zoogie/sdl2-snapshots -y));
 
 retry(qw(sudo apt-get update -qq));
 
+my @common_libs = qw(xorg-dev);
+
 if ($ENV{CXX} eq "clang++") {
     retry(qw(sudo apt-get install -qq libstdc++6-4.7-dev), @common_libs);
 }
