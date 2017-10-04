@@ -235,7 +235,6 @@ public:
         if (you.species == SP_VAMPIRE)
         {
             mpr("Yummy - fresh blood!");
-            lessen_hunger(pow, true);
         }
         else
             mpr(_blood_flavour_message());
@@ -878,7 +877,6 @@ public:
         if (you.species == SP_VAMPIRE)
         {
             mpr("This tastes delicious.");
-            lessen_hunger(pow, true);
         }
         else
             mpr(_blood_flavour_message());
@@ -1011,7 +1009,6 @@ public:
         else
         {
             mpr("That potion was really gluggy!");
-            lessen_hunger(6000, true);
         }
         return true;
     }

@@ -450,10 +450,7 @@ item_def *player::shield() const
 
 void player::make_hungry(int hunger_increase, bool silent)
 {
-    if (hunger_increase > 0)
-        ::make_hungry(hunger_increase, silent);
-    else if (hunger_increase < 0)
-        ::lessen_hunger(-hunger_increase, silent);
+    return;
 }
 
 string player::name(description_level_type dt, bool, bool) const

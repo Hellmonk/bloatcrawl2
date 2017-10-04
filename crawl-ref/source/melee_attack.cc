@@ -588,14 +588,6 @@ static void _hydra_devour(monster &victim)
     if (victim.has_ench(ENCH_STICKY_FLAME))
         mprf("Spicy!");
 
-    // nutrition (maybe)
-    if (filling)
-    {
-        const int equiv_chunks =
-            1 + random2(max_corpse_chunks(victim.type));
-        lessen_hunger(CHUNK_BASE_NUTRITION * equiv_chunks, false, max_hunger);
-    }
-
     // healing
     if (!you.duration[DUR_DEATHS_DOOR])
     {
@@ -3530,10 +3522,6 @@ bool melee_attack::_player_vampire_draws_blood(const monster* mon, const int dam
             canned_msg(MSG_GAIN_HEALTH);
         }
     }
-
-    // Gain nutrition.
-    if (you.hunger_state != HS_ENGORGED)
-        lessen_hunger(30 + random2avg(59, 2), false);
 
     return true;
 }

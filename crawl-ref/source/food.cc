@@ -60,20 +60,6 @@ static constexpr int hunger_threshold[HS_ENGORGED + 1] =
     HUNGER_ENGORGED
 };
 
-/**
- * Attempt to reduce the player's hunger.
- *
- * @param satiated_amount       The amount by which to reduce hunger by.
- * @param suppress_msg          Whether to squelch messages about hunger
- *                              decreasing.
- * @param max                   The maximum hunger state which the player may
- *                              reach. If -1, defaults to HUNGER_MAXIMUM.
- */
-void lessen_hunger(int satiated_amount, bool suppress_msg, int max)
-{
-	return;
-}
-
 void set_hunger(int new_hunger_level, bool suppress_msg)
 {
     return;
@@ -263,7 +249,6 @@ void finish_eating_item(item_def& food)
     {
         int value = food_value(food);
         ASSERT(value > 0);
-        lessen_hunger(value, true);
         _finished_eating_message(static_cast<food_type>(food.sub_type));
     }
 
@@ -416,7 +401,6 @@ static void _eat_chunk(item_def& food)
     if (do_eat)
     {
         dprf("nutrition: %d", nutrition);
-        lessen_hunger(nutrition, true);
         if (!suppress_msg)
             _chunk_nutrition_message(nutrition);
     }
@@ -475,9 +459,6 @@ void vampire_nutrition_per_turn(const item_def &corpse, int feeding)
              mons_class_flag(mons_type, M_WARM_BLOOD) ? "warm "
                                                       : "");
     }
-
-    if (!end_feeding)
-        lessen_hunger(food_value / duration, !start_feeding);
 }
 
 bool is_bad_food(const item_def &food)

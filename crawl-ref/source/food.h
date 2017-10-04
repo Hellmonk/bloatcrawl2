@@ -27,8 +27,6 @@ bool eat_food(int slot = -1);
 
 void make_hungry(int hunger_amount, bool suppress_msg, bool magic = false);
 
-void lessen_hunger(int statiated_amount, bool suppress_msg, int max = - 1);
-
 void set_hunger(int new_hunger_level, bool suppress_msg);
 
 bool is_bad_food(const item_def &food);
