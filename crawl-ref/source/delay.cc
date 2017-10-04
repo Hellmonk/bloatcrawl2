@@ -708,7 +708,6 @@ bool BlurryScrollDelay::invalidated()
 void FeedVampireDelay::tick()
 {
     mprf(MSGCH_MULTITURN_ACTION, "You continue drinking.");
-    vampire_nutrition_per_turn(corpse, 0);
 }
 
 void MultidropDelay::tick()
@@ -866,23 +865,6 @@ void EatDelay::finish()
 void FeedVampireDelay::finish()
 {
     mpr("You finish drinking.");
-
-    vampire_nutrition_per_turn(corpse, 1);
-
-    const item_def old_corpse = corpse;
-
-    if (mons_skeleton(corpse.mon_type) && one_chance_in(3))
-    {
-        turn_corpse_into_skeleton(corpse);
-        item_check();
-    }
-    else
-        dec_mitm_item_quantity(corpse.index(), 1);
-
-    if (mons_genus(old_corpse.mon_type) == MONS_ORC)
-        did_god_conduct(DID_DESECRATE_ORCISH_REMAINS, 2);
-    if (mons_class_holiness(corpse.mon_type) & MH_HOLY)
-        did_god_conduct(DID_DESECRATE_HOLY_REMAINS, 2);
 }
 
 void MemoriseDelay::finish()

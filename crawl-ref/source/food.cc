@@ -407,38 +407,6 @@ static void _eat_chunk(item_def& food)
 //    25               4           6
 //    30               5           7
 
-void vampire_nutrition_per_turn(const item_def &corpse, int feeding)
-{
-    const monster_type mons_type = corpse.mon_type;
-
-    // Duration depends on corpse weight.
-    const int max_chunks = max_corpse_chunks(mons_type);
-    const int chunk_amount = stepdown_value(1 + max_chunks/3, 6, 6, 12, 12);
-
-    // Add 1 for the artificial extra call at the start of draining.
-    const int duration   = 1 + chunk_amount;
-
-    // Use number of potions per corpse to calculate total nutrition, which
-    // then gets distributed over the entire duration.
-    int food_value = CHUNK_BASE_NUTRITION
-                     * num_blood_potions_from_corpse(mons_type);
-
-    bool start_feeding   = false;
-    bool end_feeding     = false;
-
-    if (feeding < 0)
-        start_feeding = true;
-    else if (feeding > 0)
-        end_feeding = true;
-
-    if (start_feeding)
-    {
-        mprf("This %sblood tastes delicious!",
-             mons_class_flag(mons_type, M_WARM_BLOOD) ? "warm "
-                                                      : "");
-    }
-}
-
 bool is_bad_food(const item_def &food)
 {
     return is_mutagenic(food) || is_forbidden_food(food) || is_noxious(food);

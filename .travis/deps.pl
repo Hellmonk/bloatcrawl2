@@ -14,9 +14,9 @@ if ($ENV{BUILD_ALL}) {
        libasound2-dev
        libxss-dev
        mingw-w64
-       gcc-mingw-w64
-       gcc-mingw-w64-i686
-       gcc-mingw-w64-x86-64
+       gcc-mingw-w64-4.7.0
+       gcc-mingw-w64-i686-4.7.0
+       gcc-mingw-w64-x86-64-4.7.0
        binutils-mingw-w64-i686
        binutils-mingw-w64-x86-64
     );
@@ -26,9 +26,9 @@ else {
         liblua5.1-0-dev
         liblua5.1-0-dbg
         mingw-w64
-        gcc-mingw-w64
-        gcc-mingw-w64-i686
-        gcc-mingw-w64-x86-64
+        gcc-mingw-w64-4.7.0
+        gcc-mingw-w64-i686-4.7.0
+        gcc-mingw-w64-x86-64-4.7.0
         binutils-mingw-w64-i686
         binutils-mingw-w64-x86-64
     );
