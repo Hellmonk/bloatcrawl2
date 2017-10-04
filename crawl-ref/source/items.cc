@@ -2917,7 +2917,7 @@ static bool _is_option_autopickup(const item_def &item, bool ignore_force)
 static bool _should_autobutcher(const item_def &item)
 {
     return Options.auto_butcher && item.base_type == OBJ_CORPSES
-           && !is_inedible(item) && !is_bad_food(item);
+           && !is_inedible(item);
 }
 
 /** Is the item something that we should try to autopickup?

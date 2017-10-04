@@ -407,11 +407,6 @@ static void _eat_chunk(item_def& food)
 //    25               4           6
 //    30               5           7
 
-bool is_bad_food(const item_def &food)
-{
-    return is_mutagenic(food) || is_forbidden_food(food) || is_noxious(food);
-}
-
 // Returns true if a food item (or corpse) is mutagenic.
 bool is_mutagenic(const item_def &food)
 {

@@ -198,8 +198,6 @@ static bool _explode_corpse(item_def& corpse, const coord_def& where)
     {
         corpse.base_type = OBJ_FOOD;
         corpse.sub_type  = FOOD_CHUNK;
-        if (is_bad_food(corpse))
-            corpse.flags |= ISFLAG_DROPPED;
     }
 
     const int total_gold = corpse.quantity;

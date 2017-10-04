@@ -63,8 +63,6 @@ static int food_dangerous(lua_State *ls)
     LUA_ITEM(ls, item, 1);
 
     bool dangerous = false;
-    if (item)
-        dangerous = is_bad_food(*item);
 
     lua_pushboolean(ls, dangerous);
     return 1;

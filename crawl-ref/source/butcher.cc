@@ -187,9 +187,6 @@ void butchery(item_def* specific_corpse)
             to_eat = it;
         else if (butcher_edible)
         {
-            if (is_bad_food(*it))
-                continue;
-
             to_eat = it;
         }
         else
@@ -228,18 +225,11 @@ void butchery(item_def* specific_corpse)
                 case 'c':
                     // Since corpses are sorted by quality, we assume any
                     // subequent ones will be bad, and quit immediately.
-                    if (is_bad_food(*it))
-                    {
-                        canned_msg(MSG_OK);
-                        goto done;
-                    }
                     to_eat = it;
                     break;
 
                 case 'e':
                     butcher_edible = true;
-                    if (is_bad_food(*it))
-                        continue;
                     to_eat = it;
                     break;
 
@@ -333,8 +323,7 @@ void turn_corpse_into_chunks(item_def &item, bool bloodspatter)
     item.quantity  = stepdown_value(item.quantity, 4, 4, 12, 12);
 
     // Don't mark it as dropped if we are forcing autopickup of chunks.
-    if (you.force_autopickup[OBJ_FOOD][FOOD_CHUNK] <= 0
-        && is_bad_food(item))
+    if (you.force_autopickup[OBJ_FOOD][FOOD_CHUNK] <= 0)
     {
         item.flags |= ISFLAG_DROPPED;
     }
