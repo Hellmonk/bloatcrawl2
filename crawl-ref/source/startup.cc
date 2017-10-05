@@ -254,8 +254,7 @@ static void _post_init(bool newc)
 
     calc_hp();
     calc_mp();
-    if (you.form != TRAN_LICH)
-        food_change(true);
+
     shopping_list.refresh();
 
     run_map_local_preludes();

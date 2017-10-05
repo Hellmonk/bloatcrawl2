@@ -357,37 +357,7 @@ void wizard_heal(bool super_heal)
 
 void wizard_set_hunger_state()
 {
-    string hunger_prompt = "Set hunger state to ";
-    if (you.species != SP_VAMPIRE && you.species != SP_GHOUL)
-        hunger_prompt += "f(A)inting, ";
-    hunger_prompt += "s(T)arving, (N)ear starving, (H)ungry";
-    if (you.species == SP_GHOUL)
-        hunger_prompt += " or (S)atiated";
-    else
-        hunger_prompt += ", (S)atiated, (F)ull or (E)ngorged";
-    hunger_prompt += "? ";
-
-    mprf(MSGCH_PROMPT, "%s", hunger_prompt.c_str());
-
-    const int c = toalower(getchk());
-
-    // Values taken from food.cc.
-    switch (c)
-    {
-    case 'a': you.hunger = HUNGER_FAINTING / 2; break;
-    case 't': you.hunger = (HUNGER_STARVING + HUNGER_FAINTING) / 2; break;
-    case 'n': you.hunger = 1100;  break;
-    case 'h': you.hunger = 2300;  break;
-    case 's': you.hunger = 4900;  break;
-    case 'f': you.hunger = 7900;  break;
-    case 'e': you.hunger = HUNGER_MAXIMUM; break;
-    default:  canned_msg(MSG_OK); break;
-    }
-
-    food_change();
-
-    if (you.species == SP_GHOUL && you.hunger_state >= HS_SATIATED)
-        mpr("Ghouls can never be full or above!");
+    mpr("Food is removed, genius!");
 }
 
 void wizard_set_piety_to(int newpiety, bool force)

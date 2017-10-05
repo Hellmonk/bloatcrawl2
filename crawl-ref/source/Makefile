@@ -104,7 +104,7 @@ include Makefile.obj
 #
 
 # Which C++ standard to support
-STDFLAG = -std=c++11
+STDFLAG = -std=c++0x
 
 CFOTHERS := -pipe $(EXTERNAL_FLAGS)
 CFWARN := 
