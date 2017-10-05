@@ -6,7 +6,7 @@ cache: ccache
 before_install:
 - perl .travis/apt.pl
 - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.7; fi
-- if [ "$CXX" = "g++" ]; then export CXX="i686-w64-mingw32-g++-4.7" CC="i686-w64-mingw32-gcc"; fi
+- if [ "$CXX" = "g++" ]; then export CXX="i686-w64-mingw32-g++-4.7" CC="i686-w64-mingw32-gcc-4.8"; fi
 sudo: required
 dist: precise
 env:

@@ -43,7 +43,6 @@
 #include "transform.h"
 #include "xom.h"
 
-static void _eat_chunk(item_def& food);
 static void _heal_from_food(int hp_amt);
 
 void make_hungry(int hunger_amount, bool suppress_msg,
@@ -151,95 +150,6 @@ bool eat_item(item_def &food)
 	return false;
 }
 
-// Handle messaging at the end of eating.
-// Some food types may not get a message.
-static void _finished_eating_message(food_type type)
-{
-    bool herbivorous = you.get_mutation_level(MUT_HERBIVOROUS) > 0;
-    bool carnivorous = you.get_mutation_level(MUT_CARNIVOROUS) > 0;
-
-    if (herbivorous)
-    {
-        if (food_is_meaty(type))
-        {
-            mpr("Blech - you need greens!");
-            return;
-        }
-    }
-    else
-    {
-        switch (type)
-        {
-        case FOOD_MEAT_RATION:
-            mpr("That meat ration really hit the spot!");
-            return;
-        case FOOD_BEEF_JERKY:
-            mprf("That beef jerky was %s!",
-                 one_chance_in(4) ? "jerk-a-riffic"
-                                  : "delicious");
-            return;
-        default:
-            break;
-        }
-    }
-
-    if (carnivorous)
-    {
-        if (food_is_veggie(type))
-        {
-            mpr("Blech - you need meat!");
-            return;
-        }
-    }
-    else
-    {
-        switch (type)
-        {
-        case FOOD_BREAD_RATION:
-            mpr("That bread ration really hit the spot!");
-            return;
-        case FOOD_FRUIT:
-        {
-            string taste = getMiscString("eating_fruit");
-            if (taste.empty())
-                taste = "Eugh, buggy fruit.";
-            mpr(taste);
-            break;
-        }
-        default:
-            break;
-        }
-    }
-
-    switch (type)
-    {
-    case FOOD_ROYAL_JELLY:
-        mpr("That royal jelly was delicious!");
-        break;
-    case FOOD_PIZZA:
-    {
-        if (!Options.pizzas.empty())
-        {
-            const string za = Options.pizzas[random2(Options.pizzas.size())];
-            mprf("Mmm... %s.", trimmed_string(za).c_str());
-            break;
-        }
-
-        const string taste = getMiscString("eating_pizza");
-        if (taste.empty())
-        {
-            mpr("Bleh, bug pizza.");
-            break;
-        }
-
-        mprf("%s", taste.c_str());
-        break;
-    }
-    default:
-        break;
-    }
-}
-
 static const char *_chunk_flavour_phrase(bool likes_chunks)
 {
     const char *phrase = "tastes terrible.";
@@ -267,55 +177,6 @@ static const char *_chunk_flavour_phrase(bool likes_chunks)
     return phrase;
 }
 
-static void _chunk_nutrition_message(int nutrition)
-{
-    int perc_nutrition = nutrition * 100 / CHUNK_BASE_NUTRITION;
-    if (perc_nutrition < 15)
-        mpr("That was extremely unsatisfying.");
-    else if (perc_nutrition < 35)
-        mpr("That was not very filling.");
-}
-
-static int _apply_herbivore_nutrition_effects(int nutrition)
-{
-    int how_herbivorous = you.get_mutation_level(MUT_HERBIVOROUS);
-
-    while (how_herbivorous--)
-        nutrition = nutrition * 75 / 100;
-
-    return nutrition;
-}
-
-static int _apply_gourmand_nutrition_effects(int nutrition, int gourmand)
-{
-    return nutrition * (gourmand + GOURMAND_NUTRITION_BASE)
-                     / (GOURMAND_MAX + GOURMAND_NUTRITION_BASE);
-}
-
-static int _chunk_nutrition(int likes_chunks)
-{
-    int nutrition = CHUNK_BASE_NUTRITION;
-
-    if (you.hunger_state < HS_SATIATED + likes_chunks)
-    {
-        return likes_chunks ? nutrition
-                            : _apply_herbivore_nutrition_effects(nutrition);
-    }
-
-    const int gourmand = you.gourmand() ? you.duration[DUR_GOURMAND] : 0;
-    const int effective_nutrition =
-        _apply_gourmand_nutrition_effects(nutrition, gourmand);
-
-#ifdef DEBUG_DIAGNOSTICS
-    const int epercent = effective_nutrition * 100 / nutrition;
-    mprf(MSGCH_DIAGNOSTICS,
-            "Gourmand factor: %d, chunk base: %d, effective: %d, %%: %d",
-                gourmand, nutrition, effective_nutrition, epercent);
-#endif
-
-    return _apply_herbivore_nutrition_effects(effective_nutrition);
-}
-
 /**
  * How intelligent was the monster that the given corpse came from?
  *
@@ -334,54 +195,6 @@ mon_intel_type corpse_intelligence(const item_def &corpse)
                                 ? corpse.mon_type
                                 : orig_mt;
     return mons_class_intel(type);
-}
-
-// Never called directly - chunk_effect values must pass
-// through food:determine_chunk_effect() first. {dlb}:
-static void _eat_chunk(item_def& food)
-{
-    const corpse_effect_type chunk_effect = determine_chunk_effect(food);
-
-    int likes_chunks  = player_likes_chunks(true);
-    int nutrition     = _chunk_nutrition(likes_chunks);
-    bool suppress_msg = false; // do we display the chunk nutrition message?
-    bool do_eat       = false;
-
-    switch (chunk_effect)
-    {
-    case CE_MUTAGEN:
-        mpr("This meat tastes really weird.");
-        mutate(RANDOM_MUTATION, "mutagenic meat");
-        did_god_conduct(DID_DELIBERATE_MUTATING, 10);
-        xom_is_stimulated(100);
-        break;
-
-    case CE_CLEAN:
-    {
-        if (you.species == SP_GHOUL)
-        {
-            suppress_msg = true;
-            const int hp_amt = 1 + random2avg(5 + you.experience_level, 3);
-            _heal_from_food(hp_amt);
-        }
-
-        mprf("This raw flesh %s", _chunk_flavour_phrase(likes_chunks));
-        do_eat = true;
-        break;
-    }
-
-    case CE_NOXIOUS:
-    case CE_NOCORPSE:
-        mprf(MSGCH_ERROR, "This flesh (%d) tastes buggy!", chunk_effect);
-        break;
-    }
-
-    if (do_eat)
-    {
-        dprf("nutrition: %d", nutrition);
-        if (!suppress_msg)
-            _chunk_nutrition_message(nutrition);
-    }
 }
 
 // Divide full nutrition by duration, so that each turn you get the same
