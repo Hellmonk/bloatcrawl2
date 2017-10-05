@@ -84,33 +84,6 @@ bool eat_item(item_def &food)
 	return false;
 }
 
-static const char *_chunk_flavour_phrase(bool likes_chunks)
-{
-    const char *phrase = "tastes terrible.";
-
-    if (you.species == SP_GHOUL)
-        phrase = "tastes great!";
-    else if (likes_chunks)
-        phrase = "tastes great.";
-    else
-    {
-        const int gourmand = you.duration[DUR_GOURMAND];
-        if (gourmand >= GOURMAND_MAX)
-        {
-            phrase = one_chance_in(1000) ? "tastes like chicken!"
-                                         : "tastes great.";
-        }
-        else if (gourmand > GOURMAND_MAX * 75 / 100)
-            phrase = "tastes very good.";
-        else if (gourmand > GOURMAND_MAX * 50 / 100)
-            phrase = "tastes good.";
-        else if (gourmand > GOURMAND_MAX * 25 / 100)
-            phrase = "is not very appetising.";
-    }
-
-    return phrase;
-}
-
 /**
  * How intelligent was the monster that the given corpse came from?
  *
@@ -238,21 +211,6 @@ corpse_effect_type determine_chunk_effect(corpse_effect_type chunktype)
     }
 
     return chunktype;
-}
-
-static void _heal_from_food(int hp_amt)
-{
-    if (hp_amt > 0)
-        inc_hp(hp_amt);
-
-    if (player_rotted())
-    {
-        mpr("You feel more resilient.");
-        unrot_hp(1);
-    }
-
-    calc_hp();
-    calc_mp();
 }
 
 int you_max_hunger()
