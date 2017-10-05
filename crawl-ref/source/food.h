@@ -41,8 +41,6 @@ bool can_eat(const item_def &food, bool suppress_msg, bool check_hunger = true);
 
 bool eat_item(item_def &food);
 
-int you_max_hunger();
-int you_min_hunger();
 bool you_foodless(bool can_eat = false);
 
 void handle_starvation();

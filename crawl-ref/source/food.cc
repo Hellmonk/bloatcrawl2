@@ -213,16 +213,6 @@ corpse_effect_type determine_chunk_effect(corpse_effect_type chunktype)
     return chunktype;
 }
 
-int you_max_hunger()
-{
-    return HUNGER_DEFAULT;
-}
-
-int you_min_hunger()
-{
-    return HUNGER_DEFAULT;
-}
-
 void handle_starvation()
 {
     return;
