@@ -14,9 +14,6 @@ if ($ENV{CXX} eq "clang++") {
 }
 elsif ($ENV{CXX} eq "g++") {
     retry(qw(sudo apt-get install -qq g++-4.7), @common_libs);
-} 
-else {
-    retry(qw(sudo apt-get install -qq g++-4.7), @common_libs);
 }
 
 sub run {
