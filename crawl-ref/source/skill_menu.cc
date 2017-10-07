@@ -643,15 +643,15 @@ string SkillMenuSwitch::get_help()
     {
         if (you.species == SP_KOBOLD)
         {
-            return "Beginning at experience level 4, kobolds gain 0.5 levels in all "
-		    "skills each time they level up. They do not train skills normally. ";
+            return "Kobolds gain 0.5 levels in all skills each time they level up. "
+		    "They do not train skills normally. ";
         }
         else if (you.species == SP_GNOLL)
         {
-            return "Beginning at experience level 4, gnolls gain 0.5 levels in all "
-		    "skills each time they level up. They do not train skills normally. ";
+            return "Gnolls gain 0.5 levels in all skills each time they level up "
+		    "and start with a level in all skills. They do not train skills normally. ";
         }
-        else return "How did you get here lol";
+        else return "How did you get here lol ";
     }
     default: return "";
     }

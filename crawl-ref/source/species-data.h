@@ -330,7 +330,7 @@ static const map<species_type, species_def> species_data =
     "Gn",
     "Gnoll", nullptr, nullptr,
     SPF_NONE,
-    0, 0, 0, 2,
+    0, 0, 0, 3,
     MONS_GNOLL,
     HT_LAND, US_ALIVE, SIZE_MEDIUM,
     8, 8, 8, // 24
@@ -338,10 +338,9 @@ static const map<species_type, species_def> species_data =
     {},
     {},
     {},
-    { JOB_SKALD, JOB_WARPER, JOB_ARCANE_MARKSMAN, JOB_TRANSMUTER,
-      JOB_WANDERER },
-    { SK_SHORT_BLADES, SK_MACES_FLAILS, SK_POLEARMS, SK_LONG_BLADES, SK_STAVES,
-      SK_BOWS, SK_CROSSBOWS, SK_SLINGS },
+    { JOB_SKALD, JOB_FIGHTER, JOB_ARCANE_MARKSMAN, JOB_WANDERER },
+    { SK_SHORT_BLADES, SK_MACES_FLAILS, SK_POLEARMS,
+      SK_BOWS, SK_CROSSBOWS },
 } },
 
 { SP_HILL_ORC, {
@@ -386,8 +385,8 @@ static const map<species_type, species_def> species_data =
     1, -2, 0, 3,
     MONS_KOBOLD,
     HT_LAND, US_ALIVE, SIZE_SMALL,
-    6, 11, 8, // 25 
-    { STAT_STR, STAT_DEX, STAT_INT }, 5,
+    6, 11, 11, // 28 
+    { STAT_DEX, STAT_INT }, 5,
     {{ MUT_EVOLUTION, 1, 2 }, },
     {},
     {},
