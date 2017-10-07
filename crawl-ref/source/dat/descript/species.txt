@@ -34,6 +34,12 @@ Gargoyle
 Made of living stone, Gargoyles have a preternatural affinity for the earth.
 They have low health, but their stone bodies are incredibly tough.
 %%%%
+Gnoll
+
+A vaguely doglike species, gnolls begin with a little knowledge of everything.
+Like kobolds, they improve all skills equally when reaching a new experience
+level. 
+%%%%
 Hill Orc
 
 Orcs are skilled in close combat, and often dabble in offensive magic. Hated by
@@ -67,7 +73,7 @@ of close and ranged combat.
 Mummy
 
 Compelled to walk by an ancient curse, Mummies are adept at Necromancy but
-learn other skills very slowly. They are unable to consume any food or potions.
+learn other skills very slowly. They are unable to consume potions.
 %%%%
 Naga
 
