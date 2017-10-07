@@ -731,7 +731,8 @@ bool is_magic_skill(skill_type sk)
 void train_skills(bool simu)
 {
     int cost, exp;
-    if (you.species == SP_GNOLL || you.species == SP_KOBOLD){
+    if (you.species == SP_GNOLL || you.species == SP_KOBOLD)
+    {
        you.exp_available = 0; // need this to avoid skill allocation prompt on loading saves...
        return;
     }

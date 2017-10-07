@@ -110,7 +110,7 @@ static const map<job_type, job_def> job_data =
 { JOB_FIGHTER, {
     "Fi", "Fighter",
     8, 0, 4,
-    { SP_HILL_ORC, SP_TROLL, SP_MINOTAUR, SP_GARGOYLE, },
+    { SP_HILL_ORC, SP_TROLL, SP_MINOTAUR, SP_GARGOYLE, SP_GNOLL },
     { "scale mail", "shield", "potion of augmentation" },
     WCHOICE_GOOD,
     { { SK_FIGHTING, 3 }, { SK_SHIELDS, 3 }, { SK_ARMOUR, 3 },
@@ -130,7 +130,7 @@ static const map<job_type, job_def> job_data =
 { JOB_GLADIATOR, {
     "Gl", "Gladiator",
     7, 0, 5,
-    { SP_HILL_ORC, SP_MERFOLK, SP_MINOTAUR, SP_GARGOYLE, },
+    { SP_HILL_ORC, SP_MERFOLK, SP_MINOTAUR, SP_GARGOYLE, SP_GNOLL},
     { "leather armour", "helmet", "poisoned dart q:12", "curare dart q:3"},
     WCHOICE_GOOD,
     { { SK_FIGHTING, 2 }, { SK_THROWING, 2 }, { SK_DODGING, 3 },
@@ -140,7 +140,7 @@ static const map<job_type, job_def> job_data =
 { JOB_HUNTER, {
     "Hu", "Hunter",
     4, 3, 5,
-    { SP_HILL_ORC, SP_KOBOLD, SP_OGRE, SP_TROLL, },
+    { SP_HILL_ORC, SP_KOBOLD, SP_OGRE, SP_TROLL, SP_GNOLL},
     { "dagger", "leather armour" },
     WCHOICE_RANGED,
     { { SK_FIGHTING, 2 }, { SK_DODGING, 2 }, { SK_STEALTH, 1 },
@@ -182,7 +182,7 @@ static const map<job_type, job_def> job_data =
 { JOB_SKALD, {
     "Sk", "Skald",
     4, 4, 4,
-    { SP_MERFOLK, SP_BASE_DRACONIAN, SP_VAMPIRE, },
+    { SP_MERFOLK, SP_BASE_DRACONIAN, SP_VAMPIRE, SP_GNOLL},
     { "leather armour", "book of Battle" },
     WCHOICE_PLAIN,
     { { SK_FIGHTING, 2 }, { SK_ARMOUR, 1 }, { SK_DODGING, 1 },

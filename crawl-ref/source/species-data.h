@@ -326,6 +326,24 @@ static const map<species_type, species_def> species_data =
     { SK_MACES_FLAILS, SK_BOWS, SK_CROSSBOWS },
 } },
 
+{ SP_GNOLL, {
+    "Gn",
+    "Gnoll", nullptr, nullptr,
+    SPF_NONE,
+    0, 0, 0, 2,
+    MONS_GNOLL,
+    HT_LAND, US_ALIVE, SIZE_MEDIUM,
+    8, 8, 8, // 24
+    { STAT_STR, STAT_INT, STAT_DEX }, 5,
+    {},
+    {},
+    {},
+    { JOB_SKALD, JOB_WARPER, JOB_ARCANE_MARKSMAN, JOB_TRANSMUTER,
+      JOB_WANDERER },
+    { SK_SHORT_BLADES, SK_MACES_FLAILS, SK_POLEARMS, SK_LONG_BLADES, SK_STAVES,
+      SK_BOWS, SK_CROSSBOWS, SK_SLINGS },
+} },
+
 { SP_HILL_ORC, {
     "HO",
     "Hill Orc", "Orcish", "Orc",
@@ -743,24 +761,6 @@ static const map<species_type, species_def> species_data =
       SK_BOWS, SK_CROSSBOWS },
 } },
 #endif
-{ SP_GNOLL, {
-    "Gn",
-    "Gnoll", nullptr, nullptr,
-    SPF_NONE,
-    0, 0, 0, 2,
-    MONS_GNOLL,
-    HT_LAND, US_ALIVE, SIZE_MEDIUM,
-    8, 8, 8, // 24
-    { STAT_STR, STAT_INT, STAT_DEX }, 5,
-    {},
-    {},
-    {},
-    { JOB_SKALD, JOB_WARPER, JOB_ARCANE_MARKSMAN, JOB_TRANSMUTER,
-      JOB_WANDERER },
-    { SK_SHORT_BLADES, SK_MACES_FLAILS, SK_POLEARMS, SK_LONG_BLADES, SK_STAVES,
-      SK_BOWS, SK_CROSSBOWS, SK_SLINGS },
-} },
-
 
 // Ideally this wouldn't be necessary...
 { SP_UNKNOWN, { // Line 1: enum

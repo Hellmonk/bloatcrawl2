@@ -640,8 +640,19 @@ string SkillMenuSwitch::get_help()
         return result;
     }
     case SKM_VIEW_KOBOLD:
-        return "Beginning at experience level 4, kobolds gain 0.5 levels in all "
-		"skills each time they level up. They do not train skills normally. ";
+    {
+        if (you.species == SP_KOBOLD)
+        {
+            return "Beginning at experience level 4, kobolds gain 0.5 levels in all "
+		    "skills each time they level up. They do not train skills normally. ";
+        }
+        else if (you.species == SP_GNOLL)
+        {
+            return "Beginning at experience level 4, gnolls gain 0.5 levels in all "
+		    "skills each time they level up. They do not train skills normally. ";
+        }
+        else return "How did you get here lol";
+    }
     default: return "";
     }
 }
@@ -916,7 +927,8 @@ bool SkillMenu::exit()
         }
     }
 
-    if (!enabled_skill && !all_skills_maxed() && you.species != SP_KOBOLD)
+    if (!enabled_skill && !all_skills_maxed()
+        && you.species != SP_KOBOLD && you.species != SP_GNOLL)
     {
         set_help("<lightred>You need to enable at least one skill.</lightred>");
         return false;
@@ -1141,7 +1153,7 @@ void SkillMenu::init_switches()
 {
     SkillMenuSwitch* sw;
 	
-    if(you.species == SP_KOBOLD)
+    if(you.species == SP_KOBOLD || you.species == SP_GNOLL)
     {
         sw = new SkillMenuSwitch("Ko", '*');
         m_switches[SKM_VIEW] = sw;

@@ -199,7 +199,7 @@ static const species_type species_order[] =
     SP_VAMPIRE,
     // not humanoid at all
     SP_OCTOPODE,
-    //SP_GNOLL,
+    SP_GNOLL,
 };
 COMPILE_CHECK(ARRAYSZ(species_order) <= NUM_SPECIES);
 
@@ -983,7 +983,7 @@ static species_group species_groups[] =
             SP_OGRE,
             SP_VINE_STALKER,
             SP_FORMICID,
-	    //SP_GNOLL,
+	        SP_GNOLL,
         }
     },
     {

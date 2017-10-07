@@ -3766,7 +3766,8 @@ bool is_useless_item(const item_def &item, bool temp)
             return useless;
         }
         //If we're here, it's a manual.
-        if (you.skills[item.plus] >= 27 || you.species == SP_KOBOLD)
+        if (you.skills[item.plus] >= 27 || you.species == SP_KOBOLD
+            || you.species == SP_GNOLL)
             return true;
         if (is_useless_skill((skill_type)item.plus))
             return true;
