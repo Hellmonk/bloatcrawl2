@@ -953,7 +953,9 @@ static bool _antiscumming_summon()
 
 static void _antiscumming(int /*time_delta*/)
 {
-	if(env.turns_on_level < 2500)
+    if (crawl_state.difficulty == DIFFICULTY_CASUAL)
+        return;
+    if(env.turns_on_level < 2500)
         return;
     if(!is_connected_branch(level_id::current().branch))
         return;
