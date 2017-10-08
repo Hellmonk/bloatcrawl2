@@ -597,6 +597,7 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
     {
         case DIFFICULTY_CASUAL:
         case DIFFICULTY_NORMAL:
+        case DIFFICULTY_SPEEDRUN:
             ng.difficulty = choice.difficulty;
             break;
         default:
@@ -1804,7 +1805,7 @@ static bool _choose_difficulty(newgame_def& ng, newgame_def& ng_choice,
     TextItem* tmp = nullptr;
 	string text;
 
-	for (int difficulty = 0; difficulty < 2; difficulty ++)
+	for (int difficulty = 0; difficulty < 3; difficulty ++)
     {
         coord_def min_coord(0,0);
 	    coord_def max_coord(0,0);
@@ -1816,18 +1817,24 @@ static bool _choose_difficulty(newgame_def& ng, newgame_def& ng_choice,
 
 		switch(difficulty)
 		{
-		case 0:
+        case 0:
 			tmp->set_fg_colour(WHITE);
 			tmp->add_hotkey('n');
 			tmp->set_id(DIFFICULTY_NORMAL);
 			text += "n - Normal";
 			freeform->set_active_item(tmp);
 			break;
-		case 1:
+        case 1:
 			tmp->set_fg_colour(GREEN);
 			tmp->add_hotkey('c');
 			tmp->set_id(DIFFICULTY_CASUAL);
 			text += "c - Casual";
+			break;
+        case 2:
+			tmp->set_fg_colour(RED);
+			tmp->add_hotkey('s');
+			tmp->set_id(DIFFICULTY_SPEEDRUN);
+			text += "s - Speedrun";
 			break;
 		}
 

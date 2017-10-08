@@ -574,6 +574,8 @@ static string _difficulty_to_str(game_difficulty_level diff)
         return "casual";
     case DIFFICULTY_NORMAL:
         return "normal";
+    case DIFFICULTY_SPEEDRUN:
+        return "speedrun";
     default:
         return "ask";
     }
@@ -3307,6 +3309,8 @@ void game_options::read_option_line(const string &str, bool runscript)
 			game.difficulty = DIFFICULTY_CASUAL;
         else if (field == "normal")
             game.difficulty = DIFFICULTY_NORMAL;
+        else if (field == "speedrun")
+            game.difficulty = DIFFICULTY_SPEEDRUN;
         else
             game.difficulty = DIFFICULTY_ASK;
 	}

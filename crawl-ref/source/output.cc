@@ -1329,6 +1329,8 @@ static void _redraw_title()
         _draw_wizmode_flag("CASUAL");
     else if (crawl_state.difficulty == DIFFICULTY_NORMAL)
         _draw_wizmode_flag("NORMAL");
+    else if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN)
+        _draw_wizmode_flag("SPEED");
 #ifdef DGL_SIMPLE_MESSAGING
     update_message_status();
 #endif

@@ -85,6 +85,8 @@ def diff_string(level):
         result = "Casual"
     if level == "1":
         result = "Normal"
+    if level == "1":
+        result = "Speed"
     return result
 
 class CrawlProcessHandlerBase(object):

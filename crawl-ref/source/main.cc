@@ -442,6 +442,9 @@ NORETURN static void _launch_game()
         case DIFFICULTY_NORMAL:
         	msg::stream << "Normal";
         	break;
+        case DIFFICULTY_SPEEDRUN:
+        	msg::stream << "Speedrun";
+        	break;
         default:
             msg::stream << "Buggy";
         	break;
