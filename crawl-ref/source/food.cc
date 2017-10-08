@@ -43,8 +43,6 @@
 #include "transform.h"
 #include "xom.h"
 
-static void _heal_from_food(int hp_amt);
-
 void make_hungry(int hunger_amount, bool suppress_msg,
                  bool magic)
 {

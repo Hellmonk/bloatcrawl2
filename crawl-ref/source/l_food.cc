@@ -60,11 +60,7 @@ static int food_eat(lua_State *ls)
 
 static int food_dangerous(lua_State *ls)
 {
-    LUA_ITEM(ls, item, 1);
-
-    bool dangerous = false;
-
-    lua_pushboolean(ls, dangerous);
+    lua_pushboolean(ls, false);
     return 1;
 }
 
