@@ -1515,13 +1515,6 @@ bool items_similar(const item_def &item1, const item_def &item2)
     if (item1.base_type == OBJ_MISSILES && item1.brand != item2.brand)
         return false;
 
-    if (item1.is_type(OBJ_FOOD, FOOD_CHUNK)
-        && determine_chunk_effect(item1) != determine_chunk_effect(item2))
-    {
-        return false;
-    }
-
-
 #define NO_MERGE_FLAGS (ISFLAG_MIMIC | ISFLAG_SUMMONED)
     if ((item1.flags & NO_MERGE_FLAGS) != (item2.flags & NO_MERGE_FLAGS))
         return false;

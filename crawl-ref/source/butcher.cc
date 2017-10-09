@@ -50,17 +50,11 @@ void finish_butchering(item_def& corpse, bool bottling)
     ASSERT(corpse.base_type == OBJ_CORPSES);
     ASSERT(corpse.sub_type == CORPSE_BODY);
     const bool was_holy = bool(mons_class_holiness(corpse.mon_type) & MH_HOLY);
-    const bool was_intelligent = corpse_intelligence(corpse) >= I_HUMAN;
     const bool was_same_genus = is_player_same_genus(corpse.mon_type);
 
     if (bottling)
     {
         mpr("You bottle the corpse's blood.");
-
-        if (mons_skeleton(corpse.mon_type) && one_chance_in(3))
-            turn_corpse_into_skeleton_and_blood_potions(corpse);
-        else
-            turn_corpse_into_blood_potions(corpse);
     }
     else
     {
@@ -74,8 +68,6 @@ void finish_butchering(item_def& corpse, bool bottling)
         did_god_conduct(DID_CANNIBALISM, 2);
     else if (was_holy)
         did_god_conduct(DID_DESECRATE_HOLY_REMAINS, 4);
-    else if (was_intelligent)
-        did_god_conduct(DID_DESECRATE_SOULED_BEING, 1);
 
     StashTrack.update_stash(you.pos()); // Stash-track the generated items.
 }
@@ -89,17 +81,8 @@ static string _butcher_menu_title(const Menu *menu, const string &oldt)
 
 static int _corpse_quality(const item_def &item, bool bottle_blood)
 {
-    const corpse_effect_type ce = determine_chunk_effect(item);
     // Being almost rotten away has 480 badness.
     int badness = 3 * item.freshness;
-    if (ce == CE_MUTAGEN)
-        badness += 1000;
-    else if (ce == CE_NOXIOUS)
-        badness += 1000;
-
-    // Bottleable corpses first, unless forbidden
-    if (bottle_blood && !can_bottle_blood_from_corpse(item.mon_type))
-        badness += 4000;
 
     return -badness;
 }
@@ -202,8 +185,7 @@ void butchery(item_def* specific_corpse)
             // Shall we butcher this corpse?
             do
             {
-                const bool can_bottle =
-                    can_bottle_blood_from_corpse(it->mon_type);
+                const bool can_bottle = false;
                 mprf(MSGCH_PROMPT,
                      "%s %s? [(y)es/(c)hoosy/(n)o/(a)ll/(e)dible/(q)uit/?]",
                      can_bottle ? "Bottle" : "Butcher",
@@ -295,25 +277,12 @@ bool turn_corpse_into_skeleton(item_def &item)
     return true;
 }
 
-static void _bleed_monster_corpse(const item_def &corpse)
-{
-    const coord_def pos = item_pos(corpse);
-    if (!pos.origin())
-    {
-        const int max_chunks = max_corpse_chunks(corpse.mon_type);
-        bleed_onto_floor(pos, corpse.mon_type, max_chunks, true);
-    }
-}
-
 void turn_corpse_into_chunks(item_def &item, bool bloodspatter)
 {
     ASSERT(item.base_type == OBJ_CORPSES);
     ASSERT(item.sub_type == CORPSE_BODY);
     const item_def corpse = item;
     const int max_chunks = max_corpse_chunks(item.mon_type);
-
-    if (bloodspatter)
-        _bleed_monster_corpse(corpse);
 
     item.base_type = OBJ_FOOD;
     item.sub_type  = FOOD_CHUNK;
@@ -339,53 +308,10 @@ void butcher_corpse(item_def &item, maybe_bool skeleton, bool chunks)
         skeleton = MB_FALSE;
     if (skeleton == MB_TRUE || skeleton == MB_MAYBE && one_chance_in(3))
     {
-            _bleed_monster_corpse(item);
-            turn_corpse_into_skeleton(item);        
+        turn_corpse_into_skeleton(item);        
     }
     else
     {
-            _bleed_monster_corpse(item);
-            destroy_item(item.index());
-    }
-}
-
-bool can_bottle_blood_from_corpse(monster_type mons_class)
-{
-    return you.species == SP_VAMPIRE && mons_has_blood(mons_class);
-}
-
-int num_blood_potions_from_corpse(monster_type mons_class)
-{
-    // Max. amount is about one third of the max. amount for chunks.
-    const int max_chunks = max_corpse_chunks(mons_class);
-
-    // Max. amount is about one third of the max. amount for chunks.
-    int pot_quantity = max_chunks / 3;
-    pot_quantity = stepdown_value(pot_quantity, 2, 2, 6, 6);
-
-    if (pot_quantity < 1)
-        pot_quantity = 1;
-
-    return pot_quantity;
-}
-
-// If autopickup is active, the potions are auto-picked up after creation.
-void turn_corpse_into_blood_potions(item_def &item)
-{
-    return;
-}
-
-void turn_corpse_into_skeleton_and_blood_potions(item_def &item)
-{
-    item_def blood_potions = item;
-
-    if (mons_skeleton(item.mon_type))
-        turn_corpse_into_skeleton(item);
-
-    int o = get_mitm_slot();
-    if (o != NON_ITEM)
-    {
-        turn_corpse_into_blood_potions(blood_potions);
-        copy_item_to_grid(blood_potions, you.pos());
+        destroy_item(item.index());
     }
 }

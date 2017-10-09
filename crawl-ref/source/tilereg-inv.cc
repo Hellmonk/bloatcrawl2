@@ -348,10 +348,7 @@ bool InventoryRegion::update_tip_text(string& tip)
             && item.sub_type != CORPSE_SKELETON)
         {
             tip += "\n[Shift + L-Click] ";
-            if (can_bottle_blood_from_corpse(item.mon_type))
-                tip += "Bottle blood";
-            else
-                tip += "Chop up";
+            tip += "Chop up";
             tip += " (%)";
             cmd.push_back(CMD_BUTCHER);
 
