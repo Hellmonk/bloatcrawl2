@@ -474,6 +474,31 @@ void upstairs_removal()
 	}      
 }
 
+void map_stairs_down()
+{
+    int mapped = 0;
+    for (rectangle_iterator ri(0); ri; ++ri)
+    {
+        if (grd(*ri) == DNGN_STONE_STAIRS_DOWN_I || grd(*ri) == DNGN_STONE_STAIRS_DOWN_II
+        || grd(*ri) == DNGN_STONE_STAIRS_DOWN_III || grd(*ri) == DNGN_ESCAPE_HATCH_DOWN 
+        || grd(*ri) == DNGN_ENTER_DEPTHS || grd(*ri) == DNGN_ENTER_VAULTS 
+        || grd(*ri) == DNGN_ENTER_SLIME || grd(*ri) == DNGN_ENTER_SHOALS
+        || grd(*ri) == DNGN_ENTER_SWAMP || grd(*ri) == DNGN_ENTER_SNAKE
+        || grd(*ri) == DNGN_ENTER_SPIDER || grd(*ri) == DNGN_ENTER_ORC
+		|| grd(*ri) == DNGN_ENTER_ZOT || grd(*ri) == DNGN_ENTER_HELL
+		|| grd(*ri) == DNGN_EXIT_DUNGEON || grd(*ri) == DNGN_ENTER_DIS
+        || grd(*ri) == DNGN_ENTER_GEHENNA || grd(*ri) == DNGN_ENTER_COCYTUS
+	    || grd(*ri) == DNGN_ENTER_TARTARUS || grd(*ri) == DNGN_ENTER_ELF)
+        {
+            env.map_knowledge(*ri).set_feature(grd(*ri));
+            set_terrain_mapped(*ri);
+            mapped++;
+        }
+    }   
+    if (mapped > 0)	
+        mprf("You sense %s down.", mapped >1 ? "stairs" : "a way");
+} 
+
 void zap_close_monsters()
 {
     for (radius_iterator ri(you.pos(), LOS_SOLID); ri; ++ri)

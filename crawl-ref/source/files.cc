@@ -1508,6 +1508,9 @@ bool load_level(dungeon_feature_type stair_taken, load_mode_type load_mode,
     // Don't do so if we are just moving around inside Pan, though.
     if (just_created_level && stair_taken != DNGN_TRANSIT_PANDEMONIUM)
         take_note(Note(NOTE_DUNGEON_LEVEL_CHANGE));
+	
+    if (just_created_level && crawl_state.difficulty == DIFFICULTY_SPEEDRUN)
+        map_stairs_down();
 
     // If the player entered the level from a different location than they last
     // exited it, have monsters lose track of where they are
