@@ -1086,6 +1086,13 @@ void player_reacts()
     {
         freeze_mp(mp_to_freeze);
     }
+	
+    // doom clock
+    if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN && env.turns_on_level >= 1000)
+    {
+        mpr("The dungeon collapses into oblivion!");
+        ouch(INSTANT_DEATH, KILLED_BY_FRAILTY, MID_NOBODY, "being slow");
+    }
 }
 
 void extract_manticore_spikes(const char* endmsg)

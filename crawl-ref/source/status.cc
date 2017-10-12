@@ -20,6 +20,7 @@
 #include "spl-summoning.h"
 #include "spl-transloc.h"
 #include "spl-wpnench.h" // for _end_weapon_brand() in duration-data
+#include "state.h"
 #include "stringutil.h"
 #include "throw.h"
 #include "transform.h"
@@ -754,6 +755,24 @@ bool fill_status_info(int status, status_info* inf)
         }
 
         break;
+    }
+	
+    case STATUS_DOOM:
+    {
+	    if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN)
+        {
+            inf->light_colour = LIGHTRED;
+            inf->light_text = make_stringf("DOOM(%d)", env.turns_on_level < 1000 ? 1000 - env.turns_on_level : 0);
+            inf->short_text   = "Turns until doom";
+            inf->long_text    = "Turns remaining on this level";
+        }
+        else if (crawl_state.difficulty == DIFFICULTY_NORMAL && env.turns_on_level >= 2500)
+        {
+            inf->light_colour = LIGHTRED;
+            inf->light_text = make_stringf("DOOM(%d)", env.turns_on_level < 3000 ? 3000 - env.turns_on_level : 0);
+            inf->short_text   = "Turns until doom";
+            inf->long_text    = "Turns remaining on this level";		
+        }
     }
 
     case STATUS_STILL_WINDS:
