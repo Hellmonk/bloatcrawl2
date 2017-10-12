@@ -2683,7 +2683,7 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain)
 	
     //for difficulty levels other than normal,
     //multiply both exp gain and skill exp (but don't multiply xp-gated effects)
-    if (crawl_state.difficulty == DIFFICULTY_CASUAL)
+    if (crawl_state.difficulty == DIFFICULTY_CASUAL || crawl_state.difficulty == DIFFICULTY_SPEEDRUN)
     {
 	    exp_gained *= 2;
         skill_xp *= 2;
