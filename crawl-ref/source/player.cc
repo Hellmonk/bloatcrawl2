@@ -6256,6 +6256,7 @@ int player::res_poison(bool temp) const
 int player::res_rotting(bool temp) const
 {
     if (get_mutation_level(MUT_ROT_IMMUNITY)
+        || get_mutation_level(MUT_FOUL_STENCH)
         || is_nonliving(temp)
         || temp && get_form()->res_rot())
     {

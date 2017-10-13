@@ -108,7 +108,7 @@ force_more_message += You don't have the energy to cast that spell
 force_more_message += This is a scroll of acquirement
 force_more_message += You will only be able to enter Pandemonium once
 force_more_message += lava roasts you
-force_more_message += next floor now
+force_more_message += need to descend quickly
 force_more_message += dungeon lashes out
 
 ## Reduce chance of drowning because flight or form runs out:

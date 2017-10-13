@@ -3113,7 +3113,7 @@ void melee_attack::emit_foul_stench()
         if (one_chance_in(3))
             mon->sicken(50 + random2(100));
 
-        if (damage_done > 4 && x_chance_in_y(mut, 5)
+        if (damage_done > 4 && x_chance_in_y(mut * 2, 15)
             && !cell_is_solid(mon->pos())
             && !cloud_at(mon->pos()))
         {
