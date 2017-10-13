@@ -313,23 +313,20 @@ void melee_attack::apply_black_mark_effects()
     // Less reliable effects for players.
     if (attacker->is_player()
         && you.has_mutation(MUT_BLACK_MARK)
-        && one_chance_in(5)
+        && x_chance_in_y(you.get_mutation_level(MUT_BLACK_MARK), 5)
         || attacker->is_monster()
            && attacker->as_monster()->has_ench(ENCH_BLACK_MARK))
     {
         if (!defender->alive())
             return;
 
-        switch (random2(3))
+        switch (random2(2))
         {
             case 0:
                 antimagic_affects_defender(damage_done * 8);
                 break;
             case 1:
                 defender->weaken(attacker, 6);
-                break;
-            case 2:
-                defender->drain_exp(attacker, false, 10);
                 break;
         }
     }

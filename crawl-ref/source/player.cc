@@ -1620,13 +1620,6 @@ bool player_res_torment(bool random)
     if (you.get_mutation_level(MUT_TORMENT_RESISTANCE))
         return true;
 
-    if (random
-        && you.get_mutation_level(MUT_STOCHASTIC_TORMENT_RESISTANCE)
-        && coinflip())
-    {
-        return true;
-    }
-
     return get_form()->res_neg() == 3
            || you.species == SP_VAMPIRE && you.hunger_state <= HS_STARVING
            || you.petrified()

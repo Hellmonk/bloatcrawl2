@@ -990,10 +990,12 @@ static const mutation_def mut_data[] =
 },
 #endif
 
+// No longer stochastic because that was dumb
+// Not bothering to rename the mutation though, sorry
 { MUT_STOCHASTIC_TORMENT_RESISTANCE, 0, 1, mutflag::GOOD, false,
   "50% torment resistance",
 
-  {"You are somewhat able to resist unholy torments (1 in 2 success).","",""},
+  {"You are resistant to unholy torments (50% damage).","",""},
   {"You feel a strange anaesthesia.", "", ""},
   {"", "", ""},
 },
@@ -1561,11 +1563,13 @@ static const mutation_def mut_data[] =
 },
 #endif
 
-{ MUT_BLACK_MARK, 0, 1, mutflag::GOOD, false,
+{ MUT_BLACK_MARK, 0, 2, mutflag::GOOD, false,
   "black mark",
 
-  {"Your melee attacks may debilitate your foes.", "", ""},
-  {"An ominous black mark forms on your body.", "", ""},
+  {"Your melee attacks may debilitate your foes.", 
+   "Your melee attacks frequently debilitate your foes", ""},
+  {"An ominous black mark forms on your body.", 
+   "Your black mark grows larger.", ""},
   {"", "", ""},
 },
 

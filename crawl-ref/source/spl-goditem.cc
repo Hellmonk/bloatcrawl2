@@ -1143,6 +1143,9 @@ void torment_player(actor *attacker, torment_source_type taux)
         // Statue form is only partial petrification.
         if (you.form == TRAN_STATUE || you.species == SP_GARGOYLE)
             hploss /= 2;
+        // handle demonspawn rTorm
+        if (you.has_mutation(MUT_STOCHASTIC_TORMENT_RESISTANCE))
+            hploss /= 2;
     }
 
     // Kiku protects you from torment to a degree.
