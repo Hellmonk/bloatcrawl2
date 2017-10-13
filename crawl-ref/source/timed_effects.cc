@@ -955,20 +955,10 @@ static void _antiscumming(int /*time_delta*/)
 {
     if (crawl_state.difficulty == DIFFICULTY_CASUAL)
         return;
-    if(env.turns_on_level < 2500)
+    if(env.turns_on_level < 3000)
         return;
     if(!is_connected_branch(level_id::current().branch))
         return;
-    if (env.turns_on_level < 2800)
-	{
-        mprf(MSGCH_WARN, "You feel the dungeon grow hostile. You need to descend quickly!");
-        return;
-    }
-    if (env.turns_on_level < 3000)
-    {
-		mprf(MSGCH_WARN, "You feel the dungeon grow incredibly hostile! You need to descend to the next floor now!");
-        return;
-    }
     //make it loud
     noisy(30, you.pos());
     mprf(MSGCH_WARN, "The dungeon lashes out against you!");

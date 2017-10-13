@@ -764,14 +764,15 @@ bool fill_status_info(int status, status_info* inf)
             inf->light_colour = LIGHTRED;
             inf->light_text = make_stringf("DOOM(%d)", env.turns_on_level < 1000 ? 1000 - env.turns_on_level : 0);
             inf->short_text   = "Turns until doom";
-            inf->long_text    = "Turns remaining on this level";
+            inf->long_text    = "Turns remaining until death";
         }
-        else if (crawl_state.difficulty == DIFFICULTY_NORMAL && env.turns_on_level >= 2500)
+        else if (crawl_state.difficulty == DIFFICULTY_NORMAL && env.turns_on_level >= 2500
+            && is_connected_branch(level_id::current().branch))
         {
             inf->light_colour = LIGHTRED;
             inf->light_text = make_stringf("DOOM(%d)", env.turns_on_level < 3000 ? 3000 - env.turns_on_level : 0);
             inf->short_text   = "Turns until doom";
-            inf->long_text    = "Turns remaining on this level";		
+            inf->long_text    = "Turns until hostile summons spawn";		
         }
     }
 

@@ -31,6 +31,7 @@
 #include "act-iter.h"
 #include "areas.h"
 #include "beam.h"
+#include "branch.h"
 #include "cio.h"
 #include "cloud.h"
 #include "clua.h"
@@ -1092,6 +1093,11 @@ void player_reacts()
     {
         mpr("The dungeon collapses into oblivion!");
         ouch(INSTANT_DEATH, KILLED_BY_FRAILTY, MID_NOBODY, "being slow");
+    }
+    else if (crawl_state.difficulty == DIFFICULTY_NORMAL && env.turns_on_level == 2499
+        && is_connected_branch(level_id::current().branch))
+    {
+		mprf(MSGCH_WARN, "You feel the dungeon grow hostile. You need to descend quickly!");
     }
 }
 
