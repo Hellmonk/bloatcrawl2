@@ -2236,7 +2236,7 @@ static const facet_def _demon_facets[] =
     // Tier 2 facets
     { 2, { MUT_HEAT_RESISTANCE, MUT_FLAME_CLOUD_IMMUNITY, MUT_IGNITE_BLOOD },
       { -33, 0, 0 } },
-    { 2, { MUT_COLD_RESISTANCE, MUT_FREEZING_CLOUD_IMMUNITY, MUT_ICEMAIL },
+    { 2, { MUT_ICEMAIL, MUT_FREEZING_CLOUD_IMMUNITY, MUT_ICEMAIL },
       { -33, 0, 0 } },
     { 2, { MUT_POWERED_BY_DEATH, MUT_POWERED_BY_DEATH, MUT_POWERED_BY_DEATH },
       { -33, 0, 0 } },

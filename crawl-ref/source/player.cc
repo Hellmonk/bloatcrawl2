@@ -5865,7 +5865,9 @@ int player_icemail_armour_class()
     if (!you.has_mutation(MUT_ICEMAIL))
         return 0;
 
-    return you.duration[DUR_ICEMAIL_DEPLETED] ? 0 : ICEMAIL_MAX;
+    return you.duration[DUR_ICEMAIL_DEPLETED] ? 0 : 
+        you.get_mutation_level(MUT_ICEMAIL) > 1 ? ICEMAIL_MAX :
+        ICEMAIL_MAX / 2;
 }
 
 /**
