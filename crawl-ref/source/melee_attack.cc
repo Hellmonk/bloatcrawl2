@@ -957,7 +957,7 @@ class AuxKick: public AuxAttackType
 {
 public:
     AuxKick()
-    : AuxAttackType(-1, "kick") { };
+    : AuxAttackType(5, "kick") { };
 
     int get_damage() const override
     {
