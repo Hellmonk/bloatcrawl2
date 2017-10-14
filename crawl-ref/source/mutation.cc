@@ -94,7 +94,8 @@ static const body_facet_def _body_facets[] =
     //{ EQ_HELMET, MUT_BEAK },
     { EQ_GLOVES, MUT_CLAWS },
     { EQ_BOOTS, MUT_HOOVES },
-    { EQ_BOOTS, MUT_TALONS }
+    { EQ_BOOTS, MUT_TALONS },
+    { EQ_CLOAK, MUT_PREHENSILE_TENTACLE}
 };
 
 /**
@@ -1631,6 +1632,14 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
             ash_check_bondage();
             break;
 
+        case MUT_PREHENSILE_TENTACLE:
+            // blocks cloaks but somehow doesn't interfere with body armor. Don't ask.
+            if (cur_base_level >= 3 && !you.melded[EQ_CLOAK])
+            {
+                remove_one_equip(EQ_CLOAK, false, true);
+            }
+			break;
+
         case MUT_ACUTE_VISION:
             // We might have to turn autopickup back on again.
             autotoggle_autopickup(false);
@@ -2206,6 +2215,8 @@ static const facet_def _demon_facets[] =
     { 0, { MUT_HOOVES, MUT_HOOVES, MUT_HOOVES },
       { -33, -33, -33 } },
     { 0, { MUT_TALONS, MUT_TALONS, MUT_TALONS },
+      { -33, -33, -33 } },
+	{ 0, { MUT_PREHENSILE_TENTACLE, MUT_PREHENSILE_TENTACLE, MUT_PREHENSILE_TENTACLE },
       { -33, -33, -33 } },
     // Scale mutations
     { 1, { MUT_DISTORTION_FIELD, MUT_DISTORTION_FIELD, MUT_DISTORTION_FIELD },

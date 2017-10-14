@@ -812,6 +812,23 @@ static const mutation_def mut_data[] =
    "Your talons look more like feet."},
 },
 
+// Demonspawn only
+{ MUT_PREHENSILE_TENTACLE, 0, 3, mutflag::GOOD, true,
+  "prehensile tentacle",
+
+  {"You have a tentacle on your back.",
+   "You have a large tentacle on your back.",
+   "Your prehensile tentacle constricts enemies."},
+
+  {"Your back sprouts a tentacle.",
+   "Your back tentacle grows larger.",
+   "Your tentacle grows strong enough to constrict enemies."},
+
+  {"",
+   "",
+   ""},
+},
+
 // Octopode only
 { MUT_TENTACLE_SPIKE, 10, 1, mutflag::GOOD, true,
   "tentacle spike",
