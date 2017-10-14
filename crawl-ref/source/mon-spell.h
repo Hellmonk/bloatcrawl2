@@ -206,7 +206,7 @@ static const mon_spellbook mspell_list[] =
       {
        { SPELL_FLASH_FREEZE, 24, MON_SPELL_WIZARD },
        { SPELL_FIREBALL, 24, MON_SPELL_WIZARD },
-       { SPELL_DIG, 36, MON_SPELL_WIZARD },
+       { SPELL_AIRSTRIKE, 24, MON_SPELL_WIZARD },
        { SPELL_HASTE, 24, MON_SPELL_WIZARD },
       }
     },
