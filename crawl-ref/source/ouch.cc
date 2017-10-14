@@ -634,7 +634,7 @@ static void _powered_by_pain(int dam)
 
     if (level > 0
         && (random2(dam) > 3 + div_rand_round(you.experience_level, 5)
-            || dam >= you.hp_max / 2))
+            || dam >= you.hp_max / 4))
     {
         switch (random2(4))
         {
