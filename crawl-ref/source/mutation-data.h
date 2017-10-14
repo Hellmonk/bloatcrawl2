@@ -673,6 +673,18 @@ static const mutation_def mut_data[] =
   {"You feel less tricky.", "", ""},
 },
 
+{ MUT_ICE_ENHANCER, 0, 1, mutflag::GOOD, false,
+  "frozen heart",
+
+  {"Your frozen heart empowers your ice magic.",
+   "",
+   ""},
+
+  {"Your heart freezes.", "", ""},
+
+  {"", "", ""},
+},
+
 { MUT_TENGU_FLIGHT, 0, 2, mutflag::GOOD, false,
   "able to fly",
 

@@ -1790,6 +1790,9 @@ int player_spec_cold()
     // staves:
     sc += you.wearing(EQ_STAFF, STAFF_COLD);
 
+    // demonspawn ice enhancer	
+    sc += you.get_mutation_level(MUT_ICE_ENHANCER);
+
     // rings of ice:
     sc += you.wearing(EQ_RINGS, RING_ICE);
 
