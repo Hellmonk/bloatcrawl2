@@ -1481,11 +1481,13 @@ static const mutation_def mut_data[] =
   {"Your skin no longer functions as natural camouflage.", "", ""},
 },
 
-{ MUT_IGNITE_BLOOD, 0, 1, mutflag::GOOD, false,
+{ MUT_IGNITE_BLOOD, 0, 2, mutflag::GOOD, false,
   "ignite blood",
 
-  {"Your demonic aura causes spilled blood to erupt in flames.", "", ""},
-  {"Your blood runs red-hot!", "", ""},
+  {"Your demonic aura occasionally causes spilled blood to erupt in flames.", 
+   "Your demonic aura causes spilled blood to erupt in flames.", ""},
+  {"Your blood runs red-hot!", 
+   "Your blood burns even hotter!", ""},
   {"", "", ""},
 },
 

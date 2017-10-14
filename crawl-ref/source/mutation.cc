@@ -2234,16 +2234,12 @@ static const facet_def _demon_facets[] =
     { 1, { MUT_SANGUINE_ARMOUR, MUT_SANGUINE_ARMOUR, MUT_SANGUINE_ARMOUR },
       { -33, -33, 0 } },
     // Tier 2 facets
-    { 2, { MUT_HEAT_RESISTANCE, MUT_FLAME_CLOUD_IMMUNITY, MUT_IGNITE_BLOOD },
-      { -33, 0, 0 } },
     { 2, { MUT_ICEMAIL, MUT_ICE_ENHANCER, MUT_ICEMAIL },
       { -33, 0, 0 } },
     { 2, { MUT_POWERED_BY_DEATH, MUT_POWERED_BY_DEATH, MUT_POWERED_BY_DEATH },
       { -33, 0, 0 } },
     { 2, { MUT_DEMONIC_GUARDIAN, MUT_DEMONIC_GUARDIAN, MUT_DEMONIC_GUARDIAN },
       { -66, 17, 50 } },
-    { 2, { MUT_NIGHTSTALKER, MUT_NIGHTSTALKER, MUT_NIGHTSTALKER },
-      { -33, 0, 0 } },
     { 2, { MUT_SPINY, MUT_SPINY, MUT_SPINY },
       { -33, 0, 0 } },
     { 2, { MUT_POWERED_BY_PAIN, MUT_POWERED_BY_PAIN, MUT_POWERED_BY_PAIN },
@@ -2253,9 +2249,9 @@ static const facet_def _demon_facets[] =
     { 2, { MUT_MANA_SHIELD, MUT_MANA_REGENERATION, MUT_MANA_LINK },
       { -33, 0, 0 } },
     // Tier 3 facets
-    { 3, { MUT_HEAT_RESISTANCE, MUT_FLAME_CLOUD_IMMUNITY, MUT_HURL_DAMNATION },
+    { 3, { MUT_IGNITE_BLOOD, MUT_IGNITE_BLOOD, MUT_HURL_DAMNATION },
       { 50, 50, 50 } },
-    { 3, { MUT_COLD_RESISTANCE, MUT_FREEZING_CLOUD_IMMUNITY, MUT_PASSIVE_FREEZE },
+    { 3, { MUT_NIGHTSTALKER, MUT_NIGHTSTALKER, MUT_NIGHTSTALKER },
       { 50, 50, 50 } },
     { 3, { MUT_ROBUST, MUT_ROBUST, MUT_ROBUST },
       { 50, 50, 50 } },
@@ -2335,13 +2331,13 @@ try_again:
 
                 ret.emplace_back(m, next_facet->when[i], absfacet);
 
-                if (m == MUT_COLD_RESISTANCE)
+                if (m == MUT_ICE_ENHANCER)
                     ice_elemental++;
 
-                if (m == MUT_HEAT_RESISTANCE)
+                if (m == MUT_HURL_DAMNATION)
                     fire_elemental++;
 
-                if ((m == MUT_FOUL_STENCH && i == 0) || m == MUT_IGNITE_BLOOD)
+                if ((m == MUT_FOUL_STENCH || m == MUT_IGNITE_BLOOD) && i == 0)
                     cloud_producing++;
             }
 
