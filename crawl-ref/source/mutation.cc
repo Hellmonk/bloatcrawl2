@@ -2271,16 +2271,16 @@ static const facet_def _demon_facets[] =
       { -33, 0, 0 } },
     // Tier 3 facets
     { 3, { MUT_IGNITE_BLOOD, MUT_IGNITE_BLOOD, MUT_HURL_DAMNATION },
-      { 50, 50, 50 } },
+      { 17, 50, 50 } },
     { 3, { MUT_NIGHTSTALKER, MUT_NIGHTSTALKER, MUT_NIGHTSTALKER },
-      { 50, 50, 50 } },
+      { 17, 50, 50 } },
     { 3, { MUT_ROBUST, MUT_ROBUST, MUT_ROBUST },
-      { 50, 50, 50 } },
+      { 17, 50, 50 } },
     { 3, { MUT_BLACK_MARK, MUT_STOCHASTIC_TORMENT_RESISTANCE,
            MUT_BLACK_MARK },
-      { 50, 50, 50 } },
+      { 17, 50, 50 } },
     { 3, { MUT_AUGMENTATION, MUT_AUGMENTATION, MUT_AUGMENTATION },
-      { 50, 50, 50 } },
+      { 17, 50, 50 } },
 };
 
 static bool _works_at_tier(const facet_def& facet, int tier)
