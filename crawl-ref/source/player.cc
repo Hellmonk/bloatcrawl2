@@ -2358,7 +2358,10 @@ int player_shield_class()
     shield += (you.get_mutation_level(MUT_LARGE_BONE_PLATES) > 0
                ? you.get_mutation_level(MUT_LARGE_BONE_PLATES) * 400 + 400
                : 0);
-
+    shield += (you.get_mutation_level(MUT_CRYSTAL_SKIN) > 0
+               ? you.get_mutation_level(MUT_CRYSTAL_SKIN) * 600 + 600
+               : 0);
+			   
     shield += qazlal_sh_boost() * 100;
     shield += tso_sh_boost() * 100;
     shield += _bone_armour_bonus() * 2;
@@ -2383,11 +2386,13 @@ int player_displayed_shield_class()
  * Does the player have 'omnireflection' (the ability to reflect piercing
  * effects and enchantments)?
  *
- * @return      Whether the player has the Warlock's Mirror equipped.
+ * @return      Whether the player has the Warlock's Mirror equipped or has
+ *              the demonspawn shielding facet.
  */
 bool player_omnireflects()
 {
-    return player_equip_unrand(UNRAND_WARLOCK_MIRROR);
+    return player_equip_unrand(UNRAND_WARLOCK_MIRROR)
+        || you.get_mutation_level(MUT_MAGIC_REFLECTION) > 0;
 }
 
 void forget_map(bool rot)
@@ -5659,6 +5664,7 @@ bool player::shielded() const
     return shield()
            || duration[DUR_DIVINE_SHIELD]
            || get_mutation_level(MUT_LARGE_BONE_PLATES) > 0
+           || get_mutation_level(MUT_CRYSTAL_SKIN) > 0
            || qazlal_sh_boost() > 0
            || attribute[ATTR_BONE_ARMOUR] > 0
            || you.wearing(EQ_AMULET_PLUS, AMU_REFLECTION) > 0

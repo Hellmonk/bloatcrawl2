@@ -2123,6 +2123,14 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         ostr << mdef.have[0] << player_icemail_armour_class() << ")";
         result = ostr.str();
     }
+    else if (mut == MUT_MAGIC_REFLECTION)
+    {
+        const int SH = crawl_state.need_save ? player_shield_class() : 0;
+        const int reflect_chance = 100 * SH / omnireflect_chance_denom(SH);
+        ostringstream ostr;
+        ostr << mdef.have[0] << reflect_chance << "% chance)";
+        result = ostr.str();
+    }
     else if (mut == MUT_SANGUINE_ARMOUR)
     {
         ostringstream ostr;
@@ -2258,6 +2266,8 @@ static const facet_def _demon_facets[] =
     { 2, { MUT_FOUL_STENCH, MUT_FOUL_STENCH, MUT_FOUL_STENCH },
       { -33, 0, 0 } },
     { 2, { MUT_MANA_SHIELD, MUT_MANA_REGENERATION, MUT_MANA_LINK },
+      { -33, 0, 0 } },
+    { 2, { MUT_CRYSTAL_SKIN, MUT_REFLECTION, MUT_MAGIC_REFLECTION },
       { -33, 0, 0 } },
     // Tier 3 facets
     { 3, { MUT_IGNITE_BLOOD, MUT_IGNITE_BLOOD, MUT_HURL_DAMNATION },

@@ -284,6 +284,8 @@ bool actor::no_cast(bool calc_unid, bool items) const
 
 bool actor::reflection(bool calc_unid, bool items) const
 {
+    if (is_player() && you.get_mutation_level(MUT_REFLECTION) > 0)
+        return true;
     return items && wearing(EQ_AMULET, AMU_REFLECTION, calc_unid);
 }
 

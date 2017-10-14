@@ -3291,6 +3291,11 @@ bool bolt::misses_player()
                             shield->name(DESC_PLAIN).c_str(),
                             refl_name.c_str());
                 }
+                else if (you.get_mutation_level(MUT_REFLECTION) > 0)
+                {
+					mprf("Your crystalline skin reflects the %s!",
+                            refl_name.c_str());
+                }
                 else
                 {
                     mprf("The %s reflects off an invisible shield around you!",

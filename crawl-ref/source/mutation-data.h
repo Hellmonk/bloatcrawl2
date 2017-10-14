@@ -1175,6 +1175,30 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
+{ MUT_CRYSTAL_SKIN, 0, 1, mutflag::GOOD, false,
+  "crystal skin",
+
+  {"Your crystalline skin blocks enemy attacks. (SH +6)", "", ""},
+  {"Your skin becomes crystalline.", "", ""},
+  {"", "", ""},
+},
+
+{ MUT_REFLECTION, 0, 1, mutflag::GOOD, false,
+  "reflection",
+
+  {"Your crystalline skin reflects projectiles.", "", ""},
+  {"Your crystalline skin becomes reflective.", "", ""},
+  {"", "", ""},
+},
+
+{ MUT_MAGIC_REFLECTION, 0, 1, mutflag::GOOD, false,
+  "reflection",
+
+  {"Your crystalline skin reflects hostile magic. (", "", ""},
+  {"Your crystalline skin begins reflecting magic.", "", ""},
+  {"", "", ""},
+},
+
 // Jiyva only mutations
 { MUT_GELATINOUS_BODY, 0, 3, mutflag::GOOD | mutflag::JIYVA, true,
   "gelatinous body",
