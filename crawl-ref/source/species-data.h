@@ -537,7 +537,7 @@ static const map<species_type, species_def> species_data =
     8, 8, 9, // 25
     { STAT_STR, STAT_INT, STAT_DEX }, 4,
     { { MUT_BEAK, 1, 1 }, { MUT_TALONS, 3, 1 },
-      { MUT_TENGU_FLIGHT, 1, 5 }, { MUT_TENGU_FLIGHT, 1, 14 }, },
+      { MUT_TENGU_FLIGHT, 1, 5 }, },
     {},
     {},
     { JOB_BERSERKER, JOB_WIZARD, JOB_SUMMONER,

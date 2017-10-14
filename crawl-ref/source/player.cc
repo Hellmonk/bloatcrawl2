@@ -6515,7 +6515,7 @@ bool player::permanent_flight() const
 
 bool player::racial_permanent_flight() const
 {
-    return get_mutation_level(MUT_TENGU_FLIGHT) >= 2
+    return get_mutation_level(MUT_TENGU_FLIGHT) > 0
 #if TAG_MAJOR_VERSION == 34
         || species == SP_DJINNI
 #endif
