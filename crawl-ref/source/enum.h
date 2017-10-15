@@ -2409,6 +2409,7 @@ enum job_type
     JOB_ABYSSAL_KNIGHT,
     JOB_JESTER,
 #endif
+    JOB_TORPOR_KNIGHT,
     NUM_JOBS,                          // always after the last job
 
     JOB_UNKNOWN = 100,

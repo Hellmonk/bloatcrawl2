@@ -281,7 +281,7 @@ static const map<species_type, species_def> species_data =
       "You can dig through walls and to a lower floor.",
       "Your four strong arms can wield two-handed weapons with a shield." },
     { "permanent stasis", "dig shafts and tunnels", "four strong arms" },
-    { JOB_FIGHTER, JOB_HUNTER, JOB_EARTH_ELEMENTALIST },
+    { JOB_FIGHTER, JOB_HUNTER, JOB_EARTH_ELEMENTALIST, JOB_TORPOR_KNIGHT },
     { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
       SK_CROSSBOWS},
 } },
@@ -520,7 +520,7 @@ static const map<species_type, species_def> species_data =
     { { MUT_FAST, 2, 1 }, { MUT_ACUTE_VISION, 1, 1 }, },
     {},
     {},
-    { JOB_ARTIFICER, JOB_ENCHANTER, JOB_EARTH_ELEMENTALIST },
+    { JOB_ARTIFICER, JOB_ENCHANTER, JOB_EARTH_ELEMENTALIST, JOB_ARCANE_MARKSMAN },
     { SK_SHORT_BLADES },
 } },
 

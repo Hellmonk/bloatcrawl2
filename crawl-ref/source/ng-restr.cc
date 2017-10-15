@@ -19,6 +19,7 @@ static bool _banned_combination(job_type job, species_type species)
 {
     return species == SP_DEMIGOD
                && (job == JOB_BERSERKER
+                   || job == JOB_TORPOR_KNIGHT
                    || job == JOB_CHAOS_KNIGHT
                    || job == JOB_MONK)
            || job == JOB_TRANSMUTER

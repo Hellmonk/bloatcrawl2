@@ -811,6 +811,7 @@ void tilep_job_default(int job, dolls_data *doll)
     switch (job)
     {
         case JOB_FIGHTER:
+        case JOB_TORPOR_KNIGHT:
             parts[TILEP_PART_LEG]   = TILEP_LEG_METAL_SILVER;
             break;
 
