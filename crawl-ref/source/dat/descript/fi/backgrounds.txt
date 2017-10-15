@@ -1,9 +1,4 @@
 %%%%
-Abyssal Knight
-
-Syvänneritarit palvovat Lugonua, ja heidät lähetetään Syvänteestä Luolastoon
-levittämään korruptiota ja kaaosta.
-%%%%
 Air Elementalist
 
 Ilmaelementalistit ovat oppineet Sähköisku-taian. Myöhemmässä vaiheessa Ilman

@@ -1,9 +1,4 @@
 %%%%
-Abyssal Knight
-
-Rycerze Otchłani wielbią Lugonu, i są wysyłani z Otchłani aby siać chaos i
-zepsucie.
-%%%%
 Air Elementalist
 
 Magowie Powietrza znają czar „Iskra”. Później, Księga Powietrza zapewnia im

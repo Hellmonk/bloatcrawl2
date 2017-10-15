@@ -259,7 +259,7 @@ static void _post_init(bool newc)
 
     run_map_local_preludes();
 
-    // Abyssal Knights start out in the Abyss.
+    // Abyssal Knights started out in the Abyss.
     if (newc && you.chapter == CHAPTER_POCKET_ABYSS)
         you.where_are_you = BRANCH_ABYSS;
     else if (newc)

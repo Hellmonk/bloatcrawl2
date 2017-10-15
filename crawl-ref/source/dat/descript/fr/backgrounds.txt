@@ -1,9 +1,4 @@
 %%%%
-Abyssal Knight
-
-Les Chevaliers des Abysses servent Lugonu, et sont envoyés depuis les Abysses
-vers le Donjon pour propager la corruption et le chaos.
-%%%%
 Air Elementalist
 
 Les Élementalistes de l'Air ont appris le sort Choc. Plus tard, le livre de
