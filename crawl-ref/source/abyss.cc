@@ -1356,11 +1356,9 @@ static void _abyss_generate_new_area()
     you.moveto(ABYSS_CENTRE);
     abyss_genlevel_mask.init(true);
     _generate_area(abyss_genlevel_mask);
-    if (one_chance_in(5))
-    {
-        _place_feature_near(you.pos(), LOS_RADIUS,
-                            DNGN_FLOOR, DNGN_ALTAR_LUGONU, 50);
-    }
+
+    _place_feature_near(you.pos(), LOS_RADIUS,
+                        DNGN_FLOOR, DNGN_ALTAR_LUGONU, 50);
 
     los_changed();
     place_transiting_monsters();
@@ -1422,11 +1420,8 @@ retry:
     else
     {
         grd(ABYSS_CENTRE) = DNGN_FLOOR;
-        if (one_chance_in(5))
-        {
-            _place_feature_near(ABYSS_CENTRE, LOS_RADIUS,
-                                DNGN_FLOOR, DNGN_ALTAR_LUGONU, 50);
-        }
+        _place_feature_near(ABYSS_CENTRE, LOS_RADIUS,
+                            DNGN_FLOOR, DNGN_ALTAR_LUGONU, 50);
     }
 
     setup_environment_effects();
