@@ -816,7 +816,9 @@ static like_map divine_likes[] =
         } },
     },
     // GOD_JIYVA,
-    like_map(),
+    {
+        { DID_EXPLORATION, EXPLORE_RESPONSE },
+    },
     // GOD_FEDHAS,
     {
         { DID_ROT_CARRION, {

@@ -210,9 +210,7 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Jiyva
-    { { 1, ABIL_JIYVA_CALL_JELLY, "request a jelly" },
-      { 2, ABIL_JIYVA_JELLY_PARALYSE, "temporarily halt your jellies' item consumption" },
-      { 4, ABIL_JIYVA_SLIMIFY, "turn your foes to slime" },
+    { { 3, ABIL_JIYVA_SLIMIFY, "turn your foes to slime" },
       { 5, ABIL_JIYVA_CURE_BAD_MUTATION, "call upon Jiyva to remove your harmful mutations" },
     },
 
@@ -1193,16 +1191,6 @@ static bool _is_plant_follower(const monster* mon)
 {
     return mon->alive() && mons_is_plant(*mon)
            && mon->attitude == ATT_FRIENDLY;
-}
-
-static bool _has_jelly()
-{
-    ASSERT(you_worship(GOD_JIYVA));
-
-    for (monster_iterator mi; mi; ++mi)
-        if (mons_is_god_gift(**mi, GOD_JIYVA))
-            return true;
-    return false;
 }
 
 bool is_follower(const monster& mon)
@@ -3385,20 +3373,6 @@ static void _join_hepliaklqana()
                                     mg.mname.c_str()).c_str());
 }
 
-/// Setup when joining the gelatinous groupies of Jiyva.
-static void _join_jiyva()
-{
-    // Complimentary jelly upon joining.
-    if (_has_jelly())
-        return;
-
-    mgen_data mg(MONS_JELLY, BEH_STRICT_NEUTRAL, you.pos());
-    mg.set_summoned(&you, 0, 0, GOD_JIYVA);
-
-    delayed_monster(mg);
-    simple_god_message(" grants you a jelly!");
-}
-
 /// Setup when joining the sacred cult of Ru.
 static void _join_ru()
 {
@@ -3476,7 +3450,6 @@ static const map<god_type, function<void ()>> on_join = {
                 mi->del_ench(ENCH_AWAKEN_FOREST);
     }},
     { GOD_GOZAG, _join_gozag },
-    { GOD_JIYVA, _join_jiyva },
     { GOD_HEPLIAKLQANA, _join_hepliaklqana },
     { GOD_LUGONU, []() {
         if (you.worshipped[GOD_LUGONU] == 0)
@@ -3958,7 +3931,6 @@ void handle_god_time(int /*time_delta*/)
         case GOD_VEHUMET:
         case GOD_ZIN:
         case GOD_PAKELLAS:
-        case GOD_JIYVA:
             if (one_chance_in(17))
                 lose_piety(1);
             break;
@@ -3972,6 +3944,7 @@ void handle_god_time(int /*time_delta*/)
         case GOD_SIF_MUNA:
         case GOD_SHINING_ONE:
         case GOD_NEMELEX_XOBEH:
+        case GOD_JIYVA:
             if (one_chance_in(35))
                 lose_piety(1);
             break;
@@ -4501,7 +4474,6 @@ static bool _is_temple_god(god_type god)
     case GOD_NO_GOD:
     case GOD_LUGONU:
     case GOD_BEOGH:
-    case GOD_JIYVA:
     case GOD_ASHENZARI: // ash is bad, fam. --mps
         return false;
 

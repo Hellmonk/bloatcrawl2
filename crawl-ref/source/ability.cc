@@ -483,7 +483,7 @@ static const ability_def Ability_List[] =
     { ABIL_JIYVA_JELLY_PARALYSE, "Jelly Paralyse",
       3, 0, 0, 0, {FAIL_INVO}, abflag::PIETY },
     { ABIL_JIYVA_SLIMIFY, "Slimify",
-      4, 0, 0, 5, {FAIL_INVO, 90, 0, 2}, abflag::NONE },
+      4, 0, 0, 5, {FAIL_INVO, 80, 0, 2}, abflag::NONE },
     { ABIL_JIYVA_CURE_BAD_MUTATION, "Cure Bad Mutation",
       0, 0, 0, 10, {FAIL_INVO}, abflag::NONE },
 

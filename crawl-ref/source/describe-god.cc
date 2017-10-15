@@ -828,14 +828,12 @@ static void _describe_god_powers(god_type which_god)
         cprintf("%s shields you from corrosive effects.\n",
                 uppercase_first(god_name(which_god)).c_str());
 
-        if (have_passive(passive_t::slime_feed))
+        if (have_passive(passive_t::slime_mp))
             textcolour(god_colour(which_god));
         else
             textcolour(DARKGREY);
-        cprintf("You gain nutrition%s when your fellow slimes consume items.\n",
-                have_passive(passive_t::slime_hp) ? ", power and health" :
-                have_passive(passive_t::slime_mp) ? " and power" :
-                                                    "");
+        cprintf("You gain %s when Jiyva consumes items.\n",
+                have_passive(passive_t::slime_hp) ? "power and health" : "power");
         break;
 
     case GOD_FEDHAS:
