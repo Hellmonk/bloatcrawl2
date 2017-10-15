@@ -1,44 +1,38 @@
 language: cpp
 compiler:
-- clang
-- gcc
+    - clang
+    - gcc
 cache: ccache
 before_install:
-- perl .travis/apt.pl
-- if [ "$CXX" = "g++" ]; then export CXX="i686-w64-mingw32-g++" CC="i686-w64-mingw32-gcc"; fi
+    - perl .travis/apt.pl
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-4.7" CC="gcc-4.7"; fi
 sudo: required
 dist: precise
 env:
-- NOTHING=1
-- FULLDEBUG=1
-- TILES=1
-- TILES=1 FULLDEBUG=1
-- WEBTILES=1
-- WEBTILES=1 FULLDEBUG=1
-- USE_DGAMELAUNCH=1 EXTERNAL_DEFINES=-UTOURNEY
-- USE_DGAMELAUNCH=1 WEBTILES=1 EXTERNAL_DEFINES=-UTOURNEY
-- TILES=1 BUILD_ALL=1 SOUND=1
-- WEBTILES=1 BUILD_ALL=1
+    - NOTHING=1
+    - FULLDEBUG=1
+    - TILES=1
+    - TILES=1 FULLDEBUG=1
+    - WEBTILES=1
+    - WEBTILES=1 FULLDEBUG=1
+    - USE_DGAMELAUNCH=1 EXTERNAL_DEFINES=-UTOURNEY
+    - USE_DGAMELAUNCH=1 WEBTILES=1 EXTERNAL_DEFINES=-UTOURNEY
+    - TILES=1 BUILD_ALL=1 SOUND=1
+    - WEBTILES=1 BUILD_ALL=1
 git:
-  submodules: true
+    submodules: false
 install: perl .travis/deps.pl
 script: perl .travis/build.pl
-deploy:
-  provider: releases
-  api_key:
-    secure: a9tMz1kQlDWiGgcimJmIxD1yrwAfKM6vBMuNhkTOKNPMcrkJ1m9PSB2smA/c8HwUv59UZUMKY0TysFR0UT2RL0BCw4y9No+pbR6ZTVjIokm3XsEdra+cTaO7nSIN6u6cjrGquX3hQaBb03usvx35Sm/7lxMvQhPdMmek8PlLXdN56IwTHBkmqbxL2SMqTok47NSOwGyzJ3EYXyZs4KMx0Fz0BvUUxwdW+I9TbhlLWDRI77R2bmg+XfWLIVolap/jBtx84qjk28b+O2UgCSX4M6Oouxg/9P/hl6cwrc7UQBK2fwCyE0AzssyzIBJJO0sYa5rsc8y2X3sq1Sk+p78kLr5bVZvrYWuRVuH+1Bca1eSttXwbhSNJ0U9cXx6t5T8hP1oa3vRJlqtIOvrTdPORD5fn8fZz4oMzAZIOd+XVslhF6J0bRbI2VSPOiuZUb4smEN9LTKGiZukYMFhDb1jC55F80GyRamW/9pkPIIYb6hcLmYc5U9Z/UubweoZx0WMLdOMdfY2noqcPisKk59MWhisreCFrVwW6IIPnNM/eQYiorH9/AwMwQ+5L61AgFit5bJh/TTFRBp/kw3J+TKT/TmguUx7WFDE+FMQqIM1IfPJiO9+0AkY3wuLtDKZRLuGUq5Q7Okpw3xaAp3q4Lf9wAu1zVlQosR8MjZ+gKkVKPBQ=
-  file: 
-   - stone_soup-5.2-tiles-win32.zip
-   - stone_soup-5.2-win32.zip
-  skip_cleanup: true
-  on:
-    tags: true
 notifications:
-  irc:
-    channels: chat.freenode.net##crawl-forks
-    on_success: always
-    on_failure: always
-    use_notice: true
-    template:
-    - "%{message} (%{branch} - %{commit} #%{build_number} : %{build_url} View changes:
-      %{compare_url}"
+#    email:
+#        on_success: change
+#        on_failure: always
+#        recipients:
+#          - crawl-ref-commits@lists.sourceforge.net
+    irc:
+        channels: chat.freenode.net##crawl-forks
+        on_success: always
+        on_failure: always
+        use_notice: true
+        template:
+            - "%{message} (%{branch} - %{commit} #%{build_number} : %{build_url} View changes: %{compare_url}"

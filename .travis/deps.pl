@@ -13,26 +13,12 @@ if ($ENV{BUILD_ALL}) {
        libegl1-mesa-dev
        libasound2-dev
        libxss-dev
-       mingw-w64
-       gcc-mingw-w64
-       gcc-mingw-w64-i686
-       g++-mingw-w64-i686
-       gcc-mingw-w64-x86-64
-       binutils-mingw-w64-i686
-       binutils-mingw-w64-x86-64
     );
 }
 else {
     push @deps, qw(
         liblua5.1-0-dev
         liblua5.1-0-dbg
-        mingw-w64
-        gcc-mingw-w64
-        gcc-mingw-w64-i686
-        g++-mingw-w64-i686
-        gcc-mingw-w64-x86-64
-        binutils-mingw-w64-i686
-        binutils-mingw-w64-x86-64
     );
 
     push @deps, qw(
