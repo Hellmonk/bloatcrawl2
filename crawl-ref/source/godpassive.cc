@@ -771,7 +771,7 @@ static bool _check_portal(coord_def where)
 
 int ash_detect_portals(bool all)
 {
-    if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN)
+    if (crawl_state.difficulty != DIFFICULTY_SPEEDRUN)
         return 0;
 
     int portals_found = 0;

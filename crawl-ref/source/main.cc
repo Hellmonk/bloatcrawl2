@@ -2379,11 +2379,11 @@ static void _prep_input()
 
     if (you.seen_portals)
     {
-        ASSERT(have_passive(passive_t::detect_portals));
+        ASSERT(crawl_state.difficulty == DIFFICULTY_SPEEDRUN);
         if (you.seen_portals == 1)
-            mprf(MSGCH_GOD, "You have a vision of a gate.");
+            mprf("You have a vision of a gate.");
         else
-            mprf(MSGCH_GOD, "You have a vision of multiple gates.");
+            mprf("You have a vision of multiple gates.");
 
         you.seen_portals = 0;
     }
