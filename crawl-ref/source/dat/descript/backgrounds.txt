@@ -83,6 +83,11 @@ Summoner
 Summoners start with the book of Callings and are able to cast Summon Small
 Mammal from the start.
 %%%%
+Torpor Knight
+
+Torpor Knights are sturdy followers of Cheibriados who begin with a weapon
+of their choice and ponderous armour in addition to their god's favour.
+%%%%
 Transmuter
 
 Transmuters start with the book of Changes. They can learn spells to shift
