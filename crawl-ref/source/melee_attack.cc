@@ -3358,7 +3358,7 @@ bool melee_attack::_extra_aux_attack(unarmed_attack_type atk)
         return you.has_usable_pseudopods() && !one_chance_in(3);
 
     case UNAT_TENTACLES:
-        return (you.get_mutation_level(MUT_PREHENSILE_TENTACLE) && x_chance_in_y(you.get_mutation_level(MUT_PREHENSILE_TENTACLE) + 1, 6))
+        return (you.get_mutation_level(MUT_PREHENSILE_TENTACLE) && x_chance_in_y(you.get_mutation_level(MUT_PREHENSILE_TENTACLE) + 2, 8))
             || (you.has_usable_tentacles() && !one_chance_in(3));
 
     case UNAT_BITE:
