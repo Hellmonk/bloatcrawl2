@@ -1707,6 +1707,10 @@ static bool _prompt_skippable_branch(dungeon_feature_type ftype)
             return yesno("This shortcut to the Depths bypasses a runes. "
                          "Enter anyway?", false, 'n');
         else return true;
+    case DNGN_ENTER_ZOT:
+        if (!you.uniq_map_tags.count("uniq_holypan"))
+        return yesno("The runes of Pandemonium will be lost if you enter Zot now. "
+                     "Enter anyway?", false, 'n');
     default:
         return true;
     }
