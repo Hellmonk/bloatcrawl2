@@ -1414,9 +1414,9 @@ bool feat_dangerous_for_form(transformation_type which_trans,
 
 static mutation_type appendages[] =
 {
-    MUT_HORNS,
     MUT_TENTACLE_SPIKE,
     MUT_TALONS,
+    MUT_HORNS,
 };
 
 static bool _slot_conflict(equipment_type eq)
@@ -1445,7 +1445,6 @@ static bool _slot_conflict(equipment_type eq)
 static mutation_type _beastly_appendage()
 {
     mutation_type chosen = NUM_MUTATIONS;
-    int count = 0;
 
     for (mutation_type app : appendages)
     {
@@ -1453,9 +1452,9 @@ static mutation_type _beastly_appendage()
             continue;
         if (physiology_mutation_conflict(app))
             continue;
-
-        if (one_chance_in(++count))
-            chosen = app;
+        
+        chosen = app;
+        return chosen;
     }
     return chosen;
 }
