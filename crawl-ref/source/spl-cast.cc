@@ -1665,28 +1665,28 @@ static spret_type _handle_form_spells(spell_type spell, int powc, bolt& beam, go
     {
     // Transformations.
         case SPELL_BEASTLY_APPENDAGE:
-            return cast_transform(powc, TRAN_APPENDAGE, fail);
+            return cast_transform(powc, TRAN_APPENDAGE, false);
 
         case SPELL_BLADE_HANDS:
-            return cast_transform(powc, TRAN_BLADE_HANDS, fail);
+            return cast_transform(powc, TRAN_BLADE_HANDS, false);
 
         case SPELL_SPIDER_FORM:
-            return cast_transform(powc, TRAN_SPIDER, fail);
+            return cast_transform(powc, TRAN_SPIDER, false);
 
         case SPELL_STATUE_FORM:
-            return cast_transform(powc, TRAN_STATUE, fail);
+            return cast_transform(powc, TRAN_STATUE, false);
 
         case SPELL_ICE_FORM:
-            return cast_transform(powc, TRAN_ICE_BEAST, fail);
+            return cast_transform(powc, TRAN_ICE_BEAST, false);
 
         case SPELL_HYDRA_FORM:
-            return cast_transform(powc, TRAN_HYDRA, fail);
+            return cast_transform(powc, TRAN_HYDRA, false);
 
         case SPELL_DRAGON_FORM:
-            return cast_transform(powc, TRAN_DRAGON, fail);
+            return cast_transform(powc, TRAN_DRAGON, false);
 
         case SPELL_NECROMUTATION:
-            return cast_transform(powc, TRAN_LICH, fail);
+            return cast_transform(powc, TRAN_LICH, false);
         default:
             return SPRET_NONE;
     }
