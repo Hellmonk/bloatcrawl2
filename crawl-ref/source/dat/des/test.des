@@ -38,7 +38,6 @@ KFEAT:  7 = altar_okawaru
 KFEAT:  8 = altar_makhleb
 KFEAT:  9 = altar_sif_muna
 KFEAT:  0 = altar_trog
-KFEAT:  B = altar_nemelex_xobeh
 KFEAT:  C = altar_elyvilon
 KFEAT:  D = altar_lugonu
 KFEAT:  F = altar_jiyva
@@ -54,7 +53,7 @@ MAP
 .IGTUVY.....
 ............
 .0123456789.
-.BCD.F.J....
+..CD.F.J....
 ............
 ENDMAP
 

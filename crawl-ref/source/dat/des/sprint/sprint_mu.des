@@ -252,8 +252,6 @@ KMONS: s = patrolling wizard hd:3
 KITEM: s = any book
 KMONS: 5 = patrolling kobold demonologist hd:2
 KITEM: 5 = any book / gold
-KFEAT: N = altar_nemelex_xobeh
-KITEM: N = any misc
 KFEAT: X = altar_xom
 KFEAT: M = altar_makhleb
 KFEAT: C = altar_cheibriados
@@ -283,7 +281,7 @@ x..........
 #.f........
 x...xxxxxx+
 x.f.xJlxm..
-x...xNGx...
+x...x.Gx...
 x+xxxXHx...
 x.s5xMCx..*
 xVSKxQ.+..j
