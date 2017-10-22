@@ -3310,6 +3310,44 @@ G......G
 G......G
 ENDMAP
 
+NAME:hellmonk_temple_overflow_whatever
+TAGS: temple_overflow_generic_10 temple_overflow_generic_8
+TAGS: temple_overflow_generic_6 temple_overflow_generic_4
+{{
+  local altarcount = 1
+  if is_validating() then
+    altarcount = 10
+  else
+    altarcount = get_overflow_altar_count(_G)
+  end
+  if altarcount == "4" then
+    subst("d = B")
+    subst("ef = G")
+  elseif altarcount == "6" then
+    subst("df = B")
+    subst("e = G")
+  elseif altarcount == "8" then
+    subst("de = B")
+    subst("f = G")
+  else
+    subst("def = B")
+  end
+}}
+MAP
+         @@@
+      ccc+++ccc
+    ccc.......ccc
+   ccce.......eccc
+  ccc...ccccc...ccc
+ ccc...ccd.dcc...ccc
+cccf..cc..T..cc..fccc
+ ccc...ccd.dcc...ccc
+  ccc...cc+cc...ccc
+   ccce.......eccc
+    ccc.......ccc
+      ccccccccc
+ENDMAP
+
 NAME: hellmonk_temple_overflow_hourglass
 TAGS: temple_overflow_generic_12 temple_overflow_generic_11
 TAGS: temple_overflow_generic_10 temple_overflow_generic_9
