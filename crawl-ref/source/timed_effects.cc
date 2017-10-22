@@ -913,6 +913,14 @@ static void _antiscumming(int /*time_delta*/)
 {
     if (crawl_state.difficulty == DIFFICULTY_CASUAL)
         return;
+    if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN
+        && env.turns_on_level > 650)
+    {
+		int amount = 1 + (env.turns_on_level - 650) / 40;
+        rot_hp(amount);
+        mprf(MSGCH_WARN, "You feel yourself rotting away!");
+        return;
+	}
     if(env.turns_on_level < 3000)
         return;
     if(!is_connected_branch(level_id::current().branch))

@@ -1089,10 +1089,9 @@ void player_reacts()
     }
 	
     // doom clock
-    if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN && env.turns_on_level >= 1000)
+    if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN && env.turns_on_level == 649)
     {
-        mpr("The dungeon collapses into oblivion!");
-        ouch(INSTANT_DEATH, KILLED_BY_FRAILTY, MID_NOBODY, "being slow");
+        mprf(MSGCH_WARN, "You feel yourself begin to rot away!");
     }
     else if (crawl_state.difficulty == DIFFICULTY_NORMAL && env.turns_on_level == 2499
         && is_connected_branch(level_id::current().branch))
