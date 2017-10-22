@@ -367,15 +367,15 @@ static const ability_def Ability_List[] =
     { ABIL_TSO_DIVINE_SHIELD, "Divine Shield",
       3, 0, 50, 2, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_TSO_CLEANSING_FLAME, "Cleansing Flame",
-      5, 0, 100, 2, {FAIL_INVO, 70, 4, 25}, abflag::NONE },
+      5, 0, 100, 3, {FAIL_INVO, 70, 4, 25}, abflag::NONE },
     { ABIL_TSO_SUMMON_DIVINE_WARRIOR, "Summon Divine Warrior",
-      8, 0, 150, 6, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
+      8, 0, 150, 7, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
     { ABIL_TSO_BLESS_WEAPON, "Brand Weapon With Holy Wrath", 0, 0, 0, 0,
       {FAIL_INVO}, abflag::NONE },
 
     // Kikubaaqudgha
     { ABIL_KIKU_MIASMA, "Miasmata",
-      3, 0, 200, 2, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
+      3, 0, 200, 3, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_KIKU_TORMENT, "Torment",
       4, 0, 0, 6, {FAIL_INVO, 60, 5, 20}, abflag::NONE },
     { ABIL_KIKU_GIFT_NECRONOMICON, "Receive Necronomicon", 0, 0, 0, 0,
@@ -393,21 +393,21 @@ static const ability_def Ability_List[] =
     { ABIL_YRED_ANIMATE_DEAD, "Animate Dead",
       2, 0, 200, 0, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
     { ABIL_YRED_DRAIN_LIFE, "Drain Life",
-      6, 0, 200, 2, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
+      6, 0, 200, 3, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
     { ABIL_YRED_ENSLAVE_SOUL, "Enslave Soul",
-      8, 0, 500, 4, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
+      8, 0, 500, 5, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
 
     // Okawaru
     { ABIL_OKAWARU_HEROISM, "Heroism",
-      2, 0, 0, 2, {FAIL_INVO, 30, 6, 20}, abflag::NONE },
+      2, 0, 0, 3, {FAIL_INVO, 30, 6, 20}, abflag::NONE },
     { ABIL_OKAWARU_FINESSE, "Finesse",
-      5, 0, 0, 4, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
+      5, 0, 0, 5, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
 
     // Makhleb
     { ABIL_MAKHLEB_MINOR_DESTRUCTION, "Minor Destruction",
       0, scaling_cost::fixed(1), 0, 0, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_MAKHLEB_LESSER_SERVANT_OF_MAKHLEB, "Lesser Servant of Makhleb",
-      0, scaling_cost::fixed(5), 0, 2, {FAIL_INVO, 40, 5, 20}, abflag::HOSTILE },
+      0, scaling_cost::fixed(5), 0, 3, {FAIL_INVO, 40, 5, 20}, abflag::HOSTILE },
     { ABIL_MAKHLEB_HURL_DAMNATION, "Hurl Damnation",
       0, scaling_cost::fixed(10), 0, 5, {FAIL_INVO, 70, 4, 25}, abflag::NONE },
     { ABIL_MAKHLEB_GREATER_SERVANT_OF_MAKHLEB, "Greater Servant of Makhleb",
@@ -427,9 +427,9 @@ static const ability_def Ability_List[] =
     // Trog
     { ABIL_TROG_BERSERK, "Berserk", 0, 0, 200, 0, {FAIL_INVO}, abflag::NONE },
     { ABIL_TROG_REGEN_MR, "Trog's Hand",
-      0, 0, 200, 2, {FAIL_INVO, piety_breakpoint(2), 0, 1}, abflag::NONE },
+      0, 0, 200, 3, {FAIL_INVO, piety_breakpoint(2), 0, 1}, abflag::NONE },
     { ABIL_TROG_BROTHERS_IN_ARMS, "Brothers in Arms",
-      0, 0, 250, 5, {FAIL_INVO, piety_breakpoint(5), 0, 1}, abflag::NONE },
+      0, 0, 250, 6, {FAIL_INVO, piety_breakpoint(5), 0, 1}, abflag::NONE },
 
     // Elyvilon
     { ABIL_ELYVILON_LIFESAVING, "Divine Protection",
@@ -437,17 +437,17 @@ static const ability_def Ability_List[] =
     { ABIL_ELYVILON_LESSER_HEALING, "Lesser Healing", 1, 0, 100,
       1, {FAIL_INVO, 30, 6, 20}, abflag::CONF_OK },
     { ABIL_ELYVILON_HEAL_OTHER, "Heal Other",
-      2, 0, 250, 1, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
+      2, 0, 250, 3, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_ELYVILON_PURIFICATION, "Purification",
-      3, 0, 300, 2, {FAIL_INVO, 20, 5, 20}, abflag::CONF_OK },
+      3, 0, 300, 4, {FAIL_INVO, 20, 5, 20}, abflag::CONF_OK },
     { ABIL_ELYVILON_GREATER_HEALING, "Greater Healing",
       2, 0, 250, 4, {FAIL_INVO, 40, 5, 20}, abflag::CONF_OK },
     { ABIL_ELYVILON_DIVINE_VIGOUR, "Divine Vigour",
-      0, 0, 600, 5, {FAIL_INVO, 80, 4, 25}, abflag::CONF_OK },
+      0, 0, 600, 7, {FAIL_INVO, 80, 4, 25}, abflag::CONF_OK },
 
     // Lugonu
     { ABIL_LUGONU_ABYSS_EXIT, "Depart the Abyss",
-      1, 0, 0, 5, {FAIL_INVO, 30, 6, 20}, abflag::NONE },
+      1, 0, 0, 10, {FAIL_INVO, 30, 6, 20}, abflag::NONE },
     { ABIL_LUGONU_BEND_SPACE, "Bend Space",
       1, 0, 0, 0, {FAIL_INVO, 40, 5, 20}, abflag::PAIN },
     { ABIL_LUGONU_BANISH, "Banish", 4, 0, 200, 4,
@@ -483,7 +483,7 @@ static const ability_def Ability_List[] =
     { ABIL_JIYVA_JELLY_PARALYSE, "Jelly Paralyse",
       3, 0, 0, 0, {FAIL_INVO}, abflag::PIETY },
     { ABIL_JIYVA_SLIMIFY, "Slimify",
-      4, 0, 0, 5, {FAIL_INVO, 80, 0, 2}, abflag::NONE },
+      4, 0, 0, 9, {FAIL_INVO, 80, 0, 2}, abflag::NONE },
     { ABIL_JIYVA_CURE_BAD_MUTATION, "Cure Bad Mutation",
       0, 0, 0, 10, {FAIL_INVO}, abflag::NONE },
 
@@ -505,11 +505,11 @@ static const ability_def Ability_List[] =
     { ABIL_CHEIBRIADOS_TIME_BEND, "Bend Time",
       1, 0, 50, 1, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
     { ABIL_CHEIBRIADOS_DISTORTION, "Temporal Distortion",
-      2, 0, 200, 2, {FAIL_INVO, 60, 5, 20}, abflag::INSTANT },
+      2, 0, 200, 4, {FAIL_INVO, 60, 5, 20}, abflag::INSTANT },
     { ABIL_CHEIBRIADOS_SLOUCH, "Slouch",
-      3, 0, 100, 4, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
+      3, 0, 100, 8, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
     { ABIL_CHEIBRIADOS_TIME_STEP, "Step From Time",
-      5, 0, 200, 8, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
+      5, 0, 200, 12, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
 
     // Ashenzari
     { ABIL_ASHENZARI_CURSE, "Curse Item",
@@ -523,9 +523,9 @@ static const ability_def Ability_List[] =
 
     // Dithmenos
     { ABIL_DITHMENOS_SHADOW_STEP, "Shadow Step",
-      4, 0, 0, 3, {FAIL_INVO, 30, 6, 20}, abflag::NONE },
+      4, 0, 0, 5, {FAIL_INVO, 30, 6, 20}, abflag::NONE },
     { ABIL_DITHMENOS_SHADOW_FORM, "Shadow Form",
-      9, 0, 0, 8, {FAIL_INVO, 80, 4, 25}, abflag::SKILL_DRAIN },
+      9, 0, 0, 12, {FAIL_INVO, 80, 4, 25}, abflag::SKILL_DRAIN },
 
     // Ru
     { ABIL_RU_DRAW_OUT_POWER, "Draw Out Power", 0, 0, 0, 0,
@@ -582,11 +582,11 @@ static const ability_def Ability_List[] =
 
     // Qazlal
     { ABIL_QAZLAL_UPHEAVAL, "Upheaval",
-      4, 0, 0, 2, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
+      4, 0, 0, 3, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_QAZLAL_CLOUD_SURGE, "Cloud Surge",
-      6, 0, 0, 4, {FAIL_INVO, 50, 5, 20}, abflag::NONE },
+      6, 0, 0, 5, {FAIL_INVO, 50, 5, 20}, abflag::NONE },
     { ABIL_QAZLAL_DISASTER_AREA, "Disaster Area",
-      7, 0, 0, 6, {FAIL_INVO, 70, 4, 25}, abflag::NONE },
+      7, 0, 0, 8, {FAIL_INVO, 70, 4, 25}, abflag::NONE },
 
     // Pakellas
     { ABIL_PAKELLAS_DEVICE_SURGE, "Device Surge",
@@ -610,10 +610,10 @@ static const ability_def Ability_List[] =
     { ABIL_HEPLIAKLQANA_RECALL, "Recall Ancestor",
         2, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
     { ABIL_HEPLIAKLQANA_TRANSFERENCE, "Transference",
-        2, 0, 0, 2, {FAIL_INVO, 40, 5, 20},
+        2, 0, 0, 4, {FAIL_INVO, 40, 5, 20},
         abflag::NONE },
     { ABIL_HEPLIAKLQANA_IDEALISE, "Idealise",
-        4, 0, 0, 4, {FAIL_INVO, 60, 4, 25},
+        4, 0, 0, 5, {FAIL_INVO, 60, 4, 25},
         abflag::NONE },
 
     { ABIL_HEPLIAKLQANA_TYPE_KNIGHT,       "Ancestor Life: Knight",
