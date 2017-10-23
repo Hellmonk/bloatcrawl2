@@ -2387,6 +2387,9 @@ bool gain_piety(int original_gain, int denominator, bool should_scale_piety)
         }
         you.piety_max[you.religion] = you.piety;
     }
+    //redraw the title
+    you.redraw_title = true;
+
     return true;
 }
 
@@ -2421,16 +2424,15 @@ void lose_piety(int pgn)
     else
         you.piety -= pgn;
 
+	// Redraw piety display
+    you.redraw_title = true;
+	
     // Don't bother printing out these messages if you're under
     // penance, you wouldn't notice since all these abilities
     // are withheld.
     if (!player_under_penance()
         && piety_rank(old_piety) > piety_rank())
     {
-        // Redraw piety display and, in case the best skill is Invocations,
-        // redraw the god title.
-        you.redraw_title = true;
-
         const int old_rank = piety_rank(old_piety);
 
         for (const auto& power : get_god_powers(you.religion))
