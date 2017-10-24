@@ -29,6 +29,7 @@ stop += You feel you are being watched
 stop += [Ss]omething.* misses you.
 stop += emerges from the mists of memory
 stop += need to descend quickly
+stop += You feel yourself begin to rot away
 
 # Traps
 #

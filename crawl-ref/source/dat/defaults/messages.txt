@@ -110,6 +110,7 @@ force_more_message += You will only be able to enter Pandemonium once
 force_more_message += lava roasts you
 force_more_message += need to descend quickly
 force_more_message += dungeon lashes out
+force_more_message += You feel yourself begin to rot away
 
 ## Reduce chance of drowning because flight or form runs out:
 force_more_message += Careful!
