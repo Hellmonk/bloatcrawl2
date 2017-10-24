@@ -41,6 +41,7 @@
 #include "random-var.h"
 #include "religion.h"
 #include "shopping.h"
+#include "shout.h"
 #include "spl-miscast.h"
 #include "spl-summoning.h"
 #include "state.h"
@@ -1053,4 +1054,15 @@ bool stop_attack_prompt(targetter &hitfunc, const char* verb,
         canned_msg(MSG_OK);
         return true;
     }
+}
+
+void spooky(actor *defender)
+{
+    if(!defender->is_monster())
+        return;
+    if(defender->paralysed())
+        return;
+    mprf("Boo! %s is paralyzed with terror!", defender->name(DESC_THE).c_str());
+    noisy(12, you.pos());
+	defender->paralyse(&you, 2 + random2(4));
 }

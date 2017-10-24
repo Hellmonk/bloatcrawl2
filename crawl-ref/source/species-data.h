@@ -508,6 +508,25 @@ static const map<species_type, species_def> species_data =
       SK_BOWS, SK_CROSSBOWS },
 } },
 
+{ SP_SKELETON, {
+    "Sk",
+    "Skeleton", nullptr, nullptr,
+    SPF_NONE,
+    0, -1, 0, 4,
+    MONS_SKELETAL_WARRIOR,
+    HT_LAND, US_UNDEAD, SIZE_MEDIUM,
+    9, 6, 7, // 22
+    { STAT_STR, STAT_DEX }, 5,
+    { { MUT_NEGATIVE_ENERGY_RESISTANCE, 3, 1 }, { MUT_COLD_RESISTANCE, 1, 1 },
+      { MUT_TORMENT_RESISTANCE, 1, 1 }, { MUT_UNBREATHING, 1, 1 },},
+    {"You are spooky and scary.",
+     "You do not feel fear.",
+     "You gain temporary bone armour from killing."},
+    {"spooky", "fear immunity", "bone armour"},
+    { JOB_ENCHANTER, JOB_FIGHTER, JOB_SKALD, JOB_NECROMANCER, JOB_SUMMONER },
+    { SK_SHORT_BLADES, SK_MACES_FLAILS },
+} },
+
 { SP_SPRIGGAN, {
     "Sp",
     "Spriggan", nullptr, nullptr,

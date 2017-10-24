@@ -111,7 +111,7 @@ KMONS:   V = octopode ; nothing
 KMONS:   W = formicid ; nothing
 KMONS:   X = gargoyle ; nothing
 KMONS:   Y = vine stalker ; nothing
-KMONS:   Z = nothing
+KMONS:   Z = skeletal warrior ; nothing
 MAP
  ccccc
  c.{.c
@@ -849,7 +849,7 @@ KMASK: uU = no_item_gen
 : if (not crawl.game_started()) or race == "Vampire"
 :     or race == "Mummy" or race == "Ghoul"
 :     or race == "Gargoyle" or race == "Vine Stalker"
-:     or race == "Yak" then
+:     or race == "Yak" or race == "Skeleton" then
 :   mons = "human"
 : end
 : if you.race() == "Formicid" or you.race() == "Octopode" then

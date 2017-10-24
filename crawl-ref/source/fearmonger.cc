@@ -19,7 +19,14 @@
 bool player::add_fearmonger(const monster* mon)
 {
     ASSERT(mon); // XXX: change to const monster &mon
-    if (is_sanctuary(pos()))
+    if(you.species == SP_SKELETON)
+    {
+		mprf("%s is not spooky enough to scare you!",
+             mon->name(DESC_THE).c_str());
+        return false;
+    }
+    
+	if (is_sanctuary(pos()))
     {
         if (can_see(*mon))
         {

@@ -5668,7 +5668,8 @@ bool player::shielded() const
            || qazlal_sh_boost() > 0
            || attribute[ATTR_BONE_ARMOUR] > 0
            || you.wearing(EQ_AMULET_PLUS, AMU_REFLECTION) > 0
-           || you.scan_artefacts(ARTP_SHIELDING);
+           || you.scan_artefacts(ARTP_SHIELDING)
+           || attribute[ATTR_SKELETON_ARMOUR] > 0;
 }
 
 int player::shield_bonus() const
@@ -5888,6 +5889,9 @@ int player_icemail_armour_class()
  */
 static int _bone_armour_bonus()
 {
+	if(you.attribute[ATTR_SKELETON_ARMOUR])
+        return you.attribute[ATTR_SKELETON_ARMOUR] * 100;
+	
     if (!you.attribute[ATTR_BONE_ARMOUR])
         return 0;
 

@@ -1491,6 +1491,8 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 
     case SPELL_CIGOTUVIS_EMBRACE:
+        if (you.species == SP_SKELETON)
+            return "you already steal bones from the dead.";
         if (temp && you.form == TRAN_STATUE)
             return "the corpses won't embrace your stony flesh.";
         if (temp && you.attribute[ATTR_OZO_ARMOUR])

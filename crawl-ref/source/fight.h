@@ -71,5 +71,6 @@ bool stop_attack_prompt(const monster* mon, bool beam_attack,
 bool stop_attack_prompt(targetter &hitfunc, const char* verb,
                         bool (*affects)(const actor *victim) = 0,
                         bool *prompted = nullptr);
-
+						
+void spooky(actor *defender);
 #endif

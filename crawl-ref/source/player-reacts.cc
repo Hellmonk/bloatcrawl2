@@ -969,7 +969,22 @@ void player_reacts()
     {
         const int bone_armour = you.attribute[ATTR_BONE_ARMOUR];
 		if (bone_armour > 1)
-            you.attribute[ATTR_BONE_ARMOUR] = bone_armour - 1;	
+        {
+            you.attribute[ATTR_BONE_ARMOUR] = bone_armour - 1;
+            you.redraw_armour_class = true;
+        }
+    }
+	
+    //decrement skeleton armour
+    if (you.attribute[ATTR_SKELETON_ARMOUR]
+        && x_chance_in_y(you.time_taken, 14 * BASELINE_DELAY))
+    {
+        const int bone_armour = you.attribute[ATTR_SKELETON_ARMOUR];
+		if (bone_armour > 0)
+        {
+            you.attribute[ATTR_SKELETON_ARMOUR] = bone_armour - 1;
+            you.redraw_armour_class = true;	
+        }		
     }
 
     if (x_chance_in_y(you.time_taken, 10 * BASELINE_DELAY))

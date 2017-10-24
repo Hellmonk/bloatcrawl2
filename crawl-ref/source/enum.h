@@ -619,6 +619,7 @@ enum attribute_type
     ATTR_EXCRUCIATING_WOUNDS,  // excruciating wounds
     ATTR_ANIMATE_DEAD,         // animate dead
     ATTR_SPECTRAL_WEAPON,      // spectral weapon
+    ATTR_SKELETON_ARMOUR,      // skeleton bone armour
     NUM_ATTRIBUTES
 };
 
@@ -4397,6 +4398,7 @@ enum species_type
     SP_FROGTAUR,
 #endif
     SP_GNOLL,
+    SP_SKELETON,
     NUM_SPECIES,
 
     SP_UNKNOWN  = 100,

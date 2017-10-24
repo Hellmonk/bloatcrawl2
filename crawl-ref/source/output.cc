@@ -523,7 +523,8 @@ static bool _boosted_ac()
            || you.duration[DUR_QAZLAL_AC]
            || sanguine_armour_bonus()
            || you.attribute[ATTR_BONE_ARMOUR] > 0
-           || you.attribute[ATTR_OZO_ARMOUR] > 0;
+           || you.attribute[ATTR_OZO_ARMOUR] > 0
+           || you.attribute[ATTR_SKELETON_ARMOUR] > 0;
 }
 
 static bool _boosted_ev()
@@ -535,7 +536,8 @@ static bool _boosted_sh()
 {
     return you.duration[DUR_DIVINE_SHIELD]
            || qazlal_sh_boost() > 0
-           || you.attribute[ATTR_BONE_ARMOUR] > 0;
+           || you.attribute[ATTR_BONE_ARMOUR] > 0
+           || you.attribute[ATTR_SKELETON_ARMOUR] > 0;
 }
 
 #ifdef DGL_SIMPLE_MESSAGING

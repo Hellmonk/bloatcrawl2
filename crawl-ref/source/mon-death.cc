@@ -2196,6 +2196,21 @@ item_def* monster_die(monster* mons, killer_type killer,
             you.redraw_armour_class = true;
         }
     }
+	
+    // Skeleton bone armour works a little differently
+    if (you.species == SP_SKELETON
+        && killer == KILL_YOU
+        && gives_player_xp
+        && leaves_corpse)
+    {
+        const int bone_armour = you.attribute[ATTR_SKELETON_ARMOUR];
+        const int max_bone_armour = 3 + you.experience_level / 2;
+        if (bone_armour < max_bone_armour) // experience level dependent cap
+		{
+            you.attribute[ATTR_SKELETON_ARMOUR] = min(max_bone_armour, bone_armour + 1);
+            you.redraw_armour_class = true;
+        }
+    }
 
     switch (killer)
     {
