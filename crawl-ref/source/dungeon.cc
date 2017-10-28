@@ -4137,13 +4137,11 @@ static void _build_postvault_level(vault_placement &place)
     if (player_in_branch(BRANCH_SPIDER))
     {
         int ngb_min = 2;
-        int ngb_max = random_range(3, 8);
+        int ngb_max = random_range(3, 6);
         if (one_chance_in(10))
             ngb_min = 1, ngb_max = random_range(5, 7);
-        if (one_chance_in(20))
-            ngb_min = 3, ngb_max = 4;
         delve(0, ngb_min, ngb_max,
-              random_choose(0, 5, 20, 50, 100),
+              random_choose(0, 5, 20, 25, 40),
               -1,
               random_choose(1, 20, 125, 500, 999999));
     }
