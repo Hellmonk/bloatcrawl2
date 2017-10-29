@@ -5303,15 +5303,11 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
 
     case BEAM_DISPEL_UNDEAD:
 	{
-        if (simple_monster_message(*mon, " convulses!"))
-		{
+        const int dddd = damage.roll();
+        const string m = make_stringf(" convulses (%d)!", dddd);
+        if (simple_monster_message(*mon, m.c_str()))
             obvious_effect = true;
-		}
-		string monname = mon->name(DESC_THE);
-		int dddd = mon->hurt(agent(), damage.roll());
-		if(obvious_effect)
-		    mprf("%s is dispelled (%d)!", monname.c_str(), dddd);
-		
+        mon->hurt(agent(), dddd);
         return MON_AFFECTED;
 	}
     case BEAM_ENSLAVE_SOUL:
@@ -5332,7 +5328,8 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
         const int dam = resist_adjust_damage(mon, flavour, damage.roll());
         if (dam)
         {
-            if (simple_monster_message(*mon, " writhes in agony!"))
+            const string m = make_stringf(" writhes in agony (%d)!", dam);
+            if (simple_monster_message(*mon, m.c_str()))
                 obvious_effect = true;
             mon->hurt(agent(), dam, flavour);
             return MON_AFFECTED;
@@ -5346,10 +5343,14 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
         return MON_AFFECTED;
 
     case BEAM_DISINTEGRATION:   // disrupt/disintegrate
-        if (simple_monster_message(*mon, " is blasted."))
+    {
+        const int dam = damage.roll();
+        const string m = make_stringf(" is blasted (%d).", dam);
+        if (simple_monster_message(*mon, m.c_str()))
             obvious_effect = true;
-        mon->hurt(agent(), damage.roll(), flavour);
+        mon->hurt(agent(), dam, flavour);
         return MON_AFFECTED;
+    }
 
     case BEAM_HIBERNATION:
         if (mon->can_hibernate())
