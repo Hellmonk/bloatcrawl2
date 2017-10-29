@@ -371,11 +371,11 @@ int calc_skill_level_change(skill_type sk, int starting_level, int sk_points)
     while (1)
     {
         if (new_level < MAX_SKILL_LEVEL
-            && sk_points >= skill_exp_needed(new_level + 1, sk))
+            && sk_points >= (int) skill_exp_needed(new_level + 1, sk))
         {
             ++new_level;
         }
-        else if (sk_points < skill_exp_needed(new_level, sk))
+        else if (sk_points < (int) skill_exp_needed(new_level, sk))
         {
             new_level--;
             ASSERT(new_level >= 0);
@@ -911,33 +911,19 @@ bool skill_trained(int i)
     return you.can_train[i] && you.train[i];
 }
 
-int _calc_skill_cost_level(int xp, int start)
+static int _calc_skill_cost_level(int xp, int start)
 {
     while (start < MAX_SKILL_COST_LEVEL
-           && xp >= skill_cost_needed(start + 1))
+           && xp >= (int) skill_cost_needed(start + 1))
     {
         ++start;
     }
     while (start > 0
-           && xp < skill_cost_needed(start))
+           && xp < (int) skill_cost_needed(start))
     {
         --start;
     }
     return start;
-}
-
-void check_skill_cost_change()
-{
-#ifdef DEBUG_TRAINING_COST
-    int initial_cost = you.skill_cost_level;
-#endif
-
-    you.skill_cost_level = _calc_skill_cost_level(you.total_experience, you.skill_cost_level);
-
-#ifdef DEBUG_TRAINING_COST
-    if (initial_cost != you.skill_cost_level)
-        dprf("Adjusting skill cost level to %d", you.skill_cost_level);
-#endif
 }
 
 void check_skill_cost_change()
@@ -967,7 +953,7 @@ void check_skill_cost_change()
  */
 bool target_met(skill_type sk, bool real)
 {
-    return you.skill(sk, 10, real) >= you.training_targets[sk];
+    return you.skill(sk, 10, real) >= (int) you.training_targets[sk];
 }
 
 /**
@@ -1123,7 +1109,7 @@ skill_diff skill_level_to_diffs(skill_type skill, double amount,
     // We're calculating you.skill_points[skill] and calculating the new
     // you.total_experience to update skill cost.
 
-    int you_skill = you.skill_points[skill];
+    unsigned int you_skill = you.skill_points[skill];
 
     if (!base_only)
     {
@@ -1226,31 +1212,9 @@ void set_skill_level(skill_type skill, double amount)
 #endif
 
     check_skill_cost_change();
-}
-
-void set_skill_level(skill_type skill, double amount)
-{
-    double level;
-    modf(amount, &level);
-
-    you.ct_skill_points[skill] = 0;
-
-    skill_diff diffs = skill_level_to_diffs(skill, amount);
-
-    you.skills[skill] = level;
-    you.skill_points[skill] += diffs.skill_points;
-    you.total_experience += diffs.experience;
-#ifdef DEBUG_TRAINING_COST
-    dprf("Change (total): %d skp (%d), %d xp (%d)",
-        diffs.skill_points, you.skill_points[skill],
-        diffs.experience, you.total_experience);
-#endif
-
-    check_skill_cost_change();
 
     // need to check them all, to handle crosstraining.
     check_training_targets();
->>>>>>> a7893f84d5... Implement training target backend
 }
 
 int get_skill_progress(skill_type sk, int level, int points, int scale)
@@ -1291,7 +1255,7 @@ int get_skill_percentage(const skill_type x)
  */
 int player::get_training_target(const skill_type sk) const
 {
-    ASSERT_RANGE(training_targets[sk], 0, 270);
+    ASSERT_RANGE(training_targets[sk], 0, 271);
     return training_targets[sk];
 }
 
@@ -1301,10 +1265,10 @@ int player::get_training_target(const skill_type sk) const
  * @param sk the skill to set
  * @param target the new target, between 0.0 and 27.0.  0.0 means no target.
  */
-void player::set_training_target(const skill_type sk, const double target, bool announce)
+bool player::set_training_target(const skill_type sk, const double target, bool announce)
 {
     dprf("Setting target for %s to %d", skill_name(sk), (int) round(target * 10));
-    set_training_target(sk, (int) round(target * 10), announce);
+    return set_training_target(sk, (int) round(target * 10), announce);
 }
 
 /**
@@ -1314,10 +1278,10 @@ void player::set_training_target(const skill_type sk, const double target, bool 
  * @param target the new target, scaled by ten, so between 0 and 270.  0 means
  *               no target.
  */
-void player::set_training_target(const skill_type sk, const int target, bool announce)
+bool player::set_training_target(const skill_type sk, const int target, bool announce)
 {
     const int ranged_target = min(max((int) target, 0), 270);
-    if (announce && ranged_target != training_targets[sk])
+    if (announce && ranged_target != (int) training_targets[sk])
     {
         if (ranged_target == 0)
             mprf("Clearing the skill training target for %s.", skill_name(sk));
@@ -1328,6 +1292,13 @@ void player::set_training_target(const skill_type sk, const int target, bool ann
         }
     }
     training_targets[sk] = ranged_target;
+    return true;
+}
+
+void player::clear_training_targets()
+{
+    for (skill_type sk = SK_FIRST_SKILL; sk < NUM_SKILLS; ++sk)
+        set_training_target(sk, 0);
 }
 
 const char *skill_name(skill_type which_skill)

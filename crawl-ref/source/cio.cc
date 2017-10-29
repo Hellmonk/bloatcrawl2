@@ -827,7 +827,7 @@ int line_reader::process_key(int ch)
         {
             const char *np = next_glyph(cur);
             ASSERT(np);
-            char32_t ch_at_point;
+            ucs_t ch_at_point;
             utf8towc(&ch_at_point, cur);
             const int glyph_width = wcwidth(ch_at_point);
             const size_t del_bytes = np - cur;
