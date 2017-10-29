@@ -1065,4 +1065,9 @@ void spooky(actor *defender)
     mprf("Boo! %s is paralyzed with terror!", defender->name(DESC_THE).c_str());
     noisy(12, you.pos());
 	defender->paralyse(&you, 2 + random2(4));
+    if(you.experience_level >= 13)
+    {
+        mprf("You radiate an aura of fear!");
+        mass_enchantment(ENCH_FEAR, you.experience_level * 4, false);
+    }
 }
