@@ -838,7 +838,7 @@ static int _item_training_target(const item_def &item)
 {
     const int throw_dam = property(item, PWPN_DAMAGE);
     if (item.base_type == OBJ_WEAPONS)
-        return weapon_min_delay_skill(item) * 10;
+        return min(weapon_min_delay_skill(item) * 10,270);
     else if (is_shield(item))
         return round(you.get_shield_skill_to_offset_penalty(item) * 10);
     else if (item.base_type == OBJ_MISSILES && throw_dam)
@@ -874,6 +874,9 @@ static bool _could_set_training_target(const item_def &item, bool ignore_current
     if (!crawl_state.need_save || is_useless_item(item))
         return false;
 
+    if (you.species == SP_GNOLL || you.species == SP_KOBOLD)
+        return false;
+	
     const skill_type skill = _item_training_skill(item);
     if (skill == SK_NONE)
         return false;
@@ -889,10 +892,14 @@ static string _skill_target_desc(skill_type skill, double target, int training)
 {
     string description = "";
 
+    if (you.species == SP_GNOLL || you.species == SP_KOBOLD)
+        return description;
+	
     const bool max_training = (training == 100);
-    const bool hypothetical = !crawl_state.need_save || (training != you.training[skill]);
+    const bool hypothetical = !crawl_state.need_save || (training != (int) you.training[skill]);
+    double min_target = min(target, 27.0);
 
-    const skill_diff diffs = skill_level_to_diffs(skill, target, training, false);
+    const skill_diff diffs = skill_level_to_diffs(skill, min_target, training, false);
     const int level_diff = xp_to_level_diff(diffs.experience, 10);
 
     if (max_training)
@@ -908,7 +915,7 @@ static string _skill_target_desc(skill_type skill, double target, int training)
     description += make_stringf(
         "you %s reach %.1f in %s %d.%d XLs.",
             hypothetical ? "would" : "will",
-            target,
+            min_target,
             (you.experience_level + (level_diff + 9) / 10) > 27
                                 ? "the equivalent of" : "about",
             level_diff / 10, level_diff % 10);
@@ -941,13 +948,6 @@ static void _append_weapon_stats(string &description, const item_def &item)
 
     const bool could_set_target = _could_set_training_target(item, true);
 
-    if (skill == SK_SLINGS)
-    {
-        description += make_stringf("\nFiring bullets:    Base damage: %d",
-                                    base_dam +
-                                    ammo_type_damage(MI_SLING_BULLET));
-    }
-
     description += make_stringf(
     "\nBase accuracy: %+d  Base damage: %d  Base attack delay: %.1f"
     "\nThis weapon's minimum attack delay (%.1f) is reached at skill level %d.",
@@ -955,7 +955,7 @@ static void _append_weapon_stats(string &description, const item_def &item)
         base_dam + ammo_dam,
         (float) property(item, PWPN_SPEED) / 10,
         (float) weapon_min_delay(item) / 10,
-        mindelay_skill / 10);
+        min(mindelay_skill / 10,27));
 
     string target_command_desc = "";
     if (could_set_target &&
@@ -963,7 +963,7 @@ static void _append_weapon_stats(string &description, const item_def &item)
     {
         target_command_desc = make_stringf(
             "; press <white>(s)</white> to set %d.%d as a training target.",
-                                    mindelay_skill / 10, mindelay_skill % 10);
+                                    min(mindelay_skill / 10,27), mindelay_skill > 270 ? 0 : mindelay_skill % 10);
     }
 
     if (crawl_state.need_save && !is_useless_item(item))
@@ -974,7 +974,7 @@ static void _append_weapon_stats(string &description, const item_def &item)
     }
 
     if (could_set_target)
-        _append_skill_target_desc(description, skill, mindelay_skill / 10);
+        _append_skill_target_desc(description, skill, min(mindelay_skill / 10,27));
 }
 
 static string _handedness_string(const item_def &item)
