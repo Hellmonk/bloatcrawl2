@@ -952,7 +952,7 @@ void fontbuf_line_reader::cursorto(int newcpos)
     // TODO: does this technique get flashing on some screens b/c of the double draw?
     print_segment(0, 0);
 
-    char32_t c;
+    ucs_t c;
     float pos_x, pos_y;
 
     if (newcpos >= length)
