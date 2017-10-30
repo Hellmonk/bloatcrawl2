@@ -514,7 +514,7 @@ static const map<species_type, species_def> species_data =
     SPF_NONE,
     0, -1, 0, 4,
     MONS_SKELETAL_WARRIOR,
-    HT_LAND, US_UNDEAD, SIZE_MEDIUM,
+    HT_LAND, US_HUNGRY_DEAD, SIZE_MEDIUM,
     9, 6, 7, // 22
     { STAT_STR, STAT_DEX }, 5,
     { { MUT_NEGATIVE_ENERGY_RESISTANCE, 3, 1 }, { MUT_COLD_RESISTANCE, 1, 1 },
