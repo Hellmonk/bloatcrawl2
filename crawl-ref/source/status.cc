@@ -401,7 +401,7 @@ bool fill_status_info(int status, status_info* inf)
 #endif
 
     case STATUS_BONE_ARMOUR:
-        if (you.attribute[ATTR_BONE_ARMOUR] > 0)
+        if (you.attribute[ATTR_BONE_ARMOUR] > 0 || you.attribute[ATTR_SKELETON_ARMOUR] > 0)
         {
             inf->short_text = "corpse armour";
             inf->long_text = "You are enveloped in carrion and bones.";
