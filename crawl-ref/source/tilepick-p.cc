@@ -723,6 +723,7 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
             break;
         case SP_SKELETON:
             hair = 0;
+            break;
         case SP_TROLL:
             hair = TILEP_HAIR_TROLL;
             break;
