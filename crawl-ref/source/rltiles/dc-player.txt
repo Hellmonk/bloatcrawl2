@@ -51,6 +51,8 @@ kobold2_m
 kobold2_f
 mummy_m MUMMY
 mummy_f
+skeleton_m SKELETON
+skeleton_f
 naga_f NAGA
 naga_m
 naga_darkgreen_f
