@@ -837,7 +837,7 @@ static string _describe_mutant_beast(const monster_info &mi)
 static int _item_training_target(const item_def &item)
 {
     const int throw_dam = property(item, PWPN_DAMAGE);
-    if (item.base_type == OBJ_WEAPONS)
+    if (item.base_type == OBJ_WEAPONS || item.base_type == OBJ_STAVES)
         return min(weapon_min_delay_skill(item) * 10,270);
     else if (is_shield(item))
         return round(you.get_shield_skill_to_offset_penalty(item) * 10);
@@ -855,7 +855,7 @@ static int _item_training_target(const item_def &item)
 static skill_type _item_training_skill(const item_def &item)
 {
     const int throw_dam = property(item, PWPN_DAMAGE);
-    if (item.base_type == OBJ_WEAPONS)
+    if (item.base_type == OBJ_WEAPONS || item.base_type == OBJ_STAVES)
         return item_attack_skill(item);
     else if (is_shield(item))
         return SK_SHIELDS; // shields are armour, so do shields before armour
