@@ -1502,7 +1502,7 @@ static int _good_jewellery_plus(int subtype)
         case RING_STRENGTH:
         case RING_DEXTERITY:
         case RING_INTELLIGENCE:
-            return 3 + (one_chance_in(4) ? 3 : 0);
+            return 5;
         default:
             return 3 + (one_chance_in(6) ? 3 : 0);
     }
