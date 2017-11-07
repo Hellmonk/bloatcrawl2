@@ -952,8 +952,8 @@ ORIENT: encompass
 TAGS:   bailey_polearm no_item_gen no_monster_gen no_pool_fixup patrolling
 : orc_with_polearm(_G)
 : orc_warrior_with_polearm(_G)
-MONS:   centaur ; javelin ego:dispersal ident:type q:2 | \
-            javelin ego:dispersal ident:type q:3 . spear | trident | halberd . \
+MONS:   centaur ; tomahawk ego:dispersal ident:type q:2 | \
+            tomahawk ego:dispersal ident:type q:3 . spear | trident | halberd . \
             ring mail | scale mail | chain mail
 NSUBST: _ = 4:2 / 5:1 / *:.
 NSUBST: ; = 6:2 / 6:1 / *:.
