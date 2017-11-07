@@ -451,8 +451,6 @@ bool attack::distortion_affects_defender()
         BIG_DMG,
         BANISH,
         BLINK,
-        TELE_INSTANT,
-        TELE_DELAYED,
         NONE
     };
 
@@ -460,32 +458,26 @@ bool attack::distortion_affects_defender()
                                                        22, BIG_DMG,
                                                        5,  BANISH,
                                                        15, BLINK,
-                                                       10, TELE_INSTANT,
-                                                       10, TELE_DELAYED,
-                                                       5,  NONE);
+                                                       25,  NONE);
 
     if (simu && !(choice == SMALL_DMG || choice == BIG_DMG))
 	{
         return false;
 	}
 	
-	std::string d = std::to_string(special_damage);
-	
     switch (choice)
     {
     case SMALL_DMG:
 		special_damage += 1 + random2avg(7, 2);
-		d = std::to_string(special_damage);
-        special_damage_message = make_stringf("Space bends around %s (%s).",
+        special_damage_message = make_stringf("Space bends around %s (%d).",
                                               defender_name(false).c_str(),
-											  d.c_str());
+											  special_damage);
         break;
     case BIG_DMG:
 		special_damage += 3 + random2avg(24, 2);
-		d = std::to_string(special_damage);
-        special_damage_message = make_stringf("Space warps horribly around %s (%s)!",
+        special_damage_message = make_stringf("Space warps horribly around %s (%d)!",
                                               defender_name(false).c_str(),
-											  d.c_str());
+											  special_damage);
         break;
     case BLINK:
         if (defender_visible)
@@ -499,23 +491,6 @@ bool attack::distortion_affects_defender()
         defender->banish(attacker, attacker->name(DESC_PLAIN, true),
                          attacker->get_experience_level());
         return true;
-    case TELE_INSTANT:
-    case TELE_DELAYED:
-        if (defender_visible)
-            obvious_effect = true;
-        if (crawl_state.game_is_sprint() && defender->is_player()
-            || defender->no_tele())
-        {
-            if (defender->is_player())
-                canned_msg(MSG_STRANGE_STASIS);
-            return false;
-        }
-
-        if (choice == TELE_INSTANT)
-            teleport_fineff::schedule(defender);
-        else
-            defender->teleport();
-        break;
     case NONE:
         // Do nothing
         break;
