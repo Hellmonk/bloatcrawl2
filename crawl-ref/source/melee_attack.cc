@@ -1806,9 +1806,11 @@ void melee_attack::handle_noise(const coord_def & pos)
         return;
 
     int loudness = damage_done / 4;
-
-    // All non-stab melee attacks make some noise.
-    loudness = max(1, loudness);
+	
+    if(attacker->is_player() && you.attribute[ATTR_SONG_OF_SLAYING])
+    {
+		loudness += random2(5) + 1;
+    }
 
     // Cap melee noise at shouting volume.
     loudness = min(12, loudness);
