@@ -593,6 +593,7 @@ static const duration_def duration_data[] =
     { DUR_ANCESTOR_DELAY, 0, "", "", "ancestor delay", "", D_NO_FLAGS, {{""}}},
     { DUR_NO_CAST, 0, "", "", "no cast", "", D_NO_FLAGS,
       {{ "You regain access to your magic." }, {}, true }},
+    { DUR_SPECTRAL_WEAPON_COOLDOWN, 0, "", "", "spectral weapon cooldown", "", D_NO_FLAGS},
 
 #if TAG_MAJOR_VERSION == 34
     // And removed ones

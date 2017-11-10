@@ -365,7 +365,8 @@ bool melee_attack::handle_phase_hit()
         return false;
     }
 	
-	if (attacker->is_player() && you.attribute[ATTR_SPECTRAL_WEAPON])
+	if (attacker->is_player() && you.attribute[ATTR_SPECTRAL_WEAPON]
+        && !(you.duration[DUR_SPECTRAL_WEAPON_COOLDOWN] > 0))
     {
         summon_spectral_weapon(&you, calc_spell_power(SPELL_SPECTRAL_WEAPON,true),you.religion);         
 	}

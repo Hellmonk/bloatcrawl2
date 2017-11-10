@@ -3128,6 +3128,11 @@ void end_spectral_weapon(monster* mons, bool killed, bool quiet)
     if (owner)
         owner->props.erase("spectral_weapon");
 
+    if (killed && owner && owner->is_player())
+    {
+        you.duration[DUR_SPECTRAL_WEAPON_COOLDOWN] = random_range(30,70);
+    }
+
     if (!quiet)
     {
         if (you.can_see(*mons))

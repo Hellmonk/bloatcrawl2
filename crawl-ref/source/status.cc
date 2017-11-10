@@ -733,13 +733,19 @@ bool fill_status_info(int status, status_info* inf)
             if (!weapon_can_be_spectral(weapon))
             {
 			    inf->short_text   = "unsuitable spectral weapon";
-                inf->long_text   = "can't summon spectral weapon";
+                inf->long_text    = "can't summon spectral weapon";
+                inf->light_colour = DARKGREY;
+            }
+            else if (you.duration[DUR_SPECTRAL_WEAPON_COOLDOWN])
+            {
+                inf->short_text   = "spectral weapon cooldown";
+                inf->long_text    = "spectral weapon on cooldown";
                 inf->light_colour = DARKGREY;
             }
             else
             {
                 inf->short_text   = "spectral weapon";
-                inf->long_text   = "ready to summon spectral weapon";
+                inf->long_text    = "ready to summon spectral weapon";
                 inf->light_colour = WHITE;
             }
         }

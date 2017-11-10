@@ -823,6 +823,9 @@ static void _decrement_durations()
 
     if (you.duration[DUR_DRAGON_CALL])
         do_dragon_call(delay);
+	
+    if(you.duration[DUR_SPECTRAL_WEAPON_COOLDOWN])
+        you.duration[DUR_SPECTRAL_WEAPON_COOLDOWN] = max(you.duration[DUR_SPECTRAL_WEAPON_COOLDOWN] - delay, 0);
 
     if (you.attribute[ATTR_ABJURATION_AURA])
         do_aura_of_abjuration(delay);
