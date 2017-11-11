@@ -768,7 +768,7 @@ bool fill_status_info(int status, status_info* inf)
 	    if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN)
         {
             inf->light_colour = LIGHTRED;
-            inf->light_text = make_stringf("DOOM(%d)", env.turns_on_level < 650 ? 650 - env.turns_on_level : 0);
+            inf->light_text = make_stringf("DOOM(%d)", env.turns_on_level < 500 ? 500 - env.turns_on_level : 0);
             inf->short_text   = "Turns until doom";
             inf->long_text    = "Turns remaining until you rot away";
         }

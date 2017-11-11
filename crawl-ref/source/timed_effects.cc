@@ -914,9 +914,9 @@ static void _antiscumming(int /*time_delta*/)
     if (crawl_state.difficulty == DIFFICULTY_CASUAL)
         return;
     if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN
-        && env.turns_on_level > 650)
+        && env.turns_on_level > 500)
     {
-		int amount = 1 + (env.turns_on_level - 650) / 40;
+		int amount = 3 + (env.turns_on_level - 500) / 40;
         rot_hp(amount);
         mprf(MSGCH_WARN, "You feel yourself rotting away!");
         return;

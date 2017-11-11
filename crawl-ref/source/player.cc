@@ -1239,6 +1239,8 @@ int player_mp_regen()
         multiplier += 175;
     if (player_equip_unrand(UNRAND_ETHERIC_CAGE))
         multiplier += 175;
+    if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN)
+	    multiplier += 50;
 
     return regen_amount * multiplier / 100;
 }
