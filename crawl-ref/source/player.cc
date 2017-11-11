@@ -2788,7 +2788,7 @@ int xp_to_level_diff(int xp, int scale)
     ASSERT(xp >= 0);
     int adjusted_xp = you.experience + xp;
     int level = you.experience_level;
-    while (adjusted_xp >= exp_needed(level + 1))
+    while (adjusted_xp >= (int) exp_needed(level + 1))
         level++;
     if (scale > 1)
     {
