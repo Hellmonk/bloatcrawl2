@@ -2352,7 +2352,6 @@ static spell_type servitor_spells[] =
     SPELL_MEPHITIC_CLOUD,
     // fallback spells
     SPELL_STICKY_FLAME,
-    SPELL_THROW_FROST,
     SPELL_FREEZE,
     SPELL_FLAME_TONGUE,
     SPELL_SANDBLAST,
@@ -2637,7 +2636,6 @@ bool battlesphere_can_mirror(spell_type spell)
         || spell == SPELL_FREEZE
         || spell == SPELL_FIREBALL     
         || spell == SPELL_BOLT_OF_FIRE
-        || spell == SPELL_THROW_FROST
         || spell == SPELL_MEPHITIC_CLOUD
         || spell == SPELL_BOLT_OF_DRAINING
         || spell == SPELL_LEHUDIBS_CRYSTAL_SPEAR

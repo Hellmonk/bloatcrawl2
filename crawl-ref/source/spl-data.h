@@ -247,7 +247,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_THROW_FROST, "Throw Frost",
     SPTYP_ICE,
-    SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER,
+    SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER | SPFLAG_MONSTER,
     2,
     50,
     6, 6,
