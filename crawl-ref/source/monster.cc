@@ -5933,19 +5933,6 @@ bool monster::evoke_jewellery_effect(jewellery_type jtype)
 void monster::react_to_damage(const actor *oppressor, int damage,
                                beam_type flavour)
 {
-    // Don't discharge on small amounts of damage (this helps avoid
-    // continuously shocking when poisoned or sticky flamed)
-    // XXX: this might not be necessary anymore?
-    if (type == MONS_SHOCK_SERPENT && damage > 4 && oppressor)
-    {
-        const int pow = div_rand_round(min(damage, hit_points + damage), 9);
-        if (pow)
-        {
-            shock_serpent_discharge_fineff::schedule(this, *oppressor, pos(),
-                                                     pow);
-        }
-    }
-
     // The (real) royal jelly objects to taking damage and will SULK. :-)
     if (type == MONS_ROYAL_JELLY && !is_summoned())
         trj_spawn_fineff::schedule(oppressor, this, pos(), damage);
