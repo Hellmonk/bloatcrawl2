@@ -864,7 +864,7 @@ static void _describe_glow(status_info* inf)
 #if TAG_MAJOR_VERSION == 34
     if (cont > 1 || you.species != SP_DJINNI)
 #endif
-    inf->light_text = "Contam";
+    inf->light_text = make_stringf("Contam (%d)", you.magic_contamination);
 
     /// Mappings from contamination levels to descriptions.
     static const string contam_adjectives[] =
