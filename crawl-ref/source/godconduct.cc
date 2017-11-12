@@ -404,14 +404,14 @@ static peeve_map divine_peeves[] =
         { DID_KILL_SLIME, {
             "you kill slimes", true,
             1, 2, nullptr, nullptr, [] (const monster* victim) -> bool {
-                return victim && !victim->is_shapeshifter();
+                return victim && !victim->is_shapeshifter() && !you.penance[GOD_JIYVA];
             }
         } },
         { DID_ATTACK_NEUTRAL, {
             nullptr, true,
             1, 1, nullptr, nullptr, [] (const monster* victim) -> bool {
                 return victim
-                    && mons_is_slime(*victim) && !victim->is_shapeshifter();
+                    && mons_is_slime(*victim) && !victim->is_shapeshifter() && !you.penance[GOD_JIYVA];
             }
         } },
         { DID_ATTACK_FRIEND, _on_attack_friend("you attack fellow slimes") },
@@ -1041,10 +1041,6 @@ string get_god_likes(god_type which_god)
     case GOD_FEDHAS:
         likes.emplace_back("you promote the decay of nearby corpses by "
                            "<w>p</w>raying");
-        break;
-    case GOD_JIYVA:
-        likes.emplace_back("you sacrifice items by allowing slimes to consume "
-                           "them");
         break;
     case GOD_GOZAG:
         likes.emplace_back("you collect gold");

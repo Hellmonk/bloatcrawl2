@@ -888,7 +888,8 @@ bool bad_attack(const monster *mon, string& adj, string& suffix,
         return bad_landing;
 
     if (you_worship(GOD_JIYVA) && mons_is_slime(*mon)
-        && !(mon->is_shapeshifter() && (mon->flags & MF_KNOWN_SHIFTER)))
+        && !(mon->is_shapeshifter() && (mon->flags & MF_KNOWN_SHIFTER))
+           && !you.penance[GOD_JIYVA])
     {
         would_cause_penance = true;
         return true;
