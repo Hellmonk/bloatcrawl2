@@ -130,7 +130,7 @@ bool Form::slot_available(int slot) const
         return !all_blocked(EQF_RINGS);
 
     if (slot == EQ_STAFF)
-        slot = EQ_WEAPON;
+        slot = EQ_SHIELD;
     return !(blocked_slots & SLOTF(slot));
 }
 

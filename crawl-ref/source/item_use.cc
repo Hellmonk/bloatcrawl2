@@ -406,7 +406,7 @@ bool can_wield(const item_def *weapon, bool say_reason,
 
     if (!ignore_temporary_disability && is_shield_incompatible(*weapon))
     {
-        SAY(mpr("You can't wield that with a shield."));
+        SAY(mpr("You can't wield that with a shield or magical staff."));
         return false;
     }
 
@@ -667,7 +667,7 @@ static int armour_equip_delay(const item_def &item)
 bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
 {
     const object_class_type base_type = item.base_type;
-    if (base_type != OBJ_ARMOUR)
+    if (base_type != OBJ_ARMOUR && base_type != OBJ_STAVES)
     {
         if (verbose)
             mpr("You can't wear that.");
@@ -675,7 +675,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         return false;
     }
 
-    const int sub_type = item.sub_type;
+    const int sub_type = base_type == OBJ_STAVES ? ARM_SHIELD : item.sub_type;
     const equipment_type slot = get_armour_slot(item);
 
     if (you.species == SP_OCTOPODE && slot != EQ_HELMET && slot != EQ_SHIELD)
@@ -709,7 +709,8 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         return false;
     }
 
-    if (you.get_mutation_level(MUT_MISSING_HAND) && is_shield(item))
+    if (you.get_mutation_level(MUT_MISSING_HAND)
+         && (is_shield(item) || item.base_type == OBJ_STAVES))
     {
         if (verbose)
         {
@@ -722,7 +723,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
     }
 
     if (!ignore_temporary && you.weapon()
-        && is_shield(item)
+        && (is_shield(item) || item.base_type == OBJ_STAVES)
         && is_shield_incompatible(*you.weapon(), &item))
     {
         if (verbose)
@@ -977,7 +978,7 @@ static bool _can_takeoff_armour(int item);
 static bool _can_equip_armour(const item_def &item)
 {
     const object_class_type base_type = item.base_type;
-    if (base_type != OBJ_ARMOUR)
+    if (base_type != OBJ_ARMOUR && base_type != OBJ_STAVES)
     {
         mpr("You can't wear that.");
         return false;
@@ -1096,7 +1097,7 @@ bool wear_armour(int item)
 static bool _can_takeoff_armour(int item)
 {
     item_def& invitem = you.inv[item];
-    if (invitem.base_type != OBJ_ARMOUR)
+    if (invitem.base_type != OBJ_ARMOUR && invitem.base_type != OBJ_STAVES)
     {
         mpr("You aren't wearing that!");
         return false;

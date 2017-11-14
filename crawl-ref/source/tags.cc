@@ -3620,6 +3620,12 @@ static void tag_read_you_items(reader &th)
             if (entry->world_reacts_func)
                 you.unrand_reacts.set(i);
         }
+        // unequip any staves if they're in the wrong hand
+        if(th.getMinorVersion() < TAG_MINOR_MAGICAL_STAVES && item && item->base_type == OBJ_STAVES)
+        {
+            you.equip[i] = -1;
+            you.melded.set(i, false);
+        }
     }
 
     unmarshallFixedBitVector<NUM_RUNE_TYPES>(th, you.runes);

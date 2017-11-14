@@ -406,10 +406,13 @@ bool player::could_wield(const item_def &item, bool ignore_brand,
     // Most non-weapon objects can be wielded, though there's rarely a point
     if (!is_weapon(item))
     {
-        if (item.base_type == OBJ_ARMOUR || item.base_type == OBJ_JEWELLERY)
+        if (item.base_type == OBJ_ARMOUR || item.base_type == OBJ_JEWELLERY
+           || item.base_type == OBJ_STAVES)
         {
             if (!quiet)
-                mprf("You can't wield %s.", base_type_string(item));
+                mprf("You can't wield %s%s.",
+                    item.base_type == OBJ_STAVES ? "a magical " : "",
+                    base_type_string(item));
             return false;
         }
 

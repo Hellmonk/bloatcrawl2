@@ -1001,10 +1001,11 @@ bool item_is_selected(const item_def &i, int selector)
     switch (selector)
     {
     case OBJ_ARMOUR:
-        return itype == OBJ_ARMOUR && can_wear_armour(i, false, false);
+        return (itype == OBJ_ARMOUR || itype == OBJ_STAVES)
+            && can_wear_armour(i, false, false);
 
     case OSEL_WORN_ARMOUR:
-        return itype == OBJ_ARMOUR && item_is_equipped(i);
+        return (itype == OBJ_ARMOUR || itype == OBJ_STAVES) && item_is_equipped(i);
 
     case OSEL_UNIDENT:
         return !fully_identified(i) && itype != OBJ_BOOKS;

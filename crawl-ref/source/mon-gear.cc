@@ -933,8 +933,9 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         force_item = true;
         if (one_chance_in(3))
         {
-            item.base_type = OBJ_STAVES;
-            item.sub_type = STAFF_EARTH;
+            item.base_type = OBJ_WEAPONS;
+            item.sub_type = WPN_BROAD_AXE;
+            set_item_ego_type(item, OBJ_WEAPONS, SPWPN_VORPAL);
         }
         else
         {
@@ -991,18 +992,19 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         force_item = true;
         if (one_chance_in(3))
         {
-            item.base_type = OBJ_STAVES;
-            item.sub_type = STAFF_COLD;
+            item.base_type = OBJ_WEAPONS;
+            item.sub_type = WPN_SCIMITAR;
+            set_item_ego_type(item, OBJ_WEAPONS, SPWPN_FREEZING);
         }
         else
         {
             item.base_type = OBJ_WEAPONS;
             item.sub_type = WPN_QUARTERSTAFF;
             set_item_ego_type(item, OBJ_WEAPONS, SPWPN_FREEZING);
-            // this might not be the best place for this logic, but:
-            make_item_for_monster(mon, OBJ_JEWELLERY, RING_ICE,
-                                  0, 1, ISFLAG_KNOW_TYPE);
         }
+        // this might not be the best place for this logic, but:
+        make_item_for_monster(mon, OBJ_JEWELLERY, RING_ICE,
+                                  0, 1, ISFLAG_KNOW_TYPE);
         item.flags |= ISFLAG_KNOW_TYPE;
         break;
 
@@ -1013,9 +1015,12 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
 
     case MONS_ARACHNE:
         force_item = true;
-        item.base_type = OBJ_STAVES;
-        item.sub_type = STAFF_DEATH;
-        item.flags    |= ISFLAG_KNOW_TYPE;
+        item.base_type = OBJ_WEAPONS;
+        item.sub_type = WPN_QUARTERSTAFF;
+        if(one_chance_in(3))
+            set_item_ego_type(item, OBJ_WEAPONS, SPWPN_PAIN);
+        else
+            set_item_ego_type(item, OBJ_WEAPONS, SPWPN_VENOM);
         break;
 
     case MONS_CEREBOV:

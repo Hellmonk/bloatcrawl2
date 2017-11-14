@@ -3659,14 +3659,8 @@ bool is_useless_item(const item_def &item, bool temp)
 #endif
 
     case OBJ_STAVES:
-        if (!you.could_wield(item, true, !temp))
-        {
-            // Weapon is too large (or small) to be wielded and cannot
-            // be thrown either.
+        if (you.get_mutation_level(MUT_MISSING_HAND))
             return true;
-        }
-        if (!item_type_known(item))
-            return false;
 
         switch (item.sub_type)
         {

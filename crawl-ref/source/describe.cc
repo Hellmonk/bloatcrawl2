@@ -2005,13 +2005,8 @@ string get_item_description(const item_def &item, bool verbose,
         break;
 
     case OBJ_STAVES:
-        {
-            string stats = "\n";
-            _append_weapon_stats(stats, item);
-            description << stats;
-        }
         description << "\n\nIt falls into the 'Staves' category. ";
-        description << _handedness_string(item);
+        description << "\nIt is designed to be worn in place of a shield.";
         break;
 
     case OBJ_MISCELLANY:
@@ -2253,9 +2248,6 @@ static vector<command_type> _allowed_actions(const item_def& item)
     switch (item.base_type)
     {
     case OBJ_WEAPONS:
-    case OBJ_STAVES:
-        if (_could_set_training_target(item, false))
-            actions.push_back(CMD_SET_SKILL_TARGET);
         // intentional fallthrough
     case OBJ_MISCELLANY:
         if (!item_is_equipped(item))
@@ -2272,6 +2264,7 @@ static vector<command_type> _allowed_actions(const item_def& item)
         actions.push_back(CMD_QUIVER_ITEM);
         break;
     case OBJ_ARMOUR:
+    case OBJ_STAVES:
         if (_could_set_training_target(item, false))
             actions.push_back(CMD_SET_SKILL_TARGET);
         if (item_is_equipped(item))
