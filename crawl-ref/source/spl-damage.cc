@@ -1051,27 +1051,19 @@ static int _shatter_mon_dice(const monster *mon)
     case MONS_ROXANNE:
         return 6;
 
-    // 1/3 damage to liquids.
-    case MONS_WATER_ELEMENTAL:
-        return 1;
-
     default:
         const bool petrifying = mon->petrifying();
         const bool petrified = mon->petrified();
 
-        // Extra damage to petrifying/petrified things.
-        // Undo the damage reduction as well; base damage is 4 : 6.
+		// Extra damage to petrifying/petrified things.
         if (petrifying || petrified)
-            return petrifying ? 6 : 12;
-        // No damage to insubstantials.
+            return 6;
+        // reduced damage to insubstantials.
         else if (mon->is_insubstantial())
-            return 0;
+            return 1;
         // 1/3 damage to fliers and slimes.
         else if (mon->airborne() || mons_is_slime(*mon))
             return 1;
-        // 3/2 damage to ice.
-        else if (mon->is_icy())
-            return coinflip() ? 5 : 4;
         // Double damage to bone.
         else if (mon->is_skeletal())
             return 6;
@@ -1192,19 +1184,13 @@ static int _shatter_walls(coord_def where, int pow, actor *agent)
 static int _shatter_player_dice()
 {
     if (you.is_insubstantial())
-        return 0;
-    else if (you.petrified())
-        return 12; // reduced later
-    else if (you.petrifying())
-        return 6;  // reduced later
-    // Same order as for monsters -- petrified flyers get hit hard, skeletal
-    // flyers get no extra damage.
+        return 1;
+    else if (you.petrified() || you.petrifying())
+        return 6; // reduced later
     else if (you.airborne())
         return 1;
     else if (you.form == TRAN_STATUE || you.species == SP_GARGOYLE)
         return 6;
-    else if (you.form == TRAN_ICE_BEAST)
-        return coinflip() ? 5 : 4;
     else
         return 3;
 }
