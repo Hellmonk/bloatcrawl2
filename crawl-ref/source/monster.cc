@@ -4349,14 +4349,6 @@ int monster::hurt(const actor *agent, int amount, beam_type flavour,
 
     if (alive())
     {
-        if (amount != INSTANT_DEATH)
-        {
-            if (petrified())
-                amount /= 2;
-            else if (petrifying())
-                amount = amount * 2 / 3;
-        }
-
         if (amount != INSTANT_DEATH && has_ench(ENCH_INJURY_BOND))
         {
             actor* guardian = get_ench(ENCH_INJURY_BOND).agent();

@@ -291,13 +291,12 @@ You are more vulnerable to hostile enchantments.
 %%%%
 Stone status
 
-You are petrified, and completely unable to act. You are very easy to hit,
-but all damage taken is substantially reduced.
+You are petrified, and completely unable to act. You are very easy to hit.
 %%%%
 Petr status
 
-You are turning to stone. Your actions are slowed, all damage taken is slightly
-reduced, and you will soon be completely petrified (gaining the Stone status).
+You are turning to stone. Your actions are slowed and you will soon be 
+completely petrified (gaining the Stone status).
 %%%%
 Resist status
 
