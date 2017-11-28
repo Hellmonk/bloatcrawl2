@@ -6018,7 +6018,7 @@ int player::armour_class(bool /*calc_unid*/) const
     AC += scan_artefacts(ARTP_AC) * 100;
 
     if (you.attribute[ATTR_OZO_ARMOUR])
-        AC += 500 + calc_spell_power(SPELL_OZOCUBUS_ARMOUR, true) * 8;
+        AC += 400 + calc_spell_power(SPELL_OZOCUBUS_ARMOUR, true) * 8;
 
     if (mutation[MUT_ICEMAIL])
         AC += 100 * player_icemail_armour_class();
