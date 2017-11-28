@@ -3110,26 +3110,6 @@ ccccWWWWWcccc
  ccccc@ccccc
 ENDMAP
 
-NAME: nicolae_overflow_quartered_altars
-TAGS: temple_overflow_generic_4
-SHUFFLE: fgh/ijk, pq/rs
-SUBST: pqi = ., rk = c, s = +, z : cm, j : GTt
-CLEAR: fgh
-MAP
-  ffghgff
- @.ccccc.@
-f.qp.c.pq.f
-fcp..z..pcf
-gc..BcB..cg
-hcczccczcch
-gc..BcB..cg
-fcp..z..pcf
-f.qp.c.pq.f
- @.ccccc.@
-  ffghgff
-ENDMAP
-
-
 NAME: hellmonk_temple_overflow_moretrees
 TAGS: temple_overflow_generic_4
 MAP
