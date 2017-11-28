@@ -96,7 +96,6 @@ static const vector<spell_type> spellbook_templates[] =
 },
 
 {   // Book of Death
-    SPELL_SUBLIMATION_OF_BLOOD,
     SPELL_AGONY,
     SPELL_DISPEL_UNDEAD,
     SPELL_EXCRUCIATING_WOUNDS,
@@ -153,6 +152,7 @@ static const vector<spell_type> spellbook_templates[] =
 
 {   // Book of Necromancy
     SPELL_PAIN,
+    SPELL_SUBLIMATION_OF_BLOOD,
     SPELL_VAMPIRIC_DRAINING,
     SPELL_REGENERATION,
     SPELL_ANIMATE_DEAD,
