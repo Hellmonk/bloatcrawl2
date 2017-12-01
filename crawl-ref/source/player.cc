@@ -1925,6 +1925,9 @@ int player_prot_life(bool calc_unid, bool temp, bool items)
         // completely stoned, unlike statue which has some life force
         if (you.petrified())
             pl += 3;
+		
+        if (you.duration[DUR_RESISTANCE])
+            pl++;
     }
 
     if (items)
@@ -6387,6 +6390,9 @@ int player_res_magic(bool calc_unid, bool temp)
     if (you.form == TRAN_LICH && temp)
         rm += MR_PIP;
 
+    if (you.duration[DUR_RESISTANCE])
+        rm += MR_PIP;
+	
     // Trog's Hand
     if (you.duration[DUR_TROGS_HAND] && temp)
         rm += MR_PIP * 2;
