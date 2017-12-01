@@ -923,7 +923,7 @@ static void _antiscumming(int /*time_delta*/)
 	}
     if(env.turns_on_level < 3000)
         return;
-    if(!is_connected_branch(level_id::current().branch))
+    if(player_in_branch(BRANCH_ABYSS))
         return;
     //make it loud
     noisy(30, you.pos());

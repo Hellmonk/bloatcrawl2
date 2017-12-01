@@ -1112,9 +1112,10 @@ void player_reacts()
         mprf(MSGCH_WARN, "You feel yourself begin to rot away!");
     }
     else if (crawl_state.difficulty == DIFFICULTY_NORMAL && env.turns_on_level == 2499
-        && is_connected_branch(level_id::current().branch))
+        && !player_in_branch(BRANCH_ABYSS))
     {
-		mprf(MSGCH_WARN, "You feel the dungeon grow hostile. You need to descend quickly!");
+		mprf(MSGCH_WARN, "You feel the dungeon grow hostile. You need to %s quickly!",
+                is_connected_branch(level_id::current().branch) ? "descend" : "move on");
     }
 }
 

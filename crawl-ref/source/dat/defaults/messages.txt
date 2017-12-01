@@ -30,6 +30,7 @@ msc += $danger:place you under penance
 msc += $danger:acid corrodes
 msc += $danger:rotting away
 msc += $danger:need to descend
+msc += $danger:need to move on
 
 # Less urgent, but still significant messages
 #
@@ -109,6 +110,7 @@ force_more_message += This is a scroll of acquirement
 force_more_message += You will only be able to enter Pandemonium once
 force_more_message += lava roasts you
 force_more_message += need to descend quickly
+force_more_message += need to move on quickly
 force_more_message += dungeon lashes out
 force_more_message += You feel yourself begin to rot away
 
