@@ -2821,7 +2821,7 @@ string _status_mut_rune_list(int sw)
     {
         text += make_stringf("\n<w>%s:</w> %d/%d rune%s: %s",
                     stringize_glyph(get_item_symbol(SHOW_ITEM_MISCELLANY)).c_str(),
-                    (int)runes.size(), you.obtainable_runes,
+                    (int)runes.size(), 9,
                     you.obtainable_runes == 1 ? "" : "s",
                     comma_separated_line(runes.begin(), runes.end(),
                                          ", ", ", ").c_str());
