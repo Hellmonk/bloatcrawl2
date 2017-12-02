@@ -1090,6 +1090,9 @@ static void _start_running(int dir, int mode)
         }
     }
 
+    if (wu_jian_can_wall_jump(next_pos))
+        return; // Do not wall jump while running.
+	
     you.running.initialise(dir, mode);
 }
 
@@ -2569,7 +2572,9 @@ void world_reacts()
     if (!crawl_state.game_is_arena())
         player_reacts_to_monsters();
 
-    viewwindow();
+    wu_jian_end_of_turn_effects();
+	
+	viewwindow();
 
     if (you.cannot_act() && any_messages()
         && crawl_state.repeat_cmd != CMD_WIZARD)
@@ -3200,6 +3205,8 @@ static void _move_player(coord_def move)
         you.turn_is_over = true;
         return;
     }
+	
+    const coord_def initial_position = you.pos();
 
     // When confused, sometimes make a random move.
     if (you.confused())
@@ -3258,9 +3265,12 @@ static void _move_player(coord_def move)
     }
 
     const coord_def targ = you.pos() + move;
+	
+    bool can_wall_jump = wu_jian_can_wall_jump(targ);
+    bool did_wall_jump = false;
 
     // You can't walk out of bounds!
-    if (!in_bounds(targ))
+    if (!in_bounds(targ) && !can_wall_jump)
     {
         // Why isn't the border permarock?
         if (you.digging)
@@ -3422,8 +3432,11 @@ static void _move_player(coord_def move)
             return;
         }
     }
+	
+    const bool running = you_are_delayed() && current_delay()->is_run();
 
-    if (!attacking && targ_pass && moving && !beholder && !fmonger)
+    if (!attacking && (targ_pass || can_wall_jump)
+    && moving && !beholder && !fmonger)
     {
         if (you.confused() && is_feat_unpleasant(env.grid(targ)))
         {
@@ -3488,7 +3501,6 @@ static void _move_player(coord_def move)
             }
         }
 
-        const bool running = you_are_delayed() && current_delay()->is_run();
         if (running && env.travel_trail.empty())
             env.travel_trail.push_back(you.pos());
         else if (!running)
@@ -3499,8 +3511,22 @@ static void _move_player(coord_def move)
         you.stop_being_constricted();
 
         // Don't trigger traps when confusion causes no move.
-        if (you.pos() != targ)
+        if (you.pos() != targ && targ_pass)
             move_player_to_grid(targ, true);
+        else if (can_wall_jump && !running)
+        {
+            auto wall_jump_direction = (you.pos() - targ).sgn();
+            auto wall_jump_landing_spot = (you.pos() + wall_jump_direction
+                                           + wall_jump_direction);
+            if (!check_moveto(wall_jump_landing_spot, "wall jump"))
+            {
+                you.turn_is_over = false;
+                return;
+            }
+            did_wall_jump = true;
+            move_player_to_grid(wall_jump_landing_spot, false);
+            wu_jian_wall_jump_effects(initial_position);
+        }
         // Now it is safe to apply the swappee's location effects. Doing
         // so earlier would allow e.g. shadow traps to put a monster
         // at the player's location.
@@ -3522,7 +3548,10 @@ static void _move_player(coord_def move)
         if (you_are_delayed() && current_delay()->is_run())
             env.travel_trail.push_back(you.pos());
 
-        you.time_taken *= player_movement_speed();
+	    // Serpent's Lash = 1 means half of the wall jump time is refunded, so the modifier is 2 * 1/2 = 1;
+        int wall_jump_modifier = (did_wall_jump && you.attribute[ATTR_SERPENTS_LASH] != 1) ? 2 : 1;
+	
+        you.time_taken *= wall_jump_modifier * player_movement_speed();
         you.time_taken = div_rand_round(you.time_taken, 10);
         you.time_taken += additional_time_taken;
 
@@ -3538,6 +3567,14 @@ static void _move_player(coord_def move)
         move.reset();
         you.turn_is_over = true;
         request_autopickup();
+    }
+	
+    if (!attacking && !targ_pass && !can_wall_jump && !running
+        && moving && !beholder && !fmonger
+        && wu_jian_can_wall_jump_in_principle(targ))
+    {
+        // do messaging for a failed wall jump
+        wu_jian_can_wall_jump(targ, true);
     }
 
     // BCR - Easy doors single move
@@ -3562,7 +3599,7 @@ static void _move_player(coord_def move)
         _entered_malign_portal(&you);
         return;
     }
-    else if (!targ_pass && !attacking)
+    else if (!targ_pass && !attacking && !can_wall_jump)
     {
         if (you.is_stationary())
             canned_msg(MSG_CANNOT_MOVE);
@@ -3579,14 +3616,14 @@ static void _move_player(coord_def move)
         crawl_state.cancel_cmd_repeat();
         return;
     }
-    else if (beholder && !attacking)
+    else if (beholder && !attacking && !can_wall_jump)
     {
         mprf("You cannot move away from %s!",
             beholder->name(DESC_THE).c_str());
         stop_running();
         return;
     }
-    else if (fmonger && !attacking)
+    else if (fmonger && !attacking && !can_wall_jump)
     {
         mprf("You cannot move closer to %s!",
             fmonger->name(DESC_THE).c_str());
@@ -3607,6 +3644,9 @@ static void _move_player(coord_def move)
     {
         did_god_conduct(DID_HASTY, 1, true);
     }
+	
+    if (you_worship(GOD_WU_JIAN) && !attacking)
+        wu_jian_post_move_effects(did_wall_jump, you.turn_is_over, initial_position);
 }
 
 static int _get_num_and_char(const char* prompt, char* buf, int buf_len)

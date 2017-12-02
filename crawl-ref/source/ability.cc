@@ -158,6 +158,7 @@ static skill_type _invo_skill()
         case GOD_GOZAG:
         case GOD_RU:
         case GOD_TROG:
+        case GOD_WU_JIAN:
             return SK_NONE; // ugh
         default:
             return SK_INVOCATIONS;
@@ -626,6 +627,12 @@ static const ability_def Ability_List[] =
     { ABIL_HEPLIAKLQANA_IDENTITY,  "Ancestor Identity",
         0, 0, 0, 0, {FAIL_INVO}, abflag::INSTANT },
 
+    // Wu Jian
+    { ABIL_WU_JIAN_SERPENTS_LASH, "Serpent's Lash",
+        0, 0, 0, 2, {FAIL_INVO}, abflag::EXHAUSTION | abflag::INSTANT },
+    { ABIL_WU_JIAN_HEAVENLY_STORM, "Heavenly Storm",
+        0, 0, 0, 20, {FAIL_INVO, piety_breakpoint(5), 0, 1}, abflag::NONE },		
+		
     { ABIL_STOP_RECALL, "Stop Recall", 0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
     { ABIL_RENOUNCE_RELIGION, "Renounce Religion",
       0, 0, 0, 0, {FAIL_INVO}, abflag::NONE },
@@ -3080,6 +3087,40 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         hepliaklqana_choose_identity();
         break;
 
+    case ABIL_WU_JIAN_SERPENTS_LASH:
+        if (you.attribute[ATTR_SERPENTS_LASH])
+        {
+            mpr("You are already lashing out.");
+            return SPRET_ABORT;
+        }
+        if (you.duration[DUR_EXHAUSTED])
+        {
+            mpr("You are too exhausted to lash out.");
+            return SPRET_ABORT;
+        }
+        fail_check();
+        mprf(MSGCH_GOD, "Your muscles tense, ready for explosive movement...");
+        you.attribute[ATTR_SERPENTS_LASH] = 2;
+        you.redraw_status_lights = true;
+        return SPRET_SUCCESS;
+
+    case ABIL_WU_JIAN_HEAVENLY_STORM:
+        fail_check();
+        mprf(MSGCH_GOD, "The air is filled with shimmering golden clouds!");
+        wu_jian_sifu_message(" says: The storm will not cease as long as you "
+                             "keep fighting, disciple!");
+
+        for (radius_iterator ai(you.pos(), 2, C_SQUARE, LOS_SOLID); ai; ++ai)
+        {
+            if (!cell_is_solid(*ai))
+                place_cloud(CLOUD_GOLD_DUST, *ai, 5 + random2(5), &you);
+        }
+
+        you.attribute[ATTR_HEAVENLY_STORM] = 12;
+        you.duration[DUR_HEAVENLY_STORM] = WU_JIAN_HEAVEN_TICK_TIME;
+        invalidate_agrid(true);
+break;		
+		
     case ABIL_RENOUNCE_RELIGION:
         fail_check();
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",

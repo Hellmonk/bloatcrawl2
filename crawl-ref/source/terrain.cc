@@ -343,6 +343,16 @@ command_type feat_stair_direction(dungeon_feature_type feat)
     }
 }
 
+/** Can you wall jump against this feature? (Wu Jian)?
+ */
+bool feat_can_wall_jump_against(dungeon_feature_type feat)
+{
+    return feat_is_wall(feat)
+           || feat == DNGN_GRATE
+           || feat_is_tree(feat)
+           || feat_is_statuelike(feat);
+}
+
 /** Can you normally see through this feature?
  */
 bool feat_is_opaque(dungeon_feature_type feat)
@@ -491,6 +501,7 @@ static const pair<god_type, dungeon_feature_type> _god_altars[] =
     { GOD_PAKELLAS, DNGN_ALTAR_PAKELLAS },
     { GOD_USKAYAW, DNGN_ALTAR_USKAYAW },
     { GOD_HEPLIAKLQANA, DNGN_ALTAR_HEPLIAKLQANA },
+    { GOD_WU_JIAN, DNGN_ALTAR_WU_JIAN },
     { GOD_ECUMENICAL, DNGN_ALTAR_ECUMENICAL },
 };
 

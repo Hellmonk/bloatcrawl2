@@ -281,6 +281,13 @@ static const cloud_data clouds[] = {
       BEAM_NONE, {},                              // beam & damage
       true,                                       // opacity
     },
+    // CLOUD_GOLD_DUST,
+    { "golden dust",  nullptr,                    // terse, verbose name
+      ETC_HOLY,                                   // colour
+      { TILE_CLOUD_GOLD_DUST, CTVARY_DUR },       // tile
+      BEAM_NONE, {},                              // beam & damage
+      true,                                       // opacity
+},
 };
 COMPILE_CHECK(ARRAYSZ(clouds) == NUM_CLOUD_TYPES);
 

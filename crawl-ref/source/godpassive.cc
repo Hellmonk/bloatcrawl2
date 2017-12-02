@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cmath>
 
+#include "act-iter.h"
 #include "artefact.h"
 #include "art-enum.h"
 #include "branch.h"
@@ -12,6 +13,7 @@
 #include "coordit.h"
 #include "directn.h"
 #include "env.h"
+#include "enum.h"
 #include "fight.h"
 #include "files.h"
 #include "food.h"
@@ -24,17 +26,24 @@
 #include "itemprop.h"
 #include "items.h"
 #include "libutil.h"
+#include "map_knowledge.h"
+#include "melee_attack.h"
 #include "message.h"
 #include "mon-cast.h"
 #include "mon-place.h"
 #include "mon-util.h"
+#include "output.h"
 #include "religion.h"
 #include "shout.h"
 #include "skills.h"
+#include "spl-clouds.h"
 #include "state.h"
+#include "status.h"
 #include "stringutil.h"
 #include "terrain.h"
 #include "throw.h"
+#include "unwind.h"
+#include "view.h"
 
 // TODO: template out the differences between this and god_power.
 // TODO: use the display method rather than dummy powers in god_powers.
@@ -282,6 +291,12 @@ static const vector<god_passive> god_passives[] =
     {
         { -1, passive_t::frail, "GOD siphons a part of your essence into your ancestor" },
         {  5, passive_t::transfer_drain, "drain nearby creatures when transferring your ancestor" },
+    },
+    // Wu Jian
+    {
+        { 0, passive_t::wu_jian_lunge, "perform damaging attacks by moving towards foes." },
+        { 1, passive_t::wu_jian_whirlwind, "lightly attack and pin monsters in place by moving around them." },
+        { 2, passive_t::wu_jian_wall_jump, "perform airborne attacks by moving against a solid obstacle." },
     },
 };
 COMPILE_CHECK(ARRAYSZ(god_passives) == NUM_GODS);
@@ -1354,6 +1369,347 @@ void dithmenos_shadow_spell(bolt* orig_beam, spell_type spell)
     mons_cast(mon, beem, shadow_spell, MON_SPELL_WIZARD, false);
 
     shadow_monster_reset(mon);
+}
+
+static void _wu_jian_trigger_serpents_lash(const coord_def& old_pos, bool wall_jump)
+{
+    if (you.attribute[ATTR_SERPENTS_LASH] == 0)
+       return;
+
+    if (wall_jump && you.attribute[ATTR_SERPENTS_LASH] == 1)
+    {
+        // No turn manipulation, since we are only refunding half
+        // a wall jump's time (the walk speed modifier for this special case
+        // is already factored in main.cc)
+        you.attribute[ATTR_SERPENTS_LASH] = 0;
+    } else {
+        you.turn_is_over = false;
+        you.elapsed_time_at_last_input = you.elapsed_time;
+        you.attribute[ATTR_SERPENTS_LASH] -= wall_jump ? 2 : 1;
+        you.redraw_status_lights = true;
+        update_turn_count();
+    }
+
+
+    // these messages are a little silly...
+    if (you.attribute[ATTR_SERPENTS_LASH] == 0)
+    {
+        you.increase_duration(DUR_EXHAUSTED, 12 + random2(5));
+        mpr(coinflip() ? "ZOOOM!" : "SWOOSH!");
+    }
+    else
+        mpr(coinflip() ? "Zoom!" : "Swooosh!");
+
+    if (!cell_is_solid(old_pos))
+        check_place_cloud(CLOUD_DUST_TRAIL, old_pos, 2 + random2(3) , &you, 1, -1);
+}
+
+void wu_jian_heaven_tick()
+{
+    if (you.attribute[ATTR_HEAVENLY_STORM] == 0)
+        return;
+
+    // TODO: this is still ridiculous. REWRITEME!
+    if (you.attribute[ATTR_HEAVENLY_STORM] <= 10)
+        you.attribute[ATTR_HEAVENLY_STORM] -= 1;
+    else if (you.attribute[ATTR_HEAVENLY_STORM] <= 15)
+        you.attribute[ATTR_HEAVENLY_STORM] -= 2;
+    else if (you.attribute[ATTR_HEAVENLY_STORM] <= 20)
+        you.attribute[ATTR_HEAVENLY_STORM] -= 3;
+    else if (you.attribute[ATTR_HEAVENLY_STORM] <= 30)
+        you.attribute[ATTR_HEAVENLY_STORM] -= 5;
+    else
+        you.attribute[ATTR_HEAVENLY_STORM] -= 10;
+
+    for (radius_iterator ai(you.pos(), 2, C_SQUARE, LOS_SOLID); ai; ++ai)
+    {
+        if (!cell_is_solid(*ai))
+            place_cloud(CLOUD_GOLD_DUST, *ai, 5 + random2(5), &you);
+    }
+
+    noisy(15, you.pos());
+
+    if (you.attribute[ATTR_HEAVENLY_STORM] == 0)
+        end_heavenly_storm();
+    else
+        you.duration[DUR_HEAVENLY_STORM] = WU_JIAN_HEAVEN_TICK_TIME;
+}
+
+void end_heavenly_storm()
+{
+    you.attribute[ATTR_HEAVENLY_STORM] = 0;
+    mprf(MSGCH_GOD, "The heavenly storm settles.");
+}
+
+bool wu_jian_has_momentum(wu_jian_attack_type attack_type)
+{
+    return you.attribute[ATTR_SERPENTS_LASH]
+           && attack_type != WU_JIAN_ATTACK_NONE
+           && attack_type != WU_JIAN_ATTACK_TRIGGERED_AUX;
+}
+
+static bool _can_attack_martial(const monster* mons)
+{
+    return !(mons->wont_attack()
+           || mons_is_firewood(*mons)
+           || mons_is_projectile(mons->type)
+           || !you.can_see(*mons));
+}
+
+// A mismatch between attack speed and move speed may cause
+// any particular martial attack to be doubled, tripled, or
+// not happen at all. Given enough time moving, you would have
+// made the same amount of attacks as tabbing.
+static int _wu_jian_number_of_attacks(bool wall_jump)
+{
+    const int move_delay = player_movement_speed() * player_speed();
+    int attack_delay;
+
+    {
+        // attack_delay() is dependent on you.time_taken, which won't be set
+        // appropriately during a movement turn. This temporarily resets
+        // you.time_taken to the initial value (see `_prep_input`) used for
+        // basic, simple, melee attacks.
+        // TODO: can `attack_delay` be changed to not depend on you.time_taken?
+        unwind_var<int> reset_speed(you.time_taken, player_speed());
+        attack_delay = you.attack_delay().roll();
+    }
+
+    return div_rand_round(wall_jump ? 2 * move_delay : move_delay, attack_delay * BASELINE_DELAY);
+}
+
+static void _wu_jian_lunge(const coord_def& old_pos)
+{
+    coord_def lunge_direction = (you.pos() - old_pos).sgn();
+    coord_def potential_target = you.pos() + lunge_direction;
+    monster* mons = monster_at(potential_target);
+
+    if (!mons || !_can_attack_martial(mons) || !mons->alive())
+        return;
+
+    if (you.attribute[ATTR_HEAVENLY_STORM] > 0)
+        you.attribute[ATTR_HEAVENLY_STORM] += 2;
+
+    you.apply_berserk_penalty = false;
+
+    const int number_of_attacks = _wu_jian_number_of_attacks(false);
+
+    if (number_of_attacks == 0)
+    {
+        mprf("You lunge at %s, but your attack speed is too slow for a blow "
+             "to land.", mons->name(DESC_THE).c_str());
+        return;
+    }
+    else
+    {
+        mprf("You lunge%s at %s%s.",
+             wu_jian_has_momentum(WU_JIAN_ATTACK_LUNGE) ?
+                 " with incredible momentum" : "",
+             mons->name(DESC_THE).c_str(),
+             number_of_attacks > 1 ? ", in a flurry of attacks" : "");
+    }
+
+    for (int i = 0; i < number_of_attacks; i++)
+    {
+        if (!mons->alive())
+            break;
+        melee_attack lunge(&you, mons);
+        lunge.wu_jian_attack = WU_JIAN_ATTACK_LUNGE;
+        lunge.attack();
+    }
+}
+
+/// Monsters adjacent to the given pos that are valid targets for whirlwind.
+static vector<monster*> _get_whirlwind_targets(coord_def pos)
+{
+    vector<monster*> targets;
+    for (adjacent_iterator ai(pos, true); ai; ++ai)
+        if (monster_at(*ai) && _can_attack_martial(monster_at(*ai)))
+            targets.push_back(monster_at(*ai));
+    sort(targets.begin(), targets.end());
+    return targets;
+}
+
+static void _wu_jian_whirlwind(const coord_def& old_pos)
+{
+    const vector<monster*> targets = _get_whirlwind_targets(you.pos());
+    if (targets.empty())
+        return;
+
+    const vector<monster*> old_targets = _get_whirlwind_targets(old_pos);
+    vector<monster*> common_targets;
+    set_intersection(targets.begin(), targets.end(),
+                     old_targets.begin(), old_targets.end(),
+                     back_inserter(common_targets));
+
+    for (auto mons : common_targets)
+    {
+        if (!mons->alive())
+            continue;
+
+        if (you.attribute[ATTR_HEAVENLY_STORM] > 0)
+            you.attribute[ATTR_HEAVENLY_STORM] += 2;
+
+        // Pin has a longer duration than one player turn, but gets cleared before
+        // its duration expires by wu_jian_upkeep. This is necessary to make sure it
+        // works well with Wall Jump's longer aut count.
+        mons->del_ench(ENCH_WHIRLWIND_PINNED);
+        mons->add_ench(mon_enchant(ENCH_WHIRLWIND_PINNED, 2, nullptr, BASELINE_DELAY * 5));
+
+        you.apply_berserk_penalty = false;
+
+        const int number_of_attacks = _wu_jian_number_of_attacks(false);
+        if (number_of_attacks == 0)
+        {
+            mprf("You spin to attack %s, but your attack speed is too slow for "
+                 "a blow to land.", mons->name(DESC_THE).c_str());
+            continue;
+        }
+        else
+        {
+            mprf("You spin and attack %s%s%s.",
+                 mons->name(DESC_THE).c_str(),
+                 number_of_attacks > 1 ? " repeatedly" : "",
+                 wu_jian_has_momentum(WU_JIAN_ATTACK_WHIRLWIND) ?
+                     ", with incredible momentum" : "");
+        }
+
+        for (int i = 0; i < number_of_attacks; i++)
+        {
+            if (!mons->alive())
+                break;
+            melee_attack whirlwind(&you, mons);
+            whirlwind.wu_jian_attack = WU_JIAN_ATTACK_WHIRLWIND;
+            whirlwind.wu_jian_number_of_targets = common_targets.size();
+            whirlwind.attack();
+        }
+    }
+}
+
+static void _wu_jian_trigger_martial_arts(const coord_def& old_pos)
+{
+    if (you.pos() == old_pos || you.duration[DUR_CONF])
+        return;
+
+    if (have_passive(passive_t::wu_jian_lunge))
+        _wu_jian_lunge(old_pos);
+
+    if (have_passive(passive_t::wu_jian_whirlwind))
+        _wu_jian_whirlwind(old_pos);
+}
+
+bool wu_jian_can_wall_jump_in_principle(const coord_def& target)
+{
+    if (!have_passive(passive_t::wu_jian_wall_jump)
+        || !feat_can_wall_jump_against(grd(target))
+        || you.is_stationary()
+        || you.digging)
+    {
+        return false;
+    }
+    return true;
+}
+
+bool wu_jian_can_wall_jump(const coord_def& target, bool messaging)
+{
+    if (!wu_jian_can_wall_jump_in_principle(target))
+        return false;
+
+    auto wall_jump_direction = (you.pos() - target).sgn();
+    auto wall_jump_landing_spot = (you.pos() + wall_jump_direction
+                                   + wall_jump_direction);
+
+    const actor* landing_actor = actor_at(wall_jump_landing_spot);
+    if (feat_is_solid(grd(you.pos() + wall_jump_direction))
+        || !in_bounds(wall_jump_landing_spot)
+        || !you.is_habitable(wall_jump_landing_spot)
+        || landing_actor)
+    {
+        if (messaging)
+        {
+            if (landing_actor)
+            {
+                mprf("You have no room to wall jump; %s is in the way.",
+                        landing_actor->observable() ? landing_actor->name(DESC_THE).c_str()
+                                    : "something you can't see");
+            }
+            else
+                mpr("You have no room to wall jump.");
+        }
+        return false;
+    }
+
+    return true;
+}
+
+void wu_jian_wall_jump_effects(const coord_def& old_pos)
+{
+    vector<monster*> targets;
+    for (adjacent_iterator ai(you.pos(), true); ai; ++ai)
+    {
+        monster* target = monster_at(*ai);
+        if (target && _can_attack_martial(target) && target->alive())
+            targets.push_back(target);
+
+        if (!cell_is_solid(*ai))
+            check_place_cloud(CLOUD_DUST_TRAIL, *ai, 1 + random2(3) , &you, 0, -1);
+    }
+
+    for (auto target : targets)
+    {
+        if (!target->alive())
+            continue;
+
+        if (you.attribute[ATTR_HEAVENLY_STORM] > 0)
+            you.attribute[ATTR_HEAVENLY_STORM] += 2;
+
+        you.apply_berserk_penalty = false;
+
+        // Twice the attacks as Wall Jump spends twice the time
+        const int number_of_attacks = _wu_jian_number_of_attacks(true);
+        if (number_of_attacks == 0)
+        {
+            mprf("You attack %s from above, but your attack speed is too slow"
+                 " for a blow to land.", target->name(DESC_THE).c_str());
+            continue;
+        }
+        else
+        {
+            mprf("You %sattack %s from above%s.",
+                 number_of_attacks > 1 ? "repeatedly " : "",
+                 target->name(DESC_THE).c_str(),
+                 wu_jian_has_momentum(WU_JIAN_ATTACK_WALL_JUMP) ?
+                     ", with incredible momentum" : "");
+        }
+
+        for (int i = 0; i < number_of_attacks; i++)
+        {
+            if (!target->alive())
+                break;
+
+            melee_attack aerial(&you, target);
+            aerial.wu_jian_attack = WU_JIAN_ATTACK_WALL_JUMP;
+            aerial.wu_jian_number_of_targets = targets.size();
+            aerial.attack();
+        }
+    }
+}
+
+void wu_jian_end_of_turn_effects()
+{
+    // This guarantees that the whirlwind pin status is capped to one turn of monster movement.
+    for (monster_iterator mi; mi; ++mi)
+        if (mi->has_ench(ENCH_WHIRLWIND_PINNED) && !you.attribute[ATTR_SERPENTS_LASH])
+            mi->lose_ench_levels(mi->get_ench(ENCH_WHIRLWIND_PINNED), 1, true);
+}
+
+void wu_jian_post_move_effects(bool did_wall_jump, bool turn_over, const coord_def& initial_position)
+{
+    if (!did_wall_jump)
+        _wu_jian_trigger_martial_arts(initial_position);
+
+    if (you.turn_is_over)
+        _wu_jian_trigger_serpents_lash(initial_position, did_wall_jump);
 }
 
 /**

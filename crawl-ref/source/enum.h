@@ -467,6 +467,10 @@ enum ability_type
     ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION,
 #endif
 
+    // Wu Jian
+    ABIL_WU_JIAN_SERPENTS_LASH = 1280,
+    ABIL_WU_JIAN_HEAVENLY_STORM,
+
     // For both Yred and Beogh
     ABIL_STOP_RECALL = 1500,
 
@@ -620,6 +624,8 @@ enum attribute_type
     ATTR_ANIMATE_DEAD,         // animate dead
     ATTR_SPECTRAL_WEAPON,      // spectral weapon
     ATTR_SKELETON_ARMOUR,      // skeleton bone armour
+    ATTR_SERPENTS_LASH,        // Remaining turns in which you can move instantly.
+    ATTR_HEAVENLY_STORM,       // Measures the strength of the Heavenly Storm effect.
     NUM_ATTRIBUTES
 };
 
@@ -991,6 +997,7 @@ enum cloud_type
     CLOUD_FLUFFY,
     CLOUD_XOM_TRAIL,
     CLOUD_SALT,
+    CLOUD_GOLD_DUST,
     NUM_CLOUD_TYPES,
 
     // Random per-square.
@@ -1778,6 +1785,7 @@ enum dungeon_feature_type
     DNGN_ALTAR_HEPLIAKLQANA,
 
     DNGN_ENDLESS_SALT,
+    DNGN_ALTAR_WU_JIAN,
 #endif
 
     NUM_FEATURES
@@ -1976,6 +1984,7 @@ enum duration_type
     DUR_CONFUSION_IMMUNITY,
     DUR_MIASMATA,
     DUR_SPECTRAL_WEAPON_COOLDOWN,
+    DUR_HEAVENLY_STORM,
     NUM_DURATIONS
 };
 
@@ -2151,6 +2160,7 @@ enum enchant_type
     ENCH_BOUND_SOUL,
     ENCH_INFESTATION,
     ENCH_STILL_WINDS,
+    ENCH_WHIRLWIND_PINNED,
     // Update enchant_names[] in mon-ench.cc when adding or removing
     // enchantments.
     NUM_ENCHANTMENTS
@@ -2277,6 +2287,7 @@ enum god_type
     GOD_PAKELLAS,
     GOD_USKAYAW,
     GOD_HEPLIAKLQANA,
+    GOD_WU_JIAN,
     NUM_GODS,                          // always after last god
 
     GOD_RANDOM = 100,
@@ -5410,6 +5421,15 @@ enum deck_rarity_type
     DECK_RARITY_COMMON,
     DECK_RARITY_RARE,
     DECK_RARITY_LEGENDARY,
+};
+
+enum wu_jian_attack_type
+{
+    WU_JIAN_ATTACK_NONE,
+    WU_JIAN_ATTACK_LUNGE,
+    WU_JIAN_ATTACK_WHIRLWIND,
+    WU_JIAN_ATTACK_WALL_JUMP,
+    WU_JIAN_ATTACK_TRIGGERED_AUX,
 };
 
 enum timed_effect_type

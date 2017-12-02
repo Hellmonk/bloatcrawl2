@@ -441,6 +441,31 @@ bool fill_status_info(int status, status_info* inf)
         }
         break;
 		
+	case STATUS_SERPENTS_LASH:
+        if (you.attribute[ATTR_SERPENTS_LASH] > 0)
+        {
+            inf->light_colour = WHITE;
+            inf->light_text
+               = make_stringf("Lash (%u)",
+                              you.attribute[ATTR_SERPENTS_LASH]);
+            inf->short_text = "serpent's lash";
+            inf->long_text = "You are moving at supernatural speed.";
+        }
+        break;
+
+    case STATUS_HEAVENLY_STORM:
+        if (you.attribute[ATTR_HEAVENLY_STORM] > 0)
+        {
+            inf->light_colour = WHITE;
+            inf->light_text
+               = make_stringf("Storm (%u)",
+                              you.attribute[ATTR_HEAVENLY_STORM]);
+            inf->short_text = "heavenly storm";
+            inf->long_text = "Heavenly clouds are increasing your damage and "
+                             "accuracy.";
+        }
+        break;
+		
     case STATUS_DEATH_CHANNEL:
         if(you.attribute[ATTR_DEATH_CHANNEL])
         {

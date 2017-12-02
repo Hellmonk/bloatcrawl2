@@ -915,6 +915,20 @@ Ancestor Identity ability
 Recalls who your ancestor preferred to be known as, correcting their name and
 gender. This does not take any time.
 %%%%
+Serpent's Lash ability
+
+Allows you to move at supernatural speeds for a short distance, travelling
+a length of two tiles instantly. Martial attacks performed under the
+effect of Serpent's Lash are more damaging and never miss.
+%%%%
+Heavenly Storm ability
+
+Invokes a storm of heavenly clouds. While the storm rages, striking enemies
+with martial attacks provides an increasing bonus to melee damage and accuracy.
+The bonus fades over time, and the storm lasts until the bonus has faded
+completely. The heavenly clouds prevent invisibility, and obscure the vision of
+those outside the storm.
+%%%%
 Hop ability
 
 Hops toward a chosen destination, landing somewhere nearby. After using this

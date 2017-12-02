@@ -62,7 +62,9 @@ enum status_type
     STATUS_SPECTRAL_WEAPON,
     STATUS_OZO_ARMOUR, //needed so that webtiles will display an ac boost
     STATUS_DOOM, //clockeroni
-    STATUS_LAST_STATUS = STATUS_DOOM
+    STATUS_SERPENTS_LASH,
+    STATUS_HEAVENLY_STORM,
+    STATUS_LAST_STATUS = STATUS_HEAVENLY_STORM
 };
 
 struct status_info

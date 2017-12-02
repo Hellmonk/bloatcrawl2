@@ -254,6 +254,11 @@ enum class passive_t
 	
     ///damage shaving
     damage_shaving,
+	
+    /// Martial attacks
+    wu_jian_lunge,
+    wu_jian_whirlwind,
+    wu_jian_wall_jump,
 };
 
 enum ru_interference
@@ -293,5 +298,14 @@ void dithmenos_shadow_throw(const dist &d, const item_def &item);
 void dithmenos_shadow_spell(bolt* orig_beam, spell_type spell);
 void uskayaw_prepares_audience();
 void uskayaw_bonds_audience();
+
+bool wu_jian_can_wall_jump_in_principle(const coord_def& target);
+bool wu_jian_can_wall_jump(const coord_def& target, bool messaging=false);
+void wu_jian_wall_jump_effects(const coord_def& old_pos);
+bool wu_jian_has_momentum(wu_jian_attack_type);
+void wu_jian_heaven_tick();
+void wu_jian_post_move_effects(bool did_wall_jump, bool turn_over, const coord_def& initial_position);
+void wu_jian_end_of_turn_effects();
+void end_heavenly_storm();
 
 #endif

@@ -41,6 +41,7 @@
 #include "shout.h"
 #include "spl-summoning.h"
 #include "state.h"
+#include "stepdown.h"
 #include "stringutil.h"
 #include "target.h"
 #include "terrain.h"
@@ -70,7 +71,9 @@ melee_attack::melee_attack(actor *attk, actor *defn,
     ::attack(attk, defn),
 
     attack_number(attack_num), effective_attack_number(effective_attack_num),
-    cleaving(is_cleaving), is_riposte(false)
+    cleaving(is_cleaving), is_riposte(false),
+    wu_jian_attack(WU_JIAN_ATTACK_NONE),
+    wu_jian_number_of_targets(1)
 {
     attack_occurred = false;
     damage_brand = attacker->damage_brand(attack_number);
@@ -145,8 +148,11 @@ bool melee_attack::handle_phase_attempted()
     if (attacker->is_player())
     {
         // Set delay now that we know the attack won't be cancelled.
-        if (!is_riposte)
+        if (!is_riposte
+           && (wu_jian_attack == WU_JIAN_ATTACK_NONE))
+		{
             you.time_taken = you.attack_delay().roll();
+        }
         if (weapon)
         {
             if (weapon->base_type == OBJ_WEAPONS)
@@ -529,7 +535,8 @@ bool melee_attack::handle_phase_damaged()
 
 bool melee_attack::handle_phase_aux()
 {
-    if (attacker->is_player() && !cleaving)
+    if (attacker->is_player()
+        && !cleaving && wu_jian_attack != WU_JIAN_ATTACK_TRIGGERED_AUX)
     {
         // returns whether an aux attack successfully took place
         // additional attacks from cleave don't get aux
@@ -678,7 +685,7 @@ bool melee_attack::handle_phase_end()
     if (!cleave_targets.empty())
     {
         attack_cleave_targets(*attacker, cleave_targets, attack_number,
-                              effective_attack_number);
+                              effective_attack_number, wu_jian_attack);
     }
 
     // Check for passive mutation effects.
@@ -785,6 +792,10 @@ bool melee_attack::attack()
             ev_margin = AUTOMATIC_HIT;
             shield_blocked = false;
         }
+		
+        // Serpent's Lash does not miss
+        if (wu_jian_has_momentum(wu_jian_attack))
+            ev_margin = AUTOMATIC_HIT;
     }
 
     if (shield_blocked)
@@ -1162,6 +1173,9 @@ void melee_attack::player_aux_setup(unarmed_attack_type atk)
     aux_attack = aux->get_name();
     aux_verb = aux->get_verb();
 
+	if (wu_jian_attack != WU_JIAN_ATTACK_NONE)
+        wu_jian_attack = WU_JIAN_ATTACK_TRIGGERED_AUX;
+	
     if (atk == UNAT_BITE
         && _vamp_wants_blood_from_monster(defender->as_monster()))
     {
@@ -3305,6 +3319,21 @@ int melee_attack::cleave_damage_mod(int dam)
     return div_rand_round(dam * 7, 10);
 }
 
+// Martial strikes get modified by momentum and maneuver specific damage mods.
+int melee_attack::martial_damage_mod(int dam)
+{
+    if (wu_jian_has_momentum(wu_jian_attack))
+        dam = div_rand_round(dam * 14, 10);
+
+    if (wu_jian_attack == WU_JIAN_ATTACK_LUNGE)
+        dam = div_rand_round(dam * 12, 10);
+
+    if (wu_jian_attack == WU_JIAN_ATTACK_WHIRLWIND)
+        dam = div_rand_round(dam * 8, 10);
+
+    return dam;
+}
+
 void melee_attack::chaos_affect_actor(actor *victim)
 {
     ASSERT(victim); // XXX: change to actor &victim
@@ -3334,6 +3363,14 @@ bool melee_attack::_extra_aux_attack(unarmed_attack_type atk)
         && you.strength() + you.dex() <= random2(50))
     {
         return false;
+    }
+	
+    if (wu_jian_attack != WU_JIAN_ATTACK_NONE
+    && !x_chance_in_y(1, wu_jian_number_of_targets))
+    {
+       // Reduces aux chance proportionally to number of
+       // enemies attacked with a martial attack
+       return false;
     }
 
     switch (atk)

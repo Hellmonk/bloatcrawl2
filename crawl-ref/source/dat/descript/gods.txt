@@ -191,6 +191,14 @@ playthings with which to toy. Many choose to follow Xom in the hope of
 receiving fabulous rewards and mighty powers, but Xom is nothing if not
 capricious. There is nothing a follower can do to influence Xom's mood.
 %%%%
+Wu Jian
+
+The Wu Jian Council is a congregation of martial monks, ascended to divinity
+after battling their way out of the afterlife. Disciples of the Council are
+able to execute acrobatic martial maneuvers, such as wall jumps, spinning
+attacks and punishing lunges. They will eventually become able to request
+help in the form of a storm of heavenly clouds.
+%%%%
 Yredelemnul
 
 Yredelemnul the Dark is a god worshipped by those who seek powers over death
@@ -408,7 +416,6 @@ increasing resistance to hostile enchantments. Later, followers may call in
 powerful raging allies. Eventually, Trog will gift followers with weapons
 focused on damage.
 %%%%
-%%%%
 Uskayaw powers
 
 Worshippers of Uskayaw can stomp to damage foes around them, and rapidly move
@@ -428,6 +435,26 @@ upon killing beings. As they gain favour, they will also gain enhancements to
 their destructive spells — first assistance in casting such spells and then
 increased range for conjurations. Vehumet will offer followers the knowledge of
 increasingly powerful destructive spells as they gain piety.
+%%%%
+Wu Jian powers
+
+Disciples of the Council learn to perform three martial techniques, shown
+below. They will also be taught to move at unfathomable speeds for short
+distances, and become able to summon a storm of golden clouds to increase their
+precision and damage for as long as they keep using martial attacks.
+
+  .......       ....... (-) <lightred>Lunge</lightred>: Move directly towards an enemy to deal
+  ..<lightred>@</lightred>.O..  -->  ...<lightred>@</lightred>O.. extra damage.
+  .......       .......
+
+  .......       ...<lightred>@</lightred>... (*) <lightred>Whirlwind</lightred>: Move between two tiles adjacent to
+  ...<lightred>@</lightred>O..  -->  ....O.. an enemy to strike them lightly. The dizzying
+  .......       ....... motion pins monsters in place for one turn.
+
+  ..x....       ..x.... (**) <lightred>Wall Jump</lightred>: Move into a wall to vault towards
+  ..x<lightred>@</lightred>O..  -->  ..x.O<lightred>@</lightred>. enemies, striking all enemies adjacent to the landing
+  ..x....       ..x.... spot.
+
 %%%%
 Xom powers
 
@@ -615,6 +642,13 @@ Vehumet wrath
 Those that anger Vehumet find destruction amply heaped upon them. Novices are
 struck by flame and frost; archmages by crystal spears and firestorms. Their
 own conjurations, too, are wont to misfire at the worst possible moments.
+%%%%
+Wu Jian wrath
+
+Those who turn against the Council must be prepared to endure death by a
+thousand cuts. No hiding place is secure, no disguise perfect enough to avoid
+the sudden spring of traps, the flying daggers and the armies of animated
+weapons that will ambush the betrayer.
 %%%%
 Xom wrath
 

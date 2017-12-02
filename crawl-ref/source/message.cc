@@ -1815,8 +1815,20 @@ bool simple_monster_message(const monster& mons, const char *event,
 // yet another wrapper for mpr() {dlb}:
 void simple_god_message(const char *event, god_type which_deity)
 {
-    string msg = uppercase_first(god_name(which_deity)) + event;
+    string msg;
+    if (which_deity == GOD_WU_JIAN)
+       msg = uppercase_first(string("The Council") + event);
+    else
+       msg = uppercase_first(god_name(which_deity)) + event;
+
     god_speaks(which_deity, msg.c_str());
+}
+
+void wu_jian_sifu_message(const char *event)
+{
+    string msg;
+    msg = uppercase_first(string("Sifu ") + wu_jian_random_sifu_name() + event);
+    god_speaks(GOD_WU_JIAN, msg.c_str());
 }
 
 static bool is_channel_dumpworthy(msg_channel_type channel)
