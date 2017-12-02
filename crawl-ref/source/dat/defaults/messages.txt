@@ -59,6 +59,7 @@ msc += $warning:crackle.*arcane power
 msc += $warning:crackle.*magical portal
 msc += $warning:distant wind
 msc += $warning:whistling.*wind
+msc += $warning:elven voice
 msc += $warning:distant elf
 msc += $warning:chatter.*elf
 msc += $warning:rapidly growing quiet
