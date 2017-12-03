@@ -964,6 +964,7 @@ KFEAT:   j = altar_jiyva
 KFEAT:   k = altar_kikubaaqudgha
 KFEAT:   l = altar_lugonu
 KFEAT:   m = altar_makhleb
+KFEAT:   n = altar_nemelex_xobeh
 KFEAT:   o = altar_okawaru
 KFEAT:   q = altar_qazlal
 KFEAT:   r = altar_ru
@@ -980,7 +981,7 @@ KFEAT:   ' = altar_the_shining_one
 : base_monster_setup(_G)
 MAP
 a.cde.ghjk
-lm.oqrstuv
+lmnoqrstuv
 xyz'
 ENDMAP
 

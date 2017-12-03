@@ -220,6 +220,7 @@ KFEAT:  j = altar_jiyva
 KFEAT:  k = altar_kikubaaqudgha
 KFEAT:  l = altar_lugonu
 KFEAT:  m = altar_makhleb
+KFEAT:  n = altar_nemelex_xobeh
 KFEAT:  o = altar_okawaru
 KFEAT:  q = altar_qazlal
 KFEAT:  r = altar_ru
@@ -238,7 +239,7 @@ MAP
 .c.k.t.1
 ..d.l.u.
 ...e.m.v
-........
+......n.
 .....g.o
 ENDMAP
 

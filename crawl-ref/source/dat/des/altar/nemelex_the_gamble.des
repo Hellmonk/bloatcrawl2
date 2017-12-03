@@ -68,7 +68,7 @@ end
 NAME:   grunt_nemelex_the_gamble
 TAGS:   temple_overflow_nemelex_xobeh uniq_altar_nemelex_xobeh no_trap_gen no_monster_gen
 WEIGHT: 2
-DEPTH:  Crypt
+DEPTH:  D:2-13
 {{
     dgn.persist.grunt_nemelex_gamble_announced = false
     dgn.persist.grunt_nemelex_gamble_triggered = false
