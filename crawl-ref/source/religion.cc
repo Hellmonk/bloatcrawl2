@@ -177,8 +177,6 @@ const vector<god_power> god_powers[NUM_GODS] =
     // Nemelex
     { { 3, ABIL_NEMELEX_TRIPLE_DRAW, "choose one out of three cards" },
       { 4, ABIL_NEMELEX_DEAL_FOUR, "deal four cards at a time" },
-      { 5, ABIL_NEMELEX_STACK_FIVE, "order the top five cards of a deck",
-                                    "stack decks" },
     },
 
     // Elyvilon

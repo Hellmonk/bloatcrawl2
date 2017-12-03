@@ -344,8 +344,8 @@ Nemelex Xobeh powers
 The Trickster's followers gain various ways to influence fate when playing
 their cards. The effects of the cards will be more powerful with higher piety.
 Later, followers will gain powerful abilities to manipulate the cards, allowing
-them to choose one of three drawn cards, to gain the effects of multiple cards
-at once, and finally to stack decks and re-order their contents.
+them to choose one of three drawn cards, and eventually
+to gain the effects of multiple cards at once.
 %%%%
 Okawaru powers
 
