@@ -1765,7 +1765,7 @@ static void _summon_dancing_weapon(int power, deck_rarity_type rarity)
     case 0:
         // Wimpy, negative-enchantment weapon.
         wpn.plus = random2(3) - 2;
-        wpn.sub_type = (coinflip() ? WPN_QUARTERSTAFF : WPN_HAND_AXE);
+        wpn.sub_type = (coinflip() ? WPN_SPEAR : WPN_HAND_AXE);
 
         set_item_ego_type(wpn, OBJ_WEAPONS,
                           coinflip() ? SPWPN_VENOM : SPWPN_NORMAL);
@@ -1773,7 +1773,7 @@ static void _summon_dancing_weapon(int power, deck_rarity_type rarity)
     case 1:
         // This is getting good.
         wpn.plus = random2(4) - 1;
-        wpn.sub_type = (coinflip() ? WPN_LONG_SWORD : WPN_TRIDENT);
+        wpn.sub_type = (coinflip() ? WPN_QUARTERSTAFF : WPN_TRIDENT);
 
         if (coinflip())
         {
