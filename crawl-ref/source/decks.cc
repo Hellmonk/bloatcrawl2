@@ -1690,7 +1690,7 @@ static void _summon_demon_card(int power, deck_rarity_type rarity)
         break;
     default:
         dct = random_demon_by_tier(2);
-        dct2 = MONS_PANDEMONIUM_LORD;
+        dct2 = random_demon_by_tier(1);
     }
 
     if (is_good_god(you.religion))
