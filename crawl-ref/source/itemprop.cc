@@ -1569,6 +1569,9 @@ bool check_armour_size(armour_type sub_type, size_type size)
  */
 bool check_armour_size(const item_def &item, size_type size)
 {
+    if (item.base_type == OBJ_STAVES)
+        return true;
+
     ASSERT(item.base_type == OBJ_ARMOUR);
 
     return check_armour_size(static_cast<armour_type>(item.sub_type), size);
