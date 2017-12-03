@@ -953,7 +953,7 @@ static bool _give_nemelex_gift(bool forced = false)
             simple_god_message(" grants you a gift!");
             if(move_item_to_inv(deck))
             {
-				_inc_gift_timeout(5 + random2avg(9, 2));
+				_inc_gift_timeout(5 + random2avg(6, 2));
 				you.num_current_gifts[you.religion]++;
 				you.num_total_gifts[you.religion]++;
 				take_note(Note(NOTE_GOD_GIFT, you.religion));
