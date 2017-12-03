@@ -1213,25 +1213,14 @@ void evoke_deck(item_def& deck)
 static int _get_power_level(int power, deck_rarity_type rarity)
 {
     int power_level = 0;
-    switch (rarity)
-    {
-    case DECK_RARITY_COMMON:
-//give nemelex worshipers a small chance for an upgrade
-//approx 1/2 ORNATE chance (plain decks don't get the +150 power boost)
-        if (have_passive(passive_t::cards_power) && (x_chance_in_y(power, 1000)))
-            ++power_level;
-        break;
-    case DECK_RARITY_LEGENDARY:
-        if (x_chance_in_y(power, 500))
-            ++power_level;
-        // deliberate fall-through
-    case DECK_RARITY_RARE:
-        if (x_chance_in_y(power, 700))
-            ++power_level;
-        break;
-    case DECK_RARITY_RANDOM:
-        die("unset deck rarity");
-    }
+	
+    // formerly from rare deck rarity
+    if (x_chance_in_y(power, 700))
+        ++power_level;
+    // add a chance for power level 2
+    if (x_chance_in_y(power, 1500))
+        ++power_level;
+
     dprf("Power level: %d", power_level);
 
     // other functions in this file will break if this assertion is violated
