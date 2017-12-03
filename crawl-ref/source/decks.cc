@@ -37,6 +37,7 @@
 #include "mon-cast.h"
 #include "mon-clone.h"
 #include "mon-death.h"
+#include "mon-movetarget.h"
 #include "mon-place.h"
 #include "mon-poly.h"
 #include "mon-project.h"
@@ -1506,6 +1507,36 @@ static void _damaging_card(card_type card, int power, deck_rarity_type rarity,
     case CARD_ORB:
         ztype = orbzaps[power_level];
         break;
+		
+    case CARD_STORM:
+    {
+        bool success = false;
+
+        int how_many = random2(2 * power_level + 1);
+        //guarantee one ball at power 1 and two at power 2
+        how_many = max(how_many, power_level);
+
+        mgen_data cbl(MONS_BALL_LIGHTNING, BEH_FRIENDLY, you.pos());
+        cbl.set_summoned(&you, 0, SPELL_CONJURE_BALL_LIGHTNING);
+        cbl.hd = 5 + power_level * 3;
+
+        for (int i = 0; i < how_many; ++i)
+        {
+            if (monster *ball = create_monster(cbl))
+            {
+                success = true;
+                ball->add_ench(ENCH_SHORT_LIVED);
+
+                // Avoid ball lightnings without targets always moving towards (0,0)
+                set_random_target(ball);
+            }
+        }
+
+        if (success)
+            mpr("You create some ball lightning!");
+        ztype = ZAP_LIGHTNING_BOLT;
+        break;
+    }
 
     case CARD_PAIN:
         if (power_level == 2)
@@ -1964,35 +1995,6 @@ static void _cloud_card(int power, deck_rarity_type rarity)
         canned_msg(MSG_NOTHING_HAPPENS);
 }
 
-static void _storm_card(int power, deck_rarity_type rarity)
-{
-    const int power_level = _get_power_level(power, rarity);
-
-    _friendly(MONS_AIR_ELEMENTAL, 3);
-
-    wind_blast(&you, (power_level == 0) ? 100 : 200, coord_def(), true);
-
-    for (radius_iterator ri(you.pos(), 4, C_SQUARE, LOS_SOLID); ri; ++ri)
-    {
-        monster *mons = monster_at(*ri);
-
-        if (adjacent(*ri, you.pos()))
-            continue;
-
-        if (mons && mons->wont_attack())
-            continue;
-
-        if ((feat_has_solid_floor(grd(*ri))
-             || grd(*ri) == DNGN_DEEP_WATER)
-            && !cloud_at(*ri))
-        {
-            place_cloud(CLOUD_STORM, *ri,
-                        5 + (power_level + 1) * random2(10), & you);
-        }
-    }
-
-}
-
 static void _illusion_card(int power, deck_rarity_type rarity)
 {
     const int power_level = _get_power_level(power, rarity);
@@ -2181,7 +2183,6 @@ void card_effect(card_type which_card, deck_rarity_type rarity,
     case CARD_SUMMON_FLYING:    _summon_flying(power, rarity); break;
     case CARD_TORMENT:          _torment_card(); break;
     case CARD_CLOUD:            _cloud_card(power, rarity); break;
-    case CARD_STORM:            _storm_card(power, rarity); break;
     case CARD_ILLUSION:         _illusion_card(power, rarity); break;
     case CARD_DEGEN:            _degeneration_card(power, rarity); break;
     case CARD_WILD_MAGIC:       _wild_magic_card(power, rarity); break;
@@ -2189,6 +2190,7 @@ void card_effect(card_type which_card, deck_rarity_type rarity,
     case CARD_VITRIOL:
     case CARD_PAIN:
     case CARD_ORB:
+    case CARD_STORM:
         _damaging_card(which_card, power, rarity, flags & CFLAG_DEALT);
         break;
 
