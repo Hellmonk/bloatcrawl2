@@ -1269,8 +1269,7 @@ static void _velocity_card(int power, deck_rarity_type rarity)
     switch (power_level)
     {
         case 0:
-            for_allies = for_hostiles = random_choose(ENCH_SLOW, ENCH_HASTE,
-                                                      ENCH_SWIFT);
+            for_allies = ENCH_SWIFT;
             break;
 
         case 1:
