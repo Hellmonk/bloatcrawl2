@@ -1533,7 +1533,10 @@ static void _damaging_card(card_type card, int power, deck_rarity_type rarity,
         }
 
         if (success)
+        {
             mpr("You create some ball lightning!");
+            redraw_screen();
+        }
         ztype = ZAP_LIGHTNING_BOLT;
         break;
     }
@@ -2126,20 +2129,21 @@ static void _famine_card(int power, deck_rarity_type rarity)
         if (x_chance_in_y(power_level, 8))
         {
 			mons->paralyse(&you, random2(5) + 2);
+			something_happened = true;
         }
         else if (x_chance_in_y(2 * power_level + 1, 10) && mons->can_go_frenzy())
         {
             mons->go_frenzy(&you);
+            something_happened = true;
 		}
         else
         {
             mons->weaken(&you, 12);
+            something_happened = true;
         }
     }
 
-    if (something_happened)
-        mpr("w");
-    else
+    if (!something_happened)
         canned_msg(MSG_NOTHING_HAPPENS);
 }
 
