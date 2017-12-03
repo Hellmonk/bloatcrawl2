@@ -56,7 +56,7 @@ the Storm card
 
 The card depicts a ship at sea sinking in a thunderstorm.
 
-Drawing it unleashes a storm of wind and thunder clouds.
+Drawing it unleashes a bolt of lightning and possibly some orbs of electricity.
 %%%%
 Pain card
 
@@ -142,7 +142,8 @@ Famine card
 The card depicts a gaunt figure crawling along an expanse of dry, cracked
 earth.
 
-Drawing this card will leave its user on the brink of starvation.
+Drawing this card will inflict enemies with a terrible hunger that may cause
+weakness, insanity, or paralysis.
 %%%%
 the Wraith card
 
