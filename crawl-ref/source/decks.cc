@@ -94,7 +94,7 @@ deck_archetype deck_of_escape =
     { CARD_ELIXIR,     {5, 5, 5} },
     { CARD_CLOUD,      {5, 5, 5} },
     { CARD_VELOCITY,   {5, 5, 5} },
-    { CARD_SHAFT,      {5, 5, 5} },
+    { CARD_FAMINE,     {5, 5, 5} },
 };
 
 deck_archetype deck_of_destruction =
@@ -2111,6 +2111,38 @@ static void _torment_card()
         torment_player(&you, TORMENT_CARDS);
 }
 
+static void _famine_card(int power, deck_rarity_type rarity)
+{
+    const int power_level = _get_power_level(power, rarity);
+    bool something_happened = false;
+
+    for (radius_iterator di(you.pos(), LOS_NO_TRANS); di; ++di)
+    {
+        monster *mons = monster_at(*di);
+
+        if (!mons || mons->wont_attack() || !mons_is_threatening(*mons))
+            continue;
+		 
+        if (x_chance_in_y(power_level, 8))
+        {
+			mons->paralyse(&you, random2(5) + 2);
+        }
+        else if (x_chance_in_y(2 * power_level + 1, 10) && mons->can_go_frenzy())
+        {
+            mons->go_frenzy(&you);
+		}
+        else
+        {
+            mons->weaken(&you, 12);
+        }
+    }
+
+    if (something_happened)
+        mpr("w");
+    else
+        canned_msg(MSG_NOTHING_HAPPENS);
+}
+
 // Punishment cards don't have their power adjusted depending on Nemelex piety
 // or penance, and are based on experience level instead of evocations skill
 // for more appropriate scaling.
@@ -2186,16 +2218,13 @@ void card_effect(card_type which_card, deck_rarity_type rarity,
     case CARD_ILLUSION:         _illusion_card(power, rarity); break;
     case CARD_DEGEN:            _degeneration_card(power, rarity); break;
     case CARD_WILD_MAGIC:       _wild_magic_card(power, rarity); break;
+    case CARD_FAMINE:           _famine_card(power, rarity); break;
 
     case CARD_VITRIOL:
     case CARD_PAIN:
     case CARD_ORB:
     case CARD_STORM:
         _damaging_card(which_card, power, rarity, flags & CFLAG_DEALT);
-        break;
-
-    case CARD_FAMINE:
-        mpr("You feel rather smug.");
         break;
 
     case CARD_SWINE:
