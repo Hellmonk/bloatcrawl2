@@ -146,4 +146,9 @@ bool is_temp_terrain(coord_def pos);
 
 bool plant_forbidden_at(const coord_def &p, bool connectivity_only = false);
 
+vector<coord_def> get_push_spaces(const coord_def& pos, bool push_actor,
+                    const vector<coord_def>* excluded);
+bool has_push_spaces(const coord_def& pos, bool push_actor,
+                    const vector<coord_def>* excluded);
+bool push_items_from(const coord_def& pos, const vector<coord_def>* excluded);
 #endif

@@ -8269,6 +8269,8 @@ void player_close_door(coord_def doorpos)
                                                 "door_description_noun");
     set<coord_def> all_door;
     find_connected_identical(doorpos, all_door);
+    const auto door_vec = vector<coord_def>(all_door.begin(), all_door.end());
+
     const char *adj, *noun;
     get_door_description(all_door.size(), &adj, &noun);
     const string waynoun_str = make_stringf("%sway", noun);
@@ -8305,6 +8307,17 @@ void player_close_door(coord_def doorpos)
             return;
         }
     }
+    const int you_old_top_item = igrd(you.pos());
+
+    bool items_moved = false;
+    for (const coord_def& dc : all_door)
+        items_moved |= push_items_from(dc, &door_vec);
+
+    // TODO: if only one thing moved, use that item's name
+    // TODO: handle des-derived strings.  (Better yet, find a way to not have
+    // format strings in des...)
+    const char *items_msg = items_moved ? ", pushing everything out of the way"
+                                        : "";
 
     const int skill = 8 + you.skill_rdiv(SK_STEALTH, 4, 3);
 
@@ -8318,7 +8331,7 @@ void player_close_door(coord_def doorpos)
                 mprf(berserk_close.c_str(), adj, noun);
             }
             else
-                mprf("You slam the %s%s shut!", adj, noun);
+                mprf("You slam the %s%s shut%s!", adj, noun, items_msg);
         }
         else
         {
@@ -8332,8 +8345,8 @@ void player_close_door(coord_def doorpos)
             }
             else
             {
-                mprf(MSGCH_SOUND, "You slam the %s%s shut with a bang!",
-                                  adj, noun);
+                mprf(MSGCH_SOUND, "You slam the %s%s shut with a bang%s!",
+                                  adj, noun, items_msg);
             }
 
             noisy(15, you.pos());
@@ -8345,31 +8358,28 @@ void player_close_door(coord_def doorpos)
             mprf(MSGCH_SOUND, door_close_creak.c_str(), adj, noun);
         else
         {
-            mprf(MSGCH_SOUND, "As you close the %s%s, it creaks loudly!",
-                              adj, noun);
+            mprf(MSGCH_SOUND, "As you close the %s%s%s, it creaks loudly!",
+                              adj, noun, items_msg);
         }
 
         noisy(10, you.pos());
     }
     else
     {
-        const char* verb;
         if (you.airborne())
         {
             if (!door_airborne.empty())
-                verb = door_airborne.c_str();
+                mprf(door_airborne.c_str(), adj, noun);
             else
-                verb = "You reach down and close the %s%s.";
+                mprf("You reach down and close the %s%s%s.", adj, noun, items_msg);
         }
         else
         {
             if (!door_close_verb.empty())
-                verb = door_close_verb.c_str();
+                mprf(door_close_verb.c_str(), adj, noun);
             else
-                verb = "You close the %s%s.";
+                mprf("You close the %s%s%s.", adj, noun, items_msg);
         }
-
-        mprf(verb, adj, noun);
     }
 
     vector<coord_def> excludes;
@@ -8395,6 +8405,10 @@ void player_close_door(coord_def doorpos)
     }
 
     update_exclusion_los(excludes);
+
+    // item pushing may have moved items under the player
+    if (igrd(you.pos()) != you_old_top_item)
+        item_check();
     you.turn_is_over = true;
 }
 
