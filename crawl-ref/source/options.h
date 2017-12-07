@@ -249,6 +249,8 @@ public:
     int         autofight_warning;      // Amount of real time required between
                                         // two autofight commands
 
+    bool        wall_jump_prompt; // Whether to ask for confirmation before jumps.
+
     int         fire_items_start; // index of first item for fire command
     vector<unsigned> fire_order;  // missile search order for 'f' command
 
