@@ -1654,6 +1654,9 @@ bool monster::pickup_armour(item_def &item, bool msg, bool force)
 
     if (!force && !wants_armour(item))
         return false;
+	
+    if(item.base_type == OBJ_STAVES)
+        return false;
 
     const monster_type genus = mons_genus(mons_species(true));
     const monster_type base_type = mons_is_zombified(*this) ? base_monster
