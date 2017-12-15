@@ -638,6 +638,7 @@ enum attribute_type
     ATTR_BATTLESPHERE,         // battlesphere
     ATTR_SERVITOR,             // spellforged servitor
     ATTR_YRED_SOUL_TIMEOUT,    // enslaved soul timeout
+    ATTR_WALL_JUMP_READY,      // Ready to perform a wall jump.
     NUM_ATTRIBUTES
 };
 

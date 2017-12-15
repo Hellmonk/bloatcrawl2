@@ -151,4 +151,5 @@ vector<coord_def> get_push_spaces(const coord_def& pos, bool push_actor,
 bool has_push_spaces(const coord_def& pos, bool push_actor,
                     const vector<coord_def>* excluded);
 bool push_items_from(const coord_def& pos, const vector<coord_def>* excluded);
+coord_def push_actor_from(const coord_def& pos, const vector<coord_def>* excluded, bool random);
 #endif
