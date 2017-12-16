@@ -861,11 +861,24 @@ static void _evolve(int time_delta)
         {
             you.attribute[ATTR_EVOL_XP] = 0;
             mpr("You feel a genetic drift.");
-            bool evol = one_chance_in(5) ?
-                delete_mutation(RANDOM_BAD_MUTATION, "evolution", false) :
-                mutate(coinflip() ? RANDOM_GOOD_MUTATION : RANDOM_MUTATION,
-                       "evolution", false, false, false, false, MUTCLASS_NORMAL,
-                       true);
+			
+            bool evol = false;
+			
+            if(you.species == SP_KOBOLD && one_chance_in(7))
+            {
+               evol = one_chance_in(4) ?
+                    delete_mutation(RANDOM_KOBOLD_MUTATION, "evolution", false) :
+                    mutate(RANDOM_KOBOLD_MUTATION, "evolution",
+                   false, false, false, false, MUTCLASS_NORMAL, true);
+            }
+            else
+            {
+                evol = one_chance_in(5) ?
+                    delete_mutation(RANDOM_BAD_MUTATION, "evolution", false) :
+                    mutate(coinflip() ? RANDOM_GOOD_MUTATION : RANDOM_MUTATION,
+                           "evolution", false, false, false, false, MUTCLASS_NORMAL,
+                           true);
+            }
             // it would kill itself anyway, but let's speed that up
             if (one_chance_in(10)
                 && (!you.rmut_from_item()

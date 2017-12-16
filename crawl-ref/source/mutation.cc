@@ -922,6 +922,18 @@ static mutation_type _get_mut_with_use(mutflag mt)
     die("Error while selecting mutations");
 }
 
+static mutation_type _get_kobold_enhancer_mutation()
+{
+	mutation_type mutat = random_choose_weighted(
+                                    2, MUT_HEX_ENHANCER,
+                                    2, MUT_CHARMS_ENHANCER,
+                                    2, MUT_SUMMON_ENHANCER,
+                                    1, MUT_AIR_ENHANCER,
+                                    1, MUT_EARTH_ENHANCER);
+
+    return mutat;									
+}
+
 static mutation_type _get_random_slime_mutation()
 {
     return _get_mut_with_use(mutflag::JIYVA);
@@ -934,6 +946,27 @@ static mutation_type _delete_random_slime_mutation()
     while (true)
     {
         mutat = _get_random_slime_mutation();
+
+        if (you.get_base_mutation_level(mutat) > 0)
+            break;
+
+        if (one_chance_in(500))
+        {
+            mutat = NUM_MUTATIONS;
+            break;
+        }
+    }
+
+    return mutat;
+}
+
+static mutation_type _delete_random_kobold_mutation()
+{
+	mutation_type mutat;
+
+    while (true)
+    {
+        mutat = _get_kobold_enhancer_mutation();
 
         if (you.get_base_mutation_level(mutat) > 0)
             break;
@@ -1443,6 +1476,8 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
     case RANDOM_QAZLAL_MUTATION:
         mutat = _get_random_qazlal_mutation();
         break;
+    case RANDOM_KOBOLD_MUTATION:
+        mutat = _get_kobold_enhancer_mutation();
     default:
         break;
     }
@@ -1903,6 +1938,13 @@ bool delete_mutation(mutation_type which_mutation, const string &reason,
         mutat = _delete_random_slime_mutation();
 
         if (mutat == NUM_MUTATIONS)
+            return false;
+    }
+    else if (which_mutation == RANDOM_KOBOLD_MUTATION)
+    {
+		mutat = _delete_random_kobold_mutation();
+		
+        if(mutat == NUM_MUTATIONS)
             return false;
     }
 

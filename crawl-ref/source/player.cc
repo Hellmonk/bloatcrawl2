@@ -1814,6 +1814,9 @@ int player_spec_earth()
 
     // Staves
     se += you.wearing(EQ_SHIELD, STAFF_EARTH);
+	
+    // Earth enhancer goodmut
+    se += you.get_mutation_level(MUT_EARTH_ENHANCER);
 
     return se;
 }
@@ -1824,6 +1827,9 @@ int player_spec_air()
 
     // Staves
     sa += you.wearing(EQ_SHIELD, STAFF_AIR);
+	
+    // Air enhancer goodmut
+    sa += you.get_mutation_level(MUT_AIR_ENHANCER);
 
     return sa;
 }
@@ -1845,8 +1851,11 @@ int player_spec_hex()
 
 int player_spec_charm()
 {
-    // Nothing, for the moment.
-    return 0;
+    int sc = 0;
+    // Charm enhancer goodmut
+    sc += you.get_mutation_level(MUT_CHARMS_ENHANCER);
+
+    return sc;
 }
 
 int player_spec_summ()
@@ -1855,6 +1864,9 @@ int player_spec_summ()
 
     // Staves
     ss += you.wearing(EQ_SHIELD, STAFF_SUMMONING);
+	
+    // Summon enhancer goodmut
+    ss += you.get_mutation_level(MUT_SUMMON_ENHANCER);
 
     return ss;
 }

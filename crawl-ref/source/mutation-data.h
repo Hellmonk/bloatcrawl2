@@ -661,16 +661,64 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_HEX_ENHANCER, 2, 1, mutflag::GOOD, false,
+{ MUT_HEX_ENHANCER, 0, 2, mutflag::GOOD, false,
   "powerful hexes",
 
-  {"Your tricky nature makes your hexes more powerful.",
+  {"Your tricky nature empowers your hexes.",
+   "Your tricky nature greatly empowers your hexes.",
+   ""},
+
+  {"You feel tricky.", "You feel extremely tricky.", ""},
+
+  {"You no longer feel tricky.", "You feel less tricky", ""},
+},
+
+{ MUT_CHARMS_ENHANCER, 0, 2, mutflag::GOOD, false,
+  "powerful charms",
+
+  {"Your graceful nature empowers your charms.",
+   "Your graceful nature greatly empowers your charms.",
+   ""},
+
+  {"You feel graceful.", "You feel extremely graceful.", ""},
+
+  {"You no longer feel graceful.", "You feel less graceful.", ""},
+},
+
+{ MUT_SUMMON_ENHANCER, 0, 2, mutflag::GOOD, false,
+  "powerful summons",
+
+  {"Your amiable nature empowers your summons.",
+   "Your amiable nature greatly empowers your summons.",
+   ""},
+
+  {"You feel amiable.", "You feel extremely amiable.", ""},
+
+  {"You no longer feel amiable.", "You feel less amiable.", ""},
+},
+
+{ MUT_AIR_ENHANCER, 0, 1, mutflag::GOOD, false,
+  "powerful air magic",
+
+  {"Your whimsical nature empowers your air magic.",
    "",
    ""},
 
-  {"You feel extremely tricky.", "", ""},
+  {"You feel whimsical.", "", ""},
 
-  {"You feel less tricky.", "", ""},
+  {"You no longer feel whimsical.", "", ""},
+},
+
+{ MUT_EARTH_ENHANCER, 0, 1, mutflag::GOOD, false,
+  "powerful earth magic",
+
+  {"Your serious nature empowers your earth magic.",
+   "",
+   ""},
+
+  {"You feel serious.", "", ""},
+
+  {"You no longer feel serious.", "", ""},
 },
 
 { MUT_ICE_ENHANCER, 0, 1, mutflag::GOOD, false,
