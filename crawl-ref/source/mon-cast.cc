@@ -141,6 +141,7 @@ static void _setup_ghostly_sacrifice_beam(bolt& beam, const monster& caster,
 static function<bool(const monster&)> _setup_hex_check(spell_type spell);
 static bool _worth_hexing(const monster &caster, spell_type spell);
 static bool _torment_vulnerable(actor* victim);
+static void _cast_phase_shift(monster &mons, mon_spell_slot, bolt&);
 
 enum spell_logic_flag
 {
@@ -474,6 +475,12 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
     { SPELL_VIRULENCE, _hex_logic(SPELL_VIRULENCE, [](const monster &caster) {
         return caster.get_foe()->res_poison(false) < 3;
     }, 6) },
+    { SPELL_PHASE_SHIFT, {
+        [](const monster &caster) { return !caster.has_ench(ENCH_PHASE_SHIFT); },
+        _cast_phase_shift,
+        nullptr,
+        MSPELL_NO_AUTO_NOISE,
+    } },
 };
 
 /// Is the 'monster' actually a proxy for the player?
@@ -746,6 +753,13 @@ static void _cast_cantrip(monster &mons, mon_spell_slot slot, bolt& pbolt)
             mprf(channel, "%s", slugform.c_str());
         }
     }
+}
+
+static void _cast_phase_shift(monster &mons, mon_spell_slot, bolt&)
+{
+    simple_monster_message(mons, " begins phasing through reality.", MSGCH_MONSTER_SPELL);
+	mons.add_ench(mon_enchant(ENCH_PHASE_SHIFT, 0, &mons,
+                              random_range(12, 25) * BASELINE_DELAY));
 }
 
 static void _cast_injury_mirror(monster &mons, mon_spell_slot slot, bolt&)

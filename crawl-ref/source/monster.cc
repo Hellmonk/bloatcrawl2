@@ -3443,6 +3443,9 @@ int monster::evasion(ev_ignore_type evit, const actor* /*act*/) const
         ev /= (body_size(PSIZE_BODY) + 2);
     else if (confused() || has_ench(ENCH_GRASPING_ROOTS))
         ev /= 2;
+	
+    if(has_ench(ENCH_PHASE_SHIFT))
+        ev += 8;
 
     return max(ev, 0);
 }

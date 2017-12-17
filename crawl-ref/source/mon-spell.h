@@ -447,7 +447,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_MAGIC_DART, 9, MON_SPELL_WIZARD },
        { SPELL_THROW_FLAME, 9, MON_SPELL_WIZARD },
        { SPELL_CONFUSE, 18, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 9, MON_SPELL_WIZARD },
+       { SPELL_PHASE_SHIFT, 9, MON_SPELL_WIZARD },
       }
     },
 

@@ -1415,18 +1415,18 @@ static const struct spell_desc spelldata[] =
     3, 0,
     TILEG_ERROR,
 },
+#endif
 
 {
     SPELL_PHASE_SHIFT, "Phase Shift",
     SPTYP_TRANSLOCATION,
-    SPFLAG_HELPFUL | SPFLAG_UTILITY,
+    SPFLAG_HELPFUL | SPFLAG_UTILITY | SPFLAG_MONSTER,
     5,
     200,
     -1, -1,
     4, 0,
     TILEG_ERROR,
 },
-#endif
 
 {
     SPELL_SUMMON_BUTTERFLIES, "Summon Butterflies",

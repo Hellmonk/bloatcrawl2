@@ -966,6 +966,13 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
     case ENCH_STILL_WINDS:
         end_still_winds();
         break;
+		
+    case ENCH_PHASE_SHIFT:
+        if (!quiet)
+            simple_monster_message(*this, " is no longer phasing.");
+
+        behaviour_event(this, ME_EVAL);
+        break;
 
     default:
         break;
@@ -1449,6 +1456,7 @@ void monster::apply_enchantment(const mon_enchant &me)
     case ENCH_BLACK_MARK:
     case ENCH_STILL_WINDS:
     case ENCH_WHIRLWIND_PINNED:
+    case ENCH_PHASE_SHIFT:
         decay_enchantment(en);
         break;
 
@@ -2149,7 +2157,7 @@ static const char *enchant_names[] =
 #endif
     "aura_of_brilliance", "empowered_spells", "gozag_incite", "pain_bond",
     "idealised", "bound_soul", "infestation",
-    "stilling the winds", "pinned_by_whirlwind",
+    "stilling the winds", "pinned_by_whirlwind", "phase_shift",
     "buggy",
 };
 
@@ -2286,6 +2294,7 @@ int mon_enchant::calc_duration(const monster* mons,
         cturn = 1000 / _mod_speed(25, mons->speed);
         break;
     case ENCH_HASTE:
+    case ENCH_PHASE_SHIFT:
     case ENCH_MIGHT:
     case ENCH_INVIS:
     case ENCH_FEAR_INSPIRING:
