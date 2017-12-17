@@ -1510,31 +1510,24 @@ static void _damaging_card(card_type card, int power, deck_rarity_type rarity,
 		
     case CARD_STORM:
     {
-        bool success = false;
+        int successes = 0;
 
         int how_many = random2(2 * power_level + 1);
-        //guarantee one ball at power 1 and two at power 2
+        //guarantee one elemental at power 1 and two at power 2
         how_many = max(how_many, power_level);
-
-        mgen_data cbl(MONS_BALL_LIGHTNING, BEH_FRIENDLY, you.pos());
-        cbl.set_summoned(&you, 0, SPELL_CONJURE_BALL_LIGHTNING);
-        cbl.hd = 5 + power_level * 3;
-
-        for (int i = 0; i < how_many; ++i)
+		
+        for (int i = 0; i < how_many; i++)
         {
-            if (monster *ball = create_monster(cbl))
-            {
-                success = true;
-                ball->add_ench(ENCH_SHORT_LIVED);
-
-                // Avoid ball lightnings without targets always moving towards (0,0)
-                set_random_target(ball);
+            if (monster *elemental = _friendly(MONS_AIR_ELEMENTAL, 3))
+			{
+                successes++;
+				elemental->foe = MHITYOU;
             }
         }
 
-        if (success)
+        if (successes > 0)
         {
-            mpr("You create some ball lightning!");
+            mprf("You summon %s!", successes > 1 ? "some air elementals" : "an air elemental");
             redraw_screen();
         }
         ztype = ZAP_LIGHTNING_BOLT;
