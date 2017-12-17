@@ -3665,10 +3665,11 @@ static const struct spell_desc spelldata[] =
     TILEG_CIGOTUVIS_EMBRACE,
 },
 
+#if TAG_MAJOR_VERSION == 34
 {
     SPELL_GRAVITAS, "Gell's Gravitas",
     SPTYP_TRANSLOCATION,
-    SPFLAG_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEEDS_TRACER,
+    SPFLAG_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEEDS_TRACER | SPFLAG_MONSTER,
     3,
     200,
     LOS_RADIUS, LOS_RADIUS,
@@ -3676,7 +3677,6 @@ static const struct spell_desc spelldata[] =
     TILEG_GRAVITAS,
 },
 
-#if TAG_MAJOR_VERSION == 34
 {
     SPELL_CHANT_FIRE_STORM, "Chant Fire Storm",
     SPTYP_FIRE,
