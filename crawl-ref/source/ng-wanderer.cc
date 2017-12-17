@@ -49,10 +49,6 @@ static void _give_wanderer_weapon(skill_type wpn_skill, int plus)
         sub_type = WPN_SHORTBOW;
         break;
 
-    case SK_CROSSBOWS:
-        sub_type = WPN_HAND_CROSSBOW;
-        break;
-
     default:
         sub_type = WPN_DAGGER;
         break;
@@ -61,8 +57,6 @@ static void _give_wanderer_weapon(skill_type wpn_skill, int plus)
     newgame_make_item(OBJ_WEAPONS, sub_type, 1, plus);
 
     if (sub_type == WPN_SHORTBOW)
-        newgame_make_item(OBJ_MISSILES, MI_ARROW, 120 + random2avg(160, 5));
-    else if (sub_type == WPN_HAND_CROSSBOW)
         newgame_make_item(OBJ_MISSILES, MI_ARROW, 120 + random2avg(160, 5));
 }
 
@@ -153,7 +147,7 @@ static skill_type _wanderer_role_weapon_select(stat_type role)
 {
     skill_type skill = NUM_SKILLS;
     const skill_type str_weapons[] =
-        { SK_AXES, SK_MACES_FLAILS, SK_BOWS, SK_CROSSBOWS };
+        { SK_AXES, SK_MACES_FLAILS, SK_BOWS};
 
     int str_size = ARRAYSZ(str_weapons);
 
@@ -440,7 +434,7 @@ static void _wanderer_good_equipment(skill_type & skill)
 {
 
     const skill_type combined_weapon_skills[] =
-        { SK_AXES, SK_MACES_FLAILS, SK_BOWS, SK_CROSSBOWS,
+        { SK_AXES, SK_MACES_FLAILS, SK_BOWS,
           SK_SHORT_BLADES, SK_UNARMED_COMBAT, SK_POLEARMS };
 
     int total_weapons = ARRAYSZ(combined_weapon_skills);
@@ -470,7 +464,6 @@ static void _wanderer_good_equipment(skill_type & skill)
     case SK_THROWING:
     case SK_SHORT_BLADES:
     case SK_BOWS:
-    case SK_CROSSBOWS:
         _give_wanderer_weapon(skill, 2);
         break;
 
@@ -530,7 +523,7 @@ static void _wanderer_decent_equipment(skill_type & skill,
                                        set<skill_type> & gift_skills)
 {
     const skill_type combined_weapon_skills[] =
-        { SK_AXES, SK_MACES_FLAILS, SK_BOWS, SK_CROSSBOWS,
+        { SK_AXES, SK_MACES_FLAILS, SK_BOWS,
           SK_SHORT_BLADES, SK_UNARMED_COMBAT, SK_POLEARMS };
 
     int total_weapons = ARRAYSZ(combined_weapon_skills);
@@ -565,7 +558,6 @@ static void _wanderer_decent_equipment(skill_type & skill,
     case SK_AXES:
     case SK_POLEARMS:
     case SK_BOWS:
-    case SK_CROSSBOWS:
     case SK_THROWING:
     case SK_SHORT_BLADES:
         _give_wanderer_weapon(skill, 0);

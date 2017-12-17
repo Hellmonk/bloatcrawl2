@@ -619,13 +619,13 @@ static const weapon_def Weapon_prop[] =
         DAMV_NON_MELEE, 0, 0, 0, RANGED_BRANDS },
 
     { WPN_HAND_CROSSBOW,     "hand crossbow",      12,  5, 15,
-        SK_CROSSBOWS,    SIZE_LITTLE, SIZE_LITTLE, MI_ARROW,
+        SK_BOWS,    SIZE_LITTLE, SIZE_LITTLE, MI_ARROW,
         DAMV_NON_MELEE, 7, 10, 35, RANGED_BRANDS },
     { WPN_ARBALEST,          "arbalest",           18,  2, 19,
-        SK_CROSSBOWS,    SIZE_LITTLE, NUM_SIZE_LEVELS, MI_ARROW,
+        SK_BOWS,    SIZE_LITTLE, NUM_SIZE_LEVELS, MI_ARROW,
         DAMV_NON_MELEE, 5, 10, 45, RANGED_BRANDS },
     { WPN_TRIPLE_CROSSBOW,   "triple crossbow",    22,  0, 23,
-        SK_CROSSBOWS,    SIZE_LITTLE, NUM_SIZE_LEVELS, MI_ARROW,
+        SK_BOWS,    SIZE_LITTLE, NUM_SIZE_LEVELS, MI_ARROW,
         DAMV_NON_MELEE, 0, 2, 100, RANGED_BRANDS },
 
     { WPN_SHORTBOW,          "shortbow",            9,  2, 13,

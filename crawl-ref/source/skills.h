@@ -135,7 +135,7 @@ static const skill_type skill_display_order[] =
 
     SK_BLANK_LINE,
 
-    SK_BOWS, SK_CROSSBOWS, SK_THROWING, SK_SLINGS,
+    SK_BOWS, SK_THROWING, SK_SLINGS, SK_CROSSBOWS,
 
     SK_BLANK_LINE,
 

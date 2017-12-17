@@ -78,7 +78,7 @@ static const map<species_type, species_def> species_data =
     { JOB_TRANSMUTER, JOB_FIRE_ELEMENTALIST, JOB_ICE_ELEMENTALIST,
       JOB_AIR_ELEMENTALIST, JOB_EARTH_ELEMENTALIST },
     { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
-      SK_BOWS, SK_CROSSBOWS},
+      SK_BOWS },
 } },
 
 { SP_BASE_DRACONIAN, {
@@ -96,7 +96,7 @@ static const map<species_type, species_def> species_data =
     { JOB_BERSERKER, JOB_TRANSMUTER, JOB_FIRE_ELEMENTALIST,
       JOB_ICE_ELEMENTALIST, JOB_AIR_ELEMENTALIST, JOB_EARTH_ELEMENTALIST },
     { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
-      SK_BOWS, SK_CROSSBOWS },
+      SK_BOWS },
 } },
 
 { SP_RED_DRACONIAN, {
@@ -264,7 +264,7 @@ static const map<species_type, species_def> species_data =
     { JOB_GLADIATOR, JOB_BERSERKER, JOB_WIZARD,
       JOB_NECROMANCER, JOB_FIRE_ELEMENTALIST, JOB_ICE_ELEMENTALIST },
     { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
-      SK_BOWS, SK_CROSSBOWS},
+      SK_BOWS },
 } },
 
 { SP_FORMICID, {
@@ -282,8 +282,7 @@ static const map<species_type, species_def> species_data =
       "Your four strong arms can wield two-handed weapons with a shield." },
     { "permanent stasis", "dig shafts and tunnels", "four strong arms" },
     { JOB_FIGHTER, JOB_HUNTER, JOB_EARTH_ELEMENTALIST, JOB_TORPOR_KNIGHT },
-    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
-      SK_CROSSBOWS},
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS },
 } },
 
 { SP_GHOUL, {
@@ -303,7 +302,7 @@ static const map<species_type, species_def> species_data =
     { "hp from kills" },
     { JOB_GLADIATOR, JOB_MONK, JOB_NECROMANCER,
       JOB_ICE_ELEMENTALIST, JOB_EARTH_ELEMENTALIST },
-    { SK_UNARMED_COMBAT, SK_BOWS, SK_CROSSBOWS},
+    { SK_UNARMED_COMBAT, SK_BOWS },
 } },
 
 { SP_GARGOYLE, {
@@ -322,7 +321,7 @@ static const map<species_type, species_def> species_data =
     {},
     { JOB_FIGHTER, JOB_GLADIATOR, JOB_MONK, JOB_BERSERKER,
       JOB_FIRE_ELEMENTALIST, JOB_ICE_ELEMENTALIST, JOB_EARTH_ELEMENTALIST },
-    { SK_MACES_FLAILS, SK_BOWS, SK_CROSSBOWS },
+    { SK_MACES_FLAILS, SK_BOWS },
 } },
 
 { SP_GNOLL, {
@@ -339,7 +338,7 @@ static const map<species_type, species_def> species_data =
     {},
     { JOB_SKALD, JOB_FIGHTER, JOB_ARCANE_MARKSMAN, JOB_WANDERER },
     { SK_SHORT_BLADES, SK_MACES_FLAILS, SK_POLEARMS,
-      SK_BOWS, SK_CROSSBOWS },
+      SK_BOWS },
 } },
 
 { SP_HILL_ORC, {
@@ -374,7 +373,7 @@ static const map<species_type, species_def> species_data =
     { JOB_BERSERKER, JOB_NECROMANCER, JOB_FIRE_ELEMENTALIST,
       JOB_ICE_ELEMENTALIST },
     { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
-      SK_BOWS, SK_CROSSBOWS },
+      SK_BOWS },
 } },
 
 { SP_KOBOLD, {
@@ -391,7 +390,7 @@ static const map<species_type, species_def> species_data =
     {},
     { JOB_ARCANE_MARKSMAN, JOB_ENCHANTER,
       JOB_SUMMONER, JOB_WIZARD },
-    { SK_SHORT_BLADES, SK_MACES_FLAILS, SK_CROSSBOWS },
+    { SK_SHORT_BLADES, SK_MACES_FLAILS },
 } },
 
 { SP_MERFOLK, {
@@ -427,7 +426,7 @@ static const map<species_type, species_def> species_data =
     { "retaliatory headbutt" },
     { JOB_FIGHTER, JOB_GLADIATOR, JOB_MONK, JOB_HUNTER, JOB_BERSERKER },
     { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
-      SK_BOWS, SK_CROSSBOWS},
+      SK_BOWS },
 } },
 
 { SP_MUMMY, {
@@ -449,7 +448,7 @@ static const map<species_type, species_def> species_data =
     { JOB_WIZARD, JOB_NECROMANCER, JOB_ICE_ELEMENTALIST,
       JOB_FIRE_ELEMENTALIST, JOB_SUMMONER },
     { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
-      SK_BOWS, SK_CROSSBOWS },
+      SK_BOWS },
 } },
 
 { SP_NAGA, {
@@ -468,8 +467,7 @@ static const map<species_type, species_def> species_data =
     {},
     { JOB_BERSERKER, JOB_TRANSMUTER, JOB_ENCHANTER, JOB_FIRE_ELEMENTALIST,
       JOB_ICE_ELEMENTALIST, JOB_WIZARD },
-    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_BOWS,
-      SK_CROSSBOWS },
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_BOWS },
 } },
 
 { SP_OGRE, {
@@ -505,7 +503,7 @@ static const map<species_type, species_def> species_data =
     { JOB_TRANSMUTER, JOB_WIZARD,
       JOB_FIRE_ELEMENTALIST, JOB_ICE_ELEMENTALIST, JOB_EARTH_ELEMENTALIST },
     { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
-      SK_BOWS, SK_CROSSBOWS },
+      SK_BOWS },
 } },
 
 { SP_SKELETON, {
@@ -559,7 +557,7 @@ static const map<species_type, species_def> species_data =
     { JOB_BERSERKER, JOB_WIZARD, JOB_SUMMONER,
       JOB_FIRE_ELEMENTALIST, JOB_AIR_ELEMENTALIST },
     { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
-      SK_BOWS, SK_CROSSBOWS },
+      SK_BOWS },
 } },
 
 { SP_TITAN, {
@@ -612,7 +610,7 @@ static const map<species_type, species_def> species_data =
     {},
     { JOB_GLADIATOR, JOB_ENCHANTER, JOB_EARTH_ELEMENTALIST,
       JOB_NECROMANCER, JOB_ICE_ELEMENTALIST },
-    { SK_SHORT_BLADES, SK_AXES, SK_BOWS, SK_CROSSBOWS },
+    { SK_SHORT_BLADES, SK_AXES, SK_BOWS },
 } },
 
 { SP_VINE_STALKER, {
@@ -633,7 +631,7 @@ static const map<species_type, species_def> species_data =
     { JOB_FIGHTER, JOB_BERSERKER, JOB_ENCHANTER,
       JOB_NECROMANCER, JOB_ICE_ELEMENTALIST },
     { SK_SHORT_BLADES, SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
-      SK_BOWS, SK_CROSSBOWS },
+      SK_BOWS },
 } },
 #if TAG_MAJOR_VERSION == 34
 { SP_SLUDGE_ELF, {
@@ -720,7 +718,7 @@ static const map<species_type, species_def> species_data =
     { "damage resistance", "recharge devices" },
     { JOB_FIGHTER, JOB_HUNTER, JOB_BERSERKER, JOB_NECROMANCER,
       JOB_EARTH_ELEMENTALIST },
-    { SK_MACES_FLAILS, SK_AXES, SK_CROSSBOWS },
+    { SK_MACES_FLAILS, SK_AXES },
 } },
 
 { SP_FELID, {
@@ -758,7 +756,7 @@ static const map<species_type, species_def> species_data =
     {},
     { JOB_FIGHTER, JOB_GLADIATOR, JOB_HUNTER, JOB_ARCANE_MARKSMAN },
     { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, 
-      SK_BOWS, SK_CROSSBOWS },
+      SK_BOWS },
 } },
 
 { SP_HALFLING, {
@@ -791,7 +789,7 @@ static const map<species_type, species_def> species_data =
     { "swims", },
     { JOB_FIGHTER, JOB_BERSERKER, JOB_SKALD, JOB_SUMMONER, JOB_ICE_ELEMENTALIST },
     { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
-      SK_BOWS, SK_CROSSBOWS },
+      SK_BOWS },
 } },
 #endif
 
