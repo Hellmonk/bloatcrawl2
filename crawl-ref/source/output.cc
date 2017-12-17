@@ -1370,7 +1370,7 @@ static void _redraw_title()
                               _god_status_colour(god_colour(you.religion)));
         }
     }
-    else if (you.char_class == JOB_MONK && you.species != SP_DEMIGOD
+    else if (you.char_class == JOB_MONK && you.species != SP_DEMIGOD && you.species != SP_TITAN
              && !had_gods())
     {
         string godpiety = "2*";
@@ -2688,7 +2688,7 @@ string mutation_overview()
     }
 
     // a bit more stuff
-    if (you.species == SP_OGRE || you.species == SP_TROLL
+    if (you.species == SP_TITAN || you.species == SP_TROLL
         || species_is_draconian(you.species) || you.species == SP_SPRIGGAN)
     {
         mutations.emplace_back("unfitting armour");

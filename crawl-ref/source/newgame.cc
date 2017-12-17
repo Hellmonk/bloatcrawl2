@@ -184,7 +184,7 @@ static const species_type species_order[] =
     // small species
     SP_KOBOLD,		   SP_SPRIGGAN,
     // large species
-    SP_OGRE,           SP_TROLL,
+    SP_TROLL,
     // significantly different body type from human ("monstrous")
     SP_NAGA,           
     SP_MERFOLK,        SP_MINOTAUR,
@@ -193,7 +193,7 @@ static const species_type species_order[] =
     // mostly human shape but made of a strange substance
     SP_VINE_STALKER,
     // celestial species
-    SP_DEMIGOD,        SP_DEMONSPAWN,
+    SP_TITAN,        SP_DEMONSPAWN,
     // undead species
     SP_MUMMY,          SP_GHOUL,
     SP_VAMPIRE,        SP_SKELETON,
@@ -981,7 +981,6 @@ static species_group species_groups[] =
             SP_KOBOLD,
             SP_DEMONSPAWN,
             SP_SPRIGGAN,
-            SP_OGRE,
             SP_VINE_STALKER,
             SP_FORMICID,
 	        SP_GNOLL,
@@ -993,7 +992,7 @@ static species_group species_groups[] =
         20,
         {
             SP_VAMPIRE,
-            SP_DEMIGOD,
+            SP_TITAN,
             SP_NAGA,
             SP_TENGU,
             SP_OCTOPODE,

@@ -2584,7 +2584,7 @@ string get_skill_description(skill_type skill, bool need_title)
     switch (skill)
     {
         case SK_INVOCATIONS:
-            if (you.species == SP_DEMIGOD)
+            if (you.species == SP_DEMIGOD || you.species == SP_TITAN)
             {
                 result += "\n";
                 result += "How on earth did you manage to pick this up?";

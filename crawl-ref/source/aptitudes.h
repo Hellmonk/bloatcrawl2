@@ -933,7 +933,48 @@ static const species_skill_aptitude species_skill_aptitudes[] =
 #endif
     APT(SP_DEMIGOD,         SK_INVOCATIONS,   UNUSABLE_SKILL),
     APT(SP_DEMIGOD,         SK_EVOCATIONS,     -1),
-
+	
+    // SP_TITAN
+    APT(SP_TITAN,         SK_FIGHTING,        3),
+    APT(SP_TITAN,         SK_SHORT_BLADES,   -1),
+    APT(SP_TITAN,         SK_LONG_BLADES,   UNUSABLE_SKILL),
+    APT(SP_TITAN,         SK_AXES,           -1),
+    APT(SP_TITAN,         SK_MACES_FLAILS,    3),
+    APT(SP_TITAN,         SK_POLEARMS,        0),
+    APT(SP_TITAN,         SK_STAVES,        UNUSABLE_SKILL),
+    APT(SP_TITAN,         SK_SLINGS,        UNUSABLE_SKILL),
+    APT(SP_TITAN,         SK_BOWS,           -2),
+    APT(SP_TITAN,         SK_CROSSBOWS,      -2),
+    APT(SP_TITAN,         SK_THROWING,       -1),
+    APT(SP_TITAN,         SK_ARMOUR,         -2),
+    APT(SP_TITAN,         SK_DODGING,        -1),
+    APT(SP_TITAN,         SK_STEALTH,        -1),
+#if TAG_MAJOR_VERSION == 34
+    APT(SP_TITAN,         SK_STABBING,      UNUSABLE_SKILL),
+#endif
+    APT(SP_TITAN,         SK_SHIELDS,        -1),
+#if TAG_MAJOR_VERSION == 34
+    APT(SP_TITAN,         SK_TRAPS,         UNUSABLE_SKILL),
+#endif
+    APT(SP_TITAN,         SK_UNARMED_COMBAT,  0),
+    APT(SP_TITAN,         SK_SPELLCASTING,    1),
+    APT(SP_TITAN,         SK_CONJURATIONS,  UNUSABLE_SKILL),
+    APT(SP_TITAN,         SK_HEXES,          -1),
+    APT(SP_TITAN,         SK_CHARMS,         -1),
+    APT(SP_TITAN,         SK_SUMMONINGS,     -1),
+    APT(SP_TITAN,         SK_NECROMANCY,     -1),
+    APT(SP_TITAN,         SK_TRANSLOCATIONS, -1),
+    APT(SP_TITAN,         SK_TRANSMUTATIONS, -1),
+    APT(SP_TITAN,         SK_FIRE_MAGIC,     -1),
+    APT(SP_TITAN,         SK_ICE_MAGIC,      -1),
+    APT(SP_TITAN,         SK_AIR_MAGIC,      -1),
+    APT(SP_TITAN,         SK_EARTH_MAGIC,    -1),
+#if TAG_MAJOR_VERSION == 34
+    APT(SP_TITAN,         SK_POISON_MAGIC,  UNUSABLE_SKILL),
+#endif
+    APT(SP_TITAN,         SK_INVOCATIONS,   UNUSABLE_SKILL),
+    APT(SP_TITAN,         SK_EVOCATIONS,     -1),
+	
     // SP_SPRIGGAN
     APT(SP_SPRIGGAN,        SK_FIGHTING,       -2),
     APT(SP_SPRIGGAN,        SK_SHORT_BLADES,    1),

@@ -4421,6 +4421,7 @@ enum species_type
 #endif
     SP_GNOLL,
     SP_SKELETON,
+    SP_TITAN,
     NUM_SPECIES,
 
     SP_UNKNOWN  = 100,

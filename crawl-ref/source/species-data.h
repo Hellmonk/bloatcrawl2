@@ -562,6 +562,24 @@ static const map<species_type, species_def> species_data =
       SK_BOWS, SK_CROSSBOWS },
 } },
 
+{ SP_TITAN, {
+    "Ti",
+    "Titan", "Titanic", nullptr,
+    SPF_NONE,
+    -1, 3, 2, 4,
+    MONS_TITAN,
+    HT_LAND, US_ALIVE, SIZE_LARGE,
+    13, 12, 9, // 34
+    set<stat_type>(), 28, // No natural stat gain (double chosen instead)
+    { {MUT_HIGH_MAGIC, 1, 1}, { MUT_SHOCK_RESISTANCE, 1, 1 }, },
+    {},
+    {},
+    { JOB_TRANSMUTER, JOB_FIGHTER, JOB_ICE_ELEMENTALIST,
+      JOB_AIR_ELEMENTALIST, JOB_EARTH_ELEMENTALIST },
+    { SK_MACES_FLAILS, SK_POLEARMS,
+      SK_THROWING},
+} },
+
 { SP_TROLL, {
     "Tr",
     "Troll", "Trollish", nullptr,
