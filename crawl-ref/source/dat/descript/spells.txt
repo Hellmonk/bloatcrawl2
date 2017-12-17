@@ -1006,8 +1006,8 @@ otherwise almost indistinguishable from the original.
 %%%%
 Phase Shift spell
 
-Causes the caster to partially phase through reality into a parallel universe.
-While in this state, the caster's evasion is significantly increased.
+Causes the caster to phase in and out of the material plane, allowing them to
+occasionally avoid blows entirely.
 %%%%
 Plane Rend spell
 

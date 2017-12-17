@@ -181,7 +181,7 @@ static const mon_spellbook mspell_list[] =
       {
        { SPELL_THROW_ICICLE, 24, MON_SPELL_WIZARD },
        { SPELL_HASTE, 12, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 12, MON_SPELL_WIZARD },
+       { SPELL_PHASE_SHIFT, 12, MON_SPELL_WIZARD },
       }
     },
 
@@ -283,7 +283,7 @@ static const mon_spellbook mspell_list[] =
     {  MST_BOGGART,
       {
        { SPELL_SHADOW_CREATURES, 33, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 11, MON_SPELL_WIZARD },
+       { SPELL_PHASE_SHIFT, 11, MON_SPELL_WIZARD },
        { SPELL_BLINK, 11, MON_SPELL_WIZARD },
       }
     },
@@ -459,7 +459,6 @@ static const mon_spellbook mspell_list[] =
        { SPELL_THROW_FROST, 9, MON_SPELL_WIZARD },
        { SPELL_THROW_FLAME, 9, MON_SPELL_WIZARD },
        { SPELL_HASTE, 9, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 9, MON_SPELL_WIZARD | MON_SPELL_EMERGENCY },
       }
     },
 
@@ -495,7 +494,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_BOLT_OF_COLD, 15, MON_SPELL_WIZARD },
        { SPELL_AGONY, 15, MON_SPELL_WIZARD },
        { SPELL_BIND_SOULS, 30, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 10, MON_SPELL_WIZARD | MON_SPELL_EMERGENCY },
+       { SPELL_PHASE_SHIFT, 10, MON_SPELL_WIZARD | MON_SPELL_EMERGENCY },
       }
     },
 
@@ -504,7 +503,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_BOLT_OF_FIRE, 15, MON_SPELL_WIZARD },
        { SPELL_AGONY, 15, MON_SPELL_WIZARD },
        { SPELL_BIND_SOULS, 30, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 10, MON_SPELL_WIZARD | MON_SPELL_EMERGENCY },
+       { SPELL_PHASE_SHIFT, 10, MON_SPELL_WIZARD | MON_SPELL_EMERGENCY },
       }
     },
 
@@ -514,7 +513,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_STONE_ARROW, 14, MON_SPELL_WIZARD },
        { SPELL_LIGHTNING_BOLT, 12, MON_SPELL_WIZARD },
        { SPELL_BANISHMENT, 10, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 14, MON_SPELL_WIZARD },
+       { SPELL_PHASE_SHIFT, 14, MON_SPELL_WIZARD },
       }
     },
 
@@ -994,7 +993,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_IRON_SHOT, 12, MON_SPELL_WIZARD },
        { SPELL_SUMMON_GREATER_DEMON, 12, MON_SPELL_WIZARD },
        { SPELL_CONFUSE, 12, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 12, MON_SPELL_WIZARD },
+       { SPELL_PHASE_SHIFT, 12, MON_SPELL_WIZARD },
       }
     },
 
@@ -1004,7 +1003,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_FORCE_LANCE, 12, MON_SPELL_WIZARD },
        { SPELL_SUMMON_GREATER_DEMON, 12, MON_SPELL_WIZARD },
        { SPELL_SLOW, 12, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 12, MON_SPELL_WIZARD },
+       { SPELL_PHASE_SHIFT, 12, MON_SPELL_WIZARD },
       }
     },
 
@@ -1142,7 +1141,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_HASTE_OTHER, 10, MON_SPELL_WIZARD },
        { SPELL_CONFUSE, 10, MON_SPELL_WIZARD },
        { SPELL_SLOW, 10, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 10, MON_SPELL_WIZARD },
+       { SPELL_PHASE_SHIFT, 10, MON_SPELL_WIZARD },
       }
     },
 
@@ -1312,7 +1311,7 @@ static const mon_spellbook mspell_list[] =
       {
        { SPELL_VAMPIRIC_DRAINING, 50, MON_SPELL_WIZARD },
        { SPELL_CONFUSE, 14, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 14, MON_SPELL_WIZARD },
+       { SPELL_PHASE_SHIFT, 14, MON_SPELL_WIZARD },
       }
     },
 
@@ -1320,7 +1319,7 @@ static const mon_spellbook mspell_list[] =
       {
        { SPELL_BOLT_OF_DRAINING, 10, MON_SPELL_WIZARD },
        { SPELL_SUMMON_UNDEAD, 10, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 20, MON_SPELL_WIZARD },
+       { SPELL_PHASE_SHIFT, 20, MON_SPELL_WIZARD },
        { SPELL_VAMPIRIC_DRAINING, 50, MON_SPELL_WIZARD },
       }
     },
@@ -1330,7 +1329,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_BLINK_CLOSE, 12, MON_SPELL_WIZARD },
        { SPELL_PARALYSE, 12, MON_SPELL_WIZARD },
        { SPELL_HASTE, 12, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 12, MON_SPELL_WIZARD },
+       { SPELL_PHASE_SHIFT, 12, MON_SPELL_WIZARD },
        { SPELL_VAMPIRIC_DRAINING, 50, MON_SPELL_WIZARD },
       }
     },
@@ -1738,7 +1737,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_STRIP_RESISTANCE, 11, MON_SPELL_WIZARD },
        { SPELL_HASTE, 11, MON_SPELL_WIZARD },
        { SPELL_DEFLECT_MISSILES, 11, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 11, MON_SPELL_WIZARD | MON_SPELL_EMERGENCY },
+       { SPELL_PHASE_SHIFT, 11, MON_SPELL_WIZARD | MON_SPELL_EMERGENCY },
       }
     },
 
@@ -1748,7 +1747,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_THROW_ICICLE, 11, MON_SPELL_WIZARD },
        { SPELL_WATER_ELEMENTALS, 22, MON_SPELL_WIZARD },
        { SPELL_CALL_TIDE, 11, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 11, MON_SPELL_WIZARD },
+       { SPELL_PHASE_SHIFT, 11, MON_SPELL_WIZARD },
        { SPELL_BLINK, 11, MON_SPELL_WIZARD },
       }
     },
@@ -1905,7 +1904,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_BOLT_OF_COLD, 12, MON_SPELL_WIZARD },
        { SPELL_IRON_SHOT, 12, MON_SPELL_WIZARD },
        { SPELL_IOOD, 12, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 24, MON_SPELL_WIZARD },
+       { SPELL_PHASE_SHIFT, 24, MON_SPELL_WIZARD },
       }
     },
 
@@ -2055,7 +2054,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_ISKENDERUNS_MYSTIC_BLAST, 10, MON_SPELL_WIZARD },
        { SPELL_CONFUSE, 10, MON_SPELL_WIZARD },
        { SPELL_SLOW, 10, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 10, MON_SPELL_WIZARD },
+       { SPELL_PHASE_SHIFT, 10, MON_SPELL_WIZARD },
       }
     },
 
@@ -2106,7 +2105,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_PORKALATOR, 22, MON_SPELL_WIZARD },
        { SPELL_SLOW, 11, MON_SPELL_WIZARD },
        { SPELL_MONSTROUS_MENAGERIE, 11, MON_SPELL_WIZARD },
-       { SPELL_INVISIBILITY, 11, MON_SPELL_WIZARD | MON_SPELL_EMERGENCY },
+       { SPELL_PHASE_SHIFT, 11, MON_SPELL_WIZARD | MON_SPELL_EMERGENCY },
       }
     },
 
