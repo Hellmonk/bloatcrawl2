@@ -63,7 +63,7 @@ static void _give_wanderer_weapon(skill_type wpn_skill, int plus)
     if (sub_type == WPN_SHORTBOW)
         newgame_make_item(OBJ_MISSILES, MI_ARROW, 120 + random2avg(160, 5));
     else if (sub_type == WPN_HAND_CROSSBOW)
-        newgame_make_item(OBJ_MISSILES, MI_BOLT, 120 + random2avg(160, 5));
+        newgame_make_item(OBJ_MISSILES, MI_ARROW, 120 + random2avg(160, 5));
 }
 
 // The overall role choice for wanderers is a weighted chance based on

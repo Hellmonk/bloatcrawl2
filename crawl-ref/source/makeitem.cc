@@ -488,7 +488,9 @@ static special_missile_type _determine_missile_brand(const item_def& item,
     case MI_LARGE_ROCK:
     case MI_SLING_BULLET:
     case MI_ARROW:
+#if TAG_MAJOR_VERSION == 34
     case MI_BOLT:
+#endif
         rc = SPMSL_NORMAL;
         break;
 #if TAG_MAJOR_VERSION == 34
@@ -629,9 +631,8 @@ static void _generate_missile_item(item_def& item, int force_type,
     else
     {
         item.sub_type =
-            random_choose_weighted(56, MI_STONE,
+            random_choose_weighted(68, MI_STONE,
                                    20, MI_ARROW,
-                                   12, MI_BOLT,
                                    4,  MI_DART_POISONED,
                                    3,  MI_TOMAHAWK,
                                    2,  MI_JAVELIN,

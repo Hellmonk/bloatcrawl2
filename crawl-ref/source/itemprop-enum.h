@@ -347,7 +347,9 @@ enum missile_type
     MI_NEEDLE,
 #endif
     MI_ARROW,
+#if TAG_MAJOR_VERSION == 34
     MI_BOLT,
+#endif
     MI_JAVELIN,
 
     MI_STONE,

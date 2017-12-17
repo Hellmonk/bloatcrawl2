@@ -1148,7 +1148,7 @@ item_def trap_def::generate_trap_item()
     case TRAP_DART:   base = OBJ_MISSILES; sub = MI_DART;          break;
 #endif
     case TRAP_ARROW:  base = OBJ_MISSILES; sub = MI_ARROW;         break;
-    case TRAP_BOLT:   base = OBJ_MISSILES; sub = MI_BOLT;          break;
+    case TRAP_BOLT:   base = OBJ_MISSILES; sub = MI_ARROW;         break;
     case TRAP_SPEAR:  base = OBJ_WEAPONS;  sub = WPN_SPEAR;        break;
     case TRAP_NEEDLE: base = OBJ_MISSILES; sub = MI_DART_POISONED; break;
 #if TAG_MAJOR_VERSION == 34

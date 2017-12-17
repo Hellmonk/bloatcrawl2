@@ -227,7 +227,7 @@ static void _give_ammo(weapon_type weapon, int plus)
         newgame_make_item(OBJ_MISSILES, MI_ARROW, 160);
         break;
     case WPN_HAND_CROSSBOW:
-        newgame_make_item(OBJ_MISSILES, MI_BOLT, 160);
+        newgame_make_item(OBJ_MISSILES, MI_ARROW, 160);
         break;
     default:
         break;

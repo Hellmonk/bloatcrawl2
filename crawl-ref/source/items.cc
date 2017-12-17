@@ -3516,9 +3516,9 @@ colour_t item_def::missile_colour() const
 #if TAG_MAJOR_VERSION == 34
         case MI_NEEDLE:
             return WHITE;
-#endif
         case MI_BOLT:
             return LIGHTBLUE;
+#endif
         case MI_JAVELIN:
             return RED;
 #if TAG_MAJOR_VERSION == 34
