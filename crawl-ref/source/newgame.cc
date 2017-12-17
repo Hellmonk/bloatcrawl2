@@ -1681,10 +1681,10 @@ static vector<weapon_choice> _get_weapons(const newgame_def& ng)
     vector<weapon_choice> weapons;
     if (job_gets_ranged_weapons(ng.job))
     {
-        weapon_type startwep[3] = { WPN_THROWN,
-                                    WPN_SHORTBOW, WPN_HAND_CROSSBOW };
+        weapon_type startwep[2] = { WPN_THROWN,
+                                    WPN_SHORTBOW };
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 2; i++)
         {
             weapon_choice wp;
             wp.first = startwep[i];

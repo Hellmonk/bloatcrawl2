@@ -131,7 +131,7 @@
        "pair of gloves" }
 
       elseif s == "H" then i = { "halberd",
-       "hand axe", "hand crossbow",
+       "hand axe",
        "potion of heal wounds", "potion of haste", "scroll of holy word",
        "manual of hexes", "hat", "helmet" }
 

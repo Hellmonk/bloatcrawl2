@@ -126,9 +126,9 @@ dagger "Morg"
 An ugly rusty dagger. Many years ago it was the property of a powerful mage
 called Boris. He got lost in the Dungeon while seeking the Orb.
 %%%%
-hand crossbow "Punk"
+shortbow "Punk"
 
-A hand crossbow made of weird green... stuff, oozing corrosive slime. Originally the
+A shortbow made of weird green... stuff, oozing corrosive slime. Originally the
 weapon of a notorious mischief-maker and general scamp, it's since fallen into
 less savoury hands.
 %%%%

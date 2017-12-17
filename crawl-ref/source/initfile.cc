@@ -512,7 +512,7 @@ static map<string, weapon_type> _special_weapon_map = {
 
     // These weapons' base names have changed; we want to interpret the old
     // names correctly.
-    {"crossbow",    WPN_HAND_CROSSBOW},
+    {"crossbow",    WPN_SHORTBOW},
 
     // Pseudo-weapons.
     {"unarmed",     WPN_UNARMED},

@@ -399,8 +399,8 @@ BRAND:   SPWPN_SPEED
 STR:     3
 BOOL:    nogen
 
-NAME:    hand crossbow "Punk"
-OBJ:     OBJ_WEAPONS/WPN_HAND_CROSSBOW
+NAME:    shortbow "Punk"
+OBJ:     OBJ_WEAPONS/WPN_SHORTBOW
 PLUS:    +8
 COLOUR:  ETC_SLIME
 TILE:    urand_punk
