@@ -334,8 +334,8 @@ KITEM:  ' = q:1 arrow
 KITEM:  $ = nothing, q:30 arrow / any good_item
 : else
 MONS:   patrolling yaktaur captain, plant
-KITEM:  ' = q:1 bolt
-KITEM:  $ = nothing, q:30 bolt / any good_item
+KITEM:  ' = q:1 arrow
+KITEM:  $ = nothing, q:30 arrow / any good_item
 :end
 SHUFFLE: %$
 SUBST:  % = %W

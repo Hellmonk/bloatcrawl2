@@ -1032,10 +1032,10 @@ KMONS:   1 = guardian mummy ; randart quarterstaff ego:chaos | \
              randart glaive | randart trident
 KMONS:   3 = guardian mummy ; randart shortbow ego:chaos . arrow / \
              guardian mummy ; randart longbow ego:chaos . arrow / \
-             guardian mummy ; randart triple crossbow . bolt / \
+             guardian mummy ; randart triple crossbow . arrow / \
              guardian mummy ; randart shortbow . arrow / \
              guardian mummy ; randart longbow . arrow / \
-             guardian mummy ; randart arbalest . bolt
+             guardian mummy ; randart arbalest . arrow
 KMONS:   5 = guardian mummy ; wand of lightning | scroll of summoning
 KMONS:   7 = guardian mummy ; randart ring mail | randart scale mail | \
              randart chain mail | randart robe . scroll of summoning

@@ -92,7 +92,7 @@
        "scroll of amnesia", "staff of air", "manual of axes", "potion of augmentation",
        "manual of armour", "wand of acid", "acid dragon scales" }
 
-      elseif s == "B" then i = { "bardiche", "battleaxe", "bolt",
+      elseif s == "B" then i = { "bardiche", "battleaxe",
        "book of battle", "book of beasts", "book of burglary", "box of beasts",
        "broad axe", "pair of boots", "potion of berserk rage",
        "scroll of blinking", "scroll of brand weapon",

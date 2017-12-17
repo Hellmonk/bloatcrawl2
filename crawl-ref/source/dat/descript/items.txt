@@ -56,7 +56,7 @@ but, having never been tanned, it carries a light stench of rotting flesh.
 %%%%
 arbalest
 
-A large piece of machinery used for firing bolts, braced with steel and cranked
+A large piece of machinery used for firing arrows, braced with steel and cranked
 with a windlass. It takes some time to load and fire.
 %%%%
 arrow
@@ -481,7 +481,7 @@ A small axe.
 %%%%
 hand crossbow
 
-A compact piece of machinery, used for firing bolts. It takes some time to load
+A compact piece of machinery, used for firing arrows. It takes some time to load
 and fire.
 %%%%
 hat
