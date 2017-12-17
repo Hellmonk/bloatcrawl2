@@ -2343,29 +2343,32 @@ int player_shield_class()
     if (you.shield())
     {
         const item_def& item = you.inv[you.equip[EQ_SHIELD]];
-        int size_factor = (you.body_size(PSIZE_TORSO) - SIZE_MEDIUM)
+        if(item.base_type != OBJ_STAVES)
+        {
+            int size_factor = (you.body_size(PSIZE_TORSO) - SIZE_MEDIUM)
                         * (item.sub_type - ARM_LARGE_SHIELD);
-        int base_shield = property(item, PARM_AC) * 2 + size_factor;
+            int base_shield = property(item, PARM_AC) * 2 + size_factor;
 
-        // bonus applied only to base, see above for effect:
-        shield += base_shield * 50;
-        shield += base_shield * you.skill(SK_SHIELDS, 5) / 2;
+            // bonus applied only to base, see above for effect:
+            shield += base_shield * 50;
+            shield += base_shield * you.skill(SK_SHIELDS, 5) / 2;
 
-        shield += item.plus * 200;
+            shield += item.plus * 200;
 
-        shield += you.skill(SK_SHIELDS, 38)
+            shield += you.skill(SK_SHIELDS, 38)
                 + min(you.skill(SK_SHIELDS, 38), 3 * 38);
 
-        int stat = 0;
-        if (item.sub_type == ARM_BUCKLER)
-            stat = you.dex() * 38;
-        else if (item.sub_type == ARM_LARGE_SHIELD)
-            stat = you.dex() * 12 + you.strength() * 26;
-        else
-            stat = you.dex() * 19 + you.strength() * 19;
-        stat = stat * (base_shield + 13) / 26;
+            int stat = 0;
+            if (item.sub_type == ARM_BUCKLER)
+                stat = you.dex() * 38;
+            else if (item.sub_type == ARM_LARGE_SHIELD)
+                stat = you.dex() * 12 + you.strength() * 26;
+            else
+                stat = you.dex() * 19 + you.strength() * 19;
+            stat = stat * (base_shield + 13) / 26;
 
-        shield += stat;
+            shield += stat;
+		}
     }
 
     // mutations
