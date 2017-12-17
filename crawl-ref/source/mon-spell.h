@@ -226,7 +226,6 @@ static const mon_spellbook mspell_list[] =
        { SPELL_CALL_DOWN_DAMNATION, 12, MON_SPELL_PRIEST },
        { SPELL_MALIGN_OFFERING, 18, MON_SPELL_PRIEST },
        { SPELL_SMITING, 18, MON_SPELL_PRIEST },
-       { SPELL_TWISTED_RESURRECTION, 12, MON_SPELL_PRIEST },
       }
     },
 
@@ -243,7 +242,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_BOLT_OF_DRAINING, 22, MON_SPELL_WIZARD },
        { SPELL_VAMPIRIC_DRAINING, 22, MON_SPELL_WIZARD },
        { SPELL_CALL_LOST_SOUL, 11, MON_SPELL_WIZARD },
-       { SPELL_TWISTED_RESURRECTION, 11, MON_SPELL_WIZARD },
+       { SPELL_AGONY, 11, MON_SPELL_WIZARD },
       }
     },
 	
