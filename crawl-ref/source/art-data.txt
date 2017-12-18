@@ -540,6 +540,7 @@ BRAND:    SPWPN_VORPAL
 BOOL:     seeinv
 INSCRIP:  nevermiss,
 
+# TAG_MAJOR_VERSION == 34
 NAME:    longbow "Piercer"
 OBJ:     OBJ_WEAPONS/WPN_LONGBOW
 PLUS:    +7
@@ -548,6 +549,7 @@ TILE:    urand_piercer
 TILE_EQ: great_bow
 BRAND:   SPWPN_PENETRATION
 EV:      -2
+BOOL:    nogen
 
 # TAG_MAJOR_VERSION == 34
 ENUM:    BLOWGUN_ASSASSIN
