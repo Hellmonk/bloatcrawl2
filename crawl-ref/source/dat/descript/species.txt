@@ -101,6 +101,12 @@ While most skeletons are mindless, some of these spooky, scary undead keep their
 intelligence and take up adventuring. They use the bones of their slain foes as
 temporary armour and can paralyze unwary enemies with fear.
 %%%%
+Titan
+
+Large descendants of godlike beings, Titans do not worship any god and have difficulty
+with many types of armour, but make up for this with divine attributes
+and very high reserves of health and magic.
+%%%%
 Troll
 
 Trolls are large brutes with powerful claws, always hungering for raw meat.
