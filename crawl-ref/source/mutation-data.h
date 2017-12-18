@@ -2011,4 +2011,5 @@ static const mutation_category_def category_mut_data[] =
   { RANDOM_NON_SLIME_MUTATION, "nonslime"},
   { RANDOM_CORRUPT_MUTATION, "corrupt"},
   { RANDOM_QAZLAL_MUTATION, "qazlal"},
+  { RANDOM_KOBOLD_MUTATION, "kobold"},
 };
