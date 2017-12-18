@@ -631,9 +631,9 @@ static const weapon_def Weapon_prop[] =
     { WPN_SHORTBOW,          "shortbow",            9,  2, 13,
         SK_BOWS,         SIZE_LITTLE, NUM_SIZE_LEVELS, MI_ARROW,
         DAMV_NON_MELEE, 8, 10, 30, RANGED_BRANDS },
-    { WPN_LONGBOW,           "longbow",            15,  0, 17,
-        SK_BOWS,         SIZE_MEDIUM, NUM_SIZE_LEVELS, MI_ARROW,
-        DAMV_NON_MELEE, 2, 10, 45, RANGED_BRANDS },
+    { WPN_LONGBOW,           "longbow",            13,  0, 17,
+        SK_BOWS,         SIZE_LITTLE, NUM_SIZE_LEVELS, MI_ARROW,
+        DAMV_NON_MELEE, 3, 10, 45, RANGED_BRANDS },
 };
 
 struct missile_def

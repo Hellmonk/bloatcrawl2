@@ -798,8 +798,10 @@ int weapon_min_delay(const item_def &weapon, bool check_speed)
     if (min_delay > 7)
         min_delay = 7;
 
-    // ...except crossbows...
-    if (item_attack_skill(weapon) == SK_CROSSBOWS && min_delay < 10)
+    // ...except former crossbows...
+    if (weapon.sub_type
+       && (weapon.sub_type == WPN_ARBALEST || weapon.sub_type == WPN_TRIPLE_CROSSBOW)
+        && min_delay < 10)
         min_delay = 10;
 
     // ... and unless it would take more than skill 27 to get there.
