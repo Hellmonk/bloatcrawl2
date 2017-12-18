@@ -287,8 +287,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         // Airstrike.
         if (you.res_wind())
             hurted = 0;
-        else if (you.airborne())
-            hurted = hurted;
         break;
     }
 

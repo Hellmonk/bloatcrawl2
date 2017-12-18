@@ -59,8 +59,6 @@
 
 const coord_def ABYSS_CENTRE(GXM / 2, GYM / 2);
 
-static const int ABYSSAL_RUNE_MAX_ROLL = 200;
-
 abyss_state abyssal_state;
 
 static ProceduralLayout *abyssLayout = nullptr, *levelLayout = nullptr;
