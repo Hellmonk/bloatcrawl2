@@ -187,7 +187,9 @@ enum jewellery_type
 #endif
     RING_STRENGTH,
     RING_SLAYING,
+#if TAG_MAJOR_VERSION == 34
     RING_SEE_INVISIBLE,
+#endif
     RING_RESIST_CORROSION,
 #if TAG_MAJOR_VERSION == 34
     RING_LOUDNESS,

@@ -478,7 +478,6 @@ function coven_setup(e)
           ring of protection from magic randart ident:all not_cursed /\
           ring of fire randart ident:all not_cursed /\
           ring of ice randart ident:all not_cursed /\
-          ring of see invisible randart ident:all not_cursed /\
           ring of poison resistance randart ident:all not_cursed /\
           ring of slaying plus:5 ident:all not_cursed /\
           ring of invisibility randart ident:all not_cursed /\

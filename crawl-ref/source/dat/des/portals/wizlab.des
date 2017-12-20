@@ -1295,7 +1295,7 @@ ITEM:       w:20 potion of flight / potion of magic / potion of haste / \
             potion of resistance / gold
 ITEM:       wand of lightning / staff of air / \
             gold / scroll of silence / quick blade / ring of evasion / \
-            ring of see invisible / book of clouds / any book w:15 / \
+            ring of protection from magic / book of clouds / any book w:15 / \
             any good_item / any w:20
 ITEM:       randbook disc:air
 KFEAT:      #5 = deep_water

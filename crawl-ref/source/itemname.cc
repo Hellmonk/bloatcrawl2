@@ -764,7 +764,9 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
 #endif
         case RING_STRENGTH:              return "strength";
         case RING_SLAYING:               return "slaying";
+#if TAG_MAJOR_VERSION == 34
         case RING_SEE_INVISIBLE:         return "see invisible";
+#endif
         case RING_RESIST_CORROSION:      return "resist corrosion";
 #if TAG_MAJOR_VERSION == 34
         case RING_LOUDNESS:              return "loudness";
@@ -828,7 +830,9 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
 #endif
         case RING_STRENGTH:              return "Str";
         case RING_SLAYING:               return "Slay";
+#if TAG_MAJOR_VERSION == 34
         case RING_SEE_INVISIBLE:         return "sInv";
+#endif
         case RING_RESIST_CORROSION:      return "rCorr";
 #if TAG_MAJOR_VERSION == 34
         case RING_LOUDNESS:              return "Stlth-";
@@ -3625,9 +3629,11 @@ bool is_useless_item(const item_def &item, bool temp)
 
         case AMU_MANA_REGENERATION:
             return you_worship(GOD_PAKELLAS);
-
+			
+#if TAG_MAJOR_VERSION == 34
         case RING_SEE_INVISIBLE:
             return you.innate_sinv();
+#endif
 
         case RING_POISON_RESISTANCE:
             return player_res_poison(false, temp, false) > 0

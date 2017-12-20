@@ -406,7 +406,6 @@ KITEM:    a = ring of fire ident:all not_cursed /\
           ring of protection from magic ident:all not_cursed /\
           ring of fire ident:all not_cursed /\
           ring of ice ident:all not_cursed /\
-          ring of see invisible ident:all not_cursed /\
           ring of poison resistance ident:all not_cursed /\
           any jewellery ident:all not_cursed
 KITEM:    b = any weapon level:27 ident:all /\
@@ -781,7 +780,6 @@ KITEM:    a = amulet of faith randart not_cursed ident:all /\
     ring of protection from magic randart ident:all not_cursed /\
     ring of fire randart ident:all not_cursed /\
     ring of ice randart ident:all not_cursed /\
-    ring of see invisible randart ident:all not_cursed /\
     ring of poison resistance randart ident:all not_cursed /\
     ring of slaying plus:3 ident:all not_cursed /\
     ring of resist corrosion randart ident:all not_cursed /\

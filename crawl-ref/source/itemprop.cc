@@ -761,6 +761,7 @@ const set<pair<object_class_type, int> > removed_items =
     { OBJ_JEWELLERY, RING_STEALTH },
     { OBJ_JEWELLERY, RING_FLIGHT },
     { OBJ_JEWELLERY, RING_MAGICAL_POWER },
+    { OBJ_JEWELLERY, RING_SEE_INVISIBLE },
 	{ OBJ_STAVES, 	 STAFF_POISON },
     { OBJ_STAVES,    STAFF_ENCHANTMENT },
     { OBJ_STAVES,    STAFF_CHANNELING },
