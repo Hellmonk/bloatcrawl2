@@ -225,7 +225,7 @@ bool melee_attack::handle_phase_attempted()
         return false;
     }
 
-    if (attk_flavour == AF_SHADOWSTAB
+    if (mons_class_flag(attacker->type, M_INVIS)
         && defender && !defender->can_see(*attacker))
     {
         if (you.see_cell(attack_position))
@@ -2366,6 +2366,10 @@ bool melee_attack::mons_attack_effects()
     if (attacker != defender && defender->alive())
     {
         mons_apply_attack_flavour();
+		
+        if(mons_class_flag(attacker->type, M_INVIS)
+                         &&!defender->can_see(*attacker))
+            attacker->as_monster()->del_ench(ENCH_INVIS, true);
 
         if (needs_message && !special_damage_message.empty())
             mpr(special_damage_message);
@@ -3484,7 +3488,7 @@ int melee_attack::apply_damage_modifiers(int damage, int damage_max)
 
     // If the defender is asleep, the attacker gets a stab.
     if (defender && (defender->asleep()
-                     || (attk_flavour == AF_SHADOWSTAB
+                     || (mons_class_flag(attacker->type, M_INVIS)
                          &&!defender->can_see(*attacker))))
     {
         damage = damage * 5 / 2;

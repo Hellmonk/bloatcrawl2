@@ -1336,7 +1336,7 @@ static const mon_spellbook mspell_list[] =
     // ('W') Incorporeal undead.
     {  MST_SHADOW,
       {
-       { SPELL_INVISIBILITY, 33, MON_SPELL_NATURAL },
+       { SPELL_PHASE_SHIFT, 11, MON_SPELL_NATURAL },
       }
     },
 	
