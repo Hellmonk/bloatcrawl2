@@ -594,7 +594,7 @@ void attack::chaos_affects_defender()
 
         10,             // CHAOS_HEAL
         speed_chance,   // CHAOS_HASTE
-        10,             // CHAOS_INVIS
+        0,             // CHAOS_INVIS
 
         speed_chance,   // CHAOS_SLOW
         para_chance,    // CHAOS_PARALYSIS
@@ -731,8 +731,9 @@ void attack::chaos_affects_defender()
         }
         beam.flavour = BEAM_HASTE;
         break;
+    //disabling this -hellmonk
     case CHAOS_INVIS:
-        beam.flavour = BEAM_INVISIBILITY;
+        beam.flavour = BEAM_SLOW;
         break;
     case CHAOS_SLOW:
         beam.flavour = BEAM_SLOW;
