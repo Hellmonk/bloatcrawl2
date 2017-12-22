@@ -10,6 +10,7 @@
 #include <type_traits> // underlying_type<>, enable_if<>
 
 #include "tag-version.h"
+#include "tiledef-player.h"
 
 // Provide a last_exponent static member variable only if the LastExponent
 // template parameter is nonnegative.
@@ -5403,8 +5404,11 @@ enum tile_inventory_flags
 
 enum tile_player_flags
 {
-    TILEP_SHOW_EQUIP    = 0x1000,
+    TILEP_SHOW_EQUIP    = 0x10000000,
 };
+
+static_assert(static_cast<int>(TILEP_SHOW_EQUIP) > static_cast<int>(TILEP_PLAYER_MAX),
+        "TILEP_SHOW_EQUIP must be distinct from all player tile enums");
 
 enum tile_player_flag_cut
 {
