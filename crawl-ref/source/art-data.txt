@@ -417,7 +417,6 @@ TILE:     urand_zephyr
 TILE_EQ:  zephyr
 BRAND:    SPWPN_SPEED
 DEX:      3
-BOOL:     seeinv
 
 NAME:    giant club "Skullcrusher"
 OBJ:     OBJ_WEAPONS/WPN_GIANT_CLUB
@@ -436,7 +435,7 @@ TILE:     urand_guard
 TILE_EQ:  glaive_of_the_guard
 BRAND:    SPWPN_ELECTROCUTION
 AC:       5
-BOOL:     seeinv, berserk
+BOOL:     berserk
 
 ENUM:     SWORD_OF_RIGHTEOUSNESS
 NAME:     sword of Righteousness
@@ -685,7 +684,7 @@ TILE:     urand_thief
 TILE_EQ:  black
 SLAY:     -2
 STEALTH:  1
-BOOL:     seeinv, fog
+BOOL:     fog
 
 # TAG_MAJOR_VERSION == 34
 NAME:    large shield "Bullseye"
@@ -704,7 +703,7 @@ COLOUR:  ETC_JEWEL
 TILE:    urand_dyrovepreva
 TILE_EQ: dyrovepreva
 INT:     2
-BOOL:    elec, seeinv
+BOOL:    elec
 
 NAME:     hat of the Bear Spirit
 OBJ:      OBJ_ARMOUR/ARM_HAT
@@ -823,8 +822,7 @@ COLOUR:  ETC_SHIMMER_BLUE
 TILE:    urand_dragonmask
 TILE_EQ: art_dragonhelm
 MAGIC:   1
-SLAY:    3
-BOOL:    seeinv
+SLAY:    4
 
 NAME:     robe of Night
 OBJ:      OBJ_ARMOUR/ARM_ROBE
@@ -834,7 +832,6 @@ COLOUR:   ETC_DARK
 TILE:     urand_night
 TILE_EQ:  robe_of_night
 MAGIC:    1
-BOOL:     seeinv
 
 NAME:    scales of the Dragon King
 OBJ:     OBJ_ARMOUR/ARM_GOLD_DRAGON_ARMOUR
@@ -1215,7 +1212,7 @@ TILE:    urand_eternal_torment
 TILE_EQ: eternal_torment
 INSCRIP: rTorment HP--
 LIFE:    3
-BOOL:    evil, seeinv, nogen
+BOOL:    evil, nogen
 
 ENUM:    VINES
 NAME:    robe of Vines

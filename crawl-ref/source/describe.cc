@@ -1521,10 +1521,10 @@ static string _describe_armour(const item_def &item, bool verbose)
         case SPARM_POISON_RESISTANCE:
             description += "It protects its wearer from poison.";
             break;
+#if TAG_MAJOR_VERSION == 34
         case SPARM_SEE_INVISIBLE:
             description += "It allows its wearer to see invisible things.";
             break;
-#if TAG_MAJOR_VERSION == 34
         case SPARM_INVISIBILITY:
             description += "It does nothing special.";
             break;

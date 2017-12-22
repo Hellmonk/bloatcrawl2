@@ -335,7 +335,6 @@ function metal_vault_setup(e)
           ring of protection from magic ident:all not_cursed /\
           ring of fire ident:all not_cursed /\
           ring of ice ident:all not_cursed /\
-          ring of see invisible ident:all not_cursed /\
           ring of poison resistance ident:all not_cursed /\
           any jewellery ident:all not_cursed")
   e.lua_marker('>', props_marker {

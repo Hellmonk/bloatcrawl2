@@ -348,7 +348,9 @@ unsigned int item_value(item_def item, bool ident)
             case SPARM_COLD_RESISTANCE:
             case SPARM_DEXTERITY:
             case SPARM_FIRE_RESISTANCE:
+#if TAG_MAJOR_VERSION == 34
             case SPARM_SEE_INVISIBLE:
+#endif
             case SPARM_INTELLIGENCE:
             case SPARM_FLYING:
             case SPARM_STEALTH:

@@ -776,14 +776,13 @@ static special_armour_type _generate_armour_type_ego(armour_type type,
 
     case ARM_HAT:
         return random_choose_weighted(8, SPARM_NORMAL,
-                                      3, SPARM_MAGICAL_POWER,
+                                      4, SPARM_MAGICAL_POWER,
                                       3, SPARM_MAGIC_RESISTANCE,
-                                      2, SPARM_INTELLIGENCE,
-                                      2, SPARM_SEE_INVISIBLE,
+                                      3, SPARM_INTELLIGENCE,
                                       1, SPARM_SPIRIT_SHIELD);
 
     case ARM_HELMET:
-        return coinflip() ? SPARM_SEE_INVISIBLE : SPARM_INTELLIGENCE;
+        return coinflip() ? SPARM_MAGIC_RESISTANCE : SPARM_INTELLIGENCE;
 
     case ARM_GLOVES:
         return random_choose(SPARM_DEXTERITY, SPARM_STRENGTH, SPARM_ARCHERY);
@@ -932,7 +931,7 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
         return true; // in portal vaults, these can happen on every slot
 
     case SPARM_MAGIC_RESISTANCE:
-        if (type == ARM_HAT)
+        if (type == ARM_HAT || type == ARM_HELMET)
             return true;
         // deliberate fall-through
     case SPARM_POISON_RESISTANCE:

@@ -541,8 +541,8 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_FIRE_RESISTANCE:   return "fire resistance";
         case SPARM_COLD_RESISTANCE:   return "cold resistance";
         case SPARM_POISON_RESISTANCE: return "poison resistance";
-        case SPARM_SEE_INVISIBLE:     return "see invisible";
 #if TAG_MAJOR_VERSION == 34
+        case SPARM_SEE_INVISIBLE:     return "see invisible";
         case SPARM_INVISIBILITY:      return "invisibility";
 #endif
         case SPARM_STRENGTH:          return "strength";
