@@ -1856,7 +1856,7 @@ const char* feat_type_name(dungeon_feature_type feat)
     if (feat_is_trap(feat))
         return "trap";
     if (feat_is_escape_hatch(feat))
-        return "escape hatch";
+        return "mutagenic shaft";
     if (feat_is_portal(feat) || feat_is_gate(feat))
         return "portal";
     if (feat_is_travelable_stair(feat))

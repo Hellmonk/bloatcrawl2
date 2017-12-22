@@ -29,6 +29,7 @@
 #include "message.h"
 #include "misc.h"
 #include "mon-death.h"
+#include "mutation.h" //purple stairs
 #include "notes.h"
 #include "output.h"
 #include "prompt.h"
@@ -157,7 +158,7 @@ static bool _stair_moves_pre(dungeon_feature_type stair)
 static void _exit_stair_message(dungeon_feature_type stair)
 {
     if (feat_is_escape_hatch(stair))
-        mpr("The hatch slams shut behind you.");
+        mpr("The mutagenic shaft squelches shut behind you.");
 }
 
 static void _climb_message(dungeon_feature_type stair, bool going_up,
@@ -849,6 +850,9 @@ void take_stairs(dungeon_feature_type force_stair, bool going_up,
 
     if (!whither.is_valid() && !(old_feat == DNGN_EXIT_DUNGEON && going_up))
         return;
+	
+    if(old_feat == DNGN_ESCAPE_HATCH_DOWN)
+        mutate(RANDOM_MUTATION, "mutagenic hatch");
 
     floor_transition(how, old_feat, whither,
                      bool(force_stair), going_up, shaft, wizard);

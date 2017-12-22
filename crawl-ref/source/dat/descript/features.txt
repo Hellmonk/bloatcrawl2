@@ -275,10 +275,10 @@ An iron grate
 A rusted iron grate, brittle enough to be disrupted with a spell or a wand
 quite easily. It is too strong to be breakable by hand, however.
 %%%%
-An escape hatch in the floor
+A mutagenic shaft in the floor
 
-A spring-loaded one-way escape hatch set in the dungeon floor. It functions
-much like a staircase.
+A disgusting yet strangely compelling radioactive shaft. It will surely
+mutate you if you descend, but otherwise functions much like a normal staircase.
 %%%%
 An escape hatch in the ceiling
 
@@ -286,7 +286,7 @@ A spring-loaded one-way escape hatch set in the ceiling.
 %%%%
 A shaft
 
-A hole in the ground, leading to a dungeon level one or more floors deeper.
+A hole in the ground, leading to a dungeon level one floor deeper.
 %%%%
 A sealed passage leading down
 

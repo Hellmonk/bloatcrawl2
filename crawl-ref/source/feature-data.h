@@ -300,7 +300,7 @@ STONE_STAIRS_UP(II, ii),
 STONE_STAIRS_UP(III, iii),
 
 {
-    DNGN_ESCAPE_HATCH_DOWN, "escape hatch in the floor", "escape_hatch_down",
+    DNGN_ESCAPE_HATCH_DOWN, "mutagenic shaft in the floor", "escape_hatch_down",
     DCHAR_STAIRS_DOWN, NUM_DCHAR_TYPES,
     COLOUR_AND_MAP(BROWN),
     FFT_NONE, MF_STAIR_DOWN,

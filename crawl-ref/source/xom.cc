@@ -2512,7 +2512,7 @@ static void _xom_repel_stairs(bool unclimbable)
         if (!real_stairs)
         {
             if (feat_is_escape_hatch(grd(stairs_avail[0])))
-                feat_name = "escape hatch";
+                feat_name = "mutagenic shaft";
             else
                 feat_name = "gate";
         }

@@ -1412,7 +1412,7 @@ static void _mons_indicate_level_exit(const monster* mon)
                 dir == CMD_GO_UPSTAIRS     ? "goes up" :
                 dir == CMD_GO_DOWNSTAIRS   ? "goes down"
                                            : "takes",
-                feat_is_escape_hatch(feat) ? "escape hatch"
+                feat_is_escape_hatch(feat) ? "mutagenic shaft"
                                            : "stairs").c_str());
     }
     else if (is_shaft)
