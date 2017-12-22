@@ -1796,7 +1796,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_SPIT_POISON:      // Naga poison spit
     {
-        int power = 10 + you.experience_level;
+        int power = 12 + you.experience_level;
         beam.range = _calc_breath_ability_range(abil.ability);
 
         if (!spell_direction(abild, beam)
