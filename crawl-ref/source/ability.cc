@@ -316,6 +316,8 @@ static const ability_def Ability_List[] =
       0, 0, 0, 0, {}, abflag::NONE },
     { ABIL_END_ANIMATE_DEAD, "End Animate Dead",
       0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_INFESTATION, "End Infestation",
+      0, 0, 0, 0, {}, abflag::NONE },
 
     { ABIL_DIG, "Dig", 0, 0, 0, 0, {}, abflag::INSTANT },
     { ABIL_SHAFT_SELF, "Shaft Self", 0, 0, 250, 0, {}, abflag::DELAY },
@@ -3732,6 +3734,7 @@ int find_ability_slot(const ability_type abil, char firstletter)
     case ABIL_END_RING_OF_FLAMES:
     case ABIL_END_ANIMATE_DEAD:
     case ABIL_END_SPECTRAL_WEAPON:
+    case ABIL_END_INFESTATION:
         first_slot = letter_to_index('A');
         break;
     default:

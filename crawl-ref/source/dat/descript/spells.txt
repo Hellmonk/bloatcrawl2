@@ -725,8 +725,8 @@ Infestation spell
 Calls forth a plague of scarabs to coat the caster's hands or melee weapon. As long 
 as the spell is sustained, any monster hit by the caster will become infested 
 for a duration depending on power. When an infested monster dies, a death scarab
-will burst forth from their remains, though this renders the corpse unusable in
-the process.
+will burst forth from their remains, though this process prevents reanimating the corpse
+in other ways.
 %%%%
 Infusion spell
 

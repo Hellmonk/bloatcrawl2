@@ -134,6 +134,10 @@ End Aura of Abjuration ability
 
 Ends your Aura of Abjuration spell.
 %%%%
+End Infestation ability
+
+Ends your Infestation spell.
+%%%%
 End Infusion ability
 
 Ends your Infusion spell.
