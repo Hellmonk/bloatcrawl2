@@ -2119,6 +2119,12 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         mpr("You stop readying your spectral weapon.");
         break;
     }
+	
+    case ABIL_END_INFESTATION:
+        fail_check();
+        you.attribute[ATTR_INFESTATION] = 0;
+        mpr("You are no longer infesting your enemies.");
+        break;
 
     case ABIL_STOP_FLYING:
         fail_check();
@@ -3457,6 +3463,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
    
     if (you.attribute[ATTR_INFUSION])
        _add_talent(talents, ABIL_END_INFUSION, check_confused);
+   
+    if (you.attribute[ATTR_INFESTATION])
+       _add_talent(talents, ABIL_END_INFESTATION, check_confused);
    
     if (you.attribute[ATTR_SPECTRAL_WEAPON])
        _add_talent(talents, ABIL_END_SPECTRAL_WEAPON, check_confused);

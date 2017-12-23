@@ -464,6 +464,13 @@ static void _remove_spell_attributes(spell_type spell)
             mprf(MSGCH_DURATION, "You are no longer reaping the dead.");
         }
         break;
+    case SPELL_INFESTATION:
+        if (you.attribute[ATTR_INFESTATION])
+        {
+            you.attribute[ATTR_INFESTATION] = 0;
+            mprf(MSGCH_DURATION, "You are no longer infesting your enemies.");
+        }
+        break;
     case SPELL_SPECTRAL_WEAPON:
         if (you.attribute[ATTR_SPECTRAL_WEAPON])
         {
@@ -1553,7 +1560,13 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_TWISTED_RESURRECTION:
     case SPELL_CONTROL_UNDEAD:
     case SPELL_SIMULACRUM:
+        if (you.get_mutation_level(MUT_NO_LOVE))
+            return "you cannot coerce anything to obey you.";
+        break;
+		
     case SPELL_INFESTATION:
+        if(temp && you.attribute[ATTR_INFESTATION])
+            return "you're already infesting your enemies";
         if (you.get_mutation_level(MUT_NO_LOVE))
             return "you cannot coerce anything to obey you.";
         break;

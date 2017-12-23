@@ -3238,19 +3238,12 @@ static void _setup_infestation(bolt &beam, int pow)
     beam.origin_spell = SPELL_INFESTATION;
 }
 
-spret_type cast_infestation(int pow, bolt &beam, bool fail)
+spret_type cast_infestation(int pow, bool fail)
 {
-    if (cell_is_solid(beam.target))
-    {
-        canned_msg(MSG_SOMETHING_IN_WAY);
-        return SPRET_ABORT;
-    }
-
+	
     fail_check();
-
-    _setup_infestation(beam, pow);
+    you.attribute[ATTR_INFESTATION] = 1;
     mpr("You call forth a plague of scarabs!");
-    beam.explode();
 
     return SPRET_SUCCESS;
 }

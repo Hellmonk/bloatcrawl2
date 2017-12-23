@@ -749,6 +749,16 @@ bool fill_status_info(int status, status_info* inf)
         break;
     }
 	
+    case STATUS_INFESTATION:
+    {
+        if(you.attribute[ATTR_INFESTATION])
+        {
+            inf->light_text = "Infest";
+            inf->light_colour = WHITE;
+        }
+        break;
+    }
+	
     case STATUS_SPECTRAL_WEAPON:
     {
         if(you.attribute[ATTR_SPECTRAL_WEAPON])

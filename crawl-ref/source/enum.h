@@ -491,6 +491,7 @@ enum ability_type
     ABIL_END_INFUSION,
     ABIL_END_ANIMATE_DEAD,
     ABIL_END_SPECTRAL_WEAPON,
+    ABIL_END_INFESTATION,
     NUM_ABILITIES
 };
 
@@ -626,6 +627,7 @@ enum attribute_type
     ATTR_SKELETON_ARMOUR,      // skeleton bone armour
     ATTR_SERPENTS_LASH,        // Remaining turns in which you can move instantly.
     ATTR_HEAVENLY_STORM,       // Measures the strength of the Heavenly Storm effect.
+    ATTR_INFESTATION,          // infestation
     NUM_ATTRIBUTES
 };
 

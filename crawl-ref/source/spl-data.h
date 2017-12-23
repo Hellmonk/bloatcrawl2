@@ -3812,11 +3812,11 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_INFESTATION, "Infestation",
-    SPTYP_NECROMANCY,
-    SPFLAG_TARGET | SPFLAG_UNCLEAN,
-    8,
+    SPTYP_NECROMANCY | SPTYP_HEXES,
+    SPFLAG_PERMABUFF | SPFLAG_UNCLEAN,
+    7,
     200,
-    LOS_RADIUS, LOS_RADIUS,
+    -1, -1,
     8, 4,
     TILEG_INFESTATION,
 },

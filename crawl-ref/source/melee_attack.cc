@@ -387,6 +387,16 @@ bool melee_attack::handle_phase_hit()
             place_cloud(CLOUD_MIASMA, defender->pos(), 5 + random2(6), &you);
 		}
     }
+	
+    if (attacker->is_player() && you.attribute[ATTR_INFESTATION])
+    {
+        if(!defender->is_summoned() && !(defender->as_monster()->flags & MF_HARD_RESET))
+        {
+            const int dur = (5 + random2avg(calc_spell_power(SPELL_INFESTATION, true) / 2, 2)) * BASELINE_DELAY;
+            defender->as_monster()->add_ench(mon_enchant(ENCH_INFESTATION, 0, &you, dur));
+            mprf("%s is infested!", you.can_see(*defender)? defender->name(DESC_THE).c_str() : "something");
+        }
+    }
 
     if (attacker->is_player() && you.attribute[ATTR_INFUSION])
     {
