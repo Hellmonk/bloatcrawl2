@@ -182,8 +182,7 @@ static bool _explode_corpse(item_def& corpse, const coord_def& where)
 
     ld.update();
 
-    const int max_chunks = max_corpse_chunks(corpse.mon_type);
-    const int nchunks = stepdown_value(1 + random2(max_chunks), 4, 4, 12, 12);
+    const int nchunks = 1;
     if (corpse.base_type != OBJ_GOLD)
         blood_spray(where, corpse.mon_type, nchunks * 3); // spray some blood
 
@@ -2838,12 +2837,14 @@ item_def* monster_die(monster* mons, killer_type killer,
     {
         autotoggle_autopickup(false);
     }
-
-    if (corpse && _reaping(mons))
-        corpse = nullptr;
+    if(!mons->flags & MF_EXPLODE_KILL)
+    {
+        if (corpse && _reaping(mons))
+            corpse = nullptr;
 	
-    if(corpse && _reap_dead(mons))
-        corpse = nullptr;
+        if(corpse && _reap_dead(mons))
+            corpse = nullptr;
+    }
 
     crawl_state.dec_mon_acting(mons);
     monster_cleanup(mons);

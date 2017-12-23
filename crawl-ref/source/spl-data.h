@@ -3817,7 +3817,7 @@ static const struct spell_desc spelldata[] =
     7,
     200,
     -1, -1,
-    8, 4,
+    4, 0,
     TILEG_INFESTATION,
 },
 
