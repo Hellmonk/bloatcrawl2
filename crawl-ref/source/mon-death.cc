@@ -2837,7 +2837,7 @@ item_def* monster_die(monster* mons, killer_type killer,
     {
         autotoggle_autopickup(false);
     }
-    if(!mons->flags & MF_EXPLODE_KILL)
+    if(!(mons->flags & MF_EXPLODE_KILL))
     {
         if (corpse && _reaping(mons))
             corpse = nullptr;

@@ -3569,6 +3569,7 @@ static int _slouch_monsters(coord_def where)
     // towards the middle.
     const int dmg = roll_dice(_slouch_damage(mon), 3) / 2;
 
+	mprf("%s is slouched (%d)!",mon->name(DESC_THE).c_str(), dmg);
     mon->hurt(&you, dmg, BEAM_MMISSILE, KILLED_BY_BEAM, "", "", true);
     return 1;
 }
