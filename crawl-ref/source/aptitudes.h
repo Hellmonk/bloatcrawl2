@@ -967,7 +967,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_TITAN,         SK_TRANSMUTATIONS, -1),
     APT(SP_TITAN,         SK_FIRE_MAGIC,     -1),
     APT(SP_TITAN,         SK_ICE_MAGIC,      -1),
-    APT(SP_TITAN,         SK_AIR_MAGIC,      -1),
+    APT(SP_TITAN,         SK_AIR_MAGIC,       0),
     APT(SP_TITAN,         SK_EARTH_MAGIC,    -1),
 #if TAG_MAJOR_VERSION == 34
     APT(SP_TITAN,         SK_POISON_MAGIC,  UNUSABLE_SKILL),
