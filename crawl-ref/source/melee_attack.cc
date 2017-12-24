@@ -372,7 +372,7 @@ bool melee_attack::handle_phase_hit()
     }
 	
 	if (attacker->is_player() && you.attribute[ATTR_SPECTRAL_WEAPON]
-        && !(you.duration[DUR_SPECTRAL_WEAPON_COOLDOWN] > 0))
+        && !(you.duration[DUR_SPECTRAL_WEAPON_COOLDOWN] > 0) && !mons_is_firewood(*defender->as_monster()))
     {
         summon_spectral_weapon(&you, calc_spell_power(SPELL_SPECTRAL_WEAPON,true),you.religion);         
 	}
