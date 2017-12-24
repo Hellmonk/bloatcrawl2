@@ -478,6 +478,13 @@ static void _remove_spell_attributes(spell_type spell)
             mprf(MSGCH_DURATION, "You are no longer ready to draw out your spectral weapon.");
         }
         break;
+    case SPELL_BATTLESPHERE:
+        if (you.attribute[ATTR_BATTLESPHERE])
+        {
+            you.attribute[ATTR_BATTLESPHERE] = 0;
+            mprf(MSGCH_DURATION, "You are no longer ready to summon your battlesphere.");
+        }
+        break;
     // Forms
     case SPELL_SPIDER_FORM:
         if (you.form && !you.transform_uncancellable && you.form == TRAN_SPIDER)
@@ -1429,6 +1436,13 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "you already have your spectral weapon prepared";
         }
     case SPELL_PORTAL_PROJECTILE:
+        break;
+		
+    case SPELL_BATTLESPHERE:
+        if(temp && you.attribute[ATTR_BATTLESPHERE])
+        {
+            return "you already have your battlesphere prepared";
+        }
         break;
 
     case SPELL_LEDAS_LIQUEFACTION:

@@ -776,8 +776,9 @@ lingers, enough to leave them dangerously contaminated after a few castings.
 %%%%
 Iskenderun's Battlesphere spell
 
-Conjures a small globe of magical energy linked to the caster's own magical
-reserves. While the battlesphere cannot take independent action, it will fire
+Prepares a small globe of magical energy linked to the caster's own magical
+reserves. Casting any spell that the battlesphere can mirror while enemies are
+in range will summon it for a brief time. The battlesphere will fire
 volleys of energy at the caster's enemies in sync with its creator's own
 destructive magic. With increasing power, the battlesphere lasts longer
 and deals more damage per volley.

@@ -2516,6 +2516,20 @@ monster* find_battlesphere(const actor* agent)
         return nullptr;
 }
 
+spret_type player_battlesphere(actor *agent, int pow, god_type god, bool fail)
+{
+    ASSERT(agent);
+
+    if (!agent->is_player())
+        return SPRET_ABORT;
+
+    fail_check();
+    you.attribute[ATTR_BATTLESPHERE] = 1;
+    mprf("You prepare to summon your battlesphere.");
+
+    return SPRET_SUCCESS;
+}
+
 spret_type cast_battlesphere(actor* agent, int pow, god_type god, bool fail)
 {
     fail_check();
@@ -2536,19 +2550,8 @@ spret_type cast_battlesphere(actor* agent, int pow, god_type god, bool fail)
 
         if (recalled)
         {
-            mpr("You recall your battlesphere and imbue it with additional"
-                " charge.");
+            mpr("You recall your battlesphere.");
         }
-        else
-            mpr("You imbue your battlesphere with additional charge.");
-
-        battlesphere->battlecharge = min(20, (int) battlesphere->battlecharge
-                                              + 4 + random2(pow + 10) / 10);
-
-        // Increase duration
-        mon_enchant abj = battlesphere->get_ench(ENCH_FAKE_ABJURATION);
-        abj.duration = min(abj.duration + (7 + roll_dice(2, pow)) * 10, 500);
-        battlesphere->update_ench(abj);
     }
     else
     {
@@ -2569,7 +2572,7 @@ spret_type cast_battlesphere(actor* agent, int pow, god_type god, bool fail)
             agent->props["battlesphere"].get_int() = battlesphere->mid;
 
             if (agent->is_player())
-                mpr("You conjure a globe of magical energy.");
+                noisy(spell_effect_noise(SPELL_BATTLESPHERE), you.pos());
             else
             {
                 if (you.can_see(*agent) && you.can_see(*battlesphere))
@@ -2581,7 +2584,7 @@ spret_type cast_battlesphere(actor* agent, int pow, god_type god, bool fail)
                     simple_monster_message(*battlesphere, " appears!");
                 battlesphere->props["band_leader"].get_int() = agent->mid;
             }
-            battlesphere->battlecharge = 4 + random2(pow + 10) / 10;
+            battlesphere->battlecharge = 4 + random2(pow + 20) / 10;
             battlesphere->foe = agent->mindex();
             battlesphere->target = agent->pos();
         }
@@ -3221,21 +3224,6 @@ bool confirm_attack_spectral_weapon(monster* mons, const actor *defender)
     mons->speed_increment -= energy;
 
     return false;
-}
-
-static void _setup_infestation(bolt &beam, int pow)
-{
-    beam.name         = "infestation";
-    beam.aux_source   = "infestation";
-    beam.flavour      = BEAM_INFESTATION;
-    beam.glyph        = dchar_glyph(DCHAR_FIRED_BURST);
-    beam.colour       = GREEN;
-    beam.source_id    = MID_PLAYER;
-    beam.thrower      = KILL_YOU;
-    beam.is_explosion = true;
-    beam.ex_size      = 2;
-    beam.ench_power   = pow;
-    beam.origin_spell = SPELL_INFESTATION;
 }
 
 spret_type cast_infestation(int pow, bool fail)

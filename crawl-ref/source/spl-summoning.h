@@ -98,6 +98,7 @@ spret_type cast_aura_of_abjuration(int pow, bool fail = false);
 void do_aura_of_abjuration(int delay);
 
 monster* find_battlesphere(const actor* agent);
+spret_type player_battlesphere(actor *agent, int pow, god_type god, bool fail);
 spret_type cast_battlesphere(actor* agent, int pow, god_type god, bool fail);
 void end_battlesphere(monster* mons, bool killed);
 bool battlesphere_can_mirror(spell_type spell);

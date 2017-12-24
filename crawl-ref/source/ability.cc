@@ -318,6 +318,8 @@ static const ability_def Ability_List[] =
       0, 0, 0, 0, {}, abflag::NONE },
     { ABIL_END_INFESTATION, "End Infestation",
       0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_BATTLESPHERE, "End Battlesphere",
+      0, 0, 0, 0, {}, abflag::NONE },
 
     { ABIL_DIG, "Dig", 0, 0, 0, 0, {}, abflag::INSTANT },
     { ABIL_SHAFT_SELF, "Shaft Self", 0, 0, 250, 0, {}, abflag::DELAY },
@@ -2122,6 +2124,17 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         break;
     }
 	
+    case ABIL_END_BATTLESPHERE:
+    {
+        fail_check();
+        monster* old_bsphere = find_battlesphere(&you);
+        if(old_bsphere)
+            end_battlesphere(old_bsphere, false);
+        you.attribute[ATTR_BATTLESPHERE] = 0;
+        mpr("You stop readying your battlesphere.");
+        break;
+    }
+	
     case ABIL_END_INFESTATION:
         fail_check();
         you.attribute[ATTR_INFESTATION] = 0;
@@ -3471,6 +3484,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
    
     if (you.attribute[ATTR_SPECTRAL_WEAPON])
        _add_talent(talents, ABIL_END_SPECTRAL_WEAPON, check_confused);
+   
+    if (you.attribute[ATTR_BATTLESPHERE])
+       _add_talent(talents, ABIL_END_BATTLESPHERE, check_confused);
   
     if (you.attribute[ATTR_ANIMATE_DEAD])
        _add_talent(talents, ABIL_END_ANIMATE_DEAD, check_confused);
@@ -3735,6 +3751,7 @@ int find_ability_slot(const ability_type abil, char firstletter)
     case ABIL_END_ANIMATE_DEAD:
     case ABIL_END_SPECTRAL_WEAPON:
     case ABIL_END_INFESTATION:
+    case ABIL_END_BATTLESPHERE:
         first_slot = letter_to_index('A');
         break;
     default:

@@ -2581,12 +2581,12 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_BATTLESPHERE, "Iskenderun's Battlesphere",
-    SPTYP_CHARMS,
-    SPFLAG_UTILITY,
+    SPTYP_CHARMS | SPTYP_SUMMONING,
+    SPFLAG_UTILITY | SPFLAG_PERMABUFF,
     5,
     100,
     -1, -1,
-    5, 0,
+    0, 5,
     TILEG_BATTLESPHERE,
 },
 
