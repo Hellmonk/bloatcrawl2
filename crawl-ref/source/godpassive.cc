@@ -1638,21 +1638,12 @@ bool wu_jian_can_wall_jump(const coord_def& target, bool messaging)
         {
             if (landing_actor)
             {
-<<<<<<< HEAD:crawl-ref/source/godpassive.cc
-                mprf("You have no room to wall jump; %s is in the way.",
-                        landing_actor->observable() ? landing_actor->name(DESC_THE).c_str()
-                                    : "something you can't see");
-            }
-            else
-                mpr("You have no room to wall jump.");
-=======
                 mprf("You have no room to wall jump there; %s is in the way.",
                     landing_actor->observable() ? landing_actor->name(DESC_THE).c_str()
                                 : "something you can't see");
             }
             else
                 mpr("You have no room to wall jump there.");
->>>>>>> a86a5923f3... Tweak walljump messaging:crawl-ref/source/god-passive.cc
         }
         you.attribute[ATTR_WALL_JUMP_READY] = 0;
         return false;

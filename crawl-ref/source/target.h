@@ -108,6 +108,8 @@ class targetter_transference : public targetter_smite
 {
 public:
     targetter_transference(const actor *act);
+    targeter_walljump();
+    aff_type is_affected(coord_def loc) override;
     bool valid_aim(coord_def a) override;
 };
 
