@@ -367,6 +367,20 @@ bool feat_is_solid(dungeon_feature_type feat)
     return get_feature_def(feat).flags & FFT_SOLID;
 }
 
+<<<<<<< HEAD
+=======
+/** Can you wall jump against this feature? (Wu Jian)?
+ */
+bool feat_can_wall_jump_against(dungeon_feature_type feat)
+{
+    return feat_is_wall(feat)
+           || feat == DNGN_GRATE
+           || feat_is_closed_door(feat)
+           || feat_is_tree(feat)
+           || feat_is_statuelike(feat);
+}
+
+>>>>>>> 11b2e07010... Allow wall jump against closed doors via the ability
 /** Can you move into this cell in normal play?
  */
 bool cell_is_solid(const coord_def &c)
