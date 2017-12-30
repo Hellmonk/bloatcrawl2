@@ -682,6 +682,33 @@ static char32_t _key_suppresses_textinput(int keycode)
     return result;
 }
 
+int SDLWrapper::send_textinput(wm_event *event)
+{
+    event->type = WME_KEYDOWN;
+    do
+    {
+        // pop a key off the input queue
+        char32_t wc;
+        int wc_bytelen = utf8towc(&wc, m_textinput_queue.c_str());
+        m_textinput_queue.erase(0, wc_bytelen);
+
+        if (prev_keycode && _key_suppresses_textinput(prev_keycode) == wc)
+        {
+            // this needs to return something, or the event loop in
+            // TilesFramework::getch_ck will block. Currently, CK_NO_KEY
+            // is handled in macro.cc:_getch_mul.
+            prev_keycode = 0;
+            if (!m_textinput_queue.empty())
+                continue;
+            event->key.keysym.sym = CK_NO_KEY;
+            return 1;
+        }
+        event->key.keysym.sym = wc;
+    }
+    while (false);
+    return 1;
+}
+
 int SDLWrapper::wait_event(wm_event *event)
 {
     SDL_Event sdlevent;
@@ -814,6 +841,11 @@ void SDLWrapper::delay(unsigned int ms)
 
 unsigned int SDLWrapper::get_event_count(wm_event_type type)
 {
+    // check for enqueued characters from a multi-char textinput event
+    // count is floored to 1 for consistency with other event types
+    if (type == WME_KEYDOWN && m_textinput_queue.size() > 0)
+        return 1;
+
     // Look for the presence of any keyboard events in the queue.
     Uint32 event;
     switch (type)
@@ -830,10 +862,6 @@ unsigned int SDLWrapper::get_event_count(wm_event_type type)
 
     case WME_KEYUP:
         event = SDL_KEYUP;
-        break;
-
-    case WME_KEYPRESS:
-        event = SDL_TEXTINPUT;
         break;
 
     case WME_MOUSEMOTION:
@@ -866,6 +894,8 @@ unsigned int SDLWrapper::get_event_count(wm_event_type type)
 
     // Note: this returns -1 for error.
     int count = SDL_PeepEvents(&store, 1, SDL_PEEKEVENT, event, event);
+    if (type == WME_KEYDOWN)
+        count += SDL_PeepEvents(&store, 1, SDL_PEEKEVENT, SDL_TEXTINPUT, SDL_TEXTINPUT);
     ASSERT(count >= 0);
 
     return max(count, 0);
