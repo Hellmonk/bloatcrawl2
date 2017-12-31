@@ -1,3 +1,8 @@
+crawl (2:0.22.0-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+ -- gammafunk <gammafunk@gmail.com>  Sat, 30 Dec 2017 19:24:18 -0600
+
 crawl (2:0.21.2-1) UNRELEASED; urgency=low
 
   * New upstream release.
@@ -7,11 +12,6 @@ crawl (2:0.21.1-1) UNRELEASED; urgency=low
 
   * New upstream release.
  -- gammafunk <gammafunk@gmail.com>  Thu, 01 Feb 2018 01:54:03 -0600
-
-crawl (2:0.21.0-1) UNRELEASED; urgency=low
-
-  * New upstream release.
- -- gammafunk <gammafunk@gmail.com>  Fri, 05 Jan 2018 12:41:16 -0600
 
 crawl (2:0.20.0-1) UNRELEASED; urgency=low
 
