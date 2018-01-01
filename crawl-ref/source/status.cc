@@ -764,7 +764,25 @@ bool fill_status_info(int status, status_info* inf)
         if(you.attribute[ATTR_BATTLESPHERE])
         {
             inf->light_text = "Bsphere";
-            inf->light_colour = WHITE;
+            monster* battlesphere = find_battlesphere(&you);
+            if (battlesphere)
+                inf->light_colour = DARKGREY;
+            else
+                inf->light_colour = WHITE;
+        }
+        break;
+    }
+	
+	case STATUS_SERVITOR:
+    {
+        if(you.attribute[ATTR_SERVITOR])
+        {
+            inf->light_text = "Servitor";
+            monster* servitor = find_servitor(&you);
+            if (servitor)
+                inf->light_colour = DARKGREY;
+            else
+                inf->light_colour = WHITE;
         }
         break;
     }

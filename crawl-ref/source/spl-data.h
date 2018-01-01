@@ -3276,7 +3276,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_SPELLFORGED_SERVITOR, "Spellforged Servitor",
     SPTYP_SUMMONING,
-    SPFLAG_NONE,
+    SPFLAG_PERMABUFF,
     7,
     200,
     -1, -1,

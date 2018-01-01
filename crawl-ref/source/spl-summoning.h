@@ -70,6 +70,7 @@ void do_dragon_call(int time);
 void doom_howl(int time);
 
 void init_servitor(monster* servitor, actor* caster);
+spret_type player_spellforged_servitor(int pow, god_type god, bool fail);
 spret_type cast_spellforged_servitor(int pow, god_type god, bool fail);
 
 int animate_remains(const coord_def &a, corpse_type class_allowed,
@@ -98,6 +99,7 @@ spret_type cast_aura_of_abjuration(int pow, bool fail = false);
 void do_aura_of_abjuration(int delay);
 
 monster* find_battlesphere(const actor* agent);
+monster* find_servitor(const actor* agent);
 spret_type player_battlesphere(actor *agent, int pow, god_type god, bool fail);
 spret_type cast_battlesphere(actor* agent, int pow, god_type god, bool fail);
 void end_battlesphere(monster* mons, bool killed);

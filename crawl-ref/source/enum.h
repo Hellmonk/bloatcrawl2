@@ -493,6 +493,7 @@ enum ability_type
     ABIL_END_SPECTRAL_WEAPON,
     ABIL_END_INFESTATION,
     ABIL_END_BATTLESPHERE,
+    ABIL_END_SERVITOR,
     NUM_ABILITIES
 };
 
@@ -630,6 +631,7 @@ enum attribute_type
     ATTR_HEAVENLY_STORM,       // Measures the strength of the Heavenly Storm effect.
     ATTR_INFESTATION,          // infestation
     ATTR_BATTLESPHERE,         // battlesphere
+    ATTR_SERVITOR,             // spellforged servitor
     NUM_ATTRIBUTES
 };
 

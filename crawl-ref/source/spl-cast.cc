@@ -1505,7 +1505,7 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
 
     const bool old_target = actor_at(beam.target);
 	
-    const bool can_summon_sphere = !spell_no_hostile_in_range(spell);
+    const bool can_summon_avatar = !spell_no_hostile_in_range(spell);
 
     spret_type cast_result = _do_cast(spell, powc, spd, beam, god,
                                       potion, fail);
@@ -1528,7 +1528,7 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
         {
             dithmenos_shadow_spell(&beam, spell);
         }
-        if(you.attribute[ATTR_BATTLESPHERE] && battlesphere_can_mirror(spell) && can_summon_sphere)
+        if(you.attribute[ATTR_BATTLESPHERE] && battlesphere_can_mirror(spell) && can_summon_avatar)
         {
             monster* battlesphere = find_battlesphere(&you);
             if(!battlesphere)
@@ -1536,11 +1536,16 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
                 if(cast_battlesphere(&you, calc_spell_power(SPELL_BATTLESPHERE, true), god, false) == SPRET_SUCCESS)
                     mprf("You summon your battlesphere!");
             }
-            else if(!you.can_see(*battlesphere))
-            {
-				cast_battlesphere(&you, calc_spell_power(SPELL_BATTLESPHERE, true), god, false);
-			}
 		}
+        if(you.attribute[ATTR_SERVITOR] && vehumet_supports_spell(spell) && can_summon_avatar
+            && !(flags & SPFLAG_PERMABUFF))
+        {
+            monster* servitor = find_servitor(&you);
+            if(!servitor)
+            {
+                cast_spellforged_servitor(calc_spell_power(SPELL_SPELLFORGED_SERVITOR, true), god, false);
+            }
+        }
         _spellcasting_side_effects(spell, god, !allow_fail);
         return SPRET_SUCCESS;
     }
@@ -1673,6 +1678,8 @@ static spret_type _handle_buff_spells(spell_type spell, int powc, bolt& beam, go
             return cast_spectral_weapon(&you, powc, god, false);
         case SPELL_BATTLESPHERE:
             return player_battlesphere(&you, powc, god, false);
+        case SPELL_SPELLFORGED_SERVITOR:
+            return player_spellforged_servitor(powc, god, false);
         default:
 		    return SPRET_NONE;
     }
@@ -1896,9 +1903,6 @@ static spret_type _do_cast(spell_type spell, int powc,
 
     case SPELL_HAUNT:
         return cast_haunt(powc, beam.target, god, fail);
-
-    case SPELL_SPELLFORGED_SERVITOR:
-        return cast_spellforged_servitor(powc, god, fail);
 
     // Enchantments.
     case SPELL_CONFUSING_TOUCH:

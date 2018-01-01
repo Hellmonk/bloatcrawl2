@@ -2403,6 +2403,7 @@ void init_servitor(monster* servitor, actor* caster)
     ASSERT(servitor); // XXX: change to monster &servitor
     ASSERT(caster); // XXX: change to actor &caster
     _init_servitor_monster(*servitor, *caster);
+    caster->props["servitor"].get_int() = servitor->mid;
 
     if (you.can_see(*caster))
     {
@@ -2427,6 +2428,16 @@ void init_servitor(monster* servitor, actor* caster)
     servitor->props["ideal_range"].get_int() = shortest_range;
 }
 
+spret_type player_spellforged_servitor(int pow, god_type god, bool fail)
+{
+	fail_check();
+	
+    you.attribute[ATTR_SERVITOR] = 1;
+    mprf("You prepare to summon your spellforged servitor.");
+
+    return SPRET_SUCCESS;
+}
+
 spret_type cast_spellforged_servitor(int pow, god_type god, bool fail)
 {
     fail_check();
@@ -2436,8 +2447,6 @@ spret_type cast_spellforged_servitor(int pow, god_type god, bool fail)
 
     if (monster* mon = create_monster(mdata))
         init_servitor(mon, &you);
-    else
-        canned_msg(MSG_NOTHING_HAPPENS);
 
     return SPRET_SUCCESS;
 }
@@ -2512,6 +2521,14 @@ monster* find_battlesphere(const actor* agent)
 {
     if (agent->props.exists("battlesphere"))
         return monster_by_mid(agent->props["battlesphere"].get_int());
+    else
+        return nullptr;
+}
+
+monster* find_servitor(const actor* agent)
+{
+    if (agent->props.exists("servitor"))
+        return monster_by_mid(agent->props["servitor"].get_int());
     else
         return nullptr;
 }

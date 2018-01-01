@@ -452,6 +452,10 @@ int calculate_frozen_mp()
     {
 		frozen_mp += spell_mp_freeze(SPELL_BATTLESPHERE);
 	}
+    if (you.attribute[ATTR_SERVITOR] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_SPELLFORGED_SERVITOR);
+	}
     // Forms. Only check for cancelable forms here; uncancellable goodforms shouldn't reserve mp.
     if (you.form && !you.transform_uncancellable)
     {
@@ -581,6 +585,14 @@ void dispel_permanent_buffs()
         if(old_sphere)
             end_battlesphere(old_sphere, false);
         you.attribute[ATTR_BATTLESPHERE] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_SERVITOR])
+    {
+        /*monster* old_sphere = find_battlesphere(&you);
+        if(old_sphere)
+            end_battlesphere(old_sphere, false);*/
+        you.attribute[ATTR_SERVITOR] = 0;
         dispelled = true;
     }
     if(you.attribute[ATTR_EXCRUCIATING_WOUNDS])
