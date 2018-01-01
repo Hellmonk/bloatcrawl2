@@ -3148,7 +3148,7 @@ void end_spectral_weapon(monster* mons, bool killed, bool quiet, bool cooldown)
 
     if (killed && owner && owner->is_player() && cooldown)
     {
-        you.duration[DUR_SPECTRAL_WEAPON_COOLDOWN] = random_range(30,70);
+        you.duration[DUR_SPECTRAL_WEAPON_COOLDOWN] = random_range(50,70);
     }
 
     if (!quiet)
