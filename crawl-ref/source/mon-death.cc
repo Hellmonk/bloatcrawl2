@@ -2141,7 +2141,7 @@ item_def* monster_die(monster* mons, killer_type killer,
     }
     else if (mons->type == MONS_SPECTRAL_WEAPON)
     {
-        end_spectral_weapon(mons, true, killer == KILL_RESET);
+        end_spectral_weapon(mons, true, killer == KILL_RESET, killer != KILL_RESET);
         silent = true;
     }
     else if (mons->type == MONS_DROWNED_SOUL)

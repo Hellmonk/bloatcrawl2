@@ -3135,7 +3135,7 @@ void summon_spectral_weapon(actor *agent, int pow, god_type god)
     return;
 }
 
-void end_spectral_weapon(monster* mons, bool killed, bool quiet)
+void end_spectral_weapon(monster* mons, bool killed, bool quiet, bool cooldown)
 {
     // Should only happen if you dismiss it in wizard mode, I think
     if (!mons)
@@ -3146,7 +3146,7 @@ void end_spectral_weapon(monster* mons, bool killed, bool quiet)
     if (owner)
         owner->props.erase("spectral_weapon");
 
-    if (killed && owner && owner->is_player())
+    if (killed && owner && owner->is_player() && cooldown)
     {
         you.duration[DUR_SPECTRAL_WEAPON_COOLDOWN] = random_range(30,70);
     }
