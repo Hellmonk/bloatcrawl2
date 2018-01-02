@@ -620,6 +620,7 @@ static string _get_god_misc_info(god_type which_god)
         case GOD_ASHENZARI:
         case GOD_JIYVA:
         case GOD_TROG:
+        case GOD_WU_JIAN:
         {
             const string piety_only = "Note that " + god_name(which_god) +
                                       " does not demand training of the"

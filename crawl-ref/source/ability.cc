@@ -3252,7 +3252,7 @@ static void _pay_ability_costs(const ability_def& abil)
         you.elapsed_time_at_last_input = you.elapsed_time;
         update_turn_count();
     }
-    else
+    else if (abil.ability != ABIL_WU_JIAN_WALLJUMP)
         you.turn_is_over = true;
 
     const int food_cost  = abil.food_cost + random2avg(abil.food_cost, 2);
