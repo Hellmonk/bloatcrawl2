@@ -519,7 +519,7 @@ unsigned int FTFontWrapper::string_height(const formatted_string &str) const
 unsigned int FTFontWrapper::string_height(const char *text) const
 {
     int height = 1;
-    for (const char *itr = text; (*itr); itr++)
+    for (char *itr = (char *)text; *itr; itr = next_glyph(itr))
         if (*itr == '\n')
             height++;
 
@@ -539,7 +539,7 @@ unsigned int FTFontWrapper::string_width(const char *text)
 
     unsigned int width = base_width;
     unsigned int adjust = 0;
-    for (const unsigned char *itr = (unsigned const char *)text; *itr; itr++)
+    for (char *itr = (char *)text; *itr; itr = next_glyph(itr))
     {
         if (*itr == '\n')
         {
@@ -565,18 +565,18 @@ int FTFontWrapper::find_index_before_width(const char *text, int max_width)
 
     max_width *= scale_num / scale_den;
 
-    for (int i = 0; text[i]; i++)
+    for (char *itr = (char *)text; *itr; itr = next_glyph(itr))
     {
-        if (text[i] == '\n')
+        if (*itr == '\n')
         {
             width = 0;
             continue;
         }
-        unsigned int c = map_unicode(text[i]);
+        unsigned int c = map_unicode(*itr);
         width += m_glyphs[c].advance;
         int adjust = max(0, m_glyphs[c].width - m_glyphs[c].advance);
         if (width + adjust > max_width)
-            return i;
+            return itr-text;
     }
 
     return INT_MAX;
@@ -617,7 +617,7 @@ formatted_string FTFontWrapper::split(const formatted_string &str,
         else
         {
             space_idx = -1;
-            for (char *search = &line[line_end]; search > line; search--)
+            for (char *search = &line[line_end]; search > line; search = prev_glyph(search, line))
             {
                 if (*search == ' ')
                 {
