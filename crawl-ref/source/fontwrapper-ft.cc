@@ -285,7 +285,14 @@ void FTFontWrapper::load_glyph(unsigned int c, ucs_t uchar)
     }
 }
 
-unsigned int FTFontWrapper::map_unicode(ucs_t uchar)
+unsigned int FTFontWrapper::map_unicode(char *ch)
+{
+    char32_t c;
+    utf8towc(&c, ch);
+    return map_unicode(c);
+}
+
+unsigned int FTFontWrapper::map_unicode(char32_t uchar)
 {
     unsigned int c;  // index in m_glyphs
     if (!m_glyphmap.count(uchar))
@@ -549,7 +556,7 @@ unsigned int FTFontWrapper::string_width(const char *text)
         }
         else
         {
-            unsigned int c = map_unicode(*itr);
+            unsigned int c = map_unicode(itr);
             width += m_glyphs[c].advance;
             adjust = max(0, m_glyphs[c].width - m_glyphs[c].advance);
         }
@@ -572,7 +579,7 @@ int FTFontWrapper::find_index_before_width(const char *text, int max_width)
             width = 0;
             continue;
         }
-        unsigned int c = map_unicode(*itr);
+        unsigned int c = map_unicode(itr);
         width += m_glyphs[c].advance;
         int adjust = max(0, m_glyphs[c].width - m_glyphs[c].advance);
         if (width + adjust > max_width)
