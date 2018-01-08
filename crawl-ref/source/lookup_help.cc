@@ -647,7 +647,7 @@ static MenuEntry* _monster_menu_gen(char letter, const string &str,
 static MenuEntry* _feature_menu_gen(char letter, const string &str, string &key)
 {
     const dungeon_feature_type feat = feat_by_desc(str);
-    MenuEntry* me = new FeatureMenuEntry(str, feat, letter);
+    MenuEntry* me = new MenuEntry(str, MEL_ITEM, 1, letter);
     me->data = &key;
 
 #ifdef USE_TILE
