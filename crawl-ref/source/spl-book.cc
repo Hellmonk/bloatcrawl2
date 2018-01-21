@@ -559,56 +559,239 @@ vector<spell_type> get_mem_spell_list()
     return mem_spells;
 }
 
-static spell_type _choose_mem_spell(spell_list &spells,
-                                    unsigned int num_misc)
+class MemoriseMenu : public Menu
 {
-    sort(spells.begin(), spells.end(), _sort_mem_spells);
+public:
+    enum class action
+    {
+        memorise,
+        describe,
+        hide,
+        unhide,
+    };
+    action current_action;
 
+private:
+    spell_list& spells;
+    string more_str;
+
+    void update_title_more()
+    {
+        string t;
 #ifdef USE_TILE_LOCAL
-    const bool text_only = false;
+        t = " Your Spells - [";
+        switch (current_action)
+        {
+        case action::memorise:
+            t += "<blue>Memorise</blue><w>|Describe|Hide|Un-hide";
+            break;
+        case action::describe:
+            t += "Memorise|<blue>Describe</blue><w>|Hide|Un-hide";
+            break;
+        case action::hide:
+            t += "Memorise|Describe|<blue>Hide</blue><w>|Un-hide";
+            break;
+        case action::unhide:
+            t += "Memorise|Describe|Hide|<blue>Un-hide</blue><w>";
+            break;
+        }
+        t += "] (toggle with '!')";
 #else
-    const bool text_only = true;
+        string full_more = more_str + "   [";
+        t = "     Spells ";
+        switch (current_action)
+        {
+        case action::memorise:
+            t = "(Memorise)             ";
+            full_more += "<w>Memorise</w>|Describe|Hide|Un-hide]";
+            break;
+        case action::describe:
+            t = "(Describe)             ";
+            full_more += "Memorise|<w>Describe</w>|Hide|Un-hide]";
+            break;
+        case action::hide:
+            t = "(Hide)                 ";
+            full_more += "Memorise|Describe|<w>Hide</w>|Un-hide]";
+            break;
+        case action::unhide:
+            t = "(Un-hide)              ";
+            full_more += "Memorise|Describe|Hide|<w>Un-hide</w>]";
+            break;
+        }
+        t += "Type                          Failure  Level";
+        set_more(formatted_string::parse_string(full_more));
+#endif
+        set_title(new MenuEntry(t, MEL_TITLE));
+    }
+
+    virtual void draw_menu() override
+    {
+#ifdef USE_TILE_WEB
+        // update the item list
+        tiles.json_open_object();
+        tiles.json_write_string("msg", "update_menu");
+        tiles.json_write_int("total_items", items.size());
+        tiles.json_close_object();
+        tiles.finish_message();
+        if (items.size() > 0)
+            webtiles_update_items(0, items.size() - 1);
+#endif
+        Menu::draw_menu();
+    }
+
+    virtual bool process_key(int keyin) override
+    {
+        if (keyin == '!' || keyin == '?'
+#ifdef TOUCH_UI
+            || keyin == CK_TOUCH_DUMMY
+#endif
+           )
+        {
+            switch (current_action)
+            {
+                case action::memorise: current_action = action::describe; break;
+                case action::describe: current_action = action::hide; break;
+                case action::hide:
+                    current_action = action::unhide;
+                    update_entries();
+                    draw_menu();
+                    break;
+                case action::unhide:
+                    current_action = action::memorise;
+                    update_entries();
+                    draw_menu();
+                    break;
+            }
+            update_title_more();
+            // actually does the redraw
+            update_title();
+#ifndef USE_TILE_LOCAL
+            mdisplay->draw_more();
+#endif
+#ifdef USE_TILE_WEB
+            tiles.json_open_object();
+            tiles.json_write_string("msg", "update_menu");
+            tiles.json_write_string("more", more.to_colour_string());
+            tiles.json_close_object();
+            tiles.finish_message();
+#endif
+            return true;
+        }
+        else if (current_action == action::hide || current_action == action::unhide)
+        {
+            select_items(keyin, num);
+            get_selected(&sel);
+            if (sel.size() == 1)
+            {
+                const spell_type spell = *static_cast<spell_type*>(sel[0]->data);
+                ASSERT(is_valid_spell(spell));
+                you.hidden_spells.set(spell, !you.hidden_spells.get(spell));
+                update_entries();
+                draw_menu();
+                return true;
+            }
+        }
+        return Menu::process_key(keyin);
+    }
+
+    // Update the list of spells. If show_hidden is true, show only hidden ones; otherwise, show
+    // oonly non-hidden ones.
+    void update_entries()
+    {
+        const bool show_hidden = current_action == action::unhide;
+        deleteAll(items);
+        int count = 0;
+        for (spell_type& spell : spells)
+        {
+            if (you.hidden_spells.get(spell) != show_hidden)
+                continue;
+
+            ostringstream desc;
+
+            int colour = LIGHTGRAY;
+            if (vehumet_is_offering(spell))
+                colour = LIGHTBLUE;
+            else
+            {
+                bool transient = false;
+                bool memcheck = true;
+                colour = spell_highlight_by_utility(spell, COL_UNKNOWN, transient, memcheck);
+            }
+
+
+            desc << "<" << colour_to_str(colour) << ">";
+
+            desc << left;
+            desc << chop_string(spell_title(spell), 30);
+            desc << spell_schools_string(spell);
+
+            int so_far = strwidth(desc.str()) - (colour_to_str(colour).length()+2);
+            if (so_far < 60)
+                desc << string(60 - so_far, ' ');
+            desc << "</" << colour_to_str(colour) << ">";
+
+            colour = failure_rate_colour(spell);
+            desc << "<" << colour_to_str(colour) << ">";
+            desc << chop_string(failure_rate_to_string(raw_spell_fail(spell)), 12);
+            desc << "</" << colour_to_str(colour) << ">";
+            desc << spell_difficulty(spell);
+
+            MenuEntry* me =
+                new MenuEntry(desc.str(), MEL_ITEM, 1,
+                              index_to_letter(count++ % 52));
+
+#ifdef USE_TILE
+            me->add_tile(tile_def(tileidx_spell(spell), TEX_GUI));
 #endif
 
-    ToggleableMenu spell_menu(MF_SINGLESELECT | MF_ANYPRINTABLE
-                    | MF_ALWAYS_SHOW_MORE | MF_ALLOW_FORMATTING,
-                    text_only);
+            me->data = &spell;
+            add_entry(me);
+        }
+    }
+
+public:
+    MemoriseMenu(spell_list& list, string more_str_)
+        : Menu(MF_SINGLESELECT | MF_ANYPRINTABLE
+               | MF_ALWAYS_SHOW_MORE | MF_ALLOW_FORMATTING, "",
 #ifdef USE_TILE_LOCAL
-    // [enne] Hack. Use a separate title, so the column headers are aligned.
-    spell_menu.set_title(
-        new MenuEntry(" Your Spells - Memorisation  (toggle to descriptions with '!')",
-            MEL_TITLE));
-
-    spell_menu.set_title(
-        new MenuEntry(" Your Spells - Descriptions  (toggle to memorisation with '!')",
-            MEL_TITLE), false);
-
+               false
+#else
+               true
+#endif
+               ),
+        current_action(action::memorise),
+        spells(list),
+        more_str(more_str_)
     {
+        set_highlighter(nullptr);
+        set_tag("spell");
+
+        set_more(formatted_string::parse_string(more_str));
+
+        update_title_more();
+#ifdef USE_TILE_LOCAL
+        // [enne] Hack. Use a separate title, so the column headers are aligned.
         MenuEntry* me =
             new MenuEntry("     Spells                        Type          "
                           "                Failure  Level",
                 MEL_ITEM);
         me->colour = BLUE;
-        spell_menu.add_entry(me);
-    }
-#else
-    spell_menu.set_title(
-        new MenuEntry("     Spells (Memorisation)         Type          "
-                      "                Failure  Level",
-            MEL_TITLE));
-
-    spell_menu.set_title(
-        new MenuEntry("     Spells (Description)          Type          "
-                      "                Failure  Level",
-            MEL_TITLE), false);
+        add_entry(me);
 #endif
+        // Don't make a menu so tall that we recycle hotkeys on the same page.
+        if (spells.size() > 52
+            && (maxpagesize() > 52 || maxpagesize() == 0))
+        {
+            set_maxpagesize(52);
+        }
 
-    spell_menu.set_highlighter(nullptr);
-    spell_menu.set_tag("spell");
+        update_entries();
+    }
+};
 
-    spell_menu.action_cycle = Menu::CYCLE_TOGGLE;
-    spell_menu.menu_action  = Menu::ACT_EXECUTE;
-
+static spell_type _choose_mem_spell(spell_list &spells,
+                                    unsigned int num_misc)
+{
     string more_str = make_stringf("<lightgreen>%d spell level%s left"
                                    "<lightgreen>",
                                    player_spell_levels(),
@@ -677,11 +860,11 @@ static spell_type _choose_mem_spell(spell_list &spells,
 #ifdef USE_TILE
         me->add_tile(tile_def(tileidx_spell(spell), TEX_GUI));
 #endif
-
-        me->data = &spells[i];
-        spell_menu.add_entry(me);
     }
-
+    sort(spells.begin(), spells.end(), _sort_mem_spells);
+	
+    MemoriseMenu spell_menu(spells, more_str);
+	
     while (true)
     {
         vector<MenuEntry*> sel = spell_menu.show();
@@ -697,10 +880,17 @@ static spell_type _choose_mem_spell(spell_list &spells,
         const spell_type spell = *static_cast<spell_type*>(sel[0]->data);
         ASSERT(is_valid_spell(spell));
 
-        if (spell_menu.menu_action == Menu::ACT_EXAMINE)
-            describe_spell(spell, nullptr);
-        else
+        switch (spell_menu.current_action)
+        {
+        case MemoriseMenu::action::memorise:
             return spell;
+        case MemoriseMenu::action::describe:
+            describe_spell(spell, nullptr); break;
+        case MemoriseMenu::action::hide:
+            you.hidden_spells.set(spell, true); break;
+        case MemoriseMenu::action::unhide:
+            you.hidden_spells.set(spell, false); break;
+        }
     }
 }
 
