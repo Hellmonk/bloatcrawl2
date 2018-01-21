@@ -951,7 +951,6 @@ static bool _id_floor_item(item_def &item)
         if (item_needs_autopickup(item))
             item.props["needs_autopickup"] = true;
         set_ident_flags(item, ISFLAG_IDENT_MASK);
-        mark_had_book(item);
         return true;
     }
     else if (item.base_type == OBJ_WANDS)
@@ -2097,10 +2096,7 @@ static int _place_item_in_free_slot(item_def &it, int quant_got,
 
     maybe_identify_base_type(item);
     if (item.base_type == OBJ_BOOKS)
-    {
         set_ident_flags(item, ISFLAG_IDENT_MASK);
-        mark_had_book(item);
-    }
 
     note_inscribe_item(item);
 
