@@ -76,5 +76,4 @@ recommended_jobs:
   - JOB_VENOM_MAGE
 recommended_weapons:
   - SK_UNARMED_COMBAT
-create_enum: false
 altar_action: sit before

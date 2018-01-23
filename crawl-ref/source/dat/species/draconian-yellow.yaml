@@ -38,4 +38,3 @@ fake_mutations:
     short: spit acid
   - long: You are resistant to acid.
     short: acid resistance
-create_enum: false

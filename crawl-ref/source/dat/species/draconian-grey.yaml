@@ -39,4 +39,3 @@ mutations:
 fake_mutations:
   - long: You can walk through water.
     short: walk through water
-create_enum: false

@@ -47,6 +47,5 @@ recommended_jobs:
   - JOB_WARPER
   - JOB_WIZARD
   - JOB_VENOM_MAGE
-create_enum: false
 walking_verb: Slid
 altar_action: coil in front of
