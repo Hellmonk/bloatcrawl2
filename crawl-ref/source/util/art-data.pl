@@ -483,16 +483,14 @@ my @art_order = (
     "base_type", "sub_type", "plus", "plus2", "COLOUR", "VALUE", "\n",
     "flags",
 
-    # Move FOG after FLY, and remove four copies of "unused", when
-    # it is no longer the case that TAG_MAJOR_VERSION == 34
     "{", "BRAND", "AC", "EV", "STR", "INT", "DEX", "\n",
     "FIRE", "COLD", "ELEC", "POISON", "LIFE", "MAGIC", "\n",
-    "SEEINV", "INV", "FLY", "BLINK", "BERSERK",  "NOISES", "\n",
-    "NOSPELL", "RND_TELE", "NOTELEP", "ANGRY", "unused", "\n",
-    "MUTATE", "unused", "SLAY", "CURSE", "STEALTH", "MP", "\n",
+    "SEEINV", "INV", "FLY", "FOG", "BLINK", "BERSERK",  "NOISES", "\n",
+    "NOSPELL", "RND_TELE", "NOTELEP", "ANGRY", "\n",
+    "MUTATE", "SLAY", "CURSE", "STEALTH", "MP", "\n",
     "BASE_DELAY", "HP", "CLARITY", "BASE_ACC", "BASE_DAM", "\n",
-    "RMSL", "FOG", "REGEN", "unused", "NO_UPGRADE", "RCORR", "\n",
-    "RMUT", "unused", "CORRODE", "DRAIN", "SLOW", "FRAGILE", "\n",
+    "RMSL", "REGEN", "NO_UPGRADE", "RCORR", "\n",
+    "RMUT", "CORRODE", "DRAIN", "SLOW", "FRAGILE", "\n",
     "SH", "HARM", "\n",
     "}",
 
