@@ -15,7 +15,7 @@ COMPILE_CHECK(TAG_CHR_FORMAT < 256);
 // in a single commit, please. Making clean-up and actual code changes,
 // especially of this size, separated is vital for sanity.
 #ifndef TAG_MAJOR_VERSION
-#define TAG_MAJOR_VERSION 34
+#define TAG_MAJOR_VERSION 35
 #endif
 COMPILE_CHECK(TAG_MAJOR_VERSION < 256);
 
