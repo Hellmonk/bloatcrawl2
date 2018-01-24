@@ -123,6 +123,7 @@ string range_string(int range, int maxrange, ucs_t caster_char);
 
 string spell_schools_string(spell_type spell);
 string spell_hunger_string(spell_type spell);
+string spell_failure_rate_string(spell_type spell);
 string spell_noise_string(spell_type spell, int chop_wiz_display_width = 0);
 
 void spell_skills(spell_type spell, set<skill_type> &skills);
