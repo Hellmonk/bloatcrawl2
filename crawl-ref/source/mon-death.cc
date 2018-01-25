@@ -2188,7 +2188,7 @@ item_def* monster_die(monster* mons, killer_type killer,
         && leaves_corpse)
     {
         const int bone_armour = you.attribute[ATTR_BONE_ARMOUR];
-        const int max_bone_armour = 6 + div_rand_round(calc_spell_power(SPELL_CIGOTUVIS_EMBRACE, true),20);
+        const int max_bone_armour = 9 + div_rand_round(calc_spell_power(SPELL_CIGOTUVIS_EMBRACE, true),20);
         if (bone_armour < max_bone_armour) // spellpower dependent cap
 		{
             you.attribute[ATTR_BONE_ARMOUR] = min(max_bone_armour, bone_armour + 1);
