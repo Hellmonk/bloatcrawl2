@@ -438,7 +438,7 @@ AC:       5
 BOOL:     berserk
 
 ENUM:     SWORD_OF_RIGHTEOUSNESS
-NAME:     sword of Righteousness
+NAME:     Righteous Blade
 OBJ:      OBJ_WEAPONS/WPN_EUDEMON_BLADE
 PLUS:     +10
 COLOUR:   ETC_HOLY
