@@ -2262,13 +2262,15 @@ static void _mons_open_door(monster& mons, const coord_def &pos)
     set<coord_def> all_door;
     find_connected_identical(pos, all_door);
     get_door_description(all_door.size(), &adj, &noun);
+	
+    dungeon_feature_type feat = one_chance_in(10) ? DNGN_FLOOR : DNGN_OPEN_DOOR;
 
     for (const auto &dc : all_door)
     {
         if (you.see_cell(dc))
             was_seen = true;
 
-        grd(dc) = DNGN_OPEN_DOOR;
+        grd(dc) = feat;
         set_terrain_changed(dc);
     }
 
@@ -2279,7 +2281,7 @@ static void _mons_open_door(monster& mons, const coord_def &pos)
         string open_str = "opens the ";
         open_str += adj;
         open_str += noun;
-        open_str += ".";
+        open_str += feat == DNGN_FLOOR ? ", breaking it off its hinges!" : ".";
 
         // Should this be conditionalized on you.can_see(mons?)
         mons.seen_context = (all_door.size() <= 2) ? SC_DOOR : SC_GATE;
