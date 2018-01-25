@@ -96,14 +96,13 @@
        "book of battle", "book of beasts", "book of burglary", "box of beasts",
        "broad axe", "pair of boots", "potion of berserk rage",
        "scroll of blinking", "scroll of brand weapon",
-       "manual of bows", "manual of blades", "buckler" }
+       "manual of bows & xbows", "manual of blades", "buckler" }
 
       elseif s == "C" then i = { "book of callings", "book of cantrips",
        "book of changes", "book of conjurations", "potion of cure mutation",
        "chain mail", "crystal ball of energy", "cloak",
        "crystal plate armour", "potion of cancellation", "wand of clouds",
        "book of clouds", "staff of cold", "wand of confusion", "cutlass",
-       "manual of crossbows",
        "manual of charms", "potion of curing" }
 
       elseif s == "D" then i = { "book of death", "book of arcane marksmanship",
