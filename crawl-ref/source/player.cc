@@ -5896,7 +5896,7 @@ int player::skill(skill_type sk, int scale, bool real, bool drained) const
 	}
 
 
-    if (have_passive(passive_t::heroism) && sk <= SK_LAST_MUNDANE)
+    if (have_passive(passive_t::heroism) && sk <= SK_LAST_MUNDANE && sk != SK_STEALTH)
         level = min(level + (piety_rank() - 1) * scale, 27 * scale);
     return level;
 }
