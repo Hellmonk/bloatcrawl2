@@ -6965,6 +6965,103 @@ spret_type hepliaklqana_transference(bool fail)
     return SPRET_SUCCESS;
 }
 
+/**
+ * Activate Yred's soul transfer ability, swapping the player's
+ * enslaved soul with a targeted creature & potentially draining monsters adjacent
+ * to the target.
+ *
+ * @param fail      Whether the effect should fail after checking validity.
+ * @return          Whether the ability succeeded, failed, or was aborted.
+ */
+spret_type yred_transference(bool fail)
+{
+    monster *soul = yred_soul_mon();
+    if (!soul || !you.can_see(*soul))
+    {
+        mprf("Your enslaved soul is not nearby!");
+        return SPRET_ABORT;
+    }
+
+    coord_def target = _get_transference_target();
+    if (target.origin())
+    {
+        canned_msg(MSG_OK);
+        return SPRET_ABORT;
+    }
+
+    actor* victim = actor_at(target);
+    const bool victim_visible = victim && you.can_see(*victim);
+    if ((!victim || !victim_visible)
+        && !yesno("You can't see anything there. Try transferring anyway?",
+                  true, 'n'))
+    {
+        canned_msg(MSG_OK);
+        return SPRET_ABORT;
+    }
+
+    if (victim == soul)
+    {
+        mpr("You can't transfer your enslaved soul with itself.");
+        return SPRET_ABORT;
+    }
+
+    const bool victim_immovable
+        = victim && (mons_is_tentacle_or_tentacle_segment(victim->type)
+                     || victim->is_stationary());
+    if (victim_visible && victim_immovable)
+    {
+        mpr("You can't transfer that.");
+        return SPRET_ABORT;
+    }
+
+    const coord_def destination = soul->pos();
+    if (victim == &you && !check_moveto(destination, "transfer"))
+        return SPRET_ABORT;
+
+    const bool uninhabitable = victim && !victim->is_habitable(destination);
+    if (uninhabitable && victim_visible)
+    {
+        mprf("%s can't be transferred into %s.",
+             victim->name(DESC_THE).c_str(), feat_type_name(grd(destination)));
+        return SPRET_ABORT;
+    }
+
+    // we assume the soul flies & so can survive anywhere anything can.
+
+    fail_check();
+
+    if (!victim || uninhabitable || victim_immovable)
+    {
+        canned_msg(MSG_NOTHING_HAPPENS);
+        return SPRET_SUCCESS;
+    }
+
+    if (victim->is_player())
+    {
+        soul->move_to_pos(target, true, true);
+        victim->move_to_pos(destination, true, true);
+    }
+    else
+        soul->swap_with(victim->as_monster());
+
+    mprf("%s swap%s with your enslaved soul!",
+         victim->name(DESC_THE).c_str(),
+         victim->is_player() ? "" : "s");
+
+    if (victim->is_monster())
+        mons_relocated(victim->as_monster());
+
+    soul->apply_location_effects(destination);
+    victim->apply_location_effects(target);
+    if (victim->is_monster())
+        behaviour_event(victim->as_monster(), ME_DISTURB, &you, target);
+
+    if (have_passive(passive_t::transfer_drain))
+        _transfer_drain_nearby(target);
+
+    return SPRET_SUCCESS;
+}
+
 /// Prompt to rename your ancestor.
 static void _hepliaklqana_choose_name()
 {

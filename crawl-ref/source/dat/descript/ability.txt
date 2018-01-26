@@ -938,3 +938,12 @@ Hop ability
 Hops toward a chosen destination, landing somewhere nearby. After using this
 ability, you will be unable to hop again until you have spent some time not
 moving. (Other actions, such as casting spells and attacking, are fine.)
+%%%%
+Soul Transfer ability
+
+Exchanges the places of your enslaved soul and the target (which may be yourself).
+%%%%
+Recall Enslaved Soul ability
+
+Recalls your enslaved soul from anywhere in the dungeon to your immediate
+surroundings.

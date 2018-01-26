@@ -133,7 +133,7 @@ void start_recall(recall_t type)
 
         you.attribute[ATTR_NEXT_RECALL_INDEX] = 1;
         you.attribute[ATTR_NEXT_RECALL_TIME] = 0;
-        mpr("You begin recalling your allies.");
+        mpr("You begin recalling your enslaved soul.");
     }
     else
         mpr("Nothing appears to have answered your call.");

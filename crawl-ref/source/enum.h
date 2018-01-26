@@ -470,6 +470,8 @@ enum ability_type
     // Wu Jian
     ABIL_WU_JIAN_SERPENTS_LASH = 1280,
     ABIL_WU_JIAN_HEAVENLY_STORM,
+    // New Yred ability
+    ABIL_YRED_TRANSFERENCE = 1290,
 
     // For both Yred and Beogh
     ABIL_STOP_RECALL = 1500,

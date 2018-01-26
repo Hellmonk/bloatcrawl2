@@ -399,10 +399,12 @@ static const ability_def Ability_List[] =
       2, 0, 0, 0, {FAIL_INVO, 50, 4, 20}, abflag::NONE },
     { ABIL_YRED_ENSLAVE_SOUL, "Enslave Soul",
       4, 0, 500, 4, {FAIL_INVO, 50, 4, 25}, abflag::NONE },
+    { ABIL_YRED_TRANSFERENCE, "Soul Transfer",
+        4, 0, 0, 4, {FAIL_INVO, 40, 5, 20}, abflag::NONE },
     { ABIL_YRED_ANIMATE_DEAD, "Animate Dead",
       2, 0, 200, 0, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
     { ABIL_YRED_DRAIN_LIFE, "Drain Life",
-      6, 0, 200, 3, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
+      6, 0, 200, 4, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
 
 
     // Okawaru
@@ -912,6 +914,7 @@ ability_type fixup_ability(ability_type ability)
         return ability;
 
     case ABIL_YRED_RECALL_UNDEAD_SLAVES:
+    case ABIL_YRED_TRANSFERENCE:
         if(!you.props.exists(YRED_ENSLAVED_SOUL_KEY))
             return ABIL_NON_ABILITY;
     case ABIL_BEOGH_RECALL_ORCISH_FOLLOWERS:
@@ -1524,6 +1527,7 @@ static bool _check_ability_possible(const ability_def& abil,
         }
         return true;
     case ABIL_YRED_RECALL_UNDEAD_SLAVES:
+    case ABIL_YRED_TRANSFERENCE:
         if (yred_soul() == MID_NOBODY)
         {
             if (!quiet)
@@ -2417,6 +2421,9 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         fail_check();
         return zapping(ZAP_ENSLAVE_SOUL, power, beam, false, nullptr, fail);
     }
+	
+    case ABIL_YRED_TRANSFERENCE:
+        return yred_transference(fail);
 
     case ABIL_OKAWARU_HEROISM:
         fail_check();

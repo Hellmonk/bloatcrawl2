@@ -274,6 +274,28 @@ monster* hepliaklqana_ancestor_mon()
     return nullptr;
 }
 
+/**
+ * Returns the a pointer to the current enslaved soul, if
+ * any. If none exists, returns null.
+ *
+ * The enslaved soul is *not* guaranteed to be on-level, even if it exists; check
+ * the companion_list before doing anything rash!
+ *
+ * @return  The player's enslaved soul, or nullptr if none exists.
+ */
+monster* yred_soul_mon()
+{
+    const mid_t soul_mid = yred_soul();
+    if (soul_mid == MID_NOBODY)
+        return nullptr;
+
+    monster* soul = monster_by_mid(soul_mid);
+    if (soul)
+        return soul;
+
+    return nullptr;
+}
+
 #if TAG_MAJOR_VERSION == 34
 // A temporary routine to clean up some references to invalid companions and
 // prevent crashes on load. Should be unnecessary once the cloning bugs that

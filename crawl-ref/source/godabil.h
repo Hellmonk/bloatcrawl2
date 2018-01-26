@@ -187,5 +187,6 @@ spret_type uskayaw_grand_finale(bool fail);
 bool hepliaklqana_choose_ancestor_type(int ancestor_type);
 spret_type hepliaklqana_idealise(bool fail);
 spret_type hepliaklqana_transference(bool fail);
+spret_type yred_transference(bool fail);
 void hepliaklqana_choose_identity();
 #endif

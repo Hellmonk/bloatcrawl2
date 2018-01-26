@@ -3486,6 +3486,7 @@ tileidx_t tileidx_ability(const ability_type ability)
     case ABIL_HEPLIAKLQANA_IDEALISE:
         return TILEG_ABILITY_HEP_IDEALISE;
     case ABIL_HEPLIAKLQANA_TRANSFERENCE:
+    case ABIL_YRED_TRANSFERENCE:
         return TILEG_ABILITY_HEP_TRANSFERENCE;
     case ABIL_HEPLIAKLQANA_IDENTITY:
         return TILEG_ABILITY_HEP_IDENTITY;
