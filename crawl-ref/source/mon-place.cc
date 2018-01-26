@@ -1162,7 +1162,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
 
     // Some sanity checks.
     if (mons_is_unique(mg.cls) && you.unique_creatures[mg.cls]
-            && !crawl_state.game_is_arena()
+            && !crawl_state.game_is_arena() && you.props[YRED_ENSLAVED_SOUL_KEY].get_int() != mg.cls
         || mons_class_flag(mg.cls, M_CANT_SPAWN))
     {
         die("invalid monster to place: %s (%d)", mons_class_name(mg.cls), mg.cls);

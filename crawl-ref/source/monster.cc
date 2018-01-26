@@ -6595,5 +6595,6 @@ bool monster::angered_by_attacks() const
             && !mons_is_avatar(type)
             && type != MONS_SPELLFORGED_SERVITOR
             && !testbits(flags, MF_DEMONIC_GUARDIAN)
-            && !mons_is_hepliaklqana_ancestor(type);
+            && !mons_is_hepliaklqana_ancestor(type)
+            && !testbits(flags, MF_ENSLAVED_SOUL);
 }

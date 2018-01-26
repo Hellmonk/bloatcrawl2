@@ -1789,13 +1789,14 @@ bool yred_injury_mirror()
            && crawl_state.which_god_acting() != GOD_YREDELEMNUL;
 }
 
-void yred_make_enslaved_soul(monster* mon, bool force_hostile)
+void yred_make_enslaved_soul(monster* mon, bool force_hostile, bool silent)
 {
     ASSERT(mon); // XXX: change to monster &mon
-    ASSERT(mons_enslaved_body_and_soul(*mon));
 
     add_daction(DACT_OLD_ENSLAVED_SOULS_POOF);
     remove_enslaved_soul_companion();
+	
+    you.props[YRED_ENSLAVED_SOUL_KEY] = mon->type;
 
     const string whose = you.can_see(*mon) ? apostrophise(mon->name(DESC_THE))
                                            : mon->pronoun(PRONOUN_POSSESSIVE);
@@ -1843,6 +1844,7 @@ void yred_make_enslaved_soul(monster* mon, bool force_hostile)
 
     mon->flags |= MF_NO_REWARD;
     mon->flags |= MF_ENSLAVED_SOUL;
+    mon->flags |= MF_HARD_RESET;
 
     // If the original monster type has melee abilities, make sure
     // its spectral thing has them as well.
@@ -1872,8 +1874,11 @@ void yred_make_enslaved_soul(monster* mon, bool force_hostile)
         invalidate_agrid();
     }
 
-    mprf("%s soul %s.", whose.c_str(),
+    if(!silent)
+    {
+        mprf("%s soul %s.", whose.c_str(),
          !force_hostile ? "is now yours" : "fights you");
+    }
 }
 
 bool kiku_receive_corpses(int pow)

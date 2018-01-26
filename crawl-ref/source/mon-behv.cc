@@ -1465,6 +1465,7 @@ bool summon_can_attack(const monster* mons)
            || !mons->is_summoned()
               && !mons->has_ench(ENCH_FAKE_ABJURATION)
               && !mons_is_hepliaklqana_ancestor(mons->type)
+              && !mons_enslaved_soul(*mons)
            || you.see_cell_no_trans(mons->pos());
 }
 
@@ -1489,7 +1490,8 @@ bool summon_can_attack(const monster* mons, const coord_def &p)
     if (!mons->friendly()
         || !mons->is_summoned()
             && !mons->has_ench(ENCH_FAKE_ABJURATION)
-            && !mons_is_hepliaklqana_ancestor(mons->type))
+            && !mons_is_hepliaklqana_ancestor(mons->type)
+            && !mons_enslaved_soul(*mons))
     {
         return true;
     }

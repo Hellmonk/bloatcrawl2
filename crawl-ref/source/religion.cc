@@ -1322,6 +1322,27 @@ mgen_data hepliaklqana_ancestor_gen_data()
     return mg;
 }
 
+/**
+ * Creates a mgen_data with the information needed to create an enslaved soul
+ * for Yred worshippers.
+ *
+ * XXX: should this be populating a mgen_data passed by reference, rather than
+ * returning one on the stack?
+ *
+ * @return    The mgen_data.
+ */
+mgen_data yred_enslaved_soul_data()
+{
+    const monster_type type = you.props.exists(YRED_ENSLAVED_SOUL_KEY) ?
+        (monster_type)you.props[YRED_ENSLAVED_SOUL_KEY].get_int() :
+        MONS_LOST_SOUL; // note: this shouldn't happen
+    mgen_data mg(type, BEH_FRIENDLY, you.pos(), MHITYOU, MG_AUTOFOE);
+    mg.set_summoned(&you, 0, 0, GOD_YREDELEMNUL);
+    mg.extra_flags |= MF_NO_REWARD;
+    mg.extra_flags |= MF_HARD_RESET;
+    return mg;
+}
+
 /// Print a message for an ancestor's *something* being gained.
 static void _regain_memory(const monster &ancestor, string memory)
 {

@@ -433,6 +433,11 @@ static void _abyss_lose_monster(monster& mons)
         remove_companion(&mons);
         you.duration[DUR_ANCESTOR_DELAY] = random_range(50, 150); //~5-15 turns
     }
+    else if (yred_soul() == mons.mid)
+    { 
+	   remove_companion(&mons);
+       you.duration[DUR_SOUL_DELAY] = random_range(50, 150); //~5-15 turns
+    }
 
     mons.destroy_inventory();
     monster_cleanup(&mons);

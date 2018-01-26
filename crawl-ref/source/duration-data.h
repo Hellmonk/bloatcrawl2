@@ -593,6 +593,7 @@ static const duration_def duration_data[] =
     { DUR_BRAINLESS, 0, "", "", "brainless", "", D_NO_FLAGS },
     { DUR_CLUMSY, 0, "", "", "clumsy", "", D_NO_FLAGS },
     { DUR_ANCESTOR_DELAY, 0, "", "", "ancestor delay", "", D_NO_FLAGS, {{""}}},
+    { DUR_SOUL_DELAY, 0, "", "", "enslaved soul delay", "", D_NO_FLAGS, {{""}}},
     { DUR_NO_CAST, 0, "", "", "no cast", "", D_NO_FLAGS,
       {{ "You regain access to your magic." }, {}, true }},
     { DUR_HEAVENLY_STORM, 0, "", "", "", "", D_NO_FLAGS,

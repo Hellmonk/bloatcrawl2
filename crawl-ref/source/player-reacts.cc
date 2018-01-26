@@ -562,6 +562,21 @@ static void _try_to_respawn_ancestor()
                       ancestor); // ;)
 }
 
+/**
+ * Try to respawn the player's enslaved soul, if possible.
+ */
+static void _try_to_respawn_enslaved_soul()
+{
+     monster *soul = create_monster(yred_enslaved_soul_data());
+     if (!soul)
+         return;
+    yred_make_enslaved_soul(soul, false, true);
+
+    mprf("%s returns to your service!",
+         soul->name(DESC_YOUR).c_str());
+    add_companion(soul);
+}
+
 
 /**
  * Take a 'simple' duration, decrement it, and print messages as appropriate
@@ -843,6 +858,14 @@ static void _decrement_durations()
         && hepliaklqana_ancestor() == MID_NOBODY)
     {
         _try_to_respawn_ancestor();
+    }
+	
+    if(in_good_standing(GOD_YREDELEMNUL)
+       && you.props.exists(YRED_ENSLAVED_SOUL_KEY)
+       && yred_soul() == MID_NOBODY
+       && !you.duration[DUR_SOUL_DELAY])
+    {
+        _try_to_respawn_enslaved_soul();
     }
 
     const bool sanguine_armour_is_valid = sanguine_armour_valid();

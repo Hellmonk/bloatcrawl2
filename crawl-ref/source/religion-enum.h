@@ -30,4 +30,7 @@ enum nemelex_gift_types
 /// custom monster gender
 #define MON_GENDER_KEY "mon_gender"
 
+/// enslaved soul (monster type)
+#define YRED_ENSLAVED_SOUL_KEY "yred_enslaved_soul"
+
 #endif

@@ -556,7 +556,8 @@ void record_monster_defeat(const monster* mons, killer_type killer)
     if (mons->has_ench(ENCH_FAKE_ABJURATION) || mons->is_summoned())
         return;
     if (mons->is_named() && mons->friendly()
-        && !mons_is_hepliaklqana_ancestor(mons->type))
+        && !mons_is_hepliaklqana_ancestor(mons->type)
+        && !mons_enslaved_soul(*mons))
     {
         take_note(Note(NOTE_ALLY_DEATH, 0, 0, mons->mname));
     }
@@ -710,6 +711,7 @@ static bool _yred_enslave_soul(monster* mons, killer_type killer)
     {
         record_monster_defeat(mons, killer);
         record_monster_defeat(mons, KILL_ENSLAVED);
+        ASSERT(mons_enslaved_body_and_soul(*mons));
         yred_make_enslaved_soul(mons, player_under_penance());
         return true;
     }
@@ -2824,6 +2826,14 @@ item_def* monster_die(monster* mons, killer_type killer,
             }
             // respawn in ~30-60 turns
             you.duration[DUR_ANCESTOR_DELAY] = random_range(300, 600);
+        }
+        if (mons_enslaved_soul(*mons))
+        {
+            if (!you.can_see(*mons))
+            {
+                mprf("Your enslaved soul has left this plane.");
+            }
+			you.duration[DUR_SOUL_DELAY] = random_range(300, 600);
         }
     }
 

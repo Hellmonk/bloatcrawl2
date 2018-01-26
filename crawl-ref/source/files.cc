@@ -864,7 +864,7 @@ static bool _grab_follower_at(const coord_def &pos, bool can_follow)
         return false;
 
     // only H's ancestors can follow into portals & similar.
-    if (!can_follow && !mons_is_hepliaklqana_ancestor(fol->type))
+    if (!can_follow && !mons_is_hepliaklqana_ancestor(fol->type) && !mons_enslaved_soul(*fol))
         return false;
 
     // The monster has to already be tagged in order to follow.

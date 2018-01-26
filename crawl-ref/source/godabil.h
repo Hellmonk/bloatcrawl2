@@ -92,7 +92,7 @@ bool beogh_gift_item();
 bool beogh_resurrect();
 
 bool yred_injury_mirror();
-void yred_make_enslaved_soul(monster* mon, bool force_hostile = false);
+void yred_make_enslaved_soul(monster* mon, bool force_hostile = false, bool silent = false);
 
 bool kiku_receive_corpses(int pow);
 bool kiku_take_corpse();
