@@ -740,9 +740,13 @@ bool cast_a_spell(bool check_range, spell_type spell)
                 }
                 else
                 {
+<<<<<<< HEAD
                     string fail_chance = spell_failure_rate_string(you.last_cast_spell);
                     mprf(MSGCH_PROMPT, "Casting: <w>%s "
                                        "(%s risk of failure)</w>",
+=======
+                    mprf(MSGCH_PROMPT, "Casting: <w>%s</w> <lightgrey>(%s)</lightgrey>",
+>>>>>>> 5b255cfda4... Fix spurious spell failure warning for wands (Le_Nerd, #11370)
                                        spell_title(you.last_cast_spell),
                                        fail_chance.c_str());
                     mprf(MSGCH_PROMPT, "Confirm with . or Enter, or press "
@@ -1373,9 +1377,10 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
                                    eff_pow, evoked_item, hitfunc.get());
         }
 
-        string fail_chance = spell_failure_rate_string(spell);
-        string title = make_stringf("Aiming: <w>%s (%s risk of failure)</w>",
-                            spell_title(spell), fail_chance.c_str());
+        string title = make_stringf("Aiming: <w>%s</w>", spell_title(spell));
+        if (allow_fail)
+            title += make_stringf(" <lightgrey>(%s)</lightgrey>",
+                _spell_failure_rate_description(spell).c_str());
 
         direction_chooser_args args;
         args.hitfunc = hitfunc.get();
