@@ -201,11 +201,10 @@ help in the form of a storm of heavenly clouds.
 %%%%
 Yredelemnul
 
-Yredelemnul the Dark is a god worshipped by those who seek powers over death
-and the undead. Followers can obtain legions of servile undead, and gain a
-number of other useful powers with which to make better use of the souls of
-the living. Yredelemnul especially favours those who would destroy holy
-creatures, which oppose the realm of undeath, and the nonliving, which exist
+Yredelemnul the Dark is a god worshipped by those who seek powers over death. 
+Followers can permanently enslave the soul of a monster and gain additional
+powers to afflict the souls of the living. Yredelemnul especially favours those who would 
+destroy holy creatures, which oppose the realm of undeath, and the nonliving, which exist
 outside of it.
 %%%%
 Zin
@@ -466,13 +465,14 @@ playthings...
 %%%%
 Yredelemnul powers
 
-Yredelemnul gives followers the power to raise skeletons and corpses, to recall
-undead followers to their vicinity, and to heal by draining the life force of
-living creatures. With sufficient piety, Yredelemnul can be called upon to
-mirror a follower's injuries onto attackers. Eventually, followers will gain
-the power to bind a monster's soul, and make it fight for them instead.
-Yredelemnul will sporadically gift followers increasingly powerful undead
-servants.
+Yredelemnul allows followers to mirror their injuries onto attackers. 
+With sufficient piety, followers gain the power to bind a monster's soul
+and make it fight for them eternally. The enslaved soul may be recalled 
+from any location and will return to its master's service after a short time 
+if it is destroyed, but will be released from service if another soul is 
+enslaved. Eventually, followers may swap their enslaved soul's position with
+another creature. Very devout followers gain the ability to drain ambient life
+force from surrounding monsters.
 %%%%
 Zin powers
 

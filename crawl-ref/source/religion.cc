@@ -4512,7 +4512,8 @@ static bool _is_temple_god(god_type god)
     case GOD_NO_GOD:
     case GOD_LUGONU:
     case GOD_BEOGH:
-    case GOD_ASHENZARI: // ash is bad, fam. --mps
+    case GOD_ASHENZARI: 
+    case GOD_HEPLIAKLQANA:
         return false;
 
     default:
