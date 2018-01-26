@@ -6866,7 +6866,7 @@ static void _transfer_drain_nearby(coord_def destination)
 
 /**
  * Activate Hepliaklqana's Transference ability, swapping the player's
- * ancestor with a targeted creature & potentially slowing monsters adjacent
+ * ancestor with a targeted creature & potentially draining monsters adjacent
  * to the target.
  *
  * @param fail      Whether the effect should fail after checking validity.

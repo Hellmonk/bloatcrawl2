@@ -124,9 +124,9 @@ const vector<god_power> god_powers[NUM_GODS] =
 
     // Yredelemnul
     { { 1, ABIL_YRED_INJURY_MIRROR, "mirror injuries on your foes" },
-	  { 3, ABIL_YRED_RECALL_UNDEAD_SLAVES, "recall your undead slaves" },
-      { 4, ABIL_YRED_DRAIN_LIFE, "drain ambient life force" },
-      { 5, ABIL_YRED_ENSLAVE_SOUL, "enslave living souls" },
+	  { 2, ABIL_YRED_ENSLAVE_SOUL, "enslave living souls" },
+	  { 2, ABIL_YRED_RECALL_UNDEAD_SLAVES, "recall your enslaved soul" },
+      { 5, ABIL_YRED_DRAIN_LIFE, "drain ambient life force" },
     },
 
     // Xom
@@ -1810,28 +1810,6 @@ bool do_god_gift(bool forced)
             }
             break;
         }
-
-        case GOD_YREDELEMNUL:
-            if (!you.get_mutation_level(MUT_NO_LOVE)
-                && (forced
-                    || (random2(you.piety) >= piety_breakpoint(2)
-                        && one_chance_in(4))))
-            {
-                unsigned int threshold = MIN_YRED_SERVANT_THRESHOLD
-                                         + you.num_current_gifts[you.religion] / 2;
-                threshold = max(threshold,
-                    static_cast<unsigned int>(MIN_YRED_SERVANT_THRESHOLD));
-                threshold = min(threshold,
-                    static_cast<unsigned int>(MAX_YRED_SERVANT_THRESHOLD));
-
-                if (yred_random_servants(threshold) != -1)
-                {
-                    delayed_monster_done(" grants you @servant@!",
-                                         _delayed_gift_callback);
-                    success = true;
-                }
-            }
-            break;
 
         case GOD_JIYVA:
             if (forced || you.piety >= piety_breakpoint(2)

@@ -395,14 +395,15 @@ static const ability_def Ability_List[] =
       0, 0, 0, 0, {FAIL_INVO, 40, 4, 20}, abflag::PIETY },
     { ABIL_YRED_ANIMATE_REMAINS, "Animate Remains",
       2, 0, 200, 0, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
-    { ABIL_YRED_RECALL_UNDEAD_SLAVES, "Recall Undead Slaves",
+    { ABIL_YRED_RECALL_UNDEAD_SLAVES, "Recall Enslaved Soul",
       2, 0, 0, 0, {FAIL_INVO, 50, 4, 20}, abflag::NONE },
+    { ABIL_YRED_ENSLAVE_SOUL, "Enslave Soul",
+      4, 0, 500, 4, {FAIL_INVO, 50, 4, 25}, abflag::NONE },
     { ABIL_YRED_ANIMATE_DEAD, "Animate Dead",
       2, 0, 200, 0, {FAIL_INVO, 40, 4, 20}, abflag::NONE },
     { ABIL_YRED_DRAIN_LIFE, "Drain Life",
       6, 0, 200, 3, {FAIL_INVO, 60, 4, 25}, abflag::NONE },
-    { ABIL_YRED_ENSLAVE_SOUL, "Enslave Soul",
-      8, 0, 500, 5, {FAIL_INVO, 80, 4, 25}, abflag::NONE },
+
 
     // Okawaru
     { ABIL_OKAWARU_HEROISM, "Heroism",
@@ -911,6 +912,8 @@ ability_type fixup_ability(ability_type ability)
         return ability;
 
     case ABIL_YRED_RECALL_UNDEAD_SLAVES:
+        if(!you.props.exists(YRED_ENSLAVED_SOUL_KEY))
+            return ABIL_NON_ABILITY;
     case ABIL_BEOGH_RECALL_ORCISH_FOLLOWERS:
         if (you.get_mutation_level(MUT_NO_LOVE))
             return ABIL_NON_ABILITY;
@@ -1520,7 +1523,16 @@ static bool _check_ability_possible(const ability_def& abil,
             return false;
         }
         return true;
-
+    case ABIL_YRED_RECALL_UNDEAD_SLAVES:
+        if (yred_soul() == MID_NOBODY)
+        {
+            if (!quiet)
+            {
+                mprf("Your enslaved soul has not yet returned to this plane!");
+            }
+            return false;
+        }
+	    return true;
     default:
         return true;
     }
