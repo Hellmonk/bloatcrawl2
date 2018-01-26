@@ -494,7 +494,6 @@ KFEAT: C = altar_cheibriados
 KFEAT: D = altar_dithmenos
 KFEAT: E = altar_elyvilon
 KFEAT: g = altar_gozag
-KFEAT: H = altar_hepliaklqana
 KFEAT: J = altar_jiyva
 KFEAT: K = altar_kikubaaqudgha
 KFEAT: L = altar_lugonu
@@ -530,7 +529,7 @@ KMONS: X = apocalypse crab
 KMONS: Y = profane servitor
 KMONS: Z = angel / w:1 pearl dragon
 KMONS: 1 = daeva / w:1 pearl dragon
-SUBST: ? = CDEgHJKLMOQRSTUVXYZ1
+SUBST: ? = CDEgJKLMOQRSTUVXYZ1
 MAP
 xxxxx@@@xxxxx
 xxx.......xxx

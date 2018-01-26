@@ -106,7 +106,6 @@ KFEAT: C = altar_cheibriados
 KFEAT: D = altar_dithmenos
 KFEAT: E = altar_elyvilon
 KFEAT: G = altar_gozag
-KFEAT: H = altar_hepliaklqana
 KFEAT: K = altar_kikubaaqudgha
 KFEAT: N = altar_nemelex_xobeh
 KFEAT: O = altar_okawaru
@@ -126,7 +125,7 @@ xxxx$$c$$$c*c
 xEZxxxc$$cc*c
 x'OT.Qcc+c..+
 xK.s..2+...Sc
-xY..UHccV1x+x
+xY..U.ccV1x+x
 cDRCGNccx+x*x
 ccccccccx.xxx
 ENDMAP

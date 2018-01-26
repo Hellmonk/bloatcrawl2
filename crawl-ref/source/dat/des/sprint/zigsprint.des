@@ -695,7 +695,6 @@ KFEAT:  c = altar_cheibriados
 KFEAT:  d = altar_dithmenos
 KFEAT:  e = altar_elyvilon
 KFEAT:  g = altar_gozag
-KFEAT:  h = altar_hepliaklqana
 KFEAT:  j = altar_jiyva
 KFEAT:  k = altar_kikubaaqudgha
 KFEAT:  l = altar_lugonu
@@ -792,7 +791,7 @@ KFEAT:    ^ = granite_statue
 KFEAT:    & = granite_statue
 COLOUR:   & = magenta
 MAP
-^g^h^j&A&k^l^m^
+^g^.^j&A&k^l^m^
 ..............n
 ^.........RT..^
 e..HG.........o

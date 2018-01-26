@@ -406,7 +406,7 @@ bool is_unavailable_god(god_type god)
 
     // Disabled, pending a rework.
     if (god == GOD_PAKELLAS || god == GOD_FEDHAS || god == GOD_ASHENZARI
-		|| god == GOD_BEOGH)
+		|| god == GOD_BEOGH || god == GOD_HEPLIAKLQANA)
         return true;
 
     return false;
@@ -3017,7 +3017,7 @@ bool player_can_join_god(god_type which_god)
     if (is_good_god(which_god) && you.undead_or_demonic())
         return false;
 
-    if (which_god == GOD_BEOGH)
+    if (is_unavailable_god(which_god))
         return false;
 
     // Fedhas hates undead, but will accept demonspawn.
@@ -4499,7 +4499,7 @@ static bool _is_disabled_god(god_type god)
 {
     // Disabled, pending a rework.
     return god == GOD_PAKELLAS || god == GOD_FEDHAS || god == GOD_ASHENZARI
-		|| god == GOD_BEOGH;
+		|| god == GOD_BEOGH || god == GOD_HEPLIAKLQANA;
 }
 
 static bool _is_temple_god(god_type god)

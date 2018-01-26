@@ -182,7 +182,6 @@ KFEAT:    c = altar_cheibriados
 KFEAT:    d = altar_dithmenos
 KFEAT:    e = altar_elyvilon
 KFEAT:    g = altar_gozag
-KFEAT:    h = altar_hepliaklqana
 KFEAT:    j = altar_jiyva
 KFEAT:    k = altar_kikubaaqudgha
 KFEAT:    l = altar_lugonu
@@ -205,7 +204,7 @@ KFEAT:    1 = altar_the_shining_one
 :           })
 MAP
 xxxxxxxxxxxxxxxxxxxxxxxxx
-~.cde.ghjklmnoqrstuvXyz1.
+~.cde.g.jklmnoqrstuvXyz1.
 xxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 

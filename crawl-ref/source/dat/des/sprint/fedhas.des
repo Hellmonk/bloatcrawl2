@@ -103,7 +103,6 @@ KFEAT:  c = altar_cheibriados
 KFEAT:  d = altar_dithmenos
 KFEAT:  e = altar_elyvilon
 KFEAT:  g = altar_gozag
-KFEAT:  h = altar_hepliaklqana
 KFEAT:  j = altar_jiyva
 KFEAT:  k = altar_kikubaaqudgha
 KFEAT:  l = altar_lugonu
@@ -124,7 +123,7 @@ KMONS:  P = oklob sapling name:priest n_suf \
             spells:spit_acid.50.natural;cantrip.36.priest;smiting.18.priest
 MAP
 .T...c.d.e.T.
-..g.h.j.k.l..
+..g...j.k.l..
 ...m.nPo.q...
 ..r.s.t.u.v..
 .T.x.y.z.1.T.
