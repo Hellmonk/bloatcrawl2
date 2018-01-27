@@ -702,34 +702,6 @@ static bool _ely_heal_monster(monster* mons, killer_type killer, int i)
     return true;
 }
 
-static void _yred_props_cleanup()
-{
-	if(you.props.exists(YRED_SOUL_BRAND_KEY))
-           you.props.erase(YRED_SOUL_BRAND_KEY);
-    if(you.props.exists(YRED_SOUL_WEAPON_TYPE))
-           you.props.erase(YRED_SOUL_WEAPON_TYPE);
-    if(you.props.exists(YRED_SOUL_WEAPON_PLUS))
-           you.props.erase(YRED_SOUL_WEAPON_PLUS);
-    if(you.props.exists(YRED_ALT_WEAPON_TYPE))
-           you.props.erase(YRED_ALT_WEAPON_TYPE);
-	if(you.props.exists(YRED_ALT_WEAPON_PLUS))
-           you.props.erase(YRED_ALT_WEAPON_PLUS);
-    if(you.props.exists(YRED_ALT_BRAND_KEY))
-           you.props.erase(YRED_ALT_BRAND_KEY);
-    if(you.props.exists(YRED_SOUL_ARMOUR_TYPE))
-           you.props.erase(YRED_SOUL_ARMOUR_TYPE);
-    if(you.props.exists(YRED_SOUL_ARMOUR_PLUS))
-           you.props.erase(YRED_SOUL_ARMOUR_PLUS);
-	if(you.props.exists(YRED_SOUL_ARMOUR_EGO))
-           you.props.erase(YRED_SOUL_ARMOUR_EGO);
-    if(you.props.exists(YRED_SOUL_SHIELD_TYPE))
-           you.props.erase(YRED_SOUL_SHIELD_TYPE);
-    if(you.props.exists(YRED_SOUL_SHIELD_PLUS))
-           you.props.erase(YRED_SOUL_SHIELD_PLUS);
-    if(you.props.exists(YRED_SOUL_SHIELD_EGO))
-           you.props.erase(YRED_SOUL_SHIELD_EGO);   
-}
-
 static bool _yred_enslave_soul(monster* mons, killer_type killer)
 {
     if (you_worship(GOD_YREDELEMNUL) && mons_enslaved_body_and_soul(*mons)
@@ -740,7 +712,8 @@ static bool _yred_enslave_soul(monster* mons, killer_type killer)
         record_monster_defeat(mons, killer);
         record_monster_defeat(mons, KILL_ENSLAVED);
         ASSERT(mons_enslaved_body_and_soul(*mons));
-        _yred_props_cleanup();
+        you.attribute[ATTR_YRED_SOUL_TIMEOUT] = 0;
+        you.duration[DUR_SOUL_DELAY] = 0;
         yred_make_enslaved_soul(mons, player_under_penance());
         return true;
     }
@@ -2823,7 +2796,7 @@ item_def* monster_die(monster* mons, killer_type killer,
         unwind_var<int> fakehp(mons->hit_points, 1);
         monster_drop_things(mons, YOU_KILL(killer) || pet_kill);
     }
-    else
+    else if(!mons_enslaved_soul(*mons) || killer == KILL_DISMISSED)
     {
         // Destroy the items belonging to MF_HARD_RESET monsters so they
         // don't clutter up mitm[].
@@ -2855,12 +2828,19 @@ item_def* monster_die(monster* mons, killer_type killer,
             // respawn in ~30-60 turns
             you.duration[DUR_ANCESTOR_DELAY] = random_range(300, 600);
         }
-        if (mons_enslaved_soul(*mons))
+        if (mons_enslaved_soul(*mons) && killer != KILL_DISMISSED)
         {
+            //the genius hack
+            mons->heal(9999);
+            if(you.where_are_you == BRANCH_DUNGEON && you.depth == 1)
+                move_companion_to(mons, level_id(BRANCH_ZOT, 5));
+            else
+                move_companion_to(mons, level_id(BRANCH_DUNGEON, 1));
             if (!you.can_see(*mons))
             {
                 mprf("Your enslaved soul has left this plane.");
             }
+            you.attribute[ATTR_YRED_SOUL_TIMEOUT] = 1;
 			you.duration[DUR_SOUL_DELAY] = random_range(300, 600);
         }
     }

@@ -435,8 +435,11 @@ static void _abyss_lose_monster(monster& mons)
     }
     else if (yred_soul() == mons.mid)
     { 
-	   remove_companion(&mons);
-       you.duration[DUR_SOUL_DELAY] = random_range(50, 150); //~5-15 turns
+	    move_companion_to(&mons, level_id(BRANCH_DUNGEON, 1));
+        you.attribute[ATTR_YRED_SOUL_TIMEOUT] = 1;
+        you.duration[DUR_SOUL_DELAY] = random_range(50, 150); //~5-15 turns
+        monster_cleanup(&mons);
+        return;
     }
 
     mons.destroy_inventory();

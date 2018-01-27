@@ -1528,7 +1528,7 @@ static bool _check_ability_possible(const ability_def& abil,
         return true;
     case ABIL_YRED_RECALL_UNDEAD_SLAVES:
     case ABIL_YRED_TRANSFERENCE:
-        if (yred_soul() == MID_NOBODY)
+        if (yred_soul() == MID_NOBODY || you.attribute[ATTR_YRED_SOUL_TIMEOUT])
         {
             if (!quiet)
             {

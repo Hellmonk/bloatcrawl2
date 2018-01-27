@@ -106,10 +106,17 @@ void start_recall(recall_t type)
         {
             if (!(mi->holiness() & MH_UNDEAD))
                 continue;
+            if(mons_enslaved_soul(**mi) && you.attribute[ATTR_YRED_SOUL_TIMEOUT])
+                continue;
         }
         else if (type == RECALL_BEOGH)
         {
             if (!is_orcish_follower(**mi))
+                continue;
+        }
+        else if (type == RECALL_SPELL)
+        {
+			if(mons_enslaved_soul(**mi) && you.attribute[ATTR_YRED_SOUL_TIMEOUT])
                 continue;
         }
 

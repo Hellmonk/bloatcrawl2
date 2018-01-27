@@ -567,9 +567,14 @@ static void _try_to_respawn_ancestor()
  */
 static void _try_to_respawn_enslaved_soul()
 {
-     monster *soul = create_monster(yred_enslaved_soul_data());
-     if (!soul)
-         return;
+	if (try_recall(yred_soul()))
+    {
+        mprf("Your enslaved soul returns to your service.");
+        return;
+	}
+    monster *soul = create_monster(yred_enslaved_soul_data());
+    if (!soul)
+        return;
     yred_make_enslaved_soul(soul, false, true);
 
     mprf("%s returns to your service!",
@@ -862,9 +867,10 @@ static void _decrement_durations()
 	
     if(in_good_standing(GOD_YREDELEMNUL)
        && you.props.exists(YRED_ENSLAVED_SOUL_KEY)
-       && yred_soul() == MID_NOBODY
+       && you.attribute[ATTR_YRED_SOUL_TIMEOUT]
        && !you.duration[DUR_SOUL_DELAY])
     {
+        you.attribute[ATTR_YRED_SOUL_TIMEOUT] = 0;
         _try_to_respawn_enslaved_soul();
     }
 

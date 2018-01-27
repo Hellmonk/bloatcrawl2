@@ -33,20 +33,4 @@ enum nemelex_gift_types
 /// enslaved soul (monster type)
 #define YRED_ENSLAVED_SOUL_KEY "yred_enslaved_soul"
 
-/// enslaved soul equipment properties
-#define YRED_SOUL_WEAPON_TYPE "yred_soul_weapon_type"
-#define YRED_SOUL_WEAPON_PLUS "yred_soul_weapon_plus"
-#define YRED_SOUL_BRAND_KEY "yred_soul_weapon_brand"
-
-#define YRED_ALT_WEAPON_TYPE "yred_alt_weapon_type"
-#define YRED_ALT_WEAPON_PLUS "yred_alt_weapon_plus"
-#define YRED_ALT_BRAND_KEY "yred_alt_weapon_brand"
-
-#define YRED_SOUL_ARMOUR_TYPE "yred_soul_armour_type"
-#define YRED_SOUL_ARMOUR_PLUS "yred_soul_armour_plus"
-#define YRED_SOUL_ARMOUR_EGO "yred_soul_armour_ego"
-
-#define YRED_SOUL_SHIELD_TYPE "yred_soul_shield_type"
-#define YRED_SOUL_SHIELD_PLUS "yred_soul_shield_plus"
-#define YRED_SOUL_SHIELD_EGO "yred_soul_shield_ego"
 #endif

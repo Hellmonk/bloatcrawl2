@@ -634,6 +634,7 @@ enum attribute_type
     ATTR_INFESTATION,          // infestation
     ATTR_BATTLESPHERE,         // battlesphere
     ATTR_SERVITOR,             // spellforged servitor
+    ATTR_YRED_SOUL_TIMEOUT,    // enslaved soul timeout
     NUM_ATTRIBUTES
 };
 
