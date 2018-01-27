@@ -1817,10 +1817,61 @@ void yred_make_enslaved_soul(monster* mon, bool force_hostile, bool silent)
     // remove any active avatars.
     for (int slot = MSLOT_WEAPON; slot <= MSLOT_ALT_WEAPON; slot++) {
         item_def *wpn = mon->mslot_item(static_cast<mon_inv_type>(slot));
+        if(slot == MSLOT_WEAPON && wpn)
+        {
+            if(you.props.exists(YRED_SOUL_WEAPON_TYPE))
+                wpn->sub_type = (int)you.props[YRED_SOUL_WEAPON_TYPE];
+            if(you.props.exists(YRED_SOUL_WEAPON_PLUS))
+                wpn->plus = you.props[YRED_SOUL_WEAPON_PLUS];
+            if(you.props.exists(YRED_SOUL_BRAND_KEY))
+                set_item_ego_type(*wpn, OBJ_WEAPONS, you.props[YRED_SOUL_BRAND_KEY]);
+            you.props[YRED_SOUL_BRAND_KEY] = get_weapon_brand(*wpn);
+            you.props[YRED_SOUL_WEAPON_TYPE] = wpn->sub_type;
+            you.props[YRED_SOUL_WEAPON_PLUS] = wpn->plus;
+        }
+        if(slot == MSLOT_ALT_WEAPON && wpn)
+        {
+            if(you.props.exists(YRED_ALT_WEAPON_TYPE))
+                wpn->sub_type = (int)you.props[YRED_ALT_WEAPON_TYPE];
+            if(you.props.exists(YRED_ALT_WEAPON_PLUS))
+                wpn->plus = you.props[YRED_ALT_WEAPON_PLUS];
+            if(you.props.exists(YRED_ALT_BRAND_KEY))
+                set_item_ego_type(*wpn, OBJ_WEAPONS, you.props[YRED_ALT_BRAND_KEY]);
+            you.props[YRED_ALT_BRAND_KEY] = get_weapon_brand(*wpn);
+            you.props[YRED_ALT_WEAPON_TYPE] = wpn->sub_type;
+            you.props[YRED_ALT_WEAPON_PLUS] = wpn->plus;
+        }
         if (wpn && get_weapon_brand(*wpn) == SPWPN_HOLY_WRATH)
         {
             set_item_ego_type(*wpn, OBJ_WEAPONS, SPWPN_DRAINING);
             convert2bad(*wpn);
+        }
+    }
+    for (int slot = MSLOT_ARMOUR; slot <= MSLOT_SHIELD; slot++) {
+        item_def *armour = mon->mslot_item(static_cast<mon_inv_type>(slot));
+        if(slot == MSLOT_ARMOUR && armour)
+        {
+            if(you.props.exists(YRED_SOUL_ARMOUR_TYPE))
+                armour->sub_type = (int)you.props[YRED_SOUL_ARMOUR_TYPE];
+            if(you.props.exists(YRED_SOUL_ARMOUR_PLUS))
+                armour->plus = you.props[YRED_SOUL_ARMOUR_PLUS];
+            if(you.props.exists(YRED_SOUL_ARMOUR_EGO))
+                set_item_ego_type(*armour, OBJ_ARMOUR, you.props[YRED_SOUL_ARMOUR_EGO]);
+            you.props[YRED_SOUL_ARMOUR_EGO] = get_armour_ego_type(*armour);
+            you.props[YRED_SOUL_ARMOUR_TYPE] = armour->sub_type;
+            you.props[YRED_SOUL_ARMOUR_PLUS] = armour->plus;
+        }
+        if(slot == MSLOT_SHIELD && armour)
+        {
+            if(you.props.exists(YRED_SOUL_SHIELD_TYPE))
+                armour->sub_type = (int)you.props[YRED_SOUL_SHIELD_TYPE];
+            if(you.props.exists(YRED_SOUL_SHIELD_PLUS))
+                armour->plus = you.props[YRED_SOUL_SHIELD_PLUS];
+            if(you.props.exists(YRED_SOUL_SHIELD_EGO))
+                set_item_ego_type(*armour, OBJ_ARMOUR, you.props[YRED_SOUL_SHIELD_EGO]);
+            you.props[YRED_SOUL_SHIELD_EGO] = get_armour_ego_type(*armour);
+            you.props[YRED_SOUL_SHIELD_TYPE] = armour->sub_type;
+            you.props[YRED_SOUL_SHIELD_PLUS] = armour->plus;
         }
     }
     monster_drop_things(mon, false, is_holy_item);
