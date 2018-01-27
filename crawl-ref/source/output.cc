@@ -1637,7 +1637,7 @@ void draw_border()
     // Line 8 is exp pool, Level
 }
 
-void redraw_screen()
+void redraw_screen(bool show_updates)
 {
     if (!crawl_state.need_save)
     {
@@ -1678,8 +1678,16 @@ void redraw_screen()
         update_turn_count();
     }
 
-    viewwindow();
-
+    if (Options.messages_at_top)
+    {
+        display_message_window();
+        viewwindow(show_updates);
+    }
+    else
+    {
+        viewwindow(show_updates);
+        display_message_window();
+    }
     // Display the message window at the end because it places
     // the cursor behind possible prompts.
     display_message_window();
