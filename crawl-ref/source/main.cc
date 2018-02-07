@@ -1825,6 +1825,7 @@ void process_command(command_type cmd)
         // else fall-through
     case CMD_WAIT:
         update_acrobat_status();
+        you.turn_is_over = true;
         break;
 
     case CMD_PICKUP:
