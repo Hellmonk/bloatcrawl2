@@ -154,7 +154,7 @@ static const map<job_type, job_def> job_data =
     { "robe" },
     WCHOICE_PLAIN,
     { { SK_FIGHTING, 3 }, { SK_WEAPON, 3 }, { SK_DODGING, 3 },
-      { SK_STEALTH, 2 }, },
+      { SK_STEALTH, 2 }, {SK_INVOCATIONS, 3} },
 } },
 
 { JOB_NECROMANCER, {
