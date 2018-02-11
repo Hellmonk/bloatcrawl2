@@ -296,6 +296,7 @@ static const vector<god_passive> god_passives[] =
     {
         { 0, passive_t::wu_jian_lunge, "perform damaging attacks by moving towards foes." },
         { 1, passive_t::wu_jian_whirlwind, "lightly attack and pin monsters in place by moving around them." },
+        { 1, passive_t::wu_jian_glass_cannon, "GOD reduces your AC in exchange for slaying."},
         { 2, passive_t::wu_jian_wall_jump, "perform airborne attacks by moving against a solid obstacle." },
     },
 };
@@ -1654,6 +1655,8 @@ void wu_jian_wall_jump_effects(const coord_def& old_pos)
         if (!cell_is_solid(*ai))
             check_place_cloud(CLOUD_DUST_TRAIL, *ai, 1 + random2(3) , &you, 0, -1);
     }
+	
+    int evasion_boost = -4;
 
     for (auto target : targets)
     {
@@ -1663,6 +1666,8 @@ void wu_jian_wall_jump_effects(const coord_def& old_pos)
         if (you.attribute[ATTR_HEAVENLY_STORM] > 0)
             you.attribute[ATTR_HEAVENLY_STORM] += 2;
 
+        evasion_boost += 4;
+		
         you.apply_berserk_penalty = false;
 
         // Twice the attacks as Wall Jump spends twice the time
@@ -1692,6 +1697,22 @@ void wu_jian_wall_jump_effects(const coord_def& old_pos)
             aerial.wu_jian_number_of_targets = targets.size();
             aerial.attack();
         }
+    }
+    
+    // Walljumping multiple targets gives an ev boost.
+    // The boost value may be increased by a later walljump,
+    // however the duration will not be extended
+    if(evasion_boost > 0 && (!you.props.exists(WALL_JUMP_EV_KEY)
+       || evasion_boost > you.props[WALL_JUMP_EV_KEY].get_int()))
+    {
+        you.props[WALL_JUMP_EV_KEY] = evasion_boost;
+        if(!you.duration[DUR_WALL_JUMP_EV])
+        {
+            you.increase_duration(DUR_WALL_JUMP_EV, random_range(15,25), 25);
+            mpr("Your acrobatic leap heightens your reflexes.");
+        }
+        mpr("You feel more evasive.");
+        you.redraw_evasion = true;
     }
 }
 

@@ -259,6 +259,9 @@ enum class passive_t
     wu_jian_lunge,
     wu_jian_whirlwind,
     wu_jian_wall_jump,
+	
+    ///trade AC for big, big damage
+    wu_jian_glass_cannon,
 };
 
 enum ru_interference

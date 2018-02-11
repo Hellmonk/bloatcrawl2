@@ -319,6 +319,8 @@ const vector<god_power> god_powers[NUM_GODS] =
            "perform lunging strikes" },
       { 1, "lightly attack and pin monsters in place by moving around them",
            "perform spinning attacks" },
+      { 1, "The Council enhances your melee damage and reduces your AC.",
+           "The Council no longer enhances your melee damage or reduces your AC." },
       { 2, "perform airborne attacks by moving against a solid obstacle",
            "perform airborne attacks" },
       { 3, ABIL_WU_JIAN_SERPENTS_LASH, "briefly move at supernatural speeds",
@@ -2390,6 +2392,9 @@ bool gain_piety(int original_gain, int denominator, bool should_scale_piety)
     }
     //redraw the title
     you.redraw_title = true;
+    //redraw AC if have WJC passive
+    if(have_passive(passive_t::wu_jian_glass_cannon))
+        you.redraw_armour_class = true;
 
     return true;
 }
@@ -2491,6 +2496,10 @@ void lose_piety(int pgn)
         // Piety change affects halo / umbra radius.
         invalidate_agrid(true);
     }
+	
+    //redraw AC if worshipping WJC (might have lost passive)
+    if(you_worship(GOD_WU_JIAN))
+        you.redraw_armour_class = true;
 }
 
 // Fedhas worshipers are on the hook for most plants and fungi

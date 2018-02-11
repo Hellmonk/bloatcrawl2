@@ -529,7 +529,9 @@ static bool _boosted_ac()
 
 static bool _boosted_ev()
 {
-    return you.duration[DUR_AGILITY];
+    return you.duration[DUR_AGILITY]
+           || you.props.exists(WALL_JUMP_EV_KEY)
+               && you.props[WALL_JUMP_EV_KEY].get_int() > 0;
 }
 
 static bool _boosted_sh()

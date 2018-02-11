@@ -2191,6 +2191,9 @@ static int _player_evasion_bonuses()
     // transformation penalties/bonuses not covered by size alone:
     if (you.get_mutation_level(MUT_SLOW_REFLEXES))
         evbonus -= you.get_mutation_level(MUT_SLOW_REFLEXES) * 3;
+	
+    if (you.props.exists(WALL_JUMP_EV_KEY))
+        evbonus += you.props[WALL_JUMP_EV_KEY].get_int();
 
     return evbonus;
 }
@@ -3640,6 +3643,11 @@ int slaying_bonus(bool ranged)
 
     if (you.duration[DUR_HORROR])
         ret -= you.props[HORROR_PENALTY_KEY].get_int();
+	
+    if (have_passive(passive_t::wu_jian_glass_cannon) && !ranged)
+    {
+        ret += 3 * piety_rank();
+    }
 
     ret += you.attribute[ATTR_HEAVENLY_STORM];
 	
@@ -6094,6 +6102,13 @@ int player::armour_class(bool /*calc_unid*/) const
     AC -= get_mutation_level(MUT_PHYSICAL_VULNERABILITY)
           ? get_mutation_level(MUT_PHYSICAL_VULNERABILITY) * 300 : 0;
               // +3, +6, +9
+    //WJC passive goes last and affects all sources of AC
+    if(you_worship(GOD_WU_JIAN) && have_passive(passive_t::wu_jian_glass_cannon))
+    {
+        AC *= 10 - piety_rank();
+        AC /= 10;
+    }
+
     return AC / 100;
 }
 

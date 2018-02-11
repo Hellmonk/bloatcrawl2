@@ -627,7 +627,14 @@ static void _decrement_durations()
         you.redraw_armour_class = true;
     }
 	
-    if(you.attribute[ATTR_OZO_ARMOUR])
+    if(_decrement_a_duration(DUR_WALL_JUMP_EV, delay, "You feel less evasive."))
+    {
+        if (you.props.exists(WALL_JUMP_EV_KEY))
+            you.props.erase(WALL_JUMP_EV_KEY);
+        you.redraw_evasion = true;
+    }
+	
+    if (you.attribute[ATTR_OZO_ARMOUR])
         you.redraw_armour_class = true;
 
     // Possible reduction of silence radius.

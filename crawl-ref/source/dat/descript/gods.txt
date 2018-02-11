@@ -194,8 +194,9 @@ capricious. There is nothing a follower can do to influence Xom's mood.
 Wu Jian
 
 The Wu Jian Council is a congregation of martial monks, ascended to divinity
-after battling their way out of the afterlife. Disciples of the Council are
-able to execute acrobatic martial maneuvers, such as wall jumps, spinning
+after battling their way out of the afterlife. The Council significantly enhances 
+its followers' melee damage, but drastically reduces their AC. Disciples of the Council 
+are able to execute acrobatic martial maneuvers, such as wall jumps, spinning
 attacks and punishing lunges. They will eventually become able to request
 help in the form of a storm of heavenly clouds.
 %%%%
@@ -452,7 +453,7 @@ precision and damage for as long as they keep using martial attacks.
 
   ..x....       ..x.... (**) <lightred>Wall Jump</lightred>: Move into a wall to vault towards
   ..x<lightred>@</lightred>O..  -->  ..x.O<lightred>@</lightred>. enemies, striking all enemies adjacent to the landing
-  ..x....       ..x.... spot.
+  ..x....       ..x.... spot. Evasion is temporarily boosted when multiple enemies are attacked this way.
 
 %%%%
 Xom powers

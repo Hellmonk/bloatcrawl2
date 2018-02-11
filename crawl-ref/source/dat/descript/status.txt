@@ -686,3 +686,7 @@ Hevn status
 Heavenly clouds are boosting your damage and precision. Performing martial
 attacks against multiple enemies prevents the storm from settling.
 %%%%
+Reflex status
+
+A recent wall jump has heightened your reflexes, temporarily increasing 
+your evasion.
