@@ -806,65 +806,10 @@ static spell_type _choose_mem_spell(spell_list &spells,
                                  num_misc > 1 ? "s" : "");
     }
 
-#ifndef USE_TILE_LOCAL
-    // Tiles menus get this information in the title.
-    more_str += "   Toggle display with '<w>!</w>'";
-#endif
-
-    spell_menu.set_more(formatted_string::parse_string(more_str));
-
-    // Don't make a menu so tall that we recycle hotkeys on the same page.
-    if (spells.size() > 52
-        && (spell_menu.maxpagesize() > 52 || spell_menu.maxpagesize() == 0))
-    {
-        spell_menu.set_maxpagesize(52);
-    }
-
-    for (unsigned int i = 0; i < spells.size(); i++)
-    {
-        const spell_type spell = spells[i];
-
-        ostringstream desc;
-
-        int colour = LIGHTGRAY;
-        if (vehumet_is_offering(spell))
-            colour = LIGHTBLUE;
-        // Grey out spells for which you lack experience or spell levels.
-        else if (spell_difficulty(spell) > you.experience_level
-                 || player_spell_levels() < spell_levels_required(spell))
-            colour = DARKGRAY;
-        else
-            colour = spell_highlight_by_utility(spell);
-
-        desc << "<" << colour_to_str(colour) << ">";
-
-        desc << left;
-        desc << chop_string(spell_title(spell), 30);
-        desc << spell_schools_string(spell);
-
-        int so_far = strwidth(desc.str()) - (colour_to_str(colour).length()+2);
-        if (so_far < 60)
-            desc << string(60 - so_far, ' ');
-        desc << "</" << colour_to_str(colour) << ">";
-
-        colour = failure_rate_colour(spell);
-        desc << "<" << colour_to_str(colour) << ">";
-        desc << chop_string(failure_rate_to_string(raw_spell_fail(spell)), 12);
-        desc << "</" << colour_to_str(colour) << ">";
-        desc << spell_difficulty(spell);
-
-        MenuEntry* me =
-            new MenuEntry(desc.str(), MEL_ITEM, 1,
-                          index_to_letter(i % 52));
-
-#ifdef USE_TILE
-        me->add_tile(tile_def(tileidx_spell(spell), TEX_GUI));
-#endif
-    }
     sort(spells.begin(), spells.end(), _sort_mem_spells);
-	
+
     MemoriseMenu spell_menu(spells, more_str);
-	
+
     while (true)
     {
         vector<MenuEntry*> sel = spell_menu.show();
