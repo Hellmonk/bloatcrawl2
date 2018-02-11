@@ -7329,7 +7329,6 @@ bool wu_jian_wall_jump_ability()
         args.top_prompt = "Aiming: <white>Wall jump</white>";
         args.self = CONFIRM_CANCEL;
         targeter_walljump tgt;
-        tgt.obeys_mesmerise = true;
         args.hitfunc = &tgt;
         {
             // TODO: make this unnecessary

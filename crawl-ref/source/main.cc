@@ -3289,7 +3289,7 @@ static void _move_player(coord_def move)
 
     const string walkverb = you.airborne()                     ? "fly"
                           : you.swimming()                     ? "swim"
-                          : you.form == transformation::spider ? "crawl"
+                          : you.form == TRAN_SPIDER            ? "crawl"
                           : (you.species == SP_NAGA
                              && form_keeps_mutations()) ? "slither"
                                                         : "walk";
@@ -3431,7 +3431,7 @@ static void _move_player(coord_def move)
     }
     else if (you.form == TRAN_FUNGUS && moving && !you.confused())
     {
-        if (you.made_nervous_by(targ))
+        if (you.is_nervous())
         {
             mpr("You're too terrified to move while being watched!");
             stop_running();

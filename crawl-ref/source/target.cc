@@ -11,7 +11,7 @@
 #include "english.h"
 #include "env.h"
 #include "fight.h"
-#include "god-abil.h"
+#include "godabil.h"
 #include "libutil.h"
 #include "los_def.h"
 #include "losglobal.h"
@@ -454,7 +454,14 @@ aff_type targetter_smite::is_affected(coord_def loc)
 
 targetter_transference::targetter_transference(const actor* act) :
     targetter_smite(act, LOS_RADIUS, 0, 0, false, nullptr)
+{
+}
 
+targeter_walljump::targeter_walljump() :
+    targetter_smite(&you, LOS_RADIUS, 1, 1, false, nullptr)
+{
+}	
+	
 bool targeter_walljump::valid_aim(coord_def a)
 {
     return wu_jian_can_wall_jump(a, why_not);

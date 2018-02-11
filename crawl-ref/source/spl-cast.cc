@@ -674,6 +674,17 @@ void do_cast_spell_cmd(bool force)
         flush_input_buffer(FLUSH_ON_FAILURE);
 }
 
+static string _spell_failure_rate_description(spell_type spell)
+{
+    const string failure = failure_rate_to_string(raw_spell_fail(spell));
+    const char *severity_adj = fail_severity_adjs[fail_severity(spell)];
+    const string colour = colour_to_str(failure_rate_colour(spell));
+    const char *col = colour.c_str();
+
+    return make_stringf("<%s>%s</%s>; <%s>%s</%s> risk of failure",
+            col, severity_adj, col, col, failure.c_str(), col);
+}
+
 /**
  * Cast a spell.
  *
@@ -740,15 +751,9 @@ bool cast_a_spell(bool check_range, spell_type spell)
                 }
                 else
                 {
-<<<<<<< HEAD
-                    string fail_chance = spell_failure_rate_string(you.last_cast_spell);
-                    mprf(MSGCH_PROMPT, "Casting: <w>%s "
-                                       "(%s risk of failure)</w>",
-=======
                     mprf(MSGCH_PROMPT, "Casting: <w>%s</w> <lightgrey>(%s)</lightgrey>",
->>>>>>> 5b255cfda4... Fix spurious spell failure warning for wands (Le_Nerd, #11370)
                                        spell_title(you.last_cast_spell),
-                                       fail_chance.c_str());
+                                       _spell_failure_rate_description(you.last_cast_spell).c_str());
                     mprf(MSGCH_PROMPT, "Confirm with . or Enter, or press "
                                        "? or * to list all spells.");
                 }
@@ -1130,6 +1135,7 @@ static bool _spellcasting_aborted(spell_type spell, bool fake_spell)
     }
 
     const int severity = fail_severity(spell);
+    const string failure_rate = spell_failure_rate_string(spell);
 
     if(!is_buff_spell(spell))
     {
@@ -1138,7 +1144,7 @@ static bool _spellcasting_aborted(spell_type spell, bool fake_spell)
         && !crawl_state.disables[DIS_CONFIRMATIONS]
         && !fake_spell)
         {
-            string prompt = make_stringf("The spell is %s to cast%s "
+            string prompt = make_stringf("The spell is %s to cast "
                                      "(%s risk of failure)%s "
                                      "Continue anyway?",
                                      fail_severity_adjs[severity],
