@@ -827,7 +827,7 @@ int line_reader::process_key(int ch)
         {
             const char *np = next_glyph(cur);
             ASSERT(np);
-            ucs_t ch_at_point;
+            char32_t ch_at_point;
             utf8towc(&ch_at_point, cur);
             const int glyph_width = wcwidth(ch_at_point);
             const size_t del_bytes = np - cur;
@@ -952,7 +952,7 @@ void fontbuf_line_reader::cursorto(int newcpos)
     // TODO: does this technique get flashing on some screens b/c of the double draw?
     print_segment(0, 0);
 
-    ucs_t c;
+    char32_t c;
     float pos_x, pos_y;
 
     if (newcpos >= length)
