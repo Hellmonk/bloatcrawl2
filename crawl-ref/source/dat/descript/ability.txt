@@ -317,9 +317,9 @@ skeletons cannot leave the level they were created on.
 %%%%
 Drain Life ability
 
-Drains the life force of any nearby creatures, healing the user depending on
-the damage dealt. The amount of life force drained is increased by Invocations
-skill.
+Drains the life force of any nearby creatures, healing the user and their enslaved
+soul (if present) for a portion of the damage dealt. The amount of life force drained 
+is increased by Invocations skill.
 %%%%
 Enslave Soul ability
 

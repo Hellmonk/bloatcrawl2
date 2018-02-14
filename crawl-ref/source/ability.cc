@@ -2371,10 +2371,16 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         if (result != SPRET_SUCCESS)
             return result;
 
-        if (damage > 0)
+        if (damage > 1)
         {
             mpr("You feel life flooding into your body.");
-            inc_hp(damage);
+            inc_hp(damage / 2);
+            monster *soul = yred_soul_mon();
+            if(soul && you.can_see(*soul))
+            {
+                mpr("Your enslaved soul is healed.");
+                soul->heal(damage / 2);
+            }
         }
         break;
     }
