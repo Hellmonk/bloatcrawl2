@@ -123,9 +123,9 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Yredelemnul
-    { { 1, ABIL_YRED_INJURY_MIRROR, "mirror injuries on your foes" },
+    { { 0, ABIL_YRED_RECALL_UNDEAD_SLAVES, "recall your enslaved soul" },
+      { 1, ABIL_YRED_INJURY_MIRROR, "mirror injuries on your foes" },
 	  { 2, ABIL_YRED_ENSLAVE_SOUL, "enslave living souls" },
-	  { 2, ABIL_YRED_RECALL_UNDEAD_SLAVES, "recall your enslaved soul" },
       { 4, ABIL_YRED_TRANSFERENCE, "swap creatures with your enslaved soul" },
       { 5, ABIL_YRED_DRAIN_LIFE, "drain ambient life force" },
     },
