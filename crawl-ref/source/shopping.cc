@@ -980,11 +980,6 @@ class ShopMenu : public InvMenu
     void purchase_selected();
 
     virtual bool process_key(int keyin) override;
-    virtual void draw_menu() override;
-    // Selecting one item may remove another from the shopping list, or change
-    // the colour others need to have, so we can't be lazy with redrawing
-    // elements.
-    virtual bool always_redraw() const override { return true; }
 
 public:
     bool bought_something = false;
@@ -1080,25 +1075,6 @@ void ShopMenu::init_entries()
         newentry->add_hotkey(ckey++);
         add_entry(move(newentry));
     }
-}
-
-void ShopMenu::draw_menu()
-{
-    // Unlike other menus, selecting one item in the shopping menu may change
-    // other ones (because of the colour scheme). Keypresses also need to
-    // update the more, which is hijacked for use as help text.
-#ifdef USE_TILE_WEB
-    tiles.json_open_object();
-    tiles.json_write_string("msg", "update_menu");
-    tiles.json_write_string("more", more.to_colour_string());
-    tiles.json_write_int("total_items", items.size());
-    tiles.json_close_object();
-    tiles.finish_message();
-    if (items.size() > 0)
-        webtiles_update_items(0, items.size() - 1);
-#endif
-
-    InvMenu::draw_menu();
 }
 
 int ShopMenu::selected_cost() const
@@ -2126,54 +2102,41 @@ void ShoppingList::gold_changed(int old_amount, int new_amount)
 class ShoppingListMenu : public Menu
 {
 public:
-    ShoppingListMenu()
-#ifdef USE_TILE_LOCAL
-        : Menu(MF_MULTISELECT,"",false)
-#else
-        : Menu()
-#endif
-    { }
+    ShoppingListMenu() : Menu(MF_MULTISELECT | MF_ALLOW_FORMATTING) {}
 
 protected:
-    void draw_title();
+virtual formatted_string calc_title() override;
 };
 
-void ShoppingListMenu::draw_title()
+formatted_string ShoppingListMenu::calc_title()
 {
-    if (title)
+    formatted_string fs;
+    const int total_cost = you.props[SHOPPING_LIST_COST_KEY];
+
+    fs.textcolour(title->colour);
+    fs.cprintf("%d %s%s, total %d gold",
+                title->quantity, title->text.c_str(),
+                title->quantity > 1? "s" : "",
+                total_cost);
+
+    string s = "<lightgrey>  [<w>a-z</w>] ";
+
+    switch (menu_action)
     {
-        const int total_cost = you.props[SHOPPING_LIST_COST_KEY];
-
-        cgotoxy(1, 1);
-        formatted_string fs = formatted_string(title->colour);
-        fs.cprintf("%d %s%s, total %d gold",
-                   title->quantity, title->text.c_str(),
-                   title->quantity > 1? "s" : "",
-                   total_cost);
-        fs.display();
-
-#ifdef USE_TILE_WEB
-        webtiles_set_title(fs);
-#endif
-        string s = "<lightgrey>  [<w>a-z</w>] ";
-
-        switch (menu_action)
-        {
-        case ACT_EXECUTE:
-            s += "<w>travel</w>|examine|delete";
-            break;
-        case ACT_EXAMINE:
-            s += "travel|<w>examine</w>|delete";
-            break;
-        default:
-            s += "travel|examine|<w>delete</w>";
-            break;
-        }
-
-        s += "  [<w>?</w>/<w>!</w>] change action</lightgrey>";
-
-        draw_title_suffix(formatted_string::parse_string(s), false);
+    case ACT_EXECUTE:
+        s += "<w>travel</w>|examine|delete";
+        break;
+    case ACT_EXAMINE:
+        s += "travel|<w>examine</w>|delete";
+        break;
+    default:
+        s += "travel|examine|<w>delete</w>";
+        break;
     }
+
+    s += "  [<w>?</w>/<w>!</w>] change action</lightgrey>";
+    fs += formatted_string::parse_string(s);
+    return fs;
 }
 
 /**
@@ -2246,13 +2209,6 @@ void ShoppingList::display()
 
     MenuEntry *mtitle = new MenuEntry(title, MEL_TITLE);
     shopmenu.set_title(mtitle);
-
-    // Don't make a menu so tall that we recycle hotkeys on the same page.
-    if (list->size() > 52
-        && (shopmenu.maxpagesize() > 52 || shopmenu.maxpagesize() == 0))
-    {
-        shopmenu.set_maxpagesize(52);
-    }
 
     string more_str = make_stringf("<yellow>You have %d gp</yellow>", you.gold);
     shopmenu.set_more(formatted_string::parse_string(more_str));

@@ -562,85 +562,55 @@ vector<spell_type> get_mem_spell_list()
 class MemoriseMenu : public Menu
 {
 public:
-    enum class action
+    enum class action { memorise, describe, hide, unhide } current_action;
+
+protected:
+    virtual formatted_string calc_title() override
     {
-        memorise,
-        describe,
-        hide,
-        unhide,
-    };
-    action current_action;
+#ifdef USE_TILE_LOCAL
+        return formatted_string::parse_string(
+                    make_stringf("<w> Your Spells - [%s] (toggle with '!')",
+                        current_action == action::memorise ?
+                            "<blue>Memorise</blue><w>|Describe|Hide|Un-hide" :
+                        current_action == action::describe ?
+                            "Memorise|<blue>Describe</blue><w>|Hide|Un-hide" :
+                        current_action == action::hide ?
+                            "Memorise|Describe|<blue>Hide</blue><w>|Un-hide" :
+                            "Memorise|Describe|Hide|<blue>Un-hide</blue><w>"));
+#else
+        return formatted_string::parse_string(
+                    make_stringf("<w> Spells %s                 Type                          Failure  Level",
+                        current_action == action::memorise ?
+                            "(Memorise)" :
+                        current_action == action::describe ?
+                            "(Describe)" :
+                        current_action == action::hide ?
+                            "(Hide)    " :
+                            "(Un-hide) "));
+#endif
+    }
 
 private:
     spell_list& spells;
     string more_str;
+    string search_text;
 
-    void update_title_more()
+    void update_more()
     {
-        string t;
-#ifdef USE_TILE_LOCAL
-        t = " Your Spells - [";
-        switch (current_action)
-        {
-        case action::memorise:
-            t += "<blue>Memorise</blue><w>|Describe|Hide|Un-hide";
-            break;
-        case action::describe:
-            t += "Memorise|<blue>Describe</blue><w>|Hide|Un-hide";
-            break;
-        case action::hide:
-            t += "Memorise|Describe|<blue>Hide</blue><w>|Un-hide";
-            break;
-        case action::unhide:
-            t += "Memorise|Describe|Hide|<blue>Un-hide</blue><w>";
-            break;
-        }
-        t += "] (toggle with '!')";
-#else
-        string full_more = more_str + "   [";
-        t = "     Spells ";
-        switch (current_action)
-        {
-        case action::memorise:
-            t = "(Memorise)             ";
-            full_more += "<w>Memorise</w>|Describe|Hide|Un-hide]";
-            break;
-        case action::describe:
-            t = "(Describe)             ";
-            full_more += "Memorise|<w>Describe</w>|Hide|Un-hide]";
-            break;
-        case action::hide:
-            t = "(Hide)                 ";
-            full_more += "Memorise|Describe|<w>Hide</w>|Un-hide]";
-            break;
-        case action::unhide:
-            t = "(Un-hide)              ";
-            full_more += "Memorise|Describe|Hide|<w>Un-hide</w>]";
-            break;
-        }
-        t += "Type                          Failure  Level";
-        set_more(formatted_string::parse_string(full_more));
-#endif
-        set_title(new MenuEntry(t, MEL_TITLE));
-    }
-
-    virtual void draw_menu() override
-    {
-#ifdef USE_TILE_WEB
-        // update the item list
-        tiles.json_open_object();
-        tiles.json_write_string("msg", "update_menu");
-        tiles.json_write_int("total_items", items.size());
-        tiles.json_close_object();
-        tiles.finish_message();
-        if (items.size() > 0)
-            webtiles_update_items(0, items.size() - 1);
-#endif
-        Menu::draw_menu();
+        set_more(formatted_string::parse_string(more_str +
+                    make_stringf("   [%s]",
+                        current_action == action::memorise ?
+                            "<w>Memorise</w>|Describe|Hide|Un-hide" :
+                        current_action == action::describe ?
+                            "Memorise|<w>Describe</w>|Hide|Un-hide" :
+                        current_action == action::hide ?
+                            "Memorise|Describe|<w>Hide</w>|Un-hide" :
+                            "Memorise|Describe|Hide|<w>Un-hide</w>")));
     }
 
     virtual bool process_key(int keyin) override
     {
+        bool entries_changed = false;
         if (keyin == '!' || keyin == '?'
 #ifdef TOUCH_UI
             || keyin == CK_TOUCH_DUMMY
@@ -649,62 +619,73 @@ private:
         {
             switch (current_action)
             {
-                case action::memorise: current_action = action::describe; break;
+                case action::memorise:
+                    current_action = action::describe;
+                    entries_changed = true; // need to add hotkeys
+                    break;
                 case action::describe: current_action = action::hide; break;
                 case action::hide:
                     current_action = action::unhide;
-                    update_entries();
-                    draw_menu();
+                    entries_changed = true;
                     break;
                 case action::unhide:
                     current_action = action::memorise;
-                    update_entries();
-                    draw_menu();
+                    entries_changed = true;
                     break;
             }
-            update_title_more();
-            // actually does the redraw
-            update_title();
 #ifndef USE_TILE_LOCAL
-            mdisplay->draw_more();
+            update_more();
 #endif
-#ifdef USE_TILE_WEB
-            tiles.json_open_object();
-            tiles.json_write_string("msg", "update_menu");
-            tiles.json_write_string("more", more.to_colour_string());
-            tiles.json_close_object();
-            tiles.finish_message();
-#endif
-            return true;
         }
-        else if (current_action == action::hide || current_action == action::unhide)
+        else if (keyin == CONTROL('F'))
         {
-            select_items(keyin, num);
-            get_selected(&sel);
-            if (sel.size() == 1)
-            {
-                const spell_type spell = *static_cast<spell_type*>(sel[0]->data);
-                ASSERT(is_valid_spell(spell));
-                you.hidden_spells.set(spell, !you.hidden_spells.get(spell));
-                update_entries();
-                draw_menu();
-                return true;
-            }
+            char linebuf[80] = "";
+            const bool validline = title_prompt(linebuf, sizeof linebuf,
+                                                "Search for what? (regex) ");
+            string old_search = search_text;
+            if (validline)
+                search_text = linebuf;
+            else
+                search_text = "";
+            entries_changed = old_search != search_text;
         }
-        return Menu::process_key(keyin);
+        else
+            return Menu::process_key(keyin);
+
+        if (entries_changed)
+            update_entries();
+        draw_menu(entries_changed);
+        return true;
     }
 
-    // Update the list of spells. If show_hidden is true, show only hidden ones; otherwise, show
-    // oonly non-hidden ones.
+    // Update the list of spells. If show_hidden is true, show only hidden
+    // ones; otherwise, show only non-hidden ones.
     void update_entries()
     {
-        const bool show_hidden = current_action == action::unhide;
         deleteAll(items);
-        int count = 0;
+#ifdef USE_TILE_LOCAL
+        // [enne] Hack. Use a separate title, so the column headers are aligned.
+        MenuEntry* subtitle =
+            new MenuEntry(" Spells                            Type          "
+                          "                Failure  Level",
+                MEL_ITEM);
+        subtitle->colour = BLUE;
+        add_entry(subtitle);
+#endif
+        const bool show_hidden = current_action == action::unhide;
+        menu_letter hotkey;
+        text_pattern pat(search_text, true);
         for (spell_type& spell : spells)
         {
             if (you.hidden_spells.get(spell) != show_hidden)
                 continue;
+
+            if (!search_text.empty()
+                && !pat.matches(spell_title(spell))
+                && !pat.matches(spell_schools_string(spell)))
+            {
+                continue;
+            }
 
             ostringstream desc;
 
@@ -736,9 +717,13 @@ private:
             desc << "</" << colour_to_str(colour) << ">";
             desc << spell_difficulty(spell);
 
-            MenuEntry* me =
-                new MenuEntry(desc.str(), MEL_ITEM, 1,
-                              index_to_letter(count++ % 52));
+            MenuEntry* me = new MenuEntry(desc.str(), MEL_ITEM, 1,
+            // don't add a hotkey if you can't memorise it
+                    (current_action == action::memorise && !you_can_memorise(spell)) ?
+                    ' ' : char(hotkey));
+            // But do increment hotkeys anyway, to keep the memorise and
+            // describe hotkeys consistent.
+            ++hotkey;
 
 #ifdef USE_TILE
             me->add_tile(tile_def(tileidx_spell(spell), TEX_GUI));
@@ -752,40 +737,41 @@ private:
 public:
     MemoriseMenu(spell_list& list, string more_str_)
         : Menu(MF_SINGLESELECT | MF_ANYPRINTABLE
-               | MF_ALWAYS_SHOW_MORE | MF_ALLOW_FORMATTING, "",
-#ifdef USE_TILE_LOCAL
-               false
-#else
-               true
-#endif
-               ),
+               | MF_ALWAYS_SHOW_MORE | MF_ALLOW_FORMATTING
+               // To have the ctrl-f menu show up in webtiles
+               | MF_ALLOW_FILTER, "spell"),
         current_action(action::memorise),
         spells(list),
         more_str(more_str_)
     {
         set_highlighter(nullptr);
-        set_tag("spell");
+        set_title(new MenuEntry("")); // Actual text handled by calc_title
 
         set_more(formatted_string::parse_string(more_str));
 
-        update_title_more();
-#ifdef USE_TILE_LOCAL
-        // [enne] Hack. Use a separate title, so the column headers are aligned.
-        MenuEntry* me =
-            new MenuEntry("     Spells                        Type          "
-                          "                Failure  Level",
-                MEL_ITEM);
-        me->colour = BLUE;
-        add_entry(me);
-#endif
-        // Don't make a menu so tall that we recycle hotkeys on the same page.
-        if (spells.size() > 52
-            && (maxpagesize() > 52 || maxpagesize() == 0))
-        {
-            set_maxpagesize(52);
-        }
-
+        update_more();
         update_entries();
+        on_single_selection = [this](const MenuEntry& item)
+        {
+            const spell_type spell = *static_cast<spell_type*>(item.data);
+            ASSERT(is_valid_spell(spell));
+
+            switch (current_action)
+            {
+            case action::memorise:
+                return false;
+            case action::describe:
+                describe_spell(spell, nullptr);
+                break;
+            case action::hide:
+            case action::unhide:
+                you.hidden_spells.set(spell, !you.hidden_spells.get(spell));
+                update_entries();
+                draw_menu(true);
+                break;
+            }
+            return true;
+        };
     }
 };
 

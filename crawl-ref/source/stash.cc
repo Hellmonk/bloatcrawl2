@@ -1550,42 +1550,35 @@ public:
 
 protected:
     bool process_key(int key) override;
-    void draw_title() override;
+    virtual formatted_string calc_title() override;
 };
 
-void StashSearchMenu::draw_title()
+formatted_string StashSearchMenu::calc_title()
 {
-    if (title)
+    formatted_string fs;
+    fs.textcolour(title->colour);
+    fs.cprintf("%d %s%s",
+                title->quantity, title->text.c_str(),
+                title->quantity == 1 ? "" : "es");
+    if (title->quantity == 0 && filtered)
     {
-        cgotoxy(1, 1);
-        formatted_string fs = formatted_string(title->colour);
-        fs.cprintf("%d %s%s",
-                   title->quantity, title->text.c_str(),
-                   title->quantity == 1 ? "" : "es");
-        fs.display();
-
-#ifdef USE_TILE_WEB
-        webtiles_set_title(fs);
-#endif
-        if (title->quantity == 0 && filtered)
-        {
-            // TODO: it might be better to just force filtered=false in the
-            // display loop if only useless items are found.
-            draw_title_suffix(formatted_string::parse_string(
-                "<lightgrey>"
-                ": only useless items found; press <w>=</w> to show."
-                "</lightgrey>"), false);
-        } else {
-            draw_title_suffix(formatted_string::parse_string(make_stringf(
-                "<lightgrey>"
-                ": <w>%s</w> [toggle: <w>!</w>],"
-                " by <w>%s</w> [<w>/</w>],"
-                " <w>%s</w> useless & duplicates [<w>=</w>]"
-                "</lightgrey>",
-                menu_action == ACT_EXECUTE ? "travel" : "view  ",
-                sort_style, filtered)), false);
-        }
+        // TODO: it might be better to just force filtered=false in the
+        // display loop if only useless items are found.
+        fs += formatted_string::parse_string(
+            "<lightgrey>"
+            ": only useless items found; press <w>=</w> to show."
+            "</lightgrey>");
+    } else {
+        fs += formatted_string::parse_string(make_stringf(
+            "<lightgrey>"
+            ": <w>%s</w> [toggle: <w>!</w>],"
+            " by <w>%s</w> [<w>/</w>],"
+            " <w>%s</w> useless & duplicates [<w>=</w>]"
+            "</lightgrey>",
+            menu_action == ACT_EXECUTE ? "travel" : "view  ",
+            sort_style, filtered));
     }
+    return fs;
 }
 
 bool StashSearchMenu::process_key(int key)
@@ -1657,13 +1650,6 @@ bool StashTracker::display_search_results(
     // Abuse of the quantity field.
     mtitle->quantity = results->size();
     stashmenu.set_title(mtitle);
-
-    // Don't make a menu so tall that we recycle hotkeys on the same page.
-    if (results->size() > 52
-        && (stashmenu.maxpagesize() > 52 || stashmenu.maxpagesize() == 0))
-    {
-        stashmenu.set_maxpagesize(52);
-    }
 
     menu_letter hotkey;
     for (stash_search_result &res : *results)
