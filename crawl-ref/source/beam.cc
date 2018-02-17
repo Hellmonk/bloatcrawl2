@@ -4593,9 +4593,6 @@ void bolt::knockback_actor(actor *act, int dam)
         }
     }
 
-    if (act->pos() != newpos)
-        act->collide(newpos, agent(), ench_power);
-
     // Stun the monster briefly so that it doesn't look as though it wasn't
     // knocked back at all
     if (act->is_monster())
