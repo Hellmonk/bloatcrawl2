@@ -322,6 +322,13 @@ random_var player::attack_delay(const item_def *projectile, bool rescale) const
             attk_delay = haste_mul(attk_delay);
         attk_delay = div_rand_round(attk_delay, 2);
     }
+	
+    if (weap && player_equip_unrand(UNRAND_VARIABILITY))
+    { 
+        int num = random2(11) + 10;
+        int denom = random2(11) + 10;
+        attk_delay = div_rand_round(attk_delay * num, denom);
+    }
 
     // TODO: does this really have to depend on `you.time_taken`?  In basic
     // cases at least, `you.time_taken` is just `player_speed()`. See

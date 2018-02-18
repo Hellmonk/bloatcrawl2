@@ -185,8 +185,8 @@ ANGRY:   50
 BRAND:   SPWPN_ANTIMAGIC
 
 NAME:    mace of Variability
-OBJ:     OBJ_WEAPONS/WPN_GREAT_MACE
-PLUS:    +0   # Set on generation
+OBJ:     OBJ_WEAPONS/WPN_MACE
+PLUS:    +27   # Set on generation
 COLOUR:  ETC_RANDOM
 TILE:    spwpn_mace_of_variability
 TILE_EQ: mace_of_variability

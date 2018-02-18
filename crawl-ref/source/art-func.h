@@ -500,21 +500,6 @@ static void _VAMPIRES_TOOTH_equip(item_def *item, bool *show_msgs, bool unmeld)
 
 ///////////////////////////////////////////////////
 
-// XXX: Pluses at creation time are hardcoded in make_item_unrandart()
-
-static void _VARIABILITY_world_reacts(item_def *item)
-{
-    if (x_chance_in_y(2, 5))
-        item->plus += (coinflip() ? +1 : -1);
-
-    if (item->plus < -4)
-        item->plus = -4;
-    else if (item->plus > 16)
-        item->plus = 16;
-}
-
-///////////////////////////////////////////////////
-
 static void _ZONGULDROK_equip(item_def *item, bool *show_msgs, bool unmeld)
 {
     _equip_mpr(show_msgs, "You sense an extremely unholy aura.");

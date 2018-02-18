@@ -20,9 +20,9 @@ battle.
 %%%%
 mace of Variability
 
-A weapon with a peculiar reputation — said to be at times peerless in quality,
-and other times virtually useless. No one knows exactly who would have made
-such a weapon, or why, but Xom is probably to blame somehow.
+A peculiar weapon of chaos which takes a variable amount of time to swing. 
+No one knows exactly who would have made such a weapon, or why, but Xom is 
+probably to blame somehow.
 %%%%
 glaive of Prune
 
