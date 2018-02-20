@@ -221,8 +221,8 @@ static bool _compare_mon_toughness(MenuEntry *entry_a, MenuEntry* entry_b)
 class DescMenu : public Menu
 {
 public:
-    DescMenu(int _flags, bool _toggleable_sort, bool _text_only)
-    : Menu(_flags, "", _text_only), sort_alpha(true),
+    DescMenu(int _flags, bool _toggleable_sort)
+    : Menu(_flags, ""), sort_alpha(true),
     toggleable_sort(_toggleable_sort)
     {
         set_highlighter(nullptr);
@@ -816,16 +816,9 @@ static string _mons_desc_key(monster_type type)
  */
 void LookupType::display_keys(vector<string> &key_list) const
 {
-    // For tiles builds use a tiles menu to display monsters.
-    const bool text_only =
-#ifdef USE_TILE_LOCAL
-    !(flags & lookup_type::SUPPORT_TILES);
-#else
-    true;
-#endif
 
-    DescMenu desc_menu(MF_SINGLESELECT | MF_ANYPRINTABLE | MF_ALLOW_FORMATTING,
-                       toggleable_sort(), text_only);
+    DescMenu desc_menu(MF_SINGLESELECT | MF_ANYPRINTABLE | MF_ALLOW_FORMATTING
+            | MF_USE_TWO_COLUMNS , toggleable_sort());
     desc_menu.set_tag("description");
 
     // XXX: ugh
