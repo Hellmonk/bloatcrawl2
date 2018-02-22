@@ -3501,7 +3501,7 @@ int melee_attack::apply_damage_modifiers(int damage, int damage_max)
                      || (mons_class_flag(attacker->type, M_INVIS)
                          &&!defender->can_see(*attacker))))
     {
-        damage = damage * 5 / 2;
+        damage = damage * 3 / 2;
         dprf(DIAG_COMBAT, "Stab damage vs %s: %d",
              defender->name(DESC_PLAIN).c_str(),
              damage);
