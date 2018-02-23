@@ -5882,16 +5882,15 @@ int player::skill(skill_type sk, int scale, bool real, bool drained) const
     if (you.species == SP_GNOLL)
        level = level + max(you.experience_level + 1, 0)*scale/2;
 
-    // apply gnoll/kobold before returning for "real" switch
+    // apply gnoll/kobold before returning for "real"
     if (real)
         return level;
+
+    // reworked draining to not be a big mess
+    // just a flat reduction: 10 draining = 0.1 levels down in all skills
     if (drained && you.attribute[ATTR_XP_DRAIN])
     {
-        // skill = base * (3000 - drain) / 3000  - drain / 100
-        //         base - ((drain * base / 3000) + drain / 100)
-        int drain_scale = max(0, (30 * 100 - you.attribute[ATTR_XP_DRAIN]) * scale);
-        level = skill(sk, drain_scale, real, false);
-        return max(0, (level - 30 * scale * you.attribute[ATTR_XP_DRAIN]) / (30 * 100));
+        return max(0, ((level * 10 * scale - you.attribute[ATTR_XP_DRAIN] * scale) / (10 * scale)));
     }
 
     if (have_passive(passive_t::magic_skill_boost))
