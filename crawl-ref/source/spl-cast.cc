@@ -1287,6 +1287,64 @@ vector<string> desc_success_chance(const monster_info& mi, int pow, bool evoked,
     return descs;
 }
 
+// _tetrahedral_number: returns the nth tetrahedral number.
+// This is the number of triples of nonnegative integers with sum < n.
+// Called only by get_true_fail_rate.
+static int _tetrahedral_number(int n)
+{
+    return n * (n+1) * (n+2) / 6;
+}
+
+// number of outcomes for "true spell failure"
+// called by _get_true_fail_rate and elsewhere
+static int _outcomes()
+{
+    return 101 * 101 * 100;
+}
+
+// get_true_fail_rate: Takes the raw failure to-beat number
+// and converts it to the number of outcomes
+// dividing by the number of outcomes gives the actual fail rate
+static double _get_true_fail_outcomes(int raw_fail)
+{
+    // Need 3*random2avg(100,3) = random2(101) + random2(101) + random2(100)
+    // to be (strictly) less than 3*raw_fail. Fun with tetrahedral numbers!
+
+    // How many possible outcomes, considering all three dice?
+    const int outcomes = _outcomes();
+    const int target = raw_fail * 3;
+
+    if (target <= 100)
+    {
+        // The failures are exactly the triples of nonnegative integers
+        // that sum to < target.
+        return double(_tetrahedral_number(target));
+    }
+    if (target <= 200)
+    {
+        // Some of the triples that sum to < target would have numbers
+        // greater than 100, or a last number greater than 99, so aren't
+        // possible outcomes. Apply the principle of inclusion-exclusion
+        // by subtracting out these cases. The set of triples with first
+        // number > 100 is isomorphic to the set of triples that sum to
+        // 101 less; likewise for the second and third numbers (100 less
+        // in the last case). Two or more out-of-range numbers would have
+        // resulted in a sum of at least 201, so there is no overlap
+        // among the three cases we are subtracting.
+        return double(_tetrahedral_number(target)
+                      - 2 * _tetrahedral_number(target - 101)
+                      - _tetrahedral_number(target - 100));
+    }
+    // The random2avg distribution is symmetric, so the last interval is
+    // essentially the same as the first interval.
+    return double(outcomes - _tetrahedral_number(300 - target));
+}
+
+static double _get_true_fail_rate(int raw_fail)
+{
+    return double(_get_true_fail_outcomes(raw_fail) / _outcomes());
+}
+
 /**
  * Targets and fires player-cast spells & spell-like effects.
  *
@@ -1450,7 +1508,7 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
 	
     else if (allow_fail)
     {
-        int spfl = random2avg(100, 3);
+        int spfl = random2(_outcomes());
 
         if (!you_worship(GOD_SIF_MUNA)
             && you.penance[GOD_SIF_MUNA] && one_chance_in(20))
@@ -1491,7 +1549,7 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
                           random2avg(88, 3), "the malice of Vehumet");
         }
 
-        const int spfail_chance = raw_spell_fail(spell);
+        const int spfail_chance = _get_true_fail_outcomes(raw_spell_fail(spell));
 
         if (spfl < spfail_chance)
             fail = spfail_chance - spfl;
@@ -1575,7 +1633,7 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
         // quite nasty: 9 * 9 * 90 / 500 = 15 points of
         // contamination!
         int nastiness = spell_difficulty(spell) * spell_difficulty(spell)
-                        * fail + 250;
+                        * fail * 100 / _outcomes() + 250;
 
         const int cont_points = 2 * nastiness;
 
@@ -1583,7 +1641,7 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
         contaminate_player(cont_points, true);
 
         MiscastEffect(&you, nullptr, SPELL_MISCAST, spell,
-                      spell_difficulty(spell), fail);
+                      spell_difficulty(spell), fail * 100 / _outcomes());
 
         return SPRET_FAIL;
     }
@@ -2040,55 +2098,6 @@ static spret_type _do_cast(spell_type spell, int powc,
     }
 
     return SPRET_NONE;
-}
-
-// _tetrahedral_number: returns the nth tetrahedral number.
-// This is the number of triples of nonnegative integers with sum < n.
-// Called only by get_true_fail_rate.
-static int _tetrahedral_number(int n)
-{
-    return n * (n+1) * (n+2) / 6;
-}
-
-// get_true_fail_rate: Takes the raw failure to-beat number
-// and converts it to the actual chance of failure:
-// the probability that random2avg(100,3) < raw_fail.
-// Should probably use more constants, though I doubt the spell
-// success algorithms will really change *that* much.
-// Called only by failure_rate_to_int and get_miscast_chance.
-static double _get_true_fail_rate(int raw_fail)
-{
-    // Need 3*random2avg(100,3) = random2(101) + random2(101) + random2(100)
-    // to be (strictly) less than 3*raw_fail. Fun with tetrahedral numbers!
-
-    // How many possible outcomes, considering all three dice?
-    const int outcomes = 101 * 101 * 100;
-    const int target = raw_fail * 3;
-
-    if (target <= 100)
-    {
-        // The failures are exactly the triples of nonnegative integers
-        // that sum to < target.
-        return double(_tetrahedral_number(target)) / outcomes;
-    }
-    if (target <= 200)
-    {
-        // Some of the triples that sum to < target would have numbers
-        // greater than 100, or a last number greater than 99, so aren't
-        // possible outcomes. Apply the principle of inclusion-exclusion
-        // by subtracting out these cases. The set of triples with first
-        // number > 100 is isomorphic to the set of triples that sum to
-        // 101 less; likewise for the second and third numbers (100 less
-        // in the last case). Two or more out-of-range numbers would have
-        // resulted in a sum of at least 201, so there is no overlap
-        // among the three cases we are subtracting.
-        return double(_tetrahedral_number(target)
-                      - 2 * _tetrahedral_number(target - 101)
-                      - _tetrahedral_number(target - 100)) / outcomes;
-    }
-    // The random2avg distribution is symmetric, so the last interval is
-    // essentially the same as the first interval.
-    return double(outcomes - _tetrahedral_number(300 - target)) / outcomes;
 }
 
 int spell_mp_freeze (spell_type spell)
