@@ -119,7 +119,6 @@ RTILE:   c = wall_vines
 ITEM:    potion of curing q:1
 ITEM:    wand of flame charges:9 ident:all
 ITEM:    wand of digging charges:15 ident:all
-ITEM:    amulet of rage mundane cursed
 ITEM:    scroll of noise q:1 ident:all
 MONS:    goblin ; dagger \
          ego:none not_cursed

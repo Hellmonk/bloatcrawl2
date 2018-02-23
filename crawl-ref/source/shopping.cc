@@ -663,7 +663,9 @@ unsigned int item_value(item_def item, bool ident)
                 switch (item.sub_type)
                 {
                 case AMU_FAITH:
+#if TAG_MAJOR_VERSION == 34
                 case AMU_RAGE:
+#endif
                     valued += 400;
                     break;
 

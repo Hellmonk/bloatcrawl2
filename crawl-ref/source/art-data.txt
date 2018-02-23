@@ -930,13 +930,13 @@ MAGIC:   3
 BOOL:    clarity
 
 NAME:    necklace of Bloodlust
-OBJ:     OBJ_JEWELLERY/AMU_RAGE
+OBJ:     OBJ_JEWELLERY/AMU_NOTHING
 COLOUR:  ETC_BLOOD
 TILE:    urand_bloodlust
 INT:     -3
 MAGIC:   1
 ANGRY:   5
-SLAY:    3
+SLAY:    7
 
 NAME:    ring of Dodge City
 OBJ:     OBJ_JEWELLERY/RING_EVASION
