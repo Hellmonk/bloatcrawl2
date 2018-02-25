@@ -1144,6 +1144,13 @@ void player_reacts()
         freeze_mp(mp_to_freeze);
     }
 	
+    //de-attune amulet of destruction if the last action wasn't destructive
+    if(you.props.exists(AMULET_DESTRUCTIVE_SPELL)
+        && !you.props.exists(LAST_ACTION_DESTRUCTIVE_KEY))
+    {
+        you.props.erase(AMULET_DESTRUCTIVE_SPELL);
+    }
+	
     // doom clock
     if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN && env.turns_on_level == 649)
     {

@@ -1077,6 +1077,11 @@ static void _equip_amulet_of_regeneration()
     }
 }
 
+static void _equip_amulet_of_destruction()
+{
+    mpr("You feel ready to unleash your destructive magic.");
+}
+
 static void _equip_amulet_of_mana_regeneration()
 {
     if (!player_regenerates_mp())
@@ -1168,6 +1173,11 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
 
     case AMU_GUARDIAN_SPIRIT:
         _spirit_shield_message(unmeld);
+        break;
+		
+    case AMU_DESTRUCTION:
+        if (!unmeld)
+            _equip_amulet_of_destruction();
         break;
     }
 

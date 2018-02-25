@@ -804,6 +804,11 @@ bool cast_a_spell(bool check_range, spell_type spell)
     }
 
     int cost = spell_mana(spell);
+    if(you.props.exists(AMULET_DESTRUCTIVE_SPELL)
+        && you.props[AMULET_DESTRUCTIVE_SPELL].get_int() == spell)
+    {
+        cost = cost > 6 ? cost -2 : max(1, cost - 1);
+    }
     int sifcast_amount = 0;
     int freeze_cost = spell_mp_freeze(spell);
     int true_cost = freeze_cost > cost ? freeze_cost : cost;
@@ -1571,6 +1576,17 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
     spret_type cast_result = _do_cast(spell, powc, spd, beam, god,
                                       potion, fail);
 
+    //attune amulet of destruction to the spell, if supported
+    if(vehumet_supports_spell(spell) && you.wearing(EQ_AMULET, AMU_DESTRUCTION)
+      && !(flags & SPFLAG_PERMABUFF))
+    {
+        if(!you.props.exists(AMULET_DESTRUCTIVE_SPELL) || you.props[AMULET_DESTRUCTIVE_SPELL].get_int() != spell)
+            mprf("Your amulet of destruction attunes itself to %s", spell_title(spell));
+
+        you.props[AMULET_DESTRUCTIVE_SPELL] = spell;
+        you.props[LAST_ACTION_DESTRUCTIVE_KEY] = true;
+	}
+									  
     switch (cast_result)
     {
     case SPRET_SUCCESS:

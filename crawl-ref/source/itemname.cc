@@ -802,6 +802,7 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
         case AMU_INACCURACY:        return "garbage";
 #endif
         case AMU_NOTHING:           return "nothing";
+        case AMU_DESTRUCTION:       return "destruction";
         case AMU_GUARDIAN_SPIRIT:   return "guardian spirit";
         case AMU_FAITH:             return "faith";
         case AMU_REFLECTION:        return "reflection";

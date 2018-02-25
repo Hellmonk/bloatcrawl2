@@ -6,6 +6,12 @@ much protection as the armour made from the scales of some larger dragons, it is
 somewhat lighter and less encumbering. It is also remarkably smooth, letting
 corrosive slime flow off it like water.
 %%%%
+amulet of destruction
+
+An amulet inscribed with mysterious runes. Casting a destructive spell briefly 
+attunes the amulet to that spell, reducing the MP cost of successive casts. 
+The attunement is lost if another action is taken.
+%%%%
 amulet of faith
 
 A talisman crafted to call the attention of the gods to its wearer. This divine

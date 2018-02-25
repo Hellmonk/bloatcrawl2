@@ -1480,6 +1480,10 @@ static void _input()
 
         crawl_state.waiting_for_command = true;
         c_input_reset(true);
+		
+        // Reset "last action was a destructive spell" flag.
+        if (you.props.exists(LAST_ACTION_DESTRUCTIVE_KEY))
+            you.props.erase(LAST_ACTION_DESTRUCTIVE_KEY);
 
 #ifdef USE_TILE_LOCAL
         cursor_control con(false);

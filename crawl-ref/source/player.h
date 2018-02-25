@@ -37,6 +37,8 @@
 #define TEMP_WATERWALK_KEY "temp_waterwalk"
 #define EMERGENCY_FLIGHT_KEY "emergency_flight"
 #define WALL_JUMP_EV_KEY "wall_jump_evasion"
+#define LAST_ACTION_DESTRUCTIVE_KEY "last_action_destructive"
+#define AMULET_DESTRUCTIVE_SPELL "amulet_destructive_spell"
 
 // display/messaging breakpoints for penalties from Ru's MUT_HORROR
 #define HORROR_LVL_EXTREME  3

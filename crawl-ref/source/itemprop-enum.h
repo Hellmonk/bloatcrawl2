@@ -239,6 +239,7 @@ enum jewellery_type
     AMU_FAITH,
     AMU_REFLECTION,
     AMU_REGENERATION,
+    AMU_DESTRUCTION,
 
     NUM_JEWELLERY
 };
