@@ -36,7 +36,7 @@ ae += forbidden
 :  or string.find(itname, "ring of see invisible")
 :  or string.find(itname, "ring of resist corrosion")
 :  or string.find(itname, "ring of poison resistance")
-:  or string.find(itname, "amulet of rage")
+:  or string.find(itname, "amulet of destruction")
 :  or string.find(itname, "amulet of guardian spirit")
 :  or string.find(itname, "amulet of faith")
 :  or string.find(itname, "amulet of magic regeneration")

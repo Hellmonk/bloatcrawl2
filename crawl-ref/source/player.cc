@@ -1232,30 +1232,30 @@ int player_mp_regen()
     int multiplier = 100;
     if (you.get_mutation_level(MUT_MANA_REGENERATION))
         multiplier += 100;
-    if (you.wearing(EQ_AMULET, AMU_MANA_REGENERATION)
-		&& you.props[MANA_REGEN_AMULET_ACTIVE].get_int() == 1)
-        multiplier += 175;
+    if (you.wearing(EQ_AMULET, AMU_REGENERATION)
+		&& you.props[REGEN_AMULET_ACTIVE].get_int() == 1)
+        multiplier += 100;
     if (player_equip_unrand(UNRAND_ETHERIC_CAGE))
-        multiplier += 175;
+        multiplier += 100;
     if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN)
 	    multiplier += 50;
 
     return regen_amount * multiplier / 100;
 }
 
-// Amulet of regeneration needs to be worn while at full health before it begins
-// to function.
+// Amulet of regeneration needs to be worn while at full health and magic
+// before it begins to function.
 void update_regen_amulet_attunement()
 {
     if (you.wearing(EQ_AMULET, AMU_REGENERATION)
         && you.get_mutation_level(MUT_NO_REGENERATION) == 0)
     {
-        if (you.hp == you.hp_max
+        if (you.hp == you.hp_max && you.magic_points == you.max_magic_points
             && you.props[REGEN_AMULET_ACTIVE].get_int() == 0)
         {
             you.props[REGEN_AMULET_ACTIVE] = 1;
             mpr("Your amulet attunes itself to your body and you begin to "
-                "regenerate more quickly.");
+                "regenerate health and magic more quickly.");
         }
     }
     else

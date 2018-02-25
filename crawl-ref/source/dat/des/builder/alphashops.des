@@ -110,7 +110,7 @@
        "demon trident", "demon whip", "disc of storms",
        "double sword", "ring of dexterity",
        "manual of dodging", "wand of disintegration", "staff of death",
-       "wand of digging" }
+       "wand of digging", "amulet of destruction" }
 
       elseif s == "E" then i = { "book of enchantments", "manual of evocations",
        "ring of evasion", "executioner's axe",
@@ -152,7 +152,6 @@
       elseif s == "M" then i = { "manual of maces & staves",
        "book of minor magic", "book of misfortune", "book of maledictions",
        "morningstar", "mace", "potion of magic",
-       "amulet of magic regeneration", 
        "potion of mutation", "scroll of magic mapping", }
 
       elseif s == "N" then i = { "book of necromancy", "naga barding",

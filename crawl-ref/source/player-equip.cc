@@ -1060,19 +1060,17 @@ static void _remove_amulet_of_faith(item_def &item)
 static void _equip_amulet_of_regeneration()
 {
 
-    if (you.get_mutation_level(MUT_NO_REGENERATION) > 0)
-    {
-        mpr("The amulet feels cold and inert.");
-    }
-    else if (you.hp == you.hp_max)
+    if (you.hp == you.hp_max && you.magic_points == you.max_magic_points)
     {
         you.props[REGEN_AMULET_ACTIVE] = 1;
         mpr("The amulet throbs as it attunes itself to your uninjured body.");
     }
     else
     {
-        mpr("You sense that the amulet cannot attune itself to your injured"
-            " body.");
+        mprf("You sense that the amulet cannot attune itself to your %s"
+            " body.", you.hp == you.hp_max ? "exhausted" : 
+                  you.magic_points == you.max_magic_points ? "injured" : 
+                  "injured and exhausted");
         you.props[REGEN_AMULET_ACTIVE] = 0;
     }
 }
