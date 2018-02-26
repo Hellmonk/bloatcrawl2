@@ -166,7 +166,6 @@ static const vector<god_passive> god_passives[] =
     {
         { -1, passive_t::protect_from_harm, "GOD sometimes watches over you" },
         { -1, passive_t::protect_ally, "can protect the life of your allies" },
-        {  3, passive_t::purification, "will sometimes purify you "          },
     },
 
     // Lugonu
