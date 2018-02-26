@@ -16,6 +16,7 @@
 #include "macro.h"
 #include "menu.h"
 #include "mon-book.h"
+#include "mon-cast.h"
 #include "monster.h" // SEEN_SPELLS_KEY
 #include "prompt.h"
 #include "religion.h"
@@ -124,22 +125,23 @@ static string _booktype_header(mon_spell_slot_flag type, size_t num_books,
         _ability_type_vulnerabilities(type, has_silencable);
     const string spell_filter_desc = has_filtered ? _describe_spell_filtering(type, pronoun)
                                                   : "";
+	const string ranges = " (spell ranges are listed in parentheses)";
 
     if (type == MON_SPELL_WIZARD)
     {
-        return make_stringf("has mastered %s%s%s:",
+        return make_stringf("has mastered %s%s%s%s:",
                             num_books > 1 ? "one of the following spellbooks"
                                           : "the following spells",
                             spell_filter_desc.c_str(),
-                            vulnerabilities.c_str());
+                            vulnerabilities.c_str(), ranges.c_str());
     }
 
     const string descriptor = _ability_type_descriptor(type);
 
-    return make_stringf("possesses the following %s abilities%s%s:",
+    return make_stringf("possesses the following %s abilities%s%s%s:",
                         descriptor.c_str(),
                         spell_filter_desc.c_str(),
-                        vulnerabilities.c_str());
+                        vulnerabilities.c_str(), ranges.c_str());
 }
 
 static bool _spell_in_book(spell_type spell, const vector<mon_spell_slot> &book)
@@ -482,9 +484,21 @@ static void _describe_book(const spellbook_contents &book,
         }
         else
         {
-            description.cprintf("%c - %s",
+            int pow = mons_power_for_hd(spell, hd, false);
+            int range = spell_range(spell, pow, false);
+            if (range > 0)
+            {
+                description.cprintf("%c - %s (%d)",
+                            spell_letter,
+                            chop_string(spell_title(spell), 25).c_str(),
+                            range);
+            }
+            else
+            {
+                description.cprintf("%c - %s",
                             spell_letter,
                             chop_string(spell_title(spell), 29).c_str());
+            }
         }
 
         // only display type & level for book spells
