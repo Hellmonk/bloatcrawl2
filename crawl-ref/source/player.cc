@@ -4302,6 +4302,12 @@ bool confuse_player(int amount, bool quiet, bool force)
         return false;
     }
 	
+    if(!force && have_passive(passive_t::purification) && x_chance_in_y(you.piety, 200))
+    {
+		simple_god_message(" protects you from confusion.");
+        return false;
+    }
+	
     if (!force && you.duration[DUR_DIVINE_STAMINA] > 0)
     {
         if (!quiet)
@@ -4340,6 +4346,12 @@ bool poison_player(int amount, string source, string source_aux, bool force)
     if (you.duration[DUR_DIVINE_STAMINA] > 0)
     {
         mpr("Your divine stamina protects you from poison!");
+        return false;
+    }
+	
+	if(have_passive(passive_t::purification) && x_chance_in_y(you.piety, 200))
+    {
+		simple_god_message(" protects you from poison.");
         return false;
     }
 
@@ -4661,7 +4673,7 @@ void dec_napalm_player(int delay)
     }
 }
 
-bool slow_player(int turns)
+bool slow_player(int turns, bool force)
 {
     ASSERT(!crawl_state.game_is_arena());
 
@@ -4670,6 +4682,12 @@ bool slow_player(int turns)
 
     if (check_stasis())
         return false;
+	
+    if(!force && have_passive(passive_t::purification) && x_chance_in_y(you.piety, 200))
+    {
+		simple_god_message(" protects you from slowing.");
+        return false;
+    }
 
     // Doubling these values because moving while slowed takes twice the
     // usual delay.
@@ -6682,6 +6700,12 @@ int player::hurt(const actor *agent, int amount, beam_type flavour,
 
 void player::drain_stat(stat_type s, int amount)
 {
+    if(have_passive(passive_t::purification) && x_chance_in_y(you.piety, 200))
+    {
+		simple_god_message(" protects you from stat loss.");
+        return;
+    }
+	
     lose_stat(s, amount);
 }
 
@@ -6695,6 +6719,12 @@ bool player::rot(actor *who, int amount, bool quiet, bool /*no_cleanup*/)
     if (res_rotting() || duration[DUR_DEATHS_DOOR])
     {
         mpr("You feel terrible.");
+        return false;
+    }
+	
+    if(have_passive(passive_t::purification) && x_chance_in_y(you.piety, 200))
+    {
+		simple_god_message(" protects you from rotting.");
         return false;
     }
 
@@ -6819,6 +6849,12 @@ void player::paralyse(actor *who, int str, string source)
         return;
     }
 
+    if(who && have_passive(passive_t::purification) && x_chance_in_y(you.piety, 200))
+    {
+		simple_god_message(" protects you from paralysis.");
+        return;
+    }
+
     int &paralysis(duration[DUR_PARALYSIS]);
 
     const bool use_actor_name = source.empty() && who != nullptr;
@@ -6848,6 +6884,12 @@ void player::petrify(actor *who, bool force)
     if (res_petrify() && !force)
     {
         canned_msg(MSG_YOU_UNAFFECTED);
+        return;
+    }
+	
+    if(have_passive(passive_t::purification) && x_chance_in_y(you.piety, 200))
+    {
+		simple_god_message(" protects you from petrification.");
         return;
     }
 
@@ -7069,6 +7111,12 @@ bool player::sicken(int amount)
     if (duration[DUR_DIVINE_STAMINA] > 0)
     {
         mpr("Your divine stamina protects you from disease!");
+        return false;
+    }
+	
+	if(have_passive(passive_t::purification) && x_chance_in_y(you.piety, 200))
+    {
+		simple_god_message(" protects you from disease.");
         return false;
     }
 
@@ -7667,6 +7715,12 @@ bool player::made_nervous_by(const monster *mons)
 
 void player::weaken(actor *attacker, int pow)
 {
+    if(have_passive(passive_t::purification) && x_chance_in_y(you.piety, 200))
+    {
+		simple_god_message(" protects you from weakness.");
+        return;
+    }
+	
     if (!duration[DUR_WEAK])
         mprf(MSGCH_WARN, "You feel your attacks grow feeble.");
     else
@@ -8568,7 +8622,7 @@ void player_end_berserk()
     const bool hints_slow = Hints.hints_events[HINT_YOU_ENCHANTED];
     Hints.hints_events[HINT_YOU_ENCHANTED] = false;
 
-    slow_player(dur);
+    slow_player(dur, true);
 
     make_hungry(BERSERK_NUTRITION, true);
     you.hunger = max(HUNGER_STARVING - 100, you.hunger);

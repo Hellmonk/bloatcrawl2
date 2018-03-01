@@ -262,6 +262,9 @@ enum class passive_t
 	
     ///trade AC for big, big damage
     wu_jian_glass_cannon,
+	
+    ///passive ely purification
+    purification,
 };
 
 enum ru_interference
