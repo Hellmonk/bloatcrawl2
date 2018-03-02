@@ -507,13 +507,13 @@ void reset_hud()
 
 static bool _boosted_hp()
 {
-    return you.duration[DUR_DIVINE_VIGOUR]
+    return you.attribute[ATTR_DIVINE_VIGOUR]
            || you.berserk();
 }
 
 static bool _boosted_mp()
 {
-    return you.duration[DUR_DIVINE_VIGOUR];
+    return you.attribute[ATTR_DIVINE_VIGOUR];
 }
 
 static bool _boosted_ac()

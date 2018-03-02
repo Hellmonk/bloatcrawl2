@@ -265,6 +265,9 @@ enum class passive_t
 	
     ///passive ely purification
     purification,
+	
+    ///passive ely divine vigour
+    divine_vigour,
 };
 
 enum ru_interference

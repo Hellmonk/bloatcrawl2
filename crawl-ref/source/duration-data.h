@@ -187,7 +187,7 @@ static const duration_def duration_data[] =
       0, "",
       "divinely vigorous", "divine vigour",
       "You are imbued with divine vigour.", D_NO_FLAGS,
-      {{ "", elyvilon_remove_divine_vigour }}},
+      {}, 6},
     { DUR_EXHAUSTED,
       YELLOW, "Exh",
       "exhausted", "",

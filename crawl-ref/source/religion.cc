@@ -183,8 +183,11 @@ const vector<god_power> god_powers[NUM_GODS] =
     // Elyvilon
     { { 1, ABIL_ELYVILON_LESSER_HEALING, "provide lesser healing for yourself" },
       { 2, ABIL_ELYVILON_HEAL_OTHER, "heal and attempt to pacify others" },
+      { 2, "Elyvilon will sometimes protect you from status effects.",
+           "Elyvilon no longer protects you from status effects."},
+      { 3, "Elyvilon provides you with divine vigour.",
+           "Elyvilon no longer provides you with divine vigour"},
       { 4, ABIL_ELYVILON_GREATER_HEALING, "provide greater healing for yourself" },
-      { 5, ABIL_ELYVILON_DIVINE_VIGOUR, "call upon Elyvilon for divine vigour" },
       { 1, ABIL_ELYVILON_LIFESAVING, "call on Elyvilon to save your life" },
     },
 
@@ -725,7 +728,7 @@ static void _inc_penance(god_type god, int val)
         // Neither does Ely's divine vigour.
         else if (god == GOD_ELYVILON)
         {
-            if (you.duration[DUR_DIVINE_VIGOUR])
+            if (you.attribute[ATTR_DIVINE_VIGOUR])
                 elyvilon_remove_divine_vigour();
         }
         else if (god == GOD_JIYVA)
@@ -2743,7 +2746,7 @@ void excommunication(bool voluntary, god_type new_god)
 
     case GOD_ELYVILON:
         you.duration[DUR_LIFESAVING] = 0;
-        if (you.duration[DUR_DIVINE_VIGOUR])
+        if (you.attribute[ATTR_DIVINE_VIGOUR])
             elyvilon_remove_divine_vigour();
 
         // Leaving Elyvilon for a non-good god will make neutral holies

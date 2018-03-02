@@ -1108,6 +1108,8 @@ void player_reacts()
         xom_tick();
     else if (you_worship(GOD_QAZLAL))
         qazlal_storm_clouds();
+    else if(you_worship(GOD_ELYVILON))
+        update_divine_vigour();
 
     if (you.props[EMERGENCY_FLIGHT_KEY].get_bool())
         _handle_emergency_flight();
@@ -1162,6 +1164,18 @@ void player_reacts()
 		mprf(MSGCH_WARN, "You feel the dungeon grow hostile. You need to %s quickly!",
                 is_connected_branch(level_id::current().branch) ? "descend" : "move on");
     }
+}
+
+void update_divine_vigour()
+{
+    if(have_passive(passive_t::divine_vigour))
+    {
+        you.attribute[ATTR_DIVINE_VIGOUR] = piety_rank() - 1;
+    }
+    else
+        you.attribute[ATTR_DIVINE_VIGOUR] = 0;
+    calc_hp();
+    calc_mp();	
 }
 
 void extract_manticore_spikes(const char* endmsg)
