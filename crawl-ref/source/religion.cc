@@ -188,7 +188,6 @@ const vector<god_power> god_powers[NUM_GODS] =
       { 3, "Elyvilon provides you with divine vigour.",
            "Elyvilon no longer provides you with divine vigour"},
       { 4, ABIL_ELYVILON_GREATER_HEALING, "provide greater healing for yourself" },
-      { 1, ABIL_ELYVILON_LIFESAVING, "call on Elyvilon to save your life" },
     },
 
     // Lugonu
@@ -3878,30 +3877,25 @@ int elyvilon_lifesaving()
     if (you.piety < piety_breakpoint(0))
         return 0;
 
-    return you.piety > 130 ? 2 : 1;
+    return 1;
 }
 
 bool god_protects_from_harm()
 {
-    if (you.duration[DUR_LIFESAVING])
-    {
-        switch (elyvilon_lifesaving())
-        {
-        case 1:
-            if (random2(you.piety) >= piety_breakpoint(0))
-                return true;
-            break;
-        case 2:
-            // Reliable lifesaving is costly.
-            lose_piety(21 + random2(20));
-            return true;
-        }
-    }
-
     if (have_passive(passive_t::protect_from_harm)
         && (one_chance_in(10) || x_chance_in_y(you.piety, 1000)))
     {
         return true;
+    }
+	
+    if (you_worship(GOD_ELYVILON))
+    {
+        if(elyvilon_lifesaving() > 0 && x_chance_in_y(you.piety, 150))
+        {
+            //extra ely chance to save your life costs piety
+            lose_piety(10 + random2(you.piety / 2));
+            return true;
+        }
     }
 
     return false;
