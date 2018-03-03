@@ -4412,12 +4412,12 @@ static double _poison_dur_to_aut(double dur)
 {
     // Poison already at minimum speed.
     if (dur < 15.0 * 250.0)
-        return dur / 25.0;
+        return dur / 125.0;
     // Poison is not at maximum speed.
     if (dur < 15.0 * 10000.0)
-        return 150.0 + 10.0 * log(dur / (15.0 * 250.0)) / log(15.0 / 14.0);
-    return 150.0 + (dur - 15.0 * 10000.0) / 1000.0
-                 + 10.0 * log(10000.0 / 250.0) / log(15.0 / 14.0);
+        return (150.0 + 10.0 * log(dur / (15.0 * 250.0)) / log(15.0 / 14.0)) / 5.0;
+    return (150.0 + (dur - 15.0 * 10000.0) / 1000.0
+                 + 10.0 * log(10000.0 / 250.0) / log(15.0 / 14.0)) / 5.0;
 }
 
 // The inverse of the above function, i.e. the amount of poison needed
@@ -4425,13 +4425,13 @@ static double _poison_dur_to_aut(double dur)
 static double _poison_aut_to_dur(double aut)
 {
     // Amount of time that poison lasts at minimum speed.
-    if (aut < 150.0)
-        return aut * 25.0;
+    if (aut < 1500.0)
+        return aut * 125.0;
     // Amount of time that poison exactly at the maximum speed lasts.
     const double aut_from_max_speed = 150.0 + 10.0 * log(40.0) / log(15.0 / 14.0);
     if (aut < aut_from_max_speed)
-        return 15.0 * 250.0 * exp(log(15.0 / 14.0) / 10.0 * (aut - 150.0));
-    return 15.0 * 10000.0 + 1000.0 * (aut - aut_from_max_speed);
+        return (15.0 * 250.0 * exp(log(15.0 / 14.0) / 10.0 * (aut - 150.0))) * 5.0;
+    return (15.0 * 10000.0 + 1000.0 * (aut - aut_from_max_speed)) * 5.0;
 }
 
 void handle_player_poison(int delay)
