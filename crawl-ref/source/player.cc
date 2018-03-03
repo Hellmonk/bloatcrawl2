@@ -2632,6 +2632,7 @@ static void _handle_stat_loss(int exp)
 /// update xp drain
 static void _handle_xp_drain(int exp)
 {
+
     if (!you.attribute[ATTR_XP_DRAIN])
         return;
 
@@ -5908,7 +5909,9 @@ int player::skill(skill_type sk, int scale, bool real, bool drained) const
     // just a flat reduction: 10 draining = 0.1 levels down in all skills
     if (drained && you.attribute[ATTR_XP_DRAIN])
     {
-        return max(0, ((level * 10 * scale - you.attribute[ATTR_XP_DRAIN] * scale) / (10 * scale)));
+        int drain_scale = 10;
+        level = skill(sk, drain_scale, real, false);
+        return max(0, ((level * scale - you.attribute[ATTR_XP_DRAIN]) / 10));
     }
 
     if (have_passive(passive_t::magic_skill_boost))
