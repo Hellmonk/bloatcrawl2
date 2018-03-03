@@ -181,13 +181,12 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Elyvilon
-    { { 1, ABIL_ELYVILON_LESSER_HEALING, "provide lesser healing for yourself" },
-      { 2, ABIL_ELYVILON_HEAL_OTHER, "heal and attempt to pacify others" },
+    { { 2, ABIL_ELYVILON_HEAL_OTHER, "heal and attempt to pacify others" },
       { 2, "Elyvilon will sometimes protect you from status effects.",
            "Elyvilon no longer protects you from status effects."},
       { 3, "Elyvilon provides you with divine vigour.",
            "Elyvilon no longer provides you with divine vigour"},
-      { 4, ABIL_ELYVILON_GREATER_HEALING, "provide greater healing for yourself" },
+      { 4, ABIL_ELYVILON_GREATER_HEALING, "provide healing for yourself" },
     },
 
     // Lugonu
