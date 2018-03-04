@@ -26,7 +26,7 @@ MARKER: H = lua:fog_machine { \
 MONS:   ogre, Sigmund, centaur warrior, Sonja, deep troll, wasp
 SUBST:  r = r.
 SUBST:  r = ~.
-KITEM:  I = potion of curing
+KITEM:  I = potion of ambrosia
 KITEM:  $ = gold q:27
 KMONS:  D = kobold demonologist
 KMONS:  E = floating eye

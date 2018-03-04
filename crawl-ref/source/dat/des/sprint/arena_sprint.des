@@ -1033,9 +1033,7 @@ KFEAT:  O = distillery shop type:Do-It-Yourself suffix:Clinic count:17 use_all g
             potion of heal wounds q:3 | potion of heal wounds q:3 | potion of heal wounds q:3 |\
             potion of heal wounds q:3 | potion of heal wounds q:3 | potion of heal wounds q:3 |\
             potion of heal wounds q:3 | potion of heal wounds q:3 | potion of heal wounds q:3 |\
-            potion of heal wounds q:3 | potion of heal wounds q:3 | potion of heal wounds q:3 |\
-            potion of curing q:4 | potion of curing q:4 | potion of curing q:4 |\
-            potion of curing q:4 | potion of curing q:4
+            potion of heal wounds q:3 | potion of heal wounds q:3 | potion of heal wounds q:3
 KFEAT:  I = antiques shop type:Jewellery count:17 greed:9 ; \
             any jewellery randart
 KFEAT:  K = antique armour shop count:17 use_all type:Advanced suffix:Armour greed:35 ; \

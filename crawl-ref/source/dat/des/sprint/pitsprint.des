@@ -176,7 +176,6 @@ function general_item_setup(e)
   e.kitem("* = star_item ident:all w:66 / any ident:all w:33")
   e.kitem("% = any ident:all")
   e.kitem("! = potion of heal wounds ident:all q:2 w:30 /\
-          potion of curing ident:all w:20 /\
           potion of augmentation ident:all /\
           potion of haste ident:all /\
           potion of resistance ident:all w:5 /\
@@ -730,7 +729,7 @@ KITEM: e = quarterstaff ego:protection ident:all not_cursed /\
 KITEM: f = long sword ego:holy_wrath ident:all not_cursed /\
        long sword ego:flaming ident:all not_cursed
 KITEM: g = potion of heal wounds q:5 ident:all
-KITEM: h = potion of curing q:5 ident:all
+KITEM: h = potion of ambrosia q:5 ident:all
 KITEM: i = chain mail plus:3 ident:all not_cursed w:20 /\
        ring mail plus:3 ident:all not_cursed /\
        scale mail plus:3 ident:all not_cursed /\

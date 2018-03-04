@@ -5729,7 +5729,9 @@ bool monster::can_drink_potion(potion_type ptype) const
 
     switch (ptype)
     {
+#if TAG_MAJOR_VERSION == 34
         case POT_CURING:
+#endif
         case POT_HEAL_WOUNDS:
             return !(holiness() & (MH_NONLIVING | MH_PLANT));
 #if TAG_MAJOR_VERSION == 34
@@ -5760,11 +5762,13 @@ bool monster::should_drink_potion(potion_type ptype) const
 {
     switch (ptype)
     {
+#if TAG_MAJOR_VERSION == 34
     case POT_CURING:
         return hit_points <= max_hit_points / 2
                || has_ench(ENCH_POISON)
                || has_ench(ENCH_SICK)
                || has_ench(ENCH_CONFUSION);
+#endif
     case POT_HEAL_WOUNDS:
         return hit_points <= max_hit_points / 2;
 #if TAG_MAJOR_VERSION == 34
@@ -5806,6 +5810,7 @@ bool monster::drink_potion_effect(potion_type pot_eff, bool card)
 
     switch (pot_eff)
     {
+#if TAG_MAJOR_VERSION == 34
     case POT_CURING:
     {
         if (heal(5 + random2(7)))
@@ -5820,6 +5825,7 @@ bool monster::drink_potion_effect(potion_type pot_eff, bool card)
             del_ench(cured);
     }
     break;
+#endif
 
     case POT_HEAL_WOUNDS:
         if (heal(10 + random2avg(28, 3)))

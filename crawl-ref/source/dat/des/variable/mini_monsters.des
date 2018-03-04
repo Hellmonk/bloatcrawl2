@@ -2229,7 +2229,7 @@ NAME:    hallowed_hall
 TAGS:    no_monster_gen no_trap_gen
 DEPTH:   Depths
 MONS:    pearl dragon, apis, ophan, plant
-ITEM:    potion of curing ident:type / potion of heal wounds ident:type
+ITEM:    potion of ambrosia ident:type / potion of heal wounds ident:type
 KFEAT:   A = altar_the_shining_one
 KFEAT:   B = altar_elyvilon
 KFEAT:   C = altar_zin

@@ -970,14 +970,12 @@ static void _xom_do_potion(int /*sever*/)
     potion_type pot = POT_CURING;
     do
     {
-        pot = random_choose_weighted(10, POT_CURING,
-                                     10, POT_HEAL_WOUNDS,
+        pot = random_choose_weighted(10, POT_HEAL_WOUNDS,
                                      10, POT_MAGIC,
                                      10, POT_HASTE,
                                      10, POT_MIGHT,
                                      10, POT_INVISIBILITY,
-                                     10, POT_BERSERK_RAGE,
-                                     1,  POT_EXPERIENCE);
+                                     10, POT_BERSERK_RAGE);
     }
     while (!get_potion_effect(pot)->can_quaff()); // ugh
 

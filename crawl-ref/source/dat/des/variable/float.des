@@ -2550,7 +2550,7 @@ MONS:    deep troll
 # Fortunately, we have a permanently invisible 2 already.
 MONS:    lorocyproca
 : end
-ITEM:    arbalest, arrow, potion of curing, potion of heal wounds
+ITEM:    arbalest, arrow, potion of ambrosia, potion of heal wounds
 ITEM:    potion of invisibility
 : if you.in_branch("Geh") then
 SUBST: defgh = .

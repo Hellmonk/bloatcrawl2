@@ -288,7 +288,7 @@ KFEAT:    y = shallow_water
 KFEAT:    E = altar_zin / altar_elyvilon w:30
 MONS:     jackal / w:3 nothing, kobold / w:5 nothing, big kobold
 SHUFFLE:  de
-ITEM:     potion of curing / potion of heal wounds
+ITEM:     potion of ambrosia / potion of heal wounds
 ITEM:     potion of flight
 MONS:     rat w:15 / iguana w:7 / nothing w:3
 MAP
@@ -342,7 +342,7 @@ MONS:   kobold / big kobold w:1
 MONS:   ball python / adder w:5 / frilled lizard w:2 / ooze w:1
 SUBST:   y : yyyyyyW., Y : YYYYYYWw
 SUBST:   y = W., Y = Ww
-ITEM:   potion of curing / potion of heal wounds / potion of augmentation w:4 /\
+ITEM:   potion of ambrosia / potion of heal wounds / potion of augmentation w:4 /\
         potion of flight w:4 / any scroll w:7 / any armour w:2 / any weapon w:2
 : sewer_setup(_G)
 : set_feature_name("clear_stone_wall", "large window")
@@ -395,7 +395,7 @@ MONS:    bat / rat / ooze w:5 / ball python / frilled lizard w:5 /\
 KMONS:   . = plant w:1 / fungus w:1 / nothing w:80
 KMONS:   p = plant
 SUBST:   p = ppW
-ITEM:    potion of curing / potion of heal wounds / potion of augmentation w:4 /\
+ITEM:    potion of ambrosia / potion of heal wounds / potion of augmentation w:4 /\
          potion of flight w:4 / any scroll w:7 / any armour w:2 / \
          any weapon w:2
 SHUFFLE: DEFH
@@ -552,7 +552,7 @@ SHUFFLE: de
 MONS:    rat / iguana w:2
 MONS:    ball python / adder w:5 / frilled lizard w:2 / ooze w:1
 MONS:    bullfrog
-ITEM:    potion of curing / potion of heal wounds / potion of augmentation /\
+ITEM:    potion of ambrosia / potion of heal wounds / potion of augmentation /\
          potion of magic / potion of haste w:5
 ITEM:    scroll of teleportation / scroll of blinking w:5 /\
          scroll of fear w:5 / scroll of magic mapping /\
@@ -714,7 +714,7 @@ KMONS:   1 = frilled lizard / ball python w:5 / \
          adder w:4 / nothing w:6
 #      loot
 SUBST:   e = !!!!????%
-KITEM:   ? = potion of flight q:2 w:15 / potion of curing /\
+KITEM:   ? = potion of flight q:2 w:15 / potion of ambrosia /\
          potion of heal wounds / potion of augmentation / potion of magic /\
          potion of haste w:5
 KITEM:   ! =  scroll of teleportation / scroll of fear w:5 /\
@@ -983,7 +983,7 @@ SUBST:   hVZzSsUuTgY = W
 #      loot
 SUBST:   e = !!!!?????
 KITEM:   ? = potion of flight w:5 / potion of flight q:2 w:5 /\
-         potion of curing / potion of heal wounds / potion of augmentation /\
+         potion of ambrosia / potion of heal wounds / potion of augmentation /\
          potion of magic / potion of haste w:5
 KITEM:   ! =  scroll of teleportation / scroll of fear w:5 /\
          scroll of blinking w:3 / scroll of magic mapping w:3 /\
@@ -1046,7 +1046,7 @@ SUBST:  ~ = WWWW.
 SUBST:  - = WW...
 SUBST:  " = W...
 NSUBST: ? = 4=ef / *=112233
-KITEM:  e = potion of curing / potion of heal wounds / potion of augmentation /\
+KITEM:  e = potion of ambrosia / potion of heal wounds / potion of augmentation /\
         potion of magic / potion of haste w:5
 KITEM:  f = scroll of teleportation / scroll of fear w:5 /\
         scroll of blinking w:3 / scroll of magic mapping w:3 /\
@@ -1141,7 +1141,7 @@ KMONS:   " = nothing w:50 / rat w:15 / iguana w:7
 KPROP:   w = no_tele_into
 #      loot
 SUBST:   e = !!!!!?????%
-KITEM:   ? = potion of curing / potion of heal wounds / potion of augmentation /\
+KITEM:   ? = potion of ambrosia / potion of heal wounds / potion of augmentation /\
          potion of magic / potion of haste w:5
 KITEM:   ! =  scroll of teleportation / scroll of fear w:5 /\
          scroll of blinking w:3 / scroll of magic mapping w:3 /\
@@ -1201,7 +1201,7 @@ SUBST:   2 = 222222W.
 SUBST:   e = !!!?????%WWW
 KFEAT:   !?% = W
 COLOUR:  !?% = lightgreen
-KITEM:   ? = potion of curing / potion of heal wounds / potion of augmentation /\
+KITEM:   ? = potion of ambrosia / potion of heal wounds / potion of augmentation /\
          potion of magic / potion of haste w:5
 KITEM:   ! =  scroll of teleportation / scroll of fear w:5 /\
          scroll of blinking w:3 / scroll of magic mapping w:3 /\
@@ -1294,7 +1294,7 @@ SUBST:   W = WWWw.
 SUBST:   - = wwwW-
 COLOUR:  w- = green
 COLOUR:  W = lightgreen
-ITEM:    potion of curing / potion of heal wounds / \
+ITEM:    potion of ambrosia / potion of heal wounds / \
          potion of augmentation w:2 / \
          potion of flight w:14 / \
          any scroll w:7 / any armour w:2 / any weapon w:2

@@ -3900,7 +3900,7 @@ KFEAT:  O = exit_pandemonium
 : pan_declare_demonic_rune(_G)
 KITEM:  O = demonic rune of Zot
 : end
-ITEM:   w:5 any / potion of curing
+ITEM:   w:5 any / potion of ambrosia
 ITEM:   any / potion of heal wounds
 ITEM:   acquire any
 ITEM:   potion of cancellation

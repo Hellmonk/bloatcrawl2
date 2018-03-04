@@ -652,7 +652,9 @@ const char* potion_type_name(int potiontype)
 {
     switch (static_cast<potion_type>(potiontype))
     {
+#if TAG_MAJOR_VERSION == 34
     case POT_CURING:            return "curing";
+#endif
     case POT_HEAL_WOUNDS:       return "heal wounds";
     case POT_HASTE:             return "haste";
     case POT_MIGHT:             return "augmentation";
@@ -3158,7 +3160,6 @@ bool is_emergency_item(const item_def &item)
                 && you.species != SP_FORMICID;
         case POT_HEAL_WOUNDS:
             return you.can_device_heal();
-        case POT_CURING:
         case POT_RESISTANCE:
         case POT_MAGIC:
             return true;

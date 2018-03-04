@@ -27,7 +27,6 @@ function general_item_setup(e)
   e.kitem("* = star_item ident:all w:66 / any ident:all w:33")
   e.kitem("% = any ident:all")
   e.kitem("! = potion of heal wounds ident:all q:2 w:30 /\
-          potion of curing ident:all w:20 /\
           potion of augmentation ident:all /\
           potion of haste ident:all /\
           potion of resistance ident:all w:5 /\
@@ -211,8 +210,7 @@ ENDMAP
 
 NAME:     items_1
 TAGS:     items_1
-KITEM:    a = potion of curing q:4 ident:all, \
-              potion of heal wounds q:2 ident:all, \
+KITEM:    a = potion of heal wounds q:2 ident:all, \
               potion of invisibility q:1 ident:all, \
               potion of magic q:2 ident:all
 KITEM:    b = scroll of blinking q:1 ident:all, \

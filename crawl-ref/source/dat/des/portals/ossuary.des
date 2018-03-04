@@ -507,7 +507,7 @@ ITEM:    scroll of noise w:20 / scroll of immolation / \
          scroll of noise / scroll of immolation / \
          potion of mutation w:5 / potion of ambrosia w:5 / \
          potion of mutation / potion of lignification / \
-         potion of flight / potion of curing w:15
+         potion of flight / potion of ambrosia w:15
 # and sometimes mostly useless ones
 ITEM:    scroll of noise / \
          scroll of immolation / potion of mutation w:5 / \
@@ -766,7 +766,7 @@ ORIENT:  encompass
 TAGS:    no_item_gen no_monster_gen
 # loot: 8 items of which 6 should be good.
 # Most of the loot helps right here, if need be.
-ITEM:    potion of curing / potion of heal wounds / potion of haste / \
+ITEM:    potion of ambrosia / potion of heal wounds / potion of haste / \
          potion of ambrosia w:5 / potion of mutation w:5 / \
          scroll of noise / scroll of teleportation w:5 / \
          scroll of blinking w:5 / scroll of holy word

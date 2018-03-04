@@ -566,8 +566,7 @@ static bool _advise_use_healing_potion()
         if (!item_type_known(obj))
             continue;
 
-        if (obj.sub_type == POT_CURING
-            || obj.sub_type == POT_HEAL_WOUNDS)
+        if (obj.sub_type == POT_HEAL_WOUNDS)
         {
             return true;
         }

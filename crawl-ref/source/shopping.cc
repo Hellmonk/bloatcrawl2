@@ -513,8 +513,9 @@ unsigned int item_value(item_def item, bool ident)
                 valued += 40;
                 break;
 #endif
-				
+#if TAG_MAJOR_VERSION == 34			
             case POT_CURING:
+#endif
             case POT_LIGNIFY:
             case POT_FLIGHT:
                 valued += 30;

@@ -63,7 +63,6 @@ static void _unfocus_stats()
 // Some consumables to make the starts of Sprint a little easier.
 static void _give_bonus_items()
 {
-    newgame_make_item(OBJ_POTIONS, POT_CURING);
     newgame_make_item(OBJ_POTIONS, POT_HEAL_WOUNDS);
     newgame_make_item(OBJ_POTIONS, POT_HASTE);
     newgame_make_item(OBJ_POTIONS, POT_MAGIC, 2);

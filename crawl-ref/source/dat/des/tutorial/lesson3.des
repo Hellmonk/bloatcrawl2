@@ -116,7 +116,7 @@ KFEAT:   AB = .
 COLOUR:  ABdefghi = lightblue
 FTILE:   ABdefghi = tutorial_pad
 RTILE:   c = wall_vines
-ITEM:    potion of curing q:1
+ITEM:    potion of ambrosia q:1
 ITEM:    wand of flame charges:9 ident:all
 ITEM:    wand of digging charges:15 ident:all
 ITEM:    scroll of noise q:1 ident:all
@@ -177,7 +177,7 @@ FTILE:   .{)deS = floor_swamp, t = floor_grass
 FTILE:   ABCde = tutorial_pad
 FTILE:   c = wall_vines
 KFEAT:   S = general shop use_all ; \
-             ring of fire mundane not_cursed | potion of curing | \
+             ring of fire mundane not_cursed | potion of ambrosia | \
              potion of heal wounds | potion of heal wounds q:2 | \
              potion of augmentation | wand of paralysis | ring mail | \
              buckler ego:none | ring of slaying | scroll of enchant weapon
