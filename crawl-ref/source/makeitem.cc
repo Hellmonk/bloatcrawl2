@@ -1698,8 +1698,8 @@ int items(bool allow_uniques,
                                     50, OBJ_WANDS,
                                    262, OBJ_ARMOUR,
                                    212, OBJ_WEAPONS,
-                                   176, OBJ_POTIONS,
-                                   400, OBJ_MISSILES,
+                                   140, OBJ_POTIONS,
+                                   436, OBJ_MISSILES,
 			                       202, OBJ_SCROLLS,
                                    548, OBJ_GOLD); 
 
