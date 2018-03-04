@@ -9,8 +9,9 @@ corrosive slime flow off it like water.
 amulet of destruction
 
 An amulet inscribed with mysterious runes. Casting a destructive spell briefly 
-attunes the amulet to that spell, reducing the MP cost of successive casts. 
-The attunement is lost if another action is taken.
+attunes the amulet to that spell, reducing the MP cost of successive casts for
+a short time. The attunement is refreshed when the spell is cast again but is 
+lost if another spell is cast.
 %%%%
 amulet of faith
 

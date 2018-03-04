@@ -550,6 +550,10 @@ static const duration_def duration_data[] =
       "can't hop", "",
       "", D_NO_FLAGS,
       {{ "You are ready to hop once more." }}},
+    { DUR_DESTRUCTION, BLUE, "Destruction",
+      "destruction attunement", "",
+      "", D_EXPIRES,
+      {{ "Your amulet of destruction loses attunement.", []() {}}}},
 
     // The following are visible in wizmode only, or are handled
     // specially in the status lights and/or the % or @ screens.

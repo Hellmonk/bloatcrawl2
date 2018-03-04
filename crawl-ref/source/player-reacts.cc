@@ -1146,9 +1146,10 @@ void player_reacts()
         freeze_mp(mp_to_freeze);
     }
 	
-    //de-attune amulet of destruction if the last action wasn't destructive
+    //de-attune amulet of destruction if dur is up and the last action wasn't destructive
     if(you.props.exists(AMULET_DESTRUCTIVE_SPELL)
-        && !you.props.exists(LAST_ACTION_DESTRUCTIVE_KEY))
+        && !you.props.exists(LAST_ACTION_DESTRUCTIVE_KEY)
+        && !you.duration[DUR_DESTRUCTION])
     {
         you.props.erase(AMULET_DESTRUCTIVE_SPELL);
     }

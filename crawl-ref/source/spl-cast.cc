@@ -807,7 +807,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     if(you.props.exists(AMULET_DESTRUCTIVE_SPELL)
         && you.props[AMULET_DESTRUCTIVE_SPELL].get_int() == spell)
     {
-        cost = cost > 6 ? cost -2 : max(1, cost - 1);
+        cost = cost > 6 ? cost -2 : max(0, cost - 1);
     }
     int sifcast_amount = 0;
     int freeze_cost = spell_mp_freeze(spell);
@@ -1585,7 +1585,15 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
 
         you.props[AMULET_DESTRUCTIVE_SPELL] = spell;
         you.props[LAST_ACTION_DESTRUCTIVE_KEY] = true;
+        you.set_duration(DUR_DESTRUCTION, 10, 10);
 	}
+    else if(you.props.exists(AMULET_DESTRUCTIVE_SPELL))
+    {
+        mpr("Your amulet of destruction loses attunement.");
+        you.props.erase(AMULET_DESTRUCTIVE_SPELL);
+        if(you.duration[DUR_DESTRUCTION])
+            you.duration[DUR_DESTRUCTION] = 0;
+    }
 									  
     switch (cast_result)
     {

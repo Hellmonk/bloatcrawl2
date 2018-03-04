@@ -2001,6 +2001,7 @@ enum duration_type
     DUR_HEAVENLY_STORM,
     DUR_SOUL_DELAY,
     DUR_WALL_JUMP_EV,
+    DUR_DESTRUCTION,
     NUM_DURATIONS
 };
 
