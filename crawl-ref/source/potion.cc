@@ -455,6 +455,10 @@ public:
 
     bool effect(bool=true, int=40, bool=true) const override
     {
+        if (you.duration[DUR_POISONING])
+            you.redraw_hit_points = true;
+        you.duration[DUR_POISONING] = 0;
+        you.disease = 0;
         debuff_player();
         mpr("You feel magically purged.");
         return true;
