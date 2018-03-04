@@ -115,7 +115,8 @@ Pois status
 
 You are poisoned and will continually lose health. While poisoned, your current
 health will be partially recoloured to display the eventual poison damage that
-will be dealt. Poison can be cured immediately by potions of curing.
+will be dealt. Poison is never lethal, though the impact damage of poisonous
+attacks or spells can be. Poison can be cured immediately by potions of cancellation.
 %%%%
 Conf status
 
