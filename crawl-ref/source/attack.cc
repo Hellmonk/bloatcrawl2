@@ -813,7 +813,6 @@ brand_type attack::random_chaos_brand()
                     10, SPWPN_FLAMING,
                     10, SPWPN_FREEZING,
                     10, SPWPN_ELECTROCUTION,
-                    10, SPWPN_VENOM,
                     10, SPWPN_CHAOS,
                      5, SPWPN_DRAINING,
                      5, SPWPN_VAMPIRISM,

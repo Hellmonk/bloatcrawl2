@@ -6064,9 +6064,6 @@ int player::armour_class(bool /*calc_unid*/) const
 
     AC += wearing(EQ_RINGS_PLUS, RING_PROTECTION) * 100;
 
-    if (wearing_ego(EQ_WEAPON, SPWPN_PROTECTION))
-        AC += 500;
-
     if (wearing_ego(EQ_SHIELD, SPARM_PROTECTION))
         AC += 300;
 

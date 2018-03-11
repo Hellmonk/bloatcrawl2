@@ -3162,41 +3162,6 @@ void monster::ablate_deflection()
 }
 
 /**
- * How many weapons of the given brand does this monster currently wield?
- *
- * @param mon           The monster in question.
- * @param brand         The brand in question.
- * @param calc_unid     Whether to include weapons whose brands are unknown (to
- *                      the player).
- * @return              The number of the aforementioned weapons currently
- *                      wielded.
- */
-static int _weapons_with_prop(const monster *mon, brand_type brand,
-                              bool calc_unid = true)
-{
-    int wielded = 0;
-
-    const mon_inv_type last_weap_slot = mons_wields_two_weapons(*mon) ?
-                                        MSLOT_ALT_WEAPON :
-                                        MSLOT_WEAPON;
-    for (int i = MSLOT_WEAPON; i <= last_weap_slot; i++)
-    {
-        const item_def *weap = mon->mslot_item(static_cast<mon_inv_type>(i));
-        if (!weap)
-            continue;
-
-        if (!calc_unid && !item_ident(*weap, ISFLAG_KNOW_TYPE))
-            continue;
-
-        const int weap_brand = get_weapon_brand(*weap);
-        if (brand == weap_brand)
-            wielded++;
-    }
-
-    return wielded;
-}
-
-/**
  * What AC bonus or penalty does a given zombie type apply to the base
  * monster type's?
  *
@@ -3292,9 +3257,6 @@ int monster::base_armour_class() const
 int monster::armour_class(bool calc_unid) const
 {
     int ac = base_armour_class();
-
-    // check for protection-brand weapons
-    ac += 5 * _weapons_with_prop(this, SPWPN_PROTECTION, calc_unid);
 
     // armour from ac
     const item_def *armour = mslot_item(MSLOT_ARMOUR);

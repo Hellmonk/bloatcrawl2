@@ -528,9 +528,9 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         { MONS_GREY_DRACONIAN,          { NAGA_WEAPONS } },
         { MONS_TENGU,                   { NAGA_WEAPONS } },
         { MONS_NAGA_RITUALIST,
-            { { { WPN_DAGGER,           12 },
-                { WPN_SCIMITAR,         5 },
-        }, { 2, 1, 4 }, { { SPWPN_VENOM, 1 } } } },
+            { { { WPN_DAGGER,       1 },
+                { WPN_SCIMITAR,     1 },
+		  } } },
         { MONS_RUPERT,
             // Rupert favours big two-handers with visceral up-close
             // effects, i.e. no polearms.
@@ -694,8 +694,7 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
             { { WPN_DAGGER,             1 },
               { WPN_RAPIER,             1 }, }, {},
             { { SPWPN_DISTORTION,       3 },
-              { SPWPN_VENOM,            2 },
-              { SPWPN_DRAINING,         1 } },
+              { SPWPN_DRAINING,         3 } },
         } },
         { MONS_EUSTACHIO,
             { { { WPN_LONG_SWORD,       1 },
@@ -1017,10 +1016,10 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         force_item = true;
         item.base_type = OBJ_WEAPONS;
         item.sub_type = WPN_QUARTERSTAFF;
-        if(one_chance_in(3))
+        if(coinflip())
             set_item_ego_type(item, OBJ_WEAPONS, SPWPN_PAIN);
         else
-            set_item_ego_type(item, OBJ_WEAPONS, SPWPN_VENOM);
+            set_item_ego_type(item, OBJ_WEAPONS, SPWPN_NORMAL);
         break;
 
     case MONS_CEREBOV:

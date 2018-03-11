@@ -2127,9 +2127,6 @@ bool god_hates_brand(const int brand)
         return true;
     }
 
-    if (you_worship(GOD_SHINING_ONE) && brand == SPWPN_VENOM)
-        return true;
-
     if (you_worship(GOD_CHEIBRIADOS) && (brand == SPWPN_CHAOS
                                          || brand == SPWPN_SPEED))
     {
@@ -2157,7 +2154,6 @@ static void _rebrand_weapon(item_def& wpn)
             new_brand = random_choose_weighted(
                                     33, SPWPN_FLAMING,
                                     33, SPWPN_FREEZING,
-                                    23, SPWPN_VENOM,
                                     23, SPWPN_VORPAL,
                                     5, SPWPN_ELECTROCUTION,
                                     3, SPWPN_CHAOS);
@@ -2168,10 +2164,8 @@ static void _rebrand_weapon(item_def& wpn)
                                     30, SPWPN_FLAMING,
                                     30, SPWPN_FREEZING,
                                     25, SPWPN_VORPAL,
-                                    20, SPWPN_VENOM,
                                     15, SPWPN_DRAINING,
                                     15, SPWPN_ELECTROCUTION,
-                                    12, SPWPN_PROTECTION,
                                     8, SPWPN_VAMPIRISM,
                                     3, SPWPN_CHAOS);
         }

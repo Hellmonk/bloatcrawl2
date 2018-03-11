@@ -285,8 +285,7 @@ bool is_weapon_brand_ok(int type, int brand, bool strict)
     {
     // Universal brands.
     case SPWPN_NORMAL:
-    case SPWPN_VENOM:
-    case SPWPN_PROTECTION:
+    case SPWPN_VENOM: // only exists on unrands
     case SPWPN_SPEED:
     case SPWPN_VORPAL:
     case SPWPN_CHAOS:
@@ -323,6 +322,7 @@ bool is_weapon_brand_ok(int type, int brand, bool strict)
     case SPWPN_FROST:
     case SPWPN_DRAGON_SLAYING:
     case SPWPN_EVASION:
+    case SPWPN_PROTECTION:
         return false;
 #endif
 
