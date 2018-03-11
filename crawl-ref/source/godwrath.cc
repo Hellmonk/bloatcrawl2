@@ -1715,8 +1715,7 @@ static int _wu_jian_summon_weapons()
                                           WPN_BROAD_AXE, WPN_GREAT_SWORD,
                                           WPN_RAPIER, WPN_GLAIVE);
         const int ego = random_choose(SPWPN_VORPAL, SPWPN_FLAMING,
-                                      SPWPN_FREEZING, SPWPN_ELECTROCUTION,
-                                      SPWPN_SPEED);
+                                      SPWPN_FREEZING, SPWPN_ELECTROCUTION);
 
         if (monster *mon =
             create_monster(_wrath_mon_data(MONS_DANCING_WEAPON, god)))

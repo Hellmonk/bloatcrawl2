@@ -246,7 +246,6 @@ struct weapon_def
 /// brand weights for non-dagger shortblades (short sword & rapier)
 static const vector<brand_weight_tuple> SBL_BRANDS = {
     { SPWPN_NORMAL, 33 },
-    { SPWPN_SPEED, 10 },
     { SPWPN_DRAINING, 9 },
     { SPWPN_ELECTROCUTION, 6 },
     { SPWPN_HOLY_WRATH, 5 },
@@ -429,7 +428,6 @@ static const weapon_def Weapon_prop[] =
         SK_SHORT_BLADES, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_PIERCING, 10, 10, 20, {
             { SPWPN_NORMAL,         20 },
-            { SPWPN_SPEED,          10 },
             { SPWPN_DRAINING,        9 },
             { SPWPN_ELECTROCUTION,   6 },
             { SPWPN_HOLY_WRATH,      5 },
@@ -563,7 +561,6 @@ static const weapon_def Weapon_prop[] =
             { SPWPN_NORMAL,     50 },
             { SPWPN_DRAINING,    8 },
             { SPWPN_VORPAL,      8 },
-            { SPWPN_SPEED,       8 },
             { SPWPN_DISTORTION,  2 },
             { SPWPN_PAIN,        2 },
             { SPWPN_HOLY_WRATH,  2 },
@@ -574,7 +571,6 @@ static const weapon_def Weapon_prop[] =
         SK_MACES_FLAILS,       SIZE_LITTLE, NUM_SIZE_LEVELS, MI_NONE,
         DAMV_SLICING, 0, 0, 0, {
             { SPWPN_NORMAL,         34 },
-            { SPWPN_SPEED,          12 },
             { SPWPN_ELECTROCUTION,  12 },
             { SPWPN_VAMPIRISM,      12 },
             { SPWPN_PAIN,            7 },

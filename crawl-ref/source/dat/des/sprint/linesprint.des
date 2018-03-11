@@ -221,7 +221,6 @@ KITEM:    d = wand of iceblast charges:7 ident:all /\
               staff of wizardry not_cursed ident:all
 KITEM:    e = rapier plus:2 ego:electrocution ident:all not_cursed /\
            rapier plus:2 ego:draining ident:all not_cursed /\
-           rapier plus:2 ego:venom ident:all not_cursed /\
            rapier plus:2 ego:distortion ident:all not_cursed /\
            rapier plus:2 good_item ident:all not_cursed, \
            war axe plus:3 ego:freezing ident:all not_cursed /\
@@ -230,14 +229,10 @@ KITEM:    e = rapier plus:2 ego:electrocution ident:all not_cursed /\
            broad axe plus:1 ego:freezing ident:all not_cursed /\
            broad axe plus:1 ego:vorpal ident:all not_cursed /\
            broad axe plus:1 good_item ident:all not_cursed w:5, \
-           morningstar plus:2 ego:protection ident:all not_cursed /\
            morningstar plus:2 ego:vorpal ident:all not_cursed /\
            morningstar plus:2 good_item ident:all not_cursed w:5, \
-           halberd plus:2 ego:protection ident:all not_cursed /\
-           halberd plus:2 ego:venom ident:all not_cursed /\
            halberd plus:2 good_item ident:all not_cursed w:5, \
            quarterstaff plus:0 ident:all not_cursed /\
-           quarterstaff plus:4 ego:speed ident:all not_cursed w:15 /\
            quarterstaff plus:4 good_item ident:all not_cursed w:5, \
            scimitar plus:2 ego:flaming ident:all not_cursed /\
            scimitar plus:2 ego:holy_wrath not_cursed ident:all /\

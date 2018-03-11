@@ -601,7 +601,7 @@ function arena_sprint_get_monster_set(round, boss)
                 "orb spider / emperor scorpion / ghost moth / moth of wrath",
                 "w:40 greater naga / guardian serpent / w:5 anaconda",
                 "w:30 acid blob / azure jelly / floating eye / eye of draining",
-                "dancing weapon ; bardiche ego:speed",
+                "dancing weapon ; bardiche ego:flaming",
                 "spriggan air mage",
                 "w:15 ancient lich / w:6 curse toe",
                 "greater demon / pandemonium lord",

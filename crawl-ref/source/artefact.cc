@@ -453,7 +453,6 @@ static void _add_randart_weapon_brand(const item_def &item,
     if (is_range_weapon(item))
     {
         item_props[ARTP_BRAND] = random_choose_weighted(
-            2, SPWPN_SPEED,
             5, SPWPN_VORPAL,
             5, SPWPN_FLAMING,
             5, SPWPN_FREEZING,
@@ -480,7 +479,6 @@ static void _add_randart_weapon_brand(const item_def &item,
             26, SPWPN_DRAINING,
             13, SPWPN_HOLY_WRATH,
             13, SPWPN_ELECTROCUTION,
-            13, SPWPN_SPEED,
             13, SPWPN_VAMPIRISM,
             13, SPWPN_PAIN,
             13, SPWPN_ANTIMAGIC,

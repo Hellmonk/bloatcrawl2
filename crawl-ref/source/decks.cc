@@ -1815,7 +1815,7 @@ static void _summon_dancing_weapon(int power, deck_rarity_type rarity)
         wpn.sub_type = (coinflip() ? WPN_DEMON_TRIDENT : WPN_EXECUTIONERS_AXE);
 
         set_item_ego_type(wpn, OBJ_WEAPONS,
-                          coinflip() ? SPWPN_SPEED : SPWPN_ELECTROCUTION);
+                          coinflip() ? SPWPN_DRAINING : SPWPN_ELECTROCUTION);
     }
 
     item_colour(wpn); // this is probably not needed

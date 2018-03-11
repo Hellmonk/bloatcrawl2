@@ -906,7 +906,7 @@ TAGS: sprint_mu_vaults no_rotate no_hmirror no_vmirror
 MONS: centaur warrior, lich, shadow dragon, ogre mage
 MONS: vault guard ; rapier ego:electrocution | long sword ego:flaming |\
       quarterstaff ego:vampirism | war axe ego:freezing | spear ego:vorpal |\
-      great mace ego:pain | double sword ego:venom .\
+      great mace ego:pain | double sword ego:pain .\
       chain mail ego:poison_resistance | chain mail ego:cold_resistance |\
       scale mail ego:poison_resistance | scale mail ego:cold_resistance |\
       plate armour ego:fire_resistance . large shield ego:reflection |\

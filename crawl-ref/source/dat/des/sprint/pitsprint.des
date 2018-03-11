@@ -621,7 +621,6 @@ KITEM: d = potion of invisibility ident:all q:2, \
 # The 3rd equipment room
 KITEM: e = rapier plus:2 ego:electrocution ident:all not_cursed /\
        rapier plus:2 ego:draining ident:all not_cursed /\
-       rapier plus:2 ego:venom ident:all not_cursed /\
        rapier plus:2 ego:distortion ident:all not_cursed /\
        rapier plus:2 good_item ident:all not_cursed
 KITEM: f = war axe plus:2 ego:freezing ident:all not_cursed /\
@@ -630,17 +629,12 @@ KITEM: f = war axe plus:2 ego:freezing ident:all not_cursed /\
        broad axe plus:1 ego:freezing ident:all not_cursed /\
        broad axe plus:1 ego:vorpal ident:all not_cursed /\
        broad axe plus:1 good_item ident:all not_cursed w:5
-KITEM: g = quarterstaff plus:2 ego:protection ident:all not_cursed /\
-       quarterstaff plus:2 ego:vorpal ident:all not_cursed /\
+KITEM: g = quarterstaff plus:2 ego:vorpal ident:all not_cursed /\
        quarterstaff plus:2 good_item ident:all not_cursed w:5 /\
-       morningstar plus:2 ego:protection ident:all not_cursed /\
        morningstar plus:2 ego:vorpal ident:all not_cursed /\
        morningstar plus:2 good_item ident:all not_cursed w:5
-KITEM: h = halberd plus:2 ego:protection ident:all not_cursed /\
-       halberd plus:2 ego:venom ident:all not_cursed /\
-       halberd plus:2 good_item ident:all not_cursed w:5
+KITEM: h = halberd plus:2 good_item ident:all not_cursed w:5
 KITEM: i = quarterstaff plus:0 ident:all not_cursed /\
-       quarterstaff plus:4 ego:speed ident:all not_cursed w:15 /\
        quarterstaff plus:4 good_item ident:all not_cursed w:5
 KITEM: j = scimitar plus:2 ego:flaming ident:all not_cursed /\
        scimitar plus:2 ego:holy_wrath not_cursed ident:all /\
@@ -715,17 +709,13 @@ ENDMAP
 NAME:  equipment_2
 TAGS:  equipment_2
 KITEM: a = dagger ego:electrocution ident:all not_cursed /\
-       dagger ego:draining ident:all not_cursed /\
-       dagger ego:venom ident:all not_cursed
+       dagger ego:draining ident:all not_cursed
 KITEM: b = hand axe ego:freezing ident:all not_cursed /\
        hand axe ego:vorpal ident:all not_cursed
 KITEM: c = mace ego:vorpal ident:all not_cursed /\
-       mace ego:protection ident:all not_cursed /\
-       flail ego:vorpal ident:all not_cursed /\
-       flail ego:protection ident:all not_cursed
+       flail ego:vorpal ident:all not_cursed
 KITEM: d = trident ego:vorpal ident:all not_cursed
-KITEM: e = quarterstaff ego:protection ident:all not_cursed /\
-       quarterstaff ego:speed ident:all not_cursed
+KITEM: e = quarterstaff ego:vorpal ident:all not_cursed
 KITEM: f = long sword ego:holy_wrath ident:all not_cursed /\
        long sword ego:flaming ident:all not_cursed
 KITEM: g = potion of heal wounds q:5 ident:all
