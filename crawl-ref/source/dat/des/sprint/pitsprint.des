@@ -211,7 +211,7 @@ function general_item_setup(e)
     demon blade plus:9 randart not_cursed ident:all /\
     quarterstaff plus:9 good_item not_cursed ident:all /\
     quarterstaff plus:7 randart not_cursed ident:all /\
-    longbow plus:7 ego:vorpal not_cursed ident:all w:15 /\
+    longbow plus:7 ego:devastation not_cursed ident:all w:15 /\
     triple crossbow plus:7 good_item not_cursed ident:all w:15")
   e.kitem("] = plate armour plus:12 not_cursed ident:all /\
     plate armour plus:8 good_item not_cursed ident:all /\
@@ -624,14 +624,14 @@ KITEM: e = rapier plus:2 ego:electrocution ident:all not_cursed /\
        rapier plus:2 ego:distortion ident:all not_cursed /\
        rapier plus:2 good_item ident:all not_cursed
 KITEM: f = war axe plus:2 ego:freezing ident:all not_cursed /\
-       war axe plus:2 ego:vorpal ident:all not_cursed /\
+       war axe plus:2 ego:devastation ident:all not_cursed /\
        war axe plus:2 good_item ident:all not_cursed w:5 /\
        broad axe plus:1 ego:freezing ident:all not_cursed /\
-       broad axe plus:1 ego:vorpal ident:all not_cursed /\
+       broad axe plus:1 ego:devastation ident:all not_cursed /\
        broad axe plus:1 good_item ident:all not_cursed w:5
-KITEM: g = quarterstaff plus:2 ego:vorpal ident:all not_cursed /\
+KITEM: g = quarterstaff plus:2 ego:devastation ident:all not_cursed /\
        quarterstaff plus:2 good_item ident:all not_cursed w:5 /\
-       morningstar plus:2 ego:vorpal ident:all not_cursed /\
+       morningstar plus:2 ego:devastation ident:all not_cursed /\
        morningstar plus:2 good_item ident:all not_cursed w:5
 KITEM: h = halberd plus:2 good_item ident:all not_cursed w:5
 KITEM: i = quarterstaff plus:0 ident:all not_cursed /\
@@ -711,11 +711,11 @@ TAGS:  equipment_2
 KITEM: a = dagger ego:electrocution ident:all not_cursed /\
        dagger ego:draining ident:all not_cursed
 KITEM: b = hand axe ego:freezing ident:all not_cursed /\
-       hand axe ego:vorpal ident:all not_cursed
-KITEM: c = mace ego:vorpal ident:all not_cursed /\
-       flail ego:vorpal ident:all not_cursed
-KITEM: d = trident ego:vorpal ident:all not_cursed
-KITEM: e = quarterstaff ego:vorpal ident:all not_cursed
+       hand axe ego:devastation ident:all not_cursed
+KITEM: c = mace ego:devastation ident:all not_cursed /\
+       flail ego:devastation ident:all not_cursed
+KITEM: d = trident ego:devastation ident:all not_cursed
+KITEM: e = quarterstaff ego:devastation ident:all not_cursed
 KITEM: f = long sword ego:holy_wrath ident:all not_cursed /\
        long sword ego:flaming ident:all not_cursed
 KITEM: g = potion of heal wounds q:5 ident:all

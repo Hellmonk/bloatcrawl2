@@ -905,7 +905,7 @@ NAME: sprint_mu_vaults_butterflies
 TAGS: sprint_mu_vaults no_rotate no_hmirror no_vmirror
 MONS: centaur warrior, lich, shadow dragon, ogre mage
 MONS: vault guard ; rapier ego:electrocution | long sword ego:flaming |\
-      quarterstaff ego:vampirism | war axe ego:freezing | spear ego:vorpal |\
+      quarterstaff ego:vampirism | war axe ego:freezing | spear ego:devastation |\
       great mace ego:pain | double sword ego:pain .\
       chain mail ego:poison_resistance | chain mail ego:cold_resistance |\
       scale mail ego:poison_resistance | scale mail ego:cold_resistance |\
@@ -916,7 +916,7 @@ MONS: stone giant / shadow dragon / quicksilver dragon / golden dragon /\
 MONS: skeletal warrior
 KMONS: 8 = obsidian statue
 KMONS: f = butterfly
-KMONS: U = Sojobo ; morningstar ego:vorpal . large shield ego:reflection / \
+KMONS: U = Sojobo ; morningstar ego:devastation . large shield ego:reflection / \
            Frederick ; trident ego:freezing . large shield ego:reflection
 KMONS: C = generate_awake Chuck
 KMONS: k = yaktaur captain ; arbalest ego:chaos . arrow
@@ -1147,8 +1147,8 @@ KMONS: d = col:lightgrey generate_awake statue name:air_elementalist name_adject
 KMONS: e = ancient champion \
        spells:venom_bolt.21.wizard;haste.21.wizard;haunt.21.wizard \
        ; plate armour ego:fire_resistance | plate armour ego:cold_resistance . \
-       battleaxe ego:vorpal | battleaxe ego:pain | \
-       w:3 executioner's axe ego:vorpal
+       battleaxe ego:devastation | battleaxe ego:pain | \
+       w:3 executioner's axe ego:devastation
 KITEM: e = superb_item, superb_item
 KMONS: p = plant
 KMONS: 1 = patrolling vampire knight

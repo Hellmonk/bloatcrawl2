@@ -260,7 +260,7 @@ static const vector<brand_weight_tuple> SBL_BRANDS = {
 static const vector<brand_weight_tuple> M_AND_F_BRANDS = {
     { SPWPN_NORMAL,         28 },
     { SPWPN_HOLY_WRATH,     15 },
-    { SPWPN_VORPAL,         14 },
+    { SPWPN_DEVASTATION,    14 },
     { SPWPN_DRAINING,       10 },
     { SPWPN_DISTORTION,      1 },
     { SPWPN_ANTIMAGIC,       1 },
@@ -283,7 +283,7 @@ static const vector<brand_weight_tuple> DEMON_BRANDS = {
 static const vector<brand_weight_tuple> LBL_BRANDS = {
     { SPWPN_HOLY_WRATH,     23 },
     { SPWPN_NORMAL,         19 },
-    { SPWPN_VORPAL,         15 },
+    { SPWPN_DEVASTATION,    15 },
     { SPWPN_ELECTROCUTION,  10 },
     { SPWPN_FREEZING,        5 },
     { SPWPN_FLAMING,         5 },
@@ -297,7 +297,7 @@ static const vector<brand_weight_tuple> LBL_BRANDS = {
 /// brand weights for axes.
 static const vector<brand_weight_tuple> AXE_BRANDS = {
     { SPWPN_NORMAL,         31 },
-    { SPWPN_VORPAL,         16 },
+    { SPWPN_DEVASTATION,    16 },
     { SPWPN_ELECTROCUTION,  11 },
     { SPWPN_FLAMING,        10 },
     { SPWPN_FREEZING,       10 },
@@ -312,7 +312,7 @@ static const vector<brand_weight_tuple> AXE_BRANDS = {
 /// brand weights for most polearms.
 static const vector<brand_weight_tuple> POLEARM_BRANDS = {
     { SPWPN_NORMAL,     36 },
-    { SPWPN_VORPAL,      9 },
+    { SPWPN_DEVASTATION, 9 },
     { SPWPN_FLAMING,     7 },
     { SPWPN_FREEZING,    7 },
     { SPWPN_VAMPIRISM,   5 },
@@ -324,10 +324,10 @@ static const vector<brand_weight_tuple> POLEARM_BRANDS = {
 
 /// brand weights for most ranged weapons.
 static const vector<brand_weight_tuple> RANGED_BRANDS = {
-    { SPWPN_NORMAL,   58 },
-    { SPWPN_FLAMING,  16 },
-    { SPWPN_FREEZING, 16 },
-    { SPWPN_VORPAL,   10 },
+    { SPWPN_NORMAL,      58 },
+    { SPWPN_FLAMING,     16 },
+    { SPWPN_FREEZING,    16 },
+    { SPWPN_DEVASTATION, 10 },
 };
 
 /// brand weights for holy (TSO-blessed) weapons.
@@ -380,7 +380,7 @@ static const weapon_def Weapon_prop[] =
             { SPWPN_NORMAL,         15 },
             { SPWPN_HOLY_WRATH,     15 },
             { SPWPN_DRAINING,       10 },
-            { SPWPN_VORPAL,          9 },
+            { SPWPN_DEVASTATION,     9 },
             { SPWPN_FLAMING,         4 },
             { SPWPN_FREEZING,        4 },
             { SPWPN_DISTORTION,      2 },
@@ -404,7 +404,7 @@ static const weapon_def Weapon_prop[] =
             { SPWPN_DRAINING,       19 },
             { SPWPN_HOLY_WRATH,     15 },
             { SPWPN_NORMAL,          8 },
-            { SPWPN_VORPAL,          6 },
+            { SPWPN_DEVASTATION,     6 },
             { SPWPN_FLAMING,         6 },
             { SPWPN_FREEZING,        6 },
             { SPWPN_DISTORTION,      2 },
@@ -520,7 +520,6 @@ static const weapon_def Weapon_prop[] =
         SK_POLEARMS,     SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_PIERCING, 8, 10, 30, {
             { SPWPN_NORMAL,     46 },
-            { SPWPN_VORPAL,     12 },
             { SPWPN_FLAMING,     7 },
             { SPWPN_FREEZING,    7 },
             { SPWPN_VAMPIRISM,   5 },
@@ -560,7 +559,7 @@ static const weapon_def Weapon_prop[] =
         DAMV_CRUSHING, 5, 10, 50, {
             { SPWPN_NORMAL,     50 },
             { SPWPN_DRAINING,    8 },
-            { SPWPN_VORPAL,      8 },
+            { SPWPN_DEVASTATION, 8 },
             { SPWPN_DISTORTION,  2 },
             { SPWPN_PAIN,        2 },
             { SPWPN_HOLY_WRATH,  2 },

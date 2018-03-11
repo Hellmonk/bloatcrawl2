@@ -1794,7 +1794,7 @@ static void _summon_dancing_weapon(int power, deck_rarity_type rarity)
         wpn.sub_type = (coinflip() ? WPN_SPEAR : WPN_HAND_AXE);
 
         set_item_ego_type(wpn, OBJ_WEAPONS,
-                          coinflip() ? SPWPN_VORPAL : SPWPN_NORMAL);
+                          coinflip() ? SPWPN_DEVASTATION : SPWPN_NORMAL);
         break;
     case 1:
         // This is getting good.

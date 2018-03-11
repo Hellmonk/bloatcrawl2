@@ -288,7 +288,7 @@ bool is_weapon_brand_ok(int type, int brand, bool strict)
     case SPWPN_VENOM: // only exists on unrands
     case SPWPN_SPEED: // only exists on unrands
     case SPWPN_DEVASTATION:
-    case SPWPN_VORPAL:
+    case SPWPN_VORPAL: //only exists on unrands
     case SPWPN_CHAOS:
     case SPWPN_HOLY_WRATH:
     case SPWPN_ELECTROCUTION:

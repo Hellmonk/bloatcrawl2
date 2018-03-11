@@ -202,7 +202,7 @@ TILE:    spwpn_glaive_of_prune
 TILE_EQ: glaive_of_prune
 VALUE:   1000
 BOOL:    chaotic
-BRAND:   SPWPN_VORPAL
+BRAND:   SPWPN_DEVASTATION
 
 NAME:    sword of Power
 OBJ:     OBJ_WEAPONS/WPN_DOUBLE_SWORD
@@ -321,7 +321,7 @@ PLUS:    +8
 COLOUR:  ETC_DARK
 TILE:    urand_bloodbane
 TILE_EQ: bloodbane
-BRAND:   SPWPN_VORPAL
+BRAND:   SPWPN_DEVASTATION
 ANGRY:   5
 BOOL:    berserk
 STEALTH: -1
@@ -535,7 +535,7 @@ COLOUR:   ETC_DARK
 TILE:     urand_sniper
 TILE_EQ:  sniper
 BASE_DELAY: +4
-BRAND:    SPWPN_VORPAL
+BRAND:    SPWPN_DEVASTATION
 BOOL:     seeinv
 INSCRIP:  nevermiss,
 
@@ -990,7 +990,7 @@ PLUS:     +14
 COLOUR:   ETC_UNHOLY
 TILE:     spwpn_demon_axe
 TILE_EQ:  demon_axe
-BRAND:    SPWPN_VORPAL
+BRAND:    SPWPN_DEVASTATION
 BOOL:     evil, seeinv, fly, drain
 
 NAME:     lightning scales
@@ -1188,7 +1188,7 @@ COLOUR:  ETC_ENCHANT
 TILE:    urand_gyre
 TILE_EQ: gyre
 PLUS:    5
-BRAND:   SPWPN_VORPAL
+BRAND:   SPWPN_FREEZING
 DEX:     -3
 
 ENUM:    ETHERIC_CAGE
