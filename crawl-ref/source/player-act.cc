@@ -297,6 +297,8 @@ random_var player::attack_delay(const item_def *projectile, bool rescale) const
         attk_delay -= div_rand_round(random_var(wpn_sklev), DELAY_SCALE);
         if (get_weapon_brand(*weap) == SPWPN_SPEED)
             attk_delay = div_rand_round(attk_delay * 2, 3);
+        if (get_weapon_brand(*weap) == SPWPN_DEVASTATION)
+            attk_delay = div_rand_round(attk_delay * 3, 2);
     }
 
     // At the moment it never gets this low anyway.

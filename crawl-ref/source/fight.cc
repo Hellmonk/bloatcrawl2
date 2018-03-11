@@ -813,6 +813,12 @@ int weapon_min_delay(const item_def &weapon, bool check_speed)
         min_delay *= 2;
         min_delay /= 3;
     }
+	
+    if (check_speed && get_weapon_brand(weapon) == SPWPN_DEVASTATION)
+    {
+        min_delay *= 3;
+        min_delay /= 2;
+    }
 
     // never go faster than speed 3 (ie 3.33 attacks per round)
     if (min_delay < 3)

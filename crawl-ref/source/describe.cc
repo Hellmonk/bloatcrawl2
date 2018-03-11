@@ -1132,6 +1132,9 @@ static string _describe_weapon(const item_def &item, bool verbose)
         case SPWPN_SPEED:
             description += "Attacks with this weapon are significantly faster.";
             break;
+        case SPWPN_DEVASTATION:
+            description += "Attacks with this weapon are slower, but deal significantly more damage.";
+            break;
         case SPWPN_VORPAL:
             if (is_range_weapon(item))
             {

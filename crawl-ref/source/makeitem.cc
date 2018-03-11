@@ -278,7 +278,7 @@ bool is_weapon_brand_ok(int type, int brand, bool strict)
     if (brand <= SPWPN_NORMAL)
         return true;
 
-    if (type == WPN_QUICK_BLADE && brand == SPWPN_SPEED)
+    if (type == WPN_QUICK_BLADE && (brand == SPWPN_SPEED || brand == SPWPN_DEVASTATION))
         return false;
 
     switch ((brand_type)brand)
@@ -287,6 +287,7 @@ bool is_weapon_brand_ok(int type, int brand, bool strict)
     case SPWPN_NORMAL:
     case SPWPN_VENOM: // only exists on unrands
     case SPWPN_SPEED: // only exists on unrands
+    case SPWPN_DEVASTATION:
     case SPWPN_VORPAL:
     case SPWPN_CHAOS:
     case SPWPN_HOLY_WRATH:

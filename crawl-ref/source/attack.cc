@@ -1577,7 +1577,8 @@ bool attack::apply_damage_brand(const char *what)
     if (!damage_done
         && (brand == SPWPN_FLAMING || brand == SPWPN_FREEZING
             || brand == SPWPN_HOLY_WRATH || brand == SPWPN_ANTIMAGIC
-            || brand == SPWPN_VORPAL || brand == SPWPN_VAMPIRISM))
+            || brand == SPWPN_VORPAL || brand == SPWPN_VAMPIRISM 
+            || brand == SPWPN_DEVASTATION))
     {
         // These brands require some regular damage to function.
         return false;
@@ -1598,6 +1599,14 @@ bool attack::apply_damage_brand(const char *what)
         calc_elemental_brand_damage(BEAM_COLD, "freeze", what);
         defender->expose_to_element(BEAM_COLD, 2);
         break;
+		
+    case SPWPN_DEVASTATION:
+    {
+        special_damage = 1 + div_rand_round(random2(damage_done * 15), 10);
+        std::string d = std::to_string(special_damage);
+        special_damage_message = "The blow is devastating (" + d + ")!";
+        break;
+    }
 
     case SPWPN_HOLY_WRATH:
         if (defender->holy_wrath_susceptible())

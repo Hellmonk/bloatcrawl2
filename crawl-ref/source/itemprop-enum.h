@@ -147,6 +147,7 @@ enum brand_type // item_def.special
 #endif
     SPWPN_PENETRATION,
     SPWPN_REAPING,
+    SPWPN_DEVASTATION,
 
 // From this point on save compat is irrelevant.
     NUM_REAL_SPECIAL_WEAPONS,
@@ -154,7 +155,7 @@ enum brand_type // item_def.special
     SPWPN_ACID,    // acid bite and Punk
 #if TAG_MAJOR_VERSION > 34
     SPWPN_CONFUSE, // Confusing Touch only for the moment
-#endif
+#endif 
     SPWPN_DEBUG_RANDART,
     NUM_SPECIAL_WEAPONS,
 };

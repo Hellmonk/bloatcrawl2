@@ -490,6 +490,10 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
                 case SPWPN_SPEED:
                     mpr(you.hands_act("tingle", "!"));
                     break;
+				
+                case SPWPN_DEVASTATION:
+                    mpr("You feel an incredible weight.");
+                    break;
 
                 case SPWPN_VAMPIRISM:
                     if (you.species == SP_VAMPIRE)

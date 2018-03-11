@@ -386,6 +386,8 @@ random_var monster::attack_delay(const item_def *projectile,
     random_var delay(property(*weap, PWPN_SPEED));
     if (get_weapon_brand(*weap) == SPWPN_SPEED)
         delay = div_rand_round(delay * 2, 3);
+    if (get_weapon_brand(*weap) == SPWPN_DEVASTATION)
+        delay = div_rand_round(delay * 3, 2);
     return (random_var(10) + delay) / 2;
 }
 

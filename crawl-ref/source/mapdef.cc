@@ -4831,6 +4831,7 @@ static int _str_to_ego(item_spec &spec, string ego_str)
 #if TAG_MAJOR_VERSION == 34
         "confuse",
 #endif
+        "devastation",
         "penetration",
         "reaping",
         nullptr
