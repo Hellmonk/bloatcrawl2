@@ -3222,6 +3222,12 @@ static void _describe_monster_hp(const monster_info& mi, ostringstream &result)
 	 result << "Max HP: " << mi.get_max_hp_desc() << "\n";
 }
 
+static void _describe_monster_hd(const monster_info mi, ostringstream &result)
+{
+	std::string s = std::to_string(mi.hd);
+    result << "Hit Dice: " + s + "\n";
+}
+
 /**
  * Append information about a given monster's AC to the provided stream.
  *
@@ -3288,6 +3294,7 @@ static string _monster_stat_description(const monster_info& mi)
 {
     ostringstream result;
 
+    _describe_monster_hd(mi, result);
     _describe_monster_hp(mi, result);
     _describe_monster_ac(mi, result);
     _describe_monster_ev(mi, result);
