@@ -4369,6 +4369,9 @@ bool poison_player(int amount, string source, string source_aux, bool force)
 
     if (player_res_poison() < 0)
         amount *= 2;
+	
+    // stepdown high poison values
+    amount = stepdown_value(amount, 30, 30, 120, 120);
 
     you.duration[DUR_POISONING] += amount * 1000;
 
@@ -4415,12 +4418,12 @@ static double _poison_dur_to_aut(double dur)
 {
     // Poison already at minimum speed.
     if (dur < 15.0 * 250.0)
-        return dur / 125.0;
+        return dur / 100.0;
     // Poison is not at maximum speed.
     if (dur < 15.0 * 10000.0)
-        return (150.0 + 10.0 * log(dur / (15.0 * 250.0)) / log(15.0 / 14.0)) / 5.0;
+        return (150.0 + 10.0 * log(dur / (15.0 * 250.0)) / log(15.0 / 14.0)) / 4.0;
     return (150.0 + (dur - 15.0 * 10000.0) / 1000.0
-                 + 10.0 * log(10000.0 / 250.0) / log(15.0 / 14.0)) / 5.0;
+                 + 10.0 * log(10000.0 / 250.0) / log(15.0 / 14.0)) / 4.0;
 }
 
 // The inverse of the above function, i.e. the amount of poison needed
@@ -4429,12 +4432,12 @@ static double _poison_aut_to_dur(double aut)
 {
     // Amount of time that poison lasts at minimum speed.
     if (aut < 1500.0)
-        return aut * 125.0;
+        return aut * 100.0;
     // Amount of time that poison exactly at the maximum speed lasts.
     const double aut_from_max_speed = 150.0 + 10.0 * log(40.0) / log(15.0 / 14.0);
     if (aut < aut_from_max_speed)
-        return (15.0 * 250.0 * exp(log(15.0 / 14.0) / 10.0 * (aut - 150.0))) * 5.0;
-    return (15.0 * 10000.0 + 1000.0 * (aut - aut_from_max_speed)) * 5.0;
+        return (15.0 * 250.0 * exp(log(15.0 / 14.0) / 10.0 * (aut - 150.0))) * 4.0;
+    return (15.0 * 10000.0 + 1000.0 * (aut - aut_from_max_speed)) * 4.0;
 }
 
 void handle_player_poison(int delay)
