@@ -876,7 +876,7 @@ brand_type attack::random_chaos_brand()
     switch (brand)
     {
     case SPWPN_NORMAL:          brand_name += "(plain)"; break;
-    case SPWPN_FLAMING:         brand_name += "detonation"; break;
+    case SPWPN_FLAMING:         brand_name += "flaming"; break;
     case SPWPN_FREEZING:        brand_name += "freezing"; break;
     case SPWPN_HOLY_WRATH:      brand_name += "holy wrath"; break;
     case SPWPN_ELECTROCUTION:   brand_name += "electrocution"; break;

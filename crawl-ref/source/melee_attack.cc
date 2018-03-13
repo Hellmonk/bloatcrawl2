@@ -1836,8 +1836,8 @@ void melee_attack::handle_noise(const coord_def & pos)
 		loudness += random2(5) + 1;
     }
 
-    // Cap melee noise at shouting volume.
-    loudness = min(12, loudness);
+    // Cap melee noise at shouting volume unless singing.
+    loudness = min(12 + you.attribute[ATTR_SONG_OF_SLAYING] ? 6 : 0, loudness);
 
     noisy(loudness, pos, attacker->mid);
 }
