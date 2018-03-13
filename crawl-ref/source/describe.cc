@@ -1057,13 +1057,13 @@ static string _describe_weapon(const item_def &item, bool verbose)
         case SPWPN_FLAMING:
             if (is_range_weapon(item))
             {
-                description += "It causes projectiles fired from it to burn "
-                    "those they strike,";
+                description += "It causes projectiles fired from it to explode "
+                    "in flames when hitting a target,";
             }
             else
             {
-                description += "It has been specially enchanted to burn "
-                    "those struck by it,";
+                description += "It has been specially enchanted to produce "
+                    "a fiery explosion on hit,";
             }
             description += " causing extra injury to most foes and up to half "
                            "again as much damage against particularly "

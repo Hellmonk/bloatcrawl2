@@ -34,6 +34,8 @@
 #include "mon-poly.h"
 #include "nearby-danger.h"
 #include "religion.h"
+#include "shout.h"
+#include "spl-damage.h"
 #include "spl-miscast.h"
 #include "state.h"
 #include "stepdown.h"
@@ -874,7 +876,7 @@ brand_type attack::random_chaos_brand()
     switch (brand)
     {
     case SPWPN_NORMAL:          brand_name += "(plain)"; break;
-    case SPWPN_FLAMING:         brand_name += "flaming"; break;
+    case SPWPN_FLAMING:         brand_name += "detonation"; break;
     case SPWPN_FREEZING:        brand_name += "freezing"; break;
     case SPWPN_HOLY_WRATH:      brand_name += "holy wrath"; break;
     case SPWPN_ELECTROCUTION:   brand_name += "electrocution"; break;
@@ -1587,12 +1589,8 @@ bool attack::apply_damage_brand(const char *what)
     switch (brand)
     {
     case SPWPN_FLAMING:
-        calc_elemental_brand_damage(BEAM_FIRE,
-                                    defender->is_icy() ? "melt" : "burn",
-                                    what);
-        defender->expose_to_element(BEAM_FIRE, 2);
-        if (defender->is_player())
-            maybe_melt_player_enchantments(BEAM_FIRE, special_damage);
+        noisy(min(damage_done / 2, 20), defender->pos());
+        detonation_brand(attacker, defender->pos(), damage_done);
         break;
 
     case SPWPN_FREEZING:

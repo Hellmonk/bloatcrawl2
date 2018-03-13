@@ -1364,6 +1364,72 @@ void shillelagh(actor *wielder, coord_def where, int pow)
         _shatter_player(pow, wielder, true);
 }
 
+void detonation_brand(actor *wielder, coord_def where, int pow)
+{
+
+    // Used to draw explosion cells
+    bolt beam_visual;
+    beam_visual.set_agent(wielder);
+    beam_visual.flavour       = BEAM_VISUAL;
+    beam_visual.glyph         = dchar_glyph(DCHAR_EXPLOSION);
+    beam_visual.colour        = RED;
+    beam_visual.ex_size       = 1;
+    beam_visual.is_explosion  = true;
+
+    vector <monster* > affected_monsters;
+    for (adjacent_iterator ai(where, false); ai; ++ai)
+    {
+        monster *mon = monster_at(*ai);
+        if (!mon || !mon->alive() || mon->submerged()
+            || mon == wielder)
+        {
+            continue;
+        }
+        if(mon && wielder->is_monster() && wielder->as_monster()->attitude == mon->attitude)
+        {
+			continue;
+        }
+        else if(mon && wielder->is_player() && mon->attitude != ATT_HOSTILE)
+        {
+			continue;
+        }	
+        affected_monsters.push_back(mon);
+    }
+    
+    if (you.can_see(*wielder))
+    {
+        mpr("There is a fiery explosion!");
+    }
+	
+    beam_visual.explosion_draw_cell(where);
+
+    // do the actual damage
+    for (auto mon : affected_monsters)
+    {
+        int dam = resist_adjust_damage(mon, BEAM_FIRE, 1 + random2(pow) / 2);
+        if(you.can_see(*mon))
+        {
+            mprf("%s is burned (%d)!", mon->name(DESC_THE).c_str(), dam);
+            beam_visual.explosion_draw_cell(mon->pos());
+        }
+        mon->expose_to_element(BEAM_FIRE, 1 + dam / 5);
+        mon->hurt(wielder, dam);
+    }
+	
+    if ((you.pos() - where).rdist() <= 1 && in_bounds(you.pos()) && wielder->is_monster()
+            && wielder->as_monster()->attitude == ATT_HOSTILE)
+    {
+        int dam = resist_adjust_damage(&you, BEAM_FIRE, 1 + random2(pow) / 2);
+		beam_visual.explosion_draw_cell(you.pos());
+        mprf("you are burned (%d)!", dam);
+        expose_player_to_element(BEAM_FIRE, 1 + dam / 5);
+        ouch(dam, KILLED_BY_MONSTER, wielder->mid);
+    }
+	
+    update_screen();
+    scaled_delay(50);
+}
+
 /**
  * Is it OK for the player to cast Irradiate right now, or will they end up
  * injuring a monster they didn't mean to?
