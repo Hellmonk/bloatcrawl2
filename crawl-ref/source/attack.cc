@@ -579,9 +579,9 @@ void attack::chaos_affects_defender()
     int poly_up_chance  = can_poly && mon               ?  1 : 0;
     int shifter_chance  = can_poly && mon && is_natural
                           && !is_shifter                ?  1 : 0;
-    int rage_chance     = can_rage                      ?  5 : 0;
+    int rage_chance     = can_rage                      ? 10 : 0;
     int speed_chance    = can_slow                      ? 10 : 0;
-    int para_chance     = !firewood                     ?  5 : 0;
+    int para_chance     = !firewood                     ? 10 : 0;
     int petrify_chance  = can_slow && can_petrify       ? 10 : 0;
 
     // NOTE: Must appear in exact same order as in chaos_type enumeration.
@@ -589,14 +589,14 @@ void attack::chaos_affects_defender()
     {
         clone_chance,   // CHAOS_CLONE
         poly_chance,    // CHAOS_POLY
-        poly_up_chance, // CHAOS_POLY_UP
-        shifter_chance, // CHAOS_MAKE_SHIFTER
-        20,             // CHAOS_MISCAST
+        0,              // CHAOS_POLY_UP
+        0,              // CHAOS_MAKE_SHIFTER
+        0,              // CHAOS_MISCAST
         rage_chance,    // CHAOS_RAGE
 
         10,             // CHAOS_HEAL
         speed_chance,   // CHAOS_HASTE
-        0,             // CHAOS_INVIS
+        0,              // CHAOS_INVIS
 
         speed_chance,   // CHAOS_SLOW
         para_chance,    // CHAOS_PARALYSIS
