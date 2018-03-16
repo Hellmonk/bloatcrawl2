@@ -79,8 +79,6 @@ void practise_casting(spell_type spell, bool success)
 
        spellcasting had also been generally exercised at the same time
        ****************************************************************** */
-
-    exercise(SK_SPELLCASTING, 1 + random2(1 + diff) / skillcount);
 }
 
 /**
