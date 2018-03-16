@@ -66,7 +66,7 @@ Breathes a blast of noxious fumes at a targeted creature.
 Bat Form ability
 
 Transforms you into a swift-moving vampire bat. The user becomes unable to
-drink potions or evoke wands, to open or close doors, or to cast spells.
+evoke wands or to cast spells.
 %%%%
 Spit Acid ability
 
@@ -134,9 +134,17 @@ End Aura of Abjuration ability
 
 Ends your Aura of Abjuration spell.
 %%%%
+End Infestation ability
+
+Ends your Infestation spell.
+%%%%
 End Infusion ability
 
 Ends your Infusion spell.
+%%%%
+End Animate Dead ability
+
+Ends your Animate Dead spell.
 %%%%
 Self-Restoration ability
 
@@ -153,6 +161,9 @@ Allows making tunnels through soft rock and rusted grates. Activating the
 ability has no cost and simply prepares you to start digging; once active,
 moving into a wall will start tunneling. Doing so makes some noise and causes
 hunger, and is a little slower than walking.
+
+Once active, activating the ability again or making any non-digging movement
+action will cancel the Dig status.
 %%%%
 Shaft Self ability
 
@@ -257,10 +268,12 @@ One. Demon weapons will be converted into a more powerful sacred weapon. This
 blessing may only be used once, and it cannot be used on artefact weapons.
 %%%%
 # Kikubaaqudgha
-Receive Corpses ability
+Miasmata ability
 
-Creates one or more reanimatable monster corpses nearby. The number and
-freshness of these are dependent on Necromancy skill.
+Imbues your attacks with putrescent vapours. Enemies you strike
+may be engulfed in miasma for a brief time. High levels of 
+necromancy skill will increase the chance of a cloud forming as well as the
+duration of the ability.
 %%%%
 Torment ability
 
@@ -304,9 +317,9 @@ skeletons cannot leave the level they were created on.
 %%%%
 Drain Life ability
 
-Drains the life force of any nearby creatures, healing the user depending on
-the damage dealt. The amount of life force drained is increased by Invocations
-skill.
+Drains the life force of any nearby creatures, healing the user and their enslaved
+soul (if present) for a portion of the damage dealt. The amount of life force drained 
+is increased by Invocations skill.
 %%%%
 Enslave Soul ability
 
@@ -865,7 +878,7 @@ overall increase is determined by the size of your donation.
 %%%%
 Curse Item ability
 
-Curses a chosen item, at the cost of a potion of curing.
+Curses a chosen item.
 %%%%
 Recall Ancestor ability
 
@@ -909,8 +922,31 @@ Ancestor Identity ability
 Recalls who your ancestor preferred to be known as, correcting their name and
 gender. This does not take any time.
 %%%%
+Serpent's Lash ability
+
+Allows you to move at supernatural speeds for a short distance, travelling
+a length of two tiles instantly. Martial attacks performed under the
+effect of Serpent's Lash are more damaging and never miss.
+%%%%
+Heavenly Storm ability
+
+Invokes a storm of heavenly clouds. While the storm rages, striking enemies
+with martial attacks provides an increasing bonus to melee damage and accuracy.
+The bonus fades over time, and the storm lasts until the bonus has faded
+completely. The heavenly clouds prevent invisibility, and obscure the vision of
+those outside the storm.
+%%%%
 Hop ability
 
 Hops toward a chosen destination, landing somewhere nearby. After using this
 ability, you will be unable to hop again until you have spent some time not
 moving. (Other actions, such as casting spells and attacking, are fine.)
+%%%%
+Soul Transfer ability
+
+Exchanges the places of your enslaved soul and the target (which may be yourself).
+%%%%
+Recall Enslaved Soul ability
+
+Recalls your enslaved soul from anywhere in the dungeon to your immediate
+surroundings.

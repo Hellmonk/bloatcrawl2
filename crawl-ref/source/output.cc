@@ -507,13 +507,13 @@ void reset_hud()
 
 static bool _boosted_hp()
 {
-    return you.duration[DUR_DIVINE_VIGOUR]
+    return you.attribute[ATTR_DIVINE_VIGOUR]
            || you.berserk();
 }
 
 static bool _boosted_mp()
 {
-    return you.duration[DUR_DIVINE_VIGOUR];
+    return you.attribute[ATTR_DIVINE_VIGOUR];
 }
 
 static bool _boosted_ac()
@@ -523,19 +523,23 @@ static bool _boosted_ac()
            || you.duration[DUR_QAZLAL_AC]
            || sanguine_armour_bonus()
            || you.attribute[ATTR_BONE_ARMOUR] > 0
-           || you.attribute[ATTR_OZO_ARMOUR] > 0;
+           || you.attribute[ATTR_OZO_ARMOUR] > 0
+           || you.attribute[ATTR_SKELETON_ARMOUR] > 0;
 }
 
 static bool _boosted_ev()
 {
-    return you.duration[DUR_AGILITY];
+    return you.duration[DUR_AGILITY]
+           || you.props.exists(WALL_JUMP_EV_KEY)
+               && you.props[WALL_JUMP_EV_KEY].get_int() > 0;
 }
 
 static bool _boosted_sh()
 {
     return you.duration[DUR_DIVINE_SHIELD]
            || qazlal_sh_boost() > 0
-           || you.attribute[ATTR_BONE_ARMOUR] > 0;
+           || you.attribute[ATTR_BONE_ARMOUR] > 0
+           || you.attribute[ATTR_SKELETON_ARMOUR] > 0;
 }
 
 #ifdef DGL_SIMPLE_MESSAGING
@@ -915,9 +919,6 @@ static void _print_stats_hp(int x, int y)
 
 static short _get_stat_colour(stat_type stat)
 {
-    if (you.duration[stat_zero_duration(stat)])
-        return LIGHTRED;
-
     // Check the stat_colour option for warning thresholds.
     for (const auto &entry : Options.stat_colour)
         if (you.stat(stat) <= entry.first)
@@ -1166,6 +1167,7 @@ static void _get_status_lights(vector<status_light>& out)
         DUR_DEATHS_DOOR,
         DUR_EXHAUSTED,
         DUR_QUAD_DAMAGE,
+        STATUS_SERPENTS_LASH,
     };
 
     bitset<STATUS_LAST_STATUS + 1> done;
@@ -1332,6 +1334,8 @@ static void _redraw_title()
         _draw_wizmode_flag("CASUAL");
     else if (crawl_state.difficulty == DIFFICULTY_NORMAL)
         _draw_wizmode_flag("NORMAL");
+    else if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN)
+        _draw_wizmode_flag("SPEED");
 #ifdef DGL_SIMPLE_MESSAGING
     update_message_status();
 #endif
@@ -1368,10 +1372,10 @@ static void _redraw_title()
                               _god_status_colour(god_colour(you.religion)));
         }
     }
-    else if (you.char_class == JOB_MONK && you.species != SP_DEMIGOD
+    else if (you.char_class == JOB_MONK && you.species != SP_DEMIGOD && you.species != SP_TITAN
              && !had_gods())
     {
-        string godpiety = "**....";
+        string godpiety = "2*";
         textcolour(DARKGREY);
         if ((unsigned int)(strwidth(species) + strwidth(godpiety) + 1) <= WIDTH)
             NOWRAP_EOL_CPRINTF(" %s", godpiety.c_str());
@@ -1633,7 +1637,7 @@ void draw_border()
     // Line 8 is exp pool, Level
 }
 
-void redraw_screen()
+void redraw_screen(bool show_updates)
 {
     if (!crawl_state.need_save)
     {
@@ -1674,8 +1678,16 @@ void redraw_screen()
         update_turn_count();
     }
 
-    viewwindow();
-
+    if (Options.messages_at_top)
+    {
+        display_message_window();
+        viewwindow(show_updates);
+    }
+    else
+    {
+        viewwindow(show_updates);
+        display_message_window();
+    }
     // Display the message window at the end because it places
     // the cursor behind possible prompts.
     display_message_window();
@@ -2227,7 +2239,7 @@ static string _god_asterisks()
     else
     {
         const int prank = piety_rank();
-        return string(prank, '*') + string(NUM_PIETY_STARS - prank, '.');
+        return make_stringf("%d*[%d]", prank, you.piety);
     }
 }
 
@@ -2686,7 +2698,7 @@ string mutation_overview()
     }
 
     // a bit more stuff
-    if (you.species == SP_OGRE || you.species == SP_TROLL
+    if (you.species == SP_TITAN || you.species == SP_TROLL
         || species_is_draconian(you.species) || you.species == SP_SPRIGGAN)
     {
         mutations.emplace_back("unfitting armour");
@@ -2820,7 +2832,7 @@ string _status_mut_rune_list(int sw)
     {
         text += make_stringf("\n<w>%s:</w> %d/%d rune%s: %s",
                     stringize_glyph(get_item_symbol(SHOW_ITEM_MISCELLANY)).c_str(),
-                    (int)runes.size(), you.obtainable_runes,
+                    (int)runes.size(), 9,
                     you.obtainable_runes == 1 ? "" : "s",
                     comma_separated_line(runes.begin(), runes.end(),
                                          ", ", ", ").c_str());

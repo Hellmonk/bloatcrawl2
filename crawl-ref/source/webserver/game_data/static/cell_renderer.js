@@ -843,6 +843,11 @@ function ($, view_data, main, tileinfo_player, icons, dngn, enums,
                 this.draw_icon(icons.GLOWING, x, y, -status_shift, 0);
                 status_shift += 8;
             }
+            if (fg.SWIFT)
+            {
+                this.draw_icon(icons.SWIFT, x, y, -status_shift, 0);
+                status_shift += 6;
+            }
             if (fg.HASTED)
             {
                 this.draw_icon(icons.HASTED, x, y, -status_shift, 0);
@@ -856,6 +861,11 @@ function ($, view_data, main, tileinfo_player, icons, dngn, enums,
             if (fg.MIGHT)
             {
                 this.draw_icon(icons.MIGHT, x, y, -status_shift, 0);
+                status_shift += 6;
+            }
+            if (fg.CORRODED)
+            {
+                this.draw_icon(icons.CORRODED, x, y, -status_shift, 0);
                 status_shift += 6;
             }
             if (fg.DRAIN)
@@ -896,6 +906,11 @@ function ($, view_data, main, tileinfo_player, icons, dngn, enums,
             if (fg.INFESTED)
             {
                 this.draw_icon(icons.INFESTED, x, y, -status_shift, 0);
+                status_shift += 6;
+            }
+            if (fg.PINNED)
+            {
+                this.draw_icon(icons.PINNED, x, y, -status_shift, 0);
                 status_shift += 6;
             }
             if (fg.RECALL)
@@ -988,7 +1003,7 @@ function ($, view_data, main, tileinfo_player, icons, dngn, enums,
 
 
         // Helper functions for drawing from specific textures
-        draw_tile: function(idx, x, y, mod, ofsx, ofsy, y_max)
+        draw_tile: function(idx, x, y, mod, ofsx, ofsy, y_max, centre)
         {
             var info = mod.get_tile_info(idx);
             var img = get_img(mod.get_img(idx));
@@ -996,8 +1011,9 @@ function ($, view_data, main, tileinfo_player, icons, dngn, enums,
             {
                 throw ("Tile not found: " + idx);
             }
-            var size_ox = 32 / 2 - info.w / 2;
-            var size_oy = 32 - info.h;
+            centre = centre === undefined ? true : centre;
+            var size_ox = !centre ? 0 : 32 / 2 - info.w / 2;
+            var size_oy = !centre ? 0 : 32 - info.h;
             var pos_sy_adjust = (ofsy || 0) + info.oy + size_oy;
             var pos_ey_adjust = pos_sy_adjust + info.ey - info.sy;
             var sy = pos_sy_adjust;
@@ -1052,10 +1068,10 @@ function ($, view_data, main, tileinfo_player, icons, dngn, enums,
             this.draw_tile(idx, x, y, icons, ofsx, ofsy);
         },
 
-        draw_from_texture: function (idx, x, y, tex, ofsx, ofsy, y_max)
+        draw_from_texture: function (idx, x, y, tex, ofsx, ofsy, y_max, centre)
         {
             var mod = tileinfos(tex);
-            this.draw_tile(idx, x, y, mod, ofsx, ofsy);
+            this.draw_tile(idx, x, y, mod, ofsx, ofsy, y_max, centre);
         },
     });
 

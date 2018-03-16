@@ -227,6 +227,28 @@ mid_t hepliaklqana_ancestor()
 }
 
 /**
+ * Returns the mid of the current soul enslaved by Yred, if any. If none
+ * exists, returns MID_NOBODY.
+ *
+ * The soul is *not* guaranteed to be on-level, even if it exists; check
+ * the companion_list before doing anything rash!
+ *
+ * @return  The mid_t of the enslaved soul, or MID_NOBODY if none exists.
+ */
+mid_t yred_soul()
+{
+    for (auto &entry : companion_list)
+    {
+        monster* mons = monster_by_mid(entry.first);
+        if (!mons)
+            mons = &entry.second.mons.mons;
+        if (mons_enslaved_soul(*mons))
+            return entry.first;
+    }
+    return MID_NOBODY;
+}
+
+/**
  * Returns the a pointer to the current ancestor granted by Hepliaklqana, if
  * any. If none exists, returns null.
  *
@@ -249,6 +271,28 @@ monster* hepliaklqana_ancestor_mon()
         if (mons_is_hepliaklqana_ancestor(entry.second.mons.mons.type))
             return &entry.second.mons.mons;
     // should never reach this...
+    return nullptr;
+}
+
+/**
+ * Returns the a pointer to the current enslaved soul, if
+ * any. If none exists, returns null.
+ *
+ * The enslaved soul is *not* guaranteed to be on-level, even if it exists; check
+ * the companion_list before doing anything rash!
+ *
+ * @return  The player's enslaved soul, or nullptr if none exists.
+ */
+monster* yred_soul_mon()
+{
+    const mid_t soul_mid = yred_soul();
+    if (soul_mid == MID_NOBODY)
+        return nullptr;
+
+    monster* soul = monster_by_mid(soul_mid);
+    if (soul)
+        return soul;
+
     return nullptr;
 }
 

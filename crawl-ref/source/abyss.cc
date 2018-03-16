@@ -59,8 +59,6 @@
 
 const coord_def ABYSS_CENTRE(GXM / 2, GYM / 2);
 
-static const int ABYSSAL_RUNE_MAX_ROLL = 200;
-
 abyss_state abyssal_state;
 
 static ProceduralLayout *abyssLayout = nullptr, *levelLayout = nullptr;
@@ -434,6 +432,14 @@ static void _abyss_lose_monster(monster& mons)
     {
         remove_companion(&mons);
         you.duration[DUR_ANCESTOR_DELAY] = random_range(50, 150); //~5-15 turns
+    }
+    else if (yred_soul() == mons.mid)
+    { 
+	    move_companion_to(&mons, level_id(BRANCH_DUNGEON, 1));
+        you.attribute[ATTR_YRED_SOUL_TIMEOUT] = 1;
+        you.duration[DUR_SOUL_DELAY] = random_range(50, 150); //~5-15 turns
+        monster_cleanup(&mons);
+        return;
     }
 
     mons.destroy_inventory();
@@ -1356,11 +1362,9 @@ static void _abyss_generate_new_area()
     you.moveto(ABYSS_CENTRE);
     abyss_genlevel_mask.init(true);
     _generate_area(abyss_genlevel_mask);
-    if (one_chance_in(5))
-    {
-        _place_feature_near(you.pos(), LOS_RADIUS,
-                            DNGN_FLOOR, DNGN_ALTAR_LUGONU, 50);
-    }
+
+    _place_feature_near(you.pos(), LOS_RADIUS,
+                        DNGN_FLOOR, DNGN_ALTAR_LUGONU, 50);
 
     los_changed();
     place_transiting_monsters();
@@ -1422,11 +1426,8 @@ retry:
     else
     {
         grd(ABYSS_CENTRE) = DNGN_FLOOR;
-        if (one_chance_in(5))
-        {
-            _place_feature_near(ABYSS_CENTRE, LOS_RADIUS,
-                                DNGN_FLOOR, DNGN_ALTAR_LUGONU, 50);
-        }
+        _place_feature_near(ABYSS_CENTRE, LOS_RADIUS,
+                            DNGN_FLOOR, DNGN_ALTAR_LUGONU, 50);
     }
 
     setup_environment_effects();
@@ -1712,15 +1713,9 @@ static void _corrupt_square(const corrupt_env &cenv, const coord_def &c)
     actor* act = actor_at(c);
     if (feat_is_solid(feat) && (igrd(c) != NON_ITEM || act))
     {
-        coord_def newpos;
-        get_push_space(c, newpos, act, true);
-        if (!newpos.origin())
-        {
-            move_items(c, newpos);
-            if (act)
-                actor_at(c)->move_to_pos(newpos);
-        }
-        else
+        push_items_from(c, nullptr);
+        push_actor_from(c, nullptr, true);
+        if (actor_at(c) || igrd(c) != NON_ITEM)
             feat = DNGN_FLOOR;
     }
 

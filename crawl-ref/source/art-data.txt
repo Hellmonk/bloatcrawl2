@@ -185,8 +185,8 @@ ANGRY:   50
 BRAND:   SPWPN_ANTIMAGIC
 
 NAME:    mace of Variability
-OBJ:     OBJ_WEAPONS/WPN_GREAT_MACE
-PLUS:    +0   # Set on generation
+OBJ:     OBJ_WEAPONS/WPN_MACE
+PLUS:    +27   # Set on generation
 COLOUR:  ETC_RANDOM
 TILE:    spwpn_mace_of_variability
 TILE_EQ: mace_of_variability
@@ -202,10 +202,10 @@ TILE:    spwpn_glaive_of_prune
 TILE_EQ: glaive_of_prune
 VALUE:   1000
 BOOL:    chaotic
-BRAND:   SPWPN_VORPAL
+BRAND:   SPWPN_DEVASTATION
 
 NAME:    sword of Power
-OBJ:     OBJ_WEAPONS/WPN_GREAT_SWORD
+OBJ:     OBJ_WEAPONS/WPN_DOUBLE_SWORD
 PLUS:    +0 # Set on wield
 COLOUR:  RED
 TILE:    spwpn_sword_of_power
@@ -240,6 +240,7 @@ TILE:    spwpn_vampires_tooth
 TILE_EQ: vampires_tooth
 BRAND:   SPWPN_VAMPIRISM
 VALUE:   1000
+BOOL:    nogen
 
 NAME:    scythe of Curses
 OBJ:     OBJ_WEAPONS/WPN_SCYTHE
@@ -257,7 +258,7 @@ COLOUR:  ETC_GOLD
 TILE:    spwpn_sceptre_of_torment
 TILE_EQ: mace_ruby
 VALUE:   1200
-BOOL:    special, evil
+BOOL:    special, evil, nogen
 
 NAME:    sword of Zonguldrok
 OBJ:     OBJ_WEAPONS/WPN_DOUBLE_SWORD
@@ -320,11 +321,12 @@ PLUS:    +8
 COLOUR:  ETC_DARK
 TILE:    urand_bloodbane
 TILE_EQ: bloodbane
-BRAND:   SPWPN_VORPAL
+BRAND:   SPWPN_DEVASTATION
 ANGRY:   5
 BOOL:    berserk
 STEALTH: -1
 
+# TAG_MAJOR_VERSION == 34
 NAME:    scimitar of Flaming Death
 OBJ:     OBJ_WEAPONS/WPN_SCIMITAR
 INSCRIP: sticky flame,
@@ -335,7 +337,7 @@ TILE_EQ: flaming_death
 BRAND:   SPWPN_FLAMING
 FIRE:    2
 COLD:    -1
-BOOL:    poison, skip_ego
+BOOL:    poison, skip_ego, nogen
 MAGIC:   1
 
 # TAG_MAJOR_VERSION == 34
@@ -362,6 +364,7 @@ AC:      -3
 EV:      -3
 LIFE:     1
 
+# TAG_MAJOR_VERSION == 34
 NAME:    dagger of Chilly Death
 OBJ:     OBJ_WEAPONS/WPN_DAGGER
 INSCRIP: flash freeze,
@@ -373,7 +376,7 @@ BRAND:   SPWPN_FREEZING
 FIRE:    -1
 COLD:    2
 MAGIC:   1
-BOOL:    poison, skip_ego
+BOOL:    poison, skip_ego, nogen
 
 NAME:     dagger "Morg"
 OBJ:      OBJ_WEAPONS/WPN_DAGGER
@@ -396,8 +399,8 @@ BRAND:   SPWPN_SPEED
 STR:     3
 BOOL:    nogen
 
-NAME:    hand crossbow "Punk"
-OBJ:     OBJ_WEAPONS/WPN_HAND_CROSSBOW
+NAME:    shortbow "Punk"
+OBJ:     OBJ_WEAPONS/WPN_SHORTBOW
 PLUS:    +8
 COLOUR:  ETC_SLIME
 TILE:    urand_punk
@@ -414,7 +417,6 @@ TILE:     urand_zephyr
 TILE_EQ:  zephyr
 BRAND:    SPWPN_SPEED
 DEX:      3
-BOOL:     seeinv
 
 NAME:    giant club "Skullcrusher"
 OBJ:     OBJ_WEAPONS/WPN_GIANT_CLUB
@@ -433,10 +435,10 @@ TILE:     urand_guard
 TILE_EQ:  glaive_of_the_guard
 BRAND:    SPWPN_ELECTROCUTION
 AC:       5
-BOOL:     seeinv, berserk
+BOOL:     berserk
 
 ENUM:     SWORD_OF_RIGHTEOUSNESS
-NAME:     sword of Righteousness
+NAME:     Righteous Blade
 OBJ:      OBJ_WEAPONS/WPN_EUDEMON_BLADE
 PLUS:     +10
 COLOUR:   ETC_HOLY
@@ -533,10 +535,11 @@ COLOUR:   ETC_DARK
 TILE:     urand_sniper
 TILE_EQ:  sniper
 BASE_DELAY: +4
-BRAND:    SPWPN_VORPAL
+BRAND:    SPWPN_DEVASTATION
 BOOL:     seeinv
 INSCRIP:  nevermiss,
 
+# TAG_MAJOR_VERSION == 34
 NAME:    longbow "Piercer"
 OBJ:     OBJ_WEAPONS/WPN_LONGBOW
 PLUS:    +7
@@ -545,6 +548,7 @@ TILE:    urand_piercer
 TILE_EQ: great_bow
 BRAND:   SPWPN_PENETRATION
 EV:      -2
+BOOL:    nogen
 
 # TAG_MAJOR_VERSION == 34
 ENUM:    BLOWGUN_ASSASSIN
@@ -680,7 +684,7 @@ TILE:     urand_thief
 TILE_EQ:  black
 SLAY:     -2
 STEALTH:  1
-BOOL:     seeinv, fog
+BOOL:     fog
 
 # TAG_MAJOR_VERSION == 34
 NAME:    large shield "Bullseye"
@@ -699,7 +703,7 @@ COLOUR:  ETC_JEWEL
 TILE:    urand_dyrovepreva
 TILE_EQ: dyrovepreva
 INT:     2
-BOOL:    elec, seeinv
+BOOL:    elec
 
 NAME:     hat of the Bear Spirit
 OBJ:      OBJ_ARMOUR/ARM_HAT
@@ -712,6 +716,7 @@ BOOL:     berserk
 MAGIC:    2
 LIFE:     1
 
+# TAG_MAJOR_VERSION == 34
 NAME:     robe of Misfortune
 OBJ:      OBJ_ARMOUR/ARM_ROBE
 PLUS:     -5
@@ -720,7 +725,7 @@ TILE:     urand_misfortune
 TILE_EQ:  robe_misfortune
 EV:       -5
 STEALTH:  -2
-BOOL:     nospell, rnd_tele, randapp, unided, mutate, drain
+BOOL:     nospell, rnd_tele, randapp, unided, mutate, drain, nogen
 
 # TAG_MAJOR_VERSION == 34
 NAME:     cloak of Flash
@@ -751,6 +756,7 @@ TILE:    urand_lear
 TILE_EQ: lears_hauberk
 BOOL:    special
 
+# TAG_MAJOR_VERSION == 34
 NAME:    skin of Zhor
 OBJ:     OBJ_ARMOUR/ARM_ANIMAL_SKIN
 PLUS:    +4
@@ -758,7 +764,9 @@ COLOUR:  BROWN
 TILE:    urand_zhor
 TILE_EQ: zhor
 COLD:    3
+BOOL:    nogen
 
+# TAG_MAJOR_VERSION == 34
 ENUM:    SALAMANDER
 NAME:    salamander hide armour
 OBJ:     OBJ_ARMOUR/ARM_LEATHER_ARMOUR
@@ -767,7 +775,7 @@ COLOUR:  ETC_FIRE
 TILE:    urand_salamander
 TILE_EQ: leather_red
 FIRE:    2
-BOOL:    berserk
+BOOL:    berserk, nogen
 
 NAME:    gauntlets of War
 OBJ:     OBJ_ARMOUR/ARM_GLOVES
@@ -814,8 +822,7 @@ COLOUR:  ETC_SHIMMER_BLUE
 TILE:    urand_dragonmask
 TILE_EQ: art_dragonhelm
 MAGIC:   1
-SLAY:    3
-BOOL:    seeinv
+SLAY:    4
 
 NAME:     robe of Night
 OBJ:      OBJ_ARMOUR/ARM_ROBE
@@ -825,7 +832,6 @@ COLOUR:   ETC_DARK
 TILE:     urand_night
 TILE_EQ:  robe_of_night
 MAGIC:    1
-BOOL:     seeinv
 
 NAME:    scales of the Dragon King
 OBJ:     OBJ_ARMOUR/ARM_GOLD_DRAGON_ARMOUR
@@ -868,6 +874,7 @@ COLD:     1
 STEALTH:  -2
 BOOL:     elec
 
+# TAG_MAJOR_VERSION == 34
 NAME:     ratskin cloak
 OBJ:      OBJ_ARMOUR/ARM_CLOAK
 PLUS:     +2
@@ -877,7 +884,7 @@ TILE_EQ:  ratskin
 INT:      -1
 DEX:      -1
 LIFE:     1
-BOOL:     poison
+BOOL:     poison, nogen
 
 NAME:     shield of the Gong
 OBJ:      OBJ_ARMOUR/ARM_SHIELD
@@ -902,7 +909,7 @@ INSCRIP: Umbra
 OBJ:     OBJ_JEWELLERY/RING_EVASION
 COLOUR:  ETC_DARK
 TILE:    urand_shadows
-BOOL:    inv
+DEX:     13
 
 # TAG_MAJOR_VERSION == 34
 NAME:    amulet of Cekugob
@@ -923,13 +930,13 @@ MAGIC:   3
 BOOL:    clarity
 
 NAME:    necklace of Bloodlust
-OBJ:     OBJ_JEWELLERY/AMU_RAGE
+OBJ:     OBJ_JEWELLERY/AMU_NOTHING
 COLOUR:  ETC_BLOOD
 TILE:    urand_bloodlust
 INT:     -3
 MAGIC:   1
 ANGRY:   5
-SLAY:    3
+SLAY:    7
 
 NAME:    ring of Dodge City
 OBJ:     OBJ_JEWELLERY/RING_EVASION
@@ -983,7 +990,7 @@ PLUS:     +14
 COLOUR:   ETC_UNHOLY
 TILE:     spwpn_demon_axe
 TILE_EQ:  demon_axe
-BRAND:    SPWPN_VORPAL
+BRAND:    SPWPN_DEVASTATION
 BOOL:     evil, seeinv, fly, drain
 
 NAME:     lightning scales
@@ -1181,7 +1188,7 @@ COLOUR:  ETC_ENCHANT
 TILE:    urand_gyre
 TILE_EQ: gyre
 PLUS:    5
-BRAND:   SPWPN_VORPAL
+BRAND:   SPWPN_FREEZING
 DEX:     -3
 
 ENUM:    ETHERIC_CAGE
@@ -1205,7 +1212,7 @@ TILE:    urand_eternal_torment
 TILE_EQ: eternal_torment
 INSCRIP: rTorment HP--
 LIFE:    3
-BOOL:    evil, seeinv, nogen
+BOOL:    evil, nogen
 
 ENUM:    VINES
 NAME:    robe of Vines

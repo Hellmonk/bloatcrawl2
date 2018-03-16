@@ -6,6 +6,13 @@ much protection as the armour made from the scales of some larger dragons, it is
 somewhat lighter and less encumbering. It is also remarkably smooth, letting
 corrosive slime flow off it like water.
 %%%%
+amulet of destruction
+
+An amulet inscribed with mysterious runes. Casting a destructive spell briefly 
+attunes the amulet to that spell, reducing the MP cost of successive casts for
+a short time. The attunement is refreshed when the spell is cast again but is 
+lost if another spell is cast.
+%%%%
 amulet of faith
 
 A talisman crafted to call the attention of the gods to its wearer. This divine
@@ -56,7 +63,7 @@ but, having never been tanned, it carries a light stench of rotting flesh.
 %%%%
 arbalest
 
-A large piece of machinery used for firing bolts, braced with steel and cranked
+A large piece of machinery used for firing arrows, braced with steel and cranked
 with a windlass. It takes some time to load and fire.
 %%%%
 arrow
@@ -481,7 +488,7 @@ A small axe.
 %%%%
 hand crossbow
 
-A compact piece of machinery, used for firing bolts. It takes some time to load
+A compact piece of machinery, used for firing arrows. It takes some time to load
 and fire.
 %%%%
 hat
@@ -644,8 +651,8 @@ drinks it.
 potion of ambrosia
 
 A strange substance, produced by ghost moths. Consuming it causes regeneration
-of health and magic, along with total befuddlement. The two effects are
-fundamentally linked – the regeneration ends the moment the confusion does.
+of health and magic, but also slows you. The two effects are
+fundamentally linked – the regeneration ends the moment the slowing does.
 %%%%
 potion of berserk rage
 
@@ -667,7 +674,7 @@ it. It also reduces magical contamination.
 %%%%
 potion of curing
 
-A potion which heals some wounds, clears the mind and cures poison and disease.
+A potion which heals some wounds and cures poison and disease.
 It can also slightly repair rotting.
 %%%%
 potion of flight
@@ -693,9 +700,9 @@ potion of magic
 
 A valuable potion which grants an infusion of magical energy.
 %%%%
-potion of might
+potion of augmentation
 
-A potion which greatly increases the strength and physical power of one who
+A potion which greatly increases the physical and mental power of one who
 drinks it.
 %%%%
 potion of mutation
@@ -772,10 +779,6 @@ ring of resist corrosion
 
 A ring that protects the wearer from acid damage and from corrosion caused by
 acids, although not infallibly so.
-%%%%
-ring of magical power
-
-A ring that increases its wearer's reserves of magical power.
 %%%%
 ring of poison resistance
 
@@ -990,36 +993,26 @@ fastened on one end.
 staff of air
 
 A staff that increases the power of air spells cast by its wielder, and
-insulates them from electricity. If the wielder is skilled in Evocations and
-Air Magic, they can shock those struck by it.
+insulates them from electricity.
 %%%%
 staff of cold
 
 A staff that increases the power of ice spells cast by its wielder, and
-protects them from the effects of cold. If the wielder is skilled in Evocations
-and Ice Magic, they can freeze those struck by it.
+protects them from the effects of cold.
 %%%%
 staff of death
 
 A staff that increases the power of necromantic spells cast by its wielder, and
-protects them from negative energy. If the wielder is skilled in Evocations and
-Necromancy, they can inflict great pain on those living souls they strike.
+protects them from negative energy.
 %%%%
 staff of earth
 
-A staff that increases the power of earth spells cast by its wielder. If the
-wielder is skilled in Evocations and Earth magic, they can crush those struck
-by it.
+A staff that increases the power of earth spells cast by its wielder.
 %%%%
 staff of fire
 
 A staff that increases the power of fire spells cast by its wielder, and
-protects them from the effects of fire. If the wielder is skilled in Evocations
-and Fire Magic, they can burn those struck by it.
-%%%%
-staff of power
-
-A staff that provides an increased reservoir of magical power to its wielder.
+protects them from the effects of fire.
 %%%%
 staff of summoning
 
@@ -1145,10 +1138,6 @@ wand of scattershot
 
 A magical device which fires powerful blasts of metallic shrapnel. Its damage
 is strongly reduced by armour.
-%%%%
-wand of slowing
-
-A magical device which slows down the actions of a targeted creature.
 %%%%
 war axe
 

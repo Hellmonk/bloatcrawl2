@@ -197,6 +197,8 @@ const vector<GameOption*> game_options::build_options_list()
         new BoolGameOption(SIMPLE_NAME(auto_sacrifice), false),
         new BoolGameOption(SIMPLE_NAME(dump_on_save), true),
         new BoolGameOption(SIMPLE_NAME(rest_wait_both), false),
+        new BoolGameOption(SIMPLE_NAME(wall_jump_prompt), false),
+        new BoolGameOption(SIMPLE_NAME(wall_jump_move), true),
         new BoolGameOption(SIMPLE_NAME(darken_beyond_range), true),
         new BoolGameOption(SIMPLE_NAME(dump_book_spells), true),
         new BoolGameOption(SIMPLE_NAME(arena_dump_msgs), false),
@@ -386,7 +388,7 @@ map<string, GameOption*> game_options::build_options_map(
     return option_map;
 }
 
-object_class_type item_class_by_sym(ucs_t c)
+object_class_type item_class_by_sym(char32_t c)
 {
     switch (c)
     {
@@ -512,7 +514,7 @@ static map<string, weapon_type> _special_weapon_map = {
 
     // These weapons' base names have changed; we want to interpret the old
     // names correctly.
-    {"crossbow",    WPN_HAND_CROSSBOW},
+    {"crossbow",    WPN_SHORTBOW},
 
     // Pseudo-weapons.
     {"unarmed",     WPN_UNARMED},
@@ -574,6 +576,8 @@ static string _difficulty_to_str(game_difficulty_level diff)
         return "casual";
     case DIFFICULTY_NORMAL:
         return "normal";
+    case DIFFICULTY_SPEEDRUN:
+        return "speedrun";
     default:
         return "ask";
     }
@@ -1182,7 +1186,7 @@ void game_options::clear_feature_overrides()
     feature_symbol_overrides.clear();
 }
 
-ucs_t get_glyph_override(int c)
+char32_t get_glyph_override(int c)
 {
     if (c < 0)
         c = -c;
@@ -1203,7 +1207,7 @@ static int read_symbol(string s)
         s = s.substr(1);
 
     {
-        ucs_t c;
+        char32_t c;
         const char *nc = s.c_str();
         nc += utf8towc(&c, nc);
         // no control, combining or CJK characters, please
@@ -1431,7 +1435,7 @@ void game_options::add_feature_override(const string &text, bool prepend)
         if (feat >= NUM_FEATURES)
             continue; // TODO: handle other object types.
 
-#define SYM(n, field) if (ucs_t s = read_symbol(iprops[n])) \
+#define SYM(n, field) if (char32_t s = read_symbol(iprops[n])) \
                           feature_symbol_overrides[feat][n] = s; \
                       else \
                           feature_symbol_overrides[feat][n] = '\0';
@@ -2311,8 +2315,8 @@ static void _bindkey(string field)
                                         end_bracket - start_bracket - 1);
     const char *s = key_str.c_str();
 
-    ucs_t wc;
-    vector<ucs_t> wchars;
+    char32_t wc;
+    vector<char32_t> wchars;
     while (int l = utf8towc(&wc, s))
     {
         s += l;
@@ -2513,7 +2517,7 @@ void game_options::read_option_line(const string &str, bool runscript)
         // clear out autopickup
         autopickups.reset();
 
-        ucs_t c;
+        char32_t c;
         for (const char* tp = field.c_str(); int s = utf8towc(&c, tp); tp += s)
         {
             object_class_type type = item_class_by_sym(c);
@@ -3307,6 +3311,8 @@ void game_options::read_option_line(const string &str, bool runscript)
 			game.difficulty = DIFFICULTY_CASUAL;
         else if (field == "normal")
             game.difficulty = DIFFICULTY_NORMAL;
+        else if (field == "speedrun")
+            game.difficulty = DIFFICULTY_SPEEDRUN;
         else
             game.difficulty = DIFFICULTY_ASK;
 	}

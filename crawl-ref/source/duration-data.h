@@ -2,6 +2,8 @@
  * Status defaults for durations.
  */
 
+#include "godpassive.h"
+ 
 static void _end_weapon_brand()
 {
     you.attribute[ATTR_EXCRUCIATING_WOUNDS] = 0;
@@ -152,8 +154,7 @@ static const duration_def duration_data[] =
     { DUR_CONF,
       RED, "Conf",
       "confused", "conf",
-      "You are confused.", D_DISPELLABLE,
-      {{ "You feel less confused." }}},
+      "You are confused.", D_DISPELLABLE},
     { DUR_CONFUSING_TOUCH,
       LIGHTBLUE, "Touch",
       "confusing touch", "",
@@ -186,7 +187,7 @@ static const duration_def duration_data[] =
       0, "",
       "divinely vigorous", "divine vigour",
       "You are imbued with divine vigour.", D_NO_FLAGS,
-      {{ "", elyvilon_remove_divine_vigour }}},
+      {}, 6},
     { DUR_EXHAUSTED,
       YELLOW, "Exh",
       "exhausted", "",
@@ -201,6 +202,11 @@ static const duration_def duration_data[] =
       0, "",
       "icy armour", "",
       "You are protected by a layer of icy armour.", D_DISPELLABLE | D_EXPIRES,
+      {}, 6},
+    { DUR_WALL_JUMP_EV,
+      BLUE, "Reflex",
+      "reflex", "",
+      "Your recent wall jump has made you unusually evasive.", D_EXPIRES,
       {}, 6},
     { DUR_LIQUID_FLAMES,
       RED, "Fire",
@@ -326,6 +332,11 @@ static const duration_def duration_data[] =
       {{ "", []() {
           mprf(MSGCH_DURATION, "%s", you.hands_act("slow", "down.").c_str());
       }}}},
+    { DUR_MIASMATA,
+      LIGHTBLUE, "Miasma",
+      "miasmata", "",
+      "Your attacks sometimes engulf foes in miasma.", D_NO_FLAGS,
+      {{ "You are no longer imbuing your attacks with miasma."}}},
     { DUR_LIFESAVING,
       LIGHTGREY, "Prot",
       "protection", "lifesaving",
@@ -539,6 +550,10 @@ static const duration_def duration_data[] =
       "can't hop", "",
       "", D_NO_FLAGS,
       {{ "You are ready to hop once more." }}},
+    { DUR_DESTRUCTION, BLUE, "Destruction",
+      "destruction attunement", "",
+      "", D_EXPIRES,
+      {{ "Your amulet of destruction loses attunement.", []() {}}}},
 
     // The following are visible in wizmode only, or are handled
     // specially in the status lights and/or the % or @ screens.
@@ -570,6 +585,7 @@ static const duration_def duration_data[] =
     { DUR_ICEMAIL_DEPLETED, 0, "", "", "icemail depleted", "", D_NO_FLAGS,
       {{ "Your icy envelope is restored.", _redraw_armour }}},
     { DUR_PARALYSIS_IMMUNITY, 0, "", "", "paralysis immunity", "", D_NO_FLAGS},
+    { DUR_CONFUSION_IMMUNITY, 0, "", "", "paralysis immunity", "", D_NO_FLAGS},
     { DUR_VEHUMET_GIFT, 0, "", "", "vehumet gift", "", D_NO_FLAGS, {{""}}},
     { DUR_SICKENING, 0, "", "", "sickening", "", D_DISPELLABLE, {{""}}},
     { DUR_WATER_HOLD, 0, "", "", "drowning", "", D_NO_FLAGS},
@@ -586,8 +602,12 @@ static const duration_def duration_data[] =
     { DUR_BRAINLESS, 0, "", "", "brainless", "", D_NO_FLAGS },
     { DUR_CLUMSY, 0, "", "", "clumsy", "", D_NO_FLAGS },
     { DUR_ANCESTOR_DELAY, 0, "", "", "ancestor delay", "", D_NO_FLAGS, {{""}}},
+    { DUR_SOUL_DELAY, 0, "", "", "enslaved soul delay", "", D_NO_FLAGS, {{""}}},
     { DUR_NO_CAST, 0, "", "", "no cast", "", D_NO_FLAGS,
       {{ "You regain access to your magic." }, {}, true }},
+    { DUR_HEAVENLY_STORM, 0, "", "", "", "", D_NO_FLAGS,
+      {{ "", wu_jian_heaven_tick }}},
+    { DUR_SPECTRAL_WEAPON_COOLDOWN, 0, "", "", "spectral weapon cooldown", "", D_NO_FLAGS},
 
 #if TAG_MAJOR_VERSION == 34
     // And removed ones

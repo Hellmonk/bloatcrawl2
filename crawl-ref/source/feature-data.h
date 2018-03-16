@@ -300,7 +300,7 @@ STONE_STAIRS_UP(II, ii),
 STONE_STAIRS_UP(III, iii),
 
 {
-    DNGN_ESCAPE_HATCH_DOWN, "escape hatch in the floor", "escape_hatch_down",
+    DNGN_ESCAPE_HATCH_DOWN, "mutagenic shaft in the floor", "escape_hatch_down",
     DCHAR_STAIRS_DOWN, NUM_DCHAR_TYPES,
     COLOUR_AND_MAP(BROWN),
     FFT_NONE, MF_STAIR_DOWN,
@@ -503,6 +503,7 @@ ALTAR(DNGN_ALTAR_ECUMENICAL, "faded altar of an unknown god", "altar_ecumenical"
 ALTAR(DNGN_ALTAR_PAKELLAS, "oddly glowing altar of Pakellas", "altar_pakellas", ETC_PAKELLAS),
 ALTAR(DNGN_ALTAR_USKAYAW, "hide-covered altar of Uskayaw", "altar_uskayaw", ETC_INCARNADINE),
 ALTAR(DNGN_ALTAR_HEPLIAKLQANA, "hazy altar of Hepliaklqana", "altar_hepliaklqana", LIGHTGREEN),
+ALTAR(DNGN_ALTAR_WU_JIAN, "ornate altar of the Wu Jian Council", "altar_wu_jian", ETC_WU_JIAN),
 
 #define FOUNTAIN(enum, name, vaultname, colour)\
 {\

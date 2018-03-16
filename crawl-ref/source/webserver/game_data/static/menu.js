@@ -50,7 +50,7 @@ function ($, comm, client, enums, dungeon_renderer, cr, util, options) {
             renderer.init(canvas[0]);
 
             $.each(item.tiles, function () {
-                renderer.draw_from_texture(this.t, 0, 0, this.tex, 0, 0, this.ymax);
+                renderer.draw_from_texture(this.t, 0, 0, this.tex, 0, 0, this.ymax, false);
             });
 
             elem.prepend(canvas);
@@ -451,7 +451,7 @@ function ($, comm, client, enums, dungeon_renderer, cr, util, options) {
                 var ctrlf = String.fromCharCode(6);
                 var enter = String.fromCharCode(13);
                 var text = ctrlf + input.val() + enter;
-                comm.send_message("input", { text: text + "\n" });
+                comm.send_message("input", { text: text });
 
                 restore();
                 ev.preventDefault();
@@ -500,14 +500,16 @@ function ($, comm, client, enums, dungeon_renderer, cr, util, options) {
     {
         $.extend(menu, data);
 
-        if (menu.total_items < menu.items.length)
+        var old_length = menu.items.length;
+        menu.items.length = menu.total_items;
+        if (menu.total_items < old_length)
         {
-            for (var i = menu.items.length; i >= menu.total_items; --i)
+            for (var i = old_length; i >= menu.total_items; --i)
                 delete menu.items[i];
-            menu.items.length = menu.total_items;
             var container = $("ol");
             container.empty();
             $.each(menu.items, function(i, item) {
+                item.elem.data("item", item);
                 container.append(item.elem);
             });
         }

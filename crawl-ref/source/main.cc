@@ -442,6 +442,9 @@ NORETURN static void _launch_game()
         case DIFFICULTY_NORMAL:
         	msg::stream << "Normal";
         	break;
+        case DIFFICULTY_SPEEDRUN:
+        	msg::stream << "Speedrun";
+        	break;
         default:
             msg::stream << "Buggy";
         	break;
@@ -780,8 +783,8 @@ static void _do_wizard_command(int wiz_command)
 
     // case 'j': break;
     case 'J':
-        mpr("Running Jiyva off-level sacrifice.");
-        jiyva_eat_offlevel_items();
+        mpr("Running Jiyva on-level sacrifice.");
+        jiyva_eat_onlevel_items();
         break;
     // case CONTROL('J'): break;
 
@@ -1086,6 +1089,10 @@ static void _start_running(int dir, int mode)
             return;
         }
     }
+
+    string wall_jump_err;
+    if (wu_jian_can_wall_jump(next_pos, wall_jump_err))
+       return; // Do not wall jump while running.
 
     you.running.initialise(dir, mode);
 }
@@ -1473,6 +1480,10 @@ static void _input()
 
         crawl_state.waiting_for_command = true;
         c_input_reset(true);
+		
+        // Reset "last action was a destructive spell" flag.
+        if (you.props.exists(LAST_ACTION_DESTRUCTIVE_KEY))
+            you.props.erase(LAST_ACTION_DESTRUCTIVE_KEY);
 
 #ifdef USE_TILE_LOCAL
         cursor_control con(false);
@@ -1704,6 +1715,10 @@ static bool _prompt_skippable_branch(dungeon_feature_type ftype)
             return yesno("This shortcut to the Depths bypasses a runes. "
                          "Enter anyway?", false, 'n');
         else return true;
+    case DNGN_ENTER_ZOT:
+        if (!you.uniq_map_tags.count("uniq_holypan"))
+        return yesno("The runes of Pandemonium will be lost if you enter Zot now. "
+                     "Enter anyway?", false, 'n');
     default:
         return true;
     }
@@ -1793,11 +1808,12 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
             return false;
         }
     }
+	
+    if (feat_is_escape_hatch(ygrd))
+            return yesno("Really go through this mutagenic shaft?", true, 'n');
 
     if (Options.warn_hatches)
     {
-        if (feat_is_escape_hatch(ygrd))
-            return yesno("Really go through this one-way escape hatch?", true, 'n');
         if (down && shaft) // voluntary shaft usage
             return yesno("Really dive through this shaft in the floor?", true, 'n');
     }
@@ -2128,8 +2144,6 @@ void process_command(command_type cmd)
         // else fall-through
     case CMD_WAIT:
         you.turn_is_over = true;
-        extract_manticore_spikes("You carefully extract the barbed spikes "
-                                 "from your body.");
         break;
 
     case CMD_PICKUP:
@@ -2372,11 +2386,11 @@ static void _prep_input()
 
     if (you.seen_portals)
     {
-        ASSERT(have_passive(passive_t::detect_portals));
+        ASSERT(crawl_state.difficulty == DIFFICULTY_SPEEDRUN);
         if (you.seen_portals == 1)
-            mprf(MSGCH_GOD, "You have a vision of a gate.");
+            mprf("You have a vision of a gate.");
         else
-            mprf(MSGCH_GOD, "You have a vision of multiple gates.");
+            mprf("You have a vision of multiple gates.");
 
         you.seen_portals = 0;
     }
@@ -2562,7 +2576,9 @@ void world_reacts()
     if (!crawl_state.game_is_arena())
         player_reacts_to_monsters();
 
-    viewwindow();
+    wu_jian_end_of_turn_effects();
+	
+	viewwindow();
 
     if (you.cannot_act() && any_messages()
         && crawl_state.repeat_cmd != CMD_WIZARD)
@@ -2896,14 +2912,6 @@ static void _open_door(coord_def move)
         return;
     }
 
-    // If we get here, the player either hasn't picked a direction yet,
-    // or the chosen direction actually contains a closed door.
-    if (!player_can_open_doors())
-    {
-        mpr("You can't open doors in your present form.");
-        return;
-    }
-
     if (you.confused())
     {
         canned_msg(MSG_TOO_CONFUSED);
@@ -2994,12 +3002,6 @@ static void _open_door(coord_def move)
 
 static void _close_door(coord_def move)
 {
-    if (!player_can_open_doors())
-    {
-        mpr("You can't close doors in your present form.");
-        return;
-    }
-
     if (you.attribute[ATTR_HELD])
     {
         mprf("You can't close doors while %s.", held_status());
@@ -3207,6 +3209,8 @@ static void _move_player(coord_def move)
         you.turn_is_over = true;
         return;
     }
+	
+    const coord_def initial_position = you.pos();
 
     // When confused, sometimes make a random move.
     if (you.confused())
@@ -3266,8 +3270,13 @@ static void _move_player(coord_def move)
 
     const coord_def targ = you.pos() + move;
 
+    string wall_jump_err;
+    bool can_wall_jump = Options.wall_jump_move &&
+                            wu_jian_can_wall_jump(targ, wall_jump_err);
+    bool did_wall_jump = false;
+
     // You can't walk out of bounds!
-    if (!in_bounds(targ))
+    if (!in_bounds(targ) && !can_wall_jump)
     {
         // Why isn't the border permarock?
         if (you.digging)
@@ -3277,8 +3286,14 @@ static void _move_player(coord_def move)
 
     const dungeon_feature_type targ_grid = grd(targ);
 
-    const string walkverb = you.airborne()              ? "fly"
-                          : you.form == TRAN_SPIDER     ? "crawl"
+    // don't allow wall jump against close doors via movement -- need to use
+    // the ability
+    if (can_wall_jump && feat_is_closed_door(targ_grid))
+        can_wall_jump = false;
+
+    const string walkverb = you.airborne()                     ? "fly"
+                          : you.swimming()                     ? "swim"
+                          : you.form == TRAN_SPIDER            ? "crawl"
                           : (you.species == SP_NAGA
                              && form_keeps_mutations()) ? "slither"
                                                         : "walk";
@@ -3420,7 +3435,7 @@ static void _move_player(coord_def move)
     }
     else if (you.form == TRAN_FUNGUS && moving && !you.confused())
     {
-        if (you.made_nervous_by(targ))
+        if (you.is_nervous())
         {
             mpr("You're too terrified to move while being watched!");
             stop_running();
@@ -3429,8 +3444,11 @@ static void _move_player(coord_def move)
             return;
         }
     }
+	
+    const bool running = you_are_delayed() && current_delay()->is_run();
 
-    if (!attacking && targ_pass && moving && !beholder && !fmonger)
+    if (!attacking && (targ_pass || can_wall_jump)
+    && moving && !beholder && !fmonger)
     {
         if (you.confused() && is_feat_unpleasant(env.grid(targ)))
         {
@@ -3495,7 +3513,6 @@ static void _move_player(coord_def move)
             }
         }
 
-        const bool running = you_are_delayed() && current_delay()->is_run();
         if (running && env.travel_trail.empty())
             env.travel_trail.push_back(you.pos());
         else if (!running)
@@ -3506,8 +3523,15 @@ static void _move_player(coord_def move)
         you.stop_being_constricted();
 
         // Don't trigger traps when confusion causes no move.
-        if (you.pos() != targ)
+        if (you.pos() != targ && targ_pass)
             move_player_to_grid(targ, true);
+        else if (can_wall_jump && !running)
+        {
+            if (!wu_jian_do_wall_jump(targ, false))
+                return; // wall jump only in the ready state, or cancelled
+            else
+                did_wall_jump = true;
+        }
         // Now it is safe to apply the swappee's location effects. Doing
         // so earlier would allow e.g. shadow traps to put a monster
         // at the player's location.
@@ -3524,12 +3548,18 @@ static void _move_player(coord_def move)
             // Sometimes decrease duration even when we move.
             if (one_chance_in(3))
                 extract_manticore_spikes("The barbed spikes snap loose.");
+            // But if that failed to end the effect, duration stays the same.
+            if (you.duration[DUR_BARBS])
+                you.duration[DUR_BARBS] += you.time_taken;
         }
 
         if (you_are_delayed() && current_delay()->is_run())
             env.travel_trail.push_back(you.pos());
 
-        you.time_taken *= player_movement_speed();
+	    // Serpent's Lash = 1 means half of the wall jump time is refunded, so the modifier is 2 * 1/2 = 1;
+        int wall_jump_modifier = (did_wall_jump && you.attribute[ATTR_SERPENTS_LASH] != 1) ? 2 : 1;
+	
+        you.time_taken *= wall_jump_modifier * player_movement_speed();
         you.time_taken = div_rand_round(you.time_taken, 10);
         you.time_taken += additional_time_taken;
 
@@ -3545,6 +3575,15 @@ static void _move_player(coord_def move)
         move.reset();
         you.turn_is_over = true;
         request_autopickup();
+    }
+	
+    if (!attacking && !targ_pass && !can_wall_jump && !running
+        && moving && !beholder && !fmonger
+        && Options.wall_jump_move
+        && wu_jian_can_wall_jump_in_principle(targ))
+    {
+        // do messaging for a failed wall jump
+        mpr(wall_jump_err);
     }
 
     // BCR - Easy doors single move
@@ -3569,7 +3608,7 @@ static void _move_player(coord_def move)
         _entered_malign_portal(&you);
         return;
     }
-    else if (!targ_pass && !attacking)
+    else if (!targ_pass && !attacking && !can_wall_jump)
     {
         if (you.is_stationary())
             canned_msg(MSG_CANNOT_MOVE);
@@ -3586,14 +3625,14 @@ static void _move_player(coord_def move)
         crawl_state.cancel_cmd_repeat();
         return;
     }
-    else if (beholder && !attacking)
+    else if (beholder && !attacking && !can_wall_jump)
     {
         mprf("You cannot move away from %s!",
             beholder->name(DESC_THE).c_str());
         stop_running();
         return;
     }
-    else if (fmonger && !attacking)
+    else if (fmonger && !attacking && !can_wall_jump)
     {
         mprf("You cannot move closer to %s!",
             fmonger->name(DESC_THE).c_str());
@@ -3614,14 +3653,9 @@ static void _move_player(coord_def move)
     {
         did_god_conduct(DID_HASTY, 1, true);
     }
-}
-
-static int _get_num_and_char_keyfun(int &ch)
-{
-    if (ch == CK_BKSP || isadigit(ch) || (unsigned)ch >= 128)
-        return 1;
-
-    return -1;
+	
+    if (you_worship(GOD_WU_JIAN) && !attacking)
+        wu_jian_post_move_effects(did_wall_jump, initial_position);
 }
 
 static int _get_num_and_char(const char* prompt, char* buf, int buf_len)
@@ -3631,7 +3665,7 @@ static int _get_num_and_char(const char* prompt, char* buf, int buf_len)
 
     line_reader reader(buf, buf_len);
 
-    reader.set_keyproc(_get_num_and_char_keyfun);
+    reader.set_keyproc(keyfun_num_and_char);
 #ifdef USE_TILE_WEB
     reader.set_tag("repeat");
 #endif

@@ -1907,10 +1907,9 @@ spret_type cast_animate_skeleton(god_type god, bool fail)
 spret_type cast_animate_dead(int pow, god_type god, bool fail)
 {
     fail_check();
-    canned_msg(MSG_CALL_DEAD);
-
-    if (!animate_dead(&you, pow + 1, BEH_FRIENDLY, MHITYOU, &you, "", god))
-        canned_msg(MSG_NOTHING_HAPPENS);
+    mpr("You call on the dead to rise!");
+    
+    you.attribute[ATTR_ANIMATE_DEAD] = 1;
 
     return SPRET_SUCCESS;
 }
@@ -2353,7 +2352,6 @@ static spell_type servitor_spells[] =
     SPELL_MEPHITIC_CLOUD,
     // fallback spells
     SPELL_STICKY_FLAME,
-    SPELL_THROW_FROST,
     SPELL_FREEZE,
     SPELL_FLAME_TONGUE,
     SPELL_SANDBLAST,
@@ -2405,6 +2403,7 @@ void init_servitor(monster* servitor, actor* caster)
     ASSERT(servitor); // XXX: change to monster &servitor
     ASSERT(caster); // XXX: change to actor &caster
     _init_servitor_monster(*servitor, *caster);
+    caster->props["servitor"].get_int() = servitor->mid;
 
     if (you.can_see(*caster))
     {
@@ -2429,6 +2428,16 @@ void init_servitor(monster* servitor, actor* caster)
     servitor->props["ideal_range"].get_int() = shortest_range;
 }
 
+spret_type player_spellforged_servitor(int pow, god_type god, bool fail)
+{
+	fail_check();
+	
+    you.attribute[ATTR_SERVITOR] = 1;
+    mprf("You prepare to summon your spellforged servitor.");
+
+    return SPRET_SUCCESS;
+}
+
 spret_type cast_spellforged_servitor(int pow, god_type god, bool fail)
 {
     fail_check();
@@ -2438,8 +2447,6 @@ spret_type cast_spellforged_servitor(int pow, god_type god, bool fail)
 
     if (monster* mon = create_monster(mdata))
         init_servitor(mon, &you);
-    else
-        canned_msg(MSG_NOTHING_HAPPENS);
 
     return SPRET_SUCCESS;
 }
@@ -2518,6 +2525,28 @@ monster* find_battlesphere(const actor* agent)
         return nullptr;
 }
 
+monster* find_servitor(const actor* agent)
+{
+    if (agent->props.exists("servitor"))
+        return monster_by_mid(agent->props["servitor"].get_int());
+    else
+        return nullptr;
+}
+
+spret_type player_battlesphere(actor *agent, int pow, god_type god, bool fail)
+{
+    ASSERT(agent);
+
+    if (!agent->is_player())
+        return SPRET_ABORT;
+
+    fail_check();
+    you.attribute[ATTR_BATTLESPHERE] = 1;
+    mprf("You prepare to summon your battlesphere.");
+
+    return SPRET_SUCCESS;
+}
+
 spret_type cast_battlesphere(actor* agent, int pow, god_type god, bool fail)
 {
     fail_check();
@@ -2538,19 +2567,8 @@ spret_type cast_battlesphere(actor* agent, int pow, god_type god, bool fail)
 
         if (recalled)
         {
-            mpr("You recall your battlesphere and imbue it with additional"
-                " charge.");
+            mpr("You recall your battlesphere.");
         }
-        else
-            mpr("You imbue your battlesphere with additional charge.");
-
-        battlesphere->battlecharge = min(20, (int) battlesphere->battlecharge
-                                              + 4 + random2(pow + 10) / 10);
-
-        // Increase duration
-        mon_enchant abj = battlesphere->get_ench(ENCH_FAKE_ABJURATION);
-        abj.duration = min(abj.duration + (7 + roll_dice(2, pow)) * 10, 500);
-        battlesphere->update_ench(abj);
     }
     else
     {
@@ -2571,7 +2589,7 @@ spret_type cast_battlesphere(actor* agent, int pow, god_type god, bool fail)
             agent->props["battlesphere"].get_int() = battlesphere->mid;
 
             if (agent->is_player())
-                mpr("You conjure a globe of magical energy.");
+                noisy(spell_effect_noise(SPELL_BATTLESPHERE), you.pos());
             else
             {
                 if (you.can_see(*agent) && you.can_see(*battlesphere))
@@ -2583,7 +2601,7 @@ spret_type cast_battlesphere(actor* agent, int pow, god_type god, bool fail)
                     simple_monster_message(*battlesphere, " appears!");
                 battlesphere->props["band_leader"].get_int() = agent->mid;
             }
-            battlesphere->battlecharge = 4 + random2(pow + 10) / 10;
+            battlesphere->battlecharge = 4 + random2(pow + 20) / 10;
             battlesphere->foe = agent->mindex();
             battlesphere->target = agent->pos();
         }
@@ -2638,7 +2656,6 @@ bool battlesphere_can_mirror(spell_type spell)
         || spell == SPELL_FREEZE
         || spell == SPELL_FIREBALL     
         || spell == SPELL_BOLT_OF_FIRE
-        || spell == SPELL_THROW_FROST
         || spell == SPELL_MEPHITIC_CLOUD
         || spell == SPELL_BOLT_OF_DRAINING
         || spell == SPELL_LEHUDIBS_CRYSTAL_SPEAR
@@ -3051,35 +3068,32 @@ spret_type cast_spectral_weapon(actor *agent, int pow, god_type god, bool fail)
 {
     ASSERT(agent);
 
-    const int dur = min(2 + random2(1 + div_rand_round(pow, 25)), 4);
-    item_def* wpn = agent->weapon();
-
-    // If the wielded weapon should not be cloned, abort
-    if (!weapon_can_be_spectral(wpn))
-    {
-        if (agent->is_player())
-        {
-            if (wpn)
-            {
-                mprf("%s vibrate%s crazily for a second.",
-                     wpn->name(DESC_YOUR).c_str(),
-                     wpn->quantity > 1 ? "" : "s");
-            }
-            else
-                mpr(you.hands_act("twitch", "."));
-        }
-
+    if (!agent->is_player())
         return SPRET_ABORT;
-    }
 
     fail_check();
+    you.attribute[ATTR_SPECTRAL_WEAPON] = 1;
+    mprf("You prepare to draw out your weapon's spirit.");
 
-    // Remove any existing spectral weapons. Only one should be alive at any
-    // given time.
-    monster *old_mons = find_spectral_weapon(agent);
-    if (old_mons)
-        end_spectral_weapon(old_mons, false);
+    return SPRET_SUCCESS;
+}
 
+void summon_spectral_weapon(actor *agent, int pow, god_type god)
+{
+    ASSERT(agent);
+	
+    //don't summon anything if a spectral weapon is already alive
+    monster *old_weapon = find_spectral_weapon(agent);
+    if (old_weapon)
+        return;
+
+    const int dur = min(2 + random2(1 + div_rand_round(pow, 25)), 4);
+    item_def* wpn = agent->weapon();
+	
+    //don't do anything if the weapon can't be spectral
+    if (!weapon_can_be_spectral(wpn))
+        return;
+	
     mgen_data mg(MONS_SPECTRAL_WEAPON,
                  agent->is_player() ? BEH_FRIENDLY
                                     : SAME_ATTITUDE(agent->as_monster()),
@@ -3089,13 +3103,11 @@ spret_type cast_spectral_weapon(actor *agent, int pow, god_type god, bool fail)
     mg.props[TUKIMA_WEAPON] = *wpn;
     mg.props[TUKIMA_POWER] = pow;
 
+    //return if the weapon wasn't created for some reason
     monster *mons = create_monster(mg);
     if (!mons)
     {
-        //if (agent->is_player())
-            canned_msg(MSG_NOTHING_HAPPENS);
-
-        return SPRET_SUCCESS;
+        return;
     }
 
     if (agent->is_player())
@@ -3120,10 +3132,10 @@ spret_type cast_spectral_weapon(actor *agent, int pow, god_type god, bool fail)
     mons->summoner = agent->mid;
     agent->props["spectral_weapon"].get_int() = mons->mid;
 
-    return SPRET_SUCCESS;
+    return;
 }
 
-void end_spectral_weapon(monster* mons, bool killed, bool quiet)
+void end_spectral_weapon(monster* mons, bool killed, bool quiet, bool cooldown)
 {
     // Should only happen if you dismiss it in wizard mode, I think
     if (!mons)
@@ -3133,6 +3145,11 @@ void end_spectral_weapon(monster* mons, bool killed, bool quiet)
 
     if (owner)
         owner->props.erase("spectral_weapon");
+
+    if (killed && owner && owner->is_player() && cooldown)
+    {
+        you.duration[DUR_SPECTRAL_WEAPON_COOLDOWN] = random_range(50,70);
+    }
 
     if (!quiet)
     {
@@ -3226,34 +3243,12 @@ bool confirm_attack_spectral_weapon(monster* mons, const actor *defender)
     return false;
 }
 
-static void _setup_infestation(bolt &beam, int pow)
+spret_type cast_infestation(int pow, bool fail)
 {
-    beam.name         = "infestation";
-    beam.aux_source   = "infestation";
-    beam.flavour      = BEAM_INFESTATION;
-    beam.glyph        = dchar_glyph(DCHAR_FIRED_BURST);
-    beam.colour       = GREEN;
-    beam.source_id    = MID_PLAYER;
-    beam.thrower      = KILL_YOU;
-    beam.is_explosion = true;
-    beam.ex_size      = 2;
-    beam.ench_power   = pow;
-    beam.origin_spell = SPELL_INFESTATION;
-}
-
-spret_type cast_infestation(int pow, bolt &beam, bool fail)
-{
-    if (cell_is_solid(beam.target))
-    {
-        canned_msg(MSG_SOMETHING_IN_WAY);
-        return SPRET_ABORT;
-    }
-
+	
     fail_check();
-
-    _setup_infestation(beam, pow);
+    you.attribute[ATTR_INFESTATION] = 1;
     mpr("You call forth a plague of scarabs!");
-    beam.explode();
 
     return SPRET_SUCCESS;
 }

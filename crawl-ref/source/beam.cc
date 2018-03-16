@@ -1730,16 +1730,9 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
         break;
 
     case BEAM_AIR:
-        if (mons->res_wind())
-            hurted = 0;
-        else if (mons->airborne())
+        if (mons->airborne())
             hurted += hurted / 2;
-        if (!hurted)
-        {
-            if (doFlavouredEffects)
-                simple_monster_message(*mons, " is harmlessly tossed around.");
-        }
-        else if (original < hurted)
+        if (original < hurted)
         {
             if (doFlavouredEffects)
                 simple_monster_message(*mons, " gets badly buffeted.");
@@ -2139,7 +2132,7 @@ bool curare_actor(actor* source, actor* target, int levels, string name,
 int silver_damages_victim(actor* victim, int damage, string &dmg_msg)
 {
     int ret = 0;
-    if (victim->how_chaotic()
+    if (victim->how_chaotic() || victim->holy_wrath_susceptible()
         || victim->is_player() && player_is_shapechanged())
     {
         ret = damage * 3 / 4;
@@ -3291,6 +3284,11 @@ bool bolt::misses_player()
                             shield->name(DESC_PLAIN).c_str(),
                             refl_name.c_str());
                 }
+                else if (you.get_mutation_level(MUT_REFLECTION) > 0)
+                {
+					mprf("Your crystalline skin reflects the %s!",
+                            refl_name.c_str());
+                }
                 else
                 {
                     mprf("The %s reflects off an invisible shield around you!",
@@ -3948,12 +3946,15 @@ void bolt::affect_player()
     {
         mpr("The barbed spikes become lodged in your body.");
         if (!you.duration[DUR_BARBS])
-            you.set_duration(DUR_BARBS,  random_range(3, 6));
+            you.set_duration(DUR_BARBS, random_range(4, 8));
         else
             you.increase_duration(DUR_BARBS, random_range(2, 4), 12);
 
         if (you.attribute[ATTR_BARBS_POW])
-            you.attribute[ATTR_BARBS_POW] = min(6, you.attribute[ATTR_BARBS_POW]++);
+        {
+            you.attribute[ATTR_BARBS_POW] =
+                min(6, you.attribute[ATTR_BARBS_POW]++);
+        }
         else
             you.attribute[ATTR_BARBS_POW] = 4;
     }
@@ -4584,9 +4585,6 @@ void bolt::knockback_actor(actor *act, int dam)
                  name.c_str());
         }
     }
-
-    if (act->pos() != newpos)
-        act->collide(newpos, agent(), ench_power);
 
     // Stun the monster briefly so that it doesn't look as though it wasn't
     // knocked back at all
@@ -5298,15 +5296,11 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
 
     case BEAM_DISPEL_UNDEAD:
 	{
-        if (simple_monster_message(*mon, " convulses!"))
-		{
+        const int dddd = damage.roll();
+        const string m = make_stringf(" convulses (%d)!", dddd);
+        if (simple_monster_message(*mon, m.c_str()))
             obvious_effect = true;
-		}
-		string monname = mon->name(DESC_THE);
-		int dddd = mon->hurt(agent(), damage.roll());
-		if(obvious_effect)
-		    mprf("%s is dispelled (%d)!", monname.c_str(), dddd);
-		
+        mon->hurt(agent(), dddd);
         return MON_AFFECTED;
 	}
     case BEAM_ENSLAVE_SOUL:
@@ -5315,7 +5309,7 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
             return MON_UNAFFECTED;
 
         obvious_effect = true;
-        const int duration = you.skill_rdiv(SK_INVOCATIONS, 3, 4) + 2;
+        const int duration = you.skill_rdiv(SK_INVOCATIONS, 5, 4) + 5;
         mon->add_ench(mon_enchant(ENCH_SOUL_RIPE, 0, agent(),
                                   duration * BASELINE_DELAY));
         simple_monster_message(*mon, "'s soul is now ripe for the taking.");
@@ -5327,7 +5321,8 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
         const int dam = resist_adjust_damage(mon, flavour, damage.roll());
         if (dam)
         {
-            if (simple_monster_message(*mon, " writhes in agony!"))
+            const string m = make_stringf(" writhes in agony (%d)!", dam);
+            if (simple_monster_message(*mon, m.c_str()))
                 obvious_effect = true;
             mon->hurt(agent(), dam, flavour);
             return MON_AFFECTED;
@@ -5341,10 +5336,14 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
         return MON_AFFECTED;
 
     case BEAM_DISINTEGRATION:   // disrupt/disintegrate
-        if (simple_monster_message(*mon, " is blasted."))
+    {
+        const int dam = damage.roll();
+        const string m = make_stringf(" is blasted (%d).", dam);
+        if (simple_monster_message(*mon, m.c_str()))
             obvious_effect = true;
-        mon->hurt(agent(), damage.roll(), flavour);
+        mon->hurt(agent(), dam, flavour);
         return MON_AFFECTED;
+    }
 
     case BEAM_HIBERNATION:
         if (mon->can_hibernate())

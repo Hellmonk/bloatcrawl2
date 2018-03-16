@@ -1,9 +1,4 @@
 %%%%
-Abyssal Knight
-
-Los Caballeros del Abismo adoran a Lugonu, y son enviados desde el Abismo al
-Calabozo para extender la corrupción y el caos.
-%%%%
 Air Elementalist
 
 Los Elementalistas del Aire han aprendido el hechizo de la Descarga. Más

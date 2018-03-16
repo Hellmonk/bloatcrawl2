@@ -51,7 +51,7 @@
     "never_corpse col:red generate_awake " ..
     "spells:blink_close.90.wizard " ..
     "; ring of slaying plus:200 not_cursed ident:all " ..
-    "no_pickup . double sword plus:9 ego:vorpal ident:all no_pickup"
+    "no_pickup . double sword plus:9 ego:devastation ident:all no_pickup"
 
   local plague =
     "sea snake hp:500 hd:30 name:scourge n_rpl n_des n_spe " ..
@@ -117,7 +117,7 @@
     "generate_awake never_corpse " ..
     "spells:sentinel's_mark.30.wizard;haste.30.wizard;ensnare.30.wizard " ..
     "; ring of slaying plus:200 not_cursed ident:all " ..
-    "no_pickup . triple sword plus:9 not_cursed ego:vorpal " ..
+    "no_pickup . triple sword plus:9 not_cursed ego:devastation " ..
     "ident:all no_pickup"
 
   local defiler =
@@ -125,7 +125,7 @@
     "generate_awake never_corpse " ..
     "spells:fireball.60.natural;poisonous_cloud.20.natural " ..
     "; ring of slaying plus:250 not_cursed ident:all " ..
-    "no_pickup . demon whip plus:9 not_cursed ego:vorpal " ..
+    "no_pickup . demon whip plus:9 not_cursed ego:devastation " ..
     "ident:all no_pickup " ..
     ". large shield plus:12 not_cursed ego:none " ..
     "ident:all no_pickup"
@@ -136,7 +136,7 @@
     "generate_awake never_corpse " ..
     "spells:shadow_creatures.44.magical;airstrike.44.magical;conjure_ball_lightning.22.magical " ..
     "; ring of slaying plus:27000 not_cursed ident:all " ..
-    "no_pickup . sceptre_of_torment not_cursed " ..
+    "no_pickup . scythe_of_curses not_cursed " ..
     "ident:all no_pickup"
 
   -- Unspeakable shadow creatures will be (a lot of) starcursed masses
@@ -404,7 +404,7 @@ NSUBST:    ' = 1:& / *:.
     "</red>")
 
 }}
-KITEM:     + = ring of see invisible not_cursed ident:all no_pickup
+KITEM:     + = ring of ice not_cursed ident:all no_pickup
 KITEM:     * = ring of fire not_cursed ident:all no_pickup
 SUBST:     1 = 1.
 KFEAT:     _ = altar_makhleb

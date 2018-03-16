@@ -106,10 +106,17 @@ void start_recall(recall_t type)
         {
             if (!(mi->holiness() & MH_UNDEAD))
                 continue;
+            if(mons_enslaved_soul(**mi) && you.attribute[ATTR_YRED_SOUL_TIMEOUT])
+                continue;
         }
         else if (type == RECALL_BEOGH)
         {
             if (!is_orcish_follower(**mi))
+                continue;
+        }
+        else if (type == RECALL_SPELL)
+        {
+			if(mons_enslaved_soul(**mi) && you.attribute[ATTR_YRED_SOUL_TIMEOUT])
                 continue;
         }
 
@@ -133,7 +140,7 @@ void start_recall(recall_t type)
 
         you.attribute[ATTR_NEXT_RECALL_INDEX] = 1;
         you.attribute[ATTR_NEXT_RECALL_TIME] = 0;
-        mpr("You begin recalling your allies.");
+        mpr("You begin recalling your enslaved soul.");
     }
     else
         mpr("Nothing appears to have answered your call.");

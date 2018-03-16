@@ -536,7 +536,7 @@ static int _acquirement_missile_subtype(bool /*divine*/, int & /*quantity*/)
     switch (skill)
     {
     case SK_BOWS:      result = MI_ARROW; break;
-    case SK_CROSSBOWS: result = MI_BOLT; break;
+    case SK_CROSSBOWS: result = MI_ARROW; break;
 
     case SK_THROWING:
         {
@@ -613,15 +613,11 @@ static int _acquirement_staff_subtype(bool /*divine*/, int & /*quantity*/)
 #undef TRY_GIVE
     default:                                           break;
     }
-    if (one_chance_in(found_enhancer ? 2 : 3))
+    if (x_chance_in_y(2,found_enhancer ? 3 : 5))
         return result;
 
-    // Otherwise pick a non-enhancer staff.
-    switch (random2(3))
-    {
-    case 0: case 1: result = STAFF_WIZARDRY;   break;
-    case 2: result = STAFF_POWER;              break;
-    }
+    // Otherwise pick a staff of fuckin wizardry.
+    result = STAFF_WIZARDRY;
     return result;
 }
 
@@ -693,7 +689,6 @@ static int _acquirement_wand_subtype(bool /*divine*/, int & /*quantity*/)
         { WAND_FLAME,           1 },
         { WAND_CONFUSION,       1 },
         { WAND_PARALYSIS,       1 },
-        { WAND_SLOWING,         1 },
     };
 
     // Unknown wands get a huge weight bonus.
@@ -1026,6 +1021,7 @@ static int _weapon_brand_quality(int brand, bool range)
     case SPWPN_PENETRATION:
         return 4;
     case SPWPN_ELECTROCUTION:
+    case SPWPN_DEVASTATION:
     case SPWPN_DISTORTION:
     case SPWPN_HOLY_WRATH:
     case SPWPN_REAPING:

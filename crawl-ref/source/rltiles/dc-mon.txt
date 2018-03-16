@@ -70,6 +70,9 @@ bennu MONS_BENNU
 caustic_shrike MONS_CAUSTIC_SHRIKE
 shard_shrike MONS_SHARD_SHRIKE
 ghost_robin MONS_GHOST_ROBIN
+diesel_robin MONS_DIESEL_ROBIN
+%sdir mon/unique
+combo_robin MONS_COMBO_ROBIN
 %sdir mon/vault
 microbat MONS_MICROBAT
 %rim 1
@@ -679,6 +682,7 @@ tengu MONS_TENGU
 tengu_conjurer MONS_TENGU_CONJURER
 tengu_warrior MONS_TENGU_WARRIOR
 tengu_reaver MONS_TENGU_REAVER
+elevengu MONS_ELEVENGU
 %sdir mon/mutantbeast
 %rim 0
 base1 MUTANT_BEAST_BASE

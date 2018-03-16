@@ -55,7 +55,7 @@ function ch_stash_search_annotate_item(it)
   end
 
   local skill = it.weap_skill
-  if skill then
+  if skill and not it.class(true) == "magical staff" then
     annot = annot .. "{" .. skill .. "} "
   end
 

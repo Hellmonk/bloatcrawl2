@@ -147,6 +147,7 @@ enum brand_type // item_def.special
 #endif
     SPWPN_PENETRATION,
     SPWPN_REAPING,
+    SPWPN_DEVASTATION,
 
 // From this point on save compat is irrelevant.
     NUM_REAL_SPECIAL_WEAPONS,
@@ -154,7 +155,7 @@ enum brand_type // item_def.special
     SPWPN_ACID,    // acid bite and Punk
 #if TAG_MAJOR_VERSION > 34
     SPWPN_CONFUSE, // Confusing Touch only for the moment
-#endif
+#endif 
     SPWPN_DEBUG_RANDART,
     NUM_SPECIAL_WEAPONS,
 };
@@ -187,7 +188,9 @@ enum jewellery_type
 #endif
     RING_STRENGTH,
     RING_SLAYING,
+#if TAG_MAJOR_VERSION == 34
     RING_SEE_INVISIBLE,
+#endif
     RING_RESIST_CORROSION,
 #if TAG_MAJOR_VERSION == 34
     RING_LOUDNESS,
@@ -201,8 +204,8 @@ enum jewellery_type
     RING_DEXTERITY,
     RING_INTELLIGENCE,
     RING_WIZARDRY,
-    RING_MAGICAL_POWER,
 #if TAG_MAJOR_VERSION == 34
+    RING_MAGICAL_POWER,
     RING_FLIGHT,
 #endif
     RING_LIFE_PROTECTION,
@@ -237,6 +240,7 @@ enum jewellery_type
     AMU_FAITH,
     AMU_REFLECTION,
     AMU_REGENERATION,
+    AMU_DESTRUCTION,
 
     NUM_JEWELLERY
 };
@@ -347,7 +351,9 @@ enum missile_type
     MI_NEEDLE,
 #endif
     MI_ARROW,
+#if TAG_MAJOR_VERSION == 34
     MI_BOLT,
+#endif
     MI_JAVELIN,
 
     MI_STONE,
@@ -448,8 +454,10 @@ enum special_armour_type
     SPARM_FIRE_RESISTANCE,
     SPARM_COLD_RESISTANCE,
     SPARM_POISON_RESISTANCE,
+#if TAG_MAJOR_VERSION == 34
     SPARM_SEE_INVISIBLE,
     SPARM_INVISIBILITY,
+#endif
     SPARM_STRENGTH,
     SPARM_DEXTERITY,
     SPARM_INTELLIGENCE,
@@ -470,6 +478,7 @@ enum special_armour_type
 #if TAG_MAJOR_VERSION == 34
     SPARM_JUMPING,
 #endif
+    SPARM_MAGICAL_POWER,
     NUM_REAL_SPECIAL_ARMOURS,
     NUM_SPECIAL_ARMOURS,
 };
@@ -516,7 +525,9 @@ enum special_ring_type // jewellery mitm[].special values
 enum stave_type
 {
     STAFF_WIZARDRY,
+#if TAG_MAJOR_VERSION == 34
     STAFF_POWER,
+#endif
     STAFF_FIRE,
     STAFF_COLD,
 #if TAG_MAJOR_VERSION == 34
@@ -726,9 +737,7 @@ enum wand_type
     WAND_FLAME,
 #if TAG_MAJOR_VERSION == 34
     WAND_FROST_REMOVED,
-#endif
     WAND_SLOWING,
-#if TAG_MAJOR_VERSION == 34
     WAND_HASTING,
     WAND_MAGIC_DARTS_REMOVED,
     WAND_HEAL_WOUNDS_REMOVED,

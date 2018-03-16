@@ -1,9 +1,4 @@
 %%%%
-Abyssal Knight
-
-Pragarmės riteriai garbina Lugonu ir yra siunčiami iš Pragarmės į požemį
-skleisti korupciją ir sumaištį.
-%%%%
 Air Elementalist
 
 Oro burtininkai moka Šoko burtažodį. Vėliau jų turima Oro knyga suteikia jiems

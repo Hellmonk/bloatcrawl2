@@ -661,28 +661,84 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_HEX_ENHANCER, 2, 1, mutflag::GOOD, false,
+{ MUT_HEX_ENHANCER, 0, 2, mutflag::GOOD, false,
   "powerful hexes",
 
-  {"Your tricky nature makes your hexes more powerful.",
+  {"Your tricky nature empowers your hexes.",
+   "Your tricky nature greatly empowers your hexes.",
+   ""},
+
+  {"You feel tricky.", "You feel extremely tricky.", ""},
+
+  {"You no longer feel tricky.", "You feel less tricky", ""},
+},
+
+{ MUT_CHARMS_ENHANCER, 0, 2, mutflag::GOOD, false,
+  "powerful charms",
+
+  {"Your graceful nature empowers your charms.",
+   "Your graceful nature greatly empowers your charms.",
+   ""},
+
+  {"You feel graceful.", "You feel extremely graceful.", ""},
+
+  {"You no longer feel graceful.", "You feel less graceful.", ""},
+},
+
+{ MUT_SUMMON_ENHANCER, 0, 2, mutflag::GOOD, false,
+  "powerful summons",
+
+  {"Your amiable nature empowers your summons.",
+   "Your amiable nature greatly empowers your summons.",
+   ""},
+
+  {"You feel amiable.", "You feel extremely amiable.", ""},
+
+  {"You no longer feel amiable.", "You feel less amiable.", ""},
+},
+
+{ MUT_AIR_ENHANCER, 0, 1, mutflag::GOOD, false,
+  "powerful air magic",
+
+  {"Your whimsical nature empowers your air magic.",
    "",
    ""},
 
-  {"You feel extremely tricky.", "", ""},
+  {"You feel whimsical.", "", ""},
 
-  {"You feel less tricky.", "", ""},
+  {"You no longer feel whimsical.", "", ""},
 },
 
-{ MUT_TENGU_FLIGHT, 0, 2, mutflag::GOOD, false,
+{ MUT_EARTH_ENHANCER, 0, 1, mutflag::GOOD, false,
+  "powerful earth magic",
+
+  {"Your serious nature empowers your earth magic.",
+   "",
+   ""},
+
+  {"You feel serious.", "", ""},
+
+  {"You no longer feel serious.", "", ""},
+},
+
+{ MUT_ICE_ENHANCER, 0, 1, mutflag::GOOD, false,
+  "frozen heart",
+
+  {"Your frozen heart empowers your ice magic.",
+   "",
+   ""},
+
+  {"Your heart freezes.", "", ""},
+
+  {"", "", ""},
+},
+
+{ MUT_TENGU_FLIGHT, 0, 1, mutflag::GOOD, false,
   "able to fly",
 
-  {"You can fly.",
-   "You can fly continuously.",
-   ""},
+  {"You can fly continuously.", "", ""},
 
-  {"You have gained the ability to fly.",
-   "You can now fly continuously.",
-   ""},
+  {"You have gained the ability to fly continuously.", "", ""},
 
   {"", "", ""},
 },
@@ -798,6 +854,23 @@ static const mutation_def mut_data[] =
   {"Your talons dull and shrink into feet.",
    "Your talons look more like feet.",
    "Your talons look more like feet."},
+},
+
+// Demonspawn only
+{ MUT_PREHENSILE_TENTACLE, 0, 3, mutflag::GOOD, true,
+  "prehensile tentacle",
+
+  {"You have a tentacle on your back.",
+   "You have a large tentacle on your back.",
+   "Your prehensile tentacle constricts enemies."},
+
+  {"Your back sprouts a tentacle.",
+   "Your back tentacle grows larger.",
+   "Your tentacle grows strong enough to constrict enemies."},
+
+  {"",
+   "",
+   ""},
 },
 
 // Octopode only
@@ -990,10 +1063,12 @@ static const mutation_def mut_data[] =
 },
 #endif
 
+// No longer stochastic because that was dumb
+// Not bothering to rename the mutation though, sorry
 { MUT_STOCHASTIC_TORMENT_RESISTANCE, 0, 1, mutflag::GOOD, false,
   "50% torment resistance",
 
-  {"You are somewhat able to resist unholy torments (1 in 2 success).","",""},
+  {"You are resistant to unholy torments (50% damage).","",""},
   {"You feel a strange anaesthesia.", "", ""},
   {"", "", ""},
 },
@@ -1008,11 +1083,13 @@ static const mutation_def mut_data[] =
   {"You feel slightly disoriented.", "", ""},
 },
 
-{ MUT_ICEMAIL, 0, 1, mutflag::GOOD, false,
+{ MUT_ICEMAIL, 0, 2, mutflag::GOOD, false,
   "icemail",
 
-  {"A meltable icy envelope protects you from harm. (AC +", "", ""},
-  {"An icy envelope takes form around you.", "", ""},
+  {"A meltable icy envelope protects you from harm. (AC +", 
+   "A meltable icy envelope protects you from harm. (AC +", ""},
+  {"An icy envelope takes form around you.", 
+   "Your icy envelope grows thicker.", ""},
   {"", "", ""},
 },
 
@@ -1130,7 +1207,7 @@ static const mutation_def mut_data[] =
   "magic regeneration",
 
   {"You regenerate magic rapidly.", "", ""},
-  {"You feel your magic shroud grow more resilient.", "", ""},
+  {"You feel your magic regeneration quicken.", "", ""},
   {"", "", ""},
 },
 
@@ -1139,6 +1216,30 @@ static const mutation_def mut_data[] =
 
   {"When low on magic, you restore magic in place of health.", "", ""},
   {"You feel your life force and your magical essence meld.", "", ""},
+  {"", "", ""},
+},
+
+{ MUT_CRYSTAL_SKIN, 0, 1, mutflag::GOOD, false,
+  "crystal skin",
+
+  {"Your crystalline skin blocks enemy attacks. (SH +6)", "", ""},
+  {"Your skin becomes crystalline.", "", ""},
+  {"", "", ""},
+},
+
+{ MUT_REFLECTION, 0, 1, mutflag::GOOD, false,
+  "reflection",
+
+  {"Your crystalline skin reflects projectiles.", "", ""},
+  {"Your crystalline skin becomes reflective.", "", ""},
+  {"", "", ""},
+},
+
+{ MUT_MAGIC_REFLECTION, 0, 1, mutflag::GOOD, false,
+  "reflection",
+
+  {"Your crystalline skin reflects hostile magic. (", "", ""},
+  {"Your crystalline skin begins reflecting magic.", "", ""},
   {"", "", ""},
 },
 
@@ -1465,24 +1566,26 @@ static const mutation_def mut_data[] =
   {"Your skin no longer functions as natural camouflage.", "", ""},
 },
 
-{ MUT_IGNITE_BLOOD, 0, 1, mutflag::GOOD, false,
+{ MUT_IGNITE_BLOOD, 0, 2, mutflag::GOOD, false,
   "ignite blood",
 
-  {"Your demonic aura causes spilled blood to erupt in flames.", "", ""},
-  {"Your blood runs red-hot!", "", ""},
+  {"Your demonic aura occasionally causes spilled blood to erupt in flames.", 
+   "Your demonic aura causes spilled blood to erupt in flames.", ""},
+  {"Your blood runs red-hot!", 
+   "Your blood burns even hotter!", ""},
   {"", "", ""},
 },
 
-{ MUT_FOUL_STENCH, 0, 2, mutflag::GOOD, false,
+{ MUT_FOUL_STENCH, 0, 3, mutflag::GOOD, false,
   "foul stench",
 
   {"You may emit foul miasma when damaged in melee.",
-   "You frequently emit foul miasma when damaged in melee.",
-   ""},
+   "You sometimes emit foul miasma when damaged in melee.",
+   "You frequently emit foul miasma when damaged in melee."},
 
   {"You begin to emit a foul stench of rot and decay.",
-   "You begin to radiate miasma.",
-   ""},
+   "Your foul stench grows more powerful",
+   "You begin to radiate miasma."},
 
   {"", "", ""},
 },
@@ -1561,11 +1664,13 @@ static const mutation_def mut_data[] =
 },
 #endif
 
-{ MUT_BLACK_MARK, 0, 1, mutflag::GOOD, false,
+{ MUT_BLACK_MARK, 0, 2, mutflag::GOOD, false,
   "black mark",
 
-  {"Your melee attacks may debilitate your foes.", "", ""},
-  {"An ominous black mark forms on your body.", "", ""},
+  {"Your melee attacks may debilitate your foes.", 
+   "Your melee attacks frequently debilitate your foes", ""},
+  {"An ominous black mark forms on your body.", 
+   "Your black mark grows larger.", ""},
   {"", "", ""},
 },
 
@@ -1906,4 +2011,5 @@ static const mutation_category_def category_mut_data[] =
   { RANDOM_NON_SLIME_MUTATION, "nonslime"},
   { RANDOM_CORRUPT_MUTATION, "corrupt"},
   { RANDOM_QAZLAL_MUTATION, "qazlal"},
+  { RANDOM_KOBOLD_MUTATION, "kobold"},
 };

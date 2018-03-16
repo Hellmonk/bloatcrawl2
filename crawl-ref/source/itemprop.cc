@@ -246,10 +246,7 @@ struct weapon_def
 /// brand weights for non-dagger shortblades (short sword & rapier)
 static const vector<brand_weight_tuple> SBL_BRANDS = {
     { SPWPN_NORMAL, 33 },
-    { SPWPN_VENOM, 17 },
-    { SPWPN_SPEED, 10 },
     { SPWPN_DRAINING, 9 },
-    { SPWPN_PROTECTION, 6 },
     { SPWPN_ELECTROCUTION, 6 },
     { SPWPN_HOLY_WRATH, 5 },
     { SPWPN_VAMPIRISM, 4 },
@@ -261,12 +258,10 @@ static const vector<brand_weight_tuple> SBL_BRANDS = {
 
 /// brand weights for most m&f weapons
 static const vector<brand_weight_tuple> M_AND_F_BRANDS = {
-    { SPWPN_PROTECTION,     30 },
     { SPWPN_NORMAL,         28 },
     { SPWPN_HOLY_WRATH,     15 },
-    { SPWPN_VORPAL,         14 },
+    { SPWPN_DEVASTATION,    14 },
     { SPWPN_DRAINING,       10 },
-    { SPWPN_VENOM,           5 },
     { SPWPN_DISTORTION,      1 },
     { SPWPN_ANTIMAGIC,       1 },
     { SPWPN_PAIN,            1 },
@@ -275,7 +270,6 @@ static const vector<brand_weight_tuple> M_AND_F_BRANDS = {
 /// brand weights for demon weapons (whip, blade, trident)
 static const vector<brand_weight_tuple> DEMON_BRANDS = {
     { SPWPN_NORMAL,         27 },
-    { SPWPN_VENOM,          19 },
     { SPWPN_ELECTROCUTION,  16 },
     { SPWPN_DRAINING,       10 },
     { SPWPN_FLAMING,         7 },
@@ -289,14 +283,12 @@ static const vector<brand_weight_tuple> DEMON_BRANDS = {
 static const vector<brand_weight_tuple> LBL_BRANDS = {
     { SPWPN_HOLY_WRATH,     23 },
     { SPWPN_NORMAL,         19 },
-    { SPWPN_VORPAL,         15 },
+    { SPWPN_DEVASTATION,    15 },
     { SPWPN_ELECTROCUTION,  10 },
-    { SPWPN_PROTECTION,      8 },
     { SPWPN_FREEZING,        5 },
     { SPWPN_FLAMING,         5 },
     { SPWPN_DRAINING,        5 },
     { SPWPN_VAMPIRISM,       4 },
-    { SPWPN_VENOM,           2 },
     { SPWPN_DISTORTION,      2 },
     { SPWPN_PAIN,            1 },
     { SPWPN_ANTIMAGIC,       1 },
@@ -305,11 +297,10 @@ static const vector<brand_weight_tuple> LBL_BRANDS = {
 /// brand weights for axes.
 static const vector<brand_weight_tuple> AXE_BRANDS = {
     { SPWPN_NORMAL,         31 },
-    { SPWPN_VORPAL,         16 },
+    { SPWPN_DEVASTATION,    16 },
     { SPWPN_ELECTROCUTION,  11 },
     { SPWPN_FLAMING,        10 },
     { SPWPN_FREEZING,       10 },
-    { SPWPN_VENOM,           8 },
     { SPWPN_VAMPIRISM,       5 },
     { SPWPN_DRAINING,        3 },
     { SPWPN_DISTORTION,      2 },
@@ -321,9 +312,7 @@ static const vector<brand_weight_tuple> AXE_BRANDS = {
 /// brand weights for most polearms.
 static const vector<brand_weight_tuple> POLEARM_BRANDS = {
     { SPWPN_NORMAL,     36 },
-    { SPWPN_VENOM,      17 },
-    { SPWPN_PROTECTION, 12 },
-    { SPWPN_VORPAL,      9 },
+    { SPWPN_DEVASTATION, 9 },
     { SPWPN_FLAMING,     7 },
     { SPWPN_FREEZING,    7 },
     { SPWPN_VAMPIRISM,   5 },
@@ -335,10 +324,10 @@ static const vector<brand_weight_tuple> POLEARM_BRANDS = {
 
 /// brand weights for most ranged weapons.
 static const vector<brand_weight_tuple> RANGED_BRANDS = {
-    { SPWPN_NORMAL,   58 },
-    { SPWPN_FLAMING,  16 },
-    { SPWPN_FREEZING, 16 },
-    { SPWPN_VORPAL,   10 },
+    { SPWPN_NORMAL,      58 },
+    { SPWPN_FLAMING,     16 },
+    { SPWPN_FREEZING,    16 },
+    { SPWPN_DEVASTATION, 10 },
 };
 
 /// brand weights for holy (TSO-blessed) weapons.
@@ -364,7 +353,6 @@ static const weapon_def Weapon_prop[] =
         SK_MACES_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_SLASHING, 4, 0, 25, {
             { SPWPN_NORMAL,        34 },
-            { SPWPN_VENOM,         16 },
             { SPWPN_ELECTROCUTION, 16 },
             { SPWPN_DRAINING,       7 },
             { SPWPN_FREEZING,       6 },
@@ -389,12 +377,10 @@ static const weapon_def Weapon_prop[] =
     { WPN_MORNINGSTAR,       "morningstar",        14, -2, 15,
         SK_MACES_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_CRUSHING | DAM_PIERCE, 3, 10, 70, {
-            { SPWPN_PROTECTION,     30 },
             { SPWPN_NORMAL,         15 },
             { SPWPN_HOLY_WRATH,     15 },
             { SPWPN_DRAINING,       10 },
-            { SPWPN_VORPAL,          9 },
-            { SPWPN_VENOM,           5 },
+            { SPWPN_DEVASTATION,     9 },
             { SPWPN_FLAMING,         4 },
             { SPWPN_FREEZING,        4 },
             { SPWPN_DISTORTION,      2 },
@@ -415,12 +401,10 @@ static const weapon_def Weapon_prop[] =
     { WPN_EVENINGSTAR,       "eveningstar",        15, -1, 15,
         SK_MACES_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_CRUSHING | DAM_PIERCE, 0, 0, 0, {
-            { SPWPN_PROTECTION,     30 },
             { SPWPN_DRAINING,       19 },
             { SPWPN_HOLY_WRATH,     15 },
             { SPWPN_NORMAL,          8 },
-            { SPWPN_VORPAL,          6 },
-            { SPWPN_VENOM,           6 },
+            { SPWPN_DEVASTATION,     6 },
             { SPWPN_FLAMING,         6 },
             { SPWPN_FREEZING,        6 },
             { SPWPN_DISTORTION,      2 },
@@ -443,11 +427,8 @@ static const weapon_def Weapon_prop[] =
     { WPN_DAGGER,            "dagger",              4,  6, 10,
         SK_SHORT_BLADES, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_PIERCING, 10, 10, 20, {
-            { SPWPN_VENOM,          28 },
             { SPWPN_NORMAL,         20 },
-            { SPWPN_SPEED,          10 },
             { SPWPN_DRAINING,        9 },
-            { SPWPN_PROTECTION,      6 },
             { SPWPN_ELECTROCUTION,   6 },
             { SPWPN_HOLY_WRATH,      5 },
             { SPWPN_VAMPIRISM,       4 },
@@ -539,8 +520,6 @@ static const weapon_def Weapon_prop[] =
         SK_POLEARMS,     SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_PIERCING, 8, 10, 30, {
             { SPWPN_NORMAL,     46 },
-            { SPWPN_VENOM,      17 },
-            { SPWPN_VORPAL,     12 },
             { SPWPN_FLAMING,     7 },
             { SPWPN_FREEZING,    7 },
             { SPWPN_VAMPIRISM,   5 },
@@ -579,10 +558,8 @@ static const weapon_def Weapon_prop[] =
         SK_MACES_FLAILS,       SIZE_LITTLE, NUM_SIZE_LEVELS,  MI_NONE,
         DAMV_CRUSHING, 5, 10, 50, {
             { SPWPN_NORMAL,     50 },
-            { SPWPN_PROTECTION, 18 },
             { SPWPN_DRAINING,    8 },
-            { SPWPN_VORPAL,      8 },
-            { SPWPN_SPEED,       8 },
+            { SPWPN_DEVASTATION, 8 },
             { SPWPN_DISTORTION,  2 },
             { SPWPN_PAIN,        2 },
             { SPWPN_HOLY_WRATH,  2 },
@@ -593,11 +570,8 @@ static const weapon_def Weapon_prop[] =
         SK_MACES_FLAILS,       SIZE_LITTLE, NUM_SIZE_LEVELS, MI_NONE,
         DAMV_SLICING, 0, 0, 0, {
             { SPWPN_NORMAL,         34 },
-            { SPWPN_SPEED,          12 },
             { SPWPN_ELECTROCUTION,  12 },
             { SPWPN_VAMPIRISM,      12 },
-            { SPWPN_PROTECTION,      9 },
-            { SPWPN_VENOM,           7 },
             { SPWPN_PAIN,            7 },
             { SPWPN_ANTIMAGIC,       4 },
             { SPWPN_DISTORTION,      3 },
@@ -619,21 +593,21 @@ static const weapon_def Weapon_prop[] =
         DAMV_NON_MELEE, 0, 0, 0, RANGED_BRANDS },
 
     { WPN_HAND_CROSSBOW,     "hand crossbow",      12,  5, 15,
-        SK_CROSSBOWS,    SIZE_LITTLE, SIZE_LITTLE, MI_BOLT,
-        DAMV_NON_MELEE, 7, 10, 35, RANGED_BRANDS },
+        SK_BOWS,    SIZE_LITTLE, SIZE_LITTLE, MI_ARROW,
+        DAMV_NON_MELEE, 0, 0, 35, RANGED_BRANDS },
     { WPN_ARBALEST,          "arbalest",           18,  2, 19,
-        SK_CROSSBOWS,    SIZE_LITTLE, NUM_SIZE_LEVELS, MI_BOLT,
+        SK_BOWS,    SIZE_LITTLE, NUM_SIZE_LEVELS, MI_ARROW,
         DAMV_NON_MELEE, 5, 10, 45, RANGED_BRANDS },
     { WPN_TRIPLE_CROSSBOW,   "triple crossbow",    22,  0, 23,
-        SK_CROSSBOWS,    SIZE_LITTLE, NUM_SIZE_LEVELS, MI_BOLT,
+        SK_BOWS,    SIZE_LITTLE, NUM_SIZE_LEVELS, MI_ARROW,
         DAMV_NON_MELEE, 0, 2, 100, RANGED_BRANDS },
 
     { WPN_SHORTBOW,          "shortbow",            9,  2, 13,
         SK_BOWS,         SIZE_LITTLE, NUM_SIZE_LEVELS, MI_ARROW,
         DAMV_NON_MELEE, 8, 10, 30, RANGED_BRANDS },
-    { WPN_LONGBOW,           "longbow",            15,  0, 17,
-        SK_BOWS,         SIZE_MEDIUM, NUM_SIZE_LEVELS, MI_ARROW,
-        DAMV_NON_MELEE, 2, 10, 45, RANGED_BRANDS },
+    { WPN_LONGBOW,           "longbow",            13,  0, 17,
+        SK_BOWS,         SIZE_LITTLE, NUM_SIZE_LEVELS, MI_ARROW,
+        DAMV_NON_MELEE, 3, 10, 45, RANGED_BRANDS },
 };
 
 struct missile_def
@@ -655,7 +629,9 @@ static const missile_def Missile_prop[] =
 #endif
     { MI_STONE,         "stone",         2, 1, 1, true  },
     { MI_ARROW,         "arrow",         0, 2, 2, false },
+#if TAG_MAJOR_VERSION == 34
     { MI_BOLT,          "bolt",          0, 2, 2, false },
+#endif
     { MI_LARGE_ROCK,    "large rock",   20, 7, 7, true  },
 #if TAG_MAJOR_VERSION == 34
     { MI_SLING_BULLET,  "sling bullet",  4, 5, 5, false },
@@ -749,6 +725,8 @@ const set<pair<object_class_type, int> > removed_items =
 	{ OBJ_JEWELLERY, AMU_DISMISSAL },
 	{ OBJ_JEWELLERY, AMU_HARM },
 	{ OBJ_JEWELLERY, AMU_INACCURACY },
+    { OBJ_JEWELLERY, AMU_RAGE },
+    { OBJ_JEWELLERY, AMU_MANA_REGENERATION },
     { OBJ_JEWELLERY, RING_REGENERATION },
     { OBJ_JEWELLERY, RING_SUSTAIN_ATTRIBUTES },
     { OBJ_JEWELLERY, RING_TELEPORT_CONTROL },
@@ -758,11 +736,14 @@ const set<pair<object_class_type, int> > removed_items =
     { OBJ_JEWELLERY, RING_LOUDNESS },
     { OBJ_JEWELLERY, RING_STEALTH },
     { OBJ_JEWELLERY, RING_FLIGHT },
+    { OBJ_JEWELLERY, RING_MAGICAL_POWER },
+    { OBJ_JEWELLERY, RING_SEE_INVISIBLE },
 	{ OBJ_STAVES, 	 STAFF_POISON },
     { OBJ_STAVES,    STAFF_ENCHANTMENT },
     { OBJ_STAVES,    STAFF_CHANNELING },
 	{ OBJ_STAVES, 	 STAFF_ENERGY },
     { OBJ_STAVES, 	 STAFF_CONJURATION },
+    { OBJ_STAVES, 	 STAFF_POWER },
     { OBJ_POTIONS,   POT_GAIN_STRENGTH },
     { OBJ_POTIONS,   POT_GAIN_DEXTERITY },
     { OBJ_POTIONS,   POT_GAIN_INTELLIGENCE },
@@ -779,6 +760,9 @@ const set<pair<object_class_type, int> > removed_items =
 	{ OBJ_POTIONS, 	 POT_DEGENERATION },
     { OBJ_POTIONS,   POT_CURE_MUTATION },
     { OBJ_POTIONS,   POT_BENEFICIAL_MUTATION },
+    { OBJ_POTIONS,   POT_AGILITY },
+    { OBJ_POTIONS,   POT_BRILLIANCE },
+    { OBJ_POTIONS,   POT_CURING },
 	{ OBJ_BOOKS, 	 BOOK_YOUNG_POISONERS },
     { OBJ_BOOKS,     BOOK_WIZARDRY },
     { OBJ_BOOKS,     BOOK_CONTROL },
@@ -806,6 +790,7 @@ const set<pair<object_class_type, int> > removed_items =
 	{ OBJ_WANDS,     WAND_TELEPORTATION },
     { OBJ_WANDS,     WAND_HEAL_WOUNDS_REMOVED },
     { OBJ_WANDS,     WAND_RANDOM_EFFECTS },
+    { OBJ_WANDS,     WAND_SLOWING },
     { OBJ_SCROLLS,   SCR_CURSE_WEAPON },
     { OBJ_SCROLLS,   SCR_CURSE_ARMOUR },
     { OBJ_SCROLLS,   SCR_CURSE_JEWELLERY },
@@ -1471,7 +1456,10 @@ int armour_acq_weight(const armour_type armour)
 
 equipment_type get_armour_slot(const item_def &item)
 {
-    ASSERT(item.base_type == OBJ_ARMOUR);
+    ASSERT(item.base_type == OBJ_ARMOUR || item.base_type == OBJ_STAVES);
+	
+    if(item.base_type == OBJ_STAVES)
+        return EQ_SHIELD;
 
     return Armour_prop[ Armour_index[item.sub_type] ].slot;
 }
@@ -1532,6 +1520,8 @@ static int _fit_armour_size(armour_type sub_type, size_type size)
  */
 int fit_armour_size(const item_def &item, size_type size)
 {
+    if(item.base_type == OBJ_STAVES)
+        return 0;
     ASSERT(item.base_type == OBJ_ARMOUR);
     return _fit_armour_size(static_cast<armour_type>(item.sub_type), size);
 }
@@ -1559,6 +1549,9 @@ bool check_armour_size(armour_type sub_type, size_type size)
  */
 bool check_armour_size(const item_def &item, size_type size)
 {
+    if (item.base_type == OBJ_STAVES)
+        return true;
+
     ASSERT(item.base_type == OBJ_ARMOUR);
 
     return check_armour_size(static_cast<armour_type>(item.sub_type), size);
@@ -1600,7 +1593,6 @@ int wand_charge_value(int type)
         return 5; 
 
     case WAND_FLAME:
-    case WAND_SLOWING:
     case WAND_CONFUSION:
         return 6; 
     }
@@ -1655,7 +1647,6 @@ bool is_offensive_wand(const item_def& item)
 		return false;
 
     case WAND_FLAME:
-    case WAND_SLOWING:
     case WAND_PARALYSIS:
     case WAND_CONFUSION:
     case WAND_ICEBLAST:
@@ -2050,8 +2041,7 @@ bool is_weapon_wieldable(const item_def &item, size_type size)
 {
     ASSERT(is_weapon(item));
 
-    const int subtype = OBJ_STAVES == item.base_type ? WPN_STAFF
-                                                     : item.sub_type;
+    const int subtype = item.sub_type;
     return Weapon_prop[Weapon_index[subtype]].min_2h_size <= size;
 }
 
@@ -2722,7 +2712,7 @@ bool gives_ability(const item_def &item)
         return false;
 
     // Check for evokable randart properties.
-    for (int rap = ARTP_INVISIBLE; rap <= ARTP_BERSERK; rap++)
+    for (int rap = ARTP_FLY; rap <= ARTP_BERSERK; rap++)
         if (artefact_property(item, static_cast<artefact_prop_type>(rap)))
             return true;
 
@@ -2840,7 +2830,6 @@ equipment_type get_item_slot(object_class_type type, int sub_type)
     switch (type)
     {
     case OBJ_WEAPONS:
-    case OBJ_STAVES:
 #if TAG_MAJOR_VERSION == 34
     case OBJ_RODS:
 #endif
@@ -2849,6 +2838,9 @@ equipment_type get_item_slot(object_class_type type, int sub_type)
 
     case OBJ_ARMOUR:
         return get_armour_slot(static_cast<armour_type>(sub_type));
+		
+    case OBJ_STAVES:
+        return EQ_SHIELD;
 
     case OBJ_JEWELLERY:
         return jewellery_is_amulet(sub_type) ? EQ_AMULET : EQ_RINGS;
@@ -2880,7 +2872,10 @@ bool is_shield_incompatible(const item_def &weapon, const item_def *shield)
 
 bool shield_reflects(const item_def &shield)
 {
-    ASSERT(is_shield(shield));
+    if(shield.base_type == OBJ_STAVES)
+        return false;
+
+	ASSERT(is_shield(shield));
 
     return get_armour_ego_type(shield) == SPARM_REFLECTION;
 }

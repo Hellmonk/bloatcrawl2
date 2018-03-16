@@ -553,10 +553,6 @@ ring of intelligence
 Denne ring øger eller mindsker sin bærers mentale evner, afhængigt af hvor
 meget den er fortryllet.
 %%%%
-ring of magical power
-
-Denne ring øger sin bærers reserver af magisk energi.
-%%%%
 ring of poison resistance
 
 Denne ring beskytter sin bærer mod effekterne af gifte og edder.
@@ -815,10 +811,6 @@ Denne stav øger brugerens ildbesværgelsers kraft, men nedsætter den for
 isbesværgelser. Den beskytter brugeren mod virkningerne af ild. Hvis brugeren
 er kyndig i vækkelser og ildmagi kan staven fryse de fjender, den rammer.
 %%%%
-staff of power
-
-Denne stav øger brugerens reservoir af magisk energi.
-%%%%
 staff of summoning
 
 Denne stav øger brugerens hidkaldelsers kraft og beskytter mod hidkaldte
@@ -942,11 +934,6 @@ wand of polymorph
 
 En magisk anordning som omskaber et væsen til en anden form. Den er særligt
 effektiv mod formskiftende væsener.
-%%%%
-wand of slowing
-
-En magisk anordning, som kaster fortryllelser, der gør et væsens handlinger
-langsommere.
 %%%%
 whip
 

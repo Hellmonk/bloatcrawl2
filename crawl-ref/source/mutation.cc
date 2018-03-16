@@ -94,7 +94,8 @@ static const body_facet_def _body_facets[] =
     //{ EQ_HELMET, MUT_BEAK },
     { EQ_GLOVES, MUT_CLAWS },
     { EQ_BOOTS, MUT_HOOVES },
-    { EQ_BOOTS, MUT_TALONS }
+    { EQ_BOOTS, MUT_TALONS },
+    { EQ_CLOAK, MUT_PREHENSILE_TENTACLE}
 };
 
 /**
@@ -726,15 +727,6 @@ string describe_mutations(bool center_title)
     return result;
 }
 
-static const string _vampire_Ascreen_footer = (
-#ifdef USE_TILE_LOCAL
-    "<w>Right-click</w> or press '<w>!</w>'"
-#else
-    "Press '<w>!</w>'"
-#endif
-    " to toggle between mutations and properties depending on your blood\n"
-    "level.\n");
-
 #if TAG_MAJOR_VERSION == 34
 static const string _lava_orc_Ascreen_footer = (
 #ifndef USE_TILE_LOCAL
@@ -745,91 +737,6 @@ static const string _lava_orc_Ascreen_footer = (
     " to toggle between mutations and properties depending on your\n"
     "temperature.\n");
 #endif
-
-static void _display_vampire_attributes()
-{
-    ASSERT(you.species == SP_VAMPIRE);
-
-    string result;
-
-    const int lines = 12;
-    string column[lines][5] =
-    {
-        {"                     ", "<green>Full</green>       ", "Satiated   ", "<yellow>Thirsty</yellow>    ", "<lightred>Bloodless</lightred>"},
-                                 //Full       Satiated      Thirsty         Bloodless
-        {"Metabolism           ", "fast       ", "normal     ", "slow       ", "none  "},
-
-        {"Regeneration         ", "fast       ", "normal     ", "slow       ", "none  "},
-
-        {"Stealth boost        ", "none       ", "none       ", "minor      ", "major "},
-
-        {"Hunger costs         ", "full       ", "full       ", "halved     ", "none  "},
-
-        {"\n<w>Resistances</w>\n"
-         "Poison resistance    ", "           ", "           ", "+          ", "immune"},
-
-        {"Cold resistance      ", "           ", "           ", "+          ", "++    "},
-
-        {"Negative resistance  ", "           ", " +         ", "++         ", "+++   "},
-
-        {"Rotting resistance   ", "           ", "           ", "+          ", "+     "},
-
-        {"Torment resistance   ", "           ", "           ", "           ", "+     "},
-
-        {"\n<w>Transformations</w>\n"
-         "Bat form             ", "no         ", "yes        ", "yes        ", "yes   "},
-
-        {"Other forms and \n"
-         "berserk              ", "yes        ", "yes        ", "no         ", "no    "}
-    };
-
-    int current = 0;
-    switch (you.hunger_state)
-    {
-    case HS_ENGORGED:
-    case HS_VERY_FULL:
-    case HS_FULL:
-        current = 1;
-        break;
-    case HS_SATIATED:
-        current = 2;
-        break;
-    case HS_HUNGRY:
-    case HS_VERY_HUNGRY:
-    case HS_NEAR_STARVING:
-        current = 3;
-        break;
-    case HS_STARVING:
-    case HS_FAINTING:
-        current = 4;
-    }
-
-    for (int y = 0; y < lines; y++)  // lines   (properties)
-    {
-        for (int x = 0; x < 5; x++)  // columns (hunger states)
-        {
-            if (y > 0 && x == current)
-                result += "<w>";
-            result += column[y][x];
-            if (y > 0 && x == current)
-                result += "</w>";
-        }
-        result += "\n";
-    }
-
-    result += "\n";
-    result += _vampire_Ascreen_footer;
-
-    formatted_scroller attrib_menu;
-    attrib_menu.add_text(result);
-
-    attrib_menu.show();
-    if (attrib_menu.getkey() == '!'
-        || attrib_menu.getkey() == CK_MOUSE_CMD)
-    {
-        display_mutations();
-    }
-}
 
 #if TAG_MAJOR_VERSION == 34
 static void _display_temperature()
@@ -924,13 +831,6 @@ void display_mutations()
         extra += "<darkgrey>(())</darkgrey>: Completely suppressed.\n";
     if (_num_transient)
         extra += "<magenta>[]</magenta>   : Transient mutations.";
-    if (you.species == SP_VAMPIRE)
-    {
-        if (!extra.empty())
-            extra += "\n";
-
-        extra += _vampire_Ascreen_footer;
-    }
 
 #if TAG_MAJOR_VERSION == 34
     if (you.species == SP_LAVA_ORC)
@@ -955,12 +855,6 @@ void display_mutations()
 
     mutation_menu.show();
 
-    if (you.species == SP_VAMPIRE
-        && (mutation_menu.getkey() == '!'
-            || mutation_menu.getkey() == CK_MOUSE_CMD))
-    {
-        _display_vampire_attributes();
-    }
 #if TAG_MAJOR_VERSION == 34
     if (you.species == SP_LAVA_ORC
         && (mutation_menu.getkey() == '!'
@@ -1028,6 +922,18 @@ static mutation_type _get_mut_with_use(mutflag mt)
     die("Error while selecting mutations");
 }
 
+static mutation_type _get_kobold_enhancer_mutation()
+{
+	mutation_type mutat = random_choose_weighted(
+                                    2, MUT_HEX_ENHANCER,
+                                    2, MUT_CHARMS_ENHANCER,
+                                    2, MUT_SUMMON_ENHANCER,
+                                    1, MUT_AIR_ENHANCER,
+                                    1, MUT_EARTH_ENHANCER);
+
+    return mutat;									
+}
+
 static mutation_type _get_random_slime_mutation()
 {
     return _get_mut_with_use(mutflag::JIYVA);
@@ -1040,6 +946,27 @@ static mutation_type _delete_random_slime_mutation()
     while (true)
     {
         mutat = _get_random_slime_mutation();
+
+        if (you.get_base_mutation_level(mutat) > 0)
+            break;
+
+        if (one_chance_in(500))
+        {
+            mutat = NUM_MUTATIONS;
+            break;
+        }
+    }
+
+    return mutat;
+}
+
+static mutation_type _delete_random_kobold_mutation()
+{
+	mutation_type mutat;
+
+    while (true)
+    {
+        mutat = _get_kobold_enhancer_mutation();
 
         if (you.get_base_mutation_level(mutat) > 0)
             break;
@@ -1274,15 +1201,6 @@ bool physiology_mutation_conflict(mutation_type mutat)
         && (mutat == MUT_THIN_SKELETAL_STRUCTURE || mutat == MUT_HORNS))
     {
         return true;
-    }
-	
-    // Kobolds aren't allowed to get stat mutations.
-	// It interferes with their gimmick and also is too likely to statzero them.
-	if (you.species == SP_KOBOLD
-        && (mutat == MUT_STRONG || mutat == MUT_WEAK || mutat == MUT_AGILE || mutat == MUT_CLUMSY
-            || mutat == MUT_CLEVER || mutat == MUT_DOPEY))
-    {
-        return true;		
     }
 
     // No feet.
@@ -1558,6 +1476,8 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
     case RANDOM_QAZLAL_MUTATION:
         mutat = _get_random_qazlal_mutation();
         break;
+    case RANDOM_KOBOLD_MUTATION:
+        mutat = _get_kobold_enhancer_mutation();
     default:
         break;
     }
@@ -1746,6 +1666,14 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
             // Recheck Ashenzari bondage in case our available slots changed.
             ash_check_bondage();
             break;
+
+        case MUT_PREHENSILE_TENTACLE:
+            // blocks cloaks but somehow doesn't interfere with body armor. Don't ask.
+            if (cur_base_level >= 3 && !you.melded[EQ_CLOAK])
+            {
+                remove_one_equip(EQ_CLOAK, false, true);
+            }
+			break;
 
         case MUT_ACUTE_VISION:
             // We might have to turn autopickup back on again.
@@ -2012,6 +1940,13 @@ bool delete_mutation(mutation_type which_mutation, const string &reason,
         if (mutat == NUM_MUTATIONS)
             return false;
     }
+    else if (which_mutation == RANDOM_KOBOLD_MUTATION)
+    {
+		mutat = _delete_random_kobold_mutation();
+		
+        if(mutat == NUM_MUTATIONS)
+            return false;
+    }
 
     return _delete_single_mutation_level(mutat, reason, false); // won't delete temp mutations
 }
@@ -2230,6 +2165,14 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         ostr << mdef.have[0] << player_icemail_armour_class() << ")";
         result = ostr.str();
     }
+    else if (mut == MUT_MAGIC_REFLECTION)
+    {
+        const int SH = crawl_state.need_save ? player_shield_class() : 0;
+        const int reflect_chance = 100 * SH / omnireflect_chance_denom(SH);
+        ostringstream ostr;
+        ostr << mdef.have[0] << reflect_chance << "% chance)";
+        result = ostr.str();
+    }
     else if (mut == MUT_SANGUINE_ARMOUR)
     {
         ostringstream ostr;
@@ -2323,6 +2266,8 @@ static const facet_def _demon_facets[] =
       { -33, -33, -33 } },
     { 0, { MUT_TALONS, MUT_TALONS, MUT_TALONS },
       { -33, -33, -33 } },
+	{ 0, { MUT_PREHENSILE_TENTACLE, MUT_PREHENSILE_TENTACLE, MUT_PREHENSILE_TENTACLE },
+      { -33, -33, -33 } },
     // Scale mutations
     { 1, { MUT_DISTORTION_FIELD, MUT_DISTORTION_FIELD, MUT_DISTORTION_FIELD },
       { -33, -33, 0 } },
@@ -2350,36 +2295,34 @@ static const facet_def _demon_facets[] =
     { 1, { MUT_SANGUINE_ARMOUR, MUT_SANGUINE_ARMOUR, MUT_SANGUINE_ARMOUR },
       { -33, -33, 0 } },
     // Tier 2 facets
-    { 2, { MUT_HEAT_RESISTANCE, MUT_FLAME_CLOUD_IMMUNITY, MUT_IGNITE_BLOOD },
-      { -33, 0, 0 } },
-    { 2, { MUT_COLD_RESISTANCE, MUT_FREEZING_CLOUD_IMMUNITY, MUT_ICEMAIL },
+    { 2, { MUT_ICEMAIL, MUT_ICE_ENHANCER, MUT_ICEMAIL },
       { -33, 0, 0 } },
     { 2, { MUT_POWERED_BY_DEATH, MUT_POWERED_BY_DEATH, MUT_POWERED_BY_DEATH },
       { -33, 0, 0 } },
     { 2, { MUT_DEMONIC_GUARDIAN, MUT_DEMONIC_GUARDIAN, MUT_DEMONIC_GUARDIAN },
       { -66, 17, 50 } },
-    { 2, { MUT_NIGHTSTALKER, MUT_NIGHTSTALKER, MUT_NIGHTSTALKER },
-      { -33, 0, 0 } },
     { 2, { MUT_SPINY, MUT_SPINY, MUT_SPINY },
       { -33, 0, 0 } },
     { 2, { MUT_POWERED_BY_PAIN, MUT_POWERED_BY_PAIN, MUT_POWERED_BY_PAIN },
       { -33, 0, 0 } },
-    { 2, { MUT_ROT_IMMUNITY, MUT_FOUL_STENCH, MUT_FOUL_STENCH },
+    { 2, { MUT_FOUL_STENCH, MUT_FOUL_STENCH, MUT_FOUL_STENCH },
       { -33, 0, 0 } },
-    { 2, { MUT_MANA_SHIELD, MUT_MANA_REGENERATION, MUT_MANA_LINK },
+    { 2, { MUT_MANA_REGENERATION, MUT_MANA_SHIELD, MUT_MANA_LINK },
+      { -33, 0, 0 } },
+    { 2, { MUT_CRYSTAL_SKIN, MUT_REFLECTION, MUT_MAGIC_REFLECTION },
       { -33, 0, 0 } },
     // Tier 3 facets
-    { 3, { MUT_HEAT_RESISTANCE, MUT_FLAME_CLOUD_IMMUNITY, MUT_HURL_DAMNATION },
-      { 50, 50, 50 } },
-    { 3, { MUT_COLD_RESISTANCE, MUT_FREEZING_CLOUD_IMMUNITY, MUT_PASSIVE_FREEZE },
-      { 50, 50, 50 } },
+    { 3, { MUT_IGNITE_BLOOD, MUT_IGNITE_BLOOD, MUT_HURL_DAMNATION },
+      { 17, 50, 50 } },
+    { 3, { MUT_NIGHTSTALKER, MUT_NIGHTSTALKER, MUT_NIGHTSTALKER },
+      { 17, 50, 50 } },
     { 3, { MUT_ROBUST, MUT_ROBUST, MUT_ROBUST },
-      { 50, 50, 50 } },
-    { 3, { MUT_NEGATIVE_ENERGY_RESISTANCE, MUT_STOCHASTIC_TORMENT_RESISTANCE,
+      { 17, 50, 50 } },
+    { 3, { MUT_BLACK_MARK, MUT_STOCHASTIC_TORMENT_RESISTANCE,
            MUT_BLACK_MARK },
-      { 50, 50, 50 } },
+      { 17, 50, 50 } },
     { 3, { MUT_AUGMENTATION, MUT_AUGMENTATION, MUT_AUGMENTATION },
-      { 50, 50, 50 } },
+      { 17, 50, 50 } },
 };
 
 static bool _works_at_tier(const facet_def& facet, int tier)
@@ -2451,13 +2394,13 @@ try_again:
 
                 ret.emplace_back(m, next_facet->when[i], absfacet);
 
-                if (m == MUT_COLD_RESISTANCE)
+                if (m == MUT_ICE_ENHANCER)
                     ice_elemental++;
 
-                if (m == MUT_HEAT_RESISTANCE)
+                if (m == MUT_HURL_DAMNATION)
                     fire_elemental++;
 
-                if (m == MUT_ROT_IMMUNITY || m == MUT_IGNITE_BLOOD)
+                if ((m == MUT_FOUL_STENCH || m == MUT_IGNITE_BLOOD) && i == 0)
                     cloud_producing++;
             }
 

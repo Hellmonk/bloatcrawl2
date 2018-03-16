@@ -578,9 +578,12 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
         return TILEP_BASE_KOBOLD;
     case SP_MUMMY:
         return TILEP_BASE_MUMMY;
+    case SP_SKELETON:
+        return TILEP_BASE_SKELETON;
     case SP_NAGA:
         return TILEP_BASE_NAGA;
     case SP_OGRE:
+    case SP_TITAN:
         return TILEP_BASE_OGRE;
     case SP_TROLL:
         return TILEP_BASE_TROLL;
@@ -719,6 +722,9 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
         case SP_MUMMY:
             hair = 0;
             break;
+        case SP_SKELETON:
+            hair = 0;
+            break;
         case SP_TROLL:
             hair = TILEP_HAIR_TROLL;
             break;
@@ -811,6 +817,7 @@ void tilep_job_default(int job, dolls_data *doll)
     switch (job)
     {
         case JOB_FIGHTER:
+        case JOB_TORPOR_KNIGHT:
             parts[TILEP_PART_LEG]   = TILEP_LEG_METAL_SILVER;
             break;
 

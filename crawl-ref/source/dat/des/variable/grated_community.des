@@ -239,7 +239,7 @@ KMONS: P = plant
 MONS:  deep elf annihilator
 KFEAT: * = altar_vehumet / w:2 altar_makhleb
 KITEM: " = gold, wand of acid / wand of iceblast / wand of lightning,\
-           potion of brilliance / nothing
+           nothing
 KFEAT: 8 = granite_statue / w:1 floor
 KITEM: ? = scroll of immolation / nothing, any scroll / nothing
 : kitem("! = q:" .. crawl.random_range(1, 3) .. " scroll of immolation /\
@@ -334,8 +334,8 @@ KITEM:  ' = q:1 arrow
 KITEM:  $ = nothing, q:30 arrow / any good_item
 : else
 MONS:   patrolling yaktaur captain, plant
-KITEM:  ' = q:1 bolt
-KITEM:  $ = nothing, q:30 bolt / any good_item
+KITEM:  ' = q:1 arrow
+KITEM:  $ = nothing, q:30 arrow / any good_item
 :end
 SHUFFLE: %$
 SUBST:  % = %W

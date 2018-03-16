@@ -966,6 +966,13 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
     case ENCH_STILL_WINDS:
         end_still_winds();
         break;
+		
+    case ENCH_PHASE_SHIFT:
+        if (!quiet)
+            simple_monster_message(*this, " is no longer phasing.");
+
+        behaviour_event(this, ME_EVAL);
+        break;
 
     default:
         break;
@@ -1448,6 +1455,8 @@ void monster::apply_enchantment(const mon_enchant &me)
     case ENCH_INFESTATION:
     case ENCH_BLACK_MARK:
     case ENCH_STILL_WINDS:
+    case ENCH_WHIRLWIND_PINNED:
+    case ENCH_PHASE_SHIFT:
         decay_enchantment(en);
         break;
 
@@ -1551,30 +1560,6 @@ void monster::apply_enchantment(const mon_enchant &me)
         {
             simple_monster_message(*this, " burns!");
             dprf("sticky flame damage: %d", dam);
-
-            if (mons_genus(type) == MONS_SHEEP)
-            {
-                for (adjacent_iterator ai(pos()); ai; ++ai)
-                {
-                    monster *mon = monster_at(*ai);
-                    if (mon
-                        && (mons_genus(mon->type) == MONS_SHEEP)
-                        && !mon->has_ench(ENCH_STICKY_FLAME)
-                        && coinflip())
-                    {
-                        const int dur = me.degree/2 + 1 + random2(me.degree);
-                        mon->add_ench(mon_enchant(ENCH_STICKY_FLAME, dur,
-                                                  me.agent()));
-                        mon->add_ench(mon_enchant(ENCH_FEAR, dur + random2(20),
-                                                  me.agent()));
-                        if (visible_to(&you))
-                            mprf("%s catches fire!", mon->name(DESC_A).c_str());
-                        behaviour_event(mon, ME_SCARE, me.agent());
-                        xom_is_stimulated(100);
-                    }
-                }
-            }
-
             hurt(me.agent(), dam, BEAM_STICKY_FLAME);
         }
 
@@ -2148,7 +2133,7 @@ static const char *enchant_names[] =
 #endif
     "aura_of_brilliance", "empowered_spells", "gozag_incite", "pain_bond",
     "idealised", "bound_soul", "infestation",
-    "stilling the winds",
+    "stilling the winds", "pinned_by_whirlwind", "phase_shift",
     "buggy",
 };
 
@@ -2285,6 +2270,7 @@ int mon_enchant::calc_duration(const monster* mons,
         cturn = 1000 / _mod_speed(25, mons->speed);
         break;
     case ENCH_HASTE:
+    case ENCH_PHASE_SHIFT:
     case ENCH_MIGHT:
     case ENCH_INVIS:
     case ENCH_FEAR_INSPIRING:

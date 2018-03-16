@@ -118,14 +118,13 @@ class item_def_printer:
             # 'OBJ_GOLD':
             # Remove when TAG_MAJOR_VERSION > 34:
             'OBJ_RODS':      'rod_type'
-			'OBJ_FOOD':      'food_type',
             }.get(ty, 'uint8_t')
         sub_ty = str(self.val['sub_type'].cast(gdb.lookup_type(sub_type_type)))
 
         yield f('base_type')
         yield g('sub_type', sub_type_type)
 
-        if ty == 'OBJ_CORPSES' or (ty == 'OBJ_FOOD' and sub_ty == 'FOOD_CHUNK'):
+        if ty == 'OBJ_CORPSES':
             yield f('mon_type')
         else:
             yield f('plus')

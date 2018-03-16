@@ -731,8 +731,7 @@ int DungeonRegion::handle_mouse(MouseEvent &event)
         return CK_MOUSE_CLICK;
     }
 
-    if (mouse_control::current_mode() == MOUSE_MODE_NORMAL
-        || mouse_control::current_mode() == MOUSE_MODE_MACRO
+    if (mouse_control::current_mode() == MOUSE_MODE_MACRO
         || mouse_control::current_mode() == MOUSE_MODE_MORE
         || mouse_control::current_mode() == MOUSE_MODE_PROMPT
         || mouse_control::current_mode() == MOUSE_MODE_YESNO)
@@ -770,6 +769,9 @@ int DungeonRegion::handle_mouse(MouseEvent &event)
         if (!desc.empty())
             tiles.add_text_tag(TAG_CELL_DESC, desc, gc);
     }
+
+    if (mouse_control::current_mode() == MOUSE_MODE_NORMAL)
+        return 0;
 
     if (!on_map)
         return 0;

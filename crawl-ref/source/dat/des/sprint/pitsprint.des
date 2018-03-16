@@ -166,7 +166,7 @@ function general_item_setup(e)
   e.kitem("^ = superb_item ident:all w:590 / stone q:3 w:2 /\
           potion of heal wounds ident:all q:2 w:2 /\
           scroll of fog w:1 ident:all / scroll of holy word w:1 ident:all /\
-          potion of might ident:all w:2 / potion of agility w:2 ident:all /\
+          potion of augmentation ident:all w:2 /\
           potion of haste q:2 ident:all w:2 /\
           scroll of acquirement q:1 w:1 ident:all /\
           scroll of enchant weapon ident:all q:4 w:2 /\
@@ -176,10 +176,9 @@ function general_item_setup(e)
   e.kitem("* = star_item ident:all w:66 / any ident:all w:33")
   e.kitem("% = any ident:all")
   e.kitem("! = potion of heal wounds ident:all q:2 w:30 /\
-          potion of curing ident:all w:20 /\
-          potion of might ident:all / potion of agility ident:all /\
+          potion of augmentation ident:all /\
           potion of haste ident:all /\
-          potion of resistance ident:all w:5 / potion of brilliance ident:all /\
+          potion of resistance ident:all w:5 /\
           potion of berserk rage ident:all /\
           potion of mutation ident:all")
   e.kitem("? = scroll of blinking ident:all /\
@@ -212,7 +211,7 @@ function general_item_setup(e)
     demon blade plus:9 randart not_cursed ident:all /\
     quarterstaff plus:9 good_item not_cursed ident:all /\
     quarterstaff plus:7 randart not_cursed ident:all /\
-    longbow plus:7 ego:vorpal not_cursed ident:all w:15 /\
+    longbow plus:7 ego:devastation not_cursed ident:all w:15 /\
     triple crossbow plus:7 good_item not_cursed ident:all w:15")
   e.kitem("] = plate armour plus:12 not_cursed ident:all /\
     plate armour plus:8 good_item not_cursed ident:all /\
@@ -335,7 +334,6 @@ function metal_vault_setup(e)
           ring of protection from magic ident:all not_cursed /\
           ring of fire ident:all not_cursed /\
           ring of ice ident:all not_cursed /\
-          ring of see invisible ident:all not_cursed /\
           ring of poison resistance ident:all not_cursed /\
           any jewellery ident:all not_cursed")
   e.lua_marker('>', props_marker {
@@ -436,7 +434,7 @@ function armoury_setup(e)
   e.kitem("c = any weapon good_item ident:all")
   e.kitem("d = any armour good_item ident:all")
   e.kitem("e = arrow q:50 mundane ident:all")
-  e.kitem("f = bolt q:50 mundane ident:all")
+  e.kitem("f = arrow q:50 mundane ident:all")
   e.subst("c = ccc(")
   e.subst("d = ddd[")
   e.lua_marker('~', props_marker {
@@ -466,8 +464,7 @@ function coven_setup(e)
   e.kitem("a = any book good_item ident:all")
   e.kitem("b = amulet of faith randart not_cursed ident:all /\
           amulet of guardian spirit randart not_cursed ident:all /\
-          amulet of magic regeneration randart not_cursed ident:all /\
-          amulet of rage randart not_cursed ident:all /\
+          amulet of destruction randart not_cursed ident:all /\
           amulet of reflection randart not_cursed ident:all /\
           amulet of regeneration randart ident:all not_cursed /\
           ring of slaying plus:5 randart ident:all not_cursed /\
@@ -478,7 +475,6 @@ function coven_setup(e)
           ring of protection from magic randart ident:all not_cursed /\
           ring of fire randart ident:all not_cursed /\
           ring of ice randart ident:all not_cursed /\
-          ring of see invisible randart ident:all not_cursed /\
           ring of poison resistance randart ident:all not_cursed /\
           ring of slaying plus:5 ident:all not_cursed /\
           ring of invisibility randart ident:all not_cursed /\
@@ -491,8 +487,8 @@ function coven_setup(e)
   e.kitem("e = wand of digging charges:5 ident:all")
   e.kitem("d = potion of heal wounds q:5 ident:all")
   e.kitem("f = any wand good_item ident:all")
-  e.kitem("g = staff of power ident:all")
-  e.kitem("h = staff of power ident:all")
+  e.kitem("g = staff of wizardry ident:all")
+  e.kitem("h = staff of wizardry ident:all")
   e.kitem("i = crystal ball of energy")
   e.kitem("j = potion of mutation ident:all")
   e.lua_marker('~', props_marker {
@@ -617,7 +613,7 @@ KITEM: a = stone, \
 KITEM: b = scroll of summoning ident:all q:1, \
        scroll of amnesia q:5 ident:all, \
        scroll of vulnerability q:2 ident:all
-KITEM: c = staff of power ident:all, \
+KITEM: c = staff of wizardry ident:all, \
        stone q:10
 KITEM: d = potion of invisibility ident:all q:2, \
        potion of berserk rage ident:all q:2, \
@@ -625,26 +621,20 @@ KITEM: d = potion of invisibility ident:all q:2, \
 # The 3rd equipment room
 KITEM: e = rapier plus:2 ego:electrocution ident:all not_cursed /\
        rapier plus:2 ego:draining ident:all not_cursed /\
-       rapier plus:2 ego:venom ident:all not_cursed /\
        rapier plus:2 ego:distortion ident:all not_cursed /\
        rapier plus:2 good_item ident:all not_cursed
 KITEM: f = war axe plus:2 ego:freezing ident:all not_cursed /\
-       war axe plus:2 ego:vorpal ident:all not_cursed /\
+       war axe plus:2 ego:devastation ident:all not_cursed /\
        war axe plus:2 good_item ident:all not_cursed w:5 /\
        broad axe plus:1 ego:freezing ident:all not_cursed /\
-       broad axe plus:1 ego:vorpal ident:all not_cursed /\
+       broad axe plus:1 ego:devastation ident:all not_cursed /\
        broad axe plus:1 good_item ident:all not_cursed w:5
-KITEM: g = quarterstaff plus:2 ego:protection ident:all not_cursed /\
-       quarterstaff plus:2 ego:vorpal ident:all not_cursed /\
+KITEM: g = quarterstaff plus:2 ego:devastation ident:all not_cursed /\
        quarterstaff plus:2 good_item ident:all not_cursed w:5 /\
-       morningstar plus:2 ego:protection ident:all not_cursed /\
-       morningstar plus:2 ego:vorpal ident:all not_cursed /\
+       morningstar plus:2 ego:devastation ident:all not_cursed /\
        morningstar plus:2 good_item ident:all not_cursed w:5
-KITEM: h = halberd plus:2 ego:protection ident:all not_cursed /\
-       halberd plus:2 ego:venom ident:all not_cursed /\
-       halberd plus:2 good_item ident:all not_cursed w:5
+KITEM: h = halberd plus:2 good_item ident:all not_cursed w:5
 KITEM: i = quarterstaff plus:0 ident:all not_cursed /\
-       quarterstaff plus:4 ego:speed ident:all not_cursed w:15 /\
        quarterstaff plus:4 good_item ident:all not_cursed w:5
 KITEM: j = scimitar plus:2 ego:flaming ident:all not_cursed /\
        scimitar plus:2 ego:holy_wrath not_cursed ident:all /\
@@ -719,21 +709,17 @@ ENDMAP
 NAME:  equipment_2
 TAGS:  equipment_2
 KITEM: a = dagger ego:electrocution ident:all not_cursed /\
-       dagger ego:draining ident:all not_cursed /\
-       dagger ego:venom ident:all not_cursed
+       dagger ego:draining ident:all not_cursed
 KITEM: b = hand axe ego:freezing ident:all not_cursed /\
-       hand axe ego:vorpal ident:all not_cursed
-KITEM: c = mace ego:vorpal ident:all not_cursed /\
-       mace ego:protection ident:all not_cursed /\
-       flail ego:vorpal ident:all not_cursed /\
-       flail ego:protection ident:all not_cursed
-KITEM: d = trident ego:vorpal ident:all not_cursed
-KITEM: e = quarterstaff ego:protection ident:all not_cursed /\
-       quarterstaff ego:speed ident:all not_cursed
+       hand axe ego:devastation ident:all not_cursed
+KITEM: c = mace ego:devastation ident:all not_cursed /\
+       flail ego:devastation ident:all not_cursed
+KITEM: d = trident ego:devastation ident:all not_cursed
+KITEM: e = quarterstaff ego:devastation ident:all not_cursed
 KITEM: f = long sword ego:holy_wrath ident:all not_cursed /\
        long sword ego:flaming ident:all not_cursed
 KITEM: g = potion of heal wounds q:5 ident:all
-KITEM: h = potion of curing q:5 ident:all
+KITEM: h = potion of ambrosia q:5 ident:all
 KITEM: i = chain mail plus:3 ident:all not_cursed w:20 /\
        ring mail plus:3 ident:all not_cursed /\
        scale mail plus:3 ident:all not_cursed /\
@@ -959,7 +945,6 @@ KFEAT:   c = altar_cheibriados
 KFEAT:   d = altar_dithmenos
 KFEAT:   e = altar_elyvilon
 KFEAT:   g = altar_gozag
-KFEAT:   h = altar_hepliaklqana
 KFEAT:   j = altar_jiyva
 KFEAT:   k = altar_kikubaaqudgha
 KFEAT:   l = altar_lugonu
@@ -980,7 +965,7 @@ KFEAT:   ' = altar_the_shining_one
 : general_item_setup(_G)
 : base_monster_setup(_G)
 MAP
-a.cde.ghjk
+a.cde.g.jk
 lmnoqrstuv
 xyz'
 ENDMAP

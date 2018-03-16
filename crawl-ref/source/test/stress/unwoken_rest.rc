@@ -17,6 +17,8 @@ show_more = false
 :     bot_start = false
 :     crawl.enable_more(false)
 :     crawl.process_keys("&Y" .. esc)
+:     crawl.sendkeys("&l27" .. eol .. "N")
+:     crawl.sendkeys("&A27" .. eol)
 :     crawl.call_dlua("require('dlua/stress.lua');" ..
 :                     "stress.entomb()")
 :     crawl.sendkeys("5")

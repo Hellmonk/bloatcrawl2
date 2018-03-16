@@ -283,8 +283,7 @@ bool is_hasty_item(const item_def& item)
     case OBJ_WEAPONS:
         {
         const int item_brand = get_weapon_brand(item);
-        retval = (item_brand == SPWPN_SPEED
-                  || item.sub_type == WPN_QUICK_BLADE);
+        retval = (item_brand == SPWPN_SPEED);
         }
         break;
     case OBJ_ARMOUR:
@@ -302,6 +301,9 @@ bool is_hasty_item(const item_def& item)
         break;
     case OBJ_BOOKS:
         retval = _is_book_type(item, is_hasty_spell);
+        break;
+    case OBJ_MISSILES:
+        retval = item.sub_type == MI_DART_FRENZY;
         break;
     default:
         break;
@@ -375,7 +377,7 @@ bool is_corpse_violating_spell(spell_type spell)
 /**
  * Do the good gods hate use of this spell?
  *
- * @param spell     The spell in question; e.g. SPELL_CORPSE_ROT.
+ * @param spell     The spell in question; e.g. SPELL_PAIN.
  * @return          Whether the Good Gods hate this spell.
  */
 bool is_evil_spell(spell_type spell)
@@ -461,14 +463,6 @@ conduct_type god_hates_item_handling(const item_def &item)
     switch (you.religion)
     {
     case GOD_ZIN:
-        // Handled here rather than is_forbidden_food() because you can
-        // butcher or otherwise desecrate the corpses all you want, just as
-        // long as you don't eat the chunks. This check must come before the
-        // item_type_known() check because the latter returns false for food
-        // (and other item types without identification).
-        if (item.is_type(OBJ_FOOD, FOOD_CHUNK) && is_mutagenic(item))
-            return DID_DELIBERATE_MUTATING;
-
         if (!item_type_known(item))
             return DID_NOTHING;
 
@@ -501,9 +495,7 @@ conduct_type god_hates_item_handling(const item_def &item)
 
     case GOD_CHEIBRIADOS:
         if (item_type_known(item) && (_is_potentially_hasty_item(item)
-                                      || is_hasty_item(item))
-            // Don't need item_type_known for quick blades.
-            || item.is_type(OBJ_WEAPONS, WPN_QUICK_BLADE))
+                                      || is_hasty_item(item)))
         {
             return DID_HASTY;
         }
@@ -579,16 +571,14 @@ bool god_likes_item_type(const item_def &item, god_type which_god)
             if (item.base_type == OBJ_JEWELLERY
                 && (item.sub_type == RING_WIZARDRY
                     || item.sub_type == RING_ICE
-                    || item.sub_type == RING_MAGICAL_POWER))
+                    || item.sub_type == RING_FIRE))
             {
                 return false;
             }
             break;
 
         case GOD_CHEIBRIADOS:
-            // Slow god: no quick blades, no berserking.
-            if (item.is_type(OBJ_WEAPONS, WPN_QUICK_BLADE))
-                return false;
+            // Slow god: no berserking.
 
             if (item.is_type(OBJ_JEWELLERY, AMU_RAGE))
                 return false;

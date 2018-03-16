@@ -970,16 +970,12 @@ static void _xom_do_potion(int /*sever*/)
     potion_type pot = POT_CURING;
     do
     {
-        pot = random_choose_weighted(10, POT_CURING,
-                                     10, POT_HEAL_WOUNDS,
+        pot = random_choose_weighted(10, POT_HEAL_WOUNDS,
                                      10, POT_MAGIC,
                                      10, POT_HASTE,
                                      10, POT_MIGHT,
-                                     10, POT_AGILITY,
-                                     10, POT_BRILLIANCE,
                                      10, POT_INVISIBILITY,
-                                     10, POT_BERSERK_RAGE,
-                                     1,  POT_EXPERIENCE);
+                                     10, POT_BERSERK_RAGE);
     }
     while (!get_potion_effect(pot)->can_quaff()); // ugh
 
@@ -1791,7 +1787,6 @@ static void _xom_enchant_monster(bool helpful)
             BEAM_HASTE,
             BEAM_MIGHT,
             BEAM_AGILITY,
-            BEAM_INVISIBILITY,
             BEAM_RESISTANCE,
         };
         ench = RANDOM_ELEMENT(enchantments);
@@ -2515,7 +2510,7 @@ static void _xom_repel_stairs(bool unclimbable)
         if (!real_stairs)
         {
             if (feat_is_escape_hatch(grd(stairs_avail[0])))
-                feat_name = "escape hatch";
+                feat_name = "mutagenic shaft";
             else
                 feat_name = "gate";
         }

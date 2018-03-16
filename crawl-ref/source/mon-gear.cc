@@ -342,7 +342,7 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
     static const vector<pair<brand_type, int>> HELL_KNIGHT_BRANDS = // sum 45
     {   { SPWPN_FLAMING,        13 },
         { SPWPN_DRAINING,       4 },
-        { SPWPN_VORPAL,         4 },
+        { SPWPN_DEVASTATION,    4 },
         { SPWPN_DISTORTION,     2 },
         { SPWPN_PAIN,           2 },
         { NUM_SPECIAL_WEAPONS,  20 }, // 5/9 chance of brand
@@ -528,9 +528,9 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         { MONS_GREY_DRACONIAN,          { NAGA_WEAPONS } },
         { MONS_TENGU,                   { NAGA_WEAPONS } },
         { MONS_NAGA_RITUALIST,
-            { { { WPN_DAGGER,           12 },
-                { WPN_SCIMITAR,         5 },
-        }, { 2, 1, 4 }, { { SPWPN_VENOM, 1 } } } },
+            { { { WPN_DAGGER,       1 },
+                { WPN_SCIMITAR,     1 },
+		  } } },
         { MONS_RUPERT,
             // Rupert favours big two-handers with visceral up-close
             // effects, i.e. no polearms.
@@ -694,8 +694,7 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
             { { WPN_DAGGER,             1 },
               { WPN_RAPIER,             1 }, }, {},
             { { SPWPN_DISTORTION,       3 },
-              { SPWPN_VENOM,            2 },
-              { SPWPN_DRAINING,         1 } },
+              { SPWPN_DRAINING,         3 } },
         } },
         { MONS_EUSTACHIO,
             { { { WPN_LONG_SWORD,       1 },
@@ -739,10 +738,10 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
               { WPN_DOUBLE_SWORD,       1 }, },
             { 1, 0, 3 },
             { { SPWPN_DRAINING,      13 }, // total 45
-              { SPWPN_VORPAL,        7 },
-              { SPWPN_FREEZING,      4 },
-              { SPWPN_FLAMING,       4 },
-              { SPWPN_PAIN,          2 },
+              { SPWPN_DEVASTATION,    7 },
+              { SPWPN_FREEZING,       4 },
+              { SPWPN_FLAMING,        4 },
+              { SPWPN_PAIN,           2 },
               { NUM_SPECIAL_WEAPONS, 15 } }, // 2/3 chance of brand
         } },
         { MONS_SOJOBO, {
@@ -758,6 +757,7 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         { MONS_TORTUROUS_DEMONSPAWN,    { DS_WEAPONS } },
         { MONS_CORRUPTER,               { DS_WEAPONS } },
         { MONS_BLACK_SUN,               { DS_WEAPONS } },
+        { MONS_ELEVENGU,                { DS_WEAPONS } },
         { MONS_WARMONGER, {
             { { WPN_DEMON_BLADE,        10 },
               { WPN_DEMON_WHIP,         10 },
@@ -892,7 +892,7 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         else if (one_chance_in(30) && level > 2)
         {
             item.base_type = OBJ_WEAPONS;
-            item.sub_type  = WPN_HAND_CROSSBOW;
+            item.sub_type  = WPN_SHORTBOW;
             break;
         }
         break;
@@ -932,14 +932,15 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         force_item = true;
         if (one_chance_in(3))
         {
-            item.base_type = OBJ_STAVES;
-            item.sub_type = STAFF_EARTH;
+            item.base_type = OBJ_WEAPONS;
+            item.sub_type = WPN_BROAD_AXE;
+            set_item_ego_type(item, OBJ_WEAPONS, SPWPN_DEVASTATION);
         }
         else
         {
             item.base_type = OBJ_WEAPONS;
             item.sub_type = WPN_QUARTERSTAFF;
-            set_item_ego_type(item, OBJ_WEAPONS, SPWPN_VORPAL);
+            set_item_ego_type(item, OBJ_WEAPONS, SPWPN_DEVASTATION);
         }
         item.flags |= ISFLAG_KNOW_TYPE;
         break;
@@ -990,18 +991,19 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
         force_item = true;
         if (one_chance_in(3))
         {
-            item.base_type = OBJ_STAVES;
-            item.sub_type = STAFF_COLD;
+            item.base_type = OBJ_WEAPONS;
+            item.sub_type = WPN_SCIMITAR;
+            set_item_ego_type(item, OBJ_WEAPONS, SPWPN_FREEZING);
         }
         else
         {
             item.base_type = OBJ_WEAPONS;
             item.sub_type = WPN_QUARTERSTAFF;
             set_item_ego_type(item, OBJ_WEAPONS, SPWPN_FREEZING);
-            // this might not be the best place for this logic, but:
-            make_item_for_monster(mon, OBJ_JEWELLERY, RING_ICE,
-                                  0, 1, ISFLAG_KNOW_TYPE);
         }
+        // this might not be the best place for this logic, but:
+        make_item_for_monster(mon, OBJ_JEWELLERY, RING_ICE,
+                                  0, 1, ISFLAG_KNOW_TYPE);
         item.flags |= ISFLAG_KNOW_TYPE;
         break;
 
@@ -1012,9 +1014,12 @@ static void _give_weapon(monster* mon, int level, bool melee_only = false,
 
     case MONS_ARACHNE:
         force_item = true;
-        item.base_type = OBJ_STAVES;
-        item.sub_type = STAFF_DEATH;
-        item.flags    |= ISFLAG_KNOW_TYPE;
+        item.base_type = OBJ_WEAPONS;
+        item.sub_type = WPN_QUARTERSTAFF;
+        if(coinflip())
+            set_item_ego_type(item, OBJ_WEAPONS, SPWPN_PAIN);
+        else
+            set_item_ego_type(item, OBJ_WEAPONS, SPWPN_NORMAL);
         break;
 
     case MONS_CEREBOV:

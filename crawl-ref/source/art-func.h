@@ -488,7 +488,7 @@ static bool _WUCAD_MU_evoke(item_def *item, bool* did_work, bool* unevokable)
 
 static void _VAMPIRES_TOOTH_equip(item_def *item, bool *show_msgs, bool unmeld)
 {
-    if (you.undead_state() == US_ALIVE && !you_foodless())
+    if (you.undead_state() == US_ALIVE)
     {
         _equip_mpr(show_msgs,
                    "You feel a strange hunger, and smell blood in the air...");
@@ -496,21 +496,6 @@ static void _VAMPIRES_TOOTH_equip(item_def *item, bool *show_msgs, bool unmeld)
     else if (you.species != SP_VAMPIRE)
         _equip_mpr(show_msgs, "You feel strangely empty.");
     // else let player-equip.cc handle message
-}
-
-///////////////////////////////////////////////////
-
-// XXX: Pluses at creation time are hardcoded in make_item_unrandart()
-
-static void _VARIABILITY_world_reacts(item_def *item)
-{
-    if (x_chance_in_y(2, 5))
-        item->plus += (coinflip() ? +1 : -1);
-
-    if (item->plus < -4)
-        item->plus = -4;
-    else if (item->plus > 16)
-        item->plus = 16;
 }
 
 ///////////////////////////////////////////////////
@@ -1350,7 +1335,7 @@ static void _FROSTBITE_melee_effects(item_def* weapon, actor* attacker,
 
 static void _LEECH_equip(item_def *item, bool *show_msgs, bool unmeld)
 {
-    if (you.undead_state() == US_ALIVE && !you_foodless())
+    if (you.undead_state() == US_ALIVE)
         _equip_mpr(show_msgs, "You feel a powerful hunger.");
     else if (you.species != SP_VAMPIRE)
         _equip_mpr(show_msgs, "You feel very empty.");

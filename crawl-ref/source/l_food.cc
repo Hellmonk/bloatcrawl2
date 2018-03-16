@@ -22,20 +22,13 @@ static int food_do_eat(lua_State *ls)
 
 static int food_prompt_eat_chunks(lua_State *ls)
 {
-    int eaten = 0;
-    if (!you.turn_is_over)
-        eaten = prompt_eat_chunks();
-
-    lua_pushboolean(ls, (eaten != 0));
+    lua_pushboolean(ls, (false));
     return 1;
 }
 
 static int food_prompt_inventory_menu(lua_State *ls)
 {
-    bool eaten = false;
-    if (!you.turn_is_over)
-        eaten = prompt_eat_item();
-    lua_pushboolean(ls, eaten);
+    lua_pushboolean(ls, false);
     return 1;
 }
 
@@ -67,13 +60,7 @@ static int food_eat(lua_State *ls)
 
 static int food_dangerous(lua_State *ls)
 {
-    LUA_ITEM(ls, item, 1);
-
-    bool dangerous = false;
-    if (item)
-        dangerous = is_bad_food(*item);
-
-    lua_pushboolean(ls, dangerous);
+    lua_pushboolean(ls, false);
     return 1;
 }
 
@@ -107,9 +94,7 @@ static int food_isveggie(lua_State *ls)
 
 static int food_bottleable(lua_State *ls)
 {
-    LUA_ITEM(ls, item, 1);
-    lua_pushboolean(ls, item && item->is_type(OBJ_CORPSES, CORPSE_BODY)
-                             && can_bottle_blood_from_corpse(item->mon_type));
+    lua_pushboolean(ls, false);
     return 1;
 }
 

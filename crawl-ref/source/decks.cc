@@ -37,6 +37,7 @@
 #include "mon-cast.h"
 #include "mon-clone.h"
 #include "mon-death.h"
+#include "mon-movetarget.h"
 #include "mon-place.h"
 #include "mon-poly.h"
 #include "mon-project.h"
@@ -93,7 +94,7 @@ deck_archetype deck_of_escape =
     { CARD_ELIXIR,     {5, 5, 5} },
     { CARD_CLOUD,      {5, 5, 5} },
     { CARD_VELOCITY,   {5, 5, 5} },
-    { CARD_SHAFT,      {5, 5, 5} },
+    { CARD_FAMINE,     {5, 5, 5} },
 };
 
 deck_archetype deck_of_destruction =
@@ -120,7 +121,6 @@ deck_archetype deck_of_punishment =
 {
     { CARD_WRAITH,     {5, 5, 5} },
     { CARD_WRATH,      {5, 5, 5} },
-    { CARD_FAMINE,     {5, 5, 5} },
     { CARD_SWINE,      {5, 5, 5} },
     { CARD_TORMENT,    {5, 5, 5} },
 };
@@ -1213,25 +1213,14 @@ void evoke_deck(item_def& deck)
 static int _get_power_level(int power, deck_rarity_type rarity)
 {
     int power_level = 0;
-    switch (rarity)
-    {
-    case DECK_RARITY_COMMON:
-//give nemelex worshipers a small chance for an upgrade
-//approx 1/2 ORNATE chance (plain decks don't get the +150 power boost)
-        if (have_passive(passive_t::cards_power) && (x_chance_in_y(power, 1000)))
-            ++power_level;
-        break;
-    case DECK_RARITY_LEGENDARY:
-        if (x_chance_in_y(power, 500))
-            ++power_level;
-        // deliberate fall-through
-    case DECK_RARITY_RARE:
-        if (x_chance_in_y(power, 700))
-            ++power_level;
-        break;
-    case DECK_RARITY_RANDOM:
-        die("unset deck rarity");
-    }
+	
+    // formerly from rare deck rarity
+    if (x_chance_in_y(power, 700))
+        ++power_level;
+    // add a chance for power level 2
+    if (x_chance_in_y(power, 1500))
+        ++power_level;
+
     dprf("Power level: %d", power_level);
 
     // other functions in this file will break if this assertion is violated
@@ -1280,8 +1269,7 @@ static void _velocity_card(int power, deck_rarity_type rarity)
     switch (power_level)
     {
         case 0:
-            for_allies = for_hostiles = random_choose(ENCH_SLOW, ENCH_HASTE,
-                                                      ENCH_SWIFT);
+            for_allies = ENCH_SWIFT;
             break;
 
         case 1:
@@ -1519,6 +1507,32 @@ static void _damaging_card(card_type card, int power, deck_rarity_type rarity,
     case CARD_ORB:
         ztype = orbzaps[power_level];
         break;
+		
+    case CARD_STORM:
+    {
+        int successes = 0;
+
+        int how_many = random2(2 * power_level + 1);
+        //guarantee one elemental at power 1 and two at power 2
+        how_many = max(how_many, power_level);
+		
+        for (int i = 0; i < how_many; i++)
+        {
+            if (monster *elemental = _friendly(MONS_AIR_ELEMENTAL, 3))
+			{
+                successes++;
+				elemental->foe = MHITYOU;
+            }
+        }
+
+        if (successes > 0)
+        {
+            mprf("You summon %s!", successes > 1 ? "some air elementals" : "an air elemental");
+            redraw_screen();
+        }
+        ztype = ZAP_LIGHTNING_BOLT;
+        break;
+    }
 
     case CARD_PAIN:
         if (power_level == 2)
@@ -1690,7 +1704,7 @@ static void _summon_demon_card(int power, deck_rarity_type rarity)
         break;
     default:
         dct = random_demon_by_tier(2);
-        dct2 = MONS_PANDEMONIUM_LORD;
+        dct2 = random_demon_by_tier(1);
     }
 
     if (is_good_god(you.religion))
@@ -1777,15 +1791,15 @@ static void _summon_dancing_weapon(int power, deck_rarity_type rarity)
     case 0:
         // Wimpy, negative-enchantment weapon.
         wpn.plus = random2(3) - 2;
-        wpn.sub_type = (coinflip() ? WPN_QUARTERSTAFF : WPN_HAND_AXE);
+        wpn.sub_type = (coinflip() ? WPN_SPEAR : WPN_HAND_AXE);
 
         set_item_ego_type(wpn, OBJ_WEAPONS,
-                          coinflip() ? SPWPN_VENOM : SPWPN_NORMAL);
+                          coinflip() ? SPWPN_DEVASTATION : SPWPN_NORMAL);
         break;
     case 1:
         // This is getting good.
         wpn.plus = random2(4) - 1;
-        wpn.sub_type = (coinflip() ? WPN_LONG_SWORD : WPN_TRIDENT);
+        wpn.sub_type = (coinflip() ? WPN_QUARTERSTAFF : WPN_TRIDENT);
 
         if (coinflip())
         {
@@ -1801,7 +1815,7 @@ static void _summon_dancing_weapon(int power, deck_rarity_type rarity)
         wpn.sub_type = (coinflip() ? WPN_DEMON_TRIDENT : WPN_EXECUTIONERS_AXE);
 
         set_item_ego_type(wpn, OBJ_WEAPONS,
-                          coinflip() ? SPWPN_SPEED : SPWPN_ELECTROCUTION);
+                          coinflip() ? SPWPN_DRAINING : SPWPN_ELECTROCUTION);
     }
 
     item_colour(wpn); // this is probably not needed
@@ -1936,11 +1950,11 @@ static void _cloud_card(int power, deck_rarity_type rarity)
 
         switch (power_level)
         {
-            case 0: cloudy = (you_worship(GOD_SHINING_ONE) || !one_chance_in(5))
+            case 0: cloudy = (!one_chance_in(5))
                               ? CLOUD_MEPHITIC : CLOUD_POISON;
                     break;
 
-            case 1: cloudy = (you_worship(GOD_DITHMENOS) || coinflip())
+            case 1: cloudy = (coinflip())
                               ? CLOUD_COLD : CLOUD_FIRE;
                     break;
 
@@ -1975,35 +1989,6 @@ static void _cloud_card(int power, deck_rarity_type rarity)
         mpr("Clouds appear around you!");
     else
         canned_msg(MSG_NOTHING_HAPPENS);
-}
-
-static void _storm_card(int power, deck_rarity_type rarity)
-{
-    const int power_level = _get_power_level(power, rarity);
-
-    _friendly(MONS_AIR_ELEMENTAL, 3);
-
-    wind_blast(&you, (power_level == 0) ? 100 : 200, coord_def(), true);
-
-    for (radius_iterator ri(you.pos(), 4, C_SQUARE, LOS_SOLID); ri; ++ri)
-    {
-        monster *mons = monster_at(*ri);
-
-        if (adjacent(*ri, you.pos()))
-            continue;
-
-        if (mons && mons->wont_attack())
-            continue;
-
-        if ((feat_has_solid_floor(grd(*ri))
-             || grd(*ri) == DNGN_DEEP_WATER)
-            && !cloud_at(*ri))
-        {
-            place_cloud(CLOUD_STORM, *ri,
-                        5 + (power_level + 1) * random2(10), & you);
-        }
-    }
-
 }
 
 static void _illusion_card(int power, deck_rarity_type rarity)
@@ -2122,6 +2107,39 @@ static void _torment_card()
         torment_player(&you, TORMENT_CARDS);
 }
 
+static void _famine_card(int power, deck_rarity_type rarity)
+{
+    const int power_level = _get_power_level(power, rarity);
+    bool something_happened = false;
+
+    for (radius_iterator di(you.pos(), LOS_NO_TRANS); di; ++di)
+    {
+        monster *mons = monster_at(*di);
+
+        if (!mons || mons->wont_attack() || !mons_is_threatening(*mons))
+            continue;
+		 
+        if (x_chance_in_y(power_level, 8))
+        {
+			mons->paralyse(&you, random2(5) + 2);
+			something_happened = true;
+        }
+        else if (x_chance_in_y(2 * power_level + 1, 10) && mons->can_go_frenzy())
+        {
+            mons->go_frenzy(&you);
+            something_happened = true;
+		}
+        else
+        {
+            mons->weaken(&you, 12);
+            something_happened = true;
+        }
+    }
+
+    if (!something_happened)
+        canned_msg(MSG_NOTHING_HAPPENS);
+}
+
 // Punishment cards don't have their power adjusted depending on Nemelex piety
 // or penance, and are based on experience level instead of evocations skill
 // for more appropriate scaling.
@@ -2194,22 +2212,16 @@ void card_effect(card_type which_card, deck_rarity_type rarity,
     case CARD_SUMMON_FLYING:    _summon_flying(power, rarity); break;
     case CARD_TORMENT:          _torment_card(); break;
     case CARD_CLOUD:            _cloud_card(power, rarity); break;
-    case CARD_STORM:            _storm_card(power, rarity); break;
     case CARD_ILLUSION:         _illusion_card(power, rarity); break;
     case CARD_DEGEN:            _degeneration_card(power, rarity); break;
     case CARD_WILD_MAGIC:       _wild_magic_card(power, rarity); break;
+    case CARD_FAMINE:           _famine_card(power, rarity); break;
 
     case CARD_VITRIOL:
     case CARD_PAIN:
     case CARD_ORB:
+    case CARD_STORM:
         _damaging_card(which_card, power, rarity, flags & CFLAG_DEALT);
-        break;
-
-    case CARD_FAMINE:
-        if (you_foodless())
-            mpr("You feel rather smug.");
-        else
-            set_hunger(min(you.hunger, HUNGER_STARVING / 2), true);
         break;
 
     case CARD_SWINE:

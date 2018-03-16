@@ -949,22 +949,6 @@ spret_type cast_airstrike(int pow, const dist &beam, bool fail)
         return SPRET_SUCCESS; // still losing a turn
     }
 
-    if (mons->res_wind())
-    {
-        if (mons->observable())
-        {
-            mprf("But air would do no harm to %s!",
-                 mons->name(DESC_THE).c_str());
-            return SPRET_ABORT;
-        }
-
-        fail_check();
-        mprf("The air twists arounds and harmlessly tosses %s around.",
-             mons->name(DESC_THE).c_str());
-        // Bailing out early, no need to upset the gods or the target.
-        return SPRET_SUCCESS; // you still did discover the invisible monster
-    }
-
     god_conduct_trigger conducts[3];
     disable_attack_conducts(conducts);
 
@@ -1051,27 +1035,19 @@ static int _shatter_mon_dice(const monster *mon)
     case MONS_ROXANNE:
         return 6;
 
-    // 1/3 damage to liquids.
-    case MONS_WATER_ELEMENTAL:
-        return 1;
-
     default:
         const bool petrifying = mon->petrifying();
         const bool petrified = mon->petrified();
 
-        // Extra damage to petrifying/petrified things.
-        // Undo the damage reduction as well; base damage is 4 : 6.
+		// Extra damage to petrifying/petrified things.
         if (petrifying || petrified)
-            return petrifying ? 6 : 12;
-        // No damage to insubstantials.
+            return 6;
+        // reduced damage to insubstantials.
         else if (mon->is_insubstantial())
-            return 0;
+            return 1;
         // 1/3 damage to fliers and slimes.
         else if (mon->airborne() || mons_is_slime(*mon))
             return 1;
-        // 3/2 damage to ice.
-        else if (mon->is_icy())
-            return coinflip() ? 5 : 4;
         // Double damage to bone.
         else if (mon->is_skeletal())
             return 6;
@@ -1192,19 +1168,13 @@ static int _shatter_walls(coord_def where, int pow, actor *agent)
 static int _shatter_player_dice()
 {
     if (you.is_insubstantial())
-        return 0;
-    else if (you.petrified())
-        return 12; // reduced later
-    else if (you.petrifying())
-        return 6;  // reduced later
-    // Same order as for monsters -- petrified flyers get hit hard, skeletal
-    // flyers get no extra damage.
+        return 1;
+    else if (you.petrified() || you.petrifying())
+        return 6; // reduced later
     else if (you.airborne())
         return 1;
     else if (you.form == TRAN_STATUE || you.species == SP_GARGOYLE)
         return 6;
-    else if (you.form == TRAN_ICE_BEAST)
-        return coinflip() ? 5 : 4;
     else
         return 3;
 }
@@ -1392,6 +1362,72 @@ void shillelagh(actor *wielder, coord_def where, int pow)
 
     if ((you.pos() - wielder->pos()).rdist() <= 1 && in_bounds(you.pos()))
         _shatter_player(pow, wielder, true);
+}
+
+void detonation_brand(actor *wielder, coord_def where, int pow)
+{
+
+    // Used to draw explosion cells
+    bolt beam_visual;
+    beam_visual.set_agent(wielder);
+    beam_visual.flavour       = BEAM_VISUAL;
+    beam_visual.glyph         = dchar_glyph(DCHAR_EXPLOSION);
+    beam_visual.colour        = RED;
+    beam_visual.ex_size       = 1;
+    beam_visual.is_explosion  = true;
+
+    vector <monster* > affected_monsters;
+    for (adjacent_iterator ai(where, false); ai; ++ai)
+    {
+        monster *mon = monster_at(*ai);
+        if (!mon || !mon->alive() || mon->submerged()
+            || mon == wielder)
+        {
+            continue;
+        }
+        if(mon && wielder->is_monster() && wielder->as_monster()->attitude == mon->attitude)
+        {
+			continue;
+        }
+        else if(mon && wielder->is_player() && mon->attitude != ATT_HOSTILE)
+        {
+			continue;
+        }	
+        affected_monsters.push_back(mon);
+    }
+    
+    if (you.can_see(*wielder))
+    {
+        mpr("There is a fiery explosion!");
+    }
+	
+    beam_visual.explosion_draw_cell(where);
+
+    // do the actual damage
+    for (auto mon : affected_monsters)
+    {
+        int dam = resist_adjust_damage(mon, BEAM_FIRE, 1 + random2(pow) / 2);
+        if(you.can_see(*mon))
+        {
+            mprf("%s is burned (%d)!", mon->name(DESC_THE).c_str(), dam);
+            beam_visual.explosion_draw_cell(mon->pos());
+        }
+        mon->expose_to_element(BEAM_FIRE, 1 + dam / 5);
+        mon->hurt(wielder, dam);
+    }
+	
+    if ((you.pos() - where).rdist() <= 1 && in_bounds(you.pos()) && wielder->is_monster()
+            && wielder->as_monster()->attitude == ATT_HOSTILE)
+    {
+        int dam = resist_adjust_damage(&you, BEAM_FIRE, 1 + random2(pow) / 2);
+		beam_visual.explosion_draw_cell(you.pos());
+        mprf("you are burned (%d)!", dam);
+        expose_player_to_element(BEAM_FIRE, 1 + dam / 5);
+        ouch(dam, KILLED_BY_MONSTER, wielder->mid);
+    }
+	
+    update_screen();
+    scaled_delay(50);
 }
 
 /**
@@ -2095,8 +2131,7 @@ spret_type cast_discharge(int pow, bool fail)
 }
 
 bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
-                              const coord_def target, bool allow_random,
-                              bool get_max_distance, bool quiet,
+                              const coord_def target, bool quiet,
                               const char **what, bool &should_destroy_wall,
                               bool &hole)
 {
@@ -2113,7 +2148,7 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
 
     beam.target = target;
 
-    // Number of dice vary... 3 is easy/common, but it can get as high as 6.
+    // Number of dice vary from 2-4.
     beam.damage = dice_def(0, 5 + pow / 5);
 
     monster* mon = monster_at(target);
@@ -2151,9 +2186,9 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
         switch (mon->type)
         {
         case MONS_TOENAIL_GOLEM:
-            beam.damage.num = 3;
             beam.name       = "blast of toenail fragments";
             beam.colour     = RED;
+            beam.damage.num = 3;
             break;
 
         case MONS_IRON_ELEMENTAL:
@@ -2273,30 +2308,23 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
         if (what && *what == nullptr)
             *what = "wall";
         // fall-through
-    case DNGN_GRANITE_STATUE:   // normal rock -- big explosion
+    case DNGN_GRANITE_STATUE:
         if (what && *what == nullptr)
             *what = "statue";
 
         beam.name       = "blast of rock fragments";
         beam.damage.num = 3;
 
-        if ((grid == DNGN_ORCISH_IDOL
-             || grid == DNGN_GRANITE_STATUE
-             || grid == DNGN_GRATE
-             || pow >= 35 && grid == DNGN_ROCK_WALL
-                 && (allow_random && one_chance_in(3)
-                     || !allow_random && get_max_distance)
-             || pow >= 35 && grid == DNGN_CLEAR_ROCK_WALL
-                 && (allow_random && one_chance_in(3)
-                     || !allow_random && get_max_distance)
-             || pow >= 50 && grid == DNGN_STONE_WALL
-                 && (allow_random && one_chance_in(10)
-                     || !allow_random && get_max_distance)
-             || pow >= 50 && grid == DNGN_CLEAR_STONE_WALL
-                 && (allow_random && one_chance_in(10)
-                     || !allow_random && get_max_distance)))
+        if (grid == DNGN_ORCISH_IDOL
+            || grid == DNGN_GRANITE_STATUE
+            || pow >= 35 && (grid == DNGN_ROCK_WALL
+                             || grid == DNGN_SLIMY_WALL
+                             || grid == DNGN_CLEAR_ROCK_WALL)
+               && one_chance_in(3)
+            || pow >= 50 && (grid == DNGN_STONE_WALL
+                             || grid == DNGN_CLEAR_STONE_WALL)
+               && one_chance_in(10))
         {
-            beam.ex_size = 2;
             should_destroy_wall = true;
         }
         break;
@@ -2312,12 +2340,10 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
         beam.name       = "blast of metal fragments";
         beam.damage.num = 4;
 
-        if (pow >= 75 && (allow_random && x_chance_in_y(pow / 5, 500)
-                          || !allow_random && get_max_distance)
+        if (pow >= 75 && one_chance_in(20)
             || grid == DNGN_GRATE)
         {
-            beam.damage.num += 2;
-            should_destroy_wall     = true;
+            should_destroy_wall = true;
         }
         break;
 
@@ -2329,16 +2355,11 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
         beam.name       = "blast of crystal shards";
         beam.damage.num = 4;
 
-        if (allow_random && coinflip()
-            || !allow_random && get_max_distance)
-        {
-            beam.ex_size = 3;
+        if (one_chance_in(3))
             should_destroy_wall = true;
-        }
         break;
 
     // Stone doors and arches
-
     case DNGN_OPEN_DOOR:
     case DNGN_CLOSED_DOOR:
     case DNGN_RUNED_DOOR:
@@ -2349,7 +2370,7 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
         should_destroy_wall = true;
 
         // fall-through
-    case DNGN_STONE_ARCH:          // Floor -- small explosion.
+    case DNGN_STONE_ARCH:
         if (what && *what == nullptr)
             *what = "stone arch";
         hole            = false;  // to hit monsters standing on doors
@@ -2388,8 +2409,8 @@ spret_type cast_fragmentation(int pow, const actor *caster,
     bolt beam;
 
     // should_destroy_wall is an output argument.
-    if (!setup_fragmentation_beam(beam, pow, caster, target, true, false,
-                                  false, &what, should_destroy_wall, hole))
+    if (!setup_fragmentation_beam(beam, pow, caster, target, false, &what,
+                                  should_destroy_wall, hole))
     {
         return SPRET_ABORT;
     }
@@ -2399,8 +2420,8 @@ spret_type cast_fragmentation(int pow, const actor *caster,
 
         bolt tempbeam;
         bool temp;
-        setup_fragmentation_beam(tempbeam, pow, caster, target, false, true,
-                                 true, nullptr, temp, temp);
+        setup_fragmentation_beam(tempbeam, pow, caster, target, true, nullptr,
+                                 temp, temp);
         tempbeam.is_tracer = true;
         tempbeam.explode(false);
         if (tempbeam.beam_cancelled)
@@ -2436,19 +2457,9 @@ spret_type cast_fragmentation(int pow, const actor *caster,
             mprf("%s shatters!", mon->name(DESC_THE).c_str());
 
         if (caster->is_player())
-        {
-            if (_player_hurt_monster(*mon, beam.damage.roll(),
-                                     BEAM_DISINTEGRATION))
-            {
-                beam.damage.num += 2;
-            }
-        }
+            _player_hurt_monster(*mon, beam.damage.roll(), BEAM_DISINTEGRATION);
         else
-        {
             mon->hurt(caster, beam.damage.roll(), BEAM_DISINTEGRATION);
-            if (!mon->alive())
-                beam.damage.num += 2;
-        }
     }
 
     beam.explode(true, hole);
@@ -2653,30 +2664,22 @@ void forest_damage(const actor *mon)
 
                 if (!apply_chunked_AC(1, foe->evasion(EV_IGNORE_NONE, mon)))
                 {
-                    msg = random_choose(
-                            "@foe@ @is@ waved at by a branch.",
-                            "A tree reaches out but misses @foe@.",
-                            "A root lunges up near @foe@.");
+                    msg = "A tree reaches out but misses @foe@.";
                 }
                 else if (!(dmg = foe->apply_ac(hd + random2(hd), hd * 2 - 1,
                                                AC_PROPORTIONAL)))
                 {
-                    msg = random_choose(
-                            "@foe@ @is@ scraped by a branch!",
-                            "A tree reaches out and scrapes @foe@!",
-                            "A root barely touches @foe@ from below.");
+                    msg = "A tree reaches out and scrapes @foe@!";
                 }
                 else
                 {
-                    msg = random_choose(
-                        "@foe@ @is@ hit by a branch!",
-                        "A tree reaches out and hits @foe@!",
-                        "A root smacks @foe@ from below.");
+                    msg = "A tree reaches out and hits @foe@ (@dmg@)!";
                 }
 
+                std::string d = to_string(dmg);
                 msg = replace_all(replace_all(msg,
                     "@foe@", foe->name(DESC_THE)),
-                    "@is@", foe->conj_verb("be"));
+                    "@dmg@", d);
                 if (you.see_cell(foe->pos()))
                     mpr(msg);
 

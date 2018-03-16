@@ -63,7 +63,6 @@ static void _unfocus_stats()
 // Some consumables to make the starts of Sprint a little easier.
 static void _give_bonus_items()
 {
-    newgame_make_item(OBJ_POTIONS, POT_CURING);
     newgame_make_item(OBJ_POTIONS, POT_HEAL_WOUNDS);
     newgame_make_item(OBJ_POTIONS, POT_HASTE);
     newgame_make_item(OBJ_POTIONS, POT_MAGIC, 2);
@@ -201,7 +200,6 @@ static void _give_ranged_weapon(weapon_type weapon, int plus)
     switch (weapon)
     {
     case WPN_SHORTBOW:
-    case WPN_HAND_CROSSBOW:
         newgame_make_item(OBJ_WEAPONS, weapon, 1, plus);
         break;
     default:
@@ -226,9 +224,6 @@ static void _give_ammo(weapon_type weapon, int plus)
     case WPN_SHORTBOW:
         newgame_make_item(OBJ_MISSILES, MI_ARROW, 160);
         break;
-    case WPN_HAND_CROSSBOW:
-        newgame_make_item(OBJ_MISSILES, MI_BOLT, 160);
-        break;
     default:
         break;
     }
@@ -251,6 +246,16 @@ static void _give_items_skills(const newgame_def& ng)
                 you.skills[SK_ARMOUR]++; // converted later
         }
         break;
+		
+    case JOB_TORPOR_KNIGHT:
+        you.religion = GOD_CHEIBRIADOS;
+        you.piety = 35;
+
+        if (species_apt(SK_ARMOUR) < species_apt(SK_DODGING))
+            you.skills[SK_DODGING]++;
+        else
+            you.skills[SK_ARMOUR]++;
+        break;
 
     case JOB_CHAOS_KNIGHT:
         you.religion = GOD_XOM;
@@ -263,19 +268,6 @@ static void _give_items_skills(const newgame_def& ng)
             you.skills[SK_ARMOUR]++;
         break;
 
-    case JOB_ABYSSAL_KNIGHT:
-        you.religion = GOD_LUGONU;
-        if (!crawl_state.game_is_sprint())
-            you.chapter = CHAPTER_POCKET_ABYSS;
-        you.piety = 38;
-
-        if (species_apt(SK_ARMOUR) < species_apt(SK_DODGING))
-            you.skills[SK_DODGING]++;
-        else
-            you.skills[SK_ARMOUR]++;
-
-        break;
-
     case JOB_WANDERER:
         create_wanderer();
         break;
@@ -284,9 +276,7 @@ static void _give_items_skills(const newgame_def& ng)
         break;
     }
 
-    if (you.char_class == JOB_ABYSSAL_KNIGHT)
-        newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +1);
-    else if (you.char_class == JOB_CHAOS_KNIGHT)
+    if (you.char_class == JOB_CHAOS_KNIGHT)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, 0, SPWPN_CHAOS);
     else if (job_gets_ranged_weapons(you.char_class))
         _give_ranged_weapon(ng.weapon, you.char_class == JOB_HUNTER ? 1 : 0);

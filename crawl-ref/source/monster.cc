@@ -386,6 +386,8 @@ random_var monster::attack_delay(const item_def *projectile,
     random_var delay(property(*weap, PWPN_SPEED));
     if (get_weapon_brand(*weap) == SPWPN_SPEED)
         delay = div_rand_round(delay * 2, 3);
+    if (get_weapon_brand(*weap) == SPWPN_DEVASTATION)
+        delay = div_rand_round(delay * 3, 2);
     return (random_var(10) + delay) / 2;
 }
 
@@ -911,11 +913,11 @@ void monster::equip(item_def &item, bool msg)
     switch (item.base_type)
     {
     case OBJ_WEAPONS:
-    case OBJ_STAVES:
         equip_weapon(item, msg);
         break;
 
     case OBJ_ARMOUR:
+    case OBJ_STAVES:
         equip_armour(item, msg);
         break;
 
@@ -1650,9 +1652,12 @@ static int _get_monster_armour_value(const monster *mon,
  */
 bool monster::pickup_armour(item_def &item, bool msg, bool force)
 {
-    ASSERT(item.base_type == OBJ_ARMOUR);
+    ASSERT(item.base_type == OBJ_ARMOUR || item.base_type == OBJ_STAVES);
 
     if (!force && !wants_armour(item))
+        return false;
+	
+    if(item.base_type == OBJ_STAVES)
         return false;
 
     const monster_type genus = mons_genus(mons_species(true));
@@ -2057,6 +2062,7 @@ bool monster::pickup_item(item_def &item, bool msg, bool force)
     {
     // Pickup some stuff only if WANDERING.
     case OBJ_ARMOUR:
+    case OBJ_STAVES:
         return pickup_armour(item, msg, force);
     case OBJ_GOLD:
         return pickup_gold(item, msg);
@@ -2064,7 +2070,6 @@ bool monster::pickup_item(item_def &item, bool msg, bool force)
         return pickup_jewellery(item, msg, force);
     // Fleeing monsters won't pick up these.
     // Hostiles won't pick them up if they were ever dropped/thrown by you.
-    case OBJ_STAVES:
     case OBJ_WEAPONS:
         return pickup_weapon(item, msg, force);
     case OBJ_MISSILES:
@@ -2959,7 +2964,7 @@ bool monster::cannot_act() const
 
 bool monster::cannot_move() const
 {
-    return cannot_act();
+    return cannot_act() || has_ench(ENCH_WHIRLWIND_PINNED);
 }
 
 bool monster::asleep() const
@@ -3159,41 +3164,6 @@ void monster::ablate_deflection()
 }
 
 /**
- * How many weapons of the given brand does this monster currently wield?
- *
- * @param mon           The monster in question.
- * @param brand         The brand in question.
- * @param calc_unid     Whether to include weapons whose brands are unknown (to
- *                      the player).
- * @return              The number of the aforementioned weapons currently
- *                      wielded.
- */
-static int _weapons_with_prop(const monster *mon, brand_type brand,
-                              bool calc_unid = true)
-{
-    int wielded = 0;
-
-    const mon_inv_type last_weap_slot = mons_wields_two_weapons(*mon) ?
-                                        MSLOT_ALT_WEAPON :
-                                        MSLOT_WEAPON;
-    for (int i = MSLOT_WEAPON; i <= last_weap_slot; i++)
-    {
-        const item_def *weap = mon->mslot_item(static_cast<mon_inv_type>(i));
-        if (!weap)
-            continue;
-
-        if (!calc_unid && !item_ident(*weap, ISFLAG_KNOW_TYPE))
-            continue;
-
-        const int weap_brand = get_weapon_brand(*weap);
-        if (brand == weap_brand)
-            wielded++;
-    }
-
-    return wielded;
-}
-
-/**
  * What AC bonus or penalty does a given zombie type apply to the base
  * monster type's?
  *
@@ -3289,9 +3259,6 @@ int monster::base_armour_class() const
 int monster::armour_class(bool calc_unid) const
 {
     int ac = base_armour_class();
-
-    // check for protection-brand weapons
-    ac += 5 * _weapons_with_prop(this, SPWPN_PROTECTION, calc_unid);
 
     // armour from ac
     const item_def *armour = mslot_item(MSLOT_ARMOUR);
@@ -3440,6 +3407,9 @@ int monster::evasion(ev_ignore_type evit, const actor* /*act*/) const
         ev /= (body_size(PSIZE_BODY) + 2);
     else if (confused() || has_ench(ENCH_GRASPING_ROOTS))
         ev /= 2;
+	
+    if(has_ench(ENCH_PHASE_SHIFT))
+        ev += 8;
 
     return max(ev, 0);
 }
@@ -3956,9 +3926,10 @@ bool monster::res_torment() const
             || get_mons_resist(*this, MR_RES_TORMENT) > 0;
 }
 
-bool monster::res_wind() const
+bool monster::res_tornado() const
 {
-    return has_ench(ENCH_TORNADO) || get_mons_resist(*this, MR_RES_WIND) > 0;
+    return has_ench(ENCH_TORNADO)
+           || get_mons_resist(*this, MR_RES_TORNADO) > 0;
 }
 
 bool monster::res_petrify(bool /*temp*/) const
@@ -4349,14 +4320,6 @@ int monster::hurt(const actor *agent, int amount, beam_type flavour,
 
     if (alive())
     {
-        if (amount != INSTANT_DEATH)
-        {
-            if (petrified())
-                amount /= 2;
-            else if (petrifying())
-                amount = amount * 2 / 3;
-        }
-
         if (amount != INSTANT_DEATH && has_ench(ENCH_INJURY_BOND))
         {
             actor* guardian = get_ench(ENCH_INJURY_BOND).agent();
@@ -5121,8 +5084,6 @@ bool monster::can_see_invisible(bool calc_unid) const
 
     if (scan_artefacts(ARTP_SEE_INVISIBLE) > 0)
         return true;
-    else if (wearing(EQ_RINGS, RING_SEE_INVISIBLE))
-        return true;
     else if (wearing_ego(EQ_ALL_ARMOUR, SPARM_SEE_INVISIBLE))
         return true;
 
@@ -5732,7 +5693,9 @@ bool monster::can_drink_potion(potion_type ptype) const
 
     switch (ptype)
     {
+#if TAG_MAJOR_VERSION == 34
         case POT_CURING:
+#endif
         case POT_HEAL_WOUNDS:
             return !(holiness() & (MH_NONLIVING | MH_PLANT));
 #if TAG_MAJOR_VERSION == 34
@@ -5744,7 +5707,9 @@ bool monster::can_drink_potion(potion_type ptype) const
             return can_go_berserk();
         case POT_HASTE:
         case POT_MIGHT:
+#if TAG_MAJOR_VERSION == 34
         case POT_AGILITY:
+#endif
         case POT_INVISIBILITY:
         case POT_RESISTANCE:
             // If there are any item using monsters that are permanently
@@ -5761,11 +5726,13 @@ bool monster::should_drink_potion(potion_type ptype) const
 {
     switch (ptype)
     {
+#if TAG_MAJOR_VERSION == 34
     case POT_CURING:
         return hit_points <= max_hit_points / 2
                || has_ench(ENCH_POISON)
                || has_ench(ENCH_SICK)
                || has_ench(ENCH_CONFUSION);
+#endif
     case POT_HEAL_WOUNDS:
         return hit_points <= max_hit_points / 2;
 #if TAG_MAJOR_VERSION == 34
@@ -5781,8 +5748,10 @@ bool monster::should_drink_potion(potion_type ptype) const
         return !has_ench(ENCH_HASTE);
     case POT_MIGHT:
         return !has_ench(ENCH_MIGHT) && foe_distance() <= 2;
+#if TAG_MAJOR_VERSION == 34
     case POT_AGILITY:
         return !has_ench(ENCH_AGILE);
+#endif
     case POT_RESISTANCE:
         return !has_ench(ENCH_RESISTANCE);
     case POT_INVISIBILITY:
@@ -5805,6 +5774,7 @@ bool monster::drink_potion_effect(potion_type pot_eff, bool card)
 
     switch (pot_eff)
     {
+#if TAG_MAJOR_VERSION == 34
     case POT_CURING:
     {
         if (heal(5 + random2(7)))
@@ -5819,6 +5789,7 @@ bool monster::drink_potion_effect(potion_type pot_eff, bool card)
             del_ench(cured);
     }
     break;
+#endif
 
     case POT_HEAL_WOUNDS:
         if (heal(10 + random2avg(28, 3)))
@@ -5851,11 +5822,11 @@ bool monster::drink_potion_effect(potion_type pot_eff, bool card)
     case POT_INVISIBILITY:
         enchant_actor_with_flavour(this, this, BEAM_INVISIBILITY);
         break;
-
+#if TAG_MAJOR_VERSION == 34
     case POT_AGILITY:
         enchant_actor_with_flavour(this, this, BEAM_AGILITY);
         break;
-
+#endif
     case POT_RESISTANCE:
         enchant_actor_with_flavour(this, this, BEAM_RESISTANCE);
         break;
@@ -5929,58 +5900,11 @@ bool monster::evoke_jewellery_effect(jewellery_type jtype)
 void monster::react_to_damage(const actor *oppressor, int damage,
                                beam_type flavour)
 {
-    // Don't discharge on small amounts of damage (this helps avoid
-    // continuously shocking when poisoned or sticky flamed)
-    // XXX: this might not be necessary anymore?
-    if (type == MONS_SHOCK_SERPENT && damage > 4 && oppressor)
-    {
-        const int pow = div_rand_round(min(damage, hit_points + damage), 9);
-        if (pow)
-        {
-            shock_serpent_discharge_fineff::schedule(this, *oppressor, pos(),
-                                                     pow);
-        }
-    }
-
     // The (real) royal jelly objects to taking damage and will SULK. :-)
     if (type == MONS_ROYAL_JELLY && !is_summoned())
         trj_spawn_fineff::schedule(oppressor, this, pos(), damage);
 
-    // Damage sharing from the spectral weapon to its owner
-    // The damage shared should not be directly lethal, though like the
-    // pain spell, it can leave the player at a very dangerous 1hp.
-    // XXX: This makes a lot of messages, especially when the spectral weapon
-    //      is hit by a monster with multiple attacks and is frozen, burned, etc.
-    if (type == MONS_SPECTRAL_WEAPON && oppressor)
-    {
-        // The owner should not be able to damage itself
-        // XXX: the mid check here is intended to treat the player's shadow
-        // mimic as the player itself, i.e. the weapon won't share damage
-        // the shadow mimic inflicts on it (this causes a crash).
-        actor *owner = actor_by_mid(summoner);
-        if (owner && owner != oppressor && oppressor->mid != summoner)
-        {
-            int shared_damage = damage / 2;
-            if (shared_damage > 0)
-            {
-                if (owner->is_player())
-                    mpr("Your spectral weapon shares its damage with you!");
-                else if (owner->alive() && you.can_see(*owner))
-                {
-                    string buf = " shares ";
-                    buf += owner->pronoun(PRONOUN_POSSESSIVE);
-                    buf += " spectral weapon's damage!";
-                    simple_monster_message(*owner->as_monster(), buf.c_str());
-                }
-
-                // Share damage using a fineff, so that it's non-fatal
-                // regardless of processing order in an AoE attack.
-                deferred_damage_fineff::schedule(oppressor, owner,
-                                                 shared_damage, false, false);
-            }
-        }
-    }
-    else if (mons_is_tentacle_or_tentacle_segment(type)
+    if (mons_is_tentacle_or_tentacle_segment(type)
              && !mons_is_solo_tentacle(type)
              && flavour != BEAM_TORMENT_DAMAGE
              && monster_by_mid(tentacle_connect)
@@ -6642,5 +6566,6 @@ bool monster::angered_by_attacks() const
             && !mons_is_avatar(type)
             && type != MONS_SPELLFORGED_SERVITOR
             && !testbits(flags, MF_DEMONIC_GUARDIAN)
-            && !mons_is_hepliaklqana_ancestor(type);
+            && !mons_is_hepliaklqana_ancestor(type)
+            && !testbits(flags, MF_ENSLAVED_SOUL);
 }

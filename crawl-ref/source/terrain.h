@@ -41,6 +41,7 @@ bool feat_is_closed_door(dungeon_feature_type feat);
 bool feat_is_sealed(dungeon_feature_type feat);
 bool feat_is_statuelike(dungeon_feature_type feat);
 bool feat_is_permarock(dungeon_feature_type feat);
+bool feat_can_wall_jump_against(dungeon_feature_type feat);
 bool feat_is_diggable(dungeon_feature_type feat);
 
 bool feat_is_stone_stair_down(dungeon_feature_type feat);
@@ -145,4 +146,10 @@ bool is_temp_terrain(coord_def pos);
 
 bool plant_forbidden_at(const coord_def &p, bool connectivity_only = false);
 
+vector<coord_def> get_push_spaces(const coord_def& pos, bool push_actor,
+                    const vector<coord_def>* excluded);
+bool has_push_spaces(const coord_def& pos, bool push_actor,
+                    const vector<coord_def>* excluded);
+bool push_items_from(const coord_def& pos, const vector<coord_def>* excluded);
+coord_def push_actor_from(const coord_def& pos, const vector<coord_def>* excluded, bool random);
 #endif

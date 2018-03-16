@@ -601,7 +601,7 @@ function arena_sprint_get_monster_set(round, boss)
                 "orb spider / emperor scorpion / ghost moth / moth of wrath",
                 "w:40 greater naga / guardian serpent / w:5 anaconda",
                 "w:30 acid blob / azure jelly / floating eye / eye of draining",
-                "dancing weapon ; bardiche ego:speed",
+                "dancing weapon ; bardiche ego:flaming",
                 "spriggan air mage",
                 "w:15 ancient lich / w:6 curse toe",
                 "greater demon / pandemonium lord",
@@ -1025,7 +1025,7 @@ KFEAT:  EP = scroll shop greed:10 use_all count:17 ; \
             scroll of enchant armour q:4 | scroll of enchant armour q:4
 KFEAT:  FS = distillery shop use_all count:17 greed:7 ; \
              potion of haste q:3 | potion of haste q:4 | potion of haste q:5 |\
-             potion of agility q:6 | potion of might q:6 | potion of brilliance q:6 |\
+             potion of augmentation q:6 |\
              potion of mutation | potion of mutation q:2 | potion of mutation q:3 |\
              potion of resistance q:6 | potion of resistance q:6 | potion of magic q:6 |\
              potion of magic q:6 | potion of berserk rage q:5 | potion of berserk rage q:5
@@ -1033,9 +1033,7 @@ KFEAT:  O = distillery shop type:Do-It-Yourself suffix:Clinic count:17 use_all g
             potion of heal wounds q:3 | potion of heal wounds q:3 | potion of heal wounds q:3 |\
             potion of heal wounds q:3 | potion of heal wounds q:3 | potion of heal wounds q:3 |\
             potion of heal wounds q:3 | potion of heal wounds q:3 | potion of heal wounds q:3 |\
-            potion of heal wounds q:3 | potion of heal wounds q:3 | potion of heal wounds q:3 |\
-            potion of curing q:4 | potion of curing q:4 | potion of curing q:4 |\
-            potion of curing q:4 | potion of curing q:4
+            potion of heal wounds q:3 | potion of heal wounds q:3 | potion of heal wounds q:3
 KFEAT:  I = antiques shop type:Jewellery count:17 greed:9 ; \
             any jewellery randart
 KFEAT:  K = antique armour shop count:17 use_all type:Advanced suffix:Armour greed:35 ; \
@@ -1068,7 +1066,7 @@ KFEAT:  Q = weapon shop type:Weapon suffix:Rack count:17 use_all greed:30 ; \
             mundane not_cursed quarterstaff | mundane not_cursed longbow |\
             mundane not_cursed triple crossbow \
                 |\
-            mundane bolt q:50 |\
+            mundane arrow q:50 |\
             mundane arrow q:50
 KFEAT:  H = distillery shop type:Bottled suffix:Enhancements count:5 use_all greed:6 ; \
             potion of beneficial mutation q:1 | potion of beneficial mutation q:1 |\
@@ -1082,8 +1080,7 @@ KFEAT:  J = general shop type:Miscellaneous suffix:Merchandise count:14 greed:15
             ring of poison resistance |\
             ring of fire | ring of ice |\
             ring of protection from magic | amulet of regeneration |\
-            amulet of reflection |\
-            ring of see invisible
+            amulet of reflection
 SUBST:  b : cb
 TILE:   c = wall_marble
 KFEAT:  TUVWYZ!? = dry_fountain

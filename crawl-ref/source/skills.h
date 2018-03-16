@@ -18,6 +18,7 @@ struct skill_state
     FixedVector<training_status, NUM_SKILLS>       train;
     FixedVector<unsigned int, NUM_SKILLS> training;
     FixedVector<unsigned int, NUM_SKILLS> skill_points;
+    FixedVector<unsigned int, NUM_SKILLS> training_targets;
     FixedVector<unsigned int, NUM_SKILLS> ct_skill_points;
     FixedVector<uint8_t, NUM_SKILLS>      skill_order;
     int skill_cost_level;
@@ -29,6 +30,15 @@ struct skill_state
     void save();
     void restore_levels();
     void restore_training();
+};
+
+struct skill_diff
+{
+    skill_diff() : skill_points(0), experience(0) { }
+    skill_diff(int skp, int xp) : skill_points(skp), experience(xp) { }
+
+    int skill_points;
+    int experience;
 };
 
 typedef set<skill_type> skill_set;
@@ -51,6 +61,7 @@ void init_can_train();
 void init_training();
 void update_can_train();
 void reset_training();
+int calc_skill_level_change(skill_type sk, int starting_level, int sk_points);
 void check_skill_level_change(skill_type sk, bool do_level_up = true);
 void change_skill_level(skill_type exsk, int num_level);
 void change_skill_points(skill_type sk, int points, bool do_level_up);
@@ -69,6 +80,7 @@ int get_skill_progress(skill_type sk, int scale);
 int get_skill_percentage(const skill_type x);
 const char *skill_name(skill_type which_skill);
 skill_type str_to_skill(const string &skill);
+skill_type str_to_skill_safe(const string &skill);
 
 string skill_title_by_rank(
     skill_type best_skill, uint8_t skill_rank,
@@ -94,9 +106,12 @@ float species_apt_factor(skill_type sk, species_type sp = you.species);
 float apt_to_factor(int apt);
 unsigned int skill_exp_needed(int lev, skill_type sk,
                               species_type sp = you.species);
+skill_diff skill_level_to_diffs(skill_type skill, double amount,
+    int scaled_training=100, bool base_only=true);
 
 bool compare_skills(skill_type sk1, skill_type sk2);
 vector<skill_type> get_crosstrain_skills(skill_type sk);
+int get_crosstrain_points(skill_type sk);
 
 int elemental_preference(spell_type spell, int scale = 1);
 
@@ -109,6 +124,10 @@ int skill_bump(skill_type skill, int scale = 1);
 void fixup_skills();
 skill_type best_magic_skill();
 
+bool target_met(skill_type sk, bool real=false);
+bool check_training_target(skill_type sk);
+bool check_training_targets();
+
 static const skill_type skill_display_order[] =
 {
     SK_TITLE,
@@ -117,7 +136,7 @@ static const skill_type skill_display_order[] =
 
     SK_BLANK_LINE,
 
-    SK_BOWS, SK_CROSSBOWS, SK_THROWING, SK_SLINGS,
+    SK_BOWS, SK_THROWING, SK_SLINGS, SK_CROSSBOWS,
 
     SK_BLANK_LINE,
 

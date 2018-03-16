@@ -50,7 +50,7 @@
 #include "viewchar.h"
 
 
-typedef vector<string> (*keys_by_glyph)(ucs_t showchar);
+typedef vector<string> (*keys_by_glyph)(char32_t showchar);
 typedef vector<string> (*simple_key_list)();
 typedef void (*db_keys_recap)(vector<string>&);
 typedef MenuEntry* (*menu_entry_generator)(char letter, const string &str,
@@ -221,8 +221,8 @@ static bool _compare_mon_toughness(MenuEntry *entry_a, MenuEntry* entry_b)
 class DescMenu : public Menu
 {
 public:
-    DescMenu(int _flags, bool _toggleable_sort, bool _text_only)
-    : Menu(_flags, "", _text_only), sort_alpha(true),
+    DescMenu(int _flags, bool _toggleable_sort)
+    : Menu(_flags, ""), sort_alpha(true),
     toggleable_sort(_toggleable_sort)
     {
         set_highlighter(nullptr);
@@ -298,7 +298,7 @@ static vector<string> _get_desc_keys(string regex, db_find_filter filter)
     return all_matches;
 }
 
-static vector<string> _get_monster_keys(ucs_t showchar)
+static vector<string> _get_monster_keys(char32_t showchar)
 {
     vector<string> mon_keys;
 
@@ -315,7 +315,7 @@ static vector<string> _get_monster_keys(ucs_t showchar)
         if (me->mc != i)
             continue;
 
-        if ((ucs_t)me->basechar != showchar)
+        if ((char32_t)me->basechar != showchar)
             continue;
 
         if (mons_species(i) == MONS_SERPENT_OF_HELL)
@@ -555,12 +555,16 @@ static string _spell_sources(const spell_type spell)
 
     item.base_type = OBJ_BOOKS;
     for (int i = 0; i < NUM_FIXED_BOOKS; i++)
+    {
+        if (item_type_removed(OBJ_BOOKS, i))
+            continue;
         for (spell_type sp : spellbook_template(static_cast<book_type>(i)))
             if (sp == spell)
             {
                 item.sub_type = i;
                 books.push_back(item.name(DESC_PLAIN));
             }
+    }
 
     if (books.empty())
         return "\n\nThis spell is not found in any books.";
@@ -646,11 +650,11 @@ static MenuEntry* _monster_menu_gen(char letter, const string &str,
  */
 static MenuEntry* _feature_menu_gen(char letter, const string &str, string &key)
 {
-    const dungeon_feature_type feat = feat_by_desc(str);
-    MenuEntry* me = new FeatureMenuEntry(str, feat, letter);
+    MenuEntry* me = new MenuEntry(str, MEL_ITEM, 1, letter);
     me->data = &key;
 
 #ifdef USE_TILE
+    const dungeon_feature_type feat = feat_by_desc(str);
     if (feat)
     {
         const tileidx_t idx = tileidx_feature_base(feat);
@@ -712,7 +716,7 @@ static MenuEntry* _skill_menu_gen(char letter, const string &str, string &key)
     MenuEntry* me = _simple_menu_gen(letter, str, key);
 
 #ifdef USE_TILE
-    const skill_type skill = str_to_skill(str);
+    const skill_type skill = str_to_skill_safe(str);
     me->add_tile(tile_def(tileidx_skill(skill, TRAINING_ENABLED), TEX_GUI));
 #endif
 
@@ -812,16 +816,9 @@ static string _mons_desc_key(monster_type type)
  */
 void LookupType::display_keys(vector<string> &key_list) const
 {
-    // For tiles builds use a tiles menu to display monsters.
-    const bool text_only =
-#ifdef USE_TILE_LOCAL
-    !(flags & lookup_type::SUPPORT_TILES);
-#else
-    true;
-#endif
 
-    DescMenu desc_menu(MF_SINGLESELECT | MF_ANYPRINTABLE | MF_ALLOW_FORMATTING,
-                       toggleable_sort(), text_only);
+    DescMenu desc_menu(MF_SINGLESELECT | MF_ANYPRINTABLE | MF_ALLOW_FORMATTING
+            | MF_USE_TWO_COLUMNS , toggleable_sort());
     desc_menu.set_tag("description");
 
     // XXX: ugh
@@ -1079,23 +1076,19 @@ static int _describe_item(const string &key, const string &suffix,
                            string footer)
 {
     item_def item;
-    string stats;
-    if (get_item_by_name(&item, key.c_str(), OBJ_WEAPONS)
-        || get_item_by_name(&item, key.c_str(), OBJ_ARMOUR)
-        || get_item_by_name(&item, key.c_str(), OBJ_MISSILES)
-        || get_item_by_name(&item, key.c_str(), OBJ_MISCELLANY))
+    if (!get_item_by_exact_name(item, key.c_str()))
+        die("Unable to get item %s by name", key.c_str());
+    if (item.base_type == OBJ_BOOKS)
     {
-        // don't request description since _describe_key handles that
-        stats = get_item_description(item, true, false, true);
-    }
-    // spellbooks are interactive & so require special handling
-    else if (get_item_by_name(&item, key.c_str(), OBJ_BOOKS))
-    {
+        // spellbooks are interactive & so require special handling
         item_colour(item);
         return _describe_spellbook(item);
     }
-
-    return _describe_key(key, suffix, footer, stats);
+    else
+    {
+        string stats = get_item_description(item, true, false, true);
+        return _describe_key(key, suffix, footer, stats);
+    }
 }
 
 /**

@@ -118,6 +118,9 @@ enum band_type
     BAND_ANTIMATTER_ELF,
     BAND_MUTATATOTOT,
     BAND_SUBTRACTOR_SNAKE,
+    BAND_ELEVENGU,
+    BAND_DIESEL_ROBIN,
+    BAND_COMBO_ROBIN,
     NUM_BANDS                   // always last
 };
 

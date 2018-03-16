@@ -309,7 +309,7 @@ static void _replace_static_tags(string &text)
         dummy.base_type = static_cast<object_class_type>(type);
         dummy.sub_type = 0;
         if (item == "amulet") // yay shared item classes
-            dummy.base_type = OBJ_JEWELLERY, dummy.sub_type = AMU_RAGE;
+            dummy.base_type = OBJ_JEWELLERY, dummy.sub_type = AMU_NOTHING;
         item = stringize_glyph(get_item_symbol(show_type(dummy).item));
 
         if (item == "<")
@@ -566,8 +566,7 @@ static bool _advise_use_healing_potion()
         if (!item_type_known(obj))
             continue;
 
-        if (obj.sub_type == POT_CURING
-            || obj.sub_type == POT_HEAL_WOUNDS)
+        if (obj.sub_type == POT_HEAL_WOUNDS)
         {
             return true;
         }
@@ -735,7 +734,6 @@ void hints_gained_new_skill(skill_type skill)
 
     // Ranged skills.
     case SK_BOWS:
-    case SK_CROSSBOWS:
         learned_something_new(HINT_GAINED_RANGED_SKILL);
         break;
 
@@ -788,7 +786,6 @@ static bool _advise_use_wand()
         switch (obj.sub_type)
         {
         case WAND_FLAME:
-        case WAND_SLOWING:
         case WAND_PARALYSIS:
         case WAND_CONFUSION:
         case WAND_ICEBLAST:
@@ -2601,7 +2598,7 @@ void learned_something_new(hints_event_type seen_what, coord_def gc)
                 "some powerful magics, like invisibility or haste, or from "
                 "miscasting spells. ";
 
-        if (get_contamination_level() < 2)
+        if (!player_severe_contamination())
         {
             text << "As long as the status only shows in grey nothing will "
                     "actually happen as a result of it, but as you continue "

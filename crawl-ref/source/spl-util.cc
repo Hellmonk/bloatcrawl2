@@ -32,6 +32,7 @@
 #include "spl-book.h"
 #include "spl-damage.h"
 #include "spl-summoning.h"
+#include "spl-wpnench.h"
 #include "spl-zap.h"
 #include "stringutil.h"
 #include "target.h"
@@ -365,6 +366,165 @@ static void _remove_spell_attributes(spell_type spell)
         }
         break;
 #endif
+
+    case SPELL_OZOCUBUS_ARMOUR:
+        if (you.attribute[ATTR_OZO_ARMOUR])
+        {
+            you.attribute[ATTR_OZO_ARMOUR] = 0;
+            you.redraw_armour_class = true;
+            mprf(MSGCH_DURATION, "Your icy armour evaporates.");
+        }
+        break;
+	
+	case SPELL_REGENERATION:
+	    if (you.attribute[ATTR_SPELL_REGEN])
+        {
+            you.attribute[ATTR_SPELL_REGEN] = 0;
+            mprf(MSGCH_DURATION, "Your regeneration ceases.");
+        }
+        break;
+	case SPELL_SONG_OF_SLAYING:
+	    if (you.attribute[ATTR_SONG_OF_SLAYING])
+        {
+            you.attribute[ATTR_SONG_OF_SLAYING] = 0;
+            mprf(MSGCH_DURATION, "Your song of slaying ends.");
+        }
+        break;
+	case SPELL_DEATH_CHANNEL:
+        if (you.attribute[ATTR_DEATH_CHANNEL])
+        {
+            you.attribute[ATTR_DEATH_CHANNEL] = 0;
+            mprf(MSGCH_DURATION, "Your unholy channeling expires.");
+        }
+        break;
+    case SPELL_DARKNESS:
+	    if (you.attribute[ATTR_DARKNESS])
+        {
+            you.attribute[ATTR_DARKNESS] = 0;
+            update_vision_range();
+            mprf(MSGCH_DURATION, "The darkness lifts.");
+        }
+        break;
+    case SPELL_AURA_OF_ABJURATION:
+        if (you.attribute[ATTR_ABJURATION_AURA])
+        {
+            you.attribute[ATTR_ABJURATION_AURA] = 0;
+            mprf(MSGCH_DURATION, "Your aura of abjuration dissipates.");
+        }
+        break;
+    case SPELL_HASTE:
+        if (you.attribute[ATTR_PERMAHASTE])
+        {
+            you.attribute[ATTR_PERMAHASTE] = 0;
+            mprf(MSGCH_DURATION, "Your unnatural speed expires.");
+        }
+        break;
+    case SPELL_INVISIBILITY:
+	    if (you.attribute[ATTR_PERMAINVIS])
+        {
+            you.attribute[ATTR_PERMAINVIS] = 0;
+            mprf(MSGCH_DURATION, "Your permanent invisibility ends.");
+        }
+        break;
+    case SPELL_CIGOTUVIS_EMBRACE:
+	    if (you.attribute[ATTR_BONE_ARMOUR])
+        {
+            you.attribute[ATTR_BONE_ARMOUR] = 0;
+            you.redraw_armour_class = true;
+            mprf(MSGCH_DURATION, "Your bone armour crumbles away.");
+        }
+        break;
+    case SPELL_RING_OF_FLAMES:
+	    if (you.attribute[ATTR_FIRE_SHIELD])
+        {
+            you.attribute[ATTR_FIRE_SHIELD] = 0;
+            mprf(MSGCH_DURATION, "Your ring of flames gutters out.");
+        }
+        break;
+    case SPELL_INFUSION: 
+        if (you.attribute[ATTR_INFUSION])
+        {
+            you.attribute[ATTR_INFUSION] = 0;
+            mprf(MSGCH_DURATION, "Your attacks are no longer infused with magic.");
+        }
+        break;
+    case SPELL_EXCRUCIATING_WOUNDS:
+        if(you.attribute[ATTR_EXCRUCIATING_WOUNDS])
+        {
+            you.attribute[ATTR_EXCRUCIATING_WOUNDS] = 0;
+		    item_def *wpn = you.weapon();
+            end_weapon_brand(*wpn,true);
+            mprf(MSGCH_DURATION, "Your weapon looks less painful.");
+        }
+        break;
+    case SPELL_ANIMATE_DEAD:
+        if (you.attribute[ATTR_ANIMATE_DEAD])
+        {
+            you.attribute[ATTR_ANIMATE_DEAD] = 0;
+            mprf(MSGCH_DURATION, "You are no longer reaping the dead.");
+        }
+        break;
+    case SPELL_INFESTATION:
+        if (you.attribute[ATTR_INFESTATION])
+        {
+            you.attribute[ATTR_INFESTATION] = 0;
+            mprf(MSGCH_DURATION, "You are no longer infesting your enemies.");
+        }
+        break;
+    case SPELL_SPECTRAL_WEAPON:
+        if (you.attribute[ATTR_SPECTRAL_WEAPON])
+        {
+            you.attribute[ATTR_SPECTRAL_WEAPON] = 0;
+            mprf(MSGCH_DURATION, "You are no longer ready to draw out your spectral weapon.");
+        }
+        break;
+    case SPELL_BATTLESPHERE:
+        if (you.attribute[ATTR_BATTLESPHERE])
+        {
+            you.attribute[ATTR_BATTLESPHERE] = 0;
+            mprf(MSGCH_DURATION, "You are no longer ready to summon your battlesphere.");
+        }
+        break;
+    case SPELL_SPELLFORGED_SERVITOR:
+        if (you.attribute[ATTR_SERVITOR])
+        {
+            you.attribute[ATTR_SERVITOR] = 0;
+            mprf(MSGCH_DURATION, "You are no longer ready to summon your spellforged servitor.");
+        }
+        break;
+    // Forms
+    case SPELL_SPIDER_FORM:
+        if (you.form && !you.transform_uncancellable && you.form == TRAN_SPIDER)
+            untransform();
+        break;
+    case SPELL_ICE_FORM:
+        if (you.form && !you.transform_uncancellable && you.form == TRAN_ICE_BEAST)
+            untransform();
+        break;
+    case SPELL_BLADE_HANDS:
+        if (you.form && !you.transform_uncancellable && you.form == TRAN_BLADE_HANDS)
+            untransform();
+        break;
+    case SPELL_STATUE_FORM:
+        if (you.form && !you.transform_uncancellable && you.form == TRAN_STATUE)
+            untransform();
+        break;
+    case SPELL_NECROMUTATION:
+        if (you.form && !you.transform_uncancellable && you.form == TRAN_LICH)
+            untransform();
+        break;
+    case SPELL_HYDRA_FORM:
+        if (you.form && !you.transform_uncancellable && you.form == TRAN_HYDRA)
+            untransform();
+        break;
+    case SPELL_DRAGON_FORM:
+        if (you.form && !you.transform_uncancellable && you.form == TRAN_DRAGON)
+            untransform();
+        break;
+    case SPELL_BEASTLY_APPENDAGE:
+        if (you.form && !you.transform_uncancellable && you.form == TRAN_APPENDAGE)
+            untransform();
+        break;
     default:
         break;
     }
@@ -1200,7 +1360,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_INVISIBILITY:
         if (!prevent && temp && you.backlit())
             return "invisibility won't help you when you glow in the dark.";
-        if (you.attribute[ATTR_PERMAINVIS])
+        if (temp && you.attribute[ATTR_PERMAINVIS])
             return "you are already as invisible as you can get, sorry.";
         break;
 
@@ -1208,7 +1368,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         // mere corona is not enough, but divine light blocks it completely
         if (temp && (you.haloed() || !prevent && have_passive(passive_t::halo)))
             return "darkness is useless against divine light.";
-        if(you.attribute[ATTR_DARKNESS])
+        if(temp && you.attribute[ATTR_DARKNESS])
             return "it's already dark.";
         break;
 
@@ -1228,6 +1388,10 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 
     case SPELL_STATUE_FORM:
+        if (temp && you.attribute[ATTR_OZO_ARMOUR] > 0)
+            return "you can't become a statue while covered in ice.";
+        if (temp && you.attribute[ATTR_BONE_ARMOUR] > 0)
+            return "you can't become a statue while covered in skeletons.";
         if (SP_GARGOYLE == you.species)
             return "you're already a statue.";
         // fallthrough to other forms
@@ -1245,7 +1409,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         }
         if (temp && you.is_lifeless_undead())
             return "your current blood level is not sufficient.";
-        if (already_in_form(spell))
+        if (temp && already_in_form(spell))
             return "you're already in that form.";
         break;
 
@@ -1254,7 +1418,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "you can't regenerate without divine aid.";
         if (you.undead_state(temp) == US_UNDEAD)
             return "you're too dead to regenerate.";
-        if(you.attribute[ATTR_SPELL_REGEN])
+        if(temp && you.attribute[ATTR_SPELL_REGEN])
             return "you're already regenerating.";
         break;
 
@@ -1266,13 +1430,31 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         {
             return "you aren't wielding a brandable weapon.";
         }
-        if (you.attribute[ATTR_EXCRUCIATING_WOUNDS])
+        if (temp && you.attribute[ATTR_EXCRUCIATING_WOUNDS])
         {
             return "your weapon is already branded with pain";
 		}
         // intentional fallthrough
-    case SPELL_PORTAL_PROJECTILE:
     case SPELL_SPECTRAL_WEAPON:
+        if(temp && you.attribute[ATTR_SPECTRAL_WEAPON])
+        {
+            return "you already have your spectral weapon prepared";
+        }
+    case SPELL_PORTAL_PROJECTILE:
+        break;
+		
+    case SPELL_BATTLESPHERE:
+        if(temp && you.attribute[ATTR_BATTLESPHERE])
+        {
+            return "you already have your battlesphere prepared";
+        }
+        break;
+		
+    case SPELL_SPELLFORGED_SERVITOR:
+        if(temp && you.attribute[ATTR_SERVITOR])
+        {
+            return "you already have your spellforged servitor prepared";
+        }
         break;
 
     case SPELL_LEDAS_LIQUEFACTION:
@@ -1314,12 +1496,12 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 		
     case SPELL_SONG_OF_SLAYING:
-        if (you.attribute[ATTR_SONG_OF_SLAYING])
+        if (temp && you.attribute[ATTR_SONG_OF_SLAYING])
             return "you're already singing.";
         break;
 
     case SPELL_INFUSION:
-        if(you.attribute[ATTR_INFUSION])
+        if(temp && you.attribute[ATTR_INFUSION])
             return "you are already infusing your attacks with magic.";
         break;
 
@@ -1328,25 +1510,27 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "your body armour is too heavy.";
         if (temp && you.form == TRAN_STATUE)
             return "the film of ice won't work on stone.";
-        if (you.attribute[ATTR_FIRE_SHIELD])
+        if (temp && you.attribute[ATTR_FIRE_SHIELD])
             return "your ring of flames would instantly melt the ice.";
-        if (you.attribute[ATTR_OZO_ARMOUR])
+        if (temp && you.attribute[ATTR_OZO_ARMOUR])
             return "you are already covered in icy armour.";
-        if (you.attribute[ATTR_BONE_ARMOUR])
+        if (temp && you.attribute[ATTR_BONE_ARMOUR])
             return "the film of ice won't work on corpses.";
         break;
 		
     case SPELL_RING_OF_FLAMES:
-        if (you.attribute[ATTR_FIRE_SHIELD])
+        if (temp && you.attribute[ATTR_FIRE_SHIELD])
             return "you are already surrounded by a ring of flames";
         break;
 
     case SPELL_CIGOTUVIS_EMBRACE:
+        if (you.species == SP_SKELETON)
+            return "you already steal bones from the dead.";
         if (temp && you.form == TRAN_STATUE)
             return "the corpses won't embrace your stony flesh.";
-        if (you.attribute[ATTR_OZO_ARMOUR])
+        if (temp && you.attribute[ATTR_OZO_ARMOUR])
             return "the corpses won't embrace your icy flesh.";
-        if (you.attribute[ATTR_BONE_ARMOUR])
+        if (temp && you.attribute[ATTR_BONE_ARMOUR])
 			return "you are already converting the dead into corpse armour.";
         break;
 
@@ -1390,18 +1574,25 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 
     case SPELL_DEATH_CHANNEL:
-        if (you.attribute[ATTR_DEATH_CHANNEL])
+        if (temp && you.attribute[ATTR_DEATH_CHANNEL])
             return "you are already channeling malign forces.";
         if (you.get_mutation_level(MUT_NO_LOVE))
             return "you cannot coerce anything to obey you.";
         break;
 
     case SPELL_ANIMATE_DEAD:
-    case SPELL_ANIMATE_SKELETON:
+        if(temp && you.attribute[ATTR_ANIMATE_DEAD])
+            return "you are already reaping the dead.";
     case SPELL_TWISTED_RESURRECTION:
     case SPELL_CONTROL_UNDEAD:
     case SPELL_SIMULACRUM:
+        if (you.get_mutation_level(MUT_NO_LOVE))
+            return "you cannot coerce anything to obey you.";
+        break;
+		
     case SPELL_INFESTATION:
+        if(temp && you.attribute[ATTR_INFESTATION])
+            return "you're already infesting your enemies";
         if (you.get_mutation_level(MUT_NO_LOVE))
             return "you cannot coerce anything to obey you.";
         break;
@@ -1416,12 +1607,12 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
     
     case SPELL_AURA_OF_ABJURATION:
-        if (you.attribute[ATTR_ABJURATION_AURA])
+        if (temp && you.attribute[ATTR_ABJURATION_AURA])
             return "you are already abjuring hostile summons.";
         break;
 
     case SPELL_HASTE:
-        if (you.attribute[ATTR_PERMAHASTE])
+        if (temp && you.attribute[ATTR_PERMAHASTE])
             return "you are already going fast.";
         break;
 
@@ -1445,10 +1636,11 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
  * @param spell           The type of spell to be coloured.
  * @param default_colour   Colour to be used if the spell is unremarkable.
  * @param transient       If true, check if spell is temporarily useless.
+ * @param memcheck        If true, check if spell can be memorised
  * @return                The colour to highlight the spell.
  */
 int spell_highlight_by_utility(spell_type spell, int default_colour,
-                               bool transient)
+                               bool transient, bool memcheck)
 {
     // If your god hates the spell, that overrides all other concerns.
     if (god_hates_spell(spell, you.religion)
@@ -1456,9 +1648,15 @@ int spell_highlight_by_utility(spell_type spell, int default_colour,
     {
         return COL_FORBIDDEN;
     }
-
+    // Grey out spells for which you lack experience or spell levels.
+    if (memcheck && (spell_difficulty(spell) > you.experience_level
+        || player_spell_levels() < spell_levels_required(spell)))
+    {
+        return COL_INAPPLICABLE;
+    }
+    // Check if the spell is considered useless based on your current status
     if (spell_is_useless(spell, transient))
-        default_colour = COL_USELESS;
+        return COL_USELESS;
 
     return default_colour;
 }

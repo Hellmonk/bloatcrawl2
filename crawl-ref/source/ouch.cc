@@ -282,14 +282,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         break;
     }
 
-    case BEAM_AIR:
-    {
-        // Airstrike.
-        if (you.res_wind())
-            hurted = 0;
-        break;
-    }
-
     default:
         break;
     }                           // end switch
@@ -631,8 +623,8 @@ static void _powered_by_pain(int dam)
     const int level = you.get_mutation_level(MUT_POWERED_BY_PAIN);
 
     if (level > 0
-        && (random2(dam) > 4 + div_rand_round(you.experience_level, 4)
-            || dam >= you.hp_max / 2))
+        && (random2(dam) > 3 + div_rand_round(you.experience_level, 5)
+            || dam >= you.hp_max / 4))
     {
         switch (random2(4))
         {
@@ -762,18 +754,26 @@ void reset_damage_counters()
 
 bool can_shave_damage()
 {
-    return false;
+    return have_passive(passive_t::damage_shaving);
 }
 
 int do_shave_damage(int dam)
 {
     if (!can_shave_damage())
         return dam;
+	
+    if (dam == 0)
+        return dam;
 
-    // Deep Dwarves get to shave any hp loss.
-    int shave = 1 + random2(2 + random2(1 + you.experience_level / 3));
-    dprf("HP shaved: %d.", shave);
+    if(!you_worship(GOD_JIYVA))
+        return dam;
+
+    // high piety Jiyvaites get to shave any hp loss.
+    // max shaving based on piety, only available at 5* anyway tho
+    // does not use nested random2s like the old, stupid DD formula
+    int shave = 1 + random2(1 + div_rand_round(you.piety, 30));
     dam -= shave;
+    mprf("Jiyva absorbs %d damage for you.", dam >= 0 ? shave : shave + dam);
 
     return dam;
 }
@@ -830,10 +830,6 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             drain_amount = (dam - (dam / 2));
             dam /= 2;
         }
-        if (you.petrified())
-            dam /= 2;
-        else if (you.petrifying())
-            dam = dam * 10 / 15;
     }
     ait_hp_loss hpl(dam, death_type);
     interrupt_activity(AI_HP_LOSS, &hpl);

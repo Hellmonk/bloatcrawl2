@@ -359,7 +359,7 @@ static string _get_branches(bool display)
 static string _get_altars(bool display)
 {
     // Just wastes space for demigods.
-    if (you.species == SP_DEMIGOD)
+    if (you.species == SP_DEMIGOD || you.species == SP_TITAN)
         return "";
 
     string disp;
@@ -801,6 +801,8 @@ void set_unique_annotation(monster* mons, const level_id level)
 
 void remove_unique_annotation(monster* mons)
 {
+    if (mons->is_illusion()) // Fake monsters don't clear real annotations
+        return;
     set<level_id> affected_levels;
     string name = unique_name(mons);
     for (auto i = auto_unique_annotations.begin();

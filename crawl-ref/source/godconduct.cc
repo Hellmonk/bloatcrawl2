@@ -349,9 +349,7 @@ static peeve_map divine_peeves[] =
     // GOD_VEHUMET,
     peeve_map(),
     // GOD_OKAWARU,
-    {
-        { DID_ATTACK_FRIEND, _on_attack_friend("you attack allies") },
-    },
+    peeve_map(),
     // GOD_MAKHLEB,
     peeve_map(),
     // GOD_SIF_MUNA,
@@ -363,7 +361,7 @@ static peeve_map divine_peeves[] =
             10, 10
         } },
         { DID_SPELL_CASTING, {
-            "you attempt to cast spells", true,
+            "you attempt to cast spells or sustain spells", true,
             1, 5,
         } },
         { DID_SPELL_PRACTISE, {
@@ -406,14 +404,14 @@ static peeve_map divine_peeves[] =
         { DID_KILL_SLIME, {
             "you kill slimes", true,
             1, 2, nullptr, nullptr, [] (const monster* victim) -> bool {
-                return victim && !victim->is_shapeshifter();
+                return victim && !victim->is_shapeshifter() && !you.penance[GOD_JIYVA];
             }
         } },
         { DID_ATTACK_NEUTRAL, {
             nullptr, true,
             1, 1, nullptr, nullptr, [] (const monster* victim) -> bool {
                 return victim
-                    && mons_is_slime(*victim) && !victim->is_shapeshifter();
+                    && mons_is_slime(*victim) && !victim->is_shapeshifter() && !you.penance[GOD_JIYVA];
             }
         } },
         { DID_ATTACK_FRIEND, _on_attack_friend("you attack fellow slimes") },
@@ -461,6 +459,8 @@ static peeve_map divine_peeves[] =
     // GOD_USKAYAW,
     peeve_map(),
     // GOD_HEPLIAKLQANA,
+    peeve_map(),
+    // GOD_WU_JIAN,
     peeve_map(),
 };
 
@@ -763,51 +763,7 @@ static like_map divine_likes[] =
     },
     // GOD_SIF_MUNA,
     {
-        { DID_KILL_LIVING, _on_kill("you kill living beings", MH_NATURAL, false,
-                                  [](int &piety, int &denom,
-                                     const monster* victim)
-            {
-                denom *= 3;
-            }
-        ) },
-        { DID_KILL_UNDEAD, _on_kill("you destroy the undead", MH_UNDEAD, false,
-                                  [](int &piety, int &denom,
-                                     const monster* victim)
-            {
-                denom *= 3;
-            }
-        ) },
-        { DID_KILL_DEMON, _on_kill("you kill demons", MH_DEMONIC, false,
-                                  [](int &piety, int &denom,
-                                     const monster* victim)
-            {
-                denom *= 3;
-            }
-        ) },
-        { DID_KILL_HOLY, _on_kill("you kill holy beings", MH_HOLY, false,
-                                  [](int &piety, int &denom,
-                                     const monster* victim)
-            {
-                denom *= 3;
-            }
-        ) },
-        { DID_KILL_NONLIVING, _on_kill("you destroy nonliving beings",
-                                       MH_NONLIVING, false,
-                                       [](int &piety, int &denom,
-                                          const monster* victim)
-            {
-                denom *= 3;
-            }
-        ) },
-        { DID_SPELL_PRACTISE, {
-            "you train your various spell casting skills", true,
-            0, 0, 0, nullptr,
-            [] (int &piety, int &denom, const monster* /*victim*/)
-            {
-                // piety = denom = level at the start of the function
-                denom = 6;
-            }
-        } },
+        { DID_EXPLORATION, EXPLORE_RESPONSE },
     },
     // GOD_TROG,
     {
@@ -862,7 +818,17 @@ static like_map divine_likes[] =
         } },
     },
     // GOD_JIYVA,
-    like_map(),
+    {
+        { DID_EXPLORATION, {
+            "you explore the world", false,
+            0, 0, 0, nullptr,
+            [] (int &piety, int &denom, const monster* /*victim*/)
+            {
+                // piety = denom = level at the start of the function
+                piety = 20;
+            }
+        } },
+    },
     // GOD_FEDHAS,
     {
         { DID_ROT_CARRION, {
@@ -969,6 +935,14 @@ static like_map divine_likes[] =
     // GOD_HEPLIAKLQANA,
     {
         { DID_EXPLORATION, EXPLORE_RESPONSE },
+    },
+    // GOD_WU_JIAN
+    {
+        { DID_KILL_LIVING, KILL_LIVING_RESPONSE },
+        { DID_KILL_UNDEAD, KILL_UNDEAD_RESPONSE },
+        { DID_KILL_DEMON, KILL_DEMON_RESPONSE },
+        { DID_KILL_HOLY, KILL_HOLY_RESPONSE },
+        { DID_KILL_NONLIVING, KILL_NONLIVING_RESPONSE },
     },
 };
 
@@ -1085,10 +1059,6 @@ string get_god_likes(god_type which_god)
     case GOD_FEDHAS:
         likes.emplace_back("you promote the decay of nearby corpses by "
                            "<w>p</w>raying");
-        break;
-    case GOD_JIYVA:
-        likes.emplace_back("you sacrifice items by allowing slimes to consume "
-                           "them");
         break;
     case GOD_GOZAG:
         likes.emplace_back("you collect gold");

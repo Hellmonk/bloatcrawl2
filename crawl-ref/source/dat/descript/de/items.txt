@@ -519,10 +519,6 @@ ring of intelligence
 Dieser Ring vergrößert oder vermindert die geistige Fähigkeit seines Trägers
 abhängig vom Grad, zu dem es verzaubert worden ist.
 %%%%
-ring of magical power
-
-Dieser Ring erhöht die Magiereserven seines Trägers.
-%%%%
 ring of poison resistance
 
 Dieser Ring liefert Schutz vor den Effekten von Vergiftung und Gift.
@@ -767,11 +763,6 @@ zu werden. Es ist gegen Gestalt ändernde Wesen besonders wirksam.
 wand of random effects
 
 Ein magisches Gerät welches eine Menge verschiedener Effekte erzeugen kann.
-%%%%
-wand of slowing
-
-Ein magisches Gerät welches Verzauberungen auf Kreaturen in seiner Richtung
-wirft, welche dadurch verlangsamt werden.
 %%%%
 whip
 

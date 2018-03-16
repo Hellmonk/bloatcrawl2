@@ -21,7 +21,7 @@ void opening_screen()
 {
     string msg =
     "<yellow>Hello, welcome to " CRAWL " " + string(Version::Long) + "!</yellow>\n"
-    "<brown>(c) Copyright 1997-2002 Linley Henzell, 2002-2016 Crawl DevTeam\n"
+    "<brown>(c) Copyright 1997-2002 Linley Henzell, 2002-2018 Crawl DevTeam\n"
     "Read the instructions for legal details.</brown> ";
 
 
@@ -179,7 +179,7 @@ bool validate_player_name(const string &name, bool verbose)
         return false;
     }
 
-    ucs_t c;
+    char32_t c;
     for (const char *str = name.c_str(); int l = utf8towc(&c, str); str += l)
     {
         // The technical reasons are gone, but enforcing some sanity doesn't

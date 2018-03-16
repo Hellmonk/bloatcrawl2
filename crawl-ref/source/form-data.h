@@ -68,7 +68,7 @@ static const form_entry formdata[] =
     "a venomous arachnid creature.",
     EQF_PHYSICAL, MR_VUL_POISON,
     FormDuration(10, PS_DOUBLE, 60), 0, 5, SIZE_TINY, 10,
-    2, 0, 0, true, 10, 10, 5,
+    2, 0, 0, true, 0, 10, 5,
     SPWPN_VENOM, LIGHTGREEN, "Fangs", ANIMAL_VERBS,
     FC_DEFAULT, FC_FORBID, FC_FORBID, true, false,
     "hiss", -4, "front leg", "", "crawl onto", "flesh"
@@ -78,7 +78,7 @@ static const form_entry formdata[] =
     "",
     EQF_HANDS, MR_NO_FLAGS,
     FormDuration(10, PS_SINGLE, 100), 0, 0, SIZE_CHARACTER, 10,
-    0, 0, 0, true, 20, 12, 22,
+    0, 0, 0, true, 0, 12, 22,
     SPWPN_NORMAL, RED, "", { "hit", "slash", "slice", "shred" },
     FC_DEFAULT, FC_DEFAULT, FC_DEFAULT, true, true,
     "", 0, "scythe-like blade", "", "", ""

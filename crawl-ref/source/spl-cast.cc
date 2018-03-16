@@ -119,11 +119,9 @@ static string _spell_base_description(spell_type spell, bool viewing)
     desc << "</" << colour_to_str(highlight) <<">";
 
     // spell fail rate, level
-    highlight = failure_rate_colour(spell);
-    desc << "<" << colour_to_str(highlight) << ">";
-    const string failure = failure_rate_to_string(raw_spell_fail(spell));
-    desc << chop_string(failure, 12);
-    desc << "</" << colour_to_str(highlight) << ">";
+    const string failure_rate = spell_failure_rate_string(spell);
+    const int width = strwidth(formatted_string::parse_string(failure_rate).tostring());
+    desc << failure_rate << string(12-width, ' ');
     desc << spell_difficulty(spell);
 
     return desc.str();
@@ -162,15 +160,8 @@ int list_spells(bool toggle_with_I, bool viewing, bool allow_preselect,
     if (toggle_with_I && get_spell_by_letter('I') != SPELL_NO_SPELL)
         toggle_with_I = false;
 
-#ifdef USE_TILE_LOCAL
-    const bool text_only = false;
-#else
-    const bool text_only = true;
-#endif
-
     ToggleableMenu spell_menu(MF_SINGLESELECT | MF_ANYPRINTABLE
-                              | MF_ALWAYS_SHOW_MORE | MF_ALLOW_FORMATTING,
-                              text_only);
+                              | MF_ALWAYS_SHOW_MORE | MF_ALLOW_FORMATTING);
     string titlestring = make_stringf("%-25.25s", title.c_str());
 #ifdef USE_TILE_LOCAL
     {
@@ -665,13 +656,6 @@ static bool _can_cast()
         return false;
     }
 
-    if (!you.undead_state() && !you_foodless()
-        && you.hunger_state <= HS_STARVING)
-    {
-        canned_msg(MSG_NO_ENERGY);
-        return false;
-    }
-
     return true;
 }
 
@@ -679,6 +663,17 @@ void do_cast_spell_cmd(bool force)
 {
     if (!cast_a_spell(!force))
         flush_input_buffer(FLUSH_ON_FAILURE);
+}
+
+static string _spell_failure_rate_description(spell_type spell)
+{
+    const string failure = failure_rate_to_string(raw_spell_fail(spell));
+    const char *severity_adj = fail_severity_adjs[fail_severity(spell)];
+    const string colour = colour_to_str(failure_rate_colour(spell));
+    const char *col = colour.c_str();
+
+    return make_stringf("<%s>%s</%s>; <%s>%s</%s> risk of failure",
+            col, severity_adj, col, col, failure.c_str(), col);
 }
 
 /**
@@ -747,9 +742,11 @@ bool cast_a_spell(bool check_range, spell_type spell)
                 }
                 else
                 {
-                    mprf(MSGCH_PROMPT, "Casting: <w>%s</w>",
-                         spell_title(you.last_cast_spell));
-                    mprf(MSGCH_PROMPT, "Confirm with . or Enter, or press ? or * to list all spells.");
+                    mprf(MSGCH_PROMPT, "Casting: <w>%s</w> <lightgrey>(%s)</lightgrey>",
+                                       spell_title(you.last_cast_spell),
+                                       _spell_failure_rate_description(you.last_cast_spell).c_str());
+                    mprf(MSGCH_PROMPT, "Confirm with . or Enter, or press "
+                                       "? or * to list all spells.");
                 }
 
                 keyin = get_ch();
@@ -805,9 +802,14 @@ bool cast_a_spell(bool check_range, spell_type spell)
     }
 
     int cost = spell_mana(spell);
+    if(you.props.exists(AMULET_DESTRUCTIVE_SPELL)
+        && you.props[AMULET_DESTRUCTIVE_SPELL].get_int() == spell)
+    {
+        cost = cost > 6 ? cost -2 : max(0, cost - 1);
+    }
     int sifcast_amount = 0;
-    double freeze_cost = spell_mp_freeze(spell);
-    int true_cost = freeze_cost > cost ? (int) freeze_cost + 1 : cost;
+    int freeze_cost = spell_mp_freeze(spell);
+    int true_cost = freeze_cost > cost ? freeze_cost : cost;
     if (!enough_mp(true_cost, true))
     {
         if (you.attribute[ATTR_DIVINE_ENERGY])
@@ -836,14 +838,6 @@ bool cast_a_spell(bool check_range, spell_type spell)
             range_view_annotator show_range(&range);
             delay(50);
         }
-        crawl_state.zero_turns_taken();
-        return false;
-    }
-
-    if (you.undead_state() == US_ALIVE && !you_foodless()
-        && you.hunger <= spell_hunger(spell))
-    {
-        canned_msg(MSG_NO_ENERGY);
         crawl_state.zero_turns_taken();
         return false;
     }
@@ -1137,6 +1131,8 @@ static bool _spellcasting_aborted(spell_type spell, bool fake_spell)
     }
 
     const int severity = fail_severity(spell);
+    const string failure_rate = spell_failure_rate_string(spell);
+
     if(!is_buff_spell(spell))
     {
         if (Options.fail_severity_to_confirm > 0
@@ -1144,9 +1140,11 @@ static bool _spellcasting_aborted(spell_type spell, bool fake_spell)
         && !crawl_state.disables[DIS_CONFIRMATIONS]
         && !fake_spell)
         {
-            string prompt = make_stringf("The spell is %s to cast%s "
+            string prompt = make_stringf("The spell is %s to cast "
+                                     "(%s risk of failure)%s "
                                      "Continue anyway?",
                                      fail_severity_adjs[severity],
+                                     failure_rate.c_str(),
                                      severity > 1 ? "!" : ".");
 
             if (!yesno(prompt.c_str(), false, 'n'))
@@ -1292,6 +1290,64 @@ vector<string> desc_success_chance(const monster_info& mi, int pow, bool evoked,
     return descs;
 }
 
+// _tetrahedral_number: returns the nth tetrahedral number.
+// This is the number of triples of nonnegative integers with sum < n.
+// Called only by get_true_fail_rate.
+static int _tetrahedral_number(int n)
+{
+    return n * (n+1) * (n+2) / 6;
+}
+
+// number of outcomes for "true spell failure"
+// called by _get_true_fail_rate and elsewhere
+static int _outcomes()
+{
+    return 101 * 101 * 100;
+}
+
+// get_true_fail_rate: Takes the raw failure to-beat number
+// and converts it to the number of outcomes
+// dividing by the number of outcomes gives the actual fail rate
+static double _get_true_fail_outcomes(int raw_fail)
+{
+    // Need 3*random2avg(100,3) = random2(101) + random2(101) + random2(100)
+    // to be (strictly) less than 3*raw_fail. Fun with tetrahedral numbers!
+
+    // How many possible outcomes, considering all three dice?
+    const int outcomes = _outcomes();
+    const int target = raw_fail * 3;
+
+    if (target <= 100)
+    {
+        // The failures are exactly the triples of nonnegative integers
+        // that sum to < target.
+        return double(_tetrahedral_number(target));
+    }
+    if (target <= 200)
+    {
+        // Some of the triples that sum to < target would have numbers
+        // greater than 100, or a last number greater than 99, so aren't
+        // possible outcomes. Apply the principle of inclusion-exclusion
+        // by subtracting out these cases. The set of triples with first
+        // number > 100 is isomorphic to the set of triples that sum to
+        // 101 less; likewise for the second and third numbers (100 less
+        // in the last case). Two or more out-of-range numbers would have
+        // resulted in a sum of at least 201, so there is no overlap
+        // among the three cases we are subtracting.
+        return double(_tetrahedral_number(target)
+                      - 2 * _tetrahedral_number(target - 101)
+                      - _tetrahedral_number(target - 100));
+    }
+    // The random2avg distribution is symmetric, so the last interval is
+    // essentially the same as the first interval.
+    return double(outcomes - _tetrahedral_number(300 - target));
+}
+
+static double _get_true_fail_rate(int raw_fail)
+{
+    return double(_get_true_fail_outcomes(raw_fail) / _outcomes());
+}
+
 /**
  * Targets and fires player-cast spells & spell-like effects.
  *
@@ -1381,15 +1437,10 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
                                    eff_pow, evoked_item, hitfunc.get());
         }
 
-        string title = "Aiming: <white>";
-        title += spell_title(spell);
-        title += "</white>";
-        if (evoked_item
-            && evoked_item->base_type == OBJ_WANDS
-            && !item_ident(*evoked_item, ISFLAG_KNOW_PLUSES))
-        {
-            title += " <lightred>(will waste charges)</lightred>";
-        }
+        string title = make_stringf("Aiming: <w>%s</w>", spell_title(spell));
+        if (allow_fail)
+            title += make_stringf(" <lightgrey>(%s)</lightgrey>",
+                _spell_failure_rate_description(spell).c_str());
 
         direction_chooser_args args;
         args.hitfunc = hitfunc.get();
@@ -1460,7 +1511,7 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
 	
     else if (allow_fail)
     {
-        int spfl = random2avg(100, 3);
+        int spfl = random2(_outcomes());
 
         if (!you_worship(GOD_SIF_MUNA)
             && you.penance[GOD_SIF_MUNA] && one_chance_in(20))
@@ -1501,7 +1552,7 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
                           random2avg(88, 3), "the malice of Vehumet");
         }
 
-        const int spfail_chance = raw_spell_fail(spell);
+        const int spfail_chance = _get_true_fail_outcomes(raw_spell_fail(spell));
 
         if (spfl < spfail_chance)
             fail = spfail_chance - spfl;
@@ -1517,10 +1568,31 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
         aim_battlesphere(&you, spell, powc, beam);
 
     const bool old_target = actor_at(beam.target);
+	
+    const bool can_summon_avatar = !spell_no_hostile_in_range(spell);
 
     spret_type cast_result = _do_cast(spell, powc, spd, beam, god,
                                       potion, fail);
 
+    //attune amulet of destruction to the spell, if supported
+    if(vehumet_supports_spell(spell) && you.wearing(EQ_AMULET, AMU_DESTRUCTION)
+      && !(flags & SPFLAG_PERMABUFF))
+    {
+        if(!you.props.exists(AMULET_DESTRUCTIVE_SPELL) || you.props[AMULET_DESTRUCTIVE_SPELL].get_int() != spell)
+            mprf("Your amulet of destruction attunes itself to %s", spell_title(spell));
+
+        you.props[AMULET_DESTRUCTIVE_SPELL] = spell;
+        you.props[LAST_ACTION_DESTRUCTIVE_KEY] = true;
+        you.set_duration(DUR_DESTRUCTION, 10, 10);
+	}
+    else if(you.props.exists(AMULET_DESTRUCTIVE_SPELL))
+    {
+        mpr("Your amulet of destruction loses attunement.");
+        you.props.erase(AMULET_DESTRUCTIVE_SPELL);
+        if(you.duration[DUR_DESTRUCTION])
+            you.duration[DUR_DESTRUCTION] = 0;
+    }
+									  
     switch (cast_result)
     {
     case SPRET_SUCCESS:
@@ -1538,6 +1610,24 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
             && (!old_target || (victim && !victim->is_player())))
         {
             dithmenos_shadow_spell(&beam, spell);
+        }
+        if(you.attribute[ATTR_BATTLESPHERE] && battlesphere_can_mirror(spell) && can_summon_avatar)
+        {
+            monster* battlesphere = find_battlesphere(&you);
+            if(!battlesphere)
+            {
+                if(cast_battlesphere(&you, calc_spell_power(SPELL_BATTLESPHERE, true), god, false) == SPRET_SUCCESS)
+                    mprf("You summon your battlesphere!");
+            }
+		}
+        if(you.attribute[ATTR_SERVITOR] && vehumet_supports_spell(spell) && can_summon_avatar
+            && !(flags & SPFLAG_PERMABUFF))
+        {
+            monster* servitor = find_servitor(&you);
+            if(!servitor)
+            {
+                cast_spellforged_servitor(calc_spell_power(SPELL_SPELLFORGED_SERVITOR, true), god, false);
+            }
         }
         _spellcasting_side_effects(spell, god, !allow_fail);
         return SPRET_SUCCESS;
@@ -1565,7 +1655,7 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
         // quite nasty: 9 * 9 * 90 / 500 = 15 points of
         // contamination!
         int nastiness = spell_difficulty(spell) * spell_difficulty(spell)
-                        * fail + 250;
+                        * fail * 100 / _outcomes() + 250;
 
         const int cont_points = 2 * nastiness;
 
@@ -1573,7 +1663,7 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
         contaminate_player(cont_points, true);
 
         MiscastEffect(&you, nullptr, SPELL_MISCAST, spell,
-                      spell_difficulty(spell), fail);
+                      spell_difficulty(spell), fail * 100 / _outcomes());
 
         return SPRET_FAIL;
     }
@@ -1663,6 +1753,16 @@ static spret_type _handle_buff_spells(spell_type spell, int powc, bolt& beam, go
             return cast_infusion(powc, false);   
         case SPELL_EXCRUCIATING_WOUNDS:
             return cast_excruciating_wounds(powc, false);
+        case SPELL_INFESTATION:
+            return cast_infestation(powc, false);
+        case SPELL_ANIMATE_DEAD:
+            return cast_animate_dead(powc, god, false);
+        case SPELL_SPECTRAL_WEAPON:
+            return cast_spectral_weapon(&you, powc, god, false);
+        case SPELL_BATTLESPHERE:
+            return player_battlesphere(&you, powc, god, false);
+        case SPELL_SPELLFORGED_SERVITOR:
+            return player_spellforged_servitor(powc, god, false);
         default:
 		    return SPRET_NONE;
     }
@@ -1674,28 +1774,28 @@ static spret_type _handle_form_spells(spell_type spell, int powc, bolt& beam, go
     {
     // Transformations.
         case SPELL_BEASTLY_APPENDAGE:
-            return cast_transform(powc, TRAN_APPENDAGE, fail);
+            return cast_transform(powc, TRAN_APPENDAGE, false);
 
         case SPELL_BLADE_HANDS:
-            return cast_transform(powc, TRAN_BLADE_HANDS, fail);
+            return cast_transform(powc, TRAN_BLADE_HANDS, false);
 
         case SPELL_SPIDER_FORM:
-            return cast_transform(powc, TRAN_SPIDER, fail);
+            return cast_transform(powc, TRAN_SPIDER, false);
 
         case SPELL_STATUE_FORM:
-            return cast_transform(powc, TRAN_STATUE, fail);
+            return cast_transform(powc, TRAN_STATUE, false);
 
         case SPELL_ICE_FORM:
-            return cast_transform(powc, TRAN_ICE_BEAST, fail);
+            return cast_transform(powc, TRAN_ICE_BEAST, false);
 
         case SPELL_HYDRA_FORM:
-            return cast_transform(powc, TRAN_HYDRA, fail);
+            return cast_transform(powc, TRAN_HYDRA, false);
 
         case SPELL_DRAGON_FORM:
-            return cast_transform(powc, TRAN_DRAGON, fail);
+            return cast_transform(powc, TRAN_DRAGON, false);
 
         case SPELL_NECROMUTATION:
-            return cast_transform(powc, TRAN_LICH, fail);
+            return cast_transform(powc, TRAN_LICH, false);
         default:
             return SPRET_NONE;
     }
@@ -1881,26 +1981,11 @@ static spret_type _do_cast(spell_type spell, int powc,
     case SPELL_ANIMATE_SKELETON:
         return cast_animate_skeleton(god, fail);
 
-    case SPELL_ANIMATE_DEAD:
-        return cast_animate_dead(powc, god, fail);
-
     case SPELL_SIMULACRUM:
         return cast_simulacrum(powc, god, fail);
 
     case SPELL_HAUNT:
         return cast_haunt(powc, beam.target, god, fail);
-
-    case SPELL_SPELLFORGED_SERVITOR:
-        return cast_spellforged_servitor(powc, god, fail);
-
-    case SPELL_SPECTRAL_WEAPON:
-        return cast_spectral_weapon(&you, powc, god, fail);
-
-    case SPELL_BATTLESPHERE:
-        return cast_battlesphere(&you, powc, god, fail);
-
-    case SPELL_INFESTATION:
-        return cast_infestation(powc, beam, fail);
 
     // Enchantments.
     case SPELL_CONFUSING_TOUCH:
@@ -1963,9 +2048,6 @@ static spret_type _do_cast(spell_type spell, int powc,
 
     case SPELL_DISJUNCTION:
         return cast_disjunction(powc, fail);
-
-    case SPELL_CORPSE_ROT:
-        return cast_corpse_rot(fail);
 
     case SPELL_GOLUBRIAS_PASSAGE:
         return cast_golubrias_passage(beam.target, fail);
@@ -2040,56 +2122,7 @@ static spret_type _do_cast(spell_type spell, int powc,
     return SPRET_NONE;
 }
 
-// _tetrahedral_number: returns the nth tetrahedral number.
-// This is the number of triples of nonnegative integers with sum < n.
-// Called only by get_true_fail_rate.
-static int _tetrahedral_number(int n)
-{
-    return n * (n+1) * (n+2) / 6;
-}
-
-// get_true_fail_rate: Takes the raw failure to-beat number
-// and converts it to the actual chance of failure:
-// the probability that random2avg(100,3) < raw_fail.
-// Should probably use more constants, though I doubt the spell
-// success algorithms will really change *that* much.
-// Called only by failure_rate_to_int and get_miscast_chance.
-static double _get_true_fail_rate(int raw_fail)
-{
-    // Need 3*random2avg(100,3) = random2(101) + random2(101) + random2(100)
-    // to be (strictly) less than 3*raw_fail. Fun with tetrahedral numbers!
-
-    // How many possible outcomes, considering all three dice?
-    const int outcomes = 101 * 101 * 100;
-    const int target = raw_fail * 3;
-
-    if (target <= 100)
-    {
-        // The failures are exactly the triples of nonnegative integers
-        // that sum to < target.
-        return double(_tetrahedral_number(target)) / outcomes;
-    }
-    if (target <= 200)
-    {
-        // Some of the triples that sum to < target would have numbers
-        // greater than 100, or a last number greater than 99, so aren't
-        // possible outcomes. Apply the principle of inclusion-exclusion
-        // by subtracting out these cases. The set of triples with first
-        // number > 100 is isomorphic to the set of triples that sum to
-        // 101 less; likewise for the second and third numbers (100 less
-        // in the last case). Two or more out-of-range numbers would have
-        // resulted in a sum of at least 201, so there is no overlap
-        // among the three cases we are subtracting.
-        return double(_tetrahedral_number(target)
-                      - 2 * _tetrahedral_number(target - 101)
-                      - _tetrahedral_number(target - 100)) / outcomes;
-    }
-    // The random2avg distribution is symmetric, so the last interval is
-    // essentially the same as the first interval.
-    return double(outcomes - _tetrahedral_number(300 - target)) / outcomes;
-}
-
-double spell_mp_freeze (spell_type spell)
+int spell_mp_freeze (spell_type spell)
 {
     //no need to freeze mp if it's not a buff spell
     if (!is_buff_spell(spell) && !spell_is_form(spell))
@@ -2102,7 +2135,7 @@ double spell_mp_freeze (spell_type spell)
         if (success < 0.05)
             return 400;
 		double mp_to_freeze = spell_difficulty(spell) / (success * success);
-        return mp_to_freeze;
+        return (int) mp_to_freeze;
     }
 }
 
@@ -2196,6 +2229,14 @@ string spell_hunger_string(spell_type spell)
     return hunger_cost_string(spell_hunger(spell));
 }
 
+string spell_failure_rate_string(spell_type spell)
+{
+    const string failure = failure_rate_to_string(raw_spell_fail(spell));
+    const string colour = colour_to_str(failure_rate_colour(spell));
+    return make_stringf("<%s>%s</%s>",
+            colour.c_str(), failure.c_str(), colour.c_str());
+}
+
 string spell_noise_string(spell_type spell, int chop_wiz_display_width)
 {
     const int casting_noise = spell_noise(spell);
@@ -2273,7 +2314,7 @@ string spell_reserved_mp_string(spell_type spell)
         return "N/A";
     else 
     {
-        int mp_to_freeze = (int) spell_mp_freeze(spell);
+        int mp_to_freeze = spell_mp_freeze(spell);
         if (mp_to_freeze == 400)
             return make_stringf(">400");
         return make_stringf("%d", mp_to_freeze);    
@@ -2317,7 +2358,7 @@ string spell_range_string(spell_type spell)
  *                      Usually @ for the player.
  * @return              See above.
  */
-string range_string(int range, int maxrange, ucs_t caster_char)
+string range_string(int range, int maxrange, char32_t caster_char)
 {
     if (range <= 0)
         return "N/A";

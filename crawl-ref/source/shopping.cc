@@ -140,9 +140,6 @@ int artefact_value(const item_def &item)
     if (prop[ ARTP_BERSERK ])
         ret += 5;
 
-    if (prop[ ARTP_INVISIBLE ])
-        ret += 10;
-
     if (prop[ ARTP_ANGRY ])
         ret -= 3;
 
@@ -234,6 +231,7 @@ unsigned int item_value(item_def item, bool ident)
             case SPWPN_DISTORTION:
             case SPWPN_ELECTROCUTION:
             case SPWPN_PAIN:
+            case SPWPN_DEVASTATION:
                 valued *= 25;
                 break;
 
@@ -351,12 +349,18 @@ unsigned int item_value(item_def item, bool ident)
             case SPARM_COLD_RESISTANCE:
             case SPARM_DEXTERITY:
             case SPARM_FIRE_RESISTANCE:
+#if TAG_MAJOR_VERSION == 34
             case SPARM_SEE_INVISIBLE:
+#endif
             case SPARM_INTELLIGENCE:
             case SPARM_FLYING:
             case SPARM_STEALTH:
+            case SPARM_MAGICAL_POWER:
+            case SPARM_SPIRIT_SHIELD:
             case SPARM_STRENGTH:
+#if TAG_MAJOR_VERSION == 34
             case SPARM_INVISIBILITY:
+#endif
             case SPARM_MAGIC_RESISTANCE:
             case SPARM_PROTECTION:
             case SPARM_ARCHERY:
@@ -366,7 +370,6 @@ unsigned int item_value(item_def item, bool ident)
             case SPARM_POSITIVE_ENERGY:
             case SPARM_POISON_RESISTANCE:
             case SPARM_REFLECTION:
-            case SPARM_SPIRIT_SHIELD:
                 valued += 20;
                 break;
 
@@ -430,13 +433,12 @@ unsigned int item_value(item_def item, bool ident)
                 break;
 
             case WAND_ENSLAVEMENT:
-            case WAND_POLYMORPH:
             case WAND_PARALYSIS:
                 valued += 20;
                 break;
 
             case WAND_CONFUSION:
-            case WAND_SLOWING:
+            case WAND_POLYMORPH:
                 valued += 15;
                 break;
 
@@ -498,19 +500,23 @@ unsigned int item_value(item_def item, bool ident)
 
             case POT_BERSERK_RAGE:
             case POT_HEAL_WOUNDS:
+            case POT_MIGHT:
 #if TAG_MAJOR_VERSION == 34
             case POT_RESTORE_ABILITIES:
 #endif
                 valued += 50;
                 break;
 
-            case POT_MIGHT:
+            
+#if TAG_MAJOR_VERSION == 34
             case POT_AGILITY:
             case POT_BRILLIANCE:
                 valued += 40;
                 break;
-
+#endif
+#if TAG_MAJOR_VERSION == 34			
             case POT_CURING:
+#endif
             case POT_LIGNIFY:
             case POT_FLIGHT:
                 valued += 30;
@@ -659,7 +665,9 @@ unsigned int item_value(item_def item, bool ident)
                 switch (item.sub_type)
                 {
                 case AMU_FAITH:
+#if TAG_MAJOR_VERSION == 34
                 case AMU_RAGE:
+#endif
                     valued += 400;
                     break;
 
@@ -675,8 +683,9 @@ unsigned int item_value(item_def item, bool ident)
                 case RING_PROTECTION_FROM_MAGIC:
                     valued += 250;
                     break;
-
+#if TAG_MAJOR_VERSION == 34
                 case RING_MAGICAL_POWER:
+#endif
                 case RING_LIFE_PROTECTION:
                 case RING_POISON_RESISTANCE:
                 case RING_RESIST_CORROSION:
@@ -688,12 +697,10 @@ unsigned int item_value(item_def item, bool ident)
                 case RING_FLIGHT:
                     valued += 175;
                     break;
-#endif
                 case RING_SEE_INVISIBLE:
                     valued += 150;
                     break;
-					
-#if TAG_MAJOR_VERSION == 34
+
                 case RING_LOUDNESS:
                 case RING_TELEPORTATION:
 #endif
@@ -977,11 +984,6 @@ class ShopMenu : public InvMenu
     void purchase_selected();
 
     virtual bool process_key(int keyin) override;
-    virtual void draw_menu() override;
-    // Selecting one item may remove another from the shopping list, or change
-    // the colour others need to have, so we can't be lazy with redrawing
-    // elements.
-    virtual bool always_redraw() const override { return true; }
 
 public:
     bool bought_something = false;
@@ -1077,25 +1079,6 @@ void ShopMenu::init_entries()
         newentry->add_hotkey(ckey++);
         add_entry(move(newentry));
     }
-}
-
-void ShopMenu::draw_menu()
-{
-    // Unlike other menus, selecting one item in the shopping menu may change
-    // other ones (because of the colour scheme). Keypresses also need to
-    // update the more, which is hijacked for use as help text.
-#ifdef USE_TILE_WEB
-    tiles.json_open_object();
-    tiles.json_write_string("msg", "update_menu");
-    tiles.json_write_string("more", more.to_colour_string());
-    tiles.json_write_int("total_items", items.size());
-    tiles.json_close_object();
-    tiles.finish_message();
-    if (items.size() > 0)
-        webtiles_update_items(0, items.size() - 1);
-#endif
-
-    InvMenu::draw_menu();
 }
 
 int ShopMenu::selected_cost() const
@@ -2123,54 +2106,41 @@ void ShoppingList::gold_changed(int old_amount, int new_amount)
 class ShoppingListMenu : public Menu
 {
 public:
-    ShoppingListMenu()
-#ifdef USE_TILE_LOCAL
-        : Menu(MF_MULTISELECT,"",false)
-#else
-        : Menu()
-#endif
-    { }
+    ShoppingListMenu() : Menu(MF_MULTISELECT | MF_ALLOW_FORMATTING) {}
 
 protected:
-    void draw_title();
+virtual formatted_string calc_title() override;
 };
 
-void ShoppingListMenu::draw_title()
+formatted_string ShoppingListMenu::calc_title()
 {
-    if (title)
+    formatted_string fs;
+    const int total_cost = you.props[SHOPPING_LIST_COST_KEY];
+
+    fs.textcolour(title->colour);
+    fs.cprintf("%d %s%s, total %d gold",
+                title->quantity, title->text.c_str(),
+                title->quantity > 1? "s" : "",
+                total_cost);
+
+    string s = "<lightgrey>  [<w>a-z</w>] ";
+
+    switch (menu_action)
     {
-        const int total_cost = you.props[SHOPPING_LIST_COST_KEY];
-
-        cgotoxy(1, 1);
-        formatted_string fs = formatted_string(title->colour);
-        fs.cprintf("%d %s%s, total %d gold",
-                   title->quantity, title->text.c_str(),
-                   title->quantity > 1? "s" : "",
-                   total_cost);
-        fs.display();
-
-#ifdef USE_TILE_WEB
-        webtiles_set_title(fs);
-#endif
-        string s = "<lightgrey>  [<w>a-z</w>] ";
-
-        switch (menu_action)
-        {
-        case ACT_EXECUTE:
-            s += "<w>travel</w>|examine|delete";
-            break;
-        case ACT_EXAMINE:
-            s += "travel|<w>examine</w>|delete";
-            break;
-        default:
-            s += "travel|examine|<w>delete</w>";
-            break;
-        }
-
-        s += "  [<w>?</w>/<w>!</w>] change action</lightgrey>";
-
-        draw_title_suffix(formatted_string::parse_string(s), false);
+    case ACT_EXECUTE:
+        s += "<w>travel</w>|examine|delete";
+        break;
+    case ACT_EXAMINE:
+        s += "travel|<w>examine</w>|delete";
+        break;
+    default:
+        s += "travel|examine|<w>delete</w>";
+        break;
     }
+
+    s += "  [<w>?</w>/<w>!</w>] change action</lightgrey>";
+    fs += formatted_string::parse_string(s);
+    return fs;
 }
 
 /**
@@ -2243,13 +2213,6 @@ void ShoppingList::display()
 
     MenuEntry *mtitle = new MenuEntry(title, MEL_TITLE);
     shopmenu.set_title(mtitle);
-
-    // Don't make a menu so tall that we recycle hotkeys on the same page.
-    if (list->size() > 52
-        && (shopmenu.maxpagesize() > 52 || shopmenu.maxpagesize() == 0))
-    {
-        shopmenu.set_maxpagesize(52);
-    }
 
     string more_str = make_stringf("<yellow>You have %d gp</yellow>", you.gold);
     shopmenu.set_more(formatted_string::parse_string(more_str));

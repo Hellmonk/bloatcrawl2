@@ -264,12 +264,11 @@ KFEAT:   O = altar_dithmenos
 KFEAT:   P = altar_gozag
 KFEAT:   Q = altar_qazlal
 KFEAT:   R = altar_uskayaw
-KFEAT:   S = altar_hepliaklqana
 MAP
 ''''''...............
 ''ccccccccccccccccc..
 ''G'c"""D"""""P"""c..
-''''c"A"""I"L"""S"c..
+''''c"A"""I"L"""""c..
 ''G'c"""E"""""Q"""ct.
 ''''+"B"""J"N"""C"c..
 ''G'c"""F"""""R"""c..

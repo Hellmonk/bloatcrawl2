@@ -466,8 +466,8 @@ TAGS:   bailey_axe no_rotate
 MONS:   gnoll ; mundane halberd | halberd ego:electrocution ident:type
 MONS:   orc warrior / orc knight
 NSUBST: e = 1:e / *:d
-ITEM:   potion of curing / potion of heal wounds / potion of magic / potion of mutation /\
-        potion of might w:5 / potion of haste w:2 / potion of berserk rage w:3
+ITEM:   potion of ambrosia / potion of heal wounds / potion of magic / potion of mutation /\
+        potion of augmentation w:5 / potion of haste w:2 / potion of berserk rage w:3
 ITEM:   potion of mutation q:3 / scroll of acquirement q:1
 : bailey_setup(_G)
 MAP
@@ -630,8 +630,8 @@ TAGS:   bailey_axe no_item_gen no_monster_gen
 #
 # I believe that loot is a bit much, but other baileys suffer from that as
 # well... added the warlord in an attempt to make it more even.  --dpeg
-ITEM:   potion of curing / potion of heal wounds / potion of resistance w:5 / \
-        potion of might w:5 / potion of brilliance w:5 / potion of agility w:5 / \
+ITEM:   potion of ambrosia / potion of heal wounds / potion of resistance w:5 / \
+        potion of augmentation w:5 / \
         potion of magic w:5 / potion of haste w:5 / \
         scroll of teleportation / scroll of blinking / scroll of noise / \
         scroll of enchant weapon w:5 / scroll of enchant armour w:5
@@ -761,8 +761,8 @@ ENDMAP
 NAME:   bailey_polearm_2
 ORIENT: encompass
 TAGS:   bailey_polearm no_rotate no_pool_fixup no_monster_gen
-MONS:   orc warrior w:5 ; arbalest . bolt . ring mail | scale mail / \
-        orc ; arbalest . bolt . ring mail | scale mail
+MONS:   orc warrior w:5 ; arbalest . arrow . ring mail | scale mail / \
+        orc ; arbalest . arrow . ring mail | scale mail
 : orc_with_polearm(_G)
 : orc_warrior_with_polearm(_G)
 : orc_knight_with_polearm(_G)
@@ -877,7 +877,7 @@ NAME:   bailey_polearm_4
 ORIENT: encompass
 TAGS:   bailey_polearm no_rotate no_item_gen no_monster_gen no_pool_fixup
 ITEM:   any good_item
-MONS:   orc warrior ; arbalest . bolt . ring mail | scale mail | chain mail / \
+MONS:   orc warrior ; arbalest . arrow . ring mail | scale mail | chain mail / \
         orc warrior ; halberd . ring mail | scale mail | chain mail
 : orc_with_polearm(_G)
 : orc_warrior_with_polearm(_G)
@@ -913,7 +913,7 @@ NAME:   bailey_polearm_5
 ORIENT: encompass
 TAGS:   bailey_polearm no_item_gen no_monster_gen
 ITEM:   scroll of acquirement q:1
-ITEM:   potion of curing / potion of heal wounds / potion of might w:5 /\
+ITEM:   potion of ambrosia / potion of heal wounds / potion of augmentation w:5 /\
         potion of berserk rage w:3 / potion of haste w:2 /\
         potion of invisibility w:3 / potion of resistance w:2
 ITEM:   scroll of brand weapon w:5 / scroll of acquirement q:1 w:5 /\
@@ -952,8 +952,8 @@ ORIENT: encompass
 TAGS:   bailey_polearm no_item_gen no_monster_gen no_pool_fixup patrolling
 : orc_with_polearm(_G)
 : orc_warrior_with_polearm(_G)
-MONS:   centaur ; javelin ego:dispersal ident:type q:2 | \
-            javelin ego:dispersal ident:type q:3 . spear | trident | halberd . \
+MONS:   centaur ; tomahawk ego:dispersal ident:type q:2 | \
+            tomahawk ego:dispersal ident:type q:3 . spear | trident | halberd . \
             ring mail | scale mail | chain mail
 NSUBST: _ = 4:2 / 5:1 / *:.
 NSUBST: ; = 6:2 / 6:1 / *:.
@@ -961,7 +961,7 @@ NSUBST: ! = 8:1 / *:.
 SUBST:  / = 12
 KITEM:  d = manual of armour / manual of fighting / manual of shields /\
             good_item bardiche / good_item executioner's axe
-KITEM:  e = potion of beneficial mutation q:1 / scroll of acquirement q:1 /\
+KITEM:  e = potion of mutation q:2 / scroll of acquirement q:1 /\
             scroll of enchant armour q:2 / scroll of enchant weapon q:3
 NSUBST: d = 1:e / *:d|
 : bailey_setup(_G)
@@ -1068,8 +1068,8 @@ KITEM:  d = any weapon
 KITEM:  D = any weapon good_item
 KITEM:  e = any armour
 KITEM:  E = any armour good_item
-KITEM:  f = potion of curing / potion of might / potion of brilliance / \
-            potion of agility / potion of mutation w:30 / potion of flight w:20 / \
+KITEM:  f = potion of ambrosia / potion of augmentation / \
+            potion of mutation w:30 / potion of flight w:20 / \
             potion of lignification  / \
             scroll of teleportation / scroll of noise w:30 / \
             scroll of fear / scroll of noise w:30 / scroll of magic mapping
@@ -1144,8 +1144,8 @@ ENDMAP
 NAME:   bailey_axe_bossmonster_kennysheep
 ORIENT: encompass
 TAGS:   bailey_axe no_item_gen no_monster_gen no_pool_fixup
-ITEM:   potion of curing / potion of heal wounds / potion of resistance w:5 / \
-            potion of might w:5 / potion of brilliance w:5 / potion of agility w:5 / \
+ITEM:   potion of ambrosia / potion of heal wounds / potion of resistance w:5 / \
+            potion of augmentation w:5 / \
             potion of magic w:5 / potion of haste w:5 / \
             scroll of teleportation / scroll of blinking / scroll of noise / \
             scroll of enchant weapon w:5 / scroll of enchant armour w:5

@@ -822,18 +822,6 @@ static int _item_name_specialness(const item_def& item)
     return 0;
 }
 
-static void _maybe_give_corpse_hint(const item_def& item)
-{
-    if (!crawl_state.game_is_hints_tutorial())
-        return;
-
-    if (item.is_type(OBJ_CORPSES, CORPSE_BODY)
-        && you.has_spell(SPELL_ANIMATE_SKELETON))
-    {
-        learned_something_new(HINT_ANIMATE_CORPSE_SKELETON);
-    }
-}
-
 void item_check()
 {
     describe_floor();
@@ -851,7 +839,6 @@ void item_check()
         const item_def& it(*items[0]);
         string name = get_menu_colour_prefix_tags(it, DESC_A);
         strm << "You see here " << name << '.' << endl;
-        _maybe_give_corpse_hint(it);
         return;
     }
 
@@ -909,7 +896,6 @@ void item_check()
         for (const item_def *it : items)
         {
             mprf_nocap("%s", get_menu_colour_prefix_tags(*it, DESC_A).c_str());
-            _maybe_give_corpse_hint(*it);
         }
     }
     else if (!done_init_line)
@@ -1529,13 +1515,6 @@ bool items_similar(const item_def &item1, const item_def &item2)
     if (item1.base_type == OBJ_MISSILES && item1.brand != item2.brand)
         return false;
 
-    if (item1.is_type(OBJ_FOOD, FOOD_CHUNK)
-        && determine_chunk_effect(item1) != determine_chunk_effect(item2))
-    {
-        return false;
-    }
-
-
 #define NO_MERGE_FLAGS (ISFLAG_MIMIC | ISFLAG_SUMMONED)
     if ((item1.flags & NO_MERGE_FLAGS) != (item2.flags & NO_MERGE_FLAGS))
         return false;
@@ -1836,6 +1815,8 @@ static void _get_book(const item_def& it, bool quiet)
             useless = !you_can_memorise(st);
             if (!quiet && !useless)
                 mprf("You add the spell %s to your library.", spell_title(st));
+            else if (!quiet)
+                mprf(MSGCH_DIAGNOSTICS, "You add the spell %s to your library.", spell_title(st));
         }
 //        else if (!quiet)
 //            mprf("Your library already contains %s.", spell_title(st));
@@ -2929,7 +2910,7 @@ static bool _is_option_autopickup(const item_def &item, bool ignore_force)
 static bool _should_autobutcher(const item_def &item)
 {
     return Options.auto_butcher && item.base_type == OBJ_CORPSES
-           && !is_inedible(item) && !is_bad_food(item);
+           && !is_inedible(item);
 }
 
 /** Is the item something that we should try to autopickup?
@@ -3373,7 +3354,6 @@ zap_type item_def::zap() const
     switch (wand_sub_type)
     {
     case WAND_FLAME:           result = ZAP_THROW_FLAME;     break;
-    case WAND_SLOWING:         result = ZAP_SLOW;            break;
     case WAND_PARALYSIS:       result = ZAP_PARALYSE;        break;
     case WAND_CONFUSION:       result = ZAP_CONFUSE;         break;
     case WAND_DIGGING:         result = ZAP_DIG;             break;
@@ -3395,6 +3375,7 @@ zap_type item_def::zap() const
     case WAND_COLD_REMOVED:
     case WAND_FROST_REMOVED:
     case WAND_HEAL_WOUNDS_REMOVED:
+    case WAND_SLOWING:
     case WAND_RANDOM_EFFECTS:  /* impossible */
 #endif
         break;
@@ -3535,9 +3516,9 @@ colour_t item_def::missile_colour() const
 #if TAG_MAJOR_VERSION == 34
         case MI_NEEDLE:
             return WHITE;
-#endif
         case MI_BOLT:
             return LIGHTBLUE;
+#endif
         case MI_JAVELIN:
             return RED;
 #if TAG_MAJOR_VERSION == 34
@@ -4619,6 +4600,47 @@ bool get_item_by_name(item_def *item, const char* specs,
     item_set_appearance(*item);
 
     return true;
+}
+
+bool get_item_by_exact_name(item_def &item, const char* name)
+{
+    item.clear();
+    item.quantity = 1;
+    // Don't use set_ident_flags(), to avoid getting a spurious ID note.
+    item.flags |= ISFLAG_IDENT_MASK;
+
+    string name_lc = lowercase_string(string(name));
+
+    for (int i = 0; i < NUM_OBJECT_CLASSES; ++i)
+    {
+        if (i == OBJ_RUNES) // runes aren't shown in ?/I
+            continue;
+
+        item.base_type = static_cast<object_class_type>(i);
+        item.sub_type = 0;
+
+        // _deck_from_specs doesn't use exact matches, but it's close enough
+        if (item.base_type == OBJ_MISCELLANY && starts_with(name_lc, "deck of"))
+        {
+            _deck_from_specs(name, item, false);
+
+            // deck creation cancelled, clean up item.
+            if (item.base_type == OBJ_UNASSIGNED)
+                return false;
+            return item.sub_type != 0;
+        }
+
+        if (!item.sub_type)
+        {
+            for (int j = 0; j < get_max_subtype(item.base_type); ++j)
+            {
+                item.sub_type = j;
+                if (lowercase_string(item.name(DESC_DBNAME)) == name_lc)
+                    return true;
+            }
+        }
+    }
+    return false;
 }
 
 void move_items(const coord_def r, const coord_def p)

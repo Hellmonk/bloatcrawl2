@@ -28,9 +28,10 @@ icebreaker at wizard parties.
 %%%%
 Animate Dead spell
 
-Reanimates all corpses and skeletons in the vicinity as followers. This magic
-is unstable, so eventually those reanimated will crumble to dust. Zombies and
-skeletons cannot leave the level they were created on.
+Reanimates corpses of monsters slain by the caster as mindless zombies. 
+This magic is unstable, so eventually those reanimated will crumble to dust. 
+Zombies cannot leave the level they were created on. High spellpower will
+increase the chance of reanimating a slain monster.
 %%%%
 Animate Skeleton spell
 
@@ -721,9 +722,11 @@ spell.
 %%%%
 Infestation spell
 
-Calls forth a plague of scarabs, infesting affected creatures for a duration
-depending on power and causing death scarabs to grow and burst from them upon
-death.
+Calls forth a plague of scarabs to coat the caster's hands or melee weapon. As long 
+as the spell is sustained, any monster hit by the caster will become infested 
+for a duration depending on power. When an infested monster dies, a death scarab
+will burst forth from their remains, though this process prevents reanimating the corpse
+in other ways.
 %%%%
 Infusion spell
 
@@ -773,8 +776,9 @@ lingers, enough to leave them dangerously contaminated after a few castings.
 %%%%
 Iskenderun's Battlesphere spell
 
-Conjures a small globe of magical energy linked to the caster's own magical
-reserves. While the battlesphere cannot take independent action, it will fire
+Prepares a small globe of magical energy linked to the caster's own magical
+reserves. Casting any spell that the battlesphere can mirror while enemies are
+in range will summon it for a brief time. The battlesphere will fire
 volleys of energy at the caster's enemies in sync with its creator's own
 destructive magic. With increasing power, the battlesphere lasts longer
 and deals more damage per volley.
@@ -800,15 +804,14 @@ deadly shrapnel. It can be used on monsters made of ice, bone, or any wall-like
 substance, as well as those turned to stone by petrification. Its damage is
 strongly reduced by armour.
 
-Targets made from rock, stone, ice or bone will cause a small or medium-sized
-explosion. Metal targets will cause a small but particularly damaging
-explosion, and targets made from crystal will cause a large and extremely
-damaging explosion.
+Targets made from rock, stone, ice or bone will cause a small explosion. Metal
+targets will cause a small but more damaging explosion, and targets made from
+crystal will cause a large and more damaging explosion.
 
 At high power, this spell is capable of destroying some walls: rock, stone or
-metal walls have a chance of being destroyed with at least 5, 6 or 7 bars of
-power. Crystal walls are particularly brittle and have a chance of being
-destroyed at any power level.
+metal walls have a chance of being destroyed with at least 35, 50 or 75
+spellpower respectively. Crystal walls are particularly brittle and have a chance of
+being destroyed at any power level.
 %%%%
 Legendary Destruction spell
 
@@ -950,10 +953,10 @@ impact. Its damage partially bypasses armour.
 %%%%
 Ozocubu's Armour spell
 
-Envelops the caster's body in a protective layer of thick ice. This will slow
-the caster's movement slightly, and provides no special protection against cold.
-The spell will not function for casters already wearing heavy armour (any body
-armour with an encumbrance rating of 5 or more).
+Envelops the caster's body in a protective layer of thick ice. This provides 
+no special protection against cold. The spell will not function for casters 
+already wearing heavy armour (any body armour with an encumbrance rating of 5 
+or more).
 %%%%
 Ozocubu's Refrigeration spell
 
@@ -1003,6 +1006,11 @@ Phantom Mirror spell
 
 Creates a phantom copy of a creature. The copy will be somewhat fragile, but
 otherwise almost indistinguishable from the original.
+%%%%
+Phase Shift spell
+
+Causes the caster to phase in and out of the material plane, allowing them to
+occasionally avoid blows entirely.
 %%%%
 Plane Rend spell
 
@@ -1224,12 +1232,12 @@ coalesce from the mist over time.
 Spectral Weapon spell
 
 Draws out the spirit within a wielded weapon to fight for the caster, with its
-strength increasing with power. It only attacks when the caster does, and its
-kills count as the caster's own. If the weapon is damaged, part of the injury
-will be echoed on the caster's body. Only one spectral weapon can be maintained
+strength increasing with power. The weapon will be summoned when the caster 
+successfully hits a target. It only attacks when the caster does, and its
+kills count as the caster's own. Only one spectral weapon can be maintained
 at a time, and only while the original weapon remains wielded.
 
-Certain powerful named artefacts cannot be affected, and any abilities that
+Certain powerful named artefacts cannot be summoned, and any abilities that
 require evocation skill to trigger will not be active.
 %%%%
 Spellforged Servitor spell

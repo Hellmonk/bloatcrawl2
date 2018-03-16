@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <cstdio>
+#include <cmath>
 #include <iomanip>
 #include <numeric>
 #include <set>
@@ -142,6 +143,7 @@ const char* jewellery_base_ability_string(int subtype)
     case AMU_CONSERVATION:        return "Cons";
     case AMU_CONTROLLED_FLIGHT:   return "cFly";
 #endif
+    case AMU_DESTRUCTION:         return "Destruction";
     case AMU_GUARDIAN_SPIRIT:     return "Spirit";
     case AMU_FAITH:               return "Faith";
     case AMU_REFLECTION:          return "Reflect";
@@ -397,6 +399,9 @@ static const char* _jewellery_base_ability_description(int subtype)
     case AMU_CONSERVATION:
         return "It protects your inventory from destruction.";
 #endif
+    case AMU_DESTRUCTION:
+        return "It reduces the cost of successive casts of the same destructive "
+               "spell.";
     case AMU_GUARDIAN_SPIRIT:
         return "It causes incoming damage to be split between your health and "
                "magic.";
@@ -444,7 +449,6 @@ static string _randart_descrip(const item_def &item)
         { ARTP_HP, "It affects your health (%d).", false},
         { ARTP_MAGICAL_POWER, "It affects your magic capacity (%d).", false},
         { ARTP_SEE_INVISIBLE, "It lets you see invisible.", false},
-        { ARTP_INVISIBLE, "It lets you turn invisible.", false},
         { ARTP_FLY, "It lets you fly.", false},
         { ARTP_BLINK, "It lets you blink.", false},
         { ARTP_BERSERK, "It lets you go berserk.", false},
@@ -829,27 +833,152 @@ static string _describe_mutant_beast(const monster_info &mi)
            + " " + _describe_mutant_beast_tier(tier);
 }
 
+/**
+ * Is the item associated with some specific training goal?  (E.g. mindelay)
+ *
+ * @return the goal, or 0 if there is none, scaled by 10.
+ */
+static int _item_training_target(const item_def &item)
+{
+    const int throw_dam = property(item, PWPN_DAMAGE);
+    if (item.base_type == OBJ_WEAPONS || item.base_type == OBJ_STAVES)
+        return min(weapon_min_delay_skill(item) * 10,270);
+    else if (is_shield(item))
+        return round(you.get_shield_skill_to_offset_penalty(item) * 10);
+    else if (item.base_type == OBJ_MISSILES && throw_dam)
+        return (((10 + throw_dam / 2) - FASTEST_PLAYER_THROWING_SPEED) * 2) * 10;
+    else
+        return 0;
+}
+
+/**
+ * Does an item improve with training some skill?
+ *
+ * @return the skill, or SK_NONE if there is none. Note: SK_NONE is *not* 0.
+ */
+static skill_type _item_training_skill(const item_def &item)
+{
+    const int throw_dam = property(item, PWPN_DAMAGE);
+    if (item.base_type == OBJ_WEAPONS || item.base_type == OBJ_STAVES)
+        return item_attack_skill(item);
+    else if (is_shield(item))
+        return SK_SHIELDS; // shields are armour, so do shields before armour
+    else if (item.base_type == OBJ_ARMOUR)
+        return SK_ARMOUR;
+    else if (item.base_type == OBJ_MISSILES && throw_dam)
+        return SK_THROWING;
+    else if (item_is_evokable(item)) // not very accurate
+        return SK_EVOCATIONS;
+    else
+        return SK_NONE;
+}
+
+static bool _could_set_training_target(const item_def &item, bool ignore_current)
+{
+    if (!crawl_state.need_save || is_useless_item(item))
+        return false;
+
+    if (you.species == SP_GNOLL || you.species == SP_KOBOLD)
+        return false;
+	
+    const skill_type skill = _item_training_skill(item);
+    if (skill == SK_NONE)
+        return false;
+
+    const int target = _item_training_target(item);
+
+    return target && you.can_train[skill]
+       && you.skill(skill, 10) < target
+       && (ignore_current || you.get_training_target(skill) < target);
+}
+
+static string _skill_target_desc(skill_type skill, double target, int training)
+{
+    string description = "";
+
+    if (you.species == SP_GNOLL || you.species == SP_KOBOLD)
+        return description;
+	
+    const bool max_training = (training == 100);
+    const bool hypothetical = !crawl_state.need_save || (training != (int) you.training[skill]);
+    double min_target = min(target, 27.0);
+
+    const skill_diff diffs = skill_level_to_diffs(skill, min_target, training, false);
+    const int level_diff = xp_to_level_diff(diffs.experience, 10);
+
+    if (max_training)
+        description += "At 100% training ";
+    else if (!hypothetical)
+    {
+        description += make_stringf("At current training (%d%%) ",
+                                        you.training[skill]);
+    }
+    else
+        description += make_stringf("At a training level of %d%% ", training);
+
+    description += make_stringf(
+        "you %s reach %.1f in %s %d.%d XLs.",
+            hypothetical ? "would" : "will",
+            min_target,
+            (you.experience_level + (level_diff + 9) / 10) > 27
+                                ? "the equivalent of" : "about",
+            level_diff / 10, level_diff % 10);
+    if (you.wizard)
+    {
+        description += make_stringf("\n    (%d xp, %d skp)",
+                                    diffs.experience, diffs.skill_points);
+    }
+    return description;
+}
+
+static void _append_skill_target_desc(string &description, skill_type skill, double target)
+{
+    description += "\n    " + _skill_target_desc(skill, target, 100);
+    if (you.training[skill] > 0 && you.training[skill] < 100)
+    {
+        description += "\n    " + _skill_target_desc(skill, target,
+                                                    you.training[skill]);
+    }
+}
+
 static void _append_weapon_stats(string &description, const item_def &item)
 {
     const int base_dam = property(item, PWPN_DAMAGE);
     const int ammo_type = fires_ammo_type(item);
     const int ammo_dam = ammo_type == MI_NONE ? 0 :
                                                 ammo_type_damage(ammo_type);
-    const skill_type skill = item_attack_skill(item);
+    const skill_type skill = _item_training_skill(item);
+    const int mindelay_skill = _item_training_target(item);
 
-    const string your_skill = crawl_state.need_save ?
-      make_stringf("\n (Your skill: %.1f)", (float) you.skill(skill, 10) / 10)
-      : "";
+    const bool could_set_target = _could_set_training_target(item, true);
+
     description += make_stringf(
     "\nBase accuracy: %+d  Base damage: %d  Base attack delay: %.1f"
-    "\nThis weapon's minimum attack delay (%.1f) is reached at skill level %d."
-    "%s",
-     property(item, PWPN_HIT),
-     base_dam + ammo_dam,
-     (float) property(item, PWPN_SPEED) / 10,
-     (float) weapon_min_delay(item) / 10,
-     weapon_min_delay_skill(item),
-     your_skill.c_str());
+    "\nThis weapon's minimum attack delay (%.1f) is reached at skill level %d.",
+        property(item, PWPN_HIT),
+        base_dam + ammo_dam,
+        (float) property(item, PWPN_SPEED) / 10,
+        (float) weapon_min_delay(item) / 10,
+        min(mindelay_skill / 10,27));
+
+    string target_command_desc = "";
+    if (could_set_target &&
+                you.get_training_target(skill) < mindelay_skill)
+    {
+        target_command_desc = make_stringf(
+            "; press <white>(s)</white> to set %d.%d as a training target.",
+                                    min(mindelay_skill / 10,27), mindelay_skill > 270 ? 0 : mindelay_skill % 10);
+    }
+
+    if (crawl_state.need_save && !is_useless_item(item))
+    {
+        description += make_stringf(
+            "\n    Your skill: %.1f%s", (float) you.skill(skill, 10) / 10,
+                                            target_command_desc.c_str());
+    }
+
+    if (could_set_target)
+        _append_skill_target_desc(description, skill, min(mindelay_skill / 10,27));
 }
 
 static string _handedness_string(const item_def &item)
@@ -928,13 +1057,13 @@ static string _describe_weapon(const item_def &item, bool verbose)
         case SPWPN_FLAMING:
             if (is_range_weapon(item))
             {
-                description += "It causes projectiles fired from it to burn "
-                    "those they strike,";
+                description += "It causes projectiles fired from it to explode "
+                    "in flames when hitting a target,";
             }
             else
             {
-                description += "It has been specially enchanted to burn "
-                    "those struck by it,";
+                description += "It has been specially enchanted to produce "
+                    "a fiery explosion on hit,";
             }
             description += " causing extra injury to most foes and up to half "
                            "again as much damage against particularly "
@@ -1002,6 +1131,9 @@ static string _describe_weapon(const item_def &item, bool verbose)
             break;
         case SPWPN_SPEED:
             description += "Attacks with this weapon are significantly faster.";
+            break;
+        case SPWPN_DEVASTATION:
+            description += "Attacks with this weapon are slower, but deal significantly more damage.";
             break;
         case SPWPN_VORPAL:
             if (is_range_weapon(item))
@@ -1249,9 +1381,22 @@ static string _describe_ammo(const item_def &item)
     if (dam)
     {
         const int throw_delay = (10 + dam / 2);
-        const string your_skill = crawl_state.need_save ?
-                make_stringf("\n (Your skill: %.1f)",
-                    (float) you.skill(SK_THROWING, 10) / 10)
+        const int target_skill = _item_training_target(item);
+        const bool could_set_target = _could_set_training_target(item, true);
+
+        string target_command_desc = "";
+        if (could_set_target &&
+                    you.get_training_target(SK_THROWING) < target_skill)
+        {
+            target_command_desc = make_stringf(
+                "; press <white>(s)</white> to set %d.0 as a training target.",
+                                        target_skill / 10);
+        }
+
+        const string your_skill = crawl_state.need_save && !is_useless_item(item) ?
+                make_stringf("\n    Your skill: %.1f%s",
+                    (float) you.skill(SK_THROWING, 10) / 10,
+                    target_command_desc.c_str())
                     : "";
 
         description += make_stringf(
@@ -1262,13 +1407,16 @@ static string _describe_ammo(const item_def &item)
             dam,
             (float) throw_delay / 10,
             (float) FASTEST_PLAYER_THROWING_SPEED / 10,
-            (throw_delay - FASTEST_PLAYER_THROWING_SPEED) * 2,
+            target_skill / 10,
             your_skill.c_str()
         );
-    }
 
-	if (!ammo_never_destroyed(item))
-        description += "\nIt will always be destroyed on impact.";
+        if (could_set_target)
+            _append_skill_target_desc(description, SK_THROWING, target_skill / 10);
+    }
+    
+    if (!ammo_never_destroyed(item))
+        description += "\n\nIt will always be destroyed on impact.";
 
     return description;
 }
@@ -1292,22 +1440,36 @@ static string _describe_armour(const item_def &item, bool verbose)
     {
         if (is_shield(item))
         {
-            const float skill = you.get_shield_skill_to_offset_penalty(item);
+            const int skill = _item_training_target(item);
             description += "\n";
             description += "\nBase shield rating: "
                         + to_string(property(item, PARM_AC));
+            const bool could_set_target = _could_set_training_target(item, true);
+
             if (!is_useless_item(item))
             {
                 description += "       Skill to remove penalty: "
-                            + make_stringf("%.1f", skill);
+                            + make_stringf("%d.%d", skill / 10, skill % 10);
+                string target_command_desc = "";
+                if (could_set_target &&
+                        you.get_training_target(SK_SHIELDS) < skill)
+                {
+                    target_command_desc = make_stringf(
+                        "; press <white>(s)</white> to set %d.%d as a training target.",
+                                                skill / 10, skill % 10);
+                }
+
                 if (crawl_state.need_save)
                 {
                     description += "\n                            "
-                                + make_stringf("(Your skill: %.1f)",
-                                               (float) you.skill(SK_SHIELDS, 10) / 10);
+                                + make_stringf("Your skill: %.1f%s",
+                                        (float) you.skill(SK_SHIELDS, 10) / 10,
+                                        target_command_desc.c_str());
                 }
                 else
                     description += "\n";
+                if (could_set_target)
+                    _append_skill_target_desc(description, SK_SHIELDS, skill / 10);
             }
 
             if (is_unrandom_artefact(item, UNRAND_WARLOCK_MIRROR))
@@ -1366,14 +1528,14 @@ static string _describe_armour(const item_def &item, bool verbose)
         case SPARM_POISON_RESISTANCE:
             description += "It protects its wearer from poison.";
             break;
+#if TAG_MAJOR_VERSION == 34
         case SPARM_SEE_INVISIBLE:
             description += "It allows its wearer to see invisible things.";
             break;
         case SPARM_INVISIBILITY:
-            description += "When activated it hides its wearer from "
-                "the sight of others, but also increases "
-                "their metabolic rate by a large amount.";
+            description += "It does nothing special.";
             break;
+#endif
         case SPARM_STRENGTH:
             description += "It increases the physical power of its wearer (+3 to strength).";
             break;
@@ -1399,6 +1561,9 @@ static string _describe_armour(const item_def &item, bool verbose)
             break;
         case SPARM_STEALTH:
             description += "It enhances the stealth of its wearer.";
+            break;
+        case SPARM_MAGICAL_POWER:
+            description += "It increases the magical reserves of its wearer.";
             break;
         case SPARM_RESISTANCE:
             description += "It protects its wearer from the effects "
@@ -1844,31 +2009,11 @@ string get_item_description(const item_def &item, bool verbose,
                 description << "It is small enough that eating it takes "
                                "only one turn.";
         }
-        if (item.base_type == OBJ_CORPSES || item.sub_type == FOOD_CHUNK)
-        {
-            switch (determine_chunk_effect(item))
-            {
-            case CE_MUTAGEN:
-                description << "\n\nEating this meat will cause random "
-                               "mutations.";
-                break;
-            case CE_NOXIOUS:
-                description << "\n\nThis meat is toxic.";
-                break;
-            default:
-                break;
-            }
-        }
         break;
 
     case OBJ_STAVES:
-        {
-            string stats = "\n";
-            _append_weapon_stats(stats, item);
-            description << stats;
-        }
         description << "\n\nIt falls into the 'Staves' category. ";
-        description << _handedness_string(item);
+        description << "\nIt is designed to be worn in place of a shield.";
         break;
 
     case OBJ_MISCELLANY:
@@ -2110,7 +2255,7 @@ static vector<command_type> _allowed_actions(const item_def& item)
     switch (item.base_type)
     {
     case OBJ_WEAPONS:
-    case OBJ_STAVES:
+        // intentional fallthrough
     case OBJ_MISCELLANY:
         if (!item_is_equipped(item))
         {
@@ -2121,9 +2266,14 @@ static vector<command_type> _allowed_actions(const item_def& item)
         }
         break;
     case OBJ_MISSILES:
+        if (_could_set_training_target(item, false))
+            actions.push_back(CMD_SET_SKILL_TARGET);
         actions.push_back(CMD_QUIVER_ITEM);
         break;
     case OBJ_ARMOUR:
+    case OBJ_STAVES:
+        if (_could_set_training_target(item, false))
+            actions.push_back(CMD_SET_SKILL_TARGET);
         if (item_is_equipped(item))
             actions.push_back(CMD_REMOVE_ARMOUR);
         else
@@ -2184,9 +2334,9 @@ static string _actions_desc(const vector<command_type>& actions, const item_def&
         { CMD_DROP, "(d)rop" },
         { CMD_INSCRIBE_ITEM, "(i)nscribe" },
         { CMD_ADJUST_INVENTORY, "(=)adjust" },
+        { CMD_SET_SKILL_TARGET, "(s)kill" },
     };
-    return "You can "
-           + comma_separated_fn(begin(actions), end(actions),
+    return comma_separated_fn(begin(actions), end(actions),
                                 [] (command_type cmd)
                                 {
                                     return act_str.at(cmd);
@@ -2216,6 +2366,7 @@ static command_type _get_action(int key, vector<command_type> actions)
         { CMD_DROP,             'd' },
         { CMD_INSCRIBE_ITEM,    'i' },
         { CMD_ADJUST_INVENTORY, '=' },
+        { CMD_SET_SKILL_TARGET, 's' },
     };
 
     key = tolower(key);
@@ -2261,10 +2412,27 @@ static bool _do_action(item_def &item, const vector<command_type>& actions, int 
     case CMD_DROP:             drop_item(slot, item.quantity);      break;
     case CMD_INSCRIBE_ITEM:    inscribe_item(item);                 break;
     case CMD_ADJUST_INVENTORY: adjust_item(slot);                   break;
+    case CMD_SET_SKILL_TARGET: target_item(item);                   break;
     default:
         die("illegal inventory cmd %d", action);
     }
     return false;
+}
+
+void target_item(item_def &item)
+{
+    const skill_type skill = _item_training_skill(item);
+    if (skill == SK_NONE)
+        return;
+
+    const int target = _item_training_target(item);
+    if (target == 0)
+        return;
+
+    you.set_training_target(skill, target, true);
+    you.train[skill] = TRAINING_ENABLED;
+    you.train_alt[skill] = TRAINING_ENABLED;
+    reset_training();
 }
 
 /**
@@ -2423,7 +2591,7 @@ string get_skill_description(skill_type skill, bool need_title)
     switch (skill)
     {
         case SK_INVOCATIONS:
-            if (you.species == SP_DEMIGOD)
+            if (you.species == SP_DEMIGOD || you.species == SP_TITAN)
             {
                 result += "\n";
                 result += "How on earth did you manage to pick this up?";
@@ -2742,6 +2910,8 @@ static const char* _get_resist_name(mon_resist_flags res_type)
         return "negative energy";
     case MR_RES_DAMNATION:
         return "damnation";
+    case MR_RES_TORNADO:
+        return "tornadoes";
     default:
         return "buggy resistance";
     }
@@ -3046,6 +3216,12 @@ static void _describe_monster_hp(const monster_info& mi, ostringstream &result)
 	 result << "Max HP: " << mi.get_max_hp_desc() << "\n";
 }
 
+static void _describe_monster_hd(const monster_info mi, ostringstream &result)
+{
+	std::string s = std::to_string(mi.hd);
+    result << "Hit Dice: " + s + "\n";
+}
+
 /**
  * Append information about a given monster's AC to the provided stream.
  *
@@ -3112,6 +3288,7 @@ static string _monster_stat_description(const monster_info& mi)
 {
     ostringstream result;
 
+    _describe_monster_hd(mi, result);
     _describe_monster_hp(mi, result);
     _describe_monster_ac(mi, result);
     _describe_monster_ev(mi, result);
@@ -3126,6 +3303,7 @@ static string _monster_stat_description(const monster_info& mi)
         MR_RES_ELEC,    MR_RES_POISON, MR_RES_FIRE,
         MR_RES_STEAM,   MR_RES_COLD,   MR_RES_ACID,
         MR_RES_ROTTING, MR_RES_NEG,    MR_RES_DAMNATION,
+        MR_RES_TORNADO,
     };
 
     vector<string> extreme_resists;
@@ -3140,7 +3318,7 @@ static string _monster_stat_description(const monster_info& mi)
         if (level != 0)
         {
             const char* attackname = _get_resist_name(rflags);
-            if (rflags == MR_RES_DAMNATION)
+            if (rflags == MR_RES_DAMNATION || rflags == MR_RES_TORNADO)
                 level = 3; // one level is immunity
             level = max(level, -1);
             level = min(level,  3);

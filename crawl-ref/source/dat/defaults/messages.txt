@@ -29,6 +29,8 @@ msc += $danger:You feel a build-up of mutagenic energy
 msc += $danger:place you under penance
 msc += $danger:acid corrodes
 msc += $danger:rotting away
+msc += $danger:need to descend
+msc += $danger:need to move on
 
 # Less urgent, but still significant messages
 #
@@ -57,6 +59,7 @@ msc += $warning:crackle.*arcane power
 msc += $warning:crackle.*magical portal
 msc += $warning:distant wind
 msc += $warning:whistling.*wind
+msc += $warning:elven voice
 msc += $warning:distant elf
 msc += $warning:chatter.*elf
 msc += $warning:rapidly growing quiet
@@ -106,6 +109,11 @@ force_more_message += You cannot cast spells when silenced
 force_more_message += You don't have the energy to cast that spell
 force_more_message += This is a scroll of acquirement
 force_more_message += You will only be able to enter Pandemonium once
+force_more_message += lava roasts you
+force_more_message += need to descend quickly
+force_more_message += need to move on quickly
+force_more_message += dungeon lashes out
+force_more_message += You feel yourself begin to rot away
 
 ## Reduce chance of drowning because flight or form runs out:
 force_more_message += Careful!
@@ -121,7 +129,6 @@ force_more_message += oppressive heat about you
 force_more_message += crackle of arcane power
 force_more_message += distant wind
 force_more_message += elven voice
-force_more_message += lava roasts you
 
 # Religion
 force_more_message += press .* to convert to Beogh

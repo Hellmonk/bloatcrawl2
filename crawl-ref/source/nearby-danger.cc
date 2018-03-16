@@ -60,10 +60,7 @@ static bool _mons_has_path_to_player(const monster* mon, bool want_move = false)
     // (even though the player cannot know this) treat it as unsafe.
     if (mon->travel_target == MTRAV_FOE)
         return true;
-
-    if (mon->travel_target == MTRAV_KNOWN_UNREACHABLE)
-        return false;
-
+	
     // Try to find a path from monster to player, using the map as it's
     // known to the player and assuming unknown terrain to be traversable.
     monster_pathfind mp;
@@ -72,11 +69,14 @@ static bool _mons_has_path_to_player(const monster* mon, bool want_move = false)
     // direct path to you "safe" just because it would be too stupid to
     // track you that far out-of-sight. Use a factor of 2 for smarter
     // creatures as a safety margin.
-    if (range > 0)
+    if (range >= 0)
         mp.set_range(max(LOS_RADIUS, range * 2));
 
     if (mp.init_pathfind(mon, you.pos(), true, false, true))
         return true;
+	
+    if (mon->travel_target == MTRAV_KNOWN_UNREACHABLE)
+        return false;
 
     // Now we know the monster cannot possibly reach the player.
     mon->travel_target = MTRAV_KNOWN_UNREACHABLE;
@@ -178,7 +178,7 @@ vector<monster* > get_nearby_monsters(bool want_move,
     ASSERT(!crawl_state.game_is_arena());
 
     if (range == -1)
-        range = LOS_RADIUS;
+        range = you.current_vision;
 
     vector<monster* > mons;
 
@@ -241,15 +241,7 @@ bool i_feel_safe(bool announce, bool want_move, bool just_monsters,
         if (is_sanctuary(you.pos()) && env.sanctuary_time >= 5)
             return true;
 
-        if (poison_is_lethal())
-        {
-            if (announce)
-                mprf(MSGCH_WARN, "There is a lethal amount of poison in your body!");
-
-            return false;
-        }
-		
-		//don't rest in lava
+        //don't rest in lava
         if(env.grid(you.pos()) == DNGN_LAVA && !you.airborne())
         {
             if (announce)

@@ -26,8 +26,6 @@
     #endif
 #endif
 
-typedef uint32_t ucs_t;
-
 // max size of inventory array {dlb}:
 #define ENDOFPACK 52
 
@@ -165,6 +163,8 @@ const int MAX_KNOWN_SPELLS = 21;
 const int INVALID_ABSDEPTH = -1000;
 
 const int UNUSABLE_SKILL = -99;
+
+const int WU_JIAN_HEAVEN_TICK_TIME = 10;
 
 //#define DEBUG_MIMIC
 #ifdef DEBUG_MIMIC

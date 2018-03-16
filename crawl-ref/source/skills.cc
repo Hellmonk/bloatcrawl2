@@ -20,6 +20,7 @@
 #include "exercise.h"
 #include "godabil.h"
 #include "godconduct.h"
+#include "godpassive.h"
 #include "hints.h"
 #include "itemprop.h"
 #include "libutil.h"
@@ -72,7 +73,7 @@ static const char *skill_titles[NUM_SKILLS][6] =
     {"Polearms",       "Poker",         "Spear-Bearer",    "Impaler",         "Phalangite",     "@Adj@ Porcupine"},
     {"Staves",         "Twirler",       "Cruncher",        "Stickfighter",    "Pulveriser",     "Chief of Staff"},
     {"Slings",         "Vandal",        "Slinger",         "Whirler",         "Slingshot",      "@Adj@ Catapult"},
-    {"Bows",           "Shooter",       "Archer",          "Marks@genus@",    "Crack Shot",     "Merry @Genus@"},
+    {"Bows & Xbows",   "Shooter",       "Archer",          "Marks@genus@",    "Crack Shot",     "Merry @Genus@"},
     {"Crossbows",      "Bolt Thrower",  "Quickloader",     "Sharpshooter",    "Sniper",         "@Adj@ Arbalest"},
     {"Throwing",       "Chucker",       "Thrower",         "Deadly Accurate", "Hawkeye",        "@Adj@ Ballista"},
     {"Armour",         "Covered",       "Protected",       "Tortoise",        "Impregnable",    "Invulnerable"},
@@ -94,7 +95,7 @@ static const char *skill_titles[NUM_SKILLS][6] =
     {"Charms",         "Charmwright",   "Infuser",         "Anointer",        "Gracecrafter",   "Miracle Worker"},
     {"Summonings",     "Caller",        "Summoner",        "Convoker",        "Demonologist",   "Hellbinder"},
     {"Necromancy",     "Grave Robber",  "Reanimator",      "Necromancer",     "Thanatomancer",  "@Genus_Short@ of Death"},
-    {"Translocations", "Grasshopper",   "Placeless @Genus@", "Blinker",       "Portalist",      "Plane @Walker@"},
+    {"Translocations", "Grasshopper",   "Placeless @Genus@", "Blinker",       "Portalist",      "PoG Champ"},
     {"Transmutations", "Changer",       "Transmogrifier",  "Alchemist",       "Malleable",      "Shapeless @Genus@"},
 
     {"Fire Magic",     "Firebug",       "Arsonist",        "Scorcher",        "Pyromancer",     "Infernalist"},
@@ -351,17 +352,17 @@ void redraw_skill(skill_type exsk, skill_type old_best_skill)
         auto_id_inventory();
 }
 
-void check_skill_level_change(skill_type sk, bool do_level_up)
+int calc_skill_level_change(skill_type sk, int starting_level, int sk_points)
 {
-    int new_level = you.skills[sk];
+    int new_level = starting_level;
     while (1)
     {
         if (new_level < MAX_SKILL_LEVEL
-            && you.skill_points[sk] >= skill_exp_needed(new_level + 1, sk))
+            && sk_points >= (int) skill_exp_needed(new_level + 1, sk))
         {
             ++new_level;
         }
-        else if (you.skill_points[sk] < skill_exp_needed(new_level, sk))
+        else if (sk_points < (int) skill_exp_needed(new_level, sk))
         {
             new_level--;
             ASSERT(new_level >= 0);
@@ -369,6 +370,12 @@ void check_skill_level_change(skill_type sk, bool do_level_up)
         else
             break;
     }
+    return new_level;
+}
+
+void check_skill_level_change(skill_type sk, bool do_level_up)
+{
+    const int new_level = calc_skill_level_change(sk, you.skills[sk], you.skill_points[sk]);
 
     if (new_level != you.skills[sk])
     {
@@ -609,7 +616,7 @@ bool check_selected_skills()
     // or level 27, so we don't assert.
 }
 
-/*
+/**
  * Reset the training array. Disabled skills are skipped.
  * In automatic mode, we use values from the exercise queue.
  * In manual mode, all enabled skills are set to the same value.
@@ -718,6 +725,11 @@ bool is_magic_skill(skill_type sk)
 void train_skills(bool simu)
 {
     int cost, exp;
+    if (you.species == SP_GNOLL || you.species == SP_KOBOLD)
+    {
+       you.exp_available = 0; // need this to avoid skill allocation prompt on loading saves...
+       return;
+    }
     do
     {
         cost = calc_skill_cost(you.skill_cost_level);
@@ -761,9 +773,14 @@ static void _train_skills(int exp, const int cost, const bool simu)
          you.skill_cost_level, cost, exp);
 #endif
 
+    // pre-check training targets -- may disable some skills.
+    if (!simu)
+        check_training_targets();
+
     // We scale the training array to the amount of XP available in the pool.
     // That gives us the amount of XP available to train each skill.
     for (int i = 0; i < NUM_SKILLS; ++i)
+    {
         if (you.training[i] > 0)
         {
             sk_exp[i] = you.training[i] * exp / 100;
@@ -777,6 +794,7 @@ static void _train_skills(int exp, const int cost, const bool simu)
             }
             training_order.push_back(static_cast<skill_type>(i));
         }
+    }
 
     if (!skip_first_phase)
     {
@@ -837,6 +855,10 @@ static void _train_skills(int exp, const int cost, const bool simu)
 #endif
     }
 
+    // clean up any cross-training effects
+    if (!simu)
+        check_training_targets();
+
 #ifdef DEBUG_DIAGNOSTICS
     if (!crawl_state.script)
     {
@@ -876,18 +898,94 @@ bool skill_trained(int i)
     return you.can_train[i] && you.train[i];
 }
 
+static int _calc_skill_cost_level(int xp, int start)
+{
+    while (start < MAX_SKILL_COST_LEVEL
+           && xp >= (int) skill_cost_needed(start + 1))
+    {
+        ++start;
+    }
+    while (start > 0
+           && xp < (int) skill_cost_needed(start))
+    {
+        --start;
+    }
+    return start;
+}
+
 void check_skill_cost_change()
 {
-    while (you.skill_cost_level < MAX_SKILL_COST_LEVEL
-           && you.total_experience >= skill_cost_needed(you.skill_cost_level + 1))
+#ifdef DEBUG_TRAINING_COST
+    int initial_cost = you.skill_cost_level;
+#endif
+
+    you.skill_cost_level = _calc_skill_cost_level(you.total_experience, you.skill_cost_level);
+
+#ifdef DEBUG_TRAINING_COST
+    if (initial_cost != you.skill_cost_level)
+        dprf("Adjusting skill cost level to %d", you.skill_cost_level);
+#endif
+}
+
+/**
+ * Is the training target, if any, met or exceeded for skill sk?
+ *
+ * @param sk the skill to check.
+ * @param real if true, check the base skill level, otherwise incorporate other
+ *             factors (crosstraining, etc). Does not factor in draining.
+ *
+ * @return whether the skill target has been met.
+ *
+ * @see player::skill for the effect of `real`.
+ */
+bool target_met(skill_type sk, bool real)
+{
+    return you.skill(sk, 10, real) >= (int) you.training_targets[sk];
+}
+
+/**
+ * Check the training target (if any) for skill sk, and change state
+ * appropriately. If the target has been met or exceeded, this will turn off
+ * targeting for that skill, and stop training it. This does *not* reset the
+ * training percentages, though, so if it's used mid-training, you need to take
+ * care of that.
+ *
+ * @param sk the skill to check.
+ * @return whether a target was reached.
+ */
+bool check_training_target(skill_type sk)
+{
+    if (you.training_targets[sk] && target_met(sk, false))
     {
-        ++you.skill_cost_level;
+        mprf("%sraining target %d.%d for %s reached!",
+            you.attribute[ATTR_XP_DRAIN] ? "Base t" : "T",
+            you.training_targets[sk] / 10,
+            you.training_targets[sk] % 10, skill_name(sk));
+
+        you.training_targets[sk] = 0;
+        you.train[sk] = TRAINING_DISABLED;
+        you.train_alt[sk] = TRAINING_DISABLED;
+        return true;
     }
-    while (you.skill_cost_level > 0
-           && you.total_experience < skill_cost_needed(you.skill_cost_level))
-    {
-        --you.skill_cost_level;
-    }
+    return false;
+}
+
+/**
+ * Check the training target (if any) for all skills, and change state
+ * appropriately.
+ *
+ * @return whether any target was reached.
+ *
+ * @see check_training_target
+ */
+bool check_training_targets()
+{
+    bool change = false;
+    for (skill_type sk = SK_FIRST_SKILL; sk < NUM_SKILLS; ++sk)
+        change |= check_training_target(sk);
+    if (change)
+        reset_training();
+    return change;
 }
 
 void change_skill_points(skill_type sk, int points, bool do_level_up)
@@ -941,7 +1039,12 @@ static int _train(skill_type exsk, int &max_exp, bool simu)
     max_exp -= cost;
 
     if (!simu)
+    {
+        // TODO should check_training_targets be called here, to halt training
+        // and clean up cross-training immediately?
+        check_training_target(exsk);
         redraw_skill(exsk, old_best_skill);
+    }
 
     check_skill_cost_change();
     ASSERT(you.exp_available >= 0);
@@ -951,14 +1054,32 @@ static int _train(skill_type exsk, int &max_exp, bool simu)
     return skill_inc;
 }
 
-void set_skill_level(skill_type skill, double amount)
+/**
+ * Calculate the difference in skill points and xp for new skill level `amount`.
+ *
+ * If `base_only` is false, this will produce an estimate only. Otherwise, it is
+ * exact. This function is used in both estimating skill targets, and in
+ * actually changing skills. It will work both for cases where the new skill
+ * level is greater, and where it is less, than the current level.
+ *
+ * @param skill the skill to calculate for.
+ * @param amount the new skill level for `skill`.
+ * @param scaled_training how to scale the training values (for estimating what
+ *          happens when other skills are being trained).
+ * @param base_only whether to calculate on actual unmodified skill levels, or
+ *          use various bonuses that apply on top of these (crosstraining, ash,
+ *          manuals).
+ *
+ * @return a pair consisting of the difference in skill points, and the
+ *          difference in xp.
+ */
+skill_diff skill_level_to_diffs(skill_type skill, double amount,
+                            int scaled_training,
+                            bool base_only)
 {
+    // TODO: should this use skill_state?
     double level;
     double fractional = modf(amount, &level);
-
-    you.ct_skill_points[skill] = 0;
-    you.skills[skill] = level;
-
     if (level >= MAX_SKILL_LEVEL)
     {
         level = MAX_SKILL_LEVEL;
@@ -972,53 +1093,115 @@ void set_skill_level(skill_type skill, double amount)
                   - skill_exp_needed(level, skill)) * fractional + 1;
     }
 
-    if (target == you.skill_points[skill])
-        return;
-
-    // We're updating you.skill_points[skill] and calculating the new
+    // We're calculating you.skill_points[skill] and calculating the new
     // you.total_experience to update skill cost.
 
-    const bool reduced = target < you.skill_points[skill];
+    unsigned int you_skill = you.skill_points[skill];
+
+    if (!base_only)
+    {
+        // Factor in crosstraining bonus at the time of the query.
+        // This will not address the case where some cross-training skills are
+        // also being trained.
+        you_skill += get_crosstrain_points(skill);
+
+        // Estimate the ash bonus, based on current skill levels and piety.
+        // This isn't perfectly accurate, because the boost changes as
+        // skill increases. TODO: exact solution.
+        // It also assumes that piety won't change.
+        you_skill += ash_skill_point_boost(skill, you.skills[skill] * 10);
+
+        if (skill_has_manual(skill))
+            target = you_skill + (target - you_skill) / 2;
+    }
+
+    if (target == you_skill)
+        return skill_diff();
+
+    // Do we need to increase or decrease skill points/xp?
+    // XXX: reducing with ash bonuses in play could lead to weird results.
+    const bool decrease_skill = target < you_skill;
+
+    int you_xp = you.total_experience;
+    int you_skill_cost_level = you.skill_cost_level;
 
 #ifdef DEBUG_TRAINING_COST
-    dprf(DIAG_SKILLS, "target: %d.", target);
+    dprf(DIAG_SKILLS, "target skill points: %d.", target);
 #endif
-    while (you.skill_points[skill] != target)
+    while (you_skill != target)
     {
-        int next_level = reduced ? skill_cost_needed(you.skill_cost_level)
-                                 : skill_cost_needed(you.skill_cost_level + 1);
-        int max_xp = abs(next_level - (int)you.total_experience);
+        // each loop is the max skill points that can be gained at the
+        // current skill cost level, up to `target`.
+
+        // If we are decreasing, find the xp needed to get to the current skill
+        // cost level. Otherwise, find the xp needed to get to the next one.
+        const int next_level = skill_cost_needed(you_skill_cost_level +
+                                                    (decrease_skill ? 0 : 1));
+
+        // max xp that can be added (or subtracted) in one pass of the loop
+        int max_xp = abs(next_level - you_xp);
 
         // When reducing, we don't want to stop right at the limit, unless
         // we're at skill cost level 0.
-        if (reduced && you.skill_cost_level)
+        if (decrease_skill && you_skill_cost_level)
             ++max_xp;
 
-        int cost = calc_skill_cost(you.skill_cost_level);
+        const int cost = calc_skill_cost(you_skill_cost_level);
         // Maximum number of skill points to transfer in one go.
         // It's max_xp*10/cost rounded up.
-        int max_skp = (max_xp * 10 + cost - 1) / cost;
-        max_skp = max(max_skp, 1);
-        int delta_skp = min<int>(abs((int)(target - you.skill_points[skill])),
-                                 max_skp);
-        int delta_xp = (delta_skp * cost + 9) / 10;
+        const int max_skp = max((max_xp * 10 + cost - 1) / cost, 1);
 
-        if (reduced)
+        skill_diff delta;
+        delta.skill_points = min<int>(abs((int)(target - you_skill)),
+                                 max_skp);
+        delta.experience = (delta.skill_points * cost + 9) / 10;
+
+        if (decrease_skill)
         {
-            delta_skp = -min<int>(delta_skp, you.skill_points[skill]);
-            delta_xp = -min<int>(delta_xp, you.total_experience);
+            // We are decreasing skill points / xp to reach the target. Ensure
+            // that the delta is negative but won't result in negative skp or xp
+            delta.skill_points = -min<int>(delta.skill_points, you_skill);
+            delta.experience = -min<int>(delta.experience, you_xp);
         }
 
 #ifdef DEBUG_TRAINING_COST
         dprf(DIAG_SKILLS, "cost level: %d, total experience: %d, "
              "next level: %d, skill points: %d, delta_skp: %d, delta_xp: %d.",
-             you.skill_cost_level, you.total_experience, next_level,
-             you.skill_points[skill], delta_skp, delta_xp);
+             you_skill_cost_level, you_xp, next_level,
+             you_skill, delta.skill_points, delta.experience);
 #endif
-        you.skill_points[skill] += delta_skp;
-        you.total_experience += delta_xp;
-        check_skill_cost_change();
+        you_skill += (delta.skill_points * scaled_training
+                                        + (decrease_skill ? -99 : 99)) / 100;
+        you_xp += delta.experience;
+        you_skill_cost_level = _calc_skill_cost_level(you_xp, you_skill_cost_level);
     }
+
+    return skill_diff(you_skill - you.skill_points[skill],
+                                you_xp - you.total_experience);
+}
+
+void set_skill_level(skill_type skill, double amount)
+{
+    double level;
+    modf(amount, &level);
+
+    you.ct_skill_points[skill] = 0;
+
+    skill_diff diffs = skill_level_to_diffs(skill, amount);
+
+    you.skills[skill] = level;
+    you.skill_points[skill] += diffs.skill_points;
+    you.total_experience += diffs.experience;
+#ifdef DEBUG_TRAINING_COST
+    dprf("Change (total): %d skp (%d), %d xp (%d)",
+        diffs.skill_points, you.skill_points[skill],
+        diffs.experience, you.total_experience);
+#endif
+
+    check_skill_cost_change();
+
+    // need to check them all, to handle crosstraining.
+    check_training_targets();
 }
 
 int get_skill_progress(skill_type sk, int level, int points, int scale)
@@ -1050,18 +1233,95 @@ int get_skill_percentage(const skill_type x)
     return get_skill_progress(x, 100);
 }
 
+/**
+ * Get the training target for a skill.
+ *
+ * @param sk the skill to set
+ * @return the current target, scaled by 10 -- so between 0 and 270.
+ *         0 means no target.
+ */
+int player::get_training_target(const skill_type sk) const
+{
+    ASSERT_RANGE(training_targets[sk], 0, 271);
+    return training_targets[sk];
+}
+
+/**
+ * Set the training target for a skill.
+ *
+ * @param sk the skill to set
+ * @param target the new target, between 0.0 and 27.0.  0.0 means no target.
+ */
+bool player::set_training_target(const skill_type sk, const double target, bool announce)
+{
+    dprf("Setting target for %s to %d", skill_name(sk), (int) round(target * 10));
+    return set_training_target(sk, (int) round(target * 10), announce);
+}
+
+/**
+ * Set the training target for a skill, scaled by 10.
+ *
+ * @param sk the skill to set
+ * @param target the new target, scaled by ten, so between 0 and 270.  0 means
+ *               no target.
+ */
+bool player::set_training_target(const skill_type sk, const int target, bool announce)
+{
+    const int ranged_target = min(max((int) target, 0), 270);
+    if (announce && ranged_target != (int) training_targets[sk])
+    {
+        if (ranged_target == 0)
+            mprf("Clearing the skill training target for %s.", skill_name(sk));
+        else
+        {
+            mprf("Setting a skill training target for %s at %d.%d.", skill_name(sk),
+                                    ranged_target / 10, ranged_target % 10);
+        }
+    }
+    training_targets[sk] = ranged_target;
+    return true;
+}
+
+void player::clear_training_targets()
+{
+    for (skill_type sk = SK_FIRST_SKILL; sk < NUM_SKILLS; ++sk)
+        set_training_target(sk, 0);
+}
+
 const char *skill_name(skill_type which_skill)
 {
     return skill_titles[which_skill][0];
 }
 
+/**
+ * Get a skill_type from an (exact, case-insensitive) skill name.
+ *
+ * @return a valid skill_type, or SK_NONE on failure.
+ *
+ * @see skill_from_name for a non-exact version.
+ */
 skill_type str_to_skill(const string &skill)
 {
     for (skill_type sk = SK_FIRST_SKILL; sk < NUM_SKILLS; ++sk)
         if (lowercase_string(skill) == lowercase_string(skill_titles[sk][0]))
             return sk;
 
-    return SK_FIGHTING;
+    return SK_NONE;
+}
+
+/**
+ * Get a skill_type from a skill name.
+ *
+ * @return a valid skill_type, or SK_FIGHTING on failure.
+ */
+skill_type str_to_skill_safe(const string &skill)
+{
+    // legacy behavior -- ensure that a valid skill is returned.
+    skill_type sk = str_to_skill(skill);
+    if (sk == SK_NONE)
+        return SK_FIGHTING;
+    else
+        return sk;
 }
 
 static string _stk_weight(species_type species)
@@ -1423,6 +1683,18 @@ vector<skill_type> get_crosstrain_skills(skill_type sk)
 }
 
 /**
+ * Calculate the current crosstraining bonus for skill `sk`, in skill points.
+ */
+int get_crosstrain_points(skill_type sk)
+{
+    int points = 0;
+    for (skill_type cross : get_crosstrain_skills(sk))
+        points += you.skill_points[cross] * 2 / 5;
+    return points;
+
+}
+
+/**
  * Is the provided skill one of the elemental spellschools?
  *
  * @param sk    The skill in question.
@@ -1631,6 +1903,7 @@ void skill_state::save()
     train              = you.train;
     training           = you.training;
     skill_points       = you.skill_points;
+    training_targets   = you.training_targets;
     ct_skill_points    = you.ct_skill_points;
     skill_cost_level   = you.skill_cost_level;
     skill_order        = you.skill_order;
@@ -1660,8 +1933,10 @@ void skill_state::restore_levels()
 void skill_state::restore_training()
 {
     for (skill_type sk = SK_FIRST_SKILL; sk < NUM_SKILLS; ++sk)
+    {
         if (you.skills[sk] < MAX_SKILL_LEVEL)
             you.train[sk] = train[sk];
+    }
 
     you.can_train                   = can_train;
     you.auto_training               = auto_training;
@@ -1683,6 +1958,8 @@ void fixup_skills()
 
     if (you.exp_available >= calc_skill_cost(you.skill_cost_level))
         skill_menu(SKMF_EXPERIENCE);
+
+    check_training_targets();
 }
 
 skill_type best_magic_skill()

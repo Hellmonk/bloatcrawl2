@@ -184,7 +184,7 @@ static const species_type species_order[] =
     // small species
     SP_KOBOLD,		   SP_SPRIGGAN,
     // large species
-    SP_OGRE,           SP_TROLL,
+    SP_TROLL,
     // significantly different body type from human ("monstrous")
     SP_NAGA,           
     SP_MERFOLK,        SP_MINOTAUR,
@@ -193,12 +193,13 @@ static const species_type species_order[] =
     // mostly human shape but made of a strange substance
     SP_VINE_STALKER,
     // celestial species
-    SP_DEMIGOD,        SP_DEMONSPAWN,
+    SP_TITAN,        SP_DEMONSPAWN,
     // undead species
     SP_MUMMY,          SP_GHOUL,
-    SP_VAMPIRE,
+    SP_VAMPIRE,        SP_SKELETON,
     // not humanoid at all
     SP_OCTOPODE,
+    SP_GNOLL,
 };
 COMPILE_CHECK(ARRAYSZ(species_order) <= NUM_SPECIES);
 
@@ -596,6 +597,7 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
     {
         case DIFFICULTY_CASUAL:
         case DIFFICULTY_NORMAL:
+        case DIFFICULTY_SPEEDRUN:
             ng.difficulty = choice.difficulty;
             break;
         default:
@@ -979,9 +981,9 @@ static species_group species_groups[] =
             SP_KOBOLD,
             SP_DEMONSPAWN,
             SP_SPRIGGAN,
-            SP_OGRE,
             SP_VINE_STALKER,
             SP_FORMICID,
+	        SP_GNOLL,
         }
     },
     {
@@ -990,12 +992,13 @@ static species_group species_groups[] =
         20,
         {
             SP_VAMPIRE,
-            SP_DEMIGOD,
+            SP_TITAN,
             SP_NAGA,
             SP_TENGU,
             SP_OCTOPODE,
             SP_DEEP_ELF,
             SP_MUMMY,
+            SP_SKELETON,
         }
     },
 };
@@ -1078,7 +1081,7 @@ static job_group jobs_order[] =
     {
         "Warrior",
         coord_def(0, 0), 15,
-        { JOB_FIGHTER, JOB_GLADIATOR, JOB_MONK, JOB_HUNTER, JOB_ASSASSIN }
+        { JOB_FIGHTER, JOB_GLADIATOR, JOB_MONK, JOB_HUNTER }
     },
     {
         "Adventurer",
@@ -1088,7 +1091,7 @@ static job_group jobs_order[] =
     {
         "Zealot",
         coord_def(15, 0), 20,
-        { JOB_BERSERKER, JOB_ABYSSAL_KNIGHT, JOB_CHAOS_KNIGHT }
+        { JOB_BERSERKER, JOB_TORPOR_KNIGHT, JOB_CHAOS_KNIGHT }
     },
     {
         "Warrior-mage",
@@ -1678,10 +1681,10 @@ static vector<weapon_choice> _get_weapons(const newgame_def& ng)
     vector<weapon_choice> weapons;
     if (job_gets_ranged_weapons(ng.job))
     {
-        weapon_type startwep[3] = { WPN_THROWN,
-                                    WPN_SHORTBOW, WPN_HAND_CROSSBOW };
+        weapon_type startwep[2] = { WPN_THROWN,
+                                    WPN_SHORTBOW };
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 2; i++)
         {
             weapon_choice wp;
             wp.first = startwep[i];
@@ -1802,7 +1805,7 @@ static bool _choose_difficulty(newgame_def& ng, newgame_def& ng_choice,
     TextItem* tmp = nullptr;
 	string text;
 
-	for (int difficulty = 0; difficulty < 2; difficulty ++)
+	for (int difficulty = 0; difficulty < 3; difficulty ++)
     {
         coord_def min_coord(0,0);
 	    coord_def max_coord(0,0);
@@ -1814,18 +1817,24 @@ static bool _choose_difficulty(newgame_def& ng, newgame_def& ng_choice,
 
 		switch(difficulty)
 		{
-		case 0:
+        case 0:
 			tmp->set_fg_colour(WHITE);
 			tmp->add_hotkey('n');
 			tmp->set_id(DIFFICULTY_NORMAL);
 			text += "n - Normal";
 			freeform->set_active_item(tmp);
 			break;
-		case 1:
+        case 1:
 			tmp->set_fg_colour(GREEN);
 			tmp->add_hotkey('c');
 			tmp->set_id(DIFFICULTY_CASUAL);
 			text += "c - Casual";
+			break;
+        case 2:
+			tmp->set_fg_colour(RED);
+			tmp->add_hotkey('s');
+			tmp->set_id(DIFFICULTY_SPEEDRUN);
+			text += "s - Speedrun";
 			break;
 		}
 

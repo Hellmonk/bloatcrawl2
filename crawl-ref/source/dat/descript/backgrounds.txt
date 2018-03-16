@@ -1,9 +1,4 @@
 %%%%
-Abyssal Knight
-
-Abyssal Knights worship Lugonu, and are sent from the Abyss into the Dungeon to
-spread corruption and chaos.
-%%%%
 Air Elementalist
 
 Air Elementalists have learned the Magic Dart spell. Later on, their book of Air
@@ -46,7 +41,7 @@ and are equipped with an enchanted dagger.
 Fighter
 
 Fighters are equipped with armour and shield, as well as a weapon of their
-choice and a potion of might.
+choice and a potion of augmentation.
 %%%%
 Fire Elementalist
 
@@ -56,7 +51,7 @@ spell. The other spells in their book focus on destruction as well.
 Gladiator
 
 Gladiators are ready for the arena with light armour and a weapon of
-their choice.
+their choice, plus a few darts to handle dangerous targets.
 %%%%
 Hunter
 
@@ -87,6 +82,11 @@ Summoner
 
 Summoners start with the book of Callings and are able to cast Summon Small
 Mammal from the start.
+%%%%
+Torpor Knight
+
+Torpor Knights are sturdy followers of Cheibriados who begin with a weapon
+of their choice and ponderous armour in addition to their god's favour.
 %%%%
 Transmuter
 

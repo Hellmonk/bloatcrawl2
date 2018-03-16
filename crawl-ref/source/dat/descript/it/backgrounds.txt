@@ -1,9 +1,4 @@
 %%%%
-Abyssal Knight
-
-I cavalieri dell'abisso adorano la divinità Lugonu e sono inviati dall'abisso
-al dungeon per diffondere caos e corruzione.
-%%%%
 Air Elementalist
 
 Gli elementalisti dell'aria hanno imparato l'incantesimo Shock. Più avanti il

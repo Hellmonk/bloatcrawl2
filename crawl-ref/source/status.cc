@@ -17,9 +17,10 @@
 #include "player-stats.h"
 #include "random.h" // for midpoint_msg.offset() in duration-data
 #include "religion.h"
-#include "spl-summoning.h" // NEXT_DOOM_HOUND_KEY in duration-data
+#include "spl-summoning.h"
 #include "spl-transloc.h"
 #include "spl-wpnench.h" // for _end_weapon_brand() in duration-data
+#include "state.h"
 #include "stringutil.h"
 #include "throw.h"
 #include "transform.h"
@@ -164,7 +165,6 @@ static void _describe_sickness(status_info* inf);
 static void _describe_speed(status_info* inf);
 static void _describe_poison(status_info* inf);
 static void _describe_transform(status_info* inf);
-static void _describe_stat_zero(status_info* inf, stat_type st);
 static void _describe_terrain(status_info* inf);
 static void _describe_missiles(status_info* inf);
 static void _describe_invisible(status_info* inf);
@@ -388,16 +388,6 @@ bool fill_status_info(int status, status_info* inf)
         _describe_transform(inf);
         break;
 
-    case STATUS_STR_ZERO:
-        _describe_stat_zero(inf, STAT_STR);
-        break;
-    case STATUS_INT_ZERO:
-        _describe_stat_zero(inf, STAT_INT);
-        break;
-    case STATUS_DEX_ZERO:
-        _describe_stat_zero(inf, STAT_DEX);
-        break;
-
 #if TAG_MAJOR_VERSION == 34
     case STATUS_FIREBALL:
         if (you.attribute[ATTR_DELAYED_FIREBALL])
@@ -411,7 +401,7 @@ bool fill_status_info(int status, status_info* inf)
 #endif
 
     case STATUS_BONE_ARMOUR:
-        if (you.attribute[ATTR_BONE_ARMOUR] > 0)
+        if (you.attribute[ATTR_BONE_ARMOUR] > 0 || you.attribute[ATTR_SKELETON_ARMOUR] > 0)
         {
             inf->short_text = "corpse armour";
             inf->long_text = "You are enveloped in carrion and bones.";
@@ -451,11 +441,44 @@ bool fill_status_info(int status, status_info* inf)
         }
         break;
 		
+	case STATUS_SERPENTS_LASH:
+        if (you.attribute[ATTR_SERPENTS_LASH] > 0)
+        {
+            inf->light_colour = WHITE;
+            inf->light_text
+               = make_stringf("Lash (%u)",
+                              you.attribute[ATTR_SERPENTS_LASH]);
+            inf->short_text = "serpent's lash";
+            inf->long_text = "You are moving at supernatural speed.";
+        }
+        break;
+
+    case STATUS_HEAVENLY_STORM:
+        if (you.attribute[ATTR_HEAVENLY_STORM] > 0)
+        {
+            inf->light_colour = WHITE;
+            inf->light_text
+               = make_stringf("Storm (%u)",
+                              you.attribute[ATTR_HEAVENLY_STORM]);
+            inf->short_text = "heavenly storm";
+            inf->long_text = "Heavenly clouds are increasing your damage and "
+                             "accuracy.";
+        }
+        break;
+		
     case STATUS_DEATH_CHANNEL:
         if(you.attribute[ATTR_DEATH_CHANNEL])
         {
             inf->light_colour = LIGHTMAGENTA;
             inf->light_text = "DChan";
+        }
+        break;
+		
+    case STATUS_ANIMATE_DEAD:
+        if(you.attribute[ATTR_ANIMATE_DEAD])
+        {
+            inf->light_colour = LIGHTMAGENTA;
+            inf->light_text = "Reap";
         }
         break;
 
@@ -482,6 +505,16 @@ bool fill_status_info(int status, status_info* inf)
         {
             inf->light_colour = LIGHTMAGENTA;
             inf->light_text = "Abj";
+		}
+        break;
+		
+    case STATUS_OZO_ARMOUR:
+        if(you.attribute[ATTR_OZO_ARMOUR])
+        {
+            inf->light_colour = LIGHTBLUE;
+            inf->light_text = "";
+            inf->short_text   = "icy armour";
+            inf->long_text    = "You are protected by icy armour.";
 		}
         break;
 
@@ -715,6 +748,72 @@ bool fill_status_info(int status, status_info* inf)
         }
         break;
     }
+	
+    case STATUS_INFESTATION:
+    {
+        if(you.attribute[ATTR_INFESTATION])
+        {
+            inf->light_text = "Infest";
+            inf->light_colour = WHITE;
+        }
+        break;
+    }
+	
+    case STATUS_BATTLESPHERE:
+    {
+        if(you.attribute[ATTR_BATTLESPHERE])
+        {
+            inf->light_text = "Bsphere";
+            monster* battlesphere = find_battlesphere(&you);
+            if (battlesphere)
+                inf->light_colour = DARKGREY;
+            else
+                inf->light_colour = WHITE;
+        }
+        break;
+    }
+	
+	case STATUS_SERVITOR:
+    {
+        if(you.attribute[ATTR_SERVITOR])
+        {
+            inf->light_text = "Servitor";
+            monster* servitor = find_servitor(&you);
+            if (servitor)
+                inf->light_colour = DARKGREY;
+            else
+                inf->light_colour = WHITE;
+        }
+        break;
+    }
+	
+    case STATUS_SPECTRAL_WEAPON:
+    {
+        if(you.attribute[ATTR_SPECTRAL_WEAPON])
+        {
+            const item_def* weapon = you.weapon();
+            inf->light_text = "Weap";
+            if (!weapon_can_be_spectral(weapon))
+            {
+			    inf->short_text   = "unsuitable spectral weapon";
+                inf->long_text    = "can't summon spectral weapon";
+                inf->light_colour = DARKGREY;
+            }
+            else if (you.duration[DUR_SPECTRAL_WEAPON_COOLDOWN])
+            {
+                inf->short_text   = "spectral weapon cooldown";
+                inf->long_text    = "spectral weapon on cooldown";
+                inf->light_colour = DARKGREY;
+            }
+            else
+            {
+                inf->short_text   = "spectral weapon";
+                inf->long_text    = "ready to summon spectral weapon";
+                inf->light_colour = WHITE;
+            }
+        }
+        break;
+	}
 
     case STATUS_ORB:
     {
@@ -725,6 +824,25 @@ bool fill_status_info(int status, status_info* inf)
         }
 
         break;
+    }
+	
+    case STATUS_DOOM:
+    {
+	    if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN)
+        {
+            inf->light_colour = LIGHTRED;
+            inf->light_text = make_stringf("DOOM(%d)", env.turns_on_level < 500 ? 500 - env.turns_on_level : 0);
+            inf->short_text   = "Turns until doom";
+            inf->long_text    = "Turns remaining until you rot away";
+        }
+        else if (crawl_state.difficulty == DIFFICULTY_NORMAL && env.turns_on_level >= 2500
+            && !player_in_branch(BRANCH_ABYSS))
+        {
+            inf->light_colour = LIGHTRED;
+            inf->light_text = make_stringf("DOOM(%d)", env.turns_on_level < 3000 ? 3000 - env.turns_on_level : 0);
+            inf->short_text   = "Turns until doom";
+            inf->long_text    = "Turns until hostile summons spawn";		
+        }
     }
 
     case STATUS_STILL_WINDS:
@@ -803,19 +921,24 @@ static void _describe_glow(status_info* inf)
         return;
 
     const unsigned int cont = signed_cont; // so we don't get compiler warnings
-    inf->light_colour = DARKGREY;
-    if (cont > 1)
-        inf->light_colour = _bad_ench_colour(cont, 3, 4);
+    if (player_severe_contamination())
+        inf->light_colour = _bad_ench_colour(cont, SEVERE_CONTAM_LEVEL + 1,
+                                                   SEVERE_CONTAM_LEVEL + 2);
+    else if (cont > 1)
+        inf->light_colour = LIGHTGREY;
+    else
+        inf->light_colour = DARKGREY;
 #if TAG_MAJOR_VERSION == 34
     if (cont > 1 || you.species != SP_DJINNI)
 #endif
-    inf->light_text = "Contam";
+    inf->light_text = make_stringf("Contam (%d)", you.magic_contamination);
 
     /// Mappings from contamination levels to descriptions.
     static const string contam_adjectives[] =
     {
         "",
         "very slightly ",
+        "slightly",
         "",
         "heavily ",
         "very heavily ",
@@ -903,7 +1026,7 @@ static void _describe_poison(status_info* inf)
 
 static void _describe_speed(status_info* inf)
 {
-    bool slow = you.duration[DUR_SLOW] || have_stat_zero();
+    bool slow = you.duration[DUR_SLOW];
     bool fast = you.duration[DUR_HASTE] || you.attribute[ATTR_PERMAHASTE];
 
     if (slow && fast)
@@ -992,21 +1115,6 @@ static void _describe_transform(status_info* inf)
 
     inf->light_colour = _dur_colour(GREEN, expire);
     _mark_expiring(inf, expire);
-}
-
-static const char* s0_names[NUM_STATS] = { "Collapse", "Brainless", "Clumsy", };
-
-static void _describe_stat_zero(status_info* inf, stat_type st)
-{
-    if (you.duration[stat_zero_duration(st)])
-    {
-        inf->light_colour = you.stat(st) ? LIGHTRED : RED;
-        inf->light_text   = s0_names[st];
-        inf->short_text   = make_stringf("lost %s", stat_desc(st, SD_NAME));
-        inf->long_text    = make_stringf(you.stat(st) ?
-                "You are recovering from loss of %s." : "You have no %s!",
-                stat_desc(st, SD_NAME));
-    }
 }
 
 static void _describe_terrain(status_info* inf)

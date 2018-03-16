@@ -468,10 +468,6 @@ ring of intelligence
 この指輪は装着者の知力を増加させるか、あるいは減退させる。
 効果がどちらであるかは指輪の数値に依存している。
 %%%%
-ring of magical power
-
-この指輪は装着者に追加の魔力をもたらす。
-%%%%
 ring of poison resistance
 
 この指輪は毒からの保護をもたらす。
@@ -691,8 +687,4 @@ wand of magic darts
 wand of polymorph
 
 対象を別の形態に変化させる魔法の道具だ。特に不定形の生物に対して有効だ。
-%%%%
-wand of slowing
-
-これは狙った対象に動きが遅くなる魔法をかける魔法の道具だ。
 %%%%

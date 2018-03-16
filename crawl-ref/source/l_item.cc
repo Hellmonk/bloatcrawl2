@@ -597,7 +597,7 @@ IDEF(is_bad_food)
     if (!item || !item->defined())
         return 0;
 
-    lua_pushboolean(ls, is_bad_food(*item));
+    lua_pushboolean(ls, false);
 
     return 1;
 }

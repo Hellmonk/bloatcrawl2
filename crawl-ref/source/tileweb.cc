@@ -727,12 +727,16 @@ void TilesFramework::_send_player(bool force_full)
     uint8_t prank = 0;
     if (!you_worship(GOD_NO_GOD))
         prank = max(0, piety_rank());
-    else if (you.char_class == JOB_MONK && you.species != SP_DEMIGOD
+    else if (you.char_class == JOB_MONK && you.species != SP_DEMIGOD && you.species !=SP_TITAN
              && !had_gods())
     {
         prank = 2;
     }
     _update_int(force_full, c.piety_rank, prank, "piety_rank");
+    int piety = -1;
+    if (!you_worship(GOD_NO_GOD) && !you_worship(GOD_GOZAG))
+        piety = you.piety;
+    _update_int(force_full, c.piety, piety, "piety");
 
     _update_int(force_full, c.form, (uint8_t) you.form, "form");
 
@@ -1134,7 +1138,7 @@ void TilesFramework::_send_cell(const coord_def &gc,
         json_write_int("mf", mf);
 
     // Glyph and colour
-    ucs_t glyph = next_sc.glyph;
+    char32_t glyph = next_sc.glyph;
     if (current_sc.glyph != glyph)
     {
         char buf[5];
@@ -1909,7 +1913,7 @@ void TilesFramework::textbackground(int col)
     m_print_bg = col;
 }
 
-void TilesFramework::put_ucs_string(ucs_t *str)
+void TilesFramework::put_ucs_string(char32_t *str)
 {
     if (m_print_area == nullptr)
         return;

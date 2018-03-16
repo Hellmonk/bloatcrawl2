@@ -74,8 +74,8 @@ static FixedVector < int, NUM_MONSTERS > mon_entry;
 
 struct mon_display
 {
-    ucs_t        glyph;
-    colour_t     colour;
+    char32_t glyph;
+    colour_t colour;
 
     mon_display(unsigned gly = 0, unsigned col = 0)
        : glyph(gly), colour(col) { }
@@ -1012,7 +1012,7 @@ bool mons_is_plant(const monster& mon)
 
 bool mons_eats_items(const monster& mon)
 {
-    return mons_is_slime(mon) && have_passive(passive_t::jelly_eating);
+    return false;
 }
 
 bool invalid_monster(const monster* mon)
@@ -1525,7 +1525,7 @@ bool mons_can_be_dazzled(monster_type mc)
         && mons_can_be_blinded(mc);
 }
 
-ucs_t mons_char(monster_type mc)
+char32_t mons_char(monster_type mc)
 {
     if (Options.mon_glyph_overrides.count(mc)
         && Options.mon_glyph_overrides[mc].ch)
@@ -2136,9 +2136,9 @@ bool mons_flattens_trees(const monster& mon)
     return mons_base_type(mon) == MONS_LERNAEAN_HYDRA;
 }
 
-bool mons_class_res_wind(monster_type mc)
+bool mons_class_res_tornado(monster_type mc)
 {
-    return get_resist(get_mons_class_resists(mc), MR_RES_WIND);
+    return get_resist(get_mons_class_resists(mc), MR_RES_TORNADO);
 }
 
 /**

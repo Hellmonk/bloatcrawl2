@@ -108,12 +108,12 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Kikubaaqudgha
-    { { 1, ABIL_KIKU_RECEIVE_CORPSES, "receive cadavers from Kikubaaqudgha" },
+    { { 1, ABIL_KIKU_MIASMA, "imbue your attacks with miasma"},
       { 2, "Kikubaaqudgha is protecting you from necromantic miscasts and death curses.",
            "Kikubaaqudgha no longer protects you from necromantic miscasts or death curses." },
       { 4, "Kikubaaqudgha is protecting you from unholy torment.",
            "Kikubaaqudgha will no longer protect you from unholy torment." },
-      { 5, ABIL_KIKU_TORMENT, "invoke torment by sacrificing a corpse" },
+      { 5, ABIL_KIKU_TORMENT, "invoke torment" },
       { 7, ABIL_KIKU_BLESS_WEAPON,
            "Kikubaaqudgha will grant you a Necronomicon or bloody your weapon with pain... once.",
            "Kikubaaqudgha is no longer ready to enhance your necromancy." },
@@ -123,12 +123,11 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Yredelemnul
-    { { 1, ABIL_YRED_ANIMATE_REMAINS, "animate remains" },
-      { 2, ABIL_YRED_RECALL_UNDEAD_SLAVES, "recall your undead slaves" },
-      { 2, ABIL_YRED_INJURY_MIRROR, "mirror injuries on your foes" },
-      { 3, ABIL_YRED_ANIMATE_DEAD, "animate legions of the dead" },
-      { 4, ABIL_YRED_DRAIN_LIFE, "drain ambient life force" },
-      { 5, ABIL_YRED_ENSLAVE_SOUL, "enslave living souls" },
+    { { 0, ABIL_YRED_RECALL_UNDEAD_SLAVES, "recall your enslaved soul" },
+      { 1, ABIL_YRED_INJURY_MIRROR, "mirror injuries on your foes" },
+	  { 2, ABIL_YRED_ENSLAVE_SOUL, "enslave living souls" },
+      { 4, ABIL_YRED_TRANSFERENCE, "swap creatures with your enslaved soul" },
+      { 5, ABIL_YRED_DRAIN_LIFE, "drain ambient life force" },
     },
 
     // Xom
@@ -142,7 +141,8 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Okawaru
-    { { 1, ABIL_OKAWARU_HEROISM, "gain great but temporary skills" },
+    { { 2, "Okawaru improves your combat prowess.", 
+		   "Okawaru no longer improves your combat prowess."},
       { 5, ABIL_OKAWARU_FINESSE, "speed up your combat" },
     },
 
@@ -178,17 +178,15 @@ const vector<god_power> god_powers[NUM_GODS] =
     // Nemelex
     { { 3, ABIL_NEMELEX_TRIPLE_DRAW, "choose one out of three cards" },
       { 4, ABIL_NEMELEX_DEAL_FOUR, "deal four cards at a time" },
-      { 5, ABIL_NEMELEX_STACK_FIVE, "order the top five cards of a deck",
-                                    "stack decks" },
     },
 
     // Elyvilon
-    { { 1, ABIL_ELYVILON_LESSER_HEALING, "provide lesser healing for yourself" },
-      { 2, ABIL_ELYVILON_HEAL_OTHER, "heal and attempt to pacify others" },
-      { 3, ABIL_ELYVILON_PURIFICATION, "purify yourself" },
-      { 4, ABIL_ELYVILON_GREATER_HEALING, "provide greater healing for yourself" },
-      { 5, ABIL_ELYVILON_DIVINE_VIGOUR, "call upon Elyvilon for divine vigour" },
-      { 1, ABIL_ELYVILON_LIFESAVING, "call on Elyvilon to save your life" },
+    { { 2, ABIL_ELYVILON_HEAL_OTHER, "heal and attempt to pacify others" },
+      { 2, "Elyvilon will sometimes protect you from status effects.",
+           "Elyvilon no longer protects you from status effects."},
+      { 3, "Elyvilon provides you with divine vigour.",
+           "Elyvilon no longer provides you with divine vigour"},
+      { 4, ABIL_ELYVILON_GREATER_HEALING, "provide healing for yourself" },
     },
 
     // Lugonu
@@ -211,9 +209,7 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Jiyva
-    { { 1, ABIL_JIYVA_CALL_JELLY, "request a jelly" },
-      { 2, ABIL_JIYVA_JELLY_PARALYSE, "temporarily halt your jellies' item consumption" },
-      { 4, ABIL_JIYVA_SLIMIFY, "turn your foes to slime" },
+    { { 3, ABIL_JIYVA_SLIMIFY, "turn your foes to slime" },
       { 5, ABIL_JIYVA_CURE_BAD_MUTATION, "call upon Jiyva to remove your harmful mutations" },
     },
 
@@ -317,6 +313,20 @@ const vector<god_power> god_powers[NUM_GODS] =
       { 4, ABIL_HEPLIAKLQANA_IDEALISE, "heal and protect your ancestor" },
       { 5, "drain nearby creatures when transferring your ancestor"},
     },
+	
+    // Wu Jian
+    { { 0, "perform damaging attacks by moving towards foes",
+           "perform lunging strikes" },
+      { 1, "lightly attack and pin monsters in place by moving around them",
+           "perform spinning attacks" },
+      { 1, "The Council enhances your melee damage and reduces your AC.",
+           "The Council no longer enhances your melee damage or reduces your AC." },
+      { 2, ABIL_WU_JIAN_WALLJUMP, "perform airborne attacks" },
+      { 3, ABIL_WU_JIAN_SERPENTS_LASH, "briefly move at supernatural speeds",
+           "move at supernatural speeds" },
+      { 5, ABIL_WU_JIAN_HEAVENLY_STORM, "summon a storm of heavenly clouds to empower your attacks",
+      "summon a storm of heavenly clouds" },
+    },
 };
 
 vector<god_power> get_god_powers(god_type god)
@@ -397,7 +407,7 @@ bool is_unavailable_god(god_type god)
 
     // Disabled, pending a rework.
     if (god == GOD_PAKELLAS || god == GOD_FEDHAS || god == GOD_ASHENZARI
-		|| god == GOD_BEOGH)
+		|| god == GOD_BEOGH || god == GOD_HEPLIAKLQANA)
         return true;
 
     return false;
@@ -716,7 +726,7 @@ static void _inc_penance(god_type god, int val)
         // Neither does Ely's divine vigour.
         else if (god == GOD_ELYVILON)
         {
-            if (you.duration[DUR_DIVINE_VIGOUR])
+            if (you.attribute[ATTR_DIVINE_VIGOUR])
                 elyvilon_remove_divine_vigour();
         }
         else if (god == GOD_JIYVA)
@@ -945,7 +955,7 @@ static bool _give_nemelex_gift(bool forced = false)
             simple_god_message(" grants you a gift!");
             if(move_item_to_inv(deck))
             {
-				_inc_gift_timeout(5 + random2avg(9, 2));
+				_inc_gift_timeout(5 + random2avg(6, 2));
 				you.num_current_gifts[you.religion]++;
 				you.num_total_gifts[you.religion]++;
 				take_note(Note(NOTE_GOD_GIFT, you.religion));
@@ -996,7 +1006,6 @@ static int _pakellas_low_wand()
 {
     static const vector<int> low_wands = {
         WAND_FLAME,
-        WAND_SLOWING,
         WAND_CONFUSION,
         WAND_POLYMORPH,
     };
@@ -1197,16 +1206,6 @@ static bool _is_plant_follower(const monster* mon)
            && mon->attitude == ATT_FRIENDLY;
 }
 
-static bool _has_jelly()
-{
-    ASSERT(you_worship(GOD_JIYVA));
-
-    for (monster_iterator mi; mi; ++mi)
-        if (mons_is_god_gift(**mi, GOD_JIYVA))
-            return true;
-    return false;
-}
-
 bool is_follower(const monster& mon)
 {
     if (you_worship(GOD_YREDELEMNUL))
@@ -1219,32 +1218,6 @@ bool is_follower(const monster& mon)
         return _is_plant_follower(&mon);
     else
         return mon.alive() && mon.friendly();
-}
-
-
-static void _delayed_gift_callback(const mgen_data &mg, monster *&mon,
-                                   int placed)
-{
-    if (placed <= 0)
-        return;
-    ASSERT(mon);
-
-    // Make sure monsters are shown.
-    viewwindow();
-    more();
-    _inc_gift_timeout(4 + random2avg(7, 2));
-    you.num_current_gifts[you.religion]++;
-    you.num_total_gifts[you.religion]++;
-    string gift;
-    if (placed == 1)
-        gift = mon->name(DESC_A);
-    else
-    {
-        gift = make_stringf("%d %s", placed,
-                            pluralise(mon->name(DESC_PLAIN)).c_str());
-    }
-
-    take_note(Note(NOTE_GOD_GIFT, you.religion, 0, gift));
 }
 
 static bool _jiyva_mutate()
@@ -1322,6 +1295,27 @@ mgen_data hepliaklqana_ancestor_gen_data()
     mg.mname = hepliaklqana_ally_name();
     mg.props[MON_GENDER_KEY]
         = you.props[HEPLIAKLQANA_ALLY_GENDER_KEY].get_int();
+    return mg;
+}
+
+/**
+ * Creates a mgen_data with the information needed to create an enslaved soul
+ * for Yred worshippers.
+ *
+ * XXX: should this be populating a mgen_data passed by reference, rather than
+ * returning one on the stack?
+ *
+ * @return    The mgen_data.
+ */
+mgen_data yred_enslaved_soul_data()
+{
+    const monster_type type = you.props.exists(YRED_ENSLAVED_SOUL_KEY) ?
+        (monster_type)you.props[YRED_ENSLAVED_SOUL_KEY].get_int() :
+        MONS_LOST_SOUL; // note: this shouldn't happen
+    mgen_data mg(type, BEH_FRIENDLY, you.pos(), MHITYOU, MG_AUTOFOE);
+    mg.set_summoned(&you, 0, 0, GOD_YREDELEMNUL);
+    mg.extra_flags |= MF_NO_REWARD;
+    mg.extra_flags |= MF_HARD_RESET;
     return mg;
 }
 
@@ -1793,28 +1787,6 @@ bool do_god_gift(bool forced)
             break;
         }
 
-        case GOD_YREDELEMNUL:
-            if (!you.get_mutation_level(MUT_NO_LOVE)
-                && (forced
-                    || (random2(you.piety) >= piety_breakpoint(2)
-                        && one_chance_in(4))))
-            {
-                unsigned int threshold = MIN_YRED_SERVANT_THRESHOLD
-                                         + you.num_current_gifts[you.religion] / 2;
-                threshold = max(threshold,
-                    static_cast<unsigned int>(MIN_YRED_SERVANT_THRESHOLD));
-                threshold = min(threshold,
-                    static_cast<unsigned int>(MAX_YRED_SERVANT_THRESHOLD));
-
-                if (yred_random_servants(threshold) != -1)
-                {
-                    delayed_monster_done(" grants you @servant@!",
-                                         _delayed_gift_callback);
-                    success = true;
-                }
-            }
-            break;
-
         case GOD_JIYVA:
             if (forced || you.piety >= piety_breakpoint(2)
                           && random2(you.piety) > 50
@@ -2038,8 +2010,9 @@ string god_name(god_type which_god, bool long_name)
     case GOD_QAZLAL:        return "Qazlal";
     case GOD_RU:            return "Ru";
     case GOD_PAKELLAS:      return "Pakellas";
-    case GOD_USKAYAW:        return "Uskayaw";
+    case GOD_USKAYAW:       return "Uskayaw";
     case GOD_HEPLIAKLQANA:  return "Hepliaklqana";
+    case GOD_WU_JIAN:       return "Wu Jian";
     case GOD_JIYVA: // This is handled at the beginning of the function
     case GOD_ECUMENICAL:    return "an unknown god";
     case NUM_GODS:          return "Buggy";
@@ -2054,6 +2027,21 @@ string god_name_jiyva(bool second_name)
         name += " " + you.jiyva_second_name;
 
     return name;
+}
+
+string wu_jian_random_sifu_name()
+{
+    switch (random2(7))
+    {
+        case 0: return "Deng Ai";
+        case 1: return "Jiang Wei";
+        case 2: return "Zhang Bao";
+        case 3: return "Ma Yunglu";
+        case 4: return "Sun Luban";
+        case 5: return "Gene Jian Bin";
+        case 6: return "Cai Fang";
+        default: return "Bug";
+    }
 }
 
 god_type str_to_god(const string &_name, bool exact)
@@ -2401,6 +2389,12 @@ bool gain_piety(int original_gain, int denominator, bool should_scale_piety)
         }
         you.piety_max[you.religion] = you.piety;
     }
+    //redraw the title
+    you.redraw_title = true;
+    //redraw AC if have WJC passive
+    if(have_passive(passive_t::wu_jian_glass_cannon))
+        you.redraw_armour_class = true;
+
     return true;
 }
 
@@ -2435,16 +2429,15 @@ void lose_piety(int pgn)
     else
         you.piety -= pgn;
 
+	// Redraw piety display
+    you.redraw_title = true;
+	
     // Don't bother printing out these messages if you're under
     // penance, you wouldn't notice since all these abilities
     // are withheld.
     if (!player_under_penance()
         && piety_rank(old_piety) > piety_rank())
     {
-        // Redraw piety display and, in case the best skill is Invocations,
-        // redraw the god title.
-        you.redraw_title = true;
-
         const int old_rank = piety_rank(old_piety);
 
         for (const auto& power : get_god_powers(you.religion))
@@ -2502,6 +2495,10 @@ void lose_piety(int pgn)
         // Piety change affects halo / umbra radius.
         invalidate_agrid(true);
     }
+	
+    //redraw AC if worshipping WJC (might have lost passive)
+    if(you_worship(GOD_WU_JIAN))
+        you.redraw_armour_class = true;
 }
 
 // Fedhas worshipers are on the hook for most plants and fungi
@@ -2747,7 +2744,7 @@ void excommunication(bool voluntary, god_type new_god)
 
     case GOD_ELYVILON:
         you.duration[DUR_LIFESAVING] = 0;
-        if (you.duration[DUR_DIVINE_VIGOUR])
+        if (you.attribute[ATTR_DIVINE_VIGOUR])
             elyvilon_remove_divine_vigour();
 
         // Leaving Elyvilon for a non-good god will make neutral holies
@@ -2872,6 +2869,12 @@ void excommunication(bool voluntary, god_type new_god)
         you.exp_docked_total[old_god] = you.exp_docked[old_god];
         _set_penance(old_god, 50);
         break;
+		
+    case GOD_WU_JIAN:
+        you.attribute[ATTR_SERPENTS_LASH] = 0;
+        you.attribute[ATTR_HEAVENLY_STORM] = 0;
+        _set_penance(old_god, 25);
+        break;
 
     default:
         _set_penance(old_god, 25);
@@ -2941,7 +2944,6 @@ bool god_hates_attacking_friend(god_type god, const monster& fr)
         case GOD_ZIN:
         case GOD_SHINING_ONE:
         case GOD_ELYVILON:
-        case GOD_OKAWARU:
             return true;
         case GOD_BEOGH: // added penance to avoid killings for loot
             return mons_genus(species) == MONS_ORC;
@@ -2988,13 +2990,16 @@ int gozag_service_fee()
 
 bool player_can_join_god(god_type which_god)
 {
-    if (you.species == SP_DEMIGOD)
+    if (you.species == SP_DEMIGOD || you.species == SP_TITAN)
+        return false;
+	
+    if (which_god == GOD_TROG && you.mp_frozen > 0)
         return false;
 
     if (is_good_god(which_god) && you.undead_or_demonic())
         return false;
 
-    if (which_god == GOD_BEOGH && !species_is_orcish(you.species))
+    if (is_unavailable_god(which_god))
         return false;
 
     // Fedhas hates undead, but will accept demonspawn.
@@ -3385,20 +3390,6 @@ static void _join_hepliaklqana()
                                     mg.mname.c_str()).c_str());
 }
 
-/// Setup when joining the gelatinous groupies of Jiyva.
-static void _join_jiyva()
-{
-    // Complimentary jelly upon joining.
-    if (_has_jelly())
-        return;
-
-    mgen_data mg(MONS_JELLY, BEH_STRICT_NEUTRAL, you.pos());
-    mg.set_summoned(&you, 0, 0, GOD_JIYVA);
-
-    delayed_monster(mg);
-    simple_god_message(" grants you a jelly!");
-}
-
 /// Setup when joining the sacred cult of Ru.
 static void _join_ru()
 {
@@ -3476,7 +3467,6 @@ static const map<god_type, function<void ()>> on_join = {
                 mi->del_ench(ENCH_AWAKEN_FOREST);
     }},
     { GOD_GOZAG, _join_gozag },
-    { GOD_JIYVA, _join_jiyva },
     { GOD_HEPLIAKLQANA, _join_hepliaklqana },
     { GOD_LUGONU, []() {
         if (you.worshipped[GOD_LUGONU] == 0)
@@ -3492,7 +3482,7 @@ void join_religion(god_type which_god)
 {
     ASSERT(which_god != GOD_NO_GOD);
     ASSERT(which_god != GOD_ECUMENICAL);
-    ASSERT(you.species != SP_DEMIGOD);
+    ASSERT(you.species != SP_DEMIGOD && you.species != SP_TITAN);
 
     redraw_screen();
 
@@ -3616,6 +3606,9 @@ void god_pitch(god_type which_god)
                      " have %d.", fee, you.gold);
             }
         }
+        else if (which_god == GOD_TROG && you.mp_frozen > 0)
+            simple_god_message(" demands that you end your permanent spells first!",
+                               which_god);
         else if (you.get_mutation_level(MUT_NO_LOVE)
                  && (which_god == GOD_BEOGH
                      || which_god == GOD_JIYVA
@@ -3883,30 +3876,25 @@ int elyvilon_lifesaving()
     if (you.piety < piety_breakpoint(0))
         return 0;
 
-    return you.piety > 130 ? 2 : 1;
+    return 1;
 }
 
 bool god_protects_from_harm()
 {
-    if (you.duration[DUR_LIFESAVING])
-    {
-        switch (elyvilon_lifesaving())
-        {
-        case 1:
-            if (random2(you.piety) >= piety_breakpoint(0))
-                return true;
-            break;
-        case 2:
-            // Reliable lifesaving is costly.
-            lose_piety(21 + random2(20));
-            return true;
-        }
-    }
-
     if (have_passive(passive_t::protect_from_harm)
         && (one_chance_in(10) || x_chance_in_y(you.piety, 1000)))
     {
         return true;
+    }
+	
+    if (you_worship(GOD_ELYVILON))
+    {
+        if(elyvilon_lifesaving() > 0 && x_chance_in_y(you.piety, 150))
+        {
+            //extra ely chance to save your life costs piety
+            lose_piety(10 + random2(you.piety / 2));
+            return true;
+        }
     }
 
     return false;
@@ -3955,7 +3943,7 @@ void handle_god_time(int /*time_delta*/)
         case GOD_VEHUMET:
         case GOD_ZIN:
         case GOD_PAKELLAS:
-        case GOD_JIYVA:
+        case GOD_WU_JIAN:
             if (one_chance_in(17))
                 lose_piety(1);
             break;
@@ -3969,6 +3957,7 @@ void handle_god_time(int /*time_delta*/)
         case GOD_SIF_MUNA:
         case GOD_SHINING_ONE:
         case GOD_NEMELEX_XOBEH:
+        case GOD_JIYVA:
             if (one_chance_in(35))
                 lose_piety(1);
             break;
@@ -4031,6 +4020,7 @@ int god_colour(god_type god) // mv - added
     case GOD_BEOGH:
     case GOD_LUGONU:
     case GOD_ASHENZARI:
+    case GOD_WU_JIAN:
         return LIGHTRED;
 
     case GOD_GOZAG:
@@ -4127,6 +4117,7 @@ colour_t god_message_altar_colour(god_type god)
         return BLUE;
 
     case GOD_LUGONU:
+    case GOD_WU_JIAN:
         return LIGHTRED;
 
     case GOD_CHEIBRIADOS:
@@ -4485,7 +4476,7 @@ static bool _is_disabled_god(god_type god)
 {
     // Disabled, pending a rework.
     return god == GOD_PAKELLAS || god == GOD_FEDHAS || god == GOD_ASHENZARI
-		|| god == GOD_BEOGH;
+		|| god == GOD_BEOGH || god == GOD_HEPLIAKLQANA;
 }
 
 static bool _is_temple_god(god_type god)
@@ -4498,8 +4489,8 @@ static bool _is_temple_god(god_type god)
     case GOD_NO_GOD:
     case GOD_LUGONU:
     case GOD_BEOGH:
-    case GOD_JIYVA:
-    case GOD_ASHENZARI: // ash is bad, fam. --mps
+    case GOD_ASHENZARI: 
+    case GOD_HEPLIAKLQANA:
         return false;
 
     default:

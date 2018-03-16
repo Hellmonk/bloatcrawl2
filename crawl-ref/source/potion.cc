@@ -75,8 +75,7 @@ public:
     bool can_quaff(string *reason = nullptr) const override
     {
         // cure status effects
-        if (you.duration[DUR_CONF]
-            || you.duration[DUR_POISONING]
+        if (you.duration[DUR_POISONING]
             || you.disease
             || player_rotted())
         {
@@ -145,7 +144,6 @@ public:
             you.redraw_hit_points = true;
         you.duration[DUR_POISONING] = 0;
         you.disease = 0;
-        you.duration[DUR_CONF] = 0;
         return true;
     }
 };
@@ -237,7 +235,6 @@ public:
         if (you.species == SP_VAMPIRE)
         {
             mpr("Yummy - fresh blood!");
-            lessen_hunger(pow, true);
         }
         else
             mpr(_blood_flavour_message());
@@ -319,12 +316,18 @@ public:
     bool effect(bool=true, int pow = 40, bool=true) const override
     {
         const bool were_mighty = you.duration[DUR_MIGHT] > 0;
+        const bool were_brilliant = you.duration[DUR_BRILLIANCE] > 0;
 
         mprf(MSGCH_DURATION, "You feel %s all of a sudden.",
              were_mighty ? "mightier" : "very mighty");
+        mprf(MSGCH_DURATION, "You feel %s all of a sudden.",
+             were_brilliant ? "more clever" : "clever");
         you.increase_duration(DUR_MIGHT, 35 + random2(pow), 80);
+        you.increase_duration(DUR_BRILLIANCE, 35 + random2(pow), 80);
         if (!were_mighty)
             notify_stat_change(STAT_STR, 5, true);
+        if (!were_brilliant)
+            notify_stat_change(STAT_INT, 5, true);
         return true;
     }
 };
@@ -452,6 +455,10 @@ public:
 
     bool effect(bool=true, int=40, bool=true) const override
     {
+        if (you.duration[DUR_POISONING])
+            you.redraw_hit_points = true;
+        you.duration[DUR_POISONING] = 0;
+        you.disease = 0;
         debuff_player();
         mpr("You feel magically purged.");
         return true;
@@ -471,8 +478,8 @@ public:
 
     bool effect(bool=true, int=40, bool=true) const override
     {
-        const int ambrosia_turns = 3 + random2(8);
-        if (confuse_player(ambrosia_turns, false, true))
+        const int ambrosia_turns = 5 + random2(6);
+        if (slow_player(ambrosia_turns * 2 / 3), true)
         {
             print_device_heal_message();
             mprf("You feel%s invigorated.",
@@ -504,7 +511,7 @@ public:
             vector<const char *> afflictions;
             if (you.haloed() && !you.umbraed())
                 afflictions.push_back("halo");
-            if (get_contamination_level() > 1)
+            if (player_severe_contamination())
                 afflictions.push_back("magical contamination");
             if (you.duration[DUR_CORONA])
                 afflictions.push_back("corona");
@@ -874,7 +881,6 @@ public:
         if (you.species == SP_VAMPIRE)
         {
             mpr("This tastes delicious.");
-            lessen_hunger(pow, true);
         }
         else
             mpr(_blood_flavour_message());
@@ -1007,7 +1013,6 @@ public:
         else
         {
             mpr("That potion was really gluggy!");
-            lessen_hunger(6000, true);
         }
         return true;
     }

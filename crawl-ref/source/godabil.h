@@ -92,7 +92,7 @@ bool beogh_gift_item();
 bool beogh_resurrect();
 
 bool yred_injury_mirror();
-void yred_make_enslaved_soul(monster* mon, bool force_hostile = false);
+void yred_make_enslaved_soul(monster* mon, bool force_hostile = false, bool silent = false);
 
 bool kiku_receive_corpses(int pow);
 bool kiku_take_corpse();
@@ -187,5 +187,11 @@ spret_type uskayaw_grand_finale(bool fail);
 bool hepliaklqana_choose_ancestor_type(int ancestor_type);
 spret_type hepliaklqana_idealise(bool fail);
 spret_type hepliaklqana_transference(bool fail);
+spret_type yred_transference(bool fail);
 void hepliaklqana_choose_identity();
+
+bool wu_jian_can_wall_jump_in_principle(const coord_def& target);
+bool wu_jian_can_wall_jump(const coord_def& target, string &error_ret);
+bool wu_jian_do_wall_jump(coord_def targ, bool ability);
+bool wu_jian_wall_jump_ability();
 #endif

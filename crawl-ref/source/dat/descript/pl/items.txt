@@ -467,11 +467,6 @@ ring of intelligence
 Ten pierścień zwiększa lub zmniejsza inteligencję nosiciela, w zależności od
 mocy i kierunku czaru nań rzuconego.
 %%%%
-ring of magical power
-
-Ten pierścień zwiększa dostępną pulę magicznej mocy, a także powoduje jej
-szybszą regenerację.
-%%%%
 ring of poison resistance
 
 Ten pierścień zapewnia znaczną odporność na trucizny i jady.

@@ -10,6 +10,7 @@
 #include <type_traits> // underlying_type<>, enable_if<>
 
 #include "tag-version.h"
+#include "tiledef-player.h"
 
 // Provide a last_exponent static member variable only if the LastExponent
 // template parameter is nonnegative.
@@ -187,6 +188,7 @@ enum game_difficulty_level
 	DIFFICULTY_ASK = -1,
 	DIFFICULTY_CASUAL = 0,
 	DIFFICULTY_NORMAL = 1,
+    DIFFICULTY_SPEEDRUN = 2,
 };
 
 enum lang_t
@@ -312,7 +314,7 @@ enum ability_type
     ABIL_TSO_SUMMON_DIVINE_WARRIOR,
     ABIL_TSO_BLESS_WEAPON,
     // Kiku
-    ABIL_KIKU_RECEIVE_CORPSES = 1020,
+    ABIL_KIKU_MIASMA = 1020,
     ABIL_KIKU_TORMENT,
     ABIL_KIKU_BLESS_WEAPON,
     ABIL_KIKU_GIFT_NECRONOMICON,
@@ -466,6 +468,15 @@ enum ability_type
     ABIL_HEPLIAKLQANA_HEXER_ENGLACIATION,
 #endif
 
+    // Wu Jian
+    ABIL_WU_JIAN_SERPENTS_LASH = 1280,
+    ABIL_WU_JIAN_HEAVENLY_STORM,
+    ABIL_WU_JIAN_LUNGE,
+    ABIL_WU_JIAN_WHIRLWIND,
+    ABIL_WU_JIAN_WALLJUMP,
+    // New Yred ability
+    ABIL_YRED_TRANSFERENCE = 1290,
+
     // For both Yred and Beogh
     ABIL_STOP_RECALL = 1500,
 
@@ -484,6 +495,11 @@ enum ability_type
     ABIL_END_DCHAN,
     ABIL_END_ABJURATION,
     ABIL_END_INFUSION,
+    ABIL_END_ANIMATE_DEAD,
+    ABIL_END_SPECTRAL_WEAPON,
+    ABIL_END_INFESTATION,
+    ABIL_END_BATTLESPHERE,
+    ABIL_END_SERVITOR,
     NUM_ABILITIES
 };
 
@@ -614,6 +630,16 @@ enum attribute_type
     ATTR_FIRE_SHIELD,          // ring of flames
     ATTR_INFUSION,             // infusion
     ATTR_EXCRUCIATING_WOUNDS,  // excruciating wounds
+    ATTR_ANIMATE_DEAD,         // animate dead
+    ATTR_SPECTRAL_WEAPON,      // spectral weapon
+    ATTR_SKELETON_ARMOUR,      // skeleton bone armour
+    ATTR_SERPENTS_LASH,        // Remaining turns in which you can move instantly.
+    ATTR_HEAVENLY_STORM,       // Measures the strength of the Heavenly Storm effect.
+    ATTR_INFESTATION,          // infestation
+    ATTR_BATTLESPHERE,         // battlesphere
+    ATTR_SERVITOR,             // spellforged servitor
+    ATTR_YRED_SOUL_TIMEOUT,    // enslaved soul timeout
+    ATTR_WALL_JUMP_READY,      // Ready to perform a wall jump.
     NUM_ATTRIBUTES
 };
 
@@ -985,6 +1011,7 @@ enum cloud_type
     CLOUD_FLUFFY,
     CLOUD_XOM_TRAIL,
     CLOUD_SALT,
+    CLOUD_GOLD_DUST,
     NUM_CLOUD_TYPES,
 
     // Random per-square.
@@ -1153,6 +1180,9 @@ enum command_type
     CMD_LUA_CONSOLE,
 
     CMD_MAX_NORMAL = CMD_LUA_CONSOLE,
+	
+    // inventory only
+    CMD_SET_SKILL_TARGET,
 
     // overmap commands
     CMD_MAP_CLEAR_MAP,
@@ -1769,6 +1799,7 @@ enum dungeon_feature_type
     DNGN_ALTAR_HEPLIAKLQANA,
 
     DNGN_ENDLESS_SALT,
+    DNGN_ALTAR_WU_JIAN,
 #endif
 
     NUM_FEATURES
@@ -1964,6 +1995,13 @@ enum duration_type
     DUR_NO_CAST,
     DUR_CHANNEL_ENERGY,
     DUR_NO_HOP,
+    DUR_CONFUSION_IMMUNITY,
+    DUR_MIASMATA,
+    DUR_SPECTRAL_WEAPON_COOLDOWN,
+    DUR_HEAVENLY_STORM,
+    DUR_SOUL_DELAY,
+    DUR_WALL_JUMP_EV,
+    DUR_DESTRUCTION,
     NUM_DURATIONS
 };
 
@@ -2139,6 +2177,8 @@ enum enchant_type
     ENCH_BOUND_SOUL,
     ENCH_INFESTATION,
     ENCH_STILL_WINDS,
+    ENCH_WHIRLWIND_PINNED,
+    ENCH_PHASE_SHIFT,
     // Update enchant_names[] in mon-ench.cc when adding or removing
     // enchantments.
     NUM_ENCHANTMENTS
@@ -2265,6 +2305,7 @@ enum god_type
     GOD_PAKELLAS,
     GOD_USKAYAW,
     GOD_HEPLIAKLQANA,
+    GOD_WU_JIAN,
     NUM_GODS,                          // always after last god
 
     GOD_RANDOM = 100,
@@ -2399,11 +2440,10 @@ enum job_type
 #if TAG_MAJOR_VERSION == 34
     JOB_ARCANE_MARKSMAN,
     JOB_DEATH_KNIGHT,
-#endif
     JOB_ABYSSAL_KNIGHT,
-#if TAG_MAJOR_VERSION == 34
     JOB_JESTER,
 #endif
+    JOB_TORPOR_KNIGHT,
     NUM_JOBS,                          // always after the last job
 
     JOB_UNKNOWN = 100,
@@ -3645,6 +3685,9 @@ MONS_ANTIMATTER_ELF,
 	MONS_GIANT_GIANT,
 	MONS_MUTATATOTOT,
 	MONS_ZOTBOT,
+    MONS_ELEVENGU,
+    MONS_DIESEL_ROBIN,
+    MONS_COMBO_ROBIN,
 #endif
 
     NUM_MONSTERS,               // used for polymorph
@@ -3956,6 +3999,15 @@ enum mutation_type
     MUT_NO_REGENERATION,
     MUT_DAYWALKER,
     MUT_HEX_ENHANCER,
+    MUT_ICE_ENHANCER,
+    MUT_PREHENSILE_TENTACLE,
+    MUT_CRYSTAL_SKIN,
+    MUT_REFLECTION,
+    MUT_MAGIC_REFLECTION,
+    MUT_AIR_ENHANCER,
+    MUT_EARTH_ENHANCER,
+    MUT_SUMMON_ENHANCER,
+    MUT_CHARMS_ENHANCER,
     NUM_MUTATIONS,
 
     CATEGORY_MUTATIONS,
@@ -3967,6 +4019,7 @@ enum mutation_type
     RANDOM_NON_SLIME_MUTATION,
     RANDOM_CORRUPT_MUTATION,
     RANDOM_QAZLAL_MUTATION,
+    RANDOM_KOBOLD_MUTATION,
     MUT_NON_MUTATION,
 };
 
@@ -4054,9 +4107,9 @@ enum potion_type
     POT_HEAL_WOUNDS,
     POT_HASTE,
     POT_MIGHT,
+#if TAG_MAJOR_VERSION == 34
     POT_BRILLIANCE,
     POT_AGILITY,
-#if TAG_MAJOR_VERSION == 34
     POT_GAIN_STRENGTH,
     POT_GAIN_DEXTERITY,
     POT_GAIN_INTELLIGENCE,
@@ -4311,9 +4364,11 @@ enum skill_menu_state
     SKM_VIEW_NEW_LEVEL,
     SKM_VIEW_POINTS,
     SKM_VIEW_PROGRESS,
+    SKM_VIEW_TARGETS,
     SKM_VIEW_TRAINING,
     SKM_VIEW_TRANSFER,
     SKM_VIEW_COST,
+    SKM_VIEW_KOBOLD,
 };
 
 enum skill_focus_mode
@@ -4381,6 +4436,9 @@ enum species_type
 #if TAG_MAJOR_VERSION == 34
     SP_FROGTAUR,
 #endif
+    SP_GNOLL,
+    SP_SKELETON,
+    SP_TITAN,
     NUM_SPECIES,
 
     SP_UNKNOWN  = 100,
@@ -4483,8 +4541,8 @@ enum spell_type : int
     SPELL_DEMONIC_HORDE,
 #endif
     SPELL_SUMMON_GREATER_DEMON,
-    SPELL_CORPSE_ROT,
 #if TAG_MAJOR_VERSION == 34
+    SPELL_CORPSE_ROT,
     SPELL_FIRE_BRAND,
     SPELL_FREEZING_AURA,
     SPELL_LETHAL_INFUSION,
@@ -5258,6 +5316,9 @@ enum tile_flags ENUM_INT64
     TILE_FLAG_IDEALISED =  0x10000000000000ULL,
     TILE_FLAG_BOUND_SOUL=  0x20000000000000ULL,
     TILE_FLAG_INFESTED  =  0x40000000000000ULL,
+    TILE_FLAG_CORRODED  =  0x80000000000000ULL,
+    TILE_FLAG_SWIFT     =  0x100000000000000ULL,
+    TILE_FLAG_PINNED    =  0x200000000000000ULL,
 
     // MDAM has 5 possibilities, so uses 3 bits.
     TILE_FLAG_MDAM_MASK  = 0x1C0000000ULL,
@@ -5344,8 +5405,11 @@ enum tile_inventory_flags
 
 enum tile_player_flags
 {
-    TILEP_SHOW_EQUIP    = 0x1000,
+    TILEP_SHOW_EQUIP    = 0x10000000,
 };
+
+static_assert(static_cast<int>(TILEP_SHOW_EQUIP) > static_cast<int>(TILEP_PLAYER_MAX),
+        "TILEP_SHOW_EQUIP must be distinct from all player tile enums");
 
 enum tile_player_flag_cut
 {
@@ -5385,6 +5449,15 @@ enum deck_rarity_type
     DECK_RARITY_COMMON,
     DECK_RARITY_RARE,
     DECK_RARITY_LEGENDARY,
+};
+
+enum wu_jian_attack_type
+{
+    WU_JIAN_ATTACK_NONE,
+    WU_JIAN_ATTACK_LUNGE,
+    WU_JIAN_ATTACK_WHIRLWIND,
+    WU_JIAN_ATTACK_WALL_JUMP,
+    WU_JIAN_ATTACK_TRIGGERED_AUX,
 };
 
 enum timed_effect_type

@@ -357,6 +357,17 @@ bool feat_is_solid(dungeon_feature_type feat)
     return get_feature_def(feat).flags & FFT_SOLID;
 }
 
+/** Can you wall jump against this feature? (Wu Jian)?
+ */
+bool feat_can_wall_jump_against(dungeon_feature_type feat)
+{
+    return feat_is_wall(feat)
+           || feat == DNGN_GRATE
+           || feat_is_closed_door(feat)
+           || feat_is_tree(feat)
+           || feat_is_statuelike(feat);
+}
+
 /** Can you move into this cell in normal play?
  */
 bool cell_is_solid(const coord_def &c)
@@ -491,6 +502,7 @@ static const pair<god_type, dungeon_feature_type> _god_altars[] =
     { GOD_PAKELLAS, DNGN_ALTAR_PAKELLAS },
     { GOD_USKAYAW, DNGN_ALTAR_USKAYAW },
     { GOD_HEPLIAKLQANA, DNGN_ALTAR_HEPLIAKLQANA },
+    { GOD_WU_JIAN, DNGN_ALTAR_WU_JIAN },
     { GOD_ECUMENICAL, DNGN_ALTAR_ECUMENICAL },
 };
 
@@ -1845,7 +1857,7 @@ const char* feat_type_name(dungeon_feature_type feat)
     if (feat_is_trap(feat))
         return "trap";
     if (feat_is_escape_hatch(feat))
-        return "escape hatch";
+        return "mutagenic shaft";
     if (feat_is_portal(feat) || feat_is_gate(feat))
         return "portal";
     if (feat_is_travelable_stair(feat))
@@ -2149,4 +2161,132 @@ bool plant_forbidden_at(const coord_def &p, bool connectivity_only)
     //      were it not for the previous check.
 
     return passable <= 1 && !connectivity_only;
+}
+
+/*
+ * Find an adjacent space to displace a stack of items or a creature.
+ *
+ * @param pos the starting position to displace from.
+ * @param push_actor true if the goal is to move an actor, false if items
+ * @param excluded any spots to rule out a priori. Used for e.g. imprison and
+ *                       for multi-space doors.
+ *
+ * @return a (possibly empty) vector of positions where displacement is
+ *                       possible. If `push_actor` is true but there is no
+ *                       actor at the position, will return an empty list.
+ */
+vector<coord_def> get_push_spaces(const coord_def& pos, bool push_actor,
+                    const vector<coord_def>* excluded)
+{
+    vector<coord_def> results;
+    actor *act = nullptr;
+    if (push_actor)
+    {
+        act = actor_at(pos);
+        if (!act || act->is_stationary())
+            return results;
+    }
+
+    dungeon_feature_type starting_feat = grd(pos);
+    vector<coord_def> bad_spots; // used for items
+
+    for (adjacent_iterator ai(pos); ai; ++ai)
+    {
+        dungeon_feature_type feat = grd(*ai);
+
+        // Make sure the spot wasn't already vetoed. This is used e.g. for
+        // imprison, to pre-exclude all the spots where a wall will be.
+        if (excluded && find(begin(*excluded), end(*excluded), *ai)
+                            != end(*excluded))
+        {
+            continue;
+        }
+
+        // can never push to a solid space
+        if (feat_is_solid(feat))
+            continue;
+
+        // Extra checks if we're moving a monster instead of an item
+        if (push_actor)
+        {
+            // these should get deep water and lava for cases where they matter
+            if (actor_at(*ai)
+                || !act->can_pass_through(*ai)
+                || !act->is_habitable(*ai))
+            {
+                continue;
+            }
+            results.push_back(*ai);
+        }
+        else
+        {
+            if (feat_has_solid_floor(feat))
+                results.push_back(*ai);
+            else if (starting_feat == DNGN_DEEP_WATER
+                && feat == DNGN_DEEP_WATER)
+            {
+                // Dispreferentially allow pushing items from deep water to
+                // deep water. Without this, zin imprison fails over deep
+                // water if there are items, even if the player can't see
+                // them.
+                bad_spots.push_back(*ai);
+            }
+            // otherwise, can't position an item on this spot
+        }
+    }
+    if (!results.empty())
+        return results;
+    return bad_spots;
+}
+
+bool has_push_spaces(const coord_def& pos, bool push_actor,
+                    const vector<coord_def>* excluded)
+{
+    return !get_push_spaces(pos, push_actor, excluded).empty();
+}
+
+/**
+ * Push items from `pos`, splashing them around whatever available spaces
+ * there are.
+ * @param pos the source position.
+ * @param excluded positions that are a priori unavailable.
+ *
+ * @return true if any items moved, false otherwise. (Will return false if there
+ *         were no items.)
+ */
+bool push_items_from(const coord_def& pos, const vector<coord_def>* excluded)
+{
+    vector<coord_def> targets = get_push_spaces(pos, false, excluded);
+    bool result = false;
+    if (targets.empty())
+        return false;
+    while (igrd(pos) != NON_ITEM)
+        result |= move_top_item(pos, targets[random2(targets.size())]);
+    return result;
+}
+
+/**
+ * Push an actor from `pos` to some available space, if possible.
+ *
+ * @param pos the source position.
+ * @param excluded excluded positions that are a priori unavailable.
+ * @param random whether to chose the position randomly, or deterministically.
+ *        (Useful for systematically moving a bunch of actors at once.)
+ *
+ * @return the new coordinates for the actor.
+ */
+coord_def push_actor_from(const coord_def& pos, const vector<coord_def>* excluded, bool random)
+{
+    actor* act = actor_at(pos);
+    if (!act)
+        return coord_def(0,0);
+    vector<coord_def> targets = get_push_spaces(pos, true, excluded);
+    if (targets.empty())
+        return coord_def(0,0);
+    const coord_def newpos = random ? targets[random2(targets.size())]
+                                    : targets.front();
+    ASSERT(!newpos.origin());
+    act->move_to_pos(newpos);
+    // the new position of the monster is now an additional veto spot for monsters
+    return newpos;
 }

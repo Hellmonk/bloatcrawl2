@@ -23,6 +23,7 @@
 #include "output.h"
 #include "religion.h"
 #include "showsymb.h"
+#include "spl-summoning.h"
 #include "spl-transloc.h"
 #include "spl-util.h"
 #include "spl-wpnench.h"
@@ -378,7 +379,7 @@ spret_type cast_invisibility(int pow, bool fail)
 //chain of ifs, probably should, like, use a real data structure
 int calculate_frozen_mp()
 {
-    double frozen_mp = 0;
+    int frozen_mp = 0;
 	if (you.attribute[ATTR_OZO_ARMOUR] > 0)
     {
 		frozen_mp += spell_mp_freeze(SPELL_OZOCUBUS_ARMOUR);
@@ -435,6 +436,26 @@ int calculate_frozen_mp()
     {
 		frozen_mp += spell_mp_freeze(SPELL_EXCRUCIATING_WOUNDS);
 	}
+    if (you.attribute[ATTR_ANIMATE_DEAD] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_ANIMATE_DEAD);
+	}
+    if (you.attribute[ATTR_SPECTRAL_WEAPON] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_SPECTRAL_WEAPON);
+	}
+    if (you.attribute[ATTR_INFESTATION] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_INFESTATION);
+	}
+    if (you.attribute[ATTR_BATTLESPHERE] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_BATTLESPHERE);
+	}
+    if (you.attribute[ATTR_SERVITOR] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_SPELLFORGED_SERVITOR);
+	}
     // Forms. Only check for cancelable forms here; uncancellable goodforms shouldn't reserve mp.
     if (you.form && !you.transform_uncancellable)
     {
@@ -468,7 +489,7 @@ int calculate_frozen_mp()
                 break;
         }
     }
-    return (int) frozen_mp;
+    return frozen_mp;
 }
 
 void dispel_permanent_buffs()
@@ -497,6 +518,7 @@ void dispel_permanent_buffs()
     if(you.attribute[ATTR_DARKNESS])
     {
         you.attribute[ATTR_DARKNESS] = 0;
+        update_vision_range();
         dispelled = true;
     }
     if(you.attribute[ATTR_DEFLECT_MISSILES])
@@ -537,6 +559,40 @@ void dispel_permanent_buffs()
     if(you.attribute[ATTR_INFUSION])
     {
         you.attribute[ATTR_INFUSION] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_ANIMATE_DEAD])
+    {
+        you.attribute[ATTR_ANIMATE_DEAD] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_INFESTATION])
+    {
+        you.attribute[ATTR_INFESTATION] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_SPECTRAL_WEAPON])
+    {
+        monster* old_weap = find_spectral_weapon(&you);
+        if(old_weap)
+            end_spectral_weapon(old_weap, false);
+        you.attribute[ATTR_SPECTRAL_WEAPON] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_BATTLESPHERE])
+    {
+        monster* old_sphere = find_battlesphere(&you);
+        if(old_sphere)
+            end_battlesphere(old_sphere, false);
+        you.attribute[ATTR_BATTLESPHERE] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_SERVITOR])
+    {
+        /*monster* old_sphere = find_battlesphere(&you);
+        if(old_sphere)
+            end_battlesphere(old_sphere, false);*/
+        you.attribute[ATTR_SERVITOR] = 0;
         dispelled = true;
     }
     if(you.attribute[ATTR_EXCRUCIATING_WOUNDS])

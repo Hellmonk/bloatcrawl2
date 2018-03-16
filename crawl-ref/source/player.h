@@ -36,10 +36,15 @@
 #define SAP_MAGIC_KEY "sap_magic_amount"
 #define TEMP_WATERWALK_KEY "temp_waterwalk"
 #define EMERGENCY_FLIGHT_KEY "emergency_flight"
+#define WALL_JUMP_EV_KEY "wall_jump_evasion"
+#define LAST_ACTION_DESTRUCTIVE_KEY "last_action_destructive"
+#define AMULET_DESTRUCTIVE_SPELL "amulet_destructive_spell"
 
 // display/messaging breakpoints for penalties from Ru's MUT_HORROR
 #define HORROR_LVL_EXTREME  3
 #define HORROR_LVL_OVERWHELMING  5
+
+#define SEVERE_CONTAM_LEVEL 3
 
 /// Maximum stat value
 static const int MAX_STAT_VALUE = 125;
@@ -159,6 +164,7 @@ public:
     int obtainable_runes; // can be != 15 in Sprint
 
     FixedBitVector<NUM_SPELLS> spell_library;
+    FixedBitVector<NUM_SPELLS> hidden_spells;
     FixedVector<spell_type, MAX_KNOWN_SPELLS> spells;
     set<spell_type> old_vehumet_gifts, vehumet_gifts;
 
@@ -195,6 +201,7 @@ public:
     FixedVector<unsigned int, NUM_SKILLS>  training; ///< percentage of XP used
     FixedBitVector<NUM_SKILLS> can_train; ///< Is training this skill allowed?
     FixedVector<unsigned int, NUM_SKILLS> skill_points;
+    FixedVector<unsigned int, NUM_SKILLS> training_targets; ///< Training targets, scaled by 10 (so [0,270]).  0 means no target.
 
     /// track skill points gained by crosstraining
     FixedVector<unsigned int, NUM_SKILLS> ct_skill_points;
@@ -529,7 +536,8 @@ public:
     void update_fearmongers();
     void update_fearmonger(const monster* mon);
 
-    bool made_nervous_by(const coord_def &pos);
+    bool made_nervous_by(const monster *mons);
+    bool is_nervous();
 
     kill_category kill_alignment() const override;
 
@@ -607,6 +615,11 @@ public:
     int       get_mutation_level(mutation_type mut, mutation_activity_type minact) const;
     int       get_innate_mutation_level(mutation_type mut) const;
     int       get_temp_mutation_level(mutation_type mut) const;
+
+    int       get_training_target(const skill_type sk) const;
+    bool      set_training_target(const skill_type sk, const double target, bool announce=false);
+    bool      set_training_target(const skill_type sk, const int target, bool announce=false);
+    void      clear_training_targets();
 
     bool      has_temporary_mutation(mutation_type mut) const;
     bool      has_innate_mutation(mutation_type mut) const;
@@ -731,7 +744,7 @@ public:
     int res_holy_energy() const override;
     int res_negative_energy(bool intrinsic_only = false) const override;
     bool res_torment() const override;
-    bool res_wind() const override;
+    bool res_tornado() const override;
     bool res_petrify(bool temp = true) const override;
     int res_constrict() const override;
     int res_magic(bool /*calc_unid*/ = true) const override;
@@ -810,7 +823,7 @@ public:
     float get_shield_skill_to_offset_penalty(const item_def &item);
     int armour_tohit_penalty(bool random_factor, int scale = 1) const override;
     int shield_tohit_penalty(bool random_factor, int scale = 1) const override;
-
+   
     bool wearing_light_armour(bool with_skill = false) const;
     int  skill(skill_type skill, int scale =1,
                bool real = false, bool drained = true) const override;
@@ -1026,7 +1039,7 @@ void forget_map(bool rot = false);
 int get_exp_progress();
 void gain_exp(unsigned int exp_gained, unsigned int* actual_gain = nullptr);
 
-bool player_can_open_doors();
+int xp_to_level_diff(int xp, int scale=1);
 
 void level_change(bool skip_attribute_increase = false);
 void adjust_level(int diff, bool just_xp = false);
@@ -1072,6 +1085,7 @@ int get_real_hp(bool trans, bool rotted = false);
 int get_real_mp(bool include_items, bool frozen = false);
 
 int get_contamination_level();
+bool player_severe_contamination();
 string describe_contamination(int level);
 
 bool sanguine_armour_valid();
@@ -1103,7 +1117,7 @@ bool napalm_player(int amount, string source, string source_aux = "");
 void dec_napalm_player(int delay);
 
 bool spell_slow_player(int pow);
-bool slow_player(int turns);
+bool slow_player(int turns, bool force = false);
 void dec_slow_player(int delay);
 void dec_exhaust_player(int delay);
 

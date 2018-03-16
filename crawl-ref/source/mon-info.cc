@@ -112,6 +112,8 @@ static map<enchant_type, monster_info_flags> trivial_ench_mb_mappings = {
     { ENCH_INFESTATION,     MB_INFESTATION },
     { ENCH_STILL_WINDS,     MB_STILL_WINDS },
     { ENCH_SLOWLY_DYING,    MB_SLOWLY_DYING },
+    { ENCH_WHIRLWIND_PINNED, MB_PINNED },
+    { ENCH_PHASE_SHIFT, MB_PHASE_SHIFT },
 };
 
 static monster_info_flags ench_to_mb(const monster& mons, enchant_type ench)
@@ -1191,6 +1193,8 @@ static string _verbose_info0(const monster_info& mi)
         return "petrified";
     if (mi.is(MB_PETRIFYING))
         return "petrifying";
+    if (mi.is(MB_PINNED))
+        return "pinned";
     if (mi.is(MB_MAD))
         return "mad";
     if (mi.is(MB_CONFUSED))
@@ -1614,19 +1618,20 @@ int monster_info::res_magic() const
 
 string monster_info::speed_description() const
 {
+    std::string s = std::to_string(mbase_speed);
     if (mbase_speed < 7)
-        return "very slow";
+        return "very slow (speed " + s + ")";
     else if (mbase_speed < 10)
-        return "slow";
+        return "slow (speed " + s + ")";
     else if (mbase_speed > 20)
-        return "extremely fast";
+        return "extremely fast (speed " + s + ")";
     else if (mbase_speed > 15)
-        return "very fast";
+        return "very fast (speed " + s + ")";
     else if (mbase_speed > 10)
-        return "fast";
+        return "fast (speed " + s + ")";
 
     // This only ever displays through Lua.
-    return "normal";
+    return "normal (speed " + s + ")";
 }
 
 bool monster_info::wields_two_weapons() const

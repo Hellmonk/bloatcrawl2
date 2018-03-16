@@ -504,14 +504,14 @@ direction_chooser::direction_chooser(dist& moves_,
     mode(args.mode),
     range(args.range),
     just_looking(args.just_looking),
-    needs_path(args.needs_path),
     self(args.self),
     target_prefix(args.target_prefix),
     top_prompt(args.top_prompt),
     behaviour(args.behaviour),
     show_floor_desc(args.show_floor_desc),
     hitfunc(args.hitfunc),
-    default_place(args.default_place)
+    default_place(args.default_place),
+    needs_path(args.needs_path)
 {
     if (!behaviour)
         behaviour = &stock_behaviour;
@@ -622,13 +622,6 @@ void full_describe_view()
     desc_menu.set_type(MT_PICKUP); // necessary for sorting of the item submenu
     desc_menu.action_cycle = Menu::CYCLE_TOGGLE;
     desc_menu.menu_action  = InvMenu::ACT_EXECUTE;
-
-    // Don't make a menu so tall that we recycle hotkeys on the same page.
-    if (list_mons.size() + list_items.size() + list_features.size() > 52
-        && (desc_menu.maxpagesize() > 52 || desc_menu.maxpagesize() == 0))
-    {
-        desc_menu.set_maxpagesize(52);
-    }
 
     // Start with hotkey 'a' and count from there.
     menu_letter hotkey;
@@ -1036,6 +1029,8 @@ bool direction_chooser::find_default_monster_target(coord_def& result) const
     {
         // Special colouring in tutorial or hints mode.
         const bool need_hint = Hints.hints_events[HINT_TARGET_NO_FOE];
+        // TODO: this seems to trigger when there are no monsters in range
+        // of the hitfunc, regardless of what's in the way, and it shouldn't.
         mprf(need_hint ? MSGCH_TUTORIAL : MSGCH_PROMPT,
             "All monsters which could be auto-targeted are covered by "
             "a wall or statue which interrupts your line of fire, even "
@@ -1837,7 +1832,14 @@ bool direction_chooser::do_main_loop()
     reinitialize_move_flags();
 
     const coord_def old_target = target();
-    const command_type key_command = behaviour->get_command();
+    const int key = behaviour->get_key();
+    if (key == CK_REDRAW)
+    {
+        redraw_screen(false);
+        return false;
+    }
+
+    const command_type key_command = behaviour->get_command(key);
     behaviour->update_top_prompt(&top_prompt);
     bool loop_done = false;
 
@@ -3425,7 +3427,7 @@ static void _debug_describe_feature_at(const coord_def &where)
                              vp.size.x, vp.size.y);
     }
 
-    ucs_t ch = get_cell_glyph(where).ch;
+    char32_t ch = get_cell_glyph(where).ch;
     dprf("(%d,%d): %s - %s (%d/%s)%s%s%s%s map: %x",
          where.x, where.y,
          ch == '<' ? "<<" : stringize_glyph(ch).c_str(),

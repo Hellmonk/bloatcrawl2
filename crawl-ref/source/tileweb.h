@@ -44,6 +44,7 @@ struct player_info
     string god;
     bool under_penance;
     uint8_t piety_rank;
+    int piety;
 
     uint8_t form;
 
@@ -128,7 +129,7 @@ public:
     // Webtiles-specific
     void textcolour(int col);
     void textbackground(int col);
-    void put_ucs_string(ucs_t *str);
+    void put_ucs_string(char32_t *str);
     void clear_to_end_of_line();
 
     void push_menu(Menu* m);

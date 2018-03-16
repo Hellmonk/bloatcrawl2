@@ -72,8 +72,8 @@ bringing them into the ranks of the mythical heroes.
 Jiyva
 
 Jiyva is the ancient deity of the slimes. Followers are expected to
-support the spread and satiation of their fellow slimes by allowing them to
-consume items, and are forbidden from harming any slimes. Especially favoured
+explore the dungeon in search of new regions for slimes to spread to
+and are forbidden from harming any slimes. Especially favoured
 followers will become as shapeless as their god, as their attributes and
 mutations shift around under Jiyva's influence.
 %%%%
@@ -83,8 +83,8 @@ Kikubaaqudgha is a terrible Demon-God, served by those who wish to indulge in
 the powers of death. An evil god, Kikubaaqudgha requires worshippers to cause
 the death and destruction of as many creatures as possible. In exchange,
 Kikubaaqudgha offers great assistance to the aspiring necromancer: spellbooks
-filled with dark magic, protection against necromantic backlash, and an endless
-supply of bodies taken from Kikubaaqudgha's vast mausoleum.
+filled with dark magic, protection against necromantic backlash, and the ability
+to imbue their attacks with miasma for a brief time.
 %%%%
 Lugonu
 
@@ -146,10 +146,9 @@ foes.
 Sif Muna
 
 Sif Muna the Loreminder is a contemplative but powerful deity, served by those
-who seek magical knowledge. The Loreminder appreciates followers who triumph
-over their foes and especially the training of spellcasting skills in order to
-do so. The faithful can expect to recieve a supply of spellbooks taken directly
-from Sif Muna's legendary library.
+who seek magical knowledge. The Loreminder appreciates followers who explore
+the dungeon. The faithful can expect to recieve a supply of spellbooks taken 
+directly from Sif Muna's legendary library.
 %%%%
 the Shining One
 
@@ -192,13 +191,21 @@ playthings with which to toy. Many choose to follow Xom in the hope of
 receiving fabulous rewards and mighty powers, but Xom is nothing if not
 capricious. There is nothing a follower can do to influence Xom's mood.
 %%%%
+Wu Jian
+
+The Wu Jian Council is a congregation of martial monks, ascended to divinity
+after battling their way out of the afterlife. The Council significantly enhances 
+its followers' melee damage, but drastically reduces their AC. Disciples of the Council 
+are able to execute acrobatic martial maneuvers, such as wall jumps, spinning
+attacks and punishing lunges. They will eventually become able to request
+help in the form of a storm of heavenly clouds.
+%%%%
 Yredelemnul
 
-Yredelemnul the Dark is a god worshipped by those who seek powers over death
-and the undead. Followers can raise legions of servile undead, and gain a
-number of other useful powers with which to make better use of the souls of
-the living. Yredelemnul especially favours those who would destroy holy
-creatures, which oppose the realm of undeath, and the nonliving, which exist
+Yredelemnul the Dark is a god worshipped by those who seek powers over death. 
+Followers can permanently enslave the soul of a monster and gain additional
+powers to afflict the souls of the living. Yredelemnul especially favours those who would 
+destroy holy creatures, which oppose the realm of undeath, and the nonliving, which exist
 outside of it.
 %%%%
 Zin
@@ -295,13 +302,14 @@ their life's talents.
 %%%%
 Jiyva powers
 
-Jiyva's followers can request jellies, which will consume nearby items and
-provide sustenance to the follower in doing so. Jiyva will also consume items
-left elsewhere in the dungeon. Followers will later become able to turn
-monsters to slime, and eventually to reshape themselves to remove harmful
-mutations. As their piety grows, Jiyva will, with increasing frequency, drop
-jellies into the dungeon; rearrange followers' attributes based on their skills
-and armour; and mutate followers to better reflect Jiyva's image.
+Jiyva will consume items in the dungeon, granting sufficiently pious 
+followers mana and health in the process. Followers will become able 
+to turn monsters to slime, and eventually to reshape themselves to 
+remove harmful mutations. As their piety grows, Jiyva will, with 
+increasing frequency, rearrange followers' attributes based on their 
+skills and armour; and mutate followers to better reflect Jiyva's 
+image. Jiyva will directly intervene to absorb some damage on behalf 
+of the exceptionally devout.
 %%%%
 Kikubaaqudgha powers
 
@@ -336,8 +344,8 @@ Nemelex Xobeh powers
 The Trickster's followers gain various ways to influence fate when playing
 their cards. The effects of the cards will be more powerful with higher piety.
 Later, followers will gain powerful abilities to manipulate the cards, allowing
-them to choose one of three drawn cards, to gain the effects of multiple cards
-at once, and finally to stack decks and re-order their contents.
+them to choose one of three drawn cards, and eventually
+to gain the effects of multiple cards at once.
 %%%%
 Okawaru powers
 
@@ -408,7 +416,6 @@ increasing resistance to hostile enchantments. Later, followers may call in
 powerful raging allies. Eventually, Trog will gift followers with weapons
 focused on damage.
 %%%%
-%%%%
 Uskayaw powers
 
 Worshippers of Uskayaw can stomp to damage foes around them, and rapidly move
@@ -429,6 +436,26 @@ their destructive spells — first assistance in casting such spells and then
 increased range for conjurations. Vehumet will offer followers the knowledge of
 increasingly powerful destructive spells as they gain piety.
 %%%%
+Wu Jian powers
+
+Disciples of the Council learn to perform three martial techniques, shown
+below. They will also be taught to move at unfathomable speeds for short
+distances, and become able to summon a storm of golden clouds to increase their
+precision and damage for as long as they keep using martial attacks.
+
+  .......       ....... (-) <lightred>Lunge</lightred>: Move directly towards an enemy to deal
+  ..<lightred>@</lightred>.O..  -->  ...<lightred>@</lightred>O.. extra damage.
+  .......       .......
+
+  .......       ...<lightred>@</lightred>... (*) <lightred>Whirlwind</lightred>: Move between two tiles adjacent to
+  ...<lightred>@</lightred>O..  -->  ....O.. an enemy to strike them lightly. The dizzying
+  .......       ....... motion pins monsters in place for one turn.
+
+  ..x....       ..x.... (**) <lightred>Wall Jump</lightred>: Move into a wall to vault towards
+  ..x<lightred>@</lightred>O..  -->  ..x.O<lightred>@</lightred>. enemies, striking all enemies adjacent to the landing
+  ..x....       ..x.... spot. Evasion is temporarily boosted when multiple enemies are attacked this way.
+
+%%%%
 Xom powers
 
 To worship Xom is to live riskily. In a good mood Xom may shower worshippers
@@ -439,13 +466,14 @@ playthings...
 %%%%
 Yredelemnul powers
 
-Yredelemnul gives followers the power to raise skeletons and corpses, to recall
-undead followers to their vicinity, and to heal by draining the life force of
-living creatures. With sufficient piety, Yredelemnul can be called upon to
-mirror a follower's injuries onto attackers. Eventually, followers will gain
-the power to bind a monster's soul, and make it fight for them instead.
-Yredelemnul will sporadically gift followers increasingly powerful undead
-servants.
+Yredelemnul allows followers to mirror their injuries onto attackers. 
+With sufficient piety, followers gain the power to bind a monster's soul
+and make it fight for them eternally. The enslaved soul may be recalled 
+from any location and will return to its master's service after a short time 
+if it is destroyed, but will be released from service if another soul is 
+enslaved. Eventually, followers may swap their enslaved soul's position with
+another creature. Very devout followers gain the ability to drain ambient life
+force from surrounding monsters.
 %%%%
 Zin powers
 
@@ -615,6 +643,13 @@ Vehumet wrath
 Those that anger Vehumet find destruction amply heaped upon them. Novices are
 struck by flame and frost; archmages by crystal spears and firestorms. Their
 own conjurations, too, are wont to misfire at the worst possible moments.
+%%%%
+Wu Jian wrath
+
+Those who turn against the Council must be prepared to endure death by a
+thousand cuts. No hiding place is secure, no disguise perfect enough to avoid
+the sudden spring of traps, the flying daggers and the armies of animated
+weapons that will ambush the betrayer.
 %%%%
 Xom wrath
 

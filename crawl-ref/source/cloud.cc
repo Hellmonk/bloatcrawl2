@@ -281,6 +281,13 @@ static const cloud_data clouds[] = {
       BEAM_NONE, {},                              // beam & damage
       true,                                       // opacity
     },
+    // CLOUD_GOLD_DUST,
+    { "golden dust",  nullptr,                    // terse, verbose name
+      ETC_HOLY,                                   // colour
+      { TILE_CLOUD_GOLD_DUST, CTVARY_DUR },       // tile
+      BEAM_NONE, {},                              // beam & damage
+      true,                                       // opacity
+},
 };
 COMPILE_CHECK(ARRAYSZ(clouds) == NUM_CLOUD_TYPES);
 
@@ -895,6 +902,7 @@ bool actor_cloud_immune(const actor *act, const cloud_struct &cloud)
             return act->res_fire() >= 3;
         return you.duration[DUR_FIRE_SHIELD]
                || you.has_mutation(MUT_FLAME_CLOUD_IMMUNITY)
+               || you.has_mutation(MUT_IGNITE_BLOOD)
                || player_equip_unrand(UNRAND_FIRESTARTER)
                || you.attribute[ATTR_FIRE_SHIELD];
     case CLOUD_HOLY:
@@ -923,7 +931,7 @@ bool actor_cloud_immune(const actor *act, const cloud_struct &cloud)
     case CLOUD_NEGATIVE_ENERGY:
         return act->res_negative_energy() >= 3;
     case CLOUD_TORNADO:
-        return act->res_wind();
+        return act->res_tornado();
     case CLOUD_RAIN:
         return !act->is_fiery();
     default:
@@ -1068,7 +1076,7 @@ static bool _actor_apply_cloud_side_effects(actor *act,
         if (player)
         {
             const actor* agent = cloud.agent();
-            poison_player(5 + roll_dice(3, 8), agent ? agent->name(DESC_A) : "",
+            poison_player(5 + roll_dice(2, 8), agent ? agent->name(DESC_A) : "",
                           cloud.cloud_name());
         }
         else

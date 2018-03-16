@@ -47,7 +47,7 @@ FTILE:   defgABC = tutorial_pad
 ITEM:    pair of boots mundane not_cursed useful
 ITEM:    scroll of fog q:1
 ITEM:    scroll of fear q:1
-ITEM:    scimitar ego:venom not_cursed
+ITEM:    scimitar ego:freezing not_cursed
 MONS:    goblin ; nothing
 MONS:    rat, giant cockroach, hobgoblin ; nothing
 MARKER:  d = lua:tutorial3.msg("armour")
@@ -116,11 +116,9 @@ KFEAT:   AB = .
 COLOUR:  ABdefghi = lightblue
 FTILE:   ABdefghi = tutorial_pad
 RTILE:   c = wall_vines
-ITEM:    potion of curing q:1
-ITEM:    ratskin_cloak
+ITEM:    potion of ambrosia q:1
 ITEM:    wand of flame charges:9 ident:all
 ITEM:    wand of digging charges:15 ident:all
-ITEM:    amulet of rage mundane cursed
 ITEM:    scroll of noise q:1 ident:all
 MONS:    goblin ; dagger \
          ego:none not_cursed
@@ -179,9 +177,9 @@ FTILE:   .{)deS = floor_swamp, t = floor_grass
 FTILE:   ABCde = tutorial_pad
 FTILE:   c = wall_vines
 KFEAT:   S = general shop use_all ; \
-             ring of fire mundane not_cursed | potion of curing | \
+             ring of fire mundane not_cursed | potion of ambrosia | \
              potion of heal wounds | potion of heal wounds q:2 | \
-             potion of might | wand of paralysis | ring mail | \
+             potion of augmentation | wand of paralysis | ring mail | \
              buckler ego:none | ring of slaying | scroll of enchant weapon
 ITEM:    gold q:40
 ITEM:    gold q:220

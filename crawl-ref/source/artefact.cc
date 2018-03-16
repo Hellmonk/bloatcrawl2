@@ -97,8 +97,7 @@ static bool _god_fits_artefact(const god_type which_god, const item_def &item,
         if (item.base_type == OBJ_WEAPONS && brand != SPWPN_HOLY_WRATH)
             return false;
 
-        if (artefact_property(item, ARTP_INVISIBLE)
-            || artefact_property(item, ARTP_STEALTH) > 0)
+        if (artefact_property(item, ARTP_STEALTH) > 0)
         {
             return false;
         }
@@ -360,12 +359,8 @@ struct jewellery_fake_artp
 };
 
 static map<jewellery_type, vector<jewellery_fake_artp>> jewellery_artps = {
-    { AMU_RAGE, { { ARTP_BERSERK, 1 } } },
     { AMU_REGENERATION, { { ARTP_REGENERATION, 1 } } },
     { AMU_REFLECTION, { { ARTP_SHIELDING, 0 } } },
-
-    { RING_MAGICAL_POWER, { { ARTP_MAGICAL_POWER, 9 } } },
-    { RING_SEE_INVISIBLE, { { ARTP_SEE_INVISIBLE, 1 } } },
 
     { RING_POISON_RESISTANCE, { { ARTP_POISON, 1 } } },
     { RING_LIFE_PROTECTION, { { ARTP_NEGATIVE_ENERGY, 1 } } },
@@ -458,21 +453,11 @@ static void _add_randart_weapon_brand(const item_def &item,
     if (is_range_weapon(item))
     {
         item_props[ARTP_BRAND] = random_choose_weighted(
-            2, SPWPN_SPEED,
-            4, SPWPN_VENOM,
-            4, SPWPN_VORPAL,
-            4, SPWPN_FLAMING,
-            4, SPWPN_FREEZING);
-
-        if (item_attack_skill(item) == SK_CROSSBOWS)
-        {
-            // Penetration and electrocution are only allowed on
-            // crossbows. This may change in future.
-            if (one_chance_in(5))
-                item_props[ARTP_BRAND] = SPWPN_ELECTROCUTION;
-            else if (one_chance_in(5))
-                item_props[ARTP_BRAND] = SPWPN_PENETRATION;
-        }
+            5, SPWPN_DEVASTATION,
+            5, SPWPN_FLAMING,
+            5, SPWPN_FREEZING,
+            1, SPWPN_ELECTROCUTION,
+            1, SPWPN_PENETRATION);
     }
     else if (is_demonic(item) && x_chance_in_y(7, 9))
     {
@@ -482,21 +467,18 @@ static void _add_randart_weapon_brand(const item_def &item,
             SPWPN_FREEZING,
             SPWPN_ELECTROCUTION,
             SPWPN_VAMPIRISM,
-            SPWPN_PAIN,
-            SPWPN_VENOM);
+            SPWPN_PAIN);
         // fall back to regular melee brands 2/9 of the time
     }
     else
     {
         item_props[ARTP_BRAND] = random_choose_weighted(
-            73, SPWPN_VORPAL,
+            73, SPWPN_DEVASTATION,
             34, SPWPN_FLAMING,
             34, SPWPN_FREEZING,
-            26, SPWPN_VENOM,
             26, SPWPN_DRAINING,
             13, SPWPN_HOLY_WRATH,
             13, SPWPN_ELECTROCUTION,
-            13, SPWPN_SPEED,
             13, SPWPN_VAMPIRISM,
             13, SPWPN_PAIN,
             13, SPWPN_ANTIMAGIC,
@@ -536,9 +518,10 @@ static bool _artp_can_go_on_item(artefact_prop_type prop, const item_def &item,
         case ARTP_SLAYING:
             return item_class != OBJ_WEAPONS; // they already have slaying!
         case ARTP_POISON:
-        case ARTP_SEE_INVISIBLE:
             return !item.is_type(OBJ_ARMOUR, ARM_NAGA_BARDING);
-            // naga already have rPois & sInv!
+            // naga already have rPois
+        case ARTP_SEE_INVISIBLE:
+            return false;
         case ARTP_CORRODE:
             return !extant_props[ARTP_RCORR];
         case ARTP_RCORR:
@@ -639,10 +622,11 @@ static const artefact_prop_data artp_data[] =
         _gen_good_res_artp, nullptr, 2, 4 },
     { "MR", ARTP_VAL_ANY, 50,       // ARTP_MAGIC_RESISTANCE,
         _gen_good_res_artp, _gen_bad_res_artp, 2, 4 },
-    { "SInv", ARTP_VAL_BOOL, 30,    // ARTP_SEE_INVISIBLE,
+    { "SInv", ARTP_VAL_BOOL, 0,    // ARTP_SEE_INVISIBLE,
         []() { return 1; }, nullptr, 0, 0 },
-    { "+Inv", ARTP_VAL_BOOL, 15,    // ARTP_INVISIBLE,
-        []() { return 1; }, nullptr, 0, 0 },
+#if TAG_MAJOR_VERSION == 34
+    { "+Inv", ARTP_VAL_BOOL, 0, nullptr, nullptr, 0, 0 }, //ARTP_INVISIBLE,
+#endif
     { "+Fly", ARTP_VAL_BOOL, 15,    // ARTP_FLY,
         []() { return 1; }, nullptr, 0, 0 },
 #if TAG_MAJOR_VERSION > 34
@@ -1421,10 +1405,6 @@ static bool _randart_is_redundant(const item_def &item,
         provides  = ARTP_SLAYING;
         break;
 
-    case RING_SEE_INVISIBLE:
-        provides = ARTP_SEE_INVISIBLE;
-        break;
-
     case RING_EVASION:
         provides = ARTP_EVASION;
         break;
@@ -1437,20 +1417,12 @@ static bool _randart_is_redundant(const item_def &item,
         provides = ARTP_INTELLIGENCE;
         break;
 
-    case RING_MAGICAL_POWER:
-        provides = ARTP_MAGICAL_POWER;
-        break;
-
     case RING_LIFE_PROTECTION:
         provides = ARTP_NEGATIVE_ENERGY;
         break;
 
     case RING_PROTECTION_FROM_MAGIC:
         provides = ARTP_MAGIC_RESISTANCE;
-        break;
-
-    case AMU_RAGE:
-        provides = ARTP_BERSERK;
         break;
 
     case AMU_REGENERATION:
@@ -1496,7 +1468,6 @@ static bool _randart_is_conflicting(const item_def &item,
     case RING_FIRE:
     case RING_ICE:
     case RING_WIZARDRY:
-    case RING_MAGICAL_POWER:
         conflicts = ARTP_PREVENT_SPELLCASTING;
         break;
 
@@ -1505,9 +1476,6 @@ static bool _randart_is_conflicting(const item_def &item,
         conflicts = ARTP_PREVENT_TELEPORTATION;
         break;
 
-    case AMU_RAGE:
-        conflicts = ARTP_STEALTH;
-        break;
     }
 
     if (conflicts == ARTP_NUM_PROPERTIES)
@@ -1672,9 +1640,9 @@ static void _make_faerie_armour(item_def &item)
 
 static jewellery_type octoring_types[8] =
 {
-    RING_SEE_INVISIBLE, RING_FIRE, RING_ICE,
+    RING_PROTECTION_FROM_MAGIC, RING_FIRE, RING_ICE,
     RING_RESIST_CORROSION, RING_PROTECTION_FROM_MAGIC, RING_WIZARDRY, 
-    RING_MAGICAL_POWER, RING_LIFE_PROTECTION
+    RING_WIZARDRY, RING_LIFE_PROTECTION
 };
 
 static void _make_octoring(item_def &item)
@@ -1726,9 +1694,7 @@ bool make_item_unrandart(item_def &item, int unrand_index)
 
     _set_unique_item_status(unrand_index, UNIQ_EXISTS);
 
-    if (unrand_index == UNRAND_VARIABILITY)
-        item.plus = random_range(-4, 16);
-    else if (unrand_index == UNRAND_FAERIE)
+    if (unrand_index == UNRAND_FAERIE)
         _make_faerie_armour(item);
     else if (unrand_index == UNRAND_OCTOPUS_KING_RING)
         _make_octoring(item);

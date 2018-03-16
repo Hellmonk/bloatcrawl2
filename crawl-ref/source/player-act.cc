@@ -297,6 +297,8 @@ random_var player::attack_delay(const item_def *projectile, bool rescale) const
         attk_delay -= div_rand_round(random_var(wpn_sklev), DELAY_SCALE);
         if (get_weapon_brand(*weap) == SPWPN_SPEED)
             attk_delay = div_rand_round(attk_delay * 2, 3);
+        if (get_weapon_brand(*weap) == SPWPN_DEVASTATION)
+            attk_delay = div_rand_round(attk_delay * 3, 2);
     }
 
     // At the moment it never gets this low anyway.
@@ -322,10 +324,19 @@ random_var player::attack_delay(const item_def *projectile, bool rescale) const
             attk_delay = haste_mul(attk_delay);
         attk_delay = div_rand_round(attk_delay, 2);
     }
+	
+    if (weap && player_equip_unrand(UNRAND_VARIABILITY))
+    { 
+        int num = random2(11) + 10;
+        int denom = random2(11) + 10;
+        attk_delay = div_rand_round(attk_delay * num, denom);
+    }
 
-    // see comment on player.cc:player_speed
-    return rv::max(div_rand_round(attk_delay * you.time_taken, 10),
-                   random_var(2));
+    // TODO: does this really have to depend on `you.time_taken`?  In basic
+    // cases at least, `you.time_taken` is just `player_speed()`. See
+    // `_prep_input`.
+    return rv::max(div_rand_round(attk_delay * you.time_taken, BASELINE_DELAY),
+                  random_var(2));
 }
 
 // Returns the item in the given equipment slot, nullptr if the slot is empty.
@@ -406,10 +417,13 @@ bool player::could_wield(const item_def &item, bool ignore_brand,
     // Most non-weapon objects can be wielded, though there's rarely a point
     if (!is_weapon(item))
     {
-        if (item.base_type == OBJ_ARMOUR || item.base_type == OBJ_JEWELLERY)
+        if (item.base_type == OBJ_ARMOUR || item.base_type == OBJ_JEWELLERY
+           || item.base_type == OBJ_STAVES)
         {
             if (!quiet)
-                mprf("You can't wield %s.", base_type_string(item));
+                mprf("You can't wield %s%s.",
+                    item.base_type == OBJ_STAVES ? "a magical " : "",
+                    base_type_string(item));
             return false;
         }
 
@@ -450,10 +464,7 @@ item_def *player::shield() const
 
 void player::make_hungry(int hunger_increase, bool silent)
 {
-    if (hunger_increase > 0)
-        ::make_hungry(hunger_increase, silent);
-    else if (hunger_increase < 0)
-        ::lessen_hunger(-hunger_increase, silent);
+    return;
 }
 
 string player::name(description_level_type dt, bool, bool) const

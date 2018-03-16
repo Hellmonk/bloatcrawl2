@@ -996,6 +996,33 @@ Life Insurance
 the Singularity
 
 the Sludge Elves
+
+#pasta
+Ravioli
+
+Linguini
+
+Fettuccine
+
+Spaghetti
+
+Capellini
+
+Macaroni
+
+Vermicelli
+
+Lasagne
+
+Rotini
+
+Farfalle
+
+Cannelloni
+
+Tortelloni
+
+the Pastamancer
 %%%%
 _card_
 

@@ -474,16 +474,6 @@ static void _xom_check_corpse_waste()
     xom_is_stimulated(50 + (151 * food_need / 6000));
 }
 
-static bool _auto_eat()
-{
-    return Options.auto_eat_chunks
-           && Options.autopickup_on > 0
-           && (player_likes_chunks(true)
-               || !you.gourmand()
-               || you.duration[DUR_GOURMAND] >= GOURMAND_MAX / 4
-               || you.hunger_state < HS_SATIATED);
-}
-
 void clear_macro_process_key_delay()
 {
     if (dynamic_cast<MacroProcessKeyDelay*>(current_delay().get()))
@@ -563,13 +553,6 @@ void BaseRunDelay::handle()
         stop_running();
     else
     {
-        if (want_autoeat() && _auto_eat())
-        {
-            const interrupt_block block_interrupts;
-            if (prompt_eat_chunks(true) == 1)
-                return;
-        }
-
         cmd = move_cmd();
     }
 
@@ -725,7 +708,6 @@ bool BlurryScrollDelay::invalidated()
 void FeedVampireDelay::tick()
 {
     mprf(MSGCH_MULTITURN_ACTION, "You continue drinking.");
-    vampire_nutrition_per_turn(corpse, 0);
 }
 
 void MultidropDelay::tick()
@@ -878,29 +860,11 @@ void EatDelay::finish()
 {
     if (food_turns(food) > 1) // If duration was just one turn, don't print.
         mpr("You finish eating.");
-    finish_eating_item(food);
 }
 
 void FeedVampireDelay::finish()
 {
     mpr("You finish drinking.");
-
-    vampire_nutrition_per_turn(corpse, 1);
-
-    const item_def old_corpse = corpse;
-
-    if (mons_skeleton(corpse.mon_type) && one_chance_in(3))
-    {
-        turn_corpse_into_skeleton(corpse);
-        item_check();
-    }
-    else
-        dec_mitm_item_quantity(corpse.index(), 1);
-
-    if (mons_genus(old_corpse.mon_type) == MONS_ORC)
-        did_god_conduct(DID_DESECRATE_ORCISH_REMAINS, 2);
-    if (mons_class_holiness(corpse.mon_type) & MH_HOLY)
-        did_god_conduct(DID_DESECRATE_HOLY_REMAINS, 2);
 }
 
 void MemoriseDelay::finish()
@@ -1416,13 +1380,6 @@ bool interrupt_activity(activity_interrupt_type ai,
     }
 
     const auto delay = current_delay();
-
-    // If we get hungry while traveling, let's try to auto-eat a chunk.
-    if (ai == AI_HUNGRY && delay->want_autoeat() && _auto_eat()
-        && prompt_eat_chunks(true) == 1)
-    {
-        return false;
-    }
 
     dprf("Activity interrupt: %s", _activity_interrupt_name(ai));
 

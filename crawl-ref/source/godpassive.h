@@ -249,6 +249,25 @@ enum class passive_t
 	///sif muna improves your magical skills
 	magic_skill_boost,
 	
+    ///heroism
+    heroism,
+	
+    ///damage shaving
+    damage_shaving,
+	
+    /// Martial attacks
+    wu_jian_lunge,
+    wu_jian_whirlwind,
+    wu_jian_wall_jump,
+	
+    ///trade AC for big, big damage
+    wu_jian_glass_cannon,
+	
+    ///passive ely purification
+    purification,
+	
+    ///passive ely divine vigour
+    divine_vigour,
 };
 
 enum ru_interference
@@ -262,7 +281,7 @@ bool have_passive(passive_t passive);
 bool will_have_passive(passive_t passive);
 int rank_for_passive(passive_t passive);
 int chei_stat_boost(int piety = you.piety);
-void jiyva_eat_offlevel_items();
+void jiyva_eat_onlevel_items();
 void ash_init_bondage(player *y);
 void ash_check_bondage(bool msg = true);
 string ash_describe_bondage(int flags, bool level);
@@ -270,8 +289,8 @@ bool god_id_item(item_def& item, bool silent = true);
 void ash_id_monster_equipment(monster* mon);
 int ash_detect_portals(bool all);
 monster_type ash_monster_tier(const monster *mon);
+unsigned int ash_skill_point_boost(skill_type sk, int scaled_skill);
 int ash_skill_boost(skill_type sk, int scale);
-int sif_magic_boost(skill_type sk, int scale);
 map<skill_type, int8_t> ash_get_boosted_skills(eq_type type);
 int gozag_gold_in_los(actor* whom);
 int qazlal_sh_boost(int piety = you.piety);
@@ -288,5 +307,12 @@ void dithmenos_shadow_throw(const dist &d, const item_def &item);
 void dithmenos_shadow_spell(bolt* orig_beam, spell_type spell);
 void uskayaw_prepares_audience();
 void uskayaw_bonds_audience();
+
+void wu_jian_wall_jump_effects(const coord_def& old_pos);
+bool wu_jian_has_momentum(wu_jian_attack_type);
+void wu_jian_heaven_tick();
+void wu_jian_post_move_effects(bool did_wall_jump, const coord_def& initial_position);
+void wu_jian_end_of_turn_effects();
+void end_heavenly_storm();
 
 #endif

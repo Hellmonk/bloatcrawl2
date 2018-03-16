@@ -207,7 +207,7 @@ bool give_monster_proper_name(monster& mon, bool orcs_only = true);
 
 bool mons_flattens_trees(const monster& mon);
 size_type mons_class_body_size(monster_type mc);
-bool mons_class_res_wind(monster_type mc);
+bool mons_class_res_tornado(monster_type mc);
 
 mon_itemuse_type mons_class_itemuse(monster_type mc);
 mon_itemuse_type mons_itemuse(const monster& mon);
@@ -320,7 +320,7 @@ void name_zombie(monster& mon, const monster& orig);
 
 int mons_power(monster_type mc);
 
-ucs_t mons_char(monster_type mc);
+char32_t mons_char(monster_type mc);
 char mons_base_char(monster_type mc);
 
 int mons_class_colour(monster_type mc);

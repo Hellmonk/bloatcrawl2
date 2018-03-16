@@ -35,6 +35,7 @@ god_type random_god();
 int piety_breakpoint(int i);
 string god_name(god_type which_god, bool long_name = false);
 string god_name_jiyva(bool second_name = false);
+string wu_jian_random_sifu_name();
 god_type str_to_god(const string &name, bool exact = true);
 
 bool active_penance(god_type god);
@@ -118,6 +119,7 @@ bool vehumet_is_offering(spell_type spell);
 void vehumet_accept_gift(spell_type spell);
 
 mgen_data hepliaklqana_ancestor_gen_data();
+mgen_data yred_enslaved_soul_data();
 string hepliaklqana_ally_name();
 int hepliaklqana_ally_hp();
 

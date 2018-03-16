@@ -311,8 +311,7 @@ static void _unequip_artefact_effect(item_def &item,
 
     if (proprt[ARTP_INVISIBLE] != 0
         && you.duration[DUR_INVIS] > 1
-        && !you.attribute[ATTR_INVIS_UNCANCELLABLE]
-        && !you.evokable_invis())
+        && !you.attribute[ATTR_INVIS_UNCANCELLABLE])
     {
         you.duration[DUR_INVIS] = 1;
     }
@@ -408,12 +407,6 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
         set_ident_flags(item, ISFLAG_IDENT_MASK);
         set_ident_type(OBJ_STAVES, item.sub_type, true);
 
-        if (item.sub_type == STAFF_POWER)
-        {
-            canned_msg(MSG_MANA_INCREASE);
-            calc_mp();
-        }
-
         _wield_cursed(item, known_cursed, unmeld);
         break;
     }
@@ -497,11 +490,15 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
                 case SPWPN_SPEED:
                     mpr(you.hands_act("tingle", "!"));
                     break;
+				
+                case SPWPN_DEVASTATION:
+                    mpr("You feel an incredible weight.");
+                    break;
 
                 case SPWPN_VAMPIRISM:
                     if (you.species == SP_VAMPIRE)
                         mpr("You feel a bloodthirsty glee!");
-                    else if (you.undead_state() == US_ALIVE && !you_foodless())
+                    else if (you.undead_state() == US_ALIVE)
                         mpr("You feel a dreadful hunger.");
                     else
                         mpr("You feel an empty sense of dread.");
@@ -574,13 +571,6 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
                 break;
 
             case SPWPN_VAMPIRISM:
-                if (you.species != SP_VAMPIRE
-                    && you.undead_state() == US_ALIVE
-                    && !you_foodless()
-                    && !unmeld)
-                {
-                    make_hungry(4500, false, false);
-                }
                 break;
 
             case SPWPN_DISTORTION:
@@ -724,11 +714,6 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
             }
         }
     }
-    else if (item.is_type(OBJ_STAVES, STAFF_POWER))
-    {
-        calc_mp();
-        canned_msg(MSG_MANA_DECREASE);
-    }
 
     // Unwielding dismisses an active spectral weapon
     monster *spectral_weapon = find_spectral_weapon(&you);
@@ -843,6 +828,11 @@ static void _equip_armour_effect(item_def& arm, bool unmeld,
 
         case SPARM_PROTECTION:
             mpr("You feel protected.");
+            break;
+			
+        case SPARM_MAGICAL_POWER:
+            canned_msg(MSG_MANA_INCREASE);
+            calc_mp();
             break;
 
         case SPARM_STEALTH:
@@ -962,15 +952,6 @@ static void _unequip_armour_effect(item_def& item, bool meld,
         }
         break;
 
-    case SPARM_INVISIBILITY:
-        if (you.duration[DUR_INVIS]
-            && !you.attribute[ATTR_INVIS_UNCANCELLABLE]
-            && !you.evokable_invis())
-        {
-            you.duration[DUR_INVIS] = 1;
-        }
-        break;
-
     case SPARM_STRENGTH:
         notify_stat_change(STAT_STR, -3, false);
         break;
@@ -1001,6 +982,11 @@ static void _unequip_armour_effect(item_def& item, bool meld,
 
     case SPARM_PROTECTION:
         mpr("You feel less protected.");
+        break;
+		
+    case SPARM_MAGICAL_POWER:
+        canned_msg(MSG_MANA_DECREASE);
+        calc_mp();
         break;
 
     case SPARM_STEALTH:
@@ -1075,21 +1061,24 @@ static void _remove_amulet_of_faith(item_def &item)
 static void _equip_amulet_of_regeneration()
 {
 
-    if (you.get_mutation_level(MUT_NO_REGENERATION) > 0)
-    {
-        mpr("The amulet feels cold and inert.");
-    }
-    else if (you.hp == you.hp_max)
+    if (you.hp == you.hp_max && you.magic_points == you.max_magic_points)
     {
         you.props[REGEN_AMULET_ACTIVE] = 1;
         mpr("The amulet throbs as it attunes itself to your uninjured body.");
     }
     else
     {
-        mpr("You sense that the amulet cannot attune itself to your injured"
-            " body.");
+        mprf("You sense that the amulet cannot attune itself to your %s"
+            " body.", you.hp == you.hp_max ? "exhausted" : 
+                  you.magic_points == you.max_magic_points ? "injured" : 
+                  "injured and exhausted");
         you.props[REGEN_AMULET_ACTIVE] = 0;
     }
+}
+
+static void _equip_amulet_of_destruction()
+{
+    mpr("You feel ready to unleash your destructive magic.");
 }
 
 static void _equip_amulet_of_mana_regeneration()
@@ -1153,13 +1142,8 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
         notify_stat_change(STAT_INT, item.plus, false);
         break;
 
-    case RING_MAGICAL_POWER:
-        canned_msg(MSG_MANA_INCREASE);
-        calc_mp();
-        break;
-
     case AMU_FAITH:
-        if (you.species == SP_DEMIGOD)
+        if (you.species == SP_DEMIGOD || you.species == SP_TITAN)
             mpr("You feel a surge of self-confidence.");
         else if (you_worship(GOD_RU) && you.piety >= piety_breakpoint(5))
         {
@@ -1188,6 +1172,11 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
 
     case AMU_GUARDIAN_SPIRIT:
         _spirit_shield_message(unmeld);
+        break;
+		
+    case AMU_DESTRUCTION:
+        if (!unmeld)
+            _equip_amulet_of_destruction();
         break;
     }
 
@@ -1274,13 +1263,14 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
         notify_stat_change(STAT_INT, -item.plus, false);
         break;
 
-    case RING_MAGICAL_POWER:
-        canned_msg(MSG_MANA_DECREASE);
-        break;
-
     case AMU_FAITH:
         if (!meld)
             _remove_amulet_of_faith(item);
+        break;
+		
+    case AMU_DESTRUCTION:
+        if(you.duration[DUR_DESTRUCTION])
+            you.duration[DUR_DESTRUCTION] = 0;
         break;
 
     case AMU_GUARDIAN_SPIRIT:

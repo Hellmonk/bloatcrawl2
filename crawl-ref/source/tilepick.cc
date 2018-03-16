@@ -445,6 +445,8 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_DNGN_ALTAR_USKAYAW;
     case DNGN_ALTAR_HEPLIAKLQANA:
         return TILE_DNGN_ALTAR_HEPLIAKLQANA;
+    case DNGN_ALTAR_WU_JIAN:
+        return TILE_DNGN_ALTAR_WU_JIAN;
     case DNGN_ALTAR_ECUMENICAL:
         return TILE_DNGN_ALTAR_ECUMENICAL;
     case DNGN_FOUNTAIN_BLUE:
@@ -611,11 +613,13 @@ static tileidx_t _mon_random(tileidx_t tile)
     return tile + ui_random(count);
 }
 
+#ifdef USE_TILE
 static bool _mons_is_kraken_tentacle(const int mtype)
 {
     return mtype == MONS_KRAKEN_TENTACLE
            || mtype == MONS_KRAKEN_TENTACLE_SEGMENT;
 }
+#endif
 
 tileidx_t tileidx_tentacle(const monster_info& mon)
 {
@@ -693,9 +697,18 @@ tileidx_t tileidx_tentacle(const monster_info& mon)
     {
         if (no_head_connect)
         {
-            if (_mons_is_kraken_tentacle(mon.type))
-                return _mon_random(TILEP_MONS_KRAKEN_TENTACLE_WATER);
-            else return _mon_random(TILEP_MONS_ELDRITCH_TENTACLE_PORTAL);
+            tileidx_t tile;
+            switch (mon.type)
+            {
+                case MONS_KRAKEN_TENTACLE: tile = TILEP_MONS_KRAKEN_TENTACLE_WATER; break;
+                case MONS_STARSPAWN_TENTACLE: tile = TILEP_MONS_STARSPAWN_TENTACLE_S; break;
+                case MONS_ELDRITCH_TENTACLE: tile = TILEP_MONS_ELDRITCH_TENTACLE_PORTAL; break;
+                case MONS_SNAPLASHER_VINE: tile = TILEP_MONS_VINE_S; break;
+                default: die("bad tentacle type");
+            }
+
+            bool vary = !(mon.props.exists("fake") && mon.props["fake"].get_bool());
+            return vary ? _mon_random(tile) : tile;
         }
 
         // Different handling according to relative positions.
@@ -1087,7 +1100,6 @@ static tileidx_t _zombie_tile_to_skeleton(const tileidx_t z_tile)
     case TILEP_MONS_ZOMBIE_GNOLL:
     case TILEP_MONS_ZOMBIE_ORC:
     case TILEP_MONS_ZOMBIE_HUMAN:
-    case TILEP_MONS_ZOMBIE_DRACONIAN:
     case TILEP_MONS_ZOMBIE_ELF:
     case TILEP_MONS_ZOMBIE_MERFOLK:
     case TILEP_MONS_ZOMBIE_MINOTAUR:
@@ -1149,6 +1161,8 @@ static tileidx_t _zombie_tile_to_skeleton(const tileidx_t z_tile)
         return TILEP_MONS_SKELETON_DRAKE;
     case TILEP_MONS_ZOMBIE_UGLY_THING:
         return TILEP_MONS_SKELETON_UGLY_THING;
+    case TILEP_MONS_ZOMBIE_DRACONIAN:
+        return TILEP_MONS_SKELETON_DRACONIAN;
     default:
         if (tile_player_basetile(z_tile) == TILEP_MONS_ZOMBIE_HYDRA)
         {
@@ -1244,6 +1258,8 @@ static tileidx_t _mon_to_zombie_tile(const monster_info &mon)
         { MONS_SALAMANDER,              TILEP_MONS_ZOMBIE_SALAMANDER, },
         { MONS_SPRIGGAN,                TILEP_MONS_ZOMBIE_SPRIGGAN, },
         { MONS_YAKTAUR,                 TILEP_MONS_ZOMBIE_YAKTAUR, },
+        { MONS_YAK,                     TILEP_MONS_ZOMBIE_YAK, },
+        { MONS_BEAR,                    TILEP_MONS_ZOMBIE_BEAR, },
     };
 
     struct shape_size_tiles {
@@ -1369,7 +1385,7 @@ static tileidx_t _modrng(int mod, tileidx_t first, tileidx_t last)
 // extra parameters that have reasonable defaults for monsters where
 // only the type is known are pushed here.
 tileidx_t tileidx_monster_base(int type, bool in_water, int colour, int number,
-                               int tile_num_prop)
+                               int tile_num_prop, bool vary)
 {
     switch (type)
     {
@@ -1400,7 +1416,7 @@ tileidx_t tileidx_monster_base(int type, bool in_water, int colour, int number,
 
     const monster_type mtype = static_cast<monster_type>(type);
     const tileidx_t base_tile = get_mon_base_tile(mtype);
-    const mon_type_tile_variation vary_type = get_mon_tile_variation(mtype);
+    const mon_type_tile_variation vary_type = vary ? get_mon_tile_variation(mtype) : TVARY_NONE;
     switch (vary_type)
     {
     case TVARY_NONE:
@@ -1596,9 +1612,10 @@ static tileidx_t _tileidx_monster_no_props(const monster_info& mon)
     if (mon.props.exists(TILE_NUM_KEY))
         tile_num = mon.props[TILE_NUM_KEY].get_short();
 
+    bool vary = !(mon.props.exists("fake") && mon.props["fake"].get_bool());
     const tileidx_t base = tileidx_monster_base(mon.type, in_water,
                                                 mon.colour(true),
-                                                mon.number, tile_num);
+                                                mon.number, tile_num, vary);
 
     switch (mon.type)
     {
@@ -1806,6 +1823,12 @@ tileidx_t tileidx_monster(const monster_info& mons)
         ch |= TILE_FLAG_BOUND_SOUL;
     if (mons.is(MB_INFESTATION))
         ch |= TILE_FLAG_INFESTED;
+    if (mons.is(MB_CORROSION))
+        ch |= TILE_FLAG_CORRODED;
+    if (mons.is(MB_SWIFT))
+        ch |= TILE_FLAG_SWIFT;
+    if (mons.is(MB_PINNED))
+        ch |= TILE_FLAG_PINNED;
 
     if (mons.attitude == ATT_FRIENDLY)
         ch |= TILE_FLAG_PET;
@@ -2196,15 +2219,6 @@ static tileidx_t _tileidx_chunk(const item_def &item)
 {
     if (is_inedible(item))
         return TILE_FOOD_CHUNK_INEDIBLE;
-
-    if (is_mutagenic(item))
-        return TILE_FOOD_CHUNK_MUTAGENIC;
-
-    if (is_noxious(item))
-        return TILE_FOOD_CHUNK_ROTTING;
-
-    if (is_forbidden_food(item))
-        return TILE_FOOD_CHUNK_FORBIDDEN;
 
     return TILE_FOOD_CHUNK;
 }
@@ -3208,6 +3222,8 @@ tileidx_t tileidx_ability(const ability_type ability)
     case ABIL_END_DCHAN:
     case ABIL_END_ABJURATION:
     case ABIL_END_INFUSION:
+    case ABIL_END_ANIMATE_DEAD:
+    case ABIL_END_SPECTRAL_WEAPON:
         return TILEG_ABILITY_END_TRANSFORMATION;
 
     // Species-specific abilities.
@@ -3271,7 +3287,7 @@ tileidx_t tileidx_ability(const ability_type ability)
     case ABIL_TSO_BLESS_WEAPON:
         return TILEG_ABILITY_TSO_BLESS_WEAPON;
     // Kiku
-    case ABIL_KIKU_RECEIVE_CORPSES:
+    case ABIL_KIKU_MIASMA:
         return TILEG_ABILITY_KIKU_RECEIVE_CORPSES;
     case ABIL_KIKU_TORMENT:
         return TILEG_ABILITY_KIKU_TORMENT;
@@ -3485,6 +3501,7 @@ tileidx_t tileidx_ability(const ability_type ability)
     case ABIL_HEPLIAKLQANA_IDEALISE:
         return TILEG_ABILITY_HEP_IDEALISE;
     case ABIL_HEPLIAKLQANA_TRANSFERENCE:
+    case ABIL_YRED_TRANSFERENCE:
         return TILEG_ABILITY_HEP_TRANSFERENCE;
     case ABIL_HEPLIAKLQANA_IDENTITY:
         return TILEG_ABILITY_HEP_IDENTITY;
@@ -3501,6 +3518,11 @@ tileidx_t tileidx_ability(const ability_type ability)
         return TILEG_ABILITY_USKAYAW_LINE_PASS;
    case ABIL_USKAYAW_GRAND_FINALE:
         return TILEG_ABILITY_USKAYAW_GRAND_FINALE;
+    // Wu Jian
+    case ABIL_WU_JIAN_SERPENTS_LASH:
+        return TILEG_ABILITY_WU_JIAN_SERPENTS_LASH;
+    case ABIL_WU_JIAN_HEAVENLY_STORM:
+        return TILEG_ABILITY_WU_JIAN_HEAVENLY_STORM;
 
     // General divine (pseudo) abilities.
     case ABIL_RENOUNCE_RELIGION:
@@ -3590,16 +3612,6 @@ tileidx_t tileidx_corpse_brand(const item_def &item)
     // Vampires are only interested in fresh blood.
     if (you.species == SP_VAMPIRE && !mons_has_blood(item.mon_type))
         return TILE_FOOD_INEDIBLE;
-
-    // Harmful chunk effects > religious rules > reduced nutrition.
-    if (is_mutagenic(item))
-        return TILE_FOOD_MUTAGENIC;
-
-    if (is_noxious(item))
-        return TILE_FOOD_ROTTING;
-
-    if (is_forbidden_food(item))
-        return TILE_FOOD_FORBIDDEN;
 
     return 0;
 }

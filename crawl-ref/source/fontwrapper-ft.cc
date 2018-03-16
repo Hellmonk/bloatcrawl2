@@ -182,7 +182,7 @@ bool FTFontWrapper::load_font(const char *font_name, unsigned int font_size,
     return true;
 }
 
-void FTFontWrapper::load_glyph(unsigned int c, ucs_t uchar)
+void FTFontWrapper::load_glyph(unsigned int c, char32_t uchar)
 {
     // get on with rendering the new glyph
     FT_Error error;
@@ -285,7 +285,14 @@ void FTFontWrapper::load_glyph(unsigned int c, ucs_t uchar)
     }
 }
 
-unsigned int FTFontWrapper::map_unicode(ucs_t uchar)
+unsigned int FTFontWrapper::map_unicode(char *ch)
+{
+    char32_t c;
+    utf8towc(&c, ch);
+    return map_unicode(c);
+}
+
+unsigned int FTFontWrapper::map_unicode(char32_t uchar)
 {
     unsigned int c;  // index in m_glyphs
     if (!m_glyphmap.count(uchar))
@@ -369,7 +376,7 @@ unsigned int FTFontWrapper::map_unicode(ucs_t uchar)
 }
 
 void FTFontWrapper::render_textblock(unsigned int x_pos, unsigned int y_pos,
-                                     ucs_t *chars,
+                                     char32_t *chars,
                                      uint8_t *colours,
                                      unsigned int width, unsigned int height,
                                      bool drop_shadow)
@@ -519,7 +526,7 @@ unsigned int FTFontWrapper::string_height(const formatted_string &str) const
 unsigned int FTFontWrapper::string_height(const char *text) const
 {
     int height = 1;
-    for (const char *itr = text; (*itr); itr++)
+    for (char *itr = (char *)text; *itr; itr = next_glyph(itr))
         if (*itr == '\n')
             height++;
 
@@ -539,7 +546,7 @@ unsigned int FTFontWrapper::string_width(const char *text)
 
     unsigned int width = base_width;
     unsigned int adjust = 0;
-    for (const unsigned char *itr = (unsigned const char *)text; *itr; itr++)
+    for (char *itr = (char *)text; *itr; itr = next_glyph(itr))
     {
         if (*itr == '\n')
         {
@@ -549,7 +556,7 @@ unsigned int FTFontWrapper::string_width(const char *text)
         }
         else
         {
-            unsigned int c = map_unicode(*itr);
+            unsigned int c = map_unicode(itr);
             width += m_glyphs[c].advance;
             adjust = max(0, m_glyphs[c].width - m_glyphs[c].advance);
         }
@@ -565,16 +572,27 @@ int FTFontWrapper::find_index_before_width(const char *text, int max_width)
 
     max_width *= scale_num / scale_den;
 
-    for (int i = 0; text[i]; i++)
+    for (char *itr = (char *)text; *itr; itr = next_glyph(itr))
     {
-        unsigned int c = map_unicode(text[i]);
+        if (*itr == '\n')
+        {
+            width = 0;
+            continue;
+        }
+        unsigned int c = map_unicode(itr);
         width += m_glyphs[c].advance;
         int adjust = max(0, m_glyphs[c].width - m_glyphs[c].advance);
         if (width + adjust > max_width)
-            return i;
+            return itr-text;
     }
 
-    return -1;
+    return INT_MAX;
+}
+
+static int _find_newline(const char *s)
+{
+    const char *nl = strchr(s, '\n');
+    return nl ? nl-s : INT_MAX;
 }
 
 formatted_string FTFontWrapper::split(const formatted_string &str,
@@ -595,30 +613,44 @@ formatted_string FTFontWrapper::split(const formatted_string &str,
     char *line = &base[0];
     while (true)
     {
+        int nl = _find_newline(line);
         int line_end = find_index_before_width(line, max_width);
-        if (line_end == -1)
+        if (line_end == INT_MAX && nl == INT_MAX)
             break;
 
         int space_idx = 0;
-        for (char *search = &line[line_end]; search > line; search--)
+        if (nl < line_end)
+            space_idx = nl;
+        else
         {
-            if (*search == ' ')
+            space_idx = -1;
+            for (char *search = &line[line_end]; search > line; search = prev_glyph(search, line))
             {
-                space_idx = search - line;
-                break;
+                if (*search == ' ')
+                {
+                    space_idx = search - line;
+                    break;
+                }
             }
         }
 
-        if (++num_lines >= max_lines || !space_idx)
+        if (++num_lines >= max_lines || space_idx == -1)
         {
+            line_end = min(line_end, nl);
             int ellipses;
-            if (space_idx && space_idx - line_end > 2)
+            if (space_idx != -1 && space_idx - line_end > 2)
                 ellipses = space_idx;
             else
-                ellipses = line_end - 2;
+            {
+                ellipses = line_end;
+                for (unsigned i = 0; i < strlen(".."); i++)
+                {
+                    char *prev = prev_glyph(&line[ellipses], line);
+                    ellipses = (prev ? prev : line) - line;
+                }
+            }
 
-            size_t idx = &line[ellipses] - &base[0];
-            ret = ret.chop(idx);
+            ret = ret.chop_bytes(&line[ellipses] - &base[0]);
             ret += formatted_string("..");
             return ret;
         }
@@ -650,7 +682,7 @@ void FTFontWrapper::render_string(unsigned int px, unsigned int py,
     unsigned int max_rows = 1;
     unsigned int cols = 0;
     unsigned int max_cols = 0;
-    ucs_t c;
+    char32_t c;
     for (const char *tp = text; int s = utf8towc(&c, tp); tp += s)
     {
         int w = wcwidth(c);
@@ -669,7 +701,7 @@ void FTFontWrapper::render_string(unsigned int px, unsigned int py,
     }
 
     // Create the text block
-    ucs_t *chars = (ucs_t*)malloc(max_rows * max_cols * sizeof(ucs_t));
+    char32_t *chars = (char32_t*)malloc(max_rows * max_cols * sizeof(char32_t));
     uint8_t *colours = (uint8_t*)malloc(max_rows * max_cols);
     for (unsigned int i = 0; i < max_rows * max_cols; i++)
         chars[i] = ' ';
@@ -742,17 +774,36 @@ void FTFontWrapper::render_string(unsigned int px, unsigned int py,
     free(colours);
 }
 
+/**
+ * Store a string in a FontBuffer.
+ *
+ * @param buf the FontBuffer to store the glyph in.
+ * @param x the x coordinate
+ * @param y the y coordinate
+ * @param str the string to store
+ * @param col a foreground color
+ */
 void FTFontWrapper::store(FontBuffer &buf, float &x, float &y,
                           const string &str, const VColour &col)
 {
     store(buf, x, y, str, col, x);
 }
 
+/**
+ * Store a string in a FontBuffer.
+ *
+ * @param buf the FontBuffer to store the glyph in.
+ * @param x the x coordinate
+ * @param y the y coordinate
+ * @param str the string to store
+ * @param col a foreground color
+ * @param orig_x an x offset to use as an origin
+ */
 void FTFontWrapper::store(FontBuffer &buf, float &x, float &y,
                           const string &str, const VColour &col, float orig_x)
 {
     const char *sp = str.c_str();
-    ucs_t c;
+    char32_t c;
     while (int s = utf8towc(&c, sp))
     {
         sp += s;
@@ -766,12 +817,29 @@ void FTFontWrapper::store(FontBuffer &buf, float &x, float &y,
     }
 }
 
+/**
+ * Store a formatted_string in a FontBuffer.
+ *
+ * @param buf the FontBuffer to store the glyph in.
+ * @param x the x coordinate
+ * @param y the y coordinate
+ * @param fs the formatted string to store
+ */
 void FTFontWrapper::store(FontBuffer &buf, float &x, float &y,
                           const formatted_string &fs)
 {
     store(buf, x, y, fs, x);
 }
 
+/**
+ * Store a formatted_string in a FontBuffer.
+ *
+ * @param buf the FontBuffer to store the glyph in.
+ * @param x the x coordinate
+ * @param y the y coordinate
+ * @param fs the formatted string to store
+ * @param orig_x an x offset to use as an origin
+ */
 void FTFontWrapper::store(FontBuffer &buf, float &x, float &y,
                           const formatted_string &fs, float orig_x)
 {
@@ -793,8 +861,17 @@ void FTFontWrapper::store(FontBuffer &buf, float &x, float &y,
     }
 }
 
+/**
+ * Store a single glyph in a FontBuffer.
+ *
+ * @param buf the FontBuffer to store the glyph in.
+ * @param x the x coordinate
+ * @param y the y coordinate
+ * @param ch a (unicode) character
+ * @param fg_col the foreground color to print
+ */
 void FTFontWrapper::store(FontBuffer &buf, float &x, float &y,
-                          ucs_t ch, const VColour &col)
+                          char32_t ch, const VColour &col)
 {
     unsigned int c = map_unicode(ch);
     if (!m_glyphs[c].renderable)
@@ -824,6 +901,33 @@ void FTFontWrapper::store(FontBuffer &buf, float &x, float &y,
 
     x += m_glyphs[c].advance * (float)scale_den / (float)scale_num;
 }
+
+/**
+ * Store a single glyph, with both a background and a foreground color.
+ *
+ * @param buf the FontBuffer to store the glyph in.
+ * @param x the x coordinate
+ * @param y the y coordinate
+ * @param ch a (unicode) character
+ * @param fg_col the foreground color to print
+ * @param bg_col the background color to print
+ */
+void FTFontWrapper::store(FontBuffer &buf, float &x, float &y,
+                          char32_t ch, const VColour &fg_col, const VColour &bg_col)
+{
+    unsigned int c = map_unicode(ch);
+    int this_width = m_glyphs[c].width;
+    int normal_width = m_glyphs[map_unicode('9')].width;
+
+    float bg_width = max(this_width, normal_width) * (float)scale_den / (float)scale_num;
+    float bg_height = m_max_height * (float)scale_den / (float)scale_num;
+    GLWPrim bg_rect(x, y, x + bg_width, y + bg_height);
+    bg_rect.set_col(bg_col);
+    buf.add_primitive(bg_rect);
+
+    store(buf, x, y, ch, fg_col);
+}
+
 
 unsigned int FTFontWrapper::char_width() const
 {

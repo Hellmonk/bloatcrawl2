@@ -92,8 +92,8 @@ void wizard_create_spec_object_by_name()
 
 void wizard_create_spec_object()
 {
-    char           specs[80];
-    ucs_t          keyin;
+    char specs[80];
+    char32_t keyin;
     object_class_type class_wanted;
 
     do
@@ -1056,6 +1056,7 @@ static void _debug_acquirement_stats(FILE *ostat)
 #endif
             "penetration",
             "reaping",
+            "devastation",
             "INVALID",
             "acid",
 #if TAG_MAJOR_VERSION > 34

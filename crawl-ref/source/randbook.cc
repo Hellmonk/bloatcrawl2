@@ -978,21 +978,11 @@ void make_book_kiku_gift(item_def &book, bool first)
 
     if (first)
     {
-        bool can_bleed = you.species != SP_GARGOYLE
-            && you.species != SP_GHOUL
-            && you.species != SP_MUMMY;
-        bool can_regen = you.species != SP_MUMMY;
-        bool pain = coinflip();
-
-        chosen_spells[0] = pain ? SPELL_PAIN : SPELL_ANIMATE_SKELETON;
-        chosen_spells[1] = SPELL_CORPSE_ROT;
-        chosen_spells[2] = (can_bleed ? SPELL_SUBLIMATION_OF_BLOOD
-                            : pain ? SPELL_ANIMATE_SKELETON
-                            : SPELL_PAIN);
-        chosen_spells[3] = (!can_regen || coinflip())
-            ? SPELL_VAMPIRIC_DRAINING : SPELL_REGENERATION;
+        chosen_spells[0] = SPELL_PAIN;
+        chosen_spells[1] = SPELL_SUBLIMATION_OF_BLOOD;
+        chosen_spells[2] = SPELL_REGENERATION;
+        chosen_spells[3] = SPELL_VAMPIRIC_DRAINING;
         chosen_spells[4] = SPELL_CONTROL_UNDEAD;
-
     }
     else
     {
@@ -1001,7 +991,7 @@ void make_book_kiku_gift(item_def &book, bool first)
         chosen_spells[1] = coinflip()
             ? SPELL_AGONY : SPELL_EXCRUCIATING_WOUNDS;
         chosen_spells[2] = random_choose(SPELL_BOLT_OF_DRAINING,
-                                         SPELL_SIMULACRUM,
+                                         SPELL_AGONY,
                                          SPELL_DEATH_CHANNEL);
         spell_type extra_spell;
         do
@@ -1011,7 +1001,6 @@ void make_book_kiku_gift(item_def &book, bool first)
                                         SPELL_AGONY,
                                         SPELL_EXCRUCIATING_WOUNDS,
                                         SPELL_BOLT_OF_DRAINING,
-                                        SPELL_SIMULACRUM,
                                         SPELL_DEATH_CHANNEL);
             for (int i = 0; i < 3; i++)
                 if (extra_spell == chosen_spells[i])

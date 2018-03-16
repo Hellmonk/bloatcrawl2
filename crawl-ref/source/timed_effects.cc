@@ -12,6 +12,7 @@
 #include "areas.h"
 #include "beam.h"
 #include "bloodspatter.h"
+#include "branch.h"
 #include "cloud.h"
 #include "coordit.h"
 #include "database.h"
@@ -32,6 +33,7 @@
 #include "mon-behv.h"
 #include "mon-death.h"
 #include "mon-pathfind.h"
+#include "mon-pick.h"
 #include "mon-place.h"
 #include "mon-project.h"
 #include "mutation.h"
@@ -792,8 +794,8 @@ static void _magic_contamination_effects()
 static void _handle_magic_contamination(int /*time_delta*/)
 {
     // [ds] Move magic contamination effects closer to b26 again.
-    const bool glow_effect = get_contamination_level() > 1
-            && x_chance_in_y(you.magic_contamination, 12000);
+    const bool glow_effect = player_severe_contamination()
+                             && x_chance_in_y(you.magic_contamination, 12000);
 
     if (glow_effect)
     {
@@ -836,76 +838,47 @@ static void _abyss_speed(int /*time_delta*/)
 
 static void _jiyva_effects(int /*time_delta*/)
 {
-    if (have_passive(passive_t::jellies_army) && one_chance_in(10))
-    {
-        int total_jellies = 1 + random2(5);
-        bool success = false;
-        for (int num_jellies = total_jellies; num_jellies > 0; num_jellies--)
-        {
-            // Spread jellies around the level.
-            coord_def newpos;
-            do
-            {
-                newpos = random_in_bounds();
-            }
-            while (grd(newpos) != DNGN_FLOOR
-                       && grd(newpos) != DNGN_SHALLOW_WATER
-                   || monster_at(newpos)
-                   || cloud_at(newpos)
-                   || testbits(env.pgrid(newpos), FPROP_NO_JIYVA));
-
-            mgen_data mg(MONS_JELLY, BEH_STRICT_NEUTRAL, newpos);
-            mg.god = GOD_JIYVA;
-            mg.non_actor_summoner = "Jiyva";
-
-            if (create_monster(mg))
-                success = true;
-        }
-
-        if (success && !silenced(you.pos()))
-        {
-            switch (random2(3))
-            {
-                case 0:
-                    simple_god_message(" gurgles merrily.");
-                    break;
-                case 1:
-                    mprf(MSGCH_SOUND, "You hear %s splatter%s.",
-                         total_jellies > 1 ? "a series of" : "a",
-                         total_jellies > 1 ? "s" : "");
-                    break;
-                case 2:
-                    simple_god_message(" says: Divide and consume!");
-                    break;
-            }
-        }
-    }
-
     if (have_passive(passive_t::fluid_stats)
         && x_chance_in_y(you.piety / 4, MAX_PIETY)
-        && !player_under_penance() && one_chance_in(4))
+        && !player_under_penance() && one_chance_in(10))
     {
         jiyva_stat_action();
     }
 
-    if (have_passive(passive_t::jelly_eating) && one_chance_in(25))
-        jiyva_eat_offlevel_items();
+    if (have_passive(passive_t::jelly_eating))
+        for(int i = 0; i < 3; i++)
+        {
+            jiyva_eat_onlevel_items();
+        }
 }
 
 static void _evolve(int time_delta)
 {
     if (you.get_mutation_level(MUT_EVOLUTION))
-        if (x_chance_in_y(3, 4)
+        if (x_chance_in_y(4, 5)
             && you.attribute[ATTR_EVOL_XP] * (1 + random2(10))
                > (int)exp_needed(you.experience_level + 1))
         {
             you.attribute[ATTR_EVOL_XP] = 0;
             mpr("You feel a genetic drift.");
-            bool evol = one_chance_in(5) ?
-                delete_mutation(RANDOM_BAD_MUTATION, "evolution", false) :
-                mutate(coinflip() ? RANDOM_GOOD_MUTATION : RANDOM_MUTATION,
-                       "evolution", false, false, false, false, MUTCLASS_NORMAL,
-                       true);
+			
+            bool evol = false;
+			
+            if(you.species == SP_KOBOLD && one_chance_in(7))
+            {
+               evol = one_chance_in(4) ?
+                    delete_mutation(RANDOM_KOBOLD_MUTATION, "evolution", false) :
+                    mutate(RANDOM_KOBOLD_MUTATION, "evolution",
+                   false, false, false, false, MUTCLASS_NORMAL, true);
+            }
+            else
+            {
+                evol = one_chance_in(5) ?
+                    delete_mutation(RANDOM_BAD_MUTATION, "evolution", false) :
+                    mutate(coinflip() ? RANDOM_GOOD_MUTATION : RANDOM_MUTATION,
+                           "evolution", false, false, false, false, MUTCLASS_NORMAL,
+                           true);
+            }
             // it would kill itself anyway, but let's speed that up
             if (one_chance_in(10)
                 && (!you.rmut_from_item()
@@ -925,6 +898,54 @@ static int _div(int num, int denom)
 {
     div_t res = div(num, denom);
     return res.rem >= 0 ? res.quot : res.quot - 1;
+}
+
+static const pop_entry _antiscum_summons[] =
+{ // reeeeeemove scummers
+  {  1,  7,   2, FLAT, MONS_CENTAUR },
+  {  4, 12,   2, FLAT, MONS_ORC_SORCERER },
+  { 10, 18,   2, FLAT, MONS_DEEP_ELF_HIGH_PRIEST },
+  { 15, 24,   2, FLAT, MONS_TITAN },
+  { 21, 27,   2, FLAT, MONS_ANCIENT_LICH },
+  { 26, 27,   2, FLAT, MONS_PANDEMONIUM_LORD },
+  { 0,0,0,FLAT,MONS_0 }
+};
+
+static bool _antiscumming_summon()
+{
+	monster_type mtyp = pick_monster_from(_antiscum_summons,
+                                              you.experience_level);
+	mgen_data mg = mgen_data::hostile_at(mtyp, true, you.pos())
+                    .set_summoned(nullptr, 0, 0)
+                    .set_non_actor_summoner("The dungeon");
+    mg.extra_flags |= (MF_NO_REWARD | MF_HARD_RESET);
+	return create_monster(mg, false);
+}
+
+static void _antiscumming(int /*time_delta*/)
+{
+    if (crawl_state.difficulty == DIFFICULTY_CASUAL)
+        return;
+    if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN
+        && env.turns_on_level > 500)
+    {
+		int amount = 3 + (env.turns_on_level - 500) / 40;
+        rot_hp(amount);
+        mprf(MSGCH_WARN, "You feel yourself rotting away!");
+        return;
+	}
+    if(env.turns_on_level < 3000)
+        return;
+    if(player_in_branch(BRANCH_ABYSS))
+        return;
+    //make it loud
+    noisy(30, you.pos());
+    mprf(MSGCH_WARN, "The dungeon lashes out against you!");
+	int num_summons = 2 + random2(4);
+    for(int i = 1; i <= num_summons; ++i)
+    {
+        _antiscumming_summon();
+    }
 }
 
 struct timed_effect
@@ -950,14 +971,14 @@ static struct timed_effect timed_effects[] =
 #if TAG_MAJOR_VERSION == 34
     { nullptr,                                0,     0, false },
 #endif
-    { rot_inventory_food,            100,   300, false },
+    { _antiscumming,                 400,   700, false },
     { _wait_practice,                100,   300, false },
     { _lab_change,                  1000,  3000, false },
     { _abyss_speed,                  100,   300, false },
     { _jiyva_effects,                100,   300, false },
     { _evolve,                      5000, 15000, false },
 #if TAG_MAJOR_VERSION == 34
-    { nullptr,                         0,     0, false },
+	{  nullptr,                        0,     0, false },
 #endif
 };
 
@@ -1298,7 +1319,8 @@ void monster::timeout_enchantments(int levels)
         case ENCH_FRIENDLY_BRIBED: case ENCH_CORROSION: case ENCH_GOLD_LUST:
         case ENCH_RESISTANCE: case ENCH_HEXED: case ENCH_IDEALISED:
         case ENCH_BOUND_SOUL:
-        case ENCH_STILL_WINDS:
+        case ENCH_STILL_WINDS: case ENCH_PHASE_SHIFT:
+        case ENCH_WHIRLWIND_PINNED:
             lose_ench_levels(entry.second, levels);
             break;
 

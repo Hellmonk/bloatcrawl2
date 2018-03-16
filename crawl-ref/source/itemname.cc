@@ -422,7 +422,7 @@ static const char *weapon_brands_terse[] =
 #if TAG_MAJOR_VERSION == 34
     "evade", "confuse",
 #endif
-    "penet", "reap", "buggy-num", "acid",
+    "penet", "reap", "devast", "buggy-num", "acid",
 #if TAG_MAJOR_VERSION > 34
     "confuse",
 #endif
@@ -447,10 +447,11 @@ static const char *weapon_brands_verbose[] =
 #if TAG_MAJOR_VERSION == 34
     "evasion", "confusion",
 #endif
-    "penetration", "reaping", "buggy-num", "acid",
+    "penetration", "reaping", "devastation", "buggy-num", "acid",
 #if TAG_MAJOR_VERSION > 34
     "confusion",
 #endif
+
     "debug",
 };
 
@@ -541,8 +542,10 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_FIRE_RESISTANCE:   return "fire resistance";
         case SPARM_COLD_RESISTANCE:   return "cold resistance";
         case SPARM_POISON_RESISTANCE: return "poison resistance";
+#if TAG_MAJOR_VERSION == 34
         case SPARM_SEE_INVISIBLE:     return "see invisible";
         case SPARM_INVISIBILITY:      return "invisibility";
+#endif
         case SPARM_STRENGTH:          return "strength";
         case SPARM_DEXTERITY:         return "dexterity";
         case SPARM_INTELLIGENCE:      return "intelligence";
@@ -552,6 +555,7 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_MAGIC_RESISTANCE:  return "magic resistance";
         case SPARM_PROTECTION:        return "protection";
         case SPARM_STEALTH:           return "stealth";
+        case SPARM_MAGICAL_POWER:     return "magical power";
         case SPARM_RESISTANCE:        return "resistance";
         case SPARM_POSITIVE_ENERGY:   return "positive energy";
         case SPARM_ARCHMAGI:          return "the Archmagi";
@@ -575,7 +579,9 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_COLD_RESISTANCE:   return "rC+";
         case SPARM_POISON_RESISTANCE: return "rPois";
         case SPARM_SEE_INVISIBLE:     return "SInv";
-        case SPARM_INVISIBILITY:      return "+Inv";
+#if TAG_MAJOR_VERSION == 34
+        case SPARM_INVISIBILITY:      return "obsolete";
+#endif
         case SPARM_STRENGTH:          return "Str+3";
         case SPARM_DEXTERITY:         return "Dex+3";
         case SPARM_INTELLIGENCE:      return "Int+3";
@@ -584,6 +590,7 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_MAGIC_RESISTANCE:  return "MR+";
         case SPARM_PROTECTION:        return "AC+3";
         case SPARM_STEALTH:           return "Stlth+";
+        case SPARM_MAGICAL_POWER:     return "MP+9";
         case SPARM_RESISTANCE:        return "rC+ rF+";
         case SPARM_POSITIVE_ENERGY:   return "rN+";
         case SPARM_ARCHMAGI:          return "Archmagi";
@@ -604,7 +611,6 @@ static const char* _wand_type_name(int wandtype)
     switch (wandtype)
     {
     case WAND_FLAME:           return "flame";
-    case WAND_SLOWING:         return "slowing";
     case WAND_PARALYSIS:       return "paralysis";
     case WAND_CONFUSION:       return "confusion";
     case WAND_DIGGING:         return "digging";
@@ -647,13 +653,15 @@ const char* potion_type_name(int potiontype)
 {
     switch (static_cast<potion_type>(potiontype))
     {
+#if TAG_MAJOR_VERSION == 34
     case POT_CURING:            return "curing";
+#endif
     case POT_HEAL_WOUNDS:       return "heal wounds";
     case POT_HASTE:             return "haste";
-    case POT_MIGHT:             return "might";
+    case POT_MIGHT:             return "augmentation";
+#if TAG_MAJOR_VERSION == 34
     case POT_AGILITY:           return "agility";
     case POT_BRILLIANCE:        return "brilliance";
-#if TAG_MAJOR_VERSION == 34
     case POT_GAIN_STRENGTH:     return "gain strength";
     case POT_GAIN_DEXTERITY:    return "gain dexterity";
     case POT_GAIN_INTELLIGENCE: return "gain intelligence";
@@ -759,7 +767,9 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
 #endif
         case RING_STRENGTH:              return "strength";
         case RING_SLAYING:               return "slaying";
+#if TAG_MAJOR_VERSION == 34
         case RING_SEE_INVISIBLE:         return "see invisible";
+#endif
         case RING_RESIST_CORROSION:      return "resist corrosion";
 #if TAG_MAJOR_VERSION == 34
         case RING_LOUDNESS:              return "loudness";
@@ -773,8 +783,8 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
         case RING_DEXTERITY:             return "dexterity";
         case RING_INTELLIGENCE:          return "intelligence";
         case RING_WIZARDRY:              return "wizardry";
-        case RING_MAGICAL_POWER:         return "magical power";
 #if TAG_MAJOR_VERSION == 34
+        case RING_MAGICAL_POWER:         return "magical power";
         case RING_FLIGHT:                return "flight";
 #endif
         case RING_LIFE_PROTECTION:       return "positive energy";
@@ -783,9 +793,7 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
         case RING_ICE:                   return "ice";
 #if TAG_MAJOR_VERSION == 34
         case RING_TELEPORT_CONTROL:      return "teleport control";
-#endif
         case AMU_RAGE:              return "rage";
-#if TAG_MAJOR_VERSION == 34
         case AMU_HARM:              return "haram";
         case AMU_DISMISSAL:         return "unfeature";
 #endif
@@ -797,6 +805,7 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
         case AMU_INACCURACY:        return "garbage";
 #endif
         case AMU_NOTHING:           return "nothing";
+        case AMU_DESTRUCTION:       return "destruction";
         case AMU_GUARDIAN_SPIRIT:   return "guardian spirit";
         case AMU_FAITH:             return "faith";
         case AMU_REFLECTION:        return "reflection";
@@ -823,7 +832,9 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
 #endif
         case RING_STRENGTH:              return "Str";
         case RING_SLAYING:               return "Slay";
+#if TAG_MAJOR_VERSION == 34
         case RING_SEE_INVISIBLE:         return "sInv";
+#endif
         case RING_RESIST_CORROSION:      return "rCorr";
 #if TAG_MAJOR_VERSION == 34
         case RING_LOUDNESS:              return "Stlth-";
@@ -840,7 +851,9 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
 #endif
         case RING_LIFE_PROTECTION:       return "rN+";
         case RING_PROTECTION_FROM_MAGIC: return "MR+";
+#if TAG_MAJOR_VERSION == 34
         case AMU_RAGE:                   return "+Rage";
+#endif
         case AMU_REGENERATION:           return "Regen";
         case AMU_REFLECTION:             return "Reflect";
         default: return "buggy";
@@ -1129,7 +1142,9 @@ static const char* staff_type_name(int stafftype)
     switch ((stave_type)stafftype)
     {
     case STAFF_WIZARDRY:    return "wizardry";
+#if TAG_MAJOR_VERSION == 34
     case STAFF_POWER:       return "power";
+#endif
     case STAFF_FIRE:        return "fire";
     case STAFF_COLD:        return "cold";
 #if TAG_MAJOR_VERSION == 34
@@ -1863,21 +1878,7 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
         case FOOD_FRUIT: buff << "fruit"; break;
         case FOOD_PIZZA: buff << "slice of pizza"; break;
         case FOOD_BEEF_JERKY: buff << "beef jerky"; break;
-        case FOOD_CHUNK:
-            switch (determine_chunk_effect(*this))
-            {
-                case CE_MUTAGEN:
-                    buff << "mutagenic ";
-                    break;
-                case CE_NOXIOUS:
-                    buff << "inedible ";
-                    break;
-                default:
-                    break;
-            }
-
-            buff << "chunk of flesh";
-            break;
+        case FOOD_CHUNK: buff << "chunk of flesh"; break;
 #if TAG_MAJOR_VERSION == 34
         default: buff << "removed food"; break;
 #endif
@@ -2297,7 +2298,7 @@ protected:
         {
             //return the menu title to its previous text.
             set_title(temp_title);
-            update_title();
+            draw_title();
             num = -2;
 
             // Disarm ^D here, because process_key doesn't always set lastch.
@@ -2334,7 +2335,7 @@ protected:
                 lastch = CONTROL('D');
                 temp_title = title->text;
                 set_title("Select to reset item to default: ");
-                update_title();
+                draw_title();
             }
 
             return true;
@@ -3160,7 +3161,6 @@ bool is_emergency_item(const item_def &item)
                 && you.species != SP_FORMICID;
         case POT_HEAL_WOUNDS:
             return you.can_device_heal();
-        case POT_CURING:
         case POT_RESISTANCE:
         case POT_MAGIC:
             return true;
@@ -3571,8 +3571,9 @@ bool is_useless_item(const item_def &item, bool temp)
             // If you're poison resistant, poison is only useless.
             return !is_bad_item(item, temp);
         case POT_SLOWING:
-            return you.species == SP_FORMICID;
 #endif
+        case POT_AMBROSIA:
+            return you.species == SP_FORMICID;
         case POT_HEAL_WOUNDS:
             return !you.can_device_heal();
         case POT_INVISIBILITY:
@@ -3611,7 +3612,7 @@ bool is_useless_item(const item_def &item, bool temp)
                    || you.undead_state(temp);
 #endif
         case AMU_FAITH:
-            return (you.species == SP_DEMIGOD && !you.religion)
+            return ((you.species == SP_DEMIGOD || you.species == SP_TITAN) && !you.religion)
                     || you_worship(GOD_GOZAG)
                     || (you_worship(GOD_RU) && you.piety == piety_breakpoint(5));
 
@@ -3631,9 +3632,11 @@ bool is_useless_item(const item_def &item, bool temp)
 
         case AMU_MANA_REGENERATION:
             return you_worship(GOD_PAKELLAS);
-
+			
+#if TAG_MAJOR_VERSION == 34
         case RING_SEE_INVISIBLE:
             return you.innate_sinv();
+#endif
 
         case RING_POISON_RESISTANCE:
             return player_res_poison(false, temp, false) > 0
@@ -3665,14 +3668,8 @@ bool is_useless_item(const item_def &item, bool temp)
 #endif
 
     case OBJ_STAVES:
-        if (!you.could_wield(item, true, !temp))
-        {
-            // Weapon is too large (or small) to be wielded and cannot
-            // be thrown either.
+        if (you.get_mutation_level(MUT_MISSING_HAND))
             return true;
-        }
-        if (!item_type_known(item))
-            return false;
 
         switch (item.sub_type)
         {
@@ -3708,13 +3705,7 @@ bool is_useless_item(const item_def &item, bool temp)
         return true;
 
     case OBJ_CORPSES:
-        if (item.sub_type != CORPSE_SKELETON && !you_foodless())
-            return false;
-
-        if (you.has_spell(SPELL_ANIMATE_DEAD)
-            || you.has_spell(SPELL_ANIMATE_SKELETON)
-            || you.has_spell(SPELL_SIMULACRUM)
-            || you_worship(GOD_YREDELEMNUL) && !you.penance[GOD_YREDELEMNUL]
+        if (you_worship(GOD_YREDELEMNUL) && !you.penance[GOD_YREDELEMNUL]
                && you.piety >= piety_breakpoint(0))
         {
             return false;
@@ -3764,7 +3755,8 @@ bool is_useless_item(const item_def &item, bool temp)
             return useless;
         }
         //If we're here, it's a manual.
-        if (you.skills[item.plus] >= 27)
+        if (you.skills[item.plus] >= 27 || you.species == SP_KOBOLD
+            || you.species == SP_GNOLL)
             return true;
         if (is_useless_skill((skill_type)item.plus))
             return true;
@@ -3839,14 +3831,6 @@ string item_prefix(const item_def &item, bool temp)
             prefixes.push_back("inedible");
         else if (is_preferred_food(item))
             prefixes.push_back("preferred");
-
-        if (is_forbidden_food(item))
-            prefixes.push_back("forbidden");
-
-        if (is_mutagenic(item))
-            prefixes.push_back("mutagenic");
-        else if (is_noxious(item))
-            prefixes.push_back("inedible");
         break;
 
     case OBJ_POTIONS:
@@ -4004,7 +3988,7 @@ item_kind item_kind_by_name(const string &name)
                   { OBJ_UNASSIGNED, 0, 0, 0 });
 }
 
-vector<string> item_name_list_for_glyph(unsigned glyph)
+vector<string> item_name_list_for_glyph(char32_t glyph)
 {
     return lookup(item_names_by_glyph_cache, glyph, {});
 }

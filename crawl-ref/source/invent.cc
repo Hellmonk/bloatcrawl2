@@ -303,13 +303,13 @@ void InvEntry::set_show_glyph(bool doshow)
 }
 
 InvMenu::InvMenu(int mflags)
-    : Menu(mflags, "inventory", false), type(MT_INVLIST), pre_select(nullptr),
+    : Menu(mflags, "inventory"), type(MT_INVLIST), pre_select(nullptr),
       title_annotate(nullptr)
 {
 #ifdef USE_TILE_LOCAL
     if (Options.tile_menu_icons)
+        set_flags(mflags | MF_USE_TWO_COLUMNS);
 #endif
-        mdisplay->set_num_columns(2);
 
     InvEntry::set_show_cursor(false);
 }
@@ -426,8 +426,9 @@ string no_selectables_message(int item_selector)
     case OBJ_POTIONS:
         return "You aren't carrying any potions.";
     case OBJ_SCROLLS:
+        return "You aren't carrying any scrolls.";
     case OBJ_BOOKS:
-        return "You aren't carrying any spellbooks or scrolls.";
+        return "You don't have any books.";
     case OBJ_WANDS:
         return "You aren't carrying any wands.";
     case OBJ_JEWELLERY:
@@ -846,10 +847,6 @@ menu_letter InvMenu::load_items(const vector<const item_def*> &mitems,
         }
     }
 
-    // Don't make a menu so tall that we recycle hotkeys on the same page.
-    if (mitems.size() > 52 && (max_pagesize > 52 || max_pagesize == 0))
-        set_maxpagesize(52);
-
     return ckey;
 }
 
@@ -1001,10 +998,11 @@ bool item_is_selected(const item_def &i, int selector)
     switch (selector)
     {
     case OBJ_ARMOUR:
-        return itype == OBJ_ARMOUR && can_wear_armour(i, false, false);
+        return (itype == OBJ_ARMOUR || itype == OBJ_STAVES)
+            && can_wear_armour(i, false, false);
 
     case OSEL_WORN_ARMOUR:
-        return itype == OBJ_ARMOUR && item_is_equipped(i);
+        return (itype == OBJ_ARMOUR || itype == OBJ_STAVES) && item_is_equipped(i);
 
     case OSEL_UNIDENT:
         return !fully_identified(i) && itype != OBJ_BOOKS;
@@ -1014,9 +1012,6 @@ bool item_is_selected(const item_def &i, int selector)
 
     case OSEL_THROWABLE:
     {
-        if (you_worship(GOD_TROG) && item_is_spellbook(i))
-            return true;
-
         if (itype != OBJ_WEAPONS && itype != OBJ_MISSILES)
             return false;
 

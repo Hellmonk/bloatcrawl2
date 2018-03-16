@@ -24,6 +24,7 @@ queen_ant CORPSE_QUEEN_ANT
 bat CORPSE_BAT
 caustic_shrike CORPSE_CAUSTIC_SHRIKE
 shard_shrike CORPSE_SHARD_SHRIKE
+diesel_robin CORPSE_DIESEL_ROBIN
 
 ## Hounds and hogs ('h')
 jackal CORPSE_JACKAL

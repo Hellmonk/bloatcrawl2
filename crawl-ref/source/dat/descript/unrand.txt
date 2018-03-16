@@ -20,9 +20,9 @@ battle.
 %%%%
 mace of Variability
 
-A weapon with a peculiar reputation — said to be at times peerless in quality,
-and other times virtually useless. No one knows exactly who would have made
-such a weapon, or why, but Xom is probably to blame somehow.
+A peculiar weapon of chaos which takes a variable amount of time to swing. 
+No one knows exactly who would have made such a weapon, or why, but Xom is 
+probably to blame somehow.
 %%%%
 glaive of Prune
 
@@ -34,7 +34,7 @@ purple skin and a few wrinkles.
 sword of Power
 
 A mighty sword which rewards the powerful with power and the meek with
-weakness.
+weakness. So powerful it counts as a double sword despite having only one blade.
 %%%%
 staff of Olgreb
 
@@ -126,9 +126,9 @@ dagger "Morg"
 An ugly rusty dagger. Many years ago it was the property of a powerful mage
 called Boris. He got lost in the Dungeon while seeking the Orb.
 %%%%
-hand crossbow "Punk"
+shortbow "Punk"
 
-A hand crossbow made of weird green... stuff, oozing corrosive slime. Originally the
+A shortbow made of weird green... stuff, oozing corrosive slime. Originally the
 weapon of a notorious mischief-maker and general scamp, it's since fallen into
 less savoury hands.
 %%%%
@@ -417,9 +417,9 @@ hand.
 %%%%
 ring of Shadows
 
-A black ring that can make its wearer one with the shadows. It creates a dark
+A black ring that makes its wearer one with the shadows. It creates a dark
 umbra that surrounds the wearer and increases stealth greatly, and reduces the
-accuracy of all those within it.
+accuracy of all those within it. It also greatly increases the wearer's dexterity.
 %%%%
 # TAG_MAJOR_VERSION == 34
 amulet of Cekugob

@@ -1162,7 +1162,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
 
     // Some sanity checks.
     if (mons_is_unique(mg.cls) && you.unique_creatures[mg.cls]
-            && !crawl_state.game_is_arena()
+            && !crawl_state.game_is_arena() && you.props[YRED_ENSLAVED_SOUL_KEY].get_int() != mg.cls
         || mons_class_flag(mg.cls, M_CANT_SPAWN))
     {
         die("invalid monster to place: %s (%d)", mons_class_name(mg.cls), mg.cls);
@@ -2031,6 +2031,8 @@ static const map<monster_type, band_set> bands_by_leader = {
     { MONS_CAUSTIC_SHRIKE,  { {}, {{ BAND_CAUSTIC_SHRIKE, {2, 5} }}}},
     { MONS_SHARD_SHRIKE,    { {}, {{ BAND_SHARD_SHRIKE, {1, 4} }}}},
 	{ MONS_GHOST_ROBIN,     { {}, {{ BAND_GHOST_ROBIN, {1, 4} }}}},
+    { MONS_DIESEL_ROBIN,     { {}, {{ BAND_DIESEL_ROBIN, {2, 5} }}}},
+    { MONS_COMBO_ROBIN,     { {}, {{ BAND_COMBO_ROBIN, {4, 8} }}}},
     { MONS_FLYING_SKULL,    { {}, {{ BAND_FLYING_SKULLS, {2, 6} }}}},
     { MONS_SLIME_CREATURE,  { {}, {{ BAND_SLIME_CREATURES, {2, 6} }}}},
     { MONS_YAK,             { {}, {{ BAND_YAKS, {2, 6} }}}},
@@ -2156,6 +2158,7 @@ static const map<monster_type, band_set> bands_by_leader = {
     { MONS_IRON_GIANT,      { {}, {{ BAND_ANCIENT_CHAMPIONS, {2, 3}, true }}}},
 	{ MONS_ZOTLING,         { {}, {{ BAND_ZOTLINGS, {3, 6} }}}},
 	{ MONS_ANTIMATTER_ELF,  { {}, {{ BAND_ANTIMATTER_ELF, {1, 2} }}}},
+    { MONS_ELEVENGU,        { {}, {{ BAND_ELEVENGU, {1, 2} }}}},
 	{ MONS_SUBTRACTOR_SNAKE, { {}, {{ BAND_SUBTRACTOR_SNAKE, {1, 4} }}}},
 	{ MONS_MUTATATOTOT,     { {}, {{ BAND_MUTATATOTOT, {1, 2} }}}},
     { MONS_SPARK_WASP,      { {0, 0, []() {
@@ -2562,6 +2565,11 @@ static const map<band_type, vector<member_possibilites>> band_membership = {
                                   {MONS_GUARDIAN_SERPENT, 2},
                                   {MONS_IMPERIAL_MYRMIDON, 2}}}},
 	{ BAND_GHOST_ROBIN,         {{{MONS_GHOST_ROBIN, 1}}}},
+    { BAND_DIESEL_ROBIN,         {{{MONS_DIESEL_ROBIN, 1}}}},
+    { BAND_COMBO_ROBIN,         {{{MONS_DIESEL_ROBIN, 1},
+                                  {MONS_GHOST_ROBIN, 1},
+                                  {MONS_CAUSTIC_SHRIKE, 1},
+                                  {MONS_SHARD_SHRIKE, 1}}}},
 	{ BAND_ZOTLINGS,            {{{MONS_SUBTRACTOR_SNAKE, 1}, 
                                   {MONS_PLUTONIUM_CRAB, 1}, 
 								  {MONS_ZOTBOT, 1},
@@ -2572,10 +2580,11 @@ static const map<band_type, vector<member_possibilites>> band_membership = {
                                   {MONS_GIANT_GIANT, 30},
                                   {MONS_CURSE_SKULL, 15},
                                   {MONS_ANCIENT_LICH, 5}}}},
+    { BAND_ELEVENGU,            {{{MONS_ELEVENGU, 1}}}},
 	{ BAND_MUTATATOTOT,         {{{MONS_MUTATATOTOT, 1}}}},
 	{ BAND_SUBTRACTOR_SNAKE,    {{{MONS_GOLDEN_DRAGON, 5},{MONS_SHADOW_DRAGON, 5},{MONS_QUICKSILVER_DRAGON, 2}},
 
-	                            {{MONS_CAUSTIC_SHRIKE, 10}, {MONS_GHOST_ROBIN, 10}, {MONS_SHARD_SHRIKE, 7}}}},
+	                            {{MONS_CAUSTIC_SHRIKE, 10}, {MONS_GHOST_ROBIN, 10}, {MONS_SHARD_SHRIKE, 7}, {MONS_DIESEL_ROBIN, 10}}}},
 };
 
 /**

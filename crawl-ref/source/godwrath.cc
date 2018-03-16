@@ -9,6 +9,7 @@
 
 #include <sstream>
 
+#include "areas.h"
 #include "artefact.h"
 #include "attitude-change.h"
 #include "coordit.h"
@@ -85,6 +86,7 @@ static const char *_god_wrath_adjectives[] =
     "progress",         // Pakellas
     "fury",             // Uskayaw
     "memory",           // Hepliaklqana (unused)
+    "rancor",           // Wu Jian
 };
 COMPILE_CHECK(ARRAYSZ(_god_wrath_adjectives) == NUM_GODS);
 
@@ -100,8 +102,8 @@ COMPILE_CHECK(ARRAYSZ(_god_wrath_adjectives) == NUM_GODS);
  */
 static string _god_wrath_name(god_type god)
 {
-    const bool use_full_name = god == GOD_FEDHAS; // fedhas is very formal.
-                                                  // apparently.
+    const bool use_full_name = god == GOD_FEDHAS
+                                || god == GOD_WU_JIAN;
     return make_stringf("the %s of %s",
                         _god_wrath_adjectives[god],
                         god_name(god, use_full_name).c_str());
@@ -163,7 +165,6 @@ static const pop_entry _okawaru_servants[] =
   { 11, 27,   2, FLAT, MONS_FROST_GIANT },
   { 13, 27,   1, FLAT, MONS_DEEP_ELF_BLADEMASTER },
   { 13, 27,   1, FLAT, MONS_DEEP_ELF_MASTER_ARCHER },
-  { 13, 27,   1, FLAT, RANDOM_BASE_DRACONIAN },
   { 15, 27,   2, FLAT, MONS_TITAN },
   { 0,0,0,FLAT,MONS_0 }
 };
@@ -1702,6 +1703,80 @@ static bool _choose_hostile_monster(const monster& mon)
     return mon.attitude == ATT_HOSTILE;
 }
 
+static int _wu_jian_summon_weapons()
+{
+    god_type god = GOD_WU_JIAN;
+    const int num = 3 + random2(3);
+    int created = 0;
+
+    for (int i = 0; i < num; ++i)
+    {
+        const int subtype = random_choose(WPN_DIRE_FLAIL, WPN_QUARTERSTAFF,
+                                          WPN_BROAD_AXE, WPN_GREAT_SWORD,
+                                          WPN_RAPIER, WPN_GLAIVE);
+        const int ego = random_choose(SPWPN_DEVASTATION, SPWPN_FLAMING,
+                                      SPWPN_FREEZING, SPWPN_ELECTROCUTION);
+
+        if (monster *mon =
+            create_monster(_wrath_mon_data(MONS_DANCING_WEAPON, god)))
+        {
+            ASSERT(mon->weapon() != nullptr);
+            item_def& wpn(*mon->weapon());
+
+            set_item_ego_type(wpn, OBJ_WEAPONS, ego);
+
+            wpn.plus = random2(5);
+            wpn.sub_type = subtype;
+
+            set_ident_flags(wpn, ISFLAG_KNOW_TYPE);
+
+            item_colour(wpn);
+
+            ghost_demon newstats;
+            newstats.init_dancing_weapon(wpn, you.experience_level * 50 / 9);
+
+            mon->set_ghost(newstats);
+            mon->ghost_demon_init();
+
+            created++;
+        }
+    }
+
+    return created;
+}
+
+static bool _wu_jian_retribution()
+{
+    god_type god = GOD_WU_JIAN;
+
+    if (_wu_jian_summon_weapons())
+    {
+        switch (random2(4))
+        {
+        case 0:
+            wu_jian_sifu_message(" says: Die by a thousand cuts!");
+            you.set_duration(DUR_BARBS, random_range(5, 10));
+            break;
+        case 1:
+            wu_jian_sifu_message(" whispers: Nowhere to run...");
+            you.set_duration(DUR_SLOW, random_range(5, 10));
+            break;
+        case 2:
+            wu_jian_sifu_message(" whispers: These will loosen your tongue!");
+            you.increase_duration(DUR_SILENCE, 5 + random2(11), 50);
+            invalidate_agrid(true);
+            break;
+        case 3:
+            wu_jian_sifu_message(" says: Suffer, mortal!");
+            you.corrode_equipment(_god_wrath_name(god).c_str(), 2);
+            break;
+        }
+    }
+    else
+        simple_god_message("'s divine weapons fail to arrive.", god);
+
+    return true;
+}
 
 static bool _uskayaw_retribution()
 {
@@ -1788,6 +1863,7 @@ bool divine_retribution(god_type god, bool no_bonus, bool force)
     case GOD_DITHMENOS:     do_more = _dithmenos_retribution(); break;
     case GOD_QAZLAL:        do_more = _qazlal_retribution(); break;
     case GOD_USKAYAW:       do_more = _uskayaw_retribution(); break;
+    case GOD_WU_JIAN: do_more = _wu_jian_retribution(); break;
 
     case GOD_ASHENZARI:
     case GOD_GOZAG:

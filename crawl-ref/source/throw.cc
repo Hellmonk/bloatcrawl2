@@ -20,6 +20,7 @@
 #include "fight.h"
 #include "godabil.h"
 #include "godconduct.h"
+#include "goditem.h"
 #include "godpassive.h" // passive_t::shadow_attacks
 #include "hints.h"
 #include "invent.h"
@@ -462,6 +463,11 @@ void fire_thing(int item)
     item = get_ammo_to_shoot(item, target, is_pproj_active());
     if (item == -1)
         return;
+	
+    if (item && you.inv[item].sub_type == MI_DART_FRENZY && you_worship(GOD_CHEIBRIADOS))
+        if (!yesno("Really throw a frenzy dart? This would place you under penance!",
+            false, 'n'))
+            return;
 
     if (check_warning_inscriptions(you.inv[item], OPER_FIRE)
         && (!you.weapon()

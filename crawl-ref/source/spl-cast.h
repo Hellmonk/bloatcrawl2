@@ -104,7 +104,7 @@ vector<string> desc_success_chance(const monster_info& mi, int pow, bool evoked,
 spret_type your_spells(spell_type spell, int powc = 0, bool allow_fail = true,
                        const item_def* const evoked_item = nullptr);				   
 					   
-double spell_mp_freeze(spell_type spell);
+int spell_mp_freeze(spell_type spell);
 bool is_buff_spell (spell_type spell);
 extern const char *fail_severity_adjs[];
 
@@ -119,10 +119,10 @@ int power_to_barcount(int power);
 string spell_power_string(spell_type spell);
 string spell_reserved_mp_string(spell_type spell);
 string spell_range_string(spell_type spell);
-string range_string(int range, int maxrange, ucs_t caster_char);
-
+string range_string(int range, int maxrange, char32_t caster_char);
 string spell_schools_string(spell_type spell);
 string spell_hunger_string(spell_type spell);
+string spell_failure_rate_string(spell_type spell);
 string spell_noise_string(spell_type spell, int chop_wiz_display_width = 0);
 
 void spell_skills(spell_type spell, set<skill_type> &skills);

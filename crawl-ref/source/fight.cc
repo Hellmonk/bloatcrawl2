@@ -41,6 +41,7 @@
 #include "random-var.h"
 #include "religion.h"
 #include "shopping.h"
+#include "shout.h"
 #include "spl-miscast.h"
 #include "spl-summoning.h"
 #include "state.h"
@@ -743,8 +744,16 @@ void get_cleave_targets(const actor &attacker, const coord_def& def,
  * @param effective_attack_number   ?
  */
 void attack_cleave_targets(actor &attacker, list<actor*> &targets,
-                           int attack_number, int effective_attack_number)
+                           int attack_number, int effective_attack_number,
+                           wu_jian_attack_type wu_jian_attack)
 {
+    if (wu_jian_attack == WU_JIAN_ATTACK_WHIRLWIND
+        || wu_jian_attack == WU_JIAN_ATTACK_WALL_JUMP
+        || wu_jian_attack == WU_JIAN_ATTACK_TRIGGERED_AUX)
+    {
+        return; // WJC AOE attacks don't cleave.
+    }
+
     while (attacker.alive() && !targets.empty())
     {
         actor* def = targets.front();
@@ -752,6 +761,8 @@ void attack_cleave_targets(actor &attacker, list<actor*> &targets,
         {
             melee_attack attck(&attacker, def, attack_number,
                                ++effective_attack_number, true);
+
+            attck.wu_jian_attack = wu_jian_attack;
             attck.attack();
         }
         targets.pop_front();
@@ -787,8 +798,10 @@ int weapon_min_delay(const item_def &weapon, bool check_speed)
     if (min_delay > 7)
         min_delay = 7;
 
-    // ...except crossbows...
-    if (item_attack_skill(weapon) == SK_CROSSBOWS && min_delay < 10)
+    // ...except former crossbows...
+    if (weapon.sub_type
+       && (weapon.sub_type == WPN_ARBALEST || weapon.sub_type == WPN_TRIPLE_CROSSBOW)
+        && min_delay < 10)
         min_delay = 10;
 
     // ... and unless it would take more than skill 27 to get there.
@@ -799,6 +812,12 @@ int weapon_min_delay(const item_def &weapon, bool check_speed)
     {
         min_delay *= 2;
         min_delay /= 3;
+    }
+	
+    if (check_speed && get_weapon_brand(weapon) == SPWPN_DEVASTATION)
+    {
+        min_delay *= 3;
+        min_delay /= 2;
     }
 
     // never go faster than speed 3 (ie 3.33 attacks per round)
@@ -887,7 +906,8 @@ bool bad_attack(const monster *mon, string& adj, string& suffix,
         return bad_landing;
 
     if (you_worship(GOD_JIYVA) && mons_is_slime(*mon)
-        && !(mon->is_shapeshifter() && (mon->flags & MF_KNOWN_SHIFTER)))
+        && !(mon->is_shapeshifter() && (mon->flags & MF_KNOWN_SHIFTER))
+           && !you.penance[GOD_JIYVA])
     {
         would_cause_penance = true;
         return true;
@@ -1052,5 +1072,21 @@ bool stop_attack_prompt(targetter &hitfunc, const char* verb,
     {
         canned_msg(MSG_OK);
         return true;
+    }
+}
+
+void spooky(actor *defender)
+{
+    if(!defender->is_monster())
+        return;
+    if(defender->paralysed())
+        return;
+    mprf("Boo! %s is paralyzed with terror!", defender->name(DESC_THE).c_str());
+    noisy(12, you.pos());
+	defender->paralyse(&you, 2 + random2(4));
+    if(you.experience_level >= 13)
+    {
+        mprf("You radiate an aura of fear!");
+        mass_enchantment(ENCH_FEAR, you.experience_level * 4, false);
     }
 }

@@ -1,9 +1,4 @@
 %%%%
-Abyssal Knight
-
-Afgrundsriddere tilbeder Lugonu og sendes ud fra Afgrunden til de underjordiske
-gange for at sprede fordærv og kaos.
-%%%%
 Air Elementalist
 
 Lufttroldmænd har lært besværgelsen Stød. Senere giver deres Bogen om luften

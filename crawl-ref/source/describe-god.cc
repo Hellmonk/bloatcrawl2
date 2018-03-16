@@ -231,6 +231,10 @@ static const char *divine_title[][8] =
     // Hepliaklqana -- memory/ancestry theme
     {"Damnatio Memoriae",       "Hazy",             "@Adj@ Child",              "Storyteller",
         "Brooding",           "Anamnesiscian",               "Grand Scion",                "Unforgettable"},
+
+    // Wu Jian -- animal/chinese martial arts monk theme
+    {"Wooden Rat",          "Young Dog",             "Young Crane",              "Young Tiger",
+        "Young Dragon", "Red Sash", "Golden Sash", "Sifu"},
 };
 COMPILE_CHECK(ARRAYSZ(divine_title) == NUM_GODS);
 
@@ -616,6 +620,7 @@ static string _get_god_misc_info(god_type which_god)
         case GOD_ASHENZARI:
         case GOD_JIYVA:
         case GOD_TROG:
+        case GOD_WU_JIAN:
         {
             const string piety_only = "Note that " + god_name(which_god) +
                                       " does not demand training of the"
@@ -828,14 +833,19 @@ static void _describe_god_powers(god_type which_god)
         cprintf("%s shields you from corrosive effects.\n",
                 uppercase_first(god_name(which_god)).c_str());
 
-        if (have_passive(passive_t::slime_feed))
+        if (have_passive(passive_t::slime_mp))
             textcolour(god_colour(which_god));
         else
             textcolour(DARKGREY);
-        cprintf("You gain nutrition%s when your fellow slimes consume items.\n",
-                have_passive(passive_t::slime_hp) ? ", power and health" :
-                have_passive(passive_t::slime_mp) ? " and power" :
-                                                    "");
+        cprintf("You gain %s when Jiyva consumes items.\n",
+                have_passive(passive_t::slime_hp) ? "power and health" : "power");
+
+        if (have_passive(passive_t::damage_shaving))
+            textcolour(god_colour(which_god));
+        else
+            textcolour(DARKGREY);
+        cprintf("%s absorbs a portion of the damage you take.\n",
+                uppercase_first(god_name(which_god)).c_str());
         break;
 
     case GOD_FEDHAS:
@@ -921,17 +931,6 @@ static void _describe_god_powers(god_type which_god)
                 uppercase_first(god_name(which_god)).c_str());
         cprintf("%s identifies device charges for you.\n",
                 uppercase_first(god_name(which_god)).c_str());
-        if (!you_foodless_normally())
-        {
-            if (have_passive(passive_t::bottle_mp))
-                textcolour(god_colour(which_god));
-            else
-                textcolour(DARKGREY);
-
-            cprintf("%s will collect and distill excess magic from your "
-                    "kills.\n",
-                    uppercase_first(god_name(which_god)).c_str());
-        }
         break;
     }
 

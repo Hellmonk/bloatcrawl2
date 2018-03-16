@@ -31,6 +31,7 @@
 #include "act-iter.h"
 #include "areas.h"
 #include "beam.h"
+#include "branch.h"
 #include "cio.h"
 #include "cloud.h"
 #include "clua.h"
@@ -253,6 +254,24 @@ static void _decrement_paralysis(int delay)
             * BASELINE_DELAY;
             if (you.props.exists("paralysed_by"))
                 you.props.erase("paralysed_by");
+        }
+    }
+}
+
+static void _decrement_confusion(int delay)
+{
+    _decrement_a_duration(DUR_CONFUSION_IMMUNITY, delay);
+
+    if (you.duration[DUR_CONF])
+    {
+        _decrement_a_duration(DUR_CONF, delay);
+
+        if (!you.duration[DUR_CONF])
+        {
+            mprf(MSGCH_DURATION, "You feel less confused.");
+            you.redraw_armour_class = true;
+            you.duration[DUR_CONFUSION_IMMUNITY] = roll_dice(1, 3)
+            * BASELINE_DELAY;
         }
     }
 }
@@ -543,6 +562,26 @@ static void _try_to_respawn_ancestor()
                       ancestor); // ;)
 }
 
+/**
+ * Try to respawn the player's enslaved soul, if possible.
+ */
+static void _try_to_respawn_enslaved_soul()
+{
+	if (try_recall(yred_soul()))
+    {
+        mprf("Your enslaved soul returns to your service.");
+        return;
+	}
+    monster *soul = create_monster(yred_enslaved_soul_data());
+    if (!soul)
+        return;
+    yred_make_enslaved_soul(soul, false, true);
+
+    mprf("%s returns to your service!",
+         soul->name(DESC_YOUR).c_str());
+    add_companion(soul);
+}
+
 
 /**
  * Take a 'simple' duration, decrement it, and print messages as appropriate
@@ -571,16 +610,7 @@ static void _decrement_durations()
 {
     const int delay = you.time_taken;
 
-    if (you.gourmand())
-    {
-        // Innate gourmand is always fully active.
-        if (you.has_mutation(MUT_GOURMAND))
-            you.duration[DUR_GOURMAND] = GOURMAND_MAX;
-        else if (you.duration[DUR_GOURMAND] < GOURMAND_MAX && coinflip())
-            you.duration[DUR_GOURMAND] += delay;
-    }
-    else
-        you.duration[DUR_GOURMAND] = 0;
+    _decrement_confusion(delay);
 
     if (you.duration[DUR_LIQUID_FLAMES])
         dec_napalm_player(delay);
@@ -597,7 +627,14 @@ static void _decrement_durations()
         you.redraw_armour_class = true;
     }
 	
-    if(you.attribute[ATTR_OZO_ARMOUR])
+    if(_decrement_a_duration(DUR_WALL_JUMP_EV, delay, "You feel less evasive."))
+    {
+        if (you.props.exists(WALL_JUMP_EV_KEY))
+            you.props.erase(WALL_JUMP_EV_KEY);
+        you.redraw_evasion = true;
+    }
+	
+    if (you.attribute[ATTR_OZO_ARMOUR])
         you.redraw_armour_class = true;
 
     // Possible reduction of silence radius.
@@ -672,26 +709,14 @@ static void _decrement_durations()
         reset_powered_by_death_duration();
     }
 
-    dec_ambrosia_player(delay);
     dec_channel_player(delay);
     dec_slow_player(delay);
+    dec_ambrosia_player(delay);
     dec_exhaust_player(delay);
     dec_haste_player(delay);
 
     if (you.duration[DUR_LIQUEFYING] && !you.stand_on_solid_ground())
         you.duration[DUR_LIQUEFYING] = 1;
-
-    for (int i = 0; i < NUM_STATS; ++i)
-    {
-        stat_type s = static_cast<stat_type>(i);
-        if (you.stat(s) > 0
-            && _decrement_a_duration(stat_zero_duration(s), delay))
-        {
-            mprf(MSGCH_RECOVERY, "Your %s has recovered.", stat_desc(s, SD_NAME));
-            you.redraw_stats[s] = true;
-        }
-    }
-
 
     if (you.duration[DUR_BERSERK]
         && you.hunger + 100 <= HUNGER_STARVING + BERSERK_NUTRITION)
@@ -825,6 +850,9 @@ static void _decrement_durations()
 
     if (you.duration[DUR_DRAGON_CALL])
         do_dragon_call(delay);
+	
+    if(you.duration[DUR_SPECTRAL_WEAPON_COOLDOWN])
+        you.duration[DUR_SPECTRAL_WEAPON_COOLDOWN] = max(you.duration[DUR_SPECTRAL_WEAPON_COOLDOWN] - delay, 0);
 
     if (you.attribute[ATTR_ABJURATION_AURA])
         do_aura_of_abjuration(delay);
@@ -833,6 +861,8 @@ static void _decrement_durations()
         doom_howl(min(delay, you.duration[DUR_DOOM_HOWL]));
 
     dec_elixir_player(delay);
+    extract_manticore_spikes("You carefully extract the barbed spikes from "
+                             "your body.");
 
     if (!env.sunlight.empty())
         process_sunlights();
@@ -842,6 +872,15 @@ static void _decrement_durations()
         && hepliaklqana_ancestor() == MID_NOBODY)
     {
         _try_to_respawn_ancestor();
+    }
+	
+    if(in_good_standing(GOD_YREDELEMNUL)
+       && you.props.exists(YRED_ENSLAVED_SOUL_KEY)
+       && you.attribute[ATTR_YRED_SOUL_TIMEOUT]
+       && !you.duration[DUR_SOUL_DELAY])
+    {
+        you.attribute[ATTR_YRED_SOUL_TIMEOUT] = 0;
+        _try_to_respawn_enslaved_soul();
     }
 
     const bool sanguine_armour_is_valid = sanguine_armour_valid();
@@ -971,7 +1010,22 @@ void player_reacts()
     {
         const int bone_armour = you.attribute[ATTR_BONE_ARMOUR];
 		if (bone_armour > 1)
-            you.attribute[ATTR_BONE_ARMOUR] = bone_armour - 1;	
+        {
+            you.attribute[ATTR_BONE_ARMOUR] = bone_armour - 1;
+            you.redraw_armour_class = true;
+        }
+    }
+	
+    //decrement skeleton armour
+    if (you.attribute[ATTR_SKELETON_ARMOUR]
+        && x_chance_in_y(you.time_taken, 14 * BASELINE_DELAY))
+    {
+        const int bone_armour = you.attribute[ATTR_SKELETON_ARMOUR];
+		if (bone_armour > 0)
+        {
+            you.attribute[ATTR_SKELETON_ARMOUR] = bone_armour - 1;
+            you.redraw_armour_class = true;	
+        }		
     }
 
     if (x_chance_in_y(you.time_taken, 10 * BASELINE_DELAY))
@@ -1054,9 +1108,17 @@ void player_reacts()
         xom_tick();
     else if (you_worship(GOD_QAZLAL))
         qazlal_storm_clouds();
+    else if(you_worship(GOD_ELYVILON))
+        update_divine_vigour();
 
     if (you.props[EMERGENCY_FLIGHT_KEY].get_bool())
         _handle_emergency_flight();
+    // Trog doesn't like it when you sustain spells
+    if (you_worship(GOD_TROG) && you.mp_frozen > 0)
+    {
+        did_god_conduct(DID_SPELL_CASTING, 1 + random2(5));
+		redraw_screen();
+    }
     //-cast disrupts permabuffs and voluntary transformations
     if (you.no_cast() && you.mp_frozen > 0)
     {
@@ -1083,6 +1145,38 @@ void player_reacts()
     {
         freeze_mp(mp_to_freeze);
     }
+	
+    //de-attune amulet of destruction if dur is up and the last action wasn't destructive
+    if(you.props.exists(AMULET_DESTRUCTIVE_SPELL)
+        && !you.props.exists(LAST_ACTION_DESTRUCTIVE_KEY)
+        && !you.duration[DUR_DESTRUCTION])
+    {
+        you.props.erase(AMULET_DESTRUCTIVE_SPELL);
+    }
+	
+    // doom clock
+    if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN && env.turns_on_level == 649)
+    {
+        mprf(MSGCH_WARN, "You feel yourself begin to rot away!");
+    }
+    else if (crawl_state.difficulty == DIFFICULTY_NORMAL && env.turns_on_level == 2499
+        && !player_in_branch(BRANCH_ABYSS))
+    {
+		mprf(MSGCH_WARN, "You feel the dungeon grow hostile. You need to %s quickly!",
+                is_connected_branch(level_id::current().branch) ? "descend" : "move on");
+    }
+}
+
+void update_divine_vigour()
+{
+    if(have_passive(passive_t::divine_vigour))
+    {
+        you.attribute[ATTR_DIVINE_VIGOUR] = piety_rank() - 1;
+    }
+    else
+        you.attribute[ATTR_DIVINE_VIGOUR] = 0;
+    calc_hp();
+    calc_mp();	
 }
 
 void extract_manticore_spikes(const char* endmsg)

@@ -18,10 +18,11 @@ show_more = false
 :     bot_start = false
 :     crawl.enable_more(false)
 :     crawl.process_keys("&Y" .. esc)
+:     crawl.sendkeys("&l27" .. eol .. "N")
+:     crawl.sendkeys("&A27" .. eol)
 :     crawl.call_dlua("require('dlua/stress.lua');" ..
 :                     "stress.entomb();" ..
 :                     "stress.awaken_level()")
-:     crawl.sendkeys("&l27" .. eol .. esc)
 :     crawl.sendkeys("5")
 :   elseif you.turns() < 1000 then
 :     crawl.sendkeys("5")

@@ -141,6 +141,7 @@ static void _setup_ghostly_sacrifice_beam(bolt& beam, const monster& caster,
 static function<bool(const monster&)> _setup_hex_check(spell_type spell);
 static bool _worth_hexing(const monster &caster, spell_type spell);
 static bool _torment_vulnerable(actor* victim);
+static void _cast_phase_shift(monster &mons, mon_spell_slot, bolt&);
 
 enum spell_logic_flag
 {
@@ -474,6 +475,12 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
     { SPELL_VIRULENCE, _hex_logic(SPELL_VIRULENCE, [](const monster &caster) {
         return caster.get_foe()->res_poison(false) < 3;
     }, 6) },
+    { SPELL_PHASE_SHIFT, {
+        [](const monster &caster) { return !caster.has_ench(ENCH_PHASE_SHIFT); },
+        _cast_phase_shift,
+        nullptr,
+        MSPELL_NO_AUTO_NOISE,
+    } },
 };
 
 /// Is the 'monster' actually a proxy for the player?
@@ -746,6 +753,13 @@ static void _cast_cantrip(monster &mons, mon_spell_slot slot, bolt& pbolt)
             mprf(channel, "%s", slugform.c_str());
         }
     }
+}
+
+static void _cast_phase_shift(monster &mons, mon_spell_slot, bolt&)
+{
+    simple_monster_message(mons, " begins phasing through reality.", MSGCH_MONSTER_SPELL);
+	mons.add_ench(mon_enchant(ENCH_PHASE_SHIFT, 0, &mons,
+                              random_range(12, 25) * BASELINE_DELAY));
 }
 
 static void _cast_injury_mirror(monster &mons, mon_spell_slot slot, bolt&)
@@ -2263,9 +2277,9 @@ static bool _can_force_door_shut(const coord_def& door)
         return false;
 
     set<coord_def> all_door;
-    vector<coord_def> veto_spots;
     find_connected_identical(door, all_door);
-    copy(all_door.begin(), all_door.end(), back_inserter(veto_spots));
+    auto veto_spots = vector<coord_def>(all_door.begin(), all_door.end());
+    auto door_spots = veto_spots;
 
     for (const auto &dc : all_door)
     {
@@ -2278,26 +2292,61 @@ static bool _can_force_door_shut(const coord_def& door)
                 || act->is_monster()
                     && act->as_monster()->attitude != ATT_HOSTILE)
             {
-                coord_def newpos;
-                if (!get_push_space(dc, newpos, act, true, &veto_spots))
+                vector<coord_def> targets = get_push_spaces(dc, true, &veto_spots);
+                if (targets.empty())
                     return false;
-                else
-                    veto_spots.push_back(newpos);
+                veto_spots.push_back(targets.front());
             }
             else
                 return false;
         }
         // If there are items in the way, see if there's room to push them
         // out of the way
-        else if (igrd(dc) != NON_ITEM)
+        if (igrd(dc) != NON_ITEM)
         {
-            if (!has_push_space(dc, 0))
+            if (!has_push_spaces(dc, false, &door_spots))
                 return false;
         }
     }
 
-    // Didn't find any items we couldn't displace
+    // Didn't find any actors or items we couldn't displace
     return true;
+}
+
+static vector<coord_def> _get_push_spaces_max_tension(const coord_def& pos,
+                                            const vector<coord_def>* excluded)
+{
+    // if there are any push spaces at all, this will always return something non-empty.
+    vector<coord_def> possible_spaces = get_push_spaces(pos, true, excluded);
+    if (possible_spaces.empty())
+        return possible_spaces;
+    vector<coord_def> best;
+    int max_tension = -1;
+    actor *act = actor_at(pos);
+    ASSERT(act);
+
+    for (auto c : possible_spaces)
+    {
+        set<coord_def> all_door;
+        find_connected_identical(pos, all_door);
+        dungeon_feature_type old_feat = grd(pos);
+
+        act->move_to_pos(c);
+        _set_door(all_door, DNGN_CLOSED_DOOR);
+        int new_tension = get_tension(GOD_NO_GOD);
+        _set_door(all_door, old_feat);
+        act->move_to_pos(pos);
+
+        if (new_tension == max_tension)
+            best.push_back(c);
+        else if (new_tension > max_tension)
+        {
+            max_tension = new_tension;
+            best.clear();
+            best.push_back(c);
+        }
+    }
+    return best;
 }
 
 static bool _should_force_door_shut(const coord_def& door)
@@ -2306,12 +2355,10 @@ static bool _should_force_door_shut(const coord_def& door)
         return false;
 
     dungeon_feature_type old_feat = grd(door);
-    int cur_tension = get_tension(GOD_NO_GOD);
 
     set<coord_def> all_door;
-    vector<coord_def> veto_spots;
     find_connected_identical(door, all_door);
-    copy(all_door.begin(), all_door.end(), back_inserter(veto_spots));
+    auto veto_spots = vector<coord_def>(all_door.begin(), all_door.end());
 
     bool player_in_door = false;
     for (const auto &dc : all_door)
@@ -2323,24 +2370,21 @@ static bool _should_force_door_shut(const coord_def& door)
         }
     }
 
-    int new_tension;
+    const int cur_tension = get_tension(GOD_NO_GOD);
+    coord_def oldpos = you.pos();
+
     if (player_in_door)
     {
-        coord_def newpos;
-        coord_def oldpos = you.pos();
-        get_push_space(oldpos, newpos, &you, false, &veto_spots);
+        coord_def newpos = _get_push_spaces_max_tension(you.pos(), &veto_spots).front();
         you.move_to_pos(newpos);
-        _set_door(all_door, DNGN_CLOSED_DOOR);
-        new_tension = get_tension(GOD_NO_GOD);
-        _set_door(all_door, old_feat);
+    }
+
+    _set_door(all_door, DNGN_CLOSED_DOOR);
+    const int new_tension = get_tension(GOD_NO_GOD);
+    _set_door(all_door, old_feat);
+
+    if (player_in_door)
         you.move_to_pos(oldpos);
-    }
-    else
-    {
-        _set_door(all_door, DNGN_CLOSED_DOOR);
-        new_tension = get_tension(GOD_NO_GOD);
-        _set_door(all_door, old_feat);
-    }
 
     // If closing the door would reduce player tension by too much, probably
     // it is scarier for the player to leave it open and thus it should be left
@@ -2348,118 +2392,6 @@ static bool _should_force_door_shut(const coord_def& door)
 
     // Currently won't allow tension to be lowered by more than 33%
     return ((cur_tension - new_tension) * 3) <= cur_tension;
-}
-
-/*
- * Find an adjacent space to displace a stack of items or a creature.
- *
- * @param pos the starting position to displace from.
- * @param newpos if successful, will populate this with the new position.
- * @param act an actor to displace, or null if the goal is to displace items.
- * @param ignore_tension should displacement ignore tension, or prioritize spots
- *                       that maximize tension?  Used for vault wardens, and
- *                       only affects pushing actors.
- * @param excluded any spots to rule out a priori. Used for e.g. imprison.
- *
- * @return whether displacement is possible. If successful, will also populate
- *         `newpos` with the preferred target. Otherwise, will not change
- *         `newpos`.
- */
-bool get_push_space(const coord_def& pos, coord_def& newpos, actor* act,
-                    bool ignore_tension, const vector<coord_def>* excluded)
-{
-    if (act && act->is_stationary())
-        return false;
-
-    dungeon_feature_type starting_feat = grd(pos);
-    int max_tension = -1;
-    coord_def best_spot(-1, -1);
-    bool can_push = false;
-    bool found_non_deep_spot = false; // used for pushing items only
-    for (adjacent_iterator ai(pos); ai; ++ai)
-    {
-        dungeon_feature_type feat = grd(*ai);
-
-        // Make sure the spot wasn't already vetoed. This is used e.g. for
-        // imprison to pre-exclude all the spots where a wall will be.
-        if (excluded && find(begin(*excluded), end(*excluded), *ai)
-                            != end(*excluded))
-        {
-            continue;
-        }
-
-        // can never push to a solid space
-        if (feat_is_solid(feat))
-            continue;
-
-        // Extra checks if we're moving a monster instead of an item
-        if (act)
-        {
-            // these should get deep water and lava for cases where they matter
-            if (actor_at(*ai)
-                || !act->can_pass_through(*ai)
-                || !act->is_habitable(*ai))
-            {
-                continue;
-            }
-
-            // If we don't care about tension, first valid spot is acceptable
-            if (ignore_tension)
-            {
-                newpos = *ai;
-                return true;
-            }
-            else // Calculate tension with monster at new location
-            {
-                set<coord_def> all_door;
-                find_connected_identical(pos, all_door);
-                dungeon_feature_type old_feat = grd(pos);
-
-                act->move_to_pos(*ai);
-                _set_door(all_door, DNGN_CLOSED_DOOR);
-                int new_tension = get_tension(GOD_NO_GOD);
-                _set_door(all_door, old_feat);
-                act->move_to_pos(pos);
-
-                if (new_tension > max_tension)
-                {
-                    max_tension = new_tension;
-                    best_spot = *ai;
-                    can_push = true;
-                }
-            }
-        }
-        else
-        {
-            if (feat_has_solid_floor(feat))
-            {
-                // TODO (?): this will allow pushing items out of deep water.
-                best_spot = *ai;
-                found_non_deep_spot = true;
-                can_push = true;
-            }
-            else if (!found_non_deep_spot
-                && starting_feat == DNGN_DEEP_WATER
-                && feat == DNGN_DEEP_WATER)
-            {
-                // dispreferentially allow pushing items from deep water to deep water
-                best_spot = *ai;
-                can_push = true;
-            }
-            // otherwise, can't position an item on this spot
-        }
-    }
-
-    if (can_push)
-        newpos = best_spot;
-    return can_push;
-}
-
-bool has_push_space(const coord_def& pos, actor* act,
-                    const vector<coord_def>* excluded)
-{
-    coord_def dummy(-1, -1);
-    return get_push_space(pos, dummy, act, true, excluded);
 }
 
 static bool _seal_doors_and_stairs(const monster* warden,
@@ -2492,34 +2424,30 @@ static bool _seal_doors_and_stairs(const monster* warden,
                 return true;
 
             set<coord_def> all_door;
-            vector<coord_def> veto_spots;
             find_connected_identical(*ri, all_door);
-            copy(all_door.begin(), all_door.end(), back_inserter(veto_spots));
+            auto veto_spots = vector<coord_def>(all_door.begin(), all_door.end());
+            auto door_spots = veto_spots;
+
             for (const auto &dc : all_door)
             {
                 // If there are things in the way, push them aside
+                // This code is only reached for the player or non-hostile actors
                 actor* act = actor_at(dc);
-                if (igrd(dc) != NON_ITEM || act)
+                if (act)
                 {
-                    coord_def newpos;
-                    // If we don't find a spot, try again ignoring tension.
-                    const bool success =
-                        get_push_space(dc, newpos, act, false, &veto_spots)
-                        || get_push_space(dc, newpos, act, true, &veto_spots);
-                    ASSERTM(success, "No push space from (%d,%d)", dc.x, dc.y);
+                    vector<coord_def> targets = _get_push_spaces_max_tension(dc, &veto_spots);
+                    ASSERTM(!targets.empty(), "No push space from (%d,%d)", dc.x, dc.y);
+                    coord_def newpos = targets.front();
 
-                    move_items(dc, newpos);
-                    if (act)
+                    actor_at(dc)->move_to_pos(newpos);
+                    if (act->is_player())
                     {
-                        actor_at(dc)->move_to_pos(newpos);
-                        if (act->is_player())
-                        {
-                            stop_delay(true);
-                            player_pushed = true;
-                        }
-                        veto_spots.push_back(newpos);
+                        stop_delay(true);
+                        player_pushed = true;
                     }
+                    veto_spots.push_back(newpos);
                 }
+                push_items_from(dc, &door_spots);
             }
 
             // Close the door
@@ -3259,7 +3187,7 @@ static bool _trace_los(monster* agent, bool (*vulnerable)(actor*))
 
 static bool _tornado_vulnerable(actor* victim)
 {
-    return !victim->res_wind();
+    return !victim->res_tornado();
 }
 
 static bool _torment_vulnerable(actor* victim)
@@ -5020,8 +4948,8 @@ static coord_def _mons_fragment_target(const monster &mon)
     {
         bool temp;
         bolt beam;
-        if (!setup_fragmentation_beam(beam, pow, mons, mons->target, false,
-                                      true, true, nullptr, temp, temp))
+        if (!setup_fragmentation_beam(beam, pow, mons, mons->target, true,
+                                      nullptr, temp, temp))
         {
             return target;
         }
@@ -5038,8 +4966,8 @@ static coord_def _mons_fragment_target(const monster &mon)
             continue;
 
         bolt beam;
-        if (!setup_fragmentation_beam(beam, pow, mons, *di, false, true, true,
-                                      nullptr, temp, temp))
+        if (!setup_fragmentation_beam(beam, pow, mons, *di, true, nullptr,
+                                      temp, temp))
         {
             continue;
         }
@@ -5049,20 +4977,10 @@ static coord_def _mons_fragment_target(const monster &mon)
         if (!mons_should_fire(beam))
             continue;
 
-        bolt beam2;
-        if (!setup_fragmentation_beam(beam2, pow, mons, *di, false, false, true,
-                                      nullptr, temp, temp))
+        if (beam.foe_info.count > 0
+            && beam.foe_info.power > maxpower)
         {
-            continue;
-        }
-
-        beam2.range = range;
-        fire_tracer(mons, beam2, true);
-
-        if (beam2.foe_info.count > 0
-            && beam2.foe_info.power > maxpower)
-        {
-            maxpower = beam2.foe_info.power;
+            maxpower = beam.foe_info.power;
             target = *di;
         }
     }
@@ -6398,10 +6316,6 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
 
     case SPELL_BATTLESPHERE:
         cast_battlesphere(mons, min(splpow, 200), mons->god, false);
-        return;
-
-    case SPELL_SPECTRAL_WEAPON:
-        cast_spectral_weapon(mons, min(splpow, 200), mons->god, false);
         return;
 
     case SPELL_TORNADO:
@@ -8077,13 +7991,11 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
     case SPELL_SUMMON_SPECTRAL_ORCS:
     case SPELL_SUMMON_MUSHROOMS:
     case SPELL_ENTROPIC_WEAVE:
+    case SPELL_AIRSTRIKE:
         return !foe;
 
     case SPELL_HOLY_FLAMES:
         return !foe || no_clouds;
-
-    case SPELL_AIRSTRIKE:
-        return !foe || foe->res_wind();
 
     case SPELL_FREEZE:
         return !foe || !adjacent(mon->pos(), foe->pos());

@@ -792,8 +792,7 @@ function ring_value(it, cur, it2)
     if not it.fully_identified and not cur then
       val1 = val1 - 20*12
     end
-  --elseif subtype == "ring of sustain abilities"
-  --       or subtype == "ring of magical power" then
+  --elseif subtype == "ring of sustain abilities" then
   --  value = value + 10
   end
   return value+val1,value+val2

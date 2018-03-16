@@ -26,17 +26,16 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_FLAME_TONGUE,
     SPELL_SEARING_RAY,
     SPELL_CONJURE_FLAME,
-    SPELL_INNER_FLAME,
     SPELL_STICKY_FLAME,
     SPELL_FIREBALL,
 },
 
 {   // Book of Frost
     SPELL_FREEZE,
-    SPELL_THROW_FROST,
+    SPELL_HIBERNATION,
     SPELL_OZOCUBUS_ARMOUR,
     SPELL_THROW_ICICLE,
-    SPELL_SUMMON_ICE_BEAST,
+    SPELL_ENGLACIATION,
 },
 
 {   // Book of Summonings
@@ -58,10 +57,9 @@ static const vector<spell_type> spellbook_templates[] =
 
 {   // Book of Ice
     SPELL_ICE_FORM,
-    SPELL_ENGLACIATION,
+    SPELL_SUMMON_ICE_BEAST,
     SPELL_OZOCUBUS_REFRIGERATION,
     SPELL_FREEZING_CLOUD,
-    SPELL_SIMULACRUM,
 },
 
 {   // Book of Spatial Translocations
@@ -97,8 +95,6 @@ static const vector<spell_type> spellbook_templates[] =
 },
 
 {   // Book of Death
-    SPELL_CORPSE_ROT,
-    SPELL_SUBLIMATION_OF_BLOOD,
     SPELL_AGONY,
     SPELL_DISPEL_UNDEAD,
     SPELL_EXCRUCIATING_WOUNDS,
@@ -108,7 +104,6 @@ static const vector<spell_type> spellbook_templates[] =
 {   // Book of Misfortune
     SPELL_CONFUSING_TOUCH,
     SPELL_CONFUSE,
-    SPELL_GRAVITAS,
     SPELL_PETRIFY,
     SPELL_ENGLACIATION,
     SPELL_VIOLENT_UNRAVELLING,
@@ -130,7 +125,6 @@ static const vector<spell_type> spellbook_templates[] =
 },
 
 {   // Fen Folio
-    SPELL_CORPSE_ROT,
     SPELL_LEDAS_LIQUEFACTION,
     SPELL_OLGREBS_TOXIC_RADIANCE,
     SPELL_SUMMON_FOREST,
@@ -142,8 +136,9 @@ static const vector<spell_type> spellbook_templates[] =
 {   // Book of Battle
     SPELL_INFUSION,
     SPELL_SONG_OF_SLAYING,
-    SPELL_SPECTRAL_WEAPON,
     SPELL_REGENERATION,
+    SPELL_OZOCUBUS_ARMOUR,
+    SPELL_SPECTRAL_WEAPON,
 },
 #endif
 {   // Book of Clouds
@@ -155,7 +150,7 @@ static const vector<spell_type> spellbook_templates[] =
 
 {   // Book of Necromancy
     SPELL_PAIN,
-    SPELL_ANIMATE_SKELETON,
+    SPELL_SUBLIMATION_OF_BLOOD,
     SPELL_VAMPIRIC_DRAINING,
     SPELL_REGENERATION,
     SPELL_ANIMATE_DEAD,
@@ -198,7 +193,6 @@ static const vector<spell_type> spellbook_templates[] =
 },
 
 {   // Book of the Warp
-    SPELL_GRAVITAS,
     SPELL_FORCE_LANCE,
     SPELL_SUMMON_FOREST,
     SPELL_DISPERSAL,
@@ -220,7 +214,6 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_CONTROL_UNDEAD,
     SPELL_CIGOTUVIS_EMBRACE,
     SPELL_DEATH_CHANNEL,
-    SPELL_SIMULACRUM,
 },
 
 #if TAG_MAJOR_VERSION == 34
@@ -232,8 +225,9 @@ static const vector<spell_type> spellbook_templates[] =
 {   // Book of Battle (replacing Morphology)
     SPELL_INFUSION,
     SPELL_SONG_OF_SLAYING,
-    SPELL_SPECTRAL_WEAPON,
     SPELL_REGENERATION,
+    SPELL_OZOCUBUS_ARMOUR,
+    SPELL_SPECTRAL_WEAPON,
 },
 #endif
 
@@ -274,7 +268,7 @@ static const vector<spell_type> spellbook_templates[] =
 
 {   // Book of Cantrips
     SPELL_CONFUSING_TOUCH,
-    SPELL_ANIMATE_SKELETON,
+    SPELL_INFUSION,
     SPELL_SUMMON_SMALL_MAMMAL,
     SPELL_APPORTATION,
 },
@@ -326,8 +320,8 @@ static const vector<spell_type> spellbook_templates[] =
 {   // Book of Dreams
     SPELL_HIBERNATION,
     SPELL_SILENCE,
-    SPELL_DARKNESS,
     SPELL_SHADOW_CREATURES,
+    SPELL_DARKNESS,
 },
 
 {   // Book of Alchemy
@@ -361,11 +355,11 @@ static const vector<spell_type> spellbook_templates[] =
 },
 
 {   // Necronomicon
+    SPELL_NECROMUTATION,
     SPELL_HAUNT,
+    SPELL_INFESTATION,
     SPELL_BORGNJORS_REVIVIFICATION,
     SPELL_DEATHS_DOOR,
-    SPELL_INFESTATION,
-    SPELL_NECROMUTATION,
 },
 
 };

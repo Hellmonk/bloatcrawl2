@@ -119,7 +119,7 @@ static bool _try_god_conversion(god_type god, bool beogh_priest)
 {
     ASSERT(god != GOD_NO_GOD);
 
-    if (you.species == SP_DEMIGOD)
+    if (you.species == SP_DEMIGOD || you.species == SP_TITAN)
     {
         mpr("A being of your status worships no god.");
         return false;
@@ -301,21 +301,11 @@ static slurp_gain _sacrifice_one_item_noncount(const item_def& item)
 
     // compress into range 0..250
     const int stepped = stepdown_value(value, 50, 50, 200, 250);
-    gain_piety(stepped, 50);
-    gain.piety_gain = (piety_gain_t)min(2, div_rand_round(stepped, 50));
 
     if (player_under_penance(GOD_JIYVA))
         return gain;
 
     int item_value = div_rand_round(stepped, 50);
-    if (have_passive(passive_t::slime_feed)
-        && x_chance_in_y(you.piety, MAX_PIETY)
-        && !you_foodless())
-    {
-        //same as a sultana
-        lessen_hunger(70, true);
-        gain.jiyva_bonus |= JS_FOOD;
-    }
 
     if (have_passive(passive_t::slime_mp)
         && x_chance_in_y(you.piety, MAX_PIETY)
@@ -347,14 +337,9 @@ void jiyva_slurp_item_stack(const item_def& item, int quantity)
     {
         const slurp_gain new_gain = _sacrifice_one_item_noncount(item);
 
-        gain.piety_gain = max(gain.piety_gain, new_gain.piety_gain);
         gain.jiyva_bonus |= new_gain.jiyva_bonus;
     }
 
-    if (gain.piety_gain > PIETY_NONE)
-        simple_god_message(" appreciates your sacrifice.");
-    if (gain.jiyva_bonus & JS_FOOD)
-        mpr("You feel a little less hungry.");
     if (gain.jiyva_bonus & JS_MP)
         canned_msg(MSG_GAIN_MAGIC);
     if (gain.jiyva_bonus & JS_HP)

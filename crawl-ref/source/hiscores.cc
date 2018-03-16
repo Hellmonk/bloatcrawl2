@@ -973,7 +973,7 @@ void scorefile_entry::init_with_fields()
     lvl     = fields->int_field("xl");
     race_class_name = fields->str_field("char");
 
-    best_skill     = str_to_skill(fields->str_field("sk"));
+    best_skill     = str_to_skill_safe(fields->str_field("sk"));
     best_skill_lvl = fields->int_field("sklev");
     title          = fields->str_field("title");
 
@@ -1869,6 +1869,9 @@ string scorefile_entry::difficulty_name() const
     case DIFFICULTY_NORMAL:
         result = "NORMAL";
 		break;
+    case DIFFICULTY_SPEEDRUN:
+        result = "SPEED";
+        break;
 	default:
 		result = "BUGGY";
 		break;
@@ -1928,7 +1931,8 @@ scorefile_entry::character_description(death_desc_verbosity verbosity) const
 
     desc += wiz_mode ? ") *WIZ*" : 
          explore_mode ? ") *EXPLORE*" : 
-         difficulty == DIFFICULTY_CASUAL ? ") *CASUAL*" : ")";
+         difficulty == DIFFICULTY_CASUAL ? ") *CASUAL*" : 
+         difficulty == DIFFICULTY_SPEEDRUN ? ") *SPEED*" : ")";
     desc += _hiscore_newline_string();
 
     if (verbose)
@@ -1946,7 +1950,7 @@ scorefile_entry::character_description(death_desc_verbosity verbosity) const
         desc = _append_sentence_delimiter(desc, ".");
         desc += _hiscore_newline_string();
 
-        if (race != SP_DEMIGOD && god != GOD_NO_GOD)
+        if (race != SP_DEMIGOD && race !=SP_TITAN && god != GOD_NO_GOD)
         {
             if (god == GOD_XOM)
             {

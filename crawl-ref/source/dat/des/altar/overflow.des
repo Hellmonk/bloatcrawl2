@@ -150,6 +150,8 @@ function species_mock(e)
     e.kmons("1 = tyrant leech")
   elseif you.race() == "Vine Stalker" then
     e.kmons("1 = thorn hunter")
+  elseif you.race() == "Skeleton" then
+    e.kmons("1 = hobgoblin skeleton")
   else
     e.kmons("1 = spectral ugly thing")
   end
@@ -246,11 +248,11 @@ TAGS:   patrolling
 DEPTH:  D:3-9
 WEIGHT: 5
 KFEAT:  _ = altar_cheibriados
-MONS:   goblin; wand of slowing ident:type / \
-        hobgoblin; wand of slowing ident:type / \
-        gnoll; wand of slowing ident:type / \
-        orc; wand of slowing ident:type / \
-        kobold; wand of slowing ident:type
+MONS:   goblin; potion of ambrosia ident:type / \
+        hobgoblin; potion of ambrosia ident:type / \
+        gnoll; potion of ambrosia ident:type / \
+        orc; potion of ambrosia ident:type / \
+        kobold; potion of ambrosia ident:type
 MONS:   goblin / hobgoblin / gnoll / orc / kobold
 NSUBST: 2 = 1:1 / *:2
 MAP
@@ -652,45 +654,6 @@ MAP
 ddd
 d_d
 ddd
-ENDMAP
-
-### Hepliaklqana overflow altars #############################################
-
-NAME: worldfamousw_hep_ancestral_shrine
-TAGS: uniq_overflow_hepliaklqana temple_overflow_hepliaklqana
-TAGS: no_monster_gen no_item_gen no_pool_fixup
-KFEAT: _ = altar_hepliaklqana
-COLOUR: w = green
-TILE: G = dngn_gravestone
-TILE: t = DNGN_TREE_DEAD
-{{
-set_feature_name("granite_statue", "a gravestone")
-set_feature_name("tree", "dead tree")
-dgn.persist.hep_ancestral_shrine_reborn = false
-
-local los_marker = TriggerableFunction:new {
-  func="callback.hep_ancestral_shrine_los",
-  repeated=true
-}
-los_marker:add_triggerer(DgnTriggerer:new {
-  type="player_los"})
-
-lua_marker('_', los_marker)
-lua_marker("t", portal_desc { dead_tree=1 })
-lua_marker("w", portal_desc { green_water=1 })
-}}
-MAP
- xxxxx
-xxwwwxx
-xwwwwwx
-xwwwwwx
-xwtGtwx
-xt...tx
-x.._..x
-xt...tx
-xxt.txx
- xx+xx
-   @
 ENDMAP
 
 ### Kikubaaqudgha overflow altars #############################################
@@ -2228,32 +2191,6 @@ xxc.....cxx
      @
 ENDMAP
 
-NAME:   zin_purify
-TAGS:   no_item_gen no_monster_gen temple_overflow_1 temple_overflow_zin
-TAGS:   transparent
-DEPTH:  D:2-9, Orc, !Orc:$
-KFEAT:  _ = altar_zin
-KFEAT:  v = general shop name:Zin type:Purification suffix:Station count:1 \
-        greed:30 ; \
-        potion of curing
-COLOUR: c = white
-COLOUR: ' = white
-TILE:   c = wall_church
-FTILE:  Td'_ = floor_limestone
-SUBST:  ' = .
-: interest_check(_G)
-MAP
- .....
-..ccc..
-.ccTcc.
-..c_c..
- .....
-...'...
-..'v'..
- ..'..
-  ...
-ENDMAP
-
 NAME:   zin_scriptorium
 TAGS:   no_item_gen no_monster_gen temple_overflow_1 temple_overflow_zin
 DEPTH:  D:2-9
@@ -2684,8 +2621,6 @@ KFEAT:   A = altar_kikubaaqudgha
 KFEAT:   B = altar_sif_muna
 KFEAT:   C = altar_vehumet
 ITEM:    randbook owner:Kikubaaqudgha disc:necromancy spells:pain \
-         numspells:1 / \
-         randbook owner:Kikubaaqudgha disc:necromancy spells:animate_skeleton \
          numspells:1
 # You already got a direct damage spell by looting the other gods' altars.
 ITEM:    randbook owner:Sif_Muna disc:hexes numspells:1 slevels:1 / \
@@ -2858,38 +2793,6 @@ cc....T....cc
  cc..T.T..cc
   cc.....cc
    ccc@ccc
-ENDMAP
-
-# Xom seems to not think much of Hepliaklqana's ancestral focus,
-# and mocks the species roots of incoming pilgrims.
-# This will probably go over most players' heads, but it's neat anyway -- PF
-NAME:    regret_index_temple_of_mockery
-TAGS:    temple_overflow_2 temple_overflow_xom temple_overflow_hepliaklqana
-DEPTH:   D:2-9
-: species_mock(_G)
-KMONS:   2 = spectral ugly thing
-KFEAT:   A = altar_xom
-KFEAT:   B = altar_hepliaklqana
-SHUFFLE: AB
-SUBST:   G = G...
-KPROP:   12' = no_tele_into
-KMASK:   12' = no_item_gen
-KMASK:   12' = no_trap_gen
-KMASK:   ' = no_monster_gen
-MARKER:  2 = lua:fog_machine { cloud_type = "thin mist", \
-             pow_min = 100, pow_max = 100, delay = 1, \
-             size = 1, walk_dist = 0, start_clouds = 1 }
-MAP
-cccccc
-ccb'bccccc
-cb2n1bc.+.
-c'nnnnc.c.
-cb1nA...cc
-ccbn.G.bc
-cccc..Bcc
- c...bcc
- c+cccc
- c..c
 ENDMAP
 
 ### Variable overflow altars ##################################################
@@ -3285,23 +3188,26 @@ ccccWWWWWcccc
  ccccc@ccccc
 ENDMAP
 
-NAME: nicolae_overflow_quartered_altars
+NAME: hellmonk_temple_overflow_moretrees
 TAGS: temple_overflow_generic_4
-SHUFFLE: fgh/ijk, pq/rs
-SUBST: pqi = ., rk = c, s = +, z : cm, j : GTt
-CLEAR: fgh
 MAP
-  ffghgff
- @.ccccc.@
-f.qp.c.pq.f
-fcp..z..pcf
-gc..BcB..cg
-hcczccczcch
-gc..BcB..cg
-fcp..z..pcf
-f.qp.c.pq.f
- @.ccccc.@
-  ffghgff
+     .......
+    ...ttt...
+   ...t...t...
+  ...t..B..t...
+   ...t...t... 
+ ......ttt......
+..ttt.......ttt..
+.t...t.....t...t.
+t..B..t.G.t..B..t
+.t...t.....t...t.
+..ttt.......ttt..
+ ......ttt......
+   ...t...t...
+  ...t..B..t...
+   ...t...t...
+    ...ttt...
+     .......
 ENDMAP
 
 NAME:   minmay_overflow_temple_star_hex
@@ -3464,6 +3370,158 @@ G......G
 G......G
 ENDMAP
 
+NAME:hellmonk_temple_overflow_whatever
+TAGS: temple_overflow_generic_10 temple_overflow_generic_8
+TAGS: temple_overflow_generic_6 temple_overflow_generic_4
+{{
+  local altarcount = 1
+  if is_validating() then
+    altarcount = 10
+  else
+    altarcount = get_overflow_altar_count(_G)
+  end
+  if altarcount == "4" then
+    subst("d = B")
+    subst("ef = G")
+  elseif altarcount == "6" then
+    subst("df = B")
+    subst("e = G")
+  elseif altarcount == "8" then
+    subst("de = B")
+    subst("f = G")
+  else
+    subst("def = B")
+  end
+}}
+MAP
+         @@@
+      ccc+++ccc
+    ccc.......ccc
+   ccce.......eccc
+  ccc...ccccc...ccc
+ ccc...ccd.dcc...ccc
+cccf..cc..T..cc..fccc
+ ccc...ccd.dcc...ccc
+  ccc...cc+cc...ccc
+   ccce.......eccc
+    ccc.......ccc
+      ccccccccc
+ENDMAP
+
+NAME: hellmonk_temple_overflow_hourglass
+TAGS: temple_overflow_generic_12 temple_overflow_generic_11
+TAGS: temple_overflow_generic_10 temple_overflow_generic_9
+TAGS: temple_overflow_generic_8 temple_overflow_generic_7
+TAGS: temple_overflow_generic_6 temple_overflow_generic_5
+TAGS: temple_overflow_generic_4 temple_overflow_generic_3
+TAGS: temple_overflow_generic_2
+{{
+  local altarcount = 1
+  if is_validating() then
+    altarcount = 12
+  else
+    altarcount = get_overflow_altar_count(_G)
+  end
+  if altarcount == "1" then
+    subst("h = B")
+    subst("defg = .")
+  elseif altarcount == "2" then
+    subst("e = B")
+    subst("dfgh = .")
+  elseif altarcount == "3" then
+    subst("d = B")
+    subst("efgh = .")
+  elseif altarcount == "4" then
+    subst("dh = B")
+    subst("efg = .")
+  elseif altarcount == "5" then
+    subst("de = B")
+    subst("fgh = .")
+  elseif altarcount == "6" then
+    subst("df = B")
+    subst("egh = .")
+  elseif altarcount == "7" then
+    subst("dfh = B")
+    subst("eg = .")
+  elseif altarcount == "8" then
+    subst("dfe = B")
+    subst("gh = .")
+  elseif altarcount == "9" then
+    subst("dfg = B")
+    subst("eh = .")
+  elseif altarcount == "10" then
+    subst("dfgh = B")
+    subst("e = .")  
+  elseif altarcount == "11" then
+    subst("defg = B")
+    subst("h = .")
+  else
+    subst("defgh = B")
+  end
+}}
+MAP
+ccccccccc
+c.......c
+ccdghgdcc
+cccfefccc
+ccccdcccc
+ccc.e.ccc
+cc..g..cc
+c...f...c
+cccc+cccc
+    @
+ENDMAP
+
+NAME: hellmonk_temple_overflow_bars
+TAGS:    temple_overflow_generic_8 temple_overflow_generic_7
+TAGS:    temple_overflow_generic_6 temple_overflow_generic_5
+TAGS:    temple_overflow_generic_4 temple_overflow_generic_3
+TAGS:    temple_overflow_generic_2
+SHUFFLE: defghijk
+{{
+  local altarcount = 1
+  if is_validating() then
+    altarcount = 8
+  else
+    altarcount = get_overflow_altar_count(_G)
+  end
+  if altarcount == "1" then
+    subst("d = B")
+    subst("efghijk = .")
+  elseif altarcount == "2" then
+    subst("dh = B")
+    subst("efgijk = .")
+  elseif altarcount == "3" then
+    subst("dgi = B")
+    subst("efhjk = .")
+  elseif altarcount == "4" then
+    subst("dfhj = B")
+    subst("egik = .")
+  elseif altarcount == "5" then
+    subst("dfgij = B")
+    subst("ehk = .")
+  elseif altarcount == "6" then
+    subst("defhij = B")
+    subst("gk = .")
+  elseif altarcount == "7" then
+    subst("defghij = B")
+    subst("k = .")
+  else
+    subst("defghijk = B")
+  end
+}}
+MAP
+@d..........
+.c........e.
+.c..f.....c.
+.c..c..g..c.
+.c..c..c..c.
+.h..c..c..c.
+....c..c..i.
+....j..c....
+.......k...@
+ENDMAP
+
 NAME:    grunt_temple_overflow_open
 TAGS:    temple_overflow_generic_8 temple_overflow_generic_7
 TAGS:    temple_overflow_generic_6 temple_overflow_generic_5
@@ -3518,6 +3576,7 @@ ENDMAP
 
 # Formerly minivault_3; resurrected after being removed way back in late 2009.
 NAME:  minitemple
+WEIGHT:  2
 TAGS:  temple_overflow_generic_14 temple_overflow_generic_13
 TAGS:  temple_overflow_generic_12 temple_overflow_generic_11
 TAGS:  temple_overflow_generic_10 temple_overflow_generic_9

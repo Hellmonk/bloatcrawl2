@@ -352,7 +352,7 @@ void maybe_mons_speaks(monster* mons)
         return;
 
     // too annoying for a permanent companion without more thought put into it
-    if (mons_is_hepliaklqana_ancestor(mons->type))
+    if (mons_is_hepliaklqana_ancestor(mons->type) || mons_enslaved_soul(*mons))
         return;
 
     int chance = 21; // this is a very old number; no idea why it was chosen

@@ -997,9 +997,9 @@ xxxxxxxxxcc.ccxxxxxxxxxxx
 xxxxxxxxcc.c.ccxxxxxxxxxx
 xxxxxxxcc.ccc.ccxxxxxxxxx
 xxxxxxcc.cc>cc.ccxxxxxxxx
-xxxxxcc.cc.Q.cc.ccxxxxxxx
-xxxxcc.c.c...c.c.ccxxxxxx
-xxxcc.c.c.ccc.c.c.ccxxxxx
+xxxxxcc.........ccxxxxxxx
+xxxxcc...ccQcc...ccxxxxxx
+xxxcc.....ccc.....ccxxxxx
 xxxcccccccccccccccccccxxx
 xxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP

@@ -359,6 +359,8 @@ function ($, comm, enums, map_knowledge, messages, options) {
             $("#stats_wizmode").text("CASUAL");
         else if (player.diff == 1)
             $("#stats_wizmode").text("NORMAL");
+        else if (player.diff == 2)
+            $("#stats_wizmode").text("SPEED");
         else
             $("#stats_wizmode").text("");
 
@@ -411,8 +413,10 @@ function ($, comm, enums, map_knowledge, messages, options) {
         else if ((player.piety_rank > 0 || player.god != "")
                  && player.god != "Gozag")
         {
-            $("#stats_piety").text(repeat_string("*", player.piety_rank)
-                                   + repeat_string(".", 6-player.piety_rank));
+            if (player.piety > 0)
+                $("#stats_piety").text(player.piety_rank + "*[" + player.piety + "]");
+            else
+                $("#stats_piety").text(player.piety_rank + "*");
         }
         else
             $("#stats_piety").text("");
@@ -571,7 +575,7 @@ function ($, comm, enums, map_knowledge, messages, options) {
                 gold: 0,
                 str: 0, int: 0, dex: 0,
                 str_max: 0, int_max: 0, dex_max: 0,
-                piety_rank: 0, penance: false,
+                piety_rank: 0, piety: 0, penance: false,
                 status: [],
                 inv: {}, equip: {}, quiver_item: -1,
                 unarmed_attack: "",

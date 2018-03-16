@@ -182,24 +182,15 @@ static bool _explode_corpse(item_def& corpse, const coord_def& where)
 
     ld.update();
 
-    const int max_chunks = max_corpse_chunks(corpse.mon_type);
-    const int nchunks = stepdown_value(1 + random2(max_chunks), 4, 4, 12, 12);
+    const int nchunks = 1;
     if (corpse.base_type != OBJ_GOLD)
         blood_spray(where, corpse.mon_type, nchunks * 3); // spray some blood
-
-    // Don't let the player evade food conducts by using OOD (!) or /disint
-    // Spray blood, but no chunks. (The mighty hand of your God squashes them
-    // in mid-flight...!)
-    if (is_forbidden_food(corpse))
-        return true;
 
     // turn the corpse into chunks
     if (corpse.base_type != OBJ_GOLD)
     {
         corpse.base_type = OBJ_FOOD;
         corpse.sub_type  = FOOD_CHUNK;
-        if (is_bad_food(corpse))
-            corpse.flags |= ISFLAG_DROPPED;
     }
 
     const int total_gold = corpse.quantity;
@@ -565,7 +556,8 @@ void record_monster_defeat(const monster* mons, killer_type killer)
     if (mons->has_ench(ENCH_FAKE_ABJURATION) || mons->is_summoned())
         return;
     if (mons->is_named() && mons->friendly()
-        && !mons_is_hepliaklqana_ancestor(mons->type))
+        && !mons_is_hepliaklqana_ancestor(mons->type)
+        && !mons_enslaved_soul(*mons))
     {
         take_note(Note(NOTE_ALLY_DEATH, 0, 0, mons->mname));
     }
@@ -719,13 +711,15 @@ static bool _yred_enslave_soul(monster* mons, killer_type killer)
     {
         record_monster_defeat(mons, killer);
         record_monster_defeat(mons, KILL_ENSLAVED);
+        ASSERT(mons_enslaved_body_and_soul(*mons));
+        you.attribute[ATTR_YRED_SOUL_TIMEOUT] = 0;
+        you.duration[DUR_SOUL_DELAY] = 0;
         yred_make_enslaved_soul(mons, player_under_penance());
         return true;
     }
 
     return false;
 }
-
 
 /**
  * Attempt to get a deathbed conversion for the given orc.
@@ -1671,6 +1665,17 @@ static bool _reaping(monster *mons)
     return false;
 }
 
+static bool _reap_dead(monster *mons)
+{
+	if(! you.attribute[ATTR_ANIMATE_DEAD])
+        return false;
+	
+    int rd = calc_spell_power(SPELL_ANIMATE_DEAD, true);
+    if(!x_chance_in_y(200 + rd, 400))
+        return false;
+    return _mons_reaped(&you, mons);
+}
+
 static bool _god_will_bless_follower(monster* victim)
 {
     return have_passive(passive_t::bless_followers)
@@ -1857,11 +1862,7 @@ item_def* monster_die(monster* mons, killer_type killer,
         && _monster_avoided_death(mons, killer, killer_index))
     {
         mons->flags &= ~MF_EXPLODE_KILL;
-
-        // revived by a lost soul?
-        if (!spectralised && testbits(mons->flags, MF_SPECTRALISED))
-            return place_monster_corpse(*mons, silent);
-        return nullptr;
+        return nullptr;	
     }
 
     // If the monster was calling the tide, let go now.
@@ -2143,7 +2144,7 @@ item_def* monster_die(monster* mons, killer_type killer,
     }
     else if (mons->type == MONS_SPECTRAL_WEAPON)
     {
-        end_spectral_weapon(mons, true, killer == KILL_RESET);
+        end_spectral_weapon(mons, true, killer == KILL_RESET, killer != KILL_RESET);
         silent = true;
     }
     else if (mons->type == MONS_DROWNED_SOUL)
@@ -2193,7 +2194,22 @@ item_def* monster_die(monster* mons, killer_type killer,
         const int max_bone_armour = 9 + div_rand_round(calc_spell_power(SPELL_CIGOTUVIS_EMBRACE, true),20);
         if (bone_armour < max_bone_armour) // spellpower dependent cap
 		{
-            you.attribute[ATTR_BONE_ARMOUR] = min(max_bone_armour, bone_armour + 1 + random2(2));
+            you.attribute[ATTR_BONE_ARMOUR] = min(max_bone_armour, bone_armour + 1);
+            you.redraw_armour_class = true;
+        }
+    }
+	
+    // Skeleton bone armour works a little differently
+    if (you.species == SP_SKELETON
+        && killer == KILL_YOU
+        && gives_player_xp
+        && leaves_corpse)
+    {
+        const int bone_armour = you.attribute[ATTR_SKELETON_ARMOUR];
+        const int max_bone_armour = 3 + you.experience_level / 2;
+        if (bone_armour < max_bone_armour) // experience level dependent cap
+		{
+            you.attribute[ATTR_SKELETON_ARMOUR] = min(max_bone_armour, bone_armour + 1);
             you.redraw_armour_class = true;
         }
     }
@@ -2302,8 +2318,7 @@ item_def* monster_die(monster* mons, killer_type killer,
 
                 // perhaps this should go to its own function
                 if (mp_heal
-                    && have_passive(passive_t::bottle_mp)
-                    && !you_foodless_normally())
+                    && have_passive(passive_t::bottle_mp))
                 {
                     simple_god_message(" collects the excess magic power.");
                     you.attribute[ATTR_PAKELLAS_EXTRA_MP] -= mp_heal;
@@ -2748,6 +2763,8 @@ item_def* monster_die(monster* mons, killer_type killer,
     {
         if (corpse && _reaping(mons))
             corpse = nullptr;
+        if (corpse && _reap_dead(mons))
+            corpse = nullptr;
         _give_experience(player_xp, monster_xp, killer, killer_index,
                          pet_kill, was_visible);
         crawl_state.dec_mon_acting(mons);
@@ -2779,7 +2796,7 @@ item_def* monster_die(monster* mons, killer_type killer,
         unwind_var<int> fakehp(mons->hit_points, 1);
         monster_drop_things(mons, YOU_KILL(killer) || pet_kill);
     }
-    else
+    else if(!mons_enslaved_soul(*mons) || killer == KILL_DISMISSED)
     {
         // Destroy the items belonging to MF_HARD_RESET monsters so they
         // don't clutter up mitm[].
@@ -2811,6 +2828,21 @@ item_def* monster_die(monster* mons, killer_type killer,
             // respawn in ~30-60 turns
             you.duration[DUR_ANCESTOR_DELAY] = random_range(300, 600);
         }
+        if (mons_enslaved_soul(*mons) && killer != KILL_DISMISSED)
+        {
+            //the genius hack
+            mons->heal(9999);
+            if(you.where_are_you == BRANCH_DUNGEON && you.depth == 1)
+                move_companion_to(mons, level_id(BRANCH_ZOT, 5));
+            else
+                move_companion_to(mons, level_id(BRANCH_DUNGEON, 1));
+            if (!you.can_see(*mons))
+            {
+                mprf("Your enslaved soul has left this plane.");
+            }
+            you.attribute[ATTR_YRED_SOUL_TIMEOUT] = 1;
+			you.duration[DUR_SOUL_DELAY] = random_range(300, 600);
+        }
     }
 
     // If we kill an invisible monster reactivate autopickup.
@@ -2823,9 +2855,14 @@ item_def* monster_die(monster* mons, killer_type killer,
     {
         autotoggle_autopickup(false);
     }
-
-    if (corpse && _reaping(mons))
-        corpse = nullptr;
+    if(!(mons->flags & MF_EXPLODE_KILL))
+    {
+        if (corpse && _reaping(mons))
+            corpse = nullptr;
+	
+        if(corpse && _reap_dead(mons))
+            corpse = nullptr;
+    }
 
     crawl_state.dec_mon_acting(mons);
     monster_cleanup(mons);
@@ -2841,6 +2878,13 @@ item_def* monster_die(monster* mons, killer_type killer,
     {
         _give_experience(player_xp, monster_xp, killer, killer_index, pet_kill,
                          was_visible);
+    }
+    // Reeeeeeeeeeeeeeeeeemove corpses
+    if(corpse)
+    {
+        item_was_destroyed(*corpse);
+        destroy_item(corpse->index());
+        corpse = nullptr;		
     }
     return corpse;
 }
@@ -3402,8 +3446,15 @@ void elven_twin_died(monster* twin, bool in_transit, killer_type killer, int kil
 
     // Upgrade the spellbook here, as elven_twin_energize
     // may not be called due to lack of visibility.
-    if (mons_is_mons_class(mons, MONS_DOWAN))
+    if (mons_is_mons_class(mons, MONS_DOWAN)
+                                        && !(mons->flags & MF_POLYMORPHED))
     {
+        // Don't mess with Dowan's spells if he's been polymorphed: most
+        // possible forms have no spells, and the few that do (e.g. boggart)
+        // have way more fun spells than this. If this ever changes, the
+        // following code would need to be rewritten, as it'll crash.
+        // TODO: this is a fairly brittle way of upgrading Dowan...
+        ASSERT(mons->spells.size() >= 5);
         mons->spells[0].spell = SPELL_STONE_ARROW;
         mons->spells[1].spell = SPELL_THROW_ICICLE;
         mons->spells[3].spell = SPELL_BLINK;

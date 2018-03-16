@@ -278,17 +278,17 @@ bool is_weapon_brand_ok(int type, int brand, bool strict)
     if (brand <= SPWPN_NORMAL)
         return true;
 
-    if (type == WPN_QUICK_BLADE && brand == SPWPN_SPEED)
+    if (type == WPN_QUICK_BLADE && (brand == SPWPN_SPEED || brand == SPWPN_DEVASTATION))
         return false;
 
     switch ((brand_type)brand)
     {
     // Universal brands.
     case SPWPN_NORMAL:
-    case SPWPN_VENOM:
-    case SPWPN_PROTECTION:
-    case SPWPN_SPEED:
-    case SPWPN_VORPAL:
+    case SPWPN_VENOM: // only exists on unrands
+    case SPWPN_SPEED: // only exists on unrands
+    case SPWPN_DEVASTATION:
+    case SPWPN_VORPAL: //only exists on unrands
     case SPWPN_CHAOS:
     case SPWPN_HOLY_WRATH:
     case SPWPN_ELECTROCUTION:
@@ -323,6 +323,7 @@ bool is_weapon_brand_ok(int type, int brand, bool strict)
     case SPWPN_FROST:
     case SPWPN_DRAGON_SLAYING:
     case SPWPN_EVASION:
+    case SPWPN_PROTECTION:
         return false;
 #endif
 
@@ -488,7 +489,9 @@ static special_missile_type _determine_missile_brand(const item_def& item,
     case MI_LARGE_ROCK:
     case MI_SLING_BULLET:
     case MI_ARROW:
+#if TAG_MAJOR_VERSION == 34
     case MI_BOLT:
+#endif
         rc = SPMSL_NORMAL;
         break;
 #if TAG_MAJOR_VERSION == 34
@@ -509,15 +512,11 @@ static special_missile_type _determine_missile_brand(const item_def& item,
 #endif
     case MI_JAVELIN:
         rc = random_choose_weighted(32, SPMSL_PENETRATION,
-                                    32, SPMSL_POISONED,
-                                    21, SPMSL_STEEL,
                                     20, SPMSL_SILVER,
                                     nw, SPMSL_NORMAL);
         break;
     case MI_TOMAHAWK:
         rc = random_choose_weighted(15, SPMSL_POISONED,
-                                    10, SPMSL_SILVER,
-                                    10, SPMSL_STEEL,
                                     12, SPMSL_DISPERSAL,
                                     15, SPMSL_EXPLODING,
                                     nw, SPMSL_NORMAL);
@@ -633,9 +632,8 @@ static void _generate_missile_item(item_def& item, int force_type,
     else
     {
         item.sub_type =
-            random_choose_weighted(56, MI_STONE,
+            random_choose_weighted(68, MI_STONE,
                                    20, MI_ARROW,
-                                   12, MI_BOLT,
                                    4,  MI_DART_POISONED,
                                    3,  MI_TOMAHAWK,
                                    2,  MI_JAVELIN,
@@ -773,19 +771,19 @@ static special_armour_type _generate_armour_type_ego(armour_type type,
 
     case ARM_CLOAK:
         return random_choose(SPARM_POISON_RESISTANCE,
-                             SPARM_INVISIBILITY,
                              SPARM_MAGIC_RESISTANCE,
-							 SPARM_STEALTH);
+							 SPARM_STEALTH,
+                             SPARM_MAGICAL_POWER);
 
     case ARM_HAT:
         return random_choose_weighted(8, SPARM_NORMAL,
+                                      4, SPARM_MAGICAL_POWER,
                                       3, SPARM_MAGIC_RESISTANCE,
-                                      2, SPARM_INTELLIGENCE,
-                                      2, SPARM_SEE_INVISIBLE,
+                                      3, SPARM_INTELLIGENCE,
                                       1, SPARM_SPIRIT_SHIELD);
 
     case ARM_HELMET:
-        return coinflip() ? SPARM_SEE_INVISIBLE : SPARM_INTELLIGENCE;
+        return coinflip() ? SPARM_MAGIC_RESISTANCE : SPARM_INTELLIGENCE;
 
     case ARM_GLOVES:
         return random_choose(SPARM_DEXTERITY, SPARM_STRENGTH, SPARM_ARCHERY);
@@ -882,8 +880,11 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
 #endif
         return slot == EQ_BOOTS;
 
-	 case SPARM_STEALTH:
+	case SPARM_STEALTH:
 		return slot == EQ_BOOTS || slot == EQ_CLOAK;
+		
+    case SPARM_MAGICAL_POWER:
+        return slot == EQ_CLOAK || type == ARM_HAT;
 		
     case SPARM_ARCHMAGI:
         return !strict || type == ARM_ROBE;
@@ -895,9 +896,9 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
         if (type == ARM_PLATE_ARMOUR && !strict)
             return true;
         // deliberate fall-through
-#endif
     case SPARM_INVISIBILITY:
         return slot == EQ_CLOAK;
+#endif
 
     case SPARM_REFLECTION:
     case SPARM_PROTECTION:
@@ -931,7 +932,7 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
         return true; // in portal vaults, these can happen on every slot
 
     case SPARM_MAGIC_RESISTANCE:
-        if (type == ARM_HAT)
+        if (type == ARM_HAT || type == ARM_HELMET)
             return true;
         // deliberate fall-through
     case SPARM_POISON_RESISTANCE:
@@ -1193,7 +1194,6 @@ static int _random_wand_subtype()
     return random_choose_weighted(9, WAND_FLAME,
                                   9, WAND_LIGHTNING,
                                   9, WAND_ICEBLAST,
-                                  6, WAND_SLOWING,
                                   6, WAND_PARALYSIS,
                                   6, WAND_CONFUSION,
                                   6, WAND_POLYMORPH,
@@ -1273,21 +1273,18 @@ static void _generate_potion_item(item_def& item, int force_type,
         int tries = 500;
         do
         {
-            stype = random_choose_weighted(192, POT_CURING,
-                                            95, POT_HEAL_WOUNDS,
-                                            73, POT_MUTATION,
-                                            73, POT_LIGNIFY,
-                                            73, POT_FLIGHT,
-                                            66, POT_MIGHT,
-                                            66, POT_AGILITY,
-                                            66, POT_BRILLIANCE,
-                                            63, POT_HASTE,                                         
+            stype = random_choose_weighted( 95, POT_HEAL_WOUNDS,
+                                            70, POT_MUTATION,
+                                            70, POT_LIGNIFY,
+                                            70, POT_FLIGHT,
+                                            60, POT_MIGHT,
+                                            60, POT_HASTE,  
+											50, POT_CANCELLATION,
+                                            50, POT_AMBROSIA,
                                             35, POT_INVISIBILITY,
                                             35, POT_RESISTANCE,
                                             35, POT_MAGIC,
-                                            35, POT_BERSERK_RAGE,
-                                            35, POT_CANCELLATION,
-                                            35, POT_AMBROSIA);
+                                            35, POT_BERSERK_RAGE);
         }
         while (agent == GOD_XOM
                && _is_boring_item(OBJ_POTIONS, stype)
@@ -1502,7 +1499,7 @@ static int _good_jewellery_plus(int subtype)
         case RING_STRENGTH:
         case RING_DEXTERITY:
         case RING_INTELLIGENCE:
-            return 3 + (one_chance_in(4) ? 3 : 0);
+            return 5;
         default:
             return 3 + (one_chance_in(6) ? 3 : 0);
     }
@@ -1703,8 +1700,8 @@ int items(bool allow_uniques,
                                     50, OBJ_WANDS,
                                    262, OBJ_ARMOUR,
                                    212, OBJ_WEAPONS,
-                                   176, OBJ_POTIONS,
-                                   400, OBJ_MISSILES,
+                                   140, OBJ_POTIONS,
+                                   436, OBJ_MISSILES,
 			                       202, OBJ_SCROLLS,
                                    548, OBJ_GOLD); 
 
@@ -1755,7 +1752,7 @@ int items(bool allow_uniques,
         {
             item.base_type = OBJ_STAVES;
             if (unrand_id == UNRAND_WUCAD_MU)
-                force_type = STAFF_POWER;
+                force_type = STAFF_WIZARDRY;
             else
                 force_type = OBJ_RANDOM;
             // XXX: small chance of the other unrand...

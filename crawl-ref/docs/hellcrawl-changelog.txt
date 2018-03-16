@@ -1,0 +1,227 @@
+Hellcrawl changelog up to whatever version we're at.
+
+Features/Unfeatures:
+Hunger and food are removed.
+Curses are removed.
+Identification is removed.
+Upstairs are removed.
+3000 turn limit per floor, then bad things happen.
+Traps automatically reveal. Random traps are removed.
+Player ghosts are removed.
+Energy randomization is removed.
+Ammo always mulches but spawns in larger stacks.
+Monster AC/EV/MR are displayed numerically.
+Damage dealt is displayed for most damage sources.
+Ally kills grant full exp.
+Orb status does not apply until after grabbing the orb.
+Spellbooks do not take up inventory space.
+Many spells are now “permabuffs” that reserve max mp. Amount reserved is based on success rate and spell level.
+Stat zero is removed; can't drop below 1 in a stat.
+Ambient noise doesn't depend on branch.
+Chain confusion is an unthing: you can't be confused again while already confused and get a brief immunity when it wears off (like paralysis).
+Monsters no longer use consumables.
+Corpses don't drop as an item.
+You can train any skill without having to find a related item first.
+Piety display is numeric.
+All species can “swim” slowly (but not attack) in deep water or lava. Lava swimming also does damage every turn.
+Casual difficulty mode with double experience and no turn limit but reduced score. Intended to provide difficulty more in line with normal DCSS.
+Speed difficulty mode with double experience, faster mp regen, and automatically mapped stairs, but a 500 turn clock on each floor. Intended to be played fast.
+
+Dungeon Layout:
+Canonical branch order for a “3 rune game” is D->Orc->Sbranch->Vaults->Slime->Depths->Zot->Hell. Shortcuts are available for more challenge and 6 additional runes are available from Pan and Hell for a 9 rune “extended” game option.
+Temple, Lair, Crypt, Tomb, Lab, Desolation, and Zig are removed
+All available altars spawn between D:2 and D:8
+Orc entrance spawns on D:15
+Only one of swamp/snake/shoals/spider generates each game. The entrance is on Orc:2. 
+Swamp/snake/shoals/spider is 3 floors long.
+Vaults entrance is accessible from the bottom of swamp/snake/shoals/spider or from D:15 (skips 1 rune).
+Vaults is 3 floors long.
+Slime entrance is accessible from Vaults:3 or from Orc:2 (skips 2 runes).
+Slime is 4 floors long.
+Depths is accessible from Slime:4, Vaults:3 (skips 1 rune), or D:15 (skips 3 runes).
+Depths is 3 floors long.
+Elf is a timed portal vault and always spawns on Depths:1.
+Pan is exactly 5 floors long, must be completed in a single visit, and is accessible from Depths:3.
+Hell is accessible from Zot:5 and is the orbrun; you need the Orb to enter.
+Hell branches are on roulette: only one of Tar/Geh/Coc/Dis will generate each game.
+Abyss no longer has a rune, experience, or items.
+Wucad Mu's monastery is removed from the set of available wizlabs.
+Many branches have updated monster sets.
+Hatches are now mutagenic shafts, which randomly mutate upon use (60% positive/40% negative).
+
+Species Changes:
+Halfling, Deep Dwarf, Centaur, Felid, Barachi, Demigod, and Ogre are removed.
+[NEW] Titans merge many of the core features of Demigod (high stats, no worship) and Ogre (High hp, large size, high maces aptitude) into one species. They also get relec.
+[NEW] Skeletons are somewhat frail undead that have innate bone armour; they get temporary AC/SH when they kill a monster. When stabbing, they spook the target out of their wits. This causes paralysis and (at level 12 or higher) may cause fear in any onlookers, but is loud.
+Gnolls get a flat +0.5 to all skills per level, completely bypassing normal skill exp except as it applies to starting skills from background.
+Kobolds are completely reworked, skilling like Gnoll but with a greater emphasis on magic from their initial aptitudes, and gaining the evolution mutation at level 2. Kobold evolution may provide Kobold-exclusive spell enhancer mutations.
+Demonspawn have several altered mutation facets: mana shield facet gives increased mpregen first, then guardian spirit. Crystalline skin facet provides 6 SH, then reflection, then omnireflection a la warlock mirror. Powered by Pain activates more often. Prehensile Tentacle provides a tentacle slap aux and allows constriction but disables the cloak slot at rank 3. Damnation facet is merged with ignite blood and gives ignite blood/2, ignite blood, hurl damnation. Icemail gives icemail/2, ice enhancer, icemail. Negative energy facet gives black mark, deterministic 50% rtorment, stronger black mark. Foul stench facet does something at level 1.
+Demonspawn get their first level of the tier 3 facet earlier on average.
+Demonspawn get all mutations by level 24.
+No monstrous demonspawn.
+Tengu get permanent flight at level 5.
+Vampires get near-starving stealth bonuses and are otherwise identical to a satiated vampire in regular DCSS.
+Ghouls do not rot and regain some hp when they kill a monster.
+Nagas get constriction at level 7.
+Naga poison spit is slightly more powerful.
+Humans get a +2 exp apt.
+
+Background Changes:
+Warper, Conjurer, Assassin, Abyssal Knight, and Venom Mage are removed.
+[NEW] Torpor Knights start with Chei and a ponderous plate armour.
+Necromancer book contains Sublimation of Blood.
+Ice Elementalist book contains Hibernation and Metabolic Englaciation, no longer contains Summon Ice Beast.
+Air Elementalist book contains Magic Dart instead of Shock, Meph instead of Airstrike, and Fulminant Prism instead of Lightning Bolt.
+Fire Elementalist book contains Searing Ray instead of Throw Flame.
+Earth Elementalist book contains Force Lance instead of Stone Arrow.
+Arcane Marksman book contains Blink instead of Inner Flame.
+Wizard book is Magic Dart, Blink, Passwall, Slow, Sumblimation of Blood, Conjure Flame, Call Canine Familiar.
+Skald book contains Ozocubu's Armour.
+Monk starts with invocations skill.
+Gladiator starts with some poisoned and curare darts.
+
+Monster Changes:
+Orange crystal statue, hippogriff, sky beast, red devil, kraken, iron golem, leopard gecko, necrophage, river rat, worm, merfolk avatar, every draconian except the base (colorless) one, every classed demonspawn, Maurice, Ijyb, and Tiamat are removed.
+Temporary monster invis is no more; most monsters get phase shift instead.
+Permanently invisible monsters and Shadows get implicit shadowstab: 5/2 damage and can't miss against an unaware player, but are then revealed.
+Many weak generic monsters no longer have armor. Some uniques can spawn with better armor.
+Spider monsters do not have web sense.
+Shock serpents do not discharge in retaliation.
+Orb spiders are completely reworked as an elec-immune enemy with blink, lightning bolt, and orb of electricity. They do not maintain range and have less HD.
+Hungry ghosts are reworked as angry ghosts, with more damage, less EV, and hit to cause berserk.
+Hydra heads cannot be severed. Hydras normally spawn with 5-9 heads rather than 4-8.
+Iron trolls are speed 13 (fast) instead of speed 7.
+Death oozes hit to drain speed.
+Sigmund and reapers get AF_REACH instead of a weapon.
+Prince Ribbit and Sonja do not teleport self.
+Robin is called Samantha now.
+Phantoms blink close rather than random blink and hit to inflict weakness.
+Neqoxecs get corrupting pulse instead of malmutate.
+Wretched stars get malmutate instead of corrupting pulse.
+Killer Klowns blink close rather than random blink and attack twice.
+Electric eels can leave the water and attack to constrict.
+Juggernauts have a single attack, attack faster, and cleave.
+Deep elf elementalists have Airstrike but no longer dig or repel missiles.
+Deep elf death mages can cast Agony.
+Satyrs cast sleep more often and no longer cast cause fear.
+Hell knights have upgraded spell sets.
+Silent spectres cast silence frequently but do not radiate it. Their damage is significantly improved.
+Crimson imps no longer blink.
+Pandemonium lords cannot have chaos melee and cannot cast firestorm or glaciate.
+Elemental wellsprings no longer damage themselves when casting spells.
+Tzitzimimeh are once again called shadow fiends.
+Caustic shrikes are now acid robins.
+Shard shrikes are now cool robins, are speed 20, and are not batty.
+[NEW] Zot monsters: ghost robin, diesel robin, subtractor snake, mutatatotot, antimatter elf, orb child, THE GIAGGOSTUONO, zotling, zotbot, plutonium crab, giant giant, The Combo Robin
+[NEW] Pan/Extended monster: elevengu
+
+God Changes:
+Ashenzari, Beogh, Fedhas, and Hepliaklqana are removed.
+Trog no longer allows followers to burn books and has faster piety decay.
+Trog and Okawaru gifting uses a longer timeout (need to gain more piety per gift).
+Okawaru heroism is a passive skill boost that scales with piety level and does not increase stealth.
+Okawaru finesse costs slightly more piety.
+Sif Muna provides a piety-dependent boost to magic skills.
+Sif Muna piety is exploration based.
+Nemelex decks merge automatically with decks of the same type and are destroyed when dropped.
+Nemelex no longer gives a Stack Five ability.
+Kiku no longer provides corpses and no longer requires a corpse to invoke torment.
+Kiku provides an ability to sometimes inflict miasma clouds on hit.
+Several Nemelex cards are reworked.
+Gozag's potion petition and call merchant are more expensive.
+Gozag gold is automatically deposited into your account.
+Chei's active abilities have lower mp costs.
+Chei no longer hates quickblades.
+Qazlal provides more passive SH.
+Qazlal's upheaval and disaster area scale better with invocations.
+Qazlal's elemental force ability is removed and replaced with cloud surge, which surrounds the player with a long-lived ring of clouds whose radius depends on invocations skill.
+Makhleb provides hurl damnation instead of greater destruction.
+Makhleb's passive healing is slightly reduced.
+Makhleb's lesser servant costs more piety.
+Dithmenos no longer prohibits fire.
+Dithmenos provides monster detection and see invisible as passives.
+Vehumet gifts start at spell level 3 and always end with 3 level 9 spells.
+Wu Jian Council passively reduces AC by a percentage but provides a flat slaying bonus. 
+Wu Jian Council's walljump ability provides a short duration EV bonus when multiple targets are hit (4 EV per target beyond the first).
+Jiyva is reworked: Piety from exploration rather than jellies eating items, no jelly swarms or summoning, all item eating is passive over time, provides damage shaving as a passive at high piety. J altar is always available.
+Yred is completely reworked: *.....: injury mirror. **....: enslave soul with a longer duration on the status and lower piety cost. ****..: soul transfer (same as Hep's transference). *****.: drain life with a higher piety cost. The enslaved soul respawns when killed like Hep ancestor. Yred no longer gifts allies. 
+Zin gifts mutation removals beginning at ***... piety.
+
+Skill Changes:
+Conjurations, Poison magic, and slings skills are removed.
+Bows and Crossbows are one skill.
+Blades is a single skill, merging long blades and short blades.
+Staves skill is no more. Quarterstaves use the Maces & Staves skill.
+
+Item Changes:
+Rings of fire and ice don't have opposite-element weaknesses.
+Stat rings are always +5. Slay/AC/EV rings are always either +3 or +6.
+Magical staves are worn in the shield slot and do not function as weapons.
+Amulet of magic regeneration restores much more mp per turn.
+Amulet of faith is less effective: 20% more piety instead of 25%.
+Potions of augmentation merge the effects of might and brilliance.
+Potions of resistance provide temporary rN and MR.
+Potions of ambrosia slow rather than confuse.
+Potions of curing no longer cure confusion.
+Elec brand does less damage.
+Distortion brand does not inflict teleports.
+Longbows have 2 less base damage.
+Boots can generate with the dexterity ego. 
+Cloaks can generate with the stealth ego.
+Ego body armour is slightly more common.
+More spellbooks and fewer wands generate, on average.
+Amulets are slightly rarer relative to rings.
+Crystal ball of energy is an xp-gated evoker that restores some mp and maybe drains int, but has no other bad effects.
+Zealot Sword is now known as Righteous Blade.
+Ring of Phasing is now known as Ring of Dodge City.
+Blowguns are removed; poison, curare, and frenzy needles are now darts.
+Potions of blood, experience, degeneration, might, agility, and brilliance are removed.
+Scrolls of identify, remove curse, and random uselessness are removed.
+Rings of protection from fire, protection from cold, teleportation, loudness, flight, see invisible, magical power, and stealth are removed.
+Amulets of the gourmand, inaccuracy, and harm are removed.
+Staves of poison, conjurations, power, and energy are removed.
+Wands of random effects are removed.
+Nets are removed.
+Evocable invis is removed.
+Slings, sling bullets, hand crossbows, crossbow bolts, scythes, lajatangs, clubs, giant spiked clubs, falchions, short swords, dire flails, eveningstars and great swords are removed.
+Triple swords and morningstars have 1 more base damage.
+Quarterstaves have 2 more base damage.
+Maxwell's Etheric Cage is +2 and provides deterministic MP regen.
+Vampire's Tooth, Sceptre of Torment, Robe of Misfortune, Skin of Zhor, Salamander Hide Armour, Ratskin Cloak, and Piercer are removed.
+
+Spell Changes:
+Spellpower is displayed numerically.
+Magic Dart is level 1 air.
+Searing Ray is level 2 fire and deals partially irresistible damage.
+Sticks to snakes is transmutations/summoning.
+Call imp's summon cap is 1.
+Dazzling Spray is level 3 fire/hexes and deals fire damage.
+Lesser Beckoning's power cap is 100 instead of 200 (gets better range faster).
+Force Lance is level 3 earth/translocations.
+Silence is level 4.
+Mephitic cloud is level 4 air/hexes.
+Fulminant Prism is level 5 air and deals elec damage. The prism is now electricity immune.
+Necromutation is level 6.
+Orb of destruction is level 7 earth.
+Conjure ball lightning is level 7 air.
+All other conjuration spells have the conjuration school dropped.
+Throw Icicle, Fireball, Bolt of Draining, Bolt of Fire, and Iron Shot do slightly less damage to make up for being single school.
+Shock, Throw Flame, Throw Frost, Stone Arrow, Bolt of Magma, Lightning Bolt, Bolt of Cold, Lehudib's Crystal Spear, Animate Skeleton, Corpse Rot, Simulacrum, Shroud of Golubria and Gell's Gravitas are no longer castable by players.
+The following spells are “permabuffs” that reserve max mp until canceled: Infusion, Song of Slaying, Repel Missiles, Deflect Missiles, Ring of Flames, Ozocubu's Armour, Cigotuvi's Embrace, Animate Dead, Aura of Abjuration, Death Channel, Darkness, Regeneration, Excruciating Wounds, Iskendrun's Battlesphere, Spellforged Servitor, Infestation, Invisibility, Haste, all transmutation form spells.
+Spider form and blade hands do not penalize spellcasting.
+Spectral weapon does not share damage with the player and briefly goes on cooldown when it dies.
+Animate Dead functions like death channel but with zombies. The chance to raise a zombie depends on spellpower; 50% at max power.
+Spectral Weapon is level 5 hexes/summoning.
+Cigotuvi's embrace is level 6 and provides AC/SH when a living, corporeal monster is killed.
+Invisibility is level 7 and does not cause contamination over time.
+Darkness is level 7.
+Infestation is level 7 necro/hexes and applies its status to enemies hit in melee.
+Haste is level 9 and does not cause contamination over time.
+
+Miscellaneous/Memes:
+Petrified/Petrifying statuses do not reduce damage taken.
+Many mutations (stat up/down, stinger, shaggy fur, sturdy frame, camouflage, tentacle spike) are single level with greater impact.
+Scale muts are not available to most species.
+Default name for failed name generation is “dong”.
+Dank new randart names.
+Liches say some funny lines from the twitter account dasharez0ne.

@@ -284,6 +284,8 @@ bool actor::no_cast(bool calc_unid, bool items) const
 
 bool actor::reflection(bool calc_unid, bool items) const
 {
+    if (is_player() && you.get_mutation_level(MUT_REFLECTION) > 0)
+        return true;
     return items && wearing(EQ_AMULET, AMU_REFLECTION, calc_unid);
 }
 
@@ -300,8 +302,7 @@ bool actor::evokable_berserk(bool calc_unid) const
 
 bool actor::evokable_invis(bool calc_unid) const
 {
-    return wearing_ego(EQ_CLOAK, SPARM_INVISIBILITY, calc_unid)
-           || scan_artefacts(ARTP_INVISIBLE, calc_unid);
+    return false;
 }
 
 // Return an int so we know whether an item is the sole source.

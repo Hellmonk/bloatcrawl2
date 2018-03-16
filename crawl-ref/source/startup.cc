@@ -254,13 +254,12 @@ static void _post_init(bool newc)
 
     calc_hp();
     calc_mp();
-    if (you.form != TRAN_LICH)
-        food_change(true);
+
     shopping_list.refresh();
 
     run_map_local_preludes();
 
-    // Abyssal Knights start out in the Abyss.
+    // Abyssal Knights started out in the Abyss.
     if (newc && you.chapter == CHAPTER_POCKET_ABYSS)
         you.where_are_you = BRANCH_ABYSS;
     else if (newc)

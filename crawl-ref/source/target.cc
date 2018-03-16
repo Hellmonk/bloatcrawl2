@@ -11,6 +11,7 @@
 #include "english.h"
 #include "env.h"
 #include "fight.h"
+#include "godabil.h"
 #include "libutil.h"
 #include "los_def.h"
 #include "losglobal.h"
@@ -456,6 +457,33 @@ targetter_transference::targetter_transference(const actor* act) :
 {
 }
 
+targeter_walljump::targeter_walljump() :
+    targetter_smite(&you, LOS_RADIUS, 1, 1, false, nullptr)
+{
+}	
+	
+bool targeter_walljump::valid_aim(coord_def a)
+{
+    return wu_jian_can_wall_jump(a, why_not);
+}
+
+aff_type targeter_walljump::is_affected(coord_def loc)
+{
+    if (!valid_aim(aim))
+        return AFF_NO;
+
+    auto wall_jump_direction = (you.pos() - aim).sgn();
+    auto wall_jump_landing_spot = (you.pos() + wall_jump_direction
+                                   + wall_jump_direction);
+    if (loc == wall_jump_landing_spot)
+        return AFF_YES;
+
+    if (loc.distance_from(wall_jump_landing_spot) == 1 && monster_at(loc))
+        return AFF_YES;
+
+    return AFF_NO;
+}
+
 bool targetter_transference::valid_aim(coord_def a)
 {
     if (!targetter_smite::valid_aim(a))
@@ -491,8 +519,8 @@ bool targetter_fragment::valid_aim(coord_def a)
 
     bolt tempbeam;
     bool temp;
-    if (!setup_fragmentation_beam(tempbeam, pow, agent, a, false,
-                                  true, true, nullptr, temp, temp))
+    if (!setup_fragmentation_beam(tempbeam, pow, agent, a, true, nullptr, temp,
+                                  temp))
     {
         return notify_fail("You cannot affect that.");
     }
@@ -507,12 +535,10 @@ bool targetter_fragment::set_aim(coord_def a)
     bolt tempbeam;
     bool temp;
 
-    if (setup_fragmentation_beam(tempbeam, pow, agent, a, false,
-                                 false, true, nullptr, temp, temp))
+    if (setup_fragmentation_beam(tempbeam, pow, agent, a, true, nullptr, temp,
+                                 temp))
     {
         exp_range_min = tempbeam.ex_size;
-        setup_fragmentation_beam(tempbeam, pow, agent, a, false,
-                                 true, true, nullptr, temp, temp);
         exp_range_max = tempbeam.ex_size;
     }
     else

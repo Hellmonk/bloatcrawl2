@@ -144,7 +144,7 @@ static void _maybe_bloodify_square(const coord_def& where, int amount,
             env.pgrid(where) |= FPROP_BLOODY;
             _orient_wall_blood(where, from, old_blood);
 
-            if (ignite_blood
+            if (x_chance_in_y(you.get_mutation_level(MUT_IGNITE_BLOOD),2)
                 && !cell_is_solid(where)
                 && !cloud_at(where))
             {

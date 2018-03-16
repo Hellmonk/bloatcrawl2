@@ -485,3 +485,59 @@ MAP
   _..
   .
 ENDMAP
+
+NAME: hellmonk_deep_altar
+DEPTH: Depths:2-, Zot:1-4
+TAGS: allow_dup
+WEIGHT: 5
+KFEAT: C = altar_cheibriados
+KFEAT: D = altar_dithmenos
+KFEAT: E = altar_elyvilon
+KFEAT: g = altar_gozag
+KFEAT: J = altar_jiyva
+KFEAT: K = altar_kikubaaqudgha
+KFEAT: L = altar_lugonu
+KFEAT: M = altar_makhleb
+KFEAT: O = altar_okawaru
+KFEAT: Q = altar_qazlal
+KFEAT: R = altar_ru
+KFEAT: S = altar_sif_muna
+KFEAT: T = altar_trog
+KFEAT: U = altar_uskayaw
+KFEAT: V = altar_vehumet
+KFEAT: X = altar_xom
+KFEAT: Y = altar_yredelemnul
+KFEAT: Z = altar_zin
+KFEAT: 1 = altar_the_shining_one
+KMONS: C = death cob
+KMONS: D = shadow fiend
+KMONS: E = apis att:neutral / w:1 pearl dragon att:neutral
+KMONS: g = golden dragon
+KMONS: H = ancient lich
+KMONS: J = acid blob
+KMONS: K = greater mummy
+KMONS: L = starcursed mass
+KMONS: M = executioner
+KMONS: O = iron giant
+KMONS: Q = storm dragon
+KMONS: R = silent spectre
+KMONS: S = antimatter elf
+KMONS: T = moth of wrath
+KMONS: U = juggernaut
+KMONS: V = elevengu
+KMONS: X = apocalypse crab
+KMONS: Y = profane servitor
+KMONS: Z = angel / w:1 pearl dragon
+KMONS: 1 = daeva / w:1 pearl dragon
+SUBST: ? = CDEgJKLMOQRSTUVXYZ1
+MAP
+xxxxx@@@xxxxx
+xxx.......xxx
+x...........x
+@....G.G....@
+@.....?.....@
+@....G.G....@
+x...........x
+xxx.......xxx
+xxxxx@@@xxxxx
+ENDMAP

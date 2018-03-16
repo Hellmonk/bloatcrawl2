@@ -115,7 +115,8 @@ Pois status
 
 You are poisoned and will continually lose health. While poisoned, your current
 health will be partially recoloured to display the eventual poison damage that
-will be dealt. Poison can be cured immediately by potions of curing.
+will be dealt. Poison is never lethal, though the impact damage of poisonous
+attacks or spells can be. Poison can be cured immediately by potions of cancellation.
 %%%%
 Conf status
 
@@ -291,13 +292,12 @@ You are more vulnerable to hostile enchantments.
 %%%%
 Stone status
 
-You are petrified, and completely unable to act. You are very easy to hit,
-but all damage taken is substantially reduced.
+You are petrified, and completely unable to act. You are very easy to hit.
 %%%%
 Petr status
 
-You are turning to stone. Your actions are slowed, all damage taken is slightly
-reduced, and you will soon be completely petrified (gaining the Stone status).
+You are turning to stone. Your actions are slowed and you will soon be 
+completely petrified (gaining the Stone status).
 %%%%
 Resist status
 
@@ -675,3 +675,19 @@ maintain and intensify the ray, at the cost of 1 MP per turn; any other action,
 including recasting the spell, will end it.
 
 # XXX: also cover Ray+, Ray++?
+%%%%
+Lash status
+
+You are moving at supernatural speed, causing movement actions to become
+instant. Any martial attacks made while moving in this way are increased in
+effectiveness.
+%%%%
+Hevn status
+
+Heavenly clouds are boosting your damage and precision. Performing martial
+attacks against multiple enemies prevents the storm from settling.
+%%%%
+Reflex status
+
+A recent wall jump has heightened your reflexes, temporarily increasing 
+your evasion.

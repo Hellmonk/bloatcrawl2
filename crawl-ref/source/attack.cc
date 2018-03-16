@@ -34,6 +34,8 @@
 #include "mon-poly.h"
 #include "nearby-danger.h"
 #include "religion.h"
+#include "shout.h"
+#include "spl-damage.h"
 #include "spl-miscast.h"
 #include "state.h"
 #include "stepdown.h"
@@ -451,8 +453,6 @@ bool attack::distortion_affects_defender()
         BIG_DMG,
         BANISH,
         BLINK,
-        TELE_INSTANT,
-        TELE_DELAYED,
         NONE
     };
 
@@ -460,32 +460,26 @@ bool attack::distortion_affects_defender()
                                                        22, BIG_DMG,
                                                        5,  BANISH,
                                                        15, BLINK,
-                                                       10, TELE_INSTANT,
-                                                       10, TELE_DELAYED,
-                                                       5,  NONE);
+                                                       25,  NONE);
 
     if (simu && !(choice == SMALL_DMG || choice == BIG_DMG))
 	{
         return false;
 	}
 	
-	std::string d = std::to_string(special_damage);
-	
     switch (choice)
     {
     case SMALL_DMG:
 		special_damage += 1 + random2avg(7, 2);
-		d = std::to_string(special_damage);
-        special_damage_message = make_stringf("Space bends around %s (%s).",
+        special_damage_message = make_stringf("Space bends around %s (%d).",
                                               defender_name(false).c_str(),
-											  d.c_str());
+											  special_damage);
         break;
     case BIG_DMG:
 		special_damage += 3 + random2avg(24, 2);
-		d = std::to_string(special_damage);
-        special_damage_message = make_stringf("Space warps horribly around %s (%s)!",
+        special_damage_message = make_stringf("Space warps horribly around %s (%d)!",
                                               defender_name(false).c_str(),
-											  d.c_str());
+											  special_damage);
         break;
     case BLINK:
         if (defender_visible)
@@ -499,23 +493,6 @@ bool attack::distortion_affects_defender()
         defender->banish(attacker, attacker->name(DESC_PLAIN, true),
                          attacker->get_experience_level());
         return true;
-    case TELE_INSTANT:
-    case TELE_DELAYED:
-        if (defender_visible)
-            obvious_effect = true;
-        if (crawl_state.game_is_sprint() && defender->is_player()
-            || defender->no_tele())
-        {
-            if (defender->is_player())
-                canned_msg(MSG_STRANGE_STASIS);
-            return false;
-        }
-
-        if (choice == TELE_INSTANT)
-            teleport_fineff::schedule(defender);
-        else
-            defender->teleport();
-        break;
     case NONE:
         // Do nothing
         break;
@@ -602,9 +579,9 @@ void attack::chaos_affects_defender()
     int poly_up_chance  = can_poly && mon               ?  1 : 0;
     int shifter_chance  = can_poly && mon && is_natural
                           && !is_shifter                ?  1 : 0;
-    int rage_chance     = can_rage                      ?  5 : 0;
+    int rage_chance     = can_rage                      ? 10 : 0;
     int speed_chance    = can_slow                      ? 10 : 0;
-    int para_chance     = !firewood                     ?  5 : 0;
+    int para_chance     = !firewood                     ? 10 : 0;
     int petrify_chance  = can_slow && can_petrify       ? 10 : 0;
 
     // NOTE: Must appear in exact same order as in chaos_type enumeration.
@@ -612,14 +589,14 @@ void attack::chaos_affects_defender()
     {
         clone_chance,   // CHAOS_CLONE
         poly_chance,    // CHAOS_POLY
-        poly_up_chance, // CHAOS_POLY_UP
-        shifter_chance, // CHAOS_MAKE_SHIFTER
-        20,             // CHAOS_MISCAST
+        0,              // CHAOS_POLY_UP
+        0,              // CHAOS_MAKE_SHIFTER
+        0,              // CHAOS_MISCAST
         rage_chance,    // CHAOS_RAGE
 
         10,             // CHAOS_HEAL
         speed_chance,   // CHAOS_HASTE
-        10,             // CHAOS_INVIS
+        0,              // CHAOS_INVIS
 
         speed_chance,   // CHAOS_SLOW
         para_chance,    // CHAOS_PARALYSIS
@@ -756,8 +733,9 @@ void attack::chaos_affects_defender()
         }
         beam.flavour = BEAM_HASTE;
         break;
+    //disabling this -hellmonk
     case CHAOS_INVIS:
-        beam.flavour = BEAM_INVISIBILITY;
+        beam.flavour = BEAM_SLOW;
         break;
     case CHAOS_SLOW:
         beam.flavour = BEAM_SLOW;
@@ -837,7 +815,6 @@ brand_type attack::random_chaos_brand()
                     10, SPWPN_FLAMING,
                     10, SPWPN_FREEZING,
                     10, SPWPN_ELECTROCUTION,
-                    10, SPWPN_VENOM,
                     10, SPWPN_CHAOS,
                      5, SPWPN_DRAINING,
                      5, SPWPN_VAMPIRISM,
@@ -1194,12 +1171,9 @@ string attack::defender_name(bool allow_reflexive)
 
 int attack::player_stat_modify_damage(int damage)
 {
-    int dammod = 39;
+    int dammod = 29;
 
-    if (you.strength() > 10)
-        dammod += (random2(you.strength() - 9) * 2);
-    else if (you.strength() < 10)
-        dammod -= (random2(11 - you.strength()) * 3);
+    dammod += (random2(you.strength() + 1) * 2);
 
     damage *= dammod;
     damage /= 39;
@@ -1388,6 +1362,9 @@ int attack::calc_damage()
 
         damage = max(0, damage);
         set_attack_verb(damage);
+		
+        if(you.species == SP_SKELETON && stab_attempt)
+            spooky(defender);
 
         return damage;
     }
@@ -1602,7 +1579,8 @@ bool attack::apply_damage_brand(const char *what)
     if (!damage_done
         && (brand == SPWPN_FLAMING || brand == SPWPN_FREEZING
             || brand == SPWPN_HOLY_WRATH || brand == SPWPN_ANTIMAGIC
-            || brand == SPWPN_VORPAL || brand == SPWPN_VAMPIRISM))
+            || brand == SPWPN_VORPAL || brand == SPWPN_VAMPIRISM 
+            || brand == SPWPN_DEVASTATION))
     {
         // These brands require some regular damage to function.
         return false;
@@ -1611,18 +1589,22 @@ bool attack::apply_damage_brand(const char *what)
     switch (brand)
     {
     case SPWPN_FLAMING:
-        calc_elemental_brand_damage(BEAM_FIRE,
-                                    defender->is_icy() ? "melt" : "burn",
-                                    what);
-        defender->expose_to_element(BEAM_FIRE, 2);
-        if (defender->is_player())
-            maybe_melt_player_enchantments(BEAM_FIRE, special_damage);
+        noisy(min(damage_done / 2, 20), defender->pos());
+        detonation_brand(attacker, defender->pos(), damage_done);
         break;
 
     case SPWPN_FREEZING:
         calc_elemental_brand_damage(BEAM_COLD, "freeze", what);
         defender->expose_to_element(BEAM_COLD, 2);
         break;
+		
+    case SPWPN_DEVASTATION:
+    {
+        special_damage = 1 + div_rand_round(random2(damage_done * 15), 10);
+        std::string d = std::to_string(special_damage);
+        special_damage_message = "The blow is devastating (" + d + ")!";
+        break;
+    }
 
     case SPWPN_HOLY_WRATH:
         if (defender->holy_wrath_susceptible())

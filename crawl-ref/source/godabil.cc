@@ -18,6 +18,7 @@
 #include "bloodspatter.h"
 #include "branch.h"
 #include "butcher.h"
+#include "chardump.h"
 #include "cloud.h"
 #include "colour.h"
 #include "coordit.h"
@@ -1442,9 +1443,6 @@ void elyvilon_remove_divine_vigour()
 
 bool vehumet_supports_spell(spell_type spell)
 {
-    // Conjurations work by conjuring up a chunk of short-lived matter and
-    // propelling it towards the victim. This is the most popular way, but
-    // by no means it has a monopoly for being destructive.
     // Vehumet loves all direct physical destruction.
     if (spell == SPELL_SHATTER
         || spell == SPELL_LRD
@@ -1456,12 +1454,10 @@ bool vehumet_supports_spell(spell_type spell)
         || spell == SPELL_OZOCUBUS_REFRIGERATION
         || spell == SPELL_OLGREBS_TOXIC_RADIANCE
         || spell == SPELL_VIOLENT_UNRAVELLING
-        || spell == SPELL_INNER_FLAME
         || spell == SPELL_IGNITION
         || spell == SPELL_FIREBALL
         || spell == SPELL_CONJURE_FLAME      
         || spell == SPELL_BOLT_OF_FIRE
-        || spell == SPELL_THROW_FROST
         || spell == SPELL_FREEZING_CLOUD
         || spell == SPELL_MEPHITIC_CLOUD
         || spell == SPELL_BOLT_OF_DRAINING
@@ -1788,18 +1784,19 @@ bool jiyva_remove_bad_mutation()
 
 bool yred_injury_mirror()
 {
-    return in_good_standing(GOD_YREDELEMNUL, 1)
+    return in_good_standing(GOD_YREDELEMNUL, 0)
            && you.duration[DUR_MIRROR_DAMAGE]
            && crawl_state.which_god_acting() != GOD_YREDELEMNUL;
 }
 
-void yred_make_enslaved_soul(monster* mon, bool force_hostile)
+void yred_make_enslaved_soul(monster* mon, bool force_hostile, bool silent)
 {
     ASSERT(mon); // XXX: change to monster &mon
-    ASSERT(mons_enslaved_body_and_soul(*mon));
 
     add_daction(DACT_OLD_ENSLAVED_SOULS_POOF);
     remove_enslaved_soul_companion();
+	
+    you.props[YRED_ENSLAVED_SOUL_KEY] = mon->type;
 
     const string whose = you.can_see(*mon) ? apostrophise(mon->name(DESC_THE))
                                            : mon->pronoun(PRONOUN_POSSESSIVE);
@@ -1847,6 +1844,7 @@ void yred_make_enslaved_soul(monster* mon, bool force_hostile)
 
     mon->flags |= MF_NO_REWARD;
     mon->flags |= MF_ENSLAVED_SOUL;
+    mon->flags |= MF_HARD_RESET;
 
     // If the original monster type has melee abilities, make sure
     // its spectral thing has them as well.
@@ -1876,8 +1874,11 @@ void yred_make_enslaved_soul(monster* mon, bool force_hostile)
         invalidate_agrid();
     }
 
-    mprf("%s soul %s.", whose.c_str(),
+    if(!silent)
+    {
+        mprf("%s soul %s.", whose.c_str(),
          !force_hostile ? "is now yours" : "fights you");
+    }
 }
 
 bool kiku_receive_corpses(int pow)
@@ -3570,6 +3571,7 @@ static int _slouch_monsters(coord_def where)
     // towards the middle.
     const int dmg = roll_dice(_slouch_damage(mon), 3) / 2;
 
+	mprf("%s is slouched (%d)!",mon->name(DESC_THE).c_str(), dmg);
     mon->hurt(&you, dmg, BEAM_MMISSILE, KILLED_BY_BEAM, "", "", true);
     return 1;
 }
@@ -3940,28 +3942,26 @@ bool dithmenos_shadow_step()
 static potion_type _gozag_potion_list[][4] =
 {
     { POT_HEAL_WOUNDS, NUM_POTIONS, NUM_POTIONS, NUM_POTIONS },
-    { POT_HEAL_WOUNDS, POT_CURING, NUM_POTIONS, NUM_POTIONS },
     { POT_HEAL_WOUNDS, POT_MAGIC, NUM_POTIONS, NUM_POTIONS, },
-    { POT_CURING, POT_MAGIC, NUM_POTIONS, NUM_POTIONS },
     { POT_HEAL_WOUNDS, POT_BERSERK_RAGE, NUM_POTIONS, NUM_POTIONS },
     { POT_HASTE, POT_HEAL_WOUNDS, NUM_POTIONS, NUM_POTIONS },
-    { POT_HASTE, POT_BRILLIANCE, NUM_POTIONS, NUM_POTIONS },
-    { POT_HASTE, POT_AGILITY, NUM_POTIONS, NUM_POTIONS },
-    { POT_MIGHT, POT_AGILITY, NUM_POTIONS, NUM_POTIONS },
+    { POT_HASTE, POT_MIGHT, NUM_POTIONS, NUM_POTIONS },
+    { POT_HASTE, NUM_POTIONS, NUM_POTIONS, NUM_POTIONS },
+    { POT_MIGHT, NUM_POTIONS, NUM_POTIONS, NUM_POTIONS },
     { POT_HASTE, POT_FLIGHT, NUM_POTIONS, NUM_POTIONS },
     { POT_HASTE, POT_RESISTANCE, NUM_POTIONS, NUM_POTIONS },
-    { POT_RESISTANCE, POT_AGILITY, NUM_POTIONS, NUM_POTIONS },
+    { POT_RESISTANCE, NUM_POTIONS, NUM_POTIONS, NUM_POTIONS },
     { POT_RESISTANCE, POT_FLIGHT, NUM_POTIONS, NUM_POTIONS },
-    { POT_INVISIBILITY, POT_AGILITY, NUM_POTIONS , NUM_POTIONS },
-    { POT_HEAL_WOUNDS, POT_CURING, POT_MAGIC, NUM_POTIONS },
-    { POT_HEAL_WOUNDS, POT_CURING, POT_BERSERK_RAGE, NUM_POTIONS },
-    { POT_HEAL_WOUNDS, POT_HASTE, POT_AGILITY, NUM_POTIONS },
-    { POT_MIGHT, POT_AGILITY, POT_BRILLIANCE, NUM_POTIONS },
-    { POT_HASTE, POT_AGILITY, POT_FLIGHT, NUM_POTIONS },
-    { POT_FLIGHT, POT_AGILITY, POT_INVISIBILITY, NUM_POTIONS },
-    { POT_RESISTANCE, POT_MIGHT, POT_AGILITY, NUM_POTIONS },
+    { POT_INVISIBILITY, POT_MIGHT, NUM_POTIONS , NUM_POTIONS },
+    { POT_HEAL_WOUNDS, POT_MIGHT, POT_MAGIC, NUM_POTIONS },
+    { POT_HEAL_WOUNDS, POT_INVISIBILITY, POT_BERSERK_RAGE, NUM_POTIONS },
+    { POT_HEAL_WOUNDS, POT_HASTE, NUM_POTIONS, NUM_POTIONS },
+    { POT_MIGHT, POT_MAGIC, NUM_POTIONS, NUM_POTIONS },
+    { POT_HASTE, POT_RESISTANCE, POT_FLIGHT, NUM_POTIONS },
+    { POT_FLIGHT, POT_MIGHT, POT_INVISIBILITY, NUM_POTIONS },
+    { POT_RESISTANCE, POT_MIGHT, NUM_POTIONS, NUM_POTIONS },
     { POT_RESISTANCE, POT_MIGHT, POT_HASTE, NUM_POTIONS },
-    { POT_RESISTANCE, POT_INVISIBILITY, POT_AGILITY, NUM_POTIONS },
+    { POT_RESISTANCE, POT_INVISIBILITY, POT_FLIGHT, NUM_POTIONS },
 };
 
 static void _gozag_add_potions(CrawlVector &vec, potion_type *which)
@@ -5598,20 +5598,6 @@ string ru_sacrifice_vector(ability_type sac)
     return sac_def.sacrifice_vector ? sac_def.sacrifice_vector : "";
 }
 
-static const char* _describe_sacrifice_piety_gain(int piety_gain)
-{
-    if (piety_gain >= 40)
-        return "an incredible";
-    else if (piety_gain >= 29)
-        return "a major";
-    else if (piety_gain >= 21)
-        return "a significant";
-    else if (piety_gain >= 13)
-        return "a modest";
-    else
-        return "a trivial";
-}
-
 static const string _piety_asterisks(int piety)
 {
     const int prank = piety_rank(piety);
@@ -5799,8 +5785,8 @@ static int _ru_get_sac_piety_gain(ability_type sac)
 string ru_sacrifice_description(ability_type sac)
 {
     const int piety_gain = _ru_get_sac_piety_gain(sac);
-    return make_stringf("This is %s sacrifice. Piety after sacrifice: %s",
-                        _describe_sacrifice_piety_gain(piety_gain),
+    return make_stringf("This sacrifice gives %d piety. Piety after sacrifice: %s",
+                        piety_gain,
                         _piety_asterisks(you.piety + piety_gain).c_str());
 }
 
@@ -6874,7 +6860,7 @@ static void _transfer_drain_nearby(coord_def destination)
 
 /**
  * Activate Hepliaklqana's Transference ability, swapping the player's
- * ancestor with a targeted creature & potentially slowing monsters adjacent
+ * ancestor with a targeted creature & potentially draining monsters adjacent
  * to the target.
  *
  * @param fail      Whether the effect should fail after checking validity.
@@ -6973,6 +6959,103 @@ spret_type hepliaklqana_transference(bool fail)
     return SPRET_SUCCESS;
 }
 
+/**
+ * Activate Yred's soul transfer ability, swapping the player's
+ * enslaved soul with a targeted creature & potentially draining monsters adjacent
+ * to the target.
+ *
+ * @param fail      Whether the effect should fail after checking validity.
+ * @return          Whether the ability succeeded, failed, or was aborted.
+ */
+spret_type yred_transference(bool fail)
+{
+    monster *soul = yred_soul_mon();
+    if (!soul || !you.can_see(*soul))
+    {
+        mprf("Your enslaved soul is not nearby!");
+        return SPRET_ABORT;
+    }
+
+    coord_def target = _get_transference_target();
+    if (target.origin())
+    {
+        canned_msg(MSG_OK);
+        return SPRET_ABORT;
+    }
+
+    actor* victim = actor_at(target);
+    const bool victim_visible = victim && you.can_see(*victim);
+    if ((!victim || !victim_visible)
+        && !yesno("You can't see anything there. Try transferring anyway?",
+                  true, 'n'))
+    {
+        canned_msg(MSG_OK);
+        return SPRET_ABORT;
+    }
+
+    if (victim == soul)
+    {
+        mpr("You can't transfer your enslaved soul with itself.");
+        return SPRET_ABORT;
+    }
+
+    const bool victim_immovable
+        = victim && (mons_is_tentacle_or_tentacle_segment(victim->type)
+                     || victim->is_stationary());
+    if (victim_visible && victim_immovable)
+    {
+        mpr("You can't transfer that.");
+        return SPRET_ABORT;
+    }
+
+    const coord_def destination = soul->pos();
+    if (victim == &you && !check_moveto(destination, "transfer"))
+        return SPRET_ABORT;
+
+    const bool uninhabitable = victim && !victim->is_habitable(destination);
+    if (uninhabitable && victim_visible)
+    {
+        mprf("%s can't be transferred into %s.",
+             victim->name(DESC_THE).c_str(), feat_type_name(grd(destination)));
+        return SPRET_ABORT;
+    }
+
+    // we assume the soul flies & so can survive anywhere anything can.
+
+    fail_check();
+
+    if (!victim || uninhabitable || victim_immovable)
+    {
+        canned_msg(MSG_NOTHING_HAPPENS);
+        return SPRET_SUCCESS;
+    }
+
+    if (victim->is_player())
+    {
+        soul->move_to_pos(target, true, true);
+        victim->move_to_pos(destination, true, true);
+    }
+    else
+        soul->swap_with(victim->as_monster());
+
+    mprf("%s swap%s with your enslaved soul!",
+         victim->name(DESC_THE).c_str(),
+         victim->is_player() ? "" : "s");
+
+    if (victim->is_monster())
+        mons_relocated(victim->as_monster());
+
+    soul->apply_location_effects(destination);
+    victim->apply_location_effects(target);
+    if (victim->is_monster())
+        behaviour_event(victim->as_monster(), ME_DISTURB, &you, target);
+
+    if (have_passive(passive_t::transfer_drain))
+        _transfer_drain_nearby(target);
+
+    return SPRET_SUCCESS;
+}
+
 /// Prompt to rename your ancestor.
 static void _hepliaklqana_choose_name()
 {
@@ -7048,4 +7131,223 @@ void hepliaklqana_choose_identity()
 {
     _hepliaklqana_choose_name();
     _hepliaklqana_choose_gender();
+}
+
+bool wu_jian_can_wall_jump_in_principle(const coord_def& target)
+{
+    if (!have_passive(passive_t::wu_jian_wall_jump)
+        || !feat_can_wall_jump_against(grd(target))
+        || you.is_stationary()
+        || you.digging)
+    {
+        return false;
+    }
+    return true;
+}
+
+bool wu_jian_can_wall_jump(const coord_def& target, string &error_ret)
+{
+    if (target.distance_from(you.pos()) != 1)
+    {
+        error_ret = "You can only wall jump against adjacent positions.";
+        return false;
+    }
+
+    if (!wu_jian_can_wall_jump_in_principle(target))
+    {
+        if (!feat_can_wall_jump_against(grd(target)))
+        {
+            error_ret = string("You cannot wall jump against ") +
+                feature_description_at(target, false, DESC_THE, true);
+        }
+        else
+            error_ret = "";
+        return false;
+    }
+
+    auto wall_jump_direction = (you.pos() - target).sgn();
+    auto wall_jump_landing_spot = (you.pos() + wall_jump_direction
+                                   + wall_jump_direction);
+
+    monster* beholder = you.get_beholder(target);
+    if (beholder)
+    {
+        error_ret = make_stringf("You cannot move your %s away from %s to wall jump!",
+             you.foot_name(true).c_str(),
+             beholder->name(DESC_THE, true).c_str());
+        return false;
+    }
+
+    monster* fearmonger = you.get_fearmonger(wall_jump_landing_spot);
+    if (fearmonger)
+    {
+        error_ret = make_stringf("You are too afraid to wall jump closer to %s!",
+             fearmonger->name(DESC_THE, true).c_str());
+        return false;
+    }
+
+    const actor* landing_actor = actor_at(wall_jump_landing_spot);
+    if (feat_is_solid(grd(you.pos() + wall_jump_direction))
+        || !in_bounds(wall_jump_landing_spot)
+        || !you.is_habitable(wall_jump_landing_spot)
+        || landing_actor)
+    {
+        if (landing_actor)
+        {
+            error_ret = make_stringf(
+                "You have no room to wall jump there; %s is in the way.",
+                landing_actor->observable()
+                            ? landing_actor->name(DESC_THE).c_str()
+                            : "something you can't see");
+        }
+        else
+            error_ret = "You have no room to wall jump there.";
+        you.attribute[ATTR_WALL_JUMP_READY] = 0;
+        return false;
+    }
+    error_ret = "";
+    return true;
+}
+
+/**
+ * Do a walljump.
+ *
+ * This doesn't check whether there's space; see `wu_jian_can_wall_jump`.
+ * It does check whether the landing spot is safe, excluded, etc.
+ *
+ * @param targ the movement target (i.e. the wall being moved against).
+ * @return whether the jump culminated.
+ */
+bool wu_jian_do_wall_jump(coord_def targ, bool ability)
+{
+    // whether there's space in the first place is checked earlier
+    // in wu_jian_can_wall_jump.
+    auto wall_jump_direction = (you.pos() - targ).sgn();
+    auto wall_jump_landing_spot = (you.pos() + wall_jump_direction
+                                   + wall_jump_direction);
+    if (!check_moveto(wall_jump_landing_spot, "wall jump"))
+    {
+        you.turn_is_over = false;
+        if (!ability && Options.wall_jump_prompt)
+        {
+            mprf(MSGCH_PLAIN, "You take your %s off %s.",
+                you.foot_name(true).c_str(),
+                feature_description_at(targ, false,
+                                            DESC_THE, false).c_str());
+            you.attribute[ATTR_WALL_JUMP_READY] = 0;
+        }
+        return false;
+    }
+
+    if (!ability && Options.wall_jump_prompt &&
+        you.attribute[ATTR_WALL_JUMP_READY] == 0)
+    {
+        you.turn_is_over = false;
+        mprf(MSGCH_PLAIN,
+            "You put your %s on %s. Move against it again to jump.",
+            you.foot_name(true).c_str(),
+            feature_description_at(targ, false,
+                                            DESC_THE, false).c_str());
+        you.attribute[ATTR_WALL_JUMP_READY] = 1;
+        return false;
+    }
+
+    auto initial_position = you.pos();
+    move_player_to_grid(wall_jump_landing_spot, false);
+    if (!ability)
+        count_action(CACT_INVOKE, ABIL_WU_JIAN_WALLJUMP);
+    wu_jian_wall_jump_effects(initial_position);
+
+    if (ability)
+    {
+        // TODO: code duplication with movement...
+        // TODO: check engulfing
+        int wall_jump_modifier = (you.attribute[ATTR_SERPENTS_LASH] != 1) ? 2 : 1;
+
+        you.time_taken = player_speed() * wall_jump_modifier * player_movement_speed();
+        you.time_taken = div_rand_round(you.time_taken, 10);
+
+        // need to set this here in case serpent's lash isn't active
+        you.turn_is_over = true;
+        request_autopickup();
+        wu_jian_post_move_effects(true, initial_position);
+    }
+    return true;
+}
+
+bool wu_jian_wall_jump_ability()
+{
+    // This needs to be kept in sync with direct walljumping via movement.
+    ASSERT(!crawl_state.game_is_arena());
+
+    if (crawl_state.is_repeating_cmd())
+    {
+        crawl_state.cant_cmd_repeat("You can't repeat a wall jump.");
+        crawl_state.cancel_cmd_again();
+        crawl_state.cancel_cmd_repeat();
+        return false;
+    }
+    string wj_error;
+    bool has_targets = false;
+
+    for (adjacent_iterator ai(you.pos()); ai; ++ai)
+        if (wu_jian_can_wall_jump(*ai, wj_error))
+        {
+            has_targets = true;
+            break;
+        }
+
+    if (!has_targets)
+    {
+        mpr("There is nothing to wall jump against here.");
+        return false;
+    }
+
+    if (you.is_nervous())
+    {
+        mpr("You are too terrified to wall jump!");
+        return false;
+    }
+
+    // query for location:
+    dist beam;
+
+    while (1)
+    {
+        direction_chooser_args args;
+        args.restricts = DIR_TARGET;
+        args.mode = TARG_ANY;
+        args.range = 1;
+        args.needs_path = false; // TODO: overridden by hitfunc?
+        args.top_prompt = "Aiming: <white>Wall jump</white>";
+        args.self = CONFIRM_CANCEL;
+        targeter_walljump tgt;
+        args.hitfunc = &tgt;
+        {
+            // TODO: make this unnecessary
+            direction_chooser dc(beam, args);
+            dc.needs_path = false;
+            dc.choose_direction();
+        }
+        if (crawl_state.seen_hups)
+        {
+            clear_messages();
+            mpr("Cancelling wall jump due to HUP.");
+            return false;
+        }
+
+        if (!beam.isValid || beam.target == you.pos())
+            return false;         // early return
+
+        if (wu_jian_can_wall_jump(beam.target, wj_error))
+            break;
+    }
+
+    if (!wu_jian_do_wall_jump(beam.target, true))
+        return false;
+
+    crawl_state.cancel_cmd_again();
+    crawl_state.cancel_cmd_repeat();
+
+    return true;
 }

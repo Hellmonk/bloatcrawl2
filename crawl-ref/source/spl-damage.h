@@ -22,6 +22,7 @@ spret_type fire_los_attack_spell(spell_type spell, int pow, const actor* agent,
 void sonic_damage(bool scream);
 bool mons_shatter(monster* caster, bool actual = true);
 void shillelagh(actor *wielder, coord_def where, int pow);
+void detonation_brand(actor *wielder, coord_def where, int pow);
 spret_type vampiric_drain(int pow, monster* mons, bool fail);
 spret_type cast_freeze(int pow, monster* mons, bool fail);
 spret_type cast_airstrike(int pow, const dist &beam, bool fail);
@@ -33,8 +34,7 @@ spret_type cast_ignite_poison(actor *agent, int pow, bool fail,
 int discharge_monsters(coord_def where, int pow, actor *agent);
 spret_type cast_discharge(int pow, bool fail);
 bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
-                              const coord_def target, bool allow_random,
-                              bool get_max_distance, bool quiet,
+                              const coord_def target, bool quiet,
                               const char **what,
                               bool &should_destroy_wall, bool &hole);
 spret_type cast_fragmentation(int powc, const actor *caster,

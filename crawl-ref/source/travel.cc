@@ -247,10 +247,6 @@ bool feat_is_traversable_now(dungeon_feature_type grid, bool try_fallback)
         // Permanently flying players can cross most hostile terrain.
         if (grid == DNGN_DEEP_WATER || grid == DNGN_LAVA)
             return you.permanent_flight();
-
-        // You can't open doors in bat form.
-        if (grid == DNGN_CLOSED_DOOR || grid == DNGN_RUNED_DOOR)
-            return player_can_open_doors();
     }
 
     return feat_is_traversable(grid, try_fallback);
@@ -2173,18 +2169,18 @@ static level_id _find_down_level()
     return find_down_level(level_id::current());
 }
 
-static int _travel_depth_keyfilter(int &c)
+static keyfun_action _travel_depth_keyfilter(int &c)
 {
     switch (c)
     {
     case '<': case '>': case '?': case '$': case '^':
-        return -1;
+        return KEYFUN_BREAK;
     case '-':
     case CONTROL('P'): case 'p':
         c = '-';  // Make uniform.
-        return -1;
+        return KEYFUN_BREAK;
     default:
-        return 1;
+        return KEYFUN_PROCESS;
     }
 }
 
@@ -2823,25 +2819,6 @@ void start_explore(bool grab_items)
     if (!i_feel_safe(true, true))
         return;
 
-    if (you_worship(GOD_FEDHAS))
-    {
-        bool corpse_on_pos = false;
-        for (radius_iterator i(you.pos(), LOS_NO_TRANS); i && !corpse_on_pos; ++i)
-        {
-            for (stack_iterator j(*i); j; ++j)
-            {
-                if (j->is_type(OBJ_CORPSES, CORPSE_BODY))
-                {
-                    corpse_on_pos = true;
-                    break;
-                }
-            }
-        }
-
-        if (corpse_on_pos && Options.auto_sacrifice)
-            pray(false);
-    }
-
     you.running = (grab_items ? RMODE_EXPLORE_GREEDY : RMODE_EXPLORE);
 
     for (rectangle_iterator ri(0); ri; ++ri)
@@ -2854,12 +2831,8 @@ void start_explore(bool grab_items)
 
 void do_explore_cmd()
 {
-    if (you.hunger_state <= HS_STARVING && !you_min_hunger())
-        mpr("You need to eat something NOW!");
-    else if (you.berserk())
+    if (you.berserk())
         mpr("Calm down first, please.");
-    else if (player_in_branch(BRANCH_LABYRINTH))
-        mpr("No exploration algorithm can help you here.");
     else                        // Start exploring
         start_explore(Options.explore_greedy);
 }
@@ -4021,9 +3994,9 @@ string explore_discoveries::cleaned_feature_description(
     string s = lowercase_first(feature_description_at(pos));
     if (s.length() && s[s.length() - 1] == '.')
         s.erase(s.length() - 1);
-    if (s.find("a ") != string::npos)
+    if (starts_with(s, "a "))
         s = s.substr(2);
-    else if (s.find("an ") != string::npos)
+    else if (starts_with(s, "an "))
         s = s.substr(3);
     return s;
 }
