@@ -18,7 +18,8 @@
 # Typical parameters:
 #    TILES         -- set to anything to enable tiles build
 #
-#    SOUND         -- set to anything to enable sound
+#    SOUND         -- set to anything to enable sound; note that you will need to
+#                     uncomment some lines in sound.h if not building tiles
 #
 #    CROSSHOST     -- target system, eg, i386-pc-msdosdjgpp or i586-mingw32msvc
 #
@@ -104,7 +105,7 @@ include Makefile.obj
 #
 
 # Which C++ standard to support
-STDFLAG = -std=c++0x
+STDFLAG = -std=c++11
 
 CFOTHERS := -pipe $(EXTERNAL_FLAGS)
 CFWARN := 
@@ -132,7 +133,7 @@ CHMOD = chmod 2>/dev/null
 CHOWN = chown 2>/dev/null
 PNGCRUSH = $(COPY)
 PNGCRUSH_LABEL = COPY
-ADVPNG = advpng -z -4
+ADVPNG = advpng -z -2
 PKGCONFIG = pkg-config
 DOXYGEN = doxygen
 DOXYGEN_SIMPLE_CONF = crawl_simple.doxy
@@ -285,7 +286,13 @@ endif
 LIBZ := contrib/install/$(ARCH)/lib/libz.a
 
 ifndef CROSSHOST
-	SQLITE_INCLUDE_DIR := /usr/include
+	# FreeBSD keeps all of its userland includes in /usr/local so
+	# look there
+	ifeq ($(uname_S),FreeBSD)
+		SQLITE_INCLUDE_DIR := /usr/local/include
+	else
+		SQLITE_INCLUDE_DIR := /usr/include
+	endif
 else
 	# This is totally wrong, works only with some old-style setups, and
 	# on some architectures of Debian/new FHS multiarch -- excluding, for
@@ -323,10 +330,10 @@ endif
 #
 # Check for an Apple-released compiler.
 #
-ifndef NO_APPLE_GCC
+ifndef NO_APPLE_PLATFORM
 ifeq ($(uname_S),Darwin)
 ifneq ($(shell gcc -v 2>&1 | grep Apple),)
-APPLE_GCC = YesPlease
+APPLE_PLATFORM = YesPlease
 endif
 endif
 endif
@@ -370,9 +377,6 @@ MCHMOD_LOGS := 664
 INSTALL_UGRP := games:games
 endif
 
-chroot_prefix :=
-prefix        :=
-
 ifeq ($(patsubst %/local,%,$(patsubst %/,%,$(prefix))),/usr)
 FHS := yes
 endif
@@ -405,73 +409,7 @@ endif
 
 INCLUDES_L += -Iutil -I.
 
-ifdef APPLE_GCC
-
-MARCH := $(uname_M)
-
-
-ifndef NO_AUTO_SDK
-
-# The SDK locations were moved in 10.8; this snippet tries to find them
-# there first, then reverts to the original location.
-XCODE_SDK_SUFFIX := Platforms/MacOSX.platform/Developer
-# Try to use xcode-select -p to find the current user-configured Xcode.app.
-XCODE_SELECT_PATH := $(shell xcode-select -p 2>/dev/null | sed 's/\/$$//')
-ifeq ($(shell test -e "$(XCODE_SELECT_PATH)/$(XCODE_SDK_SUFFIX)" || echo NOPE),)
-DEVELOPER_PATH := $(XCODE_SELECT_PATH)/$(XCODE_SDK_SUFFIX)
-else
-# Otherwise, try /Applications/Xcode.app.
-XCODE_DEFAULT_PATH := /Applications/Xcode.app/Contents/Developer
-ifeq ($(shell test -e "$(XCODE_DEFAULT_PATH)/$(XCODE_SDK_SUFFIX)" || echo NOPE),)
-DEVELOPER_PATH := $(XCODE_DEFAULT_PATH)/$(XCODE_SDK_SUFFIX)
-else
-# If all else fails, maybe it's in /Developer.
-DEVELOPER_PATH := /Developer
-endif
-endif
-
-# Find the oldest SDK available, in attempt to make this build as
-# backward-compatible as we possibly can.
-SDK_VER := $(shell command ls $(DEVELOPER_PATH)/SDKs | grep -v "MacOSX.sdk" | sort -n | head -1 | perl -pe 's/^MacOSX//g;s/.sdk$$//g')
-
-ifeq ($(SDK_VER),10.4u)
-SDK_VER := 10.4
-endif
-
-ifndef SDK_VER
-$(error You do not seem to have any Mac OS X SDKs installed! This build is doomed to fail)
-endif
-
-endif
-
-ifndef SDK_VER
-ifeq ($(MARCH),ppc)
-SDK_VER := 10.4
-endif
-ifeq ($(MARCH),i386)
-SDK_VER := 10.4
-endif
-ifeq ($(MARCH),x86_64)
-ifdef TILES
-SDK_VER := 10.6
-else
-SDK_VER := 10.5
-endif
-endif
-endif
-
-# Mac OS X 10.4 adds a 'u' on the end of the SDK name. Everything
-# else is much easier to predict the name of.
-ifeq ($(SDK_VER),10.4)
-GCC_VER := 4.0
-SDKROOT := $(DEVELOPER_PATH)/SDKs/MacOSX$(SDK_VER)u.sdk
-else
-SDKROOT := $(DEVELOPER_PATH)/SDKs/MacOSX$(SDK_VER).sdk
-endif
-
-ifneq ($(shell test -d $(SDKROOT) || echo NOPE),)
-$(error The Mac OS X $(SDK_VER) SDK seems missing)
-endif
+ifdef APPLE_PLATFORM
 
 ifdef BUILD_UNIVERSAL
 # [ds] 10.4 SDK g++-4.0 + x86_64 runs into SDL compile issues.
@@ -479,7 +417,7 @@ CFLAGS_ARCH := -arch i386 -arch ppc -faltivec
 CFLAGS_DEPCC_ARCH := -arch i386
 NO_INLINE_DEPGEN := YesPlease
 else
-CFLAGS_ARCH := -arch $(MARCH)
+CFLAGS_ARCH := -arch $(uname_M)
 endif
 
 MACOSX_MIN_VERSION=10.7
@@ -761,10 +699,10 @@ endif # pkg-config
 
 ifndef GLES
 ifneq ($(uname_S),Darwin)
-ifeq (,$(findstring MINGW,$(uname_S)))
-LIBS += -lGL -lGLU
-else
+ifeq ($(msys),Yes)
 LIBS += -lopengl32 -lglu32
+else
+LIBS += -lGL -lGLU
 endif
 endif
 endif
@@ -783,6 +721,9 @@ CFWARN_L += $(shell w=-Wno-array-bounds;echo|$(GXX) -E -x c++ - -Werror $$w >/de
 CFWARN_L += $(shell w=-Wno-format-zero-length;echo|$(GXX) -E -x c++ - -Werror $$w >/dev/null 2>&1 && echo $$w)
 CFWARN_L += $(shell w=-Wmissing-declarations;echo|$(GXX) -E -x c++ - -Werror $$w >/dev/null 2>&1 && echo $$w)
 CFWARN_L  += $(shell w=-Wredundant-decls;echo|$(GXX) -E -x c++ - -Werror $$w >/dev/null 2>&1 && echo $$w)
+# Avoid warnings about safety checks that might be necessary on other compilers
+# where the same enum is assigned a signed underlying type.
+CFWARN_L  += $(shell w=-Wno-tautological-unsigned-enum-zero-compare;echo|$(GXX) -E -x c++ - -Werror $$w >/dev/null 2>&1 && echo $$w)
 
 CFWARN_L += -Wno-parentheses -Wwrite-strings -Wshadow -pedantic
 CFOTHERS_L = $(EXTERNAL_FLAGS_L) $(EXTRA_FLAGS) $(DEFINES) $(SDL2_CFLAGS)
@@ -1080,7 +1021,7 @@ ifeq ($(strip $(YACC)),)
 NO_YACC = YesPlease
 endif
 
-ifneq ($(findstring $(MAKEFLAGS),s),s)
+ifneq ($(findstring s,$(MAKEFLAGS)),s)
 ifndef V
         QUIET_CC       = @echo '   ' CC $@;
         QUIET_CXX      = @echo '   ' CXX $@;
@@ -1203,6 +1144,10 @@ SRC_VERSION   := $(shell git describe --tags $(MERGE_BASE) 2>/dev/null || cat ut
 MAJOR_VERSION = $(shell echo "$(SRC_VERSION)"|sed -r 's/-.*//;s/^([^.]+\.[^.]+).*/\1/')
 
 export SRC_VERSION
+
+# Update .ver file if SRC_VERSION has changed
+.ver: FORCE
+	@echo '$(SRC_VERSION)' | cmp -s - $@ || echo '$(SRC_VERSION)' > $@
 
 PKG_SRC_DIR   := $(SRC_PKG_BASE)-$(SRC_VERSION)
 SRC_PKG_TAR   := $(PKG_SRC_DIR).tar.xz
@@ -1334,7 +1279,7 @@ endif
 compflag.h: $(OBJECTS:.o=.cc) main.cc util/gen-cflg.pl .cflags
 	$(QUIET_GEN)util/gen-cflg.pl compflag.h "$(ALL_CFLAGS)" "$(LDFLAGS)" "$(HOST)" "$(ARCH)"
 
-build.h: $(OBJECTS:.o=.cc) main.cc util/gen_ver.pl
+build.h: $(OBJECTS:.o=.cc) main.cc util/gen_ver.pl .ver
 	$(QUIET_GEN)util/gen_ver.pl $@ $(MERGE_BASE)
 
 version.o: build.h compflag.h
@@ -1344,6 +1289,10 @@ version.o: build.h compflag.h
 #
 $(DOC_BASE)/aptitudes.txt: $(DOC_TEMPLATES)/apt-tmpl.txt species-data.h aptitudes.h \
 						   util/gen-apt.pl
+	$(QUIET_GEN)./util/gen-apt.pl $@ $^
+
+$(DOC_BASE)/aptitudes-wide.txt: $(DOC_TEMPLATES)/apt-tmpl-wide.txt species-data.h \
+						   aptitudes.h util/gen-apt.pl
 	$(QUIET_GEN)./util/gen-apt.pl $@ $^
 
 $(DOC_BASE)/FAQ.html: dat/database/FAQ.txt util/FAQ2html.pl
@@ -1430,7 +1379,7 @@ endif
 	$(COPY_R) dat/dlua/* $(datadir_fp)/dat/dlua/
 	echo "-- Autogenerated list of maps to load and compile:" \
 	    >$(datadir_fp)/dat/dlua/loadmaps.lua
-	find dat -name '*.des'|sed s:dat/::| \
+	find dat -name '*.des'|LC_ALL=C sort|sed s:dat/::| \
 	while read x; \
 	    do echo "dgn.load_des_file('$$x')"; \
 	    done >>$(datadir_fp)/dat/dlua/loadmaps.lua
@@ -1446,7 +1395,7 @@ endif
 	$(COPY) ../docs/develop/levels/*.txt $(datadir_fp)/docs/develop/levels/
 	$(COPY) ../docs/license/*.txt $(datadir_fp)/docs/license/
 	$(COPY) ../CREDITS.txt $(datadir_fp)/docs/
-	$(COPY) ../settings/* $(datadir_fp)/settings/
+	$(COPY_R) ../settings/* $(datadir_fp)/settings/
 ifeq ($(GAME),crawl.exe)
 	sed -i 's/$$/\r/' `find $(datadir_fp) -iname '*.txt' -o -iname '*.des'`
 endif
@@ -1655,7 +1604,7 @@ $(RLTILES)/dc-unrand.txt: art-data.h
 artefact.o: art-data.h art-enum.h
 mon-util.o: mon-mst.h
 mon-util.d: mon-mst.h
-l_moninf.o: mi-enum.h
+l-moninf.o: mi-enum.h
 macro.o: cmd-name.h
 
 #############################################################################
