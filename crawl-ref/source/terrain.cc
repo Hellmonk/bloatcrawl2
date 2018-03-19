@@ -185,7 +185,7 @@ FEATFN_MEMOIZED(feat_is_portal_entrance, feat)
     // These are have different rules from normal connected branches, but they
     // also have different rules from "portal vaults," and are more similar to
     // real branches in some respects.
-    if (feat == DNGN_ENTER_ABYSS || feat == DNGN_ENTER_PANDEMONIUM)
+    if (feat == DNGN_ENTER_ABYSS || feat == DNGN_ENTER_PANDEMONIUM || feat == DNGN_ENTER_BAZAAR)
         return false;
 
     for (branch_iterator it; it; ++it)
@@ -208,7 +208,7 @@ FEATFN_MEMOIZED(feat_is_portal_entrance, feat)
  */
 FEATFN_MEMOIZED(feat_is_portal_exit, feat)
 {
-    if (feat == DNGN_EXIT_ABYSS || feat == DNGN_EXIT_PANDEMONIUM)
+    if (feat == DNGN_EXIT_ABYSS || feat == DNGN_EXIT_PANDEMONIUM || feat == DNGN_EXIT_BAZAAR)
         return false;
 
     for (branch_iterator it; it; ++it)
@@ -336,6 +336,7 @@ command_type feat_stair_direction(dungeon_feature_type feat)
     case DNGN_ENTER_PANDEMONIUM:
     case DNGN_EXIT_PANDEMONIUM:
     case DNGN_TRANSIT_PANDEMONIUM:
+    case DNGN_EXIT_BAZAAR:
         return CMD_GO_DOWNSTAIRS;
 
     default:

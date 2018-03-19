@@ -2563,6 +2563,15 @@ static bool _pan_level()
     return vault->orient != MAP_ENCOMPASS;
 }
 
+static bool _bazaar_level()
+{
+	const map_def *vault = nullptr;
+    vault = random_map_for_tag("bazaar", false, false, MB_FALSE);
+    ASSERT(vault);
+	_dgn_ensure_vault_placed(_build_primary_vault(vault), false);
+    return vault->orient != MAP_ENCOMPASS;
+}
+
 // Returns true if we want the dungeon builder
 // to place more vaults after this
 static bool _builder_by_type()
@@ -2588,7 +2597,11 @@ static bool _builder_by_type()
         setup_vault_mon_list();
         return _pan_level();
     }
-    else
+    else if (player_in_branch(BRANCH_BAZAAR))
+    {
+        return _bazaar_level();
+    }
+    else 
         return _builder_normal();
 }
 
@@ -2612,6 +2625,13 @@ static const map_def *_dgn_random_map_for_place(bool minivault)
 
             // Fall through and use a different Temple map instead.
         }
+    }
+	
+    if(player_in_branch(BRANCH_BAZAAR))
+    {
+        const map_def *vault = random_map_for_tag("bazaar", false, false, MB_FALSE);
+        if(vault)
+            return vault;
     }
 
     const level_id lid = level_id::current();

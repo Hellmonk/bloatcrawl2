@@ -617,6 +617,7 @@ void floor_transition(dungeon_feature_type how,
 
     if (how == DNGN_ENTER_PANDEMONIUM
         || how == DNGN_ENTER_ABYSS
+        || how == DNGN_ENTER_BAZAAR
         || feat_is_portal_entrance(how))
     {
         you.level_stack.push_back(level_pos::current());

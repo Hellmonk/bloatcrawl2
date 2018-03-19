@@ -744,6 +744,7 @@ static bool is_ash_portal(dungeon_feature_type feat)
     switch (feat)
     {
     case DNGN_ENTER_HELL:
+    case DNGN_ENTER_BAZAAR:
     case DNGN_ENTER_ABYSS: // for completeness
     case DNGN_EXIT_THROUGH_ABYSS:
     case DNGN_EXIT_ABYSS:

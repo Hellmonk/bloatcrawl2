@@ -304,7 +304,7 @@ default-depth: Bazaar
 # bazaar lakeside (jpeg)
 # 5 shops
 NAME:    bazaar_lake
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 ORIENT:  encompass
 WEIGHT:  20
 SUBST:   a = W.

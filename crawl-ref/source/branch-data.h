@@ -232,8 +232,8 @@ const Branch branches[NUM_BRANCHES] =
       BLACK, BLACK,
       '0', {}, 0 },
 
-    { BRANCH_BAZAAR, NUM_BRANCHES, -1, -1, 1, 18,
-      BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
+    { BRANCH_BAZAAR, NUM_BRANCHES, 27, 27, 1, 18,
+      BFLAG_NO_ITEMS,
       DNGN_ENTER_BAZAAR, DNGN_EXIT_BAZAAR, NUM_FEATURES,
       "Bazaar", "a bazaar", "Bazaar",
       "You enter an inter-dimensional bazaar!",
