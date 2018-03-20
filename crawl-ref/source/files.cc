@@ -1083,7 +1083,6 @@ static bool _leave_level(dungeon_feature_type stair_taken,
     {
         *return_pos = you.level_stack.back().pos;
         you.level_stack.pop_back();
-        env.level_state |= LSTATE_DELETED;
         popped = true;
     }
     else if (stair_taken == DNGN_TRANSIT_PANDEMONIUM

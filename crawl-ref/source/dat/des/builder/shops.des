@@ -70,16 +70,7 @@ CHANCE: 60% (Vaults)
 CHANCE: 30% (Shoals, Snake)
 {{
 hook("post_place", function()
-    local num = num_shops()
-
-    if you.absdepth() > 10 and you.absdepth() <= 27
-      and crawl.one_chance_in(30 - (you.absdepth() - 1))
-    then
-        dgn.place_maps { tag = "bzr_entry", count = 1 }
-        num = num - 1
-    end
-
-    dgn.place_maps { tag = "shop", count = num }
+    dgn.place_maps { tag = "bzr_entry", count = 1 }
 end)
 }}
 MAP

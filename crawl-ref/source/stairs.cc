@@ -982,6 +982,11 @@ level_id stair_destination(dungeon_feature_type feat, const string &dst,
         if (for_real && !player_in_hell())
             brentry[BRANCH_VESTIBULE] = level_id::current();
         return level_id(BRANCH_VESTIBULE);
+		
+    case DNGN_ENTER_BAZAAR:
+        if(for_real)
+            brentry[BRANCH_BAZAAR] = level_id::current();
+        return level_id(BRANCH_BAZAAR);
 
     case DNGN_EXIT_ABYSS:
         if (you.chapter == CHAPTER_POCKET_ABYSS)

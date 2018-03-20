@@ -21,7 +21,7 @@ function place_bazaar_portal(e, perm)
   if perm then
      e.lua_marker('O', bazaar_portal(false))
   else
-     e.lua_marker('O', bazaar_portal(not crawl.one_chance_in(6)))
+     e.lua_marker('O', bazaar_portal(false))
   end
 end
 
@@ -85,12 +85,12 @@ function fixup_bazaar()
 
   dgn.floor_halo("enter_shop", "yellow", tile.halo)
 end
-
+  
 dgn.set_branch_epilogue("Bazaar", "fixup_bazaar")
 
 }}
 
-default-depth: D:1-, Depths, Orc:$, Snake, Shoals, Vaults:1-2
+default-depth: D:10-, Depths, Orc:$, Snake, Shoals, Vaults:1-2
 
 ###############################################################################
 # Entries.
