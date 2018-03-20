@@ -990,6 +990,7 @@ level_id stair_destination(dungeon_feature_type feat, const string &dst,
     case DNGN_EXIT_PORTAL_VAULT:
 #endif
     case DNGN_EXIT_PANDEMONIUM:
+    case DNGN_EXIT_BAZAAR:
         if (you.level_stack.empty())
         {
             if (you.wizard)

@@ -90,7 +90,7 @@ dgn.set_branch_epilogue("Bazaar", "fixup_bazaar")
 
 }}
 
-default-depth: D:11-, Depths, Orc:$, Snake, Shoals, Vaults:1-2
+default-depth: D:1-, Depths, Orc:$, Snake, Shoals, Vaults:1-2
 
 ###############################################################################
 # Entries.
@@ -345,7 +345,7 @@ xxxxxxxx.....E.......awwwwwaa......A.....xxxxxxxxx
 xxxxxxx............aawwwwwwwww............xxxxxxxx
 xxxxxxx...........awwwwwWwwwwa............xxxxxxxx
 xxxxxxx..........awwwwwWWWwwwa............xxxxxxxx
-xxxxxxxY.T........awwwwwwWWwwwa........T.Yxxxxxxxx
+xxxxxxxY.T..{.....awwwwwwWWwwwa........T.Yxxxxxxxx
 xxxxxxx............awwwwwwwwaX............xxxxxxxx
 xxxxxxx.............aawwwwwwwwa...........xxxxxxxx
 xxxxxxx...............aaaaaaaa............xxxxxxxx
@@ -370,7 +370,7 @@ ENDMAP
 # bazaars in a row
 # ~4 shops
 NAME:    bazaar_short_row
-TAGS:    no_rotate no_pool_fixup
+TAGS:    no_rotate no_pool_fixup bazaar
 ORIENT:  encompass
 WEIGHT:  20
 SHUFFLE: Aa/Bb/Cc/Dd/Ee/Ff
@@ -404,7 +404,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxAxxxxxxxxxxxCxxxxxxxxxxxExxxxxxxxxxxxxxxx
 xxx.....xxxxxxx...xxxxxxxxx...xxxxxxxxx...xxxxxxx.....xxx
 xx..www..xxxxxx.a.xxxxxxxxx.c.xxxxxxxxx.e.xxxxxx..lll..xx
-x<.wwwww..+...........+...........+...........+..lllll.>x
+x{.wwwww..+...........+...........+...........+..lllll.>x
 xx..www..xxxxxx.b.xxxxxxxxx.d.xxxxxxxxx.f.xxxxxx..lll..xx
 xxx.....xxxxxxx...xxxxxxxxx...xxxxxxxxx...xxxxxxx.....xxx
 xxxxxxxxxxxxxxxxBxxxxxxxxxxxDxxxxxxxxxxxFxxxxxxxxxxxxxxxx
@@ -415,7 +415,7 @@ ENDMAP
 # bazaars in a row v2
 # ~4.5 shops
 NAME:    bazaar_long_row
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 ORIENT:  encompass
 WEIGHT:  20
 SHUFFLE: Aa/Bb/Cc/Dd/Ee/Ff/Gg/Hh
@@ -447,7 +447,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxAxxxxxxxxxxxCxxxxxxxxxxxExxxxxxxxxxxGxxxxxxxxxxxxxxxx
 xxx.....xxxxxxx...xxxxxxxxx...xxxxxxxxx...xxxxxxxxx...xxxxxxx.....xxx
 xx..www..xxxxxx.a.xxxxxxxxx.c.xxxxxxxxx.e.xxxxxxxxx.g.xxxxxx..lll..xx
-x<.wwwww..+...........+...........+...........+...........+..lllll.>x
+x{.wwwww..+...........+...........+...........+...........+..lllll.>x
 xx..www..xxxxxx.b.xxxxxxxxx.d.xxxxxxxxx.f.xxxxxxxxx.h.xxxxxx..lll..xx
 xx......xxxxxxx...xxxxxxxxx...xxxxxxxxx...xxxxxxxxx...xxxxxxx.....xxx
 xxxxxxxxxxxxxxxxBxxxxxxxxxxxDxxxxxxxxxxxFxxxxxxxxxxxHxxxxxxxxxxxxxxxx
@@ -456,7 +456,7 @@ ENDMAP
 
 NAME:    bazaar_jpeg_circle_common
 WEIGHT:  20
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 ORIENT:  encompass
 KFEAT:   A = any shop / antique armour shop
 KFEAT:   B = any shop / antique weapon shop
@@ -476,7 +476,7 @@ xxxxx..xxxxxxxxxx>xxxxxxxxxx..xxxxx
 xxxxx+xxxxxxxxxx...xxxxxxxxxx+xxxxx
 xxx...xxxxxxxx.......xxxxxxxx...xxx
 xx.....xxxxxx.........xxxxxx.....xx
-xx..A..xxxxxT....<....Txxxxx..B..xx
+xx..A..xxxxxT....{....Txxxxx..B..xx
 xx.....xxxxxx.........xxxxxx.....xx
 xxx...xxxxxxxx.......xxxxxxxx...xxx
 xxxxx+xxxxxxxxxx...xxxxxxxxxx+xxxxx
@@ -493,16 +493,16 @@ ENDMAP
 
 # 2 good shops or 3 shops
 NAME:    bazaar_jpeg_cross
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 WEIGHT:  20
 ORIENT:  encompass
 SHUFFLE: ABCD
 : if crawl.coinflip() then
-SUBST:   A = <, B = >
+SUBST:   A = {, B = >
 KFEAT:   C = jewellery shop / gadget shop
 KFEAT:   D = antique armour shop / book shop
 : else
-SUBST:   T = <, A = >
+SUBST:   T = {, A = >
 KFEAT:   B = antique weapon shop
 KFEAT:   C = antique armour shop
 KFEAT:   D = general shop / distillery shop
@@ -538,7 +538,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
 NAME:      bazaar_minmay_generic_island
-TAGS:      no_rotate
+TAGS:      no_rotate bazaar
 ORIENT:    encompass
 WEIGHT:    20
 SUBST:     w : wl
@@ -573,7 +573,7 @@ xwwwwwwwwwwwwwwnn..AAA...BBB..nnwwwwwwwwwwwwwwx
 xwwwwwwwwwwwwwwn...AaA...BbB...nwwwwwwwwwwwwwwx
 xwwwwwwwwwwwwwwn...AAA...BBB...nwwwwwwwwwwwwwwx
 xwwwwwwwwwwwwwwn.............<.nwwwwwwwwwwwwwwx
-xwwwwwwwwwwwwwwn.>.............nwwwwwwwwwwwwwwx
+xwwwwwwwwwwwwwwn.{.............nwwwwwwwwwwwwwwx
 xwwwwwwwwwwwwwwn...CCC...DDD...nwwwwwwwwwwwwwwx
 xwwwwwwwwwwwwwwn...CcC...DdD...nwwwwwwwwwwwwwwx
 xwwwwwwwwwwwwwwnn..CCC...DDD..nnwwwwwwwwwwwwwwx
@@ -599,7 +599,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
 NAME:    bazaar_minmay_row
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 ORIENT:  encompass
 WEIGHT:  20
 SHUFFLE: T? / AB
@@ -611,7 +611,7 @@ SUBST:   T : Tc
 MAP
        xxxxx
        x...x
-       x.<.x
+       x.{.x
     xxxx...xxxx
   xxx.........xxx
  xx......c......xx
@@ -630,139 +630,13 @@ xx..c.........c..xx
        xxxxx
 ENDMAP
 
-NAME:   bazaar_minmay_cross
-TAGS:   no_rotate
-ORIENT: encompass
-WEIGHT: 20
-KFEAT:  ! = any shop
-SUBST:  T = TU
-:       bazaar_setup(_G)
-MAP
-        xxxxx
-        x...x
-        x.!.x
-        x...x
-xxxxxxxxx...xxxxxxxxx
-x...x...........x...x
-x.>.+.!...T...!.+.<.x
-x...x...........x...x
-xxxxxxxxx...xxxxxxxxx
-        x...x
-        x.!.x
-        x...x
-        xxxxx
-ENDMAP
-
 ##########################################################################
 # Rare maps (weights 0-10)
 ##########################################################################
 
-# 4 random shops
-NAME:   bazaar_general_marketplace
-TAGS:   no_rotate
-WEIGHT: 5
-ORIENT: encompass
-KFEAT:  A = any shop
-:       bazaar_setup(_G)
-MAP
-xxxxxxxxxxxxxxx
-xxxxxxx>xxxxxxx
-xxxxxx...xxxxxx
-xxxxx.....xxxxx
-xxxx...A...xxxx
-xxx.........xxx
-xx...........xx
-x<..A.....A..>x
-xx...........xx
-xxx.........xxx
-xxxx...A...xxxx
-xxxxx.....xxxxx
-xxxxxx...xxxxxx
-xxxxxxx>xxxxxxx
-xxxxxxxxxxxxxxx
-ENDMAP
-
-# 3 weapon/armour shops, potentially antique
-NAME:    bazaar_outfitter
-ORIENT:  encompass
-WEIGHT:  5
-KFEAT:   A = any shop
-SHUFFLE: ABC, de
-KFEAT:   A = weapon shop / armour shop
-KFEAT:   B = antique weapon shop / weapon shop
-KFEAT:   C = antique armour shop / armour shop
-ITEM:    any weapon / w:2 good_item any weapon
-ITEM:    any armour / w:2 good_item any armour
-:        bazaar_setup(_G)
-MAP
-xxxxxxxxx
-xxxx>xxxx
-xx.....xx
-x.......x
-x.AdBeC.x
-x.......x
-xx.....xx
-xxxx<xxxx
-xxxxxxxxx
-ENDMAP
-
-# 4 random shops
-NAME:    bazaar_jpeg_oval
-TAGS:    no_rotate
-WEIGHT:  5
-ORIENT:  encompass
-SUBST:   A = TVBG
-KFEAT:   B = any shop
-:        bazaar_setup(_G)
-MAP
-xxxxxxxxxxxxx
-xxxB.....Bxxx
-xx.........xx
-x<....A....>x
-xx.........xx
-xxxB.....Bxxx
-xxxxxxxxxxxxx
-ENDMAP
-
-# 2 shops, some items.
-NAME:    bazaar_mystics
-TAGS:    no_pool_fixup
-WEIGHT:  5
-ORIENT:  encompass
-SUBST:   w : wlx
-SHUFFLE: AB, def
-KFEAT:   A = scroll shop / book shop / book shop
-KFEAT:   B = jewellery shop
-ITEM:    any jewellery / good_item any jewellery
-ITEM:    any book / good_item any book, any magical staff
-SUBST:   d=.d, e=.e, f=.f
-# special cases for blue/red floor
-: local colour = random_bazaar_colour()
-: lfloorcol(colour)
-: if colour == "red" then
-SUBST: l = w
-: else
-: if colour == "blue" then
-SUBST: w = l
-: end
-: end
-#
-:        bazaar_setup(_G)
-MAP
-xxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxwwwwwxxxxxx
-xxxxxxxxxxwwww...wwwxxxx
-xwwwwwwwwww....A...wwxxx
-xw<......d+....e....+f>x
-xwwwwwwwwww....B...wwxxx
-xxxxxxxxxxwwww...wwwxxxx
-xxxxxxxxxxxxxwwwwwxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxx
-ENDMAP
-
 # 2 wand shops, 2 potion shops
 NAME:    dpeg_bazaar_wands
-TAGS:    no_rotate no_pool_fixup
+TAGS:    no_rotate no_pool_fixup bazaar
 WEIGHT:  5
 ORIENT:  encompass
 KFEAT:   A = gadget shop
@@ -801,14 +675,14 @@ x..............lll..............x
 xxxxx.......................xxxxx
 x...x.......................x...x
 x.B.+.......................+.B.x
-x...x..........<d>..........x...x
+x...x..........{d>..........x...x
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
 # 5 shops, total weight of jpeg's rare circle vaults is 5
 NAME:    bazaar_jpeg_circle_rare_1
 WEIGHT:  1
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 ORIENT:  encompass
 SHUFFLE: ABCD, EFGH
 SUBST:   H=>, A=T, B=T
@@ -844,7 +718,7 @@ ENDMAP
 
 NAME:    bazaar_jpeg_circle_rare_2
 WEIGHT:  1
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 ORIENT:  encompass
 SHUFFLE: EFGH
 SUBST:   H=>, D=T, C=T
@@ -863,7 +737,7 @@ xxx.x..xxxxxxxxxx+xxxxxxxxxx..x.xxx
 xxx+x+xxxxxxxxxx...xxxxxxxxxx+x+xxx
 xxx...xxxxxxxx.......xxxxxxxx...xxx
 xx.....xxxxxx.........xxxxxx.....xx
-xx..A..xxxxxT....<....Txxxxx..B..xx
+xx..A..xxxxxT....{....Txxxxx..B..xx
 xx.....xxxxxx.........xxxxxx.....xx
 xxx...xxxxxxxx.......xxxxxxxx...xxx
 xxx+x+xxxxxxxxxx...xxxxxxxxxx+x+xxx
@@ -880,7 +754,7 @@ ENDMAP
 
 NAME:    bazaar_jpeg_circle_rare_3
 WEIGHT:  1
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 ORIENT:  encompass
 SHUFFLE: EFGH
 SUBST:   A=>, D=T, C=T
@@ -899,7 +773,7 @@ xxx.xxxxxxxxxxxxx+xxxxxxxxxxxxx.xxx
 xxx+xxxxxxxxxxxx...xxxxxxxxxxxx+xxx
 xxx...xxxxxxxx.......xxxxxxxx...xxx
 xx.....xxxxxx.........xxxxxx.....xx
-xx..A..xxxxxT....<....Txxxxx..B..xx
+xx..A..xxxxxT....{....Txxxxx..B..xx
 xx.....xxxxxx.........xxxxxx.....xx
 xxx...xxxxxxxx.......xxxxxxxx...xxx
 xxx+xxxxxxxxxxxx...xxxxxxxxxxxx+xxx
@@ -916,7 +790,7 @@ ENDMAP
 
 NAME:    bazaar_jpeg_circle_rare_4
 WEIGHT:  1
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 ORIENT:  encompass
 SHUFFLE: ABCDEF
 KFEAT:   ABCDE = any shop
@@ -935,7 +809,7 @@ xxx.xxxxxxxxxxxxx+xxxxxxxxxxxxx.xxx
 xxx+xxxxxxxxxxxx...xxxxxxxxxxxx+xxx
 xxx...xxxxxxxx.......xxxxxxxx...xxx
 xx.....xxxxxx.........xxxxxx.....xx
-xx..A..xxxxxT....<....Txxxxx..>..xx
+xx..A..xxxxxT....{....Txxxxx..>..xx
 xx.....xxxxxx.........xxxxxx.....xx
 xxx...xxxxxxxx.......xxxxxxxx...xxx
 xxx+xxxxxxxxxxxx...xxxxxxxxxxxx+xxx
@@ -952,7 +826,7 @@ ENDMAP
 
 NAME:    bazaar_jpeg_circle_rare_5
 WEIGHT:  1
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 ORIENT:  encompass
 KFEAT:   CDEFG = any shop
 :        bazaar_setup(_G)
@@ -969,7 +843,7 @@ xxxxx..xxxxxxxxxxTxxxxxxxxxx..xxxxx
 xxxxx+xxxxxxxxxx...xxxxxxxxxx+xxxxx
 xxx...xxxxxxxx.......xxxxxxxx...xxx
 xx.....xxxxxx.........xxxxxx.....xx
-xx..T..+....+....<....+....+..T..xx
+xx..T..+....+....{....+....+..T..xx
 xx.....xxxxxx.........xxxxxx.....xx
 xxx...xxxxxxxx.......xxxxxxxx...xxx
 xxx+x+xxxxxxxxxx...xxxxxxxxxx+x+xxx
@@ -987,7 +861,7 @@ ENDMAP
 # 4 shops
 NAME:    bazaar_jpeg_honeycomb
 WEIGHT:  10
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 ORIENT:  encompass
 MONS:    plant
 SHUFFLE: ABCDEF
@@ -1010,7 +884,7 @@ xxxx........xx.......xx........xxxx
 xxxK....A....xxxx+xxxx....C....Kxxx
 xxxx........xxK.....Kxx........xxxx
 xxxxx.....Kxx.........xxK....xxxxxx
-xxxxxxx....+.....<.....+....xxxxxxx
+xxxxxxx....+.....{.....+....xxxxxxx
 xxxxx.....Kxx.........xxK....xxxxxx
 xxxx........xxK.....Kxx........xxxx
 xxxK....F....xxxx+xxxx....D....Kxxx
@@ -1025,7 +899,7 @@ ENDMAP
 
 # 4 shops
 NAME:    bazaar_jpeg_ribbon
-TAGS:    no_rotate no_pool_fixup
+TAGS:    no_rotate no_pool_fixup bazaar
 WEIGHT:  10
 ORIENT:  encompass
 SHUFFLE: zZ
@@ -1043,7 +917,7 @@ SUBST: w = l
 : end
 #
 SHUFFLE: AX
-SUBST:   X = <, A = >
+SUBST:   X = {, A = >
 SUBST:   B : T G
 KFEAT:   C = any shop
 KFEAT:   D = weapon shop / book shop / jewellery shop
@@ -1070,12 +944,12 @@ ENDMAP
 
 # 5 shops, total weight of jpeg's nineroom vaults is 5
 NAME:    bazaar_jpeg_ninerooms_1
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 WEIGHT:  1
 ORIENT:  encompass
 SUBST:   k : . x
 NSUBST:  A = 2=T:30 V / *:C
-NSUBST:  B = 1:< / >
+NSUBST:  B = 1:{ / >
 KFEAT:   C = any shop
 :        bazaar_setup(_G)
 MAP
@@ -1107,12 +981,12 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
 NAME:    bazaar_jpeg_ninerooms_2
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 WEIGHT:  1
 ORIENT:  encompass
 SUBST:   k : . x
 NSUBST:  A = 2=T:30 V / *:C
-NSUBST:  B = 1:< / >
+NSUBST:  B = 1:{ / >
 KFEAT:   C = any shop
 :        bazaar_setup(_G)
 MAP
@@ -1144,12 +1018,12 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
 NAME:    bazaar_jpeg_ninerooms_3
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 WEIGHT:  1
 ORIENT:  encompass
 SUBST:   z = .:50 +
 SUBST:   k : . x
-NSUBST:  A = 1:< / 1=<TC / 2=T:30 V / *:C
+NSUBST:  A = 1:{ / 1=<TC / 2=T:30 V / *:C
 NSUBST:  B = 1:> / 1=C>
 KFEAT:   C = any shop
 :        bazaar_setup(_G)
@@ -1182,12 +1056,12 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
 NAME:    bazaar_jpeg_ninerooms_4
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 WEIGHT:  1
 ORIENT:  encompass
 SUBST:   z = .:50 +
 SUBST:   k : . x
-NSUBST:  A = 1:< / 1=<TC / 2=T:30 V / *:C
+NSUBST:  A = 1:{ / 1=<TC / 2=T:30 V / *:C
 NSUBST:  B = 1:> / 1=C>
 KFEAT:   C = any shop
 :        bazaar_setup(_G)
@@ -1220,11 +1094,11 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
 NAME:    bazaar_jpeg_ninerooms_5
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 WEIGHT:  1
 ORIENT:  encompass
 SUBST:   k : . x
-NSUBST:  A = 1:< / 1:> / 1:T C / 3=T:30 V / *:C
+NSUBST:  A = 1:{ / 1:> / 1:T C / 3=T:30 V / *:C
 SUBST:   B = > C:20
 KFEAT:   C = any shop
 :        bazaar_setup(_G)
@@ -1256,31 +1130,12 @@ xk.......kxxxxxxxxxk.......kxxxxxxxxxk.......kx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
-NAME:   bazaar_minmay_generic_box
-TAGS:   no_rotate
-WEIGHT: 5
-ORIENT: encompass
-KFEAT:  ! = any shop
-KFEAT:  ? = any shop / T
-:       bazaar_setup(_G)
-MAP
-xxxxxxxxx
-x.......x
-x.?.!.?.x
-x.......x
-x.<...>.x
-x.......x
-x.?.!.?.x
-x.......x
-xxxxxxxxx
-ENDMAP
-
 # This one's vertical edges look odd because
 # it almost exceeds the maximum level size.
 # Can't find a way to fix this without
 # ruining the look of the vault.
 NAME:      bazaar_minmay_generic_d
-TAGS:      no_rotate
+TAGS:      no_rotate bazaar
 WEIGHT:    5
 ORIENT:    encompass
 LFLOORCOL: darkgrey
@@ -1296,7 +1151,7 @@ MAP
 lllllllllllllllllllllllllllllllllllll
 ll...lllllllllllllllll'''llllllllllll
 l.....lllllllllllllll'''''lllllllllll
-l..<...lllllllllllll'''B''lllllllllll
+l..{...lllllllllllll'''B''lllllllllll
 l.......lllllllllll'''''''lllllllllll
 ll.......lllllllll'''''''llllllllllll
 lll.......lllllll'''''''lllllllllllll
@@ -1362,35 +1217,8 @@ ll...lllllllllllllllll"""llllllllllll
 lllllllllllllllllllllllllllllllllllll
 ENDMAP
 
-NAME:      bazaar_minmay_trees
-TAGS:      no_rotate
-WEIGHT:    5
-ORIENT:    encompass
-MONS:      bush
-KFEAT:     ! = any shop
-KFEAT:     ? = any shop / .
-LFLOORCOL: green
-:          bazaar_setup(_G)
-MAP
-ttttttttttttttt
-ttttttttttttttt
-tttttt.>.tttttt
-tttt.......tttt
-ttt.........ttt
-ttt..11.11..ttt
-tt...1!.!1...tt
-tt.?.1...1.?.tt
-tt...1!.!1...tt
-ttt..11111..ttt
-ttt.........ttt
-tttt.......tttt
-tttttt.<.tttttt
-ttttttttttttttt
-ttttttttttttttt
-ENDMAP
-
 NAME:   bazaar_minmay_armour_weapon
-TAGS:   no_rotate no_species_fe
+TAGS:   no_rotate bazaar
 WEIGHT: 5
 ORIENT: encompass
 KFEAT:  A = antique weapon shop
@@ -1400,7 +1228,7 @@ MAP
       xxxxx
      xx...xx
      x.....x
-     x..<..x
+     x..{..x
      x.....x
      xx...xx
       x...x
@@ -1429,7 +1257,7 @@ xx...xx...xx...xx
 ENDMAP
 
 NAME:   bazaar_minmay_snake
-TAGS:   no_rotate
+TAGS:   no_rotate bazaar
 WEIGHT: 5
 ORIENT: encompass
 KFEAT:  ! = any shop
@@ -1439,7 +1267,7 @@ MAP
  xxxxx         xxxxx         xxxxx
 xx...xxxxxxxxxxx...xxxxxxxxxxx...xx
 x.................................x
-x..<.............?.............!..x
+x..{.............?.............!..x
 x.................................x
 xx...xxxxxxxxxxx...xxxxxxxxxxx...xx
  xxxxx         xxxxx         x...x
@@ -1474,7 +1302,7 @@ xx...xxxxxxxxxxx...xxxxxxxxxxx...xx
 ENDMAP
 
 NAME:      bazaar_minmay_plants
-TAGS:      no_rotate
+TAGS:      no_rotate bazaar
 WEIGHT:    5
 ORIENT:    encompass
 MONS:      plant / bush w:5
@@ -1500,7 +1328,7 @@ MAP
 """"""""""mm..........mm""""""""""
 """""""""""mm....cc..mm"""""""""""
 """"""""""""m..cc>c..m""""""""""""
-""""""""""""m..c<c...m""""""""""""
+""""""""""""m..c{c...m""""""""""""
 """""""""""mm..ccc...mm"""""""""""
 """"""""""mm..........mm""""""""""
 """""""""mm............mm"""""""""
@@ -1521,6 +1349,7 @@ ENDMAP
 
 # 4 random shops
 NAME:   grunt_bazaar_doublecross
+TAGS:   bazaar
 DEPTH:  Bazaar
 ORIENT: encompass
 KFEAT:  A = any shop
@@ -1535,7 +1364,7 @@ xxxxx.......xxxxx
 xxxxxxx.T.xxxxxxx
 xxxxx.......xxxxx
 xxx...xxxxx...xxx
-x...xx+.<.+xx...x
+x...xx+.{.+xx...x
 xT.xxxx.T.xxxx.Tx
 x...xx+.>.+xx...x
 xxx...xxxxx...xxx
@@ -1554,11 +1383,11 @@ ENDMAP
 
 # 4.4 shops
 NAME:    bazaar_jpeg_triangles
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 ORIENT:  encompass
 WEIGHT:  1
 SHUFFLE: ACD
-SUBST:   A = <
+SUBST:   A = {
 KFEAT:   B = any shop / antique armour shop / jewellery shop
 SUBST:   C = >
 SUBST:   D = T
@@ -1576,7 +1405,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
 NAME:    bazaar_jpeg_hexagon
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 ORIENT:  encompass
 WEIGHT:  1
 SHUFFLE: AC, BD
@@ -1591,7 +1420,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxx.................===.xxxxxxxxx
 xxxxxxxx.............A...xxx...xxxxxxxx
 xxxxxxx.................xxx.....xxxxxxx
-xxxxxx........<........xxx.......xxxxxx
+xxxxxx........{........xxx.......xxxxxx
 xxxxx.................xxx....B....xxxxx
 xxxx...A.............xxx...........xxxx
 xxx.................xxx.............xxx
@@ -1608,11 +1437,11 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
 NAME:    bazaar_jpeg_triangle_bulge
-TAGS:    no_rotate
+TAGS:    no_rotate bazaar
 ORIENT:  encompass
 WEIGHT:  1
 SHUFFLE: AB
-SUBST:   A = <, B = >
+SUBST:   A = {, B = >
 KFEAT:   C = any shop
 :        bazaar_setup(_G)
 MAP
@@ -1634,7 +1463,7 @@ ENDMAP
 
 # ~3.75 shops
 NAME:     due_bazaar_butterfly
-TAGS:     no_rotate
+TAGS:     no_rotate bazaar
 ORIENT:   encompass
 WEIGHT:   1
 SHUFFLE:  AEST
@@ -1660,7 +1489,7 @@ xxxxxxxxxxx::::xxxx.xxxxx:::xxxxxxxxxxx
 x...xx.S.xxxxx::"xx+xx":::xxx.S.xx...xx
 x...xx...xxxxxxxx.....xxxxxxx...xx...xx
 x...xxx+xxxxxxxxx.....xxxxxxxx+xxx...xx
-x.A.+...........+..<..+..........+.A.xx
+x.A.+...........+..{..+..........+.A.xx
 x...xxx+xxxxxxxxx.....xxxxxxxx+xxx...xx
 x...xx...xxxxxxxx.....xxxxxxx...xx...xx
 x...xx.S.xxxx:::"xx+xx":::xxx.S.xx...xx
@@ -1672,147 +1501,3 @@ xxx.+.....+.T.''...A...''.T.+.....+.xxx
 xE..xxxxxxx...xx.......xx...xxxxxxx..Ex
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
-
-NAME:    bazaar_minmay_challenge
-TAGS:    no_rotate
-WEIGHT:  1
-ORIENT:  encompass
-SUBST:   B = ., N = ., n = T, t = ., ' = ., " = .
-KITEM:   ? = wand of disintegration ident:type
-KFEAT:   ? = gadget shop
-KFEAT:   ! = any shop
-SUBST:   T = V T U:1
-SHUFFLE: XY
-SUBST:   X = T
-NSUBST:  Y = 1:< / *:>
-:        bazaar_setup(_G)
-MAP
-xxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxx'''...'''xxxxxxxx
-xxxxxxx''''.X.''''xxxxxxx
-xxxxxx'''''...'''''xxxxxx
-xxxxx"""""".Y.""""""xxxxx
-xxxx.................xxxx
-xxx".BBBBBBNnNBBBBBB."xxx
-xx'".B.............B."'xx
-x''".B..bbbmmmbbb..B."''x
-x''".B..b.......b..B."''x
-x''".B..b.!...!.b..B."''x
-x....N..m.......m..N....x
-x..!.NTtm...>...mtTN.?..x
-x....N..m.......m..N....x
-x''".B..b.!...!.b..B."''x
-x''".B..b.......b..B."''x
-x''".B..bbbmmmbbb..B."''x
-xx'".B.............B."'xx
-xxx".BBBBBBNnNBBBBBB."xxx
-xxxx.................xxxx
-xxxxx"""""".Y.""""""xxxxx
-xxxxxx'''''...'''''xxxxxx
-xxxxxxx''''.X.''''xxxxxxx
-xxxxxxxx'''...'''xxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxx
-ENDMAP
-
-NAME:   bazaar_minmay_noklob
-TAGS:   no_rotate
-WEIGHT: 1
-ORIENT: encompass
-KFEAT:  ! = any shop
-SUBST:  . = 1 .:200, ' = ., 2 = 1.
-MONS:   plant
-:       bazaar_setup(_G)
-MAP
-xxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxx....'....xxxxxxxxx
-xxxxxxxxx.!..'..!.xxxxxxxxx
-xxxxxxxxx....'....xxxxxxxxx
-xxx'''xxx....'....xxx'''xxx
-xxx'<''+.....'.....+''>'xxx
-xxx'''xxx....'....xxx'''xxx
-xxxxxxxxx....'....xxxxxxxxx
-xxxxxxxxx....'....xxxxxxxxx
-xxxxxxxxx....'....xxxxxxxxx
-xxxxxxxxx....'....xxxxxxxxx
-xxxxxxxxx....'....xxxxxxxxx
-xxxxxxxxx....'....xxxxxxxxx
-xxxxxxxxx....'....xxxxxxxxx
-xxxxxxxxx....'....xxxxxxxxx
-xxx'''xxx....'....xxx'''xxx
-xxx'!''+2....'....2+''!'xxx
-xxx'''xxx....'....xxx'''xxx
-xxxxxxxxx....'....xxxxxxxxx
-xxxxxxxxx.!..>..!.xxxxxxxxx
-xxxxxxxxx....'....xxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxx
-ENDMAP
-
-NAME:   bazaar_minmay_mutagenic_fog
-TAGS:   no_rotate
-ORIENT: encompass
-WEIGHT: 1
-KFEAT:  ! = general shop
-MARKER: d = lua:fog_machine { cloud_type = "mutagenic fog", \
-             pow_min = 1, pow_max = 3, delay_min = 5, delay_max = 10, \
-             size = 1, walk_dist = 0, spread_rate= 0 }
-ITEM:   nothing
-NSUBST: < = 1:< / *:.
-:       bazaar_setup(_G)
-MAP
-xxxxxxxxx     xxxxxxxxx
-x.......x     x.......x
-x.>...!.x     x.!...>.x
-x.......x     x.......x
-x...<...x     x...<...x
-x.......x     x.......x
-x.!.....xxx xxx.....!.x
-x.......x.xxx.x.......x
-xxxxxxxx.x.x.x.xxxxxxxx
-      x.xx...xx.x
-      xx.......xx
-       xx..d..xx
-      xx.......xx
-      x.xx...xx.x
-xxxxxxxx.x.x.x.xxxxxxxx
-x.......x.xxx.x.......x
-x.!.....xxx xxx.....!.x
-x.......x     x.......x
-x...<...x     x...<...x
-x.......x     x.......x
-x.>...!.x     x.!...>.x
-x.......x     x.......x
-xxxxxxxxx     xxxxxxxxx
-ENDMAP
-
-##########################################################################
-# Generated maps
-##########################################################################
-
-# With Nemelex's bazaars gone, the number of bazaars in a game is sharply
-# limited.  This one keeps allow_dup, just in case.
-NAME:   bazaar_kb_twisted_cavern
-TAGS:   allow_dup
-ORIENT: encompass
-WEIGHT: 50
-{{
-    -- Restricting the map to a smaller box might be good (more forks) but
-    -- by allowing the whole level we mostly avoid straight borders.
-    local gxm, gym = dgn.max_bounds()
-    extend_map{width = gxm, height = gym}
-    fill_area{fill = 'x', border = 'X'}
-
-    -- 4th argument is the size of the cavern to be delved.
-    delve(3, 3, 0, 150, 1)
-
-    -- place one marker (shop / entrance / exit) at random
-    nsubst('. = 1:C / *:.')
-    -- then add five or six more (for 4-5 shops), using a greedy algorithm
-    for i = 1, 5 + crawl.random2(2) do
-      local x, y = farthest_from('C')
-      mapgrd[x][y] = 'C'
-    end
-    nsubst('C = 1:< / 1:> / *:C')
-    subst('X = x')
-    kfeat('C = any shop')
-    bazaar_setup(_G)
-}}

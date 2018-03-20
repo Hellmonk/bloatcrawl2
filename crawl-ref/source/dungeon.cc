@@ -831,6 +831,7 @@ static bool _is_upwards_exit_stair(const coord_def &c)
     {
     case DNGN_EXIT_PANDEMONIUM:
     case DNGN_TRANSIT_PANDEMONIUM:
+    case DNGN_EXIT_BAZAAR:
     case DNGN_EXIT_ABYSS:
         return true;
     case DNGN_ENTER_HELL:
@@ -859,6 +860,7 @@ static bool _is_exit_stair(const coord_def &c)
     {
     case DNGN_EXIT_PANDEMONIUM:
     case DNGN_TRANSIT_PANDEMONIUM:
+    case DNGN_EXIT_BAZAAR:
     case DNGN_EXIT_ABYSS:
         return true;
     case DNGN_ENTER_HELL:
