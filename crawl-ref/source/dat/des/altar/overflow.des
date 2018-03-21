@@ -621,28 +621,6 @@ b$....b
 bbb@bbb
 ENDMAP
 
-# No, you probably can't afford any of it.
-# You should have thought of that before being poor.
-NAME:  nicolae_gozag_zags_fifth_avenue
-TAGS:  temple_overflow_gozag temple_overflow_1 uniq_altar_gozag
-TAGS:  no_pool_fixup no_item_gen no_monster_gen decor transparent
-DEPTH: D:2-
-WEIGHT: 5
-FTILE: '_TS = floor_limestone
-KFEAT: _ = altar_gozag
-KFEAT: S = general shop name:Gozag type:Platinum suffix:Reserve count:4 \
-        greed:100 ; any weapon randart | any armour randart | any jewellery randart
-: interest_check(_G)
-MAP
-wwwwwww....
-w'''''wwww.
-w'T'T''''w.
-w''S'''_''@
-w'T'T''''w.
-w'''''wwww.
-wwwwwww....
-ENDMAP
-
 NAME:  nicolae_gozag_seed_capital
 TAGS:  temple_overflow_gozag temple_overflow_1 uniq_altar_gozag decor
 TAGS:  transparent no_item_gen

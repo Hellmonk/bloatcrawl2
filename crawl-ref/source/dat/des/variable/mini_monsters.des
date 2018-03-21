@@ -3475,7 +3475,7 @@ TAGS:    no_item_gen no_trap_gen no_pool_fixup patrolling
 DEPTH:   D, Depths, Orc, Elf, Crypt, Snake, Shoals, Geh, Coc, Dis, Tar, Zot
 WEIGHT:  10 (D), 1 (Geh, Coc, Dis, Tar, Zot), 4
 KFEAT:   A = stone_arch
-KFEAT:   D = any shop
+KFEAT:   D = stone_arch
 KFEAT:   ^ : known teleport trap / known shaft trap
 KFEAT:   Z = known zot trap
 SUBST:   A : C:20 D:20 ATVY^{[(<>, b : c:30 G:20 bvwtdGG123, 0 : 0:3 9:2 ':1
@@ -5105,7 +5105,7 @@ SUBST: % = %$..
 : else
 SUBST: * : .
 SUBST: % : {}OB
-KFEAT: O = any shop
+KFEAT: O = stone_arch
 : end
 SUBST: 0 = 0.
 MAP
@@ -5129,7 +5129,7 @@ SUBST: % = %$..
 : else
 SUBST: * : .
 SUBST: % : {}O
-KFEAT: O = any shop
+KFEAT: O = stone_arch
 : end
 SUBST: 0 = 0.
 MAP
@@ -5226,7 +5226,7 @@ SUBST: % = %$..
 : else
 SUBST: * : .
 SUBST: % : {}OCB
-KFEAT: O = any shop
+KFEAT: O = stone_arch
 : end
 SUBST: 0 = 0.
 MAP
@@ -5256,7 +5256,7 @@ DEPTH:  D:4-, Depths, !D:$, !Depths:$
 : if crawl.coinflip() then
 SUBST:  O : 0
 : else
-KFEAT:  O = any shop
+KFEAT:  O = stone_arch
 SUBST:  } : 0
 : end
 : if crawl.coinflip() then

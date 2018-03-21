@@ -4563,7 +4563,7 @@ KMONS:   1 = patrolling 0
 KMONS:   4 = 9 w:40 / 0 band
 KITEM:   1d = % w:75 / $ w:20 / nothing w:4 / * w:1
 KITEM:   $ = $ w:40 / nothing
-KFEAT:   D = any shop
+KFEAT:   D = abandoned_shop
 SHUFFLE: *|, CT, 23 / CT, 8w / 8w / w8
 SHUFFLE: 1239 / 1239 / 1239 / 1239 / $444, wW / wW / wW / mm
 NSUBST:  = = 1:+ / 1:==XX+ / *:=, - = 1:+ / 1:xxxx+ / *:x
@@ -6588,49 +6588,6 @@ cccc cc...cc cccc
 ENDMAP
 
 ####
-
-NAME:   kennysheep_gozag_temple
-DEPTH:  Depths, !Depths:$
-ORIENT: centre
-TAGS:   transparent no_monster_gen no_pool_fixup no_item_gen
-TAGS:   uniq_kennysheep_gozag_temple
-KMONS:  2 = guardian serpent
-KMONS:  B = golden dragon
-KITEM:  | = gold good_item
-KITEM:  23 = gold
-KFEAT:  B = altar_gozag
-KFEAT:  D = granite_statue
-TILE:   GD = dngn_golden_statue
-: set_feature_name("granite_statue", "golden statue")
-COLOUR: cGD = yellow
-FTILE:  .0_Gt = floor_grass
-FTILE:  $|B}+nc23-D = floor_limestone
-FTILE:  " = floor_dirt
-KFEAT:  _ = antiques shop name:Gozag greed:100 count:3 /\
-            antique weapon shop name:Gozag greed:100 count:3 /\
-            antique armour shop name:Gozag greed:100 count:3
-MAP
-      ww    @    ww
-     wwt..G"""G..tww
-    www.."""""""..www
-   wwwG.""c+++c"".Gwww
-  www..""cc---cc""..www
-  ww..t""cD---Dc""t..ww
- ww..."""cc+++cc"""...ww
- ww.t.""Gcc$$$ccG"".t.ww
- ww..0""cc$$$$$cc""0..ww
- w""""""n$$2|$$$n""""""w
-@""G.""_n$$|B|$$n_"".G""@
- w""""".n$$$|2$$n."""""w
- ww.0"".cc$$$$$cc.""0.ww
- ww.."".Gcc$$$ccG.""..ww
- ww..""..0cnnnc0..""..ww
- ww.."""...._...."""..ww
-  wwt.""""""""""""".tww
-  wwwt.""""""""""".twww
-   wwwt...G"""G...twww
-    www     @     www
-ENDMAP
 
 NAME: pf_snail_temple
 DEPTH: Depths, !Depths:$

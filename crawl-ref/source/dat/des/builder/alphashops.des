@@ -233,7 +233,7 @@
 
 NAME: nicolae_alphabet_shops
 TAGS: transparent allow_dup extra
-DEPTH: D:4-, Depths, Orc, Elf, Snake, Shoals
+DEPTH: Crypt
 WEIGHT: 5
 ## We allow shop lists with no fewer than 5 item types, and place 5-15
 ## items or place itemcount items, whichever is less, where itemcount is

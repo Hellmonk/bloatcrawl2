@@ -608,7 +608,7 @@ TAGS: water_ok no_pool_fixup
 KPROP: .wW}xtC = no_tide
 SHUFFLE: }])
 SUBST: y = Ww, z = w
-KFEAT: C = any shop
+KFEAT: C = abandoned_shop
 MAP
        xxxxxx
     xtttttttxx

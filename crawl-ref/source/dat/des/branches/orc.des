@@ -92,33 +92,6 @@ MAP
 ENDMAP
 
 #############################################################################
-# The Orc Outfitter
-#
-NAME: orc_david_3
-TAGS: orc_entry
-ORIENT: float
-#
-: if you.absdepth() >= 10 then
-MONS: weight:20 orc / orc warrior / weight:1 orc knight
-: else
-MONS: weight:30 orc / orc warrior
-: end
-#
-KFEAT: X = armour shop / .
-KFEAT: Y = weapon shop / .
-SUBST: ? = 1 $
-KFEAT: O = enter_orcish_mines
-MAP
-@.........@
-...??..??..
-.?.........
-.?.X.O.Y.?.
-.........?.
-...??...?..
-@.........@
-ENDMAP
-
-#############################################################################
 # Wary orcs
 #
 NAME: david_orc_4
@@ -864,7 +837,7 @@ KMONS:   4 = orc priest / orc / nothing
 KMONS:   5 = orc wizard / nothing
 KMONS:   6 = ogre / two-headed ogre / troll / deep troll / ogre mage / nothing
 KMONS:   7 = warg
-KFEAT:   S = any shop
+KFEAT:   S = abandoned_shop
 SUBST:   ? = 3467
 SUBST:   - = S34.
 SHUFFLE: 352?
@@ -1359,7 +1332,10 @@ MONS:    orc warrior, orc knight
 : end
 #
 MONS:    warg / nothing
-KFEAT:   S = any shop
+KFEAT:   S = enter_bazaar
+KFEAT:   s = stone_arch
+KITEM:   s = $
+SHUFFLE: sS
 SUBST:   5 = 32, A:+, C:+, B:c, D:c
 SUBST:   T : TIII
 SHUFFLE: AC/BD
@@ -1367,7 +1343,7 @@ MAP
 ...................................
 ...................................
 ..cccccc..ccc.ccc.ccccccc..cccccc..
-..cS521c..ccc.ccc.ccccccc..c125Sc..
+..cs521c..ccc.ccc.ccccccc..c125sc..
 ..c5211D..ccc.ccc4ccccccc..B.125c..
 ..c2111c4....1......121..4.c..12c..
 ..cccCcc...11211.4ccc1ccc..ccAccc..
@@ -1376,7 +1352,7 @@ MAP
 ..c11..c4.ccc+ccc.ccc1ccc4c...11c..
 ..c211.D..c1...1c...131...B..112c..
 ..c5211c..c2.3.2c4ccc1ccc.c.1125c..
-..cS521c..c1...1c.ccc.ccc.c1125Sc..
+..cS521c..c1...1c.ccc.ccc.c1125sc..
 ..cccccc..ccccccc.ccc.ccc.ccccccc..
 ...................................
 ...................................
@@ -1389,7 +1365,11 @@ PLACE:   Orc:$
 ORIENT:  float
 MONS:    ogre / nothing w:5, two-headed ogre / nothing w:5, ogre mage
 KMONS:   S = ogre / nothing w:5
-KFEAT:   S = any shop
+KMONS:   s = ogre / nothing w:5
+KFEAT:   S = enter_bazaar
+KFEAT:   s = stone_arch
+KITEM:   s = $
+SHUFFLE: sS
 MAP
   ..........@.........
  ......................
@@ -1397,8 +1377,8 @@ MAP
 ..xxxx............xxxx..
 ..xx.......11.......xx..
 ..x..212..1221..212..x..
-....2111213SS3121112....
-....2111213SS3121112....
+....2111213ss3121112....
+....2111213Ss3121112....
 ..x..212..1221..212..x..
 ..xx.......11.......xx..
 ..xxxx............xxxx..
@@ -1419,7 +1399,10 @@ MONS:    orc knight ; arbalest . arrow . glaive | broad axe | great mace
 MONS:    orc warrior
 MONS:    centaur w:20 / centaur warrior w:1 / nothing w:21
 SUBST:   3 = 23
-KFEAT:   S = any shop
+KFEAT:   S = enter_bazaar
+KFEAT:   s = stone_arch
+KITEM:   s = $
+SHUFFLE: sS
 MAP
   ...............@...............
  .................................
@@ -1427,10 +1410,10 @@ MAP
 ..cc..........wwcccww..........cc..
 ..c..5.......wwwcccwww.......5..c..
 ....5...5..wwwwcccccwwww..5...5....
-..c....5.wwwwccccSccccwwww.5....c..
+..c....5.wwwwccccsccccwwww.5....c..
 ..c...5.wwwwcccc4.4ccccwwww.5...c..
-........1221...34S43...1221........
-........1221...34S43...1221........
+........1221...34s43...1221........
+........1221...34s43...1221........
 ..c...5.wwwwcccc4.4ccccwwww.5...c..
 ..c....5.wwwwccccSccccwwww.5....c..
 ....5...5..wwwwcccccwwww..5...5....
@@ -1448,7 +1431,10 @@ PLACE:   Orc:$
 ORIENT:  float
 MONS:    orc / nothing, orc wizard / nothing, orc sorcerer
 MONS:    orc priest / nothing, orc high priest, orc warrior
-KFEAT:   S = any shop
+KFEAT:   S = enter_bazaar
+KFEAT:   s = stone_arch
+KITEM:   s = $
+SHUFFLE: sS
 SHUFFLE: 23/45
 MAP
   ...................
@@ -1460,8 +1446,8 @@ MAP
 ..c..2.2c.....c2.2..c..
 ..c...2ccc.3.ccc2...c..
 ..c..c..c.....c..c..c..
-..11.cc...cSc...cc.11..
-..61.c..3.S5S.3..c.16.@
+..11.cc...csc...cc.11..
+..61.c..3.s5s.3..c.16.@
 ..11.cc...cSc...cc.11..
 ..c..c..c.....c..c..c..
 ..c...2ccc.3.ccc2...c..
@@ -1481,7 +1467,10 @@ PLACE:   Orc:$
 ORIENT:  float
 MONS:    orc / nothing, orc warrior / nothing, orc knight / nothing
 MONS:    orc priest / nothing, orc high priest
-KFEAT:   S = any shop
+KFEAT:   S = enter_bazaar
+KFEAT:   s = stone_arch
+KITEM:   s = $
+SHUFFLE: sS
 MAP
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   ccccccccccccccccccccccccccccccccccccccx
@@ -1489,10 +1478,10 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   cccc.44.44.44ccccccccc.........cccccccx
   cc1..44.44.44..ccccc22..33.33..22cccccx
   c1111...........ccc.22.........22.ccccx
- .c.c1c.c.c.c1c.c.c.c.c1c4c4c4c4c4c.cSccx
-.....111.222.11.3.....11..2...2...2.5.Scx
+ .c.c1c.c.c.c1c.c.c.c.c1c4c4c4c4c4c.csccx
+.....111.222.11.3.....11..2...2...2.5.scx
 @........222.11.33c5c.112.2.2.2.2.2.c.ccx
-.....111.222.11.3.....11..2...2...2.5.Scx
+.....111.222.11.3.....11..2...2...2.5.scx
  .c.c1c.c.c.c1c.c.c.c.c1c4c4c4c4c4c.cSccx
   c1111...........ccc.22.........22.ccccx
   cc1..44.44.44..ccccc22..33.33..22cccccx
@@ -1511,18 +1500,16 @@ MONS:    orc / nothing, orc warrior / nothing, orc priest / nothing
 MONS:    orc wizard / nothing, orc knight, orc high priest, orc sorcerer
 KMONS:   V = orc warlord
 KFEAT:   V = T
-# This one has a lot more high level orcs than the rest,
-# so instead of adding more shops, guarantees good shops.
-KFEAT:   S = general shop
-KFEAT:   A = antique armour shop
-KFEAT:   B = antique weapon shop
-KFEAT:   C = book shop / jewellery shop
+KFEAT:   S = enter_bazaar
+KFEAT:   s = stone_arch
+KITEM:   s = $
+SHUFFLE: sS
 SHUFFLE: 74/63
 MAP
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xcccccccccccccccccccccccccccx
-xc1111.ccC..ccccc..Bcc.1111cx
-xc122...ccS..ccc..Acc...221cx
+xc1111.ccs..ccccc..scc.1111cx
+xc122...ccS..ccc..scc...221cx
 xc122....cc...c...cc....221cx
 xcc...7...ccc...ccc...7...ccx
 xccc..4.33.........33.4..cccx
@@ -1554,17 +1541,20 @@ PLACE:   Orc:$
 ORIENT:  float
 MONS:    ogre, two-headed ogre, troll, deep troll w:19 / iron troll w:1
 MONS:    ogre mage, two-headed ogre w:14 / ettin w:1, cyclops w:29 / stone giant w:1
-KFEAT:   S = any shop
+KFEAT:   S = enter_bazaar
+KFEAT:   s = stone_arch
+KITEM:   s = $
+SHUFFLE: sS
 MAP
  .....
 ..111..  .... ....
-..151....4....3S3..
+..151....4....3s3..
 ..111.....321..3..11
  .......2.252......1
   ....6...123..7..@
    ..S.3...........
-  ..4........6.1S.
-  ...3.7..S2.. 11.
+  ..4........6.1s.
+  ...3.7..s2.. 11.
    .... ....
 ENDMAP
 
@@ -1575,12 +1565,15 @@ PLACE:   Orc:$
 ORIENT:  float
 MONS:    orc high priest, orc sorcerer, orc knight
 MONS:    orc warrior, orc priest, orc wizard
-KFEAT:   S = any shop
+KFEAT:   S = enter_bazaar
+KFEAT:   s = stone_arch
+KITEM:   s = $
+SHUFFLE: sS
 MAP
 xxxxxxxxxxxxxxxxxxxxxxx
 xcccccccccccccccccccccx
-xccccccS.......Sccccccx
-xccccS...cc.cc...Sccccx
+xccccccs.......sccccccx
+xccccs...cc.cc...Sccccx
 xccc...cc3...3cc...cccx
 xcc5.cc3...1...3cc.5ccx
 xcc5...............5ccx
@@ -1599,229 +1592,6 @@ xcccccccccc.ccccccccccx
 ENDMAP
 
 ##################################################
-NAME:   grunt_orc_gardens
-PLACE:  Orc:$
-ORIENT: float
-{{
-  -- There is functionality here for making the enemy sets consist of
-  -- small numbers of cyclopses, ettins, and a stone giant.
-  -- I have yet to decide how fair this will be, so it's a fairly low
-  -- chance until I decide one way or the other if it works.
-  dgn.persist.grunt_orc_gardens_giant_problem = crawl.one_chance_in(8)
-  hook("post_place", function()
-    local stores = { "antique weapon shop", "antique armour shop",
-                     "general shop", "book shop / jewellery shop" }
-    local which = crawl.random2(#stores) + 1
-    dgn.persist.grunt_orc_gardens_store = stores[which]
-    table.remove(stores, which)
-    dgn.persist.grunt_orc_gardens_boss = true
-    dgn.place_maps{tag="grunt_orc_garden", count=1}
-    dgn.persist.grunt_orc_gardens_boss = false
-    for i = 1, 3 do
-      which = crawl.random2(#stores) + 1
-      dgn.persist.grunt_orc_gardens_store = stores[which]
-      table.remove(stores, which)
-      dgn.place_maps{tag="grunt_orc_garden", count=1}
-    end
-  end)
-}}
-
-NAME: grunt_orc_garden
-TAGS: grunt_orc_garden allow_dup transparent no_monster_gen no_item_gen
-{{
-  if dgn.persist.grunt_orc_gardens_giant_problem then
-    if dgn.persist.grunt_orc_gardens_boss then
-      mons("stone giant")
-    else
-      mons("ettin")
-    end
-    mons("cyclops")
-    mons("nothing")
-    nsubst("0 : 1:1 / 2:2 / *:.")
-  else
-    if dgn.persist.grunt_orc_gardens_boss then
-       mons("orc warlord")
-    end
-    mons("orc knight / orc sorcerer w:5 / orc high priest w:5")
-    if not dgn.persist.grunt_orc_gardens_boss then
-      mons("nothing")
-    end
-    mons("orc warrior / orc sorcerer w:1 / orc high priest w:1 /"
-         .. "ogre w:1 / troll w:1 / warg w:1")
-    nsubst("0 : 1:1 / *:2")
-  end
-}}
-MONS: nothing w:20 / fungus
-SUBST: . = ..4
-NSUBST: 3 = 5:3 / 1:I / 4:P / *:.
-SUBST: P = .4
-: if is_validating() then
-KFEAT: A = any shop
-: else
-: kfeat("A = " .. dgn.persist.grunt_orc_gardens_store)
-: end
-MAP
-   .....
- ...PPP...
- .PPP3PPP.
-..P33333P..
-.PP33033PP.
-.P330A033P.
-.PP33033PP.
-..P33333P..
- .PPP3PPP.
- ...PPP...
-   .....
-ENDMAP
-
-##################################################
-NAME:   grunt_orc_community_town_hall
-TAGS:   transparent no_monster_gen no_item_gen
-PLACE:  Orc:$
-ORIENT: float
-KMONS:  O = Saint Roka band w:3 / orc warlord band, orc warlord band
-MONS:   orc knight / orc warrior w:30, orc sorcerer / orc wizard w:30
-MONS:   orc high priest / orc priest w:30
-MONS:   orc warrior / orc w:30, orc / nothing
-KFEAT:  A = antique armour shop
-KFEAT:  B = antique weapon shop
-NSUBST: 0 = 2:1 / 3:2 / *:3
-{{
-  local small_house_count = 4 + crawl.random2(3)
-  hook("post_place", function()
-    dgn.place_maps{tag="grunt_orc_community_big_house", count=2}
-    dgn.place_maps{tag="grunt_orc_community_house", count=small_house_count}
-  end)
-}}
-MAP
-   .........
-  ...ccccc...
- ..ccc...ccc..
- .ccA0.O.0Bcc.
-..cccI0.0Iccc..
-.ccccc...ccccc.
-.c..4c.4.c4..c.
-.c.0.+...+.0.c.
-.c4..c.4.c..4c.
-.ccccc.I.ccccc.
-.c4..c.4.c..4c.
-.c.0.+...+.0.c.
-.c..4c...c4..c.
-.ccccc.4.ccccc.
-.ccccI...Icccc.
-..ccc.4.4.ccc..
- ...cc+++cc...
-   .........
-     .I.I.
-      .@.
-ENDMAP
-
-NAME:    grunt_orc_community_big_house_1
-TAGS:    grunt_orc_community_big_house allow_dup transparent no_monster_gen
-TAGS:    no_item_gen
-KMONS:   A = orc knight / orc sorcerer / orc high priest / \
-             orc warrior / orc wizard / orc priest
-MONS:    orc warrior / orc wizard / orc priest
-MONS:    orc warrior / orc w:30
-KFEAT:   A = any shop
-SHUFFLE: def
-SUBST:   d = +, ef = c
-MAP
-  .......
- ..ccccc..
-..cc.A.cc..
-.cc.....cc.
-.c.2...2.c.
-.c1.2I2.1c.
-.c.2...2.c.
-.cc.....cc.
-..cc...cc.
- ..cdefc..
-  ...@...
-ENDMAP
-
-NAME:    grunt_orc_community_big_house_2
-TAGS:    grunt_orc_community_big_house allow_dup transparent no_monster_gen
-TAGS:    no_item_gen
-KMONS:   A = orc knight / orc sorcerer / orc high priest / \
-             orc warrior / orc wizard / orc priest
-MONS:    orc warrior / orc wizard / orc priest
-MONS:    orc warrior / orc w:30
-KFEAT:   A = any shop
-SHUFFLE: def, ghi
-SUBST:   dg = +, efhi = c
-MAP
-...........
-.ccccccccc.
-.cc2....cc.
-.c.....1.c.
-.c..2...2c.
-.cghic...c.
-.c.2.c.1.c.
-.c2I2cI.Ic.
-.c...c.A.c.
-.cdefccccc.
-...@.......
-ENDMAP
-
-NAME:    grunt_orc_community_house_1
-TAGS:    grunt_orc_community_house allow_dup transparent no_monster_gen
-TAGS:    no_item_gen
-MONS:    orc warrior / orc priest / orc wizard
-MONS:    orc / nothing
-SHUFFLE: def, I_ / I- / -_ / _- / -I
-SUBST:   d = +, ef = c
-KFEAT:   - = floor
-MAP
-.......
-.ccccc.
-.c1.1c.
-.c2I2c.
-.c.2.c.
-.cdefc.
-...@...
-ENDMAP
-
-NAME:    grunt_orc_community_house_2
-TAGS:    grunt_orc_community_house allow_dup transparent no_monster_gen
-TAGS:    no_item_gen
-MONS:    orc warrior / orc priest / orc wizard
-MONS:    orc / nothing
-SHUFFLE: de, I_ / I- / -_ / _- / -I
-SUBST:   d = +, e = c
-KFEAT:   - = floor
-MAP
-......
-.cccc.
-.c.Ic.
-.c11c.
-.c22c.
-.c.2c.
-.cdec.
-..@....
-ENDMAP
-
-NAME:    grunt_orc_community_house_3
-TAGS:    grunt_orc_community_house allow_dup transparent no_monster_gen
-TAGS:    no_item_gen
-MONS:    orc warrior / orc priest / orc wizard
-MONS:    orc / nothing
-SHUFFLE: def, I_ / I- / -_ / _- / -I
-SUBST:   d = +, ef = c
-KFEAT:   - = floor
-MAP
-.........
-..ccccc..
-.cc.2.cc.
-.c.....c.
-.c1.I.1c.
-.c.2.2.c.
-.cc...cc.
-..cdefc..
-....@....
-ENDMAP
-
-##################################################
 # The orcs roasted some dungeon creatures, and they're sleeping off the meal.
 NAME:   grunt_orc_tribal_feast
 TAGS:   patrolling no_item_gen no_monster_gen
@@ -1833,16 +1603,19 @@ MARKER: O = lua:fog_machine { cloud_type='flame', pow_min = 10, pow_max = 10, \
                               delay = 10, size = 1, excl_rad = 0 }
 : dgn.delayed_decay(_G, 'd', 'yak skeleton')
 : dgn.delayed_decay(_G, 'e', 'rat skeleton')
-KFEAT:  A = any shop
+KFEAT:   S = enter_bazaar
+KFEAT:   s = stone_arch
+KITEM:   s = $
+SHUFFLE: sS
 MAP
       ccccccc
      cce.6.5ccc
-   xxc4.1.1..Acc
+   xxc4.1.1..Scc
    x...e.2....2cc
-  xx.4.d...e...Ac
- xx.e.e3.O.3.1.Ac
+  xx.4.d...e...sc
+ xx.e.e3.O.3.1.sc
  x7..4.e..e...3cc
-xx.e.c.d.2.e.Acc
+xx.e.c.d.2.e.scc
 x..7xc4e.e.6cccc
 x...xcc.5cccc
 x.7..xcccc
@@ -1867,13 +1640,13 @@ KMONS:  A = Saint Roka band w:3 / orc warlord band, orc warlord band
 KMONS:  B = Nergalle w:3 / orc sorcerer, orc sorcerer
 KMONS:  C = Urug w:3 / orc knight, orc knight
 KMONS:  D = Blork the orc w:3 / orc wizard, orc wizard
-KFEAT:  E = general shop
-KFEAT:  F = antique armour shop
-KFEAT:  G = antique weapon shop
-KFEAT:  H = book shop / jewellery shop
+KFEAT:   S = enter_bazaar
+KFEAT:   s = stone_arch
+KITEM:   s = $
+SHUFFLE: sS
 MAP
 cccc  c..@..c  cccc
-cE6ccccI.4.Icccc5Fc
+cs6ccccI.4.Icccc5sc
 c5..ccc.....ccc..6c
 cc...cc.....cc...cc
  cc...c..2..c...cc
@@ -1889,7 +1662,7 @@ ccccc.........ccccc
  cc...c..3..c...cc
 cc...cc.....cc...cc
 c6..cccI...Iccc..5c
-cG5cccc..4..cccc6Hc
+cs5cccc..4..cccc6Sc
 cccc  c..@..c  cccc
 ENDMAP
 
@@ -1897,7 +1670,6 @@ ENDMAP
 # Inspired by evil_forest.
 # A combination dark temple / marketplace. (Wasn't someone supposed to throw
 # those moneychangers out, anyway...?)
-# Outer shops are for common orc pilgrims, inner shops only for the initiated.
 NAME: pf_orc_diabolical
 TAGS: patrolling no_item_gen no_monster_gen transparent
 PLACE: Orc:$
@@ -1909,10 +1681,12 @@ MONS: orc knight
 MONS: gelid demonspawn / infernal demonspawn / putrid demonspawn /\
       torturous demonspawn / nothing w:20
 MONS: orc high priest / orc sorcerer
-SHUFFLE: BC
-KFEAT: A = general shop / distillery shop / scroll shop
-KFEAT: B = book shop / gadget shop
-KFEAT: C = antique weapon shop / antique armour shop
+KFEAT:   A = stone_arch
+KITEM:   A = $
+KFEAT:   S = enter_bazaar
+KFEAT:   s = stone_arch
+KITEM:   s = $
+SHUFFLE: sS
 KFEAT: P = enter_pandemonium
 TILE:  c = wall_stone_dark
 FTILE: .1234567@ = floor_pebble_lightred
@@ -1929,9 +1703,9 @@ MAP
     ccc.1......cc75.cc.4.ccc
    ccc.1.1c.3.cc..c..cc...ccc
   ccc123c32..cc..ccc.3cc.c.ccc
- cccA2c1211.cc6.cB7cc32.2.27ccc
+ cccA2c1211.cc6.cS7cc32.2.27ccc
 ccc5.11.c1.cc77.766Pcc.c....5ccc
- cccA2c1211.cc6.cC7cc32.2.27ccc
+ cccA2c1211.cc6.cs7cc32.2.27ccc
   ccc123c32..cc..ccc.3cc.c.ccc
    ccc.1.1c.3.cc..c..cc...ccc
     ccc.1......cc75.cc.4.ccc
@@ -1944,63 +1718,6 @@ ccc5.11.c1.cc77.766Pcc.c....5ccc
            ccc..ccccc
             ccc33ccc
              cc2@3c
-ENDMAP
-
-##################################################
-NAME:   kennysheep_orc_mage_school
-TAGS:   patrolling no_item_gen no_monster_gen
-PLACE:  Orc:$
-ORIENT: float
-MONS:   orc sorcerer / ogre mage w:2, orc wizard, orc / ogre w:3
-KMONS:  4 = Erolcha / ogre mage, ogre mage
-KMONS:  5 = Nergalle / orc sorcerer, orc sorcerer
-NSUBST: . = 8:1 / 16:2 / 8:3
-KFEAT:  A = distillery shop / scroll shop
-KFEAT:  B = book shop / gadget shop
-KFEAT:  C = antique weapon shop / antique armour shop
-NSUBST: Y = 1:A / 1:B / 1:C / 1:ABC / *:I
-KFEAT:  ' = floor
-KFEAT:  E = altar_kikubaaqudgha
-KFEAT:  F = altar_vehumet
-KFEAT:  mn = rock_wall
-COLOUR: n = black
-TILE:   n = wall_hall_darkgray
-COLOUR: m = white
-TILE:   m = wall_hall_white
-MAP
-                     ccccccccc
-                   cccbbbbbbbccc  ccccc
-                 lccbbblllllbbbccccbbbcc
-                llclllllllllllllcclllbbcc
-               lllccllllllll...cc...llbbcc
-               llllcccI.lll....+..Immmlbbc
-               llccc.........I.c....Fmllbc
-              lllc.............+.....m.lbccccc
-              llcc..lll...lll..c.....I.lccbbbcccc
-    '''''     llcY.cbbbc..lccccc......4ccbbYbbbbcc
-  '''''''''   llcc..lll...lcbbbc......cclll.lllbbcc
- '''''''''''  lllc........lclll......cc.......llbbcc
-''''''cc''cc'lcclccc......lc........cc.....I...llbbc
-''''''cc''cc'lcclllcccc...lcI...ll..c...I.l.l.I.llbc
-''''''''''''''llllllll....lc...cbl..c....ll.ll...lbcc
-'''''''''''''''''''.......lc...cbl..+...ll...ll..lbbc
-@'''''''''''''''''''...I..lcY..cbl..+..Il......I..Ybc
-'''''''''''''''''''.......lc...cbl..+...ll...ll..lbbc
-''''''''''''''llllllll....lc...cbl..c....ll.ll...lbcc
-''''''cc''cc'lcclllcccc...lcI...ll..c...I.l.l.I.llbc
-''''''cc''cc'lcclccc......lc........cc.....I...llbbc
- '''''''''''  lllc........lclll......cc.......llbbcc
-  '''''''''   llcc..lll...lcbbbc......cclll.lllbbcc
-    '''''     llcY.cbbbc..lccccc......5ccbbYbbbbcc
-              llcc..lll...lll..c.....I.lccbbbcccc
-              lllc.............+.....n.lbccccc
-               llccc.........I.c....Enllbc
-               llllcccI.lll....+..Innnlbbc
-               lllccllllllll...cc...llbbcc
-                llclllllllllllllcclllbbcc
-                 lccbbblllllbbbccccbbbcc
-                   cccbbbbbbbccc  ccccc
-                     ccccccccc
 ENDMAP
 
 ##################################################
@@ -2018,7 +1735,10 @@ KMONS:  D = orc high priest
 KMONS:  E = Saint Roka band w:1 / orc warlord band, orc warlord band
 KMONS:  P = plant / nothing
 NSUBST: u = 2:s / I
-KFEAT:  s = any shop
+KFEAT:   S = enter_bazaar
+KFEAT:   s = stone_arch
+KITEM:   s = $
+SHUFFLE: sS
 : if you.where() == dgn.level_name(dgn.br_entrance("Elf")) then
 KFEAT:  p = enter_elven_halls
 : else
@@ -2093,6 +1813,6 @@ xxxxxccccccc.+._.+.........+.....cccccccwwwwwwwxxxxxxxxxxxxxxxxxxxxxx
 xxxxxllll0.ccc2.0c.cc+ccc+cc.....c.0Wwwwwwwwxxxxxxxxxxxxxxxxxxxxxxxxx
 xlxxlllll..+.c...c.c...c...c.....+..WWwwwwwxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxlllllll0.c.cc+cc.c0.0c0.0ccccccc.0Wwwwxxxwwxxxxxxxxxxxxxxxxxxxxxxxx
-xllllccccccc.......cs6.c.6scxxxxccccccccxxxxwxxxxxxxxxxxxxxxxxxxxxxxx
+xllllccccccc.......cS6.c.6scxxxxccccccccxxxxwxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxcccccccccccccccccxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP

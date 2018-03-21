@@ -1302,22 +1302,6 @@ MAP
 .x...x.
 ENDMAP
 
-NAME:   dpeg_vaults_monster_box
-TAGS:   vaults_room
-MONS:   0 band
-SUBST:  - : @.., _ : @..
-SUBST:  b : xxxxb0009.
-NSUBST: 9 = 1:S / *:9
-KFEAT:  S = armour shop / weapon shop
-NSUBST: . = 1:1 / * = 0........
-MAP
-..@@..
-..bb..
--.bb.-
-..bb..
-..__..
-ENDMAP
-
 NAME:   dpeg_vaults_monster_row
 TAGS:   vaults_room
 SUBST:  0 : 0000000z, z : z., 0 = 0009..

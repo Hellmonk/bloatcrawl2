@@ -469,7 +469,7 @@ NAME:  vaults_end_norune
 TAGS:  vaults_end_norune allow_dup unrand
 KMONS: o = 8 / 9
 : if crawl.random2(13) == 12 then
-KFEAT:   o = any shop
+KFEAT:   o = enter_bazaar
 : else
 KITEM:   o = any good_item
 : end
@@ -1157,10 +1157,9 @@ x......xxx$$$$$$$xxx......x
 ENDMAP
 
 ############################################################
-# One shop, 16 monsters
 NAME:    vaults_end_dpeg_shops1
 TAGS:    vaults_end_quadrant vaults_end_quadrant_mall unrand
-KFEAT:   S = any shop
+KFEAT:   S = abandoned_shop
 : if crawl.one_chance_in(4) then
 SUBST:   A = +, a = ., CD = x
 : else
@@ -1193,47 +1192,6 @@ xx......................xxx
 x........................xx
 x.................xxxxx...x
  ....xxxx.....xxxxxxxxxx..
-  xxxxxxxxxxxxxxxxxxxxxxx
-ENDMAP
-
-############################################################
-# Consumable shops (scrolls, potions, food).
-# Monsters in rooms.
-NAME:    vaults_end_dpeg_shops2
-TAGS:    vaults_end_quadrant vaults_end_quadrant_mall unrand
-NSUBST:  A = 1:+ / *:x+
-NSUBST:  B = 1:+ / *:x+
-NSUBST:  C = 1:+ / *:x+
-NSUBST:  S = 3:S / 1:O / *:S99
-KFEAT:   S = scroll shop / distillery shop
-NSUBST:  ' = 20:9 / *:.
-NSUBST:  . = 5:9 / *:.
-SUBST:   9 = 8 9 .:20
-: vaults_end_loot(_G)
-: vaults_end_rune(_G)
-MAP
-  xxxxxxxxxxxxxxxxxxxxxxx
- .........................
-x.........................x
-x...xxxxx..xxxxx..xxxxx...x
-x...x'S'x..x'S'x..x'S'x...x
-x...x'''x..x'''x..x'''x...x
-x...xx+xx..xx+xx..xx+xx...x
-x.........................x
-x.........................x
-x...xxAxx..xxBxx..xxCxx...x
-x...x'''x..x'''x..x'''x...x
-x...x'S'x..x'S'x..x'S'x...x
-x...x'''x..x'''x..x'''x...x
-x...xxAxx..xxBxx..xxCxx...x
-x.........................x
-x.........................x
-x...xx+xx..xx+xx..xx+xx...x
-x...x'''x..x'''x..x'''x...x
-x...x'S'x..x'S'x..x'S'x...x
-x...xxxxx..xxxxx..xxxxx...x
-x.........................x
- .........................
   xxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
@@ -2235,49 +2193,6 @@ x..xx..9....9....9.xx.....x
 x.!x...............|xx....x
  ..................|?xx...
   xxxxxxxxxxxxxxxxxxxxxxx
-ENDMAP
-
-############################################################
-# Two guaranteed good shops. Perhaps more shops.
-# Almost all monsters are in the rooms.
-NAME:    vaults_end_dpeg_mall
-TAGS:    vaults_end_quadrant_prize vaults_end_quadrant_prize_mall unrand
-SHUFFLE: AB, CD
-SUBST:   A=+, B:xx+, C:xxx+, D:xxxx+
-NSUBST:  S = 2:S / 1:O / *:RRU9
-KFEAT:   S = jewellery shop / antique armour shop / gadget shop
-KFEAT:   R = general shop / book shop / scroll shop / antique weapon shop / distillery shop
-KFEAT:   U = stone_arch
-NSUBST:  ' = 22:9 / *:.
-NSUBST:  . = 2:9 / *:.
-SUBST:   9 = 8 9
-SUBST:   a : x.
-: vaults_end_loot(_G)
-: vaults_end_rune(_G)
-MAP
-  aaxxxxxxxxxxxxxxxxxxxaa
- .........................
-a.........................a
-a..................xxx....a
-x..............x+++xxx....x
-x..........x+++x'''xxx....x
-x..........x'''D'S'xx.....x
-x..........x'S'D'''xx.....x
-x........xxx'''xxxxxx.....x
-x........xxxBBBxxxxxx.....x
-x........xx''''xx.........x
-x......T.xx'ST'xx.T.......x
-x........xx''''xx.........x
-x....xxxxxxAAAxxx.........x
-x....xxxxxx'''xxx.........x
-x....xx'''C'S'x...........x
-x....xx'S'C'''x...........x
-x...xxx'''x+++x...........x
-x...xxx+++x...............x
-a...xxx...................a
-a.........................a
- ........................
-  aaxxxxxxxxxxxxxxxxxxxaa
 ENDMAP
 
 ############################################################

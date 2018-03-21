@@ -239,23 +239,6 @@ MAP
 ...............
 ENDMAP
 
-# Are they guarding or looting? Or just shopping?
-NAME:  gnoll_camp_mini_shop
-TAGS:  serial_gnoll_camp patrolling allow_dup
-MONS:  gnoll / nothing w:2
-KFEAT: S = any shop
-MAP
-........
-..ccc...
-.xxxxx..
-.1...xc.
-.1.S.xc.
-.1...xc.
-.xxxxx..
-..ccc...
-........
-ENDMAP
-
 NAME:    gnoll_camp_mini_house
 TAGS:    serial_gnoll_camp patrolling allow_dup
 SHUFFLE: 23
