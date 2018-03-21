@@ -2610,7 +2610,8 @@ string mutation_overview()
 
     // a bit more stuff
     if (you.species == SP_OGRE || you.species == SP_TROLL
-        || species_is_draconian(you.species) || you.species == SP_SPRIGGAN)
+        || species_is_draconian(you.species) || you.species == SP_SPRIGGAN
+        || you.species == SP_FAERIE_DRAGON)
     {
         mutations.emplace_back("unfitting armour");
     }
