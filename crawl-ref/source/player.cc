@@ -4042,10 +4042,8 @@ int get_real_hp(bool trans, bool rotted)
 {
     int hitp;
 
-    hitp  = you.experience_level * 11 / 2 + 8;
+    hitp  = 6 + (you.experience_level * 8);
     hitp += you.hp_max_adj_perm;
-    hitp += (you.experience_level * you.experience_level * 3) / 70
-          + (you.experience_level * 3 / 2);
 
     // Racial modifier.
     hitp *= 10 + species_hp_modifier(you.species);
