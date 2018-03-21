@@ -1034,8 +1034,10 @@ void down_stairs(dungeon_feature_type force_stair, bool force_known_shaft,
 {
     take_stairs(force_stair, false, force_known_shaft, wizard);
 	upstairs_removal();
-    if(player_in_branch(BRANCH_DUNGEON))
+    if (player_in_branch(BRANCH_DUNGEON))
         zap_close_monsters();
+    if (player_in_branch(BRANCH_BAZAAR))
+        bazaar_postlevel_shops();      
 }
 
 static bool _any_glowing_mold()

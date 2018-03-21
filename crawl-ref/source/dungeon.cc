@@ -474,6 +474,27 @@ void upstairs_removal()
 	}      
 }
 
+void bazaar_postlevel_shops()
+{
+	int added_shop_count = one_chance_in(6) ? 2 + random2(4) : 1;
+    int tries = 100;
+    while (tries > 0 && added_shop_count > 0)
+    {
+        tries--;
+        coord_def c = random_in_bounds();
+        if(grd(c) == DNGN_FLOOR)
+        {
+			shop_type type = static_cast<shop_type>(random2(NUM_SHOPS));
+            while(type == SHOP_FOOD)
+            {
+                 type = static_cast<shop_type>(random2(NUM_SHOPS));
+            }
+            place_spec_shop(c, type);
+			added_shop_count--;
+        }
+    }
+}
+
 void map_stairs_down()
 {
     int mapped = 0;

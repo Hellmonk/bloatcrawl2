@@ -290,6 +290,7 @@ bool door_vetoed(const coord_def pos);
 
 void fixup_misplaced_items();
 void upstairs_removal();
+void bazaar_postlevel_shops();
 void map_stairs_down();
 void zap_close_monsters();
 #endif
