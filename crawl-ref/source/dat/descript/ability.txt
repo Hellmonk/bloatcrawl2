@@ -664,8 +664,9 @@ three lists at a time, with varying prices.
 %%%%
 Call Merchant ability
 
-Sends funds to a merchant to help them set up shop at your location. The cost of
-funding a shop increases with the number of shops funded.
+Sends funds to a merchant to help them set up shop. This ability can only be used
+in the Bazaar; merchants aren't crazy enough to open up shop inside a dungeon.
+The cost of funding a shop increases with the number of shops funded.
 %%%%
 Bribe Branch ability
 

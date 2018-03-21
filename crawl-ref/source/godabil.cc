@@ -4160,11 +4160,11 @@ bool gozag_setup_call_merchant(bool quiet)
         }
         return false;
     }
-    if (!is_connected_branch(level_id::current().branch))
+    if (level_id::current().branch != BRANCH_BAZAAR)
     {
         if (!quiet)
         {
-            mprf("No merchants are willing to come to this location.");
+            mprf("You must be in the bazaar to call a merchant.");
             return false;
         }
     }
