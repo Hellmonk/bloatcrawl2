@@ -5365,8 +5365,8 @@ static int _shop_greed(shop_type type, int level_number, int spec_greed)
     const int base_greed = greed_for_shop_type(type, level_number);
     int adj_greed = base_greed;
 
-    // Allow bargains in bazaars, prices randomly between 60% and 95%.
-    if (player_in_branch(BRANCH_BAZAAR))
+    // Allow bargains occasionally, prices randomly between 60% and 95%.
+    if (player_in_branch(BRANCH_BAZAAR) && one_chance_in(10))
     {
         // divided by 20, so each is 5% of original price
         // 12-19 = 60-95%, per above
