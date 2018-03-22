@@ -116,6 +116,128 @@ w.w.w
  www
 ENDMAP
 
+# Some small bazaar entries
+NAME: bzr_entry_doored
+: place_bazaar_portal(_G)
+MAP
+xx+xx
+x...x
++.O.+
+x...x
+xx+xx
+ENDMAP
+
+NAME: bzr_entry_hallway
+: place_bazaar_portal(_G)
+MAP
+xxxxx
+x.O.x
+x...x
+x...x
+x...x
+x...x
+x...x
+x.G.x
+x...x
+x...x
+x...x
+x...x
+x...x
+ENDMAP
+
+NAME: bzr_entry_grove
+: place_bazaar_portal(_G)
+MAP
+t..t..t
+.......
+..t.t..
+t..O..t
+..t.t..
+.......
+t..t..t
+ENDMAP
+
+NAME: bzr_entry_arches
+: place_bazaar_portal(_G)
+MAP
+cccccccc
++A..A..c
+ccccccAc
+cO..A..c
+cccccccc
+ENDMAP
+
+NAME: bzr_entry_dried
+: place_bazaar_portal(_G)
+MAP
+.V.
+VOV
+.V.
+ENDMAP
+
+NAME: bzr_entry_wishing
+KFEAT: C = altar_gozag
+KITEM: T = nothing / q:1 gold
+: place_bazaar_portal(_G)
+MAP
+   T
+  ...
+ .....
+T..O..T
+ .....
+  ...
+   C
+ENDMAP
+   
+NAME: bzr_entry_metal_box
+NSUBST: x = 1:+ / *:v
+: place_bazaar_portal(_G)
+MAP
+xxx
+xOx
+xxx
+ENDMAP
+
+NAME: bzr_entry_crystal
+: place_bazaar_portal(_G)
+MAP
+  .b.
+ .....
+.......
+b..O..b
+.......
+ .....
+  .b.
+ENDMAP
+
+NAME: bzr_entry_room
+: place_bazaar_portal(_G)
+MAP
+c++ccccc++c
+c.........c
+c.........c
+c..G...G..c
+c.........c
+c....O....c
+ccccccccccc
+ENDMAP
+
+NAME: bzr_entry_crossroad
+: place_bazaar_portal(_G)
+MAP
+   x.@.x
+   x...x
+   x...x
+xxxx...xxxx
+...........
+@....O....@
+...........
+xxxx...xxxx
+   x...x
+   x...x
+   x.@.x
+ENDMAP
+
 # Some coins to shop with.
 NAME:   bzr_entry_gold
 SUBST:  $=$.
@@ -252,6 +374,18 @@ c...$...c
 c.*...*.c
 c...O...c
 ccccccccc
+ENDMAP
+
+# guarded
+NAME: bzr_guarded
+WEIGHT: 1
+: place_bazaar_portal(_G)
+MAP
+  mmmmmmm
+ mm..O..mm
+mm...8...mm
+ mm.....mm
+  mm===mm
 ENDMAP
 
 #########################################
@@ -570,7 +704,7 @@ xwwwwwwwwwwwwwwwnn...........nnwwwwwwwwwwwwwwwx
 xwwwwwwwwwwwwwwnn..AAA...BBB..nnwwwwwwwwwwwwwwx
 xwwwwwwwwwwwwwwn...AaA...BbB...nwwwwwwwwwwwwwwx
 xwwwwwwwwwwwwwwn...AAA...BBB...nwwwwwwwwwwwwwwx
-xwwwwwwwwwwwwwwn.............<.nwwwwwwwwwwwwwwx
+xwwwwwwwwwwwwwwn.............>.nwwwwwwwwwwwwwwx
 xwwwwwwwwwwwwwwn.{.............nwwwwwwwwwwwwwwx
 xwwwwwwwwwwwwwwn...CCC...DDD...nwwwwwwwwwwwwwwx
 xwwwwwwwwwwwwwwn...CcC...DdD...nwwwwwwwwwwwwwwx
@@ -594,6 +728,152 @@ xxxxxxxxxxxxxwwwwwwwwwwwwwwwwwwwwwxxxxxxxxxxxxx
 xxxxxxxxxxxxxxwwwwwwwwwwwwwwwwwwwxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxwwwwwwwwwwwwwwwwwxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ENDMAP
+
+NAME:    jpeg_bazaar_island
+TAGS:    no_rotate no_pool_fixup bazaar
+ORIENT:  encompass
+WEIGHT:  20
+SUBST:   W = W:30 w, ~ = ':20 W
+NSUBST:  ' = 5:t / 7:1 / 4:2 / *:'
+NSUBST:  A = 1:{ / *:'
+NSUBST:  ! = 4:! / *:.
+KFEAT:   ! = any shop
+COLOUR:  ' = green / brown w:2
+FTILE:   'A12 = floor_grass
+FTILE:   .!T = floor_vault
+: set_border_fill_type("open_sea")
+:        bazaar_setup(_G)
+MAP
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwWWWWWWWWWWWWWWWWWWWwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwWW~~~~~~~~~~~~~~~~~WWwwwwwwwwwwwwww
+wwwwwwwwwwwwwWW~'''''''''''''''''~WWwwwwwwwwwwwww
+wwwwwwwwwwwwWW~'''''''''''''''''''~WWwwwwwwwwwwww
+wwwwwwwwwwwWW~'''''''''''''''''''''~WWwwwwwwwwwww
+wwwwwwwwwwWW~''''''''ccccccc''''A'''~WWwwwwwwwwww
+wwwwwwwwwWW~'''''''ccc.....ccc'''''''~WWwwwwwwwww
+wwwwwwwwWW~''''''ccc...!.....ccc''''''~WWwwwwwwww
+wwwwwwwwW~''''''cc.........!...cc''''''~Wwwwwwwww
+wwwwwwwwW~''''''+...!........!..c''''''~Wwwwwwwww
+wwwwwwwwW~''A'''+.......!.T....>c''''''~Wwwwwwwww
+wwwwwwwwW~''''''+...!........!..c''''''~Wwwwwwwww
+wwwwwwwwW~''''''cc.........!...cc''''''~Wwwwwwwww
+wwwwwwwwWW~''''''ccc...!.....ccc''''''~WWwwwwwwww
+wwwwwwwwwWW~'''''''ccc.....ccc'''''''~WWwwwwwwwww
+wwwwwwwwwwWW~''''''''ccccccc''''A'''~WWwwwwwwwwww
+wwwwwwwwwwwWW~'''''''''''''''''''''~WWwwwwwwwwwww
+wwwwwwwwwwwwWW~'''''''''''''''''''~WWwwwwwwwwwwww
+wwwwwwwwwwwwwWW~'''''''''''''''''~WWwwwwwwwwwwwww
+wwwwwwwwwwwwwwWW~~~~~~~~~~~~~~~~~WWwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwWWWWWWWWWWWWWWWWWWWwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+ENDMAP
+
+NAME:    cyrus_bazaar_forest
+TAGS:    no_rotate bazaar
+ORIENT:  encompass
+WEIGHT:  20
+MONS:    plant, bush
+NSUBST:  . = 10:X / 34:Y / *:.
+NSUBST:  ! = 4:! / *:.
+SUBST:   X : tXY., X = t., Y : Y., Y = 1112..
+SUBST:   - = ., " : """.
+KFEAT:   ! = any shop
+COLOUR:  .12 = green
+COLOUR:  " : brown
+COLOUR:  ' : white
+FTILE:   T.t12 = floor_grass
+FTILE:   " = floor_dirt
+FTILE:   '{+G! = floor_vault
+:        bazaar_setup(_G)
+MAP
+tttttttttttttttttttttttttttttt
+tttttttttttttttttttttttttttttt
+tt..........................tt
+tt.."""................"""..tt
+tt.."!"...""".."""....."!"..tt
+tt.."""..."!".."!"....."""..tt
+tt........""".."""..........tt
+tt..........................tt
+tt--..""".."""..""".."""....tt
+tt{---"!".."T".."T".."!"...>tt
+tt--..""".."""..""".."""....tt
+tt..........................tt
+tt..........""".."""........tt
+tt.."""....."!".."!"..."""..tt
+tt.."!".....""".."""..."!"..tt
+tt.."""................"""..tt
+tt..........................tt
+tttttttttttttttttttttttttttttt
+tttttttttttttttttttttttttttttt
+ENDMAP
+
+NAME:   dpeg_three_leaves_bazaar
+TAGS:   no_rotate bazaar
+ORIENT: encompass
+WEIGHT: 20
+NSUBST: ! = 4:! / *:.
+KFEAT:  ! = any shop
+:        bazaar_setup(_G)
+MAP
+      bbbb               bbbb
+    bbbb.bb             bb.bbbb
+    bb....bb           bb....bb
+   bb......bbb       bbb......bb
+  bb.....!...bb     bb...!.....bb
+ bb..!........bbb bbb........!..bb
+ bb.............bbb.............bb
+bb....!....T.....b.....T....!....bb
+bb...............................bb
+ bbbbbbbb........{........bbbbbbbb
+        bbbbbbbb...bbbbbbbb
+              bb...bb
+             bb.....bb
+            bb...T...bb
+           bb.........bb
+          bb...........bb
+         bb...!..>..!...bb
+        bb...............bb
+        bbbb.....!.....bbbb
+           bbbb.....bbbb
+             bbbbbbbbb
+ENDMAP
+
+NAME:   zaba_magenta_bazaar
+TAGS:   no_rotate bazaar
+ORIENT: encompass
+NSUBST: ! = 2:! / *:.
+KFEAT:  ! = any shop
+KFEAT:  B = distillery shop
+COLOUR: c = magenta
+:        bazaar_setup(_G)
+MAP
+ccccccccccccccccccccccccccccccccccccccccccc
+cccc.......ccccccc.......ccccccc.......cccc
+cc...!...!...ccc...T...T...ccc...!...!...cc
+c.............c.............c.............c
+cc.......................................cc
+cccc>..B.............{.............B....ccc
+cc.......................................cc
+c.............c.............c.............c
+cc...!...!...ccc...T...T...ccc...!...!...cc
+cccc.......ccccccc.......ccccccc.......cccc
+ccccccccccccccccccccccccccccccccccccccccccc
 ENDMAP
 
 NAME:    bazaar_minmay_row
@@ -626,6 +906,59 @@ xx..c.........c..xx
        x.>.x
        x...x
        xxxxx
+ENDMAP
+
+NAME:    nicolae_bazaar_no_exploring_needed
+TAGS:    no_pool_fixup bazaar
+ORIENT:  encompass
+WEIGHT:  20
+NSUBST:  ! = 4:! / *:T
+KFEAT:   ! = any shop
+:        bazaar_setup(_G)
+MAP
+   ccccccccc
+  cc!.!.!.!cc
+ cc.........cc
+cc!.........!cc
+c.............c
+c!...........!c
+c......>......c
+c!.....{.....!c
+c.............c
+c!...........!c
+c.............c
+cc!.........!cc
+ cc.........cc
+  cc!.!.!.!cc
+   ccccccccc
+ENDMAP
+
+NAME:    bazaar_eino_lava
+TAGS:    no_rotate bazaar
+ORIENT:  encompass
+COLOUR:  c = red
+KFEAT:   B = any shop
+:        bazaar_setup(_G)
+MAP
+      ccc     ccc
+     cclccccccclcc
+  ccccl.lcclccl.lcccc
+ cclll...c...c...lllcc
+ clll....G...G....lllc
+ cll.......B.......llc
+ cl.................lc
+ ccG...............Gccc
+cc.........>.........cc
+cl..B......{......B..lc
+cc...................cc
+ ccG...............Gcc
+ cl.................lc
+ cll.......B.......llc
+ clll....G...G....lllc
+ cclll...c...c...lllcc
+  ccccl.lcclccl.lcccc
+     cclccccccclcc
+      ccc     ccc
 ENDMAP
 
 ##########################################################################
@@ -1126,93 +1459,6 @@ x.........+............A............+.........x
 x....A....xxxxxxxxx.........xxxxxxxxx....A....x
 xk.......kxxxxxxxxxk.......kxxxxxxxxxk.......kx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-ENDMAP
-
-# This one's vertical edges look odd because
-# it almost exceeds the maximum level size.
-# Can't find a way to fix this without
-# ruining the look of the vault.
-NAME:      bazaar_minmay_generic_d
-TAGS:      no_rotate bazaar
-WEIGHT:    5
-ORIENT:    encompass
-LFLOORCOL: darkgrey
-: if crawl.coinflip() then
-SUBST:     "=l , '=. , A=l , B=!
-: else
-SUBST:     "=. , '=l , A=! , B=l
-: end
-KFEAT:     ! = jewellery shop / jewellery shop / gadget shop / scroll shop / book shop
-: set_border_fill_type("endless_lava")
-:          bazaar_setup(_G)
-MAP
-lllllllllllllllllllllllllllllllllllll
-ll...lllllllllllllllll'''llllllllllll
-l.....lllllllllllllll'''''lllllllllll
-l..{...lllllllllllll'''B''lllllllllll
-l.......lllllllllll'''''''lllllllllll
-ll.......lllllllll'''''''llllllllllll
-lll.......lllllll'''''''lllllllllllll
-llll.......lllll'''''''llllllllllllll
-lllll.......lll'''''''lllllllllllllll
-llllll.......''''''''llllllllllllllll
-lllllll.......''''''lllllllllllllllll
-llllllll.......''''lllllllllllll"""ll
-lllllllll.......''lllllllllllll"""""l
-lllllllll".......'llllllllllll"""A""l
-lllllllll"".......lllllllllll"""""""l
-llllllll"""".......lllllllll"""""""ll
-lllllll"""""".......lllllll"""""""lll
-llllll"""""""".......lllll"""""""llll
-lllll"""""""lll.......lll"""""""lllll
-llll"""""""lllll.......""""""""llllll
-lll"""""""lllllll.......""""""lllllll
-ll"""""""lllllllll.......""""llllllll
-l"""""""lllllllllll.......""lllllllll
-l""A"""llllllllllll'......."lllllllll
-l"""""lllllllllllll''.......lllllllll
-ll"""lllllllllllll''''.......llllllll
-lllllllllllllllll''''''.......lllllll
-llllllllllllllll''''''''.......llllll
-lllllllllllllll'''''''lll.......lllll
-llllllllllllll'''''''lllll.......llll
-lllllllllllll...''''lllllll.......lll
-llllllllllll.....''lllllllll.......ll
-lllllllllll.......lllllllllll.......l
-lllllllllll...!...lllllllllll.......l
-lllllllllll.......lllllllllll.......l
-llllllllllll.....""lllllllll.......ll
-lllllllllllll...""""lllllll.......lll
-llllllllllllll"""""""lllll.......llll
-lllllllllllllll"""""""lll.......lllll
-llllllllllllllll"""""""".......llllll
-lllllllllllllllll"""""".......lllllll
-ll'''lllllllllllll"""".......llllllll
-l'''''lllllllllllll"".......lllllllll
-l''B'''llllllllllll".......'lllllllll
-l'''''''lllllllllll.......''lllllllll
-ll'''''''lllllllll.......''''llllllll
-lll'''''''lllllll.......''''''lllllll
-llll'''''''lllll.......''''''''llllll
-lllll'''''''lll.......lll'''''''lllll
-llllll''''''''.......lllll'''''''llll
-lllllll''''''.......lllllll'''''''lll
-llllllll''''.......lllllllll'''''''ll
-lllllllll''.......lllllllllll'''''''l
-lllllllll'......."llllllllllll'''B''l
-lllllllll.......""lllllllllllll'''''l
-llllllll.......""""lllllllllllll'''ll
-lllllll.......""""""lllllllllllllllll
-llllll.......""""""""llllllllllllllll
-lllll.......lll"""""""lllllllllllllll
-llll.......lllll"""""""llllllllllllll
-lll.......lllllll"""""""lllllllllllll
-ll.......lllllllll"""""""llllllllllll
-l.......lllllllllll"""""""lllllllllll
-l..>...lllllllllllll"""A""lllllllllll
-l.....lllllllllllllll"""""lllllllllll
-ll...lllllllllllllllll"""llllllllllll
-lllllllllllllllllllllllllllllllllllll
 ENDMAP
 
 NAME:   bazaar_minmay_armour_weapon
