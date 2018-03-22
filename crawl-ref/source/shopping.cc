@@ -1347,6 +1347,19 @@ bool ShopMenu::process_key(int keyin)
         draw_menu();
         return true;
     }
+	else if (keyin - 'A' >= 0 && keyin - 'A' < (int)items.size())
+    {
+        const auto index = letter_to_index(keyin) % 26;
+        auto entry = dynamic_cast<ShopEntry*>(items[index]);
+        entry->selected_qty = 0;
+        const item_def& item(*entry->item);
+        if (shopping_list.is_on_list(item, &pos))
+            shopping_list.del_thing(item, &pos);
+        else
+            shopping_list.add_thing(item, item_price(item, shop), &pos);
+        draw_menu(true);
+        return true;
+    }
 
     auto old_selected = selected_entries();
     bool ret = InvMenu::process_key(keyin);
