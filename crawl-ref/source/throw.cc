@@ -28,6 +28,7 @@
 #include "items.h"
 #include "item_use.h"
 #include "macro.h"
+#include "makeitem.h"
 #include "message.h"
 #include "mon-behv.h"
 #include "output.h"
@@ -461,21 +462,60 @@ void fire_thing(int item)
             }
     dist target;
     item = get_ammo_to_shoot(item, target, is_pproj_active());
-    if (item == -1)
-        return;
 	
-    if (item && you.inv[item].sub_type == MI_DART_FRENZY && you_worship(GOD_CHEIBRIADOS))
+	if (!target.isValid)
+         return;
+	 
+    item_def *ammo = nullptr;
+    bool created_ammo = false;
+    if (item == -1)
+    {
+        item_def *const weapon = you.weapon();
+        missile_type missileType;
+        special_missile_type ego = SPMSL_NORMAL;
+        if (weapon && weapon->is_valid() && weapon->base_type == OBJ_WEAPONS)
+        {
+            switch(weapon->sub_type)
+                    {
+                        case WPN_HAND_CROSSBOW:
+                        case WPN_TRIPLE_CROSSBOW:
+                        case WPN_ARBALEST:
+                        case WPN_SHORTBOW:
+                        case WPN_LONGBOW:
+                            missileType = MI_ARROW;
+                            break;
+                        default:
+                            missileType = MI_ARROW;
+                            break;
+                    }
+        }
+        else 
+            return;
+		
+		if (!ammo)
+        {
+                int p = items(false, OBJ_MISSILES, missileType, 0, ego);
+                ammo = &mitm[p];
+                created_ammo = true;			
+        }
+        else
+            return;
+    }
+    else
+        ammo = &you.inv[item];
+	
+    if (item && item != -1 && you.inv[item].sub_type == MI_DART_FRENZY && you_worship(GOD_CHEIBRIADOS))
         if (!yesno("Really throw a frenzy dart? This would place you under penance!",
             false, 'n'))
             return;
 
-    if (check_warning_inscriptions(you.inv[item], OPER_FIRE)
+    if (check_warning_inscriptions(*ammo, OPER_FIRE)
         && (!you.weapon()
-            || is_launched(&you, you.weapon(), you.inv[item]) != LRET_LAUNCHED
+            || is_launched(&you, you.weapon(), *ammo) != LRET_LAUNCHED
             || check_warning_inscriptions(*you.weapon(), OPER_FIRE)))
     {
         bolt beam;
-        throw_it(beam, item, &target);
+        throw_it(beam, *ammo, &target);
     }
 }
 
@@ -511,7 +551,8 @@ void throw_item_no_quiver()
     }
 
     bolt beam;
-    throw_it(beam, slot);
+    item_def &item = you.inv[slot];
+    throw_it(beam, item);
 }
 
 static bool _setup_missile_beam(const actor *agent, bolt &beam, item_def &item,
@@ -663,7 +704,7 @@ static void _throw_noise(actor* act, const bolt &pbolt, const item_def &ammo)
 //
 // Return value is only relevant if dummy_target is non-nullptr, and returns
 // true if dummy_target is hit.
-bool throw_it(bolt &pbolt, int throw_2, dist *target)
+bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
 {
     dist thr;
     bool returning   = false;    // Item can return to pack.
@@ -693,7 +734,6 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
     }
     pbolt.set_target(thr);
 
-    item_def& thrown = you.inv[throw_2];
     ASSERT(thrown.defined());
 
     // Figure out if we're thrown or launched.
@@ -702,7 +742,14 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
     // Making a copy of the item: changed only for venom launchers.
     item_def item = thrown;
     item.quantity = 1;
-    item.slot     = index_to_letter(item.link);
+    if (item.link > ENDOFPACK) 
+    {
+        item.slot     = 0;
+    } 
+    else 
+    {
+        item.slot     = index_to_letter(item.link);
+    }
 
     string ammo_name;
 
@@ -764,18 +811,6 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
     }
 
     pbolt.is_tracer = false;
-
-    bool unwielded = false;
-    if (throw_2 == you.equip[EQ_WEAPON] && thrown.quantity == 1)
-    {
-        if (!wield_weapon(true, SLOT_BARE_HANDS, true, false, true, false))
-            return false;
-
-        if (!thrown.quantity)
-            return false; // destroyed when unequipped (fragile)
-
-        unwielded = true;
-    }
 
     // Now start real firing!
     origin_set_unknown(item);
@@ -913,20 +948,21 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
                     << endl;
 
         // Player saw the item return.
-        if (!is_artefact(you.inv[throw_2]))
-            set_ident_flags(you.inv[throw_2], ISFLAG_KNOW_TYPE);
+        if (!is_artefact(thrown))
+            set_ident_flags(thrown, ISFLAG_KNOW_TYPE);
     }
     else
     {
         // Should have returned but didn't.
-        if (returning && item_type_known(you.inv[throw_2]))
+        if (returning && item_type_known(thrown))
         {
             msg::stream << item.name(DESC_THE)
                         << " fails to return to your pack!" << endl;
         }
-        dec_inv_item_quantity(throw_2, 1);
-        if (unwielded)
-            canned_msg(MSG_EMPTY_HANDED_NOW);
+        if (thrown.in_player_inventory())
+            dec_inv_item_quantity(thrown.link, 1);
+        else
+            destroy_item(thrown);
     }
 
     _throw_noise(&you, pbolt, thrown);
