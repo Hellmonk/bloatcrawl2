@@ -2861,8 +2861,8 @@ KMONS:  3 = dancing weapon ; broad axe ego:flaming | scimitar ego:freezing | \
 KMONS:  4 = stone giant w:15 / fire giant / frost giant
 KMONS:  5 = spark wasp / catoblepas
 KMONS:  6 = storm dragon / iron dragon / titan / war gargoyle
-KMONS:  7 = spriggan defender ; staff of fire | staff of cold | \
-                                staff of air | staff of earth . \
+KMONS:  7 = spriggan defender ; quick blade ego: flaming | \
+                                quick blade ego:freezing . \
                                 robe ego:resistance good_item ident:type
 KMONS:  8 = tengu reaver ; battleaxe ego:flaming | double sword ego:freezing | \
                            halberd ego:electrocution | morningstar ego:devastation . \
