@@ -477,7 +477,7 @@ void upstairs_removal()
 void bazaar_postlevel_shops()
 {
 	int added_shop_count = one_chance_in(6) ? 2 + random2(4) : 1;
-    int tries = 100;
+    int tries = 500;
     while (tries > 0 && added_shop_count > 0)
     {
         tries--;
