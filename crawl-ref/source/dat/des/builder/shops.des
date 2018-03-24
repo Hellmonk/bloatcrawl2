@@ -65,7 +65,8 @@ TAGS: allow_dup extra luniq
 DEPTH:  D:11-, Depths, Orc:1, Shoals, Snake, Vaults
 CHANCE: 100% (D:11)
 CHANCE: 20% (D:12-)
-CHANCE: 40% (Depths)
+CHANCE: 40% (Depths:1-2)
+CHANCE: 100% (Depths: 3)
 CHANCE: 40% (Orc)
 CHANCE: 60% (Vaults)
 CHANCE: 30% (Shoals, Snake)
