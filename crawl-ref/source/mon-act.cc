@@ -916,14 +916,18 @@ bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
     item_def *launcher = nullptr;
     const item_def *weapon = nullptr;
     const int mon_item = mons_usable_missile(mons, &launcher);
-
-    if (mon_item == NON_ITEM || !mitm[mon_item].defined())
-        return false;
+	item_def *missile = nullptr;
 
     if (player_or_mon_in_sanct(*mons))
         return false;
-
-    item_def *missile = &mitm[mon_item];
+	
+    if (mon_item == NON_ITEM || !mitm[mon_item].defined())
+    {
+		int p = items(false, OBJ_MISSILES, MI_ARROW, 0, SPMSL_NORMAL);
+        missile = &mitm[p];
+	}
+    else
+        missile = &mitm[mon_item];
 
     ASSERT(missile->base_type == OBJ_MISSILES);
 
@@ -1006,7 +1010,7 @@ bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
             mons->swap_weapons();
 
         beem.name.clear();
-        return mons_throw(mons, beem, mon_item, teleport);
+        return mons_throw(mons, beem, *missile, teleport);
     }
 
     return false;

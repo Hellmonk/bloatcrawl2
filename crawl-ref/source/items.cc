@@ -472,6 +472,28 @@ bool dec_mitm_item_quantity(int obj, int amount)
     return false;
 }
 
+// Reduce quantity of monster ammo, do cleanup if item goes away.
+// Returns true if stack of items no longer exists.
+bool dec_mitm_ammo_quantity(item_def &item, int amount)
+{
+    if (amount > item.quantity)
+        amount = item.quantity; // can't use min due to type mismatch
+
+    if (item.quantity == amount)
+    {
+        destroy_item(item);
+        // If we're repeating a command, the repetitions used up the
+        // item stack being repeated on, so stop rather than move onto
+        // the next stack.
+        crawl_state.cancel_cmd_repeat();
+        crawl_state.cancel_cmd_again();
+        return true;
+    }
+
+    item.quantity -= amount;
+    return false;
+}
+
 void inc_inv_item_quantity(int obj, int amount)
 {
     if (you.equip[EQ_WEAPON] == obj)

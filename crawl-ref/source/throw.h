@@ -42,5 +42,5 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target = nullptr);
 bool thrown_object_destroyed(item_def *item, const coord_def& where);
 
 void setup_monster_throw_beam(monster* mons, bolt &beam);
-bool mons_throw(monster* mons, bolt &beam, int msl, bool teleport = false);
+bool mons_throw(monster* mons, bolt &beam, item_def& thrown, bool teleport = false);
 #endif

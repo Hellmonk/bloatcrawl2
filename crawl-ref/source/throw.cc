@@ -1001,33 +1001,32 @@ void setup_monster_throw_beam(monster* mons, bolt &beam)
 }
 
 // msl is the item index of the thrown missile (or weapon).
-bool mons_throw(monster* mons, bolt &beam, int msl, bool teleport)
+bool mons_throw(monster* mons, bolt &beam, item_def& thrown, bool teleport)
 {
     string ammo_name;
 
     bool returning = false;
 
     // Some initial convenience & initializations.
-    ASSERT(mitm[msl].base_type == OBJ_MISSILES);
+    ASSERT(thrown.base_type == OBJ_MISSILES);
 
     const int weapon    = mons->inv[MSLOT_WEAPON];
-
-    mon_inv_type slot = get_mon_equip_slot(mons, mitm[msl]);
-    ASSERT(slot != NUM_MONSTER_SLOTS);
+	
+	mon_inv_type slot = get_mon_equip_slot(mons, thrown);
 
     // Energy is already deducted for the spell cast, if using portal projectile
     // FIXME: should it use this delay and not the spell delay?
     if (!teleport)
     {
         const int energy = mons->action_energy(EUT_MISSILE);
-        const int delay = mons->attack_delay(&mitm[msl]).roll();
+        const int delay = mons->attack_delay(&thrown).roll();
         ASSERT(energy > 0);
         ASSERT(delay > 0);
         mons->speed_increment -= div_rand_round(energy * delay, 10);
     }
 
     // Dropping item copy, since the launched item might be different.
-    item_def item = mitm[msl];
+    item_def item = thrown;
     item.quantity = 1;
 
     if (_setup_missile_beam(mons, beam, item, ammo_name, returning))
@@ -1037,7 +1036,7 @@ bool mons_throw(monster* mons, bolt &beam, int msl, bool teleport)
 
     const launch_retval projected =
         is_launched(mons, mons->mslot_item(MSLOT_WEAPON),
-                    mitm[msl]);
+                    thrown);
 
     if (projected == LRET_THROWN)
         returning = returning && !teleport;
@@ -1049,9 +1048,9 @@ bool mons_throw(monster* mons, bolt &beam, int msl, bool teleport)
         if (projected == LRET_LAUNCHED
                && item_type_known(mitm[weapon])
             || projected == LRET_THROWN
-               && mitm[msl].base_type == OBJ_MISSILES)
+               && thrown.base_type == OBJ_MISSILES)
         {
-            set_ident_flags(mitm[msl], ISFLAG_KNOW_TYPE);
+            set_ident_flags(thrown, ISFLAG_KNOW_TYPE);
             set_ident_flags(item, ISFLAG_KNOW_TYPE);
         }
     }
@@ -1132,10 +1131,15 @@ bool mons_throw(monster* mons, bolt &beam, int msl, bool teleport)
 
         // Player saw the item return.
         if (!is_artefact(item))
-            set_ident_flags(mitm[msl], ISFLAG_KNOW_TYPE);
+            set_ident_flags(thrown, ISFLAG_KNOW_TYPE);
     }
-    else if (dec_mitm_item_quantity(msl, 1))
-        mons->inv[slot] = NON_ITEM;
+    if (slot != NUM_MONSTER_SLOTS)
+    {
+        if (dec_mitm_ammo_quantity(thrown, 1))
+            mons->inv[slot] = NON_ITEM;
+    }
+    else
+        destroy_item(thrown);
 
     if (beam.special_explosion != nullptr)
         delete beam.special_explosion;
