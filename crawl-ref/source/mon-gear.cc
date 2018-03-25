@@ -1173,40 +1173,14 @@ static void _give_ammo(monster* mon, int level, bool mons_summoned)
     {
         const object_class_type xitc = OBJ_MISSILES;
         int xitt = fires_ammo_type(*launcher);
+		
+        if(xitt == MI_ARROW)
+            return;
 
         const int thing_created = items(false, xitc, xitt, level);
 
         if (thing_created == NON_ITEM)
             return;
-
-        if (xitt == MI_NEEDLE)
-        {
-        }
-        else
-        {
-            // Sanity check to avoid useless brands.
-            const int bow_brand  = get_weapon_brand(*launcher);
-            const int ammo_brand = get_ammo_brand(mitm[thing_created]);
-            if (ammo_brand != SPMSL_NORMAL
-                && (bow_brand == SPWPN_FLAMING || bow_brand == SPWPN_FREEZING))
-            {
-                mitm[thing_created].brand = SPMSL_NORMAL;
-            }
-        }
-        switch (mon->type)
-        {
-            case MONS_DEEP_ELF_MASTER_ARCHER:
-                // Master archers get double ammo - archery is their only attack
-                mitm[thing_created].quantity *= 2;
-                break;
-
-            case MONS_JOSEPH:
-                mitm[thing_created].quantity += 2 + random2(7);
-                break;
-
-            default:
-                break;
-        }
 
         _give_monster_item(mon, thing_created);
     }
