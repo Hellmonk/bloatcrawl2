@@ -100,7 +100,6 @@ MONS:    rat always_corpse
 MONS:    dart slug
 ITEM:    tomahawk mundane q:10
 ITEM:    shortbow mundane not_cursed
-ITEM:    arrow mundane q:30
 MARKER:  d = lua:tutorial2.msg("tomahawks")
 MARKER:  A = lua:tutorial2.msg("throwing")
 MARKER:  B = lua:tutorial2.msg("resting_reminder")

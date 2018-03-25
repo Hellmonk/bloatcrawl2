@@ -738,11 +738,9 @@ KITEM:    H = demon blade mundane not_cursed ident:all plus:5, \
               triple sword mundane not_cursed ident:all plus:5
 KITEM:    I = quarterstaff mundane not_cursed ident:all plus:5
 KITEM:    J = shortbow mundane not_cursed ident:all plus:5, \
-              arrow q:1000 mundane ident:all, \
               arbalest mundane not_cursed ident:all plus:5, \
               triple crossbow mundane not_cursed ident:all plus:5, \
-              shortbow mundane not_cursed ident:all plus:5, \
-              arrow q:1000 mundane ident:all
+              shortbow mundane not_cursed ident:all plus:5
 KITEM:    K = potion of heal wounds q:9 ident:all, \
               potion of berserk rage q:2 ident:all, \
               potion of augmentation q:5 ident:all, \

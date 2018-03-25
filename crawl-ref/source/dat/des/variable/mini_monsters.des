@@ -2457,7 +2457,7 @@ NAME:   minmay_dual_archer_statues
 DEPTH:  D:10-
 WEIGHT: 2
 MONS:   statue tile:mons_statue_archer name:archer name_adjective; \
-        longbow . arrow q:30
+        longbow
 MONS:   bush
 MAP
 .........
