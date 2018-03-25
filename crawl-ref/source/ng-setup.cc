@@ -222,7 +222,6 @@ static void _give_ammo(weapon_type weapon, int plus)
             newgame_make_item(OBJ_MISSILES, MI_JAVELIN, 100 + 20* plus);
         break;
     case WPN_SHORTBOW:
-        newgame_make_item(OBJ_MISSILES, MI_ARROW, 160);
         break;
     default:
         break;
