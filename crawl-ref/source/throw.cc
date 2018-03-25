@@ -936,6 +936,8 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
 
     if (item.base_type == OBJ_MISSILES && item.sub_type == MI_DART_FRENZY)
         did_god_conduct(DID_HASTY, 6 + random2(3), true);
+	
+    bool shadow_allowed = thrown.base_type == OBJ_MISSILES && thrown.sub_type != MI_NEEDLE;
 
     if (did_return)
     {
@@ -979,8 +981,7 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
     if (!teleport
         && projected
         && will_have_passive(passive_t::shadow_attacks)
-        && thrown.base_type == OBJ_MISSILES
-        && thrown.sub_type != MI_NEEDLE)
+        && shadow_allowed)
     {
         dithmenos_shadow_throw(thr, item);
     }
