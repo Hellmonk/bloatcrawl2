@@ -1327,8 +1327,7 @@ static void _xom_snakes_to_sticks(int sever)
                                                                : OBJ_WEAPONS;
 
         const int sub_type =
-            (base_type == OBJ_MISSILES ?
-             (x_chance_in_y(3,5) ? MI_ARROW : MI_JAVELIN)
+            (base_type == OBJ_MISSILES ? MI_JAVELIN
              : _xom_random_stickable(mi->get_experience_level()));
 
         int item_slot = items(false, base_type, sub_type,

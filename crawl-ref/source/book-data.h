@@ -111,7 +111,7 @@ static const vector<spell_type> spellbook_templates[] =
 
 {   // Book of Changes
     SPELL_BEASTLY_APPENDAGE,
-    SPELL_STICKS_TO_SNAKES,
+    SPELL_PASSWALL,
     SPELL_SPIDER_FORM,
     SPELL_ICE_FORM,
     SPELL_BLADE_HANDS,
