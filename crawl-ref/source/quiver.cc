@@ -177,7 +177,7 @@ void choose_item_for_quiver()
              t == AMMO_THROW    ? "throwing" :
              t == AMMO_SLING    ? "sling" :
              t == AMMO_BOW      ? "bow" :
-                                  "crossbow");
+                                  "bow");
         return;
     }
     else
@@ -373,6 +373,9 @@ void player_quiver::_get_fire_order(vector<int>& order,
     {
         return;
     }
+	
+    if (launcher)
+        return;
 
     for (int i_inv = inv_start; i_inv < ENDOFPACK; i_inv++)
     {
