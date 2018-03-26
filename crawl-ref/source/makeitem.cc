@@ -633,7 +633,6 @@ static void _generate_missile_item(item_def& item, int force_type,
     {
         item.sub_type =
             random_choose_weighted(68, MI_STONE,
-                                   20, MI_ARROW,
                                    4,  MI_DART_POISONED,
                                    3,  MI_TOMAHAWK,
                                    2,  MI_JAVELIN,
@@ -1701,6 +1700,7 @@ int items(bool allow_uniques,
                                    262, OBJ_ARMOUR,
                                    212, OBJ_WEAPONS,
                                    140, OBJ_POTIONS,
+                                   // reduce missile weight to 55 when ammoless is complete
                                    436, OBJ_MISSILES,
 			                       202, OBJ_SCROLLS,
                                    548, OBJ_GOLD); 
