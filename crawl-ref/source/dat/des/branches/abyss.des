@@ -303,7 +303,7 @@ ENDMAP
 NAME:    hangedman_abyss_feature_spike
 TAGS:    extra no_item_gen no_pool_fixup allow_dup
 MONS:    fungus, plant, bush
-ITEM:    stone q:1, large rock q:1
+ITEM:    large rock q:1
 KFEAT:   - = altar_lugonu
 KMASK:   wWl = no_monster_gen
 SHUFFLE: fghij / opqrs, fghijopqrs / JKLMNOPQRS
@@ -639,7 +639,6 @@ ENDMAP
 
 NAME:  evilmike_abyss_exit_4
 TAGS:  abyss_exit unrand allow_dup
-ITEM:  stone q:1 no_pickup
 : init_abyss_exit(_G, "O")
 MAP
     x
@@ -655,7 +654,6 @@ ENDMAP
 
 NAME:   evilmike_abyss_exit_5
 TAGS:   abyss_exit unrand allow_dup
-ITEM:   stone q:1 no_pickup
 NSUBST: d = 1:O / *:d
 : init_abyss_exit(_G, "O")
 MAP

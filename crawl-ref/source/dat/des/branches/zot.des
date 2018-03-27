@@ -1976,7 +1976,7 @@ TAGS: no_monster_gen transparent
 MONS: lightning spire, patrolling electric golem
 NSUBST: % = 2:!
 KMONS: ! = patrolling death cob
-KITEM: %! = stone q:1 / nothing w:10
+KITEM: %! = large rock q:1 / nothing w:10
 MAP
 @xxxxx@
 .......
@@ -2040,8 +2040,8 @@ MONS:    very ugly thing w:20 / deep elf annihilator w:15 / \
          quicksilver dragon / death knight / crystal guardian
 MONS:    curse skull w:15 / apocalypse crab / lorocyproca / acid blob
 MONS:    butterfly
-ITEM:    stone q:1 no_pickup, large rock q:1 no_pickup
-ITEM:    stone q:1 no_pickup, crystal ball of energy no_pickup
+ITEM:    large rock q:1 no_pickup
+ITEM:    crystal ball of energy no_pickup
 # Altars obliquely refer to those temple maps.
 KFEAT:   D = altar_lugonu / altar_jiyva / C w:20
 KFEAT:   ~ = known zot trap

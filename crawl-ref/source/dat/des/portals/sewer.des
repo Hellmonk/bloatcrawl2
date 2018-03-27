@@ -651,7 +651,6 @@ KMONS:  4 = Purgy, crocodile
 ITEM:   potion of flight / potion of heal wounds / \
         potion of invisibility / potion of mutation /\
         scroll of blinking / scroll of teleportation / scroll of fear / \
-        stone / \
         nothing w:140
 : sewer_setup(_G)
 MAP
@@ -779,7 +778,6 @@ KMONS:  2 = purgy, crocodile
 ITEM:   potion of flight / potion of heal wounds / \
         potion of invisibility / potion of mutation / \
         scroll of blinking / scroll of teleportation / scroll of fear / \
-        stone / \
         nothing w:140
 NSUBST: e = 3:* / 9:d / *:.
 NSUBST: 0 = 5:1 / 1:2 / *:.

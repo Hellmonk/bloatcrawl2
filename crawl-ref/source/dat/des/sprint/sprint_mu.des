@@ -264,7 +264,7 @@ KFEAT: l = altar_lugonu
 KFEAT: J = altar_jiyva
 KMONS: m = shadow
 KMONS: j = patrolling jelly
-KITEM: * = stone
+KITEM: * = large rock
 COLOUR: # = yellow
 KFEAT: # = closed_door
 : lua_marker('#', props_marker {
@@ -441,9 +441,9 @@ ENDMAP
 NAME: sprint_mu_hive_nellie
 TAGS: sprint_mu_hive no_rotate no_hmirror no_vmirror
 KMONS: 1 = killer bee
-KITEM: 1 = stone w:30 / nothing
+KITEM: 1 = large rock w:30 / nothing
 KMONS: 2 = queen bee
-KITEM: 2 = stone
+KITEM: 2 = large rock
 KMONS: 3 = generate_awake Nellie
 KITEM: 3 = demonic rune of zot
 : acq_on_sight(_G, '3', {"food","misc","wand"})
@@ -512,7 +512,7 @@ KMONS: r = hydra simulacrum / fire dragon simulacrum / polar bear simulacrum /\
  wolf simulacrum / black mamba simulacrum
 KITEM: r = any, any, any, any, any, superb_item / w:1 wand of acid /\
  w:1 wand of disintegration
-KITEM: % = stone q:6
+KITEM: % = large rock q:6
 KFEAT: _ = altar_qazlal
 KMONS: s = patrolling Urug
 KMONS: u = death drake

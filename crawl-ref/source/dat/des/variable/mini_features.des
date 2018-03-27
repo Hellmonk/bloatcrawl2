@@ -1352,7 +1352,7 @@ TAGS:    transparent extra decor
 DEPTH:   D, Depths, Elf
 WEIGHT:  1
 SHUFFLE: defgh
-ITEM:    q:1 $, large rock, tomahawk q:1, large rock, stone q:1
+ITEM:    q:1 $, large rock, tomahawk q:1, large rock, gold q:1
 NSUBST:  ' = 9:d / *:.
 MAP
 '.......'.......'
@@ -1379,7 +1379,7 @@ NAME:   roderic_three_in_a_row
 TAGS:   transparent extra decor
 DEPTH:  D, Depths, Elf
 WEIGHT: 1
-ITEM:   q:1 $, large rock, stone, tomahawk q:1
+ITEM:   q:1 $, large rock, q:1 $, tomahawk q:1
 SUBST:  ' : TUdefg
 MAP
 @xxxx@xxxx@
@@ -2867,7 +2867,7 @@ ENDMAP
 NAME:   supply_closet_lemuel
 DEPTH:  D:1-9
 TAGS:   no_monster_gen extra
-ITEM:   stone / large rock /\
+ITEM:   large rock /\
         dagger / spear / any potion w:5
 MAP
 x+xx
@@ -3086,7 +3086,7 @@ DEPTH: D:4-12
 SUBST: Q = TPW, T = tP, P = p'', Y = W', Z = tW, ' = ':13 r:1
 FTILE: tp'r = floor_sand
 KMONS: p = plant
-KITEM: r = stone q:1 / large rock q:1 w:5
+KITEM: r = large rock q:1
 KITEM: s = pair of boots
 KFEAT: ' = .
 MAP

@@ -580,8 +580,8 @@ KPROP: YycfZ. = no_tide
 KPROP: ZYcf. = no_tele_into
 KMONS: c = patrolling angry ghost
 NSUBST: f = 1:g / 2:f / *:.
-KITEM: g = stone
-KITEM: f = stone / nothing w:20
+KITEM: g = large rock
+KITEM: f = large rock w: 20 / nothing
 : dgn.delayed_decay(_G, 'c', 'human skeleton')
 SUBST: Z = yY
 KFEAT: y = w

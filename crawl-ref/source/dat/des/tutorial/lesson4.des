@@ -37,8 +37,8 @@ FTILE:   ABCDEFdefg = tutorial_pad
 ITEM:    randbook numspells:2 spells:magic_dart&mephitic_cloud title:Introduction_to_Spellcasting owner:player
 ITEM:    ring of wizardry not_cursed
 ITEM:    staff of wizardry not_cursed
-ITEM:    stone
-MONS:    training dummy ; stone q:20
+ITEM:    large rock
+MONS:    training dummy ; large rock q:20
 MONS:    bat skeleton, goblin skeleton
 MONS:    rat, goblin
 KMONS:   8 = training dummy hd:3 hp:7

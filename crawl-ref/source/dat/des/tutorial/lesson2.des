@@ -95,7 +95,7 @@ FTILE:   .123f = floor_swamp, t = floor_grass
 KFEAT:   ,ABCDEF = .
 COLOUR:  deABCDEF = lightblue
 FTILE:   deABCDEF = tutorial_pad
-MONS:    training dummy hp:2 ; stone q:10
+MONS:    training dummy hp:2 ; large rock q:10
 MONS:    rat always_corpse
 MONS:    dart slug
 ITEM:    tomahawk mundane q:10

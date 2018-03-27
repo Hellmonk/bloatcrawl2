@@ -34,7 +34,7 @@ function callback.tgw_lugonu_bribe_lugonu_item (data, triggerable,
               good_item " .. weapon .. " ego:flaming ident:type",
          Elyvilon="book of Necromancy w:5 /\
               book of Death w:5 / book of Unlife w:5",
-         Jiyva="stone q:10-20 / large rock q:2-4",
+         Jiyva="gold q:1",
          Kikubaaqudgha="randbook owner:Lugonu spells:control_undead&dispel_undead \
                        numspells:2 /\
               rat corpse w:5 / kobold corpse w:5",
