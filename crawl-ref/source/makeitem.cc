@@ -632,8 +632,7 @@ static void _generate_missile_item(item_def& item, int force_type,
     else
     {
         item.sub_type =
-            random_choose_weighted(68, MI_STONE,
-                                   4,  MI_DART_POISONED,
+            random_choose_weighted(4,  MI_DART_POISONED,
                                    3,  MI_TOMAHAWK,
                                    2,  MI_JAVELIN,
                                    1,  MI_DART_CURARE,
@@ -1697,13 +1696,12 @@ int items(bool allow_uniques,
                                     50, OBJ_BOOKS,
                                     50, OBJ_JEWELLERY,
                                     50, OBJ_WANDS,
+                                    55, OBJ_MISSILES,
                                    262, OBJ_ARMOUR,
                                    212, OBJ_WEAPONS,
                                    140, OBJ_POTIONS,
-                                   // reduce missile weight to 55 when ammoless is complete
-                                   436, OBJ_MISSILES,
 			                       202, OBJ_SCROLLS,
-                                   548, OBJ_GOLD); 
+                                   929, OBJ_GOLD); 
 
         // misc items placement wholly dependent upon current depth {dlb}:
         if (item_level > 7 && x_chance_in_y(21 + item_level, 5000))
@@ -1829,7 +1827,7 @@ int items(bool allow_uniques,
         if (force_good)
             item.quantity = 100 + random2(400);
         else
-            item.quantity = 1 + random2avg(19, 2) + random2(item_level);
+            item.quantity = 1 + random2avg(10, 2) + random2(div_rand_round(item_level * 4, 7));
         break;
     }
 
