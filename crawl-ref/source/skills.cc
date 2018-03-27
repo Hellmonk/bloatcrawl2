@@ -15,6 +15,7 @@
 #include <sstream>
 
 #include "ability.h"
+#include "clua.h"
 #include "describe-god.h"
 #include "evoke.h"
 #include "exercise.h"
@@ -597,6 +598,13 @@ bool check_selected_skills()
 
     if (trainable_skill)
     {
+        // Calling a user lua function here to allow enabling skills without user
+        // prompt (much like the callback auto_experience for the case of potion of experience).
+        if (clua.callbooleanfn(false, "skill_training_needed", nullptr))
+        {
+            return true;
+        }
+
         mpr("You need to enable at least one skill for training.");
         more();
         reset_training();
