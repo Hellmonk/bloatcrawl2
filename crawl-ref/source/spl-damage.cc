@@ -1406,10 +1406,14 @@ void detonation_brand(actor *wielder, coord_def where, int pow)
     // do the actual damage
     for (auto mon : affected_monsters)
     {
+        if(!mon || mon == nullptr || mon->type >= NUM_MONSTERS)
+            continue;
         int dam = resist_adjust_damage(mon, BEAM_FIRE, 1 + random2(pow) / 2);
         if(you.can_see(*mon))
         {
-            mprf("%s is burned (%d)!", mon->name(DESC_THE).c_str(), dam);
+            if(dam > 0)
+                mprf("%s is burned (%d)!", mon->name(DESC_THE).c_str(), dam);
+			
             beam_visual.explosion_draw_cell(mon->pos());
         }
         mon->expose_to_element(BEAM_FIRE, 1 + dam / 5);
