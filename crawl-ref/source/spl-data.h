@@ -1547,7 +1547,7 @@ static const struct spell_desc spelldata[] =
     SPTYP_EARTH,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEEDS_TRACER,
     1,
-    50,
+    25,
     3, 3,
     1, 0,
     TILEG_SANDBLAST,

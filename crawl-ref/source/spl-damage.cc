@@ -2486,35 +2486,9 @@ int wielding_rocks()
 
 spret_type cast_sandblast(int pow, bolt &beam, bool fail)
 {
-    item_def *stone = nullptr;
-	int num_stones = 0;
-	for (item_def& i : you.inv)
-	{
-		if (i.is_type(OBJ_MISSILES, MI_STONE)
-			&& check_warning_inscriptions(i, OPER_DESTROY))
-        {
-            num_stones += i.quantity;
-            stone = &i;
-        }
-	}
-	
-	if (num_stones < 8)
-    {
-        mpr("You don't have enough stones to cast with.");
-        return SPRET_ABORT;
-    }
-
     zap_type zap = ZAP_SANDBLAST;
 
     const spret_type ret = zapping(zap, pow, beam, true, nullptr, fail);
-	
-	if (ret == SPRET_SUCCESS)
-	{
-        if(dec_inv_item_quantity(letter_to_index(stone->slot), 8))
-			mpr("You now have no stones remaining.");
-		else
-            mprf_nocap("%s", stone->name(DESC_INVENTORY).c_str());
-	}
 	
     return ret;
 }
