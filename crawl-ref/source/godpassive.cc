@@ -1208,6 +1208,8 @@ monster* shadow_monster(bool equip)
         {
             new_item.base_type = wpn->base_type;
             new_item.sub_type  = wpn->sub_type;
+            brand_type brand = get_weapon_brand(*wpn);
+            new_item.brand = brand < NUM_REAL_SPECIAL_WEAPONS ? brand : SPWPN_NORMAL;
         }
         new_item.quantity = 1;
         new_item.rnd = 1;
