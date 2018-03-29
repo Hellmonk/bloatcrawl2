@@ -1346,9 +1346,9 @@ MONS:    orc warrior, orc knight
 MONS:    warg / nothing
 KFEAT:   s = stone_arch
 KITEM:   s = $
-SHUFFLE: sO
 SUBST:   5 = 32, A:+, C:+, B:c, D:c
 SUBST:   T : TIII
+NSUBST:  s = 1:O / *:s
 SHUFFLE: AC/BD
 : place_bazaar_portal(_G)
 MAP
@@ -1364,7 +1364,7 @@ MAP
 ..c11..c4.ccc+ccc.ccc1ccc4c...11c..
 ..c211.D..c1...1c...131...B..112c..
 ..c5211c..c2.3.2c4ccc1ccc.c.1125c..
-..cO521c..c1...1c.ccc.ccc.c1125sc..
+..cs521c..c1...1c.ccc.ccc.c1125sc..
 ..cccccc..ccccccc.ccc.ccc.ccccccc..
 ...................................
 ...................................
@@ -1376,11 +1376,10 @@ TAGS:    no_item_gen no_monster_gen
 PLACE:   Orc:$
 ORIENT:  float
 MONS:    ogre / nothing w:5, two-headed ogre / nothing w:5, ogre mage
-KMONS:   O = ogre / nothing w:5
 KMONS:   s = ogre / nothing w:5
 KFEAT:   s = stone_arch
 KITEM:   s = $
-SHUFFLE: sO
+NSUBST:  s = 1:O / *:s
 : place_bazaar_portal(_G)
 MAP
   ..........@.........
@@ -1390,7 +1389,7 @@ MAP
 ..xx.......11.......xx..
 ..x..212..1221..212..x..
 ....2111213ss3121112....
-....2111213Os3121112....
+....2111213ss3121112....
 ..x..212..1221..212..x..
 ..xx.......11.......xx..
 ..xxxx............xxxx..
@@ -1413,7 +1412,7 @@ MONS:    centaur w:20 / centaur warrior w:1 / nothing w:21
 SUBST:   3 = 23
 KFEAT:   s = stone_arch
 KITEM:   s = $
-SHUFFLE: sO
+NSUBST:  s = 1:O / *:s
 : place_bazaar_portal(_G)
 MAP
   ...............@...............
@@ -1427,7 +1426,7 @@ MAP
 ........1221...34s43...1221........
 ........1221...34s43...1221........
 ..c...5.wwwwcccc4.4ccccwwww.5...c..
-..c....5.wwwwccccOccccwwww.5....c..
+..c....5.wwwwccccsccccwwww.5....c..
 ....5...5..wwwwcccccwwww..5...5....
 ..c..5.......wwwcccwww.......5..c..
 ..cc..........wwcccww..........cc..
@@ -1445,7 +1444,7 @@ MONS:    orc / nothing, orc wizard / nothing, orc sorcerer
 MONS:    orc priest / nothing, orc high priest, orc warrior
 KFEAT:   s = stone_arch
 KITEM:   s = $
-SHUFFLE: sO
+NSUBST:  s = 1:O / *:s
 SHUFFLE: 23/45
 : place_bazaar_portal(_G)
 MAP
@@ -1460,7 +1459,7 @@ MAP
 ..c..c..c.....c..c..c..
 ..11.cc...csc...cc.11..
 ..61.c..3.s5s.3..c.16.@
-..11.cc...cOc...cc.11..
+..11.cc...csc...cc.11..
 ..c..c..c.....c..c..c..
 ..c...2ccc.3.ccc2...c..
 ..c..2.2c.....c2.2..c..
@@ -1481,7 +1480,7 @@ MONS:    orc / nothing, orc warrior / nothing, orc knight / nothing
 MONS:    orc priest / nothing, orc high priest
 KFEAT:   s = stone_arch
 KITEM:   s = $
-SHUFFLE: sO
+NSUBST:  s = 1:O / *:s
 : place_bazaar_portal(_G)
 MAP
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -1494,7 +1493,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 .....111.222.11.3.....11..2...2...2.5.scx
 @........222.11.33c5c.112.2.2.2.2.2.c.ccx
 .....111.222.11.3.....11..2...2...2.5.scx
- .c.c1c.c.c.c1c.c.c.c.c1c4c4c4c4c4c.cOccx
+ .c.c1c.c.c.c1c.c.c.c.c1c4c4c4c4c4c.csccx
   c1111...........ccc.22.........22.ccccx
   cc1..44.44.44..ccccc22..33.33..22cccccx
   cccc.44.44.44ccccccccc.........cccccccx
@@ -1514,14 +1513,14 @@ KMONS:   V = orc warlord
 KFEAT:   V = T
 KFEAT:   s = stone_arch
 KITEM:   s = $
-SHUFFLE: sO
+NSUBST:  s = 1:O / *:s
 SHUFFLE: 74/63
 : place_bazaar_portal(_G)
 MAP
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xcccccccccccccccccccccccccccx
 xc1111.ccs..ccccc..scc.1111cx
-xc122...ccO..ccc..scc...221cx
+xc122...ccs..ccc..scc...221cx
 xc122....cc...c...cc....221cx
 xcc...7...ccc...ccc...7...ccx
 xccc..4.33.........33.4..cccx
@@ -1555,7 +1554,7 @@ MONS:    ogre, two-headed ogre, troll, deep troll w:19 / iron troll w:1
 MONS:    ogre mage, two-headed ogre w:14 / ettin w:1, cyclops w:29 / stone giant w:1
 KFEAT:   s = stone_arch
 KITEM:   s = $
-SHUFFLE: sO
+NSUBST:  s = 1:O / *:s
 : place_bazaar_portal(_G)
 MAP
  .....
@@ -1564,7 +1563,7 @@ MAP
 ..111.....321..3..11
  .......2.252......1
   ....6...123..7..@
-   ..O.3...........
+   ..s.3...........
   ..4........6.1s.
   ...3.7..s2.. 11.
    .... ....
@@ -1579,13 +1578,13 @@ MONS:    orc high priest, orc sorcerer, orc knight
 MONS:    orc warrior, orc priest, orc wizard
 KFEAT:   s = stone_arch
 KITEM:   s = $
-SHUFFLE: sO
+NSUBST:  s = 1:O / *:s
 : place_bazaar_portal(_G)
 MAP
 xxxxxxxxxxxxxxxxxxxxxxx
 xcccccccccccccccccccccx
 xccccccs.......sccccccx
-xccccs...cc.cc...Occccx
+xccccs...cc.cc...sccccx
 xccc...cc3...3cc...cccx
 xcc5.cc3...1...3cc.5ccx
 xcc5...............5ccx
@@ -1619,7 +1618,7 @@ KMONS:  C = Urug w:3 / orc knight, orc knight
 KMONS:  D = Blork the orc w:3 / orc wizard, orc wizard
 KFEAT:   s = stone_arch
 KITEM:   s = $
-SHUFFLE: sO
+NSUBST:  s = 1:O / *:s
 : place_bazaar_portal(_G)
 MAP
 cccc  c..@..c  cccc
@@ -1639,7 +1638,7 @@ ccccc.........ccccc
  cc...c..3..c...cc
 cc...cc.....cc...cc
 c6..cccI...Iccc..5c
-cs5cccc..4..cccc6Oc
+cs5cccc..4..cccc6sc
 cccc  c..@..c  cccc
 ENDMAP
 
@@ -1662,7 +1661,7 @@ KFEAT:   A = stone_arch
 KITEM:   A = $
 KFEAT:   s = stone_arch
 KITEM:   s = $
-SHUFFLE: sO
+NSUBST:  s = 1:O / *:s
 KFEAT: P = enter_pandemonium
 TILE:  c = wall_stone_dark
 FTILE: .1234567@O = floor_pebble_lightred
@@ -1680,7 +1679,7 @@ MAP
     ccc.1......cc75.cc.4.ccc
    ccc.1.1c.3.cc..c..cc...ccc
   ccc123c32..cc..ccc.3cc.c.ccc
- cccA2c1211.cc6.cO7cc32.2.27ccc
+ cccA2c1211.cc6.cs7cc32.2.27ccc
 ccc5.11.c1.cc77.766Pcc.c....5ccc
  cccA2c1211.cc6.cs7cc32.2.27ccc
   ccc123c32..cc..ccc.3cc.c.ccc
@@ -1714,7 +1713,7 @@ KMONS:  P = plant / nothing
 NSUBST: u = 2:s / I
 KFEAT:   s = stone_arch
 KITEM:   s = $
-SHUFFLE: sO
+NSUBST:  s = 1:O / *:s
 : if you.where() == dgn.level_name(dgn.br_entrance("Elf")) then
 KFEAT:  p = enter_elven_halls
 : else
@@ -1790,6 +1789,6 @@ xxxxxccccccc.+._.+.........+.....cccccccwwwwwwwxxxxxxxxxxxxxxxxxxxxxx
 xxxxxllll0.ccc2.0c.cc+ccc+cc.....c.0Wwwwwwwwxxxxxxxxxxxxxxxxxxxxxxxxx
 xlxxlllll..+.c...c.c...c...c.....+..WWwwwwwxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxlllllll0.c.cc+cc.c0.0c0.0ccccccc.0Wwwwxxxwwxxxxxxxxxxxxxxxxxxxxxxxx
-xllllccccccc.......cO6.c.6scxxxxccccccccxxxxwxxxxxxxxxxxxxxxxxxxxxxxx
+xllllccccccc.......cs6.c.6scxxxxccccccccxxxxwxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxcccccccccccccccccxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
