@@ -491,6 +491,13 @@ void bazaar_postlevel_shops()
             }
             place_spec_shop(c, type);
 			added_shop_count--;
+            map_cell& cell = env.map_knowledge(c);
+            cell.clear_cloud();
+            cell.clear_item();
+            cell.clear_monster();
+#ifdef USE_TILE
+            tile_reset_fg(c);
+#endif            
         }
     }
 }
