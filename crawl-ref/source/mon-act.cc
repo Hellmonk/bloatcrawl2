@@ -917,6 +917,7 @@ bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
     const item_def *weapon = nullptr;
     const int mon_item = mons_usable_missile(mons, &launcher);
 	item_def *missile = nullptr;
+    bool created = false;
 	
     launcher = mons->mslot_item(MSLOT_WEAPON);
     if (!launcher || !is_range_weapon(*launcher))
@@ -931,6 +932,7 @@ bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
         {
 		    int p = items(false, OBJ_MISSILES, MI_ARROW, 0, SPMSL_NORMAL);
             missile = &mitm[p];
+            created = true;
         }
         else 
             return false;
@@ -967,6 +969,8 @@ bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
             simple_monster_message(*mons,
                                 " is stunned by your will and fails to attack.",
                                 MSGCH_GOD);
+            if(created)
+                destroy_item(missile->index());
             return false;
         }
         else if (interference == DO_REDIRECT_ATTACK)
@@ -1010,7 +1014,11 @@ bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
     if (teleport || mons_should_fire(beem) || interference != DO_NOTHING)
     {
         if (check_only)
+        {
             return true;
+            if(created)
+                destroy_item(missile->index());
+        }
 
         // Monsters shouldn't shoot if fleeing, so let them "turn to attack".
         make_mons_stop_fleeing(mons);
@@ -1021,6 +1029,9 @@ bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
         beem.name.clear();
         return mons_throw(mons, beem, *missile, teleport);
     }
+	
+    if(created)
+        destroy_item(missile->index());
 
     return false;
 }
