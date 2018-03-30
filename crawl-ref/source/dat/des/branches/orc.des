@@ -7,7 +7,6 @@
 lua {{
 
 function place_bazaar_portal(e)
-  e.tags("bzr_entry")
   e.kfeat("O = enter_bazaar")
   e.lua_marker('O', bazaar_portal(false))
 end
