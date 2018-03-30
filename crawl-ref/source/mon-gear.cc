@@ -1199,13 +1199,12 @@ static void _give_ammo(monster* mon, int level, bool mons_summoned)
                                                   MI_DART_POISONED;
                 qty        = weap_type == MI_DART_CURARE ? random_range(2, 8) :
                                                        random_range(4, 16);
-                break;
             }
-        // deliberate fall-through
+            break;
         case MONS_BIG_KOBOLD:
             if (x_chance_in_y(2, 5))
             {
-                weap_type  = MI_STONE;
+                weap_type  = MI_TOMAHAWK;
                 qty = 1 + random2(5);
             }
             break;
