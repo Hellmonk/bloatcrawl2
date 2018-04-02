@@ -1081,7 +1081,7 @@ static job_group jobs_order[] =
     {
         "Warrior",
         coord_def(0, 0), 15,
-        { JOB_FIGHTER, JOB_GLADIATOR, JOB_MONK, JOB_HUNTER }
+        { JOB_FIGHTER, JOB_GLADIATOR, JOB_MONK }
     },
     {
         "Adventurer",
@@ -1696,8 +1696,8 @@ static vector<weapon_choice> _get_weapons(const newgame_def& ng)
     }
     else
     {
-        weapon_type startwep[5] = { WPN_MACE, WPN_HAND_AXE,
-                                    WPN_SPEAR, WPN_RAPIER, WPN_UNARMED };
+        weapon_type startwep[6] = { WPN_MACE, WPN_HAND_AXE,
+                                    WPN_SPEAR, WPN_RAPIER, WPN_SHORTBOW, WPN_UNARMED };
         for (int i = 0; i < 5; ++i)
         {
             weapon_choice wp;

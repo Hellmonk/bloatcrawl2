@@ -98,6 +98,12 @@ char_choice_restriction weapon_restriction(weapon_type wpn,
     {
         return CC_BANNED;
     }
+	
+    if (wpn == WPN_SHORTBOW && ng.job != JOB_GLADIATOR
+        && ng.job != JOB_ARCANE_MARKSMAN)
+    {
+        return CC_BANNED;
+    }
 
     // Javelins are always good, tomahawks not so much.
     if (wpn == WPN_THROWN)

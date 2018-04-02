@@ -199,7 +199,7 @@ again:
             choice.species  = _get_hints_species(Hints.hints_type);
             choice.job = _get_hints_job(Hints.hints_type);
             // easiest choice for fighters
-            choice.weapon = choice.job == JOB_HUNTER ? WPN_SHORTBOW
+            choice.weapon = choice.job == JOB_GLADIATOR ? WPN_SHORTBOW
                                                      : WPN_HAND_AXE;
 
             return;
@@ -261,7 +261,7 @@ static job_type _get_hints_job(unsigned int type)
     case HINT_MAGIC_CHAR:
         return JOB_CONJURER;
     case HINT_RANGER_CHAR:
-        return JOB_HUNTER;
+        return JOB_GLADIATOR;
     default:
         // Use something fancy for debugging.
         return JOB_NECROMANCER;
