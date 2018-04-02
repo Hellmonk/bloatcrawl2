@@ -419,7 +419,7 @@ static void _pre_refrigerate(const actor* agent, bool player,
 
 static const dice_def _refrigerate_damage(int pow)
 {
-    return dice_def(3, 5 + pow / 10);
+    return dice_def(3, 5 + pow / 5);
 }
 
 static int _refrigerate_player(const actor* agent, int pow, int avg,
@@ -438,13 +438,11 @@ static int _refrigerate_player(const actor* agent, int pow, int avg,
                  "by Ozocubu's Refrigeration", true,
                  agent->as_monster()->name(DESC_A).c_str());
             you.expose_to_element(BEAM_COLD, 5);
-
-            // Note: this used to be 12!... and it was also applied even if
-            // the player didn't take damage from the cold, so we're being
-            // a lot nicer now.  -- bwr
         }
         else
         {
+            //halve the self damage for players casting fridge on themselves
+            hurted = hurted / 2;
             ouch(hurted, KILLED_BY_FREEZING);
             you.expose_to_element(BEAM_COLD, 5);
             you.increase_duration(DUR_NO_POTIONS, 7 + random2(9), 15);

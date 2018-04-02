@@ -716,7 +716,7 @@ static const struct spell_desc spelldata[] =
     SPELL_OZOCUBUS_REFRIGERATION, "Ozocubu's Refrigeration",
     SPTYP_ICE,
     SPFLAG_AREA,
-    6,
+    7,
     200,
     -1, -1,
     5, 0,
