@@ -2006,10 +2006,6 @@ int player_movement_speed()
     else if (player_under_penance(GOD_CHEIBRIADOS))
         mv += 2 + min(div_rand_round(you.piety_max[GOD_CHEIBRIADOS], 20), 8);
 
-    // Tengu can move slightly faster when flying.
-    if (you.tengu_flight())
-        mv--;
-
     if (you.duration[DUR_FROZEN])
         mv += 4;
 
