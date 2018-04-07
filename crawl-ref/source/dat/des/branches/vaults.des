@@ -468,11 +468,7 @@ ENDMAP
 NAME:  vaults_end_norune
 TAGS:  vaults_end_norune allow_dup unrand
 KMONS: o = 8 / 9
-: if crawl.random2(13) == 12 then
-KFEAT:   o = enter_bazaar
-: else
 KITEM:   o = any good_item
-: end
 MAP
 o
 ENDMAP
