@@ -1122,19 +1122,8 @@ static void _print_talent_description(const talent& tal)
 void no_ability_msg()
 {
     // Give messages if the character cannot use innate talents right now.
-    // * Vampires can't turn into bats when full of blood.
     // * Tengu can't start to fly if already flying.
-    if (you.species == SP_VAMPIRE && you.experience_level >= 3)
-    {
-        if (you.transform_uncancellable)
-            mpr("You can't untransform!");
-        else
-        {
-            ASSERT(you.hunger_state > HS_SATIATED);
-            mpr("Sorry, you're too full to transform right now.");
-        }
-    }
-    else if (you.get_mutation_level(MUT_TENGU_FLIGHT)
+    if (you.get_mutation_level(MUT_TENGU_FLIGHT)
              || you.get_mutation_level(MUT_BIG_WINGS))
     {
         if (you.airborne())
@@ -3433,12 +3422,6 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
         && draconian_breath(you.species) != ABIL_NON_ABILITY)
     {
         _add_talent(talents, draconian_breath(you.species), check_confused);
-    }
-
-    if (you.species == SP_VAMPIRE && you.experience_level >= 3
-        && you.form != TRAN_BAT)
-    {
-        _add_talent(talents, ABIL_TRAN_BAT, check_confused);
     }
 
     if (you.get_mutation_level(MUT_TENGU_FLIGHT) && !you.airborne()
