@@ -109,8 +109,8 @@ and very high reserves of health and magic.
 %%%%
 Troll
 
-Trolls are large brutes with powerful claws, always hungering for raw meat.
-They regenerate health rapidly.
+Trolls are large brutes with claws that become more powerful as they grow.
+They are extremely robust and regenerate health rapidly.
 %%%%
 Vampire
 
