@@ -1182,14 +1182,14 @@ static const species_skill_aptitude species_skill_aptitudes[] =
 
     // SP_TENGU
     APT(SP_TENGU,           SK_FIGHTING,        0),
-    APT(SP_TENGU,           SK_SHORT_BLADES,    1),
+    APT(SP_TENGU,           SK_SHORT_BLADES,    2),
     APT(SP_TENGU,           SK_LONG_BLADES,   UNUSABLE_SKILL),
-    APT(SP_TENGU,           SK_AXES,            1),
-    APT(SP_TENGU,           SK_MACES_FLAILS,    1),
-    APT(SP_TENGU,           SK_POLEARMS,        1),
+    APT(SP_TENGU,           SK_AXES,            2),
+    APT(SP_TENGU,           SK_MACES_FLAILS,    2),
+    APT(SP_TENGU,           SK_POLEARMS,        2),
     APT(SP_TENGU,           SK_STAVES,        UNUSABLE_SKILL),
     APT(SP_TENGU,           SK_SLINGS,        UNUSABLE_SKILL),
-    APT(SP_TENGU,           SK_BOWS,            1),
+    APT(SP_TENGU,           SK_BOWS,            2),
     APT(SP_TENGU,           SK_CROSSBOWS,     UNUSABLE_SKILL),
     APT(SP_TENGU,           SK_THROWING,        0),
     APT(SP_TENGU,           SK_ARMOUR,          1),
@@ -1202,7 +1202,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
 #if TAG_MAJOR_VERSION == 34
     APT(SP_TENGU,           SK_TRAPS,         UNUSABLE_SKILL),
 #endif
-    APT(SP_TENGU,           SK_UNARMED_COMBAT,  1),
+    APT(SP_TENGU,           SK_UNARMED_COMBAT,  2),
     APT(SP_TENGU,           SK_SPELLCASTING,  UNUSABLE_SKILL),
     APT(SP_TENGU,           SK_CONJURATIONS,  UNUSABLE_SKILL),
     APT(SP_TENGU,           SK_HEXES,          -3),
