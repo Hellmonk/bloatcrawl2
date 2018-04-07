@@ -195,7 +195,7 @@ static const species_type species_order[] =
     // celestial species
     SP_TITAN,        SP_DEMONSPAWN,
     // undead species
-    SP_MUMMY,          SP_GHOUL,
+    SP_MUMMY,
     SP_VAMPIRE,        SP_SKELETON,
     // not humanoid at all
     SP_OCTOPODE,
@@ -969,7 +969,7 @@ static species_group species_groups[] =
             SP_GARGOYLE,
             SP_BASE_DRACONIAN,
             SP_TROLL,
-            SP_GHOUL,
+            SP_SPRIGGAN,
         }
     },
     {
@@ -980,10 +980,10 @@ static species_group species_groups[] =
             SP_HUMAN,
             SP_KOBOLD,
             SP_DEMONSPAWN,
-            SP_SPRIGGAN,
             SP_VINE_STALKER,
             SP_FORMICID,
 	        SP_GNOLL,
+            SP_TITAN,
         }
     },
     {
@@ -992,7 +992,6 @@ static species_group species_groups[] =
         20,
         {
             SP_VAMPIRE,
-            SP_TITAN,
             SP_NAGA,
             SP_TENGU,
             SP_OCTOPODE,

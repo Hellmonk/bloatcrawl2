@@ -4412,17 +4412,19 @@ enum species_type
     SP_BASE_DRACONIAN,
 #if TAG_MAJOR_VERSION == 34
     SP_CENTAUR,
-#endif
     SP_DEMIGOD,
+#endif
     SP_SPRIGGAN,
     SP_MINOTAUR,
     SP_DEMONSPAWN,
+#if TAG_MAJOR_VERSION == 34
     SP_GHOUL,
+#endif
     SP_TENGU,
     SP_MERFOLK,
     SP_VAMPIRE,
-    SP_DEEP_DWARF,
 #if TAG_MAJOR_VERSION == 34
+    SP_DEEP_DWARF,
     SP_FELID,
 #endif
     SP_OCTOPODE,

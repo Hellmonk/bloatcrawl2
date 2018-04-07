@@ -285,26 +285,6 @@ static const map<species_type, species_def> species_data =
     { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS },
 } },
 
-{ SP_GHOUL, {
-    "Gh",
-    "Ghoul", "Ghoulish", nullptr,
-    SPF_NO_HAIR,
-    0, 1, -1, 3,
-    MONS_GHOUL,
-    HT_LAND, US_HUNGRY_DEAD, SIZE_MEDIUM,
-    11, 3, 4, // 18
-    { STAT_STR }, 5,
-    { { MUT_NEGATIVE_ENERGY_RESISTANCE, 3, 1 },
-      { MUT_TORMENT_RESISTANCE, 1, 1 },
-      { MUT_INHIBITED_REGENERATION, 1, 1 }, { MUT_COLD_RESISTANCE, 1, 1 },
-      { MUT_CLAWS, 1, 1 }, { MUT_UNBREATHING, 1, 1 }, },
-    { "You restore health by killing enemies." },
-    { "hp from kills" },
-    { JOB_GLADIATOR, JOB_MONK, JOB_NECROMANCER,
-      JOB_ICE_ELEMENTALIST, JOB_EARTH_ELEMENTALIST },
-    { SK_UNARMED_COMBAT, SK_BOWS },
-} },
-
 { SP_GARGOYLE, {
     "Gr",
     "Gargoyle", nullptr, nullptr,
@@ -792,6 +772,26 @@ static const map<species_type, species_def> species_data =
     { JOB_FIGHTER, JOB_BERSERKER, JOB_SKALD, JOB_SUMMONER, JOB_ICE_ELEMENTALIST },
     { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS,
       SK_BOWS },
+} },
+
+{ SP_GHOUL, {
+    "Gh",
+    "Ghoul", "Ghoulish", nullptr,
+    SPF_NO_HAIR,
+    0, 1, -1, 3,
+    MONS_GHOUL,
+    HT_LAND, US_HUNGRY_DEAD, SIZE_MEDIUM,
+    11, 3, 4, // 18
+    { STAT_STR }, 5,
+    { { MUT_NEGATIVE_ENERGY_RESISTANCE, 3, 1 },
+      { MUT_TORMENT_RESISTANCE, 1, 1 },
+      { MUT_INHIBITED_REGENERATION, 1, 1 }, { MUT_COLD_RESISTANCE, 1, 1 },
+      { MUT_CLAWS, 1, 1 }, { MUT_UNBREATHING, 1, 1 }, },
+    { "You restore health by killing enemies." },
+    { "hp from kills" },
+    { JOB_GLADIATOR, JOB_MONK, JOB_NECROMANCER,
+      JOB_ICE_ELEMENTALIST, JOB_EARTH_ELEMENTALIST },
+    { SK_UNARMED_COMBAT, SK_BOWS },
 } },
 #endif
 

@@ -1139,6 +1139,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_DEMONSPAWN,      SK_INVOCATIONS,     3),
     APT(SP_DEMONSPAWN,      SK_EVOCATIONS,      0),
 
+	#if TAG_MAJOR_VERSION == 34
     // SP_GHOUL
     APT(SP_GHOUL,           SK_FIGHTING,        1),
     APT(SP_GHOUL,           SK_SHORT_BLADES,   -1),
@@ -1154,13 +1155,9 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_GHOUL,           SK_ARMOUR,         -1),
     APT(SP_GHOUL,           SK_DODGING,        -1),
     APT(SP_GHOUL,           SK_STEALTH,         2),
-#if TAG_MAJOR_VERSION == 34
     APT(SP_GHOUL,           SK_STABBING,      UNUSABLE_SKILL),
-#endif
     APT(SP_GHOUL,           SK_SHIELDS,        -1),
-#if TAG_MAJOR_VERSION == 34
     APT(SP_GHOUL,           SK_TRAPS,         UNUSABLE_SKILL),
-#endif
     APT(SP_GHOUL,           SK_UNARMED_COMBAT,  1),
     APT(SP_GHOUL,           SK_SPELLCASTING,  UNUSABLE_SKILL),
     APT(SP_GHOUL,           SK_CONJURATIONS,  UNUSABLE_SKILL),
@@ -1174,11 +1171,10 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_GHOUL,           SK_ICE_MAGIC,       1),
     APT(SP_GHOUL,           SK_AIR_MAGIC,      -2),
     APT(SP_GHOUL,           SK_EARTH_MAGIC,     1),
-#if TAG_MAJOR_VERSION == 34
     APT(SP_GHOUL,           SK_POISON_MAGIC,  UNUSABLE_SKILL),
-#endif
     APT(SP_GHOUL,           SK_INVOCATIONS,     1),
     APT(SP_GHOUL,           SK_EVOCATIONS,     -1),
+#endif
 
     // SP_TENGU
     APT(SP_TENGU,           SK_FIGHTING,        0),

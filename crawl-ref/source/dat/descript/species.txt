@@ -24,11 +24,6 @@ Formicid
 Formicids are humanoid ants adept at digging. Their limbs are exceptionally
 strong and they live in a state of permanent stasis.
 %%%%
-Ghoul
-
-Ghouls are undead creatures, damned to rot eternally. They have sharp claws,
-and they restore health when they slay enemies.
-%%%%
 Gargoyle
 
 Made of living stone, Gargoyles have a preternatural affinity for the earth.

@@ -79,7 +79,7 @@ static const map<job_type, job_def> job_data =
     "EE", "Earth Elementalist",
     0, 7, 5,
     { SP_DEEP_ELF, SP_SPRIGGAN, SP_GARGOYLE, SP_VINE_STALKER,
-      SP_GHOUL, SP_OCTOPODE, },
+      SP_OCTOPODE, },
     { "book of Geomancy", "stone q:240", "robe", },
     WCHOICE_NONE,
     { { SK_TRANSMUTATIONS, 2 }, { SK_EARTH_MAGIC, 4 },

@@ -124,8 +124,6 @@ function species_mock(e)
     e.kmons("1 = soldier ant")
   elseif you.race() == "Gargoyle" then
     e.kmons("1 = earth elemental")
-  elseif you.race() == "Ghoul" then
-    e.kmons("1 = death ooze")
   elseif you.race() == "Kobold" then
     e.kmons("1 = boggart")
   elseif you.race() == "Merfolk" then
