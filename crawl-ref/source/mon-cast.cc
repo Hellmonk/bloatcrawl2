@@ -5313,10 +5313,8 @@ static void _cast_flay(monster &caster, mon_spell_slot, bolt&)
     int damage_taken = 0;
     if (defender->is_player())
     {
-        damage_taken = (6 + (you.hp * 18 / you.hp_max)) * you.hp_max / 100;
-        damage_taken = min(damage_taken,
-                           max(0, you.hp - 25 - random2(15)));
-        if (damage_taken < 10)
+        damage_taken = you.hp * 40 / 100;
+        if (damage_taken < 1)
             return;
 
         if (you.duration[DUR_FLAYED])
@@ -5329,11 +5327,8 @@ static void _cast_flay(monster &caster, mon_spell_slot, bolt&)
     {
         monster* mon = defender->as_monster();
 
-        damage_taken = (6 + (mon->hit_points * 18 / mon->max_hit_points))
-                       * mon->max_hit_points / 100;
-        damage_taken = min(damage_taken,
-                           max(0, mon->hit_points - 25 - random2(15)));
-        if (damage_taken < 10)
+        damage_taken = mon->hit_points * 40 / 100;
+        if (damage_taken < 1)
             return;
 
         if (mon->has_ench(ENCH_FLAYED))
