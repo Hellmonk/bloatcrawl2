@@ -138,6 +138,20 @@ sub aptitude_table
         next if $sp eq 'Sludge Elf';
         next if $sp eq 'Djinni';
         next if $sp eq 'Lava Orc';
+        next if $sp eq 'Centaur';
+        next if $sp eq 'Demigod';
+        next if $sp eq 'Deep Dwarf';
+        next if $sp eq 'Felid';
+        next if $sp eq 'Mottled Draconian';
+        next if $sp eq 'Frogtaur';
+        next if $sp eq 'Ghoul';
+        next if $sp eq 'Halfling';
+        next if $sp eq 'Ogre';
+        
+        if($sp eq 'Vampire')
+        {
+            $sp = 'Jiangshi';
+		}
 
         my $line = '';
         $line .= fix_draco_species($sp, \$seen_draconian_length);
