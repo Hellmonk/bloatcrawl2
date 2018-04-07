@@ -577,8 +577,8 @@ static const map<species_type, species_def> species_data =
 } },
 
 { SP_VAMPIRE, {
-    "Vp",
-    "Vampire", "Vampiric", nullptr,
+    "Ji",
+    "Jiangshi", "Vampiric", nullptr,
     SPF_NONE,
     -1, 0, 0, 4,
     MONS_VAMPIRE,

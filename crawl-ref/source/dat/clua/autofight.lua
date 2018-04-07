@@ -341,7 +341,7 @@ function af_food_is_low()
   if you.race() == "Mummy" or you.transform() == "lich" then
       return false
   elseif (not AUTOFIGHT_HUNGER_STOP_UNDEAD)
-         and (you.race() == "Vampire" or you.race() == "Ghoul") then
+         and (you.race() == "Jiangshi" or you.race() == "Ghoul") then
       return false
   else
       return (AUTOFIGHT_HUNGER_STOP ~= nil

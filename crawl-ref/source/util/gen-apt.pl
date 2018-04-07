@@ -82,6 +82,16 @@ sub fix_draco_species
     $sp
 }
 
+sub fix_vampire
+{
+    my ($sp) = @_;
+    if ($sp =~ /Vampire/)
+    {
+        $sp = "Jiangshi";
+    }
+    $sp
+}
+
 sub find_skill
 {
     my ($species, $skill) = @_;
@@ -256,6 +266,10 @@ sub load_mods
     {
         my $sp = $_;
         $sp =~ s/Base //;
+        if ($sp eq 'Vampire')
+        {
+            $sp = 'Jiangshi';
+		}
         my ($xp, $hp, $mp, $mr) = $file =~ /$sp.*\n.*\n *(-?\d), (-?\d), (-?\d), (\d),/;
 
         $SPECIES_SKILLS{$_}{"Experience"} = $xp;

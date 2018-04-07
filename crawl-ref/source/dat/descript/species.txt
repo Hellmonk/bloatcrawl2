@@ -107,9 +107,9 @@ Troll
 Trolls are large brutes with claws that become more powerful as they grow.
 They are extremely robust and regenerate health rapidly.
 %%%%
-Vampire
+Jiangshi
 
-Shifting between the states of life and undeath, Vampires are accomplished
+Partly but not entirely undead, these stiff-legged hopping vampires are accomplished
 stabbers and casters.
 %%%%
 Vine Stalker

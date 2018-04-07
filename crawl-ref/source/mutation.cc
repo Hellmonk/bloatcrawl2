@@ -617,16 +617,6 @@ string describe_mutations(bool center_title)
                          && you.form == TRAN_DRAGON));
     }
 
-    if (you.species == SP_VAMPIRE)
-    {
-        if (you.hunger_state <= HS_STARVING)
-            result += "<green>You do not heal naturally.</green>\n";
-        else if (you.hunger_state < HS_SATIATED)
-            result += "<green>You heal slowly.</green>\n";
-        else if (you.hunger_state >= HS_FULL)
-            result += "<green>Your natural rate of healing is unusually fast.</green>\n";
-    }
-
     if (you.species == SP_OCTOPODE)
     {
         result += _annotate_form_based("You are amphibious.",

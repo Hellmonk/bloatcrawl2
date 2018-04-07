@@ -579,7 +579,7 @@ substantially weakening your melee attacks.
 
 Any equipped weapons, armour and rings are melded, and you are unable to evoke
 wands or cast spells. {{
-    if you.race() ~= "Vampire" then
+    if you.race() ~= "Jiangshi" then
         return "The effectiveness of your melee attacks while " ..
                "in this form is based on experience level instead of on " ..
                "Unarmed Combat skill."

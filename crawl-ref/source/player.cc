@@ -1112,7 +1112,7 @@ int player_teleport(bool calc_unid)
 }
 
 // Computes bonuses to regeneration from most sources. Does not handle
-// slow regeneration, vampireness, or Trog's Hand.
+// slow regeneration or Trog's Hand.
 static int _player_bonus_regen()
 {
     int rr = 0;
@@ -1625,8 +1625,6 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
         case US_UNDEAD: // mummies & lichform
             return 3;
         case US_SEMI_UNDEAD: // vampire
-            if (you.hunger_state <= HS_STARVING) // XXX: && temp?
-                return 3;
             break;
     }
 
@@ -4326,10 +4324,8 @@ void handle_player_poison(int delay)
 
     // Transforming into a form with no metabolism merely suspends the poison
     // but doesn't let your body get rid of it.
-    // Hungry vampires are less affected by poison (not at all when bloodless).
     if (you.is_nonliving() || you.undead_state()
-        && (you.undead_state() != US_SEMI_UNDEAD
-            || x_chance_in_y(4 - you.hunger_state, 4)))
+        && (you.undead_state() != US_SEMI_UNDEAD))
     {
         return;
     }
@@ -5511,14 +5507,7 @@ void player::banish(actor* /*agent*/, const string &who, const int power,
 // to 50% (hungry, very hungry, near starving) or zero (starving).
 int calc_hunger(int food_cost)
 {
-    if (you.undead_state() == US_SEMI_UNDEAD && you.hunger_state < HS_SATIATED)
-    {
-        if (you.hunger_state <= HS_STARVING)
-            return 0;
-
-        return food_cost/2;
-    }
-    return food_cost;
+    return 0;
 }
 
 /*
