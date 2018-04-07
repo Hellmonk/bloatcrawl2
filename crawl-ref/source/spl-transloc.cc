@@ -352,7 +352,6 @@ spret_type frog_hop(bool fail)
     move_player_to_grid(target, false);
     crawl_state.cancel_cmd_again();
     crawl_state.cancel_cmd_repeat();
-    mpr("Boing!");
     you.increase_duration(DUR_NO_HOP, 12 + random2(13));
 
     return SPRET_SUCCESS; // TODO

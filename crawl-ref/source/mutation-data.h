@@ -958,13 +958,13 @@ static const mutation_def mut_data[] =
 #endif
 
 { MUT_HOP, 0, 2, mutflag::GOOD, true,
-  "strong legs",
+  "stiff legs",
 
   {"You can hop short distances.",
    "You can hop longer distances.",
    ""},
 
-  {"", "Your legs feel stronger.", ""},
+  {"", "Your legs feel stronger and stiffer.", ""},
 
   {"", "", ""},
 },
