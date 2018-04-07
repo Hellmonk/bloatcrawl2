@@ -1190,18 +1190,8 @@ int player_regen()
     // Before applying other effects, make sure that there's something
     // to heal.
     rr = max(1, rr);
+	
 
-    // Healing depending on satiation.
-    // The better-fed you are, the faster you heal.
-    if (you.species == SP_VAMPIRE)
-    {
-        if (you.hunger_state <= HS_STARVING)
-            rr = 0;   // No regeneration for starving vampires.
-        else if (you.hunger_state < HS_SATIATED)
-            rr /= 2;  // Halved regeneration for hungry vampires.
-        else if (you.hunger_state >= HS_FULL)
-            rr += 20; // Bonus regeneration for full vampires.
-    }
 #if TAG_MAJOR_VERSION == 34
 
     // Compared to other races, a starting djinni would have regen of 4 (hp)
@@ -1468,14 +1458,6 @@ int player_res_cold(bool calc_unid, bool temp, bool items)
 
         rc += get_form()->res_cold();
 
-        if (you.species == SP_VAMPIRE)
-        {
-            if (you.hunger_state <= HS_STARVING)
-                rc += 2;
-            else if (you.hunger_state < HS_SATIATED)
-                rc++;
-        }
-
 #if TAG_MAJOR_VERSION == 34
         if (you.species == SP_LAVA_ORC && temperature_effect(LORC_COLD_VULN))
             rc--;
@@ -1617,7 +1599,6 @@ bool player_res_torment(bool random)
         return true;
 
     return get_form()->res_neg() == 3
-           || you.species == SP_VAMPIRE && you.hunger_state <= HS_STARVING
            || you.petrified()
 #if TAG_MAJOR_VERSION == 34
            || player_equip_unrand(UNRAND_ETERNAL_TORMENT)
@@ -1683,11 +1664,6 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
     // mutations:
     rp += you.get_mutation_level(MUT_POISON_RESISTANCE, temp);
     rp += you.get_mutation_level(MUT_SLIMY_GREEN_SCALES, temp) == 3 ? 1 : 0;
-
-    // Only thirsty vampires are naturally poison resistant.
-    // XXX: && temp?
-    if (you.species == SP_VAMPIRE && you.hunger_state < HS_SATIATED)
-        rp++;
 
     if (temp)
     {
@@ -1889,30 +1865,6 @@ int player_energy()
 int player_prot_life(bool calc_unid, bool temp, bool items)
 {
     int pl = 0;
-
-    // Hunger is temporary, true, but that's something you can control,
-    // especially as life protection only increases the hungrier you
-    // get.
-    if (you.species == SP_VAMPIRE)
-    {
-        switch (you.hunger_state)
-        {
-        case HS_FAINTING:
-        case HS_STARVING:
-            pl = 3;
-            break;
-        case HS_NEAR_STARVING:
-        case HS_VERY_HUNGRY:
-        case HS_HUNGRY:
-            pl = 2;
-            break;
-        case HS_SATIATED:
-            pl = 1;
-            break;
-        default:
-            break;
-        }
-    }
 
     // Same here. Your piety status, and, hence, TSO's protection, is
     // something you can more or less control.
@@ -3316,48 +3268,6 @@ static void _display_char_status(int value, const char *fmt, ...)
     va_end(argp);
 }
 
-static void _display_vampire_status()
-{
-    string msg = "At your current hunger state you ";
-    vector<const char *> attrib;
-
-    switch (you.hunger_state)
-    {
-        case HS_FAINTING:
-        case HS_STARVING:
-            attrib.push_back("are immune to poison");
-            attrib.push_back("significantly resist cold");
-            attrib.push_back("are immune to negative energy");
-            attrib.push_back("resist torment");
-            attrib.push_back("do not heal.");
-            break;
-        case HS_NEAR_STARVING:
-        case HS_VERY_HUNGRY:
-        case HS_HUNGRY:
-            attrib.push_back("resist poison");
-            attrib.push_back("resist cold");
-            attrib.push_back("significantly resist negative energy");
-            attrib.push_back("have a slow metabolism");
-            attrib.push_back("heal slowly.");
-            break;
-        case HS_SATIATED:
-            attrib.push_back("resist negative energy.");
-            break;
-        case HS_FULL:
-        case HS_VERY_FULL:
-        case HS_ENGORGED:
-            attrib.push_back("have a fast metabolism");
-            attrib.push_back("heal quickly.");
-            break;
-    }
-
-    if (!attrib.empty())
-    {
-        msg += comma_separated_line(attrib.begin(), attrib.end());
-        mpr(msg);
-    }
-}
-
 static void _display_movement_speed()
 {
     const int move_cost = (player_speed() * player_movement_speed()) / 10;
@@ -3462,12 +3372,7 @@ static string _constriction_description();
 
 void display_char_status()
 {
-    if (you.undead_state() == US_SEMI_UNDEAD
-        && you.hunger_state == HS_ENGORGED)
-    {
-        mpr("You feel almost alive.");
-    }
-    else if (you.undead_state())
+    if (you.undead_state())
         mpr("You are undead.");
     else if (you.duration[DUR_DEATHS_DOOR])
     {
@@ -3489,9 +3394,6 @@ void display_char_status()
     }
     else if (you.haloed())
         mpr("An external divine halo illuminates you.");
-
-    if (you.species == SP_VAMPIRE)
-        _display_vampire_status();
 
     status_info inf;
     for (unsigned i = 0; i <= STATUS_LAST_STATUS; ++i)
@@ -4124,8 +4026,6 @@ int get_real_mp(bool include_items, bool frozen)
 bool player_regenerates_hp()
 {
     if (you.has_mutation(MUT_NO_REGENERATION))
-        return false;
-    if (you.species == SP_VAMPIRE && you.hunger_state <= HS_STARVING)
         return false;
     return true;
 }
