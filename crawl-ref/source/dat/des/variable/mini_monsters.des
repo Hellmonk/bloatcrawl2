@@ -232,31 +232,6 @@ xx...xxx222xxx...xx
        x+++x
 ENDMAP
 
-NAME:  worms_lemuel
-TAGS:  no_rotate no_monster_gen no_pool_fixup
-DEPTH: D:8-13, Lair, Spider
-KMONS: 1 = dart slug
-KMONS: 2| = swamp worm
-KMONS: P = plant
-KITEM: | = |, *, %
-KFEAT: 12P| = W
-: if you.absdepth() > 13 then
-SUBST: 1 = 112
-: else
-SUBST: 1 = 1112
-: end
-MAP
-   WWWWWWW
- WWWWw1wWWWW
-WWwxxxxxxxwWW
-WWxx11111xPWW
-W1x|21111PPWW
-WWxx11111xPWW
-WWwxxxxxxxwWW
- WWWWw1wWWWW
-   WWWWWWW
-ENDMAP
-
 NAME:   minmay_another_anthill
 TAGS:   uniq_anthill
 DEPTH:  D:8-13, Lair:2-, Spider
