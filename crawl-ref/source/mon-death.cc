@@ -2346,8 +2346,8 @@ item_def* monster_die(monster* mons, killer_type killer,
                 }
             }
 
-			//ghouls get pseudo-vamp on kills
-			if (gives_player_xp && you.species == SP_GHOUL)
+			//vampires get pseudo-vamp when killing a corpse-having, xp-giving monster
+			if (leaves_corpse && gives_player_xp && you.species == SP_VAMPIRE && coinflip())
 			{
 				int hp_heal = random2(1 + mons->get_experience_level());
 				if (hp_heal && you.hp < you.hp_max)
