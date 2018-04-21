@@ -530,7 +530,7 @@ static const map<species_type, species_def> species_data =
     HT_LAND, US_ALIVE, SIZE_MEDIUM,
     8, 8, 9, // 25
     { STAT_STR, STAT_INT, STAT_DEX }, 4,
-    { { MUT_BEAK, 1, 1 }, { MUT_TALONS, 3, 1 },
+    { { MUT_BEAK, 1, 1 }, { MUT_TALONS, 3, 1 }, { MUT_CLAWS, 1, 1 }, { MUT_HORNS, 1, 1 },
       { MUT_TENGU_FLIGHT, 1, 5 }, },
     {},
     {},
