@@ -1386,7 +1386,8 @@ static void _generate_book_item(item_def& item, bool allow_uniques,
                                                              SK_SPELLCASTING));
             }
 		        while (item.skill == SK_POISON_MAGIC
-                   || item.skill == SK_CONJURATIONS);
+                   || item.skill == SK_CONJURATIONS
+                   || item.skill == SK_SPELLCASTING);
         }
         else
 #if TAG_MAJOR_VERSION == 34
