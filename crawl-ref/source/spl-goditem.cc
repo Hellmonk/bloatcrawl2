@@ -1215,16 +1215,24 @@ void torment_player(actor *attacker, torment_source_type taux)
 
 void torment_cell(coord_def where, actor *attacker, torment_source_type taux)
 {
+    const monster* att = attacker->as_monster();
     // Is the player in this cell?
     if (where == you.pos())
-        torment_player(attacker, taux);
+    {
+        if(!(attacker->is_monster() && att->attitude > ATT_NEUTRAL))
+            torment_player(attacker, taux);
+    }
     // Don't return, since you could be standing on a monster.
 
     // Is a monster in this cell?
     monster* mons = monster_at(where);
     if (!mons || !mons->alive() || mons->res_torment())
         return;
-
+    if (attacker->is_player() && mons->attitude != ATT_HOSTILE)
+        return;
+    else if (attacker->is_monster() && mons_aligned( mons, att))
+        return;
+		
     int hploss = max(0, mons->hit_points * (50 - mons->res_negative_energy() * 5) / 100 - 1);
 
     if (hploss)

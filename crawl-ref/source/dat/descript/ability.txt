@@ -277,9 +277,9 @@ duration of the ability.
 %%%%
 Torment ability
 
-Sacrifices a cadaver to make all living creatures in sight experience all
-the pain that being suffered in its life. This damage is never directly lethal.
-Kikubaaqudgha may shield you from the effect, depending on your piety.
+Invokes unholy torment, causing great pain to all hostile living creatures in 
+the user's line of sight, but also affecting the user. The damage is never 
+directly lethal. Kikubaaqudgha may shield you from the effect, depending on your piety.
 %%%%
 Brand Weapon With Pain ability
 

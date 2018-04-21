@@ -1493,7 +1493,7 @@ effect ends, the caster's movements will be sluggish for a time.
 %%%%
 Symbol of Torment spell
 
-Calls on the powers of darkness to cause agonising injury to any living thing
+Calls on the powers of darkness to cause agonising injury to any hostile living thing
 in the caster's vicinity, cutting their resilience in half. This damage is
 never directly lethal.
 %%%%
