@@ -267,7 +267,7 @@ ENDMAP
 
 NAME:    hangedman_stitches_earthworm
 TAGS:    no_monster_gen no_item_gen transparent no_pool_fixup
-DEPTH:   Depths, Spider:2-, Abyss
+DEPTH:   Depths, Spider:2-
 KMONS:   0 = 0
 KMONS:   1 = tyrant leech
 KMONS:   2 = nothing
@@ -276,11 +276,6 @@ KMONS:   4 = thrashing horror
 KITEM:   ' = large rock no_pickup q:1 w:5 / nothing
 KITEM:   01234 = % w:90 no_pickup / * no_pickup
 SHUFFLE: ABCDEF / ABCDEF / ABCCBA, ABC, DEF, 13 / 13 / 31, {`
-:  if you.in_branch("Abyss") then
-SUBST:   G = BEG, C : x:5 cvb, B : x:5 cvbw, A : xcvb w:4
-SUBST:   D: x:5 cvb, E : x:5 cvbw, F : xcvb w:4, { = '
-SUBST:   0 = 4:50 0
-:  else
 SUBST:   { = {[( .:15, ` = '
 NSUBST:  { = 1:{ / 1:}, [ = 1:[ / 1:(, ( = 1:] / 1:)
 SUBST:   G = BEG, C: xc, B : x., A : xxc .:2
@@ -1571,7 +1566,7 @@ ENDMAP
 
 NAME:    hangedman_summoners_spam
 TAGS:    no_monster_gen patrolling
-DEPTH:   Depths, Elf, Crypt, Abyss
+DEPTH:   Depths, Elf, Crypt
 MONS:    boggart, orc high priest, kobold demonologist, deep elf mage
 MONS:    shadow demon, deep elf demonologist, vampire mage
 KMONS:   8 = mummy priest
@@ -1587,9 +1582,7 @@ KMASK:   "'@ = !no_monster_gen
 SHUFFLE: 12, 34, 12 / 34
 NSUBST:  ' = 1:@ / * = .@
 SUBST:   c : ccb
-: if you.in_branch("Abyss") then
-SUBST:   bc = xcccccvb
-: elseif you.in_branch("Crypt") then
+if you.in_branch("Crypt") then
 SUBST:   5 = 7, 6 = 8
 : else
 SHUFFLE: 56 / 78
@@ -2779,15 +2772,12 @@ ENDMAP
 
 NAME:   hangedman_eye_storm
 TAGS:   no_monster_gen no_item_gen patrolling
-DEPTH:  Depths, !Depths:$, Abyss
+DEPTH:  Depths, !Depths:$
 MONS:   golden eye, eye of draining, floating eye
 MONS:   eye of devastation, great orb of eyes / shining eye w:5
 NSUBST: 5 = 2:5 / *:4 5:15
 KPROP:  13' = no_tele_into
 KFEAT:  m = iron_grate
-: if you.in_branch("Abyss") then
-SUBST:  c = c:4 v:1 b:1, = = +
-: end
 MAP
      c==cccc
    ccc..c3'ccc
@@ -3207,7 +3197,7 @@ ENDMAP
 
 NAME:    onia_ninara_dug_in_and_dangerous
 TAGS:    ruin_abyss
-DEPTH:   D:8-, !D:$, Depths:2-, !Depths:$, Abyss
+DEPTH:   D:8-, !D:$, Depths:2-, !Depths:$
 SHUFFLE: vcb, AB?/CD!, d<>, de
 SUBST:   A=9, B=8, C=1, D=9
 SUBST:   ? = %:10 *:50 |:60
@@ -6021,7 +6011,7 @@ ENDMAP
 # Little trap spiral
 NAME: minivault_13
 TAGS: ruin_abyss
-DEPTH: D:9-, Elf, Abyss
+DEPTH: D:9-
 SHUFFLE: AB, CD, EH/FG
 KITEM: ABCD = gold / nothing
 SUBST: F = G:99 F:1
@@ -6088,7 +6078,7 @@ ENDMAP
 
 NAME: minivault_20
 TAGS: allow_dup extra ruin_abyss
-DEPTH: D:9-, Elf, Abyss
+DEPTH: D:9-, Elf
 MAP
 ............
 .xxxx..xxxx.
@@ -6106,7 +6096,7 @@ ENDMAP
 
 NAME:    minivault_25_ag
 TAGS:    allow_dup extra ruin_abyss
-DEPTH:   D:9-, Elf, Abyss
+DEPTH:   D:9-, Elf
 SHUFFLE: XY, ABCDE
 SUBST:   X=x, Y=+
 SUBST:   A=?, B=%%%*, C=T, D=0009, E=89
@@ -6127,7 +6117,7 @@ ENDMAP
 
 NAME:  minivault_28
 TAGS:  allow_dup ruin_abyss misc_elf_vault
-DEPTH: D:9-, Elf, Abyss
+DEPTH: D:9-, Elf
 MAP
 ...........
 .xxxx.xxxx.

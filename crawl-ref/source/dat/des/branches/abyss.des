@@ -300,42 +300,6 @@ MAP
    ebe
 ENDMAP
 
-NAME:    hangedman_abyss_feature_spike
-TAGS:    extra no_item_gen no_pool_fixup allow_dup
-MONS:    fungus, plant, bush
-ITEM:    large rock q:1
-KFEAT:   - = altar_lugonu
-KMASK:   wWl = no_monster_gen
-SHUFFLE: fghij / opqrs, fghijopqrs / JKLMNOPQRS
-SHUFFLE: fghij / fffff / fffff / fffff / fffff / fghgf / fgfgf / ffhii / ffhii
-SHUFFLE: opqrs / ooooo / ooooo / ooooo / ooooo / opqpo / opopo / ooqrr / ooqrr
-SHUFFLE: JKLMN / JJJJJ / JJJJJ / JJJJJ / JJJJJ / JKLKJ / JKJKJ / JJLMM / JJLMM
-SHUFFLE: OPQRS / OOOOO / OOOOO / OOOOO / OOOOO / OPQPO / OPOPO / OOQRR / OOQRR
-SUBST:   f = %, g = C, h = T, i = U, j = V
-SUBST:   o = t, p = G, q = w, r = W, s = l
-SUBST:   J = x, K = c, L = v, MN = m, O = 1, P = 2, Q = 3, RS = b
-CLEAR:   -
-SHUFFLE: AACCTTUUVYYdeefghi, tGGwWlI, xxccvvbbmm+123
-: dgn.delayed_decay(_G, '%', 'human skeleton')
-MAP
-        .....
-        .LqL.
-        .QhQ.
-        .....
-          .
-     .          .
-    ....      ....
-    .pK.      .Mr.
-    .Pg.      .iR.
-    ....      ....
-          -
- .                 .
-....             ....
-.oJ.             .Ns.
-.Of.             .jS.
-....             ....
-ENDMAP
-
 NAME:   hangedman_abyss_or_decor_stabs
 TAGS:   transparent no_pool_fixup decor
 DEPTH:  D, Depths, Abyss
