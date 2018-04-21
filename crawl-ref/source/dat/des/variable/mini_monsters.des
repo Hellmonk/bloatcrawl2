@@ -285,7 +285,6 @@ SUBST:   0 = 3:50 0
 :    else
 SUBST:   c : cb
 :    end
-:  end
 MAP
   '...      ..'.D.1.D.'..
  '.'A..    ..'D'E'D'E'D'..
@@ -1582,7 +1581,7 @@ KMASK:   "'@ = !no_monster_gen
 SHUFFLE: 12, 34, 12 / 34
 NSUBST:  ' = 1:@ / * = .@
 SUBST:   c : ccb
-if you.in_branch("Crypt") then
+: if you.in_branch("Crypt") then
 SUBST:   5 = 7, 6 = 8
 : else
 SHUFFLE: 56 / 78
