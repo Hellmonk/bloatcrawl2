@@ -467,7 +467,6 @@ void fire_thing(int item)
          return;
 	 
     item_def *ammo = nullptr;
-    bool created_ammo = false;
     if (item == -1)
     {
         item_def *const weapon = you.weapon();
@@ -495,8 +494,7 @@ void fire_thing(int item)
 		if (!ammo)
         {
                 int p = items(false, OBJ_MISSILES, missileType, 0, ego);
-                ammo = &mitm[p];
-                created_ammo = true;			
+                ammo = &mitm[p];			
         }
         else
             return;
