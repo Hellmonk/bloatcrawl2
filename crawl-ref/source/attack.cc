@@ -1619,6 +1619,11 @@ bool attack::apply_damage_brand(const char *what)
                     defender->conj_verb("convulse").c_str(),
                     attack_strength_punctuation(special_damage).c_str());
         }
+        else if (!special_damage)
+        {
+            special_damage_message = "";
+            special_damage = silver_damages_victim(defender, damage_done, special_damage_message);
+        }
         break;
 
     case SPWPN_ELECTROCUTION:
