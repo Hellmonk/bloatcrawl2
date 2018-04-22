@@ -1762,7 +1762,9 @@ static spret_type _handle_buff_spells(spell_type spell, int powc, bolt& beam, go
         case SPELL_BATTLESPHERE:
             return player_battlesphere(&you, powc, god, false);
         case SPELL_SPELLFORGED_SERVITOR:
-            return player_spellforged_servitor(powc, god, false);
+            return player_spellforged_servitor(powc, god, false);    
+        case SPELL_PORTAL_PROJECTILE:
+            return cast_portal_projectile(powc, false);
         default:
 		    return SPRET_NONE;
     }
@@ -2013,9 +2015,6 @@ static spret_type _do_cast(spell_type spell, int powc,
 
     case SPELL_SILENCE:
         return cast_silence(powc, fail);
-
-    case SPELL_PORTAL_PROJECTILE:
-        return cast_portal_projectile(powc, fail);
 
     // other
     case SPELL_BORGNJORS_REVIVIFICATION:

@@ -1113,6 +1113,13 @@ void player_reacts()
 
     if (you.props[EMERGENCY_FLIGHT_KEY].get_bool())
         _handle_emergency_flight();
+	
+    //recalc pproj power every turn
+    if(you.attribute[ATTR_PORTAL_PROJECTILE] > 0)
+    {
+        you.attribute[ATTR_PORTAL_PROJECTILE] = 1 + calc_spell_power(SPELL_PORTAL_PROJECTILE, true);
+    }
+
     // Trog doesn't like it when you sustain spells
     if (you_worship(GOD_TROG) && you.mp_frozen > 0)
     {

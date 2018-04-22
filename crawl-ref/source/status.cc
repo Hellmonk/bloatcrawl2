@@ -729,10 +729,16 @@ bool fill_status_info(int status, status_info* inf)
         break;
     }
 
-    case DUR_PORTAL_PROJECTILE:
+    case STATUS_PORTAL_PROJECTILE:
     {
-        if (!is_pproj_active())
-            inf->light_colour = DARKGREY;
+        if(you.attribute[ATTR_PORTAL_PROJECTILE])
+        {
+            inf->light_text = "PProj";
+            if (!is_pproj_active())
+                inf->light_colour = DARKGREY;
+            else
+                inf->light_colour = LIGHTBLUE;
+        }
         break;
     }
 

@@ -432,6 +432,10 @@ int calculate_frozen_mp()
     {
 		frozen_mp += spell_mp_freeze(SPELL_INFUSION);
 	}
+    if (you.attribute[ATTR_PORTAL_PROJECTILE] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_PORTAL_PROJECTILE);
+	}
     if (you.attribute[ATTR_EXCRUCIATING_WOUNDS] > 0)
     {
 		frozen_mp += spell_mp_freeze(SPELL_EXCRUCIATING_WOUNDS);
@@ -569,6 +573,11 @@ void dispel_permanent_buffs()
     if(you.attribute[ATTR_INFESTATION])
     {
         you.attribute[ATTR_INFESTATION] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_PORTAL_PROJECTILE])
+    {
+        you.attribute[ATTR_PORTAL_PROJECTILE] = 0;
         dispelled = true;
     }
     if(you.attribute[ATTR_SPECTRAL_WEAPON])

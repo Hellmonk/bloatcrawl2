@@ -322,6 +322,8 @@ static const ability_def Ability_List[] =
       0, 0, 0, 0, {}, abflag::NONE },
     { ABIL_END_SERVITOR, "End Spellforged Servitor",
       0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_PPROJ, "End Portal Projectile",
+      0, 0, 0, 0, {}, abflag::NONE },
 
     { ABIL_DIG, "Dig", 0, 0, 0, 0, {}, abflag::INSTANT },
     { ABIL_SHAFT_SELF, "Shaft Self", 0, 0, 250, 0, {}, abflag::DELAY },
@@ -2105,6 +2107,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         you.attribute[ATTR_INFUSION] = 0;
         mpr("You stop infusing your attacks.");
         break;
+    case ABIL_END_PPROJ:
+        fail_check();
+        you.attribute[ATTR_PORTAL_PROJECTILE] = 0;
+        mpr("You stop teleporting projectiles.");
+        break;
     case ABIL_END_ANIMATE_DEAD:
         fail_check();
         you.attribute[ATTR_ANIMATE_DEAD] = 0;
@@ -3467,6 +3474,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     if (you.attribute[ATTR_INFUSION])
        _add_talent(talents, ABIL_END_INFUSION, check_confused);
    
+    if (you.attribute[ATTR_PORTAL_PROJECTILE])
+       _add_talent(talents, ABIL_END_PPROJ, check_confused);
+   
     if (you.attribute[ATTR_INFESTATION])
        _add_talent(talents, ABIL_END_INFESTATION, check_confused);
    
@@ -3744,6 +3754,7 @@ int find_ability_slot(const ability_type abil, char firstletter)
     case ABIL_END_INFESTATION:
     case ABIL_END_BATTLESPHERE:
     case ABIL_END_SERVITOR:
+    case ABIL_END_PPROJ:
         first_slot = letter_to_index('A');
         break;
     default:

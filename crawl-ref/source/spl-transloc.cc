@@ -769,13 +769,15 @@ void you_teleport_now(bool wizard_tele, bool teleportitis)
 spret_type cast_portal_projectile(int pow, bool fail)
 {
     fail_check();
-    if (!you.duration[DUR_PORTAL_PROJECTILE])
+    if (!you.attribute[ATTR_PORTAL_PROJECTILE])
         mpr("You begin teleporting projectiles to their destination.");
     else
-        mpr("You renew your portal.");
+    {
+        mpr("You are already teleporting projectiles to their destination.");
+        return SPRET_ABORT;
+    }
     // Calculate the accuracy bonus based on current spellpower.
-    you.attribute[ATTR_PORTAL_PROJECTILE] = pow;
-    you.increase_duration(DUR_PORTAL_PROJECTILE, 3 + random2(pow / 2) + random2(pow / 5), 50);
+    you.attribute[ATTR_PORTAL_PROJECTILE] = 1 + pow;
     return SPRET_SUCCESS;
 }
 

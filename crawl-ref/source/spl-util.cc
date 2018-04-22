@@ -1434,13 +1434,18 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         {
             return "your weapon is already branded with pain";
 		}
-        // intentional fallthrough
+        break;
     case SPELL_SPECTRAL_WEAPON:
         if(temp && you.attribute[ATTR_SPECTRAL_WEAPON])
         {
             return "you already have your spectral weapon prepared";
         }
+        break;
     case SPELL_PORTAL_PROJECTILE:
+        if(temp && you.attribute[ATTR_PORTAL_PROJECTILE])
+        {
+            return "you are already teleporting projectiles to their destination";
+        }
         break;
 		
     case SPELL_BATTLESPHERE:

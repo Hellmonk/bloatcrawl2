@@ -1624,7 +1624,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_PORTAL_PROJECTILE, "Portal Projectile",
     SPTYP_TRANSLOCATION | SPTYP_HEXES,
-    SPFLAG_NONE,
+    SPFLAG_PERMABUFF,
     3,
     50,
     -1, -1,

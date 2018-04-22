@@ -444,7 +444,7 @@ int get_ammo_to_shoot(int item, dist &target, bool teleport)
 // Portal Projectile requires MP per shot.
 bool is_pproj_active()
 {
-    return !you.confused() && you.duration[DUR_PORTAL_PROJECTILE]
+    return !you.confused() && you.attribute[ATTR_PORTAL_PROJECTILE] > 0
            && enough_mp(1, true, false);
 }
 
