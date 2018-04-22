@@ -989,7 +989,7 @@ bool learn_spell(spell_type specspell, bool wizard)
     else
     {
         if (!already_learning_spell(specspell))
-            start_delay<MemoriseDelay>(spell_difficulty(specspell), specspell);
+            start_delay<MemoriseDelay>(0, specspell);
         you.turn_is_over = true;
 
         did_god_conduct(DID_SPELL_CASTING, 2 + random2(5));
