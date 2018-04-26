@@ -124,6 +124,9 @@ struct game_state
 
     game_difficulty_level difficulty;
 
+    // Should flushing a nonempty key buffer error or crash? Used for tests.
+    bool nonempty_buffer_flush_errors;
+
 protected:
     void reset_cmd_repeat();
     void reset_cmd_again();
