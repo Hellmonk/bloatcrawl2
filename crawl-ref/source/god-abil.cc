@@ -59,6 +59,7 @@
 #include "mon-poly.h"
 #include "mon-tentacle.h"
 #include "mon-util.h"
+#include "movement.h"
 #include "mutation.h"
 #include "notes.h"
 #include "ouch.h"
@@ -76,9 +77,9 @@
 #include "spl-goditem.h"
 #include "spl-monench.h"
 #include "spl-summoning.h"
-#include "spl-wpnench.h"
 #include "spl-transloc.h"
 #include "spl-util.h"
+#include "spl-wpnench.h"
 #include "sprint.h"
 #include "state.h"
 #include "stringutil.h"
@@ -7318,6 +7319,7 @@ bool wu_jian_do_wall_jump(coord_def targ, bool ability)
 bool wu_jian_wall_jump_ability()
 {
     // This needs to be kept in sync with direct walljumping via movement.
+    // TODO: Refactor to call the same code.
     ASSERT(!crawl_state.game_is_arena());
 
     if (crawl_state.is_repeating_cmd())
@@ -7327,11 +7329,16 @@ bool wu_jian_wall_jump_ability()
         crawl_state.cancel_cmd_repeat();
         return false;
     }
+
+    if (cancel_barbed_move())
+        return false;
+
     if (you.digging)
     {
         you.digging = false;
         mpr("You retract your mandibles.");
     }
+
     string wj_error;
     bool has_targets = false;
 
@@ -7395,5 +7402,6 @@ bool wu_jian_wall_jump_ability()
     crawl_state.cancel_cmd_again();
     crawl_state.cancel_cmd_repeat();
 
+    apply_barbs_damage();
     return true;
 }
