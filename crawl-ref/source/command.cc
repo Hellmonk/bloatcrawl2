@@ -123,10 +123,10 @@ static string _get_version_changes()
         help = buf;
 
         // Look for version headings
-        if (starts_with(help, "Stone Soup "))
+        if (starts_with(help, "Stoat Soup "))
         {
             // Stop if this is for an older major version; otherwise, highlight
-            if (help.find(string("Stone Soup ")+Version::Major) == string::npos)
+            if (help.find(string("Stoat Soup ")+Version::Major) == string::npos)
                 break;
             else
                 goto highlight;
