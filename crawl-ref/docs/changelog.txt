@@ -13,6 +13,11 @@ Bugfix Release
 * Autotravel will no longer try to take shortcuts through hell.
 * 73 other bugfixes and cleanups.
 
+Stoat Soup 0.21.1
+-----------------
+Restore spawns
+Revert "Increase numbers of level generation monsters in most branches"
+
 Stone Soup 0.21.1 (20180201)
 ----------------------------
 
