@@ -571,6 +571,7 @@ struct item_def
                                    /// random cosmetics. 0 = uninitialized
     short          quantity;       ///< number of items
     iflags_t       flags;          ///< item status flags
+    int turnofbirth;               ///< copied from the monster
 
     /// The location of the item. Items in player inventory are indicated by
     /// pos (-1, -1), items in monster inventory by (-2, -2), and items

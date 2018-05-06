@@ -116,6 +116,7 @@ static bool _fill_out_corpse(const monster& mons, item_def& corpse)
     corpse.mon_type       = corpse_class;
     corpse.sub_type       = CORPSE_BODY;
     corpse.freshness      = FRESHEST_CORPSE;  // rot time
+    corpse.turnofbirth    = mons.turnofbirth;
     corpse.quantity       = 1;
     corpse.rnd            = 1 + random2(255);
     corpse.orig_monnum    = mtype;

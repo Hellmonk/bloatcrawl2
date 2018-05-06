@@ -387,7 +387,7 @@ static bool _compare_by_freshness(const item_def *food1, const item_def *food2)
 
     // At this point, we know both are corpses or chunks, edible
 
-    // Always offer inedible chunks last.
+    // Always offer poisonous/mutagenic chunks last.
     if (is_bad_food(*food1) && !is_bad_food(*food2))
         return false;
     if (is_bad_food(*food2) && !is_bad_food(*food1))
@@ -633,11 +633,26 @@ static void _eat_chunk(item_def& food)
 
     bool likes_chunks = player_likes_chunks(true);
     int nutrition     = _chunk_nutrition(likes_chunks);
+    int age           = you.elapsed_time - food.turnofbirth;
     bool suppress_msg = false; // do we display the chunk nutrition message?
     bool do_eat       = false;
 
     switch (chunk_effect)
     {
+    case CE_MUTAGEN:
+        //take_note(Note(NOTE_MESSAGE, 0, 0, make_stringf("Ate age %d.", age)), true);
+        if (random2(age) < 5000) {
+            mpr("This meat tastes really weird.");
+            mutate(RANDOM_MUTATION, "mutagenic meat");
+            xom_is_stimulated(100);
+        } else {
+            mpr("This meat tastes unpleasant.");
+        }
+        // Zin minds you trying, whether or not you succeed, but Xom
+        // demands actual entertainment
+        did_god_conduct(DID_DELIBERATE_MUTATING, 10);
+        break;
+
     case CE_CLEAN:
     {
         if (you.species == SP_GHOUL)
@@ -712,7 +727,16 @@ bool eat_item(item_def &food)
 
 bool is_bad_food(const item_def &food)
 {
-    return is_forbidden_food(food) || is_noxious(food);
+    return is_mutagenic(food) || is_forbidden_food(food) || is_noxious(food);
+}
+
+// Returns true if a food item (or corpse) is mutagenic.
+bool is_mutagenic(const item_def &food)
+{
+    if (food.base_type != OBJ_FOOD && food.base_type != OBJ_CORPSES)
+        return false;
+
+    return determine_chunk_effect(food) == CE_MUTAGEN;
 }
 
 // Returns true if a food item (or corpse) is totally inedible.
@@ -825,6 +849,11 @@ bool can_eat(const item_def &food, bool suppress_msg, bool check_hunger)
     if (food.base_type != OBJ_FOOD && food.base_type != OBJ_CORPSES)
         FAIL("That's not food!");
 
+    // special case mutagenic chunks to skip hunger checks, as they don't give
+    // nutrition and player can get hungry by using spells etc. anyway
+    if (is_mutagenic(food))
+        check_hunger = false;
+
     // [ds] These redundant checks are now necessary - Lua might be calling us.
     if (!_eat_check(check_hunger, suppress_msg))
         return false;
@@ -867,7 +896,7 @@ bool can_eat(const item_def &food, bool suppress_msg, bool check_hunger)
 /**
  * Determine the 'effective' chunk type for a given piece of carrion (chunk or
  * corpse), for the player.
- * E.g., ghouls treat rotting and poisonous chunks as normal chunks.
+ * E.g., ghouls treat rotting and mutagenic chunks as normal chunks.
  *
  * @param carrion       The actual chunk or corpse.
  * @return              A chunk type corresponding to the effect eating the
@@ -880,7 +909,7 @@ corpse_effect_type determine_chunk_effect(const item_def &carrion)
 
 /**
  * Determine the 'effective' chunk type for a given input for the player.
- * E.g., ghouls/vampires treat rotting and poisonous chunks as normal chunks.
+ * E.g., ghouls/vampires treat rotting and mutagenic chunks as normal chunks.
  *
  * @param chunktype     The actual chunk type.
  * @return              A chunk type corresponding to the effect eating a chunk
@@ -891,6 +920,7 @@ corpse_effect_type determine_chunk_effect(corpse_effect_type chunktype)
     switch (chunktype)
     {
     case CE_NOXIOUS:
+    case CE_MUTAGEN:
         if (you.species == SP_GHOUL || you.species == SP_VAMPIRE)
             chunktype = CE_CLEAN;
         break;

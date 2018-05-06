@@ -1025,6 +1025,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     mon->type         = mg.cls;
     mon->base_monster = mg.base_type;
     mon->xp_tracking  = mg.xp_tracking;
+    mon->turnofbirth  = you.elapsed_time;
 
     // Set pos and link monster into monster grid.
     if (!dont_place && !mon->move_to_pos(fpos))
