@@ -18,6 +18,8 @@ Stoat Soup 0.21.1
 Restore spawns
 Restore purple chunks. Mutagenic monsters "cool down" to stop Mr Boring
 but Optimal storing them all in a branch somewhere for later.
+Make food less boring, but royal jellies turn up only in hives, to
+slightly reduce inventoryspam.
 
 Stone Soup 0.21.1 (20180201)
 ----------------------------

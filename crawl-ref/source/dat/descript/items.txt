@@ -290,6 +290,10 @@ There are six known traits:
 
 As far as anyone knows, all beasts have exactly two of these traits.
 %%%%
+bread ration
+
+A filling meal of stale, but hearty, bread.
+%%%%
 broad axe
 
 An axe with langets, spikes, a lengthed haft and a single-bladed crescent head.
@@ -430,6 +434,10 @@ while rendering its wearer more susceptible to cold.
 flail
 
 A mace with a short chain connecting the head to the haft.
+%%%%
+fruit
+
+A delicious edible flower ovary.
 %%%%
 fustibalus
 
@@ -586,6 +594,10 @@ manual
 
 A valuable book which allows one to practise a certain skill more efficiently
 when carried.
+%%%%
+meat ration
+
+A filling ration of dried and preserved meats.
 %%%%
 morningstar
 
@@ -758,11 +770,6 @@ much easier for even inexperienced handlers to attack with it quickly.
 rapier
 
 A slender, sharply pointed sword, with an uncommonly elegant design.
-%%%%
-ration
-
-Something for everyone: A filling meal of preserved meats, fruits, cheese,
-and stale, but hearty, bread.
 %%%%
 ring mail
 

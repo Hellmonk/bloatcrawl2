@@ -220,6 +220,10 @@ Denne æske indeholder en forkvaklet troldmands magiske eksperimenters bizarre
 rester. Hvis den åbnes, kan den slippe en venlig kimære løs: en mytisk hybrid
 som består af dele fra tre separate væsener.
 %%%%
+bread ration
+
+Et stort, mættende måltid af tørt brød.
+%%%%
 buckler
 
 Et lille stykke træ og metal, som spændes på den ene arm til forsvar. Det er
@@ -429,6 +433,10 @@ lychee
 
 En tropisk frugt.
 %%%%
+meat ration
+
+En mættende ration af tørret og konserveret kød.
+%%%%
 mottled dragon scales
 
 Denne rustning er lavet af skællene fra en spættet drage. Selvom den i
@@ -618,6 +626,11 @@ Denne stok er beregnet til nærkamp, hvor den udløser sine ladninger for at
 forvolde yderligere skade, som afhænger af dine færdigheder med vækkelser, når
 den rammer en fjende. Køller og plejle-færdigheden hjælper med at forbedre din
 grundlæggende effektivitet med våbnet.
+%%%%
+royal jelly
+
+En særligt fed og gylden geléagtig tingest. Hvis du indtager den, giver den,
+udover næring, dig dine tabte evner tilbage.
 %%%%
 rune of zot
 

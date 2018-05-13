@@ -159,6 +159,10 @@ Una pieza curva de madera con una cuerda atada entre sus extremos, diseñada
 para disparar flechas. Hace bastante daño en combate, y alguien con habilidad
 puede usarlo con gran eficiencia.
 %%%%
+bread ration
+
+Pan un poco rancio, aunque sustancioso.
+%%%%
 buckler
 
 Un pequeño escudo.
@@ -327,6 +331,10 @@ lychee
 
 Una fruta tropical.
 %%%%
+meat ration
+
+Una ración nutritiva de carne seca y en conserva.
+%%%%
 orange
 
 Una deliciosa y jugosa fruta anaranjada.
@@ -481,6 +489,11 @@ mismo efecto.
 ring of wizardry
 
 Este anillo incrementa la habilidad de su portador para usar hechizos mágicos.
+%%%%
+royal jelly
+
+Una cosa gelatinosa dorada bastante nutritiva. Consumirla restaurará tus
+habilidades, además de que es saludable.
 %%%%
 rune of zot
 

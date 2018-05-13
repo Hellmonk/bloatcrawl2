@@ -409,13 +409,23 @@ static int _acquirement_food_subtype(bool /*divine*/, int& quantity)
         // class type is set elsewhere
         type_wanted = POT_BLOOD;
     }
+    else if (you_worship(GOD_FEDHAS))
+    {
+        // Fedhas worshippers get fruit to use for growth and evolution
+        type_wanted = FOOD_FRUIT;
+    }
     else
-        type_wanted = FOOD_RATION;
+    {
+        type_wanted = you.get_mutation_level(MUT_HERBIVOROUS) ? FOOD_BREAD_RATION
+                                                      : FOOD_MEAT_RATION;
+    }
 
-    quantity = 3 + random2(5);
-
+    quantity = 3 + random2(4); // reduced because the removal of royal jellies
+                               // gives the average item more nutrition
     // giving more of the lower food value items
-    if (type_wanted == FOOD_CHUNK)
+    if (type_wanted == FOOD_FRUIT)
+        quantity = 8 + random2avg(15, 2);
+    else if (type_wanted == FOOD_CHUNK)
         quantity += 2 + random2avg(10, 2);
     else if (type_wanted == POT_BLOOD)
         quantity = 8 + random2(5);
@@ -1488,8 +1498,9 @@ bool acquirement(object_class_type class_wanted, int agent,
         { OBJ_GOLD,       "Gold" },
     };
     ASSERT(acq_classes[6].type == OBJ_FOOD);
-    acq_classes[6].name = you.species == SP_VAMPIRE ? "Blood":
-                                                      "Food";
+    acq_classes[6].name = you_worship(GOD_FEDHAS) ? "Fruit":
+                          you.species == SP_VAMPIRE  ? "Blood":
+                                                       "Food";
 
     int thing_created = NON_ITEM;
 

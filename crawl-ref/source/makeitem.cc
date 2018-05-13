@@ -1330,7 +1330,11 @@ static void _generate_food_item(item_def& item, int force_quant, int force_type)
 {
     // Determine sub_type:
     if (force_type == OBJ_RANDOM)
-        item.sub_type = FOOD_RATION;
+    {
+        item.sub_type = random_choose_weighted(42, FOOD_MEAT_RATION,
+                                               42, FOOD_BREAD_RATION,
+                                               16, FOOD_FRUIT);
+    }
     else
         item.sub_type = force_type;
 
@@ -1345,7 +1349,22 @@ static void _generate_food_item(item_def& item, int force_quant, int force_type)
     }
 
     // Determine quantity.
-    item.quantity = force_quant > 1 ? force_quant : 1;
+    if (force_quant > 1)
+        item.quantity = force_quant;
+    else
+    {
+        item.quantity = 1;
+
+        if (item.sub_type != FOOD_MEAT_RATION
+            && item.sub_type != FOOD_BREAD_RATION)
+        {
+            if (one_chance_in(80))
+                item.quantity += random2(3);
+
+            if (is_fruit(item))
+                item.quantity += random2(4);
+        }
+    }
 }
 
 static void _generate_potion_item(item_def& item, int force_type,

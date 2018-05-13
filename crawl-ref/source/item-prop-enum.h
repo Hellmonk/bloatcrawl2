@@ -736,17 +736,19 @@ enum wand_type
 
 enum food_type
 {
-    FOOD_RATION,
-#if TAG_MAJOR_VERSION == 34
+    FOOD_MEAT_RATION,
     FOOD_BREAD_RATION,
+#if TAG_MAJOR_VERSION == 34
     FOOD_PEAR,
     FOOD_APPLE,
     FOOD_CHOKO,
 #endif
+    FOOD_ROYAL_JELLY,
 #if TAG_MAJOR_VERSION == 34
-    FOOD_ROYAL_JELLY,   // was: royal jelly
-    FOOD_UNUSED, // was: royal jelly and/or pizza
+    FOOD_UNUSED, // was: pizza
+#endif
     FOOD_FRUIT,  // was: snozzcumber
+#if TAG_MAJOR_VERSION == 34
     FOOD_PIZZA,
     FOOD_APRICOT,
     FOOD_ORANGE,

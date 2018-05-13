@@ -80,7 +80,6 @@
 #include "stringutil.h"
 #include "terrain.h"
 #include "throw.h"
-#include "tilepick.h"
 #include "travel.h"
 #include "unwind.h"
 #include "viewchar.h"
@@ -2069,13 +2068,6 @@ static int _place_item_in_free_slot(item_def &it, int quant_got,
         mark_had_book(item);
     }
 
-    // Normalize ration tile in inventory
-    if (item.base_type == OBJ_FOOD && item.sub_type == FOOD_RATION)
-    {
-        item.props["item_tile_name"] = "food_ration_inventory";
-        bind_item_tile(item);
-    }
-
     note_inscribe_item(item);
 
     // avoid blood potion timer/stack size mismatch
@@ -3097,7 +3089,7 @@ static bool _interesting_explore_pickup(const item_def& item)
         return _item_different_than_inv(item, _similar_jewellery);
 
     case OBJ_FOOD:
-        if (you_worship(GOD_FEDHAS) && item.is_type(OBJ_FOOD, FOOD_RATION))
+        if (you_worship(GOD_FEDHAS) && is_fruit(item))
             return true;
 
         if (is_inedible(item))
@@ -3605,9 +3597,14 @@ colour_t item_def::food_colour() const
 
     switch (sub_type)
     {
+        case FOOD_ROYAL_JELLY:
+            return YELLOW;
+        case FOOD_FRUIT:
+            return LIGHTGREEN;
         case FOOD_CHUNK:
             return LIGHTRED;
-        case FOOD_RATION:
+        case FOOD_BREAD_RATION:
+        case FOOD_MEAT_RATION:
         default:
             return BROWN;
     }

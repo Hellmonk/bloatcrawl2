@@ -3001,19 +3001,19 @@ static bool _prompt_amount(int max, int& selected, const string& prompt)
     return false;
 }
 
-static int _collect_rations(vector<pair<int,int> >& available_rations)
+static int _collect_fruit(vector<pair<int,int> >& available_fruit)
 {
     int total = 0;
 
     for (int i = 0; i < ENDOFPACK; i++)
     {
-        if (you.inv[i].defined() && you.inv[i].is_type(OBJ_FOOD, FOOD_RATION))
+        if (you.inv[i].defined() && is_fruit(you.inv[i]))
         {
             total += you.inv[i].quantity;
-            available_rations.emplace_back(you.inv[i].quantity, i);
+            available_fruit.emplace_back(you.inv[i].quantity, i);
         }
     }
-    sort(available_rations.begin(), available_rations.end());
+    sort(available_fruit.begin(), available_fruit.end());
 
     return total;
 }
@@ -3028,20 +3028,20 @@ static void _decrease_amount(vector<pair<int, int> >& available, int amount)
         dec_inv_item_quantity(avail.second, decrease_amount);
     }
     if (total_decrease > 1)
-        mprf("%d rations are consumed!", total_decrease);
+        mprf("%d pieces of fruit are consumed!", total_decrease);
     else
-        mpr("A ration is consumed!");
+        mpr("A piece of fruit is consumed!");
 }
 
 // Create a ring or partial ring around the caster. The user is
-// prompted to select a stack of rations, and then plants are placed on open
-// squares adjacent to the user. Of course, two rations are
+// prompted to select a stack of fruit, and then plants are placed on open
+// squares adjacent to the user. Of course, one piece of fruit is
 // consumed per plant, so a complete ring may not be formed.
-bool fedhas_plant_ring_from_rations()
+bool fedhas_plant_ring_from_fruit()
 {
-    // How many rations is available?
-    vector<pair<int, int> > collected_rations;
-    int total_rations = _collect_rations(collected_rations);
+    // How much fruit is available?
+    vector<pair<int, int> > collected_fruit;
+    int total_fruit = _collect_fruit(collected_fruit);
 
     // How many adjacent open spaces are there?
     vector<coord_def> adjacent;
@@ -3054,16 +3054,16 @@ bool fedhas_plant_ring_from_rations()
         }
     }
 
-    const int max_use = min(total_rations/2, static_cast<int>(adjacent.size()));
+    const int max_use = min(total_fruit, static_cast<int>(adjacent.size()));
 
-    // Don't prompt if we can't do anything (due to having no rations or
+    // Don't prompt if we can't do anything (due to having no fruit or
     // no squares to place plants on).
     if (max_use == 0)
     {
         if (adjacent.empty())
             mpr("No empty adjacent squares.");
         else
-            mpr("Not enough rations available.");
+            mpr("No fruit available.");
 
         return false;
     }
@@ -3131,7 +3131,7 @@ bool fedhas_plant_ring_from_rations()
     }
 
     if (created_count)
-        _decrease_amount(collected_rations, 2 * created_count);
+        _decrease_amount(collected_fruit, created_count);
     else
         canned_msg(MSG_NOTHING_HAPPENS);
 
@@ -3352,14 +3352,14 @@ struct monster_conversion
 {
     monster_type new_type;
     int piety_cost;
-    int ration_cost;
+    int fruit_cost;
 };
 
 static const map<monster_type, monster_conversion> conversions =
 {
-    { MONS_PLANT,          { MONS_OKLOB_PLANT, 0, 2 } },
-    { MONS_BUSH,           { MONS_OKLOB_PLANT, 0, 2 } },
-    { MONS_BURNING_BUSH,   { MONS_OKLOB_PLANT, 0, 2 } },
+    { MONS_PLANT,          { MONS_OKLOB_PLANT, 0, 1 } },
+    { MONS_BUSH,           { MONS_OKLOB_PLANT, 0, 1 } },
+    { MONS_BURNING_BUSH,   { MONS_OKLOB_PLANT, 0, 1 } },
     { MONS_OKLOB_SAPLING,  { MONS_OKLOB_PLANT, 4, 0 } },
     { MONS_FUNGUS,         { MONS_WANDERING_MUSHROOM, 3, 0 } },
     { MONS_TOADSTOOL,      { MONS_WANDERING_MUSHROOM, 3, 0 } },
@@ -3444,14 +3444,14 @@ spret_type fedhas_evolve_flora(bool fail)
 
     monster_conversion upgrade = *map_find(conversions, plant->type);
 
-    vector<pair<int, int> > collected_rations;
-    if (upgrade.ration_cost)
+    vector<pair<int, int> > collected_fruit;
+    if (upgrade.fruit_cost)
     {
-        const int total_rations = _collect_rations(collected_rations);
+        const int total_fruit = _collect_fruit(collected_fruit);
 
-        if (total_rations < upgrade.ration_cost)
+        if (total_fruit < upgrade.fruit_cost)
         {
-            mpr("Not enough rations available.");
+            mpr("Not enough fruit available.");
             return SPRET_ABORT;
         }
     }
@@ -3531,8 +3531,8 @@ spret_type fedhas_evolve_flora(bool fail)
     plant->set_hit_dice(plant->get_experience_level()
                         + you.skill_rdiv(SK_INVOCATIONS));
 
-    if (upgrade.ration_cost)
-        _decrease_amount(collected_rations, upgrade.ration_cost);
+    if (upgrade.fruit_cost)
+        _decrease_amount(collected_fruit, upgrade.fruit_cost);
 
     if (upgrade.piety_cost)
     {

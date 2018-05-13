@@ -1835,7 +1835,10 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
     case OBJ_FOOD:
         switch (item_typ)
         {
-        case FOOD_RATION: buff << "ration"; break;
+        case FOOD_MEAT_RATION: buff << "meat ration"; break;
+        case FOOD_BREAD_RATION: buff << "bread ration"; break;
+        case FOOD_ROYAL_JELLY: buff << "royal jelly"; break;
+        case FOOD_FRUIT: buff << "fruit"; break;
         case FOOD_CHUNK:
             switch (determine_chunk_effect(*this))
             {
@@ -2356,8 +2359,17 @@ public:
             case FOOD_CHUNK:
                 name = "chunks";
                 break;
-            case FOOD_RATION:
-                name = "rations";
+            case FOOD_MEAT_RATION:
+                name = "meat rations";
+                break;
+            case FOOD_BREAD_RATION:
+                name = "bread rations";
+                break;
+            case FOOD_FRUIT:
+                name = "fruit";
+                break;
+            case FOOD_ROYAL_JELLY:
+                name = "royal jellies";
                 break;
 #if TAG_MAJOR_VERSION == 34
             default:
@@ -3693,7 +3705,7 @@ bool is_useless_item(const item_def &item, bool temp)
                 return false;
         }
 
-        if (you_worship(GOD_FEDHAS) && item.is_type(OBJ_FOOD, FOOD_RATION))
+        if (is_fruit(item) && you_worship(GOD_FEDHAS))
             return false;
 
         return true;

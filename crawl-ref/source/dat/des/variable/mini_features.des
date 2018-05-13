@@ -1178,9 +1178,9 @@ NAME:    roderic_nine_men_s_morris
 TAGS:    transparent extra decor
 DEPTH:   D, Depths, Elf
 WEIGHT:  1
-ITEM:    q:1 $, ration q:1, stone q:1
-NSUBST:  ' = 2:d / 1:e / 2:f / *:.
-SHUFFLE: ddeff
+SHUFFLE: defg
+ITEM:    q:1 $, fruit q:1, bread ration q:1 w:3, meat ration q:1 w:2, stone q:1
+NSUBST:  ' = 9:d / *:.
 MAP
 '.......'.......'
 .xxxxxxx.xxxxxxx.
@@ -1206,8 +1206,8 @@ NAME:   roderic_three_in_a_row
 TAGS:   transparent extra decor
 DEPTH:  D, Depths, Elf
 WEIGHT: 1
-ITEM:   q:1 $, ration, stone
-SUBST:  ' : TTUUddeff
+ITEM:   q:1 $, fruit q:1, stone, fruit q:1
+SUBST:  ' : TUdefg
 MAP
 @xxxx@xxxx@
 x'...'...'x
@@ -2780,7 +2780,8 @@ ENDMAP
 NAME:   supply_closet_lemuel
 DEPTH:  D:1-9
 TAGS:   no_monster_gen extra
-ITEM:   ration w:20 / arrow / bolt / spear / any potion w:5
+ITEM:   bread ration / meat ration / arrow /\
+        bolt / spear / any potion w:5
 MAP
 x+xx
 xddx
@@ -2884,7 +2885,7 @@ SUBST:  . = ..", X = xxB
 KPROP:  "B = bloody
 SUBST:  " = ., B = x
 NSUBST: . = 5:d / 10=d. / 2:e / 1:e. / *=.f
-ITEM:   ration / w:5 minotaur chunk
+ITEM:   meat ration / w:5 minotaur chunk
 : dgn.delayed_decay(_G, 'e', 'minotaur corpse')
 ITEM:   hand axe
 SUBST:  ' = .
@@ -2904,7 +2905,7 @@ NAME:   dk_vineyard_1
 DEPTH:  D:2-12
 WEIGHT: 4
 TAGS:   no_item_gen no_monster_gen uniq_vineyard extra
-ITEM:   ration / nothing
+ITEM:   fruit q:1 / fruit q:5
 NSUBST: . = 6:d
 KFEAT:  w = shallow_water
 FTILE:  .d = floor_moss / floor_grass / floor_dirt
@@ -2926,7 +2927,7 @@ NAME:   dk_vineyard_2
 DEPTH:  D:2-12
 WEIGHT: 4
 TAGS:   no_item_gen no_monster_gen uniq_vineyard extra
-ITEM:   ration / nothing
+ITEM:   fruit q:1 / fruit q:5
 NSUBST: . = 4:d
 KFEAT:  w = shallow_water
 FTILE:  .d = floor_moss / floor_grass
@@ -2943,7 +2944,7 @@ NAME:   dk_vineyard_3
 DEPTH:  D:2-12
 WEIGHT: 4
 TAGS:   no_item_gen no_monster_gen uniq_vineyard extra
-ITEM:   ration / nothing
+ITEM:   fruit q:1 / fruit q:5
 NSUBST: . = 4:d
 NSUBST: : = 5:. / *:'
 KFEAT:  w = shallow_water
@@ -3180,7 +3181,7 @@ NAME:  bh_chokoban
 TAGS:  extra decor no_exits
 TAGS:  no_rotate no_hmirror no_vmirror
 DEPTH: D:2-, !D:$, Depths:2-, !Depths:$, Lair:2-, !Lair:$
-ITEM:  ration w:5 / stone
+ITEM:  fruit q:1
 MAP
 cccccc  ccccc
 c....c  c...c
