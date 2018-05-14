@@ -2516,7 +2516,7 @@ will deselect it (except for ',' and '-', obviously).
 /
   Select all wands.
 
-|
+\|
   Select all staves.
 
 \\
