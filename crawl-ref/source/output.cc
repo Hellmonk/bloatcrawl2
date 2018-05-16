@@ -609,10 +609,15 @@ static void _print_stats_equip(int x, int y)
 static void _print_stats_noise(int x, int y)
 {
     bool silence = silenced(you.pos());
+    bool qazlal = you_worship(GOD_QAZLAL);
     int level = silence ? 0 : you.get_noise_perception(true);
     CGOTOXY(x, y, GOTO_STAT);
     textcolour(HUD_CAPTION_COLOUR);
-    cprintf("Noise: ");
+    if (you.wizard && !silence) {
+        cprintf("Noi:");
+    } else {
+        cprintf("Noise: ");
+    }
     colour_t noisecolour;
 
     // This is calibrated roughly so that in an open-ish area:
@@ -636,23 +641,23 @@ static void _print_stats_noise(int x, int y)
         noisecolour = LIGHTMAGENTA;
 
     int bar_position;
+    // This would be funnier if the default bar went up to 10 all the time
+    if (qazlal) {
+        Noise_Bar.horiz_bar_width = 11;
+        bar_position = 7;
+    } else {
+        Noise_Bar.horiz_bar_width = 9;
+        bar_position = 7;
+    }
     if (you.wizard && !silence)
     {
-        Noise_Bar.horiz_bar_width = 6;
-        bar_position = 10;
-
         // numeric noise level, basically the internal value used by noise
         // propagation (see shout.cc:noisy). The exact value is too hard to
         // interpret to show outside of wizmode, because noise propagation is
         // very complicated.
-        CGOTOXY(x + bar_position - 3, y, GOTO_STAT);
+        CGOTOXY(x + 4, y, GOTO_STAT);
         textcolour(noisecolour);
-        CPRINTF("%2d ", you.get_noise_perception(false));
-    }
-    else
-    {
-        Noise_Bar.horiz_bar_width = 9;
-        bar_position = 7;
+        CPRINTF("%2d", you.get_noise_perception(false));
     }
 
     if (silence)
@@ -660,22 +665,27 @@ static void _print_stats_noise(int x, int y)
         CGOTOXY(x + bar_position, y, GOTO_STAT);
         textcolour(LIGHTMAGENTA);
 
-        // This needs to be one extra wide in case silence happens
-        // immediately after super-loud (magenta) noise
-        CPRINTF("Silenced  ");
+        // This needs to be two extra wide in case silence happens
+        // immediately after super-loud (magenta) noise with Qaz
+        CPRINTF("Silenced   ");
         Noise_Bar.reset(); // so it doesn't display a change bar after silence ends
     }
     else
     {
-        if (level == 1000)
-        {
-            // the bar goes up to 11 for extra loud sounds! (Well, really 10.)
-            Noise_Bar.horiz_bar_width += 1;
-        }
-        else
-        {
-            CGOTOXY(x + 16, y, GOTO_STAT);
-            CPRINTF(" "); // clean up after the extra wide bar
+        if (!qazlal) {
+            if (level == 1000)
+            {
+                // the bar goes up to 11 for extra loud sounds! 
+                // (Well, really 10.)
+                Noise_Bar.horiz_bar_width += 1;
+            } else {
+	        CGOTOXY(x + 16, y, GOTO_STAT);
+                CPRINTF("  "); // clean up after the extra wide bar
+// accounting for the possibility of having just swapped from Qaz. This doesn't
+// quite work since if you maintain exactly the same level of noise (eg keep
+// blocking with the Gong) the bar will continue to go to 11, but I can live
+// with that.
+            }
         }
 #ifndef USE_TILE_LOCAL
         // use the previous color for negative change in console; there's a
