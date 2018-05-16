@@ -1414,6 +1414,8 @@ static void tag_construct_you(writer &th)
     marshallShort(th, you.hp_max_adj_temp);
     marshallShort(th, you.hp_max_adj_perm);
     marshallShort(th, you.mp_max_adj);
+    marshallInt(th, you.dd_heals);
+    marshallInt(th, you.dd_mp_rotted);
 
     marshallShort(th, you.pos().x);
     marshallShort(th, you.pos().y);
@@ -2460,6 +2462,12 @@ static void tag_read_you(reader &th)
     you.hp_max_adj_perm           = unmarshallShort(th);
     you.mp_max_adj                = unmarshallShort(th);
 #if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() >= TAG_MINOR_DD_HEALING) {
+#endif
+        you.dd_heals                  = unmarshallInt(th);
+        you.dd_mp_rotted              = unmarshallInt(th);
+#if TAG_MAJOR_VERSION == 34
+    }
     if (th.getMinorVersion() < TAG_MINOR_REMOVE_BASE_MP)
     {
         int baseadj = unmarshallShort(th);

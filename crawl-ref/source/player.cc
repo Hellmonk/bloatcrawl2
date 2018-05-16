@@ -5034,6 +5034,8 @@ player::player()
     magic_points     = 0;
     max_magic_points = 0;
     mp_max_adj       = 0;
+    dd_heals         = 0;
+    dd_mp_rotted     = 0;
 
     stat_loss.init(0);
     base_stats.init(0);

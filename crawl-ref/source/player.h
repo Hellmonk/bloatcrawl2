@@ -143,6 +143,8 @@ public:
     int magic_points;
     int max_magic_points;
     int mp_max_adj;             // max MP loss (ability costs, tutorial bonus)
+    int dd_heals;
+    int dd_mp_rotted;
 
     FixedVector<int8_t, NUM_STATS> stat_loss;
     FixedVector<int8_t, NUM_STATS> base_stats;

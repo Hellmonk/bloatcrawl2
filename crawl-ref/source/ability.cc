@@ -1792,15 +1792,22 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     switch (abil.ability)
     {
     case ABIL_HEAL_WOUNDS:
-        fail_check();
-        if (one_chance_in(4))
-        {
-            mpr("Your magical essence is drained by the effort!");
-            rot_mp(1);
-        }
-        potionlike_effect(POT_HEAL_WOUNDS, 40);
-        break;
-
+	{
+	    fail_check();
+	    int expected = you.dd_heals - (you.dd_mp_rotted * 4);
+// Because going from 1/4 to 1/3 makes more of a difference than going to 1/5,
+// and because we're more concerned with bad luck stuffing you up,
+// you're allowed to get more ahead than behind before chance is adjusted.
+	    expected /= ((expected > 0) ? 6 : 4); you.dd_heals++;
+	    int chance = max(2,(4 - expected));
+	    if (one_chance_in(chance)) {
+		    mpr("Your magical essence is drained by the effort!");
+                    you.dd_mp_rotted++;
+		    rot_mp(1);
+		}
+	    potionlike_effect(POT_HEAL_WOUNDS, 40);
+	    break;
+	}
     case ABIL_DIG:
         fail_check();
         if (!you.digging)
