@@ -1801,10 +1801,17 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 	    expected /= ((expected > 0) ? 6 : 4); you.dd_heals++;
 	    int chance = max(2,(4 - expected));
 	    if (one_chance_in(chance)) {
+// The first-rot mulligan here matches up to the way DD used to start with a
+// wand of charges and could consume an MP to get a second lot. Too easy?
+// I think I can live with the idea that DD is meant to have a very easy
+// start; and this is no easier than it was in 0.18.
+// Plus the fail-able ability is slightly worse than the on-demand wand.
+		if (you.dd_mp_rotted > 0) {
 		    mpr("Your magical essence is drained by the effort!");
-                    you.dd_mp_rotted++;
 		    rot_mp(1);
 		}
+		you.dd_mp_rotted++;
+	    }
 	    potionlike_effect(POT_HEAL_WOUNDS, 40);
 	    break;
 	}
