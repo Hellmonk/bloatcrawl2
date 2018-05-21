@@ -459,43 +459,33 @@ SUBST:   w = W
 #
 :        bazaar_setup(_G)
 MAP
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxx.....X.....xxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxx.................xxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxx.......................xxxxxxxxxxxxxx
-xxxxxxxxxxx......T......F......T......xxxxxxxxxxxx
-xxxxxxxxxx.............................xxxxxxxxxxx
-xxxxxxxxx...............................xxxxxxxxxx
-xxxxxxxx..............aaaaa..............xxxxxxxxx
-xxxxxxxx.....E.......awwwwwaa......A.....xxxxxxxxx
-xxxxxxx............aawwwwwwwww............xxxxxxxx
-xxxxxxx...........awwwwwWwwwwa............xxxxxxxx
-xxxxxxx..........awwwwwWWWwwwa............xxxxxxxx
-xxxxxxxY.T..{.....awwwwwwWWwwwa........T.Yxxxxxxxx
-xxxxxxx............awwwwwwwwaX............xxxxxxxx
-xxxxxxx.............aawwwwwwwwa...........xxxxxxxx
-xxxxxxx...............aaaaaaaa............xxxxxxxx
-xxxxxxxx.....D.....................B.....xxxxxxxxx
-xxxxxxxx.................................xxxxxxxxx
-xxxxxxxxx...............................xxxxxxxxxx
-xxxxxxxxxx.............................xxxxxxxxxxx
-xxxxxxxxxxx......T......C......T......xxxxxxxxxxxx
-xxxxxxxxxxxxx.......................xxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxx.................xxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxx.....X.....xxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxx.....X.....xxxxxxxxxxxxxxx
+xxxxxxxxxxx.................xxxxxxxxxxxx
+xxxxxxxx.......................xxxxxxxxx
+xxxxxx......T......F......T......xxxxxxx
+xxxxx.............................xxxxxx
+xxxx...............................xxxxx
+xxx..............aaaaa..............xxxx
+xxx.....E.......awwwwwaa......A.....xxxx
+xx............aawwwwwwwww............xxx
+xx...........awwwwwWwwwwa............xxx
+xx..........awwwwwWWWwwwa............xxx
+xxY.T..{.....awwwwwwWWwwwa........T.Yxxx
+xx............awwwwwwwwaX............xxx
+xx.............aawwwwwwwwa...........xxx
+xx...............aaaaaaaa............xxx
+xxx.....D.....................B.....xxxx
+xxx.................................xxxx
+xxxx...............................xxxxx
+xxxxx.............................xxxxxx
+xxxxxx......T......C......T......xxxxxxx
+xxxxxxxx.......................xxxxxxxxx
+xxxxxxxxxxx.................xxxxxxxxxxxx
+xxxxxxxxxxxxxx.....X.....xxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
 ENDMAP
 
 ########################################
@@ -745,35 +735,29 @@ FTILE:   .!T = floor_vault
 : set_border_fill_type("open_sea")
 :        bazaar_setup(_G)
 MAP
-wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwWWWWWWWWWWWWWWWWWWWwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwWW~~~~~~~~~~~~~~~~~WWwwwwwwwwwwwwww
-wwwwwwwwwwwwwWW~'''''''''''''''''~WWwwwwwwwwwwwww
-wwwwwwwwwwwwWW~'''''''''''''''''''~WWwwwwwwwwwwww
-wwwwwwwwwwwWW~'''''''''''''''''''''~WWwwwwwwwwwww
-wwwwwwwwwwWW~''''''''ccccccc''''A'''~WWwwwwwwwwww
-wwwwwwwwwWW~'''''''ccc.....ccc'''''''~WWwwwwwwwww
-wwwwwwwwWW~''''''ccc...!.....ccc''''''~WWwwwwwwww
-wwwwwwwwW~''''''cc.........!...cc''''''~Wwwwwwwww
-wwwwwwwwW~''''''+...!........!..c''''''~Wwwwwwwww
-wwwwwwwwW~''A'''+.......!.T.....c'''>''~Wwwwwwwww
-wwwwwwwwW~''''''+...!........!..c''''''~Wwwwwwwww
-wwwwwwwwW~''''''cc.........!...cc''''''~Wwwwwwwww
-wwwwwwwwWW~''''''ccc...!.....ccc''''''~WWwwwwwwww
-wwwwwwwwwWW~'''''''ccc.....ccc'''''''~WWwwwwwwwww
-wwwwwwwwwwWW~''''''''ccccccc''''A'''~WWwwwwwwwwww
-wwwwwwwwwwwWW~'''''''''''''''''''''~WWwwwwwwwwwww
-wwwwwwwwwwwwWW~'''''''''''''''''''~WWwwwwwwwwwwww
-wwwwwwwwwwwwwWW~'''''''''''''''''~WWwwwwwwwwwwwww
-wwwwwwwwwwwwwwWW~~~~~~~~~~~~~~~~~WWwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwWWWWWWWWWWWWWWWWWWWwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+wwwwwwwwWWWWWWWWWWWWWWWWWWWwwwwwwww
+wwwwwwwWW~~~~~~~~~~~~~~~~~WWwwwwwww
+wwwwwwWW~'''''''''''''''''~WWwwwwww
+wwwwwWW~'''''''''''''''''''~WWwwwww
+wwwwWW~'''''''''''''''''''''~WWwwww
+wwwWW~''''''''ccccccc''''A'''~WWwww
+wwWW~'''''''ccc.....ccc'''''''~WWww
+wWW~''''''ccc...!.....ccc''''''~WWw
+wW~''''''cc.........!...cc''''''~Ww
+wW~''''''+...!........!..c''''''~Ww
+wW~''A'''+.......!.T.....c'''>''~Ww
+wW~''''''+...!........!..c''''''~Ww
+wW~''''''cc.........!...cc''''''~Ww
+wWW~''''''ccc...!.....ccc''''''~WWw
+wwWW~'''''''ccc.....ccc'''''''~WWww
+wwwWW~''''''''ccccccc''''A'''~WWwww
+wwwwWW~'''''''''''''''''''''~WWwwww
+wwwwwWW~'''''''''''''''''''~WWwwwww
+wwwwwwWW~'''''''''''''''''~WWwwwwww
+wwwwwwwWW~~~~~~~~~~~~~~~~~WWwwwwwww
+wwwwwwwwWWWWWWWWWWWWWWWWWWWwwwwwwww
+
 ENDMAP
 
 NAME:    cyrus_bazaar_forest
@@ -1535,52 +1519,6 @@ x..!.............?.............>..x
 x.................................x
 xx...xxxxxxxxxxx...xxxxxxxxxxx...xx
  xxxxx         xxxxx         xxxxx
-ENDMAP
-
-NAME:      bazaar_minmay_plants
-TAGS:      no_rotate bazaar
-WEIGHT:    5
-ORIENT:    encompass
-MONS:      plant / bush w:5
-KFEAT:     ! = any shop
-LFLOORCOL: green
-SUBST:     " = ....111t
-:          bazaar_setup(_G)
-MAP
-""""""""""""""""""""""""""""""""">
-""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""
-"""""""""mmmmm""""""mmmmm"""""""""
-"""""""""m...mm""""mm...m"""""""""
-"""""""""m.!..mm""mm..!.m"""""""""
-"""""""""m.....mmmm.....m"""""""""
-"""""""""mm............mm"""""""""
-""""""""""mm..........mm""""""""""
-"""""""""""mm....cc..mm"""""""""""
-""""""""""""m..cc>c..m""""""""""""
-""""""""""""m..c{c...m""""""""""""
-"""""""""""mm..ccc...mm"""""""""""
-""""""""""mm..........mm""""""""""
-"""""""""mm............mm"""""""""
-"""""""""m.....mmmm.....m"""""""""
-"""""""""m.!..mm""mm..!.m"""""""""
-"""""""""m...mm""""mm...m"""""""""
-"""""""""mmmmm""""""mmmmm"""""""""
-""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""
-"""""""""""""""""""""""""""""""""
-"""""""""""""""""""""""""""""""""
-"""""""""""""""""""""""""""""""""
 ENDMAP
 
 # 4 random shops
