@@ -27,8 +27,8 @@ run_one()
         $CRAWL -arena 'cerebov, lom lobon, mnoleg, gloorx vloq v ereshkigal, asmodeus, antaeus, dispater delay:0 t:6'
     ;;
     6|miscasts)
-        echo "arena: miscasts 5 pandemonium lord v 20 20-headed hydra delay:0 t:10" 1>&2
-        $CRAWL -arena 'miscasts 5 pandemonium lord v 20 20-headed hydra delay:0 t:10'
+        echo "arena: miscasts cerebov, lom lobon, mnoleg v 20 20-headed hydra delay:0 t:10" 1>&2
+        $CRAWL -arena 'miscasts cerebov, lom lobon, mnoleg v 20 20-headed hydra delay:0 t:10'
     ;;
     7|kraken)
         echo "arena: swamp worm v spectral swamp worm arena:small_deep_pool delay:0 t:20" 1>&2
