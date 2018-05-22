@@ -106,8 +106,8 @@ end
 
 -- Guarantee two rare base types with a brand
 function halls_of_blades_weapon(e)
-  local long_blade_type = crawl.one_chance_in(2) and "double sword"
-                                                  or "triple sword"
+  local long_blade_type = crawl.one_chance_in(2) and "broadsword"
+                                                  or "claymore"
   local types = {"quick blade", long_blade_type,
                  "executioner's axe", "eveningstar", "bardiche",
                  "lajatang"}

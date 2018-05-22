@@ -414,7 +414,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
         { WPN_SCIMITAR,         8 },
         { WPN_GREAT_SWORD,      8 },
         { WPN_BROAD_AXE,        9 },
-        { WPN_DOUBLE_SWORD,     10 },
+        { WPN_BROADSWORD,     10 },
         { WPN_EVENINGSTAR,      13 },
         { WPN_DEMON_TRIDENT,    14 }, };
     static const weapon_list SP_DEFENDER_WEAPONS =
@@ -618,7 +618,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
             // effects, i.e. no polearms.
             { { { WPN_GREAT_MACE,       10 },
                 { WPN_GREAT_SWORD,      6 },
-                { WPN_TRIPLE_SWORD,     2 },
+                { WPN_CLAYMORE,     2 },
                 { WPN_BATTLEAXE,        8 },
                 { WPN_EXECUTIONERS_AXE, 2 },
         }, {}, {}, 1 } },
@@ -737,7 +737,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
                 { WPN_LONG_SWORD,       10 },
                 { WPN_BROAD_AXE,        9 },
                 { WPN_EVENINGSTAR,      7 },
-                { WPN_DOUBLE_SWORD,     7 },
+                { WPN_BROADSWORD,     7 },
                 { WPN_DEMON_TRIDENT,    7 },
                 { WPN_WAR_AXE,          3 },
         } } },
@@ -859,7 +859,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
               { NUM_SPECIAL_WEAPONS, 15 } }, // 2/3 chance of brand
         } },
         { MONS_SOJOBO, {
-            { { WPN_TRIPLE_SWORD,       1 },
+            { { WPN_CLAYMORE,       1 },
               { WPN_GREAT_SWORD,        5 } }, {},
             { { SPWPN_ELECTROCUTION, 2 },
               { NUM_SPECIAL_WEAPONS, 1 } },
@@ -880,7 +880,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
               { WPN_DEMON_TRIDENT,      10 },
               { WPN_BATTLEAXE,          7 },
               { WPN_GREAT_SWORD,        5 },
-              { WPN_DOUBLE_SWORD,       2 },
+              { WPN_BROADSWORD,       2 },
               { WPN_DIRE_FLAIL,         5 },
               { WPN_GREAT_MACE,         2 },
               { WPN_GLAIVE,             5 },
@@ -906,7 +906,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
         { MONS_IMPERIAL_MYRMIDON, {
             { { WPN_SCIMITAR,           20 },
               { WPN_DEMON_BLADE,        4 },
-              { WPN_DOUBLE_SWORD,       1 }, },
+              { WPN_BROADSWORD,       1 }, },
         } },
     };
 

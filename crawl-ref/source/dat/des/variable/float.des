@@ -8998,9 +8998,9 @@ ITEM:    manual of armour w:30 / manual of fighting w:30 / \
 ITEM:    executioner's axe good_item no_pickup w:5 / \
          battleaxe good_item randart no_pickup / \
          broad axe good_item no_pickup / \
-         triple sword good_item no_pickup w:5 / \
+         claymore good_item no_pickup w:5 / \
          great sword good_item randart no_pickup / \
-         double sword good_item no_pickup / \
+         broadsword good_item no_pickup / \
          great mace good_item no_pickup / \
          eveningstar good_item no_pickup / \
          bardiche good_item no_pickup w:5 / \

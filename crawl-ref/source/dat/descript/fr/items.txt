@@ -94,7 +94,7 @@ blessed double sword
 
 Une épée longue et large, améliorée par l'Étincelant.
 %%%%
-blessed triple sword
+blessed claymore
 
 Une épée massive, améliorée par l'Étincelant.
 %%%%

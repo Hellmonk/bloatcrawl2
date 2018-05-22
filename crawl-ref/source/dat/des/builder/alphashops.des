@@ -67,7 +67,7 @@
        "book of battle", "book of beasts", "book of burglary", "box of beasts",
        "bread ration", "broad axe", "pair of boots", "potion of berserk rage",
        "blowgun", "potion of blood", "potion of brilliance",
-       "scroll of blinking", "scroll of brand weapon",
+       "scroll of blinking", "scroll of brand weapon", "broadsword",
        "manual of bows", "buckler" }
 
       elseif s == "C" then i = { "book of callings", "book of cantrips",
@@ -75,11 +75,11 @@
        "chain mail", "crystal ball of energy", "cloak", "crystal plate armour",
        "potion of cancellation", "book of clouds", "staff of cold",
        "staff of conjuration", "manual of crossbows", "manual of conjurations",
-       "manual of charms", "potion of curing", "wand of clouds" }
+       "manual of charms", "potion of curing", "wand of clouds", "claymore" }
 
       elseif s == "D" then i = { "book of death", "book of debilitation",
        "book of dreams", "book of the dragon", "dagger", "demon blade",
-       "demon trident", "demon whip", "dire flail", "double sword",
+       "demon trident", "demon whip", "dire flail",
        "ring of dexterity", "manual of dodging", "wand of disintegration",
        "staff of death", "wand of digging" }
 
@@ -161,7 +161,7 @@
 
       elseif s == "T" then i = { "book of the tempests", "scroll of torment",
        "book of transfigurations", "ring of teleportation",
-       "scroll of teleportation", "triple sword", "triple crossbow",
+       "scroll of teleportation", "triple crossbow",
        "troll leather armour", "manual of throwing",
        "manual of translocations", "manual of transmutations", "tomahawk",
        "trident", "throwing net" }

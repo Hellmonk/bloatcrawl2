@@ -22,6 +22,9 @@ Make food less boring, but royal jellies turn up only in hives, to
 slightly reduce inventoryspam.
 If you worship Qazlal, the noise bar goes to 11!
 Reduce variance in DD healing.
+Change double swords and triple swords to broadswords and claymores; no
+game mechanical change here.
+Experimentally make Singing Sword vorpal so it is at least vaguely attractive.
 
 Stone Soup 0.21.1 (20180201)
 ----------------------------

@@ -71,7 +71,7 @@ function crypt_loot_plus(e)
   local ring = "ring of positive energy randart good_item"
   local amulet = "amulet of regeneration randart good_item"
   -- One drop-off of these,
-  e.kitem("d = double sword w:5 " .. drain .." / triple sword w:5 " .. drain ..
+  e.kitem("d = broadsword w:5 " .. drain .." / claymore w:5 " .. drain ..
           " / quick blade " .. drain .. " / executioner's axe " .. drain ..
           " / eveningstar " .. drain .. " / bardiche " .. drain ..
           " / lajatang " .. drain)
@@ -1310,9 +1310,9 @@ KITEM: | = plate armour good_item ego:cold_resistance \
            / executioner's axe good_item ego:freezing w:5 \
            / battleaxe good_item ego:freezing \
            / lajatang good_item ego:freezing \
-           / triple sword good_item ego:freezing w:5 \
+           / claymore good_item ego:freezing w:5 \
            / great sword good_item ego:freezing \
-           / double sword good_item ego:freezing \
+           / broadsword good_item ego:freezing \
            / great mace good_item ego:freezing \
            / eveningstar good_item ego:freezing \
            / bardiche good_item ego:freezing \

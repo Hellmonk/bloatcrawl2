@@ -6037,10 +6037,10 @@ KMONS:   N = Asterion / ancient champion, ancient champion / nothing
 KMONS:   O = Frederick / draconian knight, draconian knight / nothing
 KMONS:   P = Sojobo / tengu reaver, tengu reaver / nothing
 KMONS:   S = dancing weapon ; long sword good_item | good_item great sword | \
-                              demon blade good_item | triple sword good_item | \
-                              double sword good_item
+                              demon blade good_item | claymore good_item | \
+                              broadsword good_item
 KITEM:   s = long sword good_item / good_item great sword / \
-             demon blade good_item / triple sword good_item / double sword good_item
+             demon blade good_item / claymore good_item / broadsword good_item
 KMONS:   o = orc warrior / orc knight w:5
 KMONS:   e = deep elf knight
 NSUBST:  k = 4:k / 2 = k. / *:.
@@ -6450,7 +6450,7 @@ ENDMAP
 ####
 # Maxwell's Thermic Engine
 #
-# Use demon blade as fallback here instead of double sword, to keep
+# Use demon blade as fallback here instead of broadsword, to keep
 # consistency with the Maxwell's demon reference.
 #
 NAME:   brannock_guarded_unrand_thermic_engine

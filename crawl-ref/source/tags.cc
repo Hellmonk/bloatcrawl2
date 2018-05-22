@@ -4599,6 +4599,14 @@ void unmarshallItem(reader &th, item_def &item)
             item.brand = SPWPN_FLAMING;
     }
 
+    // seems like a tag here wouldn't really achieve much
+    if (item.is_type(OBJ_WEAPONS, WPN_DOUBLE_SWORD)) {
+        item.sub_type = WPN_BROADSWORD;
+    }
+    if (item.is_type(OBJ_WEAPONS, WPN_TRIPLE_SWORD)) {
+        item.sub_type = WPN_CLAYMORE;
+    }
+
     // Rescale old MR (range 35-99) to new discrete steps (40/80/120)
     // Negative MR was only supposed to exist for Folly, but paranoia.
     if (th.getMinorVersion() < TAG_MINOR_MR_ITEM_RESCALE

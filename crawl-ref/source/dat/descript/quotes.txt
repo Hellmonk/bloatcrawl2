@@ -998,6 +998,13 @@ broad axe
  To be lean'd, and to lean on.”
     -Walt Whitman, _Song of the Broad-Axe_, l. 1-6. 1867.
 %%%%
+broadsword
+
+“The deadly weapon seemed unnaturally light and easy in his hand. Something
+that lethal should have more heft, like a broadsword. Wrong, for murder to
+be so potentially effortless — one ought to at least have to grunt for it.”
+    -Lois McMaster Bujold, _The Warrior's Apprentice_, 1986.
+%%%%
 buckler
 
 “Let who will boast their courage in the field,
@@ -1060,9 +1067,15 @@ of the brightness of Yahweh's glory.
 the voice of God Almighty when he speaks.”
     -WEB Bible, Ezekiel 10:4-5
 %%%%
-triple sword
+claymore
 
-<demon blade>
+“But mark the Rustic, haggis-fed,
+ The trembling earth resounds his tread,
+ Clap in his walie nieve a blade,
+ He'll make it whissle;
+ An legs an arms, an heads will sned,
+ Like taps o thrissle.”
+    -Robert Burns, _Address to a Haggis_.
 %%%%
 cloak
 

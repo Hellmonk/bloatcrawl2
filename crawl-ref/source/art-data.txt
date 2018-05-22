@@ -166,12 +166,13 @@ COLOUR: BLACK
 ####################### First come the old fixed arts.
 
 NAME:    Singing Sword
-OBJ:     OBJ_WEAPONS/WPN_DOUBLE_SWORD
+OBJ:     OBJ_WEAPONS/WPN_BROADSWORD
 PLUS:    +7
 COLOUR:  ETC_GOLD
 TILE:    spwpn_singing_sword
 TILE_EQ: singing_sword
 VALUE:   1000
+BRAND:   SPWPN_VORPAL
 BOOL:    special
 
 NAME:    Wrath of Trog
@@ -260,7 +261,7 @@ VALUE:   1200
 BOOL:    special, evil
 
 NAME:    sword of Zonguldrok
-OBJ:     OBJ_WEAPONS/WPN_DOUBLE_SWORD
+OBJ:     OBJ_WEAPONS/WPN_BROADSWORD
 PLUS:    +9
 COLOUR:  ETC_BONE
 TILE:    spwpn_sword_of_zonguldrok
@@ -582,7 +583,7 @@ MAGIC:    1
 STEALTH:  1
 
 NAME:    plutonium sword
-OBJ:     OBJ_WEAPONS/WPN_TRIPLE_SWORD
+OBJ:     OBJ_WEAPONS/WPN_CLAYMORE
 PLUS:    +11
 COLOUR:  ETC_MUTAGENIC
 TILE:    urand_plutonium
@@ -1296,7 +1297,7 @@ BOOL:     inv, nogen
 
 ENUM:     THERMIC_ENGINE
 NAME:     Maxwell's thermic engine
-OBJ:      OBJ_WEAPONS/WPN_DOUBLE_SWORD
+OBJ:      OBJ_WEAPONS/WPN_BROADSWORD
 INSCRIP:  freeze,
 PLUS:     +2
 COLOUR:   ETC_VEHUMET

@@ -79,12 +79,12 @@ long_sword3
 greatsword1 WPN_GREAT_SWORD
 greatsword2
 greatsword3
-double_sword WPN_DOUBLE_SWORD
-double_sword2
-double_sword3
-triple_sword WPN_TRIPLE_SWORD
-triple_sword2
-triple_sword3
+broadsword WPN_BROADSWORD
+broadsword2
+broadsword3
+claymore WPN_CLAYMORE
+claymore2
+claymore3
 demon_blade WPN_DEMON_BLADE
 demon_blade2
 demon_blade3

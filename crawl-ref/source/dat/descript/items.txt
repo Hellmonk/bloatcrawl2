@@ -298,6 +298,12 @@ broad axe
 
 An axe with langets, spikes, a lengthed haft and a single-bladed crescent head.
 %%%%
+broadsword
+
+A large and sturdy sword with a thick forte, a ricasso, a heavy pommel,
+fullers, quillions, and - more pertinent to your interests - a sharp bit
+and a bit for holding onto. 
+%%%%
 buckler
 
 A small piece of wood and metal, to be strapped on one arm for defence. It is
@@ -315,6 +321,10 @@ A suit of armour made entirely out of tiny metal rings.
 chunk of flesh
 
 A piece of raw meat found in the dungeon. It won't stay fresh for long.
+%%%%
+claymore
+
+A two-handed sword of prodigious - perhaps excessive - dimensions.
 %%%%
 cloak
 

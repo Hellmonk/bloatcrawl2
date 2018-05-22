@@ -565,23 +565,22 @@ short_sword_slant SHORT_SWORD_SLANT
 short_sword_slant2
 short_sword_two SHORT_SWORD2
 sword_thief SWORD_THIEF
-double_sword DOUBLE_SWORD
-double_sword2
-double_sword3
+broadsword BROADSWORD
+broadsword2
+broadsword3
 long_sword_slant LONG_SWORD_SLANT
 long_sword_slant2
 blessed_blade BLESSED_BLADE
 great_sword_slant GREAT_SWORD_SLANT
 great_sword_slant2
-triple_sword TRIPLE_SWORD
-triple_sword2
+claymore CLAYMORE
+claymore2
 katana_slant KATANA_SLANT
 scimitar SCIMITAR
 scimitar2
 falchion FALCHION
 falchion2
 sword_two SWORD2
-broadsword BROADSWORD
 black_sword BLACK_SWORD
 sword_black SWORD_BLACK
 sword_twist SWORD_TWIST

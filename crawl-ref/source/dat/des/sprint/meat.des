@@ -119,7 +119,7 @@
     "generate_awake never_corpse " ..
     "spells:sentinel's_mark.30.wizard;haste.30.wizard;ensnare.30.wizard " ..
     "; ring of slaying plus:200 not_cursed ident:all " ..
-    "no_pickup . triple sword plus:9 not_cursed ego:vorpal " ..
+    "no_pickup . claymore plus:9 not_cursed ego:vorpal " ..
     "ident:all no_pickup"
 
   local defiler =

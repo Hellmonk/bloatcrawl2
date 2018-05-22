@@ -55,7 +55,7 @@ blessed double sword
 
 '샤이닝 원'의 권능이 부여된, 길고 커다란 검이다.
 %%%%
-blessed triple sword
+blessed claymore
 
 '샤이닝 원'의 권능이 부여된, 거대한 검이다.
 %%%%
