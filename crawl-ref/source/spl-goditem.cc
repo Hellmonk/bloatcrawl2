@@ -1215,7 +1215,7 @@ void torment_player(actor *attacker, torment_source_type taux)
 
 void torment_cell(coord_def where, actor *attacker, torment_source_type taux)
 {
-    const monster* att = attacker->as_monster();
+    const monster* att = attacker ? attacker->as_monster() : nullptr;
     // Is the player in this cell?
     if (where == you.pos())
     {
