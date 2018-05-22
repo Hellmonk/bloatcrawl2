@@ -10,7 +10,7 @@
 #include "artefact.h"
 #include "directn.h"
 #include "dungeon.h"
-#include "item-name.h"
+#include "itemname.h"
 #include "libutil.h"
 #include "macro.h"
 #include "message.h"

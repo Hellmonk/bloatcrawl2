@@ -459,7 +459,6 @@ SUBST:   w = W
 #
 :        bazaar_setup(_G)
 MAP
-
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxx.....X.....xxxxxxxxxxxxxxx
 xxxxxxxxxxx.................xxxxxxxxxxxx
@@ -485,7 +484,6 @@ xxxxxxxx.......................xxxxxxxxx
 xxxxxxxxxxx.................xxxxxxxxxxxx
 xxxxxxxxxxxxxx.....X.....xxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
 ENDMAP
 
 ########################################
@@ -735,7 +733,6 @@ FTILE:   .!T = floor_vault
 : set_border_fill_type("open_sea")
 :        bazaar_setup(_G)
 MAP
-
 wwwwwwwwWWWWWWWWWWWWWWWWWWWwwwwwwww
 wwwwwwwWW~~~~~~~~~~~~~~~~~WWwwwwwww
 wwwwwwWW~'''''''''''''''''~WWwwwwww
@@ -757,7 +754,6 @@ wwwwwWW~'''''''''''''''''''~WWwwwww
 wwwwwwWW~'''''''''''''''''~WWwwwwww
 wwwwwwwWW~~~~~~~~~~~~~~~~~WWwwwwwww
 wwwwwwwwWWWWWWWWWWWWWWWWWWWwwwwwwww
-
 ENDMAP
 
 NAME:    cyrus_bazaar_forest

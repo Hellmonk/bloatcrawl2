@@ -16,6 +16,7 @@
 #include <sstream>
 #include <string>
 
+#include "ability.h"
 #include "adjust.h"
 #include "art-enum.h"
 #include "artefact.h"
@@ -106,14 +107,13 @@ int show_description(const describe_info &inf)
     // Ensure we get the full screen size when calling get_number_of_cols()
     cgotoxy(1, 1);
 #endif
-    desc_proc_proxy proc;
-    process_description<desc_proc_proxy>(proc, inf);
+    string desc = process_description(inf);
 
     formatted_scroller desc_fs;
     int flags = MF_NOSELECT | MF_NOWRAP;
     desc_fs.set_flags(flags, false);
     desc_fs.set_more();
-    desc_fs.add_text(proc.oss.str(), false, get_number_of_cols());
+    desc_fs.add_text(desc, false, get_number_of_cols());
 
     formatted_scroller quote_fs;
     quote_fs.set_more();
@@ -143,6 +143,22 @@ int show_description(const describe_info &inf)
             return keyin;
         }
     }
+}
+
+string process_description(const describe_info &inf)
+{
+    string desc;
+    if (!inf.prefix.empty())
+        desc += "\n\n" + trimmed_string(filtered_lang(inf.prefix));
+    if (!inf.title.empty())
+        desc += "\n\n" + trimmed_string(filtered_lang(inf.title));
+    desc += "\n\n" + trimmed_string(filtered_lang(inf.body.str()));
+    if (!inf.suffix.empty())
+        desc += "\n\n" + trimmed_string(filtered_lang(inf.suffix));
+    if (!inf.footer.empty())
+        desc += "\n\n" + trimmed_string(filtered_lang(inf.footer));
+    trim_string(desc);
+    return desc;
 }
 
 const char* jewellery_base_ability_string(int subtype)
@@ -2251,7 +2267,7 @@ void get_feature_desc(const coord_def &pos, describe_info &inf)
     inf.quote = getQuoteString(db_name);
 }
 
-void describe_feature_wide(const coord_def& pos, bool show_quote)
+void describe_feature_wide(const coord_def& pos)
 {
     describe_info inf;
     get_feature_desc(pos, inf);
@@ -2428,7 +2444,7 @@ static bool _do_action(item_def &item, const vector<command_type>& actions, int 
     case CMD_EVOKE:            evoke_item(slot);                    break;
     case CMD_EAT:              eat_food(slot);                      break;
     case CMD_READ:             read(&item);                         break;
-    case CMD_WEAR_JEWELLERY:   puton_ring(slot);                    break;
+    case CMD_WEAR_JEWELLERY:   puton_ring(slot, true);              break;
     case CMD_REMOVE_JEWELLERY: remove_ring(slot, true);             break;
     case CMD_QUAFF:            drink(&item);                        break;
     case CMD_DROP:             drop_item(slot, item.quantity);      break;
