@@ -2174,7 +2174,7 @@ ENDMAP
 NAME:    onia_arrival_larder
 TAGS:    arrival
 ORIENT:  float
-MONS:    w:100 rat / w:50 giant cockroach / quokka
+MONS:    w:100 rat / w:50 giant cockroach / weasel
 SUBST:   ? = .:30 1:20
 MAP
 xxxxxxxxxx@xxxxxxxxxx
@@ -2441,7 +2441,7 @@ ORIENT:  float
 : if crawl.one_chance_in(10) then
 SHUFFLE: 16
 MONS:    centaur / centaur warrior / yaktaur / yaktaur captain
-MONS:    rat / river rat / hell rat / quokka
+MONS:    rat / river rat / hell rat / weasel
 MONS:    worker ant / soldier ant / queen ant
 MONS:    worm / tyrant leech
 MONS:    komodo dragon / iguana / basilisk

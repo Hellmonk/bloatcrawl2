@@ -115,7 +115,7 @@ ENDMAP
 NAME:   enter_ossuary_4
 TAGS:   transparent
 COLOUR: 1 = yellow, x = white
-MONS:   rat zombie / quokka zombie / goblin zombie
+MONS:   rat zombie / weasel zombie / goblin zombie
 FTILE:  1 = floor_sandstone, x = floor_sandstone, O = floor_sandstone
 : ossuary_portal(_G)
 MAP
@@ -463,7 +463,7 @@ SUBST:   2 = 2 3:1 .:1
 SUBST:   3 = 3 2:1 .:1
 ITEM:    any scroll, any potion
 MONS:    mummy
-MONS:    rat zombie / jackal zombie / quokka zombie / adder zombie / \
+MONS:    rat zombie / jackal zombie / weasel zombie / adder zombie / \
          goblin zombie / hobgoblin zombie / kobold zombie
 MONS:    gnoll zombie / orc zombie / hound zombie / big kobold zombie / \
          human zombie / elf zombie / centaur zombie
@@ -1129,7 +1129,7 @@ NAME:   ossuary_minmay_chase
 WEIGHT: 10
 ORIENT: encompass
 TAGS:   no_item_gen no_monster_gen
-MONS:   rat zombie / quokka zombie / adder zombie /\
+MONS:   rat zombie / weasel zombie / adder zombie /\
         goblin zombie / hobgoblin zombie / kobold zombie / gnoll zombie w:2 /\
         big kobold zombie w:1 / human zombie w:1 / elf zombie w:1 / orc zombie w:1
 MONS:   generate_awake mummy
@@ -1168,7 +1168,7 @@ NAME:   ossuary_boxes_badplayer
 WEIGHT: 10
 TAGS:   no_item_gen no_monster_gen
 ORIENT: encompass
-MONS:   rat zombie / quokka zombie / adder zombie /\
+MONS:   rat zombie / weasel zombie / adder zombie /\
         goblin zombie / hobgoblin zombie / kobold zombie / gnoll zombie w:2 /\
         big kobold zombie w:1 / human zombie w:1 / elf zombie w:1 / orc zombie w:1
 MONS:   mummy

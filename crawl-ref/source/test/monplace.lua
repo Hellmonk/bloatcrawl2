@@ -15,7 +15,7 @@ local function assert_place_monster_on(monster, feature)
          "Could not place monster " .. monster .. " on " .. feature)
 end
 
-assert_place_monster_on("quokka", "floor")
+assert_place_monster_on("weasel", "floor")
 assert_place_monster_on("necrophage", "altar_zin")
 assert_place_monster_on("rat", "shallow water")
 

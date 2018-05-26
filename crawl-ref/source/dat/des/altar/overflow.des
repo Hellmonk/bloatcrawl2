@@ -614,7 +614,7 @@ TAGS:   uniq_altar_elyvilon temple_overflow_1 temple_overflow_elyvilon
 TAGS:   no_monster_gen transparent decor
 DEPTH:  D:2-
 KFEAT:  C = altar_elyvilon
-MONS:   patrolling quokka att:good_neutral
+MONS:   patrolling weasel att:good_neutral
 : interest_check(_G)
 MAP
 xxx.@.xxx
@@ -1760,7 +1760,7 @@ SHUFFLE: MCSBP
 KFEAT: _ = altar_ru
 KMONS: P = ball python perm_ench:paralysis / rat perm_ench:paralysis / \
   frilled lizard perm_ench:paralysis / giant cockroach perm_ench:paralysis / \
-  quokka perm_ench:paralysis / kobold w:5 perm_ench:paralysis / \
+  weasel perm_ench:paralysis / kobold w:5 perm_ench:paralysis / \
   goblin w:5 perm_ench:paralysis / hobgoblin w:5 perm_ench:paralysis
 KMONS: C = bat perm_ench:corona / adder perm_ench:corona / \
   kobold perm_ench:corona / goblin perm_ench:corona / hobgoblin perm_ench:corona
@@ -2086,11 +2086,11 @@ TAGS:   overflow_altar_trog
 DEPTH:  D:2-9, Orc, !Orc:$
 : if you.absdepth() < 6 then
 MONS:   orc ; hand axe . animal skin
-MONS:   leopard gecko / rat / frilled lizard / quokka
+MONS:   leopard gecko / rat / frilled lizard / weasel
 {{
   dgn.delayed_decay(_G, 'd',
                     'leopard gecko chunk q:1 / rat chunk q:1 / ' ..
-                    'frilled lizard chunk q:1 / quokka chunk q:1')
+                    'frilled lizard chunk q:1 / weasel chunk q:1')
 }}
 : else
 MONS:   orc warrior ; war axe . animal skin

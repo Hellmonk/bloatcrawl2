@@ -2913,6 +2913,11 @@ water elementalist statue
 A smooth statue of a beautiful merfolk bathing in a fountain, sculpted from
 creamy, faintly pinkish travertine. It glistens softly in the light.
 %%%%
+weasel
+
+A slender mustelid of a vicious disposition. Not entirely to your surprise, it
+seems to have grown to an outrageous size.
+%%%%
 witch
 
 An old and unnaturally ugly human, wearing robes stained with what appears to

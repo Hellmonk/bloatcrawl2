@@ -64,7 +64,7 @@ zombie_human MONS_ZOMBIE_HUMAN
 zombie_jackal MONS_ZOMBIE_JACKAL
 zombie_kobold MONS_ZOMBIE_KOBOLD
 zombie_orc MONS_ZOMBIE_ORC
-zombie_quokka MONS_ZOMBIE_QUOKKA
+zombie_weasel MONS_ZOMBIE_WEASEL
 zombie_rat MONS_ZOMBIE_RAT
 zombie_roach MONS_ZOMBIE_ROACH
 zombie_scorpion MONS_ZOMBIE_SCORPION

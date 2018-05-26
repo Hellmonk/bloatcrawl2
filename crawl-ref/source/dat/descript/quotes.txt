@@ -3225,6 +3225,17 @@ water nymph
 watery tart threw a sword at you.”
     -Monty Python and the Holy Grail, 1975.
 %%%%
+weasel
+
+ HAMLET: Do you see yonder cloud that's almost in shape of a camel? 
+ POLONIUS: By th' mass, and 'tis like a camel indeed. 
+ HAMLET: Methinks it is like a weasel.
+ POLONIUS: It is back'd like a weasel. 
+ HAMLET: Or like a whale. 
+ POLONIUS: Very like a whale. 
+    -William Shakespeare, _The Tragedy of Hamlet, Prince of Denmark_, III, 2.
+1603.
+%%%%
 whip
 
 “Not with a Club, the Heart is broken

@@ -51,7 +51,7 @@ komodo_dragon CORPSE_KOMODO_DRAGON
 
 ## Rodents ('r')
 rat CORPSE_RAT
-quokka CORPSE_QUOKKA
+weasel CORPSE_WEASEL
 green_rat CORPSE_GREEN_RAT
 orange_rat CORPSE_ORANGE_RAT
 porcupine CORPSE_PORCUPINE

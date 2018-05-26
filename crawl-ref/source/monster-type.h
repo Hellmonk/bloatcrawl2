@@ -37,8 +37,9 @@ enum monster_type                      // menv[].type
     MONS_HELL_RAT,
 #if TAG_MAJOR_VERSION == 34
     MONS_LABORATORY_RAT,
+    MONS_QUOKKA,
 #endif
-    MONS_QUOKKA,         // Quokka are a type of wallaby, returned -- bwr 382
+    MONS_WEASEL,
     MONS_PORCUPINE,
     MONS_JACKAL,
     MONS_HOUND,

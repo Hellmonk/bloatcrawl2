@@ -121,7 +121,7 @@ spret_type cast_summon_small_mammal(int pow, god_type god, bool fail)
     if (x_chance_in_y(10, pow + 1))
         mon = random_choose(MONS_BAT, MONS_RAT);
     else
-        mon = MONS_QUOKKA;
+        mon = MONS_WEASEL;
 
     if (!create_monster(_pal_data(mon, 3, god, SPELL_SUMMON_SMALL_MAMMAL)))
         canned_msg(MSG_NOTHING_HAPPENS);
@@ -1695,8 +1695,7 @@ static bool _raise_remains(const coord_def &pos, int corps, beh_type beha,
     {
         *motions_r |= DEAD_ARE_SLITHERING;
     }
-    else if (mons_genus(zombie_type)    == MONS_FROG
-             || mons_genus(zombie_type) == MONS_QUOKKA)
+    else if (mons_genus(zombie_type)    == MONS_FROG)
     {
         *motions_r |= DEAD_ARE_HOPPING;
     }

@@ -938,7 +938,7 @@ static tileidx_t _zombie_tile_to_spectral(const tileidx_t z_tile)
         return TILEP_MONS_SPECTRAL_LARGE;
     case TILEP_MONS_ZOMBIE_QUADRUPED_SMALL:
     case TILEP_MONS_ZOMBIE_RAT:
-    case TILEP_MONS_ZOMBIE_QUOKKA:
+    case TILEP_MONS_ZOMBIE_WEASEL:
     case TILEP_MONS_ZOMBIE_JACKAL:
     case TILEP_MONS_ZOMBIE_HOUND:
     case TILEP_MONS_ZOMBIE_CRAB:
@@ -1023,7 +1023,7 @@ static tileidx_t _zombie_tile_to_simulacrum(const tileidx_t z_tile)
         return TILEP_MONS_SIMULACRUM_LARGE;
     case TILEP_MONS_ZOMBIE_QUADRUPED_SMALL:
     case TILEP_MONS_ZOMBIE_RAT:
-    case TILEP_MONS_ZOMBIE_QUOKKA:
+    case TILEP_MONS_ZOMBIE_WEASEL:
     case TILEP_MONS_ZOMBIE_JACKAL:
     case TILEP_MONS_ZOMBIE_HOUND:
     case TILEP_MONS_ZOMBIE_CRAB:
@@ -1108,7 +1108,7 @@ static tileidx_t _zombie_tile_to_skeleton(const tileidx_t z_tile)
         return TILEP_MONS_SKELETON_LARGE;
     case TILEP_MONS_ZOMBIE_QUADRUPED_SMALL:
     case TILEP_MONS_ZOMBIE_RAT:
-    case TILEP_MONS_ZOMBIE_QUOKKA:
+    case TILEP_MONS_ZOMBIE_WEASEL:
     case TILEP_MONS_ZOMBIE_JACKAL:
     case TILEP_MONS_ZOMBIE_HOUND:
     case TILEP_MONS_ZOMBIE_BEETLE:
@@ -1231,7 +1231,7 @@ static tileidx_t _mon_to_zombie_tile(const monster_info &mon)
         { MONS_GIANT_LIZARD,            TILEP_MONS_ZOMBIE_LIZARD },
         { MONS_CROCODILE,               TILEP_MONS_ZOMBIE_LIZARD },
         { MONS_RAT,                     TILEP_MONS_ZOMBIE_RAT },
-        { MONS_QUOKKA,                  TILEP_MONS_ZOMBIE_QUOKKA },
+        { MONS_WEASEL,                  TILEP_MONS_ZOMBIE_WEASEL },
         { MONS_HOUND,                   TILEP_MONS_ZOMBIE_HOUND },
         { MONS_FROG,                    TILEP_MONS_ZOMBIE_FROG },
         { MONS_CRAB,                    TILEP_MONS_ZOMBIE_CRAB },

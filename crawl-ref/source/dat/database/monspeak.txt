@@ -1211,7 +1211,7 @@ Summonings player ghost
 
 @The_monster@ says, "It's dangerous to adventure alone."
 
-VISUAL:@The_monster@ pulls a quokka out of @possessive@ cap.
+VISUAL:@The_monster@ pulls a bunny out of @possessive@ hat.
 
 @The_monster@ points @at_foe@ and yells, "Attack!"
 

@@ -463,7 +463,7 @@ ENDMAP
 
 NAME:  minmay_rat_hole
 DEPTH: D:2-4
-MONS:  rat, quokka
+MONS:  rat, weasel
 ITEM:  bread ration / meat ration / nothing w:60
 MAP
  xxx
@@ -4968,7 +4968,7 @@ KITEM:  e = randbook disc:necromancy slevels:2 owner:Jessica / \
             randbook disc:charms slevels:2 owner:Jessica / \
             randbook disc:hexes slevels:2 owner:Jessica / \
             randbook disc:translocation slevels:2 owner:Jessica
-MONS:   jessica, quokka
+MONS:   jessica, weasel
 veto {{ return you.uniques("Jessica") }}
 MAP
    .....

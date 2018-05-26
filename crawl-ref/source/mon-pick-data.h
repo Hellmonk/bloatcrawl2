@@ -14,7 +14,7 @@ static const pop_entry pop_d[] =
   {  1, 11,  335, SEMI, MONS_JACKAL },
   {  1, 11,  192, PEAK, MONS_GNOLL },
   {  2, 12,  925, FLAT, MONS_ADDER },
-  {  2, 12,  515, SEMI, MONS_QUOKKA },
+  {  2, 12,  515, SEMI, MONS_WEASEL },
   {  2,  6,  515, FALL, MONS_WORM },
   {  3, 13, 1000, FLAT, MONS_ORC },
   {  4,  7, 1000, FLAT, MONS_NO_MONSTER},
