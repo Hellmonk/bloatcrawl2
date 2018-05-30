@@ -71,6 +71,7 @@ private:
     void glDebug(const char *msg);
 
     int prev_keycode;
+    string m_textinput_queue;
 };
 
 #endif // USE_SDL

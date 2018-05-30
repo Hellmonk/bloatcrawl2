@@ -760,7 +760,7 @@ int SDLWrapper::wait_event(wm_event *event)
         break;
     case SDL_TEXTINPUT:
     {
-        event->type = WME_KEYPRESS;
+        event->type = WME_KEYDOWN;
         // XXX: handle multiple keys?
         char32_t wc;
         utf8towc(&wc, sdlevent.text.text);
