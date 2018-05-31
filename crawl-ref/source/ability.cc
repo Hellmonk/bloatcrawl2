@@ -324,6 +324,8 @@ static const ability_def Ability_List[] =
       0, 0, 0, 0, {}, abflag::NONE },
     { ABIL_END_PPROJ, "End Portal Projectile",
       0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_PIERCE, "End Portal Projectile",
+      0, 0, 0, 0, {}, abflag::NONE },
 
     { ABIL_DIG, "Dig", 0, 0, 0, 0, {}, abflag::INSTANT },
     { ABIL_SHAFT_SELF, "Shaft Self", 0, 0, 250, 0, {}, abflag::DELAY },
@@ -2116,6 +2118,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         you.attribute[ATTR_ANIMATE_DEAD] = 0;
         mpr("You stop reaping the dead.");
         break;
+    case ABIL_END_PIERCE:
+        fail_check();
+        you.attribute[ATTR_PIERCING_SHOT] = 0;
+        mpr("Your projectiles no longer penetrate their targets.");
+        break;
     case ABIL_END_SPECTRAL_WEAPON:
     {
         fail_check();
@@ -3493,6 +3500,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
   
     if (you.attribute[ATTR_BONE_ARMOUR])
        _add_talent(talents, ABIL_END_CIGOTUVIS, check_confused);
+   
+    if (you.attribute[ATTR_PIERCING_SHOT])
+        _add_talent(talents, ABIL_END_PIERCE, check_confused);
    
     if (you.attribute[ATTR_REPEL_MISSILES] || you.attribute[ATTR_DEFLECT_MISSILES])
        _add_talent(talents, ABIL_END_MISSILE_DEFLECTION, check_confused);

@@ -708,3 +708,9 @@ Reflex status
 
 A recent wall jump has heightened your reflexes, temporarily increasing 
 your evasion.
+%%%%
+Pierce status
+
+You are enchanting your fired or thrown missiles to penetrate their targets,
+potentially hitting everything in their path and bypassing shields. This comes
+at the cost of some magic for each missile.

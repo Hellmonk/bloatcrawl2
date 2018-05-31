@@ -1039,6 +1039,12 @@ Porkalator spell
 Transforms the target into a pig. The target moves swiftly but cannot evoke
 wands or cast spells. The caster's demise will cause the transformation to end.
 %%%%
+Piercing Shot spell
+
+Imbues the caster's thrown or fired missiles with translocational energy, causing
+them to pierce through any targets hit until reaching their maximum distance and 
+bypassing shields. Each missile thrown or fired in this way consumes additional magic.
+%%%%
 Portal Projectile spell
 
 Allows the caster to teleport fired or thrown missiles directly to their

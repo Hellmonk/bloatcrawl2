@@ -777,6 +777,19 @@ bool fill_status_info(int status, status_info* inf)
         break;
     }
 	
+    case STATUS_PIERCING_SHOT:
+    {
+        if(you.attribute[ATTR_PIERCING_SHOT])
+        {
+            inf->light_text = "Pierce";
+            if (!is_pierce_active())
+                inf->light_colour = DARKGREY;
+            else
+                inf->light_colour = LIGHTBLUE;
+        }
+        break;
+    }
+	
 	case STATUS_SERVITOR:
     {
         if(you.attribute[ATTR_SERVITOR])

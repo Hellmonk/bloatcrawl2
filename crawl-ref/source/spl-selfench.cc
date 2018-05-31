@@ -375,6 +375,16 @@ spret_type cast_invisibility(int pow, bool fail)
     return SPRET_SUCCESS;
 }
 
+spret_type cast_piercing_shot(int pow, bool fail)
+{
+    fail_check();
+    you.attribute[ATTR_PIERCING_SHOT] = 1;
+
+    // Piercing Shot and Portal Projectile are mutually exclusive.
+    you.attribute[ATTR_PORTAL_PROJECTILE] = 0;
+    return SPRET_SUCCESS;
+}
+
 //return the total amount of mp the player has frozen using a really ugly 
 //chain of ifs, probably should, like, use a real data structure
 int calculate_frozen_mp()
@@ -459,6 +469,10 @@ int calculate_frozen_mp()
     if (you.attribute[ATTR_SERVITOR] > 0)
     {
 		frozen_mp += spell_mp_freeze(SPELL_SPELLFORGED_SERVITOR);
+	}
+    if (you.attribute[ATTR_PIERCING_SHOT] > 0)
+    {
+		frozen_mp += spell_mp_freeze(SPELL_PIERCING_SHOT);
 	}
     // Forms. Only check for cancelable forms here; uncancellable goodforms shouldn't reserve mp.
     if (you.form && !you.transform_uncancellable)
@@ -548,6 +562,11 @@ void dispel_permanent_buffs()
     if(you.attribute[ATTR_PERMAINVIS])
     {
         you.attribute[ATTR_PERMAINVIS] = 0;
+        dispelled = true;
+    }
+    if(you.attribute[ATTR_PIERCING_SHOT])
+    {
+        you.attribute[ATTR_PIERCING_SHOT] = 0;
         dispelled = true;
     }
     if(you.attribute[ATTR_BONE_ARMOUR])

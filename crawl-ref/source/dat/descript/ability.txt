@@ -146,6 +146,14 @@ End Animate Dead ability
 
 Ends your Animate Dead spell.
 %%%%
+End Portal Projectile ability
+
+Ends your Portal Projectile spell.
+%%%%
+End Piercing Shot ability
+
+Ends your Piercing Shot spell.
+%%%%
 Self-Restoration ability
 
 Restores your strength, dexterity and intelligence and heals any rotted health,

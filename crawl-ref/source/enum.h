@@ -501,6 +501,7 @@ enum ability_type
     ABIL_END_BATTLESPHERE,
     ABIL_END_SERVITOR,
     ABIL_END_PPROJ,
+	ABIL_END_PIERCE,
     NUM_ABILITIES
 };
 
@@ -641,6 +642,7 @@ enum attribute_type
     ATTR_SERVITOR,             // spellforged servitor
     ATTR_YRED_SOUL_TIMEOUT,    // enslaved soul timeout
     ATTR_WALL_JUMP_READY,      // Ready to perform a wall jump.
+	ATTR_PIERCING_SHOT,        // Piercing shot
     NUM_ATTRIBUTES
 };
 
@@ -4902,6 +4904,7 @@ enum spell_type : int
     SPELL_UPHEAVAL,
 	SPELL_RADIATION_BREATH,
     SPELL_IGNITION,
+    SPELL_PIERCING_SHOT,
     NUM_SPELLS
 };
 

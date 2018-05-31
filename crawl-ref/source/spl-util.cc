@@ -412,6 +412,18 @@ static void _remove_spell_attributes(spell_type spell)
             mprf(MSGCH_DURATION, "Your aura of abjuration dissipates.");
         }
         break;
+    case SPELL_PORTAL_PROJECTILE:
+        if (you.attribute[ATTR_PORTAL_PROJECTILE])
+        {
+            you.attribute[ATTR_PORTAL_PROJECTILE] = 0;
+            mprf(MSGCH_DURATION, "You are no longer teleporting projectiles.");
+        }
+    case SPELL_PIERCING_SHOT:
+        if (you.attribute[ATTR_PIERCING_SHOT])
+        {
+            you.attribute[ATTR_PIERCING_SHOT] = 0;
+            mprf(MSGCH_DURATION, "You are no longer teleporting projectiles.");
+        }
     case SPELL_HASTE:
         if (you.attribute[ATTR_PERMAHASTE])
         {

@@ -777,6 +777,7 @@ spret_type cast_portal_projectile(int pow, bool fail)
         return SPRET_ABORT;
     }
     // Calculate the accuracy bonus based on current spellpower.
+	 you.attribute[ATTR_PIERCING_SHOT] = 0;
     you.attribute[ATTR_PORTAL_PROJECTILE] = 1 + pow;
     return SPRET_SUCCESS;
 }

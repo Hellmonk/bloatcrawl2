@@ -1644,6 +1644,17 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+    SPELL_PIERCING_SHOT, "Piercing Shot",
+    SPTYP_CHARMS | SPTYP_TRANSLOCATION,
+    SPFLAG_PERMABUFF,
+    5,
+    200,
+    -1, -1,
+    3, 0,
+    TILEG_PIERCING_SHOT,
+},
+
+{
     SPELL_GOLUBRIAS_PASSAGE, "Passage of Golubria",
     SPTYP_TRANSLOCATION,
     SPFLAG_TARGET | SPFLAG_NEUTRAL | SPFLAG_ESCAPE | SPFLAG_SELFENCH,
