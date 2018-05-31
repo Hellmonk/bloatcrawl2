@@ -798,6 +798,12 @@ void sonic_damage(bool scream)
 
 spret_type vampiric_drain(int pow, monster* mons, bool fail)
 {
+    if (you.hp == you.hp_max)
+    {
+        mpr("Your health is already full!");
+        return SPRET_ABORT;
+    }
+	
     if (mons == nullptr || mons->submerged())
     {
         fail_check();
