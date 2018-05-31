@@ -652,8 +652,8 @@ void init_element_colours()
                         0));
     add_element_colour(_create_random_element_colour_calc(
                             ETC_AWOKEN_FOREST, "awoken_forest",
-                            40, GREEN,
-                            40, LIGHTGREEN,
+                            40, RED,
+                            40, LIGHTRED,
                         0));
     add_element_colour(new random_element_colour_calc(
                             ETC_WU_JIAN, "wu_jian",
