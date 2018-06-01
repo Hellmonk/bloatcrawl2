@@ -776,8 +776,13 @@ spret_type cast_portal_projectile(int pow, bool fail)
         mpr("You are already teleporting projectiles to their destination.");
         return SPRET_ABORT;
     }
+	
+    if (you.attribute[ATTR_PIERCING_SHOT])
+    {
+        you.attribute[ATTR_PIERCING_SHOT] = 0;
+        mprf("Your projectiles are no longer magically penetrating their targets.");
+    }
     // Calculate the accuracy bonus based on current spellpower.
-	 you.attribute[ATTR_PIERCING_SHOT] = 0;
     you.attribute[ATTR_PORTAL_PROJECTILE] = 1 + pow;
     return SPRET_SUCCESS;
 }

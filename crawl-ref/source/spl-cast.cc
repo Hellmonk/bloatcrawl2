@@ -1773,6 +1773,8 @@ static spret_type _handle_buff_spells(spell_type spell, int powc, bolt& beam, go
             return player_spellforged_servitor(powc, god, false);    
         case SPELL_PORTAL_PROJECTILE:
             return cast_portal_projectile(powc, false);
+        case SPELL_PIERCING_SHOT:
+            return cast_piercing_shot(powc, false);
         default:
 		    return SPRET_NONE;
     }

@@ -381,7 +381,11 @@ spret_type cast_piercing_shot(int pow, bool fail)
     you.attribute[ATTR_PIERCING_SHOT] = 1;
 
     // Piercing Shot and Portal Projectile are mutually exclusive.
-    you.attribute[ATTR_PORTAL_PROJECTILE] = 0;
+    if(you.attribute[ATTR_PORTAL_PROJECTILE])
+    {
+        you.attribute[ATTR_PORTAL_PROJECTILE] = 0;
+        mprf("You are no longer teleporting projectiles to their destination.");
+    }
     return SPRET_SUCCESS;
 }
 

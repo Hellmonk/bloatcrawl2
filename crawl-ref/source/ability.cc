@@ -324,7 +324,7 @@ static const ability_def Ability_List[] =
       0, 0, 0, 0, {}, abflag::NONE },
     { ABIL_END_PPROJ, "End Portal Projectile",
       0, 0, 0, 0, {}, abflag::NONE },
-    { ABIL_END_PIERCE, "End Portal Projectile",
+    { ABIL_END_PIERCE, "End Piercing Shot",
       0, 0, 0, 0, {}, abflag::NONE },
 
     { ABIL_DIG, "Dig", 0, 0, 0, 0, {}, abflag::INSTANT },

@@ -784,12 +784,11 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
     }
 
     string ammo_name;
-	
-    if (!pbolt.pierce)
-        pierce = false;
 
-    else if(_is_always_penetrating_attack(you, you.weapon(), item))
+    if(_is_always_penetrating_attack(you, you.weapon(), item))
+    {
         pierce = false;
+	}
 
     if (_setup_missile_beam(&you, pbolt, item, ammo_name, returning))
     {
