@@ -182,7 +182,7 @@ static const species_type species_order[] =
 {
     // comparatively human-like looks
     SP_HUMAN,          SP_DEEP_ELF,
-    SP_HILL_ORC,
+    SP_MOUNTAIN_DWARF,
     // small species
     SP_KOBOLD,		   SP_SPRIGGAN,
     // large species
@@ -965,7 +965,7 @@ static species_group species_groups[] =
         coord_def(0, 0),
         20,
         {
-            SP_HILL_ORC,
+            SP_MOUNTAIN_DWARF,
             SP_MINOTAUR,
             SP_MERFOLK,
             SP_GARGOYLE,

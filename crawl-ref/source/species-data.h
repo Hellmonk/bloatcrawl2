@@ -321,20 +321,21 @@ static const map<species_type, species_def> species_data =
       SK_BOWS },
 } },
 
-{ SP_HILL_ORC, {
-    "HO",
-    "Hill Orc", "Orcish", "Orc",
-    SPF_ORCISH,
-    0, 1, 0, 3,
-    MONS_ORC,
-    HT_LAND, US_ALIVE, SIZE_MEDIUM,
+{ SP_MOUNTAIN_DWARF, {
+    "MD",
+    "Mountain Dwarf", "Dwarven", "Dwarf",
+    SPF_NONE,
+    0, 0, -1, 3,
+    MONS_DEEP_DWARF,
+    HT_LAND, US_ALIVE, SIZE_SMALL,
     10, 8, 6, // 24
     { STAT_STR }, 5,
+    { {MUT_STURDY_FRAME, 1, 1 }, {MUT_WILD_MAGIC, 1, 6}, {MUT_WILD_MAGIC, 1, 12},
+      {MUT_WILD_MAGIC, 1, 18},},
     {},
     {},
-    {},
-    { JOB_FIGHTER, JOB_MONK, JOB_BERSERKER,
-      JOB_NECROMANCER, JOB_FIRE_ELEMENTALIST, JOB_TORPOR_KNIGHT },
+    { JOB_FIGHTER, JOB_BERSERKER,
+      JOB_EARTH_ELEMENTALIST, JOB_FIRE_ELEMENTALIST, JOB_TORPOR_KNIGHT },
     { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS },
 } },
 
@@ -702,6 +703,23 @@ static const map<species_type, species_def> species_data =
     { JOB_FIGHTER, JOB_BERSERKER, JOB_NECROMANCER,
       JOB_EARTH_ELEMENTALIST },
     { SK_MACES_FLAILS, SK_AXES },
+} },
+
+{ SP_HILL_ORC, {
+    "HO",
+    "Hill Orc", "Orcish", "Orc",
+    SPF_ORCISH,
+    0, 1, 0, 3,
+    MONS_ORC,
+    HT_LAND, US_ALIVE, SIZE_MEDIUM,
+    10, 8, 6, // 24
+    { STAT_STR }, 5,
+    {},
+    {},
+    {},
+    { JOB_FIGHTER, JOB_MONK, JOB_BERSERKER,
+      JOB_NECROMANCER, JOB_FIRE_ELEMENTALIST, JOB_TORPOR_KNIGHT },
+    { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS },
 } },
 
 { SP_FELID, {

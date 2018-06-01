@@ -147,6 +147,7 @@ sub aptitude_table
         next if $sp eq 'Ghoul';
         next if $sp eq 'Halfling';
         next if $sp eq 'Ogre';
+        next if $sp eq 'Hill Orc';
         
         if($sp eq 'Vampire')
         {

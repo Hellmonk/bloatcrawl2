@@ -4444,6 +4444,7 @@ enum species_type
     SP_GNOLL,
     SP_SKELETON,
     SP_TITAN,
+    SP_MOUNTAIN_DWARF,
     NUM_SPECIES,
 
     SP_UNKNOWN  = 100,
