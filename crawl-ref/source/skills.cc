@@ -1027,17 +1027,16 @@ static int _train(skill_type exsk, int &max_exp, bool simu)
         return 0;
 
     // Bonus from manual
-    int slot;
+    item_def* manual = manual_for_skill(exsk);
     int bonus_left = skill_inc;
-    while (bonus_left > 0 && (slot = manual_slot_for_skill(exsk)) != -1)
+    while (bonus_left > 0 && manual != nullptr && manual->skill_points > 0)
     {
-        item_def& manual(you.inv[slot]);
-        const int bonus = min<int>(bonus_left, manual.skill_points);
+        int bonus = min<int>(bonus_left, manual->skill_points);
         skill_inc += bonus;
         bonus_left -= bonus;
-        manual.skill_points -= bonus;
-        if (!manual.skill_points && !simu)
-            finish_manual(slot);
+        manual->skill_points -= bonus;
+        if (!manual->skill_points && !simu)
+            finish_manual(manual);
     }
 
     const skill_type old_best_skill = best_skill(SK_FIRST_SKILL, SK_LAST_SKILL);

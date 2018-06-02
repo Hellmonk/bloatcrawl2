@@ -5066,6 +5066,8 @@ player::player()
 
     spell_library.reset();
 	
+	manuals_in_inventory.clear();
+	
     spells.init(SPELL_NO_SPELL);
     old_vehumet_gifts.clear();
     spell_no        = 0;

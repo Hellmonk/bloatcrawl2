@@ -167,6 +167,8 @@ public:
     FixedBitVector<NUM_SPELLS> hidden_spells;
     FixedVector<spell_type, MAX_KNOWN_SPELLS> spells;
     set<spell_type> old_vehumet_gifts, vehumet_gifts;
+	
+    vector<item_def> manuals_in_inventory;
 
     uint8_t spell_no;
     game_chapter chapter;

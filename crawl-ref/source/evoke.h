@@ -6,9 +6,9 @@
 #ifndef EVOKE_H
 #define EVOKE_H
 
-int manual_slot_for_skill(skill_type skill);
+item_def* manual_for_skill(skill_type skill);
 bool skill_has_manual(skill_type skill);
-void finish_manual(int slot);
+void finish_manual(item_def* manual);
 void get_all_manual_charges(vector<int> &charges);
 void set_all_manual_charges(const vector<int> &charges);
 string manual_skill_names(bool short_text=false);

@@ -1664,6 +1664,11 @@ static void tag_construct_you_items(writer &th)
     marshallFixedBitVector<NUM_RUNE_TYPES>(th, you.runes);
     marshallByte(th, you.obtainable_runes);
 
+    // List of manuals carried by the player
+	marshallShort(th, you.manuals_in_inventory.size());
+    for (const auto &manual : you.manuals_in_inventory)
+         marshallItem(th, manual);
+	
     // Item descrip for each type & subtype.
     // how many types?
     marshallUByte(th, NUM_IDESC);
@@ -3637,7 +3642,21 @@ static void tag_read_you_items(reader &th)
 
     unmarshallFixedBitVector<NUM_RUNE_TYPES>(th, you.runes);
     you.obtainable_runes = unmarshallByte(th);
-	
+
+    if(th.getMinorVersion() >= TAG_MINOR_GOLDIFY_MANUALS)
+    {
+        // List of manuals carried
+        count = unmarshallShort(th);
+        ASSERT(count >= 0);
+        you.manuals_in_inventory.clear();
+        for (int j = 0; j < count; ++j)
+        {
+            item_def it;
+            unmarshallItem(th, it);
+            you.manuals_in_inventory.push_back(it);
+        }
+    }
+
     // Item descrip for each type & subtype.
     // how many types?
     count = unmarshallUByte(th);

@@ -69,6 +69,7 @@
 #include "rot.h"
 #include "shopping.h"
 #include "showsymb.h"
+#include "skills.h"
 #include "spl-book.h"
 #include "spl-util.h"
 #include "stash.h"
@@ -1845,6 +1846,17 @@ static void _get_book(const item_def& it, bool quiet)
         mpr("Unfortunately, it added no spells to the library.");
 }
 
+static void _get_manual(const item_def& it, bool quiet)
+{
+    const skill_type skill = static_cast<skill_type>(it.plus);
+    you.manuals_in_inventory.push_back(it);
+    if (!quiet)
+    {
+        mprf("You pick up the manual of %s%s",
+              skill_name(skill), is_useless_skill(skill) ? "" :  " and begin studying.");
+    }
+}
+
 // Adds all books in the player's inventory to library.
 // Declared here for use by tags to load old saves.
 // Outside of loading old saves, only used at character creation.
@@ -2152,10 +2164,18 @@ static bool _merge_items_into_inv(item_def &it, int quant_got,
     }
 	
 	// Books are also massless.
-    if (it.base_type == OBJ_BOOKS && it.sub_type != BOOK_MANUAL)
+    if (it.base_type == OBJ_BOOKS)
     {
-        _get_book(it, quiet);
-        return true;
+        if (it.sub_type != BOOK_MANUAL)
+        {
+            _get_book(it, quiet);
+            return true;
+        }
+        else
+        {
+			_get_manual(it, quiet);
+            return true;
+        }
     }
 
     // The Orb is also handled specially.

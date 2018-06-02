@@ -204,6 +204,7 @@ enum tag_minor_version
     TAG_MINOR_TRAINING_TARGETS,    // training targets for skills
     TAG_MINOR_MAGICAL_STAVES,      // moved magical staves to the offhand
     TAG_MINOR_GOLDIFY_IMPROVEMENT, // allow spell hiding
+    TAG_MINOR_GOLDIFY_MANUALS,     // Don't make manuals take up an inventory slot either
 #endif
     NUM_TAG_MINORS,
     TAG_MINOR_VERSION = NUM_TAG_MINORS - 1
