@@ -1282,7 +1282,7 @@ int player_hunger_rate(bool temp)
  */
 int player_total_spell_levels()
 {
-    return you.experience_level
+    return 2 + you.experience_level
            + (max(0, you.intel()) * you.experience_level) / 27;
 }
 
