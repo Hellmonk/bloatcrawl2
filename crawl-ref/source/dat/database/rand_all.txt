@@ -544,6 +544,32 @@ the Invisible
 
 the Vanishing
 
+the Stale
+
+the Obscure
+
+the Opulent
+
+the Excruciating
+
+the Unknown
+
+the Violent
+
+the Explosive
+
+the Angry
+
+the Peaceful
+
+the Restless
+
+the Hunted
+
+the Slumbering
+
+the Awoken
+
 %%%%
 _thing_names_
 
@@ -650,6 +676,8 @@ Games
 Plagues
 
 Years
+
+Memes
 
 w:5
 Spreadsheets
