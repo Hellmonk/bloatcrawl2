@@ -325,7 +325,7 @@ static const map<species_type, species_def> species_data =
     "MD",
     "Mountain Dwarf", "Dwarven", "Dwarf",
     SPF_NONE,
-    0, 0, -1, 3,
+    0, 0, 0, 3,
     MONS_DEEP_DWARF,
     HT_LAND, US_ALIVE, SIZE_SMALL,
     10, 8, 6, // 24
