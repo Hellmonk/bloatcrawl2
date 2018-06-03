@@ -211,11 +211,11 @@ spret_type cast_chain_spell(spell_type spell_cast, int pow,
 
     bool first = true;
     coord_def source, target;
-
+	
+    source = target = caster->pos();
     do
     {
-		source = target;
-        source = caster->pos();
+        source = target;
         // infinity as far as this spell is concerned
         // (Range - 1) is used because the distance is randomised and
         // may be shifted by one.
