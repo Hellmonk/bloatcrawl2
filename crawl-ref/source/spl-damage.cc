@@ -212,9 +212,10 @@ spret_type cast_chain_spell(spell_type spell_cast, int pow,
     bool first = true;
     coord_def source, target;
 
-    for (source = caster->pos(); pow > 0;
-         pow -= 8 + random2(13), source = target)
+    do
     {
+		source = target;
+        source = caster->pos();
         // infinity as far as this spell is concerned
         // (Range - 1) is used because the distance is randomised and
         // may be shifted by one.
@@ -258,13 +259,9 @@ spret_type cast_chain_spell(spell_type spell_cast, int pow,
 
             if (dist < min_dist)
             {
-                // switch to looking for closer targets (but not always)
-                if (!one_chance_in(10))
-                {
-                    min_dist = dist;
-                    target = mi->pos();
-                    count = 0;
-                }
+                min_dist = dist;
+                target = mi->pos();
+                count = 0;
             }
             else if (target.x == -1 || one_chance_in(count))
             {
@@ -335,13 +332,13 @@ spret_type cast_chain_spell(spell_type spell_cast, int pow,
             case SPELL_CHAIN_LIGHTNING:
                 beam.colour = LIGHTBLUE;
                 beam.damage = caster->is_player()
-                    ? calc_dice(5, 10 + pow * 2 / 3)
-                    : calc_dice(5, 46 + pow / 6);
+                    ? calc_dice(5, 10 + div_rand_round(pow * 2,3))
+                    : calc_dice(5, 46 + div_rand_round(pow,6));
                 break;
             case SPELL_CHAIN_OF_CHAOS:
                 beam.colour       = ETC_RANDOM;
                 beam.ench_power   = pow;
-                beam.damage       = calc_dice(3, 5 + pow / 2);
+                beam.damage       = calc_dice(3, 5 + div_rand_round(pow,2));
                 beam.real_flavour = BEAM_CHAOS;
                 beam.flavour      = BEAM_CHAOS;
             default:
@@ -357,7 +354,10 @@ spret_type cast_chain_spell(spell_type spell_cast, int pow,
                 beam.damage.size = 3;
         }
         beam.fire();
+		
+        pow -= 15;
     }
+    while (pow > random2(20));
 
     return SPRET_SUCCESS;
 }
