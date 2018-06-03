@@ -1996,9 +1996,8 @@ int discharge_monsters(coord_def where, int pow, actor *agent)
     if (!victim)
         return 0;
 
-    int damage = (agent == victim) ? 1 + random2(3 + pow / 15)
-                                   : 3 + random2(5 + pow / 10
-                                                 + (random2(pow) / 10));
+    int damage = (agent == victim) ? 1 + random2(3 + div_rand_round(pow,15))
+                                   : 3 + random2(5 + div_rand_round(pow,7));
 
     bolt beam;
     beam.flavour    = BEAM_ELECTRICITY; // used for mons_adjust_flavoured
@@ -2015,7 +2014,7 @@ int discharge_monsters(coord_def where, int pow, actor *agent)
 
     if (victim->is_player())
     {
-		damage = 1 + random2(3 + pow / 15);
+		damage = 1 + random2(3 + div_rand_round(pow,15));
         dprf("You: static discharge damage: %d", damage);
         damage = check_your_resists(damage, BEAM_ELECTRICITY,
                                     "static discharge");
@@ -2057,11 +2056,11 @@ int discharge_monsters(coord_def where, int pow, actor *agent)
     }
 
     // Recursion to give us chain-lightning -- bwr
-    // Low power slight chance added for low power characters -- bwr
-    if ((pow >= 10 && !one_chance_in(4)) || (pow >= 3 && one_chance_in(10)))
+    // Smooth out some of the low end nonsense -- me
+    if (!one_chance_in(4) && x_chance_in_y(pow, 15))
     {
         mpr("The lightning arcs!");
-        pow /= (coinflip() ? 2 : 3);
+        pow = div_rand_round(pow * 2, 5);
         damage += apply_random_around_square([pow, agent] (coord_def where2) {
             return discharge_monsters(where2, pow, agent);
         }, where, true, 1);
