@@ -327,7 +327,7 @@ static const map<species_type, species_def> species_data =
     SPF_NONE,
     0, 0, 0, 3,
     MONS_DEEP_DWARF,
-    HT_LAND, US_ALIVE, SIZE_SMALL,
+    HT_LAND, US_ALIVE, SIZE_MEDIUM,
     10, 8, 6, // 24
     { STAT_STR }, 5,
     { {MUT_STURDY_FRAME, 1, 1 }, {MUT_WILD_MAGIC, 1, 6}, {MUT_WILD_MAGIC, 1, 12},
