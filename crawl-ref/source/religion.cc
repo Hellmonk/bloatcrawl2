@@ -1926,11 +1926,6 @@ bool do_god_gift(bool forced)
                         take_note(Note(NOTE_OFFERED_SPELL, *it));
                     }
                     prompt += ".";
-                    if (gifts >= NUM_VEHUMET_GIFTS - 1)
-                    {
-                        prompt += " These spells will remain available"
-                                  " as long as you worship Vehumet.";
-                    }
 
                     you.duration[DUR_VEHUMET_GIFT] = (100 + random2avg(100, 2)) * BASELINE_DELAY;
                     if (gifts >= 5)
@@ -1940,6 +1935,17 @@ bool do_god_gift(bool forced)
 
                     simple_god_message(prompt.c_str());
                     // included in default force_more_message
+					
+                    for (const spell_type& st : offers)
+                    {
+                        if (!you.spell_library[st])
+                        {
+                            you.spell_library.set(st, true);
+                            bool useless = !you_can_memorise(st);
+                            if (!useless)
+                                mprf("You add the spell %s to your library.", spell_title(st));
+                        }
+                    }
 
                     success = true;
                 }
