@@ -3400,7 +3400,7 @@ int monster::evasion(ev_ignore_type evit, const actor* /*act*/) const
     if (evit & EV_IGNORE_HELPLESS)
         return max(ev, 0);
 
-    if (paralysed() || petrified() || petrifying() || asleep())
+    if (paralysed() || petrified() || petrifying())
         return 0;
 
     if (caught() || is_constricted())
