@@ -62,6 +62,7 @@
 #include "skills.h"
 #include "spl-book.h"
 #include "spl-miscast.h"
+#include "spl-selfench.h"
 #include "sprint.h"
 #include "state.h"
 #include "stringutil.h"
@@ -3525,12 +3526,16 @@ void join_religion(god_type which_god)
 
     // When you start worshipping a good god, you make all non-hostile
     // unholy and evil beings hostile.
-    if (is_good_god(you.religion)
-        && query_daction_counter(DACT_ALLY_UNHOLY_EVIL))
+    if (is_good_god(you.religion))
     {
-        add_daction(DACT_ALLY_UNHOLY_EVIL);
-        mprf(MSGCH_MONSTER_ENCHANT, "Your unholy and evil allies forsake you.");
+        if(query_daction_counter(DACT_ALLY_UNHOLY_EVIL))
+        {
+            add_daction(DACT_ALLY_UNHOLY_EVIL);
+            mprf(MSGCH_MONSTER_ENCHANT, "Your unholy and evil allies forsake you.");
+        }
+        dispel_permanent_buffs(true);
     }
+	
 
     // Move gold to top of piles with Gozag.
     if (have_passive(passive_t::detect_gold))
