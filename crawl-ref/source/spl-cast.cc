@@ -859,6 +859,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
         && !crawl_state.disables[DIS_CONFIRMATIONS])
     {
         // None currently dock just piety, right?
+        // need to fix this interaction w/ permabuffs; they're just straight forbidden now.
         if (!yesno(god_loathes_spell(spell, you.religion) ?
             "<lightred>Casting this spell will cause instant excommunication!"
                 "</lightred> Really cast?" :

@@ -1906,6 +1906,11 @@ spret_type cast_animate_skeleton(god_type god, bool fail)
 
 spret_type cast_animate_dead(int pow, god_type god, bool fail)
 {
+    if (is_good_god(you.religion))
+    {
+        mprf("%s forbids you from sustaining this spell.", god_name(you.religion).c_str());
+        return SPRET_ABORT;
+    }
     fail_check();
     mpr("You call on the dead to rise!");
     
@@ -3245,7 +3250,11 @@ bool confirm_attack_spectral_weapon(monster* mons, const actor *defender)
 
 spret_type cast_infestation(int pow, bool fail)
 {
-	
+	if (is_good_god(you.religion))
+    {
+        mprf("%s forbids you from sustaining this spell.", god_name(you.religion).c_str());
+        return SPRET_ABORT;
+    }
     fail_check();
     you.attribute[ATTR_INFESTATION] = 1;
     mpr("You call forth a plague of scarabs!");

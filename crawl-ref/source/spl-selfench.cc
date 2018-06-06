@@ -146,6 +146,11 @@ int harvest_corpses(const actor &harvester, bool dry_run)
  */
 spret_type corpse_armour(int pow, bool fail)
 {
+    if (is_good_god(you.religion))
+    {
+        mprf("%s forbids you from sustaining this spell.", god_name(you.religion).c_str());
+        return SPRET_ABORT;
+    }
     fail_check();
     you.attribute[ATTR_BONE_ARMOUR] = 1;
     mpr("The dead rush to embrace you!");
@@ -177,6 +182,11 @@ spret_type deflection(int pow, bool fail)
 
 spret_type cast_regen(int pow, bool fail)
 {
+    if (is_good_god(you.religion))
+    {
+        mprf("%s forbids you from sustaining this spell.", god_name(you.religion).c_str());
+        return SPRET_ABORT;
+    }
     fail_check();
     you.attribute[ATTR_SPELL_REGEN] = 1;
     mpr("Your skin crawls.");
@@ -342,6 +352,11 @@ spret_type cast_shroud_of_golubria(int pow, bool fail)
 
 spret_type cast_transform(int pow, transformation_type which_trans, bool fail)
 {
+    if (you.religion == GOD_ZIN || (is_good_god(you.religion) && which_trans == TRAN_LICH))
+    {
+        mprf("%s forbids you from sustaining this spell.", god_name(you.religion).c_str());
+        return SPRET_ABORT;
+    }
     if (!transform(pow, which_trans, false, true)
         || !check_form_stat_safety(which_trans))
     {
