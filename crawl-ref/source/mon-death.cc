@@ -2180,7 +2180,7 @@ item_def* monster_die(monster* mons, killer_type killer,
     {
         const int sos_bonus = you.attribute[ATTR_SONG_OF_SLAYING];
         // spellpower dependent cap. Not guaranteed the last point, but it will roll for it every kill.
-        if (sos_bonus < 6 + div_rand_round(calc_spell_power(SPELL_SONG_OF_SLAYING, true),17)) 
+        if (sos_bonus < 6 + div_rand_round(calc_spell_power(SPELL_SONG_OF_SLAYING, true),20)) 
             you.attribute[ATTR_SONG_OF_SLAYING] = sos_bonus + 1;
     }
 	
