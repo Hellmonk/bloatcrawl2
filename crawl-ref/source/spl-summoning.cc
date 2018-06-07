@@ -3277,7 +3277,7 @@ static const map<spell_type, summon_cap> summonsdata =
     { SPELL_CALL_CANINE_FAMILIAR,       { 1, 2 } },
     { SPELL_SUMMON_ICE_BEAST,           { 3, 3 } },
     { SPELL_SUMMON_HYDRA,               { 3, 2 } },
-    { SPELL_SUMMON_MANA_VIPER,          { 2, 2 } },
+    { SPELL_SUMMON_MANA_VIPER,          { 1, 2 } },
     // Demons
     { SPELL_CALL_IMP,                   { 1, 2 } },
     { SPELL_SUMMON_DEMON,               { 3, 2 } },
