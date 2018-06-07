@@ -490,7 +490,10 @@ bool attack::distortion_affects_defender()
     case BANISH:
         if (defender_visible)
             obvious_effect = true;
-        defender->banish(attacker, attacker->name(DESC_PLAIN, true),
+        if (defender->is_player())
+            contaminate_player(4000 + random2(4000));
+        else
+            defender->banish(attacker, attacker->name(DESC_PLAIN, true),
                          attacker->get_experience_level());
         return true;
     case NONE:

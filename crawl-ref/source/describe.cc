@@ -1263,7 +1263,7 @@ static string _describe_weapon(const item_def &item, bool verbose)
             break;
         case SPWPN_DISTORTION:
             description += "It warps and distorts space around it. "
-                "Unwielding it can cause banishment or high damage.";
+                "Unwielding it can cause contamination or high damage.";
             break;
         case SPWPN_PENETRATION:
             description += "Ammo fired by it will pass through the "

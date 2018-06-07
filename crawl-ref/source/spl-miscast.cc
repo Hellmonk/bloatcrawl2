@@ -538,21 +538,6 @@ bool MiscastEffect::_sleep(int dur)
     return true;
 }
 
-bool MiscastEffect::_send_to_abyss()
-{
-    // The Abyss depth check is duplicated here (and the banishment forced if
-    // successful), in order to degrade to Malign Gateway in the Abyss instead
-    // of doing nothing.
-    if ((player_in_branch(BRANCH_ABYSS)
-         && x_chance_in_y(you.depth, brdepth[BRANCH_ABYSS]))
-        || special_source == HELL_EFFECT_MISCAST)
-    {
-        return _malign_gateway();
-    }
-    target->banish(act_source, cause, target->get_experience_level(), true);
-    return true;
-}
-
 // XXX: Mostly duplicated from cast_malign_gateway.
 bool MiscastEffect::_malign_gateway(bool hostile)
 {
@@ -1270,7 +1255,7 @@ void MiscastEffect::_translocation(int severity)
 
     case 2:         // less harmless
     reroll_2:
-        switch (random2(7))
+        switch (random2(6))
         {
         case 0:
         case 1:
@@ -1312,17 +1297,13 @@ void MiscastEffect::_translocation(int severity)
                 all_msg = "Space twists in upon itself!";
             break;
         }
-        case 6:
-            if (!_send_to_abyss())
-                goto reroll_2;
-            break;
         }
         break;
 
     case 3:         // much less harmless
     reroll_3:
         // Don't use the last case for monsters.
-        switch (random2(target->is_player() ? 4 : 3))
+        switch (random2(target->is_player() ? 3 : 2))
         {
         case 0:
             {
@@ -1356,10 +1337,6 @@ void MiscastEffect::_translocation(int severity)
             }
             break;
         case 2:
-            if (!_send_to_abyss())
-                goto reroll_3;
-            break;
-        case 3:
             contaminate_player(random2avg(18000, 3), spell != SPELL_NO_SPELL);
             break;
         }
@@ -1508,7 +1485,7 @@ void MiscastEffect::_summoning(int severity)
 
         while (reroll)
         {
-            switch (random2(5))
+            switch (random2(4))
             {
             case 0:
             {
@@ -1547,10 +1524,6 @@ void MiscastEffect::_summoning(int severity)
             }
 
             case 3:
-                reroll = !_send_to_abyss();
-                break;
-
-            case 4:
                 reroll = !_malign_gateway(target->is_player());
                 break;
             }
@@ -3049,8 +3022,7 @@ void MiscastEffect::_zot()
             target->rot(act_source, 3 + random2(3));
             break;
         case 3:
-            if (!_send_to_abyss())
-                goto reroll_2;
+            target->confuse(act_source, 2 + random2(4));
             break;
         case 4:
             if (!target->is_player())
