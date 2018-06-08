@@ -659,33 +659,6 @@ bool MiscastEffect::_create_monster(monster_type what, int abj_deg,
     return create_monster(data);
 }
 
-// hair or hair-equivalent (like bandages)
-static bool _has_hair(actor* target)
-{
-    // Don't bother for monsters.
-    if (target->is_monster())
-        return false;
-
-    return !form_changed_physiology()
-           && (species_has_hair(you.species) || you.species == SP_MUMMY);
-}
-
-static string _hair_str(actor* target, bool &plural)
-{
-    ASSERT(target->is_player());
-
-    if (you.species == SP_MUMMY)
-    {
-        plural = true;
-        return "bandages";
-    }
-    else
-    {
-        plural = false;
-        return "hair";
-    }
-}
-
 /**
  * Malmutate the player.
  *
@@ -703,122 +676,34 @@ void MiscastEffect::_malmutate()
 
 void MiscastEffect::_conjuration(int severity)
 {
-    int num;
     switch (severity)
     {
     case 0:         // just a harmless message but for some reason we need 11 of them
-        num = 10 + (_has_hair(target) ? 1 : 0);
-        switch (random2(num))
-        {
-        case 0:
-            if (special_source == HELL_EFFECT_MISCAST)
-                all_msg = "Sparks fly from the ground!";
-            you_msg      = "Sparks fly from your @hands@!";
-            mon_msg_seen = "Sparks fly from @the_monster@'s @hands@!";
-            break;
-        case 1:
-            you_msg      = "The air around you crackles with energy!";
-            mon_msg_seen = "The air around @the_monster@ crackles "
-                           "with energy!";
-            break;
-        case 2:
-            if (special_source == HELL_EFFECT_MISCAST)
-                all_msg = "Wisps of smoke drift around you.";
-            you_msg      = "Wisps of smoke drift from your @hands@.";
-            mon_msg_seen = "Wisps of smoke drift from @the_monster@'s "
-                           "@hands@.";
-            break;
-        case 3:
-            you_msg = "You feel a strange surge of energy!";
-            // Monster messages needed.
-            break;
-        case 4:
-            you_msg      = "You are momentarily dazzled by a flash of light!";
-            mon_msg_seen = "@The_monster@ emits a flash of light!";
-            break;
-        case 5:
-            you_msg      = "Strange energies run through your body.";
-            mon_msg_seen = "@The_monster@ glows " + weird_glowing_colour() +
-                           " for a moment.";
-            break;
-        case 6:
-            you_msg      = "Your skin tingles.";
-            mon_msg_seen = "@The_monster@ twitches.";
-            break;
-        case 7:
-            you_msg      = "Your skin glows momentarily.";
-            mon_msg_seen = "@The_monster@ glows momentarily.";
-            // A small glow isn't going to make it past invisibility.
-            break;
-        case 8:
-            // Set nothing; canned_msg(MSG_NOTHING_HAPPENS) will be taken
-            // care of elsewhere.
-            break;
-        case 9:
-            if (you.can_smell())
-                all_msg = "You smell something strange.";
-            else if (you.species == SP_MUMMY)
-                you_msg = "Your bandages flutter.";
-            break;
-        case 10:
-        {
-            // Player only (for now).
-            bool plural;
-            string hair = _hair_str(target, plural);
-            you_msg = make_stringf("Your %s stand%s on end.", hair.c_str(),
-                                   plural ? "" : "s");
-        }
-        }
+        you_msg      = "Strange energies run through your body.";
+        mon_msg_seen = "@The_monster@ glows " + weird_glowing_colour() +
+                       " for a moment.";
         do_msg();
-        break;
+    break;
 
     case 1:
-    {
         you_msg      = "A wave of violent energy washes through your body!";
         mon_msg_seen = "@The_monster@ lurches violently!";
         _ouch(6 + random2avg(7, 2));
         break;
-    }
 
     case 2:
-    {
         you_msg      = "Energy rips through your body!";
         mon_msg_seen = "@The_monster@ jerks violently!";
         _ouch(9 + random2avg(17, 2));
         break;
-    }
 
     case 3:
-    {
         you_msg      = "You are blasted with magical energy!";
         mon_msg_seen = "@The_monster@ is blasted with magical energy!";
         // No message for invis monsters?
         _ouch(12 + random2avg(29, 2));
         break;
     }
-    }
-}
-
-static void _your_hands_glow(actor* target, string& you_msg,
-                             string& mon_msg_seen, bool pluralise)
-{
-    you_msg      = "Your @hands@ ";
-    mon_msg_seen = "@The_monster@'s @hands@ ";
-    // No message for invisible monsters.
-
-    if (pluralise)
-    {
-        you_msg      += "glow";
-        mon_msg_seen += "glow";
-    }
-    else
-    {
-        you_msg      += "glows";
-        mon_msg_seen += "glows";
-    }
-
-    you_msg      += " momentarily.";
-    mon_msg_seen += " momentarily.";
 }
 
 void MiscastEffect::_hexes(int severity)
@@ -826,77 +711,44 @@ void MiscastEffect::_hexes(int severity)
     switch (severity)
     {
     case 0:         // harmless messages only
-        switch (random2(10))
-        {
-        case 0:
-            _your_hands_glow(target, you_msg, mon_msg_seen, can_plural_hand);
-            break;
-        case 1:
-            you_msg      = "You feel off-balance for a moment.";
-            mon_msg_seen = "@The_monster@ looks off-balance for a moment.";
-            break;
-        case 2:
-            you_msg        = "Multicoloured lights dance before your eyes!";
-            mon_msg_seen   = "Multicoloured lights dance around @the_monster@!";
-            mon_msg_unseen = "Multicoloured lights dance in the air!";
-            break;
-        case 3:
-            you_msg      = "You feel a bit tired.";
-            mon_msg_seen = "@The_monster@ looks sleepy for a second.";
-            break;
-        case 4:
-            you_msg        = "The light around you dims momentarily.";
-            mon_msg_seen   = "The light around @the_monster@ dims momentarily.";
-            mon_msg_unseen = "A patch of light dims momentarily.";
-            break;
-        case 5:
-            you_msg      = "Strange energies run through your body.";
-            mon_msg_seen = "@The_monster@ glows " + weird_glowing_colour() +
-                           " for a moment.";
-            break;
-        case 6:
-            you_msg      = "Your skin tingles.";
-            mon_msg_seen = "@The_monster@ twitches.";
-            break;
-        case 7:
-            you_msg      = "Your skin glows momentarily.";
-            mon_msg_seen = "@The_monster@'s body glows momentarily.";
-            break;
-        case 8:
-            // Set nothing; canned_msg(MSG_NOTHING_HAPPENS) will be taken
-            // care of elsewhere.
-            break;
-        case 9:
-            // Mental noises ignore silence.
-            all_msg = "You hear an indistinct dissonance whispering inside your mind.";
-            break;
-        }
+        you_msg        = "Multicoloured lights dance before your eyes!";
+        mon_msg_seen   = "Multicoloured lights dance around @the_monster@!";
+        mon_msg_unseen = "Multicoloured lights dance in the air!";
         do_msg();
         break;
 
     case 1:         // slightly annoying
         if (target->is_player())
+        {
+            contaminate_player(random2avg(2000, 3), spell != SPELL_NO_SPELL);
             you.backlight();
+        }
         else
             target->as_monster()->add_ench(mon_enchant(ENCH_CORONA, 20,
                                                            act_source));
         break;
 
     case 2:         // much more annoying
-        target->slow_down(act_source, 10);
+        if (target->is_player())
+        {
+            contaminate_player(random2avg(6000, 3), spell != SPELL_NO_SPELL);
+            you.backlight();
+        }
+        else
+            target->as_monster()->add_ench(mon_enchant(ENCH_CORONA, 20,
+                                                           act_source));
         break;
 
-    case 3:         // potentially lethal
-        // Avoid the last case for monsters.
-        switch (random2(target->is_player() ? 2 : 1))
+    case 3:
+        target->confuse(act_source, 5 + random2(3));
+        if (target->is_player())
         {
-            case 0:
-                target->confuse(act_source, 5 + random2(3));
-                break;
-            case 1:
-                contaminate_player(random2avg(18000, 3), spell != SPELL_NO_SPELL);
-                break;
+            contaminate_player(random2avg(18000, 3), spell != SPELL_NO_SPELL);
+            you.backlight();
         }
+        else
+            target->as_monster()->add_ench(mon_enchant(ENCH_CORONA, 20,
+                                                           act_source));
         break;
     }
 }
@@ -906,79 +758,21 @@ void MiscastEffect::_charms(int severity)
     switch (severity)
     {
     case 0:         // harmless messages only
-        switch (random2(10))
-        {
-        case 0:
-            _your_hands_glow(target, you_msg, mon_msg_seen, can_plural_hand);
-            break;
-        case 1:
-            you_msg      = "The air around you crackles with energy!";
-            mon_msg_seen = "The air around @the_monster@ crackles with"
-                           " energy!";
-            break;
-        case 2:
-            you_msg        = "Multicoloured lights dance before your eyes!";
-            mon_msg_seen   = "Multicoloured lights dance around @the_monster@!";
-            mon_msg_unseen = "Multicoloured lights dance in the air!";
-            break;
-        case 3:
-            you_msg = "You feel a strange surge of energy!";
-            // Monster messages needed.
-            break;
-        case 4:
-            you_msg      = "Waves of light ripple over your body.";
-            mon_msg_seen = "Waves of light ripple over @the_monster@'s body.";
-            break;
-        case 5:
-            you_msg      = "Strange energies run through your body.";
-            mon_msg_seen = "@The_monster@ glows " + weird_glowing_colour() +
-                           " for a moment.";
-            break;
-        case 6:
-            you_msg      = "Your skin tingles.";
-            mon_msg_seen = "@The_monster@ twitches.";
-            break;
-        case 7:
-            you_msg      = "Your skin glows momentarily.";
-            mon_msg_seen = "@The_monster@'s body glows momentarily.";
-            break;
-        case 8:
-            // Set nothing; canned_msg(MSG_NOTHING_HAPPENS) will be taken
-            // care of elsewhere.
-            break;
-        case 9:
-            if (neither_end_silenced())
-            {
-                all_msg        = "You hear something strange.";
-                msg_ch         = MSGCH_SOUND;
-                sound_loudness = 2;
-                return;
-            }
-            else if (target->is_player())
-            {
-                if (you.species == SP_OCTOPODE)
-                    you_msg = "Your beak vibrates slightly."; // the only hard part
-                else
-                    you_msg = "Your skull vibrates slightly.";
-            }
-            break;
-        }
+        you_msg      = "Your skin glows momentarily.";
+        mon_msg_seen = "@The_monster@'s body glows momentarily.";
         do_msg();
         break;
 
     case 1:         // slightly annoying
-        if (target->is_player())
-            you.backlight();
-        else
-            target->as_monster()->add_ench(mon_enchant(ENCH_CORONA, 20,
-                                                           act_source));
+        target->slow_down(act_source, 6);
         break;
         
     case 2:         // much more annoying
-        target->slow_down(act_source, 10);
+        target->slow_down(act_source, 12);
         break;
 
     case 3:         // potentially lethal
+        target->slow_down(act_source, 18);
         if (special_source == HELL_EFFECT_MISCAST)
             all_msg = "Magic is drained from your body!";
         you_msg        = "Magic surges out from your body!";
@@ -1012,52 +806,8 @@ void MiscastEffect::_translocation(int severity)
     switch (severity)
     {
     case 0:         // harmless messages only
-        switch (random2(10))
-        {
-        case 0:
-            all_msg = "You catch a glimpse of the back of your own head.";
-            break;
-        case 1:
-            you_msg      = "The air around you crackles with energy!";
-            mon_msg_seen = "The air around @the_monster@ crackles with "
-                           "energy!";
-            mon_msg_unseen = "The air around something crackles with energy!";
-            break;
-        case 2:
-            you_msg      = "You feel a wrenching sensation.";
-            mon_msg_seen = "@The_monster@ jerks violently for a moment.";
-            break;
-        case 3:
-            all_msg = "The floor and the ceiling briefly switch places.";
-            break;
-        case 4:
-            you_msg      = "You spin around.";
-            mon_msg_seen = "@The_monster@ spins around.";
-            break;
-        case 5:
-            you_msg      = "Strange energies run through your body.";
-            mon_msg_seen = "@The_monster@ glows " + weird_glowing_colour() +
-                           " for a moment.";
-            mon_msg_unseen = "A spot of thin air glows "
-                             + weird_glowing_colour() + " for a moment.";
-            break;
-        case 6:
-            you_msg      = "Your skin tingles.";
-            mon_msg_seen = "@The_monster@ twitches.";
-            break;
-        case 7:
-            you_msg      = "The world appears momentarily distorted!";
-            mon_msg_seen = "@The_monster@ appears momentarily distorted!";
-            break;
-        case 8:
-            // Set nothing; canned_msg(MSG_NOTHING_HAPPENS) will be taken
-            // care of elsewhere.
-            break;
-        case 9:
-            you_msg      = "You feel uncomfortable.";
-            mon_msg_seen = "@The_monster@ scowls.";
-            break;
-        }
+        you_msg      = "You feel a wrenching sensation.";
+        mon_msg_seen = "@The_monster@ jerks violently for a moment.";
         do_msg();
         break;
 
@@ -1078,55 +828,31 @@ void MiscastEffect::_translocation(int severity)
         {
             // Same message as a harmless miscast, thus no permit_id.
             if (!target->no_tele(true, false))
-            {
-                if (one_chance_in(3))
-                    target->teleport(true);
-                else
                     target->blink();
-            }
-            if (target->alive())
-                target->confuse(act_source, 5 + random2(3));
+            if (target->is_player())
+                you.increase_duration(DUR_DIMENSION_ANCHOR, 5 + random2(6), 50);
+            else if (target->is_monster())
+                     target->as_monster()->add_ench(mon_enchant(ENCH_DIMENSION_ANCHOR,
+                     0, act_source, 5 + random2(6) * BASELINE_DELAY));
         }
         break;
 
     case 3:         // much less harmless
-        // Don't use the last case for monsters.
-        switch (random2(target->is_player() ? 3 : 2))
+        you_msg        = "Space warps crazily around you!";
+        mon_msg_seen   = "Space warps crazily around @the_monster@!";
+        mon_msg_unseen = "A rift temporarily opens in the fabric of space!";
+        if (_ouch(9 + random2avg(17, 2)) && target->alive())
         {
-        case 0:
+            if (!target->no_tele())
+                target->teleport(true);
+            if (target->alive())
             {
-            you_msg        = "You are crushed and pinned by an extremely strong "
-                             "localised spatial distortion!";
-            mon_msg_seen   = "@The_monster@ is crushed and pinned by an extremely "
-                             "strong localised spatial distortion!";
-            mon_msg_unseen = "A rift temporarily opens in the fabric of space!";
-
-            _ouch(15 + random2avg(29, 2));
-            if (!target->alive())
-                break;
-
-            if (target->is_player())
-                you.increase_duration(DUR_DIMENSION_ANCHOR, 20 + random2(11), 50);
-            else if (target->is_monster())
+                if (target->is_player())
+                    you.increase_duration(DUR_DIMENSION_ANCHOR, 20 + random2(11), 50);
+                else if (target->is_monster())
                      target->as_monster()->add_ench(mon_enchant(ENCH_DIMENSION_ANCHOR,
                      0, act_source, 20 + random2(11) * BASELINE_DELAY));
             }
-            break;
-        case 1:
-            you_msg        = "Space warps crazily around you!";
-            mon_msg_seen   = "Space warps crazily around @the_monster@!";
-            mon_msg_unseen = "A rift temporarily opens in the fabric of space!";
-            if (_ouch(9 + random2avg(17, 2)) && target->alive())
-            {
-                if (!target->no_tele())
-                    target->teleport(true);
-                if (target->alive())
-                    target->confuse(act_source, 5 + random2(3));
-            }
-            break;
-        case 2:
-            contaminate_player(random2avg(18000, 3), spell != SPELL_NO_SPELL);
-            break;
         }
         break;
     }
@@ -1137,64 +863,10 @@ void MiscastEffect::_summoning(int severity)
     switch (severity)
     {
     case 0:         // harmless messages only
-        switch (random2(10))
-        {
-        case 0:
-            you_msg      = "Shadowy shapes form in the air around you, "
+        you_msg      = "Shadowy shapes form in the air around you, "
                            "then vanish.";
-            mon_msg_seen = "Shadowy shapes form in the air around "
+        mon_msg_seen = "Shadowy shapes form in the air around "
                            "@the_monster@, then vanish.";
-            break;
-        case 1:
-            if (neither_end_silenced())
-            {
-                all_msg        = "You hear strange voices.";
-                msg_ch         = MSGCH_SOUND;
-                sound_loudness = 2;
-            }
-            else if (target->is_player())
-                you_msg = "You feel momentarily dizzy.";
-            break;
-        case 2:
-            you_msg = "Your head hurts.";
-            // Monster messages needed.
-            break;
-        case 3:
-            you_msg = "You feel a strange surge of energy!";
-            // Monster messages needed.
-            break;
-        case 4:
-            you_msg = "Your brain hurts!";
-            // Monster messages needed.
-            break;
-        case 5:
-            you_msg      = "Strange energies run through your body.";
-            mon_msg_seen = "@The_monster@ glows " + weird_glowing_colour() +
-                           " for a moment.";
-            break;
-        case 6:
-            you_msg      = "The world appears momentarily distorted.";
-            mon_msg_seen = "@The_monster@ appears momentarily distorted.";
-            break;
-        case 7:
-            all_msg = "A fistful of eyes flickers past your view.";
-            break;
-        case 8:
-            // Set nothing; canned_msg(MSG_NOTHING_HAPPENS) will be taken
-            // care of elsewhere.
-            break;
-        case 9:
-            if (neither_end_silenced())
-            {
-                you_msg        = "Distant voices call out to you!";
-                mon_msg_seen   = "Distant voices call out to @the_monster@!";
-                msg_ch         = MSGCH_SOUND;
-                sound_loudness = 2;
-            }
-            else if (target->is_player())
-                you_msg = "You feel watched.";
-            break;
-        }
         do_msg();
         break;
 
@@ -1210,7 +882,7 @@ void MiscastEffect::_summoning(int severity)
         do_msg();
         break;
 
-    case 3:         // more bad
+    case 3:         // most bad
         if (_create_monster(summon_any_demon(RANDOM_DEMON_GREATER), 0, true))
             all_msg = "You sense a hostile presence.";
         do_msg();
@@ -1251,319 +923,93 @@ void MiscastEffect::_necromancy(int severity)
     switch (severity)
     {
     case 0:
-        switch (random2(10))
-        {
-        case 0:
-            if (you.can_smell())
-                all_msg = "You smell decay.";
-            else if (you.species == SP_MUMMY)
-                you_msg = "Your bandages flutter.";
-            break;
-        case 1:
-            if (neither_end_silenced())
-            {
-                all_msg        = "You hear strange and distant voices.";
-                msg_ch         = MSGCH_SOUND;
-                sound_loudness = 3;
-            }
-            else if (target->is_player())
-                you_msg = "You feel homesick.";
-            break;
-        case 2:
-            you_msg = "Pain shoots through your body.";
-            mon_msg_seen = "@The_monster@ twitches violently.";
-            break;
-        case 3:
-            if (you.species == SP_OCTOPODE)
-                you_msg = "You feel numb.";
-            else
-                you_msg = "Your bones ache.";
-            mon_msg_seen = "@The_monster@ pauses, visibly distraught.";
-            break;
-        case 4:
-            you_msg      = "The world around you seems to dim momentarily.";
-            mon_msg_seen = "@The_monster@ seems to dim momentarily.";
-            break;
-        case 5:
-            you_msg      = "Strange energies run through your body.";
-            mon_msg_seen = "@The_monster@ glows " + weird_glowing_colour() +
-                           " for a moment.";
-            break;
-        case 6:
-            you_msg      = "You shiver with cold.";
-            mon_msg_seen = "@The_monster@ shivers with cold.";
-            break;
-        case 7:
-            you_msg        = "You sense a malignant aura.";
-            mon_msg_seen   = "@The_monster@ is briefly tinged with black.";
-            mon_msg_unseen = "The air has a black tinge for a moment.";
-            break;
-        case 8:
-            // Set nothing; canned_msg(MSG_NOTHING_HAPPENS) will be taken
-            // care of elsewhere.
-            break;
-        case 9:
-            you_msg      = "You feel very uncomfortable.";
-            mon_msg_seen = "@The_monster@ scowls horribly.";
-            break;
-        }
+        you_msg      = "The world around you seems to dim momentarily.";
+        mon_msg_seen = "@The_monster@ seems to dim momentarily.";
         do_msg();
         break;
 
     case 1:         // a bit nasty
-        if (!target->res_rotting())
-        {
-            you_msg      = "Your flesh rots away!";
-            mon_msg_seen = "@The_monster@ rots away!";
-
-            // Must produce the message before rotting, because that
-            // might kill a target monster, and do_msg does not like
-            // dead monsters. FIXME: We should avoid_lethal here!
-            if (!did_msg)
-                do_msg();
-            target->rot(act_source, 1, true);
-        }
-        else if (you.species == SP_MUMMY)
-        {
-            // Monster messages needed.
-            you_msg = "Your bandages flutter.";
-        }
+        you_msg      = "You are partially engulfed in negative energy!";
+        mon_msg_seen = "@The_monster@ is partially engulfed in negative energy!";
+        do_msg();
+        target->drain_exp(act_source, false, 10);
         break;
 
     case 2:         // much nastier
         you_msg      = "You are engulfed in negative energy!";
         mon_msg_seen = "@The_monster@ is engulfed in negative energy!";
-
-        if (one_chance_in(3))
-        {
-                do_msg();
-                target->drain_exp(act_source, false, 100);
-                break;
-        }
+        do_msg();
+        target->drain_exp(act_source, false, 30);
+        if (!target->res_rotting())
+            target->rot(act_source, 1, true);
         break;
 
     case 3:         // even nastier
-        you_msg      = "You are engulfed in negative energy!";
-        mon_msg_seen = "@The_monster@ is engulfed in negative energy!";
+        you_msg      = "You are completely engulfed in negative energy!";
+        mon_msg_seen = "@The_monster@ is completely engulfed in negative energy!";
 
         do_msg();
-        target->drain_exp(act_source, false, 100);
+        target->drain_exp(act_source, false, 90);
 
         if (target->is_player())
-        {
             lose_stat(STAT_RANDOM, 1 + random2(3));
-            break;
-        }
-
-        // If we didn't do anything, just flow through if it's the player.
-        if (target->is_monster() || did_msg)
-            break;
         break;
     }
 }
 
 void MiscastEffect::_transmutation(int severity)
 {
-    int num;
     switch (severity)
     {
     case 0:         // just a harmless message
-        num = 10 + (_has_hair(target) ? 1 : 0);
-        switch (random2(num))
-        {
-        case 0:
-            _your_hands_glow(target, you_msg, mon_msg_seen, can_plural_hand);
-            break;
-        case 1:
-            you_msg        = "The air around you crackles with energy!";
-            mon_msg_seen   = "The air around @the_monster@ crackles with "
-                             "energy!";
-            mon_msg_unseen = "The thin air crackles with energy!";
-            break;
-        case 2:
-            you_msg        = "Multicoloured lights dance before your eyes!";
-            mon_msg_seen   = "Multicoloured lights dance around @the_monster@!";
-            mon_msg_unseen = "Multicoloured lights dance in the air!";
-            break;
-        case 3:
-            you_msg = "You feel a strange surge of energy!";
-            mon_msg = "There is a strange surge of energy around @the_monster@.";
-            break;
-        case 4:
-            you_msg        = "Waves of light ripple over your body.";
-            mon_msg_seen   = "Waves of light ripple over @the_monster@'s body.";
-            mon_msg_unseen = "Waves of light ripple in the air.";
-            break;
-        case 5:
-            you_msg      = "Strange energies run through your body.";
-            mon_msg_seen = "@The_monster@ glows " + weird_glowing_colour() +
-                           " for a moment.";
-            break;
-        case 6:
-            you_msg      = "Your skin tingles.";
-            mon_msg_seen = "@The_monster@ twitches.";
-            break;
-        case 7:
-            you_msg      = "Your skin glows momentarily.";
-            mon_msg_seen = "@The_monster@'s body glows momentarily.";
-            break;
-        case 8:
-            // Set nothing; canned_msg(MSG_NOTHING_HAPPENS) will be taken
-            // care of elsewhere.
-            break;
-        case 9:
-            if (you.can_smell())
-                all_msg = "You smell something strange.";
-            else if (you.species == SP_MUMMY)
-                you_msg = "Your bandages flutter.";
-            break;
-        case 10:
-        {
-            // Player only (for now).
-            bool plural;
-            string hair = _hair_str(target, plural);
-            you_msg = make_stringf("Your %s momentarily turn%s into snakes!",
-                                   hair.c_str(), plural ? "" : "s");
-        }
-        }
+        you_msg      = "Your skin glows momentarily.";
+        mon_msg_seen = "@The_monster@'s body glows momentarily.";
         do_msg();
         break;
 
     case 1:         // slightly annoying
-        switch (random2(target->is_player() ? 10 : 6))
-        {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-            you_msg      = "Your body is twisted painfully.";
-            mon_msg_seen = "@The_monster@'s body twists unnaturally.";
-            _ouch(1 + random2avg(11, 2));
-            break;
-        case 5:
-        {
-            // Should be actual monsters and not durable summons,
-            // but there's a bunch of problems there (corpses,
-            // piety, perma-allies-on-hostiles-somehow, etc)
-            bool success = false;
-            for (int i = 2 + random2(3); i > 0; --i)
-                success |= _create_monster(MONS_GIANT_COCKROACH, 0, true);
+        you_msg        = "Your limbs ache.";
+        mon_msg_seen   = "@The_monster@ looks weaker.";
+        do_msg();
 
-            if (success)
-            {
-                you_msg        = "Shape-changing energy floods out "
-                                 "from your body and enlargens the floor bugs!";
-                mon_msg_seen   = "Shape-changing energy floods out "
-                                 "from @the_monster@ and enlargens the floor bugs!";
-                mon_msg_unseen = "Shape-changing energy pours out "
-                                 "from thin air and enlargens the floor bugs!";
-            }
-            do_msg();
-            break;
-        }
-        case 6:
-        case 7:
-        case 8:
-        case 9:
-            random_uselessness();
-            break;
+        if (target->is_player())
+            you.increase_duration(DUR_WEAK, 8 + random2(4), 50);
+        else if (target->is_monster())
+        {
+             target->as_monster()->add_ench(mon_enchant(ENCH_WEAK,
+             0, act_source, 8 + random2(4) * BASELINE_DELAY));
         }
         break;
 
     case 2:         // much more annoying
-        // Last case for players only.
-        switch (random2(target->is_player() ? 5 : 4))
-        {
-        case 0:
-            if (target->polymorph(0)) // short duration
-                break;
-        case 1:
-        case 2:
-            you_msg      = "Your body is twisted very painfully!";
-            mon_msg_seen = "@The_monster@'s body twists and writhes.";
-            _ouch(3 + random2avg(23, 2));
-            break;
-        case 3:
-            you_msg        = "Your limbs ache and wobble like jelly!";
-            mon_msg_seen   = "@The_monster@ looks weaker.";
-            do_msg();
+        you_msg        = "Your limbs ache and wobble like jelly!";
+        mon_msg_seen   = "@The_monster@ looks weaker.";
+        do_msg();
 
-            if (target->is_player())
-                you.increase_duration(DUR_WEAK, 10 + random2(6), 50);
-            else if (target->is_monster())
-            {
-                 target->as_monster()->add_ench(mon_enchant(ENCH_WEAK,
-                 0, act_source, 10 + random2(6) * BASELINE_DELAY));
-            }
-            break;
-        case 4:
-            contaminate_player(random2avg(18000, 3), spell != SPELL_NO_SPELL);
-            break;
+        if (target->is_player())
+            you.increase_duration(DUR_WEAK, 12 + random2(6), 75);
+        else if (target->is_monster())
+        {
+             target->as_monster()->add_ench(mon_enchant(ENCH_WEAK,
+             0, act_source, 10 + random2(6) * BASELINE_DELAY));
         }
+        target->polymorph(0);
         break;
 
     case 3:         // even nastier
-        if (coinflip() && target->polymorph(200))
-            break;
+        you_msg        = "Your limbs ache terribly!";
+        mon_msg_seen   = "@The_monster@ looks weaker.";
+        do_msg();
 
-        switch (random2(3))
+        if (target->is_player())
+            you.increase_duration(DUR_WEAK, 18 + random2(9), 100);
+        else if (target->is_monster())
         {
-        case 0:
-            you_msg = "Your body is flooded with distortional energies!";
-            mon_msg = "@The_monster@'s body is flooded with distortional "
-                      "energies!";
-            if (_ouch(3 + random2avg(18, 2)) && target->alive())
-            {
-                if (target->is_player())
-                {
-                    contaminate_player(random2avg(34000, 3),
-                                       spell != SPELL_NO_SPELL, false);
-                }
-                else
-                    target->polymorph(0);
-            }
-            break;
-
-        case 1:
-            // HACK: Avoid lethality before deleting mutation, since
-            // afterwards a message would already have been given.
-            if (lethality_margin > 0
-                && (you.hp - lethality_margin) <= 27
-                && avoid_lethal(you.hp))
-            {
-                return;
-            }
-
-            if (target->is_player())
-            {
-                you_msg = "You feel very strange.";
-                delete_mutation(RANDOM_MUTATION, cause, true, false, false, false);
-            }
-            else
-                target->polymorph(0);
-            _ouch(5 + random2avg(23, 2));
-            break;
-
-        case 2:
-            if (target->is_player())
-            {
-                // HACK: Avoid lethality before giving mutation, since
-                // afterwards a message would already have been given.
-                if (lethality_margin > 0
-                    && (you.hp - lethality_margin) <= 27
-                    && avoid_lethal(you.hp))
-                {
-                    return;
-                }
-
-                _malmutate();
-            }
-            else
-                target->malmutate(cause);
-            _ouch(5 + random2avg(23, 2));
-            break;
+             target->as_monster()->add_ench(mon_enchant(ENCH_WEAK,
+             0, act_source, 10 + random2(6) * BASELINE_DELAY));
         }
+        target->polymorph(200);
+
         break;
     }
 }
@@ -1573,60 +1019,8 @@ void MiscastEffect::_fire(int severity)
     switch (severity)
     {
     case 0:         // just a harmless message
-        switch (random2(10))
-        {
-        case 0:
-            if (special_source == HELL_EFFECT_MISCAST)
-                all_msg = "Sparks fly from the ground!";
-            you_msg      = "Sparks fly from your @hands@!";
-            mon_msg_seen = "Sparks fly from @the_monster@'s @hands@!";
-            break;
-        case 1:
-            you_msg      = "The air around you burns with energy!";
-            mon_msg_seen = "The air around @the_monster@ burns with energy!";
-            break;
-        case 2:
-            if (special_source == HELL_EFFECT_MISCAST)
-                all_msg = "Wisps of smoke drift around you.";
-            you_msg      = "Wisps of smoke drift from your @hands@.";
-            mon_msg_seen = "Wisps of smoke drift from @the_monster@'s @hands@.";
-            break;
-        case 3:
-            all_msg = "You have a brief vision of globes of primordial fire.";
-            break;
-        case 4:
-            if (you.can_smell())
-                all_msg = "You smell smoke.";
-            else if (you.species == SP_MUMMY)
-                you_msg = "Your bandages flutter.";
-            break;
-        case 5:
-            you_msg = "Heat runs through your body.";
-            // Monster messages needed.
-            break;
-        case 6:
-            you_msg = "You feel uncomfortably hot.";
-            // Monster messages needed.
-            break;
-        case 7:
-            you_msg      = "Lukewarm flames ripple over your body.";
-            mon_msg_seen = "Dim flames ripple over @the_monster@'s body.";
-            break;
-        case 8:
-            // Set nothing; canned_msg(MSG_NOTHING_HAPPENS) will be taken
-            // care of elsewhere.
-            break;
-        case 9:
-            if (neither_end_silenced())
-            {
-                all_msg        = "You hear a sizzling sound.";
-                msg_ch         = MSGCH_SOUND;
-                sound_loudness = 2;
-            }
-            else if (target->is_player())
-                you_msg = "You feel like you have heartburn.";
-            break;
-        }
+        you_msg      = "The air around you burns with energy!";
+        mon_msg_seen = "The air around @the_monster@ burns with energy!";
         do_msg();
         break;
 
@@ -1648,7 +1042,7 @@ void MiscastEffect::_fire(int severity)
         you_msg        = "You are blasted with fire.";
         mon_msg_seen   = "@The_monster@ is blasted with fire.";
         mon_msg_unseen = "A flame briefly burns in thin air.";
-        if (_ouch(5 + random2avg(29, 2), BEAM_FIRE) && target->alive())
+        if (_ouch(6 + random2avg(26, 2), BEAM_FIRE) && target->alive())
             target->expose_to_element(BEAM_FIRE, 5);
         break;
 
@@ -1660,7 +1054,7 @@ void MiscastEffect::_fire(int severity)
         mon_msg_unseen = "A large flame burns hotly for a moment in the "
                              "thin air.";
 
-        if (_ouch(9 + random2avg(33, 2), BEAM_FIRE) && target->alive())
+        if (_ouch(10 + random2avg(39, 2), BEAM_FIRE) && target->alive())
             target->expose_to_element(BEAM_FIRE, 10);
         if (!target->alive())
             break;
@@ -1677,78 +1071,15 @@ void MiscastEffect::_fire(int severity)
 void MiscastEffect::_ice(int severity)
 {
     const dungeon_feature_type feat = grd(target->pos());
-
-    const bool frostable_feat =
-        (feat == DNGN_FLOOR || feat_altar_god(feat) != GOD_NO_GOD
-         || feat_is_staircase(feat) || feat_is_water(feat));
-
+	
     const string feat_name = (feat == DNGN_FLOOR ? "the " : "") +
         feature_description_at(target->pos(), false, DESC_THE);
 
-    int num;
     switch (severity)
     {
     case 0:         // just a harmless message
-        num = 10 + (frostable_feat ? 1 : 0);
-        switch (random2(num))
-        {
-        case 0:
-            you_msg      = "You shiver with cold.";
-            mon_msg_seen = "@The_monster@ shivers with cold.";
-            break;
-        case 1:
-            you_msg = "A chill runs through your body.";
-            // Monster messages needed.
-            break;
-        case 2:
-            if (special_source == HELL_EFFECT_MISCAST)
-                all_msg = "Wisps of condensation drift around you.";
-            you_msg        = "Wisps of condensation drift from your @hands@.";
-            mon_msg_seen   = "Wisps of condensation drift from @the_monster@'s "
-                             "@hands@.";
-            mon_msg_unseen = "Wisps of condensation drift in the air.";
-            break;
-        case 3:
-            you_msg = "You feel a strange surge of energy!";
-            // Monster messages needed.
-            break;
-        case 4:
-            you_msg      = "Your @hands@ feel@hand_conj@ numb with cold.";
-            // Monster messages needed.
-            break;
-        case 5:
-            you_msg = "A chill runs through your body.";
-            // Monster messages needed.
-            break;
-        case 6:
-            you_msg = "You feel uncomfortably cold.";
-            // Monster messages needed.
-            break;
-        case 7:
-            you_msg      = "Frost covers your body.";
-            mon_msg_seen = "Frost covers @the_monster@'s body.";
-            break;
-        case 8:
-            // Set nothing; canned_msg(MSG_NOTHING_HAPPENS) will be taken
-            // care of elsewhere.
-            break;
-        case 9:
-            if (neither_end_silenced())
-            {
-                all_msg        = "You hear a crackling sound.";
-                msg_ch         = MSGCH_SOUND;
-                sound_loudness = 2;
-            }
-            else if (target->is_player())
-                you_msg = "A snowflake lands on your nose.";
-            break;
-        case 10:
-            if (feat_is_water(feat))
-                all_msg  = "A thin layer of ice forms on " + feat_name;
-            else
-                all_msg  = "Frost spreads across " + feat_name;
-            break;
-        }
+        you_msg      = "You shiver with cold.";
+        mon_msg_seen = "@The_monster@ shivers with cold.";
         do_msg();
         break;
 
@@ -1769,10 +1100,17 @@ void MiscastEffect::_ice(int severity)
     case 2:         // rather less harmless stuff
         you_msg = "Heat is drained from your body!";
         mon_msg = "Heat is drained from @the_monster@.";
-        if (_ouch(5 + random2(6) + random2(7), BEAM_COLD) && target->alive())
+        if (_ouch(5 + random2avg(13, 2), BEAM_COLD) && target->alive())
             target->expose_to_element(BEAM_COLD, 4);
-        if (target->is_player() && !you_foodless(false))
-            you.increase_duration(DUR_NO_POTIONS, 10 + random2(11), 50);
+        if(!target->alive())
+            break;
+        if (target->is_player())
+            you.increase_duration(DUR_FROZEN, 4 + random2(7), 50);
+        else if (target->is_monster())
+        {
+            target->as_monster()->add_ench(mon_enchant(ENCH_FROZEN,
+            0, act_source, 4 + random2(7) * BASELINE_DELAY));
+        }
         break;
 
     case 3:         // less harmless stuff
@@ -1786,130 +1124,41 @@ void MiscastEffect::_ice(int severity)
             break;
 
         if (target->is_player())
-            you.increase_duration(DUR_FROZEN, 6 + random2(11), 50);
+            you.increase_duration(DUR_FROZEN, 8 + random2(15), 50);
         else if (target->is_monster())
         {
             target->as_monster()->add_ench(mon_enchant(ENCH_FROZEN,
-            0, act_source, 6 + random2(16) * BASELINE_DELAY));
+            0, act_source, 8 + random2(15) * BASELINE_DELAY));
         }
         break;
     }
 }
 
-static bool _on_floor(actor* target)
-{
-    return target->ground_level() && grd(target->pos()) == DNGN_FLOOR;
-}
 
 void MiscastEffect::_earth(int severity)
 {
-    int num;
     switch (severity)
     {
     case 0:         // just a harmless message
-	
-	
-	
-	
-	
-    //note: what the fuck 
-	
-	
-	
-    case 1:
-        num = 11 + (_on_floor(target) ? 2 : 0);
-        switch (random2(num))
-        {
-        case 0:
-            you_msg = "You feel earthy.";
-            // Monster messages needed.
-            break;
-        case 1:
-            you_msg        = "You are showered with tiny particles of grit.";
-            mon_msg_seen   = "@The_monster@ is showered with tiny particles "
-                             "of grit.";
-            mon_msg_unseen = "Tiny particles of grit hang in the air for a "
-                             "moment.";
-            break;
-        case 2:
-            if (special_source == HELL_EFFECT_MISCAST)
-                all_msg = "Sand pours from out of thin air.";
-            you_msg        = "Sand pours from your @hands@.";
-            mon_msg_seen   = "Sand pours from @the_monster@'s @hands@.";
-            mon_msg_unseen = "Sand pours from out of thin air.";
-            break;
-        case 3:
-            you_msg = "You feel a surge of energy from the ground.";
-            // Monster messages needed.
-            break;
-        case 4:
-            if (neither_end_silenced())
-            {
-                all_msg        = "You hear a distant rumble.";
-                msg_ch         = MSGCH_SOUND;
-                sound_loudness = 2;
-            }
-            else if (target->is_player())
-                you_msg = "You sympathise with the stones.";
-            break;
-        case 5:
-            you_msg = "You feel gritty.";
-            // Monster messages needed.
-            break;
-        case 6:
-            you_msg      = "You feel momentarily lethargic.";
-            mon_msg_seen = "@The_monster@ looks momentarily listless.";
-            break;
-        case 7:
-            you_msg        = "Motes of dust swirl before your eyes.";
-            mon_msg_seen   = "Motes of dust swirl around @the_monster@.";
-            mon_msg_unseen = "Motes of dust swirl around in the air.";
-            break;
-        case 8:
-            // Set nothing; canned_msg(MSG_NOTHING_HAPPENS) will be taken
-            // care of elsewhere.
-            break;
-        case 9:
-        {
-            bool          pluralised = true;
-            string        feet       = you.foot_name(true, &pluralised);
-            ostringstream str;
-
-            str << "Your " << feet << (pluralised ? " feel" : " feels")
-                << " warm.";
-
-            you_msg = str.str();
-            // Monster messages needed.
-            break;
-        }
-        case 10:
-            if (target->cannot_move())
-            {
-                you_msg      = "You briefly vibrate.";
-                mon_msg_seen = "@The_monster@ briefly vibrates.";
-            }
-            else
-            {
-                you_msg      = "You momentarily stiffen.";
-                mon_msg_seen = "@The_monster@ momentarily stiffens.";
-            }
-            break;
-        case 11:
-            all_msg = "The floor vibrates.";
-            break;
-        case 12:
-            all_msg = "The floor shifts beneath you alarmingly!";
-            break;
-        }
+	    you_msg        = "Motes of dust swirl before your eyes.";
+        mon_msg_seen   = "Motes of dust swirl around @the_monster@.";
+        mon_msg_unseen = "Motes of dust swirl around in the air.";
         do_msg();
         break;
+    case 1:
+        you_msg        = "You are blasted with sand!";
+        mon_msg_seen   = "@the_monster@ is blasted with sand!";
+        mon_msg_unseen = "Sand pours all over something!";
+        _ouch(target->apply_ac(random2avg(6, 2) + 6));
+        break;
+
 
     case 2:         // slightly less harmless stuff
         you_msg        = "Rocks fall onto you out of nowhere!";
         mon_msg_seen   = "Rocks fall onto @the_monster@ out of "
                                  "nowhere!";
         mon_msg_unseen = "Rocks fall out of nowhere!";
-        _ouch(target->apply_ac(random2avg(13, 2) + 10));
+        _ouch(target->apply_ac(random2avg(13, 2) + 12));
         break;
 
     case 3:         // less harmless stuff
@@ -1921,7 +1170,7 @@ void MiscastEffect::_earth(int severity)
 
         beam.flavour = BEAM_FRAG;
         beam.glyph   = dchar_glyph(DCHAR_FIRED_BURST);
-        beam.damage  = dice_def(3, 15);
+        beam.damage  = dice_def(3, 18);
         beam.name    = "explosion";
         beam.colour  = CYAN;
 
@@ -1937,125 +1186,11 @@ void MiscastEffect::_earth(int severity)
 
 void MiscastEffect::_air(int severity)
 {
-    int num;
     switch (severity)
     {
     case 0:         // just a harmless message
-        num = 9;
-        if (target->is_player())
-            num += 3 + _has_hair(target);
-        switch (random2(num))
-        {
-        case 0:
-            you_msg      = "You feel momentarily weightless.";
-            mon_msg_seen = "@The_monster@ bobs in the air for a moment.";
-            break;
-        case 1:
-            if (special_source == HELL_EFFECT_MISCAST)
-                all_msg = "Wisps of vapour drift around you.";
-            you_msg      = "Wisps of vapour drift from your @hands@.";
-            mon_msg_seen = "Wisps of vapour drift from @the_monster@'s "
-                           "@hands@.";
-            break;
-        case 2:
-        {
-            if (special_source == HELL_EFFECT_MISCAST)
-                all_msg = "Sparks of electricity dance around you.";
-
-            bool pluralised = true;
-            if (!hand_str.empty())
-                pluralised = can_plural_hand;
-            else
-                target->hand_name(true, &pluralised);
-
-            if (pluralised)
-            {
-                you_msg      = "Sparks of electricity dance between your "
-                               "@hands@.";
-                mon_msg_seen = "Sparks of electricity dance between "
-                               "@the_monster@'s @hands@.";
-            }
-            else
-            {
-                you_msg      = "Sparks of electricity dance over your "
-                               "@hand@.";
-                mon_msg_seen = "Sparks of electricity dance over "
-                               "@the_monster@'s @hand@.";
-            }
-            break;
-        }
-        case 3:
-            you_msg      = "You are blasted with air!";
-            mon_msg_seen = "@The_monster@ is blasted with air!";
-            break;
-        case 4:
-            if (neither_end_silenced())
-            {
-                all_msg        = "You hear a whooshing sound.";
-                msg_ch         = MSGCH_SOUND;
-                sound_loudness = 2;
-            }
-            else if (you.can_smell())
-                all_msg = "You smell ozone.";
-            else if (you.species == SP_MUMMY)
-                you_msg = "Your bandages flutter.";
-            break;
-        case 5:
-            // Set nothing; canned_msg(MSG_NOTHING_HAPPENS) will be taken
-            // care of elsewhere.
-            break;
-        case 6:
-            if (neither_end_silenced())
-            {
-                all_msg        = "You hear a crackling sound.";
-                msg_ch         = MSGCH_SOUND;
-                sound_loudness = 2;
-            }
-            else if (you.can_smell())
-                all_msg = "You smell something musty.";
-            else if (you.species == SP_MUMMY)
-                you_msg = "Your bandages flutter.";
-            break;
-        case 7:
-            you_msg      = "There is a short, sharp shower of sparks.";
-            mon_msg_seen = "@The_monster@ is briefly showered in sparks.";
-            break;
-        case 8:
-            if (silenced(you.pos()))
-            {
-                you_msg        = "The wind whips around you!";
-                mon_msg_seen   = "The wind whips around @the_monster@!";
-                mon_msg_unseen = "The wind whips!";
-            }
-            else
-            {
-                you_msg        = "The wind howls around you!";
-                mon_msg_seen   = "The wind howls around @the_monster@!";
-                mon_msg_unseen = "The wind howls!";
-            }
-            break;
-        case 9:
-            you_msg = "Ouch! You feel a sudden electric shock.";
-            // Monster messages needed.
-            break;
-        case 10:
-            you_msg = "You feel a strange surge of energy!";
-            // Monster messages needed.
-            break;
-        case 11:
-            you_msg = "You feel electric!";
-            // Monster messages needed.
-            break;
-        case 12:
-        {
-            // Player only (for now).
-            bool plural;
-            string hair = _hair_str(target, plural);
-            you_msg = make_stringf("Your %s stand%s on end.", hair.c_str(),
-                                   plural ? "" : "s");
-            break;
-        }
-        }
+        you_msg      = "You feel momentarily weightless.";
+        mon_msg_seen = "@The_monster@ bobs in the air for a moment.";
         do_msg();
         break;
 
@@ -2097,54 +1232,8 @@ void MiscastEffect::_poison(int severity)
     switch (severity)
     {
     case 0:         // just a harmless message
-        switch (random2(10))
-        {
-        case 0:
-            you_msg      = "You feel mildly nauseous.";
-            mon_msg_seen = "@The_monster@ briefly looks nauseous.";
-            break;
-        case 1:
-            you_msg      = "You feel slightly ill.";
-            mon_msg_seen = "@The_monster@ briefly looks sick.";
-            break;
-        case 2:
-            if (special_source == HELL_EFFECT_MISCAST)
-                all_msg = "Wisps of poison gas drift around you.";
-            you_msg      = "Wisps of poison gas drift from your @hands@.";
-            mon_msg_seen = "Wisps of poison gas drift from @the_monster@'s "
-                           "@hands@.";
-            break;
-        case 3:
-            you_msg = "You feel a strange surge of energy!";
-            // Monster messages needed.
-            break;
-        case 4:
-            you_msg      = "You feel faint for a moment.";
-            mon_msg_seen = "@The_monster@ looks faint for a moment.";
-            break;
-        case 5:
-            you_msg      = "You feel sick.";
-            mon_msg_seen = "@The_monster@ looks sick.";
-            break;
-        case 6:
-            you_msg      = "You feel odd.";
-            mon_msg_seen = "@The_monster@ has an odd expression for a "
-                           "moment.";
-            break;
-        case 7:
-            you_msg      = "You feel weak for a moment.";
-            mon_msg_seen = "@The_monster@ looks weak for a moment.";
-            break;
-        case 8:
-            // Set nothing; canned_msg(MSG_NOTHING_HAPPENS) will be taken
-            // care of elsewhere.
-            break;
-        case 9:
-            you_msg        = "Your vision is briefly tinged with green.";
-            mon_msg_seen   = "@The_monster@ is briefly tinged with green.";
-            mon_msg_unseen = "The air has a green tinge for a moment.";
-            break;
-        }
+        you_msg      = "You feel slightly ill.";
+        mon_msg_seen = "@The_monster@ briefly looks sick.";
         do_msg();
         break;
 
