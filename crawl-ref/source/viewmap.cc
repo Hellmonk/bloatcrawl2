@@ -566,8 +566,8 @@ static level_pos _stair_dest(const coord_def& p, command_type dir)
 
 static void _unforget_map()
 {
-    ASSERT(env.map_forgotten.get());
-    MapKnowledge &old(*env.map_forgotten.get());
+    ASSERT(env.map_forgotten);
+    MapKnowledge &old(*env.map_forgotten);
 
     for (rectangle_iterator ri(0); ri; ++ri)
         if (!env.map_knowledge(*ri).seen() && old(*ri).seen())
@@ -877,7 +877,7 @@ bool show_map(level_pos &lpos,
             case CMD_MAP_FORGET:
                 {
                     // Merge it with already forgotten data first.
-                    if (env.map_forgotten.get())
+                    if (env.map_forgotten)
                         _unforget_map();
                     MapKnowledge *old = new MapKnowledge(env.map_knowledge);
                     _forget_map();
@@ -887,7 +887,7 @@ bool show_map(level_pos &lpos,
                 break;
 
             case CMD_MAP_UNFORGET:
-                if (env.map_forgotten.get())
+                if (env.map_forgotten)
                 {
                     _unforget_map();
                     env.map_forgotten.reset();
