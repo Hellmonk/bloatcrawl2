@@ -1428,7 +1428,7 @@ int num_traps_for_place()
 /**
  * Choose a weighted random trap type for the currently-generated level.
  *
- * Odds of generating zot traps vary by depth (and are depth-limited). Alarm
+ * Odds of generating zot traps are fuckin' removed. Alarm
  * traps also can't be placed before D:4. All other traps are depth-agnostic.
  *
  * @return                    A random trap type.
@@ -1437,17 +1437,6 @@ int num_traps_for_place()
 
 trap_type random_trap_for_place()
 {
-    // zot traps are Very Special.
-    // very common in zot...
-    if (player_in_branch(BRANCH_ZOT) && coinflip())
-        return TRAP_ZOT;
-
-    // and elsewhere, increasingly common with depth
-    // possible starting at depth 15 (end of D, late lair, lair branches)
-    // XXX: is there a better way to express this?
-    if (random2(1 + env.absdepth0) > 14 && one_chance_in(3))
-        return TRAP_ZOT;
-
     const bool shaft_ok = is_valid_shaft_level();
     const bool tele_ok = !crawl_state.game_is_sprint();
     const bool alarm_ok = env.absdepth0 > 3;

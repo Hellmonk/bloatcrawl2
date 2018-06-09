@@ -2620,7 +2620,7 @@ ORIENT: float
 KITEM:  $ = amulet_of_vitality / acquire any
 KITEM:  12345d = gold / any / nothing
 KITEM:  67M = superb_item / any
-KFEAT:  ~ = known zot trap
+KFEAT:  ~ = known alarm trap
 KMONS:  1 = mummy
 KMONS:  25 = guardian mummy
 KMONS:  36 = mummy priest

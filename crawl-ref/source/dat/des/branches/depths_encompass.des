@@ -881,7 +881,7 @@ MONS:    spriggan defender w:30 / titan w:30 / ancient lich w:30 / \
          deep elf blademaster / deep elf master archer / \
          juggernaut w:20
 KMONS:   Z = deep elf annihilator
-KFEAT:   z^ = known zot trap w:499 / floor w:1
+KFEAT:   z^ = floor
 KFEAT:   Z = enter_zot
 SHUFFLE: Y], {([>, HI / HI / IH, JK / JK / KJ
 SHUFFLE: NO / NO / ON, PQ / PQ / QP, RS / RS / SR, lm / lm / ml

@@ -1279,213 +1279,22 @@ void MiscastEffect::_do_poison(int amount)
 
 void MiscastEffect::_zot()
 {
-    bool success = false;
-    int roll;
-    switch (random2(4))
+    switch (random2(5))
     {
-    case 0:    // mainly explosions
-        beam.name = "explosion";
-        beam.damage = dice_def(3, 20);
-        beam.ex_size = coinflip() ? 1 : 2;
-        beam.glyph   = dchar_glyph(DCHAR_FIRED_BURST);
-        switch (random2(7))
-        {
-        case 0:
-        case 1:
-            all_msg = "There is a sudden explosion of flames!";
-            beam.flavour = BEAM_FIRE;
-            beam.colour  = RED;
-            _explosion();
-            break;
-        case 2:
-        case 3:
-            all_msg = "There is a sudden explosion of frost!";
-            beam.flavour = BEAM_COLD;
-            beam.colour  = WHITE;
-            _explosion();
-            break;
-        case 4:
-            all_msg = "There is a sudden blast of acid!";
-            beam.name    = "acid blast";
-            beam.flavour = BEAM_ACID;
-            beam.colour  = YELLOW;
-            _explosion();
-            break;
-        case 5:
-            if (_create_monster(MONS_BALL_LIGHTNING, 3))
-                all_msg = "A ball of electricity appears!";
-            do_msg();
-            break;
-        case 6:
-            if (_create_monster(MONS_TWISTER, 1))
-                all_msg = "A huge vortex of air appears!";
-            do_msg();
-            break;
-        }
+    case 0:
+        target->paralyse(act_source, 2 + random2(4), cause);
         break;
-    case 1:    // summons
-    reroll_1:
-        switch (random2(9))
-        {
-        case 0:
-            if (_create_monster(MONS_SOUL_EATER, 4, true))
-            {
-                you_msg        = "Something reaches out for you...";
-                mon_msg_seen   = "Something reaches out for @the_monster@...";
-                mon_msg_unseen = "Something reaches out from thin air...";
-            }
-            do_msg();
-            break;
-        case 1:
-            if (_create_monster(MONS_REAPER, 4, true))
-            {
-                you_msg        = "Death has come for you...";
-                mon_msg_seen   = "Death has come for @the_monster@...";
-                mon_msg_unseen = "Death appears from thin air...";
-            }
-            do_msg();
-            break;
-        case 2:
-            if (_create_monster(summon_any_demon(RANDOM_DEMON_GREATER), 0, true))
-                all_msg = "You sense a hostile presence.";
-            do_msg();
-            break;
-        case 3:
-        case 4:
-            for (int i = 1 + random2(2); i > 0; --i)
-                success |= _create_monster(summon_any_demon(RANDOM_DEMON_COMMON), 0, true);
-
-            if (success)
-            {
-                you_msg = "Something turns its malign attention towards "
-                          "you...";
-                mon_msg = "You sense a malign presence.";
-                do_msg();
-            }
-            break;
-        case 5:
-            for (int i = 2 + random2(2); i > 0; --i)
-                success |= _create_monster(MONS_ABOMINATION_SMALL, 5, true);
-
-            if (success && neither_end_silenced())
-            {
-                you_msg        = "A chorus of moans calls out to you!";
-                mon_msg        = "A chorus of moans calls out!";
-                msg_ch         = MSGCH_SOUND;
-                sound_loudness = 3;
-                do_msg();
-            }
-            break;
-        case 6:
-        case 7:
-            for (int i = 2 + random2(4); i > 0; --i)
-                success |= _create_monster(RANDOM_MOBILE_MONSTER, 4, true);
-
-            if (success)
-            {
-                all_msg = "Wisps of shadow whirl around...";
-                do_msg();
-            }
-            break;
-        case 8:
-            if (!_malign_gateway(target->is_player()))
-                goto reroll_1;
-            break;
-        }
+    case 1:
+        target->petrify(act_source);
         break;
     case 2:
-    case 3:    // other misc stuff
-        // Cases at the end are for players only.
-        switch (random2(target->is_player() ? 14 : 9))
-        {
-        case 0:
-            target->paralyse(act_source, 2 + random2(4), cause);
-            break;
-        case 1:
-            target->petrify(act_source);
-            break;
-        case 2:
-            target->rot(act_source, 3 + random2(3));
-            break;
-        case 3:
-            target->confuse(act_source, 2 + random2(4));
-            break;
-        case 4:
-            if (!target->is_player())
-                target->polymorph(0);
-            else if (coinflip())
-            {
-                you_msg = "You feel very strange.";
-                delete_mutation(RANDOM_MUTATION, cause, true, false, false, false);
-                do_msg();
-            }
-            else
-            {
-                _malmutate();
-                do_msg();
-            }
-            break;
-        case 5:
-        case 6:
-            roll = random2(3); // Give 2 of 3 effects.
-            if (roll != 0)
-                target->confuse(act_source, 5 + random2(3));
-            if (roll != 1)
-                target->slow_down(act_source, 5 + random2(3));
-            if (roll != 2)
-            {
-                you_msg        = "Space warps around you!";
-                mon_msg_seen   = "Space warps around @the_monster@!";
-                mon_msg_unseen = "A piece of empty space twists and writhes.";
-                _ouch(5 + random2avg(9, 2));
-                if (target->alive())
-                {
-                    if (!target->no_tele())
-                    {
-                        if (one_chance_in(3))
-                            target->teleport(true);
-                        else
-                            target->blink();
-                    }
-                }
-            }
-            break;
-        case 7:
-            you_msg      = "You are engulfed in negative energy!";
-            mon_msg_seen = "@The_monster@ is engulfed in negative energy!";
-            do_msg();
-            target->drain_exp(act_source, false, 100);
-            break;
-        case 8:
-            if (target->is_player())
-                contaminate_player(2000 + random2avg(13000, 2), false);
-            else
-                target->polymorph(0);
-            break;
-        case 9:
-            if (you.magic_points > 0)
-            {
-                dec_mp(10 + random2(21));
-                canned_msg(MSG_MAGIC_DRAIN);
-            }
-            break;
-        case 10:
-            if (!drain_wands())
-                do_msg(); // For canned_msg(MSG_NOTHING_HAPPENS)
-            break;
-        case 11:
-            lose_stat(STAT_RANDOM, 1 + random2avg(5, 2));
-            break;
-        case 12:
-            mpr("An unnatural silence engulfs you.");
-            you.increase_duration(DUR_SILENCE, 10 + random2(21), 30);
-            invalidate_agrid(true);
-            break;
-        case 13:
-            if (!mons_word_of_recall(nullptr, 2 + random2(3)))
-                canned_msg(MSG_NOTHING_HAPPENS);
-            break;
-        }
+        target->confuse(act_source, 2 + random2(4));
+        break;  
+    case 3:
+        _sleep(2 + random2(4));	
+        break;
+    case 4:
+        target->slow_down(act_source, 10);
         break;
     }
 }

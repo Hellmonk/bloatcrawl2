@@ -536,7 +536,7 @@ NAME:  weyrava_lich_vault
 DEPTH: Crypt
 TAGS:  no_monster_gen no_item_gen
 ITEM:  gold
-KFEAT: Z = w:13 known zot trap / w:50 floor
+KFEAT: Z = floor
 KMONS: Y = Boris / ancient lich, ancient lich
 MONS:  w:3 zombie / lich / w:3 skeleton / w:3 bone dragon
 MONS:  skeleton / zombie
