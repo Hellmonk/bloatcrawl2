@@ -670,7 +670,7 @@ static void _eat_chunk(item_def& food)
 
     bool likes_chunks = player_likes_chunks(true);
     int nutrition     = _chunk_nutrition(likes_chunks);
-    int age           = you.elapsed_time - food.turnofbirth;
+    int age           = you.elapsed_time - food.turnspotted;
     bool suppress_msg = false; // do we display the chunk nutrition message?
     bool do_eat       = false;
 

@@ -4340,7 +4340,7 @@ void marshallItem(writer &th, const item_def &item, bool iinfo)
     marshallShort(th, item.plus2);
     marshallInt(th, item.special);
     marshallShort(th, item.quantity);
-    marshallInt(th, item.turnofbirth);
+    marshallInt(th, item.turnspotted);
 
     marshallByte(th, item.rnd);
     marshallShort(th, item.pos.x);
@@ -4411,7 +4411,7 @@ void unmarshallItem(reader &th, item_def &item)
     item.plus2       = unmarshallShort(th);
     item.special     = unmarshallInt(th);
     item.quantity    = unmarshallShort(th);
-    item.turnofbirth = unmarshallInt(th);
+    item.turnspotted = unmarshallInt(th);
 #if TAG_MAJOR_VERSION == 34
     // These used to come in stacks in monster inventory as throwing weapons.
     // Replace said stacks (but not single items) with tomahawks.
@@ -5139,7 +5139,7 @@ void marshallMonster(writer &th, const monster& m)
     marshallByte(th, m.get_experience_level());
     marshallByte(th, m.speed);
     marshallByte(th, m.speed_increment);
-    marshallInt(th, m.turnofbirth);
+    marshallInt(th, m.turnspotted);
     marshallByte(th, m.behaviour);
     marshallByte(th, m.pos().x);
     marshallByte(th, m.pos().y);
@@ -5998,7 +5998,7 @@ void unmarshallMonster(reader &th, monster& m)
     m.speed           = unmarshallByte(th);
     // Avoid sign extension when loading files (Elethiomel's hang)
     m.speed_increment = unmarshallUByte(th);
-    m.turnofbirth     = unmarshallInt(th);
+    m.turnspotted     = unmarshallInt(th);
     m.behaviour       = static_cast<beh_type>(unmarshallUByte(th));
     int x             = unmarshallByte(th);
     int y             = unmarshallByte(th);

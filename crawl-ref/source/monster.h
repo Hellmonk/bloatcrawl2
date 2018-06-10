@@ -54,7 +54,7 @@ public:
     int max_hit_points;
     int speed;
     int speed_increment;
-    int turnofbirth;
+    int turnspotted;
 
     coord_def target;
     coord_def firing_pos;
