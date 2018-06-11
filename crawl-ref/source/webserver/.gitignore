@@ -1,4 +1,5 @@
 config.toml
 nickmap.txt
 venv
-
+player_titles.txt
+templates/*.html
