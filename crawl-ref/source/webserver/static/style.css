@@ -4,44 +4,238 @@ body {
     font: 16px monospace;
 }
 
-.login {
-    font-size: small;
+#login {
+    text-align: right;
+    float: right;
 }
 
-/* controls --------------------------------------- */
-.text, input[type="text"], input[type="password"],
-input[type="email"], textarea {
+#crt {
+    display: inline-block;
+}
+
+#lobby_body {
+    text-align: center;
+}
+
+#prompt {
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    z-index: 4000;
+}
+
+#prompt > div {
+    background-color: black;
+    width: 34em;
+    margin-left: -17em;
+    margin-top: -10ex;
+    padding: 1em 2ex;
+    border: 1px solid white;
+}
+
+#prompt #login {
+    float: none;
+    text-align: left;
+    margin: 2ex 0;
+}
+
+#prompt_game {
+    font-weight: bold;
+}
+
+#player_list {
+    width: 100%;
+    text-align: left;
+    line-height: 1.1em;
+}
+
+#player_list th.header {
+    cursor: pointer;
+    padding-left: 1px;
+    padding-right: 17px;
+}
+#player_list th.headerSortDown {
+    background-image: url("asc.gif");
+    background-repeat: no-repeat;
+    background-position: center left;
+    padding-left: 17px;
+    padding-right: 1px;
+}
+#player_list th.headerSortUp {
+    background-image: url("desc.gif");
+    background-repeat: no-repeat;
+    background-position: center left;
+    padding-left: 17px;
+    padding-right: 1px;
+}
+
+#player_list th.xl.header {
+    width: 2em;
+    text-align: right;
+    padding-left: 17px;
+    padding-right: 5px;
+}
+#player_list th.xl.headerSortDown,
+#player_list th.xl.headerSortUp {
+    padding-right: 5px;
+}
+#player_list td.xl {
+    text-align: right;
+    padding-right: 5px;
+}
+#player_list th.char {
+    width: 3em;
+}
+#player_list th.place {
+    width: 3em;
+}
+
+#player_list th.idle_time {
+    width: 3em;
+}
+#player_list th.spectator_count {
+    width: 1em;
+}
+
+#player_list th.milestone_col {
+    width: 20em;
+}
+
+#player_list tr:hover {
+    background-color: #101010;
+}
+
+#player_list .milestone_container {
+    overflow-y: hidden;
+    height: 1.1em;
+}
+#player_list .milestone {
+    position: relative;
+}
+#player_list .new_milestone {
+    position: relative;
+}
+
+.floating_dialog {
+    position: absolute;
+    left: 50px;
+    top: 50px;
+
+    border: 1px solid lightgray;
+    padding: 10px;
+    background-color: black;
+
+    z-index: 3000;
+}
+
+.floating_dialog .title {
+    text-align: center;
+}
+
+#register label {
+    width: 200px;
+    float: left;
+}
+
+#reg_cancel {
+    float: left;
+}
+
+#reg_submit {
+    float: right;
+}
+
+.text {
     background-color: black;
     color: white;
-    font: 13px monospace;
-
     border: 1px solid white;
-    padding: 1px 0px;
-    margin: 2px 2px;
-
-    box-sizing: content-box;
-    -moz-box-sizing: content-box;
 }
-input[type="text"], input[type="password"],
-input[type="email"] {
-    height: 16px;
-}
-.button, input[type="button"], input[type="submit"] {
+.button {
     background-color: #DDDDDD;
-    font: 13px monospace;
-
     border: 1px solid white;
-    padding: 1px 6px;
-    margin: 2px 2px;
-
-    height: 16px;
-
-    box-sizing: content-box;
-    -moz-box-sizing: content-box;
 }
-.button:hover, input[type="button"]:hover,
-input[type="submit"]:hover {
-    background-color: #AAAAAA;
+
+#exit_game_dump {
+    text-align: right;
+}
+
+#chat {
+    background: rgba(0, 0, 0, 0.85);
+    width: 400px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+
+    color: #A2A2A2;
+
+    font-size: small;
+
+    padding: 5px;
+    border: 1px solid #626262;
+
+    z-index: 3000;
+}
+
+#chat a {
+    color: inherit;
+    font-weight: inherit;
+}
+
+#chat_caption {
+    font-weight: normal;
+    text-decoration: none;
+}
+
+#chat_caption:hover {
+    background-color: #111111;
+}
+
+#chat_login_text {
+    border-top: 1px dashed #626262;
+}
+
+.chat_automated {
+    color: white;
+    font-style: italic;
+}
+
+#message_count {
+    float: right;
+}
+#message_count.has_new {
+    font-weight: bolder;
+    color: green;
+}
+
+#chat_history_container {
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    margin-bottom: 3px;
+}
+
+#chat_history {
+    width: 100%;
+}
+
+.chat_sender {
+    font-weight: bold;
+}
+
+#spectator_list .player {
+    font-weight: bold;
+}
+
+#spectator_list .watcher {
+    font-weight: normal;
+}
+
+#chat_input {
+    width: 394px;
+    font: small monospace;
 }
 
 a:link, a:active, a:visited {
@@ -54,180 +248,192 @@ a:hover {
     font-weight: bold;
 }
 
-/* general dialog overlay ------------------------- */
-.overlay {
-    text-align: left;
-    color: white;
-    font: 16px monospace;
-
-    border: 1px solid lightgray;
-    padding: 10px;
-    background-color: black;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-
-    position: relative;
-    top: 50px;
-
-    margin-left: auto;
-    margin-right: auto;
-    width: 720px;
-}
-
-.overlay.noborder {
-    border: none;
-}
-
-@media (max-width: 720px) {
-    .overlay {
-        border: none;
-        width: 100%;
-        margin-left: 0;
-        margin-right: 0;
-        top: 0;
-    }
-}
-
-.overlay h3 {
+#loader {
+    display: table;
     text-align: center;
-    margin-top: 0;
-    margin-bottom: 4px;
-    border-bottom: 1px solid gray;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+#loader_center {
+    display: table-cell;
+    vertical-align: middle;
 }
 
-.server_dialog {
+#overlay {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0.7;
+    z-index: 2000;
+}
+
+#ui-stack {
+    z-index: 3000;
+}
+
+.ui-popup-overlay {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    background-color: rgba(0,0,0,0.7);
+}
+
+.ui-popup {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
     overflow: hidden;
 }
 
-.error {
-    color: red;
+.ui-popup-outer {
+    margin: 50px;
+    max-height: calc(100vh - 100px);
+
+    padding: 20px;
+    background-color: black;
+
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    z-index: 0;
+    position: relative;
 }
 
-.warning {
-    color: yellow;
-    font-weight: bold;
-}
-
-.overlay.confirm {
+.ui-popup-inner {
+    position: relative; /* positioned so that it renders on top of bg */
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
     overflow: hidden;
-}
-.overlay.confirm input[value="Cancel"] {
-    float: left;
-}
-.overlay.confirm input[value="OK"] {
-    float: right;
+    max-height: calc(100vh - 100px - 46px); /* for IE11 */
 }
 
-/* game selector ---------------------------------- */
-.saved_games {
-    margin: 0.5em 0;
+.ui-popup-bg {
+    position: absolute;
+    background: url(/static/popup.png);
 }
-.saved_games ol {
-    display: block;
-    margin: 0;
-    padding: 0;
-    padding-left: 1em;
+.ui-popup-bg.tl, .ui-popup-bg.tr, .ui-popup-bg.bl, .ui-popup-bg.br {
+    height: 23px;
+    width: 23px;
 }
-.saved_games li {
-    display: block;
-    margin: 3px;
-    cursor: pointer;
-    font-weight: bold;
-    text-decoration: underline;
+.ui-popup-bg.t, .ui-popup-bg.r, .ui-popup-bg.b, .ui-popup-bg.l, .ui-popup-bg.m {
+    background-size: 300% 300%;
 }
-.saved_games li:hover {
-    color: lightgrey;
+.ui-popup-bg.tl { background-position: 0 0; top: 0; left: 0; }
+.ui-popup-bg.tr { background-position: -46px 0; top: 0; right: 0; }
+.ui-popup-bg.bl { background-position: 0 -46px; bottom: 0; left: 0; }
+.ui-popup-bg.br { background-position: -46px -46px; bottom: 0; right: 0; }
+.ui-popup-bg.t {
+    background-position: 50% 0%;
+    height: 23px;
+    left: 23px;
+    right: 23px;
+    top: 0;
+}
+.ui-popup-bg.b {
+    background-position: 50% 100%;
+    bottom: 0;
+    height: 23px;
+    left: 23px;
+    right: 23px;
+}
+.ui-popup-bg.l {
+    background-position: 0% 50%;
+    bottom: 23px;
+    left: 0;
+    top: 23px;
+    width: 23px;
+}
+.ui-popup-bg.r {
+    background-position: 100% 50%;
+    bottom: 23px;
+    right: 0;
+    top: 23px;
+    width: 23px;
+}
+.ui-popup-bg.m {
+    background-position: 50% 50%;
+    bottom: 23px;
+    left: 23px;
+    right: 23px;
+    top: 23px;
+}
+.ui-popup-inner .bg0 {
+    background-color: transparent;
 }
 
-ol.select {
+.hidden, .templates {
+    display: none !important;
+}
+
+/* These are just here for compatibility with older versions */
+.fg0 { color: rgb(  0,   0,   0); }
+.fg1 { color: rgb(  0,  82, 255); }
+.fg2 { color: rgb(100, 185,  70); }
+.fg3 { color: rgb(  0, 180, 180); }
+.fg4 { color: rgb(255,  48,   0); }
+.fg5 { color: rgb(238,  92, 238); }
+.fg6 { color: rgb(165,  91,   0); }
+.fg7 { color: rgb(162, 162, 162); }
+.fg8 { color: rgb( 82,  82,  82); }
+.fg9 { color: rgb( 82, 102, 255); }
+.fg10 { color: rgb( 82, 255,  82); }
+.fg11 { color: rgb( 82, 255, 255); }
+.fg12 { color: rgb(255,  82,  82); }
+.fg13 { color: rgb(255,  82, 255); }
+.fg14 { color: rgb(255, 255,  82); }
+.fg15 { color: rgb(255, 255, 255); }
+
+.bg0 { background-color: rgb(  0,   0,   0); }
+.bg1 { background-color: rgb(  0,  82, 255); }
+.bg2 { background-color: rgb(100, 185,  70); }
+.bg3 { background-color: rgb(  0, 180, 180); }
+.bg4 { background-color: rgb(255,  48,   0); }
+.bg5 { background-color: rgb(238,  92, 238); }
+.bg6 { background-color: rgb(165,  91,   0); }
+.bg7 { background-color: rgb(162, 162, 162); }
+.bg8 { background-color: rgb( 82,  82,  82); }
+.bg9 { background-color: rgb( 82, 102, 255); }
+.bg10 { background-color: rgb( 82, 255,  82); }
+.bg11 { background-color: rgb( 82, 255, 255); }
+.bg12 { background-color: rgb(255,  82,  82); }
+.bg13 { background-color: rgb(255,  82, 255); }
+.bg14 { background-color: rgb(255, 255,  82); }
+.bg15 { background-color: rgb(255, 255, 255); }
+
+#stats {
     display: inline-block;
-    margin: 0;
-    padding: 0;
-}
-ol.select li {
-    display: inline-block;
-    border: 1px solid gray;
-    padding: 3px;
-    margin: 3px;
-    cursor: pointer;
-}
-ol.select li.selected {
-    background-color: darkgray;
-}
-ol.select li:hover {
-    background-color: lightgray;
-    color: black;
+    vertical-align: top;
+    position: absolute;
 }
 
-/* password change form --------------------------- */
-.password_change {
-    overflow: hidden;
+#minimap, #minimap_overlay {
+    position: absolute;
 }
 
-.password_change form {
-    width: 100%;
-}
-.password_change form div {
-    overflow: hidden;
-    margin: 4px 0;
-}
-.password_change label {
-    float: left;
-}
-.password_change input[type="password"] {
-    width: 50%;
-    float: right;
-}
-.password_change input[type="button"] {
-    float: left;
-}
-.password_change input[type="submit"] {
-    float: right;
-}
-
-/* registration form ------------------------------ */
-.register_form form {
-    width: 100%;
-}
-.register_form form div {
-    overflow: hidden;
-    margin: 4px 0;
-}
-.register_form label {
-    float: left;
-}
-.register_form input[type="text"],
-.register_form input[type="email"],
-.register_form input[type="password"] {
-    width: 50%;
-    float: right;
-}
-.register_form input[type="button"] {
-    float: left;
-}
-.register_form input[type="submit"] {
-    float: right;
-}
-
-/* login form ------------------------------------- */
-.login_overlay form {
-    width: 100%;
-    overflow: hidden;
-}
-.login_overlay form div {
-    overflow: hidden;
-}
-.login_overlay label {
-    float: left;
-}
-.login_overlay input[type="text"],
-.login_overlay input[type="password"] {
-    width: calc(100% - 6px);
-    float: right;
-}
-.login_overlay input[type="submit"] {
-    float: right;
-}
+/* added by aj during ui-overhaul merge */
 
 /* player list ------------------------------------ */
 .player_list {
@@ -291,13 +497,6 @@ ol.select li:hover {
 .player_list tr:hover {
     background-color: #101010;
 }
-
-
-/* loader ----------------------------------------- */
-.loader {
-    text-align: center;
-}
-
 
 /* chat ------------------------------------------- */
 .chat {
@@ -408,100 +607,23 @@ ol.select li:hover {
     line-height: 16px;
 }
 
-/* stuff that actually belongs to the game -------- */
-#crt {
+/* game selector ---------------------------------- */
+ol.select {
     display: inline-block;
+    margin: 0;
+    padding: 0;
 }
-
-.floating_dialog {
-    position: absolute;
-    left: 50px;
-    top: 50px;
-
-    border: 1px solid lightgray;
-    padding: 10px;
-    background-color: black;
-
-    z-index: 3000;
-}
-
-.floating_dialog .title {
-    text-align: center;
-}
-
-#overlay {
-    display: none;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: black;
-    opacity: 0.7;
-    z-index: 2000;
-}
-
-/* stuff for even older versions ------------------ */
-.fg0 { color: rgb(  0,   0,   0); }
-.fg1 { color: rgb(  0,  82, 255); }
-.fg2 { color: rgb(100, 185,  70); }
-.fg3 { color: rgb(  0, 180, 180); }
-.fg4 { color: rgb(255,  48,   0); }
-.fg5 { color: rgb(238,  92, 238); }
-.fg6 { color: rgb(165,  91,   0); }
-.fg7 { color: rgb(162, 162, 162); }
-.fg8 { color: rgb( 82,  82,  82); }
-.fg9 { color: rgb( 82, 102, 255); }
-.fg10 { color: rgb( 82, 255,  82); }
-.fg11 { color: rgb( 82, 255, 255); }
-.fg12 { color: rgb(255,  82,  82); }
-.fg13 { color: rgb(255,  82, 255); }
-.fg14 { color: rgb(255, 255,  82); }
-.fg15 { color: rgb(255, 255, 255); }
-
-.bg0 { background-color: rgb(  0,   0,   0); }
-.bg1 { background-color: rgb(  0,  82, 255); }
-.bg2 { background-color: rgb(100, 185,  70); }
-.bg3 { background-color: rgb(  0, 180, 180); }
-.bg4 { background-color: rgb(255,  48,   0); }
-.bg5 { background-color: rgb(238,  92, 238); }
-.bg6 { background-color: rgb(165,  91,   0); }
-.bg7 { background-color: rgb(162, 162, 162); }
-.bg8 { background-color: rgb( 82,  82,  82); }
-.bg9 { background-color: rgb( 82, 102, 255); }
-.bg10 { background-color: rgb( 82, 255,  82); }
-.bg11 { background-color: rgb( 82, 255, 255); }
-.bg12 { background-color: rgb(255,  82,  82); }
-.bg13 { background-color: rgb(255,  82, 255); }
-.bg14 { background-color: rgb(255, 255,  82); }
-.bg15 { background-color: rgb(255, 255, 255); }
-
-#stats {
+ol.select li {
     display: inline-block;
-    vertical-align: top;
-    position: absolute;
+    border: 1px solid gray;
+    padding: 3px;
+    margin: 3px;
+    cursor: pointer;
 }
-
-#minimap, #minimap_overlay {
-    position: absolute;
+ol.select li.selected {
+    background-color: darkgray;
 }
-
-select {
-    background-color: inherit;
-    color: inherit;
-    font: inherit;
-    border: 1px solid #666;
-}
-
-select option {
-    background-color: black;
-    color: white;
-}
-
-input {
-    font: inherit;
-}
-
-form {
-    margin: 0px;
+ol.select li:hover {
+    background-color: lightgray;
+    color: black;
 }
