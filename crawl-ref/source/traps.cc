@@ -1597,3 +1597,28 @@ bool ensnare(actor *fly)
     check_monsters_sense(SENSE_WEB_VIBRATION, 9, fly->pos());
     return true;
 }
+
+bool curse(actor *target)
+{
+    if(!target)
+        return false;
+    if(!target->is_player())
+        return false;
+    vector<coord_def> locations;
+    for (radius_iterator ai(target->pos(), 1, C_SQUARE, LOS_SOLID); ai; ++ai)
+    {
+        trap_def* ptrap = trap_at(*ai);
+        if (ptrap)
+            continue;
+        dungeon_feature_type feat = grd(*ai);
+        if (feat == DNGN_FLOOR)
+            locations.push_back(*ai);
+	}
+    if(!locations.empty())
+    {
+        place_specific_trap(locations[random2(locations.size())], TRAP_ZOT);
+        mprf("you feel cursed");
+        return true;
+    }
+    return false;
+}

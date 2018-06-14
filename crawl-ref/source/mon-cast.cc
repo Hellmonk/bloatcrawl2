@@ -444,6 +444,8 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
     { SPELL_SLOW, _hex_logic(SPELL_SLOW) },
     { SPELL_CONFUSE, _hex_logic(SPELL_CONFUSE) },
     { SPELL_BANISHMENT, _hex_logic(SPELL_BANISHMENT) },
+    /*{ SPELL_CURSE, {_always_worthwhile,
+	_fire_simple_beam, nullptr}},*/
     { SPELL_PARALYSE, _hex_logic(SPELL_PARALYSE) },
     { SPELL_PETRIFY, _hex_logic(SPELL_PETRIFY) },
     { SPELL_PAIN, _hex_logic(SPELL_PAIN) },
@@ -1532,6 +1534,7 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
     case SPELL_GLACIATE:              // ditto
     case SPELL_CLOUD_CONE:            // ditto
     case SPELL_SCATTERSHOT:           // ditto
+    case SPELL_CURSE:
         _setup_fake_beam(beam, *mons);
         break;
 
@@ -6626,6 +6629,17 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
     case SPELL_BLINK_ALLIES_ENCIRCLE:
         _blink_allies_encircle(mons);
         return;
+		
+     case SPELL_CURSE:
+	 {
+        actor *target = mons->get_foe();
+        if (!curse(target))
+        {
+            mons->speed_increment +=
+                get_monster_data(mons->type)->energy_usage.spell;
+        }
+        return;
+	 }
 
     case SPELL_MASS_CONFUSION:
         _mons_mass_confuse(mons);

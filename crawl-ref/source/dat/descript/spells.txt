@@ -367,6 +367,10 @@ Cure Poison spell
 
 Removes poison from the caster's system.
 %%%%
+Curse spell
+
+Invokes the Curse of Zot, placing a deadly Zot trap near the target.
+%%%%
 Darkness spell
 
 Dims the light of the dungeon, reducing the range of vision. 
