@@ -759,7 +759,7 @@ void trap_def::trigger(actor& triggerer)
             {
                 if (m->wont_attack() || crawl_state.game_is_arena())
                     targ = m;
-                else if (one_chance_in(5))
+                else if (one_chance_in(3))
                     targ = &you;
             }
 
