@@ -1616,7 +1616,13 @@ bool curse(actor *target)
 	}
     if(!locations.empty())
     {
-        place_specific_trap(locations[random2(locations.size())], TRAP_ZOT);
+        coord_def trap_loc = locations[random2(locations.size())];
+        place_specific_trap(trap_loc, TRAP_ZOT, 2);
+        if (grd(trap_loc) == DNGN_UNDISCOVERED_TRAP
+            && you.see_cell(trap_loc))
+        {
+            grd(trap_loc) = DNGN_TRAP_ZOT;
+        }
         mprf("you feel cursed");
         return true;
     }

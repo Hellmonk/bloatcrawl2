@@ -52,6 +52,7 @@
 #include "terrain.h"
 #include "tileview.h"
 #include "throw.h"
+#include "traps.h"
 #include "travel.h"
 #include "viewchar.h"
 #include "unwind.h"
@@ -948,6 +949,23 @@ static void _antiscumming(int /*time_delta*/)
     }
 }
 
+static void _timeout_traps(int /*time_delta*/)
+{
+	for (rectangle_iterator ri(0); ri; ++ri)
+    {
+        if (in_bounds(*ri))
+        {
+            trap_def* ptrap = trap_at(*ri);
+            if (ptrap && ptrap->type == TRAP_ZOT && ptrap->ammo_qty)
+            {
+                ptrap->ammo_qty -= 1;
+                if(ptrap->ammo_qty <= 0)
+                    destroy_trap(*ri);
+            }
+        }
+    }
+}
+
 struct timed_effect
 {
     void              (*trigger)(int);
@@ -980,6 +998,7 @@ static struct timed_effect timed_effects[] =
 #if TAG_MAJOR_VERSION == 34
 	{  nullptr,                        0,     0, false },
 #endif
+    { _timeout_traps,                200,   300, false },
 };
 
 // Do various time related actions...
