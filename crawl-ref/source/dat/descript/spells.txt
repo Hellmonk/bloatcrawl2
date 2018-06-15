@@ -369,7 +369,9 @@ Removes poison from the caster's system.
 %%%%
 Curse spell
 
-Invokes the Curse of Zot, placing a deadly Zot trap near the target.
+Invokes the Curse of Zot, placing a temporary Zot trap near the target. The trap
+will cause a dangerous status effect if you step on it, and may be triggered by
+monsters as well.
 %%%%
 Darkness spell
 
