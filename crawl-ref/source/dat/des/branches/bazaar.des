@@ -890,6 +890,82 @@ cc...................cc
       ccc     ccc
 ENDMAP
 
+NAME:    bazaar_hellmonk_w
+TAGS:    no_rotate no_pool_fixup bazaar
+ORIENT:  encompass
+SHUFFLE: AB
+SUBST:   A = {, B = >
+KFEAT:   C = any shop
+:        bazaar_setup(_G)
+MAP
+xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxx......................xxx
+xxW..........WW..........Wxx
+xWWW..C..C..WWWW..C..C..WWWx
+x.WWW......WWWWWW......WWW.x
+x..WWW....WWW..WWW....WWW..x
+x...WWW..WWW....WWW..WWW...x
+x....WWWWWW......WWWWWW....x
+x.....WWWW..A..B..WWWW.....x
+xx.....WW..........WW.....xx
+xxx......................xxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ENDMAP
+
+NAME:    bazaar_hellmonk_smoke_trees
+TAGS:    no_rotate bazaar
+ORIENT:  encompass
+SHUFFLE: AB
+SUBST:   A = {, B = >
+KFEAT:   C = any shop
+:        bazaar_setup(_G)
+MAP
+ttttttttttttttttttttttttttttttt
+ttttttttttttllllllltttttttttttt
+tttttttttttll.....llttttttttttt
+tttttttttttl...C...lttttttttttt
+tttttttttttll.....llttttttttttt
+tttttttttttl...C...lttttttttttt
+tttttttttttl.......lttttttttttt
+tttttttttttll.A.B.llttttttttttt
+ttttttttttttl.....ltttttttttttt
+tttttttttttll..C..llttttttttttt
+tttttttttttl.......lttttttttttt
+tttttttttttl...C...lttttttttttt
+tttttttttttll.....llttttttttttt
+ttttttttttttllllllltttttttttttt
+ttttttttttttttttttttttttttttttt
+ENDMAP
+
+NAME:    bazaar_hellmonk_stone
+TAGS:    no_rotate bazaar
+ORIENT:  encompass
+SHUFFLE: AB
+SUBST:   A = {, B = >
+TILE:    i = dngn_transparent_stone
+KFEAT:   C = any shop
+:        bazaar_setup(_G)
+MAP
+ccccccccccccccccc
+ccc....ici....ccc
+ccC...i.c.i...Ccc
+c....i..c..i....c
+c...i...c...i...c
+c..i....c....i..c
+c.i....i.i....i.c
+ci....i...i....ic
+cccccc.A.B.cccccc
+ci....i...i....ic
+c.i....i.i....i.c
+c..i....c....i..c
+c...i...c...i...c
+c....i..c..i....c
+ccC...i.c.i...Ccc
+ccc....ici....ccc
+ccccccccccccccccc
+ENDMAP
+
+
 ##########################################################################
 # Rare maps (weights 0-10)
 ##########################################################################
