@@ -1150,13 +1150,13 @@ skill_diff skill_level_to_diffs(skill_type skill, double amount,
 
         const int cost = calc_skill_cost(you_skill_cost_level);
         // Maximum number of skill points to transfer in one go.
-        // It's max_xp*10/cost rounded up.
-        const int max_skp = max((max_xp * 10 + cost - 1) / cost, 1);
+        // It's max_xp/cost rounded up.
+        const int max_skp = max((max_xp + cost - 1) / cost, 1);
 
         skill_diff delta;
         delta.skill_points = min<int>(abs((int)(target - you_skill)),
                                  max_skp);
-        delta.experience = (delta.skill_points * cost + 9) / 10;
+        delta.experience = delta.skill_points * cost;
 
         if (decrease_skill)
         {
