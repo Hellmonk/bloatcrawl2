@@ -80,7 +80,7 @@ static const map<job_type, job_def> job_data =
     0, 7, 5,
     { SP_DEEP_ELF, SP_SPRIGGAN, SP_GARGOYLE, SP_VINE_STALKER,
       SP_OCTOPODE, },
-    { "book of Geomancy", "stone q:240", "robe", },
+    { "book of Geomancy", "robe", },
     WCHOICE_NONE,
     { { SK_TRANSMUTATIONS, 2 }, { SK_EARTH_MAGIC, 4 },
       { SK_DODGING, 2 }, { SK_STEALTH, 2 }, }
