@@ -979,6 +979,14 @@ static const mutation_def mut_data[] =
   {"You feel the shadows return.", "", ""},
 },
 
+{ MUT_MAGIC_ATTUNEMENT, 1, 1, mutflag::GOOD, true,
+  "magic attunement",
+
+  {"Your spells cost 1 less MP to cast", "", ""},
+  {"", "", ""},
+  {"", "", ""},
+},
+
 { MUT_SHAGGY_FUR, 4, 1, mutflag::GOOD, true,
   "shaggy fur",
 

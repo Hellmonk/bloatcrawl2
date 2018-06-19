@@ -54,7 +54,7 @@ static const map<species_type, species_def> species_data =
     HT_LAND, US_ALIVE, SIZE_MEDIUM,
     5, 12, 10, // 27
     { STAT_INT }, 4,
-    {},
+    { { MUT_MAGIC_ATTUNEMENT, 1, 1 }, },
     {},
     {},
     { JOB_WIZARD, JOB_SUMMONER, JOB_NECROMANCER,
