@@ -982,7 +982,7 @@ static const mutation_def mut_data[] =
 { MUT_MAGIC_ATTUNEMENT, 1, 1, mutflag::GOOD, true,
   "magic attunement",
 
-  {"Your spells cost 1 less MP to cast", "", ""},
+  {"Your non-sustained spells cost 1 less MP to cast", "", ""},
   {"", "", ""},
   {"", "", ""},
 },
