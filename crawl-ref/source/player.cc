@@ -5952,8 +5952,8 @@ int player::armour_class(bool /*calc_unid*/) const
     // Scale mutations, etc. Statues don't get an AC benefit from scales,
     // since the scales are made of the same stone as everything else.
     AC += get_mutation_level(MUT_TOUGH_SKIN)
-          ? get_mutation_level(MUT_TOUGH_SKIN) * 100 : 0;
-              // +1, +2, +3
+          ? get_mutation_level(MUT_TOUGH_SKIN) * 300 : 0;
+              // +3
     AC += get_mutation_level(MUT_SHAGGY_FUR)
           ? get_mutation_level(MUT_SHAGGY_FUR) * 400 : 0;
               // +4

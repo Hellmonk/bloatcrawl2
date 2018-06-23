@@ -22,20 +22,14 @@ struct mutation_category_def
 static const mutation_def mut_data[] =
 {
 
-{ MUT_TOUGH_SKIN, 0, 3, mutflag::GOOD, true,
+{ MUT_TOUGH_SKIN, 1, 1, mutflag::GOOD, true,
   "tough skin",
 
-  {"You have tough skin. (AC +1)",
-   "You have very tough skin. (AC +2)",
-   "You have extremely tough skin. (AC +3)"},
+  {"You have tough skin. (AC +3)", "", ""},
 
-  {"Your skin toughens.",
-   "Your skin toughens.",
-   "Your skin toughens."},
+  {"Your skin toughens.", "", ""},
 
-  {"Your skin feels delicate.",
-   "Your skin feels delicate.",
-   "Your skin feels delicate."},
+  {"Your skin feels delicate.", "", ""},
 },
 
 { MUT_STRONG, 7, 1, mutflag::GOOD, false,

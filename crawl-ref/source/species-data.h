@@ -568,7 +568,7 @@ static const map<species_type, species_def> species_data =
     HT_LAND, US_ALIVE, SIZE_LARGE,
     15, 4, 5, // 24
     { STAT_STR }, 3,
-    { { MUT_TOUGH_SKIN, 3, 1 }, { MUT_REGENERATION, 1, 1 }, { MUT_CLAWS, 1, 1 },
+    { { MUT_TOUGH_SKIN, 1, 1 }, { MUT_REGENERATION, 1, 1 }, { MUT_CLAWS, 1, 1 },
       { MUT_CLAWS, 1, 11 }, { MUT_CLAWS, 1, 21 },},
     {},
     {},
@@ -751,7 +751,7 @@ static const map<species_type, species_def> species_data =
     HT_LAND, US_ALIVE, SIZE_LARGE,
     10, 7, 4, // 21
     { STAT_STR, STAT_DEX }, 4,
-    { { MUT_TOUGH_SKIN, 3, 1 }, { MUT_FAST, 2, 1 },  { MUT_DEFORMED, 1, 1 },
+    { { MUT_TOUGH_SKIN, 1, 1 }, { MUT_FAST, 2, 1 },  { MUT_DEFORMED, 1, 1 },
       { MUT_HOOVES, 3, 1 }, },
     {},
     {},

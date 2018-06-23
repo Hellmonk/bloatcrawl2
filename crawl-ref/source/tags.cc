@@ -2814,7 +2814,11 @@ static void tag_read_you(reader &th)
         if(you.mutation[MUT_TENGU_FLIGHT] > 1)
         {
             you.mutation[MUT_TENGU_FLIGHT] = 1;	
-        }		
+        }	
+        if(you.mutation[MUT_TOUGH_SKIN] > 1)
+        {
+            you.mutation[MUT_TOUGH_SKIN] = 1;	
+        }	
     }
 #endif
     }
