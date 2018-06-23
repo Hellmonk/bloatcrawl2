@@ -108,7 +108,7 @@ int formatted_scroller::show()
     m_contents_dirty = false;
     m_scroll_dirty = false;
     bool done = false;
-    popup->on(Widget::slots.event, [&done, &vbox, &text, this](wm_event ev) {
+    popup->on(Widget::slots.event, [&done, &text, this](wm_event ev) {
         if (ev.type != WME_KEYDOWN)
             return false; // allow default event handling
         m_lastch = ev.key.keysym.sym;
@@ -131,11 +131,11 @@ int formatted_scroller::show()
         }
         if (done)
             return true;
-        if (vbox->on_event(ev))
+        if (m_scroller->on_event(ev))
             return true;
         if (m_flags & FS_EASY_EXIT)
             return done = true;
-        return false;
+        return true;
     });
 
 #ifdef USE_TILE_WEB
