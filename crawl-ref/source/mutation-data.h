@@ -1278,20 +1278,14 @@ static const mutation_def mut_data[] =
    "The eyeballs on your body recede somewhat."},
 },
 
-{ MUT_TRANSLUCENT_SKIN, 0, 3, mutflag::GOOD | mutflag::JIYVA, true,
+{ MUT_TRANSLUCENT_SKIN, 0, 1, mutflag::GOOD | mutflag::JIYVA, true,
   "translucent skin",
 
-  {"Your translucent skin slightly reduces your foes' accuracy. (Stealth)",
-   "Your translucent skin reduces your foes' accuracy. (Stealth)",
-   "Your transparent skin significantly reduces your foes' accuracy. (Stealth)"},
+  {"Your translucent skin slightly reduces your foes' accuracy. (Stealth)", "", ""},
 
-  {"Your skin becomes partially translucent.",
-   "Your skin becomes more translucent.",
-   "Your skin becomes completely transparent."},
+  {"Your skin becomes completely translucent.", "", ""},
 
-  {"Your skin returns to its normal opacity.",
-   "Your skin's translucency fades.",
-   "Your skin's transparency fades."},
+  {"Your skin returns to its normal opacity.", "", ""},
 },
 
 { MUT_PSEUDOPODS, 0, 3, mutflag::GOOD | mutflag::JIYVA, true,

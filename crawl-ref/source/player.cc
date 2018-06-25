@@ -3145,7 +3145,7 @@ int check_stealth()
     stealth += (STEALTH_PIP / 2)
                 * you.get_mutation_level(MUT_THIN_SKELETAL_STRUCTURE);
     stealth += STEALTH_PIP * you.get_mutation_level(MUT_CAMOUFLAGE) * 3;
-    const int how_transparent = you.get_mutation_level(MUT_TRANSLUCENT_SKIN);
+    const int how_transparent = 3 * you.get_mutation_level(MUT_TRANSLUCENT_SKIN);
 
     if (how_transparent)
         stealth += 15 * (how_transparent);

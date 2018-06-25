@@ -266,7 +266,7 @@ int attack::calc_to_hit(bool random)
         // This can only help if you're visible!
         const int how_transparent = you.get_mutation_level(MUT_TRANSLUCENT_SKIN);
         if (defender->is_player() && how_transparent)
-            mhit -= 2 * how_transparent;
+            mhit -= 6 * how_transparent;
 
         if (defender->backlit(false))
             mhit += 2 + random2(8);
