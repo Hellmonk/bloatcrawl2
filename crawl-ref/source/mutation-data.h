@@ -2009,6 +2009,14 @@ static const mutation_def mut_data[] =
   {"You taste negative energy.", "", ""},
   {"You no longer taste negative energy.", "", ""},
 },
+
+{ MUT_EXPOSED, 3, 1, mutflag::BAD, true,
+  "draining bite",
+
+  {"You are less able to defend yourself (AC -3, EV -3, SH - 3).", "", ""},
+  {"You feel exposed.", "", ""},
+  {"You feel less exposed.", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =

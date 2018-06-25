@@ -2134,6 +2134,9 @@ static int _player_evasion_bonuses()
     if (you.get_mutation_level(MUT_SLOW_REFLEXES))
         evbonus -= you.get_mutation_level(MUT_SLOW_REFLEXES) * 3;
 	
+    if (you.get_mutation_level(MUT_EXPOSED))
+        evbonus -= you.get_mutation_level(MUT_EXPOSED) * 3;
+	
     if (you.props.exists(WALL_JUMP_EV_KEY))
         evbonus += you.props[WALL_JUMP_EV_KEY].get_int();
 
@@ -2330,8 +2333,11 @@ int player_shield_class()
     shield += _bone_armour_bonus() * 2;
     shield += you.wearing(EQ_AMULET_PLUS, AMU_REFLECTION) * 200;
     shield += you.scan_artefacts(ARTP_SHIELDING) * 200;
+	
+    if (you.get_mutation_level(MUT_EXPOSED))
+        shield -= you.get_mutation_level(MUT_EXPOSED) * 600;
 
-    return (shield + 50) / 100;
+    return max((shield + 50) / 100, 0);
 }
 
 /**
@@ -5987,6 +5993,8 @@ int player::armour_class(bool /*calc_unid*/) const
     AC -= get_mutation_level(MUT_PHYSICAL_VULNERABILITY)
           ? get_mutation_level(MUT_PHYSICAL_VULNERABILITY) * 300 : 0;
               // +3, +6, +9
+    AC -= get_mutation_level(MUT_EXPOSED)
+          ? get_mutation_level(MUT_EXPOSED) * 300 : 0;
     //WJC passive goes last and affects all sources of AC
     if(you_worship(GOD_WU_JIAN) && have_passive(passive_t::wu_jian_glass_cannon))
     {
