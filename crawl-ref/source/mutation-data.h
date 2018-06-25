@@ -1113,7 +1113,7 @@ static const mutation_def mut_data[] =
 },
 #endif
 
-{ MUT_PASSIVE_FREEZE, 0, 1, mutflag::GOOD, false,
+{ MUT_PASSIVE_FREEZE, 3, 1, mutflag::GOOD, false,
   "passive freeze",
 
   {"A frigid envelope surrounds you and freezes all who hurt you.", "", ""},
