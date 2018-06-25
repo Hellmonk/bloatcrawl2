@@ -1676,7 +1676,7 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_COLD_BLOODED, 0, 1, mutflag::BAD, true,
+{ MUT_COLD_BLOODED, 2, 1, mutflag::BAD, true,
   "cold-blooded",
 
   {"You are cold-blooded and may be slowed by cold attacks.", "", ""},
