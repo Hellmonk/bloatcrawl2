@@ -2001,6 +2001,14 @@ static const mutation_def mut_data[] =
   {"You stop regenerating.", "", ""},
   {"You start regenerating.", "", ""},
 },
+
+{ MUT_DRAIN_BITE, 3, 1, mutflag::GOOD, true,
+  "draining bite",
+
+  {"Your bite drains your enemies.", "", ""},
+  {"You taste negative energy.", "", ""},
+  {"You no longer taste negative energy.", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =

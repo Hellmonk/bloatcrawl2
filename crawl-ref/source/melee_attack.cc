@@ -1112,7 +1112,8 @@ public:
     {
         if (you.get_mutation_level(MUT_ANTIMAGIC_BITE))
             return SPWPN_ANTIMAGIC;
-
+        if (you.get_mutation_level(MUT_DRAIN_BITE))
+            return SPWPN_DRAINING;
         if (you.get_mutation_level(MUT_ACIDIC_BITE))
             return SPWPN_ACID;
 
@@ -1348,6 +1349,9 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
         if (damage_brand == SPWPN_VENOM && coinflip())
             poison_monster(defender->as_monster(), &you);
 
+        if (damage_brand == SPWPN_DRAINING)
+                bite_drain_defender();
+		
         // Normal vampiric biting attack, not if already got stabbing special.
         if (damage_brand == SPWPN_VAMPIRISM && you.species == SP_VAMPIRE
             && (!stab_attempt || stab_bonus <= 0))
@@ -3418,6 +3422,7 @@ bool melee_attack::_extra_aux_attack(unarmed_attack_type atk)
     case UNAT_BITE:
         return you.get_mutation_level(MUT_ANTIMAGIC_BITE)
                || (you.has_usable_fangs()
+                   || you.get_mutation_level(MUT_DRAIN_BITE)
                    || you.get_mutation_level(MUT_ACIDIC_BITE))
                    && x_chance_in_y(2, 5);
 
