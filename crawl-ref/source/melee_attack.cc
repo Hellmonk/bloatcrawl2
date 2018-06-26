@@ -1125,7 +1125,7 @@ class AuxPseudopods: public AuxAttackType
 {
 public:
     AuxPseudopods()
-    : AuxAttackType(4, "bludgeon") { };
+    : AuxAttackType(12, "bludgeon") { };
 
     int get_damage() const override
     {

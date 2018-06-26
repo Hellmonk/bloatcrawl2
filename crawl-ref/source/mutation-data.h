@@ -1288,20 +1288,14 @@ static const mutation_def mut_data[] =
   {"Your skin returns to its normal opacity.", "", ""},
 },
 
-{ MUT_PSEUDOPODS, 0, 3, mutflag::GOOD | mutflag::JIYVA, true,
+{ MUT_PSEUDOPODS, 0, 1, mutflag::GOOD | mutflag::JIYVA, true,
   "pseudopods",
 
-  {"Armour fits poorly on your pseudopods.",
-   "Armour fits poorly on your large pseudopods.",
-   "Armour fits poorly on your massive pseudopods."},
+  {"Armour fits poorly on your massive pseudopods.", "", ""},
 
-  {"Pseudopods emerge from your body.",
-   "Your pseudopods grow in size.",
-   "Your pseudopods grow in size."},
+  {"Massive pseudopods emerge from your body.", "", ""},
 
-  {"Your pseudopods retract into your body.",
-   "Your pseudopods become smaller.",
-   "Your pseudopods become smaller."},
+  {"Your pseudopods retract into your body.", "", ""},
 },
 
 #if TAG_MAJOR_VERSION == 34
