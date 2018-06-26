@@ -38,7 +38,7 @@ bool is_pierce_active();
 void fire_thing(int item = -1);
 void throw_item_no_quiver();
 
-bool throw_it(bolt &pbolt, item_def& thrown, dist *target = nullptr);
+bool throw_it(bolt &pbolt, item_def& thrown, dist *target = nullptr, bool created = false);
 
 bool thrown_object_destroyed(item_def *item, const coord_def& where);
 

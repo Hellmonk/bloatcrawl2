@@ -500,6 +500,7 @@ void fire_thing(int item)
          return;
 	 
     item_def *ammo = nullptr;
+    bool created = false;
     if (item == -1)
     {
         item_def *const weapon = you.weapon();
@@ -527,7 +528,8 @@ void fire_thing(int item)
 		if (!ammo)
         {
                 int p = items(false, OBJ_MISSILES, missileType, 0, ego);
-                ammo = &mitm[p];			
+                ammo = &mitm[p];	
+                created = true;				
         }
         else
             return;
@@ -546,7 +548,11 @@ void fire_thing(int item)
             || check_warning_inscriptions(*you.weapon(), OPER_FIRE)))
     {
         bolt beam;
-        throw_it(beam, *ammo, &target);
+        throw_it(beam, *ammo, &target, created);
+    }
+    else if (created)
+    {
+        destroy_item(ammo->index());
     }
 }
 
@@ -735,7 +741,7 @@ static void _throw_noise(actor* act, const bolt &pbolt, const item_def &ammo)
 //
 // Return value is only relevant if dummy_target is non-nullptr, and returns
 // true if dummy_target is hit.
-bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
+bool throw_it(bolt &pbolt, item_def& thrown, dist *target, bool created)
 {
     dist thr;
     bool returning   = false;    // Item can return to pack.
@@ -760,7 +766,10 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
         {
             if (thr.isCancel)
                 canned_msg(MSG_OK);
-
+            if (created)
+            {
+                destroy_item(thrown);
+            }
             return false;
         }
     }
@@ -793,6 +802,10 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
     if (_setup_missile_beam(&you, pbolt, item, ammo_name, returning))
     {
         you.turn_is_over = false;
+        if (created)
+        {
+            destroy_item(thrown);
+        }
         return false;
     }
 
@@ -844,6 +857,10 @@ bool throw_it(bolt &pbolt, item_def& thrown, dist *target)
     if (cancelled)
     {
         you.turn_is_over = false;
+        if (created)
+        {
+            destroy_item(thrown);
+        }
         return false;
     }
 
