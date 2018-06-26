@@ -7037,9 +7037,6 @@ bool player::innate_sinv() const
     if (get_mutation_level(MUT_ANTENNAE) == 3)
         return true;
 
-    if (get_mutation_level(MUT_EYEBALLS) == 3)
-        return true;
-
     if (have_passive(passive_t::sinv))
         return true;
 

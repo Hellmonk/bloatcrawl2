@@ -1262,20 +1262,15 @@ static const mutation_def mut_data[] =
    "Your body becomes less viscous."},
 },
 
-{ MUT_EYEBALLS, 0, 3, mutflag::GOOD | mutflag::JIYVA, true,
+{ MUT_EYEBALLS, 0, 1, mutflag::GOOD | mutflag::JIYVA, true,
   "eyeballs",
 
-  {"Your body has grown golden eyes which may confuse attackers. (Acc +3)",
-   "Your body has grown many golden eyes which may confuse attackers. (Acc +5)",
-   "Your body is covered in golden eyes which may confuse attackers. (Acc +7, SInv)"},
+  {"Your body is covered in golden eyes which may confuse attackers. (Acc +7)",
+   "", ""},
 
-  {"Eyeballs grow over part of your body.",
-   "Eyeballs cover a large portion of your body.",
-   "Eyeballs cover you completely."},
+  {"Eyeballs cover you completely.", "", ""},
 
-  {"The eyeballs on your body disappear.",
-   "The eyeballs on your body recede somewhat.",
-   "The eyeballs on your body recede somewhat."},
+  {"The eyeballs on your body disappear.", "", ""},
 },
 
 { MUT_TRANSLUCENT_SKIN, 0, 1, mutflag::GOOD | mutflag::JIYVA, true,

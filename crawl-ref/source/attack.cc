@@ -216,7 +216,7 @@ int attack::calc_to_hit(bool random)
 
         // mutation
         if (you.get_mutation_level(MUT_EYEBALLS))
-            mhit += 2 * you.get_mutation_level(MUT_EYEBALLS) + 1;
+            mhit += 7 * you.get_mutation_level(MUT_EYEBALLS);
 
         // hit roll
         mhit = maybe_random2(mhit, random);
