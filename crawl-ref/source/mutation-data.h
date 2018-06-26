@@ -1999,7 +1999,7 @@ static const mutation_def mut_data[] =
 },
 
 { MUT_EXPOSED, 3, 1, mutflag::BAD, true,
-  "draining bite",
+  "exposed",
 
   {"You are less able to defend yourself (AC -3, EV -3, SH - 3).", "", ""},
   {"You feel exposed.", "", ""},
