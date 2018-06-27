@@ -2142,6 +2142,11 @@ void drink(item_def* potion)
     else if (!quaff_potion(*potion))
         return;
 
+    if(you.get_mutation_level(MUT_POTION_AGILITY))
+    {
+        you.increase_duration(DUR_AGILITY, 15 + random2(15), 30);
+    }
+	
     if (!alreadyknown && dangerous)
     {
         // Xom loves it when you drink an unknown potion and there is

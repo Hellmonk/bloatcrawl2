@@ -866,7 +866,6 @@ static const mutation_def mut_data[] =
    "Your talons look more like feet."},
 },
 
-// Demonspawn only
 { MUT_PREHENSILE_TENTACLE, 1, 3, mutflag::GOOD, true,
   "prehensile tentacle",
 
@@ -2015,6 +2014,14 @@ static const mutation_def mut_data[] =
   {"You are less able to defend yourself (AC -3, EV -3, SH - 3).", "", ""},
   {"You feel exposed.", "", ""},
   {"You feel less exposed.", "", ""},
+},
+
+{ MUT_POTION_AGILITY, 3, 1, mutflag::GOOD, true,
+  "agile potions",
+
+  {"Quaffing potions temporarily makes you agile.", "", ""},
+  {"You feel like having a drink.", "", ""},
+  {"You don't feel like having a drink anymore.", "", ""},
 },
 };
 
