@@ -867,7 +867,7 @@ static const mutation_def mut_data[] =
 },
 
 // Demonspawn only
-{ MUT_PREHENSILE_TENTACLE, 0, 3, mutflag::GOOD, true,
+{ MUT_PREHENSILE_TENTACLE, 1, 3, mutflag::GOOD, true,
   "prehensile tentacle",
 
   {"You have a tentacle on your back.",

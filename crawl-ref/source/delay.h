@@ -8,7 +8,6 @@
 
 #include "enum.h"
 #include "itemprop-enum.h"
-#include "potion.h"
 
 class monster;
 struct ait_hp_loss;
