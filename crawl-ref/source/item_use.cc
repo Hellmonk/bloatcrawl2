@@ -2038,6 +2038,32 @@ static void _vampire_corpse_help()
         mpr("Use <w>e</w> to drain blood from corpses.");
 }
 
+/**
+ * If the player is unable to (r)ead the item in the given slot, return the
+ * reason why. Otherwise (if they are able to read it), returns "", the empty
+ * string.
+ */
+string cannot_quaff_item_reason(const item_def &item)
+{
+    if (item.base_type != OBJ_POTIONS)
+        return "You can't drink that!";
+
+    if (you_foodless(true))
+    {
+        return "You can't drink.";
+    }
+
+    if (you.berserk())
+    {
+        return "You are too berserk!";
+    }
+
+    if (you.duration[DUR_NO_POTIONS])
+    {
+        return "You cannot drink potions in your current state!";
+    }
+}
+
 void drink(item_def* potion)
 {
     if (you_foodless(true))
@@ -2089,6 +2115,14 @@ void drink(item_def* potion)
     const bool dangerous = (player_in_a_dangerous_place()
                             && you.experience_level > 1);
 
+    if (you.get_mutation_level(MUT_TINY_MOUTH)
+        && !i_feel_safe(false, false, true)
+        && !yesno("Really quaff through your tiny mouth while enemies are nearby?",
+                  false, 'n'))
+    {
+        canned_msg(MSG_OK);
+        return;
+    }
     if (player_under_penance(GOD_GOZAG) && one_chance_in(3))
     {
         simple_god_message(" petitions for your drink to fail.", GOD_GOZAG);
@@ -2096,7 +2130,16 @@ void drink(item_def* potion)
         return;
     }
 
-    if (!quaff_potion(*potion))
+    if (you.get_mutation_level(MUT_TINY_MOUTH))
+    {
+        // takes 0.5, 1, 2 extra turns
+        const int turns = max(1, you.get_mutation_level(MUT_TINY_MOUTH) - 1);
+        start_delay<SlowPotionDelay>(turns, *potion);
+        if (you.get_mutation_level(MUT_TINY_MOUTH) == 1)
+            you.time_taken /= 2;
+        you.turn_is_over = true;
+    }
+    else if (!quaff_potion(*potion))
         return;
 
     if (!alreadyknown && dangerous)

@@ -52,6 +52,7 @@
 #include "output.h"
 #include "player-equip.h"
 #include "player.h"
+#include "potion.h"
 #include "prompt.h"
 #include "random.h"
 #include "religion.h"
@@ -285,6 +286,22 @@ bool BlurryScrollDelay::try_interrupt()
     return false;
 }
 
+bool SlowPotionDelay::try_interrupt()
+{
+    if (duration > 1 && !was_prompted)
+    {
+        if (!crawl_state.disables[DIS_CONFIRMATIONS]
+            && !yesno("Keep quaffing the potion?", false, 0, false))
+        {
+            mpr("You stop quaffing the potion.");
+            return true;
+        }
+        else
+            was_prompted = true;
+    }
+    return false;
+}
+
 bool AscendingStairsDelay::try_interrupt()
 {
     mpr("You stop ascending the stairs.");
@@ -467,6 +484,16 @@ static bool _can_read_scroll(const item_def& scroll)
     return false;
 }
 
+static bool _can_quaff_potion(const item_def &potion)
+{
+	const string no_quaff_reason = cannot_quaff_item_reason(potion);
+    if(no_quaff_reason.empty())
+        return true;
+    
+    mpr(no_quaff_reason);
+    return false;
+}
+
 // Xom is amused by a potential food source going to waste, and is
 // more amused the hungrier you are.
 static void _xom_check_corpse_waste()
@@ -515,6 +542,11 @@ void ShaftSelfDelay::start()
 void BlurryScrollDelay::start()
 {
     mprf(MSGCH_MULTITURN_ACTION, "You begin reading the scroll.");
+}
+
+void SlowPotionDelay::start()
+{
+    mprf(MSGCH_MULTITURN_ACTION, "You begin quaffing the potion.");
 }
 
 command_type RunDelay::move_cmd() const
@@ -699,6 +731,16 @@ bool MultidropDelay::invalidated()
 bool BlurryScrollDelay::invalidated()
 {
     if (!_can_read_scroll(scroll))
+    {
+        you.time_taken = 0;
+        return true;
+    }
+    return false;
+}
+
+bool SlowPotionDelay::invalidated()
+{
+    if (!_can_quaff_potion(potion))
     {
         you.time_taken = 0;
         return true;
@@ -930,6 +972,12 @@ void BlurryScrollDelay::finish()
     // Make sure the scroll still exists, the player isn't confused, etc
     if (_can_read_scroll(scroll))
         read_scroll(scroll);
+}
+
+void SlowPotionDelay::finish()
+{
+    if (_can_quaff_potion(potion))
+        quaff_potion(potion);
 }
 
 static void _finish_butcher_delay(item_def& corpse, bool bottling)

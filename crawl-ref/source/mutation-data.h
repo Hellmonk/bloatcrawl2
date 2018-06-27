@@ -532,6 +532,22 @@ static const mutation_def mut_data[] =
    "Your vision sharpens a little."},
 },
 
+{ MUT_TINY_MOUTH, 10, 3, mutflag::BAD | mutflag::XOM, false,
+  "tiny mouth",
+
+  {"Potions take you a little longer to quaff.",
+   "Potions take you longer to quaff.",
+   "Potions take you much longer to quaff."},
+
+  {"Your mouth shrinks.",
+   "Your mouth shrinks.",
+   "Your mouth shrinks."},
+
+  {"Your mouth returns to its normal size.",
+   "Your mouth widens a little.",
+   "Your mouth widens a little."},
+},
+
 { MUT_MUTATION_RESISTANCE, 4, 3, mutflag::GOOD, false,
   "mutation resistance",
 

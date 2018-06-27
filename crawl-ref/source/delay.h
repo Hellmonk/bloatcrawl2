@@ -8,6 +8,7 @@
 
 #include "enum.h"
 #include "itemprop-enum.h"
+#include "potion.h"
 
 class monster;
 struct ait_hp_loss;
@@ -745,6 +746,33 @@ public:
     const char* name() const override
     {
         return "blurry_vision";
+    }
+};
+
+class SlowPotionDelay : public Delay
+{
+    item_def& potion;
+    bool was_prompted = false;
+
+    void start() override;
+    bool invalidated() override;
+
+    void tick() override
+    {
+        mprf(MSGCH_MULTITURN_ACTION, "You continue quaffing the potion.");
+    }
+
+    void finish() override;
+public:
+    SlowPotionDelay(int dur, item_def& item) :
+                      Delay(dur), potion(item)
+    { }
+
+    bool try_interrupt() override;
+
+    const char* name() const override
+    {
+        return "slow_potion";
     }
 };
 
