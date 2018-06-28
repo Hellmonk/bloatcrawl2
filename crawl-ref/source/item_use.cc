@@ -2062,6 +2062,7 @@ string cannot_quaff_item_reason(const item_def &item)
     {
         return "You cannot drink potions in your current state!";
     }
+    return "";
 }
 
 void drink(item_def* potion)
@@ -2138,6 +2139,7 @@ void drink(item_def* potion)
         if (you.get_mutation_level(MUT_TINY_MOUTH) == 1)
             you.time_taken /= 2;
         you.turn_is_over = true;
+        return;
     }
     else if (!quaff_potion(*potion))
         return;
@@ -2152,11 +2154,6 @@ void drink(item_def* potion)
         // Xom loves it when you drink an unknown potion and there is
         // a dangerous monster nearby...
         xom_is_stimulated(200);
-    }
-    if (is_blood_potion(*potion))
-    {
-        // Always drink oldest potion.
-        remove_oldest_perishable_item(*potion);
     }
     if (in_inventory(*potion))
     {

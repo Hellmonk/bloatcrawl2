@@ -15,6 +15,7 @@
 #include "artefact.h"
 #include "bloodspatter.h"
 #include "butcher.h"
+#include "chardump.h"
 #include "clua.h"
 #include "command.h"
 #include "coord.h"
@@ -977,7 +978,23 @@ void BlurryScrollDelay::finish()
 void SlowPotionDelay::finish()
 {
     if (_can_quaff_potion(potion))
-        quaff_potion(potion);
+        if(quaff_potion(potion))
+        {
+            if(you.get_mutation_level(MUT_POTION_AGILITY))
+            {
+                you.increase_duration(DUR_AGILITY, 15 + random2(15), 30);
+            }
+	
+            if (in_inventory(potion))
+            {
+                dec_inv_item_quantity(potion.link, 1);
+                auto_assign_item_slot(potion);
+            }
+            else
+                dec_mitm_item_quantity(potion.index(), 1);
+            count_action(CACT_USE, OBJ_POTIONS);
+            you.turn_is_over = true;
+        }
 }
 
 static void _finish_butcher_delay(item_def& corpse, bool bottling)
