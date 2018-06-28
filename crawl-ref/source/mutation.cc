@@ -157,6 +157,7 @@ static const int conflict[][3] =
     { MUT_NO_REGENERATION,     MUT_REGENERATION,          -1},
     { MUT_NIGHTSTALKER,        MUT_DAYWALKER,             -1},
     { MUT_ACIDIC_BITE,         MUT_DRAIN_BITE,             -1},
+    { MUT_OUT_OF_LOS_HPREGEN,  MUT_INHIBITED_REGENERATION, -1},
 };
 
 equipment_type beastly_slot(int mut)

@@ -2013,7 +2013,7 @@ static const mutation_def mut_data[] =
 
   {"You are less able to defend yourself (AC -3, EV -3, SH - 3).", "", ""},
   {"You feel exposed.", "", ""},
-  {"You feel less exposed.", "", ""},
+  {"You no longer feel exposed.", "", ""},
 },
 
 { MUT_POTION_AGILITY, 3, 1, mutflag::GOOD, true,
@@ -2023,6 +2023,25 @@ static const mutation_def mut_data[] =
   {"You feel like having a drink.", "", ""},
   {"You don't feel like having a drink anymore.", "", ""},
 },
+
+{ MUT_OUT_OF_LOS_HPREGEN, 3, 2, mutflag::GOOD | mutflag::JIYVA, true,
+  "jiyva regeneration",
+
+  {"Your regeneration increases when no monsters are visible.", 
+   "Your regeneration greatly increases when no monsters are visible.", ""},
+  {"You feel blessed with divine regeneration.", "You feel blessed with divine regeneration", ""},
+  {"You feel less blessed.", "You feel less blessed.", ""},
+},
+
+{ MUT_OUT_OF_LOS_MPREGEN, 3, 2, mutflag::GOOD | mutflag::JIYVA, true,
+  "jiyva magic regeneration",
+
+  {"Your magic regeneration increases when no monsters are visible.", 
+   "Your magic regeneration greatly increases when no monsters are visible.", ""},
+  {"You feel blessed with divine magic regeneration.", "You feel blessed with divine magic regeneration", ""},
+  {"You feel less blessed.", "You feel less blessed.", ""},
+},
+
 };
 
 static const mutation_category_def category_mut_data[] =

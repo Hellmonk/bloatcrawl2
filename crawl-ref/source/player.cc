@@ -1139,6 +1139,9 @@ static int _player_bonus_regen()
     // Fast heal mutation.
     rr += you.get_mutation_level(MUT_REGENERATION) * REGEN_PIP;
 
+	if(you.get_mutation_level(MUT_OUT_OF_LOS_HPREGEN) && !there_are_monsters_nearby(true))
+        rr *= 2 + you.get_mutation_level(MUT_OUT_OF_LOS_HPREGEN);
+	
     // Powered By Death mutation, boosts regen by variable strength
     // if the duration of the effect is still active.
     if (you.duration[DUR_POWERED_BY_DEATH])
@@ -1184,30 +1187,19 @@ int player_regen()
     if (rr > 20)
         rr = 20 + ((rr - 20) / 2);
 
+    if(you.get_mutation_level(MUT_OUT_OF_LOS_HPREGEN) && !there_are_monsters_nearby(true))
+        rr *= 2 + you.get_mutation_level(MUT_OUT_OF_LOS_HPREGEN);
+	
     // Add in miscellaneous bonuses
     rr += _player_bonus_regen();
 
     // Before applying other effects, make sure that there's something
     // to heal.
     rr = max(1, rr);
-	
-
-#if TAG_MAJOR_VERSION == 34
-
-    // Compared to other races, a starting djinni would have regen of 4 (hp)
-    // plus 17 (mp). So let's compensate them early; they can stand getting
-    // shafted on the total regen rates later on.
-    if (you.species == SP_DJINNI)
-        if (you.hp_max < 100)
-            rr += (100 - you.hp_max) / 6;
-#endif
-
-    if (you.duration[DUR_COLLAPSE])
-        rr /= 4;
 
     if (you.disease || regeneration_is_inhibited() || !player_regenerates_hp())
         rr = 0;
-
+	
     // Trog's Hand. This circumvents sickness or inhibited regeneration.
     if (you.duration[DUR_TROGS_HAND])
         rr += 100;
@@ -1229,6 +1221,8 @@ int player_mp_regen()
         multiplier += 100;
     if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN)
 	    multiplier += 50;
+    if(you.get_mutation_level(MUT_OUT_OF_LOS_MPREGEN) && !there_are_monsters_nearby(true))
+        multiplier *= 2 + you.get_mutation_level(MUT_OUT_OF_LOS_MPREGEN);
 
     return regen_amount * multiplier / 100;
 }
