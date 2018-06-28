@@ -127,11 +127,7 @@ static bool _valid_morph(monster* mons, monster_type new_mclass)
     }
 
     // Various inappropriate polymorph targets.
-    if ( !(mons_class_holiness(new_mclass) & mons_class_holiness(old_mclass))
-        // normally holiness just needs to overlap, but we don't want
-        // shapeshifters to become demons
-        || mons->is_shapeshifter() && !(mons_class_holiness(new_mclass) & MH_NATURAL)
-        || mons_class_flag(new_mclass, M_UNFINISHED)  // no unfinished monsters
+    if ( mons_class_flag(new_mclass, M_UNFINISHED)  // no unfinished monsters
         || mons_class_flag(new_mclass, M_CANT_SPAWN)  // no dummy monsters
         || mons_class_flag(new_mclass, M_NO_POLY_TO)  // explicitly disallowed
         || mons_class_flag(new_mclass, M_UNIQUE)      // no uniques
@@ -561,38 +557,14 @@ bool monster_polymorph(monster* mons, monster_type targetc,
 
 bool mon_can_be_slimified(const monster* mons)
 {
-    const mon_holy_type holi = mons->holiness();
-
     return !mons->is_insubstantial()
            && !mons_is_tentacle_or_tentacle_segment(mons->type)
-           && (holi & (MH_UNDEAD | MH_NATURAL) && !mons_is_slime(*mons));
+           && !mons_is_slime(*mons);
 }
 
 void slimify_monster(monster* mon, bool hostile)
 {
-    monster_type target = MONS_JELLY;
-
-    const int x = mon->get_hit_dice() + (coinflip() ? 1 : -1) * random2(5);
-
-    if (x < 3)
-        target = MONS_OOZE;
-    else if (x >= 3 && x < 5)
-        target = MONS_JELLY;
-    else if (x >= 5 && x <= 11)
-        target = MONS_SLIME_CREATURE;
-    else
-    {
-        if (coinflip())
-            target = MONS_ACID_BLOB;
-        else
-            target = MONS_AZURE_JELLY;
-    }
-
-    if (feat_is_water(grd(mon->pos()))) // Pick something amphibious.
-        target = (x < 7) ? MONS_JELLY : MONS_SLIME_CREATURE;
-
-    if (mon->holiness() & MH_UNDEAD)
-        target = MONS_DEATH_OOZE;
+    monster_type target = MONS_SLIME_CREATURE;
 
     // Bail out if jellies can't live here.
     if (!monster_habitable_grid(target, grd(mon->pos())))
@@ -605,13 +577,8 @@ void slimify_monster(monster* mon, bool hostile)
     remove_unique_annotation(mon);
 
     monster_polymorph(mon, target);
-
-    if (!hostile)
-        mon->attitude = ATT_STRICT_NEUTRAL;
-    else
-        mon->attitude = ATT_HOSTILE;
-
-    mons_make_god_gift(*mon, GOD_JIYVA);
+	
+    mon->attitude = ATT_HOSTILE;
 
     // Don't want shape-shifters to shift into non-slimes.
     mon->del_ench(ENCH_GLOWING_SHAPESHIFTER);
