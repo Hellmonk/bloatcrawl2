@@ -2986,7 +2986,7 @@ wand of paralysis
 
 <wand>
 %%%%
-wand of polymorph
+wand of slimification
 
 <wand>
 %%%%

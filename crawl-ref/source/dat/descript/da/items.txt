@@ -930,7 +930,7 @@ wand of magic darts
 En magisk anordning, som kaster med små kiler af destruktiv energi. De rammer
 aldrig ved siden af.
 %%%%
-wand of polymorph
+wand of slimification
 
 En magisk anordning som omskaber et væsen til en anden form. Den er særligt
 effektiv mod formskiftende væsener.

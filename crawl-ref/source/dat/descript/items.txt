@@ -1129,10 +1129,10 @@ wand of paralysis
 A magical device which can render a creature immobile, incapable of moving any
 of its limbs.
 %%%%
-wand of polymorph
+wand of slimification
 
-A magical device which causes a creature to be transmogrified into another
-form. It is especially effective against shape-changing creatures.
+A magical device which causes a creature to be transmogrified into a slime 
+creature. It behaves unpredictably against shape-changing creatures.
 %%%%
 wand of scattershot
 

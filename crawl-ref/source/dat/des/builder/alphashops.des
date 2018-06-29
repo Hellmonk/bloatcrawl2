@@ -162,7 +162,7 @@
       elseif s == "P" then i = { "book of party tricks", "book of power",
        "pearl dragon scales", "phantom mirror", "phial of floods",
        "plate armour", "ring of poison resistance", "manual of polearms",
-       "wand of polymorph", "ring of positive energy", "ring of protection",
+       "wand of slimification", "ring of positive energy", "ring of protection",
        "wand of paralysis", "ring of protection from magic" }
 
       elseif s == "Q" then i = { "quarterstaff", "quicksilver dragon scales",

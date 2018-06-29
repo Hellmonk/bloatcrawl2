@@ -558,7 +558,6 @@ static beam_type _chaos_beam_flavour(bolt* beam)
             10, BEAM_PARALYSIS,
             10, BEAM_CONFUSION,
             10, BEAM_INVISIBILITY,
-            10, BEAM_POLYMORPH,
             10, BEAM_BANISH,
             10, BEAM_DISINTEGRATION,
             10, BEAM_PETRIFY,
@@ -5269,8 +5268,11 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
         return obvious_effect ? MON_AFFECTED : MON_OTHER; // ?
 
     case BEAM_POLYMORPH:
-        if (mon->polymorph(ench_power))
+        if (mon->can_polymorph())
+        {
+            monster_polymorph(mon, MONS_SLIME_CREATURE);
             obvious_effect = true;
+        }
         if (YOU_KILL(thrower))
         {
             did_god_conduct(DID_DELIBERATE_MUTATING, 2 + random2(3),
@@ -6216,14 +6218,6 @@ bool bolt::nasty_to(const monster* mon) const
 // actively positive.
 bool bolt::nice_to(const monster_info& mi) const
 {
-    // Polymorphing a (very) ugly thing will mutate it into a different
-    // (very) ugly thing.
-    if (flavour == BEAM_POLYMORPH)
-    {
-        return mi.type == MONS_UGLY_THING
-               || mi.type == MONS_VERY_UGLY_THING;
-    }
-
     if (flavour == BEAM_HASTE
         || flavour == BEAM_HEALING
         || flavour == BEAM_MIGHT

@@ -728,7 +728,7 @@ wand of magic darts
 Magiczny przedmiot który strzela małymi pociskami surowej magii, które zawsze
 trafiają.
 %%%%
-wand of polymorph
+wand of slimification
 
 Magiczny przedmiot który potrafi przemienić stworzenie w coś innego. Jest
 szczególnie efektywne wobec istot które naturalnie zmieniają formę: nie są one
