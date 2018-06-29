@@ -219,6 +219,7 @@ public:
     bool        show_newturn_mark;// Show underscore prefix in messages for new turn
     bool        show_game_time; // Show game time instead of player turns.
     bool        equip_bar; // Show equip bar instead of noise bar.
+    bool        animate_equip_bar; // Animate colours in equip bar.
 
     FixedBitVector<NUM_OBJECT_CLASSES> autopickups; // items to autopickup
     bool        travel_open_doors;     // open doors while exploring
