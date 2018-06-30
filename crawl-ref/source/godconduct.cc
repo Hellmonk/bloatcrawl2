@@ -400,22 +400,7 @@ static peeve_map divine_peeves[] =
         { DID_ATTACK_FRIEND, _on_attack_friend("you attack allied orcs") },
     },
     // GOD_JIYVA,
-    {
-        { DID_KILL_SLIME, {
-            "you kill slimes", true,
-            1, 2, nullptr, nullptr, [] (const monster* victim) -> bool {
-                return victim && !victim->is_shapeshifter() && !you.penance[GOD_JIYVA];
-            }
-        } },
-        { DID_ATTACK_NEUTRAL, {
-            nullptr, true,
-            1, 1, nullptr, nullptr, [] (const monster* victim) -> bool {
-                return victim
-                    && mons_is_slime(*victim) && !victim->is_shapeshifter() && !you.penance[GOD_JIYVA];
-            }
-        } },
-        { DID_ATTACK_FRIEND, _on_attack_friend("you attack fellow slimes") },
-    },
+    peeve_map(),
     // GOD_FEDHAS,
     {
         { DID_CORPSE_VIOLATION, {

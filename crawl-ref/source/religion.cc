@@ -403,9 +403,6 @@ bool is_unknown_god(god_type god)
 
 bool is_unavailable_god(god_type god)
 {
-    if (god == GOD_JIYVA && jiyva_is_dead())
-        return true;
-
     // Disabled, pending a rework.
     if (god == GOD_PAKELLAS || god == GOD_FEDHAS || god == GOD_ASHENZARI
 		|| god == GOD_BEOGH || god == GOD_HEPLIAKLQANA)
@@ -513,15 +510,9 @@ void dec_penance(god_type god, int val)
         mark_milestone("god.mollify",
                        "mollified " + god_name(god) + ".");
 
-        const bool dead_jiyva = (god == GOD_JIYVA && jiyva_is_dead());
-
         simple_god_message(
-            make_stringf(" seems mollified%s.",
-                         dead_jiyva ? ", and vanishes" : "").c_str(),
+            make_stringf(" seems mollified").c_str(),
             god);
-
-        if (dead_jiyva)
-            add_daction(DACT_REMOVE_JIYVA_ALTARS);
 
         take_note(Note(NOTE_MOLLIFY_GOD, god));
 
@@ -639,12 +630,6 @@ static void _grant_temporary_waterwalk()
 {
     mprf("Your water-walking will last only until you reach solid ground.");
     you.props[TEMP_WATERWALK_KEY] = true;
-}
-
-bool jiyva_is_dead()
-{
-    return you.royal_jelly_dead
-           && !you_worship(GOD_JIYVA) && !you.penance[GOD_JIYVA];
 }
 
 void set_penance_xp_timeout()
@@ -1225,16 +1210,10 @@ static bool _jiyva_mutate()
 {
     simple_god_message(" alters your body.");
 
-    const int rand = random2(100);
-
-    if (rand < 5)
-        return delete_mutation(RANDOM_SLIME_MUTATION, "Jiyva's grace", true, false, true);
-    else if (rand < 30)
-        return delete_mutation(RANDOM_NON_SLIME_MUTATION, "Jiyva's grace", true, false, true);
-    else if (rand < 55)
-        return mutate(RANDOM_MUTATION, "Jiyva's grace", true, false, true);
-    else if (rand < 75)
+    if (one_chance_in(5))
         return mutate(RANDOM_SLIME_MUTATION, "Jiyva's grace", true, false, true);
+    else if (coinflip())
+        return mutate(RANDOM_MUTATION, "Jiyva's grace", true, false, true);
     else
         return mutate(RANDOM_GOOD_MUTATION, "Jiyva's grace", true, false, true);
 }
@@ -1789,14 +1768,13 @@ bool do_god_gift(bool forced)
         }
 
         case GOD_JIYVA:
-            if (forced || you.piety >= piety_breakpoint(2)
-                          && random2(you.piety) > 50
-                          && one_chance_in(4) && !you.gift_timeout
+            if (forced || you.piety >= piety_breakpoint(0)
+                          && one_chance_in(10) && !you.gift_timeout
                           && you.can_safely_mutate())
             {
                 if (_jiyva_mutate())
                 {
-                    _inc_gift_timeout(15 + roll_dice(2, 4));
+                    _inc_gift_timeout(15 + roll_dice(2, 6));
                     you.num_current_gifts[you.religion]++;
                     you.num_total_gifts[you.religion]++;
                 }
@@ -2303,20 +2281,6 @@ static void _gain_piety_point()
         if (rank >= rank_for_passive(passive_t::identify_items))
             auto_id_inventory();
 
-        // TODO: add one-time ability check in have_passive
-        if (have_passive(passive_t::unlock_slime_vaults) && can_do_capstone_ability(you.religion))
-        {
-            simple_god_message(" will now unseal the treasures of the "
-                               "Slime Pits.");
-            dlua.callfn("dgn_set_persistent_var", "sb",
-                        "fix_slime_vaults", true);
-            // If we're on Slime:6, pretend we just entered the level
-            // in order to bring down the vault walls.
-            if (level_id::current() == level_id(BRANCH_SLIME, 6))
-                dungeon_events.fire_event(DET_ENTERED_LEVEL);
-
-            you.one_time_ability_used.set(you.religion);
-        }
         if (you_worship(GOD_HEPLIAKLQANA)
             && rank == 2 && !you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY))
         {

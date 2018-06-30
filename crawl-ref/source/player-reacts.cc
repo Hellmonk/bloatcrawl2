@@ -608,6 +608,7 @@ static void _decrement_simple_duration(duration_type dur, int delay)
  */
 static void _decrement_durations()
 {
+	
     const int delay = you.time_taken;
 
     _decrement_confusion(delay);

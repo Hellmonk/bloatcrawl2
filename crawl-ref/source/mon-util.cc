@@ -5340,9 +5340,6 @@ bool mons_is_notable(const monster& mons)
     {
         return true;
     }
-    // Jellies are never interesting to Jiyva.
-    if (mons.type == MONS_JELLY && you_worship(GOD_JIYVA))
-        return false;
     if (mons_threat_level(mons) == MTHRT_NASTY)
         return true;
     const auto &nm = Options.note_monsters;

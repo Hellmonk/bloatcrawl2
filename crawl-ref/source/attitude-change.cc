@@ -64,7 +64,6 @@ void mons_att_changed(monster* mon)
     mon->align_avatars();
 }
 
-static void _jiyva_convert_slime(monster* slime);
 static void _fedhas_neutralise_plant(monster* plant);
 
 void beogh_follower_convert(monster* mons, bool orc_hit)
@@ -93,22 +92,6 @@ void beogh_follower_convert(monster* mons, bool orc_hit)
         {
             beogh_convert_orc(mons, orc_hit || !mons->alive() ? conv_t::DEATHBED
                                                               : conv_t::SIGHT);
-            stop_running();
-        }
-    }
-}
-
-void slime_convert(monster* mons)
-{
-    if (have_passive(passive_t::neutral_slimes) && mons_is_slime(*mons)
-        && !mons->neutral()
-        && !mons->friendly()
-        && !testbits(mons->flags, MF_ATT_CHANGE_ATTEMPT))
-    {
-        mons->flags |= MF_ATT_CHANGE_ATTEMPT;
-        if (!player_under_penance())
-        {
-            _jiyva_convert_slime(mons);
             stop_running();
         }
     }
@@ -360,37 +343,6 @@ static void _fedhas_neutralise_plant(monster* plant)
     plant->attitude = ATT_GOOD_NEUTRAL;
     plant->flags   |= MF_WAS_NEUTRAL;
     mons_att_changed(plant);
-}
-
-static void _jiyva_convert_slime(monster* slime)
-{
-    ASSERT(slime); // XXX: change to monster &slime
-    ASSERT(mons_is_slime(*slime));
-
-    behaviour_event(slime, ME_ALERT);
-
-    if (you.can_see(*slime))
-    {
-        if (mons_genus(slime->type) == MONS_FLOATING_EYE)
-        {
-            mprf(MSGCH_GOD, "%s stares at you suspiciously for a moment, "
-                            "then relaxes.",
-
-            slime->name(DESC_THE).c_str());
-        }
-        else
-        {
-            mprf(MSGCH_GOD, "%s trembles before you.",
-                 slime->name(DESC_THE).c_str());
-        }
-    }
-
-    slime->attitude = ATT_STRICT_NEUTRAL;
-    slime->flags   |= MF_WAS_NEUTRAL;
-
-    mons_make_god_gift(*slime, GOD_JIYVA);
-
-    mons_att_changed(slime);
 }
 
 void gozag_set_bribe(monster* traitor)

@@ -694,12 +694,6 @@ void handle_behaviour(monster* mon)
                     return;
             }
 
-            if (mon->strict_neutral() && mons_is_slime(*mon)
-                && you_worship(GOD_JIYVA))
-            {
-                set_random_slime_target(mon);
-            }
-
             // Is our foe in LOS?
             // Batty monsters don't automatically reseek so that
             // they'll flitter away, we'll reset them just before

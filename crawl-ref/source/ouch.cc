@@ -569,18 +569,7 @@ static void _maybe_spawn_monsters(int dam, const bool is_torment,
     monster_type mon;
     int how_many = 0;
 
-    if (you_worship(GOD_JIYVA)
-        && you.piety >= piety_breakpoint(5))
-    {
-        mon = royal_jelly_ejectable_monster();
-        if (dam >= you.hp_max * 3 / 4)
-            how_many = random2(4) + 2;
-        else if (dam >= you.hp_max / 2)
-            how_many = random2(2) + 2;
-        else if (dam >= you.hp_max / 4)
-            how_many = 1;
-    }
-    else if (you_worship(GOD_XOM)
+    if (you_worship(GOD_XOM)
              && dam >= you.hp_max / 4
              && x_chance_in_y(dam, 3 * you.hp_max))
     {
@@ -606,13 +595,6 @@ static void _maybe_spawn_monsters(int dam, const bool is_torment,
             {
                 mprf(MSGCH_GOD, "A shower of butterflies erupts from you!");
                 take_note(Note(NOTE_XOM_EFFECT, you.piety, -1, "butterfly on damage"), true);
-            }
-            else
-            {
-                mprf("You shudder from the %s and a %s!",
-                     death_type == KILLED_BY_MONSTER ? "blow" : "blast",
-                     count_created > 1 ? "flood of jellies pours out from you"
-                                       : "jelly pops out");
             }
         }
     }

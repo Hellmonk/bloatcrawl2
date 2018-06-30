@@ -783,8 +783,7 @@ static void _do_wizard_command(int wiz_command)
 
     // case 'j': break;
     case 'J':
-        mpr("Running Jiyva on-level sacrifice.");
-        jiyva_eat_onlevel_items();
+        mpr("Jiyva on-level sacrifice is removed fam.");
         break;
     // case CONTROL('J'): break;
 

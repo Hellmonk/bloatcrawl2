@@ -804,15 +804,6 @@ void floor_transition(dungeon_feature_type how,
     }
 
     you.clear_fearmongers();
-	
-    //slurp some items on level entry
-    if(you_worship(GOD_JIYVA))
-    {
-        for (int i = 0; i < 15; i++)
-        {
-            jiyva_eat_onlevel_items();
-        }
-    }
 
     if (!wizard && !shaft)
         _update_travel_cache(old_level, stair_pos);

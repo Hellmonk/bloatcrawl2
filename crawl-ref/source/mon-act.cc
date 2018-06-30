@@ -2146,87 +2146,6 @@ static bool _jelly_divide(monster& parent)
     return true;
 }
 
-// Only Jiyva jellies eat items.
-static bool _monster_eat_item(monster* mons)
-{
-    if (!mons_eats_items(*mons))
-        return false;
-
-    // Off-limit squares are off-limit.
-    if (testbits(env.pgrid(mons->pos()), FPROP_NO_JIYVA))
-        return false;
-
-    int hps_changed = 0;
-    int max_eat = roll_dice(1, 10);
-    int eaten = 0;
-    bool shown_msg = false;
-
-    // Jellies can swim, so don't check water
-    for (stack_iterator si(mons->pos());
-         si && eaten < max_eat && hps_changed < 50; ++si)
-    {
-        if (!item_is_jelly_edible(*si))
-            continue;
-
-        dprf("%s eating %s", mons->name(DESC_PLAIN, true).c_str(),
-             si->name(DESC_PLAIN).c_str());
-
-        int quant = si->quantity;
-
-        if (si->base_type != OBJ_GOLD)
-        {
-            quant = min(quant, max_eat - eaten);
-
-            hps_changed += quant * 3;
-            eaten += quant;
-        }
-        else
-        {
-            // Shouldn't be much trouble to digest a huge pile of gold!
-            if (quant > 500)
-                quant = 500 + roll_dice(2, (quant - 500) / 2);
-
-            hps_changed += quant / 10 + 1;
-            eaten++;
-        }
-
-        if (eaten && !shown_msg && player_can_hear(mons->pos()))
-        {
-            mprf(MSGCH_SOUND, "You hear a%s slurping noise.",
-                 you.see_cell(mons->pos()) ? "" : " distant");
-            shown_msg = true;
-        }
-
-        if (you_worship(GOD_JIYVA))
-            jiyva_slurp_item_stack(*si, quant);
-
-        if (quant >= si->quantity)
-            item_was_destroyed(*si);
-        else if (is_perishable_stack(*si))
-            for (int i = 0; i < quant; ++i)
-                remove_oldest_perishable_item(*si);
-        dec_mitm_item_quantity(si.index(), quant);
-    }
-
-    if (eaten > 0)
-    {
-        hps_changed = max(hps_changed, 1);
-        hps_changed = min(hps_changed, 50);
-
-        // This is done manually instead of using heal_monster(),
-        // because that function doesn't work quite this way. - bwr
-        const int avg_hp = mons_avg_hp(mons->type);
-        mons->hit_points += hps_changed;
-        mons->hit_points = min(MAX_MONSTER_HP,
-                               min(avg_hp * 4, mons->hit_points));
-        mons->max_hit_points = max(mons->hit_points, mons->max_hit_points);
-
-        _jelly_divide(*mons);
-    }
-
-    return eaten > 0;
-}
-
 
 static bool _handle_pickup(monster* mons)
 {
@@ -2247,9 +2166,6 @@ static bool _handle_pickup(monster* mons)
         return false;
 
     int count_pickup = 0;
-
-    if (mons_eats_items(*mons) && _monster_eat_item(mons))
-        return false;
 
     if (mons_itemuse(*mons) < MONUSE_WEAPONS_ARMOUR)
         return false;

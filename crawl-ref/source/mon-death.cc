@@ -826,28 +826,6 @@ static bool _monster_avoided_death(monster* mons, killer_type killer,
     return false;
 }
 
-static void _jiyva_died()
-{
-    if (you_worship(GOD_JIYVA))
-        return;
-
-    add_daction(DACT_REMOVE_JIYVA_ALTARS);
-
-    if (!player_in_branch(BRANCH_SLIME))
-        return;
-
-    if (silenced(you.pos()))
-    {
-        god_speaks(GOD_JIYVA, "With an infernal shudder, the power ruling "
-                   "this place vanishes!");
-    }
-    else
-    {
-        god_speaks(GOD_JIYVA, "With an infernal noise, the power ruling this "
-                   "place vanishes!");
-    }
-}
-
 void fire_monster_death_event(monster* mons,
                               killer_type killer,
                               int i, bool polymorph)
@@ -896,9 +874,6 @@ void fire_monster_death_event(monster* mons,
     if (type == MONS_ROYAL_JELLY && !mons->is_summoned() && !polymorph)
     {
         you.royal_jelly_dead = true;
-
-        if (jiyva_is_dead())
-            _jiyva_died();
     }
 }
 
@@ -1751,11 +1726,6 @@ static void _fire_kill_conducts(monster &mons, killer_type killer,
     // Beogh hates priests of other gods.
     if (mons.is_priest())
         did_kill_conduct(DID_KILL_PRIEST, mons);
-
-    // Jiyva hates you killing slimes, but eyeballs
-    // mutation can confuse without you meaning it.
-    if (mons_is_slime(mons) && killer != KILL_YOU_CONF)
-        did_kill_conduct(DID_KILL_SLIME, mons);
 
     if (mons.is_holy())
         did_kill_conduct(DID_KILL_HOLY, mons);

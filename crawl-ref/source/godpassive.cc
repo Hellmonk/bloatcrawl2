@@ -192,13 +192,8 @@ static const vector<god_passive> god_passives[] =
     // Jiyva
     {
         { -1, passive_t::neutral_slimes, "slimes and eye monsters are neutral towards you" },
-        { -1, passive_t::jelly_eating, "GOD devours items" },
-        { -1, passive_t::fluid_stats, "GOD adjusts your attributes periodically" },
         {  1, passive_t::resist_corrosion, "GOD protects your from corrosion" },
-        {  2, passive_t::slime_mp, "items consumed by your fellow slimes restores your mana reserve" },
-        {  4, passive_t::slime_hp, "items consumed by your fellow slimes restores your health" },
         {  5, passive_t::damage_shaving, "GOD absorbs a portion of the damage you take" },
-        {  6, passive_t::unlock_slime_vaults, "GOD grants you access to the hidden treasures of the Slime Pits" },
     },
 
     // Fedhas
@@ -348,58 +343,6 @@ int chei_stat_boost(int piety)
     if (piety >= piety_breakpoint(5))
         return 15;
     return (piety - 10) / 10;
-}
-
-// Eat from random on-level item stacks.
-void jiyva_eat_onlevel_items()
-{
-    // For wizard mode 'J' command
-    if (!have_passive(passive_t::jelly_eating))
-        return;
-
-    if (crawl_state.game_is_sprint())
-        return;
-
-    const level_id lid = level_id::current();
-
-    if (lid != level_id::current() || !is_existing_level(lid))
-        return;
-
-    dprf("Checking %s", lid.describe().c_str());
-
-    level_excursion le;
-    le.go_to(lid);
-
-    while (true)
-    {
-        if (one_chance_in(200))
-            break;
-
-        const coord_def p = random_in_bounds();
-
-        if (igrd(p) == NON_ITEM || testbits(env.pgrid(p), FPROP_NO_JIYVA))
-            continue;
-
-        for (stack_iterator si(p); si; ++si)
-        {
-            if (!item_is_jelly_edible(*si) || one_chance_in(4))
-                continue;
-
-            if (one_chance_in(4))
-                break;
-
-            dprf("Eating %s on %s",
-                 si->name(DESC_PLAIN).c_str(), lid.describe().c_str());
-
-            // Needs a message now to explain possible hp or mp
-            // gain from jiyva_slurp_bonus()
-            mpr("You hear a distant slurping noise.");
-            jiyva_slurp_item_stack(*si);
-            item_was_destroyed(*si);
-            destroy_item(si.index());
-        }
-        return;
-    }
 }
 
 void ash_init_bondage(player *y)
