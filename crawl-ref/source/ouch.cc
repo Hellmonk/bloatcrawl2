@@ -747,16 +747,6 @@ int do_shave_damage(int dam)
     if (dam == 0)
         return dam;
 
-    if(!you_worship(GOD_JIYVA))
-        return dam;
-
-    // high piety Jiyvaites get to shave any hp loss.
-    // max shaving based on piety, only available at 5* anyway tho
-    // does not use nested random2s like the old, stupid DD formula
-    int shave = 1 + random2(1 + div_rand_round(you.piety, 30));
-    dam -= shave;
-    mprf("Jiyva absorbs %d damage for you.", dam >= 0 ? shave : shave + dam);
-
     return dam;
 }
 
