@@ -357,6 +357,22 @@ static void _end_horror()
     you.set_duration(DUR_HORROR, 0);
 }
 
+static void _malmutation_aura()
+{
+    if(you_worship(GOD_ZIN))
+        return;
+    if (you.magic_contamination < 2500)
+        contaminate_player(2500 - you.magic_contamination);
+	for (adjacent_iterator ai(you.pos()); ai; ++ai)
+    {
+        monster* mon = monster_at(*ai);
+        if (mon && mon->attitude == ATT_HOSTILE && mon->alive())
+        {
+            mon->malmutate("");
+        }
+    }
+}
+
 /**
  * Update penalties for cowardice based on the current situation, if the player
  * has Ru's MUT_COWARDICE.
@@ -1096,6 +1112,9 @@ void player_reacts()
     dec_disease_player(you.time_taken);
     if (you.duration[DUR_POISONING])
         handle_player_poison(you.time_taken);
+	
+    if (you.get_mutation_level(MUT_RADIOACTIVE))
+        _malmutation_aura();
 
     // Reveal adjacent mimics.
     for (adjacent_iterator ai(you.pos(), false); ai; ++ai)

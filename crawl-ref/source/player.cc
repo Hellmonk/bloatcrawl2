@@ -4091,8 +4091,8 @@ void contaminate_player(int change, bool controlled, bool msg)
     if (change > 0 && player_equip_unrand(UNRAND_ETHERIC_CAGE))
         change *= 2;
 
-    you.magic_contamination = max(0, min(250000,
-                                         you.magic_contamination + change));
+    you.magic_contamination = max(you.get_mutation_level(MUT_RADIOACTIVE) ? 2500 : 0, 
+                                    min(250000, you.magic_contamination + change));
 
     new_level = get_contamination_level();
 

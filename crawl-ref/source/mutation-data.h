@@ -1288,6 +1288,17 @@ static const mutation_def mut_data[] =
   {"The eyeballs on your body disappear.", "", ""},
 },
 
+{ MUT_RADIOACTIVE, 0, 1, mutflag::GOOD | mutflag::JIYVA, true,
+  "radioactive",
+
+  {"You are slightly radioactive and malmutate nearby enemies (contam).",
+   "", ""},
+
+  {"You begin to undergo nuclear fission.", "", ""},
+
+  {"You feel less radioactive.", "", ""},
+},
+
 { MUT_TRANSLUCENT_SKIN, 0, 1, mutflag::GOOD | mutflag::JIYVA, true,
   "translucent skin",
 
@@ -2019,7 +2030,7 @@ static const mutation_def mut_data[] =
 { MUT_SHINY, 3, 1, mutflag::BAD, true,
   "shiny",
 
-  {"You sparkle and shine (Stealth---).", "", ""},
+  {"You shine softly (Stealth---).", "", ""},
   {"You feel shiny.", "", ""},
   {"You no longer feel shiny.", "", ""},
 },
