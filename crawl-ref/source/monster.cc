@@ -4737,8 +4737,6 @@ bool monster::is_trap_safe(const coord_def& where, bool just_check) const
         return true;
     const trap_def& trap = *ptrap;
 
-    const bool player_knows_trap = (trap.is_known(&you));
-
     // Known shafts are safe. Unknown ones are unknown.
     if (trap.type == TRAP_SHAFT)
         return true;
@@ -4748,8 +4746,8 @@ bool monster::is_trap_safe(const coord_def& where, bool just_check) const
         return true;
 #endif
 
-    // No friendly monsters will ever enter a Zot trap you know.
-    if (player_knows_trap && friendly() && trap.type == TRAP_ZOT)
+    // No friendly monsters will ever enter a Zot trap.
+    if (friendly() && trap.type == TRAP_ZOT)
         return false;
 
 	if (stasis() && (trap.type == TRAP_TELEPORT || trap.type == TRAP_TELEPORT_PERMANENT))
@@ -4807,7 +4805,7 @@ bool monster::is_trap_safe(const coord_def& where, bool just_check) const
     // Friendlies will try not to be parted from you.
     if (intelligent_ally(*this) && (trap.type == TRAP_TELEPORT
                                    || trap.type == TRAP_TELEPORT_PERMANENT)
-        && player_knows_trap && can_see(you))
+        && can_see(you))
     {
         return false;
     }
