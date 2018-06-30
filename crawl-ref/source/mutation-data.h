@@ -2016,6 +2016,14 @@ static const mutation_def mut_data[] =
   {"You no longer feel exposed.", "", ""},
 },
 
+{ MUT_SHINY, 3, 1, mutflag::BAD, true,
+  "shiny",
+
+  {"You sparkle and shine (Stealth---).", "", ""},
+  {"You feel shiny.", "", ""},
+  {"You no longer feel shiny.", "", ""},
+},
+
 { MUT_POTION_AGILITY, 3, 1, mutflag::GOOD, true,
   "agile potions",
 
