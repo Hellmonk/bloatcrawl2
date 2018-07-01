@@ -943,7 +943,11 @@ bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
     {
         weapon = mons->mslot_item(MSLOT_WEAPON);
         if (weapon && weapon != launcher && weapon->cursed())
+        {
+            if(created)
+                destroy_item(missile->index());
             return false;
+        }
     }
 
     // Ok, we'll try it.
@@ -1011,9 +1015,9 @@ bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
     {
         if (check_only)
         {
-            return true;
             if(created)
                 destroy_item(missile->index());
+            return true;
         }
 
         // Monsters shouldn't shoot if fleeing, so let them "turn to attack".

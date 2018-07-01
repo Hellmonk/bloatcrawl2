@@ -161,8 +161,8 @@ int calc_skill_cost(int skill_cost_level)
                          265, 265 };
     COMPILE_CHECK(ARRAYSZ(cost) == MAX_SKILL_COST_LEVEL);
 
-    if(skill_cost_level < 1 || skill_cost_level > MAX_SKILL_COST_LEVEL + 1)
-        skill_cost_level = MAX_SKILL_COST_LEVEL + 1;
+    if(skill_cost_level < 1)
+        skill_cost_level = 1;
     ASSERT_RANGE(skill_cost_level, 1, MAX_SKILL_COST_LEVEL + 1);
     return cost[skill_cost_level - 1];
 }
