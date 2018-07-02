@@ -378,6 +378,10 @@ public:
     bool wrap_text = false;
     bool ellipsize = false;
 
+#ifndef USE_TILE_LOCAL
+    void set_bg_colour(COLOURS colour);
+#endif
+
 protected:
     void wrap_text_to_size(int width, int height);
 
@@ -389,6 +393,7 @@ protected:
     ShapeBuffer m_hl_buf;
 #else
     vector<formatted_string> m_wrapped_lines;
+    COLOURS m_bg_colour = BLACK;
 #endif
     i2 m_wrapped_size = { -1, -1 };
     string hl_pat;
