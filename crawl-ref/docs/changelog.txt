@@ -16,9 +16,78 @@ Vanilla changes not made, awaiting revision
 Vanilla changes not made
 ------------------------
 * Dream sheep can still spread sticky flame to each other because why not?
-* Dithmo still hates fire. I'll bet this will introduce bugs in future where I
-  forget to add new spells or effects to the list. Sorry.
+* Dithmo still hates fire (and isn't evil). I'll bet this will introduce bugs
+  where I forget to add new fire spells or effects to the list. Sorry.
 * Engulf still gives a movement penalty.
+
+Stone Soup 0.22 (through 0.22-a0-604-gc538b7411b)
+-------------------------------------------------
+
+Branches, Environment
+---------------------
+* Players on Abyss:1-4 will sometimes be drawn a level deeper, with the chance
+  increasing based on XL and decreasing based on current depth.
+* The Hall of the Hellbinder WizLab has fewer higher-tier demons.
+
+Character
+---------
+* The MP-powered wand mutation allows use of wands at 0 MP and is now
+  considered a good mutation.
+
+Gods
+----
+* Dithmenos revamp:
+  - Dithmenos's Shadow Step ability no longer requires the target monster to
+    be 'still' and has an HP cost of 8% max HP.
+* Makhleb's Major Destruction has its range increased to 7 and Minor
+  Destruction has its range reduced to 5.
+* Yredelemnul's Enslave Soul ability is now smite-targeted.
+* Trog no longer has a Burn Spellbook ability.
+
+Interface
+---------
+* In the Tiles minimap, the exploration horizon has a distinct colour.
+* WebTiles chat improvements:
+  - The player can use `/mute' and `/unmute' commands on chatters.
+  - The `/mutelist' command shows the current mute list.
+  - The chat window has a minimize button that removes message notification.
+  - The `/hide' and `/hide forever` commands minimize/remove the chat window.
+* Wands of digging now have a targeter showing the dig range.
+
+Items
+-----
+* New Amulet: the Amulet of the Acrobat, which boosts the wearer's EV by 15
+  for non-attacking movement and rest actions.
+* The Mace of Variability is reworked to sometimes create arcs of chaos that
+  harm nearby monsters, but not the wielder. 
+* All fog types from Scrolls of Fog now spread like grey and black fog.
+
+Monsters
+--------
+* Swamp worms and Iron Giants now have Harpoon Shot: a range 6 ability
+  that fires a shot which pulls the player adjacent.
+* Ilsuiw spawns on Shoals:2-4 with chances similar to other branch-specific
+  uniques instead of nearly always spawning on Shoals:4.
+* The Barb status from manticore barbs now counts any non-movement actions
+  towards removing the status.
+* Swamp worms no longer spawn submerged in water.
+* Sojobo, air elementals, ball lightnings, and twisters have resistance to
+  Tornado instead of resistance to all wind attacks.
+* Shock serpent retaliation now properly checks rElec.
+
+Spells
+------
+* Spell Library:
+  - Spells from books are automatically added to a global library upon pickup.
+  - Library spells can be memorized from anywhere through the 'M' screen.
+  - Spellbooks are destroyed after their spells are added to the library.
+  - Vehumet won't offer you a spell you already have in your library.
+* Borgnjor's Vile Clutch constriction damage is reduced by 25% and the spell
+  is no longer in the Necromancer starting book (the Book of Necromancy).
+* Spellcasting success rates no longer use a step-down, making L9 spells
+  slightly easier to cast.
+* Passwall now has better range scaling, a lower max spellpower and a targeter
+  to show its range.
 
 Stoat Soup 0.21.2
 -----------------
