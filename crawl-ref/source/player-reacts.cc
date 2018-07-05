@@ -363,12 +363,25 @@ static void _malmutation_aura()
         return;
     if (you.magic_contamination < 2500)
         contaminate_player(2500 - you.magic_contamination);
-	for (adjacent_iterator ai(you.pos()); ai; ++ai)
+    for (adjacent_iterator ai(you.pos()); ai; ++ai)
     {
         monster* mon = monster_at(*ai);
         if (mon && mon->attitude == ATT_HOSTILE && mon->alive())
         {
             mon->malmutate("");
+        }
+    }
+}
+
+static void _dream_aura()
+{
+    for (adjacent_iterator ai(you.pos()); ai; ++ai)
+    {
+        monster* mon = monster_at(*ai);
+        if (mon && mon->attitude == ATT_HOSTILE && mon->alive()
+        && one_chance_in(25))
+        {
+            mon->put_to_sleep(&you, random2avg(50 - mon->get_hit_dice(),2) + 1, true);
         }
     }
 }
@@ -1115,6 +1128,9 @@ void player_reacts()
 	
     if (you.get_mutation_level(MUT_RADIOACTIVE))
         _malmutation_aura();
+	
+    if (you.get_mutation_level(MUT_DREAM_DUST))
+        _dream_aura();
 
     // Reveal adjacent mimics.
     for (adjacent_iterator ai(you.pos(), false); ai; ++ai)

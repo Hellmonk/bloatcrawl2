@@ -1291,12 +1291,23 @@ static const mutation_def mut_data[] =
 { MUT_RADIOACTIVE, 0, 1, mutflag::GOOD | mutflag::JIYVA, true,
   "radioactive",
 
-  {"You are slightly radioactive and malmutate nearby enemies (contam).",
+  {"You are slightly radioactive and malmutate adjacent enemies (contam).",
    "", ""},
 
   {"You begin to undergo nuclear fission.", "", ""},
 
   {"You feel less radioactive.", "", ""},
+},
+
+{ MUT_DREAM_DUST, 0, 1, mutflag::GOOD | mutflag::JIYVA, true,
+  "dream dust",
+
+  {"You are coated in dream dust that rarely puts adjacent enemies to sleep.",
+   "", ""},
+
+  {"Your pores begin secreting dream dust.", "", ""},
+
+  {"You stop secreting dream dust.", "", ""},
 },
 
 { MUT_TRANSLUCENT_SKIN, 0, 1, mutflag::GOOD | mutflag::JIYVA, true,
