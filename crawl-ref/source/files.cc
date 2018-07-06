@@ -1498,11 +1498,7 @@ bool load_level(dungeon_feature_type stair_taken, load_mode_type load_mode,
         ash_detect_portals(is_map_persistent());
 
         if (just_created_level)
-        {
-            if(you.props.exists(XOM_GIFT_KEY))
-                you.props.erase(XOM_GIFT_KEY);
-            xom_new_level_effect();
-        }
+            xom_new_level_noise_or_stealth();
     }
     // Initialize halos, etc.
     invalidate_agrid(true);

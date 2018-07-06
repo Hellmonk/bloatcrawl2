@@ -9,7 +9,6 @@
 #include "ouch.h"
 
 #define XOM_CLOUD_TRAIL_TYPE_KEY "xom_cloud_trail_type"
-#define XOM_GIFT_KEY "xom gift"
 
 struct item_def;
 
@@ -102,7 +101,7 @@ void xom_check_lost_item(const item_def& item);
 void xom_check_destroyed_item(const item_def& item);
 void xom_death_message(const kill_method_type killed_by);
 bool xom_saves_your_life(const kill_method_type death_type, const char *aux);
-void xom_new_level_effect();
+void xom_new_level_noise_or_stealth();
 
 string xom_effect_to_name(xom_event_type effect);
 
