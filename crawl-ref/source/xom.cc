@@ -1330,19 +1330,20 @@ static void _xom_animate_monster_weapon(int sever)
     dancing->colour = mitm[wpn].get_colour();
 }
 
-static void _xom_give_mutations(bool good)
+static void _xom_shuffle_mutations()
 {
     if (!you.can_safely_mutate())
         return;
 
-    god_speaks(GOD_XOM, good ? _get_xom_speech("good mutations").c_str()
-                             : _get_xom_speech("random mutations").c_str());
+    god_speaks(GOD_XOM, _get_xom_speech("random mutations").c_str());
+	
+    delete_all_mutations("Xom's power");
 
-    const int num_tries = random2(4) + 1;
+    const int num_tries = 1 + random2avg(you.experience_level + 1, 2);
 
     const string note = make_stringf("give %smutation%s",
 #ifdef NOTE_DEBUG_XOM
-             good ? "good " : "random ",
+            "random ",
 #else
              "",
 #endif
@@ -1355,8 +1356,8 @@ static void _xom_give_mutations(bool good)
 
     for (int i = num_tries; i > 0; --i)
     {
-        if (!mutate(good ? RANDOM_GOOD_MUTATION : RANDOM_XOM_MUTATION,
-                    good ? "Xom's grace" : "Xom's mischief",
+        if (!mutate(RANDOM_MUTATION,
+                    coinflip() ? "Xom's grace" : "Xom's mischief",
                     failMsg, false, true, false, MUTCLASS_NORMAL))
         {
             failMsg = false;
