@@ -1009,15 +1009,19 @@ void change_skill_points(skill_type sk, int points, bool do_level_up)
 static int _train(skill_type exsk, int &max_exp, bool simu)
 {
     // This will be added to you.skill_points[exsk];
-    int skill_inc = 1;
+    int skill_inc = 10;
 
     // This will be deducted from you.exp_available.
     int cost = calc_skill_cost(you.skill_cost_level);
 
     // Scale cost and skill_inc to available experience.
-    const int spending_limit = min(10 * MAX_SPENDING_LIMIT, max_exp);
-    skill_inc = spending_limit / cost;
-    cost = skill_inc * cost;
+    const int spending_limit = min(MAX_SPENDING_LIMIT, max_exp);
+    if (cost > spending_limit)
+    {
+        int frac = spending_limit * 10 / cost;
+        cost = spending_limit;
+        skill_inc = skill_inc * frac / 10;
+    }
 
     if (skill_inc <= 0 || cost > max_exp)
         return 0;
