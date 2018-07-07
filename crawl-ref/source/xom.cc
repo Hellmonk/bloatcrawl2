@@ -676,7 +676,7 @@ static void _xom_make_item(object_class_type base, int subtype, int power)
     stop_running();
 }
 
-/// Xom's 'acquirement'. A gift for the player, of a sort...
+/// Xom's 'acquirement'. A gift for the player
 static void _xom_acquirement(int /*sever*/)
 {
     god_speaks(GOD_XOM, _get_xom_speech("general gift").c_str());
@@ -684,7 +684,7 @@ static void _xom_acquirement(int /*sever*/)
     const object_class_type types[] =
     {
         OBJ_WEAPONS, OBJ_ARMOUR, OBJ_JEWELLERY,  OBJ_BOOKS,
-        OBJ_STAVES,  OBJ_WANDS,  OBJ_MISCELLANY, OBJ_FOOD,  OBJ_GOLD,
+        OBJ_STAVES,  OBJ_WANDS,  OBJ_MISCELLANY,
         OBJ_MISSILES
     };
     const object_class_type force_class = RANDOM_ELEMENT(types);
@@ -2955,6 +2955,14 @@ void xom_new_level_effect()
 		}
         you.props[XOM_GIFT_KEY] = true;
 	}
+    else if(one_chance_in(10))
+    {
+        if(coinflip())
+            _xom_acquirement(5 + random2(you.experience_level* 7));
+        else
+            _xom_random_item(5 + random2(you.experience_level* 7));
+        you.props[XOM_GIFT_KEY] = true;
+    }
 }
 
 static const map<xom_event_type, xom_event> xom_events = {
@@ -2968,8 +2976,8 @@ static const map<xom_event_type, xom_event> xom_events = {
     { XOM_GOOD_SINGLE_ALLY, { "single ally", _xom_send_one_ally }},
     { XOM_GOOD_ANIMATE_MON_WPN, { "animate monster weapon",
                                   _xom_animate_monster_weapon }},
-    { XOM_GOOD_RANDOM_ITEM, { "random item gift", _xom_random_item }},
-    { XOM_GOOD_ACQUIREMENT, { "acquirement", _xom_acquirement }},
+    { XOM_GOOD_RANDOM_ITEM, { "nothing" }},
+    { XOM_GOOD_ACQUIREMENT, { "nothing" }},
     { XOM_GOOD_ALLIES, { "summon allies", _xom_send_allies }},
     { XOM_GOOD_POLYMORPH, { "good polymorph", _xom_good_polymorph }},
     { XOM_GOOD_TELEPORT, { "nothing" }},

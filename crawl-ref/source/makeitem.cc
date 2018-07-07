@@ -108,24 +108,43 @@ void item_colour(item_def &item)
 // Does Xom consider an item boring?
 static bool _is_boring_item(int type, int sub_type)
 {
+    //any consumables that (ostensibly) carry risk are nonboring
     switch (type)
     {
     case OBJ_SCROLLS:
-        // These scrolls increase knowledge and thus reduce risk.
         switch (sub_type)
         {
-        case SCR_MAGIC_MAPPING:
-            return true;
+        case SCR_IMMOLATION:
+        case SCR_VULNERABILITY:
+        case SCR_SILENCE:
+            return false;
+        case SCR_TORMENT:
+            return you.res_torment();
+        case SCR_HOLY_WORD:
+            return you.undead_or_demonic();
         default:
             break;
         }
         break;
+    case OBJ_POTIONS:
+        switch (sub_type)
+        {
+        case POT_AMBROSIA:
+        case POT_BERSERK_RAGE:
+        case POT_LIGNIFY:
+        case POT_MUTATION:
+        case POT_CANCELLATION:
+            return false;
+        default:
+            break;
+		}
+        break;
     case OBJ_JEWELLERY:
         return sub_type == AMU_NOTHING;
     default:
-        break;
+        return false;
     }
-    return false;
+    return true;
 }
 
 static weapon_type _determine_weapon_subtype(int item_level)
@@ -1285,7 +1304,7 @@ static void _generate_potion_item(item_def& item, int force_type,
                                             35, POT_BERSERK_RAGE);
         }
         while (agent == GOD_XOM
-               && _is_boring_item(OBJ_POTIONS, stype)
+               && (_is_boring_item(OBJ_POTIONS, stype) || one_chance_in(5))
                && --tries > 0);
 
         item.sub_type = stype;
@@ -1337,7 +1356,7 @@ static void _generate_scroll_item(item_def& item, int force_type,
         }
         while (item.sub_type == NUM_SCROLLS
                || agent == GOD_XOM
-                  && _is_boring_item(OBJ_SCROLLS, item.sub_type)
+                  && (_is_boring_item(OBJ_SCROLLS, item.sub_type) || one_chance_in(5))
                   && --tries > 0);
     }
 
