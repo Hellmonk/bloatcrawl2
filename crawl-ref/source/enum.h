@@ -643,6 +643,7 @@ enum attribute_type
     ATTR_YRED_SOUL_TIMEOUT,    // enslaved soul timeout
     ATTR_WALL_JUMP_READY,      // Ready to perform a wall jump.
 	ATTR_PIERCING_SHOT,        // Piercing shot
+    ATTR_XOM_MUT_XP,           // How much XP before xom mutates the player again
     NUM_ATTRIBUTES
 };
 

@@ -69,6 +69,7 @@
 #include "terrain.h"
 #include "transform.h"
 #include "view.h"
+#include "xom.h"
 
 #ifdef DEBUG_RELIGION
 #    define DEBUG_DIAGNOSTICS
@@ -3386,6 +3387,12 @@ static void _join_trog()
     }
 }
 
+static void _join_xom()
+{
+    if(!you.attribute[ATTR_XOM_MUT_XP])
+        xom_mutate_player();
+}
+
 // Setup for joining the orderly ascetics of Zin.
 static void _join_zin()
 {
@@ -3446,6 +3453,7 @@ static const map<god_type, function<void ()>> on_join = {
     { GOD_PAKELLAS, _join_pakellas },
     { GOD_RU, _join_ru },
     { GOD_TROG, _join_trog },
+    { GOD_XOM, _join_xom },
     { GOD_ZIN, _join_zin },
 };
 

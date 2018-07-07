@@ -1339,7 +1339,7 @@ static void _xom_shuffle_mutations()
 	
     delete_all_mutations("Xom's power");
 
-    const int num_tries = 1 + random2avg(you.experience_level + 1, 2);
+    const int num_tries = 2 + random2avg(you.experience_level + 1, 2);
 
     const string note = make_stringf("give %smutation%s",
 #ifdef NOTE_DEBUG_XOM
@@ -2963,6 +2963,16 @@ void xom_new_level_effect()
             _xom_random_item(5 + random2(you.experience_level* 7));
         you.props[XOM_GIFT_KEY] = true;
     }
+}
+
+//delete all the player's mutations and give them a bunch of new ones
+//set the timeout on this effect to somewhat over 1 level's worth of exp
+void xom_mutate_player()
+{
+    _xom_shuffle_mutations();
+    you.attribute[ATTR_XOM_MUT_XP] +=
+        ((10 + random2(10)) * (exp_needed(you.experience_level + 1) 
+                - exp_needed(you.experience_level))) / 10;
 }
 
 static const map<xom_event_type, xom_event> xom_events = {

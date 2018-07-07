@@ -103,6 +103,7 @@ void xom_check_destroyed_item(const item_def& item);
 void xom_death_message(const kill_method_type killed_by);
 bool xom_saves_your_life(const kill_method_type death_type, const char *aux);
 void xom_new_level_effect();
+void xom_mutate_player();
 
 string xom_effect_to_name(xom_event_type effect);
 
