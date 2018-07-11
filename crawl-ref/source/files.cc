@@ -1465,35 +1465,6 @@ bool load_level(dungeon_feature_type stair_taken, load_mode_type load_mode,
 
     if (load_mode == LOAD_ENTER_LEVEL)
     {
-        // 50% chance of repelling the stair you just came through.
-        if (you.duration[DUR_REPEL_STAIRS_MOVE]
-            || you.duration[DUR_REPEL_STAIRS_CLIMB])
-        {
-            dungeon_feature_type feat = grd(you.pos());
-            if (feat != DNGN_ENTER_SHOP
-                && feat_stair_direction(feat) != CMD_NO_CMD
-                && feat_stair_direction(stair_taken) != CMD_NO_CMD)
-            {
-                string stair_str = feature_description_at(you.pos(), false,
-                                                          DESC_THE, false);
-                string verb = stair_climb_verb(feat);
-
-                if (coinflip()
-                    && slide_feature_over(you.pos()))
-                {
-                    mprf("%s slides away from you right after you %s it!",
-                         stair_str.c_str(), verb.c_str());
-                }
-
-                if (coinflip())
-                {
-                    // Stairs stop fleeing from you now you actually caught one.
-                    mprf("%s settles down.", stair_str.c_str());
-                    you.duration[DUR_REPEL_STAIRS_MOVE]  = 0;
-                    you.duration[DUR_REPEL_STAIRS_CLIMB] = 0;
-                }
-            }
-        }
 
         ash_detect_portals(is_map_persistent());
 

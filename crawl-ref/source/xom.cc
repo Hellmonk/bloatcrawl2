@@ -2937,7 +2937,9 @@ struct xom_event
 //have Xom do something when you reach a new level, sometimes
 void xom_new_level_effect()
 {
-    if(one_chance_in(4))
+    if(!you_worship(GOD_XOM))
+        return;
+    if(one_chance_in(8))
     {
         switch (random2(3))
         {
@@ -2953,16 +2955,25 @@ void xom_new_level_effect()
             default:
                 break;
 		}
-        you.props[XOM_GIFT_KEY] = true;
+        you.props[XOM_GIFT_KEY] = you.props[XOM_GIFT_KEY].get_int() + 1;
 	}
     else if(one_chance_in(10))
     {
-        if(coinflip())
-            _xom_acquirement(5 + random2(you.experience_level* 7));
-        else
-            _xom_random_item(5 + random2(you.experience_level* 7));
-        you.props[XOM_GIFT_KEY] = true;
+        give_xom_gift(50);
     }
+}
+
+void give_xom_gift(int acq_chance)
+{
+	if(!you_worship(GOD_XOM)) 
+        return;
+    if(you.props.exists(XOM_GIFT_KEY) && !one_chance_in(you.props[XOM_GIFT_KEY].get_int() + 1))
+        return;
+    if(x_chance_in_y(acq_chance, 100))
+        _xom_acquirement(5 + random2(you.experience_level* 7));
+    else
+        _xom_random_item(5 + random2(you.experience_level* 7));
+    you.props[XOM_GIFT_KEY] = you.props[XOM_GIFT_KEY].get_int() + 1;
 }
 
 //delete all the player's mutations and give them a bunch of new ones
