@@ -2054,7 +2054,7 @@ static const mutation_def mut_data[] =
   {"You don't feel like having a drink anymore.", "", ""},
 },
 
-{ MUT_OUT_OF_LOS_HPREGEN, 3, 2, mutflag::GOOD | mutflag::JIYVA, true,
+{ MUT_OUT_OF_LOS_HPREGEN, 0, 2, mutflag::GOOD | mutflag::JIYVA, true,
   "jiyva regeneration",
 
   {"Your regeneration increases when no monsters are visible.", 
@@ -2063,7 +2063,7 @@ static const mutation_def mut_data[] =
   {"You feel less blessed.", "You feel less blessed.", ""},
 },
 
-{ MUT_OUT_OF_LOS_MPREGEN, 3, 2, mutflag::GOOD | mutflag::JIYVA, true,
+{ MUT_OUT_OF_LOS_MPREGEN, 0, 2, mutflag::GOOD | mutflag::JIYVA, true,
   "jiyva magic regeneration",
 
   {"Your magic regeneration increases when no monsters are visible.", 
