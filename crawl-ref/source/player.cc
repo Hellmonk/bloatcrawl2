@@ -2621,13 +2621,22 @@ static void _handle_god_wrath(int exp)
     }
 }
 
-static void _handle_xom_mutations(int exp)
+static void _handle_xom_effects(int exp)
 {
     if(!you_worship(GOD_XOM) && !active_penance(GOD_XOM))
         return;
     you.attribute[ATTR_XOM_MUT_XP] -= exp;
+	you.attribute[ATTR_XOM_GIFT_XP] -= exp;
     if (you.attribute[ATTR_XOM_MUT_XP] < 0)
+    {
+        you.attribute[ATTR_XOM_MUT_XP] = 0;
         xom_mutate_player(); 
+    }
+    if (you.attribute[ATTR_XOM_GIFT_XP] < 0)
+    {
+        you.attribute[ATTR_XOM_GIFT_XP] = 0;
+        give_xom_gift(10 + you.experience_level * 3); 
+    }
 }
 
 void gain_exp(unsigned int exp_gained, unsigned int* actual_gain)
@@ -2639,7 +2648,7 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain)
     _handle_xp_penance(exp_gained);
     _handle_god_wrath(exp_gained);
     _transfer_knowledge(exp_gained);
-    _handle_xom_mutations(exp_gained);
+    _handle_xom_effects(exp_gained);
 
     // evolution mutation timer
     you.attribute[ATTR_EVOL_XP] += exp_gained;

@@ -1339,7 +1339,7 @@ static void _xom_shuffle_mutations()
 	
     delete_all_mutations("Xom's power");
 
-    const int num_tries = 2 + random2avg(you.experience_level + 1, 2);
+    const int num_tries = 2 + random2avg(you.experience_level * 3 / 2 + 1, 2);
 
     const string note = make_stringf("give %smutation%s",
 #ifdef NOTE_DEBUG_XOM
@@ -2955,7 +2955,9 @@ void xom_new_level_effect()
             default:
                 break;
 		}
-        you.props[XOM_GIFT_KEY] = you.props[XOM_GIFT_KEY].get_int() + 1;
+        you.attribute[ATTR_XOM_GIFT_XP] +=
+        (exp_needed(you.experience_level + 1) 
+                - exp_needed(you.experience_level)) / (1 + random2(8));
 	}
     else if(one_chance_in(10))
     {
@@ -2967,13 +2969,13 @@ void give_xom_gift(int acq_chance)
 {
 	if(!you_worship(GOD_XOM)) 
         return;
-    if(you.props.exists(XOM_GIFT_KEY) && !one_chance_in(you.props[XOM_GIFT_KEY].get_int() + 1))
-        return;
     if(x_chance_in_y(acq_chance, 100))
         _xom_acquirement(5 + random2(you.experience_level* 7));
     else
         _xom_random_item(5 + random2(you.experience_level* 7));
-    you.props[XOM_GIFT_KEY] = you.props[XOM_GIFT_KEY].get_int() + 1;
+    you.attribute[ATTR_XOM_GIFT_XP] +=
+        (exp_needed(you.experience_level + 1) 
+                - exp_needed(you.experience_level)) / (1 + random2(8));
 }
 
 //delete all the player's mutations and give them a bunch of new ones

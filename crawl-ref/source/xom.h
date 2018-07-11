@@ -9,7 +9,6 @@
 #include "ouch.h"
 
 #define XOM_CLOUD_TRAIL_TYPE_KEY "xom_cloud_trail_type"
-#define XOM_GIFT_KEY "xom gift"
 
 struct item_def;
 

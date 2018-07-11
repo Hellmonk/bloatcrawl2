@@ -2227,12 +2227,6 @@ item_def* monster_die(monster* mons, killer_type killer,
                 _hints_inspect_kill();
 
             _fire_kill_conducts(*mons, killer, killer_index, gives_player_xp);
-			
-            if(gives_player_xp && you_worship(GOD_XOM)
-                && x_chance_in_y(mons->get_experience_level(), 500))
-            {
-                    give_xom_gift(mons->get_experience_level() * 2 + 10);
-            }
 
             // Divine health and mana restoration doesn't happen when
             // killing born-friendly monsters.

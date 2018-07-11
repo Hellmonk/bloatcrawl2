@@ -1458,7 +1458,10 @@ bool load_level(dungeon_feature_type stair_taken, load_mode_type load_mode,
     }
 
     if (just_created_level)
+    {
         you.attribute[ATTR_ABYSS_ENTOURAGE] = 0;
+        xom_new_level_effect();
+    }
 
     if (load_mode != LOAD_VISITOR)
         dungeon_events.fire_event(DET_ENTERED_LEVEL);
@@ -1467,13 +1470,6 @@ bool load_level(dungeon_feature_type stair_taken, load_mode_type load_mode,
     {
 
         ash_detect_portals(is_map_persistent());
-
-        if (just_created_level)
-        {
-            if(you.props.exists(XOM_GIFT_KEY))
-                you.props.erase(XOM_GIFT_KEY);
-            xom_new_level_effect();
-        }
     }
     // Initialize halos, etc.
     invalidate_agrid(true);
