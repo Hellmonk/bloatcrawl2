@@ -395,21 +395,6 @@ static int _exploration_estimate(bool seen_only = false)
     return seen;
 }
 
-static bool _teleportation_check(const spell_type spell = SPELL_TELEPORT_SELF)
-{
-    if (crawl_state.game_is_sprint())
-        return false;
-
-    switch (spell)
-    {
-    case SPELL_BLINK:
-    case SPELL_TELEPORT_SELF:
-        return !you.no_tele(false, false, spell == SPELL_BLINK);
-    default:
-        return true;
-    }
-}
-
 static bool _transformation_check(const spell_type spell)
 {
     transformation_type tran = TRAN_NONE;
@@ -1311,75 +1296,7 @@ static void _xom_throw_divine_lightning(int /*sever*/)
     take_note(Note(NOTE_XOM_EFFECT, you.piety, -1, "divine lightning"), true);
 }
 
-/// What scenery nearby would Xom like to mess with, if any?
-static vector<coord_def> _xom_scenery_candidates()
-{
-    vector<coord_def> candidates;
-    vector<coord_def> closed_doors;
-    vector<coord_def> open_doors;
-    for (radius_iterator ri(you.pos(), LOS_DEFAULT); ri; ++ri)
-    {
-        if (!you.see_cell(*ri))
-            continue;
-
-        dungeon_feature_type feat = grd(*ri);
-        if (feat_is_fountain(feat))
-            candidates.push_back(*ri);
-        else if (feat_is_closed_door(feat))
-        {
-            // Check whether this door is already included in a gate.
-            if (find(begin(closed_doors), end(closed_doors), *ri)
-                == end(closed_doors))
-            {
-                // If it's a gate, add all doors belonging to the gate.
-                set<coord_def> all_door;
-                find_connected_identical(*ri, all_door);
-                for (auto dc : all_door)
-                    closed_doors.push_back(dc);
-            }
-        }
-        else if (feat == DNGN_OPEN_DOOR && !actor_at(*ri)
-                 && igrd(*ri) == NON_ITEM)
-        {
-            // Check whether this door is already included in a gate.
-            if (find(begin(open_doors), end(open_doors), *ri)
-                == end(open_doors))
-            {
-                // Check whether any of the doors belonging to a gate is
-                // blocked by an item or monster.
-                set<coord_def> all_door;
-                find_connected_identical(*ri, all_door);
-                bool is_blocked = false;
-                for (auto dc : all_door)
-                {
-                    if (actor_at(dc) || igrd(dc) != NON_ITEM)
-                    {
-                        is_blocked = true;
-                        break;
-                    }
-                }
-
-                // If the doorway isn't blocked, add all doors
-                // belonging to the gate.
-                if (!is_blocked)
-                {
-                    for (auto dc : all_door)
-                        open_doors.push_back(dc);
-                }
-            }
-        }
-    }
-    // Order needs to be the same as messaging below, else the messages might
-    // not make sense.
-    // FIXME: Changed fountains behind doors are not properly remembered.
-    //        (At least in tiles.)
-    candidates.insert(end(candidates), begin(open_doors), end(open_doors));
-    candidates.insert(end(candidates), begin(closed_doors), end(closed_doors));
-
-    return candidates;
-}
-
-/// Xom hurls fireballs at your foes! Or, possibly, 'fireballs'.
+/// Xom hurls fireballs at your foes!
 static void _xom_destruction(int sever, bool real)
 {
     bool rc = false;
@@ -1853,25 +1770,6 @@ bool move_stair(coord_def stair_pos, bool away, bool allow_under)
     return true;
 }
 
-static vector<coord_def> _nearby_stairs()
-{
-    vector<coord_def> stairs_avail;
-    for (radius_iterator ri(you.pos(), LOS_RADIUS, C_SQUARE); ri; ++ri)
-    {
-        if (!cell_see_cell(you.pos(), *ri, LOS_SOLID_SEE))
-            continue;
-
-        dungeon_feature_type feat = grd(*ri);
-        if (feat_stair_direction(feat) != CMD_NO_CMD
-            && feat != DNGN_ENTER_SHOP)
-        {
-            stairs_avail.push_back(*ri);
-        }
-    }
-
-    return stairs_avail;
-}
-
 static void _xom_cloud_trail(int /*sever*/)
 {
     you.duration[DUR_CLOUD_TRAIL] = random_range(600, 1200);
@@ -1990,39 +1888,6 @@ static void _xom_summon_hostiles(int sever)
 static bool _has_min_banishment_level()
 {
     return you.experience_level >= 9;
-}
-
-// Rolls whether banishment will be averted.
-static bool _will_not_banish()
-{
-    return x_chance_in_y(5, you.experience_level);
-}
-
-// Disallow early banishment and make it much rarer later-on.
-// While Xom is bored, the chance is increased.
-static bool _allow_xom_banishment()
-{
-    // Always allowed if under penance.
-    if (player_under_penance(GOD_XOM))
-        return true;
-
-    // If Xom is bored, banishment becomes viable earlier.
-    if (_xom_is_bored())
-        return !_will_not_banish();
-
-    // Below the minimum experience level, only fake banishment is allowed.
-    if (!_has_min_banishment_level())
-    {
-        // Allow banishment; it will be retracted right away.
-        if (one_chance_in(5) && x_chance_in_y(you.piety, 1000))
-            return true;
-        else
-            return false;
-    }
-    else if (_will_not_banish())
-        return false;
-
-    return true;
 }
 
 static void _revert_banishment(bool xom_banished = true)
