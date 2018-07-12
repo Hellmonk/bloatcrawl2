@@ -87,7 +87,6 @@ static bool _action_is_bad(xom_event_type action)
     return action > XOM_LAST_GOOD_ACT && action <= XOM_LAST_BAD_ACT;
 }
 
-// Spells to be cast at tension > 0, i.e. usually in battle situations.
 // Spells later in the list require higher severity to have a chance of being
 // selected.
 static const vector<spell_type> _xom_random_spells =
@@ -96,17 +95,14 @@ static const vector<spell_type> _xom_random_spells =
     SPELL_SUMMON_SMALL_MAMMAL,
     SPELL_CONFUSING_TOUCH,
     SPELL_CALL_CANINE_FAMILIAR,
-    SPELL_SPIDER_FORM,
     SPELL_OLGREBS_TOXIC_RADIANCE,
     SPELL_SUMMON_ICE_BEAST,
     SPELL_LEDAS_LIQUEFACTION,
     SPELL_CAUSE_FEAR,
     SPELL_INTOXICATE,
-    SPELL_ICE_FORM,
     SPELL_SHADOW_CREATURES,
     SPELL_SUMMON_MANA_VIPER,
     SPELL_STATUE_FORM,
-    SPELL_HYDRA_FORM,
     SPELL_DISPERSAL,
     SPELL_ENGLACIATION,
     SPELL_SUMMON_HYDRA,
@@ -319,99 +315,23 @@ void xom_is_stimulated(int maxinterestingness, const string& message,
 
 void xom_tick()
 {
-    // Xom now ticks every action, not every 20 turns.
-    if (one_chance_in(20))
+    int sever = 0;
+    if (!you_worship(GOD_XOM) && !you.penance[GOD_XOM])
+        return;
+    for (radius_iterator ri(you.pos(), LOS_RADIUS, C_SQUARE); ri; ++ri)
     {
-        // Xom semi-randomly drifts your piety.
-        const string old_xom_favour = describe_xom_favour();
-        const bool good = (you.piety == HALF_MAX_PIETY ? coinflip()
-                                                       : you.piety > HALF_MAX_PIETY);
-        int size = abs(you.piety - HALF_MAX_PIETY);
-
-        // Piety slowly drifts towards the extremes.
-        const int delta = piety_scale(x_chance_in_y(511, 1000) ? 1 : -1);
-        size += delta;
-        if (size > HALF_MAX_PIETY)
-            size = HALF_MAX_PIETY;
-
-        you.piety = HALF_MAX_PIETY + (good ? size : -size);
-        string new_xom_favour = describe_xom_favour();
-        you.redraw_title = true; // redraw piety/boredom display
-        if (old_xom_favour != new_xom_favour)
-        {
-            // If we entered another favour state, take a big step into
-            // the new territory, to avoid oscillating favour announcements
-            // every few turns.
-            size += delta * 8;
-            if (size > HALF_MAX_PIETY)
-                size = HALF_MAX_PIETY;
-
-            // If size was 0 to begin with, it may become negative, but that
-            // doesn't really matter.
-            you.piety = HALF_MAX_PIETY + (good ? size : -size);
-        }
-#ifdef DEBUG_XOM
-        const string note = make_stringf("xom_tick(), delta: %d, piety: %d",
-                                         delta, you.piety);
-        take_note(Note(NOTE_MESSAGE, 0, 0, note), true);
-#endif
-
-        // ...but he gets bored...
-        if (you.gift_timeout > 0 && coinflip())
-           you.gift_timeout--;
-
-        new_xom_favour = describe_xom_favour();
-        if (old_xom_favour != new_xom_favour)
-        {
-            const string msg = "You are now " + new_xom_favour;
-            god_speaks(you.religion, msg.c_str());
-        }
-
-        if (you.gift_timeout == 1)
-            simple_god_message(" is getting BORED.");
+            monster* mons = monster_at(*ri);
+            if (!mons || !you.see_cell(*ri))
+                continue;
+            if (!xom_wants_to_help(mons))
+                continue;
+            sever += mons_threat_level(*mons) * 2 + 1;
     }
+	
+    if (!x_chance_in_y(sever, 200))
+        return;
 
-    if (x_chance_in_y(2 + you.faith(), 6))
-    {
-        const int tension = get_tension(GOD_XOM);
-        const int chance = (tension ==  0 ? 1 :
-                            tension <=  5 ? 2 :
-                            tension <= 10 ? 3 :
-                            tension <= 20 ? 4
-                                          : 5);
-
-        // If Xom is bored, the chances for Xom acting are sort of reversed.
-        if (!you.gift_timeout && x_chance_in_y(25 - chance*chance, 100))
-        {
-            xom_acts(abs(you.piety - HALF_MAX_PIETY), MB_MAYBE, tension);
-            return;
-        }
-        else if (you.gift_timeout <= 1 && chance > 0
-                 && x_chance_in_y(chance - 1, 80))
-        {
-            // During tension, Xom may briefly forget about being bored.
-            const int interest = random2(chance * 15);
-            if (interest > 0)
-            {
-                if (interest < 25)
-                    simple_god_message(" is interested.");
-                else
-                    simple_god_message(" is intrigued.");
-
-                you.gift_timeout += interest;
-                //updating piety status line
-                you.redraw_title = true;
-#if defined(DEBUG_RELIGION) || defined(DEBUG_XOM)
-                mprf(MSGCH_DIAGNOSTICS,
-                     "tension %d (chance: %d) -> increase interest to %d",
-                     tension, chance, you.gift_timeout);
-#endif
-            }
-        }
-
-        if (x_chance_in_y(chance*chance, 100))
-            xom_acts(abs(you.piety - HALF_MAX_PIETY), MB_MAYBE, tension);
-    }
+    xom_acts(sever);
 }
 
 static bool mon_nearby(function<bool(monster&)> filter)
@@ -2281,147 +2201,30 @@ static void _handle_accidental_death(const int orig_hp,
 }
 
 /**
- * Try to choose an action for Xom to take that is at least notionally 'good'
- * for the player.
- *
+ * Try to choose an action for Xom to take
  * @param sever         The intended magnitude of the action.
- * @param tension       How much danger we think the player's currently in.
- * @return              A good action for Xom to take, e.g. XOM_GOOD_ALLIES.
+ * @return              An action for Xom to take, e.g. XOM_BAD_NOISE.
  */
-static xom_event_type _xom_choose_good_action(int sever, int tension)
+static xom_event_type _xom_choose_random_action(int sever)
 {
-    // This series of random calls produces a poisson-looking
-    // distribution: initial hump, plus a long-ish tail.
-    // a wizard has pronounced a curse on the original author of this code
-
-    // Don't make the player go berserk, etc. if there's no danger.
-    if (tension > random2(3) && x_chance_in_y(2, sever))
-        return XOM_GOOD_POTION;
-
-    if (x_chance_in_y(3, sever))
+    int destruction_chance = 0;
+    for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
     {
-        const xom_event_type divination
-            = random_choose(XOM_GOOD_MAGIC_MAPPING,
-                            XOM_GOOD_DETECT_CREATURES,
-                            XOM_GOOD_DETECT_ITEMS);
-
-        if (divination == XOM_GOOD_DETECT_CREATURES)
+        if (mons_is_projectile(**mi)
+            || mons_is_tentacle_or_tentacle_segment(mi->type))
         {
-            return divination; // useful regardless of exploration state
-
-        // Only do mmap/detect items if there's a decent chunk of unexplored
+            continue;
         }
-        // level left
-        const int explored = _exploration_estimate(false);
-        if (explored <= 80 || x_chance_in_y(explored, 100))
-            return divination;
-    }
 
-    if (x_chance_in_y(4, sever) && tension > 0
-        && _choose_random_spell(sever) != SPELL_NO_SPELL)
-    {
-        return XOM_GOOD_SPELL;
-    }
-
-    if (tension <= 0 && x_chance_in_y(5, sever)
-        && !you.duration[DUR_CLOUD_TRAIL])
-    {
-        return XOM_GOOD_CLOUD_TRAIL;
-    }
-
-    if (tension > 0 && x_chance_in_y(5, sever)
-        && mon_nearby([](monster& mon){ return !mon.wont_attack(); }))
-    {
-        return XOM_GOOD_CONFUSION;
-    }
-
-    if (tension > 0 && x_chance_in_y(6, sever)
-        && mon_nearby(_choose_enchantable_monster))
-    {
-        return XOM_GOOD_ENCHANT_MONSTER;
-    }
-
-    if (tension > random2(5) && x_chance_in_y(7, sever)
-        && !you.get_mutation_level(MUT_NO_LOVE))
-    {
-        return XOM_GOOD_SINGLE_ALLY;
-    }
-    if (tension < random2(5) && x_chance_in_y(8, sever)
-        && !_xom_scenery_candidates().empty() || one_chance_in(8))
-    {
-        return XOM_GOOD_SCENERY;
-    }
-
-    if (tension > random2(10) && x_chance_in_y(10, sever)
-        && !you.get_mutation_level(MUT_NO_LOVE))
-    {
-        return XOM_GOOD_ALLIES;
-    }
-    if (tension > random2(8) && x_chance_in_y(11, sever)
-        && _find_monster_with_animateable_weapon()
-        && !you.get_mutation_level(MUT_NO_LOVE))
-    {
-        return XOM_GOOD_ANIMATE_MON_WPN;
-    }
-
-    if (x_chance_in_y(12, sever) && _xom_mons_poly_target() != nullptr)
-        return XOM_GOOD_POLYMORPH;
-
-    if (tension > 0 && x_chance_in_y(13, sever))
-    {
-        const bool fake = one_chance_in(3);
-        for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
+        // Skip adjacent monsters and non-hostile monsters
+        if (!adjacent(you.pos(), mi->pos()) && !mi->wont_attack())
         {
-            if (mons_is_projectile(**mi)
-                || mons_is_tentacle_or_tentacle_segment(mi->type))
-            {
-                continue;
-            }
-
-            if (fake)
-                return XOM_GOOD_FAKE_DESTRUCTION;
-
-            // Skip adjacent monsters, and skip non-hostile monsters if not feeling nasty.
-            if (!adjacent(you.pos(), mi->pos())
-                 && (!mi->wont_attack() || _xom_feels_nasty()))
-            {
-                return XOM_GOOD_DESTRUCTION;
-            }
+            destruction_chance+= 5;
         }
     }
-
-    if (tension > random2(5) && x_chance_in_y(14, sever))
-        return XOM_GOOD_CLEAVING;
-
-    if (tension > 0 && x_chance_in_y(15, sever) && !cloud_at(you.pos()))
-        return XOM_GOOD_FOG;
-
-    if (random2(tension) < 15 && x_chance_in_y(16, sever))
-    {
-        return x_chance_in_y(sever, 201) ? XOM_GOOD_ACQUIREMENT
-                                         : XOM_GOOD_RANDOM_ITEM;
-    }
-
-    if (!player_in_branch(BRANCH_ABYSS) && x_chance_in_y(17, sever)
-        && _teleportation_check())
-    {
-        // This is not very interesting if the level is already fully
-        // explored (presumably cleared). Even then, it may
-        // occasionally happen.
-        const int explored = _exploration_estimate(true);
-        if (explored < 80 || !x_chance_in_y(explored, 120))
-            return XOM_GOOD_TELEPORT;
-    }
-
-    if (random2(tension) < 5 && x_chance_in_y(19, sever)
-        && x_chance_in_y(16, you.how_mutated())
-        && you.can_safely_mutate())
-    {
-        return XOM_GOOD_MUTATION;
-    }
-
-    if (tension > 0 && x_chance_in_y(20, sever)
-        && player_in_a_dangerous_place())
+	
+    int lightning_chance = 0;
+    if (player_in_a_dangerous_place())
     {
         // Make sure there's at least one enemy within the lightning radius.
         for (radius_iterator ri(you.pos(), 2, C_SQUARE, LOS_SOLID, true); ri;
@@ -2429,100 +2232,41 @@ static xom_event_type _xom_choose_good_action(int sever, int tension)
         {
             const monster *mon = monster_at(*ri);
             if (mon && !mon->wont_attack())
-                return XOM_GOOD_LIGHTNING;
+                lightning_chance++;
         }
     }
+	
+    xom_event_type action = random_choose_weighted(
+        200, XOM_GOOD_POTION,
+        _choose_random_spell(sever) != SPELL_NO_SPELL ? 100 : 0, XOM_GOOD_SPELL,
+        !you.get_mutation_level(MUT_NO_LOVE) ? 100 : 0, XOM_GOOD_SINGLE_ALLY,
+        _find_monster_with_animateable_weapon()
+        && !you.get_mutation_level(MUT_NO_LOVE) ? 50 : 0, XOM_GOOD_ANIMATE_MON_WPN,
+		!you.duration[DUR_CLOUD_TRAIL] ? 50 : 0, XOM_GOOD_CLOUD_TRAIL,
+        mon_nearby(_choose_enchantable_monster) ? 50 + sever / 4 : 0, XOM_GOOD_ENCHANT_MONSTER,
+        mon_nearby([](monster& mon){ return !mon.wont_attack(); }) ? 30 : 0, XOM_GOOD_CONFUSION,
+        !you.get_mutation_level(MUT_NO_LOVE) ? 30 : 0, XOM_GOOD_ALLIES,
+        _xom_mons_poly_target() != nullptr ? 30 : 0, XOM_GOOD_POLYMORPH,  
+        destruction_chance, XOM_GOOD_DESTRUCTION,
+        !cloud_at(you.pos()) ? 20 + sever / 4 : 0, XOM_GOOD_FOG,
+        lightning_chance * sever / 5, XOM_GOOD_LIGHTNING,
+        20, XOM_GOOD_CLEAVING,
+        100 - sever, XOM_BAD_NOISE,
+        100, XOM_BAD_ENCHANT_MONSTER,
+        mon_nearby(_mon_valid_blink_victim) ? 100 : 0, XOM_BAD_BLINK_MONSTERS,
+        _rearrangeable_pieces().size() ? 50 : 0, XOM_BAD_SWAP_MONSTERS,
+        30, XOM_BAD_MISCAST_MAJOR,
+        30 + sever / 5, XOM_BAD_POLYMORPH,
+        20, XOM_BAD_CONFUSION,
+        30 + sever / 5, XOM_BAD_SUMMON_HOSTILES,
+        10 + sever / 5, XOM_BAD_MISCAST_CRITICAL,
+        10, XOM_BAD_DRAINING,
+        10, XOM_BAD_STATLOSS,
+        10, XOM_BAD_TORMENT,
+        5,  XOM_BAD_CHAOS_UPGRADE,
+        5,  XOM_BAD_CHAOS_CLOUD);
 
-    return XOM_DID_NOTHING;
-}
-
-/**
- * Try to choose an action for Xom to take that is at least notionally 'bad'
- * for the player.
- *
- * @param sever         The intended magnitude of the action.
- * @param tension       How much danger we think the player's currently in.
- * @return              A bad action for Xom to take, e.g. XOM_BAD_NOISE.
- */
-static xom_event_type _xom_choose_bad_action(int sever, int tension)
-{
-    // Sometimes do noise out of combat.
-    if ((tension > 0 || coinflip()) && x_chance_in_y(6, sever))
-        return XOM_BAD_NOISE;
-    if (tension > 0 && x_chance_in_y(7, sever))
-        return XOM_BAD_ENCHANT_MONSTER;
-
-    if (tension > 0 && x_chance_in_y(8, sever)
-        && mon_nearby(_mon_valid_blink_victim))
-    {
-        return XOM_BAD_BLINK_MONSTERS;
-    }
-
-    // It's pointless to confuse player if there's no danger nearby.
-    if (tension > 0 && x_chance_in_y(9, sever))
-        return XOM_BAD_CONFUSION;
-
-    if (tension > 0 && x_chance_in_y(10, sever)
-        && _rearrangeable_pieces().size())
-    {
-        return XOM_BAD_SWAP_MONSTERS;
-    }
-
-    if (x_chance_in_y(12, sever))
-        return XOM_BAD_MISCAST_MAJOR;
-    if (x_chance_in_y(14, sever) && mon_nearby(_choose_chaos_upgrade))
-        return XOM_BAD_CHAOS_UPGRADE;
-    if (x_chance_in_y(16, sever))
-        return XOM_BAD_POLYMORPH;
- // Pushing stairs/exits is always hilarious in the Abyss!
-    if ((tension > 0 || player_in_branch(BRANCH_ABYSS))
-        && x_chance_in_y(17, sever) && !_nearby_stairs().empty()
-        && !you.duration[DUR_REPEL_STAIRS_MOVE]
-        && !you.duration[DUR_REPEL_STAIRS_CLIMB])
-    {
-        if (one_chance_in(5)
-            || feat_stair_direction(grd(you.pos())) != CMD_NO_CMD
-                && grd(you.pos()) != DNGN_ENTER_SHOP)
-        {
-            return XOM_BAD_CLIMB_STAIRS;
-        }
-        return XOM_BAD_MOVING_STAIRS;
-    }
-    if (random2(tension) < 11 && x_chance_in_y(18, sever)
-        && you.can_safely_mutate())
-    {
-        return XOM_BAD_MUTATION;
-    }
-    if (x_chance_in_y(19, sever))
-        return XOM_BAD_SUMMON_HOSTILES;
-    if (x_chance_in_y(20, sever))
-        return XOM_BAD_MISCAST_CRITICAL;
-
-    if (x_chance_in_y(21, sever))
-    {
-        if (coinflip())
-            return XOM_BAD_STATLOSS;
-        if (coinflip())
-        {
-            if (player_prot_life() < 3)
-                return XOM_BAD_DRAINING;
-            // else choose something else
-        } else if (!player_res_torment(false))
-            return XOM_BAD_TORMENT;
-        // else choose something else
-    }
-    if (tension > 0 && x_chance_in_y(22, sever)
-        && !cloud_at(you.pos()))
-    {
-        return XOM_BAD_CHAOS_CLOUD;
-    }
-    if (one_chance_in(sever) && !player_in_branch(BRANCH_ABYSS)
-        && _allow_xom_banishment())
-    {
-        return xom_maybe_reverts_banishment(true, true);
-    }
-
-    return XOM_DID_NOTHING; // ugh
+    return action;
 }
 
 /**
@@ -2533,7 +2277,7 @@ static xom_event_type _xom_choose_bad_action(int sever, int tension)
  * @param tension       How much danger we think the player's currently in.
  * @return              An bad action for Xom to take, e.g. XOM_DID_NOTHING.
  */
-xom_event_type xom_choose_action(bool niceness, int sever, int tension)
+xom_event_type xom_choose_action(int sever)
 {
     sever = max(1, sever);
 
@@ -2550,47 +2294,10 @@ xom_event_type xom_choose_action(bool niceness, int sever, int tension)
         return XOM_PLAYER_DEAD;
     }
 
-    if (niceness)
-    {
-        // Make good acts at zero tension less likely, especially if Xom
-        // is in a bad mood.
-        if (tension == 0
-            && you_worship(GOD_XOM) && !x_chance_in_y(you.piety, MAX_PIETY))
-        {
-#ifdef NOTE_DEBUG_XOM
-            take_note(Note(NOTE_MESSAGE, 0, 0, "suppress good act because of "
-                           "zero tension"), true);
-#endif
-            return XOM_DID_NOTHING;
-        }
-
-        // {sarcastically}: Good stuff. {seriously}: remove this loop
-        while (true)
-        {
-            const xom_event_type action = _xom_choose_good_action(sever,
-                                                                  tension);
-            if (action != XOM_DID_NOTHING)
-                return action;
-        }
-    }
-
-    // Make bad acts at non-zero tension less likely, especially if Xom
-    // is in a good mood.
-    if (!_xom_feels_nasty() && tension > random2(10)
-        && you_worship(GOD_XOM) && x_chance_in_y(you.piety, MAX_PIETY))
-    {
-#ifdef NOTE_DEBUG_XOM
-        const string note = string("suppress bad act because of ") +
-                                   tension + " tension";
-        take_note(Note(NOTE_MESSAGE, 0, 0, note), true);
-#endif
-        return XOM_DID_NOTHING;
-    }
-
     // Bad mojo. (this loop, that is)
     while (true)
     {
-        const xom_event_type action = _xom_choose_bad_action(sever, tension);
+        const xom_event_type action = _xom_choose_random_action(sever);
         if (action != XOM_DID_NOTHING)
             return action;
     }
@@ -2675,10 +2382,8 @@ void xom_take_action(xom_event_type action, int sever)
  * @param tension       How much danger we think the player's currently in.
  * @return              Whichever action Xom took, or XOM_DID_NOTHING.
  */
-xom_event_type xom_acts(int sever, maybe_bool nice, int tension, bool debug)
+xom_event_type xom_acts(int sever, bool debug)
 {
-    bool niceness = tobool(nice, xom_is_nice(tension));
-
 #if defined(DEBUG_RELIGION) || defined(DEBUG_XOM)
     if (!debug)
     {
@@ -2688,27 +2393,15 @@ xom_event_type xom_acts(int sever, maybe_bool nice, int tension, bool debug)
         // anyway. (jpeg)
 
         // these numbers (sever, tension) may be modified later...
-        mprf(MSGCH_DIAGNOSTICS, "xom_acts(%u, %d, %d); piety: %u, interest: %u",
-             niceness, sever, tension, you.piety, you.gift_timeout);
+        mprf(MSGCH_DIAGNOSTICS, "xom_acts(%d)", sever);
 
         static char xom_buf[100];
-        snprintf(xom_buf, sizeof(xom_buf), "xom_acts(%s, %d, %d), mood: %d",
-                 (niceness ? "true" : "false"), sever, tension, you.piety);
+        snprintf(xom_buf, sizeof(xom_buf), "xom_acts(%d)", sever);
         take_note(Note(NOTE_MESSAGE, 0, 0, xom_buf), true);
     }
 #endif
 
-    if (tension == -1)
-        tension = get_tension(GOD_XOM);
-
-#if defined(DEBUG_RELIGION) || defined(DEBUG_XOM) || defined(DEBUG_TENSION)
-    // No message during heavy-duty wizmode testing:
-    // Instead all results are written into xom_debug.stat.
-    if (!debug)
-        mprf(MSGCH_DIAGNOSTICS, "Xom tension: %d", tension);
-#endif
-
-    const xom_event_type action = xom_choose_action(niceness, sever, tension);
+    const xom_event_type action = xom_choose_action(sever);
     if (!debug)
         xom_take_action(action, sever);
 
@@ -2978,6 +2671,15 @@ void give_xom_gift(int acq_chance)
                 - exp_needed(you.experience_level)) / (1 + random2(8));
 }
 
+bool xom_wants_to_help(monster* mon)
+{
+    return !mon->friendly()
+            && you.see_cell(mon->pos())
+            && !mons_is_firewood(*mon)
+            && !mon->submerged()
+            && !mons_is_projectile(mon->type);
+}
+
 //delete all the player's mutations and give them a bunch of new ones
 //set the timeout on this effect to somewhat over 1 level's worth of exp
 void xom_mutate_player()
@@ -3211,8 +2913,7 @@ void debug_xom_effects()
         // Repeat N times.
         for (int i = 0; i < N; ++i)
         {
-            const xom_event_type result = xom_acts(sever, MB_MAYBE, tension,
-                                                   true);
+            const xom_event_type result = xom_acts(sever, true);
 
             mood_effects.push_back(result);
             all_effects[0].push_back(result);

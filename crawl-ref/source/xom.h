@@ -90,9 +90,8 @@ bool xom_is_nice(int tension = -1);
 const string describe_xom_favour();
 int xom_favour_rank();
 
-xom_event_type xom_acts(int sever, maybe_bool niceness = MB_MAYBE,
-                        int tension = -1, bool debug = false);
-xom_event_type xom_choose_action(bool niceness,  int sever, int tension);
+xom_event_type xom_acts(int sever, bool debug = false);
+xom_event_type xom_choose_action(int sever);
 void xom_take_action(xom_event_type action, int sever);
 
 xom_event_type xom_maybe_reverts_banishment(bool xom_banished = true,
@@ -104,6 +103,7 @@ bool xom_saves_your_life(const kill_method_type death_type, const char *aux);
 void xom_new_level_effect();
 void give_xom_gift(int acq_chance);
 void xom_mutate_player();
+bool xom_wants_to_help(monster* mon);
 
 string xom_effect_to_name(xom_event_type effect);
 
