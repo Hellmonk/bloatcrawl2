@@ -414,12 +414,6 @@ public:
         viewwindow();
 
         const bool exit_is_near = abyss_exit_nearness();
-
-        if (exit_was_near && !exit_is_near)
-            xom_is_stimulated(200, "Xom snickers loudly.", true);
-
-        if (!exit_was_near && exit_is_near)
-            xom_is_stimulated(200);
     }
 };
 

@@ -696,8 +696,6 @@ void trap_def::trigger(actor& triggerer)
                 if (_player_caught_in_web())
                 {
                     check_monsters_sense(SENSE_WEB_VIBRATION, 9, you.pos());
-                    if (player_in_a_dangerous_place())
-                        xom_is_stimulated(50);
                 }
             }
         }
@@ -739,8 +737,6 @@ void trap_def::trigger(actor& triggerer)
         {
             mpr((trig_knows) ? "You enter the Zot trap."
                              : "Oh no! You have blundered into a Zot trap!");
-            if (!trig_knows)
-                xom_is_stimulated(25);
 
             MiscastEffect(&you, nullptr, ZOT_TRAP_MISCAST, SPTYP_RANDOM,
                            3, name(DESC_A));

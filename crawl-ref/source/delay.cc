@@ -86,7 +86,6 @@ private:
 
 int interrupt_block::interrupts_blocked = 0;
 
-static void _xom_check_corpse_waste();
 static const char *_activity_interrupt_name(activity_interrupt_type ai);
 
 void push_delay(shared_ptr<Delay> delay)
@@ -192,8 +191,6 @@ bool MacroDelay::try_interrupt()
 static void _interrupt_vampire_feeding(item_def& corpse, int dur)
 {
     mpr("You stop draining the corpse.");
-
-    _xom_check_corpse_waste();
 
     // Don't skeletonize a corpse if it's no longer there!
     if (corpse.defined() && corpse.is_type(OBJ_CORPSES, CORPSE_BODY)
@@ -495,14 +492,6 @@ static bool _can_quaff_potion(const item_def &potion)
     return false;
 }
 
-// Xom is amused by a potential food source going to waste, and is
-// more amused the hungrier you are.
-static void _xom_check_corpse_waste()
-{
-    const int food_need = max(HUNGER_SATIATED - you.hunger, 0);
-    xom_is_stimulated(50 + (151 * food_need / 6000));
-}
-
 void clear_macro_process_key_delay()
 {
     if (dynamic_cast<MacroProcessKeyDelay*>(current_delay().get()))
@@ -691,7 +680,6 @@ static bool _check_corpse_gone(item_def& item, const char* action)
     {
         mprf("The corpse has rotted away into a skeleton before "
              "you could %s!", action);
-        _xom_check_corpse_waste();
         return true;
     }
 

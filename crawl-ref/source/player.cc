@@ -116,9 +116,6 @@ static void _moveto_maybe_repel_stairs()
         {
             mprf("%s slides away as you move %s it!", stair_str.c_str(),
                  prep.c_str());
-
-            if (player_in_a_dangerous_place() && one_chance_in(5))
-                xom_is_stimulated(25);
         }
     }
 }
@@ -3014,7 +3011,6 @@ void level_change(bool skip_attribute_increase)
         if (!updated_maxhp)
             _gain_and_note_hp_mp();
 
-        xom_is_stimulated(12);
         if (in_good_standing(GOD_HEPLIAKLQANA))
             upgrade_hepliaklqana_ancestor();
 
@@ -3824,8 +3820,6 @@ void rot_hp(int hp_loss)
 
     calc_hp();
 
-    xom_is_stimulated(hp_loss * 25);
-
     you.redraw_hit_points = true;
 }
 
@@ -4125,7 +4119,6 @@ void contaminate_player(int change, bool controlled, bool msg)
             mprf(player_severe_contamination() ? MSGCH_WARN : MSGCH_PLAIN,
                  "%s", describe_contamination(new_level).c_str());
         }
-        xom_is_stimulated(new_level * 25);
     }
     else if (msg && new_level < old_level)
     {
@@ -4211,9 +4204,6 @@ bool confuse_player(int amount, bool quiet, bool force)
     }
 
     learned_something_new(HINT_YOU_ENCHANTED);
-
-    xom_is_stimulated((you.duration[DUR_CONF])
-                       / BASELINE_DELAY);
     
     return true;
 }

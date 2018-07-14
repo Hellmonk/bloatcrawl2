@@ -762,7 +762,7 @@ void you_teleport_now(bool wizard_tele, bool teleportitis)
     if (randtele && !player_in_branch(BRANCH_ABYSS)
         && player_in_a_dangerous_place())
     {
-        xom_is_stimulated(200);
+        return;
     }
 }
 

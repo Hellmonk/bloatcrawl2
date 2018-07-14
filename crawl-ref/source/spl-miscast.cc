@@ -313,8 +313,6 @@ void MiscastEffect::do_miscast()
     if (special_source == ZOT_TRAP_MISCAST)
     {
         _zot();
-        if (target->is_player())
-            xom_is_stimulated(150);
         return;
     }
 
@@ -336,9 +334,6 @@ void MiscastEffect::do_miscast()
     default:
         die("Invalid miscast spell discipline.");
     }
-
-    if (target->is_player())
-        xom_is_stimulated(severity * 50);
 }
 
 void MiscastEffect::do_msg(bool suppress_nothing_happens)

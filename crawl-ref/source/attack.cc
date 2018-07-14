@@ -167,9 +167,6 @@ int attack::calc_to_hit(bool random)
         {
             if (wpn_skill != SK_FIGHTING)
             {
-                if (you.skill(wpn_skill) < 1 && player_in_a_dangerous_place())
-                    xom_is_stimulated(10); // Xom thinks that is mildly amusing.
-
                 mhit += maybe_random_div(you.skill(wpn_skill, 100), 100,
                                          random);
             }
@@ -653,9 +650,6 @@ void attack::chaos_affects_defender()
             // The player shouldn't get new permanent followers from cloning.
             if (clone->attitude == ATT_FRIENDLY && !clone->is_summoned())
                 clone->mark_summoned(6, true, MON_SUMM_CLONE);
-
-            // Monsters being cloned is interesting.
-            xom_is_stimulated(clone->friendly() ? 12 : 25);
         }
         break;
     }
@@ -691,7 +685,6 @@ void attack::chaos_affects_defender()
         // Xom loves it if this happens!
         const int friend_factor = mon->friendly() ? 1 : 2;
         const int glow_factor   = mon->has_ench(ENCH_SHAPESHIFTER) ? 1 : 2;
-        xom_is_stimulated(64 * friend_factor * glow_factor);
         break;
     }
     case CHAOS_MISCAST:

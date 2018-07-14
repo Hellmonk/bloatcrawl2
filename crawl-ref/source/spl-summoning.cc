@@ -1778,9 +1778,6 @@ int animate_remains(const coord_def &a, corpse_type class_allowed,
 
             if (!quiet && you.see_cell(a))
                 _display_undead_motions(motions);
-
-            if (was_butchering)
-                xom_is_stimulated(200);
         }
 
         any_success |= success;
@@ -2073,7 +2070,6 @@ bool monster_simulacrum(monster *mon, bool actual)
                 {
                     mprf("The flesh of the corpse you are %s vaporises!",
                          was_draining ? "drinking from" : "butchering");
-                    xom_is_stimulated(200);
                 }
 
             }

@@ -390,46 +390,6 @@ static void _rune_effect(dungeon_feature_type ftype)
     }
 }
 
-static void _new_level_amuses_xom(dungeon_feature_type feat,
-                                  dungeon_feature_type old_feat,
-                                  bool shaft, int shaft_depth, bool voluntary)
-{
-    switch (you.where_are_you)
-    {
-    default:
-        // Xom thinks it's funny if you enter a new level via shaft
-        // or escape hatch, for shafts it's funnier the deeper you fell.
-        if (shaft || feat_is_escape_hatch(feat))
-            xom_is_stimulated(shaft_depth * 50);
-        else if (!is_connected_branch(you.where_are_you))
-            xom_is_stimulated(25);
-        else
-            xom_is_stimulated(10);
-        break;
-
-    case BRANCH_ZIGGURAT:
-        // The best way to die currently.
-        xom_is_stimulated(50);
-        break;
-
-    case BRANCH_LABYRINTH:
-        // Finding the way out of a labyrinth interests Xom.
-        xom_is_stimulated(75);
-        break;
-
-    case BRANCH_PANDEMONIUM:
-        xom_is_stimulated(100);
-        break;
-
-    case BRANCH_ABYSS:
-        if (voluntary && old_feat == DNGN_ENTER_ABYSS)
-            xom_is_stimulated(100, XM_INTRIGUED);
-        else
-            xom_is_stimulated(200);
-        break;
-    }
-}
-
 static level_id _travel_destination(const dungeon_feature_type how,
                                     const dungeon_feature_type whence,
                                     bool forced, bool going_up,
@@ -772,13 +732,6 @@ void floor_transition(dungeon_feature_type how,
         mpr("Beware, you cannot shaft yourself on this level.");
 
     const bool newlevel = load_level(how, LOAD_ENTER_LEVEL, old_level);
-
-    if (newlevel)
-    {
-        _new_level_amuses_xom(how, whence, shaft,
-                              (shaft ? whither.depth - old_level.depth : 1),
-                              !forced);
-    }
 
     // This should maybe go in load_level?
     if (you.where_are_you == BRANCH_ABYSS)

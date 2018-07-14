@@ -1687,8 +1687,6 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
             break;
         }
 
-        xom_is_stimulated(_calc_mutation_amusement_value(mutat));
-
         if (mutclass != MUTCLASS_TEMPORARY)
         {
             take_note(Note(NOTE_GET_MUTATION, mutat, cur_base_level,

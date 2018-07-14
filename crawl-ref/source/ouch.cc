@@ -125,7 +125,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         else if (hurted > original && doEffects)
         {
             mpr("The water douses you terribly!");
-            xom_is_stimulated(200);
         }
         break;
 
@@ -136,7 +135,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         else if (hurted > original && doEffects)
         {
             mpr("The steam scalds you terribly!");
-            xom_is_stimulated(200);
         }
         break;
 
@@ -147,7 +145,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         else if (hurted > original && doEffects)
         {
             mpr("The fire burns you terribly!");
-            xom_is_stimulated(200);
         }
         break;
 
@@ -161,7 +158,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         else if (hurted > original && doEffects)
         {
             mpr("You feel a terrible chill!");
-            xom_is_stimulated(200);
         }
         break;
 
@@ -173,7 +169,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         else if (hurted > original && doEffects)
         {
             mpr("You are shocked senseless!");
-            xom_is_stimulated(200);
         }
         break;
 
@@ -224,7 +219,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
             if (hurted > original)
             {
                 mpr("The negative energy saps you greatly!");
-                xom_is_stimulated(200);
             }
             drain_player(min(75, 35 + original * 2 / 3), true);
         }
@@ -238,7 +232,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         else if (hurted > original && doEffects)
         {
             mpr("You feel a painful chill!");
-            xom_is_stimulated(200);
         }
         break;
 
@@ -250,7 +243,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         else if (hurted > original && doEffects)
         {
             mpr("The lava burns you terribly!");
-            xom_is_stimulated(200);
         }
         break;
 
@@ -277,7 +269,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         else if (hurted > original && doEffects)
         {
             mpr("You writhe in agony!");
-            xom_is_stimulated(200);
         }
         break;
     }
@@ -374,8 +365,6 @@ void lose_level()
     redraw_screen();
 #endif
 
-    xom_is_stimulated(200);
-
     // Kill the player if maxhp <= 0. We can't just move the ouch() call past
     // dec_max_hp() since it would decrease hp twice, so here's another one.
     ouch(0, KILLED_BY_DRAINING);
@@ -418,7 +407,6 @@ bool drain_player(int power, bool announce_full, bool ignore_protection, bool pr
 		{
         mpr("You feel drained.");
 		}
-        xom_is_stimulated(15);
 
         you.attribute[ATTR_XP_DRAIN] += power;
         // Losing skills may affect AC/EV.
@@ -449,20 +437,15 @@ static void _xom_checks_damage(kill_method_type death_type,
             int amusement = 200 * dam / (dam + you.hp);
             if (death_type == KILLED_BY_SELF_AIMED)
                 amusement /= 5;
-            xom_is_stimulated(amusement);
             return;
         }
         else if (death_type == KILLED_BY_FALLING_DOWN_STAIRS
                  || death_type == KILLED_BY_FALLING_THROUGH_GATE)
         {
-            // Xom thinks falling down the stairs is hilarious.
-            xom_is_stimulated(200);
             return;
         }
         else if (death_type == KILLED_BY_DISINT)
         {
-            // flying chunks...
-            xom_is_stimulated(100);
             return;
         }
         else if (death_type != KILLED_BY_MONSTER
@@ -481,8 +464,6 @@ static void _xom_checks_damage(kill_method_type death_type,
 
         if (mons->wont_attack())
         {
-            // Xom thinks collateral damage is funny.
-            xom_is_stimulated(200 * dam / (dam + you.hp));
             return;
         }
 
@@ -514,7 +495,6 @@ static void _xom_checks_damage(kill_method_type death_type,
 
         amusementvalue /= (you.hp > 0) ? you.hp : 1;
 
-        xom_is_stimulated(amusementvalue);
     }
 }
 

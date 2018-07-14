@@ -1207,8 +1207,6 @@ void evoke_deck(item_def& deck)
 
     card_effect(card, rarity, flags, false);
 
-    xom_is_stimulated(amusement);
-
     // Always wield change, since the number of cards used/left has
     // changed, and it might be wielded.
     you.wield_change = true;

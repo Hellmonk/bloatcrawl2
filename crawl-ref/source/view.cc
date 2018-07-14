@@ -517,7 +517,6 @@ void update_monsters_in_view()
         && you.attribute[ATTR_ABYSS_ENTOURAGE] < num_hostile)
     {
         you.attribute[ATTR_ABYSS_ENTOURAGE] = num_hostile;
-        xom_is_stimulated(12 * num_hostile);
     }
 }
 

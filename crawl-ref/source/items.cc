@@ -729,13 +729,11 @@ static void _handle_gone_item(const item_def &item)
 void item_was_lost(const item_def &item)
 {
     _handle_gone_item(item);
-    xom_check_lost_item(item);
 }
 
 void item_was_destroyed(const item_def &item)
 {
     _handle_gone_item(item);
-    xom_check_destroyed_item(item);
 }
 
 void lose_item_stack(const coord_def& where)

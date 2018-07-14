@@ -435,8 +435,7 @@ public:
     {
         if (player_res_poison() >= 1)
             mpr("You feel slightly nauseous.");
-        else if (effect(was_known))
-            xom_is_stimulated(100 / _xom_factor(was_known));
+        effect(was_known);
         return true;
     }
 };
@@ -667,8 +666,7 @@ public:
             return false;
         }
 
-        if (effect(was_known))
-            xom_is_stimulated(50);
+        effect(was_known);
         return true;
     }
 };
@@ -853,8 +851,7 @@ public:
 
     bool quaff(bool was_known) const override
     {
-        if (effect())
-            xom_is_stimulated( 50 / _xom_factor(was_known));
+        effect();
         return true;
     }
 };
@@ -1239,8 +1236,7 @@ public:
 
     bool quaff(bool was_known) const override
     {
-        if (effect())
-            xom_is_stimulated( 50 / _xom_factor(was_known));
+        effect();
         return true;
     }
 };

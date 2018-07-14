@@ -2149,12 +2149,6 @@ void drink(item_def* potion)
         you.increase_duration(DUR_AGILITY, 15 + random2(15), 30);
     }
 	
-    if (!alreadyknown && dangerous)
-    {
-        // Xom loves it when you drink an unknown potion and there is
-        // a dangerous monster nearby...
-        xom_is_stimulated(200);
-    }
     if (in_inventory(*potion))
     {
         dec_inv_item_quantity(potion->link, 1);
@@ -3134,14 +3128,6 @@ void read_scroll(item_def& scroll)
         else
             dec_mitm_item_quantity(scroll.index(), 1);
         count_action(CACT_USE, OBJ_SCROLLS);
-    }
-
-    if (!alreadyknown && dangerous)
-    {
-        // Xom loves it when you read an unknown scroll and there is a
-        // dangerous monster nearby... (though not as much as potions
-        // since there are no *really* bad scrolls, merely useless ones).
-        xom_is_stimulated(bad_effect ? 100 : 50);
     }
 
     if (!alreadyknown)

@@ -250,69 +250,6 @@ bool xom_is_nice(int tension)
         return coinflip();
 }
 
-static void _xom_is_stimulated(int maxinterestingness,
-                               const char *message_array[],
-                               bool force_message)
-{
-    if (!you_worship(GOD_XOM) || maxinterestingness <= 0)
-        return;
-
-    // Xom is not directly stimulated by his own acts.
-    if (crawl_state.which_god_acting() == GOD_XOM)
-        return;
-
-    int interestingness = random2(piety_scale(maxinterestingness));
-
-    interestingness = min(200, interestingness);
-
-#if defined(DEBUG_RELIGION) || defined(DEBUG_GIFTS) || defined(DEBUG_XOM)
-    mprf(MSGCH_DIAGNOSTICS,
-         "Xom: gift_timeout: %d, maxinterestingness = %d, interestingness = %d",
-         you.gift_timeout, maxinterestingness, interestingness);
-#endif
-
-    bool was_stimulated = false;
-    if (interestingness > you.gift_timeout && interestingness >= 10)
-    {
-        you.gift_timeout = interestingness;
-        was_stimulated = true;
-    }
-
-    if (was_stimulated || force_message)
-    {
-        god_speaks(GOD_XOM,
-                   ((interestingness > 160) ? message_array[5] :
-                    (interestingness >  80) ? message_array[4] :
-                    (interestingness >  60) ? message_array[3] :
-                    (interestingness >  40) ? message_array[2] :
-                    (interestingness >  20) ? message_array[1]
-                                            : message_array[0]));
-        //updating piety status line
-        you.redraw_title = true;
-    }
-}
-
-void xom_is_stimulated(int maxinterestingness, xom_message_type message_type,
-                       bool force_message)
-{
-    _xom_is_stimulated(maxinterestingness, _xom_message_arrays[message_type],
-                       force_message);
-}
-
-void xom_is_stimulated(int maxinterestingness, const string& message,
-                       bool force_message)
-{
-    if (!you_worship(GOD_XOM))
-        return;
-
-    const char *message_array[6];
-
-    for (int i = 0; i < 6; ++i)
-        message_array[i] = message.c_str();
-
-    _xom_is_stimulated(maxinterestingness, message_array, force_message);
-}
-
 void xom_tick()
 {
     int sever = 0;
@@ -2271,18 +2208,6 @@ xom_event_type xom_acts(int sever, bool debug)
         xom_take_action(action, sever);
 
     return action;
-}
-
-void xom_check_lost_item(const item_def& item)
-{
-    if (is_unrandom_artefact(item))
-        xom_is_stimulated(100, "Xom snickers.", true);
-}
-
-void xom_check_destroyed_item(const item_def& item)
-{
-    if (is_unrandom_artefact(item))
-        xom_is_stimulated(100, "Xom snickers.", true);
 }
 
 static bool _death_is_funny(const kill_method_type killed_by)

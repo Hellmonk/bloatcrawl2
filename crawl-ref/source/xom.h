@@ -81,11 +81,6 @@ enum xom_event_type
 };
 
 void xom_tick();
-void xom_is_stimulated(int maxinterestingness,
-                       xom_message_type message_type = XM_NORMAL,
-                       bool force_message = false);
-void xom_is_stimulated(int maxinterestingness, const string& message,
-                       bool force_message = false);
 bool xom_is_nice(int tension = -1);
 const string describe_xom_favour();
 int xom_favour_rank();
@@ -96,8 +91,6 @@ void xom_take_action(xom_event_type action, int sever);
 
 xom_event_type xom_maybe_reverts_banishment(bool xom_banished = true,
                                             bool debug = false);
-void xom_check_lost_item(const item_def& item);
-void xom_check_destroyed_item(const item_def& item);
 void xom_death_message(const kill_method_type killed_by);
 bool xom_saves_your_life(const kill_method_type death_type, const char *aux);
 void xom_new_level_effect();

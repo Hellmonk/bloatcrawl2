@@ -956,8 +956,6 @@ void do_curse_item(item_def &item, bool quiet)
             ash_check_bondage();
             auto_id_inventory();
         }
-
-        xom_is_stimulated(amusement);
     }
 }
 
