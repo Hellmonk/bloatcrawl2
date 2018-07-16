@@ -3525,7 +3525,7 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     }
 
     // And finally, the ability to opt-out of your faith {dlb}:
-    if (!you_worship(GOD_NO_GOD))
+    if (!you_worship(GOD_NO_GOD) && !you_worship(GOD_XOM))
         _add_talent(talents, ABIL_RENOUNCE_RELIGION, check_confused);
 
     //jmf: Check for breath weapons - they're exclusive of each other, I hope!
