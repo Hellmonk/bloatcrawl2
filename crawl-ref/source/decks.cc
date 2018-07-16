@@ -1111,42 +1111,6 @@ void draw_from_deck_of_punishment(bool deal)
     card_effect(card, DECK_RARITY_COMMON, flags);
 }
 
-static int _xom_check_card(item_def &deck, card_type card,
-                           uint8_t flags)
-{
-    int amusement = 64;
-
-    if (flags & CFLAG_PUNISHMENT)
-        amusement = 200;
-    else if (!item_type_known(deck))
-        amusement *= 2;
-
-    if (player_in_a_dangerous_place())
-        amusement *= 2;
-
-    if (flags & CFLAG_SEEN)
-        amusement /= 2;
-
-    switch (card)
-    {
-    case CARD_EXILE:
-        // Nothing happened, boring.
-        if (player_in_branch(BRANCH_ABYSS))
-            amusement = 0;
-        break;
-
-    case CARD_FAMINE:
-    case CARD_SWINE:
-        // Always hilarious.
-        amusement = 255;
-
-    default:
-        break;
-    }
-
-    return amusement;
-}
-
 void evoke_deck(item_def& deck)
 {
     if (_check_buggy_deck(deck))
@@ -1184,8 +1148,6 @@ void evoke_deck(item_def& deck)
             }
         }
     }
-
-    const int amusement = _xom_check_card(deck, card, flags);
 
     // Punishment cards don't give any information about the deck.
     if (flags & (CFLAG_PUNISHMENT))

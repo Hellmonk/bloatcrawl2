@@ -89,10 +89,7 @@ xom_event_type xom_acts(int sever, bool debug = false);
 xom_event_type xom_choose_action(int sever);
 void xom_take_action(xom_event_type action, int sever);
 
-xom_event_type xom_maybe_reverts_banishment(bool xom_banished = true,
-                                            bool debug = false);
 void xom_death_message(const kill_method_type killed_by);
-bool xom_saves_your_life(const kill_method_type death_type, const char *aux);
 void xom_new_level_effect();
 void give_xom_gift(int acq_chance);
 void xom_mutate_player();

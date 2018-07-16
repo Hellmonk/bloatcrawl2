@@ -681,10 +681,6 @@ void attack::chaos_affects_defender()
                                        : ENCH_SHAPESHIFTER);
         // Immediately polymorph monster, just to make the effect obvious.
         monster_polymorph(mon, RANDOM_MONSTER);
-
-        // Xom loves it if this happens!
-        const int friend_factor = mon->friendly() ? 1 : 2;
-        const int glow_factor   = mon->has_ench(ENCH_SHAPESHIFTER) ? 1 : 2;
         break;
     }
     case CHAOS_MISCAST:

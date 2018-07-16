@@ -2110,12 +2110,6 @@ void drink(item_def* potion)
         return;
     }
 
-    // The "> 1" part is to reduce the amount of times that Xom is
-    // stimulated when you are a low-level 1 trying your first unknown
-    // potions on monsters.
-    const bool dangerous = (player_in_a_dangerous_place()
-                            && you.experience_level > 1);
-
     if (you.get_mutation_level(MUT_TINY_MOUTH)
         && !i_feel_safe(false, false, true)
         && !yesno("Really quaff through your tiny mouth while enemies are nearby?",
@@ -2850,11 +2844,8 @@ void read_scroll(item_def& scroll)
         // Actual removal of scroll done afterwards. -- bwr
     }
 
-    const bool dangerous = player_in_a_dangerous_place();
-
     // ... but some scrolls may still be cancelled afterwards.
     bool cancel_scroll = false;
-    bool bad_effect = false; // for Xom: result is bad (or at least dangerous)
 
     switch (which_scroll)
     {
@@ -2957,7 +2948,6 @@ void read_scroll(item_def& scroll)
 
         // This is only naughty if you know you're doing it.
         did_god_conduct(DID_EVIL, 10, item_type_known(scroll));
-        bad_effect = true;
         break;
 
     case SCR_IMMOLATION:
@@ -2978,7 +2968,6 @@ void read_scroll(item_def& scroll)
         else
             mpr("The air around you briefly surges with heat, but it dissipates.");
 
-        bad_effect = true;
         break;
     }
 
@@ -3001,7 +2990,6 @@ void read_scroll(item_def& scroll)
             // Also sets wield_change.
             do_curse_item(*weapon, false);
             learned_something_new(HINT_YOU_CURSED);
-            bad_effect = true;
         }
         break;
     }

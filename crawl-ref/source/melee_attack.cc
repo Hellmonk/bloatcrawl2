@@ -201,7 +201,6 @@ bool melee_attack::handle_phase_attempted()
     // The attacker loses nutrition.
     attacker->make_hungry(3, true);
 
-    // Xom thinks fumbles are funny...
     if (attacker->fumbles_attack())
     {
         return false;
@@ -2337,7 +2336,7 @@ static void _print_resist_messages(actor* defender, int base_damage,
                                    beam_type flavour)
 {
     // check_your_resists is used for the player case to get additional
-    // effects such as Xom amusement, melting of icy effects, etc.
+    // effects such as melting of icy effects, etc.
     // mons_adjust_flavoured is used for the monster case to get all of the
     // special message handling ("The ice beast melts!") correct.
     // XXX: there must be a nicer way to do this, especially because we're

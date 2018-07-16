@@ -941,12 +941,8 @@ void do_curse_item(item_def &item, bool quiet)
     // they're worn/equipped.
     if (in_inventory(item))
     {
-        int amusement = 50;
-
         if (item_is_equipped(item))
         {
-            amusement *= 2;
-
             if (you.equip[EQ_WEAPON] == item.link)
             {
                 // Redraw the weapon.

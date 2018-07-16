@@ -857,19 +857,6 @@ void display_mutations()
 #endif
 }
 
-static int _calc_mutation_amusement_value(mutation_type which_mutation)
-{
-    int amusement = 12 * (11 - _get_mutation_def(which_mutation).weight);
-
-    if (MUT_GOOD(mut_data[which_mutation]))
-        amusement /= 2;
-    else if (MUT_BAD(mut_data[which_mutation]))
-        amusement *= 2;
-    // currently is only ever one of these, but maybe that'll change?
-
-    return amusement;
-}
-
 static bool _accept_mutation(mutation_type mutat, bool ignore_weight = false)
 {
     if (!_is_valid_mutation(mutat))

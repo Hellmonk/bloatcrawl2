@@ -117,45 +117,6 @@ static const vector<spell_type> _xom_random_spells =
     SPELL_CHAIN_OF_CHAOS
 };
 
-static const char *_xom_message_arrays[NUM_XOM_MESSAGE_TYPES][6] =
-{
-    // XM_NORMAL
-    {
-        "Xom is interested.",
-        "Xom is mildly amused.",
-        "Xom is amused.",
-        "Xom is highly amused!",
-        "Xom thinks this is hilarious!",
-        "Xom roars with laughter!"
-    },
-
-    // XM_INTRIGUED
-    {
-        "Xom is interested.",
-        "Xom is very interested.",
-        "Xom is extremely interested.",
-        "Xom is intrigued!",
-        "Xom is very intrigued!",
-        "Xom is fascinated!"
-    }
-};
-
-/**
- * How much does Xom like you right now?
- *
- * Doesn't account for boredom, or whether or not you actually worship Xom.
- *
- * @return An index mapping to an entry in xom_moods.
- */
-int xom_favour_rank()
-{
-    static const int breakpoints[] = { 20, 50, 80, 120, 150, 180};
-    for (unsigned int i = 0; i < ARRAYSZ(breakpoints); ++i)
-        if (you.piety <= breakpoints[i])
-            return i;
-    return ARRAYSZ(breakpoints);
-}
-
 static const char* xom_moods[] = {
     "a very special plaything of Xom.",
     "a special plaything of Xom.",
@@ -168,7 +129,7 @@ static const char* xom_moods[] = {
 
 static const char *describe_xom_mood()
 {
-    const int mood = xom_favour_rank();
+    const int mood = random2(7);
     ASSERT(mood >= 0);
     ASSERT((size_t) mood < ARRAYSZ(xom_moods));
     return xom_moods[mood];
@@ -179,8 +140,6 @@ const string describe_xom_favour()
     string favour;
     if (!you_worship(GOD_XOM))
         favour = "a very buggy toy of Xom.";
-    else if (you.gift_timeout < 1)
-        favour = "a BORING thing.";
     else
         favour = describe_xom_mood();
 
@@ -265,7 +224,7 @@ void xom_tick()
             sever += mons_threat_level(*mons) * 2 + 1;
     }
 	
-    if (!x_chance_in_y(sever, 200))
+    if (!x_chance_in_y(sever, 500))
         return;
 
     xom_acts(sever);
@@ -1822,39 +1781,6 @@ static void _xom_summon_hostiles(int sever)
     }
 }
 
-static bool _has_min_banishment_level()
-{
-    return you.experience_level >= 9;
-}
-
-static void _revert_banishment(bool xom_banished = true)
-{
-    more();
-    god_speaks(GOD_XOM, xom_banished
-               ? _get_xom_speech("revert own banishment").c_str()
-               : _get_xom_speech("revert other banishment").c_str());
-    down_stairs(DNGN_EXIT_ABYSS);
-    take_note(Note(NOTE_XOM_EFFECT, you.piety, -1,
-                   "revert banishment"), true);
-}
-
-xom_event_type xom_maybe_reverts_banishment(bool xom_banished, bool debug)
-{
-    // Never revert if Xom is bored or the player is under penance.
-    if (_xom_feels_nasty())
-        return XOM_BAD_BANISHMENT;
-
-    // Sometimes Xom will immediately revert banishment.
-    // Always if the banishment happened below the minimum exp level and Xom was responsible.
-    if (xom_banished && !_has_min_banishment_level() || x_chance_in_y(you.piety, 1000))
-    {
-        if (!debug)
-            _revert_banishment(xom_banished);
-        return XOM_BAD_PSEUDO_BANISHMENT;
-    }
-    return XOM_BAD_BANISHMENT;
-}
-
 static void _xom_noise(int /*sever*/)
 {
     // Ranges from shout to shatter volume.
@@ -2255,104 +2181,6 @@ void xom_death_message(const kill_method_type killed_by)
     // All others just get ignored by Xom.
 }
 
-static int _death_is_worth_saving(const kill_method_type killed_by,
-                                  const char *aux)
-{
-    switch (killed_by)
-    {
-    // These don't count.
-    case KILLED_BY_LEAVING:
-    case KILLED_BY_WINNING:
-    case KILLED_BY_QUITTING:
-
-    // These are too much hassle.
-    case KILLED_BY_LAVA:
-    case KILLED_BY_WATER:
-    case KILLED_BY_DRAINING:
-    case KILLED_BY_STARVATION:
-    case KILLED_BY_ROTTING:
-
-    // Don't protect the player from these.
-    case KILLED_BY_SELF_AIMED:
-    case KILLED_BY_TARGETING:
-        return false;
-
-    // Everything else is fair game.
-    default:
-        return true;
-    }
-}
-
-static string _get_death_type_keyword(const kill_method_type killed_by)
-{
-    switch (killed_by)
-    {
-    case KILLED_BY_MONSTER:
-    case KILLED_BY_BEAM:
-    case KILLED_BY_BEOGH_SMITING:
-    case KILLED_BY_TSO_SMITING:
-    case KILLED_BY_DIVINE_WRATH:
-        return "actor";
-    default:
-        return "general";
-    }
-}
-
-/**
- * Have Xom maybe act to save your life. There is both a flat chance
- * and an additional chance based on tension that he will refuse to
- * save you.
- * @param death_type  The type of death that occurred.
- * @param aux         Additional string describing this death.
- * @return            True if Xom saves your life, false otherwise.
- */
-bool xom_saves_your_life(const kill_method_type death_type, const char *aux)
-{
-    if (!you_worship(GOD_XOM) || _xom_feels_nasty())
-        return false;
-
-    // If this happens, don't bother.
-    if (you.hp_max < 1 || you.experience_level < 1)
-        return false;
-
-    // Generally a rare effect.
-    if (!one_chance_in(20))
-        return false;
-
-    if (!_death_is_worth_saving(death_type, aux))
-        return false;
-
-    // In addition, the chance depends on the current tension and Xom's mood.
-    const int death_tension = get_tension(GOD_XOM);
-    if (death_tension < random2(5) || !xom_is_nice(death_tension))
-        return false;
-
-    // Fake death message.
-    canned_msg(MSG_YOU_DIE);
-    more();
-
-    const string key = _get_death_type_keyword(death_type);
-    // XOM_SPEECH("life saving actor") or XOM_SPEECH("life saving general")
-    string speech = _get_xom_speech("life saving " + key);
-    god_speaks(GOD_XOM, speech.c_str());
-
-    // Give back some hp.
-    if (you.hp < 1)
-        set_hp(1 + random2(you.hp_max/4));
-
-    god_speaks(GOD_XOM, "Xom revives you!");
-
-    // Ideally, this should contain the death cause but that is too much
-    // trouble for now.
-    take_note(Note(NOTE_XOM_REVIVAL));
-
-    // Make sure Xom doesn't get bored within the next couple of turns.
-    if (you.gift_timeout < 10)
-        you.gift_timeout = 10;
-
-    return true;
-}
-
 /**
  * The Xom teleportation train takes you on instant
  * teleportation to a few random areas, stopping if either
@@ -2457,8 +2285,8 @@ void give_xom_gift(int acq_chance)
     else
         _xom_random_item(5 + random2(you.experience_level* 7));
     you.attribute[ATTR_XOM_GIFT_XP] +=
-        (exp_needed(you.experience_level + 1) 
-                - exp_needed(you.experience_level)) / (1 + random2(8));
+        2 * (exp_needed(you.experience_level + 1) 
+                - exp_needed(you.experience_level)) / (1 + random2(min(you.experience_level, 9)));
 }
 
 bool xom_wants_to_help(monster* mon)

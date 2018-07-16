@@ -731,8 +731,8 @@ void floor_transition(dungeon_feature_type how,
     if (you.species == SP_FORMICID && !is_valid_shaft_level())
         mpr("Beware, you cannot shaft yourself on this level.");
 
-    const bool newlevel = load_level(how, LOAD_ENTER_LEVEL, old_level);
-
+    load_level(how, LOAD_ENTER_LEVEL, old_level);
+	
     // This should maybe go in load_level?
     if (you.where_are_you == BRANCH_ABYSS)
         generate_random_blood_spatter_on_level();

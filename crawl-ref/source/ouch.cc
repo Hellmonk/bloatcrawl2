@@ -421,83 +421,6 @@ bool drain_player(int power, bool announce_full, bool ignore_protection, bool pr
     return false;
 }
 
-static void _xom_checks_damage(kill_method_type death_type,
-                               int dam, mid_t death_source)
-{
-    if (you_worship(GOD_XOM))
-    {
-        if (death_type == KILLED_BY_TARGETING
-            || death_type == KILLED_BY_BOUNCE
-            || death_type == KILLED_BY_REFLECTION
-            || death_type == KILLED_BY_SELF_AIMED
-               && player_in_a_dangerous_place())
-        {
-            // Xom thinks the player accidentally hurting him/herself is funny.
-            // Deliberate damage is only amusing if it's dangerous.
-            int amusement = 200 * dam / (dam + you.hp);
-            if (death_type == KILLED_BY_SELF_AIMED)
-                amusement /= 5;
-            return;
-        }
-        else if (death_type == KILLED_BY_FALLING_DOWN_STAIRS
-                 || death_type == KILLED_BY_FALLING_THROUGH_GATE)
-        {
-            return;
-        }
-        else if (death_type == KILLED_BY_DISINT)
-        {
-            return;
-        }
-        else if (death_type != KILLED_BY_MONSTER
-                    && death_type != KILLED_BY_BEAM
-                    && death_type != KILLED_BY_DISINT
-                 || !monster_by_mid(death_source))
-        {
-            return;
-        }
-
-        int amusementvalue = 1;
-        const monster* mons = monster_by_mid(death_source);
-
-        if (!mons->alive())
-            return;
-
-        if (mons->wont_attack())
-        {
-            return;
-        }
-
-        int leveldif = mons->get_experience_level() - you.experience_level;
-        if (leveldif == 0)
-            leveldif = 1;
-
-        // Note that Xom is amused when you are significantly hurt by a
-        // creature of higher level than yourself, as well as by a
-        // creature of lower level than yourself.
-        amusementvalue += leveldif * leveldif * dam;
-
-        if (!mons->visible_to(&you))
-            amusementvalue += 8;
-
-        if (mons->speed < 100/player_movement_speed())
-            amusementvalue += 7;
-
-        if (death_type != KILLED_BY_BEAM
-            && you.skill(SK_THROWING) <= (you.experience_level / 4))
-        {
-            amusementvalue += 2;
-        }
-        else if (you.skill(SK_FIGHTING) <= (you.experience_level / 4))
-            amusementvalue += 2;
-
-        if (player_in_a_dangerous_place())
-            amusementvalue += 2;
-
-        amusementvalue /= (you.hp > 0) ? you.hp : 1;
-
-    }
-}
-
 static void _yred_mirrors_injury(int dam, mid_t death_source)
 {
     if (yred_injury_mirror())
@@ -634,12 +557,6 @@ static void _maybe_fog(int dam)
     {
         mpr("You emit a cloud of dark smoke.");
         big_cloud(CLOUD_BLACK_SMOKE, &you, you.pos(), 50, 4 + random2(5));
-    }
-    else if (you_worship(GOD_XOM) && x_chance_in_y(dam, 30 * upper_threshold))
-    {
-        mprf(MSGCH_GOD, "You emit a cloud of colourful smoke!");
-        big_cloud(CLOUD_XOM_TRAIL, &you, you.pos(), 50, 4 + random2(5), -1);
-        take_note(Note(NOTE_XOM_EFFECT, you.piety, -1, "smoke on damage"), true);
     }
 }
 
@@ -889,8 +806,6 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
             hints_healing_check();
 
-            _xom_checks_damage(death_type, dam, source);
-
             // for note taking
             string damage_desc;
             if (!see_source)
@@ -934,9 +849,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         you.escaped_death_aux   = aux == nullptr ? "" : aux;
 
         // Xom should only kill his worshippers if they're under penance
-        // or Xom is bored.
-        if (you_worship(GOD_XOM) && !you.penance[GOD_XOM]
-            && you.gift_timeout > 0)
+        if (you_worship(GOD_XOM) && !you.penance[GOD_XOM])
         {
             return;
         }
@@ -961,9 +874,6 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         else if (strstr(aux, "Xom") == nullptr)
             death_type = KILLED_BY_XOM;
     }
-    // Xom may still try to save your life.
-    else if (xom_saves_your_life(death_type, aux))
-        return;
 
 #if defined(WIZARD) || defined(DEBUG)
     if (!non_death && crawl_state.disables[DIS_DEATH])

@@ -1316,7 +1316,6 @@ int acquirement_create_item(object_class_type class_wanted,
         // Temporarily mark the type as ID'd for the purpose of checking if
         // it is a hated brand (this addresses, e.g., Elyvilon followers
         // immediately identifying evil weapons).
-        // Note that Xom will happily give useless items!
         int oldflags = acq_item.flags;
         acq_item.flags |= ISFLAG_KNOW_TYPE;
         if ((is_useless_item(acq_item, false))

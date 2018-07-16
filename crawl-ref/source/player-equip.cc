@@ -209,9 +209,7 @@ static void _equip_artefact_effect(item_def &item, bool *show_msgs, bool unmeld,
         if (entry->world_reacts_func)
             you.unrand_reacts.set(slot);
     }
-
-    const bool alreadyknown = item_type_known(item);
-    const bool dangerous    = player_in_a_dangerous_place();
+	
     const bool msg          = !show_msgs || *show_msgs;
 
     artefact_properties_t  proprt;

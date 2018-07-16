@@ -30,6 +30,7 @@
 #include "spl-book.h"
 #include "spl-util.h"
 #include "state.h"
+#include "xom.h"
 
 #define MIN_START_STAT       3
 
@@ -260,6 +261,8 @@ static void _give_items_skills(const newgame_def& ng)
         you.religion = GOD_XOM;
         you.piety = 100;
         you.gift_timeout = max(5, random2(40) + random2(40));
+        you.attribute[ATTR_XOM_GIFT_XP] = 1;
+        you.attribute[ATTR_XOM_MUT_XP] = 1;
 
         if (species_apt(SK_ARMOUR) < species_apt(SK_DODGING))
             you.skills[SK_DODGING]++;
