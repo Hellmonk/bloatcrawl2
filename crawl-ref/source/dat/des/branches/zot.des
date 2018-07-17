@@ -2222,8 +2222,8 @@ SUBST:    C = X:90 c
 # 1/4 times, lower the chance of forced traps to enter the first chambers,
 # but provide some statues between the first and second chambers instead.
 SHUFFLE:  ABab / .... / .... / ....
-SUBST:    A = ..... B = ..
-SUBST:    a = .. b = 6G
+SUBST:    A = ...., B = ..
+SUBST:    a = ., b = 6G
 
 ## monsters
 MONS:     patrolling orb guardian, killer klown, electric golem, orb of fire

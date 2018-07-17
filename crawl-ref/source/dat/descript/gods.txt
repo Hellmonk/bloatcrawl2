@@ -458,11 +458,11 @@ precision and damage for as long as they keep using martial attacks.
 %%%%
 Xom powers
 
-To worship Xom is to live riskily. In a good mood Xom may shower worshippers
-with gifts, while at other times this capricious god could decide to “spice
-things up a little” and send worshippers to their doom. If such toys of Xom
-prove to be interesting, so much the better; if not, well, there'll be other
-playthings...
+To worship Xom is to live riskily. Xom will shower worshippers with gifts,
+often of questionable utility, and frequently shuffles their mutations, 
+though not always for the better. Xom also may intervene in combat, especially
+when large numbers of opponents are involved, with wild and unpredictable 
+results.
 %%%%
 Yredelemnul powers
 
