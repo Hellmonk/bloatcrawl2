@@ -490,7 +490,8 @@ bool xp_penance(god_type god)
            && (god == GOD_ASHENZARI
                || god == GOD_GOZAG
                || god == GOD_HEPLIAKLQANA
-               || god == GOD_PAKELLAS);
+               || god == GOD_PAKELLAS
+               || god == GOD_XOM);
 }
 
 void dec_penance(god_type god, int val)
@@ -2555,6 +2556,9 @@ void excommunication(bool voluntary, god_type new_god)
 
     if (old_god == GOD_ASHENZARI)
         ash_init_bondage(&you);
+	
+    if (old_god == GOD_XOM)
+        xom_mutate_player(true);
 
     you.num_current_gifts[old_god] = 0;
 

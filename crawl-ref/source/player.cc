@@ -2620,7 +2620,7 @@ static void _handle_god_wrath(int exp)
 
 static void _handle_xom_effects(int exp)
 {
-    if(!you_worship(GOD_XOM) && !active_penance(GOD_XOM))
+    if(!you_worship(GOD_XOM))
         return;
     you.attribute[ATTR_XOM_MUT_XP] -= exp;
 	you.attribute[ATTR_XOM_GIFT_XP] -= exp;

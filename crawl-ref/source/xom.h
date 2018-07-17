@@ -92,7 +92,7 @@ void xom_take_action(xom_event_type action, int sever);
 void xom_death_message(const kill_method_type killed_by);
 void xom_new_level_effect();
 void give_xom_gift(int acq_chance);
-void xom_mutate_player();
+void xom_mutate_player(bool penance = false);
 bool xom_wants_to_help(monster* mon);
 
 string xom_effect_to_name(xom_event_type effect);

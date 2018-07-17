@@ -1131,7 +1131,7 @@ static void _xom_animate_monster_weapon(int sever)
     dancing->colour = mitm[wpn].get_colour();
 }
 
-static void _xom_shuffle_mutations()
+static void _xom_shuffle_mutations(bool penance)
 {
     if (!you.can_safely_mutate())
         return;
@@ -1157,8 +1157,8 @@ static void _xom_shuffle_mutations()
 
     for (int i = num_tries; i > 0; --i)
     {
-        if (!mutate(RANDOM_MUTATION,
-                    coinflip() ? "Xom's grace" : "Xom's mischief",
+        if (!mutate(penance ? RANDOM_BAD_MUTATION : RANDOM_MUTATION,
+                    penance ?  "Xom's mischief" : "Xom's grace",
                     failMsg, false, true, false, MUTCLASS_NORMAL))
         {
             failMsg = false;
@@ -1983,16 +1983,16 @@ static xom_event_type _xom_choose_random_action(int sever)
         100, XOM_BAD_ENCHANT_MONSTER,
         mon_nearby(_mon_valid_blink_victim) ? 100 : 0, XOM_BAD_BLINK_MONSTERS,
         _rearrangeable_pieces().size() ? 50 : 0, XOM_BAD_SWAP_MONSTERS,
-        30, XOM_BAD_MISCAST_MAJOR,
         30 + sever / 5, XOM_BAD_POLYMORPH,
         20, XOM_BAD_CONFUSION,
         30 + sever / 5, XOM_BAD_SUMMON_HOSTILES,
-        10 + sever / 5, XOM_BAD_MISCAST_CRITICAL,
+        10, XOM_BAD_MISCAST_MAJOR,
         10, XOM_BAD_DRAINING,
         10, XOM_BAD_STATLOSS,
         10, XOM_BAD_TORMENT,
         5,  XOM_BAD_CHAOS_UPGRADE,
-        5,  XOM_BAD_CHAOS_CLOUD);
+        5,  XOM_BAD_CHAOS_CLOUD,
+        1 + sever / 5, XOM_BAD_MISCAST_CRITICAL);
 
     return action;
 }
@@ -2300,9 +2300,11 @@ bool xom_wants_to_help(monster* mon)
 
 //delete all the player's mutations and give them a bunch of new ones
 //set the timeout on this effect to somewhat over 1 level's worth of exp
-void xom_mutate_player()
+void xom_mutate_player(bool penance)
 {
-    _xom_shuffle_mutations();
+    _xom_shuffle_mutations(penance);
+    if(penance)
+        return;
     you.attribute[ATTR_XOM_MUT_XP] +=
         ((10 + random2(10)) * (exp_needed(you.experience_level + 1) 
                 - exp_needed(you.experience_level))) / 10;
