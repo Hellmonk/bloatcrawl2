@@ -224,7 +224,7 @@ void xom_tick()
             sever += mons_threat_level(*mons) * 2 + 1;
     }
 	
-    if (!x_chance_in_y(sever, 100 + sever))
+    if (!x_chance_in_y(sever, 150 + sever))
         return;
 
     xom_acts(sever);
