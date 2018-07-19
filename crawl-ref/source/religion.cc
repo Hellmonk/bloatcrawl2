@@ -3394,7 +3394,9 @@ static void _join_trog()
 static void _join_xom()
 {
     if(!you.attribute[ATTR_XOM_MUT_XP])
-        xom_mutate_player();
+        you.attribute[ATTR_XOM_MUT_XP] = 20 * you.experience_level;
+    if(!you.attribute[ATTR_XOM_GIFT_XP])
+        you.attribute[ATTR_XOM_GIFT_XP] = 20 * you.experience_level;
 }
 
 // Setup for joining the orderly ascetics of Zin.

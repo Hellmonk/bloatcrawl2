@@ -224,7 +224,7 @@ void xom_tick()
             sever += mons_threat_level(*mons) * 2 + 1;
     }
 	
-    if (!x_chance_in_y(sever, 500))
+    if (!x_chance_in_y(sever, 100 + sever))
         return;
 
     xom_acts(sever);
@@ -2267,8 +2267,8 @@ void xom_new_level_effect()
                 break;
 		}
         you.attribute[ATTR_XOM_GIFT_XP] +=
-        (exp_needed(you.experience_level + 1) 
-                - exp_needed(you.experience_level)) / (1 + random2(8));
+        2 * (exp_needed(you.experience_level + 1) 
+                - exp_needed(you.experience_level)) / (1 + random2(4));
 	}
     else if(one_chance_in(10))
     {
@@ -2286,7 +2286,7 @@ void give_xom_gift(int acq_chance)
         _xom_random_item(5 + random2(you.experience_level* 7));
     you.attribute[ATTR_XOM_GIFT_XP] +=
         2 * (exp_needed(you.experience_level + 1) 
-                - exp_needed(you.experience_level)) / (1 + random2(min(you.experience_level, 9)));
+                - exp_needed(you.experience_level)) / (1 + random2(min(you.experience_level, 4)));
 }
 
 bool xom_wants_to_help(monster* mon)
@@ -2307,7 +2307,7 @@ void xom_mutate_player(bool penance)
         return;
     you.attribute[ATTR_XOM_MUT_XP] +=
         ((10 + random2(10)) * (exp_needed(you.experience_level + 1) 
-                - exp_needed(you.experience_level))) / 10;
+                - exp_needed(you.experience_level))) / 4;
 }
 
 static const map<xom_event_type, xom_event> xom_events = {
