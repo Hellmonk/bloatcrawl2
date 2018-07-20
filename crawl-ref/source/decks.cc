@@ -2435,20 +2435,16 @@ void shuffle_all_decks_on_level()
     }
 }
 
-static bool _shuffle_inventory_decks()
+static bool _delete_inventory_decks()
 {
     bool success = false;
 
-    for (auto &item : you.inv)
+    for (int slot = 0; slot < ENDOFPACK; ++slot)
     {
+        item_def& item = you.inv[slot];
         if (item.defined() && is_deck(item))
         {
-#ifdef DEBUG_DIAGNOSTICS
-            mprf(MSGCH_DIAGNOSTICS, "Shuffling in inventory: %s",
-                 item.name(DESC_PLAIN).c_str());
-#endif
-            _shuffle_deck(item);
-
+            dec_inv_item_quantity(slot, 1);
             success = true;
         }
     }
@@ -2459,10 +2455,10 @@ static bool _shuffle_inventory_decks()
 void nemelex_shuffle_decks()
 {
     add_daction(DACT_SHUFFLE_DECKS);
-    _shuffle_inventory_decks();
+    _delete_inventory_decks();
 
     // Wildly inaccurate, but of similar quality as the old code which
     // was triggered by the presence of any deck anywhere.
     if (you.num_total_gifts[GOD_NEMELEX_XOBEH])
-        god_speaks(GOD_NEMELEX_XOBEH, "You hear Nemelex Xobeh chuckle.");
+        god_speaks(GOD_NEMELEX_XOBEH, "Nemelex Xobeh reclaims your decks.");
 }
