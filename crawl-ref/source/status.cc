@@ -777,6 +777,16 @@ bool fill_status_info(int status, status_info* inf)
         break;
     }
 	
+    case STATUS_SHROUD:
+    {
+        if(you.get_mutation_level(MUT_SLIME_SHROUD)
+                && !you.duration[DUR_SHROUD_TIMEOUT])
+        {
+            inf->light_text = "Shroud";
+            inf->light_colour = GREEN;
+        }
+    }
+	
     case STATUS_PIERCING_SHOT:
     {
         if(you.attribute[ATTR_PIERCING_SHOT])

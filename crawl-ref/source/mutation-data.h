@@ -2054,6 +2054,14 @@ static const mutation_def mut_data[] =
   {"You don't feel like having a drink anymore.", "", ""},
 },
 
+{ MUT_SLIME_SHROUD, 0, 1, mutflag::GOOD | mutflag::JIYVA, true,
+  "slime shroud",
+
+  {"A fragile, slimy shroud covers you, deflecting attacks.", "", ""},
+  {"A thin film of slime covers your body.", "", ""},
+  {"Your film of slime dries up.", "", ""},
+},
+
 { MUT_OUT_OF_LOS_HPREGEN, 0, 2, mutflag::GOOD | mutflag::JIYVA, true,
   "jiyva regeneration",
 
