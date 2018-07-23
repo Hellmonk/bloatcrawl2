@@ -4614,7 +4614,7 @@ static int _upheaval_radius(int pow)
 
 spret_type qazlal_upheaval(coord_def target, bool quiet, bool fail)
 {
-    int pow = you.skill(SK_INVOCATIONS, 9);
+    int pow = you.skill(SK_INVOCATIONS, 7);
     const int max_radius = _upheaval_radius(pow);
 
     bolt beam;
@@ -4899,7 +4899,7 @@ bool qazlal_disaster_area()
     bool friendlies = false;
     vector<coord_def> targets;
     vector<int> weights;
-    const int pow = you.skill(SK_INVOCATIONS, 8);
+    const int pow = you.skill(SK_INVOCATIONS, 7);
     const int upheaval_radius = _upheaval_radius(pow);
     for (radius_iterator ri(you.pos(), LOS_RADIUS, C_SQUARE, LOS_NO_TRANS, true);
          ri; ++ri)
