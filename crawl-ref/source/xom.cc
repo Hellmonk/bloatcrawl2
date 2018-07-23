@@ -790,7 +790,7 @@ static void _xom_do_potion(int /*sever*/)
 
     _note_potion_effect(pot);
 
-    get_potion_effect(pot)->effect(true, 150);
+    get_potion_effect(pot)->effect(true, 80);
 }
 
 static void _confuse_monster(monster* mons, int sever)
@@ -1668,7 +1668,7 @@ bool move_stair(coord_def stair_pos, bool away, bool allow_under)
 
 static void _xom_cloud_trail(int /*sever*/)
 {
-    you.duration[DUR_CLOUD_TRAIL] = random_range(600, 1200);
+    you.duration[DUR_CLOUD_TRAIL] = random_range(300, 600);
     you.props[XOM_CLOUD_TRAIL_TYPE_KEY] =
         // 80% chance of a useful trail
         random_choose_weighted(20, CLOUD_CHAOS,
@@ -1837,7 +1837,7 @@ static void _xom_cleaving(int sever)
 {
     god_speaks(GOD_XOM, _get_xom_speech("cleaving").c_str());
 
-    you.increase_duration(DUR_CLEAVE, 10 + random2(sever));
+    you.increase_duration(DUR_CLEAVE, 5 + random2(sever));
 
     if (const item_def* const weapon = you.weapon())
     {
