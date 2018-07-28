@@ -1133,7 +1133,7 @@ static const mutation_def mut_data[] =
 
   {"A frigid envelope surrounds you and freezes all who hurt you.", "", ""},
   {"Your skin feels very cold.", "", ""},
-  {"", "", ""},
+  {"Your skin warms up.", "", ""},
 },
 
 { MUT_NIGHTSTALKER, 0, 3, mutflag::GOOD, false,
