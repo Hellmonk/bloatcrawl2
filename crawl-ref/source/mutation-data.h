@@ -992,8 +992,8 @@ static const mutation_def mut_data[] =
   "magic attunement",
 
   {"Your non-sustained spells cost 1 less MP to cast", "", ""},
-  {"", "", ""},
-  {"", "", ""},
+  {"You feel more efficient with your magic.", "", ""},
+  {"You feel less efficient with your magic.", "", ""},
 },
 
 { MUT_SHAGGY_FUR, 4, 1, mutflag::GOOD, true,
