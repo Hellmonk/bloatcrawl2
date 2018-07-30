@@ -2957,7 +2957,7 @@ void melee_attack::do_passive_freeze()
         if (!hurted)
             return;
 
-        auto message = make_stringf(" is very cold (%s).", hurted);
+        auto message = make_stringf(" is very cold (%d).", hurted).c_str();
         simple_monster_message(*mon, message);
 
 #ifndef USE_TILE_LOCAL
