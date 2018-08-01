@@ -3133,7 +3133,7 @@ int choose_ability_menu(const vector<talent>& talents)
                                 "Cost                          Failure",
                                 "Ability - describe what?            "
                                 "Cost                          Failure",
-                                MEL_TITLE));
+                                MEL_TITLE), true, true);
 #endif
     abil_menu.set_tag("ability");
     abil_menu.add_toggle_key('!');
