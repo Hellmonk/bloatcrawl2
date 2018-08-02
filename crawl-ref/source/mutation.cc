@@ -1602,6 +1602,7 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
 
         case MUT_LOW_MAGIC:
         case MUT_HIGH_MAGIC:
+        case MUT_EXTRA_MP:
             calc_mp();
             break;
 
