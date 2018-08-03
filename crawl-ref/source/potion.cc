@@ -795,9 +795,11 @@ public:
         int remove_mutations = random_range(MIN_REMOVED, MAX_REMOVED);
         int add_mutations = random_range(MIN_ADDED, MAX_ADDED);
 
-        // Remove mutations.
-        for (int i = 0; i < remove_mutations; i++)
-            mutated |= delete_mutation(RANDOM_MUTATION, "potion of mutation", false);
+        // Remove mutations (except Jiyva worshippers)
+        if (!you_worship(GOD_JIYVA)) {
+            for (int i = 0; i < remove_mutations; i++)
+                mutated |= delete_mutation(RANDOM_MUTATION, "potion of mutation", false);
+        }
         // Add mutations.
         for (int i = 0; i < add_mutations; i++)
             mutated |= mutate(RANDOM_MUTATION, "potion of mutation", false);
