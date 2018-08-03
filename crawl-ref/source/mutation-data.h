@@ -992,8 +992,8 @@ static const mutation_def mut_data[] =
   "magic attunement",
 
   {"Your non-sustained spells cost 1 less MP to cast", "", ""},
-  {"", "", ""},
-  {"", "", ""},
+  {"You feel more efficient with your magic.", "", ""},
+  {"You feel less efficient with your magic.", "", ""},
 },
 
 { MUT_SHAGGY_FUR, 4, 1, mutflag::GOOD, true,
@@ -1133,7 +1133,7 @@ static const mutation_def mut_data[] =
 
   {"A frigid envelope surrounds you and freezes all who hurt you.", "", ""},
   {"Your skin feels very cold.", "", ""},
-  {"", "", ""},
+  {"Your skin warms up.", "", ""},
 },
 
 { MUT_NIGHTSTALKER, 0, 3, mutflag::GOOD, false,
