@@ -2804,9 +2804,10 @@ item_def* monster_die(monster* mons, killer_type killer,
             //the genius hack
             mons->heal(9999);
             if(you.where_are_you == BRANCH_DUNGEON && you.depth == 1)
-                move_companion_to(mons, level_id(BRANCH_ZOT, 5));
+                mons->set_transit(level_id(BRANCH_ZOT,5));
             else
-                move_companion_to(mons, level_id(BRANCH_DUNGEON, 1));
+                mons->set_transit(level_id(BRANCH_DUNGEON,1));
+            mons->destroy_inventory();
             if (!you.can_see(*mons))
             {
                 mprf("Your enslaved soul has left this plane.");
