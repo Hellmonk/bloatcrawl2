@@ -51,6 +51,7 @@ template<class Target, class... Args>
 class Slot<Target, bool (Args...)>
 {
 public:
+    ~Slot() { alive = false; }
     typedef function<bool (Args...)> HandlerSig;
     typedef multimap<Target*, HandlerSig> HandlerMap;
     bool emit(Target *target, Args&... args)
@@ -71,9 +72,11 @@ public:
     }
     void remove_by_target(Target *target)
     {
-        handlers.erase(target);
+        if (alive)
+            handlers.erase(target);
     }
 protected:
+    bool alive {true};
     HandlerMap handlers;
 };
 
