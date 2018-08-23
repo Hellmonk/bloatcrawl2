@@ -806,7 +806,7 @@ void CLua::init_lua()
     lua_register(_state, "loadfile", _clua_loadfile);
     lua_register(_state, "dofile", _clua_dofile);
 
-    lua_register(_state, "require", _clua_require);
+    lua_register(_state, "crawl_require", _clua_require);
 
     execfile("dlua/util.lua", true, true);
     execfile("dlua/iter.lua", true, true);
