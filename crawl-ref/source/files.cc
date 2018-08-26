@@ -118,7 +118,7 @@ static void _ghost_dprf(const char *format, ...)
 
 static void _save_level(const level_id& lid);
 
-static bool _ghost_version_compatible(reader &ghost_reader);
+static bool _ghost_version_compatible(save_version &version);
 
 static bool _restore_tagged_chunk(package *save, const string &name,
                                   tag_type tag, const char* complaint);
@@ -1819,8 +1819,9 @@ static vector<string> _list_bones()
     vector<string> filenames = get_dir_files(bonefile_dir);
     vector<string> bonefiles;
     for (const auto &filename : filenames)
-        if (starts_with(filename, underscored_filename))
-	{
+        if (starts_with(filename, underscored_filename)
+                                            && !ends_with(filename, ".backup"))
+        {
             bonefiles.push_back(bonefile_dir + filename);
             _ghost_dprf("bonesfile %s", (bonefile_dir + filename).c_str());
         }
@@ -1848,58 +1849,198 @@ static string _find_ghost_file()
     return bonefiles[ui_random(bonefiles.size())];
 }
 
-static vector<ghost_demon> _load_ghost_vec(bool creating_level)
+static string _old_bones_filename(string ghost_filename, const save_version &v)
+{
+    // TODO: a way of looking for any backup with a version earlier than v
+    if (ends_with(ghost_filename, ".backup"))
+        return ghost_filename; // already an old bones file
+
+    string new_filename = make_stringf("%s-v%d.%d.backup", ghost_filename.c_str(),
+                                        v.major, v.minor);
+    return new_filename;
+}
+
+static bool _backup_bones_for_upgrade(string ghost_filename, save_version &v)
+{
+    // Copy the bones file to a versioned name, so that non-upgraded saves can
+    // load it. Copying would be cleaner with c++ ios stuff, but we need to
+    // interact with the lock system.
+
+    if (ghost_filename.empty())
+        return false;
+    if (ends_with(ghost_filename, ".backup"))
+        return false; // already an old bones file
+
+    string upgrade_filename = _old_bones_filename(ghost_filename, v);
+    if (file_exists(upgrade_filename))
+        return false;
+    _ghost_dprf("Backing up bones file %s to %s before upgrade to %d.%d",
+                            ghost_filename.c_str(), upgrade_filename.c_str(),
+                            save_version::current().major,
+                            save_version::current().minor);
+
+    FILE *backup_src = lk_open("rb", ghost_filename);
+    if (!backup_src)
+    {
+        mprf(MSGCH_ERROR, "Bones file to back up doesn't exist: %s",
+            ghost_filename.c_str());
+        return false;
+    }
+    FILE *backup_target = lk_open("wb", upgrade_filename);
+    if (!backup_target)
+    {
+        mprf(MSGCH_ERROR, "Unable to open bones backup file %s for writing",
+            upgrade_filename.c_str());
+        lk_close(backup_src, ghost_filename);
+        return false;
+    }
+
+    char buf[BUFSIZ];
+
+    size_t size;
+    while ((size = fread(buf, sizeof(char), BUFSIZ, backup_src)) > 0)
+        fwrite(buf, sizeof(char), size, backup_target);
+
+    lk_close(backup_target, upgrade_filename);
+
+    if (!feof(backup_src))
+    {
+        mprf(MSGCH_ERROR, "Error backing up bones file to %s",
+                                                    upgrade_filename.c_str());
+        if (unlink(upgrade_filename.c_str()) != 0)
+        {
+            mprf(MSGCH_ERROR,
+                "Failed to unlink probably corrupt bones file: %s",
+                upgrade_filename.c_str());
+        }
+        lk_close(backup_src, ghost_filename);
+        return false;
+    }
+    lk_close(backup_src, ghost_filename);
+    return true;
+}
+
+static save_version _read_ghost_header(reader &inf)
+{
+    auto version = get_save_version(inf);
+    if (!version.valid())
+        return version;
+
+    try
+    {
+        // Check for the DCSS ghost signature.
+        if (unmarshallShort(inf) != GHOST_SIGNATURE)
+            return save_version(); // version was valid, but this isn't a bones file
+
+        // Discard three more 32-bit words of padding.
+        inf.read(nullptr, 3*4);
+    }
+    catch (short_read_exception &E)
+    {
+        mprf(MSGCH_ERROR,
+             "Ghost file \"%s\" seems to be invalid (short read); deleting it.",
+             inf.filename().c_str());
+        return save_version();
+    }
+    return version;
+}
+
+static vector<ghost_demon> _load_bones_file(string filename)
 {
     vector<ghost_demon> result;
 
-    const string ghost_filename = _find_ghost_file();
-    if (ghost_filename.empty())
-    {
-        _ghost_dprf("%s", "No ghost files for this level.");
-        return result; // no such ghost.
-    }
-
-    reader inf(ghost_filename);
+    reader inf(filename);
     if (!inf.valid())
     {
-        _ghost_dprf("Ghost file '%s' invalid before read.", ghost_filename.c_str());
+        // file doesn't exist
+        _ghost_dprf("Ghost file '%s' invalid before read.", filename.c_str());
         return result;
     }
 
     inf.set_safe_read(true); // don't die on 0-byte bones
-    if (_ghost_version_compatible(inf))
+
+    save_version version = _read_ghost_header(inf);
+    if (!_ghost_version_compatible(version))
     {
-        try
-        {
-            result = tag_read_ghosts(inf);
-            inf.fail_if_not_eof(ghost_filename);
-        }
-        catch (short_read_exception &short_read)
-        {
-            mprf(MSGCH_ERROR, "Broken bones file: %s",
-                 ghost_filename.c_str());
-        }
+        string error = "Incompatible bones file: " + filename;
+        throw corrupted_save(error, version);
+    }
+    inf.setMinorVersion(version.minor);
+    if (version.is_past())
+        _backup_bones_for_upgrade(filename, version);
+
+    try
+    {
+        result = tag_read_ghosts(inf);
+        inf.fail_if_not_eof(filename);
+    }
+    catch (short_read_exception &short_read)
+    {
+        string error = "Broken bones file: " + filename;
+        throw corrupted_save(error, version);
     }
     inf.close();
 
-    // Remove bones file - ghosts are hardly permanent.
-    if (unlink(ghost_filename.c_str()) != 0)
-    {
-        mprf(MSGCH_ERROR, "Failed to unlink bones file: %s",
-                ghost_filename.c_str());
-    }
-
     if (!debug_check_ghosts(result))
     {
-        mprf(MSGCH_DIAGNOSTICS,
-             "Refusing to load buggy ghost from file \"%s\"!",
-             ghost_filename.c_str());
-        result.clear();
-        return result;
+        string error = "Bones file is buggy: " + filename;
+        throw corrupted_save(error, version);
     }
-
     return result;
+}
 
+
+static vector<ghost_demon> _load_ghost_vec(bool creating_level)
+{
+    vector<ghost_demon> results;
+
+    const string filename = _find_ghost_file();
+    if (filename.empty())
+    {
+        _ghost_dprf("%s", "No ghost files for this level.");
+        return results; // no such ghost.
+    }
+    try
+    {
+        results = _load_bones_file(filename);
+    }
+    catch (corrupted_save &err)
+    {
+        // not a corrupted save per se, just from the future. Try to load the
+        // versioned bones file if it exists.
+        if (err.version.valid() && err.version.is_future())
+        {
+            string old_bones =
+                        _old_bones_filename(filename, save_version::current());
+            if (old_bones != filename)
+            {
+                _ghost_dprf("Loading ghost from backup bones file %s",
+                                                        old_bones.c_str());
+                return _load_bones_file(old_bones);
+            }
+            else
+                mprf(MSGCH_ERROR, "Mismatch between bones backup "
+                    "filename '%s' and version %d.%d!", filename.c_str(),
+                    err.version.major, err.version.minor);
+            // intentional fallthrough -- unlink the misnamed file
+        }
+        else
+            mprf(MSGCH_ERROR, "%s", err.what());
+        string report;
+        // if we get to this point the bones file is unreadable and needs to
+        // be scrapped
+        if (unlink(filename.c_str()) != 0)
+            report = "Failed to unlink bad bones file";
+        else
+            report = "Clearing bad bones file";
+        mprf(MSGCH_ERROR, "%s: %s", report.c_str(), filename.c_str());
+    }
+    if (unlink(filename.c_str()) != 0)
+    {
+        mprf(MSGCH_ERROR, "Failed to unlink bones file: %s",
+                filename.c_str());
+    }
+    return results;
 }
 
 /**
@@ -2189,7 +2330,7 @@ level_excursion::~level_excursion()
     }
 }
 
-bool get_save_version(reader &file, int &major, int &minor)
+save_version get_save_version(reader &file)
 {
     // Read first two bytes.
     uint8_t buf[2];
@@ -2200,14 +2341,10 @@ bool get_save_version(reader &file, int &major, int &minor)
     catch (short_read_exception& E)
     {
         // Empty file?
-        major = minor = -1;
-        return false;
+        return save_version(-1, -1);
     }
 
-    major = buf[0];
-    minor = buf[1];
-
-    return true;
+    return save_version(buf[0], buf[1]);
 }
 
 static bool _convert_obsolete_species()
@@ -2309,18 +2446,20 @@ static bool _read_char_chunk(package *save)
 
 static bool _tagged_chunk_version_compatible(reader &inf, string* reason)
 {
-    int major = 0, minor = TAG_MINOR_INVALID;
     ASSERT(reason);
 
-    if (!get_save_version(inf, major, minor))
+    save_version version = get_save_version(inf);
+
+    if (!version.valid())
     {
-        *reason = "File is corrupt.";
+        *reason = make_stringf("File is corrupt (found version %d,%d).",
+                                version.major, version.minor);
         return false;
     }
 
-    if (major != TAG_MAJOR_VERSION
+    if (version.major != TAG_MAJOR_VERSION
 #if TAG_MAJOR_VERSION == 34
-        && (major != 33 || minor != 17)
+        && (version.major != 33 || version.minor != 17)
 #endif
        )
     {
@@ -2334,27 +2473,20 @@ static bool _tagged_chunk_version_compatible(reader &inf, string* reason)
         else
         {
             *reason = make_stringf("Major version mismatch: %d (want %d).",
-                                   major, TAG_MAJOR_VERSION);
+                                   version.major, TAG_MAJOR_VERSION);
         }
         return false;
     }
 
-    if (minor < 0)
-    {
-        *reason = make_stringf("Minor version %d is negative!",
-                               minor);
-        return false;
-    }
-
-    if (minor > TAG_MINOR_VERSION)
+    if (version.minor > TAG_MINOR_VERSION)
     {
         *reason = make_stringf("Minor version mismatch: %d (want <= %d). "
                                "The save is from a newer version.",
-                               minor, TAG_MINOR_VERSION);
+                               version.minor, TAG_MINOR_VERSION);
         return false;
     }
 
-    inf.setMinorVersion(minor);
+    inf.setMinorVersion(version.minor);
     return true;
 }
 
@@ -2388,36 +2520,16 @@ static bool _restore_tagged_chunk(package *save, const string &name,
     return true;
 }
 
-static bool _ghost_version_compatible(reader &inf)
+static bool _ghost_version_compatible(save_version &version)
 {
-    try
+    if (!version.valid())
+        return false;
+    if (version.major != TAG_MAJOR_VERSION
+        || version.minor > TAG_MINOR_VERSION)
     {
-        const int majorVersion = unmarshallUByte(inf);
-        const int minorVersion = unmarshallUByte(inf);
-
-        if (majorVersion != TAG_MAJOR_VERSION
-            || minorVersion > TAG_MINOR_VERSION)
-        {
-            dprf("Ghost version mismatch: ghost was %d.%d; wanted %d.%d",
-                 majorVersion, minorVersion,
-                 TAG_MAJOR_VERSION, TAG_MINOR_VERSION);
-            return false;
-        }
-
-        inf.setMinorVersion(minorVersion);
-
-        // Check for the DCSS ghost signature.
-        if (unmarshallShort(inf) != GHOST_SIGNATURE)
-            return false;
-
-        // Discard three more 32-bit words of padding.
-        inf.read(nullptr, 3*4);
-    }
-    catch (short_read_exception &E)
-    {
-        mprf(MSGCH_ERROR,
-             "Ghost file \"%s\" seems to be invalid (short read); deleting it.",
-             inf.filename().c_str());
+        dprf("Ghost version mismatch: ghost was %d.%d; wanted %d.%d",
+             version.major, version.minor,
+             TAG_MAJOR_VERSION, TAG_MINOR_VERSION);
         return false;
     }
     return true;
