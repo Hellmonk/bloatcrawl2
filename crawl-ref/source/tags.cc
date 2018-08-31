@@ -6830,6 +6830,7 @@ static void unmarshallSpells(reader &th, monster_spells &spells
 
 static void marshallGhost(writer &th, const ghost_demon &ghost)
 {
+    // save compat changes with minor tags here must be added to bones_minor_tags
     marshallString(th, ghost.name);
 
     marshallShort(th, ghost.species);
@@ -6857,6 +6858,7 @@ static void marshallGhost(writer &th, const ghost_demon &ghost)
 
 static ghost_demon unmarshallGhost(reader &th)
 {
+    // save compat changes with minor tags here must be added to bones_minor_tags
     ghost_demon ghost;
 
     ghost.name             = unmarshallString(th);

@@ -118,7 +118,7 @@ static void _ghost_dprf(const char *format, ...)
 
 static void _save_level(const level_id& lid);
 
-static bool _ghost_version_compatible(save_version &version);
+static bool _ghost_version_compatible(const save_version &version);
 
 static bool _restore_tagged_chunk(package *save, const string &name,
                                   tag_type tag, const char* complaint);
@@ -828,8 +828,10 @@ string get_prefs_filename()
 
 static void _write_ghost_version(writer &outf)
 {
-    marshallUByte(outf, TAG_MAJOR_VERSION);
-    marshallUByte(outf, TAG_MINOR_VERSION);
+    // this may be distinct from the current save version
+    auto bones_version = save_version::current_bones();
+    marshallUByte(outf, bones_version.major);
+    marshallUByte(outf, bones_version.minor);
 
     // extended_version just pads the version out to four 32-bit words.
     // This makes the bones file compatible with Hearse with no extra
@@ -1876,8 +1878,8 @@ static bool _backup_bones_for_upgrade(string ghost_filename, save_version &v)
         return false;
     _ghost_dprf("Backing up bones file %s to %s before upgrade to %d.%d",
                             ghost_filename.c_str(), upgrade_filename.c_str(),
-                            save_version::current().major,
-                            save_version::current().minor);
+                            save_version::current_bones().major,
+                            save_version::current_bones().minor);
 
     FILE *backup_src = lk_open("rb", ghost_filename);
     if (!backup_src)
@@ -1926,6 +1928,18 @@ static save_version _read_ghost_header(reader &inf)
     if (!version.valid())
         return version;
 
+#if TAG_MAJOR_VERSION == 34
+    // downgrade bones files saved before the bones sub-versioning system
+    if (version > save_version::current_bones() && version.is_compatible())
+    {
+        _ghost_dprf("Setting bones file version from %d.%d to %d.%d on load",
+            version.major, version.minor,
+            save_version::current_bones().major,
+            save_version::current_bones().minor);
+        version = save_version::current_bones();
+    }
+#endif
+
     try
     {
         // Check for the DCSS ghost signature.
@@ -1942,18 +1956,19 @@ static save_version _read_ghost_header(reader &inf)
              inf.filename().c_str());
         return save_version();
     }
+
     return version;
 }
 
-static vector<ghost_demon> _load_bones_file(string filename)
+static vector<ghost_demon> _load_bones_file(string ghost_filename)
 {
     vector<ghost_demon> result;
 
-    reader inf(filename);
+    reader inf(ghost_filename);
     if (!inf.valid())
     {
         // file doesn't exist
-        _ghost_dprf("Ghost file '%s' invalid before read.", filename.c_str());
+        _ghost_dprf("Ghost file '%s' invalid before read.", ghost_filename.c_str());
         return result;
     }
 
@@ -1962,28 +1977,28 @@ static vector<ghost_demon> _load_bones_file(string filename)
     save_version version = _read_ghost_header(inf);
     if (!_ghost_version_compatible(version))
     {
-        string error = "Incompatible bones file: " + filename;
+        string error = "Incompatible bones file: " + ghost_filename;
         throw corrupted_save(error, version);
     }
     inf.setMinorVersion(version.minor);
-    if (version.is_past())
-        _backup_bones_for_upgrade(filename, version);
+    if (version < save_version::current_bones())
+        _backup_bones_for_upgrade(ghost_filename, version);
 
     try
     {
         result = tag_read_ghosts(inf);
-        inf.fail_if_not_eof(filename);
+        inf.fail_if_not_eof(ghost_filename);
     }
     catch (short_read_exception &short_read)
     {
-        string error = "Broken bones file: " + filename;
+        string error = "Broken bones file: " + ghost_filename;
         throw corrupted_save(error, version);
     }
     inf.close();
 
     if (!debug_check_ghosts(result))
     {
-        string error = "Bones file is buggy: " + filename;
+        string error = "Bones file is buggy: " + ghost_filename;
         throw corrupted_save(error, version);
     }
     return result;
@@ -2343,7 +2358,6 @@ save_version get_save_version(reader &file)
         // Empty file?
         return save_version(-1, -1);
     }
-
     return save_version(buf[0], buf[1]);
 }
 
@@ -2519,7 +2533,7 @@ static bool _restore_tagged_chunk(package *save, const string &name,
     return true;
 }
 
-static bool _ghost_version_compatible(save_version &version)
+static bool _ghost_version_compatible(const save_version &version)
 {
     if (!version.valid())
         return false;
