@@ -81,7 +81,7 @@ protected:
     HandlerMap handlers;
 };
 
-class Widget
+class Widget : public enable_shared_from_this<Widget>
 {
 public:
     enum Align {
@@ -113,6 +113,9 @@ public:
     virtual void _allocate_region();
     void _set_parent(Widget* p);
     Widget* _get_parent() const { return m_parent; };
+    shared_ptr<Widget> get_shared() {
+        return shared_from_this();
+    };
     void _invalidate_sizereq(bool immediate = true);
     void _queue_allocation(bool immediate = true);
     void set_allocation_needed() { alloc_queued = true; };
