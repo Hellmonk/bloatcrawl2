@@ -826,7 +826,7 @@ string get_prefs_filename()
 #endif
 }
 
-static void _write_ghost_version(writer &outf)
+void write_ghost_version(writer &outf)
 {
     // this may be distinct from the current save version
     auto bones_version = save_version::current_bones();
@@ -1922,7 +1922,7 @@ static bool _backup_bones_for_upgrade(string ghost_filename, save_version &v)
     return true;
 }
 
-static save_version _read_ghost_header(reader &inf)
+save_version read_ghost_header(reader &inf)
 {
     auto version = get_save_version(inf);
     if (!version.valid())
@@ -1960,7 +1960,7 @@ static save_version _read_ghost_header(reader &inf)
     return version;
 }
 
-static vector<ghost_demon> _load_bones_file(string ghost_filename)
+vector<ghost_demon> load_bones_file(string ghost_filename, bool backup)
 {
     vector<ghost_demon> result;
 
@@ -1973,15 +1973,14 @@ static vector<ghost_demon> _load_bones_file(string ghost_filename)
     }
 
     inf.set_safe_read(true); // don't die on 0-byte bones
-
-    save_version version = _read_ghost_header(inf);
+    save_version version = read_ghost_header(inf);
     if (!_ghost_version_compatible(version))
     {
         string error = "Incompatible bones file: " + ghost_filename;
         throw corrupted_save(error, version);
     }
     inf.setMinorVersion(version.minor);
-    if (version < save_version::current_bones())
+    if (backup && version < save_version::current_bones())
         _backup_bones_for_upgrade(ghost_filename, version);
 
     try
@@ -2017,7 +2016,7 @@ static vector<ghost_demon> _load_ghost_vec(bool creating_level)
     }
     try
     {
-        results = _load_bones_file(filename);
+        results = load_bones_file(filename, true);
     }
     catch (corrupted_save &err)
     {
@@ -2031,7 +2030,7 @@ static vector<ghost_demon> _load_ghost_vec(bool creating_level)
             {
                 _ghost_dprf("Loading ghost from backup bones file %s",
                                                         old_bones.c_str());
-                return _load_bones_file(old_bones);
+                return load_bones_file(old_bones, false);
             }
             else
                 mprf(MSGCH_ERROR, "Mismatch between bones backup "
@@ -2624,7 +2623,7 @@ void save_ghosts(const vector<ghost_demon> &ghosts, bool force)
 
     writer outw(g_file_name, ghost_file);
 
-    _write_ghost_version(outw);
+    write_ghost_version(outw);
     tag_write_ghosts(outw, ghosts);
 
     lk_close(ghost_file, g_file_name);
