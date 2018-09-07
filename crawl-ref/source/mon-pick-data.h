@@ -437,31 +437,23 @@ static const pop_entry pop_vaults[] =
 };
 
 static const pop_entry pop_crypt[] =
-{ // Crypt (OOD cap: 5)
-  { -3,  3,   70, PEAK, MONS_SHADOW },
-  { -3,  3,   40, PEAK, MONS_WIGHT },
-  { -3,  3,   45, PEAK, MONS_FLYING_SKULL },
-  { -3,  3,   75, SEMI, MONS_NECROMANCER },
-  { -3,  3,   75, SEMI, MONS_DEATH_KNIGHT },
-  { -2,  4,  125, SEMI, MONS_WRAITH },
-  { -1,  5,   75, PEAK, MONS_JIANGSHI },
-  { -1,  5,  125, PEAK, MONS_PHANTASMAL_WARRIOR },
-  { -1,  9,  120, PEAK, MONS_ANCIENT_CHAMPION },
-  {  0,  2,   65, SEMI, MONS_FREEZING_WRAITH },
-  {  0,  5,  125, FLAT, MONS_VAMPIRE_MAGE },
-  {  0,  5,   93, PEAK, MONS_GHOUL },
-  {  0,  5,  105, FLAT, MONS_VAMPIRE_KNIGHT },
-  {  1,  4,   75, FLAT, MONS_SKELETAL_WARRIOR },
-  {  1,  5,   55, SEMI, MONS_SOUL_EATER },
-  {  1,  6,  145, SEMI, MONS_EIDOLON },
-  {  1,  6,   80, SEMI, MONS_DEEP_ELF_DEATH_MAGE },
-  {  1,  7,   85, SEMI, MONS_REVENANT },
-  {  1,  7,   75, SEMI, MONS_CURSE_SKULL },
-  {  2,  5,  145, SEMI, MONS_FLAYED_GHOST },
-  {  2,  5,   95, SEMI, MONS_SHADOW_WRAITH },
-  {  2,  7,   40, SEMI, MONS_REAPER },
-  {  2,  7,   55, PEAK, MONS_LICH },
-  {  3,  7,   15, PEAK, MONS_ANCIENT_LICH },
+{ // Crypt
+  {  1,  1,  150, FLAT, MONS_PHANTASMAL_WARRIOR },
+  {  1,  1,  150, FLAT, MONS_SKELETAL_WARRIOR },
+  {  1,  1,  100, FLAT, MONS_FLYING_SKULL },
+  {  1,  1,  100, SEMI, MONS_SPECTRAL_THING },
+  {  1,  1,   50, FLAT, MONS_JIANGSHI },
+  {  1,  1,   50, FLAT, MONS_REVENANT },
+  {  1,  1,   50, FLAT, MONS_ANCIENT_CHAMPION },
+  {  1,  1,   50, FLAT, MONS_EIDOLON },
+  {  1,  1,   50, FLAT, MONS_VAMPIRE_MAGE },
+  {  1,  1,   50, FLAT, MONS_VAMPIRE_KNIGHT },
+  {  1,  1,   50, FLAT, MONS_FLAYED_GHOST },
+  {  1,  1,   50, FLAT, MONS_SKELETON },
+  {  1,  1,   50, FLAT, MONS_ZOMBIE },
+  {  1,  1,   20, FLAT, MONS_CURSE_SKULL },
+  {  1,  1,   20, FLAT, MONS_LICH },
+  {  1,  1,   10, FLAT, MONS_ANCIENT_LICH },
   { 0,0,0,FLAT,MONS_0 }
 };
 
