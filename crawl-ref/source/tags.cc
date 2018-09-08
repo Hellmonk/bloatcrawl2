@@ -6932,7 +6932,8 @@ static vector<ghost_demon> tag_read_ghost(reader &th)
 
     if (nghosts < 1 || nghosts > MAX_GHOSTS)
     {
-        string error = "Bones file has an invalid ghost count " + nghosts;
+        string error = "Bones file has an invalid ghost count (" +
+                                                    to_string(nghosts) + ")";
         throw corrupted_save(error);
     }
 
