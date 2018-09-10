@@ -1405,29 +1405,27 @@ MONS:   ancient lich
 MONS:   bone dragon
 MONS:   lich
 MONS:   ancient champion
-MONS:   skeletal warrior
+MONS:   skeletal warrior / phantasmal warrior
 MONS:   flying skull
-MONS:   w:20 skeletal warrior / w:50 skeleton / nothing
+MONS:   skeletal warrior / skeleton w:5 / nothing w:5
 # vampire layout
 : elseif brnd > 4 then
-KMONS:  1 = vampire knight / Jory w:5, vampire knight
-KMONS:  2 = phantasmal warrior
-KMONS:  3 = vampire knight w:15 / \
-            dancing weapon ; long sword ego:vampirism ident:type
-KMONS:  4 = vampire mage
-KMONS:  5 = skeletal warrior / phantasmal warrior
-KMONS:  6 = vampire knight w:15 / jiangshi
-KMONS:  7 = vampire knight / skeletal warrior / w:15 zombie / wraith / w:5 nothing
+KMONS:  1 = Jory / vampire knight
+KMONS:  2 = ancient champion
+KMONS:  3 = vampire knight / vampire mage
+KMONS:  4 = phantasmal warrior
+KMONS:  5 = skeletal warrior
+KMONS:  6 = flying skull / jiangshi
+KMONS:  7 = vampire knight / skeletal warrior / spectral thing / nothing
 # ghost layout
 : elseif brnd > 0 then
 MONS:   curse skull
 MONS:   revenant
 MONS:   lich
 MONS:   eidolon / flayed ghost
-MONS:   phantasmal warrior / shadow wraith w:6
+MONS:   phantasmal warrior / spectral thing w:5
 MONS:   flying skull
-MONS:   wraith / freezing wraith / shadow wraith / spectral thing / \
-        hungry ghost / w:15 shadow / w:5 nothing
+MONS:   freezing wraith / spectral thing / nothing w:5
 # mummy layout - rare
 : else
 MONS:   greater mummy
@@ -1502,16 +1500,15 @@ KFEAT:  A = w
 KMONS:  A = flying skull
 KMONS:  B = ancient lich
 KMONS:  D = bone dragon
-KMONS:  V = vampire knight
-KMONS:  X = dancing weapon
+KMONS:  V = ancient champion
+KMONS:  X = phantasmal warrior
 KMONS:  L = lich
-KMONS:  I = war gargoyle
-KMONS:  G = crystal guardian
+KMONS:  I = freezing wraith
+KMONS:  G = revenant
 KMONS:  z = skeletal warrior
-KMONS:  N = necromancer
-KMONS:  H = hell knight
-KMONS:  M = zombie / skeleton / w:5 necrophage
-KMONS:  Q = titan zombie / fire dragon zombie / golden dragon zombie / ghoul
+KMONS:  N = vampire mage
+KMONS:  H = flayed ghost / flying skull w:20
+KMONS:  M = spectral thing / w:5 zombie / w:5 skeleton
 # red metal walls
 COLOUR: = = red
 SUBST:  = = +
@@ -1545,9 +1542,9 @@ vwwwwwwwwwwwwwwv.........r//||//r.........vAAAAAAwwwwwwwwv
 vwwwwwwvvvv?vvvv......rr=rr*/O*rr=rr......v?v?v?v?vwwwwwwv
 vwwwwwwv.......v......r$$*rr++rr*$$r......v.......vwwwwwwv
 vwwwwww?....H..v.....rrrrOr$$$$rOrrrr.....v.......?wwwwwwv
-vwwwwwwv....H..+........rrr$$$$rrr........+.Q..H..vwwwwwwv
+vwwwwwwv....H..+........rrr$$$$rrr........+.M..H..vwwwwwwv
 vwwwwww?....H..v......L...r$$$$r...L......v....H..?wwwwwwv
-vwwwwwwv.Q.vvvvv...rrr....rr++rr....rrr...v....H..vwwwwwwv
+vwwwwwwv.M.vvvvv...rrr....rr++rr....rrr...v....H..vwwwwwwv
 vwwwwww?...v...vv....rr.rrrU..Urrr.rr....vvv+v....?wwwwwwv
 vwwwwwwv...v.X..vv....rrr........rrr....vv...vvvvvvwwwwwwv
 vwwwwwwv...+.....vv....r.U..BC..U.r....vvvv.....+Mvwwwwwwv
@@ -1614,7 +1611,7 @@ KFEAT:  m = iron_grate
 KMASK:  1 = opaque
 MONS:   patrolling lich / patrolling ancient lich
 MONS:   bone dragon / curse skull / curse toe
-MONS:   flying skull / skeletal warrior / skeleton
+MONS:   flying skull / skeletal warrior / spectral thing
 MONS:   ancient champion
 KMONS:  F = orange crystal statue / obsidian statue
 KITEM:  | = | no_pickup
@@ -1669,12 +1666,12 @@ KFEAT:  o = granite_statue
 SUBST:  B = b %
 KITEM:  b = any book
 SUBST:  u = U Y
-KMONS:  8 = gargoyle
+KMONS:  8 = war gargoyle
 ####### NW monsters (chapel).
 KMONS:  A = ancient lich / w:2 mummy priest
 KMONS:  DL = lich / w:5 ancient lich
 KMONS:  E = war gargoyle
-KMONS:  G = shadow / hungry ghost / wraith
+KMONS:  G = phantasmal warrior
 ####### NE monsters (hoard). On a coinflip, either vampires or mummies.
 : if crawl.coinflip() then
 KMONS:  H = vampire knight
@@ -1684,8 +1681,8 @@ KMONS:  P = vampire / zombie / skeleton
 : else
 KMONS:  H = sphinx
 KMONS:  I = guardian mummy w:7 / ushabti w:3
-KMONS:  J = guardian mummy / mummy
-KMONS:  P = skeleton / mummy
+KMONS:  J = guardian mummy w:7 / ushabti w:3
+KMONS:  P = skeleton
 : end
 ####### SE monsters (catacombs). Either corporeal or incorporeal undead.
 : if crawl.coinflip() then
@@ -1697,14 +1694,14 @@ KMONS:  S = zombie / skeleton
 KMONS:  Z = patrolling curse skull
 KMONS:  Q = eidolon
 KMONS:  R = phantasmal warrior / flayed ghost w:8
-KMONS:  S = shadow / wraith / freezing wraith / shadow wraith / wight
+KMONS:  S = freezing wraith / shadow wraith
 : end
 ####### SW monsters (crematory). Either fiery undead or hellish.
 : if crawl.coinflip() then
 KMONS:  t = fire giant skeleton / fire dragon skeleton
 KMONS:  X = w:1 curse skull / w:19 revenant
 : else
-KMONS:  t = w:20 hell knight / smoke demon / red devil
+KMONS:  t = hell knight / w:1 margery
 KMONS:  X = w:1 curse skull / w:19 hell knight
 : end
 ####### Randomisation of doors
@@ -1820,11 +1817,11 @@ SUBST:  D = +, d = cc+
 NSUBST: * = 12:* / 12:% / *:$
 KFEAT:  m = iron_grate
 KFEAT:  > = enter_tomb
-MONS:   w:3 patrolling lich / w:1 patrolling revenant
+MONS:   patrolling lich / w:3 patrolling revenant
 MONS:   patrolling zombie / nothing
-MONS:   jumping spider / wolf spider / redback / w:19 nothing
-MONS:   w:5 wraith / phantasmal warrior / eidolon / w:5 freezing wraith / w:5 nothing
-MONS:   wyvern skeleton / w:30 nothing
+MONS:   jumping spider spectre / wolf spider spectre / redback spectre / w:19 nothing
+MONS:   phantasmal warrior / eidolon / w:5 freezing wraith / w:5 nothing
+MONS:   bone dragon / w:30 nothing
 MONS:   w:2 ushabti / w:3 guardian mummy / w:2 mummy
 MONS:   w:5 patrolling mummy priest / w:1 patrolling greater mummy
 KMONS:  z = patrolling curse skull
@@ -1834,11 +1831,11 @@ SHUFFLE: 9H
 KFEAT: _ = altar_yredelemnul
 KMONS:  9 = patrolling profane servitor
 KMONS:  H = w:20 patrolling death knight / patrolling profane servitor
-KMONS:  0 = patrolling ghoul
+KMONS:  0 = patrolling spectral thing
 KMONS:  A = patrolling death knight
 KMONS:  B = skeletal warrior
-KMONS:  C = necrophage
-KMONS:  E = phantasmal warrior / w:4 flayed ghost / w:1 phantom / w:1 shadow / nothing
+KMONS:  C = phantasmal warrior
+KMONS:  E = phantasmal warrior / w:4 flayed ghost
 KMONS:  F = patrolling bone dragon
 : else
 # Temple of kiku - more necromancers, more demonic (kiku's description refers to
@@ -1848,9 +1845,9 @@ KMONS:  9 = patrolling ancient lich
 KMONS:  H = w:20 patrolling lich / patrolling ancient lich
 KMONS:  0 = patrolling reaper w:5 / patrolling soul eater
 KMONS:  A = patrolling deep elf death mage
-KMONS:  B = necromancer
+KMONS:  B = vampire mage
 KMONS:  C = hellwing
-KMONS:  E = skeleton w:13 / nothing
+KMONS:  E = spectral thing / nothing
 KMONS:  F = patrolling reaper
 : end
 SUBST:  n : ncc
@@ -1961,18 +1958,18 @@ KFEAT:  CSd = floor
 COLOUR: YsDdE = darkgrey
 : local brnd = crawl.random2(15)
 : if brnd > 10 then
-MONS:   patrolling skeletal warrior w:8 / patrolling wight
+MONS:   patrolling skeletal warrior w:8
 MONS:   ancient lich
 MONS:   bone dragon w:1 / ancient champion / lich w:1
-MONS:   caustic shrike skeleton / titan skeleton
-MONS:   w:50 skeleton / wight
+MONS:   caustic shrike skeleton / golden dragon skeleton
+MONS:   zombie / skeleton
 MONS:   generate_awake bone dragon / generate_awake curse toe
 : elseif brnd > 6 then
 MONS:   patrolling vampire knight / patrolling vampire mage / \
         patrolling vampire w:25
 KMONS:  2 = vampire knight / Jory w:15, vampire knight
-KMONS:  3 = dancing weapon ; long sword ego:vampirism / vampire knight
-KMONS:  4 = phantasmal warrior / jiangshi
+KMONS:  3 = phantasmal warrior / eidolon w:5
+KMONS:  4 = skeletal warrior / jiangshi
 KMONS:  5 = vampire / zombie / golden dragon zombie w:3 / storm dragon zombie w:3
 KMONS:  6 = generate_awake vampire mage
 SUBST:  2 = ., ' = 2, " = 4
@@ -1981,7 +1978,7 @@ MONS:   patrolling freezing wraith / patrolling spectral thing w:8
 MONS:   revenant
 MONS:   eidolon
 MONS:   flayed ghost / phantasmal warrior
-MONS:   spectral thing / simulacrum / shadow w:3 / wraith w:2 / shadow wraith / \
+MONS:   spectral thing / simulacrum / shadow wraith / \
         spectral storm dragon w:5 / spectral quicksilver dragon w:5
 MONS:   generate_awake shadow dragon / generate_awake ghost moth
 SUBST:  2 = ., ' = 2, " = 4
@@ -2056,19 +2053,18 @@ ORIENT:  encompass
 MONS:    skeletal warrior / jiangshi, flying skull band
 SHUFFLE: 34 / 56 / 78 / 90, AB / CD / EF / HI / JK / LM / NO / PQ
 
-KMONS:   3 = ghoul
-KMONS:   4 = necrophage
-KMONS:   5 = necromancer
-KMONS:   6 = simulacrum / spectral thing / zombie w:5 / skeleton w:5 / \
-             hell knight w:5
+KMONS:   3 = spectral thing
+KMONS:   4 = skeleton
+KMONS:   5 = vampire mage
+KMONS:   6 = simulacrum / spectral thing / zombie w:5 / skeleton w:5
 KMONS:   7 = death knight
 KMONS:   8 = vampire knight w:5 / skeletal warrior
-KMONS:   9 = ancient champion
+KMONS:   9 = phantasmal warrior
 KMONS:   0 = skeletal warrior
 
 # Room guardian waves; these should be tougher, but not boss tier.
 KMONS:   A = lich
-KMONS:   C = revenant
+KMONS:   C = revenant / eidolon
 KMONS:   BD = freezing wraith / shadow wraith / wraith
 KMONS:   E = deep elf death mage
 KMONS:   F = small abomination / large abomination w:5
@@ -2079,7 +2075,7 @@ KMONS:   L = bone dragon
 KMONS:   KM = nothing
 KMONS:   NO = jiangshi
 KMONS:   P = flayed ghost
-KMONS:   Q = flayed ghost / shadow w:20
+KMONS:   Q = flayed ghost / spectral thing w:5
 
 # Boss tier monsters.
 : if crawl.one_chance_in(4) then
@@ -2093,11 +2089,11 @@ KMONS:   T = vampire knight / jiangshi
 : elseif crawl.coinflip() then
 KMONS:   R = ancient lich
 KMONS:   S = flayed ghost
-KMONS:   T = phantasmal warrior
+KMONS:   T = revenant
 : else
 KMONS:   R = curse skull
 KMONS:   S = ancient champion
-KMONS:   T = skeletal warrior
+KMONS:   T = eidolon
 : end
 
 KFEAT:   R = enter_tomb
@@ -2172,12 +2168,12 @@ NAME:    lightli_unholy_cathedral
 TAGS:    no_monster_gen layout_city
 PLACE:   Crypt:$
 ORIENT:  north
-MONS:    ancient champion, lich / revenant, jiangshi / ghoul w:2
+MONS:    ancient champion, lich / revenant, jiangshi / phantasmal warrior
 MONS:    profane servitor / bone dragon / curse toe / \
          greater mummy w:2 / ancient lich w:2
 MONS:    skeletal warrior ; halberd | glaive | bardiche w:5
 MONS:    freezing wraith w:20 / shadow wraith w:20 / flayed ghost
-MONS:    zombie w:20 / skeleton w:20 / simulacrum / nothing w:25
+MONS:    spectral thing w:20 / zombie w:20 / skeleton w:20 / simulacrum / nothing w:25
 KMONS:   8 = vampire knight
 KMONS:   9 = vampire w:6 / vampire mage w:4
 KMONS:   0 = mummy priest
