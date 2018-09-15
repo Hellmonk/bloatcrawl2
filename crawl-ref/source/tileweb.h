@@ -205,8 +205,10 @@ public:
     void update_input_mode(mouse_mode mode);
 
     void send_mcache(mcache_entry *entry, bool submerged,
-                     bool send_doll = true);
+                     bool send = true);
     void write_tileidx(tileidx_t t);
+
+    void send_doll(const dolls_data &doll, bool submerged, bool ghost);
 
 protected:
     int m_sock;
