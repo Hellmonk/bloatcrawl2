@@ -224,6 +224,7 @@ static command_type _keycode_to_command(keycode_type key);
 static void _do_cmd_repeat();
 static void _do_prev_cmd_again();
 static void _update_replay_state();
+static void _check_turn_limit();
 
 static void _show_commandline_options_help();
 static void _wanderer_startup_message();
@@ -472,6 +473,9 @@ NORETURN static void _launch_game()
     run_uncancels();
 
     cursor_control ccon(!Options.use_fake_player_cursor);
+#ifdef DGAMELAUNCH
+    _check_turn_limit();
+#endif
     while (true)
         _input();
 }
@@ -2242,6 +2246,9 @@ void world_reacts()
 
     ASSERT(you.time_taken >= 0);
     you.elapsed_time += you.time_taken;
+#ifdef DGAMELAUNCH
+    _check_turn_limit();
+#endif
     if (you.elapsed_time >= 2*1000*1000*1000)
     {
         // 2B of 1/10 turns. A 32-bit signed int can hold 2.1B.
@@ -3544,4 +3551,17 @@ static void _update_replay_state()
     }
 
     repeat_again_rec.clear();
+}
+
+static void _check_turn_limit()
+{
+    if (you.elapsed_time >= MAX_ONLINE_TURNS)
+    {
+        mpr("Sorry, you have reached the turn limit for online play. "
+            "You can plead clemency with the server's admin, or die.");
+        if (yes_or_no("Would you like to die?"))
+            ouch(INSTANT_DEATH, KILLED_BY_QUITTING);
+        else
+            save_game(true);
+    }
 }

@@ -280,6 +280,10 @@ static inline double pow(int x, double y) { return std::pow((double)x, y); }
     // there are no false positives.
     // (A false positive would be possible with wizmode shenanigans.)
     #define WATCHDOG
+
+    // Maximum number of turns that can be played. This is lower than the 2bn
+    // limit for offline to protect servers from abuse.
+    #define MAX_ONLINE_TURNS 2000000
 #endif
 
 #ifndef TIME_FN
