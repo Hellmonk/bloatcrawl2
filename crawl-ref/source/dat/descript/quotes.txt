@@ -1070,11 +1070,11 @@ the voice of God Almighty when he speaks.”
 claymore
 
 “But mark the Rustic, haggis-fed,
-The trembling earth resounds his tread,
-Clap in his walie nieve a blade,
-He'll make it whissle;
-An' legs an' arms, an' heads will sned,
-Like taps o' thrissle.”
+ The trembling earth resounds his tread,
+ Clap in his walie nieve a blade,
+ He'll make it whissle;
+ An' legs an' arms, an' heads will sned,
+ Like taps o' thrissle.”
     -Robert Burns, _Address to a Haggis_. Circa 1787.
 %%%%
 cloak

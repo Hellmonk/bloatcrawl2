@@ -4572,6 +4572,14 @@ void unmarshallItem(reader &th, item_def &item)
         item.sub_type = WPN_FLAIL;
     }
 
+    // seems like a tag here wouldn't really achieve much
+    if (item.is_type(OBJ_WEAPONS, WPN_DOUBLE_SWORD)) {
+        item.sub_type = WPN_BROADSWORD;
+    }
+    if (item.is_type(OBJ_WEAPONS, WPN_TRIPLE_SWORD)) {
+        item.sub_type = WPN_CLAYMORE;
+    }
+
     if (item.base_type == OBJ_WEAPONS
         && (item.brand == SPWPN_RETURNING
             || item.brand == SPWPN_REACHING
@@ -4597,14 +4605,6 @@ void unmarshallItem(reader &th, item_def &item)
             artefact_set_property(item, ARTP_BRAND, SPWPN_FLAMING);
         else
             item.brand = SPWPN_FLAMING;
-    }
-
-    // seems like a tag here wouldn't really achieve much
-    if (item.is_type(OBJ_WEAPONS, WPN_DOUBLE_SWORD)) {
-        item.sub_type = WPN_BROADSWORD;
-    }
-    if (item.is_type(OBJ_WEAPONS, WPN_TRIPLE_SWORD)) {
-        item.sub_type = WPN_CLAYMORE;
     }
 
     // Rescale old MR (range 35-99) to new discrete steps (40/80/120)
@@ -4789,9 +4789,9 @@ void unmarshallItem(reader &th, item_def &item)
         case WPN_BLESSED_FALCHION:     item.sub_type = WPN_FALCHION; break;
         case WPN_BLESSED_LONG_SWORD:   item.sub_type = WPN_LONG_SWORD; break;
         case WPN_BLESSED_SCIMITAR:     item.sub_type = WPN_SCIMITAR; break;
-        case WPN_BLESSED_DOUBLE_SWORD: item.sub_type = WPN_DOUBLE_SWORD; break;
+        case WPN_BLESSED_DOUBLE_SWORD: item.sub_type = WPN_BROADSWORD; break;
         case WPN_BLESSED_GREAT_SWORD:  item.sub_type = WPN_GREAT_SWORD; break;
-        case WPN_BLESSED_TRIPLE_SWORD: item.sub_type = WPN_TRIPLE_SWORD; break;
+        case WPN_BLESSED_TRIPLE_SWORD: item.sub_type = WPN_CLAYMORE; break;
         default:                       break;
         }
         if (initial_type != item.sub_type)
