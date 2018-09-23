@@ -1033,6 +1033,12 @@ spret_type cast_dispersal(int pow, bool fail)
     return SPRET_SUCCESS;
 }
 
+int gravitas_range(int pow)
+{
+    return pow >= 80 ? 3 : 2;
+}
+
+
 #define GRAVITY "by gravitational forces"
 
 static void _attract_actor(const actor* agent, actor* victim,
@@ -1096,10 +1102,10 @@ bool fatal_attraction(const coord_def& pos, const actor *agent, int pow)
             continue;
 
         const int range = (pos - ai->pos()).rdist();
-        const int strength =
-            min(LOS_RADIUS, ((pow + 100) / 20) / (range*range));
-        if (strength <= 0)
+        if (range > gravitas_range(pow))
             continue;
+
+        const int strength = ((pow + 100) / 20) / (range*range);
 
         affected = true;
         _attract_actor(agent, *ai, pos, pow, strength);
