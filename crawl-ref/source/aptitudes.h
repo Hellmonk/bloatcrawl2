@@ -243,7 +243,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
 #endif
 	
     // SP_MOUNTAIN_DWARF
-    APT(SP_MOUNTAIN_DWARF,        SK_FIGHTING,        2),
+    APT(SP_MOUNTAIN_DWARF,        SK_FIGHTING,      UNUSABLE_SKILL),
     APT(SP_MOUNTAIN_DWARF,        SK_SHORT_BLADES,    0),
     APT(SP_MOUNTAIN_DWARF,        SK_LONG_BLADES,   UNUSABLE_SKILL),
     APT(SP_MOUNTAIN_DWARF,        SK_AXES,            2),
