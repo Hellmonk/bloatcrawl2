@@ -2080,6 +2080,13 @@ static const mutation_def mut_data[] =
   {"You feel less blessed.", "You feel less blessed.", ""},
 },
 
+{ MUT_EXTRA_MP, 4, 2, mutflag::GOOD, false,
+  "extra MP",
+  { "Your innate MP is slightly higher than usual. (+5 MP)", "Your innate MP is much higher than usual. (+10 MP)" },
+  { "You feel your innate MP increase.", "You feel your innate MP increase." },
+  { "You feel your innate MP decrease.", "You feel your innate MP decrease." },
+}
+
 };
 
 static const mutation_category_def category_mut_data[] =

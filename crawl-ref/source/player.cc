@@ -3994,6 +3994,8 @@ int get_real_mp(bool include_items, bool frozen)
                - (you.get_mutation_level(MUT_LOW_MAGIC) * 10);
     enp /= 100 * scale;
 //    enp = stepdown_value(enp, 9, 18, 45, 100)
+
+    enp += you.get_mutation_level(MUT_EXTRA_MP) * 5;
     enp += species_mp_modifier(you.species);
 
     // This is our "rotted" base, applied after multipliers
