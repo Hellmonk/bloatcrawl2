@@ -1710,18 +1710,21 @@ int items(bool allow_uniques,
     else
     {
         ASSERT(force_type == OBJ_RANDOM);
-        // Total weight: 1960
+        // Total weight: 1000
         item.base_type = random_choose_weighted(
-                                    10, OBJ_STAVES,
-                                    50, OBJ_BOOKS,
-                                    50, OBJ_JEWELLERY,
-                                    50, OBJ_WANDS,
-                                    55, OBJ_MISSILES,
-                                   262, OBJ_ARMOUR,
-                                   212, OBJ_WEAPONS,
-                                   140, OBJ_POTIONS,
-			                       202, OBJ_SCROLLS,
-                                   929, OBJ_GOLD); 
+                                    5, OBJ_STAVES,
+                                   25, OBJ_BOOKS,
+                                   25, OBJ_JEWELLERY,
+                                   25, OBJ_WANDS,
+                                   25, OBJ_MISSILES,
+                                   70, OBJ_POTIONS,
+                                  120, OBJ_ARMOUR,
+                                  105, OBJ_WEAPONS,
+                                  100, OBJ_SCROLLS,
+                                  250, OBJ_GOLD,
+                                  250, OBJ_UNASSIGNED); // No item
+        if (item.base_type == OBJ_UNASSIGNED)
+            return NON_ITEM;
 
         // misc items placement wholly dependent upon current depth {dlb}:
         if (item_level > 7 && x_chance_in_y(21 + item_level, 5000))
@@ -1847,7 +1850,7 @@ int items(bool allow_uniques,
         if (force_good)
             item.quantity = 100 + random2(400);
         else
-            item.quantity = 1 + random2avg(10, 2) + random2(div_rand_round(item_level * 4, 7));
+            item.quantity = 2 * (1 + random2avg(10, 2) + random2(div_rand_round(item_level * 4, 7)));
         break;
     }
 
