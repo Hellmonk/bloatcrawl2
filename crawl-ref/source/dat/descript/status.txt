@@ -332,6 +332,23 @@ You are silenced. This makes reading scrolls, casting spells, invoking divine
 abilities, or shouting impossible. The oppressive, unnatural effect greatly
 hampers your stealth.
 %%%%
+Engulf status
+
+{{
+    local desc = "You are engulfed in water"
+
+    if not you.res_drowning() then
+        desc = desc .. " and are unable to breathe. You will take increasing"
+                       .. " damage from asphyxiation every turn until you"
+                       .. " escape. This makes reading scrolls, casting"
+                       .. " spells, and invoking divine abilities impossible"
+    else
+        desc = desc .. " but suffer no negative effects"
+    end
+
+    return desc .. "."
+}}
+%%%%
 Stealth status
 
 Your stealth is greatly increased.
@@ -579,7 +596,7 @@ substantially weakening your melee attacks.
 
 Any equipped weapons, armour and rings are melded, and you are unable to evoke
 wands or cast spells. {{
-    if you.race() ~= "Vampire" then
+    if you.race() ~= "Jiangshi" then
         return "The effectiveness of your melee attacks while " ..
                "in this form is based on experience level instead of on " ..
                "Unarmed Combat skill."
@@ -691,3 +708,9 @@ Reflex status
 
 A recent wall jump has heightened your reflexes, temporarily increasing 
 your evasion.
+%%%%
+Pierce status
+
+You are enchanting your fired or thrown missiles to penetrate their targets,
+potentially hitting everything in their path and bypassing shields. This comes
+at the cost of some magic for each missile.

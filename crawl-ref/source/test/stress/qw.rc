@@ -173,7 +173,7 @@ df += potions? of (brilliance|magic|berserk rage)
 df += potions? of (flight|invisibility|agility)
 df += potions? of (ambrosia|decay|degeneration|mutation)
 df += potions? of (poison|lignification)
-: if you.race() ~= "Vampire" then
+: if you.race() ~= "Jiangshi" then
 ae += potions? of blood
 df += potions? of blood
 : end
@@ -1295,7 +1295,7 @@ end
 
 function intrinsic_sinv()
   local sp = you.race()
-  if sp == "Naga" or sp == "Formicid" or sp == "Vampire" then
+  if sp == "Naga" or sp == "Formicid" or sp == "Jiangshi" then
     return true
   end
   return false
@@ -1322,7 +1322,7 @@ end
 function intrinsic_evil()
   local sp = you.race()
   if sp == "Demonspawn" or sp == "Mummy" or sp == "Ghoul" or
-     sp == "Vampire" then
+     sp == "Jiangshi" then
     return true
   end
   return false
@@ -1600,7 +1600,7 @@ function can_teleport()
 end
 
 function too_hungry_to_berserk()
-  if you.race() == "Vampire" then
+  if you.race() == "Jiangshi" then
     return (you.hunger_name() ~= "almost alive"
             and you.hunger_name() ~= "very full"
             and you.hunger_name() ~= "full")
@@ -2327,7 +2327,7 @@ function want_permafood()
   if you.race() == "Mummy" or you.transform() == "lich" then
     return false
   end
-  if you.race() == "Vampire" then
+  if you.race() == "Jiangshi" then
     return (you.hunger_name() ~= "almost alive"
             and you.hunger_name() ~= "very full"
             and you.hunger_name() ~= "full")
@@ -2346,7 +2346,7 @@ end
 
 function want_chunk()
   if you.race() == "Spriggan" or you.race() == "Mummy"
-     or you.race() == "Vampire" or you.transform() == "lich" then
+     or you.race() == "Jiangshi" or you.transform() == "lich" then
     return false
   end
   if you.race() == "Ghoul" and you.rot() > 0 then
@@ -3202,7 +3202,7 @@ function drink_blood()
 end
 
 function eat_permafood()
-  if you.race() == "Vampire" then
+  if you.race() == "Jiangshi" then
     return drink_blood()
   end
   local l
@@ -3305,7 +3305,7 @@ function plan_handle_corpses()
   if not on_corpses() then
     return false
   end
-  if you.race() == "Vampire" then
+  if you.race() == "Jiangshi" then
     return vp_handle_corpses()
   end
   if want_pray() and (not want_chunk() or on_dangerous_corpse())
@@ -3662,7 +3662,7 @@ function plan_upgrade_weapon()
         drop = true
       end
       if equip and swappable and (twohands or it.hands < 2) then
-        if it.name():find("vamp") and you.race() ~= "Vampire" and not
+        if it.name():find("vamp") and you.race() ~= "Jiangshi" and not
            (you.hunger_name() == "full" or you.hunger_name() == "very full" or
             you.hunger_name() == "completely stuffed") then
           say("Eating in order to wield vampiric weapon.")

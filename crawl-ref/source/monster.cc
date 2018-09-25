@@ -2719,10 +2719,7 @@ bool monster::go_frenzy(actor *source)
     }
     mons_att_changed(this);
 
-    if (simple_monster_message(*this, " flies into a frenzy!"))
-        // Xom likes monsters going insane.
-        xom_is_stimulated(friendly() ? 25 : 100);
-
+    simple_monster_message(*this, " flies into a frenzy!");
     return true;
 }
 
@@ -2751,9 +2748,7 @@ bool monster::go_berserk(bool intentional, bool /* potion */)
         wield_melee_weapon();
 
     add_ench(ENCH_BERSERK);
-    if (simple_monster_message(*this, " goes berserk!"))
-        // Xom likes monsters going berserk.
-        xom_is_stimulated(friendly() ? 25 : 100);
+    simple_monster_message(*this, " goes berserk!");
 
     if (const item_def* w = weapon())
     {
@@ -3400,7 +3395,7 @@ int monster::evasion(ev_ignore_type evit, const actor* /*act*/) const
     if (evit & EV_IGNORE_HELPLESS)
         return max(ev, 0);
 
-    if (paralysed() || petrified() || petrifying() || asleep())
+    if (paralysed() || petrified() || petrifying())
         return 0;
 
     if (caught() || is_constricted())

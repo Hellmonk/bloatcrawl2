@@ -1302,22 +1302,6 @@ MAP
 .x...x.
 ENDMAP
 
-NAME:   dpeg_vaults_monster_box
-TAGS:   vaults_room
-MONS:   0 band
-SUBST:  - : @.., _ : @..
-SUBST:  b : xxxxb0009.
-NSUBST: 9 = 1:S / *:9
-KFEAT:  S = armour shop / weapon shop
-NSUBST: . = 1:1 / * = 0........
-MAP
-..@@..
-..bb..
--.bb.-
-..bb..
-..__..
-ENDMAP
-
 NAME:   dpeg_vaults_monster_row
 TAGS:   vaults_room
 SUBST:  0 : 0000000z, z : z., 0 = 0009..
@@ -1634,7 +1618,6 @@ ENDMAP
 NAME: nicolae_vaults_yaktaur_gun_rack
 TAGS: vaults_room no_monster_gen no_item_gen
 MONS: yaktaur w:8 / yaktaur band w:4 / yaktaur captain w:2 / yaktaur captain band w:1
-KITEM: b = arrow w:3 / arrow good_item w:2
 KITEM: c = arbalest w:8 / arbalest good_item w:1 / triple crossbow w:1
 MAP
 xxxxxxx
@@ -1642,7 +1625,7 @@ xcccccx
 x......
 x.1....
 x......
-xbbbbbx
+xcccccx
 xxxxxxx
 ENDMAP
 

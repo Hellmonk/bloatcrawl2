@@ -1273,6 +1273,13 @@ OBJ:      OBJ_JEWELLERY/AMU_NOTHING
 COLOUR:   WHITE
 BOOL:     inv, nogen
 
+ENUM:     KILLDUDES
+NAME:     ring "Killdudes"
+OBJ:      OBJ_JEWELLERY/RING_SLAYING
+PLUS:     +8
+COLOUR:   ETC_BONE
+TILE:     urand_killdudes
+
 # This entry must always be last.
 ENUM:   DUMMY2
 NAME:   DUMMY UNRANDART 2

@@ -121,8 +121,13 @@ struct game_state
     // Git version of the character save. This will be empty unless the
     // character has been loaded from a previous save.
     std::string save_rcs_version;
+	
+    string default_startup_name;
 
     game_difficulty_level difficulty;
+
+    // Should flushing a nonempty key buffer error or crash? Used for tests.
+    bool nonempty_buffer_flush_errors;
 
 protected:
     void reset_cmd_repeat();

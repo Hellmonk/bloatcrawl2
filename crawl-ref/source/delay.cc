@@ -15,6 +15,7 @@
 #include "artefact.h"
 #include "bloodspatter.h"
 #include "butcher.h"
+#include "chardump.h"
 #include "clua.h"
 #include "command.h"
 #include "coord.h"
@@ -41,6 +42,7 @@
 #include "libutil.h"
 #include "macro.h"
 #include "message.h"
+#include "mon-act.h"
 #include "mon-behv.h"
 #include "mon-tentacle.h"
 #include "mon-util.h"
@@ -51,6 +53,7 @@
 #include "output.h"
 #include "player-equip.h"
 #include "player.h"
+#include "potion.h"
 #include "prompt.h"
 #include "random.h"
 #include "religion.h"
@@ -83,7 +86,6 @@ private:
 
 int interrupt_block::interrupts_blocked = 0;
 
-static void _xom_check_corpse_waste();
 static const char *_activity_interrupt_name(activity_interrupt_type ai);
 
 void push_delay(shared_ptr<Delay> delay)
@@ -190,8 +192,6 @@ static void _interrupt_vampire_feeding(item_def& corpse, int dur)
 {
     mpr("You stop draining the corpse.");
 
-    _xom_check_corpse_waste();
-
     // Don't skeletonize a corpse if it's no longer there!
     if (corpse.defined() && corpse.is_type(OBJ_CORPSES, CORPSE_BODY)
         && corpse.pos == you.pos())
@@ -276,6 +276,22 @@ bool BlurryScrollDelay::try_interrupt()
             && !yesno("Keep reading the scroll?", false, 0, false))
         {
             mpr("You stop reading the scroll.");
+            return true;
+        }
+        else
+            was_prompted = true;
+    }
+    return false;
+}
+
+bool SlowPotionDelay::try_interrupt()
+{
+    if (duration > 1 && !was_prompted)
+    {
+        if (!crawl_state.disables[DIS_CONFIRMATIONS]
+            && !yesno("Keep quaffing the potion?", false, 0, false))
+        {
+            mpr("You stop quaffing the potion.");
             return true;
         }
         else
@@ -466,12 +482,14 @@ static bool _can_read_scroll(const item_def& scroll)
     return false;
 }
 
-// Xom is amused by a potential food source going to waste, and is
-// more amused the hungrier you are.
-static void _xom_check_corpse_waste()
+static bool _can_quaff_potion(const item_def &potion)
 {
-    const int food_need = max(HUNGER_SATIATED - you.hunger, 0);
-    xom_is_stimulated(50 + (151 * food_need / 6000));
+	const string no_quaff_reason = cannot_quaff_item_reason(potion);
+    if(no_quaff_reason.empty())
+        return true;
+    
+    mpr(no_quaff_reason);
+    return false;
 }
 
 void clear_macro_process_key_delay()
@@ -514,6 +532,11 @@ void ShaftSelfDelay::start()
 void BlurryScrollDelay::start()
 {
     mprf(MSGCH_MULTITURN_ACTION, "You begin reading the scroll.");
+}
+
+void SlowPotionDelay::start()
+{
+    mprf(MSGCH_MULTITURN_ACTION, "You begin quaffing the potion.");
 }
 
 command_type RunDelay::move_cmd() const
@@ -657,7 +680,6 @@ static bool _check_corpse_gone(item_def& item, const char* action)
     {
         mprf("The corpse has rotted away into a skeleton before "
              "you could %s!", action);
-        _xom_check_corpse_waste();
         return true;
     }
 
@@ -698,6 +720,16 @@ bool MultidropDelay::invalidated()
 bool BlurryScrollDelay::invalidated()
 {
     if (!_can_read_scroll(scroll))
+    {
+        you.time_taken = 0;
+        return true;
+    }
+    return false;
+}
+
+bool SlowPotionDelay::invalidated()
+{
+    if (!_can_quaff_potion(potion))
     {
         you.time_taken = 0;
         return true;
@@ -806,7 +838,7 @@ void JewelleryOnDelay::finish()
             return;
     }
 
-    puton_ring(jewellery.link, false);
+    puton_ring(jewellery.link, false, false);
 }
 
 void ArmourOnDelay::finish()
@@ -929,6 +961,28 @@ void BlurryScrollDelay::finish()
     // Make sure the scroll still exists, the player isn't confused, etc
     if (_can_read_scroll(scroll))
         read_scroll(scroll);
+}
+
+void SlowPotionDelay::finish()
+{
+    if (_can_quaff_potion(potion))
+        if(quaff_potion(potion))
+        {
+            if(you.get_mutation_level(MUT_POTION_AGILITY))
+            {
+                you.increase_duration(DUR_AGILITY, 15 + random2(15), 30);
+            }
+	
+            if (in_inventory(potion))
+            {
+                dec_inv_item_quantity(potion.link, 1);
+                auto_assign_item_slot(potion);
+            }
+            else
+                dec_mitm_item_quantity(potion.index(), 1);
+            count_action(CACT_USE, OBJ_POTIONS);
+            you.turn_is_over = true;
+        }
 }
 
 static void _finish_butcher_delay(item_def& corpse, bool bottling)
@@ -1313,7 +1367,7 @@ static inline bool _monster_warning(activity_interrupt_type ai,
         {
             yell(mon);
         }
-        mon->seen_context = SC_JUST_SEEN;
+        mons_set_just_seen(mon);
     }
 
     if (crawl_state.game_is_hints())

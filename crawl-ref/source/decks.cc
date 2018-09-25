@@ -808,13 +808,17 @@ static void _describe_cards(vector<card_type> cards)
     ASSERT(!cards.empty());
 
 #ifdef USE_TILE_WEB
-    tiles_crt_control show_as_menu(CRT_MENU, "describe_cards");
+    tiles_crt_control show_as_menu(CRT_MENU);
 #endif
-
+    bool seen[NUM_CARDS] = {0};
     ostringstream data;
     bool first = true;
     for (card_type card : cards)
     {
+        if (seen[card])
+            continue;
+        seen[card] = true;
+
         string name = card_name(card);
         string desc = getLongDescription(name + " card");
         if (desc.empty())
@@ -879,7 +883,7 @@ bool stack_five(int slot)
     const int num_to_stack = (num_cards < 5 ? num_cards : 5);
 
 #ifdef USE_TILE_WEB
-    tiles_crt_control show_as_menu(CRT_MENU, "deck_stack");
+    tiles_crt_control show_as_menu(CRT_MENU);
 #endif
 
     vector<card_type> draws;
@@ -1107,42 +1111,6 @@ void draw_from_deck_of_punishment(bool deal)
     card_effect(card, DECK_RARITY_COMMON, flags);
 }
 
-static int _xom_check_card(item_def &deck, card_type card,
-                           uint8_t flags)
-{
-    int amusement = 64;
-
-    if (flags & CFLAG_PUNISHMENT)
-        amusement = 200;
-    else if (!item_type_known(deck))
-        amusement *= 2;
-
-    if (player_in_a_dangerous_place())
-        amusement *= 2;
-
-    if (flags & CFLAG_SEEN)
-        amusement /= 2;
-
-    switch (card)
-    {
-    case CARD_EXILE:
-        // Nothing happened, boring.
-        if (player_in_branch(BRANCH_ABYSS))
-            amusement = 0;
-        break;
-
-    case CARD_FAMINE:
-    case CARD_SWINE:
-        // Always hilarious.
-        amusement = 255;
-
-    default:
-        break;
-    }
-
-    return amusement;
-}
-
 void evoke_deck(item_def& deck)
 {
     if (_check_buggy_deck(deck))
@@ -1181,8 +1149,6 @@ void evoke_deck(item_def& deck)
         }
     }
 
-    const int amusement = _xom_check_card(deck, card, flags);
-
     // Punishment cards don't give any information about the deck.
     if (flags & (CFLAG_PUNISHMENT))
         allow_id = false;
@@ -1202,8 +1168,6 @@ void evoke_deck(item_def& deck)
     }
 
     card_effect(card, rarity, flags, false);
-
-    xom_is_stimulated(amusement);
 
     // Always wield change, since the number of cards used/left has
     // changed, and it might be wielded.
@@ -2471,20 +2435,16 @@ void shuffle_all_decks_on_level()
     }
 }
 
-static bool _shuffle_inventory_decks()
+static bool _delete_inventory_decks()
 {
     bool success = false;
 
-    for (auto &item : you.inv)
+    for (int slot = 0; slot < ENDOFPACK; ++slot)
     {
+        item_def& item = you.inv[slot];
         if (item.defined() && is_deck(item))
         {
-#ifdef DEBUG_DIAGNOSTICS
-            mprf(MSGCH_DIAGNOSTICS, "Shuffling in inventory: %s",
-                 item.name(DESC_PLAIN).c_str());
-#endif
-            _shuffle_deck(item);
-
+            dec_inv_item_quantity(slot, 1);
             success = true;
         }
     }
@@ -2495,10 +2455,10 @@ static bool _shuffle_inventory_decks()
 void nemelex_shuffle_decks()
 {
     add_daction(DACT_SHUFFLE_DECKS);
-    _shuffle_inventory_decks();
+    _delete_inventory_decks();
 
     // Wildly inaccurate, but of similar quality as the old code which
     // was triggered by the presence of any deck anywhere.
     if (you.num_total_gifts[GOD_NEMELEX_XOBEH])
-        god_speaks(GOD_NEMELEX_XOBEH, "You hear Nemelex Xobeh chuckle.");
+        god_speaks(GOD_NEMELEX_XOBEH, "Nemelex Xobeh reclaims your decks.");
 }

@@ -125,7 +125,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         else if (hurted > original && doEffects)
         {
             mpr("The water douses you terribly!");
-            xom_is_stimulated(200);
         }
         break;
 
@@ -136,7 +135,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         else if (hurted > original && doEffects)
         {
             mpr("The steam scalds you terribly!");
-            xom_is_stimulated(200);
         }
         break;
 
@@ -147,7 +145,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         else if (hurted > original && doEffects)
         {
             mpr("The fire burns you terribly!");
-            xom_is_stimulated(200);
         }
         break;
 
@@ -161,7 +158,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         else if (hurted > original && doEffects)
         {
             mpr("You feel a terrible chill!");
-            xom_is_stimulated(200);
         }
         break;
 
@@ -173,7 +169,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         else if (hurted > original && doEffects)
         {
             mpr("You are shocked senseless!");
-            xom_is_stimulated(200);
         }
         break;
 
@@ -224,7 +219,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
             if (hurted > original)
             {
                 mpr("The negative energy saps you greatly!");
-                xom_is_stimulated(200);
             }
             drain_player(min(75, 35 + original * 2 / 3), true);
         }
@@ -238,7 +232,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         else if (hurted > original && doEffects)
         {
             mpr("You feel a painful chill!");
-            xom_is_stimulated(200);
         }
         break;
 
@@ -250,7 +243,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         else if (hurted > original && doEffects)
         {
             mpr("The lava burns you terribly!");
-            xom_is_stimulated(200);
         }
         break;
 
@@ -277,7 +269,6 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         else if (hurted > original && doEffects)
         {
             mpr("You writhe in agony!");
-            xom_is_stimulated(200);
         }
         break;
     }
@@ -374,8 +365,6 @@ void lose_level()
     redraw_screen();
 #endif
 
-    xom_is_stimulated(200);
-
     // Kill the player if maxhp <= 0. We can't just move the ouch() call past
     // dec_max_hp() since it would decrease hp twice, so here's another one.
     ouch(0, KILLED_BY_DRAINING);
@@ -418,7 +407,6 @@ bool drain_player(int power, bool announce_full, bool ignore_protection, bool pr
 		{
         mpr("You feel drained.");
 		}
-        xom_is_stimulated(15);
 
         you.attribute[ATTR_XP_DRAIN] += power;
         // Losing skills may affect AC/EV.
@@ -431,89 +419,6 @@ bool drain_player(int power, bool announce_full, bool ignore_protection, bool pr
     }
 
     return false;
-}
-
-static void _xom_checks_damage(kill_method_type death_type,
-                               int dam, mid_t death_source)
-{
-    if (you_worship(GOD_XOM))
-    {
-        if (death_type == KILLED_BY_TARGETING
-            || death_type == KILLED_BY_BOUNCE
-            || death_type == KILLED_BY_REFLECTION
-            || death_type == KILLED_BY_SELF_AIMED
-               && player_in_a_dangerous_place())
-        {
-            // Xom thinks the player accidentally hurting him/herself is funny.
-            // Deliberate damage is only amusing if it's dangerous.
-            int amusement = 200 * dam / (dam + you.hp);
-            if (death_type == KILLED_BY_SELF_AIMED)
-                amusement /= 5;
-            xom_is_stimulated(amusement);
-            return;
-        }
-        else if (death_type == KILLED_BY_FALLING_DOWN_STAIRS
-                 || death_type == KILLED_BY_FALLING_THROUGH_GATE)
-        {
-            // Xom thinks falling down the stairs is hilarious.
-            xom_is_stimulated(200);
-            return;
-        }
-        else if (death_type == KILLED_BY_DISINT)
-        {
-            // flying chunks...
-            xom_is_stimulated(100);
-            return;
-        }
-        else if (death_type != KILLED_BY_MONSTER
-                    && death_type != KILLED_BY_BEAM
-                    && death_type != KILLED_BY_DISINT
-                 || !monster_by_mid(death_source))
-        {
-            return;
-        }
-
-        int amusementvalue = 1;
-        const monster* mons = monster_by_mid(death_source);
-
-        if (!mons->alive())
-            return;
-
-        if (mons->wont_attack())
-        {
-            // Xom thinks collateral damage is funny.
-            xom_is_stimulated(200 * dam / (dam + you.hp));
-            return;
-        }
-
-        int leveldif = mons->get_experience_level() - you.experience_level;
-        if (leveldif == 0)
-            leveldif = 1;
-
-        // Note that Xom is amused when you are significantly hurt by a
-        // creature of higher level than yourself, as well as by a
-        // creature of lower level than yourself.
-        amusementvalue += leveldif * leveldif * dam;
-
-        if (!mons->visible_to(&you))
-            amusementvalue += 8;
-
-        if (mons->speed < 100/player_movement_speed())
-            amusementvalue += 7;
-
-        if (death_type != KILLED_BY_BEAM
-            && you.skill(SK_THROWING) <= (you.experience_level / 4))
-        {
-            amusementvalue += 2;
-        }
-
-        if (player_in_a_dangerous_place())
-            amusementvalue += 2;
-
-        amusementvalue /= (you.hp > 0) ? you.hp : 1;
-
-        xom_is_stimulated(amusementvalue);
-    }
 }
 
 static void _yred_mirrors_injury(int dam, mid_t death_source)
@@ -567,18 +472,7 @@ static void _maybe_spawn_monsters(int dam, const bool is_torment,
     monster_type mon;
     int how_many = 0;
 
-    if (you_worship(GOD_JIYVA)
-        && you.piety >= piety_breakpoint(5))
-    {
-        mon = royal_jelly_ejectable_monster();
-        if (dam >= you.hp_max * 3 / 4)
-            how_many = random2(4) + 2;
-        else if (dam >= you.hp_max / 2)
-            how_many = random2(2) + 2;
-        else if (dam >= you.hp_max / 4)
-            how_many = 1;
-    }
-    else if (you_worship(GOD_XOM)
+    if (you_worship(GOD_XOM)
              && dam >= you.hp_max / 4
              && x_chance_in_y(dam, 3 * you.hp_max))
     {
@@ -604,13 +498,6 @@ static void _maybe_spawn_monsters(int dam, const bool is_torment,
             {
                 mprf(MSGCH_GOD, "A shower of butterflies erupts from you!");
                 take_note(Note(NOTE_XOM_EFFECT, you.piety, -1, "butterfly on damage"), true);
-            }
-            else
-            {
-                mprf("You shudder from the %s and a %s!",
-                     death_type == KILLED_BY_MONSTER ? "blow" : "blast",
-                     count_created > 1 ? "flood of jellies pours out from you"
-                                       : "jelly pops out");
             }
         }
     }
@@ -670,12 +557,6 @@ static void _maybe_fog(int dam)
     {
         mpr("You emit a cloud of dark smoke.");
         big_cloud(CLOUD_BLACK_SMOKE, &you, you.pos(), 50, 4 + random2(5));
-    }
-    else if (you_worship(GOD_XOM) && x_chance_in_y(dam, 30 * upper_threshold))
-    {
-        mprf(MSGCH_GOD, "You emit a cloud of colourful smoke!");
-        big_cloud(CLOUD_XOM_TRAIL, &you, you.pos(), 50, 4 + random2(5), -1);
-        take_note(Note(NOTE_XOM_EFFECT, you.piety, -1, "smoke on damage"), true);
     }
 }
 
@@ -762,16 +643,6 @@ int do_shave_damage(int dam)
 
     if (dam == 0)
         return dam;
-
-    if(!you_worship(GOD_JIYVA))
-        return dam;
-
-    // high piety Jiyvaites get to shave any hp loss.
-    // max shaving based on piety, only available at 5* anyway tho
-    // does not use nested random2s like the old, stupid DD formula
-    int shave = 1 + random2(1 + div_rand_round(you.piety, 30));
-    dam -= shave;
-    mprf("Jiyva absorbs %d damage for you.", dam >= 0 ? shave : shave + dam);
 
     return dam;
 }
@@ -935,8 +806,6 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
             hints_healing_check();
 
-            _xom_checks_damage(death_type, dam, source);
-
             // for note taking
             string damage_desc;
             if (!see_source)
@@ -980,9 +849,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         you.escaped_death_aux   = aux == nullptr ? "" : aux;
 
         // Xom should only kill his worshippers if they're under penance
-        // or Xom is bored.
-        if (you_worship(GOD_XOM) && !you.penance[GOD_XOM]
-            && you.gift_timeout > 0)
+        if (you_worship(GOD_XOM) && !you.penance[GOD_XOM])
         {
             return;
         }
@@ -1007,9 +874,6 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         else if (strstr(aux, "Xom") == nullptr)
             death_type = KILLED_BY_XOM;
     }
-    // Xom may still try to save your life.
-    else if (xom_saves_your_life(death_type, aux))
-        return;
 
 #if defined(WIZARD) || defined(DEBUG)
     if (!non_death && crawl_state.disables[DIS_DEATH])

@@ -82,6 +82,16 @@ sub fix_draco_species
     $sp
 }
 
+sub fix_vampire
+{
+    my ($sp) = @_;
+    if ($sp =~ /Vampire/)
+    {
+        $sp = "Jiangshi";
+    }
+    $sp
+}
+
 sub find_skill
 {
     my ($species, $skill) = @_;
@@ -128,6 +138,21 @@ sub aptitude_table
         next if $sp eq 'Sludge Elf';
         next if $sp eq 'Djinni';
         next if $sp eq 'Lava Orc';
+        next if $sp eq 'Centaur';
+        next if $sp eq 'Demigod';
+        next if $sp eq 'Deep Dwarf';
+        next if $sp eq 'Felid';
+        next if $sp eq 'Mottled Draconian';
+        next if $sp eq 'Frogtaur';
+        next if $sp eq 'Ghoul';
+        next if $sp eq 'Halfling';
+        next if $sp eq 'Ogre';
+        next if $sp eq 'Hill Orc';
+        
+        if($sp eq 'Vampire')
+        {
+            $sp = 'Jiangshi';
+		}
 
         my $line = '';
         $line .= fix_draco_species($sp, \$seen_draconian_length);
@@ -256,6 +281,10 @@ sub load_mods
     {
         my $sp = $_;
         $sp =~ s/Base //;
+        if ($sp eq 'Vampire')
+        {
+            $sp = 'Jiangshi';
+		}
         my ($xp, $hp, $mp, $mr) = $file =~ /$sp.*\n.*\n *(-?\d), (-?\d), (-?\d), (\d),/;
 
         $SPECIES_SKILLS{$_}{"Experience"} = $xp;

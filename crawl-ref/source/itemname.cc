@@ -406,7 +406,7 @@ const char* missile_brand_name(const item_def &item, mbn_type t)
 
 static const char *weapon_brands_terse[] =
 {
-    "", "flame", "freeze", "holy", "elec",
+    "", "flame", "freeze", "silver", "elec",
 #if TAG_MAJOR_VERSION == 34
     "obsolete", "obsolete",
 #endif
@@ -431,7 +431,7 @@ static const char *weapon_brands_terse[] =
 
 static const char *weapon_brands_verbose[] =
 {
-    "", "flaming", "freezing", "holy wrath", "electrocution",
+    "", "flaming", "freezing", "holy silver", "electrocution",
 #if TAG_MAJOR_VERSION == 34
     "orc slaying", "dragon slaying",
 #endif
@@ -616,7 +616,7 @@ static const char* _wand_type_name(int wandtype)
     case WAND_DIGGING:         return "digging";
     case WAND_ICEBLAST:        return "iceblast";
     case WAND_LIGHTNING:       return "lightning";
-    case WAND_POLYMORPH:       return "polymorph";
+    case WAND_POLYMORPH:       return "slimification";
     case WAND_ENSLAVEMENT:     return "enslavement";
     case WAND_ACID:            return "acid";
     case WAND_DISINTEGRATION:  return "disintegration";
@@ -2583,7 +2583,9 @@ void check_item_knowledge(bool unknown_items)
         for (int i = 0; i < NUM_MISSILES; i++)
         {
 #if TAG_MAJOR_VERSION == 34
-            if (i == MI_DART || i == MI_NEEDLE || i == MI_SLING_BULLET)
+            if (i == MI_DART || i == MI_NEEDLE || i == MI_SLING_BULLET
+                || i == MI_ARROW || i == MI_STONE || i == MI_BOLT
+                || i == MI_THROWING_NET)
                 continue;
 #endif
             _add_fake_item(OBJ_MISSILES, i, selected_items, items_missile);

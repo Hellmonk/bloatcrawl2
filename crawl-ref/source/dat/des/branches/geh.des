@@ -155,7 +155,7 @@ KMONS:   34 = ice devil
 KMONS:   56 = reaper / cool robin w:5
 KMONS:   7 = alligator snapping turtle skeleton / anaconda simulacrum / \
          golden dragon simulacrum w:5 / iron troll simulacrum w:5 / hydra simulacrum
-KMONS:   0 = skeletal warrior ; arbalest ego:freezing ident:type . arrow
+KMONS:   0 = skeletal warrior ; arbalest ego:freezing ident:type
 SUBST:   l = w, W = .
 :  else
 KMONS:   1 = cool robin
@@ -190,7 +190,7 @@ ENDMAP
 
 NAME:    hangedman_elemental_corridor
 TAGS:    no_monster_gen no_pool_fixup allow_dup
-DEPTH:   Geh, Coc, Zot, !Geh:$, !Coc:$, !Zot:$, Abyss
+DEPTH:   Geh, Coc, Zot, !Geh:$, !Coc:$, !Zot:$
 SHUFFLE: 123456, }] / }] / {[ / **
 :  if you.in_branch("Geh") then
 MONS:    brimstone fiend / balrug / hellion
@@ -203,14 +203,6 @@ MONS:    eight-headed hydra simulacrum w:2 / \
          seven-headed hydra simulacrum w:2 / \
          ice dragon simulacrum w:3 / freezing wraith w:3 / ice devil
 SUBST:   l = w, F = f, %* = ., 2 = 1, 3456 = 2
-:  elseif you.in_branch("Abyss") then
-MONS:    blizzard demon / frost giant / dancing weapon ; battleaxe ego:freezing ident:type w:5
-MONS:    simulacrum w:12 / water elemental w:5 / \
-         white very ugly thing w:15 / ice devil w:8
-MONS:    balrug / hellion / fire crab w:5 / hellephant w:5
-MONS:    hell hound w:8 / fire elemental w:5 / \
-         red very ugly thing w:15 / efreet w:12
-SUBST:   * = *||, {}[] = ***|, xc = xxxccb, 5 = 2, 6 = 4
 :  else
 KMONS:   123 = fire dragon
 KMONS:   456 = ice dragon

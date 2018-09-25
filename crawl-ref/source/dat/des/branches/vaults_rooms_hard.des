@@ -369,7 +369,7 @@ ENDMAP
 
 NAME:    hangedman_vaults_hard_town_square
 TAGS:    vaults_hard
-KFEAT:   d = any shop
+KFEAT:   d = abandoned_shop
 SHUFFLE: abc, de, d*, AB
 SUBST:   a : x., b : x.., c = ., e = %%$, * = %:3 *:7
 SUBST:   A : x.., B : xx., C : xGT

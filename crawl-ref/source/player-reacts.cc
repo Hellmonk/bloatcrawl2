@@ -357,6 +357,35 @@ static void _end_horror()
     you.set_duration(DUR_HORROR, 0);
 }
 
+static void _malmutation_aura()
+{
+    if(you_worship(GOD_ZIN))
+        return;
+    if (you.magic_contamination < 2500)
+        contaminate_player(2500 - you.magic_contamination);
+    for (adjacent_iterator ai(you.pos()); ai; ++ai)
+    {
+        monster* mon = monster_at(*ai);
+        if (mon && mon->attitude == ATT_HOSTILE && mon->alive())
+        {
+            mon->malmutate("");
+        }
+    }
+}
+
+static void _dream_aura()
+{
+    for (adjacent_iterator ai(you.pos()); ai; ++ai)
+    {
+        monster* mon = monster_at(*ai);
+        if (mon && mon->attitude == ATT_HOSTILE && mon->alive()
+        && one_chance_in(25))
+        {
+            mon->put_to_sleep(&you, random2avg(50 - mon->get_hit_dice(),2) + 1, true);
+        }
+    }
+}
+
 /**
  * Update penalties for cowardice based on the current situation, if the player
  * has Ru's MUT_COWARDICE.
@@ -608,6 +637,7 @@ static void _decrement_simple_duration(duration_type dur, int delay)
  */
 static void _decrement_durations()
 {
+	
     const int delay = you.time_taken;
 
     _decrement_confusion(delay);
@@ -1095,6 +1125,12 @@ void player_reacts()
     dec_disease_player(you.time_taken);
     if (you.duration[DUR_POISONING])
         handle_player_poison(you.time_taken);
+	
+    if (you.get_mutation_level(MUT_RADIOACTIVE))
+        _malmutation_aura();
+	
+    if (you.get_mutation_level(MUT_DREAM_DUST))
+        _dream_aura();
 
     // Reveal adjacent mimics.
     for (adjacent_iterator ai(you.pos(), false); ai; ++ai)
@@ -1113,6 +1149,13 @@ void player_reacts()
 
     if (you.props[EMERGENCY_FLIGHT_KEY].get_bool())
         _handle_emergency_flight();
+	
+    //recalc pproj power every turn
+    if(you.attribute[ATTR_PORTAL_PROJECTILE] > 0)
+    {
+        you.attribute[ATTR_PORTAL_PROJECTILE] = 1 + calc_spell_power(SPELL_PORTAL_PROJECTILE, true);
+    }
+
     // Trog doesn't like it when you sustain spells
     if (you_worship(GOD_TROG) && you.mp_frozen > 0)
     {

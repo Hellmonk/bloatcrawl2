@@ -873,9 +873,7 @@ w:30
 ##########################################################
 # adjective2, Vampire special
 ##########################################################
-insult vampire adj2
-
-bat-flapping
+insult jiangshi adj2
 
 blood-sucking
 

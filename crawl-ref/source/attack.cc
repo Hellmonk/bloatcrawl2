@@ -162,9 +162,6 @@ int attack::calc_to_hit(bool random)
         // weapon skill contribution
         if (using_weapon())
         {
-            if (you.skill(wpn_skill) < 1 && player_in_a_dangerous_place())
-                xom_is_stimulated(10); // Xom thinks that is mildly amusing.
-
             mhit += maybe_random_div(you.skill(wpn_skill, 100) * 2, 100,
                                      random);
         }
@@ -210,7 +207,7 @@ int attack::calc_to_hit(bool random)
 
         // mutation
         if (you.get_mutation_level(MUT_EYEBALLS))
-            mhit += 2 * you.get_mutation_level(MUT_EYEBALLS) + 1;
+            mhit += 7 * you.get_mutation_level(MUT_EYEBALLS);
 
         // hit roll
         mhit = maybe_random2(mhit, random);
@@ -260,7 +257,7 @@ int attack::calc_to_hit(bool random)
         // This can only help if you're visible!
         const int how_transparent = you.get_mutation_level(MUT_TRANSLUCENT_SKIN);
         if (defender->is_player() && how_transparent)
-            mhit -= 2 * how_transparent;
+            mhit -= 6 * how_transparent;
 
         if (defender->backlit(false))
             mhit += 2 + random2(8);
@@ -482,7 +479,10 @@ bool attack::distortion_affects_defender()
     case BANISH:
         if (defender_visible)
             obvious_effect = true;
-        defender->banish(attacker, attacker->name(DESC_PLAIN, true),
+        if (defender->is_player())
+            contaminate_player(4000 + random2(4000));
+        else
+            defender->banish(attacker, attacker->name(DESC_PLAIN, true),
                          attacker->get_experience_level());
         return true;
     case NONE:
@@ -642,9 +642,6 @@ void attack::chaos_affects_defender()
             // The player shouldn't get new permanent followers from cloning.
             if (clone->attitude == ATT_FRIENDLY && !clone->is_summoned())
                 clone->mark_summoned(6, true, MON_SUMM_CLONE);
-
-            // Monsters being cloned is interesting.
-            xom_is_stimulated(clone->friendly() ? 12 : 25);
         }
         break;
     }
@@ -676,11 +673,6 @@ void attack::chaos_affects_defender()
                                        : ENCH_SHAPESHIFTER);
         // Immediately polymorph monster, just to make the effect obvious.
         monster_polymorph(mon, RANDOM_MONSTER);
-
-        // Xom loves it if this happens!
-        const int friend_factor = mon->friendly() ? 1 : 2;
-        const int glow_factor   = mon->has_ench(ENCH_SHAPESHIFTER) ? 1 : 2;
-        xom_is_stimulated(64 * friend_factor * glow_factor);
         break;
     }
     case CHAOS_MISCAST:
@@ -979,6 +971,24 @@ void attack::drain_defender()
                     defender_name(true).c_str());
 			special_damage_message = special_damage_message + " (" + d + ")!";
         }
+    }
+}
+
+void attack::bite_drain_defender()
+{
+    if (defender->is_monster() && coinflip())
+        return;
+
+    if (!(defender->holiness() & MH_NATURAL))
+        return;
+
+    special_damage = resist_adjust_damage(defender, BEAM_NEG,
+                                          (1 + random2(damage_done)) / 2);
+
+    if (defender->drain_exp(attacker, true, 20 + min(35, damage_done))
+        && defender_visible)
+    {
+        mprf("Your bite drains %s!", defender_name(true).c_str());
     }
 }
 
@@ -1599,6 +1609,11 @@ bool attack::apply_damage_brand(const char *what)
                     defender_name(false).c_str(),
                     defender->conj_verb("convulse").c_str(),
                     attack_strength_punctuation(special_damage).c_str());
+        }
+        else if (!special_damage)
+        {
+            special_damage_message = "";
+            special_damage = silver_damages_victim(defender, damage_done, special_damage_message);
         }
         break;
 

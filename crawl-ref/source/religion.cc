@@ -62,12 +62,14 @@
 #include "skills.h"
 #include "spl-book.h"
 #include "spl-miscast.h"
+#include "spl-selfench.h"
 #include "sprint.h"
 #include "state.h"
 #include "stringutil.h"
 #include "terrain.h"
 #include "transform.h"
 #include "view.h"
+#include "xom.h"
 
 #ifdef DEBUG_RELIGION
 #    define DEBUG_DIAGNOSTICS
@@ -402,9 +404,6 @@ bool is_unknown_god(god_type god)
 
 bool is_unavailable_god(god_type god)
 {
-    if (god == GOD_JIYVA && jiyva_is_dead())
-        return true;
-
     // Disabled, pending a rework.
     if (god == GOD_PAKELLAS || god == GOD_FEDHAS || god == GOD_ASHENZARI
 		|| god == GOD_BEOGH || god == GOD_HEPLIAKLQANA)
@@ -491,7 +490,8 @@ bool xp_penance(god_type god)
            && (god == GOD_ASHENZARI
                || god == GOD_GOZAG
                || god == GOD_HEPLIAKLQANA
-               || god == GOD_PAKELLAS);
+               || god == GOD_PAKELLAS
+               || god == GOD_XOM);
 }
 
 void dec_penance(god_type god, int val)
@@ -512,15 +512,9 @@ void dec_penance(god_type god, int val)
         mark_milestone("god.mollify",
                        "mollified " + god_name(god) + ".");
 
-        const bool dead_jiyva = (god == GOD_JIYVA && jiyva_is_dead());
-
         simple_god_message(
-            make_stringf(" seems mollified%s.",
-                         dead_jiyva ? ", and vanishes" : "").c_str(),
+            make_stringf(" seems mollified").c_str(),
             god);
-
-        if (dead_jiyva)
-            add_daction(DACT_REMOVE_JIYVA_ALTARS);
 
         take_note(Note(NOTE_MOLLIFY_GOD, god));
 
@@ -638,12 +632,6 @@ static void _grant_temporary_waterwalk()
 {
     mprf("Your water-walking will last only until you reach solid ground.");
     you.props[TEMP_WATERWALK_KEY] = true;
-}
-
-bool jiyva_is_dead()
-{
-    return you.royal_jelly_dead
-           && !you_worship(GOD_JIYVA) && !you.penance[GOD_JIYVA];
 }
 
 void set_penance_xp_timeout()
@@ -1224,16 +1212,10 @@ static bool _jiyva_mutate()
 {
     simple_god_message(" alters your body.");
 
-    const int rand = random2(100);
-
-    if (rand < 5)
-        return delete_mutation(RANDOM_SLIME_MUTATION, "Jiyva's grace", true, false, true);
-    else if (rand < 30)
-        return delete_mutation(RANDOM_NON_SLIME_MUTATION, "Jiyva's grace", true, false, true);
-    else if (rand < 55)
-        return mutate(RANDOM_MUTATION, "Jiyva's grace", true, false, true);
-    else if (rand < 75)
+    if (one_chance_in(5))
         return mutate(RANDOM_SLIME_MUTATION, "Jiyva's grace", true, false, true);
+    else if (coinflip())
+        return mutate(RANDOM_MUTATION, "Jiyva's grace", true, false, true);
     else
         return mutate(RANDOM_GOOD_MUTATION, "Jiyva's grace", true, false, true);
 }
@@ -1788,14 +1770,13 @@ bool do_god_gift(bool forced)
         }
 
         case GOD_JIYVA:
-            if (forced || you.piety >= piety_breakpoint(2)
-                          && random2(you.piety) > 50
-                          && one_chance_in(4) && !you.gift_timeout
+            if (forced || you.piety >= piety_breakpoint(0)
+                          && one_chance_in(10) && !you.gift_timeout
                           && you.can_safely_mutate())
             {
                 if (_jiyva_mutate())
                 {
-                    _inc_gift_timeout(15 + roll_dice(2, 4));
+                    _inc_gift_timeout(15 + roll_dice(2, 6));
                     you.num_current_gifts[you.religion]++;
                     you.num_total_gifts[you.religion]++;
                 }
@@ -1926,11 +1907,6 @@ bool do_god_gift(bool forced)
                         take_note(Note(NOTE_OFFERED_SPELL, *it));
                     }
                     prompt += ".";
-                    if (gifts >= NUM_VEHUMET_GIFTS - 1)
-                    {
-                        prompt += " These spells will remain available"
-                                  " as long as you worship Vehumet.";
-                    }
 
                     you.duration[DUR_VEHUMET_GIFT] = (100 + random2avg(100, 2)) * BASELINE_DELAY;
                     if (gifts >= 5)
@@ -1940,6 +1916,17 @@ bool do_god_gift(bool forced)
 
                     simple_god_message(prompt.c_str());
                     // included in default force_more_message
+					
+                    for (const spell_type& st : offers)
+                    {
+                        if (!you.spell_library[st])
+                        {
+                            you.spell_library.set(st, true);
+                            bool useless = !you_can_memorise(st);
+                            if (!useless)
+                                mprf("You add the spell %s to your library.", spell_title(st));
+                        }
+                    }
 
                     success = true;
                 }
@@ -2296,20 +2283,6 @@ static void _gain_piety_point()
         if (rank >= rank_for_passive(passive_t::identify_items))
             auto_id_inventory();
 
-        // TODO: add one-time ability check in have_passive
-        if (have_passive(passive_t::unlock_slime_vaults) && can_do_capstone_ability(you.religion))
-        {
-            simple_god_message(" will now unseal the treasures of the "
-                               "Slime Pits.");
-            dlua.callfn("dgn_set_persistent_var", "sb",
-                        "fix_slime_vaults", true);
-            // If we're on Slime:6, pretend we just entered the level
-            // in order to bring down the vault walls.
-            if (level_id::current() == level_id(BRANCH_SLIME, 6))
-                dungeon_events.fire_event(DET_ENTERED_LEVEL);
-
-            you.one_time_ability_used.set(you.religion);
-        }
         if (you_worship(GOD_HEPLIAKLQANA)
             && rank == 2 && !you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY))
         {
@@ -2583,6 +2556,9 @@ void excommunication(bool voluntary, god_type new_god)
 
     if (old_god == GOD_ASHENZARI)
         ash_init_bondage(&you);
+	
+    if (old_god == GOD_XOM)
+        xom_mutate_player(true);
 
     you.num_current_gifts[old_god] = 0;
 
@@ -3415,6 +3391,14 @@ static void _join_trog()
     }
 }
 
+static void _join_xom()
+{
+    if(!you.attribute[ATTR_XOM_MUT_XP])
+        you.attribute[ATTR_XOM_MUT_XP] = 20 * you.experience_level;
+    if(!you.attribute[ATTR_XOM_GIFT_XP])
+        you.attribute[ATTR_XOM_GIFT_XP] = 20 * you.experience_level;
+}
+
 // Setup for joining the orderly ascetics of Zin.
 static void _join_zin()
 {
@@ -3475,6 +3459,7 @@ static const map<god_type, function<void ()>> on_join = {
     { GOD_PAKELLAS, _join_pakellas },
     { GOD_RU, _join_ru },
     { GOD_TROG, _join_trog },
+    { GOD_XOM, _join_xom },
     { GOD_ZIN, _join_zin },
 };
 
@@ -3519,12 +3504,16 @@ void join_religion(god_type which_god)
 
     // When you start worshipping a good god, you make all non-hostile
     // unholy and evil beings hostile.
-    if (is_good_god(you.religion)
-        && query_daction_counter(DACT_ALLY_UNHOLY_EVIL))
+    if (is_good_god(you.religion))
     {
-        add_daction(DACT_ALLY_UNHOLY_EVIL);
-        mprf(MSGCH_MONSTER_ENCHANT, "Your unholy and evil allies forsake you.");
+        if(query_daction_counter(DACT_ALLY_UNHOLY_EVIL))
+        {
+            add_daction(DACT_ALLY_UNHOLY_EVIL);
+            mprf(MSGCH_MONSTER_ENCHANT, "Your unholy and evil allies forsake you.");
+        }
+        dispel_permanent_buffs(true);
     }
+	
 
     // Move gold to top of piles with Gozag.
     if (have_passive(passive_t::detect_gold))
@@ -4487,7 +4476,6 @@ static bool _is_temple_god(god_type god)
     switch (god)
     {
     case GOD_NO_GOD:
-    case GOD_LUGONU:
     case GOD_BEOGH:
     case GOD_ASHENZARI: 
     case GOD_HEPLIAKLQANA:

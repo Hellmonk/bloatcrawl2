@@ -748,13 +748,6 @@ bool zin_check_able_to_recite(bool quiet)
         return false;
     }
 
-    if (you.duration[DUR_WATER_HOLD] && !you.res_water_drowning())
-    {
-        if (!quiet)
-            mpr("You cannot recite while unable to breathe!");
-        return false;
-    }
-
     return true;
 }
 
@@ -4160,11 +4153,11 @@ bool gozag_setup_call_merchant(bool quiet)
         }
         return false;
     }
-    if (!is_connected_branch(level_id::current().branch))
+    if (level_id::current().branch != BRANCH_BAZAAR)
     {
         if (!quiet)
         {
-            mprf("No merchants are willing to come to this location.");
+            mprf("You must be in the bazaar to call a merchant.");
             return false;
         }
     }
@@ -4621,7 +4614,7 @@ static int _upheaval_radius(int pow)
 
 spret_type qazlal_upheaval(coord_def target, bool quiet, bool fail)
 {
-    int pow = you.skill(SK_INVOCATIONS, 9);
+    int pow = you.skill(SK_INVOCATIONS, 7);
     const int max_radius = _upheaval_radius(pow);
 
     bolt beam;
@@ -4906,7 +4899,7 @@ bool qazlal_disaster_area()
     bool friendlies = false;
     vector<coord_def> targets;
     vector<int> weights;
-    const int pow = you.skill(SK_INVOCATIONS, 8);
+    const int pow = you.skill(SK_INVOCATIONS, 7);
     const int upheaval_radius = _upheaval_radius(pow);
     for (radius_iterator ri(you.pos(), LOS_RADIUS, C_SQUARE, LOS_NO_TRANS, true);
          ri; ++ri)

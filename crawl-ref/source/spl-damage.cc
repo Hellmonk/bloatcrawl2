@@ -211,10 +211,11 @@ spret_type cast_chain_spell(spell_type spell_cast, int pow,
 
     bool first = true;
     coord_def source, target;
-
-    for (source = caster->pos(); pow > 0;
-         pow -= 8 + random2(13), source = target)
+	
+    source = target = caster->pos();
+    do
     {
+        source = target;
         // infinity as far as this spell is concerned
         // (Range - 1) is used because the distance is randomised and
         // may be shifted by one.
@@ -258,13 +259,9 @@ spret_type cast_chain_spell(spell_type spell_cast, int pow,
 
             if (dist < min_dist)
             {
-                // switch to looking for closer targets (but not always)
-                if (!one_chance_in(10))
-                {
-                    min_dist = dist;
-                    target = mi->pos();
-                    count = 0;
-                }
+                min_dist = dist;
+                target = mi->pos();
+                count = 0;
             }
             else if (target.x == -1 || one_chance_in(count))
             {
@@ -335,13 +332,13 @@ spret_type cast_chain_spell(spell_type spell_cast, int pow,
             case SPELL_CHAIN_LIGHTNING:
                 beam.colour = LIGHTBLUE;
                 beam.damage = caster->is_player()
-                    ? calc_dice(5, 10 + pow * 2 / 3)
-                    : calc_dice(5, 46 + pow / 6);
+                    ? calc_dice(5, 10 + div_rand_round(pow * 2,3))
+                    : calc_dice(5, 46 + div_rand_round(pow,6));
                 break;
             case SPELL_CHAIN_OF_CHAOS:
                 beam.colour       = ETC_RANDOM;
                 beam.ench_power   = pow;
-                beam.damage       = calc_dice(3, 5 + pow / 2);
+                beam.damage       = calc_dice(3, 5 + div_rand_round(pow,2));
                 beam.real_flavour = BEAM_CHAOS;
                 beam.flavour      = BEAM_CHAOS;
             default:
@@ -357,7 +354,10 @@ spret_type cast_chain_spell(spell_type spell_cast, int pow,
                 beam.damage.size = 3;
         }
         beam.fire();
+		
+        pow -= 15;
     }
+    while (pow > random2(20));
 
     return SPRET_SUCCESS;
 }
@@ -419,7 +419,7 @@ static void _pre_refrigerate(const actor* agent, bool player,
 
 static const dice_def _refrigerate_damage(int pow)
 {
-    return dice_def(3, 5 + pow / 10);
+    return dice_def(3, 5 + pow / 5);
 }
 
 static int _refrigerate_player(const actor* agent, int pow, int avg,
@@ -438,13 +438,11 @@ static int _refrigerate_player(const actor* agent, int pow, int avg,
                  "by Ozocubu's Refrigeration", true,
                  agent->as_monster()->name(DESC_A).c_str());
             you.expose_to_element(BEAM_COLD, 5);
-
-            // Note: this used to be 12!... and it was also applied even if
-            // the player didn't take damage from the cold, so we're being
-            // a lot nicer now.  -- bwr
         }
         else
         {
+            //halve the self damage for players casting fridge on themselves
+            hurted = hurted / 2;
             ouch(hurted, KILLED_BY_FREEZING);
             you.expose_to_element(BEAM_COLD, 5);
             you.increase_duration(DUR_NO_POTIONS, 7 + random2(9), 15);
@@ -800,6 +798,12 @@ void sonic_damage(bool scream)
 
 spret_type vampiric_drain(int pow, monster* mons, bool fail)
 {
+    if (you.hp == you.hp_max)
+    {
+        mpr("Your health is already full!");
+        return SPRET_ABORT;
+    }
+	
     if (mons == nullptr || mons->submerged())
     {
         fail_check();
@@ -1406,10 +1410,14 @@ void detonation_brand(actor *wielder, coord_def where, int pow)
     // do the actual damage
     for (auto mon : affected_monsters)
     {
+        if(!mon || mon == nullptr || mon->type >= NUM_MONSTERS)
+            continue;
         int dam = resist_adjust_damage(mon, BEAM_FIRE, 1 + random2(pow) / 2);
         if(you.can_see(*mon))
         {
-            mprf("%s is burned (%d)!", mon->name(DESC_THE).c_str(), dam);
+            if(dam > 0)
+                mprf("%s is burned (%d)!", mon->name(DESC_THE).c_str(), dam);
+			
             beam_visual.explosion_draw_cell(mon->pos());
         }
         mon->expose_to_element(BEAM_FIRE, 1 + dam / 5);
@@ -1988,9 +1996,8 @@ int discharge_monsters(coord_def where, int pow, actor *agent)
     if (!victim)
         return 0;
 
-    int damage = (agent == victim) ? 1 + random2(3 + pow / 15)
-                                   : 3 + random2(5 + pow / 10
-                                                 + (random2(pow) / 10));
+    int damage = (agent == victim) ? 1 + random2(3 + div_rand_round(pow,15))
+                                   : 3 + random2(5 + div_rand_round(pow,7));
 
     bolt beam;
     beam.flavour    = BEAM_ELECTRICITY; // used for mons_adjust_flavoured
@@ -2007,7 +2014,7 @@ int discharge_monsters(coord_def where, int pow, actor *agent)
 
     if (victim->is_player())
     {
-		damage = 1 + random2(3 + pow / 15);
+		damage = 1 + random2(3 + div_rand_round(pow,15));
         dprf("You: static discharge damage: %d", damage);
         damage = check_your_resists(damage, BEAM_ELECTRICITY,
                                     "static discharge");
@@ -2049,11 +2056,11 @@ int discharge_monsters(coord_def where, int pow, actor *agent)
     }
 
     // Recursion to give us chain-lightning -- bwr
-    // Low power slight chance added for low power characters -- bwr
-    if ((pow >= 10 && !one_chance_in(4)) || (pow >= 3 && one_chance_in(10)))
+    // Smooth out some of the low end nonsense -- me
+    if (!one_chance_in(4) && x_chance_in_y(pow, 15))
     {
         mpr("The lightning arcs!");
-        pow /= (coinflip() ? 2 : 3);
+        pow = div_rand_round(pow * 2, 5);
         damage += apply_random_around_square([pow, agent] (coord_def where2) {
             return discharge_monsters(where2, pow, agent);
         }, where, true, 1);
@@ -2482,35 +2489,9 @@ int wielding_rocks()
 
 spret_type cast_sandblast(int pow, bolt &beam, bool fail)
 {
-    item_def *stone = nullptr;
-	int num_stones = 0;
-	for (item_def& i : you.inv)
-	{
-		if (i.is_type(OBJ_MISSILES, MI_STONE)
-			&& check_warning_inscriptions(i, OPER_DESTROY))
-        {
-            num_stones += i.quantity;
-            stone = &i;
-        }
-	}
-	
-	if (num_stones < 8)
-    {
-        mpr("You don't have enough stones to cast with.");
-        return SPRET_ABORT;
-    }
-
     zap_type zap = ZAP_SANDBLAST;
 
     const spret_type ret = zapping(zap, pow, beam, true, nullptr, fail);
-	
-	if (ret == SPRET_SUCCESS)
-	{
-        if(dec_inv_item_quantity(letter_to_index(stone->slot), 8))
-			mpr("You now have no stones remaining.");
-		else
-            mprf_nocap("%s", stone->name(DESC_INVENTORY).c_str());
-	}
 	
     return ret;
 }

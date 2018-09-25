@@ -1249,6 +1249,12 @@ static int _prompt_ring_to_remove(int new_ring)
         slot_chars.push_back(index_to_letter(rings.back()->link));
     }
 
+    if (slot_chars.size() + 2 > msgwin_lines())
+    {
+        // force a menu rather than a more().
+        return EQ_NONE;
+    }
+
     clear_messages();
 
     mprf(MSGCH_PROMPT,
@@ -1527,8 +1533,18 @@ static bool _swap_rings(int ring_slot)
         if (!all_same || Options.jewellery_prompt)
             unwanted = _prompt_ring_to_remove(ring_slot);
 
+        if (unwanted == EQ_NONE)
+        {
+            // do this here rather than in remove_ring so that the custom
+            // message is visible. TODO: show only worn rings
+            unwanted = prompt_invent_item(
+                    "You're wearing all the rings you can. Remove which one?",
+                    MT_INVLIST, OBJ_JEWELLERY, OPER_REMOVE,
+                    invprompt_flag::no_warning | invprompt_flag::hide_known);
+        }
+
         // Cancelled:
-        if (unwanted < -1)
+        if (unwanted < 0)
         {
             canned_msg(MSG_OK);
             return false;
@@ -1676,7 +1692,8 @@ static bool _can_puton_jewellery(int item_slot)
 }
 
 // Put on a particular ring or amulet
-static bool _puton_item(int item_slot, bool prompt_slot)
+static bool _puton_item(int item_slot, bool prompt_slot,
+                        bool check_for_inscriptions)
 {
     item_def& item = you.inv[item_slot];
 
@@ -1700,8 +1717,9 @@ static bool _puton_item(int item_slot, bool prompt_slot)
 
     // It looks to be possible to equip this item. Before going any further,
     // we should prompt the user with any warnings that come with trying to
-    // put it on.
-    if (!check_warning_inscriptions(item, OPER_PUTON))
+    // put it on, except when they have already been prompted with them
+    // from switching rings.
+    if (check_for_inscriptions && !check_warning_inscriptions(item, OPER_PUTON))
     {
         canned_msg(MSG_OK);
         return false;
@@ -1809,7 +1827,7 @@ static bool _puton_item(int item_slot, bool prompt_slot)
 }
 
 // Put on a ring or amulet. (If slot is -1, first prompt for which item to put on)
-bool puton_ring(int slot, bool allow_prompt)
+bool puton_ring(int slot, bool allow_prompt, bool check_for_inscriptions)
 {
     int item_slot;
 
@@ -1839,7 +1857,7 @@ bool puton_ring(int slot, bool allow_prompt)
 
     bool prompt = allow_prompt ? Options.jewellery_prompt : false;
 
-    return _puton_item(item_slot, prompt);
+    return _puton_item(item_slot, prompt, check_for_inscriptions);
 }
 
 // Remove the amulet/ring at given inventory slot (or, if slot is -1, prompt
@@ -2020,6 +2038,33 @@ static void _vampire_corpse_help()
         mpr("Use <w>e</w> to drain blood from corpses.");
 }
 
+/**
+ * If the player is unable to (r)ead the item in the given slot, return the
+ * reason why. Otherwise (if they are able to read it), returns "", the empty
+ * string.
+ */
+string cannot_quaff_item_reason(const item_def &item)
+{
+    if (item.base_type != OBJ_POTIONS)
+        return "You can't drink that!";
+
+    if (you_foodless(true))
+    {
+        return "You can't drink.";
+    }
+
+    if (you.berserk())
+    {
+        return "You are too berserk!";
+    }
+
+    if (you.duration[DUR_NO_POTIONS])
+    {
+        return "You cannot drink potions in your current state!";
+    }
+    return "";
+}
+
 void drink(item_def* potion)
 {
     if (you_foodless(true))
@@ -2065,12 +2110,14 @@ void drink(item_def* potion)
         return;
     }
 
-    // The "> 1" part is to reduce the amount of times that Xom is
-    // stimulated when you are a low-level 1 trying your first unknown
-    // potions on monsters.
-    const bool dangerous = (player_in_a_dangerous_place()
-                            && you.experience_level > 1);
-
+    if (you.get_mutation_level(MUT_TINY_MOUTH)
+        && !i_feel_safe(false, false, true)
+        && !yesno("Really quaff through your tiny mouth while enemies are nearby?",
+                  false, 'n'))
+    {
+        canned_msg(MSG_OK);
+        return;
+    }
     if (player_under_penance(GOD_GOZAG) && one_chance_in(3))
     {
         simple_god_message(" petitions for your drink to fail.", GOD_GOZAG);
@@ -2078,20 +2125,24 @@ void drink(item_def* potion)
         return;
     }
 
-    if (!quaff_potion(*potion))
+    if (you.get_mutation_level(MUT_TINY_MOUTH))
+    {
+        // takes 0.5, 1, 2 extra turns
+        const int turns = max(1, you.get_mutation_level(MUT_TINY_MOUTH) - 1);
+        start_delay<SlowPotionDelay>(turns, *potion);
+        if (you.get_mutation_level(MUT_TINY_MOUTH) == 1)
+            you.time_taken /= 2;
+        you.turn_is_over = true;
+        return;
+    }
+    else if (!quaff_potion(*potion))
         return;
 
-    if (!alreadyknown && dangerous)
+    if(you.get_mutation_level(MUT_POTION_AGILITY))
     {
-        // Xom loves it when you drink an unknown potion and there is
-        // a dangerous monster nearby...
-        xom_is_stimulated(200);
+        you.increase_duration(DUR_AGILITY, 15 + random2(15), 30);
     }
-    if (is_blood_potion(*potion))
-    {
-        // Always drink oldest potion.
-        remove_oldest_perishable_item(*potion);
-    }
+	
     if (in_inventory(*potion))
     {
         dec_inv_item_quantity(potion->link, 1);
@@ -2793,11 +2844,8 @@ void read_scroll(item_def& scroll)
         // Actual removal of scroll done afterwards. -- bwr
     }
 
-    const bool dangerous = player_in_a_dangerous_place();
-
     // ... but some scrolls may still be cancelled afterwards.
     bool cancel_scroll = false;
-    bool bad_effect = false; // for Xom: result is bad (or at least dangerous)
 
     switch (which_scroll)
     {
@@ -2900,7 +2948,6 @@ void read_scroll(item_def& scroll)
 
         // This is only naughty if you know you're doing it.
         did_god_conduct(DID_EVIL, 10, item_type_known(scroll));
-        bad_effect = true;
         break;
 
     case SCR_IMMOLATION:
@@ -2921,7 +2968,6 @@ void read_scroll(item_def& scroll)
         else
             mpr("The air around you briefly surges with heat, but it dissipates.");
 
-        bad_effect = true;
         break;
     }
 
@@ -2944,7 +2990,6 @@ void read_scroll(item_def& scroll)
             // Also sets wield_change.
             do_curse_item(*weapon, false);
             learned_something_new(HINT_YOU_CURSED);
-            bad_effect = true;
         }
         break;
     }
@@ -3071,14 +3116,6 @@ void read_scroll(item_def& scroll)
         else
             dec_mitm_item_quantity(scroll.index(), 1);
         count_action(CACT_USE, OBJ_SCROLLS);
-    }
-
-    if (!alreadyknown && dangerous)
-    {
-        // Xom loves it when you read an unknown scroll and there is a
-        // dangerous monster nearby... (though not as much as potions
-        // since there are no *really* bad scrolls, merely useless ones).
-        xom_is_stimulated(bad_effect ? 100 : 50);
     }
 
     if (!alreadyknown)

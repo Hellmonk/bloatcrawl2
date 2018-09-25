@@ -72,6 +72,11 @@ spret_type cast_sublimation_of_blood(int pow, bool fail)
 
 spret_type cast_death_channel(int pow, god_type god, bool fail)
 {
+    if (is_good_god(you.religion))
+    {
+        mprf("%s forbids you from sustaining this spell.", god_name(you.religion).c_str());
+        return SPRET_ABORT;
+    }
     fail_check();
     mpr("Malign forces permeate your being, awaiting release.");
 

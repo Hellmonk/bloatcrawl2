@@ -367,6 +367,12 @@ Cure Poison spell
 
 Removes poison from the caster's system.
 %%%%
+Curse spell
+
+Invokes the Curse of Zot, placing a temporary Zot trap near the target. The trap
+will cause a dangerous status effect if you step on it, and may be triggered by
+monsters as well.
+%%%%
 Darkness spell
 
 Dims the light of the dungeon, reducing the range of vision. 
@@ -1039,6 +1045,12 @@ Porkalator spell
 Transforms the target into a pig. The target moves swiftly but cannot evoke
 wands or cast spells. The caster's demise will cause the transformation to end.
 %%%%
+Piercing Shot spell
+
+Imbues the caster's thrown or fired missiles with translocational energy, causing
+them to pierce through any targets hit until reaching their maximum distance and 
+bypassing shields. Each missile thrown or fired in this way consumes additional magic.
+%%%%
 Portal Projectile spell
 
 Allows the caster to teleport fired or thrown missiles directly to their
@@ -1493,7 +1505,7 @@ effect ends, the caster's movements will be sluggish for a time.
 %%%%
 Symbol of Torment spell
 
-Calls on the powers of darkness to cause agonising injury to any living thing
+Calls on the powers of darkness to cause agonising injury to any hostile living thing
 in the caster's vicinity, cutting their resilience in half. This damage is
 never directly lethal.
 %%%%

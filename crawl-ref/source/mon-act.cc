@@ -44,6 +44,7 @@
 #include "mon-death.h"
 #include "mon-movetarget.h"
 #include "mon-place.h"
+#include "mon-poly.h"
 #include "mon-project.h"
 #include "mon-speak.h"
 #include "mon-tentacle.h"
@@ -159,12 +160,7 @@ static void _escape_water_hold(monster& mons)
 {
     if (mons.has_ench(ENCH_WATER_HOLD))
     {
-        if (mons_habitat(mons) != HT_AMPHIBIOUS
-            && mons_habitat(mons) != HT_WATER)
-        {
-            mons.speed_increment -= 5;
-        }
-        simple_monster_message(mons, " pulls free of the water.");
+        simple_monster_message(mons, " slips free of the water.");
         mons.del_ench(ENCH_WATER_HOLD);
     }
 }
@@ -916,14 +912,29 @@ bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
     item_def *launcher = nullptr;
     const item_def *weapon = nullptr;
     const int mon_item = mons_usable_missile(mons, &launcher);
-
-    if (mon_item == NON_ITEM || !mitm[mon_item].defined())
-        return false;
+	item_def *missile = nullptr;
+    bool created = false;
+	
+    launcher = mons->mslot_item(MSLOT_WEAPON);
+    if (!launcher || !is_range_weapon(*launcher))
+        launcher = mons->mslot_item(MSLOT_ALT_WEAPON);
 
     if (player_or_mon_in_sanct(*mons))
         return false;
-
-    item_def *missile = &mitm[mon_item];
+	
+    if (mon_item == NON_ITEM || !mitm[mon_item].defined())
+    {
+        if (launcher && is_range_weapon(*launcher))
+        {
+		    int p = items(false, OBJ_MISSILES, MI_ARROW, 0, SPMSL_NORMAL);
+            missile = &mitm[p];
+            created = true;
+        }
+        else 
+            return false;
+	}
+    else
+        missile = &mitm[mon_item];
 
     ASSERT(missile->base_type == OBJ_MISSILES);
 
@@ -932,7 +943,11 @@ bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
     {
         weapon = mons->mslot_item(MSLOT_WEAPON);
         if (weapon && weapon != launcher && weapon->cursed())
+        {
+            if(created)
+                destroy_item(missile->index());
             return false;
+        }
     }
 
     // Ok, we'll try it.
@@ -954,6 +969,8 @@ bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
             simple_monster_message(*mons,
                                 " is stunned by your will and fails to attack.",
                                 MSGCH_GOD);
+            if(created)
+                destroy_item(missile->index());
             return false;
         }
         else if (interference == DO_REDIRECT_ATTACK)
@@ -997,7 +1014,11 @@ bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
     if (teleport || mons_should_fire(beem) || interference != DO_NOTHING)
     {
         if (check_only)
+        {
+            if(created)
+                destroy_item(missile->index());
             return true;
+        }
 
         // Monsters shouldn't shoot if fleeing, so let them "turn to attack".
         make_mons_stop_fleeing(mons);
@@ -1006,8 +1027,11 @@ bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
             mons->swap_weapons();
 
         beem.name.clear();
-        return mons_throw(mons, beem, mon_item, teleport);
+        return mons_throw(mons, beem, *missile, teleport);
     }
+	
+    if(created)
+        destroy_item(missile->index());
 
     return false;
 }
@@ -1972,6 +1996,34 @@ static void _update_monster_attitude(monster *mon)
     }
 }
 
+vector<monster *> just_seen_queue;
+
+void mons_set_just_seen(monster *mon)
+{
+    mon->seen_context = SC_JUST_SEEN;
+    just_seen_queue.push_back(mon);
+}
+
+static void _display_just_seen()
+{
+    // these are monsters that were marked as SC_JUST_SEEN at some point since
+    // last time this was called. We announce any that leave all at once so
+    // as to handle monsters that may move multiple times per world_reacts.
+    for (auto m : just_seen_queue)
+    {
+        if (!m || invalid_monster(m) || !m->alive())
+            continue;
+        // can't use simple_monster_message here, because m is out of view.
+        // The monster should be visible to be in this queue.
+        if (in_bounds(m->pos()) && !you.see_cell(m->pos()))
+        {
+            mprf(MSGCH_PLAIN, "%s moves out of view.",
+                m->name(DESC_THE, true).c_str());
+        }
+    }
+    just_seen_queue.clear();
+}
+
 /**
  * Get all monsters to make an action, if they can/want to.
  *
@@ -2030,6 +2082,7 @@ void handle_monsters(bool with_noise)
             break;
         }
     }
+    _display_just_seen();
 
     // Process noises now (before clearing the sleep flag).
     if (with_noise)
@@ -2097,87 +2150,6 @@ static bool _jelly_divide(monster& parent)
     return true;
 }
 
-// Only Jiyva jellies eat items.
-static bool _monster_eat_item(monster* mons)
-{
-    if (!mons_eats_items(*mons))
-        return false;
-
-    // Off-limit squares are off-limit.
-    if (testbits(env.pgrid(mons->pos()), FPROP_NO_JIYVA))
-        return false;
-
-    int hps_changed = 0;
-    int max_eat = roll_dice(1, 10);
-    int eaten = 0;
-    bool shown_msg = false;
-
-    // Jellies can swim, so don't check water
-    for (stack_iterator si(mons->pos());
-         si && eaten < max_eat && hps_changed < 50; ++si)
-    {
-        if (!item_is_jelly_edible(*si))
-            continue;
-
-        dprf("%s eating %s", mons->name(DESC_PLAIN, true).c_str(),
-             si->name(DESC_PLAIN).c_str());
-
-        int quant = si->quantity;
-
-        if (si->base_type != OBJ_GOLD)
-        {
-            quant = min(quant, max_eat - eaten);
-
-            hps_changed += quant * 3;
-            eaten += quant;
-        }
-        else
-        {
-            // Shouldn't be much trouble to digest a huge pile of gold!
-            if (quant > 500)
-                quant = 500 + roll_dice(2, (quant - 500) / 2);
-
-            hps_changed += quant / 10 + 1;
-            eaten++;
-        }
-
-        if (eaten && !shown_msg && player_can_hear(mons->pos()))
-        {
-            mprf(MSGCH_SOUND, "You hear a%s slurping noise.",
-                 you.see_cell(mons->pos()) ? "" : " distant");
-            shown_msg = true;
-        }
-
-        if (you_worship(GOD_JIYVA))
-            jiyva_slurp_item_stack(*si, quant);
-
-        if (quant >= si->quantity)
-            item_was_destroyed(*si);
-        else if (is_perishable_stack(*si))
-            for (int i = 0; i < quant; ++i)
-                remove_oldest_perishable_item(*si);
-        dec_mitm_item_quantity(si.index(), quant);
-    }
-
-    if (eaten > 0)
-    {
-        hps_changed = max(hps_changed, 1);
-        hps_changed = min(hps_changed, 50);
-
-        // This is done manually instead of using heal_monster(),
-        // because that function doesn't work quite this way. - bwr
-        const int avg_hp = mons_avg_hp(mons->type);
-        mons->hit_points += hps_changed;
-        mons->hit_points = min(MAX_MONSTER_HP,
-                               min(avg_hp * 4, mons->hit_points));
-        mons->max_hit_points = max(mons->hit_points, mons->max_hit_points);
-
-        _jelly_divide(*mons);
-    }
-
-    return eaten > 0;
-}
-
 
 static bool _handle_pickup(monster* mons)
 {
@@ -2198,9 +2170,6 @@ static bool _handle_pickup(monster* mons)
         return false;
 
     int count_pickup = 0;
-
-    if (mons_eats_items(*mons) && _monster_eat_item(mons))
-        return false;
 
     if (mons_itemuse(*mons) < MONUSE_WEAPONS_ARMOUR)
         return false;
@@ -2932,8 +2901,6 @@ static bool _do_move_monster(monster& mons, const coord_def& delta)
     // The monster gave a "comes into view" message and then immediately
     // moved back out of view, leaing the player nothing to see, so give
     // this message to avoid confusion.
-    if (mons.seen_context == SC_JUST_SEEN && !you.see_cell(f))
-        simple_monster_message(mons, " moves out of view.");
     else if (crawl_state.game_is_hints() && mons.flags & MF_WAS_IN_VIEW
              && !you.see_cell(f))
     {
@@ -2969,6 +2936,11 @@ static bool _do_move_monster(monster& mons, const coord_def& delta)
 
     mons.check_redraw(mons.pos() - delta);
     mons.apply_location_effects(mons.pos() - delta);
+    if (!invalid_monster(&mons) && you.can_see(mons))
+    {
+        handle_seen_interrupt(&mons);
+        seen_monster(&mons);
+    }
 
     _handle_manticore_barbs(mons);
 

@@ -156,6 +156,8 @@ static const int conflict[][3] =
     { MUT_NO_REGENERATION,     MUT_INHIBITED_REGENERATION, -1},
     { MUT_NO_REGENERATION,     MUT_REGENERATION,          -1},
     { MUT_NIGHTSTALKER,        MUT_DAYWALKER,             -1},
+    { MUT_ACIDIC_BITE,         MUT_DRAIN_BITE,             -1},
+    { MUT_OUT_OF_LOS_HPREGEN,  MUT_INHIBITED_REGENERATION, -1},
 };
 
 equipment_type beastly_slot(int mut)
@@ -617,16 +619,6 @@ string describe_mutations(bool center_title)
                          && you.form == TRAN_DRAGON));
     }
 
-    if (you.species == SP_VAMPIRE)
-    {
-        if (you.hunger_state <= HS_STARVING)
-            result += "<green>You do not heal naturally.</green>\n";
-        else if (you.hunger_state < HS_SATIATED)
-            result += "<green>You heal slowly.</green>\n";
-        else if (you.hunger_state >= HS_FULL)
-            result += "<green>Your natural rate of healing is unusually fast.</green>\n";
-    }
-
     if (you.species == SP_OCTOPODE)
     {
         result += _annotate_form_based("You are amphibious.",
@@ -863,19 +855,6 @@ void display_mutations()
         _display_temperature();
     }
 #endif
-}
-
-static int _calc_mutation_amusement_value(mutation_type which_mutation)
-{
-    int amusement = 12 * (11 - _get_mutation_def(which_mutation).weight);
-
-    if (MUT_GOOD(mut_data[which_mutation]))
-        amusement /= 2;
-    else if (MUT_BAD(mut_data[which_mutation]))
-        amusement *= 2;
-    // currently is only ever one of these, but maybe that'll change?
-
-    return amusement;
 }
 
 static bool _accept_mutation(mutation_type mutat, bool ignore_weight = false)
@@ -1623,6 +1602,7 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
 
         case MUT_LOW_MAGIC:
         case MUT_HIGH_MAGIC:
+        case MUT_EXTRA_MP:
             calc_mp();
             break;
 
@@ -1694,8 +1674,6 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
         default:
             break;
         }
-
-        xom_is_stimulated(_calc_mutation_amusement_value(mutat));
 
         if (mutclass != MUTCLASS_TEMPORARY)
         {

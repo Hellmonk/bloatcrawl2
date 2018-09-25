@@ -340,7 +340,7 @@ int raw_spell_fail(spell_type spell)
 
         200,
         260,
-        330,
+        340,
     };
     const int spell_level = spell_difficulty(spell);
     ASSERT_RANGE(spell_level, 0, (int) ARRAYSZ(difficulty_by_level));
@@ -446,36 +446,44 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
 
     if (apply_intel)
         power = (power * you.intel()) / 10;
+ 
+    if (fail_rate_check)
+    {
+        // Scale appropriately.
+        // The stepdown performs this step in the else block.
+        power *= scale;
+        power /= 100;
+    }
+    else
+    {
+        // Brilliance boosts spell power a bit (equivalent to three
+        // spell school levels).
+        if (you.duration[DUR_BRILLIANCE])
+            power += 600;
 
-    // [dshaligram] Enhancers don't affect fail rates any more, only spell
-    // power. Note that this does not affect Vehumet's boost in castability.
-    if (!fail_rate_check)
+        // [dshaligram] Enhancers don't affect fail rates any more, only spell
+        // power. Note that this does not affect Vehumet's boost in castability.
         power = apply_enhancement(power, _spell_enhancement(spell));
 
-    // Wild magic boosts spell power but decreases success rate.
-    if (!fail_rate_check)
-    {
+        // Wild magic boosts spell power but decreases success rate.
         power *= (10 + 3 * you.get_mutation_level(MUT_WILD_MAGIC));
         power /= (10 + 3 * you.get_mutation_level(MUT_SUBDUED_MAGIC));
-    }
 
-    // Augmentation boosts spell power at high HP.
-    if (!fail_rate_check)
-    {
+        // Augmentation boosts spell power at high HP.
         power *= 10 + 4 * augmentation_amount();
         power /= 10;
+    
+        // Each level of horror reduces spellpower by 10%
+        if (you.duration[DUR_HORROR])
+        {
+            power *= 10;
+            power /= 10 + (you.props[HORROR_PENALTY_KEY].get_int() * 3) / 2;
+        }
+     
+        // at this point, `power` is assumed to be basically in centis.
+        // apply a stepdown, and scale.
+        power = stepdown_spellpower(power, scale);
     }
-
-    // Each level of horror reduces spellpower by 10%
-    if (you.duration[DUR_HORROR] && !fail_rate_check)
-    {
-        power *= 10;
-        power /= 10 + (you.props[HORROR_PENALTY_KEY].get_int() * 3) / 2;
-    }
-
-    // at this point, `power` is assumed to be basically in centis.
-    // apply a stepdown, and scale.
-    power = stepdown_spellpower(power, scale);
 
     const int cap = spell_power_cap(spell);
     if (cap > 0 && cap_power)
@@ -851,6 +859,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
         && !crawl_state.disables[DIS_CONFIRMATIONS])
     {
         // None currently dock just piety, right?
+        // need to fix this interaction w/ permabuffs; they're just straight forbidden now.
         if (!yesno(god_loathes_spell(spell, you.religion) ?
             "<lightred>Casting this spell will cause instant excommunication!"
                 "</lightred> Really cast?" :
@@ -1762,7 +1771,11 @@ static spret_type _handle_buff_spells(spell_type spell, int powc, bolt& beam, go
         case SPELL_BATTLESPHERE:
             return player_battlesphere(&you, powc, god, false);
         case SPELL_SPELLFORGED_SERVITOR:
-            return player_spellforged_servitor(powc, god, false);
+            return player_spellforged_servitor(powc, god, false);    
+        case SPELL_PORTAL_PROJECTILE:
+            return cast_portal_projectile(powc, false);
+        case SPELL_PIERCING_SHOT:
+            return cast_piercing_shot(powc, false);
         default:
 		    return SPRET_NONE;
     }
@@ -2013,9 +2026,6 @@ static spret_type _do_cast(spell_type spell, int powc,
 
     case SPELL_SILENCE:
         return cast_silence(powc, fail);
-
-    case SPELL_PORTAL_PROJECTILE:
-        return cast_portal_projectile(powc, fail);
 
     // other
     case SPELL_BORGNJORS_REVIVIFICATION:

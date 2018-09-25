@@ -139,9 +139,8 @@ public:
 
     virtual string get_filter_text() const override;
 
-#ifdef USE_TILE
+    // returns const false and leaves arg unchanged unless USE_TILES is defined
     virtual bool get_tiles(vector<tile_def>& tiles) const override;
-#endif
 
 private:
     void add_class_hotkeys(const item_def &i);
@@ -233,6 +232,10 @@ void identify_inventory();
 
 const char *item_class_name(int type, bool terse = false);
 const char *item_slot_name(equipment_type type);
+
+#ifdef USE_TILE
+bool get_tiles_for_item(const item_def &item, vector<tile_def>& tileset, bool show_background);
+#endif
 
 bool check_old_item_warning(const item_def& item, operation_types oper);
 bool check_warning_inscriptions(const item_def& item, operation_types oper);

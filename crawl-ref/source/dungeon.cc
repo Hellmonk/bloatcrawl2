@@ -474,6 +474,44 @@ void upstairs_removal()
 	}      
 }
 
+void bazaar_postlevel_shops()
+{
+	int added_shop_count = one_chance_in(6) ? 2 + random2(4) : 1;
+    vector<coord_def> locations;
+    int tries = 50;
+    for (rectangle_iterator ri(0); ri; ++ri)
+    {
+        if (in_bounds(*ri))
+        {
+            dungeon_feature_type feat = grd(*ri);
+            if (feat == DNGN_FLOOR)
+                locations.push_back(*ri);
+        }
+    }
+    while (tries > 0 && added_shop_count > 0)
+    {
+        tries--;
+        coord_def c = locations[random2(locations.size())];
+        if(grd(c) == DNGN_FLOOR) //need this in case another shop was already placed here
+        {
+			shop_type type = static_cast<shop_type>(random2(NUM_SHOPS));
+            while(type == SHOP_FOOD)
+            {
+                 type = static_cast<shop_type>(random2(NUM_SHOPS));
+            }
+            place_spec_shop(c, type);
+			added_shop_count--;
+            map_cell& cell = env.map_knowledge(c);
+            cell.clear_cloud();
+            cell.clear_item();
+            cell.clear_monster();
+#ifdef USE_TILE
+            tile_reset_fg(c);
+#endif            
+        }
+    }
+}
+
 void map_stairs_down()
 {
     int mapped = 0;
@@ -831,6 +869,7 @@ static bool _is_upwards_exit_stair(const coord_def &c)
     {
     case DNGN_EXIT_PANDEMONIUM:
     case DNGN_TRANSIT_PANDEMONIUM:
+    case DNGN_EXIT_BAZAAR:
     case DNGN_EXIT_ABYSS:
         return true;
     case DNGN_ENTER_HELL:
@@ -859,6 +898,7 @@ static bool _is_exit_stair(const coord_def &c)
     {
     case DNGN_EXIT_PANDEMONIUM:
     case DNGN_TRANSIT_PANDEMONIUM:
+    case DNGN_EXIT_BAZAAR:
     case DNGN_EXIT_ABYSS:
         return true;
     case DNGN_ENTER_HELL:
@@ -2563,6 +2603,15 @@ static bool _pan_level()
     return vault->orient != MAP_ENCOMPASS;
 }
 
+static bool _bazaar_level()
+{
+	const map_def *vault = nullptr;
+    vault = random_map_for_tag("bazaar", false, false, MB_FALSE);
+    ASSERT(vault);
+	_dgn_ensure_vault_placed(_build_primary_vault(vault), false);
+    return vault->orient != MAP_ENCOMPASS;
+}
+
 // Returns true if we want the dungeon builder
 // to place more vaults after this
 static bool _builder_by_type()
@@ -2588,7 +2637,11 @@ static bool _builder_by_type()
         setup_vault_mon_list();
         return _pan_level();
     }
-    else
+    else if (player_in_branch(BRANCH_BAZAAR))
+    {
+        return _bazaar_level();
+    }
+    else 
         return _builder_normal();
 }
 
@@ -2612,6 +2665,13 @@ static const map_def *_dgn_random_map_for_place(bool minivault)
 
             // Fall through and use a different Temple map instead.
         }
+    }
+	
+    if(player_in_branch(BRANCH_BAZAAR))
+    {
+        const map_def *vault = random_map_for_tag("bazaar", false, false, MB_FALSE);
+        if(vault)
+            return vault;
     }
 
     const level_id lid = level_id::current();
@@ -5297,7 +5357,7 @@ static dungeon_feature_type _pick_an_altar()
             {
                 god = random_god();
             }
-            while (god == GOD_LUGONU || god == GOD_BEOGH || god == GOD_JIYVA);
+            while (god == GOD_BEOGH);
             break;
         }
     }
@@ -5343,8 +5403,8 @@ static int _shop_greed(shop_type type, int level_number, int spec_greed)
     const int base_greed = greed_for_shop_type(type, level_number);
     int adj_greed = base_greed;
 
-    // Allow bargains in bazaars, prices randomly between 60% and 95%.
-    if (player_in_branch(BRANCH_BAZAAR))
+    // Allow bargains occasionally, prices randomly between 60% and 95%.
+    if (player_in_branch(BRANCH_BAZAAR) && one_chance_in(10))
     {
         // divided by 20, so each is 5% of original price
         // 12-19 = 60-95%, per above

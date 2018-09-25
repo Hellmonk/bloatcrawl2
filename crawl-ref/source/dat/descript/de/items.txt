@@ -755,7 +755,7 @@ wand of magic darts
 Ein magisches Gerät, das kleine Bolzen der zerstörenden Energie wirft. Sie
 verfehlen nie.
 %%%%
-wand of polymorph
+wand of slimification
 
 Ein magisches Gerät, das ein Wesen veranlasst, in eine andere Form umgemodelt
 zu werden. Es ist gegen Gestalt ändernde Wesen besonders wirksam.

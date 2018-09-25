@@ -595,17 +595,17 @@ static const weapon_def Weapon_prop[] =
     { WPN_HAND_CROSSBOW,     "hand crossbow",      12,  5, 15,
         SK_BOWS,    SIZE_LITTLE, SIZE_LITTLE, MI_ARROW,
         DAMV_NON_MELEE, 0, 0, 35, RANGED_BRANDS },
-    { WPN_ARBALEST,          "arbalest",           18,  2, 19,
+    { WPN_ARBALEST,          "arbalest",           18, -1, 19,
         SK_BOWS,    SIZE_LITTLE, NUM_SIZE_LEVELS, MI_ARROW,
         DAMV_NON_MELEE, 5, 10, 45, RANGED_BRANDS },
-    { WPN_TRIPLE_CROSSBOW,   "triple crossbow",    22,  0, 23,
+    { WPN_TRIPLE_CROSSBOW,   "triple crossbow",    22, -3, 23,
         SK_BOWS,    SIZE_LITTLE, NUM_SIZE_LEVELS, MI_ARROW,
         DAMV_NON_MELEE, 0, 2, 100, RANGED_BRANDS },
 
-    { WPN_SHORTBOW,          "shortbow",            9,  2, 13,
+    { WPN_SHORTBOW,          "shortbow",            9,  0, 13,
         SK_BOWS,         SIZE_LITTLE, NUM_SIZE_LEVELS, MI_ARROW,
         DAMV_NON_MELEE, 8, 10, 30, RANGED_BRANDS },
-    { WPN_LONGBOW,           "longbow",            13,  0, 17,
+    { WPN_LONGBOW,           "longbow",            13,  -2, 17,
         SK_BOWS,         SIZE_LITTLE, NUM_SIZE_LEVELS, MI_ARROW,
         DAMV_NON_MELEE, 3, 10, 45, RANGED_BRANDS },
 };
@@ -941,12 +941,8 @@ void do_curse_item(item_def &item, bool quiet)
     // they're worn/equipped.
     if (in_inventory(item))
     {
-        int amusement = 50;
-
         if (item_is_equipped(item))
         {
-            amusement *= 2;
-
             if (you.equip[EQ_WEAPON] == item.link)
             {
                 // Redraw the weapon.
@@ -956,8 +952,6 @@ void do_curse_item(item_def &item, bool quiet)
             ash_check_bondage();
             auto_id_inventory();
         }
-
-        xom_is_stimulated(amusement);
     }
 }
 

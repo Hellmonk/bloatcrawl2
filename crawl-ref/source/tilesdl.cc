@@ -722,13 +722,6 @@ int TilesFramework::getch_ck()
                 m_last_tick_moved = UINT_MAX;
                 break;
 
-            case WME_KEYPRESS:
-                key = event.key.keysym.sym;
-                m_region_tile->place_cursor(CURSOR_MOUSE, NO_CURSOR);
-
-                m_last_tick_moved = UINT_MAX;
-                break;
-
             case WME_MOUSEMOTION:
                 {
                     // Record mouse pos for tooltip timer
@@ -1453,7 +1446,7 @@ void TilesFramework::redraw()
 
 void TilesFramework::update_minimap(const coord_def& gc)
 {
-    if (!m_region_map)
+    if (!m_region_map || !map_bounds(gc))
         return;
 
     map_feature mf;

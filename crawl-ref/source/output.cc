@@ -2222,20 +2222,9 @@ static string _god_asterisks()
     if (player_under_penance())
         return "*";
 
-    if (you_worship(GOD_GOZAG))
+    if (you_worship(GOD_GOZAG) || you_worship(GOD_XOM))
         return "";
 
-    if (you_worship(GOD_XOM))
-    {
-        const int p_rank = xom_favour_rank() - 1;
-        if (p_rank >= 0)
-        {
-            return string(p_rank, '.') + "*"
-                   + string(NUM_PIETY_STARS - 1 - p_rank, '.');
-        }
-        else
-            return string(NUM_PIETY_STARS, '.'); // very special plaything
-    }
     else
     {
         const int prank = piety_rank();

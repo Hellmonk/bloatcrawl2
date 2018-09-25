@@ -251,6 +251,7 @@ bool feat_is_travelable_stair(dungeon_feature_type feat)
            || feat_is_escape_hatch(feat)
            || feat_is_branch_entrance(feat)
            || feat_is_branch_exit(feat)
+           || feat == DNGN_ENTER_BAZAAR
            || feat == DNGN_ENTER_HELL
            || feat == DNGN_EXIT_HELL;
 }
@@ -323,6 +324,7 @@ command_type feat_stair_direction(dungeon_feature_type feat)
 
     case DNGN_ENTER_SHOP:
     case DNGN_EXIT_HELL:
+    case DNGN_EXIT_BAZAAR:
         return CMD_GO_UPSTAIRS;
 
     case DNGN_STONE_STAIRS_DOWN_I:
@@ -672,9 +674,10 @@ int count_neighbours_with_func(const coord_def& c, bool (*checker)(dungeon_featu
 // For internal use by find_connected_identical only.
 static void _find_connected_identical(const coord_def &d,
                                       dungeon_feature_type ft,
-                                      set<coord_def>& out)
+                                      set<coord_def>& out,
+                                      bool known_only)
 {
-    if (grd(d) != ft)
+    if (grd(d) != ft || (known_only && !env.map_knowledge(d).known()))
         return;
 
     string prop = env.markers.property_at(d, MAT_ANY, "connected_exclude");
@@ -688,22 +691,22 @@ static void _find_connected_identical(const coord_def &d,
 
     if (out.insert(d).second)
     {
-        _find_connected_identical(coord_def(d.x+1, d.y), ft, out);
-        _find_connected_identical(coord_def(d.x-1, d.y), ft, out);
-        _find_connected_identical(coord_def(d.x, d.y+1), ft, out);
-        _find_connected_identical(coord_def(d.x, d.y-1), ft, out);
+        _find_connected_identical(coord_def(d.x+1, d.y), ft, out, known_only);
+        _find_connected_identical(coord_def(d.x-1, d.y), ft, out, known_only);
+        _find_connected_identical(coord_def(d.x, d.y+1), ft, out, known_only);
+        _find_connected_identical(coord_def(d.x, d.y-1), ft, out, known_only);
     }
 }
 
 // Find all connected cells containing ft, starting at d.
-void find_connected_identical(const coord_def &d, set<coord_def>& out)
+void find_connected_identical(const coord_def &d, set<coord_def>& out, bool known_only)
 {
     string prop = env.markers.property_at(d, MAT_ANY, "connected_exclude");
 
     if (!prop.empty())
         out.insert(d);
     else
-        _find_connected_identical(d, grd(d), out);
+        _find_connected_identical(d, grd(d), out, known_only);
 }
 
 void get_door_description(int door_size, const char** adjective, const char** noun)

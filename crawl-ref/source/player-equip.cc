@@ -209,9 +209,7 @@ static void _equip_artefact_effect(item_def &item, bool *show_msgs, bool unmeld,
         if (entry->world_reacts_func)
             you.unrand_reacts.set(slot);
     }
-
-    const bool alreadyknown = item_type_known(item);
-    const bool dangerous    = player_in_a_dangerous_place();
+	
     const bool msg          = !show_msgs || *show_msgs;
 
     artefact_properties_t  proprt;
@@ -248,13 +246,6 @@ static void _equip_artefact_effect(item_def &item, bool *show_msgs, bool unmeld,
          && one_chance_in(proprt[ARTP_CURSE]))
     {
         do_curse_item(item, !msg);
-    }
-
-    if (!alreadyknown && dangerous)
-    {
-        // Xom loves it when you use an unknown random artefact and
-        // there is a dangerous monster nearby...
-        xom_is_stimulated(100);
     }
 
     if (proprt[ARTP_HP])
@@ -385,8 +376,6 @@ static void _wield_cursed(item_def& item, bool known_cursed, bool unmeld)
     const int wpn_skill = item_attack_skill(item.base_type, item.sub_type);
     if (wpn_skill != SK_UNARMED_COMBAT && you.skills[wpn_skill] == 0)
         amusement *= 2;
-
-    xom_is_stimulated(amusement);
 }
 
 // Provide a function for handling initial wielding of 'special'
@@ -574,15 +563,6 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
                 break;
 
             case SPWPN_DISTORTION:
-                if (!was_known)
-                {
-                    // Xom loves it when you ID a distortion weapon this way,
-                    // and even more so if he gifted the weapon himself.
-                    if (origin_as_god_gift(item) == GOD_XOM)
-                        xom_is_stimulated(200);
-                    else
-                        xom_is_stimulated(100);
-                }
                 break;
 
             case SPWPN_ANTIMAGIC:
@@ -734,7 +714,7 @@ static void _spirit_shield_message(bool unmeld)
     }
     else if (!unmeld && you.get_mutation_level(MUT_MANA_SHIELD))
         mpr("You feel the presence of a powerless spirit.");
-    else // unmeld or already spirit-shielded
+    else if (!you.get_mutation_level(MUT_MANA_SHIELD))
         mpr("You feel spirits watching over you.");
 }
 
@@ -879,8 +859,6 @@ static void _equip_armour_effect(item_def& arm, bool unmeld,
 
             if (origin_as_god_gift(arm) == GOD_XOM)
                 amusement *= 2;
-
-            xom_is_stimulated(amusement);
         }
     }
 
@@ -1210,7 +1188,6 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
             if (origin_as_god_gift(item) == GOD_XOM)
                 amusement *= 2;
         }
-        xom_is_stimulated(amusement);
     }
 
     // Cursed or not, we know that since we've put the ring on.

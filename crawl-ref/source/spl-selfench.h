@@ -32,8 +32,9 @@ spret_type cast_transform(int pow, transformation_type which_trans, bool fail);
 
 spret_type cast_haste(int pow, bool fail);
 spret_type cast_invisibility(int pow, bool fail);
+spret_type cast_piercing_shot(int pow, bool fail);
 
 int calculate_frozen_mp();
-void dispel_permanent_buffs();
+void dispel_permanent_buffs(bool evil_only = false);
 
 #endif

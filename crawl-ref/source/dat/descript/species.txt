@@ -24,11 +24,6 @@ Formicid
 Formicids are humanoid ants adept at digging. Their limbs are exceptionally
 strong and they live in a state of permanent stasis.
 %%%%
-Ghoul
-
-Ghouls are undead creatures, damned to rot eternally. They have sharp claws,
-and they restore health when they slay enemies.
-%%%%
 Gargoyle
 
 Made of living stone, Gargoyles have a preternatural affinity for the earth.
@@ -52,7 +47,7 @@ Humans advance quickly in levels and have equal abilities in most skills.
 Tengu
 
 Tengu are bird-people who love to fight, both with weapons and spells. They are
-quite fragile, but they learn to fly swiftly later on.
+quite fragile, but they learn to fly evasively later on.
 %%%%
 Kobold
 
@@ -64,6 +59,12 @@ Merfolk
 
 Half fish, half human, Merfolk are citizens of both water and land. They are
 strong combatants, and adept at using magic to assist in battle.
+%%%%
+Mountain Dwarf
+
+An ancient species long thought extinct, Mountain Dwarves are short, sturdy-framed 
+humanoids. Their magic becomes powerful but harder to control as they grow.
+
 %%%%
 Minotaur
 
@@ -109,12 +110,12 @@ and very high reserves of health and magic.
 %%%%
 Troll
 
-Trolls are large brutes with powerful claws, always hungering for raw meat.
-They regenerate health rapidly.
+Trolls are large brutes with claws that become more powerful as they grow.
+They are extremely robust and regenerate health rapidly.
 %%%%
-Vampire
+Jiangshi
 
-Shifting between the states of life and undeath, Vampires are accomplished
+Partly but not entirely undead, these stiff-legged hopping vampires are accomplished
 stabbers and casters.
 %%%%
 Vine Stalker

@@ -69,6 +69,7 @@
 #include "rot.h"
 #include "shopping.h"
 #include "showsymb.h"
+#include "skills.h"
 #include "spl-book.h"
 #include "spl-util.h"
 #include "stash.h"
@@ -472,6 +473,28 @@ bool dec_mitm_item_quantity(int obj, int amount)
     return false;
 }
 
+// Reduce quantity of monster ammo, do cleanup if item goes away.
+// Returns true if stack of items no longer exists.
+bool dec_mitm_ammo_quantity(item_def &item, int amount)
+{
+    if (amount > item.quantity)
+        amount = item.quantity; // can't use min due to type mismatch
+
+    if (item.quantity == amount)
+    {
+        destroy_item(item);
+        // If we're repeating a command, the repetitions used up the
+        // item stack being repeated on, so stop rather than move onto
+        // the next stack.
+        crawl_state.cancel_cmd_repeat();
+        crawl_state.cancel_cmd_again();
+        return true;
+    }
+
+    item.quantity -= amount;
+    return false;
+}
+
 void inc_inv_item_quantity(int obj, int amount)
 {
     if (you.equip[EQ_WEAPON] == obj)
@@ -706,13 +729,11 @@ static void _handle_gone_item(const item_def &item)
 void item_was_lost(const item_def &item)
 {
     _handle_gone_item(item);
-    xom_check_lost_item(item);
 }
 
 void item_was_destroyed(const item_def &item)
 {
     _handle_gone_item(item);
-    xom_check_destroyed_item(item);
 }
 
 void lose_item_stack(const coord_def& where)
@@ -1738,12 +1759,10 @@ static bool _put_item_in_inv(item_def& it, int quant_got, bool quiet, bool& put_
 
         // cleanup items that ended up in an inventory slot (not gold, etc)
         if (inv_slot != -1)
-        {
             _got_item(you.inv[inv_slot]);
-            _check_note_item(you.inv[inv_slot]);
-        }
-        else
-            _check_note_item(it);
+        else if (it.base_type == OBJ_BOOKS)
+            _got_item(it);
+        _check_note_item(inv_slot == -1 ? it : you.inv[inv_slot]);
         return true;
     }
 
@@ -1823,6 +1842,17 @@ static void _get_book(const item_def& it, bool quiet)
     }
     if (!newspells && !quiet)
         mpr("Unfortunately, it added no spells to the library.");
+}
+
+static void _get_manual(const item_def& it, bool quiet)
+{
+    const skill_type skill = static_cast<skill_type>(it.plus);
+    you.manuals_in_inventory.push_back(it);
+    if (!quiet)
+    {
+        mprf("You pick up the manual of %s%s",
+              skill_name(skill), is_useless_skill(skill) ? "" :  " and begin studying.");
+    }
 }
 
 // Adds all books in the player's inventory to library.
@@ -2132,10 +2162,18 @@ static bool _merge_items_into_inv(item_def &it, int quant_got,
     }
 	
 	// Books are also massless.
-    if (it.base_type == OBJ_BOOKS && it.sub_type != BOOK_MANUAL)
+    if (it.base_type == OBJ_BOOKS)
     {
-        _get_book(it, quiet);
-        return true;
+        if (it.sub_type != BOOK_MANUAL)
+        {
+            _get_book(it, quiet);
+            return true;
+        }
+        else
+        {
+			_get_manual(it, quiet);
+            return true;
+        }
     }
 
     // The Orb is also handled specially.

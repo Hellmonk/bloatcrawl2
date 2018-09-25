@@ -108,24 +108,43 @@ void item_colour(item_def &item)
 // Does Xom consider an item boring?
 static bool _is_boring_item(int type, int sub_type)
 {
+    //any consumables that (ostensibly) carry risk are nonboring
     switch (type)
     {
     case OBJ_SCROLLS:
-        // These scrolls increase knowledge and thus reduce risk.
         switch (sub_type)
         {
-        case SCR_MAGIC_MAPPING:
-            return true;
+        case SCR_IMMOLATION:
+        case SCR_VULNERABILITY:
+        case SCR_SILENCE:
+            return false;
+        case SCR_TORMENT:
+            return you.res_torment();
+        case SCR_HOLY_WORD:
+            return you.undead_or_demonic();
         default:
             break;
         }
         break;
+    case OBJ_POTIONS:
+        switch (sub_type)
+        {
+        case POT_AMBROSIA:
+        case POT_BERSERK_RAGE:
+        case POT_LIGNIFY:
+        case POT_MUTATION:
+        case POT_CANCELLATION:
+            return false;
+        default:
+            break;
+		}
+        break;
     case OBJ_JEWELLERY:
         return sub_type == AMU_NOTHING;
     default:
-        break;
+        return false;
     }
-    return false;
+    return true;
 }
 
 static weapon_type _determine_weapon_subtype(int item_level)
@@ -632,9 +651,7 @@ static void _generate_missile_item(item_def& item, int force_type,
     else
     {
         item.sub_type =
-            random_choose_weighted(68, MI_STONE,
-                                   20, MI_ARROW,
-                                   4,  MI_DART_POISONED,
+            random_choose_weighted(4,  MI_DART_POISONED,
                                    3,  MI_TOMAHAWK,
                                    2,  MI_JAVELIN,
                                    1,  MI_DART_CURARE,
@@ -1287,7 +1304,7 @@ static void _generate_potion_item(item_def& item, int force_type,
                                             35, POT_BERSERK_RAGE);
         }
         while (agent == GOD_XOM
-               && _is_boring_item(OBJ_POTIONS, stype)
+               && (_is_boring_item(OBJ_POTIONS, stype) || one_chance_in(5))
                && --tries > 0);
 
         item.sub_type = stype;
@@ -1339,7 +1356,7 @@ static void _generate_scroll_item(item_def& item, int force_type,
         }
         while (item.sub_type == NUM_SCROLLS
                || agent == GOD_XOM
-                  && _is_boring_item(OBJ_SCROLLS, item.sub_type)
+                  && (_is_boring_item(OBJ_SCROLLS, item.sub_type) || one_chance_in(5))
                   && --tries > 0);
     }
 
@@ -1388,7 +1405,8 @@ static void _generate_book_item(item_def& item, bool allow_uniques,
                                                              SK_SPELLCASTING));
             }
 		        while (item.skill == SK_POISON_MAGIC
-                   || item.skill == SK_CONJURATIONS);
+                   || item.skill == SK_CONJURATIONS
+                   || item.skill == SK_SPELLCASTING);
         }
         else
 #if TAG_MAJOR_VERSION == 34
@@ -1399,7 +1417,7 @@ static void _generate_book_item(item_def& item, bool allow_uniques,
 			}			
 			while(item.skill == SK_STABBING || item.skill == SK_TRAPS
                 || item.skill == SK_STAVES || item.skill == SK_LONG_BLADES
-                || item.skill == SK_SLINGS);
+                || item.skill == SK_SLINGS || item.skill == SK_CROSSBOWS);
         }
 #else
             item.plus = random2(SK_UNARMED_COMBAT + 1);
@@ -1692,18 +1710,21 @@ int items(bool allow_uniques,
     else
     {
         ASSERT(force_type == OBJ_RANDOM);
-        // Total weight: 1960
+        // Total weight: 1000
         item.base_type = random_choose_weighted(
-                                    10, OBJ_STAVES,
-                                    50, OBJ_BOOKS,
-                                    50, OBJ_JEWELLERY,
-                                    50, OBJ_WANDS,
-                                   262, OBJ_ARMOUR,
-                                   212, OBJ_WEAPONS,
-                                   140, OBJ_POTIONS,
-                                   436, OBJ_MISSILES,
-			                       202, OBJ_SCROLLS,
-                                   548, OBJ_GOLD); 
+                                    5, OBJ_STAVES,
+                                   25, OBJ_BOOKS,
+                                   25, OBJ_JEWELLERY,
+                                   25, OBJ_WANDS,
+                                   25, OBJ_MISSILES,
+                                   70, OBJ_POTIONS,
+                                  120, OBJ_ARMOUR,
+                                  105, OBJ_WEAPONS,
+                                  100, OBJ_SCROLLS,
+                                  250, OBJ_GOLD,
+                                  250, OBJ_UNASSIGNED); // No item
+        if (item.base_type == OBJ_UNASSIGNED)
+            return NON_ITEM;
 
         // misc items placement wholly dependent upon current depth {dlb}:
         if (item_level > 7 && x_chance_in_y(21 + item_level, 5000))
@@ -1829,7 +1850,7 @@ int items(bool allow_uniques,
         if (force_good)
             item.quantity = 100 + random2(400);
         else
-            item.quantity = 1 + random2avg(19, 2) + random2(item_level);
+            item.quantity = 2 * (1 + random2avg(10, 2) + random2(div_rand_round(item_level * 4, 7)));
         break;
     }
 

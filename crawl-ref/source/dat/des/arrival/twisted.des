@@ -105,7 +105,7 @@ KMONS:   P = demonspawn ; nothing
 KMONS:   Q = mummy
 KMONS:   R = nothing
 KMONS:   S = ghoul
-KMONS:   T = vampire spells:. ; nothing
+KMONS:   T = jiangshi
 KMONS:   U = demigod ; nothing
 KMONS:   V = octopode ; nothing
 KMONS:   W = formicid ; nothing
@@ -166,7 +166,7 @@ KMASK:   EMNOQ = no_item_gen
 KMONS: M = human / elf / orc; nothing / naga; nothing / centaur; nothing / \
            draconian; nothing / ogre; nothing / minotaur / troll / kobold / \
            mummy / ghoul / spriggan; nothing / dwarf; nothing / \
-           octopode; nothing / vampire spells:. / formicid; nothing / \
+           octopode; nothing / jiangshi/ formicid; nothing / \
            gargoyle; nothing / vine stalker; nothing
 # Player monsters, zombie versions (ghouls drop out because they need sustenance
 # and can't be reanimated once starved; gargoyles don't leave corpses):
@@ -277,7 +277,7 @@ SUBST:   C=., !=@
 SHUFFLE: B(' / zzz, V[" / yyy
 SUBST:   z=x, y=x, B=., '=+, V=., "=+
 NSUBST:  . = 1:d / *:.
-ITEM:    stone
+ITEM:    gold q:1
 MAP
 xxxxxxxxxxxxxxxxxxx....@
 xxxxxxxCCCCCCCxxxxx.....
@@ -846,7 +846,7 @@ KMASK: uU = no_item_gen
 : local skeltype = "skeleton"
 : local yourname = string.gsub(you.name(), " ", "_")
 : -- The corpseless. Before the game starts, you.monster() is "program bug".
-: if (not crawl.game_started()) or race == "Vampire"
+: if (not crawl.game_started()) or race == "Jiangshi"
 :     or race == "Mummy" or race == "Ghoul"
 :     or race == "Gargoyle" or race == "Vine Stalker"
 :     or race == "Yak" or race == "Skeleton" then

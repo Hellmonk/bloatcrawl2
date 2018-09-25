@@ -1064,10 +1064,7 @@ KFEAT:  Q = weapon shop type:Weapon suffix:Rack count:17 use_all greed:30 ; \
             mundane not_cursed great mace | mundane not_cursed giant club |\
             mundane not_cursed demon trident | mundane not_cursed bardiche |\
             mundane not_cursed quarterstaff | mundane not_cursed longbow |\
-            mundane not_cursed triple crossbow \
-                |\
-            mundane arrow q:50 |\
-            mundane arrow q:50
+            mundane not_cursed triple crossbow
 KFEAT:  H = distillery shop type:Bottled suffix:Enhancements count:5 use_all greed:6 ; \
             potion of beneficial mutation q:1 | potion of beneficial mutation q:1 |\
             potion of beneficial mutation q:2 | potion of beneficial mutation q:3 |\

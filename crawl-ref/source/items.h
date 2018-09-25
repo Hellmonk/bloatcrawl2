@@ -37,6 +37,7 @@ bool item_type_has_unidentified(object_class_type base_type);
 
 bool dec_inv_item_quantity(int obj, int amount);
 bool dec_mitm_item_quantity(int obj, int amount);
+bool dec_mitm_ammo_quantity(item_def &item, int amount);
 
 void inc_inv_item_quantity(int obj, int amount);
 void inc_mitm_item_quantity(int obj, int amount);

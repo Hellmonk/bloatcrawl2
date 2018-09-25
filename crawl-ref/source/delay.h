@@ -748,6 +748,33 @@ public:
     }
 };
 
+class SlowPotionDelay : public Delay
+{
+    item_def& potion;
+    bool was_prompted = false;
+
+    void start() override;
+    bool invalidated() override;
+
+    void tick() override
+    {
+        mprf(MSGCH_MULTITURN_ACTION, "You continue quaffing the potion.");
+    }
+
+    void finish() override;
+public:
+    SlowPotionDelay(int dur, item_def& item) :
+                      Delay(dur), potion(item)
+    { }
+
+    bool try_interrupt() override;
+
+    const char* name() const override
+    {
+        return "slow_potion";
+    }
+};
+
 void push_delay(shared_ptr<Delay> delay);
 
 template<typename T, typename... Args>

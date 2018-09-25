@@ -116,12 +116,6 @@ const vector<GameOption*> game_options::build_options_list()
 #else
         false;
 #endif
-    const bool USING_LOCAL_TILES =
-#if defined(USE_TILE_LOCAL)
-        true;
-#else
-        false;
-#endif
 #ifdef USE_TILE
     const bool USING_WEB_TILES =
 #if defined(USE_TILE_WEB)
@@ -243,6 +237,7 @@ const vector<GameOption*> game_options::build_options_list()
                           MSG_MIN_HEIGHT),
         new IntGameOption(SIMPLE_NAME(msg_max_height), max(10, MSG_MIN_HEIGHT),
                           MSG_MIN_HEIGHT),
+        new IntGameOption(SIMPLE_NAME(msg_webtiles_height), -1),
         new IntGameOption(SIMPLE_NAME(rest_wait_percent), 100, 0, 100),
         new IntGameOption(SIMPLE_NAME(pickup_menu_limit), 1),
         new IntGameOption(SIMPLE_NAME(view_delay), DEFAULT_VIEW_DELAY, 0),
@@ -279,7 +274,11 @@ const vector<GameOption*> game_options::build_options_list()
 #endif
 #ifndef DGAMELAUNCH
         new BoolGameOption(SIMPLE_NAME(restart_after_save), false),
-        new BoolGameOption(SIMPLE_NAME(restart_after_game), USING_LOCAL_TILES),
+#if defined(USE_TILE_LOCAL)
+        new BoolGameOption(SIMPLE_NAME(restart_after_game), true),
+#else
+        new BoolGameOption(SIMPLE_NAME(restart_after_game), false),
+#endif
         new StringGameOption(SIMPLE_NAME(map_file_name), ""),
         new StringGameOption(SIMPLE_NAME(save_dir), _get_save_path("saves/")),
         new StringGameOption(SIMPLE_NAME(morgue_dir),

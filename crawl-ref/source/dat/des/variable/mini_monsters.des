@@ -122,7 +122,7 @@ NAME:   minivault_7
 TAGS:   uniq_beehive patrolling
 DEPTH:  D:9-
 MONS:   queen bee, meliai, killer bee
-KITEM:  R = stone
+KITEM:  R = large rock
 COLOUR: x = yellow
 TILE:   x = wall_wax
 : if you.absdepth() < 12 then
@@ -232,31 +232,6 @@ xx...xxx222xxx...xx
        x+++x
 ENDMAP
 
-NAME:  worms_lemuel
-TAGS:  no_rotate no_monster_gen no_pool_fixup
-DEPTH: D:8-13, Lair, Spider
-KMONS: 1 = dart slug
-KMONS: 2| = swamp worm
-KMONS: P = plant
-KITEM: | = |, *, %
-KFEAT: 12P| = W
-: if you.absdepth() > 13 then
-SUBST: 1 = 112
-: else
-SUBST: 1 = 1112
-: end
-MAP
-   WWWWWWW
- WWWWw1wWWWW
-WWwxxxxxxxwWW
-WWxx11111xPWW
-W1x|21111PPWW
-WWxx11111xPWW
-WWwxxxxxxxwWW
- WWWWw1wWWWW
-   WWWWWWW
-ENDMAP
-
 NAME:   minmay_another_anthill
 TAGS:   uniq_anthill
 DEPTH:  D:8-13, Lair:2-, Spider
@@ -292,20 +267,15 @@ ENDMAP
 
 NAME:    hangedman_stitches_earthworm
 TAGS:    no_monster_gen no_item_gen transparent no_pool_fixup
-DEPTH:   Depths, Spider:2-, Abyss
+DEPTH:   Depths, Spider:2-
 KMONS:   0 = 0
 KMONS:   1 = tyrant leech
 KMONS:   2 = nothing
 KMONS:   3 = redback w:5 / orb spider w:5 / nothing
 KMONS:   4 = thrashing horror
-KITEM:   ' = stone no_pickup q:1 w:5 / nothing
+KITEM:   ' = large rock no_pickup q:1 w:5 / nothing
 KITEM:   01234 = % w:90 no_pickup / * no_pickup
 SHUFFLE: ABCDEF / ABCDEF / ABCCBA, ABC, DEF, 13 / 13 / 31, {`
-:  if you.in_branch("Abyss") then
-SUBST:   G = BEG, C : x:5 cvb, B : x:5 cvbw, A : xcvb w:4
-SUBST:   D: x:5 cvb, E : x:5 cvbw, F : xcvb w:4, { = '
-SUBST:   0 = 4:50 0
-:  else
 SUBST:   { = {[( .:15, ` = '
 NSUBST:  { = 1:{ / 1:}, [ = 1:[ / 1:(, ( = 1:] / 1:)
 SUBST:   G = BEG, C: xc, B : x., A : xxc .:2
@@ -315,7 +285,6 @@ SUBST:   0 = 3:50 0
 :    else
 SUBST:   c : cb
 :    end
-:  end
 MAP
   '...      ..'.D.1.D.'..
  '.'A..    ..'D'E'D'E'D'..
@@ -401,43 +370,6 @@ MAP
 .x1x1x1x1x1x.
 .x+x+x+x+x+x.
 .............
-ENDMAP
-
-NAME:  minmay_rats_cheesy_pizza
-DEPTH: D:2-3
-MONS:  rat
-ITEM:  stone
-MAP
-xxxxx+xxxxxxx
-x1....xd1111x
-x.1..xxx1111x
-x..1xxxxx111x
-x..xxxxxxx11x
-x.xxxxxxxxx1x
-x+xxxxxxxxx+x
-x.xxxxxxxxx1x
-x1.xxxxxxx1.x
-x.1.xxxxx1.1x
-x1.1.xxx1.1.x
-x.1.1.+1.1.1x
-xxxxxxxxxxxxx
-ENDMAP
-
-NAME:  minmay_rat_hole
-DEPTH: D:2-4
-MONS:  rat, quokka
-ITEM:  stone / nothing w:60
-MAP
- xxx
-xxdx
-xddxx
-xdddxxxx
-xxxx211xx
-  xx1111x
-  x11111x
-  x11111x
-  xx11xxx
-   xx@x
 ENDMAP
 
 NAME:  minmay_snake_closets
@@ -982,7 +914,7 @@ TAGS:  patrolling no_monster_gen transparent
 DEPTH: D:2-5
 KMONS: 2 = adder
 KMONS: 3 = plant
-ITEM:  stone
+ITEM:  gold q:1
 SUBST: - = wwwwwwWWW
 SUBST: . = ........33
 SUBST: ? = .wwt3%dd22
@@ -1034,7 +966,7 @@ KMONS:  P = withered plant
 ITEM:   shield ego:reflection ident:type / \
         buckler ego:reflection ident:type w:1 / \
         large shield ego:reflection ident:type w:1
-ITEM:   stone
+ITEM:   gold q:1
 NSUBST: H = 4:G / 2:G. / *:e
 MAP
      xxxxxxx
@@ -1064,7 +996,7 @@ ENDMAP
 NAME:    minmay_goblin_outpost
 TAGS:    no_pool_fixup
 DEPTH:   D:2-4
-MONS:    goblin / hobgoblin w:5, goblin ; stone q:20
+MONS:    goblin / hobgoblin w:5, goblin ; gold q:20
 SUBST:   y = .WWw, Y = ...W, . = .....1
 SHUFFLE: >X/_"
 SUBST:   X = x, _ = +, " = @
@@ -1106,8 +1038,8 @@ TAGS:   patrolling
 DEPTH:  D:8-
 WEIGHT: 5
 KMONS:  1 = Joseph / cyclops, \
-            yaktaur ; quarterstaff . stone / cyclops
-ITEM:   stone / whip w:5 / large rock w:3 / quarterstaff w:1
+            yaktaur ; quarterstaff / cyclops
+ITEM:   large rock / whip w:5 / large rock w:3 / quarterstaff w:1
 NSUBST: . = 4:d / 4:. / * = d:30 .:150
 MAP
 .........
@@ -1165,7 +1097,7 @@ NAME:   minmay_ogre_servants
 DEPTH:  D:3-6
 MONS:   ogre
 NSUBST: " = 6:" / *:'
-KITEM:  ' = stone
+KITEM:  ' = gold q:1
 KMONS:  "' = goblin
 MAP
 xxxxx
@@ -1222,7 +1154,7 @@ ENDMAP
 NAME:   minmay_ruffians
 DEPTH:  D:6-10
 MONS:   human; whip | mace w:3 . animal skin | leather armour
-MONS:   human; stone . animal skin | \
+MONS:   human; animal skin | \
         leather armour
 SUBST:  1 = 112.
 KMONS:  3 = human; flail . ring mail | scale mail
@@ -1264,7 +1196,7 @@ TAGS:    no_monster_gen
 KPROP:   56' = no_tele_into
 MONS:    kobold, plant, bush
 : if you.absdepth() < 4 then
-MONS:    kobold ; dagger . stone
+MONS:    kobold ; dagger
 : else
 MONS:    big kobold ; dagger . javelin q:2
 : end
@@ -1356,7 +1288,7 @@ NAME:    bh_hangedman_babel_library
 TAGS:    transparent no_monster_gen no_item_gen
 DEPTH:   D:10-, !D:$, Elf, !Elf:$
 MONS:    wizard / deep elf mage
-ITEM:    stone
+ITEM:    gold q:1
 ITEM:    randbook numspells:2 title:Dhcmrlchtdj
 ITEM:    randbook numspells:2 title:Combed_Thunderclap disc:air
 ITEM:    randbook numspells:2 title:Plaster_Cramp disc:earth
@@ -1633,7 +1565,7 @@ ENDMAP
 
 NAME:    hangedman_summoners_spam
 TAGS:    no_monster_gen patrolling
-DEPTH:   Depths, Elf, Crypt, Abyss
+DEPTH:   Depths, Elf, Crypt
 MONS:    boggart, orc high priest, kobold demonologist, deep elf mage
 MONS:    shadow demon, deep elf demonologist, vampire mage
 KMONS:   8 = mummy priest
@@ -1649,9 +1581,7 @@ KMASK:   "'@ = !no_monster_gen
 SHUFFLE: 12, 34, 12 / 34
 NSUBST:  ' = 1:@ / * = .@
 SUBST:   c : ccb
-: if you.in_branch("Abyss") then
-SUBST:   bc = xcccccvb
-: elseif you.in_branch("Crypt") then
+: if you.in_branch("Crypt") then
 SUBST:   5 = 7, 6 = 8
 : else
 SHUFFLE: 56 / 78
@@ -1739,7 +1669,7 @@ NAME:  guppyfry_early_orc_mine
 DEPTH: D:2-5
 TAGS:  patrolling no_monster_gen transparent
 MONS:  orc, goblin, hobgoblin, orc priest, orc wizard, orc warrior
-ITEM:  stone / large rock q:1 w:1
+ITEM:  large rock q:1 w:1
 NSUBST: ? = 2:$ / 2:d / *:.
 : if you.absdepth() > 3 then
 NSUBST: - = 1:6 / 1:5 / 1:4 / 3:1 / 2:. / 2:x / 2:I / *:.
@@ -1842,7 +1772,7 @@ ENDMAP
 NAME: lightli_orcish_oven
 DEPTH: D:6-11, Orc
 MONS: orc warrior, orc
-ITEM: stone
+ITEM: large rock
 MAP
 xxxxxxxxxx
 xvvv....xx
@@ -2457,7 +2387,7 @@ NAME:   minmay_dual_archer_statues
 DEPTH:  D:10-
 WEIGHT: 2
 MONS:   statue tile:mons_statue_archer name:archer name_adjective; \
-        longbow . arrow q:30
+        longbow
 MONS:   bush
 MAP
 .........
@@ -2743,7 +2673,7 @@ NAME:    minislime_mu
 TAGS:    no_monster_gen no_item_gen
 DEPTH:   Depths, !Depths:$
 MONS:    large slime creature, great orb of eyes, eye of draining
-KITEM:   R = stone
+KITEM:   R = large rock
 ITEM:    scroll of teleportation q:2
 ITEM:    wand of digging
 ITEM:    wand of disintegration
@@ -2841,15 +2771,12 @@ ENDMAP
 
 NAME:   hangedman_eye_storm
 TAGS:   no_monster_gen no_item_gen patrolling
-DEPTH:  Depths, !Depths:$, Abyss
+DEPTH:  Depths, !Depths:$
 MONS:   golden eye, eye of draining, floating eye
 MONS:   eye of devastation, great orb of eyes / shining eye w:5
 NSUBST: 5 = 2:5 / *:4 5:15
 KPROP:  13' = no_tele_into
 KFEAT:  m = iron_grate
-: if you.in_branch("Abyss") then
-SUBST:  c = c:4 v:1 b:1, = = +
-: end
 MAP
      c==cccc
    ccc..c3'ccc
@@ -3269,7 +3196,7 @@ ENDMAP
 
 NAME:    onia_ninara_dug_in_and_dangerous
 TAGS:    ruin_abyss
-DEPTH:   D:8-, !D:$, Depths:2-, !Depths:$, Abyss
+DEPTH:   D:8-, !D:$, Depths:2-, !Depths:$
 SHUFFLE: vcb, AB?/CD!, d<>, de
 SUBST:   A=9, B=8, C=1, D=9
 SUBST:   ? = %:10 *:50 |:60
@@ -3475,9 +3402,9 @@ TAGS:    no_item_gen no_trap_gen no_pool_fixup patrolling
 DEPTH:   D, Depths, Orc, Elf, Crypt, Snake, Shoals, Geh, Coc, Dis, Tar, Zot
 WEIGHT:  10 (D), 1 (Geh, Coc, Dis, Tar, Zot), 4
 KFEAT:   A = stone_arch
-KFEAT:   D = any shop
+KFEAT:   D = stone_arch
 KFEAT:   ^ : known teleport trap / known shaft trap
-KFEAT:   Z = known zot trap
+KFEAT:   Z = known alarm trap
 SUBST:   A : C:20 D:20 ATVY^{[(<>, b : c:30 G:20 bvwtdGG123, 0 : 0:3 9:2 ':1
 SUBST:   .' : .:99 W:1, [ : [], ( : ()
 NSUBST:  { = 1:{ / 1:}, [ = 1:[ / 1:(, ] = 1:[ / 1:], ( = 1:] / 1:), ) = 1:( / 1:)
@@ -5105,7 +5032,7 @@ SUBST: % = %$..
 : else
 SUBST: * : .
 SUBST: % : {}OB
-KFEAT: O = any shop
+KFEAT: O = stone_arch
 : end
 SUBST: 0 = 0.
 MAP
@@ -5129,7 +5056,7 @@ SUBST: % = %$..
 : else
 SUBST: * : .
 SUBST: % : {}O
-KFEAT: O = any shop
+KFEAT: O = stone_arch
 : end
 SUBST: 0 = 0.
 MAP
@@ -5226,7 +5153,7 @@ SUBST: % = %$..
 : else
 SUBST: * : .
 SUBST: % : {}OCB
-KFEAT: O = any shop
+KFEAT: O = stone_arch
 : end
 SUBST: 0 = 0.
 MAP
@@ -5256,7 +5183,7 @@ DEPTH:  D:4-, Depths, !D:$, !Depths:$
 : if crawl.coinflip() then
 SUBST:  O : 0
 : else
-KFEAT:  O = any shop
+KFEAT:  O = stone_arch
 SUBST:  } : 0
 : end
 : if crawl.coinflip() then
@@ -6083,7 +6010,7 @@ ENDMAP
 # Little trap spiral
 NAME: minivault_13
 TAGS: ruin_abyss
-DEPTH: D:9-, Elf, Abyss
+DEPTH: D:9-
 SHUFFLE: AB, CD, EH/FG
 KITEM: ABCD = gold / nothing
 SUBST: F = G:99 F:1
@@ -6150,7 +6077,7 @@ ENDMAP
 
 NAME: minivault_20
 TAGS: allow_dup extra ruin_abyss
-DEPTH: D:9-, Elf, Abyss
+DEPTH: D:9-, Elf
 MAP
 ............
 .xxxx..xxxx.
@@ -6168,7 +6095,7 @@ ENDMAP
 
 NAME:    minivault_25_ag
 TAGS:    allow_dup extra ruin_abyss
-DEPTH:   D:9-, Elf, Abyss
+DEPTH:   D:9-, Elf
 SHUFFLE: XY, ABCDE
 SUBST:   X=x, Y=+
 SUBST:   A=?, B=%%%*, C=T, D=0009, E=89
@@ -6189,7 +6116,7 @@ ENDMAP
 
 NAME:  minivault_28
 TAGS:  allow_dup ruin_abyss misc_elf_vault
-DEPTH: D:9-, Elf, Abyss
+DEPTH: D:9-, Elf
 MAP
 ...........
 .xxxx.xxxx.

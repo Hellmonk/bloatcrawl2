@@ -45,7 +45,8 @@ bool is_dumpable_artefact(const item_def &item);
 string get_item_description(const item_def &item, bool verbose,
                             bool dump = false, bool lookup = false);
 
-void describe_feature_wide(const coord_def& pos, bool show_quote = false);
+void describe_feature_wide(const coord_def& pos);
+string get_cloud_desc(cloud_type cloud);
 void get_feature_desc(const coord_def &gc, describe_info &inf);
 
 bool describe_item(item_def &item, function<void (string&)> fixup_desc = nullptr);
@@ -66,6 +67,7 @@ void describe_spell(spell_type spelled,
                     const monster_info *mon_owner = nullptr,
                     const item_def* item = nullptr);
 
+void describe_ability(ability_type ability);
 string short_ghost_description(const monster *mon, bool abbrev = false);
 string get_ghost_description(const monster_info &mi, bool concise = false);
 
@@ -79,8 +81,11 @@ int hex_chance(const spell_type spell, const int hd);
 string get_command_description(const command_type cmd, bool terse);
 #endif
 
-void print_description(const string &desc);
-void print_description(const describe_info &inf);
+int show_description(const string &body);
+int show_description(const describe_info &inf);
+string process_description(const describe_info &inf);
+
+const char* get_size_adj(const size_type size, bool ignore_medium = false);
 
 const char* jewellery_base_ability_string(int subtype);
 string artefact_inscription(const item_def& item);

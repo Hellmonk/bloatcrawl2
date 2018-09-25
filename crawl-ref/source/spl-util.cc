@@ -412,6 +412,18 @@ static void _remove_spell_attributes(spell_type spell)
             mprf(MSGCH_DURATION, "Your aura of abjuration dissipates.");
         }
         break;
+    case SPELL_PORTAL_PROJECTILE:
+        if (you.attribute[ATTR_PORTAL_PROJECTILE])
+        {
+            you.attribute[ATTR_PORTAL_PROJECTILE] = 0;
+            mprf(MSGCH_DURATION, "You are no longer teleporting projectiles.");
+        }
+    case SPELL_PIERCING_SHOT:
+        if (you.attribute[ATTR_PIERCING_SHOT])
+        {
+            you.attribute[ATTR_PIERCING_SHOT] = 0;
+            mprf(MSGCH_DURATION, "You are no longer teleporting projectiles.");
+        }
     case SPELL_HASTE:
         if (you.attribute[ATTR_PERMAHASTE])
         {
@@ -628,7 +640,7 @@ bool spell_harms_area(spell_type spell)
 // for Xom acting (more power = more likely to grab his attention) {dlb}
 int spell_mana(spell_type which_spell)
 {
-    return _seekspell(which_spell)->level;
+    return _seekspell(which_spell)->level - you.get_mutation_level(MUT_MAGIC_ATTUNEMENT);
 }
 
 // applied in naughties (more difficult = higher level knowledge = worse)
@@ -1434,13 +1446,18 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         {
             return "your weapon is already branded with pain";
 		}
-        // intentional fallthrough
+        break;
     case SPELL_SPECTRAL_WEAPON:
         if(temp && you.attribute[ATTR_SPECTRAL_WEAPON])
         {
             return "you already have your spectral weapon prepared";
         }
+        break;
     case SPELL_PORTAL_PROJECTILE:
+        if(temp && you.attribute[ATTR_PORTAL_PROJECTILE])
+        {
+            return "you are already teleporting projectiles to their destination";
+        }
         break;
 		
     case SPELL_BATTLESPHERE:

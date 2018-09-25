@@ -1023,7 +1023,7 @@ wand of magic darts
 Un instrument magique qui tire de petits missiles d'énergie destructrice. Ils
 ne ratent jamais.
 %%%%
-wand of polymorph
+wand of slimification
 
 Un instrument magique qui métamorphose la créature ciblée en une autre
 créature. Ceci est particulièrement efficace contre les changeurs de forme.

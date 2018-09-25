@@ -1347,6 +1347,19 @@ bool ShopMenu::process_key(int keyin)
         draw_menu();
         return true;
     }
+	else if (keyin - 'A' >= 0 && keyin - 'A' < (int)items.size())
+    {
+        const auto index = letter_to_index(keyin) % 26;
+        auto entry = dynamic_cast<ShopEntry*>(items[index]);
+        entry->selected_qty = 0;
+        const item_def& item(*entry->item);
+        if (shopping_list.is_on_list(item, &pos))
+            shopping_list.del_thing(item, &pos);
+        else
+            shopping_list.add_thing(item, item_price(item, shop), &pos);
+        draw_menu(true);
+        return true;
+    }
 
     auto old_selected = selected_entries();
     bool ret = InvMenu::process_key(keyin);
@@ -2180,9 +2193,7 @@ void ShoppingList::fill_out_menu(Menu& shopmenu)
         MenuEntry *me = new MenuEntry(etitle, MEL_ITEM, 1, hotkey);
         me->data = &thing;
 
-        if (cost > you.gold)
-            me->colour = DARKGREY;
-        else if (thing_is_item(thing))
+        if (thing_is_item(thing))
         {
             // Colour shopping list item according to menu colours.
             const item_def &item = get_thing_item(thing);
@@ -2191,9 +2202,18 @@ void ShoppingList::fill_out_menu(Menu& shopmenu)
             const int col = menu_colour(item.name(DESC_A),
                                         colprf, "shop");
 
+#ifdef USE_TILE
+            vector<tile_def> item_tiles;
+            get_tiles_for_item(item, item_tiles, true);
+            for (const auto &tile : item_tiles)
+                me->add_tile(tile);
+#endif
+
             if (col != -1)
                 me->colour = col;
         }
+        if (cost > you.gold)
+            me->colour = DARKGREY;
 
         shopmenu.add_entry(me);
         ++hotkey;
@@ -2273,9 +2293,7 @@ void ShoppingList::display()
                              "%s with an entry fee of %d gold pieces.",
                              describe_thing(*thing, DESC_A).c_str(),
                              (int) thing_cost(*thing));
-
-                print_description(info.c_str());
-                getchm();
+                show_description(info.c_str());
             }
         }
         else if (shopmenu.menu_action == Menu::ACT_MISC)

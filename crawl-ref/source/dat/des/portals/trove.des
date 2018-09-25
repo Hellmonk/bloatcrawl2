@@ -788,37 +788,6 @@ xdddx
 xxxxx
 ENDMAP
 
-# A "themed" trove.
-NAME:    trove_hunter_1
-WEIGHT:  5
-ORIENT:  encompass
-TAGS:    no_item_gen no_monster_gen allow_dup no_species_fe no_species_op
-# Loot:  15 items, this time.
-COLOUR:  x = blue
-MONS:    storm dragon zombie
-MONS:    golden dragon zombie
-MONS:    fire dragon skeleton
-ITEM:    animal skin good_item / any armour good_item
-ITEM:    gold dragon scales / storm dragon scales / fire dragon scales / troll leather armour / any useful armour good_item
-ITEM:    arrow good_item / arrow good_item
-ITEM:    longbow good_item / arbalest good_item / any useful weapon good_item
-SHUFFLE: 123
-SHUFFLE: defg
-: trove.setup_features(_G)
-MAP
-xxxxxxx
-x1x2x3x
-xooooox
-xdededx
-xfgfgfx
-xgfffgx
-xxx+xxx
-x.....x
-x.<.A.x
-x.....x
-xxxxxxx
-ENDMAP
-
 # A "nasty" monsters-behind-glass map for dpeg.
 NAME:   trove_nasty
 ORIENT: encompass

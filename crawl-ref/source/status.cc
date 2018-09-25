@@ -542,15 +542,13 @@ bool fill_status_info(int status, status_info* inf)
         {
             inf->short_text   = "engulfed";
             inf->long_text    = "You are engulfed in water.";
-            if (you.can_swim())
-                inf->light_colour = DARKGREY;
-            else
-                inf->light_colour = YELLOW;
+            inf->light_colour = DARKGREY;
         }
         else
         {
             inf->short_text   = "engulfed (cannot breathe)";
-            inf->long_text    = "You are engulfed in water and unable to breathe.";
+            inf->long_text    = "You are engulfed in water and unable to "
+                                "breathe.";
             inf->light_colour = RED;
         }
         break;
@@ -729,10 +727,16 @@ bool fill_status_info(int status, status_info* inf)
         break;
     }
 
-    case DUR_PORTAL_PROJECTILE:
+    case STATUS_PORTAL_PROJECTILE:
     {
-        if (!is_pproj_active())
-            inf->light_colour = DARKGREY;
+        if(you.attribute[ATTR_PORTAL_PROJECTILE])
+        {
+            inf->light_text = "PProj";
+            if (!is_pproj_active())
+                inf->light_colour = DARKGREY;
+            else
+                inf->light_colour = LIGHTBLUE;
+        }
         break;
     }
 
@@ -769,6 +773,29 @@ bool fill_status_info(int status, status_info* inf)
                 inf->light_colour = DARKGREY;
             else
                 inf->light_colour = WHITE;
+        }
+        break;
+    }
+	
+    case STATUS_SHROUD:
+    {
+        if(you.get_mutation_level(MUT_SLIME_SHROUD)
+                && !you.duration[DUR_SHROUD_TIMEOUT])
+        {
+            inf->light_text = "Shroud";
+            inf->light_colour = GREEN;
+        }
+    }
+	
+    case STATUS_PIERCING_SHOT:
+    {
+        if(you.attribute[ATTR_PIERCING_SHOT])
+        {
+            inf->light_text = "Pierce";
+            if (!is_pierce_active())
+                inf->light_colour = DARKGREY;
+            else
+                inf->light_colour = LIGHTBLUE;
         }
         break;
     }
@@ -1065,7 +1092,7 @@ static void _describe_airborne(status_info* inf)
     const bool perm      = you.permanent_flight();
     const bool expiring  = (!perm && dur_expiring(DUR_FLIGHT));
     const bool emergency = you.props[EMERGENCY_FLIGHT_KEY].get_bool();
-    const string desc   = you.tengu_flight() ? " quickly and evasively" : "";
+    const string desc   = you.tengu_flight() ? " evasively" : "";
 
     inf->light_colour = perm ? WHITE : emergency ? LIGHTRED : BLUE;
     inf->light_text   = "Fly";

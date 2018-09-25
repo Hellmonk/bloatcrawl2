@@ -116,9 +116,6 @@ static void _moveto_maybe_repel_stairs()
         {
             mprf("%s slides away as you move %s it!", stair_str.c_str(),
                  prep.c_str());
-
-            if (player_in_a_dangerous_place() && one_chance_in(5))
-                xom_is_stimulated(25);
         }
     }
 }
@@ -1112,7 +1109,7 @@ int player_teleport(bool calc_unid)
 }
 
 // Computes bonuses to regeneration from most sources. Does not handle
-// slow regeneration, vampireness, or Trog's Hand.
+// slow regeneration or Trog's Hand.
 static int _player_bonus_regen()
 {
     int rr = 0;
@@ -1139,6 +1136,9 @@ static int _player_bonus_regen()
     // Fast heal mutation.
     rr += you.get_mutation_level(MUT_REGENERATION) * REGEN_PIP;
 
+	if(you.get_mutation_level(MUT_OUT_OF_LOS_HPREGEN) && !there_are_monsters_nearby(true))
+        rr *= 2 + you.get_mutation_level(MUT_OUT_OF_LOS_HPREGEN);
+	
     // Powered By Death mutation, boosts regen by variable strength
     // if the duration of the effect is still active.
     if (you.duration[DUR_POWERED_BY_DEATH])
@@ -1184,6 +1184,9 @@ int player_regen()
     if (rr > 20)
         rr = 20 + ((rr - 20) / 2);
 
+    if(you.get_mutation_level(MUT_OUT_OF_LOS_HPREGEN) && !there_are_monsters_nearby(true))
+        rr *= 2 + you.get_mutation_level(MUT_OUT_OF_LOS_HPREGEN);
+	
     // Add in miscellaneous bonuses
     rr += _player_bonus_regen();
 
@@ -1191,33 +1194,9 @@ int player_regen()
     // to heal.
     rr = max(1, rr);
 
-    // Healing depending on satiation.
-    // The better-fed you are, the faster you heal.
-    if (you.species == SP_VAMPIRE)
-    {
-        if (you.hunger_state <= HS_STARVING)
-            rr = 0;   // No regeneration for starving vampires.
-        else if (you.hunger_state < HS_SATIATED)
-            rr /= 2;  // Halved regeneration for hungry vampires.
-        else if (you.hunger_state >= HS_FULL)
-            rr += 20; // Bonus regeneration for full vampires.
-    }
-#if TAG_MAJOR_VERSION == 34
-
-    // Compared to other races, a starting djinni would have regen of 4 (hp)
-    // plus 17 (mp). So let's compensate them early; they can stand getting
-    // shafted on the total regen rates later on.
-    if (you.species == SP_DJINNI)
-        if (you.hp_max < 100)
-            rr += (100 - you.hp_max) / 6;
-#endif
-
-    if (you.duration[DUR_COLLAPSE])
-        rr /= 4;
-
     if (you.disease || regeneration_is_inhibited() || !player_regenerates_hp())
         rr = 0;
-
+	
     // Trog's Hand. This circumvents sickness or inhibited regeneration.
     if (you.duration[DUR_TROGS_HAND])
         rr += 100;
@@ -1239,6 +1218,8 @@ int player_mp_regen()
         multiplier += 100;
     if (crawl_state.difficulty == DIFFICULTY_SPEEDRUN)
 	    multiplier += 50;
+    if(you.get_mutation_level(MUT_OUT_OF_LOS_MPREGEN) && !there_are_monsters_nearby(true))
+        multiplier *= 2 + you.get_mutation_level(MUT_OUT_OF_LOS_MPREGEN);
 
     return regen_amount * multiplier / 100;
 }
@@ -1292,7 +1273,7 @@ int player_hunger_rate(bool temp)
  */
 int player_total_spell_levels()
 {
-    return you.experience_level
+    return 2 + you.experience_level
            + (max(0, you.intel()) * you.experience_level) / 27;
 }
 
@@ -1468,14 +1449,6 @@ int player_res_cold(bool calc_unid, bool temp, bool items)
 
         rc += get_form()->res_cold();
 
-        if (you.species == SP_VAMPIRE)
-        {
-            if (you.hunger_state <= HS_STARVING)
-                rc += 2;
-            else if (you.hunger_state < HS_SATIATED)
-                rc++;
-        }
-
 #if TAG_MAJOR_VERSION == 34
         if (you.species == SP_LAVA_ORC && temperature_effect(LORC_COLD_VULN))
             rc--;
@@ -1617,7 +1590,6 @@ bool player_res_torment(bool random)
         return true;
 
     return get_form()->res_neg() == 3
-           || you.species == SP_VAMPIRE && you.hunger_state <= HS_STARVING
            || you.petrified()
 #if TAG_MAJOR_VERSION == 34
            || player_equip_unrand(UNRAND_ETERNAL_TORMENT)
@@ -1644,8 +1616,6 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
         case US_UNDEAD: // mummies & lichform
             return 3;
         case US_SEMI_UNDEAD: // vampire
-            if (you.hunger_state <= HS_STARVING) // XXX: && temp?
-                return 3;
             break;
     }
 
@@ -1683,11 +1653,6 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
     // mutations:
     rp += you.get_mutation_level(MUT_POISON_RESISTANCE, temp);
     rp += you.get_mutation_level(MUT_SLIMY_GREEN_SCALES, temp) == 3 ? 1 : 0;
-
-    // Only thirsty vampires are naturally poison resistant.
-    // XXX: && temp?
-    if (you.species == SP_VAMPIRE && you.hunger_state < HS_SATIATED)
-        rp++;
 
     if (temp)
     {
@@ -1890,30 +1855,6 @@ int player_prot_life(bool calc_unid, bool temp, bool items)
 {
     int pl = 0;
 
-    // Hunger is temporary, true, but that's something you can control,
-    // especially as life protection only increases the hungrier you
-    // get.
-    if (you.species == SP_VAMPIRE)
-    {
-        switch (you.hunger_state)
-        {
-        case HS_FAINTING:
-        case HS_STARVING:
-            pl = 3;
-            break;
-        case HS_NEAR_STARVING:
-        case HS_VERY_HUNGRY:
-        case HS_HUNGRY:
-            pl = 2;
-            break;
-        case HS_SATIATED:
-            pl = 1;
-            break;
-        default:
-            break;
-        }
-    }
-
     // Same here. Your piety status, and, hence, TSO's protection, is
     // something you can more or less control.
     if (you_worship(GOD_SHINING_ONE))
@@ -2005,10 +1946,6 @@ int player_movement_speed()
         mv += 2 + min(div_rand_round(you.piety, 20), 8);
     else if (player_under_penance(GOD_CHEIBRIADOS))
         mv += 2 + min(div_rand_round(you.piety_max[GOD_CHEIBRIADOS], 20), 8);
-
-    // Tengu can move slightly faster when flying.
-    if (you.tengu_flight())
-        mv--;
 
     if (you.duration[DUR_FROZEN])
         mv += 4;
@@ -2187,7 +2124,10 @@ static int _player_evasion_bonuses()
     // transformation penalties/bonuses not covered by size alone:
     if (you.get_mutation_level(MUT_SLOW_REFLEXES))
         evbonus -= you.get_mutation_level(MUT_SLOW_REFLEXES) * 3;
-
+	
+    if (you.get_mutation_level(MUT_EXPOSED))
+        evbonus -= you.get_mutation_level(MUT_EXPOSED) * 3;
+	
     if (you.props.exists(WALL_JUMP_EV_KEY))
         evbonus += you.props[WALL_JUMP_EV_KEY].get_int();
 
@@ -2245,7 +2185,7 @@ static int _player_scale_evasion(int prescaled_ev, const int scale)
  */
 static int _player_armour_adjusted_dodge_bonus(int scale)
 {
-    const int ev_dex = stepdown(you.dex(), 18, ROUND_CLOSE, MAX_STAT_VALUE);
+    const int ev_dex = stepdown(you.dex(), 24, ROUND_CLOSE, MAX_STAT_VALUE);
 
     const int dodge_bonus =
         (70 + you.skill(SK_DODGING, 10) * ev_dex) * scale
@@ -2384,8 +2324,11 @@ int player_shield_class()
     shield += _bone_armour_bonus() * 2;
     shield += you.wearing(EQ_AMULET_PLUS, AMU_REFLECTION) * 200;
     shield += you.scan_artefacts(ARTP_SHIELDING) * 200;
+	
+    if (you.get_mutation_level(MUT_EXPOSED))
+        shield -= you.get_mutation_level(MUT_EXPOSED) * 600;
 
-    return (shield + 50) / 100;
+    return max((shield + 50) / 100, 0);
 }
 
 /**
@@ -2675,6 +2618,24 @@ static void _handle_god_wrath(int exp)
     }
 }
 
+static void _handle_xom_effects(int exp)
+{
+    if(!you_worship(GOD_XOM))
+        return;
+    you.attribute[ATTR_XOM_MUT_XP] -= exp;
+	you.attribute[ATTR_XOM_GIFT_XP] -= exp;
+    if (you.attribute[ATTR_XOM_MUT_XP] < 0)
+    {
+        you.attribute[ATTR_XOM_MUT_XP] = 0;
+        xom_mutate_player(); 
+    }
+    if (you.attribute[ATTR_XOM_GIFT_XP] < 0)
+    {
+        you.attribute[ATTR_XOM_GIFT_XP] = 0;
+        give_xom_gift(10 + you.experience_level * 3); 
+    }
+}
+
 void gain_exp(unsigned int exp_gained, unsigned int* actual_gain)
 {
     if (crawl_state.game_is_arena())
@@ -2684,6 +2645,7 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain)
     _handle_xp_penance(exp_gained);
     _handle_god_wrath(exp_gained);
     _transfer_knowledge(exp_gained);
+    _handle_xom_effects(exp_gained);
 
     // evolution mutation timer
     you.attribute[ATTR_EVOL_XP] += exp_gained;
@@ -2905,22 +2867,6 @@ void level_change(bool skip_attribute_increase)
 
             switch (you.species)
             {
-            case SP_VAMPIRE:
-                if (you.experience_level == 3)
-                {
-                    if (you.hunger_state > HS_SATIATED)
-                    {
-                        mprf(MSGCH_INTRINSIC_GAIN, "If you weren't so full, "
-                             "you could now transform into a vampire bat.");
-                    }
-                    else
-                    {
-                        mprf(MSGCH_INTRINSIC_GAIN,
-                             "You can now transform into a vampire bat.");
-                    }
-                }
-                break;
-
             case SP_NAGA:
                 if (!(you.experience_level % 3))
                 {
@@ -3065,7 +3011,6 @@ void level_change(bool skip_attribute_increase)
         if (!updated_maxhp)
             _gain_and_note_hp_mp();
 
-        xom_is_stimulated(12);
         if (in_good_standing(GOD_HEPLIAKLQANA))
             upgrade_hepliaklqana_ancestor();
 
@@ -3209,7 +3154,8 @@ int check_stealth()
     stealth += (STEALTH_PIP / 2)
                 * you.get_mutation_level(MUT_THIN_SKELETAL_STRUCTURE);
     stealth += STEALTH_PIP * you.get_mutation_level(MUT_CAMOUFLAGE) * 3;
-    const int how_transparent = you.get_mutation_level(MUT_TRANSLUCENT_SKIN);
+    stealth -= STEALTH_PIP * you.get_mutation_level(MUT_SHINY) * 3;
+    const int how_transparent = 3 * you.get_mutation_level(MUT_TRANSLUCENT_SKIN);
 
     if (how_transparent)
         stealth += 15 * (how_transparent);
@@ -3320,48 +3266,6 @@ static void _display_char_status(int value, const char *fmt, ...)
     va_end(argp);
 }
 
-static void _display_vampire_status()
-{
-    string msg = "At your current hunger state you ";
-    vector<const char *> attrib;
-
-    switch (you.hunger_state)
-    {
-        case HS_FAINTING:
-        case HS_STARVING:
-            attrib.push_back("are immune to poison");
-            attrib.push_back("significantly resist cold");
-            attrib.push_back("are immune to negative energy");
-            attrib.push_back("resist torment");
-            attrib.push_back("do not heal.");
-            break;
-        case HS_NEAR_STARVING:
-        case HS_VERY_HUNGRY:
-        case HS_HUNGRY:
-            attrib.push_back("resist poison");
-            attrib.push_back("resist cold");
-            attrib.push_back("significantly resist negative energy");
-            attrib.push_back("have a slow metabolism");
-            attrib.push_back("heal slowly.");
-            break;
-        case HS_SATIATED:
-            attrib.push_back("resist negative energy.");
-            break;
-        case HS_FULL:
-        case HS_VERY_FULL:
-        case HS_ENGORGED:
-            attrib.push_back("have a fast metabolism");
-            attrib.push_back("heal quickly.");
-            break;
-    }
-
-    if (!attrib.empty())
-    {
-        msg += comma_separated_line(attrib.begin(), attrib.end());
-        mpr(msg);
-    }
-}
-
 static void _display_movement_speed()
 {
     const int move_cost = (player_speed() * player_movement_speed()) / 10;
@@ -3466,12 +3370,7 @@ static string _constriction_description();
 
 void display_char_status()
 {
-    if (you.undead_state() == US_SEMI_UNDEAD
-        && you.hunger_state == HS_ENGORGED)
-    {
-        mpr("You feel almost alive.");
-    }
-    else if (you.undead_state())
+    if (you.undead_state())
         mpr("You are undead.");
     else if (you.duration[DUR_DEATHS_DOOR])
     {
@@ -3493,9 +3392,6 @@ void display_char_status()
     }
     else if (you.haloed())
         mpr("An external divine halo illuminates you.");
-
-    if (you.species == SP_VAMPIRE)
-        _display_vampire_status();
 
     status_info inf;
     for (unsigned i = 0; i <= STATUS_LAST_STATUS; ++i)
@@ -3924,8 +3820,6 @@ void rot_hp(int hp_loss)
 
     calc_hp();
 
-    xom_is_stimulated(hp_loss * 25);
-
     you.redraw_hit_points = true;
 }
 
@@ -4097,6 +3991,8 @@ int get_real_mp(bool include_items, bool frozen)
                - (you.get_mutation_level(MUT_LOW_MAGIC) * 10);
     enp /= 100 * scale;
 //    enp = stepdown_value(enp, 9, 18, 45, 100)
+
+    enp += you.get_mutation_level(MUT_EXTRA_MP) * 5;
     enp += species_mp_modifier(you.species);
 
     // This is our "rotted" base, applied after multipliers
@@ -4125,8 +4021,6 @@ int get_real_mp(bool include_items, bool frozen)
 bool player_regenerates_hp()
 {
     if (you.has_mutation(MUT_NO_REGENERATION))
-        return false;
-    if (you.species == SP_VAMPIRE && you.hunger_state <= HS_STARVING)
         return false;
     return true;
 }
@@ -4209,8 +4103,8 @@ void contaminate_player(int change, bool controlled, bool msg)
     if (change > 0 && player_equip_unrand(UNRAND_ETHERIC_CAGE))
         change *= 2;
 
-    you.magic_contamination = max(0, min(250000,
-                                         you.magic_contamination + change));
+    you.magic_contamination = max(you.get_mutation_level(MUT_RADIOACTIVE) ? 2500 : 0, 
+                                    min(250000, you.magic_contamination + change));
 
     new_level = get_contamination_level();
 
@@ -4224,7 +4118,6 @@ void contaminate_player(int change, bool controlled, bool msg)
             mprf(player_severe_contamination() ? MSGCH_WARN : MSGCH_PLAIN,
                  "%s", describe_contamination(new_level).c_str());
         }
-        xom_is_stimulated(new_level * 25);
     }
     else if (msg && new_level < old_level)
     {
@@ -4310,10 +4203,6 @@ bool confuse_player(int amount, bool quiet, bool force)
     }
 
     learned_something_new(HINT_YOU_ENCHANTED);
-
-    xom_is_stimulated((you.duration[DUR_CONF])
-                       / BASELINE_DELAY);
-
     return true;
 }
 
@@ -4328,6 +4217,9 @@ void paralyse_player(string source, int amount)
 bool poison_player(int amount, string source, string source_aux, bool force)
 {
     ASSERT(!crawl_state.game_is_arena());
+
+    if (crawl_state.disables[DIS_AFFLICTIONS])
+        return false;
 
     if (you.duration[DUR_DIVINE_STAMINA] > 0)
     {
@@ -4443,10 +4335,8 @@ void handle_player_poison(int delay)
 
     // Transforming into a form with no metabolism merely suspends the poison
     // but doesn't let your body get rid of it.
-    // Hungry vampires are less affected by poison (not at all when bloodless).
     if (you.is_nonliving() || you.undead_state()
-        && (you.undead_state() != US_SEMI_UNDEAD
-            || x_chance_in_y(4 - you.hunger_state, 4)))
+        && (you.undead_state() != US_SEMI_UNDEAD))
     {
         return;
     }
@@ -5183,7 +5073,9 @@ player::player()
     obtainable_runes = 15;
 
     spell_library.reset();
-
+	
+	manuals_in_inventory.clear();
+	
     spells.init(SPELL_NO_SPELL);
     old_vehumet_gifts.clear();
     spell_no        = 0;
@@ -5628,14 +5520,7 @@ void player::banish(actor* /*agent*/, const string &who, const int power,
 // to 50% (hungry, very hungry, near starving) or zero (starving).
 int calc_hunger(int food_cost)
 {
-    if (you.undead_state() == US_SEMI_UNDEAD && you.hunger_state < HS_SATIATED)
-    {
-        if (you.hunger_state <= HS_STARVING)
-            return 0;
-
-        return food_cost/2;
-    }
-    return food_cost;
+    return 0;
 }
 
 /*
@@ -6075,8 +5960,8 @@ int player::armour_class(bool /*calc_unid*/) const
     // Scale mutations, etc. Statues don't get an AC benefit from scales,
     // since the scales are made of the same stone as everything else.
     AC += get_mutation_level(MUT_TOUGH_SKIN)
-          ? get_mutation_level(MUT_TOUGH_SKIN) * 100 : 0;
-              // +1, +2, +3
+          ? get_mutation_level(MUT_TOUGH_SKIN) * 300 : 0;
+              // +3
     AC += get_mutation_level(MUT_SHAGGY_FUR)
           ? get_mutation_level(MUT_SHAGGY_FUR) * 400 : 0;
               // +4
@@ -6110,6 +5995,8 @@ int player::armour_class(bool /*calc_unid*/) const
     AC -= get_mutation_level(MUT_PHYSICAL_VULNERABILITY)
           ? get_mutation_level(MUT_PHYSICAL_VULNERABILITY) * 300 : 0;
               // +3, +6, +9
+    AC -= get_mutation_level(MUT_EXPOSED)
+          ? get_mutation_level(MUT_EXPOSED) * 300 : 0;
     //WJC passive goes last and affects all sources of AC
     if(you_worship(GOD_WU_JIAN) && have_passive(passive_t::wu_jian_glass_cannon))
     {
@@ -7150,9 +7037,6 @@ bool player::innate_sinv() const
 
     // antennae give sInvis at 3
     if (get_mutation_level(MUT_ANTENNAE) == 3)
-        return true;
-
-    if (get_mutation_level(MUT_EYEBALLS) == 3)
         return true;
 
     if (have_passive(passive_t::sinv))

@@ -353,7 +353,7 @@ MONS:    steam dragon / acid dragon / swamp drake
 MONS:    w:20 iguana / komodo dragon / crocodile / nothing
 SUBST:   ? = x.c
 SHUFFLE: %*RO
-KITEM:   R = stone
+KITEM:   R = large rock
 KFEAT:   O = enter_lair
 
 MAP
@@ -485,7 +485,7 @@ ORIENT:  northeast
 DEPTH:   D:5-8, Lair
 SHUFFLE: 23, 34
 MONS:    rat, rat / iguana w:5, iguana, hell rat
-ITEM:    stone w:80 / large rock
+ITEM:    large rock
 SUBST:   d = d$..., e = d$
 : if you.in_branch("Lair") then
 TAGS:    extra
@@ -1467,7 +1467,7 @@ DEPTH:  Lair
 ORIENT: float
 MONS:   iguana band, hell rat, iguana / rat
 KMONS:  P = plant / fungus w:2
-KITEM:  d = stone
+KITEM:  d = large rock
 NSUBST: W = 1:1 / 2:P / 2:2 / 2:3 / 2:d
 MAP
  xxxx
@@ -1487,7 +1487,7 @@ TAGS:   ruin
 DEPTH:  Lair
 ORIENT: float
 MONS:   iguana / rat, hell rat, rat
-KITEM:  d = stone
+KITEM:  d = large rock
 SUBST:  d = d123..., 2 = 2.
 NSUBST: 1 = *:1
 MAP
@@ -1586,7 +1586,7 @@ TAGS:   patrolling no_monster_gen
 MONS:   black bear / polar bear
 KFEAT:  " = W
 KMONS:  " = electric eel w:40 / nothing
-KITEM:  % = stone
+KITEM:  % = large rock
 SUBST:  % = %., * = *:40 |, B = 1., E = tE
 CLEAR:  E
 MAP
@@ -1771,7 +1771,7 @@ DEPTH: Lair:4-
 TAGS: no_monster_gen no_item_gen no_trap_gen
 SUBST: P = P.
 NSUBST: D = 1:D / *:.
-KITEM: f = stone / nothing
+KITEM: f = large rock / nothing
 KMONS: Y = yak
 KMONS: D = death yak
 KMONS: C = catoblepas
@@ -1897,7 +1897,7 @@ NAME: grunt_forest_small_clearings
 TAGS: transparent extra decor
 DEPTH: Lair
 MONS: plant / bush
-KITEM: d = stone
+KITEM: d = large rock
 KMASK: G = no_monster_gen
 SHUFFLE: Ww. / ''` / ''`
 SUBST: t = t.., '` = 1:49 d:36 .:405
@@ -1941,7 +1941,7 @@ MONS:    plant / bush, wolf
 MONS:    black bear / polar bear, spriggan / centaur w:4
 KMONS:   9 = 9
 KMONS:   * = spriggan rider / faun w:4
-ITEM:    stone q:10
+ITEM:    large rock
 KITEM:   9* = *
 KFEAT:   9 = W
 SHUFFLE: wW'"-~-_9 / ''GG''''* / '''0''''% / ``````22G
@@ -2113,7 +2113,7 @@ NAME:   beast_lair_carwin_2
 TAGS:   transparent luniq_beast_lair
 : beast_lair_populate_mons_small(_G)
 : beast_lair_randomise(_G)
-ITEM: stone
+ITEM: large rock
 SUBST: ? : .
 MAP
   ...
@@ -2572,8 +2572,8 @@ MONS:    black bear, polar bear
 KMONS:   P = plant
 # The one big reward and the several smaller stacks of items
 # are randomly split between the mostly-dog and mostly-bear sections.
-KITEM:   $ = any, any w:1 / nothing w:5, stone q:3
-KITEM:   % = any, any w:1 / nothing w:5, stone q:2
+KITEM:   $ = any, any w:1 / nothing w:5, large rock q:3
+KITEM:   % = any, any w:1 / nothing w:5, large rock q:2
 KITEM:   *| = gold, gold, gold, acquire any
 NSUBST:  3 = 1:4 / 1:5 / 2 : 3:4 4:3 5:1 / *:3
 SHUFFLE: %'*" / '$"|

@@ -15,6 +15,7 @@
 #include <sstream>
 
 #include "ability.h"
+#include "clua.h"
 #include "describe-god.h"
 #include "evoke.h"
 #include "exercise.h"
@@ -589,6 +590,13 @@ bool check_selected_skills()
 
     if (trainable_skill)
     {
+        // Calling a user lua function here to allow enabling skills without user
+        // prompt (much like the callback auto_experience for the case of potion of experience).
+        if (clua.callbooleanfn(false, "skill_training_needed", nullptr))
+        {
+            return true;
+        }
+
         mpr("You need to enable at least one skill for training.");
         more();
         reset_training();
@@ -1007,21 +1015,20 @@ static int _train(skill_type exsk, int &max_exp, bool simu)
         skill_inc = skill_inc * frac / 10;
     }
 
-    if (skill_inc <= 0)
+    if (skill_inc <= 0 || cost > max_exp)
         return 0;
 
     // Bonus from manual
-    int slot;
+    item_def* manual = manual_for_skill(exsk);
     int bonus_left = skill_inc;
-    while (bonus_left > 0 && (slot = manual_slot_for_skill(exsk)) != -1)
+    while (bonus_left > 0 && manual != nullptr && manual->skill_points && manual->skill_points > 0)
     {
-        item_def& manual(you.inv[slot]);
-        const int bonus = min<int>(bonus_left, manual.skill_points);
+        int bonus = min<int>(bonus_left, manual->skill_points);
         skill_inc += bonus;
         bonus_left -= bonus;
-        manual.skill_points -= bonus;
-        if (!manual.skill_points && !simu)
-            finish_manual(slot);
+        manual->skill_points -= bonus;
+        if (!manual->skill_points && !simu)
+            finish_manual(manual);
     }
 
     const skill_type old_best_skill = best_skill(SK_FIRST_SKILL, SK_LAST_SKILL);
@@ -1070,6 +1077,7 @@ skill_diff skill_level_to_diffs(skill_type skill, double amount,
                             bool base_only)
 {
     // TODO: should this use skill_state?
+    // TODO: can `amount` be converted to fixed point?
     double level;
     double fractional = modf(amount, &level);
     if (level >= MAX_SKILL_LEVEL)
@@ -1096,12 +1104,6 @@ skill_diff skill_level_to_diffs(skill_type skill, double amount,
         // This will not address the case where some cross-training skills are
         // also being trained.
         you_skill += get_crosstrain_points(skill);
-
-        // Estimate the ash bonus, based on current skill levels and piety.
-        // This isn't perfectly accurate, because the boost changes as
-        // skill increases. TODO: exact solution.
-        // It also assumes that piety won't change.
-        you_skill += ash_skill_point_boost(skill, you.skills[skill] * 10);
 
         if (skill_has_manual(skill))
             target = you_skill + (target - you_skill) / 2;
@@ -1140,13 +1142,13 @@ skill_diff skill_level_to_diffs(skill_type skill, double amount,
 
         const int cost = calc_skill_cost(you_skill_cost_level);
         // Maximum number of skill points to transfer in one go.
-        // It's max_xp*10/cost rounded up.
-        const int max_skp = max((max_xp * 10 + cost - 1) / cost, 1);
+        // It's max_xp/cost rounded up.
+        const int max_skp = max((max_xp + cost - 1) / cost, 1);
 
         skill_diff delta;
         delta.skill_points = min<int>(abs((int)(target - you_skill)),
                                  max_skp);
-        delta.experience = (delta.skill_points * cost + 9) / 10;
+        delta.experience = delta.skill_points * cost;
 
         if (decrease_skill)
         {

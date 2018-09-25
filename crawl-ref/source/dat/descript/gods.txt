@@ -71,11 +71,9 @@ bringing them into the ranks of the mythical heroes.
 %%%%
 Jiyva
 
-Jiyva is the ancient deity of the slimes. Followers are expected to
-explore the dungeon in search of new regions for slimes to spread to
-and are forbidden from harming any slimes. Especially favoured
-followers will become as shapeless as their god, as their attributes and
-mutations shift around under Jiyva's influence.
+Jiyva is an ancient, shapeless deity. Followers will have their shape radically
+altered by mutations and gain the ability to destroy the very shape of their foes,
+turning them to slime.
 %%%%
 Kikubaaqudgha
 
@@ -302,14 +300,10 @@ their life's talents.
 %%%%
 Jiyva powers
 
-Jiyva will consume items in the dungeon, granting sufficiently pious 
-followers mana and health in the process. Followers will become able 
-to turn monsters to slime, and eventually to reshape themselves to 
-remove harmful mutations. As their piety grows, Jiyva will, with 
-increasing frequency, rearrange followers' attributes based on their 
-skills and armour; and mutate followers to better reflect Jiyva's 
-image. Jiyva will directly intervene to absorb some damage on behalf 
-of the exceptionally devout.
+Jiyva regularly mutates followers. The mutations gifted by Jiyva are usually
+beneficial and include some truly divine mutations that can only be obtained
+through worship. Followers will become able to turn monsters to slime, and eventually 
+to reshape themselves to remove harmful mutations. 
 %%%%
 Kikubaaqudgha powers
 
@@ -458,11 +452,11 @@ precision and damage for as long as they keep using martial attacks.
 %%%%
 Xom powers
 
-To worship Xom is to live riskily. In a good mood Xom may shower worshippers
-with gifts, while at other times this capricious god could decide to “spice
-things up a little” and send worshippers to their doom. If such toys of Xom
-prove to be interesting, so much the better; if not, well, there'll be other
-playthings...
+To worship Xom is to live riskily. Xom will shower worshippers with gifts,
+often of questionable utility, and frequently shuffles their mutations, 
+though not always for the better. Xom also may intervene in combat, especially
+when large numbers of opponents are involved, with wild and unpredictable 
+results.
 %%%%
 Yredelemnul powers
 
@@ -549,9 +543,7 @@ against the ex-worshipper.
 %%%%
 Jiyva wrath
 
-Jiyva's vengeance is swift and gurgling. All slimes turn against those who
-offend Jiyva, and Jiyva ensures a plentiful supply of further slimes. Victims,
-too, will find their own bodies becoming unstable; regularly transmuting into
+Jiyva's vengeance is swift and gurgling. Victims will find their own bodies becoming unstable; regularly transmuting into
 strange forms and acquiring debilitating mutations, as well as having any gifts
 of slime mutations stripped away from them.
 %%%%

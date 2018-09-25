@@ -435,8 +435,7 @@ public:
     {
         if (player_res_poison() >= 1)
             mpr("You feel slightly nauseous.");
-        else if (effect(was_known))
-            xom_is_stimulated(100 / _xom_factor(was_known));
+        effect(was_known);
         return true;
     }
 };
@@ -655,12 +654,6 @@ public:
 
     bool effect(bool was_known = true, int pow = 40, bool=true) const override
     {
-        if (you.species == SP_VAMPIRE && you.hunger_state < HS_SATIATED)
-        {
-            mpr("You feel slightly irritated.");
-            return false;
-        }
-
         you.go_berserk(was_known, true);
         return true;
     }
@@ -673,8 +666,7 @@ public:
             return false;
         }
 
-        if (effect(was_known))
-            xom_is_stimulated(50);
+        effect(was_known);
         return true;
     }
 };
@@ -803,9 +795,11 @@ public:
         int remove_mutations = random_range(MIN_REMOVED, MAX_REMOVED);
         int add_mutations = random_range(MIN_ADDED, MAX_ADDED);
 
-        // Remove mutations.
-        for (int i = 0; i < remove_mutations; i++)
-            mutated |= delete_mutation(RANDOM_MUTATION, "potion of mutation", false);
+        // Remove mutations (except Jiyva worshippers)
+        if (!you_worship(GOD_JIYVA)) {
+            for (int i = 0; i < remove_mutations; i++)
+                mutated |= delete_mutation(RANDOM_MUTATION, "potion of mutation", false);
+        }
         // Add mutations.
         for (int i = 0; i < add_mutations; i++)
             mutated |= mutate(RANDOM_MUTATION, "potion of mutation", false);
@@ -859,8 +853,7 @@ public:
 
     bool quaff(bool was_known) const override
     {
-        if (effect())
-            xom_is_stimulated( 50 / _xom_factor(was_known));
+        effect();
         return true;
     }
 };
@@ -1245,8 +1238,7 @@ public:
 
     bool quaff(bool was_known) const override
     {
-        if (effect())
-            xom_is_stimulated( 50 / _xom_factor(was_known));
+        effect();
         return true;
     }
 };

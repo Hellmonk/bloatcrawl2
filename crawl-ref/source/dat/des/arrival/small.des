@@ -207,7 +207,7 @@ ORIENT: float
 NSUBST: s = 1:+ / *:x, p = 1:+ / *:x, q = 1:+ / *:x, r = 1:+ / *:x
 NSUBST: _ = 1:w / *:., ' = 1:w / *:., ` = 1:w / 1:d / *:.
 SUBST:  w:wlxm, x:xccv, +=+++.
-ITEM:   stone
+ITEM:   gold q:1
 MAP
    ...........
   ..rrrrrrrrr..
@@ -226,24 +226,6 @@ MAP
  ..rr.`````.rr..
   ..rrrrrrrrr..
    ...........
-ENDMAP
-
-###############################################################
-# Player is usually encouraged to go towards the dangerous door with the
-# bait. The monster is slow, and there's room to escape and close the door.
-NAME:    evilmike_arrival_run_for_it
-TAGS:    arrival no_monster_gen
-ORIENT:  float
-: if crawl.one_chance_in(4) then
-SHUFFLE: d'
-: end
-SUBST:   '=.
-MONS:    dart slug
-ITEM:    stone
-MAP
-xxxxxxxxxxxxxxxxx
-x%1.+d....{....'+
-xxxxxxxxxxxxxxxxx
 ENDMAP
 
 ##############################################################
@@ -615,7 +597,7 @@ ENDMAP
 NAME:    erik_arrival_orb_chamber
 TAGS:    arrival no_rotate
 ORIENT:  float
-ITEM:    q:1 stone
+ITEM:    gold q:1
 MONS:    rat
 NSUBST:  { = 1:{ / *:.
 MAP
@@ -759,7 +741,7 @@ ENDMAP
 NAME:   dpeg_arrival_chase
 TAGS:   arrival no_monster_gen no_pool_fixup no_rotate
 MONS:   kobold, hobgoblin / goblin / bat
-ITEM:   stone
+ITEM:   gold q:1
 ORIENT: float
 SUBST:  w : w l:1
 MAP
@@ -784,7 +766,7 @@ TAGS:    arrival no_monster_gen
 ORIENT:  float
 SHUFFLE: cvb
 NSUBST:  . = 1:d / *:.
-ITEM:    stone
+ITEM:    gold q:1
 MAP
 xxxxxxxxxxxxxxx
 xcccccccx.....x
@@ -849,7 +831,7 @@ ORIENT:  float
 SHUFFLE: cxxx
 NSUBST:  . = 1:d / *:.
 SUBST:   T = TVVVV
-ITEM:    stone
+ITEM:    gold q:1
 MAP
         ccccccc@ccccccc
     ccccc.............ccccc
@@ -872,7 +854,7 @@ TAGS:    arrival no_monster_gen no_rotate
 ORIENT:  float
 SHUFFLE: cxxx
 NSUBST:  . = 1:d / *:.
-ITEM:    stone
+ITEM:    gold q:1
 SUBST:   T = TVVVV
 MAP
      ccccccccccc
@@ -898,7 +880,7 @@ TAGS:    arrival no_monster_gen no_rotate
 ORIENT:  float
 SHUFFLE: cxxx
 NSUBST:  . = 1:d / *:.
-ITEM:    stone
+ITEM:    gold q:1
 SUBST:   T = TVVVV
 MAP
          ccccc
@@ -952,7 +934,7 @@ TAGS:    arrival no_monster_gen no_rotate
 ORIENT:  float
 SHUFFLE: cxxx
 NSUBST:  . = 1:d / *:.
-ITEM:    stone
+ITEM:    gold q:1
 SUBST:   T = TVVVV
 MAP
    ccccccccccccccccc
@@ -980,7 +962,7 @@ ORIENT: float
 SUBST:  ' = .x
 SUBST:  G : GTVt
 NSUBST: d = 1:d / *:'
-ITEM:   stone
+ITEM:   gold q:1
 MAP
                xxxxx
              xxx...xxx
@@ -1190,7 +1172,7 @@ NAME:   dpeg_arrival_simpleton_a
 TAGS:   arrival  no_monster_gen
 ORIENT: float
 NSUBST: . = 1:d / *:.
-ITEM:   stone
+ITEM:   gold q:1
 MAP
 @xx           xx@
 x.xxxx     xxxx.x
@@ -1249,30 +1231,6 @@ MAP
 ...x...x...
 ...xx+xx...
 @.........@
-ENDMAP
-
-##############################################################################
-NAME:    dpeg_arrival_prison
-TAGS:    arrival no_monster_gen
-ORIENT:  float
-SHUFFLE: ABCDEFGH
-SUBST:   A={, B=', C=', D=', E=', F=', G=', H=d
-SUBST:   ' = .:70 1 w:2
-SUBST:   . = .:60 2:1 3:1
-ITEM:    stone
-MONS:    fungus, rat, giant cockroach
-MAP
-xxxxxxxxxxxxxxxxx
-x'A'x'B'x'C'x'D'x
-x'.'x'.'x'.'x'.'x
-xx+xxx+xxx+xxx+xx
-x'..............x
-x'..............+
-x'..............x
-xx+xxx+xxx+xxx+xx
-x'.'x'.'x'.'x'.'x
-x'E'x'F'x'G'x'H'x
-xxxxxxxxxxxxxxxxx
 ENDMAP
 
 ##############################################################################
@@ -1359,7 +1317,7 @@ NAME:   zaba_arrival_water
 TAGS:   arrival no_monster_gen no_rotate
 ORIENT: float
 SUBST:  T = TV, ? = wW, > = >d
-ITEM:   stone
+ITEM:   gold q:1
 MAP
 xxx@xxx@xxx@xxx
 x.............x
@@ -1542,7 +1500,7 @@ SUBST:  0 = 0 .
 SUBST:  ' = w'
 NSUBST: . = 1:d / *:.
 NSUBST: " = 1:@ / *:.
-ITEM:   stone
+ITEM:   gold q:1
 MAP
 ".0.0....0."
 xxwwwwwwwxxx
@@ -1564,7 +1522,7 @@ SUBST:   {=., [=.
 SUBST:   Z=x, Y=x, W=@, C=+x
 SUBST:   z=@, y=+, w=x
 NSUBST:  . = 1:d / *:.
-ITEM:    stone
+ITEM:    gold q:1
 ORIENT:  float
 MAP
   xZxxx
@@ -1624,7 +1582,7 @@ ORIENT:  float
 SUBST:   ' : . x ':40, '=.x
 NSUBST:  . = 1:d / *:.
 NSUBST:  { = 1:{ / *:.
-ITEM:    stone
+ITEM:    gold q:1
 MAP
     xxxxxxxxxxxxxxxxx
    xx''xx''''''xx''xx
@@ -1770,7 +1728,6 @@ SHUFFLE: 1x
 SUBST:   x = '
 NSUBST:  ' = 2:d / *:'
 NSUBST:  . = '.
-KITEM:   d : stone q:5
 KFEAT:   d = '
 FTILE:   d'1{ = floor_grass
 COLOUR:  d' = green
@@ -1926,7 +1883,7 @@ SHUFFLE: DX'/CY"
 SUBST:   D = c, XC" = x, 'Y = .
 SHUFFLE: cvb
 NSUBST:  . = 1:d / *:.
-ITEM:    stone
+ITEM:    gold q:1
 MAP
           xxxxxxxxxxx
      xxxxxx...xxxx..xx
@@ -2123,7 +2080,7 @@ NAME:    onia_arrival_mini_maze
 TAGS:    arrival
 WEIGHT:  5
 ORIENT:  float
-ITEM:    stone q:10 / nothing / stone
+ITEM:    nothing
 SHUFFLE: Aa, Bb, Cc, Ee, Ff
 MONS:    w:30 nothing / w:10 plant / w:5 fungus / w:10 rat
 SUBST:   A=x, B=x, C=x, E=x, F=x, a=., b=., c=., e=., f=.
@@ -2149,7 +2106,7 @@ NAME:    onia_arrival_mini_maze_b
 TAGS:    arrival
 WEIGHT:  5
 ORIENT:  float
-ITEM:    stone q:10 / nothing / stone / w:30 nothing
+ITEM:    nothing
 SHUFFLE: AB
 SUBST:   A : x , B = +., X = x+
 MONS:    w:30 nothing / w:10 plant / w:3 fungus / w:1 dart slug
@@ -2926,29 +2883,6 @@ Oxxxxxxxxxxxxx@@@@@
 Ox
 Ox
 xx
-ENDMAP
-
-##############################################################
-NAME:    minmay_arrival_shattered_statue
-TAGS:    arrival
-ORIENT:  float
-ITEM:    stone q:4 / stone q:2 / nothing
-ITEM:    stone q:3 w:5 / stone q:1 / nothing
-ITEM:    stone q:2 w:5 / stone q:1 w:5 / nothing
-ITEM:    stone q:1 w:5 / nothing
-ITEM:    stone q:1 w:1 / nothing w:20
-MAP
-   xxxxxxx
-  xx.....xx
-  x..h{h..x
-  xxhggghxx
-   xxx+xxx
- xxxeeeeexxx
-xxgfedddefgxx
-+hgfedGdefgh+
-xxgfedddefgxx
- xxxeeeeexxx
-   xxxxxxx
 ENDMAP
 
 NAME:   mainiacjoe_arrival_reflecting_pool

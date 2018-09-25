@@ -651,8 +651,6 @@ static void _god_greeting_message(bool game_start)
         ;
     else if (game_start)
         msg = " newgame";
-    else if (you_worship(GOD_XOM) && you.gift_timeout <= 1)
-        msg = " bored";
     else if (player_under_penance())
         msg = " penance";
 
@@ -783,8 +781,7 @@ static void _do_wizard_command(int wiz_command)
 
     // case 'j': break;
     case 'J':
-        mpr("Running Jiyva on-level sacrifice.");
-        jiyva_eat_onlevel_items();
+        mpr("Jiyva on-level sacrifice is removed fam.");
         break;
     // case CONTROL('J'): break;
 
@@ -2002,7 +1999,10 @@ static void _do_cycle_quiver(int dir)
 
 static void _do_list_gold()
 {
-    mprf("You have %d gold piece%s.", you.gold, you.gold != 1 ? "s" : "");
+    if (shopping_list.empty())
+        mprf("You have %d gold piece%s.", you.gold, you.gold != 1 ? "s" : "");
+    else
+        shopping_list.display();
 }
 
 // Note that in some actions, you don't want to clear afterwards.
@@ -3476,13 +3476,7 @@ static void _move_player(coord_def move)
 
         if (you.duration[DUR_WATER_HOLD])
         {
-            if (you.can_swim())
-                mpr("You deftly slip free of the water engulfing you.");
-            else //Unless you're a natural swimmer, this takes longer than normal
-            {
-                mpr("With effort, you pull free of the water engulfing you.");
-                you.time_taken = you.time_taken * 3 / 2;
-            }
+            mpr("You slip free of the water engulfing you.");
             you.duration[DUR_WATER_HOLD] = 1;
             you.props.erase("water_holder");
         }

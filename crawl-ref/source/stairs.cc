@@ -390,46 +390,6 @@ static void _rune_effect(dungeon_feature_type ftype)
     }
 }
 
-static void _new_level_amuses_xom(dungeon_feature_type feat,
-                                  dungeon_feature_type old_feat,
-                                  bool shaft, int shaft_depth, bool voluntary)
-{
-    switch (you.where_are_you)
-    {
-    default:
-        // Xom thinks it's funny if you enter a new level via shaft
-        // or escape hatch, for shafts it's funnier the deeper you fell.
-        if (shaft || feat_is_escape_hatch(feat))
-            xom_is_stimulated(shaft_depth * 50);
-        else if (!is_connected_branch(you.where_are_you))
-            xom_is_stimulated(25);
-        else
-            xom_is_stimulated(10);
-        break;
-
-    case BRANCH_ZIGGURAT:
-        // The best way to die currently.
-        xom_is_stimulated(50);
-        break;
-
-    case BRANCH_LABYRINTH:
-        // Finding the way out of a labyrinth interests Xom.
-        xom_is_stimulated(75);
-        break;
-
-    case BRANCH_PANDEMONIUM:
-        xom_is_stimulated(100);
-        break;
-
-    case BRANCH_ABYSS:
-        if (voluntary && old_feat == DNGN_ENTER_ABYSS)
-            xom_is_stimulated(100, XM_INTRIGUED);
-        else
-            xom_is_stimulated(200);
-        break;
-    }
-}
-
 static level_id _travel_destination(const dungeon_feature_type how,
                                     const dungeon_feature_type whence,
                                     bool forced, bool going_up,
@@ -617,6 +577,7 @@ void floor_transition(dungeon_feature_type how,
 
     if (how == DNGN_ENTER_PANDEMONIUM
         || how == DNGN_ENTER_ABYSS
+        || how == DNGN_ENTER_BAZAAR
         || feat_is_portal_entrance(how))
     {
         you.level_stack.push_back(level_pos::current());
@@ -770,15 +731,8 @@ void floor_transition(dungeon_feature_type how,
     if (you.species == SP_FORMICID && !is_valid_shaft_level())
         mpr("Beware, you cannot shaft yourself on this level.");
 
-    const bool newlevel = load_level(how, LOAD_ENTER_LEVEL, old_level);
-
-    if (newlevel)
-    {
-        _new_level_amuses_xom(how, whence, shaft,
-                              (shaft ? whither.depth - old_level.depth : 1),
-                              !forced);
-    }
-
+    load_level(how, LOAD_ENTER_LEVEL, old_level);
+	
     // This should maybe go in load_level?
     if (you.where_are_you == BRANCH_ABYSS)
         generate_random_blood_spatter_on_level();
@@ -803,15 +757,6 @@ void floor_transition(dungeon_feature_type how,
     }
 
     you.clear_fearmongers();
-	
-    //slurp some items on level entry
-    if(you_worship(GOD_JIYVA))
-    {
-        for (int i = 0; i < 15; i++)
-        {
-            jiyva_eat_onlevel_items();
-        }
-    }
 
     if (!wizard && !shaft)
         _update_travel_cache(old_level, stair_pos);
@@ -981,6 +926,11 @@ level_id stair_destination(dungeon_feature_type feat, const string &dst,
         if (for_real && !player_in_hell())
             brentry[BRANCH_VESTIBULE] = level_id::current();
         return level_id(BRANCH_VESTIBULE);
+		
+    case DNGN_ENTER_BAZAAR:
+        if(for_real)
+            brentry[BRANCH_BAZAAR] = level_id::current();
+        return level_id(BRANCH_BAZAAR);
 
     case DNGN_EXIT_ABYSS:
         if (you.chapter == CHAPTER_POCKET_ABYSS)
@@ -989,6 +939,7 @@ level_id stair_destination(dungeon_feature_type feat, const string &dst,
     case DNGN_EXIT_PORTAL_VAULT:
 #endif
     case DNGN_EXIT_PANDEMONIUM:
+    case DNGN_EXIT_BAZAAR:
         if (you.level_stack.empty())
         {
             if (you.wizard)
@@ -1027,8 +978,10 @@ void down_stairs(dungeon_feature_type force_stair, bool force_known_shaft,
 {
     take_stairs(force_stair, false, force_known_shaft, wizard);
 	upstairs_removal();
-    if(player_in_branch(BRANCH_DUNGEON))
+    if (player_in_branch(BRANCH_DUNGEON))
         zap_close_monsters();
+    if (player_in_branch(BRANCH_BAZAAR))
+        bazaar_postlevel_shops();      
 }
 
 static bool _any_glowing_mold()

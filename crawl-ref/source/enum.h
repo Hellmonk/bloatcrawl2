@@ -500,6 +500,8 @@ enum ability_type
     ABIL_END_INFESTATION,
     ABIL_END_BATTLESPHERE,
     ABIL_END_SERVITOR,
+    ABIL_END_PPROJ,
+	ABIL_END_PIERCE,
     NUM_ABILITIES
 };
 
@@ -640,6 +642,9 @@ enum attribute_type
     ATTR_SERVITOR,             // spellforged servitor
     ATTR_YRED_SOUL_TIMEOUT,    // enslaved soul timeout
     ATTR_WALL_JUMP_READY,      // Ready to perform a wall jump.
+	ATTR_PIERCING_SHOT,        // Piercing shot
+    ATTR_XOM_MUT_XP,           // How much XP before Xom mutates the player again
+    ATTR_XOM_GIFT_XP,          // How much XP before Xom gifts the player again
     NUM_ATTRIBUTES
 };
 
@@ -2002,6 +2007,7 @@ enum duration_type
     DUR_SOUL_DELAY,
     DUR_WALL_JUMP_EV,
     DUR_DESTRUCTION,
+    DUR_SHROUD_TIMEOUT,
     NUM_DURATIONS
 };
 
@@ -4008,6 +4014,18 @@ enum mutation_type
     MUT_EARTH_ENHANCER,
     MUT_SUMMON_ENHANCER,
     MUT_CHARMS_ENHANCER,
+    MUT_MAGIC_ATTUNEMENT,
+    MUT_DRAIN_BITE,
+    MUT_EXPOSED,
+    MUT_TINY_MOUTH,
+    MUT_POTION_AGILITY,
+    MUT_OUT_OF_LOS_HPREGEN,
+    MUT_OUT_OF_LOS_MPREGEN,
+    MUT_SHINY,
+    MUT_RADIOACTIVE,
+    MUT_DREAM_DUST,
+    MUT_SLIME_SHROUD,
+    MUT_EXTRA_MP,
     NUM_MUTATIONS,
 
     CATEGORY_MUTATIONS,
@@ -4412,17 +4430,19 @@ enum species_type
     SP_BASE_DRACONIAN,
 #if TAG_MAJOR_VERSION == 34
     SP_CENTAUR,
-#endif
     SP_DEMIGOD,
+#endif
     SP_SPRIGGAN,
     SP_MINOTAUR,
     SP_DEMONSPAWN,
+#if TAG_MAJOR_VERSION == 34
     SP_GHOUL,
+#endif
     SP_TENGU,
     SP_MERFOLK,
     SP_VAMPIRE,
-    SP_DEEP_DWARF,
 #if TAG_MAJOR_VERSION == 34
+    SP_DEEP_DWARF,
     SP_FELID,
 #endif
     SP_OCTOPODE,
@@ -4439,6 +4459,7 @@ enum species_type
     SP_GNOLL,
     SP_SKELETON,
     SP_TITAN,
+    SP_MOUNTAIN_DWARF,
     NUM_SPECIES,
 
     SP_UNKNOWN  = 100,
@@ -4899,6 +4920,8 @@ enum spell_type : int
     SPELL_UPHEAVAL,
 	SPELL_RADIATION_BREATH,
     SPELL_IGNITION,
+    SPELL_PIERCING_SHOT,
+    SPELL_CURSE,
     NUM_SPELLS
 };
 
@@ -4984,7 +5007,7 @@ enum undead_state_type                // you.is_undead
     US_ALIVE = 0,
     US_HUNGRY_DEAD,     // Ghouls
     US_UNDEAD,          // Mummies
-    US_SEMI_UNDEAD,     // Vampires
+    US_SEMI_UNDEAD,     // Jiangshi
 };
 
 enum unique_item_status_type
@@ -5484,6 +5507,7 @@ enum timed_effect_type
 #if TAG_MAJOR_VERSION == 34
     TIMER_BRIBE_TIMEOUT,
 #endif
+    TIMER_TRAP_REMOVAL,
     NUM_TIMERS,
 };
 

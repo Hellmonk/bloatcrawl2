@@ -87,7 +87,7 @@
    function shopcontents(s)
       local i = {}
       if s == "A" then i = { "arbalest", "book of alchemy", "book of air",
-       "manual of air magic", "book of annihilations", "arrow",
+       "manual of air magic", "book of annihilations",
        "potion of ambrosia", "scroll of acquirement q:1",
        "scroll of amnesia", "staff of air", "manual of axes", "potion of augmentation",
        "manual of armour", "wand of acid", "acid dragon scales" }
@@ -162,7 +162,7 @@
       elseif s == "P" then i = { "book of party tricks", "book of power",
        "pearl dragon scales", "phantom mirror", "phial of floods",
        "plate armour", "ring of poison resistance", "manual of polearms",
-       "wand of polymorph", "ring of positive energy", "ring of protection",
+       "wand of slimification", "ring of positive energy", "ring of protection",
        "wand of paralysis", "ring of protection from magic" }
 
       elseif s == "Q" then i = { "quarterstaff", "quicksilver dragon scales",
@@ -182,7 +182,7 @@
        "steam dragon scales", "shadow dragon scales",
        "storm dragon scales", "swamp dragon scales",
        "staff of summoning", "manual of shields",
-       "manual of spellcasting", "manual of summonings", "stone" }
+       "manual of summonings" }
 
       elseif s == "T" then i = { "book of the tempests", "scroll of torment",
        "book of transfigurations",
@@ -233,7 +233,7 @@
 
 NAME: nicolae_alphabet_shops
 TAGS: transparent allow_dup extra
-DEPTH: D:4-, Depths, Orc, Elf, Snake, Shoals
+DEPTH: Crypt
 WEIGHT: 5
 ## We allow shop lists with no fewer than 5 item types, and place 5-15
 ## items or place itemcount items, whichever is less, where itemcount is

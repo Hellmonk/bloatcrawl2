@@ -811,69 +811,60 @@ int recharge_wand(bool known, const string &pre_msg, int num, int den)
 
 // return a slot that has manual for given skill, or -1 if none exists
 // in case of multiple manuals the one with the fewest charges is returned
-int manual_slot_for_skill(skill_type skill)
+item_def* manual_for_skill(skill_type skill)
 {
-    int slot = -1;
-    int charges = -1;
-
-    FixedVector<item_def,ENDOFPACK>::const_pointer iter = you.inv.begin();
-    for (;iter!=you.inv.end(); ++iter)
+    item_def* m;
+    for (auto &manual : you.manuals_in_inventory)
     {
-        if (iter->base_type != OBJ_BOOKS || iter->sub_type != BOOK_MANUAL)
+        if (manual.base_type != OBJ_BOOKS || manual.sub_type != BOOK_MANUAL)
             continue;
 
-        if (iter->skill != skill || iter->skill_points == 0)
+        if (manual.skill != skill || manual.skill_points == 0)
             continue;
 
-        if (slot != -1 && iter->skill_points > charges)
-            continue;
-
-        slot = iter - you.inv.begin();
-        charges = iter->skill_points;
+        m = &manual;
+        return m;
     }
 
-    return slot;
+    return nullptr;
 }
 
 bool skill_has_manual(skill_type skill)
 {
-    return manual_slot_for_skill(skill) != -1;
+    return manual_for_skill(skill) != nullptr;
 }
 
-void finish_manual(int slot)
+void finish_manual(item_def* manual)
 {
-    item_def& manual(you.inv[slot]);
-    const skill_type skill = static_cast<skill_type>(manual.plus);
+    const skill_type skill = static_cast<skill_type>(manual->plus);
 
     mprf("You have finished your manual of %s and toss it away.",
          skill_name(skill));
-    dec_inv_item_quantity(slot, 1);
 }
 
 void get_all_manual_charges(vector<int> &charges)
 {
     charges.clear();
 
-    FixedVector<item_def,ENDOFPACK>::const_pointer iter = you.inv.begin();
-    for (;iter!=you.inv.end(); ++iter)
+    for (auto manual : you.manuals_in_inventory)
     {
-        if (iter->base_type != OBJ_BOOKS || iter->sub_type != BOOK_MANUAL)
+        if (manual.base_type != OBJ_BOOKS || manual.sub_type != BOOK_MANUAL)
             continue;
 
-        charges.push_back(iter->skill_points);
+        charges.push_back(manual.skill_points);
     }
 }
 
 void set_all_manual_charges(const vector<int> &charges)
 {
     auto charge_iter = charges.begin();
-    for (item_def &item : you.inv)
+    for (auto manual : you.manuals_in_inventory)
     {
-        if (item.base_type != OBJ_BOOKS || item.sub_type != BOOK_MANUAL)
+        if (manual.base_type != OBJ_BOOKS || manual.sub_type != BOOK_MANUAL)
             continue;
 
         ASSERT(charge_iter != charges.end());
-        item.skill_points = *charge_iter;
+        manual.skill_points = *charge_iter;
         charge_iter++;
     }
     ASSERT(charge_iter == charges.end());
@@ -883,17 +874,16 @@ string manual_skill_names(bool short_text)
 {
     skill_set skills;
 
-    FixedVector<item_def,ENDOFPACK>::const_pointer iter = you.inv.begin();
-    for (;iter!=you.inv.end(); ++iter)
+    for (auto manual : you.manuals_in_inventory)
     {
-        if (iter->base_type != OBJ_BOOKS
-            || iter->sub_type != BOOK_MANUAL
-            || is_useless_item(*iter))
+        if (manual.base_type != OBJ_BOOKS
+            || manual.sub_type != BOOK_MANUAL
+            || is_useless_item(manual))
         {
             continue;
         }
 
-        skills.insert(static_cast<skill_type>(iter->plus));
+        skills.insert(static_cast<skill_type>(manual.plus));
     }
 
     if (short_text && skills.size() > 1)
@@ -955,7 +945,6 @@ static bool _box_of_beasts(item_def &box)
 
     mprf("...and %s %s out!",
          mons->name(DESC_A).c_str(), mons->airborne() ? "flies" : "leaps");
-    xom_is_stimulated(10); // dubious
     did_god_conduct(DID_CHAOS, random_range(5,10));
 
     // After unboxing a beast, chance to break.

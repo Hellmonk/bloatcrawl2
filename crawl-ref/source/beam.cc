@@ -558,7 +558,6 @@ static beam_type _chaos_beam_flavour(bolt* beam)
             10, BEAM_PARALYSIS,
             10, BEAM_CONFUSION,
             10, BEAM_INVISIBILITY,
-            10, BEAM_POLYMORPH,
             10, BEAM_BANISH,
             10, BEAM_DISINTEGRATION,
             10, BEAM_PETRIFY,
@@ -1420,11 +1419,6 @@ void bolt::do_fire()
     // Reactions if a monster zapped the beam.
     if (monster_by_mid(source_id))
     {
-        if (foe_info.hurt == 0 && friend_info.hurt > 0)
-            xom_is_stimulated(100);
-        else if (foe_info.helped > 0 && friend_info.helped == 0)
-            xom_is_stimulated(100);
-
         // Allow friendlies to react to projectiles, except when in
         // sanctuary when pet_target can only be explicitly changed by
         // the player.
@@ -3383,11 +3377,6 @@ void bolt::affect_player_enchantment(bool resistible)
                 mprf("You%s", you.resist_margin_phrase(margin).c_str());
             }
         }
-        // You *could* have gotten a free teleportation in the Abyss,
-        // but no, you resisted.
-        if (flavour == BEAM_TELEPORT && player_in_branch(BRANCH_ABYSS))
-            xom_is_stimulated(200);
-
         extra_range_used += range_used_on_hit();
         return;
     }
@@ -3482,12 +3471,6 @@ void bolt::affect_player_enchantment(bool resistible)
 
     case BEAM_TELEPORT:
         you_teleport();
-
-        // An enemy helping you escape while in the Abyss, or an
-        // enemy stabilizing a teleport that was about to happen.
-        if (!mons_att_wont_attack(attitude) && player_in_branch(BRANCH_ABYSS))
-            xom_is_stimulated(200);
-
         obvious_effect = true;
         break;
 
@@ -3729,17 +3712,6 @@ void bolt::affect_player_enchantment(bool resistible)
         if (mons_att_wont_attack(attitude))
         {
             friend_info.hurt++;
-            if (source_id == MID_PLAYER)
-            {
-                // Beam from player rebounded and hit player.
-                if (!aimed_at_feet)
-                    xom_is_stimulated(200);
-            }
-            else
-            {
-                // Beam from an ally or neutral.
-                xom_is_stimulated(100);
-            }
         }
         else
             foe_info.hurt++;
@@ -3751,7 +3723,6 @@ void bolt::affect_player_enchantment(bool resistible)
         else
         {
             foe_info.helped++;
-            xom_is_stimulated(100);
         }
     }
 
@@ -3973,17 +3944,6 @@ void bolt::affect_player()
         if (mons_att_wont_attack(attitude))
         {
             friend_info.hurt++;
-
-            // Beam from player rebounded and hit player.
-            // Xom's amusement at the player's being damaged is handled
-            // elsewhere.
-            if (source_id == MID_PLAYER)
-            {
-                if (!aimed_at_feet)
-                    xom_is_stimulated(200);
-            }
-            else if (was_affected)
-                xom_is_stimulated(100);
         }
         else
             foe_info.hurt++;
@@ -4051,13 +4011,6 @@ void bolt::update_hurt_or_helped(monster* mon)
         else if (nice_to(monster_info(mon)))
         {
             foe_info.helped++;
-            // Accidentally helped a foe.
-            if (!is_tracer && !effect_known && mons_is_threatening(*mon))
-            {
-                const int interest =
-                    (flavour == BEAM_INVISIBILITY && can_see_invis) ? 25 : 100;
-                xom_is_stimulated(interest);
-            }
         }
     }
     else
@@ -4065,10 +4018,6 @@ void bolt::update_hurt_or_helped(monster* mon)
         if (nasty_to(mon))
         {
             friend_info.hurt++;
-
-            // Harmful beam from this monster rebounded and hit the monster.
-            if (!is_tracer && mon->mid == source_id)
-                xom_is_stimulated(100);
         }
         else if (nice_to(monster_info(mon)))
             friend_info.helped++;
@@ -5269,8 +5218,11 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
         return obvious_effect ? MON_AFFECTED : MON_OTHER; // ?
 
     case BEAM_POLYMORPH:
-        if (mon->polymorph(ench_power))
+        if (mon->can_polymorph())
+        {
+            monster_polymorph(mon, MONS_SLIME_CREATURE);
             obvious_effect = true;
+        }
         if (YOU_KILL(thrower))
         {
             did_god_conduct(DID_DELIBERATE_MUTATING, 2 + random2(3),
@@ -6216,14 +6168,6 @@ bool bolt::nasty_to(const monster* mon) const
 // actively positive.
 bool bolt::nice_to(const monster_info& mi) const
 {
-    // Polymorphing a (very) ugly thing will mutate it into a different
-    // (very) ugly thing.
-    if (flavour == BEAM_POLYMORPH)
-    {
-        return mi.type == MONS_UGLY_THING
-               || mi.type == MONS_VERY_UGLY_THING;
-    }
-
     if (flavour == BEAM_HASTE
         || flavour == BEAM_HEALING
         || flavour == BEAM_MIGHT

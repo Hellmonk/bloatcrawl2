@@ -72,6 +72,7 @@
 #include "unwind.h"
 #include "viewchar.h"
 #include "view.h"
+#include "xom.h"
 
 /**
  * Initialise a corpse item.
@@ -826,28 +827,6 @@ static bool _monster_avoided_death(monster* mons, killer_type killer,
     return false;
 }
 
-static void _jiyva_died()
-{
-    if (you_worship(GOD_JIYVA))
-        return;
-
-    add_daction(DACT_REMOVE_JIYVA_ALTARS);
-
-    if (!player_in_branch(BRANCH_SLIME))
-        return;
-
-    if (silenced(you.pos()))
-    {
-        god_speaks(GOD_JIYVA, "With an infernal shudder, the power ruling "
-                   "this place vanishes!");
-    }
-    else
-    {
-        god_speaks(GOD_JIYVA, "With an infernal noise, the power ruling this "
-                   "place vanishes!");
-    }
-}
-
 void fire_monster_death_event(monster* mons,
                               killer_type killer,
                               int i, bool polymorph)
@@ -896,9 +875,6 @@ void fire_monster_death_event(monster* mons,
     if (type == MONS_ROYAL_JELLY && !mons->is_summoned() && !polymorph)
     {
         you.royal_jelly_dead = true;
-
-        if (jiyva_is_dead())
-            _jiyva_died();
     }
 }
 
@@ -1752,11 +1728,6 @@ static void _fire_kill_conducts(monster &mons, killer_type killer,
     if (mons.is_priest())
         did_kill_conduct(DID_KILL_PRIEST, mons);
 
-    // Jiyva hates you killing slimes, but eyeballs
-    // mutation can confuse without you meaning it.
-    if (mons_is_slime(mons) && killer != KILL_YOU_CONF)
-        did_kill_conduct(DID_KILL_SLIME, mons);
-
     if (mons.is_holy())
         did_kill_conduct(DID_KILL_HOLY, mons);
 
@@ -2180,7 +2151,7 @@ item_def* monster_die(monster* mons, killer_type killer,
     {
         const int sos_bonus = you.attribute[ATTR_SONG_OF_SLAYING];
         // spellpower dependent cap. Not guaranteed the last point, but it will roll for it every kill.
-        if (sos_bonus < 6 + div_rand_round(calc_spell_power(SPELL_SONG_OF_SLAYING, true),17)) 
+        if (sos_bonus < 6 + div_rand_round(calc_spell_power(SPELL_SONG_OF_SLAYING, true),20)) 
             you.attribute[ATTR_SONG_OF_SLAYING] = sos_bonus + 1;
     }
 	
@@ -2191,7 +2162,7 @@ item_def* monster_die(monster* mons, killer_type killer,
         && leaves_corpse)
     {
         const int bone_armour = you.attribute[ATTR_BONE_ARMOUR];
-        const int max_bone_armour = 9 + div_rand_round(calc_spell_power(SPELL_CIGOTUVIS_EMBRACE, true),20);
+        const int max_bone_armour = 6 + div_rand_round(calc_spell_power(SPELL_CIGOTUVIS_EMBRACE, true),20);
         if (bone_armour < max_bone_armour) // spellpower dependent cap
 		{
             you.attribute[ATTR_BONE_ARMOUR] = min(max_bone_armour, bone_armour + 1);
@@ -2346,8 +2317,8 @@ item_def* monster_die(monster* mons, killer_type killer,
                 }
             }
 
-			//ghouls get pseudo-vamp on kills
-			if (gives_player_xp && you.species == SP_GHOUL)
+			//vampires get pseudo-vamp when killing a corpse-having, xp-giving monster
+			if (leaves_corpse && gives_player_xp && you.species == SP_VAMPIRE && coinflip())
 			{
 				int hp_heal = random2(1 + mons->get_experience_level());
 				if (hp_heal && you.hp < you.hp_max)
@@ -2833,9 +2804,10 @@ item_def* monster_die(monster* mons, killer_type killer,
             //the genius hack
             mons->heal(9999);
             if(you.where_are_you == BRANCH_DUNGEON && you.depth == 1)
-                move_companion_to(mons, level_id(BRANCH_ZOT, 5));
+                mons->set_transit(level_id(BRANCH_ZOT,5));
             else
-                move_companion_to(mons, level_id(BRANCH_DUNGEON, 1));
+                mons->set_transit(level_id(BRANCH_DUNGEON,1));
+            mons->destroy_inventory();
             if (!you.can_see(*mons))
             {
                 mprf("Your enslaved soul has left this plane.");

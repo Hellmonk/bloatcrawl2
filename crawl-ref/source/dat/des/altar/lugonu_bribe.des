@@ -34,13 +34,13 @@ function callback.tgw_lugonu_bribe_lugonu_item (data, triggerable,
               good_item " .. weapon .. " ego:flaming ident:type",
          Elyvilon="book of Necromancy w:5 /\
               book of Death w:5 / book of Unlife w:5",
-         Jiyva="stone q:10-20 / large rock q:2-4",
+         Jiyva="gold q:1",
          Kikubaaqudgha="randbook owner:Lugonu spells:control_undead&dispel_undead \
                        numspells:2 /\
               rat corpse w:5 / kobold corpse w:5",
          Pakellas="crystal ball of energy",
          ["the Shining One"]="potion of invisibility ident:type q:3-6",
-         Trog="manual of Spellcasting / manual of Air Magic w:5 /\
+         Trog="manual of Air Magic w:5 /\
               manual of Earth Magic w:5 / manual of Fire Magic w:5 /\
               manual of Ice Magic w:5 /\
               any magical staff ident:type /\
@@ -52,7 +52,7 @@ function callback.tgw_lugonu_bribe_lugonu_item (data, triggerable,
          Zin="good_item " .. weapon .. " ego:draining ident:type /\
               good_item " .. weapon .. " ego:pain ident:type /\
               good_item " .. weapon .. " ego:chaos ident:type /\
-              wand of polymorph ident:type",
+              wand of slimification ident:type",
     }
     data.triggered = true
     if item[you.god()] ~= nil then

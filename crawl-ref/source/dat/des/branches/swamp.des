@@ -570,7 +570,7 @@ dgn.delayed_decay_extra(_G, 'p', 'orc corpse', 'hand axe / broad axe, ' ..
    'leather armour / pair of gloves')
 }}
 KITEM: w = mundane quarterstaff
-KITEM: s = stone
+KITEM: s = large rock
 KFEAT: 'o = W
 CLEAR:  _
 MAP
@@ -1226,7 +1226,7 @@ SUBST: - = .W
 SUBST: C = c:20 . W
 SUBST: + = +.
 SUBST: G = Gg
-KITEM: g = stone w:40 / large rock q:1
+KITEM: g = large rock q:1
 KFEAT: g = floor
 KFEAT: _ = altar_yredelemnul / altar_kikubaaqudgha
 MAP
@@ -1558,7 +1558,7 @@ SUBST: ghi = .
 KMONS: D = patrolling spriggan rider
 KMONS: SGHI = spriggan / nothing
 KMONS: F = spriggan druid
-KITEM: f = stone
+KITEM: f = large rock
 MAP
        ttttt
   ttttttgggt
@@ -2160,7 +2160,7 @@ KMONS:   ef = patrolling hydra
 KITEM:   d = decaying rune of Zot
 KFEAT:   d = enter_vaults
 KITEM:   ef = any good_item
-KITEM:   g = stone w:40 / large rock q:1
+KITEM:   g = large rock q:1
 NSUBST:  @ = 1:@ / *:.
 SUBST:   C = cc., = = +.
 SHUFFLE: def, 123

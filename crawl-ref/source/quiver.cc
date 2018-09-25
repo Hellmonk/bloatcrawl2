@@ -103,7 +103,7 @@ int player_quiver::get_fire_item(string* no_item_reason) const
             // nothing
         }
         else if (full_fire_order.empty())
-            *no_item_reason = "No suitable missiles.";
+            *no_item_reason = "";
         else
         {
             const int skipped_item = full_fire_order[0];
@@ -177,7 +177,7 @@ void choose_item_for_quiver()
              t == AMMO_THROW    ? "throwing" :
              t == AMMO_SLING    ? "sling" :
              t == AMMO_BOW      ? "bow" :
-                                  "crossbow");
+                                  "bow");
         return;
     }
     else
@@ -373,6 +373,14 @@ void player_quiver::_get_fire_order(vector<int>& order,
     {
         return;
     }
+	
+    if (launcher && launcher->base_type == OBJ_WEAPONS
+    && (launcher->sub_type == WPN_SHORTBOW
+            || launcher->sub_type == WPN_LONGBOW
+            || launcher->sub_type == WPN_ARBALEST
+            || launcher->sub_type == WPN_TRIPLE_CROSSBOW
+    ))
+        return;
 
     for (int i_inv = inv_start; i_inv < ENDOFPACK; i_inv++)
     {

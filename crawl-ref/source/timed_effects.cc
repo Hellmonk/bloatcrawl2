@@ -52,6 +52,7 @@
 #include "terrain.h"
 #include "tileview.h"
 #include "throw.h"
+#include "traps.h"
 #include "travel.h"
 #include "viewchar.h"
 #include "unwind.h"
@@ -838,18 +839,7 @@ static void _abyss_speed(int /*time_delta*/)
 
 static void _jiyva_effects(int /*time_delta*/)
 {
-    if (have_passive(passive_t::fluid_stats)
-        && x_chance_in_y(you.piety / 4, MAX_PIETY)
-        && !player_under_penance() && one_chance_in(10))
-    {
-        jiyva_stat_action();
-    }
-
-    if (have_passive(passive_t::jelly_eating))
-        for(int i = 0; i < 3; i++)
-        {
-            jiyva_eat_onlevel_items();
-        }
+    return;
 }
 
 static void _evolve(int time_delta)
@@ -948,6 +938,23 @@ static void _antiscumming(int /*time_delta*/)
     }
 }
 
+static void _timeout_traps(int /*time_delta*/)
+{
+	for (rectangle_iterator ri(0); ri; ++ri)
+    {
+        if (in_bounds(*ri))
+        {
+            trap_def* ptrap = trap_at(*ri);
+            if (ptrap && ptrap->type == TRAP_ZOT && ptrap->ammo_qty)
+            {
+                ptrap->ammo_qty -= 1;
+                if(ptrap->ammo_qty <= 0)
+                    destroy_trap(*ri);
+            }
+        }
+    }
+}
+
 struct timed_effect
 {
     void              (*trigger)(int);
@@ -980,6 +987,7 @@ static struct timed_effect timed_effects[] =
 #if TAG_MAJOR_VERSION == 34
 	{  nullptr,                        0,     0, false },
 #endif
+    { _timeout_traps,                200,   300, false },
 };
 
 // Do various time related actions...

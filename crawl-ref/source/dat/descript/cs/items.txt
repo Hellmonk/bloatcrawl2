@@ -240,7 +240,7 @@ wand of magic darts
 
 Magický přístroj, který vrhá malé údery destruktivní energie. Nikdy se nemine.
 %%%%
-wand of polymorph
+wand of slimification
 
 Magické zařízení, které způsobí, že se bytost promění do jiné formy. To je
 obzvláště účinné proti tvar-měnící bytosti.

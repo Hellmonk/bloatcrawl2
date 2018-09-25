@@ -22,20 +22,14 @@ struct mutation_category_def
 static const mutation_def mut_data[] =
 {
 
-{ MUT_TOUGH_SKIN, 0, 3, mutflag::GOOD, true,
+{ MUT_TOUGH_SKIN, 1, 1, mutflag::GOOD, true,
   "tough skin",
 
-  {"You have tough skin. (AC +1)",
-   "You have very tough skin. (AC +2)",
-   "You have extremely tough skin. (AC +3)"},
+  {"You have tough skin. (AC +3)", "", ""},
 
-  {"Your skin toughens.",
-   "Your skin toughens.",
-   "Your skin toughens."},
+  {"Your skin toughens.", "", ""},
 
-  {"Your skin feels delicate.",
-   "Your skin feels delicate.",
-   "Your skin feels delicate."},
+  {"Your skin feels delicate.", "", ""},
 },
 
 { MUT_STRONG, 7, 1, mutflag::GOOD, false,
@@ -538,6 +532,22 @@ static const mutation_def mut_data[] =
    "Your vision sharpens a little."},
 },
 
+{ MUT_TINY_MOUTH, 10, 3, mutflag::BAD | mutflag::XOM, false,
+  "tiny mouth",
+
+  {"Potions take you a little longer to quaff.",
+   "Potions take you longer to quaff.",
+   "Potions take you much longer to quaff."},
+
+  {"Your mouth shrinks.",
+   "Your mouth shrinks.",
+   "Your mouth shrinks."},
+
+  {"Your mouth returns to its normal size.",
+   "Your mouth widens a little.",
+   "Your mouth widens a little."},
+},
+
 { MUT_MUTATION_RESISTANCE, 4, 3, mutflag::GOOD, false,
   "mutation resistance",
 
@@ -856,8 +866,7 @@ static const mutation_def mut_data[] =
    "Your talons look more like feet."},
 },
 
-// Demonspawn only
-{ MUT_PREHENSILE_TENTACLE, 0, 3, mutflag::GOOD, true,
+{ MUT_PREHENSILE_TENTACLE, 1, 3, mutflag::GOOD, true,
   "prehensile tentacle",
 
   {"You have a tentacle on your back.",
@@ -958,13 +967,13 @@ static const mutation_def mut_data[] =
 #endif
 
 { MUT_HOP, 0, 2, mutflag::GOOD, true,
-  "strong legs",
+  "stiff legs",
 
   {"You can hop short distances.",
    "You can hop longer distances.",
    ""},
 
-  {"", "Your legs feel stronger.", ""},
+  {"", "Your legs feel stronger and stiffer.", ""},
 
   {"", "", ""},
 },
@@ -977,6 +986,14 @@ static const mutation_def mut_data[] =
   {"The shadows flee from you.", "", ""},
 
   {"You feel the shadows return.", "", ""},
+},
+
+{ MUT_MAGIC_ATTUNEMENT, 1, 1, mutflag::GOOD, true,
+  "magic attunement",
+
+  {"Your non-sustained spells cost 1 less MP to cast", "", ""},
+  {"You feel more efficient with your magic.", "", ""},
+  {"You feel less efficient with your magic.", "", ""},
 },
 
 { MUT_SHAGGY_FUR, 4, 1, mutflag::GOOD, true,
@@ -1111,12 +1128,12 @@ static const mutation_def mut_data[] =
 },
 #endif
 
-{ MUT_PASSIVE_FREEZE, 0, 1, mutflag::GOOD, false,
+{ MUT_PASSIVE_FREEZE, 3, 1, mutflag::GOOD, false,
   "passive freeze",
 
   {"A frigid envelope surrounds you and freezes all who hurt you.", "", ""},
   {"Your skin feels very cold.", "", ""},
-  {"", "", ""},
+  {"Your skin warms up.", "", ""},
 },
 
 { MUT_NIGHTSTALKER, 0, 3, mutflag::GOOD, false,
@@ -1260,52 +1277,57 @@ static const mutation_def mut_data[] =
    "Your body becomes less viscous."},
 },
 
-{ MUT_EYEBALLS, 0, 3, mutflag::GOOD | mutflag::JIYVA, true,
+{ MUT_EYEBALLS, 0, 1, mutflag::GOOD | mutflag::JIYVA, true,
   "eyeballs",
 
-  {"Your body has grown golden eyes which may confuse attackers. (Acc +3)",
-   "Your body has grown many golden eyes which may confuse attackers. (Acc +5)",
-   "Your body is covered in golden eyes which may confuse attackers. (Acc +7, SInv)"},
+  {"Your body is covered in golden eyes which may confuse attackers. (Acc +7)",
+   "", ""},
 
-  {"Eyeballs grow over part of your body.",
-   "Eyeballs cover a large portion of your body.",
-   "Eyeballs cover you completely."},
+  {"Eyeballs cover you completely.", "", ""},
 
-  {"The eyeballs on your body disappear.",
-   "The eyeballs on your body recede somewhat.",
-   "The eyeballs on your body recede somewhat."},
+  {"The eyeballs on your body disappear.", "", ""},
 },
 
-{ MUT_TRANSLUCENT_SKIN, 0, 3, mutflag::GOOD | mutflag::JIYVA, true,
+{ MUT_RADIOACTIVE, 0, 1, mutflag::GOOD | mutflag::JIYVA, true,
+  "radioactive",
+
+  {"You are slightly radioactive and malmutate adjacent enemies (contam).",
+   "", ""},
+
+  {"You begin to undergo nuclear fission.", "", ""},
+
+  {"You feel less radioactive.", "", ""},
+},
+
+{ MUT_DREAM_DUST, 0, 1, mutflag::GOOD | mutflag::JIYVA, true,
+  "dream dust",
+
+  {"You are coated in dream dust that rarely puts adjacent enemies to sleep.",
+   "", ""},
+
+  {"Your pores begin secreting dream dust.", "", ""},
+
+  {"You stop secreting dream dust.", "", ""},
+},
+
+{ MUT_TRANSLUCENT_SKIN, 0, 1, mutflag::GOOD | mutflag::JIYVA, true,
   "translucent skin",
 
-  {"Your translucent skin slightly reduces your foes' accuracy. (Stealth)",
-   "Your translucent skin reduces your foes' accuracy. (Stealth)",
-   "Your transparent skin significantly reduces your foes' accuracy. (Stealth)"},
+  {"Your translucent skin slightly reduces your foes' accuracy. (Stealth)", "", ""},
 
-  {"Your skin becomes partially translucent.",
-   "Your skin becomes more translucent.",
-   "Your skin becomes completely transparent."},
+  {"Your skin becomes completely translucent.", "", ""},
 
-  {"Your skin returns to its normal opacity.",
-   "Your skin's translucency fades.",
-   "Your skin's transparency fades."},
+  {"Your skin returns to its normal opacity.", "", ""},
 },
 
-{ MUT_PSEUDOPODS, 0, 3, mutflag::GOOD | mutflag::JIYVA, true,
+{ MUT_PSEUDOPODS, 0, 1, mutflag::GOOD | mutflag::JIYVA, true,
   "pseudopods",
 
-  {"Armour fits poorly on your pseudopods.",
-   "Armour fits poorly on your large pseudopods.",
-   "Armour fits poorly on your massive pseudopods."},
+  {"Armour fits poorly on your massive pseudopods.", "", ""},
 
-  {"Pseudopods emerge from your body.",
-   "Your pseudopods grow in size.",
-   "Your pseudopods grow in size."},
+  {"Massive pseudopods emerge from your body.", "", ""},
 
-  {"Your pseudopods retract into your body.",
-   "Your pseudopods become smaller.",
-   "Your pseudopods become smaller."},
+  {"Your pseudopods retract into your body.", "", ""},
 },
 
 #if TAG_MAJOR_VERSION == 34
@@ -1674,7 +1696,7 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_COLD_BLOODED, 0, 1, mutflag::BAD, true,
+{ MUT_COLD_BLOODED, 2, 1, mutflag::BAD, true,
   "cold-blooded",
 
   {"You are cold-blooded and may be slowed by cold attacks.", "", ""},
@@ -1999,6 +2021,72 @@ static const mutation_def mut_data[] =
   {"You stop regenerating.", "", ""},
   {"You start regenerating.", "", ""},
 },
+
+{ MUT_DRAIN_BITE, 3, 1, mutflag::GOOD, true,
+  "draining bite",
+
+  {"Your bite drains your enemies.", "", ""},
+  {"You taste negative energy.", "", ""},
+  {"You no longer taste negative energy.", "", ""},
+},
+
+{ MUT_EXPOSED, 3, 1, mutflag::BAD, true,
+  "exposed",
+
+  {"You are less able to defend yourself (AC -3, EV -3, SH - 3).", "", ""},
+  {"You feel exposed.", "", ""},
+  {"You no longer feel exposed.", "", ""},
+},
+
+{ MUT_SHINY, 3, 1, mutflag::BAD, true,
+  "shiny",
+
+  {"You shine softly (Stealth---).", "", ""},
+  {"You feel shiny.", "", ""},
+  {"You no longer feel shiny.", "", ""},
+},
+
+{ MUT_POTION_AGILITY, 3, 1, mutflag::GOOD, true,
+  "agile potions",
+
+  {"Quaffing potions temporarily makes you agile.", "", ""},
+  {"You feel like having a drink.", "", ""},
+  {"You don't feel like having a drink anymore.", "", ""},
+},
+
+{ MUT_SLIME_SHROUD, 0, 1, mutflag::GOOD | mutflag::JIYVA, true,
+  "slime shroud",
+
+  {"A fragile, slimy shroud covers you, deflecting attacks.", "", ""},
+  {"A thin film of slime covers your body.", "", ""},
+  {"Your film of slime dries up.", "", ""},
+},
+
+{ MUT_OUT_OF_LOS_HPREGEN, 0, 2, mutflag::GOOD | mutflag::JIYVA, true,
+  "jiyva regeneration",
+
+  {"Your regeneration increases when no monsters are visible.", 
+   "Your regeneration greatly increases when no monsters are visible.", ""},
+  {"You feel blessed with divine regeneration.", "You feel blessed with divine regeneration", ""},
+  {"You feel less blessed.", "You feel less blessed.", ""},
+},
+
+{ MUT_OUT_OF_LOS_MPREGEN, 0, 2, mutflag::GOOD | mutflag::JIYVA, true,
+  "jiyva magic regeneration",
+
+  {"Your magic regeneration increases when no monsters are visible.", 
+   "Your magic regeneration greatly increases when no monsters are visible.", ""},
+  {"You feel blessed with divine magic regeneration.", "You feel blessed with divine magic regeneration", ""},
+  {"You feel less blessed.", "You feel less blessed.", ""},
+},
+
+{ MUT_EXTRA_MP, 4, 2, mutflag::GOOD, false,
+  "extra MP",
+  { "Your innate MP is slightly higher than usual. (+5 MP)", "Your innate MP is much higher than usual. (+10 MP)" },
+  { "You feel your innate MP increase.", "You feel your innate MP increase." },
+  { "You feel your innate MP decrease.", "You feel your innate MP decrease." },
+}
+
 };
 
 static const mutation_category_def category_mut_data[] =

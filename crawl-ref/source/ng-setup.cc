@@ -30,6 +30,7 @@
 #include "spl-book.h"
 #include "spl-util.h"
 #include "state.h"
+#include "xom.h"
 
 #define MIN_START_STAT       3
 
@@ -222,7 +223,6 @@ static void _give_ammo(weapon_type weapon, int plus)
             newgame_make_item(OBJ_MISSILES, MI_JAVELIN, 100 + 20* plus);
         break;
     case WPN_SHORTBOW:
-        newgame_make_item(OBJ_MISSILES, MI_ARROW, 160);
         break;
     default:
         break;
@@ -261,6 +261,8 @@ static void _give_items_skills(const newgame_def& ng)
         you.religion = GOD_XOM;
         you.piety = 100;
         you.gift_timeout = max(5, random2(40) + random2(40));
+        you.attribute[ATTR_XOM_GIFT_XP] = 20;
+        you.attribute[ATTR_XOM_MUT_XP] = 20;
 
         if (species_apt(SK_ARMOUR) < species_apt(SK_DODGING))
             you.skills[SK_DODGING]++;
@@ -279,7 +281,7 @@ static void _give_items_skills(const newgame_def& ng)
     if (you.char_class == JOB_CHAOS_KNIGHT)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, 0, SPWPN_CHAOS);
     else if (job_gets_ranged_weapons(you.char_class))
-        _give_ranged_weapon(ng.weapon, you.char_class == JOB_HUNTER ? 1 : 0);
+        _give_ranged_weapon(ng.weapon, you.char_class == JOB_ARCANE_MARKSMAN ? 1 : 0);
     else if (job_has_weapon_choice(you.char_class))
         newgame_make_item(OBJ_WEAPONS, ng.weapon);
 
@@ -287,7 +289,7 @@ static void _give_items_skills(const newgame_def& ng)
     give_job_skills(you.char_class);
 
     if (job_gets_ranged_weapons(you.char_class))
-        _give_ammo(ng.weapon, you.char_class == JOB_HUNTER ? 1 : 0);
+        _give_ammo(ng.weapon, 0);
 
     if (you.species == SP_FELID)
     {
@@ -428,6 +430,10 @@ static void _setup_generic(const newgame_def& ng)
     // ShoppingList::item_type_identified().
     you.props[REMOVED_DEAD_SHOPS_KEY] = true;
 #endif
+
+    // Needs to happen before we give the player items, so that it's safe to
+    // check whether those items need to be removed from their shopping list.
+    shopping_list.refresh();
 
     you.your_name  = ng.name;
     you.species    = ng.species;

@@ -43,8 +43,6 @@ static equipment_type _acquirement_armour_slot(bool);
 static armour_type _acquirement_armour_for_slot(equipment_type, bool);
 static armour_type _acquirement_shield_type();
 static armour_type _acquirement_body_armour(bool);
-static armour_type _useless_armour_type();
-
 
 /**
  * Get a randomly rounded value for the player's specified skill, unmodified
@@ -287,74 +285,6 @@ static armour_type _acquirement_body_armour(bool divine)
     return *armour_ptr;
 }
 
-/**
- * Choose a random type of armour that the player cannot wear, for Xom to spite
- * the player with.
- *
- * @return  A random useless armour_type.
- */
-static armour_type _useless_armour_type()
-{
-    vector<pair<equipment_type, int>> weights = {
-        { EQ_BODY_ARMOUR, 1 }, { EQ_SHIELD, 1 }, { EQ_CLOAK, 1 },
-        { EQ_HELMET, 1 }, { EQ_GLOVES, 1 }, { EQ_BOOTS, 1 },
-    };
-
-    // everyone has some kind of boot-slot item they can't wear, regardless
-    // of what you_can_wear() claims
-    for (auto &weight : weights)
-        if (you_can_wear(weight.first) == MB_TRUE && weight.first != EQ_BOOTS)
-            weight.second = 0;
-
-    const equipment_type* slot_ptr = random_choose_weighted(weights);
-    const equipment_type slot = slot_ptr ? *slot_ptr : EQ_BOOTS;
-
-    switch (slot)
-    {
-        case EQ_BOOTS:
-            if (you_can_wear(EQ_BOOTS) == MB_TRUE)
-                return ARM_NAGA_BARDING;
-            if (you.species == SP_NAGA)
-                return ARM_BOOTS;
-            return ARM_BOOTS;
-        case EQ_GLOVES:
-            return ARM_GLOVES;
-        case EQ_HELMET:
-            if (you_can_wear(EQ_HELMET))
-                return ARM_HELMET;
-            return coinflip() ? ARM_HELMET : ARM_HAT;
-        case EQ_CLOAK:
-            return ARM_CLOAK;
-        case EQ_SHIELD:
-        {
-            vector<pair<armour_type, int>> shield_weights = {
-                { ARM_BUCKLER,       1 },
-                { ARM_SHIELD,        1 },
-                { ARM_LARGE_SHIELD,  1 },
-            };
-
-            return filtered_vector_select(shield_weights,
-                                          [] (armour_type shtyp) {
-                return !check_armour_size(shtyp,
-                                          you.body_size(PSIZE_TORSO, true));
-            });
-        }
-        case EQ_BODY_ARMOUR:
-            // only the rarest & most precious of unwearable armours for Xom
-            if (you_can_wear(EQ_BODY_ARMOUR))
-                return ARM_CRYSTAL_PLATE_ARMOUR;
-            // arbitrary selection of [unwearable] dragon armours
-            return random_choose(ARM_FIRE_DRAGON_ARMOUR,
-                                 ARM_ICE_DRAGON_ARMOUR,
-                                 ARM_PEARL_DRAGON_ARMOUR,
-                                 ARM_GOLD_DRAGON_ARMOUR,
-                                 ARM_SHADOW_DRAGON_ARMOUR,
-                                 ARM_STORM_DRAGON_ARMOUR);
-        default:
-            die("Unknown slot type selected for Xom bad-armour-acq!");
-    }
-}
-
 static armour_type _pick_unseen_armour()
 {
     // Consider shields uninteresting always, since unlike with other slots
@@ -535,9 +465,6 @@ static int _acquirement_missile_subtype(bool /*divine*/, int & /*quantity*/)
 
     switch (skill)
     {
-    case SK_BOWS:      result = MI_ARROW; break;
-    case SK_CROSSBOWS: result = MI_ARROW; break;
-
     case SK_THROWING:
         {
             // Choose from among all usable missile types.
@@ -748,10 +675,6 @@ static int _find_acquirement_subtype(object_class_type &class_wanted,
         if (class_wanted == OBJ_MISCELLANY)
             class_wanted = OBJ_MISCELLANY;
 
-        // Vampires acquire blood, not food.
-        if (class_wanted == OBJ_FOOD && you.species == SP_VAMPIRE)
-            class_wanted = OBJ_POTIONS;
-
         if (_subtype_finders[class_wanted])
             type_wanted = (*_subtype_finders[class_wanted])(divine, quantity);
 
@@ -835,7 +758,7 @@ static bool _skill_useless_with_god(int skill)
     case GOD_ELYVILON:
         return skill == SK_NECROMANCY;
     case GOD_XOM:
-    case GOD_NEMELEX_XOBEH:
+    case GOD_RU:
     case GOD_KIKUBAAQUDGHA:
     case GOD_VEHUMET:
     case GOD_ASHENZARI:
@@ -861,8 +784,8 @@ static bool _should_acquire_manual(int agent)
     if (you_worship(GOD_TROG)) // always give a manual for Trog worshippers
         return true;
 
-    // Manuals are too useful for Xom, and useless when gifted from Sif Muna.
-    if (agent == GOD_XOM || agent == GOD_SIF_MUNA)
+    // No manual gifts from Sif Muna
+    if (agent == GOD_SIF_MUNA)
         return false;
 
     int magic_weights = 0;
@@ -988,19 +911,16 @@ static bool _do_book_acquirement(item_def &book, int agent)
 
     // If we couldn't make a useful book, try to make a manual instead.
     // We have to temporarily identify the book for this.
-    if (agent != GOD_XOM)
+    int oldflags = book.flags;
+    book.flags |= ISFLAG_KNOW_TYPE;
+    bool useless = is_useless_item(book);
+    book.flags = oldflags;
+    if (useless && agent != GOD_SIF_MUNA)
     {
-        int oldflags = book.flags;
-        book.flags |= ISFLAG_KNOW_TYPE;
-        bool useless = is_useless_item(book);
-        book.flags = oldflags;
-        if (useless && agent != GOD_SIF_MUNA)
-        {
-            destroy_item(book);
-            book.base_type = OBJ_BOOKS;
-            book.quantity = 1;
-            return _acquire_manual(book);
-        }
+        destroy_item(book);
+        book.base_type = OBJ_BOOKS;
+        book.quantity = 1;
+        return _acquire_manual(book);
     }
     return true;
 }
@@ -1152,8 +1072,7 @@ static void _adjust_brand(item_def &item, bool divine)
  */
 static string _why_reject(const item_def &item, int agent)
 {
-    if (agent != GOD_XOM
-        && (item.base_type == OBJ_WEAPONS
+    if ((item.base_type == OBJ_WEAPONS
                 && !can_wield(&item, false, true)
             || item.base_type == OBJ_ARMOUR
                 && !can_wear_armour(item, false, true)))
@@ -1217,14 +1136,9 @@ int acquirement_create_item(object_class_type class_wanted,
     for (int item_tries = 0; item_tries < MAX_ACQ_TRIES; item_tries++)
     {
         int type_wanted = -1;
-        if (agent == GOD_XOM && class_wanted == OBJ_ARMOUR && one_chance_in(20))
-            type_wanted = _useless_armour_type();
-        else
-        {
-            // This may clobber class_wanted (e.g. staves or vampire food)
-            type_wanted = _find_acquirement_subtype(class_wanted, quant,
+        // This may clobber class_wanted (e.g. staves or vampire food)
+        type_wanted = _find_acquirement_subtype(class_wanted, quant,
                                                     divine, agent);
-        }
         ASSERT(type_wanted != -1);
 
         // Don't generate randart books in items(), we do that
@@ -1252,8 +1166,7 @@ int acquirement_create_item(object_class_type class_wanted,
         {
             const special_armour_type sparm = get_armour_ego_type(acq_item);
 
-            if (agent != GOD_XOM
-                && you.seen_armour[acq_item.sub_type] & (1 << sparm)
+            if (you.seen_armour[acq_item.sub_type] & (1 << sparm)
                 && x_chance_in_y(MAX_ACQ_TRIES - item_tries, MAX_ACQ_TRIES + 5)
                 || !divine
                 && you.seen_armour[acq_item.sub_type]
@@ -1283,7 +1196,7 @@ int acquirement_create_item(object_class_type class_wanted,
                     thing_created = items(true, OBJ_ARMOUR, at,
                                           ITEM_LEVEL, 0, agent);
                 }
-                else if (agent != GOD_XOM && one_chance_in(3))
+                else if (one_chance_in(3))
                 {
                     // If the item is plain and there aren't any
                     // unfilled slots, we might want to roll again.
@@ -1403,10 +1316,9 @@ int acquirement_create_item(object_class_type class_wanted,
         // Temporarily mark the type as ID'd for the purpose of checking if
         // it is a hated brand (this addresses, e.g., Elyvilon followers
         // immediately identifying evil weapons).
-        // Note that Xom will happily give useless items!
         int oldflags = acq_item.flags;
         acq_item.flags |= ISFLAG_KNOW_TYPE;
-        if ((is_useless_item(acq_item, false) && agent != GOD_XOM)
+        if ((is_useless_item(acq_item, false))
             || god_hates_item(acq_item))
         {
             if (!quiet)
@@ -1422,7 +1334,7 @@ int acquirement_create_item(object_class_type class_wanted,
     if (thing_created == NON_ITEM)
         return _failed_acquirement(quiet);
 
-    ASSERT(!is_useless_item(mitm[thing_created], false) || agent == GOD_XOM);
+    ASSERT(!is_useless_item(mitm[thing_created], false));
     ASSERT(!god_hates_item(mitm[thing_created]));
 
     // Moving this above the move since it might not exist after falling.
@@ -1435,10 +1347,7 @@ int acquirement_create_item(object_class_type class_wanted,
         && agent > GOD_NO_GOD
         && agent < NUM_GODS)
     {
-        if (agent == GOD_XOM)
-            simple_god_message(" snickers.", GOD_XOM);
-        else
-            return _failed_acquirement(quiet);
+        return _failed_acquirement(quiet);
     }
 
     move_item_to_grid(&thing_created, pos);

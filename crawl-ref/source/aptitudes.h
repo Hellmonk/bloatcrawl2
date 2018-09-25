@@ -205,6 +205,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_HALFLING,        SK_EVOCATIONS,      0),
 #endif
 
+#if TAG_MAJOR_VERSION == 34
     // SP_HILL_ORC
     APT(SP_HILL_ORC,        SK_FIGHTING,      UNUSABLE_SKILL),
     APT(SP_HILL_ORC,        SK_SHORT_BLADES,    0),
@@ -220,13 +221,9 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_HILL_ORC,        SK_ARMOUR,          1),
     APT(SP_HILL_ORC,        SK_DODGING,        -2),
     APT(SP_HILL_ORC,        SK_STEALTH,        -1),
-#if TAG_MAJOR_VERSION == 34
     APT(SP_HILL_ORC,        SK_STABBING,      UNUSABLE_SKILL),
-#endif
     APT(SP_HILL_ORC,        SK_SHIELDS,         1),
-#if TAG_MAJOR_VERSION == 34
     APT(SP_HILL_ORC,        SK_TRAPS,         UNUSABLE_SKILL),
-#endif
     APT(SP_HILL_ORC,        SK_UNARMED_COMBAT,  1),
     APT(SP_HILL_ORC,        SK_SPELLCASTING,  UNUSABLE_SKILL),
     APT(SP_HILL_ORC,        SK_CONJURATIONS,  UNUSABLE_SKILL),
@@ -240,11 +237,51 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_HILL_ORC,        SK_ICE_MAGIC,      -1),
     APT(SP_HILL_ORC,        SK_AIR_MAGIC,      -2),
     APT(SP_HILL_ORC,        SK_EARTH_MAGIC,     0),
-#if TAG_MAJOR_VERSION == 34
     APT(SP_HILL_ORC,        SK_POISON_MAGIC,  UNUSABLE_SKILL),
-#endif
     APT(SP_HILL_ORC,        SK_INVOCATIONS,     3),
     APT(SP_HILL_ORC,        SK_EVOCATIONS,      0),
+#endif
+	
+    // SP_MOUNTAIN_DWARF
+    APT(SP_MOUNTAIN_DWARF,        SK_FIGHTING,        2),
+    APT(SP_MOUNTAIN_DWARF,        SK_SHORT_BLADES,    0),
+    APT(SP_MOUNTAIN_DWARF,        SK_LONG_BLADES,   UNUSABLE_SKILL),
+    APT(SP_MOUNTAIN_DWARF,        SK_AXES,            2),
+    APT(SP_MOUNTAIN_DWARF,        SK_MACES_FLAILS,    1),
+    APT(SP_MOUNTAIN_DWARF,        SK_POLEARMS,        1),
+    APT(SP_MOUNTAIN_DWARF,        SK_STAVES,        UNUSABLE_SKILL),
+    APT(SP_MOUNTAIN_DWARF,        SK_SLINGS,        UNUSABLE_SKILL),
+    APT(SP_MOUNTAIN_DWARF,        SK_BOWS,           -2),
+    APT(SP_MOUNTAIN_DWARF,        SK_CROSSBOWS,     UNUSABLE_SKILL),
+    APT(SP_MOUNTAIN_DWARF,        SK_THROWING,       -1),
+    APT(SP_MOUNTAIN_DWARF,        SK_ARMOUR,          1),
+    APT(SP_MOUNTAIN_DWARF,        SK_DODGING,        -2),
+    APT(SP_MOUNTAIN_DWARF,        SK_STEALTH,        -1),
+#if TAG_MAJOR_VERSION == 34
+    APT(SP_MOUNTAIN_DWARF,        SK_STABBING,      UNUSABLE_SKILL),
+#endif
+    APT(SP_MOUNTAIN_DWARF,        SK_SHIELDS,         2),
+#if TAG_MAJOR_VERSION == 34
+    APT(SP_MOUNTAIN_DWARF,        SK_TRAPS,         UNUSABLE_SKILL),
+#endif
+    APT(SP_MOUNTAIN_DWARF,        SK_UNARMED_COMBAT,  1),
+    APT(SP_MOUNTAIN_DWARF,        SK_SPELLCASTING,  UNUSABLE_SKILL),
+    APT(SP_MOUNTAIN_DWARF,        SK_CONJURATIONS,  UNUSABLE_SKILL),
+    APT(SP_MOUNTAIN_DWARF,        SK_HEXES,          -1),
+    APT(SP_MOUNTAIN_DWARF,        SK_CHARMS,         -1),
+    APT(SP_MOUNTAIN_DWARF,        SK_SUMMONINGS,     -1),
+    APT(SP_MOUNTAIN_DWARF,        SK_NECROMANCY,     -1),
+    APT(SP_MOUNTAIN_DWARF,        SK_TRANSLOCATIONS, -2),
+    APT(SP_MOUNTAIN_DWARF,        SK_TRANSMUTATIONS, -2),
+    APT(SP_MOUNTAIN_DWARF,        SK_FIRE_MAGIC,      1),
+    APT(SP_MOUNTAIN_DWARF,        SK_ICE_MAGIC,      -1),
+    APT(SP_MOUNTAIN_DWARF,        SK_AIR_MAGIC,      -1),
+    APT(SP_MOUNTAIN_DWARF,        SK_EARTH_MAGIC,     1),
+#if TAG_MAJOR_VERSION == 34
+    APT(SP_MOUNTAIN_DWARF,        SK_POISON_MAGIC,  UNUSABLE_SKILL),
+#endif
+    APT(SP_MOUNTAIN_DWARF,        SK_INVOCATIONS,     1),
+    APT(SP_MOUNTAIN_DWARF,        SK_EVOCATIONS,      0),
 
     // SP_KOBOLD
     APT(SP_KOBOLD,          SK_FIGHTING,      UNUSABLE_SKILL),
@@ -1139,6 +1176,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_DEMONSPAWN,      SK_INVOCATIONS,     3),
     APT(SP_DEMONSPAWN,      SK_EVOCATIONS,      0),
 
+	#if TAG_MAJOR_VERSION == 34
     // SP_GHOUL
     APT(SP_GHOUL,           SK_FIGHTING,      UNUSABLE_SKILL),
     APT(SP_GHOUL,           SK_SHORT_BLADES,   -1),
@@ -1154,13 +1192,9 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_GHOUL,           SK_ARMOUR,         -1),
     APT(SP_GHOUL,           SK_DODGING,        -1),
     APT(SP_GHOUL,           SK_STEALTH,         2),
-#if TAG_MAJOR_VERSION == 34
     APT(SP_GHOUL,           SK_STABBING,      UNUSABLE_SKILL),
-#endif
     APT(SP_GHOUL,           SK_SHIELDS,        -1),
-#if TAG_MAJOR_VERSION == 34
     APT(SP_GHOUL,           SK_TRAPS,         UNUSABLE_SKILL),
-#endif
     APT(SP_GHOUL,           SK_UNARMED_COMBAT,  1),
     APT(SP_GHOUL,           SK_SPELLCASTING,  UNUSABLE_SKILL),
     APT(SP_GHOUL,           SK_CONJURATIONS,  UNUSABLE_SKILL),
@@ -1174,22 +1208,21 @@ static const species_skill_aptitude species_skill_aptitudes[] =
     APT(SP_GHOUL,           SK_ICE_MAGIC,       1),
     APT(SP_GHOUL,           SK_AIR_MAGIC,      -2),
     APT(SP_GHOUL,           SK_EARTH_MAGIC,     1),
-#if TAG_MAJOR_VERSION == 34
     APT(SP_GHOUL,           SK_POISON_MAGIC,  UNUSABLE_SKILL),
-#endif
     APT(SP_GHOUL,           SK_INVOCATIONS,     1),
     APT(SP_GHOUL,           SK_EVOCATIONS,     -1),
+#endif
 
     // SP_TENGU
     APT(SP_TENGU,           SK_FIGHTING,      UNUSABLE_SKILL),
-    APT(SP_TENGU,           SK_SHORT_BLADES,    1),
+    APT(SP_TENGU,           SK_SHORT_BLADES,    2),
     APT(SP_TENGU,           SK_LONG_BLADES,   UNUSABLE_SKILL),
-    APT(SP_TENGU,           SK_AXES,            1),
-    APT(SP_TENGU,           SK_MACES_FLAILS,    1),
-    APT(SP_TENGU,           SK_POLEARMS,        1),
+    APT(SP_TENGU,           SK_AXES,            2),
+    APT(SP_TENGU,           SK_MACES_FLAILS,    2),
+    APT(SP_TENGU,           SK_POLEARMS,        2),
     APT(SP_TENGU,           SK_STAVES,        UNUSABLE_SKILL),
     APT(SP_TENGU,           SK_SLINGS,        UNUSABLE_SKILL),
-    APT(SP_TENGU,           SK_BOWS,            1),
+    APT(SP_TENGU,           SK_BOWS,            2),
     APT(SP_TENGU,           SK_CROSSBOWS,     UNUSABLE_SKILL),
     APT(SP_TENGU,           SK_THROWING,        0),
     APT(SP_TENGU,           SK_ARMOUR,          1),
@@ -1202,7 +1235,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
 #if TAG_MAJOR_VERSION == 34
     APT(SP_TENGU,           SK_TRAPS,         UNUSABLE_SKILL),
 #endif
-    APT(SP_TENGU,           SK_UNARMED_COMBAT,  1),
+    APT(SP_TENGU,           SK_UNARMED_COMBAT,  2),
     APT(SP_TENGU,           SK_SPELLCASTING,  UNUSABLE_SKILL),
     APT(SP_TENGU,           SK_CONJURATIONS,  UNUSABLE_SKILL),
     APT(SP_TENGU,           SK_HEXES,          -3),

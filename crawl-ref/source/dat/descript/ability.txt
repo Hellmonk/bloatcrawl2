@@ -146,6 +146,14 @@ End Animate Dead ability
 
 Ends your Animate Dead spell.
 %%%%
+End Portal Projectile ability
+
+Ends your Portal Projectile spell.
+%%%%
+End Piercing Shot ability
+
+Ends your Piercing Shot spell.
+%%%%
 Self-Restoration ability
 
 Restores your strength, dexterity and intelligence and heals any rotted health,
@@ -277,9 +285,9 @@ duration of the ability.
 %%%%
 Torment ability
 
-Sacrifices a cadaver to make all living creatures in sight experience all
-the pain that being suffered in its life. This damage is never directly lethal.
-Kikubaaqudgha may shield you from the effect, depending on your piety.
+Invokes unholy torment, causing great pain to all hostile living creatures in 
+the user's line of sight, but also affecting the user. The damage is never 
+directly lethal. Kikubaaqudgha may shield you from the effect, depending on your piety.
 %%%%
 Brand Weapon With Pain ability
 
@@ -664,8 +672,9 @@ three lists at a time, with varying prices.
 %%%%
 Call Merchant ability
 
-Sends funds to a merchant to help them set up shop at your location. The cost of
-funding a shop increases with the number of shops funded.
+Sends funds to a merchant to help them set up shop. This ability can only be used
+in the Bazaar; merchants aren't crazy enough to open up shop inside a dungeon.
+The cost of funding a shop increases with the number of shops funded.
 %%%%
 Bribe Branch ability
 

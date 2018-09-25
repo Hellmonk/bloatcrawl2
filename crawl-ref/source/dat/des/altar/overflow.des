@@ -124,8 +124,6 @@ function species_mock(e)
     e.kmons("1 = soldier ant")
   elseif you.race() == "Gargoyle" then
     e.kmons("1 = earth elemental")
-  elseif you.race() == "Ghoul" then
-    e.kmons("1 = death ooze")
   elseif you.race() == "Kobold" then
     e.kmons("1 = boggart")
   elseif you.race() == "Merfolk" then
@@ -146,7 +144,7 @@ function species_mock(e)
     e.kmons("1 = acid robin")
   elseif you.race() == "Troll" then
     e.kmons("1 = angry ghost")
-  elseif you.race() == "Vampire" then
+  elseif you.race() == "Jiangshi" then
     e.kmons("1 = tyrant leech")
   elseif you.race() == "Vine Stalker" then
     e.kmons("1 = thorn hunter")
@@ -619,28 +617,6 @@ b.._..b
 bbb.b.b
 b$....b
 bbb@bbb
-ENDMAP
-
-# No, you probably can't afford any of it.
-# You should have thought of that before being poor.
-NAME:  nicolae_gozag_zags_fifth_avenue
-TAGS:  temple_overflow_gozag temple_overflow_1 uniq_altar_gozag
-TAGS:  no_pool_fixup no_item_gen no_monster_gen decor transparent
-DEPTH: D:2-
-WEIGHT: 5
-FTILE: '_TS = floor_limestone
-KFEAT: _ = altar_gozag
-KFEAT: S = general shop name:Gozag type:Platinum suffix:Reserve count:4 \
-        greed:100 ; any weapon randart | any armour randart | any jewellery randart
-: interest_check(_G)
-MAP
-wwwwwww....
-w'''''wwww.
-w'T'T''''w.
-w''S'''_''@
-w'T'T''''w.
-w'''''wwww.
-wwwwwww....
 ENDMAP
 
 NAME:  nicolae_gozag_seed_capital
@@ -1166,24 +1142,6 @@ MAP
    .....
 ENDMAP
 
-NAME:  okawaru_altar_gauntlet_db
-TAGS:  uniq_altar_okawaru temple_overflow_1 temple_overflow_okawaru
-DEPTH: D:2-9
-KFEAT: _ = altar_okawaru
-MONS:  goblin; stone q:5 / hobgoblin; stone q:5 / gnoll; stone q:5 /\
-       orc; stone q:5 / kobold; stone q:5
-MAP
-  xxx
-xxx_xxx
-x1w.wxx
-xxw.w1x
-x1w.wxx
-xxw.w1x
-x1w.wxx
-xxw.w1x
-xxx+xxx
-ENDMAP
-
 NAME:   okawaru_gym_becter
 TAGS:   uniq_altar_okawaru temple_overflow_1 temple_overflow_okawaru
 TAGS:   transparent decor
@@ -1287,7 +1245,7 @@ KPROP:  c = no_tele_into
 SUBST:  c = cccl^.
 SUBST:  - = ..l^
 KFEAT:  ^ = known shaft trap
-KITEM:  . = nothing w:189 / stone / large rock q:1 w:1
+KITEM:  . = nothing w:189 / gold q:1 / large rock q:1 w:1
 KFEAT:  . = .
 : interest_check(_G)
 MAP
@@ -1743,10 +1701,10 @@ ENDMAP
 NAME:   trog_hazing_becter
 TAGS:   overflow_altar_trog no_monster_gen no_item_gen no_pool_fixup
 DEPTH:  D:2-9, Orc, !Orc:$
-MONS:   goblin ; stone q:5 . animal skin / \
-        hobgoblin ; stone q:5 . animal skin / \
-        kobold ; stone q:5 | animal skin
-ITEM:   stone
+MONS:   goblin ; trident . animal skin / \
+        hobgoblin ; trident . animal skin / \
+        kobold ; trident | animal skin
+ITEM:   gold q:1
 NSUBST: T = 6:1 / *:.
 SUBST:  . = d....
 KFEAT:  _ = altar_trog

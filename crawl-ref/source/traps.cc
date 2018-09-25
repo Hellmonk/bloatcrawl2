@@ -696,8 +696,6 @@ void trap_def::trigger(actor& triggerer)
                 if (_player_caught_in_web())
                 {
                     check_monsters_sense(SENSE_WEB_VIBRATION, 9, you.pos());
-                    if (player_in_a_dangerous_place())
-                        xom_is_stimulated(50);
                 }
             }
         }
@@ -739,8 +737,6 @@ void trap_def::trigger(actor& triggerer)
         {
             mpr((trig_knows) ? "You enter the Zot trap."
                              : "Oh no! You have blundered into a Zot trap!");
-            if (!trig_knows)
-                xom_is_stimulated(25);
 
             MiscastEffect(&you, nullptr, ZOT_TRAP_MISCAST, SPTYP_RANDOM,
                            3, name(DESC_A));
@@ -759,7 +755,7 @@ void trap_def::trigger(actor& triggerer)
             {
                 if (m->wont_attack() || crawl_state.game_is_arena())
                     targ = m;
-                else if (one_chance_in(5))
+                else if (one_chance_in(3))
                     targ = &you;
             }
 
@@ -1428,7 +1424,7 @@ int num_traps_for_place()
 /**
  * Choose a weighted random trap type for the currently-generated level.
  *
- * Odds of generating zot traps vary by depth (and are depth-limited). Alarm
+ * Odds of generating zot traps are fuckin' removed. Alarm
  * traps also can't be placed before D:4. All other traps are depth-agnostic.
  *
  * @return                    A random trap type.
@@ -1437,17 +1433,6 @@ int num_traps_for_place()
 
 trap_type random_trap_for_place()
 {
-    // zot traps are Very Special.
-    // very common in zot...
-    if (player_in_branch(BRANCH_ZOT) && coinflip())
-        return TRAP_ZOT;
-
-    // and elsewhere, increasingly common with depth
-    // possible starting at depth 15 (end of D, late lair, lair branches)
-    // XXX: is there a better way to express this?
-    if (random2(1 + env.absdepth0) > 14 && one_chance_in(3))
-        return TRAP_ZOT;
-
     const bool shaft_ok = is_valid_shaft_level();
     const bool tele_ok = !crawl_state.game_is_sprint();
     const bool alarm_ok = env.absdepth0 > 3;
@@ -1607,4 +1592,35 @@ bool ensnare(actor *fly)
 
     check_monsters_sense(SENSE_WEB_VIBRATION, 9, fly->pos());
     return true;
+}
+
+bool curse(actor *target)
+{
+    if(!target)
+        return false;
+    if(!target->is_player())
+        return false;
+    vector<coord_def> locations;
+    for (radius_iterator ai(target->pos(), 1, C_SQUARE, LOS_SOLID); ai; ++ai)
+    {
+        trap_def* ptrap = trap_at(*ai);
+        if (ptrap)
+            continue;
+        dungeon_feature_type feat = grd(*ai);
+        if (feat == DNGN_FLOOR)
+            locations.push_back(*ai);
+	}
+    if(!locations.empty())
+    {
+        coord_def trap_loc = locations[random2(locations.size())];
+        place_specific_trap(trap_loc, TRAP_ZOT, 2);
+        if (grd(trap_loc) == DNGN_UNDISCOVERED_TRAP
+            && you.see_cell(trap_loc))
+        {
+            grd(trap_loc) = DNGN_TRAP_ZOT;
+        }
+        mprf("you feel cursed");
+        return true;
+    }
+    return false;
 }

@@ -147,7 +147,6 @@ void seen_monsters_react(int stealth)
 
         beogh_follower_convert(*mi);
         gozag_check_bribe(*mi);
-        slime_convert(*mi);
 
         if (!mi->has_ench(ENCH_INSANE) && mi->can_see(you))
         {
@@ -518,7 +517,6 @@ void update_monsters_in_view()
         && you.attribute[ATTR_ABYSS_ENTOURAGE] < num_hostile)
     {
         you.attribute[ATTR_ABYSS_ENTOURAGE] = num_hostile;
-        xom_is_stimulated(12 * num_hostile);
     }
 }
 

@@ -1217,13 +1217,6 @@ static void _remove_equipment(const set<equipment_type>& removed,
             }
             else
                 unequip_item(e);
-
-            if (mutation)
-            {
-                // A mutation made us not only lose an equipment slot
-                // but actually removed a worn item: Funny!
-                xom_is_stimulated(is_artefact(*equip) ? 200 : 100);
-            }
         }
         else
             meld_slot(e);

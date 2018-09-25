@@ -93,7 +93,7 @@ const Branch branches[NUM_BRANCHES] =
       BROWN, YELLOW,
       'N', { RUNE_SPIDER }, 0 },
 
-    { BRANCH_SLIME, BRANCH_ORC, 2, 2, 4, 17,
+    { BRANCH_SLIME, BRANCH_ORC, 2, 2, 3, 17,
       BFLAG_NO_ITEMS | BFLAG_DANGEROUS_END | BFLAG_SPOTTY,
       DNGN_ENTER_SLIME, DNGN_EXIT_SLIME, NUM_FEATURES,
       "Slime Pits", "the Pits of Slime", "Slime",
@@ -232,8 +232,8 @@ const Branch branches[NUM_BRANCHES] =
       BLACK, BLACK,
       '0', {}, 0 },
 
-    { BRANCH_BAZAAR, NUM_BRANCHES, -1, -1, 1, 18,
-      BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
+    { BRANCH_BAZAAR, NUM_BRANCHES, 27, 27, 1, 18,
+      BFLAG_NO_ITEMS,
       DNGN_ENTER_BAZAAR, DNGN_EXIT_BAZAAR, NUM_FEATURES,
       "Bazaar", "a bazaar", "Bazaar",
       "You enter an inter-dimensional bazaar!",

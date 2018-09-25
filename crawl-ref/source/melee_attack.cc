@@ -201,19 +201,9 @@ bool melee_attack::handle_phase_attempted()
     // The attacker loses nutrition.
     attacker->make_hungry(3, true);
 
-    // Xom thinks fumbles are funny...
     if (attacker->fumbles_attack())
     {
-        // ... and thinks fumbling when trying to hit yourself is just
-        // hilarious.
-        xom_is_stimulated(attacker == defender ? 200 : 10);
         return false;
-    }
-    // Non-fumbled self-attacks due to confusion are still pretty funny, though.
-    else if (attacker == defender && attacker->confused())
-    {
-        // And is still hilarious if it's the player.
-        xom_is_stimulated(attacker->is_player() ? 200 : 100);
     }
 
     // Any attack against a monster we're afraid of has a chance to fail
@@ -497,37 +487,30 @@ bool melee_attack::handle_phase_damaged()
     // TODO: Move this somewhere else, this is a terrible place for a
     // block-like (prevents all damage) effect.
     if (attacker != defender
-        && (defender->is_player() && you.duration[DUR_SHROUD_OF_GOLUBRIA]
-            || defender->is_monster()
-               && defender->as_monster()->has_ench(ENCH_SHROUD))
-        && !one_chance_in(3))
+        && (defender->is_player() && you.get_mutation_level(MUT_SLIME_SHROUD)
+            && !you.duration[DUR_SHROUD_TIMEOUT])
+        && one_chance_in(4))
     {
-        // Chance of the shroud falling apart increases based on the
-        // strain of it, i.e. the damage it is redirecting.
-        if (x_chance_in_y(damage_done, 10+damage_done))
+        // Delay the message for the shroud breaking until after
+        // the attack message.
+        shroud_broken = true;
+        if (defender->is_player())
         {
-            // Delay the message for the shroud breaking until after
-            // the attack message.
-            shroud_broken = true;
-            if (defender->is_player())
-                you.duration[DUR_SHROUD_OF_GOLUBRIA] = 0;
-            else
-                defender->as_monster()->del_ench(ENCH_SHROUD);
+            you.duration[DUR_SHROUD_TIMEOUT] = 100 + random2(damage_done) * 10;
         }
         else
+            defender->as_monster()->del_ench(ENCH_SHROUD);
+        if (needs_message)
         {
-            if (needs_message)
-            {
-                mprf("%s shroud bends %s attack away%s",
+            mprf("%s shroud bends %s attack away%s",
                      def_name(DESC_ITS).c_str(),
                      atk_name(DESC_ITS).c_str(),
                      attack_strength_punctuation(damage_done).c_str());
-            }
-            did_hit = false;
-            damage_done = 0;
-
-            return false;
         }
+        did_hit = false;
+        damage_done = 0;
+
+        return false;
     }
 
     if (!attack::handle_phase_damaged())
@@ -1112,7 +1095,8 @@ public:
     {
         if (you.get_mutation_level(MUT_ANTIMAGIC_BITE))
             return SPWPN_ANTIMAGIC;
-
+        if (you.get_mutation_level(MUT_DRAIN_BITE))
+            return SPWPN_DRAINING;
         if (you.get_mutation_level(MUT_ACIDIC_BITE))
             return SPWPN_ACID;
 
@@ -1124,7 +1108,7 @@ class AuxPseudopods: public AuxAttackType
 {
 public:
     AuxPseudopods()
-    : AuxAttackType(4, "bludgeon") { };
+    : AuxAttackType(12, "bludgeon") { };
 
     int get_damage() const override
     {
@@ -1346,6 +1330,9 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
         if (damage_brand == SPWPN_VENOM && coinflip())
             poison_monster(defender->as_monster(), &you);
 
+        if (damage_brand == SPWPN_DRAINING)
+                bite_drain_defender();
+		
         // Normal vampiric biting attack, not if already got stabbing special.
         if (damage_brand == SPWPN_VAMPIRISM && you.species == SP_VAMPIRE
             && (!stab_attempt || stab_bonus <= 0))
@@ -2340,7 +2327,7 @@ static void _print_resist_messages(actor* defender, int base_damage,
                                    beam_type flavour)
 {
     // check_your_resists is used for the player case to get additional
-    // effects such as Xom amusement, melting of icy effects, etc.
+    // effects such as melting of icy effects, etc.
     // mons_adjust_flavoured is used for the monster case to get all of the
     // special message handling ("The ice beast melts!") correct.
     // XXX: there must be a nicer way to do this, especially because we're
@@ -2968,7 +2955,8 @@ void melee_attack::do_passive_freeze()
         if (!hurted)
             return;
 
-        simple_monster_message(*mon, " is very cold.");
+        auto message = make_stringf(" is very cold (%d).", hurted).c_str();
+        simple_monster_message(*mon, message);
 
 #ifndef USE_TILE_LOCAL
         flash_monster_colour(mon, LIGHTBLUE, 200);
@@ -3025,9 +3013,9 @@ void melee_attack::mons_do_eyeball_confusion()
     if (you.has_mutation(MUT_EYEBALLS)
         && attacker->alive()
         && adjacent(you.pos(), attacker->as_monster()->pos())
-        && x_chance_in_y(you.get_mutation_level(MUT_EYEBALLS), 20))
+        && x_chance_in_y(you.get_mutation_level(MUT_EYEBALLS), 7))
     {
-        const int ench_pow = you.get_mutation_level(MUT_EYEBALLS) * 30;
+        const int ench_pow = you.get_mutation_level(MUT_EYEBALLS) * 90;
         monster* mon = attacker->as_monster();
 
         if (mon->check_res_magic(ench_pow) <= 0)
@@ -3415,6 +3403,7 @@ bool melee_attack::_extra_aux_attack(unarmed_attack_type atk)
     case UNAT_BITE:
         return you.get_mutation_level(MUT_ANTIMAGIC_BITE)
                || (you.has_usable_fangs()
+                   || you.get_mutation_level(MUT_DRAIN_BITE)
                    || you.get_mutation_level(MUT_ACIDIC_BITE))
                    && x_chance_in_y(2, 5);
 
@@ -3442,7 +3431,7 @@ int melee_attack::calc_your_to_hit_unarmed(int uattack)
     your_to_hit -= 5 * you.inaccuracy();
 
     if (you.get_mutation_level(MUT_EYEBALLS))
-        your_to_hit += 2 * you.get_mutation_level(MUT_EYEBALLS) + 1;
+        your_to_hit += 7 * you.get_mutation_level(MUT_EYEBALLS);
 
     if (you.species != SP_VAMPIRE && you.hunger_state <= HS_STARVING)
         your_to_hit -= 3;

@@ -905,14 +905,6 @@ bool bad_attack(const monster *mon, string& adj, string& suffix,
     if (check_landing_only)
         return bad_landing;
 
-    if (you_worship(GOD_JIYVA) && mons_is_slime(*mon)
-        && !(mon->is_shapeshifter() && (mon->flags & MF_KNOWN_SHIFTER))
-           && !you.penance[GOD_JIYVA])
-    {
-        would_cause_penance = true;
-        return true;
-    }
-
     if (mon->friendly())
     {
         if (god_hates_attacking_friend(you.religion, *mon))

@@ -16,6 +16,7 @@
 #include <sstream>
 #include <string>
 
+#include "ability.h"
 #include "adjust.h"
 #include "art-enum.h"
 #include "artefact.h"
@@ -75,47 +76,89 @@ int count_desc_lines(const string &_desc, const int width)
     return count(begin(desc), end(desc), '\n');
 }
 
-void print_description(const string &body)
+int show_description(const string &body)
 {
     describe_info inf;
     inf.body << body;
-    print_description(inf);
+    return show_description(inf);
 }
 
-class default_desc_proc
+class desc_proc_proxy
 {
 public:
-    int width() { return get_number_of_cols() - 1; }
-    int height() { return get_number_of_lines(); }
-    void print(const string &str) { cprintf("%s", str.c_str()); }
-
-    void nextline()
-    {
-        if (wherey() < height())
-            cgotoxy(1, wherey() + 1);
-        else
-            cgotoxy(1, height());
-        // Otherwise cgotoxy asserts; let's just clobber the last line
-        // instead, which should be noticeable enough.
-    }
+    int width() { return 10000000; }
+    int height() { return 10000000; }
+    void print(const string &str) { oss << str; }
+    void nextline() { oss << "\n"; }
+    ostringstream oss;
 };
 
-void print_description(const describe_info &inf)
-{
-    clrscr();
-    textcolour(LIGHTGREY);
+/// A message explaining how the player can toggle between quote &
+static const string _toggle_message =
+    "Press '<w>!</w>'"
+#ifdef USE_TILE_LOCAL
+    " or <w>Right-click</w>"
+#endif
+    " to toggle between the description and quote.";
 
-    default_desc_proc proc;
-    process_description<default_desc_proc>(proc, inf);
+int show_description(const describe_info &inf)
+{
+#ifdef USE_TILE_LOCAL
+    // Ensure we get the full screen size when calling get_number_of_cols()
+    cgotoxy(1, 1);
+#endif
+    string desc = process_description(inf);
+
+    formatted_scroller desc_fs;
+    int flags = MF_NOSELECT | MF_NOWRAP;
+    desc_fs.set_flags(flags, false);
+    desc_fs.set_more();
+    desc_fs.add_text(desc, false, get_number_of_cols());
+
+    formatted_scroller quote_fs;
+    quote_fs.set_more();
+
+    if (!inf.quote.empty())
+    {
+        desc_fs.set_flags(desc_fs.get_flags() | MF_ALWAYS_SHOW_MORE);
+        quote_fs.set_flags(quote_fs.get_flags() | MF_ALWAYS_SHOW_MORE);
+        desc_fs.set_more(formatted_string::parse_string(_toggle_message));
+        quote_fs.set_more(formatted_string::parse_string(_toggle_message));
+
+        quote_fs.add_text(inf.title, true);
+        quote_fs.add_text(inf.quote, false, get_number_of_cols() - 1);
+    }
+
+    bool show_quote = false;
+    while (true)
+    {
+        formatted_scroller& fs = show_quote ? quote_fs : desc_fs;
+        fs.show();
+        int keyin = fs.getkey();
+        if (!inf.quote.empty() && (keyin == '!' || keyin == CK_MOUSE_CMD))
+            show_quote = !show_quote;
+        else
+        {
+            clrscr();
+            return keyin;
+        }
+    }
 }
 
-static void _print_quote(const describe_info &inf)
+string process_description(const describe_info &inf)
 {
-    clrscr();
-    textcolour(LIGHTGREY);
-
-    default_desc_proc proc;
-    process_quote<default_desc_proc>(proc, inf);
+    string desc;
+    if (!inf.prefix.empty())
+        desc += "\n\n" + trimmed_string(filtered_lang(inf.prefix));
+    if (!inf.title.empty())
+        desc += "\n\n" + trimmed_string(filtered_lang(inf.title));
+    desc += "\n\n" + trimmed_string(filtered_lang(inf.body.str()));
+    if (!inf.suffix.empty())
+        desc += "\n\n" + trimmed_string(filtered_lang(inf.suffix));
+    if (!inf.footer.empty())
+        desc += "\n\n" + trimmed_string(filtered_lang(inf.footer));
+    trim_string(desc);
+    return desc;
 }
 
 const char* jewellery_base_ability_string(int subtype)
@@ -892,19 +935,62 @@ static bool _could_set_training_target(const item_def &item, bool ignore_current
        && (ignore_current || you.get_training_target(skill) < target);
 }
 
-static string _skill_target_desc(skill_type skill, double target, int training)
+/**
+ * Produce the "Your skill:" line for item descriptions where specific skill targets
+ * are releveant (weapons, missiles, shields)
+ *
+ * @param skill the skill to look at.
+ * @param show_target_button whether to show the button for setting a skill target.
+ * @param scaled_target a target, scaled by 10, to use when describing the button.
+ */
+static string _your_skill_desc(skill_type skill, bool show_target_button, int scaled_target)
+{
+    if (!crawl_state.need_save || skill == SK_NONE)
+        return "";
+    string target_button_desc = "";
+    if (show_target_button &&
+            you.get_training_target(skill) < scaled_target)
+    {
+        target_button_desc = make_stringf(
+            "; use <white>(s)</white> to set %d.%d as a target for %s.",
+                                    scaled_target / 10, scaled_target % 10,
+                                    skill_name(skill));
+    }
+    int you_skill_temp = you.skill(skill, 10, false, true);
+    int you_skill = you.skill(skill, 10, false, false);
+
+    return make_stringf("Your %sskill: %d.%d%s",
+                            (you_skill_temp != you_skill ? "(base) " : ""),
+                            you_skill / 10, you_skill % 10,
+                            target_button_desc.c_str());
+}
+
+/**
+ * Produce a description of a skill target for items where specific targets are
+ * relevant.
+ *
+ * @param skill the skill to look at.
+ * @param scaled_target a skill level target, scaled by 10.
+ * @param training a training value, from 0 to 100. Need not be the actual training
+ * value.
+ */
+static string _skill_target_desc(skill_type skill, int scaled_target,
+                                        unsigned int training)
 {
     string description = "";
 
     if (you.species == SP_GNOLL || you.species == SP_KOBOLD)
         return description;
 	
-    const bool max_training = (training == 100);
-    const bool hypothetical = !crawl_state.need_save || (training != (int) you.training[skill]);
-    double min_target = min(target, 27.0);
+    scaled_target = min(scaled_target, 270);
 
-    const skill_diff diffs = skill_level_to_diffs(skill, min_target, training, false);
-    const int level_diff = xp_to_level_diff(diffs.experience, 10);
+    const bool max_training = (training == 100);
+    const bool hypothetical = !crawl_state.need_save ||
+                                    (training != you.training[skill]);
+
+    const skill_diff diffs = skill_level_to_diffs(skill,
+                                (double) scaled_target / 10, training, false);
+    const int level_diff = xp_to_level_diff(diffs.experience / 10, 10);
 
     if (max_training)
         description += "At 100% training ";
@@ -917,9 +1003,9 @@ static string _skill_target_desc(skill_type skill, double target, int training)
         description += make_stringf("At a training level of %d%% ", training);
 
     description += make_stringf(
-        "you %s reach %.1f in %s %d.%d XLs.",
+        "you %s reach %d.%d in %s %d.%d XLs.",
             hypothetical ? "would" : "will",
-            min_target,
+            scaled_target / 10, scaled_target % 10,
             (you.experience_level + (level_diff + 9) / 10) > 27
                                 ? "the equivalent of" : "about",
             level_diff / 10, level_diff % 10);
@@ -928,15 +1014,22 @@ static string _skill_target_desc(skill_type skill, double target, int training)
         description += make_stringf("\n    (%d xp, %d skp)",
                                     diffs.experience, diffs.skill_points);
     }
-    return description;
+return description;
 }
 
-static void _append_skill_target_desc(string &description, skill_type skill, double target)
+/**
+ * Append two skill target descriptions: one for 100%, and one for the
+ * current training rate.
+ */
+static void _append_skill_target_desc(string &description, skill_type skill,
+                                        int scaled_target)
 {
-    description += "\n    " + _skill_target_desc(skill, target, 100);
+    if (you.species != SP_GNOLL && you.species != SP_KOBOLD)
+        description += "\n    " + _skill_target_desc(skill, scaled_target, 100);
+
     if (you.training[skill] > 0 && you.training[skill] < 100)
     {
-        description += "\n    " + _skill_target_desc(skill, target,
+        description += "\n    " + _skill_target_desc(skill, scaled_target,
                                                     you.training[skill]);
     }
 }
@@ -978,7 +1071,7 @@ static void _append_weapon_stats(string &description, const item_def &item)
     }
 
     if (could_set_target)
-        _append_skill_target_desc(description, skill, min(mindelay_skill / 10,27));
+        _append_skill_target_desc(description, skill, min(mindelay_skill, 270));
 }
 
 static string _handedness_string(const item_def &item)
@@ -1170,7 +1263,7 @@ static string _describe_weapon(const item_def &item, bool verbose)
             break;
         case SPWPN_DISTORTION:
             description += "It warps and distorts space around it. "
-                "Unwielding it can cause banishment or high damage.";
+                "Unwielding it can cause contamination or high damage.";
             break;
         case SPWPN_PENETRATION:
             description += "Ammo fired by it will pass through the "
@@ -1409,7 +1502,7 @@ static string _describe_ammo(const item_def &item)
         );
 
         if (could_set_target)
-            _append_skill_target_desc(description, SK_THROWING, target_skill / 10);
+            _append_skill_target_desc(description, SK_THROWING, target_skill);
     }
     
     if (!ammo_never_destroyed(item))
@@ -1437,7 +1530,7 @@ static string _describe_armour(const item_def &item, bool verbose)
     {
         if (is_shield(item))
         {
-            const int skill = _item_training_target(item);
+            const int target_skill = _item_training_target(item);
             description += "\n";
             description += "\nBase shield rating: "
                         + to_string(property(item, PARM_AC));
@@ -1446,27 +1539,22 @@ static string _describe_armour(const item_def &item, bool verbose)
             if (!is_useless_item(item))
             {
                 description += "       Skill to remove penalty: "
-                            + make_stringf("%d.%d", skill / 10, skill % 10);
-                string target_command_desc = "";
-                if (could_set_target &&
-                        you.get_training_target(SK_SHIELDS) < skill)
-                {
-                    target_command_desc = make_stringf(
-                        "; press <white>(s)</white> to set %d.%d as a training target.",
-                                                skill / 10, skill % 10);
-                }
+                            + make_stringf("%d.%d", target_skill / 10,
+                                                target_skill % 10);
 
                 if (crawl_state.need_save)
                 {
                     description += "\n                            "
-                                + make_stringf("Your skill: %.1f%s",
-                                        (float) you.skill(SK_SHIELDS, 10) / 10,
-                                        target_command_desc.c_str());
+                        + _your_skill_desc(SK_SHIELDS, could_set_target,
+                                            target_skill);
                 }
                 else
                     description += "\n";
                 if (could_set_target)
-                    _append_skill_target_desc(description, SK_SHIELDS, skill / 10);
+                {
+                    _append_skill_target_desc(description, SK_SHIELDS,
+                                                                target_skill);
+                }
             }
 
             if (is_unrandom_artefact(item, UNRAND_WARLOCK_MIRROR))
@@ -2118,6 +2206,16 @@ string get_item_description(const item_def &item, bool verbose,
     return description.str();
 }
 
+string get_cloud_desc(cloud_type cloud)
+{
+    if (cloud == CLOUD_NONE)
+        return "";
+    const string cl_name = cloud_type_name(cloud);
+    const string cl_desc = getLongDescription(cl_name + " cloud");
+    return "A cloud of " + cl_name + (cl_desc.empty() ? "." : ".\n\n")
+        + cl_desc + extra_cloud_info(cloud);
+}
+
 void get_feature_desc(const coord_def &pos, describe_info &inf)
 {
     dungeon_feature_type feat = env.map_knowledge(pos).feat();
@@ -2161,78 +2259,18 @@ void get_feature_desc(const coord_def &pos, describe_info &inf)
     inf.body << long_desc;
 
     if (const cloud_type cloud = env.map_knowledge(pos).cloud())
-    {
-        const string cl_name = cloud_type_name(cloud);
-        const string cl_desc = getLongDescription(cl_name + " cloud");
-        inf.body << "\n\nA cloud of " << cl_name
-                 << (cl_desc.empty() ? "." : ".\n\n")
-                 << cl_desc << extra_cloud_info(cloud);
-    }
+        inf.body << "\n\n" + get_cloud_desc(cloud);
 
     inf.quote = getQuoteString(db_name);
 }
 
-/// A message explaining how the player can toggle between quote &
-static const string _toggle_message =
-    "Press '<w>!</w>'"
-#ifdef USE_TILE_LOCAL
-    " or <w>Right-click</w>"
-#endif
-    " to toggle between the description and quote.";
-
-/**
- * If the given description has an associated quote, print a message at the
- * bottom of the screen explaining how the player can toggle between viewing
- * that quote & the description, and then check whether the input corresponds
- * to such a toggle.
- *
- * @param inf[in]       The description in question.
- * @param key[in,out]   The input command. If zero, is set to getchm().
- * @return              Whether the description & quote should be toggled.
- */
-static int _print_toggle_message(const describe_info &inf, int& key)
-{
-    mouse_control mc(MOUSE_MODE_MORE);
-
-    if (inf.quote.empty())
-    {
-        if (!key)
-            key = getchm();
-        return false;
-    }
-
-    const int bottom_line = min(30, get_number_of_lines());
-    cgotoxy(1, bottom_line);
-    formatted_string::parse_string(_toggle_message).display();
-    if (!key)
-        key = getchm();
-
-    if (key == '!' || key == CK_MOUSE_CMD)
-        return true;
-
-    return false;
-}
-
-void describe_feature_wide(const coord_def& pos, bool show_quote)
+void describe_feature_wide(const coord_def& pos)
 {
     describe_info inf;
     get_feature_desc(pos, inf);
-
-#ifdef USE_TILE_WEB
-    tiles_crt_control show_as_menu(CRT_MENU, "describe_feature");
-#endif
-
-    if (show_quote)
-        _print_quote(inf);
-    else
-        print_description(inf);
-
     if (crawl_state.game_is_hints())
-        hints_describe_pos(pos.x, pos.y);
-
-    int key = 0;
-    if (_print_toggle_message(inf, key))
-        describe_feature_wide(pos, !show_quote);
+        inf.body << hints_describe_pos(pos.x, pos.y);
+    show_description(inf);
 }
 
 void get_item_desc(const item_def &item, describe_info &inf)
@@ -2403,7 +2441,7 @@ static bool _do_action(item_def &item, const vector<command_type>& actions, int 
     case CMD_EVOKE:            evoke_item(slot);                    break;
     case CMD_EAT:              eat_food(slot);                      break;
     case CMD_READ:             read(&item);                         break;
-    case CMD_WEAR_JEWELLERY:   puton_ring(slot);                    break;
+    case CMD_WEAR_JEWELLERY:   puton_ring(slot, true);              break;
     case CMD_REMOVE_JEWELLERY: remove_ring(slot, true);             break;
     case CMD_QUAFF:            drink(&item);                        break;
     case CMD_DROP:             drop_item(slot, item.quantity);      break;
@@ -2444,10 +2482,6 @@ bool describe_item(item_def &item, function<void (string&)> fixup_desc)
 {
     if (!item.defined())
         return true;
-
-#ifdef USE_TILE_WEB
-    tiles_crt_control show_as_menu(CRT_MENU, "describe_item");
-#endif
 
     string desc = get_item_description(item, true, false);
 
@@ -2772,7 +2806,6 @@ static bool _get_spell_description(const spell_type spell,
     if (item && item->base_type == OBJ_BOOKS && in_inventory(*item)
         && !you.has_spell(spell) && you_can_memorise(spell))
     {
-        description += "\n(M)emorise this spell.\n";
         return true;
     }
 
@@ -2806,26 +2839,36 @@ void get_spell_desc(const spell_type spell, describe_info &inf)
 void describe_spell(spell_type spelled, const monster_info *mon_owner,
                     const item_def* item)
 {
-#ifdef USE_TILE_WEB
-    tiles_crt_control show_as_menu(CRT_MENU, "describe_spell");
-#endif
-
     string desc;
     const bool can_mem = _get_spell_description(spelled, mon_owner, desc, item);
-    print_description(desc);
+    formatted_scroller menu;
+    menu.add_text(desc, false, get_number_of_cols());
 
-    mouse_control mc(MOUSE_MODE_MORE);
-    char ch;
-    if ((ch = getchm()) == 0)
-        ch = getchm();
+    if (can_mem)
+    {
+        menu.set_flags(menu.get_flags() | MF_ALWAYS_SHOW_MORE);
+        menu.set_more(formatted_string("(M)emorise this spell.", CYAN));
+    }
 
-    if (can_mem && toupper(ch) == 'M')
+    menu.show();
+
+    if (can_mem && toupper(menu.getkey()) == 'M')
     {
         redraw_screen();
         if (!learn_spell(spelled) || !you.turn_is_over)
             more();
         redraw_screen();
     }
+}
+
+/**
+ * Examine a given ability. List its description and details.
+ *
+ * @param ability   The ability in question.
+ */
+void describe_ability(ability_type ability)
+{
+    show_description(get_ability_desc(ability));
 }
 
 static string _describe_demonspawn_role(monster_type type)
@@ -3877,27 +3920,31 @@ int describe_monsters(const monster_info &mi, bool force_seen,
             inf.footer += "\n" + footer;
     }
 
-#ifdef USE_TILE_WEB
-    tiles_crt_control show_as_menu(CRT_MENU, "describe_monster");
+#ifdef USE_TILE_LOCAL
+    // Ensure we get the full screen size when calling get_number_of_cols()
+    cgotoxy(1, 1);
 #endif
 
     spell_scroller fs(monster_spellset(mi), &mi, nullptr);
-    fs.add_text(inf.title);
+    fs.add_text(inf.title, true);
     fs.add_text(inf.body.str(), false, get_number_of_cols() - 1);
     if (crawl_state.game_is_hints())
         fs.add_text(hints_describe_monster(mi, has_stat_desc).c_str());
 
     formatted_scroller qs;
 
+    fs.set_more();
+    qs.set_more();
+
     if (!inf.quote.empty())
     {
-        fs.add_item_formatted_string(
-                formatted_string::parse_string("\n" + _toggle_message));
+        fs.set_flags(fs.get_flags() | MF_ALWAYS_SHOW_MORE);
+        qs.set_flags(qs.get_flags() | MF_ALWAYS_SHOW_MORE);
+        fs.set_more(formatted_string::parse_string(_toggle_message));
+        qs.set_more(formatted_string::parse_string(_toggle_message));
 
-        qs.add_text(inf.title);
+        qs.add_text(inf.title, true);
         qs.add_text(inf.quote, false, get_number_of_cols() - 1);
-        qs.add_item_formatted_string(
-                formatted_string::parse_string("\n" + _toggle_message));
     }
 
     fs.add_item_formatted_string(formatted_string::parse_string(inf.footer));
@@ -3911,9 +3958,7 @@ int describe_monsters(const monster_info &mi, bool force_seen,
             fs.show();
 
         int keyin = (show_quote ? qs : fs).get_lastch();
-        // this is never actually displayed to the player
-        // we just use it to check whether we should toggle.
-        if (_print_toggle_message(inf, keyin))
+        if (!inf.quote.empty() && (keyin == '!' || keyin == CK_MOUSE_CMD))
             show_quote = !show_quote;
         else
             return keyin;
@@ -4001,15 +4046,8 @@ string get_ghost_description(const monster_info &mi, bool concise)
 void describe_skill(skill_type skill)
 {
     ostringstream data;
-
-#ifdef USE_TILE_WEB
-    tiles_crt_control show_as_menu(CRT_MENU, "describe_skill");
-#endif
-
     data << get_skill_description(skill, true);
-
-    print_description(data.str());
-    getchm();
+    show_description(data.str());
 }
 
 #ifdef USE_TILE

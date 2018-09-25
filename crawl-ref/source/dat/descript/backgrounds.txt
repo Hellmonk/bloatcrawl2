@@ -30,8 +30,8 @@ god's constantly changing moods.
 %%%%
 Earth Elementalist
 
-Earth Elementalists know the Sandblast spell, and carry stones to fuel the
-spell. More earthen spells are in their book of Geomancy.
+Earth Elementalists know the Sandblast spell. 
+More earthen spells are in their book of Geomancy.
 %%%%
 Enchanter
 

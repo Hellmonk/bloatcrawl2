@@ -322,6 +322,10 @@ static const ability_def Ability_List[] =
       0, 0, 0, 0, {}, abflag::NONE },
     { ABIL_END_SERVITOR, "End Spellforged Servitor",
       0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_PPROJ, "End Portal Projectile",
+      0, 0, 0, 0, {}, abflag::NONE },
+    { ABIL_END_PIERCE, "End Piercing Shot",
+      0, 0, 0, 0, {}, abflag::NONE },
 
     { ABIL_DIG, "Dig", 0, 0, 0, 0, {}, abflag::INSTANT },
     { ABIL_SHAFT_SELF, "Shaft Self", 0, 0, 250, 0, {}, abflag::DELAY },
@@ -1111,30 +1115,14 @@ string get_ability_desc(const ability_type ability)
 
 static void _print_talent_description(const talent& tal)
 {
-    clrscr();
-
-    print_description(get_ability_desc(tal.which));
-
-    getchm();
-    clrscr();
+    show_description(get_ability_desc(tal.which));
 }
 
 void no_ability_msg()
 {
     // Give messages if the character cannot use innate talents right now.
-    // * Vampires can't turn into bats when full of blood.
     // * Tengu can't start to fly if already flying.
-    if (you.species == SP_VAMPIRE && you.experience_level >= 3)
-    {
-        if (you.transform_uncancellable)
-            mpr("You can't untransform!");
-        else
-        {
-            ASSERT(you.hunger_state > HS_SATIATED);
-            mpr("Sorry, you're too full to transform right now.");
-        }
-    }
-    else if (you.get_mutation_level(MUT_TENGU_FLIGHT)
+    if (you.get_mutation_level(MUT_TENGU_FLIGHT)
              || you.get_mutation_level(MUT_BIG_WINGS))
     {
         if (you.airborne())
@@ -1252,15 +1240,19 @@ static bool _check_ability_possible(const ability_def& abil,
         return false;
     }
 
-    if (silenced(you.pos()))
+    // Silence and water elementals
+    if (silenced(you.pos())
+        || you.duration[DUR_WATER_HOLD] && !you.res_water_drowning())
     {
         talent tal = get_talent(abil.ability, false);
         if (tal.is_invocation)
         {
             if (!quiet)
             {
-                mprf("You cannot call out to %s while silenced.",
-                     god_name(you.religion).c_str());
+                mprf("You cannot call out to %s while %s.",
+                     god_name(you.religion).c_str(),
+                     you.duration[DUR_WATER_HOLD] ? "unable to breathe"
+                                                  : "silenced");
             }
             return false;
         }
@@ -2116,10 +2108,20 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         you.attribute[ATTR_INFUSION] = 0;
         mpr("You stop infusing your attacks.");
         break;
+    case ABIL_END_PPROJ:
+        fail_check();
+        you.attribute[ATTR_PORTAL_PROJECTILE] = 0;
+        mpr("You stop teleporting projectiles.");
+        break;
     case ABIL_END_ANIMATE_DEAD:
         fail_check();
         you.attribute[ATTR_ANIMATE_DEAD] = 0;
         mpr("You stop reaping the dead.");
+        break;
+    case ABIL_END_PIERCE:
+        fail_check();
+        you.attribute[ATTR_PIERCING_SHOT] = 0;
+        mpr("Your projectiles no longer penetrate their targets.");
         break;
     case ABIL_END_SPECTRAL_WEAPON:
     {
@@ -3435,20 +3437,12 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
         _add_talent(talents, draconian_breath(you.species), check_confused);
     }
 
-    if (you.species == SP_VAMPIRE && you.experience_level >= 3
-        && you.form != TRAN_BAT)
-    {
-        _add_talent(talents, ABIL_TRAN_BAT, check_confused);
-    }
-
     if (you.get_mutation_level(MUT_TENGU_FLIGHT) && !you.airborne()
         || you.racial_permanent_flight() && !you.attribute[ATTR_PERM_FLIGHT])
     {
-        // Tengu can fly, but only from the ground
-        // (until level 14, when it becomes permanent until revoked).
+        // Tengu can fly.
         // Black draconians and gargoyles get permaflight at XL 14, but they
-        // don't get the tengu movement/evasion bonuses and they don't get
-        // temporary flight before then.
+        // don't get the tengu evasion bonuses.
         // Other dracs can mutate big wings whenever as well.
         _add_talent(talents, ABIL_FLY, check_confused);
     }
@@ -3486,6 +3480,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     if (you.attribute[ATTR_INFUSION])
        _add_talent(talents, ABIL_END_INFUSION, check_confused);
    
+    if (you.attribute[ATTR_PORTAL_PROJECTILE])
+       _add_talent(talents, ABIL_END_PPROJ, check_confused);
+   
     if (you.attribute[ATTR_INFESTATION])
        _add_talent(talents, ABIL_END_INFESTATION, check_confused);
    
@@ -3503,6 +3500,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
   
     if (you.attribute[ATTR_BONE_ARMOUR])
        _add_talent(talents, ABIL_END_CIGOTUVIS, check_confused);
+   
+    if (you.attribute[ATTR_PIERCING_SHOT])
+        _add_talent(talents, ABIL_END_PIERCE, check_confused);
    
     if (you.attribute[ATTR_REPEL_MISSILES] || you.attribute[ATTR_DEFLECT_MISSILES])
        _add_talent(talents, ABIL_END_MISSILE_DEFLECTION, check_confused);
@@ -3763,6 +3763,7 @@ int find_ability_slot(const ability_type abil, char firstletter)
     case ABIL_END_INFESTATION:
     case ABIL_END_BATTLESPHERE:
     case ABIL_END_SERVITOR:
+    case ABIL_END_PPROJ:
         first_slot = letter_to_index('A');
         break;
     default:

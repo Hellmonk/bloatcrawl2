@@ -240,9 +240,9 @@ function fiery_guardians (e, intelligent, village)
                           .. " | whip " .. flame
                           .. " . robe " .. res
         local ogrestuff = "great mace " .. flame .. " | giant club " .. flame
-        local centaur = "centaur ; shortbow ego:flaming ident:type . arrow"
+        local centaur = "centaur ; shortbow ego:flaming ident:type "
         local centaurstuff = "robe " .. res
-                             .. " . shortbow ego:flaming ident:type . arrow"
+                             .. " . shortbow ego:flaming ident:type"
         local elfstuff = "long sword " .. flame
                          .. " | rapier " .. flame
                          .. " . leather armour " .. res
@@ -275,7 +275,7 @@ function fiery_guardians (e, intelligent, village)
                     .. ", ogre mage ; " .. magestuff)
         elseif set_weight < 9 then
             e.mons(centaur
-                   .. " / yaktaur w:5 ; arbalest ego:flaming ident:type . arrow")
+                   .. " / yaktaur w:5 ; arbalest ego:flaming ident:type")
             e.kmons("2 = Nessos / centaur warrior w:40 ; " .. centaurstuff
                     .. ", centaur warrior ; " .. centaurstuff)
         elseif set_weight < 10 then
@@ -1106,7 +1106,7 @@ ORIENT:     encompass
 TAGS:       no_item_gen no_monster_gen no_rotate
 #           Loot: 11 items, 8 gold.
 :           volcano_setup(_G)
-KITEM:      h = stone
+KITEM:      h = large rock q:1
 COLOUR:     m = blue
 MONS:       human ; mace ego:flaming . robe ego:fire_resistance ident:type
 MONS:       toenail golem

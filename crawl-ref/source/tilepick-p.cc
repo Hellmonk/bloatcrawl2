@@ -620,10 +620,11 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
         return TILEP_BASE_MERFOLK;
     case SP_VAMPIRE:
         return TILEP_BASE_VAMPIRE;
+    case SP_MOUNTAIN_DWARF:
 #if TAG_MAJOR_VERSION == 34
     case SP_DEEP_DWARF:
-        return TILEP_BASE_DEEP_DWARF;
 #endif
+        return TILEP_BASE_DEEP_DWARF;
     case SP_GARGOYLE:
         return TILEP_BASE_GARGOYLE;
 #if TAG_MAJOR_VERSION == 34
@@ -764,6 +765,7 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
             break;
 #if TAG_MAJOR_VERSION == 34
         case SP_DEEP_DWARF:
+        case SP_MOUNTAIN_DWARF:
             hair  = TILEP_HAIR_SHORT_WHITE;
             beard = TILEP_BEARD_GARIBALDI_WHITE;
             break;

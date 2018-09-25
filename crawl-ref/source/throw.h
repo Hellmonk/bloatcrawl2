@@ -34,13 +34,14 @@ bool fire_warn_if_impossible(bool silent = false);
 int get_next_fire_item(int current, int offset);
 int get_ammo_to_shoot(int item, dist &target, bool teleport = false);
 bool is_pproj_active();
+bool is_pierce_active();
 void fire_thing(int item = -1);
 void throw_item_no_quiver();
 
-bool throw_it(bolt &pbolt, int throw_2, dist *target = nullptr);
+bool throw_it(bolt &pbolt, item_def& thrown, dist *target = nullptr, bool created = false);
 
 bool thrown_object_destroyed(item_def *item, const coord_def& where);
 
 void setup_monster_throw_beam(monster* mons, bolt &beam);
-bool mons_throw(monster* mons, bolt &beam, int msl, bool teleport = false);
+bool mons_throw(monster* mons, bolt &beam, item_def& thrown, bool teleport = false);
 #endif

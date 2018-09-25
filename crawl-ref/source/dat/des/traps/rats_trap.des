@@ -31,7 +31,7 @@ function callback.rats_trap_stepped(data, triggerable, triggerer, marker, ev)
   for slave in iter.slave_iterator("hole", 1) do
       if not dgn.is_passable(slave.x,slave.y) then
         dgn.terrain_changed(slave.x, slave.y, "floor", false)
-        dgn.create_item(slave.x, slave.y, "stone q:3 / stone q:2 / stone")
+        dgn.create_item(slave.x, slave.y, "large rock q:3 / large rock q:2 / large rock")
       else
         crawl.mpr("You hear a click.")
         return

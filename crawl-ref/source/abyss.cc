@@ -276,13 +276,6 @@ void banished(const string &who, const int power)
     // This is an honest abyss entry, mark milestone
     mark_milestone("abyss.enter",
         "was cast into the Abyss!" + _who_banished(who), "parent");
-
-    // Xom just might decide to interfere.
-    if (you_worship(GOD_XOM) && who != "Xom" && who != "wizard command"
-        && who != "a distortion unwield")
-    {
-        xom_maybe_reverts_banishment(false, false);
-    }
 }
 
 void push_features_to_abyss()
@@ -380,48 +373,6 @@ static bool _abyssal_rune_at(const coord_def p)
             return true;
     return false;
 }
-
-class xom_abyss_feature_amusement_check
-{
-private:
-    bool exit_was_near;
-
-private:
-    bool abyss_exit_nearness() const
-    {
-        // env.map_knowledge().known() doesn't work on unmappable levels because
-        // mapping flags are not set on such levels.
-        for (radius_iterator ri(you.pos(), LOS_DEFAULT); ri; ++ri)
-            if (grd(*ri) == DNGN_EXIT_ABYSS && env.map_knowledge(*ri).seen())
-                return true;
-
-        return false;
-    }
-
-public:
-    xom_abyss_feature_amusement_check()
-    {
-        exit_was_near = abyss_exit_nearness();
-    }
-
-    // If the player was almost to the exit when it disappeared, Xom
-    // is extremely amused. He's also extremely amused if the player
-    // winds up right next to an exit when there wasn't one there
-    // before.
-    ~xom_abyss_feature_amusement_check()
-    {
-        // Update known terrain
-        viewwindow();
-
-        const bool exit_is_near = abyss_exit_nearness();
-
-        if (exit_was_near && !exit_is_near)
-            xom_is_stimulated(200, "Xom snickers loudly.", true);
-
-        if (!exit_was_near && exit_is_near)
-            xom_is_stimulated(200);
-    }
-};
 
 static void _abyss_lose_monster(monster& mons)
 {
@@ -1260,8 +1211,6 @@ static void abyss_area_shift()
          you.pos().x, you.pos().y);
 
     {
-        xom_abyss_feature_amusement_check xomcheck;
-
         // A teleport may move you back to the center, resulting in a (0,0)
         // shift. The code can't handle those. We still to forget the map,
         // spawn new monsters or allow return from transit, though.
@@ -1468,7 +1417,6 @@ void abyss_morph()
 
 void abyss_teleport()
 {
-    xom_abyss_feature_amusement_check xomcheck;
     dprf(DIAG_ABYSS, "New area Abyss teleport.");
     mprf(MSGCH_BANISHMENT, "You are suddenly pulled into a different region of the Abyss!");
     _abyss_generate_new_area();

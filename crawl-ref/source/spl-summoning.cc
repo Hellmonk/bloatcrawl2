@@ -1778,9 +1778,6 @@ int animate_remains(const coord_def &a, corpse_type class_allowed,
 
             if (!quiet && you.see_cell(a))
                 _display_undead_motions(motions);
-
-            if (was_butchering)
-                xom_is_stimulated(200);
         }
 
         any_success |= success;
@@ -1906,6 +1903,11 @@ spret_type cast_animate_skeleton(god_type god, bool fail)
 
 spret_type cast_animate_dead(int pow, god_type god, bool fail)
 {
+    if (is_good_god(you.religion))
+    {
+        mprf("%s forbids you from sustaining this spell.", god_name(you.religion).c_str());
+        return SPRET_ABORT;
+    }
     fail_check();
     mpr("You call on the dead to rise!");
     
@@ -2068,7 +2070,6 @@ bool monster_simulacrum(monster *mon, bool actual)
                 {
                     mprf("The flesh of the corpse you are %s vaporises!",
                          was_draining ? "drinking from" : "butchering");
-                    xom_is_stimulated(200);
                 }
 
             }
@@ -3245,7 +3246,11 @@ bool confirm_attack_spectral_weapon(monster* mons, const actor *defender)
 
 spret_type cast_infestation(int pow, bool fail)
 {
-	
+	if (is_good_god(you.religion))
+    {
+        mprf("%s forbids you from sustaining this spell.", god_name(you.religion).c_str());
+        return SPRET_ABORT;
+    }
     fail_check();
     you.attribute[ATTR_INFESTATION] = 1;
     mpr("You call forth a plague of scarabs!");
@@ -3268,7 +3273,7 @@ static const map<spell_type, summon_cap> summonsdata =
     { SPELL_CALL_CANINE_FAMILIAR,       { 1, 2 } },
     { SPELL_SUMMON_ICE_BEAST,           { 3, 3 } },
     { SPELL_SUMMON_HYDRA,               { 3, 2 } },
-    { SPELL_SUMMON_MANA_VIPER,          { 2, 2 } },
+    { SPELL_SUMMON_MANA_VIPER,          { 1, 2 } },
     // Demons
     { SPELL_CALL_IMP,                   { 1, 2 } },
     { SPELL_SUMMON_DEMON,               { 3, 2 } },

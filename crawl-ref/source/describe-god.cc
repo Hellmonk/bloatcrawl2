@@ -832,20 +832,6 @@ static void _describe_god_powers(god_type which_god)
             textcolour(DARKGREY);
         cprintf("%s shields you from corrosive effects.\n",
                 uppercase_first(god_name(which_god)).c_str());
-
-        if (have_passive(passive_t::slime_mp))
-            textcolour(god_colour(which_god));
-        else
-            textcolour(DARKGREY);
-        cprintf("You gain %s when Jiyva consumes items.\n",
-                have_passive(passive_t::slime_hp) ? "power and health" : "power");
-
-        if (have_passive(passive_t::damage_shaving))
-            textcolour(god_colour(which_god));
-        else
-            textcolour(DARKGREY);
-        cprintf("%s absorbs a portion of the damage you take.\n",
-                uppercase_first(god_name(which_god)).c_str());
         break;
 
     case GOD_FEDHAS:

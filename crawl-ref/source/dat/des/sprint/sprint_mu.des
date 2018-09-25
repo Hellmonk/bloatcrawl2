@@ -264,7 +264,7 @@ KFEAT: l = altar_lugonu
 KFEAT: J = altar_jiyva
 KMONS: m = shadow
 KMONS: j = patrolling jelly
-KITEM: * = stone
+KITEM: * = large rock
 COLOUR: # = yellow
 KFEAT: # = closed_door
 : lua_marker('#', props_marker {
@@ -411,7 +411,7 @@ MONS: deep elf annihilator ; robe ego:poison_resistance | robe ego:resistance | 
 MONS: deep elf death mage ; robe ego:poison_resistance | robe ego:cold_resistance | robe /\
       deep elf high priest ; robe ego:poison_resistance | robe ego:cold_resistance | robe
 MONS: deep elf blademaster ; chain mail ego:cold_resistance /\
-      deep elf master archer ; chain mail ego:poison_resistance . longbow . q:30 arrow
+      deep elf master archer ; chain mail ego:poison_resistance . longbow
 NSUBST: $ = 1:b / 1:s / *:|
 : acq_on_sight(_G, 'b', {"book","book","wand"})
 : acq_on_sight(_G, 's', {"magical staff","jewellery","jewellery"})
@@ -441,9 +441,9 @@ ENDMAP
 NAME: sprint_mu_hive_nellie
 TAGS: sprint_mu_hive no_rotate no_hmirror no_vmirror
 KMONS: 1 = killer bee
-KITEM: 1 = stone w:30 / nothing
+KITEM: 1 = large rock w:30 / nothing
 KMONS: 2 = queen bee
-KITEM: 2 = stone
+KITEM: 2 = large rock
 KMONS: 3 = generate_awake Nellie
 KITEM: 3 = demonic rune of zot
 : acq_on_sight(_G, '3', {"food","misc","wand"})
@@ -512,7 +512,7 @@ KMONS: r = hydra simulacrum / fire dragon simulacrum / polar bear simulacrum /\
  wolf simulacrum / black mamba simulacrum
 KITEM: r = any, any, any, any, any, superb_item / w:1 wand of acid /\
  w:1 wand of disintegration
-KITEM: % = stone q:6
+KITEM: % = large rock q:6
 KFEAT: _ = altar_qazlal
 KMONS: s = patrolling Urug
 KMONS: u = death drake
@@ -919,7 +919,7 @@ KMONS: f = butterfly
 KMONS: U = Sojobo ; morningstar ego:devastation . large shield ego:reflection / \
            Frederick ; trident ego:freezing . large shield ego:reflection
 KMONS: C = generate_awake Chuck
-KMONS: k = yaktaur captain ; arbalest ego:chaos . arrow
+KMONS: k = yaktaur captain ; arbalest ego:chaos
 KMONS: b = bush
 KMONS: D = fire dragon
 NSUBST: $ = 1:1 / *:|
@@ -1037,7 +1037,7 @@ KMONS: 6 = patrolling zombie
 KMONS: 7 = patrolling simulacrum
 SUBST: 1 = 1122334455667
 KITEM: 1234567 = star_item / nothing
-KFEAT: ^ = zot trap
+KFEAT: ^ = alarm trap
 KFEAT: - = spear trap / needle trap / net trap / blade trap / bolt trap
 NSUBST: ~ = 1:^ / 10:- / *:.
 SUBST: ! = +
@@ -1100,7 +1100,7 @@ NAME: sprint_mu_tomb_spiral
 TAGS: sprint_mu_tomb no_rotate no_hmirror no_vmirror
 MONS: patrolling greater mummy, patrolling mummy priest
 MONS: patrolling guardian mummy, patrolling sphinx
-KFEAT: - = needle trap / net trap / blade trap / bolt trap / spear trap / zot trap
+KFEAT: - = needle trap / net trap / blade trap / bolt trap / spear trap / alarm trap
 SUBST: . = -----.................332
 KITEM: $ = golden rune of zot
 KITEM: ? = scroll of acquirement ident:all q:5
@@ -1156,7 +1156,7 @@ KMONS: 2 = patrolling mara
 KMONS: 3 = molten gargoyle
 KMONS: 4 = patrolling titanic slime creature
 KMONS: 5 = mummy priest
-KMONS: f = skeletal warrior ; longbow ego:flaming . arrow q:30
+KMONS: f = skeletal warrior ; longbow ego:flaming
 KMONS: 6 = shadow wraith
 KMONS: g = ball lightning / ballistomycete spore
 KMONS: 7 = patrolling storm dragon
@@ -1164,7 +1164,7 @@ KMONS: 8 = patrolling nikola
 KMONS: A = col:magenta plant / w:2 deep elf blademaster
 KMONS: B = col:lightmagenta plant
 SUBST: A = AAB
-KFEAT: AB = zot trap w:2 / floor
+KFEAT: AB = alarm trap w:2 / floor
 KMONS: i = patrolling floating eye
 KMONS: j = patrolling golden eye
 KMONS: k = patrolling shining eye
@@ -1176,7 +1176,7 @@ KMONS: r = hydra simulacrum / golden dragon zombie / spectral iron dragon / \
  titan zombie
 KMONS: s = boris
 KMONS: t = col:white generate_awake statue name:pristine name_adjective \
-           hp:100 tile:mons_statue_crossbow ; arbalest . arrow q:50 ego:silver
+           hp:100 tile:mons_statue_crossbow ; arbalest
 KMONS: u = Mennas
 KMONS: y = generate_awake roxanne
 KMONS: z = oklob plant
@@ -1190,13 +1190,13 @@ KMONS: G = iron troll simulacrum hd:20
 KMONS: I = patrolling vault guard / patrolling orc knight /\
  patrolling deep elf knight
 KITEM: % = quad damage
-KFEAT: % = known zot trap
+KFEAT: % = known alarm trap
 KFEAT: J = deep_water
 SUBST: J = Jh
 KFEAT: h = deep_water
 KMONS: h = electric eel
 KMONS: K = executioner
-KMONS: M = patrolling yaktaur ; longbow . arrow ego:dispersal q:10
+KMONS: M = patrolling yaktaur ; longbow
 KMONS: N = patrolling nessos
 KFEAT: ^ = net trap
 KFEAT: " = floor
@@ -1445,7 +1445,7 @@ MARKER: T = lua:fog_machine { \
         pow_max = 15, delay_min = 100, delay_max = 150, \
         size = 2, size_buildup_amnt = 29, \
         size_buildup_time = 1000, cloud_type = "mutagenic fog" }
-KFEAT: T = zot trap
+KFEAT: T = alarm trap
 KMONS: * = orb of fire
 MONS: THE GIAGGOSTUONO, storm dragon
 MONS: orb child
@@ -1485,7 +1485,7 @@ lua_marker('q', mon_list_marker)
 }}
 SUBST: A = ^
 NSUBST: a = 1:+ / *:X
-KFEAT: - = zot trap
+KFEAT: - = alarm trap
 NSUBST: ^ = 3:- / *:.
 KMONS: k = killer klown
 KMONS: A = plant col:magenta

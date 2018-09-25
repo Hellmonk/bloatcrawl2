@@ -951,8 +951,8 @@ A scroll that translocates the reader to a random position after a short delay.
 %%%%
 scroll of torment
 
-A scroll that calls on the powers of darkness to inflict great pain on any
-nearby creature — including the reader! This halves the resilience of all
+A scroll that calls on the powers of darkness to inflict great pain on hostile
+nearby creatures, but also affects the reader! This halves the resilience of all
 living creatures, although it is never directly fatal.
 %%%%
 scroll of vulnerability
@@ -1129,10 +1129,10 @@ wand of paralysis
 A magical device which can render a creature immobile, incapable of moving any
 of its limbs.
 %%%%
-wand of polymorph
+wand of slimification
 
-A magical device which causes a creature to be transmogrified into another
-form. It is especially effective against shape-changing creatures.
+A magical device which causes a creature to be transmogrified into a slime 
+creature. It behaves unpredictably against shape-changing creatures.
 %%%%
 wand of scattershot
 

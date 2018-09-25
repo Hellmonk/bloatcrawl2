@@ -240,6 +240,7 @@ end
 
 local function mp_is_low()
   local mp, mmp = you.mp()
+  mp = mp + (you.get_base_mutation_level("magic attunement", true, true, true) == 0) and 1 or 0 
   return (100*mp <= AUTOMAGIC_STOP*mmp)
 end
 

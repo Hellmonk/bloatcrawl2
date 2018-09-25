@@ -580,8 +580,8 @@ KPROP: YycfZ. = no_tide
 KPROP: ZYcf. = no_tele_into
 KMONS: c = patrolling angry ghost
 NSUBST: f = 1:g / 2:f / *:.
-KITEM: g = stone
-KITEM: f = stone / nothing w:20
+KITEM: g = large rock
+KITEM: f = large rock w: 20 / nothing
 : dgn.delayed_decay(_G, 'c', 'human skeleton')
 SUBST: Z = yY
 KFEAT: y = w
@@ -608,7 +608,7 @@ TAGS: water_ok no_pool_fixup
 KPROP: .wW}xtC = no_tide
 SHUFFLE: }])
 SUBST: y = Ww, z = w
-KFEAT: C = any shop
+KFEAT: C = abandoned_shop
 MAP
        xxxxxx
     xtttttttxx
@@ -928,8 +928,8 @@ ORIENT: float
 SHUFFLE: 1Ww / 2DD
 MONS: merfolk, faun
 MONS: merfolk impaler ; demon trident good_item | trident good_item . gold
-MONS: satyr ; shortbow good_item . arrow good_item . gold / \
-      satyr ; longbow good_item . arrow good_item . gold
+MONS: satyr ; shortbow good_item . gold / \
+      satyr ; longbow good_item . gold
 COLOUR:   c = white
 COLOUR:   1234'D = cyan
 FTILE:    1234'D+WwG = floor_pebble_cyan

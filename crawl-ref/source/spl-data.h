@@ -716,7 +716,7 @@ static const struct spell_desc spelldata[] =
     SPELL_OZOCUBUS_REFRIGERATION, "Ozocubu's Refrigeration",
     SPTYP_ICE,
     SPFLAG_AREA,
-    6,
+    7,
     200,
     -1, -1,
     5, 0,
@@ -1352,7 +1352,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_STICKS_TO_SNAKES, "Sticks to Snakes",
     SPTYP_TRANSMUTATION | SPTYP_SUMMONING,
-    SPFLAG_NO_GHOST,
+    SPFLAG_NO_GHOST | SPFLAG_MONSTER,
     2,
     100,
     -1, -1,
@@ -1547,7 +1547,7 @@ static const struct spell_desc spelldata[] =
     SPTYP_EARTH,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEEDS_TRACER,
     1,
-    50,
+    25,
     3, 3,
     1, 0,
     TILEG_SANDBLAST,
@@ -1624,7 +1624,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_PORTAL_PROJECTILE, "Portal Projectile",
     SPTYP_TRANSLOCATION | SPTYP_HEXES,
-    SPFLAG_NONE,
+    SPFLAG_PERMABUFF,
     3,
     50,
     -1, -1,
@@ -1641,6 +1641,17 @@ static const struct spell_desc spelldata[] =
     -1, -1,
     5, 0,
     TILEG_MONSTROUS_MENAGERIE,
+},
+
+{
+    SPELL_PIERCING_SHOT, "Piercing Shot",
+    SPTYP_CHARMS | SPTYP_TRANSLOCATION,
+    SPFLAG_PERMABUFF,
+    5,
+    200,
+    -1, -1,
+    3, 0,
+    TILEG_PIERCING_SHOT,
 },
 
 {
@@ -3230,7 +3241,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_GLACIATE, "Glaciate",
     SPTYP_ICE,
-    SPFLAG_DIR_OR_TARGET | SPFLAG_AREA | SPFLAG_NOT_SELF,
+    SPFLAG_DIR_OR_TARGET | SPFLAG_AREA | SPFLAG_NOT_SELF | SPFLAG_MONSTER,
     9,
     200,
     6, 6,
@@ -3897,6 +3908,17 @@ static const struct spell_desc spelldata[] =
     -1, -1,
     8, 0,
     TILEG_IGNITION,
+},
+
+{
+    SPELL_CURSE, "Curse",
+    SPTYP_HEXES,
+    SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER | SPFLAG_MONSTER,
+    6,
+    200,
+    LOS_RADIUS, LOS_RADIUS,
+    3, 0,
+    TILEG_ERROR,
 },
 
 {

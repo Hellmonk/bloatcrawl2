@@ -658,8 +658,7 @@ static MenuEntry* _feature_menu_gen(char letter, const string &str, string &key)
     if (feat)
     {
         const tileidx_t idx = tileidx_feature_base(feat);
-        me->add_tile(tile_def(pick_dngn_tile(idx, ui_random(INT_MAX)),
-                                             get_dngn_tex(idx)));
+        me->add_tile(tile_def(idx, get_dngn_tex(idx)));
     }
 #endif
 
@@ -939,12 +938,7 @@ static int _describe_key(const string &key, const string &suffix,
     inf.footer = footer;
     inf.title  = title;
 
-#ifdef USE_TILE_WEB
-    tiles_crt_control show_as_menu(CRT_MENU, "description");
-#endif
-
-    print_description(inf);
-    return getchm();
+    return show_description(inf);
 }
 
 /**
