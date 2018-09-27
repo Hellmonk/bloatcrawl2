@@ -2295,9 +2295,14 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         int damage = 0;
         const spret_type result =
             fire_los_attack_spell(SPELL_DRAIN_LIFE,
+<<<<<<< HEAD
                                   apply_invo_enhancer(
 									  you.skill_rdiv(SK_INVOCATIONS), true),
                                   &you, fail, &damage);
+=======
+                                  you.skill_rdiv(SK_INVOCATIONS),
+                                  &you, nullptr, fail, &damage);
+>>>>>>> 2a92f5cd5c... Revamp the Singing Sword
         if (result != SPRET_SUCCESS)
             return result;
 
