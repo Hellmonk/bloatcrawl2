@@ -89,5 +89,6 @@ enum zap_type
     ZAP_UNDOING_EXPLOSION,
     ZAP_REFRIGERATE,
     ZAP_DRAIN_LIFE,
+    ZAP_SONIC_WAVE,
     NUM_ZAPS
 };
