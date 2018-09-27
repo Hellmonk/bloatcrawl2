@@ -1284,7 +1284,6 @@ _mon_hex_zap(ZAP_DRAIN_MAGIC, BEAM_DRAIN_MAGIC),
     0 // handled by explosion
 },
 
-/*
 {
     ZAP_REFRIGERATE,
     "refrigeration",
@@ -1320,6 +1319,5 @@ _mon_hex_zap(ZAP_DRAIN_MAGIC, BEAM_DRAIN_MAGIC),
     false,
     0 // No additional effect noise.
 },
-*/
 
 };
