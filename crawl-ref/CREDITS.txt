@@ -86,7 +86,6 @@
     Max Bane
     Bill Beher
     Alexander Beisig
-    Edgar A. Bering IV
     Stu Black
     blackcustard
     Peter 'xFleury' Blain
@@ -283,6 +282,7 @@
 The Dungeon Crawl Stone Soup development team is:
     advil
     Peter Berger
+    Edgar A. Bering IV
     Adam Borowski
     Samuel Bronson
     Jude Brown
