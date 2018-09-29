@@ -513,14 +513,6 @@ static spret_type _cast_los_attack_spell(spell_type spell, int pow,
                *mons_vis_msg = nullptr, *mons_invis_msg = nullptr,
                *verb = nullptr;
     bool (*vulnerable)(const actor *, const actor *) = nullptr;
-    int fake_damage = -1;
-    if (!damage_done)
-        damage_done = &fake_damage;
-
-    int hurted = 0;
-    int this_damage = 0;
-    int total_damage = 0;
-    *damage_done = total_damage;
 
     switch (spell)
     {
@@ -613,6 +605,8 @@ static spret_type _cast_los_attack_spell(spell_type spell, int pow,
         }
     }
 
+    const int avg_damage = (1 + beam.damage.num * beam.damage.size) / 2;
+    int total_damage = 0;
     // XXX: This ordering is kind of broken; it's to preserve the message
     // order from the original behaviour in the case of refrigerate.
     if (affects_you)
@@ -624,13 +618,13 @@ static spret_type _cast_los_attack_spell(spell_type spell, int pow,
             {
                 beam.friend_info.count++;
                 beam.friend_info.power +=
-                    (you.get_experience_level() * total_damage / hurted);
+                    (you.get_experience_level() * total_damage / avg_damage);
             }
             else
             {
                 beam.foe_info.count++;
                 beam.foe_info.power +=
-                    (you.get_experience_level() * total_damage / hurted);
+                    (you.get_experience_level() * total_damage / avg_damage);
             }
         }
     }
@@ -645,8 +639,8 @@ static spret_type _cast_los_attack_spell(spell_type spell, int pow,
         if (!m->alive())
             continue;
 
-        this_damage = _los_spell_damage_monster(agent, m, beam, actual,
-                                                m != defender);
+        int this_damage = _los_spell_damage_monster(agent, m, beam, actual,
+                                                    m != defender);
         total_damage += this_damage;
 
         if (!actual && mons)
@@ -655,18 +649,20 @@ static spret_type _cast_los_attack_spell(spell_type spell, int pow,
             {
                 beam.friend_info.count++;
                 beam.friend_info.power +=
-                    (m->get_hit_dice() * this_damage / hurted);
+                    (m->get_hit_dice() * this_damage / avg_damage);
             }
             else
             {
                 beam.foe_info.count++;
                 beam.foe_info.power +=
-                    (m->get_hit_dice() * this_damage / hurted);
+                    (m->get_hit_dice() * this_damage / avg_damage);
             }
         }
     }
 
-    *damage_done = total_damage;
+    if (damage_done)
+        *damage_done = total_damage;
+
     if (actual)
         return SPRET_SUCCESS;
     return mons_should_fire(beam) ? SPRET_SUCCESS : SPRET_ABORT;
