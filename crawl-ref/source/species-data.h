@@ -725,7 +725,7 @@ static const map<species_type, species_def> species_data =
     "Le",
     "Leprechaun", nullptr, nullptr,
     SPF_NONE,
-    0, -2, 0, 3,
+    -1, -2, 0, 2,
     MONS_BOGGART,
     HT_LAND, US_ALIVE, SIZE_SMALL,
     6, 6, 12, // 24
