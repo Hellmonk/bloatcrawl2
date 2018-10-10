@@ -1251,6 +1251,12 @@ static bool _can_take_stairs(dungeon_feature_type ftype, bool down,
         return false;
     }
 
+    if (ftype == DNGN_ENCHANTED_ANVIL)
+    {
+        use_anvil();
+        return false;
+    }
+
     // If it's not bidirectional, check that the player is headed
     // in the right direction.
     if (!feat_is_bidirectional_portal(ftype))

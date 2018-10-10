@@ -775,7 +775,7 @@ static bool _try_make_armour_artefact(item_def& item, int force_type,
  * @return              An ego appropriate to the item type.
  *                      May be SPARM_NORMAL.
  */
-static special_armour_type _generate_armour_type_ego(armour_type type)
+special_armour_type generate_armour_type_ego(armour_type type)
 {
     // TODO: move this into data
     switch (type)
@@ -875,7 +875,7 @@ static special_armour_type _generate_armour_ego(const item_def& item)
         return static_cast<special_armour_type>(item.brand);
 
     const special_armour_type ego
-        = _generate_armour_type_ego(static_cast<armour_type>(item.sub_type));
+        = generate_armour_type_ego(static_cast<armour_type>(item.sub_type));
 
     ASSERT(is_armour_brand_ok(item.sub_type, ego, true));
     return ego;
@@ -1424,7 +1424,6 @@ static void _generate_scroll_item(item_def& item, int force_type,
                  17, (depth_mod < 4 ? NUM_SCROLLS : SCR_SUMMONING),
                  15, (depth_mod < 4 ? NUM_SCROLLS : SCR_ACQUIREMENT),
                  15, (depth_mod < 4 ? NUM_SCROLLS : SCR_SILENCE),
-                 15, (depth_mod < 4 ? NUM_SCROLLS : SCR_BRAND_WEAPON),
                  15, (depth_mod < 4 ? NUM_SCROLLS : SCR_TORMENT),
                  15, (depth_mod < 4 ? NUM_SCROLLS : SCR_HOLY_WORD));
         }

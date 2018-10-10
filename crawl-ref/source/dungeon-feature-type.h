@@ -289,6 +289,9 @@ enum dungeon_feature_type
     DNGN_SEALED_CLEAR_DOOR,
     DNGN_TOXIC_BOG,
 #endif
+    DNGN_ENCHANTED_ANVIL,
+    DNGN_DESTROYED_ANVIL,
+
 
     NUM_FEATURES
 };

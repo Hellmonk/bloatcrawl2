@@ -36,3 +36,5 @@ void squash_plusses(int item_slot);
 #if defined(DEBUG_DIAGNOSTICS) || defined(DEBUG_TESTS)
 void makeitem_tests();
 #endif
+
+special_armour_type generate_armour_type_ego(armour_type type);

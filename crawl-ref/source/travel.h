@@ -193,6 +193,7 @@ enum explore_stop_type
     ES_BRANCH                    = 0x04000,
     ES_RUNED_DOOR                = 0x08000,
     ES_TRANSPORTER               = 0x10000,
+    ES_ANVIL                     = 0x20000,
 };
 
 ////////////////////////////////////////////////////////////////////////////
@@ -239,6 +240,7 @@ private:
 
     vector<string> marker_msgs;
     vector<string> marked_feats;
+    vector<string> anvils;
 
 private:
     template <class C> void say_any(const C &coll, const char *category) const;
