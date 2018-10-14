@@ -151,9 +151,9 @@ static void _dump_player(FILE *file)
 
     fprintf(file, "HP: %d/%d; mods: %d/%d\n", you.hp, you.hp_max,
             you.hp_max_adj_temp, you.hp_max_adj_perm);
-    fprintf(file, "MP: %d/%d; mod: %d\n",
+    fprintf(file, "MP: %d/%d; mod: %d/%d\n",
             you.magic_points, you.max_magic_points,
-            you.mp_max_adj);
+            you.mp_max_adj_temp, you.mp_max_adj_perm);
     fprintf(file, "Stats: %d (%d) %d (%d) %d (%d)\n",
             you.strength(false), you.max_strength(),
             you.intel(false), you.max_intel(),
@@ -274,10 +274,11 @@ static void _dump_player(FILE *file)
         int normal = you.mutation[i];
         int innate = you.innate_mutation[i];
         int temp   = you.temp_mutation[i];
+        int perma  = you.permabuffs[i];
 
         // Normally innate and temp imply normal, but a crash handler should
         // expect the spanish^Wunexpected.
-        if (!normal && !innate && !temp)
+        if (!normal && !innate && !temp && !perma)
             continue;
 
         if (const char* name = mutation_name(mut))
@@ -299,6 +300,11 @@ static void _dump_player(FILE *file)
                 fprintf(file, " (temporary)");
             else
                 fprintf(file, " (%d temporary)", temp);
+        }
+
+        if (perma)
+        {
+            fprintf(file, " (%d permabuff)", perma);
         }
 
         fprintf(file, "\n");

@@ -31,6 +31,7 @@
 #include "player-stats.h"
 #include "religion.h"
 #include "shopping.h"
+#include "spl-selfench.h" // For permabuffs
 #include "spl-miscast.h"
 #include "spl-summoning.h"
 #include "spl-wpnench.h"
@@ -155,6 +156,10 @@ void equip_effect(equipment_type slot, int item_slot, bool unmeld, bool msg)
 
     if (slot == EQ_WEAPON && eq != EQ_WEAPON)
         return;
+
+    // Drop all permabuffs if the player equips a new set of armour
+    if (slot == EQ_BODY_ARMOUR && eq == EQ_BODY_ARMOUR)
+        spell_drop_permabuffs();
 
     _assert_valid_slot(eq, slot);
 

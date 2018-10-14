@@ -144,7 +144,8 @@ public:
 
     int magic_points;
     int max_magic_points;
-    int mp_max_adj;             // max MP loss (ability costs, tutorial bonus)
+    int mp_max_adj_perm;        // max MP loss (ability costs, tutorial bonus)
+    int mp_max_adj_temp;        // Temporary max MP loss (reserved MP)
 
     FixedVector<int8_t, NUM_STATS> stat_loss;
     FixedVector<int8_t, NUM_STATS> base_stats;
@@ -271,6 +272,7 @@ public:
     FixedVector<uint8_t, NUM_MUTATIONS> innate_mutation;
     FixedVector<uint8_t, NUM_MUTATIONS> temp_mutation;
     FixedVector<uint8_t, NUM_MUTATIONS> sacrifices;
+    FixedVector<uint8_t, NUM_MUTATIONS> permabuffs;
 
     FixedVector<uint8_t, NUM_ABILITIES> sacrifice_piety;
 
@@ -644,6 +646,7 @@ public:
     bool      has_temporary_mutation(mutation_type mut) const;
     bool      has_innate_mutation(mutation_type mut) const;
     bool      has_mutation(mutation_type mut, bool check_form=true) const;
+    bool      has_permabuffs(mutation_type mut) const;
 
     int       how_mutated(bool innate=false, bool levels=false, bool temp=true) const;
 
@@ -1080,6 +1083,8 @@ void rot_hp(int hp_loss);
 // Unrot the player and return excess HP if any.
 int unrot_hp(int hp_recovered);
 int player_rotted();
+bool reserve_mp(int mp_reserved);
+void unreserve_mp(int mp_recovered);
 void rot_mp(int mp_loss);
 
 void inc_max_hp(int hp_gain);

@@ -22,7 +22,9 @@
 #include "macro.h"
 #include "message.h"
 #include "monster.h"
+#include "mutation.h"
 #include "output.h"
+#include "player.h"
 #include "religion.h"
 #include "showsymb.h"
 #include "spl-transloc.h"
@@ -500,3 +502,97 @@ void end_time_stop(bool due_to_teleport)
     }
 }
 
+static mutation_type _permabuff_to_mut(spell_type spell)
+{
+    switch (spell)
+    {
+        case SPELL_BEASTLY_APPENDAGE:
+        case SPELL_SPIDER_FORM:
+        case SPELL_ICE_FORM:
+        case SPELL_STATUE_FORM:
+        case SPELL_BLADE_HANDS:
+        case SPELL_DRAGON_FORM:
+        case SPELL_HYDRA_FORM:
+        case SPELL_NECROMUTATION:
+            return MUT_TRANSFORMATION;
+        case SPELL_RING_OF_FLAMES:
+            return MUT_RING_OF_FLAMES;
+        case SPELL_REGENERATION:
+            return MUT_REGEN_SPELL;
+        case SPELL_SPECTRAL_WEAPON:
+            return MUT_SPECTRAL_WEAPON;
+        case SPELL_INFUSION:
+            return MUT_INFUSION;
+        case SPELL_EXCRUCIATING_WOUNDS:
+            return MUT_EXCRUCIATING_WOUNDS;
+        case SPELL_OZOCUBUS_ARMOUR:
+            return MUT_OZOCUBUS_ARMOUR;
+        case SPELL_BATTLESPHERE:
+            return MUT_BATTLESPHERE;
+        case SPELL_SONG_OF_SLAYING:
+            return MUT_SONG_OF_SLAYING;
+        case SPELL_DEFLECT_MISSILES:
+            return MUT_DEFLECT_MISSILES;
+        default:
+            return MUT_NON_MUTATION; //Failed to find permabuff, fail out
+    }
+}
+
+// Attempt to add a permabuff; return false if it didn't work
+bool spell_add_permabuff(spell_type spell, int reserve_amount)
+{
+    if (!reserve_mp(reserve_amount))
+    {
+        mpr("You don't have enough energy to reserve that spell!");
+        return false;
+    }
+    else
+    {
+        // Add permabuff to player's permabuffs here
+        mutation_type mutat = _permabuff_to_mut(spell);
+        if (mutat == MUT_NON_MUTATION)
+        {
+            mpr("DEBUG: No mutation found that matches spell, I fucked up.");
+            return false;
+        }
+        else
+        {
+            mutate(mutat, "adding permabuff");
+            return true;
+        }
+    }
+}
+
+// Remove the selected spell from permabuffs
+void spell_remove_permabuff(spell_type spell, int release_amount)
+{
+    unreserve_mp(release_amount);
+    // Remove permabuff from player's permabuffs here
+    mutation_type mutat = _permabuff_to_mut(spell);
+    if (mutat == MUT_NON_MUTATION)
+    {
+        mpr("DEBUG: No mutation found that matches spell, I fucked up.");
+    }
+    else
+    {
+        mutate(mutat, "removing permabuff");
+    }
+    
+}
+
+// Drop all permabuffs (comes from max MP/EP change or armour equipping)
+void spell_drop_permabuffs()
+{
+    // Unreserve all MP/EP
+    unreserve_mp(you.mp_max_adj_temp);
+    // Remove all permabuffs from player's permabuffs here
+    for (int i=0; i < NUM_MUTATIONS; i++)
+    {
+        while (you.has_permabuffs(static_cast<mutation_type>(i)))
+        {
+            mutate(static_cast<mutation_type>(i), "dropping permabuffs");
+        }
+    }
+
+    mpr("You lose control of your reserved spells!");
+}

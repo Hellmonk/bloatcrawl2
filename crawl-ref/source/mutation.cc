@@ -277,6 +277,16 @@ static const mutation_type _all_scales[] =
     MUT_SANGUINE_ARMOUR,            MUT_SHIMMERING_SCALES,
 };
 
+// Permabuffs go here
+static const mutation_type _all_permabuffs[] =
+{
+    MUT_TRANSFORMATION,            MUT_RING_OF_FLAMES,
+    MUT_REGEN_SPELL,               MUT_SPECTRAL_WEAPON,
+    MUT_INFUSION,                  MUT_EXCRUCIATING_WOUNDS,
+    MUT_OZOCUBUS_ARMOUR,           MUT_BATTLESPHERE,
+    MUT_SONG_OF_SLAYING,           MUT_DEFLECT_MISSILES,
+};
+
 static bool _is_covering(mutation_type mut)
 {
     return find(begin(_all_scales), end(_all_scales), mut) != end(_all_scales);
@@ -287,6 +297,12 @@ bool is_body_facet(mutation_type mut)
     return any_of(begin(_body_facets), end(_body_facets),
                   [=](const body_facet_def &facet)
                   { return facet.mut == mut; });
+}
+
+bool is_permabuff(mutation_type mut)
+{
+    return any_of(begin(_all_permabuffs), end(_all_permabuffs), 
+                  [=](const mutation_type &i){return i == mut;});
 }
 
 /*
@@ -433,6 +449,14 @@ bool player::has_innate_mutation(mutation_type mut) const
 }
 
 /*
+ * Does the player have mutation `mut` that is a permabuff?
+ */
+bool player::has_permabuffs(mutation_type mut) const
+{
+    return you.permabuffs[mut] > 0;
+}
+
+/*
  * How much of mutation `mut` does the player have? This ignores form changes.
  * If all three bool arguments are false, this should always return 0.
  *
@@ -447,6 +471,7 @@ int player::get_base_mutation_level(mutation_type mut, bool innate, bool temp, b
     ASSERT_RANGE(mut, 0, NUM_MUTATIONS);
     // you.mutation stores the total levels of all mutations
     int level = you.mutation[mut];
+
     if (!temp)
         level -= you.temp_mutation[mut];
     if (!innate)
@@ -535,13 +560,15 @@ void validate_mutations(bool debug_msg)
         mutation_type mut = static_cast<mutation_type>(i);
         if (debug_msg && you.mutation[mut] > 0)
         {
-            dprf("mutation %s: total %d innate %d temp %d",
+            dprf("mutation %s: total %d innate %d temp %d perma %d",
                 mutation_name(mut), you.mutation[mut],
-                you.innate_mutation[mut], you.temp_mutation[mut]);
+                you.innate_mutation[mut], you.temp_mutation[mut],
+                you.permabuffs[mut]);
         }
         ASSERT(you.mutation[mut] >= 0);
         ASSERT(you.innate_mutation[mut] >= 0);
         ASSERT(you.temp_mutation[mut] >= 0);
+        ASSERT(you.permabuffs[mut] >= 0);
         ASSERT(you.get_base_mutation_level(mut) == you.mutation[mut]);
         ASSERT(you.mutation[i] >= you.innate_mutation[mut] + you.temp_mutation[mut]);
         total_temp += you.temp_mutation[mut];
@@ -699,6 +726,16 @@ string describe_mutations(bool center_title)
     if (player_res_poison(false, false, false) == 3)
         result += "You are immune to poison.\n";
 
+    // Permabuffs are magical, so include them with innate abilities color
+    for (int i = 0; i < NUM_MUTATIONS; i++)
+    {
+        mutation_type mut_type = static_cast<mutation_type>(i);
+        if (you.has_permabuffs(mut_type))
+        {
+            result += mutation_desc(mut_type, -1);
+            result += "\n";
+        }
+    }
     result += "</lightblue>";
 
     // First add (non-removable) inborn abilities and demon powers.
@@ -990,6 +1027,10 @@ static int _calc_mutation_amusement_value(mutation_type which_mutation)
 
 static bool _accept_mutation(mutation_type mutat, bool ignore_weight = false)
 {
+    // Don't try to pick permabuffs for removal/addition at random for anything
+    if(is_permabuff(mutat))
+        return false;
+
     if (!_is_valid_mutation(mutat))
         return false;
 
@@ -1491,6 +1532,21 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
             bool force_mutation, bool god_gift, bool beneficial,
             mutation_permanence_class mutclass)
 {
+    // Permabuffs always succeed regardless of any factors, as they aren't really mutations
+    if (is_permabuff(which_mutation))
+    {
+        // If player already has the permabuff, remove it (toggle off); otherwise, add it.
+        if(you.permabuffs[which_mutation] > 0)
+        {
+            you.permabuffs[which_mutation]--;
+        }
+        else
+        {
+            you.permabuffs[which_mutation]++;
+        }
+        return true;
+    }
+
     if (which_mutation == RANDOM_BAD_MUTATION
         && mutclass == MUTCLASS_NORMAL
         && crawl_state.disables[DIS_AFFLICTIONS])
@@ -2705,7 +2761,8 @@ int player::how_mutated(bool innate, bool levels, bool temp) const
 
     for (int i = 0; i < NUM_MUTATIONS; ++i)
     {
-        if (you.mutation[i])
+        // Never count permabuffs as mutation levels
+        if (you.mutation[i] && !is_permabuff(static_cast<mutation_type>(i)))
         {
             const int mut_level = get_base_mutation_level(static_cast<mutation_type>(i), innate, temp);
 

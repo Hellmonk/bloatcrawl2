@@ -65,6 +65,7 @@
 #include "shout.h"
 #include "skills.h"
 #include "spl-damage.h"
+#include "spl-selfench.h"
 #include "spl-transloc.h"
 #include "spl-util.h"
 #include "sprint.h"
@@ -3990,9 +3991,62 @@ int player_rotted()
     return -you.hp_max_adj_temp;
 }
 
+// Attempt to reserve MP (or EP) for permabuffs or other future MP reservations
+bool reserve_mp(int mp_reserved)
+{
+    // If not enough MP (or EP if Djinni) left to reserve, return false
+    // (include items for MP, do not include trans/berserk if EP)
+    if((-(you.mp_max_adj_temp-mp_reserved) > 
+        get_real_mp(true)-you.mp_max_adj_temp) && you.species != SP_DJINNI)
+    {
+        return false;
+    }
+    else if((-(you.mp_max_adj_temp-mp_reserved) > 
+        get_real_hp(false, false)-you.mp_max_adj_temp && you.species == SP_DJINNI))
+    {
+        return false;
+    }
+    else
+    {
+        you.mp_max_adj_temp -= mp_reserved;
+        
+        if(you.species != SP_DJINNI)
+        {
+            calc_mp();
+            you.redraw_magic_points = true;
+        }
+        else
+        {
+            calc_hp();
+            you.redraw_hit_points = true;
+        }
+        return true;
+    }
+}
+
+// Unreserve MP (or EP) from permabuffs or other reservations
+void unreserve_mp(int mp_recovered)
+{
+    you.mp_max_adj_temp += mp_recovered;
+    
+    if (you.mp_max_adj_temp > 0)
+        you.mp_max_adj_temp = 0;
+
+    if(you.species != SP_DJINNI)
+    {
+        calc_mp();
+        you.redraw_magic_points = true;
+    }
+    else
+    {
+        calc_hp();
+        you.redraw_hit_points = true;
+    }
+}
+
 void rot_mp(int mp_loss)
 {
-    you.mp_max_adj -= mp_loss;
+    you.mp_max_adj_perm -= mp_loss;
     calc_mp();
 
     you.redraw_magic_points = true;
@@ -4092,6 +4146,19 @@ int get_real_hp(bool trans, bool rotted)
     if (!rotted)
         hitp += you.hp_max_adj_temp;
 
+    bool trans_dropped = false;
+    // Calculate Djinni permabuffs before trans/berserk
+    if (you.species == SP_DJINNI)
+    {
+        hitp += you.mp_max_adj_temp;
+        // If hitp is 0 after application, drop all permabuffs
+        if (hitp < 0)
+        {
+            bool trans_dropped = true;
+            hitp -= you.mp_max_adj_temp;
+            spell_drop_permabuffs();
+        }
+    }
     if (trans)
         hitp += you.scan_artefacts(ARTP_HP);
 
@@ -4099,7 +4166,7 @@ int get_real_hp(bool trans, bool rotted)
     if (trans && you.berserk())
         hitp = hitp * 3 / 2;
 
-    if (trans) // Some transformations give you extra hp.
+    if (trans && !trans_dropped) // Some transformations give you extra hp.
         hitp = hitp * form_hp_mod() / 10;
 
     if (trans && player_equip_unrand(UNRAND_ETERNAL_TORMENT))
@@ -4133,7 +4200,7 @@ int get_real_mp(bool include_items)
     enp += species_mp_modifier(you.species);
 
     // This is our "rotted" base, applied after multipliers
-    enp += you.mp_max_adj;
+    enp += you.mp_max_adj_perm;
 
     // Now applied after scaling so that power items are more useful -- bwr
     if (include_items)
@@ -4147,6 +4214,15 @@ int get_real_mp(bool include_items)
 
     if (include_items && you.wearing_ego(EQ_WEAPON, SPWPN_ANTIMAGIC))
         enp /= 3;
+
+    // Apply permabuff reservations after item calculations
+    enp += you.mp_max_adj_temp;
+    // If enp is less than zero, drop all permabuffs
+    if (enp < 0)
+    {
+        enp -= you.mp_max_adj_temp;
+        spell_drop_permabuffs();
+    }
 
     enp = max(enp, 0);
 
@@ -5209,7 +5285,8 @@ player::player()
 
     magic_points     = 0;
     max_magic_points = 0;
-    mp_max_adj       = 0;
+    mp_max_adj_perm  = 0;
+    mp_max_adj_temp  = 0;
 
     stat_loss.init(0);
     base_stats.init(0);
@@ -5317,6 +5394,7 @@ player::player()
     temp_mutation.init(0);
     demonic_traits.clear();
     sacrifices.init(0);
+    permabuffs.init(0);
 
     magic_contamination = 0;
 
