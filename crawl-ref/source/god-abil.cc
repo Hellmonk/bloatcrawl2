@@ -3514,8 +3514,8 @@ void cheibriados_temporal_distortion()
 {
     const coord_def old_pos = you.pos();
 
-    you.moveto(coord_def(0, 0));
     you.duration[DUR_TIME_STEP] = apply_invo_enhancer(3 + random2(3),true);
+    you.moveto(coord_def(0, 0));
 
     _run_time_step();
 
@@ -3545,8 +3545,8 @@ void cheibriados_time_step(int pow) // pow is the number of turns to skip
 
     mpr("You step out of the flow of time.");
     flash_view(UA_PLAYER, LIGHTBLUE);
-    you.moveto(coord_def(0, 0));
     you.duration[DUR_TIME_STEP] = pow;
+    you.moveto(coord_def(0, 0));
 
     you.time_taken = 10;
     _run_time_step();
