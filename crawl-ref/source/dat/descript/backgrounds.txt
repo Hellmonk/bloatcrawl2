@@ -83,6 +83,11 @@ Ice Elementalist
 Ice Elementalists begin with the Freeze spell. The spells in their starting
 library are quite versatile.
 %%%%
+Jellifier
+
+You have heard the calls in your dreams. You will go to the dungeon. You will
+be one with the jelly. Worships Jiyva, mutating randomly.
+%%%%
 Monk
 
 Monks start with a simple weapon of their choice, and gain additional piety
