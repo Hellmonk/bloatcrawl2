@@ -294,6 +294,10 @@ Wanderer player ghost
 Priest player ghost
 
 @player ghost@
+%%%%
+Archaeologist player ghost
+
+@player ghost@
 ########################################
 # Shouts by monster symbol
 ########################################
