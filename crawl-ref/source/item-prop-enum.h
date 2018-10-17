@@ -28,9 +28,7 @@ enum armour_type
     ARM_SCARF,
 #endif
 
-#if TAG_MAJOR_VERSION == 34
     ARM_CAP,
-#endif
     ARM_HAT,
     ARM_HELMET,
 
@@ -365,6 +363,7 @@ enum missile_type
     MI_LARGE_ROCK,
     MI_SLING_BULLET,
     MI_THROWING_NET,
+	MI_PIE,
     MI_TOMAHAWK,
 
     NUM_MISSILES,

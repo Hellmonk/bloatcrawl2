@@ -124,10 +124,8 @@ static const armour_def Armour_prop[] =
     { ARM_HELMET,               "helmet",                 1,   0,   45,
         EQ_HELMET,      SIZE_SMALL,  SIZE_MEDIUM, true },
 
-#if TAG_MAJOR_VERSION == 34
     { ARM_CAP,                  "cap",                    0,   0,   45,
         EQ_HELMET,      SIZE_LITTLE, SIZE_LARGE, true },
-#endif
 
     { ARM_HAT,                  "hat",                    0,   0,   40,
         EQ_HELMET,      SIZE_TINY, SIZE_LARGE, true },
@@ -662,6 +660,7 @@ static const missile_def Missile_prop[] =
     { MI_SLING_BULLET,  "sling bullet",  4, 8,  5,  false },
     { MI_JAVELIN,       "javelin",      10, 20, 8,  true  },
     { MI_THROWING_NET,  "throwing net",  0, 0,  30, true  },
+	{ MI_PIE,			"pie",			0, 20, 6, 	true  },
     { MI_TOMAHAWK,      "tomahawk",      6, 20, 5,  true  },
 };
 

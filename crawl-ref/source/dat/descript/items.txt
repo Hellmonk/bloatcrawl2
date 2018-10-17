@@ -311,6 +311,10 @@ A small piece of wood and metal, to be strapped on one arm for defence. It is
 cumbersome to wear, and impedes the evasion, spellcasting ability, and attack
 speed of an unskilled wearer.
 %%%%
+cap
+
+A cloth or leather cap.
+%%%%
 centaur barding
 
 An armour made for centaurs, to wear over their equine half.
@@ -675,6 +679,10 @@ phial of floods
 An enchanted vessel brimming over with elemental water. Removing the stopper
 unleashes a torrent of water from the phial and sets free the water elementals
 that dwell within it.
+%%%%
+pie
+
+A custard pie. It appears anachronistically dangerous.
 %%%%
 plate armour
 

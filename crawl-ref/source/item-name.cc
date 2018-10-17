@@ -395,10 +395,8 @@ const char* missile_brand_name(const item_def &item, mbn_type t)
         return t == MBN_TERSE ? "penet" : "penetration";
     case SPMSL_DISPERSAL:
         return t == MBN_TERSE ? "disperse" : "dispersal";
-#if TAG_MAJOR_VERSION == 34
     case SPMSL_BLINDING:
         return t == MBN_TERSE ? "blind" : "blinding";
-#endif
     case SPMSL_NORMAL:
         return "";
     default:
