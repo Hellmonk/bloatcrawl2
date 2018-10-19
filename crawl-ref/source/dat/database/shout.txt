@@ -298,6 +298,10 @@ Priest player ghost
 Archaeologist player ghost
 
 @player ghost@
+%%%%
+Healer player ghost
+
+@player ghost@
 ########################################
 # Shouts by monster symbol
 ########################################

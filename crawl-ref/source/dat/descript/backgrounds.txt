@@ -73,6 +73,11 @@ Gladiator
 Gladiators are ready for the arena with light armour, nets, and a weapon of
 their choice.
 %%%%
+Healer
+
+Healers are followers of Elyvilon the Healer, a pacifist god that protects and 
+heals the followers who adhere to Elyvilon's tenants.
+%%%%
 Hunter
 
 Hunters carry a ranged weapon of their choice, and are also equipped with light
