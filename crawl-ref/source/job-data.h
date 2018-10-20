@@ -195,6 +195,16 @@ static const map<job_type, job_def> job_data =
       { SK_DODGING, 2 }, { SK_STEALTH, 2 }, },
 } },
 
+{ JOB_JELLIFIER, {
+    "Ji", "Jellifier",
+    4, 4, 4,
+    { SP_TROLL, SP_OGRE, SP_FELID, SP_OCTOPODE, SP_HERMIT_CRAB, },
+    { "robe", "potion of mutation" },
+    WCHOICE_PLAIN,
+    { { SK_FIGHTING, 1 }, { SK_WEAPON, 2 }, { SK_DODGING, 3 },
+      { SK_STEALTH, 2 }, },
+} },
+
 { JOB_MONK, {
     "Mo", "Monk",
     3, 2, 7,
