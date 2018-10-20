@@ -85,8 +85,7 @@ library are quite versatile.
 %%%%
 Jellifier
 
-You have heard the calls in your dreams. You will go to the dungeon. You will
-be one with the jelly. Worships Jiyva, mutating randomly.
+Jellifiers are worshippers of Jiyva, the slime god of endless hunger.
 %%%%
 Monk
 
