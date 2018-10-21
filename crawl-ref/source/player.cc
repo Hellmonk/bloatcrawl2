@@ -8507,3 +8507,47 @@ void activate_sanguine_armour()
         you.redraw_armour_class = true;
     }
 }
+
+// Is the player immune to a particular hex because of their
+// intrinsic properties?
+bool player::immune_to_hex(const spell_type hex) const
+{
+    switch (hex)
+    {
+	case SPELL_PETRIFY:
+	{
+		if (you.get_mutation_level(MUT_GHOST) > 0)
+			return true;
+	}   // fallthrough
+    case SPELL_PETRIFICATION_GAZE:
+    case SPELL_PARALYSE:
+    case SPELL_SLOW:
+        return stasis();
+    case SPELL_CONFUSE:
+    case SPELL_CONFUSION_GAZE:
+    case SPELL_MASS_CONFUSION:
+        return clarity() || you.duration[DUR_DIVINE_STAMINA] > 0;
+    case SPELL_TELEPORT_OTHER:
+    case SPELL_BLINK_OTHER:
+    case SPELL_BLINK_OTHER_CLOSE:
+        return no_tele();
+    case SPELL_MESMERISE:
+    case SPELL_AVATAR_SONG:
+    case SPELL_SIREN_SONG:
+        return clarity() || berserk();
+    case SPELL_CAUSE_FEAR:
+        return clarity() || !(holiness() & MH_NATURAL) || berserk();
+    case SPELL_PORKALATOR:
+        return is_lifeless_undead();
+    case SPELL_VIRULENCE:
+        return res_poison() == 3;
+    // don't include the hidden "sleep immunity" duration
+    case SPELL_SLEEP:
+    case SPELL_DREAM_DUST:
+        return !actor::can_sleep();
+    case SPELL_HIBERNATION:
+        return !can_hibernate();
+    default:
+        return false;
+    }
+}
