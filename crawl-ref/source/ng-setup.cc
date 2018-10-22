@@ -391,7 +391,7 @@ static void _give_items_skills(const newgame_def& ng)
         break;
 	
 	case JOB_HEALER:
-		you.religion = GOD_ELYVILION;
+		you.religion = GOD_ELYVILON;
 		you.piety = 55;
 		break;
 
