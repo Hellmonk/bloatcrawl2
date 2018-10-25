@@ -37,7 +37,7 @@ trap_type get_trap_type(const coord_def& where);
 bool is_valid_shaft_level();
 level_id generic_shaft_dest(coord_def pos, bool known);
 
-int       num_traps_for_place();
+int       trap_rate_for_place();
 trap_type random_trap_for_place();
 trap_type random_vault_trap();
 
