@@ -996,8 +996,6 @@ const Form* get_form(transformation xform)
 }
 
 
-static void _extra_hp(int amount_extra);
-
 /**
  * Get the wizmode name of a form.
  *
@@ -1754,11 +1752,13 @@ bool transform(int pow, transformation which_trans, bool involuntary,
     mpr(get_form(which_trans)->transform_message(previous_trans));
 
     // Update your status.
+    // Order matters here, take stuff off (and handle attendant HP and stat
+    // changes) before adjusting the player to be transformed.
+    _remove_equipment(rem_stuff);
+
     you.form = which_trans;
     you.set_duration(DUR_TRANSFORMATION, _transform_duration(which_trans, pow));
     update_player_symbol();
-
-    _remove_equipment(rem_stuff);
 
     you.props[TRANSFORM_POW_KEY] = pow;
 
@@ -1771,7 +1771,7 @@ bool transform(int pow, transformation which_trans, bool involuntary,
     if (dex_mod)
         notify_stat_change(STAT_DEX, dex_mod, true);
 
-    _extra_hp(form_hp_mod());
+    calc_hp(true, false);
 
     if (you.digging && !form_keeps_mutations(which_trans))
     {
@@ -1937,7 +1937,6 @@ void untransform(bool skip_move)
 
     // Must be unset first or else infinite loops might result. -- bwr
     const transformation old_form = you.form;
-    int hp_downscale = form_hp_mod();
 
     // We may have to unmeld a couple of equipment types.
     set<equipment_type> melded = _init_equipment_removal(old_form);
@@ -1969,6 +1968,8 @@ void untransform(bool skip_move)
                  app == MUT_TENTACLE_SPIKE ? "s" : "");
         }
     }
+
+    calc_hp(true, false);
 
     const string message = get_form(old_form)->get_untransform_message();
     if (!message.empty())
@@ -2026,17 +2027,6 @@ void untransform(bool skip_move)
         mprf(MSGCH_DURATION, "%s cracks your icy armour.",
              armour->name(DESC_YOUR).c_str());
     }
-
-    if (hp_downscale != 10 && you.hp != you.hp_max)
-    {
-        int hp = you.hp * 10 / hp_downscale;
-        if (hp < 1)
-            hp = 1;
-        else if (hp > you.hp_max)
-            hp = you.hp_max;
-        set_hp(hp);
-    }
-    calc_hp();
 
     if (you.hp <= 0)
     {
