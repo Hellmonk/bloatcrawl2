@@ -10,7 +10,6 @@ Reduce variance in DD healing.
 Change double swords and triple swords to broadswords and claymores; no
 game mechanical change here.
 Experimentally make Singing Sword vorpal so it is at least vaguely attractive.
-Stop acq giving triple/ double swords. Not sure what's going on tags.cc.
 
 Stone Soup 0.21.2 (20180916)
 ----------------------------
