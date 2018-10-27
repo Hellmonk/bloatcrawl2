@@ -273,6 +273,7 @@
     David Speare
     John Stahara
     Jan 'heftig' Steffens
+    Stenella
     Timothy Stiles
     Johan Strandell
     Ben Striegel
