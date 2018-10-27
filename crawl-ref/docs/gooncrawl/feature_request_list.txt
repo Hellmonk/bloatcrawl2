@@ -49,7 +49,7 @@ gods
 
 - beogh rework (directly send warbands of disciples, cap number of kinds of disciples (infighting removes extra ones), buff caster orc survivability, automatically arm fighter orcs w polearms)
 - sif muna rework (either the tavern one and/or https://forums.somethingawful.com/showthread.php?threadid=3845579&userid=0&perpage=40&pagenumber=56#post483399788 and/or some ability to cast spells directly from the library)
-- hunter god trio proposal (stealth/ranged/light armour-focused magic-agnostic god)
+- hunter god trio proposal (stealth/ranged/consumables/light<->medium armour-focused magic-agnostic god)
 - non-undead hepliaqlkana ancestors/dungeon ghosts (rename to memories or some shit)
 - allow hep ancestors to be fired through and to fire through you
 - tune ru’s sacrifice artifice piety gain up 
