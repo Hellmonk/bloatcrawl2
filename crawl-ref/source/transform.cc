@@ -1146,6 +1146,7 @@ _init_equipment_removal(transformation form)
 }
 
 static void _remove_equipment(const set<equipment_type>& removed,
+                              transformation form,
                               bool meld = true, bool mutation = false)
 {
     // Meld items into you in (reverse) order. (set is a sorted container)
@@ -1158,7 +1159,7 @@ static void _remove_equipment(const set<equipment_type>& removed,
         bool unequip = !meld;
         if (!unequip && (e == EQ_WEAPON0 || e == EQ_WEAPON1))
         {
-            if (form_can_wield(you.form))
+            if (form_can_wield(form))
                 unequip = true;
         }
 
@@ -1266,7 +1267,7 @@ void remove_one_equip(equipment_type eq, bool meld, bool mutation)
 
     set<equipment_type> r;
     r.insert(eq);
-    _remove_equipment(r, meld, mutation);
+    _remove_equipment(r, you.form, meld, mutation);
 }
 
 /**
@@ -1754,7 +1755,7 @@ bool transform(int pow, transformation which_trans, bool involuntary,
     // Update your status.
     // Order matters here, take stuff off (and handle attendant HP and stat
     // changes) before adjusting the player to be transformed.
-    _remove_equipment(rem_stuff);
+    _remove_equipment(rem_stuff, which_trans);
 
     you.form = which_trans;
     you.set_duration(DUR_TRANSFORMATION, _transform_duration(which_trans, pow));
