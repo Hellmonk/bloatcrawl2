@@ -556,6 +556,7 @@ static int _acquirement_missile_subtype(bool /*divine*/, int & /*quantity*/)
 
             missile_weights.emplace_back(MI_TOMAHAWK, 50);
             missile_weights.emplace_back(MI_NEEDLE, 75);
+			missile_weights.emplace_back(MI_PIE, 25);
 
             if (you.body_size() >= SIZE_MEDIUM)
                 missile_weights.emplace_back(MI_JAVELIN, 100);

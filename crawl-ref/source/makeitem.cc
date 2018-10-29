@@ -529,6 +529,9 @@ static special_missile_type _determine_missile_brand(const item_def& item,
     case MI_BOLT:
         rc = SPMSL_NORMAL;
         break;
+	case MI_PIE:
+		rc = SPMSL_BLINDING;
+		break;
     case MI_NEEDLE:
         // Curare is special cased, all the others aren't.
         if (got_curare_roll(item_level))
@@ -607,11 +610,9 @@ bool is_missile_brand_ok(int type, int brand, bool strict)
     case SPMSL_FRENZY:
         return type == MI_NEEDLE;
 
-#if TAG_MAJOR_VERSION == 34
     case SPMSL_BLINDING:
         // possible on ex-pies
-        return type == MI_TOMAHAWK && !strict;
-#endif
+        return type == MI_PIE;
 
     default:
         if (type == MI_NEEDLE)
@@ -676,6 +677,7 @@ static void _generate_missile_item(item_def& item, int force_type,
                                    10, MI_NEEDLE,
                                    3,  MI_TOMAHAWK,
                                    2,  MI_JAVELIN,
+								   1,  MI_PIE,
                                    1,  MI_THROWING_NET,
                                    1,  MI_LARGE_ROCK);
     }
@@ -691,6 +693,11 @@ static void _generate_missile_item(item_def& item, int force_type,
         item.quantity = 1 + random2(7) + random2(10) + random2(12) + random2(10);
         return;
     }
+	else if (item.sub_type == MI_PIE)
+	{
+		item.quantity = random_range(1,4);
+		return;
+	}
     else if (item.sub_type == MI_THROWING_NET) // no fancy nets, either
     {
         item.quantity = 1 + one_chance_in(4); // and only one, rarely two
@@ -990,8 +997,8 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
         return
 #if TAG_MAJOR_VERSION == 34
                type == ARM_HAT ||
-               type == ARM_CAP ||
 #endif
+               type == ARM_CAP ||
                slot == EQ_SHIELD ||
                type == ARM_SCARF || !strict;
 

@@ -3529,6 +3529,8 @@ colour_t item_def::missile_colour() const
             return RED;
         case MI_THROWING_NET:
             return MAGENTA;
+		case MI_PIE:
+			return YELLOW;
         case MI_TOMAHAWK:
             return GREEN;
         case NUM_SPECIAL_MISSILES:
@@ -3563,9 +3565,7 @@ colour_t item_def::armour_colour() const
             return GREEN;
         case ARM_ROBE:
             return RED;
-#if TAG_MAJOR_VERSION == 34
         case ARM_CAP:
-#endif
         case ARM_HAT:
         case ARM_HELMET:
             return MAGENTA;
