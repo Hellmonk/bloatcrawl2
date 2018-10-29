@@ -341,7 +341,7 @@ static const map<job_type, job_def> job_data =
     1, 5, 6,
     { SP_HUMAN, SP_GNOLL, SP_TENGU, SP_KOBOLD, SP_SPRIGGAN, SP_OCTOPODE, },
     { "quarterstaff ego:chaos" "robe", "cap", "book of Party Tricks", 
-		"pie ego:blinding q:4", "deck of war"},
+		"pie ego:blinding q:4"},
     WCHOICE_NONE,
     { {SK_DODGING, 2}, {SK_STAVES, 1}, {SK_STEALTH, 1}, {SK_THROWING, 1},
 		{SK_SPELLCASTING, 2}, {SK_EVOCATIONS, 2}, },
