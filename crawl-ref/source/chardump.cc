@@ -237,17 +237,20 @@ static void _sdump_transform(dump_params &par)
 
 static branch_type single_portals[] =
 {
-	BRANCH_LABYRINTH,
-	BRANCH_TROVE,
-	BRANCH_SEWER,
-	BRANCH_OSSUARY,
-	BRANCH_BAILEY,
-	BRANCH_ICE_CAVE,
-	BRANCH_VOLCANO,
-	BRANCH_WIZLAB,
-	BRANCH_DESOLATION,
+    BRANCH_TROVE,
+    BRANCH_SEWER,
+    BRANCH_OSSUARY,
+    BRANCH_BAILEY,
+    BRANCH_GAUNTLET,
+    BRANCH_ICE_CAVE,
+    BRANCH_VOLCANO,
+    BRANCH_WIZLAB,
+    BRANCH_DESOLATION,
 	BRANCH_START_MARKET,
 	BRANCH_START_TEMPLE,
+#if TAG_MAJOR_VERSION == 34
+    BRANCH_LABYRINTH,
+#endif
 };
 
 static void _sdump_visits(dump_params &par)

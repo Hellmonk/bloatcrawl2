@@ -45,7 +45,9 @@ static const branch_type logical_branch_order[] = {
     BRANCH_ABYSS,
     BRANCH_PANDEMONIUM,
     BRANCH_ZIGGURAT,
+#if TAG_MAJOR_VERSION == 34
     BRANCH_LABYRINTH,
+#endif
     BRANCH_BAZAAR,
     BRANCH_TROVE,
     BRANCH_SEWER,
@@ -57,6 +59,7 @@ static const branch_type logical_branch_order[] = {
     BRANCH_DESOLATION,
 	BRANCH_START_TEMPLE,
 	BRANCH_START_MARKET,
+    BRANCH_GAUNTLET,
 };
 COMPILE_CHECK(ARRAYSZ(logical_branch_order) == NUM_BRANCHES);
 
@@ -72,9 +75,9 @@ static const branch_type danger_branch_order[] = {
     BRANCH_OSSUARY,
     BRANCH_BAILEY,
     BRANCH_LAIR,
+    BRANCH_GAUNTLET,
     BRANCH_ICE_CAVE,
     BRANCH_VOLCANO,
-    BRANCH_LABYRINTH,
     BRANCH_ORC,
     BRANCH_SWAMP,
     BRANCH_SHOALS,
@@ -101,6 +104,7 @@ static const branch_type danger_branch_order[] = {
     BRANCH_DWARF,
     BRANCH_BLADE,
     BRANCH_FOREST,
+    BRANCH_LABYRINTH,
 #endif
 };
 COMPILE_CHECK(ARRAYSZ(danger_branch_order) == NUM_BRANCHES);
