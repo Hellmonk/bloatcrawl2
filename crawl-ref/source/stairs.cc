@@ -421,11 +421,6 @@ static void _new_level_amuses_xom(dungeon_feature_type feat,
         xom_is_stimulated(50);
         break;
 
-    case BRANCH_LABYRINTH:
-        // Finding the way out of a labyrinth interests Xom.
-        xom_is_stimulated(75);
-        break;
-
     case BRANCH_PANDEMONIUM:
         xom_is_stimulated(100);
         break;
@@ -627,7 +622,7 @@ void floor_transition(dungeon_feature_type how,
         ouch(INSTANT_DEATH, KILLED_BY_LEAVING);
     }
 
-    if (how == DNGN_ENTER_LABYRINTH || how == DNGN_ENTER_ZIGGURAT)
+    if (how == DNGN_ENTER_ZIGGURAT)
         dungeon_terrain_changed(you.pos(), DNGN_STONE_ARCH);
 
     if (how == DNGN_ENTER_PANDEMONIUM
@@ -864,8 +859,8 @@ level_id stair_destination(dungeon_feature_type feat, const string &dst,
                            bool for_real)
 {
 #if TAG_MAJOR_VERSION == 34
-    if (feat == DNGN_ESCAPE_HATCH_UP && player_in_branch(BRANCH_LABYRINTH))
-        feat = DNGN_EXIT_LABYRINTH;
+    if (feat == DNGN_ESCAPE_HATCH_UP && player_in_branch(BRANCH_GAUNTLET))
+        feat = DNGN_EXIT_GAUNTLET;
 #endif
     if (branches[you.where_are_you].exit_stairs == feat
         && parent_branch(you.where_are_you) < NUM_BRANCHES

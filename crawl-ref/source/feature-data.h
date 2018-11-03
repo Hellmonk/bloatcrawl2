@@ -316,20 +316,6 @@ STONE_STAIRS_UP(III, iii),
     FFT_NONE, MF_STAIR_UP,
 },
 
-{
-    DNGN_EXIT_LABYRINTH, "escape hatch in the ceiling", "exit_labyrinth",
-    DCHAR_STAIRS_UP, NUM_DCHAR_TYPES,
-    COLOUR_AND_MAP(BROWN),
-    FFT_NONE, MF_STAIR_UP,
-},
-
-{
-    DNGN_ENTER_LABYRINTH, "labyrinth entrance", "enter_labyrinth",
-    DCHAR_ARCH, NUM_DCHAR_TYPES,
-    ETC_SHIMMER_BLUE, LIGHTGREY, ETC_SHIMMER_BLUE, ETC_SHIMMER_BLUE, ETC_SHIMMER_BLUE,
-    (FFT_NOTABLE | FFT_EXAMINE_HINT), MF_PORTAL,
-},
-
 #define PORTAL_ENTRANCE(enum, name, vaultname, colour)\
 {\
     enum, name, vaultname,\
@@ -380,6 +366,7 @@ PORTAL_ENTRANCE(DNGN_ENTER_ICE_CAVE, "frozen archway", "enter_ice_cave", WHITE),
 PORTAL_ENTRANCE(DNGN_ENTER_VOLCANO, "dark tunnel", "enter_volcano", RED),
 PORTAL_ENTRANCE(DNGN_ENTER_WIZLAB, "magical portal", "enter_wizlab", ETC_SHIMMER_BLUE),
 PORTAL_ENTRANCE(DNGN_ENTER_DESOLATION, "ruined gateway", "enter_desolation", WHITE),
+PORTAL_ENTRANCE(DNGN_ENTER_GAUNTLET, "portal to a gauntlet", "enter_gauntlet", ETC_SHIMMER_BLUE),
 #if TAG_MAJOR_VERSION == 34
 PORTAL_EXIT(DNGN_EXIT_PORTAL_VAULT, "gate leading back out of this place", "exit_portal_vault", ETC_SHIMMER_BLUE),
 #endif
@@ -393,6 +380,7 @@ PORTAL_EXIT(DNGN_EXIT_ICE_CAVE, "ice covered gate leading back out of this place
 PORTAL_EXIT(DNGN_EXIT_VOLCANO, "rocky tunnel leading out of this place", "exit_volcano", RED),
 PORTAL_EXIT(DNGN_EXIT_WIZLAB, "portal leading out of this place", "exit_wizlab", ETC_SHIMMER_BLUE),
 PORTAL_EXIT(DNGN_EXIT_DESOLATION, "gate leading back out of this place", "exit_desolation", WHITE),
+PORTAL_EXIT(DNGN_EXIT_GAUNTLET, "portalleading back out of this place", "exit_gauntlet", ETC_SHIMMER_BLUE),
 
 #define BRANCH_ENTRANCE(enum, name, vaultname)\
 {\

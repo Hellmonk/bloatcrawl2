@@ -922,12 +922,6 @@ static int _get_dest_stair_type(branch_type old_branch,
         die("return corresponding to entry %d not found", stair_taken);
     }
 
-    if (stair_taken == DNGN_ENTER_LABYRINTH)
-    {
-        // dgn_find_nearby_stair uses special logic for labyrinths.
-        return DNGN_ENTER_LABYRINTH;
-    }
-
     if (feat_is_portal_entrance(stair_taken))
         return DNGN_STONE_ARCH;
 

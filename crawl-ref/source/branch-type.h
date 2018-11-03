@@ -39,7 +39,7 @@ enum branch_type                // you.where_are_you
     BRANCH_ABYSS,
     BRANCH_PANDEMONIUM,
     BRANCH_ZIGGURAT,
-    BRANCH_LABYRINTH,
+    BRANCH_GAUNTLET,
     BRANCH_BAZAAR,
     BRANCH_TROVE,
     BRANCH_SEWER,

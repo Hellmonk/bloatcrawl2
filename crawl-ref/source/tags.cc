@@ -1004,8 +1004,8 @@ static dungeon_feature_type rewrite_feature(dungeon_feature_type x,
         x = DNGN_CLOSED_DOOR;
     if (x == DNGN_BADLY_SEALED_DOOR)
         x = DNGN_SEALED_DOOR;
-    if (x == DNGN_ESCAPE_HATCH_UP && player_in_branch(BRANCH_LABYRINTH))
-        x = DNGN_EXIT_LABYRINTH;
+    if (x == DNGN_ESCAPE_HATCH_UP && player_in_branch(BRANCH_GAUNTLET))
+        x = DNGN_EXIT_GAUNTLET;
     if (x == DNGN_DEEP_WATER && player_in_branch(BRANCH_SHOALS)
         && minor_version < TAG_MINOR_SHOALS_LITE)
     {
@@ -1114,9 +1114,9 @@ static void _add_missing_branches()
                     map_feature_marker *featm =
                         dynamic_cast<map_feature_marker*>(marker);
                     // [ds] Ensure we're activating the correct feature
-                    // markers. Feature markers are also used for other
-                    // things, notably to indicate the return point from
-                    // a labyrinth or portal vault.
+                    // markers. Feature markers are also used for other things,
+                    // notably to indicate the return point from a portal
+                    // vault.
                     switch (featm->feat)
                     {
                     case DNGN_ENTER_COCYTUS:

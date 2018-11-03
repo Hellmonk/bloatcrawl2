@@ -218,15 +218,11 @@ const Branch branches[NUM_BRANCHES] =
       BLACK, BLACK,
       'Q', {}, BRANCH_NOISE_NORMAL },
 
-    { BRANCH_LABYRINTH, NUM_BRANCHES, -1, -1, 1, 15,
-      BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS | BFLAG_NO_MAP,
-      DNGN_ENTER_LABYRINTH, DNGN_EXIT_LABYRINTH, DNGN_EXIT_THROUGH_ABYSS,
-      "Labyrinth", "a labyrinth", "Lab",
-      // XXX: Ideally, we want to hint at the wall rule (rock > metal),
-      //      and that the walls can shift occasionally.
-      // Are these too long?
-      "As you enter the labyrinth, previously moving walls settle noisily into place.\n"
-      "You hear the metallic echo of a distant snort before it fades into the rock.",
+    { BRANCH_GAUNTLET, NUM_BRANCHES, -1, -1, 1, 15,
+      BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
+      DNGN_ENTER_GAUNTLET, DNGN_EXIT_GAUNTLET, DNGN_EXIT_THROUGH_ABYSS,
+      "Gauntlet", "a Gauntlet", "Gauntlet",
+      "You enter a gauntlet!",
       BLACK, BLACK,
       '0', {}, BRANCH_NOISE_NORMAL },
 

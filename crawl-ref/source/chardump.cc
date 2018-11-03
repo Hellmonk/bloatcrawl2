@@ -237,7 +237,7 @@ static void _sdump_transform(dump_params &par)
 
 static branch_type single_portals[] =
 {
-    BRANCH_LABYRINTH,
+    BRANCH_GAUNTLET,
     BRANCH_TROVE,
     BRANCH_SEWER,
     BRANCH_OSSUARY,

@@ -911,8 +911,8 @@ static const pop_entry pop_zig[] =
   { 0,0,0,FLAT,MONS_0 }
 };
 
-static const pop_entry pop_lab[] =
-{ // Labyrinth
+static const pop_entry pop_gauntlet[] =
+{ // Gauntlet
   { 0,0,0,FLAT,MONS_0 }
 };
 
@@ -1104,7 +1104,7 @@ static const population_list population[] =
     POP(abyss),
     POP(pan),
     POP(zig),
-    POP(lab),
+    POP(gauntlet),
     POP(bazaar),
     POP(trove),
     POP(sewer),
@@ -1212,7 +1212,7 @@ static const population_list population_zombie[] =
     POP(generic_late_zombie),
     POP(generic_late_zombie),
     POP(zig),
-    POP(lab),
+    POP(gauntlet),
     POP(bazaar),
     POP(trove),
     POP(sewer),

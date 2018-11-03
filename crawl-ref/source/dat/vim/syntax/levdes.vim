@@ -102,8 +102,6 @@ syn match desBranchname contained /volcano\|wizlab\|ziggurat\|zot/
 " TAGS
 " in abyss.cc
 syn keyword desOrientation abyss_exit
-" in decks.cc and dgn-labyrinth.cc (without `minotaur` because monster)
-syn keyword desOrientation lab generate_loot
 " from dlua.ziggurat
 syn keyword desOrientation ziggurat_pillar centered
 " map building in dungeon.cc (`transparent` is handled later)
