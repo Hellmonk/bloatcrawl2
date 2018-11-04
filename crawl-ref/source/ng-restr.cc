@@ -25,8 +25,8 @@ static bool _banned_combination(job_type job, species_type species)
             || job == JOB_ASSASSIN
             || job == JOB_HUNTER
             || job == JOB_ARCANE_MARKSMAN
-			|| job == JOB_ARCHAEOLOGIST
-			|| job == JOB_JESTER)
+            || job == JOB_ARCHAEOLOGIST
+            || job == JOB_JESTER)
         {
             return true;
         }
@@ -39,8 +39,8 @@ static bool _banned_combination(job_type job, species_type species)
             || job == JOB_MONK
             || job == JOB_PRIEST
             || job == JOB_JELLIFIER
-			|| job == JOB_HEALER
-			|| job == JOB_JESTER)
+            || job == JOB_HEALER
+            || job == JOB_JESTER)
         {
             return true;
         }
@@ -52,26 +52,26 @@ static bool _banned_combination(job_type job, species_type species)
         }
         break;
     case SP_MUMMY:
-		if (job == JOB_HEALER)
-		{
-			return true;
-		}
-		break;
+        if (job == JOB_HEALER)
+        {
+            return true;
+        }
+        break;
     case SP_GHOUL:
-		if (job == JOB_HEALER)
-		{
-			return true;
-		}
-		break;
+        if (job == JOB_HEALER)
+        {
+            return true;
+        }
+        break;
     case SP_VAMPIRE:
-		if (job == JOB_HEALER)
-		{
-			return true;
-		}
-		break;
+        if (job == JOB_HEALER)
+        {
+            return true;
+        }
+        break;
     case SP_DEMONSPAWN:
         if (job == JOB_PRIEST
-			|| job == JOB_HEALER)
+            || job == JOB_HEALER)
         {
             return true;
         }

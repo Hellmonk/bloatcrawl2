@@ -363,7 +363,7 @@ enum missile_type
     MI_LARGE_ROCK,
     MI_SLING_BULLET,
     MI_THROWING_NET,
-	MI_PIE,
+    MI_PIE,
     MI_TOMAHAWK,
 
     NUM_MISSILES,

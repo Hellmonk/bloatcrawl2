@@ -3111,8 +3111,8 @@ void level_change(bool skip_attribute_increase)
 
         learned_something_new(HINT_NEW_LEVEL);
     }
-	
-	if (you.char_class == JOB_ARCHAEOLOGIST && you.experience_level >= 3)
+    
+    if (you.char_class == JOB_ARCHAEOLOGIST && you.experience_level >= 3)
     {
         int tome_index = -1;
         for (int i = 0; i < ENDOFPACK; i++)
@@ -3122,8 +3122,8 @@ void level_change(bool skip_attribute_increase)
             archaeologist_read_tome(you.inv[tome_index]);
         else if(!you.props.exists(ARCHAEOLOGIST_TRIGGER_TOME_ON_PICKUP))
             mprf("You suddenly remember the dusty tome you brought into the dungeon! "
-				 "You feel able to decipher it now. "
-				 "If only you could remember where you put it..."); 
+                 "You feel able to decipher it now. "
+                 "If only you could remember where you put it..."); 
         you.props[ARCHAEOLOGIST_TRIGGER_TOME_ON_PICKUP] = true;
     }
 

@@ -1801,10 +1801,10 @@ bool move_item_to_inv(int obj, int quant_got, bool quiet)
 {
     item_def &it = mitm[obj];
     const coord_def old_item_pos = it.pos;
-	
-	if (you.props.exists(ARCHAEOLOGIST_TRIGGER_TOME_ON_PICKUP) && it.props.exists(ARCHAEOLOGIST_TOME_SKILL))
+    
+    if (you.props.exists(ARCHAEOLOGIST_TRIGGER_TOME_ON_PICKUP) && it.props.exists(ARCHAEOLOGIST_TOME_SKILL))
         archaeologist_read_tome(it);
-	
+    
     if (you.props.exists(ARCHAEOLOGIST_TRIGGER_CRATE_ON_PICKUP) && it.props.exists(ARCHAEOLOGIST_CRATE_ITEM))
         archaeologist_open_crate(it);
 
@@ -3529,8 +3529,8 @@ colour_t item_def::missile_colour() const
             return RED;
         case MI_THROWING_NET:
             return MAGENTA;
-		case MI_PIE:
-			return YELLOW;
+        case MI_PIE:
+            return YELLOW;
         case MI_TOMAHAWK:
             return GREEN;
         case NUM_SPECIAL_MISSILES:
@@ -3952,7 +3952,7 @@ colour_t item_def::miscellany_colour() const
             return ETC_DARK;
         case MISC_ZIGGURAT:
             return _zigfig_colour();
-		case MISC_ANCIENT_CRATE:
+        case MISC_ANCIENT_CRATE:
             return BROWN;
         case MISC_DUSTY_TOME:
             return BROWN;

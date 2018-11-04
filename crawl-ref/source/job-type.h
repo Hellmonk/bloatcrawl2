@@ -32,7 +32,7 @@ enum job_type
     JOB_ARCANE_MARKSMAN,
     JOB_DEATH_KNIGHT,
     JOB_ABYSSAL_KNIGHT,
-	JOB_ARCHAEOLOGIST,
+    JOB_ARCHAEOLOGIST,
     JOB_JESTER,
     JOB_JELLIFIER,
     NUM_JOBS,                          // always after the last job

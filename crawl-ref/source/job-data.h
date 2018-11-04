@@ -323,17 +323,17 @@ static const map<job_type, job_def> job_data =
       SP_SPRIGGAN, SP_BASE_DRACONIAN },
     { "robe" },
     WCHOICE_PLAIN,
-    { {SK_FIGHTING, 2}, {SK_DODGING, 1}, {SK_INVOCATIONS, 5}, {SK_WEAPON, 3}, },
+    { { SK_FIGHTING, 2 }, { SK_DODGING, 1 }, { SK_INVOCATIONS, 5 }, { SK_WEAPON, 3 }, },
 } },
 
 { JOB_HEALER, {
     "He", "Healer",
     4, 4, 4,
     { SP_DEEP_DWARF, SP_HILL_ORC, SP_NAGA, SP_MINOTAUR, SP_BASE_DRACONIAN,
-	  SP_GARGOYLE, },
+      SP_GARGOYLE, },
     { "robe plus:1", "potion of curing", "potion of heal wounds" },
     WCHOICE_NONE,
-    { {SK_FIGHTING, 1}, {SK_DODGING, 2}, {SK_INVOCATIONS, 3} },
+    { { SK_FIGHTING, 1 }, { SK_DODGING, 2 }, { SK_INVOCATIONS, 3 }, },
 } },
 
 { JOB_JESTER, {
@@ -341,10 +341,10 @@ static const map<job_type, job_def> job_data =
     1, 5, 6,
     { SP_HUMAN, SP_GNOLL, SP_TENGU, SP_KOBOLD, SP_SPRIGGAN, SP_OCTOPODE, },
     { "quarterstaff ego:chaos" "robe", "cap", "book of Party Tricks", 
-		"pie ego:blinding q:4"},
+      "pie ego:blinding q:4"},
     WCHOICE_NONE,
-    { {SK_DODGING, 2}, {SK_STAVES, 1}, {SK_STEALTH, 1}, {SK_THROWING, 1},
-		{SK_SPELLCASTING, 2}, {SK_EVOCATIONS, 2}, },
+    { { SK_DODGING, 2 }, { SK_STAVES, 1 }, { SK_STEALTH, 1 }, { SK_THROWING, 1 },
+      { SK_SPELLCASTING, 2 }, { SK_EVOCATIONS, 2 }, },
 } },
 
 #if TAG_MAJOR_VERSION == 34

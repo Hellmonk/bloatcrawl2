@@ -90,7 +90,7 @@
 #             entry's key exactly the same as the weapon's name, but all
 #             lowercase.
 # * nospell:  Prevents wearer from casting spells.
-# * notac:	  Not generated for the Archaeologist background.
+# * notac:    Not generated for the Archaeologist background.
 # * notelep:  Prevents wearer from teleporting or blinking.
 # * poison:   Grants poison resistance.
 # * rcorr:    Grants corrosion resistance.
@@ -1097,7 +1097,7 @@ TILE:     urand_finger
 COLOUR:   ETC_BONE
 LIFE:     1
 VALUE:    400
-BOOL:	  notac
+BOOL:     notac
 
 # TAG_MAJOR_VERSION == 34
 ENUM:     SPIDER

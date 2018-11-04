@@ -387,7 +387,7 @@ tileidx_t tilep_equ_helm(const item_def &item)
     switch (item.sub_type)
     {
         case ARM_CAP:
-			return _modrng(item.rnd, TILEP_HELM_HAT_FIRST_NORM,
+            return _modrng(item.rnd, TILEP_HELM_HAT_FIRST_NORM,
                            TILEP_HELM_HAT_LAST_NORM);
         case ARM_HAT:
             return _modrng(item.rnd, TILEP_HELM_HAT_FIRST_NORM,
@@ -1010,7 +1010,7 @@ void tilep_job_default(int job, dolls_data *doll)
             parts[TILEP_PART_LEG]   = TILEP_LEG_PANTS_SHORT_BROWN;
             parts[TILEP_PART_BOOTS] = TILEP_BOOTS_MIDDLE_BROWN3;
             break;
-		
+        
         case JOB_ARCHAEOLOGIST:
             parts[TILEP_PART_HELM]  = TILEP_HELM_HAT_BLACK;
             parts[TILEP_PART_BODY]  = TILEP_BODY_SLIT_BLACK;
@@ -1024,12 +1024,12 @@ void tilep_job_default(int job, dolls_data *doll)
             parts[TILEP_PART_BODY]  = TILEP_BODY_LEATHER_ARMOUR;
             parts[TILEP_PART_LEG]   = TILEP_LEG_PANTS_BLACK;
             break;
-		
-		case JOB_JESTER:
-			parts[TILEP_PART_HELM]	= TILEP_HELM_JESTER;
-			parts[TILEP_PART_HAND1]	= TILEP_HAND1_QUARTERSTAFF_JESTER;
-			parts[TILEP_PART_BODY]	= TILEP_BODY_ROBE_JESTER;
-			break;
+        
+        case JOB_JESTER:
+            parts[TILEP_PART_HELM]  = TILEP_HELM_JESTER;
+            parts[TILEP_PART_HAND1] = TILEP_HAND1_QUARTERSTAFF_JESTER;
+            parts[TILEP_PART_BODY]  = TILEP_BODY_ROBE_JESTER;
+            break;
     }
 }
 

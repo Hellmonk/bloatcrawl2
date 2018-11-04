@@ -669,10 +669,10 @@ void archaeologist_open_crate(item_def& crate)
     item_colour(crate);
     item_set_appearance(crate);
     mprf("The crate's locking mechanism finally gives in... Revealing %s!", 
-		crate.name(DESC_THE).c_str());
+         crate.name(DESC_THE).c_str());
     crate.props.erase(ARCHAEOLOGIST_CRATE_ITEM);
-	you.props[ARCHAEOLOGIST_TRIGGER_CRATE_ON_PICKUP] = false;
-	
+    you.props[ARCHAEOLOGIST_TRIGGER_CRATE_ON_PICKUP] = false;
+
 }
 void archaeologist_read_tome(item_def& tome)
 {
@@ -683,11 +683,11 @@ void archaeologist_read_tome(item_def& tome)
     item_colour(tome);
     item_set_appearance(tome);
     mprf("You have an epiphany! "
-		"The dusty tome is %s! Reading it may be key to unlocking the crate...",
+         "The dusty tome is %s! Reading it may be key to unlocking the crate...",
          tome.name(DESC_A).c_str());
-	you.start_train.insert(tome.skill);
+    you.start_train.insert(tome.skill);
     update_can_train();
-	you.props[ARCHAEOLOGIST_TRIGGER_TOME_ON_PICKUP] = false;
+    you.props[ARCHAEOLOGIST_TRIGGER_TOME_ON_PICKUP] = false;
 }
 
 void finish_manual(int slot)
@@ -711,9 +711,9 @@ void finish_manual(int slot)
         else
         {
             mprf("As you finish your manual of %s, you suddenly remember the "
-				 "ancient crate it was unearthed with."
+                 "ancient crate it was unearthed with."
                  " You are certain you could open it now, if only you "
-				 "could find it again...",
+                 "could find it again...",
                  skill_name(skill));
             you.props[ARCHAEOLOGIST_TRIGGER_CRATE_ON_PICKUP] = true;
         }
@@ -1565,7 +1565,7 @@ static bool _stone_of_tremors()
         you.turn_is_over = true;
         return false;
     }*/
-	const int surge = pakellas_surge_devices();
+    const int surge = pakellas_surge_devices();
     surge_power(you.spec_evoke() + surge);
     mpr("The dungeon trembles and rubble falls from the walls!");
     noisy(15, you.pos());
@@ -1639,9 +1639,9 @@ static bool _stone_of_tremors()
         if (actor_at(rubble_pos[n]))
             continue;
         mgen_data mg(MONS_EARTH_ELEMENTAL, attitude, rubble_pos[n], 0,
-						MG_FORCE_BEH | MG_FORCE_PLACE);
-		mg.set_summoned(&you, 3, SPELL_NO_SPELL);
-		mg.set_prox(PROX_CLOSE_TO_PLAYER);
+                        MG_FORCE_BEH | MG_FORCE_PLACE);
+        mg.set_summoned(&you, 3, SPELL_NO_SPELL);
+        mg.set_prox(PROX_CLOSE_TO_PLAYER);
         mg.hd = player_adjust_evoc_power(
                     6 + you.skill_rdiv(SK_EVOCATIONS, 2, 13), surge);
         if (create_monster(mg))
