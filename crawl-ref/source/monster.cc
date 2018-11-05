@@ -4435,6 +4435,10 @@ bool monster::corrode_equipment(const char* corrosion_source, int degree)
 void monster::splash_with_acid(const actor* evildoer, int acid_strength,
                                bool /*allow_corrosion*/, const char* /*hurt_msg*/)
 {
+    // Splashing with acid shouldn't do anything to immune targets
+    if (res_acid() == 3)
+        return;
+
     const int dam = roll_dice(acid_strength, 4);
     const int post_res_dam = resist_adjust_damage(this, BEAM_ACID, dam);
 
