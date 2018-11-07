@@ -110,10 +110,11 @@ bool ranged_attack::attack()
     bool shield_blocked = attack_shield_blocked(false);
 
     god_conduct_trigger conducts[3];
-    disable_attack_conducts(conducts);
-
     if (attacker->is_player() && attacker != defender)
-        set_attack_conducts(conducts, defender->as_monster());
+    {
+        set_attack_conducts(conducts, *defender->as_monster(),
+                            you.can_see(*defender));
+    }
 
     if (shield_blocked)
         handle_phase_blocked();
@@ -154,8 +155,6 @@ bool ranged_attack::attack()
     }
 
     handle_phase_end();
-
-    enable_attack_conducts(conducts);
 
     return attack_occurred;
 }

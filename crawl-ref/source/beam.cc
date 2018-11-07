@@ -4367,7 +4367,6 @@ void bolt::tracer_affect_monster(monster* mon)
 void bolt::enchantment_affect_monster(monster* mon)
 {
     god_conduct_trigger conducts[3];
-    disable_attack_conducts(conducts);
 
     bool hit_woke_orc = false;
 
@@ -4380,7 +4379,7 @@ void bolt::enchantment_affect_monster(monster* mon)
             if (is_sanctuary(mon->pos()) || is_sanctuary(you.pos()))
                 remove_sanctuary(true);
 
-            set_attack_conducts(conducts, mon, you.can_see(*mon));
+            set_attack_conducts(conducts, *mon, you.can_see(*mon));
 
             if (have_passive(passive_t::convert_orcs)
                 && mons_genus(mon->type) == MONS_ORC
@@ -4393,8 +4392,6 @@ void bolt::enchantment_affect_monster(monster* mon)
     }
     else if (flavour != BEAM_HIBERNATION || !mon->asleep())
         behaviour_event(mon, ME_ALERT, agent());
-
-    enable_attack_conducts(conducts);
 
     // Doing this here so that the player gets to see monsters
     // "flicker and vanish" when turning invisible....
@@ -4920,7 +4917,6 @@ void bolt::affect_monster(monster* mon)
     // after all).
 
     god_conduct_trigger conducts[3];
-    disable_attack_conducts(conducts);
 
     if (nasty_to(mon))
     {
@@ -4930,7 +4926,7 @@ void bolt::affect_monster(monster* mon)
                 remove_sanctuary(true);
 
             // It's not the player's fault if the monster couldn't be seen
-            set_attack_conducts(conducts, mon, you.can_see(*mon));
+            set_attack_conducts(conducts, *mon, you.can_see(*mon));
         }
     }
 
@@ -5001,12 +4997,11 @@ void bolt::affect_monster(monster* mon)
     }
 
     update_hurt_or_helped(mon);
-    enable_attack_conducts(conducts);
 
-    // We'll say ballistomycete spore explosions don't trigger the ally attack conduct
-    // for Fedhas worshipers. Mostly because you can accidentally blow up a
-    // group of 8 plants and get placed under penance until the end of time
-    // otherwise. I'd prefer to do this elsewhere but the beam information
+    // We'll say ballistomycete spore explosions don't trigger the ally attack
+    // conduct for Fedhas worshipers. Mostly because you can accidentally blow
+    // up a group of 8 plants and get placed under penance until the end of
+    // time otherwise. I'd prefer to do this elsewhere but the beam information
     // goes out of scope.
     //
     // Also exempting miscast explosions from this conduct -cao
@@ -5015,7 +5010,7 @@ void bolt::affect_monster(monster* mon)
             || source_id == MID_PLAYER
                && aux_source.find("your miscasting") != string::npos))
     {
-        conducts[0].enabled = false;
+        conducts[0].set();
     }
 
     if (!is_explosion && !noise_generated)
