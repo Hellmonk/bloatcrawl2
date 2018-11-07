@@ -851,7 +851,6 @@ bool melee_attack::attack()
 
     // Stuff for god conduct, this has to remain here for scope reasons.
     god_conduct_trigger conducts[3];
-    disable_attack_conducts(conducts);
 
     // Remove sanctuary if - through some attack - it was violated.
     if (env.sanctuary_time > 0 && attack_occurred && !cancel_attack
@@ -866,7 +865,8 @@ bool melee_attack::attack()
 
     if (attacker->is_player() && attacker != defender)
     {
-        set_attack_conducts(conducts, defender->as_monster());
+        set_attack_conducts(conducts, *defender->as_monster(),
+                            you.can_see(*defender));
 
         if (player_under_penance(GOD_ELYVILON)
             && god_hates_your_god(GOD_ELYVILON)
@@ -949,8 +949,6 @@ bool melee_attack::attack()
     handle_phase_aux();
 
     handle_phase_end();
-
-    enable_attack_conducts(conducts);
 
     return attack_occurred;
 }
