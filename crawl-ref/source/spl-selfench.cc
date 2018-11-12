@@ -557,7 +557,8 @@ bool spell_add_permabuff(spell_type spell, int reserve_amount)
         }
         else
         {
-            mutate(mutat, "adding permabuff");
+            mutate(mutat, "adding permabuff", true, false, false,
+            false, MUTCLASS_NORMAL, true);
             return true;
         }
     }
@@ -582,6 +583,11 @@ void spell_remove_permabuff(spell_type spell, int release_amount)
 // Drop all permabuffs (comes from max MP/EP change or armour equipping)
 void spell_drop_permabuffs()
 {
+    // If transformed, drop form
+    if (you.form != transformation::none)
+    {
+        untransform(true);
+    }
     // Unreserve all MP/EP
     unreserve_mp(you.mp_max_adj_temp);
     // Remove all permabuffs from player's permabuffs here

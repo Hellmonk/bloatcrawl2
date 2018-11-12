@@ -158,8 +158,11 @@ void equip_effect(equipment_type slot, int item_slot, bool unmeld, bool msg)
         return;
 
     // Drop all permabuffs if the player equips a new set of armour
-    if (slot == EQ_BODY_ARMOUR && eq == EQ_BODY_ARMOUR)
+    if ((slot == EQ_BODY_ARMOUR && eq == EQ_BODY_ARMOUR) 
+        || (slot == EQ_SHIELD && eq == EQ_SHIELD))
+    {
         spell_drop_permabuffs();
+    }
 
     _assert_valid_slot(eq, slot);
 

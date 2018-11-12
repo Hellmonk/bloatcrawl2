@@ -1530,19 +1530,18 @@ bool undead_mutation_rot()
  */
 bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
             bool force_mutation, bool god_gift, bool beneficial,
-            mutation_permanence_class mutclass)
+            mutation_permanence_class mutclass, bool add_permabuff)
 {
     // Permabuffs always succeed regardless of any factors, as they aren't really mutations
     if (is_permabuff(which_mutation))
     {
-        // If player already has the permabuff, remove it (toggle off); otherwise, add it.
-        if(you.permabuffs[which_mutation] > 0)
+        if (add_permabuff && !you.permabuffs[which_mutation])
         {
-            you.permabuffs[which_mutation]--;
+            you.permabuffs[which_mutation] = 1;
         }
-        else
+        else if (!add_permabuff && you.permabuffs[which_mutation])
         {
-            you.permabuffs[which_mutation]++;
+            you.permabuffs[which_mutation] = 0;
         }
         return true;
     }

@@ -4036,13 +4036,17 @@ bool reserve_mp(int mp_reserved)
 void unreserve_mp(int mp_recovered)
 {
     // Double unreserve amount for Djinni
-    if(you.species == SP_DJINNI)
+    if (you.species == SP_DJINNI)
     {
         mp_recovered = mp_recovered * DJ_MP_RATE;
     }
-    you.mp_max_adj_temp += mp_recovered;
+    // This check shouldn't be needed, but something went wrong...
+    if (mp_recovered == -you.mp_max_adj_temp)
+        you.mp_max_adj_temp = 0;
+    else
+        you.mp_max_adj_temp += mp_recovered;
     
-    // In case I fucked up somewhere, don't unreserve below 0
+    // In case I fucked up somewhere, don't add max MP
     if (you.mp_max_adj_temp > 0)
     {
         you.mp_max_adj_temp = 0;
