@@ -98,7 +98,7 @@ LUARET1(you_one_time_ability_used, boolean,
         you.one_time_ability_used[you.religion])
 LUARET2(you_hp, number, you.hp, you.hp_max)
 LUARET2(you_mp, number, you.magic_points, you.max_magic_points)
-LUARET1(you_base_mp, number, get_real_mp(false))
+LUARET1(you_base_mp, number, get_real_mp(false, true))
 LUARET1(you_rot, number, player_rotted())
 LUARET1(you_poison_survival, number, poison_survival())
 LUARET1(you_corrosion, number, you.props["corrosion_amount"].get_int())

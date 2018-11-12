@@ -36,3 +36,7 @@ spret_type cast_transform(int pow, transformation which_trans, bool fail);
 spret_type cast_blade_of_disaster(int pow, bool fail);
 spret_type cast_time_stop(int pow, bool fail);
 void end_time_stop(bool due_to_teleport = false);
+
+bool spell_add_permabuff(spell_type spell, int reserve_amount);
+void spell_remove_permabuff(spell_type spell, int release_amount);
+void spell_drop_permabuffs();

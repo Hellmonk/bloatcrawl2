@@ -33,6 +33,7 @@
 #include "prompt.h"
 #include "religion.h"
 #include "spl-cast.h"
+#include "spl-selfench.h"
 #include "state.h"
 #include "stringutil.h"
 #include "terrain.h"
@@ -74,6 +75,71 @@ static const FormAttackVerbs ANIMAL_VERBS = FormAttackVerbs("hit", "bite",
 static const FormDuration DEFAULT_DURATION = FormDuration(20, PS_DOUBLE, 100);
 static const FormDuration BAD_DURATION = FormDuration(15, PS_ONE_AND_A_HALF,
                                                       100);
+
+// Permabuffs go here
+static const transformation _all_permatrans[] =
+{
+    transformation::appendage,            transformation::dragon,
+    transformation::spider,               transformation::hydra,
+    transformation::ice_beast,            transformation::blade_hands,
+    transformation::statue,               transformation::lich,
+};
+
+static bool _is_permatrans(transformation trans)
+{
+    return any_of(begin(_all_permatrans), end(_all_permatrans), 
+                  [=](const transformation &i){return i == trans;});
+}
+
+static int _form_reserve_amount(transformation which_trans)
+{
+    switch(which_trans)
+    {
+        case transformation::appendage:
+            return 1;
+        case transformation::spider:
+            return 3;
+        case transformation::ice_beast:
+            return 4;
+        case transformation::statue:
+            return 6;
+        case transformation::lich:
+            return 8;
+        case transformation::blade_hands:
+            return 5;
+        case transformation::dragon:
+            return 7;
+        case transformation::hydra:
+            return 6;
+        default:
+            return 0; // Went here by mistake, don't make MP changes
+    }
+}
+
+static spell_type _form_to_spell(transformation which_trans)
+{
+    switch(which_trans)
+    {
+        case transformation::appendage:
+            return SPELL_BEASTLY_APPENDAGE;
+        case transformation::spider:
+            return SPELL_SPIDER_FORM;
+        case transformation::ice_beast:
+            return SPELL_ICE_FORM;
+        case transformation::statue:
+            return SPELL_STATUE_FORM;
+        case transformation::lich:
+            return SPELL_NECROMUTATION;
+        case transformation::blade_hands:
+            return SPELL_BLADE_HANDS;
+        case transformation::dragon:
+            return SPELL_DRAGON_FORM;
+        case transformation::hydra:
+            return SPELL_HYDRA_FORM;
+        default:
+            return SPELL_NO_SPELL; // Went here by mistake, fail out
+    }
+}
 
 // Class form_entry and the formdata array
 #include "form-data.h"
@@ -1655,7 +1721,14 @@ bool transform(int pow, transformation which_trans, bool involuntary,
         if (just_check)
             return true;
 
-        // update power
+        // If casting a permabuff again, turn off form through untransform
+        if (you.permabuffs[MUT_TRANSFORMATION] && _is_permatrans(previous_trans) 
+            && !involuntary)
+        {
+            untransform(true);
+            return true;
+        }
+        // If the form is temporary, update power
         if (which_trans != transformation::none)
         {
             you.props[TRANSFORM_POW_KEY] = pow;
@@ -1705,7 +1778,9 @@ bool transform(int pow, transformation which_trans, bool involuntary,
     }
 
     if (!just_check && previous_trans != transformation::none)
+    {
         untransform(true);
+    }
 
     set<equipment_type> rem_stuff = _init_equipment_removal(which_trans);
 
@@ -1761,6 +1836,12 @@ bool transform(int pow, transformation which_trans, bool involuntary,
 
     if (which_trans == transformation::hydra)
         set_hydra_form_heads(div_rand_round(pow, 10));
+
+    if (!involuntary && _is_permatrans(which_trans))
+    {
+        spell_add_permabuff(_form_to_spell(which_trans), 
+            _form_reserve_amount(which_trans));
+    }
 
     // Give the transformation message.
     mpr(get_form(which_trans)->transform_message(previous_trans));
@@ -1954,6 +2035,12 @@ void untransform(bool skip_move)
     // We may have to unmeld a couple of equipment types.
     set<equipment_type> melded = _init_equipment_removal(old_form);
 
+    // If spell was a permabuff, unreserve MP based on form
+    if (you.permabuffs[MUT_TRANSFORMATION] && _is_permatrans(old_form))
+    {
+        spell_remove_permabuff(_form_to_spell(old_form), 
+            _form_reserve_amount(old_form));
+    }
     you.form = transformation::none;
     you.duration[DUR_TRANSFORMATION] = 0;
     update_player_symbol();

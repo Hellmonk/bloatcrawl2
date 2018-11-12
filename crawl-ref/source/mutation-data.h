@@ -1945,6 +1945,86 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
+{ MUT_TRANSFORMATION, 0, 1, mutflag::good, false,
+  "transformed",
+
+  {"You have taken a different form.", "", ""},
+  {"You start to sustain a different form.", "", ""},
+  {"You revert to your normal form.", "", ""},
+},
+
+{ MUT_RING_OF_FLAMES, 0, 1, mutflag::good, false,
+  "ring of flames",
+
+  {"You are surrounded by a ring of flames.", "", ""},
+  {"The air around you leaps into flame!", "", ""},
+  {"Your ring of flames gutters out.", "", ""},
+},
+
+{ MUT_REGEN_SPELL, 0, 1, mutflag::good, false,
+  "magically regenerating",
+
+  {"You are magically regenerating.", "", ""},
+  {"Your skin crawls.", "", ""},
+  {"Your skin stops crawling.", "", ""},
+},
+
+{ MUT_SPECTRAL_WEAPON, 0, 1, mutflag::good, false,
+  "spectral weapon",
+
+  {"You are manifesting your weapon's spirit.", "", ""},
+  {"You draw out your weapon's spirit!", "", ""},
+  {"Your weapon's spirit retreats.", "", ""},
+},
+
+{ MUT_INFUSION, 0, 1, mutflag::good, false,
+  "infused",
+
+  {"Your attacks are magically infused.", "", ""},
+  {"You begin infusing your attacks with magical energy.", "", ""},
+  {"You are no longer magically infusing your attacks.", "", ""},
+},
+
+{ MUT_EXCRUCIATING_WOUNDS, 0, 1, mutflag::good, false,
+  "pained",
+
+  {"Your weapon writhes with pain.", "", ""},
+  {"Your weapon shrieks in pain!", "", ""},
+  {"Your weapon is no longer in pain.", "", ""},
+},
+
+{ MUT_OZOCUBUS_ARMOUR, 0, 1, mutflag::good, false,
+  "icy armour",
+
+  {"You are protected by a layer of icy armour.", "", ""},
+  {"A film of ice covers your body!", "", ""},
+  {"Your icy armour cracks and falls away.", "", ""},
+},
+
+{ MUT_BATTLESPHERE, 0, 1, mutflag::good, false,
+  "battlesphere",
+
+  {"You are manifesting a battlesphere.", "", ""},
+  {"You conjure a globe of magical energy.", "", ""},
+  {"Your battlesphere fades away.", "", ""},
+},
+
+{ MUT_SONG_OF_SLAYING, 0, 1, mutflag::good, false,
+  "song of slaying",
+
+  {"Your melee attacks are strengthened by your song.", "", ""},
+  {"You start a new song!", "", ""},
+  {"You stop singing.", "", ""},
+},
+
+{ MUT_DEFLECT_MISSILES, 0, 1, mutflag::good, false,
+  "deflect missiles",
+
+  {"You are deflecting missles", "", ""},
+  {"You feel very safe from missiles.", "", ""},
+  {"You feel less protected from missiles.", "", ""},
+},
+
 };
 
 static const mutation_category_def category_mut_data[] =

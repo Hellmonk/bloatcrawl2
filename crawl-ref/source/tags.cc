@@ -1413,7 +1413,8 @@ static void tag_construct_you(writer &th)
 
     marshallShort(th, you.hp_max_adj_temp);
     marshallShort(th, you.hp_max_adj_perm);
-    marshallShort(th, you.mp_max_adj);
+    marshallShort(th, you.mp_max_adj_temp);
+    marshallShort(th, you.mp_max_adj_perm);
 
     marshallShort(th, you.pos().x);
     marshallShort(th, you.pos().y);
@@ -1503,6 +1504,7 @@ static void tag_construct_you(writer &th)
         marshallByte(th, you.innate_mutation[j]);
         marshallByte(th, you.temp_mutation[j]);
         marshallByte(th, you.sacrifices[j]);
+        marshallByte(th, you.permabuffs[j]);
     }
 
     marshallByte(th, you.demonic_traits.size());
@@ -2455,12 +2457,13 @@ static void tag_read_you(reader &th)
 
     you.hp_max_adj_temp           = unmarshallShort(th);
     you.hp_max_adj_perm           = unmarshallShort(th);
-    you.mp_max_adj                = unmarshallShort(th);
+    you.mp_max_adj_temp           = unmarshallShort(th);
+    you.mp_max_adj_perm           = unmarshallShort(th);
 #if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() < TAG_MINOR_REMOVE_BASE_MP)
     {
         int baseadj = unmarshallShort(th);
-        you.mp_max_adj += baseadj;
+        you.mp_max_adj_perm += baseadj;
     }
     if (th.getMinorVersion() < TAG_MINOR_CLASS_HP_0)
         you.hp_max_adj_perm -= 8;
@@ -2799,6 +2802,7 @@ static void tag_read_you(reader &th)
         {
 #endif
         you.sacrifices[j]       = unmarshallUByte(th);
+        you.permabuffs[j]       = unmarshallUByte(th);
 #if TAG_MAJOR_VERSION == 34
         }
 
@@ -2884,7 +2888,8 @@ static void tag_read_you(reader &th)
 #endif
 
     for (int j = count; j < NUM_MUTATIONS; ++j)
-        you.mutation[j] = you.innate_mutation[j] = you.sacrifices[j];
+        you.mutation[j] = you.innate_mutation[j] = you.sacrifices[j] 
+            = you.permabuffs[j];
 
 #if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() < TAG_MINOR_NO_DEVICE_HEAL)

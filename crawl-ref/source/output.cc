@@ -726,6 +726,8 @@ static void _print_stats_mp(int x, int y)
     if (you.species == SP_DJINNI)
         return;
 
+    int max_max_mp = get_real_mp(true, true);
+
     // Calculate colour
     short mp_colour = HUD_VALUE_COLOUR;
 
@@ -752,6 +754,8 @@ static void _print_stats_mp(int x, int y)
     if (!boosted)
         textcolour(HUD_VALUE_COLOUR);
     CPRINTF("/%d", you.max_magic_points);
+    if (max_max_mp != you.max_magic_points)
+        CPRINTF(" (%d)", max_max_mp);
     if (boosted)
         textcolour(HUD_VALUE_COLOUR);
 
@@ -817,7 +821,7 @@ static void _print_stats_hp(int x, int y)
     int max_max_hp = get_real_hp(true, true);
 
     if (you.species == SP_DJINNI)
-        max_max_hp += get_real_mp(true);
+        max_max_hp += get_real_mp(true, true);
 
     // Calculate colour
     short hp_colour = HUD_VALUE_COLOUR;
