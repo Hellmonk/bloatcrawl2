@@ -2793,7 +2793,7 @@ static void _gain_and_note_hp_mp()
     // Get "real" values for note-taking, i.e. ignore Berserk,
     // transformations or equipped items.
     const int note_maxhp = get_real_hp(false, false);
-    const int note_maxmp = get_real_mp(false);
+    const int note_maxmp = get_real_mp(false, true);
 
     char buf[200];
     if (you.species == SP_DJINNI)
@@ -3739,7 +3739,7 @@ void calc_hp()
     you.hp_max = get_real_hp(true, false);
     if (you.species == SP_DJINNI)
     {
-        you.hp_max += get_real_mp(true);
+        you.hp_max += get_real_mp(true, false);
     }
     deflate_hp(you.hp_max, false);
     if (oldhp != you.hp || oldmax != you.hp_max)
@@ -3778,7 +3778,7 @@ void calc_mp()
         you.magic_points = you.max_magic_points = 0;
         return calc_hp();
     }
-    you.max_magic_points = get_real_mp(true);
+    you.max_magic_points = get_real_mp(true, false);
     you.magic_points = min(you.magic_points, you.max_magic_points);
     you.redraw_magic_points = true;
 }
@@ -3875,7 +3875,7 @@ bool enough_mp(int minimum, bool suppress_msg, bool abort_macros)
     {
         if (!suppress_msg)
         {
-            if (get_real_mp(true) < minimum)
+            if (get_real_mp(true, false) < minimum)
                 mpr("You don't have enough magic capacity.");
             else
                 mpr("You don't have enough magic at the moment.");
@@ -3988,7 +3988,10 @@ int unrot_hp(int hp_recovered)
 
 int player_rotted()
 {
-    return -you.hp_max_adj_temp;
+    if(you.species != SP_DJINNI)
+        return -you.hp_max_adj_temp;
+    else
+        return -you.hp_max_adj_temp-you.mp_max_adj_temp;
 }
 
 // Attempt to reserve MP (or EP) for permabuffs or other future MP reservations
@@ -3997,7 +4000,7 @@ bool reserve_mp(int mp_reserved)
     // If not enough MP (or EP if Djinni) left to reserve, return false
     // (include items for MP, do not include trans/berserk if EP)
     if((-(you.mp_max_adj_temp-mp_reserved) > 
-        get_real_mp(true)-you.mp_max_adj_temp) && you.species != SP_DJINNI)
+        get_real_mp(true, false)-you.mp_max_adj_temp) && you.species != SP_DJINNI)
     {
         return false;
     }
@@ -4008,6 +4011,11 @@ bool reserve_mp(int mp_reserved)
     }
     else
     {
+        // Double reserve cost for Djinni
+        if(you.species == SP_DJINNI)
+        {
+            mp_reserved = mp_reserved * DJ_MP_RATE;
+        }
         you.mp_max_adj_temp -= mp_reserved;
         
         if(you.species != SP_DJINNI)
@@ -4027,10 +4035,18 @@ bool reserve_mp(int mp_reserved)
 // Unreserve MP (or EP) from permabuffs or other reservations
 void unreserve_mp(int mp_recovered)
 {
+    // Double unreserve amount for Djinni
+    if(you.species == SP_DJINNI)
+    {
+        mp_recovered = mp_recovered * DJ_MP_RATE;
+    }
     you.mp_max_adj_temp += mp_recovered;
     
+    // In case I fucked up somewhere, don't unreserve below 0
     if (you.mp_max_adj_temp > 0)
+    {
         you.mp_max_adj_temp = 0;
+    }
 
     if(you.species != SP_DJINNI)
     {
@@ -4154,7 +4170,7 @@ int get_real_hp(bool trans, bool rotted)
         // If hitp is 0 after application, drop all permabuffs
         if (hitp < 0)
         {
-            bool trans_dropped = true;
+            trans_dropped = true;
             hitp -= you.mp_max_adj_temp;
             spell_drop_permabuffs();
         }
@@ -4175,7 +4191,8 @@ int get_real_hp(bool trans, bool rotted)
     return max(1, hitp);
 }
 
-int get_real_mp(bool include_items)
+// If reserved is true, exclude reserved MP from calculations (for GUI)
+int get_real_mp(bool include_items, bool reserved)
 {
     const int scale = 100;
     int spellcasting = you.skill(SK_SPELLCASTING, 1 * scale, true);
@@ -4216,12 +4233,16 @@ int get_real_mp(bool include_items)
         enp /= 3;
 
     // Apply permabuff reservations after item calculations
-    enp += you.mp_max_adj_temp;
-    // If enp is less than zero, drop all permabuffs
-    if (enp < 0)
+    if (!reserved)
     {
-        enp -= you.mp_max_adj_temp;
-        spell_drop_permabuffs();
+        enp += you.mp_max_adj_temp;
+
+        // If enp is less than zero, drop all permabuffs
+        if (enp < 0)
+        {
+            enp -= you.mp_max_adj_temp;
+            spell_drop_permabuffs();
+        }
     }
 
     enp = max(enp, 0);

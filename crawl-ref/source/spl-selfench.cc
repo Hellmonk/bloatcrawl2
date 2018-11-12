@@ -577,7 +577,6 @@ void spell_remove_permabuff(spell_type spell, int release_amount)
     {
         mutate(mutat, "removing permabuff");
     }
-    
 }
 
 // Drop all permabuffs (comes from max MP/EP change or armour equipping)

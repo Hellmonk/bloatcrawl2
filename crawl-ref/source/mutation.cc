@@ -732,7 +732,7 @@ string describe_mutations(bool center_title)
         mutation_type mut_type = static_cast<mutation_type>(i);
         if (you.has_permabuffs(mut_type))
         {
-            result += mutation_desc(mut_type, -1);
+            result += mutation_desc(mut_type, 1);
             result += "\n";
         }
     }

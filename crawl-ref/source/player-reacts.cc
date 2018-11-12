@@ -626,11 +626,14 @@ static void _decrement_durations()
             // Disable emergency flight if it was active
             you.props.erase(EMERGENCY_FLIGHT_KEY);
         }
-
-        if (_decrement_a_duration(DUR_TRANSFORMATION, delay, nullptr, random2(3),
-                                  "Your transformation is almost over."))
+        // Don't decrement the duration of forms for permabuffs
+        if(!you.permabuffs[MUT_TRANSFORMATION])
         {
-            untransform();
+            if (_decrement_a_duration(DUR_TRANSFORMATION, delay, nullptr, random2(3),
+                                      "Your transformation is almost over."))
+            {
+                untransform();
+            }
         }
     }
 
