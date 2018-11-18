@@ -28,6 +28,7 @@
 #include "prompt.h"
 #include "random-pick.h"
 #include "shout.h"
+#include "spl-selfench.h"
 #include "spl-util.h"
 #include "target.h"
 #include "terrain.h"
@@ -250,16 +251,29 @@ void big_cloud(cloud_type cl_type, const actor *agent,
 spret_type cast_ring_of_flames(int power, bool fail)
 {
     fail_check();
-    you.increase_duration(DUR_FIRE_SHIELD,
-                          6 + (power / 10) + (random2(power) / 5), 50,
-                          "The air around you leaps into flame!");
-    manage_fire_shield(1);
-    return SPRET_SUCCESS;
+    if(!you.permabuffs[MUT_RING_OF_FLAMES])
+    {
+        if(spell_add_permabuff(SPELL_RING_OF_FLAMES, 7))
+        {
+            manage_fire_shield(1);
+            return SPRET_SUCCESS;
+        }
+        else
+        {
+            return SPRET_ABORT;
+        }
+    }
+    else
+    {
+        spell_remove_permabuff(SPELL_RING_OF_FLAMES, 7);
+        return SPRET_SUCCESS;
+    }
+    
 }
 
 void manage_fire_shield(int delay)
 {
-    ASSERT(you.duration[DUR_FIRE_SHIELD]);
+    ASSERT(you.permabuffs[MUT_RING_OF_FLAMES]);
 
     // Melt ice armour entirely.
     maybe_melt_player_enchantments(BEAM_FIRE, 100);

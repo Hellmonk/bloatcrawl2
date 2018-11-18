@@ -21,7 +21,9 @@ enum duration_type
 #endif
     DUR_CORONA,
     DUR_DEATHS_DOOR,
+#if TAG_MAJOR_VERSION
     DUR_FIRE_SHIELD,
+#endif
 
 #if TAG_MAJOR_VERSION == 34
     DUR_BUILDING_RAGE,

@@ -325,7 +325,7 @@ bool fill_status_info(int status, status_info& inf)
         inf.long_text = you.hands_act("are", "glowing red.");
         break;
     }
-
+#if TAG_MAJOR_VERSION == 34
     case DUR_FIRE_SHIELD:
     {
         // Might be better to handle this with an extra virtual status.
@@ -338,7 +338,7 @@ bool fill_status_info(int status, status_info& inf)
         inf.long_text += "You are immune to clouds of flame.";
         break;
     }
-
+#endif
     case DUR_POISONING:
         _describe_poison(inf);
         break;

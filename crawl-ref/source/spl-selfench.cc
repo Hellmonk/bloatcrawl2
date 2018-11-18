@@ -589,7 +589,7 @@ void spell_drop_permabuffs()
         untransform(true);
     }
     // Unreserve all MP/EP
-    unreserve_mp(you.mp_max_adj_temp);
+    unreserve_mp(-you.mp_max_adj_temp);
     // Remove all permabuffs from player's permabuffs here
     for (int i=0; i < NUM_MUTATIONS; i++)
     {

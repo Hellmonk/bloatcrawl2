@@ -1252,7 +1252,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "your body armour is too heavy.";
         if (temp && you.form == transformation::statue)
             return "the film of ice won't work on stone.";
-        if (temp && you.duration[DUR_FIRE_SHIELD])
+        if (temp && you.permabuffs[MUT_RING_OF_FLAMES])
             return "your ring of flames would instantly melt the ice.";
         break;
 

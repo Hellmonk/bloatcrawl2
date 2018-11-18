@@ -1432,7 +1432,7 @@ int player_res_fire(bool calc_unid, bool temp, bool items)
         if (you.duration[DUR_RESISTANCE])
             rf++;
 
-        if (you.duration[DUR_FIRE_SHIELD])
+        if (you.permabuffs[MUT_RING_OF_FLAMES])
             rf += 2;
 
         if (you.duration[DUR_QAZLAL_FIRE_RES])
@@ -1483,7 +1483,7 @@ int player_res_cold(bool calc_unid, bool temp, bool items)
         if (you.duration[DUR_RESISTANCE])
             rc++;
 
-        if (you.duration[DUR_FIRE_SHIELD])
+        if (you.permabuffs[MUT_RING_OF_FLAMES])
             rc--;
 
         if (you.duration[DUR_QAZLAL_COLD_RES])
@@ -1800,7 +1800,7 @@ int player_spec_fire()
     if (you.species == SP_LAVA_ORC && temperature_effect(LORC_FIRE_BOOST))
         sf++;
 
-    if (you.duration[DUR_FIRE_SHIELD])
+    if (you.permabuffs[MUT_RING_OF_FLAMES])
         sf++;
 
     return sf;
