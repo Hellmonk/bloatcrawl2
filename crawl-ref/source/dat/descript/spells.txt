@@ -1129,7 +1129,8 @@ Ring of Flames spell
 Surrounds the caster with a mobile ring of searing flame, and keeps other 
 clouds away from the caster. This spell attunes the caster to the forces of
 fire, increasing the power of their fire magic and giving protection from fire.
-However, it also makes them more susceptible to cold.
+However, it also makes them more susceptible to cold. Casting the spell again
+will cancel the form.
 %%%%
 Ring of Thunder spell
 
