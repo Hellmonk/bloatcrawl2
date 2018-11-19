@@ -208,10 +208,22 @@ spret_type deflection(int pow, bool fail)
 spret_type cast_regen(int pow, bool fail)
 {
     fail_check();
-    you.increase_duration(DUR_REGENERATION, 5 + roll_dice(2, pow / 3 + 1), 100,
-                          "Your skin crawls.");
-
-    return SPRET_SUCCESS;
+    if(!you.permabuffs[MUT_REGEN_SPELL])
+    {
+        if(spell_add_permabuff(SPELL_REGENERATION, 3))
+        {
+            mpr("You are now regenerating.");
+            return SPRET_SUCCESS;
+        }
+        else
+            return SPRET_ABORT;
+    }
+    else
+    {
+        spell_remove_permabuff(SPELL_REGENERATION, 3);
+        mpr("You are no longer regenerating.");
+        return SPRET_SUCCESS;
+    }
 }
 
 spret_type cast_revivification(int pow, bool fail)

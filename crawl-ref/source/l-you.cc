@@ -34,6 +34,7 @@
 #include "shopping.h"
 #include "skills.h"
 #include "spl-book.h"
+#include "spl-selfench.h"
 #include "spl-transloc.h"
 #include "spl-util.h"
 #include "status.h"
@@ -153,7 +154,7 @@ LUARET1(you_mesmerised, boolean, you.duration[DUR_MESMERISED])
 LUARET1(you_on_fire, boolean, you.duration[DUR_LIQUID_FLAMES])
 LUARET1(you_petrifying, boolean, you.duration[DUR_PETRIFYING])
 LUARET1(you_silencing, boolean, you.duration[DUR_SILENCE])
-LUARET1(you_regenerating, boolean, you.duration[DUR_REGENERATION]
+LUARET1(you_regenerating, boolean, you.permabuffs[MUT_REGEN_SPELL]
                                    || you.duration[DUR_TROGS_HAND])
 LUARET1(you_breath_timeout, boolean, you.duration[DUR_BREATH_WEAPON])
 LUARET1(you_extra_resistant, boolean, you.duration[DUR_RESISTANCE])

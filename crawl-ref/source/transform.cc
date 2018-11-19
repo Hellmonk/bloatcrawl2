@@ -1919,10 +1919,10 @@ bool transform(int pow, transformation which_trans, bool involuntary,
 
     case transformation::lich:
         // undead cannot regenerate -- bwr
-        if (you.duration[DUR_REGENERATION])
+        if (you.permabuffs[MUT_REGEN_SPELL])
         {
-            mprf(MSGCH_DURATION, "You stop regenerating.");
-            you.duration[DUR_REGENERATION] = 0;
+            mpr("You stop regenerating.");
+            spell_remove_permabuff(SPELL_REGENERATION, 3);
         }
 
         you.hunger_state = HS_SATIATED;  // no hunger effects while transformed

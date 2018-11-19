@@ -256,6 +256,7 @@ spret_type cast_ring_of_flames(int power, bool fail)
         if(spell_add_permabuff(SPELL_RING_OF_FLAMES, 7))
         {
             manage_fire_shield(1);
+            mpr("You are surrounded by a ring of flames.")
             return SPRET_SUCCESS;
         }
         else
@@ -266,6 +267,7 @@ spret_type cast_ring_of_flames(int power, bool fail)
     else
     {
         spell_remove_permabuff(SPELL_RING_OF_FLAMES, 7);
+        mpr("Your ring of flames fades.")
         return SPRET_SUCCESS;
     }
     

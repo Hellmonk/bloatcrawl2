@@ -1107,9 +1107,9 @@ caster, over a short duration.
 %%%%
 Regeneration spell
 
-Reanimates parts of the caster's wounds. This unnatural act dramatically but
-temporarily increases the caster's health regeneration, while also speeding
-their metabolism.
+Reanimates parts of the caster's wounds. This unnatural act dramatically
+increases the caster's health regeneration, while also speeding their
+metabolism. Casting the spell again will cancel the spell's effects.
 %%%%
 Repel Missiles spell
 
@@ -1130,7 +1130,7 @@ Surrounds the caster with a mobile ring of searing flame, and keeps other
 clouds away from the caster. This spell attunes the caster to the forces of
 fire, increasing the power of their fire magic and giving protection from fire.
 However, it also makes them more susceptible to cold. Casting the spell again
-will cancel the form.
+will cancel the spell's effects.
 %%%%
 Ring of Thunder spell
 
