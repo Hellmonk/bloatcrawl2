@@ -680,7 +680,7 @@ dgn.loot_scrolls = [[
     w:15  scroll of fog /
     w:15  scroll of fear /
     w:10  scroll of blinking /
-    w:10  scroll of summoning /
+    w:15  scroll of summoning /
     w:8   scroll of magic mapping /
     w:15  scroll of enchantment /
     w:5   scroll of brand weapon /
