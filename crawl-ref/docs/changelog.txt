@@ -19,7 +19,6 @@ Gods
 ----
 * Monster conversion for Beogh, Gozag's Bribe, and Jiyva is attempted upon
   sight instead of on the turn after the monster enters LOS.
-* The acid damage from Makhleb's Minor Destruction has been reduced.
 
 Interface
 ---------
@@ -44,8 +43,8 @@ Items
     *Drain Harm *Slow and EV+5}.
   - The sceptre of Torment is now a +7 eveningstar of pain, and its torment
     does not affect the wielder.
-  - The arc blade's effect now casts static discharge only once, but at very
-    high spellpower. The weapon's enchantment is now +8.
+  - The arc blade's effect now casts static discharge only once. The weapon's
+    enchantment is now +8.
   - Finisher loses Str+3 and gains a chance to instant-explode the target.
   - Unrandarts with melee effects that could anger nearby allies give a proper
     warning.

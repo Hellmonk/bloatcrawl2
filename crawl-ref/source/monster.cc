@@ -6782,7 +6782,7 @@ void monster::align_summons(bool force_friendly)
     }
 
 	if (avatar_gone)
-		simple_monster_message(this, " dismisses their weapons as they adapt a more neutral outlook on things.");
+		simple_monster_message(*this, " dismisses their weapons as they adapt a more neutral outlook on things.");
 
 	for (monster_iterator mi; mi; ++mi)
 	{

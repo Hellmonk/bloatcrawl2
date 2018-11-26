@@ -656,6 +656,9 @@ void seen_monster(monster* mons)
         take_note(Note(NOTE_SEEN_MONSTER, mons->type, 0, name));
     }
 
+    // attempt any god conversions on first sight
+    do_conversions(mons);
+
     if (!(mons->flags & MF_TSO_SEEN))
     {
         if (mons_gives_xp(*mons, you) && !crawl_state.game_is_arena())
