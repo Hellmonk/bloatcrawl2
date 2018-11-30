@@ -140,6 +140,7 @@ void destroy_wall(const coord_def& p);
 void set_terrain_changed(const coord_def c);
 bool cell_is_clingable(const coord_def pos);
 bool cell_can_cling_to(const coord_def& from, const coord_def to);
+bool cell_triggers_conduct(const coord_def pos);
 bool is_boring_terrain(dungeon_feature_type feat);
 
 void mutate_terrain_change_duration(coord_def pos, int delta, bool replace = false);
