@@ -56,12 +56,12 @@ end
 function gauntlet_arena_item_setup(e, other_loot)
     -- If an entry defines loot, one of that item will always place, otherwise
     -- 50% chance of good scroll or potion and 50% chance of star_item.
+    local d_first_nsubst = "d*"
     if other_loot then
         e.item(other_loot)
         d_first_nsubst = "d"
     else
         e.item(dgn.loot_scrolls .. " / " .. dgn.loot_potions)
-        d_first_nsubst = "*d"
     end
 
     -- For tier 1 arenas, we place one more item that's either 2/3 chance
@@ -73,7 +73,7 @@ function gauntlet_arena_item_setup(e, other_loot)
     -- For tier 2
     else
         if crawl.one_chance_in(3) then
-            e.item(dgn.randart_aux)
+            e.item(dgn.randart_aux_armour)
             e.item("any jewellery randart")
         else
             e.item(dgn.good_aux_armour)
@@ -377,3 +377,21 @@ tier2_gauntlet_arenas = {
     weight  = 0
   },
 }
+
+function gauntlet_exit_loot(e)
+    local gauntlet_loot = "superb_item w:49 / any armour w:7 " ..
+                          "/ any wand w:14 / any scroll"
+
+    local num_items = 7 + crawl.random2avg(10, 2)
+    local item_def = ""
+    for i = 1, num_items do
+        if i > 1 then
+            item_def = item_def .. ", "
+        end
+
+        item_def = item_def ..
+                   (crawl.one_chance_in(3) and "star_item" or gauntlet_loot)
+    end
+
+    e.kitem("< = " .. item_def)
+end
