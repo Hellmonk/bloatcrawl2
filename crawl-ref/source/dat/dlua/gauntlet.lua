@@ -281,6 +281,12 @@ tier1_gauntlet_arenas = {
   {
     first   = {mons = "large abomination", min = 0, max = 1},
     third   = {mons = "small abomination", min = 2, max = 4},
+    first   = {mons = "ice statue", min = 1, max = 1},
+    second  = {mons = "rime drake", min = 1, max = 2},
+  },
+  {
+    first   = {mons = "oklob plant", min = 1, max = 1},
+    second  = {mons = "acid dragon", min = 1, max = 2},
   },
 }
 
