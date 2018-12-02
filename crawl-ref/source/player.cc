@@ -2175,10 +2175,10 @@ static int _player_scale_evasion(int prescaled_ev, const int scale)
         return prescaled_ev + ev_bonus;
     }
 
-	// Ghost Mutation (Silent Spectre) gives a 10% EV boost.
+	// Ghost Mutation (Silent Spectre) gives a 20% EV boost.
 	if (you.get_mutation_level(MUT_GHOST) == 1)
 	{
-		const int ev_bonus = max(1 * scale, prescaled_ev / 10);
+		const int ev_bonus = max(1 * scale, prescaled_ev / 5);
 		return prescaled_ev + ev_bonus;
 	}
 
@@ -6178,7 +6178,12 @@ bool player::is_unbreathing() const
 
 bool player::is_insubstantial() const
 {
-    return form == transformation::wisp;
+	if (form == transformation::wisp)
+		return true;
+	if (you.get_mutation_level(MUT_GHOST) == 1)
+		return true;
+	else
+		return false;
 }
 
 int player::res_acid(bool calc_unid) const
@@ -6260,14 +6265,6 @@ int player::res_rotting(bool temp) const
 bool player::res_sticky_flame() const
 {
     return player_res_sticky_flame();
-}
-
-bool player::res_constrict() const
-{
-	if (you.get_mutation_level(MUT_GHOST) == 1)
-		return 3;
-	else
-		return 0;
 }
 
 int player::res_holy_energy() const

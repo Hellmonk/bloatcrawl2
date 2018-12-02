@@ -1928,9 +1928,9 @@ static const mutation_def mut_data[] =
 },
 
 { MUT_GHOST, 0, 1, mutflag::good, false,
-"spirit form",
+"insubstantial",
 
-{ "Your non-solid body increases your evasion and prevents curses from working upon you.", "", "" },
+{ "Your insubstantial body increases your evasion and prevents many things from grabbing or sticking to you. Most notably curses, sticky flames and various forms of constriction.", "", "" },
 { "Your body fades partially out of reality.", "", "" },
 { "You become solid.", "", "" },
 },
