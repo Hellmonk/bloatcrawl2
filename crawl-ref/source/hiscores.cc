@@ -2252,6 +2252,12 @@ string scorefile_entry::death_description(death_desc_verbosity verbosity) const
     case KILLED_BY_WATER:
         if (you.undead_state())
         {
+			if (race == SP_SILENT_SPECTRE) {
+				if (terse)
+					desc = "sank";
+				else
+					desc = "Lost beneath the waves";
+			}
             if (terse)
                 desc = "fell apart";
             else if (race == SP_MUMMY)
