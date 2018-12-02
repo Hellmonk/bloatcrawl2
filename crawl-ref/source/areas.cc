@@ -489,6 +489,9 @@ static int _silence_range(int dur)
 
 int player::silence_radius() const
 {
+	if (you.species == SP_SILENT_SPECTRE)
+		return 4;
+	else
     return _silence_range(duration[DUR_SILENCE]);
 }
 

@@ -605,6 +605,14 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
+{ MUT_UNBREATHING_FORM, 0, 1, mutflag::good, false,
+	"unbreathing",
+
+   { "You can survive without breathing.", "", "" },
+   { "You feel breathless.", "", "" },
+   { "", "", "" },
+},
+
 { MUT_TORMENT_RESISTANCE, 0, 1, mutflag::good, false,
   "torment resistance",
 
@@ -1909,6 +1917,22 @@ static const mutation_def mut_data[] =
   {"Your uncanny sense of smell can sniff out nearby items.", "", ""},
   {"Your sense of smell grows stronger.", "", ""},
   {"Your sense of smell gets weaker.", "", ""},
+},
+
+{ MUT_SILENT_CAST, 0, 1, mutflag::good, false,
+"silent casting",
+
+{ "You can communicate with gods and cast spells while silenced.", "", "" },
+{ "You gain the power to cast without speech.", "", "" },
+{ "Silence once again prevents your spellcasting.", "", "" },
+},
+
+{ MUT_GHOST, 0, 1, mutflag::good, false,
+"spirit form",
+
+{ "Your non-solid body increases your evasion and prevents curses from working upon you.", "", "" },
+{ "Your body fades partially out of reality.", "", "" },
+{ "You become solid.", "", "" },
 },
 };
 

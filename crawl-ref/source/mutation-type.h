@@ -122,6 +122,7 @@ enum mutation_type
     MUT_WEAK,
     MUT_WILD_MAGIC,
     MUT_UNBREATHING,
+	MUT_UNBREATHING_FORM, // Special version for SS since they keep their unbreathing between forms, while Grey Draconians don't.
     MUT_ACIDIC_BITE,
     MUT_EYEBALLS,
 #if TAG_MAJOR_VERSION == 34
@@ -212,6 +213,8 @@ enum mutation_type
     MUT_HOP,
     MUT_NO_REGENERATION,
     MUT_STRONG_NOSE,
+	MUT_SILENT_CAST,
+	MUT_GHOST,
     NUM_MUTATIONS,
     CATEGORY_MUTATIONS,
     RANDOM_MUTATION = CATEGORY_MUTATIONS,

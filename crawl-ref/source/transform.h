@@ -259,6 +259,7 @@ enum undead_form_reason
     UFR_TOO_DEAD  = -1,
     UFR_GOOD      = 0, // Must be 0, so we convert to bool sanely.
     UFR_TOO_ALIVE = 1,
+	UFR_TOO_SOLID = 2,
 };
 undead_form_reason lifeless_prevents_form(transformation form = you.form,
                                           bool involuntary = false);

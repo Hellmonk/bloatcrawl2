@@ -3086,6 +3086,9 @@ bool player_can_join_god(god_type which_god)
     if (which_god == GOD_YREDELEMNUL && you.is_nonliving())
         return false;
 
+	if (which_god == GOD_ASHENZARI && you.get_mutation_level(MUT_GHOST) == 1)
+		return false;
+
     if (which_god == GOD_BEOGH && !species_is_orcish(you.species))
         return false;
 

@@ -1465,7 +1465,12 @@ bool vehumet_supports_spell(spell_type spell)
 
 void trog_do_trogs_hand(int pow)
 {
-    you.increase_duration(DUR_TROGS_HAND,
+	if (you.undead_state() == US_GHOST)
+		you.increase_duration(DUR_TROGS_HAND,
+						5 + roll_dice(2, pow / 3 + 1), 100,
+						"Your aura crackles.");
+	else 
+		you.increase_duration(DUR_TROGS_HAND,
                           5 + roll_dice(2, pow / 3 + 1), 100,
                           "Your skin crawls.");
     mprf(MSGCH_DURATION, "You feel resistant to hostile enchantments.");
@@ -1473,8 +1478,13 @@ void trog_do_trogs_hand(int pow)
 
 void trog_remove_trogs_hand()
 {
-    if (you.duration[DUR_REGENERATION] == 0)
-        mprf(MSGCH_DURATION, "Your skin stops crawling.");
+	if (you.duration[DUR_REGENERATION] == 0)
+	{
+		if (you.undead_state() == US_GHOST)
+			mprf(MSGCH_DURATION, "Your aura calms down.");
+		else
+			mprf(MSGCH_DURATION, "Your skin stops crawling.");
+	}
     mprf(MSGCH_DURATION, "You feel less resistant to hostile enchantments.");
     you.duration[DUR_TROGS_HAND] = 0;
 }
@@ -4410,6 +4420,8 @@ bool gozag_call_merchant()
             continue;
         if (type == SHOP_DISTILLERY && you.species == SP_MUMMY)
             continue;
+		if (type == SHOP_SCROLL && you.species == SP_SILENT_SPECTRE)
+			continue;
         if (type == SHOP_EVOKABLES && you.get_mutation_level(MUT_NO_ARTIFICE))
             continue;
         if (you.species == SP_FELID &&

@@ -298,6 +298,25 @@ static const map<species_type, species_def> species_data =
     {}, // not a starting race
 } },
 
+{ SP_SILENT_SPECTRE,{
+	"SS",
+	"Silent Spectre", "Spectral", "Ghost",
+	SPF_NO_HAIR,
+    -1, -3, 3, 5,
+	MONS_SILENT_SPECTRE,
+	HT_LAND, US_GHOST, SIZE_MEDIUM,
+	4, 10, 12, // 24
+	{ STAT_INT, STAT_DEX }, 5,
+	{ { MUT_NEGATIVE_ENERGY_RESISTANCE, 3, 1 },{ MUT_TORMENT_RESISTANCE, 1, 1 },
+	{ MUT_UNBREATHING_FORM, 1, 1 }, {MUT_WILD_MAGIC, 3, 1},
+	{MUT_SILENT_CAST, 1, 1}, {MUT_GHOST,1,1}, },
+	{"You are surrounded by an aura of unnatural quiet.", },
+	{"silence aura",},
+	{ JOB_GLADIATOR, JOB_TRANSMUTER, JOB_FIRE_ELEMENTALIST, JOB_AIR_ELEMENTALIST },
+	{ SK_MACES_FLAILS, SK_SHORT_BLADES, SK_POLEARMS, SK_LONG_BLADES, SK_STAVES,
+	SK_THROWING },
+} },
+
 { SP_DEMONSPAWN, {
     "Ds",
     "Demonspawn", "Demonic", nullptr,
@@ -761,4 +780,5 @@ static const map<species_type, species_def> species_data =
     {}, // Line 13: Recommended jobs
     {}, // Line 14: Recommended weapons
 } }
+
 };

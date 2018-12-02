@@ -405,6 +405,10 @@ static void _wield_cursed(item_def& item, bool known_cursed, bool unmeld)
 {
     if (!item.cursed() || unmeld)
         return;
+	else if (you.get_mutation_level(MUT_GHOST) == 1) {
+		mprf("Your %s temporarily phases out of reality as it tries to stick to you.", you.hand_name(false).c_str());
+		return;
+	}
     mprf("It sticks to your %s!", you.hand_name(false).c_str());
     int amusement = 16;
     if (!known_cursed)
@@ -938,18 +942,24 @@ static void _equip_armour_effect(item_def& arm, bool unmeld,
 
     if (arm.cursed() && !unmeld)
     {
-        mpr("Oops, that feels deathly cold.");
-        learned_something_new(HINT_YOU_CURSED);
+		if (you.get_mutation_level(MUT_GHOST) == 0)
+		{
+			mpr("Oops, that feels deathly cold.");
+			learned_something_new(HINT_YOU_CURSED);
+		
+			if (!known_cursed)
+			{
+				int amusement = 64;
 
-        if (!known_cursed)
-        {
-            int amusement = 64;
+				if (origin_as_god_gift(arm) == GOD_XOM)
+					amusement *= 2;
 
-            if (origin_as_god_gift(arm) == GOD_XOM)
-                amusement *= 2;
-
-            xom_is_stimulated(amusement);
-        }
+				xom_is_stimulated(amusement);
+			}
+		
+		}
+		else
+			mpr("You feel a curse try and fail to bind to your spectral form.");
     }
 
     you.redraw_armour_class = true;
@@ -1324,19 +1334,24 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
 
     if (item.cursed() && !unmeld)
     {
-        mprf("Oops, that %s feels deathly cold.",
-             jewellery_is_amulet(item)? "amulet" : "ring");
-        learned_something_new(HINT_YOU_CURSED);
+		if (you.get_mutation_level(MUT_GHOST) == 0)
+		{
+			mprf("Oops, that %s feels deathly cold.",
+				jewellery_is_amulet(item) ? "amulet" : "ring");
+			learned_something_new(HINT_YOU_CURSED);
 
-        int amusement = 32;
-        if (!known_cursed && !known_bad)
-        {
-            amusement *= 2;
+			int amusement = 32;
+			if (!known_cursed && !known_bad)
+			{
+				amusement *= 2;
 
-            if (origin_as_god_gift(item) == GOD_XOM)
-                amusement *= 2;
-        }
-        xom_is_stimulated(amusement);
+				if (origin_as_god_gift(item) == GOD_XOM)
+					amusement *= 2;
+			}
+			xom_is_stimulated(amusement);
+		}
+		else
+			mpr("You feel a curse try and fail to bind to your spectral form.");
     }
 
     // Cursed or not, we know that since we've put the ring on.

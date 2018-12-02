@@ -757,11 +757,18 @@ void MiscastEffect::_conjuration(int severity)
                            " for a moment.";
             break;
         case 6:
-            you_msg      = "Your skin tingles.";
+			if (you.undead_state() == US_GHOST)
+				you_msg = "Your surface ripples.";
+			else 
+				you_msg      = "Your skin tingles.";
             mon_msg_seen = "@The_monster@ twitches.";
             break;
         case 7:
-            you_msg      = "Your skin glows momentarily.";
+			if (you.undead_state() == US_GHOST)
+				you_msg = "Your core emits a weird" + weird_glowing_colour() +
+				          "glow for a moment.";
+            else 
+				you_msg      = "Your skin glows momentarily.";
             mon_msg_seen = "@The_monster@ glows momentarily.";
             // A small glow isn't going to make it past invisibility.
             break;
@@ -912,11 +919,18 @@ void MiscastEffect::_hexes(int severity)
                            " for a moment.";
             break;
         case 6:
-            you_msg      = "Your skin tingles.";
+			if (you.undead_state() == US_GHOST)
+				you_msg = "Your surface ripples.";
+			else
+				you_msg = "Your skin tingles.";
             mon_msg_seen = "@The_monster@ twitches.";
             break;
         case 7:
-            you_msg      = "Your skin glows momentarily.";
+			if (you.undead_state() == US_GHOST)
+				you_msg = "Your core emits a weird" + weird_glowing_colour() +
+				"glow for a moment.";
+			else
+				you_msg = "Your skin glows momentarily.";
             mon_msg_seen = "@The_monster@'s body glows momentarily.";
             break;
         case 8:
@@ -1056,11 +1070,18 @@ void MiscastEffect::_charms(int severity)
                            " for a moment.";
             break;
         case 6:
-            you_msg      = "Your skin tingles.";
+			if (you.undead_state() == US_GHOST)
+				you_msg = "Your surface ripples.";
+			else
+				you_msg = "Your skin tingles.";
             mon_msg_seen = "@The_monster@ twitches.";
             break;
         case 7:
-            you_msg      = "Your skin glows momentarily.";
+			if (you.undead_state() == US_GHOST)
+				you_msg = "Your core emits a weird" + weird_glowing_colour() +
+				"glow for a moment.";
+			else
+				you_msg = "Your skin glows momentarily.";
             mon_msg_seen = "@The_monster@'s body glows momentarily.";
             break;
         case 8:
@@ -1214,7 +1235,10 @@ void MiscastEffect::_translocation(int severity)
                              + weird_glowing_colour() + " for a moment.";
             break;
         case 6:
-            you_msg      = "Your skin tingles.";
+			if (you.undead_state() == US_GHOST)
+				you_msg = "Your surface ripples.";
+			else
+				you_msg = "Your skin tingles.";
             mon_msg_seen = "@The_monster@ twitches.";
             break;
         case 7:
@@ -1844,11 +1868,18 @@ void MiscastEffect::_transmutation(int severity)
                            " for a moment.";
             break;
         case 6:
-            you_msg      = "Your skin tingles.";
+			if (you.undead_state() == US_GHOST)
+				you_msg = "Your surface ripples.";
+			else
+				you_msg = "Your skin tingles.";
             mon_msg_seen = "@The_monster@ twitches.";
             break;
         case 7:
-            you_msg      = "Your skin glows momentarily.";
+			if (you.undead_state() == US_GHOST)
+				you_msg = "Your core emits a weird" + weird_glowing_colour() +
+				"glow for a moment.";
+			else
+				you_msg = "Your skin glows momentarily.";
             mon_msg_seen = "@The_monster@'s body glows momentarily.";
             break;
         case 8:

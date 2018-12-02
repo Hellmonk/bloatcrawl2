@@ -1608,6 +1608,8 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
         case US_HUNGRY_DEAD: //ghouls
         case US_UNDEAD: // mummies & lichform
             return 3;
+		case US_GHOST: // spectres
+			return 3;
         case US_SEMI_UNDEAD: // vampire
             if (you.hunger_state <= HS_STARVING) // XXX: && temp?
                 return 3;
@@ -2169,6 +2171,13 @@ static int _player_scale_evasion(int prescaled_ev, const int scale)
         const int ev_bonus = max(1 * scale, prescaled_ev / 5);
         return prescaled_ev + ev_bonus;
     }
+
+	// Ghost Mutation (Silent Spectre) gives a 10% EV boost.
+	if (you.get_mutation_level(MUT_GHOST) == 1)
+	{
+		const int ev_bonus = max(1 * scale, prescaled_ev / 10);
+		return prescaled_ev + ev_bonus;
+	}
 
     return prescaled_ev;
 }
@@ -6160,7 +6169,8 @@ int player::how_chaotic(bool /*check_spells_god*/) const
 bool player::is_unbreathing() const
 {
     return !get_form()->breathes || petrified()
-        || get_mutation_level(MUT_UNBREATHING);
+        || get_mutation_level(MUT_UNBREATHING)
+		|| get_mutation_level(MUT_UNBREATHING_FORM);
 }
 
 bool player::is_insubstantial() const
@@ -6238,6 +6248,9 @@ int player::res_rotting(bool temp) const
 
     case US_UNDEAD:
         return 3; // full immunity
+
+	case US_GHOST:
+		return 3; // full immunity
     }
 }
 
@@ -7089,7 +7102,8 @@ bool player::can_safely_mutate(bool temp) const
         return false;
 
     return undead_state(temp) == US_ALIVE
-           || undead_state(temp) == US_SEMI_UNDEAD;
+           || undead_state(temp) == US_SEMI_UNDEAD
+		   || undead_state(temp) == US_GHOST;
 }
 
 // Is the player too undead to bleed, rage, or polymorph?

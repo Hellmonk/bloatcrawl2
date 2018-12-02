@@ -326,7 +326,8 @@ bool can_wield(const item_def *weapon, bool say_reason,
     if (!ignore_temporary_disability
         && you.weapon()
         && is_weapon(*you.weapon())
-        && you.weapon()->cursed())
+        && you.weapon()->cursed()
+		&& you.get_mutation_level(MUT_GHOST) == 0)
     {
         SAY(mprf("You can't unwield your weapon%s!",
                  !unwield ? " to draw a new one" : ""));
@@ -1132,7 +1133,7 @@ static bool _can_takeoff_armour(int item)
     }
 
     // If we get here, we're wearing the item.
-    if (invitem.cursed())
+    if (invitem.cursed() && you.get_mutation_level(MUT_GHOST) == 0)
     {
         mprf("%s is stuck to your body!", invitem.name(DESC_YOUR).c_str());
         return false;
@@ -1488,7 +1489,7 @@ static bool _swap_rings(int ring_slot)
                 }
             }
 
-            if (ring->cursed())
+            if (ring->cursed() && you.get_mutation_level(MUT_GHOST) == 0)
                 cursed++;
             else if (strstr(ring->inscription.c_str(), "=R"))
             {
@@ -1659,7 +1660,7 @@ static bool _can_puton_jewellery(int item_slot)
     if (is_amulet)
     {
         int existing = you.equip[EQ_AMULET];
-        if (existing != -1 && you.inv[existing].cursed())
+        if (existing != -1 && you.inv[existing].cursed() && you.get_mutation_level(MUT_GHOST) == 0)
         {
             mprf("%s is stuck to you!",
                  you.inv[existing].name(DESC_YOUR).c_str());
@@ -1682,7 +1683,7 @@ static bool _can_puton_jewellery(int item_slot)
                 continue;
             }
             int existing = you.equip[eq];
-            if (existing != -1 && you.inv[existing].cursed())
+            if (existing != -1 && you.inv[existing].cursed() && you.get_mutation_level(MUT_GHOST) == 0)
                 cursed++;
             else
                 // We found an available slot. We're done.
@@ -1969,7 +1970,7 @@ bool remove_ring(int slot, bool announce)
         return false;
     }
 
-    if (you.inv[you.equip[hand_used]].cursed())
+	if (you.inv[you.equip[hand_used]].cursed() && you.get_mutation_level(MUT_GHOST) == 0)
     {
         if (announce)
         {
@@ -2052,7 +2053,7 @@ static void _vampire_corpse_help()
 
 void drink(item_def* potion)
 {
-    if (you_foodless())
+    if (you.undead_state() == US_UNDEAD)
     {
         mpr("You can't drink.");
         return;

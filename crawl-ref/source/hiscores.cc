@@ -2242,6 +2242,8 @@ string scorefile_entry::death_description(death_desc_verbosity verbosity) const
         {
             if (race == SP_MUMMY)
                 desc += "Turned to ash by lava";
+			if (race == SP_SILENT_SPECTRE)
+				desc += "Lost beneath molten lava";
             else
                 desc += "Took a swim in molten lava";
         }

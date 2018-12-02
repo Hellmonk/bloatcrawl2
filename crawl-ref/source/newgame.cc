@@ -211,7 +211,7 @@ static const species_type species_order[] =
     SP_DEMIGOD,        SP_DEMONSPAWN,
     // undead species
     SP_MUMMY,          SP_GHOUL,
-    SP_VAMPIRE,
+    SP_VAMPIRE,	       SP_SILENT_SPECTRE,
     // not humanoid at all
     SP_FELID,          SP_OCTOPODE,
 };
@@ -1074,7 +1074,6 @@ static species_group species_groups[] =
             SP_TENGU,
             SP_DEEP_ELF,
             SP_OGRE,
-            SP_DEEP_DWARF,
             SP_GNOLL,
         }
     },
@@ -1084,7 +1083,6 @@ static species_group species_groups[] =
         20,
         {
             SP_VINE_STALKER,
-            SP_VAMPIRE,
             SP_DEMIGOD,
             SP_FORMICID,
             SP_NAGA,
@@ -1092,6 +1090,7 @@ static species_group species_groups[] =
             SP_FELID,
             SP_BARACHI,
             SP_MUMMY,
+			SP_SILENT_SPECTRE,
         }
     },
 };

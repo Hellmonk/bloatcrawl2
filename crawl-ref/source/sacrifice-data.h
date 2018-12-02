@@ -42,7 +42,7 @@ static const sacrifice_def sac_data[] =
   30,
   SK_NONE,
   nullptr,
-  nullptr,
+  []() { return you.species != SP_SILENT_SPECTRE; },
 },
 
 { ABIL_RU_SACRIFICE_DRINK, MUT_NO_DRINK,

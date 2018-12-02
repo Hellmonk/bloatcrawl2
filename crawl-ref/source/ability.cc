@@ -1318,7 +1318,7 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
     }
 
     // Silence and water elementals
-    if (silenced(you.pos())
+    if (silenced(you.pos()) && you.get_mutation_level(MUT_SILENT_CAST) == 0
         || you.duration[DUR_WATER_HOLD] && !you.res_water_drowning())
     {
         talent tal = get_talent(abil.ability, false);
@@ -3638,7 +3638,7 @@ vector<ability_type> get_god_abilities(bool ignore_silence, bool ignore_piety,
     if (silenced(you.pos()) && you_worship(GOD_WU_JIAN) && piety_rank() >= 2)
         abilities.push_back(ABIL_WU_JIAN_WALLJUMP);
 
-    if (!ignore_silence && silenced(you.pos()))
+    if (!ignore_silence && silenced(you.pos()) && you.get_mutation_level(MUT_SILENT_CAST) == 0)
         return abilities;
     // Remaining abilities are unusable if silenced.
     for (const auto& power : get_god_powers(you.religion))

@@ -617,7 +617,7 @@ bool can_cast_spells(bool quiet)
         return false;
     }
 
-    if (silenced(you.pos()))
+    if (silenced(you.pos()) && (you.get_mutation_level(MUT_SILENT_CAST) == 0))
     {
         if (!quiet)
             mpr("You cannot cast spells when silenced!");

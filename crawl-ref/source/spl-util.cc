@@ -1149,6 +1149,8 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_STATUE_FORM:
         if (SP_GARGOYLE == you.species)
             return "you're already a statue.";
+		if (SP_SILENT_SPECTRE == you.species)
+			return "you are incapable of being fully solid.";
         // fallthrough to other forms
 
     case SPELL_BEASTLY_APPENDAGE:
@@ -1162,7 +1164,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         {
             return "your undead flesh cannot be transformed.";
         }
-        if (temp && you.is_lifeless_undead())
+        if (you.undead_state(temp) == US_SEMI_UNDEAD && you.is_lifeless_undead())
             return "your current blood level is not sufficient.";
         break;
 
@@ -1171,6 +1173,8 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "you can't regenerate without divine aid.";
         if (you.undead_state(temp) == US_UNDEAD)
             return "you're too dead to regenerate.";
+		if (you.undead_state(temp) == US_GHOST)
+			return "you need a body to regenerate in this way.";
         break;
 
     case SPELL_EXCRUCIATING_WOUNDS:
@@ -1221,6 +1225,11 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "you're too dead.";
         break;
 
+	case SPELL_SILENCE:
+		if (you.species == SP_SILENT_SPECTRE)
+			return "you're already silenced.";
+		break;
+
     case SPELL_OZOCUBUS_ARMOUR:
         if (temp && !player_effectively_in_light_armour())
             return "your body armour is too heavy.";
@@ -1235,6 +1244,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         if (you.species == SP_GARGOYLE
             || you.species == SP_GHOUL
             || you.species == SP_MUMMY
+			|| you.species == SP_SILENT_SPECTRE
             || (temp && !form_can_bleed(you.form)))
         {
             return "you have no blood to sublime.";
@@ -1277,6 +1287,11 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         if (you.get_mutation_level(MUT_NO_LOVE))
             return "you cannot coerce anything to obey you.";
         break;
+
+	case SPELL_SONG_OF_SLAYING:
+		if (you.species == SP_SILENT_SPECTRE)
+			return "you cannot sing out loud.";
+		break;
 
     case SPELL_CORPSE_ROT:
     case SPELL_POISONOUS_VAPOURS:

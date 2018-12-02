@@ -131,3 +131,8 @@ Vine Stalker
 Frail symbionts, Vine Stalkers cannot regain health from devices or potions.
 Their magical reserves absorb damage, and they pack a magic-restoring bite.
 %%%%
+Silent Spectre
+
+Ephermal spirits surrounded by an uncanny silence. They cannot read scrolls
+aloud, but are adept at casting with gestures.
+%%%%
