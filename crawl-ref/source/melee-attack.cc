@@ -386,7 +386,7 @@ bool melee_attack::handle_phase_hit()
         return false;
     }
 
-    if (attacker->is_player() && you.duration[DUR_INFUSION])
+    if (attacker->is_player() && you.permabuffs[MUT_INFUSION])
     {
         if (enough_mp(1, true, false))
         {

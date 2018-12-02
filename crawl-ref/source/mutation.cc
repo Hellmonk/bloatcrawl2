@@ -1535,13 +1535,16 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
     // Permabuffs always succeed regardless of any factors, as they aren't really mutations
     if (is_permabuff(which_mutation))
     {
+        const mutation_def& mdef = _get_mutation_def(which_mutation);
         if (add_permabuff && !you.permabuffs[which_mutation])
         {
             you.permabuffs[which_mutation] = 1;
+            mprf(MSGCH_MUTATION, "%s", mdef.gain[0]);
         }
         else if (!add_permabuff && you.permabuffs[which_mutation])
         {
             you.permabuffs[which_mutation] = 0;
+            mprf(MSGCH_MUTATION, "%s", mdef.lose[0]);
         }
         return true;
     }

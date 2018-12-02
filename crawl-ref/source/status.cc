@@ -706,14 +706,14 @@ bool fill_status_info(int status, status_info& inf)
             inf.light_colour = DARKGREY;
         break;
     }
-
+#if TAG_MAJOR_VERSION == 34
     case DUR_INFUSION:
     {
         if (!enough_mp(1, true, false))
             inf.light_colour = DARKGREY;
         break;
     }
-
+#endif
     case STATUS_ORB:
     {
         if (player_has_orb())

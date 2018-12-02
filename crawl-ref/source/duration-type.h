@@ -133,8 +133,8 @@ enum duration_type
     DUR_ANTIMAGIC,
 #if TAG_MAJOR_VERSION == 34
     DUR_SPIRIT_HOWL,
-#endif
     DUR_INFUSION,
+#endif
     DUR_SONG_OF_SLAYING,
 #if TAG_MAJOR_VERSION == 34
     DUR_SONG_OF_SHIELDING,

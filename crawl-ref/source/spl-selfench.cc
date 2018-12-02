@@ -212,7 +212,6 @@ spret_type cast_regen(int pow, bool fail)
     {
         if(spell_add_permabuff(SPELL_REGENERATION, 3))
         {
-            mpr("You are now regenerating.");
             return SPRET_SUCCESS;
         }
         else
@@ -221,7 +220,6 @@ spret_type cast_regen(int pow, bool fail)
     else
     {
         spell_remove_permabuff(SPELL_REGENERATION, 3);
-        mpr("You are no longer regenerating.");
         return SPRET_SUCCESS;
     }
 }
@@ -301,15 +299,20 @@ int cast_selective_amnesia(const string &pre_msg)
 spret_type cast_infusion(int pow, bool fail)
 {
     fail_check();
-    if (!you.duration[DUR_INFUSION])
-        mpr("You begin infusing your attacks with magical energy.");
+    if (!you.permabuffs[MUT_INFUSION])
+    {
+        if(spell_add_permabuff(SPELL_INFUSION, 1))
+        {
+            return SPRET_SUCCESS;
+        }
+        else
+            return SPRET_ABORT;
+    }
     else
-        mpr("You extend your infusion's duration.");
-
-    you.increase_duration(DUR_INFUSION,  8 + roll_dice(2, pow), 100);
-    you.props["infusion_power"] = pow;
-
-    return SPRET_SUCCESS;
+    {
+        spell_remove_permabuff(SPELL_INFUSION, 1);
+        return SPRET_SUCCESS;
+    }
 }
 
 spret_type cast_song_of_slaying(int pow, bool fail)

@@ -390,12 +390,14 @@ static const duration_def duration_data[] =
       "marked", "sentinel's mark",
       "A sentinel's mark is revealing your location to enemies.", D_DISPELLABLE | D_EXPIRES,
       {{ "The sentinel's mark upon you fades away." }}},
+#if TAG_MAJOR_VERSION == 34
     { DUR_INFUSION,
       BLUE, "Infus",
       "infused", "",
       "Your attacks are magically infused.", D_DISPELLABLE | D_EXPIRES,
       {{ "You are no longer magically infusing your attacks." },
         { "Your magical infusion is running out." }}, 6},
+#endif
     { DUR_SONG_OF_SLAYING,
       BLUE, "Slay",
       "singing", "song of slaying",
