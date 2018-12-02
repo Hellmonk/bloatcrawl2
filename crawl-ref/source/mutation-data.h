@@ -1930,7 +1930,7 @@ static const mutation_def mut_data[] =
 { MUT_GHOST, 0, 1, mutflag::good, false,
 "insubstantial",
 
-{ "Your insubstantial body increases your evasion and prevents many things from grabbing or sticking to you. Most notably curses, sticky flames and various forms of constriction.", "", "" },
+{ "Your insubstantial form boosts your evasion and grants immunity to sticky flames, curses and constriction.", "", "" },
 { "Your body fades partially out of reality.", "", "" },
 { "You become solid.", "", "" },
 },
