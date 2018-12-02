@@ -1699,6 +1699,9 @@ int player_res_sticky_flame(bool calc_unid, bool temp, bool items)
         rsf++;
     }
 
+	if (you.get_mutation_level(MUT_GHOST) == 1)
+		rsf++;
+
     if (get_form()->res_sticky_flame())
         rsf++;
 
@@ -6257,6 +6260,14 @@ int player::res_rotting(bool temp) const
 bool player::res_sticky_flame() const
 {
     return player_res_sticky_flame();
+}
+
+bool player::res_constrict() const
+{
+	if (you.get_mutation_level(MUT_GHOST) == 1)
+		return 3;
+	else
+		return 0;
 }
 
 int player::res_holy_energy() const
