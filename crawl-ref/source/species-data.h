@@ -301,8 +301,8 @@ static const map<species_type, species_def> species_data =
 { SP_SILENT_SPECTRE,{
 	"SS",
 	"Silent Spectre", "Spectral", "Ghost",
-	SPF_NO_HAIR,
-    -1, -3, 3, 5,
+	SPF_NONE,
+    -1, -2, 3, 5,
 	MONS_SILENT_SPECTRE,
 	HT_LAND, US_GHOST, SIZE_MEDIUM,
 	4, 10, 12, // 24
@@ -312,7 +312,7 @@ static const map<species_type, species_def> species_data =
 	{MUT_SILENT_CAST, 1, 1}, {MUT_GHOST,1,1}, },
 	{"You are surrounded by an aura of unnatural quiet.", },
 	{"silence aura",},
-	{ JOB_GLADIATOR, JOB_TRANSMUTER, JOB_FIRE_ELEMENTALIST, JOB_AIR_ELEMENTALIST },
+	{ JOB_GLADIATOR, JOB_TRANSMUTER, JOB_ENCHANTER, JOB_WARPER, JOB_FIRE_ELEMENTALIST, JOB_AIR_ELEMENTALIST },
 	{ SK_MACES_FLAILS, SK_SHORT_BLADES, SK_POLEARMS, SK_LONG_BLADES, SK_STAVES,
 	SK_THROWING },
 } },

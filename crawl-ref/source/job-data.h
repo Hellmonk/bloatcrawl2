@@ -36,7 +36,8 @@ static const map<job_type, job_def> job_data =
 { JOB_AIR_ELEMENTALIST, {
     "AE", "Air Elementalist",
     0, 7, 5,
-    { SP_DEEP_ELF, SP_TENGU, SP_BASE_DRACONIAN, SP_NAGA, SP_VINE_STALKER, },
+    { SP_DEEP_ELF, SP_TENGU, SP_BASE_DRACONIAN, SP_NAGA, SP_VINE_STALKER, 
+		SP_SILENT_SPECTRE},
     { "robe", "book of Air" },
     WCHOICE_NONE,
     { { SK_CONJURATIONS, 1 }, { SK_AIR_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
@@ -56,8 +57,7 @@ static const map<job_type, job_def> job_data =
 { JOB_ARTIFICER, {
     "Ar", "Artificer",
     4, 3, 5,
-    { SP_DEEP_DWARF, SP_HALFLING, SP_KOBOLD, SP_SPRIGGAN, SP_BASE_DRACONIAN,
-      SP_DEMONSPAWN, },
+    { SP_HALFLING, SP_KOBOLD, SP_SPRIGGAN, SP_BASE_DRACONIAN, SP_DEMONSPAWN, },
     { "short sword", "leather armour", "wand of flame charges:15",
       "wand of enslavement charges:15", "wand of random effects charges:15" },
     WCHOICE_NONE,
@@ -68,8 +68,7 @@ static const map<job_type, job_def> job_data =
 { JOB_ASSASSIN, {
     "As", "Assassin",
     3, 3, 6,
-    { SP_TROLL, SP_HALFLING, SP_SPRIGGAN, SP_DEMONSPAWN, SP_VAMPIRE,
-      SP_VINE_STALKER, },
+    { SP_TROLL, SP_HALFLING, SP_SPRIGGAN, SP_DEMONSPAWN, SP_VINE_STALKER, },
     { "dagger plus:2", "blowgun", "robe", "cloak", "needle ego:poisoned q:8",
       "needle ego:curare q:2" },
     WCHOICE_NONE,
@@ -111,8 +110,8 @@ static const map<job_type, job_def> job_data =
 { JOB_EARTH_ELEMENTALIST, {
     "EE", "Earth Elementalist",
     0, 7, 5,
-    { SP_DEEP_ELF, SP_DEEP_DWARF, SP_SPRIGGAN, SP_GARGOYLE, SP_DEMIGOD,
-      SP_GHOUL, SP_OCTOPODE, },
+    { SP_DEEP_ELF, SP_SPRIGGAN, SP_GARGOYLE, SP_DEMIGOD, SP_GHOUL, 
+      SP_OCTOPODE, },
     { "book of Geomancy", "stone q:30", "robe", },
     WCHOICE_NONE,
     { { SK_TRANSMUTATIONS, 1 }, { SK_EARTH_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
@@ -122,7 +121,7 @@ static const map<job_type, job_def> job_data =
 { JOB_ENCHANTER, {
     "En", "Enchanter",
     0, 7, 5,
-    { SP_DEEP_ELF, SP_FELID, SP_KOBOLD, SP_SPRIGGAN, SP_NAGA, SP_VAMPIRE, },
+    { SP_DEEP_ELF, SP_FELID, SP_KOBOLD, SP_SPRIGGAN, SP_NAGA, SP_SILENT_SPECTRE, },
     { "dagger plus:1", "robe", "book of Maledictions" },
     WCHOICE_NONE,
     { { SK_WEAPON, 1 }, { SK_HEXES, 3 }, { SK_SPELLCASTING, 2 },
@@ -153,8 +152,7 @@ static const map<job_type, job_def> job_data =
 { JOB_GLADIATOR, {
     "Gl", "Gladiator",
     6, 0, 6,
-    { SP_DEEP_DWARF, SP_HILL_ORC, SP_MERFOLK, SP_MINOTAUR, SP_GARGOYLE,
-      SP_CENTAUR, },
+    { SP_HILL_ORC, SP_MERFOLK, SP_MINOTAUR, SP_GARGOYLE, SP_CENTAUR, },
     { "leather armour", "helmet", "throwing net q:3" },
     WCHOICE_GOOD,
     { { SK_FIGHTING, 2 }, { SK_THROWING, 2 }, { SK_DODGING, 3 },
@@ -185,8 +183,8 @@ static const map<job_type, job_def> job_data =
 { JOB_MONK, {
     "Mo", "Monk",
     3, 2, 7,
-    { SP_DEEP_DWARF, SP_HILL_ORC, SP_TROLL, SP_CENTAUR, SP_MERFOLK,
-      SP_GARGOYLE, SP_DEMONSPAWN, },
+    { SP_HILL_ORC, SP_TROLL, SP_CENTAUR, SP_MERFOLK, SP_GARGOYLE,
+	  SP_DEMONSPAWN, },
     { "robe" },
     WCHOICE_PLAIN,
     { { SK_FIGHTING, 3 }, { SK_WEAPON, 3 }, { SK_DODGING, 3 },
@@ -196,8 +194,8 @@ static const map<job_type, job_def> job_data =
 { JOB_NECROMANCER, {
     "Ne", "Necromancer",
     0, 7, 5,
-    { SP_DEEP_ELF, SP_DEEP_DWARF, SP_HILL_ORC, SP_DEMONSPAWN, SP_MUMMY,
-      SP_VAMPIRE, },
+    { SP_DEEP_ELF, SP_HILL_ORC, SP_DEMONSPAWN, SP_MUMMY,
+      SP_VAMPIRE, SP_SILENT_SPECTRE},
     { "robe", "book of Necromancy" },
     WCHOICE_NONE,
     { { SK_SPELLCASTING, 2 }, { SK_NECROMANCY, 4 }, { SK_DODGING, 2 },
@@ -207,7 +205,7 @@ static const map<job_type, job_def> job_data =
 { JOB_SKALD, {
     "Sk", "Skald",
     3, 5, 4,
-    { SP_HALFLING, SP_CENTAUR, SP_MERFOLK, SP_BASE_DRACONIAN, SP_VAMPIRE, },
+    { SP_HALFLING, SP_CENTAUR, SP_MERFOLK, SP_BASE_DRACONIAN, },
     { "leather armour", "book of Battle" },
     WCHOICE_PLAIN,
     { { SK_FIGHTING, 2 }, { SK_ARMOUR, 1 }, { SK_DODGING, 2 },
@@ -260,7 +258,7 @@ static const map<job_type, job_def> job_data =
 { JOB_WARPER, {
     "Wr", "Warper",
     3, 5, 4,
-    { SP_FELID, SP_HALFLING, SP_DEEP_DWARF, SP_SPRIGGAN, SP_CENTAUR,
+    { SP_FELID, SP_HALFLING, SP_SILENT_SPECTRE, SP_SPRIGGAN, SP_CENTAUR,
       SP_BASE_DRACONIAN, },
     { "leather armour", "book of Spatial Translocations", "scroll of blinking",
       "tomahawk ego:dispersal q:5" },
