@@ -199,10 +199,20 @@ spret_type corpse_armour(int pow, bool fail)
 spret_type deflection(int pow, bool fail)
 {
     fail_check();
-    you.attribute[ATTR_DEFLECT_MISSILES] = 1;
-    mpr("You feel very safe from missiles.");
-
-    return SPRET_SUCCESS;
+    if(!you.permabuffs[MUT_DEFLECT_MISSILES])
+    {
+        if(spell_add_permabuff(SPELL_DEFLECT_MISSILES, 6))
+        {
+            return SPRET_SUCCESS;
+        }
+        else
+            return SPRET_ABORT;
+    }
+    else
+    {
+        spell_remove_permabuff(SPELL_DEFLECT_MISSILES, 6);
+        return SPRET_SUCCESS;
+    }
 }
 
 spret_type cast_regen(int pow, bool fail)

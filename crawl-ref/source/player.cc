@@ -5928,7 +5928,7 @@ void player::shield_block_succeeded(actor *foe)
 
 int player::missile_deflection() const
 {
-    if (attribute[ATTR_DEFLECT_MISSILES])
+    if (you.permabuffs[MUT_DEFLECT_MISSILES])
         return 2;
 
     if (get_mutation_level(MUT_DISTORTION_FIELD) == 3
@@ -5944,13 +5944,13 @@ int player::missile_deflection() const
 
 void player::ablate_deflection()
 {
-    if (attribute[ATTR_DEFLECT_MISSILES])
+    if (you.permabuffs[MUT_DEFLECT_MISSILES])
     {
         const int power = calc_spell_power(SPELL_DEFLECT_MISSILES, true);
         if (one_chance_in(2 + power / 8))
         {
-            attribute[ATTR_DEFLECT_MISSILES] = 0;
-            mprf(MSGCH_DURATION, "You feel less protected from missiles.");
+            dec_mp(6);
+            mprf(MSGCH_DURATION, "Your power feels drained sustaining your protection from missiles.");
         }
     }
 }
