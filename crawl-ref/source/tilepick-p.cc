@@ -459,23 +459,51 @@ tileidx_t tileidx_player()
     case transformation::tree:
         break;
     // animals
-    case transformation::bat:       ch = TILEP_TRAN_BAT;       break;
-    case transformation::spider:    ch = TILEP_TRAN_SPIDER;    break;
-    case transformation::pig:       ch = TILEP_TRAN_PIG;       break;
+    case transformation::bat:
+		if (you.get_mutation_level(MUT_GHOST) == 1)
+			ch = TILEP_TRAN_BAT_SPECTRAL;
+		else	
+			ch = TILEP_TRAN_BAT;       
+		break;
+    case transformation::spider:
+		if (you.get_mutation_level(MUT_GHOST) == 1)
+			ch = TILEP_TRAN_SPIDER_SPECTRAL;
+		else
+			ch = TILEP_TRAN_SPIDER;
+		break;
+    case transformation::pig:
+		if (you.get_mutation_level(MUT_GHOST) == 1)
+			ch = TILEP_TRAN_PIG_SPECTRAL;
+		else
+			ch = TILEP_TRAN_PIG;
+		break;
 #if TAG_MAJOR_VERSION == 34
     case transformation::porcupine: ch = TILEP_MONS_PORCUPINE; break;
 #endif
     // non-animals
-    case transformation::ice_beast: ch = TILEP_TRAN_ICE_BEAST; break;
+    case transformation::ice_beast:
+		if (you.get_mutation_level(MUT_GHOST) == 1)
+			ch = TILEP_TRAN_ICE_BEAST_SPECTRAL;
+		else
+			ch = TILEP_TRAN_ICE_BEAST;
+		break;
     case transformation::wisp:      ch = TILEP_MONS_INSUBSTANTIAL_WISP; break;
 #if TAG_MAJOR_VERSION == 34
     case transformation::jelly:     ch = TILEP_MONS_JELLY;     break;
 #endif
-    case transformation::fungus:    ch = TILEP_TRAN_MUSHROOM;  break;
+    case transformation::fungus:
+		if (you.get_mutation_level(MUT_GHOST) == 1)
+			ch = TILEP_TRAN_MUSHROOM_SPECTRAL;
+		else
+			ch = TILEP_TRAN_MUSHROOM;
+		break;
     case transformation::shadow:    ch = TILEP_TRAN_SHADOW;    break;
-    case transformation::hydra:     ch = tileidx_mon_clamp(TILEP_MONS_HYDRA,
-                                                           you.heads() - 1);
-                                    break;
+    case transformation::hydra:     
+		if (you.get_mutation_level(MUT_GHOST) == 1)
+			ch = tileidx_mon_clamp(TILEP_TRAN_SPECTRAL_HYDRA, you.heads() - 1);
+		else
+			ch = tileidx_mon_clamp(TILEP_MONS_HYDRA, you.heads() - 1);
+		break;
     case transformation::dragon:
     {
         switch (you.species)
@@ -488,6 +516,7 @@ tileidx_t tileidx_player()
         case SP_PURPLE_DRACONIAN:  ch = TILEP_TRAN_DRAGON_PURPLE;  break;
         case SP_WHITE_DRACONIAN:   ch = TILEP_TRAN_DRAGON_WHITE;   break;
         case SP_RED_DRACONIAN:     ch = TILEP_TRAN_DRAGON_RED;     break;
+		case SP_SILENT_SPECTRE:	   ch = TILEP_TRAN_DRAGON_SPECTRAL; break;
         default:                   ch = TILEP_TRAN_DRAGON;         break;
         }
         break;

@@ -1122,9 +1122,13 @@ misc/unseen PLAYER
 ## Transformations
 %sdir player/transform
 bat_form TRAN_BAT
+bat_form_spectral TRAN_BAT_SPECTRAL
 spider_form TRAN_SPIDER
+spider_form_spectral TRAN_SPIDER_SPECTRAL
 pig_form TRAN_PIG
+pig_form_spectral TRAN_PIG_SPECTRAL
 ice_form TRAN_ICE_BEAST
+ice_form_spectral TRAN_ICE_BEAST_SPECTRAL
 statue_form_humanoid TRAN_STATUE_HUMANOID
 %syn TRAN_STATUE_EQUIP_FIRST
 statue_form_centaur TRAN_STATUE_CENTAUR
@@ -1141,6 +1145,12 @@ dragon_form_grey TRAN_DRAGON_GREY
 dragon_form_black TRAN_DRAGON_BLACK
 dragon_form_purple TRAN_DRAGON_PURPLE
 dragon_form_pale TRAN_DRAGON_PALE
+dragon_form_spectral TRAN_DRAGON_SPECTRAL
+spectral_hydra_form1 TRAN_SPECTRAL_HYDRA
+spectral_hydra_form2
+spectral_hydra_form3
+spectral_hydra_form4
+spectral_hydra_form5
 lich_form_humanoid TRAN_LICH_HUMANOID
 %syn TRAN_LICH_EQUIP_FIRST
 lich_form_centaur TRAN_LICH_CENTAUR
@@ -1149,8 +1159,10 @@ lich_form_octopode TRAN_LICH_OCTOPODE
 %syn TRAN_LICH_EQUIP_LAST
 lich_form_felid TRAN_LICH_FELID
 tree_form TRAN_TREE
+tree_form_spectral TRAN_TREE_SPECTRAL
 %rim 0
 mushroom_form TRAN_MUSHROOM
+mushroom_form_spectral TRAN_MUSHROOM_SPECTRAL
 shadow_form TRAN_SHADOW
 %rim 1
 

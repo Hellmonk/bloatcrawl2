@@ -273,7 +273,10 @@ void fill_doll_equipment(dolls_data &result)
     switch (you.form)
     {
     case transformation::tree:
-        result.parts[TILEP_PART_BASE]    = TILEP_TRAN_TREE;
+		if (you.get_mutation_level(MUT_GHOST) == 1)
+			result.parts[TILEP_PART_BASE] = TILEP_TRAN_TREE_SPECTRAL;
+		else 
+			result.parts[TILEP_PART_BASE]    = TILEP_TRAN_TREE;
         result.parts[TILEP_PART_HELM]    = 0; // fixme, should show up
         result.parts[TILEP_PART_DRCHEAD] = 0;
         result.parts[TILEP_PART_DRCWING] = 0;

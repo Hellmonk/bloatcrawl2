@@ -1542,11 +1542,10 @@ undead_form_reason lifeless_prevents_form(transformation which_trans,
 
 	if (you.species == SP_SILENT_SPECTRE) {
 		
-		if (which_trans == transformation::lich)
-			return UFR_TOO_DEAD;
-		if (which_trans == transformation::statue)
+		if (which_trans == transformation::lich || which_trans == transformation::statue)
 			return UFR_TOO_SOLID;
-		return UFR_GOOD;
+		else 
+			return UFR_GOOD;
 	}
 
     if (you.species != SP_VAMPIRE)
@@ -1670,6 +1669,14 @@ bool transform(int pow, transformation which_trans, bool involuntary,
         msg = "Your unliving flesh cannot be transformed in this way.";
         success = false;
     }
+	else if (lifeless_prevents_form(which_trans, involuntary) == UFR_TOO_SOLID)
+	{
+		if (which_trans == transformation::statue)
+			msg = "You're ghostly form cannot become solid enough.";
+		else if (which_trans == transformation::lich)
+			msg = "You're already undead.";
+		success = false;
+	}
     else if (which_trans == transformation::lich
              && you.duration[DUR_DEATHS_DOOR])
     {
