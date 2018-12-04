@@ -2379,7 +2379,7 @@ static void _init_servitor_monster(monster &mon, const actor& caster)
         if (caster.has_spell(spell)
             && (caster_mon || raw_spell_fail(spell) < 50))
         {
-            mon.spells.emplace_back(spell, 0, MON_SPELL_WIZARD);
+            mon.spells.emplace_back(spell, 0, MON_SPELL_MAGICAL);
             spell_levels += spell_difficulty(spell);
         }
     }
