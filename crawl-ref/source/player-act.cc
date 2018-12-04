@@ -824,7 +824,12 @@ bool player::antimagic_susceptible() const
 bool player::is_web_immune() const
 {
     // Spider form
-    return form == transformation::spider;
+	if (form == transformation::spider)
+		return true;
+	else if (you.get_mutation_level(MUT_GHOST) == 1)
+		return true;
+	else
+		return false;
 }
 
 bool player::shove(const char* feat_name)

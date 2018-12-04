@@ -381,6 +381,12 @@ bool player_caught_in_net()
     if (you.body_size(PSIZE_BODY) >= SIZE_GIANT)
         return false;
 
+	if (you.get_mutation_level(MUT_GHOST) == 1)
+	{
+		mpr("A net falls through you.");
+		return false;
+	}
+
     if (!you.attribute[ATTR_HELD])
     {
         mpr("You become entangled in the net!");
@@ -815,14 +821,16 @@ void trap_def::trigger(actor& triggerer)
 
         if (triggerer.is_web_immune())
         {
-            if (m)
-            {
-                if (m->is_insubstantial())
-                    simple_monster_message(*m, " passes through a web.");
-                else if (mons_genus(m->type) == MONS_JELLY)
-                    simple_monster_message(*m, " oozes through a web.");
-                // too spammy for spiders, and expected
-            }
+			if (m)
+			{
+				if (m->is_insubstantial())
+					simple_monster_message(*m, " passes through a web.");
+				else if (mons_genus(m->type) == MONS_JELLY)
+					simple_monster_message(*m, " oozes through a web.");
+				// too spammy for spiders, and expected
+			}
+			else if (you.is_insubstantial())
+				mprf("You pass through a web.");
             break;
         }
 

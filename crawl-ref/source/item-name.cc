@@ -3527,9 +3527,12 @@ bool is_useless_item(const item_def &item, bool temp)
             return !you.can_safely_mutate(temp);
 
         case POT_LIGNIFY:
-            return you.undead_state(temp)
-                   && (you.species != SP_VAMPIRE
-                       || temp && you.hunger_state < HS_SATIATED);
+			if (you.undead_state(temp) == US_GHOST)
+				return false;
+			else
+				return you.undead_state(temp)
+					   && (you.species != SP_VAMPIRE
+						   || temp && you.hunger_state < HS_SATIATED);
 
         case POT_FLIGHT:
             return you.permanent_flight()

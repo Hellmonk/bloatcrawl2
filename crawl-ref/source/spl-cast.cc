@@ -361,7 +361,9 @@ int raw_spell_fail(spell_type spell)
     chance2 += get_form()->spellcasting_penalty;
 
     chance2 -= 2 * you.get_mutation_level(MUT_SUBDUED_MAGIC);
-    chance2 += 4 * you.get_mutation_level(MUT_WILD_MAGIC);
+	if (silenced(you.pos()))
+		chance2 += 3 * you.get_mutation_level(MUT_SILENT_CAST);
+	chance2 += 4 * you.get_mutation_level(MUT_WILD_MAGIC);
     chance2 += 4 * you.get_mutation_level(MUT_ANTI_WIZARDRY);
 
     if (you.props.exists(SAP_MAGIC_KEY))

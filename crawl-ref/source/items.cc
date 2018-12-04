@@ -2561,7 +2561,8 @@ bool drop_item(int item_dropped, int quant_drop)
     }
 
     if (item_dropped == you.equip[EQ_WEAPON]
-        && item.base_type == OBJ_WEAPONS && item.cursed())
+        && item.base_type == OBJ_WEAPONS && item.cursed()
+		&& you.get_mutation_level(MUT_GHOST) == 0)
     {
         mprf("%s is stuck to you!", item.name(DESC_THE).c_str());
         return false;
