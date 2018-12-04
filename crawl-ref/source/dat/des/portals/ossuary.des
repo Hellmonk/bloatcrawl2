@@ -17,7 +17,7 @@ function ossuary_portal(e)
 
   local messager =
     timed_msg {
-      initmsg = { "You hear the hiss of flowing sand.",
+      initmsg = { "You smell dry bones and old scrolls.",
                   "There is an entrance to an ossuary on this level. "
                   .. "Hurry and find it before the portal is buried!" },
       finalmsg = "The hiss of flowing sand is almost imperceptible now.",
@@ -34,7 +34,7 @@ function ossuary_portal(e)
 
   e.lua_marker('O',
       timed_marker {
-        disappear = "The hiss of flowing sand is gone.",
+        disappear = "The portal collapses under the weight of sand.",
         entity = 'staircase',
         turns = timeout_turns,
         single_timed = true,

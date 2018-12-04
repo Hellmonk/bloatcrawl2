@@ -17,7 +17,7 @@ function bailey_portal(e, ptype)
 
   local messager =
     timed_msg {
-      initmsg = { "You hear the roar of battle.",
+      initmsg = { "You feel the heat of battle.",
                   "There is an entrance to a bailey on this level. "
                   .. "Hurry and find it before the portal closes forever!" },
       finalmsg = "$F{The} has been lowered almost to the ground.",
@@ -35,7 +35,7 @@ function bailey_portal(e, ptype)
 
   e.lua_marker('O',
       timed_marker {
-        disappear = "The portal closes with a thud.",
+        disappear = "The portal closes.",
         entity = 'portcullis',
         bailey_type = ptype,
         turns = timeout_turns,

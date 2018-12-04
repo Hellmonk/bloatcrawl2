@@ -9,7 +9,7 @@ function lab_portal(e)
 
   local messager =
     timed_msg {
-      initmsg = { "You hear a distant snort.",
+      initmsg = { "You feel the call of hidden treasure.",
                   "Hark! There is an entrance to a minotaur's labyrinth "
                   .. "on this level. Find the entrance quickly before "
                   .. "the gate is sealed!" },

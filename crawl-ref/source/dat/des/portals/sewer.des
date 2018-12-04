@@ -23,7 +23,7 @@ function sewer_portal(e)
 
   local messager =
     timed_msg {
-       initmsg = { "You hear the sound of rushing water.",
+       initmsg = { "You smell a foul stench.",
                    "There is an entrance to a sewer on this level. "
                    .. "Hurry and find it before the portal rusts away!" },
       finalmsg = "You hear the drain falling apart.",

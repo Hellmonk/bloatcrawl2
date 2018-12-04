@@ -86,7 +86,7 @@ function TimedMessaging:perceptible(cm)
 end
 
 function TimedMessaging:emit_message(cm, msg)
-  if not msg or not self:perceptible(cm) then
+  if not msg then
     return
   end
 

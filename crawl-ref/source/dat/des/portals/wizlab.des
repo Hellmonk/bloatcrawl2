@@ -78,7 +78,7 @@ function wizlab_portal (e)
 
     local messager =
       timed_msg {
-           initmsg = { "You hear the crackle of arcane power.",
+           initmsg = { "You feel an intense field of arcane energy.",
                        "There is an entrance to a wizard's laboratory on "
                        .. "this level! Hurry and find it before the "
                        .. "portal closes forever!" },

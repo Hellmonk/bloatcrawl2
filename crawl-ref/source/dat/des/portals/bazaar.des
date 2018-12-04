@@ -28,7 +28,7 @@ end
 function bazaar_portal(timed)
   local messager =
     timed_msg {
-      initmsg = { "You hear coins being counted.",
+      initmsg = { "You sense an intense greed.",
                   "An interdimensional caravan has stopped on this level "
                   .. "and set up a bazaar. Hurry and find its entrance before "
                   .. "they move on!" },

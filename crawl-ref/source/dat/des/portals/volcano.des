@@ -63,8 +63,7 @@ function volcano_portal (e)
 
     e.lua_marker('O',
       timed_marker {
-        disappear = "There is a deep roar from within the tunnel. Moments " ..
-                    "later, a river of lava pours forth, sealing it permanently.",
+        disappear = "A river of lava pours forth from the tunnel, sealing it permanently.",
         entity = 'tunnel',
         turns = timeout_turns,
         single_timed = true,
