@@ -7109,9 +7109,8 @@ bool player::can_safely_mutate(bool temp) const
     if (!can_mutate())
         return false;
 
-    return undead_state(temp) == US_ALIVE
-           || undead_state(temp) == US_SEMI_UNDEAD
-		   || undead_state(temp) == US_GHOST;
+	return undead_state(temp) == US_ALIVE
+		|| undead_state(temp) == US_SEMI_UNDEAD;
 }
 
 // Is the player too undead to bleed, rage, or polymorph?
@@ -7125,7 +7124,10 @@ bool player::is_lifeless_undead(bool temp) const
 
 bool player::can_polymorph() const
 {
-    return !(transform_uncancellable || is_lifeless_undead());
+	if (you.undead_state() == US_GHOST)
+		return true;
+	else 
+	    return !(transform_uncancellable || is_lifeless_undead());
 }
 
 bool player::can_bleed(bool allow_tran) const

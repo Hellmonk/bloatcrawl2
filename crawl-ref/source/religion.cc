@@ -1425,7 +1425,7 @@ static bool _gift_jiyva_gift(bool forced)
     if (forced || you.piety >= piety_breakpoint(2)
                   && random2(you.piety) > 50
                   && one_chance_in(4) && !you.gift_timeout
-                  && you.can_safely_mutate())
+                  && (you.can_safely_mutate() || you.get_mutation_level(MUT_GHOST) == 1))
     {
         if (_jiyva_mutate())
         {
@@ -2850,7 +2850,22 @@ void excommunication(bool voluntary, god_type new_god)
             mprf(MSGCH_MONSTER_ENCHANT, "All of your fellow slimes turn on you.");
             add_daction(DACT_ALLY_SLIME);
         }
+
+		if (you.undead_state() == US_GHOST)
+		{
+			mprf("Your slimy mutations fade away.");
+			delete_all_mutations("Jiyva's Vengence");
+		}
+
         break;
+
+	case GOD_XOM:
+		if (you.undead_state() == US_GHOST && (you.how_mutated() > 0))
+		{
+			mprf("The chaos fades from your form.");
+			delete_all_mutations("Fading Chaos");
+		}
+		break;
 
     case GOD_FEDHAS:
         if (query_daction_counter(DACT_ALLY_PLANT))

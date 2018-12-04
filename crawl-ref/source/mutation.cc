@@ -1472,25 +1472,28 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
     }
 
     // Undead bodies don't mutate, they fall apart. -- bwr
-    if (undead_mutation_rot())
+    if (undead_mutation_rot() && !((you.undead_state() == US_GHOST) && god_gift))
     {
-        switch (mutclass)
-        {
-        case MUTCLASS_TEMPORARY:
-            if (coinflip())
-                return false;
-            // fallthrough to normal mut
-        case MUTCLASS_NORMAL:
-            mprf(MSGCH_MUTATION, "Your body decomposes!");
-            lose_stat(STAT_RANDOM, 1);
-            return true;
-        case MUTCLASS_INNATE:
-            // You can't miss out on innate mutations just because you're
-            // temporarily undead.
-            break;
-        default:
-            die("bad fall through");
-            return false;
+		switch (mutclass)
+		{
+		case MUTCLASS_TEMPORARY:
+			if (coinflip())
+				return false;
+			// fallthrough to normal mut
+		case MUTCLASS_NORMAL:
+			if (you.undead_state() == US_GHOST)
+				mprf(MSGCH_MUTATION, "Wild energies bleed away your essence!");
+			else 
+				mprf(MSGCH_MUTATION, "Your body decomposes!");
+			lose_stat(STAT_RANDOM, 1);
+			return true;
+		case MUTCLASS_INNATE:
+			// You can't miss out on innate mutations just because you're
+			// temporarily undead.
+			break;
+		default:
+			die("bad fall through");
+			return false;
         }
     }
 
@@ -1923,7 +1926,7 @@ bool delete_mutation(mutation_type which_mutation, const string &reason,
             }
         }
 
-        if (undead_mutation_rot())
+        if (undead_mutation_rot() && !((you.undead_state() == US_GHOST) && god_gift))
             return false;
     }
 

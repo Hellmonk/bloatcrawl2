@@ -1423,7 +1423,7 @@ static void _xom_animate_monster_weapon(int sever)
 
 static void _xom_give_mutations(bool good)
 {
-    if (!you.can_safely_mutate())
+    if (!you.can_safely_mutate() && (you.undead_state() != US_GHOST))
         return;
 
     god_speaks(GOD_XOM, good ? _get_xom_speech("good mutations").c_str()
