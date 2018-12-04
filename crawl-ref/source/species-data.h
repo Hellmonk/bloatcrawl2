@@ -478,13 +478,14 @@ static const map<species_type, species_def> species_data =
     MONS_KOBOLD,
     HT_LAND, US_ALIVE, SIZE_SMALL,
     5, 9, 10, // 24
-    { STAT_STR, STAT_INT, STAT_DEX }, 5,
-    { { MUT_CARNIVOROUS, 1, 1 }, },
+    { STAT_DEX }, 5,
+	{ { MUT_CARNIVOROUS, 1, 1 }, {MUT_MUTATION_RESISTANCE, 2, 1} , },
     {},
     {},
     { JOB_HUNTER, JOB_BERSERKER, JOB_ARCANE_MARKSMAN, JOB_ENCHANTER,
       JOB_CONJURER, JOB_SUMMONER },
-    { SK_SHORT_BLADES, SK_MACES_FLAILS, SK_STAVES, SK_CROSSBOWS },
+    { SK_SHORT_BLADES, SK_MACES_FLAILS, SK_STAVES, SK_CROSSBOWS,
+	  SK_SLINGS, },
 } },
 
 { SP_MERFOLK, {

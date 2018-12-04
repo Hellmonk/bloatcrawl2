@@ -193,10 +193,9 @@ static const species_type species_order[] =
 {
     // comparatively human-like looks
     SP_HUMAN,          SP_DEEP_ELF,
-    SP_DEEP_DWARF,     SP_HILL_ORC,
+    SP_HILL_ORC,
     // small species
-    SP_HALFLING,       SP_KOBOLD,
-    SP_SPRIGGAN,
+    SP_KOBOLD,         SP_SPRIGGAN,
     // large species
     SP_OGRE,           SP_TROLL,
     // significantly different body type from human ("monstrous")
@@ -211,7 +210,7 @@ static const species_type species_order[] =
     SP_DEMIGOD,        SP_DEMONSPAWN,
     // undead species
     SP_MUMMY,          SP_GHOUL,
-    SP_VAMPIRE,	       SP_SILENT_SPECTRE,
+    SP_SILENT_SPECTRE,
     // not humanoid at all
     SP_FELID,          SP_OCTOPODE,
 };
@@ -1056,7 +1055,7 @@ static species_group species_groups[] =
             SP_MERFOLK,
             SP_GARGOYLE,
             SP_BASE_DRACONIAN,
-            SP_HALFLING,
+            SP_KOBOLD,
             SP_TROLL,
             SP_GHOUL,
         }
@@ -1067,7 +1066,6 @@ static species_group species_groups[] =
         20,
         {
             SP_HUMAN,
-            SP_KOBOLD,
             SP_DEMONSPAWN,
             SP_CENTAUR,
             SP_SPRIGGAN,
