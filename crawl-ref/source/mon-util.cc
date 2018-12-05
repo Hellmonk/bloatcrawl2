@@ -5651,7 +5651,10 @@ void throw_monster_bits(const monster& mon)
 /// Add an ancestor spell to the given list.
 static void _add_ancestor_spell(monster_spells &spells, spell_type spell)
 {
-    spells.emplace_back(spell, 25, MON_SPELL_WIZARD);
+	if (you.species == SP_SILENT_SPECTRE)
+		spells.emplace_back(spell, 25, MON_SPELL_MAGICAL);
+	else
+		spells.emplace_back(spell, 25, MON_SPELL_WIZARD);
 }
 
 /**
@@ -5691,8 +5694,41 @@ void set_ancestor_spells(monster &ancestor, bool notify)
         break;
     }
 
-    if (HD >= 13)
-        ancestor.spells.emplace_back(SPELL_HASTE, 25, MON_SPELL_WIZARD);
+	// Add Racial abilities to make your ancestor more like your species.
+
+	if (you.species == SP_NAGA)
+		ancestor.spells.emplace_back(SPELL_SPIT_POISON, 25, MON_SPELL_NATURAL);
+
+	if (you.species == SP_RED_DRACONIAN)
+		ancestor.spells.emplace_back(SPELL_SEARING_BREATH, 25, MON_SPELL_NATURAL);
+
+	if (you.species == SP_YELLOW_DRACONIAN)
+		ancestor.spells.emplace_back(SPELL_ACID_SPLASH, 25, MON_SPELL_NATURAL);
+
+	if (you.species == SP_WHITE_DRACONIAN)
+		ancestor.spells.emplace_back(SPELL_CHILLING_BREATH, 25, MON_SPELL_NATURAL);
+
+	if (you.species == SP_GREEN_DRACONIAN)
+		ancestor.spells.emplace_back(SPELL_POISONOUS_CLOUD, 25, MON_SPELL_NATURAL);
+
+	if (you.species == SP_PALE_DRACONIAN)
+		ancestor.spells.emplace_back(SPELL_STEAM_BALL, 25, MON_SPELL_NATURAL);
+
+	if (you.species == SP_BLACK_DRACONIAN)
+		ancestor.spells.emplace_back(SPELL_LIGHTNING_BOLT, 25, MON_SPELL_NATURAL);
+
+	if (you.species == SP_PURPLE_DRACONIAN)
+		ancestor.spells.emplace_back(SPELL_QUICKSILVER_BOLT, 25, MON_SPELL_NATURAL);
+
+	if (HD >= 13)
+	{
+		if (you.species == SP_SILENT_SPECTRE)
+			ancestor.spells.emplace_back(SPELL_HASTE, 25, MON_SPELL_MAGICAL);
+		else if (you.species == SP_FORMICID)
+			ancestor.spells.emplace_back(SPELL_MIGHT, 25, MON_SPELL_WIZARD);
+		else
+			ancestor.spells.emplace_back(SPELL_HASTE, 25, MON_SPELL_WIZARD);
+	}
 
     if (ancestor.spells.size())
         ancestor.props[CUSTOM_SPELLS_KEY] = true;

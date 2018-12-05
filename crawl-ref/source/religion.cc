@@ -1686,13 +1686,17 @@ static int _hepliaklqana_ally_hd()
 /**
  * How much max HP should the ally granted by Hepliaklqana have?
  *
- * @return      5/hd from 1-11 HD, 10/hd from 12-18.
- *              (That is, 5 HP at 1 HD, 120 at 18.)
+ * @return      6/hd from 1-11 HD, 12/hd from 12-18.
+ *              Additionally races with higher than standard
+ *				HP (Ogres, Nagas, Trolls) get 1-3 more per HD.
  */
 int hepliaklqana_ally_hp()
 {
     const int HD = _hepliaklqana_ally_hd();
-    return HD * 5 + max(0, (HD - 12) * 5);
+	int HP_MOD = species_hp_modifier(you.species);
+	if (HP_MOD < 0)
+		HP_MOD = 0;
+	return HP_MOD * HD + HD * 6 + max(0, (HD - 12) * 6);
 }
 
 /**
