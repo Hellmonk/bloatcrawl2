@@ -41,8 +41,8 @@ static const mutation_def mut_data[] =
 { MUT_STRONG, 7, 2, mutflag::good, false,
   "strong",
 
-  {"Your muscles are strong. (Str +2)",
-   "Your muscles are very strong. (Str +4)", ""},
+  {"You are strong. (Str +2)",
+   "You are very strong. (Str +4)", ""},
   {"", "", ""},
   {"", "", ""},
 },
@@ -96,9 +96,9 @@ static const mutation_def mut_data[] =
 { MUT_HEAT_RESISTANCE, 4, 3, mutflag::good, true,
   "fire resistance",
 
-  {"Your flesh is heat resistant. (rF+)",
-   "Your flesh is very heat resistant. (rF++)",
-   "Your flesh is almost immune to the effects of heat. (rF+++)"},
+  {"You are heat resistant. (rF+)",
+   "You are very heat resistant. (rF++)",
+   "You are almost immune to the effects of heat. (rF+++)"},
 
   {"You feel resistant to heat.",
    "You feel more resistant to heat.",
@@ -112,9 +112,9 @@ static const mutation_def mut_data[] =
 { MUT_COLD_RESISTANCE, 4, 3, mutflag::good, true,
   "cold resistance",
 
-  {"Your flesh is cold resistant. (rC+)",
-   "Your flesh is very cold resistant. (rC++)",
-   "Your flesh is almost immune to the effects of cold. (rC+++)"},
+  {"You are cold resistant. (rC+)",
+   "You are very cold resistant. (rC++)",
+   "You are almost immune to the effects of cold. (rC+++)"},
 
   {"You feel resistant to cold.",
    "You feel more resistant to cold.",
