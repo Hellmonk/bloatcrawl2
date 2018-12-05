@@ -15,7 +15,8 @@ void wizard_blink();
 bool dangerous_terrain_seen();
 
 void you_teleport();
-void you_teleport_now(bool wizard_tele = false, bool teleportitis = false);
+void you_teleport_now(bool wizard_tele = false, bool teleportitis = false,
+                      string reason = "");
 bool you_teleport_to(const coord_def where,
                      bool move_monsters = false);
 
