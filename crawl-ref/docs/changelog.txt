@@ -37,6 +37,8 @@ Gods
 * Elyvilon's Heal Other's is adjusted
   - The formula depends only on monster type, not specific monster maxhp
   - The targeter to display pacification chance.
+* Exploration-based piety is no longer granted for the Temple, deep water, or
+  lava.
 
 Interface
 ---------
