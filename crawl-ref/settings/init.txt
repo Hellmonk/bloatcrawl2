@@ -82,3 +82,5 @@
 # include                 = 0.12_monster_glyphs.txt
 # include                 = 0.13_monster_glyphs.txt
 # include                 = 0.14_monster_glyphs.txt
+# If you can't see walls out of LOS, etc, turn this off:
+bold_brightens_foreground = true
