@@ -3259,9 +3259,10 @@ int player_stealth()
     // If you're surrounded by a storm, you're inherently pretty conspicuous.
     if (have_passive(passive_t::storm_shield))
     {
-        stealth = stealth
-                  * (MAX_PIETY - min((int)you.piety, piety_breakpoint(5)))
-                  / (MAX_PIETY - piety_breakpoint(0));
+		stealth = stealth * 2 / 5; // Penalty now fixed at same as Halo/Corona, etc.
+			    //  stealth
+                //  * (MAX_PIETY - min((int)you.piety, piety_breakpoint(5)))
+                //  / (MAX_PIETY - piety_breakpoint(0));
     }
     // The shifting glow from the Orb, while too unstable to negate invis
     // or affect to-hit, affects stealth even more than regular glow.

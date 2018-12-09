@@ -1121,7 +1121,8 @@ void qazlal_storm_clouds()
         return;
 
     // You are a *storm*. You are pretty loud!
-    noisy(min((int)you.piety, piety_breakpoint(5)) / 10, you.pos());
+	if (you.species != SP_SILENT_SPECTRE)
+	    noisy(min((int)you.piety, piety_breakpoint(5)) / 10, you.pos());
 
     const int radius = you.piety >= piety_breakpoint(3) ? 2 : 1;
 
