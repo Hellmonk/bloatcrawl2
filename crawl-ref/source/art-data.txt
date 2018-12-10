@@ -454,7 +454,6 @@ TILE_EQ: crossbow_fire
 VALUE:   800
 BOOL:    evil
 
-# TAG_MAJOR_VERSION == 34
 NAME:    sword of the Doom Knight
 OBJ:     OBJ_WEAPONS/WPN_GREAT_SWORD
 PLUS:    +13
@@ -463,7 +462,7 @@ TILE:    urand_doom_knight
 TILE_EQ: doom_knight
 BRAND:   SPWPN_PAIN
 MAGIC:   1
-BOOL:    nospell, nogen
+BOOL:    nospell
 
 NAME:    morningstar "Eos"
 OBJ:     OBJ_WEAPONS/WPN_MORNINGSTAR
@@ -475,7 +474,6 @@ TILE_EQ: eos
 BRAND:   SPWPN_ELECTROCUTION
 BOOL:    elec
 
-# TAG_MAJOR_VERSION == 34
 # Was "spear of Voo-Doo". In the African origin, there is a distinction
 # between voodoo and bo, the latter dealing with curses, witchcraft and
 # spells designed to do harm. Priests (or rather sorcerers) of bo are
@@ -490,7 +488,7 @@ TILE_EQ:  botono
 BRAND:    SPWPN_REAPING
 HP:       -6
 LIFE:     1
-BOOL:     poison, nogen
+BOOL:     poison
 
 NAME:     trident of the Octopus King
 OBJ:      OBJ_WEAPONS/WPN_TRIDENT
@@ -1121,7 +1119,6 @@ BASE_DAM: +35
 BASE_DELAY: +13
 BRAND:    SPWPN_VORPAL
 
-# TAG_MAJOR_VERSION == 34
 ENUM:    HIGH_COUNCIL
 NAME:    hat of the High Council
 INSCRIP: Wiz-
@@ -1132,7 +1129,6 @@ TILE_EQ: wizard_lightgreen
 PLUS:    +2
 BRAND:   SPARM_ARCHMAGI
 STEALTH: -1
-BOOL:    nogen
 
 NAME:     arc blade
 INSCRIP:  discharge,
@@ -1220,7 +1216,6 @@ MP:      +4
 BOOL:    mutate, elec, chaotic
 VALUE:   400
 
-# TAG_MAJOR_VERSION == 34
 ENUM:    ETERNAL_TORMENT
 NAME:    crown of Eternal Torment
 OBJ:     OBJ_ARMOUR/ARM_HAT
@@ -1230,7 +1225,7 @@ TILE:    urand_eternal_torment
 TILE_EQ: eternal_torment
 INSCRIP: rTorment HP--
 LIFE:    3
-BOOL:    evil, seeinv, nogen, curse
+BOOL:    evil, seeinv, curse
 
 ENUM:    VINES
 NAME:    robe of Vines
