@@ -1874,17 +1874,23 @@ void upgrade_hepliaklqana_ancestor(bool quiet_force)
  */
 static weapon_type _hepliaklqana_weapon_type(monster_type mc, int HD)
 {
-    switch (mc)
-    {
-    case MONS_ANCESTOR_HEXER:
-        return HD < 16 ? WPN_DAGGER : WPN_QUICK_BLADE;
-    case MONS_ANCESTOR_KNIGHT:
-        return HD < 10 ? WPN_FLAIL : WPN_BROAD_AXE;
-    case MONS_ANCESTOR_BATTLEMAGE:
-        return HD < 13 ? WPN_QUARTERSTAFF : WPN_LAJATANG;
-    default:
-        return NUM_WEAPONS; // should never happen
-    }
+	switch (mc)
+	{
+	case MONS_ANCESTOR_HEXER:
+		return HD < 16 ? WPN_DAGGER : WPN_QUICK_BLADE;
+	case MONS_ANCESTOR_KNIGHT:
+		if (you.species == SP_MERFOLK)
+			return HD < 10 ? WPN_SPEAR : WPN_DEMON_TRIDENT;
+		else
+			return HD < 10 ? WPN_FLAIL : WPN_BROAD_AXE;
+	case MONS_ANCESTOR_BATTLEMAGE:
+		if (you.species == SP_MERFOLK)
+			return HD < 13 ? WPN_HALBERD : WPN_BARDICHE;
+		else
+			return HD < 13 ? WPN_QUARTERSTAFF : WPN_LAJATANG;
+	default:
+		return NUM_WEAPONS; // should never happen
+	}
 }
 
 /**
@@ -1925,6 +1931,7 @@ static brand_type _hepliaklqana_weapon_brand(monster_type mc, int HD)
 void upgrade_hepliaklqana_weapon(monster_type mtyp, item_def &item)
 {
     ASSERT(mons_is_hepliaklqana_ancestor(mtyp));
+
     if (mtyp == MONS_ANCESTOR)
         return; // bare-handed!
 

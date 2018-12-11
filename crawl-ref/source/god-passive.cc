@@ -1121,6 +1121,8 @@ void qazlal_storm_clouds()
         return;
 
     // You are a *storm*. You are pretty loud!
+	// Silent Spectres never make noise unless they intentionally send
+	// things outside their aura.
 	if (you.species != SP_SILENT_SPECTRE)
 	    noisy(min((int)you.piety, piety_breakpoint(5)) / 10, you.pos());
 

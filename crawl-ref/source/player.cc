@@ -1913,6 +1913,45 @@ int player_prot_life(bool calc_unid, bool temp, bool items)
     return pl;
 }
 
+// Placed here due to being based on the player movement speed
+// without applying any active temporary buffs/debuffs.
+// originally was going to call this player_base_movement_speed
+// but it only has one use and I'm picking/choosing for a reason.
+
+int hepliakqlana_ally_movement_speed()
+{
+	int mv = 10;
+
+	if (you.species == SP_MERFOLK)
+		mv = 6; 
+
+	// armour
+	if (you.run())
+		mv -= 1;
+
+	mv += you.wearing_ego(EQ_ALL_ARMOUR, SPARM_PONDEROUSNESS);
+
+	// Tengu flight always active for ancestor.
+	if (you.species == SP_TENGU && you.experience_level > 13)
+		mv--;
+
+	// Mutations: Ignoring temporary forms.
+	if (int fast = you.get_mutation_level(MUT_FAST, false))
+		mv -= fast + 1;
+
+	if (int slow = you.get_mutation_level(MUT_SLOW, false))
+	{
+		mv *= 10 + slow * 2;
+		mv /= 10;
+	}
+
+	if (mv < FASTEST_PLAYER_MOVE_SPEED)
+		mv = FASTEST_PLAYER_MOVE_SPEED;
+
+	return mv;
+}
+
+
 // New player movement speed system... allows for a bit more than
 // "player runs fast" and "player walks slow" in that the speed is
 // actually calculated (allowing for centaurs to get a bonus from

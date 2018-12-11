@@ -949,6 +949,7 @@ int player_energy();
 int player_shield_racial_factor();
 int player_armour_shield_spell_penalty();
 
+int hepliakqlana_ally_movement_speed(); 
 int player_movement_speed();
 
 int player_hunger_rate(bool temp = true);
