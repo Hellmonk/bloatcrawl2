@@ -1610,70 +1610,6 @@ static bool _try_make_jewellery_unrandart(item_def& item, int force_type,
     return false;
 }
 
-/**
- * Generate a random 'bad' plus for a ring type that cares about plusses.
- *
- * @return a bad 'plus', between -2 and -6 (inclusive).
- */
-static int _bad_ring_plus()
-{
-    int plus = -2;
-    if (coinflip())
-        --plus;
-    if (one_chance_in(3))
-        plus -= random2(4);
-    return plus;
-}
-
-/**
- * Generate a random 'good' plus for a ring type that cares about plusses.
- *
- * @param subtype       The type of ring in question.
- * @return              Between 1 and 6 (inclusive); 2-6 for statrings.
- *                      (+1 stat rings are extremely boring.)
- */
-static int _good_jewellery_plus(int subtype)
-{
-    switch (subtype)
-    {
-        case RING_STRENGTH:
-        case RING_DEXTERITY:
-        case RING_INTELLIGENCE:
-        case AMU_REFLECTION:
-            return 2 + (one_chance_in(3) ? random2(2) : random2avg(5, 2));
-        default:
-            return 1 + (one_chance_in(3) ? random2(3) : random2avg(6, 2));
-    }
-}
-
-/**
- * Generate a random 'plus' for a given type of ring.
- *
- * @param subtype       The type of ring in question.
- * @return              A 'plus' for that ring. 0 for most types.
- */
-static int _determine_ring_plus(int subtype)
-{
-    switch (subtype)
-    {
-    case RING_PROTECTION:
-    case RING_STRENGTH:
-    case RING_SLAYING:
-    case RING_EVASION:
-    case RING_DEXTERITY:
-    case RING_INTELLIGENCE:
-        if (one_chance_in(5)) // 20% of such rings are cursed {dlb}
-            return _bad_ring_plus();
-        return _good_jewellery_plus(subtype);
-
-    case AMU_REFLECTION:
-        return _good_jewellery_plus(subtype);
-
-    default:
-        return 0;
-    }
-}
-
 static void _generate_jewellery_item(item_def& item, bool allow_uniques,
                                      int force_type, int item_level,
                                      int agent)
@@ -1709,11 +1645,6 @@ static void _generate_jewellery_item(item_def& item, bool allow_uniques,
                && _is_boring_item(OBJ_JEWELLERY, item.sub_type)
                && --tries > 0);
     }
-
-    item.plus = _determine_ring_plus(item.sub_type);
-
-    if (item.plus < 0)
-        do_curse_item(item);
 
     // All jewellery base types should now work. - bwr
     if (item_level == ISPEC_RANDART

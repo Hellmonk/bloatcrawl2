@@ -126,7 +126,7 @@ bool Form::slot_available(int slot) const
 {
     if (slot == EQ_ALL_ARMOUR)
         return !all_blocked(EQF_WEAR);
-    if (slot == EQ_RINGS || slot == EQ_RINGS_PLUS)
+    if (slot == EQ_RINGS)
         return !all_blocked(EQF_RINGS);
 
     if (slot == EQ_STAFF)

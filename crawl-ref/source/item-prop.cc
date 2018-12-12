@@ -2221,25 +2221,6 @@ bool jewellery_has_pluses(const item_def &item)
 {
     ASSERT(item.base_type == OBJ_JEWELLERY);
 
-    // not known -> no plusses
-    if (!item_type_known(item))
-        return false;
-
-    switch (item.sub_type)
-    {
-    case RING_SLAYING:
-    case RING_PROTECTION:
-    case RING_EVASION:
-    case RING_STRENGTH:
-    case RING_INTELLIGENCE:
-    case RING_DEXTERITY:
-    case AMU_REFLECTION:
-        return true;
-
-    default:
-        break;
-    }
-
     return false;
 }
 
@@ -2266,7 +2247,13 @@ bool ring_has_stackable_effect(const item_def &item)
     case RING_WIZARDRY:
     case RING_FIRE:
     case RING_ICE:
-        return true;
+	case RING_SLAYING:
+	case RING_PROTECTION:
+	case RING_EVASION:
+	case RING_STRENGTH:
+	case RING_INTELLIGENCE:
+	case RING_DEXTERITY:
+		return true;
 
     default:
         break;

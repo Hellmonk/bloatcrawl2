@@ -366,7 +366,7 @@ struct jewellery_fake_artp
 static map<jewellery_type, vector<jewellery_fake_artp>> jewellery_artps = {
     { AMU_RAGE, { { ARTP_BERSERK, 1 } } },
     { AMU_REGENERATION, { { ARTP_REGENERATION, 1 } } },
-    { AMU_REFLECTION, { { ARTP_SHIELDING, 0 } } },
+    { AMU_REFLECTION, { { ARTP_SHIELDING, 5 } } },
     { AMU_HARM, { { ARTP_DRAIN, 1 } } },
 
     { RING_MAGICAL_POWER, { { ARTP_MAGICAL_POWER, 9 } } },
@@ -384,12 +384,12 @@ static map<jewellery_type, vector<jewellery_fake_artp>> jewellery_artps = {
     { RING_FIRE, { { ARTP_FIRE, 1 }, { ARTP_COLD, -1 } } },
     { RING_ICE, { { ARTP_COLD, 1 }, { ARTP_FIRE, -1 } } },
 
-    { RING_STRENGTH, { { ARTP_STRENGTH, 0 } } },
-    { RING_INTELLIGENCE, { { ARTP_INTELLIGENCE, 0 } } },
-    { RING_DEXTERITY, { { ARTP_DEXTERITY, 0 } } },
-    { RING_PROTECTION, { { ARTP_AC, 0 } } },
-    { RING_EVASION, { { ARTP_EVASION, 0 } } },
-    { RING_SLAYING, { { ARTP_SLAYING, 0 } } },
+    { RING_STRENGTH, { { ARTP_STRENGTH, 5 } } },
+    { RING_INTELLIGENCE, { { ARTP_INTELLIGENCE, 5 } } },
+    { RING_DEXTERITY, { { ARTP_DEXTERITY, 5 } } },
+    { RING_PROTECTION, { { ARTP_AC, 5 } } },
+    { RING_EVASION, { { ARTP_EVASION, 5 } } },
+    { RING_SLAYING, { { ARTP_SLAYING, 5 } } },
 };
 
 /**

@@ -937,14 +937,14 @@ SLAY:    6
 BOOL:    curse
 
 NAME:    ring of Phasing
-OBJ:     OBJ_JEWELLERY/RING_EVASION
-PLUS:    +8
+OBJ:     OBJ_JEWELLERY/RING_DEXTERITY
+EV:      8
 COLOUR:  ETC_POISON
 TILE:    urand_phasing
 
 NAME:    ring of Robustness
-OBJ:     OBJ_JEWELLERY/RING_PROTECTION
-PLUS:    +8
+OBJ:     OBJ_JEWELLERY/RING_STRENGTH
+AC:      8
 COLOUR:  ETC_GOLD
 TILE:    urand_robustness
 
@@ -959,7 +959,8 @@ NAME:     brooch of Shielding
 OBJ:      OBJ_JEWELLERY/AMU_REFLECTION
 COLOUR:   ETC_MAGIC
 TILE:     urand_brooch_of_shielding
-PLUS:     +8
+AC:       5
+EV:       5
 
 ENUM:     RCLOUDS
 NAME:     robe of Clouds

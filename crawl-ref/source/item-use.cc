@@ -1328,22 +1328,18 @@ static bool _safe_to_remove_or_wear(const item_def &item, bool remove, bool quie
     int prop_str = 0;
     int prop_dex = 0;
     int prop_int = 0;
-    if (item.base_type == OBJ_JEWELLERY
-        && item_ident(item, ISFLAG_KNOW_PLUSES))
+    if (item.base_type == OBJ_JEWELLERY)
     {
         switch (item.sub_type)
         {
         case RING_STRENGTH:
-            if (item.plus != 0)
-                prop_str = item.plus;
+            prop_str = 5;
             break;
         case RING_DEXTERITY:
-            if (item.plus != 0)
-                prop_dex = item.plus;
+            prop_dex = 5;
             break;
         case RING_INTELLIGENCE:
-            if (item.plus != 0)
-                prop_int = item.plus;
+            prop_int = 5;
             break;
         default:
             break;

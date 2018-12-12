@@ -837,18 +837,16 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid) const
         break;
 
     case EQ_AMULET:
-    case EQ_AMULET_PLUS:
         if ((item = slot_item(static_cast<equipment_type>(EQ_AMULET)))
             && item->sub_type == sub_type
             && (calc_unid
                 || item_type_known(*item)))
         {
-            ret += (slot == EQ_AMULET_PLUS ? item->plus : 1);
+            ret += 1;
         }
         break;
 
     case EQ_RINGS:
-    case EQ_RINGS_PLUS:
         for (int slots = EQ_FIRST_JEWELLERY; slots <= EQ_LAST_JEWELLERY; slots++)
         {
             if (slots == EQ_AMULET)
@@ -859,7 +857,7 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid) const
                 && (calc_unid
                     || item_type_known(*item)))
             {
-                ret += (slot == EQ_RINGS_PLUS ? item->plus : 1);
+                ret += 1;
             }
         }
         break;
@@ -910,7 +908,6 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
     case EQ_AMULET:
     case EQ_STAFF:
     case EQ_RINGS:
-    case EQ_RINGS_PLUS:
         // no ego types for these slots
         break;
 
@@ -986,7 +983,6 @@ bool player_equip_unrand(int unrand_index)
     case EQ_STAFF:
     case EQ_LEFT_RING:
     case EQ_RIGHT_RING:
-    case EQ_RINGS_PLUS:
     case EQ_ALL_ARMOUR:
         // no unrandarts for these slots.
         break;
@@ -2170,7 +2166,7 @@ static int _player_evasion_bonuses()
     if (you.duration[DUR_AGILITY])
         evbonus += AGILITY_BONUS;
 
-    evbonus += you.wearing(EQ_RINGS_PLUS, RING_EVASION);
+    evbonus += 5 * you.wearing(EQ_RINGS, RING_EVASION);
 
     evbonus += you.scan_artefacts(ARTP_EVASION);
 
@@ -2381,7 +2377,7 @@ int player_shield_class()
 
     shield += qazlal_sh_boost() * 100;
     shield += tso_sh_boost() * 100;
-    shield += you.wearing(EQ_AMULET_PLUS, AMU_REFLECTION) * 200;
+    shield += you.wearing(EQ_AMULET, AMU_REFLECTION) * 1000;
     shield += you.scan_artefacts(ARTP_SHIELDING) * 200;
 
     return (shield + 50) / 100;
@@ -3637,7 +3633,7 @@ int slaying_bonus(bool ranged)
 {
     int ret = 0;
 
-    ret += you.wearing(EQ_RINGS_PLUS, RING_SLAYING);
+    ret += 5 * you.wearing(EQ_RINGS, RING_SLAYING);
     ret += you.scan_artefacts(ARTP_SLAYING);
     if (you.wearing_ego(EQ_GLOVES, SPARM_ARCHERY) && ranged)
         ret += 4;
@@ -5699,7 +5695,7 @@ bool player::shielded() const
            || get_mutation_level(MUT_LARGE_BONE_PLATES) > 0
            || qazlal_sh_boost() > 0
            || attribute[ATTR_BONE_ARMOUR] > 0
-           || you.wearing(EQ_AMULET_PLUS, AMU_REFLECTION) > 0
+           || you.wearing(EQ_AMULET, AMU_REFLECTION) > 0
            || you.scan_artefacts(ARTP_SHIELDING);
 }
 
@@ -5993,7 +5989,7 @@ int player::base_ac(int scale) const
         AC += item.plus * 100;
     }
 
-    AC += wearing(EQ_RINGS_PLUS, RING_PROTECTION) * 100;
+    AC += wearing(EQ_RINGS, RING_PROTECTION) * 500;
 
     if (wearing_ego(EQ_SHIELD, SPARM_PROTECTION))
         AC += 300;

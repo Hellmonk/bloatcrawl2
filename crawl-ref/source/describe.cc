@@ -1779,53 +1779,49 @@ static string _describe_jewellery(const item_def &item, bool verbose)
 
     description.reserve(200);
 
-    if (verbose && !is_artefact(item)
-        && item_ident(item, ISFLAG_KNOW_PLUSES))
+    if (verbose && !is_artefact(item))
     {
         // Explicit description of ring power.
-        if (item.plus != 0)
+        switch (item.sub_type)
         {
-            switch (item.sub_type)
-            {
-            case RING_PROTECTION:
-                description += make_stringf("\nIt affects your AC (%+d).",
-                                            item.plus);
-                break;
+        case RING_PROTECTION:
+            description += make_stringf("\nIt boosts your AC (%+d).",
+                                        5);
+            break;
 
-            case RING_EVASION:
-                description += make_stringf("\nIt affects your evasion (%+d).",
-                                            item.plus);
-                break;
+        case RING_EVASION:
+            description += make_stringf("\nIt boosts your evasion (%+d).",
+                                        5);
+            break;
 
-            case RING_STRENGTH:
-                description += make_stringf("\nIt affects your strength (%+d).",
-                                            item.plus);
-                break;
+        case RING_STRENGTH:
+            description += make_stringf("\nIt boosts your strength (%+d).",
+                                        5);
+            break;
 
-            case RING_INTELLIGENCE:
-                description += make_stringf("\nIt affects your intelligence (%+d).",
-                                            item.plus);
-                break;
+        case RING_INTELLIGENCE:
+            description += make_stringf("\nIt boosts your intelligence (%+d).",
+                                        5);
+            break;
 
-            case RING_DEXTERITY:
-                description += make_stringf("\nIt affects your dexterity (%+d).",
-                                            item.plus);
-                break;
+        case RING_DEXTERITY:
+            description += make_stringf("\nIt boosts your dexterity (%+d).",
+                                        5);
+            break;
 
-            case RING_SLAYING:
-                description += make_stringf("\nIt affects your accuracy and"
-                      " damage with ranged weapons and melee attacks (%+d).",
-                      item.plus);
-                break;
+        case RING_SLAYING:
+            description += make_stringf("\nIt boosts your accuracy and"
+                    " damage with ranged weapons and melee attacks (%+d).",
+                    5);
+            break;
 
-            case AMU_REFLECTION:
-                description += make_stringf("\nIt affects your shielding (%+d).",
-                                            item.plus);
-                break;
+        case AMU_REFLECTION:
+            description += make_stringf("\nIt boosts your shielding (%+d).",
+                                        5);
+            break;
 
-            default:
-                break;
-            }
+        default:
+            break;
         }
     }
 

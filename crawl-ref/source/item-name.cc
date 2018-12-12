@@ -3260,13 +3260,6 @@ bool is_bad_item(const item_def &item, bool temp)
             return true;
         case RING_TELEPORTATION:
             return !(you.stasis() || crawl_state.game_is_sprint());
-        case RING_EVASION:
-        case RING_PROTECTION:
-        case RING_STRENGTH:
-        case RING_DEXTERITY:
-        case RING_INTELLIGENCE:
-        case RING_SLAYING:
-            return item_ident(item, ISFLAG_KNOW_PLUSES) && item.plus <= 0;
         default:
             return false;
         }

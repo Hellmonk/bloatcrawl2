@@ -678,15 +678,7 @@ IDEF(plus)
 
     if (item_ident(*item, ISFLAG_KNOW_PLUSES)
         && (item->base_type == OBJ_WEAPONS || item->base_type == OBJ_ARMOUR
-            || item->base_type == OBJ_WANDS
-            || item->base_type == OBJ_JEWELLERY
-               && (item->sub_type == RING_PROTECTION
-                   || item->sub_type == RING_STRENGTH
-                   || item->sub_type == RING_SLAYING
-                   || item->sub_type == RING_EVASION
-                   || item->sub_type == RING_DEXTERITY
-                   || item->sub_type == RING_INTELLIGENCE
-                   || item->sub_type == AMU_REFLECTION)))
+            || item->base_type == OBJ_WANDS))
     {
         lua_pushnumber(ls, item->plus);
     }

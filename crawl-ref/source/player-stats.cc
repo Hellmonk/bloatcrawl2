@@ -397,7 +397,7 @@ static int _strength_modifier(bool innate_only)
         result += 3 * count_worn_ego(SPARM_STRENGTH);
 
         // rings of strength
-        result += you.wearing(EQ_RINGS_PLUS, RING_STRENGTH);
+        result += 5 * you.wearing(EQ_RINGS, RING_STRENGTH);
 
         // randarts of strength
         result += you.scan_artefacts(ARTP_STRENGTH);
@@ -435,7 +435,7 @@ static int _int_modifier(bool innate_only)
         result += 3 * count_worn_ego(SPARM_INTELLIGENCE);
 
         // rings of intelligence
-        result += you.wearing(EQ_RINGS_PLUS, RING_INTELLIGENCE);
+        result += 5 * you.wearing(EQ_RINGS, RING_INTELLIGENCE);
 
         // randarts of intelligence
         result += you.scan_artefacts(ARTP_INTELLIGENCE);
@@ -466,7 +466,7 @@ static int _dex_modifier(bool innate_only)
         result += 3 * count_worn_ego(SPARM_DEXTERITY);
 
         // rings of dexterity
-        result += you.wearing(EQ_RINGS_PLUS, RING_DEXTERITY);
+        result += 5 * you.wearing(EQ_RINGS, RING_DEXTERITY);
 
         // randarts of dexterity
         result += you.scan_artefacts(ARTP_DEXTERITY);
