@@ -1842,12 +1842,14 @@ void upgrade_hepliaklqana_ancestor(bool quiet_force)
                  brand_type_name(brand, brand != SPWPN_DRAINING));
         }
     }
+
+
     // but shields can't be lost, and *can* be gained (knight at hd 5)
     // so give them out as appropriate
     if (!ancestor_offlevel)
     {
-        if (ancestor->shield())
-            upgrade_hepliaklqana_shield(*ancestor, *ancestor->shield());
+		if (ancestor->shield())
+			upgrade_hepliaklqana_shield(*ancestor, *ancestor->shield());
         else
             give_shield(ancestor);
     }
@@ -1881,11 +1883,21 @@ static weapon_type _hepliaklqana_weapon_type(monster_type mc, int HD)
 	case MONS_ANCESTOR_KNIGHT:
 		if (you.species == SP_MERFOLK)
 			return HD < 10 ? WPN_SPEAR : WPN_DEMON_TRIDENT;
+		else if (you.species == SP_HILL_ORC)
+			return HD < 10 ? WPN_HAND_AXE : WPN_BROAD_AXE;
+		else if (you.species == SP_OGRE)
+			return HD < 12 ? WPN_MORNINGSTAR : WPN_EVENINGSTAR;
 		else
 			return HD < 10 ? WPN_FLAIL : WPN_BROAD_AXE;
 	case MONS_ANCESTOR_BATTLEMAGE:
 		if (you.species == SP_MERFOLK)
-			return HD < 13 ? WPN_HALBERD : WPN_BARDICHE;
+			return HD < 15 ? WPN_HALBERD : WPN_BARDICHE;
+		else if (you.species == SP_HILL_ORC)
+			return HD < 17 ? WPN_BATTLEAXE : WPN_EXECUTIONERS_AXE;
+		else if (you.species == SP_OGRE)
+			return HD < 8 ?  WPN_CLUB :
+			       HD < 14 ? WPN_GIANT_CLUB :
+			                 WPN_GIANT_SPIKED_CLUB;
 		else
 			return HD < 13 ? WPN_QUARTERSTAFF : WPN_LAJATANG;
 	default:
@@ -1935,6 +1947,9 @@ void upgrade_hepliaklqana_weapon(monster_type mtyp, item_def &item)
     if (mtyp == MONS_ANCESTOR)
         return; // bare-handed!
 
+	if (you.species == SP_FELID || you.species == SP_TROLL)
+		return; // prefer claws.
+
     item.base_type = OBJ_WEAPONS;
     item.sub_type = _hepliaklqana_weapon_type(mtyp,
                                               _hepliaklqana_ally_hd());
@@ -1953,7 +1968,11 @@ void upgrade_hepliaklqana_weapon(monster_type mtyp, item_def &item)
  */
 static armour_type _hepliaklqana_shield_type(monster_type mc, int HD)
 {
-    if (mc != MONS_ANCESTOR_KNIGHT)
+	if (you.species == SP_FORMICID)
+		return ARM_SHIELD;
+	else if (you.species == SP_FELID)
+		return NUM_ARMOURS;
+	else if (mc != MONS_ANCESTOR_KNIGHT)
         return NUM_ARMOURS;
     if (HD < 13)
         return ARM_SHIELD;

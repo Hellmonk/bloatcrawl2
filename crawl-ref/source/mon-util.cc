@@ -1209,8 +1209,13 @@ size_type mons_class_body_size(monster_type mc)
 {
     // Should pass base_type to get the right size for zombies, skeletons &c.
     // For normal monsters, base_type is set to type in the constructor.
-    const monsterentry *e = get_monster_data(mc);
-    return e ? e->size : SIZE_MEDIUM;
+	if (mons_is_hepliaklqana_ancestor(mc))
+		return (get_species_def(you.species).size);
+	else
+	{
+		const monsterentry *e = get_monster_data(mc);
+		return e ? e->size : SIZE_MEDIUM;
+	}
 }
 
 int max_corpse_chunks(monster_type mc)
@@ -1905,7 +1910,11 @@ static mon_attack_def _hepliaklqana_ancestor_attack(const monster &mon,
 	{
 		
 		int dam_mult = 1;
-
+		if (you.species == SP_FELID || you.species == SP_TROLL)
+		{
+			dam_mult = 2;
+			return { AT_CLAW, AF_PLAIN, dam * dam_mult };
+		}
 		dam_mult = mon.type == MONS_ANCESTOR_BATTLEMAGE ? 2 : 1;
 		return { AT_HIT, AF_PLAIN, dam * dam_mult };
 
@@ -5711,7 +5720,7 @@ void set_ancestor_spells(monster &ancestor, bool notify)
 				SPELL_BOLT_OF_COLD :
 				SPELL_THROW_ICICLE);
 		}
-		else if (you.species == SP_NAGA)
+		else if (you.species == SP_NAGA || you.species == SP_OCTOPODE)
 		{
 			_add_ancestor_spell(ancestor.spells, HD >= 12 ?
 				SPELL_POISON_ARROW :
@@ -5719,6 +5728,28 @@ void set_ancestor_spells(monster &ancestor, bool notify)
 			_add_ancestor_spell(ancestor.spells, HD >= 16 ?
 				SPELL_LEHUDIBS_CRYSTAL_SPEAR :
 				SPELL_STONE_ARROW);
+		}
+		else if (you.species == SP_HILL_ORC)
+		{
+			_add_ancestor_spell(ancestor.spells, HD >= 12 ?
+				SPELL_BOLT_OF_DRAINING :
+				SPELL_PAIN);
+			_add_ancestor_spell(ancestor.spells, HD >= 16 ?
+				SPELL_BOLT_OF_FIRE :
+				SPELL_THROW_FLAME);
+		}
+		else if (you.species == SP_MUMMY)
+		{
+			_add_ancestor_spell(ancestor.spells, HD >= 10 ?
+				SPELL_AGONY :
+				SPELL_CORPSE_ROT);
+			_add_ancestor_spell(ancestor.spells, HD >= 12 ?
+				SPELL_BOLT_OF_DRAINING :
+				SPELL_PAIN);
+			_add_ancestor_spell(ancestor.spells, HD >= 12 ?
+				SPELL_BOLT_OF_COLD :
+				SPELL_THROW_FROST);
+			_add_ancestor_spell(ancestor.spells, SPELL_DISPEL_UNDEAD);
 		}
 		else
 		{
