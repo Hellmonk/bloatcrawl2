@@ -145,14 +145,13 @@ string trap_def::name(description_level_type desc) const
         return basename;
 }
 
-bool trap_def::is_known(const actor* act) const
+bool trap_def::is_known(const actor& act) const
 {
-
-    if (act->is_player())
+    if (act.is_player())
         return true;
-    else if (act->is_monster())
+    else if (act.is_monster())
     {
-        const monster* mons = act->as_monster();
+        const monster* mons = act.as_monster();
         const int intel = mons_intel(*mons);
 
         // Smarter trap handling for intelligent monsters
@@ -216,7 +215,7 @@ bool trap_def::is_safe(actor* act) const
         return true;
     }
 
-    if (!is_known(act))
+    if (!is_known(*act))
         return false;
 
     if (type == TRAP_GOLUBRIA || type == TRAP_SHAFT)
@@ -494,7 +493,7 @@ static passage_type _find_other_passage_side(coord_def& to)
 
 void trap_def::trigger(actor& triggerer)
 {
-    const bool trig_knows = is_known(&triggerer);
+    const bool trig_knows = is_known(triggerer);
 
     const bool you_trigger = triggerer.is_player();
     const bool in_sight = you.see_cell(pos);
