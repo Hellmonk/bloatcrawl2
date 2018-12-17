@@ -265,8 +265,9 @@ spret_type cast_ring_of_flames(int power, bool fail)
     }
     else
     {
+        // Don't have the player pay MP to remove their permabuff
         spell_remove_permabuff(SPELL_RING_OF_FLAMES, 7);
-        return SPRET_SUCCESS;
+        return SPRET_ABORT;
     }
     
 }

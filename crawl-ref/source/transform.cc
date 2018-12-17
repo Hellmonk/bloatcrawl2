@@ -2036,6 +2036,7 @@ void untransform(bool skip_move)
     set<equipment_type> melded = _init_equipment_removal(old_form);
 
     // If spell was a permabuff, unreserve MP based on form
+    // (can't refund transforms if player cancels by cast this way, sorry)
     if (you.permabuffs[MUT_TRANSFORMATION] && _is_permatrans(old_form))
     {
         spell_remove_permabuff(_form_to_spell(old_form), 

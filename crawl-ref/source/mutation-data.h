@@ -2025,6 +2025,14 @@ static const mutation_def mut_data[] =
   {"You feel less protected from missiles.", "", ""},
 },
 
+{ MUT_REPEL_MISSILES, 0, 1, mutflag::good, false,
+  "deflect missiles",
+
+  {"You are repelling missles", "", ""},
+  {"You feel safe from missiles.", "", ""},
+  {"You feel less protected from missiles.", "", ""},
+},
+
 };
 
 static const mutation_category_def category_mut_data[] =

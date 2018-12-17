@@ -285,6 +285,7 @@ static const mutation_type _all_permabuffs[] =
     MUT_INFUSION,                  MUT_EXCRUCIATING_WOUNDS,
     MUT_OZOCUBUS_ARMOUR,           MUT_BATTLESPHERE,
     MUT_SONG_OF_SLAYING,           MUT_DEFLECT_MISSILES,
+    MUT_REPEL_MISSILES,
 };
 
 static bool _is_covering(mutation_type mut)
