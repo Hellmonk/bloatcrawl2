@@ -620,12 +620,13 @@ unsigned int item_value(item_def item, bool ident)
             {
                 // Formula: price = kn(n+1) / 2, where k depends on the subtype,
                 // n is the power. (The base variable is equal to 2n.)
+				// Removing this since pluses on Jewelry no longer exist in bCrawl.
                 int base = 0;
                 int coefficient = 0;
                 if (item.sub_type == RING_SLAYING)
-                    base = 3 * item.plus;
+                    base = 15;
                 else
-                    base = 2 * item.plus;
+                    base = 10;
 
                 switch (item.sub_type)
                 {
