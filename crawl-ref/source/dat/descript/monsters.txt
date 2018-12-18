@@ -523,9 +523,9 @@ but by constricting its prey.
 %%%%
 ancestor
 
-A humanoid construct of insubstantial memory, floating through the air. Though
-perhaps somewhat changed in shape and bearing few discernable features, still
-it seems somehow to resemble a warrior from the distantly remembered past.
+A construct of insubstantial memory, floating through the air. Bearing few 
+discernable features, it still seems to resemble your forebear from a
+distantly remembered past. Specific traits depend on the species of the worshipper.
 %%%%
 ancient champion
 
@@ -600,10 +600,10 @@ myopic and uses echolocation to navigate.
 %%%%
 battlemage
 
-A humanoid construct of insubstantial memory, floating through the air. Though
-perhaps somewhat changed in shape and bearing few discernable features, still
-it seems somehow to resemble a warrior from the distantly remembered past,
-skilled with both conjurations and melee combat.
+A construct of insubstantial memory, floating through the air. Bearing few 
+discernable features, it still seems to resemble your forebear from a
+distantly remembered past, skilled with both conjurations and melee combat.
+Specific traits vary with the species of the worshipper.
 %%%%
 battlesphere
 
@@ -1328,10 +1328,10 @@ flee its grasp.
 %%%%
 hexer
 
-A humanoid construct of insubstantial memory, floating through the air. Though
-perhaps somewhat changed in shape and bearing few discernable features, still
-it seems somehow to resemble a warrior from the distantly remembered past,
-ready with debilitating spells and deadly knifework.
+A construct of insubstantial memory, floating through the air. Bearing few 
+discernable features, it still seems to resemble your forebear from a
+distantly remembered past, ready with debilitating spells and powerful stabs.
+Specific traits depend on the species of the worshipper.
 %%%%
 hippogriff
 
@@ -1509,10 +1509,10 @@ or something altogether less pleasant?
 %%%%
 knight
 
-A humanoid construct of insubstantial memory, floating through the air. Though
-perhaps somewhat changed in shape and bearing few discernable features, still
-it seems somehow to resemble a warrior from the distantly remembered past,
-well equipped with arms and armour both.
+A construct of insubstantial memory, floating through the air. Bearing few 
+discernable features, it still seems to resemble your forebear from a
+distantly remembered past, very defensively capable and bulky.
+Specific traits depend on the species of the worshipper.
 %%%%
 kobold
 

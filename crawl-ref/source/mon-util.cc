@@ -4749,11 +4749,42 @@ mon_body_shape get_mon_shape(const monster& mon)
  */
 mon_body_shape get_mon_shape(const monster_type mc)
 {
-    if (mc == MONS_CHAOS_SPAWN)
-    {
-        return static_cast<mon_body_shape>(random_range(MON_SHAPE_HUMANOID,
-                                                        MON_SHAPE_MISC));
-    }
+	if (mc == MONS_CHAOS_SPAWN)
+	{
+		return static_cast<mon_body_shape>(random_range(MON_SHAPE_HUMANOID,
+			MON_SHAPE_MISC));
+	}
+
+	if (mons_is_hepliaklqana_ancestor(mc))
+	{
+		if (species_is_draconian(you.species))
+			return static_cast<mon_body_shape>(MON_SHAPE_HUMANOID_WINGED_TAILED);
+		else
+		{
+			switch (you.species)
+			{
+			case SP_FELID:
+				return static_cast<mon_body_shape>(MON_SHAPE_QUADRUPED);
+				break;
+			case SP_MERFOLK:
+			case SP_NAGA:
+				return static_cast<mon_body_shape>(MON_SHAPE_NAGA);
+				break;
+			case SP_OCTOPODE:
+				return static_cast<mon_body_shape>(MON_SHAPE_MISC);
+				break;
+			case SP_TENGU:
+			case SP_GARGOYLE:
+				return static_cast<mon_body_shape>(MON_SHAPE_HUMANOID_WINGED);
+				break;
+			case SP_CENTAUR:
+				return static_cast<mon_body_shape>(MON_SHAPE_CENTAUR);
+			default:
+				return static_cast<mon_body_shape>(MON_SHAPE_HUMANOID);
+				break;
+			}
+		}
+	}
 
     ASSERT_smc();
     return smc->shape;
