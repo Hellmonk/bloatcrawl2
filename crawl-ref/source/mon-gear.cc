@@ -1679,16 +1679,16 @@ static void _give_shield(monster* mon, int level)
                               ISPEC_GOOD_ITEM);
         break;
 
+	case MONS_ANCESTOR_BATTLEMAGE:
+	case MONS_ANCESTOR_HEXER:
     case MONS_ANCESTOR_KNIGHT:
     {
         item_def shld;
         upgrade_hepliaklqana_shield(*mon, shld);
 
 		// Embedding a Nikola Hack, hope this works.
-		//if (you.species == SP_FELID && mon->get_experience_level() >= 5)
-		//	make_item_for_monster(mon, OBJ_JEWELLERY, AMU_REFLECTION, 6, 0, ISFLAG_KNOW_TYPE | ISFLAG_KNOW_PLUSES);
-		// Removed Nikola Hack, it worked, but it dropped the Amulet on death and we don't want that.
-		// Will give a shielding spell instead.
+		if (you.species == SP_FELID && mon->get_experience_level() >= 12)
+			make_item_for_monster(mon, OBJ_JEWELLERY, AMU_REFLECTION, 6, 0, ISFLAG_KNOW_TYPE | ISFLAG_SUMMONED);
 
         if (!shld.defined())
             break;

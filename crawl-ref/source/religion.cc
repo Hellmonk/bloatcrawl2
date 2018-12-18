@@ -1843,7 +1843,6 @@ void upgrade_hepliaklqana_ancestor(bool quiet_force)
         }
     }
 
-
     // but shields can't be lost, and *can* be gained (knight at hd 5)
     // so give them out as appropriate
     if (!ancestor_offlevel)
@@ -1858,10 +1857,20 @@ void upgrade_hepliaklqana_ancestor(bool quiet_force)
     if (shld != _hepliaklqana_shield_type(ancestor->type, old_hd)
         && !quiet_force)
     {
-        // doesn't currently support egos varying separately from shield types
         _regain_item_memory(*ancestor, OBJ_ARMOUR, shld,
                             _hepliaklqana_shield_ego(hd));
     }
+
+	// Handles gaining reflection seperately from shield type upgrade.
+
+	else if (_hepliaklqana_shield_ego(hd)
+			!= _hepliaklqana_shield_ego(old_hd) && !quiet_force)
+	{
+		mprf("%s remembers %s %s reflection.",
+			ancestor->name(DESC_YOUR, true).c_str(),
+			ancestor->pronoun(PRONOUN_POSSESSIVE, true).c_str(),
+			apostrophise(item_base_name(OBJ_ARMOUR, shld)).c_str());
+	}
 
     if (quiet_force)
         return;
@@ -1887,6 +1896,10 @@ static weapon_type _hepliaklqana_weapon_type(monster_type mc, int HD)
 			return HD < 10 ? WPN_HAND_AXE : WPN_BROAD_AXE;
 		else if (you.species == SP_OGRE)
 			return HD < 12 ? WPN_MORNINGSTAR : WPN_EVENINGSTAR;
+		else if (you.species == SP_SPRIGGAN || you.species == SP_DEEP_ELF)
+			return HD < 9  ? WPN_SHORT_SWORD :
+				   HD < 14 ? WPN_RAPIER :
+			                 WPN_QUICK_BLADE;
 		else
 			return HD < 10 ? WPN_FLAIL : WPN_BROAD_AXE;
 	case MONS_ANCESTOR_BATTLEMAGE:
@@ -1920,9 +1933,14 @@ static brand_type _hepliaklqana_weapon_brand(monster_type mc, int HD)
             return HD < 16 ?   SPWPN_DRAINING :
                                SPWPN_ANTIMAGIC;
         case MONS_ANCESTOR_KNIGHT:
-            return HD < 10 ?   SPWPN_NORMAL :
-                   HD < 16 ?   SPWPN_FLAMING :
-                               SPWPN_SPEED;
+			if (you.species == SP_SPRIGGAN || you.species == SP_DEEP_ELF)
+				return HD < 10 ? SPWPN_NORMAL :
+				       HD < 16 ? SPWPN_VENOM :
+				                 SPWPN_ELECTROCUTION;
+			else
+				return HD < 10 ?   SPWPN_NORMAL :
+					   HD < 16 ?   SPWPN_FLAMING :
+								   SPWPN_SPEED;
         case MONS_ANCESTOR_BATTLEMAGE:
             return HD < 13 ?   SPWPN_NORMAL :
                                SPWPN_FREEZING;
@@ -1968,12 +1986,17 @@ void upgrade_hepliaklqana_weapon(monster_type mtyp, item_def &item)
  */
 static armour_type _hepliaklqana_shield_type(monster_type mc, int HD)
 {
-	if (you.species == SP_FORMICID)
-		return ARM_SHIELD;
-	else if (you.species == SP_FELID)
+	if (you.species == SP_FELID)
 		return NUM_ARMOURS;
 	else if (mc != MONS_ANCESTOR_KNIGHT)
-        return NUM_ARMOURS;
+	{
+		if (you.species == SP_FORMICID)
+			return ARM_SHIELD;
+		else
+			return NUM_ARMOURS;
+	}
+	else if (you.body_size() < SIZE_MEDIUM)
+		return ARM_BUCKLER;
     if (HD < 13)
         return ARM_SHIELD;
     return ARM_LARGE_SHIELD;

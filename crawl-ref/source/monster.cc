@@ -489,8 +489,10 @@ item_def *monster::melee_weapon() const
 // Give hands required to wield weapon.
 hands_reqd_type monster::hands_reqd(const item_def &item, bool base) const
 {
-    if (mons_genus(type) == MONS_FORMICID)
-        return HANDS_ONE;
+	if (mons_genus(type) == MONS_FORMICID)
+		return HANDS_ONE;
+	else if (mons_is_hepliaklqana_ancestor && you.species == SP_FORMICID)
+		return HANDS_ONE;
     return actor::hands_reqd(item, base);
 }
 
@@ -3404,6 +3406,13 @@ int monster::base_evasion() const
         return _zombie_ev_modifier(type) + base_ev;
     }
 
+	// Ancestors vary with player race and HD.
+	if (mons_is_hepliaklqana_ancestor(type))
+	{
+		int ev = get_experience_level();
+		return ev;
+	}
+
     // abominations are weird.
     if (type == MONS_ABOMINATION_LARGE)
         return min(20, 2 * get_hit_dice() / 3);
@@ -4044,8 +4053,11 @@ int monster::res_magic(bool calc_unid) const
                 mons_class_res_magic(type, base_monster);
 
     // Hepliaklqana ancestors scale with xl.
-    if (mons_is_hepliaklqana_ancestor(type))
-        u = get_experience_level() * get_experience_level() / 2; // 0-160ish
+	if (mons_is_hepliaklqana_ancestor(type))
+		u = get_experience_level() * species_mr_modifier(you.species) * 2;
+		// 6 - 108 for low MR races (Draconians, Minotaurs, etc.)
+		// 10 - 180 for medium MR races (Mummies, etc.)
+	    // 14 - Immune for High MR Races (Spriggans, etc.)
 
     // Draining/malmutation reduce monster base MR proportionately.
     const int HD = get_hit_dice();
@@ -4673,6 +4685,9 @@ bool monster::is_trap_safe(const coord_def& where, bool just_check) const
     // No friendly monsters will ever enter a Zot trap you know.
     if (player_knows_trap && friendly() && trap.type == TRAP_ZOT)
         return false;
+
+	if (stasis() && (trap.type == TRAP_TELEPORT || trap.type == TRAP_TELEPORT_PERMANENT))
+		return true;
 
     // Dumb monsters don't care at all.
     if (intel == I_BRAINLESS)
@@ -6582,7 +6597,8 @@ bool monster::check_clarity(bool silent) const
 bool monster::stasis() const
 {
     return mons_genus(type) == MONS_FORMICID
-           || type == MONS_PLAYER_GHOST && ghost->species == SP_FORMICID;
+           || type == MONS_PLAYER_GHOST && ghost->species == SP_FORMICID
+		   || mons_is_hepliaklqana_ancestor(type) && you.species == SP_FORMICID;
 }
 
 bool monster::cloud_immune(bool calc_unid, bool items) const
