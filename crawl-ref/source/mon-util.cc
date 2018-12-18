@@ -5745,6 +5745,28 @@ void set_ancestor_spells(monster &ancestor, bool notify)
 				SPELL_BOLT_OF_COLD :
 				SPELL_THROW_ICICLE);
 		}
+		else if (species_is_draconian(you.species)) // SCORCHER! 
+		{
+			_add_ancestor_spell(ancestor.spells, HD >= 17 ?
+				SPELL_HURL_DAMNATION :
+				SPELL_FIREBALL);
+			_add_ancestor_spell(ancestor.spells, HD >= 13 ?
+				SPELL_BOLT_OF_FIRE :
+				SPELL_THROW_FLAME);
+		}
+		else if (you.species == SP_TENGU)
+		{
+			_add_ancestor_spell(ancestor.spells, HD >= 12 ?
+				SPELL_BATTLESPHERE :
+				SPELL_THROW_FROST);
+			_add_ancestor_spell(ancestor.spells, HD >= 16 ?
+				SPELL_CORROSIVE_BOLT :
+				SPELL_FORCE_LANCE);
+			_add_ancestor_spell(ancestor.spells, HD >= 13 ?
+				SPELL_LIGHTNING_BOLT :
+				SPELL_SHOCK);
+			_add_ancestor_spell(ancestor.spells, SPELL_AIRSTRIKE);
+		}
 		else if (you.species == SP_NAGA || you.species == SP_OCTOPODE)
 		{
 			_add_ancestor_spell(ancestor.spells, HD >= 12 ?
@@ -5753,6 +5775,7 @@ void set_ancestor_spells(monster &ancestor, bool notify)
 			_add_ancestor_spell(ancestor.spells, HD >= 16 ?
 				SPELL_LEHUDIBS_CRYSTAL_SPEAR :
 				SPELL_STONE_ARROW);
+			_add_ancestor_spell(ancestor.spells, SPELL_OLGREBS_TOXIC_RADIANCE);
 		}
 		else if (you.species == SP_HILL_ORC)
 		{
@@ -5763,7 +5786,7 @@ void set_ancestor_spells(monster &ancestor, bool notify)
 				SPELL_BOLT_OF_FIRE :
 				SPELL_THROW_FLAME);
 		}
-		else if (you.species == SP_MUMMY)
+		else if (you.species == SP_MUMMY | you.species == SP_GHOUL)
 		{
 			_add_ancestor_spell(ancestor.spells, HD >= 10 ?
 				SPELL_AGONY :
