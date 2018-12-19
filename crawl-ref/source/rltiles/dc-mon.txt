@@ -371,9 +371,13 @@ efreet MONS_EFREET
 %sdir mon/nonliving
 %rim 0
 ancestor MONS_ANCESTOR
+felid_ancestor
 ancestor_knight MONS_ANCESTOR_KNIGHT
+felid_ancestor_knight
 ancestor_battlemage MONS_ANCESTOR_BATTLEMAGE
+felid_ancestor_battlemage
 ancestor_hexer MONS_ANCESTOR_HEXER
+felid_ancestor_hexer
 %rim 1
 
 ## Abominations ('X')

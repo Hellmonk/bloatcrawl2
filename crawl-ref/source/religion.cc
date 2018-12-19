@@ -1810,6 +1810,13 @@ void upgrade_hepliaklqana_ancestor(bool quiet_force)
         mprf("%s remembers more of %s old skill.",
              ancestor->name(DESC_YOUR, true).c_str(),
              ancestor->pronoun(PRONOUN_POSSESSIVE, true).c_str());
+
+		// Hacky, but there isn't even handling for monsters getting jewellery at all, so...
+
+		if (you.species == SP_FELID && hd == 12 && ancestor->type == MONS_ANCESTOR_KNIGHT)
+			mprf("%s remembers %s Amulet of Reflection.",
+				ancestor->name(DESC_YOUR, true).c_str(),
+				ancestor->pronoun(PRONOUN_POSSESSIVE, true).c_str());
     }
 
     set_ancestor_spells(*ancestor, !quiet_force);
@@ -1864,7 +1871,7 @@ void upgrade_hepliaklqana_ancestor(bool quiet_force)
 	// Handles gaining reflection seperately from shield type upgrade.
 
 	else if (_hepliaklqana_shield_ego(hd)
-			!= _hepliaklqana_shield_ego(old_hd) && !quiet_force)
+			!= _hepliaklqana_shield_ego(old_hd) && !quiet_force && shld != NUM_ARMOURS)
 	{
 		mprf("%s remembers %s %s reflection.",
 			ancestor->name(DESC_YOUR, true).c_str(),
@@ -1894,6 +1901,8 @@ static weapon_type _hepliaklqana_weapon_type(monster_type mc, int HD)
 			return HD < 10 ? WPN_SPEAR : WPN_DEMON_TRIDENT;
 		else if (you.species == SP_HILL_ORC)
 			return HD < 10 ? WPN_HAND_AXE : WPN_BROAD_AXE;
+		else if (you.species == SP_FORMICID)
+			return HD < 10 ? WPN_DIRE_FLAIL : WPN_EXECUTIONERS_AXE;
 		else if (you.species == SP_OGRE)
 			return HD < 12 ? WPN_MORNINGSTAR : WPN_EVENINGSTAR;
 		else if (you.species == SP_SPRIGGAN || you.species == SP_DEEP_ELF)

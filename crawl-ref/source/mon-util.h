@@ -105,11 +105,12 @@ private:
 /// in what ways do a monster's tiles vary?
 enum mon_type_tile_variation
 {
-    TVARY_NONE,   ///< fixed tile (or special case)
-    TVARY_MOD,    ///< monster instances have fixed but random tiles
-    TVARY_CYCLE,  ///< cycle through tileset with every redraw
-    TVARY_RANDOM, ///< choose a random tile in set with every redraw
-    TVARY_WATER,  ///< if in water, incr tile enum by 1 (merfolk &c)
+    TVARY_NONE,     ///< fixed tile (or special case)
+    TVARY_MOD,      ///< monster instances have fixed but random tiles
+    TVARY_CYCLE,    ///< cycle through tileset with every redraw
+    TVARY_RANDOM,   ///< choose a random tile in set with every redraw
+    TVARY_WATER,    ///< if in water, incr tile enum by 1 (merfolk &c)
+	TVARY_SPECIES,  ///< tile varies based on player race (used for Ancestors)
 };
 
 /// Tiles display information for a monster type.
