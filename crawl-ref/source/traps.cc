@@ -590,29 +590,33 @@ void trap_def::trigger(actor& triggerer)
         break;
 
     case TRAP_ALARM:
-        if (in_sight)
+        // Alarms always mark the player, but not through glass
+        // The trap gets destroyed to prevent the player from abusing an alarm
+        // trap found in favorable terrain.
+        if (you.see_cell_no_trans(pos))
+            break;
+
+        trap_destroyed = true;
+
+        if (you_trigger)
+            mprf("You set off the alarm!");
+        else
+            mprf("%s %s the alarm!", triggerer.name(DESC_THE).c_str(),
+                 mons_intel(*m) >= I_HUMAN ? "pulls" : "sets off");
+
+        if (silenced(pos))
         {
-            // Don't let wandering monsters set off meaningless alarms.
-            trap_destroyed = true;
-            if (you_trigger)
-                mprf("You set off the alarm!");
-            else
-                mprf("%s %s the alarm!", triggerer.name(DESC_THE).c_str(),
-                     mons_intel(*m) >= I_HUMAN ? "pulls" : "sets off");
+            mprf("%s vibrates slightly, failing to make a sound.",
+                    name(DESC_THE).c_str());
+        }
+        else
+        {
+            string msg = make_stringf("%s emits a blaring wail!",
+                                name(DESC_THE).c_str());
+            noisy(40, pos, msg.c_str(), triggerer.mid);
+        }
 
-            if (silenced(pos))
-            {
-                mprf("%s vibrates slightly, failing to make a sound.",
-                     name(DESC_THE).c_str());
-            }
-            else
-            {
-                string msg = make_stringf("%s emits a blaring wail!",
-                                   name(DESC_THE).c_str());
-                noisy(40, pos, msg.c_str(), triggerer.mid);
-            }
-
-            you.sentinel_mark(true);
+        you.sentinel_mark(true);
         }
         break;
 
