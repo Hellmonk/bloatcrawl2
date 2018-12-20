@@ -2838,6 +2838,15 @@ void monster::expose_to_element(beam_type flavour, int strength,
         }
         if (has_ench(ENCH_ICEMAIL))
             del_ench(ENCH_ICEMAIL);
+		if (has_ench(ENCH_CONDENSATION_SHIELD))
+		{
+			del_ench(ENCH_CONDENSATION_SHIELD);
+			if (you.can_see(*this))
+			{
+				mprf("The heat dissapates %s  shield.",
+					apostrophise(name(DESC_THE)).c_str());
+			}
+		}
         break;
     default:
         break;
@@ -3114,7 +3123,8 @@ bool monster::shielded() const
 {
     return shield()
            || has_ench(ENCH_BONE_ARMOUR)
-           || wearing(EQ_AMULET_PLUS, AMU_REFLECTION) > 0;
+		   || has_ench(ENCH_CONDENSATION_SHIELD)
+           || wearing(EQ_AMULET, AMU_REFLECTION) > 0;
 }
 
 int monster::shield_bonus() const
@@ -3124,22 +3134,24 @@ int monster::shield_bonus() const
 
     int sh = -100;
     const item_def *shld = shield();
-    if (shld && get_armour_slot(*shld) == EQ_SHIELD)
-    {
+	if (shld && get_armour_slot(*shld) == EQ_SHIELD)
+	{
 
-        int shld_c = property(*shld, PARM_AC) + shld->plus * 2;
-        shld_c = shld_c * 2 + (body_size(PSIZE_TORSO) - SIZE_MEDIUM)
-                            * (shld->sub_type - ARM_LARGE_SHIELD);
-        sh = random2avg(shld_c + get_hit_dice() * 4 / 3, 2) / 2;
-    }
+		int shld_c = property(*shld, PARM_AC) + shld->plus * 2;
+		shld_c = shld_c * 2 + (body_size(PSIZE_TORSO) - SIZE_MEDIUM)
+			* (shld->sub_type - ARM_LARGE_SHIELD);
+		sh = random2avg(shld_c + get_hit_dice() * 4 / 3, 2) / 2;
+	}
+
+	// Condensation Shield
+	else if (has_ench(ENCH_CONDENSATION_SHIELD))
+		sh += spell_hd(SPELL_CONDENSATION_SHIELD);
+
     // shielding from jewellery
     const item_def *amulet = mslot_item(MSLOT_JEWELLERY);
     if (amulet && amulet->sub_type == AMU_REFLECTION)
-    {
-        const int jewellery_plus = amulet->plus;
-        ASSERT(abs(jewellery_plus) < 30); // sanity check
-        sh += jewellery_plus * 2;
-    }
+        sh += 10;
+
 
     return sh;
 }
@@ -3330,11 +3342,9 @@ int monster::armour_class(bool calc_unid) const
     const item_def *ring = mslot_item(MSLOT_JEWELLERY);
     if (ring && ring->sub_type == RING_PROTECTION
         && (calc_unid
-            || item_ident(*ring, ISFLAG_KNOW_TYPE | ISFLAG_KNOW_PLUSES)))
+            || item_ident(*ring, ISFLAG_KNOW_TYPE)))
     {
-        const int jewellery_plus = ring->plus;
-        ASSERT(abs(jewellery_plus) < 30); // sanity check
-        ac += jewellery_plus;
+        ac += 5;
     }
 
     // various enchantments
@@ -3455,11 +3465,9 @@ int monster::evasion(ev_ignore_type evit, const actor* /*act*/) const
     const item_def *ring = mslot_item(MSLOT_JEWELLERY);
     if (ring && ring->sub_type == RING_EVASION
         && (calc_unid
-            || item_ident(*ring, ISFLAG_KNOW_TYPE | ISFLAG_KNOW_PLUSES)))
+            || item_ident(*ring, ISFLAG_KNOW_TYPE)))
     {
-        const int jewellery_plus = ring->plus;
-        ASSERT(abs(jewellery_plus) < 30); // sanity check
-        ev += jewellery_plus;
+        ev += 5;
     }
 
     if (has_ench(ENCH_AGILE))

@@ -79,6 +79,7 @@ static map<enchant_type, monster_info_flags> trivial_ench_mb_mappings = {
     { ENCH_INNER_FLAME,     MB_INNER_FLAME },
     { ENCH_BREATH_WEAPON,   MB_BREATH_WEAPON },
     { ENCH_OZOCUBUS_ARMOUR, MB_OZOCUBUS_ARMOUR },
+	{ ENCH_CONDENSATION_SHIELD, MB_CONDENSATION_SHIELD},
     { ENCH_WRETCHED,        MB_WRETCHED },
     { ENCH_SCREAMED,        MB_SCREAMED },
     { ENCH_WORD_OF_RECALL,  MB_WORD_OF_RECALL },
@@ -1462,6 +1463,8 @@ vector<string> monster_info::attributes() const
         v.emplace_back("resistant to hostile enchantments");
     if (is(MB_OZOCUBUS_ARMOUR))
         v.emplace_back("covered in an icy film");
+	if (is(MB_CONDENSATION_SHIELD))
+		v.emplace_back("protected by a floating icy shield");
     if (is(MB_WRETCHED))
         v.emplace_back("misshapen and mutated");
     if (is(MB_WORD_OF_RECALL))

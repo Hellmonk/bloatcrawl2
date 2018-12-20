@@ -1565,18 +1565,18 @@ static const struct spell_desc spelldata[] =
     TILEG_SANDBLAST,
 },
 
-#if TAG_MAJOR_VERSION == 34
 {
     SPELL_CONDENSATION_SHIELD, "Condensation Shield",
     SPTYP_ICE,
     SPFLAG_HELPFUL | SPFLAG_UTILITY,
-    4,
+    5,
     200,
     -1, -1,
     3, 0,
     TILEG_ERROR,
 },
 
+#if TAG_MAJOR_VERSION == 34
 {
     SPELL_STONESKIN, "Stoneskin",
     SPTYP_EARTH | SPTYP_TRANSMUTATION,

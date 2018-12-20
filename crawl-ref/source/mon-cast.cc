@@ -1861,7 +1861,9 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_SUMMON_SCARABS:
 #if TAG_MAJOR_VERSION == 34
     case SPELL_HUNTING_CRY:
+#endif
     case SPELL_CONDENSATION_SHIELD:
+#if TAG_MAJOR_VERSION == 34
     case SPELL_CONTROL_UNDEAD:
 #endif
     case SPELL_CLEANSING_FLAME:
@@ -6489,6 +6491,21 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         return;
     }
 
+	case SPELL_CONDENSATION_SHIELD:
+	{
+		if (you.can_see(*mons))
+		{
+			mprf("A floating shield of ice appears before %s.",
+				mons->name(DESC_THE).c_str());
+		}
+		const int power = (mons->spell_hd(spell_cast) * 15) / 10;
+		mons->add_ench(mon_enchant(ENCH_CONDENSATION_SHIELD,
+			20 + random2(power) + random2(power),
+			mons));
+
+		return;
+	}
+
     case SPELL_WORD_OF_RECALL:
     {
         mon_enchant chant_timer = mon_enchant(ENCH_WORD_OF_RECALL, 1, mons, 30);
@@ -7812,7 +7829,7 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
                || !forest_near_enemy(mon);
 
     case SPELL_OZOCUBUS_ARMOUR:
-        return mon->is_insubstantial() || mon->has_ench(ENCH_OZOCUBUS_ARMOUR);
+        return mon->has_ench(ENCH_OZOCUBUS_ARMOUR);
 
     case SPELL_BATTLESPHERE:
         return find_battlesphere(mon);
@@ -8074,6 +8091,9 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
     case SPELL_DEFLECT_MISSILES:
         return mon->has_ench(ENCH_DEFLECT_MISSILES);
 
+	case SPELL_CONDENSATION_SHIELD:
+		return mon->has_ench(ENCH_CONDENSATION_SHIELD);
+
     case SPELL_CONFUSION_GAZE:
         return !foe || !mon->can_see(*foe);
 
@@ -8153,7 +8173,6 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
     case SPELL_SIMULACRUM:
     case SPELL_CHANT_FIRE_STORM:
     case SPELL_IGNITE_POISON_SINGLE:
-    case SPELL_CONDENSATION_SHIELD:
     case SPELL_STONESKIN:
     case SPELL_HUNTING_CRY:
     case SPELL_CONTROL_WINDS:
