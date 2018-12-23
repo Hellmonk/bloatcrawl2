@@ -2,20 +2,22 @@ Stoat Soup 0.22
 ---------------
 Antilog: vanilla changes not made
 ---------------------------------
-Dream sheep can still spread sticky flame to each other.
+* Dream sheep can still spread sticky flame to each other.
+* Dithmo still hates fire. I'll bet this will introduce bugs in future where I
+  forget to add new spells or effects to the list. Sorry.
 
 Stoat Soup 0.21.2
 -----------------
-Restore spawns
-Restore purple chunks. Mutagenic monsters "cool down" to stop Mr Boring
-but Optimal storing them all in a branch somewhere for later.
-Make food less boring, but royal jellies turn up only in hives, to
-slightly reduce inventory spam.
-If you worship Qazlal, the noise bar goes to 11!
-Reduce variance in DD healing.
-Change double swords and triple swords to broadswords and claymores; no
-game mechanical change here.
-Experimentally make Singing Sword vorpal so it is at least vaguely attractive.
+* Restore spawns
+* Restore purple chunks. Mutagenic monsters "cool down" to stop Mr Boring
+  but Optimal storing them all in a branch somewhere for later.
+* Make food less boring, but royal jellies turn up only in hives, to
+  slightly reduce inventory spam.
+* If you worship Qazlal, the noise bar goes to 11!
+* Reduce variance in DD healing.
+* Change double swords and triple swords to broadswords and claymores; no
+  game mechanical change here.
+* Experimentally make Singing Sword vorpal so it is at least vaguely attractive.
 
 Stone Soup 0.21.2 (20180916)
 ----------------------------
