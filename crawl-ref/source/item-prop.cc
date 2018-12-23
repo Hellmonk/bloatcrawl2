@@ -25,6 +25,7 @@
 #include "libutil.h" // map_find
 #include "message.h"
 #include "misc.h"
+#include "mutation.h"
 #include "notes.h"
 #include "options.h"
 #include "orb-type.h"
@@ -839,7 +840,7 @@ bool item_is_cursable(const item_def &item, bool ignore_holy_wrath)
     if (!ignore_holy_wrath
         && item.base_type == OBJ_WEAPONS
         && (get_weapon_brand(item) == SPWPN_HOLY_WRATH
-            || you.duration[DUR_EXCRUCIATING_WOUNDS]
+            || you.permabuffs[MUT_EXCRUCIATING_WOUNDS]
                && item_is_equipped(item)
                && you.props[ORIGINAL_BRAND_KEY].get_int() == SPWPN_HOLY_WRATH))
     {
@@ -907,7 +908,7 @@ void do_curse_item(item_def &item, bool quiet)
     // Holy wrath weapons cannot be cursed.
     if (item.base_type == OBJ_WEAPONS
         && (get_weapon_brand(item) == SPWPN_HOLY_WRATH
-            || you.duration[DUR_EXCRUCIATING_WOUNDS]
+            || you.permabuffs[MUT_EXCRUCIATING_WOUNDS]
                && item_is_equipped(item)
                && you.props[ORIGINAL_BRAND_KEY].get_int() == SPWPN_HOLY_WRATH))
     {

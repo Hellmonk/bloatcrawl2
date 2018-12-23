@@ -29,6 +29,7 @@
 #include "showsymb.h"
 #include "spl-transloc.h"
 #include "spl-util.h"
+#include "spl-wpnench.h"
 #include "terrain.h"
 #include "transform.h"
 #include "tilepick.h"
@@ -650,6 +651,12 @@ void spell_drop_permabuffs()
     if (you.form != transformation::none)
     {
         untransform(true);
+    }
+    // Special case for weapon brands
+    if (you.permabuffs[MUT_EXCRUCIATING_WOUNDS])
+    {
+        item_def& weapon = *you.weapon();
+        end_weapon_brand(weapon, true);
     }
     // Unreserve all MP/EP
     unreserve_mp(-you.mp_max_adj_temp);
