@@ -5,6 +5,7 @@ Antilog: vanilla changes not made
 * Dream sheep can still spread sticky flame to each other.
 * Dithmo still hates fire. I'll bet this will introduce bugs in future where I
   forget to add new spells or effects to the list. Sorry.
+* Engulf still gives a movement penalty.
 
 Stoat Soup 0.21.2
 -----------------
