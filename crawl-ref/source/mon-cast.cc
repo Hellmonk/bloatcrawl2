@@ -1074,7 +1074,9 @@ static int _mons_power_hd_factor(spell_type spell, bool random)
 
         case SPELL_MONSTROUS_MENAGERIE:
         case SPELL_BATTLESPHERE:
+#if TAG_MAJOR_VERSION == 34
         case SPELL_SPECTRAL_WEAPON:
+#endif
         case SPELL_IGNITE_POISON:
         case SPELL_IOOD:
         case SPELL_SINGULARITY:
@@ -1824,7 +1826,9 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_SUMMON_TWISTER:
 #endif
     case SPELL_BATTLESPHERE:
+#if TAG_MAJOR_VERSION == 34
     case SPELL_SPECTRAL_WEAPON:
+#endif
     case SPELL_WORD_OF_RECALL:
     case SPELL_INJURY_BOND:
     case SPELL_CALL_LOST_SOUL:
@@ -6360,11 +6364,11 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
     case SPELL_BATTLESPHERE:
         cast_battlesphere(mons, min(splpow, 200), mons->god, false);
         return;
-
+#if TAG_MAJOR_VERSION == 34
     case SPELL_SPECTRAL_WEAPON:
         cast_spectral_weapon(mons, min(splpow, 200), mons->god, false);
         return;
-
+#endif
     case SPELL_TORNADO:
     {
         _mons_tornado(mons);
@@ -7969,7 +7973,7 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
 
     case SPELL_BATTLESPHERE:
         return find_battlesphere(mon);
-
+#if TAG_MAJOR_VERSION == 34
     case SPELL_SPECTRAL_WEAPON:
         return find_spectral_weapon(mon)
             || !weapon_can_be_spectral(mon->weapon())
@@ -7979,7 +7983,7 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
             // generally helps the caster's target maintain distance, also
             // letting the target exploit the spectral's damage sharing.
             || grid_distance(mon->pos(), foe->pos()) > 2;
-
+#endif
     case SPELL_INJURY_BOND:
         for (monster_iterator mi; mi; ++mi)
         {

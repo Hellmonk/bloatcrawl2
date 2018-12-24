@@ -27,6 +27,7 @@
 #include "player.h"
 #include "religion.h"
 #include "showsymb.h"
+#include "spl-summoning.h"
 #include "spl-transloc.h"
 #include "spl-util.h"
 #include "spl-wpnench.h"
@@ -657,6 +658,12 @@ void spell_drop_permabuffs()
     {
         item_def& weapon = *you.weapon();
         end_weapon_brand(weapon, true);
+    }
+    if (you.permabuffs[MUT_SPECTRAL_WEAPON])
+    {
+        monster* old_spectral = find_spectral_weapon(&you);
+        if(old_spectral)
+            end_spectral_weapon(old_spectral, false);
     }
     // Unreserve all MP/EP
     unreserve_mp(-you.mp_max_adj_temp);

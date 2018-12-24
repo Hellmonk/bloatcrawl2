@@ -53,6 +53,7 @@
 #include "religion.h"
 #include "rot.h"
 #include "shout.h"
+#include "spl-selfench.h"
 #include "spl-util.h"
 #include "spl-wpnench.h"
 #include "spl-zap.h"
@@ -3084,36 +3085,50 @@ bool weapon_can_be_spectral(const item_def *wpn)
 spret_type cast_spectral_weapon(actor *agent, int pow, god_type god, bool fail)
 {
     ASSERT(agent);
-
-    const int dur = min(2 + random2(1 + div_rand_round(pow, 25)), 4);
-    item_def* wpn = agent->weapon();
-
-    // If the wielded weapon should not be cloned, abort
-    if (!weapon_can_be_spectral(wpn))
+    if(!agent->is_player())
     {
-        if (agent->is_player())
-        {
-            if (wpn)
-            {
-                mprf("%s vibrate%s crazily for a second.",
-                     wpn->name(DESC_YOUR).c_str(),
-                     wpn->quantity > 1 ? "" : "s");
-            }
-            else
-                mpr(you.hands_act("twitch", "."));
-        }
-
         return SPRET_ABORT;
     }
 
     fail_check();
+    
+    if(!you.permabuffs[MUT_SPECTRAL_WEAPON])
+    {
+        if(spell_add_permabuff(SPELL_SPECTRAL_WEAPON, 3))
+        {
+            return SPRET_SUCCESS;
+        }
+        else
+        {
+            return SPRET_ABORT;
+        }
+    }
+    else
+    {
+        spell_remove_permabuff(SPELL_SPECTRAL_WEAPON, 3);
+        monster* old_spectral = find_spectral_weapon(&you);
+        if(old_spectral)
+            end_spectral_weapon(old_spectral, false);
+        return SPRET_ABORT;
+    }
+}
 
-    // Remove any existing spectral weapons. Only one should be alive at any
-    // given time.
+void summon_spectral_weapon(actor *agent, int pow, god_type god)
+{
+    ASSERT(agent);
+
+    // Don't summon anything if a spectral weapon is already alive
     monster *old_mons = find_spectral_weapon(agent);
     if (old_mons)
-        end_spectral_weapon(old_mons, false);
+        return;
 
+    const int dur = min(2 + random2(1 + div_rand_round(pow, 25)), 4);
+    item_def* wpn = agent->weapon();
+    
+    //don't do anything if the weapon can't be spectral
+    if (!weapon_can_be_spectral(wpn))
+        return;
+    
     mgen_data mg(MONS_SPECTRAL_WEAPON,
                  agent->is_player() ? BEH_FRIENDLY
                                     : SAME_ATTITUDE(agent->as_monster()),
@@ -3123,13 +3138,11 @@ spret_type cast_spectral_weapon(actor *agent, int pow, god_type god, bool fail)
     mg.props[TUKIMA_WEAPON] = *wpn;
     mg.props[TUKIMA_POWER] = pow;
 
+    // Return if the weapon wasn't created for some reason
     monster *mons = create_monster(mg);
     if (!mons)
     {
-        //if (agent->is_player())
-            canned_msg(MSG_NOTHING_HAPPENS);
-
-        return SPRET_SUCCESS;
+        return;
     }
 
     if (agent->is_player())
@@ -3154,7 +3167,7 @@ spret_type cast_spectral_weapon(actor *agent, int pow, god_type god, bool fail)
     mons->summoner = agent->mid;
     agent->props["spectral_weapon"].get_int() = mons->mid;
 
-    return SPRET_SUCCESS;
+    return;
 }
 
 void end_spectral_weapon(monster* mons, bool killed, bool quiet)
