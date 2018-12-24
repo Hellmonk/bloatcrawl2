@@ -3,6 +3,11 @@ No ability ability
 
 If you get this description, it is a bug.
 %%%%
+Release Permanent Buffs ability
+
+Releases control of all permanently sustained buffs, releasing your reserved
+power.
+%%%%
 Spit Poison ability
 
 Spits poison at a targeted creature.
