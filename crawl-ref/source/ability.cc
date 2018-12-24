@@ -327,6 +327,8 @@ static const ability_def Ability_List[] =
     { ABIL_SHAFT_SELF, "Shaft Self", 0, 0, 250, 0, {}, abflag::delay },
 
     { ABIL_HOP, "Hop", 0, 0, 0, 0, {}, abflag::none },
+    { ABIL_END_PERMABUFFS, "Release Permanent Buffs",
+      0, 0, 0, 0, {}, abflag::none },
 
     // EVOKE abilities use Evocations and come from items.
     // Teleportation and Blink can also come from mutations
@@ -2119,6 +2121,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         untransform();
         break;
 
+    case ABIL_END_PERMABUFFS:
+        fail_check();
+        spell_drop_permabuffs();
+        break;
+
     // INVOCATIONS:
     case ABIL_ZIN_RECITE:
     {
@@ -3370,6 +3377,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
 
     if (you.duration[DUR_TRANSFORMATION] && !you.transform_uncancellable)
         _add_talent(talents, ABIL_END_TRANSFORMATION, check_confused);
+
+    if (you.mp_max_adj_temp < 0)
+        _add_talent(talents, ABIL_END_PERMABUFFS, check_confused);
 
     if (you.get_mutation_level(MUT_BLINK))
         _add_talent(talents, ABIL_BLINK, check_confused);
