@@ -193,7 +193,7 @@ COLOUR:  ETC_RANDOM
 TILE:    spwpn_mace_of_variability
 TILE_EQ: mace_of_variability
 VALUE:   600
-BOOL:    skip_ego,special,no_upgrade
+BOOL:    skip_ego,no_upgrade
 BRAND:   SPWPN_CHAOS
 
 NAME:    glaive of Prune

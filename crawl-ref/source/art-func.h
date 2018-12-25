@@ -504,7 +504,10 @@ static void _VARIABILITY_melee_effects(item_def* weapon, actor* attacker,
     } else {
         weapon->plus += random_choose(+1, -1, +2, -2);
         weapon->plus = max((short)1, min((short)13, weapon->plus));
-        you.wield_change = true;
+        if (attacker->is_player())
+        {
+            you.wield_change = true;
+        }
     }
 }
 
