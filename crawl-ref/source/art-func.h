@@ -501,6 +501,10 @@ static void _VARIABILITY_melee_effects(item_def* weapon, actor* attacker,
         if (you.can_see(*attacker))
             mpr("The mace of Variability scintillates.");
         cast_chain_spell(SPELL_CHAIN_OF_CHAOS, pow, attacker);
+    } else {
+        weapon->plus += random_choose(+1, -1, +2, -2);
+        weapon->plus = max((short)1, min((short)13, weapon->plus));
+        you.wield_change = true;
     }
 }
 
