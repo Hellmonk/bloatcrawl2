@@ -1,9 +1,10 @@
 Stoat Soup 0.22
 ---------------
+
 Antilog: vanilla changes not made, awaiting revision
 ----------------------------------------------------
 * Ozo's Armour unchanged
-* LRD still digs
+* LRD still digs (beware new veto_dig vault property, David)
 * Labyrinth loot and enemies unchanged
 * ghosts still roam the dungeon
 
