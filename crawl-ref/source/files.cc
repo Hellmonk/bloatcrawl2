@@ -1863,8 +1863,6 @@ bool load_ghosts(int max_ghosts, bool creating_level)
     _ghost_dprf("Loaded ghost file with %u ghost(s), will attempt to place %d of them",
              (unsigned int)loaded_ghosts.size(), max_ghosts);
 
-    bool ghost_errors = false;
-
     max_ghosts = max_ghosts <= 0 ? loaded_ghosts.size()
                                  : min(max_ghosts, (int) loaded_ghosts.size());
     int placed_ghosts = 0;
@@ -1887,25 +1885,18 @@ bool load_ghosts(int max_ghosts, bool creating_level)
         if (!mons->alive())
         {
             _ghost_dprf("Placed ghost is not alive.");
-            ghost_errors = true;
         }
         else if (mons->type != MONS_PLAYER_GHOST)
         {
             _ghost_dprf("Placed ghost is not MONS_PLAYER_GHOST, but %s",
                  mons->name(DESC_PLAIN, true).c_str());
-            ghost_errors = true;
         }
     }
 
     if (placed_ghosts < max_ghosts)
     {
         _ghost_dprf("Unable to place %u ghost(s)", max_ghosts - placed_ghosts);
-        ghost_errors = true;
     }
-#ifdef BONES_DIAGNOSTICS
-    if (ghost_errors)
-        more();
-#endif
 
     // resave any unused ghosts
     if (!loaded_ghosts.empty())
