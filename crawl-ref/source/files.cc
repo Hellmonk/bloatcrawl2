@@ -2372,10 +2372,10 @@ static FILE* _make_bones_file(string * return_gfilename)
     {
         const string g_file_name = make_stringf("%s%s_%d", bone_dir.c_str(),
                                                 base_filename.c_str(), i);
-        FILE *gfil = lk_open_exclusive(g_file_name);
+        FILE *ghost_file = lk_open_exclusive(g_file_name);
         // need to check file size, so can't open 'wb' - would truncate!
 
-        if (!gfil)
+        if (!ghost_file)
         {
             dprf("Could not open %s", g_file_name.c_str());
             continue;
@@ -2384,7 +2384,7 @@ static FILE* _make_bones_file(string * return_gfilename)
         dprf("found %s", g_file_name.c_str());
 
         *return_gfilename = g_file_name;
-        return gfil;
+        return ghost_file;
     }
 
     return nullptr;

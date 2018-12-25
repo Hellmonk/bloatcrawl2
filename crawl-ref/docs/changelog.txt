@@ -1,5 +1,12 @@
 Stoat Soup 0.22
 ---------------
+Antilog: vanilla changes not made, awaiting revision
+----------------------------------------------------
+* Ozo's Armour unchanged
+* LRD still digs
+* Labyrinth loot and enemies unchanged
+* ghosts still roam the dungeon
+
 Antilog: vanilla changes not made
 ---------------------------------
 * Dream sheep can still spread sticky flame to each other.
