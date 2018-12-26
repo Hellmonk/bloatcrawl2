@@ -1773,23 +1773,20 @@ static string _find_ghost_file()
     return bonefiles[ui_random(bonefiles.size())];
 }
 
-static vector<ghost_demon> _load_ghost_vec(bool creating_level, bool wiz_cmd)
+static vector<ghost_demon> _load_ghost_vec(bool creating_level)
 {
     vector<ghost_demon> result;
 
     const string ghost_filename = _find_ghost_file();
     if (ghost_filename.empty())
     {
-        if (wiz_cmd && !creating_level)
-            mprf(MSGCH_PROMPT, "No ghost files for this level.");
+        _ghost_dprf("%s", "No ghost files for this level.");
         return result; // no such ghost.
     }
 
     reader inf(ghost_filename);
     if (!inf.valid())
     {
-        if (wiz_cmd && !creating_level)
-            mprf(MSGCH_PROMPT, "Ghost file invalidated before read.");
         _ghost_dprf("Ghost file '%s' invalid before read.", ghost_filename.c_str());
         return result;
     }
@@ -1840,7 +1837,6 @@ static vector<ghost_demon> _load_ghost_vec(bool creating_level, bool wiz_cmd)
  */
 bool load_ghosts(int max_ghosts, bool creating_level)
 {
-    const bool wiz_cmd = (crawl_state.prev_cmd == CMD_WIZARD);
     ASSERT(you.transit_stair == DNGN_UNSEEN || creating_level);
     ASSERT(!you.entering_level || creating_level);
     ASSERT(!creating_level
@@ -1858,7 +1854,7 @@ bool load_ghosts(int max_ghosts, bool creating_level)
 #endif
 
 
-    vector<ghost_demon> loaded_ghosts = _load_ghost_vec(creating_level, wiz_cmd);
+    vector<ghost_demon> loaded_ghosts = _load_ghost_vec(creating_level);
 
     _ghost_dprf("Loaded ghost file with %u ghost(s), will attempt to place %d of them",
              (unsigned int)loaded_ghosts.size(), max_ghosts);

@@ -848,7 +848,11 @@ void remove_unique_annotation(monster* mons)
         // change levels, but there may be a different ghost with the same
         // unique_name elsewhere.
         if ((mons->type != MONS_PLAYER_GHOST
-             || i->second == level_id::current())
+             || i->second == level_id::current()
+        // This is from vanilla and presumes ghosts can take stairs. Right now
+        // they can't, but the check is harmless for us and might help in
+        // future
+             || you.can_see(*mons) && testbits(mons->flags, MF_TAKING_STAIRS))
             && i->first == name)
         {
             affected_levels.insert(i->second);
