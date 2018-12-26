@@ -2910,5 +2910,5 @@ Sprint VIII: "Arena of Blood"
 Sprint IX: "|||||||||||||||||||||||||||||"
   This mode, also known as "linesprint", puts the entire game of crawl in a
   single winding 1-space corridor, with each region as one straight line. The
-  Orb of Zot appears in the middle of the map, which continues through all 15
+  Orb of Zot appears in the middle of the map, which continues through 17
   runes past Zot.
