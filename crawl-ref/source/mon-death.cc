@@ -2257,7 +2257,7 @@ item_def* monster_die(monster& mons, killer_type killer,
 
     // Adjust song of slaying bonus. Kills by relevant avatars are adjusted by
     // now to KILL_YOU and are counted.
-    if (you.duration[DUR_SONG_OF_SLAYING]
+    if (you.permabuffs[MUT_SONG_OF_SLAYING]
         && killer == KILL_YOU
         && gives_player_xp)
     {

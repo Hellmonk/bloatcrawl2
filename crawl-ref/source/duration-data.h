@@ -399,13 +399,13 @@ static const duration_def duration_data[] =
       "Your attacks are magically infused.", D_DISPELLABLE | D_EXPIRES,
       {{ "You are no longer magically infusing your attacks." },
         { "Your magical infusion is running out." }}, 6},
-#endif
     { DUR_SONG_OF_SLAYING,
       BLUE, "Slay",
       "singing", "song of slaying",
       "Your melee attacks are strengthened by your song.", D_DISPELLABLE | D_EXPIRES,
       {{ "Your song has ended." },
         { "Your song is almost over." }}, 6},
+#endif
     { DUR_BLADE_OF_DISASTER,
       MAGENTA, "Disaster",
       "disaster", "blade of disaster",

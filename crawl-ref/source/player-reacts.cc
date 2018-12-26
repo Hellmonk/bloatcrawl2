@@ -973,18 +973,31 @@ void player_reacts()
     if (you.unrand_reacts.any())
         unrand_reacts();
 
+    // Permabuff song of slaying loses slaying bonus over time based on spellpower
+    if (you.permabuffs[MUT_SONG_OF_SLAYING]
+        && x_chance_in_y(you.time_taken * 50, 
+           (50 + calc_spell_power(SPELL_SONG_OF_SLAYING, true)) * 10 * BASELINE_DELAY))
+   {
+       const int sos_bonus = you.props[SONG_OF_SLAYING_KEY];
+       // Bonus cannot go below 0 (no negative slaying)
+       if (sos_bonus > 0)
+       {
+           you.props[SONG_OF_SLAYING_KEY] = sos_bonus - 1;
+       }
+   }
+
     // Handle sound-dependent effects that are silenced
     if (silenced(you.pos()))
     {
-        if (you.duration[DUR_SONG_OF_SLAYING])
+        if (you.permabuffs[MUT_SONG_OF_SLAYING])
         {
             mpr("The silence causes your song to end.");
-            _decrement_a_duration(DUR_SONG_OF_SLAYING, you.duration[DUR_SONG_OF_SLAYING]);
+            spell_remove_permabuff(SPELL_SONG_OF_SLAYING, 2);
         }
     }
 
     // Singing makes a continuous noise
-    if (you.duration[DUR_SONG_OF_SLAYING])
+    if (you.permabuffs[MUT_SONG_OF_SLAYING])
         noisy(spell_effect_noise(SPELL_SONG_OF_SLAYING), you.pos());
 
     if (x_chance_in_y(you.time_taken, 10 * BASELINE_DELAY))

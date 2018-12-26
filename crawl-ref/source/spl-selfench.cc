@@ -367,15 +367,23 @@ spret_type cast_song_of_slaying(int pow, bool fail)
 {
     fail_check();
 
-    if (you.duration[DUR_SONG_OF_SLAYING])
-        mpr("You start a new song!");
+    if(!you.permabuffs[MUT_SONG_OF_SLAYING])
+    {
+        if(spell_add_permabuff(SPELL_SONG_OF_SLAYING, 2))
+        {
+            you.props[SONG_OF_SLAYING_KEY] = 0;
+            return SPRET_SUCCESS;
+        }
+        else
+        {
+            return SPRET_ABORT;
+        }
+    }
     else
-        mpr("You start singing a song of slaying.");
-
-    you.set_duration(DUR_SONG_OF_SLAYING, 20 + random2avg(pow, 2));
-
-    you.props[SONG_OF_SLAYING_KEY] = 0;
-    return SPRET_SUCCESS;
+    {
+        spell_remove_permabuff(SPELL_SONG_OF_SLAYING, 2);
+        return SPRET_ABORT;
+    }
 }
 
 spret_type cast_silence(int pow, bool fail)
