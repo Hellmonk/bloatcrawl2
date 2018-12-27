@@ -3083,6 +3083,9 @@ bool player_can_join_god(god_type which_god)
     if (you.species == SP_PROMETHEAN)
         return false;
 
+    if (which_god == GOD_TROG && you.mp_max_adj_temp > 0)
+        return false;
+
     if (is_good_god(which_god) && you.undead_or_demonic())
         return false;
 
@@ -3710,6 +3713,11 @@ void god_pitch(god_type which_god)
                 mprf("The service fee for joining is currently %d gold; you only"
                      " have %d.", fee, you.gold);
             }
+        }
+        else if (which_god == GOD_TROG && you.mp_max_adj_temp > 0)
+        {
+            simple_god_message(" demands that you end your permanent spells first!",
+                               which_god);
         }
         else if (you.get_mutation_level(MUT_NO_LOVE)
                  && _god_rejects_loveless(which_god))
