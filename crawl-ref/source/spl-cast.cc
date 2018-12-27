@@ -1543,6 +1543,7 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
         aim_battlesphere(&you, spell, powc, beam);
 
     const bool old_target = actor_at(beam.target);
+    const bool can_summon_sphere = !spell_no_hostile_in_range(spell);
 
     spret_type cast_result = _do_cast(spell, powc, spd, beam, god, fail);
 
@@ -1563,6 +1564,19 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
             && (!old_target || (victim && !victim->is_player())))
         {
             dithmenos_shadow_spell(&beam, spell);
+        }
+        if(you.permabuffs[MUT_BATTLESPHERE] && battlesphere_can_mirror(spell) && can_summon_sphere)
+        {
+            monster* battlesphere = find_battlesphere(&you);
+            if(!battlesphere)
+            {
+                if(cast_battlesphere(&you, calc_spell_power(SPELL_BATTLESPHERE, true), god, false) == SPRET_SUCCESS)
+                    mprf("You summon your battlesphere!");
+            }
+            else if(!you.can_see(*battlesphere))
+            {
+                cast_battlesphere(&you, calc_spell_power(SPELL_BATTLESPHERE, true), god, false);
+            }
         }
         _spellcasting_side_effects(spell, god, !allow_fail);
         return SPRET_SUCCESS;
@@ -1823,7 +1837,7 @@ static spret_type _do_cast(spell_type spell, int powc, const dist& spd,
         return cast_spectral_weapon(&you, powc, god, fail);
 
     case SPELL_BATTLESPHERE:
-        return cast_battlesphere(&you, powc, god, fail);
+        return player_battlesphere(&you, powc, god, fail);
 
     case SPELL_INFESTATION:
         return cast_infestation(powc, beam, fail);

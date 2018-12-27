@@ -683,6 +683,12 @@ void spell_drop_permabuffs()
         if(old_spectral)
             end_spectral_weapon(old_spectral, false);
     }
+    if (you.permabuffs[MUT_BATTLESPHERE])
+    {
+        monster* old_sphere = find_battlesphere(&you);
+        if(old_sphere)
+            end_battlesphere(old_sphere, false);
+    }
     // Unreserve all MP/EP
     unreserve_mp(-you.mp_max_adj_temp);
     // Remove all permabuffs from player's permabuffs here

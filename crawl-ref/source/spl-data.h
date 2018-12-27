@@ -2571,7 +2571,7 @@ static const struct spell_desc spelldata[] =
     5,
     100,
     -1, -1,
-    5, 0,
+    0, 5,
     TILEG_BATTLESPHERE,
 },
 

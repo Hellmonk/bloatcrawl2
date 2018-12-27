@@ -2005,8 +2005,8 @@ static const mutation_def mut_data[] =
   "battlesphere",
 
   {"You are manifesting a battlesphere.", "", ""},
-  {"You conjure a globe of magical energy.", "", ""},
-  {"Your battlesphere fades away.", "", ""},
+  {"You ready yourself to conjure globes of magical energy.", "", ""},
+  {"You release control of your battlesphere.", "", ""},
 },
 
 { MUT_SONG_OF_SLAYING, 0, 1, mutflag::good, false,

@@ -2517,6 +2517,32 @@ monster* find_battlesphere(const actor* agent)
         return nullptr;
 }
 
+spret_type player_battlesphere(actor *agent, int pow, god_type god, bool fail)
+{
+    ASSERT(agent);
+
+    if (!agent->is_player())
+        return SPRET_ABORT;
+
+    fail_check();
+    if (!you.permabuffs[MUT_BATTLESPHERE])
+    {
+        if (spell_add_permabuff(SPELL_BATTLESPHERE, 5))
+        {
+            return SPRET_SUCCESS;
+        }
+        else
+        {
+            return SPRET_ABORT;
+        }
+    }
+    else
+    {
+        spell_remove_permabuff(SPELL_BATTLESPHERE, 5);
+        return SPRET_ABORT;
+    }
+}
+
 spret_type cast_battlesphere(actor* agent, int pow, god_type god, bool fail)
 {
     fail_check();
@@ -2537,19 +2563,8 @@ spret_type cast_battlesphere(actor* agent, int pow, god_type god, bool fail)
 
         if (recalled)
         {
-            mpr("You recall your battlesphere and imbue it with additional"
-                " charge.");
+            mpr("You recall your battlesphere.");
         }
-        else
-            mpr("You imbue your battlesphere with additional charge.");
-
-        battlesphere->battlecharge = min(20, (int) battlesphere->battlecharge
-                                              + 4 + random2(pow + 10) / 10);
-
-        // Increase duration
-        mon_enchant abj = battlesphere->get_ench(ENCH_FAKE_ABJURATION);
-        abj.duration = min(abj.duration + (7 + roll_dice(2, pow)) * 10, 500);
-        battlesphere->update_ench(abj);
     }
     else
     {
@@ -2570,7 +2585,7 @@ spret_type cast_battlesphere(actor* agent, int pow, god_type god, bool fail)
             agent->props["battlesphere"].get_int() = battlesphere->mid;
 
             if (agent->is_player())
-                mpr("You conjure a globe of magical energy.");
+                noisy(spell_effect_noise(SPELL_BATTLESPHERE), you.pos());
             else
             {
                 if (you.can_see(*agent) && you.can_see(*battlesphere))
