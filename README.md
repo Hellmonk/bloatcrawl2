@@ -1,8 +1,8 @@
-[![Build Status](https://travis-ci.org/crawl/crawl.svg?branch=master)](https://travis-ci.org/crawl/crawl)
-
 # Dungeon Crawl Stone Soup
 
 Dungeon Crawl Stone Soup is a game of dungeon exploration, combat and magic, involving characters of diverse skills, worshipping deities of great power and caprice. To win, you'll need to be a master of tactics and strategy, and prevail against overwhelming odds.
+
+Stoat Soup is a variant of Stone Soup. Amongst the changes are that monsters still spawn during play, and that it remains possible to eat mutagenic chunks. The changes are discussed in more detail in [the changelog](crawl-ref/docs/changelog.txt).
 
 ## Contents
 

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 Stoat Soup 0.22
 ---------------
 
@@ -21,12 +20,8 @@ Vanilla changes not made
   where I forget to add new fire spells or effects to the list. Sorry.
 * Engulf still gives a movement penalty.
 
-Stone Soup 0.22 (through 0.22-a0-900-g8945bfbd8a)
--------------------------------------------------
-=======
 Stone Soup 0.22 (20180810)
 --------------------------
->>>>>>> 9b89313ca0... Finalize the changelog for the 0.22 release
 
 Highlights
 ----------
