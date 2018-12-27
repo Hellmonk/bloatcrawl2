@@ -25,6 +25,7 @@
 #include "level-state-type.h"
 #include "libutil.h"
 #include "message.h"
+#include "mutation.h"
 #include "notes.h"
 #include "options.h"
 #include "orb.h"
@@ -1239,7 +1240,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_CIGOTUVIS_EMBRACE:
         if (temp && you.form == transformation::statue)
             return "the corpses won't embrace your stony flesh.";
-        if (temp && you.duration[DUR_ICY_ARMOUR])
+        if (temp && you.permabuffs[MUT_OZOCUBUS_ARMOUR])
             return "the corpses won't embrace your icy flesh.";
         break;
 

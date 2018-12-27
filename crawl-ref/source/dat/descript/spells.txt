@@ -996,7 +996,8 @@ Ozocubu's Armour spell
 Envelops the caster's body in a protective layer of thick ice. This will slow
 the caster's movement slightly, and provides no special protection against cold.
 The spell will not function for casters already wearing heavy armour (any body
-armour with an encumbrance rating of 5 or more).
+armour with an encumbrance rating of 5 or more). Casting the spell again will
+cancel the spell's effects.
 %%%%
 Ozocubu's Refrigeration spell
 

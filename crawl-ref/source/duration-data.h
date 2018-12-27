@@ -213,12 +213,12 @@ static const duration_def duration_data[] =
       "", D_DISPELLABLE | D_EXPIRES,
       {{ "Your ring of flames gutters out." },
        { "Your ring of flames is guttering out.", 2}}, 5},
-#endif
     { DUR_ICY_ARMOUR,
       0, "",
       "icy armour", "",
       "You are protected by a layer of icy armour.", D_DISPELLABLE | D_EXPIRES,
       {}, 6},
+#endif
     { DUR_LIQUID_FLAMES,
       RED, "Fire",
       "liquid flames", "",

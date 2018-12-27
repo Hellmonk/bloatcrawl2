@@ -89,13 +89,10 @@ void maybe_melt_player_enchantments(beam_type flavour, int damage)
             you.redraw_armour_class = true;
         }
 
-        if (you.duration[DUR_ICY_ARMOUR] > 0)
+        // Used to reduce duration if hit, now just removes permabuff
+        if (you.permabuffs[MUT_OZOCUBUS_ARMOUR])
         {
-            you.duration[DUR_ICY_ARMOUR] -= damage * BASELINE_DELAY;
-            if (you.duration[DUR_ICY_ARMOUR] <= 0)
-                remove_ice_armour();
-            else
-                you.props[MELT_ARMOUR_KEY] = true;
+            remove_ice_armour();
         }
     }
 }

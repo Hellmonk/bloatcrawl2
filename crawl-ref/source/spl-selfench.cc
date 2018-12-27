@@ -63,33 +63,43 @@ spret_type cast_deaths_door(int pow, bool fail)
 
 void remove_ice_armour()
 {
-    mprf(MSGCH_DURATION, "Your icy armour melts away.");
+    // mprf(MSGCH_DURATION, "Your icy armour melts away.");
     you.redraw_armour_class = true;
-    you.duration[DUR_ICY_ARMOUR] = 0;
+    spell_remove_permabuff(SPELL_OZOCUBUS_ARMOUR, 3);
 }
 
 spret_type ice_armour(int pow, bool fail)
 {
     fail_check();
 
-    if (you.duration[DUR_ICY_ARMOUR])
-        mpr("Your icy armour thickens.");
-    else if (you.form == transformation::ice_beast)
-        mpr("Your icy body feels more resilient.");
-    else
-        mpr("A film of ice covers your body!");
-
-    if (you.attribute[ATTR_BONE_ARMOUR] > 0)
+    if(!you.permabuffs[MUT_OZOCUBUS_ARMOUR])
     {
-        you.attribute[ATTR_BONE_ARMOUR] = 0;
-        mpr("Your corpse armour falls away.");
+        if(spell_add_permabuff(SPELL_OZOCUBUS_ARMOUR, 3))
+        {
+            if (you.form == transformation::ice_beast)
+                mpr("Your icy body feels more resilient.");
+
+            if (you.attribute[ATTR_BONE_ARMOUR] > 0)
+            {
+                you.attribute[ATTR_BONE_ARMOUR] = 0;
+                mpr("Your corpse armour falls away.");
+            }
+
+            you.props[ICY_ARMOUR_KEY] = pow;
+            you.redraw_armour_class = true;
+
+            return SPRET_SUCCESS;
+        }
+        else
+        {
+            return SPRET_ABORT;
+        }
+    }       
+    else
+    {
+        spell_remove_permabuff(SPELL_OZOCUBUS_ARMOUR, 3);
+        return SPRET_ABORT;
     }
-
-    you.increase_duration(DUR_ICY_ARMOUR, random_range(40, 50), 50);
-    you.props[ICY_ARMOUR_KEY] = pow;
-    you.redraw_armour_class = true;
-
-    return SPRET_SUCCESS;
 }
 
 /**
@@ -187,7 +197,7 @@ spret_type corpse_armour(int pow, bool fail)
     else
         mpr("Your shell of carrion and bone grows thicker.");
 
-    if (you.duration[DUR_ICY_ARMOUR])
+    if (you.permabuffs[MUT_OZOCUBUS_ARMOUR])
         remove_ice_armour();
 
     // value of ATTR_BONE_ARMOUR will be sqrt(9*harvested), rounded randomly

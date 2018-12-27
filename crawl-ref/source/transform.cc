@@ -1876,10 +1876,10 @@ bool transform(int pow, transformation which_trans, bool involuntary,
     switch (which_trans)
     {
     case transformation::statue:
-        if (you.duration[DUR_ICY_ARMOUR])
+        if (you.permabuffs[MUT_OZOCUBUS_ARMOUR])
         {
             mprf(MSGCH_DURATION, "Your new body cracks your icy armour.");
-            you.duration[DUR_ICY_ARMOUR] = 0;
+            spell_remove_permabuff(SPELL_OZOCUBUS_ARMOUR, 3);
         }
         break;
 
@@ -2119,10 +2119,11 @@ void untransform(bool skip_move)
     }
 
     // End Ozocubu's Icy Armour if you unmelded wearing heavy armour
-    if (you.duration[DUR_ICY_ARMOUR]
+    // (should get dropped with other permabuffs anyway, but whatever)
+    if (you.permabuffs[MUT_OZOCUBUS_ARMOUR]
         && !player_effectively_in_light_armour())
     {
-        you.duration[DUR_ICY_ARMOUR] = 0;
+        spell_remove_permabuff(SPELL_OZOCUBUS_ARMOUR, 3);
 
         const item_def *armour = you.slot_item(EQ_BODY_ARMOUR, false);
         mprf(MSGCH_DURATION, "%s cracks your icy armour.",

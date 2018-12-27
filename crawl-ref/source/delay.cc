@@ -46,6 +46,7 @@
 #include "mon-behv.h"
 #include "mon-tentacle.h"
 #include "mon-util.h"
+#include "mutation.h"
 #include "nearby-danger.h"
 #include "notes.h"
 #include "options.h"
@@ -749,7 +750,7 @@ void ArmourOnDelay::finish()
 
     if (eq_slot == EQ_BODY_ARMOUR)
     {
-        if (you.duration[DUR_ICY_ARMOUR] != 0
+        if (you.permabuffs[MUT_OZOCUBUS_ARMOUR] != 0
             && !is_effectively_light_armour(&armour))
         {
             remove_ice_armour();

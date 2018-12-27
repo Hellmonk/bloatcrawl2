@@ -31,8 +31,8 @@ enum duration_type
     DUR_EXHAUSTED,              // fatigue counter for berserk
 
     DUR_LIQUID_FLAMES,
-    DUR_ICY_ARMOUR,
 #if TAG_MAJOR_VERSION == 34
+    DUR_ICY_ARMOUR,
     DUR_REPEL_MISSILES,
     DUR_JELLY_PRAYER,
 #endif

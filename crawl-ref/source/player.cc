@@ -2034,7 +2034,7 @@ int player_movement_speed()
     if (you.duration[DUR_GRASPING_ROOTS])
         mv += 3;
 
-    if (you.duration[DUR_ICY_ARMOUR])
+    if (you.permabuffs[MUT_OZOCUBUS_ARMOUR])
         ++mv; // as ponderous
 
     // Mutations: -2, -3, -4, unless innate and shapechanged.
@@ -6277,7 +6277,7 @@ int player::armour_class(bool /*calc_unid*/) const
     const int scale = 100;
     int AC = base_ac(scale);
 
-    if (duration[DUR_ICY_ARMOUR])
+    if (you.permabuffs[MUT_OZOCUBUS_ARMOUR])
         AC += 500 + you.props[ICY_ARMOUR_KEY].get_int() * 8;
 
     if (has_mutation(MUT_ICEMAIL))
