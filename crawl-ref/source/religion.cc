@@ -3714,7 +3714,7 @@ void god_pitch(god_type which_god)
                      " have %d.", fee, you.gold);
             }
         }
-        else if (which_god == GOD_TROG && you.mp_max_adj_temp > 0)
+        else if (which_god == GOD_TROG && you.mp_max_adj_temp < 0)
         {
             simple_god_message(" demands that you end your permanent spells first!",
                                which_god);
