@@ -144,6 +144,7 @@ LUARET1(you_asleep, boolean, you.asleep())
 LUARET1(you_hasted, boolean, you.duration[DUR_HASTE])
 LUARET1(you_slowed, boolean, you.duration[DUR_SLOW])
 LUARET1(you_exhausted, boolean, you.duration[DUR_EXHAUSTED])
+LUARET1(you_drowning, boolean, you.duration[DUR_WATER_HOLD] && !you.res_water_drowning())
 LUARET1(you_teleporting, boolean, you.duration[DUR_TELEPORT])
 LUARET1(you_anchored, boolean, you.duration[DUR_DIMENSION_ANCHOR])
 LUARET1(you_rooted, boolean, you.duration[DUR_GRASPING_ROOTS])
@@ -654,6 +655,7 @@ static const struct luaL_reg you_clib[] =
     { "hasted",       you_hasted },
     { "slowed",       you_slowed },
     { "exhausted",    you_exhausted },
+    { "drowning",     you_drowning },
     { "teleporting",  you_teleporting },
     { "anchored",     you_anchored },
     { "rooted",       you_rooted },
