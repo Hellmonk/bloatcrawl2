@@ -2629,7 +2629,13 @@ bool temp_mutation_wanes()
         delete_temp_mutation(); // chooses randomly
 
     if (you.attribute[ATTR_TEMP_MUTATIONS] > 0)
+    {
         you.attribute[ATTR_TEMP_MUT_XP] += temp_mutation_roll();
+        // We'll see what vanilla thinks this should be but for now fix
+        // the assertion failure
+        if (you.attribute[ATTR_TEMP_MUT_XP] <=0) 
+            you.attribute[ATTR_TEMP_MUT_XP] = 1;
+    }
     else
         you.attribute[ATTR_TEMP_MUT_XP] = 0;
     ASSERT(you.attribute[ATTR_TEMP_MUTATIONS] < starting_tmuts);
