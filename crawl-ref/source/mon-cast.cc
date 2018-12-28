@@ -1055,6 +1055,7 @@ static int _mons_power_hd_factor(spell_type spell, bool random)
             return 5 * (2 + 1) * ENCH_POW_FACTOR;
 
         case SPELL_CAUSE_FEAR:
+        case SPELL_POLYMORPH:
             return 18 * ENCH_POW_FACTOR;
 
         case SPELL_MESMERISE:
