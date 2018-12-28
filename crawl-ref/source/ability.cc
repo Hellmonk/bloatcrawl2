@@ -97,7 +97,7 @@ enum class abflag
     exhaustion          = 0x00000010, // fails if you.exhausted
     instant             = 0x00000020, // doesn't take time to use
                         //0x00000040,
-                        //0x00000080,
+    permanent_mp        = 0x00000080, // costs permanent MPs
     conf_ok             = 0x00000100, // can use even if confused
     rations             = 0x00000200, // ability requires 2 rations per target
     rations_or_piety    = 0x00000400, // ability requires 2 rations or piety
@@ -340,6 +340,8 @@ static const ability_def Ability_List[] =
     // use or train Evocations (the others do).  -- bwr
     { ABIL_EVOKE_BLINK, "Evoke Blink",
       1, 0, 50, 0, {fail_basis::evo, 40, 2}, abflag::none },
+    { ABIL_RECHARGING, "Device Recharging",
+      1, 0, 0, 0, {fail_basis::xl, 45, 2}, abflag::permanent_mp },
     { ABIL_HEAL_WOUNDS, "Heal Wounds",
       0, 0, 0, 0, {fail_basis::xl, 45, 2}, abflag::none },
     { ABIL_EVOKE_BERSERK, "Evoke Berserk Rage",
@@ -756,7 +758,10 @@ const string make_cost_description(ability_type ability)
     else
     {
         if (abil.mp_cost)
-            ret += make_stringf(", %d MP", abil.mp_cost);
+        {
+            ret += make_stringf(", %d %sMP", abil.mp_cost,
+                abil.flags & abflag::permanent_mp ? "Permanent " : "");
+        }
 
         if (abil.flags & abflag::variable_mp)
             ret += ", MP";
@@ -854,7 +859,10 @@ static const string _detailed_cost_description(ability_type ability)
     if (abil.mp_cost > 0)
     {
         have_cost = true;
-        ret << "\nMP     : ";
+        if (abil.flags & abflag::permanent_mp)
+            ret << "\nMax MP : ";
+        else
+            ret << "\nMP     : ";
         ret << abil.mp_cost;
     }
     if (abil.hp_cost)
@@ -1398,6 +1406,16 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
         return false;
     }
 
+    // in case of mp rot ability, check is the player have enough natural MP
+    // (avoid use of ring/staf of magical power)
+    if ((abil.flags & abflag::permanent_mp)
+        && get_real_mp(false, false) < (int)abil.mp_cost)
+    {
+        if (!quiet)
+            mpr("You don't have enough innate magic capacity.");
+        return false;
+    }
+
     vector<text_pattern> &actions = Options.confirm_action;
     if (!actions.empty())
     {
@@ -1796,6 +1814,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     // statement... it's assumed that only failures have returned! - bwr
     switch (abil.ability)
     {
+    case ABIL_RECHARGING:
+        fail_check();
+        if (recharge_wand() <= 0)
+            return SPRET_ABORT;
+        break;
     case ABIL_HEAL_WOUNDS:
         fail_check();
         if (one_chance_in(4))
@@ -3132,7 +3155,11 @@ static void _pay_ability_costs(const ability_def& abil)
          abil.mp_cost, hp_cost, food_cost, piety_cost);
 
     if (abil.mp_cost)
+    {
         dec_mp(abil.mp_cost);
+        if (abil.flags & abflag::permanent_mp)
+            rot_mp(1);
+    }
 
     if (abil.hp_cost)
         dec_hp(hp_cost, false);
@@ -3320,7 +3347,10 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
 
     // Species-based abilities.
     if (you.species == SP_DEEP_DWARF)
+    {
+        _add_talent(talents, ABIL_RECHARGING, check_confused);
         _add_talent(talents, ABIL_HEAL_WOUNDS, check_confused);
+    }
 
     if (you.species == SP_FORMICID
         && (form_keeps_mutations() || include_unusable))

@@ -54,7 +54,9 @@ enum ability_type
     ABIL_HOP,
     // End Permabuffs ability (here to avoid massive save break)
     ABIL_END_PERMABUFFS,
-    ABIL_MAX_INTRINSIC = ABIL_END_PERMABUFFS,
+    // Also Deep Dwarves (again, trying to avoid save breaks)
+    ABIL_RECHARGING,
+    ABIL_MAX_INTRINSIC = ABIL_RECHARGING,
 
     // Evoking items.
     ABIL_EVOKE_BERSERK = 40,

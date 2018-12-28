@@ -1617,6 +1617,9 @@ Deep Dwarves
   the magic of earth and death, eventually gaining some resistance to the dark
   powers of necromancy.
 
+  Deep Dwarves can tinker with wands so as to recharge them. However, each time
+  they do so, they lose a bit of their magical essence.
+
 Deep Elves
    This is an Elven species who long ago fled the overworld to live in darkness
    underground. There, they developed their mental powers, evolving a natural

@@ -3395,6 +3395,8 @@ tileidx_t tileidx_ability(const ability_type ability)
     case ABIL_TRAN_BAT:
         return TILEG_ABILITY_BAT_FORM;
     // Deep Dwarves
+    case ABIL_RECHARGING:
+        return TILEG_ABILITY_RECHARGE;
     case ABIL_HEAL_WOUNDS:
         return TILEG_ABILITY_HEAL_WOUNDS;
     // Formicids
