@@ -1974,7 +1974,7 @@ int get_crosstrain_points(skill_type sk)
 {
     int points = 0;
     for (skill_type cross : get_crosstrain_skills(sk))
-        points += you.skill_points[cross] * 2 / 5;
+        points += you.skill_points[cross] * 3 / 5;
     return points;
 
 }
