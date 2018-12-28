@@ -2075,13 +2075,15 @@ bool load_ghosts(int max_ghosts, bool creating_level)
     // command.
     ASSERT(creating_level || (crawl_state.prev_cmd == CMD_WIZARD));
 
-#ifdef BONES_DIAGNOSTICS
+//We don't want this all the time. It went unnoticed in mainline crawl because
+//load_ghosts isn't used anymore.
+//#ifdef BONES_DIAGNOSTICS
     // this is pretty hacky, but arguably cleaner than what it is replacing.
     // The effect is to show bones diagnostic messages on wizmode builds during
     // level building
-    unwind_var<command_type> last_cmd(crawl_state.prev_cmd, creating_level ?
-        CMD_WIZARD : crawl_state.prev_cmd);
-#endif
+//    unwind_var<command_type> last_cmd(crawl_state.prev_cmd, creating_level ?
+//        CMD_WIZARD : crawl_state.prev_cmd);
+//#endif
 
 
     vector<ghost_demon> loaded_ghosts = _load_ghost_vec(creating_level);
