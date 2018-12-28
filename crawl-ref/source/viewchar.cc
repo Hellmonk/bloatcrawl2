@@ -5,7 +5,7 @@
 #include "options.h"
 #include "unicode.h"
 
-// For order and meaning of symbols, see dungeon_char_type in enum.h.
+// For order and meaning of symbols see dungeon_char_type in dungeon_char_type.h
 static const char32_t dchar_table[NUM_CSET][NUM_DCHAR_TYPES] =
 {
     // CSET_DEFAULT
@@ -31,7 +31,8 @@ static const char32_t dchar_table[NUM_CSET][NUM_DCHAR_TYPES] =
 #endif
          '}', U'\x2020', //†
             U'\xf7', //÷
-            '$', '"', ']', U'\xa7', //§
+            '$',  '"', ']',
+         U'\xa7', U'\x263c', U'\x25CB', U'\xB0', // §, ☼, ○, °
             U'\x2663', //♣
 #if TAG_MAJOR_VERSION == 34
          U'\xa9', //©
@@ -67,7 +68,7 @@ static const char32_t dchar_table[NUM_CSET][NUM_DCHAR_TYPES] =
         // item_scroll .. item_amulet
          '?',  '=',  '!',  '(',  ':',  '|',  '|',  '}',  '%',  '%',  '$',  '"',
         // item_shield ... cloud .. tree
-         ']', '0',  '7',
+         ']', '0', '0', '0', '0', '7',
 #if TAG_MAJOR_VERSION == 34
          '^',
 #endif
@@ -97,7 +98,12 @@ dungeon_char_type dchar_by_name(const string &name)
         "item_rod",
 #endif
         "item_miscellany", "item_corpse", "item_skeleton", "item_gold",
+<<<<<<< HEAD
         "item_amulet", "item_shield", "cloud", "tree",
+=======
+        "item_amulet", "cloud", "cloud_weak", "cloud_fading", "cloud_terminal",
+        "tree",
+>>>>>>> a828402fb8... Make cloud duration more apparent to console players
 #if TAG_MAJOR_VERSION == 34
         "teleporter",
 #endif
