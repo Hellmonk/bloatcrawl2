@@ -1359,6 +1359,8 @@ bool spell_no_hostile_in_range(spell_type spell)
     // This can always potentially hit out-of-LOS, although this is conditional
     // on spell-power.
     case SPELL_FIRE_STORM:
+    // Can be used speculatively, or (in Stoat Soup) for digging
+    case SPELL_IOOD:
         return false;
 
     case SPELL_CHAIN_LIGHTNING:
