@@ -1914,7 +1914,7 @@ static const mutation_def mut_data[] =
 { MUT_MAGIC_ATTUNEMENT, 0, 1, mutflag::good, true,
   "magic attunement",
 
-  {"Your spells do not cause hunger and MP costs are reduced by 1.", "", ""},
+  {"Your spells do not cause hunger; their MP costs are reduced by 1.", "", ""},
   {"", "", ""},
   {"", "", ""},
 },
@@ -1922,7 +1922,7 @@ static const mutation_def mut_data[] =
 { MUT_SHIMMERING_SCALES, 0, 1, mutflag::good, true,
   "magical scales",
 
-  {"Your shimmering scales repel attacks. (AC +6, SH +6)", "", ""},
+  {"Your shimmering scales repel attacks (AC +6, SH +6).", "", ""},
   {"", "", ""},
   {"", "", ""},
 },
