@@ -394,11 +394,14 @@ static spell_list _get_spell_list(bool just_check = false,
     spell_list mem_spells;
     spell_set available_spells;
     _list_available_spells(available_spells);
+    const int avail_slots = player_spell_levels();
 
     if (available_spells.empty())
     {
         if (!just_check)
-            mprf(MSGCH_PROMPT, "Your library has no spells.");
+            mprf(MSGCH_PROMPT,
+                 "Your library has no spells; you have %d spell slot%s",
+                 avail_slots,(avail_slots==1 ? "." : "s."));
         return mem_spells;
     }
 
@@ -426,8 +429,6 @@ static spell_list _get_spell_list(bool just_check = false,
         else
         {
             mem_spells.emplace_back(spell);
-
-            const int avail_slots = player_spell_levels();
 
             // don't filter out spells that are too high-level for us; we
             // probably still want to see them. (since that's temporary.)
