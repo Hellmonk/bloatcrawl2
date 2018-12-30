@@ -214,9 +214,8 @@ vector<monster* > get_nearby_monsters(bool want_move,
     return mons;
 }
 
-static bool _exposed_monsters_nearby(bool want_move)
+static bool _exposed_monsters_nearby(int radius)
 {
-    const int radius = want_move ? 2 : 1;
     for (radius_iterator ri(you.pos(), radius, C_SQUARE, LOS_DEFAULT); ri; ++ri)
         if (env.map_knowledge(*ri).flags & MAP_INVISIBLE_MONSTER)
             return true;
@@ -224,7 +223,7 @@ static bool _exposed_monsters_nearby(bool want_move)
 }
 
 bool i_feel_safe(bool announce, bool want_move, bool just_monsters,
-                 bool check_dist, int range)
+                 bool check_dist, int range, bool alldisturb)
 {
     if (!just_monsters)
     {
@@ -291,7 +290,8 @@ bool i_feel_safe(bool announce, bool want_move, bool just_monsters,
     }
     else if (visible.size() > 1)
         msg = "There are monsters nearby!";
-    else if (_exposed_monsters_nearby(want_move))
+    else if (_exposed_monsters_nearby(alldisturb ? you.current_vision :
+                                      (want_move ? 2 : 1)))
         msg = "There is a strange disturbance nearby!";
     else
         return true;

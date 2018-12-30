@@ -90,6 +90,7 @@
 #include "mon-tentacle.h"
 #include "mon-util.h"
 #include "mutation.h"
+#include "nearby-danger.h"
 #include "options.h"
 #include "ouch.h"
 #include "output.h"
@@ -589,7 +590,10 @@ static void _decrement_durations()
         dec_napalm_player(delay);
 
     const bool melted = you.props.exists(MELT_ARMOUR_KEY);
-    if (_decrement_a_duration(DUR_ICY_ARMOUR, delay,
+    if (_decrement_a_duration(DUR_ICY_ARMOUR, 
+                              (i_feel_safe(false,false,true,false,-1,true) ?
+                               delay * 4 :
+                               delay),
                               "Your icy armour evaporates.",
                               melted ? 0 : coinflip(),
                               melted ? nullptr

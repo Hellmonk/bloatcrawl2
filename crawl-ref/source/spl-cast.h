@@ -47,6 +47,8 @@ enum spflag_type
                                                  // good gods
     SPFLAG_HOLY               = 0x40000000,      // considered holy (can't be
                                                  // used by Yred enslaved souls)
+    SPFLAG_NEEDS_HOSTILE      = 0x80000000,      // can only be used with
+                                                 // hostiles present
 };
 
 enum spret_type

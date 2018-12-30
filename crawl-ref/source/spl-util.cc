@@ -25,6 +25,7 @@
 #include "level-state-type.h"
 #include "libutil.h"
 #include "message.h"
+#include "nearby-danger.h"
 #include "notes.h"
 #include "options.h"
 #include "orb.h"
@@ -1302,7 +1303,10 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     {
         return "you cannot coerce anything to answer your summons.";
     }
-
+    if ((get_spell_flags(spell) & SPFLAG_NEEDS_HOSTILE) 
+        && i_feel_safe(false,false,true,false,-1,true) && temp) {
+        return "no enemies are visible.";
+    }
     return "";
 }
 

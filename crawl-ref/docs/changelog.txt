@@ -12,10 +12,11 @@ Vanilla changes messed around with
 * LRD digs rock, but never stone or metal. IOOD and eyes of devastation dig
   rock again (but, unlike before, will never blow open runed doors).
   (Beware new veto_dig vault property, David.)
+* Ozo's Armour can only be cast with enemies in sight, and melts quickly if
+  they stop being visible.
 
 Vanilla changes not made, awaiting revision
 -------------------------------------------
-* Ozo's Armour unchanged
 * Labyrinth loot and enemies unchanged
 * ghosts still roam the dungeon
 

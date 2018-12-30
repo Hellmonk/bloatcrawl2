@@ -948,6 +948,10 @@ Envelops the caster's body in a protective layer of thick ice. This will slow
 the caster's movement slightly, and provides no special protection against cold.
 The spell will not function for casters already wearing heavy armour (any body
 armour with an encumbrance rating of 5 or more).
+
+The spell uses the hostility of an enemy as a focus, so cannot be cast without
+enemies in view, and it will melt away more quickly if the caster is no
+longer threatened.
 %%%%
 Ozocubu's Refrigeration spell
 
