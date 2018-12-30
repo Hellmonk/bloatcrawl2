@@ -143,6 +143,9 @@ item_def* newgame_make_item(object_class_type base,
         else
             item.sub_type = ARM_ROBE;
     }
+    if (item.sub_type == WPN_SHORT_SWORD && you.species == SP_OGRE) {
+	item.sub_type = WPN_CLUB;
+    }
 
     // Make sure we didn't get a stack of shields or such nonsense.
     ASSERT(item.quantity == 1 || is_stackable_item(item));
