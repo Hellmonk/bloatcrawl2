@@ -3067,19 +3067,18 @@ static string _player_spell_desc(spell_type spell)
                        + " supports the use of this spell.\n";
     }
 
-    if (!you_can_memorise(spell))
-    {
+    if (you.has_spell(spell)) {
+        if (spell_is_useless(spell, false)) {
+            description += "\nThis spell will never benefit you because "
+                + spell_uselessness_reason(spell, false) + "\n";
+        } else if (spell_is_useless(spell, true, false)) {
+            description+="\nThis spell will have no effect right now because "
+                + spell_uselessness_reason(spell, true, false) + "\n";
+        }
+    } else if (!you_can_memorise(spell)) {
         description += "\nYou cannot memorise this spell because "
-                       + desc_cannot_memorise_reason(spell)
-                       + "\n";
+            + desc_cannot_memorise_reason(spell) + "\n";
     }
-    else if (spell_is_useless(spell, true, false))
-    {
-        description += "\nThis spell will have no effect right now because "
-                       + spell_uselessness_reason(spell, true, false)
-                       + "\n";
-    }
-
     return description;
 }
 
