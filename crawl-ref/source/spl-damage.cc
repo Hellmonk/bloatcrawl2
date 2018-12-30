@@ -2202,16 +2202,11 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
         beam.name       = "blast of rock fragments";
         beam.damage.num = 3;
 
-        if (grid == DNGN_ORCISH_IDOL
-            || grid == DNGN_GRANITE_STATUE
-            || pow >= 35 && (grid == DNGN_ROCK_WALL
-                             || grid == DNGN_SLIMY_WALL
-                             || grid == DNGN_CLEAR_ROCK_WALL)
-               && one_chance_in(3)
-            || pow >= 50 && (grid == DNGN_STONE_WALL
-                             || grid == DNGN_CLEAR_STONE_WALL)
-               && one_chance_in(10))
-        {
+        if (grid == DNGN_ORCISH_IDOL || grid == DNGN_GRANITE_STATUE ||
+            (pow >= 35 && (grid == DNGN_ROCK_WALL
+                           || grid == DNGN_SLIMY_WALL
+                           || grid == DNGN_CLEAR_ROCK_WALL)
+             && x_chance_in_y(pow,140))) {
             should_destroy_wall = true;
         }
         break;
@@ -2227,11 +2222,8 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
         beam.name       = "blast of metal fragments";
         beam.damage.num = 4;
 
-        if (pow >= 75 && one_chance_in(20)
-            || grid == DNGN_GRATE)
-        {
+        if (grid == DNGN_GRATE)
             should_destroy_wall = true;
-        }
         break;
 
     // Crystal
@@ -2242,8 +2234,9 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
         beam.name       = "blast of crystal shards";
         beam.damage.num = 4;
 
-        if (one_chance_in(3))
+        if (one_chance_in(3) || x_chance_in_y(pow,140)) {
             should_destroy_wall = true;
+        }
         break;
 
     // Stone doors and arches
@@ -2323,8 +2316,13 @@ spret_type cast_fragmentation(int pow, const actor *caster,
 
     if (what != nullptr) // Terrain explodes.
     {
-        if (you.see_cell(target))
-            mprf("The %s shatters!", what);
+        if (you.see_cell(target)) {
+            if (should_destroy_wall) {
+                mprf("The %s shatters!", what);
+            } else {
+                mprf("The %s spews fragments!", what);
+            }
+        }
         if (should_destroy_wall)
             destroy_wall(target);
     }

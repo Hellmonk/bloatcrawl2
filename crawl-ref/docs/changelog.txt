@@ -9,11 +9,12 @@ Vanilla changes messed around with
   good, but we don't see a problem with some species having an easy weapon
   choice. Spell school apts are vaguely informed by ancient Crawl's Ogre and
   Ogre Mage apts.
+* LRD digs rock, but never stone or metal.
+  (Beware new veto_dig vault property, David.)
 
 Vanilla changes not made, awaiting revision
 -------------------------------------------
 * Ozo's Armour unchanged
-* LRD still digs (beware new veto_dig vault property, David)
 * Labyrinth loot and enemies unchanged
 * ghosts still roam the dungeon
 
