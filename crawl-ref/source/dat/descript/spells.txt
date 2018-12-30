@@ -508,7 +508,7 @@ Throws a bolt of electricity at the target, with high accuracy.
 %%%%
 Energy Bolt spell
 
-Fires a bolt of highly destructive energy.
+Fires a bolt of highly destructive energy. It can blow rock into dust.
 %%%%
 Enslavement spell
 
@@ -927,14 +927,15 @@ everything nearby for as long as the spell lasts.
 Orb of Destruction spell
 
 Conjures an orb made of pure destructive magic. Compared to most other
-projectiles, these orbs travel at a relatively slow pace. The orbs home onto
-their targets, yet because of their huge inertia, especially agile opponents
-may be able to outmanoeuvre them. The orbs need some time to stabilize, and a
+projectiles, these orbs travel at a relatively slow pace, but can
+reduce rock walls to dust. The orbs home onto their targets, yet
+because of their huge inertia, especially agile opponents may be able
+to outmanoeuvre them. The orbs need some time to stabilize, and a
 nascent orb will deal reduced damage.
 
 Residents of the dungeon are able to maintain the orb until it impacts a
 target, but when cast by you the orb will dissipate upon leaving your line of
-sight.
+sight. 
 %%%%
 Orb of Electricity spell
 

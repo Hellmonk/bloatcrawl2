@@ -9,7 +9,8 @@ Vanilla changes messed around with
   good, but we don't see a problem with some species having an easy weapon
   choice. Spell school apts are vaguely informed by ancient Crawl's Ogre and
   Ogre Mage apts.
-* LRD digs rock, but never stone or metal.
+* LRD digs rock, but never stone or metal. IOOD and eyes of devastation dig
+  rock again (but, unlike before, will never blow open runed doors).
   (Beware new veto_dig vault property, David.)
 
 Vanilla changes not made, awaiting revision

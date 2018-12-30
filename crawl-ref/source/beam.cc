@@ -929,13 +929,14 @@ static bool _destroy_wall_msg(dungeon_feature_type feat, const coord_def& p)
     case DNGN_ROCK_WALL:
     case DNGN_SLIMY_WALL:
     case DNGN_CLEAR_ROCK_WALL:
+    case DNGN_CRYSTAL_WALL:
     case DNGN_GRANITE_STATUE:
     case DNGN_CLOSED_DOOR:
     case DNGN_RUNED_DOOR:
         if (see)
         {
             msg = (feature_description_at(p, false, DESC_THE, false)
-                   + " explodes into countless fragments.");
+                   + " crumbles to dust.");
         }
         else if (hear)
         {
@@ -1008,6 +1009,7 @@ void bolt::destroy_wall_effect()
     case DNGN_ROCK_WALL:
     case DNGN_SLIMY_WALL:
     case DNGN_CLEAR_ROCK_WALL:
+    case DNGN_CRYSTAL_WALL:
     case DNGN_GRATE:
     case DNGN_GRANITE_STATUE:
     case DNGN_ORCISH_IDOL:
@@ -1099,6 +1101,10 @@ void bolt::affect_wall()
             digging_wall_effect();
         else if (can_burn_trees())
             burn_wall_effect();
+        else if (flavour == BEAM_DEVASTATION) {
+            destroy_wall_effect();
+            place_cloud(CLOUD_GREY_SMOKE,pos(),2+random2(3),agent(),11);
+        }
     }
     if (cell_is_solid(pos()))
         finish_beam();
@@ -2803,6 +2809,16 @@ bool bolt::can_affect_wall(const coord_def& p, bool map_knowledge) const
 
     if (can_burn_trees())
         return feat_is_tree(wall);
+    if (flavour == BEAM_DEVASTATION) {
+        return wall == DNGN_ROCK_WALL
+            || wall == DNGN_SLIMY_WALL
+            || wall == DNGN_CLEAR_ROCK_WALL
+            || wall == DNGN_GRATE
+            || wall == DNGN_CLOSED_DOOR
+//          || wall == DNGN_RUNED_DOOR
+            || feat_is_statuelike(wall)
+            || feat_is_tree(wall);
+    }
 
     // Lee's Rapid Deconstruction
     if (flavour == BEAM_FRAG)
