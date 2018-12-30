@@ -5,6 +5,10 @@ Vanilla changes messed around with
 ----------------------------------
 * The Mace of Variability got chain of chaos but continues to vary, albeit
   now on hits not just from hanging about.
+* Ogres have +1 Maces and Flails. +3 (especially with the new GSC) was too
+  good, but we don't see a problem with some species having an easy weapon
+  choice. Spell school apts are vaguely informed by ancient Crawl's Ogre and
+  Ogre Mage apts.
 
 Vanilla changes not made, awaiting revision
 -------------------------------------------

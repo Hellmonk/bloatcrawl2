@@ -108,7 +108,7 @@ but almost no armour fits them.
 %%%%
 Ogre
 
-Large, strong, and extremely robust, Ogres are competent at all forms of melee.
+Large, strong, and extremely robust, Ogres are competent with blunt weapons.
 They are not merely brutes, as they are comfortable with spellcasting.
 %%%%
 Spriggan
