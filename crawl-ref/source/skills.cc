@@ -603,13 +603,17 @@ void init_can_train()
 void init_train()
 {
     const bool is_gnoll = you.species == SP_GNOLL;
-
+    bool turnedonone = false;
     for (int i = 0; i < NUM_SKILLS; ++i)
     {
-        if (you.can_train[i] && you.skill_points[i])
+        if (you.can_train[i] && you.skill_points[i] && 
+// Don't turn on skills with a terrible apt - mainly stops FD Ce Tr starting
+// with Stealth on
+            (((signed) you.skill_points[i] > 
+              (-100*species_apt((skill_type) i, you.species))))) {
             you.train[i] = you.train_alt[i] = TRAINING_ENABLED;
-        else
-        {
+            turnedonone=true;
+        } else {
             const bool gnoll_enable = is_gnoll &&
                                 !is_removed_skill((skill_type) i);
             // Skills are on by default in auto mode and off in manual.
@@ -617,6 +621,13 @@ void init_train()
                                                 || you.auto_training);
             you.train_alt[i] =
                 (training_status) (gnoll_enable || !you.auto_training);
+        }
+    }
+    // bit messy
+    if (!turnedonone) {
+        for (int i = 0; i < NUM_SKILLS; ++i) {
+            if (you.can_train[i] && you.skill_points[i])
+                you.train[i] = you.train_alt[i] = TRAINING_ENABLED;
         }
     }
 }

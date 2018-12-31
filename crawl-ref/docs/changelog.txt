@@ -1,6 +1,9 @@
 Stoat Soup 0.22
 ---------------
 
+High elves are back, and joined by faerie dragons.
+Skills with low apts are not turned on by default with manual training.
+
 Vanilla changes messed around with
 ----------------------------------
 * The Mace of Variability got chain of chaos but continues to vary, albeit
