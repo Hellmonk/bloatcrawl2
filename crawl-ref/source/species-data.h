@@ -541,6 +541,23 @@ static const map<species_type, species_def> species_data =
       SK_BOWS, SK_CROSSBOWS, SK_SLINGS },
 } },
 
+{ SP_MOUNTAIN_DWARF, {
+    "MD",
+    "Mountain Dwarf", "Dwarven", "Dwarf",
+    SPF_NONE,
+    -1, 1, -1, 4,
+    MONS_DWARF,
+    HT_LAND, US_ALIVE, SIZE_MEDIUM,
+    11, 6, 7, // 24
+    { STAT_STR  }, 4,
+    { },
+    { },
+    { },
+    { JOB_FIGHTER, JOB_GLADIATOR, JOB_BERSERKER, JOB_HUNTER, 
+      JOB_FIRE_ELEMENTALIST, JOB_ICE_ELEMENTALIST },
+    { SK_MACES_FLAILS, SK_AXES, SK_CROSSBOWS },
+} },
+
 { SP_MUMMY, {
     "Mu",
     "Mummy", nullptr, nullptr,

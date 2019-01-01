@@ -52,6 +52,7 @@ enum species_type
     SP_BARACHI,
     SP_GNOLL,
     SP_FAERIE_DRAGON,
+    SP_MOUNTAIN_DWARF,
     NUM_SPECIES,
 
     SP_UNKNOWN  = 100,

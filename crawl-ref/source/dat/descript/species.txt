@@ -101,6 +101,10 @@ Minotaur
 Minotaurs are large muscular humans with bovine heads. They excel at all forms
 of close and ranged combat.
 %%%%
+Mountain Dwarf
+
+Mountain Dwarves are sturdy warriors with some talent for fire and earth magic.
+%%%%
 Mummy
 
 Compelled to walk by an ancient curse, Mummies are adept at Necromancy but

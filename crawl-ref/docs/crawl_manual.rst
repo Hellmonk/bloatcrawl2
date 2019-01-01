@@ -1589,25 +1589,6 @@ Demonspawn
   and conjurations and much better at necromancy and invocations. Note that
   unlike Demigods, they can take on gods, although not all will accept them.
 
-Deep Dwarves
-  Deep Dwarves are short, hardy people who, unlike their extinct surface
-  relatives, never left the underground homelands. Living there for countless
-  generations made them turn pale and lose all ability to regenerate health
-  over time, or to have their rate of regeneration hastened by any effects.
-  Deep Dwarves can instead draw on their magical essence to heal, but doing so
-  will gradually deplete their maximum reserves of magic. They are passively
-  able to reduce all incoming damage, and their empathy with the earth allows
-  them to sense their surroundings; these abilities increase in power as they
-  gain experience levels.
-
-  Naturally, Deep Dwarves are quite adept with all arts of avoiding blows and
-  damage. Offensively, they are skilled users of axes, crossbows, and slings.
-  Deep Dwarves are highly spiritual beings, often portrayed as actual spirits
-  by outsiders; because of this, their skill with invocations is great, and
-  they often rely on divine assistance for healing. They are most at home with
-  the magic of earth and death, eventually gaining some resistance to the dark
-  powers of necromancy.
-
 Felids
   Felids are a breed of cats that have been granted sentience. Originally they
   were witches' familiars that were magically augmented to provide help for
@@ -1740,6 +1721,48 @@ Faerie Dragons
   scales shimmer with energy that repels incoming attacks and their bright
   wings enable continuous flight. Faerie Dragons are small and evasive, but
   they're frail and cannot wear any form of body armour.
+
+Dwarves
+========================================
+Dwarves are short, hardy people. Originally inhabiting deep
+underground caverns, some of them moved closer to the surface while still
+sticking to the mountainous habitat.
+
+Mountain Dwarves
+  Mountain Dwarves come from cities far above the Dungeon. They love to
+  fight, and often venture forth to seek fame and fortune through
+  battle. As such, they are very robust and excellent at hand combat,
+  especially favouring axes or bludgeoning weapons, and are good at
+  using armour and shields. They are poor at missile combat, the
+  single exception being crossbows. Polearms usually are too big for
+  them to wield comfortably and so make quite bad weapons for Mountain
+  Dwarves.
+
+  In general, they are rather more resistant to magic than capable of using it
+  themselves. However, they are very proficient at earth and fire magic. Thus,
+  many a Mountain Dwarf started a career as an elementalist in those schools.
+  They advance in levels at a similar rate to Deep Elves.
+
+
+Deep Dwarves
+  Deep Dwarves are dwarves who, unlike their surface relatives, never
+  left the underground homelands. Living there for countless
+  generations made them turn pale and lose all ability to regenerate
+  health over time, or to have their rate of regeneration hastened by
+  any effects.  Deep Dwarves can instead draw on their magical essence
+  to heal, but doing so will gradually deplete their maximum reserves
+  of magic. They are passively able to reduce all incoming damage, and
+  their empathy with the earth allows them to sense their
+  surroundings; these abilities increase in power as they gain
+  experience levels.
+
+  Naturally, Deep Dwarves are quite adept with all arts of avoiding blows and
+  damage. Offensively, they are skilled users of axes, crossbows, and slings.
+  Deep Dwarves are highly spiritual beings, often portrayed as actual spirits
+  by outsiders; because of this, their skill with invocations is great, and
+  they often rely on divine assistance for healing. They are most at home with
+  the magic of earth and death, eventually gaining some resistance to the dark
+  powers of necromancy.
 
 Elves
 ========================================

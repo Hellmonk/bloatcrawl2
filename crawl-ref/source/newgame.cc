@@ -194,7 +194,7 @@ static const species_type species_order[] =
     // comparatively human-like looks
     SP_HUMAN,          SP_HIGH_ELF,
     SP_DEEP_ELF,       SP_DEEP_DWARF,
-    SP_HILL_ORC,
+    SP_HILL_ORC,       SP_MOUNTAIN_DWARF,
     // small species
     SP_HALFLING,       SP_KOBOLD,
     SP_SPRIGGAN,       SP_FAERIE_DRAGON,
@@ -1062,6 +1062,7 @@ static species_group species_groups[] =
             SP_GHOUL,
             SP_HIGH_ELF,
             SP_FAERIE_DRAGON,
+            SP_MOUNTAIN_DWARF,
         }
     },
     {
