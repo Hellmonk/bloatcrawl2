@@ -143,15 +143,21 @@ ghost_loot_potions = "potion of haste w:15 / potion of might w:10 / " ..
     "potion of cancellation w:10 / potion of resistance w:5 / " ..
     "potion of experience w:1"
 
+-- Loot scaling that gradually upgrades items on glyphs 'd' and 'e' with depth
+-- of placement. Starting from D:9, 'd' has a chance to become a good potion or
+-- scroll item (according to dgn.loot_potions and dgn.loot_scrolls), an
+-- auxiliary armour item, or a jewellery item. The latter two can be good_item
+-- and then randart with increasing depth.
+--
+-- This function is mostly used by the more challenging ghost vaults that place
+-- many additional monsters as a way to make attempting the vault more
+-- worthwhile.
 function ghost_good_loot(e)
     -- Possible loot items.
     jewellery = "any jewellery"
     good_jewellery = "any jewellery good_item"
     randart_jewellery = "any jewellery randart"
-    aux = "cloak / scarf / helmet / hat / pair of gloves / pair of boots"
-    good_aux = "cloak good_item / scarf good_item / helmet good_item / " ..
-        "hat good_item / pair of gloves good_item / pair of boots good_item"
-    randart_aux = good_aux:gsub("good_item", "randart")
+    aux = dgn.aux_armour
 
     first_item = true
     second_item = false
@@ -164,17 +170,17 @@ function ghost_good_loot(e)
             end
         elseif you.depth() < 14 then
             if crawl.coinflip() then
-                aux = good_aux
+                aux = dgn.good_aux_armour
                 jewellery = good_jewellery
             end
             if crawl.one_chance_in(3) then
                 second_item = true
             end
         else
-            aux = good_aux
+            aux = dgn.good_aux_armour
             jewellery = good_jewellery
             if crawl.one_chance_in(4) then
-               aux = randart_aux
+               aux = dgn.randart_aux_armour
                jewellery = randart_jewellery
             end
             if crawl.coinflip() then
@@ -183,7 +189,7 @@ function ghost_good_loot(e)
          end
     elseif you.in_branch("Lair") then
         if crawl.one_chance_in(3) then
-            aux = good_aux
+            aux = dgn.good_aux_armour
             jewellery = good_jewellery
         end
         if crawl.one_chance_in(4) then
@@ -191,7 +197,7 @@ function ghost_good_loot(e)
         end
     elseif you.in_branch("Orc") then
         if crawl.coinflip() then
-            aux = good_aux
+            aux = dgn.good_aux_armour
             jewellery = good_jewellery
         end
         if crawl.one_chance_in(3) then
@@ -201,23 +207,23 @@ function ghost_good_loot(e)
       or you.in_branch("Snake")
       or you.in_branch("Spider")
       or you.in_branch("Swamp") then
-        aux = good_aux
+        aux = dgn.good_aux_armour
         jewellery = good_jewellery
         if crawl.one_chance_in(3) then
-           aux = randart_aux
+           aux = dgn.randart_aux_armour
            jewellery = randart_jewellery
         end
         second_item = true
     elseif you.in_branch("Vaults") or you.in_branch("Elf") then
-        aux = good_aux
+        aux = dgn.good_aux_armour
         jewellery = good_jewellery
         if crawl.coinflip() then
-           aux = randart_aux
+           aux = dgn.randart_aux_armour
            jewellery = randart_jewellery
         end
         second_item = true
     else
-        aux = randart_aux
+        aux = dgn.randart_aux_armour
         jewellery = randart_jewellery
         second_item = true
     end
