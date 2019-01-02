@@ -97,6 +97,8 @@ const vector<god_power> god_powers[NUM_GODS] =
         "Zin will no longer cleanse your body of mutations." },
       { 3, ABIL_ZIN_IMPRISON, "call upon Zin to imprison the lawless" },
       { 5, ABIL_ZIN_SANCTUARY, "call upon Zin to create a sanctuary" },
+      { 6, "You can preach from the Axioms of Law more frequently.",
+        "You cannot preach from the Axioms of Law as frequently." },
       {-1, ABIL_ZIN_DONATE_GOLD, "donate money to Zin" },
     },
 

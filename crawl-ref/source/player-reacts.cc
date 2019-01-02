@@ -801,8 +801,11 @@ static void _decrement_durations()
         _decrement_a_duration(DUR_RECITE, delay);
         const int new_recite =
             (you.duration[DUR_RECITE] + BASELINE_DELAY - 1) / BASELINE_DELAY;
-        if (old_recite != new_recite)
-            _handle_recitation(new_recite);
+        if (old_recite != new_recite) {
+            for (int step=old_recite-1; step>=new_recite; step--) {
+                _handle_recitation(step);
+            }
+        }
     }
 
     if (you.duration[DUR_GRASPING_ROOTS])

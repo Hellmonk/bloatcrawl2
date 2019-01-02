@@ -2116,7 +2116,9 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             you.duration[DUR_RECITE] = 3 * BASELINE_DELAY;
             mprf("You clear your throat and prepare to recite.");
             you.increase_duration(DUR_RECITE_COOLDOWN,
-                                  3 + random2(10) + random2(30));
+                                  3 + random2(10) + 
+                                  ((you.piety >= piety_breakpoint(5)) ?
+                                   random2(20) : random2(30)));
         }
         else
         {
