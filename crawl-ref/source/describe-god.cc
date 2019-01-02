@@ -732,7 +732,7 @@ static formatted_string _describe_god_powers(god_type which_god)
                           (prot_chance >= 25) ? "sometimes"
                                               : "occasionally";
 
-        desc.cprintf("%s %s watches over you%s.\n",
+        desc.cprintf("%s %s protects you from death%s.\n",
                 uppercase_first(god_name(which_god)).c_str(),
                 how,
                 when);
@@ -744,6 +744,7 @@ static formatted_string _describe_god_powers(god_type which_god)
     {
         have_any = true;
         const char *how =
+            (piety >= MAX_PIETY) ? "always" :
             (piety >= piety_breakpoint(5)) ? "carefully" :
             (piety >= piety_breakpoint(3)) ? "often" :
             (piety >= piety_breakpoint(1)) ? "sometimes" :
