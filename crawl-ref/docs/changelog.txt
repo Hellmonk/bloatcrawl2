@@ -3,6 +3,7 @@ Stoat Soup 0.22
 
 High elves and mountain dwarves are back, and joined by faerie dragons.
 Skills with low apts are not turned on by default with manual training.
+If you hit 'M' with an empty library, you are told how many slots you have.
 
 Vanilla changes messed around with
 ----------------------------------
