@@ -1467,7 +1467,8 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
 
         // Zin's protection.
         if (have_passive(passive_t::resist_mutation)
-            && x_chance_in_y(you.piety, piety_breakpoint(5)))
+            && (x_chance_in_y(you.piety, MAX_PIETY)
+                || x_chance_in_y(you.piety, MAX_PIETY + 22)))
         {
             simple_god_message(" protects your body from mutation!");
             return false;
