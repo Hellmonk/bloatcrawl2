@@ -2335,6 +2335,7 @@ static tileidx_t _tileidx_food(const item_def &item)
     case FOOD_MEAT_RATION:  return TILE_FOOD_MEAT_RATION;
     case FOOD_BREAD_RATION: return TILE_FOOD_BREAD_RATION;
     case FOOD_FRUIT:        return _modrng(item.rnd, TILE_FOOD_FRUIT_FIRST, TILE_FOOD_FRUIT_LAST);
+    case FOOD_HONEYCOMB:    return TILE_FOOD_HONEYCOMB;
     case FOOD_ROYAL_JELLY:  return TILE_FOOD_ROYAL_JELLY;
     case FOOD_CHUNK:        return _tileidx_chunk(item);
     case NUM_FOODS:         return TILE_FOOD_BREAD_RATION;

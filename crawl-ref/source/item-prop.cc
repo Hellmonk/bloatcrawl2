@@ -689,7 +689,8 @@ static const food_def Food_prop[] =
     { FOOD_CHUNK,        "chunk",        1000,  1300,     0 },
     { FOOD_BREAD_RATION, "bread ration", 4400,     0,  5900 },
     { FOOD_FRUIT,        "fruit",         850,     0,  1000 },
-    { FOOD_ROYAL_JELLY,  "royal jelly",  2000,  2000,  2000 },
+    { FOOD_HONEYCOMB,    "honeycomb",    2000,  2000,  2000 },
+    { FOOD_ROYAL_JELLY,  "royal jelly",  4000,  4000,  4000 },
 
 #if TAG_MAJOR_VERSION == 34
     // is_real_food assumes we list FOOD_UNUSED as the first removed

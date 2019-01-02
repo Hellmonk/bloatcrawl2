@@ -3645,6 +3645,7 @@ colour_t item_def::food_colour() const
     switch (sub_type)
     {
         case FOOD_ROYAL_JELLY:
+        case FOOD_HONEYCOMB:
             return YELLOW;
         case FOOD_FRUIT:
             return LIGHTGREEN;

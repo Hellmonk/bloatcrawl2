@@ -3233,11 +3233,12 @@ WEIGHT:    2
 : nsubst("J = " .. altar_count .. ":B / *:J")
 KFEAT:     J = altar_jiyva
 KFEAT:     S = slimy_wall
+KITEM:     d = royal jelly
 SUBST:     " : " .:3,  " = .c, ' : ' .:3,  ' = .S
 SUBST:     - = --.
 LFLOORCOL: green
 COLOUR:    - = lightgray
-FTILE:     .JB = floor_slime
+FTILE:     .JBd = floor_slime
 : set_feature_name("stone_wall", "rune-carved stone wall")
 MAP
 SSSSSSSSSSSSSSSSSSSSSSSSSSSS
@@ -3254,7 +3255,7 @@ S'.."cc....cc..cc....cc"..'S
 S'.."cccJ.c.cc.c.c.Jccc"..'S
 S'.."ccccccc....ccccccc"..'S
 S..-.c...c....J...c...c"..'S
-S.-{-.c...c....c...c......'S
+S.-{-.c...c..d.c...c......'S
 S..-.ccccccc....ccccccc"..'S
 S'.."cccJ.c.cc.c.c.Jccc"..'S
 S'.."cc....cc..cc....cc"..'S

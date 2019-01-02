@@ -345,7 +345,7 @@ KMONS:  1 = orange demon
 KMONS:  2 = hornet / killer bee w:2 / nothing w:2
 KMONS:  3 = death drake / green death
 KFEAT:  123 = W
-KITEM:  3 = royal jelly
+KITEM:  3 = honeycomb
 COLOUR: x = yellow
 TILE:   x = wall_wax
 MAP
@@ -1188,7 +1188,7 @@ TAGS:   abyss_rune unrand patrolling
 MONS:   killer bee, meliai, spark wasp
 MONS:   wretched star, green very ugly thing
 KMONS:  O = queen bee
-ITEM:   royal jelly q:1
+ITEM:   honeycomb q:1
 KITEM:  O = abyssal rune of Zot
 KFEAT:  a = x
 KFEAT:  A = stone_arch

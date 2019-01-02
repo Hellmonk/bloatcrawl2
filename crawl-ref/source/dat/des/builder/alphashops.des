@@ -105,7 +105,7 @@
       elseif s == "H" then i = { "amulet of harm", "halberd", "hand axe",
        "hand crossbow", "hunting sling", "potion of heal wounds",
        "potion of haste", "scroll of holy word", "manual of hexes", "hat",
-       "helmet" }
+       "helmet", "honeycomb" }
 
       elseif s == "I" then i = { "amulet of inaccuracy", "ring of ice",
        "scroll of immolation", "ice dragon scales", "book of ice",
@@ -144,7 +144,7 @@
 
       elseif s == "R" then i = { "amulet of rage", "amulet of reflection",
        "amulet of regeneration", "rapier", "ring of resist corrosion",
-       "royal jelly", "potion of resistance", "robe", "ring mail",
+       "potion of resistance", "robe", "ring mail",
        "scroll of random uselessness", "scroll of remove curse",
        "wand of random effects" }
 

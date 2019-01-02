@@ -743,7 +743,7 @@ enum food_type
     FOOD_APPLE,
     FOOD_CHOKO,
 #endif
-    FOOD_ROYAL_JELLY,
+    FOOD_HONEYCOMB,
 #if TAG_MAJOR_VERSION == 34
     FOOD_UNUSED, // was: pizza
 #endif
@@ -767,5 +767,6 @@ enum food_type
 #if TAG_MAJOR_VERSION == 34
     FOOD_AMBROSIA,
 #endif
+    FOOD_ROYAL_JELLY,
     NUM_FOODS
 };

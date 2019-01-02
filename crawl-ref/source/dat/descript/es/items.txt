@@ -275,6 +275,10 @@ helmet
 
 Una protección metálica para la cabeza.
 %%%%
+honeycomb
+
+Un trozo de un panal de miel, creado por abejas gigantes.
+%%%%
 ice dragon hide
 
 La escamosa piel de un dragón. Puede usarse para elaborar una armadura, pero

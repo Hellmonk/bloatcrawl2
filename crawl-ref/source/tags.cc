@@ -3882,6 +3882,7 @@ static void tag_read_you_items(reader &th)
         const int oldstate = you.force_autopickup[OBJ_FOOD][NUM_FOODS];
         you.force_autopickup[OBJ_FOOD][FOOD_MEAT_RATION] = oldstate;
         you.force_autopickup[OBJ_FOOD][FOOD_BREAD_RATION] = oldstate;
+        you.force_autopickup[OBJ_FOOD][FOOD_HONEYCOMB] = oldstate;
         you.force_autopickup[OBJ_FOOD][FOOD_ROYAL_JELLY] = oldstate;
         you.force_autopickup[OBJ_FOOD][FOOD_FRUIT] = oldstate;
 
@@ -4681,7 +4682,7 @@ void unmarshallItem(reader &th, item_def &item)
         if (item.base_type == OBJ_FOOD && (item.sub_type == FOOD_UNUSED
                                            || item.sub_type == FOOD_AMBROSIA))
         {
-            item.sub_type = FOOD_ROYAL_JELLY; 
+            item.sub_type = FOOD_HONEYCOMB; 
         }
     }
 
@@ -4717,7 +4718,7 @@ void unmarshallItem(reader &th, item_def &item)
             if (item.sub_type == FOOD_BEEF_JERKY
                 || item.sub_type == FOOD_PIZZA)
             {
-                item.sub_type = FOOD_ROYAL_JELLY;
+                item.sub_type = FOOD_HONEYCOMB;
             }
         }
     }

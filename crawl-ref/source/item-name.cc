@@ -1839,6 +1839,7 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
         case FOOD_MEAT_RATION: buff << "meat ration"; break;
         case FOOD_BREAD_RATION: buff << "bread ration"; break;
         case FOOD_ROYAL_JELLY: buff << "royal jelly"; break;
+        case FOOD_HONEYCOMB: buff << "honeycomb"; break;
         case FOOD_FRUIT: buff << "fruit"; break;
         case FOOD_CHUNK:
             switch (determine_chunk_effect(*this))
@@ -2361,6 +2362,9 @@ public:
                 break;
             case FOOD_FRUIT:
                 name = "fruit";
+                break;
+            case FOOD_HONEYCOMB:
+                name = "honeycombs";
                 break;
             case FOOD_ROYAL_JELLY:
                 name = "royal jellies";

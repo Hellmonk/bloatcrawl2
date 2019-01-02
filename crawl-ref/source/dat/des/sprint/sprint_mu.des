@@ -451,9 +451,9 @@ ENDMAP
 NAME: sprint_mu_hive_nellie
 TAGS: sprint_mu_hive no_rotate no_hmirror no_vmirror
 KMONS: 1 = killer bee
-KITEM: 1 = royal jelly w:30 / nothing
+KITEM: 1 = honeycomb w:30 / nothing
 KMONS: 2 = queen bee
-KITEM: 2 = royal jelly
+KITEM: 2 = honeycomb
 KMONS: 3 = generate_awake Nellie
 KITEM: 3 = demonic rune of zot
 : acq_on_sight(_G, '3', {"food","misc","wand"})

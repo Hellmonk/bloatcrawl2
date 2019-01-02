@@ -509,6 +509,10 @@ helmet
 
 Un couvre-chef en métal.
 %%%%
+honeycomb
+
+Un morceau de ruche d'abeilles géantes, gorgé de succulent miel.
+%%%%
 horn of Geryon
 
 La corne de Geryon, le gardien du Vestibule des Enfers. Les légendes racontent

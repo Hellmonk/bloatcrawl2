@@ -400,7 +400,9 @@ static void _finished_eating_message(food_type type)
         }
     }
     if (type == FOOD_ROYAL_JELLY)
-        mpr("That royal jelly was delicious!");
+        mpr("That royal jelly was delicious.");
+    if (type == FOOD_HONEYCOMB)
+        mpr("That honeycomb was delicious, albeit rather sticky.");
 }
 
 // Returns which of two food items is older (true for first, else false).

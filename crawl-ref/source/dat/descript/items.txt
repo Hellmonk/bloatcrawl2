@@ -519,6 +519,10 @@ helmet
 
 A piece of metal headgear.
 %%%%
+honeycomb
+
+A lump of the delicious honeycomb made by giant bees.
+%%%%
 horn of Geryon
 
 The horn belonging to Geryon, guardian of the Vestibule of Hell. It has the

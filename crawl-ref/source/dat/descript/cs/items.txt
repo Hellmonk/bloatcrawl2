@@ -119,6 +119,10 @@ helmet
 
 Část kovové pokrývky hlavy.
 %%%%
+honeycomb
+
+En klump lækker bikage, som er lavet af kæmpebier.
+%%%%
 lajatang
 
 Velmi vzácná a velmi efektivní dovážená zbraň. Představuje jí tyč s

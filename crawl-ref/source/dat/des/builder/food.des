@@ -98,7 +98,7 @@ DEPTH:  D:8-14
 WEIGHT: 15
 TAGS:   uniq_second_food extra chance_second_food
 MONS:   queen bee, killer bee
-ITEM:   royal jelly
+ITEM:   honeycomb
 COLOUR: a = yellow
 TILE:   a = wall_wax
 SUBST:  a = x

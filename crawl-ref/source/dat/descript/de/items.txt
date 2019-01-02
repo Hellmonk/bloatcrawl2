@@ -351,6 +351,10 @@ helmet
 
 Ein Stück einer Kopfbedeckung aus Metall.
 %%%%
+honeycomb
+
+Ein Klumpen von einer köstlichen Honigwabe, von riesigen Bienen geschaffen.
+%%%%
 ice dragon hide
 
 Die schuppige Haut eines Kälte atmenden Drachen. Es kann in die richtige

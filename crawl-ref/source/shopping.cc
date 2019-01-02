@@ -532,8 +532,11 @@ unsigned int item_value(item_def item, bool ident)
         case FOOD_BREAD_RATION:
             valued = 50;
             break;
-        case FOOD_ROYAL_JELLY:
+        case FOOD_HONEYCOMB:
             valued = 20;
+            break;
+        case FOOD_ROYAL_JELLY:
+            valued = 50;
             break;
         case FOOD_FRUIT:
             valued = 15;

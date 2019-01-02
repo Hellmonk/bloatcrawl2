@@ -570,6 +570,7 @@ snozzcumber
 strawberry FOOD_FRUIT_LAST
 fruit FOOD_FRUIT_INVENTORY
 
+honeycomb FOOD_HONEYCOMB
 lump_of_royal_jelly FOOD_ROYAL_JELLY
 %rim 0
 bone_humanoid1 FOOD_BONE_HUMANOID
