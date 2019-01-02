@@ -13,7 +13,6 @@
 #include "cloud.h"
 #include "food.h"
 #include "god-conduct.h"
-#include "god-passive.h"
 #include "god-wrath.h" // reduce_xp_penance
 #include "hints.h"
 #include "item-name.h"
@@ -796,10 +795,7 @@ public:
 
     bool effect(bool = true, int = 40, bool = true) const override
     {
-        if (have_passive(passive_t::cleanse_mut_potions))
-            simple_god_message(" cleanses your potion of mutation!");
-        else
-            mpr("You feel extremely strange.");
+        mpr("You feel extremely strange.");
         bool mutated = false;
         int remove_mutations = random_range(MIN_REMOVED, MAX_REMOVED);
         int add_mutations = random_range(MIN_ADDED, MAX_ADDED);
@@ -807,8 +803,6 @@ public:
         // Remove mutations.
         for (int i = 0; i < remove_mutations; i++)
             mutated |= delete_mutation(RANDOM_MUTATION, "potion of mutation", false);
-        if (have_passive(passive_t::cleanse_mut_potions))
-            return mutated;
         // Add mutations.
         for (int i = 0; i < add_mutations; i++)
             mutated |= mutate(RANDOM_MUTATION, "potion of mutation", false);
@@ -826,21 +820,24 @@ public:
             return false;
 
         string msg = "Really drink that potion of mutation";
-        msg += you.rmut_from_item() ? " while resistant to mutation?" : "?";
-        const bool zin_check = you_worship(GOD_ZIN)
-                            && !have_passive(passive_t::cleanse_mut_potions);
-        if (zin_check)
-            msg += " Zin will disapprove.";
-        if (was_known && (zin_check || you.rmut_from_item())
-                      && !yesno(msg.c_str(), false, 'n'))
+        const bool zin_check = you_worship(GOD_ZIN);
+        // avoid giving the impression Zin minds because you are resistant
+        if (zin_check)  {
+            msg += "? Zin will disapprove.";
+        } else {
+            msg += (you.rmut_from_item()) ? 
+                " while resistant to mutation?" : "?";
+        }
+        if (was_known && (you_worship(GOD_ZIN) || you.rmut_from_item())
+            && !yesno(msg.c_str(), false, 'n'))
         {
             canned_msg(MSG_OK);
             return false;
         }
 
         effect();
-        if (zin_check)
-            did_god_conduct(DID_DELIBERATE_MUTATING, 15, was_known);
+        // Zin conduct is violated even if you get lucky and don't mutate
+        did_god_conduct(DID_DELIBERATE_MUTATING, 15, was_known);
         return true;
     }
 };
@@ -1245,7 +1242,7 @@ public:
 
         // Beneficial mutations go rMut, so don't prompt in this case.
         if (was_known && you_worship(GOD_ZIN)
-            && !yesno("Really drink that potion of mutation?",
+            && !yesno("Really drink that potion of mutation? Zin will disapprove.",
                       false, 'n'))
         {
             canned_msg(MSG_OK);
@@ -1254,7 +1251,7 @@ public:
 
         effect(was_known);
         // Zin conduct is violated even if you get lucky and don't mutate
-        did_god_conduct(DID_DELIBERATE_MUTATING, 10, was_known);
+        did_god_conduct(DID_DELIBERATE_MUTATING, 15, was_known);
         return true;
     }
 };
