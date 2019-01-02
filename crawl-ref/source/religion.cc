@@ -93,7 +93,7 @@ const vector<god_power> god_powers[NUM_GODS] =
     // Zin
     { { 1, ABIL_ZIN_RECITE, "recite Zin's Axioms of Law" },
       { 2, ABIL_ZIN_VITALISATION, "call upon Zin for vitalisation" },
-      { 2, "Zin will cleanse your body of mutations.",
+      { 3, "Zin will cleanse your body of mutations.",
         "Zin will no longer cleanse your body of mutations." },
       { 3, ABIL_ZIN_IMPRISON, "call upon Zin to imprison the lawless" },
       { 5, ABIL_ZIN_SANCTUARY, "call upon Zin to create a sanctuary" },
@@ -1584,7 +1584,7 @@ static bool _handle_veh_gift(bool forced)
 
 static bool _give_zin_gift()
 {
-    if (!you.how_mutated() || you.piety < piety_breakpoint(1)) {
+    if (!you.how_mutated() || you.piety < piety_breakpoint(2)) {
         return false;
     }
     bool success = delete_mutation((you.has_mutation(MUT_EVOLUTION,false)) ?
@@ -2319,8 +2319,7 @@ static void _gain_piety_point()
     // Don't run down the Zin timeout unless actually mutated, so that when
     // we get a new mut Zin doesn't always clear it right away.
     else if (you.gift_timeout > 0 && 
-             (!you_worship(GOD_ZIN) || 
-              (you.how_mutated() && (you.piety >= piety_breakpoint(1))))) {
+             (!you_worship(GOD_ZIN) || you.how_mutated())) {
         you.gift_timeout--;
 
         // Slow down piety gain to account for the fact that gifts
