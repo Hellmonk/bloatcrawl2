@@ -3165,8 +3165,7 @@ int player_stealth()
         stealth += STEALTH_PIP;
 
     if (you.form == transformation::blade_hands && you.species == SP_FELID
-        && !you.airborne())
-    {
+        && !you.airborne() && !you.duration[DUR_SILENCE]) {
         stealth -= STEALTH_PIP; // klack klack klack go the blade paws
         // this is an absurd special case but also it's really funny so w/e
     }
