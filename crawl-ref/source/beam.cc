@@ -917,7 +917,8 @@ void bolt::burn_wall_effect()
     finish_beam();
 }
 
-static bool _destroy_wall_msg(dungeon_feature_type feat, const coord_def& p)
+static bool _destroy_wall_msg(dungeon_feature_type feat, const coord_def& p,
+    string featname)
 {
     string msg = "";
     msg_channel_type chan = MSGCH_PLAIN;
@@ -935,8 +936,7 @@ static bool _destroy_wall_msg(dungeon_feature_type feat, const coord_def& p)
     case DNGN_RUNED_DOOR:
         if (see)
         {
-            msg = (feature_description_at(p, false, DESC_THE, false)
-                   + " crumbles to dust.");
+            msg = featname + " crumbles to dust.";
         }
         else if (hear)
         {
@@ -1003,7 +1003,7 @@ void bolt::destroy_wall_effect()
     }
 
     const dungeon_feature_type feat = grd(pos());
-
+    string featname = feature_description_at(pos(), false, DESC_THE, false);
     switch (feat)
     {
     case DNGN_ROCK_WALL:
@@ -1032,7 +1032,7 @@ void bolt::destroy_wall_effect()
         return;
     }
 
-    obvious_effect = _destroy_wall_msg(feat, pos());
+    obvious_effect = _destroy_wall_msg(feat, pos(), featname);
 
     if (feat_is_tree(feat))
     {
@@ -2815,6 +2815,7 @@ bool bolt::can_affect_wall(const coord_def& p, bool map_knowledge) const
             || wall == DNGN_CLEAR_ROCK_WALL
             || wall == DNGN_GRATE
             || wall == DNGN_CLOSED_DOOR
+            || wall == DNGN_CRYSTAL_WALL
 //          || wall == DNGN_RUNED_DOOR
             || feat_is_statuelike(wall)
             || feat_is_tree(wall);
