@@ -97,7 +97,6 @@ function trove.get_trove_item(e, value, base_item)
   -- currently 20% armour, 15% weapon, 50% consumable, 15% miscellaneous
   local prices = {
        {base="scroll", type="acquirement", quant=2},
-       {base="scroll", type="identify", quant=12+d(4)+d(4)+d(4)},
        {base="miscellaneous", type="rune of Zot", quant=3, name="slimy rune of Zot"},
        {base="miscellaneous", type="rune of Zot", quant=11, name="abyssal rune of Zot"},
        {base="miscellaneous", type="horn of Geryon"} }
@@ -225,7 +224,7 @@ end
 -- scrolls with a low chance of silence, vulnerability or acquirement (lowest)
 function trove.good_scroll (e)
     e.item([[scroll of enchant weapon / scroll of brand weapon w:3 /
-             scroll of enchant armour / scroll of identify w:20 /
+             scroll of enchant armour / 
              scroll of magic mapping w:5 / scroll of blinking /
              scroll of silence w:2 / scroll of acquirement w:1 /
              scroll of teleportation w:20 / scroll of vulnerability w:2 /
