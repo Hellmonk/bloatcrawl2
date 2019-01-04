@@ -1592,7 +1592,7 @@ static bool _give_zin_gift()
                                    "Zin's grace", true, true, true);
     if (success) {
         mpr("Zin's grace purifies you.");
-        inc_gift_timeout(16 + random2avg(8, 2));
+        inc_gift_timeout(20 + random2avg(10, 2));
     }
     return true;
 }

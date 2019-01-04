@@ -1472,7 +1472,7 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
         {
             simple_god_message(" protects your body from mutation!");
             if ((mutclass == MUTCLASS_NORMAL) &&
-                (!x_chance_in_y(you.gift_timeout,32))) {
+                (!x_chance_in_y(you.gift_timeout,40))) {
                 inc_gift_timeout(1);
             }
             return false;
