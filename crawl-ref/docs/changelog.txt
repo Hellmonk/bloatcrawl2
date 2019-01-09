@@ -5,12 +5,12 @@ High elves and mountain dwarves are back, and joined by faerie dragons.
 Skills with low apts are not turned on by default with manual training.
 If you hit 'M' with an empty library, you are told how many slots you have.
 Royal jellies are mostly now honeycombs, but there is one out there to find.
-Troves no longer ask for identify scrolls.
+Troves no longer ask for identify scrolls, or piety from Ru-ites.
 
 Vanilla changes messed around with
 ----------------------------------
 * Zin cures mutations on a gift timeout, so cannot be used to lock in a good
-  mutation set. Recite is slightly improved, both in the HD of monsters it
+  mutation set. Recite is marginally improved, both in the HD of monsters it
   can affect and by being usable more frequently at ****** piety.
   Also fixed a bug where not all Recite lines are seen when carrying out an
   action taking more than 10 auts.
