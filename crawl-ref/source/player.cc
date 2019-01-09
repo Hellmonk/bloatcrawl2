@@ -3196,6 +3196,15 @@ int player_stealth()
         else if (you.hunger_state <= HS_HUNGRY)
             stealth += STEALTH_PIP;
     }
+    //Faerie Dragons' bright wings reduce stealth.
+    if (you.species == SP_FAERIE_DRAGON
+        && (you.form == transformation::none
+            || you.form == transformation::appendage
+            || you.form == transformation::blade_hands
+            || you.form == transformation::dragon))
+    {
+        stealth -= STEALTH_PIP;
+    }
 
     if (!you.airborne())
     {
