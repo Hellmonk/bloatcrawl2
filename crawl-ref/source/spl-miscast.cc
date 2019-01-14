@@ -447,7 +447,7 @@ bool MiscastEffect::_ouch(int dam, beam_type flavour)
     }
     else
     {
-        dam = check_your_resists(dam, flavour, cause);
+        dam = check_your_resists(dam, flavour, cause, nullptr);
 
         if (avoid_lethal(dam))
             return false;
@@ -493,7 +493,7 @@ bool MiscastEffect::_explosion()
         beam.thrower = KILL_MISCAST;
 
     int max_dam = beam.damage.num * beam.damage.size;
-    max_dam = check_your_resists(max_dam, beam.flavour, cause);
+    max_dam = check_your_resists(max_dam, beam.flavour, cause, nullptr);
     if (avoid_lethal(max_dam))
         return false;
 
@@ -2181,7 +2181,7 @@ void MiscastEffect::_fire(int severity)
             do_msg();
 
             if (target->is_player())
-                napalm_player(random2avg(7,3) + 1, cause);
+                napalm_player(random2avg(7,3) + 1, cause, nullptr);
             else
             {
                 monster* mon_target = target->as_monster();
@@ -2906,7 +2906,7 @@ void MiscastEffect::_poison(int severity)
 void MiscastEffect::_do_poison(int amount)
 {
     if (target->is_player())
-        poison_player(amount, cause, "residual poison");
+        poison_player(amount, cause, nullptr, "residual poison");
     else
         target->poison(act_source, amount);
 }

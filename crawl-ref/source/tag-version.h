@@ -224,6 +224,7 @@ enum tag_minor_version
     TAG_MINOR_NO_ACTOR_HELD,       // Remove actor.held.
     TAG_MINOR_DD_HEALING,          // Reduce variance in DD healing
     TAG_MINOR_GOLDIFY_BOOKS,       // Spellbooks disintegrate when picked up, like gold/runes/orbs
+    TAG_MINOR_GHOST_SLAYER,        // Ghosts remember what killed them
 #endif
     NUM_TAG_MINORS,
     TAG_MINOR_VERSION = NUM_TAG_MINORS - 1
@@ -241,6 +242,7 @@ const set<int> bones_minor_tags =
          TAG_MINOR_MON_COLOUR_LOOKUP,
          TAG_MINOR_GHOST_ENERGY,
          TAG_MINOR_BOOL_FLIGHT,
+	 TAG_MINOR_GHOST_SLAYER,
 #endif
         };
 

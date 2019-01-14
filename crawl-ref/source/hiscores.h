@@ -146,6 +146,7 @@ public:
     void init_death_cause(int damage, mid_t death_source, int death_type,
                           const char *aux, const char *death_source_name);
     void init(time_t death_time = 0);
+    monster_type slayer_type = MONS_NO_MONSTER; // For vengeful ghosts
     void reset();
 
     enum death_desc_verbosity

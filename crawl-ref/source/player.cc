@@ -4240,7 +4240,8 @@ void paralyse_player(string source, int amount)
     you.paralyse(nullptr, amount, source);
 }
 
-bool poison_player(int amount, string source, string source_aux, bool force)
+bool poison_player(int amount, string source, const actor* poisoner, 
+                   string source_aux, bool force)
 {
     ASSERT(!crawl_state.game_is_arena());
 
@@ -4284,6 +4285,11 @@ bool poison_player(int amount, string source, string source_aux, bool force)
 
     you.props["poisoner"] = source;
     you.props["poison_aux"] = source_aux;
+    // This cast is kind of cheeky but I can't be arsed to wade through
+    // store.cc 
+    you.props["poisoner_type"] = (int) (poisoner && poisoner->is_monster() ?
+                                        poisoner->as_monster()->type:
+                                        MONS_NO_MONSTER);
 
     // Display the poisoned segment of our health, in case we take no damage
     you.redraw_hit_points = true;
@@ -4518,7 +4524,7 @@ bool miasma_player(actor *who, string source_aux)
     }
 
     bool success = poison_player(5 + roll_dice(3, 12),
-                                 who ? who->name(DESC_A) : "",
+                                 who ? who->name(DESC_A) : "", who,
                                  source_aux);
 
     if (coinflip())
@@ -4536,7 +4542,7 @@ bool miasma_player(actor *who, string source_aux)
     return success;
 }
 
-bool napalm_player(int amount, string source, string source_aux)
+bool napalm_player(int amount, string source, actor* flamer, string source_aux)
 {
     ASSERT(!crawl_state.game_is_arena());
 
@@ -4551,7 +4557,10 @@ bool napalm_player(int amount, string source, string source_aux)
 
     you.props["sticky_flame_source"] = source;
     you.props["sticky_flame_aux"] = source_aux;
-
+    you.props["sticky_flame_type"] = (int) (flamer && flamer->is_monster() ?
+                                            flamer->as_monster()->type :
+                                            MONS_NO_MONSTER);
+    
     return true;
 }
 
@@ -6541,8 +6550,8 @@ monster_type player::mons_species(bool zombie_base) const
 
 bool player::poison(actor *agent, int amount, bool force)
 {
-    return ::poison_player(amount, agent? agent->name(DESC_A, true) : "", "",
-                           force);
+    return ::poison_player(amount, agent? agent->name(DESC_A, true) : "", 
+                           agent, "", force);
 }
 
 void player::expose_to_element(beam_type element, int _strength,
@@ -7304,9 +7313,11 @@ void player::check_awaken(int disturbance)
     }
 }
 
-int player::beam_resists(bolt &beam, int hurted, bool doEffects, string source)
+int player::beam_resists(bolt &beam, int hurted, bool doEffects, 
+                         const actor* agent, string source)
 {
-    return check_your_resists(hurted, beam.flavour, source, &beam, doEffects);
+    return check_your_resists(hurted, beam.flavour, source, agent, &beam, 
+                              doEffects);
 }
 
 // Used for falling into traps and other bad effects, but is a slightly

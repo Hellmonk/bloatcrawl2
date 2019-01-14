@@ -238,8 +238,8 @@ public:
                                bool intrinsic_only = false) const;
     virtual bool can_sleep(bool holi_only = false) const;
     virtual void check_awaken(int disturbance) = 0;
-    virtual int beam_resists(bolt &beam, int hurted, bool doEffects,
-                             string source = "") = 0;
+    virtual int beam_resists(bolt &beam, int hurted, bool doEffects, 
+			     const actor* agent, string source = "") = 0;
 
     virtual int  skill(skill_type sk, int scale = 1,
                        bool real = false, bool drained = true,

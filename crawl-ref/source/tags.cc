@@ -6855,6 +6855,7 @@ static void marshallGhost(writer &th, const ghost_demon &ghost)
     marshallBoolean(th, ghost.flies);
 
     marshallSpells(th, ghost.spells);
+    marshallShort(th, ghost.slayer);
 }
 
 static ghost_demon unmarshallGhost(reader &th)
@@ -6913,6 +6914,15 @@ static ghost_demon unmarshallGhost(reader &th)
                      , ghost.xl
 #endif
                     );
+#if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() < TAG_MINOR_GHOST_SLAYER)
+        ghost.slayer = MONS_NO_MONSTER;
+    else
+#endif
+    ghost.slayer = unmarshallMonType(th);
+    if (ghost.slayer == MONS_PLAYER_GHOST) {
+        ghost.slayer = MONS_NO_MONSTER;
+    }
 
     return ghost;
 }

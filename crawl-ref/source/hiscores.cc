@@ -1370,6 +1370,11 @@ void scorefile_entry::init_death_cause(int dam, mid_t dsrc,
     {
         const monster* mons = monster_by_mid(death_source);
         ASSERT(mons);
+        monster* isummon = (monster *) mons;
+        while (isummon->summoner && monster_by_mid(isummon->summoner)) {
+            isummon=monster_by_mid(isummon->summoner);
+        }
+        slayer_type=isummon->type;
 
         // Previously the weapon was only used for dancing weapons,
         // but now we pass it in as a string through the scorefile
@@ -1403,12 +1408,16 @@ void scorefile_entry::init_death_cause(int dam, mid_t dsrc,
         if (death || you.can_see(*mons))
             death_source_name = mons->full_name(desc);
 
-        if (mons_is_player_shadow(*mons))
+        if (mons_is_player_shadow(*mons)) {
             death_source_name = "their own shadow"; // heh
-
-        if (mons->mid == MID_YOU_FAULTLESS)
+            slayer_type = MONS_NO_MONSTER;
+        }
+        if (mons->mid == MID_YOU_FAULTLESS) {
             death_source_name = "themself";
+            slayer_type = MONS_NO_MONSTER;
+        }
 
+        // ghosts don't have the wit to recognise shapeshifters
         if (mons->has_ench(ENCH_SHAPESHIFTER))
             death_source_name += " (shapeshifter)";
         else if (mons->has_ench(ENCH_GLOWING_SHAPESHIFTER))
@@ -1473,12 +1482,14 @@ void scorefile_entry::init_death_cause(int dam, mid_t dsrc,
     {
         death_source_name = you.props["poisoner"].get_string();
         auxkilldata = you.props["poison_aux"].get_string();
+        slayer_type = (monster_type) you.props["poisoner_type"].get_int();
     }
 
     if (death_type == KILLED_BY_BURNING)
     {
         death_source_name = you.props["sticky_flame_source"].get_string();
         auxkilldata = you.props["sticky_flame_aux"].get_string();
+        slayer_type = (monster_type) you.props["sticky_flame_type"].get_int();
     }
 }
 

@@ -268,7 +268,7 @@ void ghost_demon::init_pandemonium_lord()
 static const set<brand_type> ghost_banned_brands =
                 { SPWPN_HOLY_WRATH, SPWPN_CHAOS };
 
-void ghost_demon::init_player_ghost(bool actual_ghost)
+void ghost_demon::init_player_ghost(bool actual_ghost,monster_type slayer_type)
 {
     // don't preserve transformations for ghosty purposes
     unwind_var<transformation> form(you.form, transformation::none);
@@ -299,6 +299,7 @@ void ghost_demon::init_player_ghost(bool actual_ghost)
 
     move_energy = 10;
     speed       = 10;
+    slayer      = slayer_type ? slayer_type : MONS_NO_MONSTER;
 
     damage = 4;
     brand = SPWPN_NORMAL;
@@ -662,14 +663,14 @@ spell_type ghost_demon::translate_spell(spell_type spell) const
     return spell;
 }
 
-const vector<ghost_demon> ghost_demon::find_ghosts()
+const vector<ghost_demon> ghost_demon::find_ghosts(monster_type slayer_type)
 {
     vector<ghost_demon> gs;
 
     if (you.undead_state(false) == US_ALIVE)
     {
         ghost_demon player;
-        player.init_player_ghost();
+        player.init_player_ghost(true,slayer_type);
         announce_ghost(player);
         gs.push_back(player);
     }

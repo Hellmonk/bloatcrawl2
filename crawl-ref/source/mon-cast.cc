@@ -5757,7 +5757,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         pbolt.flavour    = BEAM_WATER;
 
         int damage_taken = waterstrike_damage(*mons).roll();
-        damage_taken = foe->beam_resists(pbolt, damage_taken, false);
+        damage_taken = foe->beam_resists(pbolt, damage_taken, false, mons);
         damage_taken = foe->apply_ac(damage_taken);
 
         foe->hurt(mons, damage_taken, BEAM_MISSILE, KILLED_BY_BEAM,
@@ -5784,7 +5784,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         pbolt.flavour = BEAM_AIR;
 
         int damage_taken = 10 + 2 * mons->get_hit_dice();
-        damage_taken = foe->beam_resists(pbolt, damage_taken, false);
+        damage_taken = foe->beam_resists(pbolt, damage_taken, false, mons);
 
         // Previous method of damage calculation (in line with player
         // airstrike) had absurd variance.

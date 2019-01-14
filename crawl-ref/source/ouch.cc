@@ -101,7 +101,7 @@ void maybe_melt_player_enchantments(beam_type flavour, int damage)
 }
 
 int check_your_resists(int hurted, beam_type flavour, string source,
-                       bolt *beam, bool doEffects)
+                       const actor* agent, bolt *beam, bool doEffects)
 {
     int original = hurted;
 
@@ -179,7 +179,7 @@ int check_your_resists(int hurted, beam_type flavour, string source,
             ASSERT(beam);
             int pois = div_rand_round(beam->damage.num * beam->damage.size, 3);
             pois = 3 + random_range(pois * 2 / 3, pois * 4 / 3);
-            poison_player(pois, source, kaux);
+            poison_player(pois, source, agent, kaux);
 
             if (player_res_poison() > 0)
                 canned_msg(MSG_YOU_RESIST);
@@ -198,7 +198,8 @@ int check_your_resists(int hurted, beam_type flavour, string source,
             pois = 3 + random_range(pois * 2 / 3, pois * 4 / 3);
 
             const int resist = player_res_poison();
-            poison_player((resist ? pois / 2 : pois), source, kaux, true);
+            poison_player((resist ? pois / 2 : pois), source, agent, kaux,
+                          true);
         }
 
         hurted = resist_adjust_damage(&you, flavour, hurted);
@@ -1106,9 +1107,10 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
     }
 
     // Never generate bones files of wizard or tutorial characters -- bwr
-    if (!non_death && !crawl_state.game_is_tutorial() && !you.wizard)
-        save_ghosts(ghost_demon::find_ghosts());
-
+    if (!non_death && !crawl_state.game_is_tutorial() && !you.wizard) {
+        monster_type slayer_type=se.slayer_type;
+        save_ghosts(ghost_demon::find_ghosts(slayer_type));
+    }
     end_game(se, hiscore_index);
 }
 

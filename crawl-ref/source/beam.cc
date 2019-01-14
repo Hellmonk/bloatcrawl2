@@ -2129,8 +2129,7 @@ static bool _curare_hits_player(actor* agent, int levels, string name,
     {
         return false;
     }
-
-    poison_player(roll_dice(levels, 12) + 1, source_name, name);
+    poison_player(roll_dice(levels, 12) + 1, source_name,agent,name);
 
     int hurted = 0;
 
@@ -3913,7 +3912,7 @@ void bolt::affect_player()
         bleed_onto_floor(you.pos(), MONS_PLAYER, blood, true);
     }
 
-    hurted = check_your_resists(hurted, flavour, "", this);
+    hurted = check_your_resists(hurted, flavour, "", agent(), this);
 
     if (flavour == BEAM_MIASMA && hurted > 0)
         was_affected = miasma_player(agent(), name);
@@ -3972,7 +3971,8 @@ void bolt::affect_player()
     {
         if (!player_res_sticky_flame())
         {
-            napalm_player(random2avg(7, 3) + 1, get_source_name(), aux_source);
+            napalm_player(random2avg(7, 3) + 1, get_source_name(), agent(),
+                          aux_source);
             was_affected = true;
         }
     }

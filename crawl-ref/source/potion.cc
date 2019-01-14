@@ -426,7 +426,8 @@ public:
     bool effect(bool=true, int=40, bool=true) const override
     {
         mprf(MSGCH_WARN, "That liquid tasted very nasty...");
-        return poison_player(10 + random2avg(15, 2), "", "a potion of poison");
+        return poison_player(10 + random2avg(15, 2), "", nullptr,
+                             "a potion of poison");
     }
 
     bool quaff(bool was_known) const override

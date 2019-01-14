@@ -25,11 +25,11 @@ Vanilla changes messed around with
   (Beware new veto_dig vault property, David.)
 * Ozo's Armour can only be cast with enemies in sight, and melts quickly if
   they stop being visible.
+* ghosts still roam the dungeon, but now they know who killed them.
 
 Vanilla changes not made, awaiting revision
 -------------------------------------------
 * Labyrinth loot and enemies unchanged
-* ghosts still roam the dungeon
 
 Vanilla changes not made
 ------------------------

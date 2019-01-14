@@ -1152,7 +1152,8 @@ static void _FLAMING_DEATH_melee_effects(item_def* weapon, actor* attacker,
     if (!mondied && (dam > 2 && one_chance_in(3)))
     {
         if (defender->is_player())
-            napalm_player(random2avg(7, 3) + 1, attacker->name(DESC_A, true));
+            napalm_player(random2avg(7, 3) + 1, attacker->name(DESC_A, true),
+			  attacker);
         else
         {
             napalm_monster(

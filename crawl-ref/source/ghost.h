@@ -36,12 +36,15 @@ public:
 
     monster_spells spells;
 
+    monster_type slayer;
+
 public:
     ghost_demon();
     bool has_spells() const;
     void reset();
     void init_pandemonium_lord();
-    void init_player_ghost(bool actual_ghost = true);
+    void init_player_ghost(bool actual_ghost = true,
+			   monster_type slayer_type=MONS_NO_MONSTER);
     void init_ugly_thing(bool very_ugly, bool only_mutate = false,
                          colour_t force_colour = BLACK);
     void init_dancing_weapon(const item_def& weapon, int power);
@@ -51,7 +54,7 @@ public:
 
 
 public:
-    static const vector<ghost_demon> find_ghosts();
+    static const vector<ghost_demon> find_ghosts(monster_type slayer_type=MONS_NO_MONSTER);
     static int max_ghosts_per_level(int absdepth);
     static bool ghost_eligible();
 

@@ -2426,7 +2426,7 @@ void melee_attack::mons_do_napalm()
         }
 
         if (defender->is_player())
-            napalm_player(random2avg(7, 3) + 1, atk_name(DESC_A));
+            napalm_player(random2avg(7, 3) + 1, atk_name(DESC_A),attacker);
         else
         {
             napalm_monster(
@@ -2448,7 +2448,9 @@ static void _print_resist_messages(actor* defender, int base_damage,
     // basically calculating the damage twice in the case where messages
     // are needed.
     if (defender->is_player())
-        (void)check_your_resists(base_damage, flavour, "");
+        // nullptr is correct here since never called with poison or sticky
+        // ouch.cc explicitly forbids calling with poison here
+        (void)check_your_resists(base_damage, flavour, "", nullptr);
     else
     {
         bolt beam;

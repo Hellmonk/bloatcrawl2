@@ -402,7 +402,8 @@ static int _refrigerate_player(const actor* agent, int pow, int avg,
     const dice_def dam_dice = _refrigerate_damage(pow);
 
     int hurted = check_your_resists((actual) ? dam_dice.roll() : avg,
-                                    BEAM_COLD, "refrigeration", 0, actual);
+                                    BEAM_COLD, "refrigeration", agent, 0, 
+                                    actual);
     if (actual && hurted > 0)
     {
         mpr("You feel very cold.");
@@ -953,7 +954,7 @@ spret_type cast_airstrike(int pow, const dist &beam, bool fail)
 #ifdef DEBUG_DIAGNOSTICS
     const int preac = hurted;
 #endif
-    hurted = mons->apply_ac(mons->beam_resists(pbeam, hurted, false));
+    hurted = mons->apply_ac(mons->beam_resists(pbeam, hurted, false, &you));
     dprf("preac: %d, postac: %d", preac, hurted);
 
     mons->hurt(&you, hurted);
@@ -1899,7 +1900,7 @@ int discharge_monsters(coord_def where, int pow, actor *agent)
         damage = 1 + random2(3 + pow / 15);
         dprf("You: static discharge damage: %d", damage);
         damage = check_your_resists(damage, BEAM_ELECTRICITY,
-                                    "static discharge");
+                                    "static discharge",victim);
         ouch(damage, KILLED_BY_BEAM, agent->mid, "by static electricity", true,
              agent->is_player() ? "you" : agent->name(DESC_A).c_str());
         if (damage > 0)
@@ -2806,7 +2807,7 @@ void toxic_radiance_effect(actor* agent, int mult)
                     "by Olgreb's Toxic Radiance", true,
                     agent->as_monster()->name(DESC_A).c_str());
 
-                poison_player(roll_dice(2, 3), agent->name(DESC_A),
+                poison_player(roll_dice(2, 3), agent->name(DESC_A),agent,
                               "toxic radiance", false);
             }
         }

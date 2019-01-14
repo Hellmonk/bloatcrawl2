@@ -800,7 +800,8 @@ public:
     void put_to_sleep(actor *, int power = 0, bool hibernate = false) override;
     void awaken();
     void check_awaken(int disturbance) override;
-    int beam_resists(bolt &beam, int hurted, bool doEffects, string source)
+    int beam_resists(bolt &beam, int hurted, bool doEffects, 
+		     const actor* agent, string source)
         override;
 
     bool can_throw_large_rocks() const override;
@@ -1098,8 +1099,8 @@ void contaminate_player(int change, bool controlled = false, bool msg = true);
 
 bool confuse_player(int amount, bool quiet = false, bool force = false);
 
-bool poison_player(int amount, string source, string source_aux = "",
-                   bool force = false);
+bool poison_player(int amount, string source, const actor* poisoner, 
+		   string source_aux = "", bool force = false);
 void paralyse_player(string source, int amount = 0);
 void handle_player_poison(int delay);
 void reduce_player_poison(int amount);
@@ -1109,7 +1110,8 @@ int poison_survival();
 
 bool miasma_player(actor *who, string source_aux = "");
 
-bool napalm_player(int amount, string source, string source_aux = "");
+bool napalm_player(int amount, string source, actor* flamer,
+		   string source_aux = "");
 void dec_napalm_player(int delay);
 
 bool spell_slow_player(int pow);
