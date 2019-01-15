@@ -1115,13 +1115,6 @@ static void _input()
         crawl_state.waiting_for_command = true;
         c_input_reset(true);
 
-        // Clear "last action was a move or rest" flag.
-        if (you.props[LAST_ACTION_WAS_MOVE_OR_REST_KEY].get_bool())
-        {
-            you.props[LAST_ACTION_WAS_MOVE_OR_REST_KEY] = false;
-            you.redraw_evasion = true;
-        }
-
 #ifdef USE_TILE_LOCAL
         cursor_control con(false);
 #endif

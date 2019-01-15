@@ -2208,12 +2208,6 @@ static int _player_evasion_bonuses()
         evbonus += 5 + you.experience_level / 3;
     }
 
-    // If you have an active amulet of the acrobat and just moved, get massive
-    // EV bonus. We also display this bonus if the duration isn't in effect but
-    // it was during the last move. It's a little hacky.
-    if (you.duration[DUR_ACROBAT] || you.props[LAST_ACTION_WAS_MOVE_OR_REST_KEY].get_bool())
-        evbonus += 15;
-
     // If you have an active amulet of the acrobat and just moved or waited, get massive
     // EV bonus.
     if (acrobat_boost_active())

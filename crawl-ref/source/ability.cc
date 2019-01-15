@@ -1957,30 +1957,10 @@ static spret _do_ability(const ability_def& abil, bool fail)
         if(you.duration[DUR_EXHAUSTED])
         {
 			mpr("You're too exhausted to do that!");
-            return SPRET_ABORT;
+            return spret::abort;
         }
         you.increase_duration(DUR_EXHAUSTED, 25 - you.experience_level / 2 + random2(8));
         return mass_enchantment(ENCH_CHARM, 10 + you.experience_level * 4);
-
-    case ABIL_DELAYED_FIREBALL:
-    {
-        fail_check();
-        // Note: Power level of ball calculated at release. - bwr
-        int power = calc_spell_power(SPELL_DELAYED_FIREBALL, true);
-        beam.range = spell_range(SPELL_FIREBALL, power);
-
-        targeter_beam tgt(&you, beam.range, ZAP_FIREBALL, power, 1, 1);
-
-        direction_chooser_args args;
-        args.mode = TARG_HOSTILE;
-        args.top_prompt = "Aiming: <white>Delayed Fireball</white>";
-        args.hitfunc = &tgt;
-        if (!spell_direction(spd, beam, &args))
-            return SPRET_ABORT;
-
-        if (!zapping(ZAP_FIREBALL, power, beam, true, nullptr, false))
-            return SPRET_ABORT;
-    }
 
     case ABIL_SPIT_POISON:      // Naga poison spit
     {
@@ -2029,9 +2009,9 @@ static spret _do_ability(const ability_def& abil, bool fail)
 	    int power = you.experience_level * 5;
         mpr("You prepare to fire your disintegration ray.");
         fail_check();
-            if (your_spells(SPELL_DISINTEGRATE, power, false) == SPRET_ABORT)
+            if (your_spells(SPELL_DISINTEGRATE, power, false) == spret::abort)
             {
-                return SPRET_ABORT;
+                return spret::abort;
             }
         you.increase_duration(DUR_BREATH_WEAPON,
                       3 + random2(10) + random2(30 - you.experience_level));
