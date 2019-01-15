@@ -30,12 +30,15 @@
 
 static void _fuzz_direction(const actor *caster, monster& mon, int pow);
 
-spret_type cast_iood(actor *caster, int pow, bolt *beam, float vx, float vy,
-                     int foe, bool fail)
+spret cast_iood(actor *caster, int pow, bolt *beam, float vx, float vy,
+                     int foe, bool fail, bool needs_tracer)
 {
     const bool is_player = caster->is_player();
-    if (beam && is_player && !player_tracer(ZAP_IOOD, pow, *beam))
-        return SPRET_ABORT;
+    if (beam && is_player && needs_tracer
+             && !player_tracer(ZAP_IOOD, pow, *beam))
+    {
+        return spret::abort;
+    }
 
     fail_check();
 
@@ -50,7 +53,7 @@ spret_type cast_iood(actor *caster, int pow, bolt *beam, float vx, float vy,
     if (!mon)
     {
         mprf(MSGCH_ERROR, "Failed to spawn projectile.");
-        return SPRET_ABORT;
+        return spret::abort;
     }
 
     if (beam)
@@ -112,7 +115,7 @@ spret_type cast_iood(actor *caster, int pow, bolt *beam, float vx, float vy,
             mon->foe = foe;
     }
 
-    return SPRET_SUCCESS;
+    return spret::success;
 }
 
 /**
@@ -250,8 +253,8 @@ static void _fuzz_direction(const actor *caster, monster& mon, int pow)
     const float off = random_choose(-0.25, 0.25);
     float tan = (random2(31) - 15) * 0.019; // approx from degrees
     tan *= 75.0 / pow;
-    int inaccuracy = caster->inaccuracy();
-    if (caster && inaccuracy > 0)
+    const int inaccuracy = caster ? caster->inaccuracy() : 0;
+    if (inaccuracy > 0)
         tan *= 2 * inaccuracy;
 
     // Cast either from left or right hand.

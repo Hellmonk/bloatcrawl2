@@ -32,11 +32,9 @@ msc += $danger:rotting away
 
 # Less urgent, but still significant messages
 #
-msc += $warning:ticking.*clock
-msc += $warning:dying ticks
 msc += $warning:distant snort
-msc += $warning:odd grinding sound
-msc += $warning:creaking of ancient gears
+msc += $warning:beating.*drum
+msc += $warning:drumbeats cease
 msc += $warning:floor suddenly vibrates
 msc += $warning:a sudden draft
 msc += $warning:coins.*counted
@@ -163,6 +161,8 @@ force_more_message += grants you (a gift|ammunition|armour|a weapon)
 force_more_message += offers you knowledge of
 force_more_message += believes you are ready to make a new sacrifice
 force_more_message += may now remember your ancestor
+force_more_message += deals you some cards
+force_more_message += finds you have enough cards
 
 # Show passwall message while still in the starting position
 force_more_message += You finish merging with the rock

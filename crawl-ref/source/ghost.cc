@@ -277,7 +277,7 @@ void ghost_demon::init_player_ghost(bool actual_ghost)
     unwind_var<bool> fishtail(you.fishtail, false);
 
     name   = you.your_name;
-    max_hp = min(get_real_hp(false), MAX_GHOST_HP);
+    max_hp = min(get_real_hp(false, false), MAX_GHOST_HP);
     ev     = min(you.evasion(EV_IGNORE_HELPLESS), MAX_GHOST_EVASION);
     ac     = you.armour_class();
     dprf("ghost ac: %d, ev: %d", ac, ev);
@@ -728,25 +728,21 @@ void ghost_demon::find_extra_ghosts(vector<ghost_demon> &gs)
     find_transiting_ghosts(gs);
 }
 
-/// Returns the number of ghosts allowed on the specified level.
-int ghost_demon::max_ghosts_per_level(int absdepth)
-{
-    return absdepth < 10 ? 1 : MAX_GHOSTS;
-}
-
-static const set<branch_type> ghosts_banned =
-            { BRANCH_ABYSS, BRANCH_LABYRINTH, BRANCH_SEWER, BRANCH_OSSUARY,
-              BRANCH_BAILEY, BRANCH_ICE_CAVE, BRANCH_VOLCANO, BRANCH_WIZLAB,
-              BRANCH_DESOLATION, BRANCH_TEMPLE };
+static const set<branch_type> ghosts_nosave =
+            { BRANCH_ABYSS, BRANCH_WIZLAB, BRANCH_DESOLATION, BRANCH_TEMPLE,
+#if TAG_MAJOR_VERSION == 34
+              BRANCH_LABYRINTH,
+#endif
+            };
 
 
-/// Is the current location eligible for ghosts?
+/// Is the current location eligible for saving ghosts?
 bool ghost_demon::ghost_eligible()
 {
     return !crawl_state.game_is_tutorial()
         && !Options.seed
         && (!player_in_branch(BRANCH_DUNGEON) || you.depth > 2)
-        && ghosts_banned.count(you.where_are_you) == 0;
+        && ghosts_nosave.count(you.where_are_you) == 0;
 }
 
 bool debug_check_ghost(const ghost_demon &ghost)

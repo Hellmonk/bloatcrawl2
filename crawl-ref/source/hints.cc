@@ -15,7 +15,6 @@
 #include "cloud.h"
 #include "colour.h"
 #include "database.h"
-#include "decks.h"
 #include "describe.h"
 #include "end.h"
 #include "english.h"
@@ -2827,7 +2826,7 @@ string hints_memorise_info()
     {
         m += "\n\nA spell that isn't <darkgray>grayed out</darkgray> or "
              "<lightred>forbidden</lightred> can be "
-             "memorised right away by selecting it at at this menu.";
+             "memorised right away by selecting it at this menu.";
     }
     else
     {
@@ -2853,13 +2852,12 @@ string hints_memorise_info()
         cmd.push_back(CMD_CAST_SPELL);
     }
 
+    if (you.spell_no)
+        m += _hints_target_mode(true);
     linebreak_string(m, _get_hints_cols());
     if (!cmd.empty())
         insert_commands(m, cmd);
     text << m;
-    if (you.spell_no)
-        text << _hints_target_mode(true);
-    text << "</" << colour_to_str(channel_to_colour(MSGCH_TUTORIAL)) << ">";
 
     return text.str();
 }
@@ -3395,24 +3393,9 @@ string hints_describe_item(const item_def &item)
             break;
 
         case OBJ_MISCELLANY:
-            if (is_deck(item))
-            {
-                ostr << "Decks of cards are powerful but dangerous magical "
-                        "items. Try e<w>%</w>oking it"
-#ifdef USE_TILE
-                        ", which can be done by clicking on it"
-#endif
-                        ". You can read about the effect of a card by "
-                        "searching the game's database with <w>%/c</w>.";
-                cmd.push_back(CMD_EVOKE);
-                cmd.push_back(CMD_DISPLAY_COMMANDS);
-            }
-            else
-            {
-                ostr << "Miscellaneous items sometimes harbour magical powers "
-                        "that can be harnessed by e<w>%</w>oking the item.";
-                cmd.push_back(CMD_EVOKE);
-            }
+            ostr << "Miscellaneous items sometimes harbour magical powers "
+                    "that can be harnessed by e<w>%</w>oking the item.";
+            cmd.push_back(CMD_EVOKE);
 
             Hints.hints_events[HINT_SEEN_MISC] = false;
             break;
@@ -3610,8 +3593,7 @@ static void _hints_describe_feature(int x, int y, ostringstream& ostr)
 #endif
 
     case DNGN_CLOSED_DOOR:
-    case DNGN_RUNED_DOOR:
-            // XXX: should this be elsewhere?
+    case DNGN_CLOSED_CLEAR_DOOR:
         if (!Hints.hints_explored)
         {
             ostr << "\nTo avoid accidentally opening a door you'd rather "
@@ -3914,10 +3896,10 @@ void hints_observe_cell(const coord_def& gc)
         learned_something_new(HINT_SEEN_ALTAR, gc);
     else if (is_feature('^', gc))
         learned_something_new(HINT_SEEN_TRAP, gc);
-    else if (grd(gc) == DNGN_OPEN_DOOR || grd(gc) == DNGN_CLOSED_DOOR)
-        learned_something_new(HINT_SEEN_DOOR, gc);
-    else if (grd(gc) == DNGN_RUNED_DOOR)
+    else if (feat_is_runed(grd(gc)))
         learned_something_new(HINT_SEEN_RUNED_DOOR, gc);
+    else if (feat_is_door(grd(gc)))
+        learned_something_new(HINT_SEEN_DOOR, gc);
     else if (grd(gc) == DNGN_ENTER_SHOP)
         learned_something_new(HINT_SEEN_SHOP, gc);
     else if (feat_is_portal_entrance(grd(gc)))

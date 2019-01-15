@@ -3,9 +3,9 @@
 -- Dungeoneering functions.
 ------------------------------------------------------------------------------
 
-require("dlua/point.lua")
-require("dlua/fnwrap.lua")
-require('dlua/util.lua')
+crawl_require("dlua/point.lua")
+crawl_require("dlua/fnwrap.lua")
+crawl_require('dlua/util.lua')
 
 -- Namespace for callbacks (just an aid to recognising callbacks, no magic)
 util.namespace('callback')
@@ -671,26 +671,26 @@ dgn.good_scrolls = [[
     w:11  scroll of vulnerability no_pickup
     ]]
 
--- Some scroll and potions with weights that are used as nice loot where we'd
--- light the item to have a better chance of being relevant for the entire
--- game. The weights are flatter to allow better types to be more common. These
--- items should be used somewhat sparingly to supplement the more variable
--- normal quality % and high quality * loot. Each list should total 100 weight.
+-- Some scroll and potions with weights that are used as nice loot. These lists
+-- emphasize tactical consumables and permanent character/equipment
+-- upgrades--things that are relevant the entire game and for most characters.
+-- These lists should be used to supplement the more variable loot types % and
+-- * to help ensure that a loot pile has usable items. Each list should total
+-- 100 weight.
 dgn.loot_scrolls = [[
     w:15  scroll of teleportation /
     w:15  scroll of fog /
     w:15  scroll of fear /
     w:10  scroll of blinking /
-    w:10  scroll of magic mapping /
     w:10  scroll of summoning /
-    w:5   scroll of enchant weapon /
-    w:5   scroll of enchant weapon /
-    w:5   scroll of enchant weapon /
-    w:5   scroll of enchant armour /
-    w:3   scroll of brand weapon /
-    w:2   scroll of acquirement /
+    w:8   scroll of magic mapping /
+    w:10  scroll of enchant weapon /
+    w:10  scroll of enchant armour /
+    w:5   scroll of brand weapon /
+    w:2   scroll of acquirement
     ]]
-dgn.loot_potions = [[ /
+
+dgn.loot_potions = [[
     w:15  potion of haste /
     w:15  potion of heal wounds /
     w:10  potion of might /
@@ -698,11 +698,23 @@ dgn.loot_potions = [[ /
     w:10  potion of agility /
     w:10  potion of magic /
     w:10  potion of mutation /
-    w:8  potion of cancellation /
+    w:8   potion of cancellation /
     w:5   potion of brilliance /
     w:5   potion of resistance /
-    w:2   potion of experience /
+    w:2   potion of experience
     ]]
+
+-- Some definitions for all types of auxiliary armor.
+dgn.aux_armour = "cloak / scarf / helmet / hat / pair of gloves " ..
+    "/ pair of boots"
+
+-- Scarves not influenced by good_item.
+dgn.good_aux_armour = "cloak good_item / scarf / helmet good_item " ..
+    "/ hat good_item / pair of gloves good_item / pair of boots good_item"
+
+-- Scarves excluded since they can't be randart.
+dgn.randart_aux_armour = "cloak randart / helmet randart / hat randart " ..
+    "/ pair of gloves randart / pair of boots randart"
 
 -- Returns true if point1 is inside radius(X, point2).
 function dgn.point_in_radius(point1, point2, radius)

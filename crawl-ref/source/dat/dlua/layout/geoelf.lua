@@ -15,10 +15,10 @@ geoelf = {}          -- Main namespace for engine
 --  command-line.
 geoelf.debug = false
 
-require("dlua/layout/geoelf_directions.lua")
-require("dlua/layout/geoelf_glyphs.lua")
-require("dlua/layout/geoelf_rooms.lua")
-require("dlua/layout/geoelf_corridors.lua")
+crawl_require("dlua/layout/geoelf_directions.lua")
+crawl_require("dlua/layout/geoelf_glyphs.lua")
+crawl_require("dlua/layout/geoelf_rooms.lua")
+crawl_require("dlua/layout/geoelf_corridors.lua")
 
 ----------------------------------------------------------------
 --
@@ -45,8 +45,7 @@ require("dlua/layout/geoelf_corridors.lua")
 --  The geoelf layout defines special meanings for the following
 --   glyphs:
 --    -> D, E, F: bush, plant, fungus (if enabled)
---    -> -: glass door in glass (currently door with retiled floor,
---                               TODO: tile, code)
+--    -> ~: glass door in glass
 --    -> J, K, L, M, N, O: glass with pictures of tree, bush,
 --                         plant, fungus, statue, fountain
 --                         (needs special tiles)

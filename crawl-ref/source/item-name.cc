@@ -457,6 +457,35 @@ static const char *weapon_brands_verbose[] =
     "debug",
 };
 
+static const char *weapon_brands_adj[] =
+{
+    "", "flaming", "freezing", "holy", "electric",
+#if TAG_MAJOR_VERSION == 34
+    "orc-killing", "dragon-slaying",
+#endif
+    "venomous", "protective", "draining", "fast", "vorpal",
+#if TAG_MAJOR_VERSION == 34
+    "flaming", "freezing",
+#endif
+    "vampiric", "painful", "antimagic", "distorting",
+#if TAG_MAJOR_VERSION == 34
+    "reaching", "returning",
+#endif
+    "chaotic",
+#if TAG_MAJOR_VERSION == 34
+    "evasive", "confusing",
+#endif
+    "penetrating", "reaping", "buggy-num", "acidic",
+#if TAG_MAJOR_VERSION > 34
+    "confusing",
+#endif
+    "debug",
+};
+
+// TODO: currently only for pghosts...expand?
+static const set<brand_type> brand_prefers_adj =
+            { SPWPN_VAMPIRISM, SPWPN_ANTIMAGIC, SPWPN_VORPAL };
+
 /**
  * What's the name of a type of vorpal brand?
  *
@@ -495,7 +524,7 @@ static const char* _vorpal_brand_name(const item_def &item, bool terse)
  * @param bool              Whether to use a terse or verbose name.
  * @return                  The name of the given brand.
  */
-const char* brand_type_name(int brand, bool terse)
+const char* brand_type_name(brand_type brand, bool terse)
 {
     COMPILE_CHECK(ARRAYSZ(weapon_brands_terse) == NUM_SPECIAL_WEAPONS);
     COMPILE_CHECK(ARRAYSZ(weapon_brands_verbose) == NUM_SPECIAL_WEAPONS);
@@ -504,6 +533,17 @@ const char* brand_type_name(int brand, bool terse)
         return terse ? "buggy" : "bugginess";
 
     return (terse ? weapon_brands_terse : weapon_brands_verbose)[brand];
+}
+
+const char* brand_type_adj(brand_type brand)
+{
+    COMPILE_CHECK(ARRAYSZ(weapon_brands_terse) == NUM_SPECIAL_WEAPONS);
+    COMPILE_CHECK(ARRAYSZ(weapon_brands_verbose) == NUM_SPECIAL_WEAPONS);
+
+    if (brand < 0 || brand >= NUM_SPECIAL_WEAPONS)
+        return "buggy";
+
+    return weapon_brands_adj[brand];
 }
 
 /**
@@ -516,9 +556,9 @@ const char* brand_type_name(int brand, bool terse)
  * @return                  The name of the given item's brand.
  */
 const char* weapon_brand_name(const item_def& item, bool terse,
-                              int override_brand)
+                              brand_type override_brand)
 {
-    const int brand = override_brand ? override_brand : get_weapon_brand(item);
+    const brand_type brand = override_brand ? override_brand : get_weapon_brand(item);
 
     if (brand == SPWPN_VORPAL)
         return _vorpal_brand_name(item, terse);
@@ -960,25 +1000,12 @@ const char* rune_type_name(short p)
     }
 }
 
-const char* deck_rarity_name(deck_rarity_type rarity)
-{
-    switch (rarity)
-    {
-    case DECK_RARITY_COMMON:    return "plain";
-    case DECK_RARITY_RARE:      return "ornate";
-    case DECK_RARITY_LEGENDARY: return "legendary";
-    default:                    return "buggy rarity";
-    }
-}
-
 static string misc_type_name(int type, bool known)
 {
-    if (is_deck_type(type, true))
-    {
-        if (!known)
-            return "deck of cards";
-        return deck_name(type);
-    }
+#if TAG_MAJOR_VERSION == 34
+    if (is_deck_type(type))
+        return "removed deck";
+#endif
 
     switch (static_cast<misc_item_type>(type))
     {
@@ -1226,27 +1253,34 @@ string sub_type_string(const item_def &item, bool known)
 }
 
 /**
- * What's the name for the weapon used by a given ghost?
+ * What's the name for the weapon used by a given ghost / pan lord?
  *
  * There's no actual weapon info, just brand, so we have to improvise...
  *
- * @param brand     The brand_type used by the ghost.
- * @return          The name of the ghost's weapon (e.g. "a weapon of flaming",
- *                  "an antimagic weapon")
+ * @param brand     The brand_type used by the ghost or pan lord.
+ * @param mtype     Monster type; determines whether the fake weapon is
+ *                  described as a `weapon` or a `touch`.
+ * @return          The name of the ghost's weapon (e.g. "weapon of flaming",
+ *                  "antimagic weapon"). SPWPN_NORMAL returns "".
  */
-string ghost_brand_name(int brand)
+string ghost_brand_name(brand_type brand, monster_type mtype)
 {
-    // XXX: deduplicate these special cases
-    if (brand == SPWPN_VAMPIRISM)
-        return "a vampiric weapon";
-    if (brand == SPWPN_ANTIMAGIC)
-        return "an antimagic weapon";
-    if (brand == SPWPN_VORPAL)
-        return "a vorpal weapon"; // can't use brand_type_name
-    return make_stringf("a weapon of %s", brand_type_name(brand, false));
+    if (brand == SPWPN_NORMAL)
+        return "";
+    const bool weapon = mtype != MONS_PANDEMONIUM_LORD;
+    if (weapon)
+    {
+        // n.b. vorpal only works if it is adjectival
+        if (brand_prefers_adj.count(brand))
+            return make_stringf("%s weapon", brand_type_adj(brand));
+        else
+            return make_stringf("weapon of %s", brand_type_name(brand, false));
+    }
+    else
+        return make_stringf("%s touch", brand_type_adj(brand));
 }
 
-string ego_type_string(const item_def &item, bool terse, int override_brand)
+string ego_type_string(const item_def &item, bool terse, brand_type override_brand)
 {
     switch (item.base_type)
     {
@@ -1255,7 +1289,7 @@ string ego_type_string(const item_def &item, bool terse, int override_brand)
     case OBJ_WEAPONS:
         if (!terse)
         {
-            int checkbrand = override_brand ? override_brand
+            brand_type checkbrand = override_brand ? override_brand
                                             : get_weapon_brand(item);
             // this is specialcased out of weapon_brand_name
             // ("vampiric hand axe", etc)
@@ -1341,69 +1375,6 @@ static bool _know_ego(const item_def &item, description_level_type desc,
     return _know_any_ident(item, desc, ident)
            && !testbits(ignore_flags, ISFLAG_KNOW_TYPE)
            && (ident || item_type_known(item));
-}
-
-/**
- * Construct the name of a given deck item.
- *
- * @param[in] deck      The deck item in question.
- * @param[in] desc      The description level to be used.
- * @param[in] ident     Whether the deck should be named as if it were
- *                      identified.
- * @param[out] buff     The buffer to fill with the given item name.
- */
-static void _name_deck(const item_def &deck, description_level_type desc,
-                       bool ident, ostringstream &buff)
-{
-    const bool know_type = ident || item_type_known(deck);
-
-    const bool dbname   = desc == DESC_DBNAME;
-    const bool basename = _use_basename(deck, desc, ident);
-
-    if (basename)
-    {
-        buff << "deck of cards";
-        return;
-    }
-
-    if (bad_deck(deck))
-    {
-        buff << "BUGGY deck of cards";
-        return;
-    }
-
-    if (!dbname)
-        buff << deck_rarity_name(deck.deck_rarity) << ' ';
-
-    if (deck.sub_type == MISC_DECK_UNKNOWN)
-        buff << misc_type_name(MISC_DECK_OF_ESCAPE, false);
-    else
-        buff << misc_type_name(deck.sub_type, know_type);
-
-    // name overriden, not a stacked deck, not a deck that's been drawn from
-    if (dbname || !top_card_is_known(deck) && deck.used_count == 0)
-        return;
-
-    buff << " {";
-    // A marked deck!
-    if (top_card_is_known(deck))
-        buff << card_name(top_card(deck));
-
-    // How many cards have been drawn, or how many are left.
-    if (deck.used_count != 0)
-    {
-        if (top_card_is_known(deck))
-            buff << ", ";
-
-        if (deck.used_count > 0)
-            buff << "drawn: ";
-        else
-            buff << "left: ";
-
-        buff << abs(deck.used_count);
-    }
-
-    buff << "}";
 }
 
 /**
@@ -1933,12 +1904,6 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
     }
     case OBJ_MISCELLANY:
     {
-        if (is_deck(*this) || item_typ == MISC_DECK_UNKNOWN)
-        {
-            _name_deck(*this, desc, ident, buff);
-            break;
-        }
-
         if (!dbname && item_typ == MISC_ZIGGURAT && you.zigs_completed > 0)
             buff << "+" << you.zigs_completed << " ";
 
@@ -2080,7 +2045,7 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
     {
         buff << "bad item (cl:" << static_cast<int>(base_type)
              << ",ty:" << item_typ << ",pl:" << plus
-             << ",pl2:" << used_count << ",sp:" << special
+             << ",pl2:" << plus2 << ",sp:" << special
              << ",qu:" << quantity << ")";
     }
 
@@ -2131,7 +2096,7 @@ bool item_type_known(const item_def& item)
     if (item.base_type == OBJ_MISSILES)
         return true;
 
-    if (item.base_type == OBJ_MISCELLANY && !is_deck(item))
+    if (item.base_type == OBJ_MISCELLANY)
         return true;
 
 #if TAG_MAJOR_VERSION == 34
@@ -2492,8 +2457,6 @@ static void _add_fake_item(object_class_type base, int sub,
         ptmp->freshness = 100;
         ptmp->mon_type = MONS_RAT;
     }
-    else if (is_deck(*ptmp, true)) // stupid fake decks
-        ptmp->deck_rarity = DECK_RARITY_COMMON;
 
     if (force_known_type)
         ptmp->flags |= ISFLAG_KNOW_TYPE;
@@ -3455,7 +3418,8 @@ bool is_useless_item(const item_def &item, bool temp)
             return true;
         case SCR_TELEPORTATION:
             return you.species == SP_FORMICID
-                   || crawl_state.game_is_sprint();
+                   || crawl_state.game_is_sprint()
+                   || player_in_branch(BRANCH_GAUNTLET);
         case SCR_BLINKING:
             return you.species == SP_FORMICID;
         case SCR_AMNESIA:
@@ -3734,7 +3698,7 @@ bool is_useless_item(const item_def &item, bool temp)
             return you.species == SP_OBSIDIAN_DWARF || you.get_mutation_level(MUT_NO_ARTIFICE);
 
         default:
-            return you.get_mutation_level(MUT_NO_ARTIFICE) && !is_deck(item);
+            return you.get_mutation_level(MUT_NO_ARTIFICE);
         }
 
     case OBJ_BOOKS:
@@ -3944,12 +3908,6 @@ void init_item_name_cache()
             {
                 if (plus > 0)
                     item.plus = max(0, plus - 1);
-                if (is_deck(item))
-                {
-                    item.plus = 1;
-                    item.deck_rarity = DECK_RARITY_COMMON;
-                    init_deck(item);
-                }
                 string name = item.name(plus || item.base_type == OBJ_RUNES ? DESC_PLAIN : DESC_DBNAME,
                                         true, true);
                 lowercase(name);

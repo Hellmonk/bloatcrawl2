@@ -405,32 +405,50 @@ bool feat_has_dry_floor(dungeon_feature_type feat)
  */
 bool feat_is_door(dungeon_feature_type feat)
 {
-    return feat == DNGN_CLOSED_DOOR || feat == DNGN_RUNED_DOOR
-           || feat == DNGN_OPEN_DOOR || feat == DNGN_SEALED_DOOR;
+    return feat_is_closed_door(feat) || feat_is_open_door(feat);
 }
 
 /** Is this feature a variety of closed door?
  */
 bool feat_is_closed_door(dungeon_feature_type feat)
 {
-    return feat == DNGN_CLOSED_DOOR || feat == DNGN_RUNED_DOOR
-           || feat == DNGN_SEALED_DOOR;
+    return feat == DNGN_CLOSED_DOOR
+           || feat == DNGN_CLOSED_CLEAR_DOOR
+           || feat_is_runed(feat)
+           || feat == DNGN_SEALED_DOOR
+           || feat == DNGN_SEALED_CLEAR_DOOR;
+}
+
+/** Is this feature a variety of open door?
+ */
+bool feat_is_open_door(dungeon_feature_type feat)
+{
+    return feat == DNGN_OPEN_DOOR || feat == DNGN_OPEN_CLEAR_DOOR;
 }
 
 /** Has this feature been sealed by a vault warden?
  */
 bool feat_is_sealed(dungeon_feature_type feat)
 {
-    return feat == DNGN_SEALED_STAIRS_DOWN || feat == DNGN_SEALED_STAIRS_UP
-           || feat == DNGN_SEALED_DOOR;
+    return feat == DNGN_SEALED_STAIRS_DOWN
+        || feat == DNGN_SEALED_STAIRS_UP
+        || feat == DNGN_SEALED_DOOR
+        || feat == DNGN_SEALED_CLEAR_DOOR;
 }
 
-/** Is this feature runed, as in a runed door?
+/** Is this feature a type of runed door?
+ */
+bool feat_is_runed(dungeon_feature_type feat)
+{
+    return feat == DNGN_RUNED_DOOR || feat == DNGN_RUNED_CLEAR_DOOR;
+}
+
+/** Is the original feature at this position runed, as in a runed door?
  */
 bool cell_is_runed(const coord_def &p)
 {
     // the orig_terrain call will check the actual terrain if there's no change
-    return orig_terrain(p) == DNGN_RUNED_DOOR;
+    return feat_is_runed(orig_terrain(p));
 }
 
 /** Is this feature a type of statue, i.e., granite or an idol?
@@ -467,15 +485,12 @@ bool feat_is_diggable(dungeon_feature_type feat)
 /** Is this feature a type of trap?
  *
  *  @param feat the feature.
- *  @param undiscovered_too whether a trap not yet found counts.
  *  @returns true if it's a trap.
  */
-bool feat_is_trap(dungeon_feature_type feat, bool undiscovered_too)
+bool feat_is_trap(dungeon_feature_type feat)
 {
     if (!is_valid_feature_type(feat))
         return false; // ???
-    if (feat == DNGN_UNDISCOVERED_TRAP)
-        return undiscovered_too;
     return get_feature_def(feat).flags & FFT_TRAP;
 }
 
@@ -1018,7 +1033,7 @@ void dgn_move_entities_at(coord_def src, coord_def dst,
         env.shop.erase(src);
         grd(src) = DNGN_FLOOR;
     }
-    else if (feat_is_trap(dfeat, true))
+    else if (feat_is_trap(dfeat))
     {
         ASSERT(trap_at(src));
         env.trap[dst] = env.trap[src];
@@ -1974,6 +1989,20 @@ void set_terrain_changed(const coord_def p)
             act->check_clinging(false, feat_is_door(grd(p)));
 }
 
+/**
+ * Does this cell count for exploraation piety?
+ *
+ * Don't count: endless map borders, deep water, lava, and cells explicitly
+ * marked. (player_view_update_at in view.cc updates the flags)
+ */
+bool cell_triggers_conduct(const coord_def p)
+{
+    return !(feat_is_endless(grd(p))
+             || grd(p) == DNGN_LAVA
+             || grd(p) == DNGN_DEEP_WATER
+             || env.pgrid(p) & FPROP_SEEN_OR_NOEXP);
+}
+
 bool is_boring_terrain(dungeon_feature_type feat)
 {
     if (!is_notable_terrain(feat))
@@ -2101,8 +2130,12 @@ static bool _revert_terrain_to_floor(coord_def pos)
         }
     }
 
-    if (grd(pos) == DNGN_RUNED_DOOR && newfeat != DNGN_RUNED_DOOR)
-        explored_tracked_feature(DNGN_RUNED_DOOR);
+    if (grd(pos) == DNGN_RUNED_DOOR && newfeat != DNGN_RUNED_DOOR
+        || grd(pos) == DNGN_RUNED_CLEAR_DOOR
+           && newfeat != DNGN_RUNED_CLEAR_DOOR)
+    {
+        explored_tracked_feature(grd(pos));
+    }
 
     grd(pos) = newfeat;
     set_terrain_changed(pos);
@@ -2337,7 +2370,8 @@ bool push_items_from(const coord_def& pos, const vector<coord_def>* excluded)
  *
  * @return the new coordinates for the actor.
  */
-coord_def push_actor_from(const coord_def& pos, const vector<coord_def>* excluded, bool random)
+coord_def push_actor_from(const coord_def& pos,
+                          const vector<coord_def>* excluded, bool random)
 {
     actor* act = actor_at(pos);
     if (!act)
@@ -2349,6 +2383,42 @@ coord_def push_actor_from(const coord_def& pos, const vector<coord_def>* exclude
                                     : targets.front();
     ASSERT(!newpos.origin());
     act->move_to_pos(newpos);
-    // the new position of the monster is now an additional veto spot for monsters
+    // The new position of the monster is now an additional veto spot for
+    // monsters.
     return newpos;
+}
+
+/** Close any door at the given position. Handles the grid change, but does not
+ * mark terrain or do any event handling.
+ *
+ * @param dest The location of the door.
+ */
+void dgn_close_door(const coord_def &dest)
+{
+    if (!feat_is_open_door(grd(dest)))
+        return;
+
+    if (grd(dest) == DNGN_OPEN_CLEAR_DOOR)
+        grd(dest) = DNGN_CLOSED_CLEAR_DOOR;
+    else
+        grd(dest) = DNGN_CLOSED_DOOR;
+}
+
+/** Open any door at the given position. Handles the grid change, but does not
+ * mark terrain or do any event handling.
+ *
+ * @param dest The location of the door.
+ */
+void dgn_open_door(const coord_def &dest)
+{
+    if (!feat_is_closed_door(grd(dest)))
+        return;
+
+    if (grd(dest) == DNGN_CLOSED_CLEAR_DOOR
+        || grd(dest) == DNGN_RUNED_CLEAR_DOOR)
+    {
+        grd(dest) = DNGN_OPEN_CLEAR_DOOR;
+    }
+    else
+        grd(dest) = DNGN_OPEN_DOOR;
 }

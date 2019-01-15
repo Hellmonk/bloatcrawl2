@@ -691,6 +691,8 @@ static void _decrement_durations()
         {
             mprf(MSGCH_RECOVERY, "Your %s has recovered.", stat_desc(s, SD_NAME));
             you.redraw_stats[s] = true;
+            if (you.duration[DUR_SLOW] == 0)
+                mprf(MSGCH_DURATION, "You feel yourself speed up.");
         }
     }
 
@@ -714,7 +716,7 @@ static void _decrement_durations()
     }
 
     if (you.duration[DUR_DISJUNCTION])
-        disjunction();
+        disjunction_spell();
 
     // Should expire before flight.
     if (you.duration[DUR_TORNADO])
@@ -962,8 +964,6 @@ static void _regenerate_hp_and_mp(int delay)
 
 void player_reacts()
 {
-    search_around();
-
     //XXX: does this _need_ to be calculated up here?
     const int stealth = player_stealth();
 
@@ -997,7 +997,7 @@ void player_reacts()
         const int teleportitis_level = player_teleport();
         // this is instantaneous
         if (teleportitis_level > 0 && one_chance_in(100 / teleportitis_level))
-            you_teleport_now(false, true);
+            you_teleport_now(false, true, "You feel strangely unstable.");
         else if (player_in_branch(BRANCH_ABYSS) && one_chance_in(80)
                  && (!map_masked(you.pos(), MMT_VAULT) || one_chance_in(3)))
         {

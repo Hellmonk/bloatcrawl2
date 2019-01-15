@@ -124,7 +124,7 @@ static inline bool _shoals_tide_passable_feat(dungeon_feature_type feat)
            // near the water. Note that the actual probability of the tide
            // getting through a doorway is this probability * 0.5 --
            // see _shoals_apply_tide.
-           || feat == DNGN_OPEN_DOOR
+           || feat_is_open_door(feat)
            || feat_is_closed_door(feat) && one_chance_in(3);
 }
 
@@ -351,8 +351,10 @@ static coord_def _shoals_region_center(
     double cx = 0.0, cy = 0.0;
     vector<coord_def> visit(1, c);
     FixedArray<bool, GXM, GYM> visited(false);
-    for (const auto p : visit)
+    // visit can be modified by push_back during this loop
+    for (size_t i = 0; i < visit.size(); ++i)
     {
+        const coord_def p(visit[i]);
         visited(p) = true;
 
         ++nseen;
@@ -559,12 +561,13 @@ static vector<coord_def> _shoals_windshadows(grid_bool &windy)
             wind_points.emplace_back(x, wi.y > epsilon ? 1 : GYM - 2);
     }
 
-    for (const coord_dbl& coord : wind_points)
+    // wind_points can be modified during this loop via emplace_back
+    for (size_t i = 0; i < wind_points.size(); ++i)
     {
-        const coord_def here(_int_coord(coord));
+        const coord_def here(_int_coord(wind_points[i]));
         windy(here) = true;
 
-        coord_dbl next = coord + wi;
+        coord_dbl next = wind_points[i] + wi;
         while (_int_coord(next) == here)
             next += wi;
 

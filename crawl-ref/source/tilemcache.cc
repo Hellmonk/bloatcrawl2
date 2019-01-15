@@ -780,6 +780,27 @@ bool mcache_monster::get_weapon_offset(tileidx_t mon_tile,
         *ofs_x = -5;
         *ofs_y = 5;
         break;
+    case TILEP_MONS_KILLER_KLOWN:
+        *ofs_x = 0;
+        *ofs_y = 4;
+        break;
+    case TILEP_MONS_KILLER_KLOWN_1:
+        *ofs_x = -4;
+        *ofs_y = -1;
+        break;
+    case TILEP_MONS_KILLER_KLOWN_2:
+        *ofs_x = -2;
+        *ofs_y = 4;
+        break;
+    case TILEP_MONS_KILLER_KLOWN_3:
+        *ofs_x = -2;
+        *ofs_y = -5;
+        break;
+    case TILEP_MONS_KILLER_KLOWN_4:
+        *ofs_x = 20;
+        *ofs_y = -10;
+        break;
+
     default:
         // This monster cannot be displayed with a weapon.
         return false;
@@ -1242,8 +1263,14 @@ bool mcache_monster::valid(const monster_info& mon)
     bool have_shield_offs = (mon.type == MONS_PLAYER
                              && Options.tile_shield_offsets.first != INT_MAX)
         || get_shield_offset(mon_tile, &ox, &oy);
-    return (mon.inv[MSLOT_WEAPON] && have_weapon_offs)
-        || (mon.inv[MSLOT_SHIELD] && have_shield_offs);
+    // Return true if the tile has a weapon offset and has a weapon,
+    // a shield offset and a shield, or is a dual-wielder and has a
+    // shield offset and an off-hand weapon (a valid edge case)
+    return have_weapon_offs && mon.inv[MSLOT_WEAPON]
+           || have_shield_offs
+              && (mon.inv[MSLOT_SHIELD]
+                  || mon.inv[MSLOT_ALT_WEAPON]
+                     && mons_class_wields_two_weapons(mon.type));
 }
 
 /////////////////////////////////////////////////////////////////////////////

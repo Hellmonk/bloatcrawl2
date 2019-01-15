@@ -745,10 +745,7 @@ unsigned int item_value(item_def item, bool ident)
             break;
 
         default:
-            if (is_deck(item))
-                valued += 80 + item.deck_rarity * 60;
-            else
-                valued += 200;
+            valued += 200;
         }
         break;
 
@@ -2350,10 +2347,10 @@ void ShoppingList::display(bool view_only)
             }
 
             del_thing_at_index(index);
-            mtitle->quantity = list->size();
+            mtitle->quantity = this->list->size();
             shopmenu.set_title(mtitle);
 
-            if (list->empty())
+            if (this->list->empty())
             {
                 mpr("Your shopping list is now empty.");
                 return false;

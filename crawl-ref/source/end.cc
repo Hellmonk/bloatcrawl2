@@ -16,7 +16,9 @@
 #include "database.h"
 #include "describe.h"
 #include "dungeon.h"
+#include "files.h"
 #include "god-passive.h"
+#include "ghost.h"
 #include "hints.h"
 #include "invent.h"
 #include "item-prop.h"
@@ -93,17 +95,14 @@ bool fatal_error_notification(string error_msg)
     // don't try. On other builds, though, it's just probably early in the
     // initialisation process, and cio_init should be fairly safe.
 #ifndef USE_TILE_LOCAL
-    if (!ui::is_available() && !crawl_state.build_db)
+    if (!ui::is_available() && !msgwin_errors_to_stderr())
         cio_init(); // this, however, should be fairly safe
 #endif
 
     mprf(MSGCH_ERROR, "%s", error_msg.c_str());
 
-    if (!ui::is_available() || crawl_state.test || crawl_state.script
-        || crawl_state.build_db)
-    {
+    if (!ui::is_available() || msgwin_errors_to_stderr())
         return false;
-    }
 
     // do the linebreak here so webtiles has it, but it's needed below as well
     linebreak_string(error_msg, 79);
@@ -290,8 +289,36 @@ static string _exit_type_to_string(game_exit e)
     return "BUGGY EXIT TYPE";
 }
 
-NORETURN void end_game(scorefile_entry &se, int hiscore_index)
+NORETURN void end_game(scorefile_entry &se)
 {
+    //Update states
+    crawl_state.need_save       = false;
+    crawl_state.updating_scores = true;
+
+    const kill_method_type death_type = (kill_method_type) se.get_death_type();
+
+    const bool non_death = death_type == KILLED_BY_QUITTING
+                        || death_type == KILLED_BY_WINNING
+                        || death_type == KILLED_BY_LEAVING;
+
+    int hiscore_index = -1;
+#ifndef SCORE_WIZARD_CHARACTERS
+    if (!you.wizard && !you.explore)
+#endif
+    {
+        // Add this highscore to the score file.
+        hiscore_index = hiscores_new_entry(se);
+        logfile_new_entry(se);
+    }
+#ifndef SCORE_WIZARD_CHARACTERS
+    else
+        hiscores_read_to_memory();
+#endif
+
+    // Never generate bones files of wizard or tutorial characters -- bwr
+    if (!non_death && !crawl_state.game_is_tutorial() && !you.wizard)
+        save_ghosts(ghost_demon::find_ghosts());
+
     for (auto &item : you.inv)
         if (item.defined() && item_type_unknown(item))
             add_inscription(item, "unknown");
@@ -300,11 +327,8 @@ NORETURN void end_game(scorefile_entry &se, int hiscore_index)
 
     _delete_files();
 
-    kill_method_type death_type = (kill_method_type) se.get_death_type();
-
     // death message
-    if (death_type != KILLED_BY_LEAVING && death_type != KILLED_BY_QUITTING
-        && death_type != KILLED_BY_WINNING)
+    if (!non_death)
     {
         canned_msg(MSG_YOU_DIE);
         xom_death_message(death_type);
@@ -428,7 +452,7 @@ NORETURN void end_game(scorefile_entry &se, int hiscore_index)
 
     string hiscore = hiscores_format_single_long(se, true);
 
-    const int lines = count_occurrences(hiscore, "\n") + 1;
+    const int desc_lines = count_occurrences(hiscore, "\n") + 1;
 
     goodbye_msg += hiscore;
 
@@ -436,8 +460,8 @@ NORETURN void end_game(scorefile_entry &se, int hiscore_index)
             crawl_state.game_type_name().c_str());
 
     // "- 5" gives us an extra line in case the description wraps on a line.
-    goodbye_msg += hiscores_print_list(24 - lines - 5, SCORE_TERSE,
-                        hiscore_index);
+    goodbye_msg += hiscores_print_list(get_number_of_lines() - desc_lines - 5,
+                                       SCORE_TERSE, hiscore_index);
 
 #ifndef DGAMELAUNCH
     goodbye_msg += make_stringf("\nYou can find your morgue file in the '%s' directory.",

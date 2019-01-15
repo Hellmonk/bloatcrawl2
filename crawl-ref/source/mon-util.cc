@@ -433,6 +433,9 @@ int monster::wearing(equipment_type slot, int sub_type, bool calc_unid) const
     int ret = 0;
     const item_def *item = 0;
 
+    if (!alive())
+        return 0;
+
     switch (slot)
     {
     case EQ_WEAPON:
@@ -501,6 +504,9 @@ int monster::wearing_ego(equipment_type slot, int special, bool calc_unid) const
     int ret = 0;
     const item_def *item = 0;
 
+    if (!alive())
+        return 0;
+
     switch (slot)
     {
     case EQ_WEAPON:
@@ -565,6 +571,10 @@ int monster::scan_artefacts(artefact_prop_type ra_prop, bool calc_unid,
                             vector<item_def> *matches) const
 {
     UNUSED(matches); //TODO: implement this when it will be required somewhere
+
+    if (!alive())
+        return 0;
+
     int ret = 0;
 
     // TODO: do we really want to prevent randarts from working for zombies?
@@ -744,6 +754,7 @@ bool mons_is_active_ballisto(const monster& mon)
 bool mons_class_is_firewood(monster_type mc)
 {
     return mons_class_is_stationary(mc)
+           && mc != MONS_TEST_STATUE
            && mons_class_flag(mc, M_NO_THREAT)
            && !mons_is_tentacle_or_tentacle_segment(mc);
 }
@@ -1993,25 +2004,8 @@ mon_attack_def mons_attack_spec(const monster& m, int attk_number,
     if (attk.type == AT_CHERUB)
         attk.type = random_choose(AT_HIT, AT_BITE, AT_PECK, AT_GORE);
 
-    if (!base_flavour)
-    {
-        if (attk.flavour == AF_KLOWN)
-        {
-            attack_flavour flavours[] =
-                {AF_POISON_STRONG, AF_PAIN, AF_DRAIN_SPEED, AF_FIRE,
-                 AF_COLD, AF_ELEC, AF_ANTIMAGIC, AF_ACID};
-
-            attk.flavour = RANDOM_ELEMENT(flavours);
-        }
-
-        if (attk.flavour == AF_DRAIN_STAT)
-        {
-            attack_flavour flavours[] =
-                {AF_DRAIN_STR, AF_DRAIN_INT, AF_DRAIN_DEX};
-
-            attk.flavour = RANDOM_ELEMENT(flavours);
-        }
-    }
+    if (attk.flavour == AF_DRAIN_STAT)
+        attk.flavour = random_choose(AF_DRAIN_STR, AF_DRAIN_INT,AF_DRAIN_DEX);
 
     // Slime creature attacks are multiplied by the number merged.
     if (mon.type == MONS_SLIME_CREATURE && mon.blob_size > 1)
@@ -4185,25 +4179,7 @@ bool mons_can_traverse(const monster& mon, const coord_def& p,
     if (!mon.is_habitable(p))
         return false;
 
-    const trap_def* ptrap = trap_at(p);
-    if (checktraps && ptrap)
-    {
-        const trap_type tt = ptrap->type;
-
-        // Don't allow allies to pass over known (to them) Zot traps.
-        if (tt == TRAP_ZOT
-            && ptrap->is_known(&mon)
-            && mon.friendly())
-        {
-            return false;
-        }
-
-        // Monsters cannot travel over teleport traps.
-        if (!can_place_on_trap(mons_base_type(mon), tt))
-            return false;
-    }
-
-    return true;
+    return !checktraps || mon.is_trap_safe(p);
 }
 
 void mons_remove_from_grid(const monster& mon)

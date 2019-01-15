@@ -4,7 +4,6 @@
 
 #include "ability.h"
 #include "adjust.h"
-#include "decks.h"
 #include "dungeon.h"
 #include "end.h"
 #include "files.h"
@@ -631,6 +630,9 @@ static void _setup_generic(const newgame_def& ng)
 
     // Must be after _give_basic_knowledge
     add_held_books_to_library();
+
+    if (you.char_class == JOB_WANDERER)
+        memorise_wanderer_spell();
 
     initialise_item_descriptions();
 

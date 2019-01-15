@@ -103,13 +103,11 @@ static void _ghost_dprf(const char *format, ...)
     va_list argp;
     va_start(argp, format);
 
+#ifndef DEBUG_DIAGNOSTICS
     const bool wiz_cmd = (crawl_state.prev_cmd == CMD_WIZARD);
     if (wiz_cmd)
-        do_message_print(MSGCH_ERROR, 0, true, false, format, argp);
-#ifdef DEBUG_DIAGNOSTICS
-    else
-        do_message_print(MSGCH_DIAGNOSTICS, 0, false, false, format, argp);
 #endif
+        do_message_print(MSGCH_DIAGNOSTICS, 0, false, false, format, argp);
 
     va_end(argp);
 }
@@ -462,7 +460,7 @@ void validate_basedirs()
 {
     // TODO: could use this to pick a single data directory?
     vector<string> bases(_get_base_dirs());
-    bool found;
+    bool found = false;
 
     // there are a few others, but this should be enough to minimally run something
     const vector<string> data_subfolders =
@@ -517,13 +515,7 @@ void validate_basedirs()
     if (!found)
     {
         string err = "Missing DCSS data directory; tried: \n";
-        for (const string &d : bases)
-            err += d + ", ";
-        if (err.size() > 2)
-        {
-            err.pop_back();
-            err.pop_back();
-        }
+        err += comma_separated_line(bases.begin(), bases.end());
 
         end(1, false, "%s", err.c_str());
     }
@@ -927,12 +919,13 @@ static int _get_dest_stair_type(branch_type old_branch,
                 return it->exit_stairs;
         die("return corresponding to entry %d not found", stair_taken);
     }
-
+#if TAG_MAJOR_VERSION == 34
     if (stair_taken == DNGN_ENTER_LABYRINTH)
     {
         // dgn_find_nearby_stair uses special logic for labyrinths.
         return DNGN_ENTER_LABYRINTH;
     }
+#endif
 
     if (feat_is_portal_entrance(stair_taken))
         return DNGN_STONE_ARCH;
@@ -1299,7 +1292,7 @@ static void _place_player(dungeon_feature_type stair_taken,
     for (distance_iterator di(you.pos(), true, false); di; ++di)
         if (you.is_habitable_feat(grd(*di))
             && !is_feat_dangerous(grd(*di), true)
-            && !feat_is_trap(grd(*di), true))
+            && !feat_is_trap(grd(*di)))
         {
             if (you.pos() != *di)
                 you.moveto(*di);

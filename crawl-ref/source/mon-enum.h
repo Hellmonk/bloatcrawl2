@@ -97,7 +97,9 @@ enum attack_flavour
 #endif
     AF_ROT,
     AF_VAMPIRIC,
+#if TAG_MAJOR_VERSION == 34
     AF_KLOWN,
+#endif
     AF_DISTORT,
     AF_RAGE,
     AF_STICKY_FLAME,
@@ -150,8 +152,8 @@ enum mon_summon_type
     MON_SUMM_WRATH,   // Divine wrath
     MON_SUMM_AID,     // Divine aid
     MON_SUMM_SCROLL,  // Scroll of summoning
-    MON_SUMM_SHADOW,  // Shadow trap
 #if TAG_MAJOR_VERSION == 34
+    MON_SUMM_SHADOW,  // Shadow trap
     MON_SUMM_LANTERN, // Lantern of shadows
 #endif
 };

@@ -41,7 +41,9 @@ bool feat_has_solid_floor(dungeon_feature_type feat);
 bool feat_has_dry_floor(dungeon_feature_type feat);
 bool feat_is_door(dungeon_feature_type feat);
 bool feat_is_closed_door(dungeon_feature_type feat);
+bool feat_is_open_door(dungeon_feature_type feat);
 bool feat_is_sealed(dungeon_feature_type feat);
+bool feat_is_runed(dungeon_feature_type feat);
 bool feat_is_statuelike(dungeon_feature_type feat);
 bool feat_is_permarock(dungeon_feature_type feat);
 bool feat_is_endless(dungeon_feature_type feat);
@@ -53,7 +55,7 @@ bool feat_is_stone_stair_up(dungeon_feature_type feat);
 bool feat_is_stone_stair(dungeon_feature_type feat);
 bool feat_is_staircase(dungeon_feature_type feat);
 bool feat_is_escape_hatch(dungeon_feature_type feat);
-bool feat_is_trap(dungeon_feature_type feat, bool undiscovered_too = false);
+bool feat_is_trap(dungeon_feature_type feat);
 command_type feat_stair_direction(dungeon_feature_type feat);
 bool feat_is_portal(dungeon_feature_type feat);
 bool feat_is_tree(dungeon_feature_type feat);
@@ -140,6 +142,7 @@ void destroy_wall(const coord_def& p);
 void set_terrain_changed(const coord_def c);
 bool cell_is_clingable(const coord_def pos);
 bool cell_can_cling_to(const coord_def& from, const coord_def to);
+bool cell_triggers_conduct(const coord_def pos);
 bool is_boring_terrain(dungeon_feature_type feat);
 
 dungeon_feature_type orig_terrain(coord_def pos);
@@ -157,3 +160,6 @@ bool has_push_spaces(const coord_def& pos, bool push_actor,
                     const vector<coord_def>* excluded);
 bool push_items_from(const coord_def& pos, const vector<coord_def>* excluded);
 coord_def push_actor_from(const coord_def& pos, const vector<coord_def>* excluded, bool random);
+
+void dgn_close_door(const coord_def &dest);
+void dgn_open_door(const coord_def &dest);

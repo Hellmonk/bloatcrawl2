@@ -51,6 +51,27 @@ static feature_def feat_defs[] =
 },
 
 {
+    DNGN_SEALED_CLEAR_DOOR, "sealed translucent door", "sealed_clear_door",
+    DCHAR_DOOR_CLOSED, NUM_DCHAR_TYPES,
+    COLOUR_AND_MAP(WHITE),
+    FFT_SOLID, MF_DOOR,
+},
+
+{
+    DNGN_CLOSED_CLEAR_DOOR, "closed translucent door", "closed_clear_door",
+    DCHAR_DOOR_CLOSED, NUM_DCHAR_TYPES,
+    COLOUR_AND_MAP(CYAN),
+    FFT_SOLID, MF_DOOR,
+},
+
+{
+    DNGN_RUNED_CLEAR_DOOR, "runed translucent door", "runed_clear_door",
+    DCHAR_DOOR_CLOSED, NUM_DCHAR_TYPES,
+    COLOUR_AND_MAP(LIGHTCYAN),
+    FFT_SOLID | FFT_NOTABLE, MF_DOOR,
+},
+
+{
     DNGN_TREE, "tree", "tree",
     DCHAR_TREE, DCHAR_WALL_MAGIC,
     COLOUR_IS(ETC_TREE),
@@ -220,6 +241,13 @@ static feature_def feat_defs[] =
     FFT_NONE, MF_DOOR,
 },
 
+{
+    DNGN_OPEN_CLEAR_DOOR, "open translucent door", "open_clear_door",
+    DCHAR_DOOR_OPEN, NUM_DCHAR_TYPES,
+    COLOUR_IS(CYAN),
+    FFT_NONE, MF_DOOR,
+},
+
 #define TRAP(enum, name, vaultname, colour)\
 {\
     enum, name, vaultname,\
@@ -229,6 +257,7 @@ static feature_def feat_defs[] =
 }
 
 TRAP(DNGN_TRAP_MECHANICAL, "mechanical trap", "trap_mechanical", LIGHTCYAN),
+TRAP(DNGN_TRAP_DISPERSAL, "disperal trap", "trap_dispersal", MAGENTA),
 TRAP(DNGN_TRAP_TELEPORT, "teleport trap", "trap_teleport", LIGHTBLUE),
 #if TAG_MAJOR_VERSION == 34
 TRAP(DNGN_TRAP_SHADOW, "shadow trap", "trap_shadow", BLUE),
@@ -240,12 +269,14 @@ TRAP(DNGN_PASSAGE_OF_GOLUBRIA, "passage of Golubria", "passage of golubria", GRE
 TRAP(DNGN_TRAP_SHAFT, "shaft", "shaft", BROWN),
 TRAP(DNGN_TRAP_WEB, "web", "trap_web", LIGHTGREY),
 
+#if TAG_MAJOR_VERSION == 34
 {
     DNGN_UNDISCOVERED_TRAP, "floor", "undiscovered_trap",
     DCHAR_FLOOR, DCHAR_FLOOR_MAGIC,
     COLOUR_IS(ETC_FLOOR),
     FFT_NONE, MF_FLOOR,
 },
+#endif
 
 {
     DNGN_ENTER_SHOP, "shop", "enter_shop",
@@ -312,7 +343,7 @@ STONE_STAIRS_UP(III, iii),
     COLOUR_AND_MAP(BROWN),
     FFT_NONE, MF_STAIR_UP,
 },
-
+#if TAG_MAJOR_VERSION == 34
 {
     DNGN_EXIT_LABYRINTH, "escape hatch in the ceiling", "exit_labyrinth",
     DCHAR_STAIRS_UP, NUM_DCHAR_TYPES,
@@ -326,6 +357,7 @@ STONE_STAIRS_UP(III, iii),
     ETC_SHIMMER_BLUE, LIGHTGREY, ETC_SHIMMER_BLUE, ETC_SHIMMER_BLUE, ETC_SHIMMER_BLUE,
     (FFT_NOTABLE | FFT_EXAMINE_HINT), MF_PORTAL,
 },
+#endif
 
 #define PORTAL_ENTRANCE(enum, name, vaultname, colour)\
 {\
@@ -373,6 +405,7 @@ PORTAL_ENTRANCE(DNGN_ENTER_TROVE, "portal to a secret trove of treasure", "enter
 PORTAL_ENTRANCE(DNGN_ENTER_SEWER, "glowing drain", "enter_sewer", LIGHTGREEN),
 PORTAL_ENTRANCE(DNGN_ENTER_OSSUARY, "sand-covered staircase", "enter_ossuary", BROWN),
 PORTAL_ENTRANCE(DNGN_ENTER_BAILEY, "flagged portal", "enter_bailey", LIGHTRED),
+PORTAL_ENTRANCE(DNGN_ENTER_GAUNTLET, "gate leading to a gauntlet", "enter_gauntlet", ETC_SHIMMER_BLUE),
 PORTAL_ENTRANCE(DNGN_ENTER_ICE_CAVE, "frozen archway", "enter_ice_cave", WHITE),
 PORTAL_ENTRANCE(DNGN_ENTER_VOLCANO, "dark tunnel", "enter_volcano", RED),
 PORTAL_ENTRANCE(DNGN_ENTER_WIZLAB, "magical portal", "enter_wizlab", ETC_SHIMMER_BLUE),
@@ -386,6 +419,7 @@ PORTAL_EXIT(DNGN_EXIT_TROVE, "gate leading back out of this place", "exit_trove"
 PORTAL_EXIT(DNGN_EXIT_SEWER, "gate leading back out of this place", "exit_sewer", BROWN),
 PORTAL_EXIT(DNGN_EXIT_OSSUARY, "gate leading back out of this place", "exit_ossuary", BROWN),
 PORTAL_EXIT(DNGN_EXIT_BAILEY, "gate leading back out of this place", "exit_bailey", ETC_SHIMMER_BLUE),
+PORTAL_EXIT(DNGN_EXIT_GAUNTLET, "gate leading back out of this place", "exit_gauntlet", ETC_SHIMMER_BLUE),
 PORTAL_EXIT(DNGN_EXIT_ICE_CAVE, "ice covered gate leading back out of this place", "exit_ice_cave", WHITE),
 PORTAL_EXIT(DNGN_EXIT_VOLCANO, "rocky tunnel leading out of this place", "exit_volcano", RED),
 PORTAL_EXIT(DNGN_EXIT_WIZLAB, "portal leading out of this place", "exit_wizlab", ETC_SHIMMER_BLUE),

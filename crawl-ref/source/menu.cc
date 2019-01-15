@@ -344,6 +344,7 @@ void UIMenu::do_layout(int mw, int num_columns)
             row_height = max(row_height, item_height);
         }
     }
+    row_height += row_height == 0 ? 0 : 2*item_pad;
     height += row_height;
     row_heights.push_back(height);
     column_width += 2*item_pad;
@@ -1186,7 +1187,7 @@ bool Menu::process_key(int keyin)
     CASE_ESCAPE
         sel.clear();
         lastch = keyin;
-        return false;
+        return is_set(MF_UNCANCEL) && !crawl_state.seen_hups;
     case ' ': case CK_PGDN: case '>':
     case CK_MOUSE_B1:
     case CK_MOUSE_CLICK:

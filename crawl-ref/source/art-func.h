@@ -32,12 +32,14 @@
 #include "mgen-data.h"     // For Sceptre of Asmodeus evoke
 #include "mon-death.h"     // For demon axe's SAME_ATTITUDE
 #include "mon-place.h"     // For Sceptre of Asmodeus evoke
+#include "nearby-danger.h" // For Zhor
 #include "player.h"
 #include "player-stats.h"
 #include "spl-cast.h"      // For evokes
 #include "spl-damage.h"    // For the Singing Sword.
 #include "spl-goditem.h"   // For Sceptre of Torment tormenting
 #include "spl-miscast.h"   // For Staff of Wucad Mu and Scythe of Curses miscasts
+#include "spl-monench.h"   // For Zhor's aura
 #include "spl-summoning.h" // For Zonguldrok animating dead
 #include "terrain.h"       // For storm bow
 #include "view.h"          // For arc blade's discharge effect
@@ -197,7 +199,7 @@ static bool _DISPATER_evoke(item_def *item, bool* did_work, bool* unevokable)
     *did_work = true;
     int power = you.skill(SK_EVOCATIONS, 8);
 
-    if (your_spells(SPELL_HURL_DAMNATION, power, false) == SPRET_ABORT)
+    if (your_spells(SPELL_HURL_DAMNATION, power, false) == spret::abort)
     {
         *unevokable = true;
         return false;
@@ -210,6 +212,28 @@ static bool _DISPATER_evoke(item_def *item, bool* did_work, bool* unevokable)
     practise_evoking(random_range(1, 2));
 
     return false;
+}
+
+////////////////////////////////////////////////////
+
+static void _FINISHER_melee_effects(item_def* weapon, actor* attacker,
+                                  actor* defender, bool mondied, int dam)
+{
+    // Can't kill a monster that's already dead.
+    // Can't kill a monster if we don't do damage.
+    // Don't insta-kill the player
+    if (mondied || dam == 0 || defender->is_player())
+        return;
+
+    // Chance to insta-kill based on HD. From 1/4 for small HD popcorn down to
+    // 1/10 for an Orb of Fire (compare to the 3/20 chance for banish or
+    // instant teleport on distortion).
+    if (x_chance_in_y(50 - defender->get_hit_dice(), 200))
+    {
+        monster* mons = defender->as_monster();
+        mons->flags |= MF_EXPLODE_KILL;
+        mons->hurt(attacker, INSTANT_DEATH);
+    }
 }
 
 ////////////////////////////////////////////////////
@@ -249,7 +273,7 @@ static bool _OLGREB_evoke(item_def *item, bool* did_work, bool* unevokable)
     int power = div_rand_round(20 + you.skill(SK_EVOCATIONS, 20), 4);
 
     // Allow aborting (for example if friendlies are nearby).
-    if (your_spells(SPELL_OLGREBS_TOXIC_RADIANCE, power, false) == SPRET_ABORT)
+    if (your_spells(SPELL_OLGREBS_TOXIC_RADIANCE, power, false) == spret::abort)
     {
         *unevokable = true;
         return false;
@@ -399,7 +423,7 @@ static void _TORMENT_equip(item_def *item, bool *show_msgs, bool unmeld)
 static void _TORMENT_melee_effects(item_def* weapon, actor* attacker,
                                    actor* defender, bool mondied, int dam)
 {
-    if (coinflip())
+    if (one_chance_in(5))
         torment(attacker, TORMENT_SCEPTRE, attacker->pos());
 }
 
@@ -535,18 +559,6 @@ static void _ZONGULDROK_melee_effects(item_def* weapon, actor* attacker,
 
 ///////////////////////////////////////////////////
 
-static void _STORM_BOW_world_reacts(item_def *item)
-{
-    if (!one_chance_in(300))
-        return;
-
-    for (radius_iterator ri(you.pos(), 2, C_SQUARE, LOS_SOLID); ri; ++ri)
-        if (!cell_is_solid(*ri) && !cloud_at(*ri) && one_chance_in(5))
-            place_cloud(CLOUD_RAIN, *ri, random2(20), &you, 3);
-}
-
-///////////////////////////////////////////////////
-
 static void _GONG_melee_effects(item_def* item, actor* wearer,
                                 actor* attacker, bool dummy, int dam)
 {
@@ -559,26 +571,6 @@ static void _GONG_melee_effects(item_def* item, actor* wearer,
     mprf(MSGCH_SOUND, "%s", msg.c_str());
 
     noisy(40, wearer->pos());
-}
-
-///////////////////////////////////////////////////
-
-static void _RCLOUDS_world_reacts(item_def *item)
-{
-    cloud_type cloud;
-    if (one_chance_in(4))
-        cloud = CLOUD_RAIN;
-    else
-        cloud = CLOUD_MIST;
-
-    for (radius_iterator ri(you.pos(), 2, C_SQUARE, LOS_SOLID); ri; ++ri)
-        if (!cell_is_solid(*ri) && !cloud_at(*ri) && one_chance_in(20))
-            place_cloud(cloud, *ri, random2(10), &you, 1);
-}
-
-static void _RCLOUDS_equip(item_def *item, bool *show_msgs, bool unmeld)
-{
-    _equip_mpr(show_msgs, "A thin mist springs up around you!");
 }
 
 ///////////////////////////////////////////////////
@@ -1020,22 +1012,16 @@ static void _ARC_BLADE_melee_effects(item_def* weapon, actor* attacker,
                                      actor* defender, bool mondied,
                                      int dam)
 {
-    if (!mondied && one_chance_in(3))
+    if (one_chance_in(3))
     {
-        const int pow = 75 + random2avg(75, 2);
-        const int num_targs = 1 + random2(random_range(1, 3) + pow / 20);
-        int dam_dealt = 0;
-        for (int i = 0; defender->alive() && i < num_targs; i++)
-            dam_dealt += discharge_monsters(defender->pos(), pow, attacker);
-        if (dam_dealt > 0)
-            scaled_delay(100);
+        const int pow = 100 + random2avg(100, 2);
+
+        if (you.can_see(*attacker))
+            mpr("The arc blade crackles.");
         else
-        {
-            if (you.can_see(*attacker))
-                mpr("The arc blade crackles.");
-            else
-                mpr("You hear the crackle of electricity.");
-        }
+            mpr("You hear the crackle of electricity.");
+
+        cast_discharge(pow, *attacker, false, false);
     }
 }
 
@@ -1411,5 +1397,16 @@ static void _THERMIC_ENGINE_world_reacts(item_def *item)
             item->plus = 2;
 
         you.wield_change = true;
+    }
+}
+
+///////////////////////////////////////////////////
+
+static void _ZHOR_world_reacts(item_def *item)
+{
+    if (there_are_monsters_nearby(true, false, false)
+        && one_chance_in(7 * div_rand_round(BASELINE_DELAY, you.time_taken)))
+    {
+        cast_englaciation(30, false);
     }
 }

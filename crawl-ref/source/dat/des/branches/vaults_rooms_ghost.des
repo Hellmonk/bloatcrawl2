@@ -13,7 +13,7 @@
 # common.
 ################################################################################
 
-: require("dlua/ghost.lua")
+: crawl_require("dlua/ghost.lua")
 
 NAME:   advil_vaults_ghost_guards
 KITEM:  12 = superb_item / star_item
@@ -178,11 +178,7 @@ KITEM:  O = hat cursed ident:all / cloak cursed ident:all / \
         dagger cursed ident:all / hand axe cursed ident:all / \
         scythe cursed ident:all / club cursed ident:all / \
         hunting sling cursed ident:all
-: if you.unrands("robe_of_misfortune") then
 KITEM:  P = robe cursed plus:-8 randart ident:all
-: else
-KITEM:  P = robe_of_misfortune ident:all
-: end
 # An "Oka weapon gift" using the more useful types on 'd'
 ITEM:   quick blade good_item w:5 / rapier good_item / scimitar good_item / \
         double sword good_item w:5 / demon blade good_item w:5 / \
@@ -342,8 +338,8 @@ ITEM:   any armour good_item, any weapon good_item, any jewellery good_item
 KMONS:  O = player ghost
 MONS:   orc, orc warrior, orc knight, orc high priest, stone giant, orc warlord
 : setup_armoury_orcs(_G)
-NSUBST: - = 2=1 / 2=1. / 2=2 / 2=2. / 3=3 / 3=3. / 4 / 2=4. / 5 / 2=5. \
-            / F / 2=6F..
+NSUBST: - = 2=1 / 2=1. / 2=2 / 2=2. / 3=3 / 3=3. / 4 / 2=4. / F / 5 / 2=5. \
+            / 2=6F..
 KFEAT:  _ = altar_beogh
 : vaults_ghost_setup(_G)
 MAP
@@ -358,7 +354,7 @@ I...........I
 .............
 ENDMAP
 
-NAME:   ploomutoo_gammafunk_vaults_potion_laboratory
+NAME:   ploomutoo_gammafunk_vaults_ghost_potion_laboratory
 TAGS:   vaults_orient_s
 WEIGHT: 5
 ITEM:   potion of mutation ident:type q:1
@@ -396,4 +392,64 @@ x-x-x-x
 nn===nn
 .......
 .......
+ENDMAP
+
+NAME:   gammafunk_vaults_ghost_tricky_traps
+TAGS:   vaults_orient_s
+KFEAT:  ^ = zot trap / dispersal trap w:5 / alarm trap w:1 / floor w:16
+KFEAT:  ' = zot trap / dispersal trap w:5 / alarm trap w:1 / floor w:8
+: kitem("O = " .. dgn.randart_aux_armour)
+: ghost_good_loot(_G)
+KMONS:  O = player ghost
+MONS:   boggart, rakshasa
+SUBST:  f = |*, g = *, h = %$
+NSUBST: - = 1 / 2=1. / 5=0 / 6=0. / 2 / .
+SUBST:  G : GGtU
+: vaults_ghost_setup(_G)
+MAP
+G-'fdOeg'-G
+-n-n-h-n-n-
+'-'-'-'-'-'
+-'-n-n-n-'-
+G-'-'-'-'-G
+xxnn===nnxx
+^.^.....^.^
+.^.^.^.^.^.
+^.^.^.^.^.^
+.^.^.^.^.^.
+ENDMAP
+
+NAME:    gammafunk_vaults_ghost_crypt
+TAGS:    vaults_orient_s
+: item(dgn.loot_scrolls .. " / " .. dgn.loot_potions)
+# Always place one randart aux, one randart jewel, and one nice book, each
+# using the possible ghost locations.
+: kitem("D = " .. dgn.randart_aux_armour)
+KITEM:   EHK = any jewellery randart
+KITEM:   FJL = randbook owner:Kikubaaqudgha disc:necromancy numspells:6 \
+               / necronomicon / manual of necromancy
+KITEM:   12 = superb_item / star_item
+KMONS:   DEF = player ghost
+KMONS:   HJ1 =  lich
+KMONS:   KL2 =  ancient lich
+# 1/7 chance for 3 ghosts, 2/7 chance for 2 ghosts, 4/7 chance for 1 ghost.
+# Any ghost that doesn't place will place a depth-appropriate lich instead.
+SHUFFLE: EF / EJ / EJ / HJ / HJ / HJ / HJ
+# For later branches, guarantee at least one ancient lich and upgrade ordinary
+# liches to ancient liches.
+SUBST:   H = HHK, J = JJL
+NSUBST:  1 = 2 / 112
+# 1.5 loot items per ghost/lich total. Mix in good loot scrolls and potions.
+SUBST:   d = dd|*----, V = VY
+KFEAT:   _ = altar_kikubaaqudgha
+FTILE:   -d|*%$ODEFHJKL12VY_ = floor_pebble_brown / floor_pebble_darkgray
+: vaults_ghost_setup(_G)
+MAP
+ xxxDxxx
+xxExdxFxx
+1ddV_Vdd1
+x-------x
+xnn===nnx
+.........
+.........
 ENDMAP

@@ -11,7 +11,7 @@
 # vaults.des.
 ###############################################################################
 
-: require('dlua/vault.lua')
+: crawl_require('dlua/vault.lua')
 
 default-depth: D:12-, !D:$, Depths, !Depths:$
 
@@ -486,14 +486,12 @@ MAP
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
-#############################################################################
-# Matthew Ludivico
-#
 NAME:   mludivico_vault
 ORIENT: southwest
 DEPTH:  D:12-, !D:$
 MONS:   hell hound, necromancer, wizard, orange demon, rust devil
 MONS:   hell knight, great orb of eyes
+KFEAT:  = = runed_clear_door
 MAP
 xx.@.xxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxx...xxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -1726,4 +1724,20 @@ x.x.x..x.x9...x.xx
 xx.xx..x.x.xx..x9x
 @.x.x99x9x9....x9x
 xxxxxxxxxxxxxxxxxx
+ENDMAP
+
+NAME:   minmay_thinvault
+TAGS:   transparent
+ORIENT: south
+DEPTH:  D:2-,Depths
+# low weight to compensate for huge placement range on a large vault
+WEIGHT: 3
+SUBST:  0 = 0.
+MAP
+x.........xxxxxxxx..........xx..x.........xx....x.....x........................x
+xxxx.xxxx........x0xxxx.xx..xx.......xx..xx..xx.x...x.x..x...xx.....xxxxxx+xxxxx
+x.%x.x%.x.x.x%x0.x....x.xx.....xx...xx..xx..xx..x.x.x....x.x.....xx.x000x...x%%x
+x0xx.xx0x.x.0x%x.xxxx0x....x...xx..xx..xx..xx.....x.x..x...x..xx....+...+.000%%x
+x..0.0..x.x...........xxx.0.0x.0..xx0...0.xx0.....x0..0x.0..0...0.0.x000x000x%%x
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP

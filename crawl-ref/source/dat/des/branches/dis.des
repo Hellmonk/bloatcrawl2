@@ -4,11 +4,11 @@
 #          (order: Dis, Geh, Coc, Tar)
 ##############################################################################
 
-: require('dlua/vault.lua')
+: crawl_require('dlua/vault.lua')
 
 {{
 function dis_setup(e)
-   e.place("Dis:7")
+   e.place("Dis:$")
    e.tags("dis", "no_rotate")
    e.kitem("$ = $ no_pickup")
 -- turn granite statues into iron statues

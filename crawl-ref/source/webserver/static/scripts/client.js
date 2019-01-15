@@ -28,6 +28,9 @@ function (exports, $, key_conversion, chat, comm) {
 
     var game_version = null;
     var loaded_modules = null;
+    var text_decoder = null;
+    if ("TextDecoder" in window)
+        text_decoder = new TextDecoder('utf-8');
 
     window.log = function (text)
     {
@@ -127,9 +130,12 @@ function (exports, $, key_conversion, chat, comm) {
 
     function delay(ms)
     {
-        clearTimeout(delay_timeout);
-        inhibit_messages();
-        delay_timeout = setTimeout(delay_ended, ms);
+        if (!("hidden" in document) || !document["hidden"])
+        {
+            clearTimeout(delay_timeout);
+            inhibit_messages();
+            delay_timeout = setTimeout(delay_ended, ms);
+        }
     }
 
     function delay_ended()
@@ -825,7 +831,7 @@ function (exports, $, key_conversion, chat, comm) {
         exit_message = null;
         exit_dump = null;
 
-        if( $("#reset_pw").length )
+        if ( $("#reset_pw").length )
         {
             show_dialog("#reset_pw");
         }
@@ -1166,12 +1172,21 @@ function (exports, $, key_conversion, chat, comm) {
 
     function decode_utf8(bufs, callback)
     {
-        var b = new Blob(bufs);
-        var f = new FileReader();
-        f.onload = function(e) {
-            callback(e.target.result)
+        if (text_decoder)
+            callback(text_decoder.decode(bufs));
+        else
+        {
+            // this approach is only a fallback for older browsers because the
+            // order of the callback isn't guaranteed, so messages can get
+            // queued out of order. TODO: maybe just fall back on uncompressed
+            // sockets instead?
+            var b = new Blob([bufs]);
+            var f = new FileReader();
+            f.onload = function(e) {
+                callback(e.target.result)
+            }
+            f.readAsText(b, "UTF-8");
         }
-        f.readAsText(b, "UTF-8");
     }
 
     var blob_construction_supported = true;
@@ -1286,7 +1301,7 @@ function (exports, $, key_conversion, chat, comm) {
 
         $("#forgot_2 input").bind("click", hide_dialog);
 
-        if( $("#reset_pw").length )
+        if ( $("#reset_pw").length )
         {
             $("#reset_pw_cancel").bind("click", cancel_reset_password);
             $("#reset_pw_form").bind("submit", reset_password);
@@ -1342,8 +1357,8 @@ function (exports, $, key_conversion, chat, comm) {
                     var data = new Uint8Array(msg.data.byteLength + 4);
                     data.set(new Uint8Array(msg.data), 0);
                     data.set([0, 0, 255, 255], msg.data.byteLength);
-                    var decompressed = [inflater.append(data)];
-                    if (decompressed[0] === -1)
+                    var decompressed = inflater.append(data);
+                    if (decompressed === -1)
                     {
                         console.error("Decompression error!");
                         var x = inflater.append(data);
@@ -1352,8 +1367,10 @@ function (exports, $, key_conversion, chat, comm) {
                         if (window.log_messages === 2)
                             console.log("Message: " + s);
                         if (window.log_message_size)
-                            console.log("Message size: " + s.length);
-
+                        {
+                            console.log("Message size: " + s.length
+                                + " (compressed " + msg.data.byteLength + ")");
+                        }
                         enqueue_messages(s);
                     });
                     return;

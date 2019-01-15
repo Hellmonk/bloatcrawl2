@@ -395,7 +395,7 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
             const int splpow = mons_spellpower(caster, slot.spell);
             if ((!in_bounds(pbolt.target)
                  || conjure_flame(&caster, splpow, pbolt.target, false)
-                    != SPRET_SUCCESS)
+                    != spret::success)
                 && you.can_see(caster))
             {
                 canned_msg(MSG_NOTHING_HAPPENS);
@@ -809,7 +809,7 @@ static void _cast_grasping_roots(monster &caster, mon_spell_slot, bolt&)
 static bool _los_spell_worthwhile(const monster &mons, spell_type spell)
 {
     return trace_los_attack_spell(spell, mons_spellpower(mons, spell), &mons)
-           == SPRET_SUCCESS;
+           == spret::success;
 }
 
 /// Set up a fake beam, for noise-generating purposes (?)
@@ -1329,6 +1329,7 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
     case SPELL_TELEPORT_OTHER:
     case SPELL_SANDBLAST:
     case SPELL_HARPOON_SHOT:
+    case SPELL_THROW_PIE:
         zappy(spell_to_zap(real_spell), power, true, beam);
         break;
 
@@ -2269,7 +2270,7 @@ static void _set_door(set<coord_def> door, dungeon_feature_type feat)
 }
 
 static int _tension_door_closed(set<coord_def> door,
-                                                dungeon_feature_type old_feat)
+                                dungeon_feature_type old_feat)
 {
     // this unwind is a bit heavy, but because out-of-los clouds dissipate
     // instantly, they can be wiped out by these door tests.
@@ -2292,7 +2293,7 @@ static int _tension_door_closed(set<coord_def> door,
  */
 static bool _can_force_door_shut(const coord_def& door)
 {
-    if (grd(door) != DNGN_OPEN_DOOR)
+    if (!feat_is_open_door(grd(door)))
         return false;
 
     set<coord_def> all_door;
@@ -2385,7 +2386,7 @@ static vector<coord_def> _get_push_spaces_max_tension(const coord_def& pos,
  */
 static bool _should_force_door_shut(const coord_def& door)
 {
-    if (grd(door) != DNGN_OPEN_DOOR)
+    if (!feat_is_open_door(grd(door)))
         return false;
 
     dungeon_feature_type old_feat = grd(door);
@@ -2445,7 +2446,7 @@ static bool _seal_doors_and_stairs(const monster* warden,
     for (radius_iterator ri(you.pos(), LOS_RADIUS, C_SQUARE);
                  ri; ++ri)
     {
-        if (grd(*ri) == DNGN_OPEN_DOOR)
+        if (feat_is_open_door(grd(*ri)))
         {
             if (!_can_force_door_shut(*ri))
                 continue;
@@ -2525,16 +2526,19 @@ static bool _seal_doors_and_stairs(const monster* warden,
         }
 
         // Try to seal the door
-        if (grd(*ri) == DNGN_CLOSED_DOOR || grd(*ri) == DNGN_RUNED_DOOR)
+        if (feat_is_closed_door(grd(*ri)) && !feat_is_sealed(grd(*ri)))
         {
             if (check_only)
                 return true;
 
             set<coord_def> all_door;
             find_connected_identical(*ri, all_door);
+            const dungeon_feature_type sealed_feat =
+                opc_default(*ri) == OPC_CLEAR ? DNGN_SEALED_CLEAR_DOOR
+                                              : DNGN_SEALED_DOOR;
             for (const auto &dc : all_door)
             {
-                temp_change_terrain(dc, DNGN_SEALED_DOOR, seal_duration,
+                temp_change_terrain(dc, sealed_feat, seal_duration,
                                     TERRAIN_CHANGE_DOOR_SEAL, warden);
                 had_effect = true;
             }
@@ -5611,10 +5615,7 @@ static void _mons_upheaval(monster& mons, actor& foe)
                      || grd(pos) == DNGN_CLEAR_ROCK_WALL
                      || grd(pos) == DNGN_SLIMY_WALL)
                      && x_chance_in_y(1, 4)
-                     || grd(pos) == DNGN_CLOSED_DOOR
-                     || grd(pos) == DNGN_RUNED_DOOR
-                     || grd(pos) == DNGN_OPEN_DOOR
-                     || grd(pos) == DNGN_SEALED_DOOR
+                     || feat_is_door(grd(pos))
                      || grd(pos) == DNGN_GRATE))
                 {
                     noisy(30, pos);
@@ -6321,6 +6322,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         static const set<dungeon_feature_type> safe_tiles =
         {
             DNGN_SHALLOW_WATER, DNGN_FLOOR, DNGN_OPEN_DOOR,
+            DNGN_OPEN_CLEAR_DOOR
         };
 
         for (adjacent_iterator ai(mons->pos()); ai; ++ai)
@@ -6603,40 +6605,8 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         return;
 
     case SPELL_DISCHARGE:
-    {
-        const int power = min(200, splpow);
-        const int num_targs = 1 + random2(random_range(1, 3) + power / 20);
-        const int dam =
-            apply_random_around_square([power, mons] (coord_def where) {
-                return discharge_monsters(where, power, mons);
-            }, mons->pos(), true, num_targs);
-
-        if (dam > 0)
-            scaled_delay(100);
-        else
-        {
-            if (!you.can_see(*mons))
-                mpr("You hear crackling.");
-            else if (coinflip())
-            {
-                mprf("The air around %s crackles with electrical energy.",
-                     mons->name(DESC_THE).c_str());
-            }
-            else
-            {
-                const bool plural = coinflip();
-                mprf("%s blue arc%s ground%s harmlessly %s %s.",
-                     plural ? "Some" : "A",
-                     plural ? "s" : "",
-                     plural ? " themselves" : "s itself",
-                     plural ? "around" : random_choose_weighted(2, "beside",
-                                                                1, "behind",
-                                                                1, "before"),
-                     mons->name(DESC_THE).c_str());
-            }
-        }
+        cast_discharge(min(200, splpow), *mons);
         return;
-    }
 
     case SPELL_PORTAL_PROJECTILE:
     {
@@ -8012,7 +7982,7 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
         if (friendly && !_animate_dead_okay(monspell))
             return true;
 
-        if (mon->is_summoned())
+        if (mon->is_summoned() || mons_enslaved_soul(*mon))
             return true;
 
         return !twisted_resurrection(mon, 500, SAME_ATTITUDE(mon), mon->foe,
@@ -8074,9 +8044,9 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
 
     case SPELL_OLGREBS_TOXIC_RADIANCE:
         return mon->has_ench(ENCH_TOXIC_RADIANCE)
-               || cast_toxic_radiance(mon, 100, false, true) != SPRET_SUCCESS;
+               || cast_toxic_radiance(mon, 100, false, true) != spret::success;
     case SPELL_IGNITE_POISON:
-        return cast_ignite_poison(mon, 0, false, true) != SPRET_SUCCESS;
+        return cast_ignite_poison(mon, 0, false, true) != spret::success;
 
     case SPELL_GLACIATE:
         return !foe

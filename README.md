@@ -74,7 +74,7 @@ This is a fork of [Dungeon Crawl Stone Stoup](https://github.com/crawl/crawl), a
 
 **Alchemist** Alchemists carry a variety of helpful potions and a dagger but are inexperienced with combat.
 
-**Entomologist** Entomologists study insects and related creatures. They bring along a net and a sack of spiders, and can also summon butterflies. 
+**Entomologist** Entomologists study insects and related creatures. They bring along a net and a sack of spiders, and can also summon butterflies.
 
 **Farmer** Farmers carry a sharp, trusty scythe and have great attributes, but little else.
 

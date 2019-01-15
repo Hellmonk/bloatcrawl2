@@ -63,6 +63,7 @@
 #include "shout.h"
 #include "skills.h"
 #include "spl-damage.h"
+#include "spl-selfench.h"
 #include "spl-transloc.h"
 #include "spl-util.h"
 #include "sprint.h"
@@ -74,7 +75,7 @@
 #include "stringutil.h"
 #include "terrain.h"
 #ifdef USE_TILE
- #include "tiledef-feat.h"
+ #include "tilepick.h"
  #include "tileview.h"
 #endif
 #include "transform.h"
@@ -170,7 +171,7 @@ bool check_moveto_trap(const coord_def& p, const string &move_verb,
 {
     // If there's no trap, let's go.
     trap_def* trap = trap_at(p);
-    if (!trap || env.grid(p) == DNGN_UNDISCOVERED_TRAP)
+    if (!trap)
         return true;
 
     if (trap->type == TRAP_ZOT && !trap->is_safe() && !crawl_state.disables[DIS_CONFIRMATIONS])
@@ -355,7 +356,6 @@ bool swap_check(monster* mons, coord_def &loc, bool quiet)
 
     // prompt when swapping into known zot traps
     if (!quiet && trap_at(loc) && trap_at(loc)->type == TRAP_ZOT
-        && env.grid(loc) != DNGN_UNDISCOVERED_TRAP
         && !yes_or_no("Do you really want to swap %s into the Zot trap?",
                       mons->name(DESC_YOUR).c_str()))
     {
@@ -458,7 +458,7 @@ void moveto_location_effects(dungeon_feature_type old_feat,
         else if (you.props.exists(TEMP_WATERWALK_KEY))
             you.props.erase(TEMP_WATERWALK_KEY);
     }
-	
+
     if(you.species == SP_BODACH && you.attribute[ATTR_BODACH_ASPECT] == 3)
     {
         noisy(3 + you.experience_level / 5, you.pos());
@@ -692,7 +692,7 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
 
     case EQ_WEAPON:
     case EQ_STAFF:
-        return you.species == SP_FELID || you.species == SP_GOLEM 
+        return you.species == SP_FELID || you.species == SP_GOLEM
                || you.species == SP_FELID_MUMMY ? MB_FALSE :
                you.body_size(PSIZE_TORSO, !temp) < SIZE_MEDIUM ? MB_MAYBE :
                                          MB_TRUE;
@@ -1020,8 +1020,7 @@ bool player_equip_unrand(int unrand_index)
 
 bool player_can_hear(const coord_def& p, int hear_distance)
 {
-    return in_bounds(you.pos())
-           && !silenced(p)
+    return !silenced(p)
            && !silenced(you.pos())
            && you.pos().distance_from(p) <= hear_distance;
 }
@@ -1030,8 +1029,8 @@ int player_teleport(bool calc_unid)
 {
     ASSERT(!crawl_state.game_is_arena());
 
-    // Don't allow any form of teleportation in Sprint.
-    if (crawl_state.game_is_sprint())
+    // Don't allow any form of teleportation in Sprint or Gauntlets.
+    if (crawl_state.game_is_sprint() || player_in_branch(BRANCH_GAUNTLET))
         return 0;
 
     // Short-circuit rings of teleport to prevent spam.
@@ -1166,7 +1165,7 @@ int player_mp_regen()
 
     if (you.props[MANA_REGEN_AMULET_ACTIVE].get_int() == 1)
         regen_amount += 25;
-	
+
     if (you.species == SP_EMBER_ELF)
         regen_amount *= 3;
 
@@ -1374,7 +1373,7 @@ int player_res_fire(bool calc_unid, bool temp, bool items)
     // species:
     if (you.species == SP_MUMMY || you.species == SP_FELID_MUMMY)
         rf--;
-	
+
     if (calc_unid && you.species == SP_BODACH && you.attribute[ATTR_BODACH_ASPECT] == 1
         && coinflip())
         rf++;
@@ -1458,10 +1457,10 @@ int player_res_cold(bool calc_unid, bool temp, bool items)
                 rc++;
         }
     }
-	
+
     if (calc_unid && you.species == SP_BODACH && you.attribute[ATTR_BODACH_ASPECT] == 1
         && coinflip())
-        rc++;    
+        rc++;
 
     if (items)
     {
@@ -1530,13 +1529,13 @@ bool player::res_corr(bool calc_unid, bool items) const
     {
         return true;
     }
-	
+
     if (form_keeps_mutations()
         && get_mutation_level(MUT_CORROSION_RESISTANCE) > 0)
     {
         return true;
     }
-	
+
     if (calc_unid && you.species == SP_BODACH && you.attribute[ATTR_BODACH_ASPECT] == 1
         && coinflip())
         return true;
@@ -1570,7 +1569,7 @@ int player_res_electricity(bool calc_unid, bool temp, bool items)
         if (calc_unid && player_equip_unrand(UNRAND_DRAGONSKIN) && coinflip())
             re++;
     }
-	
+
     if (calc_unid && you.species == SP_BODACH && you.attribute[ATTR_BODACH_ASPECT] == 1
         && coinflip())
         re++;
@@ -1697,7 +1696,7 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
     if (calc_unid && you.species == SP_BODACH && you.attribute[ATTR_BODACH_ASPECT] == 1
         && coinflip())
         rp++;
-	
+
     if (temp)
     {
         // potions/cards:
@@ -1740,7 +1739,7 @@ int player_res_sticky_flame(bool calc_unid, bool temp, bool items)
 
     if (get_form()->res_sticky_flame())
         rsf++;
-	
+
     if (you.species == SP_BODACH && you.attribute[ATTR_BODACH_ASPECT] == 2)
         rsf++;
 
@@ -1852,7 +1851,7 @@ int player_spec_poison()
     int sp = 0;
 
     sp += you.get_mutation_level(MUT_POISON_ENHANCER);
-	
+
     // Staves
     sp += you.wearing(EQ_STAFF, STAFF_POISON);
 
@@ -1945,7 +1944,7 @@ int player_prot_life(bool calc_unid, bool temp, bool items)
 
         pl += you.wearing(EQ_STAFF, STAFF_DEATH, calc_unid);
     }
-	
+
     if (calc_unid && you.species == SP_BODACH && you.attribute[ATTR_BODACH_ASPECT] == 1
         && coinflip())
         pl++;
@@ -2018,7 +2017,7 @@ int player_movement_speed()
         mv *= 10 + slow * 2;
         mv /= 10;
     }
-	
+
     if (you.species == SP_BODACH && you.attribute[ATTR_BODACH_ASPECT] == 4)
     {
         mv *= 12;
@@ -2037,7 +2036,7 @@ int player_movement_speed()
 
     if (you.species == SP_HEDGEHOG)
         mv = FASTEST_PLAYER_MOVE_SPEED;
-	
+
     // We'll use the old value of six as a minimum, with haste this could
     // end up as a speed of three, which is about as fast as we want
     // the player to be able to go (since 3 is 3.33x as fast and 2 is 5x,
@@ -2091,7 +2090,7 @@ int player_speed()
 
     if(you.species == SP_HEDGEHOG)
         return min(10, ps);
-	
+
     return ps;
 }
 
@@ -2131,8 +2130,11 @@ void update_acrobat_status()
     if (you.props[ACROBAT_AMULET_ACTIVE].get_int() != 1)
         return;
 
-    you.duration[DUR_ACROBAT] = you.time_taken;
-    you.props[LAST_ACTION_WAS_MOVE_OR_REST_KEY] = true;
+    // Acrobat duration goes slightly into the next turn, giving the
+    // player visual feedback of the EV bonus recieved.
+    // This is assignment and not increment as acrobat duration depends
+    // on player action.
+    you.duration[DUR_ACROBAT] = you.time_taken+1;
     you.redraw_evasion = true;
 }
 
@@ -2200,7 +2202,7 @@ static int _player_evasion_bonuses()
     // transformation penalties/bonuses not covered by size alone:
     if (you.get_mutation_level(MUT_SLOW_REFLEXES))
         evbonus -= you.get_mutation_level(MUT_SLOW_REFLEXES) * 5;
-	
+
     if (you.species == SP_BODACH && you.attribute[ATTR_BODACH_ASPECT] == 2)
     {
         evbonus += 5 + you.experience_level / 3;
@@ -2212,9 +2214,9 @@ static int _player_evasion_bonuses()
     if (you.duration[DUR_ACROBAT] || you.props[LAST_ACTION_WAS_MOVE_OR_REST_KEY].get_bool())
         evbonus += 15;
 
-    // If you have an active amulet of the acrobat and just moved, get massive
+    // If you have an active amulet of the acrobat and just moved or waited, get massive
     // EV bonus.
-    if (acrobat_boost_visible())
+    if (acrobat_boost_active())
         evbonus += 15;
 
     return evbonus;
@@ -2441,11 +2443,8 @@ void forget_map(bool rot)
     if (!rot)
         clear_travel_trail();
 
-    // Labyrinth and the Abyss use special rotting rules.
-    const bool rot_resist = player_in_branch(BRANCH_LABYRINTH)
-                                && you.species == SP_MINOTAUR
-                            || player_in_branch(BRANCH_ABYSS)
-                                && have_passive(passive_t::map_rot_res_abyss);
+    const bool rot_resist = player_in_branch(BRANCH_ABYSS)
+                            && have_passive(passive_t::map_rot_res_abyss);
     const double geometric_chance = 0.99;
     const int radius = (rot_resist ? 200 : 100);
 
@@ -2775,7 +2774,7 @@ static void _gain_and_note_hp_mp()
     const int old_maxmp = you.max_magic_points;
 
     // recalculate for game
-    recalc_and_scale_hp();
+    calc_hp(true, false);
     calc_mp();
 
     set_mp(old_maxmp > 0 ? old_mp * you.max_magic_points / old_maxmp
@@ -2783,7 +2782,7 @@ static void _gain_and_note_hp_mp()
 
     // Get "real" values for note-taking, i.e. ignore Berserk,
     // transformations or equipped items.
-    const int note_maxhp = get_real_hp(false, false);
+    const int note_maxhp = get_real_hp(false, true);
     const int note_maxmp = get_real_mp(false);
 
     char buf[200];
@@ -2796,19 +2795,34 @@ static void _gain_and_note_hp_mp()
 /**
  * Calculate max HP changes and scale current HP accordingly.
  */
-void recalc_and_scale_hp()
+void calc_hp(bool scale, bool set)
 {
     // Rounding must be down or Deep Dwarves would abuse certain values.
     // We can reduce errors by a factor of 100 by using partial hp we have.
+    int oldhp = you.hp;
     int old_max = you.hp_max;
-    int hp = you.hp * 100 + you.hit_points_regeneration;
-    calc_hp();
-    int new_max = you.hp_max;
-    hp = hp * new_max / old_max;
-    if (hp < 100)
-        hp = 100;
-    set_hp(min(hp / 100, you.hp_max));
-    you.hit_points_regeneration = hp % 100;
+
+    you.hp_max = get_real_hp(true, true);
+
+    if (scale) {
+        int hp = you.hp * 100 + you.hit_points_regeneration;
+        int new_max = you.hp_max;
+        hp = hp * new_max / old_max;
+        if (hp < 100)
+            hp = 100;
+        set_hp(min(hp / 100, you.hp_max));
+        you.hit_points_regeneration = hp % 100;
+    }
+    if (set)
+        you.hp = you.hp_max;
+
+    you.hp = min(you.hp, you.hp_max);
+
+    if (oldhp != you.hp || old_max != you.hp_max)
+    {
+        dprf("HP changed: %d/%d -> %d/%d", oldhp, old_max, you.hp, you.hp_max);
+        you.redraw_hit_points = true;
+    }
 }
 
 int xp_to_level_diff(int xp, int scale)
@@ -2957,7 +2971,7 @@ void level_change(bool skip_attribute_increase)
                     you.redraw_armour_class = true;
                 }
                 break;
-				
+
             case SP_BODACH:
                 if (you.experience_level % 3 == 1)
                 {
@@ -3285,7 +3299,7 @@ int player_stealth()
         else if (you.hunger_state <= HS_HUNGRY)
             stealth += STEALTH_PIP;
     }
-	
+
     if (you.species == SP_BODACH && you.attribute[ATTR_BODACH_ASPECT] == 4)
     {
         stealth += STEALTH_PIP * 2;
@@ -3690,7 +3704,7 @@ int slaying_bonus(bool ranged)
         ret += 4;
 
     ret += 3 * augmentation_amount();
-	
+
     if (you.species == SP_BODACH && you.attribute[ATTR_BODACH_ASPECT] == 3)
         ret += 1 + you.experience_level / 3;
 
@@ -3742,16 +3756,6 @@ int player::scan_artefacts(artefact_prop_type which_property,
     return retval;
 }
 
-void calc_hp()
-{
-    int oldhp = you.hp, oldmax = you.hp_max;
-    you.hp_max = get_real_hp(true, false);
-    deflate_hp(you.hp_max, false);
-    if (oldhp != you.hp || oldmax != you.hp_max)
-        dprf("HP changed: %d/%d -> %d/%d", oldhp, oldmax, you.hp, you.hp_max);
-    you.redraw_hit_points = true;
-}
-
 void dec_hp(int hp_loss, bool fatal, const char *aux)
 {
     ASSERT(!crawl_state.game_is_arena());
@@ -3781,7 +3785,7 @@ void calc_mp()
     if(you.species == SP_OBSIDIAN_DWARF)
     {
        you.magic_points = you.max_magic_points = 0;
-       return calc_hp();	   
+       return calc_hp();
     }
     you.max_magic_points = get_real_mp(true);
     you.magic_points = min(you.magic_points, you.max_magic_points);
@@ -3807,7 +3811,7 @@ void dec_mp(int mp_loss, bool silent)
 
     if (mp_loss < 1)
         return;
-	
+
     you.magic_points -= mp_loss;
 
     you.magic_points = max(0, you.magic_points);
@@ -3857,7 +3861,7 @@ bool enough_mp(int minimum, bool suppress_msg, bool abort_macros)
     {
         return enough_hp(minimum, suppress_msg);
     }
-	
+
     if (you.magic_points < minimum)
     {
         if (!suppress_msg)
@@ -3891,7 +3895,7 @@ static bool _should_stop_resting(int cur, int max)
 void inc_mp(int mp_gain, bool silent)
 {
     ASSERT(!crawl_state.game_is_arena());
-	
+
     if (mp_gain < 1 || you.magic_points >= you.max_magic_points)
         return;
 
@@ -3937,7 +3941,7 @@ void rot_hp(int hp_loss)
     const int initial_rot = you.hp_max_adj_temp;
     you.hp_max_adj_temp -= hp_loss;
     // don't allow more rot than you have normal mhp
-    you.hp_max_adj_temp = max(-(get_real_hp(false, true) - 1),
+    you.hp_max_adj_temp = max(-(get_real_hp(false, false) - 1),
                               you.hp_max_adj_temp);
     if (initial_rot == you.hp_max_adj_temp)
         return;
@@ -4000,20 +4004,6 @@ void dec_max_hp(int hp_loss)
     you.redraw_hit_points = true;
 }
 
-// Use of floor: false = hp max, true = hp min. {dlb}
-void deflate_hp(int new_level, bool floor)
-{
-    ASSERT(!crawl_state.game_is_arena());
-
-    if (floor && you.hp < new_level)
-        you.hp = new_level;
-    else if (!floor && you.hp > new_level)
-        you.hp = new_level;
-
-    // Must remain outside conditional, given code usage. {dlb}
-    you.redraw_hit_points = true;
-}
-
 void set_hp(int new_amount)
 {
     ASSERT(!crawl_state.game_is_arena());
@@ -4042,9 +4032,13 @@ void set_mp(int new_amount)
     you.redraw_magic_points = true;
 }
 
-// If trans is true, being berserk and/or transformed is taken into account
-// here. Else, the base hp is calculated. If rotted is true, calculate the
-// real max hp you'd have if the rotting was cured.
+/**
+ * Get the player's max HP
+ * @param trans          Whether to include transformations, berserk,
+ *                       items etc.
+ * @param rotted         Whether to include the effects of rotting.
+ * @return               The player's calculated max HP.
+ */
 int get_real_hp(bool trans, bool rotted)
 {
     int hitp;
@@ -4072,7 +4066,7 @@ int get_real_hp(bool trans, bool rotted)
 
     hitp /= 100;
 
-    if (!rotted)
+    if (rotted)
         hitp += you.hp_max_adj_temp;
 
     if (trans)
@@ -4082,13 +4076,17 @@ int get_real_hp(bool trans, bool rotted)
     if (trans && you.berserk())
         hitp = hitp * 3 / 2;
 
-    if (trans) // Some transformations give you extra hp.
+    // Some transformations give you extra hp.
+    if (trans)
         hitp = hitp * form_hp_mod() / 10;
 
 #if TAG_MAJOR_VERSION == 34
     if (trans && player_equip_unrand(UNRAND_ETERNAL_TORMENT))
         hitp = hitp * 4 / 5;
 #endif
+
+    if (trans && you.duration[DUR_DEATHS_DOOR] > 0)
+        hitp = allowed_deaths_door_hp();
 
     return max(1, hitp);
 }
@@ -4745,8 +4743,9 @@ void dec_slow_player(int delay)
 
     if (you.duration[DUR_SLOW] <= BASELINE_DELAY)
     {
-        mprf(MSGCH_DURATION, "You feel yourself speed up.");
         you.duration[DUR_SLOW] = 0;
+        if (!have_stat_zero())
+            mprf(MSGCH_DURATION, "You feel yourself speed up.");
     }
 }
 
@@ -5788,7 +5787,7 @@ int player::missile_deflection() const
 {
     if (attribute[ATTR_DEFLECT_MISSILES])
         return 2;
-	
+
     if (you.species == SP_BODACH && you.attribute[ATTR_BODACH_ASPECT] == 2)
     {
         return you.experience_level > 12 ? 2 : 1;
@@ -5825,7 +5824,8 @@ void player::ablate_deflection()
  * Used as the base for adjusted armour penalty calculations, as well as for
  * stealth penalty calculations.
  *
- * @return  The player's body armour's PARM_EVASION, if any.
+ * @return  The player's body armour's PARM_EVASION, if any, taking into account
+ *          the sturdy frame mutation that reduces encumbrance.
  */
 int player::unadjusted_body_armour_penalty() const
 {
@@ -5833,7 +5833,9 @@ int player::unadjusted_body_armour_penalty() const
     if (!body_armour)
         return 0;
 
-    return -property(*body_armour, PARM_EVASION) / 10;
+    // PARM_EVASION is always less than or equal to 0
+    return max(0, -property(*body_armour, PARM_EVASION) / 10
+                  - get_mutation_level(MUT_STURDY_FRAME) * 2);
 }
 
 /**
@@ -5845,12 +5847,9 @@ int player::unadjusted_body_armour_penalty() const
  */
 int player::adjusted_body_armour_penalty(int scale) const
 {
-    int unadjusted_penalty = you.species == SP_FLAN ? 
-        unadjusted_body_armour_penalty() / 2 : 
-        unadjusted_body_armour_penalty();
-    const int base_ev_penalty =
-        max(0, unadjusted_penalty
-                   - get_mutation_level(MUT_STURDY_FRAME) * 2);
+    int base_ev_penalty = unadjusted_body_armour_penalty();
+    if (you.species == SP_FLAN)
+        base_ev_penalty /= 2;
 
     // New formula for effect of str on aevp: (2/5) * evp^2 / (str+3)
     return 2 * base_ev_penalty * base_ev_penalty * (450 - skill(SK_ARMOUR, 10))
@@ -6474,8 +6473,13 @@ int player_res_magic(bool calc_unid, bool temp)
  */
 string player::no_tele_reason(bool calc_unid, bool blinking) const
 {
-    if (crawl_state.game_is_sprint() && !blinking)
-        return "Long-range teleportation is disallowed in Dungeon Sprint.";
+    if (!blinking)
+    {
+        if (crawl_state.game_is_sprint())
+            return "Long-range teleportation is disallowed in Dungeon Sprint.";
+        else if (player_in_branch(BRANCH_GAUNTLET))
+            return "Long-range teleportation does not work in a Gauntlet.";
+    }
 
     if (stasis())
         return "Your stasis prevents you from teleporting.";
@@ -6847,6 +6851,9 @@ void player::paralyse(actor *who, int str, string source)
                                                : source;
     }
 
+    if (asleep())
+        you.awaken();
+
     mpr("You suddenly lose the ability to move!");
 
     paralysis = min(str, 13) * BASELINE_DELAY;
@@ -6870,6 +6877,10 @@ void player::petrify(actor *who, bool force)
         mpr("Your divine stamina protects you from petrification!");
         return;
     }
+
+    // Petrification always wakes you up
+    if (asleep())
+        you.awaken();
 
     if (petrifying())
     {
@@ -7213,7 +7224,7 @@ bool player::can_safely_mutate(bool temp) const
 {
     if (!can_mutate())
         return false;
-	
+
     if(you.species == SP_GOLEM || you.species == SP_ROBOT)
        return false;
 
@@ -7271,7 +7282,7 @@ bool player::malmutate(const string &reason)
     return false;
 }
 
-bool player::polymorph(int pow)
+bool player::polymorph(int pow, bool allow_immobile)
 {
     ASSERT(!crawl_state.game_is_arena());
 
@@ -7280,9 +7291,17 @@ bool player::polymorph(int pow)
 
     transformation f = transformation::none;
 
-    // Be unreliable over lava. This is not that important as usually when
-    // it matters you'll have temp flight and thus that pig will fly (and
-    // when flight times out, we'll have roasted bacon).
+    vector<transformation> forms = {
+        transformation::bat,
+        transformation::wisp,
+        transformation::pig,
+    };
+    if (allow_immobile)
+    {
+        forms.emplace_back(transformation::tree);
+        forms.emplace_back(transformation::fungus);
+    }
+
     for (int tries = 0; tries < 3; tries++)
     {
         if(you.species == SP_FUNGOID) // always get fungus form
@@ -7291,15 +7310,12 @@ bool player::polymorph(int pow)
             f = transformation::werewolf;
         else
         {
-            f = random_choose(transformation::bat,
-                              transformation::fungus,
-                              transformation::pig,
-                              transformation::tree,
-                              transformation::wisp);
+            f = forms[random2(forms.size())];
         }
         // need to do a dry run first, as Zin's protection has a random factor
         if (transform(pow, f, true, true))
             break;
+
         f = transformation::none;
     }
 
@@ -7383,6 +7399,14 @@ void player::put_to_sleep(actor*, int power, bool hibernate)
         return;
     }
 
+    if (duration[DUR_PARALYSIS]
+        || duration[DUR_PETRIFIED]
+        || duration[DUR_PETRIFYING])
+    {
+        mpr("You can't fall asleep in your current state!");
+        return;
+    }
+
     mpr("You fall asleep.");
 
     stop_directly_constricting_all(false);
@@ -7424,17 +7448,14 @@ int player::beam_resists(bolt &beam, int hurted, bool doEffects, string source)
 // different effect from the player invokable ability.
 bool player::do_shaft()
 {
-    if (!is_valid_shaft_level())
-        return false;
-
-    // Handle instances of do_shaft() being invoked magically when
-    // the player isn't standing over a shaft.
-    if (get_trap_type(pos()) != TRAP_SHAFT
-        && !feat_is_shaftable(grd(pos())))
+    if (!is_valid_shaft_level()
+        || !feat_is_shaftable(grd(pos()))
+        || duration[DUR_SHAFT_IMMUNITY])
     {
         return false;
     }
 
+    duration[DUR_SHAFT_IMMUNITY] = 1;
     down_stairs(DNGN_TRAP_SHAFT);
 
     return true;
@@ -7991,21 +8012,23 @@ void player_open_door(coord_def doorpos)
     vector<coord_def> excludes;
     for (const auto &dc : all_door)
     {
+        if (cell_is_runed(dc))
+            explored_tracked_feature(grd(dc));
+        dgn_open_door(dc);
+        set_terrain_changed(dc);
+        dungeon_events.fire_position_event(DET_DOOR_OPENED, dc);
+
         // Even if some of the door is out of LOS, we want the entire
         // door to be updated. Hitting this case requires a really big
         // door!
         if (env.map_knowledge(dc).seen())
         {
-            env.map_knowledge(dc).set_feature(DNGN_OPEN_DOOR);
+            env.map_knowledge(dc).set_feature(grd(dc));
 #ifdef USE_TILE
-            env.tile_bk_bg(dc) = TILE_DNGN_OPEN_DOOR;
+            env.tile_bk_bg(dc) = tileidx_feature_base(grd(dc));
 #endif
         }
-        if (grd(dc) == DNGN_RUNED_DOOR)
-            explored_tracked_feature(grd(dc));
-        grd(dc) = DNGN_OPEN_DOOR;
-        set_terrain_changed(dc);
-        dungeon_events.fire_position_event(DET_DOOR_OPENED, dc);
+
         if (is_excluded(dc))
             excludes.push_back(dc);
     }
@@ -8161,7 +8184,7 @@ void player_close_door(coord_def doorpos)
     for (const coord_def& dc : all_door)
     {
         // Once opened, formerly runed doors become normal doors.
-        grd(dc) = DNGN_CLOSED_DOOR;
+        dgn_close_door(dc);
         set_terrain_changed(dc);
         dungeon_events.fire_position_event(DET_DOOR_CLOSED, dc);
 
@@ -8170,11 +8193,12 @@ void player_close_door(coord_def doorpos)
         // want the entire door to be updated.
         if (env.map_knowledge(dc).seen())
         {
-            env.map_knowledge(dc).set_feature(DNGN_CLOSED_DOOR);
+            env.map_knowledge(dc).set_feature(grd(dc));
 #ifdef USE_TILE
-            env.tile_bk_bg(dc) = TILE_DNGN_CLOSED_DOOR;
+            env.tile_bk_bg(dc) = tileidx_feature_base(grd(dc));
 #endif
         }
+
         if (is_excluded(dc))
             excludes.push_back(dc);
     }
@@ -8290,9 +8314,8 @@ void player_end_berserk()
 
     slow_player(dur);
 
-    // 1KB: No berserk healing.
-    set_hp((you.hp + 1) * 2 / 3);
-    calc_hp();
+    //Un-apply Berserk's +50% Current/Max HP
+    calc_hp(true, false);
 
     learned_something_new(HINT_POSTBERSERK);
     Hints.hints_events[HINT_YOU_ENCHANTED] = hints_slow;
@@ -8337,6 +8360,47 @@ void refresh_weapon_protection()
     you.redraw_armour_class = true;
 }
 
+// Is the player immune to a particular hex because of their
+// intrinsic properties?
+bool player::immune_to_hex(const spell_type hex) const
+{
+    switch (hex)
+    {
+    case SPELL_PARALYSIS_GAZE:
+    case SPELL_PARALYSE:
+    case SPELL_SLOW:
+        return stasis();
+    case SPELL_CONFUSE:
+    case SPELL_CONFUSION_GAZE:
+    case SPELL_MASS_CONFUSION:
+        return clarity() || you.duration[DUR_DIVINE_STAMINA] > 0;
+    case SPELL_TELEPORT_OTHER:
+    case SPELL_BLINK_OTHER:
+    case SPELL_BLINK_OTHER_CLOSE:
+        return no_tele();
+    case SPELL_MESMERISE:
+    case SPELL_AVATAR_SONG:
+    case SPELL_SIREN_SONG:
+        return clarity() || berserk();
+    case SPELL_CAUSE_FEAR:
+        return clarity() || !(holiness() & MH_NATURAL) || berserk();
+    case SPELL_PETRIFY:
+        return res_petrify();
+    case SPELL_PORKALATOR:
+        return is_lifeless_undead();
+    case SPELL_VIRULENCE:
+        return res_poison() == 3;
+    // don't include the hidden "sleep immunity" duration
+    case SPELL_SLEEP:
+    case SPELL_DREAM_DUST:
+        return !actor::can_sleep();
+    case SPELL_HIBERNATION:
+        return !can_hibernate();
+    default:
+        return false;
+    }
+}
+
 void bodach_realignment()
 {
 	if (you.species != SP_BODACH)
@@ -8344,7 +8408,7 @@ void bodach_realignment()
     int old_aspect = you.attribute[ATTR_BODACH_ASPECT];
     while (old_aspect == you.attribute[ATTR_BODACH_ASPECT])
     {
-        you.attribute[ATTR_BODACH_ASPECT] = 1 + random2(4); //between 1 and 4
+        you.attribute[ATTR_BODACH_ASPECT] = random_range(1, 4);
     }
     you.redraw_title = true;
 }

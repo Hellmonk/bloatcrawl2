@@ -141,6 +141,10 @@ Evoke Ratskin ability
 
 Summons up to two dungeon rats to serve their master for a brief time.
 %%%%
+Evoke Thunderclouds ability
+
+Create a mighty thunderclouds around the user.
+%%%%
 End Transformation ability
 
 Reverts you to your normal form.
@@ -369,8 +373,9 @@ Heals a creature other than yourself by a moderate amount, depending on
 Invocations skill. Using this ability on hostile monsters will try to turn them
 neutral. This works best on animals, and is less effective on humanoids and
 other intelligent creatures. Undead and demons are harder still to pacify.
-Mindless creatures cannot be pacified, and no monster can be pacified while it
-is asleep.
+Ghosts of dead adventurers and demon lords are too wrathful to be pacified,
+mindless creatures are too unintelligent to be pacified, and no monster can be
+pacified while it is asleep.
 
 Whether the pacification succeeds or not, the invested food, piety and magic
 points are lost. If it does succeed, the monster is healed and you gain half
@@ -429,22 +434,25 @@ distortion. This blessing may only be used once, and it cannot be used on
 artefact weapons.
 %%%%
 # Nemelex Xobeh
+Draw ability
+
+Draws a card from a deck of power.
+%%%%
 Triple Draw ability
 
-Draws three cards from any deck in your inventory, and allows you to choose one
-to keep, discarding the other two.
+Draws three cards from any deck, and allows you to choose one to play,
+discarding the other two.
 %%%%
 Deal Four ability
 
-Deals four cards from any unmarked deck in the time it normally takes to draw a
-single card. The rest of the deck is lost. If the deck does not contain enough
-cards, Nemelex will give you one extra card, but you might not like it.
+Deals four cards from a deck in the time it normally takes to draw a
+single card.
 %%%%
 Stack Five ability
 
-Shows you five cards from any unmarked deck in your inventory, losing the rest
-of the deck, and allows you to sort them into any order. Subsequently, you can
-draw these cards in the order you chose.
+Draws five cards from your choice of decks, and allows you to sort them into
+any order. Subsequently, you can draw these cards in the order you chose.
+Re-using this ability will discard the current stack.
 %%%%
 # Beogh
 Smiting ability

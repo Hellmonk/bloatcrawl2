@@ -50,7 +50,6 @@
 #define SAP_MAGIC_KEY "sap_magic_amount"
 #define TEMP_WATERWALK_KEY "temp_waterwalk"
 #define EMERGENCY_FLIGHT_KEY "emergency_flight"
-#define LAST_ACTION_WAS_MOVE_OR_REST_KEY "last_action_was_move_or_rest"
 
 // display/messaging breakpoints for penalties from Ru's MUT_HORROR
 #define HORROR_LVL_EXTREME  3
@@ -406,6 +405,9 @@ public:
     string banished_by;
     int banished_power;
 
+    // If true, player has triggered a trap effect by exploring.
+    bool trapped;
+
     bool wield_change;          // redraw weapon
     bool redraw_quiver;         // redraw quiver
 
@@ -685,7 +687,7 @@ public:
     bool can_bleed(bool allow_tran = true) const override;
     bool is_stationary() const override;
     bool malmutate(const string &reason) override;
-    bool polymorph(int pow) override;
+    bool polymorph(int pow, bool allow_immobile = true) override;
     void backlight();
     void banish(actor* /*agent*/, const string &who = "", const int power = 0,
                 bool force = false) override;
@@ -791,6 +793,7 @@ public:
     {
         return actor::incapacitated() || duration[DUR_CLUMSY];
     }
+    bool immune_to_hex(const spell_type hex) const;
 
     bool asleep() const override;
     void put_to_sleep(actor *, int power = 0, bool hibernate = false) override;
@@ -1048,9 +1051,8 @@ bool player_has_feet(bool temp = true, bool include_mutations = true);
 bool enough_hp(int minimum, bool suppress_msg, bool abort_macros = true);
 bool enough_mp(int minimum, bool suppress_msg, bool abort_macros = true);
 
-void calc_hp();
+void calc_hp(bool scale = false, bool set = false);
 void calc_mp();
-void recalc_and_scale_hp();
 
 void dec_hp(int hp_loss, bool fatal, const char *aux = nullptr);
 void dec_mp(int mp_loss, bool silent = false);
@@ -1068,10 +1070,9 @@ void rot_mp(int mp_loss);
 void inc_max_hp(int hp_gain);
 void dec_max_hp(int hp_loss);
 
-void deflate_hp(int new_level, bool floor);
 void set_hp(int new_amount);
 
-int get_real_hp(bool trans, bool rotted = false);
+int get_real_hp(bool trans, bool rotted = true);
 int get_real_mp(bool include_items);
 
 int get_contamination_level();
