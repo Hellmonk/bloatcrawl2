@@ -468,8 +468,10 @@ static spell_list _get_spell_list(bool just_check = false,
                          "reason; please file a bug report.";
     }
 
-    if (!just_check && *unavail_reason)
-        mprf(MSGCH_PROMPT, "%s", unavail_reason);
+    if (!just_check && *unavail_reason) {
+        mprf(MSGCH_PROMPT, "%s You have %d spell slot%s", unavail_reason,
+             avail_slots,(avail_slots==1 ? "." : "s."));
+    }
     return mem_spells;
 }
 
