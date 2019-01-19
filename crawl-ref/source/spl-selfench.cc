@@ -666,39 +666,43 @@ void spell_remove_permabuff(spell_type spell, int release_amount)
 // Drop all permabuffs (comes from max MP/EP change or armour equipping)
 void spell_drop_permabuffs()
 {
-    // If transformed, drop form
-    if (you.form != transformation::none)
+    // Only go through this if the player has any permabuffs (to avoid message annoyance/doubled messages)
+    if(you.mp_max_adj_temp != 0)
     {
-        untransform(true);
-    }
-    // Special case for weapon brands
-    if (you.permabuffs[MUT_EXCRUCIATING_WOUNDS])
-    {
-        item_def& weapon = *you.weapon();
-        end_weapon_brand(weapon, true);
-    }
-    if (you.permabuffs[MUT_SPECTRAL_WEAPON])
-    {
-        monster* old_spectral = find_spectral_weapon(&you);
-        if(old_spectral)
-            end_spectral_weapon(old_spectral, false);
-    }
-    if (you.permabuffs[MUT_BATTLESPHERE])
-    {
-        monster* old_sphere = find_battlesphere(&you);
-        if(old_sphere)
-            end_battlesphere(old_sphere, false);
-    }
-    // Unreserve all MP/EP
-    unreserve_mp(-you.mp_max_adj_temp);
-    // Remove all permabuffs from player's permabuffs here
-    for (int i=0; i < NUM_MUTATIONS; i++)
-    {
-        while (you.has_permabuffs(static_cast<mutation_type>(i)))
+        // If transformed, drop form
+        if (you.form != transformation::none)
         {
-            mutate(static_cast<mutation_type>(i), "dropping permabuffs");
+            untransform(true);
         }
-    }
+        // Special case for weapon brands
+        if (you.permabuffs[MUT_EXCRUCIATING_WOUNDS])
+        {
+            item_def& weapon = *you.weapon();
+            end_weapon_brand(weapon, true);
+        }
+        if (you.permabuffs[MUT_SPECTRAL_WEAPON])
+        {
+            monster* old_spectral = find_spectral_weapon(&you);
+            if(old_spectral)
+                end_spectral_weapon(old_spectral, false);
+        }
+        if (you.permabuffs[MUT_BATTLESPHERE])
+        {
+            monster* old_sphere = find_battlesphere(&you);
+            if(old_sphere)
+                end_battlesphere(old_sphere, false);
+        }
+        // Unreserve all MP/EP
+        unreserve_mp(-you.mp_max_adj_temp);
+        // Remove all permabuffs from player's permabuffs here
+        for (int i=0; i < NUM_MUTATIONS; i++)
+        {
+            while (you.has_permabuffs(static_cast<mutation_type>(i)))
+            {
+                mutate(static_cast<mutation_type>(i), "dropping permabuffs");
+            }
+        }
 
-    mpr("You lose control of your reserved spells!");
+        mpr("You lose control of your reserved spells!");
+    }
 }
