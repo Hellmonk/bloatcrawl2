@@ -34,7 +34,7 @@ enum job_type
     JOB_ABYSSAL_KNIGHT,
     JOB_ARCHAEOLOGIST,
     JOB_JESTER,
-    JOB_JELLIFIER,
+    JOB_SLIME_APOSTLE,
     NUM_JOBS,                          // always after the last job
 
     JOB_UNKNOWN = 100,
