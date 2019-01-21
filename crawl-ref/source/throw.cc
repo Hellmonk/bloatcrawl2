@@ -20,7 +20,7 @@
 #include "fight.h"
 #include "god-abil.h"
 #include "god-conduct.h"
-#include "god-passive.h" // passive_t::shadow_attacks
+#include "god-passive.h" // passive_t::shadow_attacks, passive_t::protected_ammo
 #include "hints.h"
 #include "invent.h"
 #include "item-prop.h"
@@ -593,7 +593,9 @@ static bool _setup_missile_beam(const actor *agent, bolt &beam, item_def &item,
     }
 
     returning = item.base_type == OBJ_MISSILES
-                && get_ammo_brand(item) == SPMSL_RETURNING;
+                && (get_ammo_brand(item) == SPMSL_RETURNING
+                    || (you_worship(GOD_OKAWARU) && have_passive(passive_t::protected_ammo)
+                        && agent->is_player()));
 
     if (item.base_type == OBJ_MISSILES
         && get_ammo_brand(item) == SPMSL_EXPLODING)
@@ -1165,5 +1167,25 @@ bool thrown_object_destroyed(item_def *item, const coord_def& where)
 
     dprf("mulch chance: %d in %d", mult, chance);
 
-    return x_chance_in_y(mult, chance);
+    if(x_chance_in_y(mult, chance))
+    {
+        // If ammo would mulch, check if Okawaru preserves it. Maxes at 100% chance at 6*.
+        // TODO: Make this only apply to the player's ammo, not all ammo. Don't really see
+        // this as too big a player buff to care to fix it at the moment.
+        if(you_worship(GOD_OKAWARU) && have_passive(passive_t::protected_ammo)
+           && x_chance_in_y(you.piety, 160))
+        {
+            // Not printing a message here because no code implemented to verify source
+            // before preserving yet, so it would get very spammy very fast.
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    else
+    {
+        return false;
+    }
 }

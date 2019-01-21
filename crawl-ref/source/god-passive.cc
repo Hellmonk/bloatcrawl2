@@ -211,7 +211,8 @@ static const vector<god_passive> god_passives[] =
 
     // Okawaru
     {
-        // None
+        {  3, passive_t::protected_ammo,
+              "GOD NOW returns your ammunition and protects it from destruction" },
     },
 
     // Makhleb

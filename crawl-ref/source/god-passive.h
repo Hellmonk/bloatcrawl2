@@ -256,6 +256,9 @@ enum class passive_t
     wu_jian_lunge,
     wu_jian_whirlwind,
     wu_jian_wall_jump,
+
+    // Okawaru's all ammo returns + ammo mulch protection
+    protected_ammo,
 };
 
 enum ru_interference

@@ -150,8 +150,8 @@ const vector<god_power> god_powers[NUM_GODS] =
 
     // Okawaru
     { { 1, ABIL_OKAWARU_HEROISM, "gain great but temporary skills" },
-      { 3, "Okawaru will gift you ammunition as your piety grows.",
-           "Okawaru will no longer gift you ammunition." },
+      { 3, "Okawaru will protect your ammunition and always make it return.",
+           "Okawaru will no protect your ammunition or make it return." },
       { 5, ABIL_OKAWARU_FINESSE, "speed up your combat" },
       { 5, "Okawaru will gift you equipment as you gain piety.",
            "Okawaru will no longer gift you equipment." },
@@ -1369,7 +1369,7 @@ static bool _give_trog_oka_gift(bool forced)
         else
             gift_type = OBJ_ARMOUR;
     }
-    else if (need_missiles && you.species != SP_FELID)
+    else if (need_missiles && you.species != SP_FELID && !you_worship(GOD_OKAWARU))
         gift_type = OBJ_MISSILES;
     else
         return false;
