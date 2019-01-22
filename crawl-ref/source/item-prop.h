@@ -109,9 +109,6 @@ bool check_armour_size(const item_def &item, size_type size) PURE;
 bool check_armour_size(armour_type sub_type, size_type size) PURE;
 
 int wand_charge_value(int type) PURE;
-#if TAG_MAJOR_VERSION == 34
-bool is_known_empty_wand(const item_def &item) PURE;
-#endif
 bool is_offensive_wand(const item_def &item) PURE;
 bool is_enchantable_armour(const item_def &arm, bool unknown = false) PURE;
 
@@ -193,9 +190,6 @@ bool jewellery_has_pluses(const item_def &item) PURE;
 bool ring_has_stackable_effect(const item_def &item) PURE;
 
 // food functions:
-#if TAG_MAJOR_VERSION == 34
-bool is_real_food(food_type food) PURE;
-#endif
 bool is_blood_potion(const item_def &item) PURE;
 bool food_is_meaty(int food_type) PURE;
 bool food_is_meaty(const item_def &item) PURE;

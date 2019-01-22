@@ -81,9 +81,3 @@ string deck_description(deck_type deck);
 const string stack_top();
 const string stack_contents();
 
-#if TAG_MAJOR_VERSION == 34
-bool is_deck_type(uint8_t type);
-bool is_deck(const item_def &item);
-void reclaim_decks();
-void reclaim_decks_on_level();
-#endif

@@ -831,20 +831,6 @@ public:
     string get_untransform_message() const override { return "You feel less wooden."; }
 };
 
-#if TAG_MAJOR_VERSION == 34
-class FormPorcupine : public Form
-{
-private:
-    FormPorcupine() : Form(transformation::porcupine) { }
-    DISALLOW_COPY_AND_ASSIGN(FormPorcupine);
-public:
-    static const FormPorcupine &instance()
-    {
-        static FormPorcupine inst;
-        return inst;
-    }
-};
-#endif
 
 class FormWisp : public Form
 {
@@ -855,16 +841,6 @@ public:
     static const FormWisp &instance() { static FormWisp inst; return inst; }
 };
 
-#if TAG_MAJOR_VERSION == 34
-class FormJelly : public Form
-{
-private:
-    FormJelly() : Form(transformation::jelly) { }
-    DISALLOW_COPY_AND_ASSIGN(FormJelly);
-public:
-    static const FormJelly &instance() { static FormJelly inst; return inst; }
-};
-#endif
 
 class FormFungus : public Form
 {
@@ -983,9 +959,6 @@ static const Form* forms[] =
     &FormPorcupine::instance(),
 
     &FormWisp::instance(),
-#if TAG_MAJOR_VERSION == 34
-    &FormJelly::instance(),
-#endif
     &FormFungus::instance(),
     &FormShadow::instance(),
     &FormHydra::instance(),

@@ -159,13 +159,6 @@ static const cloud_data clouds[] = {
       {0, 16},                                  // base, random damage
       true,                                     // opacity
     },
-#if TAG_MAJOR_VERSION == 34
-    // CLOUD_GLOOM,
-    { "gloom", "thick gloom",                   // terse, verbose name
-      MAGENTA,                                  // colour
-      { TILE_CLOUD_GLOOM },                     // tile
-    },
-#endif
     // CLOUD_INK,
     { "ink",  nullptr,                          // terse, verbose name
       DARKGREY,                                 // colour
@@ -302,10 +295,6 @@ static int _actual_spread_rate(cloud_type type, int spread_rate)
 
     switch (type)
     {
-#if TAG_MAJOR_VERSION == 34
-    case CLOUD_GLOOM:
-        return 50;
-#endif
     case CLOUD_STEAM:
     case CLOUD_GREY_SMOKE:
     case CLOUD_BLACK_SMOKE:

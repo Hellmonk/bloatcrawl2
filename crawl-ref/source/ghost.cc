@@ -730,9 +730,6 @@ void ghost_demon::find_extra_ghosts(vector<ghost_demon> &gs)
 
 static const set<branch_type> ghosts_nosave =
             { BRANCH_ABYSS, BRANCH_WIZLAB, BRANCH_DESOLATION, BRANCH_TEMPLE,
-#if TAG_MAJOR_VERSION == 34
-              BRANCH_LABYRINTH,
-#endif
             };
 
 

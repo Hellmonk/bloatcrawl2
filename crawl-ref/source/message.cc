@@ -2063,10 +2063,6 @@ void load_messages(reader& inf)
 
         msg_channel_type channel = (msg_channel_type) unmarshallInt(inf);
         int           param      = unmarshallInt(inf);
-#if TAG_MAJOR_VERSION == 34
-        if (inf.getMinorVersion() < TAG_MINOR_MESSAGE_REPEATS)
-                                   unmarshallInt(inf); // was 'repeats'
-#endif
         int           turn       = unmarshallInt(inf);
 
         message_line msg(message_line(text, channel, param, turn));

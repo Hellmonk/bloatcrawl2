@@ -729,9 +729,6 @@ static bool _is_chaos_upgradeable(const item_def &item,
     // Staves can't be changed either, since they don't have brands in the way
     // other weapons do.
     if (item.base_type == OBJ_STAVES
-#if TAG_MAJOR_VERSION == 34
-        || item.base_type == OBJ_RODS
-#endif
        )
 {
         return false;

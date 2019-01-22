@@ -109,16 +109,7 @@ void tile_default_flv(branch_type br, int depth, tile_flavour &flv)
         flv.floor = TILE_FLOOR_VINES;
         return;
 
-#if TAG_MAJOR_VERSION == 34
-    case BRANCH_DWARF:
-        flv.wall  = TILE_WALL_HALL;
-        flv.floor = TILE_FLOOR_LIMESTONE;
-        return;
-#endif
 
-#if TAG_MAJOR_VERSION == 34
-    case BRANCH_BLADE:
-#endif
     case BRANCH_ELF:
         flv.wall  = TILE_WALL_HALL;
         flv.floor = TILE_FLOOR_HALL;
@@ -199,12 +190,6 @@ void tile_default_flv(branch_type br, int depth, tile_flavour &flv)
         flv.floor = TILE_FLOOR_TOMB;
         return;
 
-#if TAG_MAJOR_VERSION == 34
-    case BRANCH_FOREST:
-        flv.wall  = TILE_WALL_LAIR;
-        flv.floor = TILE_FLOOR_GRASS;
-        return;
-#endif
     case BRANCH_ABYSS:
         flv.floor = tile_dngn_coloured(TILE_FLOOR_NERVES, env.floor_colour);
         switch (random2(6))
@@ -242,9 +227,6 @@ void tile_default_flv(branch_type br, int depth, tile_flavour &flv)
         flv.floor = TILE_FLOOR_VAULT;
         return;
 
-#if TAG_MAJOR_VERSION == 34
-    case BRANCH_LABYRINTH:
-#endif
     case BRANCH_GAUNTLET:
         flv.wall  = TILE_WALL_LAB_ROCK;
         flv.floor = TILE_FLOOR_GAUNTLET;
@@ -453,9 +435,6 @@ static bool _same_door_at(dungeon_feature_type feat, const coord_def &gc)
     const dungeon_feature_type door = grd(gc);
 
     return door == feat
-#if TAG_MAJOR_VERSION == 34
-        || map_masked(gc, MMT_WAS_DOOR_MIMIC)
-#endif
         || feat_is_closed_door(door)
            && feat_is_opaque(feat) == feat_is_opaque(door)
            && (feat_is_sealed(feat) || feat_is_sealed(door));
@@ -1453,10 +1432,6 @@ void tile_apply_properties(const coord_def &gc, packed_cell &cell)
     if (mc.flags & MAP_ORB_HALOED)
         cell.orb_glow = get_orb_phase(gc) ? 2 : 1;
 
-#if TAG_MAJOR_VERSION == 34
-    if (mc.flags & MAP_HOT)
-        cell.heat_aura = 1 + random2(3);
-#endif
 
     if (mc.flags & MAP_QUAD_HALOED)
         cell.quad_glow = true;

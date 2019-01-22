@@ -565,9 +565,7 @@ static void _describe_book(const spellbook_contents &book,
             continue;
         }
 
-        string schools =
-            source_item->base_type == OBJ_RODS ? "Evocations"
-                                               : _spell_schools(spell);
+        string schools = _spell_schools(spell);
         description.cprintf("%s%d\n",
                             chop_string(schools, 30).c_str(),
                             spell_difficulty(spell));

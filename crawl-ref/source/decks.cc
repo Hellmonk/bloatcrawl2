@@ -1773,37 +1773,3 @@ string deck_name(deck_type deck)
     return "deck of " + name;
 }
 
-#if TAG_MAJOR_VERSION == 34
-bool is_deck_type(uint8_t sub_type)
-{
-    return (MISC_FIRST_DECK <= sub_type && sub_type <= MISC_LAST_DECK)
-        || sub_type == MISC_DECK_OF_ODDITIES
-        || sub_type == MISC_DECK_UNKNOWN;
-}
-
-bool is_deck(const item_def &item)
-{
-    return item.base_type == OBJ_MISCELLANY
-           && is_deck_type(item.sub_type);
-}
-
-void reclaim_decks_on_level()
-{
-    for (auto &item : mitm)
-        if (item.defined() && is_deck(item))
-            destroy_item(item.index());
-}
-
-static void _reclaim_inventory_decks()
-{
-    for (auto &item : you.inv)
-        if (item.defined() && is_deck(item))
-            dec_inv_item_quantity(item.link, 1);
-}
-
-void reclaim_decks()
-{
-    add_daction(DACT_RECLAIM_DECKS);
-    _reclaim_inventory_decks();
-}
-#endif

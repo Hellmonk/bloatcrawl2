@@ -834,14 +834,6 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
 
     size_type player_size = you.body_size(PSIZE_TORSO, ignore_temporary);
     int bad_size = fit_armour_size(item, player_size);
-#if TAG_MAJOR_VERSION == 34
-    if (is_unrandom_artefact(item, UNRAND_TALOS))
-    {
-        // adjust bad_size for the oversized plate armour
-        // negative means levels too small, positive means levels too large
-        bad_size = SIZE_LARGE - player_size;
-    }
-#endif
 
     if (bad_size)
     {
@@ -2562,13 +2554,6 @@ static void _handle_read_book(item_def& book)
 
     ASSERT(book.sub_type != BOOK_MANUAL);
 
-#if TAG_MAJOR_VERSION == 34
-    if (book.sub_type == BOOK_BUGGY_DESTRUCTION)
-    {
-        mpr("This item has been removed, sorry!");
-        return;
-    }
-#endif
 
     set_ident_flags(book, ISFLAG_IDENT_MASK);
     read_book(book);
@@ -2603,11 +2588,6 @@ static bool _is_cancellable_scroll(scroll_type scroll)
            || scroll == SCR_ENCHANT_ARMOUR
            || scroll == SCR_AMNESIA
            || scroll == SCR_REMOVE_CURSE
-#if TAG_MAJOR_VERSION == 34
-           || scroll == SCR_CURSE_ARMOUR
-           || scroll == SCR_CURSE_JEWELLERY
-           || scroll == SCR_RECHARGING
-#endif
            || scroll == SCR_BRAND_WEAPON
            || scroll == SCR_ENCHANT_WEAPON
            || scroll == SCR_MAGIC_MAPPING
@@ -2712,25 +2692,6 @@ string cannot_read_item_reason(const item_def &item)
         case SCR_REMOVE_CURSE:
             return _no_items_reason(OSEL_CURSED_WORN);
 
-#if TAG_MAJOR_VERSION == 34
-        case SCR_CURSE_WEAPON:
-            if (!you.weapon())
-                return "This scroll only affects a wielded weapon!";
-
-            // assumption: wielded weapons always have their curse & brand known
-            if (you.weapon()->cursed())
-                return "Your weapon is already cursed!";
-
-            if (get_weapon_brand(*you.weapon()) == SPWPN_HOLY_WRATH)
-                return "Holy weapons cannot be cursed!";
-            return "";
-
-        case SCR_CURSE_ARMOUR:
-            return _no_items_reason(OSEL_UNCURSED_WORN_ARMOUR);
-
-        case SCR_CURSE_JEWELLERY:
-            return _no_items_reason(OSEL_UNCURSED_WORN_JEWELLERY);
-#endif
 
         default:
             return "";
@@ -2989,30 +2950,6 @@ void read_scroll(item_def& scroll)
         break;
     }
 
-#if TAG_MAJOR_VERSION == 34
-    case SCR_CURSE_WEAPON:
-    {
-        // Not you.weapon() because we want to handle melded weapons too.
-        item_def * const weapon = you.slot_item(EQ_WEAPON, true);
-        if (!weapon || !is_weapon(*weapon) || weapon->cursed())
-        {
-            bool plural = false;
-            const string weapon_name =
-                weapon ? weapon->name(DESC_YOUR)
-                       : "Your " + you.hand_name(true, &plural);
-            mprf("%s very briefly gain%s a black sheen.",
-                 weapon_name.c_str(), plural ? "" : "s");
-        }
-        else
-        {
-            // Also sets wield_change.
-            do_curse_item(*weapon, false);
-            learned_something_new(HINT_YOU_CURSED);
-            bad_effect = true;
-        }
-        break;
-    }
-#endif
 
     case SCR_ENCHANT_WEAPON:
         if (!alreadyknown)
@@ -3058,23 +2995,6 @@ void read_scroll(item_def& scroll)
         cancel_scroll =
             (_handle_enchant_armour(alreadyknown, pre_succ_msg) == -1);
         break;
-#if TAG_MAJOR_VERSION == 34
-    // Should always be identified by Ashenzari.
-    case SCR_CURSE_ARMOUR:
-    case SCR_CURSE_JEWELLERY:
-    {
-        const bool armour = which_scroll == SCR_CURSE_ARMOUR;
-        cancel_scroll = !curse_item(armour, pre_succ_msg);
-        break;
-    }
-
-    case SCR_RECHARGING:
-    {
-        mpr("This item has been removed, sorry!");
-        cancel_scroll = true;
-        break;
-    }
-#endif
 
     case SCR_HOLY_WORD:
     {
@@ -3138,9 +3058,6 @@ void read_scroll(item_def& scroll)
         && which_scroll != SCR_ENCHANT_WEAPON
         && which_scroll != SCR_IDENTIFY
         && which_scroll != SCR_ENCHANT_ARMOUR
-#if TAG_MAJOR_VERSION == 34
-        && which_scroll != SCR_RECHARGING
-#endif
         && which_scroll != SCR_AMNESIA)
     {
         mprf("It %s a %s.",

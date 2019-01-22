@@ -268,38 +268,3 @@ bool ancestor_full_hp()
     return true;
 }
 
-#if TAG_MAJOR_VERSION == 34
-// A temporary routine to clean up some references to invalid companions and
-// prevent crashes on load. Should be unnecessary once the cloning bugs that
-// allow the creation of these invalid companions are fully mopped up
-void fixup_bad_companions()
-{
-    for (auto i = companion_list.begin(); i != companion_list.end();)
-    {
-        if (invalid_monster_type(i->second.mons.mons.type))
-            companion_list.erase(i++);
-        else
-            ++i;
-    }
-}
-
-bool maybe_bad_priest_monster(monster &mons)
-{
-    // prior to e6d7efa92cb0, if a follower got polymorphed to a form that
-    // satisfied is_priest, its god got cleared. This resulted in Beogh
-    // followers potentially getting cloned on level load, resulting in
-    // duplicate mids or a corrupted mid cache depending on ordering. This is
-    // now fixed up in tag_read_level_load.
-    return mons.alive() && mons.attitude == ATT_FRIENDLY
-                        && mons.god == GOD_NAMELESS;
-}
-
-void fixup_bad_priest_monster(monster &mons)
-{
-    if (!maybe_bad_priest_monster(mons))
-        return;
-    mprf(MSGCH_ERROR, "Removing corrupted ex-follower from level: %s.",
-                                            mons.full_name(DESC_PLAIN).c_str());
-    monster_die(mons, KILL_RESET, -1, true, false);
-}
-#endif

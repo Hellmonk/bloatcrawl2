@@ -40,22 +40,10 @@ enum attack_type
     AT_CONSTRICT,
     AT_TRAMPLE,
     AT_TRUNK_SLAP,
-#if TAG_MAJOR_VERSION == 34
-    AT_SNAP,
-    AT_SPLASH,
-#endif
     AT_POUNCE,
-#if TAG_MAJOR_VERSION == 34
-    AT_REACH_STING,
-    AT_LAST_REAL_ATTACK = AT_REACH_STING,
-#else
     AT_LAST_REAL_ATTACK = AT_POUNCE,
-#endif
 
     AT_CHERUB,
-#if TAG_MAJOR_VERSION == 34
-    AT_SHOOT,
-#endif
     AT_WEAP_ONLY,   // AT_HIT if wielding a melee weapon, AT_NONE otherwise
     AT_RANDOM,      // Anything but AT_SHOOT and AT_WEAP_ONLY.
     NUM_ATTACK_TYPES,
@@ -70,9 +58,6 @@ enum attack_flavour
     AF_BLINK,
     AF_COLD,
     AF_CONFUSE,
-#if TAG_MAJOR_VERSION == 34
-    AF_DISEASE,
-#endif
     AF_DRAIN_STR,
     AF_DRAIN_INT,
     AF_DRAIN_DEX,
@@ -84,30 +69,14 @@ enum attack_flavour
     AF_MUTATE,
     AF_POISON_PARALYSE,
     AF_POISON,
-#if TAG_MAJOR_VERSION == 34
-    AF_POISON_NASTY,
-    AF_POISON_MEDIUM,
-#endif
     AF_POISON_STRONG,
-#if TAG_MAJOR_VERSION == 34
-    AF_POISON_STR,
-    AF_POISON_INT,
-    AF_POISON_DEX,
-    AF_POISON_STAT,
-#endif
     AF_ROT,
     AF_VAMPIRIC,
-#if TAG_MAJOR_VERSION == 34
-    AF_KLOWN,
-#endif
     AF_DISTORT,
     AF_RAGE,
     AF_STICKY_FLAME,
     AF_CHAOTIC,
     AF_STEAL,
-#if TAG_MAJOR_VERSION == 34
-    AF_STEAL_FOOD,
-#endif
     AF_CRUSH,
     AF_REACH,
     AF_HOLY,
@@ -118,24 +87,15 @@ enum attack_flavour
     AF_PURE_FIRE,
     AF_DRAIN_SPEED,
     AF_VULN,
-#if TAG_MAJOR_VERSION == 34
-    AF_PLAGUE,
-#endif
     AF_REACH_STING,
     AF_SHADOWSTAB,
     AF_DROWN,
-#if TAG_MAJOR_VERSION == 34
-    AF_FIREBRAND,
-#endif
     AF_CORRODE,
     AF_SCARAB,
     AF_KITE,  // Hops backwards if attacking with a polearm.
     AF_SWOOP, // Swoops in to perform a melee attack if far away.
     AF_TRAMPLE, // Trampling effect.
     AF_WEAKNESS,
-#if TAG_MAJOR_VERSION == 34
-    AF_MIASMATA,
-#endif
 };
 
 // Non-spell "summoning" types to give to monster::mark_summoned(), or
@@ -152,10 +112,6 @@ enum mon_summon_type
     MON_SUMM_WRATH,   // Divine wrath
     MON_SUMM_AID,     // Divine aid
     MON_SUMM_SCROLL,  // Scroll of summoning
-#if TAG_MAJOR_VERSION == 34
-    MON_SUMM_SHADOW,  // Shadow trap
-    MON_SUMM_LANTERN, // Lantern of shadows
-#endif
 };
 
 #include "mon-flags.h"
@@ -213,11 +169,7 @@ enum mon_resist_flags
     MR_RES_TORMENT       = 1 << 22,
     MR_RES_PETRIFY       = 1 << 23,
     MR_RES_DAMNATION     = 1 << 24,
-#if TAG_MAJOR_VERSION == 34
-    MR_OLD_RES_ACID      = 1 << 25,
-#else
     // unused 1 << 25,
-#endif
     MR_RES_STICKY_FLAME  = 1 << 26,
     MR_RES_TORNADO       = 1 << 27,
     MR_RES_STEAM         = 1 << 28,

@@ -1288,11 +1288,6 @@ static bool _load_map_index(const string& cache, const string &base,
         return false;
     }
 
-#if TAG_MAJOR_VERSION == 34
-    // Throw out indices that could have CHANCE priority entirely.
-    if (minor < TAG_MINOR_NO_PRIORITY)
-        return false;
-#endif
 
     const int nmaps = unmarshallShort(inf);
     const int nexist = vdefs.size();

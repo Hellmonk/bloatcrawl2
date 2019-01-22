@@ -1282,28 +1282,13 @@ int player_spell_levels()
 {
     int sl = min(player_total_spell_levels(), 99);
 
-#if TAG_MAJOR_VERSION == 34
-    bool fireball = false;
-    bool delayed_fireball = false;
-#endif
 
     for (const spell_type spell : you.spells)
     {
-#if TAG_MAJOR_VERSION == 34
-        if (spell == SPELL_FIREBALL)
-            fireball = true;
-        else if (spell == SPELL_DELAYED_FIREBALL)
-            delayed_fireball = true;
-#endif
         if (spell != SPELL_NO_SPELL)
             sl -= spell_difficulty(spell);
     }
 
-#if TAG_MAJOR_VERSION == 34
-    // Fireball is free for characters with delayed fireball
-    if (fireball && delayed_fireball)
-        sl += spell_difficulty(SPELL_FIREBALL);
-#endif
 
     // Note: This can happen because of draining. -- bwr
     if (sl < 0)
@@ -1583,9 +1568,6 @@ bool player_res_torment(bool random)
     return get_form()->res_neg() == 3
            || you.species == SP_VAMPIRE && you.hunger_state <= HS_STARVING
            || you.petrified()
-#if TAG_MAJOR_VERSION == 34
-           || player_equip_unrand(UNRAND_ETERNAL_TORMENT)
-#endif
            ;
 }
 
@@ -3949,10 +3931,6 @@ int get_real_hp(bool trans, bool rotted)
     if (trans)
         hitp = hitp * form_hp_mod() / 10;
 
-#if TAG_MAJOR_VERSION == 34
-    if (trans && player_equip_unrand(UNRAND_ETERNAL_TORMENT))
-        hitp = hitp * 4 / 5;
-#endif
 
     if (trans && you.duration[DUR_DEATHS_DOOR] > 0)
         hitp = allowed_deaths_door_hp();
@@ -5941,11 +5919,6 @@ int player::base_ac(int scale) const
               // +1, +2, +3
     AC += get_mutation_level(MUT_IRIDESCENT_SCALES, mutation_activity_type::FULL) * 200;
               // +2, +4, +6
-#if TAG_MAJOR_VERSION == 34
-    AC += get_mutation_level(MUT_ROUGH_BLACK_SCALES, mutation_activity_type::FULL)
-          ? -100 + get_mutation_level(MUT_ROUGH_BLACK_SCALES, mutation_activity_type::FULL) * 300 : 0;
-              // +2, +5, +8
-#endif
     AC += get_mutation_level(MUT_RUGGED_BROWN_SCALES, mutation_activity_type::FULL) * 100;
               // +1, +2, +3
     AC += get_mutation_level(MUT_ICY_BLUE_SCALES, mutation_activity_type::FULL)

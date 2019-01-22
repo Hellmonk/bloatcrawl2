@@ -517,9 +517,6 @@ species_type random_draconian_colour()
     vector<species_type> dracs;
     for (int drac = 0; drac < static_cast<int>(NUM_SPECIES); ++drac)
         if (species_is_draconian(static_cast<species_type>(drac))
-#if TAG_MAJOR_VERSION == 34
-            && static_cast<species_type>(drac) != SP_MOTTLED_DRACONIAN
-#endif
             )
         {
             dracs.push_back(static_cast<species_type>(drac));

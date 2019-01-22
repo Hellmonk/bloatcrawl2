@@ -745,9 +745,7 @@ void seen_tracked_feature(dungeon_feature_type feat)
 void explored_tracked_feature(dungeon_feature_type feat)
 {
     const char *feat_key = _get_tracked_feature_key(feat);
-#if TAG_MAJOR_VERSION > 34
     ASSERT(env.properties.exists(feat_key));
-#endif
 
     // Opening a runed door we haven't seen (because of door_vault, probably).
     if (env.properties[feat_key].get_int() == 0)

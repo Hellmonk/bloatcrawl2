@@ -42,34 +42,16 @@ static const char *daction_names[] =
 
     // Actions not needing a counter.
     "old enslaved souls go poof",
-#if TAG_MAJOR_VERSION == 34
-    "holy beings allow another conversion attempt",
-#else
     "slimes allow another conversion attempt",
-#endif
-    "holy beings go neutral",
-    "Trog's gifts go hostile",
-    "reclaim decks",
     "reapply passive mapping",
     "remove Jiyva altars",
     "Pikel's slaves go good-neutral",
     "corpses rot",
-#if TAG_MAJOR_VERSION == 34
-    "Tomb loses -cTele",
-    "slimes allow another conversion attempt",
-#endif
     "hogs to humans",
-#if TAG_MAJOR_VERSION == 34
-    "end spirit howl",
-#endif
     "gold to top of piles",
     "bribe timeout",
     "remove Gozag shops",
     "apply Gozag bribes",
-    "Makhleb's servants go hostile",
-#if TAG_MAJOR_VERSION == 34
-    "make all monsters hate you",
-#endif
     "ancestor vanishes",
     "upgrade ancestor",
 };
@@ -293,9 +275,6 @@ static void _apply_daction(daction_type act)
         }
         break;
 
-    case DACT_RECLAIM_DECKS:
-        reclaim_decks_on_level();
-        break;
     case DACT_REAUTOMAP:
         reautomap_level();
         break;
@@ -361,16 +340,6 @@ static void _apply_daction(daction_type act)
         if (!companion_is_elsewhere(hepliaklqana_ancestor()))
             upgrade_hepliaklqana_ancestor(true);
         break;
-#if TAG_MAJOR_VERSION == 34
-    case DACT_END_SPIRIT_HOWL:
-    case DACT_HOLY_NEW_ATTEMPT:
-    case DACT_ALLY_SACRIFICE_LOVE:
-    case DACT_TOMB_CTELE:
-    case DACT_ALLY_HOLY:
-    case DACT_HOLY_PETS_GO_NEUTRAL:
-    case DACT_ALLY_MAKHLEB:
-    case DACT_ALLY_TROG:
-#endif
     case NUM_DACTION_COUNTERS:
     case NUM_DACTIONS:
         ;

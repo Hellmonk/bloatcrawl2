@@ -906,10 +906,6 @@ level_id stair_destination(coord_def pos, bool for_real)
 level_id stair_destination(dungeon_feature_type feat, const string &dst,
                            bool for_real)
 {
-#if TAG_MAJOR_VERSION == 34
-    if (feat == DNGN_ESCAPE_HATCH_UP && player_in_branch(BRANCH_LABYRINTH))
-        feat = DNGN_EXIT_LABYRINTH;
-#endif
     if (branches[you.where_are_you].exit_stairs == feat
         && parent_branch(you.where_are_you) < NUM_BRANCHES
         && feat != DNGN_EXIT_ZIGGURAT)
@@ -979,24 +975,6 @@ level_id stair_destination(dungeon_feature_type feat, const string &dst,
     case DNGN_EXIT_THROUGH_ABYSS:
         return level_id(BRANCH_ABYSS);
 
-#if TAG_MAJOR_VERSION == 34
-    case DNGN_ENTER_PORTAL_VAULT:
-        if (dst.empty())
-        {
-            if (for_real)
-                die("portal without a destination");
-            else
-                return level_id();
-        }
-        try
-        {
-            return level_id::parse_level_id(dst);
-        }
-        catch (const bad_level_id &err)
-        {
-            die("Invalid destination for portal: %s", err.what());
-        }
-#endif
 
     case DNGN_ENTER_HELL:
         if (for_real && !player_in_hell())
@@ -1006,9 +984,6 @@ level_id stair_destination(dungeon_feature_type feat, const string &dst,
     case DNGN_EXIT_ABYSS:
         if (you.chapter == CHAPTER_POCKET_ABYSS)
             return level_id(BRANCH_DUNGEON, 1);
-#if TAG_MAJOR_VERSION == 34
-    case DNGN_EXIT_PORTAL_VAULT:
-#endif
     case DNGN_EXIT_PANDEMONIUM:
         if (you.level_stack.empty())
         {

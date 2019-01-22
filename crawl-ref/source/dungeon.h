@@ -25,9 +25,6 @@ COMPILE_CHECK(sizeof(feature_property_type) <= sizeof(terrain_property_t));
 #define TEMPLE_MAP_KEY       "temple_map_key"
 #define TEMPLE_SIZE_KEY      "temple_size_key"
 
-#if TAG_MAJOR_VERSION == 34
-#define TOMB_STONE_STAIRS_KEY "tomb_stone_stairs_key"
-#endif
 #define HATCH_NAME_PROP "_hatch_name"
 #define HATCH_DEST_NAME_PROP "_hatch_dest_name"
 
@@ -55,9 +52,6 @@ enum map_mask_type
     MMT_NO_TRAP         = 0x80,  // No trap generation
     MMT_MIMIC           = 0x100, // Feature mimics
     MMT_NO_MIMIC        = 0x200, // Feature shouldn't be turned into a mimic.
-#if TAG_MAJOR_VERSION == 34
-    MMT_WAS_DOOR_MIMIC  = 0x400, // There was a door mimic there.
-#endif
     MMT_TURNED_TO_FLOOR = 0x800, // This feature was dug, deconstructed or such.
 };
 

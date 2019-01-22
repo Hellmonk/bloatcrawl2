@@ -455,10 +455,6 @@ object_class_type item_class_by_sym(char32_t c)
     case U'\xa3': //£
     case U'\xa5': //¥ // FR: support more currencies
         return OBJ_GOLD;
-#if TAG_MAJOR_VERSION == 34
-    case '\\': // Compat break: used to be staves (why not '|'?).
-        return OBJ_RODS;
-#endif
     default:
         return NUM_OBJECT_CLASSES;
     }

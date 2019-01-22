@@ -334,17 +334,6 @@ bool is_weapon_brand_ok(int type, int brand, bool strict)
             return false;
         break;
 
-#if TAG_MAJOR_VERSION == 34
-    // Removed brands.
-    case SPWPN_RETURNING:
-    case SPWPN_REACHING:
-    case SPWPN_ORC_SLAYING:
-    case SPWPN_FLAME:
-    case SPWPN_FROST:
-    case SPWPN_DRAGON_SLAYING:
-    case SPWPN_EVASION:
-        return false;
-#endif
 
     case SPWPN_CONFUSE:
     case SPWPN_FORBID_BRAND:
@@ -517,9 +506,6 @@ static special_missile_type _determine_missile_brand(const item_def& item,
 
     switch (item.sub_type)
     {
-#if TAG_MAJOR_VERSION == 34
-    case MI_DART:
-#endif
     case MI_THROWING_NET:
     case MI_STONE:
     case MI_LARGE_ROCK:
@@ -595,22 +581,11 @@ bool is_missile_brand_ok(int type, int brand, bool strict)
 
     case SPMSL_CURARE:
     case SPMSL_PARALYSIS:
-#if TAG_MAJOR_VERSION == 34
-    case SPMSL_SLOW:
-#endif
     case SPMSL_SLEEP:
     case SPMSL_CONFUSION:
-#if TAG_MAJOR_VERSION == 34
-    case SPMSL_SICKNESS:
-#endif
     case SPMSL_FRENZY:
         return type == MI_NEEDLE;
 
-#if TAG_MAJOR_VERSION == 34
-    case SPMSL_BLINDING:
-        // possible on ex-pies
-        return type == MI_TOMAHAWK && !strict;
-#endif
 
     default:
         if (type == MI_NEEDLE)
@@ -927,9 +902,6 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
         // deliberate fall-through
     case SPARM_RUNNING:
     case SPARM_STEALTH:
-#if TAG_MAJOR_VERSION == 34
-    case SPARM_JUMPING:
-#endif
         return slot == EQ_BOOTS;
 
     case SPARM_ARCHMAGI:
@@ -937,12 +909,6 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
 
     case SPARM_PONDEROUSNESS:
         return true;
-#if TAG_MAJOR_VERSION == 34
-    case SPARM_PRESERVATION:
-        if (type == ARM_PLATE_ARMOUR && !strict)
-            return true;
-        // deliberate fall-through
-#endif
     case SPARM_INVISIBILITY:
         return slot == EQ_CLOAK;
 
@@ -987,10 +953,6 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
 
     case SPARM_SPIRIT_SHIELD:
         return
-#if TAG_MAJOR_VERSION == 34
-               type == ARM_HAT ||
-               type == ARM_CAP ||
-#endif
                slot == EQ_SHIELD ||
                type == ARM_SCARF || !strict;
 
@@ -1485,14 +1447,7 @@ static skill_type _choose_manual_skill()
     }
 
     // mundane skill
-#if TAG_MAJOR_VERSION == 34
-    skill_type skill = SK_TRAPS;
-    while (skill == SK_TRAPS || skill == SK_STABBING)
-        skill = static_cast<skill_type>(random2(SK_LAST_MUNDANE+1));
-    return skill;
-#else
     return static_cast<skill_type>(random2(SK_LAST_MUNDANE + 1));
-#endif
 }
 
 static void _generate_book_item(item_def& item, bool allow_uniques,
@@ -2159,16 +2114,6 @@ void makeitem_tests()
         item.base_type = OBJ_WEAPONS;
         item.brand = coinflip() ? SPWPN_NORMAL
                                 : random2(NUM_REAL_SPECIAL_WEAPONS);
-#if TAG_MAJOR_VERSION == 34
-        if (item.brand == SPWPN_ORC_SLAYING
-            || item.brand == SPWPN_REACHING
-            || item.brand == SPWPN_RETURNING
-            || item.brand == SPWPN_CONFUSE
-            || item.brand == SPWPN_DRAGON_SLAYING)
-        {
-            item.brand = SPWPN_FORBID_BRAND;
-        }
-#endif
         _generate_weapon_item(item,
                               coinflip(),
                               coinflip() ? OBJ_RANDOM : random2(NUM_WEAPONS),
@@ -2184,10 +2129,6 @@ void makeitem_tests()
         item.brand = coinflip() ? SPARM_NORMAL
                                 : random2(NUM_REAL_SPECIAL_ARMOURS);
         int type = coinflip() ? OBJ_RANDOM : random2(NUM_ARMOURS);
-#if TAG_MAJOR_VERSION == 34
-        if (type == ARM_CAP)
-            type = ARM_HAT;
-#endif
         _generate_armour_item(item,
                               coinflip(),
                               type,

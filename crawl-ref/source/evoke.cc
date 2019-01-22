@@ -1589,11 +1589,6 @@ bool evoke_item(int slot, bool check_range)
 
         switch (item.sub_type)
         {
-#if TAG_MAJOR_VERSION == 34
-        case MISC_BOTTLED_EFREET:
-            canned_msg(MSG_NOTHING_HAPPENS);
-            return false;
-#endif
 
         case MISC_FAN_OF_GALES:
         {
@@ -1630,11 +1625,6 @@ bool evoke_item(int slot, bool check_range)
 
             break;
 
-#if TAG_MAJOR_VERSION == 34
-        case MISC_STONE_OF_TREMORS:
-            canned_msg(MSG_NOTHING_HAPPENS);
-            return false;
-#endif
 
         case MISC_PHIAL_OF_FLOODS:
             if (!evoker_charges(item.sub_type))

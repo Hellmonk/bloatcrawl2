@@ -284,10 +284,6 @@ bool feat_is_traversable(dungeon_feature_type feat, bool try_fallback)
             return !(feat == DNGN_TRAP_SHAFT || feat == DNGN_TRAP_TELEPORT);
         return false;
     }
-#if TAG_MAJOR_VERSION == 34
-    else if (feat == DNGN_TELEPORTER) // never ever enter it automatically
-        return false;
-#endif
     else if (feat_has_solid_floor(feat)
              || feat_is_closed_door(feat)
                 && (!feat_is_sealed(feat) || try_fallback))
@@ -3053,10 +3049,6 @@ level_id level_id::get_next_level_id(const coord_def &pos)
 
     if (gridc == branches[id.branch].exit_stairs)
         return stair_destination(pos);
-#if TAG_MAJOR_VERSION == 34
-    if (gridc == DNGN_ENTER_PORTAL_VAULT)
-        return stair_destination(pos);
-#endif
     if (gridc == DNGN_EXIT_THROUGH_ABYSS)
         return level_id(BRANCH_ABYSS, 1);
 
@@ -3697,10 +3689,6 @@ void LevelInfo::load(reader& inf, int minorVersion)
     }
 
     transporters.clear();
-#if TAG_MAJOR_VERSION == 34
-    if (minorVersion >= TAG_MINOR_TRANSPORTERS)
-    {
-#endif
     int transporter_count = unmarshallShort(inf);
     for (int i = 0; i < transporter_count; ++i)
     {
@@ -3708,9 +3696,6 @@ void LevelInfo::load(reader& inf, int minorVersion)
         ti.load(inf);
         transporters.push_back(ti);
     }
-#if TAG_MAJOR_VERSION == 34
-    }
-#endif
 
     unmarshallExcludes(inf, minorVersion, excludes);
 

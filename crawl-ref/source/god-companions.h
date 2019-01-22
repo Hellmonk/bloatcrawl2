@@ -43,8 +43,3 @@ mid_t hepliaklqana_ancestor();
 monster* hepliaklqana_ancestor_mon();
 bool ancestor_full_hp();
 
-#if TAG_MAJOR_VERSION == 34
-void fixup_bad_companions();
-bool maybe_bad_priest_monster(monster &mons);
-void fixup_bad_priest_monster(monster &mons);
-#endif

@@ -919,13 +919,6 @@ static int _get_dest_stair_type(branch_type old_branch,
                 return it->exit_stairs;
         die("return corresponding to entry %d not found", stair_taken);
     }
-#if TAG_MAJOR_VERSION == 34
-    if (stair_taken == DNGN_ENTER_LABYRINTH)
-    {
-        // dgn_find_nearby_stair uses special logic for labyrinths.
-        return DNGN_ENTER_LABYRINTH;
-    }
-#endif
 
     if (feat_is_portal_entrance(stair_taken))
         return DNGN_STONE_ARCH;
@@ -1626,21 +1619,6 @@ bool load_level(dungeon_feature_type stair_taken, load_mode_type load_mode,
     if (you.position != env.old_player_pos)
        shake_off_monsters(you.as_player());
 
-#if TAG_MAJOR_VERSION == 34
-    if (make_changes && you.props.exists("zig-fixup")
-        && you.where_are_you == BRANCH_TOMB
-        && you.depth == brdepth[BRANCH_TOMB])
-    {
-        if (!just_created_level)
-        {
-            int obj = items(false, OBJ_MISCELLANY, MISC_ZIGGURAT, 0);
-            ASSERT(obj != NON_ITEM);
-            bool success = move_item_to_grid(&obj, you.pos(), true);
-            ASSERT(success);
-        }
-        you.props.erase("zig-fixup");
-    }
-#endif
 
     return just_created_level;
 }
@@ -1655,11 +1633,7 @@ static void _save_level(const level_id& lid)
     _write_tagged_chunk(lid.describe(), TAG_LEVEL);
 }
 
-#if TAG_MAJOR_VERSION == 34
-# define CHUNK(short, long) short
-#else
 # define CHUNK(short, long) long
-#endif
 
 #define SAVEFILE(short, long, savefn)           \
     do                                          \
@@ -1996,17 +1970,6 @@ save_version read_ghost_header(reader &inf)
     if (!version.valid())
         return version;
 
-#if TAG_MAJOR_VERSION == 34
-    // downgrade bones files saved before the bones sub-versioning system
-    if (version > save_version::current_bones() && version.is_compatible())
-    {
-        _ghost_dprf("Setting bones file version from %d.%d to %d.%d on load",
-            version.major, version.minor,
-            save_version::current_bones().major,
-            save_version::current_bones().minor);
-        version = save_version::current_bones();
-    }
-#endif
 
     try
     {
@@ -2505,50 +2468,6 @@ save_version get_save_version(reader &file)
 static bool _convert_obsolete_species()
 {
     // At this point the character has been loaded but not resaved, but the grid, lua, stashes, etc have not been.
-#if TAG_MAJOR_VERSION == 34
-    if (you.species == SP_LAVA_ORC)
-    {
-        if (!yes_or_no("This <red>Lava Orc</red> save game cannot be loaded as-is. If you "
-                       "load it now, your character will be converted to a Hill Orc. Continue?"))
-        {
-            you.save->abort(); // don't even rewrite the header
-            delete you.save;
-            you.save = 0;
-            game_ended(game_exit::abort,
-                "Please load the save in an earlier version "
-                "if you want to keep it as a Lava Orc.");
-        }
-        change_species_to(SP_HILL_ORC);
-        // No need for conservation
-        you.innate_mutation[MUT_CONSERVE_SCROLLS] = you.mutation[MUT_CONSERVE_SCROLLS] = 0;
-        // This is not an elegant way to deal with lava, but at this point the
-        // level isn't loaded so we can't check the grid features. In
-        // addition, even if the player isn't over lava, they might still get
-        // trapped.
-        fly_player(100);
-        return true;
-    }
-    if (you.species == SP_DJINNI)
-    {
-        if (!yes_or_no("This <red>Djinni</red> save game cannot be loaded as-is. If you "
-                       "load it now, your character will be converted to a Vine Stalker. Continue?"))
-        {
-            you.save->abort(); // don't even rewrite the header
-            delete you.save;
-            you.save = 0;
-            game_ended(game_exit::abort,
-                "Please load the save in an earlier version "
-                "if you want to keep it as a Djinni.");
-        }
-        change_species_to(SP_VINE_STALKER);
-        you.magic_contamination = 0;
-        // Djinni were flying, so give the player some time to land
-        fly_player(100);
-        // Give them some time to find food. Creating food isn't safe as the grid doesn't exist yet, and may have water anyways.
-        you.hunger = HUNGER_MAXIMUM;
-        return true;
-    }
-#endif
     return false;
 }
 
@@ -2587,10 +2506,6 @@ static bool _read_char_chunk(package *save)
         if (major == TAG_MAJOR_VERSION && minor == TAG_MINOR_VERSION)
             inf.fail_if_not_eof("chr");
 
-#if TAG_MAJOR_VERSION == 34
-        if (major == 33 && minor == TAG_MINOR_0_11)
-            return true;
-#endif
         return major == TAG_MAJOR_VERSION && minor <= TAG_MINOR_VERSION;
     }
     catch (short_read_exception &E)

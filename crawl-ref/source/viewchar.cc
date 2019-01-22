@@ -26,17 +26,11 @@ static const char32_t dchar_table[NUM_CSET][NUM_DCHAR_TYPES] =
 #endif
          '0', U'\x3c6', //φ
             ')',  '[',  '/',  '%',  '?',  '=',  '!',  '(', ':',  '|',
-#if TAG_MAJOR_VERSION == 34
-         '\\',
-#endif
          '}', U'\x2020', //†
             U'\xf7', //÷
             '$',  '"',
          U'\xa7', U'\x263c', U'\x25CB', U'\xB0', // §, ☼, ○, °
             U'\x2663', //♣
-#if TAG_MAJOR_VERSION == 34
-         U'\xa9', //©
-#endif
         // transporter .. frame_top_left
          U'\xa9', //©
             U'\xa9', //©
@@ -69,9 +63,6 @@ static const char32_t dchar_table[NUM_CSET][NUM_DCHAR_TYPES] =
          '?',  '=',  '!',  '(',  ':',  '|',  '|',  '}',  '%',  '%',  '$',  '"',
         // cloud .. tree
          '0', '0', '0', '0', '7',
-#if TAG_MAJOR_VERSION == 34
-         '^',
-#endif
         // transporter .. frame_top_left
          '^',  '^',  ' ',  '#',  '*',  '+',  'X',  '`',  '#',  '-',  '|',  '+',
         // frame_top_right .. draw_down
@@ -94,15 +85,9 @@ dungeon_char_type dchar_by_name(const string &name)
         "item_orb", "item_rune", "item_weapon", "item_armour", "item_wand",
         "item_food", "item_scroll", "item_ring", "item_potion", "item_missile",
         "item_book", "item_staff",
-#if TAG_MAJOR_VERSION == 34
-        "item_rod",
-#endif
         "item_miscellany", "item_corpse", "item_skeleton", "item_gold",
         "item_amulet", "cloud", "cloud_weak", "cloud_fading", "cloud_terminal",
         "tree",
-#if TAG_MAJOR_VERSION == 34
-        "teleporter",
-#endif
         "transporter", "transporter_landing", "space", "fired_bolt",
         "fired_zap", "fired_burst", "fired_debug", "fired_missile",
         "explosion", "frame_horiz", "frame_vert", "frame_top_left",

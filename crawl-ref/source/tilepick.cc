@@ -58,9 +58,6 @@ COMPILE_CHECK(NUM_JEWELLERY - AMU_FIRST_AMULET
               == TILE_AMU_ID_LAST - TILE_AMU_ID_FIRST + 1);
 COMPILE_CHECK(NUM_SCROLLS == TILE_SCR_ID_LAST - TILE_SCR_ID_FIRST + 1);
 COMPILE_CHECK(NUM_STAVES == TILE_STAFF_ID_LAST - TILE_STAFF_ID_FIRST + 1);
-#if TAG_MAJOR_VERSION == 34
-COMPILE_CHECK(NUM_RODS == TILE_ROD_ID_LAST - TILE_ROD_ID_FIRST + 1);
-#endif
 COMPILE_CHECK(NUM_WANDS == TILE_WAND_ID_LAST - TILE_WAND_ID_FIRST + 1);
 COMPILE_CHECK(NUM_POTIONS == TILE_POT_ID_LAST - TILE_POT_ID_FIRST + 1);
 
@@ -227,10 +224,6 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_DNGN_TRAP_SHAFT;
     case DNGN_TRAP_WEB:
         return TILE_DNGN_TRAP_WEB;
-#if TAG_MAJOR_VERSION == 34
-    case DNGN_TELEPORTER:
-        return TILE_DNGN_TRAP_GOLUBRIA;
-#endif
     case DNGN_TRANSPORTER:
         return TILE_DNGN_TRANSPORTER;
     case DNGN_TRANSPORTER_LANDING:
@@ -289,12 +282,6 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_DNGN_EXIT_PANDEMONIUM;
 
     // branch entry stairs
-#if TAG_MAJOR_VERSION == 34
-    case DNGN_ENTER_DWARF:
-    case DNGN_ENTER_FOREST:
-    case DNGN_ENTER_BLADE:
-        return TILE_DNGN_ENTER;
-#endif
     case DNGN_ENTER_TEMPLE:
         return TILE_DNGN_ENTER_TEMPLE;
     case DNGN_ENTER_ORC:
@@ -347,12 +334,6 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_DNGN_PORTAL_DESOLATION;
 
     // branch exit stairs
-#if TAG_MAJOR_VERSION == 34
-    case DNGN_EXIT_DWARF:
-    case DNGN_EXIT_FOREST:
-    case DNGN_EXIT_BLADE:
-        return TILE_DNGN_RETURN;
-#endif
     case DNGN_EXIT_TEMPLE:
         return TILE_DNGN_EXIT_TEMPLE;
     case DNGN_EXIT_ORC:
@@ -397,11 +378,6 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
     case DNGN_EXIT_WIZLAB:
         return TILE_DNGN_PORTAL_WIZARD_LAB;
 
-#if TAG_MAJOR_VERSION == 34
-    case DNGN_ENTER_PORTAL_VAULT:
-    case DNGN_EXIT_PORTAL_VAULT:
-        return TILE_DNGN_PORTAL;
-#endif
     case DNGN_EXPIRED_PORTAL:
         return TILE_DNGN_PORTAL_EXPIRED;
     case DNGN_MALIGN_GATEWAY:
@@ -452,10 +428,6 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_DNGN_ALTAR_QAZLAL;
     case DNGN_ALTAR_RU:
         return TILE_DNGN_ALTAR_RU;
-#if TAG_MAJOR_VERSION == 34
-    case DNGN_ALTAR_PAKELLAS:
-        return TILE_DNGN_ALTAR_PAKELLAS;
-#endif
     case DNGN_ALTAR_USKAYAW:
         return TILE_DNGN_ALTAR_USKAYAW;
     case DNGN_ALTAR_HEPLIAKLQANA:
@@ -2104,9 +2076,6 @@ static tileidx_t _tileidx_weapon_base(const item_def &item)
     case WPN_HALBERD:               return TILE_WPN_HALBERD;
     case WPN_SCYTHE:                return TILE_WPN_SCYTHE;
     case WPN_GLAIVE:                return TILE_WPN_GLAIVE;
-#if TAG_MAJOR_VERSION == 34
-    case WPN_STAFF:                 return TILE_WPN_STAFF;
-#endif
     case WPN_QUARTERSTAFF:          return TILE_WPN_QUARTERSTAFF;
     case WPN_CLUB:                  return TILE_WPN_CLUB;
     case WPN_MACE:                  return TILE_WPN_MACE;
@@ -2250,10 +2219,6 @@ static tileidx_t _tileidx_armour_base(const item_def &item)
     case ARM_HAT:
         return TILE_THELM_HAT;
 
-#if TAG_MAJOR_VERSION == 34
-    case ARM_CAP:
-        return TILE_THELM_CAP;
-#endif
 
     case ARM_HELMET:
         return TILE_THELM_HELM;
@@ -2489,10 +2454,6 @@ static tileidx_t _tileidx_misc(const item_def &item)
 {
     switch (item.sub_type)
     {
-#if TAG_MAJOR_VERSION == 34
-    case MISC_BOTTLED_EFREET:
-        return TILE_MISC_BOTTLED_EFREET;
-#endif
 
     case MISC_FAN_OF_GALES:
         return evoker_charges(item.sub_type) ? TILE_MISC_FAN_OF_GALES
@@ -2502,19 +2463,11 @@ static tileidx_t _tileidx_misc(const item_def &item)
         return evoker_charges(item.sub_type) ? TILE_MISC_LAMP_OF_FIRE
                                              : TILE_MISC_LAMP_OF_FIRE_INERT;
 
-#if TAG_MAJOR_VERSION == 34
-    case MISC_STONE_OF_TREMORS:
-        return TILE_MISC_STONE_OF_TREMORS_INERT;
-#endif
 
     case MISC_PHIAL_OF_FLOODS:
         return evoker_charges(item.sub_type) ? TILE_MISC_PHIAL_OF_FLOODS
                                              : TILE_MISC_PHIAL_OF_FLOODS_INERT;
 
-#if TAG_MAJOR_VERSION == 34
-    case MISC_BUGGY_LANTERN_OF_SHADOWS:
-        return TILE_MISC_LANTERN_OF_SHADOWS;
-#endif
 
     case MISC_HORN_OF_GERYON:
         return TILE_MISC_HORN_OF_GERYON;
@@ -2621,9 +2574,6 @@ tileidx_t tileidx_item(const item_def &item)
             if (item.flags & ISFLAG_KNOW_TYPE)
             {
                 return TILE_RING_ID_FIRST + type - RING_FIRST_RING
-#if TAG_MAJOR_VERSION == 34
-                       + 1 // we have a save-compat ring tile before FIRST_RING
-#endif
                     ;
             }
 
@@ -2668,10 +2618,6 @@ tileidx_t tileidx_item(const item_def &item)
         return TILE_STAFF_OFFSET
                + (subtype_rnd / NDSC_STAVE_PRI) % NDSC_STAVE_SEC;
 
-#if TAG_MAJOR_VERSION == 34
-    case OBJ_RODS:
-        return TILE_ROD + item.rnd % tile_main_count(TILE_ROD);
-#endif
 
     case OBJ_CORPSES:
         if (item.sub_type == CORPSE_SKELETON)
@@ -2812,9 +2758,6 @@ tileidx_t tileidx_known_base_item(tileidx_t label)
     if (label >= TILE_RING_ID_FIRST && label <= TILE_RING_ID_LAST)
     {
         int type = label - TILE_RING_ID_FIRST + RING_FIRST_RING
-#if TAG_MAJOR_VERSION == 34
-                   - 1 // we have a save-compat ring tile before FIRST_RING
-#endif
             ;
         int desc = you.item_description[IDESC_RINGS][type] % NDSC_JEWEL_PRI;
 
@@ -3601,12 +3544,6 @@ tileidx_t tileidx_ability(const ability_type ability)
     case ABIL_RU_REJECT_SACRIFICES:
         return TILEG_ABILITY_RU_REJECT_SACRIFICES;
     // Pakellas
-#if TAG_MAJOR_VERSION == 34
-    case ABIL_PAKELLAS_DEVICE_SURGE:
-        return TILEG_ABILITY_PAKELLAS_DEVICE_SURGE;
-    case ABIL_PAKELLAS_QUICK_CHARGE:
-        return TILEG_ABILITY_PAKELLAS_QUICK_CHARGE;
-#endif
     // Hepliaklqana
     case ABIL_HEPLIAKLQANA_RECALL:
         return TILEG_ABILITY_HEP_RECALL;
@@ -3743,12 +3680,6 @@ tileidx_t tileidx_known_brand(const item_def &item)
     {
         switch (get_ammo_brand(item))
         {
-#if TAG_MAJOR_VERSION == 34
-        case SPMSL_FLAME:
-            return TILE_BRAND_FLAME;
-        case SPMSL_FROST:
-            return TILE_BRAND_FROST;
-#endif
         case SPMSL_POISONED:
             return TILE_BRAND_POISONED;
         case SPMSL_CURARE:
@@ -3767,12 +3698,6 @@ tileidx_t tileidx_known_brand(const item_def &item)
             return TILE_BRAND_CONFUSION;
         case SPMSL_PARALYSIS:
             return TILE_BRAND_PARALYSIS;
-#if TAG_MAJOR_VERSION == 34
-        case SPMSL_SLOW:
-            return TILE_BRAND_SLOWING;
-        case SPMSL_SICKNESS:
-            return TILE_BRAND_SICKNESS;
-#endif
         case SPMSL_FRENZY:
             return TILE_BRAND_FRENZY;
         case SPMSL_SLEEP:
@@ -3781,13 +3706,6 @@ tileidx_t tileidx_known_brand(const item_def &item)
             break;
         }
     }
-#if TAG_MAJOR_VERSION == 34
-    else if (item.base_type == OBJ_RODS)
-    {
-        // Technically not a brand, but still handled here
-        return TILE_ROD_ID_FIRST + item.sub_type;
-    }
-#endif
     return 0;
 }
 

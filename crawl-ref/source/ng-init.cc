@@ -40,10 +40,6 @@ static uint8_t _random_potion_description()
     // nature and colour correspond to primary and secondary in
     // item-name.cc.
 
-#if TAG_MAJOR_VERSION == 34
-    if (PCOLOUR(desc) == PDC_CLEAR) // only water can be clear, re-roll
-        return _random_potion_description();
-#endif
 
     return desc;
 }
@@ -355,43 +351,6 @@ multi_overflow:
     }
 }
 
-#if TAG_MAJOR_VERSION == 34
-static int _get_random_porridge_desc()
-{
-    return PDESCQ(PDQ_GLUGGY, one_chance_in(3) ? PDC_BROWN
-                                               : PDC_WHITE);
-}
-
-static int _get_random_coagulated_blood_desc()
-{
-    potion_description_qualifier_type qualifier = PDQ_NONE;
-    while (true)
-    {
-        switch (random2(4))
-        {
-        case 0:
-            qualifier = PDQ_GLUGGY;
-            break;
-        case 1:
-            qualifier = PDQ_LUMPY;
-            break;
-        case 2:
-            qualifier = PDQ_SEDIMENTED;
-            break;
-        case 3:
-            qualifier = PDQ_VISCOUS;
-            break;
-        }
-        potion_description_colour_type colour = (coinflip() ? PDC_RED
-                                                            : PDC_BROWN);
-
-        uint32_t desc = PDESCQ(qualifier, colour);
-
-        if (you.item_description[IDESC_POTIONS][POT_BLOOD] != desc)
-            return desc;
-    }
-}
-#endif
 
 static int _get_random_blood_desc()
 {
@@ -407,12 +366,6 @@ void initialise_item_descriptions()
 
     you.item_description[IDESC_POTIONS][POT_BLOOD]
         = _get_random_blood_desc();
-#if TAG_MAJOR_VERSION == 34
-    you.item_description[IDESC_POTIONS][POT_BLOOD_COAGULATED]
-        = _get_random_coagulated_blood_desc();
-    you.item_description[IDESC_POTIONS][POT_PORRIDGE]
-        = _get_random_porridge_desc();
-#endif
 
     // The order here must match that of IDESC in describe.h
     const int max_item_number[6] = { NUM_WANDS,
@@ -448,9 +401,6 @@ void initialise_item_descriptions()
                     break;
 
 
-#if TAG_MAJOR_VERSION == 34
-                case IDESC_SCROLLS_II: // unused but validated
-#endif
                 case IDESC_SCROLLS: // scrolls: random seed for the name
                 {
                     // this is very weird and probably a linleyism.

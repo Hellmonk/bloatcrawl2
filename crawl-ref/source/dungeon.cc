@@ -2704,20 +2704,6 @@ static const map_def *_dgn_random_map_for_place(bool minivault)
 
     const level_id lid = level_id::current();
 
-#if TAG_MAJOR_VERSION == 34
-    if (!minivault
-        && player_in_branch(BRANCH_TOMB)
-        && you.props[TOMB_STONE_STAIRS_KEY])
-    {
-        const map_def *vault = random_map_for_tag("tomb_stone_stairs", true);
-
-        if (vault)
-            return vault;
-
-        end(1, false, "Couldn't find map with tag tomb_stone_stairs for level "
-            "%s.", lid.describe().c_str());
-    }
-#endif
 
     const map_def *vault = 0;
 
@@ -4676,10 +4662,6 @@ static void _dgn_give_mon_spec_items(mons_spec &mspec,
 monster* dgn_place_monster(mons_spec &mspec, coord_def where,
                            bool force_pos, bool generate_awake, bool patrolling)
 {
-#if TAG_MAJOR_VERSION == 34
-    if ((int)mspec.type == -1) // or rebuild the des cache
-        return 0;
-#endif
     if (mspec.type == MONS_NO_MONSTER)
         return 0;
 
@@ -5882,10 +5864,6 @@ static void _place_specific_trap(const coord_def& where, trap_spec* spec,
             spec_type = static_cast<trap_type>(random2(NUM_TRAPS));
         }
         while (!is_regular_trap(spec_type)
-#if TAG_MAJOR_VERSION == 34
-               || spec_type == TRAP_DART || spec_type == TRAP_GAS
-               || spec_type == TRAP_SHADOW || spec_type == TRAP_SHADOW_DORMANT
-#endif
                || !is_valid_shaft_level() && spec_type == TRAP_SHAFT);
     }
 

@@ -25,7 +25,6 @@ enum god_type
     GOD_GOZAG,
     GOD_QAZLAL,
     GOD_RU,
-    GOD_PAKELLAS,
     GOD_USKAYAW,
     GOD_HEPLIAKLQANA,
     GOD_WU_JIAN,

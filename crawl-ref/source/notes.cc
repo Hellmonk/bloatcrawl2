@@ -357,17 +357,6 @@ string Note::describe(bool when, bool where, bool what) const
             result << "Remembered your ancestor " << hepliaklqana_ally_name()
                    << " as " << name;
             break;
-#if TAG_MAJOR_VERSION == 34
-        case NOTE_ANCESTOR_SPECIALIZATION:
-            result << "Remembered your ancestor " << hepliaklqana_ally_name()
-                   << " " << name;
-            break;
-        case NOTE_ANCESTOR_DEATH:
-            result << "Remembered your ancestor "
-                   << apostrophise(hepliaklqana_ally_name())
-                   << " " << name << " death";
-            break;
-#endif
           case NOTE_FOUND_UNRAND:
             result << "Found " << name;
             break;
@@ -450,11 +439,6 @@ void Note::load(reader& inf)
 {
     type = static_cast<NOTE_TYPES>(unmarshallInt(inf));
     turn = unmarshallInt(inf);
-#if TAG_MAJOR_VERSION == 34
-    if (inf.getMinorVersion() < TAG_MINOR_PLACE_UNPACK)
-        place = level_id::from_packed_place(unmarshallShort(inf));
-    else
-#endif
     place.load(inf);
     first  = unmarshallInt(inf);
     second = unmarshallInt(inf);

@@ -400,10 +400,6 @@ static vector<string> _get_skill_keys()
     for (skill_type sk = SK_FIRST_SKILL; sk < NUM_SKILLS; ++sk)
     {
         const string name = lowercase_string(skill_name(sk));
-#if TAG_MAJOR_VERSION == 34
-        if (getLongDescription(name).empty())
-            continue; // obsolete skills
-#endif
 
         names.emplace_back(name);
     }

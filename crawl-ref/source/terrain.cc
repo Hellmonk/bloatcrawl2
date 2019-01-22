@@ -197,10 +197,6 @@ FEATFN_MEMOIZED(feat_is_portal_entrance, feat)
             return true;
         }
     }
-#if TAG_MAJOR_VERSION == 34
-    if (feat == DNGN_ENTER_PORTAL_VAULT)
-        return true;
-#endif
 
     return false;
 }
@@ -220,10 +216,6 @@ FEATFN_MEMOIZED(feat_is_portal_exit, feat)
             return true;
         }
     }
-#if TAG_MAJOR_VERSION == 34
-    if (feat == DNGN_EXIT_PORTAL_VAULT)
-        return true;
-#endif
 
     return false;
 }
@@ -1673,12 +1665,6 @@ dungeon_feature_type feat_by_desc(string desc)
     if (desc[desc.size() - 1] != '.')
         desc += ".";
 
-#if TAG_MAJOR_VERSION == 34
-    // hard-coded because all the dry fountain variants match this description,
-    // and they have a lower enum value, so the first is incorrectly returned
-    if (desc == "a dry fountain.")
-        return DNGN_DRY_FOUNTAIN;
-#endif
 
     return lookup(feat_desc_cache, desc, DNGN_UNSEEN);
 }

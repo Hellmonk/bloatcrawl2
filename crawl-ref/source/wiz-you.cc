@@ -930,10 +930,6 @@ void wizard_transform()
         for (int i = 0; i < NUM_TRANSFORMS; i++)
         {
             const auto tr = static_cast<transformation>(i);
-#if TAG_MAJOR_VERSION == 34
-            if (tr == transformation::jelly || tr == transformation::porcupine)
-                continue;
-#endif
             line += make_stringf("[%c] %-10s ", i + 'a', transform_name(tr));
             if (i % 5 == 4 || i == NUM_TRANSFORMS - 1)
             {
@@ -956,10 +952,6 @@ void wizard_transform()
             continue;
 
         const auto k_tr = static_cast<transformation>(keyin - 'a');
-#if TAG_MAJOR_VERSION == 34
-        if (k_tr == transformation::jelly || k_tr == transformation::porcupine)
-            continue;
-#endif
         form = k_tr;
         break;
     }

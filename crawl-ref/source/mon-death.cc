@@ -1545,10 +1545,6 @@ static string _killer_type_name(killer_type killer)
         return "banished";
     case KILL_TIMEOUT:
         return "timeout";
-#if TAG_MAJOR_VERSION == 34
-    case KILL_UNSUMMONED:
-        return "unsummoned";
-#endif
     case KILL_PACIFIED:
         return "pacified";
     case KILL_ENSLAVED:
@@ -2289,8 +2285,7 @@ item_def* monster_die(monster& mons, killer_type killer,
                        && mons.evil())
                 && !mons_is_object(mons.type)
                 && !player_under_penance()
-                && (you_worship(GOD_PAKELLAS)
-                    || random2(you.piety) >= piety_breakpoint(0)))
+                && random2(you.piety) >= piety_breakpoint(0))
             {
                 int hp_heal = 0, mp_heal = 0;
 
@@ -2309,9 +2304,6 @@ item_def* monster_die(monster& mons, killer_type killer,
                 {
                     switch (you.religion)
                     {
-                    case GOD_PAKELLAS:
-                        mp_heal = random2(2 + mons.get_experience_level() / 6);
-                        break;
                     case GOD_VEHUMET:
                     default:
                         mp_heal = 1 + random2(mons.get_experience_level() / 2);
@@ -2333,36 +2325,6 @@ item_def* monster_die(monster& mons, killer_type killer,
                     canned_msg(MSG_GAIN_MAGIC);
                     inc_mp(mp_heal);
                     mp_heal -= tmp;
-                }
-
-                // perhaps this should go to its own function
-                if (mp_heal
-                    && have_passive(passive_t::bottle_mp)
-                    && !you_foodless(false))
-                {
-                    simple_god_message(" collects the excess magic power.");
-                    you.attribute[ATTR_PAKELLAS_EXTRA_MP] -= mp_heal;
-
-                    if (you.attribute[ATTR_PAKELLAS_EXTRA_MP] <= 0
-                        && (feat_has_solid_floor(grd(you.pos()))
-                            || feat_is_watery(grd(you.pos()))
-                               && species_likes_water(you.species)))
-                    {
-                        int thing_created = items(true, OBJ_POTIONS,
-                                                  POT_MAGIC, 1, 0,
-                                                  GOD_PAKELLAS);
-                        if (thing_created != NON_ITEM)
-                        {
-                            move_item_to_grid(&thing_created, you.pos(), true);
-                            mitm[thing_created].quantity = 1;
-                            mitm[thing_created].flags |= ISFLAG_KNOW_TYPE;
-                            // not a conventional gift, but use the same
-                            // messaging
-                            simple_god_message(" grants you a gift!");
-                            you.attribute[ATTR_PAKELLAS_EXTRA_MP]
-                                += POT_MAGIC_MP;
-                        }
-                    }
                 }
             }
 

@@ -14,9 +14,6 @@ enum cloud_type
     CLOUD_TLOC_ENERGY,
     CLOUD_FOREST_FIRE,
     CLOUD_STEAM,
-#if TAG_MAJOR_VERSION == 34
-    CLOUD_GLOOM,
-#endif
     CLOUD_INK,
     CLOUD_PETRIFY,
     CLOUD_HOLY,

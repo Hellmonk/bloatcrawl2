@@ -1433,17 +1433,6 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
                                       : GOD_NO_GOD;
 
     int fail = 0;
-#if TAG_MAJOR_VERSION == 34
-    bool antimagic = false; // lost time but no other penalty
-
-    if (allow_fail && you.duration[DUR_ANTIMAGIC]
-        && x_chance_in_y(you.duration[DUR_ANTIMAGIC] / 3, you.hp_max))
-    {
-        mpr("You fail to access your magic.");
-        fail = antimagic = true;
-    }
-    else
-#endif
     if (evoked_item && evoked_item->charges == 0)
         return spret::fail;
     else if (allow_fail)
@@ -1529,10 +1518,6 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
     }
     case spret::fail:
     {
-#if TAG_MAJOR_VERSION == 34
-        if (antimagic)
-            return spret::fail;
-#endif
 
         mprf("You miscast %s.", spell_title(spell));
         flush_input_buffer(FLUSH_ON_FAILURE);
@@ -2275,37 +2260,6 @@ void spell_skills(spell_type spell, set<skill_type> &skills)
 
 const set<spell_type> removed_spells =
 {
-#if TAG_MAJOR_VERSION == 34
-    SPELL_ABJURATION,
-    SPELL_CIGOTUVIS_DEGENERATION,
-    SPELL_CONDENSATION_SHIELD,
-    SPELL_CONTROL_TELEPORT,
-    SPELL_DEMONIC_HORDE,
-    SPELL_EVAPORATE,
-    SPELL_FIRE_BRAND,
-    SPELL_FORCEFUL_DISMISSAL,
-    SPELL_FREEZING_AURA,
-    SPELL_FULSOME_DISTILLATION,
-    SPELL_INSULATION,
-    SPELL_LETHAL_INFUSION,
-    SPELL_POISON_WEAPON,
-    SPELL_SEE_INVISIBLE,
-    SPELL_SINGULARITY,
-    SPELL_SONG_OF_SHIELDING,
-    SPELL_SUMMON_SCORPIONS,
-    SPELL_SUMMON_ELEMENTAL,
-    SPELL_TWISTED_RESURRECTION,
-    SPELL_SURE_BLADE,
-    SPELL_FLY,
-    SPELL_STONESKIN,
-    SPELL_SUMMON_SWARM,
-    SPELL_PHASE_SHIFT,
-    SPELL_MASS_CONFUSION,
-    SPELL_CURE_POISON,
-    SPELL_CONTROL_UNDEAD,
-    SPELL_CIGOTUVIS_EMBRACE,
-    SPELL_DELAYED_FIREBALL,
-#endif
 };
 
 bool spell_removed(spell_type spell)

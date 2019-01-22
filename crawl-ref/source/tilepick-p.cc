@@ -42,45 +42,20 @@ tileidx_t tilep_equ_weapon(const item_def &item)
         return TILEP_HAND1_STAFF_LARGE + desc;
     }
 
-#if TAG_MAJOR_VERSION == 34
-    if (item.base_type == OBJ_RODS)
-        return _mon_mod(TILEP_HAND1_ROD_FIRST, item.rnd);
-#endif
 
     if (item.base_type == OBJ_MISCELLANY)
     {
         switch (item.sub_type)
         {
-#if TAG_MAJOR_VERSION == 34
-        case MISC_BOTTLED_EFREET:             return TILEP_HAND1_BOTTLE;
-#endif
         case MISC_FAN_OF_GALES:               return TILEP_HAND1_FAN;
-#if TAG_MAJOR_VERSION == 34
-        case MISC_STONE_OF_TREMORS:           return TILEP_HAND1_STONE;
-#endif
         case MISC_LIGHTNING_ROD:              return 0;
 
         case MISC_CRYSTAL_BALL_OF_ENERGY:     return TILEP_HAND1_CRYSTAL;
 
         case MISC_LAMP_OF_FIRE:               return TILEP_HAND1_LANTERN;
-#if TAG_MAJOR_VERSION == 34
-        case MISC_BUGGY_LANTERN_OF_SHADOWS:   return TILEP_HAND1_BONE_LANTERN;
-#endif
         case MISC_HORN_OF_GERYON:             return TILEP_HAND1_HORN;
         case MISC_BOX_OF_BEASTS:              return TILEP_HAND1_BOX;
 
-#if TAG_MAJOR_VERSION == 34
-        case MISC_DECK_OF_ESCAPE:
-        case MISC_DECK_OF_DESTRUCTION:
-        case MISC_DECK_OF_DUNGEONS:
-        case MISC_DECK_OF_SUMMONING:
-        case MISC_DECK_OF_WONDERS:
-        case MISC_DECK_OF_PUNISHMENT:
-        case MISC_DECK_OF_WAR:
-        case MISC_DECK_OF_CHANGES:
-        case MISC_DECK_OF_DEFENCE:
-            return 0;
-#endif
         }
     }
 
@@ -204,11 +179,6 @@ tileidx_t tilep_equ_weapon(const item_def &item)
     case WPN_GLAIVE:
         tile = TILEP_HAND1_GLAIVE;
         break;
-#if TAG_MAJOR_VERSION == 34
-    case WPN_STAFF:
-        tile = TILEP_HAND1_STAFF;
-        break;
-#endif
     case WPN_QUARTERSTAFF:
         tile = TILEP_HAND1_QUARTERSTAFF1;
         break;
@@ -380,9 +350,6 @@ tileidx_t tilep_equ_helm(const item_def &item)
 
     switch (item.sub_type)
     {
-#if TAG_MAJOR_VERSION == 34
-        case ARM_CAP:
-#endif
         case ARM_HAT:
             return _modrng(item.rnd, TILEP_HELM_HAT_FIRST_NORM,
                            TILEP_HELM_HAT_LAST_NORM);
@@ -458,15 +425,9 @@ tileidx_t tileidx_player()
     case transformation::bat:       ch = TILEP_TRAN_BAT;       break;
     case transformation::spider:    ch = TILEP_TRAN_SPIDER;    break;
     case transformation::pig:       ch = TILEP_TRAN_PIG;       break;
-#if TAG_MAJOR_VERSION == 34
-    case transformation::porcupine: ch = TILEP_MONS_PORCUPINE; break;
-#endif
     // non-animals
     case transformation::ice_beast: ch = TILEP_TRAN_ICE_BEAST; break;
     case transformation::wisp:      ch = TILEP_MONS_INSUBSTANTIAL_WISP; break;
-#if TAG_MAJOR_VERSION == 34
-    case transformation::jelly:     ch = TILEP_MONS_JELLY;     break;
-#endif
     case transformation::fungus:    ch = TILEP_TRAN_MUSHROOM;  break;
     case transformation::shadow:    ch = TILEP_TRAN_SHADOW;    break;
     case transformation::hydra:     ch = tileidx_mon_clamp(TILEP_MONS_HYDRA,
@@ -559,10 +520,6 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
     {
     case SP_HUMAN:
         return TILEP_BASE_HUMAN;
-#if TAG_MAJOR_VERSION == 34
-    case SP_HIGH_ELF:
-    case SP_SLUDGE_ELF:
-#endif
     case SP_DEEP_ELF:
         return TILEP_BASE_DEEP_ELF;
     case SP_HALFLING:
@@ -660,12 +617,6 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
 
     switch (sp)
     {
-#if TAG_MAJOR_VERSION == 34
-        case SP_HIGH_ELF:
-        case SP_SLUDGE_ELF:
-            hair = TILEP_HAIR_ELF_YELLOW;
-            break;
-#endif
         case SP_DEEP_ELF:
             hair = TILEP_HAIR_ELF_WHITE;
             break;
@@ -784,18 +735,6 @@ void tilep_job_default(int job, dolls_data *doll)
             parts[TILEP_PART_LEG]   = TILEP_LEG_BELT_REDBROWN;
             break;
 
-#if TAG_MAJOR_VERSION == 34
-        case JOB_STALKER:
-            parts[TILEP_PART_HELM]  = TILEP_HELM_HOOD_GREEN;
-            parts[TILEP_PART_BODY]  = TILEP_BODY_LEATHER_JACKET;
-            parts[TILEP_PART_LEG]   = TILEP_LEG_PANTS_SHORT_GRAY;
-            parts[TILEP_PART_HAND1] = TILEP_HAND1_SWORD_THIEF;
-            parts[TILEP_PART_HAND2] = TILEP_HAND2_BOOK_GREEN_DIM;
-            parts[TILEP_PART_ARM]   = TILEP_ARM_GLOVE_WRIST_PURPLE;
-            parts[TILEP_PART_CLOAK] = TILEP_CLOAK_GREEN;
-            parts[TILEP_PART_BOOTS] = TILEP_BOOTS_MIDDLE_BROWN2;
-            break;
-#endif
 
         case JOB_ASSASSIN:
             parts[TILEP_PART_HELM]  = TILEP_HELM_MASK_NINJA_BLACK;
@@ -815,21 +754,6 @@ void tilep_job_default(int job, dolls_data *doll)
             parts[TILEP_PART_HELM]  = TILEP_HELM_WIZARD_GRAY;
             break;
 
-#if TAG_MAJOR_VERSION == 34
-        case JOB_PRIEST:
-            parts[TILEP_PART_BODY]  = TILEP_BODY_ROBE_WHITE;
-            parts[TILEP_PART_ARM]   = TILEP_ARM_GLOVE_WHITE;
-            parts[TILEP_PART_BOOTS] = TILEP_BOOTS_SHORT_BROWN;
-            break;
-
-        case JOB_HEALER:
-            parts[TILEP_PART_BODY]  = TILEP_BODY_ROBE_WHITE;
-            parts[TILEP_PART_ARM]   = TILEP_ARM_GLOVE_WHITE;
-            parts[TILEP_PART_HAND1] = TILEP_HAND1_DAGGER;
-            parts[TILEP_PART_BOOTS] = TILEP_BOOTS_SHORT_BROWN;
-            parts[TILEP_PART_HELM]  = TILEP_HELM_FHELM_HEALER;
-            break;
-#endif
 
         case JOB_NECROMANCER:
             parts[TILEP_PART_BODY]  = TILEP_BODY_ROBE_BLACK;

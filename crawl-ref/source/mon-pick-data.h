@@ -189,35 +189,6 @@ static const pop_entry pop_elf[] =
   {  1,  6,   65, SEMI, MONS_GLOWING_SHAPESHIFTER },
   { 0,0,0,FLAT,MONS_0 }
 };
-#if TAG_MAJOR_VERSION == 34
-static const pop_entry pop_dwarf[] =
-{ // Dwarven Hall
-  {  1,  1, 1000, FLAT, MONS_DEEP_DWARF },
-  {  1,  1,  690, FLAT, MONS_DEATH_KNIGHT },
-  {  1,  1,    3, FLAT, MONS_DEEP_TROLL },
-  {  1,  1,    3, FLAT, MONS_DEEP_TROLL_EARTH_MAGE },
-  {  1,  1,    3, FLAT, MONS_DEEP_TROLL_SHAMAN },
-  {  1,  1,    8, FLAT, MONS_STONE_GIANT },
-  {  1,  1,    8, FLAT, MONS_FIRE_GIANT },
-  {  1,  1,    8, FLAT, MONS_FROST_GIANT },
-  {  1,  1,  192, FLAT, MONS_WRAITH },
-  {  1,  1,    3, FLAT, MONS_SHADOW_WRAITH },
-  {  1,  1,    8, FLAT, MONS_EIDOLON },
-  {  1,  1,    8, FLAT, MONS_PHANTASMAL_WARRIOR },
-  { 0,0,0,FLAT,MONS_0 }
-};
-
-static const pop_entry pop_blade[] =
-{ // Hall of Blades
-  {  1,  1, 1000, FLAT, MONS_DANCING_WEAPON },
-  { 0,0,0,FLAT,MONS_0 }
-};
-
-static const pop_entry pop_lab[] =
-{ // Labyrinth
-  { 0,0,0,FLAT,MONS_0 }
-};
-#endif
 
 static const pop_entry pop_lair[] =
 { // Lair (OOD cap: 12)
@@ -689,34 +660,6 @@ static const pop_entry pop_zot[] =
   {  1,  5,   42, FLAT, MONS_ORB_OF_FIRE },
   { 0,0,0,FLAT,MONS_0 }
 };
-#if TAG_MAJOR_VERSION == 34
-static const pop_entry pop_forest[] =
-{ // Forest
-  {  1,  5,  120, FALL, MONS_WOLF },
-  {  1,  5,   35, FALL, MONS_BLACK_BEAR },
-  {  1,  5,   50, FLAT, MONS_YAK },
-  {  1,  7,  145, SEMI, MONS_DIRE_ELEPHANT },
-  {  1,  5,   45, FLAT, MONS_HORNET },
-  {  1,  6,   75, FALL, MONS_REDBACK },
-  {  2,  7,   35, SEMI, MONS_WOLF_SPIDER },
-  {  1,  9,   75, SEMI, MONS_OKLOB_PLANT },
-  {  1,  5,  170, FLAT, MONS_DRYAD },
-  {  1,  5,  120, FLAT, MONS_WIND_DRAKE },
-  { -1,  5,   75, SEMI, MONS_FAUN },
-  {  0,  9,  105, SEMI, MONS_SATYR },
-  {  2,  8,   55, SEMI, MONS_SPRIGGAN_DRUID },
-  {  1,  6,  155, SEMI, MONS_SPRIGGAN_RIDER },
-  {  1,  9,  235, SEMI, MONS_SPRIGGAN_BERSERKER },
-  {  1,  8,  155, SEMI, MONS_SPRIGGAN_AIR_MAGE },
-  {  3,  5,  115, RISE, MONS_SPRIGGAN_DEFENDER },
-  {  1,  7,   85, PEAK, MONS_APIS },
-  {  2,  7,  165, SEMI, MONS_SHAMBLING_MANGROVE },
-  {  1,  6,   85, SEMI, MONS_ANACONDA },
-  {  1,  9,  100, PEAK, MONS_THORN_HUNTER },
-  {  1,  5,  125, FLAT, MONS_BUTTERFLY },
-  { 0,0,0,FLAT,MONS_0 }
-};
-#endif
 
 static const pop_entry pop_abyss[] =
 { // Abyss
@@ -1081,9 +1024,6 @@ static const population_list population[] =
     POP(temple),
     POP(orc),
     POP(elf),
-#if TAG_MAJOR_VERSION == 34
-    POP(dwarf),
-#endif
     POP(lair),
     POP(swamp),
     POP(shoals),
@@ -1091,47 +1031,28 @@ static const population_list population[] =
     POP(spider),
     POP(slime),
     POP(vaults),
-#if TAG_MAJOR_VERSION == 34
-    POP(blade),
-#endif
     POP(crypt),
     POP(tomb),
-#if TAG_MAJOR_VERSION > 34
     POP(depths),
-#endif
     POP(hell),
     POP(dis),
     POP(geh),
     POP(coc),
     POP(tar),
     POP(zot),
-#if TAG_MAJOR_VERSION == 34
-    POP(forest),
-#endif
     POP(abyss),
     POP(pan),
     POP(zig),
-#if TAG_MAJOR_VERSION == 34
-    POP(lab),
-#endif
     POP(bazaar),
     POP(trove),
     POP(sewer),
     POP(ossuary),
     POP(bailey),
-#if TAG_MAJOR_VERSION > 34
     POP(gauntlet),
-#endif
     POP(icecv),
     POP(volcano),
     POP(wizlab),
-#if TAG_MAJOR_VERSION == 34
-    POP(depths),
-#endif
     POP(desolation),
-#if TAG_MAJOR_VERSION == 34
-    POP(gauntlet),
-#endif
 };
 COMPILE_CHECK(ARRAYSZ(population) == NUM_BRANCHES);
 
@@ -1198,9 +1119,6 @@ static const population_list population_zombie[] =
     POP(temple),
     POP(orc),
     POP(elf),
-#if TAG_MAJOR_VERSION == 34
-    POP(dwarf),
-#endif
     POP(lair),
     POP(swamp),
     POP(shoals),
@@ -1208,47 +1126,28 @@ static const population_list population_zombie[] =
     POP(spider),
     POP(slime),
     POP(vaults),
-#if TAG_MAJOR_VERSION == 34
-    POP(blade),
-#endif
     POP(generic_late_zombie), // Crypt
     POP(generic_late_zombie), // Tomb
-#if TAG_MAJOR_VERSION > 34
     POP(depths),
-#endif
     POP(generic_late_zombie), // Vestibule
     POP(generic_late_zombie), // Dis
     POP(generic_late_zombie), // Geh
     POP(generic_late_zombie), // Coc
     POP(generic_late_zombie), // Tar
     POP(zot),
-#if TAG_MAJOR_VERSION == 34
-    POP(forest),
-#endif
     POP(generic_late_zombie), // Abyss
     POP(generic_late_zombie), // Pan
     POP(zig),
-#if TAG_MAJOR_VERSION == 34
-    POP(lab),
-#endif
     POP(bazaar),
     POP(trove),
     POP(sewer),
     POP(ossuary),
     POP(bailey),
-#if TAG_MAJOR_VERSION > 34
     POP(gauntlet),
-#endif
     POP(icecv),
     POP(volcano),
     POP(wizlab),
-#if TAG_MAJOR_VERSION == 34
-    POP(depths),
-#endif
     POP(desolation),
-#if TAG_MAJOR_VERSION == 34
-    POP(gauntlet),
-#endif
 };
 COMPILE_CHECK(ARRAYSZ(population_zombie) == NUM_BRANCHES);
 
@@ -1314,9 +1213,6 @@ static const population_list population_water[] =
     POP(water_generic), // Temple
     POP(water_generic), // Orc
     POP(water_generic), // Elf
-#if TAG_MAJOR_VERSION == 34
-    POP(water_generic), // Dwarf
-#endif
     POP(water_generic), // Lair
     POP(water_swamp),
     POP(water_generic), // Shoals
@@ -1324,47 +1220,28 @@ static const population_list population_water[] =
     POP(water_generic), // Spider
     POP(water_generic), // Slime
     POP(water_generic), // Vaults
-#if TAG_MAJOR_VERSION == 34
-    POP(water_generic), // Blade
-#endif
     POP(water_generic), // Crypt
     POP(water_generic), // Tomb
-#if TAG_MAJOR_VERSION > 34
     POP(water_depths),
-#endif
     POP(water_hell), // Vestibule
     POP(water_hell), // Dis
     POP(water_hell), // Geh
     POP(water_hell), // Coc
     POP(water_hell), // Tar
     POP(water_generic), // Zot
-#if TAG_MAJOR_VERSION == 34
-    POP(water_generic), // Forest
-#endif
     POP(water_generic), // Abyss
     POP(water_generic), // Pan
     POP(water_generic), // Zig
-#if TAG_MAJOR_VERSION == 34
-    POP(water_generic), // Lab
-#endif
     POP(water_generic), // Bazaar
     POP(water_generic), // Trove
     POP(water_generic), // Sewer
     POP(water_generic), // Ossuary
     POP(water_generic), // Bailey
-#if TAG_MAJOR_VERSION > 34
     POP(water_generic), // Gauntlet
-#endif
     POP(water_generic), // IceCv
     POP(water_generic), // Volcano
     POP(water_generic), // WizLab
-#if TAG_MAJOR_VERSION == 34
-    POP(water_depths),
-#endif
     POP(water_generic), // Desolation
-#if TAG_MAJOR_VERSION == 34
-    POP(water_generic), // Gauntlet
-#endif
 };
 COMPILE_CHECK(ARRAYSZ(population_water) == NUM_BRANCHES);
 
@@ -1426,9 +1303,6 @@ static const population_list population_lava[] =
     POP(lava_generic), // Temple
     POP(lava_generic), // Orc
     POP(lava_generic), // Elf
-#if TAG_MAJOR_VERSION == 34
-    POP(lava_generic), // Dwarf
-#endif
     POP(lava_generic), // Lair
     POP(lava_generic), // Swamp
     POP(lava_generic), // Shoals
@@ -1436,46 +1310,27 @@ static const population_list population_lava[] =
     POP(lava_generic), // Spider
     POP(lava_generic), // Slime
     POP(lava_generic), // Vaults
-#if TAG_MAJOR_VERSION == 34
-    POP(lava_generic), // Blade
-#endif
     POP(lava_generic), // Crypt
     POP(lava_generic), // Tomb
-#if TAG_MAJOR_VERSION > 34
     POP(lava_depths),
-#endif
     POP(lava_hell), // Vestibule
     POP(lava_hell), // Dis
     POP(lava_hell), // Geh
     POP(lava_hell), // Coc
     POP(lava_hell), // Tar
     POP(lava_generic), // Zot
-#if TAG_MAJOR_VERSION == 34
-    POP(lava_generic), // Forest
-#endif
     POP(lava_generic), // Abyss
     POP(lava_generic), // Pan
     POP(lava_generic), // Zig
-#if TAG_MAJOR_VERSION == 34
-    POP(lava_generic), // Lab
-#endif
     POP(lava_generic), // Bazaar
     POP(lava_generic), // Trove
     POP(lava_generic), // Sewer
     POP(lava_generic), // Ossuary
     POP(lava_generic), // Bailey
-#if TAG_MAJOR_VERSION > 34
     POP(lava_generic), // Gauntlet
-#endif
     POP(lava_generic), // IceCv
     POP(lava_generic), // Volcano
     POP(lava_generic), // WizLab
-#if TAG_MAJOR_VERSION == 34
-    POP(lava_depths),
-#endif
     POP(lava_generic), // Desolation
-#if TAG_MAJOR_VERSION == 34
-    POP(lava_generic), // Gauntlet
-#endif
 };
 COMPILE_CHECK(ARRAYSZ(population_lava) == NUM_BRANCHES);

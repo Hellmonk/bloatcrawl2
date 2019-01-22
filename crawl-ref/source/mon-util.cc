@@ -1089,9 +1089,6 @@ static void _mimic_vanish(const coord_def& pos, const string& name)
  */
 static void _destroy_mimic_feature(const coord_def &pos)
 {
-#if TAG_MAJOR_VERSION == 34
-    const dungeon_feature_type feat = grd(pos);
-#endif
 
     unnotice_feature(level_pos(level_id::current(), pos));
     grd(pos) = DNGN_FLOOR;
@@ -1099,10 +1096,6 @@ static void _destroy_mimic_feature(const coord_def &pos)
     set_terrain_changed(pos);
     remove_markers_and_listeners_at(pos);
 
-#if TAG_MAJOR_VERSION == 34
-    if (feat_is_door(feat))
-        env.level_map_mask(pos) |= MMT_WAS_DOOR_MIMIC;
-#endif
 }
 
 void discover_mimic(const coord_def& pos)
@@ -1199,9 +1192,6 @@ bool mons_is_base_draconian(monster_type mc)
 bool mons_is_demonspawn(monster_type mc)
 {
     return
-#if TAG_MAJOR_VERSION == 34
-        mc == MONS_DEMONSPAWN ||
-#endif
         mc >= MONS_FIRST_DEMONSPAWN && mc <= MONS_LAST_DEMONSPAWN;
 }
 
@@ -1430,9 +1420,6 @@ bool mons_can_shout(monster_type mc)
 bool mons_is_ghost_demon(monster_type mc)
 {
     return mons_class_flag(mc, M_GHOST_DEMON)
-#if TAG_MAJOR_VERSION == 34
-           || mc == MONS_CHIMERA;
-#endif
            ;
 }
 
@@ -1652,17 +1639,6 @@ monster_type mons_zombie_base(const monster& mon)
 
 bool mons_class_is_zombified(monster_type mc)
 {
-#if TAG_MAJOR_VERSION == 34
-    switch (mc)
-    {
-        case MONS_ZOMBIE_SMALL:     case MONS_ZOMBIE_LARGE:
-        case MONS_SKELETON_SMALL:   case MONS_SKELETON_LARGE:
-        case MONS_SIMULACRUM_SMALL: case MONS_SIMULACRUM_LARGE:
-            return true;
-        default:
-            break;
-    }
-#endif
 
     return mc == MONS_ZOMBIE
         || mc == MONS_SKELETON
@@ -2055,18 +2031,8 @@ string mon_attack_name(attack_type attack, bool with_object)
         "constrict",
         "trample",
         "trunk-slap",
-#if TAG_MAJOR_VERSION == 34
-        "snap closed at",
-        "splash",
-#endif
         "pounce on",
-#if TAG_MAJOR_VERSION == 34
-        "sting",
-#endif
         "hit", // AT_CHERUB
-#if TAG_MAJOR_VERSION == 34
-        "hit", // AT_SHOOT
-#endif
         "hit", // AT_WEAP_ONLY,
         "hit", // AT_RANDOM
     };
@@ -3054,7 +3020,7 @@ void ugly_thing_apply_uniform_band_colour(mgen_data &mg,
 
 static const char *drac_colour_names[] =
 {
-    "black", "", "yellow", "green", "purple", "red", "white", "grey", "pale"
+    "black", "yellow", "green", "purple", "red", "white", "grey", "pale"
 };
 
 string draconian_colour_name(monster_type mon_type)
@@ -3085,7 +3051,7 @@ monster_type draconian_colour_by_name(const string &name)
 // TODO: Remove "putrid" when TAG_MAJOR_VERSION > 34
 static const char *demonspawn_base_names[] =
 {
-    "monstrous", "gelid", "infernal", "putrid", "torturous",
+    "monstrous", "gelid", "infernal", "torturous",
 };
 
 string demonspawn_base_name(monster_type mon_type)
@@ -4208,9 +4174,6 @@ mon_inv_type item_to_mslot(const item_def &item)
     {
     case OBJ_WEAPONS:
     case OBJ_STAVES:
-#if TAG_MAJOR_VERSION == 34
-    case OBJ_RODS:
-#endif
         return MSLOT_WEAPON;
     case OBJ_MISSILES:
         return MSLOT_MISSILE;

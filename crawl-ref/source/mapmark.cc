@@ -33,13 +33,7 @@ map_marker::marker_reader map_marker::readers[NUM_MAP_MARKER_TYPES] =
     &map_wiz_props_marker::read,
     &map_tomb_marker::read,
     &map_malign_gateway_marker::read,
-#if TAG_MAJOR_VERSION == 34
-    &map_phoenix_marker::read,
-#endif
     &map_position_marker::read,
-#if TAG_MAJOR_VERSION == 34
-    &map_door_seal_marker::read,
-#endif
     &map_terrain_change_marker::read,
     &map_cloud_spreader_marker::read
 };
@@ -660,106 +654,6 @@ string map_malign_gateway_marker::debug_describe() const
     return make_stringf("Malign gateway (%d, %s)", duration,
                         is_player ? "player" : "monster");
 }
-#if TAG_MAJOR_VERSION == 34
-
-//////////////////////////////////////////////////////////////////////////
-// map_phoenix_marker
-
-map_phoenix_marker::map_phoenix_marker(const coord_def& p,
-                    int dur, int mnum, beh_type bh, mon_attitude_type at,
-                    god_type gd, coord_def cp)
-    : map_marker(MAT_PHOENIX, p), duration(dur), mon_num(mnum),
-            behaviour(bh), attitude(at), god(gd), corpse_pos(cp)
-{
-}
-
-void map_phoenix_marker::write(writer &out) const
-{
-    map_marker::write(out);
-    marshallShort(out, duration);
-    marshallShort(out, mon_num);
-    marshallUByte(out, behaviour);
-    marshallUByte(out, attitude);
-    marshallUByte(out, god);
-    marshallCoord(out, corpse_pos);
-}
-
-void map_phoenix_marker::read(reader &in)
-{
-    map_marker::read(in);
-
-    duration = unmarshallShort(in);
-    mon_num = unmarshallShort(in);
-    behaviour = static_cast<beh_type>(unmarshallUByte(in));
-    attitude = static_cast<mon_attitude_type>(unmarshallUByte(in));
-    god       = static_cast<god_type>(unmarshallByte(in));
-    corpse_pos = unmarshallCoord(in);
-}
-
-map_marker *map_phoenix_marker::read(reader &in, map_marker_type)
-{
-    map_phoenix_marker *mc = new map_phoenix_marker();
-    mc->read(in);
-    return mc;
-}
-
-map_marker *map_phoenix_marker::clone() const
-{
-    map_phoenix_marker *mark = new map_phoenix_marker(pos, duration, mon_num,
-                                    behaviour, attitude, god, corpse_pos);
-    return mark;
-}
-
-string map_phoenix_marker::debug_describe() const
-{
-    return make_stringf("Phoenix marker (%d, %d)", duration, mon_num);
-}
-
-////////////////////////////////////////////////////////////////////////////
-// map_door_seal_marker
-
-map_door_seal_marker::map_door_seal_marker(const coord_def& p,
-                    int dur, int mnum, dungeon_feature_type oldfeat)
-    : map_marker(MAT_DOOR_SEAL, p), duration(dur), mon_num(mnum),
-        old_feature(oldfeat)
-{
-}
-
-void map_door_seal_marker::write(writer &out) const
-{
-    map_marker::write(out);
-    marshallShort(out, duration);
-    marshallShort(out, mon_num);
-    marshallUByte(out, old_feature);
-}
-
-void map_door_seal_marker::read(reader &in)
-{
-    map_marker::read(in);
-
-    duration = unmarshallShort(in);
-    mon_num = unmarshallShort(in);
-    old_feature = static_cast<dungeon_feature_type>(unmarshallUByte(in));
-}
-
-map_marker *map_door_seal_marker::read(reader &in, map_marker_type)
-{
-    map_door_seal_marker *mc = new map_door_seal_marker();
-    mc->read(in);
-    return mc;
-}
-
-map_marker *map_door_seal_marker::clone() const
-{
-    map_door_seal_marker *mark = new map_door_seal_marker(pos, duration, mon_num, old_feature);
-    return mark;
-}
-
-string map_door_seal_marker::debug_describe() const
-{
-    return make_stringf("Door seal marker (%d, %d)", duration, mon_num);
-}
-#endif
 
 ////////////////////////////////////////////////////////////////////////////
 // map_terrain_change_marker
@@ -793,11 +687,6 @@ void map_terrain_change_marker::read(reader &in)
     new_feature = static_cast<dungeon_feature_type>(unmarshallUByte(in));
     change_type = static_cast<terrain_change_type>(unmarshallUByte(in));
     mon_num = unmarshallShort(in);
-#if TAG_MAJOR_VERSION == 34
-    if (in.getMinorVersion() < TAG_MINOR_SAVE_TERRAIN_COLOUR)
-        colour = BLACK;
-    else
-#endif
         colour = unmarshallUByte(in);
 }
 
@@ -922,11 +811,6 @@ void map_position_marker::write(writer &outf) const
 void map_position_marker::read(reader &inf)
 {
     map_marker::read(inf);
-#if TAG_MAJOR_VERSION == 34
-    if (inf.getMinorVersion() < TAG_MINOR_TRANSPORTERS)
-        feat = DNGN_UNSEEN;
-    else
-#endif
     feat = unmarshallFeatureType(inf);
     dest = (unmarshallCoord(inf));
 }
@@ -1310,12 +1194,6 @@ map_position_marker *get_position_marker_at(const coord_def &pos,
             continue;
 
         map_position_marker *posm = dynamic_cast<map_position_marker*>(m);
-#if TAG_MAJOR_VERSION == 34
-        // Escape hatches were the only feature type using position markers
-        // before TAG_MINOR_TRANSPORTERS.
-        if (posm->feat == DNGN_UNSEEN && feat_is_escape_hatch(feat))
-            posm->feat = feat;
-#endif
         if (posm->feat == feat)
             return posm;
     }

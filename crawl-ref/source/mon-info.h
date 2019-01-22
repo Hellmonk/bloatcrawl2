@@ -24,9 +24,6 @@ enum monster_info_flags
     MB_CONFUSED,
     MB_INVISIBLE,
     MB_POISONED,
-#if TAG_MAJOR_VERSION == 34
-    MB_ROTTING,
-#endif
     MB_SUMMONED,
     MB_HALOED,
     MB_GLOWING,
@@ -36,9 +33,6 @@ enum monster_info_flags
     MB_SICK,
     MB_CAUGHT,
     MB_WEBBED,
-#if TAG_MAJOR_VERSION == 34
-    MB_OLD_FRENZIED,
-#endif
     MB_PETRIFYING,
     MB_PETRIFIED,
     MB_VULN_MAGIC,
@@ -48,19 +42,10 @@ enum monster_info_flags
     MB_INSANE,
     MB_SILENCING,
     MB_MESMERIZING,
-#if TAG_MAJOR_VERSION == 34
-    MB_EVIL_ATTACK,
-#endif
     MB_SHAPESHIFTER,
     MB_CHAOTIC,
     MB_SUBMERGED,
-#if TAG_MAJOR_VERSION == 34
-    MB_BLEEDING,
-#endif
     MB_DEFLECT_MSL,
-#if TAG_MAJOR_VERSION == 34
-    MB_PREP_RESURRECT,
-#endif
     MB_REGENERATION,
     MB_RAISED_MR,
     MB_MIRROR_DAMAGE,
@@ -71,15 +56,7 @@ enum monster_info_flags
     MB_NAME_REPLACE, // [art] foo does
     MB_NAME_UNQUALIFIED, // Foo does...
     MB_NAME_THE, // The foo does....
-#if TAG_MAJOR_VERSION == 34
-    MB_FADING_AWAY,
-    MB_MOSTLY_FADED,
-#endif
     MB_FEAR_INSPIRING,
-#if TAG_MAJOR_VERSION == 34
-    MB_WITHDRAWN,
-    MB_ATTACHED,
-#endif
     MB_DAZED,
     MB_MUTE,
     MB_BLIND,
@@ -90,26 +67,13 @@ enum monster_info_flags
     MB_PERM_SUMMON,
     MB_INNER_FLAME,
     MB_UMBRAED,
-#if TAG_MAJOR_VERSION == 34
-    MB_OLD_ROUSED,
-#endif
     MB_BREATH_WEAPON,
-#if TAG_MAJOR_VERSION == 34
-    MB_DEATHS_DOOR,
-#endif
     MB_FIREWOOD,
     MB_TWO_WEAPONS,
     MB_NO_REGEN,
-#if TAG_MAJOR_VERSION == 34
-    MB_SUPPRESSED,
-    MB_ROLLING,
-#endif
     MB_RANGED_ATTACK,
     MB_NO_NAME_TAG,
     MB_OZOCUBUS_ARMOUR,
-#if TAG_MAJOR_VERSION == 34
-    MB_MAGIC_ARMOUR,
-#endif
     MB_WRETCHED,
     MB_SCREAMED,
     MB_WORD_OF_RECALL,
@@ -117,16 +81,8 @@ enum monster_info_flags
     MB_WATER_HOLD,
     MB_WATER_HOLD_DROWN,
     MB_FLAYED,
-#if TAG_MAJOR_VERSION == 34
-    MB_RETCHING,
-#endif
     MB_WEAK,
     MB_DIMENSION_ANCHOR,
-#if TAG_MAJOR_VERSION == 34
-    MB_CONTROL_WINDS,
-    MB_WIND_AIDED,
-    MB_SUMMONED_NO_STAIRS, // Temp. summoned and capped monsters
-#endif
     MB_SUMMONED_CAPPED,    // Expiring due to summons cap
     MB_TOXIC_RADIANCE,
     MB_GRASPING_ROOTS,
@@ -147,17 +103,8 @@ enum monster_info_flags
     MB_LIGHTLY_DRAINED,
     MB_HEAVILY_DRAINED,
     MB_REPEL_MSL,
-#if TAG_MAJOR_VERSION == 34
-    MB_NEGATIVE_VULN,
-    MB_CONDENSATION_SHIELD,
-#endif
     MB_RESISTANCE,
     MB_HEXED,
-#if TAG_MAJOR_VERSION == 34
-    MB_BONE_ARMOUR,
-    MB_CHANT_FIRE_STORM,
-    MB_CHANT_WORD_OF_ENTROPY,
-#endif
     MB_AIRBORNE,
     MB_BRILLIANCE_AURA,
     MB_EMPOWERED_SPELLS,

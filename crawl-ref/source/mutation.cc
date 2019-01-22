@@ -130,9 +130,6 @@ static const int conflict[][3] =
     { MUT_REGENERATION,        MUT_INHIBITED_REGENERATION,  0},
     { MUT_ACUTE_VISION,        MUT_BLURRY_VISION,           0},
     { MUT_FAST,                MUT_SLOW,                    0},
-#if TAG_MAJOR_VERSION == 34
-    { MUT_STRONG_STIFF,        MUT_FLEXIBLE_WEAK,           1},
-#endif
     { MUT_STRONG,              MUT_WEAK,                    1},
     { MUT_CLEVER,              MUT_DOPEY,                   1},
     { MUT_AGILE,               MUT_CLUMSY,                  1},
@@ -271,9 +268,6 @@ static const mutation_type _all_scales[] =
     MUT_DISTORTION_FIELD,           MUT_ICY_BLUE_SCALES,
     MUT_IRIDESCENT_SCALES,          MUT_LARGE_BONE_PLATES,
     MUT_MOLTEN_SCALES,
-#if TAG_MAJOR_VERSION == 34
-    MUT_ROUGH_BLACK_SCALES,
-#endif
     MUT_RUGGED_BROWN_SCALES,        MUT_SLIMY_GREEN_SCALES,
     MUT_THIN_METALLIC_SCALES,       MUT_THIN_SKELETAL_STRUCTURE,
     MUT_YELLOW_SCALES,              MUT_STURDY_FRAME,
@@ -326,10 +320,6 @@ mutation_activity_type mutation_activity_level(mutation_type mut)
             return mutation_activity_type::FULL;
         }
         // Dex and HP changes are kept in all forms.
-#if TAG_MAJOR_VERSION == 34
-        if (mut == MUT_ROUGH_BLACK_SCALES)
-            return mutation_activity_type::PARTIAL;
-#endif
         if (mut == MUT_RUGGED_BROWN_SCALES)
             return mutation_activity_type::PARTIAL;
         else if (_get_mutation_def(mut).form_based)
@@ -349,9 +339,6 @@ mutation_activity_type mutation_activity_level(mutation_type mut)
         case MUT_SLOW:
         case MUT_IRIDESCENT_SCALES:
             return mutation_activity_type::INACTIVE;
-#if TAG_MAJOR_VERSION == 34
-        case MUT_ROUGH_BLACK_SCALES:
-#endif
         case MUT_RUGGED_BROWN_SCALES:
             return mutation_activity_type::PARTIAL;
         case MUT_YELLOW_SCALES:
@@ -375,13 +362,6 @@ mutation_activity_type mutation_activity_level(mutation_type mut)
     {
         return mutation_activity_type::INACTIVE;
     }
-#if TAG_MAJOR_VERSION == 34
-    if ((you_worship(GOD_PAKELLAS) || player_under_penance(GOD_PAKELLAS))
-         && (mut == MUT_MANA_LINK || mut == MUT_MANA_REGENERATION))
-    {
-        return mutation_activity_type::INACTIVE;
-    }
-#endif
 
     if (!form_can_bleed(you.form) && mut == MUT_SANGUINE_ARMOUR)
         return mutation_activity_type::INACTIVE;
@@ -2052,21 +2032,8 @@ bool delete_temp_mutation()
         for (int i = 0; i < NUM_MUTATIONS; i++)
             if (you.has_temporary_mutation(static_cast<mutation_type>(i)) && one_chance_in(++count))
                 mutat = static_cast<mutation_type>(i);
-
-#if TAG_MAJOR_VERSION == 34
-        // We had a brief period (between 0.14-a0-1589-g48c4fed and
-        // 0.14-a0-1604-g40af2d8) where we corrupted attributes in transferred
-        // games.
-        if (mutat == NUM_MUTATIONS)
-        {
-            mprf(MSGCH_ERROR, "Found no temp mutations, clearing.");
-            you.attribute[ATTR_TEMP_MUTATIONS] = 0;
-            return false;
-        }
-#else
         ASSERTM(mutat != NUM_MUTATIONS, "Found no temp mutations, expected %d",
                                         you.attribute[ATTR_TEMP_MUTATIONS]);
-#endif
 
         if (_delete_single_mutation_level(mutat, "temp mutation expiry", true))
             return true;

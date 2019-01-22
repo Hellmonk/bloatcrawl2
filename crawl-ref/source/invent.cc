@@ -262,11 +262,6 @@ void get_class_hotkeys(const int type, vector<char> &glyphs)
     case OBJ_STAVES:
         glyphs.push_back('|');
         break;
-#if TAG_MAJOR_VERSION == 34
-    case OBJ_RODS:
-        glyphs.push_back('\\');
-        break;
-#endif
     case OBJ_MISCELLANY:
         glyphs.push_back('}');
         break;
@@ -440,12 +435,6 @@ string no_selectables_message(int item_selector)
             return "You aren't carrying any items that you can evoke.";
     case OSEL_CURSED_WORN:
         return "None of your equipped items are cursed.";
-#if TAG_MAJOR_VERSION == 34
-    case OSEL_UNCURSED_WORN_ARMOUR:
-        return "You aren't wearing any piece of uncursed armour.";
-    case OSEL_UNCURSED_WORN_JEWELLERY:
-        return "You aren't wearing any piece of uncursed jewellery.";
-#endif
     case OSEL_BRANDABLE_WEAPON:
         return "You aren't carrying any weapons that can be branded.";
     case OSEL_ENCHANTABLE_WEAPON:
@@ -537,9 +526,6 @@ bool get_tiles_for_item(const item_def &item, vector<tile_def>& tileset, bool sh
     }
     if (item.base_type == OBJ_WEAPONS || item.base_type == OBJ_MISSILES
         || item.base_type == OBJ_ARMOUR
-#if TAG_MAJOR_VERSION == 34
-        || item.base_type == OBJ_RODS
-#endif
        )
     {
         tileidx_t brand = tileidx_known_brand(item);
@@ -745,9 +731,6 @@ FixedVector<int, NUM_OBJECT_CLASSES> inv_order(
     OBJ_MISSILES,
     OBJ_ARMOUR,
     OBJ_STAVES,
-#if TAG_MAJOR_VERSION == 34
-    OBJ_RODS,
-#endif
     OBJ_JEWELLERY,
     OBJ_WANDS,
     OBJ_SCROLLS,
@@ -936,9 +919,6 @@ const char *item_class_name(int type, bool terse)
         case OBJ_POTIONS:    return "Potions";
         case OBJ_BOOKS:      return "Books";
         case OBJ_STAVES:     return "Magical Staves";
-#if TAG_MAJOR_VERSION == 34
-        case OBJ_RODS:       return "Rods";
-#endif
         case OBJ_ORBS:       return "Orbs of Power";
         case OBJ_MISCELLANY: return "Miscellaneous";
         case OBJ_CORPSES:    return "Carrion";
@@ -1051,13 +1031,6 @@ bool item_is_selected(const item_def &i, int selector)
         return i.cursed() && item_is_equipped(i)
                && (&i != you.weapon() || is_weapon(i));
 
-#if TAG_MAJOR_VERSION == 34
-    case OSEL_UNCURSED_WORN_ARMOUR:
-        return !i.cursed() && item_is_equipped(i) && itype == OBJ_ARMOUR;
-
-    case OSEL_UNCURSED_WORN_JEWELLERY:
-        return !i.cursed() && item_is_equipped(i) && itype == OBJ_JEWELLERY;
-#endif
 
     case OSEL_BRANDABLE_WEAPON:
         return is_brandable_weapon(i, true);
@@ -2073,15 +2046,6 @@ bool item_is_evokable(const item_def &item, bool reach, bool known,
             mpr("That item cannot be evoked!");
         return false;
 
-#if TAG_MAJOR_VERSION == 34
-    case OBJ_MISCELLANY:
-        if (item.sub_type != MISC_BUGGY_LANTERN_OF_SHADOWS
-            && item.sub_type != MISC_BUGGY_EBONY_CASKET
-            )
-        {
-            return true;
-        }
-#endif
         // removed items fallthrough to failure
 
     default:

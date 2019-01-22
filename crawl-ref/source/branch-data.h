@@ -43,16 +43,6 @@ const Branch branches[NUM_BRANCHES] =
       nullptr,
       WHITE, ETC_ELVEN_BRICK,
       'E', {}, BRANCH_NOISE_NORMAL },
-#if TAG_MAJOR_VERSION == 34
-
-    { BRANCH_DWARF, BRANCH_ELF, -1, -1, 0, 17,
-      BFLAG_NONE,
-      DNGN_ENTER_DWARF, DNGN_EXIT_DWARF, NUM_FEATURES,
-      "Dwarven Hall", "the Dwarven Hall", "Dwarf",
-      nullptr,
-      BROWN, BROWN,
-      'K', {}, BRANCH_NOISE_NORMAL },
-#endif
 
     { BRANCH_LAIR, BRANCH_DUNGEON, 8, 11, 6, 10,
       BFLAG_NONE,
@@ -109,16 +99,6 @@ const Branch branches[NUM_BRANCHES] =
       nullptr,
       LIGHTGREY, BROWN,
       'V', { RUNE_VAULTS }, BRANCH_NOISE_NORMAL },
-#if TAG_MAJOR_VERSION == 34
-
-    { BRANCH_BLADE, BRANCH_VAULTS, 3, 4, 1, 21,
-      BFLAG_NO_ITEMS,
-      DNGN_ENTER_BLADE, DNGN_EXIT_BLADE, NUM_FEATURES,
-      "Hall of Blades", "the Hall of Blades", "Blade",
-      nullptr,
-      LIGHTGREY, BROWN,
-      'B', {}, BRANCH_NOISE_QUIET },
-#endif
 
     { BRANCH_CRYPT, BRANCH_VAULTS, 2, 3, 3, 19,
       BFLAG_DANGEROUS_END,
@@ -135,7 +115,6 @@ const Branch branches[NUM_BRANCHES] =
       nullptr,
       BROWN, BROWN,
       'W', { RUNE_TOMB }, BRANCH_NOISE_QUIET },
-#if TAG_MAJOR_VERSION > 34
 
     { BRANCH_DEPTHS, BRANCH_DUNGEON, 15, 15, 5, 22,
       BFLAG_NONE,
@@ -144,7 +123,6 @@ const Branch branches[NUM_BRANCHES] =
       nullptr,
       LIGHTGREY, BROWN,
       'U', {}, BRANCH_NOISE_NORMAL },
-#endif
 
     { BRANCH_VESTIBULE, NUM_BRANCHES, 27, 27, 1, 27,
       BFLAG_NO_ITEMS,
@@ -194,16 +172,6 @@ const Branch branches[NUM_BRANCHES] =
       "You feel the power of the Orb interfering with translocations here.",
       BLACK, BLACK, // set per-map
       'Z', {}, BRANCH_NOISE_NORMAL },
-#if TAG_MAJOR_VERSION == 34
-
-    { BRANCH_FOREST, BRANCH_VAULTS, 2, 3, 5, 19,
-      BFLAG_SPOTTY,
-      DNGN_ENTER_FOREST, DNGN_EXIT_FOREST, NUM_FEATURES,
-      "Forest", "the Enchanted Forest", "Forest",
-      nullptr,
-      BROWN, BROWN,
-      'F', {}, BRANCH_NOISE_NORMAL },
-#endif
 
     { BRANCH_ABYSS, NUM_BRANCHES, -1, -1, 5, 24,
       BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_MAP,
@@ -230,16 +198,6 @@ const Branch branches[NUM_BRANCHES] =
       "You land on top of a ziggurat so tall you cannot make out the ground.",
       BLACK, BLACK,
       'Q', {}, BRANCH_NOISE_NORMAL },
-#if TAG_MAJOR_VERSION == 34
-
-    { BRANCH_LABYRINTH, NUM_BRANCHES, -1, -1, 1, 15,
-      BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
-      DNGN_ENTER_LABYRINTH, DNGN_EXIT_LABYRINTH, DNGN_EXIT_THROUGH_ABYSS,
-      "Labyrinth", "a Labyrinth", "Lab",
-      "You enter a labyrinth!",
-      BLACK, BLACK,
-      '0', {}, BRANCH_NOISE_NORMAL },
-#endif
 
     { BRANCH_BAZAAR, NUM_BRANCHES, -1, -1, 1, 18,
       BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
@@ -280,7 +238,6 @@ const Branch branches[NUM_BRANCHES] =
       "You enter a bailey!",
       WHITE, LIGHTRED,
       '5', {}, BRANCH_NOISE_NORMAL },
-#if TAG_MAJOR_VERSION > 34
 
     { BRANCH_GAUNTLET, NUM_BRANCHES, -1, -1, 1, 15,
       BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
@@ -289,7 +246,6 @@ const Branch branches[NUM_BRANCHES] =
       "You enter a gauntlet!",
       BLACK, BLACK,
       '6', {}, BRANCH_NOISE_NORMAL },
-#endif
 
     { BRANCH_ICE_CAVE, NUM_BRANCHES, -1, -1, 1, 15,
       BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
@@ -297,12 +253,7 @@ const Branch branches[NUM_BRANCHES] =
       "Ice Cave", "an ice cave", "IceCv",
       "You enter an ice cave!",
       BLUE, WHITE,
-#if TAG_MAJOR_VERSION == 34
-      '6', {}, BRANCH_NOISE_NORMAL },
-#endif
-#if TAG_MAJOR_VERSION > 34
       '7', {}, BRANCH_NOISE_NORMAL },
-#endif
 
     { BRANCH_VOLCANO, NUM_BRANCHES, -1, -1, 1, 14,
       BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
@@ -310,12 +261,7 @@ const Branch branches[NUM_BRANCHES] =
       "Volcano", "a volcano", "Volcano",
       "You enter a volcano!",
       RED, RED,
-#if TAG_MAJOR_VERSION == 34
-      '7', {}, BRANCH_NOISE_NORMAL },
-#endif
-#if TAG_MAJOR_VERSION > 34
       '8', {}, BRANCH_NOISE_NORMAL },
-#endif
 
     { BRANCH_WIZLAB, NUM_BRANCHES, -1, -1, 1, 24,
       BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
@@ -323,22 +269,7 @@ const Branch branches[NUM_BRANCHES] =
       "Wizlab", "a wizard's laboratory", "WizLab",
       "You enter a wizard's laboratory!",
       LIGHTGREY, BROWN, // set per-map
-#if TAG_MAJOR_VERSION == 34
-      '8', {}, BRANCH_NOISE_NORMAL },
-#endif
-#if TAG_MAJOR_VERSION > 34
       '9', {}, BRANCH_NOISE_NORMAL },
-#endif
-#if TAG_MAJOR_VERSION == 34
-
-    { BRANCH_DEPTHS, BRANCH_DUNGEON, 15, 15, 5, 22,
-      BFLAG_NONE,
-      DNGN_ENTER_DEPTHS, DNGN_EXIT_DEPTHS, NUM_FEATURES,
-      "Depths", "the Depths", "Depths",
-      nullptr,
-      LIGHTGREY, BROWN,
-      'U', {}, BRANCH_NOISE_NORMAL },
-#endif
 
     { BRANCH_DESOLATION, NUM_BRANCHES, -1, -1, 1, 20,
       BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
@@ -346,20 +277,5 @@ const Branch branches[NUM_BRANCHES] =
       "Desolation", "the Desolation of Salt", "Desolation",
       "You enter a great desolation of salt!",
       LIGHTGREY, BROWN, // TODO
-#if TAG_MAJOR_VERSION == 34
-      '9', {}, BRANCH_NOISE_LOUD },
-#endif
-#if TAG_MAJOR_VERSION > 34
       '0', {}, BRANCH_NOISE_LOUD },
-#endif
-#if TAG_MAJOR_VERSION == 34
-
-    { BRANCH_GAUNTLET, NUM_BRANCHES, -1, -1, 1, 15,
-      BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
-      DNGN_ENTER_GAUNTLET, DNGN_EXIT_GAUNTLET, DNGN_EXIT_THROUGH_ABYSS,
-      "Gauntlet", "a Gauntlet", "Gauntlet",
-      "You enter a gauntlet!",
-      BLACK, BLACK,
-      '!', {}, BRANCH_NOISE_NORMAL },
-#endif
 };

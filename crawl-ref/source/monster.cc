@@ -4679,10 +4679,6 @@ bool monster::is_trap_safe(const coord_def& where, bool just_check) const
     if (trap.type == TRAP_SHAFT)
         return true;
 
-#if TAG_MAJOR_VERSION == 34
-    if (trap.type == TRAP_SHADOW_DORMANT || trap.type == TRAP_SHADOW)
-        return true;
-#endif
 
     // No friendly or good neutral monsters will ever enter a trap that harms
     // the player when triggered.
@@ -5793,9 +5789,6 @@ bool monster::can_drink_potion(potion_type ptype) const
         case POT_HEAL_WOUNDS:
             return !(holiness() & (MH_NONLIVING | MH_PLANT));
         case POT_BLOOD:
-#if TAG_MAJOR_VERSION == 34
-        case POT_BLOOD_COAGULATED:
-#endif
             return mons_species() == MONS_VAMPIRE;
         case POT_BERSERK_RAGE:
             return can_go_berserk();
@@ -5826,9 +5819,6 @@ bool monster::should_drink_potion(potion_type ptype) const
     case POT_HEAL_WOUNDS:
         return hit_points <= max_hit_points / 2;
     case POT_BLOOD:
-#if TAG_MAJOR_VERSION == 34
-    case POT_BLOOD_COAGULATED:
-#endif
         return hit_points <= max_hit_points / 2;
     case POT_BERSERK_RAGE:
         // this implies !berserk()
@@ -5883,9 +5873,6 @@ bool monster::drink_potion_effect(potion_type pot_eff, bool card)
         break;
 
     case POT_BLOOD:
-#if TAG_MAJOR_VERSION == 34
-    case POT_BLOOD_COAGULATED:
-#endif
         if (mons_species() == MONS_VAMPIRE)
         {
             heal(10 + random2avg(28, 3));

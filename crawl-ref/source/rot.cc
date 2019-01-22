@@ -362,17 +362,6 @@ void rot_inventory_food(int time_delta)
         if (item.quantity < 1 || !_item_needs_rot_check(item))
             continue;
 
-#if TAG_MAJOR_VERSION == 34
-        // cleanup
-        if (item.base_type == OBJ_CORPSES)
-        {
-            if (you.equip[EQ_WEAPON] == i)
-                unwield_item();
-
-            item_was_destroyed(item);
-            destroy_item(item);
-        }
-#endif
 
         const int initial_quantity = item.quantity;
         const string item_name = item.name(DESC_PLAIN, false);

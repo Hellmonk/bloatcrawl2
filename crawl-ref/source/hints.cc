@@ -1065,9 +1065,6 @@ static bool _tutorial_interesting(hints_event_type event)
     case HINT_HEALING_POTIONS:
     case HINT_GAINED_SPELLCASTING:
     case HINT_FUMBLING_SHALLOW_WATER:
-#if TAG_MAJOR_VERSION == 34
-    case HINT_MEMORISE_FAILURE:
-#endif
     case HINT_SPELL_MISCAST:
     case HINT_CLOUD_WARNING:
     case HINT_ANIMATE_CORPSE_SKELETON:
@@ -2673,10 +2670,6 @@ void learned_something_new(hints_event_type seen_what, coord_def gc)
              << "to have a look at your skills and manage their training.";
         cmd.push_back(CMD_DISPLAY_SKILLS);
         break;
-#if TAG_MAJOR_VERSION == 34
-    case HINT_MEMORISE_FAILURE: // lmao
-        break;
-#endif
     case HINT_FUMBLING_SHALLOW_WATER:
         text << "Fighting in shallow water will sometimes cause you to slip "
                 "and fumble your attack. If possible, try to fight on "
@@ -3585,12 +3578,6 @@ static void _hints_describe_feature(int x, int y, ostringstream& ostr)
         Hints.hints_events[HINT_SEEN_ESCAPE_HATCH] = false;
         break;
 
-#if TAG_MAJOR_VERSION == 34
-    case DNGN_ENTER_PORTAL_VAULT:
-        ostr << "This " << _describe_portal(where);
-        Hints.hints_events[HINT_SEEN_PORTAL] = false;
-        break;
-#endif
 
     case DNGN_CLOSED_DOOR:
     case DNGN_CLOSED_CLEAR_DOOR:

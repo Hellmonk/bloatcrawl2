@@ -8,10 +8,6 @@
 #define ORIG_MONSTER_KEY "orig_monster_key"
 #define ELVEN_ENERGIZE_KEY "elven_twin_energize"
 #define ELVEN_IS_ENERGIZED_KEY "elven_twin_is_energized"
-#if TAG_MAJOR_VERSION == 34
-#define OLD_DUVESSA_ENERGIZE_KEY "duvessa_berserk"
-#define OLD_DOWAN_ENERGIZE_KEY "dowan_upgrade"
-#endif
 
 #define MONSTER_DIES_LUA_KEY "monster_dies_lua_key"
 

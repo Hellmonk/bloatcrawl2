@@ -1998,91 +1998,37 @@ static const char *enchant_names[] =
 {
     "none", "berserk", "haste", "might", "fatigue", "slow", "fear",
     "confusion", "invis", "poison",
-#if TAG_MAJOR_VERSION == 34
-    "rot",
-#endif
     "summon", "abj", "corona",
     "charm", "sticky_flame", "glowing_shapeshifter", "shapeshifter", "tp",
     "sleep_wary", "submerged", "short_lived", "paralysis", "sick",
-#if TAG_MAJOR_VERSION == 34
-    "sleepy",
-#endif
     "held",
-#if TAG_MAJOR_VERSION == 34
-     "battle_frenzy", "temp_pacif",
-#endif
     "petrifying",
     "petrified", "lowered_mr", "soul_ripe", "slowly_dying",
-#if TAG_MAJOR_VERSION == 34
-    "eat_items",
-#endif
     "aquatic_land", "spore_production",
-#if TAG_MAJOR_VERSION == 34
-    "slouch",
-#endif
     "swift", "tide",
     "insane", "silenced", "awaken_forest", "exploding",
-#if TAG_MAJOR_VERSION == 34
-    "bleeding",
-#endif
     "tethered", "severed", "antimagic",
-#if TAG_MAJOR_VERSION == 34
-    "fading_away", "preparing_resurrect",
-#endif
     "regen",
     "magic_res", "mirror_dam",
-#if TAG_MAJOR_VERSION == 34
-    "stoneskin",
-#endif
     "fear inspiring", "temporarily pacified",
-#if TAG_MAJOR_VERSION == 34
-    "withdrawn", "attached",
-#endif
     "guardian_timer", "flight", "liquefying", "tornado", "fake_abjuration",
     "dazed", "mute", "blind", "dumb", "mad", "silver_corona", "recite timer",
     "inner_flame",
-#if TAG_MAJOR_VERSION == 34
-    "roused",
-#endif
     "breath timer",
-#if TAG_MAJOR_VERSION == 34
-    "deaths_door", "rolling",
-#endif
     "ozocubus_armour", "wretched", "screamed", "rune_of_recall", "injury bond",
     "drowning", "flayed", "haunting",
-#if TAG_MAJOR_VERSION == 34
-    "retching",
-#endif
     "weak", "dimension_anchor", "awaken vines",
-#if TAG_MAJOR_VERSION == 34
-    "control_winds", "wind_aided",
-#endif
     "summon_capped",
-    "toxic_radiance", "grasping_roots_source", "grasping_roots",
+    "toxic_radiance", "grasping_roots",
     "iood_charged", "fire_vuln", "tornado_cooldown", "merfolk_avatar_song",
     "barbs",
-#if TAG_MAJOR_VERSION == 34
-    "building_charge",
-#endif
     "poison_vuln", "icemail", "agile",
     "frozen",
-#if TAG_MAJOR_VERSION == 34
-    "ephemeral_infusion",
-#endif
     "black_mark",
-#if TAG_MAJOR_VERSION == 34
-    "grand_avatar",
-#endif
     "sap magic", "shroud", "phantom_mirror", "bribed", "permabribed",
     "corrosion", "gold_lust", "drained", "repel missiles",
     "deflect missiles",
-#if TAG_MAJOR_VERSION == 34
-    "negative_vuln", "condensation_shield",
-#endif
     "resistant", "hexed", "corpse_armour",
-#if TAG_MAJOR_VERSION == 34
-    "chanting_fire_storm", "chanting_word_of_entropy",
-#endif
     "aura_of_brilliance", "empowered_spells", "gozag_incite", "pain_bond",
     "idealised", "bound_soul", "infestation",
     "stilling the winds", "thunder_ringed", "pinned_by_whirlwind",

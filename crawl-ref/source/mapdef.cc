@@ -2094,10 +2094,6 @@ void map_chance::write(writer &outf) const
 
 void map_chance::read(reader &inf)
 {
-#if TAG_MAJOR_VERSION == 34
-    if (inf.getMinorVersion() < TAG_MINOR_NO_PRIORITY)
-        unmarshallInt(inf); // was chance_priority
-#endif
     chance = unmarshallInt(inf);
 }
 
@@ -3518,11 +3514,6 @@ mons_spec mons_list::pick_monster(mons_spec_slot &slot)
             pick = spec;
     }
 
-#if TAG_MAJOR_VERSION == 34
-    // Force rebuild of the des cache to drop this check.
-    if ((int)pick.type < -1)
-        pick = (monster_type)(-100 - (int)pick.type);
-#endif
 
     if (slot.fix_slot)
     {
@@ -4844,15 +4835,9 @@ int str_to_ego(object_class_type item_type, string ego_str)
         "resistance",
         "positive_energy",
         "archmagi",
-#if TAG_MAJOR_VERSION == 34
-        "preservation",
-#endif
         "reflection",
         "spirit_shield",
         "archery",
-#if TAG_MAJOR_VERSION == 34
-        "jumping",
-#endif
         "repulsion",
         "cloud_immunity",
         nullptr
@@ -4865,32 +4850,16 @@ int str_to_ego(object_class_type item_type, string ego_str)
         "freezing",
         "holy_wrath",
         "electrocution",
-#if TAG_MAJOR_VERSION == 34
-        "orc_slaying",
-        "dragon_slaying",
-#endif
         "venom",
         "protection",
         "draining",
         "speed",
         "vorpal",
-#if TAG_MAJOR_VERSION == 34
-        "flame",
-        "frost",
-#endif
         "vampirism",
         "pain",
         "antimagic",
         "distortion",
-#if TAG_MAJOR_VERSION == 34
-        "reaching",
-        "returning",
-#endif
         "chaos",
-        "evasion",
-#if TAG_MAJOR_VERSION == 34
-        "confuse",
-#endif
         "penetration",
         "reaping",
         nullptr
@@ -4911,14 +4880,8 @@ int str_to_ego(object_class_type item_type, string ego_str)
         "steel",
         "silver",
         "paralysis",
-#if TAG_MAJOR_VERSION == 34
-        "slow",
-#endif
         "sleep",
         "confusion",
-#if TAG_MAJOR_VERSION == 34
-        "sickness",
-#endif
         "frenzy",
         nullptr
     };
@@ -4943,11 +4906,6 @@ int str_to_ego(object_class_type item_type, string ego_str)
         break;
 
     case OBJ_MISSILES:
-#if TAG_MAJOR_VERSION == 34
-        // HACK to get an old save to load; remove me soon?
-        if (ego_str == "sleeping")
-            return SPMSL_SLEEP;
-#endif
         order = missile_order;
         break;
 

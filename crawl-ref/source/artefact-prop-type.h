@@ -19,6 +19,7 @@ enum artefact_prop_type
     ARTP_SEE_INVISIBLE,
     ARTP_INVISIBLE,
     ARTP_FLY,
+    ARTP_FOG,
     ARTP_BLINK,
     ARTP_BERSERK,
     ARTP_NOISE,
@@ -26,13 +27,7 @@ enum artefact_prop_type
     ARTP_CAUSE_TELEPORTATION,
     ARTP_PREVENT_TELEPORTATION,
     ARTP_ANGRY,
-#if TAG_MAJOR_VERSION == 34
-    ARTP_METABOLISM,
-#endif
     ARTP_CONTAM,
-#if TAG_MAJOR_VERSION == 34
-    ARTP_ACCURACY,
-#endif
     ARTP_SLAYING,
     ARTP_CURSE,
     ARTP_STEALTH,
@@ -43,19 +38,10 @@ enum artefact_prop_type
     ARTP_BASE_ACC,
     ARTP_BASE_DAM,
     ARTP_RMSL,
-#if TAG_MAJOR_VERSION == 34
-    ARTP_FOG,
-#endif
     ARTP_REGENERATION,
-#if TAG_MAJOR_VERSION == 34
-    ARTP_SUSTAT,
-#endif
     ARTP_NO_UPGRADE,
     ARTP_RCORR,
     ARTP_RMUT,
-#if TAG_MAJOR_VERSION == 34
-    ARTP_TWISTER,
-#endif
     ARTP_CORRODE,
     ARTP_DRAIN,
     ARTP_SLOW,

@@ -31,10 +31,6 @@ typedef list<follower> m_transit_list;
 typedef map<level_id, m_transit_list> monsters_in_transit;
 
 // This one too.
-#if TAG_MAJOR_VERSION == 34
-typedef list<item_def> i_transit_list;
-typedef map<level_id, i_transit_list> items_in_transit;
-#endif
 
 extern monsters_in_transit the_lost_ones;
 
