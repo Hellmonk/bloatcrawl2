@@ -5,7 +5,7 @@
 # Most ziggurat code is in ziggurat.lua.
 # XXX: Ziggurat code is incomplete.
 
-: require("dlua/ziggurat.lua")
+: crawl_require("dlua/ziggurat.lua")
 
 ### Entry vaults to ziggurats ##########################################
 #
@@ -421,6 +421,17 @@ x0.~.0x
 xx9.9xx
  Xx0xX
   xxx
+ENDMAP
+
+NAME:  ziggurat_pillar_centre_dispersal
+TAGS:  ziggurat_pillar centered generate_awake unrand no_exits
+KFEAT: ^ = dispersal trap
+MAP
+^G.G^
+GG.GG
+.....
+GG.GG
+^G.G^
 ENDMAP
 
 #######################################################################

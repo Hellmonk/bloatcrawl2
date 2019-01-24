@@ -421,11 +421,6 @@ static void _new_level_amuses_xom(dungeon_feature_type feat,
         xom_is_stimulated(50);
         break;
 
-    case BRANCH_LABYRINTH:
-        // Finding the way out of a labyrinth interests Xom.
-        xom_is_stimulated(75);
-        break;
-
     case BRANCH_PANDEMONIUM:
         xom_is_stimulated(100);
         break;
@@ -439,8 +434,22 @@ static void _new_level_amuses_xom(dungeon_feature_type feat,
     }
 }
 
+/**
+ * Determine destination level.
+ *
+ * @param how         How the player is trying to travel.
+ *                    (e.g. stairs, traps, portals, etc)
+ * @param forced      True if the player is forcing the traveling attempt.
+ *                    (e.g. forcibly exiting the abyss, etc)
+ * @param going_up    True if the player is going upstairs.
+ * @param known_shaft True if the player is intentionally shafting themself.
+ * @return            The destination level, if valid. Note the default value
+ *                    of dest is not valid (since depth = -1) and this is
+ *                    generally what is returned for invalid destinations.
+ *                    But note the special case when failing to climb stairs
+ *                    when attempting to leave the dungeon, depth = 1.
+ */
 static level_id _travel_destination(const dungeon_feature_type how,
-                                    const dungeon_feature_type whence,
                                     bool forced, bool going_up,
                                     bool known_shaft)
 {
@@ -481,11 +490,18 @@ static level_id _travel_destination(const dungeon_feature_type how,
     // Falling down is checked before the transition if going upstairs, since
     // it might prevent the transition itself.
     if (going_up && _check_fall_down_stairs(how, true))
+    {
         // TODO: This probably causes an obscure bug where confused players
         // going 'down' into the vestibule are twice as likely to fall, because
         // they have to pass a check here, and later in floor_transition
         // Right solution is probably to use the canonicalized direction everywhere
+
+        // If player falls down the stairs trying to leave the dungeon, we set
+        // the destination depth to 1 (i.e. D:1)
+        if (how == DNGN_EXIT_DUNGEON)
+            dest.depth = 1;
         return dest;
+    }
 
     if (shaft)
     {
@@ -546,6 +562,26 @@ static level_id _travel_destination(const dungeon_feature_type how,
 }
 
 /**
+ * Check to see if transition will actually move the player.
+ *
+ * @param dest      The destination level (branch and depth).
+ * @param feat      The dungeon feature the player is standing on.
+ * @param going_up  True if the player is trying to go up stairs.
+ * @return          True if the level transition should happen.
+ */
+static bool _level_transition_moves_player(level_id dest,
+                                           dungeon_feature_type feat,
+                                           bool going_up)
+{
+    bool trying_to_exit = feat == DNGN_EXIT_DUNGEON && going_up;
+
+    // When exiting the dungeon, dest is not valid (depth = -1)
+    // So the player can transition with an invalid dest ONLY when exiting.
+    // Otherwise (i.e. not exiting) dest must be valid.
+    return dest.is_valid() != trying_to_exit;
+}
+
+/**
  * Transition to a different level.
  *
  * @param how The type of stair/portal tile the player is being conveyed through
@@ -567,6 +603,10 @@ void floor_transition(dungeon_feature_type how,
     // Magical level changes (which currently only exist "downwards") need this.
     clear_trapping_net();
     end_searing_ray();
+    you.stop_constricting_all();
+    you.stop_being_constricted();
+    you.clear_beholders();
+    you.clear_fearmongers();
 
     if (!forced)
     {
@@ -623,7 +663,7 @@ void floor_transition(dungeon_feature_type how,
         ouch(INSTANT_DEATH, KILLED_BY_LEAVING);
     }
 
-    if (how == DNGN_ENTER_LABYRINTH || how == DNGN_ENTER_ZIGGURAT)
+    if (how == DNGN_ENTER_ZIGGURAT)
         dungeon_terrain_changed(you.pos(), DNGN_STONE_ARCH);
 
     if (how == DNGN_ENTER_PANDEMONIUM
@@ -731,9 +771,14 @@ void floor_transition(dungeon_feature_type how,
                 mprf("Welcome to %s!", branches[branch].longname);
         }
 
+        const set<branch_type> boring_branch_exits = {
+            BRANCH_TEMPLE,
+            BRANCH_BAZAAR,
+            BRANCH_TROVE
+        };
+
         // Did we leave a notable branch for the first time?
-        if ((brdepth[old_level.branch] > 1
-             || old_level.branch == BRANCH_VESTIBULE)
+        if (boring_branch_exits.count(old_level.branch) == 0
             && !you.branches_left[old_level.branch])
         {
             string old_branch_string = branches[old_level.branch].longname;
@@ -782,20 +827,9 @@ void floor_transition(dungeon_feature_type how,
 
     new_level();
 
-    // Dunno why this is on going down only.
-    if (!going_up)
-    {
-        moveto_location_effects(whence);
+    moveto_location_effects(whence);
 
-        // Clear list of beholding and constricting/constricted monsters.
-        you.clear_beholders();
-        you.stop_constricting_all();
-        you.stop_being_constricted();
-
-        trackers_init_new_level(true);
-    }
-
-    you.clear_fearmongers();
+    trackers_init_new_level(true);
 
     if (update_travel_cache && !shaft)
         _update_travel_cache(old_level, stair_pos);
@@ -811,16 +845,19 @@ void floor_transition(dungeon_feature_type how,
     else
         maybe_update_stashes();
 
+    autotoggle_autopickup(false);
     request_autopickup();
 }
 
 /**
  * Try to go up or down stairs.
  *
- * @param force_stair The type of stair/portal to take. By default, use whatever
- *      tile is under the player. But this can be overridden (e.g. passing
- *      DNGN_EXIT_ABYSS forces the player out of the abyss)
- * @param force_known_shaft true if the player is shafting themselves via ability
+ * @param force_stair         The type of stair/portal to take. By default,
+ *      use whatever tile is under the player. But this can be overridden
+ *      (e.g. passing DNGN_EXIT_ABYSS forces the player out of the abyss)
+ * @param going_up            True if the player is going upstairs
+ * @param force_known_shaft   True if player is shafting themselves via ability.
+ * @param update_travel_cache True if travel cache should be updated.
  */
 void take_stairs(dungeon_feature_type force_stair, bool going_up,
                  bool force_known_shaft, bool update_travel_cache)
@@ -830,17 +867,16 @@ void take_stairs(dungeon_feature_type force_stair, bool going_up,
 
     // Taking a shaft manually (stepping on a known shaft, or using shaft ability)
     const bool known_shaft = (!force_stair
-                              && get_trap_type(you.pos()) == TRAP_SHAFT
-                              && how != DNGN_UNDISCOVERED_TRAP)
+                              && get_trap_type(you.pos()) == TRAP_SHAFT)
                              || (force_stair == DNGN_TRAP_SHAFT
                                  && force_known_shaft);
     // Latter case is falling down a shaft.
     const bool shaft = known_shaft || force_stair == DNGN_TRAP_SHAFT;
 
-    level_id whither = _travel_destination(how, old_feat,
-                           bool(force_stair), going_up, known_shaft);
+    level_id whither = _travel_destination(how, bool(force_stair), going_up,
+                                           known_shaft);
 
-    if (!whither.is_valid() && !(old_feat == DNGN_EXIT_DUNGEON && going_up))
+    if (!_level_transition_moves_player(whither, old_feat, going_up))
         return;
 
     floor_transition(how, old_feat, whither,

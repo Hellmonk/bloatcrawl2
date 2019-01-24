@@ -9,6 +9,7 @@
 
 #include "showsymb.h"
 
+#include "cloud.h"
 #include "colour.h"
 #include "env.h"
 #include "item-name.h"
@@ -36,7 +37,7 @@ static unsigned short _cell_feat_show_colour(const map_cell& cell,
     // These do not obey vault recolouring.
     const bool no_vault_recolour = feat_has_dry_floor(feat)
                                    && feat != DNGN_FLOOR
-                                   && feat != DNGN_OPEN_DOOR;
+                                   && !feat_is_open_door(feat);
 
     // These aren't shown mossy/bloody/slimy in console.
     const bool norecolour = feat_is_door(feat) || no_vault_recolour;
@@ -306,7 +307,7 @@ show_class get_cell_show_class(const map_cell& cell,
     if (feat && feat_is_solid(feat)
         || feat_has_dry_floor(feat)
            && feat != DNGN_FLOOR
-           && feat != DNGN_OPEN_DOOR
+           && !feat_is_open_door(feat)
            && feat != DNGN_ABANDONED_SHOP
            && feat != DNGN_STONE_ARCH
            && feat != DNGN_EXPIRED_PORTAL
@@ -460,12 +461,35 @@ static cglyph_t _get_cell_glyph_with_class(const map_cell& cell,
 
     case SH_CLOUD:
         ASSERT(cell_cloud);
-
         show.cls = SH_CLOUD;
         if (coloured)
             g.col = cell.cloud_colour();
         else
             g.col = DARKGRAY;
+
+        if (cloud_type_tile_info(cell.cloudinfo()->type).variation
+            == CTVARY_DUR)
+        {
+            // duration is already clamped to 0-3
+            int dur = cell.cloudinfo()->duration;
+            switch (dur)
+            {
+            case 0:
+                g.ch = dchar_glyph(DCHAR_CLOUD_TERMINAL);
+                break;
+            case 1:
+                g.ch = dchar_glyph(DCHAR_CLOUD_FADING);
+                break;
+            case 2:
+                g.ch = dchar_glyph(DCHAR_CLOUD_WEAK);
+                break;
+            case 3:
+                g.ch = dchar_glyph(DCHAR_CLOUD);
+                break;
+            }
+        }
+        else
+            g.ch = dchar_glyph(DCHAR_CLOUD);
         break;
 
     case SH_FEATURE:

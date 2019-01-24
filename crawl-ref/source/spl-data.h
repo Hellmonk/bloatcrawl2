@@ -2424,7 +2424,9 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_DRAIN_LIFE, "Drain Life",
     SPTYP_NECROMANCY,
-    SPFLAG_AREA | SPFLAG_EMERGENCY,
+    // n.b. marked as SPFLAG_MONSTER for wizmode purposes, but this spell is
+    // called by the yred ability.
+    SPFLAG_AREA | SPFLAG_EMERGENCY | SPFLAG_MONSTER,
     6,
     0,
     -1, -1,
@@ -3965,6 +3967,17 @@ static const struct spell_desc spelldata[] =
     LOS_RADIUS, LOS_RADIUS,
     5, 0,
     TILEG_GRASPING_ROOTS,
+},
+
+{
+    SPELL_THROW_PIE, "Throw Klown Pie",
+    SPTYP_CONJURATION | SPTYP_HEXES,
+    SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER | SPFLAG_MONSTER,
+    5,
+    200,
+    LOS_RADIUS, LOS_RADIUS,
+    5, 0,
+    TILEG_GENERIC_MONSTER_SPELL,
 },
 
 {

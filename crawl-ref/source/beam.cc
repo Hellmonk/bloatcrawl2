@@ -31,6 +31,7 @@
 #include "english.h"
 #include "exercise.h"
 #include "fight.h"
+#include "food.h"
 #include "god-abil.h"
 #include "god-conduct.h"
 #include "god-item.h"
@@ -50,6 +51,7 @@
 #include "mon-util.h"
 #include "mutation.h"
 #include "nearby-danger.h"
+#include "player-stats.h"
 #include "potion.h"
 #include "prompt.h"
 #include "ranged-attack.h"
@@ -235,7 +237,7 @@ static void _ench_animation(int flavour, const monster* mon, bool force)
 
 // If needs_tracer is true, we need to check the beam path for friendly
 // monsters.
-spret_type zapping(zap_type ztype, int power, bolt &pbolt,
+spret zapping(zap_type ztype, int power, bolt &pbolt,
                    bool needs_tracer, const char* msg, bool fail)
 {
     dprf(DIAG_BEAM, "zapping: power=%d", power);
@@ -247,7 +249,7 @@ spret_type zapping(zap_type ztype, int power, bolt &pbolt,
     // (or effect), player_tracer should be called directly with the highest
     // power possible respecting current skill, experience level, etc.
     if (needs_tracer && !player_tracer(ztype, power, pbolt))
-        return SPRET_ABORT;
+        return spret::abort;
 
     fail_check();
     // Fill in the bolt structure.
@@ -268,7 +270,7 @@ spret_type zapping(zap_type ztype, int power, bolt &pbolt,
 
     pbolt.fire();
 
-    return SPRET_SUCCESS;
+    return spret::success;
 }
 
 // Returns true if the path is considered "safe", and false if there are
@@ -1716,7 +1718,7 @@ static bool _monster_resists_mass_enchantment(monster* mons,
 // If m_succumbed is non-nullptr, will be set to the number of monsters that
 // were enchanted. If m_attempted is not nullptr, will be set to the number of
 // monsters that we tried to enchant.
-spret_type mass_enchantment(enchant_type wh_enchant, int pow, bool fail)
+spret mass_enchantment(enchant_type wh_enchant, int pow, bool fail)
 {
     fail_check();
     bool did_msg = false;
@@ -1773,7 +1775,7 @@ spret_type mass_enchantment(enchant_type wh_enchant, int pow, bool fail)
     if (wh_enchant == ENCH_INSANE)
         did_god_conduct(DID_HASTY, 8, true);
 
-    return SPRET_SUCCESS;
+    return spret::success;
 }
 
 void bolt::apply_bolt_paralysis(monster* mons)
@@ -2165,7 +2167,6 @@ void bolt_parent_init(const bolt &parent, bolt &child)
     child.colour         = parent.colour;
 
     child.flavour        = parent.flavour;
-    child.origin_spell   = parent.origin_spell;
 
     // We don't copy target since that is often overriden.
     child.thrower        = parent.thrower;
@@ -2601,7 +2602,7 @@ void bolt::affect_ground()
             if (beh == BEH_FRIENDLY)
                 beh = BEH_GOOD_NEUTRAL;
 
-            const god_type god = agent() ? agent()->deity() : GOD_NO_GOD;
+            const god_type god = agent()->deity();
 
             if (create_monster(mgen_data(MONS_BALLISTOMYCETE,
                                          beh,
@@ -2797,8 +2798,7 @@ void bolt::affect_place_explosion_clouds()
 // A little helper function to handle the calling of ouch()...
 void bolt::internal_ouch(int dam)
 {
-    monster* monst = nullptr;
-    monst = monster_by_mid(source_id);
+    monster* monst = monster_by_mid(source_id);
 
     const char *what = aux_source.empty() ? name.c_str() : aux_source.c_str();
 
@@ -3172,11 +3172,10 @@ bool bolt::misses_player()
         dprf(DIAG_BEAM, "Beamshield: hit: %d, block %d", testhit, block);
         if ((testhit < block && hit != AUTOMATIC_HIT) || omnireflected)
         {
-            bool penet = false;
-
-            const string refl_name = name.empty() && origin_spell ?
-                                     spell_title(origin_spell) :
-                                     name;
+            const string refl_name = name.empty() &&
+                                     origin_spell != SPELL_NO_SPELL ?
+                                        spell_title(origin_spell) :
+                                        name;
 
             const item_def *shield = you.shield();
             if (is_reflectable(you))
@@ -3200,8 +3199,7 @@ bool bolt::misses_player()
                 finish_beam();
             }
             you.shield_block_succeeded(agent());
-            if (!penet)
-                return true;
+            return true;
         }
 
         // Some training just for the "attempt".
@@ -3647,6 +3645,134 @@ void bolt::affect_actor(actor *act)
         affect_player();
 }
 
+struct pie_effect
+{
+    const char* desc;
+    function<bool(const actor& def)> valid;
+    function<void (actor& def, const bolt &beam)> effect;
+    int weight;
+};
+
+static const vector<pie_effect> pie_effects = {
+    {
+        "plum",
+        [](const actor &defender) {
+            return defender.is_player();
+        },
+        [](actor &defender, const bolt &/*beam*/) {
+            if (you.duration[DUR_VERTIGO])
+                mpr("You feel your light-headedness will last longer.");
+            else
+                mpr("You feel light-headed.");
+
+            you.increase_duration(DUR_VERTIGO, 10 + random2(11), 50);
+        },
+        10
+    },
+    {
+        "lemon",
+        [](const actor &defender) {
+            return defender.is_player() && !you_foodless();
+        },
+        [](actor &defender, const bolt &beam) {
+            if (you.duration[DUR_NO_POTIONS])
+                mpr("You feel your inability to drink will last longer.");
+            else
+                mpr("You feel unable to drink.");
+
+            you.increase_duration(DUR_NO_POTIONS, 10 + random2(11), 50);
+        },
+        10
+    },
+    {
+        "blueberry",
+        nullptr,
+        [](actor &defender, const bolt &beam) {
+            if (defender.is_monster())
+            {
+                monster *mons = defender.as_monster();
+                simple_monster_message(*mons, " looks unnaturally silent");
+                mons->add_ench(mon_enchant(ENCH_SILENCE, 0, beam.agent(),
+                            10 + random2(21) * BASELINE_DELAY));
+            }
+            else
+            {
+                if (you.duration[DUR_SILENCE])
+                    mpr("You feel your silence will last longer.");
+                else
+                    mpr("An unnatural silence engulfs you.");
+
+                you.increase_duration(DUR_SILENCE, 10 + random2(21), 30);
+            }
+        },
+        10
+    },
+    {
+        "raspberry",
+        [](const actor &defender) {
+            return defender.is_player();
+        },
+        [](actor &defender, const bolt &beam) {
+            for (int i = 0; i < NUM_STATS; ++i)
+                lose_stat(static_cast<stat_type>(i), 1 + random2(3));
+        },
+        10
+    },
+    {
+        "cherry",
+        [](const actor &defender) {
+            return defender.is_player() || defender.res_fire() < 3;
+        },
+        [](actor &defender, const bolt &beam) {
+            if (defender.is_monster())
+            {
+                monster *mons = defender.as_monster();
+                simple_monster_message(*mons,
+                        " looks more vulnerable to fire.");
+                mons->add_ench(mon_enchant(ENCH_FIRE_VULN, 0,
+                             beam.agent(),
+                             15 + random2(11) * BASELINE_DELAY));
+            }
+            else
+            {
+                if (you.duration[DUR_FIRE_VULN])
+                {
+                    mpr("You feel your vulnerability to fire will last "
+                        "longer.");
+                }
+                else
+                    mpr("Cherry-coloured flames burn away your fire "
+                        "resistance!");
+
+                you.increase_duration(DUR_FIRE_VULN, 15 + random2(11), 50);
+            }
+        },
+        6
+    },
+    {
+        "moon pie",
+        [](const actor &defender) {
+            return defender.can_polymorph();
+        },
+        [](actor &defender, const bolt &beam) {
+            defender.polymorph(100, false);
+        },
+        4
+    },
+};
+
+static pie_effect _random_pie_effect(const actor &defender)
+{
+    vector<pair<const pie_effect&, int>> weights;
+    for (const pie_effect &effect : pie_effects)
+        if (!effect.valid || effect.valid(defender))
+            weights.push_back({effect, effect.weight});
+
+    ASSERT(!weights.empty());
+
+    return *random_choose_weighted(weights);
+}
+
 void bolt::affect_player()
 {
     hit_count[MID_PLAYER]++;
@@ -3846,9 +3972,15 @@ void bolt::affect_player()
     if (flavour == BEAM_ENSNARE)
         was_affected = ensnare(&you) || was_affected;
 
-
     if (origin_spell == SPELL_QUICKSILVER_BOLT)
         debuff_player();
+
+    if (origin_spell == SPELL_THROW_PIE && hurted > 0)
+    {
+        const pie_effect effect = _random_pie_effect(you);
+        mprf("%s!", effect.desc);
+        effect.effect(you, *this);
+    }
 
     dprf(DIAG_BEAM, "Damage: %d", hurted);
 
@@ -4182,7 +4314,6 @@ void bolt::tracer_affect_monster(monster* mon)
 void bolt::enchantment_affect_monster(monster* mon)
 {
     god_conduct_trigger conducts[3];
-    disable_attack_conducts(conducts);
 
     bool hit_woke_orc = false;
 
@@ -4195,7 +4326,7 @@ void bolt::enchantment_affect_monster(monster* mon)
             if (is_sanctuary(mon->pos()) || is_sanctuary(you.pos()))
                 remove_sanctuary(true);
 
-            set_attack_conducts(conducts, mon, you.can_see(*mon));
+            set_attack_conducts(conducts, *mon, you.can_see(*mon));
 
             if (have_passive(passive_t::convert_orcs)
                 && mons_genus(mon->type) == MONS_ORC
@@ -4208,8 +4339,6 @@ void bolt::enchantment_affect_monster(monster* mon)
     }
     else if (flavour != BEAM_HIBERNATION || !mon->asleep())
         behaviour_event(mon, ME_ALERT, agent());
-
-    enable_attack_conducts(conducts);
 
     // Doing this here so that the player gets to see monsters
     // "flicker and vanish" when turning invisible....
@@ -4411,6 +4540,14 @@ void bolt::monster_post_hit(monster* mon, int dmg)
     {
         mon->add_ench(mon_enchant(ENCH_BARBS, 1, agent(),
                                   random_range(5, 7) * BASELINE_DELAY));
+    }
+
+    if (origin_spell == SPELL_THROW_PIE && dmg > 0)
+    {
+        const pie_effect effect = _random_pie_effect(*mon);
+        if (you.see_cell(mon->pos()))
+            mprf("%s!", effect.desc);
+        effect.effect(*mon, *this);
     }
 }
 
@@ -4735,7 +4872,6 @@ void bolt::affect_monster(monster* mon)
     // after all).
 
     god_conduct_trigger conducts[3];
-    disable_attack_conducts(conducts);
 
     if (nasty_to(mon))
     {
@@ -4745,7 +4881,7 @@ void bolt::affect_monster(monster* mon)
                 remove_sanctuary(true);
 
             // It's not the player's fault if the monster couldn't be seen
-            set_attack_conducts(conducts, mon, you.can_see(*mon));
+            set_attack_conducts(conducts, *mon, you.can_see(*mon));
         }
     }
 
@@ -4816,12 +4952,11 @@ void bolt::affect_monster(monster* mon)
     }
 
     update_hurt_or_helped(mon);
-    enable_attack_conducts(conducts);
 
-    // We'll say ballistomycete spore explosions don't trigger the ally attack conduct
-    // for Fedhas worshipers. Mostly because you can accidentally blow up a
-    // group of 8 plants and get placed under penance until the end of time
-    // otherwise. I'd prefer to do this elsewhere but the beam information
+    // We'll say ballistomycete spore explosions don't trigger the ally attack
+    // conduct for Fedhas worshipers. Mostly because you can accidentally blow
+    // up a group of 8 plants and get placed under penance until the end of
+    // time otherwise. I'd prefer to do this elsewhere but the beam information
     // goes out of scope.
     //
     // Also exempting miscast explosions from this conduct -cao
@@ -4830,7 +4965,7 @@ void bolt::affect_monster(monster* mon)
             || source_id == MID_PLAYER
                && aux_source.find("your miscasting") != string::npos))
     {
-        conducts[0].enabled = false;
+        conducts[0].set();
     }
 
     if (!is_explosion && !noise_generated)

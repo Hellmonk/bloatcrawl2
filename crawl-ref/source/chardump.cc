@@ -237,15 +237,18 @@ static void _sdump_transform(dump_params &par)
 
 static branch_type single_portals[] =
 {
-    BRANCH_LABYRINTH,
     BRANCH_TROVE,
     BRANCH_SEWER,
     BRANCH_OSSUARY,
     BRANCH_BAILEY,
+    BRANCH_GAUNTLET,
     BRANCH_ICE_CAVE,
     BRANCH_VOLCANO,
     BRANCH_WIZLAB,
     BRANCH_DESOLATION,
+#if TAG_MAJOR_VERSION == 34
+    BRANCH_LABYRINTH,
+#endif
 };
 
 static void _sdump_visits(dump_params &par)
@@ -1313,10 +1316,8 @@ static string _describe_action_subtype(caction_type type, int compound_subtype)
 #if TAG_MAJOR_VERSION == 34
         case EVOC_ROD:
             return "Rod";
-#endif
         case EVOC_DECK:
             return "Deck";
-#if TAG_MAJOR_VERSION == 34
         case EVOC_MISC:
             return "Miscellaneous";
         case EVOC_BUGGY_TOME:

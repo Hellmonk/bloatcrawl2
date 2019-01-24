@@ -14,7 +14,7 @@
 # Pan lua functions
 ###############################################################################
 
-: require('dlua/vault.lua')
+: crawl_require('dlua/vault.lua')
 
 # The generic pan lord warning message.
 
@@ -1633,7 +1633,7 @@ MAP
 .xxxxxxxxx..
 .x$+*+A+(x..
 .xxxxxxx+x..
-.xA+A+Ax|x..
+.xA+A+A+|x..
 .x+xxxxx+x..
 .xA+*x1+Px..
 .x+x+xxxxx..

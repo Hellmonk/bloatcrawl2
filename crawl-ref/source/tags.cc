@@ -1020,6 +1020,8 @@ static dungeon_feature_type rewrite_feature(dungeon_feature_type x,
         x = DNGN_CLEAR_STONE_WALL;
     }
 
+    if (x == DNGN_ENTER_LABYRINTH)
+        x = DNGN_ENTER_GAUNTLET;
 #endif
 
     return x;
@@ -1114,9 +1116,9 @@ static void _add_missing_branches()
                     map_feature_marker *featm =
                         dynamic_cast<map_feature_marker*>(marker);
                     // [ds] Ensure we're activating the correct feature
-                    // markers. Feature markers are also used for other
-                    // things, notably to indicate the return point from
-                    // a labyrinth or portal vault.
+                    // markers. Feature markers are also used for other things,
+                    // notably to indicate the return point from a portal
+                    // vault.
                     switch (featm->feat)
                     {
                     case DNGN_ENTER_COCYTUS:
@@ -1286,6 +1288,21 @@ void tag_read(reader &inf, tag_type tag_id)
         }
         tag_read_level_tiles(th);
 #if TAG_MAJOR_VERSION == 34
+        if (you.where_are_you == BRANCH_GAUNTLET
+            && th.getMinorVersion() < TAG_MINOR_GAUNTLET_TRAPPED)
+        {
+            vault_placement *place = dgn_vault_at(you.pos());
+            if (place && place->map.desc_or_name()
+                         == "gammafunk_gauntlet_branching")
+            {
+                auto exit = DNGN_EXIT_GAUNTLET;
+                grd(you.pos()) = exit;
+                // Announce the repair even in non-debug builds.
+                mprf(MSGCH_ERROR, "Placing emergency exit: %s.",
+                     dungeon_feature_name(exit));
+            }
+        }
+
         // We can't do this when we unmarshall shops, since we haven't
         // unmarshalled items yet...
         if (th.getMinorVersion() < TAG_MINOR_SHOP_HACK)
@@ -3600,6 +3617,15 @@ static void tag_read_you(reader &th)
         you.uncancel[i].second = unmarshallInt(th);
     }
 #if TAG_MAJOR_VERSION == 34
+    // Cancel any item-based deck manipulations
+    if (th.getMinorVersion() < TAG_MINOR_REMOVE_DECKS)
+    {
+        erase_if(you.uncancel,
+                 [](const pair<uncancellable_type, int> uc) {
+                    return uc.first == UNC_DRAW_THREE
+                           || uc.first == UNC_STACK_FIVE;
+                });
+    }
     }
 
     if (th.getMinorVersion() >= TAG_MINOR_INCREMENTAL_RECALL)
@@ -3904,14 +3930,10 @@ static void tag_read_you_items(reader &th)
                                                            | (seed3 << 16);
         }
     }
-    // Remove any decks if no longer worshipping Nemelex, now that items have
-    // been loaded.
-    if (th.getMinorVersion() < TAG_MINOR_NEMELEX_WRATH
-        && !you_worship(GOD_NEMELEX_XOBEH)
-        && you.num_total_gifts[GOD_NEMELEX_XOBEH])
-    {
-        nemelex_reclaim_decks();
-    }
+
+    // Remove any decks now that items have been loaded.
+    if (th.getMinorVersion() < TAG_MINOR_REMOVE_DECKS)
+        reclaim_decks();
 
     // Reset training arrays for transfered gnolls that didn't train all skills.
     if (th.getMinorVersion() < TAG_MINOR_GNOLLS_REDUX)
@@ -5915,6 +5937,7 @@ static spell_type _fixup_soh_breath(monster_type mtyp)
 
 static void tag_read_level_items(reader &th)
 {
+    unwind_bool dont_scan(crawl_state.crash_debug_scans_safe, false);
     env.trap.clear();
     // how many traps?
     const int trap_count = unmarshallShort(th);
@@ -5933,6 +5956,8 @@ static void tag_read_level_items(reader &th)
 #if TAG_MAJOR_VERSION == 34
         if (th.getMinorVersion() == TAG_MINOR_0_11 && trap.type >= TRAP_TELEPORT)
             trap.type = (trap_type)(trap.type - 1);
+        if (th.getMinorVersion() < TAG_MINOR_REVEAL_TRAPS)
+            grd(trap.pos) = trap.category();
         if (th.getMinorVersion() < TAG_MINOR_TRAPS_DETERM
             || th.getMinorVersion() == TAG_MINOR_0_11)
         {
@@ -5951,9 +5976,10 @@ static void tag_read_level_items(reader &th)
         for (int j = 0; j < GYM; j++)
         {
             coord_def pos(i, j);
-            if (feat_is_trap(grd(pos), true) && !map_find(env.trap, pos))
+            if (feat_is_trap(grd(pos)) && !map_find(env.trap, pos))
                 grd(pos) = DNGN_FLOOR;
         }
+
 #endif
 
     // how many items?
@@ -6442,6 +6468,7 @@ void unmarshallMonster(reader &th, monster& m)
 
 static void tag_read_level_monsters(reader &th)
 {
+    unwind_bool dont_scan(crawl_state.crash_debug_scans_safe, false);
     int count;
 
     reset_all_monsters();

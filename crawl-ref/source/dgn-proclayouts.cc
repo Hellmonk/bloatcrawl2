@@ -194,13 +194,15 @@ dungeon_feature_type sanitize_feature(dungeon_feature_type feature, bool strict)
     }
     if (feature == DNGN_SEALED_DOOR)
         feature = DNGN_CLOSED_DOOR;
+    if (feature == DNGN_SEALED_CLEAR_DOOR)
+        feature = DNGN_CLOSED_CLEAR_DOOR;
     if (feat_is_stair(feature) || feat_is_sealed(feature))
         feature = strict ? DNGN_FLOOR : DNGN_STONE_ARCH;
     if (feat_is_altar(feature))
         feature = DNGN_FLOOR;
     if (feature == DNGN_ENTER_SHOP)
         feature = DNGN_ABANDONED_SHOP;
-    if (feat_is_trap(feature, true))
+    if (feat_is_trap(feature))
         feature = DNGN_FLOOR;
     switch (feature)
     {

@@ -290,7 +290,7 @@ static const mon_spellbook mspell_list[] =
 
     {  MST_BEAR,
       {
-       { SPELL_BERSERKER_RAGE, 57, MON_SPELL_NATURAL | MON_SPELL_EMERGENCY },
+       { SPELL_BERSERKER_RAGE, 100, MON_SPELL_NATURAL | MON_SPELL_EMERGENCY },
       }
     },
 
@@ -613,6 +613,13 @@ static const mon_spellbook mspell_list[] =
        { SPELL_BOLT_OF_DRAINING, 20, MON_SPELL_WIZARD },
        { SPELL_BOLT_OF_COLD, 20, MON_SPELL_WIZARD },
        { SPELL_SHADOW_CREATURES, 20, MON_SPELL_WIZARD },
+      }
+    },
+
+    { MST_KILLER_KLOWN,
+      {
+       { SPELL_BLINK, 29, MON_SPELL_MAGICAL },
+       { SPELL_THROW_PIE, 24, MON_SPELL_NATURAL },
       }
     },
 

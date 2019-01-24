@@ -83,6 +83,8 @@ static tileidx_t _tileidx_trap(trap_type type)
         return TILE_DNGN_TRAP_ARROW;
     case TRAP_SPEAR:
         return TILE_DNGN_TRAP_SPEAR;
+    case TRAP_DISPERSAL:
+        return TILE_DNGN_TRAP_DISPERSAL;
     case TRAP_TELEPORT:
         return TILE_DNGN_TRAP_TELEPORT;
     case TRAP_TELEPORT_PERMANENT:
@@ -159,8 +161,12 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_WALL_SLIME;
     case DNGN_RUNED_DOOR:
         return TILE_DNGN_RUNED_DOOR;
+    case DNGN_RUNED_CLEAR_DOOR:
+        return TILE_DNGN_RUNED_CLEAR_DOOR;
     case DNGN_SEALED_DOOR:
         return TILE_DNGN_SEALED_DOOR;
+    case DNGN_SEALED_CLEAR_DOOR:
+        return TILE_DNGN_SEALED_CLEAR_DOOR;
     case DNGN_GRATE:
         return TILE_DNGN_GRATE;
     case DNGN_CLEAR_ROCK_WALL:
@@ -173,6 +179,8 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_DNGN_STONE_WALL;
     case DNGN_CLOSED_DOOR:
         return TILE_DNGN_CLOSED_DOOR;
+    case DNGN_CLOSED_CLEAR_DOOR:
+        return TILE_DNGN_CLOSED_CLEAR_DOOR;
     case DNGN_METAL_WALL:
         return TILE_DNGN_METAL_WALL;
     case DNGN_CRYSTAL_WALL:
@@ -194,7 +202,6 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
     case DNGN_OPEN_SEA:
         return TILE_DNGN_OPEN_SEA;
     case DNGN_FLOOR:
-    case DNGN_UNDISCOVERED_TRAP:
         return TILE_FLOOR_NORMAL;
     case DNGN_ENDLESS_SALT:
         return TILE_DNGN_ENDLESS_SALT;
@@ -204,8 +211,12 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_DNGN_ENTER_HELL;
     case DNGN_OPEN_DOOR:
         return TILE_DNGN_OPEN_DOOR;
+    case DNGN_OPEN_CLEAR_DOOR:
+        return TILE_DNGN_OPEN_CLEAR_DOOR;
     case DNGN_TRAP_MECHANICAL:
         return TILE_DNGN_TRAP_ARROW;
+    case DNGN_TRAP_DISPERSAL:
+        return TILE_DNGN_TRAP_DISPERSAL;
     case DNGN_TRAP_TELEPORT:
         return TILE_DNGN_TRAP_TELEPORT;
     case DNGN_TRAP_ALARM:
@@ -228,8 +239,8 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_SHOP_GENERAL;
     case DNGN_ABANDONED_SHOP:
         return TILE_DNGN_ABANDONED_SHOP;
-    case DNGN_ENTER_LABYRINTH:
-        return TILE_DNGN_PORTAL_LABYRINTH;
+    case DNGN_ENTER_GAUNTLET:
+        return TILE_DNGN_PORTAL_GAUNTLET;
     case DNGN_STONE_STAIRS_DOWN_I:
     case DNGN_STONE_STAIRS_DOWN_II:
     case DNGN_STONE_STAIRS_DOWN_III:
@@ -242,7 +253,7 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
     case DNGN_STONE_STAIRS_UP_II:
     case DNGN_STONE_STAIRS_UP_III:
         return TILE_DNGN_STONE_STAIRS_UP;
-    case DNGN_EXIT_LABYRINTH:
+    case DNGN_EXIT_GAUNTLET:
     case DNGN_ESCAPE_HATCH_UP:
         return TILE_DNGN_ESCAPE_HATCH_UP;
     case DNGN_SEALED_STAIRS_UP:
@@ -2476,36 +2487,6 @@ static tileidx_t _tileidx_rune(const item_def &item)
 
 static tileidx_t _tileidx_misc(const item_def &item)
 {
-    if (is_deck(item, true))
-    {
-        tileidx_t ch = TILE_ERROR;
-        switch (item.deck_rarity)
-        {
-            case DECK_RARITY_LEGENDARY:
-                ch = TILE_MISC_DECK_LEGENDARY;
-                break;
-            case DECK_RARITY_RARE:
-                ch = TILE_MISC_DECK_RARE;
-                break;
-            case DECK_RARITY_COMMON:
-            default:
-                ch = TILE_MISC_DECK;
-                break;
-        }
-
-        if (item.flags & ISFLAG_KNOW_TYPE
-#if TAG_MAJOR_VERSION == 34
-            && item.sub_type != MISC_DECK_OF_ODDITIES // non-contiguous
-#endif
-            )
-        {
-            // NOTE: order of tiles must be identical to order of decks.
-            int offset = item.sub_type - MISC_FIRST_DECK + 1;
-            ch += offset;
-        }
-        return ch;
-    }
-
     switch (item.sub_type)
     {
 #if TAG_MAJOR_VERSION == 34
@@ -2541,6 +2522,8 @@ static tileidx_t _tileidx_misc(const item_def &item)
     case MISC_BOX_OF_BEASTS:
         return TILE_MISC_BOX_OF_BEASTS;
 
+    // Detault for summary menus
+    case NUM_MISCELLANY:
     case MISC_CRYSTAL_BALL_OF_ENERGY:
         return TILE_MISC_CRYSTAL_BALL_OF_ENERGY;
 
@@ -2984,6 +2967,8 @@ tileidx_t tileidx_bolt(const bolt &bolt)
     case BROWN:
         if (bolt.name == "blast of sand")
             return TILE_BOLT_SANDBLAST;
+        else if (bolt.name == "klown pie")
+            return TILE_BOLT_PIE + dir;
         break;
 
     case GREEN:
@@ -3384,6 +3369,8 @@ tileidx_t tileidx_ability(const ability_type ability)
         return TILEG_ABILITY_EVOKE_FOG;
     case ABIL_EVOKE_RATSKIN:
         return TILEG_ABILITY_EVOKE_RATSKIN;
+    case ABIL_EVOKE_THUNDER:
+        return TILEG_ABILITY_EVOKE_THUNDER;
 
     // Divine abilities
     // Zin
@@ -3494,6 +3481,14 @@ tileidx_t tileidx_ability(const ability_type ability)
         return TILEG_ABILITY_NEMELEX_DEAL_FOUR;
     case ABIL_NEMELEX_STACK_FIVE:
         return TILEG_ABILITY_NEMELEX_STACK_FIVE;
+    case ABIL_NEMELEX_DRAW_ESCAPE:
+        return TILEG_ABILITY_NEMELEX_DRAW_ESCAPE;
+    case ABIL_NEMELEX_DRAW_DESTRUCTION:
+        return TILEG_ABILITY_NEMELEX_DRAW_DESTRUCTION;
+    case ABIL_NEMELEX_DRAW_SUMMONING:
+        return TILEG_ABILITY_NEMELEX_DRAW_SUMMONING;
+    case ABIL_NEMELEX_DRAW_STACK:
+        return TILEG_ABILITY_NEMELEX_DRAW_STACK;
     // Beogh
     case ABIL_BEOGH_GIFT_ITEM:
         return TILEG_ABILITY_BEOGH_GIFT_ITEM;
@@ -3702,8 +3697,8 @@ tileidx_t tileidx_branch(const branch_type br)
         return TILE_DNGN_ENTER_PANDEMONIUM;
     case BRANCH_ZIGGURAT:
         return TILE_DNGN_PORTAL_ZIGGURAT;
-    case BRANCH_LABYRINTH:
-        return TILE_DNGN_PORTAL_LABYRINTH;
+    case BRANCH_GAUNTLET:
+        return TILE_DNGN_PORTAL_GAUNTLET;
     case BRANCH_BAZAAR:
         return TILE_DNGN_PORTAL_BAZAAR;
     case BRANCH_TROVE:

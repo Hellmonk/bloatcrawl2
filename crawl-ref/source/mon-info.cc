@@ -182,7 +182,6 @@ static bool _blocked_ray(const coord_def &where,
 static bool _is_public_key(string key)
 {
     if (key == "helpless"
-     || key == "wand_known"
      || key == "feat_type"
      || key == "glyph"
      || key == "dbname"
@@ -653,16 +652,18 @@ monster_info::monster_info(const monster* m, int milev)
         props[KNOWN_MAX_HP_KEY] = (int)ghost.max_hp;
         if (m->props.exists(MIRRORED_GHOST_KEY))
             props[MIRRORED_GHOST_KEY] = m->props[MIRRORED_GHOST_KEY];
-
-        // describe abnormal (branded) ghost weapons
-        if (ghost.brand != SPWPN_NORMAL)
-            props[SPECIAL_WEAPON_KEY] = ghost_brand_name(ghost.brand);
     }
+    if (m->has_ghost_brand())
+        props[SPECIAL_WEAPON_KEY] = m->ghost_brand();
 
     // book loading for player ghost and vault monsters
     spells.clear();
-    if (m->props.exists(CUSTOM_SPELLS_KEY) || mons_is_pghost(type))
+    if (m->props.exists(CUSTOM_SPELLS_KEY) || mons_is_pghost(type)
+        || type == MONS_PANDEMONIUM_LORD)
+    {
         spells = m->spells;
+    }
+
     if (m->is_priest())
         props["priest"] = true;
     else if (m->is_actual_spellcaster())
@@ -688,10 +689,6 @@ monster_info::monster_info(const monster* m, int milev)
         else if (i == MSLOT_MISCELLANY)
             ok = false;
         else if (attitude == ATT_FRIENDLY)
-            ok = true;
-        else if (i == MSLOT_WAND)
-            ok = props.exists("wand_known") && props["wand_known"];
-        else if (m->props.exists("ash_id") && item_type_known(mitm[m->inv[i]]))
             ok = true;
         else if (i == MSLOT_ALT_WEAPON)
             ok = wields_two_weapons();
@@ -890,12 +887,11 @@ string monster_info::_core_name() const
         case MONS_SPECTRAL_WEAPON:
             if (inv[MSLOT_WEAPON])
             {
-                iflags_t ignore_flags = ISFLAG_KNOW_CURSE | ISFLAG_KNOW_PLUSES;
-                bool     use_inscrip  = true;
                 const item_def& item = *inv[MSLOT_WEAPON];
-                s = type==MONS_SPECTRAL_WEAPON ? "spectral " : "";
-                s += (item.name(DESC_PLAIN, false, false, use_inscrip, false,
-                                ignore_flags));
+
+                s = type == MONS_SPECTRAL_WEAPON ? "spectral " : "";
+                s += item.name(DESC_PLAIN, false, false, true, false,
+                               ISFLAG_KNOW_CURSE);
             }
             break;
 
@@ -1739,15 +1735,11 @@ bool monster_info::has_spells() const
 
     const vector<mon_spellbook_type> books = get_spellbooks(*this);
 
-    // Random pan lords don't display their spells.
-    if (books.size() == 0 || books[0] == MST_NO_SPELLS
-        || type == MONS_PANDEMONIUM_LORD)
-    {
+    if (books.size() == 0 || books[0] == MST_NO_SPELLS)
         return false;
-    }
 
-    // Ghosts have a special book but may not have any spells anyways.
-    if (books[0] == MST_GHOST)
+    // Ghosts / pan lords may have custom spell lists, so check spells directly
+    if (books[0] == MST_GHOST || type == MONS_PANDEMONIUM_LORD)
         return spells.size() > 0;
 
     return true;

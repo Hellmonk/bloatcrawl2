@@ -84,6 +84,7 @@ for (@files)
     next if -l $_;
     -f $_ or (print(STDERR "Can't read $_\n"), next);
     next if /webserver\/static\/scripts\/contrib\//i;
+    next if /dat\/dist_bones\//i;
     next if /\.(png|gif|xpm|ttf|ico|icns|fig|tex|eps|pdf|psd)$/i;
     next if /\.(sln|vim|pbxproj|vsprops|plist|csproj|config|cs)$/i;
     next if /\.(vcproj|vcproj\.user|vcxproj|vcxproj\.filters|terminal)$/i;
@@ -133,4 +134,8 @@ for (@files)
     }
 }
 
-exit 1 if ($dry_run and $any_bad);
+if ($dry_run and $any_bad) {
+    print "Found unnecessary whitespace in the above files.\n";
+    print "Re-run this command (without -n) to automatically remove it.\n";
+    exit 1;
+}

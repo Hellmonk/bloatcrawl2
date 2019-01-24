@@ -15,7 +15,6 @@
 
 #include "artefact.h"
 #include "art-enum.h"
-#include "decks.h"
 #include "describe.h"
 #include "god-passive.h"
 #include "invent.h"
@@ -1160,10 +1159,7 @@ static iflags_t _full_ident_mask(const item_def& item)
             flagset |= ISFLAG_KNOW_PLUSES;
         break;
     case OBJ_MISCELLANY:
-        if (is_deck(item))
-            flagset = ISFLAG_KNOW_TYPE;
-        else
-            flagset = 0;
+        flagset = 0;
         break;
     case OBJ_WEAPONS:
     case OBJ_ARMOUR:
@@ -1567,10 +1563,14 @@ int wand_charge_value(int type)
     {
     case WAND_CLOUDS:
     case WAND_SCATTERSHOT:
+    case WAND_DIGGING:
         return 9;
 
     case WAND_ICEBLAST:
     case WAND_ACID:
+    case WAND_ENSLAVEMENT:
+    case WAND_PARALYSIS:
+    case WAND_POLYMORPH:
         return 15;
 
     default:
@@ -1578,7 +1578,7 @@ int wand_charge_value(int type)
 
     case WAND_FLAME:
     case WAND_RANDOM_EFFECTS:
-        return 48;
+        return 32;
     }
 }
 
@@ -1972,7 +1972,6 @@ bool item_skills(const item_def &item, set<skill_type> &skills)
     // Jewellery with evokable abilities, wands and similar unwielded
     // evokers allow training.
     if (item_is_evokable(item, false, false, false, true)
-        && !is_deck(item)
         || item.base_type == OBJ_JEWELLERY && gives_ability(item))
     {
         skills.insert(SK_EVOCATIONS);
@@ -1994,7 +1993,6 @@ bool item_skills(const item_def &item, set<skill_type> &skills)
         return !skills.empty();
 
     if (item_is_evokable(item, false, false, false, false)
-        && !is_deck(item)
         || staff_uses_evocations(item)
         || item.base_type == OBJ_WEAPONS && gives_ability(item))
     {
@@ -2715,7 +2713,8 @@ bool gives_ability(const item_def &item)
 
     // Unrands that grant an evokable ability.
     if (is_unrandom_artefact(item, UNRAND_THIEF)
-        || is_unrandom_artefact(item, UNRAND_RATSKIN_CLOAK))
+        || is_unrandom_artefact(item, UNRAND_RATSKIN_CLOAK)
+        || is_unrandom_artefact(item, UNRAND_RCLOUDS))
     {
         return true;
     }
@@ -2950,11 +2949,8 @@ void seen_item(const item_def &item)
             you.seen_weapon[item.sub_type] |= 1U << SP_UNKNOWN_BRAND;
         if (item.base_type == OBJ_ARMOUR)
             you.seen_armour[item.sub_type] |= 1U << SP_UNKNOWN_BRAND;
-        if (item.base_type == OBJ_MISCELLANY
-            && !is_deck(item))
-        {
+        if (item.base_type == OBJ_MISCELLANY)
             you.seen_misc.set(item.sub_type);
-        }
     }
 
     _maybe_note_found_unrand(item);

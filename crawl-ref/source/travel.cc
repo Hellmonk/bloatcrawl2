@@ -289,9 +289,8 @@ bool feat_is_traversable(dungeon_feature_type feat, bool try_fallback)
         return false;
 #endif
     else if (feat_has_solid_floor(feat)
-             || feat == DNGN_RUNED_DOOR
-             || feat == DNGN_CLOSED_DOOR
-             || (feat == DNGN_SEALED_DOOR && try_fallback))
+             || feat_is_closed_door(feat)
+                && (!feat_is_sealed(feat) || try_fallback))
     {
         return true;
     }
@@ -352,7 +351,7 @@ static bool _is_reseedable(const coord_def& c, bool ignore_danger = false)
 
     return feat_is_water(grid)
            || grid == DNGN_LAVA
-           || grid == DNGN_RUNED_DOOR
+           || feat_is_runed(grid)
            || is_trap(c)
            || !ignore_danger && _monster_blocks_travel(cell.monsterinfo())
            || g_Slime_Wall_Check && slime_wall_neighbour(c)
@@ -434,8 +433,8 @@ static bool _is_travelsafe_square(const coord_def& c, bool ignore_hostile,
 
     // Only try pathing through temporary obstructions we remember, not
     // those we can actually see (since the latter are clearly still blockers)
-    try_fallback = (try_fallback
-                    && (!you.see_cell(c) || grid == DNGN_RUNED_DOOR));
+    try_fallback = try_fallback
+                    && (!you.see_cell(c) || feat_is_runed(grid));
 
     // Also make note of what's displayed on the level map for
     // plant/fungus checks.
@@ -478,7 +477,7 @@ static bool _is_travelsafe_square(const coord_def& c, bool ignore_hostile,
             return true;
     }
 
-    if (levelmap_cell.feat() == DNGN_RUNED_DOOR && !try_fallback)
+    if (feat_is_runed(levelmap_cell.feat()) && !try_fallback)
         return false;
 
     return feat_is_traversable_now(grid, try_fallback);
@@ -723,8 +722,7 @@ static void _explore_find_target_square()
         fallback_tp.set_floodseed(you.pos(), true);
         whereto = fallback_tp.pathfind(static_cast<run_mode_type>(you.running.runmode), true);
 
-        if (whereto.distance_from(you.pos()) == 1
-            && grd(whereto) == DNGN_RUNED_DOOR)
+        if (whereto.distance_from(you.pos()) == 1 && cell_is_runed(whereto))
         {
             runed_door_pause = true;
             whereto.reset();
@@ -1020,7 +1018,7 @@ command_type travel()
         return CMD_NO_CMD;
 
     if (result != CMD_NO_CMD)
-        return result;
+        return result; // TODO: apparently unreachable?
 
     return direction_to_command(*move_x, *move_y);
 }
@@ -1746,7 +1744,7 @@ void find_travel_pos(const coord_def& youpos,
     // stopping, or a transporter, in which case we need to issue a command to
     // enter.
     if (need_move
-        && (grd(new_dest) == DNGN_RUNED_DOOR
+        && (cell_is_runed(new_dest)
             || grd(youpos) == DNGN_TRANSPORTER
                && grd(new_dest) == DNGN_TRANSPORTER_LANDING
                && youpos.distance_from(new_dest) > 1))
@@ -3030,8 +3028,6 @@ void do_explore_cmd()
         mpr("You need to eat something NOW!");
     else if (you.berserk())
         mpr("Calm down first, please.");
-    else if (player_in_branch(BRANCH_LABYRINTH))
-        mpr("No exploration algorithm can help you here.");
     else                        // Start exploring
         start_explore(Options.explore_greedy);
 }
@@ -4136,6 +4132,7 @@ void runrest::initialise(int dir, int mode)
     direction = dir;
     notified_hp_full = false;
     notified_mp_full = false;
+    notified_ancestor_hp_full = false;
     init_travel_speed();
 
     if (dir == RDIR_REST)
@@ -4355,6 +4352,7 @@ void runrest::clear()
     mp = hp = travel_speed = 0;
     notified_hp_full = false;
     notified_mp_full = false;
+    notified_ancestor_hp_full = false;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -4424,24 +4422,23 @@ void explore_discoveries::found_feature(const coord_def &pos,
         add_stair(stair);
         es_flags |= ES_BRANCH;
     }
-    else if ((feat_is_portal(feat) || feat == DNGN_ENTER_LABYRINTH)
-             && ES_portal)
+    else if (feat_is_portal(feat) && ES_portal)
     {
         const named_thing<int> portal(cleaned_feature_description(pos), 1);
         add_stair(portal);
         es_flags |= ES_PORTAL;
     }
-    else if (feat == DNGN_RUNED_DOOR)
+    else if (feat_is_runed(feat))
     {
         seen_tracked_feature(feat);
         if (ES_rdoor)
         {
             for (orth_adjacent_iterator ai(pos); ai; ++ai)
             {
-                // If any neighbours have been seen (and thus announced) before,
-                // skip. For parts seen for the first time this turn, announce
-                // only the upper leftmost cell.
-                if (env.map_knowledge(*ai).feat() == DNGN_RUNED_DOOR
+                // If any neighbours have been seen (and thus announced)
+                // before, skip. For parts seen for the first time this turn,
+                // announce only the upper leftmost cell.
+                if (feat_is_runed(env.map_knowledge(*ai).feat())
                     && (env.map_seen(*ai) || *ai < pos))
                 {
                     return;
@@ -4736,7 +4733,7 @@ static int _adjacent_cmd(const coord_def &gc, bool force)
         int cmd = cmd_array[i];
         if (force)
         {
-            if (grd(gc) == DNGN_OPEN_DOOR
+            if (feat_is_open_door(grd(gc))
                 && !env.map_knowledge(gc).monsterinfo())
             {
                 cmd += CMD_CLOSE_DOOR_LEFT - CMD_MOVE_LEFT;

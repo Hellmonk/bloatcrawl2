@@ -563,6 +563,7 @@ punk PUNK
 sniper SNIPER
 crossbow_fire FIERY_DEVIL
 zephyr ZEPHYR
+sceptre_of_torment SCEPTRE_OF_TORMENT
 
 %sdir player/hand1
 # blades
@@ -775,7 +776,6 @@ fan FAN
 bottle BOTTLE
 box BOX
 crystal CRYSTAL
-deck DECK
 horn HORN
 lantern LANTERN
 orb ORB

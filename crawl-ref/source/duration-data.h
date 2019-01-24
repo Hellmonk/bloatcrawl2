@@ -273,6 +273,7 @@ static const duration_def duration_data[] =
       "You are standing in death's doorway.", D_EXPIRES,
       {{ "Your life is in your own hands again!", []() {
             you.duration[DUR_DEATHS_DOOR_COOLDOWN] = random_range(10, 30);
+            calc_hp();
       }}, { "Your time is quickly running out!", 5 }}, 10},
     { DUR_DEATHS_DOOR_COOLDOWN,
       YELLOW, "-DDoor",
@@ -540,7 +541,7 @@ static const duration_def duration_data[] =
       {{ "The infernal howling subsides.", []() {
           you.props.erase(NEXT_DOOM_HOUND_KEY);
       }}}},
-    { DUR_VERTIGO, YELLOW, "Vertigo", "", "vertigo",
+    { DUR_VERTIGO, YELLOW, "Vertigo", "vertigo", "",
       "Vertigo is making it harder to attack, cast, and dodge.", D_DISPELLABLE,
       {{ "The world stops spinning.", []() {
           you.redraw_evasion = true;
@@ -614,6 +615,7 @@ static const duration_def duration_data[] =
       {{ "",  wu_jian_heaven_tick }}},
     { DUR_GRASPING_ROOTS, 0, "", "grasped by roots", "grasping roots",
       "You are constricted by grasping roots.", D_NO_FLAGS},
+    { DUR_SHAFT_IMMUNITY, 0, "", "", "shaft immunity", "", D_NO_FLAGS, {{""}}},
 
 #if TAG_MAJOR_VERSION == 34
     // And removed ones

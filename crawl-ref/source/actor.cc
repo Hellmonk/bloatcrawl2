@@ -216,7 +216,10 @@ bool actor::res_corr(bool calc_unid, bool items) const
 
 bool actor::cloud_immune(bool calc_unid, bool items) const
 {
-    return items && (wearing_ego(EQ_CLOAK, SPARM_CLOUD_IMMUNE, calc_unid));
+    const item_def *body_armour = slot_item(EQ_BODY_ARMOUR);
+    return items && (wearing_ego(EQ_CLOAK, SPARM_CLOUD_IMMUNE, calc_unid)
+                     || (body_armour
+                        && is_unrandom_artefact(*body_armour, UNRAND_RCLOUDS)));
 }
 
 bool actor::holy_wrath_susceptible() const
@@ -288,9 +291,11 @@ bool actor::reflection(bool calc_unid, bool items) const
 
 bool actor::extra_harm(bool calc_unid, bool items) const
 {
-    if(is_player() && you.species == SP_OBSIDIAN_DWARF)
+    if (is_player() && you.species == SP_OBSIDIAN_DWARF)
         return true;
-    return items && wearing(EQ_AMULET, AMU_HARM, calc_unid);
+    return items &&
+           (wearing(EQ_AMULET, AMU_HARM, calc_unid)
+            || scan_artefacts(ARTP_HARM, calc_unid));
 }
 
 bool actor::rmut_from_item(bool calc_unid) const
@@ -561,7 +566,9 @@ void actor::stop_constricting_all(bool intentional, bool quiet)
 
 static bool _invalid_constricting_map_entry(const actor *constrictee)
 {
-    return !constrictee || !constrictee->is_constricted();
+    return !constrictee
+        || !constrictee->alive()
+        || !constrictee->is_constricted();
 }
 
 /**
@@ -625,21 +632,30 @@ bool actor::has_invalid_constrictor(bool move) const
     if (!is_constricted())
         return false;
 
-    const actor* const attacker = actor_by_mid(constricted_by);
-    if (!attacker)
+    const actor* const attacker = actor_by_mid(constricted_by, true);
+    if (!attacker || !attacker->alive())
         return true;
+
+    // When the player is at the origin, they don't have the normal
+    // considerations, since they're just here to avoid messages or LOS
+    // effects. Cheibriados' time step abilities are an exception to this as
+    // they have the player "leave the normal flow of time" and so should break
+    // constriction.
+    const bool ignoring_player = attacker->is_player()
+        && attacker->pos().origin()
+        && !you.duration[DUR_TIME_STEP];
 
     // Direct constriction (e.g. by nagas and octopode players or AT_CONSTRICT)
     // must happen between adjacent squares.
     if (is_directly_constricted())
-        return !adjacent(attacker->pos(), pos());
+        return !ignoring_player && !adjacent(attacker->pos(), pos());
 
     // Indirect constriction requires the defender not to move.
     return move
         // Indirect constriction requires reachable ground.
         || !feat_has_solid_floor(grd(pos()))
         // Constriction doesn't work out of LOS.
-        || !attacker->see_cell(pos());
+        || !ignoring_player && !attacker->see_cell(pos());
 }
 
 /**
@@ -659,7 +675,7 @@ void actor::clear_invalid_constrictions(bool move)
     vector<mid_t> need_cleared;
     for (const auto &entry : *constricting)
     {
-        const actor * const constrictee = actor_by_mid(entry.first);
+        const actor * const constrictee = actor_by_mid(entry.first, true);
         if (_invalid_constricting_map_entry(constrictee)
             || constrictee->has_invalid_constrictor())
         {
@@ -860,7 +876,7 @@ void actor::handle_constriction()
     {
         actor* const defender = actor_by_mid(i.first);
         const int duration = i.second;
-        if (defender)
+        if (defender && defender->alive())
             constriction_damage_defender(*defender, duration);
     }
 

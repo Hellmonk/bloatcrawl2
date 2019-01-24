@@ -31,18 +31,20 @@
 
 * The administrators of public crawl servers, both present:
     John Boyle (crawl.berotato.org)
-    Jan Anders Bremer (crawl.lantea.net)
     Rax E. Dillon (crawl.akrasiac.org)
     Wongi Hong (webzook.net / kr.dobrazupa.org)
     Alex Jurkiewicz (crawl.project357.org)
-    Aleksi Miikkael Luukkonen (crawl.lantea.net)
     Neil Moore (crawl.s-z.org)
     Marc H. Thoben (crawl.develz.org)
-    dplusplus (http://lazy-life.ddo.jp/)
+    dplusplus (lazy-life.ddo.jp)
+    floraline (crawl.kelbi.org)
   and past:
-    sd1989 (kr.dobrazupa.org)
+    Jan Anders Bremer (crawl.lantea.net)
+    Aleksi Miikkael Luukkonen (crawl.lantea.net)
     joosa (rl.heh.fi)
+    sd1989 (kr.dobrazupa.org)
     phunktion (crawl.somatika.net)
+    ZiBuDo (crawl.jorgrun.rocks)
 
 * The members of various usability testing teams from the department of
   Information Processing Science in Oulu University:
@@ -69,12 +71,14 @@
 
 * Members of the Dungeon Crawl community who have contributed to Dungeon
   Crawl Stone Soup:
+    Brent Adams
     Mike Adams
     Aj Adamson
     Nikhil Addleman
     Alcon
     Brandon Allbery
     Warwick Allison
+    AndSDev
     Austin Appleby
     araganzar
     argonaut
@@ -84,8 +88,11 @@
     Roy Axenov
     Steve 'nfogravity' Balady
     Max Bane
+    Beargit
     Bill Beher
     Alexander Beisig
+    biasface
+    bjobae
     Stu Black
     blackcustard
     Peter 'xFleury' Blain
@@ -94,12 +101,15 @@
     Erik Inge Bolsø
     bones
     Peter Borgmann
+    Matthew Boeh
     Mike Boutin
+    John Boyle
     Daniel Mark Brownrigg
     Andre Bubel
     Trent W. Buck
     Joe Buzzelli
     Policarpo Caballero
+    Ian Caltabiano
     Edgar Carballo
     Cedor
     Cerol
@@ -114,6 +124,7 @@
     Paul Dejean
     Denzi
     Lothar Dierkes
+    Doesnty
     Mark 'Palyth' Donahue
     Kevin Donnelly
     drachereborn
@@ -127,10 +138,12 @@
     Carl-Oscar Erneholm
     Christopher Evenstar
     Floodkiller
+    floraline
     Brett Foster
     Kyle Fox
     freepotion
     Chris Galardi
+    Ge0ff
     Benoît Giannangeli
     Ben Goetter
     Aaron Golden
@@ -142,14 +155,17 @@
     Brian Haase
     Sophie Hamilton
     Chris Hamons
+    Tomas Krag Hansen
     Taylor Hedberg
     Anders Heggestøyl
     Alex Henry
     R. Dan Henry
+    Max 'Ploomutoo' Hon-Anderson
     Chris Honey
     Sylvia 'Onia' Hörnke
     Benoit Hudson
     Iainuki
+    ICC
     Icy Lich
     Ilyak
     Implojin
@@ -158,6 +174,7 @@
     Jeekaroose
     Mikko Juola
     Kurt Kartaltepe
+    Dominic Kempf
     Dominic 'dk' Kexel
     Jarmo Kielosto
     Brandon Kime
@@ -179,6 +196,7 @@
     Sami Liedes
     Dom 'Bodrick' Light
     Mark Lodato
+    Matthew Ludivico
     Rob Lund
     Lynn
     Michael Lynn
@@ -190,11 +208,15 @@
     Paul Maloney
     Pablo Mansanet
     Wille Mäntylä
+    Jean Martel
     James 'Eronarn' Meickle
+    Jacob Meigs
+    Johannes Maier
     mikee
     Andrew Minton
     Yer Mivvaggah
     Shawn M Moore
+    Muffindrake
     Akinori Musha
     Mushboom
     Eva Myers
@@ -203,6 +225,7 @@
     neofelis
     nicolae
     Nikolai Lavsky
+    Jonathon Nooner
     NormalPerson7
     Erkki Nurmi
     Mattias Nyberg
@@ -214,19 +237,26 @@
     Yuuma Oohara
     Julian Ospald
     Malwyn P
+    panicbit
     William Parker
     Pedro
+    Pekkekke
     Arlen Phillips
+    pikaro
     Lemuel Pitkin
+    Poroing
     Iago Porto
+    psywombats
     pubby
     Edward Randtke
     Derek Ray
+    RealzHS
     Terence Reeves
     Tobias Rehbein
     Remsleep
     Ryan Riegel
     RjY
+    Andy Roche
     rockygargoyle
     Will Rogers
     Nate Rook
@@ -238,13 +268,13 @@
     Roman Sêk
     Brennan Shacklett
     ShadyAmish
+    Umer Shaikh
     Evan Shaw
     Aditya Shevade
     Alexandra Shields
     Robert Shimmin
     Sigurd
     Edgar Simo
-    Skrybe
     Alex Smith
     Keanan Smith
     Richard Soderberg
@@ -254,6 +284,7 @@
     David Speare
     John Stahara
     Jan 'heftig' Steffens
+    Stenella
     Timothy Stiles
     Johan Strandell
     Ben Striegel
@@ -268,11 +299,13 @@
     Matt Titus
     Tommy
     Mikko Vepsäläinen
+    WanderingBlade
     waylon531
     Steven Wheeler
     Thomas Willem
     Evan Williams
     Jeremey Wilson
+    ximxim
     Yelve Yakut
     Edward Z. Yang
     Yermak

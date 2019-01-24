@@ -505,7 +505,7 @@ static bool _boosted_ac()
 
 static bool _boosted_ev()
 {
-    return you.duration[DUR_AGILITY] || acrobat_boost_visible();
+    return you.duration[DUR_AGILITY] || acrobat_boost_active();
 }
 
 static bool _boosted_sh()
@@ -735,11 +735,21 @@ static void _print_stats_mp(int x, int y)
     if (!boosted)
         textcolour(HUD_VALUE_COLOUR);
     CPRINTF("/%d", you.max_magic_points);
-    if (boosted)
-        textcolour(HUD_VALUE_COLOUR);
 
     int col = _count_digits(you.magic_points)
               + _count_digits(you.max_magic_points) + 1;
+
+    int real_mp = get_real_mp(false);
+    if (you.species == SP_DEEP_DWARF
+        && real_mp != you.max_magic_points)
+    {
+        CPRINTF(" (%d)", real_mp);
+        col += _count_digits(real_mp) + 3;
+    }
+
+    if (boosted)
+        textcolour(HUD_VALUE_COLOUR);
+
     for (int i = 11-col; i > 0; i--)
         CPRINTF(" ");
 
@@ -753,7 +763,7 @@ static void _print_stats_mp(int x, int y)
 
 static void _print_stats_hp(int x, int y)
 {
-    int max_max_hp = get_real_hp(true, true);
+    int max_max_hp = get_real_hp(true, false);
 
     // Calculate colour
     short hp_colour = HUD_VALUE_COLOUR;
@@ -765,7 +775,7 @@ static void _print_stats_hp(int x, int y)
     else
     {
         const int hp_percent =
-            (you.hp * 100) / get_real_hp(true, false);
+            (you.hp * 100) / get_real_hp(true, true);
 
         for (const auto &entry : Options.hp_colour)
             if (hp_percent <= entry.first)
@@ -2184,7 +2194,7 @@ static vector<formatted_string> _get_overview_stats()
 
     entry.cprintf("%d/%d", you.hp, you.hp_max);
     if (player_rotted())
-        entry.cprintf(" (%d)", get_real_hp(true, true));
+        entry.cprintf(" (%d)", get_real_hp(true, false));
 
     cols.add_formatted(0, entry.to_colour_string(), false);
     entry.clear();
@@ -2201,6 +2211,11 @@ static vector<formatted_string> _get_overview_stats()
         entry.textcolour(HUD_VALUE_COLOUR);
 
     entry.cprintf("%d/%d", you.magic_points, you.max_magic_points);
+    if (you.species == SP_DEEP_DWARF
+        && get_real_mp(false) != you.max_magic_points)
+    {
+        entry.cprintf(" (%d)", get_real_mp(false));
+    }
 
     cols.add_formatted(0, entry.to_colour_string(), false);
     entry.clear();

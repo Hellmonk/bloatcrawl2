@@ -1279,6 +1279,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_DEATH_CHANNEL:
     case SPELL_SIMULACRUM:
     case SPELL_INFESTATION:
+    case SPELL_STICKS_TO_SNAKES:
         if (you.get_mutation_level(MUT_NO_LOVE))
             return "you cannot coerce anything to obey you.";
         break;
@@ -1400,7 +1401,7 @@ bool spell_no_hostile_in_range(spell_type spell)
     }
 
     case SPELL_IGNITE_POISON:
-        return cast_ignite_poison(&you, -1, false, true) == SPRET_ABORT;
+        return cast_ignite_poison(&you, -1, false, true) == spret::abort;
 
     default:
         break;

@@ -242,9 +242,12 @@ void tile_default_flv(branch_type br, int depth, tile_flavour &flv)
         flv.floor = TILE_FLOOR_VAULT;
         return;
 
+#if TAG_MAJOR_VERSION == 34
     case BRANCH_LABYRINTH:
+#endif
+    case BRANCH_GAUNTLET:
         flv.wall  = TILE_WALL_LAB_ROCK;
-        flv.floor = TILE_FLOOR_LABYRINTH;
+        flv.floor = TILE_FLOOR_GAUNTLET;
         return;
 
     case BRANCH_SEWER:
@@ -448,12 +451,14 @@ static tileidx_t _pick_dngn_tile_multi(vector<tileidx_t> candidates, int value)
 static bool _same_door_at(dungeon_feature_type feat, const coord_def &gc)
 {
     const dungeon_feature_type door = grd(gc);
-    return feat_is_closed_door(door) && feat == DNGN_SEALED_DOOR
-           || door == DNGN_SEALED_DOOR && feat_is_closed_door(feat)
+
+    return door == feat
 #if TAG_MAJOR_VERSION == 34
-           || map_masked(gc, MMT_WAS_DOOR_MIMIC)
+        || map_masked(gc, MMT_WAS_DOOR_MIMIC)
 #endif
-           || door == feat;
+        || feat_is_closed_door(door)
+           && feat_is_opaque(feat) == feat_is_opaque(door)
+           && (feat_is_sealed(feat) || feat_is_sealed(door));
 }
 
 void tile_init_flavour(const coord_def &gc, const int domino)
@@ -784,6 +789,7 @@ void tile_floor_halo(dungeon_feature_type target, tileidx_t tile)
                 continue;
             }
 
+            // TODO: these conditions are guaranteed?
             int right_spc = x < GXM - 1 ? env.tile_flv[x+1][y].floor - tile
                                         : SPECIAL_FULL;
             int down_spc  = y < GYM - 1 ? env.tile_flv[x][y+1].floor - tile
@@ -1247,7 +1253,7 @@ void apply_variations(const tile_flavour &flv, tileidx_t *bg,
     tileidx_t flag = (*bg) & (~TILE_FLAG_MASK);
 
     // TODO: allow the stone type to be set in a cleaner way.
-    if (player_in_branch(BRANCH_LABYRINTH))
+    if (player_in_branch(BRANCH_GAUNTLET))
     {
         if (orig == TILE_DNGN_STONE_WALL)
             orig = TILE_WALL_LAB_STONE;
@@ -1336,9 +1342,7 @@ void apply_variations(const tile_flavour &flv, tileidx_t *bg,
     else if (is_door_tile(orig))
     {
         tileidx_t override = flv.feat;
-        /*
-          Was: secret doors. Is it ever needed anymore?
-         */
+        // For vaults overriding door tiles, like Cigotuvi's Fleshworks.
         if (is_door_tile(override))
         {
             bool opened = (orig == TILE_DNGN_OPEN_DOOR);

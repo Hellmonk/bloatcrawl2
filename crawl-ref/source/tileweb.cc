@@ -773,7 +773,7 @@ static bool _update_statuses(player_info& c)
         else if (status == DUR_ACROBAT)
         {
             inf = status_info();
-            if (!acrobat_boost_visible())
+            if (!acrobat_boost_active())
                 continue;
             inf.short_text = "acrobat";
         }
@@ -867,11 +867,14 @@ void TilesFramework::_send_player(bool force_full)
 
     _update_int(force_full, c.hp, you.hp, "hp");
     _update_int(force_full, c.hp_max, you.hp_max, "hp_max");
-    int max_max_hp = get_real_hp(true, true);
+    int max_max_hp = get_real_hp(true, false);
 
     _update_int(force_full, c.real_hp_max, max_max_hp, "real_hp_max");
     _update_int(force_full, c.mp, you.magic_points, "mp");
     _update_int(force_full, c.mp_max, you.max_magic_points, "mp_max");
+    _update_int(force_full, c.dd_real_mp_max,
+                you.species == SP_DEEP_DWARF ? get_real_mp(false) : 0,
+                "dd_real_mp_max");
 
     _update_int(force_full, c.poison_survival, max(0, poison_survival()),
                 "poison_survival");

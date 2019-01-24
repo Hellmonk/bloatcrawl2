@@ -19,7 +19,6 @@
 #include "colour.h"
 #include "coordit.h"
 #include "database.h"
-#include "decks.h"
 #include "delay.h"
 #include "describe.h"
 #include "directn.h"
@@ -2925,7 +2924,7 @@ void read_scroll(item_def& scroll)
         else
         {
             cancel_scroll = (cast_controlled_blink(false, safely_cancellable)
-                             == SPRET_ABORT) && alreadyknown;
+                             == spret::abort) && alreadyknown;
         }
 
         if (!cancel_scroll)

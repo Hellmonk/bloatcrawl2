@@ -225,6 +225,9 @@ enum tag_minor_version
     TAG_MINOR_GOLDIFY_BOOKS,       // Spellbooks disintegrate when picked up, like gold/runes/orbs
     TAG_MINOR_VETO_DISINT,         // Replace veto_disintegrate map markers
     TAG_MINOR_LEVEL_XP_VAULTS,     // XP tracking now tracks vaults, not spawns.
+    TAG_MINOR_REVEAL_TRAPS,        // All traps generate known
+    TAG_MINOR_GAUNTLET_TRAPPED,    // It was briefly possible to get trapped in a specific gauntlet map.
+    TAG_MINOR_REMOVE_DECKS,        // Decks are no more
 #endif
     NUM_TAG_MINORS,
     TAG_MINOR_VERSION = NUM_TAG_MINORS - 1
@@ -327,7 +330,7 @@ struct save_version
 
     bool is_compatible() const
     {
-        return (valid() && !is_ancient() && !is_future());
+        return valid() && !is_ancient() && !is_future();
     }
 
     bool is_current() const

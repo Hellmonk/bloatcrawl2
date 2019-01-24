@@ -1138,6 +1138,7 @@ static cloud_type _cloud_from_feat(const dungeon_feature_type &ft)
     switch (ft)
     {
         case DNGN_CLOSED_DOOR:
+        case DNGN_OPEN_DOOR:
         case DNGN_METAL_WALL:
             return CLOUD_GREY_SMOKE;
         case DNGN_CRYSTAL_WALL:
@@ -1150,6 +1151,8 @@ static cloud_type _cloud_from_feat(const dungeon_feature_type &ft)
         case DNGN_CLEAR_STONE_WALL:
         case DNGN_CLEAR_PERMAROCK_WALL:
         case DNGN_GRATE:
+        case DNGN_CLOSED_CLEAR_DOOR:
+        case DNGN_OPEN_CLEAR_DOOR:
             return CLOUD_MIST;
         case DNGN_ORCISH_IDOL:
         case DNGN_GRANITE_STATUE:
@@ -1912,7 +1915,7 @@ static void _corrupt_square(const corrupt_env &cenv, const coord_def &c)
     else
         feat = _abyss_proto_feature();
 
-    if (feat_is_trap(feat, true)
+    if (feat_is_trap(feat)
         || feat == DNGN_UNSEEN
         || (feat_is_traversable(grd(c)) && !feat_is_traversable(feat)
             && coinflip()))

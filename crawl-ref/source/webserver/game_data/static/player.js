@@ -287,7 +287,9 @@ function ($, comm, enums, map_knowledge, messages, options) {
     function percentage_color(name)
     {
         var real = false;
-        if (player["real_" + name + "_max"] != player[name + "_max"])
+        // There is only real_hp_max, real_mp_max doesn't exist
+        if (player["real_" + name + "_max"]
+            && player["real_" + name + "_max"] != player[name + "_max"])
             real = true;
 
         $("#stats_" + name).removeClass();
@@ -380,6 +382,11 @@ function ($, comm, enums, map_knowledge, messages, options) {
             $("#stats_real_hp_max").text("(" + player.real_hp_max + ")");
         else
             $("#stats_real_hp_max").text("");
+
+        if (player.species == "Deep Dwarf" && player.dd_real_mp_max != player.mp_max)
+            $("#stats_dd_real_mp_max").text("(" + player.dd_real_mp_max + ")");
+        else
+            $("#stats_dd_real_mp_max").text("");
 
         percentage_color("hp");
         percentage_color("mp");
@@ -495,7 +502,7 @@ function ($, comm, enums, map_knowledge, messages, options) {
             $.extend(player, {
                 name: "", god: "", title: "", species: "",
                 hp: 0, hp_max: 0, real_hp_max: 0, poison_survival: 0,
-                mp: 0, mp_max: 0,
+                mp: 0, mp_max: 0, dd_real_mp_max: 0,
                 ac: 0, ev: 0, sh: 0,
                 xl: 0, progress: 0,
                 time: 0, time_delta: 0,

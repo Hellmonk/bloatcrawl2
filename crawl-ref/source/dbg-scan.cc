@@ -19,7 +19,6 @@
 #include "coordit.h"
 #include "dbg-maps.h"
 #include "dbg-util.h"
-#include "decks.h"
 #include "dungeon.h"
 #include "end.h"
 #include "env.h"
@@ -496,8 +495,8 @@ void debug_mons_scan()
                 mprf(MSGCH_ERROR, "Error: constrictor missing for monster %s(%d)",
                      m->name(DESC_PLAIN, true).c_str(), m->mindex());
             }
-            if (!h->constricting
-                || h->constricting->find(m->mid) == h->constricting->end())
+            else if (!h->constricting
+                     || h->constricting->find(m->mid) == h->constricting->end())
             {
                 mprf(MSGCH_ERROR, "Error: constricting[%s(mindex=%d mid=%d)] "
                                   "entry missing for monster %s(mindex=%d mid=%d)",
