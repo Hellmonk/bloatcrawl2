@@ -1839,6 +1839,10 @@ vector<monster_info_func> init_monster_info_funcs() {
     toret.push_back({"charmed", "charmed", 
                 [](const monster_info &mi, bool newconditions) {
                 return newconditions && mi.is(MB_CHARMED); }});
+// I can't think of a good short word here
+    toret.push_back({"hexed", "hexed", 
+                [](const monster_info &mi, bool newconditions) {
+                return newconditions && mi.is(MB_HEXED); }});
     toret.push_back({"berserk", "berserk", 
                 [](const monster_info &mi, bool newconditions) {
                 return mi.is(MB_BERSERK) &&
@@ -1861,6 +1865,7 @@ vector<monster_info_func> init_monster_info_funcs() {
     toret.push_back({"charged", "charged", 
                 [](const monster_info &mi, bool newconditions) { 
                 return newconditions && mi.is(MB_FULLY_CHARGED); }});
+// Confusing word but perhaps OK in context?
     toret.push_back({"charging", "charging", 
                 [](const monster_info &mi, bool newconditions) { 
                 return newconditions && mi.is(MB_PARTIALLY_CHARGED); }});
@@ -1870,6 +1875,12 @@ vector<monster_info_func> init_monster_info_funcs() {
     toret.push_back({"swift", "swift",
                 [](const monster_info &mi, bool newconditions) { 
                 return newconditions && mi.is(MB_SWIFT); }});
+    toret.push_back({"can howl", "can howl", 
+                [](const monster_info &mi, bool newconditions) { 
+                return newconditions && mi.is(MB_READY_TO_HOWL); }});
+    toret.push_back({"brilliance aura", "brilliance auras", 
+                [](const monster_info &mi, bool newconditions) { 
+                return newconditions && mi.is(MB_BRILLIANCE_AURA); }});
     toret.push_back({"insane", "insane", 
                 [](const monster_info &mi, bool newconditions) { 
                 return mi.is(MB_INSANE); }});
@@ -1918,20 +1929,33 @@ vector<monster_info_func> init_monster_info_funcs() {
     toret.push_back({"scary", "scary", 
                 [](const monster_info &mi, bool newconditions) { 
                 return newconditions && mi.is(MB_FEAR_INSPIRING); }});
-    toret.push_back({"recalling allies", "recalling allies",
+// Bah, these next four are really too long
+    toret.push_back({"chanting recall", "chanting recall",
                 [](const monster_info &mi, bool newconditions) { 
                 return newconditions && mi.is(MB_WORD_OF_RECALL); }});
-// Ugly words but it's that or use up half the real estate
-    toret.push_back({"repelling", "repelling", 
+    toret.push_back({"repels missiles", "repel missiles", 
                 [](const monster_info &mi, bool newconditions) {
                 return newconditions && mi.is(MB_REPEL_MSL); }});
-    toret.push_back({"deflecting", "deflecting", 
+    toret.push_back({"deflects missiles", "deflect missiles", 
                 [](const monster_info &mi, bool newconditions) {
                 return newconditions && mi.is(MB_DEFLECT_MSL); }});
-// blah, too long!
-    toret.push_back({"toxic radiance", "with toxic radiance",
+    toret.push_back({"toxic aura", "toxic auras",
                 [](const monster_info &mi, bool newconditions) {
                 return newconditions && mi.is(MB_TOXIC_RADIANCE); }});
+    toret.push_back({"black mark", "black marks",
+                [](const monster_info &mi, bool newconditions) {
+                return newconditions && mi.is(MB_BLACK_MARK); }});
+// bit of a wheeze here but the two can probably be distinguished in context
+    toret.push_back({"icy armour", "icy armour", 
+                [](const monster_info &mi, bool newconditions) {
+                return newconditions && 
+                    (mi.is(MB_OZOCUBUS_ARMOUR)|| mi.is(MB_ICEMAIL)); }});
+    toret.push_back({"shrouded", "shrouded", 
+                [](const monster_info &mi, bool newconditions) {
+                return newconditions && mi.is(MB_SHROUD); }});
+    toret.push_back({"resistant", "resistant", 
+                [](const monster_info &mi, bool newconditions) {
+                return newconditions && mi.is(MB_RESISTANCE); }});
     toret.push_back({"petrifying", "petrifying", 
                 [](const monster_info &mi, bool newconditions) {
                 return mi.is(MB_PETRIFYING); }});
@@ -1965,6 +1989,9 @@ vector<monster_info_func> init_monster_info_funcs() {
     toret.push_back({"frozen", "frozen", 
                 [](const monster_info &mi, bool newconditions) {
                 return newconditions && mi.is(MB_FROZEN); }});
+    toret.push_back({"infested", "infested", 
+                [](const monster_info &mi, bool newconditions) {
+                return newconditions && mi.is(MB_INFESTATION); }});
     toret.push_back({"wandering", "wandering", 
                 [](const monster_info &mi, bool newconditions) {
                 return (mi.is(MB_WANDERING) 
@@ -1992,9 +2019,15 @@ vector<monster_info_func> init_monster_info_funcs() {
     toret.push_back({"inflammable", "inflammable", 
                 [](const monster_info &mi, bool newconditions) {
                 return newconditions && mi.is(MB_FIRE_VULN); }});
+    toret.push_back({"easily poisoned", "easily poisoned", 
+                [](const monster_info &mi, bool newconditions) {
+                return newconditions && mi.is(MB_POISON_VULN); }});
     toret.push_back({"misshapen", "misshapen", 
                 [](const monster_info &mi, bool newconditions) {
                 return newconditions && mi.is(MB_WRETCHED); }});
+    toret.push_back({"corroded", "corroded", 
+                [](const monster_info &mi, bool newconditions) {
+                return newconditions && mi.is(MB_CORROSION); }});
     toret.push_back({"flayed", "flayed", 
                 [](const monster_info &mi, bool newconditions) {
                 return newconditions && mi.is(MB_FLAYED); }});
@@ -2013,6 +2046,14 @@ vector<monster_info_func> init_monster_info_funcs() {
     toret.push_back({"weak", "weak", 
                 [](const monster_info &mi, bool newconditions) {
                 return newconditions && mi.is(MB_WEAK); }});
+    toret.push_back({"drained", "drained", 
+                [](const monster_info &mi, bool newconditions) {
+                return newconditions && 
+                    (mi.is(MB_HEAVILY_DRAINED) || 
+                     mi.is(MB_LIGHTLY_DRAINED)); }});
+    toret.push_back({"sapped magic", "sapped magic", 
+                [](const monster_info &mi, bool newconditions) {
+                return newconditions && mi.is(MB_SAP_MAGIC); }});
     toret.push_back({"corona", "coronas", 
                 [](const monster_info &mi, bool newconditions) {
                 return newconditions && mi.is(MB_GLOWING); }});
