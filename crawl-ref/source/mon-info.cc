@@ -1855,6 +1855,9 @@ vector<monster_info_func> init_monster_info_funcs() {
                 [](const monster_info &mi, bool newconditions) { 
                 return newconditions && mi.is(MB_HASTED) &&
                     !mi.is(MB_BERSERK) && !mi.is(MB_SLOWED); }});
+    toret.push_back({"inner flame", "inner flame",
+                [](const monster_info &mi, bool newconditions) { 
+                return mi.is(MB_INNER_FLAME); }});
     toret.push_back({"strong", "strong", 
                 [](const monster_info &mi, bool newconditions) { 
                 return newconditions && mi.is(MB_STRONG) &&
@@ -1884,9 +1887,6 @@ vector<monster_info_func> init_monster_info_funcs() {
     toret.push_back({"insane", "insane", 
                 [](const monster_info &mi, bool newconditions) { 
                 return mi.is(MB_INSANE); }});
-    toret.push_back({"inner flame", "inner flame",
-                [](const monster_info &mi, bool newconditions) { 
-                return mi.is(MB_INNER_FLAME); }});
     toret.push_back({"stupefied", "stupefied",
                 [](const monster_info &mi, bool newconditions) {
                 return mi.is(MB_DUMB); }});
@@ -1926,6 +1926,11 @@ vector<monster_info_func> init_monster_info_funcs() {
                 }
                 return false;
             }});
+// We know our own friendly summons are summons, right?
+    toret.push_back({"summoned", "summoned",
+                [](const monster_info &mi, bool newconditions) { 
+                return newconditions && mi.is(MB_SUMMONED) &&
+                    (mi.attitude != ATT_FRIENDLY); }});
     toret.push_back({"scary", "scary", 
                 [](const monster_info &mi, bool newconditions) { 
                 return newconditions && mi.is(MB_FEAR_INSPIRING); }});
