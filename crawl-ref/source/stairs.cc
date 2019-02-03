@@ -55,6 +55,7 @@
 bool check_annotation_exclusion_warning()
 {
     level_id  next_level_id = level_id::get_next_level_id(you.pos());
+    const Branch &next_branch = branches[next_level_id.branch];
 
     crawl_state.level_annotation_shown = false;
     bool might_be_dangerous = false;
@@ -76,6 +77,21 @@ bool check_annotation_exclusion_warning()
         might_be_dangerous = true;
     }
 
+    if (next_level_id.depth == brdepth[next_level_id.branch]) {
+        if ((Options.branch_end_warn == END_WARN_ALL &&
+             brdepth[next_level_id.branch] > 1) ||
+            (Options.branch_end_warn == END_WARN_DANGEROUS &&
+             next_branch.branch_flags & BFLAG_DANGEROUS_END) ||
+            (Options.branch_end_warn == END_WARN_VAULTS &&
+             next_branch.id == BRANCH_VAULTS)) {
+            if (!env.properties.exists("warned_of_end")) {
+                might_be_dangerous = true;
+                mprf(MSGCH_PROMPT, "The next level is the end of this branch, and might be perilous.");
+                // Yeah, this does double duty
+                env.properties[END_WARN_KEY] = true;
+            }
+        }
+    }
     if (feat_is_travelable_stair(grd(you.pos())))
     {
         if (LevelInfo *li = travel_cache.find_level_info(level_id::current()))
@@ -764,9 +780,23 @@ void floor_transition(dungeon_feature_type how,
 
     if (newlevel)
     {
-        _new_level_amuses_xom(how, whence, shaft,
+      const Branch &next_branch = branches[whither.branch];
+      _new_level_amuses_xom(how, whence, shaft,
                               (shaft ? whither.depth - old_level.depth : 1),
                               !forced);
+        if (forced && (whither.depth == brdepth[whither.branch])) {
+            if ((Options.branch_end_warn == END_WARN_ALL &&
+                 brdepth[whither.branch] > 1) ||
+                (Options.branch_end_warn == END_WARN_DANGEROUS &&
+                 next_branch.branch_flags & BFLAG_DANGEROUS_END) ||
+                (Options.branch_end_warn == END_WARN_VAULTS &&
+                 next_branch.id == BRANCH_VAULTS)) {
+                if (!env.properties.exists("warned_of_end")) {
+                    mprf(MSGCH_PROMPT, "This level is the end of this branch, and might be perilous.");
+                    env.properties[END_WARN_KEY] = true;
+                }
+            }
+        }
     }
 
     // This should maybe go in load_level?

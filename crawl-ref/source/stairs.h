@@ -4,6 +4,7 @@
 **/
 
 #pragma once
+#define END_WARN_KEY "warned_of_end"
 
 bool check_annotation_exclusion_warning();
 level_id stair_destination(dungeon_feature_type feat, const string &dst,

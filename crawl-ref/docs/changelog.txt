@@ -10,6 +10,8 @@ The monster list provides considerably more information about monsters,
  both in that information is provided when more than one monster of a given
  type is visible and that more things are documented. No more getting whacked
  with polearms unexpectedly?
+You are optionally warned before entering, or when forcedly transported to, the
+last level in a branch.
 
 Vanilla changes messed around with
 ----------------------------------

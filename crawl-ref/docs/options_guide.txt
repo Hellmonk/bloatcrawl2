@@ -954,6 +954,16 @@ wall_jump_prompt = false
         jump via movement by moving twice against a solid feature. No effect if
         wall_jump_move = false.
 
+branch_end_warn = ( dangerous | vaults | none | all )
+        Warn the player when first attempting to descend to the level at the
+	end of a branch; also warn if you land involuntarily on such a level.
+	
+	"dangerous" warns on those branches where the game also tries to stop
+	you being shafted to the branch end: Elf, all Lair branches, Crypt,
+	Hell, Tomb, and Zot; but not Dungeon, Depths, Abyss, Orc, or Lair.
+
+	"all" warns on all branches which are not 1 level deep.
+
 3-g     Command Enhancements.
 -----------------------------
 

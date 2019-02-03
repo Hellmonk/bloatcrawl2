@@ -31,6 +31,7 @@
 #include "directn.h"
 #include "dlua.h"
 #include "end.h"
+#include "end-warn-type.h"
 #include "errors.h"
 #include "files.h"
 #include "game-options.h"
@@ -1036,6 +1037,7 @@ void game_options::reset_options()
     easy_confirm           = CONFIRM_SAFE_EASY;
     allow_self_target      = CONFIRM_PROMPT;
     skill_focus            = SKM_FOCUS_ON;
+    branch_end_warn        = END_WARN_DANGEROUS;
 
     user_note_prefix       = "";
 
@@ -2663,6 +2665,17 @@ void game_options::read_option_line(const string &str, bool runscript)
             auto_butcher = HS_NEAR_STARVING;
         else if (field == "false" || field == "starving")
             auto_butcher = HS_STARVING;
+    }
+    else if (key == "branch_end_warn")
+    {
+        if (field == "all")
+            branch_end_warn = END_WARN_ALL;
+        else if (field == "none")
+            branch_end_warn = END_WARN_NONE;
+        else if (field == "vaults")
+            branch_end_warn = END_WARN_VAULTS;
+        else if (field == "dangerous")
+            branch_end_warn = END_WARN_DANGEROUS;
     }
     else if (key == "lua_file" && runscript)
     {
