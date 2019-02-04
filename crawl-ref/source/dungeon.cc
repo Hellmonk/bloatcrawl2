@@ -231,9 +231,37 @@ static unique_ptr<dungeon_colour_grid> dgn_colour_grid;
 
 static string branch_epilogues[NUM_BRANCHES];
 
+#include "level-effect-type.h"
+
+/**
+ * Get the current level's effect.
+ */
+static level_effect_type get_level_effect()
+{
+    return static_cast<level_effect_type>(env.properties[LEVEL_EFFECT_KEY].get_int());
+}
+
+/**
+ * Pick a level effect for the player's current level and save it.
+ */
+static void _set_level_effect()
+{
+    int effect = 0;
+    if (player_in_connected_branch() /* && one_chance_in(20) XXX testing */) // TODO: exclude D:1, Tomb, etc etc
+        effect = random_range(1, static_cast<int>(level_effect_type::COUNT) - 1);
+    else
+        return;
+
+    dprf("Saving level effect %d for this level", effect);
+    env.properties[LEVEL_EFFECT_KEY] = effect;
+}
+
 /**********************************************************************
  * builder() - kickoff for the dungeon generator.
- *********************************************************************/
+ * @param enable_random_maps
+ * @param dest_stairs_type   The type of stairs used to leave the last level.
+ * @return                   Whether a level was generated (eg either true or crash).
+ */
 bool builder(bool enable_random_maps, dungeon_feature_type dest_stairs_type)
 {
     // Re-check whether we're in a valid place, it leads to obscure errors
@@ -260,6 +288,7 @@ bool builder(bool enable_random_maps, dungeon_feature_type dest_stairs_type)
 
     unwind_bool levelgen(crawl_state.generating_level, true);
     rng_generator levelgen_rng(you.where_are_you);
+    _set_level_effect();
 
     // N tries to build the level, after which we bail with a capital B.
     int tries = 50;
@@ -2363,8 +2392,47 @@ static void _post_vault_build()
     }
 }
 
+/**
+ * Apply the final level effect modifications during generation.
+ * This makes post-process changes to the map, monsters, and items.
+ */
+static void _finalise_level_effects()
+{
+    dprf("Checking level effects");
+    auto effect = get_level_effect();
+    dprf("LEVEL EFFECT: %d", effect);
+    if (effect == level_effect_type::none)
+        return;
+    dprf("Applying level effect '#%d'", effect);
+
+    switch (effect) {
+        case level_effect_type::replace_doors: {
+            for (rectangle_iterator ri(0); ri; ++ri)
+            {
+                dprf("Checking ri");
+                if (feat_is_door(grd(*ri)))
+                {
+                    grd(*ri) = DNGN_FOUNTAIN_BLOOD;
+                }
+            }
+            break;
+        }
+        case level_effect_type::low_hp: {
+            for (monster_iterator mi; mi; ++mi)
+                mi->hit_points = 1;
+            break;
+        }
+        case level_effect_type::none:
+        default:
+        {
+            die("Applying unknown level effect");
+        }
+    }
+}
+
 static void _build_dungeon_level(dungeon_feature_type dest_stairs_type)
 {
+
     bool place_vaults = _builder_by_type();
 
     if (player_in_branch(BRANCH_SLIME))
@@ -2459,6 +2527,8 @@ static void _build_dungeon_level(dungeon_feature_type dest_stairs_type)
 
     if (player_in_hell())
         _fixup_hell_stairs();
+
+    _finalise_level_effects();
 }
 
 static void _dgn_set_floor_colours()
