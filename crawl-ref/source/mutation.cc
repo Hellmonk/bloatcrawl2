@@ -1536,6 +1536,7 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
     // Permabuffs always succeed regardless of any factors, as they aren't really mutations
     if (is_permabuff(which_mutation))
     {
+        //TODO: add_permabuff might be superfluous at this point, fixup later?
         const mutation_def& mdef = _get_mutation_def(which_mutation);
         if (add_permabuff && !you.permabuffs[which_mutation])
         {

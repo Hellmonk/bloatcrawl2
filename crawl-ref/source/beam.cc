@@ -50,6 +50,7 @@
 #include "mon-util.h"
 #include "mutation.h"
 #include "nearby-danger.h"
+#include "player-stats.h"
 #include "potion.h"
 #include "prompt.h"
 #include "ranged-attack.h"
@@ -3485,6 +3486,13 @@ void bolt::affect_player_enchantment(bool resistible)
         break;
 
     case BEAM_MALMUTATE:
+        mprf("Your body %s rapidly!", species_is_undead(you.species) ? "decomposes" : "deteriorates");
+        lose_stat(STAT_STR, 1 + random2avg(4, 2));
+        lose_stat(STAT_DEX, 1 + random2avg(4, 2));
+        lose_stat(STAT_INT, 1 + random2avg(4, 2));
+        obvious_effect = true;
+        break;
+
     case BEAM_UNRAVELLED_MAGIC:
         mpr("Strange energies course through your body.");
         you.malmutate(aux_source.empty() ? get_source_name() :
