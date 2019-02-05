@@ -80,9 +80,7 @@ static void _random_hell_miscast()
     const spschool_flag_type which_miscast
         = random_choose_weighted(8, SPTYP_NECROMANCY,
                                  4, SPTYP_SUMMONING,
-                                 2, SPTYP_CONJURATION,
-                                 1, SPTYP_CHARMS,
-                                 1, SPTYP_HEXES);
+                                 4, SPTYP_CONJURATION);
 
     MiscastEffect(&you, nullptr, HELL_EFFECT_MISCAST, which_miscast,
                   4 + random2(6), random2avg(97, 3),
