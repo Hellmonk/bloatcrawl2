@@ -3487,9 +3487,9 @@ void bolt::affect_player_enchantment(bool resistible)
 
     case BEAM_MALMUTATE:
         mprf("Your body %s rapidly!", species_is_undead(you.species) ? "decomposes" : "deteriorates");
-        lose_stat(STAT_STR, 1 + random2avg(4, 2));
-        lose_stat(STAT_DEX, 1 + random2avg(4, 2));
-        lose_stat(STAT_INT, 1 + random2avg(4, 2));
+        lose_stat(STAT_STR, 1 + random2(2));
+        lose_stat(STAT_DEX, 1 + random2(2));
+        lose_stat(STAT_INT, 1 + random2(2));
         obvious_effect = true;
         break;
 
