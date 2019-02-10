@@ -35,6 +35,7 @@
 #include "mon-place.h"
 #include "mon-project.h"
 #include "mutation.h"
+#include "nearby-danger.h"
 #include "player.h"
 #include "player-stats.h"
 #include "random.h"
@@ -131,26 +132,26 @@ static map<branch_type, hell_effect_spec> hell_effects_by_branch =
  *
  * 40% chance of fiend, 60% chance of miscast.
  */
-static void _themed_hell_summon_or_miscast()
+static void _themed_hell_summon_or_miscast(bool mons_in_sight)
 {
     const hell_effect_spec *spec = map_find(hell_effects_by_branch,
                                             you.where_are_you);
     if (!spec)
         die("Attempting to call down a hell effect in a non-hellish branch.");
 
-    if (x_chance_in_y(2, 5))
+    if (x_chance_in_y(3, 5) && mons_in_sight)
+    {
+        MiscastEffect(&you, nullptr, HELL_EFFECT_MISCAST, spec->miscast_type,
+                      4 + random2(6), random2avg(97, 3),
+                      "the effects of Hell");
+    }
+    else
     {
         const monster_type fiend
             = spec->fiend_types[random2(spec->fiend_types.size())];
         create_monster(
                        mgen_data::hostile_at(fiend, true, you.pos())
                        .set_non_actor_summoner("the effects of Hell"));
-    }
-    else
-    {
-        MiscastEffect(&you, nullptr, HELL_EFFECT_MISCAST, spec->miscast_type,
-                      4 + random2(6), random2avg(97, 3),
-                      "the effects of Hell");
     }
 }
 
@@ -204,11 +205,13 @@ static void _hell_effects(int /*time_delta*/)
     }
 
     _hell_effect_noise();
+    // Don't roll on the miscast table if there is no monster in view (too boring)
+    bool mons_in_sight = !i_feel_safe(false, false, true);
 
-    if (one_chance_in(3))
+    if (one_chance_in(3) && mons_in_sight)
         _random_hell_miscast();
     else if (x_chance_in_y(5, 9))
-        _themed_hell_summon_or_miscast();
+        _themed_hell_summon_or_miscast(mons_in_sight);
 
     if (one_chance_in(3))   // NB: No "else"
         _minor_hell_summons();
