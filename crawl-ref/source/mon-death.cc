@@ -2610,6 +2610,35 @@ item_def* monster_die(monster& mons, killer_type killer,
     // None of these effects should trigger on illusory copies.
     if (!mons.is_illusion())
     {
+        // TODO: Move the rest of the monster types into this switch
+        if(!in_transit) // Banishment
+        {
+            switch (mons.type)
+            {
+                case MONS_DISPATER:
+                    you.props["dispater_dead"] = true;
+                    mpr("You no longer feel the iron fury of Dis assaulting you.");
+                    break;
+
+                case MONS_ASMODEUS:
+                    you.props["asmodeus_dead"] = true;
+                    mpr("You no longer feel the fiery rage of Gehenna assaulting you.");
+                    break;
+
+                case MONS_ANTAEUS:
+                    you.props["antaeus_dead"] = true;
+                    mpr("You no longer feel the icy wrath of Cocytus assaulting you.");
+                    break;
+
+                case MONS_ERESHKIGAL:
+                    you.props["ereshkigal_dead"] = true;
+                    mpr("You no longer feel the haunting ire of Tartarus assaulting you.");
+                    break;
+
+                default:
+                    break;
+            }
+        }
         if (mons.type == MONS_BORIS && !in_transit && !mons.pacified())
         {
             // XXX: Actual blood curse effect for Boris? - bwr

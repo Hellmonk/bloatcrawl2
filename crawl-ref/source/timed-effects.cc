@@ -196,6 +196,14 @@ static void _hell_effects(int /*time_delta*/)
     if (!player_in_hell())
         return;
 
+    // Don't trigger Hell effects when the Hell lord is dead
+    // TODO: Better method than props?
+    if (you.props["dispater_dead"] && you.where_are_you == BRANCH_DIS
+        || you.props["asmodeus_dead"] && you.where_are_you == BRANCH_GEHENNA
+        || you.props["antaeus_dead"] && you.where_are_you == BRANCH_COCYTUS
+        || you.props["ereshkigal_dead"] && you.where_are_you == BRANCH_TARTARUS)
+        return;
+
     // 50% chance at max piety
     if (have_passive(passive_t::resist_hell_effects)
         && x_chance_in_y(you.piety, MAX_PIETY * 2) || is_sanctuary(you.pos()))
