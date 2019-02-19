@@ -1304,4 +1304,79 @@ _mon_hex_zap(ZAP_DRAIN_MAGIC, BEAM_DRAIN_MAGIC),
     0 // handled by explosion
 },
 
+<<<<<<< HEAD
+=======
+{
+    ZAP_REFRIGERATE,
+    "refrigeration",
+    200,
+    new calcdice_calculator<3, 15, 3, 10>,
+    new tohit_calculator<40>,
+    new calcdice_calculator<3, 15, 3, 10>,
+    new tohit_calculator<40>,
+    LIGHTCYAN,
+    false,
+    BEAM_COLD,
+    NUM_DCHAR_TYPES,
+    true,
+    false,
+    false,
+    0 // No additional effect noise.
+},
+
+{
+    ZAP_DRAIN_LIFE,
+    "drain life",
+    200,
+    new calcdice_calculator<1, 10, 1, 1>,
+    new tohit_calculator<40>,
+    new calcdice_calculator<1, 10, 1, 1>,
+    new tohit_calculator<40>,
+    DARKGREY,
+    false,
+    BEAM_NEG,
+    NUM_DCHAR_TYPES,
+    true,
+    false,
+    false,
+    0 // No additional effect noise.
+},
+
+{
+    ZAP_SONIC_WAVE,
+    "sonic wave",
+    200,
+    new calcdice_calculator<2, 5, 1, 5>,
+    new tohit_calculator<40>,
+    new calcdice_calculator<2, 5, 1, 5>,
+    new tohit_calculator<40>,
+    YELLOW,
+    false,
+    BEAM_MMISSILE,
+    NUM_DCHAR_TYPES,
+    true,
+    false,
+    false,
+    0 // No additional effect noise.
+},
+
+{
+    ZAP_THROW_PIE,
+    "klown pie",
+    200,
+    nullptr,
+    nullptr,
+    new dicedef_calculator<3, 20, 0, 1>,
+    new tohit_calculator<16, 1, 25>,
+    BROWN,
+    false,
+    BEAM_MMISSILE,
+    DCHAR_FIRED_MISSILE,
+    true,
+    false,
+    false,
+    6
+},
+
+>>>>>>> ab847a317b... Fix Ozocubu's Refrigeration (11885)
 };
