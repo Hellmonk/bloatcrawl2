@@ -54,6 +54,7 @@ enum species_type
     SP_BARACHI,
     SP_GNOLL,
 	SP_SILENT_SPECTRE,
+	SP_GOBLIN,
     NUM_SPECIES,
 
     SP_UNKNOWN  = 100,
