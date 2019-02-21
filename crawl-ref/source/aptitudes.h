@@ -1638,7 +1638,7 @@ static const species_skill_aptitude species_skill_aptitudes[] =
 	APT(SP_GOBLIN, SK_EARTH_MAGIC, 3),
 	APT(SP_GOBLIN, SK_POISON_MAGIC, 3),
 	APT(SP_GOBLIN, SK_INVOCATIONS, 4),
-	APT(SP_GOBLIN, SK_EVOCATIONS, 3),
+	APT(SP_GOBLIN, SK_EVOCATIONS, 3)
 
 };
 COMPILE_CHECK(ARRAYSZ(species_skill_aptitudes) == NUM_SPECIES * NUM_SKILLS);

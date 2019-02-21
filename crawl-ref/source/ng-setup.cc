@@ -31,7 +31,7 @@
 #include "spl-util.h"
 #include "state.h"
 
-#define MIN_START_STAT       3
+#define MIN_START_STAT       1
 
 static void _init_player()
 {

@@ -80,6 +80,7 @@ quite fragile, but they learn to fly swiftly later on.
 Kobold
 
 Kobolds are small, mischievous and a little fragile, but multi-talented.
+They have an increased resistance to mutagenic effects.
 %%%%
 Merfolk
 
@@ -135,4 +136,9 @@ Silent Spectre
 
 Ephermal spirits surrounded by an uncanny silence. They cannot read scrolls
 aloud, but are adept at casting with gestures.
+%%%%
+Goblin
+
+Small creatures, adept at all skills; but physically and mentally 
+deficient. Gods take pity on them, granting greater invocations power.
 %%%%
