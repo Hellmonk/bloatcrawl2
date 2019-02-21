@@ -2831,6 +2831,10 @@ void level_change(bool skip_attribute_increase)
     // directly sometimes {dlb}
     you.redraw_experience = true;
 
+	if (you.species == SP_GOBLIN)
+		skip_attribute_increase = true;
+	// Goblins don't gains stats. 
+
     while (you.experience < exp_needed(you.experience_level))
         lose_level();
 

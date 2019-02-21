@@ -321,17 +321,18 @@ static const map<species_type, species_def> species_data =
 	"Gb",
 	"Goblin", nullptr, nullptr,
 	SPF_NONE,
-	-1, -2, 3, 5,
+	1, -1, -1, 2,
 	MONS_GOBLIN,
 	HT_LAND, US_ALIVE, SIZE_SMALL,
 	2, 2, 2, // 6
-	{ STAT_STR, STAT_INT, STAT_DEX }, 3,
+	{ STAT_STR, STAT_INT, STAT_DEX }, 3, // This never actually happens. (Ignore Stat Gain == True).
 	{},
-	{},
-	{},
-	{ JOB_GLADIATOR, JOB_TRANSMUTER, JOB_ENCHANTER, JOB_WARPER, JOB_FIRE_ELEMENTALIST, JOB_AIR_ELEMENTALIST },
-	{ SK_MACES_FLAILS, SK_SHORT_BLADES, SK_POLEARMS, SK_LONG_BLADES, SK_STAVES,
-	SK_THROWING },
+	{"Your stats never grow through leveling."},
+	{"stagnant stats"},
+	{ JOB_FIGHTER, JOB_BERSERKER, JOB_ABYSSAL_KNIGHT, JOB_FIRE_ELEMENTALIST, JOB_AIR_ELEMENTALIST, 
+	  JOB_ICE_ELEMENTALIST, JOB_SUMMONER},
+	{ SK_MACES_FLAILS, SK_POLEARMS, SK_LONG_BLADES, SK_STAVES,
+	SK_THROWING, SK_CROSSBOWS },
 } },
 
 { SP_DEMONSPAWN, {
