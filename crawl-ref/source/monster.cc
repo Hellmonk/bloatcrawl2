@@ -3295,11 +3295,17 @@ int monster::base_armour_class() const
         return min(10, 3 + get_hit_dice() * 2 / 3);
 
     // Hepliaklqana ancestors scale with xl.
+	// Also special cases for non-armoured races.
     if (mons_is_hepliaklqana_ancestor(type))
     {
-        if (type == MONS_ANCESTOR_KNIGHT)
-            return get_experience_level() + 7;
-        return get_experience_level() / 2;
+		if (you.species == SP_FELID || you.species == SP_OCTOPODE)
+			return 3;
+		else
+		{
+			if (type == MONS_ANCESTOR_KNIGHT)
+				return get_experience_level() + 7;
+			return get_experience_level() / 2;
+		}
     }
 
     const int base_ac = get_monster_data(type)->AC;
@@ -3419,8 +3425,16 @@ int monster::base_evasion() const
 	// Ancestors vary with player race and HD.
 	if (mons_is_hepliaklqana_ancestor(type))
 	{
+		int local_size = get_species_def(you.species).size;
 		int ev = get_experience_level();
-		return ev;
+		int x = 1;
+		if (local_size > 3)
+			x = (ev * (10 + (3 - local_size) * 2)) / 10;
+		if (local_size < 3)
+			x = (ev * (10 + (3 - local_size) * 5)) / 10;
+		else
+			x = ev;
+		return x;
 	}
 
     // abominations are weird.
@@ -4109,6 +4123,9 @@ int monster::res_magic(bool calc_unid) const
 
     if (u < 0)
         u = 0;
+
+	if (u > 200)
+		return MAG_IMMUNE;
 
     return u;
 }

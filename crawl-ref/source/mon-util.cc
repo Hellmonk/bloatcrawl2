@@ -5738,8 +5738,12 @@ void set_ancestor_spells(monster &ancestor, bool notify)
     {
 	case MONS_ANCESTOR_KNIGHT:
 		if (you.species == SP_FELID)
+		{
 			_add_ancestor_spell(ancestor.spells, SPELL_OZOCUBUS_ARMOUR);
 			_add_ancestor_spell(ancestor.spells, SPELL_CONDENSATION_SHIELD);
+		}
+		else if (you.species == SP_OCTOPODE)
+			_add_ancestor_spell(ancestor.spells, SPELL_OZOCUBUS_ARMOUR);
 		break;
     case MONS_ANCESTOR_BATTLEMAGE:
 		// Few fun special cases for a couple races, nothing OP.

@@ -1689,13 +1689,13 @@ static int _hepliaklqana_ally_hd()
  * @return      6/hd from 1-11 HD, 12/hd from 12-18.
  *              Additionally races with higher than standard
  *				HP (Ogres, Nagas, Trolls) get 1-3 more per HD.
+ *				AND the opposite for lower than standard HP 
+ *              (it's fair now that they have bonus MR/EV)
  */
 int hepliaklqana_ally_hp()
 {
     const int HD = _hepliaklqana_ally_hd();
 	int HP_MOD = species_hp_modifier(you.species);
-	if (HP_MOD < 0)
-		HP_MOD = 0;
 	return HP_MOD * HD + HD * 6 + max(0, (HD - 12) * 6);
 }
 
