@@ -1479,6 +1479,8 @@ tileidx_t tileidx_monster_base(int type, bool in_water, int colour, int number,
 			return base_tile + 1;
 		if (you.species == SP_CENTAUR)
 			return base_tile + 2;
+		if (you.species == SP_NAGA)
+			return base_tile + 3;
 		else 
 			return base_tile;
     default:
