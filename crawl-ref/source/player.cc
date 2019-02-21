@@ -1785,6 +1785,8 @@ int player_spec_conj()
 
 int player_spec_hex()
 {
+	if (player_equip_unrand(UNRAND_BOTONO))
+		return 1;
     return 0;
 }
 
