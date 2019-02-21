@@ -1819,6 +1819,17 @@ int player_spec_poison()
     return sp;
 }
 
+int player_spec_invo()
+{
+	int si = 0;
+	if (you.get_mutation_level(MUT_GODS_PITY) > 0)
+		si++;
+
+	// I may add a fixedArt staff or an artifact property here.
+
+	return si;
+}
+
 int player_energy()
 {
     int pe = 0;

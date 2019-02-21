@@ -1008,6 +1008,7 @@ int player_spec_hex();
 int player_spec_charm();
 int player_spec_poison();
 int player_spec_summ();
+int player_spec_invo();
 
 const int player_adjust_evoc_power(const int power, int enhancers = 0);
 

@@ -99,6 +99,12 @@ static bool _player_sacrificed_arcana();
 // Load the sacrifice_def definition and the sac_data array.
 #include "sacrifice-data.h"
 
+int apply_invo_enhancer(int power)
+{
+	double calc = (double)power;
+	return rand_round(calc * pow(1.5,player_spec_invo()));
+}
+
 /** Would a god currently allow using a one-time six-star ability?
  * Does not check whether the god actually grants such an ability.
  */
@@ -730,7 +736,7 @@ int zin_recite_power()
     const int invo_power = you.skill_rdiv(SK_INVOCATIONS, power_mult)
                            + 3 * power_mult;
     const int piety_power = you.piety * 3 / 2;
-    return (invo_power + piety_power) / 2 / power_mult;
+    return apply_invo_enhancer((invo_power + piety_power) / 20 / power_mult);
 }
 
 bool zin_check_able_to_recite(bool quiet)
@@ -1271,8 +1277,7 @@ bool zin_vitalisation()
     simple_god_message(" grants you divine stamina.");
 
     // Add divine stamina.
-    const int stamina_amt =
-        max(1, you.skill_rdiv(SK_INVOCATIONS, 1, 3));
+    const int stamina_amt = apply_invo_enhancer(max(1, you.skill_rdiv(SK_INVOCATIONS, 1, 3)));
     you.attribute[ATTR_DIVINE_STAMINA] = stamina_amt;
     you.set_duration(DUR_DIVINE_STAMINA, 60 + roll_dice(2, 10));
 
@@ -1327,7 +1332,8 @@ void zin_sanctuary()
         mpr("You are suddenly bathed in radiance!");
 
     flash_view(UA_PLAYER, WHITE);
-    holy_word(100, HOLY_WORD_ZIN, you.pos(), true, &you);
+	int pow = apply_invo_enhancer(100);
+    holy_word(pow, HOLY_WORD_ZIN, you.pos(), true, &you);
 #ifndef USE_TILE_LOCAL
     // Allow extra time for the flash to linger.
     scaled_delay(1000);
@@ -1335,8 +1341,7 @@ void zin_sanctuary()
 
     // Pets stop attacking and converge on you.
     you.pet_target = MHITYOU;
-    create_sanctuary(you.pos(), 7 + you.skill_rdiv(SK_INVOCATIONS) / 2);
-
+    create_sanctuary(you.pos(), apply_invo_enhancer(7 +you.skill_rdiv(SK_INVOCATIONS)/2));
 }
 
 // shield bonus = attribute for duration turns, then decreasing by 1
@@ -1360,11 +1365,11 @@ void tso_divine_shield()
 
     // Duration from 35-80 turns.
     you.set_duration(DUR_DIVINE_SHIELD,
-                     35 + you.skill_rdiv(SK_INVOCATIONS, 5, 3));
+                     apply_invo_enhancer(35 + you.skill_rdiv(SK_INVOCATIONS, 5, 3)));
 
     // Size of SH bonus.
     you.attribute[ATTR_DIVINE_SHIELD] =
-        12 + you.skill_rdiv(SK_INVOCATIONS, 4, 5);
+		apply_invo_enhancer(12 + you.skill_rdiv(SK_INVOCATIONS, 4, 5));
 
     you.redraw_armour_class = true;
 }
@@ -1401,12 +1406,12 @@ bool elyvilon_divine_vigour()
         mprf("%s grants you divine vigour.",
              god_name(GOD_ELYVILON).c_str());
 
-        const int vigour_amt = 1 + you.skill_rdiv(SK_INVOCATIONS, 1, 3);
+        const int vigour_amt = apply_invo_enhancer(1 + you.skill_rdiv(SK_INVOCATIONS, 1, 3));
         const int old_hp_max = you.hp_max;
         const int old_mp_max = you.max_magic_points;
         you.attribute[ATTR_DIVINE_VIGOUR] = vigour_amt;
-        you.set_duration(DUR_DIVINE_VIGOUR,
-                         40 + you.skill_rdiv(SK_INVOCATIONS, 5, 2));
+        you.set_duration(DUR_DIVINE_VIGOUR, 
+                         apply_invo_enhancer(40 + you.skill_rdiv(SK_INVOCATIONS, 5, 2)));
 
         calc_hp();
         inc_hp((you.hp_max * you.hp + old_hp_max - 1)/old_hp_max - you.hp);
@@ -1467,11 +1472,11 @@ void trog_do_trogs_hand(int pow)
 {
 	if (you.undead_state() == US_GHOST)
 		you.increase_duration(DUR_TROGS_HAND,
-						5 + roll_dice(2, pow / 3 + 1), 100,
+						apply_invo_enhancer(5 + roll_dice(2, pow / 3 + 1)), 100,
 						"Your aura crackles.");
 	else 
 		you.increase_duration(DUR_TROGS_HAND,
-                          5 + roll_dice(2, pow / 3 + 1), 100,
+                          apply_invo_enhancer(5 + roll_dice(2, pow / 3 + 1)), 100,
                           "Your skin crawls.");
     mprf(MSGCH_DURATION, "You feel resistant to hostile enchantments.");
 }
@@ -1883,6 +1888,9 @@ void yred_make_enslaved_soul(monster* mon, bool force_hostile)
 bool kiku_receive_corpses(int pow)
 {
     // pow = necromancy * 4, ranges from 0 to 108
+
+	pow = apply_invo_enhancer(pow);
+
     dprf("kiku_receive_corpses() power: %d", pow);
 
     // Kiku gives branch-appropriate corpses (like shadow creatures).
@@ -3004,7 +3012,7 @@ bool fedhas_plant_ring_from_rations()
         return false;
     }
 
-    const int hp_adjust = you.skill(SK_INVOCATIONS, 10);
+    const int hp_adjust = apply_invo_enhancer(you.skill(SK_INVOCATIONS, 10));
 
     // The user entered a number, remove all number overlays which
     // are higher than that number.
