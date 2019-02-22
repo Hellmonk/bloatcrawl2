@@ -1072,6 +1072,7 @@ static species_group species_groups[] =
             SP_SPRIGGAN,
             SP_TENGU,
             SP_DEEP_ELF,
+			SP_NAGA,
             SP_OGRE,
             SP_GNOLL,
         }
@@ -1085,7 +1086,6 @@ static species_group species_groups[] =
             SP_DEMIGOD,
 			SP_GOBLIN,
             SP_FORMICID,
-            SP_NAGA,
             SP_OCTOPODE,
             SP_FELID,
             SP_BARACHI,
