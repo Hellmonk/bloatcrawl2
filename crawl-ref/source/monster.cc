@@ -3300,6 +3300,8 @@ int monster::base_armour_class() const
     {
 		if (you.species == SP_FELID || you.species == SP_OCTOPODE)
 			return 3;
+		if (species_is_draconian(you.species))
+			return get_experience_level() / 2 + 3;
 		else
 		{
 			if (type == MONS_ANCESTOR_KNIGHT)

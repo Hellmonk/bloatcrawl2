@@ -5742,7 +5742,7 @@ void set_ancestor_spells(monster &ancestor, bool notify)
 			_add_ancestor_spell(ancestor.spells, SPELL_OZOCUBUS_ARMOUR);
 			_add_ancestor_spell(ancestor.spells, SPELL_CONDENSATION_SHIELD);
 		}
-		else if (you.species == SP_OCTOPODE)
+		else if (you.species == SP_OCTOPODE || species_is_draconian(you.species))
 			_add_ancestor_spell(ancestor.spells, SPELL_OZOCUBUS_ARMOUR);
 		break;
     case MONS_ANCESTOR_BATTLEMAGE:
