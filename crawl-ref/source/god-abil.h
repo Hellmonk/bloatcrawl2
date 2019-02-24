@@ -58,7 +58,7 @@ class stack_iterator;
 
 typedef FixedVector<int, NUM_RECITE_TYPES> recite_counts;
 
-int apply_invo_enhancer(int power);
+int apply_invo_enhancer(int power, bool message);
 
 bool can_do_capstone_ability(god_type god);
 bool bless_weapon(god_type god, brand_type brand, colour_t colour);

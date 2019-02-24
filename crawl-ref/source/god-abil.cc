@@ -99,9 +99,11 @@ static bool _player_sacrificed_arcana();
 // Load the sacrifice_def definition and the sac_data array.
 #include "sacrifice-data.h"
 
-int apply_invo_enhancer(int power)
+int apply_invo_enhancer(int power, bool message)
 {
 	double calc = (double)power;
+	if (message && player_spec_invo() > 0)
+		god_speaks(you.religion,"You feel a surge of divine energy.");
 	return rand_round(calc * pow(1.5,player_spec_invo()));
 }
 
@@ -736,7 +738,7 @@ int zin_recite_power()
     const int invo_power = you.skill_rdiv(SK_INVOCATIONS, power_mult)
                            + 3 * power_mult;
     const int piety_power = you.piety * 3 / 2;
-    return apply_invo_enhancer((invo_power + piety_power) / 20 / power_mult);
+    return apply_invo_enhancer((invo_power + piety_power) / 20 / power_mult, false);
 }
 
 bool zin_check_able_to_recite(bool quiet)
@@ -1274,12 +1276,13 @@ static void _zin_saltify(monster* mon)
 
 bool zin_vitalisation()
 {
-    simple_god_message(" grants you divine stamina.");
 
     // Add divine stamina.
-    const int stamina_amt = apply_invo_enhancer(max(1, you.skill_rdiv(SK_INVOCATIONS, 1, 3)));
+    const int stamina_amt = apply_invo_enhancer(max(1, you.skill_rdiv(SK_INVOCATIONS, 1, 3)), true);
     you.attribute[ATTR_DIVINE_STAMINA] = stamina_amt;
     you.set_duration(DUR_DIVINE_STAMINA, 60 + roll_dice(2, 10));
+
+	simple_god_message(" grants you divine stamina.");
 
     notify_stat_change(STAT_STR, stamina_amt, true);
     notify_stat_change(STAT_INT, stamina_amt, true);
@@ -1325,15 +1328,16 @@ void zin_sanctuary()
 {
     ASSERT(!env.sanctuary_time);
 
-    // Yes, shamelessly stolen from NetHack...
-    if (!silenced(you.pos())) // How did you manage that?
-        mprf(MSGCH_SOUND, "You hear a choir sing!");
-    else
-        mpr("You are suddenly bathed in radiance!");
-
     flash_view(UA_PLAYER, WHITE);
-	int pow = apply_invo_enhancer(100);
+	int pow = apply_invo_enhancer(100, true);
     holy_word(pow, HOLY_WORD_ZIN, you.pos(), true, &you);
+
+	// Yes, shamelessly stolen from NetHack...
+	if (!silenced(you.pos())) // How did you manage that?
+		mprf(MSGCH_SOUND, "You hear a choir sing!");
+	else
+		mpr("You are suddenly bathed in radiance!");
+
 #ifndef USE_TILE_LOCAL
     // Allow extra time for the flash to linger.
     scaled_delay(1000);
@@ -1341,7 +1345,7 @@ void zin_sanctuary()
 
     // Pets stop attacking and converge on you.
     you.pet_target = MHITYOU;
-    create_sanctuary(you.pos(), apply_invo_enhancer(7 +you.skill_rdiv(SK_INVOCATIONS)/2));
+    create_sanctuary(you.pos(), apply_invo_enhancer(7 +you.skill_rdiv(SK_INVOCATIONS)/2, false));
 }
 
 // shield bonus = attribute for duration turns, then decreasing by 1
@@ -1350,26 +1354,26 @@ void zin_sanctuary()
 // recasting simply resets those two values (to better values, presumably)
 void tso_divine_shield()
 {
-    if (!you.duration[DUR_DIVINE_SHIELD])
-    {
-        if (you.shield())
-        {
-            mprf("Your shield is strengthened by %s divine power.",
-                 apostrophise(god_name(GOD_SHINING_ONE)).c_str());
-        }
-        else
-            mpr("A divine shield forms around you!");
-    }
-    else
-        mpr("Your divine shield is renewed.");
-
     // Duration from 35-80 turns.
     you.set_duration(DUR_DIVINE_SHIELD,
-                     apply_invo_enhancer(35 + you.skill_rdiv(SK_INVOCATIONS, 5, 3)));
+                     apply_invo_enhancer(35 + you.skill_rdiv(SK_INVOCATIONS, 5, 3), true));
 
     // Size of SH bonus.
     you.attribute[ATTR_DIVINE_SHIELD] =
-		apply_invo_enhancer(12 + you.skill_rdiv(SK_INVOCATIONS, 4, 5));
+		apply_invo_enhancer(12 + you.skill_rdiv(SK_INVOCATIONS, 4, 5), false);
+
+	if (!you.duration[DUR_DIVINE_SHIELD])
+	{
+		if (you.shield())
+		{
+			mprf("Your shield is strengthened by %s divine power.",
+				apostrophise(god_name(GOD_SHINING_ONE)).c_str());
+		}
+		else
+			mpr("A divine shield forms around you!");
+	}
+	else
+		mpr("Your divine shield is renewed.");
 
     you.redraw_armour_class = true;
 }
@@ -1403,15 +1407,16 @@ bool elyvilon_divine_vigour()
 
     if (!you.duration[DUR_DIVINE_VIGOUR])
     {
-        mprf("%s grants you divine vigour.",
-             god_name(GOD_ELYVILON).c_str());
 
-        const int vigour_amt = apply_invo_enhancer(1 + you.skill_rdiv(SK_INVOCATIONS, 1, 3));
+        const int vigour_amt = apply_invo_enhancer(1 + you.skill_rdiv(SK_INVOCATIONS, 1, 3), true);
         const int old_hp_max = you.hp_max;
         const int old_mp_max = you.max_magic_points;
         you.attribute[ATTR_DIVINE_VIGOUR] = vigour_amt;
         you.set_duration(DUR_DIVINE_VIGOUR, 
-                         apply_invo_enhancer(40 + you.skill_rdiv(SK_INVOCATIONS, 5, 2)));
+                         apply_invo_enhancer(40 + you.skill_rdiv(SK_INVOCATIONS, 5, 2), false));
+
+		mprf("%s grants you divine vigour.",
+			god_name(GOD_ELYVILON).c_str());
 
         calc_hp();
         inc_hp((you.hp_max * you.hp + old_hp_max - 1)/old_hp_max - you.hp);
@@ -1472,11 +1477,11 @@ void trog_do_trogs_hand(int pow)
 {
 	if (you.undead_state() == US_GHOST)
 		you.increase_duration(DUR_TROGS_HAND,
-						apply_invo_enhancer(5 + roll_dice(2, pow / 3 + 1)), 100,
+						apply_invo_enhancer(5 + roll_dice(2, pow / 3 + 1), true), 100,
 						"Your aura crackles.");
 	else 
 		you.increase_duration(DUR_TROGS_HAND,
-                          apply_invo_enhancer(5 + roll_dice(2, pow / 3 + 1)), 100,
+                          apply_invo_enhancer(5 + roll_dice(2, pow / 3 + 1), true), 100,
                           "Your skin crawls.");
     mprf(MSGCH_DURATION, "You feel resistant to hostile enchantments.");
 }
@@ -1842,7 +1847,12 @@ void yred_make_enslaved_soul(monster* mon, bool force_hostile)
 
     // If the original monster has been levelled up, its HD might be different
     // from its class HD, in which case its HP should be rerolled to match.
-    if (mon->get_experience_level() != orig.get_experience_level())
+	if (player_spec_invo() > 0)
+	{
+		mon->set_hit_dice(apply_invo_enhancer(max(orig.get_experience_level(), 1), true));
+		roll_zombie_hp(mon);
+	}
+    else if (mon->get_experience_level() != orig.get_experience_level())
     {
         mon->set_hit_dice(max(orig.get_experience_level(), 1));
         roll_zombie_hp(mon);
@@ -1889,7 +1899,7 @@ bool kiku_receive_corpses(int pow)
 {
     // pow = necromancy * 4, ranges from 0 to 108
 
-	pow = apply_invo_enhancer(pow);
+	pow = apply_invo_enhancer(pow, true);
 
     dprf("kiku_receive_corpses() power: %d", pow);
 
@@ -3012,7 +3022,7 @@ bool fedhas_plant_ring_from_rations()
         return false;
     }
 
-    const int hp_adjust = apply_invo_enhancer(you.skill(SK_INVOCATIONS, 10));
+    const int hp_adjust = apply_invo_enhancer(you.skill(SK_INVOCATIONS, 10), true);
 
     // The user entered a number, remove all number overlays which
     // are higher than that number.
