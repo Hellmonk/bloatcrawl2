@@ -1716,7 +1716,7 @@ void get_gold(const item_def& item, int quant, bool quiet)
     if (you_worship(GOD_ZIN))
         quant -= zin_tithe(item, quant, quiet);
 	if (you.species == SP_GOBLIN)
-		quant = ((quant * 12) / 10); // I hate int math, but converting to float and back is wasteful. >_>
+		quant = div_rand_round((quant * 12), 10);
     if (quant <= 0)
         return;
     you.add_gold(quant);
