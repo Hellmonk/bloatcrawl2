@@ -1280,7 +1280,7 @@ bool zin_vitalisation()
     // Add divine stamina.
     const int stamina_amt = apply_invo_enhancer(max(1, you.skill_rdiv(SK_INVOCATIONS, 1, 3)), true);
     you.attribute[ATTR_DIVINE_STAMINA] = stamina_amt;
-    you.set_duration(DUR_DIVINE_STAMINA, 60 + roll_dice(2, 10));
+    you.set_duration(DUR_DIVINE_STAMINA, apply_invo_enhancer(60 + roll_dice(2, 10),false));
 
 	simple_god_message(" grants you divine stamina.");
 
@@ -3249,6 +3249,9 @@ spret_type fedhas_evolve_flora(bool fail)
 
     fail_check();
 
+	if (player_spec_invo() > 0)
+		god_speaks(you.religion, "You feel a surge of divine energy.");
+
     switch (upgrade.new_type)
     {
     case MONS_OKLOB_PLANT:
@@ -3313,14 +3316,8 @@ spret_type fedhas_evolve_flora(bool fail)
         plant->spells = { { SPELL_SPIT_ACID, 0, MON_SPELL_NATURAL } };
     }
 
-    plant->set_hit_dice(plant->get_experience_level()
-                        + you.skill_rdiv(SK_INVOCATIONS));
-
-    if (upgrade.piety_cost)
-    {
-        lose_piety(upgrade.piety_cost);
-        mpr("Your piety has decreased.");
-    }
+    plant->set_hit_dice(apply_invo_enhancer(plant->get_experience_level()
+                        + you.skill_rdiv(SK_INVOCATIONS),false));
 
     return SPRET_SUCCESS;
 }
@@ -3350,7 +3347,7 @@ static void _lugonu_warp_area(int pow)
 
 void lugonu_bend_space()
 {
-    const int pow = 4 + skill_bump(SK_INVOCATIONS);
+    const int pow = apply_invo_enhancer(4 + skill_bump(SK_INVOCATIONS),true);
     const bool area_warp = random2(pow) > 9;
 
     mprf("Space bends %saround you!", area_warp ? "sharply " : "");
@@ -3363,6 +3360,8 @@ void lugonu_bend_space()
 
 void cheibriados_time_bend(int pow)
 {
+	pow = apply_invo_enhancer(pow, true);
+
     mpr("The flow of time bends around you.");
 
     for (adjacent_iterator ai(you.pos()); ai; ++ai)
@@ -3401,9 +3400,9 @@ static int _slouch_damage(monster *mon)
                                                       : 1;
 
     const int player_numer = BASELINE_DELAY * BASELINE_DELAY * BASELINE_DELAY;
-    return 4 * (mon->speed * BASELINE_DELAY * jerk_num
+    return apply_invo_enhancer(4 * (mon->speed * BASELINE_DELAY * jerk_num
                            / mon->action_energy(EUT_MOVE) / jerk_denom
-                - player_numer / player_movement_speed() / player_speed());
+                - player_numer / player_movement_speed() / player_speed()),false);
 }
 
 static bool _slouchable(coord_def where)
@@ -3457,6 +3456,9 @@ bool cheibriados_slouch()
     if (stop_attack_prompt(hitfunc, "harm", _act_slouchable))
         return false;
 
+	if (player_spec_invo () > 0)
+		god_speaks(you.religion, "You feel a surge of divine energy.");
+
     mpr("You can feel time thicken for a moment.");
     dprf("your speed is %d", player_movement_speed());
 
@@ -3483,7 +3485,7 @@ void cheibriados_temporal_distortion()
     const coord_def old_pos = you.pos();
 
     you.moveto(coord_def(0, 0));
-    you.duration[DUR_TIME_STEP] = 3 + random2(3);
+    you.duration[DUR_TIME_STEP] = apply_invo_enhancer(3 + random2(3),true);
 
     _run_time_step();
 
@@ -3508,6 +3510,8 @@ void cheibriados_temporal_distortion()
 void cheibriados_time_step(int pow) // pow is the number of turns to skip
 {
     const coord_def old_pos = you.pos();
+
+	apply_invo_enhancer(pow, true);
 
     mpr("You step out of the flow of time.");
     flash_view(UA_PLAYER, LIGHTBLUE);
