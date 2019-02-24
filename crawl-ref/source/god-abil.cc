@@ -2892,84 +2892,9 @@ bool prioritise_adjacent(const coord_def &target, vector<coord_def>& candidates)
     return true;
 }
 
-static bool _prompt_amount(int max, int& selected, const string& prompt)
+// Create a ring around the caster.
+bool fedhas_plant_ring()
 {
-    selected = max;
-    while (true)
-    {
-        msg::streams(MSGCH_PROMPT) << prompt << " (" << max << " max) " << endl;
-
-        const int keyin = get_ch();
-
-        // Cancel
-        if (key_is_escape(keyin) || keyin == ' ' || keyin == '0')
-        {
-            canned_msg(MSG_OK);
-            return false;
-        }
-
-        // Default is max
-        if (keyin == '\n' || keyin == '\r')
-        {
-            selected = max;
-            return true;
-        }
-
-        // Otherwise they should enter a digit
-        if (isadigit(keyin))
-        {
-            selected = keyin - '0';
-            if (selected > 0 && selected <= max)
-                return true;
-        }
-        // else they entered some garbage?
-    }
-
-    return false;
-}
-
-static int _collect_rations(vector<pair<int,int> >& available_rations)
-{
-    int total = 0;
-
-    for (int i = 0; i < ENDOFPACK; i++)
-    {
-        if (you.inv[i].defined() && you.inv[i].is_type(OBJ_FOOD, FOOD_RATION))
-        {
-            total += you.inv[i].quantity;
-            available_rations.emplace_back(you.inv[i].quantity, i);
-        }
-    }
-    sort(available_rations.begin(), available_rations.end());
-
-    return total;
-}
-
-static void _decrease_amount(vector<pair<int, int> >& available, int amount)
-{
-    const int total_decrease = amount;
-    for (const auto &avail : available)
-    {
-        const int decrease_amount = min(avail.first, amount);
-        amount -= decrease_amount;
-        dec_inv_item_quantity(avail.second, decrease_amount);
-    }
-    if (total_decrease > 1)
-        mprf("%d rations are consumed!", total_decrease);
-    else
-        mpr("A ration is consumed!");
-}
-
-// Create a ring or partial ring around the caster. The user is
-// prompted to select a stack of rations, and then plants are placed on open
-// squares adjacent to the user. Of course, two rations are
-// consumed per plant, so a complete ring may not be formed.
-bool fedhas_plant_ring_from_rations()
-{
-    // How many rations is available?
-    vector<pair<int, int> > collected_rations;
-    int total_rations = _collect_rations(collected_rations);
-
     // How many adjacent open spaces are there?
     vector<coord_def> adjacent;
     for (adjacent_iterator adj_it(you.pos()); adj_it; ++adj_it)
@@ -2981,7 +2906,7 @@ bool fedhas_plant_ring_from_rations()
         }
     }
 
-    const int max_use = min(total_rations/2, static_cast<int>(adjacent.size()));
+    const int max_use = static_cast<int>(adjacent.size());
 
     // Don't prompt if we can't do anything (due to having no rations or
     // no squares to place plants on).
@@ -2989,80 +2914,24 @@ bool fedhas_plant_ring_from_rations()
     {
         if (adjacent.empty())
             mpr("No empty adjacent squares.");
-        else
-            mpr("Not enough rations available.");
 
-        return false;
-    }
-
-    prioritise_adjacent(you.pos(), adjacent);
-
-    // Screwing around with display code I don't really understand. -cao
-    targeter_smite range(&you, 1);
-    range_view_annotator show_range(&range);
-
-    for (int i = 0; i < max_use; ++i)
-    {
-#ifndef USE_TILE_LOCAL
-        coord_def temp = grid2view(adjacent[i]);
-        cgotoxy(temp.x, temp.y, GOTO_DNGN);
-        put_colour_ch(GREEN, '1' + i);
-#endif
-#ifdef USE_TILE
-        tiles.add_overlay(adjacent[i], TILE_INDICATOR + i);
-#endif
-    }
-
-    // And how many plants does the user want to create?
-    int target_count;
-    if (!_prompt_amount(max_use, target_count,
-                        "How many plants will you create?"))
-    {
-        // User cancelled at the prompt.
         return false;
     }
 
     const int hp_adjust = apply_invo_enhancer(you.skill(SK_INVOCATIONS, 10), true);
 
-    // The user entered a number, remove all number overlays which
-    // are higher than that number.
-#ifndef USE_TILE_LOCAL
-    unsigned not_used = adjacent.size() - unsigned(target_count);
-    for (unsigned i = adjacent.size() - not_used; i < adjacent.size(); i++)
-        view_update_at(adjacent[i]);
-#endif
-#ifdef USE_TILE
-    // For tiles we have to clear all overlays and redraw the ones
-    // we want.
-    tiles.clear_overlays();
-    for (int i = 0; i < target_count; ++i)
-        tiles.add_overlay(adjacent[i], TILE_INDICATOR + i);
-#endif
-
     int created_count = 0;
-    for (int i = 0; i < target_count; ++i)
+    for (int i = 0; i < max_use; ++i)
     {
         if (_create_plant(adjacent[i], hp_adjust))
             created_count++;
-
-        // Clear the overlay and draw the plant we just placed.
-        // This is somewhat more complicated in tiles.
         view_update_at(adjacent[i]);
-#ifdef USE_TILE
-        tiles.clear_overlays();
-        for (int j = i + 1; j < target_count; ++j)
-            tiles.add_overlay(adjacent[j], TILE_INDICATOR + j);
-        viewwindow(false);
-#endif
-        scaled_delay(200);
     }
 
-    if (created_count)
-        _decrease_amount(collected_rations, 2 * created_count);
-    else
+    if (created_count == 0)
         canned_msg(MSG_NOTHING_HAPPENS);
 
-    return created_count;
+	return created_count;
 }
 
 // Create a circle of water around the target, with a radius of
@@ -3279,18 +3148,17 @@ struct monster_conversion
 {
     monster_type new_type;
     int piety_cost;
-    int ration_cost;
 };
 
 static const map<monster_type, monster_conversion> conversions =
 {
-    { MONS_PLANT,          { MONS_OKLOB_PLANT, 0, 2 } },
-    { MONS_BUSH,           { MONS_OKLOB_PLANT, 0, 2 } },
-    { MONS_BURNING_BUSH,   { MONS_OKLOB_PLANT, 0, 2 } },
-    { MONS_OKLOB_SAPLING,  { MONS_OKLOB_PLANT, 4, 0 } },
-    { MONS_FUNGUS,         { MONS_WANDERING_MUSHROOM, 3, 0 } },
-    { MONS_TOADSTOOL,      { MONS_WANDERING_MUSHROOM, 3, 0 } },
-    { MONS_BALLISTOMYCETE, { MONS_HYPERACTIVE_BALLISTOMYCETE, 4, 0 } },
+    { MONS_PLANT,          { MONS_OKLOB_PLANT, 4 } },
+    { MONS_BUSH,           { MONS_OKLOB_PLANT, 4 } },
+    { MONS_BURNING_BUSH,   { MONS_OKLOB_PLANT, 4 } },
+    { MONS_OKLOB_SAPLING,  { MONS_OKLOB_PLANT, 4 } },
+    { MONS_FUNGUS,         { MONS_WANDERING_MUSHROOM, 3 } },
+    { MONS_TOADSTOOL,      { MONS_WANDERING_MUSHROOM, 3 } },
+    { MONS_BALLISTOMYCETE, { MONS_HYPERACTIVE_BALLISTOMYCETE, 4 } },
 };
 
 bool mons_is_evolvable(const monster* mon)
@@ -3372,17 +3240,6 @@ spret_type fedhas_evolve_flora(bool fail)
     ASSERT(upgrade_ptr);
     monster_conversion upgrade = *upgrade_ptr;
 
-    vector<pair<int, int> > collected_rations;
-    if (upgrade.ration_cost)
-    {
-        const int total_rations = _collect_rations(collected_rations);
-
-        if (total_rations < upgrade.ration_cost)
-        {
-            mpr("Not enough rations available.");
-            return SPRET_ABORT;
-        }
-    }
 
     if (upgrade.piety_cost && upgrade.piety_cost > you.piety)
     {
@@ -3458,9 +3315,6 @@ spret_type fedhas_evolve_flora(bool fail)
 
     plant->set_hit_dice(plant->get_experience_level()
                         + you.skill_rdiv(SK_INVOCATIONS));
-
-    if (upgrade.ration_cost)
-        _decrease_amount(collected_rations, upgrade.ration_cost);
 
     if (upgrade.piety_cost)
     {

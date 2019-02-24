@@ -122,7 +122,7 @@ int fedhas_fungal_bloom();
 spret_type fedhas_sunlight(bool fail = false);
 void process_sunlights(bool future = false);
 bool prioritise_adjacent(const coord_def& target, vector<coord_def>& candidates);
-bool fedhas_plant_ring_from_rations();
+bool fedhas_plant_ring();
 int fedhas_rain(const coord_def &target);
 int count_corpses_in_los(vector<stack_iterator> *positions);
 int fedhas_check_corpse_spores(bool quiet = false);
