@@ -1756,6 +1756,9 @@ void canned_msg(canned_message_type which_message)
 {
     switch (which_message)
     {
+		case MSG_BRAINLESS:
+			mprf("You have forgotten how to read.");
+			break;
         case MSG_SOMETHING_APPEARS:
             mprf("Something appears %s!",
                  player_has_feet() ? "at your feet" : "before you");

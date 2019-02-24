@@ -291,6 +291,9 @@ random_var player::attack_delay(const item_def *projectile, bool rescale) const
         attk_delay += shield_penalty;
     }
 
+	if (you.duration[DUR_CLUMSY])
+		attk_delay = attk_delay * 2;
+
     if (you.duration[DUR_FINESSE])
     {
         ASSERT(!you.duration[DUR_BERSERK]);

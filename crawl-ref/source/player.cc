@@ -1128,10 +1128,7 @@ int player_regen()
             rr += 20; // Bonus regeneration for full vampires.
     }
 
-    if (you.duration[DUR_COLLAPSE])
-        rr /= 4;
-
-    if (you.disease || regeneration_is_inhibited() || !player_regenerates_hp())
+    if (you.disease || regeneration_is_inhibited() || !player_regenerates_hp() || you.duration[DUR_COLLAPSE])
         rr = 0;
 
     // Trog's Hand. This circumvents sickness or inhibited regeneration.
@@ -1150,6 +1147,9 @@ int player_mp_regen()
 
     if (you.props[MANA_REGEN_AMULET_ACTIVE].get_int() == 1)
         regen_amount += 25;
+
+	if (you.duration[DUR_BRAINLESS])
+		return 0;
 
     return regen_amount;
 }
@@ -2070,7 +2070,7 @@ int player_speed()
     if (you.cannot_act())
         return ps;
 
-    if (you.duration[DUR_SLOW] || have_stat_zero())
+    if (you.duration[DUR_SLOW])
         ps = haste_mul(ps);
 
     if (you.duration[DUR_BERSERK] && !have_passive(passive_t::no_haste))
@@ -5929,6 +5929,10 @@ int sanguine_armour_bonus()
 int player::base_ac_from(const item_def &armour, int scale) const
 {
     const int base = property(armour, PARM_AC) * scale;
+
+	// Penalty from being strengthless.
+	if (you.duration[DUR_COLLAPSE])
+		return base / 2;
 
     // [ds] effectively: ac_value * (22 + Arm) / 22, where Arm = Armour Skill.
     const int AC = base * (440 + skill(SK_ARMOUR, 20)) / 440;

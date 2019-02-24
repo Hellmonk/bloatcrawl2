@@ -885,7 +885,7 @@ static void _describe_poison(status_info& inf)
 
 static void _describe_speed(status_info& inf)
 {
-    bool slow = you.duration[DUR_SLOW] || have_stat_zero();
+	bool slow = you.duration[DUR_SLOW];
     bool fast = you.duration[DUR_HASTE];
 
     if (slow && fast)

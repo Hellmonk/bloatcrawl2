@@ -815,7 +815,7 @@ bool can_learn_spell(bool silent)
     if (you.duration[DUR_BRAINLESS])
     {
         if (!silent)
-            mpr("Your brain is not functional enough to learn spells.");
+            mpr("You can't remember your name, let alone memorize anything!");
         return false;
     }
 

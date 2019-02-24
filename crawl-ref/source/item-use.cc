@@ -2554,7 +2554,7 @@ static void _handle_read_book(item_def& book)
 
     if (you.duration[DUR_BRAINLESS])
     {
-        mpr("Reading books requires mental cohesion, which you lack.");
+         canned_msg(MSG_BRAINLESS);
         return;
     }
 
@@ -2632,6 +2632,12 @@ bool player_can_read()
         canned_msg(MSG_TOO_CONFUSED);
         return false;
     }
+
+	if (you.duration[DUR_BRAINLESS])
+	{
+		canned_msg(MSG_BRAINLESS);
+		return false;
+	}
 
     return true;
 }
@@ -2789,13 +2795,6 @@ void read(item_def* scroll)
 
     // Ok - now we FINALLY get to read a scroll !!! {dlb}
     you.turn_is_over = true;
-
-    if (you.duration[DUR_BRAINLESS] && !one_chance_in(5))
-    {
-        mpr("You almost manage to decipher the scroll,"
-            " but fail in this attempt.");
-        return;
-    }
 
     // if we have blurry vision, we need to start a delay before the actual
     // scroll effect kicks in.

@@ -586,7 +586,7 @@ bool can_cast_spells(bool quiet)
     if (you.duration[DUR_BRAINLESS])
     {
         if (!quiet)
-            mpr("You lack the mental capacity to cast spells.");
+            mpr("You can't remember how to cast magic!");
         return false;
     }
 
