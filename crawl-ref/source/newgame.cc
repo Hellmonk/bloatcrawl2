@@ -1084,7 +1084,7 @@ static species_group species_groups[] =
         {
             SP_VINE_STALKER,
             SP_DEMIGOD,
-			SP_GOBLIN,
+			// SP_GOBLIN,
             SP_FORMICID,
             SP_OCTOPODE,
             SP_FELID,

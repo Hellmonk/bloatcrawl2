@@ -99,12 +99,21 @@ static bool _player_sacrificed_arcana();
 // Load the sacrifice_def definition and the sac_data array.
 #include "sacrifice-data.h"
 
+// Affects God's Pity I and any other Invocations Enhancers.
 int apply_invo_enhancer(int power, bool message)
 {
 	double calc = (double)power;
 	if (message && player_spec_invo() > 0)
 		god_speaks(you.religion,"You feel a surge of divine energy.");
 	return rand_round(calc * pow(1.5,player_spec_invo()));
+}
+
+// Effect of God's Pity II on Passives
+int apply_pity(int power)
+{
+	if (you.get_mutation_level(MUT_GODS_PITY) > 1)
+		return (power * 15) / 10;
+	return power;
 }
 
 /** Would a god currently allow using a one-time six-star ability?
@@ -3240,11 +3249,10 @@ spret_type fedhas_evolve_flora(bool fail)
     ASSERT(upgrade_ptr);
     monster_conversion upgrade = *upgrade_ptr;
 
-
     if (upgrade.piety_cost && upgrade.piety_cost > you.piety)
     {
         mpr("Not enough piety available.");
-        return SPRET_ABORT;
+        return SPRET_ABORT; // I don't think this can ever happen right now.
     }
 
     fail_check();
@@ -4532,7 +4540,7 @@ static int _upheaval_radius(int pow)
 
 spret_type qazlal_upheaval(coord_def target, bool quiet, bool fail)
 {
-    int pow = you.skill(SK_INVOCATIONS, 6);
+    int pow = apply_invo_enhancer(you.skill(SK_INVOCATIONS, 6),false);
     const int max_radius = _upheaval_radius(pow);
 
     bolt beam;
@@ -4588,6 +4596,9 @@ spret_type qazlal_upheaval(coord_def target, bool quiet, bool fail)
         beam.target = target;
 
     fail_check();
+	
+	if (!quiet && player_spec_invo() > 0)
+		god_speaks(you.religion, "You feel a surge of divine energy.");
 
     string message = "";
 
@@ -4671,7 +4682,7 @@ spret_type qazlal_upheaval(coord_def target, bool quiet, bool fail)
                 {
                     temp_change_terrain(
                         pos, DNGN_LAVA,
-                        random2(you.skill(SK_INVOCATIONS, BASELINE_DELAY)),
+                        apply_invo_enhancer(random2(you.skill(SK_INVOCATIONS, BASELINE_DELAY)),false),
                         TERRAIN_CHANGE_FLOOD);
                 }
                 break;
@@ -4679,7 +4690,7 @@ spret_type qazlal_upheaval(coord_def target, bool quiet, bool fail)
                 if (!cell_is_solid(pos) && !cloud_at(pos) && coinflip())
                 {
                     place_cloud(CLOUD_STORM, pos,
-                                random2(you.skill_rdiv(SK_INVOCATIONS, 1, 4)),
+                                apply_invo_enhancer(random2(you.skill_rdiv(SK_INVOCATIONS, 1, 4)),false),
                                 &you);
                 }
                 break;
@@ -4748,10 +4759,13 @@ spret_type qazlal_elemental_force(bool fail)
 
     shuffle_array(targets);
     const int count = max(1, min((int)targets.size(),
-                                 random2avg(you.skill(SK_INVOCATIONS), 2)));
+                                 apply_invo_enhancer (random2avg(you.skill(SK_INVOCATIONS), 2),true)));
     mgen_data mg;
     mg.summon_type = MON_SUMM_AID;
-    mg.abjuration_duration = 1;
+	if (player_spec_invo > 0)
+		mg.abjuration_duration = 2;
+	else
+	    mg.abjuration_duration = 1;
     mg.flags |= MG_FORCE_PLACE | MG_AUTOFOE;
     mg.summoner = &you;
     int placed = 0;
@@ -4787,7 +4801,7 @@ bool qazlal_disaster_area()
     bool friendlies = false;
     vector<coord_def> targets;
     vector<int> weights;
-    const int pow = you.skill(SK_INVOCATIONS, 6);
+    const int pow = apply_invo_enhancer(you.skill(SK_INVOCATIONS, 6),false);
     const int upheaval_radius = _upheaval_radius(pow);
     for (radius_iterator ri(you.pos(), LOS_RADIUS, C_SQUARE, LOS_NO_TRANS, true);
          ri; ++ri)
@@ -4829,6 +4843,9 @@ bool qazlal_disaster_area()
         canned_msg(MSG_OK);
         return false;
     }
+
+	if (player_spec_invo > 0)
+		god_speaks(you.religion, "You feel a surge of divine energy.");
 
     mprf(MSGCH_GOD, "Nature churns violently around you!");
 
@@ -5177,6 +5194,8 @@ static int _get_stat_piety(stat_type input_stat, int multiplier)
             stat_val -= 1;
     if (you.base_stats[STAT_DEX] > you.base_stats[input_stat])
             stat_val -= 1;
+	if (you.base_stats[input_stat] < 6)
+		stat_val = 6 - (you.base_stats[input_stat] + 1) / 2;
     return stat_val * multiplier;
 }
 
@@ -5939,13 +5958,13 @@ bool will_ru_retaliate()
     // Scales up to a 25% chance of retribution
     return have_passive(passive_t::upgraded_aura_of_power)
            && crawl_state.which_god_acting() != GOD_RU
-           && one_chance_in(div_rand_round(640, you.piety));
+           && one_chance_in(div_rand_round(640, apply_pity(you.piety)));
 }
 
 // Power of retribution increases with damage, decreases with monster HD.
 void ru_do_retribution(monster* mons, int damage)
 {
-    int power = max(0, random2(div_rand_round(you.piety*10, 32))
+    int power = max(0, random2(div_rand_round(apply_pity(you.piety*10), 32))
         + damage - (2 * mons->get_hit_dice()));
     const actor* act = &you;
 
@@ -5983,6 +6002,8 @@ void ru_do_retribution(monster* mons, int damage)
 
 void ru_draw_out_power()
 {
+	if (player_spec_invo () > 0)
+		god_speaks(you.religion, "You feel a surge of divine energy.");
     mpr("You are restored by drawing out deep reserves of power within.");
 
     //Escape nets and webs
@@ -6013,10 +6034,10 @@ void ru_draw_out_power()
     you.duration[DUR_SLOW] = 0;
     you.duration[DUR_PETRIFYING] = 0;
 
-    inc_hp(div_rand_round(you.piety, 16)
-           + roll_dice(div_rand_round(you.piety, 20), 6));
-    inc_mp(div_rand_round(you.piety, 48)
-           + roll_dice(div_rand_round(you.piety, 40), 4));
+    inc_hp(apply_invo_enhancer(div_rand_round(you.piety, 16)
+           + roll_dice(div_rand_round(you.piety, 20), 6),false));
+    inc_mp(apply_invo_enhancer(div_rand_round(you.piety, 48)
+           + roll_dice(div_rand_round(you.piety, 40), 4),false));
     drain_player(30, false, true);
 }
 
@@ -6155,6 +6176,9 @@ bool ru_power_leap()
     wave.loudness = 2;
     wave.explode();
 
+	if (player_spec_invo() > 0)
+		god_speaks(you.religion, "You feel a surge of divine energy.");
+
     // we need to exempt the player from damage.
     for (adjacent_iterator ai(you.pos(), false); ai; ++ai)
     {
@@ -6164,8 +6188,8 @@ bool ru_power_leap()
         ASSERT(mon);
 
         //damage scales with XL amd piety
-        mon->hurt((actor*)&you, roll_dice(1 + div_rand_round(you.piety *
-            (54 + you.experience_level), 777), 3),
+        mon->hurt((actor*)&you, roll_dice(1 + apply_invo_enhancer(div_rand_round(you.piety *
+            (54 + you.experience_level), 777),false), 3),
             BEAM_ENERGY, KILLED_BY_BEAM, "", "", true);
     }
 
@@ -6204,21 +6228,21 @@ static int _apply_apocalypse(coord_def where)
                 message = " doubts " + mons->pronoun(PRONOUN_POSSESSIVE)
                           + " magic when faced with ultimate truth!";
                 enchantment = ENCH_ANTIMAGIC;
-                duration = 500 + random2(200);
+                duration = apply_invo_enhancer(500 + random2(200),false);
                 num_dice = 4;
                 break;
             } // if not antimagicable, fall through to paralysis.
         case 1:
             message = " is paralysed by terrible understanding!";
             enchantment = ENCH_PARALYSIS;
-            duration = 80 + random2(60);
+            duration = apply_invo_enhancer(80 + random2(60),false);
             num_dice = 4;
             break;
 
         case 2:
             message = " slows down under the weight of truth!";
             enchantment = ENCH_SLOW;
-            duration = 300 + random2(100);
+            duration = apply_invo_enhancer(300 + random2(100),false);
             num_dice = 6;
             break;
 
@@ -6228,7 +6252,7 @@ static int _apply_apocalypse(coord_def where)
     }
 
     //damage scales with XL and piety
-    const int pow = you.piety;
+    const int pow = apply_invo_enhancer(you.piety, false);
     int die_size = 1 + div_rand_round(pow * (54 + you.experience_level), 584);
     int dmg = 10 + roll_dice(num_dice, die_size);
 
@@ -6253,6 +6277,8 @@ bool ru_apocalypse()
             return false;
         }
     }
+	if (player_spec_invo () > 0)
+		god_speaks(you.religion, "You feel a surge of divine energy.");
     mpr("You reveal the great annihilating truth to your foes!");
     noisy(30, you.pos());
     apply_area_visible(_apply_apocalypse, you.pos());
@@ -6361,7 +6387,7 @@ static bool _get_stomped(monster& mons)
     // Damage starts at 1/6th of monster current HP, then gets some damage
     // scaling off Invo power.
     int damage = div_rand_round(mons.hit_points, 6);
-    int die_size = 2 + div_rand_round(you.skill(SK_INVOCATIONS), 2);
+    int die_size = 2 + div_rand_round(apply_invo_enhancer(you.skill(SK_INVOCATIONS),false), 2);
     damage += roll_dice(2, die_size);
 
     mons.hurt(&you, damage, BEAM_ENERGY, KILLED_BY_BEAM, "", "", true);
@@ -6390,6 +6416,8 @@ bool uskayaw_stomp()
         return false;
     }
 
+	if (player_spec_invo() > 0)
+		god_speaks(you.religion, "You feel a surge of divine energy.");
     mpr("You stomp with the beat, sending a shockwave through the revelers "
             "around you!");
     apply_monsters_around_square(_get_stomped, you.pos());
@@ -6411,7 +6439,7 @@ bool uskayaw_line_pass()
     // query for location:
     int range = 8;
     int invo_skill = you.skill(SK_INVOCATIONS);
-    int pow = (25 + invo_skill + random2(invo_skill));
+    int pow = (apply_invo_enhancer(25 + invo_skill + random2(invo_skill),false));
     dist beam;
     bolt line_pass;
     line_pass.thrower = KILL_YOU;
@@ -6520,6 +6548,8 @@ bool uskayaw_line_pass()
         mpr("Something unexpectedly blocked you, preventing you from passing!");
     else
     {
+		if (player_spec_invo() > 0)
+			god_speaks(you.religion, "You feel a surge of divine energy.");
         line_pass.fire();
         you.stop_being_constricted(false);
         move_player_to_grid(beam.target, false);
@@ -6714,12 +6744,14 @@ spret_type hepliaklqana_idealise(bool fail)
 
     fail_check();
 
+	if (player_spec_invo () > 0)
+		god_speaks(you.religion, "You feel a surge of divine energy.");
     simple_god_message(make_stringf(" grants %s healing and protection!",
                                     ancestor->name(DESC_YOUR).c_str()).c_str());
 
     // 1/3 mhp healed at 0 skill, full at 27 invo
     const int healing = ancestor->max_hit_points
-                         * (9 + you.skill(SK_INVOCATIONS)) / 36;
+                         * (apply_invo_enhancer(9 + you.skill(SK_INVOCATIONS), false) / 36);
 
     if (ancestor->heal(healing))
     {
@@ -6729,8 +6761,8 @@ spret_type hepliaklqana_idealise(bool fail)
             simple_monster_message(*ancestor, " is healed somewhat.");
     }
 
-    const int dur = random_range(50, 80)
-                    + random2avg(you.skill(SK_INVOCATIONS, 20), 2);
+    const int dur = apply_invo_enhancer(random_range(50, 80)
+                    + random2avg(you.skill(SK_INVOCATIONS, 20), 2),false);
     ancestor->add_ench({ ENCH_IDEALISED, 1, &you, dur});
     return SPRET_SUCCESS;
 }
@@ -6775,8 +6807,12 @@ static void _transfer_drain_nearby(coord_def destination)
         const int dur = random_range(60, 150);
         // 1-2 at 0 skill, 2-6 at 27 skill.
         const int degree
-            = random_range(1 + you.skill_rdiv(SK_INVOCATIONS, 1, 27),
-                           2 + you.skill_rdiv(SK_INVOCATIONS, 4, 27));
+            = random_range(apply_invo_enhancer(1 + you.skill_rdiv(SK_INVOCATIONS, 1, 27),false),
+                           apply_invo_enhancer(2 + you.skill_rdiv(SK_INVOCATIONS, 4, 27),false));
+
+		if (player_spec_invo() > 0)
+			god_speaks(you.religion, "You feel a surge of divine energy.");
+
         if (mon->add_ench(mon_enchant(ENCH_DRAINED, degree, &you, dur)))
             simple_monster_message(*mon, " is drained by nostalgia.");
     }
