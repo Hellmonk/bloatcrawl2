@@ -150,7 +150,6 @@ static const int conflict[][3] =
     { MUT_GHOST,               MUT_LARGE_BONE_PLATES       -1},
     { MUT_SILENT_CAST,         MUT_SCREAM                  -1},
     { MUT_SILENT_CAST,         MUT_BLURRY_VISION           -1},
-    { MUT_SILENT_CAST,         MUT_NO_READ                 -1}, // Ru shouldn't offer this anyways...
     { MUT_FAST,                MUT_SLOW,                    1},
     { MUT_FANGS,               MUT_BEAK,                   -1},
     { MUT_ANTENNAE,            MUT_HORNS,                  -1}, // currently overridden by physiology_mutation_conflict
