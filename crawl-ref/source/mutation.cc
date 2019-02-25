@@ -148,7 +148,6 @@ static const int conflict[][3] =
     { MUT_GHOST,               MUT_POISON_RESISTANCE       -1},
     { MUT_GHOST,               MUT_THIN_SKELETAL_STRUCTURE -1},
     { MUT_GHOST,               MUT_LARGE_BONE_PLATES       -1},
-    { MUT_SILENT_CAST,         MUT_SCREAM                  -1},
     { MUT_SILENT_CAST,         MUT_BLURRY_VISION           -1},
     { MUT_FAST,                MUT_SLOW,                    1},
     { MUT_FANGS,               MUT_BEAK,                   -1},
