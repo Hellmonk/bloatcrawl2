@@ -4982,6 +4982,10 @@ static mutation_type _random_valid_sacrifice(const vector<mutation_type> &muts)
         if (mut == MUT_INHIBITED_REGENERATION && you.species == SP_VAMPIRE)
             continue;
 
+		// Can't scream in permasilence. Hah.
+		if (mut == MUT_SCREAM && you.species == SP_SILENT_SPECTRE)
+			continue;
+
         // demonspawn can't get frail if they have a robust facet
         if (you.species == SP_DEMONSPAWN && mut == MUT_FRAIL
             && any_of(begin(you.demonic_traits), end(you.demonic_traits),
