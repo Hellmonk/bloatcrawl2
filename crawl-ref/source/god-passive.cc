@@ -781,48 +781,28 @@ static bool _is_slot_cursed(equipment_type eq)
     return true;
 }
 
-bool god_id_item(item_def& item, bool silent)
+bool passive_id_item(item_def& item, bool silent)
 {
     iflags_t old_ided = item.flags & ISFLAG_IDENT_MASK;
     iflags_t ided = 0;
 
-    if (have_passive(passive_t::identify_items))
-    {
-        // Ashenzari (and other gods with both identify_items and want_curses)
-        // ties identification of weapon/armour plusses to cursed slots.
-        const bool ash = have_passive(passive_t::want_curses);
+    // Don't identify runes or the orb, since this has no gameplay purpose
+    // and might mess up other things.
+    if (item.base_type == OBJ_RUNES || item_is_orb(item))
+        return false;
 
-        // Don't identify runes or the orb, since this has no gameplay purpose
-        // and might mess up other things.
-        if (item.base_type == OBJ_RUNES || item_is_orb(item))
-            return false;
+    ided = ISFLAG_KNOW_CURSE;
 
-        ided = ISFLAG_KNOW_CURSE;
+    if ((item.base_type == OBJ_JEWELLERY || item.base_type == OBJ_STAVES)
+        && item_needs_autopickup(item))
+        
+		item.props["needs_autopickup"] = true;
 
-        if ((item.base_type == OBJ_JEWELLERY || item.base_type == OBJ_STAVES)
-            && item_needs_autopickup(item))
-        {
-            item.props["needs_autopickup"] = true;
-        }
-
-        if (is_weapon(item) || item.base_type == OBJ_ARMOUR)
-            ided |= ISFLAG_KNOW_PROPERTIES | ISFLAG_KNOW_TYPE;
-
-        if (item.base_type == OBJ_JEWELLERY)
-            ided |= ISFLAG_IDENT_MASK;
-
-        if (item.base_type == OBJ_ARMOUR
-            && (!ash || _is_slot_cursed(get_armour_slot(item))))
-        {
-            ided |= ISFLAG_KNOW_PLUSES;
-        }
-
-        if (is_weapon(item)
-            && (!ash || _is_slot_cursed(EQ_WEAPON)))
-        {
-            ided |= ISFLAG_KNOW_PLUSES;
-        }
-    }
+    if (is_weapon(item) || item.base_type == OBJ_ARMOUR
+		|| item.base_type == OBJ_JEWELLERY || item.base_type == OBJ_SCROLLS 
+		|| item.base_type == OBJ_POTIONS)
+		
+		ided |= ISFLAG_IDENT_MASK;
 
     if (ided & ~old_ided)
     {

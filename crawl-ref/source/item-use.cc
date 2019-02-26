@@ -2371,61 +2371,10 @@ bool enchant_weapon(item_def &wpn, bool quiet)
     return success;
 }
 
-/**
- * Prompt for an item to identify (either in the player's inventory or in
- * the ground), and then, if one is chosen, identify it.
- *
- * @param alreadyknown  Did we know that this was an ID scroll before we
- *                      started reading it?
- * @param pre_msg       'As you read the scroll of foo, it crumbles to dust.'
- * @param link[in,out]  The location of the ID scroll in the player's inventory
- *                      or, if it's on the floor, -1.
- *                      auto_assign_item_slot() may require us to update this.
- * @return  true if the scroll is used up. (That is, whether it was used or
- *          whether it was previously unknown (& thus uncancellable).)
- */
 static bool _identify(bool alreadyknown, const string &pre_msg, int &link)
 {
-    item_def* itemp = _choose_target_item_for_scroll(alreadyknown, OSEL_UNIDENT,
-                       "Identify which item? (\\ to view known items)");
-
-    if (!itemp)
-        return !alreadyknown;
-
-    item_def& item = *itemp;
-    if (alreadyknown)
-        mpr(pre_msg);
-
-    set_ident_type(item, true);
-    set_ident_flags(item, ISFLAG_IDENT_MASK);
-
-    // Output identified item.
-    mprf_nocap("%s", menu_colour_item_name(item, DESC_INVENTORY_EQUIP).c_str());
-    if (in_inventory(item))
-    {
-        if (item.link == you.equip[EQ_WEAPON])
-            you.wield_change = true;
-
-        if (item.is_type(OBJ_JEWELLERY, AMU_INACCURACY)
-            && item.link == you.equip[EQ_AMULET]
-            && !item_known_cursed(item))
-        {
-            learned_something_new(HINT_INACCURACY);
-        }
-
-        const int target_link = item.link;
-        item_def* moved_target = auto_assign_item_slot(item);
-        if (moved_target != nullptr && moved_target->link == link)
-        {
-            // auto-swapped ID'd item with scrolls being used to ID it
-            // correct input 'link' to the new location of the ID scroll stack
-            // so that we decrement *it* instead of the ID'd item (10663)
-            ASSERT(you.inv[target_link].defined());
-            ASSERT(you.inv[target_link].is_type(OBJ_SCROLLS, SCR_IDENTIFY));
-            link = target_link;
-        }
-    }
-    return true;
+	mprf("Everything is identified. This scroll is removed.");
+	return true;
 }
 
 static bool _handle_enchant_weapon(bool alreadyknown, const string &pre_msg)
@@ -2596,12 +2545,12 @@ static void _vulnerability_scroll()
 
 static bool _is_cancellable_scroll(scroll_type scroll)
 {
-    return scroll == SCR_IDENTIFY
-           || scroll == SCR_BLINKING
+    return    scroll == SCR_BLINKING
            || scroll == SCR_ENCHANT_ARMOUR
            || scroll == SCR_AMNESIA
            || scroll == SCR_REMOVE_CURSE
 #if TAG_MAJOR_VERSION == 34
+		   || scroll == SCR_IDENTIFY
            || scroll == SCR_CURSE_ARMOUR
            || scroll == SCR_CURSE_JEWELLERY
            || scroll == SCR_RECHARGING
@@ -2710,8 +2659,7 @@ string cannot_read_item_reason(const item_def &item)
         case SCR_ENCHANT_WEAPON:
             return _no_items_reason(OSEL_ENCHANTABLE_WEAPON, true);
 
-        case SCR_IDENTIFY:
-            return _no_items_reason(OSEL_UNIDENT, true);
+
 
         case SCR_REMOVE_CURSE:
             return _no_items_reason(OSEL_CURSED_WORN);
@@ -2728,6 +2676,9 @@ string cannot_read_item_reason(const item_def &item)
             if (get_weapon_brand(*you.weapon()) == SPWPN_HOLY_WRATH)
                 return "Holy weapons cannot be cursed!";
             return "";
+
+		case SCR_IDENTIFY:
+			return _no_items_reason(OSEL_UNIDENT, true);
 
         case SCR_CURSE_ARMOUR:
             return _no_items_reason(OSEL_UNCURSED_WORN_ARMOUR);
@@ -3033,18 +2984,6 @@ void read_scroll(item_def& scroll)
         cancel_scroll = !_handle_brand_weapon(alreadyknown, pre_succ_msg);
         break;
 
-    case SCR_IDENTIFY:
-        if (!alreadyknown)
-        {
-            mpr(pre_succ_msg);
-            mpr("It is a scroll of identify.");
-            // included in default force_more_message (to show it before menu)
-            // Do this here so it doesn't turn up in the ID menu.
-            set_ident_type(scroll, true);
-        }
-        cancel_scroll = !_identify(alreadyknown, pre_succ_msg, link);
-        break;
-
     case SCR_ENCHANT_ARMOUR:
         if (!alreadyknown)
         {
@@ -3071,6 +3010,17 @@ void read_scroll(item_def& scroll)
         cancel_scroll = true;
         break;
     }
+	case SCR_IDENTIFY:
+		if (!alreadyknown)
+		{
+			mpr(pre_succ_msg);
+			mpr("This item has been removed, sorry!");
+			// included in default force_more_message (to show it before menu)
+			// Do this here so it doesn't turn up in the ID menu.
+			set_ident_type(scroll, true);
+		}
+		cancel_scroll = !_identify(alreadyknown, pre_succ_msg, link);
+		break;
 #endif
 
     case SCR_HOLY_WORD:
@@ -3133,10 +3083,10 @@ void read_scroll(item_def& scroll)
         && which_scroll != SCR_ACQUIREMENT
         && which_scroll != SCR_BRAND_WEAPON
         && which_scroll != SCR_ENCHANT_WEAPON
-        && which_scroll != SCR_IDENTIFY
         && which_scroll != SCR_ENCHANT_ARMOUR
 #if TAG_MAJOR_VERSION == 34
         && which_scroll != SCR_RECHARGING
+		&& which_scroll != SCR_IDENTIFY
 #endif
         && which_scroll != SCR_AMNESIA)
     {

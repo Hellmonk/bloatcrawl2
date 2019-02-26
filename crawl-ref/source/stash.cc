@@ -281,7 +281,7 @@ void Stash::update()
         // Now, grab all items on that square and fill our vector
         for (stack_iterator si(pos, true); si; ++si)
         {
-            god_id_item(*si);
+            passive_id_item(*si);
             add_item(*si);
         }
 
@@ -302,7 +302,7 @@ void Stash::update()
         item_def *pitem = &mitm[you.visible_igrd(pos)];
         hints_first_item(*pitem);
 
-        god_id_item(*pitem);
+        passive_id_item(*pitem);
         maybe_identify_base_type(*pitem);
         const item_def& item = *pitem;
 
@@ -520,7 +520,7 @@ void Stash::_update_identification()
 {
     for (int i = items.size() - 1; i >= 0; i--)
     {
-        god_id_item(items[i]);
+        passive_id_item(items[i]);
         maybe_identify_base_type(items[i]);
     }
 }

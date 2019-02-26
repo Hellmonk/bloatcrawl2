@@ -785,6 +785,7 @@ const set<pair<object_class_type, int> > removed_items =
     { OBJ_WANDS,     WAND_SLOWING_REMOVED },
     { OBJ_WANDS,     WAND_CONFUSION_REMOVED },
     { OBJ_WANDS,     WAND_LIGHTNING_REMOVED },
+    { OBJ_SCROLLS,   SCR_IDENTIFY},
     { OBJ_SCROLLS,   SCR_CURSE_WEAPON },
     { OBJ_SCROLLS,   SCR_CURSE_ARMOUR },
     { OBJ_SCROLLS,   SCR_CURSE_JEWELLERY },
@@ -898,7 +899,7 @@ void auto_id_inventory()
 {
     for (auto &item : you.inv)
         if (item.defined())
-            god_id_item(item, false);
+            passive_id_item(item, false);
 }
 
 void do_curse_item(item_def &item, bool quiet)

@@ -2103,7 +2103,7 @@ static int _place_item_in_free_slot(item_def &it, int quant_got,
     // Remove "unobtainable" as it was just proven false.
     item.flags &= ~ISFLAG_UNOBTAINABLE;
 
-    god_id_item(item);
+    passive_id_item(item);
     if (item.base_type == OBJ_WANDS)
     {
         set_ident_type(item, true);
@@ -2310,7 +2310,7 @@ bool move_item_to_grid(int *const obj, const coord_def& p, bool silent)
                 {
                     // XXX: Is it actually necessary to identify when the
                     // new item merged with a stack?
-                    god_id_item(*si);
+                    passive_id_item(*si);
                     maybe_identify_base_type(*si);
                 }
                 return true;
@@ -2355,7 +2355,7 @@ bool move_item_to_grid(int *const obj, const coord_def& p, bool silent)
 
     if (you.see_cell(p))
     {
-        god_id_item(item);
+        passive_id_item(item);
         maybe_identify_base_type(item);
     }
 

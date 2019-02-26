@@ -395,7 +395,9 @@ enum rune_type
 
 enum scroll_type
 {
-    SCR_IDENTIFY,
+#if TAG_MAJOR_VERSION == 34
+	SCR_IDENTIFY,
+#endif
     SCR_TELEPORTATION,
     SCR_FEAR,
     SCR_NOISE,

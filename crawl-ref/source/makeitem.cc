@@ -116,7 +116,6 @@ static bool _is_boring_item(int type, int sub_type)
         switch (sub_type)
         {
         case SCR_REMOVE_CURSE:
-        case SCR_IDENTIFY:
         case SCR_MAGIC_MAPPING:
             return true;
         default:
@@ -1416,11 +1415,10 @@ static void _generate_scroll_item(item_def& item, int force_type,
         // _is_boring_item). Otherwise just weighted-choose a scroll.
         do
         {
-            // total weight:    709  if depth_mod < 4
-            //                  828  otherwise
-            //                 -122  in sprint
+            // total weight:    509  if depth_mod < 4
+            //                  628  otherwise
+            //                 -322  in sprint
             item.sub_type = random_choose_weighted(
-                200, SCR_IDENTIFY,
                 112, SCR_REMOVE_CURSE,
                  // [Cha] don't generate teleportation scrolls if in sprint
                 100, (crawl_state.game_is_sprint() ? NUM_SCROLLS
