@@ -1861,6 +1861,9 @@ vector<monster_info_func> init_monster_info_funcs() {
     toret.push_back({"reflects damage", "reflect damage",
                 [](const monster_info &mi, bool newconditions) { 
                 return mi.is(MB_MIRROR_DAMAGE); }});
+    toret.push_back({"soul bound", "souls bound",
+                [](const monster_info &mi, bool newconditions) { 
+                return mi.is(MB_BOUND_SOUL); }});
     toret.push_back({"strong", "strong", 
                 [](const monster_info &mi, bool newconditions) { 
                 return newconditions && mi.is(MB_STRONG) &&
@@ -1881,6 +1884,9 @@ vector<monster_info_func> init_monster_info_funcs() {
     toret.push_back({"swift", "swift",
                 [](const monster_info &mi, bool newconditions) { 
                 return newconditions && mi.is(MB_SWIFT); }});
+    toret.push_back({"stilling wind", "stilling wind",
+                [](const monster_info &mi, bool newconditions) { 
+                return newconditions && mi.is(MB_STILL_WINDS); }});
     toret.push_back({"can howl", "can howl", 
                 [](const monster_info &mi, bool newconditions) { 
                 return newconditions && mi.is(MB_READY_TO_HOWL); }});
@@ -2072,6 +2078,10 @@ vector<monster_info_func> init_monster_info_funcs() {
                 [](const monster_info &mi, bool newconditions) {
                 return newconditions && mi.is(MB_WATER_HOLD) && 
                     !mi.is(MB_WATER_HOLD_DROWN);}});
+    // This is at the bottom of the list because you know you did it
+    toret.push_back({"idealised", "idealised", 
+                [](const monster_info &mi, bool newconditions) {
+                return newconditions && mi.is(MB_IDEALISED); }});
     return toret;
 }
 
