@@ -1123,7 +1123,7 @@ static inline bool _monster_warning(activity_interrupt_type ai,
         return false;
     else
     {
-        ash_id_monster_equipment(mon);
+        passive_id_monster_equipment(mon);
         mark_mon_equipment_seen(mon);
 
         string text = getMiscString(mon->name(DESC_DBNAME) + " title");
