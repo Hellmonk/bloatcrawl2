@@ -844,7 +844,7 @@ void passive_id_monster_equipment(monster* mon)
             mon->props["wand_known"] = true;
         }
         else
-            set_ident_flags(item, ISFLAG_KNOW_TYPE);
+            set_ident_flags(item, ISFLAG_IDENT_MASK);
     }
 }
 
