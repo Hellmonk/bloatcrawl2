@@ -3240,15 +3240,6 @@ int player_stealth()
     if (how_transparent)
         stealth += 15 * (how_transparent);
 
-    // Radiating silence is the negative complement of shouting all the
-    // time... a sudden change from background noise to no noise is going
-    // to clue anything in to the fact that something is very wrong...
-    // a personal silence spell would naturally be different, but this
-    // silence radiates for a distance and prevents monster spellcasting,
-    // which pretty much gives away the stealth game.
-    if (you.duration[DUR_SILENCE])
-        stealth -= STEALTH_PIP;
-
     // Thirsty vampires are stealthier.
     if (you.species == SP_VAMPIRE)
     {

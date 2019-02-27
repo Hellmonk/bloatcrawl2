@@ -470,6 +470,7 @@ void handle_behaviour(monster* mon)
         // Track changes to state; attitude never changes here.
         beh_type new_beh       = mon->behaviour;
         unsigned short new_foe = mon->foe;
+		int sil_aware          = 50;
 
         // Take care of monster state changes.
         switch (mon->behaviour)
@@ -594,7 +595,12 @@ void handle_behaviour(monster* mon)
                     {
                         if (mon->foe == MHITYOU)
                         {
-                            if (x_chance_in_y(50, you.stealth())
+							if (silenced(mon->pos()) && you.species == SP_SILENT_SPECTRE ||
+								you.duration[DUR_SILENCE])
+								sil_aware = 100; // More interactive stealth penalty for silence.
+							else
+								sil_aware = 50;
+                            if (x_chance_in_y(sil_aware, you.stealth())
                                 || you.penance[GOD_ASHENZARI] && coinflip())
                             {
                                 mon->target = you.pos();

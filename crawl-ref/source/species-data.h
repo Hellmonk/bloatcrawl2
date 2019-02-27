@@ -308,8 +308,7 @@ static const map<species_type, species_def> species_data =
 	4, 10, 12, // 24
 	{ STAT_INT, STAT_DEX }, 5,
 	{ {MUT_PETRIFICATION_RESISTANCE, 1, 1}, { MUT_NEGATIVE_ENERGY_RESISTANCE, 3, 1 },{ MUT_TORMENT_RESISTANCE, 1, 1 },
-	{ MUT_UNBREATHING_FORM, 1, 1 }, {MUT_WILD_MAGIC, 3, 1},
-	{MUT_SILENT_CAST, 1, 1}, {MUT_GHOST,1,1}, },
+	{ MUT_UNBREATHING_FORM, 1, 1 }, {MUT_SILENT_CAST, 1, 1}, {MUT_GHOST,1,1}, },
 	{"You are surrounded by an aura of unnatural quiet." },
 	{"silence aura"},
 	{ JOB_GLADIATOR, JOB_TRANSMUTER, JOB_ENCHANTER, JOB_WARPER, JOB_FIRE_ELEMENTALIST, JOB_AIR_ELEMENTALIST },
