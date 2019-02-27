@@ -512,7 +512,9 @@ unsigned int item_value(item_def item, bool ident)
             case POT_DECAY:
 #endif
             case POT_BLOOD:
+#if TAG_MAJOR_VERSION == 34
             case POT_DEGENERATION:
+#endif
                 valued += 10;
                 break;
 
@@ -592,8 +594,10 @@ unsigned int item_value(item_def item, bool ident)
                 valued += 20;
                 break;
 
+#if TAG_MAJOR_VERSION == 34
             case SCR_NOISE:
             case SCR_RANDOM_USELESSNESS:
+#endif
                 valued += 10;
                 break;
             }
@@ -830,8 +834,8 @@ bool is_worthless_consumable(const item_def &item)
         case POT_SLOWING:
         case POT_DECAY:
         case POT_POISON:
-#endif
         case POT_DEGENERATION:
+#endif
             return true;
         default:
             return false;
@@ -843,9 +847,9 @@ bool is_worthless_consumable(const item_def &item)
         case SCR_CURSE_ARMOUR:
         case SCR_CURSE_WEAPON:
         case SCR_CURSE_JEWELLERY:
-#endif
         case SCR_NOISE:
         case SCR_RANDOM_USELESSNESS:
+#endif
             return true;
         default:
             return false;

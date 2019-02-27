@@ -1369,13 +1369,12 @@ static void _generate_potion_item(item_def& item, int force_type,
         // Currently does nothing, until we come up with a boring potion.
         do
         {
-            // total weight: 1045
+            // total weight: 979
             stype = random_choose_weighted(192, POT_CURING,
                                            105, POT_HEAL_WOUNDS,
                                             73, POT_LIGNIFY,
                                             73, POT_FLIGHT,
                                             73, POT_HASTE,
-                                            66, POT_DEGENERATION,
                                             66, POT_MIGHT,
                                             66, POT_AGILITY,
                                             66, POT_BRILLIANCE,
@@ -1415,9 +1414,9 @@ static void _generate_scroll_item(item_def& item, int force_type,
         // _is_boring_item). Otherwise just weighted-choose a scroll.
         do
         {
-            // total weight:    509  if depth_mod < 4
-            //                  628  otherwise
-            //                 -322  in sprint
+            // total weight:    465  if depth_mod < 4
+            //                  584  otherwise
+            //                 -366  in sprint
             item.sub_type = random_choose_weighted(
                 112, SCR_REMOVE_CURSE,
                  // [Cha] don't generate teleportation scrolls if in sprint
@@ -1431,9 +1430,6 @@ static void _generate_scroll_item(item_def& item, int force_type,
                  32, SCR_FOG,
                  32, SCR_BLINKING,
                  32, SCR_IMMOLATION,
-                 // [Cha] don't generate noise scrolls if in sprint
-                 22, (crawl_state.game_is_sprint() ? NUM_SCROLLS : SCR_NOISE),
-                 22, SCR_RANDOM_USELESSNESS,
                  // Higher-level scrolls.
                  27, (depth_mod < 4 ? NUM_SCROLLS : SCR_VULNERABILITY),
                  17, (depth_mod < 4 ? NUM_SCROLLS : SCR_SUMMONING),
@@ -1774,19 +1770,19 @@ int items(bool allow_uniques,
     else
     {
         ASSERT(force_type == OBJ_RANDOM);
-        // Total weight: 1960
+        // Total weight: 2015
         item.base_type = random_choose_weighted(
                                     10, OBJ_STAVES,
                                     30, OBJ_BOOKS,
-                                    50, OBJ_JEWELLERY,
+                                    45, OBJ_JEWELLERY,
                                     70, OBJ_WANDS,
                                    140, OBJ_FOOD,
                                    212, OBJ_ARMOUR,
                                    212, OBJ_WEAPONS,
-                                   176, OBJ_POTIONS,
+                                   166, OBJ_POTIONS,
                                    300, OBJ_MISSILES,
-                                   320, OBJ_SCROLLS,
-                                   440, OBJ_GOLD);
+                                   280, OBJ_SCROLLS,
+                                   450, OBJ_GOLD);
 
         // misc items placement wholly dependent upon current depth {dlb}:
         if (item_level > 7 && x_chance_in_y(21 + item_level, 5000))
@@ -2042,7 +2038,7 @@ jewellery_type get_random_ring_type()
 {
     const jewellery_type j = _get_raw_random_ring_type();
     // Adjusted distribution here. - bwr
-    if (j == RING_SLAYING && !one_chance_in(3))
+    if (j == RING_SLAYING && !one_chance_in(4))
         return _get_raw_random_ring_type();
 
     return j;

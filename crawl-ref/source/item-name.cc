@@ -672,8 +672,8 @@ const char* potion_type_name(int potiontype)
     case POT_CANCELLATION:      return "cancellation";
     case POT_AMBROSIA:          return "ambrosia";
     case POT_INVISIBILITY:      return "invisibility";
-    case POT_DEGENERATION:      return "degeneration";
 #if TAG_MAJOR_VERSION == 34
+    case POT_DEGENERATION:      return "degeneration";
     case POT_DECAY:             return "decay";
 #endif
     case POT_EXPERIENCE:        return "experience";
@@ -708,13 +708,17 @@ static const char* scroll_type_name(int scrolltype)
 #endif
     case SCR_TELEPORTATION:      return "teleportation";
     case SCR_FEAR:               return "fear";
+#if TAG_MAJOR_VERSION == 34
     case SCR_NOISE:              return "noise";
+#endif
     case SCR_REMOVE_CURSE:       return "remove curse";
     case SCR_SUMMONING:          return "summoning";
     case SCR_ENCHANT_WEAPON:     return "enchant weapon";
     case SCR_ENCHANT_ARMOUR:     return "enchant armour";
     case SCR_TORMENT:            return "torment";
+#if TAG_MAJOR_VERSION == 34
     case SCR_RANDOM_USELESSNESS: return "random uselessness";
+#endif
     case SCR_IMMOLATION:         return "immolation";
     case SCR_BLINKING:           return "blinking";
     case SCR_MAGIC_MAPPING:      return "magic mapping";
@@ -3447,8 +3451,6 @@ bool is_useless_item(const item_def &item, bool temp)
 
         switch (item.sub_type)
         {
-        case SCR_RANDOM_USELESSNESS:
-            return true;
         case SCR_TELEPORTATION:
             return you.species == SP_FORMICID
                    || crawl_state.game_is_sprint();

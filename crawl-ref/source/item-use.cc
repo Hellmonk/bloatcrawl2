@@ -2797,10 +2797,6 @@ void read_scroll(item_def& scroll)
 
     switch (which_scroll)
     {
-    case SCR_RANDOM_USELESSNESS:
-        random_uselessness();
-        break;
-
     case SCR_BLINKING:
     {
         const string reason = you.no_tele_reason(true, true);
