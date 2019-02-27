@@ -278,19 +278,15 @@ static string _monster_headsup(const vector<monster*> &monsters,
     string warning_msg = "";
     for (const monster* mon : monsters)
     {
-        const bool ash_ided = mon->props.exists("ash_id");
         const bool zin_ided = mon->props.exists("zin_id");
         const bool has_branded_weapon
             = _is_weapon_worth_listing(mon->weapon())
               || _is_weapon_worth_listing(mon->weapon(1));
-        if ((divine && !ash_ided && !zin_ided)
+        if ((divine && !zin_ided)
             || (!divine && !has_branded_weapon))
         {
             continue;
         }
-
-        if (!divine && (ash_ided || monsters.size() == 1))
-            continue; // don't give redundant warnings for enemies
 
         monster_info mi(mon);
 
@@ -312,7 +308,7 @@ static string _monster_headsup(const vector<monster*> &monsters,
         if (!divine)
         {
             warning_msg += get_monster_equipment_desc(mi, DESC_WEAPON_WARNING,
-                                                      DESC_NONE) + ".";
+                                                      DESC_NONE);
             continue;
         }
 
