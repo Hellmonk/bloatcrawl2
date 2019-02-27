@@ -2840,7 +2840,7 @@ bool mon_can_move_to_pos(const monster* mons, const coord_def& delta,
     if (mons_avoids_cloud(mons, targ))
         return false;
 
-	if (silenced(targ) && !silenced(mons->pos()) && (mons->is_actual_spellcaster() || (mons->is_priest() && !mons->is_fighter()))
+	if (silenced(targ) && !silenced(mons->pos()) && ((mons->is_actual_spellcaster() || mons->is_priest()) && !mons->is_fighter()))
 		return false;
 
     if (env.level_state & LSTATE_SLIMY_WALL && _check_slime_walls(mons, targ))
