@@ -462,15 +462,27 @@ int rank_for_passive(passive_t passive)
     return found == end(pasvec) ? 10 : found->rank;
 }
 
+
 int chei_stat_boost(int piety)
 {
     if (!have_passive(passive_t::stat_boost))
         return 0;
-    if (piety < piety_breakpoint(0))  // Since you've already begun to slow down.
-        return 1;
-    if (piety >= piety_breakpoint(5))
-        return 15;
-    return (piety - 10) / 10;
+	if (you.get_mutation_level(MUT_GODS_PITY) > 1)
+	{
+		if (piety < piety_breakpoint(0))  // Since you've already begun to slow down.
+			return 2;
+		if (piety >= piety_breakpoint(5))
+			return 22;
+		return (piety - 10) / 7;
+	}
+	else
+	{
+		if (piety < piety_breakpoint(0))  // Since you've already begun to slow down.
+			return 1;
+		if (piety >= piety_breakpoint(5))
+			return 15;
+		return (piety - 10) / 10;
+	}
 }
 
 // Eat from one random off-level item stack.
