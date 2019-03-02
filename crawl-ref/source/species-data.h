@@ -325,7 +325,7 @@ static const map<species_type, species_def> species_data =
 	HT_LAND, US_ALIVE, SIZE_SMALL,
 	2, 2, 2, // 6
 	{ STAT_STR, STAT_INT, STAT_DEX }, 3, // This never actually happens. (Ignore Stat Gain == True).
-	{ {MUT_LOW_MAGIC, 1, 1} , {MUT_GODS_PITY, 2, 1}},
+	{ {MUT_LOW_MAGIC, 1, 1} , {MUT_GODS_PITY, 2, 1} , {MUT_MUTATION_RESISTANCE, 1,1}},
 	{"Your stats never grow through leveling.", "Your goblin ancestry allows you to find more gold. (+20%)"},
 	{"stagnant stats", "goblin's greed"},
 	{ JOB_FIGHTER, JOB_BERSERKER, JOB_ABYSSAL_KNIGHT, JOB_FIRE_ELEMENTALIST, JOB_AIR_ELEMENTALIST, 
@@ -496,7 +496,7 @@ static const map<species_type, species_def> species_data =
     HT_LAND, US_ALIVE, SIZE_SMALL,
     5, 9, 10, // 24
     { STAT_DEX }, 5,
-	{ { MUT_CARNIVOROUS, 1, 1 }, {MUT_MUTATION_RESISTANCE, 2, 1} , },
+	{ { MUT_CARNIVOROUS, 1, 1 } },
     {},
     {},
     { JOB_HUNTER, JOB_BERSERKER, JOB_ARCANE_MARKSMAN, JOB_ENCHANTER,
