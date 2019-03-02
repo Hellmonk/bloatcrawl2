@@ -1586,7 +1586,7 @@ void MiscastEffect::_necromancy(int severity)
         if (spell != SPELL_NO_SPELL)
         {
             // An actual necromancy miscast.
-            if (x_chance_in_y(you.piety, piety_breakpoint(5)))
+            if (x_chance_in_y(apply_pity(you.piety), piety_breakpoint(5)))
             {
                 simple_god_message(" protects you from your miscast "
                                    "necromantic spell!");
@@ -1600,6 +1600,11 @@ void MiscastEffect::_necromancy(int severity)
                 simple_god_message(" averts the curse.");
                 return;
             }
+			else if (you.get_mutation_level(MUT_GODS_PITY) > 1 && coinflip())
+			{
+				simple_god_message(" averts the curse.");
+				return;
+			}
             else
             {
                 simple_god_message(" partially averts the curse.");

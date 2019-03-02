@@ -278,7 +278,10 @@ static int _apply_spellcasting_success_boosts(spell_type spell, int chance)
     {
         // [dshaligram] Fail rate multiplier used to be .5, scaled
         // back to 67%.
-        fail_reduce = fail_reduce * 2 / 3;
+		if (you.get_mutation_level(MUT_GODS_PITY) > 1)
+			fail_reduce = 50;
+		else
+	        fail_reduce = 67;
     }
 
     const int wizardry = player_wizardry(spell);
@@ -1212,7 +1215,7 @@ static double _chance_miscast_prot()
     double miscast_prot = 0;
 
     if (have_passive(passive_t::miscast_protection))
-        miscast_prot = (double) you.piety/piety_breakpoint(5);
+        miscast_prot = (double) apply_pity(you.piety)/piety_breakpoint(5);
 
     return min(1.0, miscast_prot);
 }

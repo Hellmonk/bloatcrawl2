@@ -37,6 +37,7 @@
 #include "god-abil.h"
 #include "god-companions.h"
 #include "god-conduct.h"
+#include "god-passive.h"
 #include "god-prayer.h"
 #include "god-wrath.h"
 #include "hints.h"
@@ -1752,6 +1753,8 @@ static bool _cleansing_flame_affects(const actor *act)
     return act->res_holy_energy() < 3;
 }
 
+bool previously_on = false;
+
 /*
  * Use an ability.
  *
@@ -2159,7 +2162,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
         fail_check();
 
-        int power = 3 + (roll_dice(5, you.skill(SK_INVOCATIONS, 5) + 12) / 26);
+        int power = apply_invo_enhancer(3 + (roll_dice(5, you.skill(SK_INVOCATIONS, 5) + 12) / 26),true);
 
         if (!cast_imprison(power, mons, -GOD_ZIN))
             return SPRET_ABORT;
@@ -2189,14 +2192,14 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
                 return SPRET_ABORT;
         }
         fail_check();
-        cleansing_flame(10 + you.skill_rdiv(SK_INVOCATIONS, 7, 6),
+        cleansing_flame(apply_invo_enhancer(10 + you.skill_rdiv(SK_INVOCATIONS, 7, 6),true),
                         CLEANSING_FLAME_INVOCATION, you.pos(), &you);
         break;
     }
 
     case ABIL_TSO_SUMMON_DIVINE_WARRIOR:
         fail_check();
-        summon_holy_warrior(you.skill(SK_INVOCATIONS, 4), false);
+        summon_holy_warrior(apply_invo_enhancer(you.skill(SK_INVOCATIONS, 4),true), false);
         break;
 
     case ABIL_TSO_BLESS_WEAPON:
@@ -2241,6 +2244,10 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_YRED_INJURY_MIRROR:
         fail_check();
+
+		you.duration[DUR_MIRROR_DAMAGE] = apply_invo_enhancer(9 * BASELINE_DELAY
+			+ random2avg(you.piety * BASELINE_DELAY, 2) / 10, true);
+
         if (yred_injury_mirror())
             mpr("Another wave of unholy energy enters you.");
         else
@@ -2248,8 +2255,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             mprf("You offer yourself to %s, and are filled with unholy energy.",
                  god_name(you.religion).c_str());
         }
-        you.duration[DUR_MIRROR_DAMAGE] = 9 * BASELINE_DELAY
-                     + random2avg(you.piety * BASELINE_DELAY, 2) / 10;
+
         break;
 
     case ABIL_YRED_ANIMATE_REMAINS:
@@ -2280,7 +2286,8 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         int damage = 0;
         const spret_type result =
             fire_los_attack_spell(SPELL_DRAIN_LIFE,
-                                  you.skill_rdiv(SK_INVOCATIONS),
+                                  apply_invo_enhancer(
+									  you.skill_rdiv(SK_INVOCATIONS), true),
                                   &you, fail, &damage);
         if (result != SPRET_SUCCESS)
             return result;
@@ -2327,7 +2334,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         }
         fail_check();
 
-        const int duration = you.skill_rdiv(SK_INVOCATIONS, 3, 4) + 2;
+        const int duration = apply_invo_enhancer(you.skill_rdiv(SK_INVOCATIONS, 3, 4) + 2,true);
         mons->add_ench(mon_enchant(ENCH_SOUL_RIPE, 0, &you,
                                    duration * BASELINE_DELAY));
         simple_monster_message(*mons, "'s soul is now ripe for the taking.");
@@ -2336,31 +2343,40 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_OKAWARU_HEROISM:
         fail_check();
-        mprf(MSGCH_DURATION, you.duration[DUR_HEROISM]
-             ? "You feel more confident with your borrowed prowess."
-             : "You gain the combat prowess of a mighty hero.");
+		previously_on = false;
+		if (you.duration[DUR_HEROISM])
+			previously_on = true;
 
         you.increase_duration(DUR_HEROISM,
-                              10 + random2avg(you.skill(SK_INVOCATIONS, 6), 2),
+                              apply_invo_enhancer(10 + random2avg(you.skill(SK_INVOCATIONS, 6), 2),true),
                               100);
+
+		mprf(MSGCH_DURATION, previously_on
+			? "You feel more confident with your borrowed prowess."
+			: "You gain the combat prowess of a mighty hero.");
+
         you.redraw_evasion      = true;
         you.redraw_armour_class = true;
         break;
 
     case ABIL_OKAWARU_FINESSE:
         fail_check();
-        if (you.duration[DUR_FINESSE])
-        {
-            // "Your [hand(s)] get{s} new energy."
-            mprf(MSGCH_DURATION, "%s",
-                 you.hands_act("get", "new energy.").c_str());
-        }
-        else
-            mprf(MSGCH_DURATION, "You can now deal lightning-fast blows.");
-
+		previously_on = false;
+		if (you.duration[DUR_FINESSE])
+			previously_on = true;
+        
         you.increase_duration(DUR_FINESSE,
-                              10 + random2avg(you.skill(SK_INVOCATIONS, 6), 2),
+                              apply_invo_enhancer(10 + random2avg(you.skill(SK_INVOCATIONS, 6), 2),true),
                               100);
+
+		if (previously_on)
+		{
+			// "Your [hand(s)] get{s} new energy."
+			mprf(MSGCH_DURATION, "%s",
+				you.hands_act("get", "new energy.").c_str());
+		}
+		else
+			mprf(MSGCH_DURATION, "You can now deal lightning-fast blows.");
 
         did_god_conduct(DID_HASTY, 8); // Currently irrelevant.
         break;
@@ -2372,9 +2388,9 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         if (!spell_direction(spd, beam))
             return SPRET_ABORT;
 
-        int power = you.skill(SK_INVOCATIONS, 1)
+        int power = apply_invo_enhancer(you.skill(SK_INVOCATIONS, 1)
                     + random2(1 + you.skill(SK_INVOCATIONS, 1))
-                    + random2(1 + you.skill(SK_INVOCATIONS, 1));
+                    + random2(1 + you.skill(SK_INVOCATIONS, 1)),true);
 
         // Since the actual beam is random, check with BEAM_MMISSILE.
         if (!player_tracer(ZAP_DEBUGGING_RAY, power, beam, beam.range))
@@ -2398,7 +2414,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         summon_demon_type(random_choose(MONS_HELLWING, MONS_NEQOXEC,
                                         MONS_ORANGE_DEMON, MONS_SMOKE_DEMON,
                                         MONS_YNOXINUL),
-                          20 + you.skill(SK_INVOCATIONS, 3),
+                          apply_invo_enhancer(20 + you.skill(SK_INVOCATIONS, 3),true),
                           GOD_MAKHLEB, 0, !fail);
         break;
 
@@ -2409,9 +2425,9 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         if (!spell_direction(spd, beam))
             return SPRET_ABORT;
 
-        int power = you.skill(SK_INVOCATIONS, 1)
+        int power = apply_invo_enhancer(you.skill(SK_INVOCATIONS, 1)
                     + random2(1 + you.skill(SK_INVOCATIONS, 1))
-                    + random2(1 + you.skill(SK_INVOCATIONS, 1));
+                    + random2(1 + you.skill(SK_INVOCATIONS, 1)),true);
 
         // Since the actual beam is random, check with BEAM_MMISSILE.
         if (!player_tracer(ZAP_DEBUGGING_RAY, power, beam, beam.range))
@@ -2437,7 +2453,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         summon_demon_type(random_choose(MONS_EXECUTIONER, MONS_GREEN_DEATH,
                                         MONS_BLIZZARD_DEMON, MONS_BALRUG,
                                         MONS_CACODEMON),
-                          20 + you.skill(SK_INVOCATIONS, 3),
+                          apply_invo_enhancer(20 + you.skill(SK_INVOCATIONS, 3),true),
                           GOD_MAKHLEB, 0, !fail);
         break;
 
@@ -2484,7 +2500,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     {
         fail_check();
         you.increase_duration(DUR_CHANNEL_ENERGY,
-            4 + random2avg(you.skill_rdiv(SK_INVOCATIONS, 2, 3), 2), 100);
+            apply_invo_enhancer(4 + random2avg(you.skill_rdiv(SK_INVOCATIONS, 2, 3), 2), 100),true);
         break;
     }
 
@@ -2498,8 +2514,8 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
                  god_name(you.religion).c_str());
         }
         // Might be a decrease, this is intentional (like Yred).
-        you.duration[DUR_LIFESAVING] = 9 * BASELINE_DELAY
-                     + random2avg(you.piety * BASELINE_DELAY, 2) / 10;
+        you.duration[DUR_LIFESAVING] = apply_pity(9 * BASELINE_DELAY
+                     + random2avg(you.piety * BASELINE_DELAY, 2) / 10);
         break;
 
     case ABIL_ELYVILON_LESSER_HEALING:
@@ -2508,9 +2524,9 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         fail_check();
         int pow = 0;
         if (abil.ability == ABIL_ELYVILON_LESSER_HEALING)
-            pow = 3 + you.skill_rdiv(SK_INVOCATIONS, 1, 6);
+            pow = apply_invo_enhancer(3 + you.skill_rdiv(SK_INVOCATIONS, 1, 6),true);
         else
-            pow = 10 + you.skill_rdiv(SK_INVOCATIONS, 1, 3);
+            pow = apply_invo_enhancer(10 + you.skill_rdiv(SK_INVOCATIONS, 1, 3), true);
         pow = min(50, pow);
         const int healed = pow + roll_dice(2, pow) - 2;
         mpr("You are healed.");
@@ -2569,12 +2585,12 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
         fail_check();
 
-        return zapping(ZAP_BANISHMENT, pow, beam, true, nullptr, fail);
+        return zapping(ZAP_BANISHMENT, apply_invo_enhancer(pow,true), beam, true, nullptr, fail);
     }
 
     case ABIL_LUGONU_CORRUPT:
         fail_check();
-        if (!lugonu_corrupt_level(300 + you.skill(SK_INVOCATIONS, 15)))
+        if (!lugonu_corrupt_level(apply_invo_enhancer(300 + you.skill(SK_INVOCATIONS, 15),true)))
             return SPRET_ABORT;
         break;
 
@@ -2619,7 +2635,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     case ABIL_BEOGH_SMITING:
         fail_check();
         if (your_spells(SPELL_SMITING,
-                        12 + skill_bump(SK_INVOCATIONS, 6),
+                        apply_invo_enhancer(12 + skill_bump(SK_INVOCATIONS, 6),true),
                         false, nullptr) == SPRET_ABORT)
         {
             return SPRET_ABORT;
@@ -2710,7 +2726,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
                                   : ("your " + you.hand_name(true));
         mprf(MSGCH_DURATION, "A thick mucus forms on %s.", msg.c_str());
         you.increase_duration(DUR_SLIMIFY,
-                              random2avg(you.piety / 4, 2) + 3, 100);
+                              apply_invo_enhancer(random2avg(you.piety / 4, 2) + 3,false), 100);
         break;
     }
 
@@ -2768,11 +2784,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_ASHENZARI_SCRYING:
         fail_check();
-        if (you.duration[DUR_SCRYING])
-            mpr("You extend your astral sight.");
-        else
-            mpr("You gain astral sight.");
-        you.duration[DUR_SCRYING] = 100 + random2avg(you.piety * 2, 2);
+        you.duration[DUR_SCRYING] = apply_invo_enhancer(100 + random2avg(you.piety * 2, 2),true);
+		if (you.duration[DUR_SCRYING])
+			mpr("You extend your astral sight.");
+		else
+			mpr("You gain astral sight.");
         you.xray_vision = true;
         viewwindow(true);
         break;
@@ -2808,7 +2824,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_DITHMENOS_SHADOW_FORM:
         fail_check();
-        if (!transform(you.skill(SK_INVOCATIONS, 2), transformation::shadow))
+        if (!transform(apply_invo_enhancer(you.skill(SK_INVOCATIONS, 2),true), transformation::shadow))
         {
             crawl_state.zero_turns_taken();
             return SPRET_ABORT;
@@ -2990,13 +3006,16 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             return SPRET_ABORT;
         }
         fail_check();
+		you.attribute[ATTR_SERPENTS_LASH] = apply_invo_enhancer(2, true);
         mprf(MSGCH_GOD, "Your muscles tense, ready for explosive movement...");
-        you.attribute[ATTR_SERPENTS_LASH] = 2;
         you.redraw_status_lights = true;
         return SPRET_SUCCESS;
 
     case ABIL_WU_JIAN_HEAVENLY_STORM:
         fail_check();
+
+		you.attribute[ATTR_HEAVENLY_STORM] = apply_invo_enhancer(12, true);
+
         mprf(MSGCH_GOD, "The air is filled with shimmering golden clouds!");
         wu_jian_sifu_message(" says: The storm will not cease as long as you "
                              "keep fighting, disciple!");
@@ -3007,7 +3026,6 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
                 place_cloud(CLOUD_GOLD_DUST, *ai, 5 + random2(5), &you);
         }
 
-        you.attribute[ATTR_HEAVENLY_STORM] = 12;
         you.duration[DUR_HEAVENLY_STORM] = WU_JIAN_HEAVEN_TICK_TIME;
         invalidate_agrid(true);
         break;

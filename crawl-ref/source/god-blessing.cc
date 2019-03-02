@@ -13,6 +13,7 @@
 #include "item-status-flag-type.h"
 #include "items.h"
 #include "item-use.h"
+#include "god-passive.h"
 #include "makeitem.h"
 #include "message.h"
 #include "mon-gear.h"
@@ -499,7 +500,7 @@ static bool _blessing_healing(monster* mon)
     const int healing = mon->max_hit_points / 4 + 1;
 
     // Heal a monster.
-    if (mon->heal(healing + random2(healing + 1)))
+    if (mon->heal(apply_pity(healing + random2(healing + 1))))
     {
         // A high-HP monster might get a unique name.
         if (x_chance_in_y(mon->max_hit_points + 1, 100))
@@ -538,10 +539,10 @@ static bool _tso_blessing_extend_stay(monster* mon)
     // much bigger boost than random beasties, which get at most double
     // their current summon duration.
     if (mon->is_holy())
-        return _increase_ench_duration(mon, abj, 1100 + random2(1100));
+        return _increase_ench_duration(mon, abj, apply_pity(1100 + random2(1100)));
     else
-        return _increase_ench_duration(mon, abj, min(abj.duration,
-                                                     500 + random2(500)));
+        return _increase_ench_duration(mon, abj, apply_pity(min(abj.duration,
+                                                     500 + random2(500))));
 }
 
 static bool _tso_blessing_friendliness(monster* mon)
@@ -593,12 +594,12 @@ static void _beogh_blessing_reinforcements()
     };
 
     // Send up to four followers.
-    int how_many = random2(4) + 1;
+    int how_many = apply_pity(random2(4) + 1);
 
     monster_type follower_type;
     for (int i = 0; i < how_many; ++i)
     {
-        if (random2(you.experience_level) >= 9 && coinflip())
+        if (random2(apply_pity(you.experience_level)) >= 9 && coinflip())
             follower_type = RANDOM_ELEMENT(high_xl_followers);
         else
             follower_type = RANDOM_ELEMENT(followers);

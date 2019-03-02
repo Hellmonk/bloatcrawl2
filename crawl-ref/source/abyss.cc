@@ -172,7 +172,7 @@ static int _abyssal_rune_roll()
         return -1;
     const bool god_favoured = have_passive(passive_t::attract_abyssal_rune);
 
-    const double depth = you.depth + god_favoured;
+    const double depth = you.depth + apply_pity(god_favoured);
 
     return (int) pow(100.0, depth/(1 + brdepth[BRANCH_ABYSS]));
 }

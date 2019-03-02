@@ -954,9 +954,13 @@ int spell_range(spell_type spell, int pow, bool allow_bonus)
     if (allow_bonus
         && vehumet_supports_spell(spell)
         && have_passive(passive_t::spells_range)
-        && maxrange > 1
-        && spell != SPELL_GLACIATE)
+        && maxrange > 1)
     {
+		if (you.get_mutation_level(MUT_GODS_PITY) > 1)
+		{
+			maxrange++;
+			minrange++;
+		}
         maxrange++;
         minrange++;
     }

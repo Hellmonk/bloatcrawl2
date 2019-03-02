@@ -707,7 +707,7 @@ static formatted_string _describe_god_powers(god_type which_god)
     {
         have_any = true;
 
-        int prot_chance = 10 + piety/10; // chance * 100
+        int prot_chance = apply_pity(10 + piety/10); // chance * 100
         const char *when = "";
 
         if (which_god == GOD_ELYVILON)

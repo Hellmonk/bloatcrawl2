@@ -255,28 +255,28 @@ static slurp_gain _sacrifice_one_item_noncount(const item_def& item)
 
     int item_value = div_rand_round(stepped, 50);
     if (have_passive(passive_t::slime_feed)
-        && x_chance_in_y(you.piety, MAX_PIETY)
+        && x_chance_in_y(apply_pity(you.piety), MAX_PIETY)
         && !you_foodless())
     {
         //same as a sultana
-        lessen_hunger(70, true);
+        lessen_hunger(apply_pity(70), true);
         gain.jiyva_bonus |= jiyva_slurp_result::food;
     }
 
     if (have_passive(passive_t::slime_mp)
-        && x_chance_in_y(you.piety, MAX_PIETY)
+        && x_chance_in_y(apply_pity(you.piety), MAX_PIETY)
         && you.magic_points < you.max_magic_points)
     {
-        inc_mp(max(random2(item_value), 1));
+        inc_mp(apply_pity(max(random2(item_value), 1)));
         gain.jiyva_bonus |= jiyva_slurp_result::mp;
     }
 
     if (have_passive(passive_t::slime_hp)
-        && x_chance_in_y(you.piety, MAX_PIETY)
+        && x_chance_in_y(apply_pity(you.piety), MAX_PIETY)
         && you.hp < you.hp_max
         && !you.duration[DUR_DEATHS_DOOR])
     {
-        inc_hp(max(random2(item_value), 1));
+        inc_hp(apply_pity(max(random2(item_value), 1)));
         gain.jiyva_bonus |= jiyva_slurp_result::hp;
     }
 

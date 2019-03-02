@@ -25,6 +25,7 @@
 #include "evoke.h"
 #include "food.h"
 #include "ghost.h"
+#include "god-abil.h"
 #include "god-passive.h" // passive_t::no_haste
 #include "god-wrath.h"
 #include "invent.h"
@@ -2068,7 +2069,7 @@ static int _card_power(deck_rarity_type rarity, bool punishment)
     else if (rarity == DECK_RARITY_LEGENDARY)
         result += 300;
 
-    return result;
+    return apply_invo_enhancer(result,true);
 }
 
 void card_effect(card_type which_card, deck_rarity_type rarity,

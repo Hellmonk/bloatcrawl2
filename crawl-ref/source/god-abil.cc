@@ -108,14 +108,6 @@ int apply_invo_enhancer(int power, bool message)
 	return rand_round(calc * pow(1.5,player_spec_invo()));
 }
 
-// Effect of God's Pity II on Passives
-int apply_pity(int power)
-{
-	if (you.get_mutation_level(MUT_GODS_PITY) > 1)
-		return (power * 15) / 10;
-	return power;
-}
-
 /** Would a god currently allow using a one-time six-star ability?
  * Does not check whether the god actually grants such an ability.
  */
@@ -4271,7 +4263,7 @@ static void _gozag_place_shop(int index)
     feature_spec feat = kmspec.get_feat();
     if (!feat.shop)
         die("Invalid shop spec?");
-    place_spec_shop(you.pos(), *feat.shop, you.experience_level);
+    place_spec_shop(you.pos(), *feat.shop, apply_invo_enhancer(you.experience_level,true));
 
     link_items();
     env.markers.add(new map_feature_marker(you.pos(), DNGN_ABANDONED_SHOP));
@@ -4519,7 +4511,7 @@ bool gozag_bribe_branch()
     if (prompted || yesno(prompt.c_str(), true, 'n'))
     {
         you.del_gold(bribe_amount);
-        you.attribute[ATTR_GOZAG_GOLD_USED] += bribe_amount;
+        you.attribute[ATTR_GOZAG_GOLD_USED] += apply_invo_enhancer(bribe_amount,true);
         branch_bribe[branch] += bribe_amount;
         string msg = make_stringf(" spreads your bribe to %s!",
                                   branch == BRANCH_VESTIBULE ? "the Hells" :

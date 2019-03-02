@@ -549,6 +549,14 @@ void jiyva_eat_offlevel_items()
     }
 }
 
+// Effect of God's Pity II on Passives
+int apply_pity(int power)
+{
+	if (you.get_mutation_level(MUT_GODS_PITY) > 1)
+		return (power * 15) / 10;
+	return power;
+}
+
 void ash_init_bondage(player *y)
 {
     y->bondage_level = 0;
@@ -1028,8 +1036,8 @@ unsigned int ash_skill_point_boost(skill_type sk, int scaled_skill)
 {
     unsigned int skill_points = 0;
 
-    skill_points += (you.skill_boost[sk] * 2 + 1) * (piety_rank() + 1)
-                    * max(scaled_skill, 1) * species_apt_factor(sk);
+    skill_points += apply_pity((you.skill_boost[sk] * 2 + 1) * (piety_rank() + 1)
+                    * max(scaled_skill, 1) * species_apt_factor(sk));
     return skill_points;
 }
 
@@ -1079,6 +1087,8 @@ int qazlal_sh_boost(int piety)
     if (!have_passive(passive_t::storm_shield))
         return 0;
 
+	if (you.get_mutation_level(MUT_GODS_PITY) > 1)
+		return min(piety, piety_breakpoint(5)) / 7;
     return min(piety, piety_breakpoint(5)) / 10;
 }
 
@@ -1127,7 +1137,7 @@ void qazlal_storm_clouds()
             candidates.push_back(*ri);
     }
     const int count =
-        div_rand_round(min((int)you.piety, piety_breakpoint(5))
+        div_rand_round(apply_pity(min((int)you.piety, piety_breakpoint(5)))
                        * candidates.size() * you.time_taken,
                        piety_breakpoint(5) * 7 * BASELINE_DELAY);
     if (count < 0)
@@ -1168,7 +1178,7 @@ void qazlal_element_adapt(beam_type flavour, int strength)
 {
     if (strength <= 0
         || !have_passive(passive_t::elemental_adaptation)
-        || !x_chance_in_y(strength, 11 - piety_rank()))
+        || !x_chance_in_y(strength, 11 - apply_pity(piety_rank())))
     {
         return;
     }
@@ -1238,7 +1248,10 @@ void qazlal_element_adapt(beam_type flavour, int strength)
 
     // was scaled by 10 * strength. But the strength parameter is used so inconsistently that
     // it seems like a constant would be better, based on the typical value of 2.
-    you.increase_duration(dur, 20, 80);
+	if (you.get_mutation_level(MUT_GODS_PITY) > 1)
+		you.increase_duration(dur, 30, 120);
+	else
+	    you.increase_duration(dur, 20, 80);
 
     if (what == BEAM_MISSILE)
         you.redraw_armour_class = true;
@@ -1268,7 +1281,7 @@ bool does_ru_wanna_redirect(monster* mon)
 ru_interference get_ru_attack_interference_level()
 {
     int r = random2(100);
-    int chance = div_rand_round(you.piety, 16);
+    int chance = div_rand_round(apply_pity(you.piety), 16);
 
     // 10% chance of stopping any attack at max piety
     if (r < chance)
@@ -1294,9 +1307,9 @@ static bool _shadow_acts(bool spell)
     // 10% chance at minimum piety; 50% chance at 200 piety.
     const int range = MAX_PIETY - minpiety;
     const int min   = range / 5;
-    return x_chance_in_y(min + ((range - min)
+    return x_chance_in_y(apply_pity(min + ((range - min)
                                 * (you.piety - minpiety)
-                                / (MAX_PIETY - minpiety)),
+                                / (MAX_PIETY - minpiety))),
                          2 * range);
 }
 
@@ -1346,11 +1359,11 @@ monster* shadow_monster(bool equip)
     mon->flags      = MF_NO_REWARD | MF_JUST_SUMMONED | MF_SEEN
                     | MF_WAS_IN_VIEW | MF_HARD_RESET;
     mon->hit_points = you.hp;
-    mon->set_hit_dice(min(27, max(1,
+    mon->set_hit_dice(apply_pity(min(27, max(1,
                                   you.skill_rdiv(wpn_index != NON_ITEM
                                                  ? item_attack_skill(mitm[wpn_index])
                                                  : SK_UNARMED_COMBAT, 10, 20)
-                                  + you.skill_rdiv(SK_FIGHTING, 10, 20))));
+                                  + you.skill_rdiv(SK_FIGHTING, 10, 20)))));
     mon->set_position(you.pos());
     mon->mid        = MID_PLAYER;
     mon->inv[MSLOT_WEAPON]  = wpn_index;
@@ -1469,9 +1482,9 @@ void dithmenos_shadow_spell(bolt* orig_beam, spell_type spell)
         return;
 
     // Don't let shadow spells get too powerful.
-    mon->set_hit_dice(max(1,
+    mon->set_hit_dice(apply_pity(max(1,
                           min(3 * spell_difficulty(spell),
-                              you.experience_level) / 2));
+                              you.experience_level) / 2)));
 
     mon->target = clamp_in_bounds(target);
     if (actor_at(target))
@@ -1615,8 +1628,12 @@ static bool _wu_jian_lunge(const coord_def& old_pos)
     if (!mons || !_can_attack_martial(mons) || !mons->alive())
         return false;
 
-    if (you.attribute[ATTR_HEAVENLY_STORM] > 0)
-        you.attribute[ATTR_HEAVENLY_STORM] += 2;
+	if (you.attribute[ATTR_HEAVENLY_STORM] > 0)
+	{
+		if (player_spec_invo())
+			you.attribute[ATTR_HEAVENLY_STORM]++;
+		you.attribute[ATTR_HEAVENLY_STORM] += 2;
+	}
 
     you.apply_berserk_penalty = false;
 
@@ -1681,8 +1698,12 @@ static bool _wu_jian_whirlwind(const coord_def& old_pos)
         if (!mons->alive())
             continue;
 
-        if (you.attribute[ATTR_HEAVENLY_STORM] > 0)
-            you.attribute[ATTR_HEAVENLY_STORM] += 2;
+		if (you.attribute[ATTR_HEAVENLY_STORM] > 0) 
+		{
+			if (player_spec_invo())
+				you.attribute[ATTR_HEAVENLY_STORM]++;
+			you.attribute[ATTR_HEAVENLY_STORM] += 2;
+		}
 
         // Pin has a longer duration than one player turn, but gets cleared
         // before its duration expires by wu_jian_end_of_turn_effects. This is
@@ -1762,8 +1783,12 @@ void wu_jian_wall_jump_effects(const coord_def& old_pos)
         if (!target->alive())
             continue;
 
-        if (you.attribute[ATTR_HEAVENLY_STORM] > 0)
-            you.attribute[ATTR_HEAVENLY_STORM] += 2;
+		if (you.attribute[ATTR_HEAVENLY_STORM] > 0)
+		{
+			if (player_spec_invo())
+				you.attribute[ATTR_HEAVENLY_STORM]++;
+			you.attribute[ATTR_HEAVENLY_STORM] += 2;
+		}
 
         you.apply_berserk_penalty = false;
 
@@ -1856,7 +1881,7 @@ static int _prepare_audience(coord_def where)
 
     int power =  max(1, random2(1 + you.skill(SK_INVOCATIONS, 2))
                  + you.experience_level - mons->get_hit_dice());
-    int duration = min(max(10, 5 + power), 40);
+    int duration = apply_pity(min(max(10, 5 + power), 40));
     mons->add_ench(mon_enchant(ENCH_PARALYSIS, 1, &you, duration));
 
     return 1;
@@ -1892,8 +1917,8 @@ static int _bond_audience(coord_def where)
 
     monster* mons = monster_at(where);
 
-    int power = you.skill(SK_INVOCATIONS, 7) + you.experience_level
-                 - mons->get_hit_dice();
+    int power = apply_pity(you.skill(SK_INVOCATIONS, 7) + you.experience_level
+                 - mons->get_hit_dice());
     int duration = 20 + random2avg(power, 2);
     mons->add_ench(mon_enchant(ENCH_PAIN_BOND, 1, &you, duration));
 

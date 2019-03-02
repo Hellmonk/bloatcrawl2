@@ -303,14 +303,19 @@ void spawn_random_monsters()
     }
 
     if (player_on_orb_run())
-        rate = have_passive(passive_t::slow_orb_run) ? 16 : 8;
+	{
+		if (have_passive(passive_t::slow_orb_run))
+			rate = apply_pity(16);
+		else
+			rate = 8;
+	}
 
     if (player_in_branch(BRANCH_ABYSS))
     {
         if (!player_in_starting_abyss())
             rate = 5;
         if (have_passive(passive_t::slow_abyss))
-            rate *= 2;
+            rate *= apply_pity(2);
     }
 
     if (!x_chance_in_y(5, rate))

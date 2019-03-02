@@ -4079,7 +4079,7 @@ bool god_protects_from_harm()
     }
 
     if (have_passive(passive_t::protect_from_harm)
-        && (one_chance_in(10) || x_chance_in_y(you.piety, 1000)))
+        && (one_chance_in(10) || x_chance_in_y(apply_pity(you.piety), 1000)))
     {
         return true;
     }

@@ -29,6 +29,7 @@
 #include "exclude.h"
 #include "fight.h"
 #include "fprop.h"
+#include "god-abil.h"
 #include "god-passive.h"
 #include "items.h"
 #include "level-state-type.h"
@@ -4215,7 +4216,7 @@ static int _monster_abjure_target(monster* target, int pow, bool actual)
     if (have_passive(passive_t::abjuration_protection_hd))
     {
         pow = pow * (30 - target->get_hit_dice()) / 30;
-        if (pow < duration)
+        if (pow < apply_pity(duration))
         {
             simple_god_message(" protects your fellow warrior from evil "
                                "magic!");
@@ -4225,7 +4226,7 @@ static int _monster_abjure_target(monster* target, int pow, bool actual)
     else if (have_passive(passive_t::abjuration_protection))
     {
         pow = pow / 2;
-        if (pow < duration)
+        if (pow < apply_pity(duration))
         {
             simple_god_message(" shields your ally from puny magic!");
             shielded = true;

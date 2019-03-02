@@ -555,11 +555,16 @@ static void _maybe_spawn_monsters(int dam, const bool is_torment,
     {
         mon = royal_jelly_ejectable_monster();
         if (dam >= you.hp_max * 3 / 4)
-            how_many = random2(4) + 2;
+            how_many = apply_pity(random2(4) + 2);
         else if (dam >= you.hp_max / 2)
-            how_many = random2(2) + 2;
-        else if (dam >= you.hp_max / 4)
-            how_many = 1;
+            how_many = apply_pity(random2(2) + 2);
+		else if (dam >= you.hp_max / 4)
+		{
+			if (you.get_mutation_level(MUT_GODS_PITY) > 1 && coinflip())
+				how_many = 2;
+			else
+				how_many = 1;
+		}
     }
     else if (you_worship(GOD_XOM)
              && dam >= you.hp_max / 4
@@ -641,14 +646,14 @@ static void _maybe_fog(int dam)
         : piety_breakpoint(2); // Xom
 
     const int upper_threshold = you.hp_max / 2;
-    const int lower_threshold = upper_threshold
-                                - upper_threshold
+    const int lower_threshold = max(upper_threshold
+                                - apply_pity(upper_threshold
                                   * (you.piety - minpiety)
-                                  / (MAX_PIETY - minpiety);
+                                  / (MAX_PIETY - minpiety)),0);
     if (have_passive(passive_t::hit_smoke)
         && (dam > 0 && you.form == transformation::shadow
             || dam >= lower_threshold
-               && x_chance_in_y(dam - lower_threshold,
+               && x_chance_in_y(apply_pity(dam - lower_threshold),
                                 upper_threshold - lower_threshold)))
     {
         mpr("You emit a cloud of dark smoke.");

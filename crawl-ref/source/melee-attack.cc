@@ -28,6 +28,7 @@
 #include "food.h"
 #include "god-conduct.h"
 #include "god-item.h"
+#include "god-abil.h"
 #include "god-passive.h" // passive_t::convert_orcs
 #include "hints.h"
 #include "item-prop.h"
@@ -3366,13 +3367,13 @@ int melee_attack::cleave_damage_mod(int dam)
 int melee_attack::martial_damage_mod(int dam)
 {
     if (wu_jian_has_momentum(wu_jian_attack))
-        dam = div_rand_round(dam * 14, 10);
+        dam = div_rand_round(apply_pity(dam * 14), 10);
 
     if (wu_jian_attack == WU_JIAN_ATTACK_LUNGE)
-        dam = div_rand_round(dam * 12, 10);
+        dam = div_rand_round(apply_pity(dam * 12), 10);
 
     if (wu_jian_attack == WU_JIAN_ATTACK_WHIRLWIND)
-        dam = div_rand_round(dam * 8, 10);
+        dam = div_rand_round(apply_pity(dam * 8), 10);
 
     return dam;
 }

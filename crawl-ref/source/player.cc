@@ -1253,8 +1253,13 @@ int player_hunger_rate(bool temp)
     }
 
     // If Cheibriados has slowed your life processes, you will hunger less.
-    if (have_passive(passive_t::slow_metabolism))
-        hunger /= 2;
+	if (have_passive(passive_t::slow_metabolism))
+	{
+		if (you.get_mutation_level(MUT_GODS_PITY) > 1)
+			hunger /= 3;
+		else
+			hunger /= 2;
+	}
 
     if (hunger < 1)
         hunger = 1;
@@ -8192,7 +8197,7 @@ void player_end_berserk()
         // Note the beauty of Trog! They get an extra save that's at
         // the very least 20% and goes up to 100%.
         if (have_passive(passive_t::extend_berserk)
-            && x_chance_in_y(you.piety, piety_breakpoint(5)))
+            && x_chance_in_y(apply_pity(you.piety), piety_breakpoint(5)))
         {
             mpr("Trog's vigour flows through your veins.");
         }

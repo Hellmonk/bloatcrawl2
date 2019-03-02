@@ -543,7 +543,7 @@ int player::halo_radius() const
     if (have_passive(passive_t::halo))
     {
         // The cap is reached at piety 160 = ******.
-        size = min((int)piety, piety_breakpoint(5)) * LOS_DEFAULT_RANGE
+        size = min(apply_pity((int)piety), piety_breakpoint(5)) * LOS_DEFAULT_RANGE
                                                     / piety_breakpoint(5);
     }
 
@@ -703,7 +703,7 @@ int player::umbra_radius() const
     if (have_passive(passive_t::umbra))
     {
         // The cap is reached at piety 160 = ******.
-        size = min((int)piety, piety_breakpoint(5)) * LOS_DEFAULT_RANGE
+        size = min(apply_pity((int)piety), piety_breakpoint(5)) * LOS_DEFAULT_RANGE
                                                     / piety_breakpoint(5);
     }
 

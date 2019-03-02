@@ -384,7 +384,7 @@ static void _give_player_experience(int experience, killer_type killer,
         mpr("You feel a bit more experienced.");
 
     if (kc == KC_YOU && have_passive(passive_t::share_exp))
-        _beogh_spread_experience(experience / 2);
+        _beogh_spread_experience(apply_pity(experience / 2));
 }
 
 static void _give_experience(int player_exp, int monster_exp,
@@ -419,7 +419,7 @@ static void _gold_pile(item_def &corpse, monster_type corpse_class)
 
     corpse.base_type = OBJ_GOLD;
     corpse.mon_type = corpse_class; // for _explode_corpse
-    corpse.quantity = base_gold / 2 + random2avg(base_gold, 2);
+    corpse.quantity = apply_pity(base_gold / 2 + random2avg(base_gold, 2));
     item_colour(corpse);
 
     // Apply the gold aura effect to the player.
@@ -723,9 +723,13 @@ static bool _ely_protect_ally(monster* mons, killer_type killer)
     if ( mons->holiness() & ~(MH_HOLY | MH_NATURAL)
         || !mons->friendly()
         || !you.can_see(*mons) // for simplicity
-        || !one_chance_in(20))
+        || !one_chance_in(10))
     {
-        return false;
+		if (you.get_mutation_level(MUT_GODS_PITY) < 2)
+		{
+			if (coinflip())
+				return false;
+		}
     }
 
     mons->hit_points = 1;
@@ -822,8 +826,8 @@ static bool _beogh_forcibly_convert_orc(monster &mons, killer_type killer)
          mons.get_hit_dice(),
          you.experience_level);
 #endif
-    if (random2(you.piety) >= piety_breakpoint(0)
-        && random2(you.experience_level) >= random2(mons.get_hit_dice())
+    if (apply_pity(random2(you.piety)) >= piety_breakpoint(0)
+        && apply_pity(random2(you.experience_level)) >= random2(mons.get_hit_dice())
         // Bias beaten-up-conversion towards the stronger orcs.
         && random2(mons.get_experience_level()) > 2)
     {
@@ -2044,11 +2048,11 @@ item_def* monster_die(monster& mons, killer_type killer,
     if (killer == KILL_YOU && you.berserk())
     {
         if (have_passive(passive_t::extend_berserk)
-            && you.piety > random2(1000))
+            && apply_pity(you.piety) > random2(1000))
         {
             const int bonus = (3 + random2avg(10, 2)) / 2;
 
-            you.increase_duration(DUR_BERSERK, bonus);
+            you.increase_duration(DUR_BERSERK, apply_pity(bonus));
 
             mprf(MSGCH_GOD, you.religion,
                  "You feel the power of %s in you as your rage grows.",
@@ -2303,13 +2307,13 @@ item_def* monster_die(monster& mons, killer_type killer,
 
                 if (have_passive(passive_t::restore_hp))
                 {
-                    hp_heal = mons.get_experience_level()
-                        + random2(mons.get_experience_level());
+                    hp_heal = apply_pity(mons.get_experience_level()
+                        + random2(mons.get_experience_level()));
                 }
                 if (have_passive(passive_t::restore_hp_mp_vs_evil))
                 {
-                    hp_heal = random2(1 + 2 * mons.get_experience_level());
-                    mp_heal = random2(2 + mons.get_experience_level() / 3);
+                    hp_heal = random2(apply_pity(1 + 2 * mons.get_experience_level()));
+                    mp_heal = random2(apply_pity(2 + mons.get_experience_level() / 3));
                 }
 
                 if (have_passive(passive_t::mp_on_kill))
@@ -2321,7 +2325,7 @@ item_def* monster_die(monster& mons, killer_type killer,
                         break;
                     case GOD_VEHUMET:
                     default:
-                        mp_heal = 1 + random2(mons.get_experience_level() / 2);
+                        mp_heal = apply_pity(1 + random2(mons.get_experience_level() / 2));
                         break;
                     }
                 }
