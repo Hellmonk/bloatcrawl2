@@ -1893,6 +1893,10 @@ vector<monster_info_func> init_monster_info_funcs() {
     toret.push_back({"brilliance aura", "brilliance auras", 
                 [](const monster_info &mi, bool newconditions) { 
                 return newconditions && mi.is(MB_BRILLIANCE_AURA); }});
+// Not a great word but it'll turn up just after doing Enslave Soul
+    toret.push_back({"possessable", "possessable", 
+                [](const monster_info &mi, bool newconditions) { 
+                return mi.is(MB_POSSESSABLE); }});
     toret.push_back({"insane", "insane", 
                 [](const monster_info &mi, bool newconditions) { 
                 return mi.is(MB_INSANE); }});
