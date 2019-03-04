@@ -1655,7 +1655,6 @@ void melee_attack::set_attack_verb(int damage)
 				{ "drill",   "" },
 				{ "pillage", "like a pirate" },
 				{ "ruin",    "like a freshman" },
-			    { "destroy", "like a priest" },
 				{ "impale",  "like its your first time" },
 				{ "compromise",    "by force" },
 			    { "make an entrance in", ""},
