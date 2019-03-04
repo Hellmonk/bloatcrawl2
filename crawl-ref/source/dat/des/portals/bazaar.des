@@ -1866,6 +1866,45 @@ x.......x     x.......x
 xxxxxxxxx     xxxxxxxxx
 ENDMAP
 
+NAME:    bcadren_priest_temple
+TAGS:    arrival no_rotate no_hmirror no_vmirror
+# No Trog, Xom or Lugonu (already have their own starts).
+KFEAT:  a = altar_ashenzari
+KFEAT:  b = altar_beogh
+KFEAT:  c = altar_cheibriados
+KFEAT:  d = altar_dithmenos
+KFEAT:  e = altar_elyvilon
+KFEAT:  f = altar_fedhas
+KFEAT:  g = altar_gozag
+KFEAT:  h = altar_hepliaklqana
+KFEAT:  j = altar_jiyva
+KFEAT:  k = altar_kikubaaqudgha
+KFEAT:  m = altar_makhleb
+KFEAT:  n = altar_nemelex_xobeh
+KFEAT:  o = altar_okawaru
+KFEAT:  q = altar_qazlal
+KFEAT:  r = altar_ru
+KFEAT:  s = altar_sif_muna
+KFEAT:  u = altar_uskayaw
+KFEAT:  v = altar_vehumet
+KFEAT:  w = altar_wu_jian
+KFEAT:  y = altar_yredelemnul
+KFEAT:  z = altar_zin
+KFEAT:  1 = altar_the_shining_one
+KFEAT:  t = altar_ecumenical
+ORIENT:  encompass
+PLACE: Bazaar
+WEIGHT:  0
+
+MAP
+xxxxxxxxxxxxxxxxxxx
+x.a.b.c.d.e.f.g.h.x
+x{.j.k.m.n.o.q.r.>x
+x.s.u.v.w.y.z.1.t.x
+xxxxxxxxxxxxxxxxxxx
+ENDMAP
+
+
 ##########################################################################
 # Generated maps
 ##########################################################################

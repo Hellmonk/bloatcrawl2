@@ -102,6 +102,11 @@ bool job_gets_ranged_weapons(job_type job)
     return _job_def(job).wchoice == WCHOICE_RANGED;
 }
 
+bool job_custom_stats(job_type job)
+{
+	return _job_def(job).wchoice == WCHOICE_STAT;
+}
+
 void give_job_equipment(job_type job)
 {
     item_list items;

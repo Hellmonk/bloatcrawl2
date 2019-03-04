@@ -720,17 +720,16 @@ static bool _ely_protect_ally(monster* mons, killer_type killer)
     if (!MON_KILL(killer) && !YOU_KILL(killer))
         return false;
 
-    if ( mons->holiness() & ~(MH_HOLY | MH_NATURAL)
-        || !mons->friendly()
-        || !you.can_see(*mons) // for simplicity
-        || !one_chance_in(10))
-    {
-		if (you.get_mutation_level(MUT_GODS_PITY) < 2)
-		{
-			if (coinflip())
-				return false;
-		}
-    }
+	if (mons->holiness() & ~(MH_HOLY | MH_NATURAL)
+		|| !mons->friendly()
+		|| !you.can_see(*mons))
+		return false;
+
+	if (!one_chance_in(10))
+	{
+		if (you.get_mutation_level(MUT_GODS_PITY) < 2 && coinflip())
+			return false;
+	}
 
     mons->hit_points = 1;
 

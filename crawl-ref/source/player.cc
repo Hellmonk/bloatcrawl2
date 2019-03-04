@@ -551,7 +551,7 @@ bool player_in_hell(bool vestibule)
  */
 bool player_in_starting_abyss()
 {
-    return you.chapter == CHAPTER_POCKET_ABYSS
+    return you.chapter == CHAPTER_NONDUNGEON_START
            && player_in_branch(BRANCH_ABYSS) && you.depth <= 1;
 }
 

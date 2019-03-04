@@ -593,7 +593,7 @@ void floor_transition(dungeon_feature_type how,
         take_note(Note(NOTE_MESSAGE, 0, 0, "Took an exit into the Abyss."), true);
     }
     else if (how == DNGN_EXIT_ABYSS
-             && you.chapter != CHAPTER_POCKET_ABYSS)
+             && you.chapter != CHAPTER_NONDUNGEON_START)
     {
         mark_milestone("abyss.exit", "escaped from the Abyss!");
         you.attribute[ATTR_BANISHMENT_IMMUNITY] = you.elapsed_time + 100
@@ -968,13 +968,15 @@ level_id stair_destination(dungeon_feature_type feat, const string &dst,
         return level_id(BRANCH_VESTIBULE);
 
     case DNGN_EXIT_ABYSS:
-        if (you.chapter == CHAPTER_POCKET_ABYSS)
+        if (you.chapter == CHAPTER_NONDUNGEON_START)
             return level_id(BRANCH_DUNGEON, 1);
 #if TAG_MAJOR_VERSION == 34
     case DNGN_EXIT_PORTAL_VAULT:
 #endif
     case DNGN_EXIT_PANDEMONIUM:
-        if (you.level_stack.empty())
+		if (you.chapter == CHAPTER_NONDUNGEON_START)
+			return level_id(BRANCH_DUNGEON, 1);
+        else if (you.level_stack.empty())
         {
             if (you.wizard)
             {
@@ -993,6 +995,8 @@ level_id stair_destination(dungeon_feature_type feat, const string &dst,
         push_features_to_abyss();
         break;
     default:
+		if (you.chapter == CHAPTER_NONDUNGEON_START)
+			return level_id(BRANCH_DUNGEON, 1);
         break;
     }
 

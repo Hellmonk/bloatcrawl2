@@ -4,6 +4,7 @@ enum weapon_choice
     WCHOICE_PLAIN,  ///< Normal weapon choice
     WCHOICE_GOOD,   ///< Chooses from "good" weapons
     WCHOICE_RANGED, ///< Choice of ranged weapon
+	WCHOICE_STAT,   ///< Customizable Stats, using this slot.
 };
 
 struct job_def
@@ -84,6 +85,15 @@ static const map<job_type, job_def> job_data =
     { "animal skin" },
     WCHOICE_PLAIN,
     { { SK_FIGHTING, 3 }, { SK_DODGING, 2 }, { SK_WEAPON, 3 }, },
+} },
+
+{ JOB_NOBLE,{
+	"No", "Noble",
+	4, 4, 4,
+	{ },
+	{ "robe" },
+	WCHOICE_STAT,
+	{ {SK_FIGHTING, 1 } , {SK_STEALTH, 1} },
 } },
 
 { JOB_CHAOS_KNIGHT, {
@@ -278,6 +288,16 @@ static const map<job_type, job_def> job_data =
     { { SK_DODGING, 2 }, { SK_STEALTH, 2 }, { SK_SPELLCASTING, 3 },
       { SK_TRANSLOCATIONS, 1 }, { SK_CONJURATIONS, 1 }, { SK_SUMMONINGS, 1 }, },
 } },
+
+{ JOB_PRIEST,{
+	"Pr", "Priest",
+	4, 4, 4,
+	{},
+	{ "robe" },
+	WCHOICE_STAT,
+	{ {SK_DODGING, 2} , {SK_STEALTH, 2} , {SK_UNARMED_COMBAT,3} , {SK_INVOCATIONS, 4} ,},
+} },
+
 #if TAG_MAJOR_VERSION == 34
 { JOB_DEATH_KNIGHT, {
     "DK", "Death Knight",
@@ -299,15 +319,6 @@ static const map<job_type, job_def> job_data =
 
 { JOB_JESTER, {
     "Jr", "Jester",
-    0, 0, 0,
-    { },
-    { },
-    WCHOICE_NONE,
-    { },
-} },
-
-{ JOB_PRIEST, {
-    "Pr", "Priest",
     0, 0, 0,
     { },
     { },

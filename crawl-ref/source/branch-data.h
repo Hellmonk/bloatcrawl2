@@ -308,4 +308,5 @@ const Branch branches[NUM_BRANCHES] =
       "You enter a great desolation of salt!",
       LIGHTGREY, BROWN, // TODO
       '9', {}, BRANCH_NOISE_LOUD },
+
 };

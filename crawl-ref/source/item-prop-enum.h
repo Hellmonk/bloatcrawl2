@@ -647,6 +647,12 @@ enum weapon_type
     WPN_CUTLASS,
 #endif
 
+	// These are only used as part of a hacky way of getting semi-customizable start stats
+	WPN_AVERAGE,
+	WPN_STRONG,
+	WPN_INTELLIGENT,
+	WPN_DEFT,
+
     NUM_WEAPONS,
 
 // special cases

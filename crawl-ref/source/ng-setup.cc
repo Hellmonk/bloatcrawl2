@@ -266,17 +266,27 @@ static void _give_items_skills(const newgame_def& ng)
 
     case JOB_ABYSSAL_KNIGHT:
         you.religion = GOD_LUGONU;
-        if (!crawl_state.game_is_sprint())
-            you.chapter = CHAPTER_POCKET_ABYSS;
         you.piety = 38;
-
+		if (!crawl_state.game_is_sprint())
+			you.chapter = CHAPTER_NONDUNGEON_START;
         if (species_apt(SK_ARMOUR) < species_apt(SK_DODGING))
             you.skills[SK_DODGING]++;
         else
             you.skills[SK_ARMOUR]++;
+		break;
 
-        break;
+	case JOB_PRIEST:
+		you.piety = 30;
+		if (!crawl_state.game_is_sprint())
+			you.chapter = CHAPTER_NONDUNGEON_START;
+		break;
 
+	case JOB_NOBLE:
+		you.gold = 1000;
+		if (!crawl_state.game_is_sprint())
+			you.chapter = CHAPTER_NONDUNGEON_START;
+		break;
+    
     case JOB_WANDERER:
         create_wanderer();
         break;
@@ -291,6 +301,27 @@ static void _give_items_skills(const newgame_def& ng)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, 0, SPWPN_CHAOS);
     else if (job_gets_ranged_weapons(you.char_class))
         _give_ranged_weapon(ng.weapon, you.char_class == JOB_HUNTER ? 1 : 0);
+	else if (job_custom_stats(you.char_class))
+	{
+		if (ng.weapon == WPN_STRONG)
+		{
+			you.base_stats[STAT_STR] += 4;
+			you.base_stats[STAT_INT] -= 2;
+			you.base_stats[STAT_DEX] -= 2;
+		}
+		if (ng.weapon == WPN_INTELLIGENT)
+		{
+			you.base_stats[STAT_STR] -= 2;
+			you.base_stats[STAT_INT] += 4;
+			you.base_stats[STAT_DEX] -= 2;
+		}
+		if (ng.weapon == WPN_DEFT)
+		{
+			you.base_stats[STAT_STR] -= 2;
+			you.base_stats[STAT_INT] -= 2;
+			you.base_stats[STAT_DEX] += 4;
+		}
+	}
     else if (job_has_weapon_choice(you.char_class))
         newgame_make_item(OBJ_WEAPONS, ng.weapon);
 

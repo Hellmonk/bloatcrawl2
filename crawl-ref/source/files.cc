@@ -867,7 +867,7 @@ static int _get_dest_stair_type(branch_type old_branch,
                                 bool &find_first)
 {
     // Order is important here.
-    if (stair_taken == DNGN_EXIT_ABYSS)
+    if (stair_taken == DNGN_EXIT_ABYSS || stair_taken == DNGN_EXIT_BAZAAR)
     {
         find_first = false;
         return DNGN_EXIT_DUNGEON;
@@ -1247,7 +1247,7 @@ static void _make_level(dungeon_feature_type stair_taken,
 
     env.turns_on_level = -1;
 
-    if (you.chapter == CHAPTER_POCKET_ABYSS
+    if (you.chapter == CHAPTER_NONDUNGEON_START
         && player_in_branch(BRANCH_DUNGEON))
     {
         // If we're leaving the Abyss for the first time as a Chaos

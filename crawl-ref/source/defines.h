@@ -49,7 +49,7 @@ enum extra_monster_index_type
 #define PAN_MONS_ALLOC 10
 #define MAX_MONS_ALLOC 20
 
-#define MAX_SUBTYPES   60
+#define MAX_SUBTYPES   80
 
 // max size of item list {dlb}:
 #define MAX_ITEMS 2000

@@ -1185,6 +1185,11 @@ static job_group jobs_order[] =
         coord_def(15, 0), 20,
         { JOB_BERSERKER, JOB_ABYSSAL_KNIGHT, JOB_CHAOS_KNIGHT }
     },
+	//{ Commenting out WIP since I need to push a bug fix.
+	//	"Custom",
+	//	coord_def(15, 7), 20,
+	//	{ JOB_PRIEST , JOB_NOBLE}
+	//},
     {
         "Warrior-mage",
         coord_def(35, 0), 21,
@@ -1858,7 +1863,10 @@ static bool _prompt_weapon(const newgame_def& ng, newgame_def& ng_choice,
     welcome.textcolour(BROWN);
     welcome.cprintf("%s\n", _welcome(ng).c_str());
     welcome.textcolour(CYAN);
-    welcome.cprintf("\nYou have a choice of weapons:  ");
+	if (job_custom_stats(ng.job))
+	    welcome.cprintf("\nYou have a choice of base stats:  ");
+	else
+		welcome.cprintf("\nYou have a choice of weapons:  ");
     welcome_text->set_text(welcome.to_colour_string());
     welcome_text->set_bounds(coord_def(1, 1), coord_def(ui_w+1, 5));
     welcome_text->set_visible(true);
@@ -2001,6 +2009,20 @@ static vector<weapon_choice> _get_weapons(const newgame_def& ng)
                 weapons.push_back(wp);
         }
     }
+	else if (job_custom_stats(ng.job))
+	{
+		weapon_type startwep[4] = { WPN_AVERAGE, WPN_STRONG,
+									WPN_INTELLIGENT, WPN_DEFT };       
+		for (int i = 0; i < 4; i++)
+		{
+			weapon_choice wp;
+			wp.first = startwep[i];
+
+			wp.second = weapon_restriction(wp.first, ng);
+
+			weapons.push_back(wp);
+		}
+	}
     else
     {
         weapon_type startwep[7] = { WPN_SHORT_SWORD, WPN_MACE, WPN_HAND_AXE,
@@ -2072,7 +2094,7 @@ static bool _choose_weapon(newgame_def& ng, newgame_def& ng_choice,
                            const newgame_def& defaults)
 {
     // No weapon use at all. The actual item will be removed later.
-    if (ng.species == SP_FELID)
+    if ((ng.species == SP_FELID) && !job_custom_stats(ng.job))
         return true;
 
     if (!job_has_weapon_choice(ng.job))

@@ -610,6 +610,22 @@ static const weapon_def Weapon_prop[] =
             { SPWPN_DISTORTION,      3 },
         }},
 
+		// Virtuals, these aren't supposed to spawn; just part of 
+		// a hack, if forced to spawn they are all plain staves.
+	{ WPN_AVERAGE,             "average (4/4/4)",               5,  5, 12,
+	SK_STAVES,       SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
+	DAMV_CRUSHING, 0, 0, 15,{} },
+
+	{ WPN_STRONG, "strong (8/2/2)", 5, 5, 12,
+		SK_STAVES, SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
+		DAMV_CRUSHING, 0, 0, 15, {} },
+	{ WPN_INTELLIGENT, "intelligent (2/8/2)", 5, 5, 12,
+			SK_STAVES, SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
+			DAMV_CRUSHING, 0, 0, 15, {} },
+	{ WPN_DEFT, "deft (2/2/8)", 5, 5, 12,
+			SK_STAVES, SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
+			DAMV_CRUSHING, 0, 0, 15, {} },
+
     // Range weapons
     { WPN_BLOWGUN,           "blowgun",             0,  2, 10,
         SK_THROWING,     SIZE_LITTLE, SIZE_LITTLE, MI_NEEDLE,
