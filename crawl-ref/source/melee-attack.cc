@@ -1648,23 +1648,17 @@ void melee_attack::set_attack_verb(int damage)
 			attack_verb = "bother";
 		else if (damage < HIT_STRONG)
 			attack_verb = "impale";
-		else if (defender_genus == MONS_SHEEP || defender_genus == MONS_YAK)
-		{
-			attack_verb = "spoil";
-			verb_degree = "like a Welshman";
-		}
 		else
 		{
 			static const char * const pene_desc[][2] =
 			{
-				{ "drill",   "till its brains fall out" },
+				{ "drill",   "" },
 				{ "pillage", "like a pirate" },
 				{ "ruin",    "like a freshman" },
 			    { "destroy", "like a priest" },
 				{ "impale",  "like its your first time" },
 				{ "compromise",    "by force" },
 			    { "make an entrance in", ""},
-				{ "crack",   "like an egg"},
 			    { "violate", ""}
 			};
 			const int choice = random2(ARRAYSZ(pene_desc));
@@ -1696,7 +1690,8 @@ void melee_attack::set_attack_verb(int damage)
                 {"beat",    "like a drum"},
                 {"hammer",  "like a gong"},
                 {"pound",   "like an anvil"},
-                {"flatten", "like a pancake"}
+                {"flatten", "like a pancake"},
+				{ "crack",   "like an egg"}
             };
             const int choice = random2(ARRAYSZ(bludgeon_desc));
             attack_verb = bludgeon_desc[choice][0];
