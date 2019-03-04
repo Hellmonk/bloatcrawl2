@@ -1209,7 +1209,8 @@ static string _describe_weapon(const item_def &item, bool verbose)
                            "again as much damage against particularly "
                            "susceptible opponents.";
             if (!is_range_weapon(item) &&
-                (damtype == DVORP_SLICING || damtype == DVORP_CHOPPING))
+                (damtype == DVORP_SLICING || damtype == DVORP_CHOPPING
+					|| damtype == DVORP_DP || damtype == DVORP_TP))
             {
                 description += " Big, fiery blades are also staple "
                     "armaments of hydra-hunters.";

@@ -1554,7 +1554,7 @@ void melee_attack::set_attack_verb(int damage)
     }
 
     // Take normal hits into account. If the hit is from a weapon with
-    // more than one damage type, randomly choose one damage type from
+    // more than one damage type, randomly	choose one damage type from
     // it.
     monster_type defender_genus = mons_genus(defender->type);
     switch (weapon ? single_damage_type(*weapon) : -1)
@@ -1642,6 +1642,36 @@ void melee_attack::set_attack_verb(int damage)
             verb_degree = slice_desc[choice][1];
         }
         break;
+
+	case DAM_PENETRATE:
+		if (damage < HIT_MED)
+			attack_verb = "bother";
+		else if (damage < HIT_STRONG)
+			attack_verb = "impale";
+		else if (defender_genus == MONS_SHEEP || defender_genus == MONS_YAK)
+		{
+			attack_verb = "spoil";
+			verb_degree = "like a Welshman";
+		}
+		else
+		{
+			static const char * const pene_desc[][2] =
+			{
+				{ "drill",   "till its brains fall out" },
+				{ "pillage", "like a pirate" },
+				{ "ruin",    "like a freshman" },
+			    { "destroy", "like a priest" },
+				{ "impale",  "like its your first time" },
+				{ "compromise",    "by force" },
+			    { "make an entrance in", ""},
+				{ "crack",   "like an egg"},
+			    { "violate", ""}
+			};
+			const int choice = random2(ARRAYSZ(pene_desc));
+			attack_verb = pene_desc[choice][0];
+			verb_degree = pene_desc[choice][1];
+		}
+		break;
 
     case DAM_BLUDGEON:
         if (damage < HIT_MED)
@@ -1993,7 +2023,8 @@ bool melee_attack::attack_chops_heads(int dam, int dam_type, int wpn_brand)
 
     // Only cutting implements.
     if (dam_type != DVORP_SLICING && dam_type != DVORP_CHOPPING
-        && dam_type != DVORP_CLAWING)
+        && dam_type != DVORP_CLAWING && dam_type != DVORP_DP
+		&& dam_type != DVORP_TP)
     {
         return false;
     }

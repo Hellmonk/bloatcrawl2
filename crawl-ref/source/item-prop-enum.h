@@ -681,7 +681,8 @@ enum vorpal_damage_type
     DAM_BLUDGEON        = 0x0001,       // crushing
     DAM_SLICE           = 0x0002,       // slicing/chopping
     DAM_PIERCE          = 0x0004,       // stabbing/piercing
-    DAM_WHIP            = 0x0008,       // whip slashing
+	DAM_PENETRATE       = 0x0008,       // I'm so going to hell for this
+    DAM_WHIP            = 0x0010,       // whip slashing
     DAM_MAX_TYPE        = DAM_WHIP,
 
     // These are used for vorpal weapon descriptions. You shouldn't set
@@ -696,6 +697,9 @@ enum vorpal_damage_type
     DVORP_CLAWING       = 0x6000,       // claw damage
     DVORP_TENTACLE      = 0x7000,       // tentacle damage
 
+	DVORP_DP            = 0x8000,       // I hope people that find this laugh
+	DVORP_TP            = 0x9000,       // either way I'm going to hell
+
     // These are shortcuts to tie vorpal/damage types for easy setting...
     // as above, setting more than one vorpal type is trouble.
     DAMV_NON_MELEE      = DVORP_NONE     | DAM_BASH,            // launchers
@@ -704,6 +708,8 @@ enum vorpal_damage_type
     DAMV_PIERCING       = DVORP_PIERCING | DAM_PIERCE,
     DAMV_CHOPPING       = DVORP_CHOPPING | DAM_SLICE,
     DAMV_SLASHING       = DVORP_SLASHING | DAM_WHIP,
+	DAMV_DP             = DVORP_DP       | DAM_PENETRATE,
+	DAMV_TP             = DVORP_TP       | DAM_PENETRATE,
 
     DAM_MASK            = 0x0fff,       // strips vorpal specification
     DAMV_MASK           = 0xf000,       // strips non-vorpal specification
