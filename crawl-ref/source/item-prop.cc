@@ -2188,6 +2188,8 @@ int ammo_type_damage(int missile_type)
 //
 reach_type weapon_reach(const item_def &item)
 {
+    if (is_unrandom_artefact(item, UNRAND_RIFT))
+        return REACH_THREE;
     if (item_attack_skill(item) == SK_POLEARMS)
         return REACH_TWO;
     return REACH_NONE;
@@ -2740,7 +2742,8 @@ bool gives_ability(const item_def &item)
 
     // Unrands that grant an evokable ability.
     if (is_unrandom_artefact(item, UNRAND_THIEF)
-        || is_unrandom_artefact(item, UNRAND_RATSKIN_CLOAK))
+        || is_unrandom_artefact(item, UNRAND_RATSKIN_CLOAK)
+        || is_unrandom_artefact(item, UNRAND_RCLOUDS))
     {
         return true;
     }

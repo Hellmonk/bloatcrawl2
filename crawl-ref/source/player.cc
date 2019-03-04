@@ -8016,7 +8016,7 @@ static int _get_device_heal_factor()
     factor -= you.mutation[MUT_NO_DEVICE_HEAL];
 
     // then apply bonuses - Kryia's doubles potion healing
-    factor *= player_equip_unrand(UNRAND_KRYIAS) ? 2 : 1;
+    factor *= player_equip_unrand(UNRAND_KRYIAS) ? 3 : 1;
 
     // make sure we don't turn healing negative.
     return max(0, factor);

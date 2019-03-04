@@ -2,7 +2,9 @@
 Singing Sword
 
 An enchanted blade which loves nothing more than to sing to its owner, whether
-they want it to or not.
+they want it to or not. The sword may sing so intensely that it radiates
+damaging sonic waves as you strike, especially in combat involving dangerous or
+numerous foes.
 %%%%
 Sulking Sword
 
@@ -52,9 +54,9 @@ Its power depends on the wielder's Evocations skill.
 %%%%
 Vampire's Tooth
 
-An ivory-like dagger that looks like it could have been crafted from the tooth
-of some enormous predatory creature. It is lethally vampiric, and restores a
-greater portion of life to its user than other vampiric weapons.
+An ivory-like quick blade that looks like it could have been crafted from the
+tooth of some enormous predatory creature. It is lethally vampiric, and
+restores a greater portion of life to its user than other vampiric weapons.
 %%%%
 scythe of Curses
 
@@ -322,7 +324,7 @@ an especially mighty bear.
 %%%%
 robe of Misfortune
 
-A splendid flowing robe of fur and silk.
+A splendid flowing robe of fur and silk whose lucky colour has faded.
 %%%%
 # TAG_MAJOR_VERSION == 34
 cloak of Flash
@@ -338,8 +340,9 @@ effective stabbing attacks with any weapon.
 %%%%
 Lear's hauberk
 
-A well-made golden hauberk that covers all of its wearer's body parts. It
-includes a chainmail coif, chausses and maille gauntlets.
+A well-made golden hauberk that covers all of its wearer's body parts, and
+keeps out lingering clouds. It includes a chainmail coif, chausses
+and maille gauntlets.
 %%%%
 skin of Zhor
 
@@ -347,7 +350,8 @@ The {{
     if you.can_smell() then
         return "smelly "
     end
-}}skin of some strange animal, native to cold and distant lands.
+}}skin of some strange animal, native to cold and distant lands. It radiates
+the chill of its native habitat, slowing creatures from warmer climes.
 %%%%
 salamander hide armour
 
@@ -574,7 +578,11 @@ find it enhances the power of their spells.
 arc blade
 
 A blade somehow crafted from pure electricity. Striking an enemy with it
-occasionally unleashes a static discharge.
+occasionally unleashes powerful arcs of lightning.
+
+These may arc to other adjacent creatures, or back to the wielder, before
+eventually grounding out. It deals reduced damage when arcing to the wielder,
+and bypasses any armour the target may have.
 %%%%
 demon whip "Spellbinder"
 
@@ -675,3 +683,10 @@ hand wraps "Fists of Thunder"
 A simple set of hand wraps, cracking with electricity. Unlike most gloves they
 don't cover any claws the wearer has, and they can deliver a real shock to
 anyone on the receiving end of a punch.
+%%%%
+demon trident "Rift"
+
+A small wrinkle in the very fabric of reality, magically bound to a shaft by
+some mad acolyte of Lugonu. It possesses an unusually large reach that
+teleports its attack directly to its victim.
+%%%%
