@@ -66,6 +66,7 @@ my %field_type = (
     RND_TELE => "bool",
     SEEINV   => "bool",
     SKIP_EGO => "bool",
+    SH       => "num",
     SLAY     => "num",
     SPECIAL  => "bool",
     SLOW     => "bool",
@@ -493,7 +494,7 @@ my @art_order = (
     "BASE_DELAY", "HP", "CLARITY", "BASE_ACC", "BASE_DAM", "\n",
     "RMSL", "FOG", "REGEN", "unused", "NO_UPGRADE", "RCORR", "\n",
     "RMUT", "unused", "CORRODE", "DRAIN", "SLOW", "FRAGILE", "\n",
-    "HARM", "\n",
+    "SH", "HARM", "\n",
     "}",
 
     "equip_func", "unequip_func", "world_reacts_func", "melee_effects_func",
