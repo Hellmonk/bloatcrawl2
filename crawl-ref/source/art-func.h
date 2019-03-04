@@ -1043,7 +1043,7 @@ static void _ARC_BLADE_melee_effects(item_def* weapon, actor* attacker,
         else
             mpr("You hear the crackle of electricity.");
 
-        cast_discharge(pow, *attacker, false, false);
+        cast_discharge(pow, *attacker, false);
     }
 }
 

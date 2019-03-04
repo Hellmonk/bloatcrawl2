@@ -457,13 +457,9 @@ enum spell_type : int
     SPELL_PHASE_SHIFT,
     SPELL_BLADE_OF_DISASTER,
     SPELL_HARPOON_SHOT,
-<<<<<<< HEAD
     SPELL_CONJURE_DISTORTION,
     SPELL_TIME_STOP,
     SPELL_ISKENDERUNS_UNDOING,
-=======
-    SPELL_GRASPING_ROOTS,
     SPELL_SONIC_WAVE,
->>>>>>> 2a92f5cd5c... Revamp the Singing Sword
     NUM_SPELLS
 };

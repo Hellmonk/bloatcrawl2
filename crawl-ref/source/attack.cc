@@ -1803,7 +1803,7 @@ void attack::player_stab_check()
         return;
     }
 
-    const stab_type st = find_stab_type(&you, *defender);
+    stab_type st = find_stab_type(&you, *defender);
     // Find stab type is also used for displaying information about monsters,
     // so we need to upgrade the stab type for the Spriggan's Knife here
     if (using_weapon()

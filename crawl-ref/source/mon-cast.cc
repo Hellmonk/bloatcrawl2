@@ -269,7 +269,7 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
                    && (!caster.friendly() || !you.visible_to(&caster));
         },
         [](monster &caster, mon_spell_slot slot, bolt&) {
-            const int splpow = mons_spellpower(caster, slot.spell);
+            const int splpow = _mons_spellpower(slot.spell, caster);
             fire_los_attack_spell(slot.spell, splpow, &caster, nullptr, false);
         },
         nullptr,

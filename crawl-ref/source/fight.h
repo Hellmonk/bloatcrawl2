@@ -6,6 +6,7 @@
 #pragma once
 
 #include <list>
+#include <functional>
 
 #include "target.h"
 #include "wu-jian-attack-type.h"

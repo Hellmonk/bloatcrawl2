@@ -533,6 +533,7 @@ dark_maul DARK_MAUL
 spellbinder SPELLBINDER
 firestarter FIRESTARTER
 majin MAJIN
+sceptre_of_torment SCEPTRE_OF_TORMENT
 ## polearms
 trident_octopus_king TRIDENT_OCTOPUS_KING
 glaive_of_prune GLAIVE_OF_PRUNE
@@ -541,6 +542,7 @@ finisher FINISHER
 glaive_of_the_guard GLAIVE_OF_THE_GUARD
 wyrmbane WYRMBANE
 crystal_spear CRYSTAL_SPEAR
+rift RIFT
 ## staves
 elemental_staff ELEMENTAL_STAFF
 asmodeus ASMODEUS
