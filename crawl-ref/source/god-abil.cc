@@ -739,7 +739,7 @@ int zin_recite_power()
     const int invo_power = you.skill_rdiv(SK_INVOCATIONS, power_mult)
                            + 3 * power_mult;
     const int piety_power = you.piety * 3 / 2;
-    return apply_invo_enhancer((invo_power + piety_power) / 20 / power_mult, false);
+    return apply_invo_enhancer((invo_power + piety_power) / 2 / power_mult,false);
 }
 
 bool zin_check_able_to_recite(bool quiet)
@@ -757,6 +757,9 @@ bool zin_check_able_to_recite(bool quiet)
             mpr("You're not ready to recite again yet.");
         return false;
     }
+
+	if (player_spec_invo() > 0)
+		god_speaks(you.religion, "You feel a surge of divine energy.");
 
     return true;
 }
