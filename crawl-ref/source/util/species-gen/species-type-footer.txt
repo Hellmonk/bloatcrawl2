@@ -1,5 +1,11 @@
     NUM_SPECIES,
 
+#if TAG_MAJOR_VERSION > 34
+    // It would be nice if these could be auto-generated
+    SP_FIRST_NONBASE_DRACONIAN = SP_BLACK_DRACONIAN,
+    SP_LAST_NONBASE_DRACONIAN = SP_YELLOW_DRACONIAN,
+#endif
+
     SP_UNKNOWN  = 100,
     SP_RANDOM   = 101,
     SP_VIABLE   = 102,

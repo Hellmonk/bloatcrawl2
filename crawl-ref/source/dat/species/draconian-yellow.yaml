@@ -38,4 +38,3 @@ mutations:
 fake_mutations:
   - long: You can spit globs of acid.
     short: spit acid
-create_enum: false
