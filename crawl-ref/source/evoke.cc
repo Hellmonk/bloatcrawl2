@@ -15,6 +15,7 @@
 #include "act-iter.h"
 #include "areas.h"
 #include "artefact.h"
+#include "art-enum.h"
 #include "branch.h"
 #include "chardump.h"
 #include "cloud.h"
