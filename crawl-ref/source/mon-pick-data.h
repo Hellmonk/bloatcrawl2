@@ -911,6 +911,11 @@ static const pop_entry pop_zig[] =
   { 0,0,0,FLAT,MONS_0 }
 };
 
+static const pop_entry pop_starttemple[] =
+{ // Starting Temple for Priests
+	{ 0,0,0,FLAT,MONS_0 }
+};
+
 static const pop_entry pop_lab[] =
 { // Labyrinth
   { 0,0,0,FLAT,MONS_0 }
@@ -1117,6 +1122,7 @@ static const population_list population[] =
     POP(depths),
 #endif
     POP(desolation),
+	POP(starttemple)
 };
 COMPILE_CHECK(ARRAYSZ(population) == NUM_BRANCHES);
 
@@ -1225,6 +1231,7 @@ static const population_list population_zombie[] =
     POP(depths),
 #endif
     POP(desolation),
+	POP(starttemple),
 };
 COMPILE_CHECK(ARRAYSZ(population_zombie) == NUM_BRANCHES);
 
@@ -1332,6 +1339,7 @@ static const population_list population_water[] =
     POP(water_depths),
 #endif
     POP(water_generic),
+	POP(water_generic),
 };
 COMPILE_CHECK(ARRAYSZ(population_water) == NUM_BRANCHES);
 
@@ -1435,5 +1443,6 @@ static const population_list population_lava[] =
     POP(lava_depths),
 #endif
     POP(lava_generic),
+	POP(lava_generic),
 };
 COMPILE_CHECK(ARRAYSZ(population_lava) == NUM_BRANCHES);

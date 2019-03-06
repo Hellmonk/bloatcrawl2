@@ -3322,7 +3322,7 @@ void set_god_ability_slots()
 /// Check if the monk's joining bonus should be given. (Except Gozag's.)
 static void _apply_monk_bonus()
 {
-    if ((you.char_class != JOB_MONK && you.char_class != JOB_PRIEST) || had_gods() > 0)
+    if ((you.char_class != JOB_MONK) || had_gods() > 0)
         return;
 
     // monks get bonus piety for first god

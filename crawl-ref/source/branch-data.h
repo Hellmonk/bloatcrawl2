@@ -309,4 +309,12 @@ const Branch branches[NUM_BRANCHES] =
       LIGHTGREY, BROWN, // TODO
       '9', {}, BRANCH_NOISE_LOUD },
 
+	{ BRANCH_START_TEMPLE, NUM_BRANCHES, -1, -1, 1, 1,
+	  BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
+	  DNGN_ENTER_START_TEMPLE, DNGN_EXIT_START_TEMPLE, NUM_FEATURES, // TODO
+	  "Temple", "a Temple outside the Dungeon", "Start Temple",
+	  "You enter a Temple.",
+	  LIGHTGREY, BROWN, // TODO
+	  '+',{}, BRANCH_NOISE_LOUD },
+
 };

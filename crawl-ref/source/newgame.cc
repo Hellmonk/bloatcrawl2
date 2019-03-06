@@ -1185,11 +1185,11 @@ static job_group jobs_order[] =
         coord_def(15, 0), 20,
         { JOB_BERSERKER, JOB_ABYSSAL_KNIGHT, JOB_CHAOS_KNIGHT }
     },
-	//{
-	//	"Custom",
-	//	coord_def(15, 7), 20,
-	//	{ JOB_PRIEST , JOB_NOBLE}
-	//},
+	{
+		"Custom",
+		coord_def(15, 7), 20,
+		{ JOB_PRIEST } // , JOB_NOBLE}
+	},
     {
         "Warrior-mage",
         coord_def(35, 0), 21,

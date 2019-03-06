@@ -1893,8 +1893,7 @@ KFEAT:  z = altar_zin
 KFEAT:  1 = altar_the_shining_one
 KFEAT:  t = altar_ecumenical
 ORIENT:  encompass
-PLACE: Bazaar
-WEIGHT:  0
+PLACE: Start Temple
 
 MAP
 xxxxxxxxxxxxxxxxxxx

@@ -55,12 +55,14 @@ static const branch_type logical_branch_order[] = {
     BRANCH_VOLCANO,
     BRANCH_WIZLAB,
     BRANCH_DESOLATION,
+	BRANCH_START_TEMPLE,
 };
 COMPILE_CHECK(ARRAYSZ(logical_branch_order) == NUM_BRANCHES);
 
 /// Branches ordered loosely by challenge level.
 static const branch_type danger_branch_order[] = {
     BRANCH_TEMPLE,
+	BRANCH_START_TEMPLE,
     BRANCH_BAZAAR,
     BRANCH_TROVE,
     BRANCH_DUNGEON,

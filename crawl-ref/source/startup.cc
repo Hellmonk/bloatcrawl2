@@ -263,7 +263,7 @@ static void _post_init(bool newc)
 	if (newc && (you.char_class == JOB_ABYSSAL_KNIGHT))
 		you.where_are_you = BRANCH_ABYSS;
 	else if (newc && (you.char_class == JOB_NOBLE || you.char_class == JOB_PRIEST))
-		you.where_are_you = BRANCH_BAZAAR;
+		you.where_are_you = BRANCH_START_TEMPLE;
     else if (newc)
         you.where_are_you = root_branch;
 

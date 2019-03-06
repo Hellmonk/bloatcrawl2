@@ -276,7 +276,6 @@ static void _give_items_skills(const newgame_def& ng)
 		break;
 
 	case JOB_PRIEST:
-		you.piety = 30;
 		if (!crawl_state.game_is_sprint())
 			you.chapter = CHAPTER_NONDUNGEON_START;
 		break;
