@@ -940,7 +940,11 @@ static void _equip_armour_effect(item_def& arm, bool unmeld,
 
     if (arm.cursed() && !unmeld)
     {
-        mpr("Oops, that feels deathly cold.");
+        if (you.religion == GOD_ASHENZARI) {
+            mpr("That feels deathly cold.");
+        } else {
+            mpr("Oops, that feels deathly cold.");
+        }
         learned_something_new(HINT_YOU_CURSED);
 
         if (!known_cursed)
@@ -1326,7 +1330,8 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
 
     if (item.cursed() && !unmeld)
     {
-        mprf("Oops, that %s feels deathly cold.",
+        mprf("%shat %s feels deathly cold.",
+             you.religion == GOD_ASHENZARI ? "T" : "Oops, t",
              jewellery_is_amulet(item)? "amulet" : "ring");
         learned_something_new(HINT_YOU_CURSED);
 
