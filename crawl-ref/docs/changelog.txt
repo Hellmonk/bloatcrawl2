@@ -41,6 +41,17 @@ Vanilla changes not made
   where I forget to add new fire spells or effects to the list. Sorry.
 * Engulf still gives a movement penalty.
 
+Stone Soup 0.22.2 (20190306)
+----------------------------
+
+Bugfix Release
+--------------
+* Fix a crash on startup when there are seeded games (from 0.23) in a shared
+  save directory.
+* Let Barachim telefrag at their full range.
+* Don't let ball lightnings climb stairs.
+* 52 other bugfixes and cleanups in total.
+
 Stone Soup 0.22.1 (20180916)
 ----------------------------
 
