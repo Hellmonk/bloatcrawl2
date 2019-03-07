@@ -369,8 +369,6 @@ PORTAL_ENTRANCE(DNGN_ENTER_PORTAL_VAULT, "gate leading to a distant place", "ent
 #endif
 PORTAL_ENTRANCE(DNGN_ENTER_ZIGGURAT, "gateway to a ziggurat", "enter_ziggurat", ETC_SHIMMER_BLUE),
 PORTAL_ENTRANCE(DNGN_ENTER_BAZAAR, "gateway to a bazaar", "enter_bazaar", ETC_SHIMMER_BLUE),
-PORTAL_ENTRANCE(DNGN_ENTER_START_TEMPLE, "buggy gateway", "enter_start_temple", ETC_SHIMMER_BLUE),
-PORTAL_ENTRANCE(DNGN_ENTER_START_MARKET, "buggy gateway", "enter_start_market", ETC_SHIMMER_BLUE),
 PORTAL_ENTRANCE(DNGN_ENTER_TROVE, "portal to a secret trove of treasure", "enter_trove", BLUE),
 PORTAL_ENTRANCE(DNGN_ENTER_SEWER, "glowing drain", "enter_sewer", LIGHTGREEN),
 PORTAL_ENTRANCE(DNGN_ENTER_OSSUARY, "sand-covered staircase", "enter_ossuary", BROWN),
@@ -379,13 +377,13 @@ PORTAL_ENTRANCE(DNGN_ENTER_ICE_CAVE, "frozen archway", "enter_ice_cave", WHITE),
 PORTAL_ENTRANCE(DNGN_ENTER_VOLCANO, "dark tunnel", "enter_volcano", RED),
 PORTAL_ENTRANCE(DNGN_ENTER_WIZLAB, "magical portal", "enter_wizlab", ETC_SHIMMER_BLUE),
 PORTAL_ENTRANCE(DNGN_ENTER_DESOLATION, "ruined gateway", "enter_desolation", WHITE),
+PORTAL_ENTRANCE(DNGN_ENTER_START_TEMPLE, "buggy gateway", "enter_start_temple", ETC_SHIMMER_BLUE),
+PORTAL_ENTRANCE(DNGN_ENTER_START_MARKET, "buggy gateway", "enter_start_market", ETC_SHIMMER_BLUE),
 #if TAG_MAJOR_VERSION == 34
 PORTAL_EXIT(DNGN_EXIT_PORTAL_VAULT, "gate leading back out of this place", "exit_portal_vault", ETC_SHIMMER_BLUE),
 #endif
 PORTAL_EXIT(DNGN_EXIT_ZIGGURAT, "gate leading back out of this place", "exit_ziggurat", ETC_SHIMMER_BLUE),
 PORTAL_EXIT(DNGN_EXIT_BAZAAR, "gate leading back out of this place", "exit_bazaar", ETC_SHIMMER_BLUE),
-PORTAL_EXIT(DNGN_EXIT_START_TEMPLE, "gate leading to the dungeon", "exit_start_temple", ETC_SHIMMER_BLUE),
-PORTAL_EXIT(DNGN_EXIT_START_MARKET, "gate leading to the dungeon", "exit_start_market", ETC_SHIMMER_BLUE),
 PORTAL_EXIT(DNGN_EXIT_TROVE, "gate leading back out of this place", "exit_trove", BLUE),
 PORTAL_EXIT(DNGN_EXIT_SEWER, "gate leading back out of this place", "exit_sewer", BROWN),
 PORTAL_EXIT(DNGN_EXIT_OSSUARY, "gate leading back out of this place", "exit_ossuary", BROWN),
@@ -394,6 +392,8 @@ PORTAL_EXIT(DNGN_EXIT_ICE_CAVE, "ice covered gate leading back out of this place
 PORTAL_EXIT(DNGN_EXIT_VOLCANO, "rocky tunnel leading out of this place", "exit_volcano", RED),
 PORTAL_EXIT(DNGN_EXIT_WIZLAB, "portal leading out of this place", "exit_wizlab", ETC_SHIMMER_BLUE),
 PORTAL_EXIT(DNGN_EXIT_DESOLATION, "gate leading back out of this place", "exit_desolation", WHITE),
+PORTAL_EXIT(DNGN_EXIT_START_TEMPLE, "gate leading to the dungeon", "exit_start_temple", ETC_SHIMMER_BLUE),
+PORTAL_EXIT(DNGN_EXIT_START_MARKET, "gate leading to the dungeon", "exit_start_market", ETC_SHIMMER_BLUE),
 
 #define BRANCH_ENTRANCE(enum, name, vaultname)\
 {\
