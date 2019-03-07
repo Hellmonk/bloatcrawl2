@@ -744,7 +744,7 @@ static bool _try_make_armour_artefact(item_def& item, int force_type,
         // The rest are normal randarts.
 
         // 10% of boots become barding.
-        if (item.sub_type == ARM_BOOTS && one_chance_in(10))
+        if (item.sub_type == ARM_BOOTS && one_chance_in(10) && (you.chapter != CHAPTER_NONDUNGEON_START))
         {
             item.sub_type = random_choose(ARM_NAGA_BARDING,
                                           ARM_CENTAUR_BARDING);
@@ -1156,7 +1156,7 @@ static void _generate_armour_item(item_def& item, bool allow_uniques,
         return;
     }
 
-    if (item.sub_type == ARM_BOOTS)
+    if (item.sub_type == ARM_BOOTS && (you.chapter != CHAPTER_NONDUNGEON_START))
     {
         if (one_chance_in(8))
             item.sub_type = ARM_NAGA_BARDING;

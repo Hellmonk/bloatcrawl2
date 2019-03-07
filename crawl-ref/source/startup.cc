@@ -262,8 +262,10 @@ static void _post_init(bool newc)
     // Abyssal Knights start out in the Abyss.
 	if (newc && (you.char_class == JOB_ABYSSAL_KNIGHT))
 		you.where_are_you = BRANCH_ABYSS;
-	else if (newc && (you.char_class == JOB_NOBLE || you.char_class == JOB_PRIEST))
+	else if (newc && you.char_class == JOB_PRIEST)
 		you.where_are_you = BRANCH_START_TEMPLE;
+	else if (newc && you.char_class == JOB_NOBLE)
+		you.where_are_you = BRANCH_START_MARKET;
     else if (newc)
         you.where_are_you = root_branch;
 

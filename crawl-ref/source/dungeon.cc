@@ -2328,6 +2328,10 @@ static void _place_feature_mimics(dungeon_feature_type dest_stairs_type)
         if (map_masked(pos, MMT_NO_MIMIC))
             continue;
 
+		// I used the tag and was still getting occasional mimics; this better fix it.
+		if (you.where_are_you == BRANCH_START_MARKET || you.where_are_you == BRANCH_START_TEMPLE)
+			continue;
+
         // Only features valid for mimicing.
         if (!feat_is_mimicable(feat))
             continue;

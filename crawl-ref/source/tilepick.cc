@@ -379,6 +379,7 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
     case DNGN_EXIT_BAILEY:
     case DNGN_EXIT_DESOLATION:
 	case DNGN_EXIT_START_TEMPLE:
+	case DNGN_EXIT_START_MARKET:
         return TILE_DNGN_PORTAL;
     case DNGN_EXIT_ICE_CAVE:
         return TILE_DNGN_PORTAL_ICE_CAVE;
@@ -3715,6 +3716,7 @@ tileidx_t tileidx_branch(const branch_type br)
     case BRANCH_LABYRINTH:
         return TILE_DNGN_PORTAL_LABYRINTH;
     case BRANCH_BAZAAR:
+	case BRANCH_START_MARKET:
         return TILE_DNGN_PORTAL_BAZAAR;
     case BRANCH_TROVE:
         return TILE_DNGN_PORTAL_TROVE;

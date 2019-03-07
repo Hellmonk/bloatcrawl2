@@ -311,10 +311,18 @@ const Branch branches[NUM_BRANCHES] =
 
 	{ BRANCH_START_TEMPLE, NUM_BRANCHES, -1, -1, 1, 1,
 	  BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
-	  DNGN_ENTER_START_TEMPLE, DNGN_EXIT_START_TEMPLE, NUM_FEATURES, // TODO
+	  DNGN_ENTER_START_TEMPLE, DNGN_EXIT_START_TEMPLE, NUM_FEATURES,
 	  "Temple", "a Temple outside the Dungeon", "Start Temple",
 	  "You enter a Temple.",
-	  LIGHTGREY, BROWN, // TODO
+	  LIGHTGREY, BROWN,
 	  '+',{}, BRANCH_NOISE_LOUD },
+
+	{ BRANCH_START_MARKET, NUM_BRANCHES, -1, -1, 1, 1,
+	  BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
+      DNGN_ENTER_START_MARKET, DNGN_EXIT_START_MARKET, NUM_FEATURES,
+	  "Market", "a Market outside the Dungeon", "Start Market",
+	  "You go to the shops.",
+	  LIGHTGREY, BROWN,
+	  '-',{}, BRANCH_NOISE_LOUD },
 
 };

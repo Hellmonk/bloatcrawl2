@@ -1188,7 +1188,7 @@ static job_group jobs_order[] =
 	{
 		"Custom",
 		coord_def(15, 7), 20,
-		{ JOB_PRIEST } // , JOB_NOBLE}
+		{ JOB_PRIEST , JOB_NOBLE}
 	},
     {
         "Warrior-mage",

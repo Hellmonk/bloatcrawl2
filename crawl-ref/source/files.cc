@@ -867,7 +867,8 @@ static int _get_dest_stair_type(branch_type old_branch,
                                 bool &find_first)
 {
     // Order is important here.
-    if (stair_taken == DNGN_EXIT_ABYSS || stair_taken == DNGN_EXIT_START_TEMPLE)
+    if (stair_taken == DNGN_EXIT_ABYSS || stair_taken == DNGN_EXIT_START_TEMPLE
+		|| stair_taken == DNGN_EXIT_START_MARKET)
     {
         find_first = false;
         return DNGN_EXIT_DUNGEON;

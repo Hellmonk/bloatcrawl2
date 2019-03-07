@@ -916,6 +916,11 @@ static const pop_entry pop_starttemple[] =
 	{ 0,0,0,FLAT,MONS_0 }
 };
 
+static const pop_entry pop_startmarket[] =
+{ // Starting Market for Nobles
+	{ 0,0,0,FLAT,MONS_0 }
+};
+
 static const pop_entry pop_lab[] =
 { // Labyrinth
   { 0,0,0,FLAT,MONS_0 }
@@ -1122,7 +1127,8 @@ static const population_list population[] =
     POP(depths),
 #endif
     POP(desolation),
-	POP(starttemple)
+	POP(starttemple),
+	POP(startmarket)
 };
 COMPILE_CHECK(ARRAYSZ(population) == NUM_BRANCHES);
 
@@ -1232,6 +1238,7 @@ static const population_list population_zombie[] =
 #endif
     POP(desolation),
 	POP(starttemple),
+	POP(startmarket)
 };
 COMPILE_CHECK(ARRAYSZ(population_zombie) == NUM_BRANCHES);
 
@@ -1340,6 +1347,7 @@ static const population_list population_water[] =
 #endif
     POP(water_generic),
 	POP(water_generic),
+	POP(water_generic),
 };
 COMPILE_CHECK(ARRAYSZ(population_water) == NUM_BRANCHES);
 
@@ -1443,6 +1451,7 @@ static const population_list population_lava[] =
     POP(lava_depths),
 #endif
     POP(lava_generic),
+	POP(lava_generic),
 	POP(lava_generic),
 };
 COMPILE_CHECK(ARRAYSZ(population_lava) == NUM_BRANCHES);

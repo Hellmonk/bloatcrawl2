@@ -53,6 +53,7 @@ enum branch_type                // you.where_are_you
 #endif
     BRANCH_DESOLATION,
 	BRANCH_START_TEMPLE,
+	BRANCH_START_MARKET,
     NUM_BRANCHES,
 
     GLOBAL_BRANCH_INFO = 127,

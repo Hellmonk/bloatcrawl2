@@ -737,7 +737,8 @@ int ghost_demon::max_ghosts_per_level(int absdepth)
 static const set<branch_type> ghosts_banned =
             { BRANCH_ABYSS, BRANCH_LABYRINTH, BRANCH_SEWER, BRANCH_OSSUARY,
               BRANCH_BAILEY, BRANCH_ICE_CAVE, BRANCH_VOLCANO, BRANCH_WIZLAB,
-              BRANCH_DESOLATION, BRANCH_TEMPLE, BRANCH_START_TEMPLE };
+              BRANCH_DESOLATION, BRANCH_TEMPLE, BRANCH_START_TEMPLE,
+			  BRANCH_START_MARKET};
 
 
 /// Is the current location eligible for ghosts?

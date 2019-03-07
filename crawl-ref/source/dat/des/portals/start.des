@@ -7,7 +7,7 @@
 ###############################################################################
 
 NAME:    bcadren_priest_temple
-TAGS:    arrival no_rotate no_hmirror no_vmirror
+TAGS:    arrival no_rotate no_hmirror no_vmirror no_mimic
 # No Trog, Xom or Lugonu (already have their own starts).
 KFEAT:  a = altar_ashenzari
 KFEAT:  b = altar_beogh
@@ -41,4 +41,246 @@ x.a.b.c.d.e.f.g.h.x
 x{.j.k.m.n.o.q.r.>x
 x.s.u.v.w.y.z.1.t.x
 xxxxxxxxxxxxxxxxxxx
+ENDMAP
+
+NAME:    bcadren_noble_market
+TAGS:    arrival no_rotate no_hmirror no_vmirror no_mimic
+ORIENT:  encompass
+KFEAT:  0 = book shop type:Expert suffix:Tomes greed:9 count:3 use_all ; \
+	    necronomicon | book of annihilations | grand grimoire
+KFEAT:  1 = armour shop count:10 greed:10 type:Dragon suffix:Armour use_all ; \
+            mundane not_cursed storm dragon scales | mundane not_cursed fire dragon scales |\
+            mundane not_cursed shadow dragon scales | mundane not_cursed quicksilver dragon scales |\
+            mundane not_cursed ice dragon scales | mundane not_cursed gold dragon scales |\
+            mundane not_cursed steam dragon scales | mundane not_cursed swamp dragon scales |\
+            mundane not_cursed pearl dragon scales | mundane not_cursed acid dragon scales
+KFEAT:  3 = armour shop count:14 greed:42 type:Shield suffix:Center use_all ; \
+            mundane not_cursed shield | not_cursed shield ego:protection plus:0 |\
+            not_cursed shield ego:reflection plus:0 |\
+            not_cursed shield ego:positive_energy plus:0 |\
+            not_cursed shield ego:poison_resistance plus:0 |\
+            not_cursed shield ego:fire_resistance plus:0 |\
+            not_cursed shield ego:cold_resistance plus:0 |\
+            mundane not_cursed large shield |\
+            not_cursed large shield ego:protection plus:0 |\
+            not_cursed large shield ego:reflection plus:0 |\
+            not_cursed large shield ego:positive_energy plus:0 |\
+            not_cursed large shield ego:poison_resistance plus:0 |\
+            not_cursed large shield ego:fire_resistance plus:0 |\
+            not_cursed large shield ego:cold_resistance plus:0 
+KFEAT:  Z = armour shop count:7 greed:40 type:Buckler suffix:Bureau use_all ; \
+            mundane not_cursed buckler | not_cursed buckler ego:protection plus:0 |\
+            not_cursed buckler ego:reflection plus:0 |\
+            not_cursed buckler ego:positive_energy plus:0 |\
+            not_cursed buckler ego:poison_resistance plus:0 |\
+            not_cursed buckler ego:fire_resistance plus:0 |\
+            not_cursed buckler ego:cold_resistance plus:0 
+KFEAT:  Y = armour shop count:3 greed:31 type:the suffix:Resistance use_all ; \
+            not_cursed buckler ego:resistance plus:0 |\
+            not_cursed shield ego:resistance plus:0 |\
+            not_cursed large shield ego:resistance plus:0
+KFEAT:  2 = weapon shop type:Archery suffix:Annex count:5 use_all greed:80 ; \
+            mundane not_cursed shortbow | mundane not_cursed longbow |\
+            mundane not_cursed hand crossbow | mundane not_cursed arbalest |\
+	    mundane not_cursed triple crossbow
+KFEAT:  4 = weapon shop type:Sling suffix:Spring count:2 use_all greed:20 ; \
+            mundane not_cursed hunting sling | mundane not_cursed fustibalus
+KFEAT:  5 = general shop type:Pet suffix:Rocks count:4 use_all greed:10 ; \
+            stone q:50 | stone q:50 | large rock q:5 | large rock q:5
+KFEAT:  6 = weapon shop type:Ammo suffix:outlet count:7 use_all greed:5 ; \
+            arrow q:50 | arrow q:50 | bolt q:50 | bolt q:50 |\
+            sling bullet q:50 | sling bullet q:50 | needle q:30
+KFEAT:  7 = weapon shop type:Blowgun suffix:Blowout count:6 use_all greed:100 ; \
+            mundane not_cursed blowgun | needle ego:curare q:5 |\
+	    needle ego:confusion q:5 | needle ego:frenzy q:5 |\
+            needle ego:sleep q:5 | needle ego:paralysis q:5
+KFEAT:  8 = armour shop type:Auxillary suffix:Armour count:11 use_all greed:20 ; \
+            mundane not_cursed hat | not_cursed hat ego:magic_resistance plus:0|\
+            not_cursed hat ego:intelligence plus:0 |\
+            not_cursed hat ego:see_invisible plus:0 |\
+            mundane not_cursed helmet |\
+            not_cursed helmet ego:intelligence plus:0 |\
+            not_cursed helmet ego:see_invisible plus:0 |\
+	    mundane not_cursed pair of gloves |\
+            not_cursed pair of gloves ego:dexterity plus:0|\
+            not_cursed pair of gloves ego:strength plus:0|\
+            not_cursed pair of gloves ego:archery plus:0
+KFEAT:  L = armour shop type:Shoe suffix:Department count:14 use_all greed:30 ; \
+	    mundane not_cursed naga barding |\
+            not_cursed naga barding ego:flying plus:0|\
+            not_cursed naga barding ego:stealth plus:0|\
+            not_cursed naga barding ego:cold_resistance plus:0|\
+            not_cursed naga barding ego:fire_resistance plus:0|\
+            mundane not_cursed centaur barding |\
+            not_cursed centaur barding ego:flying plus:0|\
+            not_cursed centaur barding ego:stealth plus:0|\
+            not_cursed centaur barding ego:cold_resistance plus:0|\
+            not_cursed centaur barding ego:fire_resistance plus:0|\
+            mundane not_cursed pair of boots |\
+            not_cursed pair of boots ego:running plus:0|\
+            not_cursed pair of boots ego:flying plus:0|\
+            not_cursed pair of boots ego:stealth plus:0
+KFEAT:  K = armour shop type:Bundle_Up suffix:Cloaks_and_Scarves use_all count:8 greed:30 ; \
+            mundane not_cursed cloak |\
+            not_cursed cloak ego:poison_resistance plus:0 |\
+            not_cursed cloak ego:invisibility plus:0 |\
+            not_cursed cloak ego:magic_resistance plus:0|\
+            not_cursed scarf ego:spirit_shield |\
+            not_cursed scarf ego:resistance |\
+            not_cursed scarf ego:repulsion |\
+            not_cursed scarf ego:cloud_immunity
+KFEAT:  M = armour shop type:Mage suffix:Robes use_all count:7 greed:25 ; \
+            mundane not_cursed robe |\
+            not_cursed robe ego:archmagi plus:0 |\
+            not_cursed robe ego:resistance plus:0|\
+            not_cursed robe ego:fire_resistance plus:0|\
+            not_cursed robe ego:cold_resistance plus:0|\
+            not_cursed robe ego:magic_resistance plus:0|\
+            not_cursed robe ego:positive_energy plus:0
+KFEAT:  O = armour shop type:Lightly suffix:Armoured use_all count:15 greed:30 ; \
+            mundane not_cursed leather armour|\
+            not_cursed leather armour ego:fire_resistance plus:0|\
+            not_cursed leather armour ego:cold_resistance plus:0|\
+            not_cursed leather armour ego:poison_resistance plus:0|\
+            not_cursed leather armour ego:magic_resistance plus:0|\
+            not_cursed leather armour ego:positive_energy plus:0|\
+            mundane not_cursed animal skin|\
+            mundane not_cursed animal skin|\
+            mundane not_cursed troll leather armour|\
+            mundane not_cursed ring mail|\
+            not_cursed ring mail ego:fire_resistance plus:0|\
+            not_cursed ring mail ego:cold_resistance plus:0|\
+            not_cursed ring mail ego:poison_resistance plus:0|\
+            not_cursed ring mail ego:magic_resistance plus:0|\
+            not_cursed ring mail ego:positive_energy plus:0
+KFEAT:  P = armour shop type:Heavily suffix:Armoured use_all count:14 greed:12 ;\
+            mundane not_cursed scale mail|\
+            not_cursed scale mail ego:fire_resistance plus:0|\
+            not_cursed scale mail ego:cold_resistance plus:0|\
+            not_cursed scale mail ego:poison_resistance plus:0|\
+            not_cursed scale mail ego:magic_resistance plus:0|\
+            not_cursed scale mail ego:positive_energy plus:0|\
+            mundane not_cursed plate armour|\
+            not_cursed plate armour ego:fire_resistance plus:0|\
+            not_cursed plate armour ego:cold_resistance plus:0|\
+            not_cursed plate armour ego:poison_resistance plus:0|\
+            not_cursed plate armour ego:magic_resistance plus:0|\
+            not_cursed plate armour ego:positive_energy plus:0|\
+            not_cursed plate armour ego:ponderousness plus:5|\
+            mundane not_cursed crystal plate armour
+KFEAT:  Q = jewellery shop name:Pakellas type:Wand suffix:Workshop use_all count:11 greed:15 ; \
+	    wand of flame charges:20 | wand of paralysis charges:10 |\
+            wand of digging charges:10 | wand of iceblast charges:10 |\
+            wand of polymorph charges:20 | wand of enslavement charges:10 |\
+            wand of acid charges:10 | wand of disintegration charges:20 |\
+            wand of clouds charges:10 | wand of scattershot charges:10 |\
+            wand of random effects charges:20
+KFEAT:  N = antiques shop name:Pakellas type:Evokable suffix:Objects use_all count:10 greed:10 ; \
+            lamp of fire | phial of floods | fan of gales | crystal ball of energy |\
+            box of beasts q:1 | box of beasts q:2 | sack of spiders q:1 | sack of spiders q:2 |\
+            phantom mirror q:1 | phantom mirror q:2
+KFEAT:  9 = weapon shop type:Blade suffix:Boutique count:13 use_all greed:100 ; \
+	    mundane not_cursed dagger | mundane not_cursed short sword |\
+            mundane not_cursed rapier |\
+            mundane not_cursed falchion | mundane not_cursed long sword |\
+            mundane not_cursed scimitar | mundane not_cursed great sword |\
+            mundane not_cursed triple sword | mundane not_cursed hand axe |\
+            mundane not_cursed war axe | mundane not_cursed broad axe |\
+            mundane not_cursed battleaxe | mundane not_cursed executioner's axe
+KFEAT:  A = weapon shop type:Mashing suffix:MeleeMart count:9 use_all greed:100 ; \
+            mundane not_cursed whip | mundane not_cursed mace |\
+            mundane not_cursed flail |\
+            mundane not_cursed morningstar |\
+	    mundane not_cursed dire flail | mundane not_cursed great mace |\
+            mundane not_cursed giant club | mundane not_cursed giant spiked club |\
+            mundane not_cursed quarterstaff
+KFEAT:  B = weapon shop type:Demonics suffix:and_Exotics count:5 use_all greed:60 ; \
+	    mundane not_cursed quick blade | mundane not_cursed demon whip |\
+            mundane not_cursed eveningstar | mundane not_cursed demon blade |\
+            mundane not_cursed lajatang
+KFEAT:  C = food shop type:Multiplicative suffix:MREs count:15 use_all greed:5 ; \
+            ration q:1 | ration q:2 | ration q:4 | ration q:8 | ration q:16 |\
+            ration q:32 | ration q:64 | ration q:128 | ration q:264 |\
+            ration q:512 | ration q:1024 | ration q:2048 | ration q:4096 |\
+	    ration q:8192 | ration q:16384
+KFEAT:  D = scroll shop type:Scrolls suffix:and_such count:21 use_all greed:20 ; \
+	    scroll of amnesia q:1 | scroll of blinking q:1 | scroll of blinking q:2 |\
+            scroll of enchant armour q:1 | scroll of enchant armour q:2 |\
+            scroll of enchant weapon q:1 | scroll of enchant weapon q:2 |\
+            scroll of fear q:1 | scroll of fear q:2 | scroll of fog q:1 |\
+	    scroll of fog q:2 | scroll of holy word q:1 | scroll of immolation q:1 |\
+            scroll of magic mapping q:1 | scroll of remove curse q:1 |\
+            scroll of silence q:1 | scroll of summoning q:1 | scroll of teleportation q:1 |\
+            scroll of teleportation q:2 | scroll of torment q:1 | scroll of vulnerability q:1
+KFEAT:  E = weapon shop type:Staff suffix:Store count:11 use_all greed:20 ; \
+            not_cursed staff of fire | not_cursed staff of cold | not_cursed staff of air |\
+            not_cursed staff of earth | not_cursed staff of death |\
+            not_cursed staff of poison | not_cursed staff of summoning |\
+            not_cursed staff of conjuration | not_cursed staff of energy |\
+            not_cursed staff of wizardry | not_cursed staff of power
+KFEAT:  F = book shop type:Basic_Mysticism suffix:books_etc greed:15 count:17 use_all ; \
+            book of minor magic | book of conjurations | book of flames |\
+            book of frost | young poisoner's handbook | book of air |\
+            book of misfortune | book of geomancy | book of power |\
+            book of cantrips | book of party tricks | book of changes |\
+            book of clouds | book of necromancy | book of callings |\
+            book of maledictions | book of debilitation
+KFEAT:  G = book shop type:Further suffix:Studies_in_the_Mystic_Arts count:18 greed:10 use_all ; \
+            book of summonings | book of fire |\
+            book of ice | book of spatial translocations |\
+            book of enchantments | book of the tempests | book of death |\
+            book of transfigurations | fen folio |\
+            book of the sky | book of the warp | book of beasts |\
+            book of unlife | book of the earth | book of the dragon |\
+            book of burglary | book of dreams | book of alchemy
+KFEAT:  H = distillery shop type:Alchemist suffix:Brewery count:16 greed:20 use_all ; \
+	    potion of curing q:1 | potion of curing q:2 | potion of heal wounds q:1 |\
+            potion of heal wounds q:2 | potion of haste q:1 | potion of might q:1 |\
+            potion of brilliance q:1 | potion of agility q:1 | potion of flight q:1 |\
+            potion of cancellation q:1 | potion of ambrosia q:1 | potion of invisibility q:1 |\
+            potion of magic q:1 | potion of berserk rage q:1 | potion of resistance q:1 |\
+            potion of lignification q:1
+KFEAT:  I = jewellery shop type:Amulets suffix:and_Necklaces count:8 greed:10 use_all ; \
+            mundane not_cursed amulet of harm | mundane not_cursed amulet of the acrobat |\
+            mundane not_cursed amulet of magic regeneration |\
+            mundane not_cursed amulet of the gourmand | mundane cursed amulet of inaccuracy |\
+            mundane not_cursed amulet of guardian spirit |\
+            mundane not_cursed amulet of reflection | mundane not_cursed amulet of regeneration
+KFEAT:  J = jewellery shop type:Rings, suffix:Glorious_Rings count:19 greed:8 use_all ; \
+            mundane not_cursed ring of protection | mundane not_cursed ring of evasion |\
+            mundane not_cursed ring of poison resistance | mundane not_cursed ring of resist corrosion|\
+            mundane not_cursed ring of strength | mundane not_cursed ring of intelligence |\
+            mundane not_cursed ring of dexterity | mundane not_cursed ring of slaying |\
+            mundane not_cursed ring of see invisible | mundane not_cursed ring of stealth|\
+            mundane cursed ring of attention | mundane cursed ring of teleportation |\
+            mundane not_cursed ring of wizardry | mundane not_cursed ring of magical power |\
+            mundane not_cursed ring of fire | mundane not_cursed ring of ice |\
+            mundane not_cursed ring of protection from magic | mundane not_cursed ring of positive energy|\
+            mundane not_cursed ring of flight
+KFEAT:  R = abandoned_shop
+KFEAT:  S = dry_fountain
+PLACE: Start Market
+
+MAP
+xxxxxxxxxxxxxxxxxxxxx
+x...................x
+x.........8.........x
+x........7.H........x
+x.......6...G.......x
+x......5.....F......x
+x.....4.......E.....x
+x....3.........D....x
+x...2...S...S...C...x
+x..1.............B..x
+x.0....S..{..S....A.x
+x..Z.............I..x
+x...Y...S...S...J...x
+x....K.........L....x
+x.....M.......N.....x
+x......O.....P......x
+x.......Q...9.......x
+x........R.R........x
+x.........R.........x
+x...................x
+xxxxxxxxxxxxxxxxxxxxx
 ENDMAP
