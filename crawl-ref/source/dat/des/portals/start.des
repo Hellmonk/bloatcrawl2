@@ -85,8 +85,8 @@ KFEAT:  2 = weapon shop type:Archery suffix:Annex count:6 use_all greed:40 ; \
 	    mundane not_cursed triple crossbow | mundane not_cursed blowgun
 KFEAT:  4 = weapon shop type:Sling suffix:Spring count:2 use_all greed:20 ; \
             mundane not_cursed hunting sling | mundane not_cursed fustibalus
-KFEAT:  5 = general shop type:Pet suffix:Rocks count:2 use_all greed:10 ; \
-            stone q:50 | stone q:50 
+KFEAT:  5 = general shop type:Pet suffix:Rocks count:5 use_all greed:10 ; \
+            stone q:1 | stone q:10 | stone q:25 | stone q:50 | stone q:50
 KFEAT:  6 = weapon shop type:Ammo suffix:outlet count:7 use_all greed:5 ; \
             arrow q:50 | arrow q:50 | bolt q:50 | bolt q:50 |\
             sling bullet q:50 | sling bullet q:50 | needle q:30
@@ -264,6 +264,14 @@ KFEAT:  J = jewellery shop type:Rings, suffix:Glorious_Rings count:19 greed:8 us
             mundane not_cursed ring of protection from magic | mundane not_cursed ring of positive energy|\
             mundane not_cursed ring of flight
 KFEAT:  R = abandoned_shop
+KFEAT:  T = weapon shop type:Tossed_out suffix:Treasures count:16 greed:10 use_all ; \
+	    tomahawk q:10 | tomahawk ego:poisoned q:10 | tomahawk ego:returning q:10 |\
+            tomahawk ego:chaos q:10 | tomahawk ego:dispersal q:10 | tomahawk ego:exploding q:10|\
+            tomahawk ego:steel q:10 | tomahawk ego:silver q:10 |\
+	    javelin q:10 | javelin ego:poisoned q:10 | javelin ego:returning q:10 |\
+            javelin ego:chaos q:10 | javelin ego:penetration q:10 |\
+            javelin ego:steel q:10 | javelin ego:silver q:10 |\
+            throwing net q:5
 KFEAT:  S = dry_fountain
 PLACE: Start Market
 
@@ -285,7 +293,7 @@ x....K.........L....x
 x.....M.......N.....x
 x......O.....P......x
 x.......Q...9.......x
-x........R.R........x
+x........T.R........x
 x.........R.........x
 x...................x
 xxxxxxxxxxxxxxxxxxxxx
