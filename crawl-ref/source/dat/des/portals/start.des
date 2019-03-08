@@ -79,21 +79,22 @@ KFEAT:  Y = armour shop count:3 greed:31 type:the suffix:Resistance use_all ; \
             not_cursed buckler ego:resistance plus:0 |\
             not_cursed shield ego:resistance plus:0 |\
             not_cursed large shield ego:resistance plus:0
-KFEAT:  2 = weapon shop type:Archery suffix:Annex count:5 use_all greed:80 ; \
+KFEAT:  2 = weapon shop type:Archery suffix:Annex count:6 use_all greed:40 ; \
             mundane not_cursed shortbow | mundane not_cursed longbow |\
             mundane not_cursed hand crossbow | mundane not_cursed arbalest |\
-	    mundane not_cursed triple crossbow
+	    mundane not_cursed triple crossbow | mundane not_cursed blowgun
 KFEAT:  4 = weapon shop type:Sling suffix:Spring count:2 use_all greed:20 ; \
             mundane not_cursed hunting sling | mundane not_cursed fustibalus
-KFEAT:  5 = general shop type:Pet suffix:Rocks count:4 use_all greed:10 ; \
-            stone q:50 | stone q:50 | large rock q:5 | large rock q:5
+KFEAT:  5 = general shop type:Pet suffix:Rocks count:2 use_all greed:10 ; \
+            stone q:50 | stone q:50 
 KFEAT:  6 = weapon shop type:Ammo suffix:outlet count:7 use_all greed:5 ; \
             arrow q:50 | arrow q:50 | bolt q:50 | bolt q:50 |\
             sling bullet q:50 | sling bullet q:50 | needle q:30
-KFEAT:  7 = weapon shop type:Blowgun suffix:Blowout count:6 use_all greed:100 ; \
-            mundane not_cursed blowgun | needle ego:curare q:5 |\
+KFEAT:  7 = weapon shop type:Blowgun suffix:Blowout count:7 use_all greed:100 ; \
+            needle ego:curare q:5 |\
 	    needle ego:confusion q:5 | needle ego:frenzy q:5 |\
-            needle ego:sleep q:5 | needle ego:paralysis q:5
+            needle ego:sleep q:5 | needle ego:paralysis q:5 |\
+            large rock q:5 | large rock q:5
 KFEAT:  8 = armour shop type:Auxillary suffix:Armour count:11 use_all greed:20 ; \
             mundane not_cursed hat | not_cursed hat ego:magic_resistance plus:0|\
             not_cursed hat ego:intelligence plus:0 |\
@@ -179,25 +180,30 @@ KFEAT:  N = antiques shop name:Pakellas type:Evokable suffix:Objects use_all cou
             lamp of fire | phial of floods | fan of gales | crystal ball of energy |\
             box of beasts q:1 | box of beasts q:2 | sack of spiders q:1 | sack of spiders q:2 |\
             phantom mirror q:1 | phantom mirror q:2
-KFEAT:  9 = weapon shop type:Blade suffix:Boutique count:13 use_all greed:100 ; \
+KFEAT:  9 = weapon shop type:Blade suffix:Boutique count:17 use_all greed:40 ; \
 	    mundane not_cursed dagger | mundane not_cursed short sword |\
             mundane not_cursed rapier |\
             mundane not_cursed falchion | mundane not_cursed long sword |\
             mundane not_cursed scimitar | mundane not_cursed great sword |\
-            mundane not_cursed triple sword | mundane not_cursed hand axe |\
+            mundane not_cursed hand axe |\
             mundane not_cursed war axe | mundane not_cursed broad axe |\
-            mundane not_cursed battleaxe | mundane not_cursed executioner's axe
-KFEAT:  A = weapon shop type:Mashing suffix:MeleeMart count:9 use_all greed:100 ; \
+            mundane not_cursed battleaxe|\
+            mundane not_cursed spear | mundane not_cursed trident |\
+            mundane not_cursed halberd |\
+            mundane not_cursed scythe | mundane not_cursed glaive
+KFEAT:  A = weapon shop type:Mashing suffix:MeleeMart count:9 use_all greed:40 ; \
             mundane not_cursed whip | mundane not_cursed mace |\
             mundane not_cursed flail |\
             mundane not_cursed morningstar |\
 	    mundane not_cursed dire flail | mundane not_cursed great mace |\
             mundane not_cursed giant club | mundane not_cursed giant spiked club |\
             mundane not_cursed quarterstaff
-KFEAT:  B = weapon shop type:Demonics suffix:and_Exotics count:5 use_all greed:60 ; \
+KFEAT:  B = weapon shop type:Demonics suffix:and_Exotics count:9 use_all greed:40 ; \
 	    mundane not_cursed quick blade | mundane not_cursed demon whip |\
             mundane not_cursed eveningstar | mundane not_cursed demon blade |\
-            mundane not_cursed lajatang
+            mundane not_cursed lajatang | mundane not_cursed demon trident |\
+            mundane not_cursed triple sword | mundane not_cursed executioner's axe|\
+            mundane not_cursed bardiche
 KFEAT:  C = food shop type:Multiplicative suffix:MREs count:15 use_all greed:5 ; \
             ration q:1 | ration q:2 | ration q:4 | ration q:8 | ration q:16 |\
             ration q:32 | ration q:64 | ration q:128 | ration q:264 |\
@@ -212,7 +218,7 @@ KFEAT:  D = scroll shop type:Scrolls suffix:and_such count:21 use_all greed:16 ;
             scroll of magic mapping q:1 | scroll of remove curse q:1 |\
             scroll of silence q:1 | scroll of summoning q:1 | scroll of teleportation q:1 |\
             scroll of teleportation q:2 | scroll of torment q:1 | scroll of vulnerability q:1
-KFEAT:  E = weapon shop type:Staff suffix:Store count:11 use_all greed:20 ; \
+KFEAT:  E = weapon shop type:Staff suffix:Store count:11 use_all greed:10 ; \
             not_cursed staff of fire | not_cursed staff of cold | not_cursed staff of air |\
             not_cursed staff of earth | not_cursed staff of death |\
             not_cursed staff of poison | not_cursed staff of summoning |\

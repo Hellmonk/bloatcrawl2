@@ -88,6 +88,11 @@ Necromancer
 Necromancers are wizards specializing in the practice of death magic. They
 start out with the Pain spell.
 %%%%
+Noble
+
+Nobles have few skills to help them survive, but they have a lot of gold.
+Starts in a special market with a variety of gear and choice of starting stats.
+%%%%
 Skald
 
 Skalds are melee fighters who can boost themselves in battle with spells from

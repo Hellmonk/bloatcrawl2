@@ -1254,6 +1254,8 @@ static void _make_level(dungeon_feature_type stair_taken,
         // If we're leaving the Abyss for the first time as a Chaos
         // Knight of Lugonu (who start out there), enable normal monster
         // generation.
+		delete_level(level_id(BRANCH_START_MARKET, 1));
+		delete_level(level_id(BRANCH_START_TEMPLE, 1));
         you.chapter = CHAPTER_ORB_HUNTING;
     }
 
