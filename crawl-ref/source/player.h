@@ -670,6 +670,7 @@ public:
     string unarmed_attack_name() const;
 
     bool fumbles_attack() override;
+	bool drowning();
     bool fights_well_unarmed(int heavy_armour_penalty) override;
 
     void attacking(actor *other, bool ranged = false) override;

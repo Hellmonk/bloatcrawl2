@@ -2512,7 +2512,7 @@ static void _swing_at_target(coord_def move)
         return;
     }
 
-	if ((env.grid(you.position)) == DNGN_DEEP_WATER && !you.can_swim())
+	if (you.drowning())
 	{
 		mpr("You can't attack, while struggling to swim!");
 		return;
@@ -3085,7 +3085,7 @@ static void _move_player(coord_def move)
                 return;
             }
 
-			if ((env.grid(you.position)) == DNGN_DEEP_WATER && !you.can_swim())
+			if (you.drowning())
 			{
 				mpr("You can't attack, while struggling to swim!");
 				stop_running();

@@ -319,6 +319,12 @@ bool check_moveto_exclusion(const coord_def& p, const string &move_verb,
     return check_moveto_exclusions({p}, move_verb, prompted);
 }
 
+bool player::drowning()
+{
+	return ((env.grid(you.position)) == DNGN_DEEP_WATER && !you.can_swim()
+		&& !you.airborne() && (you.species != SP_GREY_DRACONIAN) && !you.can_water_walk());
+}
+
 bool check_moveto(const coord_def& p, const string &move_verb, const string &msg)
 {
     return check_moveto_terrain(p, move_verb, msg)
@@ -453,7 +459,8 @@ void moveto_location_effects(dungeon_feature_type old_feat,
                          new_grid == DNGN_SHALLOW_WATER ? "shallow" : "deep");
                 }
 
-                if (new_grid == DNGN_DEEP_WATER && old_feat != DNGN_DEEP_WATER)
+                if (new_grid == DNGN_DEEP_WATER && old_feat != DNGN_DEEP_WATER 
+						&& you.species != SP_GREY_DRACONIAN)
                     mpr("You struggle to swim.");
 
                 if (!feat_is_water(old_feat))
@@ -2017,7 +2024,7 @@ int player_movement_speed()
         mv += 6;
 
 	// Deep water is even slower.
-	if ((env.grid(you.position) == DNGN_DEEP_WATER) && !you.can_swim())
+	if (you.drowning())
 		mv += 6;
 
     // moving on liquefied ground takes longer

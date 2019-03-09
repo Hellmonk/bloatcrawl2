@@ -1601,7 +1601,7 @@ void actor_apply_terrain(actor* act, dungeon_feature_type terrain)
 	{
 		if (act->is_player())
 		{
-			original = roll_dice(3, 40);
+			original = (12 + roll_dice(3, 21));
 			hurted = resist_adjust_damage(act, BEAM_FIRE, original);
 			if (hurted > original)
 				mpr("The lava burns you terribly!");
@@ -1620,9 +1620,12 @@ void actor_apply_terrain(actor* act, dungeon_feature_type terrain)
 	{
 		if (act->is_player())
 		{
-			if (!you.res_water_drowning() && one_chance_in(3))
+			if (you.drowning())
 			{
-				mpr("You inhale water! You're drowning!");
+				if (coinflip())
+					mpr("You inhale water! You're drowning!");
+				else
+					mpr("Your lungs burn in need of oxygen!");
 				ouch(timescale_damage(act,roll_dice(2, 10)), KILLED_BY_WATER, MID_NOBODY, "Deep Water");
 			}
 		}
@@ -1631,7 +1634,7 @@ void actor_apply_terrain(actor* act, dungeon_feature_type terrain)
 
 int lava_damage(actor* act)
 {
-	int output = roll_dice(3, 40);
+	int output = 12 + roll_dice(3, 21);
 	output = resist_adjust_damage(act, BEAM_FIRE, output);
 	act->expose_to_element(BEAM_FIRE, 2);
 	output = timescale_damage(act, output);

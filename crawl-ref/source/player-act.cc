@@ -648,6 +648,13 @@ bool player::fumbles_attack()
         if (floundering())
             learned_something_new(HINT_FUMBLING_SHALLOW_WATER);
     }
+
+	if (you.drowning())
+	{
+		mpr("You can't attack effectively from deep water.");
+		did_fumble = true;
+	}
+
     return did_fumble;
 }
 
