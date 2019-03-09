@@ -849,6 +849,7 @@ static special_armour_type _generate_armour_type_ego(armour_type type,
     case ARM_ROBE:
         return random_choose_weighted(1, SPARM_RESISTANCE,
                                       1, SPARM_ARCHMAGI,
+			                          1, SPARM_HIGH_PRIEST,
                                       2, SPARM_NORMAL,
                                       2, SPARM_COLD_RESISTANCE,
                                       2, SPARM_FIRE_RESISTANCE,
@@ -933,6 +934,7 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
         return slot == EQ_BOOTS;
 
     case SPARM_ARCHMAGI:
+	case SPARM_HIGH_PRIEST:
         return !strict || type == ARM_ROBE;
 
     case SPARM_PONDEROUSNESS:

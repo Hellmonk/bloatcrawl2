@@ -369,7 +369,8 @@ static void _upgrade_body_armour(item_def &arm)
         && arm.sub_type < ARM_LAST_MUNDANE_BODY
         // These are supposed to be robe-only.
         && arm.brand != SPARM_ARCHMAGI
-        && arm.brand != SPARM_RESISTANCE)
+        && arm.brand != SPARM_RESISTANCE
+		&& arm.brand != SPARM_HIGH_PRIEST)
     {
         arm.sub_type++;
     }

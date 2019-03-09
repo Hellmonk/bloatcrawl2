@@ -131,7 +131,7 @@ KFEAT:  K = armour shop type:Bundle_Up suffix:Cloaks_and_Scarves use_all count:8
             not_cursed scarf ego:repulsion |\
             not_cursed scarf ego:cloud_immunity
 KFEAT:  M = armour shop type:Mage suffix:Robes use_all count:7 greed:25 ; \
-            mundane not_cursed robe |\
+            not_cursed robe ego:high_priest plus:0 |\
             not_cursed robe ego:archmagi plus:0 |\
             not_cursed robe ego:resistance plus:0|\
             not_cursed robe ego:fire_resistance plus:0|\

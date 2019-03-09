@@ -911,6 +911,15 @@ static void _equip_armour_effect(item_def& arm, bool unmeld,
                 mpr("You feel powerful.");
             break;
 
+		case SPARM_HIGH_PRIEST:
+			if (you.species == SP_DEMIGOD)
+				mpr("You feel like worshipping yourself.");
+			else if (you_worship(GOD_NO_GOD))
+				mpr("You feel like seeking a god to worship.");
+			else
+				mprf(MSGCH_GOD, "You feel a surge of divine power.");
+			break;
+
         case SPARM_SPIRIT_SHIELD:
             _spirit_shield_message(unmeld);
             break;
@@ -1082,6 +1091,13 @@ static void _unequip_armour_effect(item_def& item, bool meld,
     case SPARM_ARCHMAGI:
         mpr("You feel strangely numb.");
         break;
+
+	case SPARM_HIGH_PRIEST:
+		if (you.species == SP_DEMIGOD)
+			mpr("You feel less interested in self-worship.");
+		else 
+ 			mprf(MSGCH_GOD,"Your divine fervour dies down.");
+		break;
 
     case SPARM_SPIRIT_SHIELD:
         if (!you.spirit_shield())

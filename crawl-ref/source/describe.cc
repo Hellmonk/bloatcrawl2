@@ -1706,6 +1706,10 @@ static string _describe_armour(const item_def &item, bool verbose)
             description += "It increases the power of its wearer's "
                 "magical spells.";
             break;
+		case SPARM_HIGH_PRIEST:
+			description += "It increases the strength god powers "
+				"when invoked by the wearer.";
+			break;
 #if TAG_MAJOR_VERSION == 34
         case SPARM_PRESERVATION:
             description += "It does nothing special.";

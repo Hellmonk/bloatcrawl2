@@ -338,6 +338,7 @@ unsigned int item_value(item_def item, bool ident)
             {
             case SPARM_RUNNING:
             case SPARM_ARCHMAGI:
+			case SPARM_HIGH_PRIEST:
             case SPARM_RESISTANCE:
                 valued += 250;
                 break;

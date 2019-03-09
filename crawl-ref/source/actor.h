@@ -325,6 +325,7 @@ public:
     virtual bool clarity(bool calc_unid = true, bool items = true) const;
     virtual bool faith(bool calc_unid = true, bool items = true) const;
     virtual int archmagi(bool calc_unid = true, bool items = true) const;
+	virtual int high_priest(bool calc_unid = true, bool items = true) const;
     virtual int spec_evoke(bool calc_unid = true, bool items = true) const;
     virtual bool no_cast(bool calc_unid = true, bool items = true) const;
     virtual bool reflection(bool calc_unid = true, bool items = true) const;

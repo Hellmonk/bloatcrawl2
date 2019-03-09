@@ -1830,7 +1830,7 @@ int player_spec_invo()
 	if (you.get_mutation_level(MUT_GODS_PITY) > 0)
 		si++;
 
-	// I may add a fixedArt staff or an artifact property here.
+	si += you.high_priest(true,true);
 
 	return si;
 }

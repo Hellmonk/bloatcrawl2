@@ -262,6 +262,15 @@ int actor::archmagi(bool calc_unid, bool items) const
     return wearing_ego(EQ_ALL_ARMOUR, SPARM_ARCHMAGI, calc_unid);
 }
 
+
+int actor::high_priest(bool calc_unid, bool items) const
+{
+	if (!items)
+		return 0;
+
+	return wearing_ego(EQ_ALL_ARMOUR, SPARM_HIGH_PRIEST, calc_unid);
+}
+
 /**
  * Indicates if the actor has an active evocations enhancer.
  *
