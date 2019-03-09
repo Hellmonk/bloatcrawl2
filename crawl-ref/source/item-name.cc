@@ -712,9 +712,7 @@ static const char* scroll_type_name(int scrolltype)
 #endif
     case SCR_TELEPORTATION:      return "teleportation";
     case SCR_FEAR:               return "fear";
-#if TAG_MAJOR_VERSION == 34
-    case SCR_NOISE:              return "noise";
-#endif
+    case SCR_NOISE:              return "attention";
     case SCR_REMOVE_CURSE:       return "remove curse";
     case SCR_SUMMONING:          return "summoning";
     case SCR_ENCHANT_WEAPON:     return "enchant weapon";
@@ -3228,8 +3226,6 @@ bool is_bad_item(const item_def &item, bool temp)
         case SCR_CURSE_JEWELLERY:
             return !have_passive(passive_t::want_curses);
 #endif
-        case SCR_NOISE:
-            return true;
         default:
             return false;
         }
@@ -3304,7 +3300,9 @@ bool is_dangerous_item(const item_def &item, bool temp)
         switch (item.sub_type)
         {
         case SCR_IMMOLATION:
+		case SCR_NOISE:
         case SCR_VULNERABILITY:
+		case SCR_SILENCE:
             return true;
         case SCR_TORMENT:
             return !you.get_mutation_level(MUT_TORMENT_RESISTANCE)

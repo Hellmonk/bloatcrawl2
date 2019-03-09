@@ -2875,6 +2875,7 @@ void read_scroll(item_def& scroll)
         break;
 
     case SCR_NOISE:
+		you.increase_duration(DUR_SENTINEL_MARK, 40 + random2(40), 80);
         noisy(25, you.pos(), "You hear a loud clanging noise!");
         break;
 

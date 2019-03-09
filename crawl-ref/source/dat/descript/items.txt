@@ -972,9 +972,11 @@ scroll of magic mapping
 
 A scroll that reveals the surroundings of the one who reads it.
 %%%%
-scroll of noise
+scroll of attention
 
-A prank scroll that creates a loud noise when read.
+A scroll that creates a loud noise and marks the reader to draw as much
+attention as possible, favorite among those that prefer long fights in
+a specific arena over searching their enemies out.
 %%%%
 scroll of random uselessness
 

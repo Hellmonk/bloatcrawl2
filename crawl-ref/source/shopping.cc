@@ -576,6 +576,7 @@ unsigned int item_value(item_def item, bool ident)
             case SCR_AMNESIA:
             case SCR_FEAR:
             case SCR_IMMOLATION:
+			case SCR_NOISE:
             case SCR_MAGIC_MAPPING:
                 valued += 35;
                 break;
@@ -596,7 +597,6 @@ unsigned int item_value(item_def item, bool ident)
                 break;
 
 #if TAG_MAJOR_VERSION == 34
-            case SCR_NOISE:
             case SCR_RANDOM_USELESSNESS:
 #endif
                 valued += 10;
@@ -848,7 +848,6 @@ bool is_worthless_consumable(const item_def &item)
         case SCR_CURSE_ARMOUR:
         case SCR_CURSE_WEAPON:
         case SCR_CURSE_JEWELLERY:
-        case SCR_NOISE:
         case SCR_RANDOM_USELESSNESS:
 #endif
             return true;
