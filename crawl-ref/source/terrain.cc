@@ -1589,44 +1589,53 @@ bool slide_feature_over(const coord_def &src, coord_def preferred_dest,
 
 /**
  * Apply harmful environmental effects from the current tile terrain to the
- * player.
- *
+ * actor.
+ * @param entry     The actor being affected by terrain.
  * @param entry     The terrain type in question.
  */
-void fall_into_a_pool(dungeon_feature_type terrain)
+void actor_apply_terrain(actor* act, dungeon_feature_type terrain)
 {
-    if (terrain == DNGN_DEEP_WATER)
-    {
-        if (you.can_water_walk() || form_likes_water())
-            return;
-    }
+	int original = 0;
+	int hurted = 0;
+	if (feat_is_lava(terrain))
+	{
+		if (act->is_player())
+		{
+			original = roll_dice(3, 40);
+			hurted = resist_adjust_damage(act, BEAM_FIRE, original);
+			if (hurted > original)
+				mpr("The lava burns you terribly!");
+			else
+				mpr("The lava burns!");
+			if (hurted < original)
+				canned_msg(MSG_YOU_RESIST);
+			ouch(timescale_damage(act, hurted) , KILLED_BY_LAVA, MID_NOBODY, "Lava");
+		}
+		else
+		{
+			act->hurt(nullptr, lava_damage(act), BEAM_LAVA, KILLED_BY_LAVA, "Lava", "", true, true);
+		}
+	}
+	else if (terrain == DNGN_DEEP_WATER)
+	{
+		if (act->is_player())
+		{
+			if (!you.res_water_drowning() && one_chance_in(3))
+			{
+				mpr("You inhale water! You're drowning!");
+				ouch(timescale_damage(act,roll_dice(2, 10)), KILLED_BY_WATER, MID_NOBODY, "Deep Water");
+			}
+		}
+	}
+}
 
-    mprf("You fall into the %s!",
-         (terrain == DNGN_LAVA)       ? "lava" :
-         (terrain == DNGN_DEEP_WATER) ? "water"
-                                      : "programming rift");
-    // included in default force_more_message
-
-    clear_messages();
-    if (terrain == DNGN_LAVA)
-    {
-        if (you.species == SP_MUMMY)
-            mpr("You burn to ash...");
-        else
-            mpr("The lava burns you to a cinder!");
-        ouch(INSTANT_DEATH, KILLED_BY_LAVA);
-    }
-    else if (terrain == DNGN_DEEP_WATER)
-    {
-        mpr("You sink like a stone!");
-
-        if (you.is_nonliving() || you.undead_state())
-            mpr("You fall apart...");
-        else
-            mpr("You drown...");
-
-        ouch(INSTANT_DEATH, KILLED_BY_WATER);
-    }
+int lava_damage(actor* act)
+{
+	int output = roll_dice(3, 40);
+	output = resist_adjust_damage(act, BEAM_FIRE, output);
+	act->expose_to_element(BEAM_FIRE, 2);
+	output = timescale_damage(act, output);
+	return output;
 }
 
 typedef map<string, dungeon_feature_type> feat_desc_map;

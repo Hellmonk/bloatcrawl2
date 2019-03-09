@@ -1004,6 +1004,9 @@ void player_reacts()
 
     actor_apply_cloud(&you);
 
+	if (!you.airborne())
+		actor_apply_terrain(&you, env.grid(you.pos()));
+
     if (env.level_state & LSTATE_SLIMY_WALL)
         slime_wall_damage(&you, you.time_taken);
 
@@ -1054,9 +1057,6 @@ void player_reacts()
         xom_tick();
     else if (you_worship(GOD_QAZLAL))
         qazlal_storm_clouds();
-
-    if (you.props[EMERGENCY_FLIGHT_KEY].get_bool())
-        _handle_emergency_flight();
 }
 
 void extract_manticore_spikes(const char* endmsg)

@@ -1472,6 +1472,9 @@ static void _pre_monster_move(monster& mons)
 
     _monster_add_energy(mons);
 
+	if (!mons.has_ench(ENCH_FLIGHT))
+		actor_apply_terrain(&mons, env.grid(mons.position));
+
     // Handle clouds on nonmoving monsters.
     if (mons.speed == 0)
     {

@@ -3015,40 +3015,6 @@ void mons_check_pool(monster* mons, const coord_def &oldpos,
         return;
     }
 
-
-    // Don't worry about invisibility. You should be able to see if
-    // something has fallen into the lava.
-    if (you.see_cell(mons->pos()) && (oldpos == mons->pos() || grd(oldpos) != grid))
-    {
-         mprf("%s falls into the %s!",
-             mons->name(DESC_THE).c_str(),
-             grid == DNGN_LAVA ? "lava" : "water");
-    }
-
-    // Even fire resistant monsters perish in lava.
-    if (grid == DNGN_LAVA && mons->res_fire() < 2)
-    {
-        simple_monster_message(*mons, " is incinerated.",
-                               MSGCH_MONSTER_DAMAGE, MDAM_DEAD);
-    }
-    else if (mons->can_drown())
-    {
-        simple_monster_message(*mons, " drowns.",
-                               MSGCH_MONSTER_DAMAGE, MDAM_DEAD);
-    }
-    else
-    {
-        simple_monster_message(*mons, " falls apart.",
-                               MSGCH_MONSTER_DAMAGE, MDAM_DEAD);
-    }
-
-    if (killer == KILL_NONE)
-    {
-        // Self-kill.
-        killer  = KILL_MON;
-        killnum = mons->mindex();
-    }
-
     // Yredelemnul special, redux: It's the only one that can
     // work on drowned monsters.
     if (!_yred_enslave_soul(mons, killer))

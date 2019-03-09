@@ -84,6 +84,12 @@ static bool _reaching_weapon_attack(const item_def& wpn)
         return false;
     }
 
+	if ((env.grid(you.position)) == DNGN_DEEP_WATER && !you.can_swim())
+	{
+		mpr("You can't attack, while struggling to swim!");
+		return false;
+	}
+
     if (you.caught())
     {
         mprf("You cannot attack while %s.", held_status());

@@ -6140,20 +6140,7 @@ void monster::react_to_damage(const actor *oppressor, int damage,
             if (!fly_died)
                 mname.clear();
 
-            if (fly_died && !is_habitable(pos()))
-            {
-                hit_points = 0;
-                if (observable())
-                {
-                    mprf("As %s mount dies, %s plunges down into %s!",
-                         pronoun(PRONOUN_POSSESSIVE).c_str(),
-                         name(DESC_THE).c_str(),
-                         grd(pos()) == DNGN_LAVA ?
-                             "lava and is incinerated" :
-                             "deep water and drowns");
-                }
-            }
-            else if (fly_died && observable())
+            if (fly_died && observable())
             {
                 mprf("%s falls from %s now dead mount.",
                      name(DESC_THE).c_str(),

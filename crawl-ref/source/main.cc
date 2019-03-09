@@ -2512,6 +2512,12 @@ static void _swing_at_target(coord_def move)
         return;
     }
 
+	if ((env.grid(you.position)) == DNGN_DEEP_WATER && !you.can_swim())
+	{
+		mpr("You can't attack, while struggling to swim!");
+		return;
+	}
+
     if (you.confused())
     {
         if (!you.is_stationary())
@@ -3078,6 +3084,14 @@ static void _move_player(coord_def move)
                 you.turn_is_over = false;
                 return;
             }
+
+			if ((env.grid(you.position)) == DNGN_DEEP_WATER && !you.can_swim())
+			{
+				mpr("You can't attack, while struggling to swim!");
+				stop_running();
+				you.turn_is_over = false;
+				return;
+			}
 
             you.turn_is_over = true;
             fight_melee(&you, targ_monst);

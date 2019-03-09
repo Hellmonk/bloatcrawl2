@@ -215,6 +215,11 @@ static bool _check_moveto_dangerous(const coord_def& p, const string& msg, const
         return true;
     }
 
+	// Moving directly from deep water to molten lava is a rare edge case, let's just assume if already
+	// in dangerous, continuing to move through dangerous is fine.
+	if (is_feat_dangerous(env.grid(you.position)))
+		return true;
+
     if (!msg.empty())
         mpr(msg);
 
@@ -223,7 +228,7 @@ static bool _check_moveto_dangerous(const coord_def& p, const string& msg, const
 	if (feat_is_water(env.grid(p)))
 	{
 		if (species_likes_water(you.species))
-			mpr("Your current form doesn't swim.");
+			mpr("You can't swim in your current form.");
 		prompt = make_stringf("Do you really want to %s into deep water?",
 			move_verb.c_str());
 	}
@@ -429,11 +434,6 @@ void moveto_location_effects(dungeon_feature_type old_feat,
 {
     const dungeon_feature_type new_grid = env.grid(you.pos());
 
-    // Terrain effects.
-    if (is_feat_dangerous(new_grid))
-        fall_into_a_pool(new_grid);
-
-    // called after fall_into_a_pool, in case of emergency untransform
     if (you.species == SP_MERFOLK)
         merfolk_check_swimming(stepped);
 
@@ -471,8 +471,16 @@ void moveto_location_effects(dungeon_feature_type old_feat,
                 mpr("Don't expect to remain undetected while in the water.");
             }
         }
-        else if (you.props.exists(TEMP_WATERWALK_KEY))
-            you.props.erase(TEMP_WATERWALK_KEY);
+		else if (you.props.exists(TEMP_WATERWALK_KEY))
+			you.props.erase(TEMP_WATERWALK_KEY);
+		else if (feat_is_lava(new_grid))
+		{
+			if (!feat_is_lava(old_feat))
+			{
+				mprf(MSGCH_WARN, "This stuff is boiling hot and burns your body as you move through it.");
+				mprf("The liquefied rock is difficult to stand upon; moving is going to be slow.");
+			}
+		}
     }
 
     id_floor_items();
@@ -2008,9 +2016,16 @@ int player_movement_speed()
     if (you.in_water() && !you.can_swim())
         mv += 6;
 
+	// Deep water is even slower.
+	if ((env.grid(you.position) == DNGN_DEEP_WATER) && !you.can_swim())
+		mv += 6;
+
     // moving on liquefied ground takes longer
     if (you.liquefied_ground())
         mv += 3;
+
+	if (you.in_lava())
+		mv += 6;
 
     // armour
     if (you.run())
@@ -5469,9 +5484,15 @@ bool player::in_water() const
     return ground_level() && !you.can_water_walk() && feat_is_water(grd(pos()));
 }
 
+bool player::in_lava() const
+{
+	return ground_level() && feat_is_lava(grd(pos()));
+}
+
+
 bool player::in_liquid() const
 {
-    return in_water() || liquefied_ground();
+    return in_water() || liquefied_ground() || in_lava();
 }
 
 bool player::can_swim(bool permanently) const

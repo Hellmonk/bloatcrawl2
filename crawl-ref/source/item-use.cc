@@ -2632,6 +2632,10 @@ string cannot_read_item_reason(const item_def &item)
     if (you.duration[DUR_WATER_HOLD] && !you.res_water_drowning())
         return "You cannot read scrolls while unable to breathe!";
 
+	// drowning
+	if ((env.grid(you.position) == DNGN_DEEP_WATER) && !you.airborne() && !you.res_water_drowning())
+		return "You cannot read scrolls while unable to breathe!";
+
     // ru
     if (you.duration[DUR_NO_SCROLLS])
         return "You cannot read scrolls in your current state!";

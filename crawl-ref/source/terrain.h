@@ -128,6 +128,8 @@ bool slide_feature_over(const coord_def &src,
                         bool announce = false);
 
 void fall_into_a_pool(dungeon_feature_type terrain);
+void actor_apply_terrain(actor* act, dungeon_feature_type terrain);
+int lava_damage(actor* act);
 
 void                 init_feat_desc_cache();
 dungeon_feature_type feat_by_desc(string desc);

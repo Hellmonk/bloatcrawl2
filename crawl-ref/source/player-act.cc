@@ -638,7 +638,7 @@ bool player::fumbles_attack()
     bool did_fumble = false;
 
     // Fumbling in shallow water.
-    if (floundering() || liquefied_ground())
+    if (floundering() || liquefied_ground() || you.in_lava())
     {
         if (x_chance_in_y(3, 8))
         {

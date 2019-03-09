@@ -487,6 +487,7 @@ public:
     int max_dex() const;
 
     bool in_water() const;
+	bool in_lava() const;
     bool in_liquid() const;
     bool can_swim(bool permanently = false) const;
     bool can_water_walk() const;
