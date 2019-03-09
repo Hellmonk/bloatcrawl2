@@ -861,6 +861,7 @@ static special_armour_type _generate_armour_type_ego(armour_type type,
                                       26, SPARM_COLD_RESISTANCE,
                                       19, SPARM_POISON_RESISTANCE,
                                       15, SPARM_MAGIC_RESISTANCE,
+									  15, SPARM_HIGH_PRIEST,
                                        7, SPARM_POSITIVE_ENERGY,
                                        7, SPARM_PONDEROUSNESS);
 

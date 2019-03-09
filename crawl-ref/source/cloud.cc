@@ -621,7 +621,7 @@ static void _maybe_leave_water(const coord_def pos)
 
     if (grd(pos) == DNGN_FLOOR)
         feat = DNGN_SHALLOW_WATER;
-    else if (grd(pos) == DNGN_SHALLOW_WATER && you.pos() != pos
+    else if (grd(pos) == DNGN_SHALLOW_WATER
              && one_chance_in(3) && !crawl_state.game_is_sprint())
     {
         // Don't drown the player!
@@ -801,7 +801,7 @@ int max_cloud_damage(cloud_type cl_type, int power)
 }
 
 // Returns true if the cloud type has negative side effects beyond
-// plain damage and inventory destruction effects.
+// plain damage.
 static bool _cloud_has_negative_side_effects(cloud_type cloud)
 {
     switch (cloud)

@@ -1599,12 +1599,6 @@ void fall_into_a_pool(dungeon_feature_type terrain)
     {
         if (you.can_water_walk() || form_likes_water())
             return;
-
-        if (species_likes_water(you.species) && !you.transform_uncancellable)
-        {
-            emergency_untransform();
-            return;
-        }
     }
 
     mprf("You fall into the %s!",

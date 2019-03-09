@@ -2997,9 +2997,7 @@ int fedhas_rain(const coord_def &target)
         // just going to skip cases where there is something on the
         // shallow water. Destroying items will probably be annoying,
         // and insta-killing monsters is clearly out of the question.
-        else if (!actor_at(*rad)
-                 && igrd(*rad) == NON_ITEM
-                 && ftype == DNGN_SHALLOW_WATER)
+        else if (ftype == DNGN_SHALLOW_WATER)
         {
             dungeon_terrain_changed(*rad, DNGN_DEEP_WATER);
 

@@ -400,9 +400,7 @@ enum scroll_type
 #endif
     SCR_TELEPORTATION,
     SCR_FEAR,
-#if TAG_MAJOR_VERSION == 34
     SCR_NOISE,
-#endif
     SCR_REMOVE_CURSE,
     SCR_SUMMONING,
     SCR_ENCHANT_WEAPON,

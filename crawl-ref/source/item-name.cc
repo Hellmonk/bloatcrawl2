@@ -559,7 +559,8 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_RESISTANCE:        return "resistance";
         case SPARM_POSITIVE_ENERGY:   return "positive energy";
         case SPARM_ARCHMAGI:          return "the Archmagi";
-		case SPARM_HIGH_PRIEST:       return "the High Priest";
+		case SPARM_HIGH_PRIEST:       if (item.sub_type == ARM_ROBE) return "the High Priest";
+									  else return "the Paladin";
 #if TAG_MAJOR_VERSION == 34
         case SPARM_JUMPING:           return "jumping";
         case SPARM_PRESERVATION:      return "preservation";

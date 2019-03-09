@@ -207,7 +207,7 @@ bool check_moveto_trap(const coord_def& p, const string &move_verb,
     return true;
 }
 
-static bool _check_moveto_dangerous(const coord_def& p, const string& msg)
+static bool _check_moveto_dangerous(const coord_def& p, const string& msg, const string& move_verb)
 {
     if (you.can_swim() && feat_is_water(env.grid(p))
         || you.airborne() || !is_feat_dangerous(env.grid(p)))
@@ -217,17 +217,33 @@ static bool _check_moveto_dangerous(const coord_def& p, const string& msg)
 
     if (!msg.empty())
         mpr(msg);
-    else if (species_likes_water(you.species) && feat_is_water(env.grid(p)))
-        mpr("You cannot enter water in your current form.");
-    else
-        canned_msg(MSG_UNTHINKING_ACT);
-    return false;
+
+	string prompt;
+
+	if (feat_is_water(env.grid(p)))
+	{
+		if (species_likes_water(you.species))
+			mpr("Your current form doesn't swim.");
+		prompt = make_stringf("Do you really want to %s into deep water?",
+			move_verb.c_str());
+	}
+
+	else
+		prompt = make_stringf("Do you really want to %s into molten lava?",
+			move_verb.c_str());
+
+	if (!yesno(prompt.c_str(), false, 'n'))
+	{
+		canned_msg(MSG_OK);
+		return false;
+	}
+    return true;
 }
 
 bool check_moveto_terrain(const coord_def& p, const string &move_verb,
                           const string &msg, bool *prompted)
 {
-    if (!_check_moveto_dangerous(p, msg))
+    if (!_check_moveto_dangerous(p, msg, move_verb))
         return false;
     if (!need_expiration_warning() && need_expiration_warning(p)
         && !crawl_state.disables[DIS_CONFIRMATIONS])
@@ -438,7 +454,7 @@ void moveto_location_effects(dungeon_feature_type old_feat,
                 }
 
                 if (new_grid == DNGN_DEEP_WATER && old_feat != DNGN_DEEP_WATER)
-                    mpr("You sink to the bottom.");
+                    mpr("You struggle to swim.");
 
                 if (!feat_is_water(old_feat))
                 {
@@ -4982,17 +4998,6 @@ void fly_player(int pow, bool already_flying)
         float_player();
 }
 
-void enable_emergency_flight()
-{
-    mprf("You can't survive in this terrain! You fly above the %s, but the "
-         "process is draining.",
-         (grd(you.pos()) == DNGN_LAVA)       ? "lava" :
-         (grd(you.pos()) == DNGN_DEEP_WATER) ? "water"
-                                             : "buggy terrain");
-
-    you.props[EMERGENCY_FLIGHT_KEY] = true;
-}
-
 /**
  * Handle the player's flight ending. Apply emergency flight if needed.
  *
@@ -5004,13 +5009,6 @@ bool land_player(bool quiet)
     // there was another source keeping you aloft
     if (you.airborne())
         return false;
-
-    // Handle landing on (formerly) instakill terrain
-    if (is_feat_dangerous(grd(you.pos())))
-    {
-        enable_emergency_flight();
-        return false;
-    }
 
     if (!quiet)
         mpr("You float gracefully downwards.");

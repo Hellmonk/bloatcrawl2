@@ -1980,9 +1980,7 @@ void untransform(bool skip_move)
     if (!skip_move)
     {
         // Land the player if we stopped flying.
-        if (is_feat_dangerous(grd(you.pos())))
-            enable_emergency_flight();
-        else if (was_flying && !you.airborne())
+        if (was_flying && !you.airborne())
             move_player_to_grid(you.pos(), false);
 
         // Update merfolk swimming for the form change.
@@ -2060,15 +2058,6 @@ static void _extra_hp(int amount_extra) // must also set in calc_hp
     you.hp /= 10;
 
     deflate_hp(you.hp_max, false);
-}
-
-void emergency_untransform()
-{
-    mpr("You quickly transform back into your natural form.");
-    untransform(true); // We're already entering the water.
-
-    if (you.species == SP_MERFOLK)
-        merfolk_start_swimming(false);
 }
 
 /**
