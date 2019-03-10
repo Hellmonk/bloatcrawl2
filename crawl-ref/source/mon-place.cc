@@ -133,11 +133,13 @@ bool monster_habitable_grid(const monster* mon,
  *                    survivable, if actual_grid isn't similar to wanted_grid.
  * @param flies if true, treat the monster as flying even if the monster class
  *              can't usually fly.
+ * @param ai_check (new) If false it will allow monsters to go to deadly terrain
+ *              (with damage); if true, it excludes deadly terrain.
  */
 bool monster_habitable_grid(monster_type mt,
                             dungeon_feature_type actual_grid,
                             dungeon_feature_type wanted_grid,
-                            bool flies)
+                            bool flies, bool ai_check)
 {
     // No monster may be placed in walls etc.
     if (!mons_class_can_pass(mt, actual_grid))
@@ -195,6 +197,9 @@ bool monster_habitable_grid(monster_type mt,
         return true;
     }
 
+	if (!ai_check)
+		return true;
+
     return false;
 }
 
@@ -216,7 +221,7 @@ bool monster_can_submerge(const monster* mon, dungeon_feature_type feat)
         case HT_AMPHIBIOUS_LAVA:
             return feat == DNGN_LAVA;
         case HT_LAND:
-            return feat == DNGN_FLOOR;
+            return (feat == DNGN_FLOOR || feat == DNGN_DEEP_WATER);
         default:
             return false;
         }

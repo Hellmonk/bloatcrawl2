@@ -41,6 +41,7 @@
 #include "random.h"
 #include "religion.h"
 #include "species.h"
+#include "shout.h" //noisy()
 #include "spl-transloc.h"
 #include "state.h"
 #include "stringutil.h"
@@ -1597,12 +1598,13 @@ void actor_apply_terrain(actor* act, dungeon_feature_type terrain)
 {
 	int original = 0;
 	int hurted = 0;
+	monster *mon = act->as_monster();
 	if (feat_is_lava(terrain))
 	{
 		if (act->is_player())
 		{
 			original = (12 + roll_dice(3, 21));
-			hurted = resist_adjust_damage(act, BEAM_FIRE, original);
+			hurted = resist_adjust_damage(act, BEAM_LAVA, original);
 			if (hurted > original)
 				mpr("The lava burns you terribly!");
 			else
@@ -1613,7 +1615,13 @@ void actor_apply_terrain(actor* act, dungeon_feature_type terrain)
 		}
 		else
 		{
-			act->hurt(nullptr, lava_damage(act), BEAM_LAVA, KILLED_BY_LAVA, "Lava", "", true, true);
+			original = (8 + roll_dice(3, 14));
+			hurted = resist_adjust_damage(act, BEAM_LAVA, original);
+			if (mons_primary_habitat(*mon) == HT_LAVA || mons_primary_habitat(*mon) == HT_AMPHIBIOUS_LAVA)
+				hurted = 0;
+			if (you.can_see(*act) && hurted > 0)
+				mpr(make_stringf("The lava burns %s%s%s", act->name(DESC_THE).c_str(), hurted > original ? " terribly!" : ".", hurted < original ? " It resists." : ""));
+			act->hurt(nullptr, hurted, BEAM_LAVA, KILLED_BY_LAVA, "Lava", "", true, true);
 		}
 	}
 	else if (terrain == DNGN_DEEP_WATER)
@@ -1623,11 +1631,26 @@ void actor_apply_terrain(actor* act, dungeon_feature_type terrain)
 			if (you.drowning())
 			{
 				if (coinflip())
-					mpr("You inhale water! You're drowning!");
-				else
-					mpr("Your lungs burn in need of oxygen!");
-				ouch(timescale_damage(act,roll_dice(2, 10)), KILLED_BY_WATER, MID_NOBODY, "Deep Water");
+				{
+					mpr("Your struggles to swim create loud splashing noises!");
+					noisy(25, you.position);
+				}
+				else if (!you.res_water_drowning())
+				{
+					if (coinflip())
+						mpr("Your lungs burn in need of oxygen!");
+					else if (coinflip())
+						mpr("You are drowning!");
+					else if (coinflip())
+						mpr("You inhale water!");
+					ouch(timescale_damage(act, roll_dice(2, 10)), KILLED_BY_WATER, MID_NOBODY, "Deep Water");
+				}
 			}
+		}
+		else if (!act->res_water_drowning() && (mons_primary_habitat(*mon) != HT_WATER) &&
+			(mons_primary_habitat(*mon) != HT_AMPHIBIOUS) && (mon->body_size(PSIZE_BODY) < SIZE_GIANT))
+		{
+			act->hurt(nullptr, timescale_damage(act, roll_dice(2, 7)), BEAM_WATER, KILLED_BY_WATER, "Deep Water", "", true, true);
 		}
 	}
 }

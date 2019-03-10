@@ -18,6 +18,7 @@ public:
 
 void mons_set_just_seen(monster *mon);
 
+bool mon_avoids_terrain(const monster* mons, dungeon_feature_type terrain);
 bool mon_can_move_to_pos(const monster* mons, const coord_def& delta,
                          bool just_check = false);
 bool mons_can_move_towards_target(const monster* mon);

@@ -1472,9 +1472,16 @@ static void _pre_monster_move(monster& mons)
 
     _monster_add_energy(mons);
 
-	if (!mons.has_ench(ENCH_FLIGHT))
+	if (!mons.has_ench(ENCH_FLIGHT) && !mons_class_flag(mons.type, M_FLIES))
 		actor_apply_terrain(&mons, env.grid(mons.position));
 
+	if (mons_primary_habitat(mons) == HT_LAND && mons.body_size(PSIZE_BODY) < SIZE_GIANT
+		&& env.grid(mons.pos()) == DNGN_DEEP_WATER && !mons.has_ench(ENCH_SUBMERGED))
+	{
+		if (you.can_see(mons))
+			mpr(make_stringf("%s sinks like a stone.", mons.name(DESC_THE).c_str()));
+		mons.add_ench(ENCH_SUBMERGED);
+	}
     // Handle clouds on nonmoving monsters.
     if (mons.speed == 0)
     {
@@ -2808,6 +2815,42 @@ static bool _check_slime_walls(const monster *mon,
     // onto more dangerous squares.
     return mon->hit_points < mon->max_hit_points / 2;
 }
+
+// Does the monster consider the terrain dangerous enough to avoid or 
+// will it path through it to get to you faster?
+bool mon_avoids_terrain(const monster* mons, dungeon_feature_type terrain)
+{
+	habitat_type habitat = mons_primary_habitat(*mons);
+	
+	switch (habitat)
+	{
+	case HT_WATER:				return (!feat_is_watery (terrain));
+	case HT_AMPHIBIOUS_LAVA:	return (feat_is_watery (terrain));
+	case HT_AMPHIBIOUS:         return (feat_is_lava(terrain));
+	case HT_LAVA:               return (!feat_is_lava(terrain));
+	case HT_LAND: 
+		if (mons->airborne())
+			return false;
+		if (mons_intel(*mons) <= I_BRAINLESS)
+			return false;
+		if (feat_is_lava(terrain))
+		{
+			return (resist_adjust_damage(mons, BEAM_LAVA, 120) > mons->stat_hp());
+		}
+		if (terrain == DNGN_DEEP_WATER)
+		{
+			if (mons->body_size(PSIZE_BODY) >= SIZE_GIANT)
+				return false;
+			if (mons->res_water_drowning())
+				return false;
+			else
+				return (60 > mons->stat_hp());
+		}
+	default:                    return false;
+	}
+
+}
+
 // Check whether a monster can move to given square (described by its relative
 // coordinates to the current monster position). just_check is true only for
 // calls from is_trap_safe when checking the surrounding squares of a trap.
@@ -2843,6 +2886,7 @@ bool mon_can_move_to_pos(const monster* mons, const coord_def& delta,
     if (mons_avoids_cloud(mons, targ))
         return false;
 
+	// Creatures that primarily kill will silenceable spells won't willingly enter silence.
 	if (silenced(targ) && !silenced(mons->pos()) && ((mons->is_actual_spellcaster() || mons->is_priest()) && !mons->is_fighter()))
 		return false;
 
@@ -3005,6 +3049,9 @@ bool mon_can_move_to_pos(const monster* mons, const coord_def& delta,
     // really stupid, or immune to the trap.
     if (!mons->is_trap_safe(targ, just_check))
         return false;
+
+	if (mon_avoids_terrain(mons, target_grid))
+		return false;
 
     // If we end up here the monster can safely move.
     return true;

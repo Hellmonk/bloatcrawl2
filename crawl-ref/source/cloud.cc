@@ -1401,7 +1401,7 @@ static bool _mons_avoids_cloud(const monster* mons, const cloud_struct& cloud,
             return false;
 
         // These don't care about deep water.
-        if (monster_habitable_grid(mons, DNGN_DEEP_WATER))
+        if (monster_habitable_grid(mons->type, DNGN_DEEP_WATER, DNGN_DEEP_WATER,false,true))
             return false;
 
         // This position could become deep water, and they might drown.

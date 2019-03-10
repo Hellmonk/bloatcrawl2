@@ -1269,6 +1269,8 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
         return false;
     }
 
+	string local_prompt = "";
+
     // Doing these would outright kill the player.
     // (or, in the case of the stat-zeros, they'd at least be extremely
     // dangerous.)
@@ -1276,22 +1278,20 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
     {
         if (is_feat_dangerous(grd(you.pos()), false, true))
         {
-            if (!quiet)
-                mpr("Stopping flight right now would be fatal!");
-            return false;
+			local_prompt = make_stringf("Stopping flight right now would cause you to %s! Are you sure you want to stop flying?",
+				env.grid(you.pos()) == DNGN_LAVA ? "burn" : "drown");
+
+            return yesno(local_prompt.c_str(), true, 'n');
         }
     }
     else if (abil.ability == ABIL_END_TRANSFORMATION)
     {
         if (feat_dangerous_for_form(transformation::none, env.grid(you.pos())))
         {
-            if (!quiet)
-            {
-                mprf("Turning back right now would cause you to %s!",
-                    env.grid(you.pos()) == DNGN_LAVA ? "burn" : "drown");
-            }
+			local_prompt = make_stringf("Turning back now would cause you to %s! Are you sure you want end your transformation?",
+				env.grid(you.pos()) == DNGN_LAVA ? "burn" : "drown");
 
-            return false;
+			return yesno(local_prompt.c_str(), true, 'n');
         }
     }
 
@@ -2142,7 +2142,7 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
         monster* mons = monster_at(beam.target);
 
-        if (mons == nullptr || !you.can_see(*mons))
+        if (mons == nullptr || !(you.can_see(*mons)))
         {
             mpr("There is no monster there to imprison!");
             return SPRET_ABORT;
