@@ -1472,7 +1472,8 @@ static void _pre_monster_move(monster& mons)
 
     _monster_add_energy(mons);
 
-	if (!mons.has_ench(ENCH_FLIGHT) && !mons_class_flag(mons.type, M_FLIES))
+	if (!mons.has_ench(ENCH_FLIGHT) && !mons_class_flag(mons.type, M_FLIES)
+			&& !mons.airborne())
 		actor_apply_terrain(&mons, env.grid(mons.position));
 
 	// Figure this out later. Want to make them unable to attack from water and only unsubmerge through
