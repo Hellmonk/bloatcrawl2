@@ -586,6 +586,13 @@ bool can_cast_spells(bool quiet)
         return false;
     }
 
+	if (you.drowning())
+	{
+		if (!quiet)
+			mpr("You cannot cast spells while struggling to keep your head above water!");
+		return false;
+	}
+
     if (you.duration[DUR_BRAINLESS])
     {
         if (!quiet)

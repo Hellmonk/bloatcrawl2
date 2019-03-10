@@ -1320,7 +1320,8 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
 
     // Silence and water elementals
     if (silenced(you.pos()) && you.get_mutation_level(MUT_SILENT_CAST) == 0
-        || you.duration[DUR_WATER_HOLD] && !you.res_water_drowning())
+        || you.duration[DUR_WATER_HOLD] && !you.res_water_drowning()
+		|| you.drowning())
     {
         talent tal = get_talent(abil.ability, false);
         if (tal.is_invocation)
@@ -1329,8 +1330,8 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
             {
                 mprf("You cannot call out to %s while %s.",
                      god_name(you.religion).c_str(),
-                     you.duration[DUR_WATER_HOLD] ? "unable to breathe"
-                                                  : "silenced");
+					 silenced(you.pos())		  ? "silenced"
+                                                  : "unable to breathe");
             }
             return false;
         }
