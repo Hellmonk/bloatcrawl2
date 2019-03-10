@@ -5489,8 +5489,8 @@ void monster::apply_location_effects(const coord_def &oldpos,
         dungeon_events.fire_position_event(DET_MONSTER_MOVED, pos());
 
     if (alive()
-        && (mons_habitat(*this) == HT_WATER || mons_habitat(*this) == HT_LAVA)
-        && !monster_habitable_grid(this, grd(pos()))
+        && (mons_habitat(*this) == HT_WATER)
+        && !feat_is_watery(env.grid(pos()))
         && !has_ench(ENCH_AQUATIC_LAND))
     {
         // Elemental wellsprings always have water beneath them
@@ -5502,6 +5502,12 @@ void monster::apply_location_effects(const coord_def &oldpos,
         else
             add_ench(ENCH_AQUATIC_LAND);
     }
+
+	if (alive()
+		&& (mons_habitat(*this) == HT_LAVA)
+		&& !feat_is_lava(env.grid(pos()))
+		&& !has_ench(ENCH_AQUATIC_LAND))
+			add_ench(ENCH_AQUATIC_LAND);
 
     if (alive() && has_ench(ENCH_AQUATIC_LAND))
     {

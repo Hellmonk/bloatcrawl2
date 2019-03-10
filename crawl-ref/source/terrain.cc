@@ -1655,15 +1655,6 @@ void actor_apply_terrain(actor* act, dungeon_feature_type terrain)
 	}
 }
 
-int lava_damage(actor* act)
-{
-	int output = 12 + roll_dice(3, 21);
-	output = resist_adjust_damage(act, BEAM_FIRE, output);
-	act->expose_to_element(BEAM_FIRE, 2);
-	output = timescale_damage(act, output);
-	return output;
-}
-
 typedef map<string, dungeon_feature_type> feat_desc_map;
 static feat_desc_map feat_desc_cache;
 

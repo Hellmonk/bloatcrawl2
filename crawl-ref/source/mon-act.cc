@@ -1476,6 +1476,10 @@ static void _pre_monster_move(monster& mons)
 			&& !mons.airborne())
 		actor_apply_terrain(&mons, env.grid(mons.position));
 
+	if ((mons_primary_habitat(mons) == HT_WATER || mons_primary_habitat(mons) == HT_LAVA)
+		&& env.grid(mons.position) == DNGN_FLOOR)
+		mons.add_ench(ENCH_AQUATIC_LAND);
+
 	// Figure this out later. Want to make them unable to attack from water and only unsubmerge through
 	// Movement, but that's not exactly how the existing enchantment works, so...more work, lol.
 /*	if (mons_primary_habitat(mons) == HT_LAND && mons.body_size(PSIZE_BODY) < SIZE_GIANT
