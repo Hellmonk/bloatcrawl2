@@ -191,7 +191,7 @@ function ice_cave_caverns_undead_demon_loot(e)
           pair of gloves good_item / pair of boots good_item / nothing")
   e.item("book of ice / book of unlife / staff of cold / staff of death / \
           randbook disc:ice disc2:necromancy numspells:6 w:2 / nothing w:30")
-  e.item("ring of ice / ring of protection from cold / \
+  e.item("ring of ice w:3 / \
           ring of positive energy / wand of iceblast / \
           any ring w:1 / any wand w:1 / nothing")
 end
@@ -206,7 +206,7 @@ function ice_cave_caverns_natural_giant_loot(e)
   e.item("book of ice / randbook disc:ice numspells:6 w:2 / \
           arbalest ego:freezing good_item no_uniq ident:type / \
           longbow ego:freezing good_item no_uniq ident:type / nothing w:20")
-  e.item("ring of ice / ring of protection from cold / nothing")
+  e.item("ring of ice")
 end
 
 }}

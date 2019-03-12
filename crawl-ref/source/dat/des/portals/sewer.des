@@ -917,19 +917,19 @@ MONS:     ooze / nothing w:2
 #       chances are good you'll find something to cross the deep water
 SHUFFLE:  de
 ITEM:     scroll of fear / scroll of fog / scroll of teleportation w:50 / \
-          scroll of blinking / scroll of identify / nothing
+          scroll of blinking / nothing
 ITEM:     potion of flight w:50 / potion of invisibility / \
           potion of might w:3 / potion of agility w:4 / \
           potion of brilliance w:3 / nothing
 #       possibly rather generous loot, if you get to the center
-ITEM:     scroll of vulnerability / scroll of identify / hat / \
+ITEM:     scroll of vulnerability / hat / \
           potion of magic / potion of brilliance / potion of resistance
-ITEM:     scroll of identify / potion of invisibility / pair of gloves w:5 / \
+ITEM:     potion of invisibility / pair of gloves w:5 / \
           pair of boots w:5 / potion of agility / nothing
-ITEM:     scroll of identify / potion of resistance / potion of might / \
+ITEM:     potion of resistance / potion of might / \
           potion of berserk rage / buckler / nothing
 KITEM:    ' = scroll of random uselessness w:30 / \
-              scroll of identify / scroll of teleportation / \
+              scroll of teleportation / \
               potion of degeneration w:100 / potion of mutation / \
               potion of flight / hat / buckler / pair of gloves w:5 / \
               pair of boots w:5

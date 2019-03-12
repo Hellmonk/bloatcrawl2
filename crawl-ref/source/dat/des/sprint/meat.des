@@ -410,7 +410,7 @@ NSUBST:    ' = 1:& / *:.
 
 }}
 KITEM:     + = ring of see invisible not_cursed ident:all no_pickup
-KITEM:     * = ring of protection from fire not_cursed ident:all no_pickup
+KITEM:     * = ring of fire not_cursed ident:all no_pickup
 SUBST:     1 = 1.
 KFEAT:     _ = altar_makhleb
 KFEAT:     ^ = permanent teleport trap

@@ -1027,7 +1027,6 @@ KFEAT:  { = {
 # For your convenience, shop positions are not randomized, and are roughly
 # grouped by category.
 
-KFEAT:  C = scroll shop type:Identification suffix:Station count:17 greed:25 ; scroll of identify q:3
 KFEAT:  D = book shop type:Must-Have suffix:Magic greed:7 count:12 use_all ; \
             book of summonings | book of spatial translocations | book of enchantments |\
             book of death | book of the sky | book of the warp |\
@@ -1098,7 +1097,7 @@ KFEAT:  R = general shop type:Premium suffix:Goods use_all count:11 greed:20 ; \
 KFEAT:  J = general shop type:Miscellaneous suffix:Merchandise count:14 greed:15 use_all ; \
             ration q:20 | potion of blood q:5 | potion of blood q:5 |\
             potion of blood q:5 | potion of blood q:5 | ring of poison resistance |\
-            ring of protection from fire | ring of protection from cold |\
+            ring of fire | ring of ice |\
             ring of protection from magic | amulet of regeneration |\
             amulet of the gourmand | amulet of harm | amulet of reflection |\
             ring of see invisible
@@ -1129,7 +1128,7 @@ XcW..........xxx.{.xxx..........UcX
 XcW..........xxx...xxx..........UcX
 Xcc.............xxx.............ccX
 XXcccK........G.xxx.G........HcccXX
-XXXXccCBBB......xxx......BBBOccXXXX
+XXXXcccBBB......xxx......BBBOccXXXX
 XXXXXcccccc.G.........G.ccccccXXXXX
 XXXXXXXXXXc!...........?cXXXXXXXXXX
 XXXXXXXXXXccc.........cccXXXXXXXXXX

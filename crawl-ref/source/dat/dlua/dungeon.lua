@@ -639,12 +639,9 @@ end
 -- List of useful scrolls, with some reasonable weights.
 -- When changing the list or the weights, please keep the total weight at 1000.
 dgn.good_scrolls = [[
-    w:85  scroll of identify no_pickup /
-    w:38  scroll of identify no_pickup q:2 /
-    w:10  scroll of identify no_pickup q:3 /
     w:85  scroll of teleportation no_pickup /
     w:38  scroll of teleportation no_pickup q:2 /
-    w:10  scroll of teleportation no_pickup q:3 /
+    w:20  scroll of teleportation no_pickup q:3 /
     w:85  scroll of fog no_pickup /
     w:33  scroll of fog no_pickup q:2 /
     w:85  scroll of remove curse no_pickup /
@@ -656,19 +653,20 @@ dgn.good_scrolls = [[
     w:54  scroll of enchant armour no_pickup /
     w:22  scroll of enchant armour no_pickup q:2 /
     w:33  scroll of magic mapping no_pickup /
-    w:11  scroll of magic mapping no_pickup q:2 /
+    w:22  scroll of magic mapping no_pickup q:2 /
     w:33  scroll of amnesia no_pickup /
-    w:11  scroll of amnesia no_pickup q:2 /
+    w:18  scroll of amnesia no_pickup q:2 /
     w:33  scroll of holy word no_pickup q:1 /
-    w:11  scroll of holy word no_pickup q:2 /
-    w:22  scroll of silence no_pickup q:1 /
-    w:5   scroll of silence no_pickup q:2 /
+    w:22  scroll of holy word no_pickup q:2 /
+    w:33  scroll of silence no_pickup q:1 /
+    w:22  scroll of silence no_pickup q:2 /
     w:11  scroll of acquirement no_pickup q:1 /
     w:4   scroll of acquirement no_pickup q:2 /
     w:1   scroll of acquirement no_pickup q:3 /
     w:11  scroll of brand weapon no_pickup q:1 /
-    w:11  scroll of torment no_pickup q:1 /
-    w:11  scroll of vulnerability no_pickup
+    w:22  scroll of torment no_pickup q:1 /
+    w:22  scroll of vulnerability no_pickup
+	w:54  scroll of attention no_pickup
     ]]
 
 -- Returns true if point1 is inside radius(X, point2).

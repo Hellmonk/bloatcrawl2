@@ -35,7 +35,7 @@ function general_item_setup(e)
           potion of mutation ident:all")
   e.kitem("? = scroll of blinking ident:all /\
           scroll of remove curse ident:all /\
-          scroll of identify ident:all / scroll of fog ident:all /\
+          scroll of fog ident:all /\
           scroll of fear ident:all / scroll of enchant weapon ident:all q:2 /\
           scroll of enchant armour ident:all q:2")
 end
@@ -407,9 +407,7 @@ ENDMAP
 
 NAME:     items_4
 TAGS:     items_4
-KITEM:    a = ring of protection from fire ident:all not_cursed /\
-          ring of protection from cold ident:all not_cursed /\
-          ring of protection from magic ident:all not_cursed /\
+KITEM:    a = ring of protection from magic ident:all not_cursed /\
           ring of fire ident:all not_cursed /\
           ring of ice ident:all not_cursed /\
           ring of see invisible ident:all not_cursed /\
@@ -793,8 +791,6 @@ KITEM:    a = amulet of faith randart not_cursed ident:all /\
     amulet of regeneration randart ident:all not_cursed /\
     ring of slaying plus:3 randart ident:all not_cursed /\
     any jewellery randart level:27 not_cursed ident:all w:40 /\
-    ring of protection from fire randart ident:all not_cursed /\
-    ring of protection from cold randart ident:all not_cursed /\
     ring of protection from magic randart ident:all not_cursed /\
     ring of fire randart ident:all not_cursed /\
     ring of ice randart ident:all not_cursed /\

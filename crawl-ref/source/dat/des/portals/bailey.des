@@ -636,7 +636,7 @@ TAGS:   bailey_axe no_item_gen no_monster_gen
 ITEM:   potion of curing / potion of heal wounds / potion of resistance w:5 / \
         potion of might w:5 / potion of brilliance w:5 / potion of agility w:5 / \
         potion of magic w:5 / potion of haste w:5 / \
-        scroll of teleportation / scroll of blinking / scroll of identify / \
+        scroll of teleportation / scroll of blinking / \
         scroll of enchant weapon w:5 / scroll of enchant armour w:5
 ITEM:   potion of experience q:1 / scroll of acquirement q:1
 : easy_axe_fighter(_G)
@@ -1074,8 +1074,8 @@ KITEM:  E = any armour good_item
 KITEM:  f = potion of curing / potion of might / potion of brilliance / \
             potion of agility / potion of mutation w:30 / potion of flight w:20 / \
             potion of lignification  / \
-            scroll of teleportation / scroll of identify w:30 / \
-            scroll of fear / scroll of noise w:30 / scroll of magic mapping / \
+            scroll of teleportation / \
+            scroll of fear / scroll of attention / scroll of magic mapping / \
             scroll of remove curse
 KITEM:  F = scroll of enchant weapon q:2 / scroll of enchant armour q:2 /\
             potion of heal wounds q:3 / potion of resistance q:2 /\
@@ -1151,7 +1151,7 @@ TAGS:   bailey_axe no_item_gen no_monster_gen no_pool_fixup
 ITEM:   potion of curing / potion of heal wounds / potion of resistance w:5 / \
             potion of might w:5 / potion of brilliance w:5 / potion of agility w:5 / \
             potion of magic w:5 / potion of haste w:5 / \
-            scroll of teleportation / scroll of blinking / scroll of identify / \
+            scroll of teleportation / scroll of blinking / \
             scroll of enchant weapon w:5 / scroll of enchant armour w:5
 ITEM:   potion of experience q:1 / scroll of acquirement q:1
 : easy_axe_fighter(_G)

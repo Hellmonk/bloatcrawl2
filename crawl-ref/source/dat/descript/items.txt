@@ -830,11 +830,11 @@ to injury, depending on its degree of enchantment.
 %%%%
 ring of protection from cold
 
-A ring that provides protection from cold.
+Removed Ring.
 %%%%
 ring of protection from fire
 
-A ring that provides protection from fire.
+Removed Ring.
 %%%%
 ring of protection from magic
 
@@ -961,7 +961,7 @@ monsters that are affected.
 %%%%
 scroll of identify
 
-A useful magic scroll which identifies the properties of any unknown object.
+Removed scroll.
 %%%%
 scroll of immolation
 

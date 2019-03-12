@@ -182,7 +182,7 @@ function general_item_setup(e)
           potion of brilliance ident:all / potion of berserk rage ident:all /\
           potion of mutation ident:all")
   e.kitem("? = scroll of blinking ident:all /\
-          scroll of remove curse ident:all / scroll of identify ident:all /\
+          scroll of remove curse ident:all /\
           scroll of fog ident:all / scroll of fear ident:all /\
           scroll of enchant weapon ident:all q:2 /\
           scroll of enchant armour ident:all q:2")
@@ -342,9 +342,7 @@ function metal_vault_setup(e)
   e.tags("the_vault_of_metal")
   e.colour("v = red")
   e.tile("v = dngn_metal_iron")
-  e.kitem("a = ring of protection from fire ident:all not_cursed /\
-          ring of protection from cold ident:all not_cursed /\
-          ring of positive energy ident:all not_cursed /\
+  e.kitem("a = ring of positive energy ident:all not_cursed /\
           ring of protection from magic ident:all not_cursed /\
           ring of fire ident:all not_cursed /\
           ring of ice ident:all not_cursed /\
@@ -488,9 +486,7 @@ function coven_setup(e)
           amulet of regeneration randart ident:all not_cursed /\
           ring of slaying plus:5 randart ident:all not_cursed /\
           any jewellery randart level:27 not_cursed ident:all w:40")
-  e.kitem("c = ring of protection from fire randart ident:all not_cursed /\
-          ring of protection from cold randart ident:all not_cursed /\
-          ring of positive energy randart ident:all not_cursed /\
+  e.kitem("c = ring of positive energy randart ident:all not_cursed /\
           ring of protection from magic randart ident:all not_cursed /\
           ring of fire randart ident:all not_cursed /\
           ring of ice randart ident:all not_cursed /\
