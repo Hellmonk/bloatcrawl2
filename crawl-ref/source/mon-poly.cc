@@ -165,8 +165,8 @@ static bool _valid_morph(monster* mons, monster_type new_mclass)
         return false;
     }
 
-    // Determine if the monster is happy on current tile.
-    return monster_habitable_grid(new_mclass, current_tile);
+    // Let monsters die if polied into something that can't survive where they are.
+	return true;
 }
 
 static bool _is_poly_power_unsuitable(poly_power_type power,

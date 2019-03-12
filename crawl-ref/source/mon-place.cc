@@ -113,14 +113,26 @@ static bool _feat_compatible(dungeon_feature_type wanted_feat,
  *          regardless of whether it may be dangerous or harmful.
  */
 bool monster_habitable_grid(const monster* mon,
-                            dungeon_feature_type actual_grid)
+							dungeon_feature_type actual_grid)
+{
+	// Zombified monsters enjoy the same habitat as their original,
+	// except lava-based monsters.
+	const monster_type mt = fixup_zombie_type(mon->type,
+		mons_base_type(*mon));
+
+	return monster_habitable_grid(mt, actual_grid, DNGN_UNSEEN, mon->airborne(), true);
+}
+
+
+bool monster_habitable_grid(const monster* mon,
+                            dungeon_feature_type actual_grid, bool ai_check)
 {
     // Zombified monsters enjoy the same habitat as their original,
     // except lava-based monsters.
     const monster_type mt = fixup_zombie_type(mon->type,
                                               mons_base_type(*mon));
 
-    return monster_habitable_grid(mt, actual_grid, DNGN_UNSEEN, mon->airborne());
+    return monster_habitable_grid(mt, actual_grid, DNGN_UNSEEN, mon->airborne(), ai_check);
 }
 
 /**

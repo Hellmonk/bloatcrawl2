@@ -1124,8 +1124,7 @@ static void _catchup_monster_move(monster* mon, int moves)
         const coord_def next(pos + inc);
         const dungeon_feature_type feat = grd(next);
         if (feat_is_solid(feat)
-            || monster_at(next)
-            || !monster_habitable_grid(mon, feat))
+            || monster_at(next))
         {
             break;
         }

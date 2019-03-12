@@ -1037,9 +1037,6 @@ static bool _can_safely_go_through(const monster * mon, const coord_def p)
 {
     ASSERT(map_bounds(p));
 
-    if (!monster_habitable_grid(mon, grd(p)))
-        return false;
-
     // Stupid monsters don't pathfind around shallow water
     // except the clinging ones.
     if (mon->floundering_at(p)

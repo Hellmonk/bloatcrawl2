@@ -2993,34 +2993,6 @@ item_def* mounted_kill(monster* daddy, monster_type mc, killer_type killer,
     return monster_die(mon, killer, killer_index, false, false, true);
 }
 
-/**
- * Applies harmful environmental effects from the current tile to monsters.
- *
- * @param mons      The monster to maybe drown/incinerate.
- * @param oldpos    Their previous tile, before landing up here.
- * @param killer    Who's responsible for killing them, if they die here.
- * @param killnum   The mindex of the killer, if any.
- */
-void mons_check_pool(monster* mons, const coord_def &oldpos,
-                     killer_type killer, int killnum)
-{
-    // Flying/clinging monsters don't make contact with the terrain.
-    if (!mons->ground_level())
-        return;
-
-    dungeon_feature_type grid = grd(mons->pos());
-    if (grid != DNGN_LAVA && grid != DNGN_DEEP_WATER
-        || monster_habitable_grid(mons, grid))
-    {
-        return;
-    }
-
-    // Yredelemnul special, redux: It's the only one that can
-    // work on drowned monsters.
-    if (!_yred_enslave_soul(mons, killer))
-        monster_die(*mons, killer, killnum, true);
-}
-
 // Make all of the monster's original equipment disappear, unless it's a fixed
 // artefact or unrand artefact.
 static void _vanish_orig_eq(monster* mons)

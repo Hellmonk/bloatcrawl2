@@ -54,9 +54,6 @@ void end_flayed_effect(monster* ghost);
 
 int exp_rate(int killer);
 
-void mons_check_pool(monster* mons, const coord_def &oldpos,
-                     killer_type killer = KILL_NONE, int killnum = -1);
-
 int dismiss_monsters(string pattern);
 
 string summoned_poof_msg(const monster* mons, bool plural = false);

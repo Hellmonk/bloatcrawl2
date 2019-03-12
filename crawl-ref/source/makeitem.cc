@@ -862,6 +862,7 @@ static special_armour_type _generate_armour_type_ego(armour_type type,
                                       19, SPARM_POISON_RESISTANCE,
                                       15, SPARM_MAGIC_RESISTANCE,
 									  15, SPARM_HIGH_PRIEST,
+									   7, SPARM_ARCHMAGI,
                                        7, SPARM_POSITIVE_ENERGY,
                                        7, SPARM_PONDEROUSNESS);
 
@@ -936,7 +937,8 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
 
     case SPARM_ARCHMAGI:
 	case SPARM_HIGH_PRIEST:
-        return !strict || type == ARM_ROBE;
+        return !strict || type == ARM_ROBE
+			|| type == ARM_PLATE_ARMOUR;
 
     case SPARM_PONDEROUSNESS:
         return true;

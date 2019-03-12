@@ -2826,7 +2826,7 @@ static void _safe_move_player(coord_def move)
 static void _swap_places(monster* mons, const coord_def &loc)
 {
     ASSERT(map_bounds(loc));
-    ASSERT(monster_habitable_grid(mons, grd(loc)));
+    ASSERT(monster_habitable_grid(mons, grd(loc), false));
 
     if (monster_at(loc))
     {

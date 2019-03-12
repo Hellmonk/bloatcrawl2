@@ -1604,7 +1604,7 @@ void actor_apply_terrain(actor* act, dungeon_feature_type terrain)
 		if (act->is_player())
 		{
 			original = (12 + roll_dice(3, 21));
-			hurted = resist_adjust_damage(act, BEAM_LAVA, original);
+			hurted = resist_adjust_damage(act, BEAM_FIRE, original);
 			if (hurted > original)
 				mpr("The lava burns you terribly!");
 			else
@@ -1616,12 +1616,12 @@ void actor_apply_terrain(actor* act, dungeon_feature_type terrain)
 		else
 		{
 			original = (8 + roll_dice(3, 14));
-			hurted = resist_adjust_damage(act, BEAM_LAVA, original);
+			hurted = resist_adjust_damage(act, BEAM_FIRE, original);
 			if (mons_primary_habitat(*mon) == HT_LAVA || mons_primary_habitat(*mon) == HT_AMPHIBIOUS_LAVA)
 				hurted = 0;
 			if (you.can_see(*act) && hurted > 0)
 				mpr(make_stringf("The lava burns %s%s%s", act->name(DESC_THE).c_str(), hurted > original ? " terribly!" : ".", hurted < original ? " It resists." : ""));
-			act->hurt(nullptr, hurted, BEAM_LAVA, KILLED_BY_LAVA, "Lava", "", true, true);
+			act->hurt(nullptr, hurted, BEAM_FIRE, KILLED_BY_LAVA, "Lava", "", true, true);
 		}
 	}
 	else if (terrain == DNGN_DEEP_WATER)

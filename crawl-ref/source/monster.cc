@@ -4893,7 +4893,7 @@ bool monster::find_home_near_place(const coord_def &c)
                 continue;
             dist(*ai - c) = last_dist = dist(p - c) + 1;
 
-            if (!monster_habitable_grid(this, grd(*ai)))
+            if (!monster_habitable_grid(this, grd(*ai), false))
                 continue;
 
             q.push(*ai);
@@ -5533,9 +5533,6 @@ void monster::apply_location_effects(const coord_def &oldpos,
     trap_def* ptrap = trap_at(pos());
     if (ptrap)
         ptrap->trigger(*this);
-
-    if (alive())
-        mons_check_pool(this, pos(), killer, killernum);
 
     if (alive()
         && has_ench(ENCH_SUBMERGED)
