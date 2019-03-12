@@ -856,7 +856,7 @@ void TilesFramework::_send_player(bool force_full)
     uint8_t prank = 0;
     if (!you_worship(GOD_NO_GOD))
         prank = max(0, piety_rank());
-    else if (you.char_class == JOB_MONK && you.species != SP_DEMIGOD
+    else if ((you.char_class == JOB_MONK || you.char_class == JOB_PRIEST) && you.species != SP_DEMIGOD
              && !had_gods())
     {
         prank = 2;

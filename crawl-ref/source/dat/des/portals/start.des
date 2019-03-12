@@ -154,7 +154,7 @@ KFEAT:  O = armour shop type:Lightly suffix:Armoured use_all count:15 greed:30 ;
             not_cursed ring mail ego:poison_resistance plus:0|\
             not_cursed ring mail ego:magic_resistance plus:0|\
             not_cursed ring mail ego:positive_energy plus:0
-KFEAT:  P = armour shop type:Heavily suffix:Armoured use_all count:14 greed:12 ;\
+KFEAT:  P = armour shop type:Heavily suffix:Armoured use_all count:15 greed:12 ;\
             mundane not_cursed scale mail|\
             not_cursed scale mail ego:fire_resistance plus:0|\
             not_cursed scale mail ego:cold_resistance plus:0|\
@@ -168,6 +168,7 @@ KFEAT:  P = armour shop type:Heavily suffix:Armoured use_all count:14 greed:12 ;
             not_cursed plate armour ego:magic_resistance plus:0|\
             not_cursed plate armour ego:positive_energy plus:0|\
 	    not_cursed plate armour ego:high_priest plus:0|\
+            not_cursed plate armour ego:archmagi plus:0:|\
             not_cursed plate armour ego:ponderousness plus:5|\
             mundane not_cursed crystal plate armour
 KFEAT:  Q = jewellery shop name:Pakellas type:Wand suffix:Workshop use_all count:11 greed:15 ; \
@@ -247,12 +248,13 @@ KFEAT:  H = distillery shop type:Alchemist suffix:Brewery count:16 greed:20 use_
             potion of cancellation q:1 | potion of ambrosia q:1 | potion of invisibility q:1 |\
             potion of magic q:1 | potion of berserk rage q:1 | potion of resistance q:1 |\
             potion of lignification q:1
-KFEAT:  I = jewellery shop type:Amulets suffix:and_Necklaces count:8 greed:10 use_all ; \
+KFEAT:  I = jewellery shop type:Amulets suffix:and_Necklaces count:9 greed:10 use_all ; \
             mundane not_cursed amulet of harm | mundane not_cursed amulet of the acrobat |\
             mundane not_cursed amulet of magic regeneration |\
             mundane not_cursed amulet of the gourmand | mundane cursed amulet of inaccuracy |\
             mundane not_cursed amulet of guardian spirit |\
-            mundane not_cursed amulet of reflection | mundane not_cursed amulet of regeneration
+            mundane not_cursed amulet of reflection | mundane not_cursed amulet of regeneration |\
+	    mundane not_cursed amulet of faith
 KFEAT:  J = jewellery shop type:Rings, suffix:Glorious_Rings count:19 greed:8 use_all ; \
             mundane not_cursed ring of protection | mundane not_cursed ring of evasion |\
             mundane not_cursed ring of poison resistance | mundane not_cursed ring of resist corrosion|\
