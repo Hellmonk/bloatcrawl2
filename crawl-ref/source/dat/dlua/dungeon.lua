@@ -665,7 +665,7 @@ dgn.good_scrolls = [[
     w:1   scroll of acquirement no_pickup q:3 /
     w:11  scroll of brand weapon no_pickup q:1 /
     w:22  scroll of torment no_pickup q:1 /
-    w:22  scroll of vulnerability no_pickup
+    w:22  scroll of vulnerability no_pickup /
 	w:54  scroll of attention no_pickup
     ]]
 
