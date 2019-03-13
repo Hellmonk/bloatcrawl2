@@ -128,7 +128,7 @@ static const int conflict[][3] =
 {
     { MUT_REGENERATION,        MUT_SLOW_METABOLISM,         0},
     { MUT_REGENERATION,        MUT_INHIBITED_REGENERATION,  0},
-    { MUT_ACUTE_VISION,        MUT_BLURRY_VISION,           0},
+    { MUT_ACUTE_VISION,        MUT_IMPAIRED_VISION,         0},
     { MUT_FAST,                MUT_SLOW,                    0},
 #if TAG_MAJOR_VERSION == 34
     { MUT_STRONG_STIFF,        MUT_FLEXIBLE_WEAK,           1},
@@ -142,14 +142,14 @@ static const int conflict[][3] =
     { MUT_CARNIVOROUS,         MUT_HERBIVOROUS,             1},
     { MUT_SLOW_METABOLISM,     MUT_FAST_METABOLISM,         1},
     { MUT_REGENERATION,        MUT_INHIBITED_REGENERATION,  1},
-    { MUT_ACUTE_VISION,        MUT_BLURRY_VISION,           1},
+    { MUT_ACUTE_VISION,        MUT_IMPAIRED_VISION,         1},
     { MUT_BERSERK,             MUT_CLARITY,                 1},
 	{ MUT_GHOST,               MUT_BERSERK                 -1},
     { MUT_GHOST,               MUT_POISON_RESISTANCE       -1},
     { MUT_GHOST,               MUT_THIN_SKELETAL_STRUCTURE -1},
     { MUT_GHOST,               MUT_LARGE_BONE_PLATES       -1},
     { MUT_SILENT_CAST,         MUT_SCREAM                  -1},
-    { MUT_SILENT_CAST,         MUT_BLURRY_VISION           -1},
+    { MUT_SILENT_CAST,         MUT_IMPAIRED_VISION         -1},
     { MUT_FAST,                MUT_SLOW,                    1},
     { MUT_FANGS,               MUT_BEAK,                   -1},
     { MUT_ANTENNAE,            MUT_HORNS,                  -1}, // currently overridden by physiology_mutation_conflict

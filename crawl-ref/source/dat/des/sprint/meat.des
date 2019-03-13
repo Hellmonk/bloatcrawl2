@@ -409,7 +409,6 @@ NSUBST:    ' = 1:& / *:.
     "</red>")
 
 }}
-KITEM:     + = ring of see invisible not_cursed ident:all no_pickup
 KITEM:     * = ring of fire not_cursed ident:all no_pickup
 SUBST:     1 = 1.
 KFEAT:     _ = altar_makhleb
@@ -438,7 +437,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxx3111111+1111113xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxx311111111111113xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxx111111111111111111111xxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxx1111111111xx1xx1xxxxx111111xxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxx21111111..................1111111xxxxxxxxxxxxxxxxxxx
@@ -474,7 +473,7 @@ xxxxxxxxxxxxxxx11111xx.......................111111111xxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxx211111xxxx....x.....xxxx111111112xxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxx1111111............x1111111xxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxx111111.........111111xxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxx3111111+1111113xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxx311111111111113xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx

@@ -1651,7 +1651,7 @@ static int _get_monster_armour_value(const monster *mon,
 
     // See invisible also is only useful if not already intrinsic.
     if (!mons_class_flag(mon->type, M_SEE_INVIS))
-        value += get_armour_see_invisible(item, true);
+        value += get_armour_improved_vision(item, true);
 
     // Give a sizable bonus for shields of reflection.
     if (get_armour_ego_type(item) == SPARM_REFLECTION)
@@ -1816,7 +1816,7 @@ static int _get_monster_jewellery_value(const monster *mon,
 
     // See invisible also is only useful if not already intrinsic.
     if (!mons_class_flag(mon->type, M_SEE_INVIS))
-        value += get_jewellery_see_invisible(item, true);
+        value += get_jewellery_improved_vision(item, true);
 
     // If we're not naturally corrosion-resistant.
     if (item.sub_type == RING_RESIST_CORROSION && !mon->res_corr(false, false))
@@ -5220,11 +5220,9 @@ bool monster::can_see_invisible(bool calc_unid) const
     if (!calc_unid)
         return false;
 
-    if (scan_artefacts(ARTP_SEE_INVISIBLE) > 0)
+    if (scan_artefacts(ARTP_IMPROVED_VISION) > 0)
         return true;
-    else if (wearing(EQ_RINGS, RING_SEE_INVISIBLE))
-        return true;
-    else if (wearing_ego(EQ_ALL_ARMOUR, SPARM_SEE_INVISIBLE))
+    else if (wearing_ego(EQ_ALL_ARMOUR, SPARM_IMPROVED_VISION))
         return true;
 
     return false;

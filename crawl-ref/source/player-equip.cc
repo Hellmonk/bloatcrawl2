@@ -225,7 +225,7 @@ static void _equip_artefact_effect(item_def &item, bool *show_msgs, bool unmeld,
     if (proprt[ARTP_EVASION])
         you.redraw_evasion = true;
 
-    if (proprt[ARTP_SEE_INVISIBLE])
+    if (proprt[ARTP_IMPROVED_VISION])
         autotoggle_autopickup(false);
 
     if (proprt[ARTP_MAGICAL_POWER] && !known[ARTP_MAGICAL_POWER] && msg)
@@ -363,7 +363,7 @@ static void _unequip_artefact_effect(item_def &item,
     if (proprt[ARTP_DRAIN] && !meld)
         drain_player(150, true, true);
 
-    if (proprt[ARTP_SEE_INVISIBLE])
+    if (proprt[ARTP_IMPROVED_VISION])
         _mark_unseen_monsters();
 
     if (is_unrandom_artefact(item))
@@ -826,8 +826,9 @@ static void _equip_armour_effect(item_def& arm, bool unmeld,
                 mpr("You feel resistant to poison.");
             break;
 
-        case SPARM_SEE_INVISIBLE:
-            mpr("You feel perceptive.");
+        case SPARM_IMPROVED_VISION:
+			if (you.innate_vision() < 1)
+	            mpr("Your vision improves.");
             autotoggle_autopickup(false);
             break;
 
@@ -1031,10 +1032,10 @@ static void _unequip_armour_effect(item_def& item, bool meld,
             mpr("You no longer feel resistant to poison.");
         break;
 
-    case SPARM_SEE_INVISIBLE:
-        if (!you.can_see_invisible())
+    case SPARM_IMPROVED_VISION:
+        if (!you.innate_vision() < 1)
         {
-            mpr("You feel less perceptive.");
+            mpr("Your vision dulls.");
             _mark_unseen_monsters();
         }
         break;
@@ -1248,11 +1249,6 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
         mpr("You feel more attuned to ice.");
         break;
 
-    case RING_SEE_INVISIBLE:
-        if (item_type_known(item))
-            autotoggle_autopickup(false);
-        break;
-
     case RING_PROTECTION:
     case AMU_REFLECTION:
         you.redraw_armour_class = true;
@@ -1396,10 +1392,6 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
     case RING_TELEPORTATION:
     case RING_WIZARDRY:
     case AMU_REGENERATION:
-        break;
-
-    case RING_SEE_INVISIBLE:
-        _mark_unseen_monsters();
         break;
 
     case RING_PROTECTION:

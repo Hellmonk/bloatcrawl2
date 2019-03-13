@@ -1094,13 +1094,12 @@ KFEAT:  R = general shop type:Premium suffix:Goods use_all count:11 greed:20 ; \
             potion of heal wounds q:5 | potion of heal wounds q:5 |\
             potion of haste q:5 | potion of haste q:5 |\
             crystal ball of energy
-KFEAT:  J = general shop type:Miscellaneous suffix:Merchandise count:14 greed:15 use_all ; \
+KFEAT:  J = general shop type:Miscellaneous suffix:Merchandise count:13 greed:15 use_all ; \
             ration q:20 | potion of blood q:5 | potion of blood q:5 |\
             potion of blood q:5 | potion of blood q:5 | ring of poison resistance |\
             ring of fire | ring of ice |\
             ring of protection from magic | amulet of regeneration |\
-            amulet of the gourmand | amulet of harm | amulet of reflection |\
-            ring of see invisible
+            amulet of the gourmand | amulet of harm | amulet of reflection
 SUBST:  b : cb
 TILE:   c = wall_marble
 KFEAT:  TUVWYZ!? = dry_fountain

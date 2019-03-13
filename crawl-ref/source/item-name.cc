@@ -545,7 +545,7 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_FIRE_RESISTANCE:   return "fire resistance";
         case SPARM_COLD_RESISTANCE:   return "cold resistance";
         case SPARM_POISON_RESISTANCE: return "poison resistance";
-        case SPARM_SEE_INVISIBLE:     return "see invisible";
+        case SPARM_IMPROVED_VISION:   return "improved vision";
         case SPARM_INVISIBILITY:      return "invisibility";
         case SPARM_STRENGTH:          return "strength";
         case SPARM_DEXTERITY:         return "dexterity";
@@ -583,7 +583,7 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_FIRE_RESISTANCE:   return "rF+";
         case SPARM_COLD_RESISTANCE:   return "rC+";
         case SPARM_POISON_RESISTANCE: return "rPois";
-        case SPARM_SEE_INVISIBLE:     return "SInv";
+        case SPARM_IMPROVED_VISION:   return "+Vis";
         case SPARM_INVISIBILITY:      return "+Inv";
         case SPARM_STRENGTH:          return "Str+3";
         case SPARM_DEXTERITY:         return "Dex+3";
@@ -771,7 +771,9 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
 #endif
         case RING_STRENGTH:              return "strength";
         case RING_SLAYING:               return "slaying";
-        case RING_SEE_INVISIBLE:         return "see invisible";
+#if TAG_MAJOR_VERSION == 34
+        case RING_SEE_INVISIBLE:         return "removedness";
+#endif
         case RING_RESIST_CORROSION:      return "resist corrosion";
         case RING_ATTENTION:             return "attention";
         case RING_TELEPORTATION:         return "teleportation";
@@ -829,7 +831,9 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
 #endif
         case RING_STRENGTH:              return "Str";
         case RING_SLAYING:               return "Slay";
-        case RING_SEE_INVISIBLE:         return "sInv";
+#if TAG_MAJOR_VERSION == 34
+        case RING_SEE_INVISIBLE:         return "Removedness";
+#endif
         case RING_RESIST_CORROSION:      return "rCorr";
         case RING_ATTENTION:             return "Stlth-";
         case RING_EVASION:               return "EV";
@@ -3623,9 +3627,6 @@ bool is_useless_item(const item_def &item, bool temp)
 
         case AMU_MANA_REGENERATION:
             return you_worship(GOD_PAKELLAS);
-
-        case RING_SEE_INVISIBLE:
-            return you.innate_sinv();
 
         case RING_POISON_RESISTANCE:
             return player_res_poison(false, temp, false) > 0

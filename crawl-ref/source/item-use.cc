@@ -2739,9 +2739,10 @@ void read(item_def* scroll)
         return;
     }
 
-    if (you.get_mutation_level(MUT_BLURRY_VISION)
+    if (you.get_mutation_level(MUT_IMPAIRED_VISION)
         && !i_feel_safe(false, false, true)
-        && !yesno("Really read with blurry vision while enemies are nearby?",
+		&& !you.haloed()
+        && !yesno("Really read with impaired vision while enemies are nearby?",
                   false, 'n'))
     {
         canned_msg(MSG_OK);
@@ -2753,13 +2754,15 @@ void read(item_def* scroll)
 
     // if we have blurry vision, we need to start a delay before the actual
     // scroll effect kicks in.
-    if (you.get_mutation_level(MUT_BLURRY_VISION))
+    if (you.get_mutation_level(MUT_IMPAIRED_VISION))
     {
-        // takes 0.5, 1, 2 extra turns
-        const int turns = max(1, you.get_mutation_level(MUT_BLURRY_VISION) - 1);
-        start_delay<BlurryScrollDelay>(turns, *scroll);
-        if (you.get_mutation_level(MUT_BLURRY_VISION) == 1)
-            you.time_taken /= 2;
+		if (you.haloed())
+		{
+			mpr("The light of the halo makes it easy to see.");
+			read_scroll(*scroll);
+		}
+		else
+			start_delay<BlurryScrollDelay>(1, *scroll);
     }
     else
         read_scroll(*scroll);
@@ -2812,7 +2815,8 @@ void read_scroll(item_def& scroll)
         }
 
         const bool safely_cancellable
-            = alreadyknown && !you.get_mutation_level(MUT_BLURRY_VISION);
+            = alreadyknown && !you.get_mutation_level(MUT_IMPAIRED_VISION)
+			 && !you.haloed();
 
         if (orb_limits_translocation())
         {

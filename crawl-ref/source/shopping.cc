@@ -132,7 +132,7 @@ int artefact_value(const item_def &item)
     if (prop[ ARTP_RMUT ])
         ret += 8;
 
-    if (prop[ ARTP_SEE_INVISIBLE ])
+    if (prop[ ARTP_IMPROVED_VISION ])
         ret += 6;
 
     // abilities:
@@ -346,7 +346,7 @@ unsigned int item_value(item_def item, bool ident)
             case SPARM_COLD_RESISTANCE:
             case SPARM_DEXTERITY:
             case SPARM_FIRE_RESISTANCE:
-            case SPARM_SEE_INVISIBLE:
+            case SPARM_IMPROVED_VISION:
             case SPARM_INTELLIGENCE:
             case SPARM_FLYING:
             case SPARM_STEALTH:
@@ -690,10 +690,6 @@ unsigned int item_value(item_def item, bool ident)
                 case RING_STEALTH:
                 case RING_FLIGHT:
                     valued += 175;
-                    break;
-
-                case RING_SEE_INVISIBLE:
-                    valued += 150;
                     break;
 
                 case RING_ATTENTION:

@@ -371,7 +371,6 @@ static map<jewellery_type, vector<jewellery_fake_artp>> jewellery_artps = {
 
     { RING_MAGICAL_POWER, { { ARTP_MAGICAL_POWER, 9 } } },
     { RING_FLIGHT, { { ARTP_FLY, 1 } } },
-    { RING_SEE_INVISIBLE, { { ARTP_SEE_INVISIBLE, 1 } } },
     { RING_STEALTH, { { ARTP_STEALTH, 1 } } },
     { RING_ATTENTION, { { ARTP_STEALTH, -1 } } },
 
@@ -546,7 +545,7 @@ static bool _artp_can_go_on_item(artefact_prop_type prop, const item_def &item,
         case ARTP_SLAYING:
             return item_class != OBJ_WEAPONS; // they already have slaying!
         case ARTP_POISON:
-        case ARTP_SEE_INVISIBLE:
+        case ARTP_IMPROVED_VISION:
             return !item.is_type(OBJ_ARMOUR, ARM_NAGA_BARDING);
             // naga already have rPois & sInv!
         case ARTP_CORRODE:
@@ -649,7 +648,7 @@ static const artefact_prop_data artp_data[] =
         _gen_good_res_artp, nullptr, 2, 4 },
     { "MR", ARTP_VAL_ANY, 50,       // ARTP_MAGIC_RESISTANCE,
         _gen_good_res_artp, _gen_bad_res_artp, 2, 4 },
-    { "SInv", ARTP_VAL_BOOL, 30,    // ARTP_SEE_INVISIBLE,
+    { "SInv", ARTP_VAL_BOOL, 30,    // ARTP_IMPROVED_VISION,
         []() { return 1; }, nullptr, 0, 0 },
     { "+Inv", ARTP_VAL_BOOL, 15,    // ARTP_INVISIBLE,
         []() { return 1; }, nullptr, 0, 0 },
@@ -1429,10 +1428,6 @@ static bool _randart_is_redundant(const item_def &item,
         provides  = ARTP_SLAYING;
         break;
 
-    case RING_SEE_INVISIBLE:
-        provides = ARTP_SEE_INVISIBLE;
-        break;
-
     case RING_STEALTH:
         provides = ARTP_STEALTH;
         break;
@@ -1703,7 +1698,7 @@ static void _make_faerie_armour(item_def &item)
 
 static jewellery_type octoring_types[8] =
 {
-    RING_SEE_INVISIBLE, RING_FIRE, RING_ICE,
+    RING_SLAYING, RING_FIRE, RING_ICE,
     RING_RESIST_CORROSION, RING_STEALTH, RING_WIZARDRY, RING_MAGICAL_POWER,
     RING_LIFE_PROTECTION
 };

@@ -98,7 +98,7 @@
 # * rmsl:     Passively repels missiles.
 # * rmut:     Grants mutation resistance.
 # * rnd_tele: Induces random teleportation.
-# * seeinv:   Lets wearer see invisible.
+# * seeinv:   Improves wearer's vision.
 # * skip_ego: The item's ego is skipped in its inscription, to be replaced by
 #             an INSCRIP: entry.
 # * slow:     Randomly causes slowing when taking damage.

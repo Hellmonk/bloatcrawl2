@@ -495,8 +495,10 @@ void zappy(zap_type z_type, int power, bool is_monster, bolt &pbolt)
                                              : zinfo->player_tohit;
         ASSERT(hit_calc);
         pbolt.hit = (*hit_calc)(power);
-        if (pbolt.hit != AUTOMATIC_HIT && !is_monster)
-            pbolt.hit = max(0, pbolt.hit - 5 * you.inaccuracy());
+		if (pbolt.hit != AUTOMATIC_HIT && !is_monster)
+		{
+			pbolt.hit = max(0, pbolt.hit - 5 * you.inaccuracy() + 5 * you.vision());
+		}
     }
 
     dam_deducer* dam_calc = is_monster ? zinfo->monster_damage

@@ -219,6 +219,9 @@ int attack::calc_to_hit(bool random)
         if (you.get_mutation_level(MUT_EYEBALLS))
             mhit += 2 * you.get_mutation_level(MUT_EYEBALLS) + 1;
 
+		// +0 for normal vision, +5 for Supernaturally Acute Vision, -5 For Impaired Vision
+		mhit += 5 * you.vision();
+
         // hit roll
         mhit = maybe_random2(mhit, random);
     }

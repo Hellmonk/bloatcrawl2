@@ -499,7 +499,8 @@ public:
     bool cannot_speak() const;
     bool invisible() const override;
     bool can_see_invisible(bool calc_unid = true) const override;
-    bool innate_sinv() const;
+	int vision(bool calc_unid = true) const;
+    int innate_vision() const;
     bool visible_to(const actor *looker) const override;
     bool can_see(const actor& a) const override;
     undead_state_type undead_state(bool temp = true) const;

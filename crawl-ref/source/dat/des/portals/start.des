@@ -255,12 +255,12 @@ KFEAT:  I = jewellery shop type:Amulets suffix:and_Necklaces count:9 greed:10 us
             mundane not_cursed amulet of guardian spirit |\
             mundane not_cursed amulet of reflection | mundane not_cursed amulet of regeneration |\
 	    mundane not_cursed amulet of faith
-KFEAT:  J = jewellery shop type:Rings, suffix:Glorious_Rings count:19 greed:8 use_all ; \
+KFEAT:  J = jewellery shop type:Rings, suffix:Glorious_Rings count:18 greed:8 use_all ; \
             mundane not_cursed ring of protection | mundane not_cursed ring of evasion |\
             mundane not_cursed ring of poison resistance | mundane not_cursed ring of resist corrosion|\
             mundane not_cursed ring of strength | mundane not_cursed ring of intelligence |\
             mundane not_cursed ring of dexterity | mundane not_cursed ring of slaying |\
-            mundane not_cursed ring of see invisible | mundane not_cursed ring of stealth|\
+            mundane not_cursed ring of stealth|\
             mundane cursed ring of attention | mundane cursed ring of teleportation |\
             mundane not_cursed ring of wizardry | mundane not_cursed ring of magical power |\
             mundane not_cursed ring of fire | mundane not_cursed ring of ice |\

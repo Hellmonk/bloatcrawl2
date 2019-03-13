@@ -842,7 +842,7 @@ A ring that increases its wearer's resistance to hostile enchantments.
 %%%%
 ring of see invisible
 
-A ring that allows its wearer to see those things hidden from view by magic.
+Removed Ring.
 %%%%
 ring of slaying
 

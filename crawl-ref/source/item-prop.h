@@ -214,7 +214,7 @@ int get_armour_res_magic(const item_def &arm, bool check_artp) PURE;
 int get_armour_res_corr(const item_def &arm) PURE;
 int get_armour_repel_missiles(const item_def &arm, bool check_artp) PURE;
 int get_armour_cloud_immunity(const item_def &arm) PURE;
-bool get_armour_see_invisible(const item_def &arm, bool check_artp) PURE;
+bool get_armour_improved_vision (const item_def &arm, bool check_artp) PURE;
 
 int get_jewellery_res_fire(const item_def &ring, bool check_artp) PURE;
 int get_jewellery_res_cold(const item_def &ring, bool check_artp) PURE;
@@ -222,7 +222,7 @@ int get_jewellery_res_poison(const item_def &ring, bool check_artp) PURE;
 int get_jewellery_res_elec(const item_def &ring, bool check_artp) PURE;
 int get_jewellery_life_protection(const item_def &ring, bool check_artp) PURE;
 int get_jewellery_res_magic(const item_def &ring, bool check_artp) PURE;
-bool get_jewellery_see_invisible(const item_def &ring, bool check_artp) PURE;
+bool get_jewellery_improved_vision(const item_def &ring, bool check_artp) PURE;
 
 int property(const item_def &item, int prop_type) PURE;
 int armour_prop(int armour, int prop_type) PURE;

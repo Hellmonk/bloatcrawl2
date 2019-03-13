@@ -26,7 +26,7 @@ function callback.tgw_lugonu_bribe_lugonu_item (data, triggerable,
                  "lajatang", "morningstar", "great mace"})
     local item = {
          ["No God"]="amulet of faith ident:type",
-         Ashenzari="ring of see invisible ident:type",
+         Ashenzari="scroll of magic mapping ident:type q:3-6",
          Beogh="scroll of fear ident:type q:3-6 /\
               scroll of immolation ident:type q:3-6",
          Cheibriados="potion of haste ident:type q:2-4 /\

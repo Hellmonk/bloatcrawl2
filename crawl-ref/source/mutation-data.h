@@ -516,20 +516,20 @@ static const mutation_def mut_data[] =
    ""},
 },
 
-{ MUT_BLURRY_VISION, 10, 3, mutflag::bad | mutflag::xom, false,
-  "blurry vision",
+{ MUT_IMPAIRED_VISION, 10, 1, mutflag::bad | mutflag::xom, false,
+  "impaired vision",
 
-  {"Scrolls take you a little longer to read.",
-   "Scrolls take you longer to read.",
-   "Scrolls take you much longer to read."},
+  {"Your poor vision makes scrolls take longer to read and aiming more difficult.",
+   "",
+   ""},
 
-  {"Your vision blurs.",
-   "Your vision blurs.",
-   "Your vision blurs."},
+  {"Your vision dulls.",
+   "",
+   ""},
 
   {"Your vision sharpens.",
-   "Your vision sharpens a little.",
-   "Your vision sharpens a little."},
+   "",
+   ""},
 },
 
 { MUT_MUTATION_RESISTANCE, 4, 3, mutflag::good, false,

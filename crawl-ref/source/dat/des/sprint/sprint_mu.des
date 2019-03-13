@@ -170,7 +170,7 @@ KITEM: * = potion of flight ident:all q:2 / potion of flight q:1 / any potion, \
  potion of mutation ident:all q:2 / potion of mutation q:1 / any potion, \
  ration w:20, \
  scroll of remove curse ident:all q:2 / scroll of remove curse q:1 / any scroll, \
- scroll of identify ident:all q:2/ scroll of identify q:1 / any scroll, \
+ any scroll, \
  scroll of torment / scroll of holy word / scroll of immolation, \
  potion of mutation
 SUBST: T = t.
@@ -203,7 +203,7 @@ KITEM: * = potion of flight ident:all q:2 / potion of flight q:1 / any potion, \
  potion of mutation ident:all q:2 / potion of mutation q:1 / any potion, \
  ration w:20, \
  scroll of remove curse ident:all q:2 / scroll of remove curse q:1 / any scroll, \
- scroll of identify ident:all q:2 / scroll of identify q:1 / any scroll, \
+ any scroll, \
  scroll of torment / scroll of holy word / scroll of immolation, \
  potion of mutation
 
@@ -806,7 +806,6 @@ MONS: spriggan defender hd:5 hp:55 ; dagger
 MONS: obsidian statue / orange crystal statue
 MONS: crystal guardian hd:10 hp:45, skeletal warrior
 KMONS: 2 = floating eye
-KITEM: 2 = q:10 scroll of identify ident:all
 KMONS: P = plant
 SUBST: P = PPPPPPPPP.
 

@@ -7073,42 +7073,48 @@ bool player::sicken(int amount)
 /// Can the player see invisible things?
 bool player::can_see_invisible(bool calc_unid) const
 {
-    if (crawl_state.game_is_arena())
-        return true;
+	return (vision() > 0);
+}
 
-    if (wearing(EQ_RINGS, RING_SEE_INVISIBLE, calc_unid)
-        // armour: (checks head armour only)
-        || wearing_ego(EQ_HELMET, SPARM_SEE_INVISIBLE)
+int player::vision(bool calc_unid) const
+{
+	int x = innate_vision();
+    if (crawl_state.game_is_arena())
+        return 1;
+
+    if (wearing_ego(EQ_HELMET, SPARM_IMPROVED_VISION)
         // randart gear
-        || scan_artefacts(ARTP_SEE_INVISIBLE, calc_unid) > 0)
+        || scan_artefacts(ARTP_IMPROVED_VISION, calc_unid) > 0)
     {
-        return true;
+        x++;
     }
 
-    return innate_sinv();
+    return min(x,1);
 }
 
 /// Can the player see invisible things without needing items' help?
-bool player::innate_sinv() const
+int player::innate_vision() const
 {
-    // Possible to have both with a temp mutation.
-    if (has_mutation(MUT_ACUTE_VISION)
-        && !has_mutation(MUT_BLURRY_VISION))
-    {
-        return true;
-    }
+	int x = 0;
 
-    // antennae give sInvis at 3
-    if (get_mutation_level(MUT_ANTENNAE) == 3)
-        return true;
+	if (has_mutation(MUT_ACUTE_VISION))
+		x++;
 
-    if (get_mutation_level(MUT_EYEBALLS) == 3)
-        return true;
+	if (get_mutation_level(MUT_ANTENNAE) == 3)
+		x++;
 
-    if (have_passive(passive_t::sinv))
-        return true;
+	if (get_mutation_level(MUT_EYEBALLS) == 3)
+		x++;
 
-    return false;
+	if (have_passive(passive_t::sinv))
+		return 1;
+
+	x = min(1, x);
+
+	if (has_mutation(MUT_IMPAIRED_VISION))
+		x--;
+
+    return x;
 }
 
 bool player::invisible() const

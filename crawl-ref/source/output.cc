@@ -2423,8 +2423,9 @@ static vector<formatted_string> _get_overview_resistances(
     // Second column, resist name is 9 chars
     out.clear();
     cwidth = 9;
-    const int rinvi = you.can_see_invisible(calc_unid);
-    out += _resist_composer("SeeInvis", cwidth, rinvi) + "\n";
+    const int rinvi = you.vision(calc_unid);
+		
+    out += _resist_composer("Vision", cwidth, rinvi, 1, true) + "\n";
 
     const int gourmand = you.gourmand(calc_unid);
     out += _resist_composer("Gourm", cwidth, gourmand, 1) + "\n";

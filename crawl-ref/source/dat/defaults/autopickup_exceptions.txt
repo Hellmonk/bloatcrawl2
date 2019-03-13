@@ -50,7 +50,6 @@ ae += [^n]identified.*spellbook
 :   or itsubtype == "ring of stealth"
 :   or itsubtype == "ring of teleportation"
 :   or itsubtype == "ring of resist corrosion"
-:   or itsubtype == "ring of see invisible"
 :   or itsubtype == "ring of magical power"
 :   or itsubtype == "ring of ice"
 :   or itsubtype == "ring of fire") then
@@ -75,4 +74,4 @@ ae += amulet of (nothing|inaccuracy|the gourmand|regeneration|harm)
 ae += amulet of (rage|guardian spirit|faith|magic regeneration|the acrobat)
 
 # Likewise for some rings.
-ae += ring of (see invisible|flight|poison resistance|resist corrosion)
+ae += ring of (flight|poison resistance|resist corrosion)

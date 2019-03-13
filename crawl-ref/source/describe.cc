@@ -328,7 +328,7 @@ static vector<string> _randart_propnames(const item_def& item,
         { ARTP_SHIELDING,             prop_note::numeral },
 
         // Qualitative attributes (and Stealth)
-        { ARTP_SEE_INVISIBLE,         prop_note::plain },
+        { ARTP_IMPROVED_VISION,       prop_note::plain },
         { ARTP_STEALTH,               prop_note::symbolic },
         { ARTP_CURSE,                 prop_note::plain },
         { ARTP_CLARITY,               prop_note::plain },
@@ -540,7 +540,7 @@ static string _randart_descrip(const item_def &item)
                                  "enchantments.", false},
         { ARTP_HP, "It affects your health (%d).", false},
         { ARTP_MAGICAL_POWER, "It affects your magic capacity (%d).", false},
-        { ARTP_SEE_INVISIBLE, "It lets you see invisible.", false},
+        { ARTP_IMPROVED_VISION, "It improves your vision.", false},
         { ARTP_INVISIBLE, "It lets you turn invisible.", false},
         { ARTP_FLY, "It lets you fly.", false},
         { ARTP_BLINK, "It lets you blink.", false},
@@ -1658,8 +1658,8 @@ static string _describe_armour(const item_def &item, bool verbose)
         case SPARM_POISON_RESISTANCE:
             description += "It protects its wearer from poison.";
             break;
-        case SPARM_SEE_INVISIBLE:
-            description += "It allows its wearer to see invisible things.";
+        case SPARM_IMPROVED_VISION:
+            description += "It improves the wearer's vision.";
             break;
         case SPARM_INVISIBILITY:
             description += "When activated it hides its wearer from "

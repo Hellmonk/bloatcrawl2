@@ -95,8 +95,6 @@ static uint8_t _jewellery_type_from_artefact_prop(const string &s
         return RING_TELEPORTATION;
     if (s == "Wiz")
         return RING_WIZARDRY;
-    if (s == "SInv")
-        return RING_SEE_INVISIBLE;
     if (s == "Noisy" || s == "Stlth-")
         return RING_ATTENTION;
     if (s == "+Fly")

@@ -2444,16 +2444,18 @@ int get_armour_res_magic(const item_def &arm, bool check_artp)
     return res;
 }
 
-bool get_armour_see_invisible(const item_def &arm, bool check_artp)
+bool get_armour_improved_vision(const item_def &arm, bool check_artp)
 {
     ASSERT(arm.base_type == OBJ_ARMOUR);
 
+	int a = 0;
+
     // check for ego resistance
-    if (get_armour_ego_type(arm) == SPARM_SEE_INVISIBLE)
+    if (get_armour_ego_type(arm) == SPARM_IMPROVED_VISION)
         return true;
 
     if (check_artp && is_artefact(arm))
-        return artefact_property(arm, ARTP_SEE_INVISIBLE);
+        return artefact_property(arm, ARTP_IMPROVED_VISION);
 
     return false;
 }
@@ -2598,15 +2600,12 @@ int get_jewellery_res_magic(const item_def &ring, bool check_artp)
     return res;
 }
 
-bool get_jewellery_see_invisible(const item_def &ring, bool check_artp)
+bool get_jewellery_improved_vision(const item_def &ring, bool check_artp)
 {
     ASSERT(ring.base_type == OBJ_JEWELLERY);
 
-    if (ring.sub_type == RING_SEE_INVISIBLE)
-        return true;
-
     if (check_artp && is_artefact(ring))
-        return artefact_property(ring, ARTP_SEE_INVISIBLE);
+        return artefact_property(ring, ARTP_IMPROVED_VISION);
 
     return false;
 }
@@ -2755,7 +2754,6 @@ bool gives_resistance(const item_def &item)
         if (!jewellery_is_amulet(item))
         {
             if (   item.sub_type == RING_POISON_RESISTANCE
-                || item.sub_type == RING_SEE_INVISIBLE
                 || item.sub_type == RING_LIFE_PROTECTION
                 || item.sub_type == RING_PROTECTION_FROM_MAGIC
                 || item.sub_type == RING_FIRE
@@ -2777,7 +2775,7 @@ bool gives_resistance(const item_def &item)
             return false;
 
         const int ego = get_armour_ego_type(item);
-        if (ego >= SPARM_FIRE_RESISTANCE && ego <= SPARM_SEE_INVISIBLE
+        if (ego >= SPARM_FIRE_RESISTANCE && ego <= SPARM_IMPROVED_VISION
             || ego == SPARM_RESISTANCE || ego == SPARM_POSITIVE_ENERGY)
         {
             return true;
