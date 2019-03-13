@@ -107,7 +107,7 @@ Ten czar tworzy kolumnę ognia w dowolnej wolnej przestrzeni. Stanowi ona
 tymczasową zaporę przeciw wrogom którzy boją się poparzeń — i zadaje spore
 obrażenia tym którzy w nią wejdą.
 %%%%
-Corona spell
+magic candle spell
 
 Ten czar tworzy poświatę wokół ofiary, czyniąc ją bardziej widoczną. W
 warunkach słabego światła, takich jak te lochy, bardzo ułatwia to obserwację

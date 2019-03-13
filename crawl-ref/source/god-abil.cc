@@ -826,7 +826,7 @@ enum class zin_eff
     paralyse,
     smite,
     blind,
-    silver_corona,
+    silver_candle,
     antimagic,
     mute,
     mad,
@@ -946,7 +946,7 @@ bool zin_recite_to_single_monster(const coord_def& where)
                 else if (mon->antimagic_susceptible())
                     effect = zin_eff::antimagic;
                 else
-                    effect = zin_eff::silver_corona;
+                    effect = zin_eff::silver_candle;
             }
             else if (check < 15)
             {
@@ -979,7 +979,7 @@ bool zin_recite_to_single_monster(const coord_def& where)
         else if (check < 10)
         {
             if (coinflip())
-                effect = zin_eff::silver_corona;
+                effect = zin_eff::silver_candle;
             else
                 effect = zin_eff::smite;
         }
@@ -988,7 +988,7 @@ bool zin_recite_to_single_monster(const coord_def& where)
             if (coinflip())
                 effect = zin_eff::ignite_chaos;
             else
-                effect = zin_eff::silver_corona;
+                effect = zin_eff::silver_candle;
         }
         else
             effect = zin_eff::saltify;
@@ -1010,14 +1010,14 @@ bool zin_recite_to_single_monster(const coord_def& where)
             if (coinflip())
                 effect = zin_eff::smite;
             else
-                effect = zin_eff::silver_corona;
+                effect = zin_eff::silver_candle;
         }
         else if (check < 15)
         {
             if (mon->undead_or_demonic() && coinflip())
                 effect = zin_eff::holy_word;
             else
-                effect = zin_eff::silver_corona;
+                effect = zin_eff::silver_candle;
         }
         else
             effect = zin_eff::saltify;
@@ -1036,7 +1036,7 @@ bool zin_recite_to_single_monster(const coord_def& where)
             if (coinflip())
                 effect = zin_eff::confuse;
             else
-                effect = zin_eff::silver_corona;
+                effect = zin_eff::silver_candle;
         }
         // Half of the time, the anti-unholy prayer will be capped at this
         // level of effect.
@@ -1045,7 +1045,7 @@ bool zin_recite_to_single_monster(const coord_def& where)
             if (coinflip())
                 effect = zin_eff::holy_word;
             else
-                effect = zin_eff::silver_corona;
+                effect = zin_eff::silver_candle;
         }
         else
             effect = zin_eff::saltify;
@@ -1114,11 +1114,11 @@ bool zin_recite_to_single_monster(const coord_def& where)
         }
         break;
 
-    case zin_eff::silver_corona:
-        if (mon->add_ench(mon_enchant(ENCH_SILVER_CORONA, degree, &you,
+    case zin_eff::silver_candle:
+        if (mon->add_ench(mon_enchant(ENCH_SILVER_CANDLE, degree, &you,
                           (degree + random2(spellpower)) * BASELINE_DELAY)))
         {
-            simple_monster_message(*mon, " is limned with silver light.");
+            mpr(make_stringf("A silvery candle appears, clearly marking %s.", mon->name(DESC_THE).c_str()));
             affected = true;
         }
         break;
@@ -5993,7 +5993,7 @@ void ru_do_retribution(monster* mons, int damage)
     {
         mprf(MSGCH_GOD, "You focus your will and illuminate %s in retribution!",
                 mons->name(DESC_THE).c_str());
-        mons->add_ench(mon_enchant(ENCH_CORONA, 1, act, power+random2(150)));
+        mons->add_ench(mon_enchant(ENCH_MAGIC_CANDLE, 1, act, power+random2(150)));
     }
 }
 

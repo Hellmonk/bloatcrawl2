@@ -1140,7 +1140,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 
     case SPELL_DARKNESS:
-        // mere corona is not enough, but divine light blocks it completely
+        // mere magic candle is not enough, but divine light blocks it completely
         if (temp && (you.haloed() || !prevent && have_passive(passive_t::halo)))
             return "darkness is useless against divine light.";
         break;
@@ -1437,7 +1437,7 @@ bool spell_no_hostile_in_range(spell_type spell)
 
     zap_type zap = spell_to_zap(spell);
     // Don't let it think that there are no susceptible monsters in range
-    if (spell == SPELL_RANDOM_BOLT)
+    if (spell == SPELL_RANDOM_BOLT || spell == SPELL_MAGIC_CANDLE)
         zap = ZAP_DEBUGGING_RAY;
 
     if (zap != NUM_ZAPS)

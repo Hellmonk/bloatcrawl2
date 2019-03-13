@@ -512,8 +512,8 @@ public:
                 afflictions.push_back("halo");
             if (player_severe_contamination())
                 afflictions.push_back("magical contamination");
-            if (you.duration[DUR_CORONA])
-                afflictions.push_back("corona");
+            if (you.duration[DUR_MAGIC_CANDLE])
+                afflictions.push_back("magic candle");
             if (you.duration[DUR_LIQUID_FLAMES])
                 afflictions.push_back("liquid flames");
             if (you.duration[DUR_QUAD_DAMAGE])

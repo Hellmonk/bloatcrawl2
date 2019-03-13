@@ -53,7 +53,6 @@ enum beam_type                  // bolt::flavour
     BEAM_BLINK_CLOSE,
     BEAM_BECKONING,
     BEAM_PETRIFY,
-    BEAM_CORONA,
     BEAM_PORKALATOR,
     BEAM_HIBERNATION,
     BEAM_BERSERK,
@@ -83,7 +82,8 @@ enum beam_type                  // bolt::flavour
     BEAM_ENSNARE,
     BEAM_CRYSTAL,
     BEAM_DEATH_RATTLE,
-    BEAM_LAST_REAL = BEAM_DEATH_RATTLE,
+	BEAM_MAGIC_CANDLE,
+    BEAM_LAST_REAL = BEAM_MAGIC_CANDLE,
 
     // For getting the visual effect of a beam.
     BEAM_VISUAL,

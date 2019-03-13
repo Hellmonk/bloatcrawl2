@@ -19,7 +19,7 @@ enum duration_type
 #if TAG_MAJOR_VERSION == 34
     DUR_SURE_BLADE,
 #endif
-    DUR_CORONA,
+    DUR_MAGIC_CANDLE,
     DUR_DEATHS_DOOR,
     DUR_FIRE_SHIELD,
 

@@ -200,10 +200,11 @@ Fire status
 You are covered with sticky fire, which causes damage over a short duration.
 Entering water will extinguish the flames.
 %%%%
-Corona status
+Magic Candle status
 
-You are surrounded by light, greatly reducing your stealth and making you
-easier to hit.
+There's a magical lightsource stuck to you, clearly marking your location to
+the beholder. It's much harder to hide or evade attacks until the light source
+burns out.
 %%%%
 Barbs status
 

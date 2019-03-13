@@ -97,14 +97,14 @@ static const mon_spellbook mspell_list[] =
     // ('c') Centaurs and such.
     {  MST_FAUN_I,
       {
-       { SPELL_CORONA, 15, MON_SPELL_WIZARD },
+       { SPELL_MAGIC_CANDLE, 15, MON_SPELL_WIZARD },
        { SPELL_SLOW, 30, MON_SPELL_WIZARD },
       }
     },
 
     {  MST_FAUN_II,
       {
-       { SPELL_CORONA, 15, MON_SPELL_WIZARD },
+       { SPELL_MAGIC_CANDLE, 15, MON_SPELL_WIZARD },
        { SPELL_CONFUSE, 10, MON_SPELL_WIZARD },
       }
     },
@@ -259,7 +259,7 @@ static const mon_spellbook mspell_list[] =
     // ('g') Small humanoids.
     {  MST_GNOLL_SHAMAN,
       {
-       { SPELL_CORONA, 11, MON_SPELL_PRIEST },
+       { SPELL_MAGIC_CANDLE, 11, MON_SPELL_PRIEST },
        { SPELL_HEAL_OTHER, 21, MON_SPELL_PRIEST },
        { SPELL_HASTE_OTHER, 11, MON_SPELL_PRIEST },
        { SPELL_MINOR_HEALING, 11, MON_SPELL_PRIEST | MON_SPELL_EMERGENCY },
@@ -1688,7 +1688,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_THROW_FLAME, 9, MON_SPELL_WIZARD },
        { SPELL_THROW_FROST, 9, MON_SPELL_WIZARD },
        { SPELL_BLINK, 9, MON_SPELL_WIZARD },
-       { SPELL_CORONA, 9, MON_SPELL_WIZARD },
+       { SPELL_MAGIC_CANDLE, 9, MON_SPELL_WIZARD },
        { SPELL_HASTE_OTHER, 9, MON_SPELL_WIZARD },
       }
     },

@@ -1762,8 +1762,8 @@ KMONS: P = ball python perm_ench:paralysis / rat perm_ench:paralysis / \
   frilled lizard perm_ench:paralysis / giant cockroach perm_ench:paralysis / \
   quokka perm_ench:paralysis / kobold w:5 perm_ench:paralysis / \
   goblin w:5 perm_ench:paralysis / hobgoblin w:5 perm_ench:paralysis
-KMONS: C = bat perm_ench:corona / adder perm_ench:corona / \
-  kobold perm_ench:corona / goblin perm_ench:corona / hobgoblin perm_ench:corona
+KMONS: C = bat perm_ench:magic_candle / adder perm_ench:magic_candle / \
+  kobold perm_ench:magic_candle / goblin perm_ench:magic_candle / hobgoblin perm_ench:magic_candle
 KMONS: S = jackal perm_ench:slow / bat perm_ench:slow / adder perm_ench:slow / \
   kobold perm_ench:slow / goblin perm_ench:slow / hobgoblin perm_ench:slow
 KMONS: B = ball python perm_ench:blind / frilled lizard perm_ench:blind / \

@@ -1268,7 +1268,7 @@ void monster::timeout_enchantments(int levels)
     {
         switch (entry.first)
         {
-        case ENCH_POISON: case ENCH_CORONA:
+        case ENCH_POISON: case ENCH_MAGIC_CANDLE:
         case ENCH_STICKY_FLAME: case ENCH_ABJ: case ENCH_SHORT_LIVED:
         case ENCH_HASTE: case ENCH_MIGHT: case ENCH_FEAR:
         case ENCH_CHARM: case ENCH_SLEEP_WARY: case ENCH_SICK:
@@ -1277,7 +1277,7 @@ void monster::timeout_enchantments(int levels)
         case ENCH_LOWERED_MR: case ENCH_SOUL_RIPE: case ENCH_ANTIMAGIC:
         case ENCH_FEAR_INSPIRING: case ENCH_REGENERATION: case ENCH_RAISED_MR:
         case ENCH_MIRROR_DAMAGE: case ENCH_LIQUEFYING:
-        case ENCH_SILVER_CORONA: case ENCH_DAZED: case ENCH_FAKE_ABJURATION:
+        case ENCH_SILVER_CANDLE: case ENCH_DAZED: case ENCH_FAKE_ABJURATION:
         case ENCH_BREATH_WEAPON: case ENCH_WRETCHED:
         case ENCH_SCREAMED: case ENCH_BLIND: case ENCH_WORD_OF_RECALL:
         case ENCH_INJURY_BOND: case ENCH_FLAYED: case ENCH_BARBS:

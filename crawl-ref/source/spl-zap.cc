@@ -38,10 +38,9 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_THROW_ICICLE, ZAP_THROW_ICICLE },
     // Wizard mode only.
     { SPELL_PORKALATOR, ZAP_PORKALATOR },
-    // Should only be available from Staff of Dispater and Sceptre
-    // of Asmodeus.
+    // Should only be available from Staff of Dispater
     { SPELL_HURL_DAMNATION, ZAP_DAMNATION },
-    { SPELL_CORONA, ZAP_CORONA },
+    { SPELL_MAGIC_CANDLE, ZAP_MAGIC_CANDLE },
     { SPELL_ENSLAVEMENT, ZAP_ENSLAVEMENT },
     { SPELL_BANISHMENT, ZAP_BANISHMENT },
     { SPELL_SLOW, ZAP_SLOW },
@@ -116,7 +115,7 @@ int spell_zap_power(spell_type spell, int pow)
 {
     switch (spell)
     {
-    case SPELL_CORONA:
+    case SPELL_MAGIC_CANDLE:
         return pow + 10;
     case SPELL_HIBERNATION:
         return stepdown_value(pow * 9 / 10, 5, 35, 45, 50);
@@ -136,7 +135,7 @@ int spell_zap_power_cap(spell_type spell)
 
     switch (spell)
     {
-    case SPELL_CORONA:
+    case SPELL_MAGIC_CANDLE:
         return max<int>(cap - 10, 0);
     case SPELL_HIBERNATION:
         return 50;

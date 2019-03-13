@@ -91,7 +91,7 @@ Conjure Flame spell
 
 这道法术创造出一团火云。
 %%%%
-Corona spell
+magic candle spell
 
 这道法术创造出一个光圈把目标生物围住，使目标生物的身体发光。
 这道光会驱散地城中的黑暗，因此要击中目标生物就容易多了。

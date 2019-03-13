@@ -1509,14 +1509,14 @@ static const struct spell_desc spelldata[] =
 },
 
 {
-    SPELL_CORONA, "Corona",
-    SPTYP_HEXES,
-    SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEEDS_TRACER | SPFLAG_MR_CHECK,
+    SPELL_MAGIC_CANDLE, "Magic Candle",
+    SPTYP_FIRE | SPTYP_HEXES,
+    SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEEDS_TRACER,
     1,
     200,
     LOS_RADIUS, LOS_RADIUS,
     1, 0,
-    TILEG_CORONA,
+    TILEG_MAGIC_CANDLE,
 },
 
 {

@@ -650,15 +650,15 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
         behaviour_event(this, ME_EVAL);
         break;
 
-    case ENCH_CORONA:
-    case ENCH_SILVER_CORONA:
+    case ENCH_MAGIC_CANDLE:
+    case ENCH_SILVER_CANDLE:
     if (!quiet)
         {
             if (visible_to(&you))
-                simple_monster_message(*this, " stops glowing.");
+                simple_monster_message(*this, " is no longer marked by a candle.");
             else if (has_ench(ENCH_INVIS) && you.see_cell(pos()))
             {
-                mprf("%s stops glowing and disappears.",
+                mprf("As the candle marking %s burns out, it fades back into invisibility.",
                      name(DESC_THE, true).c_str());
             }
         }
@@ -1435,7 +1435,7 @@ void monster::apply_enchantment(const mon_enchant &me)
     case ENCH_PETRIFYING:
     case ENCH_PETRIFIED:
     case ENCH_SICK:
-    case ENCH_CORONA:
+    case ENCH_MAGIC_CANDLE:
     case ENCH_ABJ:
     case ENCH_CHARM:
     case ENCH_SLEEP_WARY:
@@ -1835,14 +1835,14 @@ void monster::apply_enchantment(const mon_enchant &me)
         }
         break;
 
-    // This is like Corona, but if silver harms them, it has sticky
+    // This is like magic candle, but if silver harms them, it has sticky
     // flame levels of damage.
-    case ENCH_SILVER_CORONA:
+    case ENCH_SILVER_CANDLE:
         if (how_chaotic())
         {
             int dam = roll_dice(2, 4) - 1;
             simple_monster_message(*this, " is seared!");
-            dprf("Zin's Corona damage: %d", dam);
+            dprf("Zin's Silver damage: %d", dam);
             hurt(me.agent(), dam);
         }
 
@@ -2094,7 +2094,7 @@ static const char *enchant_names[] =
 #if TAG_MAJOR_VERSION == 34
     "rot",
 #endif
-    "summon", "abj", "corona",
+    "summon", "abj", "magic_candle",
     "charm", "sticky_flame", "glowing_shapeshifter", "shapeshifter", "tp",
     "sleep_wary", "submerged", "short_lived", "paralysis", "sick",
 #if TAG_MAJOR_VERSION == 34
@@ -2132,7 +2132,7 @@ static const char *enchant_names[] =
     "withdrawn", "attached",
 #endif
     "guardian_timer", "flight", "liquefying", "tornado", "fake_abjuration",
-    "dazed", "mute", "blind", "dumb", "mad", "silver_corona", "recite timer",
+    "dazed", "mute", "blind", "dumb", "mad", "silver_candle", "recite timer",
     "inner_flame",
 #if TAG_MAJOR_VERSION == 34
     "roused",
@@ -2364,8 +2364,8 @@ int mon_enchant::calc_duration(const monster* mons,
     case ENCH_STICKY_FLAME:
         cturn = 1000 * deg / _mod_speed(200, mons->speed);
         break;
-    case ENCH_CORONA:
-    case ENCH_SILVER_CORONA:
+    case ENCH_MAGIC_CANDLE:
+    case ENCH_SILVER_CANDLE:
         if (deg > 1)
             cturn = 1000 * (deg - 1) / _mod_speed(200, mons->speed);
         cturn += 1000 / _mod_speed(100, mons->speed);

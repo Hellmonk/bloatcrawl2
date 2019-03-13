@@ -165,7 +165,7 @@ Conjure Flame spell
 
 이 주문은 타오르는 불기둥을 만들어낸다.
 %%%%
-Corona spell
+magic candle spell
 
 이 마법은 대상을 빛나게 한다. 이 빛은 어둡고 텁텁한 던전의 공기로부터 대상을 더
 잘 보이게 만들어주기 때문에, 대상을 더 쉽게 공격할 수 있다.

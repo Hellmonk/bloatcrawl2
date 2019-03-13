@@ -21,7 +21,7 @@ enum enchant_type
 #endif
     ENCH_SUMMON,
     ENCH_ABJ,
-    ENCH_CORONA,
+    ENCH_MAGIC_CANDLE,
     ENCH_CHARM,
     ENCH_STICKY_FLAME,
     ENCH_GLOWING_SHAPESHIFTER,
@@ -91,7 +91,7 @@ enum enchant_type
     ENCH_BLIND,          // Blind (everything is invisible).
     ENCH_DUMB,           // Stupefied (paralysis by a different name).
     ENCH_MAD,            // Confusion by another name.
-    ENCH_SILVER_CORONA,  // Zin's silver light.
+    ENCH_SILVER_CANDLE,  // Zin's silver light.
     ENCH_RECITE_TIMER,   // Was recited against.
     ENCH_INNER_FLAME,
 #if TAG_MAJOR_VERSION == 34

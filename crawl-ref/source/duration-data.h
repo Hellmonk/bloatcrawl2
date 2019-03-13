@@ -169,13 +169,13 @@ static const duration_def duration_data[] =
           mprf(MSGCH_DURATION, "%s",
                you.hands_act("stop", "glowing.").c_str());
       }}}, 20},
-    { DUR_CORONA,
-      YELLOW, "Corona",
-      "", "corona",
+    { DUR_MAGIC_CANDLE,
+      YELLOW, "Candle",
+      "", "magic candle",
       "", D_DISPELLABLE,
       {{ "", []() {
           if (!you.backlit())
-              mprf(MSGCH_DURATION, "You are no longer glowing.");
+              mprf(MSGCH_DURATION, "The candle marking you falls away.");
       }}}},
     { DUR_DEATH_CHANNEL,
       MAGENTA, "DChan",

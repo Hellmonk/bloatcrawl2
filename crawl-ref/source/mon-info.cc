@@ -49,8 +49,8 @@
 static map<enchant_type, monster_info_flags> trivial_ench_mb_mappings = {
     { ENCH_BERSERK,         MB_BERSERK },
     { ENCH_POISON,          MB_POISONED },
-    { ENCH_CORONA,          MB_GLOWING },
-    { ENCH_SILVER_CORONA,   MB_GLOWING },
+    { ENCH_MAGIC_CANDLE,          MB_GLOWING },
+    { ENCH_SILVER_CANDLE,   MB_GLOWING },
     { ENCH_SLOW,            MB_SLOWED },
     { ENCH_SICK,            MB_SICK },
     { ENCH_INSANE,          MB_INSANE },
@@ -1407,7 +1407,7 @@ vector<string> monster_info::attributes() const
     if (is(MB_SICK))
         v.emplace_back("sick");
     if (is(MB_GLOWING))
-        v.emplace_back("softly glowing");
+        v.emplace_back("candlelit");
     if (is(MB_INSANE))
         v.emplace_back("frenzied and insane");
     if (is(MB_CONFUSED))

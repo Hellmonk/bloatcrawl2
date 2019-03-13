@@ -3312,7 +3312,7 @@ int player_stealth()
         }
     }
 
-    // If you've been tagged with Corona or are Glowing, the glow
+    // If you've been tagged with magic candle or are Glowing, the glow
     // makes you extremely unstealthy.
     if (you.backlit())
         stealth = stealth * 2 / 5;
@@ -3343,7 +3343,7 @@ int player_stealth()
     // If you're surrounded by a storm, you're inherently pretty conspicuous.
     if (have_passive(passive_t::storm_shield))
     {
-		stealth = stealth * 2 / 5; // Penalty now fixed at same as Halo/Corona, etc.
+		stealth = stealth * 2 / 5; // Penalty now fixed at same as Halo/magic candle, etc.
 			    //  stealth
                 //  * (MAX_PIETY - min((int)you.piety, piety_breakpoint(5)))
                 //  / (MAX_PIETY - piety_breakpoint(0));
@@ -7147,7 +7147,7 @@ bool player::visible_to(const actor *looker) const
 bool player::backlit(bool self_halo) const
 {
     return player_severe_contamination()
-           || duration[DUR_CORONA]
+           || duration[DUR_MAGIC_CANDLE]
            || duration[DUR_LIQUID_FLAMES]
            || duration[DUR_QUAD_DAMAGE]
            || !umbraed() && haloed() && (self_halo || halo_radius() == -1);
@@ -7163,16 +7163,16 @@ void player::backlight()
 {
     if (!duration[DUR_INVIS] && form != transformation::shadow)
     {
-        if (duration[DUR_CORONA])
-            mpr("You glow brighter.");
+        if (duration[DUR_MAGIC_CANDLE])
+            mpr("The candle marking your location glows brighter.");
         else
-            mpr("You are outlined in light.");
-        increase_duration(DUR_CORONA, random_range(15, 35), 250);
+            mpr("A magic candle marks your location to onlookers.");
+        increase_duration(DUR_MAGIC_CANDLE, random_range(15, 35), 250);
     }
     else
     {
         mpr("You feel strangely conspicuous.");
-        increase_duration(DUR_CORONA, random_range(3, 5), 250);
+        increase_duration(DUR_MAGIC_CANDLE, random_range(3, 5), 250);
     }
 }
 

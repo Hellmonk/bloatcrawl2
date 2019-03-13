@@ -952,7 +952,7 @@ void MiscastEffect::_hexes(int severity)
             if (target->is_player())
                 you.backlight();
             else
-                target->as_monster()->add_ench(mon_enchant(ENCH_CORONA, 20,
+                target->as_monster()->add_ench(mon_enchant(ENCH_MAGIC_CANDLE, 20,
                                                            act_source));
             break;
         case 1:
@@ -1115,7 +1115,7 @@ void MiscastEffect::_charms(int severity)
             if (target->is_player())
                 you.backlight();
             else
-                target->as_monster()->add_ench(mon_enchant(ENCH_CORONA, 20,
+                target->as_monster()->add_ench(mon_enchant(ENCH_MAGIC_CANDLE, 20,
                                                            act_source));
             break;
         case 1:

@@ -430,7 +430,7 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
             return _torment_vulnerable(caster.get_foe());
     }) },
     { SPELL_DISINTEGRATE, _hex_logic(SPELL_DISINTEGRATE) },
-    { SPELL_CORONA, _hex_logic(SPELL_CORONA, [](const monster& caster) {
+    { SPELL_MAGIC_CANDLE, _hex_logic(SPELL_MAGIC_CANDLE, [](const monster& caster) {
             return !caster.get_foe()->backlit();
     }) },
     { SPELL_POLYMORPH, _hex_logic(SPELL_POLYMORPH, [](const monster& caster) {
@@ -478,7 +478,7 @@ static mons_spell_logic _conjuration_logic(spell_type spell)
 /**
  * Create the appropriate casting logic for a simple mr-checking hex.
  *
- * @param spell             The hex in question; e.g. SPELL_CORONA.
+ * @param spell             The hex in question; e.g. SPELL_MAGIC_CANDLE.
  * @param extra_logic       An additional pre-casting condition, beyond the
  *                          normal hex logic.
  * @param power_hd_factor   If nonzero, how much spellpower the spell has per

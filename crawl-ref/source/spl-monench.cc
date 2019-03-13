@@ -12,6 +12,7 @@
 #include "message.h"
 #include "spl-util.h"
 #include "terrain.h"
+#include "stringutil.h"
 
 int englaciate(coord_def where, int pow, actor *agent)
 {
@@ -70,25 +71,26 @@ spret_type cast_englaciation(int pow, bool fail)
     return SPRET_SUCCESS;
 }
 
-/** Corona a monster.
+/** magic candle a monster.
  *
  *  @param mons the monster to get a backlight.
  *  @returns true if it got backlit (even if it was already).
  */
 bool backlight_monster(monster* mons)
 {
-    const mon_enchant bklt = mons->get_ench(ENCH_CORONA);
-    const mon_enchant zin_bklt = mons->get_ench(ENCH_SILVER_CORONA);
+    const mon_enchant bklt = mons->get_ench(ENCH_MAGIC_CANDLE);
+    const mon_enchant zin_bklt = mons->get_ench(ENCH_SILVER_CANDLE);
     const int lvl = bklt.degree + zin_bklt.degree;
 
-    mons->add_ench(mon_enchant(ENCH_CORONA, 1));
+    mons->add_ench(mon_enchant(ENCH_MAGIC_CANDLE, 1));
+	string local_name = mons->name(DESC_THE);
 
     if (lvl == 0)
-        simple_monster_message(*mons, " is outlined in light.");
+        mpr(make_stringf("The magic candle sticks upon %s", local_name.c_str()));
     else if (lvl == 4)
-        simple_monster_message(*mons, " glows brighter for a moment.");
+		mpr(make_stringf("The magic candle, stuck upon %s, cannot burn any brighter.", local_name.c_str()));
     else
-        simple_monster_message(*mons, " glows brighter.");
+		mpr("The additional candle sticks to the first, reinforcing the light.");
 
     return true;
 }

@@ -2820,6 +2820,9 @@ void monster::expose_to_element(beam_type flavour, int strength,
     case BEAM_WATER:
         del_ench(ENCH_STICKY_FLAME);
         break;
+	case BEAM_MAGIC_CANDLE:
+		backlight_monster(this);
+		break;
     case BEAM_FIRE:
     case BEAM_LAVA:
     case BEAM_STICKY_FLAME:
@@ -3027,8 +3030,8 @@ bool monster::asleep() const
 
 bool monster::backlit(bool self_halo) const
 {
-    if (has_ench(ENCH_CORONA) || has_ench(ENCH_STICKY_FLAME)
-        || has_ench(ENCH_SILVER_CORONA))
+    if (has_ench(ENCH_MAGIC_CANDLE) || has_ench(ENCH_STICKY_FLAME)
+        || has_ench(ENCH_SILVER_CANDLE))
     {
         return true;
     }

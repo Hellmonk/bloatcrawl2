@@ -1613,6 +1613,10 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
         }
         break;
 
+	case BEAM_MAGIC_CANDLE:
+		hurted = 0;
+		break;
+
     case BEAM_SPORE:
         if (mons->type == MONS_BALLISTOMYCETE)
             hurted = 0;
@@ -3314,11 +3318,6 @@ void bolt::affect_player_enchantment(bool resistible)
     case BEAM_HIBERNATION:
     case BEAM_SLEEP:
         you.put_to_sleep(nullptr, ench_power, flavour == BEAM_HIBERNATION);
-        break;
-
-    case BEAM_CORONA:
-        you.backlight();
-        obvious_effect = true;
         break;
 
     case BEAM_POLYMORPH:
@@ -5284,7 +5283,7 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
         }
         return MON_UNAFFECTED;
 
-    case BEAM_CORONA:
+    case BEAM_MAGIC_CANDLE:
         if (backlight_monster(mon))
         {
             obvious_effect = true;
@@ -6390,7 +6389,7 @@ static string _beam_type_name(beam_type type)
     case BEAM_BLINK_CLOSE:           return "blink close";
     case BEAM_BECKONING:             return "beckoning";
     case BEAM_PETRIFY:               return "petrify";
-    case BEAM_CORONA:                return "backlight";
+    case BEAM_MAGIC_CANDLE:                return "backlight";
     case BEAM_PORKALATOR:            return "porkalator";
     case BEAM_HIBERNATION:           return "hibernation";
     case BEAM_SLEEP:                 return "sleep";

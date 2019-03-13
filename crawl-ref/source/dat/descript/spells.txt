@@ -323,11 +323,11 @@ Translocates the caster a short distance, with precise control. Be wary that
 controlled translocations will cause the subject to become contaminated with
 magical energy.
 %%%%
-Corona spell
+Magic Candle spell
 
-Causes a halo of glowing light to surround and effectively outline a creature.
-This glow offsets the dark, musty atmosphere of the dungeon, and makes the
-affected creature appreciably easier to hit.
+Throws a harmless magical light source at the monster. Should it hit,
+the light of the candle offsets the dark, musty atmosphere of the dungeon, and
+makes the affected creature appreciably easier to hit.
 %%%%
 Corpse Rot spell
 

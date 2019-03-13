@@ -118,8 +118,8 @@ static void _mons_summon_monster_illusion(monster* caster,
         // Discard unsuitable enchantments.
         clone->del_ench(ENCH_CHARM);
         clone->del_ench(ENCH_STICKY_FLAME);
-        clone->del_ench(ENCH_CORONA);
-        clone->del_ench(ENCH_SILVER_CORONA);
+        clone->del_ench(ENCH_MAGIC_CANDLE);
+        clone->del_ench(ENCH_SILVER_CANDLE);
         clone->del_ench(ENCH_HEXED);
 
         behaviour_event(clone, ME_ALERT, 0, caster->pos());
@@ -154,7 +154,7 @@ static void _init_player_illusion_properties(monsterentry *me)
 
 // [ds] Not *all* appropriate enchantments are mapped -- only things
 // that are (presumably) internal to the body, like haste and
-// poisoning, and specifically not external effects like corona and
+// poisoning, and specifically not external effects like magic candle and
 // sticky flame.
 static enchant_type _player_duration_to_mons_enchantment(duration_type dur)
 {

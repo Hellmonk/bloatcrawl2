@@ -39,7 +39,7 @@ berserker_rage BERSERKER_RAGE
 cause_fear CAUSE_FEAR
 confuse CONFUSE
 confusing_touch CONFUSING_TOUCH
-corona CORONA
+corona MAGIC_CANDLE
 darkness DARKNESS
 discord DISCORD
 enslavement ENSLAVEMENT
