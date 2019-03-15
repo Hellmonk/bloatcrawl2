@@ -1805,9 +1805,6 @@ void StashTracker::update_corpses()
 
 void StashTracker::update_identification()
 {
-    if (!have_passive(passive_t::identify_items))
-        return;
-
     for (auto &entry : levels)
         entry.second._update_identification();
 }

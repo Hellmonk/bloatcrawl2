@@ -2977,8 +2977,7 @@ void seen_item(const item_def &item)
     item_def& malleable_item = const_cast<item_def &>(item);
 
     malleable_item.flags |= ISFLAG_SEEN;
-    if (have_passive(passive_t::identify_items))
-        malleable_item.flags |= ISFLAG_KNOW_CURSE;
+    malleable_item.flags |= ISFLAG_KNOW_CURSE;
     if (item.base_type == OBJ_GOLD && !item.tithe_state)
     {
         malleable_item.plus = (you_worship(GOD_ZIN)) ? TS_FULL_TITHE

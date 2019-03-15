@@ -338,7 +338,7 @@ static const vector<god_passive> god_passives[] =
     {
         { -1, passive_t::want_curses, "prefer cursed items" },
         { -1, passive_t::detect_portals, "sense portals" },
-        { -1, passive_t::identify_items, "sense the properties of items" },
+        { -1, passive_t::detect_runes, "sense runes of zot" },
         {  0, passive_t::auto_map, "have improved mapping abilities" },
         {  0, passive_t::detect_montier, "sense threats" },
         {  0, passive_t::detect_items, "sense items" },

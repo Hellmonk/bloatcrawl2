@@ -2439,13 +2439,7 @@ static void _gain_piety_point()
         if (rank == rank_for_passive(passive_t::sinv))
             autotoggle_autopickup(false);
         if (rank == rank_for_passive(passive_t::clarity))
-        {
-            // Inconsistent with donning amulets, but matches the
-            // message better and is not abusable.
             you.duration[DUR_CONF] = 0;
-        }
-        if (rank >= rank_for_passive(passive_t::identify_items))
-            auto_id_inventory();
 
         // TODO: add one-time ability check in have_passive
         if (have_passive(passive_t::unlock_slime_vaults) && can_do_capstone_ability(you.religion))
@@ -3206,17 +3200,6 @@ static void _god_welcome_handle_gear()
             set_ident_type(OBJ_SCROLLS, SCR_REMOVE_CURSE, true);
             pack_item_identify_message(OBJ_SCROLLS, SCR_REMOVE_CURSE);
         }
-    }
-
-    if (have_passive(passive_t::identify_items))
-    {
-        // Seemingly redundant with auto_id_inventory(), but we don't want to
-        // announce items where the only new information is their cursedness.
-        for (auto &item : you.inv)
-            if (item.defined())
-                item.flags |= ISFLAG_KNOW_CURSE;
-
-        auto_id_inventory();
     }
 
     if (have_passive(passive_t::detect_portals))

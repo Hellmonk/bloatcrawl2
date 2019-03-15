@@ -26,8 +26,8 @@ enum class passive_t
     /// You detect the presence of portals.
     detect_portals,
 
-    /// You identity items on sight, including monster equipment.
-    identify_items,
+    /// You detect the location of runes of zot.
+    detect_runes,
 
     /// You have (improved) automatic mapping.
     auto_map,

@@ -184,3 +184,6 @@ force_more_message += There's only one card left
 force_more_message += The deck only has .* cards
 force_more_message += The deck has exactly five cards
 force_more_message += You draw the first five cards
+
+# Ash finding a rune is kinda important
+force_more_message += You have a vision of a rune of Zot

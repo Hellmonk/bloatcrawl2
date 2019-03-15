@@ -26,6 +26,7 @@
 #include "butcher.h"
 #include "chardump.h"
 #include "cloud.h"
+#include "colour.h"
 #include "coordit.h"
 #include "directn.h"
 #include "dbg-maps.h"
@@ -71,6 +72,7 @@
 #include "tileview.h"
 #include "timed-effects.h"
 #include "traps.h"
+#include "view.h"
 
 #ifdef DEBUG_DIAGNOSTICS
 #define DEBUG_TEMPLES
@@ -232,11 +234,13 @@ static unique_ptr<dungeon_colour_grid> dgn_colour_grid;
 
 static string branch_epilogues[NUM_BRANCHES];
 
+// Hijacking this to also detect runes with Ashenzari instead of creating a new function.
 static void _count_gold()
 {
     vector<item_def *> gold_piles;
     vector<coord_def> gold_places;
     int gold = 0;
+	bool rune_found = false;
     for (rectangle_iterator ri(0); ri; ++ri)
     {
         for (stack_iterator j(*ri); j; ++j)
@@ -247,8 +251,21 @@ static void _count_gold()
                 gold_piles.push_back(&(*j));
                 gold_places.push_back(*ri);
             }
+			else if (j->base_type == OBJ_RUNES && have_passive(passive_t::detect_runes))
+			{
+				update_item_at(*ri, true);
+				env.map_knowledge(*ri).flags |= MAP_DETECTED_ITEM;
+				rune_found = true;
+			}
         }
     }
+
+	if (rune_found)
+	{
+		mprf(MSGCH_BANISHMENT, "You have a vision of a rune of Zot.");
+		if (you.where_are_you == BRANCH_ABYSS)
+			flash_view_delay(UA_PICKUP, rune_colour(RUNE_ABYSSAL), 300);
+	}
 
     if (!player_in_branch(BRANCH_ABYSS))
         you.attribute[ATTR_GOLD_GENERATED] += gold;

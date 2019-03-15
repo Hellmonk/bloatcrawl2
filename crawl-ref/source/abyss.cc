@@ -285,7 +285,7 @@ static bool _abyss_place_rune(const map_bitmask &abyss_genlevel_mask)
         int item_ind  = items(true, OBJ_RUNES, RUNE_ABYSSAL, 0);
         if (item_ind != NON_ITEM)
             item_colour(mitm[item_ind]);
-        move_item_to_grid(&item_ind, chosen_spot);
+        move_item_to_grid(&item_ind, chosen_spot, true);
         return item_ind != NON_ITEM;
     }
 
