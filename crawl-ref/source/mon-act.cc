@@ -2839,11 +2839,15 @@ bool mon_avoids_terrain(const monster* mons, dungeon_feature_type terrain)
 	case HT_LAND: 
 		if (mons->airborne())
 			return false;
-		if (mons_intel(*mons) <= I_BRAINLESS)
+		if (mons_intel(*mons) <= I_BRAINLESS && you.can_see(*mons))
 			return false;
 		if (feat_is_lava(terrain))
 		{
-			return (resist_adjust_damage(mons, BEAM_LAVA, 120) > mons->stat_hp());
+			if (feat_is_lava(env.grid(mons->pos())))
+				return false;
+			if (mons->res_fire > 2)
+				return false;
+			return (resist_adjust_damage(mons, BEAM_LAVA, 80) > mons->stat_hp() && you.can_see(*mons));
 		}
 		if (terrain == DNGN_DEEP_WATER)
 		{
@@ -2851,8 +2855,10 @@ bool mon_avoids_terrain(const monster* mons, dungeon_feature_type terrain)
 				return false;
 			if (mons->res_water_drowning())
 				return false;
+			if (env.grid(mons->pos() == DNGN_DEEP_WATER))
+				return false;
 			else
-				return (60 > mons->stat_hp());
+				return (60 > mons->stat_hp() && you.can_see(*mons));
 		}
 	default:                    return false;
 	}
