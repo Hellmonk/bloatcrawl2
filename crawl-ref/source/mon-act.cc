@@ -2845,7 +2845,7 @@ bool mon_avoids_terrain(const monster* mons, dungeon_feature_type terrain)
 		{
 			if (feat_is_lava(env.grid(mons->pos())))
 				return false;
-			if (mons->res_fire > 2)
+			if (mons->res_fire() > 2)
 				return false;
 			return (resist_adjust_damage(mons, BEAM_LAVA, 80) > mons->stat_hp() && you.can_see(*mons));
 		}
@@ -2855,7 +2855,7 @@ bool mon_avoids_terrain(const monster* mons, dungeon_feature_type terrain)
 				return false;
 			if (mons->res_water_drowning())
 				return false;
-			if (env.grid(mons->pos() == DNGN_DEEP_WATER))
+			if (env.grid(mons->pos()) == DNGN_DEEP_WATER)
 				return false;
 			else
 				return (60 > mons->stat_hp() && you.can_see(*mons));
