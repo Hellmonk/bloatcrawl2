@@ -710,8 +710,10 @@ snake
 # Remove regeneration when TAG_MAJOR_VERSION > 34 (and mark protection as 1st)
 i-protection RING_REGENERATION RING_ID_FIRST
 i-protection RING_PROTECTION
+# Remove rF+ when TAG_MAJOR_VERSION > 34
 i-r-fire RING_PROTECTION_FROM_FIRE
 i-r-poison RING_POISON_RESISTANCE
+# Remove rC+ when TAG_MAJOR_VERSION > 34
 i-r-cold RING_PROTECTION_FROM_COLD
 i-str RING_STRENGTH
 i-slaying RING_SLAYING
