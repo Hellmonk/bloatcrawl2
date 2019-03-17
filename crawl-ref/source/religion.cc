@@ -2933,8 +2933,8 @@ void excommunication(bool voluntary, god_type new_god)
 		{
 			you.char_class = JOB_XOM;
 			xom_insult_name();
-			mprf(MSGCH_GOD, "Xom says: You abandoned me! You don't deserve to be called Chaos Knight; you %s.", you.xom_insult.c_str());
-			mprf(MSGCH_GOD, "Xom strips away your Chaos Knight title; from now on you are known as %s.", you.xom_insult.c_str());
+			mprf(MSGCH_GOD, old_god, "Xom says: You abandoned me! You don't deserve to be called Chaos Knight; you %s.", you.xom_insult.c_str());
+			mprf(MSGCH_GOD, old_god, "Xom strips away your Chaos Knight title; from now on you are known as %s.", you.xom_insult.c_str());
 		}
 		break;
 
