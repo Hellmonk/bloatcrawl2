@@ -687,3 +687,10 @@ A small wrinkle in the very fabric of reality, magically bound to a shaft by
 some mad acolyte of Lugonu. It possesses an unusually large reach that
 teleports its attack directly to its victim.
 %%%%
+Maxwell's perpetual mechanism
+
+A bulky contraption of hissing pipes and whirling gears. It seems to absorb
+physical motion and convert it into magical power, and furthermore use magical
+power to prevent physical damage. Despite the name this process is not
+perpetual, but Maxwell is yet to deal with an unsatisfied customer.
+%%%%
