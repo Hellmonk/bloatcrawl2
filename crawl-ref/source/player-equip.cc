@@ -1033,7 +1033,7 @@ static void _unequip_armour_effect(item_def& item, bool meld,
         break;
 
     case SPARM_IMPROVED_VISION:
-        if (!you.innate_vision() < 1)
+        if (you.innate_vision() != 1)
         {
             mpr("Your vision dulls.");
             _mark_unseen_monsters();

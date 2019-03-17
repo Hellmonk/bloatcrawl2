@@ -38,6 +38,7 @@ enum job_type
     JOB_JESTER,
 #endif
 	JOB_NOBLE,
+	JOB_XOM,
     NUM_JOBS,                          // always after the last job
 
     JOB_UNKNOWN = 100,

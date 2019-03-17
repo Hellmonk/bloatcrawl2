@@ -2567,6 +2567,15 @@ static void _xom_cloud_trail(int /*sever*/)
     god_speaks(GOD_XOM, speech.c_str());
 }
 
+static void _xom_name(int /*sever*/)
+{
+	you.xom_name = make_name();
+	take_note(Note(NOTE_XOM_EFFECT, you.piety, -1, "renaming"), true);
+	god_speaks(GOD_XOM,"Your name was boring. This one is much better.");
+	mprf(MSGCH_GOD, "Xom changes your name to %s", you.xom_name.c_str());
+	you.redraw_title = true;
+}
+
 static void _xom_statloss(int /*sever*/)
 {
     const string speech = _get_xom_speech("draining or torment");
@@ -2945,6 +2954,11 @@ static xom_event_type _xom_choose_good_action(int sever, int tension)
         return XOM_GOOD_CLOUD_TRAIL;
     }
 
+	if (tension <= 0 && x_chance_in_y(5, sever) && you.religion == GOD_XOM)
+	{
+		return XOM_GOOD_NAME;
+	}
+
     if (tension > 0 && x_chance_in_y(5, sever)
         && mon_nearby([](monster& mon){ return !mon.wont_attack(); }))
     {
@@ -2962,6 +2976,7 @@ static xom_event_type _xom_choose_good_action(int sever, int tension)
     {
         return XOM_GOOD_SINGLE_ALLY;
     }
+
     if (tension < random2(5) && x_chance_in_y(8, sever)
         && !_xom_scenery_candidates().empty() || one_chance_in(8))
     {
@@ -3652,6 +3667,7 @@ static const map<xom_event_type, xom_event> xom_events = {
                                   _xom_good_enchant_monster }},
     { XOM_GOOD_FOG, { "fog", _xom_fog }},
     { XOM_GOOD_CLOUD_TRAIL, { "cloud trail", _xom_cloud_trail }},
+	{ XOM_GOOD_NAME, { "renaming", _xom_name }},
     { XOM_GOOD_CLEAVING, { "cleaving", _xom_cleaving }},
 
     { XOM_BAD_MISCAST_PSEUDO, { "pseudo-miscast", _xom_pseudo_miscast, 10}},

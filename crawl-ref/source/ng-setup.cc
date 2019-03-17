@@ -30,6 +30,7 @@
 #include "spl-book.h"
 #include "spl-util.h"
 #include "state.h"
+#include "xom.h"
 
 #define MIN_START_STAT       1
 
@@ -494,6 +495,7 @@ static void _setup_generic(const newgame_def& ng)
     shopping_list.refresh();
 
     you.your_name  = ng.name;
+	you.xom_name = ng.name;
     you.species    = ng.species;
     you.char_class = ng.job;
 

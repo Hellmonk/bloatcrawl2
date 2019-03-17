@@ -210,7 +210,7 @@ string replace_name_parts(const string &name_in, const item_def& item)
             name += getRandNameString("divine_esteem");
         }
     }
-    name = replace_all(name, "@player_name@", you.your_name);
+    name = replace_all(name, "@player_name@", you.xom_name);
 
     name = replace_all(name, "@player_species@",
                  species_name(you.species, SPNAME_GENUS));

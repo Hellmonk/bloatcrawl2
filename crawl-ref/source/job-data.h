@@ -107,6 +107,15 @@ static const map<job_type, job_def> job_data =
       { SK_WEAPON, 3 } },
 } },
 
+{ JOB_XOM, { // Not a Starting Job.
+	"AX", "Abandoned Xom",
+	4, 4, 4,
+	{},
+	{},
+	WCHOICE_NONE,
+	{},
+}},
+
 { JOB_CONJURER, {
     "Cj", "Conjurer",
     0, 7, 5,

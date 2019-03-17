@@ -4437,7 +4437,7 @@ string do_mon_str_replacements(const string &in_msg, const monster& mons,
         msg = replace_all(msg, "@foe@", "you");
         msg = replace_all(msg, "@Foe@", "You");
 
-        msg = replace_all(msg, "@foe_name@", you.your_name);
+        msg = replace_all(msg, "@foe_name@", you.xom_name);
         msg = replace_all(msg, "@foe_species@", species_name(you.species));
         msg = replace_all(msg, "@foe_genus@", foe_genus);
         msg = replace_all(msg, "@Foe_genus@", uppercase_first(foe_genus));

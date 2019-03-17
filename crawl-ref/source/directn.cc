@@ -2064,7 +2064,7 @@ string get_terse_square_desc(const coord_def &gc)
     const char *unseen_desc = "[unseen terrain]";
 
     if (gc == you.pos())
-        desc = you.your_name;
+        desc = you.xom_name;
     else if (!map_bounds(gc))
         desc = unseen_desc;
     else if (!you.see_cell(gc))

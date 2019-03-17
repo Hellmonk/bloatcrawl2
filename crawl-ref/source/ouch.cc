@@ -708,7 +708,7 @@ static void _place_player_corpse(bool explode)
     define_monster(dummy); // assumes player_mons is not a zombie
     dummy.position = you.pos();
     dummy.props["always_corpse"] = true;
-    dummy.mname = you.your_name;
+    dummy.mname = you.xom_name;
     dummy.set_hit_dice(you.experience_level);
     if (explode)
         dummy.flags &= MF_EXPLODE_KILL;

@@ -423,7 +423,7 @@ NORETURN void end_game(scorefile_entry &se, int hiscore_index)
 #endif
 
     string goodbye_msg;
-    goodbye_msg += make_stringf("Goodbye, %s.", you.your_name.c_str());
+    goodbye_msg += make_stringf("Goodbye, %s.", you.xom_name.c_str());
     goodbye_msg += "\n\n    "; // Space padding where # would go in list format
 
     string hiscore = hiscores_format_single_long(se, true);

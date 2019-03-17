@@ -1181,8 +1181,10 @@ static void _draw_wizmode_flag(const char *word)
 
 static void _redraw_title()
 {
+	if (you.xom_name == "")
+		you.xom_name = you.your_name;
     const unsigned int WIDTH = crawl_view.hudsz.x;
-    string title = you.your_name + " " + filtered_lang(player_title());
+    string title = you.xom_name + " " + filtered_lang(player_title());
     const bool small_layout =
 #ifdef USE_TILE_LOCAL
                               tiles.is_using_small_layout();
@@ -1191,7 +1193,7 @@ static void _redraw_title()
 #endif
 
     if (small_layout)
-        title = you.your_name;
+        title = you.xom_name;
     else
     {
         unsigned int in_len = strwidth(title);
@@ -1199,8 +1201,8 @@ static void _redraw_title()
         {
             in_len -= 3;  // strwidth(" the ") - strwidth(", ")
 
-            const unsigned int name_len = strwidth(you.your_name);
-            string trimmed_name = you.your_name;
+            const unsigned int name_len = strwidth(you.xom_name);
+            string trimmed_name = you.xom_name;
             // Squeeze name if required, the "- 8" is to not squeeze too much.
             if (in_len > WIDTH && (name_len - 8) > (in_len - WIDTH))
             {
@@ -2031,7 +2033,7 @@ static string _overview_screen_title(int sw)
     const int char_width = strwidth(species_job);
     const int title_width = strwidth(title);
 
-    int linelength = strwidth(you.your_name) + title_width
+    int linelength = strwidth(you.xom_name) + title_width
                    + char_width + strwidth(time_turns);
 
     if (linelength >= sw)
@@ -2050,7 +2052,7 @@ static string _overview_screen_title(int sw)
 
     string text;
     text = "<yellow>";
-    text += you.your_name;
+    text += you.xom_name;
     text += title;
     text += species_job;
 

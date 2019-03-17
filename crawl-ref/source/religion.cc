@@ -70,6 +70,7 @@
 #include "terrain.h"
 #include "transform.h"
 #include "view.h"
+#include "xom.h"
 
 #ifdef DEBUG_RELIGION
 #    define DEBUG_DIAGNOSTICS
@@ -2920,6 +2921,12 @@ void excommunication(bool voluntary, god_type new_god)
 		{
 			mprf("The chaos fades from your form.");
 			delete_all_mutations("Fading Chaos");
+		}
+		if (you.xom_name != you.your_name)
+		{
+			mpr("You change your name back from whatever silly name Xom gave you.");
+			you.xom_name = you.your_name;
+			you.redraw_title = true;
 		}
 		break;
 

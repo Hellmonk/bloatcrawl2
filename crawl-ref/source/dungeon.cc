@@ -4370,7 +4370,7 @@ static bool _apply_item_props(item_def &item, const item_spec &spec,
     {
         string owner = props[RANDBK_OWNER_KEY].get_string();
         if (owner == "player")
-            owner = you.your_name;
+            owner = you.xom_name;
         const string title = props[RANDBK_TITLE_KEY].get_string();
 
         vector<spell_type> spells;

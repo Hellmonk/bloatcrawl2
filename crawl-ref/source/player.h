@@ -119,9 +119,11 @@ public:
     // ---------------
     // Permanent data:
     // ---------------
-    string your_name;
+	string your_name;
     species_type species;
     job_type char_class;
+
+	string xom_name;
 
     // This field is here even in non-WIZARD compiles, since the
     // player might have been playing previously under wiz mode.
