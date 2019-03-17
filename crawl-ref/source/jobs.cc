@@ -7,6 +7,7 @@
 #include "item-prop.h"
 #include "libutil.h"
 #include "mapdef.h"
+#include "mon-util.h"
 #include "ng-setup.h"
 #include "player.h"
 #include "stringutil.h"
@@ -40,6 +41,12 @@ const char *get_job_name(job_type which_job)
     if (which_job == JOB_UNKNOWN)
         return "Unemployed";
 
+	if (which_job == JOB_XOM)
+	{
+		if (you.xom_insult == "")
+			xom_insult_name();
+		return you.xom_insult.c_str();
+	}
     return _job_def(which_job).name;
 }
 

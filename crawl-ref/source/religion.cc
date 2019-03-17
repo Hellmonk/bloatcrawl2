@@ -53,6 +53,7 @@
 #include "message.h"
 #include "mon-gear.h" // give_shield
 #include "mon-place.h"
+#include "mon-util.h"
 #include "mutation.h"
 #include "nearby-danger.h"
 #include "notes.h"
@@ -2927,6 +2928,13 @@ void excommunication(bool voluntary, god_type new_god)
 			mpr("You change your name back from whatever silly name Xom gave you.");
 			you.xom_name = you.your_name;
 			you.redraw_title = true;
+		}
+		if (you.char_class == JOB_CHAOS_KNIGHT)
+		{
+			you.char_class = JOB_XOM;
+			xom_insult_name();
+			mprf(MSGCH_GOD, "Xom says: You abandoned me! You don't deserve to be called Chaos Knight; you %s.", you.xom_insult.c_str());
+			mprf(MSGCH_GOD, "Xom strips away your Chaos Knight title; from now on you are known as %s.", you.xom_insult.c_str());
 		}
 		break;
 

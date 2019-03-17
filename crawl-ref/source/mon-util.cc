@@ -4347,6 +4347,13 @@ static string _get_species_insult(const string &species, const string &type)
     return insult;
 }
 
+void xom_insult_name()
+{
+	string genus = species_name(you.species, SPNAME_GENUS);
+	you.xom_insult = make_stringf("%s %s", uppercase_first(_get_species_insult(genus, "adj1")).c_str(),
+		uppercase_first(_get_species_insult(genus, "noun")).c_str());
+}
+
 // From should be of the form "prefix @tag@". Replaces all substrings
 // of the form "prefix @tag@" with to, and all strings of the form
 // "prefix @tag/alt@" with either to (if nonempty) or "prefix alt".

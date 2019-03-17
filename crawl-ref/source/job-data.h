@@ -108,7 +108,7 @@ static const map<job_type, job_def> job_data =
 } },
 
 { JOB_XOM, { // Not a Starting Job.
-	"AX", "Abandoned Xom",
+	"AX", "Xom-Abandoning Deserter",
 	4, 4, 4,
 	{},
 	{},

@@ -198,6 +198,8 @@ resists_t get_mons_resists(const monster& mon);
 int get_mons_resist(const monster& mon, mon_resist_flags res);
 const bool monster_resists_this_poison(const monster& mons, bool force = false);
 
+void xom_insult_name();
+
 void init_monsters();
 void init_monster_symbols();
 

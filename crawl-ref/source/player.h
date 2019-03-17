@@ -123,7 +123,9 @@ public:
     species_type species;
     job_type char_class;
 
+	// Only used by Xom.
 	string xom_name;
+	string xom_insult;
 
     // This field is here even in non-WIZARD compiles, since the
     // player might have been playing previously under wiz mode.
