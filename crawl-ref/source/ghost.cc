@@ -276,6 +276,8 @@ void ghost_demon::init_player_ghost(bool actual_ghost)
                                                  FixedBitVector<NUM_EQUIP>());
     unwind_var<bool> fishtail(you.fishtail, false);
 
+	if (you.xom_name == "")
+		you.xom_name == you.your_name;
     name   = you.xom_name;
     max_hp = min(get_real_hp(false), MAX_GHOST_HP);
     ev     = min(you.evasion(EV_IGNORE_HELPLESS), MAX_GHOST_EVASION);
