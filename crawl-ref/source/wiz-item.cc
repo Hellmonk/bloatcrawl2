@@ -1068,7 +1068,7 @@ static void _debug_acquirement_stats(FILE *ostat)
         const char* names[] =
         {
             "normal",
-            "flaming",
+            "molten",
             "freezing",
             "holy wrath",
             "electrocution",

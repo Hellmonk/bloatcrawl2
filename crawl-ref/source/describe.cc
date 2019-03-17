@@ -1194,25 +1194,24 @@ static string _describe_weapon(const item_def &item, bool verbose)
 
         switch (spec_ench)
         {
-        case SPWPN_FLAMING:
-            if (is_range_weapon(item))
-            {
-                description += "It causes projectiles fired from it to burn "
-                    "those they strike,";
-            }
-            else
-            {
-                description += "It has been specially enchanted to burn "
-                    "those struck by it,";
-            }
-            description += " causing extra injury to most foes and up to half "
-                           "again as much damage against particularly "
-                           "susceptible opponents.";
+        case SPWPN_MOLTEN:
+			if (is_range_weapon(item))
+			{
+				description += "It melts metal ammo placed within it; making them maluable so they can"
+					" ignore armour. Causes less base damage than a standard weapon; but completely ignores"
+					" enemy's defense, occasionally melts through shields, and burns causing additional damage"
+					"to those that don't resist heat.";
+			}
+			else 
+                description += "Its maluable surface is completely molten, allowing it to meld around and"
+                    " ignore armour. Causes less base damage than a standard weapon; but completely ignores"
+					" enemy's defense and burns causing additional damage to those that don't resist heat.";
+
             if (!is_range_weapon(item) &&
                 (damtype == DVORP_SLICING || damtype == DVORP_CHOPPING
 					|| damtype == DVORP_DP || damtype == DVORP_TP))
             {
-                description += " Big, fiery blades are also staple "
+                description += " Big, molten blades are also staple "
                     "armaments of hydra-hunters.";
             }
             break;
@@ -1334,7 +1333,7 @@ static string _describe_weapon(const item_def &item, bool verbose)
             break;
         case SPWPN_NORMAL:
             ASSERT(enchanted);
-            description += "It has no special brand (it is not flaming, "
+            description += "It has no special brand (it is not molten, "
                     "freezing, etc), but is still enchanted in some way - "
                     "positive or negative.";
             break;

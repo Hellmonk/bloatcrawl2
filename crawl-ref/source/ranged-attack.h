@@ -1,6 +1,7 @@
 #pragma once
 
 #include "attack.h"
+#include "food.h"
 
 class ranged_attack : public attack
 {
@@ -15,6 +16,7 @@ public:
                   bool teleport, actor *blame = 0);
 
     int calc_to_hit(bool random) override;
+
 
     // Applies attack damage and other effects.
     bool attack();
@@ -38,6 +40,8 @@ private:
     bool blowgun_check(special_missile_type type);
     int blowgun_duration_roll(special_missile_type type);
     bool apply_missile_brand();
+
+	int player_apply_misc_modifiers(int damage) override;
 
     /* Weapon Effects */
     bool check_unrand_effects() override;

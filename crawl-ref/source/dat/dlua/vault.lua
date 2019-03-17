@@ -111,7 +111,7 @@ function halls_of_blades_weapon(e)
   local types = {"quick blade", long_blade_type,
                  "executioner's axe", "eveningstar", "bardiche",
                  "lajatang"}
-  local egos = {"flaming", "freezing", "electrocution", "venom",
+  local egos = {"molten", "freezing", "electrocution", "venom",
               "holy_wrath", "pain", "vampirism", "draining",
               "antimagic", "distortion"}
   local weapon1 = util.random_from(types)

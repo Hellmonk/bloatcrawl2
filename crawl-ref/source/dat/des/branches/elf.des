@@ -781,7 +781,7 @@ MONS:  deep elf mage
 MONS:  deep elf annihilator / deep elf death mage / deep elf demonologist
 KFEAT: v = general shop type:Elven suffix:Fire count:7 ; \
        w:10 ring of fire | w:5 scroll of immolation | \
-       w:4 any weapon ego:flaming | w:4 shortbow ego:flaming | \
+       w:4 any weapon ego:molten | w:4 shortbow ego:molten | \
        w:7 wand of flame | w:9 any armour ego:fire_resistance | \
        w:4 staff of fire | w:17 randbook disc:fire | w:6 robe ego:fire_resistance
 SUBST: ? = .l1
@@ -1184,7 +1184,7 @@ TAGS:    no_monster_gen transparent misc_elf_vault
 DEPTH:   Elf
 MONS:    deep elf mage, deep elf knight / deep elf mage w:6
 MONS:    deep elf mage
-MONS:    dancing weapon ; short sword ego:flaming | short sword ego:freezing | \
+MONS:    dancing weapon ; short sword ego:molten | short sword ego:freezing | \
                           short sword ego:venom | short sword ego:electrocution
 # Some basic excessive pillar randomization work,
 # with spokes per-cross and centers in mirrored / half pairs.

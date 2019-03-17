@@ -135,7 +135,7 @@ void ghost_demon::reset()
  */
 static brand_type _random_special_pan_lord_brand()
 {
-    return random_choose_weighted(10, SPWPN_FLAMING,
+    return random_choose_weighted(10, SPWPN_MOLTEN,
                                   10, SPWPN_FREEZING,
                                   10, SPWPN_ELECTROCUTION,
                                   10, SPWPN_VENOM,
@@ -337,7 +337,7 @@ void ghost_demon::init_player_ghost(bool actual_ghost)
                 switch (static_cast<stave_type>(weapon.sub_type))
                 {
                 // very bad approximations
-                case STAFF_FIRE: brand = SPWPN_FLAMING; break;
+                case STAFF_FIRE: brand = SPWPN_MOLTEN; break;
                 case STAFF_COLD: brand = SPWPN_FREEZING; break;
                 case STAFF_POISON: brand = SPWPN_VENOM; break;
                 case STAFF_DEATH: brand = SPWPN_PAIN; break;

@@ -3139,7 +3139,7 @@ ENDMAP
 NAME:    pf_eden
 TAGS:    no_monster_gen
 DEPTH:   D:13-
-MONS:    patrolling cherub, patrolling dancing weapon ; great sword ego:flaming
+MONS:    patrolling cherub, patrolling dancing weapon ; great sword ego:molten
 KMONS:   p = plant
 ITEM:    ration tile:food_apple
 NSUBST:  1 = 2:1 / *:.

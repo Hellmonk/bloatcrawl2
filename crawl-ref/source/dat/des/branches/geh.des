@@ -143,8 +143,8 @@ DEPTH:   Geh, Coc, Zot:1-4
 KMONS:   1 = brimstone fiend w:9 / hell sentinel w:1
 KMONS:   2 = hellion / balrug
 KMONS:   34 = smoke demon / red devil
-KMONS:   56 = skeletal warrior ; broad axe ego:flaming ident:type | \
-         halberd ego:flaming ident:type w:7 | morningstar ego:flaming ident:type
+KMONS:   56 = skeletal warrior ; broad axe ego:molten ident:type | \
+         halberd ego:molten ident:type w:7 | morningstar ego:molten ident:type
 KMONS:   7 = hell knight
 SUBST:   w = l, W = .
 KPROP:   l = no_cloud_gen
@@ -163,7 +163,7 @@ KMONS:   2 = seven-headed hydra simulacrum / eight-headed hydra simulacrum
 KMONS:   3 = orb of fire / hellephant w:5
 KMONS:   4 = draconian scorcher
 KMONS:   5 = red draconian ; cloak . mace ego:freezing ident:type
-KMONS:   6 = white draconian ; cloak . mace ego:flaming ident:type
+KMONS:   6 = white draconian ; cloak . mace ego:molten ident:type
 KFEAT:   1 = w
 KFEAT:   3 = l
 NSUBST:  0 = 1:5 / 1:6
@@ -215,7 +215,7 @@ SUBST:   * = *||, {}[] = ***|, xc = xxxccb, 5 = 2, 6 = 4
 KMONS:   123 = fire dragon
 KMONS:   456 = ice dragon
 KMONS:   789 = red draconian ; cloak . long sword ego:freezing ident:type
-KMONS:   ABC = white draconian ; cloak . long sword ego:flaming ident:type
+KMONS:   ABC = white draconian ; cloak . long sword ego:molten ident:type
 KMONS:   D = golden dragon
 SUBST:   c : c:5 b:2 n:1
 SHUFFLE: 123456 / 1784AB / 789ABC / 1D'4D'

@@ -389,7 +389,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
     static const mon_weapon_spec EFREET_WSPEC =
     { { { WPN_SCIMITAR,         1 } },
       { 1, 0, 4 },
-      { { SPWPN_FLAMING, 1 } } };
+      { { SPWPN_MOLTEN, 1 } } };
     static const mon_weapon_spec DAEVA_WSPEC =
     { { { WPN_EUDEMON_BLADE,    1 },
         { WPN_SCIMITAR,         2 },
@@ -397,7 +397,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
       { 1, 2, 5 },
       { { SPWPN_HOLY_WRATH,     1 } } };
     static const vector<pair<brand_type, int>> HELL_KNIGHT_BRANDS = // sum 45
-    {   { SPWPN_FLAMING,        13 },
+    {   { SPWPN_MOLTEN,        13 },
         { SPWPN_DRAINING,       4 },
         { SPWPN_VORPAL,         4 },
         { SPWPN_DISTORTION,     2 },
@@ -510,7 +510,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
                 { WPN_TRIDENT,          1 },
         }, {}, {}, 3 } },
         { MONS_PIKEL, { { { WPN_WHIP, 1 } }, { 1, 0, 2 }, {
-            { SPWPN_FLAMING, 2 },
+            { SPWPN_MOLTEN, 2 },
             { SPWPN_FREEZING, 2 },
             { SPWPN_ELECTROCUTION, 1 },
         } } },
@@ -693,7 +693,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
         { MONS_NESSOS, {
             { { WPN_LONGBOW,            1 } },
             { 1, 1, 3 },
-            { { SPWPN_FLAMING, 1 } }
+            { { SPWPN_MOLTEN, 1 } }
         } },
         { MONS_YAKTAUR, { { { WPN_ARBALEST, 1 } } } },
         { MONS_YAKTAUR_CAPTAIN, { { { WPN_ARBALEST, 1 } } } },
@@ -712,12 +712,12 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
                 { WPN_SCIMITAR,         1 },
                 { WPN_FALCHION,         1 }, },
             { 1, 0, 4 },
-            { { SPWPN_FLAMING, 1 } },
+            { { SPWPN_MOLTEN, 1 } },
         } },
         { MONS_SERAPH, {
             { { WPN_GREAT_SWORD,        1 } },
             { 1, 3, 8 }, // highly enchanted, we're top rank
-            { { SPWPN_FLAMING, 1 } },
+            { { SPWPN_MOLTEN, 1 } },
         } },
         { MONS_DAEVA,                   DAEVA_WSPEC },
         { MONS_PROFANE_SERVITOR,
@@ -777,7 +777,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
         { MONS_FREDERICK,               { URUG_WEAPONS } },
         { MONS_FIRE_GIANT, {
             { { WPN_GREAT_SWORD,        1 } }, {},
-            { { SPWPN_FLAMING, 1 } },
+            { { SPWPN_MOLTEN, 1 } },
         } },
         { MONS_FROST_GIANT, {
             { { WPN_BATTLEAXE,          1 } }, {},
@@ -854,7 +854,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
             { { SPWPN_DRAINING,      13 }, // total 45
               { SPWPN_VORPAL,        7 },
               { SPWPN_FREEZING,      4 },
-              { SPWPN_FLAMING,       4 },
+              { SPWPN_MOLTEN,       4 },
               { SPWPN_PAIN,          2 },
               { NUM_SPECIAL_WEAPONS, 15 } }, // 2/3 chance of brand
         } },
@@ -1175,7 +1175,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
     case MONS_SALAMANDER:
         if (is_range_weapon(item))
         {
-            set_item_ego_type(item, OBJ_WEAPONS, SPWPN_FLAMING);
+            set_item_ego_type(item, OBJ_WEAPONS, SPWPN_MOLTEN);
             force_item = true;
         }
         break;
@@ -1361,7 +1361,7 @@ static void _give_ammo(monster* mon, int level, bool mons_summoned)
             const int bow_brand  = get_weapon_brand(*launcher);
             const int ammo_brand = get_ammo_brand(mitm[thing_created]);
             if (ammo_brand != SPMSL_NORMAL
-                && (bow_brand == SPWPN_FLAMING || bow_brand == SPWPN_FREEZING))
+                && (bow_brand == SPWPN_MOLTEN || bow_brand == SPWPN_FREEZING))
             {
                 mitm[thing_created].brand = SPMSL_NORMAL;
             }

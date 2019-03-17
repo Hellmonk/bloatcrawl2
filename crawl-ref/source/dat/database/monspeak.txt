@@ -2647,7 +2647,7 @@ w:50
 
 @The_monster@ says, "I hope these swamp worms drown."
 
-@The_monster@ says, "Damn it, I left my flaming sword at home."
+@The_monster@ says, "Damn it, I left my molten sword at home."
 
 @The_monster@ says, "Don't you hate leeches? I know I do."
 

@@ -390,6 +390,17 @@ int ranged_attack::apply_damage_modifiers(int damage, int damage_max)
     return damage;
 }
 
+int ranged_attack::player_apply_misc_modifiers(int damage)
+{
+	if (apply_starvation_penalties())
+		damage -= random2(5);
+
+	if (damage_brand == SPWPN_MOLTEN)
+		damage = div_rand_round(damage * 3, 4);
+
+	return damage;
+}
+
 bool ranged_attack::ignores_shield(bool verbose)
 {
     if (is_penetrating_attack(*attacker, weapon, *projectile))
@@ -404,6 +415,18 @@ bool ranged_attack::ignores_shield(bool verbose)
         }
         return true;
     }
+	if (damage_brand == SPWPN_MOLTEN && coinflip())
+	{
+		if (verbose)
+		{
+			mprf("The molten %s melts a hole through %s %s!",
+				projectile->name(DESC_BASENAME).c_str(),
+				apostrophise(defender_name(false)).c_str(),
+				defender_shield ? defender_shield->name(DESC_PLAIN).c_str()
+				: "shielding");
+		}
+		return true;
+	}
     return false;
 }
 
@@ -418,7 +441,7 @@ bool ranged_attack::apply_damage_brand(const char *what)
     if (projectile->base_type == OBJ_MISSILES
         && get_ammo_brand(*projectile) != SPMSL_NORMAL
         && get_ammo_brand(*projectile) != SPMSL_PENETRATION
-        && (brand == SPWPN_FLAMING
+        && (brand == SPWPN_MOLTEN
             || brand == SPWPN_FREEZING
             || brand == SPWPN_HOLY_WRATH
             || brand == SPWPN_ELECTROCUTION

@@ -1450,7 +1450,7 @@ MONS:   two-headed ogre, two-headed ogre ; dire flail good_item | \
             great mace good_item | great mace randart
 MONS:   ettin, ettin ; great mace good_item | great mace randart \
             .  great mace good_item | great mace randart
-MONS:   fire giant ; great mace ego:flaming randart
+MONS:   fire giant ; great mace ego:molten randart
 KMONS:  D = frost giant ; great mace ego:freezing randart
 # Use one of the two inner wall patterns.
 SHUFFLE: xv

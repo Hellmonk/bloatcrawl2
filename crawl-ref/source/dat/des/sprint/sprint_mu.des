@@ -913,7 +913,7 @@ ENDMAP
 NAME: sprint_mu_vaults_butterflies
 TAGS: sprint_mu_vaults no_rotate no_hmirror no_vmirror
 MONS: centaur warrior, lich, shadow dragon, ogre mage
-MONS: vault guard ; short sword ego:electrocution | long sword ego:flaming |\
+MONS: vault guard ; short sword ego:electrocution | long sword ego:molten |\
       dire flail ego:vampirism | war axe ego:freezing | spear ego:vorpal |\
       great mace ego:pain | great sword ego:venom .\
       chain mail ego:poison_resistance | chain mail ego:cold_resistance |\
@@ -1165,7 +1165,7 @@ KMONS: 2 = patrolling mara
 KMONS: 3 = molten gargoyle
 KMONS: 4 = patrolling titanic slime creature
 KMONS: 5 = mummy priest
-KMONS: f = skeletal warrior ; longbow ego:flaming . arrow q:30
+KMONS: f = skeletal warrior ; longbow ego:molten . arrow q:30
 KMONS: 6 = shadow wraith
 KMONS: g = ball lightning / ballistomycete spore
 KMONS: 7 = patrolling storm dragon

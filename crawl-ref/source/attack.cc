@@ -778,7 +778,7 @@ struct chaos_attack_type
 // always be a valid option, triggering a more unpredictable chaos_effect
 // instead of a normal attack brand when selected.
 static const vector<chaos_attack_type> chaos_types = {
-    { AF_FIRE,      SPWPN_FLAMING,       10,
+    { AF_FIRE,      SPWPN_MOLTEN,       10,
       [](const actor &d) { return !d.is_fiery(); } },
     { AF_COLD,      SPWPN_FREEZING,      10,
       [](const actor &d) { return !d.is_icy(); } },
@@ -820,7 +820,7 @@ brand_type attack::random_chaos_brand()
     string brand_name = "CHAOS brand: ";
     switch (brand)
     {
-    case SPWPN_FLAMING:         brand_name += "flaming"; break;
+    case SPWPN_MOLTEN:         brand_name += "molten"; break;
     case SPWPN_FREEZING:        brand_name += "freezing"; break;
     case SPWPN_HOLY_WRATH:      brand_name += "holy wrath"; break;
     case SPWPN_ELECTROCUTION:   brand_name += "electrocution"; break;
@@ -1338,13 +1338,16 @@ int attack::apply_defender_ac(int damage, int damage_max) const
 {
     ASSERT(defender);
     int stab_bypass = 0;
+	ac_type local_ac = AC_NORMAL;
     if (stab_bonus)
     {
         stab_bypass = you.skill(wpn_skill, 50) + you.skill(SK_STEALTH, 50);
         stab_bypass = random2(div_rand_round(stab_bypass, 100 * stab_bonus));
     }
+	if (damage_brand == SPWPN_MOLTEN)
+		local_ac = AC_NONE;
     int after_ac = defender->apply_ac(damage, damage_max,
-                                      AC_NORMAL, stab_bypass);
+                                      local_ac, stab_bypass);
     dprf(DIAG_COMBAT, "AC: att: %s, def: %s, ac: %d, gdr: %d, dam: %d -> %d",
                  attacker->name(DESC_PLAIN, true).c_str(),
                  defender->name(DESC_PLAIN, true).c_str(),
@@ -1448,7 +1451,7 @@ bool attack::apply_damage_brand(const char *what)
     obvious_effect = false;
     brand = damage_brand == SPWPN_CHAOS ? random_chaos_brand() : damage_brand;
 
-    if (brand != SPWPN_FLAMING && brand != SPWPN_FREEZING
+    if (brand != SPWPN_MOLTEN && brand != SPWPN_FREEZING
         && brand != SPWPN_ELECTROCUTION && brand != SPWPN_VAMPIRISM
         && brand != SPWPN_PROTECTION && !defender->alive())
     {
@@ -1458,7 +1461,7 @@ bool attack::apply_damage_brand(const char *what)
     }
 
     if (!damage_done
-        && (brand == SPWPN_FLAMING || brand == SPWPN_FREEZING
+        && (brand == SPWPN_MOLTEN || brand == SPWPN_FREEZING
             || brand == SPWPN_HOLY_WRATH || brand == SPWPN_ANTIMAGIC
             || brand == SPWPN_VORPAL || brand == SPWPN_VAMPIRISM))
     {
@@ -1477,7 +1480,7 @@ bool attack::apply_damage_brand(const char *what)
         }
         break;
 
-    case SPWPN_FLAMING:
+    case SPWPN_MOLTEN:
         calc_elemental_brand_damage(BEAM_FIRE,
                                     defender->is_icy() ? "melt" : "burn",
                                     what);

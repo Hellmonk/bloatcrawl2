@@ -111,7 +111,7 @@
     "harold hp:650 hd:40 name:The_Servant n_rpl col:yellow " ..
     "generate_awake never_corpse spells:none " ..
     "; ring of slaying plus:130 not_cursed ident:all " ..
-    "no_pickup . glaive plus:9 not_cursed ego:flaming " ..
+    "no_pickup . glaive plus:9 not_cursed ego:molten " ..
     "ident:all no_pickup"
 
   local captor =

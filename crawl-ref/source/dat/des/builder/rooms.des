@@ -120,7 +120,7 @@ function sroom_morgue(e)
     local bodies_chance
     local weap = ""
     if you.in_branch("Geh") then
-        weap = " ego:flaming ident:type"
+        weap = " ego:molten ident:type"
     elseif you.in_branch("Coc") then
         weap = " ego:freezing ident:type"
     elseif you.in_branch("Dis") then

@@ -318,10 +318,10 @@ ENDMAP
 NAME:    hangedman_shoal_volcano
 TAGS:    no_monster_gen no_item_gen patrolling
 DEPTH:   Shoals
-KMONS:   12 = merfolk ; trident ego:flaming | spear ego:flaming . \
+KMONS:   12 = merfolk ; trident ego:molten | spear ego:molten . \
              robe ego:fire_resistance | robe w:5 . \
              buckler ego:fire_resistance | buckler | nothing w:30
-KMONS:   3 = merfolk siren ; trident ego:flaming | spear ego:flaming . \
+KMONS:   3 = merfolk siren ; trident ego:molten | spear ego:molten . \
              robe ego:fire_resistance | robe w:5 . \
              buckler ego:fire_resistance w:20 | buckler | nothing w:70
 KMONS:   4 = merfolk avatar

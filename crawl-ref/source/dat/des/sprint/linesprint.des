@@ -248,7 +248,7 @@ KITEM:    e = rapier plus:2 ego:electrocution ident:all not_cursed /\
            lajatang plus:0 ident:all not_cursed /\
            quarterstaff plus:4 ego:speed ident:all not_cursed w:15 /\
            quarterstaff plus:4 good_item ident:all not_cursed w:5, \
-           scimitar plus:2 ego:flaming ident:all not_cursed /\
+           scimitar plus:2 ego:molten ident:all not_cursed /\
            scimitar plus:2 ego:holy_wrath not_cursed ident:all /\
            scimitar plus:2 good_item not_cursed ident:all
 KITEM:    f = pair of gloves mundane ident:all not_cursed /\

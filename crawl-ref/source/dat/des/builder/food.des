@@ -206,8 +206,8 @@ KMONS:    D = big kobold
 KMONS:    E = big kobold ; nothing
 KMONS:    F = plant
 KITEM:    C = ration
-KITEM:    E = falchion ego:flaming ident:type / \
-              hand axe ego:flaming ident:type
+KITEM:    E = falchion ego:molten ident:type / \
+              hand axe ego:molten ident:type
 KITEM:    H = ration q:2
 KITEM:    I = halberd
 KFEAT:    EF = shallow_water

@@ -1729,7 +1729,7 @@ static void _summon_dancing_weapon(int power, deck_rarity_type rarity)
         if (coinflip())
         {
             set_item_ego_type(wpn, OBJ_WEAPONS,
-                              random_choose(SPWPN_FLAMING, SPWPN_FREEZING));
+                              random_choose(SPWPN_MOLTEN, SPWPN_FREEZING));
         }
         else
             set_item_ego_type(wpn, OBJ_WEAPONS, SPWPN_NORMAL);

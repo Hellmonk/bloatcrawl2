@@ -490,8 +490,16 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
                 const string item_name = item.name(DESC_YOUR);
                 switch (special)
                 {
-                case SPWPN_FLAMING:
-                    mprf("%s bursts into flame!", item_name.c_str());
+                case SPWPN_MOLTEN:
+					if (item.sub_type == WPN_HAND_CROSSBOW || item.sub_type == WPN_ARBALEST ||
+						item.sub_type == WPN_TRIPLE_CROSSBOW)
+						mprf("As you load %s, your bolt melts into a column of liquid metal!", item_name.c_str());
+					else if (item.sub_type == WPN_HUNTING_SLING || item.sub_type == WPN_FUSTIBALUS)
+						mprf("As you load %s, your sling bullet melts into a ball of liquid metal!", item_name.c_str());
+					else if (item.sub_type == WPN_SHORTBOW || item.sub_type == WPN_LONGBOW)
+						mprf("As you load %s, the head of your arrow melts into a liquid metal spear!", item_name.c_str());
+					else
+	                    mprf("The surface of %s melts into red hot liquid metal!", item_name.c_str());
                     break;
 
                 case SPWPN_FREEZING:
@@ -669,9 +677,12 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
 
             switch (brand)
             {
-            case SPWPN_FLAMING:
-                if (showMsgs)
-                    mprf("%s stops flaming.", msg.c_str());
+            case SPWPN_MOLTEN:
+				if (showMsgs)
+					if (is_range_weapon(item))
+						mprf("As you unwield %s, your ammo resolidies.", msg.c_str());
+					else
+                    mprf("%s resolidifies.", msg.c_str());
                 break;
 
             case SPWPN_FREEZING:

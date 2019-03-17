@@ -655,7 +655,7 @@ KITEM: h = halberd plus:2 ego:protection ident:all not_cursed /\
 KITEM: i = lajatang plus:0 ident:all not_cursed /\
        quarterstaff plus:4 ego:speed ident:all not_cursed w:15 /\
        quarterstaff plus:4 good_item ident:all not_cursed w:5
-KITEM: j = scimitar plus:2 ego:flaming ident:all not_cursed /\
+KITEM: j = scimitar plus:2 ego:molten ident:all not_cursed /\
        scimitar plus:2 ego:holy_wrath not_cursed ident:all /\
        scimitar plus:2 good_item not_cursed ident:all
 KITEM: k = pair of gloves mundane ident:all not_cursed /\
@@ -739,7 +739,7 @@ KITEM: d = trident ego:vorpal ident:all not_cursed
 KITEM: e = quarterstaff ego:protection ident:all not_cursed /\
        quarterstaff ego:speed ident:all not_cursed
 KITEM: f = long sword ego:holy_wrath ident:all not_cursed /\
-       long sword ego:flaming ident:all not_cursed
+       long sword ego:molten ident:all not_cursed
 KITEM: g = potion of heal wounds q:5 ident:all
 KITEM: h = potion of curing q:5 ident:all
 KITEM: i = chain mail plus:3 ident:all not_cursed w:20 /\

@@ -1837,7 +1837,7 @@ KMONS:  Z = deep elf elementalist ; \
         robe ego:fire_resistance | \
         robe ego:cold_resistance | \
         robe ego:resistance . dagger ego:freezing | \
-        dagger ego:flaming | dagger ego:electrocution
+        dagger ego:molten | dagger ego:electrocution
 : else
 KMONS:  Z = col:flash wizard hd:15 tile:mons_master_elementalist \
         name:master_elementalist n_rpl n_des n_noc \
@@ -1847,7 +1847,7 @@ KMONS:  Z = col:flash wizard hd:15 tile:mons_master_elementalist \
                haste.11.wizard;blink.11.wizard \
         ; robe ego:fire_resistance | robe ego:cold_resistance | \
         robe ego:resistance \
-        . dagger ego:freezing | dagger ego:flaming | \
+        . dagger ego:freezing | dagger ego:molten | \
         dagger ego:electrocution
 : end
 
@@ -2996,7 +2996,7 @@ TAGS:    transparent patrolling
 DEPTH:   Depths, !Depths:$
 ORIENT:  float
 MONS:    necromancer ; wand of iceblast . \
-         staff of fire w:15 | quarterstaff ego:flaming w:15 . \
+         staff of fire w:15 | quarterstaff ego:molten w:15 . \
          robe ego:fire_resistance w:14 | robe ego:cold_resistance w:15 | \
          robe ego:resistance w:1
 MONS:    necromancer ; wand of iceblast . \
@@ -3004,7 +3004,7 @@ MONS:    necromancer ; wand of iceblast . \
          robe ego:fire_resistance w:15 | robe ego:cold_resistance w:14 | \
          robe ego:resistance w:1
 MONS:    fire giant ; battleaxe ego:freezing
-MONS:    frost giant ; great sword ego:flaming
+MONS:    frost giant ; great sword ego:molten
 MONS:    ettin simulacrum, efreet, deep elf mage
 KITEM:   d = lamp of fire, *
 KITEM:   e = lajatang ego:freezing ident:type, *
@@ -3046,7 +3046,7 @@ ORIENT: float
 KMONS:  1 = red very ugly thing / white very ugly thing / \
             cyan very ugly thing w:15
 KMONS:  2 = fire dragon / ice dragon
-KMONS:  3 = dancing weapon ; broad axe ego:flaming | scimitar ego:freezing | \
+KMONS:  3 = dancing weapon ; broad axe ego:molten | scimitar ego:freezing | \
                              trident ego:electrocution | flail ego:vorpal
 KMONS:  4 = stone giant w:15 / fire giant / frost giant
 KMONS:  5 = spark wasp / catoblepas
@@ -3054,7 +3054,7 @@ KMONS:  6 = storm dragon / iron dragon / titan / war gargoyle
 KMONS:  7 = spriggan defender ; staff of fire | staff of cold | \
                                 staff of air | staff of earth . \
                                 robe ego:resistance good_item ident:type
-KMONS:  8 = tengu reaver ; battleaxe ego:flaming | great sword ego:freezing | \
+KMONS:  8 = tengu reaver ; battleaxe ego:molten | great sword ego:freezing | \
                            halberd ego:electrocution | lajatang ego:vorpal . \
                            fire dragon scales | ice dragon scales
 KMONS:  9 = red draconian / white draconian / black draconian
@@ -3288,7 +3288,7 @@ ITEM:   book of flames / book of fire / manual of fire magic / \
         staff of fire ident:type / ring of fire ident:type / lamp of fire / \
         fire dragon scales w:5
 : if you.unrands("firestarter") then
-KITEM:  2 = great mace ego:flaming randart ident:type
+KITEM:  2 = great mace ego:molten randart ident:type
 : else
 KITEM:  2 = firestarter
 : end

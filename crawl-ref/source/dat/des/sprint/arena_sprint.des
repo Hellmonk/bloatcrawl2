@@ -723,7 +723,7 @@ function arena_sprint_init_boss_table()
                     "; robe ego:fire_resistance | " ..
                     "robe ego:cold_resistance | " ..
                     "robe ego:resistance . dagger ego:freezing | " ..
-                    "dagger ego:flaming | dagger ego:electrocution",
+                    "dagger ego:molten | dagger ego:electrocution",
                  "elven rune of zot"}
     else
         bs[3] = {"place:Forest:$ w:50 / spriggan druid w:2 / spriggan air mage w:5 / " ..

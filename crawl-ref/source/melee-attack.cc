@@ -1487,6 +1487,9 @@ int melee_attack::player_apply_misc_modifiers(int damage)
     if (apply_starvation_penalties())
         damage -= random2(5);
 
+	if (damage_brand == SPWPN_MOLTEN)
+		damage = div_rand_round(damage * 3, 4);
+
     return damage;
 }
 
@@ -1946,7 +1949,7 @@ bool melee_attack::consider_decapitation(int dam, int damage_type)
     const int limit = defender->type == MONS_LERNAEAN_HYDRA ? 27
                                                             : MAX_HYDRA_HEADS;
 
-    if (wpn_brand == SPWPN_FLAMING)
+    if (wpn_brand == SPWPN_MOLTEN)
     {
         if (defender_visible)
             mpr("The flame cauterises the wound!");
@@ -3554,6 +3557,9 @@ int melee_attack::apply_damage_modifiers(int damage, int damage_max)
 
     if (as_mon->has_ench(ENCH_WEAK))
         damage = damage * 2 / 3;
+
+	if (damage_brand == SPWPN_MOLTEN)
+		damage *= damage * 3 / 4;
 
     // If the defender is asleep, the attacker gets a stab.
     if (defender && (defender->asleep()

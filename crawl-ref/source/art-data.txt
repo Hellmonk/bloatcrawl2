@@ -280,7 +280,7 @@ PLUS:    +6
 COLOUR:  ETC_FIRE
 TILE:    spwpn_sword_of_cerebov
 TILE_EQ: sword_twist
-BRAND:   SPWPN_FLAMING
+BRAND:   SPWPN_MOLTEN
 BOOL:    evil, nogen
 
 NAME:    staff of Dispater
@@ -331,7 +331,7 @@ PLUS:    +6
 COLOUR:  ETC_FIRE
 TILE:    urand_flaming_death
 TILE_EQ: flaming_death
-BRAND:   SPWPN_FLAMING
+BRAND:   SPWPN_MOLTEN
 FIRE:    2
 COLD:    -1
 BOOL:    poison, skip_ego, nogen
@@ -1168,7 +1168,7 @@ COLOUR:   RED
 TILE:     urand_firestarter
 TILE_EQ:  firestarter
 PLUS:     +7
-BRAND:    SPWPN_FLAMING
+BRAND:    SPWPN_MOLTEN
 FIRE:     2
 BOOL:     skip_ego
 
@@ -1299,7 +1299,7 @@ PLUS:     +2
 COLOUR:   ETC_VEHUMET
 TILE:     urand_thermic_engine
 TILE_EQ:  thermic_engine
-BRAND:    SPWPN_FLAMING
+BRAND:    SPWPN_MOLTEN
 
 # This entry must always be last.
 ENUM:   DUMMY2

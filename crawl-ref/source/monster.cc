@@ -805,8 +805,8 @@ void monster::equip_weapon(item_def &item, bool msg)
         bool message_given = true;
         switch (brand)
         {
-        case SPWPN_FLAMING:
-            mpr("It bursts into flame!");
+        case SPWPN_MOLTEN:
+            mpr("The surface melts into red hot liquid metal!");
             break;
         case SPWPN_FREEZING:
             mpr(is_range_weapon(item) ? "It is covered in frost."
@@ -950,8 +950,8 @@ void monster::unequip_weapon(item_def &item, bool msg)
         bool message_given = true;
         switch (brand)
         {
-        case SPWPN_FLAMING:
-            mpr("It stops flaming.");
+        case SPWPN_MOLTEN:
+            mpr("It resolidifies.");
             break;
 
         case SPWPN_HOLY_WRATH:
@@ -1324,7 +1324,7 @@ static bool _is_signature_weapon(const monster* mons, const item_def &weapon)
         if (mons->type == MONS_AZRAEL)
         {
             return wtype == WPN_SCIMITAR
-                   && get_weapon_brand(weapon) == SPWPN_FLAMING;
+                   && get_weapon_brand(weapon) == SPWPN_MOLTEN;
         }
 
         if (mons->type == MONS_AGNES)

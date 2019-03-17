@@ -468,7 +468,7 @@ static void _add_randart_weapon_brand(const item_def &item,
             2, SPWPN_SPEED,
             4, SPWPN_VENOM,
             4, SPWPN_VORPAL,
-            4, SPWPN_FLAMING,
+            4, SPWPN_MOLTEN,
             4, SPWPN_FREEZING);
 
         if (item_attack_skill(item) == SK_CROSSBOWS)
@@ -485,7 +485,7 @@ static void _add_randart_weapon_brand(const item_def &item,
     {
         item_props[ARTP_BRAND] = random_choose(
             SPWPN_DRAINING,
-            SPWPN_FLAMING,
+            SPWPN_MOLTEN,
             SPWPN_FREEZING,
             SPWPN_ELECTROCUTION,
             SPWPN_VAMPIRISM,
@@ -497,7 +497,7 @@ static void _add_randart_weapon_brand(const item_def &item,
     {
         item_props[ARTP_BRAND] = random_choose_weighted(
             73, SPWPN_VORPAL,
-            34, SPWPN_FLAMING,
+            34, SPWPN_MOLTEN,
             34, SPWPN_FREEZING,
             26, SPWPN_VENOM,
             26, SPWPN_DRAINING,
