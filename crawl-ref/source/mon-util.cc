@@ -320,11 +320,11 @@ static resists_t _apply_holiness_resists(resists_t resists, mon_holy_type mh)
     if (mh & (MH_UNDEAD | MH_NONLIVING))
         resists = (resists & ~(MR_RES_POISON * 7)) | (MR_RES_POISON * 3);
 
-    // Everything but natural creatures have full rNeg. Set here for the
+    // Everything but natural and demonic creatures have full rNeg. Set here for the
     // benefit of the monster_info constructor. If you change this, also
     // change monster::res_negative_energy.
-    if (!(mh & MH_NATURAL))
-        resists = (resists & ~(MR_RES_NEG * 7)) | (MR_RES_NEG * 3);
+    if (!(mh & MH_NATURAL | MH_DEMONIC))
+		resists = (resists & ~(MR_RES_NEG * 7)) | (MR_RES_NEG * 3);
 
     return resists;
 }
