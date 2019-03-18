@@ -84,8 +84,8 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_STING,
     SPELL_POISONOUS_VAPOURS,
     SPELL_MEPHITIC_CLOUD,
+	SPELL_IGNITE_POISON,
     SPELL_OLGREBS_TOXIC_RADIANCE,
-	SPELL_INTOXICATE
 },
 
 {   // Book of the Tempests
@@ -210,7 +210,6 @@ static const vector<spell_type> spellbook_templates[] =
 {   // Book of Envenomations
     SPELL_SPIDER_FORM,
     SPELL_OLGREBS_TOXIC_RADIANCE,
-    SPELL_INTOXICATE,
 },
 #endif
 
@@ -281,7 +280,6 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_APPORTATION,
     SPELL_BECKONING,
     SPELL_TUKIMAS_DANCE,
-    SPELL_INTOXICATE,
     SPELL_INVISIBILITY
 },
 
@@ -332,7 +330,6 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_SUBLIMATION_OF_BLOOD,
     SPELL_IGNITE_POISON,
     SPELL_PETRIFY,
-    SPELL_INTOXICATE,
     SPELL_IRRADIATE,
 },
 
