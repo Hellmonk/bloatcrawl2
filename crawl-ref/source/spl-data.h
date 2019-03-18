@@ -201,7 +201,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_PETRIFY, "Petrify",
-    SPTYP_TRANSMUTATION | SPTYP_EARTH | SPTYP_HEXES,
+    SPTYP_TRANSMUTATION | SPTYP_EARTH,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NEEDS_TRACER | SPFLAG_MR_CHECK,
     4,
     200,
@@ -1350,7 +1350,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_IGNITE_POISON, "Ignite Poison",
-    SPTYP_FIRE | SPTYP_TRANSMUTATION | SPTYP_POISON,
+    SPTYP_FIRE | SPTYP_TRANSMUTATION,
     SPFLAG_AREA,
     3,
     100,
@@ -1405,7 +1405,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_ENGLACIATION, "Metabolic Englaciation",
-    SPTYP_HEXES | SPTYP_ICE,
+    SPTYP_ICE,
     SPFLAG_AREA,
     5,
     200,
@@ -3172,7 +3172,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SUMMON_GUARDIAN_GOLEM, "Summon Guardian Golem",
-    SPTYP_SUMMONING | SPTYP_HEXES,
+    SPTYP_SUMMONING,
     SPFLAG_NONE,
     3,
     100,
@@ -3273,7 +3273,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SPELLFORGED_SERVITOR, "Spellforged Servitor",
-    SPTYP_HEXES | SPTYP_SUMMONING,
+    SPTYP_SUMMONING,
     SPFLAG_NONE,
     7,
     200,
@@ -3297,7 +3297,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_SUMMON_MANA_VIPER, "Summon Mana Viper",
-    SPTYP_SUMMONING | SPTYP_HEXES,
+    SPTYP_POISON | SPTYP_SUMMONING,
     SPFLAG_MONS_ABJURE,
     5,
     100,
