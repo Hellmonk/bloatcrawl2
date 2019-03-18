@@ -135,7 +135,7 @@ somewhat more difficult.
 %%%%
 Blinding Spray spell
 
-Fires a spray of weak poison energy from the caster's fingertips. Any
+Fires a spray of weak poison from the caster's fingertips. Any
 living creature they strike may be blinded should the venom hit their eyes.
 %%%%
 Blink Allies Away spell
@@ -1283,13 +1283,13 @@ more dangerous snakes with higher power.
 %%%%
 Sticky Flame Range spell
 
-Launches a glob of sticky flame, covering a targeted creature with liquid fire
-for a short time.
+Launches sticky flamable oil and lights it, covering a targeted creature
+with liquid fire for a short time.
 %%%%
 Sticky Flame spell
 
-Conjures a glob of sticky flame, covering an adjacent creature with liquid fire
-for a short time.
+Conjures sticky flamable oil and lights it, covering an adjacent creature 
+with liquid fire for a short time.
 %%%%
 Still Winds spell
 
