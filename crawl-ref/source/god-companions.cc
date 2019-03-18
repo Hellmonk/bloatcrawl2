@@ -136,7 +136,7 @@ bool recall_offlevel_ally(mid_t mid)
         return false;
 
     companion* comp = &companion_list[mid];
-    monster* mons = comp->mons.place(true);
+    monster* mons = comp->mons.place(&you.pos());
     if (!mons)
         return false;
 

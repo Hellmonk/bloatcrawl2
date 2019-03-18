@@ -350,7 +350,7 @@ static void _reset_game()
     crawl_state.reset_game();
     clear_message_store();
     macro_clear_buffers();
-    the_lost_ones.clear();
+    the_lost_ones.clear(); limbo_monsters.clear();
     shopping_list = ShoppingList();
     you = player();
     reset_hud();

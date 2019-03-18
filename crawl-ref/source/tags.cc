@@ -2162,6 +2162,8 @@ static void tag_construct_lost_monsters(writer &th)
 {
     marshallMap(th, the_lost_ones, marshall_level_id,
                  marshall_follower_list);
+    marshallMap(th, limbo_monsters, marshall_level_id,
+                 marshall_follower_list);
 }
 
 static void tag_construct_companions(writer &th)
@@ -4204,6 +4206,12 @@ static void tag_read_lost_monsters(reader &th)
 {
     the_lost_ones.clear();
     unmarshallMap(th, the_lost_ones,
+                  unmarshall_level_id, unmarshall_follower_list);
+    limbo_monsters.clear();
+#if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() >= TAG_MINOR_GHOST_VENGEANCE) 
+#endif
+    unmarshallMap(th, limbo_monsters,
                   unmarshall_level_id, unmarshall_follower_list);
 }
 

@@ -1,6 +1,7 @@
 /**
  * @file
  * @brief Tracking monsters in transit between levels.
+ * Also functions to put monsters into and remove them from limbo
 **/
 
 #pragma once
@@ -20,7 +21,7 @@ struct follower
     follower(const monster& m);
 
     // if placement was successful, returns a pointer to the placed monster
-    monster* place(bool near_player = false);
+    monster* place(const coord_def *defined_pos = NULL);
     void load_mons_items();
     void restore_mons_items(monster& m);
 };
@@ -57,3 +58,13 @@ void transport_followers_from(const coord_def &from);
 
 void apply_daction_to_transit(daction_type act);
 int count_daction_in_transit(daction_type act);
+
+// Follower a bit of a misnomer here but the data structure is otherwise ideal
+typedef list<follower> m_limbo_list;
+typedef map<level_id, m_limbo_list> monsters_in_limbo;
+extern monsters_in_limbo limbo_monsters;
+
+void add_monster_to_limbo(monster *m);
+// probably something to interrogate the monsters in limbo
+bool extract_monster_from_limbo(mid_t mid, const coord_def &pos);
+void wizard_extract_limbo();

@@ -121,7 +121,7 @@ static void _do_wizard_command(int wiz_command)
 
     case 'l': wizard_set_xl(); break;
     case 'L': debug_place_map(false); break;
-    // case CONTROL('L'): break;
+    case CONTROL('L'): wizard_extract_limbo(); break;
 
     case 'M':
     case 'm': wizard_create_spec_monster_name(); break;
@@ -477,6 +477,7 @@ int list_wizard_commands(bool do_redraw_screen)
                        "<w>D</w>      detect all monsters\n"
                        "<w>G</w>      dismiss all monsters\n"
                        "<w>\"</w>      list monsters\n"
+                       "<w>Ctrl-L</w>  recover a monster from limbo\n"
                        "\n"
                        "<yellow>Item related commands</yellow>\n"
                        "<w>a</w>      acquirement\n"

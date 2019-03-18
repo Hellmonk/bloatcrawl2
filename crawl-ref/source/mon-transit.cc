@@ -17,6 +17,7 @@
 #include "god-passive.h" // passive_t::convert_orcs
 #include "items.h"
 #include "libutil.h" // map_find
+#include "mon-death.h"
 #include "mon-place.h"
 #include "religion.h"
 #include "timed-effects.h"
@@ -24,6 +25,7 @@
 #define MAX_LOST 100
 
 monsters_in_transit the_lost_ones;
+monsters_in_limbo limbo_monsters;
 
 static void _cull_lost_mons(m_transit_list &mlist, int how_many)
 {
@@ -104,7 +106,7 @@ static void _level_place_followers(m_transit_list &m)
     for (auto i = m.begin(); i != m.end();)
     {
         auto mon = i++;
-        if ((mon->mons.flags & MF_TAKING_STAIRS) && mon->place(true))
+        if ((mon->mons.flags & MF_TAKING_STAIRS) && mon->place(&you.pos()))
         {
             if (mon->mons.is_divine_companion())
             {
@@ -144,7 +146,7 @@ void place_followers()
 static monster* _place_lost_monster(follower &f)
 {
     dprf("Placing lost one: %s", f.mons.name(DESC_PLAIN, true).c_str());
-    if (monster* mons = f.place(false))
+    if (monster* mons = f.place())
     {
         // Figure out how many turns we need to update the monster
         int turns = (you.elapsed_time - f.transit_start_time)/10;
@@ -237,8 +239,7 @@ void follower::load_mons_items()
             items[i].clear();
 }
 
-monster* follower::place(bool near_player)
-{
+monster* follower::place(const coord_def *defined_pos) {
     ASSERT(mons.alive());
 
     monster *m = get_free_monster();
@@ -248,11 +249,8 @@ monster* follower::place(bool near_player)
     // Copy the saved data.
     *m = mons;
 
-    // Shafts no longer retain the position, if anything else would
-    // want to request a specific one, it should do so here if !near_player
-
-    if (m->find_place_to_live(near_player))
-    {
+    if ((defined_pos && m->find_home_near_place(*defined_pos)) ||
+        (m->find_home_anywhere())) {
 #if TAG_MAJOR_VERSION == 34
         // fix up some potential cloned monsters for beogh chars.
         // see comments on maybe_bad_priest monster and in tags.cc for details
@@ -486,4 +484,45 @@ static bool _transport_follower_at(const coord_def &pos, const coord_def &from,
 void transport_followers_from(const coord_def &from)
 {
     handle_followers(from, _transport_follower_at);
+}
+
+// This is a bit of a clone and hack of add_monster_to_transit, oh well
+void add_monster_to_limbo(monster *m) {
+    ASSERT(m->alive());
+    m_limbo_list &mlist = limbo_monsters[level_id::current()];
+    mlist.emplace_back(*m);
+    dprf("Monster entered limbo: %s", m->name(DESC_PLAIN, true).c_str());
+    m->destroy_inventory();
+    monster_cleanup(m);
+}
+bool extract_monster_from_limbo(mid_t mid, const coord_def &pos) {
+    m_transit_list &limhere = limbo_monsters[level_id::current()];
+    if (limhere.empty()) {
+        mprf(MSGCH_ERROR, "BUG: Attempted to remove monster from limbo; no monsters in limbo.");
+        return false;
+    }
+    for (auto i = limhere.begin(); i != limhere.end(); ++i) {
+        if (i->mons.mid == mid && i->place(&pos)) {
+            monster* new_mon = monster_by_mid(i->mons.mid);
+            new_mon->apply_location_effects(new_mon->pos());
+            limhere.erase(i);
+            return true;
+        }
+        return false;
+    }
+    mprf(MSGCH_ERROR, "BUG: Attempted to remove nonexistent monster %d from limbo.",mid);
+    return false;
+}
+
+void wizard_extract_limbo() {
+    m_transit_list &limhere = limbo_monsters[level_id::current()];
+    if (limhere.empty()) {
+        mpr("No monsters in limbo.");
+    } else {
+        if (extract_monster_from_limbo(limhere.begin()->mons.mid,you.pos())) {
+            mpr("That seemed to work.");
+        } else {
+            mpr("That seemed not to work.");
+        }
+    }
 }

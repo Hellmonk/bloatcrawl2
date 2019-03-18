@@ -40,6 +40,7 @@
 #include "message.h"
 #include "mon-death.h"
 #include "mon-tentacle.h"
+#include "mon-transit.h"
 #include "nearby-danger.h"
 #include "output.h"
 #include "prompt.h"
@@ -1758,6 +1759,10 @@ void direction_chooser::handle_wizard_command(command_type key_command,
 
     case CMD_TARGET_WIZARD_KILL_MONSTER:
         monster_die(*m, KILL_YOU, NON_MONSTER);
+        break;
+
+    case CMD_TARGET_WIZARD_LIMBO_MONSTER:
+        add_monster_to_limbo(m);
         break;
 
     default:
