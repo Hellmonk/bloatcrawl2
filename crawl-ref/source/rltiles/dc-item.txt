@@ -935,6 +935,7 @@ i-staff_cold STAFF_COLD
 i-staff_poison STAFF_POISON
 i-staff_energy STAFF_ENERGY
 i-staff_death STAFF_DEATH
+# Remove when TAG_MAJOR_VERSION > 34
 i-staff_conjuration STAFF_CONJURATION
 # Remove when TAG_MAJOR_VERSION > 34
 i-staff_enchantment STAFF_ENCHANTMENT

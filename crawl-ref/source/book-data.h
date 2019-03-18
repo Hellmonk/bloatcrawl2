@@ -3,26 +3,26 @@ static const vector<spell_type> spellbook_templates[] =
 {
 
 {   // Book of Minor Magic
-    SPELL_MAGIC_DART,
+    SPELL_STING,
     SPELL_BLINK,
     SPELL_CALL_IMP,
     SPELL_SLOW,
     SPELL_CONJURE_FLAME,
     SPELL_MEPHITIC_CLOUD,
 },
-
+#if TAG_MAJOR_VERSION == 34
 {   // Book of Conjurations
-    SPELL_MAGIC_DART,
+    SPELL_STING,
     SPELL_SEARING_RAY,
-    SPELL_DAZZLING_SPRAY,
+    SPELL_BLINDING_SPRAY,
     SPELL_FULMINANT_PRISM,
     SPELL_FORCE_LANCE,
-    SPELL_ISKENDERUNS_MYSTIC_BLAST,
+	SPELL_THROW_ICICLE,
 },
-
+#endif
 {   // Book of Flames
     SPELL_FLAME_TONGUE,
-    SPELL_THROW_FLAME,
+    SPELL_SEARING_RAY,
     SPELL_CONJURE_FLAME,
     SPELL_INNER_FLAME,
     SPELL_STICKY_FLAME,
@@ -177,7 +177,8 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_HIBERNATION,
     SPELL_CONFUSE,
     SPELL_TUKIMAS_DANCE,
-    SPELL_DAZZLING_SPRAY,
+    SPELL_BLINDING_SPRAY,
+	SPELL_FULMINANT_PRISM
 },
 
 {   // Book of Air

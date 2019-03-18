@@ -300,7 +300,7 @@ static string _describe_ash_skill_boost()
         // No need to list all of them since we boost all or none.
         while (it != boosted_skills.end())
         {
-            if (it->first > SK_CONJURATIONS && it->first <= SK_LAST_MAGIC)
+            if (it->first > SK_FIRST_MAGIC_SCHOOL && it->first <= SK_LAST_MAGIC)
             {
                 boosted_skills.erase(it);
                 it = boosted_skills.begin();
@@ -315,7 +315,7 @@ static string _describe_ash_skill_boost()
             // For now, all the bonuses from the same bounded part have
             // the same level.
             ASSERT(bonus == it->second);
-            if (it->first == SK_CONJURATIONS)
+            if (it->first == SK_FIRST_MAGIC_SCHOOL)
                 skills += "Magic schools";
             else
                 skills += skill_name(it->first);

@@ -1453,7 +1453,7 @@ static void _damaging_card(card_type card, int power, deck_rarity_type rarity,
     const zap_type painzaps[2] = { ZAP_AGONY, ZAP_BOLT_OF_DRAINING };
     const zap_type acidzaps[3] = { ZAP_BREATHE_ACID, ZAP_CORROSIVE_BOLT,
                                    ZAP_CORROSIVE_BOLT };
-    const zap_type orbzaps[3]  = { ZAP_ISKENDERUNS_MYSTIC_BLAST, ZAP_IOOD,
+    const zap_type orbzaps[3]  = { ZAP_THROW_ICICLE, ZAP_IOOD,
                                    ZAP_IOOD };
 
     switch (card)

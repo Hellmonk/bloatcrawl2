@@ -1706,7 +1706,7 @@ static const mutation_def mut_data[] =
   {"You can no longer study or cast Charms magic.", "", ""},
   {"You can once more study and cast Charms magic.", "", ""},
 },
-
+#if TAG_MAJOR_VERSION == 34
 { MUT_NO_CONJURATION_MAGIC, 0, 1, mutflag::bad, false,
   "no conjurations magic",
 
@@ -1714,7 +1714,7 @@ static const mutation_def mut_data[] =
   {"You can no longer study or cast Conjurations magic.", "", ""},
   {"You can once more study and cast Conjurations magic.", "", ""},
 },
-
+#endif
 { MUT_NO_EARTH_MAGIC, 0, 1, mutflag::bad, false,
   "no earth magic",
 

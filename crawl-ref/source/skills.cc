@@ -91,7 +91,9 @@ static const char *skill_titles[NUM_SKILLS][6] =
     {"Unarmed Combat", "Ruffian",       "Grappler",        "Brawler",         "Wrestler",       "@Weight@weight Champion"},
 
     {"Spellcasting",   "Magician",      "Thaumaturge",     "Eclecticist",     "Sorcerer",       "Archmage"},
+#if TAG_MAJOR_VERSION == 34
     {"Conjurations",   "Conjurer",      "Destroyer",       "Devastator",      "Ruinous",        "Annihilator"},
+#endif
     {"Hexes",          "Vexing",        "Jinx",            "Bewitcher",       "Maledictor",     "Spellbinder"},
     {"Charms",         "Charmwright",   "Infuser",         "Anointer",        "Gracecrafter",   "Miracle Worker"},
     {"Summonings",     "Caller",        "Summoner",        "Convoker",        "Demonologist",   "Hellbinder"},
@@ -1812,7 +1814,7 @@ void init_skill_order()
 bool is_removed_skill(skill_type skill)
 {
 #if TAG_MAJOR_VERSION == 34
-    if (skill == SK_STABBING || skill == SK_TRAPS)
+    if (skill == SK_STABBING || skill == SK_TRAPS || skill == SK_CONJURATIONS)
         return true;
 #endif
     return false;
@@ -1823,8 +1825,6 @@ bool is_useless_skill(skill_type skill)
     if (is_removed_skill(skill)
         || (skill == SK_AIR_MAGIC && you.get_mutation_level(MUT_NO_AIR_MAGIC))
         || (skill == SK_CHARMS && you.get_mutation_level(MUT_NO_CHARM_MAGIC))
-        || (skill == SK_CONJURATIONS
-            && you.get_mutation_level(MUT_NO_CONJURATION_MAGIC))
         || (skill == SK_EARTH_MAGIC
             && you.get_mutation_level(MUT_NO_EARTH_MAGIC))
         || (skill == SK_FIRE_MAGIC && you.get_mutation_level(MUT_NO_FIRE_MAGIC))

@@ -9,8 +9,8 @@ enum species_type
     SP_DEEP_ELF,
 #if TAG_MAJOR_VERSION == 34
     SP_SLUDGE_ELF,
-#endif
     SP_HALFLING,
+#endif
     SP_HILL_ORC,
     SP_KOBOLD,
     SP_MUMMY,
@@ -40,8 +40,10 @@ enum species_type
     SP_GHOUL,
     SP_TENGU,
     SP_MERFOLK,
+#if TAG_MAJOR_VERSION == 34
     SP_VAMPIRE,
     SP_DEEP_DWARF,
+#endif
     SP_FELID,
     SP_OCTOPODE,
 #if TAG_MAJOR_VERSION == 34

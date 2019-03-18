@@ -1,4 +1,4 @@
-%%%%
+﻿%%%%
 Abjuration spell
 
 Reduces the remaining duration of any nearby hostile summoned creatures.
@@ -132,6 +132,11 @@ melee damage significantly.
 
 While transformed, any equipped weapons are melded, and casting spells becomes
 somewhat more difficult.
+%%%%
+Blinding Spray spell
+
+Fires a spray of weak poison energy from the caster's fingertips. Any
+living creature they strike may be blinded should the venom hit their eyes.
 %%%%
 Blink Allies Away spell
 
@@ -323,12 +328,6 @@ Translocates the caster a short distance, with precise control. Be wary that
 controlled translocations will cause the subject to become contaminated with
 magical energy.
 %%%%
-Magic Candle spell
-
-Throws a harmless magical light source at the monster. Should it hit,
-the light of the candle offsets the dark, musty atmosphere of the dungeon, and
-makes the affected creature appreciably easier to hit.
-%%%%
 Corpse Rot spell
 
 Rapidly accelerates the decomposition of any corpses lying around the caster,
@@ -354,11 +353,6 @@ walls of any material due to the crystal embedded in the shot.
 Darkness spell
 
 Dims the light of the dungeon, reducing the range of vision.
-%%%%
-Dazzling Spray spell
-
-Fires a spread of scintillating energy bolts from the caster's fingertips. Any
-living creature they strike may be dazzled and left stumbling blindly.
 %%%%
 Death Channel spell
 
@@ -852,6 +846,12 @@ Mara Summon spell
 Weaves illusions of the caster. Such illusions have the same physical prowess
 as the original, and can cast the same spells.
 %%%%
+Magic Candle spell
+
+Throws a harmless magical light source at the monster. Should it hit,
+the light of the candle offsets the dark, musty atmosphere of the dungeon, and
+makes the affected creature appreciably easier to hit.
+%%%%
 Mass Confusion spell
 
 Causes confusion in all who gaze upon the caster.
@@ -920,16 +920,17 @@ Olgreb's Toxic Radiance spell
 Causes the caster to radiate toxic energy, continuously inflicting poison on
 everything nearby for as long as the spell lasts.
 %%%%
-Orb of Destruction spell
+Iskenderun's Icy Sphere spell
 
-Conjures an orb made of pure destructive magic. Compared to most other
-projectiles, these orbs travel at a relatively slow pace. The orbs home onto
-their targets, yet because of their huge inertia, especially agile opponents
-may be able to outmanoeuvre them. The orbs need some time to stabilize, and a
-nascent orb will deal reduced damage.
+Creates a ball of ice, containing an explosive force. Compared to most other
+projectiles, these spheres travel at a relatively slow pace. The snowballs 
+home onto their targets, yet because of their huge inertia, especially agile 
+opponents may be able to outmanoeuvre them. The boulders of ice grow as they 
+travel, dealing decreased damage at short distance and massively increased 
+with a long travel path.
 
-Residents of the dungeon are able to maintain the orb until it impacts a
-target, but when cast by you the orb will dissipate upon leaving your line of
+Residents of the dungeon are able to maintain boulders until they impact a
+target, but when cast by you the snowball will fall apart upon leaving your line of
 sight.
 %%%%
 Orb of Electricity spell
@@ -1105,7 +1106,7 @@ the caster from traversing them.
 %%%%
 Searing Ray spell
 
-Fires a continuous ray of arcane energy from the caster's hands. Though
+Fires a continuous ray of white hot light from the caster's hands. Though
 initially mild, so long as the caster maintains focus upon the spell and
 supplies it with magical power (by waiting in place and not taking any other
 actions), the ray will grow in strength until it becomes a surging bolt able to
@@ -1491,7 +1492,9 @@ Throws a small puff of frost.
 Throw Icicle spell
 
 Fires a shard of ice. Due to its strong impact and cutting edges, a
-significant portion of its damage bypasses cold resistance.
+significant portion of its damage bypasses cold resistance. The icicle will sometimes
+shatter on impact; dealing cold damage in all directions; the chance of it doing so is
+higher if it has traveled less distance.
 %%%%
 Thunderbolt spell
 

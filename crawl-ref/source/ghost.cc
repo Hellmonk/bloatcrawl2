@@ -70,6 +70,7 @@ static spell_type search_order_selfench[] =
     SPELL_INVISIBILITY,
     SPELL_BLINK,
     SPELL_BLINKBOLT,
+	SPELL_CONDENSATION_SHIELD,
 };
 
 // Pan lord summoning spell list.

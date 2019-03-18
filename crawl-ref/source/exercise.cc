@@ -34,7 +34,6 @@ void practise_casting(spell_type spell, bool success)
     // Fill all disciplines into a vector, then shuffle the vector, and
     // exercise skills in that random order. That way, first skill don't
     // stay in the queue for a shorter time.
-    bool conj = false;
     vector<skill_type> disc;
     for (const auto bit : spschools_type::range())
     {
@@ -42,15 +41,9 @@ void practise_casting(spell_type spell, bool success)
             continue;
 
         skill_type skill = spell_type2skill(bit);
-        if (skill == SK_CONJURATIONS)
-            conj = true;
 
         disc.push_back(skill);
     }
-
-    // We slow down the training of spells with conjurations.
-    if (conj && !x_chance_in_y(skillcount, 4))
-        return;
 
     shuffle_array(disc);
 

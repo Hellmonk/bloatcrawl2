@@ -486,9 +486,6 @@ static int _spell_enhancement(spell_type spell)
     const spschools_type typeflags = get_spell_disciplines(spell);
     int enhanced = 0;
 
-    if (typeflags & SPTYP_CONJURATION)
-        enhanced += player_spec_conj();
-
     if (typeflags & SPTYP_HEXES)
         enhanced += player_spec_hex();
 
@@ -1155,7 +1152,7 @@ static unique_ptr<targeter> _spell_targeter(spell_type spell, int pow,
     case SPELL_MEPHITIC_CLOUD:
         return make_unique<targeter_beam>(&you, range, ZAP_MEPHITIC, pow,
                                           pow >= 100 ? 1 : 0, 1);
-    case SPELL_ISKENDERUNS_MYSTIC_BLAST:
+    case SPELL_THROW_ICICLE:
         return make_unique<targeter_imb>(&you, pow, range);
     case SPELL_FIRE_STORM:
         return make_unique<targeter_smite>(&you, range, 2, pow > 76 ? 3 : 2);
@@ -1172,8 +1169,8 @@ static unique_ptr<targeter> _spell_targeter(spell_type spell, int pow,
         return make_unique<targeter_fragment>(&you, pow, range);
     case SPELL_FULMINANT_PRISM:
         return make_unique<targeter_smite>(&you, range, 0, 2);
-    case SPELL_DAZZLING_SPRAY:
-        return make_unique<targeter_spray>(&you, range, ZAP_DAZZLING_SPRAY);
+    case SPELL_BLINDING_SPRAY:
+        return make_unique<targeter_spray>(&you, range, ZAP_BLINDING_SPRAY);
     case SPELL_GLACIATE:
         return make_unique<targeter_cone>(&you, range);
     case SPELL_CLOUD_CONE:
@@ -1673,7 +1670,7 @@ static spret_type _do_cast(spell_type spell, int powc, const dist& spd,
     case SPELL_THUNDERBOLT:
         return cast_thunderbolt(&you, powc, target, fail);
 
-    case SPELL_DAZZLING_SPRAY:
+    case SPELL_BLINDING_SPRAY:
         return cast_dazzling_spray(powc, target, fail);
 
     case SPELL_CHAIN_OF_CHAOS:

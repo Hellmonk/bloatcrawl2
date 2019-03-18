@@ -848,7 +848,6 @@ skill_type spell_type2skill(spschool_flag_type spelltype)
 {
     switch (spelltype)
     {
-    case SPTYP_CONJURATION:    return SK_CONJURATIONS;
     case SPTYP_HEXES:          return SK_HEXES;
     case SPTYP_CHARMS:         return SK_CHARMS;
     case SPTYP_FIRE:           return SK_FIRE_MAGIC;
@@ -871,7 +870,6 @@ spschool_flag_type skill2spell_type(skill_type spell_skill)
 {
     switch (spell_skill)
     {
-    case SK_CONJURATIONS:    return SPTYP_CONJURATION;
     case SK_HEXES:           return SPTYP_HEXES;
     case SK_CHARMS:          return SPTYP_CHARMS;
     case SK_FIRE_MAGIC:      return SPTYP_FIRE;
@@ -1517,7 +1515,7 @@ bool spell_no_hostile_in_range(spell_type spell)
 
 // a map of schools to the corresponding sacrifice 'mutations'.
 static const mutation_type arcana_sacrifice_map[] = {
-    MUT_NO_CONJURATION_MAGIC,
+	MUT_NON_MUTATION,
     MUT_NO_HEXES_MAGIC,
     MUT_NO_CHARM_MAGIC,
     MUT_NO_FIRE_MAGIC,

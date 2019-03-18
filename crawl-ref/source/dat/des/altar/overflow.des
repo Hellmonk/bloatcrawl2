@@ -3143,7 +3143,6 @@ ITEM:    randbook owner:Sif_Muna disc:hexes numspells:1 slevels:1 / \
          randbook owner:Sif_Muna disc:transmutation numspells:1 slevels:1 / \
          randbook owner:Sif_Muna disc:summoning numspells:1 slevels:1 / \
          randbook owner:Sif_Muna disc:translocation numspells:1 slevels:1
-ITEM:    randbook owner:Vehumet disc:conjuration spells:magic_dart numspells:1
 SHUFFLE: AdB"C` / A'BeC` / A'B"Cf
 MAP
      xxxxx
@@ -3314,7 +3313,6 @@ KFEAT:   yY = altar_kikubaaqudgha
 KFEAT:   zZ = altar_vehumet
 KITEM:   X = randbook owner:Sif_Muna disc:summoning numspells:1 slevels:1
 KITEM:   Y = randbook owner:Kikubaaqudgha disc:necromancy numspells:1 slevels:1
-KITEM:   Z = randbook owner:Vehumet disc:conjuration numspells:1 slevels:1
 SHUFFLE: x'y"z` / x'y"z` / X~y"z` / x'Y~z` / x'y"Z~
 SUBST:   '"` = ., ~ = ~.
 MAP

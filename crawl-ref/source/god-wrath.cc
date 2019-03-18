@@ -1076,8 +1076,7 @@ static spell_type _vehumet_wrath_type()
     switch (severity)
     {
         case 1:
-            return random_choose(SPELL_MAGIC_DART,
-                                 SPELL_STING,
+            return random_choose(SPELL_STING,
                                  SPELL_SHOCK,
                                  SPELL_FLAME_TONGUE);
         case 2:
@@ -1087,8 +1086,7 @@ static spell_type _vehumet_wrath_type()
             return random_choose(SPELL_MEPHITIC_CLOUD,
                                  SPELL_STONE_ARROW);
         case 4:
-            return random_choose(SPELL_ISKENDERUNS_MYSTIC_BLAST,
-                                 SPELL_STICKY_FLAME,
+            return random_choose(SPELL_STICKY_FLAME,
                                  SPELL_THROW_ICICLE,
                                  SPELL_ENERGY_BOLT);
         case 5:

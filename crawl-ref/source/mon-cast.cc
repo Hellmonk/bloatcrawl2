@@ -787,7 +787,7 @@ static bool _los_spell_worthwhile(const monster &mons, spell_type spell)
 /// Set up a fake beam, for noise-generating purposes (?)
 static void _setup_fake_beam(bolt& beam, const monster&, int)
 {
-    beam.flavour  = BEAM_DEVASTATION;
+    beam.flavour  = BEAM_ENERGY;
     beam.pierce   = true;
     // Doesn't take distance into account, but this is just a tracer so
     // we'll ignore that. We need some damage on the tracer so the monster
@@ -1282,7 +1282,6 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
     case SPELL_ICEBLAST:
     case SPELL_LEHUDIBS_CRYSTAL_SPEAR:
     case SPELL_BOLT_OF_DRAINING:
-    case SPELL_ISKENDERUNS_MYSTIC_BLAST:
     case SPELL_STICKY_FLAME:
     case SPELL_STICKY_FLAME_RANGE:
     case SPELL_STING:
@@ -1304,8 +1303,8 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         zappy(spell_to_zap(real_spell), power, true, beam);
         break;
 
-    case SPELL_DAZZLING_SPRAY: // special-cased because of a spl-zap hack...
-        zappy(ZAP_DAZZLING_SPRAY, power, true, beam);
+    case SPELL_BLINDING_SPRAY: // special-cased because of a spl-zap hack...
+        zappy(ZAP_BLINDING_SPRAY, power, true, beam);
         break;
 
     case SPELL_FREEZING_CLOUD: // battlesphere special-case
@@ -1363,7 +1362,7 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         beam.short_name = "energy";
         beam.damage     = dice_def(3, 20);
         beam.hit        = 15 + power / 30;
-        beam.flavour    = BEAM_DEVASTATION; // DEVASTATION is BEAM_MMISSILE
+        beam.flavour    = BEAM_ENERGY; // DEVASTATION is BEAM_MMISSILE
         beam.pierce     = true;             // (except bloodier)
         break;
 
@@ -3906,7 +3905,7 @@ static bool _target_and_justify_spell(monster &mons,
             if (mons.foe == MHITYOU && !_set_hex_target(&mons, beem))
                 return false;
             break;
-        case SPELL_DAZZLING_SPRAY:
+        case SPELL_BLINDING_SPRAY:
             if (!mons.get_foe()
                 || !_spray_tracer(&mons, _mons_spellpower(spell, mons),
                                   beem, spell))
@@ -6699,10 +6698,10 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         mons->add_ench(mon_enchant(ENCH_SHROUD));
         return;
 
-    case SPELL_DAZZLING_SPRAY:
+    case SPELL_BLINDING_SPRAY:
     {
         vector<bolt> beams = get_spray_rays(mons, pbolt.target, pbolt.range, 3,
-                                            ZAP_DAZZLING_SPRAY);
+                                            ZAP_BLINDING_SPRAY);
         for (bolt &child : beams)
         {
             bolt_parent_init(pbolt, child);

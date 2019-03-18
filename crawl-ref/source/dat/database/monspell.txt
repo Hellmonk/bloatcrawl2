@@ -125,21 +125,21 @@ unseen Symbol of Torment cast
 
 @The_something@ calls on the powers of darkness!
 %%%%
-Orb of Destruction orb spider cast
+Iskenderun's Icy Sphere orb spider cast
 
-@The_monster@ weaves a glowing orb of energy.
+@The_monster@ weaves a web with icy snow.
 %%%%
-Orb of Destruction cast
+Iskenderun's Icy Sphere cast
 
-@The_monster@ conjures a glowing orb.
+@The_monster@ conjures an icy sphere.
 
-@The_monster@ conjures an orb of pure magic.
+@The_monster@ conjures a boulder of snow and ice.
 
-@The_monster@ launches a ball of destructive magic.
+@The_monster@ launches a betwitched ball of cold.
 %%%%
-unseen Orb of Destruction cast
+unseen Iskenderun's Icy Sphere cast
 
-@The_something@ conjures a glowing orb.
+@The_something@ conjures an icy sphere.
 %%%%
 Sticky Flame cast
 

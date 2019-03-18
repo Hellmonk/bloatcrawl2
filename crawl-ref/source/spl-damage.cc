@@ -2638,7 +2638,7 @@ static bool _dazzle_can_hit(const actor *act)
         const monster* mons = act->as_monster();
         bolt testbeam;
         testbeam.thrower = KILL_YOU;
-        zappy(ZAP_DAZZLING_SPRAY, 100, false, testbeam);
+        zappy(ZAP_BLINDING_SPRAY, 100, false, testbeam);
 
         return !testbeam.ignores_monster(mons);
     }
@@ -2648,9 +2648,9 @@ static bool _dazzle_can_hit(const actor *act)
 
 spret_type cast_dazzling_spray(int pow, coord_def aim, bool fail)
 {
-    int range = spell_range(SPELL_DAZZLING_SPRAY, pow);
+    int range = spell_range(SPELL_BLINDING_SPRAY, pow);
 
-    targeter_spray hitfunc(&you, range, ZAP_DAZZLING_SPRAY);
+    targeter_spray hitfunc(&you, range, ZAP_BLINDING_SPRAY);
     hitfunc.set_aim(aim);
     if (stop_attack_prompt(hitfunc, "fire towards", _dazzle_can_hit))
         return SPRET_ABORT;
@@ -2665,7 +2665,7 @@ spret_type cast_dazzling_spray(int pow, coord_def aim, bool fail)
 
     for (bolt &beam : hitfunc.beams)
     {
-        zappy(ZAP_DAZZLING_SPRAY, pow, false, beam);
+        zappy(ZAP_BLINDING_SPRAY, pow, false, beam);
         beam.fire();
     }
 
@@ -2831,6 +2831,7 @@ void handle_searing_ray()
     bolt beam;
     beam.thrower = KILL_YOU_MISSILE;
     beam.range   = calc_spell_range(SPELL_SEARING_RAY, pow);
+	beam.flavour = BEAM_FIRE;
     beam.source  = you.pos();
     beam.target  = you.props["searing_ray_target"].get_coord();
     beam.aimed_at_spot = you.props["searing_ray_aimed_at_spot"].get_bool();

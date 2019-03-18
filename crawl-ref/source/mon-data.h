@@ -2200,9 +2200,9 @@ DUMMY(MONS_SPIDER, 's', CYAN, "spider", TILEP_MONS_REDBACK)
 },
 
 {
-    MONS_ORB_SPIDER, 's', MAGENTA, "orb spider",
+    MONS_ORB_SPIDER, 's', CYAN, "orb spider",
     M_NO_SKELETON | M_WEB_SENSE | M_MAINTAIN_RANGE,
-    MR_VUL_POISON,
+    MR_VUL_POISON | MR_RES_COLD,
     20, MONS_SPIDER, MONS_ORB_SPIDER, MH_NATURAL, 40,
     { {AT_BITE, AF_PLAIN, 5}, AT_NO_ATK, AT_NO_ATK, AT_NO_ATK },
     7, 420,
@@ -6113,7 +6113,7 @@ DUMMY(MONS_HELL_LORD, '&', COLOUR_UNDEF, "hell lord", TILEP_MONS_PROGRAM_BUG)
 },
 
 { // not an actual monster, used by a spell
-    MONS_ORB_OF_DESTRUCTION, '*', WHITE, "orb of destruction",
+    MONS_ORB_OF_DESTRUCTION, '*', WHITE, "ball of snow and ice",
     M_INSUBSTANTIAL | M_NOT_DANGEROUS | M_NO_POLY_TO | M_PROJECTILE | M_FLIES,
     mrd(MR_RES_COLD | MR_RES_ELEC | MR_RES_ACID | MR_RES_FIRE, 3)
         | MR_RES_DAMNATION | MR_RES_STICKY_FLAME,

@@ -41,7 +41,7 @@ static const map<job_type, job_def> job_data =
 		SP_SILENT_SPECTRE},
     { "robe", "book of Air" },
     WCHOICE_NONE,
-    { { SK_CONJURATIONS, 1 }, { SK_AIR_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
+    { { SK_AIR_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
       { SK_DODGING, 2 }, { SK_STEALTH, 2 }, },
 } },
 
@@ -115,17 +115,17 @@ static const map<job_type, job_def> job_data =
 	WCHOICE_NONE,
 	{},
 }},
-
+#if TAG_MAJOR_VERSION == 34
 { JOB_CONJURER, {
     "Cj", "Conjurer",
     0, 7, 5,
     { SP_DEEP_ELF, SP_NAGA, SP_TENGU, SP_BASE_DRACONIAN, SP_DEMIGOD, },
     { "robe", "book of Conjurations" },
     WCHOICE_NONE,
-    { { SK_CONJURATIONS, 4 }, { SK_SPELLCASTING, 2 }, { SK_DODGING, 2 },
+    { { SK_SPELLCASTING, 2 }, { SK_DODGING, 2 },
       { SK_STEALTH, 2 }, },
 } },
-
+#endif
 { JOB_EARTH_ELEMENTALIST, {
     "EE", "Earth Elementalist",
     0, 7, 5,
@@ -164,7 +164,7 @@ static const map<job_type, job_def> job_data =
     { SP_DEEP_ELF, SP_HILL_ORC, SP_NAGA, SP_TENGU, SP_DEMIGOD, SP_GARGOYLE, },
     { "robe", "book of Flames" },
     WCHOICE_NONE,
-    { { SK_CONJURATIONS, 1 }, { SK_FIRE_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
+    { { SK_FIRE_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
       { SK_DODGING, 2 }, { SK_STEALTH, 2 }, },
 } },
 
@@ -195,7 +195,7 @@ static const map<job_type, job_def> job_data =
       SP_GARGOYLE, },
     { "robe", "book of Frost" },
     WCHOICE_NONE,
-    { { SK_CONJURATIONS, 1 }, { SK_ICE_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
+    { { SK_SUMMONINGS, 1 }, { SK_ICE_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
       { SK_DODGING, 2 }, { SK_STEALTH, 2 }, },
 } },
 
@@ -260,7 +260,7 @@ static const map<job_type, job_def> job_data =
       SP_DEMONSPAWN, },
     { "robe", "Young Poisoner's Handbook" },
     WCHOICE_NONE,
-    { { SK_CONJURATIONS, 1 }, { SK_POISON_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
+    { { SK_POISON_MAGIC, 3 }, { SK_SPELLCASTING, 2 },
       { SK_DODGING, 2 }, { SK_STEALTH, 2 }, },
 } },
 
@@ -295,7 +295,7 @@ static const map<job_type, job_def> job_data =
     { "robe", "hat", "book of Minor Magic" },
     WCHOICE_NONE,
     { { SK_DODGING, 2 }, { SK_STEALTH, 2 }, { SK_SPELLCASTING, 3 },
-      { SK_TRANSLOCATIONS, 1 }, { SK_CONJURATIONS, 1 }, { SK_SUMMONINGS, 1 }, },
+      { SK_TRANSLOCATIONS, 1 }, { SK_SUMMONINGS, 2 }, },
 } },
 
 { JOB_PRIEST,{

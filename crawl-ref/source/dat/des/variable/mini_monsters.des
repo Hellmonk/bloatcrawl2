@@ -1955,8 +1955,7 @@ MONS:    ancient lich
 MONS:    deep elf annihilator / draconian annihilator w:5 / lich
 MONS:    deep elf mage / tengu conjurer / wizard / orc sorcerer / \
          naga mage / ogre mage
-ITEM:    book of annihilations, book of power, book of conjurations
-ITEM:    randbook disc:conjuration, staff of conjuration
+ITEM:    book of annihilations, book of power
 KFEAT:   _ = altar_vehumet
 SHUFFLE: efgh
 MAP

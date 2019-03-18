@@ -1007,7 +1007,6 @@ bool player_omnireflects();
 
 int player_spec_air();
 int player_spec_cold();
-int player_spec_conj();
 int player_spec_death();
 int player_spec_earth();
 int player_spec_fire();

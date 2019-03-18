@@ -825,7 +825,7 @@ defenses. This choice is permanent and cannot be undone.
 Ancestor Life: Battlemage ability
 
 Remembers your ancestor as a battlemage, a warrior capable of relentless offense
-with both melee and conjurations. This choice is permanent and cannot be undone.
+with both melee and destructive magic. This choice is permanent and cannot be undone.
 %%%%
 Ancestor Life: Hexer ability
 

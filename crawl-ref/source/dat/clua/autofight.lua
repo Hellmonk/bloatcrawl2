@@ -234,7 +234,7 @@ local function is_candidate_for_attack(x,y)
     return false
   end
   if m:name() == "butterfly"
-      or m:name() == "orb of destruction" then
+      or m:name() == "ball of snow and ice" then
     return false
   end
   if m:is_firewood() then

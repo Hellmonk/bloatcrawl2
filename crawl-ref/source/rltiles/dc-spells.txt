@@ -16,7 +16,7 @@ iskenderuns_mystic_blast ISKENDERUNS_MYSTIC_BLAST
 magic_dart MAGIC_DART
 orb_of_destruction IOOD
 battlesphere BATTLESPHERE
-dazzling_spray DAZZLING_SPRAY
+dazzling_spray BLINDING_SPRAY
 force_lance FORCE_LANCE
 fulminant_prism FULMINANT_PRISM
 searing_ray SEARING_RAY

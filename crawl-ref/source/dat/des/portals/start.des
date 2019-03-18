@@ -220,14 +220,14 @@ KFEAT:  D = scroll shop type:Scrolls suffix:and_such count:21 use_all greed:16 ;
             scroll of magic mapping q:1 | scroll of remove curse q:1 |\
             scroll of silence q:1 | scroll of summoning q:1 | scroll of teleportation q:1 |\
             scroll of teleportation q:2 | scroll of torment q:1 | scroll of vulnerability q:1
-KFEAT:  E = weapon shop type:Staff suffix:Store count:11 use_all greed:10 ; \
+KFEAT:  E = weapon shop type:Staff suffix:Store count:10 use_all greed:10 ; \
             not_cursed staff of fire | not_cursed staff of cold | not_cursed staff of air |\
             not_cursed staff of earth | not_cursed staff of death |\
             not_cursed staff of poison | not_cursed staff of summoning |\
-            not_cursed staff of conjuration | not_cursed staff of energy |\
+            not_cursed staff of energy |\
             not_cursed staff of wizardry | not_cursed staff of power
-KFEAT:  F = book shop type:Basic_Mysticism suffix:books_etc greed:15 count:17 use_all ; \
-            book of minor magic | book of conjurations | book of flames |\
+KFEAT:  F = book shop type:Basic_Mysticism suffix:books_etc greed:15 count:16 use_all ; \
+            book of minor magic | book of flames |\
             book of frost | young poisoner's handbook | book of air |\
             book of misfortune | book of geomancy | book of power |\
             book of cantrips | book of party tricks | book of changes |\

@@ -311,7 +311,7 @@ bool targeter_unravelling::set_aim(coord_def a)
 }
 
 targeter_imb::targeter_imb(const actor *act, int pow, int r) :
-               targeter_beam(act, r, ZAP_ISKENDERUNS_MYSTIC_BLAST, pow, 0, 0)
+               targeter_beam(act, r, ZAP_THROW_ICICLE, pow, 0, 0)
 {
 }
 

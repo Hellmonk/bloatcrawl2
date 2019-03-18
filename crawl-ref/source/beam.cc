@@ -259,7 +259,7 @@ spret_type zapping(zap_type ztype, int power, bolt &pbolt,
     if (ztype == ZAP_LIGHTNING_BOLT)
     {
         noisy(spell_effect_noise(SPELL_LIGHTNING_BOLT),
-               you.pos(), "You hear a mighty clap of thunder!");
+               pbolt.target, "You hear a mighty clap of thunder!");
         pbolt.heard = true;
     }
 
@@ -1450,13 +1450,15 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
     {
         hurted = resist_adjust_damage(mons, pbolt.flavour, hurted);
 
-        if (!hurted && doFlavouredEffects)
-        {
-            simple_monster_message(*mons,
-                                   (original > 0) ? " completely resists."
-                                                  : " appears unharmed.");
-        }
-        else if (doFlavouredEffects && !one_chance_in(3))
+		if (!hurted && doFlavouredEffects)
+		{
+			simple_monster_message(*mons,
+				(original > 0) ? " completely resists."
+				: " appears unharmed.");
+		}
+		else if (hurted < original)
+			simple_monster_message(*mons, " partially resists.");
+        else if (doFlavouredEffects)
             poison_monster(mons, pbolt.agent());
 
         break;
@@ -2209,7 +2211,7 @@ void bolt_parent_init(const bolt &parent, bolt &child)
 
 static void _maybe_imb_explosion(bolt *parent, coord_def center)
 {
-    if (parent->origin_spell != SPELL_ISKENDERUNS_MYSTIC_BLAST
+    if (parent->origin_spell != SPELL_THROW_ICICLE
         || parent->in_explosion_phase)
     {
         return;
@@ -2220,14 +2222,15 @@ static void _maybe_imb_explosion(bolt *parent, coord_def center)
     bolt beam;
 
     bolt_parent_init(*parent, beam);
-    beam.name           = "mystic blast";
-    beam.aux_source     = "orb of energy";
+    beam.name           = "icy shards";
+    beam.aux_source     = "icicle";
     beam.range          = 3;
     beam.hit            = AUTOMATIC_HIT;
-    beam.colour         = MAGENTA;
+    beam.colour         = LIGHTCYAN;
     beam.obvious_effect = true;
     beam.pierce         = false;
     beam.is_explosion   = false;
+	beam.flavour        = BEAM_COLD;
     // So as not to recur infinitely
     beam.origin_spell = SPELL_NO_SPELL;
     beam.passed_target  = true; // The centre was the target.
@@ -2247,8 +2250,8 @@ static void _maybe_imb_explosion(bolt *parent, coord_def center)
         if (first && !beam.is_tracer)
         {
             if (you.see_cell(center))
-                mpr("The orb of energy explodes!");
-            noisy(spell_effect_noise(SPELL_ISKENDERUNS_MYSTIC_BLAST),
+                mpr("The icicle shatters into a spray of ice shards!");
+            noisy(spell_effect_noise(SPELL_THROW_ICICLE),
                   center);
             first = false;
         }
@@ -2834,7 +2837,8 @@ void bolt::internal_ouch(int dam)
              aux_source.c_str(), true,
              source_name.empty() ? nullptr : source_name.c_str());
     }
-    else if (flavour == BEAM_DISINTEGRATION || flavour == BEAM_DEVASTATION)
+    else if (flavour == BEAM_DISINTEGRATION || flavour == BEAM_DEVASTATION
+		|| flavour == BEAM_ENERGY)
     {
         ouch(dam, KILLED_BY_DISINT, source_id, what, true,
              source_name.empty() ? nullptr : source_name.c_str());
@@ -3761,7 +3765,7 @@ void bolt::affect_player()
     if (flavour == BEAM_MIASMA && hurted > 0)
         was_affected = miasma_player(agent(), name);
 
-    if (flavour == BEAM_DEVASTATION) // DISINTEGRATION already handled
+    if (flavour == BEAM_DEVASTATION || flavour == BEAM_ENERGY) // DISINTEGRATION already handled
         blood_spray(you.pos(), MONS_PLAYER, hurted / 5);
 
     // Confusion effect for spore explosions
@@ -3908,7 +3912,7 @@ void bolt::affect_player()
             you.duration[DUR_FROZEN] = (2 + random2(3)) * BASELINE_DELAY;
         }
     }
-    else if (origin_spell == SPELL_DAZZLING_SPRAY
+    else if (origin_spell == SPELL_BLINDING_SPRAY
              && !(you.holiness() & (MH_UNDEAD | MH_NONLIVING | MH_PLANT)))
     {
         if (x_chance_in_y(85 - you.experience_level * 3 , 100))
@@ -4274,7 +4278,7 @@ static bool _dazzle_monster(monster* mons, actor* act)
 
     if (x_chance_in_y(95 - mons->get_hit_dice() * 5 , 100))
     {
-        simple_monster_message(*mons, " is dazzled.");
+        simple_monster_message(*mons, " gets blinded by venom in their eyes.");
         mons->add_ench(mon_enchant(ENCH_BLIND, 1, act,
                        random_range(4, 8) * BASELINE_DELAY));
         return true;
@@ -4397,7 +4401,7 @@ void bolt::monster_post_hit(monster* mon, int dmg)
 
     knockback_actor(mon, dmg);
 
-    if (origin_spell == SPELL_DAZZLING_SPRAY)
+    if (origin_spell == SPELL_BLINDING_SPRAY)
         _dazzle_monster(mon, agent());
     else if (origin_spell == SPELL_FLASH_FREEZE
              || name == "blast of ice"
@@ -6320,10 +6324,9 @@ string bolt::get_short_name() const
     if (flavour == BEAM_ELECTRICITY && pierce)
         return "lightning";
 
-    if (origin_spell == SPELL_ISKENDERUNS_MYSTIC_BLAST
-        || origin_spell == SPELL_DAZZLING_SPRAY)
+    if (origin_spell == SPELL_BLINDING_SPRAY)
     {
-        return "energy";
+        return "blinding venom";
     }
 
     if (name == "bolt of dispelling energy")
@@ -6351,12 +6354,12 @@ static string _beam_type_name(beam_type type)
     case BEAM_MAGIC:                 return "magic";
     case BEAM_ELECTRICITY:           return "electricity";
     case BEAM_MEPHITIC:              return "noxious fumes";
-    case BEAM_POISON:                return "poison";
+    case BEAM_POISON:                return "weak poison";
     case BEAM_NEG:                   return "negative energy";
     case BEAM_ACID:                  return "acid";
     case BEAM_MIASMA:                return "miasma";
     case BEAM_SPORE:                 return "spores";
-    case BEAM_POISON_ARROW:          return "poison arrow";
+    case BEAM_POISON_ARROW:          return "strong poison";
     case BEAM_DAMNATION:             return "damnation";
     case BEAM_STICKY_FLAME:          return "sticky fire";
     case BEAM_STEAM:                 return "steam";
@@ -6389,7 +6392,7 @@ static string _beam_type_name(beam_type type)
     case BEAM_BLINK_CLOSE:           return "blink close";
     case BEAM_BECKONING:             return "beckoning";
     case BEAM_PETRIFY:               return "petrify";
-    case BEAM_MAGIC_CANDLE:                return "backlight";
+    case BEAM_MAGIC_CANDLE:          return "magic candle";
     case BEAM_PORKALATOR:            return "porkalator";
     case BEAM_HIBERNATION:           return "hibernation";
     case BEAM_SLEEP:                 return "sleep";

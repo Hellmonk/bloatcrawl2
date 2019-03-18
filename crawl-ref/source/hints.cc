@@ -266,7 +266,7 @@ static job_type _get_hints_job(unsigned int type)
     case HINT_BERSERK_CHAR:
         return JOB_BERSERKER;
     case HINT_MAGIC_CHAR:
-        return JOB_CONJURER;
+        return JOB_FIRE_ELEMENTALIST;
     case HINT_RANGER_CHAR:
         return JOB_HUNTER;
     default:
@@ -714,7 +714,6 @@ void hints_gained_new_skill(skill_type skill)
         break;
     }
     // Only one message for all magic skills (except Spellcasting).
-    case SK_CONJURATIONS:
     case SK_CHARMS:
     case SK_HEXES:
     case SK_SUMMONINGS:

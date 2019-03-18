@@ -2330,7 +2330,6 @@ static spell_type servitor_spells[] =
     SPELL_VENOM_BOLT,
     SPELL_THROW_ICICLE,
     SPELL_STONE_ARROW,
-    SPELL_ISKENDERUNS_MYSTIC_BLAST,
     // secondary spells
     SPELL_CONJURE_BALL_LIGHTNING,
     SPELL_FIREBALL,
@@ -2339,17 +2338,15 @@ static spell_type servitor_spells[] =
     SPELL_FREEZING_CLOUD,
     SPELL_POISONOUS_CLOUD,
     SPELL_FORCE_LANCE,
-    SPELL_DAZZLING_SPRAY,
+    SPELL_BLINDING_SPRAY,
     SPELL_MEPHITIC_CLOUD,
     // fallback spells
     SPELL_STICKY_FLAME,
-    SPELL_THROW_FLAME,
     SPELL_THROW_FROST,
     SPELL_FREEZE,
     SPELL_FLAME_TONGUE,
     SPELL_STING,
     SPELL_SANDBLAST,
-    SPELL_MAGIC_DART,
 };
 
 /**
@@ -2566,13 +2563,13 @@ spret_type cast_battlesphere(actor* agent, int pow, god_type god, bool fail)
             agent->props["battlesphere"].get_int() = battlesphere->mid;
 
             if (agent->is_player())
-                mpr("You conjure a globe of magical energy.");
+                mpr("You conjure a crystaline sphere.");
             else
             {
                 if (you.can_see(*agent) && you.can_see(*battlesphere))
                 {
                     simple_monster_message(*agent->as_monster(),
-                                           " conjures a globe of magical energy!");
+                                           " conjures a crystaline sphere!");
                 }
                 else if (you.can_see(*battlesphere))
                     simple_monster_message(*battlesphere, " appears!");
@@ -2628,14 +2625,52 @@ void end_battlesphere(monster* mons, bool killed)
 
 bool battlesphere_can_mirror(spell_type spell)
 {
-    return (spell_typematch(spell, SPTYP_CONJURATION)
-           && spell_to_zap(spell) != NUM_ZAPS)
-           || spell == SPELL_FREEZE
-           || spell == SPELL_STICKY_FLAME
-           || spell == SPELL_SANDBLAST
-           || spell == SPELL_AIRSTRIKE
-           || spell == SPELL_DAZZLING_SPRAY
-           || spell == SPELL_SEARING_RAY;
+	return (spell == SPELL_FREEZE
+		|| spell == SPELL_STICKY_FLAME
+		|| spell == SPELL_SANDBLAST
+		|| spell == SPELL_AIRSTRIKE
+		|| spell == SPELL_BLINDING_SPRAY
+		|| spell == SPELL_STING
+		|| spell == SPELL_FIREBALL
+		|| spell == SPELL_BOLT_OF_FIRE
+		|| spell == SPELL_BOLT_OF_COLD
+		|| spell == SPELL_LIGHTNING_BOLT
+		|| spell == SPELL_BOLT_OF_MAGMA
+		|| spell == SPELL_THROW_FLAME
+		|| spell == SPELL_THROW_FROST
+		|| spell == SPELL_FREEZING_CLOUD
+		|| spell == SPELL_MEPHITIC_CLOUD
+		|| spell == SPELL_VENOM_BOLT
+		|| spell == SPELL_BOLT_OF_DRAINING
+		|| spell == SPELL_LEHUDIBS_CRYSTAL_SPEAR
+		|| spell == SPELL_POISONOUS_CLOUD
+		|| spell == SPELL_POISONOUS_VAPOURS
+		|| spell == SPELL_FIRE_STORM
+		|| spell == SPELL_VAMPIRIC_DRAINING
+		|| spell == SPELL_POISON_ARROW
+		|| spell == SPELL_HURL_DAMNATION
+		|| spell == SPELL_IRON_SHOT
+		|| spell == SPELL_STONE_ARROW
+		|| spell == SPELL_SHOCK
+		|| spell == SPELL_THROW_ICICLE
+		|| spell == SPELL_GLACIATE
+		|| spell == SPELL_FLAME_TONGUE
+		|| spell == SPELL_STEAM_BALL
+		|| spell == SPELL_ENERGY_BOLT
+		|| spell == SPELL_PRIMAL_WAVE
+		|| spell == SPELL_STICKY_FLAME_RANGE
+		|| spell == SPELL_THUNDERBOLT
+		|| spell == SPELL_BLINDING_SPRAY
+		|| spell == SPELL_FORCE_LANCE
+		|| spell == SPELL_GHOSTLY_FIREBALL
+		|| spell == SPELL_WATERSTRIKE
+		|| spell == SPELL_WIND_BLAST
+		|| spell == SPELL_FLASH_FREEZE
+		|| spell == SPELL_CRYSTAL_BOLT
+		|| spell == SPELL_CORROSIVE_BOLT
+		|| spell == SPELL_ELECTRICAL_BOLT
+		|| spell == SPELL_ICEBLAST
+		|| spell == SPELL_SEARING_RAY);
 }
 
 bool aim_battlesphere(actor* agent, spell_type spell, int powc, bolt& beam)
@@ -2853,13 +2888,13 @@ bool fire_battlesphere(monster* mons)
             return false;
         }
 
-        beam.name       = "barrage of energy";
+        beam.name       = "crystal beam";
         beam.range      = LOS_RADIUS;
         beam.hit        = AUTOMATIC_HIT;
         beam.damage     = dice_def(2, 5 + mons->get_hit_dice());
         beam.glyph      = dchar_glyph(DCHAR_FIRED_ZAP);
-        beam.colour     = MAGENTA;
-        beam.flavour    = BEAM_MMISSILE;
+        beam.colour     = BROWN;
+        beam.flavour    = BEAM_CRYSTAL;
         beam.pierce     = false;
 
         // Fire tracer.

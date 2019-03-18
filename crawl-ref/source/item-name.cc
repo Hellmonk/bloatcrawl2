@@ -1066,7 +1066,9 @@ static const char* _book_type_name(int booktype)
     switch (static_cast<book_type>(booktype))
     {
     case BOOK_MINOR_MAGIC:            return "Minor Magic";
+#if TAG_MAJOR_VERSION == 34
     case BOOK_CONJURATIONS:           return "Conjurations";
+#endif
     case BOOK_FLAMES:                 return "Flames";
     case BOOK_FROST:                  return "Frost";
     case BOOK_SUMMONINGS:             return "Summonings";
@@ -1145,8 +1147,8 @@ static const char* staff_type_name(int stafftype)
     case STAFF_POISON:      return "poison";
     case STAFF_ENERGY:      return "energy";
     case STAFF_DEATH:       return "death";
-    case STAFF_CONJURATION: return "conjuration";
 #if TAG_MAJOR_VERSION == 34
+    case STAFF_CONJURATION: return "conjuration";
     case STAFF_ENCHANTMENT: return "enchantment";
 #endif
     case STAFF_AIR:         return "air";
@@ -3670,7 +3672,6 @@ bool is_useless_item(const item_def &item, bool temp)
         switch (item.sub_type)
         {
         case STAFF_WIZARDRY:
-        case STAFF_CONJURATION:
         case STAFF_SUMMONING:
             return you_worship(GOD_TROG);
         }

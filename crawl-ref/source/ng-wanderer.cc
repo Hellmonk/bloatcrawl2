@@ -189,7 +189,7 @@ static skill_type _wanderer_role_weapon_select(stat_type role)
 
     const skill_type casting_schools[] =
         { SK_SUMMONINGS, SK_NECROMANCY, SK_TRANSLOCATIONS,
-          SK_TRANSMUTATIONS, SK_POISON_MAGIC, SK_CONJURATIONS,
+          SK_TRANSMUTATIONS, SK_POISON_MAGIC,
           SK_HEXES, SK_CHARMS, SK_FIRE_MAGIC, SK_ICE_MAGIC,
           SK_AIR_MAGIC, SK_EARTH_MAGIC };
 
@@ -259,12 +259,6 @@ static void _give_wanderer_book(skill_type skill)
     default:
     case SK_SPELLCASTING:
         book = BOOK_MINOR_MAGIC;
-        break;
-
-    case SK_CONJURATIONS:
-        // minor magic should have only half the likelihood of conj
-        book = random_choose(BOOK_MINOR_MAGIC,
-                             BOOK_CONJURATIONS, BOOK_CONJURATIONS);
         break;
 
     case SK_SUMMONINGS:
@@ -532,7 +526,6 @@ static void _wanderer_good_equipment(skill_type & skill)
         break;
 
     case SK_SPELLCASTING:
-    case SK_CONJURATIONS:
     case SK_SUMMONINGS:
     case SK_NECROMANCY:
     case SK_TRANSLOCATIONS:
@@ -621,7 +614,6 @@ static void _wanderer_decent_equipment(skill_type & skill,
         break;
 
     case SK_SPELLCASTING:
-    case SK_CONJURATIONS:
     case SK_SUMMONINGS:
     case SK_NECROMANCY:
     case SK_TRANSLOCATIONS:

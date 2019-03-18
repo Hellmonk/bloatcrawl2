@@ -501,7 +501,7 @@ TAGS:  misc_elf_vault
 DEPTH: Elf
 MONS:  deep elf mage w:30 / nothing
 KMONS: 2 = deep elf sorcerer w:90 / deep elf annihilator / deep elf demonologist
-KITEM: 2 = randbook disc:conjuration disc2:summoning slevels:16
+KITEM: 2 = randbook disc:fire disc2:summoning slevels:16
 SUBST: x : xxc, m : mmcxb
 MAP
 ...........1............
@@ -529,7 +529,7 @@ TAGS:  misc_elf_vault
 DEPTH: Elf
 MONS:  deep elf mage / nothing
 KMONS: 2 = deep elf annihilator / deep elf sorcerer w:2
-KITEM: 2 = randbook disc:conjuration slevels:16
+KITEM: 2 = randbook disc:earth slevels:16
 SUBST: x : x c:1
 MAP
         ...

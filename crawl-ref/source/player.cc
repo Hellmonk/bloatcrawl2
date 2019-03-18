@@ -1807,16 +1807,6 @@ int player_spec_air()
     return sa;
 }
 
-int player_spec_conj()
-{
-    int sc = 0;
-
-    // Staves
-    sc += you.wearing(EQ_STAFF, STAFF_CONJURATION);
-
-    return sc;
-}
-
 int player_spec_hex()
 {
 	if (player_equip_unrand(UNRAND_BOTONO))
@@ -6658,7 +6648,8 @@ int player::hurt(const actor *agent, int amount, beam_type flavour,
              agent->visible_to(this), source.c_str());
     }
 
-    if ((flavour == BEAM_DEVASTATION || flavour == BEAM_DISINTEGRATION)
+    if ((flavour == BEAM_DEVASTATION || flavour == BEAM_DISINTEGRATION 
+		|| flavour == BEAM_ENERGY)
         && can_bleed())
     {
         blood_spray(pos(), type, amount / 5);

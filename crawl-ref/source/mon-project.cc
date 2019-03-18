@@ -231,7 +231,7 @@ static void _iood_stop(monster& mon, bool msg = true)
         return;
 
     if (msg)
-        simple_monster_message(mon, " dissipates.");
+        simple_monster_message(mon, " falls apart.");
     dprf("iood: dissipating");
     monster_die(mon, KILL_DISMISSED, NON_MONSTER);
 }
@@ -279,7 +279,7 @@ static bool _iood_shielded(monster& mon, actor &victim)
 static bool _iood_hit(monster& mon, const coord_def &pos, bool big_boom = false)
 {
     bolt beam;
-    beam.name = "orb of destruction";
+    beam.name = "icy sphere";
     beam.flavour = BEAM_DEVASTATION;
     beam.attitude = mon.attitude;
 
@@ -311,15 +311,18 @@ static bool _iood_hit(monster& mon, const coord_def &pos, bool big_boom = false)
     beam.source_name = mon.props[IOOD_CASTER].get_string();
 
     int pow = mon.props[IOOD_POW].get_short();
+	const int dist = mon.props[IOOD_DIST].get_int();
+	pow = div_rand_round(pow * 10 + pow * dist, 10);
     pow = stepdown_value(pow, 30, 30, 200, -1);
-    const int dist = mon.props[IOOD_DIST].get_int();
     ASSERT(dist >= 0);
     if (dist < 4)
         pow = pow * (dist*2+3) / 10;
     beam.damage = dice_def(9, pow / 4);
 
+	if (dist > 7)
+		beam.name = "huge " + beam.name;
     if (dist < 3)
-        beam.name = "wavering " + beam.name;
+        beam.name = "small " + beam.name;
     if (dist < 2)
         beam.hit_verb = "weakly hits";
     beam.ex_size = 1;
@@ -439,7 +442,7 @@ move_again:
         return false;
 
     if (!no_trail)
-        place_cloud(CLOUD_MAGIC_TRAIL, starting_pos, 2 + random2(3), &mon);
+        place_cloud(CLOUD_COLD, starting_pos, 2 + random2(3), &mon);
 
     actor *victim = actor_at(pos);
     if (cell_is_solid(pos) || victim)
@@ -464,7 +467,7 @@ move_again:
                 if (mons->props[IOOD_DIST].get_int() < 2)
                 {
                     if (you.see_cell(pos))
-                        mpr("The orb fizzles.");
+                        mpr("The snowball falls apart.");
                     monster_die(*mons, KILL_DISMISSED, NON_MONSTER);
                 }
 
@@ -472,20 +475,21 @@ move_again:
                 if (mon.props[IOOD_DIST].get_int() < 2)
                 {
                     if (you.see_cell(pos))
-                        mpr("The orb fizzles.");
+                        mpr("The snowball falls apart.");
                     monster_die(mon, KILL_DISMISSED, NON_MONSTER);
                     return true;
                 }
             }
             else
             {
-                if (mon.observable())
-                    mpr("The orbs collide in a blinding explosion!");
+				if (mon.observable())
+					mpr("The snowballs collide in a blinding cloud of snow!");
                 else
-                    mpr("You hear a loud magical explosion!");
+                    mpr("You hear a loud icy crash!");
                 noisy(40, pos);
                 monster_die(*mons, KILL_DISMISSED, NON_MONSTER);
                 _iood_hit(mon, pos, true);
+				place_cloud(CLOUD_COLD, pos, 3, &mon);
                 return true;
             }
         }
@@ -534,7 +538,7 @@ move_again:
                 }
                 else // has reflection property not from shield
                 {
-                    mprf("%s reflects off an invisible shield around you!",
+                    mprf("%s bounces off an invisible shield around you!",
                          mon.name(DESC_THE, true).c_str());
                 }
             }
@@ -553,7 +557,7 @@ move_again:
                     }
                     else
                     {
-                        mprf("%s reflects off an invisible shield around %s!",
+                        mprf("%s bounces off an invisible shield around %s!",
                              mon.name(DESC_THE, true).c_str(),
                              victim->name(DESC_THE, true).c_str());
 
