@@ -986,7 +986,7 @@ MONS:       deep elf mage spells:magic_dart.11.wizard;\
                                  force_lance.11.wizard;\
                                  iskenderun's_battlesphere.22.wizard;\
                                  throw_icicle.11.wizard
-MONS:       statue hd:12 spells:orb_of_destruction.62.magical \
+MONS:       statue hd:12 spells:iskenderun's_icy_sphere.62.magical \
             tile:mons_statue_mage col:vehumet name:conjurer n_adj
 KMONS:      3DEF = purple draconian
 KITEM:      D = robe ego:archmagi ident:type, star_item / superb_item, star_item

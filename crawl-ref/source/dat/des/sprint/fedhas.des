@@ -43,7 +43,7 @@ KMONS:  e = oklob plant name:demonologist n_suf \
                    malign_gateway.20.wizard
 KMONS:  f = oklob plant name:annihilator n_suf \
             spells:spit_acid.67.natural;poison_arrow.20.wizard;\
-                   orb_of_destruction.20.wizard;bolt_of_cold.20.wizard
+                   iskenderun's_icy_sphere.20.wizard;bolt_of_cold.20.wizard
 KMONS:  g = the Enchantress
 KMONS:  h = moth of wrath
 KMONS:  m = river rat
