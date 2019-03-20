@@ -273,9 +273,10 @@ BOOL:    evil, corpse_violating
 NAME:    sword of Cerebov
 APPEAR:  great serpentine sword
 TYPE:    flamberge
-OBJ:     OBJ_WEAPONS/WPN_GREAT_SWORD
-BASE_DAM: +1
-BASE_ACC: +1
+OBJ:     OBJ_WEAPONS/WPN_DEMON_BLADE
+BASE_DAM: +4
+BASE_ACC: -1
+BASE_DELAY: +4
 PLUS:    +6
 COLOUR:  ETC_FIRE
 TILE:    spwpn_sword_of_cerebov
