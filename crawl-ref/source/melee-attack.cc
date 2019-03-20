@@ -1952,7 +1952,7 @@ bool melee_attack::consider_decapitation(int dam, int damage_type)
     if (wpn_brand == SPWPN_MOLTEN)
     {
         if (defender_visible)
-            mpr("The flame cauterises the wound!");
+            mpr("The heat cauterises the wound!");
         return false;
     }
 
@@ -3559,7 +3559,7 @@ int melee_attack::apply_damage_modifiers(int damage, int damage_max)
         damage = damage * 2 / 3;
 
 	if (damage_brand == SPWPN_MOLTEN)
-		damage *= damage * 3 / 4;
+		damage = div_rand_round(damage * 3, 4);
 
     // If the defender is asleep, the attacker gets a stab.
     if (defender && (defender->asleep()

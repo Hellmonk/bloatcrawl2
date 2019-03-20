@@ -2230,7 +2230,7 @@ static void _brand_weapon(item_def &wpn)
 
     case SPWPN_MOLTEN:
         flash_colour = RED;
-        mprf("%s is engulfed in flames!", itname.c_str());
+        mprf("%s melts into a flaming hot liquid!", itname.c_str());
         break;
 
     case SPWPN_FREEZING:
