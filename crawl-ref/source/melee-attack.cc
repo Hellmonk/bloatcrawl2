@@ -1488,7 +1488,7 @@ int melee_attack::player_apply_misc_modifiers(int damage)
         damage -= random2(5);
 
 	if (damage_brand == SPWPN_MOLTEN)
-		damage = div_rand_round(damage * 3, 4);
+		damage = div_rand_round(damage * 3, 5);
 
     return damage;
 }
@@ -3559,7 +3559,7 @@ int melee_attack::apply_damage_modifiers(int damage, int damage_max)
         damage = damage * 2 / 3;
 
 	if (damage_brand == SPWPN_MOLTEN)
-		damage = div_rand_round(damage * 3, 4);
+		damage = div_rand_round(damage * 3, 5);
 
     // If the defender is asleep, the attacker gets a stab.
     if (defender && (defender->asleep()

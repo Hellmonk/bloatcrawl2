@@ -1345,12 +1345,7 @@ int attack::apply_defender_ac(int damage, int damage_max) const
         stab_bypass = random2(div_rand_round(stab_bypass, 100 * stab_bonus));
     }
 	if (damage_brand == SPWPN_MOLTEN)
-	{
-		if (attacker->is_player())
-			local_ac = AC_NONE;
-		else
 			local_ac = AC_HALF;
-	}
     int after_ac = defender->apply_ac(damage, damage_max,
                                       local_ac, stab_bypass);
     dprf(DIAG_COMBAT, "AC: att: %s, def: %s, ac: %d, gdr: %d, dam: %d -> %d",
@@ -1716,8 +1711,14 @@ void attack::calc_elemental_brand_damage(beam_type flavour,
                                          const char *verb,
                                          const char *what)
 {
-    special_damage = resist_adjust_damage(defender, flavour,
-                                          random2(damage_done) / 2 + 1);
+
+	if (flavour == BEAM_FIRE)
+		special_damage = resist_adjust_damage(defender, flavour,
+                                          damage_done);
+
+	else if (flavour == BEAM_COLD)
+		special_damage = resist_adjust_damage(defender, flavour,
+							div_rand_round(damage_done + random2(damage_done),4));
 
     if (needs_message && special_damage > 0 && verb)
     {

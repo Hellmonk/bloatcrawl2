@@ -2811,10 +2811,10 @@ void monster::expose_to_element(beam_type flavour, int strength,
     switch (flavour)
     {
     case BEAM_COLD:
-        if (slow_cold_blood && mons_class_flag(type, M_COLD_BLOOD)
-            && res_cold() <= 0 && coinflip())
+        if (slow_cold_blood && res_cold() <= 0 && one_chance_in(3))
         {
-            do_slow_monster(*this, this, (strength + random2(5)) * BASELINE_DELAY);
+			int x = mons_class_flag(type, M_COLD_BLOOD) ? 2 : 1;
+            do_slow_monster(*this, this, (strength * 2 + random2(4)) * BASELINE_DELAY * x);
         }
         break;
     case BEAM_WATER:
@@ -2846,7 +2846,7 @@ void monster::expose_to_element(beam_type flavour, int strength,
 			del_ench(ENCH_CONDENSATION_SHIELD);
 			if (you.can_see(*this))
 			{
-				mprf("The heat dissapates %s  shield.",
+				mprf("The heat dissipates %s  shield.",
 					apostrophise(name(DESC_THE)).c_str());
 			}
 		}
