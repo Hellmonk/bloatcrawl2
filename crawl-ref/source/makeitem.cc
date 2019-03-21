@@ -314,10 +314,11 @@ bool is_weapon_brand_ok(int type, int brand, bool strict)
     case SPWPN_ELECTROCUTION:
     case SPWPN_MOLTEN:
     case SPWPN_FREEZING:
+	case SPWPN_ACID: // Melee-only, except punk.
         break;
 
     // Melee-only brands.
-    case SPWPN_DRAINING:
+    case SPWPN_DRAINING: // Rare Brand, only placed by Yred-related things.
     case SPWPN_VAMPIRISM:
     case SPWPN_PAIN:
     case SPWPN_DISTORTION:
@@ -329,7 +330,6 @@ bool is_weapon_brand_ok(int type, int brand, bool strict)
 
     // Ranged-only brands.
     case SPWPN_PENETRATION:
-    case SPWPN_ACID: // Only exists on Punk
         if (!is_range_weapon(item))
             return false;
         break;

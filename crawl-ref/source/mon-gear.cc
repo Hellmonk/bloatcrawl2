@@ -395,14 +395,15 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
         { WPN_SCIMITAR,         2 },
         { WPN_LONG_SWORD,       1 } },
       { 1, 2, 5 },
-      { { SPWPN_HOLY_WRATH,     1 } } };
+	  { { SPWPN_HOLY_WRATH,     2 }, {SPWPN_SILVER, 1 } } };
     static const vector<pair<brand_type, int>> HELL_KNIGHT_BRANDS = // sum 45
     {   { SPWPN_MOLTEN,        13 },
-        { SPWPN_DRAINING,       4 },
+        { SPWPN_ACID,           4 },
         { SPWPN_VORPAL,         4 },
         { SPWPN_DISTORTION,     2 },
         { SPWPN_PAIN,           2 },
-        { NUM_SPECIAL_WEAPONS,  20 }, // 5/9 chance of brand
+		{ SPWPN_CHAOS,          2 },
+        { NUM_SPECIAL_WEAPONS,  10 }, // 5/9 chance of brand
     };
     static const weapon_list URUG_WEAPONS =
     {   { WPN_HALBERD,          5 },
@@ -704,7 +705,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
             { { WPN_WHIP,               3 },
               { WPN_SACRED_SCOURGE,     1 }, },
             { 1, 1, 3 },
-            { { SPWPN_HOLY_WRATH, 1 } },
+			{ { SPWPN_HOLY_WRATH, 2 }, {SPWPN_SILVER, 1} },
         } },
         { MONS_CHERUB,
             { { { WPN_FLAIL,            1 },
@@ -730,7 +731,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
               { WPN_SACRED_SCOURGE, 1},
               { WPN_EUDEMON_BLADE,  1}, },
             { 1, 0, 5},
-            { { SPWPN_HOLY_WRATH, 1}}
+            { { SPWPN_SILVER, 1}}
         } },
         { MONS_DONALD,
             { { { WPN_SCIMITAR,         12 },
@@ -803,7 +804,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
               { WPN_SHORT_SWORD,        1 }, }, {},
             { { SPWPN_DISTORTION,       3 },
               { SPWPN_VENOM,            2 },
-              { SPWPN_DRAINING,         1 } },
+              { SPWPN_CHAOS,         1 } },
         } },
         { MONS_MAURICE,
             { { { WPN_DAGGER,           1 },
@@ -856,13 +857,14 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
               { SPWPN_FREEZING,      4 },
               { SPWPN_MOLTEN,       4 },
               { SPWPN_PAIN,          2 },
+			  { SPWPN_CHAOS,         2 },
               { NUM_SPECIAL_WEAPONS, 15 } }, // 2/3 chance of brand
         } },
         { MONS_SOJOBO, {
             { { WPN_TRIPLE_SWORD,       1 },
               { WPN_GREAT_SWORD,        5 } }, {},
             { { SPWPN_ELECTROCUTION, 2 },
-              { NUM_SPECIAL_WEAPONS, 1 } },
+              { SPWPN_CHAOS, 1 } },
             1,
         } },
         { MONS_INFERNAL_DEMONSPAWN,     { DS_WEAPONS } },

@@ -17,6 +17,7 @@
 #include <functional>
 
 #include "art-enum.h"
+#include "beam.h"
 #include "chardump.h"
 #include "delay.h"
 #include "english.h"
@@ -1512,19 +1513,22 @@ bool attack::apply_damage_brand(const char *what)
     case SPWPN_ELECTROCUTION:
         if (defender->res_elec() > 0)
             break;
-        else if (one_chance_in(3))
+        else
         {
             special_damage_message =
                 defender->is_player()?
                    "You are electrocuted!"
                 :  make_stringf("Lightning courses through %s!",
                                 defender->name(DESC_THE).c_str());
-            special_damage = 8 + random2(13);
+            special_damage = roll_dice(2,4);
             special_damage_flavour = BEAM_ELECTRICITY;
-            defender->expose_to_element(BEAM_ELECTRICITY, 2);
+            defender->expose_to_element(BEAM_ELECTRICITY, 1);
         }
-
         break;
+
+	case SPWPN_SILVER:
+		special_damage = silver_damages_victim(defender, damage_done, special_damage_message);
+		break;
 
     case SPWPN_VENOM:
         obvious_effect = apply_poison_damage_brand();

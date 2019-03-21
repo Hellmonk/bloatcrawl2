@@ -1044,7 +1044,7 @@ static void _SPELLBINDER_melee_effects(item_def* weapon, actor* attacker,
 }
 
 ///////////////////////////////////////////////////
-
+/*
 static void _ORDER_melee_effects(item_def* item, actor* attacker,
                                          actor* defender, bool mondied, int dam)
 {
@@ -1060,7 +1060,7 @@ static void _ORDER_melee_effects(item_def* item, actor* attacker,
         }
     }
 }
-
+*/
 ///////////////////////////////////////////////////
 
 static void _FIRESTARTER_equip(item_def *item, bool *show_msgs, bool unmeld)

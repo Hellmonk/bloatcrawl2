@@ -466,6 +466,7 @@ static void _add_randart_weapon_brand(const item_def &item,
     {
         item_props[ARTP_BRAND] = random_choose_weighted(
             2, SPWPN_SPEED,
+			2, SPWPN_CHAOS,
             4, SPWPN_VENOM,
             4, SPWPN_VORPAL,
             4, SPWPN_MOLTEN,
@@ -484,13 +485,13 @@ static void _add_randart_weapon_brand(const item_def &item,
     else if (is_demonic(item) && x_chance_in_y(7, 9))
     {
         item_props[ARTP_BRAND] = random_choose(
-            SPWPN_DRAINING,
+            SPWPN_ACID,
             SPWPN_MOLTEN,
             SPWPN_FREEZING,
             SPWPN_ELECTROCUTION,
             SPWPN_VAMPIRISM,
             SPWPN_PAIN,
-            SPWPN_VENOM);
+            SPWPN_CHAOS);
         // fall back to regular melee brands 2/9 of the time
     }
     else
@@ -500,7 +501,7 @@ static void _add_randart_weapon_brand(const item_def &item,
             34, SPWPN_MOLTEN,
             34, SPWPN_FREEZING,
             26, SPWPN_VENOM,
-            26, SPWPN_DRAINING,
+            26, SPWPN_ACID,
             13, SPWPN_HOLY_WRATH,
             13, SPWPN_ELECTROCUTION,
             13, SPWPN_SPEED,
