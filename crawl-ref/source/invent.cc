@@ -1149,8 +1149,7 @@ bool item_is_selected(const item_def &i, int selector)
             && !jewellery_is_amulet(i);
 
     case OSEL_ANVIL_ENCHANTABLE:
-        return ((itype == OBJ_ARMOUR || itype == OBJ_WEAPONS)
-                && !is_artefact(i));
+        return ((itype == OBJ_ARMOUR || itype == OBJ_WEAPONS));
 
     default:
         return false;

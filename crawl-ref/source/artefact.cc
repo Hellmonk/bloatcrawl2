@@ -1624,6 +1624,19 @@ static void _artefact_setup_prop_vectors(item_def &item)
     }
 }
 
+// Turn an item into a randart with no properties
+void make_item_plain_randart(item_def &item)
+{
+    _artefact_setup_prop_vectors(item);
+    item.flags |= ISFLAG_RANDART;
+    _init_artefact_properties(item);
+    set_artefact_name(item, make_artefact_name(item, false));
+    item.props[ARTEFACT_APPEAR_KEY].get_string() =
+            make_artefact_name(item, true);
+
+    mpr("randart now");
+}
+
 // If force_mundane is true, normally mundane items are forced to
 // nevertheless become artefacts.
 bool make_item_randart(item_def &item, bool force_mundane)
@@ -1708,7 +1721,7 @@ static void _make_faerie_armour(item_def &item)
         if (one_chance_in(20))
             artefact_set_property(doodad, ARTP_MAGICAL_POWER, 1 + random2(10));
         if (one_chance_in(20))
-            artefact_set_property(doodad, ARTP_HP, random2(16) - 5);
+            artefact_set_property(doodad, ARTP_HP, random_range(-5, 10));
 
         break;
     }

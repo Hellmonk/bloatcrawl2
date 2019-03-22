@@ -1410,9 +1410,6 @@ void use_anvil()
 {
     int item_slot;
     item_def itemp;
-    bool has_ego;
-    int failure_chance;
-    int success_chance;
     while (true)
     {
         // If this is changed to allow more than weapon/armour, a lot of the
@@ -1427,6 +1424,7 @@ void use_anvil()
         }
 
         itemp = you.inv[item_slot];
+        // item_def &item = itemp;
         const bool armour = itemp.base_type == OBJ_ARMOUR;
         const bool weapon = itemp.base_type == OBJ_WEAPONS;
 
@@ -1448,23 +1446,36 @@ void use_anvil()
           return;
         }
 
-        has_ego = armour ? get_armour_ego_type(itemp) != SPARM_NORMAL : get_weapon_brand(itemp) != SPWPN_NORMAL;
-        failure_chance = min(90, itemp.plus * 10 + has_ego * 10);
-        success_chance = 100 - failure_chance;
-
-        if (!yesno(make_stringf("Enchant your %s? (success chance: %d%%)", itemp.name(DESC_YOUR).c_str(), success_chance).c_str(), true, 'n'))
+        // If the item is an unrand, enchanting it will fail
+        if (itemp.flags & ISFLAG_UNRANDART)
+        {
+            canned_msg(MSG_UNTHINKING_ACT);
             continue;
-        else
-            break;
+        }
+
+        break;
     }
 
     item_def &item = itemp;
 
+    if (!(item.flags & ISFLAG_RANDART))
+    {
+        if (!make_item_randart(item, true))
+            mpr("Failed to make randart");
+        mprf_nocap("%s", item.name(DESC_INVENTORY_EQUIP).c_str());
+        return;
+    }
+
+    const bool armour = item.base_type == OBJ_ARMOUR;
+    const bool weapon = item.base_type == OBJ_WEAPONS;
+
+    const bool branded = armour ? get_armour_ego_type(itemp) != SPARM_NORMAL : get_weapon_brand(itemp) != SPWPN_NORMAL;
+
     mprf("You place your %s on the anvil...", item.name(DESC_YOUR).c_str());
-    if (x_chance_in_y(success_chance, 100))
+    if (x_chance_in_y(5, 7))
     {
         mpr("You sense a helpful spirit.");
-        if (!one_chance_in(5) || has_ego)
+        if (!one_chance_in(5) || branded)
         {
             flash_view_delay(UA_PLAYER, YELLOW, 300);
             const int plus = random_range(1,4);
@@ -1474,9 +1485,9 @@ void use_anvil()
         else
         {
             flash_view_delay(UA_PLAYER, WHITE, 300);
-            if (item.base_type == OBJ_WEAPONS)
+            if (weapon)
                 brand_weapon(item); // XXX: prints the item
-            else if (item.base_type == OBJ_ARMOUR)
+            else if (armour)
                 item.brand = generate_armour_type_ego(static_cast<armour_type>(item.sub_type));
             mprf("Your %s has been branded!", item.name(DESC_YOUR).c_str());
         }
@@ -1484,7 +1495,7 @@ void use_anvil()
     else
     {
         mpr("You sense the presence of an evil spirit!");
-        if (!one_chance_in(5) || !has_ego)
+        if (!one_chance_in(5) || !branded)
         {
             flash_view_delay(UA_PLAYER, GREEN, 300);
             item.plus -= (1 + biased_random2(3, 2));
@@ -1493,9 +1504,9 @@ void use_anvil()
         else
         {
             flash_view_delay(UA_PLAYER, MAGENTA, 300);
-            if (item.base_type == OBJ_WEAPONS)
+            if (weapon)
                 item.brand = SPWPN_NORMAL;
-            else if (item.base_type == OBJ_ARMOUR)
+            else if (armour)
                 item.brand = SPARM_NORMAL;
             mprf("Your %s has lost its brand!", item.name(DESC_YOUR).c_str());
         }
@@ -1510,6 +1521,7 @@ void use_anvil()
     view_update_at(pos);
 
     redraw_screen();
+    you.turn_is_over = true;
 }
 
 void shop()
