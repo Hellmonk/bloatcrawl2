@@ -1380,14 +1380,14 @@ void TilesFramework::_send_cell(const coord_def &gc,
                     minfo.props["monster_tile"] =
                         short(last_player_doll.parts[TILEP_PART_BASE]);
                     item_def *item;
-                    if (you.slot_item(EQ_WEAPON))
+                    if (you.slot_item(EQ_WEAPON0))
                     {
-                        item = new item_def(get_item_info(*you.slot_item(EQ_WEAPON)));
+                        item = new item_def(get_item_info(*you.slot_item(EQ_WEAPON0)));
                         minfo.inv[MSLOT_WEAPON].reset(item);
                     }
-                    if (you.slot_item(EQ_SHIELD))
+                    if (you.slot_item(EQ_WEAPON1))
                     {
-                        item = new item_def(get_item_info(*you.slot_item(EQ_SHIELD)));
+                        item = new item_def(get_item_info(*you.slot_item(EQ_WEAPON1)));
                         minfo.inv[MSLOT_SHIELD].reset(item);
                     }
                     tileidx_t mcache_idx = mcache.register_monster(minfo);

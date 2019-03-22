@@ -366,7 +366,7 @@ void rot_inventory_food(int time_delta)
         // cleanup
         if (item.base_type == OBJ_CORPSES)
         {
-            if (you.equip[EQ_WEAPON] == i)
+            if (you.equip[EQ_WEAPON0] == i)
                 unwield_item();
 
             item_was_destroyed(item);

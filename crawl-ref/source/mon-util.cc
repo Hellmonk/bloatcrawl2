@@ -435,7 +435,7 @@ int monster::wearing(equipment_type slot, int sub_type, bool calc_unid) const
 
     switch (slot)
     {
-    case EQ_WEAPON:
+    case EQ_WEAPON0:
     case EQ_STAFF:
         {
             const mon_inv_type end = mons_wields_two_weapons(*this)
@@ -444,11 +444,11 @@ int monster::wearing(equipment_type slot, int sub_type, bool calc_unid) const
             for (int i = MSLOT_WEAPON; i <= end; i = i + 1)
             {
                 item = mslot_item((mon_inv_type) i);
-                if (item && item->base_type == (slot == EQ_WEAPON ? OBJ_WEAPONS
+                if (item && item->base_type == (slot == EQ_WEAPON0 ? OBJ_WEAPONS
                                                                   : OBJ_STAVES)
                     && item->sub_type == sub_type
                     // Weapon subtypes are always known, staves not.
-                    && (slot == EQ_WEAPON || calc_unid
+                    && (slot == EQ_WEAPON0 || calc_unid
                         || item_type_known(*item)))
                 {
                     ret++;
@@ -462,12 +462,12 @@ int monster::wearing(equipment_type slot, int sub_type, bool calc_unid) const
     case EQ_HELMET:
     case EQ_GLOVES:
     case EQ_BOOTS:
-    case EQ_SHIELD:
+    case EQ_WEAPON1:
         item = mslot_item(MSLOT_SHIELD);
         if (item && item->is_type(OBJ_ARMOUR, sub_type))
             ret++;
-        // Don't check MSLOT_ARMOUR for EQ_SHIELD
-        if (slot == EQ_SHIELD)
+        // Don't check MSLOT_ARMOUR for EQ_WEAPON1
+        if (slot == EQ_WEAPON1)
             break;
         // intentional fall-through
     case EQ_BODY_ARMOUR:
@@ -498,7 +498,7 @@ int monster::wearing_ego(equipment_type slot, int special, bool calc_unid) const
 
     switch (slot)
     {
-    case EQ_WEAPON:
+    case EQ_WEAPON0:
         {
             const mon_inv_type end = mons_wields_two_weapons(*this)
                                      ? MSLOT_ALT_WEAPON : MSLOT_WEAPON;
@@ -521,7 +521,7 @@ int monster::wearing_ego(equipment_type slot, int special, bool calc_unid) const
     case EQ_HELMET:
     case EQ_GLOVES:
     case EQ_BOOTS:
-    case EQ_SHIELD:
+    case EQ_WEAPON1:
         item = mslot_item(MSLOT_SHIELD);
         if (item && item->base_type == OBJ_ARMOUR
             && get_armour_ego_type(*item) == special
@@ -529,8 +529,8 @@ int monster::wearing_ego(equipment_type slot, int special, bool calc_unid) const
         {
             ret++;
         }
-        // Don't check MSLOT_ARMOUR for EQ_SHIELD
-        if (slot == EQ_SHIELD)
+        // Don't check MSLOT_ARMOUR for EQ_WEAPON1
+        if (slot == EQ_WEAPON1)
             break;
         // intentional fall-through
     case EQ_BODY_ARMOUR:
@@ -4246,9 +4246,9 @@ mon_inv_type equip_slot_to_mslot(equipment_type eq)
 {
     switch (eq)
     {
-    case EQ_WEAPON:      return MSLOT_WEAPON;
+    case EQ_WEAPON0:      return MSLOT_WEAPON;
     case EQ_BODY_ARMOUR: return MSLOT_ARMOUR;
-    case EQ_SHIELD:      return MSLOT_SHIELD;
+    case EQ_WEAPON1:      return MSLOT_SHIELD;
     case EQ_RINGS:
     case EQ_AMULET:      return MSLOT_JEWELLERY;
     default: return NUM_MONSTER_SLOTS;

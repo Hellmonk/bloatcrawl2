@@ -81,9 +81,9 @@ static bool _autoswitch_to_melee()
     }
 
     int item_slot;
-    if (you.equip[EQ_WEAPON] == letter_to_index('a'))
+    if (you.equip[EQ_WEAPON0] == letter_to_index('a'))
         item_slot = letter_to_index('b');
-    else if (you.equip[EQ_WEAPON] == letter_to_index('b'))
+    else if (you.equip[EQ_WEAPON0] == letter_to_index('b'))
         item_slot = letter_to_index('a');
     else
         return false;

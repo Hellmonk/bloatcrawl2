@@ -217,7 +217,7 @@ void swap_inv_slots(int from_slot, int to_slot, bool verbose)
             mprf_nocap("%s", you.inv[from_slot].name(DESC_INVENTORY_EQUIP).c_str());
     }
 
-    if (to_slot == you.equip[EQ_WEAPON] || from_slot == you.equip[EQ_WEAPON])
+    if (to_slot == you.equip[EQ_WEAPON0] || from_slot == you.equip[EQ_WEAPON0])
     {
         you.wield_change = true;
         you.m_quiver.on_weapon_changed();

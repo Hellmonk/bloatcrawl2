@@ -488,7 +488,7 @@ static bool _check_buggy_deck(item_def& deck)
              << "A swarm of software bugs snatches the deck from you "
                 "and whisks it away." << endl;
 
-        if (deck.link == you.equip[EQ_WEAPON])
+        if (deck.link == you.equip[EQ_WEAPON0])
             unwield_item();
 
         dec_inv_item_quantity(deck.link, 1);
@@ -544,7 +544,7 @@ static bool _check_buggy_deck(item_def& deck)
              << "A swarm of software bugs snatches the deck from you "
                 "and whisks it away." << endl;
 
-        if (deck.link == you.equip[EQ_WEAPON])
+        if (deck.link == you.equip[EQ_WEAPON0])
             unwield_item();
 
         dec_inv_item_quantity(deck.link, 1);
@@ -729,7 +729,7 @@ bool deck_deal()
     if (deck.quantity > 0)
     {
         mpr(_empty_deck_msg(deck.deck_rarity));
-        if (slot == you.equip[EQ_WEAPON])
+        if (slot == you.equip[EQ_WEAPON0])
             unwield_item();
 
         dec_inv_item_quantity(slot, 1);
@@ -1110,7 +1110,7 @@ bool draw_three(int slot)
     if (cards_in_deck(deck) == 0)
     {
         mpr(_empty_deck_msg(deck.deck_rarity));
-        if (slot == you.equip[EQ_WEAPON])
+        if (slot == you.equip[EQ_WEAPON0])
             unwield_item();
 
         dec_inv_item_quantity(slot, 1);

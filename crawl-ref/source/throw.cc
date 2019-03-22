@@ -355,7 +355,7 @@ static int _fire_prompt_for_item()
 // Returns false and err text if this item can't be fired.
 static bool _fire_validate_item(int slot, string &err)
 {
-    if (slot == you.equip[EQ_WEAPON]
+    if (slot == you.equip[EQ_WEAPON0]
         && is_weapon(you.inv[slot])
         && you.inv[slot].cursed())
     {
@@ -420,9 +420,9 @@ bool fire_warn_if_impossible(bool silent)
 static bool _autoswitch_to_ranged()
 {
     int item_slot;
-    if (you.equip[EQ_WEAPON] == letter_to_index('a'))
+    if (you.equip[EQ_WEAPON0] == letter_to_index('a'))
         item_slot = letter_to_index('b');
-    else if (you.equip[EQ_WEAPON] == letter_to_index('b'))
+    else if (you.equip[EQ_WEAPON0] == letter_to_index('b'))
         item_slot = letter_to_index('a');
     else
         return false;
@@ -799,7 +799,7 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
     pbolt.is_tracer = false;
 
     bool unwielded = false;
-    if (throw_2 == you.equip[EQ_WEAPON] && thrown.quantity == 1)
+    if (throw_2 == you.equip[EQ_WEAPON0] && thrown.quantity == 1)
     {
         if (!wield_weapon(true, SLOT_BARE_HANDS, true, false, true, false))
             return false;

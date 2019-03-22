@@ -44,7 +44,7 @@
 
 static const int EQF_NONE = 0;
 // "hand" slots (not rings)
-static const int EQF_HANDS = SLOTF(EQ_WEAPON) | SLOTF(EQ_SHIELD)
+static const int EQF_HANDS = SLOTF(EQ_WEAPON0) | SLOTF(EQ_WEAPON1)
                              | SLOTF(EQ_GLOVES);
 // core body slots (statue form)
 static const int EQF_STATUE = SLOTF(EQ_GLOVES) | SLOTF(EQ_BOOTS)
@@ -52,7 +52,7 @@ static const int EQF_STATUE = SLOTF(EQ_GLOVES) | SLOTF(EQ_BOOTS)
 // more core body slots (Lear's Hauberk)
 static const int EQF_LEAR = EQF_STATUE | SLOTF(EQ_HELMET);
 // everything you can (W)ear
-static const int EQF_WEAR = EQF_LEAR | SLOTF(EQ_CLOAK) | SLOTF(EQ_SHIELD);
+static const int EQF_WEAR = EQF_LEAR | SLOTF(EQ_CLOAK) | SLOTF(EQ_WEAPON1);
 // everything but jewellery
 static const int EQF_PHYSICAL = EQF_HANDS | EQF_WEAR;
 // all rings (except for the macabre finger amulet's)
@@ -130,7 +130,7 @@ bool Form::slot_available(int slot) const
         return !all_blocked(EQF_RINGS);
 
     if (slot == EQ_STAFF)
-        slot = EQ_WEAPON;
+        slot = EQ_WEAPON0;
     return !(blocked_slots & SLOTF(slot));
 }
 
@@ -1117,19 +1117,19 @@ static set<equipment_type>
 _init_equipment_removal(transformation form)
 {
     set<equipment_type> result;
-    if (!form_can_wield(form) && you.weapon() || you.melded[EQ_WEAPON])
-        result.insert(EQ_WEAPON);
+    if (!form_can_wield(form) && you.weapon() || you.melded[EQ_WEAPON0])
+        result.insert(EQ_WEAPON0);
 
     // Liches can't wield holy weapons.
     if (form == transformation::lich && you.weapon()
         && is_holy_item(*you.weapon()))
     {
-        result.insert(EQ_WEAPON);
+        result.insert(EQ_WEAPON0);
     }
 
     for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
     {
-        if (i == EQ_WEAPON)
+        if (i == EQ_WEAPON0)
             continue;
         const equipment_type eq = static_cast<equipment_type>(i);
         const item_def *pitem = you.slot_item(eq, true);
@@ -1155,7 +1155,7 @@ static void _remove_equipment(const set<equipment_type>& removed,
             continue;
 
         bool unequip = !meld;
-        if (!unequip && e == EQ_WEAPON)
+        if (!unequip && e == EQ_WEAPON0)
         {
             if (form_can_wield(you.form))
                 unequip = true;
@@ -1170,7 +1170,7 @@ static void _remove_equipment(const set<equipment_type>& removed,
 
         if (unequip)
         {
-            if (e == EQ_WEAPON)
+            if (e == EQ_WEAPON0)
             {
                 unwield_item(!you.berserk());
                 canned_msg(MSG_EMPTY_HANDED_NOW);
@@ -1202,10 +1202,10 @@ static void _unmeld_equipment_type(equipment_type e)
     item_def& item = you.inv[you.equip[e]];
     bool force_remove = false;
 
-    if (e == EQ_WEAPON)
+    if (e == EQ_WEAPON0)
     {
-        if (you.slot_item(EQ_SHIELD)
-            && is_shield_incompatible(item, you.slot_item(EQ_SHIELD)))
+        if (you.slot_item(EQ_WEAPON1)
+            && is_shield_incompatible(item, you.slot_item(EQ_WEAPON1)))
         {
             force_remove = true;
         }
@@ -1219,7 +1219,7 @@ static void _unmeld_equipment_type(equipment_type e)
         // If you switched weapons during the transformation, make
         // sure you can still wear your shield.
         // (This is only possible with Statue Form.)
-        if (e == EQ_SHIELD && you.weapon()
+        if (e == EQ_WEAPON1 && you.weapon()
             && is_shield_incompatible(*you.weapon(), &item))
         {
             force_remove = true;
@@ -1694,7 +1694,7 @@ bool transform(int pow, transformation which_trans, bool involuntary,
     item_def nil_item;
     nil_item.link = -1;
     if (just_check && !involuntary
-        && which_trans == transformation::lich && rem_stuff.count(EQ_WEAPON)
+        && which_trans == transformation::lich && rem_stuff.count(EQ_WEAPON0)
         && !check_old_item_warning(nil_item, OPER_WIELD))
     {
         canned_msg(MSG_OK);

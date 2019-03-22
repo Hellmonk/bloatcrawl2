@@ -248,7 +248,7 @@ void list_armour()
         estr << ((i == EQ_CLOAK)       ? "Cloak  " :
                  (i == EQ_HELMET)      ? "Helmet " :
                  (i == EQ_GLOVES)      ? "Gloves " :
-                 (i == EQ_SHIELD)      ? "Shield " :
+                 (i == EQ_WEAPON1)     ? "Shield " :
                  (i == EQ_BODY_ARMOUR) ? "Armour " :
                  (i == EQ_BOOTS) ?
                  ((you.species == SP_CENTAUR

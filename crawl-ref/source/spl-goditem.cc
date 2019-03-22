@@ -651,9 +651,9 @@ bool remove_curse(bool alreadyknown, const string &pre_msg)
     bool success = false;
 
     // Players can no longer wield armour and jewellery as weapons, so we do
-    // not need to check whether the EQ_WEAPON slot actually contains a weapon:
+    // not need to check whether the EQ_WEAPON0 slot actually contains a weapon:
     // only weapons (and staves) are both wieldable and cursable.
-    for (int i = EQ_WEAPON; i < NUM_EQUIP; i++)
+    for (int i = EQ_WEAPON0; i < NUM_EQUIP; i++)
     {
         // Melded equipment can also get uncursed this way.
         item_def * const it = you.slot_item(equipment_type(i), true);

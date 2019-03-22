@@ -311,7 +311,7 @@ bool can_wield(const item_def *weapon, bool say_reason,
                bool ignore_temporary_disability, bool unwield, bool only_known)
 {
 #define SAY(x) {if (say_reason) { x; }}
-    if (you.melded[EQ_WEAPON] && unwield)
+    if (you.melded[EQ_WEAPON0] && unwield)
     {
         SAY(mpr("Your weapon is melded into your body!"));
         return false;
@@ -453,8 +453,8 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 
     if (auto_wield)
     {
-        if (item_slot == you.equip[EQ_WEAPON]
-            || you.equip[EQ_WEAPON] == -1
+        if (item_slot == you.equip[EQ_WEAPON0]
+            || you.equip[EQ_WEAPON0] == -1
                && !item_is_wieldable(you.inv[item_slot]))
         {
             item_slot = 1;      // backup is 'b'
@@ -487,7 +487,7 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 
     if (prompt_failed(item_slot))
         return false;
-    else if (item_slot == you.equip[EQ_WEAPON])
+    else if (item_slot == you.equip[EQ_WEAPON0])
     {
         if (Options.equip_unequip)
             item_slot = SLOT_BARE_HANDS;
@@ -596,7 +596,7 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
     const unsigned int old_talents = your_talents(false).size();
 
     // Go ahead and wield the weapon.
-    equip_item(EQ_WEAPON, item_slot, show_weff_messages);
+    equip_item(EQ_WEAPON0, item_slot, show_weff_messages);
 
     if (show_wield_msg)
     {
@@ -701,7 +701,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
     const int sub_type = item.sub_type;
     const equipment_type slot = get_armour_slot(item);
 
-    if (you.species == SP_OCTOPODE && slot != EQ_HELMET && slot != EQ_SHIELD)
+    if (you.species == SP_OCTOPODE && slot != EQ_HELMET && slot != EQ_WEAPON1)
     {
         if (verbose)
             mpr("You can't wear that!");
@@ -1043,7 +1043,7 @@ bool wear_armour(int item)
         return false;
     }
 
-    if (item == you.equip[EQ_WEAPON])
+    if (item == you.equip[EQ_WEAPON0])
     {
         mpr("You are wielding that object!");
         return false;
@@ -1079,7 +1079,7 @@ bool wear_armour(int item)
            || slot == EQ_HELMET
            || slot == EQ_GLOVES
            || slot == EQ_BOOTS
-           || slot == EQ_SHIELD
+           || slot == EQ_WEAPON1
            || slot == EQ_BODY_ARMOUR)
         && you.equip[slot] != -1)
     {
@@ -1164,7 +1164,7 @@ bool takeoff_armour(int item)
     switch (slot)
     {
     case EQ_BODY_ARMOUR:
-    case EQ_SHIELD:
+    case EQ_WEAPON1:
     case EQ_CLOAK:
     case EQ_HELMET:
     case EQ_GLOVES:
@@ -1631,7 +1631,7 @@ static bool _can_puton_jewellery(int item_slot)
     // TODO: between this function, _puton_item, _swap_rings, and remove_ring,
     // there's a bit of duplicated work, and sep. of concerns not clear
     item_def& item = you.inv[item_slot];
-    if (item_slot == you.equip[EQ_WEAPON])
+    if (item_slot == you.equip[EQ_WEAPON0])
     {
         mpr("You are wielding that object.");
         return false;
@@ -2949,7 +2949,7 @@ void read_scroll(item_def& scroll)
     case SCR_CURSE_WEAPON:
     {
         // Not you.weapon() because we want to handle melded weapons too.
-        item_def * const weapon = you.slot_item(EQ_WEAPON, true);
+        item_def * const weapon = you.slot_item(EQ_WEAPON0, true);
         if (!weapon || !is_weapon(*weapon) || weapon->cursed())
         {
             bool plural = false;
@@ -3173,7 +3173,7 @@ void tile_item_use_secondary(int idx)
         if (check_warning_inscriptions(item, OPER_FIRE))
             fire_thing(idx); // fire weapons
     }
-    else if (you.equip[EQ_WEAPON] == idx)
+    else if (you.equip[EQ_WEAPON0] == idx)
         wield_weapon(true, SLOT_BARE_HANDS);
     else if (item_is_wieldable(item))
     {
@@ -3194,7 +3194,7 @@ void tile_item_use(int idx)
         if (you.equip[i] == idx)
         {
             equipped = true;
-            if (i == EQ_WEAPON)
+            if (i == EQ_WEAPON0)
                 equipped_weapon = true;
             break;
         }
@@ -3204,7 +3204,7 @@ void tile_item_use(int idx)
     // that they shouldn't be wielding.
     // Note that this is only a problem for equipables
     // (otherwise it would only waste a turn)
-    if (you.equip[EQ_WEAPON] == idx
+    if (you.equip[EQ_WEAPON0] == idx
         && (item.base_type == OBJ_ARMOUR
             || item.base_type == OBJ_JEWELLERY))
     {

@@ -187,7 +187,7 @@ void actor::shield_block_succeeded(actor *foe)
 
     if (sh
         && sh->base_type == OBJ_ARMOUR
-        && get_armour_slot(*sh) == EQ_SHIELD
+        && get_armour_slot(*sh) == EQ_WEAPON1
         && is_artefact(*sh)
         && is_unrandom_artefact(*sh)
         && (unrand_entry = get_unrand_entry(sh->unrand_idx))

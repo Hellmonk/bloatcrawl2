@@ -1989,8 +1989,8 @@ static void _xom_pseudo_miscast(int /*sever*/)
     ///////////////////////////
     // Equipment related stuff.
 
-    if (you_can_wear(EQ_WEAPON, true)
-        && !you.slot_item(EQ_WEAPON))
+    if (you_can_wear(EQ_WEAPON0, true)
+        && !you.slot_item(EQ_WEAPON0))
     {
         string str = "A fancy cane briefly appears in your ";
         str += you.hand_name(false);
@@ -2033,7 +2033,7 @@ static void _xom_pseudo_miscast(int /*sever*/)
         }
     }
 
-    if (item_def* item = you.slot_item(EQ_SHIELD))
+    if (item_def* item = you.slot_item(EQ_WEAPON1))
     {
         string str = "Your ";
         str += item->name(DESC_BASENAME, false, false, false);

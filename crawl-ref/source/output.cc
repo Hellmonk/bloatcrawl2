@@ -574,7 +574,7 @@ static int _count_digits(int val)
 
 static const equipment_type e_order[] =
 {
-    EQ_WEAPON, EQ_SHIELD, EQ_BODY_ARMOUR, EQ_HELMET, EQ_CLOAK,
+    EQ_WEAPON0, EQ_WEAPON1, EQ_BODY_ARMOUR, EQ_HELMET, EQ_CLOAK,
     EQ_GLOVES, EQ_BOOTS, EQ_AMULET, EQ_LEFT_RING, EQ_RIGHT_RING,
     EQ_RING_ONE, EQ_RING_TWO, EQ_RING_THREE, EQ_RING_FOUR,
     EQ_RING_FIVE, EQ_RING_SIX, EQ_RING_SEVEN, EQ_RING_EIGHT,
@@ -1943,7 +1943,7 @@ static void _print_overview_screen_equip(column_composer& cols,
     for (equipment_type eqslot : e_order)
     {
         if (you.species == SP_OCTOPODE
-            && eqslot != EQ_WEAPON
+            && eqslot != EQ_WEAPON0
             && !you_can_wear(eqslot))
         {
             continue;
@@ -1987,12 +1987,12 @@ static void _print_overview_screen_equip(column_composer& cols,
                      colname.c_str());
             equip_chars.push_back(equip_char);
         }
-        else if (eqslot == EQ_WEAPON
+        else if (eqslot == EQ_WEAPON0
                  && you.skill(SK_UNARMED_COMBAT))
         {
             str = "  - Unarmed";
         }
-        else if (eqslot == EQ_WEAPON
+        else if (eqslot == EQ_WEAPON0
                  && you.form == transformation::blade_hands)
         {
             const bool plural = !you.get_mutation_level(MUT_MISSING_HAND);

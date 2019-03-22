@@ -347,7 +347,7 @@ void fill_doll_equipment(dolls_data &result)
     // Main hand.
     if (result.parts[TILEP_PART_HAND1] == TILEP_SHOW_EQUIP)
     {
-        const int item = you.melded[EQ_WEAPON] ? -1 : you.equip[EQ_WEAPON];
+        const int item = you.melded[EQ_WEAPON0] ? -1 : you.equip[EQ_WEAPON0];
         if (you.form == transformation::blade_hands)
         {
             if (is_player_tile(result.parts[TILEP_PART_BASE], TILEP_BASE_OCTOPODE))
@@ -364,7 +364,7 @@ void fill_doll_equipment(dolls_data &result)
     // Off hand.
     if (result.parts[TILEP_PART_HAND2] == TILEP_SHOW_EQUIP)
     {
-        const int item = you.melded[EQ_SHIELD] ? -1 : you.equip[EQ_SHIELD];
+        const int item = you.melded[EQ_WEAPON1] ? -1 : you.equip[EQ_WEAPON1];
         if (you.form == transformation::blade_hands)
         {
             if (is_player_tile(result.parts[TILEP_PART_BASE], TILEP_BASE_OCTOPODE))
@@ -580,14 +580,14 @@ void pack_doll_buf(SubmergedTileBuffer& buf, const dolls_data &doll,
         monster_info minfo(MONS_PLAYER, MONS_PLAYER);
         minfo.props["monster_tile"] = short(doll.parts[TILEP_PART_BASE]);
         item_def *item;
-        if (you.slot_item(EQ_WEAPON))
+        if (you.slot_item(EQ_WEAPON0))
         {
-            item = new item_def(get_item_info(*you.slot_item(EQ_WEAPON)));
+            item = new item_def(get_item_info(*you.slot_item(EQ_WEAPON0)));
             minfo.inv[MSLOT_WEAPON].reset(item);
         }
-        if (you.slot_item(EQ_SHIELD))
+        if (you.slot_item(EQ_WEAPON1))
         {
-            item = new item_def(get_item_info(*you.slot_item(EQ_SHIELD)));
+            item = new item_def(get_item_info(*you.slot_item(EQ_WEAPON1)));
             minfo.inv[MSLOT_SHIELD].reset(item);
         }
         tileidx_t mcache_idx = mcache.register_monster(minfo);
@@ -621,8 +621,8 @@ void pack_doll_buf(SubmergedTileBuffer& buf, const dolls_data &doll,
             ymax = 18;
         }
         int ofs_x = 0, ofs_y = 0;
-        if ((p == TILEP_PART_HAND1 && you.slot_item(EQ_WEAPON)
-             || p == TILEP_PART_HAND2 && you.slot_item(EQ_SHIELD))
+        if ((p == TILEP_PART_HAND1 && you.slot_item(EQ_WEAPON0)
+             || p == TILEP_PART_HAND2 && you.slot_item(EQ_WEAPON1))
             && dind < draw_info_count - 1)
         {
             ofs_x = dinfo[draw_info_count - dind - 1].ofs_x;

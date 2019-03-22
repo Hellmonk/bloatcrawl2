@@ -203,8 +203,8 @@ int player::damage_type(int)
  */
 brand_type player::damage_brand(int)
 {
-    const int wpn = equip[EQ_WEAPON];
-    if (wpn != -1 && !melded[EQ_WEAPON])
+    const int wpn = equip[EQ_WEAPON0];
+    if (wpn != -1 && !melded[EQ_WEAPON0])
     {
         if (is_range_weapon(inv[wpn]))
             return SPWPN_NORMAL; // XXX: check !is_melee_weapon instead?
@@ -309,7 +309,7 @@ random_var player::attack_delay(const item_def *projectile, bool rescale) const
 }
 
 // Returns the item in the given equipment slot, nullptr if the slot is empty.
-// eq must be in [EQ_WEAPON, EQ_RING_AMULET], or bad things will happen.
+// eq must be in [EQ_WEAPON0, EQ_RING_AMULET], or bad things will happen.
 item_def *player::slot_item(equipment_type eq, bool include_melded) const
 {
     ASSERT_RANGE(eq, EQ_FIRST_EQUIP, NUM_EQUIP);
@@ -323,10 +323,10 @@ item_def *player::slot_item(equipment_type eq, bool include_melded) const
 // Returns the item in the player's weapon slot.
 item_def *player::weapon(int /* which_attack */) const
 {
-    if (melded[EQ_WEAPON])
+    if (melded[EQ_WEAPON0])
         return nullptr;
 
-    return slot_item(EQ_WEAPON, false);
+    return slot_item(EQ_WEAPON0, false);
 }
 
 // Give hands required to wield weapon.
@@ -342,9 +342,9 @@ bool player::can_wield(const item_def& item, bool ignore_curse,
                        bool ignore_brand, bool ignore_shield,
                        bool ignore_transform) const
 {
-    if (equip[EQ_WEAPON] != -1 && !ignore_curse)
+    if (equip[EQ_WEAPON0] != -1 && !ignore_curse)
     {
-        if (inv[equip[EQ_WEAPON]].cursed())
+        if (inv[equip[EQ_WEAPON0]].cursed())
             return false;
     }
 
@@ -431,7 +431,7 @@ bool player::could_wield(const item_def &item, bool ignore_brand,
 // Returns the shield the player is wearing, or nullptr if none.
 item_def *player::shield() const
 {
-    return slot_item(EQ_SHIELD, false);
+    return slot_item(EQ_WEAPON1, false);
 }
 
 void player::make_hungry(int hunger_increase, bool silent)

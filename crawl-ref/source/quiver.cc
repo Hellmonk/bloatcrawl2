@@ -321,7 +321,7 @@ void player_quiver::_maybe_fill_empty_slot()
 #ifdef DEBUG_QUIVER
     mprf(MSGCH_DIAGNOSTICS, "last quiver item: %s; link %d, wpn: %d",
          m_last_used_of_type[slot].name(DESC_PLAIN).c_str(),
-         m_last_used_of_type[slot].link, you.equip[EQ_WEAPON]);
+         m_last_used_of_type[slot].link, you.equip[EQ_WEAPON0]);
 #endif
 
     bool unquiver_weapon = false;
@@ -330,8 +330,8 @@ void player_quiver::_maybe_fill_empty_slot()
         // If we're wielding an item previously quivered, the quiver may need
         // to be cleared. Else, any already quivered item is valid and we
         // don't need to do anything else.
-        if (m_last_used_of_type[slot].link == you.equip[EQ_WEAPON]
-            && you.equip[EQ_WEAPON] != -1)
+        if (m_last_used_of_type[slot].link == you.equip[EQ_WEAPON0]
+            && you.equip[EQ_WEAPON0] != -1)
         {
             unquiver_weapon = true;
         }

@@ -46,7 +46,7 @@ void end_weapon_brand(item_def &weapon, bool verbose)
     if (you.weapon() && is_holy_item(weapon) && you.form == transformation::lich)
     {
         mprf(MSGCH_DURATION, "%s falls away!", weapon.name(DESC_YOUR).c_str());
-        unequip_item(EQ_WEAPON);
+        unequip_item(EQ_WEAPON0);
     }
 }
 
@@ -108,11 +108,7 @@ spret_type cast_excruciating_wounds(int power, bool fail)
         you.props[ORIGINAL_BRAND_KEY] = get_weapon_brand(weapon);
         set_item_ego_type(weapon, OBJ_WEAPONS, which_brand);
         you.wield_change = true;
-        if (you.duration[DUR_SPWPN_PROTECTION])
-        {
-            you.duration[DUR_SPWPN_PROTECTION] = 0;
-            you.redraw_armour_class = true;
-        }
+        you.redraw_armour_class = true;
         if (orig_brand == SPWPN_ANTIMAGIC)
             calc_mp();
     }

@@ -5600,8 +5600,8 @@ static void _extra_sacrifice_code(ability_type sac)
         else
             ring_slot = EQ_LEFT_RING;
 
-        item_def* const shield = you.slot_item(EQ_SHIELD, true);
-        item_def* const weapon = you.slot_item(EQ_WEAPON, true);
+        item_def* const shield = you.slot_item(EQ_WEAPON1, true);
+        item_def* const weapon = you.slot_item(EQ_WEAPON0, true);
         item_def* const ring = you.slot_item(ring_slot, true);
         int ring_inv_slot = you.equip[ring_slot];
         bool open_ring_slot = false;
@@ -5611,7 +5611,7 @@ static void _extra_sacrifice_code(ability_type sac)
         {
             mprf("You can no longer hold %s!",
                 shield->name(DESC_YOUR).c_str());
-            unequip_item(EQ_SHIELD);
+            unequip_item(EQ_WEAPON1);
         }
 
         // And your two-handed weapon
@@ -5621,7 +5621,7 @@ static void _extra_sacrifice_code(ability_type sac)
             {
                 mprf("You can no longer hold %s!",
                     weapon->name(DESC_YOUR).c_str());
-                unequip_item(EQ_WEAPON);
+                unequip_item(EQ_WEAPON0);
             }
         }
 

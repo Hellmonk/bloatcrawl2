@@ -214,11 +214,11 @@ int InventoryRegion::handle_mouse(MouseEvent &event)
 static bool _is_true_equipped_item(const item_def &item)
 {
     // Weapons and staves are only truly equipped if wielded.
-    if (item.link == you.equip[EQ_WEAPON])
+    if (item.link == you.equip[EQ_WEAPON0])
         return is_weapon(item);
 
     // Cursed armour and rings are only truly equipped if *not* wielded.
-    return item.link != you.equip[EQ_WEAPON];
+    return item.link != you.equip[EQ_WEAPON0];
 }
 
 // Returns whether there's any action you can take with an item in inventory
@@ -384,7 +384,7 @@ bool InventoryRegion::update_tip_text(string& tip)
 
         int type = item.base_type;
         const bool equipped = m_items[item_idx].flag & TILEI_FLAG_EQUIP;
-        bool wielded = (you.equip[EQ_WEAPON] == idx);
+        bool wielded = (you.equip[EQ_WEAPON0] == idx);
 
         const int EQUIP_OFFSET = NUM_OBJECT_CLASSES;
 

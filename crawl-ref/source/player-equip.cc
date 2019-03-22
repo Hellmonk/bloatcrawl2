@@ -153,7 +153,7 @@ void equip_effect(equipment_type slot, int item_slot, bool unmeld, bool msg)
     item_def& item = you.inv[item_slot];
     equipment_type eq = get_item_slot(item);
 
-    if (slot == EQ_WEAPON && eq != EQ_WEAPON)
+    if (slot == EQ_WEAPON0 && eq != EQ_WEAPON0)
         return;
 
     _assert_valid_slot(eq, slot);
@@ -161,7 +161,7 @@ void equip_effect(equipment_type slot, int item_slot, bool unmeld, bool msg)
     if (msg)
         _equip_use_warning(item);
 
-    if (slot == EQ_WEAPON)
+    if (slot == EQ_WEAPON0)
         _equip_weapon_effect(item, msg, unmeld);
     else if (slot >= EQ_CLOAK && slot <= EQ_BODY_ARMOUR)
         _equip_armour_effect(item, unmeld, slot);
@@ -174,12 +174,12 @@ void unequip_effect(equipment_type slot, int item_slot, bool meld, bool msg)
     item_def& item = you.inv[item_slot];
     equipment_type eq = get_item_slot(item);
 
-    if (slot == EQ_WEAPON && eq != EQ_WEAPON)
+    if (slot == EQ_WEAPON0 && eq != EQ_WEAPON0)
         return;
 
     _assert_valid_slot(eq, slot);
 
-    if (slot == EQ_WEAPON)
+    if (slot == EQ_WEAPON0)
         _unequip_weapon_effect(item, msg, meld);
     else if (slot >= EQ_CLOAK && slot <= EQ_BODY_ARMOUR)
         _unequip_armour_effect(item, meld, slot);
@@ -457,7 +457,7 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
         // Note that if the unrand equip prints a message, it will
         // generally set showMsgs to false.
         if (artefact)
-            _equip_artefact_effect(item, &showMsgs, unmeld, EQ_WEAPON);
+            _equip_artefact_effect(item, &showMsgs, unmeld, EQ_WEAPON0);
 
         const bool was_known      = item_type_known(item);
               bool known_recurser = false;
@@ -664,7 +664,7 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
     // false if it does its own message handling.
     if (is_artefact(item))
     {
-        _unequip_artefact_effect(real_item, &showMsgs, meld, EQ_WEAPON,
+        _unequip_artefact_effect(real_item, &showMsgs, meld, EQ_WEAPON0,
                                  true);
     }
 
@@ -706,11 +706,6 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
             case SPWPN_PROTECTION:
                 if (showMsgs)
                     mprf("%s goes still.", msg.c_str());
-                if (you.duration[DUR_SPWPN_PROTECTION])
-                {
-                    you.duration[DUR_SPWPN_PROTECTION] = 0;
-                    you.redraw_armour_class = true;
-                }
                 break;
 
             case SPWPN_VAMPIRISM:
@@ -1474,12 +1469,12 @@ bool unwield_item(bool showMsgs)
 
     item_def& item = *you.weapon();
 
-    const bool is_weapon = get_item_slot(item) == EQ_WEAPON;
+    const bool is_weapon = get_item_slot(item) == EQ_WEAPON0;
 
     if (is_weapon && !safe_to_remove(item))
         return false;
 
-    unequip_item(EQ_WEAPON, showMsgs);
+    unequip_item(EQ_WEAPON0, showMsgs);
 
     you.wield_change     = true;
     you.redraw_quiver    = true;

@@ -956,7 +956,7 @@ const char* item_slot_name(equipment_type type)
     case EQ_HELMET:      return "helmet";
     case EQ_GLOVES:      return "gloves";
     case EQ_BOOTS:       return "boots";
-    case EQ_SHIELD:      return "shield";
+    case EQ_WEAPON1:      return "shield";
     case EQ_BODY_ARMOUR: return "body";
     default:             return "";
     }
@@ -1232,7 +1232,7 @@ static string _drop_selitem_text(const vector<MenuEntry*> *s)
     {
         const item_def *item = static_cast<item_def *>(entry->data);
         const int eq = get_equip_slot(item);
-        if (eq > EQ_WEAPON && eq < NUM_EQUIP)
+        if (eq > EQ_WEAPON0 && eq < NUM_EQUIP)
         {
             extraturns = true;
             break;
@@ -1444,7 +1444,7 @@ bool check_old_item_warning(const item_def& item,
         if (!you.weapon())
             return true;
 
-        int equip = you.equip[EQ_WEAPON];
+        int equip = you.equip[EQ_WEAPON0];
         if (equip == -1 || item.link == equip)
             return true;
 
@@ -1530,7 +1530,7 @@ static string _operation_verb(operation_types oper)
 
 static bool _is_wielded(const item_def &item)
 {
-    int equip = you.equip[EQ_WEAPON];
+    int equip = you.equip[EQ_WEAPON0];
     return equip != -1 && item.link == equip;
 }
 
@@ -1706,7 +1706,7 @@ bool check_warning_inscriptions(const item_def& item,
             if (!you.can_wield(item))
                 return true;
 
-            int equip = you.equip[EQ_WEAPON];
+            int equip = you.equip[EQ_WEAPON0];
             if (equip != -1 && item.link == equip)
                 return check_old_item_warning(item, oper);
         }
@@ -2034,7 +2034,7 @@ bool item_is_evokable(const item_def &item, bool reach, bool known,
         return false;
     }
 
-    const bool wielded = !equip || you.equip[EQ_WEAPON] == item.link
+    const bool wielded = !equip || you.equip[EQ_WEAPON0] == item.link
                                    && !item_is_melded(item);
 
     switch (item.base_type)

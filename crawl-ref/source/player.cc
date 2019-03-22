@@ -716,7 +716,7 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
     case EQ_RING_SEVEN:
         return you.species == SP_OCTOPODE ? MB_TRUE : MB_FALSE;
 
-    case EQ_WEAPON:
+    case EQ_WEAPON0:
     case EQ_STAFF:
         return you.species == SP_FELID ? MB_FALSE :
                you.body_size(PSIZE_TORSO, !temp) < SIZE_MEDIUM ? MB_MAYBE :
@@ -767,7 +767,7 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
         alternate.sub_type = ARM_ROBE;
         break;
 
-    case EQ_SHIELD:
+    case EQ_WEAPON1:
         // No races right now that can wear ARM_LARGE_SHIELD but not ARM_SHIELD
         dummy.sub_type = ARM_LARGE_SHIELD;
         if (you.body_size(PSIZE_TORSO, !temp) < SIZE_MEDIUM)
@@ -851,7 +851,7 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid) const
 
     switch (slot)
     {
-    case EQ_WEAPON:
+    case EQ_WEAPON0:
         // Hands can have more than just weapons.
         if (weapon() && weapon()->is_type(OBJ_WEAPONS, sub_type))
             ret++;
@@ -922,18 +922,27 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
     int ret = 0;
 
     const item_def* item;
-    switch (slot)
-    {
-    case EQ_WEAPON:
-        // Hands can have more than just weapons.
-        if ((item = slot_item(EQ_WEAPON))
-            && item->base_type == OBJ_WEAPONS
-            && get_weapon_brand(*item) == special)
-        {
-            ret++;
-        }
-        break;
+	switch (slot)
+	{
+	case EQ_WEAPON0:
+		// Hands can have more than just weapons.
+		if ((item = slot_item(EQ_WEAPON0))
+			&& item->base_type == OBJ_WEAPONS
+			&& get_weapon_brand(*item) == special)
+		{
+			ret++;
+		}
+		break;
 
+/*	case EQ_WEAPON1:
+		if (item->base_type == OBJ_WEAPONS
+			&& get_weapon_brand(*item) == special)
+			ret++;
+		else if (item->base_type == OBJ_ARMOUR
+			&& get_armour_ego_type(*item) == special)
+			ret++;
+		break;
+*/
     case EQ_LEFT_RING:
     case EQ_RIGHT_RING:
     case EQ_AMULET:
@@ -984,7 +993,7 @@ bool player_equip_unrand(int unrand_index)
 
     switch (slot)
     {
-    case EQ_WEAPON:
+    case EQ_WEAPON0:
         // Hands can have more than just weapons.
         if ((item = you.slot_item(slot))
             && item->base_type == OBJ_WEAPONS
@@ -2187,7 +2196,7 @@ static int _player_adjusted_evasion_penalty(const int scale)
     // Some lesser armours have small penalties now (barding).
     for (int i = EQ_MIN_ARMOUR; i < EQ_MAX_ARMOUR; i++)
     {
-        if (i == EQ_SHIELD || !you.slot_item(static_cast<equipment_type>(i)))
+        if (i == EQ_WEAPON1 || !you.slot_item(static_cast<equipment_type>(i)))
             continue;
 
         // [ds] Evasion modifiers for armour are negatives, change
@@ -2387,7 +2396,7 @@ int player_shield_class()
 
     if (you.shield())
     {
-        const item_def& item = you.inv[you.equip[EQ_SHIELD]];
+        const item_def& item = you.inv[you.equip[EQ_WEAPON1]];
         int size_factor = (you.body_size(PSIZE_TORSO) - SIZE_MEDIUM)
                         * (item.sub_type - ARM_LARGE_SHIELD);
         int base_shield = property(item, PARM_AC) * 2 + size_factor;
@@ -3708,7 +3717,7 @@ int player::scan_artefacts(artefact_prop_type which_property,
         const int eq = equip[i];
 
         // Only weapons give their effects when in our hands.
-        if (i == EQ_WEAPON && inv[ eq ].base_type != OBJ_WEAPONS)
+        if (i == EQ_WEAPON0 && inv[ eq ].base_type != OBJ_WEAPONS)
             continue;
 
         if (!is_artefact(inv[ eq ]))
@@ -4105,7 +4114,7 @@ int get_real_mp(bool include_items)
             enp += 15;
     }
 
-    if (include_items && you.wearing_ego(EQ_WEAPON, SPWPN_ANTIMAGIC))
+    if (include_items && you.wearing_ego(EQ_WEAPON0, SPWPN_ANTIMAGIC))
         enp /= 3;
 
     enp = max(enp, 0);
@@ -5825,7 +5834,7 @@ int player::adjusted_body_armour_penalty(int scale) const
  */
 int player::adjusted_shield_penalty(int scale) const
 {
-    const item_def *shield_l = slot_item(EQ_SHIELD, false);
+    const item_def *shield_l = slot_item(EQ_WEAPON1, false);
     if (!shield_l)
         return 0;
 
@@ -6009,7 +6018,7 @@ int player::base_ac(int scale) const
 
     for (int eq = EQ_MIN_ARMOUR; eq <= EQ_MAX_ARMOUR; ++eq)
     {
-        if (eq == EQ_SHIELD)
+        if (eq == EQ_WEAPON1)
             continue;
 
         if (!slot_item(static_cast<equipment_type>(eq)))
@@ -6022,7 +6031,7 @@ int player::base_ac(int scale) const
 
     AC += wearing(EQ_RINGS, RING_PROTECTION) * 500;
 
-    if (wearing_ego(EQ_SHIELD, SPARM_PROTECTION))
+    if (wearing_ego(EQ_WEAPON1, SPARM_PROTECTION))
         AC += 300;
 
     AC += scan_artefacts(ARTP_AC) * 100;
@@ -6087,8 +6096,9 @@ int player::armour_class(bool /*calc_unid*/) const
     if (duration[DUR_QAZLAL_AC])
         AC += 300;
 
-    if (duration[DUR_SPWPN_PROTECTION])
-        AC += 700;
+	// Note: We're leaving protection weapons doing nothing for now; need to fix that after we get back from making dual wielding...or just remove the brand, unsure.
+//    if (you.weapon()->damage_brand == SPWPN_PROTECTION)
+//        AC += 500; 
 
     if (duration[DUR_CORROSION])
         AC -= 400 * you.props["corrosion_amount"].get_int();
@@ -6976,7 +6986,7 @@ bool player::has_usable_offhand() const
     if (shield())
         return false;
 
-    const item_def* wp = slot_item(EQ_WEAPON);
+    const item_def* wp = slot_item(EQ_WEAPON0);
     return !wp || hands_reqd(*wp) != HANDS_TWO;
 }
 
@@ -6997,7 +7007,7 @@ int player::usable_tentacles() const
     if (shield())
         free_tentacles -= 2;
 
-    const item_def* wp = slot_item(EQ_WEAPON);
+    const item_def* wp = slot_item(EQ_WEAPON0);
     if (wp)
     {
         hands_reqd_type hands_req = hands_reqd(*wp);
@@ -8280,17 +8290,4 @@ void activate_sanguine_armour()
         mpr("Your blood congeals into armour.");
         you.redraw_armour_class = true;
     }
-}
-
-/**
- * Refreshes the protective aura around the player after striking with
- * a weapon of protection. The duration is very short.
- */
-void refresh_weapon_protection()
-{
-    if (!you.duration[DUR_SPWPN_PROTECTION])
-        mpr("Your weapon exudes an aura of protection.");
-
-    you.increase_duration(DUR_SPWPN_PROTECTION, 3 + random2(2), 5);
-    you.redraw_armour_class = true;
 }

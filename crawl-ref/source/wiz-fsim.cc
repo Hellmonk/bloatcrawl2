@@ -83,7 +83,7 @@ string fight_data::summary(const string prefix, bool tsv)
 
 static skill_type _equipped_skill()
 {
-    const int weapon = you.equip[EQ_WEAPON];
+    const int weapon = you.equip[EQ_WEAPON0];
     const item_def * iweap = weapon != -1 ? &you.inv[weapon] : nullptr;
 
     if (iweap && iweap->base_type == OBJ_WEAPONS)
@@ -97,7 +97,7 @@ static skill_type _equipped_skill()
 
 static string _equipped_weapon_name()
 {
-    const int weapon = you.equip[EQ_WEAPON];
+    const int weapon = you.equip[EQ_WEAPON0];
     const item_def * iweap = weapon != -1 ? &you.inv[weapon] : nullptr;
     const int missile = you.m_quiver.get_fire_item();
 
@@ -185,10 +185,10 @@ static bool _equip_weapon(const string &weapon, bool &abort)
 
         if (you.inv[i].name(DESC_PLAIN).find(weapon) != string::npos)
         {
-            if (i != you.equip[EQ_WEAPON])
+            if (i != you.equip[EQ_WEAPON0])
             {
                 wield_weapon(true, i, false);
-                if (i != you.equip[EQ_WEAPON])
+                if (i != you.equip[EQ_WEAPON0])
                 {
                     abort = true;
                     return true;
@@ -363,7 +363,7 @@ static void _do_one_fsim_round(monster &mon, fight_data &fd, bool defend)
     unwind_var<int> hunger(you.hunger, you.hunger);
     bool did_hit = false;
 
-    const int weapon = you.equip[EQ_WEAPON];
+    const int weapon = you.equip[EQ_WEAPON0];
     const item_def *iweap = weapon != -1 ? &you.inv[weapon] : nullptr;
     const int missile = you.m_quiver.get_fire_item();
 

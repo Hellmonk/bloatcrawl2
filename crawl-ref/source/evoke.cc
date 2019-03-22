@@ -443,7 +443,7 @@ void zap_wand(int slot)
         return;
     }
     // If you happen to be wielding the wand, its display might change.
-    if (you.equip[EQ_WEAPON] == item_slot)
+    if (you.equip[EQ_WEAPON0] == item_slot)
         you.wield_change = true;
 
     if (wand.charges <= 0)
@@ -1454,8 +1454,8 @@ static spret_type _phantom_mirror()
 
 bool evoke_check(int slot, bool quiet)
 {
-    const bool reaching = slot != -1 && slot == you.equip[EQ_WEAPON]
-                          && !you.melded[EQ_WEAPON]
+    const bool reaching = slot != -1 && slot == you.equip[EQ_WEAPON0]
+                          && !you.melded[EQ_WEAPON0]
                           && weapon_reach(*you.weapon()) > REACH_NONE;
 
     if (you.berserk() && !reaching)
@@ -1487,7 +1487,7 @@ bool evoke_item(int slot, bool check_range)
     ASSERT(slot >= 0);
 
 #ifdef ASSERTS // Used only by an assert
-    const bool wielded = (you.equip[EQ_WEAPON] == slot);
+    const bool wielded = (you.equip[EQ_WEAPON0] == slot);
 #endif /* DEBUG */
 
     item_def& item = you.inv[slot];

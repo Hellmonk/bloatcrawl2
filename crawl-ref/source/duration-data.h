@@ -553,9 +553,6 @@ static const duration_def duration_data[] =
       "sanguine armour", "",
       "Your shed blood clings to and protects you.", D_NO_FLAGS,
         {{ "Your blood armour dries and flakes away.", _redraw_armour }}},
-    { DUR_SPWPN_PROTECTION, 0, "", "protection aura", "",
-      "Your weapon is exuding a protective aura.", D_NO_FLAGS,
-      {{ "", _redraw_armour }}},
     { DUR_NO_HOP, YELLOW, "-Hop",
       "can't hop", "",
       "", D_NO_FLAGS,
@@ -652,6 +649,7 @@ static const duration_def duration_data[] =
     { DUR_MAGIC_ARMOUR, 0, "", "", "old magic armour", "", D_NO_FLAGS},
     { DUR_MAGIC_SHIELD, 0, "", "", "old magic shield", "", D_NO_FLAGS},
     { DUR_FORTITUDE, 0, "", "", "old fortitude", "", D_NO_FLAGS},
+	{ DUR_SPWPN_PROTECTION, 0, "", "", "old protection aura", "", D_NO_FLAGS },
 
 #endif
 };

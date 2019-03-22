@@ -195,7 +195,7 @@ static int l_item_do_remove(lua_State *ls)
     }
 
     bool result = false;
-    if (eq == EQ_WEAPON)
+    if (eq == EQ_WEAPON0)
         result = wield_weapon(true, SLOT_BARE_HANDS);
     else if (eq >= EQ_FIRST_JEWELLERY && eq <= EQ_LAST_JEWELLERY)
         result = remove_ring(item->link);
@@ -463,7 +463,7 @@ IDEF(equip_type)
     equipment_type eq = EQ_NONE;
 
     if (is_weapon(*item))
-        eq = EQ_WEAPON;
+        eq = EQ_WEAPON0;
     else if (item->base_type == OBJ_ARMOUR)
         eq = get_armour_slot(*item);
     else if (item->base_type == OBJ_JEWELLERY)

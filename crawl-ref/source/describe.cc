@@ -2521,7 +2521,7 @@ static vector<command_type> _allowed_actions(const item_def& item)
 {
     vector<command_type> actions;
     actions.push_back(CMD_ADJUST_INVENTORY);
-    if (item_equip_slot(item) == EQ_WEAPON)
+    if (item_equip_slot(item) == EQ_WEAPON0)
         actions.push_back(CMD_UNWIELD_WEAPON);
     switch (item.base_type)
     {

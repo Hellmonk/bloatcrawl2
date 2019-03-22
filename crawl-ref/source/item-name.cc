@@ -259,7 +259,7 @@ string item_def::name(description_level_type descrip, bool terse, bool ident,
             {
                 switch (eq)
                 {
-                case EQ_WEAPON:
+                case EQ_WEAPON0:
                     if (is_weapon(*this))
                         buff << " (weapon)";
                     else if (you.species == SP_FELID)
@@ -271,7 +271,7 @@ string item_def::name(description_level_type descrip, bool terse, bool ident,
                 case EQ_HELMET:
                 case EQ_GLOVES:
                 case EQ_BOOTS:
-                case EQ_SHIELD:
+                case EQ_WEAPON1:
                 case EQ_BODY_ARMOUR:
                     buff << " (worn)";
                     break;

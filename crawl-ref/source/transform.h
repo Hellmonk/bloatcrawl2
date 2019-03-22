@@ -76,7 +76,7 @@ protected:
     Form(transformation tran);
 public:
     bool slot_available(int slot) const;
-    bool can_wield() const { return slot_available(EQ_WEAPON); }
+    bool can_wield() const { return slot_available(EQ_WEAPON0); }
     virtual bool can_wear_item(const item_def& item) const;
 
     int get_duration(int pow) const;

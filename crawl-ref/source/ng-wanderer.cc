@@ -649,7 +649,7 @@ static void _wanderer_cover_equip_holes()
     if (you.equip[EQ_BODY_ARMOUR] == -1)
         newgame_make_item(OBJ_ARMOUR, ARM_ROBE);
 
-    if (you.equip[EQ_WEAPON] == -1)
+    if (you.equip[EQ_WEAPON0] == -1)
     {
         newgame_make_item(OBJ_WEAPONS,
                           you.dex() > you.strength() ? WPN_DAGGER : WPN_CLUB);

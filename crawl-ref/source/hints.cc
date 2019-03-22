@@ -2279,7 +2279,7 @@ void learned_something_new(hints_event_type seen_what, coord_def gc)
 
     case HINT_WIELD_WEAPON:
     {
-        int wpn = you.equip[EQ_WEAPON];
+        int wpn = you.equip[EQ_WEAPON0];
         if (wpn != -1
             && you.inv[wpn].base_type == OBJ_WEAPONS
             && you.inv[wpn].cursed())
@@ -2496,7 +2496,7 @@ void learned_something_new(hints_event_type seen_what, coord_def gc)
         }
         text << "You just miscast a spell. ";
 
-        const item_def *shield = you.slot_item(EQ_SHIELD, false);
+        const item_def *shield = you.slot_item(EQ_WEAPON1, false);
         if (!player_effectively_in_light_armour() || shield)
         {
             text << "Wearing heavy body armour or using a shield, especially a "
@@ -2984,7 +2984,7 @@ string hints_describe_item(const item_def &item)
                     return "";
             }
 
-            item_def *weap = you.slot_item(EQ_WEAPON, false);
+            item_def *weap = you.slot_item(EQ_WEAPON0, false);
             bool wielded = (weap && weap->slot == item.slot);
             bool long_text = false;
 

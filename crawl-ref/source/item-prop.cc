@@ -147,11 +147,11 @@ static const armour_def Armour_prop[] =
     // Note: shields use ac-value as sh-value, EV pen is used as the basis
     // to calculate adjusted shield penalty.
     { ARM_BUCKLER,              "buckler",                3,  -8,   45,
-        EQ_SHIELD,      SIZE_LITTLE, SIZE_MEDIUM, true },
+        EQ_WEAPON1,      SIZE_LITTLE, SIZE_MEDIUM, true },
     { ARM_SHIELD,               "shield",                 8,  -30,  45,
-        EQ_SHIELD,      SIZE_SMALL,  SIZE_BIG, true    },
+        EQ_WEAPON1,      SIZE_SMALL,  SIZE_BIG, true    },
     { ARM_LARGE_SHIELD,         "large shield",          13,  -50,  45,
-        EQ_SHIELD,      SIZE_MEDIUM, SIZE_GIANT, true  },
+        EQ_WEAPON1,      SIZE_MEDIUM, SIZE_GIANT, true  },
 
     // Following all ARM_ entries for the benefit of util/gather_items
     DRAGON_ARMOUR(STEAM,       "steam",                   5,   0,   400,
@@ -995,7 +995,7 @@ void do_curse_item(item_def &item, bool quiet)
         {
             amusement *= 2;
 
-            if (you.equip[EQ_WEAPON] == item.link)
+            if (you.equip[EQ_WEAPON0] == item.link)
             {
                 // Redraw the weapon.
                 you.wield_change = true;
@@ -1028,7 +1028,7 @@ void do_uncurse_item(item_def &item, bool check_bondage)
 
     if (in_inv)
     {
-        if (you.equip[EQ_WEAPON] == item.link)
+        if (you.equip[EQ_WEAPON0] == item.link)
         {
             // Redraw the weapon.
             you.wield_change = true;
@@ -1409,7 +1409,7 @@ int armour_max_enchant(const item_def &item)
     {
         max_plus = property(item, PARM_AC);
     }
-    else if (eq_slot == EQ_SHIELD)
+    else if (eq_slot == EQ_WEAPON1)
         // 3 / 5 / 8 for bucklers/shields/lg. shields
         max_plus = (property(item, PARM_AC) - 3)/2 + 3;
 
@@ -2868,7 +2868,7 @@ equipment_type get_item_slot(object_class_type type, int sub_type)
     case OBJ_RODS:
 #endif
     case OBJ_MISCELLANY:
-        return EQ_WEAPON;
+        return EQ_WEAPON0;
 
     case OBJ_ARMOUR:
         return get_armour_slot(static_cast<armour_type>(sub_type));
@@ -2886,7 +2886,7 @@ equipment_type get_item_slot(object_class_type type, int sub_type)
 bool is_shield(const item_def &item)
 {
     return item.base_type == OBJ_ARMOUR
-           && get_armour_slot(item) == EQ_SHIELD;
+           && get_armour_slot(item) == EQ_WEAPON1;
 }
 
 // Returns true if the given item cannot be wielded _by you_ with the given shield.

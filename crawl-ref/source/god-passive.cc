@@ -566,7 +566,7 @@ void ash_init_bondage(player *y)
 
 static bool _two_handed()
 {
-    const item_def* wpn = you.slot_item(EQ_WEAPON, true);
+    const item_def* wpn = you.slot_item(EQ_WEAPON0, true);
     if (!wpn)
         return false;
 
@@ -585,9 +585,9 @@ void ash_check_bondage(bool msg)
     {
         const equipment_type i = static_cast<equipment_type>(j);
         eq_type s;
-        if (i == EQ_WEAPON)
+        if (i == EQ_WEAPON0)
             s = ET_WEAPON;
-        else if (i == EQ_SHIELD)
+        else if (i == EQ_WEAPON1)
             s = ET_SHIELD;
         else if (i <= EQ_MAX_ARMOUR)
             s = ET_ARMOUR;
@@ -627,7 +627,7 @@ void ash_check_bondage(bool msg)
             if (you.equip[i] != -1)
             {
                 const item_def& item = you.inv[you.equip[i]];
-                if (item.cursed() && (i != EQ_WEAPON || is_weapon(item)))
+                if (item.cursed() && (i != EQ_WEAPON0 || is_weapon(item)))
                 {
                     if (s == ET_WEAPON
                         && (_two_handed()
@@ -796,7 +796,7 @@ static bool _is_slot_cursed(equipment_type eq)
     if (!worn || !worn->cursed())
         return false;
 
-    if (eq == EQ_WEAPON)
+    if (eq == EQ_WEAPON0)
         return is_weapon(*worn);
     return true;
 }
@@ -948,7 +948,7 @@ map<skill_type, int8_t> ash_get_boosted_skills(eq_type type)
         return boost;
 
     // Include melded.
-    const item_def* wpn = you.slot_item(EQ_WEAPON, true);
+    const item_def* wpn = you.slot_item(EQ_WEAPON0, true);
     const item_def* armour = you.slot_item(EQ_BODY_ARMOUR, true);
     const int evp = armour ? -property(*armour, PARM_EVASION) / 10 : 0;
     switch (type)

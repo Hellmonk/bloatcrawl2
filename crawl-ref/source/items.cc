@@ -412,7 +412,7 @@ bool dec_inv_item_quantity(int obj, int amount)
 {
     bool ret = false;
 
-    if (you.equip[EQ_WEAPON] == obj)
+    if (you.equip[EQ_WEAPON0] == obj)
         you.wield_change = true;
 
     you.m_quiver.on_inv_quantity_changed(obj, amount);
@@ -423,7 +423,7 @@ bool dec_inv_item_quantity(int obj, int amount)
         {
             if (you.equip[i] == obj)
             {
-                if (i == EQ_WEAPON)
+                if (i == EQ_WEAPON0)
                 {
                     unwield_item();
                     canned_msg(MSG_EMPTY_HANDED_NOW);
@@ -478,7 +478,7 @@ bool dec_mitm_item_quantity(int obj, int amount)
 
 void inc_inv_item_quantity(int obj, int amount)
 {
-    if (you.equip[EQ_WEAPON] == obj)
+    if (you.equip[EQ_WEAPON0] == obj)
         you.wield_change = true;
 
     you.m_quiver.on_inv_quantity_changed(obj, amount);
@@ -2562,7 +2562,7 @@ bool drop_item(int item_dropped, int quant_drop)
         return false;
     }
 
-    if (item_dropped == you.equip[EQ_WEAPON]
+    if (item_dropped == you.equip[EQ_WEAPON0]
         && item.base_type == OBJ_WEAPONS && item.cursed()
 		&& you.get_mutation_level(MUT_GHOST) == 0)
     {
@@ -2596,7 +2596,7 @@ bool drop_item(int item_dropped, int quant_drop)
     //
     // Unwield needs to be done before copy in order to clear things
     // like temporary brands. -- bwr
-    if (item_dropped == you.equip[EQ_WEAPON] && quant_drop >= item.quantity)
+    if (item_dropped == you.equip[EQ_WEAPON0] && quant_drop >= item.quantity)
     {
         if (!wield_weapon(true, SLOT_BARE_HANDS, true, true, true, false))
             return false;
