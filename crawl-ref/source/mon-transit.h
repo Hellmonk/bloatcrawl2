@@ -21,7 +21,8 @@ struct follower
     follower(const monster& m);
 
     // if placement was successful, returns a pointer to the placed monster
-    monster* place(const coord_def *defined_pos = NULL);
+    monster* place(const coord_def *defined_pos = NULL, 
+		   bool exact_pos = false);
     void load_mons_items();
     void restore_mons_items(monster& m);
 };
@@ -64,7 +65,9 @@ typedef list<follower> m_limbo_list;
 typedef map<level_id, m_limbo_list> monsters_in_limbo;
 extern monsters_in_limbo limbo_monsters;
 
-void add_monster_to_limbo(monster *m);
-// probably something to interrogate the monsters in limbo
-bool extract_monster_from_limbo(mid_t mid, const coord_def &pos);
+void add_monster_to_limbo(monster *m, 
+			  const level_id &level = level_id::current());
+bool extract_monster_from_limbo(mid_t mid, const coord_def &pos, 
+				bool exact_pos = true, unsigned short foe = 0);
 void wizard_extract_limbo();
+mid_t is_limbo_mons(std::function <bool (const monster &mons)> test);

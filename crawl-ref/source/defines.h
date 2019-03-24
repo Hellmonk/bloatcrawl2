@@ -28,8 +28,8 @@
 // max size of inventory array {dlb}:
 #define ENDOFPACK 52
 
-// Max ghosts on a level.
-const int MAX_GHOSTS = 10;
+// Max ghosts on a level (before ghost rework)
+// const int MAX_GHOSTS = 10;
 
 enum extra_monster_index_type
 {
@@ -40,6 +40,7 @@ enum extra_monster_index_type
 
     MHITNOT = NON_MONSTER,
     MHITYOU,
+    MGHOSTDONE,
 };
 
 // number of monster attack specs

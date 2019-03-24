@@ -109,7 +109,8 @@ public:
     void go_to(const level_id &level);
 };
 
-void save_ghosts(const vector<ghost_demon> &ghosts, bool force = false);
+void save_ghosts(const vector<ghost_demon> &ghosts, 
+		 bool force = false, level_id level = level_id::current());
 bool load_ghosts(int max_ghosts, bool creating_level);
 bool define_ghost_from_bones(monster& mons);
 vector<ghost_demon> load_bones_file(string ghost_filename, bool backup=false);
@@ -136,3 +137,4 @@ private:
 };
 
 FILE *fopen_replace(const char *name);
+void save_limbo_ghosts(level_id level);

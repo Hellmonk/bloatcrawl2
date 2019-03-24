@@ -6869,6 +6869,7 @@ static void marshallGhost(writer &th, const ghost_demon &ghost)
 
     marshallSpells(th, ghost.spells);
     marshallShort(th, ghost.slayer);
+    marshallShort(th, ghost.attempts);
 }
 
 static ghost_demon unmarshallGhost(reader &th)
@@ -6936,6 +6937,12 @@ static ghost_demon unmarshallGhost(reader &th)
     if (ghost.slayer == MONS_PLAYER_GHOST) {
         ghost.slayer = MONS_NO_MONSTER;
     }
+#if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() < TAG_MINOR_GHOST_VENGEANCE)
+        ghost.attempts = 0;
+    else
+#endif
+    ghost.attempts = unmarshallShort(th);
 
     return ghost;
 }
@@ -6954,7 +6961,7 @@ static vector<ghost_demon> tag_read_ghost(reader &th)
     vector<ghost_demon> result;
     int nghosts = unmarshallShort(th);
 
-    if (nghosts < 1 || nghosts > MAX_GHOSTS)
+    if (nghosts < 1)
     {
         string error = "Bones file has an invalid ghost count (" +
                                                     to_string(nghosts) + ")";

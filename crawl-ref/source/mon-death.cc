@@ -2837,6 +2837,22 @@ item_def* monster_die(monster& mons, killer_type killer,
 
     if (corpse && _reaping(&mons))
         corpse = nullptr;
+    
+    // I wonder if it is more likely that some non-killing KILL_FOO will
+    // be added to the game, breaking this, or that if I do it the other
+    // way around some killing KILL_FOO will be added?
+    if (mons.props.exists("ghost_target") && !was_banished && !mons_reset) {
+        for (monster_iterator mi; mi; ++mi) {
+            if (mi->props.exists("original_foe") && 
+                (mi->props["original_foe"].get_int() == mons.mindex())) {
+                if (you.can_see(**mi)) {
+                    mprf("%s fades from view, its vengeance complete.",
+                         mi->full_name(DESC_A).c_str());
+                }
+                monster_cleanup(*mi);
+            }
+        }
+    }
 
     crawl_state.dec_mon_acting(&mons);
     monster_cleanup(&mons);
@@ -2959,6 +2975,12 @@ void monster_cleanup(monster* mons)
         if (mi->foe == monster_killed)
             mi->foe = MHITNOT;
 
+        // we could instead check for ghost_target but we've already got this
+        // iterator being used anyway...
+        if (mi->props.exists("original_foe") && 
+            (mi->props["original_foe"].get_int() == mons->mindex())) {
+            mi->props["original_foe"] = MGHOSTDONE;
+        }
         int sumtype = 0;
         if (mi->summoner == mid
             && (mi->is_summoned(nullptr, &sumtype)

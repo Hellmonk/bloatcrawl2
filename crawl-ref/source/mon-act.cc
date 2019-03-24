@@ -50,6 +50,7 @@
 #include "mon-project.h"
 #include "mon-speak.h"
 #include "mon-tentacle.h"
+#include "mon-transit.h"
 #include "nearby-danger.h"
 #include "religion.h"
 #include "rot.h"
@@ -1394,6 +1395,36 @@ static void _pre_monster_move(monster& mons)
 {
     mons.hit_points = min(mons.max_hit_points, mons.hit_points);
 
+    // I wonder if this wants to be here?
+    if (mons.type == MONS_PLAYER_GHOST) {
+        // It is intentional that if a ghost's original foe is shafted
+        // it will wander for a bit before giving up
+        unsigned int original_foe = mons.props["original_foe"].get_int();
+        if (one_chance_in(9)) {
+            mons.foe = original_foe; mons.behaviour = BEH_SEEK;
+        }
+        if (mons.foe == original_foe) {
+            const actor *foe; const monster* foe_mons;
+            if ((original_foe == MGHOSTDONE) || 
+                (!(foe = mons.get_foe())) ||
+                (!(foe_mons = foe->as_monster())) ||
+                (!foe_mons->alive())) {
+                if (you.can_see(mons)) {
+                    mprf("%s fades from view, wailing with frustration.",
+                         mons.name(DESC_THE).c_str());
+                }
+                add_monster_to_limbo(&mons); return;
+            } else if (grid_distance(mons.pos(),mons.get_foe()->pos()) > 
+                       2 * LOS_MAX_RANGE) {
+                if (you.can_see(mons)) {
+                    mprf("%s fades from view.",
+                         mons.name(DESC_THE).c_str());
+                }
+                add_monster_to_limbo(&mons); return;
+            }
+        }
+    }
+
     if (mons.type == MONS_SPATIAL_MAELSTROM
         && !player_in_branch(BRANCH_ABYSS)
         && !player_in_branch(BRANCH_ZIGGURAT))
@@ -2294,8 +2325,33 @@ static void _post_monster_move(monster* mons)
             }
     }
 
+    mid_t ghost;
+    if (mons->props.exists("ghost_hated") &&  
+        mons->attitude == ATT_HOSTILE &&
+        div_rand_round(mons->hit_points, 2 * mons->max_hit_points) &&
+        !(mons->petrifying() || mons->paralysed() || mons->petrified() || 
+          mons->asleep() || mons->is_patrolling() || 
+          mons_is_wandering(*mons)) &&
+        // Arguably this next check should be in place_ghost but I want to
+        // avoid repeated calls to trans_wall_blocking for no reason
+        (ghost = is_limbo_mons([&](const monster &spook)
+        { if (spook.ghost) {
+                if (!spook.props.exists("original_foe")) return true;
+                // We could also check the ghost_targetted prop here but let's
+                // not gratuitously rule out >1 ghost
+                if (spook.props["original_foe"].get_int() == mons->mindex()) {
+                    return true;
+                }
+            } 
+          return false;
+        })) &&
+        you.see_cell_no_trans(mons->pos())) {
+        place_ghost(*mons,ghost);
+    }
+
     if (mons->type != MONS_NO_MONSTER && mons->hit_points < 1)
         monster_die(*mons, KILL_MISC, NON_MONSTER);
+    
 }
 
 priority_queue<pair<monster *, int>,

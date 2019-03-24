@@ -37,6 +37,7 @@ public:
     monster_spells spells;
 
     monster_type slayer;
+    short attempts; // number of times this ghost loaded from bones
 
 public:
     ghost_demon();

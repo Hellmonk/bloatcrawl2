@@ -120,6 +120,8 @@ void mons_add_blame(monster* mon, const string &blame_string);
 
 void debug_bands();
 
+bool place_ghost(monster &foe, mid_t ghost_mid);
+
 // Active monster band may influence gear generation on band followers.
 extern band_type active_monster_band;
 

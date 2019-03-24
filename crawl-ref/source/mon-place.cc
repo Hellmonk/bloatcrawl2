@@ -39,6 +39,7 @@
 #include "mon-pick.h"
 #include "mon-poly.h"
 #include "mon-tentacle.h"
+#include "mon-transit.h"
 #include "options.h"
 #include "random.h"
 #include "religion.h"
@@ -1596,6 +1597,16 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         gozag_set_bribe(mon);
     }
 
+    // No check for hostility - that is checked when the monster acts
+    if ((!summoned) && 
+        (is_limbo_mons([&](const monster &mons)
+                       { return (mons.ghost && 
+                                 (mons.ghost->slayer == mon->type) ||
+                                 ((mons.ghost->slayer == MONS_NO_MONSTER) &&
+                                  (one_chance_in(27)))
+                               ); }))) {
+        mon->props["ghost_hated"]=true;
+    } 
     return mon;
 }
 
@@ -3338,4 +3349,44 @@ void setup_vault_mon_list()
     }
     if (size)
         dprf(DIAG_MONPLACE, "Level has a custom monster set.");
+}
+
+bool place_ghost(monster &foe, mid_t ghost_mid) {
+//    mpr("Attempting to place ghost...");
+    coord_def ghost_pos; bool state = false;
+    for (radius_iterator ri(foe.pos(),LOS_NO_TRANS,true);ri; ++ri) {
+        if (actor_at(*ri)) continue;
+        if (!cell_see_cell(you.pos(), *ri, LOS_NO_TRANS)) continue;
+        if (!monster_habitable_grid(MONS_PLAYER_GHOST,grd(*ri))) continue;
+        trap_def* trap = trap_at(*ri); if (trap) continue;
+        int dist = (grid_distance(*ri, you.pos()) - 
+                    grid_distance(*ri, foe.pos()));
+        if ((dist > 1) || (dist < 0)) continue;
+        for (radius_iterator ni(*ri,1,C_SQUARE,true);ni; ++ni) {
+            if ((monster_habitable_grid(MONS_PLAYER_GHOST,grd(*ni))) &&
+                (!you.see_cell(*ni)) && (!actor_at(*ni))) {
+                trap = trap_at(*ni); if (trap) continue;
+                state = true;
+                ghost_pos = *ri;
+//                mprf ("Considering %d,%d at distance %d...",ghost_pos.x,ghost_pos.y,dist);
+//                coord_def dbg_pos = *ni; mprf ("Approved because of clear square %d,%d.",dbg_pos.x,dbg_pos.y);
+                break;
+            }
+        }
+        if (state) break;
+    }
+    if (state) {
+        state = extract_monster_from_limbo(ghost_mid,ghost_pos,true,
+                                           foe.mindex());
+        if (state) {
+            monster* spook = monster_by_mid(ghost_mid);
+            spook->props["original_foe"] = foe.mindex();
+            spook->foe_memory = 1000;
+            spook->target = foe.pos();
+            spook->ghost->attempts = 0;
+            foe.props["ghost_target"] = true;
+            return true;
+        }
+    }
+    return false;
 }

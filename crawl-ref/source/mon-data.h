@@ -4447,8 +4447,9 @@ DUMMY(MONS_SNAKE, 'S', LIGHTGREEN, "snake", TILEP_MONS_ADDER)
 },
 
 // player ghost - stats are stored in ghost struct
+// lightred was left and if they can't be WHITE and neutral in console
 {
-    MONS_PLAYER_GHOST, 'W', WHITE, "player ghost",
+    MONS_PLAYER_GHOST, 'W', LIGHTRED, "player ghost",
     M_FIGHTER | M_SPEAKS | M_INSUBSTANTIAL | M_NO_POLY_TO | M_FLIES | M_GHOST_DEMON,
     MR_NO_FLAGS,
     15, MONS_PHANTOM, MONS_PLAYER_GHOST, MH_UNDEAD, -5,

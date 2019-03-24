@@ -49,6 +49,7 @@
 #include "message.h"
 #include "mgen-data.h"
 #include "mon-death.h"
+#include "mon-transit.h"
 #include "mon-place.h"
 #include "mon-util.h"
 #include "mutation.h"
@@ -1107,9 +1108,14 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
     }
 
     // Never generate bones files of wizard or tutorial characters -- bwr
-    if (!non_death && !crawl_state.game_is_tutorial() && !you.wizard) {
-        monster_type slayer_type=se.slayer_type;
-        save_ghosts(ghost_demon::find_ghosts(slayer_type));
+    if (!crawl_state.game_is_tutorial()) {
+        if (!non_death && !you.wizard) {
+            monster_type slayer_type=se.slayer_type;
+            save_ghosts(ghost_demon::find_ghosts(slayer_type));
+        }
+        for (auto& limbolist : limbo_monsters) {
+            save_limbo_ghosts(limbolist.first);
+        }
     }
     end_game(se, hiscore_index);
 }

@@ -4562,8 +4562,8 @@ void monster::ghost_init(bool need_pos)
     ghost_demon_init();
 
     god             = ghost->religion;
-    attitude        = ATT_HOSTILE;
-    behaviour       = BEH_WANDER;
+    attitude        = ATT_NEUTRAL;
+    behaviour       = BEH_SEEK;
     flags           = MF_NO_FLAGS;
     foe             = MHITNOT;
     foe_memory      = 0;
@@ -4579,9 +4579,7 @@ void monster::ghost_init(bool need_pos)
     ench_cache.reset();
     ench_countdown = 0;
 
-    // Summoned player ghosts are already given a position; calling this
-    // in those instances will cause a segfault. Instead, check to see
-    // if we have a home first. {due}
+    // I think in the new world this can never happen
     if (need_pos && !in_bounds(pos()))
         find_place_to_live();
 

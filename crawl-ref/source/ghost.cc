@@ -277,6 +277,7 @@ void ghost_demon::init_player_ghost(bool actual_ghost,monster_type slayer_type)
     unwind_var<bool> fishtail(you.fishtail, false);
 
     name   = you.your_name;
+    attempts = 0;
     max_hp = min(get_real_hp(false), MAX_GHOST_HP);
     ev     = min(you.evasion(EV_IGNORE_HELPLESS), MAX_GHOST_EVASION);
     ac     = you.armour_class();
@@ -728,15 +729,18 @@ void ghost_demon::find_extra_ghosts(vector<ghost_demon> &gs)
 }
 
 /// Returns the number of ghosts allowed on the specified level.
+// This function doesn't really do anything in Stoat Soup but leave it alone
+// in cast I change my mind later
 int ghost_demon::max_ghosts_per_level(int absdepth)
 {
-    return absdepth < 10 ? 1 : MAX_GHOSTS;
+    return 1; // absdepth < 10 ? 1 : MAX_GHOSTS;
 }
 
+// This list has been considerably shrunk, because getting a bit of help in
+// an ice cave is different to being stuck in one with a hostile ghost.
+// Lab left in because of the high probability of a free pass on the minotaur
 static const set<branch_type> ghosts_banned =
-            { BRANCH_ABYSS, BRANCH_LABYRINTH, BRANCH_SEWER, BRANCH_OSSUARY,
-              BRANCH_BAILEY, BRANCH_ICE_CAVE, BRANCH_VOLCANO, BRANCH_WIZLAB,
-              BRANCH_DESOLATION, BRANCH_TEMPLE };
+            { BRANCH_LABYRINTH, BRANCH_TEMPLE };
 
 
 /// Is the current location eligible for ghosts?

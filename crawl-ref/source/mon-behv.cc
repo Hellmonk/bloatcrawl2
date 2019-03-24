@@ -26,6 +26,7 @@
 #include "mon-death.h"
 #include "mon-movetarget.h"
 #include "mon-speak.h"
+#include "mon-transit.h"
 #include "ouch.h"
 #include "religion.h"
 #include "shout.h"
@@ -64,7 +65,7 @@ static void _mon_check_foe_invalid(monster* mon)
     if (mons_is_avatar(mon->type))
         return;
 
-    if (mon->foe != MHITNOT && mon->foe != MHITYOU)
+    if (mon->foe != MHITNOT && mon->foe != MHITYOU && mon->foe != MGHOSTDONE)
     {
         if (actor *foe = mon->get_foe())
         {

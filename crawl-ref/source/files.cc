@@ -60,6 +60,7 @@
 #include "mon-behv.h"
 #include "mon-death.h"
 #include "mon-place.h"
+#include "mon-transit.h"
 #include "notes.h"
 #include "output.h"
 #include "place.h"
@@ -1011,7 +1012,7 @@ static void _grab_followers()
     monster* dowan = nullptr;
     monster* duvessa = nullptr;
 
-    // Handle nearby ghosts.
+    // Handle nearby D&D etc
     for (adjacent_iterator ai(you.pos()); ai; ++ai)
     {
         monster* fol = monster_at(*ai);
@@ -1031,14 +1032,6 @@ static void _grab_followers()
             // must have been a summon
             if (mons_class_can_use_stairs(fol->type))
                 non_stair_using_summons++;
-        }
-
-        if (fol->type == MONS_PLAYER_GHOST
-            && fol->hit_points < fol->max_hit_points / 2)
-        {
-            if (fol->visible_to(&you))
-                mpr("The ghost fades into the shadows.");
-            monster_teleport(fol, true);
         }
     }
 
@@ -1267,6 +1260,10 @@ static void _make_level(dungeon_feature_type stair_taken,
     tile_clear_flavour();
     env.tile_names.clear();
 
+// Chance increased because they're harder to use up & might never appear
+    if (ghost_demon::ghost_eligible() && one_chance_in(2))
+        load_ghosts(ghost_demon::max_ghosts_per_level(env.absdepth0), true);
+
     // XXX: This is ugly.
     bool dummy;
     dungeon_feature_type stair_type = static_cast<dungeon_feature_type>(
@@ -1277,8 +1274,6 @@ static void _make_level(dungeon_feature_type stair_taken,
     _clear_env_map();
     builder(true, stair_type);
 
-    if (ghost_demon::ghost_eligible() && one_chance_in(3))
-        load_ghosts(ghost_demon::max_ghosts_per_level(env.absdepth0), true);
     env.turns_on_level = 0;
     // sanctuary
     env.sanctuary_pos  = coord_def(-1, -1);
@@ -1416,11 +1411,22 @@ bool load_level(dungeon_feature_type stair_taken, load_mode_type load_mode,
         if (old_level.depth != -1)
         {
             _grab_followers();
+            
+            // We do this even if the level is to be deleted so we can just
+            // save all the ghosts in limbo rather than look for them in two
+            // places
+            for (monster_iterator mi; mi; ++mi) {
+                if (mi->type == MONS_PLAYER_GHOST) {
+                    add_monster_to_limbo(*mi,old_level);
+                }
+            }
 
-            if (env.level_state & LSTATE_DELETED)
+            if (env.level_state & LSTATE_DELETED) {
+                save_limbo_ghosts(old_level);
                 delete_level(old_level), dprf("<lightmagenta>Deleting level.</lightmagenta>");
-            else
+            } else {
                 _save_level(old_level);
+            }
         }
 
         // The player is now between levels.
@@ -1800,22 +1806,22 @@ void save_game_state()
         save_game(true);
 }
 
-static string _make_ghost_filename()
+static string _make_ghost_filename(level_id level)
 {
     return "bones."
-           + replace_all(level_id::current().describe(), ":", "-");
+           + replace_all(level.describe(), ":", "-");
 }
 
 
 /**
- * Lists all bonefiles for the current level.
+ * Lists all bonefiles for a level.
  *
  * @return A vector containing absolute paths to 0+ bonefiles.
  */
-static vector<string> _list_bones()
+static vector<string> _list_bones(level_id level)
 {
     string bonefile_dir = _get_bonefile_directory();
-    string base_filename = _make_ghost_filename();
+    string base_filename = _make_ghost_filename(level);
     string underscored_filename = base_filename + "_";
 
     vector<string> filenames = get_dir_files(bonefile_dir);
@@ -1845,7 +1851,7 @@ static vector<string> _list_bones()
  */
 static string _find_ghost_file()
 {
-    vector<string> bonefiles = _list_bones();
+    vector<string> bonefiles = _list_bones(level_id::current());
     if (bonefiles.empty())
         return "";
     return bonefiles[ui_random(bonefiles.size())];
@@ -2096,6 +2102,8 @@ bool load_ghosts(int max_ghosts, bool creating_level)
     int placed_ghosts = 0;
 
     // Translate ghost to monster and place.
+    // A lot of this could be rewritten since we are only loading one ghost 
+    // ever but why bother, I might change my mind
     while (!loaded_ghosts.empty() && placed_ghosts < max_ghosts)
     {
         monster * const mons = get_free_monster();
@@ -2105,7 +2113,7 @@ bool load_ghosts(int max_ghosts, bool creating_level)
         mons->set_new_monster_id();
         mons->set_ghost(loaded_ghosts[0]);
         mons->type = MONS_PLAYER_GHOST;
-        mons->ghost_init();
+        mons->ghost_init(false);
 
         loaded_ghosts.erase(loaded_ghosts.begin());
         placed_ghosts++;
@@ -2119,6 +2127,8 @@ bool load_ghosts(int max_ghosts, bool creating_level)
             _ghost_dprf("Placed ghost is not MONS_PLAYER_GHOST, but %s",
                  mons->name(DESC_PLAIN, true).c_str());
         }
+        add_monster_to_limbo(mons);
+        
     }
 
     if (placed_ghosts < max_ghosts)
@@ -2554,11 +2564,11 @@ static bool _ghost_version_compatible(const save_version &version)
  * @param[out] return_gfilename     The name of the file created, if any.
  * @return                          A FILE object, or nullptr.
  **/
-static FILE* _make_bones_file(string * return_gfilename)
+static FILE* _make_bones_file(string * return_gfilename,level_id level)
 {
 
     const string bone_dir = _get_bonefile_directory();
-    const string base_filename = _make_ghost_filename();
+    const string base_filename = _make_ghost_filename(level);
     for (int i = 0; i < GHOST_LIMIT; i++)
     {
         const string g_file_name = make_stringf("%s%s_%d", bone_dir.c_str(),
@@ -2590,7 +2600,7 @@ static FILE* _make_bones_file(string * return_gfilename)
  * @param force   Forces ghost generation even in otherwise-disallowed levels.
  **/
 
-void save_ghosts(const vector<ghost_demon> &ghosts, bool force)
+void save_ghosts(const vector<ghost_demon> &ghosts, bool force, level_id level)
 {
     // n.b. this is not called in the normal course of events for wizmode
     // chars, so for debugging anything to do with deaths in wizmode, you will
@@ -2608,14 +2618,14 @@ void save_ghosts(const vector<ghost_demon> &ghosts, bool force)
         return;
     }
 
-    if (_list_bones().size() >= static_cast<size_t>(GHOST_LIMIT))
+    if (_list_bones(level).size() >= static_cast<size_t>(GHOST_LIMIT))
     {
         _ghost_dprf("Too many ghosts for this level already!");
         return;
     }
 
     string g_file_name = "";
-    FILE* ghost_file = _make_bones_file(&g_file_name);
+    FILE* ghost_file = _make_bones_file(&g_file_name,level);
 
     if (!ghost_file)
     {
@@ -2764,4 +2774,25 @@ vector<string> get_title_files()
             if (file.substr(0, 6) == "title_")
                 titles.push_back(file);
     return titles;
+}
+
+void save_limbo_ghosts(level_id level) {
+    vector<ghost_demon> gs;
+    m_transit_list &limhere = limbo_monsters[level];
+    for (auto i = limhere.begin(); i != limhere.end(); i++) {
+        if (i->mons.type == MONS_PLAYER_GHOST) {
+            if (!i->mons.props.exists("original_foe")) {
+                i->mons.ghost->attempts++;
+            }
+//            mprf("%d attempts",i->mons.ghost->attempts);
+            if (i->mons.ghost->attempts < 9) {
+                ghost_demon spook = *(i->mons.ghost);
+                gs.push_back(spook);
+            }
+            limhere.erase(i--);
+        }
+    }
+    if (gs.size()) {
+        save_ghosts(gs,false,level);
+    }
 }

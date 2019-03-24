@@ -28,6 +28,7 @@
 #include "exercise.h"
 #include "food.h"
 #include "fprop.h"
+#include "ghost.h"
 #include "god-abil.h"
 #include "god-conduct.h"
 #include "god-passive.h"
@@ -1170,6 +1171,19 @@ static inline bool _monster_warning(activity_interrupt_type ai,
         else
             text += " comes into view.";
 
+        if ((mon->type == MONS_PLAYER_GHOST) &&
+            // it doesn't have an original foe if it's just appearing for the
+            // first time
+            ((!mon->props.exists("original_foe")) ||
+             (mon->foe == mon->props["original_foe"].get_int())) &&
+            // This check is needed in case eg just pulled out of limbo
+            (mon->get_foe()) &&
+            (mon->get_foe()->as_monster()->alive()) &&
+            (you.can_see(*(mon->get_foe())))) {
+            text += " Its baleful gaze is fixed on ";
+            text += mon->get_foe()->as_monster()->full_name(DESC_A);
+            text += ".";
+        }
         bool ash_id = mon->props.exists("ash_id") && mon->props["ash_id"];
         bool zin_id = false;
         string god_warning;

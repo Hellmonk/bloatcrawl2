@@ -244,6 +244,7 @@ const set<int> bones_minor_tags =
          TAG_MINOR_GHOST_ENERGY,
          TAG_MINOR_BOOL_FLIGHT,
 	 TAG_MINOR_GHOST_SLAYER,
+	 TAG_MINOR_GHOST_VENGEANCE,
 #endif
         };
 
