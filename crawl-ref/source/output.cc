@@ -1837,7 +1837,7 @@ static string _itosym(int level, int max = 1)
 
 static const char *s_equip_slot_names[] =
 {
-    "Weapon", "Cloak",  "Helmet", "Gloves", "Boots",
+    "Weapon", "Weapon/Shield", "Cloak",  "Helmet", "Gloves", "Boots",
     "Shield", "Armour", "Left Ring", "Right Ring", "Amulet",
     "First Ring", "Second Ring", "Third Ring", "Fourth Ring",
     "Fifth Ring", "Sixth Ring", "Seventh Ring", "Eighth Ring",
@@ -1987,12 +1987,12 @@ static void _print_overview_screen_equip(column_composer& cols,
                      colname.c_str());
             equip_chars.push_back(equip_char);
         }
-        else if (eqslot == EQ_WEAPON0
+        else if ((eqslot == EQ_WEAPON0 || eqslot == EQ_WEAPON1)
                  && you.skill(SK_UNARMED_COMBAT))
         {
             str = "  - Unarmed";
         }
-        else if (eqslot == EQ_WEAPON0
+        else if ((eqslot == EQ_WEAPON0 || eqslot == EQ_WEAPON1)
                  && you.form == transformation::blade_hands)
         {
             const bool plural = !you.get_mutation_level(MUT_MISSING_HAND);

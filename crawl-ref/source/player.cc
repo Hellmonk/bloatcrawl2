@@ -731,6 +731,10 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
     case EQ_RING_AMULET:
         return player_equip_unrand(UNRAND_FINGER_AMULET) ? MB_TRUE : MB_FALSE;
 
+	case EQ_OLD_SHIELD:
+		return MB_FALSE;
+		break;
+
     default:
         break;
     }
@@ -773,6 +777,7 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
         if (you.body_size(PSIZE_TORSO, !temp) < SIZE_MEDIUM)
             alternate.sub_type = ARM_BUCKLER;
         break;
+
 
     case EQ_HELMET:
         dummy.sub_type = ARM_HELMET;
@@ -934,15 +939,16 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
 		}
 		break;
 
-/*	case EQ_WEAPON1:
-		if (item->base_type == OBJ_WEAPONS
+	case EQ_WEAPON1:
+/*		if (item->base_type == OBJ_WEAPONS
 			&& get_weapon_brand(*item) == special)
 			ret++;
 		else if (item->base_type == OBJ_ARMOUR
 			&& get_armour_ego_type(*item) == special)
-			ret++;
+			ret++; */
 		break;
-*/
+		
+
     case EQ_LEFT_RING:
     case EQ_RIGHT_RING:
     case EQ_AMULET:

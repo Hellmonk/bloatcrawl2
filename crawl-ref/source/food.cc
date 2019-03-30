@@ -205,10 +205,12 @@ bool eat_food(int slot)
 
 static string _how_hungry()
 {
-    if (you.hunger_state > HS_SATIATED)
-        return "full";
-    else if (you.species == SP_VAMPIRE)
-        return "thirsty";
+	if (you.hunger_state > HS_SATIATED)
+		return "full";
+	else if (you.species == SP_VAMPIRE)
+		return "thirsty";
+	else if (you.species == SP_TENGU)
+		return "peckish";
     return "hungry";
 }
 

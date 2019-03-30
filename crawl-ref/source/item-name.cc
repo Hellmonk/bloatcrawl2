@@ -267,11 +267,15 @@ string item_def::name(description_level_type descrip, bool terse, bool ident,
                     else
                         buff << " (in " << you.hand_name(false) << ")";
                     break;
+				case EQ_WEAPON1:
+					if (is_weapon(*this))
+						buff << " (secondary weapon)";
+					else
+						buff << " (shield hand)";
                 case EQ_CLOAK:
                 case EQ_HELMET:
                 case EQ_GLOVES:
                 case EQ_BOOTS:
-                case EQ_WEAPON1:
                 case EQ_BODY_ARMOUR:
                     buff << " (worn)";
                     break;

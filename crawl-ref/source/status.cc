@@ -734,6 +734,7 @@ bool fill_status_info(int status, status_info& inf)
 static void _describe_hunger(status_info& inf)
 {
     const bool vamp = (you.species == SP_VAMPIRE);
+	const bool kenku = (you.species == SP_TENGU);
 
     switch (you.hunger_state)
     {
@@ -751,15 +752,15 @@ static void _describe_hunger(status_info& inf)
         break;
     case HS_HUNGRY:
         inf.light_colour = YELLOW;
-        inf.light_text   = (vamp ? "Thirsty" : "Hungry");
+        inf.light_text   = (vamp ? "Thirsty" : kenku ? "Peckish" : "Hungry");
         break;
     case HS_VERY_HUNGRY:
         inf.light_colour = YELLOW;
-        inf.light_text   = (vamp ? "Very Thirsty" : "Very Hungry");
+        inf.light_text   = (vamp ? "Awfully Thirsty" : kenku ? "Quite Peckish" : "Very Hungry");
         break;
     case HS_NEAR_STARVING:
         inf.light_colour = YELLOW;
-        inf.light_text   = (vamp ? "Near Bloodless" : "Near Starving");
+        inf.light_text   = (vamp ? "Near Bloodless" : kenku ? "Ravenously Peckish" : "Near Starving");
         break;
     case HS_STARVING:
         inf.light_colour = LIGHTRED;

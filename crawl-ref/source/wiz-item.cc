@@ -971,7 +971,7 @@ static void _debug_acquirement_stats(FILE *ostat)
     // Print player equipment.
     const int e_order[] =
     {
-        EQ_WEAPON0, EQ_BODY_ARMOUR, EQ_WEAPON1, EQ_HELMET, EQ_CLOAK,
+        EQ_WEAPON0, EQ_WEAPON1, EQ_BODY_ARMOUR, EQ_HELMET, EQ_CLOAK,
         EQ_GLOVES, EQ_BOOTS, EQ_AMULET, EQ_RIGHT_RING, EQ_LEFT_RING,
         EQ_RING_ONE, EQ_RING_TWO, EQ_RING_THREE, EQ_RING_FOUR,
         EQ_RING_FIVE, EQ_RING_SIX, EQ_RING_SEVEN, EQ_RING_EIGHT,
