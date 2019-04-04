@@ -2849,6 +2849,9 @@ item_def* monster_die(monster& mons, killer_type killer,
                     mprf("%s fades from view, its vengeance complete.",
                          mi->full_name(DESC_A).c_str());
                 }
+                if ((you.can_see(**mi)) || (you.can_see(mons))) {
+                    remove_unique_annotation(*mi);
+                }
                 monster_cleanup(*mi);
             }
         }

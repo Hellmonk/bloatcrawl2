@@ -19,6 +19,7 @@
 #include "dbg-scan.h"
 #include "delay.h"
 #include "directn.h" // feature_description_at
+#include "dgn-overview.h"
 #include "dungeon.h"
 #include "english.h" // apostrophise
 #include "evoke.h"
@@ -1412,6 +1413,7 @@ static void _pre_monster_move(monster& mons)
                 if (you.can_see(mons)) {
                     mprf("%s fades from view, wailing with frustration.",
                          mons.name(DESC_THE).c_str());
+                    remove_unique_annotation(&mons);
                 }
                 add_monster_to_limbo(&mons); return;
             } else if (grid_distance(mons.pos(),mons.get_foe()->pos()) > 
