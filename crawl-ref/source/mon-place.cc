@@ -3359,9 +3359,14 @@ bool place_ghost(monster &foe, mid_t ghost_mid) {
         if (!cell_see_cell(you.pos(), *ri, LOS_NO_TRANS)) continue;
         if (!monster_habitable_grid(MONS_PLAYER_GHOST,grd(*ri))) continue;
         trap_def* trap = trap_at(*ri); if (trap) continue;
+        // not closer to you than the monster - avoids trapping in corridor
         int dist = (grid_distance(*ri, you.pos()) - 
                     grid_distance(*ri, foe.pos()));
-        if ((dist > 1) || (dist < 0)) continue;
+        if (dist < 0) continue;
+        // About equidistant to you and monster
+        dist = (grid_distance(foe.pos(), you.pos()) - 
+                    grid_distance(*ri, foe.pos()));
+        if (abs(dist) > 1) continue;
         for (radius_iterator ni(*ri,1,C_SQUARE,true);ni; ++ni) {
             if ((monster_habitable_grid(MONS_PLAYER_GHOST,grd(*ni))) &&
                 (!you.see_cell(*ni)) && (!actor_at(*ni))) {
