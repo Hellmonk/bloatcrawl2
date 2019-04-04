@@ -39,7 +39,7 @@ You can:
 
 - watch other players and even communicate with them
 - view your past games or those of others
-- battle ghosts of other players
+- be aided by ghosts of other players
 - compete using a common score list
 - take part in the annual tournament
 - play the most recent development version

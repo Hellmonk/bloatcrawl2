@@ -16,7 +16,7 @@ allows you to do:
 *  watch other players' games
 *  have the ability to chat and comment in-game
 *  have your game stats uploaded/recorded on the homepage
-*  encounter and kill/be killed by other players' ghosts
+*  encounter other players' ghosts
 
 ----
 
