@@ -1039,8 +1039,6 @@ Fighting player ghost
 
 VISUAL:@The_monster@ takes a fighting stance.
 
-@The_monster@ says, "My insurmountable tactics guarantee your defeat."
-
 @The_monster@ says, "Are you willing to die fighting? I was!"
 
 @The_monster@ sneers, "Do you call that fighting?"
@@ -1062,8 +1060,6 @@ VISUAL:@The_monster@ holds @possessive@ blade at the ready.
 @The_monster@ says, "Live by the sword, die by the sword."
 %%%%
 Axes player ghost
-
-@The_monster@ says, "I'll split you in two!"
 
 @The_monster@ mumbles, "They all look like pillowcases to me..."
 
@@ -1087,11 +1083,8 @@ Polearms player ghost
 %%%%
 Staves player ghost
 
-@The_monster@ says, "I excel at staving off weak adventurers."
-
 VISUAL:@The_monster@ twirls @possessive@ quarterstaff.
 
-@The_monster@ threatens to break your skull. @player_only@
 %%%%
 Slings player ghost
 
@@ -1117,13 +1110,11 @@ Throwing player ghost
 
 VISUAL:@The_monster@ glances around for something to throw.
 
-@The_monster@ deftly throws insults at you. @player_only@
-
 @_generic_ranged_@
 %%%%
 Armour player ghost
 
-@The_monster@ says, "You cannot hurt me!"
+@The_monster@ says, "I cannot be hurt!"
 
 @The_monster@ says, "I am invincible!"
 
@@ -1147,13 +1138,13 @@ VISUAL:@The_monster@ whispers something so quietly that you cannot hear @objecti
 
 VISUAL:For a moment, you lose track of @the_monster@.
 
-@The_monster@ whispers, "Be very very quiet, I'm hunting @player_genus_plural@." @player_only@
+@The_monster@ whispers, "Be very very quiet, I'm hunting @foe_genus_plural@." 
 
 VISUAL:For a moment, @the_monster@ blends into the shadows.
 %%%%
 Shields player ghost
 
-@The_monster@ says, "You can hit me, but you can't hurt me."
+@The_monster@ says, "I can be hit, but I can't be hurt."
 %%%%
 Unarmed Combat player ghost
 
@@ -1164,8 +1155,6 @@ VISUAL:@The_monster@ feints to the [left|right].
 VISUAL:@The_monster@ assumes a wrestling stance.
 
 @The_monster@ says, "I break bones and crack skulls... with my bare hands."
-
-VISUAL:@The_monster@ swings @possessive@ fists at you. @player_only@
 
 VISUAL:@The_monster@ flexes @possessive@ fingers.
 %%%%
@@ -1183,13 +1172,10 @@ VISUAL:@The_monster@'s fingertips begin to glow.
 
 VISUAL:@The_monster@ frowns in concentration.
 
-@The_monster@ says, "I am smarter than you!"
 %%%%
 Conjurations player ghost
 
 VISUAL:@The_monster@ takes aim.
-
-@The_monster@ says, "I will blast you to bits."
 
 @The_monster@ [adeptly chants|mispronounces] a nearly unspeakable incantation.
 
@@ -1245,11 +1231,11 @@ VISUAL:@The_monster@ briefly turns into a @_form_@ and back.
 %%%%
 Fire Magic player ghost
 
-@The_monster@ says, "I love the smell of burning flesh."
+@The_monster@ says @to_foe@, "I love the smell of burning flesh."
 
-@The_monster@ says, "Would you like to be cremated?"
+@The_monster@ says @to_foe@, "Would you like to be cremated?"
 
-@The_monster@ says, "Don't worry, you'll be warm in a moment."
+@The_monster@ says @to_foe@, "Don't worry, you'll be warm in a moment."
 %%%%
 Ice Magic player ghost
 
@@ -1319,11 +1305,8 @@ Ashenzari player ghost
 
 @The_monster@ says with laughter: "And yet I knew I would end up like that..."
 
-@The_monster@ promises, "I will read your future in your entrails."
 %%%%
 Beogh player ghost
-
-@The_monster@ says, "Nobody wants to follow a dead messiah!"
 
 @The_monster@ says, "I used to walk on water. Now I just fly over it."
 
@@ -1398,9 +1381,9 @@ Lugonu player ghost
 %%%%
 Makhleb player ghost
 
-@The_monster@ says, "I won't need demonic support against you."
+@The_monster@ says @to_foe@, "I won't need demonic support against you."
 
-@The_monster@ says, "I died to destroy people like you for fun."
+@The_monster@ says @to_foe@, "I died to destroy vermin like you for fun."
 
 @The_monster@ says, "Destruction is an occupation beyond life."
 
@@ -1420,7 +1403,7 @@ Okawaru player ghost
 %%%%
 Pakellas player ghost
 
-@The_monster@ says, "You're just another problem to be solved."
+@The_monster@ says @to_foe@, "You're just another problem to be solved."
 
 @The_monster@ says, "You're really going to get a charge out of this one."
 
@@ -1430,9 +1413,9 @@ Qazlal player ghost
 
 @The_monster@ says, "A storm is coming..."
 
-@The_monster@ says, "Let nature run its course against you!"
+@The_monster@ says, "Let nature run its course!"
 
-@The_monster@ says, "The earth shall destroy you!"
+@The_monster@ says @to_foe@, "The earth shall destroy you!"
 %%%%
 Ru player ghost
 
@@ -1472,11 +1455,11 @@ Trog player ghost
 %%%%
 Vehumet player ghost
 
-@The_monster@ threatens, "I'm fresh out of hellfire, but you will end anyway."
+@The_monster@ threatens, "I'm fresh out of hellfire, but this will end anyway."
 
 @The_monster@ says, "The agents of utter destruction are not stopped by death."
 
-@The_monster@ boasts, "After taking care of you, I will research a spell that consumes the world."
+@The_monster@ boasts @to_foe@, "After taking care of you, I will research a spell that consumes the world."
 
 @The_monster@ threatens, "Do not fail me, O fires of Iskenderun!"
 %%%%
@@ -1484,13 +1467,13 @@ Xom player ghost
 
 @The_monster@ @_laughs_@, "I laugh when killing. So smile when dying. SMILE!"
 
-@The_monster@ complains, "You're an easy kill, but not a fun one."
+@The_monster@ complains @to_foe@, "You're an easy kill, but not a fun one."
 
 @The_monster@ reminisces, "I miss the gifts and the pranks."
 
 @The_monster@ twaddles, "I had a jolly good time in life, and I have a jolly good time now!"
 
-@The_monster@ giggles, "Hey deadhead, what fun to see your head drop dead!"
+@The_monster@ giggles @to_foe@, "Hey deadhead, what fun to see your head drop dead!"
 
 @The_monster@ says: "I need scissors! I think I chipped a nail somewhere..."
 
@@ -1514,7 +1497,6 @@ _generic_ranged_
 
 @The_monster@ takes aim @at_foe@.
 
-You feel something passing dangerously close to your head. @player_only@
 %%%%
 _form_
 
@@ -1589,13 +1571,9 @@ VISUAL:@The_monster@ grins evilly.
 
 @The_monster@ @_wails_@, "I was like you once."
 
-@The_monster@ @_wails_@, "Very impressive. But it won't help. Nothing will."
-
 @The_monster@ @_wails_@, "I have seen your future, and it is all used up."
 
 @The_monster@ @_wails_@, "Do you think the gods will protect you?"
-
-@The_monster@ screams, "I'll kill anyone who wants the ORB!" @player_only@
 
 @The_monster@ screams @at_foe@, "Don't try to defend! You have no chance!"
 
@@ -1603,16 +1581,11 @@ VISUAL:@The_monster@ grins evilly.
 
 @The_monster@ whispers, "Death is liberation."
 
-@The_monster@ @_wails_@, "Death is your only future!"
-
-@The_monster@ whispers, "Meet the emptiness of death!"
-
 # Sid Vicious I
 @The_monster@ @_wails_@, "There is no future for me!"
 
 @The_monster@ whispers, "They're coming for you..."
 
-@The_monster@ whispers, "Trust me. Just give in."
 %%%%
 _player_ghost_rare_
 
@@ -1623,12 +1596,8 @@ _player_ghost_rare_
 
 @The_monster@ whispers, "Death doesn't hurt. What you feel is life."
 
-@The_monster@ whispers, "You will understand me better in a moment."
-
 # The Mysterious Stranger
 @The_monster@ whispers, "It is all a dream - a grotesque and foolish dream."
-
-@The_monster@ whispers, "Soon you will have time, lots of time..."
 
 @The_monster@ @_wails_@, "You must not fail where I succeeded!"
 %%%%
