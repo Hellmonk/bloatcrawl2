@@ -278,9 +278,10 @@ void ghost_demon::init_player_ghost(bool actual_ghost,monster_type slayer_type)
 
     name   = you.your_name;
     attempts = 0;
-    max_hp = min(get_real_hp(false), MAX_GHOST_HP);
-    ev     = min(you.evasion(EV_IGNORE_HELPLESS), MAX_GHOST_EVASION);
-    ac     = you.armour_class();
+    max_hp = min(((2 * (1+get_real_hp(false))) / 3), MAX_GHOST_HP);
+    ev     = min(((2 * (1+you.evasion(EV_IGNORE_HELPLESS))) / 3),
+                 MAX_GHOST_EVASION);
+    ac     = (2 * (1+you.armour_class())) / 3;
     dprf("ghost ac: %d, ev: %d", ac, ev);
 
     see_invis      = you.can_see_invisible();
