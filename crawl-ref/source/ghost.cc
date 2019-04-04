@@ -265,8 +265,30 @@ void ghost_demon::init_pandemonium_lord()
     colour = one_chance_in(10) ? ETC_RANDOM : random_monster_colour();
 }
 
-static const set<brand_type> ghost_banned_brands =
-                { SPWPN_HOLY_WRATH, SPWPN_CHAOS };
+// Returns the movement speed for a player ghost. Note that this is a
+// a movement cost, so lower is better.
+//FIXME: deduplicate with player_movement_speed()
+static int _player_ghost_movement_energy()
+{
+    int energy = 10;
+
+    if (int fast = you.get_mutation_level(MUT_FAST, false))
+        energy -= fast + 1;
+    if (int slow = you.get_mutation_level(MUT_SLOW, false))
+        energy += slow + 2;
+
+    if (you.wearing_ego(EQ_BOOTS, SPARM_RUNNING))
+        energy -= 1;
+
+    if (you.wearing_ego(EQ_ALL_ARMOUR, SPARM_PONDEROUSNESS))
+        energy += 1;
+
+    if (energy < FASTEST_PLAYER_MOVE_SPEED)
+        energy = FASTEST_PLAYER_MOVE_SPEED;
+
+    return energy;
+}
+
 
 void ghost_demon::init_player_ghost(bool actual_ghost,monster_type slayer_type)
 {
@@ -299,7 +321,7 @@ void ghost_demon::init_player_ghost(bool actual_ghost,monster_type slayer_type)
     set_resist(resists, MR_RES_ROTTING, you.res_rotting());
     set_resist(resists, MR_RES_PETRIFY, you.res_petrify());
 
-    move_energy = 10;
+    move_energy = _player_ghost_movement_energy();
     speed       = 10;
     slayer      = slayer_type ? slayer_type : MONS_NO_MONSTER;
 
@@ -325,8 +347,9 @@ void ghost_demon::init_player_ghost(bool actual_ghost,monster_type slayer_type)
             {
                 brand = static_cast<brand_type>(get_weapon_brand(weapon));
 
-                // normalize banned weapon brands
-                if (ghost_banned_brands.count(brand) > 0)
+                // Ghosts can't get holy wrath, but they get to keep
+                // the weapon.
+                if (brand == SPWPN_HOLY_WRATH)
                     brand = SPWPN_NORMAL;
 
                 // Don't copy ranged- or artefact-only brands (reaping etc.).
