@@ -2229,9 +2229,9 @@ dump_message_count = 20
         The number of last messages to be displayed in character dump
         files.
 
-dump_order  = header,hiscore,stats,misc,inventory,
-dump_order += skills,spells,overview,mutations,messages,screenshot,
-dump_order += monlist,kills,notes,skill_gains,action_counts
+dump_order  = header,hiscore,stats,misc,inventory,skills
+dump_order += spells,overview,mutations,messages,screenshot,monlist
+dump_order += kills,notes,vaults,skill_gains,action_counts,xp_by_level
         (Ordered list option)
         Controls the order of sections in the dump.
 
@@ -2243,11 +2243,7 @@ dump_order += monlist,kills,notes,skill_gains,action_counts
 
         Another optional dump section is "vaults", which will list the
         locations and names of all the vaults that have been generated
-        in the game. This will only be included in the final dump
-        which happens when you die, quit or win (or in ordinary dumps
-        while in wizard mode). The "vaults" section is enabled by default
-        in trunk builds of Crawl (not releases or pre-release betas),
-        appearing between "notes" and "skill_gains".
+        in the game. In Stoat Soup it is included by default.
 
 dump_book_spells = true
         By default all randart spellbooks in inventory will have all their
