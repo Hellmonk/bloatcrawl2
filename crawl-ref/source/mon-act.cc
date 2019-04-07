@@ -2330,6 +2330,7 @@ static void _post_monster_move(monster* mons)
     mid_t ghost;
     if (mons->props.exists("ghost_hated") &&  
         mons->attitude == ATT_HOSTILE &&
+        (random2(40) < get_tension(GOD_NO_GOD)) &&
         div_rand_round(mons->hit_points, 2 * mons->max_hit_points) &&
         !(mons->petrifying() || mons->paralysed() || mons->petrified() || 
           mons->asleep() || mons->is_patrolling() || 

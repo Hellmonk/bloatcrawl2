@@ -1231,6 +1231,42 @@ static bool _leave_level(dungeon_feature_type stair_taken,
     return popped;
 }
 
+static string _make_ghost_filename(level_id level)
+{
+    return "bones."
+           + replace_all(level.describe(), ":", "-");
+}
+
+/**
+ * Lists all bonefiles for a level.
+ *
+ * @return A vector containing absolute paths to 0+ bonefiles.
+ */
+static vector<string> _list_bones(level_id level)
+{
+    string bonefile_dir = _get_bonefile_directory();
+    string base_filename = _make_ghost_filename(level);
+    string underscored_filename = base_filename + "_";
+
+    vector<string> filenames = get_dir_files(bonefile_dir);
+    vector<string> bonefiles;
+    for (const auto &filename : filenames)
+        if (starts_with(filename, underscored_filename)
+                                            && !ends_with(filename, ".backup"))
+        {
+            bonefiles.push_back(bonefile_dir + filename);
+            _ghost_dprf("bonesfile %s", (bonefile_dir + filename).c_str());
+        }
+
+    string old_bonefile = _get_old_bonefile_directory() + base_filename;
+    if (access(old_bonefile.c_str(), F_OK) == 0)
+    {
+        _ghost_dprf("Found old bonefile %s", old_bonefile.c_str());
+        bonefiles.push_back(old_bonefile);
+    }
+
+    return bonefiles;
+}
 
 /**
  * Generate a new level.
@@ -1261,8 +1297,17 @@ static void _make_level(dungeon_feature_type stair_taken,
     env.tile_names.clear();
 
 // Chance increased because they're harder to use up & might never appear
-    if (ghost_demon::ghost_eligible() && one_chance_in(2))
-        load_ghosts(ghost_demon::max_ghosts_per_level(env.absdepth0), true);
+    if (ghost_demon::ghost_eligible()) {
+        // There is a race condition here, but it's harmless
+        int numspooks = (int) _list_bones(level_id::current()).size();
+        if (numspooks) {
+            if (((numspooks == 1) && one_chance_in(3)) ||
+                (!one_chance_in(numspooks))) {
+                load_ghosts(ghost_demon::max_ghosts_per_level(env.absdepth0), 
+                            true);
+            }
+        }
+    }
 
     // XXX: This is ugly.
     bool dummy;
@@ -1804,44 +1849,6 @@ void save_game_state()
     save_game(false);
     if (crawl_state.seen_hups)
         save_game(true);
-}
-
-static string _make_ghost_filename(level_id level)
-{
-    return "bones."
-           + replace_all(level.describe(), ":", "-");
-}
-
-
-/**
- * Lists all bonefiles for a level.
- *
- * @return A vector containing absolute paths to 0+ bonefiles.
- */
-static vector<string> _list_bones(level_id level)
-{
-    string bonefile_dir = _get_bonefile_directory();
-    string base_filename = _make_ghost_filename(level);
-    string underscored_filename = base_filename + "_";
-
-    vector<string> filenames = get_dir_files(bonefile_dir);
-    vector<string> bonefiles;
-    for (const auto &filename : filenames)
-        if (starts_with(filename, underscored_filename)
-                                            && !ends_with(filename, ".backup"))
-        {
-            bonefiles.push_back(bonefile_dir + filename);
-            _ghost_dprf("bonesfile %s", (bonefile_dir + filename).c_str());
-        }
-
-    string old_bonefile = _get_old_bonefile_directory() + base_filename;
-    if (access(old_bonefile.c_str(), F_OK) == 0)
-    {
-        _ghost_dprf("Found old bonefile %s", old_bonefile.c_str());
-        bonefiles.push_back(old_bonefile);
-    }
-
-    return bonefiles;
 }
 
 /**
@@ -2784,8 +2791,10 @@ void save_limbo_ghosts(level_id level) {
             if (!i->mons.props.exists("original_foe")) {
                 i->mons.ghost->attempts++;
             }
-//            mprf("%d attempts",i->mons.ghost->attempts);
-            if (i->mons.ghost->attempts < 9) {
+            int attempts = GHOST_LIMIT - 
+                (int) _list_bones(level_id::current()).size();
+            attempts *= 9; attempts /= GHOST_LIMIT; attempts = max(attempts,1);
+            if (i->mons.ghost->attempts < attempts) {
                 ghost_demon spook = *(i->mons.ghost);
                 gs.push_back(spook);
             }
