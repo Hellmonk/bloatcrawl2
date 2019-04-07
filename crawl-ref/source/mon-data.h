@@ -28,7 +28,7 @@
               and if a default colour isn't meaningful, they should also use
               COLOUR_UNDEF.
     - name: if an empty string, name generated automagically (see moname)
-    - genus: base monster "type" for a classed monsters (i.e. jackal as hound)
+    - genus: base monster "type" for a classed monsters (e.g. jackal as hound)
     - species: corpse type of monster (i.e. orc for orc wizard)
     - holiness: a bitwise OR of one or more of:
        MH_HOLY       - irritates some gods when killed, immunity from
@@ -4773,6 +4773,19 @@ DUMMY(MONS_SNAKE, 'S', LIGHTGREEN, "snake", TILEP_MONS_ADDER)
     {TILEP_MONS_HELLEPHANT}, TILE_CORPSE_HELLEPHANT
 },
 
+{
+    MONS_TRICERATOPS, 'Y', YELLOW, "the Triceratops",
+    M_UNIQUE | M_WARM_BLOOD | M_CRASH_DOORS,
+    MR_NO_FLAGS,
+    10, MONS_TRICERATOPS, MONS_TRICERATOPS, MH_NATURAL, 80,
+	{ {AT_GORE, AF_PLAIN, 60}, {AT_HEADBUTT, AF_TRAMPLE, 30},
+				   AT_NO_ATK, AT_NO_ATK},
+    18, 2000,
+    20, 5, MST_ALLIGATOR, CE_CLEAN, S_BELLOW,
+    I_ANIMAL, HT_LAND, 8, DEFAULT_ENERGY,
+    MONUSE_NOTHING, SIZE_BIG, MON_SHAPE_QUADRUPED,
+    {TILEP_MONS_TRICERATOPS}, TILE_CORPSE_TRICERATOPS
+    },
 {
     MONS_APIS, 'Y', WHITE, "apis",
     M_WARM_BLOOD,

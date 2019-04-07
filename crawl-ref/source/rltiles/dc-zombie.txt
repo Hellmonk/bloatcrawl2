@@ -50,6 +50,7 @@ zombie_merfolk MONS_ZOMBIE_MERFOLK
 zombie_minotaur MONS_ZOMBIE_MINOTAUR
 zombie_salamander MONS_ZOMBIE_SALAMANDER
 zombie_spriggan MONS_ZOMBIE_SPRIGGAN
+zombie_triceratops MONS_ZOMBIE_TRICERATOPS
 zombie_wyvern MONS_ZOMBIE_WYVERN
 zombie_yaktaur MONS_ZOMBIE_YAKTAUR
 %rim 0

@@ -12,6 +12,7 @@ The monster list provides considerably more information about monsters,
  with polearms unexpectedly?
 You are optionally warned before entering, or when forcedly transported to, the
 last level in a branch.
+Added the Triceratops, a Swamp unique who is not remotely cute and cuddly.
 
 Vanilla changes messed around with
 ----------------------------------

@@ -1768,6 +1768,11 @@ void name_zombie(monster& mon, monster_type mc, const string &mon_name)
         mon.mname = "Enchantress";
         mon.flags |= MF_NAME_ADJECTIVE;
     }
+    else if (mc == MONS_TRICERATOPS)
+    {
+        mon.mname = "triceratops";
+        mon.flags |= MF_NAME_REPLACE;
+    }
     else if (mons_species(mc) == MONS_SERPENT_OF_HELL)
         mon.mname = "";
 
@@ -2167,7 +2172,10 @@ bool mons_zombifiable(monster_type mc)
 
 bool mons_flattens_trees(const monster& mon)
 {
-    return mons_base_type(mon) == MONS_LERNAEAN_HYDRA;
+    // Bit unsatisfying that both tree-flattening monsters in Swamp
+    return ((mons_base_type(mon) == MONS_LERNAEAN_HYDRA) ||
+            (mons_base_type(mon) == MONS_TRICERATOPS));
+
 }
 
 bool mons_class_res_tornado(monster_type mc)

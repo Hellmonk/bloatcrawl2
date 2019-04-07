@@ -221,6 +221,7 @@ elephant_dire MONS_DIRE_ELEPHANT
 elephant_demonic MONS_HELLEPHANT
 %sdir mon/unique
 nellie MONS_NELLIE
+triceratops MONS_TRICERATOPS
 %sdir mon/holy
 apis MONS_APIS
 

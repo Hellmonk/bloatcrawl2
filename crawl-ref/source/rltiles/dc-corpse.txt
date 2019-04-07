@@ -141,6 +141,8 @@ catoblepas CORPSE_CATOBLEPAS
 sky_beast CORPSE_SKY_BEAST
 %sdir mon/holy
 apis CORPSE_APIS
+%sdir mon/unique
+triceratops CORPSE_TRICERATOPS
 
 ### Non-animals
 

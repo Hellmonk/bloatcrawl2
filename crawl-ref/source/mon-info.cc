@@ -938,10 +938,12 @@ string monster_info::_apply_adjusted_description(description_level_type desc,
 string monster_info::common_name(description_level_type desc) const
 {
     const string core = _core_name();
+    // trike is special here - few uniques are their own species?
     const bool nocore = mons_class_is_zombified(type)
-                          && mons_is_unique(base_type)
-                          && base_type == mons_species(base_type)
-                        || type == MONS_MUTANT_BEAST && !is(MB_NAME_REPLACE);
+        && mons_is_unique(base_type)
+        && ((base_type == mons_species(base_type)) && 
+            (base_type != MONS_TRICERATOPS))
+        || type == MONS_MUTANT_BEAST && !is(MB_NAME_REPLACE);
 
     ostringstream ss;
 
