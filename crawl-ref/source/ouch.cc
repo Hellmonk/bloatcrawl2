@@ -1113,9 +1113,9 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             monster_type slayer_type=se.slayer_type;
             save_ghosts(ghost_demon::find_ghosts(slayer_type));
         }
-        for (auto& limbolist : limbo_monsters) {
-            save_limbo_ghosts(limbolist.first);
-        }
+    }
+    for (auto& limbolist : limbo_monsters) {
+        save_limbo_ghosts(limbolist.first);
     }
     end_game(se, hiscore_index);
 }
