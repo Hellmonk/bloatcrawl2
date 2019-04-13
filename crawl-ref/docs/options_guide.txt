@@ -2643,7 +2643,7 @@ blink_brightens_background = false
         This option is ignored when running in 16-colour mode via
         allow_extended_colours.
 
-bold_brightens_foreground = false
+bold_brightens_foreground = true
         For 8-colour mode, assume that a bold text attribute will end up
         brightening the foreground colour.
 
