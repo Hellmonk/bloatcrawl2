@@ -4329,7 +4329,14 @@ void get_monster_db_desc(const monster_info& mi, describe_info &inf,
         } else {
             inf.body << "It ";
         }
-        inf.body << "bears you no particular rancour, but may attack anything that stands in its way.\n";
+        if (mons.attitude == ATT_HOSTILE) {
+            inf.body << "presently seems" 
+                     << ((mons.ghost->slayer != MONS_NO_MONSTER) ? 
+                         ", however, " : " ")
+                     << "to be furious with you.\n";
+        } else {
+            inf.body << "bears you no particular rancour, but may attack anything that stands in its way.\n";
+        }
         break;
 
     case MONS_PLAYER_ILLUSION:
