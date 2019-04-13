@@ -1932,6 +1932,15 @@ vector<monster_info_func> init_monster_info_funcs() {
                     return newconditions;
                 return false;
             }});
+    toret.push_back({"wand","with wands", 
+                [](const monster_info &mi, bool newconditions) {
+                if (mi.itemuse() >= MONUSE_STARTING_EQUIPMENT) {
+                    const item_def* wand = mi.inv[MSLOT_WAND].get();
+                    if (wand && mi.props.exists("wand_known"))
+                        return newconditions;
+                }
+                return false;
+            }});
     toret.push_back({"launcher","launcher", 
                 [](const monster_info &mi, bool newconditions) {
                 if (mi.itemuse() >= MONUSE_STARTING_EQUIPMENT) {
