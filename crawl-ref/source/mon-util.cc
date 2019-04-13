@@ -708,6 +708,8 @@ bool mons_gives_xp(const monster& victim, const actor& agent)
         && mons_class_gives_xp(victim.type)        // class must reward xp
         && !testbits(victim.flags, MF_WAS_NEUTRAL) // no neutral monsters
         && !testbits(victim.flags, MF_NO_REWARD)   // no reward for no_reward
+        // this also stops player allies getting ghostly XP
+        && !((victim.type == MONS_PLAYER_GHOST) && agent.is_player())
         && !mon_killed_friend;
 }
 

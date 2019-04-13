@@ -72,6 +72,9 @@ static void _mon_check_foe_invalid(monster* mon)
             const monster* foe_mons = foe->as_monster();
             if (foe_mons->alive() && summon_can_attack(mon, foe)
                 && (mon->has_ench(ENCH_INSANE)
+// Neut ghosts can attack neut monsters; hostile ghosts handled elsewhere
+                    || (mon->type == MONS_PLAYER_GHOST && mon->neutral())
+                    || (foe->type == MONS_PLAYER_GHOST && foe_mons->neutral())
                     || mon->friendly() != foe_mons->friendly()
                     || mon->neutral() != foe_mons->neutral()))
             {
@@ -414,9 +417,11 @@ void handle_behaviour(monster* mon)
     }
 
     // Neutral monsters prefer not to attack players, or other neutrals.
+    // no, the ghost bit is not an error, you can't get a neut ghost to MHITYOU
     if (isNeutral
         && !mon->has_ench(ENCH_INSANE)
         && mon->foe != MHITNOT
+        && mon->type != MONS_PLAYER_GHOST
         && (mon->foe == MHITYOU || menv[mon->foe].neutral()))
     {
         mon->foe = MHITNOT;

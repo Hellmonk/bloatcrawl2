@@ -924,8 +924,10 @@ static bool _handle_reaching(monster* mons)
     if (mons->submerged())
         return false;
 
-    if (mons_aligned(mons, foe) && !mons->has_ench(ENCH_INSANE))
+    if (mons_aligned(mons, foe) && !mons->has_ench(ENCH_INSANE) &&
+        !((mons->type == MONS_PLAYER_GHOST) && mons->neutral())) {
         return false;
+    }
 
     // Don't stop to jab at things while fleeing or leaving the level
     if ((mons_is_fleeing(*mons) || mons->pacified()))
@@ -1401,8 +1403,9 @@ static void _pre_monster_move(monster& mons)
         // It is intentional that if a ghost's original foe is shafted
         // it will wander for a bit before giving up
         unsigned int original_foe = mons.props["original_foe"].get_int();
-        if (one_chance_in(9)) {
+        if (one_chance_in(mons.neutral() ? 9 : 27)) {
             mons.foe = original_foe; mons.behaviour = BEH_SEEK;
+            mons.attitude = ATT_NEUTRAL;
         }
         if (mons.foe == original_foe) {
             const actor *foe; const monster* foe_mons;
@@ -2010,7 +2013,8 @@ void handle_monster_move(monster* mons)
         if (targ
             && targ != mons
             && mons->behaviour != BEH_WITHDRAW
-            && (!mons_aligned(mons, targ) || mons->has_ench(ENCH_INSANE))
+            && (!mons_aligned(mons, targ) || mons->has_ench(ENCH_INSANE)
+                || ((mons->type == MONS_PLAYER_GHOST) && mons->neutral()))
             && monster_can_hit_monster(mons, targ))
         {
             // Maybe they can swap places?
@@ -2330,7 +2334,7 @@ static void _post_monster_move(monster* mons)
     mid_t ghost;
     if (mons->props.exists("ghost_hated") &&  
         mons->attitude == ATT_HOSTILE &&
-        (random2(40) < get_tension(GOD_NO_GOD)) &&
+        (random2(20) < get_tension(GOD_NO_GOD)) &&
         div_rand_round(mons->hit_points, 2 * mons->max_hit_points) &&
         !(mons->petrifying() || mons->paralysed() || mons->petrified() || 
           mons->asleep() || mons->is_patrolling() || 
@@ -3036,6 +3040,7 @@ bool mon_can_move_to_pos(const monster* mons, const coord_def& delta,
 
         if (mons_aligned(mons, targmonster)
             && !mons->has_ench(ENCH_INSANE)
+            && !((mons->type == MONS_PLAYER_GHOST) && (mons->neutral()))
             && !_mons_can_displace(mons, targmonster))
         {
             return false;
@@ -3702,8 +3707,8 @@ static bool _monster_move(monster* mons)
         if (monster* targ = monster_at(mons->pos() + mmov))
         {
             if (mons_aligned(mons, targ)
-                && !mons->has_ench(ENCH_INSANE))
-            {
+                && !mons->has_ench(ENCH_INSANE) &&
+                !((mons->type == MONS_PLAYER_GHOST) && (mons->neutral()))) {
                 bool takes_time = !(mons->type == MONS_WANDERING_MUSHROOM
                                     && targ->type == MONS_TOADSTOOL
                                     || mons->type == MONS_TOADSTOOL
