@@ -644,7 +644,7 @@ string describe_mutations(bool drop_title)
 
     if (you.species == SP_VAMPIRE)
     {
-        if (you.hunger_state <= HS_STARVING)
+        if (!you.vampire_alive)
             result += "<green>You do not heal naturally.</green>\n";
         else
             result += "<green>Your natural rate of healing is unusually fast.</green>\n";
