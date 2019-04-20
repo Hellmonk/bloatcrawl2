@@ -652,9 +652,10 @@ void record_monster_defeat(const monster* mons, killer_type killer)
     if (mons->type == MONS_PLAYER_GHOST)
     {
         monster_info mi(mons);
-        string milestone = _milestone_kill_verb(killer) + " the ghost of ";
+        string milestone = "saw the final defeat of the ghost of ";
         milestone += get_ghost_description(mi, true);
         milestone += ".";
+// too clumsy with the verb in here as well        
         mark_milestone("ghost", milestone);
     }
     if (mons_is_or_was_unique(*mons) && !testbits(mons->flags, MF_SPECTRALISED))
@@ -2846,8 +2847,16 @@ item_def* monster_die(monster& mons, killer_type killer,
             if (mi->props.exists("original_foe") && 
                 (mi->props["original_foe"].get_int() == mons.mindex())) {
                 if (you.can_see(**mi)) {
+                    monster_info ginfo(*mi);
+                    const char* spookname = mi->full_name(DESC_A).c_str();
                     mprf("%s fades from view, its vengeance complete.",
-                         mi->full_name(DESC_A).c_str());
+                         spookname);
+                    take_note(Note(NOTE_GHOST_REVENGE, 0, 0, spookname,
+                                   mons.full_name(DESC_A).c_str()));
+                    string milestone = "witnessed revenge of the ghost of ";
+                    milestone += get_ghost_description(ginfo, true) + ".";
+                    // maybe a new milestone type?
+                    mark_milestone("ghost", milestone);
                 }
                 if ((you.can_see(**mi)) || (you.can_see(mons))) {
                     remove_unique_annotation(*mi);

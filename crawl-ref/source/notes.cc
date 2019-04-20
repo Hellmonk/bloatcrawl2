@@ -110,7 +110,8 @@ static bool _is_noteworthy(const Note& note)
         || note.type == NOTE_FEAT_MIMIC
         || note.type == NOTE_OFFERED_SPELL
         || note.type == NOTE_ANCESTOR_TYPE
-        || note.type == NOTE_FOUND_UNRAND)
+        || note.type == NOTE_FOUND_UNRAND
+        || note.type == NOTE_GHOST_REVENGE)
     {
         return true;
     }
@@ -279,10 +280,13 @@ string Note::describe(bool when, bool where, bool what) const
             result << "Noticed " << name;
             break;
         case NOTE_DEFEAT_MONSTER:
-            if (second)
+            if (second) {
                 result << name << " (ally) was " << desc;
-            else
+            } else if (first == MONS_PLAYER_GHOST) {
+                result << "Final defeat of " << name << ".";
+            } else {
                 result << uppercase_first(desc) << " " << name;
+            }
             break;
         case NOTE_POLY_MONSTER:
             result << name << " changed into " << desc;
@@ -368,8 +372,11 @@ string Note::describe(bool when, bool where, bool what) const
                    << " " << name << " death";
             break;
 #endif
-          case NOTE_FOUND_UNRAND:
+        case NOTE_FOUND_UNRAND:
             result << "Found " << name;
+            break;
+        case NOTE_GHOST_REVENGE:
+            result << "Witnessed revenge of " << name << " on " << desc << ".";
             break;
         default:
             result << "Buggy note description: unknown note type";
