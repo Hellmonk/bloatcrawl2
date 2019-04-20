@@ -949,6 +949,7 @@ void DescendingStairsDelay::finish()
 
 void ExsanguinateDelay::finish()
 {
+    blood_spray(you.pos(), MONS_PLAYER, 10);
     you.vampire_alive = false;
     you.redraw_status_lights = true;
     mpr("Now bloodless.");
