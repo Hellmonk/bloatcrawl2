@@ -8,6 +8,7 @@
 #include "cio.h"
 #include "describe.h"
 #include "env.h"
+#include "food.h"
 #include "invent.h"
 #include "item-name.h"
 #include "item-prop.h"
