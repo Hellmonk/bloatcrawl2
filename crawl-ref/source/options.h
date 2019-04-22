@@ -462,6 +462,7 @@ public:
 
     int         rest_wait_percent; // Stop resting after restoring this
                                    // fraction of HP or MP
+    bool        vampire_rest_alive;
 
     bool        regex_search; // whether to default to regex search for ^F
     bool        autopickup_search; // whether to annotate stash items with

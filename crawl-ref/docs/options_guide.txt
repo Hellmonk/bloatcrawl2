@@ -42,13 +42,13 @@ The contents of this text are:
 3-f     Travel and Exploration.
                 travel_delay, explore_delay, rest_delay, travel_avoid_terrain,
                 explore_greedy, explore_stop, explore_stop_pickup_ignore,
-                explore_wall_bias, travel_key_stop,
-                tc_reachable, tc_dangerous, tc_disconnected, tc_excluded,
-                tc_exclude_circle, runrest_ignore_message,
-                runrest_stop_message, runrest_safe_poison,
-                runrest_ignore_monster, rest_wait_both, rest_wait_percent,
-                rest_wait_ancestor, explore_auto_rest, auto_exclude,
-                wall_jump_move, wall_jump_prompt
+                explore_wall_bias, travel_key_stop, tc_reachable, tc_dangerous,
+                tc_disconnected, tc_excluded, tc_exclude_circle,
+                runrest_ignore_message, runrest_stop_message,
+                runrest_safe_poison, runrest_ignore_monster, rest_wait_both,
+                rest_wait_percent, rest_wait_ancestor, vampire_rest_alive,
+                explore_auto_rest, auto_exclude, wall_jump_move,
+                wall_jump_prompt
 3-g     Command Enhancements.
                 auto_switch, travel_open_doors, easy_unequip, equip_unequip,
                 jewellery_prompt, easy_confirm, simple_targeting,
@@ -954,6 +954,10 @@ rest_wait_percent = 100
         When resting, if your HP or MP is below this percentage of being full,
         it will stop resting when this percent of maximum HP or MP is refilled.
         Resting after this point will still rest up to 100%.
+
+vampire_rest_alive = true
+        When resting as a Bloodless Vampire, transition to Alive before
+        resting, and return to Bloodlesss after resting.
 
 explore_auto_rest = false
         If true, auto-explore waits until your HP and MP are both at

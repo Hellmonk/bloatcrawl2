@@ -1596,6 +1596,14 @@ static void _do_rest()
 
     if (i_feel_safe())
     {
+        bool vampire_exsanguinate = false;
+        if (you.species == SP_VAMPIRE && Options.vampire_rest_alive
+            && !you.vampire_alive)
+        {
+            vampire_exsanguinate = true;
+            start_delay<RevivifyDelay>(5);
+        }
+
         if ((you.hp == you.hp_max || !player_regenerates_hp())
             && (you.magic_points == you.max_magic_points
                 || !player_regenerates_mp())
@@ -1603,13 +1611,16 @@ static void _do_rest()
         {
             mpr("You start waiting.");
             _start_running(RDIR_REST, RMODE_WAIT_DURATION);
-            return;
         }
         else
+        {
             mpr("You start resting.");
-    }
+            _start_running(RDIR_REST, RMODE_REST_DURATION);
+        }
 
-    _start_running(RDIR_REST, RMODE_REST_DURATION);
+        if (you.species == SP_VAMPIRE && vampire_exsanguinate)
+            start_delay<ExsanguinateDelay>(5);
+    }
 }
 
 static void _do_display_map()
