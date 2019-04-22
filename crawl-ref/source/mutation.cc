@@ -798,8 +798,6 @@ static string _display_vampire_attributes()
 
         {"Stealth boost        ", "none       ", "major "},
 
-        {"Hunger costs         ", "full       ", "none  "},
-
         {"\n<w>Resistances</w>\n"
          "Poison resistance    ", "           ", "immune"},
 
