@@ -1367,15 +1367,18 @@ bool interrupt_activity(activity_interrupt ai,
 
     dprf("Activity interrupt: %s", _activity_interrupt_name(ai));
 
+    bool resting_interrupt = false;
     // First try to stop the current delay.
     if (ai == activity_interrupt::full_hp && !you.running.notified_hp_full)
     {
         you.running.notified_hp_full = true;
+        resting_interrupt = true;
         mpr("HP restored.");
     }
     else if (ai == activity_interrupt::full_mp && !you.running.notified_mp_full)
     {
         you.running.notified_mp_full = true;
+        resting_interrupt = true;
         mpr("Magic restored.");
     }
     else if (ai == activity_interrupt::ancestor_hp
@@ -1384,14 +1387,20 @@ bool interrupt_activity(activity_interrupt ai,
         // This interrupt only triggers when the ancestor is in LOS,
         // so this message does not leak information.
         you.running.notified_ancestor_hp_full = true;
+        resting_interrupt = true;
         mpr("Ancestor HP restored.");
     }
 
     if (_should_stop_activity(delay.get(), ai, at))
     {
         _monster_warning(ai, at, delay, msgs_buf);
-        // Teleport stops stair delays.
-        stop_delay(ai == activity_interrupt::teleport);
+        // If the delay is resting, there might be queued vampire
+        // management delays, so for resting complete interrupts
+        if (delay->is_resting() && resting_interrupt)
+            _pop_delay();
+        else
+            // Teleport stops stair delays.
+            stop_delay(ai == activity_interrupt::teleport);
 
         return true;
     }

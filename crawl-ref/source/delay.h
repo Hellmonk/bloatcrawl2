@@ -8,6 +8,7 @@
 #include "activity-interrupt-type.h"
 #include "command-type.h"
 #include "enum.h"
+#include "food.h"
 #include "item-prop-enum.h"
 #include "mpr.h"
 #include "operation-types.h"
@@ -517,6 +518,13 @@ class RestDelay : public BaseRunDelay
     bool want_clear_messages() const override
     {
         return false;
+    }
+
+    bool is_parent() const override
+    {
+        // Resting can only be a parent for autoeat.
+        // This is necessary to allow automatic vampire blood management.
+        return !you_foodless();
     }
 
     command_type move_cmd() const override;

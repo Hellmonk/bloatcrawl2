@@ -956,8 +956,8 @@ rest_wait_percent = 100
         Resting after this point will still rest up to 100%.
 
 vampire_rest_alive = true
-        When resting as a Bloodless Vampire, transition to Alive before
-        resting, and return to Bloodlesss after resting.
+        When resting as a Bloodless Vampire, transition to Alive before resting
+        if HP is less than max HP, and return to Bloodlesss after resting.
 
 explore_auto_rest = false
         If true, auto-explore waits until your HP and MP are both at

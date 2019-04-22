@@ -1597,7 +1597,9 @@ static void _do_rest()
     if (i_feel_safe())
     {
         bool vampire_exsanguinate = false;
-        if (you.species == SP_VAMPIRE && Options.vampire_rest_alive
+        if (you.species == SP_VAMPIRE
+            && you.hp != you.hp_max
+            && Options.vampire_rest_alive
             && !you.vampire_alive)
         {
             vampire_exsanguinate = true;
