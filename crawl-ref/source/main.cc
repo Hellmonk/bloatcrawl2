@@ -1606,7 +1606,8 @@ static void _do_rest()
             start_delay<RevivifyDelay>(5);
         }
 
-        if ((you.hp == you.hp_max || !player_regenerates_hp())
+        if ((you.hp == you.hp_max ||
+            (!player_regenerates_hp() && !vampire_exsanguinate))
             && (you.magic_points == you.max_magic_points
                 || !player_regenerates_mp())
             && ancestor_full_hp())
