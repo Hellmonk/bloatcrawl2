@@ -1397,7 +1397,10 @@ bool interrupt_activity(activity_interrupt ai,
         // If the delay is resting, there might be queued vampire
         // management delays, so for resting complete interrupts
         if (delay->is_resting() && resting_interrupt)
+        {
+            delay->try_interrupt();
             _pop_delay();
+        }
         else
             // Teleport stops stair delays.
             stop_delay(ai == activity_interrupt::teleport);
