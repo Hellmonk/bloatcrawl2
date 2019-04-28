@@ -1337,6 +1337,22 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
             return false;
         }
     }
+    else if ((abil.ability == ABIL_EXSANGUINATE
+              || abil.ability == ABIL_REVIVIFY)
+            && you.form != transformation::none)
+    {
+        if (feat_dangerous_for_form(transformation::none, env.grid(you.pos())))
+        {
+            if (!quiet)
+            {
+                mprf("Becoming %s right now would cause you to %s!",
+                    abil.ability == ABIL_EXSANGUINATE ? "bloodless" : "alive",
+                    env.grid(you.pos()) == DNGN_LAVA ? "burn" : "drown");
+            }
+
+            return false;
+        }
+    }
 
     if ((abil.ability == ABIL_EVOKE_BERSERK
          || abil.ability == ABIL_TROG_BERSERK)

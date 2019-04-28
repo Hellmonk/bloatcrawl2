@@ -2103,6 +2103,6 @@ void vampire_update_transformations()
         mprf(MSGCH_WARN,
              "Your blood-%s body can't sustain your transformation.",
              form_reason == UFR_TOO_DEAD ? "deprived" : "filled");
-        you.duration[DUR_TRANSFORMATION] = 1; // end at end of turn
+        untransform();
     }
 }
