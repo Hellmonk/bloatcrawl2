@@ -5991,7 +5991,8 @@ mon_holy_type player::holiness(bool temp) const
     mon_holy_type holi;
 
     // Lich form takes precedence over a species' base holiness
-    if (undead_state(temp))
+    // Alive Vampires are MH_NATURAL
+    if (is_lifeless_undead(temp))
         holi = MH_UNDEAD;
     else if (species == SP_GARGOYLE)
         holi = MH_NONLIVING;
