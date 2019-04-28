@@ -5292,8 +5292,13 @@ bool player::is_banished() const
 
 bool player::is_sufficiently_rested() const
 {
+    auto curr = current_delay();
+    bool revivifying_to_rest =
+        string("revivify") == curr->name()  && curr->is_resting();
+
     // Only return false if resting will actually help.
-    return (!player_regenerates_hp() || hp >= _rest_trigger_level(hp_max))
+    return ((!player_regenerates_hp() && !revivifying_to_rest)
+            || hp >= _rest_trigger_level(hp_max))
             && (magic_points >= _rest_trigger_level(max_magic_points)
                 || !player_regenerates_mp());
 }

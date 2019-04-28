@@ -1603,7 +1603,7 @@ static void _do_rest()
             && !you.vampire_alive)
         {
             vampire_exsanguinate = true;
-            start_delay<RevivifyDelay>(5);
+            start_delay<RevivifyDelay>(5, true);
         }
 
         if ((you.hp == you.hp_max ||

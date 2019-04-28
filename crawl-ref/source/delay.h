@@ -699,6 +699,7 @@ public:
 class RevivifyDelay : public Delay
 {
     bool was_prompted = false;
+    bool resting = false;
 
     void start() override;
 
@@ -709,7 +710,7 @@ class RevivifyDelay : public Delay
 
     void finish() override;
 public:
-    RevivifyDelay(int dur) : Delay(dur)
+    RevivifyDelay(int dur, bool _resting = false) : Delay(dur), resting{_resting}
     { }
 
     bool try_interrupt() override;
@@ -717,6 +718,11 @@ public:
     const char* name() const override
     {
         return "revivify";
+    }
+
+    bool is_resting() const override
+    {
+        return resting;
     }
 };
 
