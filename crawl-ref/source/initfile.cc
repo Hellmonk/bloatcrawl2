@@ -214,6 +214,7 @@ const vector<GameOption*> game_options::build_options_list()
         new BoolGameOption(SIMPLE_NAME(wall_jump_move), true),
         new BoolGameOption(SIMPLE_NAME(darken_beyond_range), true),
         new BoolGameOption(SIMPLE_NAME(dump_book_spells), true),
+        new BoolGameOption(SIMPLE_NAME(annotate_ghosts), false),
         new BoolGameOption(SIMPLE_NAME(arena_dump_msgs), false),
         new BoolGameOption(SIMPLE_NAME(arena_dump_msgs_all), false),
         new BoolGameOption(SIMPLE_NAME(arena_list_eq), false),
@@ -1038,6 +1039,7 @@ void game_options::reset_options()
     allow_self_target      = CONFIRM_PROMPT;
     skill_focus            = SKM_FOCUS_ON;
     branch_end_warn        = END_WARN_DANGEROUS;
+    annotate_ghosts        = false;
 
     user_note_prefix       = "";
 

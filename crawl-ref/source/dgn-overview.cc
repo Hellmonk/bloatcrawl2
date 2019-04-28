@@ -829,6 +829,9 @@ void set_unique_annotation(monster* mons, const level_id level)
     {
         return;
     }
+    if (mons->type == MONS_PLAYER_GHOST && !Options.annotate_ghosts) {
+        return;
+    }
 
     remove_unique_annotation(mons);
     auto_unique_annotations.insert(make_pair(unique_name(mons), level));

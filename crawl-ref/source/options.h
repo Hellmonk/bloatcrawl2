@@ -277,6 +277,7 @@ public:
     bool        wall_jump_prompt; // Whether to ask for confirmation before jumps.
     bool        wall_jump_move;   // Whether to allow wall jump via movement
     end_warn_type branch_end_warn; // Warn when descending to branch ends
+    bool        annotate_ghosts;  // Annotate ghosts in Ctrl-O
 
     int         fire_items_start; // index of first item for fire command
     vector<unsigned> fire_order;  // missile search order for 'f' command

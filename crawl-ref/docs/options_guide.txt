@@ -964,6 +964,13 @@ branch_end_warn = ( dangerous | vaults | none | all )
 
 	"all" warns on all branches which are not 1 level deep.
 
+annotate_ghosts = false
+        In vanilla Crawl, ghosts are added to the Ctrl-O notes, because they
+        are so dangerous. In Stoat Soup, they are considerably less dangerous,
+        and also can easily leave the game when out of your field of view.
+        Hence unless this option is set to "true", no note is made in Ctrl-O
+        of a ghost.
+
 3-g     Command Enhancements.
 -----------------------------
 

@@ -2853,7 +2853,8 @@ item_def* monster_die(monster& mons, killer_type killer,
                          spookname);
                     take_note(Note(NOTE_GHOST_REVENGE, 0, 0, spookname,
                                    mons.full_name(DESC_A).c_str()));
-                    string milestone = "witnessed revenge of the ghost of ";
+                    string milestone = 
+                        "witnessed the revenge of the ghost of ";
                     milestone += get_ghost_description(ginfo, true) + ".";
                     // maybe a new milestone type?
                     mark_milestone("ghost", milestone);
