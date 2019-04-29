@@ -6010,8 +6010,11 @@ mon_holy_type player::holiness(bool temp) const
     if (is_good_god(religion))
         holi |= MH_HOLY;
 
-    if (is_evil_god(religion) || species == SP_DEMONSPAWN)
+    if (is_evil_god(religion)
+        || species == SP_DEMONSPAWN || species == SP_VAMPIRE)
+    {
         holi |= MH_EVIL;
+    }
 
     // possible XXX: Monsters get evil/unholy bits set on spell selection
     //  should players?
