@@ -60,18 +60,21 @@ Breathes a blast of noxious fumes at a targeted creature.
 Bat Form ability
 
 Transforms the user into a swift-moving vampire bat, increasing evasion but
-substantially weakening melee attacks.
+substantially weakening melee attacks. The transformation drains the user's
+attributes.
 
 While tranformed, any equipped weapons, armour and rings are melded, and the
 user becomes unable to cast spells.
 %%%%
 Exsanguinate ability
 
-Remove all of your blood, transitioning to a bloodless state.
+Remove all of your blood, transitioning to a bloodless state. Returning to life
+costs permanent hit points.
 %%%%
 Revivify ability
 
-Return to life, transitioning from bloodless to alive.
+Return to life, transitioning from bloodless to alive. This process permanently
+reduces the user's maximum hit points by two percent.
 %%%%
 Fly ability
 

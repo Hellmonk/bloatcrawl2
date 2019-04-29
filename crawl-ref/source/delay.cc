@@ -958,6 +958,7 @@ void ExsanguinateDelay::finish()
 
 void RevivifyDelay::finish()
 {
+    dec_max_hp(div_rand_round(2 * get_real_hp(false, true), 100));
     you.vampire_alive = true;
     you.redraw_status_lights = true;
     mpr("Now alive.");
