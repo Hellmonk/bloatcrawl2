@@ -766,21 +766,7 @@ static formatted_string _vampire_Ascreen_footer(bool first_page)
 
 static int _vampire_bloodlessness()
 {
-    switch (you.hunger_state)
-    {
-    case HS_ENGORGED:
-    case HS_VERY_FULL:
-    case HS_FULL:
-    case HS_SATIATED:
-    case HS_HUNGRY:
-    case HS_VERY_HUNGRY:
-    case HS_NEAR_STARVING:
-        return 1;
-    case HS_STARVING:
-    case HS_FAINTING:
-        return 2;
-    }
-    die("bad hunger state %d", you.hunger_state);
+    return you.vampire_alive ? 1 : 2;
 }
 
 static string _display_vampire_attributes()
