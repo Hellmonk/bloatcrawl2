@@ -6751,7 +6751,7 @@ TAGS:    transparent
 DEPTH:   D:8-
 MONS:    chaos spawn
 KFEAT:   _ = altar_xom
-ITEM:    mace_of_variability no_pickup
+ITEM:    mace_of_variability no_pickup ident:type
 # walls are carefully placed and guarantee no islands
 SUBST:   x = xcvbmGwWlTUVYt+ <:4 >:4 A:2 1:160
 NSUBST:  1 = 2:1 / 2:% / 3=1%...... / .
@@ -6776,7 +6776,7 @@ MONS:    worker ant / soldier ant
 MONS:    killer bee
 MONS:    adder / water moccasin
 # TODO: built in fallback for staff of olgreb is kind of dumb
-ITEM:    staff_of_olgreb no_pickup
+ITEM:    staff_of_olgreb no_pickup ident:type
 NSUBST:  1 = 5:1 / 6=1.. / ., 2 = 5:2 / 9=2.. / ., 3 = 5:3 / 6=1.. / .
 MAP
       ...
@@ -6832,7 +6832,7 @@ TAGS:    transparent
 DEPTH:   D:14-, Depths
 MONS:    spriggan berserker
 NSUBST:  1 = 3:1 / 9=1...... / .
-ITEM:    wrath_of_trog no_pickup
+ITEM:    wrath_of_trog no_pickup ident:type
 MAP
     .......
    .."""""..
@@ -6860,7 +6860,7 @@ NSUBST:  d = 1:d / *:*
 MONS:    skeletal warrior
 NSUBST:  d = 1:d / *:%
 : end
-ITEM:    skullcrusher no_pickup
+ITEM:    skullcrusher no_pickup ident:type
 NSUBST:  ' = 12:1 / 14=1...... / .
 SUBST:   " = 1., ! = 2.
 MAP
@@ -6894,7 +6894,7 @@ NAME:    minmay_guarded_unrand_finisher
 TAGS:    transparent
 DEPTH:   D:7-13
 MONS:    wraith
-ITEM:    finisher no_pickup
+ITEM:    finisher no_pickup ident:type
 SUBST:   1 = 1.
 NSUBST:  A = 1:. / *:c, B = 1:. / *:c
 SUBST:   c = c .:2

@@ -3245,7 +3245,7 @@ KMONS:  2 = shock serpent / storm dragon
 ITEM:   book of air / book of the sky / manual of air magic / \
         staff of air ident:type / lightning rod w:15 / fan of gales w:15 / \
         storm dragon scales w:5
-KITEM:  2 = arc_blade
+KITEM:  2 = arc_blade ident:type
 : minmay_elemental_octagon_setup(_G)
 MAP
     xxx@xxx
@@ -3301,7 +3301,7 @@ KMONS:  2 = frost giant / ice dragon
 ITEM:   book of frost / book of ice / manual of ice magic / \
         wand of iceblast ident:type / staff of cold ident:type / \
         ring of ice ident:type / phial of floods / ice dragon scales w:5
-KITEM:  2 = frostbite / \
+KITEM:  2 = frostbite ident:type / \
             battleaxe ego:freezing randart ident:type / \
             broad axe ego:freezing randart ident:type
 : minmay_elemental_octagon_setup(_G)
@@ -3331,7 +3331,7 @@ KMONS:  2 = fire giant / fire dragon
 ITEM:   book of flames / book of fire / manual of fire magic / \
         staff of fire ident:type / ring of fire ident:type / lamp of fire / \
         fire dragon scales w:5
-KITEM:  2 = firestarter
+KITEM:  2 = firestarter ident:type
 : minmay_elemental_octagon_setup(_G)
 MAP
     xxx@xxx
@@ -3356,7 +3356,7 @@ ORIENT:  float
 DEPTH:   Depths, Crypt
 MONS:    necromancer / vampire mage
 MONS:    lich / ancient lich w:5
-ITEM:    majin-bo no_pickup
+ITEM:    majin-bo no_pickup ident:type
 ITEM:    any magical staff / any book
 NSUBST:  d = 1:d / *:e
 NSUBST:  1 = 4:1 / 8=1... / .
@@ -3385,7 +3385,7 @@ NAME:    minmay_guarded_unrand_sceptre_of_torment
 ORIENT:  float
 DEPTH:   Depths, Crypt
 MONS:    mummy priest, greater mummy
-KITEM:   d = sceptre_of_torment no_pickup
+KITEM:   d = sceptre_of_torment no_pickup ident:type
 KMONS:   d = greater mummy
 MAP
 ccccccccccc@ccccccccccc
