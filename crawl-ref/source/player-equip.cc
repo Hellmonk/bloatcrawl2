@@ -1129,10 +1129,13 @@ static void _remove_amulet_of_faith(item_def &item)
              && !you_worship(GOD_GOZAG))
     {
         simple_god_message(" seems less interested in you.");
-
-        const int piety_loss = div_rand_round(you.piety, 3);
+        
+        int piety_loss = div_rand_round(you.piety, 5);
+        piety_loss = min(piety_loss, (you.props.exists("faith total") ?
+                                      you.props["faith total"].get_int() : 0));
         // Piety penalty for removing the Amulet of Faith.
-        if (you.piety - piety_loss > 10)
+        piety_loss = min(piety_loss, (you.piety - 11));
+        if (piety_loss > 0) 
         {
             mprf(MSGCH_GOD, "You feel less pious.");
             dprf("%s: piety drain: %d",
@@ -1140,16 +1143,12 @@ static void _remove_amulet_of_faith(item_def &item)
             lose_piety(piety_loss);
         }
     }
+    you.props.erase("faith working"); you.props.erase("faith total");
 }
 
 static void _remove_amulet_of_harm()
 {
-    if (you.undead_state() == US_ALIVE)
-        mpr("The amulet drains your life force as you remove it!");
-    else
-        mpr("The amulet drains your animating force as you remove it!");
-
-    drain_player(150, false, true);
+    you.props["residual harm"] = true; you.duration[DUR_RESIDUAL_HARM] = 500;
 }
 
 static void _equip_amulet_of_regeneration()
@@ -1283,7 +1282,10 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
             mprf(MSGCH_GOD, "You feel a %ssurge of divine interest.",
                             you_worship(GOD_NO_GOD) ? "strange " : "");
         }
-
+        // We do this whichever god is involved so that if the player takes
+        // an appropriate god later, everything is set up correctly.
+        you.props.erase("faith working");
+        you.props["faith total"] = 0;
         break;
 
     case AMU_THE_GOURMAND:
@@ -1310,8 +1312,11 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
     case AMU_GUARDIAN_SPIRIT:
         _spirit_shield_message(unmeld);
         break;
-    }
 
+    case AMU_HARM:
+        // doesn't do anything
+        break;
+    }
     bool new_ident = false;
     // Artefacts have completely different appearance than base types
     // so we don't allow them to make the base types known.

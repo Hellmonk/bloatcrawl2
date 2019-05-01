@@ -4421,7 +4421,7 @@ int monster::hurt(const actor *agent, int amount, beam_type flavour,
         if (amount != INSTANT_DEATH)
         {
             // +30% damage when the opponent has harm
-            if (agent && agent->extra_harm())
+            if (agent && agent->extra_harm()) 
                 amount = amount * 13 / 10;
             // +20% damage when self has harm
             else if (extra_harm())

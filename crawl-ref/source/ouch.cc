@@ -732,11 +732,10 @@ static int _apply_extra_harm(int dam, mid_t source)
 {
     monster* damager = monster_by_mid(source);
     // Don't check for monster amulet if there source isn't a monster
-    if (damager && damager->extra_harm())
+    if (damager && damager->extra_harm()) 
         return dam * 13 / 10; // +30% damage when the opponent has harm
-    else if (you.extra_harm())
+    else if (you.extra_harm() || (you.props.exists("residual harm")))
         return dam * 6 / 5; // +20% damage when you have harm
-
     return dam;
 }
 

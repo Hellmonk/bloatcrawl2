@@ -483,7 +483,7 @@ static const char* _jewellery_base_ability_description(int subtype)
         return "It can be evoked for teleport control.";
 #endif
     case AMU_HARM:
-        return "It increases damage dealt and taken.";
+        return "It increases damage dealt and taken; the latter effect lingers after removal.";
     case AMU_MANA_REGENERATION:
         return "It increases your magic regeneration.";
     case AMU_THE_GOURMAND:

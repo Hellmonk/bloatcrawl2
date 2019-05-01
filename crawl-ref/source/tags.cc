@@ -2700,6 +2700,10 @@ static void tag_read_you(reader &th)
         you.duration[DUR_CONFUSING_TOUCH] = 0;
     }
 
+    if(th.getMinorVersion() < TAG_RESIDUAL_HARM) {
+        you.duration[DUR_RESIDUAL_HARM] = 0;
+    }
+
     you.duration[DUR_JELLY_PRAYER] = 0;
 #endif
 

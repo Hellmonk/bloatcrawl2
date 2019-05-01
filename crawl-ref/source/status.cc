@@ -438,6 +438,15 @@ bool fill_status_info(int status, status_info& inf)
         }
         break;
 
+    case STATUS_RESIDUAL_HARM:
+        if (you.props.exists("residual harm")) {
+            inf.light_colour = YELLOW;
+            inf.light_text = "Harm";
+            inf.short_text   = "residual harm";
+            inf.long_text    = "You are still taking more damage after removing an amulet of harm.";
+        }
+        break; 
+
     case STATUS_SERPENTS_LASH:
         if (you.attribute[ATTR_SERPENTS_LASH] > 0)
         {

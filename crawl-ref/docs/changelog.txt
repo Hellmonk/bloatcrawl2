@@ -13,6 +13,14 @@ The monster list provides considerably more information about monsters,
 You are optionally warned before entering, or when forcedly transported to, the
 last level in a branch.
 Added the Triceratops, a Swamp unique who is not remotely cute and cuddly.
+Wear-ID amulets with impunity:
+ The amulet of harm does not drain you. However, when you take one off, you
+ continue to take extra damage until fully healed and some time has passed,
+ so it still can't be usefully swapped mid-fight.
+ The amulet of faith only starts to increase piety gain after a random amount
+ of piety has been gained while wearing it - on average, 3 points. However, it
+ drains at most 1/5 of your piety on removal, and cannot drain more piety than
+ was gained while wearing it.
 
 Vanilla changes messed around with
 ----------------------------------

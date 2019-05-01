@@ -8,9 +8,10 @@ corrosive slime flow off it like water.
 %%%%
 amulet of faith
 
-A talisman crafted to call the attention of the gods to its wearer. This divine
-attention makes it easier to please your god, but your god will also take more
-notice of your transgressions. The amulet will drain some of your divine favour
+A talisman crafted to call the attention of the gods to its wearer. Once this
+divine attention has been drawn, which can take some effort, it makes it
+easier to please your god, but your god will also take more notice of your
+transgressions. The amulet will drain some of the additional divine favour
 when removed.
 %%%%
 amulet of guardian spirit
@@ -20,11 +21,13 @@ be divided between the wearer's reserves of health and magic.
 %%%%
 amulet of harm
 
-An amulet created to amplify all damage dealt by the wearer. As an unfortunate
-side effect, it also amplifies all damage dealt to the wearer, albeit to a
-lesser degree. When the effects of the amulet are severed by removing it, the
-magical backlash significantly drains the wearer.
-%%%%
+An amulet created to amplify all damage dealt by the wearer. As an
+unfortunate side effect, it also amplifies all damage dealt to the
+wearer, albeit to a lesser degree. The amulet's effects are produced
+by a malicious spirit which loves to see the blood of the wearer shed;
+even when the amulet is removed, the user will continue to take more
+damage until a little time has passed and they are fully healed.
+%%%% 
 amulet of inaccuracy
 
 An amulet that makes its wearer less accurate in melee combat and when

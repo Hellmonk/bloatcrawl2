@@ -226,6 +226,7 @@ enum tag_minor_version
     TAG_MINOR_GOLDIFY_BOOKS,       // Spellbooks disintegrate when picked up, like gold/runes/orbs
     TAG_MINOR_GHOST_SLAYER,        // Ghosts remember what killed them
     TAG_MINOR_GHOST_VENGEANCE,     // and seek revenge
+    TAG_RESIDUAL_HARM,             // There's a "residual harm" duration
 #endif
     NUM_TAG_MINORS,
     TAG_MINOR_VERSION = NUM_TAG_MINORS - 1

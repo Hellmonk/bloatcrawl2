@@ -2276,7 +2276,11 @@ void dock_piety(int piety_loss, int penance)
 // Scales a piety number, applying modifiers (faith).
 int piety_scale(int piety)
 {
-    return piety + (you.faith() * div_rand_round(piety, 4));
+    if (you.props.exists("faith working")) {
+        return piety + (you.faith() * div_rand_round(piety, 4));
+    } else {
+        return piety;
+    }
 }
 
 /** Gain or lose piety to reach a certain value.
@@ -2315,6 +2319,11 @@ void set_piety(int piety)
 
 static void _gain_piety_point()
 {
+    if (you.faith() && (!you.props.exists("faith working"))) {
+        if (one_chance_in(3)) {
+            you.props["faith working"] = true;
+        }
+    }
     // check to see if we owe anything first
     if (player_under_penance(you.religion))
     {
@@ -2486,11 +2495,17 @@ bool gain_piety(int original_gain, int denominator, bool should_scale_piety)
     {
         return false;
     }
-
     int pgn = should_scale_piety ? piety_scale(original_gain) : original_gain;
 
-    if (crawl_state.game_is_sprint() && should_scale_piety)
+    if (crawl_state.game_is_sprint() && should_scale_piety) {
         pgn = sprint_modify_piety(pgn);
+        original_gain = sprint_modify_piety(original_gain);
+    }
+    // This will not be quite right but it should average out
+    if ((pgn >= original_gain) && you.props.exists("faith total")) {
+        you.props["faith total"] = you.props["faith total"].get_int() +
+            div_rand_round((pgn - original_gain),denominator);
+    }
 
     pgn = div_rand_round(pgn, denominator);
     while (pgn-- > 0)

@@ -1068,6 +1068,7 @@ static void _get_status_lights(vector<status_light>& out)
         DUR_DEATHS_DOOR_COOLDOWN,
         DUR_QUAD_DAMAGE,
         STATUS_SERPENTS_LASH,
+        STATUS_RESIDUAL_HARM,
     };
 
     bitset<STATUS_LAST_STATUS + 1> done;

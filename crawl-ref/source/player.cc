@@ -1203,6 +1203,14 @@ void update_amulet_attunement_by_health()
     }
     else
         you.props[ACROBAT_AMULET_ACTIVE] = 0;
+
+    if (you.props.exists("residual harm") && 
+        (!you.wearing(EQ_AMULET, AMU_HARM)) &&
+        (!you.duration[DUR_RESIDUAL_HARM]) &&
+        (you.hp == you.hp_max)) {
+        you.props.erase("residual harm");
+        mpr("The lingering effects of the amulet of harm leave you.");
+    }
 }
 
 // Amulet of magic regeneration needs to be worn while at full magic before it
