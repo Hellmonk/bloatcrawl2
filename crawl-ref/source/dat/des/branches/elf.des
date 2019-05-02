@@ -1275,7 +1275,7 @@ ENDMAP
 NAME:    minmay_guarded_unrand_folly
 DEPTH:   Elf
 ORIENT:  float
-ITEM:    robe_of_night no_pickup
+ITEM:    robe_of_folly no_pickup
 MONS:    deep elf sorcerer / deep elf annihilator
 NSUBST:  1 = 2:2 / 5=1.. / .
 SUBST:   2 = 1.
