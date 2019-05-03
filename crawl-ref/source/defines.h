@@ -40,7 +40,8 @@ enum extra_monster_index_type
 
     MHITNOT = NON_MONSTER,
     MHITYOU,
-    MGHOSTDONE,
+    MGHOSTDONE,                          // target vanished
+    MGHOSTKILLED,                        // target slain
 };
 
 // number of monster attack specs

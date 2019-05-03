@@ -1403,6 +1403,13 @@ static void _pre_monster_move(monster& mons)
         // It is intentional that if a ghost's original foe is shafted
         // it will wander for a bit before giving up
         unsigned int original_foe = mons.props["original_foe"].get_int();
+        if (original_foe == MGHOSTKILLED) {
+            if (you.can_see(mons)) {
+                mprf("%s fades from view, its vengeance complete.",
+                     mons.full_name(DESC_A).c_str());
+            }
+            monster_die(mons,KILL_RESET,true); return;
+        }
         if (one_chance_in(mons.neutral() ? 9 : 27)) {
             mons.foe = original_foe; mons.behaviour = BEH_SEEK;
             mons.attitude = ATT_NEUTRAL;

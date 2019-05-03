@@ -2846,12 +2846,11 @@ item_def* monster_die(monster& mons, killer_type killer,
         for (monster_iterator mi; mi; ++mi) {
             if (mi->props.exists("original_foe") && 
                 (mi->props["original_foe"].get_int() == mons.mindex())) {
+                mi->props["original_foe"] = MGHOSTKILLED;
                 if (you.can_see(**mi)) {
                     monster_info ginfo(*mi);
-                    const char* spookname = mi->full_name(DESC_A).c_str();
-                    mprf("%s fades from view, its vengeance complete.",
-                         spookname);
-                    take_note(Note(NOTE_GHOST_REVENGE, 0, 0, spookname,
+                    take_note(Note(NOTE_GHOST_REVENGE, 0, 0, 
+                                   mi->full_name(DESC_A).c_str(),
                                    mons.full_name(DESC_A).c_str()));
                     string milestone = 
                         "witnessed the revenge of the ghost of ";
@@ -2859,10 +2858,6 @@ item_def* monster_die(monster& mons, killer_type killer,
                     // maybe a new milestone type?
                     mark_milestone("ghost", milestone);
                 }
-                if ((you.can_see(**mi)) || (you.can_see(mons))) {
-                    remove_unique_annotation(*mi);
-                }
-                monster_cleanup(*mi);
             }
         }
     }
@@ -2987,10 +2982,11 @@ void monster_cleanup(monster* mons)
     {
         if (mi->foe == monster_killed)
             mi->foe = MHITNOT;
-
+        
         // we could instead check for ghost_target but we've already got this
         // iterator being used anyway...
         if (mi->props.exists("original_foe") && 
+            // ie not MGHOSTKILLED
             (mi->props["original_foe"].get_int() == mons->mindex())) {
             mi->props["original_foe"] = MGHOSTDONE;
         }
@@ -3002,7 +2998,6 @@ void monster_cleanup(monster* mons)
             mi->del_ench(ENCH_ABJ);
         }
     }
-
     if (you.pet_target == monster_killed)
         you.pet_target = MHITNOT;
 }
