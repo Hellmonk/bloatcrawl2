@@ -661,6 +661,8 @@ static void _add_formatted_help_menu(column_composer &cols)
     cols.add_formatted(
         0,
         "<h>Dungeon Crawl Help\n"
+        "Information on Stoat Soup changes:\n"
+	"http://crawl.montres.org.uk/about.html\n"
         "\n"
         "Press one of the following keys to\n"
         "obtain more information on a certain\n"
