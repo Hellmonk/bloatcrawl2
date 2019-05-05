@@ -1114,6 +1114,7 @@ draco-job-scorcher DRACO_SCORCHER
 draco-job-shifter DRACO_SHIFTER
 ## From the Wucad Mu wizard laboratory
 mon/vault/draconian_monk_ghost MONS_FAINT_GREY_DRACONIAN_MONK
+mon/demihumanoids/faerie_dragon MONS_FAERIE_DRAGON
 
 %rim 1
 mon/nonliving/test_spawner MONS_TEST_SPAWNER

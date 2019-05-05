@@ -355,6 +355,8 @@ base/octopode1 CORPSE_OCTOPODE
 %compose drchead/drchead_yellow
 %finish CORPSE_DRACONIAN_YELLOW
 
+mon/demihumanoids/faerie_dragon CORPSE_FAERIE_DRAGON
+
 # Demonspawn ('6')
 %sdir mon/humanoids/demonspawn
 demonspawn CORPSE_DEMONSPAWN

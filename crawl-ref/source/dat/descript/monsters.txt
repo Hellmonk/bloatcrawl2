@@ -1073,6 +1073,10 @@ eye of draining
 
 A hovering horror that waxes strong on magic.
 %%%%
+faerie dragon
+
+A half-dragon humanoid with shimmering scales and an attument to magic.
+%%%%
 faun
 
 A hybrid with the torso of a human atop the forelegs of a goat. It is fabled
