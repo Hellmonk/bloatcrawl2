@@ -780,7 +780,7 @@ const string make_cost_description(ability_type ability)
         ret += ", Stat Drain";
 
     if (ability == ABIL_REVIVIFY)
-        ret += make_stringf(", Permanent HP (%d left)", get_real_hp(false, true));
+        ret += ", Frailty";
 
     if (abil.hp_cost)
         ret += make_stringf(", %d HP", abil.hp_cost.cost(you.hp_max));

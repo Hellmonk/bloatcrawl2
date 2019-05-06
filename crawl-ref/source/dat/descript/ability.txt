@@ -73,8 +73,8 @@ costs permanent hit points.
 %%%%
 Revivify ability
 
-Return to life, transitioning from bloodless to alive. This process permanently
-reduces the user's maximum hit points by two percent.
+Return to life, transitioning from bloodless to alive. This process renders
+the user temporarily frail.
 %%%%
 Fly ability
 
