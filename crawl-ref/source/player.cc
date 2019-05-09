@@ -1090,9 +1090,12 @@ static int _player_bonus_regen()
 // Inhibited regeneration: stops regeneration when monsters are visible
 bool regeneration_is_inhibited()
 {
-    if (you.get_mutation_level(MUT_INHIBITED_REGENERATION) == 1
-        || (you.species == SP_VAMPIRE && !you.vampire_alive))
+    switch (you.get_mutation_level(MUT_INHIBITED_REGENERATION))
     {
+    case 0:
+      return false;
+    case 1:
+      {
         for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
         {
             if (mons_is_threatening(**mi)
@@ -1103,9 +1106,12 @@ bool regeneration_is_inhibited()
                 return true;
             }
         }
+        return false;
+      }
+    default:
+      die("Unknown inhibited regeneration level.");
+      break;
     }
-
-    return false;
 }
 
 int player_regen()
@@ -1125,9 +1131,15 @@ int player_regen()
     // to heal.
     rr = max(1, rr);
 
-    // Bonus regeneration for alive vampires.
-    if (you.species == SP_VAMPIRE && you.vampire_alive)
-            rr += 20;
+    // Healing depending on satiation.
+    // The better-fed you are, the faster you heal.
+    if (you.species == SP_VAMPIRE)
+    {
+        if (!you.vampire_alive)
+            rr = 0;   // No regeneration for bloodless vampires.
+        else
+            rr += 20; // Bonus regeneration for alive vampires.
+    }
 
     if (you.duration[DUR_COLLAPSE])
         rr /= 4;
@@ -3923,6 +3935,8 @@ int get_real_mp(bool include_items)
 bool player_regenerates_hp()
 {
     if (you.has_mutation(MUT_NO_REGENERATION))
+        return false;
+    if (you.species == SP_VAMPIRE && !you.vampire_alive)
         return false;
     return true;
 }
