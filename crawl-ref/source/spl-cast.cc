@@ -804,8 +804,8 @@ bool cast_a_spell(bool check_range, spell_type spell)
     }
 
     if ((get_spell_flags(spell) & SPFLAG_NEEDS_HOSTILE)
-        && i_feel_safe(false,false,true,false,-1,true)) {
-        mpr("You can't cast that without an enemy in sight.");
+        && !there_are_monsters_nearby(true,true,false)) {
+        mpr("You can't cast that without visible enemies threatening you.");
         crawl_state.zero_turns_taken();
         return false;
     }

@@ -1304,8 +1304,8 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         return "you cannot coerce anything to answer your summons.";
     }
     if ((get_spell_flags(spell) & SPFLAG_NEEDS_HOSTILE) 
-        && i_feel_safe(false,false,true,false,-1,true) && temp) {
-        return "no enemies are visible.";
+        && !there_are_monsters_nearby(true,true,false) && temp) {
+        return "no visible enemies are threatening you.";
     }
     return "";
 }

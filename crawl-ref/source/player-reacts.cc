@@ -594,7 +594,7 @@ static void _decrement_durations()
 
     const bool melted = you.props.exists(MELT_ARMOUR_KEY);
     if (_decrement_a_duration(DUR_ICY_ARMOUR, 
-                              (i_feel_safe(false,false,true,false,-1,true) ?
+                              (!there_are_monsters_nearby(true, true, false) ?
                                delay * 4 :
                                delay),
                               "Your icy armour evaporates.",
