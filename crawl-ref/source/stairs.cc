@@ -84,7 +84,7 @@ bool check_annotation_exclusion_warning()
              next_branch.branch_flags & BFLAG_DANGEROUS_END) ||
             (Options.branch_end_warn == END_WARN_VAULTS &&
              next_branch.id == BRANCH_VAULTS)) {
-            if (!env.properties.exists("warned_of_end")) {
+            if (!env.properties.exists(END_WARN_KEY)) {
                 might_be_dangerous = true;
                 mprf(MSGCH_PROMPT, "The next level is the end of this branch, and might be perilous.");
                 // Yeah, this does double duty
@@ -791,7 +791,7 @@ void floor_transition(dungeon_feature_type how,
                  next_branch.branch_flags & BFLAG_DANGEROUS_END) ||
                 (Options.branch_end_warn == END_WARN_VAULTS &&
                  next_branch.id == BRANCH_VAULTS)) {
-                if (!env.properties.exists("warned_of_end")) {
+                if (!env.properties.exists(END_WARN_KEY)) {
                     mprf(MSGCH_PROMPT, "This level is the end of this branch, and might be perilous.");
                     env.properties[END_WARN_KEY] = true;
                 }
