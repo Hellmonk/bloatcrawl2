@@ -10,6 +10,7 @@
 #include <map>
 
 #include "monster.h"
+#include "view.h"
 
 struct follower
 {

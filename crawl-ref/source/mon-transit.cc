@@ -515,6 +515,7 @@ bool extract_monster_from_limbo(mid_t mid, const coord_def &pos,
             monster* new_mon = monster_by_mid(i->mons.mid);
             new_mon->apply_location_effects(new_mon->pos());
             limhere.erase(i);
+            update_monsters_in_view();
             return true;
         }
         return false;
