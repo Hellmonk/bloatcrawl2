@@ -1043,26 +1043,6 @@ static void _SPELLBINDER_melee_effects(item_def* weapon, actor* attacker,
     }
 }
 
-///////////////////////////////////////////////////
-/*
-static void _ORDER_melee_effects(item_def* item, actor* attacker,
-                                         actor* defender, bool mondied, int dam)
-{
-    if (!mondied)
-    {
-        string msg = "";
-        int silver_dam = silver_damages_victim(defender, dam, msg);
-        if (silver_dam)
-        {
-            if (you.can_see(*defender))
-                mpr(msg);
-            defender->hurt(attacker, silver_dam);
-        }
-    }
-}
-*/
-///////////////////////////////////////////////////
-
 static void _FIRESTARTER_equip(item_def *item, bool *show_msgs, bool unmeld)
 {
     _equip_mpr(show_msgs, "You are filled with an inner flame.");
