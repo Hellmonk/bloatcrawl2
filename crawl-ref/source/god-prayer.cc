@@ -56,55 +56,69 @@ string god_prayer_reaction()
     return result;
 }
 
-/**
- * Determine the god this game's ecumenical altar is for.
- * Replaces the ecumenical altar with the God's real altar.
- * Assumes you can worship at least one god (ie are not a
- * demigod), and that you're standing on the altar.
- *
- * @return The god this altar is for.
- */
-static god_type _altar_identify_ecumenical_altar()
-{
-    god_type god;
-    do
-    {
-        god = random_god();
-    }
-    while (!player_can_join_god(god));
-    dungeon_terrain_changed(you.pos(), altar_for_god(god));
-    return god;
-}
-
 static bool _pray_ecumenical_altar()
 {
-    if (yesno("You cannot tell which god this altar belongs to. Convert to "
-              "them anyway?", false, 'n'))
+    if (you.char_class == JOB_MONK && had_gods() == 0)
     {
-        {
-            // Don't check for or charge a Gozag service fee.
-            unwind_var<int> fakepoor(you.attribute[ATTR_GOLD_GENERATED], 0);
+        mpr("There is no benefit in using this altar for the pious such as you.");
+        return false;
+    }
 
-            god_type altar_god = _altar_identify_ecumenical_altar();
-            mprf(MSGCH_GOD, "%s accepts your prayer!",
-                            god_name(altar_god).c_str());
-            you.turn_is_over = true;
-            if (!you_worship(altar_god))
-                join_religion(altar_god);
-            else
-                return true;
+    // Don't check for or charge a Gozag service fee.
+    unwind_var<int> fakepoor(you.attribute[ATTR_GOLD_GENERATED], 0);
+
+    vector<god_type> possible;
+    for (god_iterator it; it; ++it)
+    {
+        const god_type god = *it;
+        if (god == GOD_NO_GOD)
+            continue;
+        if (player_can_join_god(god)) {
+            possible.push_back(god);
         }
+    }
 
+    shuffle_array(possible);
+    ASSERT(possible.size() >= 3);
+    vector<god_type> candidates;
+    candidates.push_back(possible[0]);
+    candidates.push_back(possible[1]);
+    candidates.push_back(possible[2]);
+
+    mprf(
+        "The inscriptions suggest this is an altar to <w>%s</w>, <w>%s</w>, or <w>%s</w>.",
+        god_name(candidates[0]).c_str(),
+        god_name(candidates[1]).c_str(), god_name(candidates[2]).c_str()
+    );
+    mpr("If you worship at this altar, one of these gods will answer your prayer and reward you with with ** piety.");
+    if (yesno("Worship at this altar?", false, 'n'))
+    {
+        shuffle_array(candidates);
+        const god_type god = candidates[0];
+        mprf(MSGCH_GOD, "%s accepts your prayer!",
+             god_name(god).c_str());
+
+        dungeon_terrain_changed(you.pos(), altar_for_god(god));
+        if (!you_worship(god))
+            join_religion(god);
+        else
+            return true;
+
+        // Apply bonus piety
         if (you_worship(GOD_RU))
             you.props[RU_SACRIFICE_PROGRESS_KEY] = 9999;
+        else if (you_worship(GOD_USKAYAW))
+            // Gaining piety past this point does nothing
+            // of value with this god and looks weird.
+            gain_piety(15, 1, false);
         else
-            gain_piety(20, 1, false);
+            gain_piety(35, 1, false);
+
+        you.turn_is_over = true;
 
         mark_milestone("god.ecumenical", "prayed at an ecumenical altar.");
         return true;
-    }
-    else
-    {
+    } else {
         canned_msg(MSG_OK);
         return false;
     }
