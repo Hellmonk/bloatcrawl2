@@ -1845,6 +1845,7 @@ void process_command(command_type cmd)
     case CMD_WEAR_JEWELLERY:       puton_ring(-1);           break;
     case CMD_WIELD_WEAPON:         wield_weapon(false);      break;
     case CMD_ZAP_WAND:             zap_wand();               break;
+    case CMD_DAB:                  dab_on_them_haters();     break;
 
     case CMD_DROP:
         drop();

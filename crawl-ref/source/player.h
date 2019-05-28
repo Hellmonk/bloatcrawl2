@@ -929,6 +929,7 @@ bool swap_check(monster* mons, coord_def &loc, bool quiet = false);
 
 void move_player_to_grid(const coord_def& p, bool stepped);
 
+void dab_on_them_haters();
 bool is_map_persistent();
 bool player_in_connected_branch();
 bool player_in_hell(bool vestibule=false);

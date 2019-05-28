@@ -518,6 +518,19 @@ void move_player_to_grid(const coord_def& p, bool stepped)
     moveto_location_effects(old_grid, stepped, old_pos);
 }
 
+void dab_on_them_haters()
+{
+    for (monster_near_iterator mi(&you); mi; ++mi)
+    {
+        if(*mi && one_chance_in(5))
+        {
+            const monster *mons = *mi; 
+            mprf("You dab on %s.", mons->name(DESC_THE).c_str());
+            return;
+        }
+    }
+    mprf("You dab.");
+}
 
 /**
  * Check if the given terrain feature is safe for the player to move into.
