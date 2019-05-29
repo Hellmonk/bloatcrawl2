@@ -77,7 +77,8 @@ bool check_annotation_exclusion_warning()
         might_be_dangerous = true;
     }
 
-    if (next_level_id.depth == brdepth[next_level_id.branch]) {
+    if ((next_level_id.depth == brdepth[next_level_id.branch]) &&
+        (next_branch.id == your_branch().id)){
         if ((Options.branch_end_warn == END_WARN_ALL &&
              brdepth[next_level_id.branch] > 1) ||
             (Options.branch_end_warn == END_WARN_DANGEROUS &&
@@ -784,7 +785,8 @@ void floor_transition(dungeon_feature_type how,
       _new_level_amuses_xom(how, whence, shaft,
                               (shaft ? whither.depth - old_level.depth : 1),
                               !forced);
-        if (forced && (whither.depth == brdepth[whither.branch])) {
+        if (forced && (whither.depth == brdepth[whither.branch]) &&
+            (next_branch.id == your_branch().id)) {
             if ((Options.branch_end_warn == END_WARN_ALL &&
                  brdepth[whither.branch] > 1) ||
                 (Options.branch_end_warn == END_WARN_DANGEROUS &&
