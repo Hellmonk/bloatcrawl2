@@ -156,3 +156,8 @@ Kitsune
 Kitsune are enthralling fox spirits that take on human shapes. They are poor at
 most skills and frailer than humans, but can charm their foes.
 %%%%
+Chaoskin
+
+Created by Xom for reasons unknown, Chaoskin constantly evolve. They are better
+than average at everything, but can't escape Xom's attention for long.
+%%%%
