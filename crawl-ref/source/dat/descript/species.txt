@@ -151,3 +151,8 @@ Hedgehog
 Rolling around at the speed of sound, Hedgehogs have got places to go and gotta
 follow their rainbow.
 %%%%
+Kitsune
+
+Kitsune are enthralling fox spirits that take on human shapes. They are poor at
+most skills and frailer than humans, but can charm their foes.
+%%%%

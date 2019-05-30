@@ -40,6 +40,7 @@ enum mutation_type
     MUT_CORROSIVE_TOUCH,
     MUT_LUCKY,
     MUT_ALWAYS_FAST,
+    MUT_CUTE_FOX_EARS,
 #endif
     MUT_ACUTE_VISION,
     MUT_AGILE,
@@ -225,6 +226,7 @@ enum mutation_type
     MUT_CORROSIVE_TOUCH,
     MUT_LUCKY,
     MUT_ALWAYS_FAST,
+    MUT_CUTE_FOX_EARS,
 #endif
     NUM_MUTATIONS,
     CATEGORY_MUTATIONS,

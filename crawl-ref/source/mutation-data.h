@@ -1944,6 +1944,14 @@ static const mutation_def mut_data[] =
    {"", "", ""},
    {"", "", ""},
 },
+
+{ MUT_CUTE_FOX_EARS, 0, 1, mutflag::good, false,
+   "cute fox ears",
+
+   {"Your cute fox ears can be used to charm enemies.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =
