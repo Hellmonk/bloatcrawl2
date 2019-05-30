@@ -3966,8 +3966,11 @@ static void _gozag_add_potions(CrawlVector &vec, potion_type *which)
         {
             continue;
         }
-        if (*which == POT_HASTE && you.stasis())
+        if (*which == POT_HASTE
+            && (you.stasis() || you.get_mutation_level(MUT_ALWAYS_FAST)))
+        {
             continue;
+        }
         // Don't add potions which are already in the list
         bool dup = false;
         for (unsigned int i = 0; i < vec.size(); i++)

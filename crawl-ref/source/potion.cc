@@ -288,6 +288,12 @@ public:
                 *reason = "Your stasis prevents you from being hasted.";
             return false;
         }
+        if (you.get_mutation_level(MUT_ALWAYS_FAST))
+        {
+            if (reason)
+                *reason = "You are already as fast as possible.";
+            return false;
+        }
         return true;
     }
 
@@ -1105,6 +1111,12 @@ public:
         {
             if (reason)
                 *reason = "Your stasis prevents you from being slowed.";
+            return false;
+        }
+        if (you.get_mutation_level(MUT_ALWAYS_FAST))
+        {
+            if (reason)
+                *reason = "You cannot be slowed.";
             return false;
         }
         return true;

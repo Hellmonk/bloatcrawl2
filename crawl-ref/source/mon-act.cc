@@ -2140,6 +2140,7 @@ static void _torpor_snail_slow(monster* mons)
 
     if (!is_sanctuary(you.pos())
         && !you.stasis()
+        && !you.get_mutation_level(MUT_ALWAYS_FAST)
         && cell_see_cell(you.pos(), mons->pos(), LOS_SOLID_SEE))
     {
         if (!you.duration[DUR_SLOW])

@@ -39,6 +39,7 @@ enum mutation_type
     MUT_SHAPELESS_BODY,
     MUT_CORROSIVE_TOUCH,
     MUT_LUCKY,
+    MUT_ALWAYS_FAST,
 #endif
     MUT_ACUTE_VISION,
     MUT_AGILE,
@@ -223,6 +224,7 @@ enum mutation_type
     MUT_SHAPELESS_BODY,
     MUT_CORROSIVE_TOUCH,
     MUT_LUCKY,
+    MUT_ALWAYS_FAST,
 #endif
     NUM_MUTATIONS,
     CATEGORY_MUTATIONS,

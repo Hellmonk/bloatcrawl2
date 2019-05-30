@@ -146,3 +146,8 @@ Leprechaun
 Leprechauns are small and frail but versatile. Their intrinsic luck gives them
 a knack for finding better items and more gold than other species.
 %%%%
+Hedgehog
+
+Rolling around at the speed of sound, Hedgehogs have got places to go and gotta
+follow their rainbow.
+%%%%

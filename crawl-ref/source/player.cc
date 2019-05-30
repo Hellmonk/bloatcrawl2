@@ -1939,6 +1939,9 @@ int player_prot_life(bool calc_unid, bool temp, bool items)
 // want to go past 6 (see below). -- bwr
 int player_movement_speed()
 {
+    if (you.get_mutation_level(MUT_ALWAYS_FAST))
+        return FASTEST_PLAYER_MOVE_SPEED;
+
     int mv = 10;
 
     // transformations
@@ -2048,6 +2051,9 @@ int player_speed()
         ps *= 15;
         ps /= 10;
     }
+
+    if (you.get_mutation_level(MUT_ALWAYS_FAST))
+        ps = min(10, ps);
 
     return ps;
 }
@@ -4588,6 +4594,12 @@ bool slow_player(int turns)
         return false;
     }
 
+    if (you.get_mutation_level(MUT_ALWAYS_FAST))
+    {
+        mpr("You cannot be slowed.");
+        return false;
+    }
+
     // Multiplying these values because moving while slowed takes longer than
     // the usual delay.
     turns = haste_mul(turns);
@@ -4665,6 +4677,12 @@ bool haste_player(int turns, bool rageext)
     if (you.stasis())
     {
         mpr("Your stasis prevents you from being hasted.");
+        return false;
+    }
+
+    if (you.get_mutation_level(MUT_ALWAYS_FAST))
+    {
+        mpr("You are already as fast as possible.");
         return false;
     }
 
@@ -8237,8 +8255,9 @@ bool player::immune_to_hex(const spell_type hex) const
     {
     case SPELL_PARALYSIS_GAZE:
     case SPELL_PARALYSE:
-    case SPELL_SLOW:
         return stasis();
+    case SPELL_SLOW:
+        return stasis() || you.get_mutation_level(MUT_ALWAYS_FAST);
     case SPELL_CONFUSE:
     case SPELL_CONFUSION_GAZE:
     case SPELL_MASS_CONFUSION:

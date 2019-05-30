@@ -3130,6 +3130,9 @@ bool player_can_join_god(god_type which_god)
     if (which_god == GOD_GOZAG && you.gold < gozag_service_fee())
         return false;
 
+    if (which_god == GOD_CHEIBRIADOS && you.get_mutation_level(MUT_ALWAYS_FAST))
+        return false;
+
     if (you.get_mutation_level(MUT_NO_LOVE) && _god_rejects_loveless(which_god))
         return false;
 
@@ -3763,6 +3766,11 @@ void god_pitch(god_type which_god)
             simple_god_message(" says: How dare you approach in such a "
                                "loathsome form!",
                                which_god);
+        }
+        else if (you.get_mutation_level(MUT_ALWAYS_FAST) && which_god == GOD_CHEIBRIADOS)
+        {
+            simple_god_message(" does not accept worship from the unstoppably "
+                               "hasty!", which_god);
         }
         else
         {

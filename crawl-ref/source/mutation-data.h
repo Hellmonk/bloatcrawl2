@@ -1936,6 +1936,14 @@ static const mutation_def mut_data[] =
    {"", "", ""},
    {"", "", ""},
 },
+
+{ MUT_ALWAYS_FAST, 0, 1, mutflag::good, false,
+   "always fast",
+
+   {"You always move and act at maximum speed.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =
