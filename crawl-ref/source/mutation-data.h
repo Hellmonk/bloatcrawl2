@@ -1928,6 +1928,14 @@ static const mutation_def mut_data[] =
    {"Your touch grows corrosive.", "", ""},
    {"Your touch loses its corrosive aspect.", "", ""},
 },
+
+{ MUT_LUCKY, 0, 1, mutflag::good, false,
+   "lucky",
+
+   {"You are lucky and find better items.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =

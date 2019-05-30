@@ -141,3 +141,8 @@ Flan
 Flans are gelatinous and slightly corrosive beings. Their fluid shape lets them fit
 easily into any body armour, but they cannot wear other armour types.
 %%%%
+Leprechaun
+
+Leprechauns are small and frail but versatile. Their intrinsic luck gives them
+a knack for finding better items and more gold than other species.
+%%%%

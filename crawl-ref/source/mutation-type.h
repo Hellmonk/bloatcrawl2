@@ -38,6 +38,7 @@ enum mutation_type
     MUT_ACID_RESISTANCE,
     MUT_SHAPELESS_BODY,
     MUT_CORROSIVE_TOUCH,
+    MUT_LUCKY,
 #endif
     MUT_ACUTE_VISION,
     MUT_AGILE,
@@ -221,6 +222,7 @@ enum mutation_type
     MUT_ACID_RESISTANCE,
     MUT_SHAPELESS_BODY,
     MUT_CORROSIVE_TOUCH,
+    MUT_LUCKY,
 #endif
     NUM_MUTATIONS,
     CATEGORY_MUTATIONS,
