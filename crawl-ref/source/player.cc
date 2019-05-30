@@ -524,7 +524,7 @@ void dab_on_them_haters()
     {
         if(*mi && one_chance_in(5))
         {
-            const monster *mons = *mi; 
+            const monster *mons = *mi;
             mprf("You dab on %s.", mons->name(DESC_THE).c_str());
             return;
         }
@@ -5709,9 +5709,17 @@ int player::unadjusted_body_armour_penalty() const
     if (!body_armour)
         return 0;
 
-    // PARM_EVASION is always less than or equal to 0
-    return max(0, -property(*body_armour, PARM_EVASION) / 10
-                  - get_mutation_level(MUT_STURDY_FRAME) * 2);
+    const int scale = 10;
+
+    // PARM_EVASION is always less than or equal to 0 and has a default scale of 10
+    int penalty = -property(*body_armour, PARM_EVASION);
+
+    penalty -= get_mutation_level(MUT_STURDY_FRAME) * 20;
+
+    if (get_mutation_level(MUT_SHAPELESS_BODY))
+        penalty /= 2;
+
+    return max(0, penalty / scale);
 }
 
 /**

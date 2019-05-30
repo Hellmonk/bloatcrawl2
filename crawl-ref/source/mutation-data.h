@@ -1912,6 +1912,22 @@ static const mutation_def mut_data[] =
   {"You feel resistant to acid.", "",  ""},
   {"You feel less resistant to acid.", "", ""},
 },
+
+{ MUT_SHAPELESS_BODY, 0, 1, mutflag::good, true,
+   "shapeless body",
+
+   {"Your bodies' adapts to match your armour (ER/2).", "", ""},
+   {"Your body loses its intrinsic shape (ER/2).", "", ""},
+   {"Your body regains its intrinsic shape (lost ER/2).", "", ""},
+},
+
+{ MUT_CORROSIVE_TOUCH, 0, 1, mutflag::good, true,
+   "corrosive skin",
+
+   {"Your touch is corrosive.", "", ""},
+   {"Your touch grows corrosive.", "", ""},
+   {"Your touch loses its corrosive aspect.", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =

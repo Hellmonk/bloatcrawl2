@@ -718,6 +718,13 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         return false;
     }
 
+    if (you.species == SP_FLAN && slot != EQ_BODY_ARMOUR && slot != EQ_SHIELD)
+    {
+        if (verbose)
+            mpr("You can't wear that!");
+        return false;
+    }
+
     if (you.get_mutation_level(MUT_MISSING_HAND) && is_shield(item))
     {
         if (verbose)

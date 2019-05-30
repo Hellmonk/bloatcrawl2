@@ -136,3 +136,8 @@ Profound Elf
 Deeper than a Deep Elf and twice as elven, Profound Elves are extremely frail
 magical experts.
 %%%%
+Flan
+
+Flans are gelatinous and slightly corrosive beings. Their fluid shape lets them fit
+easily into any body armour, but they cannot wear other armour types.
+%%%%
