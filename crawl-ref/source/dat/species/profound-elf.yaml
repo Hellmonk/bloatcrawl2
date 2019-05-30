@@ -1,0 +1,62 @@
+enum: SP_PROFOUND_ELF
+monster: MONS_ELF
+name: "Profound Elf"
+short_name: "PE"
+adjective: "Elven"
+genus: "Elf"
+difficulty: Intermediate
+# difficulty_priority: 40
+species_flags:
+  - elven
+aptitudes:
+  xp: -2
+  hp: -4
+  mp_mod: 4
+  mr: 8
+  fighting: -4
+  long_blades: -2
+  axes: -4
+  maces_and_flails: -6
+  polearms: -6
+  slings: -4
+  bows: 2
+  crossbows: -2
+  armour: -4
+  dodging: 4
+  stealth: 6
+  shields: -4
+  unarmed_combat: -4
+  spellcasting: 6
+  conjurations: 2
+  hexes: 6
+  charms: 8
+  summoning: 2
+  necromancy: 4
+  translocations: 2
+  transmutations: 2
+  fire_magic: 2
+  ice_magic: 2
+  earth_magic: 2
+  poison_magic: 2
+  invocations: 2
+  evocations: 2
+str: 2
+int: 16
+dex: 12
+levelup_stat_frequency: 2
+levelup_stats:
+  - int
+recommended_jobs:
+  - JOB_WIZARD
+  - JOB_CONJURER
+  - JOB_SUMMONER
+  - JOB_NECROMANCER
+  - JOB_FIRE_ELEMENTALIST
+  - JOB_ICE_ELEMENTALIST
+  - JOB_AIR_ELEMENTALIST
+  - JOB_EARTH_ELEMENTALIST
+  - JOB_VENOM_MAGE
+recommended_weapons:
+  - SK_SHORT_BLADES
+  - SK_STAVES
+  - SK_BOWS

@@ -131,3 +131,8 @@ Vine Stalker
 Frail symbionts, Vine Stalkers cannot regain health from devices or potions.
 Their magical reserves absorb damage, and they pack a magic-restoring bite.
 %%%%
+Profound Elf
+
+Deeper than a Deep Elf and twice as elven, Profound Elves are extremely frail
+magical experts.
+%%%%
