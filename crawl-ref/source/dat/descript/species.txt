@@ -131,3 +131,33 @@ Vine Stalker
 Frail symbionts, Vine Stalkers cannot regain health from devices or potions.
 Their magical reserves absorb damage, and they pack a magic-restoring bite.
 %%%%
+Profound Elf
+
+Deeper than a Deep Elf and twice as elven, Profound Elves are extremely frail
+magical experts.
+%%%%
+Flan
+
+Flans are gelatinous and slightly corrosive beings. Their fluid shape lets them fit
+easily into any body armour, but they cannot wear other armour types.
+%%%%
+Leprechaun
+
+Leprechauns are small and frail but versatile. Their intrinsic luck gives them
+a knack for finding better items and more gold than other species.
+%%%%
+Hedgehog
+
+Rolling around at the speed of sound, Hedgehogs have got places to go and gotta
+follow their rainbow.
+%%%%
+Kitsune
+
+Kitsune are enthralling fox spirits that take on human shapes. They are poor at
+most skills and frailer than humans, but can charm their foes.
+%%%%
+Chaoskin
+
+Created by Xom for reasons unknown, Chaoskin constantly evolve. They are better
+than average at everything, but can't escape Xom's attention for long.
+%%%%

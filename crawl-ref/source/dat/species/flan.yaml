@@ -1,0 +1,31 @@
+enum: SP_FLAN
+monster: MONS_JELLY
+name: "Flan"
+short_name: "Fl"
+difficulty: Intermediate
+# difficulty_priority: 40
+species_flags:
+  - hairless
+aptitudes:
+  xp: -1
+  hp: -1
+  mp_mod: 0
+  mr: 3
+  fighting: -1
+  spellcasting: -1
+  evocations: -2
+str: 10
+int: 10
+dex: 10
+levelup_stat_frequency: 3
+levelup_stats: default
+mutations:
+  1:
+    MUT_SHAPELESS_BODY: 1
+    MUT_CORROSIVE_TOUCH: 1
+recommended_jobs:
+  - JOB_CONJURER
+  - JOB_FIRE_ELEMENTALIST
+  - JOB_ICE_ELEMENTALIST
+  - JOB_AIR_ELEMENTALIST
+  - JOB_EARTH_ELEMENTALIST

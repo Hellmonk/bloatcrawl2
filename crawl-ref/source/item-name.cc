@@ -3114,7 +3114,8 @@ bool is_emergency_item(const item_def &item)
         {
         case POT_HASTE:
             return !have_passive(passive_t::no_haste)
-                && you.species != SP_FORMICID;
+                && you.species != SP_FORMICID
+                && !you.get_mutation_level(MUT_ALWAYS_FAST);
         case POT_HEAL_WOUNDS:
             return you.can_potion_heal();
         case POT_CURING:
@@ -3496,7 +3497,7 @@ bool is_useless_item(const item_def &item, bool temp)
         case POT_BERSERK_RAGE:
             return !you.can_go_berserk(true, true, true, nullptr, temp);
         case POT_HASTE:
-            return you.stasis();
+            return you.stasis() || you.get_mutation_level(MUT_ALWAYS_FAST);
 
 #if TAG_MAJOR_VERSION == 34
         case POT_CURE_MUTATION:

@@ -52,6 +52,7 @@ enum ability_type
     ABIL_SHAFT_SELF,
     // Barachim
     ABIL_HOP,
+    ABIL_CHARM,
     ABIL_MAX_INTRINSIC = ABIL_HOP,
 
     // Evoking items.

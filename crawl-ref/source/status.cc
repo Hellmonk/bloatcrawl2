@@ -887,6 +887,9 @@ static void _describe_speed(status_info& inf)
     bool slow = you.duration[DUR_SLOW] || have_stat_zero();
     bool fast = you.duration[DUR_HASTE];
 
+    if (you.get_mutation_level(MUT_ALWAYS_FAST))
+        return;
+
     if (slow && fast)
     {
         inf.light_colour = MAGENTA;

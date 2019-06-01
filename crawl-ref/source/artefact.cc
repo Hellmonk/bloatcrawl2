@@ -825,11 +825,14 @@ static void _add_good_randart_prop(artefact_prop_type prop,
                         of rolls for good property boosts.
  * @param max_bad_props The maximum number of bad properties this artefact can
                         be given.
+ * @param lucky         Lucky players should get sligtly better than average
+ *                      randarts. Currently this is "+1 quality".
  */
 static void _get_randart_properties(const item_def &item,
                                     artefact_properties_t &item_props,
                                     int quality = 0,
-                                    const int max_bad_props = 2)
+                                    const int max_bad_props = 2,
+                                    bool lucky = false)
 {
     const object_class_type item_class = item.base_type;
 
@@ -837,6 +840,8 @@ static void _get_randart_properties(const item_def &item,
     // artefact to be. The default calculation range is 1 to 7.
     if (quality < 1)
         quality = max(1, binomial(7, 30));
+    if (lucky)
+        quality++;
 
     // then consider adding bad properties. the better the artefact, the more
     // likely we add a bad property, up to a max of 2.
@@ -943,7 +948,7 @@ void setup_unrandart(item_def &item, bool creating)
     item.plus      = unrand->plus;
 }
 
-static bool _init_artefact_properties(item_def &item)
+static bool _init_artefact_properties(item_def &item, bool lucky = false)
 {
     ASSERT(is_artefact(item));
 
@@ -961,7 +966,7 @@ static bool _init_artefact_properties(item_def &item)
 
     artefact_properties_t prop;
     prop.init(0);
-    _get_randart_properties(item, prop);
+    _get_randart_properties(item, prop, 0, 2, lucky);
 
     for (int i = 0; i < ART_PROPERTIES; i++)
     {
@@ -1620,7 +1625,8 @@ static void _artefact_setup_prop_vectors(item_def &item)
 
 // If force_mundane is true, normally mundane items are forced to
 // nevertheless become artefacts.
-bool make_item_randart(item_def &item, bool force_mundane)
+// If lucky is true, the artefact is a little better than normal.
+bool make_item_randart(item_def &item, bool force_mundane, bool lucky)
 {
     if (item.base_type != OBJ_WEAPONS
         && item.base_type != OBJ_ARMOUR
@@ -1650,7 +1656,7 @@ bool make_item_randart(item_def &item, bool force_mundane)
     do
     {
         // Now that we found something, initialise the props array.
-        if (--randart_tries <= 0 || !_init_artefact_properties(item))
+        if (--randart_tries <= 0 || !_init_artefact_properties(item, lucky))
         {
             // Something went wrong that no amount of rerolling will fix.
             item.unrand_idx = 0;

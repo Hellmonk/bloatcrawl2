@@ -330,6 +330,8 @@ static const ability_def Ability_List[] =
 
     { ABIL_HOP, "Hop", 0, 0, 0, 0, {}, abflag::none },
 
+    { ABIL_CHARM, "Charm Monsters", 0, 0, 0, 0, {}, abflag::exhaustion },
+
     // EVOKE abilities use Evocations and come from items.
     // Teleportation and Blink can also come from mutations
     // so we have to distinguish them (see above). The off items
@@ -1900,6 +1902,15 @@ static spret _do_ability(const ability_def& abil, bool fail)
         else
             return spret::abort;
 
+    case ABIL_CHARM:
+        if(you.duration[DUR_EXHAUSTED])
+        {
+            mpr("You're too exhausted to charm anything!");
+            return spret::abort;
+        }
+        you.increase_duration(DUR_EXHAUSTED, 25 - you.experience_level / 2 + random2(8));
+        return mass_enchantment(ENCH_CHARM, 10 + you.experience_level * 4);
+
     case ABIL_SPIT_POISON:      // Naga poison spit
     {
         int power = 10 + you.experience_level;
@@ -3404,6 +3415,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
 
     if (you.get_mutation_level(MUT_HOP))
         _add_talent(talents, ABIL_HOP, check_confused);
+
+    if (you.get_mutation_level(MUT_CUTE_FOX_EARS))
+        _add_talent(talents, ABIL_CHARM, check_confused);
 
     // Spit Poison, possibly upgraded to Breathe Poison.
     if (you.get_mutation_level(MUT_SPIT_POISON) == 2)

@@ -1,0 +1,61 @@
+enum: SP_KITSUNE
+monster: MONS_HUMAN
+name: Kitsune
+short_name: Ki
+genus: Fox
+difficulty: Intermediate
+# difficulty_priority: 40
+aptitudes:
+  xp: 1
+  hp: -1
+  mp_mod: 0
+  mr: 6
+  fighting: -2
+  short_blades: -1
+  long_blades: -2
+  axes: -2
+  maces_and_flails: -2
+  polearms: -2
+  staves: -2
+  slings: -2
+  bows: -2
+  crossbows: -2
+  throwing: -2
+  armour: -2
+  dodging: -2
+  shields: -2
+  unarmed_combat: -1
+  spellcasting: 1
+  conjurations: -3
+  hexes: -1
+  charms: -1
+  summoning: -1
+  necromancy: -3
+  translocations: -2
+  fire_magic: -1
+  ice_magic: -1
+  air_magic: -1
+  earth_magic: -1
+  poison_magic: -1
+  invocations: 1
+  evocations: -3
+str: 5
+int: 11
+dex: 11
+levelup_stat_frequency: 3
+levelup_stats:
+  - int
+  - dex
+mutations:
+  1:
+    MUT_CLAWS: 1
+    MUT_CUTE_FOX_EARS: 1
+recommended_jobs:
+  - JOB_WIZARD
+  - JOB_TRANSMUTER
+  - JOB_EARTH_ELEMENTALIST
+recommended_weapons:
+  - SK_UNARMED_COMBAT
+  - SK_BOWS
+  - SK_CROSSBOWS
+  - SK_SLINGS

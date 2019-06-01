@@ -1,0 +1,48 @@
+enum: SP_LEPRECHAUN
+monster: MONS_BOGGART
+name: "Leprechaun"
+short_name: "Le"
+difficulty: Intermediate
+# difficulty_priority: 40
+aptitudes:
+  xp: 0
+  hp: -2
+  mp_mod: 0
+  mr: 3
+  fighting: -1
+  short_blades: 1
+  long_blades: 1
+  axes: 1
+  maces_and_flails: 1
+  polearms: 1
+  staves: 1
+  slings: 1
+  bows: 1
+  crossbows: 1
+  throwing: 1
+  dodging: 1
+  stealth: 2
+  shields: -1
+  unarmed_combat: -1
+  spellcasting: 1
+  conjurations: -1
+  hexes: 1
+  charms: 5
+  necromancy: -1
+  translocations: 1
+  fire_magic: -1
+  ice_magic: -1
+  earth_magic: -1
+  air_magic: -1
+  poison_magic: -1
+str: 6
+int: 6
+dex: 12
+levelup_stat_frequency: 5
+levelup_stats:
+  - int
+  - dex
+recommended_jobs:
+  - JOB_SKALD
+  - JOB_WARPER
+  - JOB_WIZARD

@@ -429,6 +429,14 @@ bool melee_attack::handle_phase_hit()
         return false;
     }
 
+    // Corrosive touch applies its debuff before anything else
+    if (attacker->is_player() && you.get_mutation_level(MUT_CORROSIVE_TOUCH)
+        && one_chance_in(3))
+    {
+        mprf("You touch %s and corrode them.", defender_name(true).c_str());
+        defender->corrode_equipment();
+    }
+
     if (attacker->is_player() && you.duration[DUR_INFUSION])
     {
         if (enough_mp(1, true, false))
