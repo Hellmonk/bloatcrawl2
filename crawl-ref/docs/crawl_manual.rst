@@ -1003,6 +1003,29 @@ representing a severe chance).
 Be careful of magic-using enemies! Some of them can use magic just as well as
 you, if not better, and often use it intelligently.
 
+In Stoat Soup, some spells which provide a beneficial enchantment, such as the
+Infusion spell, last indefinitely. (In vanilla Crawl, such spells normally time
+out.) Every time such a spell provides a benefit, there is a small chance of a
+miscast, based on the spell failure check; the frequency of miscasts is always
+lower than it would be in vanilla Crawl if you were recasting the spell every
+time it expired. If a miscast occurs, you will stop receiving the benefit for
+a few turns while you regain control of your magic. The power of any such spell
+is recalculated constantly, so you don't need to renew them as your skills 
+improve.
+
+If you are using an artefact that suppresses spellcasting (the -Cast
+flag), none of your permanent enchantments will function at all.
+
+To end one such enchantment, cast the spell again. This costs no MP,
+but takes a turn, and you must be able to cast spells (not berserk,
+silenced, brainless, etc) in order to utter the appropriate
+incantation.
+
+To end all such enchantments, use the (a)bility menu; this can be done
+even if you are brainless, have a -Cast artefact, or are starving.
+Forgetting the spell (eg with a scroll of amnesia) or quaffing a potion of
+cancellation will also end the enchantment.
+
 ****************************************
 I. Targeting
 ****************************************

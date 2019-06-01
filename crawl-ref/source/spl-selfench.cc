@@ -190,16 +190,21 @@ int cast_selective_amnesia(const string &pre_msg)
 
 spret_type cast_infusion(int pow, bool fail)
 {
-    fail_check();
-    if (!you.duration[DUR_INFUSION])
-        mpr("You begin infusing your attacks with magical energy.");
-    else
-        mpr("You extend your infusion's duration.");
-
-    you.increase_duration(DUR_INFUSION,  8 + roll_dice(2, pow), 100);
-    you.props["infusion_power"] = pow;
-
-    return SPRET_SUCCESS;
+    if (you.permabuff[PERMA_INFUSION]) {
+        mpr(you.duration[DUR_INFUSION] ? 
+            "You stop attempting to infuse your attacks with magical energy." :
+            "You stop infusing your attacks with magical energy.");
+        you.permabuff[PERMA_INFUSION] = false; 
+        return SPRET_PERMACANCEL;
+    } else {
+        fail_check();
+        mpr(you.duration[DUR_INFUSION] ? 
+            "You will soon be infusing your attacks with magical energy." :
+            "You begin infusing your attacks with magical energy.");
+        // Power is calculated every time we attack
+        you.permabuff[PERMA_INFUSION] = true;
+        return SPRET_SUCCESS;
+    }
 }
 
 spret_type cast_song_of_slaying(int pow, bool fail)

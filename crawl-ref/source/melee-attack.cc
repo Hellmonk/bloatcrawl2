@@ -39,6 +39,7 @@
 #include "mon-tentacle.h"
 #include "religion.h"
 #include "shout.h"
+#include "spl-cast.h"
 #include "spl-summoning.h"
 #include "state.h"
 #include "stepdown.h"
@@ -386,21 +387,43 @@ bool melee_attack::handle_phase_hit()
         return false;
     }
 
-    if (attacker->is_player() && you.duration[DUR_INFUSION])
-    {
-        if (enough_mp(1, true, false))
-        {
-            // infusion_power is set when the infusion spell is cast
-            const int pow = you.props["infusion_power"].get_int();
-            const int dmg = 2 + div_rand_round(pow, 12);
-            const int hurt = defender->apply_ac(dmg);
+    // it seems like some of this is going to become functions once we have
+    // more than one permabuff
+    if (attacker->is_player() && you.permabuff_working(PERMA_INFUSION)) {
+        if (enough_mp(1, true, false)) {
+            int fail = 0;
+            // 34 was the average duration at max spellpower
+            if (one_chance_in(34) || you.duration[DUR_BRAINLESS]) {
+                fail = failure_check(SPELL_INFUSION, true);
+            }
+            if (fail) {
+                mprf(MSGCH_DURATION,
+                     "You lose control of your magical infusion.");
+                if (!you.get_mutation_level(MUT_MAGIC_ATTUNEMENT)) {
+                    dec_mp(1);
+                }
+                apply_miscast(SPELL_INFUSION,fail,false);
+                // Well, this is sheer guesswork. Let's start with this; the
+                // maximum suppression duration is circa 2x the failure
+                // check interval. Perhaps this should be level-dependent?
+                you.set_duration(DUR_INFUSION,roll_dice(2,17) + fail/3);
+            } else {
+                if (god_hates_spell(SPELL_INFUSION,you.religion)) {
+                    // it seems like this should be some other function
+                    // but I don't want to set up a whole new conduct for this
+                    // HOM edge case
+                    dock_piety(1,0);                    
+                }
+                const int pow = calc_spell_power(SPELL_INFUSION, true);
+                const int dmg = 2 + div_rand_round(pow, 12);
+                const int hurt = defender->apply_ac(dmg);
 
-            dprf(DIAG_COMBAT, "Infusion: dmg = %d hurt = %d", dmg, hurt);
-
-            if (hurt > 0)
-            {
-                damage_done = hurt;
-                dec_mp(1);
+                dprf(DIAG_COMBAT, "Infusion: dmg = %d hurt = %d", dmg, hurt);
+                
+                if (hurt > 0) {
+                    damage_done = hurt;
+                    dec_mp(1);
+                }
             }
         }
     }

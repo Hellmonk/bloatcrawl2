@@ -375,12 +375,18 @@ static const duration_def duration_data[] =
       "marked", "sentinel's mark",
       "A sentinel's mark is revealing your location to enemies.", D_DISPELLABLE | D_EXPIRES,
       {{ "The sentinel's mark upon you fades away." }}},
+    // DARKGREY if not even trying
     { DUR_INFUSION,
-      BLUE, "Infus",
-      "infused", "",
-      "Your attacks are magically infused.", D_DISPELLABLE | D_EXPIRES,
-      {{ "You are no longer magically infusing your attacks." },
-        { "Your magical infusion is running out." }}, 6},
+      YELLOW, "-Infus",
+      "infusion suppressed", "",
+      "You have lost control of your magical infusion.", D_EXPIRES,
+      // I wonder if this will become a more general function with >1 perma?
+      {{ "", []() {
+		  mprf(MSGCH_DURATION, "You are once again %s your attacks.",
+		       ((you.permabuff[PERMA_INFUSION] && !you.no_cast()) ? 
+			"magically infusing" :
+			"able to magically infuse"));
+	      }}}},
     { DUR_SONG_OF_SLAYING,
       BLUE, "Slay",
       "singing", "song of slaying",

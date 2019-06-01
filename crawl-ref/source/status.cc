@@ -696,12 +696,30 @@ bool fill_status_info(int status, status_info& inf)
         break;
     }
 
-    case DUR_INFUSION:
+    case STATUS_INFUSION:
     {
-        if (!enough_mp(1, true, false))
-            inf.light_colour = DARKGREY;
+        if (you.permabuff[PERMA_INFUSION] && !you.duration[DUR_INFUSION]) {
+            inf.light_text = "Infus";
+            inf.short_text = "infusing";
+            if (you.no_cast()) {
+                inf.light_colour = DARKGREY;
+                inf.long_text = 
+                    "You would be infusing your attacks, but your equipment prevents it.";
+            } else {
+                inf.long_text = 
+                    "You are infusing your attacks with magical energy.";
+                if (enough_mp(1, true, false)) {
+                    inf.light_colour = LIGHTBLUE;
+                } else {
+                    inf.light_colour = BLUE;
+                }
+            }
+        }
         break;
     }
+
+    case DUR_INFUSION:
+        if (!you.permabuff[PERMA_INFUSION]) inf.light_colour = DARKGREY;
 
     case STATUS_ORB:
     {
