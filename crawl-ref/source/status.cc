@@ -472,10 +472,25 @@ bool fill_status_info(int status, status_info& inf)
         }
         break;
 
+    case STATUS_SONG:
+    {
+        if (you.permabuff[PERMA_SONG] && !you.duration[DUR_SONG_OF_SLAYING]) {
+            inf.light_text
+                = make_stringf("Slay (%u)",
+                               you.props[SONG_OF_SLAYING_KEY].get_int());
+            inf.short_text = "singing";
+            if (you.no_cast()) {
+                inf.light_colour = DARKGREY;
+                inf.long_text = "Your equipment prevents your song of slaying from being effective.";
+            } else {            
+                inf.light_colour = LIGHTBLUE;
+                inf.long_text = "Your melee attacks are strengthened by your song.";
+            }
+        }
+        break;
+    }
     case DUR_SONG_OF_SLAYING:
-        inf.light_text
-            = make_stringf("Slay (%u)",
-                           you.props[SONG_OF_SLAYING_KEY].get_int());
+        if (!you.permabuff[PERMA_SONG]) inf.light_colour = DARKGREY;
         break;
 
     case STATUS_BEOGH:
@@ -720,7 +735,8 @@ bool fill_status_info(int status, status_info& inf)
 
     case DUR_INFUSION:
         if (!you.permabuff[PERMA_INFUSION]) inf.light_colour = DARKGREY;
-
+        break;
+        
     case STATUS_SHROUD:
     {
         if (you.permabuff[PERMA_SHROUD] && 
@@ -736,6 +752,8 @@ bool fill_status_info(int status, status_info& inf)
                 inf.light_text = "-Shroud";
                 inf.short_text = "unshrouded";
                 inf.light_colour = BLUE;
+                inf.long_text = 
+                    "Your magic regeneration is reconstructing your distorting shroud.";
             } else {
                 inf.light_colour = LIGHTBLUE;
                 inf.long_text = 
@@ -746,6 +764,7 @@ bool fill_status_info(int status, status_info& inf)
     }
     case DUR_SHROUD_OF_GOLUBRIA:
         if (!you.permabuff[PERMA_SHROUD]) inf.light_colour = DARKGREY;
+        break;
 
     case STATUS_ORB:
     {

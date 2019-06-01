@@ -1011,7 +1011,9 @@ lower than it would be in vanilla Crawl if you were recasting the spell every
 time it expired. If a miscast occurs, you will stop receiving the benefit for
 a few turns while you regain control of your magic. The power of any such spell
 is recalculated constantly, so you don't need to renew them as your skills 
-improve.
+improve. When such a spell is providing a benefit, your MP regeneration rate
+is slightly decreased, as if you were recasting it regularly - you can see the
+effect in the % screen.
 
 If you are using an artefact that suppresses spellcasting (the -Cast
 flag), none of your permanent enchantments will function at all.

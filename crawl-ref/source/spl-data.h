@@ -3109,9 +3109,9 @@ static const struct spell_desc spelldata[] =
     2,
     100,
     -1, -1,
-    2, 8,
+    2, 8, // In Stoat Soup the effect_noise is ignored
     TILEG_SONG_OF_SLAYING,
-    PERMA_NO_PERMA,
+    PERMA_SONG,
 },
 
 #if TAG_MAJOR_VERSION == 34

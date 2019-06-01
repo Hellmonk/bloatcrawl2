@@ -3612,7 +3612,7 @@ unsigned int exp_needed(int lev, int exp_apt)
 }
 
 // returns bonuses from rings of slaying, etc.
-int slaying_bonus(bool ranged)
+int slaying_bonus(bool ranged, bool ignore_sos)
 {
     int ret = 0;
 
@@ -3623,9 +3623,10 @@ int slaying_bonus(bool ranged)
 
     ret += 3 * augmentation_amount();
 
-    if (you.duration[DUR_SONG_OF_SLAYING])
+    if ((!ignore_sos) && (you.permabuff_working(PERMA_SONG))) {
         ret += you.props[SONG_OF_SLAYING_KEY].get_int();
-
+    }
+    
     if (you.duration[DUR_HORROR])
         ret -= you.props[HORROR_PENALTY_KEY].get_int();
 
@@ -5054,6 +5055,10 @@ bool player::permabuff_working(permabuff_type pb) {
         return false;
     }
     if ((pb == PERMA_SHROUD) && (you.props.exists("shroud_recharge"))) {
+        return false;
+    }
+    // Impossible?
+    if ((pb == PERMA_SONG) && (silenced(you.pos()))) {
         return false;
     }
     return true;

@@ -209,17 +209,41 @@ spret_type cast_infusion(int pow, bool fail)
 
 spret_type cast_song_of_slaying(int pow, bool fail)
 {
-    fail_check();
+    if (you.permabuff[PERMA_SONG]) {
+        mpr(you.duration[DUR_SONG_OF_SLAYING] ? 
+            "You stop trying to sing a song of slaying." :
+            "You stop singing a song of slaying.");
+        you.permabuff[PERMA_SONG] = false; you.props[SONG_OF_SLAYING_KEY] = 0;
+        return SPRET_PERMACANCEL;
+    } else {
+        fail_check();
+        mpr(you.duration[DUR_SONG_OF_SLAYING] ? 
+            "You will soon be singing a song of slaying." :
+            "You start singing a song of slaying.");
+        you.permabuff[PERMA_SONG] = true; you.props[SONG_OF_SLAYING_KEY] = 0;
+        return SPRET_SUCCESS;
+    }
+}
 
-    if (you.duration[DUR_SONG_OF_SLAYING])
-        mpr("You start a new song!");
-    else
-        mpr("You start singing a song of slaying.");
-
-    you.set_duration(DUR_SONG_OF_SLAYING, 20 + random2avg(pow, 2));
-
-    you.props[SONG_OF_SLAYING_KEY] = 0;
-    return SPRET_SUCCESS;
+void check_sos_miscast() {
+    if (you.permabuff_working(PERMA_SONG) &&
+        you.props[SONG_OF_SLAYING_KEY].get_int()) {
+        int fail = 0;
+        if (one_chance_in(nominal_duration(SPELL_INFUSION))
+            || you.duration[DUR_BRAINLESS]) {
+            fail = failure_check(SPELL_SONG_OF_SLAYING, true);
+        }
+        if (fail) {
+            mprf(MSGCH_DURATION,
+                 "You stumble over the syllables of your song.");
+            apply_miscast(SPELL_SONG_OF_SLAYING, fail, false);
+            you.increase_duration(DUR_SONG_OF_SLAYING, roll_dice(2,10) + fail/4);
+        } else {
+            if (god_hates_spell(SPELL_SONG_OF_SLAYING,you.religion)) {
+            dock_piety(1,0);                    
+            }
+        }
+    }
 }
 
 spret_type cast_silence(int pow, bool fail)
@@ -302,5 +326,8 @@ void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
                 = max(you.duration[permabuff_durs[i]],roll_dice(num,size));
         }
     }
-    if (turn_off) you.props.erase("shroud_recharge"); 
+    if (turn_off) {
+        you.props.erase("shroud_recharge"); 
+        you.props[SONG_OF_SLAYING_KEY] = 0;
+    }
 }

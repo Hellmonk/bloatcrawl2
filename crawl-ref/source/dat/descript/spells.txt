@@ -1166,6 +1166,8 @@ redirecting their force to the air nearby. Ranged attacks cannot be diverted in
 this way. The shroud is highly unstable, and may fall apart unexpectedly under
 stress; when it does so, it reconstitutes itself over the next few turns,
 drawing from the caster's magic regeneration.
+
+This enchantment lasts indefinitely, until dispelled by the caster.
 %%%%
 Silence spell
 
@@ -1211,8 +1213,13 @@ Song of Slaying spell
 
 Recites ancient verses of battle. Each non-summoned enemy the caster slays in
 combat during this recitation temporarily enhances their melee and ranged
-skills. The bonus only lasts for the duration of the song; casting this spell
-while already singing will start a new song, not extend an existing one.
+skills. The caster need only murmur the words until an enemy is
+actually in sight, but then it becomes increasingly loud as the caster
+focuses their aggression. Unfortunately, it provides no benefit
+against an enemy the caster cannot see.
+
+This enchantment lasts indefinitely, until dispelled by the caster,
+but the bonus will decay over time at a rate dependent on spellpower.
 %%%%
 Spawn Tentacles spell
 

@@ -392,11 +392,17 @@ static const duration_def duration_data[] =
 			"able to magically infuse"));
 	      }}}},
     { DUR_SONG_OF_SLAYING,
-      BLUE, "Slay",
-      "singing", "song of slaying",
-      "Your melee attacks are strengthened by your song.", D_DISPELLABLE | D_EXPIRES,
-      {{ "Your song has ended." },
-        { "Your song is almost over." }}, 6},
+      YELLOW, "Slay",
+      "song suppressed", "song of slaying suppressed",
+      "You are stumbling over the syllables of your song of slaying.", 
+      D_EXPIRES,
+      {{ "", []() {
+		  mprf(MSGCH_DURATION, 
+		       "You are once again %s a song of slaying.",
+		       ((you.permabuff[PERMA_SONG] && !you.no_cast()) ? 
+			"singing" :
+			"able to sing"));
+	      }}}},
     { DUR_FLAYED,
       RED, "Flay",
       "flayed", "",

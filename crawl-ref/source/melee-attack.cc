@@ -40,6 +40,7 @@
 #include "religion.h"
 #include "shout.h"
 #include "spl-cast.h"
+#include "spl-selfench.h"
 #include "spl-summoning.h"
 #include "state.h"
 #include "stepdown.h"
@@ -392,8 +393,8 @@ bool melee_attack::handle_phase_hit()
     if (attacker->is_player() && you.permabuff_working(PERMA_INFUSION)) {
         if (enough_mp(1, true, false)) {
             int fail = 0;
-            // 34 was the average duration at max spellpower
-            if (one_chance_in(34) || you.duration[DUR_BRAINLESS]) {
+            if (one_chance_in(nominal_duration(SPELL_INFUSION) || 
+                              you.duration[DUR_BRAINLESS])) {
                 fail = failure_check(SPELL_INFUSION, true);
             }
             if (fail) {
@@ -403,10 +404,7 @@ bool melee_attack::handle_phase_hit()
                     dec_mp(1);
                 }
                 apply_miscast(SPELL_INFUSION,fail,false);
-                // Well, this is sheer guesswork. Let's start with this; the
-                // maximum suppression duration is circa 2x the failure
-                // check interval. Perhaps this should be level-dependent?
-                you.set_duration(DUR_INFUSION,roll_dice(2,17) + fail/3);
+                you.increase_duration(DUR_INFUSION,roll_dice(2,10) + fail/4);
             } else {
                 if (god_hates_spell(SPELL_INFUSION,you.religion)) {
                     // it seems like this should be some other function
@@ -936,6 +934,9 @@ bool melee_attack::attack()
     handle_phase_end();
 
     enable_attack_conducts(conducts);
+    if (attacker->is_player()) {
+        check_sos_miscast();
+    }
 
     return attack_occurred;
 }
@@ -3529,7 +3530,7 @@ int melee_attack::calc_your_to_hit_unarmed(int uattack)
     if (you.confused())
         your_to_hit -= 5;
 
-    your_to_hit += slaying_bonus();
+    your_to_hit += slaying_bonus(false, !defender_visible);
 
     return your_to_hit;
 }

@@ -20,6 +20,7 @@
 #include "mon-util.h"
 #include "monster.h"
 #include "player.h"
+#include "spl-selfench.h"
 #include "stringutil.h"
 #include "teleport.h"
 #include "throw.h"
@@ -156,6 +157,9 @@ bool ranged_attack::attack()
     handle_phase_end();
 
     enable_attack_conducts(conducts);
+    if (attacker->is_player()) {
+        check_sos_miscast();
+    }
 
     return attack_occurred;
 }

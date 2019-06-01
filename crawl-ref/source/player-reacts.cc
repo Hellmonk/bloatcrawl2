@@ -964,8 +964,20 @@ static void _regenerate_hp_and_mp(int delay)
     you.props["mp_to_charms"] = 0;
     const int base_val = player_mp_regen();
     int mp_regen_countup = div_rand_round(base_val * delay, BASELINE_DELAY);
+    // I can see this next becoming a function that calcs cost for all permas
+    if (you.permabuff_working(PERMA_SONG) && 
+        (you.props[SONG_OF_SLAYING_KEY].get_int() > 0)) {
+        int sub = div_rand_round(
+            (delay *
+             (you.get_mutation_level(MUT_MAGIC_ATTUNEMENT) ? 100 : 200)),
+            (nominal_duration(SPELL_SONG_OF_SLAYING)) * BASELINE_DELAY);
+        // have to check for this being < 0 when we have enough permas?
+        mp_regen_countup -= sub;
+        you.props["mp_to_charms"].get_int() += sub;
+    }
     if (you.props.exists("shroud_recharge") && !you.no_cast() &&
-        !you.duration[DUR_SHROUD_OF_GOLUBRIA]) {
+        !you.duration[DUR_SHROUD_OF_GOLUBRIA] && 
+        !you.duration[DUR_BRAINLESS]) {
         int available = (you.magic_points < you.max_magic_points) ? 
             (mp_regen_countup * 3 / 4) : mp_regen_countup;
         if (available < you.props["shroud_recharge"].get_int()) {
@@ -1019,17 +1031,20 @@ void player_reacts()
     // Handle sound-dependent effects that are silenced
     if (silenced(you.pos()))
     {
-        if (you.duration[DUR_SONG_OF_SLAYING])
+        if (you.permabuff[PERMA_SONG])
         {
             mpr("The silence causes your song to end.");
-            _decrement_a_duration(DUR_SONG_OF_SLAYING, you.duration[DUR_SONG_OF_SLAYING]);
+            you.duration[DUR_SONG_OF_SLAYING] = 0;
+            you.permabuff[PERMA_SONG] = false; 
+            you.props[SONG_OF_SLAYING_KEY] = 0;
         }
     }
 
-    // Singing makes a continuous noise
-    if (you.duration[DUR_SONG_OF_SLAYING])
-        noisy(spell_effect_noise(SPELL_SONG_OF_SLAYING), you.pos());
-
+    // Singing makes a noise when you can see anyone
+    if (you.permabuff_working(PERMA_SONG) && 
+        there_are_monsters_nearby(true, true, false)) {
+        noisy(3 + you.props[SONG_OF_SLAYING_KEY].get_int(), you.pos());
+    }
     if (x_chance_in_y(you.time_taken, 10 * BASELINE_DELAY))
     {
         const int teleportitis_level = player_teleport();
@@ -1089,6 +1104,14 @@ void player_reacts()
 
     _regenerate_hp_and_mp(you.time_taken);
 
+    int song = you.props[SONG_OF_SLAYING_KEY].get_int();
+    if (song) {
+        int dur = nominal_duration(SPELL_SONG_OF_SLAYING);
+        dur *= BASELINE_DELAY; dur /= you.time_taken;
+        if (x_chance_in_y((3 * song)/2, dur)) {
+            you.props[SONG_OF_SLAYING_KEY].get_int()--;
+        }
+    }
     if (you.props.exists("shroud_recharge") && 
         you.props["shroud_recharge"].get_int() == 0) {
         int fail = failure_check(SPELL_SHROUD_OF_GOLUBRIA, true);

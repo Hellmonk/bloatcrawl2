@@ -1609,3 +1609,14 @@ bool is_permabuff(spell_type spell) {
     int permabuff = permabuff_is(spell);
     return (permabuff != PERMA_NO_PERMA);
 }
+
+int nominal_duration(spell_type spell) {
+    switch (spell) {
+        case SPELL_SONG_OF_SLAYING:
+            return 20 + calc_spell_power(spell, true);
+        case SPELL_INFUSION:
+            return 8 + calc_spell_power(spell, true);
+        default:
+            return 0;
+        }
+}
