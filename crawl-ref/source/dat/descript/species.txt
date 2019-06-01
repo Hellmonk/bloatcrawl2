@@ -9,6 +9,11 @@ Centaur
 Swift, strong and bulky, Centaurs are particularly skilled with ranged
 weaponry.
 %%%%
+Dab Dwarf
+
+Dab Dwarves have perfected the ancient art of dabbing. They can dab on multiple
+creatures at once and may even daze their foes with the power of their dab.
+%%%%
 Deep Dwarf
 
 Deep Dwarves live underground and cannot regenerate health naturally, but they

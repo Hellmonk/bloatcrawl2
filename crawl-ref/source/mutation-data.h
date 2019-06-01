@@ -1952,6 +1952,14 @@ static const mutation_def mut_data[] =
    {"", "", ""},
    {"", "", ""},
 },
+
+{ MUT_DAB_MASTER, 0, 1, mutflag::good, false,
+   "dab master",
+
+   {"You are a master of dabbing.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =

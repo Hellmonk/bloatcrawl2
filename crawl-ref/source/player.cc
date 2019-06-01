@@ -519,17 +519,33 @@ void move_player_to_grid(const coord_def& p, bool stepped)
 }
 
 void dab_on_them_haters()
-{
+{ 
+    you.turn_is_over = true;
+    const bool dab_master = you.has_mutation(MUT_DAB_MASTER);
+    bool dabbed = false;
     for (monster_near_iterator mi(&you); mi; ++mi)
     {
-        if(*mi && one_chance_in(5))
+        monster *mons = *mi;
+        //no dabbing on invisible monsters
+        if(mons->visible_to(&you) && one_chance_in(dab_master ? 2 : 5))
         {
-            const monster *mons = *mi;
             mprf("You dab on %s.", mons->name(DESC_THE).c_str());
-            return;
+            dabbed = true;
+            if(dab_master)
+            {
+                if(x_chance_in_y(4,20))
+                {
+                    mprf("%s is dazed by your dab.", mons->name(DESC_THE).c_str());
+                    mons->add_ench(mon_enchant(ENCH_DAZED, 0, &you,
+                                   (10 + random2(10)) * BASELINE_DELAY));
+                }
+            }
+            else
+                return;
         }
     }
-    mprf("You dab.");
+    if(!dabbed)
+        mprf("You dab.");
 }
 
 /**

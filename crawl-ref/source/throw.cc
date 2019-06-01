@@ -31,6 +31,7 @@
 #include "item-use.h"
 #include "macro.h"
 #include "message.h"
+#include "mutation.h"
 #include "mon-behv.h"
 #include "output.h"
 #include "prompt.h"
@@ -960,7 +961,8 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
     mprf("You %s%s %s.",
           teleport ? "magically " : "",
           (projected == launch_retval::FUMBLED ? "toss away" :
-           projected == launch_retval::LAUNCHED ? "shoot" : "throw"),
+           projected == launch_retval::LAUNCHED ? "shoot" : 
+           you.has_mutation(MUT_DAB_MASTER) ? "yeet" : "throw"),
           ammo_name.c_str());
 
     // Ensure we're firing a 'missile'-type beam.
