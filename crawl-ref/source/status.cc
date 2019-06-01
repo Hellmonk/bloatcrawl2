@@ -721,6 +721,32 @@ bool fill_status_info(int status, status_info& inf)
     case DUR_INFUSION:
         if (!you.permabuff[PERMA_INFUSION]) inf.light_colour = DARKGREY;
 
+    case STATUS_SHROUD:
+    {
+        if (you.permabuff[PERMA_SHROUD] && 
+            !you.duration[DUR_SHROUD_OF_GOLUBRIA]) {
+            inf.light_text = "Shroud";
+            inf.short_text = "shrouded";
+            if (you.no_cast()) {
+                inf.light_colour = DARKGREY;
+                inf.long_text = 
+                    "Your equipment prevents your distorting shroud from functioning.";
+            } else if (you.props.exists("shroud_recharge") &&
+                       you.props["shroud_recharge"].get_int()){
+                inf.light_text = "-Shroud";
+                inf.short_text = "unshrouded";
+                inf.light_colour = BLUE;
+            } else {
+                inf.light_colour = LIGHTBLUE;
+                inf.long_text = 
+                    "You are protected by a distorting shroud.";
+            }
+        }
+        break;
+    }
+    case DUR_SHROUD_OF_GOLUBRIA:
+        if (!you.permabuff[PERMA_SHROUD]) inf.light_colour = DARKGREY;
+
     case STATUS_ORB:
     {
         if (player_has_orb())

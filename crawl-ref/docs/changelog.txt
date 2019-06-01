@@ -22,7 +22,7 @@ Wear-ID amulets with impunity:
  drains at most 1/5 of your piety on removal, and cannot drain more piety than
  was gained while wearing it.
 Permabuffs:
- Well, permabuff - Infusion now lasts forever.
+ Infusion and Shroud of Golubria last forever.
 
 Vanilla changes messed around with
 ----------------------------------

@@ -5053,6 +5053,9 @@ bool player::permabuff_working(permabuff_type pb) {
         (x_chance_in_y(you.duration[DUR_ANTIMAGIC] / 3, you.hp_max))) {
         return false;
     }
+    if ((pb == PERMA_SHROUD) && (you.props.exists("shroud_recharge"))) {
+        return false;
+    }
     return true;
 }
 

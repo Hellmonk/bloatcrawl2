@@ -2736,11 +2736,11 @@ static const struct spell_desc spelldata[] =
     SPTYP_CHARMS | SPTYP_TRANSLOCATION,
     SPFLAG_SELFENCH,
     2,
-    200,
+    50,
     -1, -1,
     2, 0,
     TILEG_SHROUD_OF_GOLUBRIA,
-    PERMA_NO_PERMA,
+    PERMA_SHROUD,
 },
 
 {

@@ -253,14 +253,22 @@ spret_type cast_liquefaction(int pow, bool fail)
 
 spret_type cast_shroud_of_golubria(int pow, bool fail)
 {
-    fail_check();
-    if (you.duration[DUR_SHROUD_OF_GOLUBRIA])
-        mpr("You renew your shroud.");
-    else
-        mpr("Space distorts slightly along a thin shroud covering your body.");
-
-    you.increase_duration(DUR_SHROUD_OF_GOLUBRIA, 7 + roll_dice(2, pow), 50);
-    return SPRET_SUCCESS;
+    if (you.permabuff[PERMA_SHROUD]) {
+        mpr("You dispel your protective shroud.");
+        if (you.props.exists("shroud_recharge")) {
+            you.props.erase("shroud_recharge"); 
+            you.increase_duration(DUR_SHROUD_OF_GOLUBRIA, 25, 25);
+        }
+        you.permabuff[PERMA_SHROUD] = false;
+        return SPRET_PERMACANCEL;
+    } else {
+        fail_check();
+        mpr (you.duration[DUR_SHROUD_OF_GOLUBRIA] ? 
+             "You will soon reconstruct your protective shroud." :
+             "Space distorts slightly along a thin shroud covering your body.");
+        you.permabuff[PERMA_SHROUD] = true;
+        return SPRET_SUCCESS;
+    }
 }
 
 spret_type cast_transform(int pow, transformation which_trans, bool fail)
@@ -294,4 +302,5 @@ void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
                 = max(you.duration[permabuff_durs[i]],roll_dice(num,size));
         }
     }
+    if (turn_off) you.props.erase("shroud_recharge"); 
 }

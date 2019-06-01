@@ -961,10 +961,27 @@ static void _regenerate_hp_and_mp(int delay)
     if (!player_regenerates_mp())
         return;
 
-    if (you.magic_points < you.max_magic_points)
-    {
-        const int base_val = player_mp_regen();
-        int mp_regen_countup = div_rand_round(base_val * delay, BASELINE_DELAY);
+    you.props["mp_to_charms"] = 0;
+    const int base_val = player_mp_regen();
+    int mp_regen_countup = div_rand_round(base_val * delay, BASELINE_DELAY);
+    if (you.props.exists("shroud_recharge") && !you.no_cast() &&
+        !you.duration[DUR_SHROUD_OF_GOLUBRIA]) {
+        int available = (you.magic_points < you.max_magic_points) ? 
+            (mp_regen_countup * 3 / 4) : mp_regen_countup;
+        if (available < you.props["shroud_recharge"].get_int()) {
+            you.props["shroud_recharge"].get_int() -= available;
+            mp_regen_countup -= available;
+            you.props["mp_to_charms"] = available;
+        } else {
+            mp_regen_countup -= you.props["shroud_recharge"].get_int();
+            you.props["mp_to_charms"] = 
+                you.props["shroud_recharge"].get_int();
+            you.props["shroud_recharge"] = 0;
+        }
+    }
+    you.props["mp_to_charms"].get_int() *= BASELINE_DELAY;
+    you.props["mp_to_charms"].get_int() /= delay;
+    if (you.magic_points < you.max_magic_points) {
         you.magic_points_regeneration += mp_regen_countup;
     }
 
@@ -1072,6 +1089,19 @@ void player_reacts()
 
     _regenerate_hp_and_mp(you.time_taken);
 
+    if (you.props.exists("shroud_recharge") && 
+        you.props["shroud_recharge"].get_int() == 0) {
+        int fail = failure_check(SPELL_SHROUD_OF_GOLUBRIA, true);
+        if (fail) {
+            mpr("You fail to reconstruct your distorting shroud.");
+            apply_miscast(SPELL_SHROUD_OF_GOLUBRIA, fail, false);
+            you.props["shroud_recharge"] = 
+                you.get_mutation_level(MUT_MAGIC_ATTUNEMENT) ? 100 : 200;
+        } else {
+            mpr("You reconstruct your distorting shroud.");
+            you.props.erase("shroud_recharge");
+        }
+    }
     dec_disease_player(you.time_taken);
     if (you.duration[DUR_POISONING])
         handle_player_poison(you.time_taken);

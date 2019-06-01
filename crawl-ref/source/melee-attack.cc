@@ -523,20 +523,32 @@ bool melee_attack::handle_phase_damaged()
     // TODO: Move this somewhere else, this is a terrible place for a
     // block-like (prevents all damage) effect.
     if (attacker != defender
-        && (defender->is_player() && you.duration[DUR_SHROUD_OF_GOLUBRIA]
+        && (defender->is_player() && you.permabuff_working(PERMA_SHROUD)
             || defender->is_monster()
                && defender->as_monster()->has_ench(ENCH_SHROUD))
         && !one_chance_in(3))
     {
+        int effectiveness = 10; 
+        if (defender->is_player()) {
+            effectiveness +=  
+                div_rand_round(calc_spell_power(SPELL_SHROUD_OF_GOLUBRIA,
+                                                true),10);
+            // This will be a funny message ordering but it's a weird edge case
+            if (god_hates_spell(SPELL_SHROUD_OF_GOLUBRIA,you.religion)) {
+                dock_piety(1,0);
+            }
+        } 
+        int soak = min (damage_done, effectiveness * 2);
         // Chance of the shroud falling apart increases based on the
         // strain of it, i.e. the damage it is redirecting.
-        if (x_chance_in_y(damage_done, 10+damage_done))
+        if (x_chance_in_y(soak, effectiveness+soak))
         {
             // Delay the message for the shroud breaking until after
             // the attack message.
             shroud_broken = true;
             if (defender->is_player())
-                you.duration[DUR_SHROUD_OF_GOLUBRIA] = 0;
+                you.props["shroud_recharge"] = 
+                    you.get_mutation_level(MUT_MAGIC_ATTUNEMENT) ? 100 : 200;
             else
                 defender->as_monster()->del_ench(ENCH_SHROUD);
         }
@@ -544,15 +556,20 @@ bool melee_attack::handle_phase_damaged()
         {
             if (needs_message)
             {
-                mprf("%s shroud bends %s attack away%s",
+                mprf("%s shroud %sbends %s attack away%s",
                      def_name(DESC_ITS).c_str(),
+                     soak < damage_done ? "partially ": "",
                      atk_name(DESC_ITS).c_str(),
-                     attack_strength_punctuation(damage_done).c_str());
+                     attack_strength_punctuation(soak).c_str());
             }
-            did_hit = false;
-            damage_done = 0;
-
-            return false;
+            if (soak < damage_done) {
+                damage_done -= soak;
+                return true;
+            } else {
+                did_hit = false;
+                damage_done = 0;
+                return false;
+            }
         }
     }
 

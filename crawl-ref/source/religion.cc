@@ -2504,7 +2504,7 @@ bool gain_piety(int original_gain, int denominator, bool should_scale_piety)
     }
     // This will not be quite right but it should average out
     if ((pgn >= original_gain) && you.props.exists("faith total")) {
-        you.props["faith total"] = you.props["faith total"].get_int() +
+        you.props["faith total"].get_int() +=
             div_rand_round((pgn - original_gain),denominator);
     }
 

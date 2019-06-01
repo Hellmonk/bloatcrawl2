@@ -351,11 +351,15 @@ static const duration_def duration_data[] =
       {{ "The ambient light returns to normal.", update_vision_range },
          { "The darkness around you begins to abate.", 1 }}, 6},
     { DUR_SHROUD_OF_GOLUBRIA,
-      BLUE, "Shroud",
-      "shrouded", "",
-      "You are protected by a distorting shroud.", D_DISPELLABLE | D_EXPIRES,
-      {{ "Your shroud unravels." },
-        { "Your shroud begins to fray at the edges." }}, 6},
+      YELLOW, "-Shroud",
+      "shroud dissipated", "",
+      "Your distorting shroud has been dissipated.", D_EXPIRES,
+      {{ "", []() {
+		  mprf(MSGCH_DURATION, 
+		       (you.permabuff[PERMA_SHROUD] && !you.no_cast()) ? 
+		       "You reconstruct your distorting shroud." :
+		       "You could once again produce a distorting shroud.");
+	      }}}},
     { DUR_TORNADO_COOLDOWN,
       YELLOW, "-Tornado",
       "", "tornado cooldown",

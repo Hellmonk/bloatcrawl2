@@ -1164,7 +1164,8 @@ Shroud of Golubria spell
 Bends space around the caster's body, protecting them from some blows by
 redirecting their force to the air nearby. Ranged attacks cannot be diverted in
 this way. The shroud is highly unstable, and may fall apart unexpectedly under
-stress.
+stress; when it does so, it reconstitutes itself over the next few turns,
+drawing from the caster's magic regeneration.
 %%%%
 Silence spell
 
