@@ -546,7 +546,7 @@ static string _randart_descrip(const item_def &item)
         { ARTP_BLINK, "It lets you blink.", false},
         { ARTP_BERSERK, "It lets you go berserk.", false},
         { ARTP_NOISE, "It may make noises in combat.", false},
-        { ARTP_PREVENT_SPELLCASTING, "It prevents spellcasting.", false},
+        { ARTP_PREVENT_SPELLCASTING, "It prevents spellcasting and suppresses permanent enchantments.", false},
         { ARTP_CAUSE_TELEPORTATION, "It may teleport you next to monsters.", false},
         { ARTP_PREVENT_TELEPORTATION, "It prevents most forms of teleportation.",
           false},

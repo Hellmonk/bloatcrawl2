@@ -64,6 +64,7 @@
 #include "skills.h"
 #include "spl-book.h"
 #include "spl-miscast.h"
+#include "spl-util.h"
 #include "sprint.h"
 #include "state.h"
 #include "stringutil.h"
@@ -3122,6 +3123,12 @@ bool player_can_join_god(god_type which_god)
     if (you.species == SP_DEMIGOD)
         return false;
 
+    if (you.has_any_permabuff()) {
+        for (unsigned int i = PERMA_FIRST_PERMA; i <= PERMA_LAST_PERMA ; i++) {
+            if (god_hates_spell(permabuff_spell[i],which_god)) return false;
+        }
+    }
+
     if (is_good_god(which_god) && you.undead_or_demonic())
         return false;
 
@@ -3749,8 +3756,20 @@ void god_pitch(god_type which_god)
                 mprf("The service fee for joining is currently %d gold; you only"
                      " have %d.", fee, you.gold);
             }
-        }
-        else if (you.get_mutation_level(MUT_NO_LOVE)
+        } else if (you.has_any_permabuff()) {
+            if (which_god == GOD_TROG) {
+                simple_god_message(" does not accept worshippers with permanent enchantments!",
+                                   which_god);
+            } else {
+                for (unsigned int i = PERMA_FIRST_PERMA; 
+                     i <= PERMA_LAST_PERMA ; i++) {
+                    if (god_hates_spell(permabuff_spell[i],which_god)) {
+                        // placeholder messages
+                        simple_god_message(" does not accept worshippers with one of your permanent enchantments!", which_god);
+                    }
+                }
+            }
+        } else if (you.get_mutation_level(MUT_NO_LOVE)
                  && _god_rejects_loveless(which_god))
         {
             simple_god_message(" does not accept worship from the loveless!",

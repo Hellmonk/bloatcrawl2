@@ -3753,7 +3753,7 @@ void bolt::affect_player_enchantment(bool resistible)
         if (!player_is_debuffable())
             break;
 
-        debuff_player();
+        debuff_player(false,false,true);
         _unravelling_explode(*this);
         obvious_effect = true;
         break;
@@ -4010,7 +4010,7 @@ void bolt::affect_player()
 
 
     if (origin_spell == SPELL_QUICKSILVER_BOLT)
-        debuff_player();
+        debuff_player(false,false,true);
 
     dprf(DIAG_BEAM, "Damage: %d", hurted);
 

@@ -29,3 +29,6 @@ spret_type cast_song_of_slaying(int pow, bool fail);
 spret_type cast_liquefaction(int pow, bool fail);
 spret_type cast_shroud_of_golubria(int pow, bool fail);
 spret_type cast_transform(int pow, transformation which_trans, bool fail);
+
+void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
+			   int num = 2, int size = 10);

@@ -1484,6 +1484,11 @@ static void tag_construct_you(writer &th)
     for (int j = 0; j < NUM_DURATIONS; ++j)
         marshallInt(th, you.duration[j]);
 
+    // how many permabuffs
+    marshallUByte(th, PERMA_LAST_PERMA);
+    for (int j = 0; j <= PERMA_LAST_PERMA; ++j)
+        marshallInt(th, you.permabuff[j]);
+
     // how many attributes?
     marshallByte(th, NUM_ATTRIBUTES);
     for (int j = 0; j < NUM_ATTRIBUTES; ++j)
@@ -2707,6 +2712,27 @@ static void tag_read_you(reader &th)
     you.duration[DUR_JELLY_PRAYER] = 0;
 #endif
 
+    // how many permabuffs
+#if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() < TAG_PERMABUFFS) {
+        count = 0;
+    } else {
+#endif
+        count = unmarshallUByte(th);
+#if TAG_MAJOR_VERSION == 34
+    }
+#endif
+    if (count > 0) {
+        for (int j = 0; j <= count; ++j) {
+            you.permabuff[j] = unmarshallInt(th);
+        }
+    }
+    if (count < PERMA_LAST_PERMA) {
+        for (int j = count+1; j <= PERMA_LAST_PERMA; ++j) {
+            you.permabuff[j] = (you.duration[permabuff_durs[j]] > 0);
+            you.duration[permabuff_durs[j]] = 0;
+        }
+    }
     // how many attributes?
     count = unmarshallUByte(th);
     COMPILE_CHECK(NUM_ATTRIBUTES < 256);

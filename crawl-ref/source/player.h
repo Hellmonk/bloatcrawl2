@@ -26,6 +26,7 @@
 #include "kills.h"
 #include "mon-holy-type.h"
 #include "mutation-type.h"
+#include "permabuff.h"
 #include "place-info.h"
 #include "quiver.h"
 #include "religion-enum.h"
@@ -146,6 +147,7 @@ public:
     int mp_max_adj;             // max MP loss (ability costs, tutorial bonus)
     int dd_heals;
     int dd_mp_rotted;
+    FixedVector<bool, PERMA_LAST_PERMA+1> permabuff;
 
     FixedVector<int8_t, NUM_STATS> stat_loss;
     FixedVector<int8_t, NUM_STATS> base_stats;
@@ -892,12 +894,17 @@ public:
 
     bool clear_far_engulf() override;
 
+    bool has_permabuff(spell_type spell);
+    bool permabuff_working(permabuff_type permabuff);
+    bool has_any_permabuff();
+
 protected:
     void _removed_beholder(bool quiet = false);
     bool _possible_beholder(const monster* mon) const;
 
     void _removed_fearmonger(bool quiet = false);
     bool _possible_fearmonger(const monster* mon) const;
+
 };
 COMPILE_CHECK((int) SP_UNKNOWN_BRAND < 8*sizeof(you.seen_weapon[0]));
 COMPILE_CHECK((int) SP_UNKNOWN_BRAND < 8*sizeof(you.seen_armour[0]));

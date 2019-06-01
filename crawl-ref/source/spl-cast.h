@@ -29,7 +29,7 @@ enum spflag_type
     SPFLAG_ESCAPE               = 0x002000,      // useful for running away
     SPFLAG_RECOVERY             = 0x004000,      // healing or recovery spell
     SPFLAG_AREA                 = 0x008000,      // area affect
-                            //  = 0x010000,      // was SPFLAG_BATTLE
+    SPFLAG_PERMABUFF            = 0x010000,      // is a permabuff
     SPFLAG_SELFENCH             = 0x020000,      // monsters use as selfench
     SPFLAG_MONSTER              = 0x040000,      // monster-only spell
     SPFLAG_NEEDS_TRACER         = 0x080000,      // monster casting needs tracer
@@ -56,6 +56,7 @@ enum spret_type
     SPRET_ABORT = 0,            // should be left as 0
     SPRET_FAIL,
     SPRET_SUCCESS,
+    SPRET_PERMACANCEL,          // Use no MP, minimal time
     SPRET_NONE,                 // spell was not handled
 };
 
@@ -95,7 +96,7 @@ bool cast_a_spell(bool check_range, spell_type spell = SPELL_NO_SPELL);
 int apply_enhancement(const int initial_power, const int enhancer_levels);
 
 void inspect_spells();
-bool can_cast_spells(bool quiet = false);
+bool can_cast_spells(bool quiet = false, bool perma_release = false);
 void do_cast_spell_cmd(bool force);
 
 int hex_success_chance(const int mr, int powc, int scale,
@@ -127,3 +128,7 @@ string spell_noise_string(spell_type spell, int chop_wiz_display_width = 0);
 void spell_skills(spell_type spell, set<skill_type> &skills);
 
 bool spell_removed(spell_type spell);
+
+bool apply_miscast(spell_type spell, int fail, bool chatty = false);
+
+int failure_check(spell_type spell, bool perma);

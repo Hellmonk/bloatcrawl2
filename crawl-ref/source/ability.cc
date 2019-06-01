@@ -70,6 +70,7 @@
 #include "spl-selfench.h"
 #include "spl-summoning.h"
 #include "spl-transloc.h"
+#include "spl-util.h"
 #include "stairs.h"
 #include "state.h"
 #include "stepdown.h"
@@ -96,7 +97,8 @@ enum class abflag
     piety               = 0x00000008, // ability has its own piety cost
     exhaustion          = 0x00000010, // fails if you.exhausted
     instant             = 0x00000020, // doesn't take time to use
-                        //0x00000040,
+    perma               = 0x00000040, // check can_cast_spells(quiet,true)
+    // and if you have any permabuffs. I can't think of a good name either
                         //0x00000080,
     conf_ok             = 0x00000100, // can use even if confused
     fruit               = 0x00000200, // ability requires fruit
@@ -327,6 +329,9 @@ static const ability_def Ability_List[] =
     { ABIL_SHAFT_SELF, "Shaft Self", 0, 0, 250, 0, {}, abflag::delay },
 
     { ABIL_HOP, "Hop", 0, 0, 0, 0, {}, abflag::none },
+    
+    { ABIL_END_PERMABUFFS, "End Permanent Enchantments",
+      0, 0, 0, 0, {}, abflag::starve_ok | abflag::perma },
 
     // EVOKE abilities use Evocations and come from items.
     // Teleportation and Blink can also come from mutations
@@ -909,6 +914,8 @@ static const string _detailed_cost_description(ability_type ability)
     if (abil.flags & abflag::skill_drain)
         ret << "\nIt will temporarily drain your skills when used.";
 
+    if (abil.flags & abflag::perma)
+        ret << "\nYou must be able to incant; not silenced, drowning, berserk, or confused.";
     if (abil.ability == ABIL_HEAL_WOUNDS)
     {
         ret << "\nIt has a chance of reducing your maximum magic capacity "
@@ -1314,7 +1321,11 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
             canned_msg(MSG_TOO_CONFUSED);
         return false;
     }
-
+    if (testbits(abil.flags, abflag::perma)) {
+        if (!can_cast_spells(quiet,true)) {
+            return false;
+        }
+    }
     // Silence and water elementals
     if (silenced(you.pos())
 	|| you.duration[DUR_WATER_HOLD] && !you.res_water_drowning())
@@ -1552,7 +1563,7 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
 
     case ABIL_HOP:
         return _can_hop(quiet);
-
+        
     case ABIL_BLINK:
     case ABIL_EVOKE_BLINK:
     {
@@ -1681,6 +1692,9 @@ bool activate_talent(const talent& tal)
             return false;
         case SPRET_ABORT:
             crawl_state.zero_turns_taken();
+            return false;
+        case SPRET_PERMACANCEL:
+            mprf(MSGCH_ERROR, "BUG: ability returned value only relevant to permabuffs.");
             return false;
         case SPRET_NONE:
         default:
@@ -2106,6 +2120,12 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     case ABIL_END_TRANSFORMATION:
         fail_check();
         untransform();
+        break;
+
+    case ABIL_END_PERMABUFFS:
+        fail_check(); // Can't fail right now
+        spell_drop_permabuffs(true,false,false);
+        mpr("You bring all your permanent enchantments to an end.");
         break;
 
     // INVOCATIONS:
@@ -3376,6 +3396,10 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     if (you.duration[DUR_PORTAL_PROJECTILE])
         _add_talent(talents, ABIL_CANCEL_PPROJ, check_confused);
 
+    if (you.has_any_permabuff()) {
+        _add_talent(talents, ABIL_END_PERMABUFFS, check_confused);
+    }
+
     // Evocations from items.
     if (you.scan_artefacts(ARTP_BLINK)
         && !you.get_mutation_level(MUT_NO_ARTIFICE))
@@ -3592,6 +3616,9 @@ int find_ability_slot(const ability_type abil, char firstletter)
     case ABIL_HEPLIAKLQANA_IDENTITY: // move this?
         first_slot = letter_to_index('G');
         break;
+    // not already used & harder to type by accident
+    case ABIL_END_PERMABUFFS:
+        first_slot = letter_to_index('E');
     default:
         break;
     }

@@ -21,6 +21,7 @@
 #include "macro.h"
 #include "message.h"
 #include "output.h"
+#include "permabuff.h"
 #include "prompt.h"
 #include "religion.h"
 #include "showsymb.h"
@@ -268,4 +269,24 @@ spret_type cast_transform(int pow, transformation which_trans, bool fail)
     fail_check();
     transform(pow, which_trans);
     return SPRET_SUCCESS;
+}
+
+// Should this be one function?
+void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
+                           int num, int size) {
+    if (!(turn_off || end_durs || increase_durs)) {
+        mprf(MSGCH_WARN,"BUG: drop_permabuffs called to do nothing.");
+    }
+    if (end_durs && increase_durs) {
+        mprf(MSGCH_WARN,"BUG: drop_permabuffs called to end and increase.");
+    }
+    for (unsigned int i = PERMA_FIRST_PERMA; i <= PERMA_LAST_PERMA ; i++) {
+        if (turn_off) you.permabuff[i] = false;
+        if (end_durs) you.duration[permabuff_durs[i]] = 0;
+        if (increase_durs && you.permabuff[i]) {
+            you.duration[permabuff_durs[i]] 
+                // default 2d10
+                = max(you.duration[permabuff_durs[i]],roll_dice(num,size));
+        }
+    }
 }

@@ -52,7 +52,9 @@ enum ability_type
     ABIL_SHAFT_SELF,
     // Barachim
     ABIL_HOP,
-    ABIL_MAX_INTRINSIC = ABIL_HOP,
+    // General purpose
+    ABIL_END_PERMABUFFS,
+    ABIL_MAX_INTRINSIC = ABIL_END_PERMABUFFS,
 
     // Evoking items.
     ABIL_EVOKE_BERSERK = 40,

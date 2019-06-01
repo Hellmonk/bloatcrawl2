@@ -75,6 +75,8 @@ struct spell_desc
 
     /// Icon for the spell in e.g. spellbooks, casting menus, etc.
     tileidx_t tile;
+    // If a permabuff, which one?
+    unsigned int permabuff;
 };
 
 #include "spl-data.h"
@@ -345,6 +347,12 @@ bool add_spell_to_memory(spell_type spell)
 
 static void _remove_spell_attributes(spell_type spell)
 {
+    if (you.has_permabuff(spell)) {
+        int permabuff = permabuff_is(spell);
+        you.permabuff[permabuff] = false;
+        you.duration[permabuff_durs[permabuff]] = 0;
+        mpr("Your lingering enchantment dissipates.");
+    }
     switch (spell)
     {
     case SPELL_DEFLECT_MISSILES:
@@ -1592,4 +1600,12 @@ const vector<spell_type> *soh_breath_spells(spell_type spell)
     };
 
     return map_find(soh_breaths, spell);
+}
+
+int permabuff_is(spell_type spell){
+    return _seekspell(spell)->permabuff;
+}
+bool is_permabuff(spell_type spell) {
+    int permabuff = permabuff_is(spell);
+    return (permabuff != PERMA_NO_PERMA);
 }

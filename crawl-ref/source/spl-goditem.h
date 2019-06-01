@@ -47,7 +47,8 @@ const enchant_type dispellable_enchantments[] =
 };
 
 bool player_is_debuffable();
-void debuff_player();
+void debuff_player(bool end_permas, bool end_perma_durs, 
+		   bool increase_perma_durs);
 bool monster_is_debuffable(const monster &mon);
 void debuff_monster(monster &mon);
 

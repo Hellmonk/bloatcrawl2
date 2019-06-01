@@ -578,7 +578,7 @@ void inspect_spells()
     list_spells(true, true);
 }
 
-bool can_cast_spells(bool quiet)
+bool can_cast_spells(bool quiet, bool perma_release)
 {
     if (!get_form()->can_cast)
     {
@@ -589,12 +589,17 @@ bool can_cast_spells(bool quiet)
 
     if (you.duration[DUR_WATER_HOLD] && !you.res_water_drowning())
     {
-        if (!quiet)
-            mpr("You cannot cast spells while unable to breathe!");
+        if (!quiet) {
+            if (perma_release) {
+                mpr("You cannot utter incantations while unable to breathe!");
+            } else {
+                mpr("You cannot cast spells while unable to breathe!");
+            }
+        }
         return false;
     }
 
-    if (you.duration[DUR_BRAINLESS])
+    if (you.duration[DUR_BRAINLESS] && !perma_release)
     {
         if (!quiet)
             mpr("You lack the mental capacity to cast spells.");
@@ -602,14 +607,15 @@ bool can_cast_spells(bool quiet)
     }
 
     // Randart weapons.
-    if (you.no_cast())
+    if (you.no_cast() && !perma_release)
     {
         if (!quiet)
             mpr("Something interferes with your magic!");
         return false;
     }
 
-    if (!you.spell_no)
+    if (!you.spell_no 
+        && !perma_release) // can't happen?
     {
         if (!quiet)
             canned_msg(MSG_NO_SPELLS);
@@ -618,34 +624,50 @@ bool can_cast_spells(bool quiet)
 
     if (you.berserk())
     {
-        if (!quiet)
-            canned_msg(MSG_TOO_BERSERK);
+        if (!quiet) {
+            if (perma_release) {
+                // some of these are unreachable 
+                mpr("You cannot utter incantations while berserk.");
+            } else {
+                canned_msg(MSG_TOO_BERSERK);
+            }
+        }
         return false;
     }
 
     if (you.confused())
     {
-        if (!quiet)
-            mpr("You're too confused to cast spells.");
+        if (!quiet) {
+            if (perma_release) {
+                mpr("You cannot utter incantations while confused.");
+            } else {
+                mpr("You're too confused to cast spells.");
+            }
+        }
         return false;
     }
 
     if (silenced(you.pos()))
     {
-        if (!quiet)
-            mpr("You cannot cast spells when silenced!");
-        // included in default force_more_message
+        if (!quiet) {
+            if (perma_release) {
+                mpr("You cannot utter incantations while silenced.");
+            } else {
+                mpr("You cannot cast spells when silenced!");
+                // included in default force_more_message
+            }
+        }
         return false;
     }
 
-    if (you.duration[DUR_NO_CAST])
+    if (you.duration[DUR_NO_CAST] && !perma_release)
     {
         if (!quiet)
             mpr("You are unable to access your magic!");
         return false;
     }
 
-    if (apply_starvation_penalties())
+    if (apply_starvation_penalties() && !perma_release)
     {
         if (!quiet)
             canned_msg(MSG_NO_ENERGY);
@@ -786,115 +808,121 @@ bool cast_a_spell(bool check_range, spell_type spell)
         return false;
     }
 
+    bool permacancel = you.has_permabuff(spell);
     int cost = spell_mana(spell);
     int sifcast_amount = 0;
-    if (!enough_mp(cost, true))
-    {
-        if (you.attribute[ATTR_DIVINE_ENERGY])
+    if (!permacancel) {
+        if (!enough_mp(cost, true))
         {
-            sifcast_amount = cost - you.magic_points;
-            cost = you.magic_points;
+            if (you.attribute[ATTR_DIVINE_ENERGY])
+            {
+                sifcast_amount = cost - you.magic_points;
+                cost = you.magic_points;
+            }
+            else
+            {
+                mpr("You don't have enough magic to cast that spell.");
+                crawl_state.zero_turns_taken();
+                return false;
+            }
         }
-        else
-        {
-            mpr("You don't have enough magic to cast that spell.");
+
+        if ((get_spell_flags(spell) & SPFLAG_NEEDS_HOSTILE)
+            && !there_are_monsters_nearby(true,true,false)) {
+            mpr("You can't cast that without visible enemies threatening you.");
             crawl_state.zero_turns_taken();
             return false;
         }
-    }
 
-    if ((get_spell_flags(spell) & SPFLAG_NEEDS_HOSTILE)
-        && !there_are_monsters_nearby(true,true,false)) {
-        mpr("You can't cast that without visible enemies threatening you.");
-        crawl_state.zero_turns_taken();
-        return false;
-    }
-
-    if (check_range && spell_no_hostile_in_range(spell))
-    {
-        // Abort if there are no hostiles within range, but flash the range
-        // markers for a short while.
-        mpr("You can't see any susceptible monsters within range! "
-            "(Use <w>Z</w> to cast anyway.)");
-
-        if ((Options.use_animations & UA_RANGE) && Options.darken_beyond_range)
+        if (check_range && spell_no_hostile_in_range(spell))
         {
-            targeter_smite range(&you, calc_spell_range(spell), 0, 0, true);
-            range_view_annotator show_range(&range);
-            delay(50);
-        }
-        crawl_state.zero_turns_taken();
-        return false;
-    }
-
-    if (you.undead_state() == US_ALIVE && !you_foodless()
-        && you.hunger <= spell_hunger(spell))
-    {
-        canned_msg(MSG_NO_ENERGY);
-        crawl_state.zero_turns_taken();
-        return false;
-    }
-
-    // This needs more work: there are spells which are hated but allowed if
-    // they don't have a certain effect. You may use Poison Arrow on those
-    // immune, use Mephitic Cloud to shield yourself from other clouds, and
-    // thus we don't prompt for them. It would be nice to prompt for them
-    // during the targeting phase, perhaps.
-    if (god_punishes_spell(spell, you.religion)
-        && !crawl_state.disables[DIS_CONFIRMATIONS])
-    {
-        // None currently dock just piety, right?
-        if (!yesno(god_loathes_spell(spell, you.religion) ?
-            "Casting this spell will cause instant excommunication! "
-            "Really cast?" :
-            "Casting this spell will place you under penance. Really cast?",
-            true, 'n'))
-        {
-            canned_msg(MSG_OK);
+            // Abort if there are no hostiles within range, but flash the range
+            // markers for a short while.
+            mpr("You can't see any susceptible monsters within range! "
+                "(Use <w>Z</w> to cast anyway.)");
+            
+            if ((Options.use_animations & UA_RANGE) && Options.darken_beyond_range)
+            {
+                targeter_smite range(&you, calc_spell_range(spell), 0, 0, true);
+                range_view_annotator show_range(&range);
+                delay(50);
+            }
             crawl_state.zero_turns_taken();
             return false;
         }
-    }
 
+        if (you.undead_state() == US_ALIVE && !you_foodless()
+            && you.hunger <= spell_hunger(spell))
+        {
+            canned_msg(MSG_NO_ENERGY);
+            crawl_state.zero_turns_taken();
+            return false;
+        }
+
+        // This needs more work: there are spells which are hated but allowed
+        // if they don't have a certain effect. You may use Poison Arrow on 
+        // those immune, use Mephitic Cloud to shield yourself from other 
+        // clouds, and thus we don't prompt for them. It would be nice to 
+        // prompt for them during the targeting phase, perhaps.
+        if (god_punishes_spell(spell, you.religion)
+            && !crawl_state.disables[DIS_CONFIRMATIONS])
+        {
+            // None currently dock just piety, right?
+            if (!yesno(god_loathes_spell(spell, you.religion) ?
+                       "Casting this spell will cause instant excommunication! "
+                       "Really cast?" :
+                       "Casting this spell will place you under penance. Really cast?",
+                       true, 'n'))
+            {
+                canned_msg(MSG_OK);
+                crawl_state.zero_turns_taken();
+                return false;
+            }
+        }
+        // Silently take MP before the spell.
+        dec_mp(cost, true);
+    }
     const bool staff_energy = player_energy();
     you.last_cast_spell = spell;
-    // Silently take MP before the spell.
-    dec_mp(cost, true);
 
     const spret_type cast_result = your_spells(spell, 0, true);
     if (cast_result == SPRET_ABORT)
     {
         crawl_state.zero_turns_taken();
         // Return the MP since the spell is aborted.
-        inc_mp(cost, true);
+        // can this be a permacancel ?
+        if (!permacancel) inc_mp(cost, true);
         redraw_screen();
         return false;
     }
 
-    practise_casting(spell, cast_result == SPRET_SUCCESS);
-    if (cast_result == SPRET_SUCCESS)
-    {
-        did_god_conduct(DID_SPELL_CASTING, 1 + random2(5));
-        count_action(CACT_CAST, spell);
-    }
-
-    flush_mp();
-
-    if (!staff_energy && you.undead_state() != US_UNDEAD)
-    {
-        const int spellh = spell_hunger(spell);
-        if (calc_hunger(spellh) > 0)
+    if (!permacancel) {
+        practise_casting(spell, cast_result == SPRET_SUCCESS);
+        if (cast_result == SPRET_SUCCESS)
         {
-            make_hungry(spellh, true, true);
-            learned_something_new(HINT_SPELL_HUNGER);
+            did_god_conduct(DID_SPELL_CASTING, 1 + random2(5));
+            count_action(CACT_CAST, spell);
         }
-    }
 
-    if (sifcast_amount)
-    {
-        simple_god_message(" grants you divine energy.");
-        mpr("You briefly lose access to your magic!");
-        you.set_duration(DUR_NO_CAST, 3 + random2avg(sifcast_amount * 2, 2));
+        flush_mp();
+
+        if (!staff_energy && you.undead_state() != US_UNDEAD)
+        {
+            const int spellh = spell_hunger(spell);
+            if (calc_hunger(spellh) > 0)
+            {
+                make_hungry(spellh, true, true);
+                learned_something_new(HINT_SPELL_HUNGER);
+            }
+        }
+
+        if (sifcast_amount)
+        {
+            simple_god_message(" grants you divine energy.");
+            mpr("You briefly lose access to your magic!");
+            you.set_duration(DUR_NO_CAST, 
+                             3 + random2avg(sifcast_amount * 2, 2));
+        }
     }
 
     you.turn_is_over = true;
@@ -1458,51 +1486,7 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
         return SPRET_FAIL;
     else if (allow_fail)
     {
-        int spfl = random2avg(100, 3);
-
-        if (!you_worship(GOD_SIF_MUNA)
-            && you.penance[GOD_SIF_MUNA] && one_chance_in(20))
-        {
-            god_speaks(GOD_SIF_MUNA, "You feel a surge of divine spite.");
-
-            // This will cause failure and increase the miscast effect.
-            spfl = -you.penance[GOD_SIF_MUNA];
-        }
-        else if (spell_typematch(spell, SPTYP_NECROMANCY)
-                 && !you_worship(GOD_KIKUBAAQUDGHA)
-                 && you.penance[GOD_KIKUBAAQUDGHA]
-                 && one_chance_in(20))
-        {
-            // And you thought you'd Necromutate your way out of penance...
-            simple_god_message(" does not allow the disloyal to dabble in "
-                               "death!", GOD_KIKUBAAQUDGHA);
-
-            // The spell still goes through, but you get a miscast anyway.
-            MiscastEffect(&you, nullptr, GOD_MISCAST + GOD_KIKUBAAQUDGHA,
-                          SPTYP_NECROMANCY,
-                          (you.experience_level / 2) + (spell_difficulty(spell) * 2),
-                          random2avg(88, 3), "the malice of Kikubaaqudgha");
-        }
-        else if (vehumet_supports_spell(spell)
-                 && !you_worship(GOD_VEHUMET)
-                 && you.penance[GOD_VEHUMET]
-                 && one_chance_in(20))
-        {
-            // And you thought you'd Fire Storm your way out of penance...
-            simple_god_message(" does not allow the disloyal to dabble in "
-                               "destruction!", GOD_VEHUMET);
-
-            // The spell still goes through, but you get a miscast anyway.
-            MiscastEffect(&you, nullptr, GOD_MISCAST + GOD_VEHUMET,
-                          SPTYP_CONJURATION,
-                          (you.experience_level / 2) + (spell_difficulty(spell) * 2),
-                          random2avg(88, 3), "the malice of Vehumet");
-        }
-
-        const int spfail_chance = raw_spell_fail(spell);
-
-        if (spfl < spfail_chance)
-            fail = spfail_chance - spfl;
+        fail = failure_check(spell, false);
     }
 
     dprf("Spell #%d, power=%d", spell, powc);
@@ -1543,37 +1527,14 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
             return SPRET_FAIL;
 #endif
 
-        mprf("You miscast %s.", spell_title(spell));
-        flush_input_buffer(FLUSH_ON_FAILURE);
-        learned_something_new(HINT_SPELL_MISCAST);
-
-        if (decimal_chance(_chance_miscast_prot()))
-        {
-            simple_god_message(" protects you from the effects of your miscast!");
-            return SPRET_FAIL;
-        }
-
-        // All spell failures give a bit of magical radiation.
-        // Failure is a function of power squared multiplied by how
-        // badly you missed the spell. High power spells can be
-        // quite nasty: 9 * 9 * 90 / 500 = 15 points of
-        // contamination!
-        int nastiness = spell_difficulty(spell) * spell_difficulty(spell)
-                        * fail + 250;
-
-        const int cont_points = 2 * nastiness;
-
-        // miscasts are uncontrolled
-        contaminate_player(cont_points, true);
-
-        MiscastEffect(&you, nullptr, SPELL_MISCAST, spell,
-                      spell_difficulty(spell), fail);
-
+        apply_miscast(spell, fail, true);
         return SPRET_FAIL;
     }
 
     case SPRET_ABORT:
         return SPRET_ABORT;
+    case SPRET_PERMACANCEL:
+        return SPRET_PERMACANCEL;
 
     case SPRET_NONE:
 #ifdef WIZARD
@@ -2315,4 +2276,80 @@ const set<spell_type> removed_spells =
 bool spell_removed(spell_type spell)
 {
     return removed_spells.count(spell) != 0;
+}
+
+bool apply_miscast(spell_type spell, int fail, bool chatty) {
+    if (chatty) {
+        mprf("You miscast %s.", spell_title(spell));
+        flush_input_buffer(FLUSH_ON_FAILURE);
+        learned_something_new(HINT_SPELL_MISCAST);
+    }
+    if (decimal_chance(_chance_miscast_prot())) {
+        simple_god_message(" protects you from the effects of your miscast!");
+        return false;
+    }
+    // All spell failures give a bit of magical radiation.
+    // Failure is a function of power squared multiplied by how
+    // badly you missed the spell. High power spells can be
+    // quite nasty: 9 * 9 * 90 / 500 = 15 points of
+    // contamination!
+    int nastiness = spell_difficulty(spell) * spell_difficulty(spell)
+        * fail + 250;
+    
+    const int cont_points = 2 * nastiness;
+    
+    // miscasts are uncontrolled
+    contaminate_player(cont_points, true);
+    
+    MiscastEffect(&you, nullptr, SPELL_MISCAST, spell,
+                  spell_difficulty(spell), fail);
+    return true;
+}
+
+// For simplicity, on permabuffs, all gods work the same way
+// or we'd get potential double miscasts, very confusing
+// Also Kiku and Veh between them barely will support one permabuff
+int failure_check(spell_type spell, bool perma) {
+    int spfl = random2avg(100, 3);
+    
+    if (!you_worship(GOD_SIF_MUNA)
+        && you.penance[GOD_SIF_MUNA] && one_chance_in(20)) {
+        god_speaks(GOD_SIF_MUNA, "You feel a surge of divine spite.");
+        // This will cause failure and increase the miscast effect.
+        spfl = -you.penance[GOD_SIF_MUNA];
+    } else if (spell_typematch(spell, SPTYP_NECROMANCY)
+             && !you_worship(GOD_KIKUBAAQUDGHA)
+             && you.penance[GOD_KIKUBAAQUDGHA]
+             && one_chance_in(20)) {
+        simple_god_message(" does not allow the disloyal to dabble in "
+                           "death!", GOD_KIKUBAAQUDGHA);
+        if (perma) {
+            spfl = -you.penance[GOD_KIKUBAAQUDGHA];
+        } else {
+            // And you thought you'd Necromutate your way out of penance...
+            // The spell still goes through, but you get a miscast anyway.
+            MiscastEffect(&you, nullptr, GOD_MISCAST + GOD_KIKUBAAQUDGHA,
+                          SPTYP_NECROMANCY,
+                          (you.experience_level / 2) + (spell_difficulty(spell) * 2),
+                          random2avg(88, 3), "the malice of Kikubaaqudgha");
+        }
+    } else if (vehumet_supports_spell(spell)
+                 && !you_worship(GOD_VEHUMET)
+                 && you.penance[GOD_VEHUMET]
+                 && one_chance_in(20)) {
+        simple_god_message(" does not allow the disloyal to dabble in "
+                           "destruction!", GOD_VEHUMET);
+        if (perma) {
+            spfl = -you.penance[GOD_VEHUMET];
+        } else {
+            // And you thought you'd Fire Storm your way out of penance...
+            // The spell still goes through, but you get a miscast anyway.
+            MiscastEffect(&you, nullptr, GOD_MISCAST + GOD_VEHUMET,
+                          SPTYP_CONJURATION,
+                          (you.experience_level / 2) + (spell_difficulty(spell) * 2),
+                          random2avg(88, 3), "the malice of Vehumet");
+        }
+    }
+    int fail = raw_spell_fail(spell) - spfl;
+    return max(fail,0);
 }

@@ -5030,6 +5030,32 @@ bool player::clear_far_engulf()
     return false;
 }
 
+bool player::has_permabuff(spell_type spell) {
+    if (is_permabuff(spell)) {
+        int pb = permabuff_is(spell);
+        return you.permabuff[pb];
+    } else {
+        return false;
+    }
+}
+bool player::has_any_permabuff() {
+    for (unsigned int i = PERMA_FIRST_PERMA; i <= PERMA_LAST_PERMA; i++) {
+        if (you.permabuff[i]) return true;
+    }
+    return false;
+}
+bool player::permabuff_working(permabuff_type pb) {
+    if (!you.permabuff[pb]) return false;
+    if (you.no_cast()) return false;
+    if (you.duration[permabuff_durs[pb]]) return false;
+    // Not clear you can get this duration right now
+    if ((you.duration[DUR_ANTIMAGIC]) && 
+        (x_chance_in_y(you.duration[DUR_ANTIMAGIC] / 3, you.hp_max))) {
+        return false;
+    }
+    return true;
+}
+
 void handle_player_drowning(int delay)
 {
     if (you.duration[DUR_WATER_HOLD] == 1)

@@ -31,6 +31,7 @@
 #include "mon-tentacle.h"
 #include "mutation.h"
 #include "religion.h"
+#include "spl-selfench.h"
 #include "spl-util.h"
 #include "state.h"
 #include "status.h"
@@ -370,7 +371,8 @@ bool player_is_debuffable()
  * Forms, buffs, debuffs, contamination, probably a few other things.
  * Flight gets an extra 11 aut before going away to minimize instadeaths.
  */
-void debuff_player()
+void debuff_player(bool end_permas, bool end_perma_durs, 
+                   bool increase_perma_durs)
 {
     bool need_msg = false;
 
@@ -414,6 +416,7 @@ void debuff_player()
             need_msg = true;
         }
     }
+    spell_drop_permabuffs(end_permas, end_perma_durs, increase_perma_durs);
 
     if (need_msg)
         mprf(MSGCH_WARN, "Your magical effects are unravelling.");

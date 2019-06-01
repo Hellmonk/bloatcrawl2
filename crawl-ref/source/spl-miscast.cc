@@ -1156,7 +1156,7 @@ void MiscastEffect::_charms(int severity)
                 mon_msg_unseen = "Magic surges out from thin air!";
                 if (target->is_player())
                 {
-                    debuff_player();
+                    debuff_player(true,false,false);
                     if (you.magic_points > 0)
                         dec_mp(4 + random2(3));
                 }
