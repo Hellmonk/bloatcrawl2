@@ -22,9 +22,9 @@ Wear-ID amulets with impunity:
  drains at most 1/5 of your piety on removal, and cannot drain more piety than
  was gained while wearing it.
 Permabuffs:
- Infusion, Shroud of Golubria, and Song of Slaying last forever. If you can't
- see any monsters, you mutter the words of the Song of Slaying under your
- breath, and don't make any noise.
+ Infusion, Shroud of Golubria, Regeneration, and Song of Slaying last
+ forever. If you can't see any monsters, you mutter the words of the Song 
+ of Slaying under your breath, and don't make any noise.
 
 Vanilla changes messed around with
 ----------------------------------

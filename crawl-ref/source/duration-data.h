@@ -394,7 +394,7 @@ static const duration_def duration_data[] =
     { DUR_SONG_OF_SLAYING,
       YELLOW, "-Slay",
       "song suppressed", "song of slaying suppressed",
-      "You are stumbling over the syllables of your song of slaying.", 
+      "You are stumbling over the syllables of your song of slaying.",
       D_EXPIRES,
       {{ "", []() {
 		  mprf(MSGCH_DURATION, 
@@ -402,6 +402,19 @@ static const duration_def duration_data[] =
 		       ((you.permabuff[PERMA_SONG] && !you.no_cast()) ? 
 			"singing" :
 			"able to sing"));
+	      }}}},
+    // Technically we can get this light and the blue Regen light if we have
+    // Regen up and suppressed and worship Trog. I don't care.
+    { DUR_REGENERATION,
+      YELLOW, "-Regen",
+      "regen suppressed", "regeneration suppressed",
+      "Your magical regeneration has been temporarily dispelled.", D_EXPIRES,
+      {{ "", []() {
+		  mprf(MSGCH_DURATION, 
+		       "You are once again %s.",
+		       ((you.permabuff[PERMA_REGEN] && !you.no_cast()) ? 
+			"magically regenerating" :
+			"able to magically regenerate"));
 	      }}}},
     { DUR_FLAYED,
       RED, "Flay",
@@ -596,9 +609,6 @@ static const duration_def duration_data[] =
     { DUR_FLIGHT, 0, "", "", "flight", "", D_DISPELLABLE /*but special-cased*/, {}, 10},
     { DUR_POISONING, 0, "", "", "poisoning", "", D_NO_FLAGS},
     { DUR_PIETY_POOL, 0, "", "", "piety pool", "", D_NO_FLAGS},
-    { DUR_REGENERATION, 0, "", "", "regeneration", "", D_DISPELLABLE,
-      {{ "Your skin stops crawling." },
-          { "Your skin is crawling a little less now.", 1}}, 6},
     { DUR_TRANSFORMATION, 0, "", "", "transformation", "", D_DISPELLABLE /*but special-cased*/, {}, 10},
     { DUR_EXCRUCIATING_WOUNDS, 0, "", "", "excruciating wounds", "", D_DISPELLABLE,
       {{ "", _end_weapon_brand }}},

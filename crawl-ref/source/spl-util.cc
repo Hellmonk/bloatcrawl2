@@ -1612,11 +1612,14 @@ bool is_permabuff(spell_type spell) {
 
 int nominal_duration(spell_type spell) {
     switch (spell) {
-        case SPELL_SONG_OF_SLAYING:
-            return 20 + calc_spell_power(spell, true);
-        case SPELL_INFUSION:
-            return 8 + calc_spell_power(spell, true);
-        default:
-            return 0;
-        }
+    case SPELL_SONG_OF_SLAYING:
+        return 20 + calc_spell_power(spell, true);
+    case SPELL_INFUSION:
+        return 8 + calc_spell_power(spell, true);
+    case SPELL_REGENERATION:
+        // 6 is no typo
+        return 6 + (calc_spell_power(spell, true) / 3);
+    default:
+        return 0;
+    }
 }

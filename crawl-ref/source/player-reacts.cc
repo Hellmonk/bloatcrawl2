@@ -938,6 +938,32 @@ static void _regenerate_hp_and_mp(int delay)
     {
         const int base_val = player_regen();
         you.hit_points_regeneration += div_rand_round(base_val * delay, BASELINE_DELAY);
+        if (you.permabuff_working(PERMA_REGEN) &&
+            (you.hp < you.hp_max) &&
+            (you.props["regen_reserve"].get_int() > 0)) {
+            you.props["regen_reserve"].get_int() -=
+                div_rand_round(
+                    (delay *
+                     (you.get_mutation_level(MUT_MAGIC_ATTUNEMENT) ? 
+                      200 : 300)),
+                    nominal_duration(SPELL_REGENERATION) * BASELINE_DELAY);
+            if (x_chance_in_y(delay,
+                              nominal_duration(SPELL_REGENERATION) * 
+                              BASELINE_DELAY)) {
+                int fail = failure_check(SPELL_REGENERATION, true);
+                if (fail) {
+                    mprf(MSGCH_DURATION,
+                         "Your skin crawls horribly, then goes numb.");
+                    apply_miscast(SPELL_REGENERATION, fail, false);
+                    you.increase_duration(DUR_REGENERATION,
+                                          roll_dice(2,10) + fail/4);
+                }
+            } else if (x_chance_in_y(delay, BASELINE_DELAY * 10)) {
+                if (god_hates_spell(SPELL_REGENERATION,you.religion)) {
+                    dock_piety(1,0);
+                }
+            }
+        }
     }
 
     while (you.hit_points_regeneration >= 100)
@@ -972,7 +998,7 @@ static void _regenerate_hp_and_mp(int delay)
         int sub = div_rand_round(
             (delay *
              (you.get_mutation_level(MUT_MAGIC_ATTUNEMENT) ? 100 : 200)),
-            (nominal_duration(SPELL_SONG_OF_SLAYING)) * BASELINE_DELAY);
+            nominal_duration(SPELL_SONG_OF_SLAYING) * BASELINE_DELAY);
         // have to check for this being < 0 when we have enough permas?
         mp_regen_countup -= sub;
         you.props["mp_to_charms"].get_int() += sub;
@@ -993,11 +1019,24 @@ static void _regenerate_hp_and_mp(int delay)
             you.props["shroud_recharge"] = 0;
         }
     }
-    you.props["mp_to_charms"].get_int() *= BASELINE_DELAY;
-    you.props["mp_to_charms"].get_int() /= delay;
+    // The order in which permabuffs get to divert MPreg is kind of arbitrary
+    if (you.permabuff_working(PERMA_REGEN) &&
+        (you.props["regen_reserve"].get_int() < 200)) {
+        int divert = (mp_regen_countup * you.magic_points) /
+            max(you.max_magic_points,1);
+        you.props["regen_reserve"].get_int() += divert;
+        if (you.props["regen_reserve"].get_int() > 200) {
+            divert -= (you.props["regen_reserve"].get_int() - 200);
+            you.props["regen_reserve"].get_int() = 200;
+        }
+        mp_regen_countup -= divert;
+        you.props["mp_to_charms"].get_int() += divert;
+    }
     if (you.magic_points < you.max_magic_points) {
         you.magic_points_regeneration += mp_regen_countup;
     }
+    you.props["mp_to_charms"].get_int() *= BASELINE_DELAY;
+    you.props["mp_to_charms"].get_int() /= delay;
 
     while (you.magic_points_regeneration >= 100)
     {
@@ -1118,7 +1157,8 @@ void player_reacts()
         }
     }
     if (you.props.exists("shroud_recharge") && 
-        you.props["shroud_recharge"].get_int() == 0) {
+        (you.props["shroud_recharge"].get_int() == 0) &&
+	can_cast_spells(true)) {
         int fail = failure_check(SPELL_SHROUD_OF_GOLUBRIA, true);
         if (fail) {
             mpr("You fail to reconstruct your distorting shroud.");

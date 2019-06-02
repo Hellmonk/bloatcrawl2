@@ -944,7 +944,7 @@ static const struct spell_desc spelldata[] =
     -1, -1,
     3, 0,
     TILEG_REGENERATION,
-    PERMA_NO_PERMA,
+    PERMA_REGEN,
 },
 
 // Monster-only, players can use Lugonu's ability

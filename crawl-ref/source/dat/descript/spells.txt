@@ -1065,9 +1065,13 @@ Regeneration spell
 
 Reanimates parts of the caster's wounds. This unnatural act dramatically but
 temporarily increases the caster's health regeneration, while also speeding
-their metabolism.
-%%%%
-Repel Missiles spell
+their metabolism. When the caster's magic reserves are full, it works
+at full effectiveness, but as those reserves drain, the caster will
+regenerate less. Improved spellpower improves the efficiency of the
+process, making it easier to regenerate at full speed.
+
+This enchantment lasts indefinitely, until dispelled by the caster.
+%%%% Repel Missiles spell
 
 Reduces the chance of projectile attacks striking the caster, making them
 easier to dodge. Single-target attacks are much easier to repel than

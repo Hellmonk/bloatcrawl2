@@ -1059,7 +1059,8 @@ static int _player_bonus_regen()
 
     // Trog's Hand is handled separately so that it will bypass slow
     // regeneration, and it overrides the spell.
-    if (you.duration[DUR_REGENERATION]
+    if (you.permabuff_working(PERMA_REGEN) && 
+        (you.props["regen_reserve"].get_int() > 0)
         && !you.duration[DUR_TROGS_HAND])
     {
         rr += 100;
@@ -1240,7 +1241,7 @@ int player_hunger_rate(bool temp)
         hunger += 3;            // in addition to the +3 for fast metabolism
 
     if (temp
-        && (you.duration[DUR_REGENERATION]
+        && (you.permabuff_working(PERMA_REGEN)
             || you.duration[DUR_TROGS_HAND])
         && you.hp < you.hp_max)
     {
@@ -5048,6 +5049,7 @@ bool player::has_any_permabuff() {
 bool player::permabuff_working(permabuff_type pb) {
     if (!you.permabuff[pb]) return false;
     if (you.no_cast()) return false;
+    if (you.duration[DUR_BRAINLESS]) return false;
     if (you.duration[permabuff_durs[pb]]) return false;
     // Not clear you can get this duration right now
     if ((you.duration[DUR_ANTIMAGIC]) && 
@@ -5059,6 +5061,9 @@ bool player::permabuff_working(permabuff_type pb) {
     }
     // Impossible?
     if ((pb == PERMA_SONG) && (silenced(you.pos()))) {
+        return false;
+    }
+    if ((pb == PERMA_REGEN) && (you.form == transformation::lich)) {
         return false;
     }
     return true;

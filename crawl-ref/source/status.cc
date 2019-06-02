@@ -277,7 +277,7 @@ bool fill_status_info(int status, status_info& inf)
         break;
 
     case STATUS_REGENERATION:
-        // DUR_REGENERATION + some vampire and non-healing stuff
+        // PERMA_REGEN + some vampire and non-healing stuff
         _describe_regen(inf);
         break;
 
@@ -491,6 +491,10 @@ bool fill_status_info(int status, status_info& inf)
     }
     case DUR_SONG_OF_SLAYING:
         if (!you.permabuff[PERMA_SONG]) inf.light_colour = DARKGREY;
+        break;
+
+    case DUR_REGENERATION:
+        if (!you.permabuff[PERMA_REGEN]) inf.light_colour = DARKGREY;
         break;
 
     case STATUS_BEOGH:
@@ -890,7 +894,7 @@ static void _describe_glow(status_info& inf)
 
 static void _describe_regen(status_info& inf)
 {
-    const bool regen = (you.duration[DUR_REGENERATION] > 0
+    const bool regen = (you.permabuff_working(PERMA_REGEN)
                         || you.duration[DUR_TROGS_HAND] > 0);
     const bool no_heal = !player_regenerates_hp();
     // Does vampire hunger level affect regeneration rate significantly?
@@ -899,10 +903,18 @@ static void _describe_regen(status_info& inf)
 
     if (regen)
     {
-        if (you.duration[DUR_REGENERATION] > you.duration[DUR_TROGS_HAND])
-            inf.light_colour = _dur_colour(BLUE, dur_expiring(DUR_REGENERATION));
-        else
+        inf.light_colour = BLUE;
+        if (you.duration[DUR_TROGS_HAND]) {
             inf.light_colour = _dur_colour(BLUE, dur_expiring(DUR_TROGS_HAND));
+        }
+        if (you.permabuff_working(PERMA_REGEN) && 
+            ((you.props["regen_reserve"].get_int() > 0) ||
+// This last is a bit misleading but it's better than having the damn light
+// flicker on and off.
+             (you.magic_points > 0))) {
+            inf.light_colour = LIGHTBLUE;
+        }
+
         inf.light_text   = "Regen";
         if (you.duration[DUR_TROGS_HAND])
             inf.light_text += " MR++";
@@ -924,7 +936,6 @@ static void _describe_regen(status_info& inf)
             inf.short_text = "regenerating";
             inf.long_text  = "You are regenerating.";
         }
-        _mark_expiring(inf, dur_expiring(DUR_REGENERATION));
     }
     else if (vampmod)
     {

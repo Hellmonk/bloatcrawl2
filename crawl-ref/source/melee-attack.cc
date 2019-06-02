@@ -393,8 +393,7 @@ bool melee_attack::handle_phase_hit()
     if (attacker->is_player() && you.permabuff_working(PERMA_INFUSION)) {
         if (enough_mp(1, true, false)) {
             int fail = 0;
-            if (one_chance_in(nominal_duration(SPELL_INFUSION) || 
-                              you.duration[DUR_BRAINLESS])) {
+            if (one_chance_in(nominal_duration(SPELL_INFUSION))) {
                 fail = failure_check(SPELL_INFUSION, true);
             }
             if (fail) {

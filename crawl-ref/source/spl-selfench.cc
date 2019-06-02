@@ -99,11 +99,23 @@ spret_type deflection(int pow, bool fail)
 
 spret_type cast_regen(int pow, bool fail)
 {
-    fail_check();
-    you.increase_duration(DUR_REGENERATION, 5 + roll_dice(2, pow / 3 + 1), 100,
-                          "Your skin crawls.");
-
-    return SPRET_SUCCESS;
+    if (you.permabuff[PERMA_REGEN]) {
+        mpr("Your skin stops crawling.");
+        you.permabuff[PERMA_REGEN] = false; 
+        // This stops HOM dropping and recasting to refill the reserve
+        you.increase_duration(DUR_REGENERATION, 25, 25);
+        return SPRET_PERMACANCEL;
+    } else {
+        fail_check();
+        mpr("Your skin crawls.");
+        you.permabuff[PERMA_REGEN] = true;
+        // 200 here is basically arbitrary - "300" was too good, representing
+        // you somehow having both cast Regen just before entering combat and
+        // having regenerated MP afterwards, which with Regen's short duration
+        // won't do.
+        you.props["regen_reserve"] = 200;
+        return SPRET_SUCCESS;
+    }
 }
 
 spret_type cast_revivification(int pow, bool fail)
@@ -229,8 +241,7 @@ void check_sos_miscast() {
     if (you.permabuff_working(PERMA_SONG) &&
         you.props[SONG_OF_SLAYING_KEY].get_int()) {
         int fail = 0;
-        if (one_chance_in(nominal_duration(SPELL_INFUSION))
-            || you.duration[DUR_BRAINLESS]) {
+        if (one_chance_in(nominal_duration(SPELL_SONG_OF_SLAYING))) {
             fail = failure_check(SPELL_SONG_OF_SLAYING, true);
         }
         if (fail) {
@@ -240,7 +251,7 @@ void check_sos_miscast() {
             you.increase_duration(DUR_SONG_OF_SLAYING, roll_dice(2,10) + fail/4);
         } else {
             if (god_hates_spell(SPELL_SONG_OF_SLAYING,you.religion)) {
-            dock_piety(1,0);                    
+                dock_piety(1,0);                    
             }
         }
     }
@@ -323,7 +334,8 @@ void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
         if (increase_durs && you.permabuff[i]) {
             you.duration[permabuff_durs[i]] 
                 // default 2d10
-                = max(you.duration[permabuff_durs[i]],roll_dice(num,size));
+                = max(you.duration[permabuff_durs[i]],
+                      BASELINE_DELAY * roll_dice(num,size));
         }
     }
     if (turn_off) {

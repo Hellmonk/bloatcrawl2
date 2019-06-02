@@ -1016,7 +1016,8 @@ is slightly decreased, as if you were recasting it regularly - you can see the
 effect in the % screen.
 
 If you are using an artefact that suppresses spellcasting (the -Cast
-flag), none of your permanent enchantments will function at all.
+flag), or if you are brainless, none of your permanent enchantments
+will function at all.
 
 To end one such enchantment, cast the spell again. This costs no MP,
 but takes a turn, and you must be able to cast spells (not berserk,
