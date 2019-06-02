@@ -392,7 +392,7 @@ static const duration_def duration_data[] =
 			"able to magically infuse"));
 	      }}}},
     { DUR_SONG_OF_SLAYING,
-      YELLOW, "Slay",
+      YELLOW, "-Slay",
       "song suppressed", "song of slaying suppressed",
       "You are stumbling over the syllables of your song of slaying.", 
       D_EXPIRES,

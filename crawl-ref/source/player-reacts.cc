@@ -966,7 +966,9 @@ static void _regenerate_hp_and_mp(int delay)
     int mp_regen_countup = div_rand_round(base_val * delay, BASELINE_DELAY);
     // I can see this next becoming a function that calcs cost for all permas
     if (you.permabuff_working(PERMA_SONG) && 
-        (you.props[SONG_OF_SLAYING_KEY].get_int() > 0)) {
+        (you.props[SONG_OF_SLAYING_KEY].get_int() > 0) &&
+        (there_are_monsters_nearby(true, true, false))) {
+        // free with no monsters nearby, since you're not SINGING
         int sub = div_rand_round(
             (delay *
              (you.get_mutation_level(MUT_MAGIC_ATTUNEMENT) ? 100 : 200)),
@@ -979,7 +981,7 @@ static void _regenerate_hp_and_mp(int delay)
         !you.duration[DUR_SHROUD_OF_GOLUBRIA] && 
         !you.duration[DUR_BRAINLESS]) {
         int available = (you.magic_points < you.max_magic_points) ? 
-            (mp_regen_countup * 3 / 4) : mp_regen_countup;
+            (mp_regen_countup * 1 / 2) : mp_regen_countup;
         if (available < you.props["shroud_recharge"].get_int()) {
             you.props["shroud_recharge"].get_int() -= available;
             mp_regen_countup -= available;
@@ -1108,8 +1110,11 @@ void player_reacts()
     if (song) {
         int dur = nominal_duration(SPELL_SONG_OF_SLAYING);
         dur *= BASELINE_DELAY; dur /= you.time_taken;
-        if (x_chance_in_y((3 * song)/2, dur)) {
+        you.props["song_decay"].get_int() += div_rand_round ((150 * song),
+                                                             dur);
+        if (you.props["song_decay"].get_int() > 100) {
             you.props[SONG_OF_SLAYING_KEY].get_int()--;
+            you.props["song_decay"].get_int()-= 100;
         }
     }
     if (you.props.exists("shroud_recharge") && 
