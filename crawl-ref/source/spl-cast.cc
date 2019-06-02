@@ -885,7 +885,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     const bool staff_energy = player_energy();
     you.last_cast_spell = spell;
 
-    const spret_type cast_result = your_spells(spell, 0, true);
+    const spret_type cast_result = your_spells(spell, 0, !permacancel);
     if (cast_result == SPRET_ABORT)
     {
         crawl_state.zero_turns_taken();
@@ -1367,7 +1367,7 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
     // targeting. There are others that do their own that will be
     // missed by this (and thus will not properly ESC without cost
     // because of it). Hopefully, those will eventually be fixed. - bwr
-    if (flags & SPFLAG_TARGETING_MASK)
+    if (flags & SPFLAG_TARGETING_MASK) 
     {
         const targ_mode_type targ =
               testbits(flags, SPFLAG_NEUTRAL)    ? TARG_ANY :

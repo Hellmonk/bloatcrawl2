@@ -958,10 +958,6 @@ static void _regenerate_hp_and_mp(int delay)
                     you.increase_duration(DUR_REGENERATION,
                                           roll_dice(2,10) + fail/4);
                 }
-            } else if (x_chance_in_y(delay, BASELINE_DELAY * 10)) {
-                if (god_hates_spell(SPELL_REGENERATION,you.religion)) {
-                    dock_piety(1,0);
-                }
             }
         }
     }
@@ -1003,9 +999,9 @@ static void _regenerate_hp_and_mp(int delay)
         mp_regen_countup -= sub;
         you.props["mp_to_charms"].get_int() += sub;
     }
-    if (you.props.exists("shroud_recharge") && !you.no_cast() &&
-        !you.duration[DUR_SHROUD_OF_GOLUBRIA] && 
-        !you.duration[DUR_BRAINLESS]) {
+    if (you.props.exists("shroud_recharge") &&
+        (you.props["shroud_recharge"].get_int() > 0) &&
+        (you.permabuff_notworking(PERMA_SHROUD) >= PB_WORKING)) {
         int available = (you.magic_points < you.max_magic_points) ? 
             (mp_regen_countup * 1 / 2) : mp_regen_countup;
         if (available < you.props["shroud_recharge"].get_int()) {
@@ -1158,7 +1154,7 @@ void player_reacts()
     }
     if (you.props.exists("shroud_recharge") && 
         (you.props["shroud_recharge"].get_int() == 0) &&
-	can_cast_spells(true)) {
+        (you.permabuff_notworking(PERMA_SHROUD) >= PB_WORKING)) {
         int fail = failure_check(SPELL_SHROUD_OF_GOLUBRIA, true);
         if (fail) {
             mpr("You fail to reconstruct your distorting shroud.");

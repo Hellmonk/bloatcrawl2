@@ -249,11 +249,7 @@ void check_sos_miscast() {
                  "You stumble over the syllables of your song.");
             apply_miscast(SPELL_SONG_OF_SLAYING, fail, false);
             you.increase_duration(DUR_SONG_OF_SLAYING, roll_dice(2,10) + fail/4);
-        } else {
-            if (god_hates_spell(SPELL_SONG_OF_SLAYING,you.religion)) {
-                dock_piety(1,0);                    
-            }
-        }
+        } 
     }
 }
 

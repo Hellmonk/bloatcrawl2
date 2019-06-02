@@ -355,11 +355,12 @@ static const duration_def duration_data[] =
       "shroud dissipated", "",
       "Your distorting shroud has been dissipated.", D_EXPIRES,
       {{ "", []() {
-		  mprf(MSGCH_DURATION, 
-		       (you.permabuff[PERMA_SHROUD] && !you.no_cast()) ? 
-		       "You reconstruct your distorting shroud." :
-		       "You could once again produce a distorting shroud.");
-	      }}}},
+		  if (you.permabuff_could(PERMA_SHROUD)) {
+			  mprf(MSGCH_DURATION, 
+			       (you.permabuff_working(PERMA_SHROUD) ? 
+				"You reconstruct your distorting shroud." :
+				"You could once again produce a distorting shroud."));
+		      }}}}},
     { DUR_TORNADO_COOLDOWN,
       YELLOW, "-Tornado",
       "", "tornado cooldown",
@@ -386,23 +387,25 @@ static const duration_def duration_data[] =
       "You have lost control of your magical infusion.", D_EXPIRES,
       // I wonder if this will become a more general function with >1 perma?
       {{ "", []() {
-		  mprf(MSGCH_DURATION, "You are once again %s your attacks.",
-		       ((you.permabuff[PERMA_INFUSION] && !you.no_cast()) ? 
-			"magically infusing" :
-			"able to magically infuse"));
-	      }}}},
+		  if (you.permabuff_could(PERMA_INFUSION)) {
+			  mprf(MSGCH_DURATION, 
+			       "You are once again %s your attacks.",
+			       (you.permabuff_working(PERMA_INFUSION) ? 
+				"magically infusing" :
+				"able to magically infuse"));
+		      }}}}},
     { DUR_SONG_OF_SLAYING,
       YELLOW, "-Slay",
       "song suppressed", "song of slaying suppressed",
       "You are stumbling over the syllables of your song of slaying.",
       D_EXPIRES,
       {{ "", []() {
-		  mprf(MSGCH_DURATION, 
-		       "You are once again %s a song of slaying.",
-		       ((you.permabuff[PERMA_SONG] && !you.no_cast()) ? 
-			"singing" :
-			"able to sing"));
-	      }}}},
+		  if (you.permabuff_could(PERMA_SONG)) {
+			  mprf(MSGCH_DURATION, 
+			       "You are once again %s a song of slaying.",
+			       (you.permabuff_working(PERMA_SONG) ? 
+				"singing" : "able to sing"));
+		      }}}}},
     // Technically we can get this light and the blue Regen light if we have
     // Regen up and suppressed and worship Trog. I don't care.
     { DUR_REGENERATION,
@@ -410,12 +413,13 @@ static const duration_def duration_data[] =
       "regen suppressed", "regeneration suppressed",
       "Your magical regeneration has been temporarily dispelled.", D_EXPIRES,
       {{ "", []() {
-		  mprf(MSGCH_DURATION, 
-		       "You are once again %s.",
-		       ((you.permabuff[PERMA_REGEN] && !you.no_cast()) ? 
-			"magically regenerating" :
-			"able to magically regenerate"));
-	      }}}},
+		  if (you.permabuff_could(PERMA_REGEN)) {
+			  mprf(MSGCH_DURATION, 
+			       "You are once again %s.",
+			       (you.permabuff_working(PERMA_REGEN) ? 
+			       "magically regenerating" :
+			       "able to magically regenerate"));
+		      }}}}},
     { DUR_FLAYED,
       RED, "Flay",
       "flayed", "",

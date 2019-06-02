@@ -5046,28 +5046,73 @@ bool player::has_any_permabuff() {
     }
     return false;
 }
+
+bool player::permabuff_could(permabuff_type pb) {
+    permabuff_state pb_state = permabuff_notworking(pb);
+    return ((pb_state == PB_DONTHAVE) || (pb_state == PB_WORKING));
+}
+
 bool player::permabuff_working(permabuff_type pb) {
-    if (!you.permabuff[pb]) return false;
-    if (you.no_cast()) return false;
-    if (you.duration[DUR_BRAINLESS]) return false;
-    if (you.duration[permabuff_durs[pb]]) return false;
+    return (permabuff_notworking(pb) == PB_WORKING);
+}
+
+// The ordering here matters for permabuff_could - maybe make these flags
+permabuff_state player::permabuff_notworking(permabuff_type pb) {
+    if (god_hates_spell(permabuff_spell[pb],you.religion)) return PB_GOD;
+    if (you.no_cast()) return PB_NO_CAST;
     // Not clear you can get this duration right now
     if ((you.duration[DUR_ANTIMAGIC]) && 
         (x_chance_in_y(you.duration[DUR_ANTIMAGIC] / 3, you.hp_max))) {
-        return false;
+        return PB_ANTIMAGIC;
     }
+    if (you.duration[DUR_BRAINLESS]) return PB_BRAINLESS;
+    if (you.hunger_state <= HS_STARVING) return PB_STARVING;
+    if (you.duration[permabuff_durs[pb]]) return PB_DURATION;
     if ((pb == PERMA_SHROUD) && (you.props.exists("shroud_recharge"))) {
-        return false;
+        return PB_SHROUD_RECHARGE;
     }
     // Impossible?
     if ((pb == PERMA_SONG) && (silenced(you.pos()))) {
-        return false;
+        return PB_SONG_SILENCED;
     }
     if ((pb == PERMA_REGEN) && (you.form == transformation::lich)) {
-        return false;
+        return PB_REGEN_LICH;
     }
-    return true;
+    if (!you.permabuff[pb]) return PB_DONTHAVE;
+    return PB_WORKING;
 }
+
+string player::permabuff_whynot(permabuff_type pb) {
+    permabuff_state pb_state = permabuff_notworking(pb);
+    switch (pb_state) {
+    case PB_WORKING:
+        return "you are using this enchantment";
+    case PB_GOD:
+        return "your religion forbids it";
+    case PB_NO_CAST:
+        return "your equipment doesn't let you cast spells";
+    case PB_ANTIMAGIC:
+        return "you have been hit with an antimagic attack";
+    case PB_BRAINLESS:
+        return "you are brainless";
+    case PB_STARVING:
+        return "you are starving";
+    case PB_DURATION:
+        return "it has been temporarily dispelled";
+    case PB_SHROUD_RECHARGE:
+        return "you are reconstructing the shroud";
+    case PB_SONG_SILENCED:
+        return "you cannot sing in this magical silence";
+    case PB_REGEN_LICH:
+        return "you have no flesh to regenerate";
+        // If something wants this message, weird
+    case PB_DONTHAVE:
+        return "you don't have this enchantment";
+    default:
+        return "you are buggily enchanted";
+    }
+}
+        
 
 void handle_player_drowning(int delay)
 {

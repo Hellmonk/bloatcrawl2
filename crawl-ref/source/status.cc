@@ -479,12 +479,14 @@ bool fill_status_info(int status, status_info& inf)
                 = make_stringf("Slay (%u)",
                                you.props[SONG_OF_SLAYING_KEY].get_int());
             inf.short_text = "singing";
-            if (you.no_cast()) {
-                inf.light_colour = DARKGREY;
-                inf.long_text = "Your equipment prevents your song of slaying from being effective.";
-            } else {            
+            if (you.permabuff_working(PERMA_SONG)) {
                 inf.light_colour = LIGHTBLUE;
-                inf.long_text = "Your melee attacks are strengthened by your song.";
+                inf.long_text = 
+                    "Your melee attacks are strengthened by your song.";
+            } else {            
+                inf.light_colour = DARKGREY;
+                inf.long_text = "You would sing a song of slaying, but " +
+                    you.permabuff_whynot(PERMA_SONG) + ".";
             }
         }
         break;
@@ -720,11 +722,7 @@ bool fill_status_info(int status, status_info& inf)
         if (you.permabuff[PERMA_INFUSION] && !you.duration[DUR_INFUSION]) {
             inf.light_text = "Infus";
             inf.short_text = "infusing";
-            if (you.no_cast()) {
-                inf.light_colour = DARKGREY;
-                inf.long_text = 
-                    "You would be infusing your attacks, but your equipment prevents it.";
-            } else {
+            if (you.permabuff_working(PERMA_INFUSION)) {
                 inf.long_text = 
                     "You are infusing your attacks with magical energy.";
                 if (enough_mp(1, true, false)) {
@@ -732,6 +730,11 @@ bool fill_status_info(int status, status_info& inf)
                 } else {
                     inf.light_colour = BLUE;
                 }
+            } else {
+                inf.light_colour = DARKGREY;
+                inf.short_text = "not infusing";
+                inf.long_text = "You would be infusing your attacks, but " + 
+                    you.permabuff_whynot(PERMA_INFUSION) + ".";
             }
         }
         break;
@@ -747,21 +750,22 @@ bool fill_status_info(int status, status_info& inf)
             !you.duration[DUR_SHROUD_OF_GOLUBRIA]) {
             inf.light_text = "Shroud";
             inf.short_text = "shrouded";
-            if (you.no_cast()) {
-                inf.light_colour = DARKGREY;
-                inf.long_text = 
-                    "Your equipment prevents your distorting shroud from functioning.";
-            } else if (you.props.exists("shroud_recharge") &&
-                       you.props["shroud_recharge"].get_int()){
+            if (you.props.exists("shroud_recharge") &&
+                you.props["shroud_recharge"].get_int()){
                 inf.light_text = "-Shroud";
                 inf.short_text = "unshrouded";
                 inf.light_colour = BLUE;
                 inf.long_text = 
                     "Your magic regeneration is reconstructing your distorting shroud.";
-            } else {
+            } else if (you.permabuff_working(PERMA_SHROUD)) {
                 inf.light_colour = LIGHTBLUE;
                 inf.long_text = 
                     "You are protected by a distorting shroud.";
+            } else {
+                inf.light_colour = DARKGREY;
+                inf.short_text = "not shrouded";
+                inf.long_text = "Your shroud is not working because " +
+                    you.permabuff_whynot(PERMA_SHROUD) + ".";
             }
         }
         break;
@@ -920,7 +924,7 @@ static void _describe_regen(status_info& inf)
             inf.light_text += " MR++";
         else if (no_heal)
             inf.light_colour = DARKGREY;
-    }
+    } 
 
     if ((you.disease && !regen) || no_heal)
        inf.short_text = "non-regenerating";
@@ -948,6 +952,12 @@ static void _describe_regen(status_info& inf)
             inf.short_text += " slowly";
         else
             inf.short_text += " quickly";
+    } else if (you.permabuff[PERMA_REGEN] && !regen && 
+        !you.duration[DUR_REGENERATION]) {
+        inf.light_text   = "Regen"; inf.light_colour = DARKGREY;
+        inf.short_text = "not regenerating";
+        inf.long_text = "You would be magically regenerating, but " +
+            you.permabuff_whynot(PERMA_REGEN) + ".";
     }
 }
 

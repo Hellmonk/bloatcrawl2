@@ -405,12 +405,6 @@ bool melee_attack::handle_phase_hit()
                 apply_miscast(SPELL_INFUSION,fail,false);
                 you.increase_duration(DUR_INFUSION,roll_dice(2,10) + fail/4);
             } else {
-                if (god_hates_spell(SPELL_INFUSION,you.religion)) {
-                    // it seems like this should be some other function
-                    // but I don't want to set up a whole new conduct for this
-                    // HOM edge case
-                    dock_piety(1,0);                    
-                }
                 const int pow = calc_spell_power(SPELL_INFUSION, true);
                 const int dmg = 2 + div_rand_round(pow, 12);
                 const int hurt = defender->apply_ac(dmg);
@@ -530,10 +524,6 @@ bool melee_attack::handle_phase_damaged()
             effectiveness +=  
                 div_rand_round(calc_spell_power(SPELL_SHROUD_OF_GOLUBRIA,
                                                 true),10);
-            // This will be a funny message ordering but it's a weird edge case
-            if (god_hates_spell(SPELL_SHROUD_OF_GOLUBRIA,you.religion)) {
-                dock_piety(1,0);
-            }
         } 
         int soak = min (damage_done, effectiveness * 2);
         // Chance of the shroud falling apart increases based on the

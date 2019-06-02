@@ -97,6 +97,22 @@ enum training_status
     TRAINING_INACTIVE, ///< enabled but not used (in auto mode)
 };
 
+// First conditions that cause no pb to work, then duration, then working,
+// then pb-specific conditions. Should maybe be flags?
+enum permabuff_state {
+    PB_GOD,
+    PB_NO_CAST,
+    PB_ANTIMAGIC,
+    PB_BRAINLESS,
+    PB_STARVING,
+    PB_DONTHAVE,
+    PB_DURATION,
+    PB_WORKING,
+    PB_SHROUD_RECHARGE,
+    PB_SONG_SILENCED,
+    PB_REGEN_LICH
+};
+
 // needed for assert in is_player()
 #ifdef DEBUG_GLOBALS
 #define you (*real_you)
@@ -896,6 +912,9 @@ public:
 
     bool has_permabuff(spell_type spell);
     bool permabuff_working(permabuff_type permabuff);
+    bool permabuff_could(permabuff_type permabuff);
+    permabuff_state permabuff_notworking(permabuff_type permabuff);
+    string permabuff_whynot(permabuff_type permabuff);
     bool has_any_permabuff();
 
 protected:
