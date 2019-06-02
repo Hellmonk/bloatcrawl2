@@ -941,6 +941,7 @@ static void _regenerate_hp_and_mp(int delay)
         if (you.permabuff_working(PERMA_REGEN) &&
             (you.hp < you.hp_max) &&
             (you.props["regen_reserve"].get_int() > 0)) {
+            permabuff_track(PERMA_REGEN);
             you.props["regen_reserve"].get_int() -=
                 div_rand_round(
                     (delay *
@@ -1134,12 +1135,17 @@ void player_reacts()
     // increment constriction durations
     you.accum_has_constricted();
 
+    _regenerate_hp_and_mp(you.time_taken);
+
     const int food_use = div_rand_round(player_hunger_rate() * you.time_taken,
                                         BASELINE_DELAY);
+    // Intentionally done here so if player_hunger_rate is called for info
+    // purposes, it doesn't unset all the perma_benefits
+    for (int p = PERMA_FIRST_PERMA; p <= PERMA_LAST_PERMA; ++p) {
+        you.perma_benefit[p] = false;
+    }
     if (food_use > 0 && you.hunger > 0)
         make_hungry(food_use, true);
-
-    _regenerate_hp_and_mp(you.time_taken);
 
     int song = you.props[SONG_OF_SLAYING_KEY].get_int();
     if (song) {

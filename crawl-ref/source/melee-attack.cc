@@ -392,6 +392,7 @@ bool melee_attack::handle_phase_hit()
     // more than one permabuff
     if (attacker->is_player() && you.permabuff_working(PERMA_INFUSION)) {
         if (enough_mp(1, true, false)) {
+            permabuff_track(PERMA_INFUSION);
             int fail = 0;
             if (one_chance_in(nominal_duration(SPELL_INFUSION))) {
                 fail = failure_check(SPELL_INFUSION, true);
@@ -521,6 +522,7 @@ bool melee_attack::handle_phase_damaged()
     {
         int effectiveness = 10; 
         if (defender->is_player()) {
+            permabuff_track(PERMA_SHROUD);
             effectiveness +=  
                 div_rand_round(calc_spell_power(SPELL_SHROUD_OF_GOLUBRIA,
                                                 true),10);

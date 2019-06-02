@@ -164,6 +164,7 @@ public:
     int dd_heals;
     int dd_mp_rotted;
     FixedVector<bool, PERMA_LAST_PERMA+1> permabuff;
+    FixedVector<bool, PERMA_LAST_PERMA+1> perma_benefit;
 
     FixedVector<int8_t, NUM_STATS> stat_loss;
     FixedVector<int8_t, NUM_STATS> base_stats;

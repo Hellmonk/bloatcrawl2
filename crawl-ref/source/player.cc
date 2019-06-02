@@ -1240,12 +1240,21 @@ int player_hunger_rate(bool temp)
     if (you.species == SP_TROLL)
         hunger += 3;            // in addition to the +3 for fast metabolism
 
-    if (temp
-        && (you.permabuff_working(PERMA_REGEN)
-            || you.duration[DUR_TROGS_HAND])
-        && you.hp < you.hp_max)
+    if (temp &&
+        you.perma_benefit[PERMA_REGEN] ||
+        (you.duration[DUR_TROGS_HAND] &&
+         (you.hp < you.hp_max)))
     {
         hunger += 4;
+    }
+
+    // This is the scheme we originally planned to use for MP
+    if (temp) {
+        for (int p = PERMA_FIRST_PERMA; p <= PERMA_LAST_PERMA; ++p) {
+            if (you.perma_benefit[p]) {
+                hunger += permabuff_hunger((permabuff_type) p);
+            }
+        }
     }
 
     if (you.species == SP_VAMPIRE)
@@ -3626,6 +3635,7 @@ int slaying_bonus(bool ranged, bool ignore_sos)
 
     if ((!ignore_sos) && (you.permabuff_working(PERMA_SONG))) {
         ret += you.props[SONG_OF_SLAYING_KEY].get_int();
+        permabuff_track(PERMA_SONG);
     }
     
     if (you.duration[DUR_HORROR])

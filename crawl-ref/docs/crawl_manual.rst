@@ -1011,9 +1011,14 @@ lower than it would be in vanilla Crawl if you were recasting the spell every
 time it expired. If a miscast occurs, you will stop receiving the benefit for
 a few turns while you regain control of your magic. The power of any such spell
 is recalculated constantly, so you don't need to renew them as your skills 
-improve. When such a spell is providing a benefit, your MP regeneration rate
-is slightly decreased, as if you were recasting it regularly - you can see the
-effect in the % screen.
+improve. 
+
+Some such spells decrease your MP regeneration rate when providing a benefit,
+as if you were recasting it regularly - you can see the effect in the % screen.
+Even if you are getting the benefit constantly, you will never pay more MP
+than you would if you were constantly recasting the spell in regular Crawl.
+Similarly, these spells will make you hungrier when you benefit from them, but
+never faster than they would in regular Crawl.
 
 If you are using an artefact that suppresses spellcasting (the -Cast
 flag), or if you are brainless, none of your permanent enchantments

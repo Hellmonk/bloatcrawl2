@@ -19,6 +19,7 @@
 #include "directn.h"
 #include "english.h"
 #include "env.h"
+#include "exercise.h"
 #include "god-passive.h"
 #include "god-abil.h"
 #include "item-prop.h"
@@ -1609,13 +1610,32 @@ bool is_permabuff(spell_type spell) {
     int permabuff = permabuff_is(spell);
     return (permabuff != PERMA_NO_PERMA);
 }
+int permabuff_hunger(permabuff_type pb) {
+// No; if we got the benefit, it was working then  
+//    if (!you.permabuff_working(pb)) return 0;
+    spell_type spell = permabuff_spell[pb];
+    return  (div_rand_round(spell_hunger(spell), 
+                            BASELINE_DELAY * nominal_duration(spell)));
+// mprf ("Hunger from %s - %d (%d/%d)", spell_title(spell), foo, spell_hunger(spell), nominal_duration(spell));
+}
+void permabuff_track(int pb) {
+    you.perma_benefit[pb] = true;
+    spell_type spell = permabuff_spell[pb];
+// Divide by 3 here as a very crude compensation for the way we only get 
+// pinged on benefit not just from routine recasting
+    if (one_chance_in(nominal_duration(spell) / 3)) {
+        practise_casting(spell, true);
+    }
+}
 
 int nominal_duration(spell_type spell) {
     switch (spell) {
-    case SPELL_SONG_OF_SLAYING:
-        return 20 + calc_spell_power(spell, true);
     case SPELL_INFUSION:
         return 8 + calc_spell_power(spell, true);
+    case SPELL_SONG_OF_SLAYING:
+        return 20 + calc_spell_power(spell, true);
+    case SPELL_SHROUD_OF_GOLUBRIA:
+        return 7 + calc_spell_power(spell, true);
     case SPELL_REGENERATION:
         // 6 is no typo
         return 6 + (calc_spell_power(spell, true) / 3);
