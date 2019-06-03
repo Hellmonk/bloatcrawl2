@@ -393,10 +393,7 @@ bool melee_attack::handle_phase_hit()
     if (attacker->is_player() && you.permabuff_working(PERMA_INFUSION)) {
         if (enough_mp(1, true, false)) {
             permabuff_track(PERMA_INFUSION);
-            int fail = 0;
-            if (one_chance_in(nominal_duration(SPELL_INFUSION))) {
-                fail = failure_check(SPELL_INFUSION, true);
-            }
+            int fail = permabuff_failure_check(PERMA_INFUSION);
             if (fail) {
                 mprf(MSGCH_DURATION,
                      "You lose control of your magical infusion.");

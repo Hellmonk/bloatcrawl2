@@ -948,17 +948,13 @@ static void _regenerate_hp_and_mp(int delay)
                      (you.get_mutation_level(MUT_MAGIC_ATTUNEMENT) ? 
                       200 : 300)),
                     nominal_duration(SPELL_REGENERATION) * BASELINE_DELAY);
-            if (x_chance_in_y(delay,
-                              nominal_duration(SPELL_REGENERATION) * 
-                              BASELINE_DELAY)) {
-                int fail = failure_check(SPELL_REGENERATION, true);
-                if (fail) {
-                    mprf(MSGCH_DURATION,
-                         "Your skin crawls horribly, then goes numb.");
-                    apply_miscast(SPELL_REGENERATION, fail, false);
-                    you.increase_duration(DUR_REGENERATION,
-                                          roll_dice(2,10) + fail/4);
-                }
+            int fail = permabuff_failure_check(PERMA_REGEN);
+            if (fail) {
+                mprf(MSGCH_DURATION,
+                     "Your skin crawls horribly, then goes numb.");
+                apply_miscast(SPELL_REGENERATION, fail, false);
+                you.increase_duration(DUR_REGENERATION,
+                                      roll_dice(2,10) + fail/4);
             }
         }
     }

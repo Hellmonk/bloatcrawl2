@@ -240,10 +240,7 @@ spret_type cast_song_of_slaying(int pow, bool fail)
 void check_sos_miscast() {
     if (you.permabuff_working(PERMA_SONG) &&
         you.props[SONG_OF_SLAYING_KEY].get_int()) {
-        int fail = 0;
-        if (one_chance_in(nominal_duration(SPELL_SONG_OF_SLAYING))) {
-            fail = failure_check(SPELL_SONG_OF_SLAYING, true);
-        }
+        int fail = permabuff_failure_check(PERMA_SONG);
         if (fail) {
             mprf(MSGCH_DURATION,
                  "You stumble over the syllables of your song.");
@@ -337,5 +334,14 @@ void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
     if (turn_off) {
         you.props.erase("shroud_recharge"); 
         you.props[SONG_OF_SLAYING_KEY] = 0;
+    }
+}
+
+int permabuff_failure_check(permabuff_type pb) {
+    spell_type spell = permabuff_spell[pb];
+    if (one_chance_in(nominal_duration(spell) / pb_dur_fudge[pb])) {
+        return failure_check(spell, true);
+    } else {
+        return 0;
     }
 }

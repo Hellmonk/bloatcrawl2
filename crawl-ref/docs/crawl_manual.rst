@@ -1003,15 +1003,16 @@ representing a severe chance).
 Be careful of magic-using enemies! Some of them can use magic just as well as
 you, if not better, and often use it intelligently.
 
-In Stoat Soup, some spells which provide a beneficial enchantment, such as the
-Infusion spell, last indefinitely. (In vanilla Crawl, such spells normally time
-out.) Every time such a spell provides a benefit, there is a small chance of a
-miscast, based on the spell failure check; the frequency of miscasts is always
-lower than it would be in vanilla Crawl if you were recasting the spell every
-time it expired. If a miscast occurs, you will stop receiving the benefit for
-a few turns while you regain control of your magic. The power of any such spell
-is recalculated constantly, so you don't need to renew them as your skills 
-improve. 
+In Stoat Soup, some spells which provide a beneficial enchantment,
+such as the Infusion spell, last indefinitely. (In vanilla Crawl, such
+spells normally time out.) Every time such a spell provides a benefit,
+there is a small chance of a miscast, based on the spell failure
+check; the frequency of miscasts is normally lower than it would be in
+vanilla Crawl if you were recasting the spell every time it expired,
+but they turn up unpredictably. If a miscast occurs, you will stop
+receiving the benefit for a few turns while you regain control of your
+magic. The power of any such spell is recalculated constantly, so you
+don't need to renew them as your skills improve.
 
 Some such spells decrease your MP regeneration rate when providing a benefit,
 as if you were recasting it regularly - you can see the effect in the % screen.

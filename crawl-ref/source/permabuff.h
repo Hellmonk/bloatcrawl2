@@ -27,3 +27,17 @@ static const spell_type permabuff_spell[] = {
     SPELL_SONG_OF_SLAYING,
     SPELL_REGENERATION,
 };
+
+// This is the amount to divide the nominal duration by to determine how often
+// to check for a miscast. It is meant to somehow approximate the proportion
+// of turns you might reasonably expect to benefit from it normally - eg Regen
+// has '1' because a lot of the time when you regenerate you gain HP for the 
+// whole duration. Without this, we noticed miscasts almost never happen.
+// If I don't know what the answer should be, it'll be '2'
+static const int pb_dur_fudge[] = {
+    0,
+    2, // infusion
+    1, // unused - shroud
+    2, // song
+    1  // regen
+};
