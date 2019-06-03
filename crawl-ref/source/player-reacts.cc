@@ -1002,6 +1002,7 @@ static void _regenerate_hp_and_mp(int delay)
     }
     if (you.props.exists("shroud_recharge") &&
         (you.props["shroud_recharge"].get_int() > 0) &&
+        (!you.duration[DUR_BERSERK]) &&
         (you.permabuff_notworking(PERMA_SHROUD) >= PB_WORKING)) {
         int available = (you.magic_points < you.max_magic_points) ? 
             (mp_regen_countup * 1 / 2) : mp_regen_countup;
@@ -1018,6 +1019,7 @@ static void _regenerate_hp_and_mp(int delay)
     }
     // The order in which permabuffs get to divert MPreg is kind of arbitrary
     if (you.permabuff_working(PERMA_REGEN) &&
+        (!you.duration[DUR_BERSERK]) &&
         (you.props["regen_reserve"].get_int() < 200)) {
         int divert = (mp_regen_countup * you.magic_points) /
             max(you.max_magic_points,1);
