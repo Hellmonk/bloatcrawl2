@@ -65,7 +65,9 @@ enum attribute_type
     ATTR_REPEL_MISSILES,       // Repel missiles active
 #endif
     ATTR_DEFLECT_MISSILES,     // Deflect missiles active
-    ATTR_PORTAL_PROJECTILE,    // Accuracy bonus during portal projectile
+#if TAG_MAJOR_VERSION == 34
+    ATTR_PORTAL_PROJECTILE,    // unused in Stoat Soup
+#endif
     ATTR_GOD_WRATH_XP,         // How much XP before our next god wrath check?
     ATTR_GOD_WRATH_COUNT,      // Number of stored retributions
     ATTR_NEXT_DRAGON_TIME,     // aut remaining until Dragon's Call summons another

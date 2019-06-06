@@ -711,12 +711,33 @@ bool fill_status_info(int status, status_info& inf)
         break;
     }
 
-    case DUR_PORTAL_PROJECTILE:
+    case STATUS_PPROJ:
     {
-        if (!is_pproj_active())
-            inf.light_colour = DARKGREY;
+        if (you.permabuff[PERMA_PPROJ] && 
+            !you.duration[DUR_PORTAL_PROJECTILE]) {
+            inf.light_text = "PProj";
+            inf.short_text = "portal projectile";
+            if (you.permabuff_working(PERMA_PPROJ)) {
+                inf.long_text = 
+                    "You are teleporting projectiles to their destination.";
+                if (enough_mp(1, true, false)) {
+                    inf.light_colour = LIGHTBLUE;
+                } else {
+                    inf.light_colour = BLUE;
+                }
+            } else {
+                inf.light_colour = DARKGREY;
+                inf.short_text = "not teleporting projectiles";
+                inf.long_text = "You would be teleporting projectiles, but " + 
+                    you.permabuff_whynot(PERMA_PPROJ) + ".";
+            }
+        }
         break;
     }
+
+    case DUR_PORTAL_PROJECTILE:
+        if (!you.permabuff[PERMA_PPROJ]) inf.light_colour = DARKGREY;
+        break;
 
     case STATUS_INFUSION:
     {

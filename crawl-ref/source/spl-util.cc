@@ -1629,16 +1629,25 @@ void permabuff_track(int pb) {
 }
 
 int nominal_duration(spell_type spell) {
+    int pow;
     switch (spell) {
     case SPELL_INFUSION:
         return 8 + calc_spell_power(spell, true);
+// you.increase_duration(DUR_INFUSION,  8 + roll_dice(2, pow), 100);
     case SPELL_SONG_OF_SLAYING:
-        return 20 + calc_spell_power(spell, true);
+        return 20 + (calc_spell_power(spell, true) / 2);
+// you.set_duration(DUR_SONG_OF_SLAYING, 20 + random2avg(pow, 2));
     case SPELL_SHROUD_OF_GOLUBRIA:
-        return 7 + calc_spell_power(spell, true);
+        return min (50, (7 + calc_spell_power(spell, true)));
+// you.increase_duration(DUR_SHROUD_OF_GOLUBRIA, 7 + roll_dice(2, pow), 50);
     case SPELL_REGENERATION:
         // 6 is no typo
         return 6 + (calc_spell_power(spell, true) / 3);
+// you.increase_duration(DUR_REGENERATION, 5 + roll_dice(2, pow / 3 + 1), 100,
+    case SPELL_PORTAL_PROJECTILE:
+        pow = calc_spell_power(spell, true);
+        return 3 + pow/2 + pow/5;
+//  you.increase_duration(DUR_PORTAL_PROJECTILE, 3 + random2(pow / 2) + random2(pow / 5), 50);
     default:
         return 0;
     }

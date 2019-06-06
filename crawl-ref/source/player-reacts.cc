@@ -983,18 +983,34 @@ static void _regenerate_hp_and_mp(int delay)
     you.props["mp_to_charms"] = 0;
     const int base_val = player_mp_regen();
     int mp_regen_countup = div_rand_round(base_val * delay, BASELINE_DELAY);
-    // I can see this next becoming a function that calcs cost for all permas
-    if (you.permabuff_working(PERMA_SONG) && 
-        (you.props[SONG_OF_SLAYING_KEY].get_int() > 0) &&
-        (there_are_monsters_nearby(true, true, false))) {
-        // free with no monsters nearby, since you're not SINGING
-        int sub = div_rand_round(
-            (delay *
-             (you.get_mutation_level(MUT_MAGIC_ATTUNEMENT) ? 100 : 200)),
-            nominal_duration(SPELL_SONG_OF_SLAYING) * BASELINE_DELAY);
-        // have to check for this being < 0 when we have enough permas?
-        mp_regen_countup -= sub;
-        you.props["mp_to_charms"].get_int() += sub;
+    // Theoretically HOM can use this as an invisible monster barometer but on
+    // reflection we decided this was less bad than getting a discount because
+    // you can't see your assiliant.
+    if (there_are_monsters_nearby(true, false, false)) {
+        int sub = 0;
+        for (int i = 0; i < size_mpregen_pb ; i++) {
+            permabuff_type pb = pb_ordinary_mpregen[i];
+            if (you.permabuff_working(pb) &&
+                (((pb != PERMA_SONG) && (you.perma_benefit[pb])) ||
+                 ((you.props[SONG_OF_SLAYING_KEY].get_int() > 0) &&
+                  (pb == PERMA_SONG) &&
+                  (there_are_monsters_nearby(true, true, false))))) {
+                    spell_type spell = permabuff_spell[pb];
+                sub += div_rand_round(
+                    (delay * spell_mana(spell) * 100),
+                    nominal_duration(spell) * BASELINE_DELAY);
+            }
+        }
+// It is intentional that if your permabuffs cost too much, you just get no
+// MP regen, but they don't turn off. This situation is difficult to produce
+// most of the time, but otherwise a level 1 TrSk couldn't use Infusion at all.
+        if (sub > mp_regen_countup) {
+            you.props["mp_to_charms"] = mp_regen_countup;
+            mp_regen_countup = 0;
+        } else {
+            mp_regen_countup -= sub;
+            you.props["mp_to_charms"].get_int() += sub;
+        }
     }
     if (you.props.exists("shroud_recharge") &&
         (you.props["shroud_recharge"].get_int() > 0) &&
@@ -1016,6 +1032,7 @@ static void _regenerate_hp_and_mp(int delay)
     // The order in which permabuffs get to divert MPreg is kind of arbitrary
     if (you.permabuff_working(PERMA_REGEN) &&
         (!you.duration[DUR_BERSERK]) &&
+        (!you.confused()) &&
         (you.props["regen_reserve"].get_int() < 200)) {
         int divert = (mp_regen_countup * you.magic_points) /
             max(you.max_magic_points,1);

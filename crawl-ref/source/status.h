@@ -60,7 +60,8 @@ enum status_type
     STATUS_INFUSION,
     STATUS_SHROUD,
     STATUS_SONG,
-    STATUS_LAST_STATUS = STATUS_SONG
+    STATUS_PPROJ,
+    STATUS_LAST_STATUS = STATUS_PPROJ,
 };
 
 struct status_info

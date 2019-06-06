@@ -75,8 +75,9 @@ int ranged_attack::calc_to_hit(bool random)
     if (teleport)
     {
         orig_to_hit +=
-            (attacker->is_player())
-            ? maybe_random2(you.attribute[ATTR_PORTAL_PROJECTILE] / 4, random)
+            (attacker->is_player()) ?
+            maybe_random2(calc_spell_power(SPELL_PORTAL_PROJECTILE,true) / 4, 
+                          random)
             : 3 * attacker->as_monster()->get_hit_dice();
     }
 

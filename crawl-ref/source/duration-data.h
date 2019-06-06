@@ -393,7 +393,7 @@ static const duration_def duration_data[] =
 			       (you.permabuff_working(PERMA_INFUSION) ? 
 				"magically infusing" :
 				"able to magically infuse"));
-		      }}}}},
+		  }}}}},
     { DUR_SONG_OF_SLAYING,
       YELLOW, "-Slay",
       "song suppressed", "song of slaying suppressed",
@@ -405,7 +405,7 @@ static const duration_def duration_data[] =
 			       "You are once again %s a song of slaying.",
 			       (you.permabuff_working(PERMA_SONG) ? 
 				"singing" : "able to sing"));
-		      }}}}},
+		  }}}}},
     // Technically we can get this light and the blue Regen light if we have
     // Regen up and suppressed and worship Trog. I don't care.
     { DUR_REGENERATION,
@@ -419,7 +419,7 @@ static const duration_def duration_data[] =
 			       (you.permabuff_working(PERMA_REGEN) ? 
 			       "magically regenerating" :
 			       "able to magically regenerate"));
-		      }}}}},
+		  }}}}},
     { DUR_FLAYED,
       RED, "Flay",
       "flayed", "",
@@ -479,11 +479,17 @@ static const duration_def duration_data[] =
           you.props.erase(SAP_MAGIC_KEY);
       }}}},
     { DUR_PORTAL_PROJECTILE,
-      LIGHTBLUE, "PProj",
-      "portal projectile", "",
-      "You are teleporting projectiles to their destination.", D_DISPELLABLE,
-      {{ "You are no longer teleporting projectiles to their destination.",
-         []() { you.attribute[ATTR_PORTAL_PROJECTILE] = 0; }}}},
+      YELLOW, "-PProj",
+      "portal projectile suppressed", "",
+      "You cannot currently teleport your projectiles.", D_EXPIRES,
+      {{ "", []() {
+		  if (you.permabuff_could(PERMA_PPROJ)) {
+			  mprf(MSGCH_DURATION, 
+			       "You are once again %s your projectiles.",
+			       (you.permabuff_working(PERMA_PPROJ) ? 
+				"teleporting" :
+				"able to teleport"));
+		  }}}}},
     { DUR_FORESTED,
       GREEN, "Forest",
       "", "forested",

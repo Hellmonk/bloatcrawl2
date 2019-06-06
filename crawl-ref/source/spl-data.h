@@ -1785,7 +1785,7 @@ static const struct spell_desc spelldata[] =
     -1, -1,
     3, 0,
     TILEG_PORTAL_PROJECTILE,
-    PERMA_NO_PERMA,
+    PERMA_PPROJ,
 },
 
 {

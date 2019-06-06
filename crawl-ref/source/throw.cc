@@ -39,6 +39,7 @@
 #include "skills.h"
 #include "sound.h"
 #include "spl-summoning.h"
+#include "spl-selfench.h"
 #include "state.h"
 #include "stringutil.h"
 #include "terrain.h"
@@ -474,8 +475,8 @@ int get_ammo_to_shoot(int item, dist &target, bool teleport)
 // Portal Projectile requires MP per shot.
 bool is_pproj_active()
 {
-    return !you.confused() && you.duration[DUR_PORTAL_PROJECTILE]
-           && enough_mp(1, true, false);
+    // confusion check is now baked in
+    return you.permabuff_working(PERMA_PPROJ) && enough_mp(1, true, false);
 }
 
 // If item == -1, prompt the user.
@@ -895,8 +896,9 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
     if (wepClass == OBJ_MISSILES || wepClass == OBJ_WEAPONS)
         item.flags |= ISFLAG_THROWN;
 
-    pbolt.hit = teleport ? random2(you.attribute[ATTR_PORTAL_PROJECTILE] / 4)
-                         : 0;
+    pbolt.hit = teleport ? 
+        random2(calc_spell_power(SPELL_PORTAL_PROJECTILE, true) / 4)
+        : 0;
 
     bool hit = false;
     if (teleport)
@@ -909,6 +911,17 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
             pbolt.drop_object();
         // Costs 1 MP per shot.
         dec_mp(1);
+        // Unlike Infusion, you get the shot off before it fizzles, because 
+        // there's no practical way to know which targetter to use
+        permabuff_track(PERMA_PPROJ);
+        int fail = permabuff_failure_check(PERMA_PPROJ);
+        if (fail) {
+            mprf(MSGCH_DURATION,
+                 "You lose control of your teleporting projectiles.");
+                apply_miscast(SPELL_PORTAL_PROJECTILE,fail,false);
+                you.increase_duration(DUR_PORTAL_PROJECTILE,
+                                      roll_dice(2,10) + fail/4);
+        }
     }
     else
     {

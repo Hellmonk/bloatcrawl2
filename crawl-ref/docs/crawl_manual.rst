@@ -1019,7 +1019,9 @@ as if you were recasting it regularly - you can see the effect in the % screen.
 Even if you are getting the benefit constantly, you will never pay more MP
 than you would if you were constantly recasting the spell in regular Crawl.
 Similarly, these spells will make you hungrier when you benefit from them, but
-never faster than they would in regular Crawl.
+never faster than they would in regular Crawl. Because these charges are only
+made when you get a benefit, there is no reason to, eg, switch Portal
+Projectile off when not firing projectiles.
 
 If you are using an artefact that suppresses spellcasting (the -Cast
 flag), or if you are brainless, none of your permanent enchantments

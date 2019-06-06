@@ -8,8 +8,9 @@ enum permabuff_type {
 	PERMA_SHROUD,
 	PERMA_SONG,
 	PERMA_REGEN,
+	PERMA_PPROJ,
 	PERMA_FIRST_PERMA = PERMA_INFUSION,
-	PERMA_LAST_PERMA = PERMA_REGEN,
+	PERMA_LAST_PERMA = PERMA_PPROJ,
     };
 
 static const duration_type permabuff_durs[] = {
@@ -18,6 +19,7 @@ static const duration_type permabuff_durs[] = {
     DUR_SHROUD_OF_GOLUBRIA,
     DUR_SONG_OF_SLAYING,
     DUR_REGENERATION,
+    DUR_PORTAL_PROJECTILE,
 };
 
 static const spell_type permabuff_spell[] = {
@@ -26,7 +28,19 @@ static const spell_type permabuff_spell[] = {
     SPELL_SHROUD_OF_GOLUBRIA,
     SPELL_SONG_OF_SLAYING,
     SPELL_REGENERATION,
+    SPELL_PORTAL_PROJECTILE,
 };
+
+// These PBs charge you MP regeneration based on their nominal duration.
+// Others don't - Regen has its own MP reservoir, you pay for fresh
+// Shrouds.
+// Conveniently right now they can all charge you when monsters are in view.
+static const permabuff_type pb_ordinary_mpregen[] = {
+    PERMA_INFUSION,
+    PERMA_SONG,
+    PERMA_PPROJ,
+};
+static const int size_mpregen_pb = ARRAYSZ(pb_ordinary_mpregen);
 
 // This is the amount to divide the nominal duration by to determine how often
 // to check for a miscast. It is meant to somehow approximate the proportion
@@ -39,5 +53,6 @@ static const int pb_dur_fudge[] = {
     2, // infusion
     1, // unused - shroud
     2, // song
-    1  // regen
+    1, // regen
+    1, // pproj
 };

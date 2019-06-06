@@ -5088,6 +5088,9 @@ permabuff_state player::permabuff_notworking(permabuff_type pb) {
     if ((pb == PERMA_REGEN) && (you.form == transformation::lich)) {
         return PB_REGEN_LICH;
     }
+    if ((pb == PERMA_PPROJ) && (you.confused())) {
+        return PB_CONFUSED;
+    }
     if (!you.permabuff[pb]) return PB_DONTHAVE;
     return PB_WORKING;
 }
@@ -5115,6 +5118,8 @@ string player::permabuff_whynot(permabuff_type pb) {
         return "you cannot sing in this magical silence";
     case PB_REGEN_LICH:
         return "you have no flesh to regenerate";
+    case PB_CONFUSED:
+        return "you are too confused";
         // If something wants this message, weird
     case PB_DONTHAVE:
         return "you don't have this enchantment";

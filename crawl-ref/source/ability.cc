@@ -322,9 +322,6 @@ static const ability_def Ability_List[] =
     { ABIL_DAMNATION, "Hurl Damnation",
         0, 150, 200, 0, {fail_basis::xl, 50, 1}, abflag::none },
 
-    { ABIL_CANCEL_PPROJ, "Cancel Portal Projectile",
-      0, 0, 0, 0, {}, abflag::instant | abflag::starve_ok },
-
     { ABIL_DIG, "Dig", 0, 0, 0, 0, {}, abflag::instant | abflag::starve_ok },
     { ABIL_SHAFT_SELF, "Shaft Self", 0, 0, 250, 0, {}, abflag::delay },
 
@@ -2101,13 +2098,6 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
                 m->add_ench(mon_enchant(ENCH_FAKE_ABJURATION, 3));
         }
 
-        break;
-
-    case ABIL_CANCEL_PPROJ:
-        fail_check();
-        you.duration[DUR_PORTAL_PROJECTILE] = 0;
-        you.attribute[ATTR_PORTAL_PROJECTILE] = 0;
-        mpr("You are no longer teleporting projectiles to their destination.");
         break;
 
     case ABIL_STOP_FLYING:
