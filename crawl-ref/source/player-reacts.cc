@@ -1084,11 +1084,11 @@ void player_reacts()
     // Handle sound-dependent effects that are silenced
     if (silenced(you.pos()))
     {
-        if (you.permabuff[PERMA_SONG])
-        {
-            mpr("The silence causes your song to end.");
-            you.duration[DUR_SONG_OF_SLAYING] = 0;
-            you.permabuff[PERMA_SONG] = false; 
+        if (you.permabuff[PERMA_SONG] &&
+            (you.props[SONG_OF_SLAYING_KEY].get_int() > 0)) {
+            if (you.permabuff_notworking(PERMA_SONG) == PB_SONG_SILENCED) {
+                mpr("The silence causes your song to end.");
+            }
             you.props[SONG_OF_SLAYING_KEY] = 0;
         }
     }

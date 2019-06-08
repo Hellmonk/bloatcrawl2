@@ -5081,7 +5081,6 @@ permabuff_state player::permabuff_notworking(permabuff_type pb) {
     if ((pb == PERMA_SHROUD) && (you.props.exists("shroud_recharge"))) {
         return PB_SHROUD_RECHARGE;
     }
-    // Impossible?
     if ((pb == PERMA_SONG) && (silenced(you.pos()))) {
         return PB_SONG_SILENCED;
     }

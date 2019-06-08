@@ -1646,7 +1646,7 @@ int nominal_duration(spell_type spell) {
 // you.increase_duration(DUR_REGENERATION, 5 + roll_dice(2, pow / 3 + 1), 100,
     case SPELL_PORTAL_PROJECTILE:
         pow = calc_spell_power(spell, true);
-        return 3 + pow/2 + pow/5;
+        return 3 + pow/4 + pow/10;
 //  you.increase_duration(DUR_PORTAL_PROJECTILE, 3 + random2(pow / 2) + random2(pow / 5), 50);
     default:
         return 0;
