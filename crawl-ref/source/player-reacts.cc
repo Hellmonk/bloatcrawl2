@@ -1019,15 +1019,14 @@ static void _regenerate_hp_and_mp(int delay)
         (you.props["shroud_recharge"].get_int() > 0) &&
         (!you.duration[DUR_BERSERK]) &&
         (you.permabuff_notworking(PERMA_SHROUD) >= PB_WORKING)) {
-        int available = (you.magic_points < you.max_magic_points) ? 
-            (mp_regen_countup * 1 / 2) : mp_regen_countup;
+        int available = mp_regen_countup / 2;
         if (available < you.props["shroud_recharge"].get_int()) {
             you.props["shroud_recharge"].get_int() -= available;
             mp_regen_countup -= available;
-            you.props["mp_to_charms"] = available;
+            you.props["mp_to_charms"].get_int() += available;
         } else {
             mp_regen_countup -= you.props["shroud_recharge"].get_int();
-            you.props["mp_to_charms"] = 
+            you.props["mp_to_charms"].get_int() += 
                 you.props["shroud_recharge"].get_int();
             you.props["shroud_recharge"] = 0;
         }
@@ -1046,6 +1045,18 @@ static void _regenerate_hp_and_mp(int delay)
         }
         mp_regen_countup -= divert;
         you.props["mp_to_charms"].get_int() += divert;
+    }
+    if (mp_regen_countup && (you.props["pproj_debt"].get_int() > 0)) {
+        if (mp_regen_countup < you.props["pproj_debt"].get_int()) {
+            you.props["pproj_debt"].get_int() -= mp_regen_countup;
+            you.props["mp_to_charms"].get_int() += mp_regen_countup;
+            mp_regen_countup = 0;
+        } else {
+            mp_regen_countup -= you.props["pproj_debt"].get_int();
+            you.props["mp_to_charms"].get_int() += 
+                you.props["pproj_debt"].get_int();
+            you.props["pproj_debt"] = 0;
+        }
     }
     if (you.magic_points < you.max_magic_points) {
         you.magic_points_regeneration += mp_regen_countup;
