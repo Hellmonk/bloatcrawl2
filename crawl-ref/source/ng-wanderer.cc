@@ -764,3 +764,73 @@ void memorise_wanderer_spell()
             add_spell_to_memory(which_spell);
     }
 }
+
+//like a wanderer but with more limited parameters
+void create_understudy()
+{
+    skill_type weapon_skill = random_choose(SK_AXES,
+        SK_MACES_FLAILS, SK_SHORT_BLADES, SK_LONG_BLADES,
+        SK_STAVES, SK_POLEARMS);
+    if(is_useless_skill(weapon_skill))
+        weapon_skill = SK_UNARMED_COMBAT;
+
+    weapon_type sub_type;
+    // Now fill in the type according to the random wpn_skill.
+    switch (weapon_skill)
+    {
+    case SK_SHORT_BLADES:
+        sub_type = WPN_RAPIER;
+        break;
+
+    case SK_LONG_BLADES:
+        sub_type = WPN_LONG_SWORD;
+        break;
+
+    case SK_MACES_FLAILS:
+        sub_type = WPN_FLAIL;
+        break;
+
+    case SK_AXES:
+        sub_type = WPN_WAR_AXE;
+        break;
+
+    case SK_POLEARMS:
+        sub_type = WPN_TRIDENT;
+        break;
+
+    default:
+        sub_type = WPN_DAGGER;
+        break;
+    }
+
+    if(weapon_skill != SK_UNARMED_COMBAT)
+        newgame_make_item(OBJ_WEAPONS, sub_type, 1, 0);
+    you.skills[weapon_skill] += 4;
+
+	skill_type set1_skill = SK_NONE;
+    skill_type set2_skill = SK_NONE;
+
+	do
+    {
+        set1_skill = random_choose(SK_AIR_MAGIC,
+        SK_POISON_MAGIC, SK_ICE_MAGIC, SK_FIRE_MAGIC, 
+        SK_EARTH_MAGIC, SK_CONJURATIONS, SK_BOWS, SK_THROWING,
+        SK_CROSSBOWS, SK_SLINGS);
+    }
+    while(is_useless_skill(set1_skill));
+
+    do
+    {
+        set2_skill = random_choose(SK_SHIELDS, SK_STEALTH,
+        SK_TRANSLOCATIONS, SK_TRANSMUTATIONS, SK_NECROMANCY,
+        SK_CHARMS, SK_HEXES, SK_INVOCATIONS, SK_SUMMONINGS);
+    }
+    while(is_useless_skill(set2_skill));
+
+    item_def* first_manual = newgame_make_item(OBJ_BOOKS, BOOK_MANUAL);
+        first_manual->skill = set1_skill;
+        first_manual->skill_points = 2000;
+    item_def* second_manual = newgame_make_item(OBJ_BOOKS, BOOK_MANUAL);
+        second_manual->skill = set2_skill;
+        second_manual->skill_points = 2000;
+}

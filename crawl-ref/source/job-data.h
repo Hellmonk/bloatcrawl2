@@ -48,7 +48,7 @@ static const map<job_type, job_def> job_data =
 
 { JOB_ANARCHIST, {
     "A!", "Anarchist",
-    0, 7, 5,
+    5, 2, 5,
     { SP_HUMAN, SP_TROLL, SP_OGRE, SP_KOBOLD, SP_GHOUL,
       SP_CENTAUR, },
     { "robe", "stone q:69", "scroll of immolation q:420"},
@@ -253,6 +253,15 @@ static const map<job_type, job_def> job_data =
     WCHOICE_NONE,
     { { SK_FIGHTING, 1 }, { SK_UNARMED_COMBAT, 3 }, { SK_DODGING, 2 },
       { SK_SPELLCASTING, 2 }, { SK_TRANSMUTATIONS, 2 }, },
+} },
+
+{ JOB_UNDERSTUDY, {
+    "Us", "Understudy",
+    4, 4, 4,
+    { SP_BASE_DRACONIAN, SP_GNOLL },
+    { "robe" },
+    WCHOICE_NONE,
+    { { SK_FIGHTING, 1 }, { SK_DODGING, 1 }, }, // Also gets 4 randomized weapon skill
 } },
 
 { JOB_VENOM_MAGE, {

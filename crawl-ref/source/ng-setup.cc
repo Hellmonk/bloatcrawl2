@@ -125,6 +125,9 @@ item_def* newgame_make_item(object_class_type base,
     item.quantity  = qty;
     item.plus      = plus;
     item.brand     = force_ego;
+    
+    if(item.base_type == OBJ_BOOKS && you.char_class == JOB_UNDERSTUDY)
+        return &item;
 
     // If the character is restricted in wearing the requested armour,
     // hand out a replacement instead.
@@ -275,6 +278,10 @@ static void _give_items_skills(const newgame_def& ng)
         else
             you.skills[SK_ARMOUR]++;
 
+        break;
+        
+    case JOB_UNDERSTUDY:
+        create_understudy();
         break;
 
     case JOB_WANDERER:

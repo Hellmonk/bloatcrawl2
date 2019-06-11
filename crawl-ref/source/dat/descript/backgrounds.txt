@@ -102,6 +102,11 @@ Transmuter
 Transmuters learn spells to shift their form, as well as to turn sticks into
 snakes.
 %%%%
+Understudy
+
+It's opening night for "The Orb of Zot" and the hero is sick! The Understudy
+must learn their role quickly if they want to make it through the final act.   
+%%%%
 Venom Mage
 
 Venom Mages start with the Sting spell, and their poison magic is very
