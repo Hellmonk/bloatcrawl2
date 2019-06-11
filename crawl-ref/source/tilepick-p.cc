@@ -782,6 +782,7 @@ void tilep_job_default(int job, dolls_data *doll)
             break;
 
         case JOB_BERSERKER:
+        case JOB_ANARCHIST:
             parts[TILEP_PART_BODY]  = TILEP_BODY_ANIMAL_SKIN;
             parts[TILEP_PART_LEG]   = TILEP_LEG_BELT_REDBROWN;
             break;

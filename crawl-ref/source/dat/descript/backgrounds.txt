@@ -9,6 +9,11 @@ Air Elementalist
 Air Elementalists have learned the Shock spell. Later on, their selection of
 Air Magic spells provides them with the flexibility to survive.
 %%%%
+Anarchist
+
+No Kings, No Rulers (maybe a god though). Anarchists are bent on dismantling
+the dungeon hierarchy with rocks and explosives.
+%%%%
 Arcane Marksman
 
 Arcane Marksmen carry ranged weapons, and use magic to make their foes more
