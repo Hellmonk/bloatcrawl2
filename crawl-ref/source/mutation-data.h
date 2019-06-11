@@ -1916,7 +1916,7 @@ static const mutation_def mut_data[] =
 { MUT_SHAPELESS_BODY, 0, 1, mutflag::good, true,
    "shapeless body",
 
-   {"Your bodies' adapts to match your armour (ER/2).", "", ""},
+   {"Your body adapts to match your armour (ER/2).", "", ""},
    {"Your body loses its intrinsic shape (ER/2).", "", ""},
    {"Your body regains its intrinsic shape (lost ER/2).", "", ""},
 },

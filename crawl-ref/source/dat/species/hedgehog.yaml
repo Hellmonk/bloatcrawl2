@@ -38,8 +38,8 @@ levelup_stats:
   - str
   - dex
 fake_mutations:
-  - short: boots only
-    long: The only armour you can wear are boots.
+  - short: boots and gloves only
+    long: You can only wear boots and gloves.
 mutations:
   1:
     MUT_SCREAM: 3

@@ -1687,7 +1687,7 @@ static int _determine_ring_plus(int subtype, bool lucky)
     case RING_EVASION:
     case RING_DEXTERITY:
     case RING_INTELLIGENCE:
-        if (one_chance_in(lucky ? 5 : 7)) // 20% of such rings are cursed {dlb}
+        if (one_chance_in(lucky ? 7 : 5)) // 20% of such rings are cursed {dlb}
             return _bad_ring_plus();
         return _good_jewellery_plus(subtype, lucky);
 
