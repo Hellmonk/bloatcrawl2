@@ -1241,22 +1241,24 @@ int player_hunger_rate(bool temp)
         hunger += 3;            // in addition to the +3 for fast metabolism
 
     if (temp &&
-        you.perma_benefit[PERMA_REGEN] ||
+        you.props["got_regen"].get_bool() ||
         (you.duration[DUR_TROGS_HAND] &&
          (you.hp < you.hp_max)))
     {
         hunger += 4;
     }
 
-    // This is the scheme we originally planned to use for MP
-    if (temp) {
-        for (int p = PERMA_FIRST_PERMA; p <= PERMA_LAST_PERMA; ++p) {
-            if (you.perma_benefit[p]) {
-                hunger += permabuff_hunger((permabuff_type) p);
+    for (int pb = PERMA_FIRST_PERMA; pb <= PERMA_LAST_PERMA; pb++) {
+        if (you.perma_benefit[pb]) {
+            int charge = you.perma_hunger[pb];
+            if (you.time_taken > you.perma_benefit[pb]) {
+                charge = div_rand_round(charge * you.perma_benefit[pb],
+                                        you.time_taken);
             }
+            hunger += div_rand_round(charge, 100);
+            dprf("Hunger for %d - %d", pb, charge);
         }
     }
-
     if (you.species == SP_VAMPIRE)
     {
         switch (you.hunger_state)

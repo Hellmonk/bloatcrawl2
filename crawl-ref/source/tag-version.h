@@ -229,6 +229,7 @@ enum tag_minor_version
     TAG_RESIDUAL_HARM,             // There's a "residual harm" duration
     TAG_PERMABUFFS,                // permanent enchantments
     TAG_PB_BENEFITS,
+    TAG_PB_REWORK,
 #endif
     NUM_TAG_MINORS,
     TAG_MINOR_VERSION = NUM_TAG_MINORS - 1

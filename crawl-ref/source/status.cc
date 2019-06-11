@@ -718,12 +718,15 @@ bool fill_status_info(int status, status_info& inf)
             inf.light_text = "PProj";
             inf.short_text = "portal projectile";
             if (you.permabuff_working(PERMA_PPROJ)) {
-                inf.long_text = 
-                    "You are teleporting projectiles to their destination.";
-                if (enough_mp(1, true, false)) {
+                if (enough_mp((you.props["pproj_debt"].get_int() >=100) ? 
+                              2 : 1, true, false)) {
                     inf.light_colour = LIGHTBLUE;
+                    inf.long_text = 
+                        "You are teleporting projectiles to their destination.";
                 } else {
                     inf.light_colour = BLUE;
+                    inf.long_text = 
+                    "You would be teleporting projectiles to their destination, but you don't have enough MP.";
                 }
             } else {
                 inf.light_colour = DARKGREY;
@@ -745,12 +748,15 @@ bool fill_status_info(int status, status_info& inf)
             inf.light_text = "Infus";
             inf.short_text = "infusing";
             if (you.permabuff_working(PERMA_INFUSION)) {
-                inf.long_text = 
-                    "You are infusing your attacks with magical energy.";
                 if (enough_mp(1, true, false)) {
                     inf.light_colour = LIGHTBLUE;
+                    inf.long_text = 
+                        "You are infusing your attacks with magical energy.";
                 } else {
                     inf.light_colour = BLUE;
+                    inf.long_text = 
+                        "You would infuse your attacks, but you don't have any MP.";
+
                 }
             } else {
                 inf.light_colour = DARKGREY;
@@ -935,9 +941,7 @@ static void _describe_regen(status_info& inf)
         }
         if (you.permabuff_working(PERMA_REGEN) && 
             ((you.props["regen_reserve"].get_int() > 0) ||
-// This last is a bit misleading but it's better than having the damn light
-// flicker on and off.
-             (you.magic_points > 0))) {
+             (you.props["some_mp_regen"].get_bool()))) {
             inf.light_colour = LIGHTBLUE;
         }
 
@@ -959,8 +963,15 @@ static void _describe_regen(status_info& inf)
         }
         else
         {
-            inf.short_text = "regenerating";
-            inf.long_text  = "You are regenerating.";
+            if (you.permabuff_working(PERMA_REGEN) && 
+                (!(you.props["regen_reserve"].get_int() > 0) &&
+                 !(you.props["some_mp_regen"].get_bool()))) {
+                inf.short_text = "not regenerating (no MP regeneration)";
+                inf.long_text = "You are not regenerating because your other permanent charms are consuming all your MP regeneration.";
+            } else {
+                inf.short_text = "regenerating";
+                inf.long_text  = "You are regenerating.";
+            }
         }
     }
     else if (vampmod)

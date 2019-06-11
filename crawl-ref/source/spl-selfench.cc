@@ -103,17 +103,16 @@ spret_type cast_regen(int pow, bool fail)
         mpr("Your skin stops crawling.");
         you.permabuff[PERMA_REGEN] = false; 
         // This stops HOM dropping and recasting to refill the reserve
-        you.increase_duration(DUR_REGENERATION, 25, 25);
+        you.increase_duration(DUR_REGENERATION, 10, 25);
         return SPRET_PERMACANCEL;
     } else {
         fail_check();
         mpr("Your skin crawls.");
         you.permabuff[PERMA_REGEN] = true;
-        // 200 here is basically arbitrary - "300" was too good, representing
-        // you somehow having both cast Regen just before entering combat and
-        // having regenerated MP afterwards, which with Regen's short duration
-        // won't do.
-        you.props["regen_reserve"] = 200;
+        // Decreased to 100. This does mean Regen is worse when you cast it
+        // the very first time... except you have no need to do that on
+        // entering combat, and this is a redesign of Regen.
+        you.props["regen_reserve"] = 100;
         return SPRET_SUCCESS;
     }
 }
@@ -330,10 +329,15 @@ void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
                 = max(you.duration[permabuff_durs[i]],
                       BASELINE_DELAY * roll_dice(num,size));
         }
+        if (turn_off && end_durs) {
+            you.perma_benefit[i] = you.perma_hunger[i] = you.perma_mp[i] =
+                0;
+        }
     }
     if (turn_off) {
         you.props.erase("shroud_recharge"); 
         you.props[SONG_OF_SLAYING_KEY] = 0;
+        if (end_durs) you.props["pproj_debt"] = 0;
     }
 }
 

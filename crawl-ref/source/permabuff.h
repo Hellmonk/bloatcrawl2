@@ -32,13 +32,13 @@ static const spell_type permabuff_spell[] = {
 };
 
 // These PBs charge you MP regeneration based on their nominal duration.
-// Others don't - Regen has its own MP reservoir, you pay for fresh
-// Shrouds.
-// Conveniently right now they can all charge you when monsters are in view.
+// Others don't - Regen has its own MP reservoir.
+// They all charge you hunger, however
 static const permabuff_type pb_ordinary_mpregen[] = {
     PERMA_INFUSION,
     PERMA_SONG,
-    PERMA_PPROJ,
+    PERMA_PPROJ, // handled specially
+    PERMA_SHROUD
 };
 static const int size_mpregen_pb = ARRAYSZ(pb_ordinary_mpregen);
 

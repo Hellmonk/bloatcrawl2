@@ -476,7 +476,10 @@ int get_ammo_to_shoot(int item, dist &target, bool teleport)
 bool is_pproj_active()
 {
     // confusion check is now baked in
-    return you.permabuff_working(PERMA_PPROJ) && enough_mp(1, true, false);
+    return you.permabuff_working(PERMA_PPROJ) && 
+        ((you.props["pproj_debt"].get_int() >= 100) ?
+         enough_mp(2, true, false) :
+         enough_mp(1, true, false));
 }
 
 // If item == -1, prompt the user.
@@ -909,8 +912,13 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
         pbolt.affect_endpoint();
         if (!did_return)
             pbolt.drop_object();
-        // Costs 1 MP per shot.
-        dec_mp(1);
+        // Costs 1-2 MP per shot.
+        dprf("PP debt %d", you.props["pproj_debt"].get_int());
+        if (you.props["pproj_debt"].get_int() >= 100) {
+            dec_mp(2); you.props["pproj_debt"].get_int() -= 100;
+        } else {
+            dec_mp(1);
+        }
         // Unlike Infusion, you get the shot off before it fizzles, because 
         // there's no practical way to know which targetter to use
         permabuff_track(PERMA_PPROJ);

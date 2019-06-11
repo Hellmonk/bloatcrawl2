@@ -165,7 +165,11 @@ public:
     int dd_heals;
     int dd_mp_rotted;
     FixedVector<bool, PERMA_LAST_PERMA+1> permabuff;
-    FixedVector<bool, PERMA_LAST_PERMA+1> perma_benefit;
+    // Number of auts to pay MP regen and hunger
+    FixedVector<int, PERMA_LAST_PERMA+1> perma_benefit;
+    // Hunger and MP charge per aut)
+    FixedVector<int, PERMA_LAST_PERMA+1> perma_hunger; // in 100th points
+    FixedVector<int, PERMA_LAST_PERMA+1> perma_mp;     // in 10,000th MP
 
     FixedVector<int8_t, NUM_STATS> stat_loss;
     FixedVector<int8_t, NUM_STATS> base_stats;

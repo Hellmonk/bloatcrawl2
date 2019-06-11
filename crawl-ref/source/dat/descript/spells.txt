@@ -1042,7 +1042,8 @@ Allows the caster to teleport fired or thrown missiles directly to
 their targets, spending an additional small amount of magic for each
 missile. Teleported projectiles have their accuracy greatly increased.
 
-This enchantment lasts indefinitely, until dispelled by the caster.
+This enchantment lasts indefinitely, until dispelled by the caster. As
+spellpower increases, it is less likely to use 2MP rather than 1.
 %%%%
 Primal Wave spell
 

@@ -941,6 +941,7 @@ static void _regenerate_hp_and_mp(int delay)
         if (you.permabuff_working(PERMA_REGEN) &&
             (you.hp < you.hp_max) &&
             (you.props["regen_reserve"].get_int() > 0)) {
+            you.props["got_regen"] = true;
             permabuff_track(PERMA_REGEN);
             you.props["regen_reserve"].get_int() -=
                 div_rand_round(
@@ -956,6 +957,8 @@ static void _regenerate_hp_and_mp(int delay)
                 you.increase_duration(DUR_REGENERATION,
                                       roll_dice(2,10) + fail/4);
             }
+        } else {
+            you.props["got_regen"] = false;
         }
     }
 
@@ -983,34 +986,34 @@ static void _regenerate_hp_and_mp(int delay)
     you.props["mp_to_charms"] = 0;
     const int base_val = player_mp_regen();
     int mp_regen_countup = div_rand_round(base_val * delay, BASELINE_DELAY);
-    // Theoretically HOM can use this as an invisible monster barometer but on
-    // reflection we decided this was less bad than getting a discount because
-    // you can't see your assiliant.
-    if (there_are_monsters_nearby(true, false, false)) {
-        int sub = 0;
-        for (int i = 0; i < size_mpregen_pb ; i++) {
-            permabuff_type pb = pb_ordinary_mpregen[i];
-            if (you.permabuff_working(pb) &&
-                (((pb != PERMA_SONG) && (you.perma_benefit[pb])) ||
-                 ((you.props[SONG_OF_SLAYING_KEY].get_int() > 0) &&
-                  (pb == PERMA_SONG) &&
-                  (there_are_monsters_nearby(true, true, false))))) {
-                    spell_type spell = permabuff_spell[pb];
-                sub += div_rand_round(
-                    (delay * spell_mana(spell) * 100),
-                    nominal_duration(spell) * BASELINE_DELAY);
+    int sub = 0;
+    for (int i = 0; i < size_mpregen_pb; i++) {
+        permabuff_type pb = pb_ordinary_mpregen[i];
+        if (you.perma_benefit[pb]) {
+            int charge = you.perma_mp[pb] * ((delay < you.perma_benefit[pb]) ? 
+                                             delay : you.perma_benefit[pb]);
+            charge = div_rand_round(charge, 100);
+            if (pb == PERMA_PPROJ) {
+                you.props["pproj_debt"].get_int() += charge;
+            } else {
+                sub += charge;
             }
+            dprf("%d: charged %d", pb, charge);
         }
+    }
 // It is intentional that if your permabuffs cost too much, you just get no
 // MP regen, but they don't turn off. This situation is difficult to produce
-// most of the time, but otherwise a level 1 TrSk couldn't use Infusion at all.
-        if (sub > mp_regen_countup) {
-            you.props["mp_to_charms"] = mp_regen_countup;
-            mp_regen_countup = 0;
-        } else {
-            mp_regen_countup -= sub;
-            you.props["mp_to_charms"].get_int() += sub;
-        }
+// most of the time, because the high-cost short-duration permabuffs are 
+// handled differently, but otherwise a level 1 TrSk couldn't use Infusion 
+// at all.
+    if (sub >= mp_regen_countup) {
+        you.props["mp_to_charms"] = mp_regen_countup;
+        mp_regen_countup = 0;
+        you.props["some_mp_regen"] = false;
+    } else {
+        mp_regen_countup -= sub;
+        you.props["mp_to_charms"].get_int() += sub;
+        you.props["some_mp_regen"] = true;
     }
     if (you.props.exists("shroud_recharge") &&
         (you.props["shroud_recharge"].get_int() > 0) &&
@@ -1033,13 +1036,13 @@ static void _regenerate_hp_and_mp(int delay)
     if (you.permabuff_working(PERMA_REGEN) &&
         (!you.duration[DUR_BERSERK]) &&
         (!you.confused()) &&
-        (you.props["regen_reserve"].get_int() < 200)) {
+        (you.props["regen_reserve"].get_int() < 100)) {
         int divert = (mp_regen_countup * you.magic_points) /
             max(you.max_magic_points,1);
         you.props["regen_reserve"].get_int() += divert;
-        if (you.props["regen_reserve"].get_int() > 200) {
-            divert -= (you.props["regen_reserve"].get_int() - 200);
-            you.props["regen_reserve"].get_int() = 200;
+        if (you.props["regen_reserve"].get_int() > 100) {
+            divert -= (you.props["regen_reserve"].get_int() - 100);
+            you.props["regen_reserve"].get_int() = 100;
         }
         mp_regen_countup -= divert;
         you.props["mp_to_charms"].get_int() += divert;
@@ -1154,14 +1157,12 @@ void player_reacts()
 
     const int food_use = div_rand_round(player_hunger_rate() * you.time_taken,
                                         BASELINE_DELAY);
-    // Intentionally done here so if player_hunger_rate is called for info
-    // purposes, it doesn't unset all the perma_benefits
-    for (int p = PERMA_FIRST_PERMA; p <= PERMA_LAST_PERMA; ++p) {
-        you.perma_benefit[p] = false;
-    }
     if (food_use > 0 && you.hunger > 0)
         make_hungry(food_use, true);
-
+    
+    for (int pb = PERMA_FIRST_PERMA; pb <= PERMA_LAST_PERMA; pb++) {
+        you.perma_benefit[pb] = max(0,(you.perma_benefit[pb]-you.time_taken));
+    }
     int song = you.props[SONG_OF_SLAYING_KEY].get_int();
     if (song) {
         int dur = nominal_duration(SPELL_SONG_OF_SLAYING);

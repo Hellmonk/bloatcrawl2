@@ -1487,10 +1487,13 @@ static void tag_construct_you(writer &th)
     // how many permabuffs
     marshallUByte(th, PERMA_LAST_PERMA);
     for (int j = 0; j <= PERMA_LAST_PERMA; ++j)
-        // This should have been marshallBoolean but can't be changed now sigh
-        marshallInt(th, you.permabuff[j]);
+        marshallBoolean(th, you.permabuff[j]);
     for (int j = 0; j <= PERMA_LAST_PERMA; ++j)
-        marshallBoolean(th, you.perma_benefit[j]);
+        marshallInt(th, you.perma_benefit[j]);
+    for (int j = 0; j <= PERMA_LAST_PERMA; ++j)
+        marshallInt(th, you.perma_hunger[j]);
+    for (int j = 0; j <= PERMA_LAST_PERMA; ++j)
+        marshallInt(th, you.perma_mp[j]);
 
     // how many attributes?
     marshallByte(th, NUM_ATTRIBUTES);
@@ -2727,7 +2730,9 @@ static void tag_read_you(reader &th)
 #endif
     if (count > 0) {
         for (int j = 0; j <= count; ++j) {
-            you.permabuff[j] = unmarshallInt(th);
+            you.permabuff[j] = (th.getMinorVersion() < TAG_PB_REWORK) ?
+                unmarshallInt(th) :
+                unmarshallBoolean(th);
         }
     }
     if (count < PERMA_LAST_PERMA) {
@@ -2742,12 +2747,29 @@ static void tag_read_you(reader &th)
     }
     if (count > 0) {
         for (int j = 0; j <= count; ++j) {
-            you.perma_benefit[j] = unmarshallBoolean(th);
+            if (th.getMinorVersion() < TAG_PB_REWORK) {
+                unmarshallBoolean(th);
+                you.perma_benefit[j] = you.perma_hunger[j] = you.perma_mp[j] =
+                    0;
+            } else {
+                you.perma_benefit[j] = unmarshallInt(th);
+            }
         }
     }
     if (count < PERMA_LAST_PERMA) {
         for (int j = count+1; j <= PERMA_LAST_PERMA; ++j) {
-            you.perma_benefit[j] = false;
+            you.perma_benefit[j] = you.perma_hunger[j] = you.perma_mp[j] =
+                    0;
+        }
+    }
+    if (th.getMinorVersion() >= TAG_PB_REWORK) {
+        if (count > 0) {
+            for (int j = 0; j <= count; ++j) {
+                you.perma_hunger[j] = unmarshallInt(th);
+            }
+            for (int j = 0; j <= count; ++j) {
+                you.perma_mp[j] = unmarshallInt(th);
+            }
         }
     }
 #endif

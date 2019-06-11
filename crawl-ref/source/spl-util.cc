@@ -1610,17 +1610,14 @@ bool is_permabuff(spell_type spell) {
     int permabuff = permabuff_is(spell);
     return (permabuff != PERMA_NO_PERMA);
 }
-int permabuff_hunger(permabuff_type pb) {
-// No; if we got the benefit, it was working then  
-//    if (!you.permabuff_working(pb)) return 0;
-    spell_type spell = permabuff_spell[pb];
-    return  (div_rand_round(spell_hunger(spell), 
-                            BASELINE_DELAY * nominal_duration(spell)));
-// mprf ("Hunger from %s - %d (%d/%d)", spell_title(spell), foo, spell_hunger(spell), nominal_duration(spell));
-}
 void permabuff_track(int pb) {
-    you.perma_benefit[pb] = true;
     spell_type spell = permabuff_spell[pb];
+    int dur = 10 * nominal_duration(spell);
+    // The value of '8' is pretty arbitrary
+    you.perma_benefit[pb] = max(you.perma_benefit[pb], div_rand_round(dur, 8));
+    you.perma_hunger[pb] = (100 * spell_hunger(spell)) / dur;
+    you.perma_mp[pb] = (10000 * spell_mana(spell)) / dur;
+    dprf("%d hunger, %d MP per aut, %d auts", you.perma_hunger[pb], you.perma_mp[pb],you.perma_benefit[pb]);
 // Divide by 3 here as a very crude compensation for the way we only get 
 // pinged on benefit not just from routine recasting
     if (one_chance_in(nominal_duration(spell) / 3)) {
