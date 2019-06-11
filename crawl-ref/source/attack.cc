@@ -203,7 +203,7 @@ int attack::calc_to_hit(bool random)
         mhit += slaying_bonus(wpn_skill == SK_THROWING
                               || (weapon && is_range_weapon(*weapon)
                                   && using_weapon()),
-                              !(defender->visible_to(attacker)));
+                              (defender && !(defender->visible_to(attacker))));
 
         // hunger penalty
         if (apply_starvation_penalties())
