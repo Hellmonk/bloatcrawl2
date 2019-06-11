@@ -397,9 +397,6 @@ bool melee_attack::handle_phase_hit()
             if (fail) {
                 mprf(MSGCH_DURATION,
                      "You lose control of your magical infusion.");
-                if (!you.get_mutation_level(MUT_MAGIC_ATTUNEMENT)) {
-                    dec_mp(1);
-                }
                 apply_miscast(SPELL_INFUSION,fail,false);
                 you.increase_duration(DUR_INFUSION,roll_dice(2,10) + fail/4);
             } else {
