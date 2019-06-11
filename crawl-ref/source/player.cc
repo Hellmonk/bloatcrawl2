@@ -1241,9 +1241,10 @@ int player_hunger_rate(bool temp)
         hunger += 3;            // in addition to the +3 for fast metabolism
 
     if (temp &&
-        you.props["got_regen"].get_bool() ||
-        (you.duration[DUR_TROGS_HAND] &&
-         (you.hp < you.hp_max)))
+        (you.hp < you.hp_max) &&
+        ((you.permabuff_working(PERMA_REGEN) &&
+          you.props["regen_reserve"].get_int() > 0) ||
+         you.duration[DUR_TROGS_HAND]))
     {
         hunger += 4;
     }

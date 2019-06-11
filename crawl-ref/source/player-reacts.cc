@@ -941,8 +941,8 @@ static void _regenerate_hp_and_mp(int delay)
         if (you.permabuff_working(PERMA_REGEN) &&
             (you.hp < you.hp_max) &&
             (you.props["regen_reserve"].get_int() > 0)) {
-            you.props["got_regen"] = true;
-            permabuff_track(PERMA_REGEN);
+//            permabuff_track(PERMA_REGEN); is not done here because this is
+// after the hunger charge
             you.props["regen_reserve"].get_int() -=
                 div_rand_round(
                     (delay *
@@ -957,8 +957,6 @@ static void _regenerate_hp_and_mp(int delay)
                 you.increase_duration(DUR_REGENERATION,
                                       roll_dice(2,10) + fail/4);
             }
-        } else {
-            you.props["got_regen"] = false;
         }
     }
 
@@ -1164,12 +1162,20 @@ void player_reacts()
     // increment constriction durations
     you.accum_has_constricted();
 
-    _regenerate_hp_and_mp(you.time_taken);
+    // This is done here not in _regenerate_hp_and_mp to get the full duration
+    // for MP and hunger
+    if (you.permabuff_working(PERMA_REGEN) &&
+        (you.hp < you.hp_max) &&
+        (you.props["regen_reserve"].get_int() > 0)) {
+        permabuff_track(PERMA_REGEN);
+    }
 
     const int food_use = div_rand_round(player_hunger_rate() * you.time_taken,
                                         BASELINE_DELAY);
     if (food_use > 0 && you.hunger > 0)
         make_hungry(food_use, true);
+    
+    _regenerate_hp_and_mp(you.time_taken);
     
     for (int pb = PERMA_FIRST_PERMA; pb <= PERMA_LAST_PERMA; pb++) {
         you.perma_benefit[pb] = max(0,(you.perma_benefit[pb]-you.time_taken));
