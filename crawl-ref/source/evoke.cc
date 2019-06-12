@@ -58,6 +58,7 @@
 #include "spl-book.h"
 #include "spl-cast.h"
 #include "spl-clouds.h"
+#include "spl-damage.h"
 #include "spl-util.h"
 #include "spl-zap.h"
 #include "state.h"
@@ -1662,6 +1663,23 @@ bool evoke_item(int slot, bool check_range)
             expend_xp_evoker(item.sub_type);
             practise_evoking(3);
             break;
+        }
+        
+        case MISC_AIR_HORN:
+        {
+            if (!evoker_charges(item.sub_type))
+            {
+                mpr("That is presently inert.");
+                return false;
+            }
+            
+            mpr("The air horn lets out an incredible blast of sound!");
+            const int spellpower = 30 + div_rand_round(you.skill(SK_EVOCATIONS,15),2);
+            fire_los_attack_spell(SPELL_SONIC_WAVE, spellpower, &you, nullptr);
+            you.sentinel_mark(true);
+            
+            expend_xp_evoker(item.sub_type);
+            practise_evoking(3);
         }
 
         case MISC_LAMP_OF_FIRE:

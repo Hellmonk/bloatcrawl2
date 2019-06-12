@@ -1035,6 +1035,7 @@ static string misc_type_name(int type, bool known)
 #if TAG_MAJOR_VERSION == 34
     case MISC_XOMS_CHESSBOARD:           return "removed chess piece";
 #endif
+    case MISC_AIR_HORN:                  return "air horn";
 
     default:
         return "buggy miscellaneous item";

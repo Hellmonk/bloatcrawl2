@@ -298,6 +298,7 @@ enum misc_item_type
     MISC_DECK_OF_ODDITIES,
     MISC_XOMS_CHESSBOARD,
 #endif
+    MISC_AIR_HORN,
 
     NUM_MISCELLANY,
     MISC_DECK_UNKNOWN = NUM_MISCELLANY,
@@ -319,8 +320,9 @@ const vector<misc_item_type> misc_types =
 #endif
     MISC_ZIGGURAT,
 #if TAG_MAJOR_VERSION == 34
-    MISC_BOTTLED_EFREET, MISC_BUGGY_EBONY_CASKET
+    MISC_BOTTLED_EFREET, MISC_BUGGY_EBONY_CASKET,
 #endif
+    MISC_AIR_HORN
 };
 
 enum missile_type
