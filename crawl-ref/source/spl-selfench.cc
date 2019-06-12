@@ -90,11 +90,31 @@ spret_type ice_armour(int pow, bool fail)
 
 spret_type deflection(int pow, bool fail)
 {
-    fail_check();
-    you.attribute[ATTR_DEFLECT_MISSILES] = 1;
-    mpr("You feel very safe from missiles.");
-
-    return SPRET_SUCCESS;
+    if (you.permabuff[PERMA_DMSL]) {
+        const int orig_defl = you.missile_deflection();
+        you.permabuff[PERMA_DMSL] = false; 
+        mprf("You are %s.",
+             (you.duration[DUR_DEFLECT_MISSILES] ||
+              (you.props.exists(DMSL_RECHARGE) &&
+               you.props[DMSL_RECHARGE].get_int())) ?
+             "no longer attempting to deflect missiles" : 
+             (you.missile_deflection() < orig_defl ? 
+              "less protected from missiles" :
+              "no longer protected from missiles by your spell"));
+        if (you.props.exists(DMSL_RECHARGE) &&
+            you.props[DMSL_RECHARGE].get_int()) {
+            you.props.erase(DMSL_RECHARGE); 
+            you.increase_duration(DUR_DEFLECT_MISSILES, 25, 25);
+        }
+        return SPRET_PERMACANCEL;
+    } else {
+        fail_check();
+        mpr (you.duration[DUR_DEFLECT_MISSILES] ? 
+             "You will soon be deflecting missiles." :
+             "You feel very safe from missiles.");
+        you.permabuff[PERMA_DMSL] = true;
+        return SPRET_SUCCESS;
+    }    
 }
 
 spret_type cast_regen(int pow, bool fail)
@@ -112,7 +132,7 @@ spret_type cast_regen(int pow, bool fail)
         // Decreased to 100. This does mean Regen is worse when you cast it
         // the very first time... except you have no need to do that on
         // entering combat, and this is a redesign of Regen.
-        you.props["regen_reserve"] = 100;
+        you.props[REGEN_RESERVE] = 100;
         return SPRET_SUCCESS;
     }
 }
@@ -282,7 +302,8 @@ spret_type cast_shroud_of_golubria(int pow, bool fail)
 {
     if (you.permabuff[PERMA_SHROUD]) {
         mpr("You dispel your protective shroud.");
-        if (you.props.exists(SHROUD_RECHARGE)) {
+        if (you.props.exists(SHROUD_RECHARGE) &&
+            you.props[SHROUD_RECHARGE].get_int()) {
             you.props.erase(SHROUD_RECHARGE); 
             you.increase_duration(DUR_SHROUD_OF_GOLUBRIA, 25, 25);
         }
@@ -335,9 +356,9 @@ void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
         }
     }
     if (turn_off) {
-        you.props.erase(SHROUD_RECHARGE); 
+        you.props.erase(SHROUD_RECHARGE); you.props.erase(DMSL_RECHARGE);
         you.props[SONG_OF_SLAYING_KEY] = 0;
-        if (end_durs) you.props["pproj_debt"] = 0;
+        if (end_durs) you.props[PPROJ_DEBT] = 0;
     }
 }
 

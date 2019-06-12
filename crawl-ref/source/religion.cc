@@ -2277,7 +2277,7 @@ void dock_piety(int piety_loss, int penance)
 // Scales a piety number, applying modifiers (faith).
 int piety_scale(int piety)
 {
-    if (you.props.exists(FAITH_WORKING)) {
+    if (you.props[FAITH_WORKING].get_bool()) {
         return piety + (you.faith() * div_rand_round(piety, 4));
     } else {
         return piety;
@@ -2503,7 +2503,7 @@ bool gain_piety(int original_gain, int denominator, bool should_scale_piety)
         original_gain = sprint_modify_piety(original_gain);
     }
     // This will not be quite right but it should average out
-    if ((pgn >= original_gain) && you.props.exists(FAITH_TOTAL)) {
+    if (pgn >= original_gain && you.props[FAITH_WORKING].get_bool()) {
         you.props[FAITH_TOTAL].get_int() +=
             div_rand_round((pgn - original_gain),denominator);
     }
@@ -3646,12 +3646,7 @@ void join_religion(god_type which_god)
     // Leave your prior religion first.
     if (!you_worship(GOD_NO_GOD)) {
         excommunication(true, which_god);
-        if (you.props.exists(FAITH_TOTAL)) {
-            you.props.erase(FAITH_TOTAL);
-        }
-        if (you.props.exists(FAITH_WORKING)) {
-            you.props.erase(FAITH_WORKING);
-        }
+        you.props[FAITH_TOTAL].get_int() = 0; you.props.erase(FAITH_WORKING);
     }
     // Welcome to the fold!
     you.religion = static_cast<god_type>(which_god);

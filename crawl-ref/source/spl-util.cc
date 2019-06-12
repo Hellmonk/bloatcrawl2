@@ -356,17 +356,6 @@ static void _remove_spell_attributes(spell_type spell)
     }
     switch (spell)
     {
-    case SPELL_DEFLECT_MISSILES:
-        if (you.attribute[ATTR_DEFLECT_MISSILES])
-        {
-            const int orig_defl = you.missile_deflection();
-            you.attribute[ATTR_DEFLECT_MISSILES] = 0;
-            mprf(MSGCH_DURATION, "You feel %s from missiles.",
-                                 you.missile_deflection() < orig_defl
-                                 ? "less protected"
-                                 : "your spell is no longer protecting you");
-        }
-        break;
     default:
         break;
     }
@@ -1076,6 +1065,10 @@ bool spell_is_form(spell_type spell)
 bool spell_is_useless(spell_type spell, bool temp, bool prevent,
                       bool fake_spell)
 {
+    if (temp && is_permabuff(spell) && you.has_permabuff(spell) &&
+        can_cast_spells()) {
+        return false;
+    }
     return !spell_uselessness_reason(spell, temp, prevent, fake_spell).empty();
 }
 
@@ -1149,11 +1142,6 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         // mere corona is not enough, but divine light blocks it completely
         if (temp && (you.haloed() || !prevent && have_passive(passive_t::halo)))
             return "darkness is useless against divine light.";
-        break;
-
-    case SPELL_DEFLECT_MISSILES:
-        if (temp && you.attribute[ATTR_DEFLECT_MISSILES])
-            return "you're already deflecting missiles.";
         break;
 
     case SPELL_STATUE_FORM:
@@ -1645,6 +1633,11 @@ int nominal_duration(spell_type spell) {
         pow = calc_spell_power(spell, true);
         return 3 + pow/4 + pow/10;
 //  you.increase_duration(DUR_PORTAL_PROJECTILE, 3 + random2(pow / 2) + random2(pow / 5), 50);
+    case SPELL_DEFLECT_MISSILES:
+        return 30 + calc_spell_power(spell, true);
+// you.increase_duration(DUR_DEFLECT_MISSILES, 15 + random2(pow), 100,
+// but that was in the days before it expired on being hit, so we circa double
+// the old nominal duration as a somewhat arbitary compromise
     default:
         return 0;
     }

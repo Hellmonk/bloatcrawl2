@@ -164,7 +164,7 @@ static void _describe_poison(status_info& inf);
 static void _describe_transform(status_info& inf);
 static void _describe_stat_zero(status_info& inf, stat_type st);
 static void _describe_terrain(status_info& inf);
-static void _describe_missiles(status_info& inf);
+static void _describe_repel_missiles(status_info& inf);
 static void _describe_invisible(status_info& inf);
 
 bool fill_status_info(int status, status_info& inf)
@@ -355,8 +355,40 @@ bool fill_status_info(int status, status_info& inf)
         break;
     }
 
-    case STATUS_MISSILES:
-        _describe_missiles(inf);
+    case STATUS_DEFLECT_MISSILES:
+    {
+        if (you.permabuff[PERMA_DMSL] && 
+            !you.duration[DUR_DEFLECT_MISSILES]) {
+            inf.light_text   = "DMsl";
+            inf.short_text   = "deflect missiles";
+            if (you.props.exists(DMSL_RECHARGE) &&
+                you.props[DMSL_RECHARGE].get_int()) {
+                inf.light_text = "-DMsl";
+                inf.short_text = "not deflecting";
+                inf.light_colour = BLUE;
+                inf.long_text = "Your magic regeneration is restoring your missile deflection.";
+            } else if (you.permabuff_working(PERMA_DMSL)) {
+                inf.light_colour = LIGHTMAGENTA;
+                inf.long_text    = "You deflect missiles.";
+            } else {
+                inf.light_colour = DARKGREY;
+                inf.short_text = "not deflecting";
+                inf.long_text = "You are not deflecting missiles because " +
+                    you.permabuff_whynot(PERMA_DMSL) + ".";
+            }
+        }
+        break;
+    }
+    
+    case DUR_DEFLECT_MISSILES:
+        if (!you.permabuff[PERMA_DMSL]) {
+            inf.light_colour = DARKGREY;
+            inf.long_text = "If you recast Deflect Missiles, it will not take effect immediately.";
+        }
+        break;
+
+    case STATUS_REPEL_MISSILES:
+        _describe_repel_missiles(inf);
         break;
 
     case STATUS_INVISIBLE:
@@ -494,11 +526,17 @@ bool fill_status_info(int status, status_info& inf)
         break;
     }
     case DUR_SONG_OF_SLAYING:
-        if (!you.permabuff[PERMA_SONG]) inf.light_colour = DARKGREY;
+        if (!you.permabuff[PERMA_SONG]) {
+            inf.light_colour = DARKGREY;
+            inf.long_text = "If you recast Song of Slaying, it will not take effect immediately.";
+        }
         break;
 
     case DUR_REGENERATION:
-        if (!you.permabuff[PERMA_REGEN]) inf.light_colour = DARKGREY;
+        if (!you.permabuff[PERMA_REGEN]) {
+            inf.light_colour = DARKGREY;
+            inf.long_text = "If you recast Regeneration, it will not take effect immediately.";
+        }
         break;
 
     case STATUS_BEOGH:
@@ -719,7 +757,7 @@ bool fill_status_info(int status, status_info& inf)
             inf.light_text = "PProj";
             inf.short_text = "portal projectile";
             if (you.permabuff_working(PERMA_PPROJ)) {
-                if (enough_mp((you.props["pproj_debt"].get_int() >=100) ? 
+                if (enough_mp((you.props[PPROJ_DEBT].get_int() >=100) ? 
                               2 : 1, true, false)) {
                     inf.light_colour = LIGHTBLUE;
                     inf.long_text = 
@@ -741,6 +779,7 @@ bool fill_status_info(int status, status_info& inf)
 
     case DUR_PORTAL_PROJECTILE:
         if (!you.permabuff[PERMA_PPROJ]) inf.light_colour = DARKGREY;
+        inf.long_text = "If you recast Portal Projectile, it will not take effect immediately.";
         break;
 
     case STATUS_INFUSION:
@@ -770,7 +809,10 @@ bool fill_status_info(int status, status_info& inf)
     }
 
     case DUR_INFUSION:
-        if (!you.permabuff[PERMA_INFUSION]) inf.light_colour = DARKGREY;
+        if (!you.permabuff[PERMA_INFUSION]) {
+            inf.light_colour = DARKGREY;
+            inf.long_text = "If you recast Infusion, it will not take effect immediately.";
+        }
         break;
         
     case STATUS_SHROUD:
@@ -800,7 +842,10 @@ bool fill_status_info(int status, status_info& inf)
         break;
     }
     case DUR_SHROUD_OF_GOLUBRIA:
-        if (!you.permabuff[PERMA_SHROUD]) inf.light_colour = DARKGREY;
+        if (!you.permabuff[PERMA_SHROUD]) {
+            inf.light_colour = DARKGREY;
+            inf.long_text = "If you recast Shroud of Golubria, it will not take effect immediately.";
+        }
         break;
 
     case STATUS_ORB:
@@ -824,6 +869,15 @@ bool fill_status_info(int status, status_info& inf)
         {
             inf.light_colour = BROWN;
             inf.light_text = "-Clouds";
+        }
+        break;
+
+    case STATUS_CHARMS_MP:
+        if (you.props[CHARMS_ALL_MPREGEN].get_bool()) {
+            inf.light_colour = BROWN;
+            inf.light_text = "Charms";
+            inf.short_text = "";
+            inf.long_text = "The benefits from your permanent enchantments are presently consuming all your magic regeneration.";
         }
         break;
 
@@ -941,8 +995,8 @@ static void _describe_regen(status_info& inf)
             inf.light_colour = _dur_colour(BLUE, dur_expiring(DUR_TROGS_HAND));
         }
         if (you.permabuff_working(PERMA_REGEN) && 
-            ((you.props["regen_reserve"].get_int() > 0) ||
-             (you.props["some_mp_regen"].get_bool()))) {
+            ((you.props[REGEN_RESERVE].get_int() > 0) ||
+             (!you.props[CHARMS_ALL_MPREGEN].get_bool()))) {
             inf.light_colour = LIGHTBLUE;
         }
 
@@ -965,8 +1019,8 @@ static void _describe_regen(status_info& inf)
         else
         {
             if (you.permabuff_working(PERMA_REGEN) && 
-                (!(you.props["regen_reserve"].get_int() > 0) &&
-                 !(you.props["some_mp_regen"].get_bool()))) {
+                (!(you.props[REGEN_RESERVE].get_int() > 0) &&
+                 (you.props[CHARMS_ALL_MPREGEN].get_bool()))) {
                 inf.short_text = "not regenerating (no MP regeneration)";
                 inf.long_text = "You are not regenerating because your other permanent charms are consuming all your MP regeneration.";
             } else {
@@ -1159,31 +1213,20 @@ static void _describe_terrain(status_info& inf)
     }
 }
 
-static void _describe_missiles(status_info& inf)
+static void _describe_repel_missiles(status_info& inf)
 {
     const int level = you.missile_deflection();
-    if (!level)
-        return;
 
-    if (level > 1)
-    {
-        bool perm = false;
-        inf.light_colour = perm ? WHITE : LIGHTMAGENTA;
-        inf.light_text   = "DMsl";
-        inf.short_text   = "deflect missiles";
-        inf.long_text    = "You deflect missiles.";
-    }
-    else
-    {
+    if (level == 1) {
         bool perm = you.get_mutation_level(MUT_DISTORTION_FIELD) == 3
-                    || you.wearing_ego(EQ_ALL_ARMOUR, SPARM_REPULSION)
-                    || you.scan_artefacts(ARTP_RMSL)
+            || you.wearing_ego(EQ_ALL_ARMOUR, SPARM_REPULSION)
+            || you.scan_artefacts(ARTP_RMSL)
                     || have_passive(passive_t::upgraded_storm_shield);
         inf.light_colour = perm ? WHITE : LIGHTBLUE;
         inf.light_text   = "RMsl";
         inf.short_text   = "repel missiles";
         inf.long_text    = "You repel missiles.";
-    }
+    }         
 }
 
 static void _describe_invisible(status_info& inf)

@@ -43,6 +43,7 @@
 #include "scroller.h"
 #include "showsymb.h"
 #include "skills.h"
+#include "spl-selfench.h"
 #include "state.h"
 #include "status.h"
 #include "stringutil.h"
@@ -2724,11 +2725,10 @@ string _status_mut_rune_list(int sw)
         text += "no status effects";
     else
         text += comma_separated_line(status.begin(), status.end(), ", ", ", ");
-    if (you.props.exists("mp_to_charms") && 
-        you.props["mp_to_charms"].get_int()) {
+    if (you.props[MP_TO_CHARMS].get_int()) {
         text += make_stringf(", %d.%02d MP regen used to sustain charms",
-                             you.props["mp_to_charms"].get_int() / 100,
-                             you.props["mp_to_charms"].get_int() % 100);
+                             you.props[MP_TO_CHARMS].get_int() / 100,
+                             you.props[MP_TO_CHARMS].get_int() % 100);
     }
     text += "\n";
 

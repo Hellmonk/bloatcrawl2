@@ -1380,7 +1380,7 @@ static const struct spell_desc spelldata[] =
     -1, -1,
     3, 0,
     TILEG_DEFLECT_MISSILES,
-    PERMA_NO_PERMA,
+    PERMA_DMSL,
 },
 
 {

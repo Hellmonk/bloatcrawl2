@@ -477,7 +477,7 @@ bool is_pproj_active()
 {
     // confusion check is now baked in
     return you.permabuff_working(PERMA_PPROJ) && 
-        ((you.props["pproj_debt"].get_int() >= 100) ?
+        ((you.props[PPROJ_DEBT].get_int() >= 100) ?
          enough_mp(2, true, false) :
          enough_mp(1, true, false));
 }
@@ -913,9 +913,9 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
         if (!did_return)
             pbolt.drop_object();
         // Costs 1-2 MP per shot.
-        dprf("PP debt %d", you.props["pproj_debt"].get_int());
-        if (you.props["pproj_debt"].get_int() >= 100) {
-            dec_mp(2); you.props["pproj_debt"].get_int() -= 100;
+        dprf("PP debt %d", you.props[PPROJ_DEBT].get_int());
+        if (you.props[PPROJ_DEBT].get_int() >= 100) {
+            dec_mp(2); you.props[PPROJ_DEBT].get_int() -= 100;
         } else {
             dec_mp(1);
         }

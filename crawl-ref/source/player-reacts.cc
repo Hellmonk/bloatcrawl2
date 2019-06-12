@@ -940,10 +940,10 @@ static void _regenerate_hp_and_mp(int delay)
         you.hit_points_regeneration += div_rand_round(base_val * delay, BASELINE_DELAY);
         if (you.permabuff_working(PERMA_REGEN) &&
             (you.hp < you.hp_max) &&
-            (you.props["regen_reserve"].get_int() > 0)) {
+            (you.props[REGEN_RESERVE].get_int() > 0)) {
 //            permabuff_track(PERMA_REGEN); is not done here because this is
 // after the hunger charge
-            you.props["regen_reserve"].get_int() -=
+            you.props[REGEN_RESERVE].get_int() -=
                 div_rand_round(
                     (delay *
                      (you.get_mutation_level(MUT_MAGIC_ATTUNEMENT) ? 
@@ -978,11 +978,9 @@ static void _regenerate_hp_and_mp(int delay)
     update_amulet_attunement_by_health();
 
     // MP Regeneration
-    if (!player_regenerates_mp())
-        return;
 
-    you.props["mp_to_charms"] = 0;
-    const int base_val = player_mp_regen();
+    you.props[MP_TO_CHARMS] = 0;
+    const int base_val = player_regenerates_mp() ? player_mp_regen() : 0;
     int mp_regen_countup = div_rand_round(base_val * delay, BASELINE_DELAY);
     int sub = 0;
     for (int i = 0; i < size_mpregen_pb; i++) {
@@ -992,75 +990,110 @@ static void _regenerate_hp_and_mp(int delay)
                                              delay : you.perma_benefit[pb]);
             charge = div_rand_round(charge, 100);
             if (pb == PERMA_PPROJ) {
-                you.props["pproj_debt"].get_int() += charge;
+                you.props[PPROJ_DEBT].get_int() += charge;
             } else {
                 sub += charge;
             }
             dprf("%d: charged %d", pb, charge);
         }
     }
-// It is intentional that if your permabuffs cost too much, you just get no
-// MP regen, but they don't turn off. This situation is difficult to produce
-// most of the time, because the high-cost short-duration permabuffs are 
-// handled differently, but otherwise a level 1 TrSk couldn't use Infusion 
-// at all.
+// It is intentional that if your permabuffs cost too much, you get no
+// MP regen and can lose MP, but they don't turn off. This situation is
+// difficult to produce most of the time, because the high-cost short-duration
+// permabuffs are handled differently, but otherwise eg a level 1 TrSk
+//couldn't use Infusion at all.
+    you.props[MP_TO_CHARMS].get_int() += sub;
     if (sub >= mp_regen_countup) {
-        you.props["mp_to_charms"] = mp_regen_countup;
+        you.props[CHARMS_DEBT].get_int() += (sub - mp_regen_countup);
         mp_regen_countup = 0;
-        you.props["some_mp_regen"] = false;
+        you.props[CHARMS_ALL_MPREGEN] = true;
     } else {
         mp_regen_countup -= sub;
-        you.props["mp_to_charms"].get_int() += sub;
-        you.props["some_mp_regen"] = true;
+        if (you.props[CHARMS_DEBT].get_int() > 0) {
+            int available = mp_regen_countup / 2;
+            if (available > you.props[CHARMS_DEBT].get_int()) {
+                mp_regen_countup -= you.props[CHARMS_DEBT].get_int();
+                you.props[CHARMS_DEBT].get_int() = 0;
+            } else {
+                you.props[CHARMS_DEBT].get_int() -= available;
+                mp_regen_countup -= available;
+            }
+        }
+        you.props[CHARMS_ALL_MPREGEN] = false;
     }
-    if (you.props.exists(SHROUD_RECHARGE) &&
-        (you.props[SHROUD_RECHARGE].get_int() > 0) &&
-        (!you.duration[DUR_BERSERK]) &&
-        (you.permabuff_notworking(PERMA_SHROUD) >= PB_WORKING)) {
-        int available = mp_regen_countup / 2;
-        if (available < you.props[SHROUD_RECHARGE].get_int()) {
-            you.props[SHROUD_RECHARGE].get_int() -= available;
-            mp_regen_countup -= available;
-            you.props["mp_to_charms"].get_int() += available;
-        } else {
-            mp_regen_countup -= you.props[SHROUD_RECHARGE].get_int();
-            you.props["mp_to_charms"].get_int() += 
-                you.props[SHROUD_RECHARGE].get_int();
-            you.props[SHROUD_RECHARGE] = 0;
+    if (mp_regen_countup > 0) {
+        bool dmsl_rech = (you.props.exists(DMSL_RECHARGE) && 
+                          (you.props[DMSL_RECHARGE].get_int() > 0) &&
+                          (!you.duration[DUR_BERSERK]) &&
+                          (you.permabuff_notworking(PERMA_DMSL) 
+                           >= PB_WORKING));
+        if (you.props.exists(SHROUD_RECHARGE) &&
+            (you.props[SHROUD_RECHARGE].get_int() > 0) &&
+            (!you.duration[DUR_BERSERK]) &&
+            (you.permabuff_notworking(PERMA_SHROUD) >= PB_WORKING)) {
+            int available = div_rand_round(mp_regen_countup,
+                                           (dmsl_rech ? 3 : 2));
+            if (available < you.props[SHROUD_RECHARGE].get_int()) {
+                you.props[SHROUD_RECHARGE].get_int() -= available;
+                mp_regen_countup -= available;
+                you.props[MP_TO_CHARMS].get_int() += available;
+            } else {
+                mp_regen_countup -= you.props[SHROUD_RECHARGE].get_int();
+                you.props[MP_TO_CHARMS].get_int() += 
+                    you.props[SHROUD_RECHARGE].get_int();
+                you.props[SHROUD_RECHARGE] = 0;
+            }
+        }
+        if (dmsl_rech) {
+            int available = div_rand_round(mp_regen_countup, 2);
+            if (available < you.props[DMSL_RECHARGE].get_int()) {
+                you.props[DMSL_RECHARGE].get_int() -= available;
+                mp_regen_countup -= available;
+                you.props[MP_TO_CHARMS].get_int() += available;
+            } else {
+                mp_regen_countup -= you.props[DMSL_RECHARGE].get_int();
+                you.props[MP_TO_CHARMS].get_int() += 
+                    you.props[DMSL_RECHARGE].get_int();
+                you.props[DMSL_RECHARGE] = 0;
+            }
+        }
+// The order in which permabuffs get to divert MPreg is kind of arbitrary
+        if (you.permabuff_working(PERMA_REGEN) &&
+            (!you.duration[DUR_BERSERK]) &&
+            (!you.confused()) &&
+            (you.props[REGEN_RESERVE].get_int() < 100)) {
+            int divert = (mp_regen_countup * you.magic_points) /
+                max(you.max_magic_points,1);
+            you.props[REGEN_RESERVE].get_int() += divert;
+            if (you.props[REGEN_RESERVE].get_int() > 100) {
+                divert -= (you.props[REGEN_RESERVE].get_int() - 100);
+                you.props[REGEN_RESERVE].get_int() = 100;
+            }
+            mp_regen_countup -= divert;
+            you.props[MP_TO_CHARMS].get_int() += divert;
+        }
+        if (you.props[PPROJ_DEBT].get_int() > 0) {
+            if (mp_regen_countup < you.props[PPROJ_DEBT].get_int()) {
+                you.props[PPROJ_DEBT].get_int() -= mp_regen_countup;
+                you.props[MP_TO_CHARMS].get_int() += mp_regen_countup;
+                mp_regen_countup = 0;
+            } else {
+                mp_regen_countup -= you.props[PPROJ_DEBT].get_int();
+                you.props[MP_TO_CHARMS].get_int() += 
+                    you.props[PPROJ_DEBT].get_int();
+                you.props[PPROJ_DEBT] = 0;
+            }
         }
     }
-    // The order in which permabuffs get to divert MPreg is kind of arbitrary
-    if (you.permabuff_working(PERMA_REGEN) &&
-        (!you.duration[DUR_BERSERK]) &&
-        (!you.confused()) &&
-        (you.props["regen_reserve"].get_int() < 100)) {
-        int divert = (mp_regen_countup * you.magic_points) /
-            max(you.max_magic_points,1);
-        you.props["regen_reserve"].get_int() += divert;
-        if (you.props["regen_reserve"].get_int() > 100) {
-            divert -= (you.props["regen_reserve"].get_int() - 100);
-            you.props["regen_reserve"].get_int() = 100;
-        }
-        mp_regen_countup -= divert;
-        you.props["mp_to_charms"].get_int() += divert;
-    }
-    if (mp_regen_countup && (you.props["pproj_debt"].get_int() > 0)) {
-        if (mp_regen_countup < you.props["pproj_debt"].get_int()) {
-            you.props["pproj_debt"].get_int() -= mp_regen_countup;
-            you.props["mp_to_charms"].get_int() += mp_regen_countup;
-            mp_regen_countup = 0;
-        } else {
-            mp_regen_countup -= you.props["pproj_debt"].get_int();
-            you.props["mp_to_charms"].get_int() += 
-                you.props["pproj_debt"].get_int();
-            you.props["pproj_debt"] = 0;
-        }
+    if ((you.props[CHARMS_DEBT].get_int() >= 100) && 
+        enough_mp(1, true, false)) {
+        dec_mp(1); you.props[CHARMS_DEBT].get_int() -= 100;
     }
     if (you.magic_points < you.max_magic_points) {
         you.magic_points_regeneration += mp_regen_countup;
     }
-    you.props["mp_to_charms"].get_int() *= BASELINE_DELAY;
-    you.props["mp_to_charms"].get_int() /= delay;
+    you.props[MP_TO_CHARMS].get_int() *= BASELINE_DELAY;
+    you.props[MP_TO_CHARMS].get_int() /= delay;
 
     while (you.magic_points_regeneration >= 100)
     {
@@ -1166,7 +1199,7 @@ void player_reacts()
     // for MP and hunger
     if (you.permabuff_working(PERMA_REGEN) &&
         (you.hp < you.hp_max) &&
-        (you.props["regen_reserve"].get_int() > 0)) {
+        (you.props[REGEN_RESERVE].get_int() > 0)) {
         permabuff_track(PERMA_REGEN);
     }
 
@@ -1192,17 +1225,31 @@ void player_reacts()
         }
     }
     if (you.props.exists(SHROUD_RECHARGE) && 
-        (you.props[SHROUD_RECHARGE].get_int() == 0) &&
+        (you.props[SHROUD_RECHARGE].get_int() <= 0) &&
         (you.permabuff_notworking(PERMA_SHROUD) >= PB_WORKING)) {
         int fail = failure_check(SPELL_SHROUD_OF_GOLUBRIA, true);
         if (fail) {
             mpr("You fail to reconstruct your distorting shroud.");
             apply_miscast(SPELL_SHROUD_OF_GOLUBRIA, fail, false);
             you.props[SHROUD_RECHARGE] = 
-                you.get_mutation_level(MUT_MAGIC_ATTUNEMENT) ? 100 : 200;
+                spell_mana(SPELL_SHROUD_OF_GOLUBRIA) * 100;
         } else {
             mpr("You reconstruct your distorting shroud.");
             you.props.erase(SHROUD_RECHARGE);
+        }
+    }
+    if (you.props.exists(DMSL_RECHARGE) &&
+        (you.props[DMSL_RECHARGE].get_int() <= 0) &&
+        (you.permabuff_notworking(PERMA_DMSL) >= PB_WORKING)) {
+        int fail = failure_check(SPELL_DEFLECT_MISSILES, true);
+        if (fail) {
+            mpr("You try to deflect missiles again, but fail.");
+            apply_miscast(SPELL_DEFLECT_MISSILES, fail, false);
+            you.props[DMSL_RECHARGE] = 
+                spell_mana(SPELL_DEFLECT_MISSILES) * 100;
+        } else {
+            mpr("You feel safe from missiles again.");
+            you.props.erase(DMSL_RECHARGE);
         }
     }
     dec_disease_player(you.time_taken);

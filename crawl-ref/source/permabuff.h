@@ -9,8 +9,9 @@ enum permabuff_type {
 	PERMA_SONG,
 	PERMA_REGEN,
 	PERMA_PPROJ,
+	PERMA_DMSL,
 	PERMA_FIRST_PERMA = PERMA_INFUSION,
-	PERMA_LAST_PERMA = PERMA_PPROJ,
+	PERMA_LAST_PERMA = PERMA_DMSL,
     };
 
 static const duration_type permabuff_durs[] = {
@@ -20,6 +21,7 @@ static const duration_type permabuff_durs[] = {
     DUR_SONG_OF_SLAYING,
     DUR_REGENERATION,
     DUR_PORTAL_PROJECTILE,
+    DUR_DEFLECT_MISSILES,
 };
 
 static const spell_type permabuff_spell[] = {
@@ -29,6 +31,7 @@ static const spell_type permabuff_spell[] = {
     SPELL_SONG_OF_SLAYING,
     SPELL_REGENERATION,
     SPELL_PORTAL_PROJECTILE,
+    SPELL_DEFLECT_MISSILES,
 };
 
 // These PBs charge you MP regeneration based on their nominal duration.
@@ -36,9 +39,10 @@ static const spell_type permabuff_spell[] = {
 // They all charge you hunger, however
 static const permabuff_type pb_ordinary_mpregen[] = {
     PERMA_INFUSION,
+    PERMA_SHROUD,
     PERMA_SONG,
     PERMA_PPROJ, // handled specially
-    PERMA_SHROUD
+    PERMA_DMSL,
 };
 static const int size_mpregen_pb = ARRAYSZ(pb_ordinary_mpregen);
 
@@ -51,8 +55,9 @@ static const int size_mpregen_pb = ARRAYSZ(pb_ordinary_mpregen);
 static const int pb_dur_fudge[] = {
     0,
     2, // infusion
-    1, // unused - shroud
+    2, // shroud
     2, // song
     1, // regen
     1, // pproj
+    2, // dmsl
 };

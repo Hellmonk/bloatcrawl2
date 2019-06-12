@@ -1061,7 +1061,7 @@ static int _player_bonus_regen()
     // Trog's Hand is handled separately so that it will bypass slow
     // regeneration, and it overrides the spell.
     if (you.permabuff_working(PERMA_REGEN) && 
-        (you.props["regen_reserve"].get_int() > 0)
+        (you.props[REGEN_RESERVE].get_int() > 0)
         && !you.duration[DUR_TROGS_HAND])
     {
         rr += 100;
@@ -1244,7 +1244,7 @@ int player_hunger_rate(bool temp)
     if (temp &&
         (you.hp < you.hp_max) &&
         ((you.permabuff_working(PERMA_REGEN) &&
-          you.props["regen_reserve"].get_int() > 0) ||
+          you.props[REGEN_RESERVE].get_int() > 0) ||
          you.duration[DUR_TROGS_HAND]))
     {
         hunger += 4;
@@ -5082,8 +5082,13 @@ permabuff_state player::permabuff_notworking(permabuff_type pb) {
     if (you.duration[DUR_BRAINLESS]) return PB_BRAINLESS;
     if (you.hunger_state <= HS_STARVING) return PB_STARVING;
     if (you.duration[permabuff_durs[pb]]) return PB_DURATION;
-    if ((pb == PERMA_SHROUD) && (you.props.exists(SHROUD_RECHARGE))) {
+    if ((pb == PERMA_SHROUD) && you.props.exists(SHROUD_RECHARGE) && 
+        you.props[SHROUD_RECHARGE].get_int()) {
         return PB_SHROUD_RECHARGE;
+    }
+    if ((pb == PERMA_DMSL) && you.props.exists(DMSL_RECHARGE) &&
+        you.props[DMSL_RECHARGE].get_int()) {
+        return PB_DMSL_RECHARGE;
     }
     if ((pb == PERMA_SONG) && (silenced(you.pos()))) {
         return PB_SONG_SILENCED;
@@ -5116,7 +5121,9 @@ string player::permabuff_whynot(permabuff_type pb) {
     case PB_DURATION:
         return "it has been temporarily dispelled";
     case PB_SHROUD_RECHARGE:
-        return "you are reconstructing the shroud";
+        return "you are reconstructing it";
+    case PB_DMSL_RECHARGE:
+        return "you are still restoring your protection";
     case PB_SONG_SILENCED:
         return "you cannot sing in this magical silence";
     case PB_REGEN_LICH:
@@ -5826,8 +5833,7 @@ void player::shield_block_succeeded(actor *foe)
 
 int player::missile_deflection() const
 {
-    if (attribute[ATTR_DEFLECT_MISSILES])
-        return 2;
+    if (you.permabuff_working(PERMA_DMSL)) return 2;
 
     if (get_mutation_level(MUT_DISTORTION_FIELD) == 3
         || you.wearing_ego(EQ_ALL_ARMOUR, SPARM_REPULSION)
@@ -5842,13 +5848,24 @@ int player::missile_deflection() const
 
 void player::ablate_deflection()
 {
-    if (attribute[ATTR_DEFLECT_MISSILES])
-    {
+    if (you.permabuff_working(PERMA_DMSL)) {
+        permabuff_track(PERMA_DMSL);
         const int power = calc_spell_power(SPELL_DEFLECT_MISSILES, true);
         if (one_chance_in(2 + power / 8))
         {
-            attribute[ATTR_DEFLECT_MISSILES] = 0;
+            you.props[DMSL_RECHARGE] =
+                spell_mana(SPELL_DEFLECT_MISSILES) * 100;
             mprf(MSGCH_DURATION, "You feel less protected from missiles.");
+        } else {
+// Lucky you, you can't get both failures at once
+            int fail = permabuff_failure_check(PERMA_DMSL);
+            if (fail) {
+                mprf(MSGCH_DURATION,
+                     "You fail to control your missile deflection.");
+                apply_miscast(SPELL_DEFLECT_MISSILES, fail, false);
+                you.increase_duration(DUR_DEFLECT_MISSILES,
+                                      roll_dice(2,10) + fail/4);
+            }
         }
     }
 }

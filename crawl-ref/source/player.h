@@ -109,7 +109,8 @@ enum permabuff_state {
     PB_DONTHAVE,
     PB_DURATION,
     PB_WORKING,
-    PB_SHROUD_RECHARGE,
+    PB_SHROUD_RECHARGE, // nice if these two could be the same thing but it
+    PB_DMSL_RECHARGE,   // breaks messages from permabuff_whynot
     PB_SONG_SILENCED,
     PB_REGEN_LICH,
     PB_CONFUSED, // only applies to portal proj

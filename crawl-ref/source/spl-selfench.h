@@ -6,6 +6,12 @@
 #include "transformation.h"
 
 #define SHROUD_RECHARGE "shroud_recharge"
+#define DMSL_RECHARGE "dmsl_recharge"
+#define MP_TO_CHARMS "mp_to_charms"
+#define PPROJ_DEBT "pproj_debt"
+#define CHARMS_DEBT "charms_debt"
+#define REGEN_RESERVE "regen_reserve"
+#define CHARMS_ALL_MPREGEN "charms_all_mpregen"
 
 int allowed_deaths_door_hp();
 spret_type cast_deaths_door(int pow, bool fail);

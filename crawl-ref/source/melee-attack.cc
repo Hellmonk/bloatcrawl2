@@ -517,9 +517,18 @@ bool melee_attack::handle_phase_damaged()
         int effectiveness = 10; 
         if (defender->is_player()) {
             permabuff_track(PERMA_SHROUD);
+            int fail = permabuff_failure_check(PERMA_SHROUD);
+            if (fail) {
+                mprf(MSGCH_DURATION,
+                     "You fail to keep your magical shroud coherent.");
+                apply_miscast(SPELL_SHROUD_OF_GOLUBRIA, fail, false);
+                you.increase_duration(DUR_SHROUD_OF_GOLUBRIA,
+                                      roll_dice(2,10) + fail/4);
+                return true;
+            }
             effectiveness +=  
                 div_rand_round(calc_spell_power(SPELL_SHROUD_OF_GOLUBRIA,
-                                                true),10);
+                                                true),10) - 2;
         } 
         int soak = min (damage_done, effectiveness * 2);
         // Chance of the shroud falling apart increases based on the
@@ -531,7 +540,7 @@ bool melee_attack::handle_phase_damaged()
             shroud_broken = true;
             if (defender->is_player())
                 you.props[SHROUD_RECHARGE] = 
-                    you.get_mutation_level(MUT_MAGIC_ATTUNEMENT) ? 100 : 200;
+                    spell_mana(SPELL_SHROUD_OF_GOLUBRIA) * 100;
             else
                 defender->as_monster()->del_ench(ENCH_SHROUD);
         }

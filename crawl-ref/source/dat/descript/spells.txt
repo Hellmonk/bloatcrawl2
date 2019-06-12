@@ -389,7 +389,7 @@ Deflect Missiles spell
 Protects the caster from all kinds of projectile attacks, making them
 significantly easier to dodge. It is highly effective against both
 single-target and penetrating attacks. Each time a missile is deflected the
-spell has a chance of expiring, with a lower chance of expiry at high power.
+spell has a chance of being temporarily suppressed.
 %%%%
 Dig spell
 
@@ -724,8 +724,6 @@ Infusion spell
 Infuses the caster's melee attacks with magic, drawing from their reserves of
 magical energy to deal additional damage whenever an enemy is hit. It has no
 effect when the caster's magic is depleted.
-
-This enchantment lasts indefinitely, until dispelled by the caster.
 %%%%
 Injury Bond spell
 
@@ -1038,12 +1036,11 @@ spells. The caster's demise will cause the transformation to end.
 %%%%
 Portal Projectile spell
 
-Allows the caster to teleport fired or thrown missiles directly to
-their targets, spending an additional small amount of magic for each
-missile. Teleported projectiles have their accuracy greatly increased.
+Allows the caster to teleport fired or thrown missiles directly to their
+targets, spending an additional small amount of magic for each missile. 
+Teleported projectiles have their accuracy greatly increased.
 
-This enchantment lasts indefinitely, until dispelled by the caster. As
-spellpower increases, it is less likely to use 2MP rather than 1.
+If spellpower is low, it may use 2 MP instead of 1.
 %%%%
 Primal Wave spell
 
@@ -1072,8 +1069,6 @@ their metabolism. When the caster's magic reserves are full, it works
 at full effectiveness, but as those reserves drain, the caster will
 regenerate less. Improved spellpower improves the efficiency of the
 process, making it easier to regenerate at full speed.
-
-This enchantment lasts indefinitely, until dispelled by the caster.
 %%%% Repel Missiles spell
 
 Reduces the chance of projectile attacks striking the caster, making them
@@ -1173,8 +1168,6 @@ redirecting their force to the air nearby. Ranged attacks cannot be diverted in
 this way. The shroud is highly unstable, and may fall apart unexpectedly under
 stress; when it does so, it reconstitutes itself over the next few turns,
 drawing from the caster's magic regeneration.
-
-This enchantment lasts indefinitely, until dispelled by the caster.
 %%%%
 Silence spell
 
@@ -1220,13 +1213,12 @@ Song of Slaying spell
 
 Recites ancient verses of battle. Each non-summoned enemy the caster slays in
 combat during this recitation temporarily enhances their melee and ranged
-skills. The caster need only murmur the words until an enemy is
-actually in sight, but then it becomes increasingly loud as the caster
-focuses their aggression. Unfortunately, it provides no benefit
-against an enemy the caster cannot see.
+skills, with the bonus decaying at a rate dependent on spellpower.
 
-This enchantment lasts indefinitely, until dispelled by the caster,
-but the bonus will decay over time at a rate dependent on spellpower.
+The caster need only murmur the words until an enemy is actually in
+sight, but then it becomes increasingly loud as the caster focuses
+their aggression. Unfortunately, it provides no benefit against an
+enemy the caster cannot see.
 %%%%
 Spawn Tentacles spell
 

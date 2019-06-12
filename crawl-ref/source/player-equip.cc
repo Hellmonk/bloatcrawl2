@@ -1284,7 +1284,7 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
         }
         // We do this whichever god is involved so that if the player takes
         // an appropriate god later, everything is set up correctly.
-        you.props.erase(FAITH_WORKING);
+        you.props[FAITH_WORKING] = false;
         you.props[FAITH_TOTAL] = 0;
         break;
 

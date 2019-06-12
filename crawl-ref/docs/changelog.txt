@@ -22,10 +22,15 @@ Wear-ID amulets with impunity:
  drains at most 1/5 of your piety on removal, and cannot drain more piety than
  was gained while wearing it.
 Permabuffs:
- Infusion, Shroud of Golubria, Regeneration, Portal Projectile, and
- Song of Slaying last forever. If you can't see any monsters, you
- mutter the words of the Song of Slaying under your breath, and don't
- make any noise.
+ Infusion, Shroud of Golubria, Regeneration, Portal Projectile, Deflect
+ Missiles, and Song of Slaying last forever. If you can't see any monsters, you
+ mutter the words of the Song of Slaying under your breath, and don't make any
+ noise. 
+
+ DMsl has ongoing hunger and MP costs, but at a lower rate than it did when it
+ was duration-based in vanilla (vanilla has gone from duration to fizzles on
+ being attacked, Shroud-style; here it can still fizzle on being attacked so
+ is given a long nominal duration.)
 
 Vanilla changes messed around with
 ----------------------------------
