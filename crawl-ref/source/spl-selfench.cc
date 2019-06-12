@@ -282,8 +282,8 @@ spret_type cast_shroud_of_golubria(int pow, bool fail)
 {
     if (you.permabuff[PERMA_SHROUD]) {
         mpr("You dispel your protective shroud.");
-        if (you.props.exists("shroud_recharge")) {
-            you.props.erase("shroud_recharge"); 
+        if (you.props.exists(SHROUD_RECHARGE)) {
+            you.props.erase(SHROUD_RECHARGE); 
             you.increase_duration(DUR_SHROUD_OF_GOLUBRIA, 25, 25);
         }
         you.permabuff[PERMA_SHROUD] = false;
@@ -335,7 +335,7 @@ void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
         }
     }
     if (turn_off) {
-        you.props.erase("shroud_recharge"); 
+        you.props.erase(SHROUD_RECHARGE); 
         you.props[SONG_OF_SLAYING_KEY] = 0;
         if (end_durs) you.props["pproj_debt"] = 0;
     }

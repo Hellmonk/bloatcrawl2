@@ -13,6 +13,8 @@
 #include "mutant-beast.h"
 #include "species-type.h"
 
+#define ORIGINAL_FOE "original_foe"
+
 class ghost_demon
 {
 public:

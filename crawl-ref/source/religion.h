@@ -18,6 +18,8 @@
 #define NUM_VEHUMET_GIFTS 13
 
 #define NUM_PIETY_STARS 6
+#define FAITH_WORKING "faith working"
+#define FAITH_TOTAL "faith total"
 
 enum class lifesaving_chance
 {

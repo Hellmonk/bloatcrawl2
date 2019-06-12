@@ -1131,8 +1131,8 @@ static void _remove_amulet_of_faith(item_def &item)
         simple_god_message(" seems less interested in you.");
         
         int piety_loss = div_rand_round(you.piety, 5);
-        piety_loss = min(piety_loss, (you.props.exists("faith total") ?
-                                      you.props["faith total"].get_int() : 0));
+        piety_loss = min(piety_loss, (you.props.exists(FAITH_TOTAL) ?
+                                      you.props[FAITH_TOTAL].get_int() : 0));
         // Piety penalty for removing the Amulet of Faith.
         piety_loss = min(piety_loss, (you.piety - 11));
         if (piety_loss > 0) 
@@ -1143,12 +1143,12 @@ static void _remove_amulet_of_faith(item_def &item)
             lose_piety(piety_loss);
         }
     }
-    you.props.erase("faith working"); you.props.erase("faith total");
+    you.props.erase(FAITH_WORKING); you.props.erase(FAITH_TOTAL);
 }
 
 static void _remove_amulet_of_harm()
 {
-    you.props["residual harm"] = true; you.duration[DUR_RESIDUAL_HARM] = 500;
+    you.props[RESIDUAL_HARM] = true; you.duration[DUR_RESIDUAL_HARM] = 500;
 }
 
 static void _equip_amulet_of_regeneration()
@@ -1284,8 +1284,8 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
         }
         // We do this whichever god is involved so that if the player takes
         // an appropriate god later, everything is set up correctly.
-        you.props.erase("faith working");
-        you.props["faith total"] = 0;
+        you.props.erase(FAITH_WORKING);
+        you.props[FAITH_TOTAL] = 0;
         break;
 
     case AMU_THE_GOURMAND:

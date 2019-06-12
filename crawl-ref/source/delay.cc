@@ -1174,8 +1174,8 @@ static inline bool _monster_warning(activity_interrupt_type ai,
         if ((mon->type == MONS_PLAYER_GHOST) &&
             // it doesn't have an original foe if it's just appearing for the
             // first time
-            ((!mon->props.exists("original_foe")) ||
-             (mon->foe == mon->props["original_foe"].get_int())) &&
+            ((!mon->props.exists(ORIGINAL_FOE)) ||
+             (mon->foe == mon->props[ORIGINAL_FOE].get_int())) &&
             // This check is needed in case eg just pulled out of limbo
             (mon->get_foe()) &&
             (mon->get_foe()->as_monster()->alive()) &&

@@ -28,6 +28,7 @@
 #include "env.h"
 #include "fineff.h"
 #include "food.h"
+#include "ghost.h"
 #include "god-abil.h"
 #include "god-blessing.h"
 #include "god-companions.h"
@@ -2844,9 +2845,9 @@ item_def* monster_die(monster& mons, killer_type killer,
     // way around some killing KILL_FOO will be added?
     if (mons.props.exists("ghost_target") && !was_banished && !mons_reset) {
         for (monster_iterator mi; mi; ++mi) {
-            if (mi->props.exists("original_foe") && 
-                (mi->props["original_foe"].get_int() == mons.mindex())) {
-                mi->props["original_foe"] = MGHOSTKILLED;
+            if (mi->props.exists(ORIGINAL_FOE) && 
+                (mi->props[ORIGINAL_FOE].get_int() == mons.mindex())) {
+                mi->props[ORIGINAL_FOE] = MGHOSTKILLED;
                 if (you.can_see(**mi)) {
                     monster_info ginfo(*mi);
                     take_note(Note(NOTE_GHOST_REVENGE, 0, 0, 
@@ -2985,10 +2986,10 @@ void monster_cleanup(monster* mons)
         
         // we could instead check for ghost_target but we've already got this
         // iterator being used anyway...
-        if (mi->props.exists("original_foe") && 
+        if (mi->props.exists(ORIGINAL_FOE) && 
             // ie not MGHOSTKILLED
-            (mi->props["original_foe"].get_int() == mons->mindex())) {
-            mi->props["original_foe"] = MGHOSTDONE;
+            (mi->props[ORIGINAL_FOE].get_int() == mons->mindex())) {
+            mi->props[ORIGINAL_FOE] = MGHOSTDONE;
         }
         int sumtype = 0;
         if (mi->summoner == mid

@@ -1402,7 +1402,7 @@ static void _pre_monster_move(monster& mons)
     if (mons.type == MONS_PLAYER_GHOST) {
         // It is intentional that if a ghost's original foe is shafted
         // it will wander for a bit before giving up
-        unsigned int original_foe = mons.props["original_foe"].get_int();
+        unsigned int original_foe = mons.props[ORIGINAL_FOE].get_int();
         if (original_foe == MGHOSTKILLED) {
             if (you.can_see(mons)) {
                 mprf("%s fades from view, its vengeance complete.",
@@ -2350,10 +2350,10 @@ static void _post_monster_move(monster* mons)
         // avoid repeated calls to trans_wall_blocking for no reason
         (ghost = is_limbo_mons([&](const monster &spook)
         { if (spook.ghost) {
-                if (!spook.props.exists("original_foe")) return true;
+                if (!spook.props.exists(ORIGINAL_FOE)) return true;
                 // We could also check the ghost_targetted prop here but let's
                 // not gratuitously rule out >1 ghost
-                if (spook.props["original_foe"].get_int() == mons->mindex()) {
+                if (spook.props[ORIGINAL_FOE].get_int() == mons->mindex()) {
                     return true;
                 }
             } 

@@ -5,6 +5,8 @@
 #include "permabuff.h"
 #include "transformation.h"
 
+#define SHROUD_RECHARGE "shroud_recharge"
+
 int allowed_deaths_door_hp();
 spret_type cast_deaths_door(int pow, bool fail);
 void remove_ice_armour();

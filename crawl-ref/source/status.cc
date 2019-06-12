@@ -21,6 +21,7 @@
 #include "player-stats.h"
 #include "random.h" // for midpoint_msg.offset() in duration-data
 #include "religion.h"
+#include "spl-selfench.h"
 #include "spl-summoning.h" // NEXT_DOOM_HOUND_KEY in duration-data
 #include "spl-transloc.h"
 #include "spl-wpnench.h" // for _end_weapon_brand() in duration-data
@@ -439,7 +440,7 @@ bool fill_status_info(int status, status_info& inf)
         break;
 
     case STATUS_RESIDUAL_HARM:
-        if (you.props.exists("residual harm")) {
+        if (you.props.exists(RESIDUAL_HARM)) {
             inf.light_colour = YELLOW;
             inf.light_text = "Harm";
             inf.short_text   = "residual harm";
@@ -778,8 +779,8 @@ bool fill_status_info(int status, status_info& inf)
             !you.duration[DUR_SHROUD_OF_GOLUBRIA]) {
             inf.light_text = "Shroud";
             inf.short_text = "shrouded";
-            if (you.props.exists("shroud_recharge") &&
-                you.props["shroud_recharge"].get_int()){
+            if (you.props.exists(SHROUD_RECHARGE) &&
+                you.props[SHROUD_RECHARGE].get_int()){
                 inf.light_text = "-Shroud";
                 inf.short_text = "unshrouded";
                 inf.light_colour = BLUE;

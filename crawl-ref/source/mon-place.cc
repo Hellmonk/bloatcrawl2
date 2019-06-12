@@ -3385,7 +3385,7 @@ bool place_ghost(monster &foe, mid_t ghost_mid) {
                                            foe.mindex());
         if (state) {
             monster* spook = monster_by_mid(ghost_mid);
-            spook->props["original_foe"] = foe.mindex();
+            spook->props[ORIGINAL_FOE] = foe.mindex();
             spook->foe_memory = 1000;
             spook->target = foe.pos();
             spook->ghost->attempts = 0;

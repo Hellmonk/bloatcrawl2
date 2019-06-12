@@ -530,7 +530,7 @@ bool melee_attack::handle_phase_damaged()
             // the attack message.
             shroud_broken = true;
             if (defender->is_player())
-                you.props["shroud_recharge"] = 
+                you.props[SHROUD_RECHARGE] = 
                     you.get_mutation_level(MUT_MAGIC_ATTUNEMENT) ? 100 : 200;
             else
                 defender->as_monster()->del_ench(ENCH_SHROUD);

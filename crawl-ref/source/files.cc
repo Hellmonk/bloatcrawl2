@@ -2788,7 +2788,7 @@ void save_limbo_ghosts(level_id level) {
     m_transit_list &limhere = limbo_monsters[level];
     for (auto i = limhere.begin(); i != limhere.end(); i++) {
         if (i->mons.type == MONS_PLAYER_GHOST) {
-            if (!i->mons.props.exists("original_foe")) {
+            if (!i->mons.props.exists(ORIGINAL_FOE)) {
                 i->mons.ghost->attempts++;
             }
             int attempts = GHOST_LIMIT - 

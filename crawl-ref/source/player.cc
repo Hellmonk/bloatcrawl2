@@ -63,6 +63,7 @@
 #include "shout.h"
 #include "skills.h"
 #include "spl-damage.h"
+#include "spl-selfench.h"
 #include "spl-transloc.h"
 #include "spl-util.h"
 #include "sprint.h"
@@ -1205,11 +1206,11 @@ void update_amulet_attunement_by_health()
     else
         you.props[ACROBAT_AMULET_ACTIVE] = 0;
 
-    if (you.props.exists("residual harm") && 
+    if (you.props.exists(RESIDUAL_HARM) && 
         (!you.wearing(EQ_AMULET, AMU_HARM)) &&
         (!you.duration[DUR_RESIDUAL_HARM]) &&
         (you.hp == you.hp_max)) {
-        you.props.erase("residual harm");
+        you.props.erase(RESIDUAL_HARM);
         mpr("The lingering effects of the amulet of harm leave you.");
     }
 }
@@ -5081,7 +5082,7 @@ permabuff_state player::permabuff_notworking(permabuff_type pb) {
     if (you.duration[DUR_BRAINLESS]) return PB_BRAINLESS;
     if (you.hunger_state <= HS_STARVING) return PB_STARVING;
     if (you.duration[permabuff_durs[pb]]) return PB_DURATION;
-    if ((pb == PERMA_SHROUD) && (you.props.exists("shroud_recharge"))) {
+    if ((pb == PERMA_SHROUD) && (you.props.exists(SHROUD_RECHARGE))) {
         return PB_SHROUD_RECHARGE;
     }
     if ((pb == PERMA_SONG) && (silenced(you.pos()))) {

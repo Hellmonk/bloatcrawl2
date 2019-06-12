@@ -1013,20 +1013,20 @@ static void _regenerate_hp_and_mp(int delay)
         you.props["mp_to_charms"].get_int() += sub;
         you.props["some_mp_regen"] = true;
     }
-    if (you.props.exists("shroud_recharge") &&
-        (you.props["shroud_recharge"].get_int() > 0) &&
+    if (you.props.exists(SHROUD_RECHARGE) &&
+        (you.props[SHROUD_RECHARGE].get_int() > 0) &&
         (!you.duration[DUR_BERSERK]) &&
         (you.permabuff_notworking(PERMA_SHROUD) >= PB_WORKING)) {
         int available = mp_regen_countup / 2;
-        if (available < you.props["shroud_recharge"].get_int()) {
-            you.props["shroud_recharge"].get_int() -= available;
+        if (available < you.props[SHROUD_RECHARGE].get_int()) {
+            you.props[SHROUD_RECHARGE].get_int() -= available;
             mp_regen_countup -= available;
             you.props["mp_to_charms"].get_int() += available;
         } else {
-            mp_regen_countup -= you.props["shroud_recharge"].get_int();
+            mp_regen_countup -= you.props[SHROUD_RECHARGE].get_int();
             you.props["mp_to_charms"].get_int() += 
-                you.props["shroud_recharge"].get_int();
-            you.props["shroud_recharge"] = 0;
+                you.props[SHROUD_RECHARGE].get_int();
+            you.props[SHROUD_RECHARGE] = 0;
         }
     }
     // The order in which permabuffs get to divert MPreg is kind of arbitrary
@@ -1191,18 +1191,18 @@ void player_reacts()
             you.props["song_decay"].get_int()-= 100;
         }
     }
-    if (you.props.exists("shroud_recharge") && 
-        (you.props["shroud_recharge"].get_int() == 0) &&
+    if (you.props.exists(SHROUD_RECHARGE) && 
+        (you.props[SHROUD_RECHARGE].get_int() == 0) &&
         (you.permabuff_notworking(PERMA_SHROUD) >= PB_WORKING)) {
         int fail = failure_check(SPELL_SHROUD_OF_GOLUBRIA, true);
         if (fail) {
             mpr("You fail to reconstruct your distorting shroud.");
             apply_miscast(SPELL_SHROUD_OF_GOLUBRIA, fail, false);
-            you.props["shroud_recharge"] = 
+            you.props[SHROUD_RECHARGE] = 
                 you.get_mutation_level(MUT_MAGIC_ATTUNEMENT) ? 100 : 200;
         } else {
             mpr("You reconstruct your distorting shroud.");
-            you.props.erase("shroud_recharge");
+            you.props.erase(SHROUD_RECHARGE);
         }
     }
     dec_disease_player(you.time_taken);
