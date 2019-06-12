@@ -1960,6 +1960,15 @@ static const mutation_def mut_data[] =
    {"", "", ""},
    {"", "", ""},
 },
+
+
+{ MUT_SHORT_LIFESPAN, 0, 1, mutflag::bad, false,
+   "short-lived",
+
+   {"You will die on turn 20,000.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =

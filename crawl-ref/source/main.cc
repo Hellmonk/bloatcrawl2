@@ -2265,6 +2265,11 @@ void world_reacts()
         // down by sanity is good, but this is not the case here.
         ouch(INSTANT_DEATH, KILLED_BY_QUITTING);
     }
+    else if (you.has_mutation(MUT_SHORT_LIFESPAN) && you.elapsed_time >= 200000)
+    {
+        mpr("Old age finally catches up with you.");
+        ouch(INSTANT_DEATH, KILLED_BY_OLD_AGE);
+    }
 
     handle_time();
     manage_clouds();

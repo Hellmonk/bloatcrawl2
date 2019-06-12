@@ -86,6 +86,11 @@ Kobold
 
 Kobolds are small, mischievous and a little fragile, but multi-talented.
 %%%%
+Mayflytaur
+
+Half insect, half human, Mayflytaurs have incredibly short lifespans but have
+evolved to be exceptionally overpowered in just about every imaginable way.
+%%%%
 Merfolk
 
 Half fish, half human, Merfolk are citizens of both water and land. They are

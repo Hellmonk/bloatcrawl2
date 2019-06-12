@@ -42,6 +42,7 @@ enum mutation_type
     MUT_ALWAYS_FAST,
     MUT_CUTE_FOX_EARS,
     MUT_DAB_MASTER,
+    MUT_SHORT_LIFESPAN,
 #endif
     MUT_ACUTE_VISION,
     MUT_AGILE,
@@ -229,6 +230,7 @@ enum mutation_type
     MUT_ALWAYS_FAST,
     MUT_CUTE_FOX_EARS,
     MUT_DAB_MASTER,
+    MUT_SHORT_LIFESPAN,
 #endif
     NUM_MUTATIONS,
     CATEGORY_MUTATIONS,

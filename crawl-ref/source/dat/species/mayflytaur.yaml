@@ -1,0 +1,64 @@
+enum: SP_MAYFLYTAUR
+monster: MONS_HORNET
+name: "Mayflytaur"
+short_name: "Ma"
+difficulty: Advanced
+difficulty_priority: 70
+aptitudes:
+  xp: 1
+  hp: 2
+  mp_mod: 1
+  mr: 5
+  fighting: 2
+  short_blades: 4
+  long_blades: 4
+  axes: 4
+  polearms: 4
+  slings: 4
+  throwing: 4
+  armour: 4
+  dodging: 4
+  stealth: 4
+  shields: 4
+  spellcasting: 2
+  conjurations: 4
+  hexes: 4
+  charms: 4
+  summoning: 4
+  necromancy: 4
+  translocations: 4
+  transmutations: 4
+  air_magic: 4
+  earth_magic: 4
+  invocations: 4
+  evocations: 4
+str: 8
+int: 9
+dex: 10
+levelup_stat_frequency: 2
+levelup_stats:
+  - str
+  - dex
+  - int
+mutations:
+  1:
+    MUT_BIG_WINGS: 1
+    MUT_SHORT_LIFESPAN: 1
+recommended_jobs:
+  - JOB_FIGHTER
+  - JOB_GLADIATOR
+  - JOB_BERSERKER
+  - JOB_FIRE_ELEMENTALIST
+  - JOB_ICE_ELEMENTALIST
+  - JOB_EARTH_ELEMENTALIST
+  - JOB_NECROMANCER
+recommended_weapons:
+  - SK_MACES_FLAILS
+  - SK_STAVES
+  - SK_AXES
+  - SK_POLEARMS
+  - SK_LONG_BLADES
+  - SK_SLINGS
+  - SK_THROWING
+  - SK_BOWS
+  - SK_CROSSBOWS

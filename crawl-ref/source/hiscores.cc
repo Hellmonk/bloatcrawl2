@@ -710,7 +710,7 @@ static const char *kill_method_names[] =
     "beogh_smiting", "divine_wrath", "bounce", "reflect", "self_aimed",
     "falling_through_gate", "disintegration", "headbutt", "rolling",
     "mirror_damage", "spines", "frailty", "barbs", "being_thrown",
-    "collision",
+    "collision", "old age",
 };
 
 static const char *_kill_method_name(kill_method_type kmt)
@@ -2060,7 +2060,8 @@ string scorefile_entry::death_place(death_desc_verbosity verbosity) const
     if (verbosity == DDV_ONELINE || verbosity == DDV_TERSE)
         return " (" + level_id(branch, dlvl).describe() + ")";
 
-    if (verbose && death_type != KILLED_BY_QUITTING && death_type != KILLED_BY_WIZMODE)
+    if (verbose && death_type != KILLED_BY_QUITTING && death_type != KILLED_BY_WIZMODE
+        && death_type != KILLED_BY_OLD_AGE)
         place += "...";
 
     // where did we die?
@@ -2345,6 +2346,10 @@ string scorefile_entry::death_description(death_desc_verbosity verbosity) const
 
     case KILLED_BY_QUITTING:
         desc += terse? "quit" : "Quit the game";
+        break;
+        
+    case KILLED_BY_OLD_AGE:
+        desc += terse? "boomerism" : "Died of old age";
         break;
 
     case KILLED_BY_WIZMODE:
@@ -2726,7 +2731,8 @@ string scorefile_entry::death_description(death_desc_verbosity verbosity) const
                 desc = _append_sentence_delimiter(desc, ".");
         }
         else if (death_type != KILLED_BY_QUITTING
-                 && death_type != KILLED_BY_WIZMODE)
+                 && death_type != KILLED_BY_WIZMODE
+                 && death_type != KILLED_BY_OLD_AGE)
         {
             desc += _hiscore_newline_string();
 
