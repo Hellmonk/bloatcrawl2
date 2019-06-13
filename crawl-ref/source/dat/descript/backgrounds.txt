@@ -52,6 +52,11 @@ Enchanter
 Enchanters use spells from the book of Maledictions to incapacitate their foes,
 and are equipped with an enchanted dagger.
 %%%%
+Entomologist
+
+Entomologists study insects and related creatures. They bring along a net and a sack 
+of spiders, and can also summon butterflies. 
+%%%%
 Fighter
 
 Fighters are equipped with armour and shield, as well as a weapon of their

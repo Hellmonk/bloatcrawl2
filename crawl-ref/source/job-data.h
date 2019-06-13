@@ -147,6 +147,18 @@ static const map<job_type, job_def> job_data =
       { SK_DODGING, 2 }, { SK_STEALTH, 3 }, },
 } },
 
+
+{ JOB_ENTOMOLOGIST, {
+    "Et", "Entomologist",
+    2, 4, 6,
+    { SP_TENGU, },
+    { "dagger", "throwing net", "sack of spiders", "robe"},
+    WCHOICE_NONE,
+    { { SK_SPELLCASTING, 1 }, { SK_DODGING, 3 }, { SK_EVOCATIONS, 1 },
+      { SK_WEAPON, 1 }, { SK_STEALTH, 3 }, },
+} },
+
+
 { JOB_FIGHTER, {
     "Fi", "Fighter",
     8, 0, 4,
