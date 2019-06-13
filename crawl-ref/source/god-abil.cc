@@ -7234,6 +7234,10 @@ bool wu_jian_wall_jump_ability()
         you.digging = false;
         mpr("You retract your mandibles.");
     }
+    if (you.is_stationary()) {
+        mpr("You cannot move.");
+        return false;
+    }
 
     string wj_error;
     bool has_targets = false;
