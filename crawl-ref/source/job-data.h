@@ -265,6 +265,15 @@ static const map<job_type, job_def> job_data =
       { SK_SPELLCASTING, 2 }, { SK_TRANSMUTATIONS, 2 }, },
 } },
 
+{ JOB_UNCLE, {
+    "Un", "Uncle",
+    4, 4, 4,
+    { SP_HUMAN, SP_HILL_ORC, SP_GNOLL },
+    { "club" },
+    WCHOICE_NONE,
+    { { SK_FIGHTING, 2 }, { SK_DODGING, 2 },  { SK_SPELLCASTING, 2 }, { SK_STEALTH, 1 }, },
+} },
+
 { JOB_UNDERSTUDY, {
     "Us", "Understudy",
     4, 4, 4,

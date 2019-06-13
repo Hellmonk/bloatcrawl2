@@ -107,6 +107,10 @@ Transmuter
 Transmuters learn spells to shift their form, as well as to turn sticks into
 snakes.
 %%%%
+Uncle
+
+Uncles search the dungeon for their lost nephews.
+%%%%
 Understudy
 
 It's opening night for "The Orb of Zot" and the hero is sick! The Understudy

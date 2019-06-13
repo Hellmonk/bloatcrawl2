@@ -42,6 +42,7 @@ enum job_type
     JOB_ANARCHIST,
     JOB_UNDERSTUDY,
     JOB_METEOROLOGIST,
+    JOB_UNCLE,
     NUM_JOBS,                          // always after the last job
 
     JOB_UNKNOWN = 100,

@@ -1224,14 +1224,15 @@ static job_group jobs_order[] =
         { JOB_FIGHTER, JOB_GLADIATOR, JOB_MONK, JOB_HUNTER, JOB_ASSASSIN }
     },
     {
-        "Adventurer",
-        coord_def(0, 7), 15,
-        { JOB_ARTIFICER, JOB_WANDERER, JOB_ANARCHIST, JOB_UNDERSTUDY, JOB_METEOROLOGIST }
-    },
-    {
         "Zealot",
-        coord_def(15, 0), 20,
+        coord_def(0, 7), 15,
         { JOB_BERSERKER, JOB_ABYSSAL_KNIGHT, JOB_CHAOS_KNIGHT }
+    },
+       {
+        "Adventurer",
+        coord_def(15, 0), 20,
+        { JOB_ARTIFICER, JOB_WANDERER, JOB_ANARCHIST, JOB_UNDERSTUDY, JOB_METEOROLOGIST,
+            JOB_UNCLE, }
     },
     {
         "Warrior-mage",

@@ -941,6 +941,7 @@ void tilep_job_default(int job, dolls_data *doll)
             break;
 
         case JOB_MONK:
+        case JOB_UNCLE:
             parts[TILEP_PART_BODY]  = TILEP_BODY_MONK_BLACK;
             break;
 
