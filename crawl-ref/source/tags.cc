@@ -2727,6 +2727,7 @@ static void tag_read_you(reader &th)
         count = unmarshallUByte(th);
 #if TAG_MAJOR_VERSION == 34
     }
+    bool convert_dmsl = (count < PERMA_DMSL);
 #endif
     if (count > 0) {
         for (int j = 0; j <= count; ++j) {
@@ -2745,6 +2746,7 @@ static void tag_read_you(reader &th)
     if (th.getMinorVersion() < TAG_PB_BENEFITS) {
         count = 0;
     }
+#endif
     if (count > 0) {
         for (int j = 0; j <= count; ++j) {
             if (th.getMinorVersion() < TAG_PB_REWORK) {
@@ -2762,7 +2764,9 @@ static void tag_read_you(reader &th)
                     0;
         }
     }
+#if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() >= TAG_PB_REWORK) {
+#endif
         if (count > 0) {
             for (int j = 0; j <= count; ++j) {
                 you.perma_hunger[j] = unmarshallInt(th);
@@ -2771,6 +2775,7 @@ static void tag_read_you(reader &th)
                 you.perma_mp[j] = unmarshallInt(th);
             }
         }
+#if TAG_MAJOR_VERSION == 34
     }
 #endif
     // how many attributes?
@@ -2825,6 +2830,12 @@ static void tag_read_you(reader &th)
                 you.attribute[ATTR_STAT_LOSS_XP] = stat_loss_roll();
                 break;
             }
+        }
+    }
+    if (convert_dmsl) {
+        if (you.attribute[ATTR_DEFLECT_MISSILES]) {
+            you.permabuff[PERMA_DMSL] = true;
+            you.attribute[ATTR_DEFLECT_MISSILES] = 0;
         }
     }
 
