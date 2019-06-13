@@ -582,9 +582,4 @@ static void _setup_generic(const newgame_def& ng)
     else
         you.save = new package(get_savedir_filename(you.your_name).c_str(),
                                true, true);
-    
-    // Intentionally start at 0 here in case we decide PERMA_NO_PERMA means owt
-    for (unsigned int i = 0; i <= PERMA_LAST_PERMA; i++) {
-        you.permabuff[i] = false;
-    }
 }
