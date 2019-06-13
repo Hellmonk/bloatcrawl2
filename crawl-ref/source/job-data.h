@@ -167,6 +167,15 @@ static const map<job_type, job_def> job_data =
       { SK_WEAPON, 1 }, { SK_STEALTH, 3 }, },
 } },
 
+{ JOB_FENCER, {
+    "Fn", "Fencer",
+    0, 0, 12,
+    { SP_MERFOLK, SP_MINOTAUR, SP_SPRIGGAN, SP_KOBOLD, },
+    { "rapier", "robe", "gloves ego:dex", "amulet of the acrobat"},
+    WCHOICE_NONE,
+    { { SK_FIGHTING, 1 }, { SK_DODGING, 5 }, { SK_WEAPON, 1 } },
+} },
+
 
 { JOB_FIGHTER, {
     "Fi", "Fighter",

@@ -60,7 +60,12 @@ and are equipped with an enchanted dagger.
 Entomologist
 
 Entomologists study insects and related creatures. They bring along a net and a sack 
-of spiders, and can also summon butterflies. 
+of spiders, and can also summon butterflies.
+%%%%
+Fencer
+
+Incredibly dextrous, fencers enter the dungeon with a rapier, gloves of dexterity, and an
+amulet of the acrobat.
 %%%%
 Fighter
 
