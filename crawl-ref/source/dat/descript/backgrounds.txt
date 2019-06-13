@@ -42,6 +42,11 @@ Conjurer
 
 Conjurers confront problems with damaging spells.
 %%%%
+Deprived
+
+Deprived start with nothing but a ration and almost no skills. Survival may prove...
+difficult.
+%%%%
 Earth Elementalist
 
 Earth Elementalists know the Sandblast spell, and carry stones to fuel the

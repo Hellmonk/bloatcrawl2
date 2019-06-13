@@ -948,6 +948,7 @@ void tilep_job_default(int job, dolls_data *doll)
 
         case JOB_WANDERER:
         case JOB_UNDERSTUDY:
+        case JOB_DEPRIVED:
             parts[TILEP_PART_BODY]  = TILEP_BODY_SHIRT_HAWAII;
             parts[TILEP_PART_LEG]   = TILEP_LEG_PANTS_SHORT_BROWN;
             parts[TILEP_PART_BOOTS] = TILEP_BOOTS_MIDDLE_BROWN3;

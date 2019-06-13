@@ -125,6 +125,15 @@ static const map<job_type, job_def> job_data =
       { SK_STEALTH, 2 }, },
 } },
 
+{ JOB_DEPRIVED, {
+    "De", "Deprived",
+    4, 4, 4,
+    { SP_TROLL, },
+    { "bread ration" },
+    WCHOICE_NONE,
+    { { SK_STEALTH, 1 }, },
+} },
+
 { JOB_EARTH_ELEMENTALIST, {
     "EE", "Earth Elementalist",
     0, 7, 5,
