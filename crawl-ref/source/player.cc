@@ -5448,14 +5448,6 @@ player::player()
     clear_constricted();
     constricting = 0;
 
-    // Intentionally start at 0 here in case we decide PERMA_NO_PERMA means owt
-    for (unsigned int i = 0; i <= PERMA_LAST_PERMA; i++) {
-        you.permabuff[i] = false;
-        you.perma_benefit[i] = 0;
-        you.perma_hunger[i] = 0;
-        you.perma_mp[i] = 0;
-    }
-
     // Protected fields:
     clear_place_info();
 }

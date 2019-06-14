@@ -566,6 +566,14 @@ static void _setup_generic(const newgame_def& ng)
     set_hp(you.hp_max);
     set_mp(you.max_magic_points);
 
+    // Intentionally start at 0 here in case we decide PERMA_NO_PERMA means owt
+    for (unsigned int i = 0; i <= PERMA_LAST_PERMA; i++) {
+        you.permabuff[i] = false;
+        you.perma_benefit[i] = 0;
+        you.perma_hunger[i] = 0;
+        you.perma_mp[i] = 0;
+    }
+
     initialise_branch_depths();
     initialise_temples();
     init_level_connectivity();
