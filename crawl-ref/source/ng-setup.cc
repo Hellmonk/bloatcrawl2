@@ -4,6 +4,7 @@
 
 #include "ability.h"
 #include "adjust.h"
+#include "artefact.h"
 #include "dungeon.h"
 #include "end.h"
 #include "files.h"
@@ -125,7 +126,18 @@ item_def* newgame_make_item(object_class_type base,
     item.quantity  = qty;
     item.plus      = plus;
     item.brand     = force_ego;
-    
+
+    if (force_ego < 0)
+    {
+        make_item_unrandart(item, -force_ego);
+        // Duplicate of logic below
+        if (you.equip[get_item_slot(item)] == -1)
+        {
+            you.equip[get_item_slot(item)] = slot;
+        }
+        return &item;
+    }
+
     if(item.base_type == OBJ_BOOKS && you.char_class == JOB_UNDERSTUDY)
         return &item;
 
@@ -155,7 +167,8 @@ item_def* newgame_make_item(object_class_type base,
     }
 
     if ((item.base_type == OBJ_WEAPONS && can_wield(&item, false, false)
-        || item.base_type == OBJ_ARMOUR && can_wear_armour(item, false, false))
+         || (item.base_type == OBJ_ARMOUR && can_wear_armour(item, false, false))
+         || item.base_type == OBJ_JEWELLERY)
         && you.equip[get_item_slot(item)] == -1)
     {
         you.equip[get_item_slot(item)] = slot;
