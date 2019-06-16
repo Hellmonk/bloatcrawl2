@@ -385,6 +385,9 @@ static int _strength_modifier(bool innate_only)
 
     if (!innate_only)
     {
+        if (you.duration[DUR_SQUAT])
+            result += you.base_stats[STAT_INT] / 2;
+        
         if (you.duration[DUR_MIGHT] || you.duration[DUR_BERSERK])
             result += 5;
 
@@ -423,6 +426,9 @@ static int _int_modifier(bool innate_only)
 
     if (!innate_only)
     {
+        if (you.duration[DUR_SQUAT])
+            result += you.base_stats[STAT_STR] / 2;
+        
         if (you.duration[DUR_BRILLIANCE])
             result += 5;
 

@@ -331,6 +331,8 @@ static const ability_def Ability_List[] =
     { ABIL_HOP, "Hop", 0, 0, 0, 0, {}, abflag::none },
 
     { ABIL_CHARM, "Charm Monsters", 0, 0, 0, 0, {}, abflag::exhaustion },
+    
+    { ABIL_POWERSQUAT, "Powersquat", 0, 0, 0, 0, {}, abflag::none },
 
     // EVOKE abilities use Evocations and come from items.
     // Teleportation and Blink can also come from mutations
@@ -1910,6 +1912,27 @@ static spret _do_ability(const ability_def& abil, bool fail)
         }
         you.increase_duration(DUR_EXHAUSTED, 25 - you.experience_level / 2 + random2(8));
         return mass_enchantment(ENCH_CHARM, 10 + you.experience_level * 4);
+        
+    case ABIL_POWERSQUAT:
+        if(you.duration[DUR_SQUAT])
+        {
+            mpr("You're already squatting.");
+            return spret::abort;
+        }
+        if(you.intel() <= 0)
+        {
+            mpr("You're too stupid to squat right now.");
+            return spret::abort;
+        }
+        if(you.strength() <= 0)
+        {
+            mpr("You're too wimpy to squat right now.");
+            return spret::abort;
+        }
+        you.increase_duration(DUR_SQUAT, 10 + random2(40));
+        notify_stat_change(STAT_INT, you.base_stats[STAT_STR] / 2, true);
+        notify_stat_change(STAT_STR, you.base_stats[STAT_INT] / 2, true);
+        break;
 
     case ABIL_SPIT_POISON:      // Naga poison spit
     {
@@ -3418,6 +3441,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
 
     if (you.get_mutation_level(MUT_CUTE_FOX_EARS))
         _add_talent(talents, ABIL_CHARM, check_confused);
+    
+    if (you.get_mutation_level(MUT_POWERSQUAT))
+        _add_talent(talents, ABIL_POWERSQUAT, check_confused);
 
     // Spit Poison, possibly upgraded to Breathe Poison.
     if (you.get_mutation_level(MUT_SPIT_POISON) == 2)

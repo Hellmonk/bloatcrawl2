@@ -53,7 +53,8 @@ enum ability_type
     // Barachim
     ABIL_HOP,
     ABIL_CHARM,
-    ABIL_MAX_INTRINSIC = ABIL_HOP,
+    ABIL_POWERSQUAT,
+    ABIL_MAX_INTRINSIC = ABIL_POWERSQUAT,
 
     // Evoking items.
     ABIL_EVOKE_BERSERK = 40,

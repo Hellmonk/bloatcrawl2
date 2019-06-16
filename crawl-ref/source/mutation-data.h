@@ -1961,11 +1961,18 @@ static const mutation_def mut_data[] =
    {"", "", ""},
 },
 
-
 { MUT_SHORT_LIFESPAN, 0, 1, mutflag::bad, false,
    "short-lived",
 
    {"You will die on turn 20,000.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
+
+{ MUT_POWERSQUAT, 0, 1, mutflag::good, false,
+   "powersquat",
+
+   {"You can perform the elven powersquat technique", "", ""},
    {"", "", ""},
    {"", "", ""},
 },

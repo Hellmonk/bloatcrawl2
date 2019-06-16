@@ -7170,7 +7170,7 @@ bool player::can_bleed(bool allow_tran) const
 
 bool player::is_stationary() const
 {
-    return form == transformation::tree;
+    return form == transformation::tree || you.duration[DUR_SQUAT];
 }
 
 bool player::malmutate(const string &reason)

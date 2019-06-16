@@ -135,6 +135,14 @@ static const duration_def duration_data[] =
       {{ "You feel a little less agile now.", []() {
           notify_stat_change(STAT_DEX, -5, true);
       }}}},
+    { DUR_SQUAT,
+      BLUE, "Squat",
+      "squatting", "powersquat",
+      "You are powersquatting.", D_NO_FLAGS,
+      {{ "You finish your powersquat.", []() {
+          notify_stat_change(STAT_INT, -1 * you.base_stats[STAT_STR] / 2, true);
+          notify_stat_change(STAT_STR, -1 * you.base_stats[STAT_INT] / 2, true);
+      }}}},
     { DUR_BERSERK,
       BLUE, "Berserk",
       "berserking", "berserker",

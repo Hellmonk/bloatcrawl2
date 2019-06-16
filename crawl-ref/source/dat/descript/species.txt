@@ -126,6 +126,11 @@ Spriggan
 Very small, very frail and very fast, Spriggans make highly competent stabbers
 and spellcasters.
 %%%%
+Squat Elf
+
+Less dextrous than other elves, Squat Elves have mastered the art of the
+power squat. They use this ability to enhance their strength and intelligence.
+%%%%
 Troll
 
 Trolls are monstrous creatures with powerful claws, always hungering for raw

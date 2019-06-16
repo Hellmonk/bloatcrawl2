@@ -39,6 +39,13 @@ You fly above the ground, and are able to cross water and lava or fight above
 shallow water without penalties. Most types of flight will time out – be sure
 you're not above deadly liquids when that happens!
 %%%%
+Squat status
+
+You are performing an Elven Powersquat. Your strength is temporarily increased
+by half your intelligence and your intelligence is increased by half your 
+strength. The technique requires such intense concentration that you cannot
+move until the squat is completed.
+%%%%
 Agi status
 
 You are unnaturally agile. This provides bonuses to your dexterity, evasion,
