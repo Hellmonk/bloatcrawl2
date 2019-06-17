@@ -55,6 +55,7 @@
 #include "makeitem.h"
 #include "message.h"
 #include "mon-ench.h"
+#include "mutation.h"
 #include "nearby-danger.h"
 #include "notes.h"
 #include "options.h"
@@ -1497,6 +1498,12 @@ void pickup(bool partial_quantity)
     }
     if (you.last_pickup.empty())
         you.last_pickup = tmp_l_p;
+
+    if (you.get_mutation_level(MUT_PROTEAN_BODY)) // XXX only if we pick up an artefact
+    {
+        calc_hp(true, false);
+        calc_mp();
+    }
 }
 
 bool is_stackable_item(const item_def &item)
@@ -2629,6 +2636,13 @@ bool drop_item(int item_dropped, int quant_drop)
     dec_inv_item_quantity(item_dropped, quant_drop);
     you.turn_is_over = true;
 
+    // XXX only do this if we dropped an artefact
+    if (you.get_mutation_level(MUT_PROTEAN_BODY))
+    {
+        calc_hp(true, false);
+        calc_mp();
+    }
+
     you.last_pickup.erase(item_dropped);
     if (you.last_unequip == item.link)
         you.last_unequip = -1;
@@ -3307,6 +3321,21 @@ void autopickup()
 int inv_count()
 {
     return count_if(begin(you.inv), end(you.inv), mem_fn(&item_def::defined));
+}
+
+int inv_artefact_count()
+{
+    int count = 0;
+    for (int inv_slot = 0; inv_slot < ENDOFPACK; inv_slot++)
+    {
+        auto item = you.inv[inv_slot];
+        if (item.defined())
+        {
+            if (is_artefact(item) && fully_identified(item))
+                count++;
+        }
+    }
+    return count;
 }
 
 // sub_type == -1 means look for any item of the class

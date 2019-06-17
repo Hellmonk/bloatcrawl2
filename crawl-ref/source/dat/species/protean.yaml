@@ -1,0 +1,26 @@
+enum: SP_PROTEAN
+monster: MONS_SLIME_CREATURE
+name: "Protean"
+short_name: "Pr"
+genus: "Slime"
+difficulty: Simple
+species_flags:
+  - hairless
+aptitudes:
+  xp: 0
+  hp: 0
+  mp_mod: 0
+  mr: 3
+  fighting: 1
+  stealth: 1
+size: tiny
+str: 8
+int: 8
+dex: 5
+mutations:
+  1:
+    MUT_PROTEAN_BODY: 1
+levelup_stat_frequency: 4
+recommended_jobs:
+  - JOB_FIGHTER
+  - JOB_BERSERKER

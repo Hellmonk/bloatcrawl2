@@ -140,6 +140,8 @@ item_def* newgame_make_item(object_class_type base,
             item.sub_type = ARM_SHIELD;
         else if (is_shield(item))
             item.sub_type = ARM_BUCKLER;
+        else if (item.sub_type == ARM_CLOAK)
+            item.sub_type = ARM_SCARF;
         else
             item.sub_type = ARM_ROBE;
     }
@@ -148,7 +150,10 @@ item_def* newgame_make_item(object_class_type base,
     ASSERT(item.quantity == 1 || is_stackable_item(item));
 
     // If that didn't help, nothing will.
-    if (is_useless_item(item))
+    // Although we always give Proteans items so they can grow into them later.
+    const bool protean_potential = you.get_mutation_level(MUT_PROTEAN_BODY)
+        && (item.base_type == OBJ_ARMOUR || item.base_type == OBJ_WEAPONS);
+    if (is_useless_item(item) && !protean_potential)
     {
         item = item_def();
         return nullptr;

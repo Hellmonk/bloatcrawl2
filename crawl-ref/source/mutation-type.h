@@ -44,6 +44,7 @@ enum mutation_type
     MUT_DAB_MASTER,
     MUT_SHORT_LIFESPAN,
     MUT_POWERSQUAT,
+    MUT_PROTEAN_BODY,
 #endif
     MUT_ACUTE_VISION,
     MUT_AGILE,
@@ -233,6 +234,7 @@ enum mutation_type
     MUT_DAB_MASTER,
     MUT_SHORT_LIFESPAN,
     MUT_POWERSQUAT,
+    MUT_PROTEAN_BODY,
 #endif
     NUM_MUTATIONS,
     CATEGORY_MUTATIONS,

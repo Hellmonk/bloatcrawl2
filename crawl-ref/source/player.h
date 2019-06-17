@@ -964,6 +964,7 @@ int calc_hunger(int food_cost);
 
 int player_icemail_armour_class();
 int sanguine_armour_bonus();
+int protean_bonus_hp();
 
 int player_wizardry(spell_type spell);
 

@@ -112,6 +112,7 @@ bool multiple_items_at(const coord_def& where);
 void drop();
 
 int inv_count();
+int inv_artefact_count();
 int runes_in_pack();
 
 bool pickup_single_item(int link, int qty);

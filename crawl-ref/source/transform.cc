@@ -1600,6 +1600,12 @@ bool transform(int pow, transformation which_trans, bool involuntary,
         return false;
     }
 
+    if (you.species == SP_PROTEAN)
+    {
+        msg = "You cannot transform.";
+        success = false;
+    }
+
     if (!involuntary && crawl_state.is_god_acting())
         involuntary = true;
 

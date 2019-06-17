@@ -3511,9 +3511,10 @@ bool is_useless_item(const item_def &item, bool temp)
             return !you.can_safely_mutate(temp);
 
         case POT_LIGNIFY:
-            return you.undead_state(temp)
-                   && (you.species != SP_VAMPIRE
-                       || temp && you.hunger_state < HS_SATIATED);
+            return you.get_mutation_level(MUT_PROTEAN_BODY)
+                    || (you.undead_state(temp)
+                        && (you.species != SP_VAMPIRE
+                            || temp && you.hunger_state < HS_SATIATED));
 
         case POT_FLIGHT:
             return you.permanent_flight()

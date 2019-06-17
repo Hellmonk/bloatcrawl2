@@ -1976,6 +1976,15 @@ static const mutation_def mut_data[] =
    {"", "", ""},
    {"", "", ""},
 },
+
+{ MUT_PROTEAN_BODY, 0, 1, mutflag::good, true,
+   "protean body",
+
+   // Bonus details added in mutation.cc's mutation_desc
+   {"Your protean body grows with mutations and artefacts (", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =

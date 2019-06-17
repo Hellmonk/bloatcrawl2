@@ -1166,6 +1166,8 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         }
         if (temp && you.is_lifeless_undead())
             return "your current blood level is not sufficient.";
+        if (you.species == SP_PROTEAN)
+            return "your gelatinous body cannot transform.";
         break;
 
     case SPELL_REGENERATION:
