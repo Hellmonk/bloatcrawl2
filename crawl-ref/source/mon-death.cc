@@ -2220,7 +2220,7 @@ item_def* monster_die(monster& mons, killer_type killer,
 
             // Divine health and mana restoration doesn't happen when
             // killing born-friendly monsters.
-            if (gives_player_xp
+            if ((gives_player_xp
                 && (have_passive(passive_t::restore_hp)
                     || have_passive(passive_t::mp_on_kill)
                     || have_passive(passive_t::restore_hp_mp_vs_evil)
@@ -2231,11 +2231,12 @@ item_def* monster_die(monster& mons, killer_type killer,
 #if TAG_MAJOR_VERSION == 34
                     || you_worship(GOD_PAKELLAS)
 #endif
-                   )
+                   ))
+                || you.has_mutation(MUT_HARVEST_ENERGY)
                 )
             {
                 int hp_heal = 0, mp_heal = 0;
-
+                
                 if (have_passive(passive_t::restore_hp))
                 {
                     hp_heal = mons.get_experience_level()
@@ -2245,6 +2246,11 @@ item_def* monster_die(monster& mons, killer_type killer,
                 {
                     hp_heal = random2(1 + 2 * mons.get_experience_level());
                     mp_heal = random2(2 + mons.get_experience_level() / 3);
+                }
+                
+                if(you.has_mutation(MUT_HARVEST_ENERGY))
+                {
+                    hp_heal += (you.hp_max - you.hp) / 2;
                 }
 
                 if (have_passive(passive_t::mp_on_kill))

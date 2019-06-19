@@ -1,0 +1,62 @@
+enum: SP_MIRROR_EIDOLON
+monster: MONS_EIDOLON
+name: Mirror Eidolon
+short_name: ME
+difficulty: Advanced
+# difficulty_priority: 40
+aptitudes:
+  xp: -1
+  hp: 2
+  mp_mod: 0
+  mr: 4
+  fighting: 1
+  short_blades: 0
+  long_blades: 0
+  axes: 0
+  maces_and_flails: 0
+  polearms: 0
+  staves: 0
+  slings: -3
+  bows: -3
+  crossbows: -3
+  throwing: -1
+  armour: -2
+  dodging: 1
+  stealth: 2
+  shields: -1
+  unarmed_combat: 1
+  spellcasting: -1
+  conjurations: 0
+  hexes: 2
+  charms: 1
+  summoning: 1
+  necromancy: 2
+  translocations: 1
+  transmutations: 1
+  fire_magic: 1
+  ice_magic: 2
+  air_magic: 1
+  earth_magic: 1
+  poison_magic: 1
+  invocations: -1
+  evocations: -2
+undead_type: US_HUNGRY_DEAD
+str: 7
+int: 8
+dex: 7
+levelup_stat_frequency: 5
+levelup_stats: default
+mutations:
+  1:
+    MUT_NO_REGENERATION: 1
+    MUT_NEGATIVE_ENERGY_RESISTANCE: 3
+    MUT_COLD_RESISTANCE: 1
+    MUT_TORMENT_RESISTANCE: 1
+    MUT_UNBREATHING: 1
+    MUT_FADING: 1
+    MUT_HARVEST_ENERGY: 1
+recommended_jobs:
+  - JOB_FIGHTER
+  - JOB_METEOROLOGIST
+  - JOB_NECROMANCER
+  - JOB_ICE_ELEMENTALIST

@@ -101,6 +101,11 @@ Minotaur
 Minotaurs are large muscular humans with bovine heads. They excel at all forms
 of close and ranged combat.
 %%%%
+Mirror Eidolon
+
+Strange phantoms summoned from the mirror world, Mirror Eidola rapidly fade away.
+They must slay other creatures and take their energy to stay in this plane.
+%%%%
 Mummy
 
 Compelled to walk by an ancient curse, Mummies are adept at Necromancy but

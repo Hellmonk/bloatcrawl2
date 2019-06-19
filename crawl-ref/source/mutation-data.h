@@ -1972,7 +1972,23 @@ static const mutation_def mut_data[] =
 { MUT_POWERSQUAT, 0, 1, mutflag::good, false,
    "powersquat",
 
-   {"You can perform the elven powersquat technique", "", ""},
+   {"You can perform the elven powersquat technique.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
+
+{ MUT_FADING, 0, 1, mutflag::bad, false,
+   "fading",
+
+   {"You lose health over time.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
+
+{ MUT_HARVEST_ENERGY, 0, 1, mutflag::good, false,
+   "powersquat",
+
+   {"You restore half your missing hitpoints when you defeat an enemy.", "", ""},
    {"", "", ""},
    {"", "", ""},
 },

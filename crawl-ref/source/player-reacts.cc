@@ -877,6 +877,18 @@ static void _rot_ghoul_players()
     }
 }
 
+static void _mirror_eidolon_hploss()
+{
+    if (!you.has_mutation(MUT_FADING))
+        return;
+    
+    if (one_chance_in(25))
+    {
+        mprf("Your ties to this world fade a bit.");
+        ouch(1 + div_rand_round(you.hp_max, 25), KILLED_BY_FADING, MID_NOBODY);
+    }
+}
+
 static void _handle_emergency_flight()
 {
     ASSERT(you.props[EMERGENCY_FLIGHT_KEY].get_bool());
@@ -1022,6 +1034,7 @@ void player_reacts()
 
     _decrement_durations();
     _rot_ghoul_players();
+    _mirror_eidolon_hploss();
 
     // Translocations and possibly other duration decrements can
     // escape a player from beholders and fearmongers. These should
