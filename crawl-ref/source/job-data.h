@@ -263,6 +263,15 @@ static const map<job_type, job_def> job_data =
       { SK_STEALTH, 2 }, },
 } },
 
+{ JOB_PHILOSOPHER, {
+    "Ph", "Philosopher",
+    0, 12, 0,
+    { SP_CENTAUR, SP_NAGA, SP_SPRIGGAN, },
+    { "robe", "hat of pondering", "staff of wizardry", "scroll of random uselessness"},
+    WCHOICE_NONE,
+    { { SK_FIGHTING, 2 }, { SK_SPELLCASTING, 2 }, { SK_HEXES, 1 }, { SK_STEALTH, 2 }, },
+} },
+
 { JOB_SKALD, {
     "Sk", "Skald",
     3, 5, 4,

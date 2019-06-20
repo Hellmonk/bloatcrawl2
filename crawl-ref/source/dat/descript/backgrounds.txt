@@ -107,6 +107,11 @@ Necromancer
 Necromancers are wizards specializing in the practice of death magic. They
 start out with the Pain spell.
 %%%%
+Philosopher
+
+Philosophers bring their thinking hat to the dungeon, but not much else in the
+way of useful items.
+%%%%
 Skald
 
 Skalds are melee fighters who can boost themselves in battle with spells from

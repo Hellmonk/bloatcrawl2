@@ -306,6 +306,10 @@ static void _give_items_skills(const newgame_def& ng)
         add_spell_to_memory(SPELL_PAIN);
         break;
         
+    case JOB_PHILOSOPHER:
+        add_spell_to_memory(SPELL_CONFUSE);
+        break;
+        
     case JOB_ENTOMOLOGIST:
         add_spell_to_memory(SPELL_SUMMON_BUTTERFLIES);
         break;
