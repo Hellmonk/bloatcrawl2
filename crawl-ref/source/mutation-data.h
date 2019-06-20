@@ -1940,7 +1940,7 @@ static const mutation_def mut_data[] =
 { MUT_ALWAYS_FAST, 0, 1, mutflag::good, false,
    "always fast",
 
-   {"You always move and act at maximum speed.", "", ""},
+   {"You always move and act at sonic speed.", "", ""},
    {"", "", ""},
    {"", "", ""},
 },
@@ -1986,7 +1986,7 @@ static const mutation_def mut_data[] =
 },
 
 { MUT_HARVEST_ENERGY, 0, 1, mutflag::good, false,
-   "powersquat",
+   "harvest energy",
 
    {"You restore half your missing hitpoints when you defeat an enemy.", "", ""},
    {"", "", ""},
