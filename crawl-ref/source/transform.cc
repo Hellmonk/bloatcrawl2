@@ -1748,6 +1748,7 @@ bool transform(int pow, transformation which_trans, bool involuntary,
         notify_stat_change(STAT_DEX, dex_mod, true);
 
     _extra_hp(form_hp_mod());
+    calc_mp();
 
     if (you.digging && !form_keeps_mutations(which_trans))
     {
@@ -1804,8 +1805,8 @@ bool transform(int pow, transformation which_trans, bool involuntary,
         // undead cannot regenerate -- bwr
         if (you.permabuff[PERMA_REGEN])
         {
-            mprf(MSGCH_DURATION, "You stop regenerating.");
-            you.permabuff[PERMA_REGEN] = false;
+            mprf(MSGCH_DURATION, "You stop regenerating, since you have no flesh.");
+            you.pb_off(PERMA_REGEN);
         }
 
         you.hunger_state = HS_SATIATED;  // no hunger effects while transformed
@@ -2015,6 +2016,7 @@ void untransform(bool skip_move)
         set_hp(hp);
     }
     calc_hp();
+    calc_mp();
 
     if (you.hp <= 0)
     {

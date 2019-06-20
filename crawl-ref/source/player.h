@@ -163,6 +163,9 @@ public:
 
     int magic_points;
     int max_magic_points;
+    int mp_frozen;              // MP stolen by permabuffs
+    int charms_reserve;         // 1/100 MP in charms reserve
+    int charms_reserve_size;
     int mp_max_adj;             // max MP loss (ability costs, tutorial bonus)
     int dd_heals;
     int dd_mp_rotted;
@@ -924,6 +927,8 @@ public:
     permabuff_state permabuff_notworking(permabuff_type permabuff);
     string permabuff_whynot(permabuff_type permabuff);
     bool has_any_permabuff();
+    void pb_on(permabuff_type pb);
+    void pb_off(permabuff_type pb);
 
 protected:
     void _removed_beholder(bool quiet = false);
@@ -1111,7 +1116,7 @@ void deflate_hp(int new_level, bool floor);
 void set_hp(int new_amount);
 
 int get_real_hp(bool trans, bool rotted = false);
-int get_real_mp(bool include_items);
+int get_real_mp(bool include_items, bool count_frozen);
 
 int get_contamination_level();
 bool player_severe_contamination();

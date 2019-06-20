@@ -510,6 +510,7 @@ static const char* diag_names[] =
 #ifdef DEBUG_MONINDEX
     "monster index",
 #endif
+    "permabuff"
 };
 
 void wizard_toggle_dprf()

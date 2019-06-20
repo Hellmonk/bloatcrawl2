@@ -739,12 +739,16 @@ static void _print_stats_mp(int x, int y)
 
     CGOTOXY(x, y, GOTO_STAT);
     textcolour(HUD_CAPTION_COLOUR);
-    CPRINTF(player_rotted() ? "MP: " : "Magic:  ");
+    CPRINTF(player_rotted() ? "MP: " : 
+            (you.mp_frozen ? "Magic: " : "Magic:  "));
     textcolour(mp_colour);
     CPRINTF("%d", you.magic_points);
     if (!boosted)
         textcolour(HUD_VALUE_COLOUR);
     CPRINTF("/%d", you.max_magic_points);
+    if (you.mp_frozen) {
+            CPRINTF(" (%d)", you.max_magic_points + you.mp_frozen);
+    }
     if (boosted)
         textcolour(HUD_VALUE_COLOUR);
 
@@ -2199,8 +2203,12 @@ static vector<formatted_string> _get_overview_stats()
     else
         entry.textcolour(HUD_VALUE_COLOUR);
 
-    entry.cprintf("%d/%d", you.magic_points, you.max_magic_points);
-
+    if (you.mp_frozen) {
+        entry.cprintf("%d/%d (%d)", you.magic_points, you.max_magic_points,
+            you.mp_frozen + you.max_magic_points);
+    } else {
+        entry.cprintf("%d/%d", you.magic_points, you.max_magic_points);
+    }
     cols.add_formatted(0, entry.to_colour_string(), false);
     entry.clear();
 
@@ -2720,16 +2728,22 @@ string _status_mut_rune_list(int sw)
                                              : "very slow";
         status.emplace_back(help);
     }
+    if (you.mp_frozen) {
+        status.emplace_back(make_stringf(
+                                "%d MP reserved for charms",
+                                you.mp_frozen));
+    }
+    if (you.props[MP_TO_CHARMS].get_int()) {
+        status.emplace_back(make_stringf(
+                                "%d.%02d MP regen used to sustain charms",
+                                you.props[MP_TO_CHARMS].get_int() / 100,
+                                you.props[MP_TO_CHARMS].get_int() % 100));
+    }
 
     if (status.empty())
         text += "no status effects";
     else
         text += comma_separated_line(status.begin(), status.end(), ", ", ", ");
-    if (you.props[MP_TO_CHARMS].get_int()) {
-        text += make_stringf(", %d.%02d MP regen used to sustain charms",
-                             you.props[MP_TO_CHARMS].get_int() / 100,
-                             you.props[MP_TO_CHARMS].get_int() % 100);
-    }
     text += "\n";
 
     // print mutation information

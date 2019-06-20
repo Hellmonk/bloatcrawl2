@@ -138,7 +138,7 @@ bool spell_is_soh_breath(spell_type spell);
 const vector<spell_type> *soh_breath_spells(spell_type spell);
 
 // has_permabuff doesn't complain if it's not a permabuff, it just returns false
-int permabuff_is(spell_type spell); // sigh
+permabuff_type permabuff_is(spell_type spell); // sigh
 bool is_permabuff(spell_type spell);
 void permabuff_track(int pb);
 

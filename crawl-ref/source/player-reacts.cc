@@ -945,9 +945,7 @@ static void _regenerate_hp_and_mp(int delay)
 // after the hunger charge
             you.props[REGEN_RESERVE].get_int() -=
                 div_rand_round(
-                    (delay *
-                     (you.get_mutation_level(MUT_MAGIC_ATTUNEMENT) ? 
-                      200 : 300)),
+                    (delay * spell_mana(SPELL_REGENERATION) * 100),
                     nominal_duration(SPELL_REGENERATION) * BASELINE_DELAY);
             int fail = permabuff_failure_check(PERMA_REGEN);
             if (fail) {
@@ -989,37 +987,68 @@ static void _regenerate_hp_and_mp(int delay)
             int charge = you.perma_mp[pb] * ((delay < you.perma_benefit[pb]) ? 
                                              delay : you.perma_benefit[pb]);
             charge = div_rand_round(charge, 100);
-            if (pb == PERMA_PPROJ) {
-                you.props[PPROJ_DEBT].get_int() += charge;
-            } else {
-                sub += charge;
-            }
-            dprf("%d: charged %d", pb, charge);
+            sub += charge;
+            dprf(DIAG_PERMABUFF,"Permabuff %d: charged %d", pb, charge);
         }
     }
-// It is intentional that if your permabuffs cost too much, you get no
-// MP regen and can lose MP, but they don't turn off. This situation is
-// difficult to produce most of the time, because the high-cost short-duration
-// permabuffs are handled differently, but otherwise eg a level 1 TrSk
-//couldn't use Infusion at all.
-    you.props[MP_TO_CHARMS].get_int() += sub;
+
+    if (sub) dprf(DIAG_PERMABUFF,
+                  "Total charge %d, regen %d, reserve %d", sub,
+                  mp_regen_countup, you.charms_reserve);
+    if (you.charms_reserve >= sub) {
+        you.charms_reserve -= sub; sub = 0;
+    } else {
+        sub -= you.charms_reserve; you.charms_reserve = 0;
+    }
+    if (sub) {
+        you.props[MP_TO_CHARMS].get_int() += sub;
+    }
     if (sub >= mp_regen_countup) {
         you.props[CHARMS_DEBT].get_int() += (sub - mp_regen_countup);
         mp_regen_countup = 0;
         you.props[CHARMS_ALL_MPREGEN] = true;
+        dprf(DIAG_PERMABUFF,"Debt increased to %d",
+             you.props[CHARMS_DEBT].get_int());
     } else {
         mp_regen_countup -= sub;
         if (you.props[CHARMS_DEBT].get_int() > 0) {
-            int available = mp_regen_countup / 2;
-            if (available > you.props[CHARMS_DEBT].get_int()) {
+            if (mp_regen_countup > you.props[CHARMS_DEBT].get_int()) {
                 mp_regen_countup -= you.props[CHARMS_DEBT].get_int();
                 you.props[CHARMS_DEBT].get_int() = 0;
             } else {
-                you.props[CHARMS_DEBT].get_int() -= available;
-                mp_regen_countup -= available;
+                you.props[CHARMS_DEBT].get_int() -= mp_regen_countup;
+                mp_regen_countup -= 0;
             }
+            dprf(DIAG_PERMABUFF, "Debt decreased to %d",
+                 you.props[CHARMS_DEBT].get_int());
         }
         you.props[CHARMS_ALL_MPREGEN] = false;
+    }
+    if (you.props[CHARMS_DEBT].get_int() >= 100) {
+        if (enough_mp(1, true, false)) {
+            dec_mp(1); you.props[CHARMS_DEBT].get_int() -= 100;
+            dprf(DIAG_PERMABUFF, "Lost an MP; debt decreased to %d,",
+                 you.props[CHARMS_DEBT].get_int());
+        } else {
+            int turnoff = PERMA_NO_PERMA; int charge = 0;
+            for (int j = PERMA_FIRST_PERMA; j <= PERMA_LAST_PERMA; j++) {
+                if (you.permabuff[j]) {
+                    if (you.perma_mp[j] > charge) {
+                        turnoff = j; charge = you.perma_mp[j];
+                    }
+                }
+            }
+            if (turnoff != PERMA_NO_PERMA) {
+                you.pb_off((permabuff_type) turnoff);
+                mpr("You don't have enough magic to sustain all your permanent charms!");
+                you.increase_duration(permabuff_durs[turnoff], 25);
+                // This is a bit arbitary but you'll take a recast cost down
+                // the line and stops it just turning off another one next turn
+                you.perma_mp[turnoff] = 0;
+            } else {
+                mprf(MSGCH_ERROR, "BUG: Found no permabuff to turn off when out of MP!");
+            }
+        }
     }
     if (mp_regen_countup > 0) {
         bool dmsl_rech = (you.props.exists(DMSL_RECHARGE) && 
@@ -1058,48 +1087,53 @@ static void _regenerate_hp_and_mp(int delay)
             }
         }
 // The order in which permabuffs get to divert MPreg is kind of arbitrary
+        int regen_size = 100 * spell_mana(SPELL_REGENERATION);
         if (you.permabuff_working(PERMA_REGEN) &&
             (!you.duration[DUR_BERSERK]) &&
             (!you.confused()) &&
-            (you.props[REGEN_RESERVE].get_int() < 100)) {
+            (you.props[REGEN_RESERVE].get_int() < regen_size)) {
             int divert = (mp_regen_countup * you.magic_points) /
                 max(you.max_magic_points,1);
             you.props[REGEN_RESERVE].get_int() += divert;
-            if (you.props[REGEN_RESERVE].get_int() > 100) {
-                divert -= (you.props[REGEN_RESERVE].get_int() - 100);
-                you.props[REGEN_RESERVE].get_int() = 100;
+// Because first checked if it was <, can't go way over if a FD untransforms
+            if (you.props[REGEN_RESERVE].get_int() > regen_size) {
+                divert -= (you.props[REGEN_RESERVE].get_int() - regen_size);
+                you.props[REGEN_RESERVE].get_int() = regen_size;
             }
             mp_regen_countup -= divert;
             you.props[MP_TO_CHARMS].get_int() += divert;
         }
-        if (you.props[PPROJ_DEBT].get_int() > 0) {
-            if (mp_regen_countup < you.props[PPROJ_DEBT].get_int()) {
-                you.props[PPROJ_DEBT].get_int() -= mp_regen_countup;
-                you.props[MP_TO_CHARMS].get_int() += mp_regen_countup;
-                mp_regen_countup = 0;
-            } else {
-                mp_regen_countup -= you.props[PPROJ_DEBT].get_int();
-                you.props[MP_TO_CHARMS].get_int() += 
-                    you.props[PPROJ_DEBT].get_int();
-                you.props[PPROJ_DEBT] = 0;
+        if (you.charms_reserve < (you.charms_reserve_size)) {
+            int divert = div_rand_round
+                          ((mp_regen_countup * 
+                            (you.charms_reserve_size - you.charms_reserve)),
+                           ((you.charms_reserve_size - you.charms_reserve) +
+                            100 * (you.max_magic_points - you.magic_points)));
+                dprf(DIAG_PERMABUFF, 
+                     "Diverted %d of leftover regen %d (%d/%d)",
+                     divert, mp_regen_countup, you.charms_reserve,
+                     you.charms_reserve_size);
+            you.charms_reserve += divert; mp_regen_countup -= divert;
+            if (you.charms_reserve > (you.charms_reserve_size)) {
+                int corr = you.charms_reserve - (you.charms_reserve_size);
+                mp_regen_countup += corr; divert =- corr; 
+                you.charms_reserve -= corr;
             }
+            you.props[MP_TO_CHARMS].get_int() += divert;
         }
     }
-    if ((you.props[CHARMS_DEBT].get_int() >= 100) && 
-        enough_mp(1, true, false)) {
-        dec_mp(1); you.props[CHARMS_DEBT].get_int() -= 100;
-    }
     if (you.magic_points < you.max_magic_points) {
-        you.magic_points_regeneration += mp_regen_countup;
+        you.magic_points_regeneration += mp_regen_countup; 
     }
-    you.props[MP_TO_CHARMS].get_int() *= BASELINE_DELAY;
-    you.props[MP_TO_CHARMS].get_int() /= delay;
-
     while (you.magic_points_regeneration >= 100)
     {
         inc_mp(1);
         you.magic_points_regeneration -= 100;
     }
+
+    you.props[MP_TO_CHARMS].get_int() *= BASELINE_DELAY;
+    you.props[MP_TO_CHARMS].get_int() /= delay;
+
 
     ASSERT_RANGE(you.magic_points_regeneration, 0, 100);
 

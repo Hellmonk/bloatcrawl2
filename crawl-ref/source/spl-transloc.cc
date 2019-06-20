@@ -783,16 +783,14 @@ spret_type cast_portal_projectile(int pow, bool fail)
             "You stop attempting to teleport projectiles to their destination."
             :
             "You stop teleporting projectiles to their destination.");
-        you.permabuff[PERMA_PPROJ] = false;
-        return SPRET_PERMACANCEL;
+        you.pb_off(PERMA_PPROJ); return SPRET_PERMACANCEL;
     } else {
         fail_check();
         mpr(you.duration[DUR_PORTAL_PROJECTILE] ?
             "You will soon be teleporting projectiles to their destination." :
             "You begin teleporting projectiles to their destination.");
         // Power is calculated every time we attack
-        you.permabuff[PERMA_PPROJ] = true;
-        return SPRET_SUCCESS;
+        you.pb_on(PERMA_PPROJ); return SPRET_SUCCESS;
     }
 }
 

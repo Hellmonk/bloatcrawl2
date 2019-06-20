@@ -1014,14 +1014,21 @@ receiving the benefit for a few turns while you regain control of your
 magic. The power of any such spell is recalculated constantly, so you
 don't need to renew them as your skills improve.
 
-Some such spells decrease your MP regeneration rate when providing a benefit,
-as if you were recasting it regularly - you can see the effect in the % screen.
-Even if you are getting the benefit constantly, you will never pay more MP
-than you would if you were constantly recasting the spell in regular Crawl.
-Similarly, these spells will make you hungrier when you benefit from them, but
-never faster than they would in regular Crawl. Because these charges are only
-made when you get a benefit, there is no reason to, eg, switch Portal
-Projectile off when not firing projectiles.
+Such spells reserve some of your MP capacity, giving an effect similar
+to having cast them just before entering combat. They decrease your MP
+regeneration rate when providing a benefit, as if you were recasting
+it regularly - you can see the effect in the % screen. Initially, this
+charge is taken from the reserved MP, but as those run out it will
+affect your normal MP regeneration, as if you were recasting the spell
+during the fight.
+
+Even if you are getting the benefit constantly, you will never pay
+more MP than you would if you were constantly recasting the spell in
+regular Crawl.  Similarly, these spells will make you hungrier when
+you benefit from them, but never faster than they would in regular
+Crawl. Because these charges are only made when you get a benefit,
+there is no reason to, eg, switch Portal Projectile off when not
+firing projectiles.
 
 If you are using an artefact that suppresses spellcasting (the -Cast
 flag), or if you are brainless, none of your permanent enchantments

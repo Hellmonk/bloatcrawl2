@@ -91,6 +91,7 @@ enum diag_type
 #ifdef DEBUG_MONINDEX
     DIAG_MONINDEX,
 #endif
+    DIAG_PERMABUFF,
     NUM_DIAGNOSTICS
 };
 

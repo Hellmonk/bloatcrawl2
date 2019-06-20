@@ -92,7 +92,6 @@ spret_type deflection(int pow, bool fail)
 {
     if (you.permabuff[PERMA_DMSL]) {
         const int orig_defl = you.missile_deflection();
-        you.permabuff[PERMA_DMSL] = false; 
         mprf("You are %s.",
              (you.duration[DUR_DEFLECT_MISSILES] ||
               (you.props.exists(DMSL_RECHARGE) &&
@@ -106,14 +105,13 @@ spret_type deflection(int pow, bool fail)
             you.props.erase(DMSL_RECHARGE); 
             you.increase_duration(DUR_DEFLECT_MISSILES, 25, 25);
         }
-        return SPRET_PERMACANCEL;
+        you.pb_off(PERMA_DMSL); return SPRET_PERMACANCEL;
     } else {
         fail_check();
         mpr (you.duration[DUR_DEFLECT_MISSILES] ? 
              "You will soon be deflecting missiles." :
              "You feel very safe from missiles.");
-        you.permabuff[PERMA_DMSL] = true;
-        return SPRET_SUCCESS;
+        you.pb_on(PERMA_DMSL); return SPRET_SUCCESS;
     }    
 }
 
@@ -121,19 +119,15 @@ spret_type cast_regen(int pow, bool fail)
 {
     if (you.permabuff[PERMA_REGEN]) {
         mpr("Your skin stops crawling.");
-        you.permabuff[PERMA_REGEN] = false; 
-        // This stops HOM dropping and recasting to refill the reserve
+                // This stops HOM dropping and recasting to refill the reserve
         you.increase_duration(DUR_REGENERATION, 10, 25);
-        return SPRET_PERMACANCEL;
+        you.pb_off(PERMA_REGEN); return SPRET_PERMACANCEL;
     } else {
         fail_check();
         mpr("Your skin crawls.");
-        you.permabuff[PERMA_REGEN] = true;
-        // Decreased to 100. This does mean Regen is worse when you cast it
-        // the very first time... except you have no need to do that on
-        // entering combat, and this is a redesign of Regen.
-        you.props[REGEN_RESERVE] = 100;
-        return SPRET_SUCCESS;
+        // Made this large again, with the spell reserving a like number of MP
+        you.props[REGEN_RESERVE] = spell_mana(SPELL_REGENERATION) * 100;
+        you.pb_on(PERMA_REGEN); return SPRET_SUCCESS;
     }
 }
 
@@ -225,16 +219,14 @@ spret_type cast_infusion(int pow, bool fail)
         mpr(you.duration[DUR_INFUSION] ? 
             "You stop attempting to infuse your attacks with magical energy." :
             "You stop infusing your attacks with magical energy.");
-        you.permabuff[PERMA_INFUSION] = false; 
-        return SPRET_PERMACANCEL;
+        you.pb_off(PERMA_INFUSION); return SPRET_PERMACANCEL;
     } else {
         fail_check();
         mpr(you.duration[DUR_INFUSION] ? 
             "You will soon be infusing your attacks with magical energy." :
             "You begin infusing your attacks with magical energy.");
         // Power is calculated every time we attack
-        you.permabuff[PERMA_INFUSION] = true;
-        return SPRET_SUCCESS;
+        you.pb_on(PERMA_INFUSION); return SPRET_SUCCESS;
     }
 }
 
@@ -244,15 +236,15 @@ spret_type cast_song_of_slaying(int pow, bool fail)
         mpr(you.duration[DUR_SONG_OF_SLAYING] ? 
             "You stop trying to sing a song of slaying." :
             "You stop singing a song of slaying.");
-        you.permabuff[PERMA_SONG] = false; you.props[SONG_OF_SLAYING_KEY] = 0;
-        return SPRET_PERMACANCEL;
+        you.props[SONG_OF_SLAYING_KEY] = 0;
+        you.pb_off(PERMA_SONG); return SPRET_PERMACANCEL;
     } else {
         fail_check();
         mpr(you.duration[DUR_SONG_OF_SLAYING] ? 
             "You will soon be singing a song of slaying." :
             "You start singing a song of slaying.");
-        you.permabuff[PERMA_SONG] = true; you.props[SONG_OF_SLAYING_KEY] = 0;
-        return SPRET_SUCCESS;
+        you.props[SONG_OF_SLAYING_KEY] = 0;
+        you.pb_on(PERMA_SONG); return SPRET_SUCCESS;
     }
 }
 
@@ -307,15 +299,13 @@ spret_type cast_shroud_of_golubria(int pow, bool fail)
             you.props.erase(SHROUD_RECHARGE); 
             you.increase_duration(DUR_SHROUD_OF_GOLUBRIA, 25, 25);
         }
-        you.permabuff[PERMA_SHROUD] = false;
-        return SPRET_PERMACANCEL;
+        you.pb_off(PERMA_SHROUD); return SPRET_PERMACANCEL;
     } else {
         fail_check();
         mpr (you.duration[DUR_SHROUD_OF_GOLUBRIA] ? 
              "You will soon reconstruct your protective shroud." :
              "Space distorts slightly along a thin shroud covering your body.");
-        you.permabuff[PERMA_SHROUD] = true;
-        return SPRET_SUCCESS;
+        you.pb_on(PERMA_SHROUD); return SPRET_SUCCESS;
     }
 }
 
@@ -336,13 +326,12 @@ spret_type cast_transform(int pow, transformation which_trans, bool fail)
 void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
                            int num, int size) {
     if (!(turn_off || end_durs || increase_durs)) {
-        mprf(MSGCH_WARN,"BUG: drop_permabuffs called to do nothing.");
+        mprf(MSGCH_ERROR, "BUG: drop_permabuffs called to do nothing.");
     }
     if (end_durs && increase_durs) {
-        mprf(MSGCH_WARN,"BUG: drop_permabuffs called to end and increase.");
+        mprf(MSGCH_ERROR, "BUG: drop_permabuffs called to end and increase.");
     }
-    for (unsigned int i = PERMA_FIRST_PERMA; i <= PERMA_LAST_PERMA ; i++) {
-        if (turn_off) you.permabuff[i] = false;
+    for (int i = PERMA_FIRST_PERMA; i <= PERMA_LAST_PERMA ; i++) {
         if (end_durs) you.duration[permabuff_durs[i]] = 0;
         if (increase_durs && you.permabuff[i]) {
             you.duration[permabuff_durs[i]] 
@@ -350,6 +339,7 @@ void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
                 = max(you.duration[permabuff_durs[i]],
                       BASELINE_DELAY * roll_dice(num,size));
         }
+        if (turn_off) you.pb_off((permabuff_type) i);
         if (turn_off && end_durs) {
             you.perma_benefit[i] = you.perma_hunger[i] = you.perma_mp[i] =
                 0;
@@ -358,7 +348,6 @@ void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
     if (turn_off) {
         you.props.erase(SHROUD_RECHARGE); you.props.erase(DMSL_RECHARGE);
         you.props[SONG_OF_SLAYING_KEY] = 0;
-        if (end_durs) you.props[PPROJ_DEBT] = 0;
     }
 }
 

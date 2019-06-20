@@ -41,7 +41,7 @@ static const permabuff_type pb_ordinary_mpregen[] = {
     PERMA_INFUSION,
     PERMA_SHROUD,
     PERMA_SONG,
-    PERMA_PPROJ, // handled specially
+    PERMA_PPROJ,
     PERMA_DMSL,
 };
 static const int size_mpregen_pb = ARRAYSZ(pb_ordinary_mpregen);

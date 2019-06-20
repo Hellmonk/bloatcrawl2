@@ -1388,6 +1388,10 @@ static void tag_construct_you(writer &th)
     ASSERT_RANGE(you.magic_points, 0, you.max_magic_points + 1);
     marshallUByte(th, you.magic_points);
     marshallByte(th, you.max_magic_points);
+    // Two of these are recalculated automagically but why tempt fate
+    marshallInt(th, you.mp_frozen);
+    marshallInt(th, you.charms_reserve);
+    marshallInt(th, you.charms_reserve_size);
 
     COMPILE_CHECK(NUM_STATS == 3);
     for (int i = 0; i < NUM_STATS; ++i)
@@ -2389,7 +2393,16 @@ static void tag_read_you(reader &th)
 
     you.magic_points              = unmarshallUByte(th);
     you.max_magic_points          = unmarshallByte(th);
-
+#if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() >= TAG_PB_REWORK_2) {
+#endif
+        you.mp_frozen = unmarshallInt(th);
+        you.charms_reserve = unmarshallInt(th);
+        you.charms_reserve_size = unmarshallInt(th);
+#if TAG_MAJOR_VERSION == 34
+    }
+#endif
+    
     for (int i = 0; i < NUM_STATS; ++i)
         you.base_stats[i] = unmarshallByte(th);
 #if TAG_MAJOR_VERSION == 34

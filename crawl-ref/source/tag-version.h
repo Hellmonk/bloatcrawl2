@@ -230,6 +230,7 @@ enum tag_minor_version
     TAG_PERMABUFFS,                // permanent enchantments
     TAG_PB_BENEFITS,
     TAG_PB_REWORK,
+    TAG_PB_REWORK_2,               // MP reservation
 #endif
     NUM_TAG_MINORS,
     TAG_MINOR_VERSION = NUM_TAG_MINORS - 1

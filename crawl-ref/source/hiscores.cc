@@ -1733,7 +1733,7 @@ void scorefile_entry::init(time_t dt)
 
     final_mp          = you.magic_points;
     final_max_mp      = you.max_magic_points;
-    final_base_max_mp = get_real_mp(false);
+    final_base_max_mp = get_real_mp(false, false);
 
     source_damage    = you.source_damage;
     turn_damage      = you.turn_damage;

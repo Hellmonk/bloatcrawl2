@@ -1547,7 +1547,7 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
                 canned_msg(MSG_FULL_HEALTH);
             return false;
         }
-        if (get_real_mp(false) < 1)
+        if (get_real_mp(false, false) < 1)
         {
             if (!quiet)
                 mpr("You don't have enough innate magic capacity.");

@@ -1160,7 +1160,8 @@ int player_regen()
 
 int player_mp_regen()
 {
-    int regen_amount = 7 + you.max_magic_points / 2;
+    // If more than one thing ever wants this, we'll have to make it less bodge
+    int regen_amount = 7 + (you.max_magic_points + you.mp_frozen) / 2;
 
     if (you.get_mutation_level(MUT_MANA_REGENERATION))
         regen_amount *= 2;
@@ -2746,7 +2747,7 @@ static void _gain_and_note_hp_mp()
     // Get "real" values for note-taking, i.e. ignore Berserk,
     // transformations or equipped items.
     const int note_maxhp = get_real_hp(false, false);
-    const int note_maxmp = get_real_mp(false);
+    const int note_maxmp = get_real_mp(false, false);
 
     char buf[200];
     sprintf(buf, "HP: %d/%d MP: %d/%d",
@@ -3723,7 +3724,7 @@ void dec_hp(int hp_loss, bool fatal, const char *aux)
 
 void calc_mp()
 {
-    you.max_magic_points = get_real_mp(true);
+    you.max_magic_points = get_real_mp(true, true);
     you.magic_points = min(you.magic_points, you.max_magic_points);
     you.redraw_magic_points = true;
 }
@@ -3797,7 +3798,7 @@ bool enough_mp(int minimum, bool suppress_msg, bool abort_macros)
     {
         if (!suppress_msg)
         {
-            if (get_real_mp(true) < minimum)
+            if (get_real_mp(true, true) < minimum)
                 mpr("You don't have enough magic capacity.");
             else
                 mpr("You don't have enough magic at the moment.");
@@ -4028,7 +4029,7 @@ int get_real_hp(bool trans, bool rotted)
     return max(1, hitp);
 }
 
-int get_real_mp(bool include_items)
+int get_real_mp(bool include_items, bool count_frozen)
 {
     const int scale = 100;
     int spellcasting = you.skill(SK_SPELLCASTING, 1 * scale, true);
@@ -4068,6 +4069,32 @@ int get_real_mp(bool include_items)
     if (include_items && you.wearing_ego(EQ_WEAPON, SPWPN_ANTIMAGIC))
         enp /= 3;
 
+    if (count_frozen) {
+        bool someoff = false;
+        you.charms_reserve_size = 0; you.mp_frozen = 0;
+        for (int j = PERMA_FIRST_PERMA; j <= PERMA_LAST_PERMA; ++j) {
+            if (you.permabuff[j]) {
+                int cost = spell_mana(permabuff_spell[j]);
+                if (enp >= cost) {
+                    enp -= cost;
+                    you.mp_frozen += cost;
+                    if (j != PERMA_REGEN) {
+                        you.charms_reserve_size += cost * 100;
+                    }
+                } else {
+                    // don't make this a pb_off because it will calc_mp !
+                    you.permabuff[j] = false; someoff = true;
+                    you.increase_duration(permabuff_durs[j], 25);
+                }
+            }
+        }
+        if (someoff) {
+            mpr("You don't have enough magic to sustain all your permanent charms!");
+        }
+        if (you.charms_reserve > you.charms_reserve_size) {
+            you.charms_reserve = you.charms_reserve_size;
+        }
+    }
     enp = max(enp, 0);
 
     return enp;
@@ -5048,7 +5075,7 @@ bool player::clear_far_engulf()
 
 bool player::has_permabuff(spell_type spell) {
     if (is_permabuff(spell)) {
-        int pb = permabuff_is(spell);
+        permabuff_type pb = permabuff_is(spell);
         return you.permabuff[pb];
     } else {
         return false;
@@ -5137,7 +5164,24 @@ string player::permabuff_whynot(permabuff_type pb) {
         return "you are buggily enchanted";
     }
 }
-        
+// These functions handle routine on/offs for permabuffs. They don't take 
+// account of Regeneration having special reserve handling, the reason being,
+// I'm about to change that
+void player::pb_on(permabuff_type pb) {
+    permabuff[pb] = true;
+    charms_reserve += spell_mana(permabuff_spell[pb]) * 100;
+    calc_mp();
+}
+void player::pb_off(permabuff_type pb) {
+    permabuff[pb] = false;
+    if (charms_reserve_size) {
+        charms_reserve -= 
+            (spell_mana(permabuff_spell[pb]) * 100 * charms_reserve) /
+            charms_reserve_size;
+    }
+    calc_mp();
+}
+
 
 void handle_player_drowning(int delay)
 {
@@ -5228,6 +5272,9 @@ player::player()
 
     magic_points     = 0;
     max_magic_points = 0;
+    mp_frozen        = 0;
+    charms_reserve   = 0;
+    charms_reserve_size = 0;
     mp_max_adj       = 0;
     dd_heals         = 0;
     dd_mp_rotted     = 0;
