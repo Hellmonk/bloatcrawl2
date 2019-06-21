@@ -4089,7 +4089,8 @@ int get_real_mp(bool include_items, bool count_frozen)
             }
         }
         if (someoff) {
-            mpr("You don't have enough magic to sustain all your permanent charms!");
+            mprf(MSGCH_DURATION,
+                 "You don't have enough magic to sustain all your permanent charms!");
         }
         if (you.charms_reserve > you.charms_reserve_size) {
             you.charms_reserve = you.charms_reserve_size;
@@ -5169,12 +5170,14 @@ string player::permabuff_whynot(permabuff_type pb) {
 // I'm about to change that
 void player::pb_on(permabuff_type pb) {
     permabuff[pb] = true;
-    charms_reserve += spell_mana(permabuff_spell[pb]) * 100;
+    if (pb != PERMA_REGEN) {
+        charms_reserve += spell_mana(permabuff_spell[pb]) * 100;
+    }
     calc_mp();
 }
 void player::pb_off(permabuff_type pb) {
     permabuff[pb] = false;
-    if (charms_reserve_size) {
+    if (charms_reserve_size && (pb != PERMA_REGEN)) {
         charms_reserve -= 
             (spell_mana(permabuff_spell[pb]) * 100 * charms_reserve) /
             charms_reserve_size;

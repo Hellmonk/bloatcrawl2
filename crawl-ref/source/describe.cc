@@ -3082,9 +3082,17 @@ static string _player_spell_desc(spell_type spell)
                     << "\n";
     }
     if (is_permabuff(spell)) {
-        description << "\nThis enchantment lasts indefinitely, until dispelled by the caster.\n";
+        description << "\nThis enchantment lasts indefinitely, until dispelled by the caster. ";
         if (you.has_permabuff(spell)) {
-            description << "Recast this spell to dispel the permanent enchantment.\n";
+            description <<
+                "Recast this spell to dispel the permanent enchantment. ";
+        }
+        int cost = 1 + (100 * spell_mana(spell) / nominal_duration(spell));
+        if (cost > 0) {
+            description << 
+                make_stringf(
+                    "When it gives a benefit, this spell will cost up to %d.%02d MP per turn.",
+                    cost / 100, cost %100);
         }
     }
 

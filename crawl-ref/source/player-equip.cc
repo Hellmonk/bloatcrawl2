@@ -1148,7 +1148,8 @@ static void _remove_amulet_of_faith(item_def &item)
 
 static void _remove_amulet_of_harm()
 {
-    you.props[RESIDUAL_HARM] = true; you.duration[DUR_RESIDUAL_HARM] = 500;
+    you.props[RESIDUAL_HARM] = true;
+    you.set_duration(DUR_RESIDUAL_HARM, 50);
 }
 
 static void _equip_amulet_of_regeneration()

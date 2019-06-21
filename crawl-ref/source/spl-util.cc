@@ -1600,7 +1600,7 @@ bool is_permabuff(spell_type spell) {
 }
 void permabuff_track(int pb) {
     spell_type spell = permabuff_spell[pb];
-    int dur = 10 * nominal_duration(spell);
+    int dur = BASELINE_DELAY * nominal_duration(spell);
     // The value of '8' is pretty arbitrary
     you.perma_benefit[pb] = max(you.perma_benefit[pb], div_rand_round(dur, 8));
     you.perma_hunger[pb] = (100 * spell_hunger(spell)) / dur;
@@ -1610,6 +1610,10 @@ void permabuff_track(int pb) {
 // pinged on benefit not just from routine recasting
     if (one_chance_in(nominal_duration(spell) / 3)) {
         practise_casting(spell, true);
+    }
+    if (silenced(you.pos()) && one_chance_in(nominal_duration(spell))) {
+        mprf(MSGCH_DURATION, "The silence stops you renewing one of your permanent enchantments!");
+        you.increase_duration(permabuff_durs[pb], roll_dice(2, 10));
     }
 }
 

@@ -941,8 +941,6 @@ static void _regenerate_hp_and_mp(int delay)
         if (you.permabuff_working(PERMA_REGEN) &&
             (you.hp < you.hp_max) &&
             (you.props[REGEN_RESERVE].get_int() > 0)) {
-//            permabuff_track(PERMA_REGEN); is not done here because this is
-// after the hunger charge
             you.props[REGEN_RESERVE].get_int() -=
                 div_rand_round(
                     (delay * spell_mana(SPELL_REGENERATION) * 100),
@@ -1027,7 +1025,7 @@ static void _regenerate_hp_and_mp(int delay)
     if (you.props[CHARMS_DEBT].get_int() >= 100) {
         if (enough_mp(1, true, false)) {
             dec_mp(1); you.props[CHARMS_DEBT].get_int() -= 100;
-            dprf(DIAG_PERMABUFF, "Lost an MP; debt decreased to %d,",
+            dprf(DIAG_PERMABUFF, "Lost an MP; debt decreased to %d.",
                  you.props[CHARMS_DEBT].get_int());
         } else {
             int turnoff = PERMA_NO_PERMA; int charge = 0;
@@ -1040,11 +1038,14 @@ static void _regenerate_hp_and_mp(int delay)
             }
             if (turnoff != PERMA_NO_PERMA) {
                 you.pb_off((permabuff_type) turnoff);
-                mpr("You don't have enough magic to sustain all your permanent charms!");
+                mprf(MSGCH_DURATION,
+                     "You don't have enough magic to sustain all your permanent charms!");
                 you.increase_duration(permabuff_durs[turnoff], 25);
                 // This is a bit arbitary but you'll take a recast cost down
                 // the line and stops it just turning off another one next turn
-                you.perma_mp[turnoff] = 0;
+                you.perma_mp[turnoff] = 0; 
+                you.props[CHARMS_DEBT].get_int() -= 
+                    10 * spell_mana(permabuff_spell[turnoff]);
             } else {
                 mprf(MSGCH_ERROR, "BUG: Found no permabuff to turn off when out of MP!");
             }
@@ -1095,6 +1096,8 @@ static void _regenerate_hp_and_mp(int delay)
             int divert = (mp_regen_countup * you.magic_points) /
                 max(you.max_magic_points,1);
             you.props[REGEN_RESERVE].get_int() += divert;
+            dprf(DIAG_PERMABUFF,"Regeneration diverted %d, reserve %d.",
+                 divert, you.props[REGEN_RESERVE].get_int());
 // Because first checked if it was <, can't go way over if a FD untransforms
             if (you.props[REGEN_RESERVE].get_int() > regen_size) {
                 divert -= (you.props[REGEN_RESERVE].get_int() - regen_size);

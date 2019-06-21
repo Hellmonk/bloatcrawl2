@@ -757,7 +757,8 @@ bool fill_status_info(int status, status_info& inf)
             inf.light_text = "PProj";
             inf.short_text = "portal projectile";
             if (you.permabuff_working(PERMA_PPROJ)) {
-                if (enough_mp(1, true, false)) {
+                if (enough_mp((you.props[CHARMS_DEBT].get_int() > 0) ?
+                              2 : 1, true, false)) {
                     inf.light_colour = LIGHTBLUE;
                     inf.long_text = 
                         "You are teleporting projectiles to their destination.";

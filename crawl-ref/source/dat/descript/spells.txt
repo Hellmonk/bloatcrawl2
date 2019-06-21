@@ -1040,7 +1040,8 @@ Allows the caster to teleport fired or thrown missiles directly to their
 targets, spending an additional small amount of magic for each missile. 
 Teleported projectiles have their accuracy greatly increased.
 
-If spellpower is low, it may use 2 MP instead of 1.
+If your permanent enchantments are draining all your MP, you can't use your
+final 1 MP to teleport a projectile, which would turn the spell off.
 %%%%
 Primal Wave spell
 

@@ -476,7 +476,10 @@ int get_ammo_to_shoot(int item, dist &target, bool teleport)
 bool is_pproj_active()
 {
     // confusion check is now baked in
-    return (you.permabuff_working(PERMA_PPROJ) && enough_mp(1, true, false));
+    return (you.permabuff_working(PERMA_PPROJ) && 
+            ((you.props[CHARMS_DEBT].get_int() > 0) ?
+             enough_mp(2, true, false) :
+             enough_mp(1, true, false)));
 }
 
 // If item == -1, prompt the user.

@@ -1017,10 +1017,15 @@ don't need to renew them as your skills improve.
 Such spells reserve some of your MP capacity, giving an effect similar
 to having cast them just before entering combat. They decrease your MP
 regeneration rate when providing a benefit, as if you were recasting
-it regularly - you can see the effect in the % screen. Initially, this
-charge is taken from the reserved MP, but as those run out it will
-affect your normal MP regeneration, as if you were recasting the spell
-during the fight.
+it regularly. Initially, this charge is taken from the reserved MP,
+but as those run out it will affect your normal MP regeneration - you
+can see the effect in the % screen.
+
+If you are making very heavy and prolonged use of them, so that your
+normal MP regeneration can't keep up, they will start to drain your
+normal MP supply; if this would take you to -1 MP, one of the spells
+will turn off instead. In practice, this is hard to make happen in
+normal play.
 
 Even if you are getting the benefit constantly, you will never pay
 more MP than you would if you were constantly recasting the spell in
