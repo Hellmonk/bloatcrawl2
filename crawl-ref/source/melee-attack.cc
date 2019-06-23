@@ -21,6 +21,7 @@
 #include "cloud.h"
 #include "coordit.h"
 #include "delay.h"
+#include "describe.h" // item_training_skill
 #include "english.h"
 #include "env.h"
 #include "exercise.h"
@@ -345,9 +346,18 @@ bool melee_attack::handle_phase_dodged()
             const bool using_fencers
                 = player_equip_unrand(UNRAND_FENCERS);
             const int chance = using_lbl + using_fencers;
+            
+            const skill_type skill = item_training_skill(item);
+            your_skill = you.skill(skill, 100, false, true, true)
+            const int max_skill = weapon_min_delay_skill(item) * 100;
+            const int riposte_percentage = (your_skill > max_skill) ? 100
+                : div_rand_round(your_skill, max_skill);
 
-            if (x_chance_in_y(chance, 3) && !is_riposte) // no ping-pong!
+            if (x_chance_in_y(chance, 3) && x_chance_in_y(riposte_percentage, 100)
+                && !is_riposte) // no ping-pong!
+            {
                 riposte();
+            }
 
             // Retaliations can kill!
             if (!attacker->alive())

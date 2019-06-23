@@ -99,6 +99,7 @@ void add_inscription(item_def &item, string inscrip);
 string trap_name(trap_type trap);
 string full_trap_name(trap_type trap);
 int str_to_trap(const string &s);
+skill_type item_training_skill(const item_def &item);
 
 int count_desc_lines(const string& _desc, const int width);
 

@@ -948,7 +948,7 @@ static int _item_training_target(const item_def &item)
  *
  * @return the skill, or SK_NONE if there is none. Note: SK_NONE is *not* 0.
  */
-static skill_type _item_training_skill(const item_def &item)
+skill_type item_training_skill(const item_def &item)
 {
     if (item.base_type == OBJ_WEAPONS || item.base_type == OBJ_STAVES)
         return item_attack_skill(item);
@@ -975,7 +975,7 @@ static bool _could_set_training_target(const item_def &item, bool ignore_current
     if (!crawl_state.need_save || is_useless_item(item) || you.species == SP_GNOLL)
         return false;
 
-    const skill_type skill = _item_training_skill(item);
+    const skill_type skill = item_training_skill(item);
     if (skill == SK_NONE)
         return false;
 
@@ -1087,7 +1087,7 @@ static void _append_weapon_stats(string &description, const item_def &item)
     const int ammo_type = fires_ammo_type(item);
     const int ammo_dam = ammo_type == MI_NONE ? 0 :
                                                 ammo_type_damage(ammo_type);
-    const skill_type skill = _item_training_skill(item);
+    const skill_type skill = item_training_skill(item);
     const int mindelay_skill = _item_training_target(item);
 
     const bool could_set_target = _could_set_training_target(item, true);
@@ -2589,7 +2589,7 @@ static bool _do_action(item_def &item, const vector<command_type>& actions, int 
 
 void target_item(item_def &item)
 {
-    const skill_type skill = _item_training_skill(item);
+    const skill_type skill = item_training_skill(item);
     if (skill == SK_NONE)
         return;
 
