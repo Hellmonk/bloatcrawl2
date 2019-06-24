@@ -5108,7 +5108,8 @@ permabuff_state player::permabuff_notworking(permabuff_type pb) {
         return PB_ANTIMAGIC;
     }
     if (you.duration[DUR_BRAINLESS]) return PB_BRAINLESS;
-    if (you.hunger_state <= HS_STARVING) return PB_STARVING;
+    if ((you.hunger_state <= HS_STARVING) &&
+        (you.species != SP_VAMPIRE)) return PB_STARVING;
     if (you.duration[permabuff_durs[pb]]) return PB_DURATION;
     if ((pb == PERMA_SHROUD) && you.props.exists(SHROUD_RECHARGE) && 
         you.props[SHROUD_RECHARGE].get_int()) {
