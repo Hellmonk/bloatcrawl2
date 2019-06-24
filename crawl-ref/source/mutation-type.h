@@ -46,6 +46,7 @@ enum mutation_type
     MUT_POWERSQUAT,
     MUT_FADING,
     MUT_HARVEST_ENERGY,
+    MUT_BODACH_ASPECT,
 #endif
     MUT_ACUTE_VISION,
     MUT_AGILE,
@@ -237,6 +238,7 @@ enum mutation_type
     MUT_POWERSQUAT,
     MUT_FADING,
     MUT_HARVEST_ENERGY,
+    MUT_BODACH_ASPECT,
 #endif
     NUM_MUTATIONS,
     CATEGORY_MUTATIONS,

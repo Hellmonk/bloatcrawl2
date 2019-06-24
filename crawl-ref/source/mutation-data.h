@@ -1992,6 +1992,14 @@ static const mutation_def mut_data[] =
    {"", "", ""},
    {"", "", ""},
 },
+
+{ MUT_BODACH_ASPECT, 0, 1, mutflag::good, false,
+   "bodach aspect",
+
+   {"Your aspect changes uncontrollably as you grow.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =
