@@ -2535,6 +2535,10 @@ static tileidx_t _tileidx_misc(const item_def &item)
     case MISC_SACK_OF_SPIDERS:
         return TILE_MISC_SACK_OF_SPIDERS;
 
+    case MISC_AIR_HORN:
+        return evoker_charges(item.sub_type) ? TILE_MISC_AIR_HORN
+                                             : TILE_MISC_AIR_HORN_INERT;
+
     case MISC_PHANTOM_MIRROR:
         return TILE_MISC_PHANTOM_MIRROR;
 

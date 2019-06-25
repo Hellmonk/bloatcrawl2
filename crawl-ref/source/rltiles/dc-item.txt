@@ -992,6 +992,8 @@ misc_phial MISC_PHIAL_OF_FLOODS
 misc_phial_inert MISC_PHIAL_OF_FLOODS_INERT
 misc_lightning_rod MISC_LIGHTNING_ROD
 misc_lightning_rod_inert MISC_LIGHTNING_ROD_INERT
+misc_air_horn MISC_AIR_HORN
+misc_air_horn_inert MISC_AIR_HORN_INERT
 %rim 1
 # Remove when TAG_MAJOR_VERSION > 34
 misc_lantern MISC_LANTERN_OF_SHADOWS
