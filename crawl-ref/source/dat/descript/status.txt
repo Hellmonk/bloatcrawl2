@@ -68,8 +68,8 @@ it otherwise lasts indefinitely.
 DMsl status
 
 You deflect missiles, greatly improving your chance to evade them. This effect,
-if provided by a spell, has a chance to expire with every projectile it
-deflects; it otherwise lasts indefinitely.
+if provided by a spell, has a chance to be temporarily suppressed with every
+projectile it deflects; it otherwise lasts indefinitely.
 %%%%
 Touch status
 
@@ -268,6 +268,11 @@ Collapse status
 Your strength has fallen to 0. You are slowed, and your health regeneration is
 greatly reduced. The status will persist for a short while even after
 recovering your strength.
+%%%%
+Charms status
+
+Your permanent enchantments are consuming more MP regeneration than is 
+available. If this continues, your MP will be drained.
 %%%%
 DChan status
 

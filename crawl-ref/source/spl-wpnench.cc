@@ -8,6 +8,7 @@
 #include "spl-wpnench.h"
 
 #include "areas.h"
+#include "artefact.h"
 #include "god-item.h"
 #include "god-passive.h"
 #include "item-prop.h"
@@ -27,11 +28,10 @@
  */
 void end_weapon_brand(item_def &weapon, bool verbose)
 {
-    ASSERT(you.duration[DUR_EXCRUCIATING_WOUNDS]);
+    ASSERT(you.props.exists(ORIGINAL_BRAND_KEY));
 
     set_item_ego_type(weapon, OBJ_WEAPONS, you.props[ORIGINAL_BRAND_KEY]);
     you.props.erase(ORIGINAL_BRAND_KEY);
-    you.duration[DUR_EXCRUCIATING_WOUNDS] = 0;
 
     if (verbose)
     {
@@ -50,6 +50,22 @@ void end_weapon_brand(item_def &weapon, bool verbose)
     }
 }
 
+void start_weapon_brand(item_def &weapon, bool verbose) {
+    noisy(spell_effect_noise(SPELL_EXCRUCIATING_WOUNDS), you.pos());
+    if (verbose) {
+        mprf("%s %s in agony.", weapon.name(DESC_YOUR).c_str(),
+             silenced(you.pos()) ? "writhes" : "shrieks");
+    }
+    you.props[ORIGINAL_BRAND_KEY] = get_weapon_brand(weapon);
+    set_item_ego_type(weapon, OBJ_WEAPONS, SPWPN_PAIN);
+    you.wield_change = true;
+    if (you.duration[DUR_SPWPN_PROTECTION])
+    {
+        you.duration[DUR_SPWPN_PROTECTION] = 0;
+        you.redraw_armour_class = true;
+    }
+}
+
 /**
  * Temporarily brand a weapon with pain.
  *
@@ -59,67 +75,22 @@ void end_weapon_brand(item_def &weapon, bool verbose)
  */
 spret_type cast_excruciating_wounds(int power, bool fail)
 {
-    item_def& weapon = *you.weapon();
-    const brand_type which_brand = SPWPN_PAIN;
-    const brand_type orig_brand = get_weapon_brand(weapon);
-
-    // Can only brand melee weapons.
-    if (is_range_weapon(weapon))
-    {
-        mpr("You cannot brand ranged weapons with this spell.");
-        return SPRET_ABORT;
-    }
-
-    bool has_temp_brand = you.duration[DUR_EXCRUCIATING_WOUNDS];
-    if (!has_temp_brand && get_weapon_brand(weapon) == which_brand)
-    {
-        mpr("This weapon is already branded with pain.");
-        return SPRET_ABORT;
-    }
-
-    const bool dangerous_disto = orig_brand == SPWPN_DISTORTION
-                                 && !have_passive(passive_t::safe_distortion);
-    if (dangerous_disto)
-    {
-        const string prompt =
-              "Really brand " + weapon.name(DESC_INVENTORY) + "?";
-        if (!yesno(prompt.c_str(), false, 'n'))
-        {
-            canned_msg(MSG_OK);
-            return SPRET_ABORT;
+    if (you.permabuff[PERMA_EXCRU]) {
+        mpr(you.duration[DUR_EXCRUCIATING_WOUNDS] ? 
+            "You stop attempting to infuse your attacks with pain." :
+            "You stop infusing your attacks with pain.");
+        you.pb_off(PERMA_EXCRU); return SPRET_PERMACANCEL;
+    } else {
+        fail_check();
+// Suitable weapon checks moved to spl-util.cc
+        item_def& weapon = *you.weapon();
+        // No other message - start_weapon_brand will produce one anyway
+        if (you.duration[DUR_EXCRUCIATING_WOUNDS]) {
+            mpr ("You will soon be infusing your attacks with pain.");
         }
+        start_weapon_brand(weapon);
+        you.pb_on(PERMA_EXCRU); return SPRET_SUCCESS;
     }
-
-    fail_check();
-
-    if (dangerous_disto)
-    {
-        // Can't get out of it that easily...
-        MiscastEffect(&you, nullptr, WIELD_MISCAST, SPTYP_TRANSLOCATION,
-                      9, 90, "rebranding a weapon of distortion");
-    }
-
-    noisy(spell_effect_noise(SPELL_EXCRUCIATING_WOUNDS), you.pos());
-    mprf("%s %s in agony.", weapon.name(DESC_YOUR).c_str(),
-                            silenced(you.pos()) ? "writhes" : "shrieks");
-
-    if (!has_temp_brand)
-    {
-        you.props[ORIGINAL_BRAND_KEY] = get_weapon_brand(weapon);
-        set_item_ego_type(weapon, OBJ_WEAPONS, which_brand);
-        you.wield_change = true;
-        if (you.duration[DUR_SPWPN_PROTECTION])
-        {
-            you.duration[DUR_SPWPN_PROTECTION] = 0;
-            you.redraw_armour_class = true;
-        }
-        if (orig_brand == SPWPN_ANTIMAGIC)
-            calc_mp();
-    }
-
-    you.increase_duration(DUR_EXCRUCIATING_WOUNDS, 8 + roll_dice(2, power), 50);
-
-    return SPRET_SUCCESS;
 }
 
 spret_type cast_confusing_touch(int power, bool fail)

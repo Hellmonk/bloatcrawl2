@@ -114,6 +114,7 @@ enum permabuff_state {
     PB_SONG_SILENCED,
     PB_REGEN_LICH,
     PB_CONFUSED, // only applies to portal proj
+    PB_EXCRU_NOWEP,
 };
 
 // needed for assert in is_player()

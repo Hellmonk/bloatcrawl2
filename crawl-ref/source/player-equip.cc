@@ -752,10 +752,12 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
                 break;
             }
 
-            if (you.duration[DUR_EXCRUCIATING_WOUNDS])
+            if (you.props.exists(ORIGINAL_BRAND_KEY))
             {
                 ASSERT(real_item.defined());
                 end_weapon_brand(real_item, true);
+                you.increase_duration(DUR_EXCRUCIATING_WOUNDS,
+                                      roll_dice(2,4));
             }
         }
     }

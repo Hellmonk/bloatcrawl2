@@ -1065,10 +1065,6 @@ bool spell_is_form(spell_type spell)
 bool spell_is_useless(spell_type spell, bool temp, bool prevent,
                       bool fake_spell)
 {
-    if (temp && is_permabuff(spell) && you.has_permabuff(spell) &&
-        can_cast_spells()) {
-        return false;
-    }
     return !spell_uselessness_reason(spell, temp, prevent, fake_spell).empty();
 }
 
@@ -1095,6 +1091,12 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     {
         if (!fake_spell && you.duration[DUR_CONF] > 0)
             return "you're too confused.";
+        // Moved here because otherwise _spellcasting_aborted objects to you
+        // holding a non-brandable weapon when cancelling Excru
+        if (is_permabuff(spell) && you.has_permabuff(spell) &&
+            can_cast_spells()) {
+            return "";
+        }
         if (!enough_mp(spell_mana(spell), true, false)
             && !fake_spell)
         {
@@ -1172,12 +1174,20 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 
     case SPELL_EXCRUCIATING_WOUNDS:
-        if (temp
-            && (!you.weapon()
-                || you.weapon()->base_type != OBJ_WEAPONS
-                || !is_brandable_weapon(*you.weapon(), true)))
-        {
-            return "you aren't wielding a brandable weapon.";
+        if (temp) {
+            if (!you.weapon()) {
+                return "you aren't wielding a weapon.";
+            } else {
+                item_def& weapon = *you.weapon();
+                brand_type brand = get_weapon_brand(weapon);
+                if ((weapon.base_type != OBJ_WEAPONS)
+                    || !is_brandable_weapon(weapon, false)
+                    || (brand == SPWPN_PAIN)
+                    || (brand == SPWPN_ANTIMAGIC)
+                    || (brand == SPWPN_DISTORTION)) {
+                    return "you aren't wielding a brandable weapon.";
+                }
+            }
         }
         // intentional fallthrough
     case SPELL_PORTAL_PROJECTILE:
@@ -1621,7 +1631,7 @@ int nominal_duration(spell_type spell) {
     int pow;
     switch (spell) {
     case SPELL_INFUSION:
-        return 8 + calc_spell_power(spell, true);
+        return min(100,8 + calc_spell_power(spell, true));
 // you.increase_duration(DUR_INFUSION,  8 + roll_dice(2, pow), 100);
     case SPELL_SONG_OF_SLAYING:
         return 20 + (calc_spell_power(spell, true) / 2);
@@ -1635,13 +1645,17 @@ int nominal_duration(spell_type spell) {
 // you.increase_duration(DUR_REGENERATION, 5 + roll_dice(2, pow / 3 + 1), 100,
     case SPELL_PORTAL_PROJECTILE:
         pow = calc_spell_power(spell, true);
-        return 3 + pow/4 + pow/10;
+        return min(50, 3 + pow/4 + pow/10);
 //  you.increase_duration(DUR_PORTAL_PROJECTILE, 3 + random2(pow / 2) + random2(pow / 5), 50);
     case SPELL_DEFLECT_MISSILES:
         return 30 + calc_spell_power(spell, true);
 // you.increase_duration(DUR_DEFLECT_MISSILES, 15 + random2(pow), 100,
 // but that was in the days before it expired on being hit, so we circa double
-// the old nominal duration as a somewhat arbitary compromise
+// the old nominal duration as a somewhat arbitary compromise, removing cap
+    case SPELL_EXCRUCIATING_WOUNDS:
+        return min(8+calc_spell_power(spell, true), 50);
+        //     you.increase_duration(DUR_EXCRUCIATING_WOUNDS, 
+        //     8 + roll_dice(2, power), 50);
     default:
         return 0;
     }

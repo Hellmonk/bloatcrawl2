@@ -2179,7 +2179,7 @@ bool god_hates_brand(const int brand)
 
 static void _rebrand_weapon(item_def& wpn)
 {
-    if (&wpn == you.weapon() && you.duration[DUR_EXCRUCIATING_WOUNDS])
+    if (&wpn == you.weapon() && you.props.exists(ORIGINAL_BRAND_KEY))
         end_weapon_brand(wpn);
     const brand_type old_brand = get_weapon_brand(wpn);
     brand_type new_brand = old_brand;

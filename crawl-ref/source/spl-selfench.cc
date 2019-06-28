@@ -27,6 +27,7 @@
 #include "showsymb.h"
 #include "spl-transloc.h"
 #include "spl-util.h"
+#include "spl-wpnench.h"
 #include "stringutil.h"
 #include "transform.h"
 #include "tilepick.h"
@@ -344,6 +345,9 @@ void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
             you.perma_benefit[i] = you.perma_hunger[i] = you.perma_mp[i] =
                 0;
         }
+    }
+    if (increase_durs && you.props.exists(ORIGINAL_BRAND_KEY)) {
+        end_weapon_brand(*you.weapon(), true);
     }
     if (turn_off) {
         you.props.erase(SHROUD_RECHARGE); you.props.erase(DMSL_RECHARGE);

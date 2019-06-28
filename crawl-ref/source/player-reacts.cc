@@ -6,6 +6,7 @@
 #include "AppHdr.h"
 
 #include "player-reacts.h"
+#include "spl-wpnench.h"
 
 #include <algorithm>
 #include <cerrno>
@@ -1289,6 +1290,14 @@ void player_reacts()
             you.props.erase(DMSL_RECHARGE);
         }
     }
+    // Why is this here? I don't know
+    if (you.permabuff_working(PERMA_EXCRU) &&
+        !you.props.exists(ORIGINAL_BRAND_KEY)) {
+        start_weapon_brand(*you.weapon());
+    } else if (!you.permabuff_working(PERMA_EXCRU) &&
+               you.props.exists(ORIGINAL_BRAND_KEY)) {
+        end_weapon_brand(*you.weapon(), true);
+    } 
     dec_disease_player(you.time_taken);
     if (you.duration[DUR_POISONING])
         handle_player_poison(you.time_taken);

@@ -65,6 +65,7 @@
 #include "spl-damage.h"
 #include "spl-selfench.h"
 #include "spl-transloc.h"
+#include "spl-wpnench.h"
 #include "spl-util.h"
 #include "sprint.h"
 #include "stairs.h"
@@ -5125,8 +5126,24 @@ permabuff_state player::permabuff_notworking(permabuff_type pb) {
     if ((pb == PERMA_REGEN) && (you.form == transformation::lich)) {
         return PB_REGEN_LICH;
     }
+    if ((pb == PERMA_REGEN) && (you.species == SP_VAMPIRE) &&
+        (you.hunger_state <= HS_STARVING)) {
+        return PB_STARVING;
+    }
     if ((pb == PERMA_PPROJ) && (you.confused())) {
         return PB_CONFUSED;
+    }
+    if (pb == PERMA_EXCRU) {
+        if (!you.weapon()) {
+            return PB_EXCRU_NOWEP;
+        } else {
+            item_def& weapon = *you.weapon();
+            const brand_type brand = get_weapon_brand(weapon);
+            if (is_range_weapon(weapon) || (brand == SPWPN_DISTORTION) || 
+                (brand == SPWPN_ANTIMAGIC) || (is_artefact(weapon))) {
+                return PB_EXCRU_NOWEP;
+            }
+        }
     }
     if (!you.permabuff[pb]) return PB_DONTHAVE;
     return PB_WORKING;
@@ -5146,7 +5163,8 @@ string player::permabuff_whynot(permabuff_type pb) {
     case PB_BRAINLESS:
         return "you are brainless";
     case PB_STARVING:
-        return "you are starving";
+        return (you.species == SP_VAMPIRE) ? "you are bloodless" :
+            "you are starving";
     case PB_DURATION:
         return "it has been temporarily dispelled";
     case PB_SHROUD_RECHARGE:
@@ -5159,6 +5177,14 @@ string player::permabuff_whynot(permabuff_type pb) {
         return "you have no flesh to regenerate";
     case PB_CONFUSED:
         return "you are too confused";
+    case PB_EXCRU_NOWEP:
+    {
+        if (you.weapon()) {
+            return "your weapon is unsuitable";
+        } else {
+            return "you are not wielding a weapon";
+        }
+    }
         // If something wants this message, weird
     case PB_DONTHAVE:
         return "you don't have this enchantment";

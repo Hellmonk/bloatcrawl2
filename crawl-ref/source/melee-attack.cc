@@ -42,6 +42,7 @@
 #include "spl-cast.h"
 #include "spl-selfench.h"
 #include "spl-summoning.h"
+#include "spl-wpnench.h"
 #include "state.h"
 #include "stepdown.h"
 #include "stringutil.h"
@@ -916,6 +917,29 @@ bool melee_attack::attack()
         && artefact_property(*weapon, ARTP_NOISE))
     {
         noisy_equipment();
+    }
+    if (attacker->is_player() && weapon && 
+        you.props.exists(ORIGINAL_BRAND_KEY)) {
+// Ideally I'd like to do this bit before the damage is calculated, but that
+// raises the spectre of trying to recalculate it with the weapon's original
+// brand
+        if (special_damage) {
+            permabuff_track(PERMA_EXCRU);
+            int fail = permabuff_failure_check(PERMA_EXCRU);
+            if (fail) {
+                mprf(MSGCH_DURATION,
+                     "You lose control of the necromantic energies infusing your weapon.");
+                apply_miscast(SPELL_EXCRUCIATING_WOUNDS,fail,false);
+                you.increase_duration(DUR_EXCRUCIATING_WOUNDS,
+                                      roll_dice(2,10) + fail/4);
+                end_weapon_brand(*weapon);
+            } else if (one_chance_in(
+                           nominal_duration(SPELL_EXCRUCIATING_WOUNDS) / 
+                           pb_dur_fudge[PERMA_EXCRU])) {
+                string msg = "@Your_weapon@ shrieks terribly!";
+                item_noise(*weapon, msg, 15);
+            }
+        }
     }
 
     alert_defender();

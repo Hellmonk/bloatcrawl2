@@ -782,6 +782,31 @@ bool fill_status_info(int status, status_info& inf)
         inf.long_text = "If you recast Portal Projectile, it will not take effect immediately.";
         break;
 
+    case STATUS_EXCRU:
+        if (you.permabuff[PERMA_EXCRU] &&
+            !you.duration[DUR_EXCRUCIATING_WOUNDS]) {
+            if (you.permabuff_working(PERMA_EXCRU)) {
+                inf.light_text = "Excru";
+                inf.short_text = "excruciating";
+                inf.light_colour = LIGHTBLUE;
+                inf.long_text = "You are infusing your attacks with the essence of pain.";
+            } else {
+                inf.light_text = "-Excru";
+                inf.short_text = "cannot excruciate";
+                inf.light_colour = BLUE;
+                inf.long_text = "You would inflict excruciating wounds, but "
+                    + you.permabuff_whynot(PERMA_EXCRU) + ".";
+            }
+        }
+        break;
+
+    case DUR_EXCRUCIATING_WOUNDS:
+        if (!you.permabuff[PERMA_EXCRU]) {
+            inf.light_colour = DARKGREY;
+            inf.long_text = "If you recast Excruciating Wounds, it will not take effect immediately.";
+        }
+        break;
+
     case STATUS_INFUSION:
     {
         if (you.permabuff[PERMA_INFUSION] && !you.duration[DUR_INFUSION]) {
@@ -1040,10 +1065,11 @@ static void _describe_regen(status_info& inf)
             inf.short_text += " slowly";
         else
             inf.short_text += " quickly";
-    } else if (you.permabuff[PERMA_REGEN] && !regen && 
+    } 
+    if (you.permabuff[PERMA_REGEN] && !regen && 
         !you.duration[DUR_REGENERATION]) {
         inf.light_text   = "Regen"; inf.light_colour = DARKGREY;
-        inf.short_text = "not regenerating";
+        inf.short_text = "not magically regenerating";
         inf.long_text = "You would be magically regenerating, but " +
             you.permabuff_whynot(PERMA_REGEN) + ".";
     }

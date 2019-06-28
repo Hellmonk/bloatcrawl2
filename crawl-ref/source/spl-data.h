@@ -1773,7 +1773,7 @@ static const struct spell_desc spelldata[] =
     -1, -1,
     4, 15,
     TILEG_EXCRUCIATING_WOUNDS,
-    PERMA_NO_PERMA,
+    PERMA_EXCRU,
 },
 
 {

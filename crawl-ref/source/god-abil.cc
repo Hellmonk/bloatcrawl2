@@ -165,10 +165,11 @@ bool bless_weapon(god_type god, brand_type brand, colour_t colour)
         return false;
     }
 
-    if (you.duration[DUR_EXCRUCIATING_WOUNDS]) // just in case
+    if (you.props.exists(ORIGINAL_BRAND_KEY)) // just in case
     {
         ASSERT(you.weapon());
         end_weapon_brand(*you.weapon());
+        you.pb_off(PERMA_EXCRU); 
     }
 
     string old_name = wpn.name(DESC_A);

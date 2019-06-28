@@ -4,12 +4,11 @@
 
 #include "god-passive.h"
 
-static void _end_weapon_brand()
-{
-    you.duration[DUR_EXCRUCIATING_WOUNDS] = 1;
-    ASSERT(you.weapon());
-    end_weapon_brand(*you.weapon(), true);
-}
+//static void _end_weapon_brand()
+//{
+//    ASSERT(you.weapon());
+//    end_weapon_brand(*you.weapon(), true);
+//}
 
 static void _end_invis()
 {
@@ -417,8 +416,8 @@ static const duration_def duration_data[] =
 			  mprf(MSGCH_DURATION, 
 			       "You are once again %s.",
 			       (you.permabuff_working(PERMA_REGEN) ? 
-			       "magically regenerating" :
-			       "able to magically regenerate"));
+				"magically regenerating" :
+				"able to magically regenerate"));
 		  }}}}},
     { DUR_DEFLECT_MISSILES,
       YELLOW, "-DMsl",
@@ -429,8 +428,20 @@ static const duration_def duration_data[] =
 			  mprf(MSGCH_DURATION, 
 			       "You are once again %s.",
 			       (you.permabuff_working(PERMA_DMSL) ? 
-			       "deflecting missiles" :
-			       "able to deflect missiles"));
+				"deflecting missiles" :
+				"able to deflect missiles"));
+		  }}}}},
+    { DUR_EXCRUCIATING_WOUNDS,
+      YELLOW, "-Excru",
+      "excruciation suppressed", "",
+      "You are temporarily unable to cause excruciating wounds.", D_EXPIRES,
+      {{ "", []() {
+		  if (you.permabuff_could(PERMA_EXCRU)) {
+		      mprf(MSGCH_DURATION, 
+			   "You are once again %s.",
+			   (you.permabuff_working(PERMA_EXCRU) ? 
+			    "inflicting excruciating wounds" :
+			    "able to inflict excruciating wounds"));
 		  }}}}},
     { DUR_FLAYED,
       RED, "Flay",
@@ -632,8 +643,6 @@ static const duration_def duration_data[] =
     { DUR_POISONING, 0, "", "", "poisoning", "", D_NO_FLAGS},
     { DUR_PIETY_POOL, 0, "", "", "piety pool", "", D_NO_FLAGS},
     { DUR_TRANSFORMATION, 0, "", "", "transformation", "", D_DISPELLABLE /*but special-cased*/, {}, 10},
-    { DUR_EXCRUCIATING_WOUNDS, 0, "", "", "excruciating wounds", "", D_DISPELLABLE,
-      {{ "", _end_weapon_brand }}},
     { DUR_DEMONIC_GUARDIAN, 0, "", "", "demonic guardian", "", D_NO_FLAGS, {{""}}},
     { DUR_POWERED_BY_DEATH, 0, "", "", "pbd", "", D_NO_FLAGS},
     { DUR_GOURMAND, 0, "", "", "gourmand", "", D_NO_FLAGS},
