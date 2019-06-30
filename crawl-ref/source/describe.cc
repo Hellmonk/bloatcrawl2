@@ -3087,15 +3087,35 @@ static string _player_spell_desc(spell_type spell)
             description <<
                 "Recast this spell to dispel the permanent enchantment. ";
         }
-        int cost = 1 + (100 * spell_mana(spell) / nominal_duration(spell));
-        if (cost > 0) {
-            description << 
-                make_stringf(
-                    "When it gives a benefit, this spell will cost up to %d.%02d MP per turn.",
-                    cost / 100, cost %100);
+        int basecost = (100 * spell_mana(spell) / nominal_duration(spell));
+        int succ = 100 - (min(90, failure_rate_to_int
+                              (raw_spell_fail(spell))));
+        int32_t adjcost = (10000 * spell_mana(spell)) / 
+            (nominal_duration(spell) * succ);
+        int costdiff = adjcost - basecost;
+        if (adjcost > 0) {
+            if (spell == SPELL_REGENERATION) {
+                description << 
+                    make_stringf
+                    ("To regenerate at full speed, this spell would need %d.%02d MP per turn",
+                     adjcost / 100, adjcost %100);
+            } else {
+                description << 
+                    make_stringf
+                    ("When it gives a benefit, this spell will cost up to %d.%02d MP per turn",
+                     adjcost / 100, adjcost %100);
+            }
+            if (adjcost > basecost) {
+                description <<
+                    make_stringf
+                    (", %d.%02d MP of which is caused by your spell failure chance.",
+                     costdiff / 100, costdiff % 100);
+            } else {
+                description << ".";
+            }            
         }
     }
-
+    
     return description.str();
 }
 

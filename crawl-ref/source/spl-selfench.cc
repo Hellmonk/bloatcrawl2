@@ -252,12 +252,10 @@ spret_type cast_song_of_slaying(int pow, bool fail)
 void check_sos_miscast() {
     if (you.permabuff_working(PERMA_SONG) &&
         you.props[SONG_OF_SLAYING_KEY].get_int()) {
-        int fail = permabuff_failure_check(PERMA_SONG);
-        if (fail) {
-            mprf(MSGCH_DURATION,
-                 "You stumble over the syllables of your song.");
-            apply_miscast(SPELL_SONG_OF_SLAYING, fail, false);
-            you.increase_duration(DUR_SONG_OF_SLAYING, roll_dice(2,10) + fail/4);
+        if (permabuff_fail_check
+            (PERMA_SONG,
+             "You stumble over the syllables of your song.")) {
+            you.props[SONG_OF_SLAYING_KEY] = 0;
         } 
     }
 }
@@ -336,7 +334,7 @@ void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
         if (end_durs) you.duration[permabuff_durs[i]] = 0;
         if (increase_durs && you.permabuff[i]) {
             you.duration[permabuff_durs[i]] 
-                // default 2d10
+                // default 4d10
                 = max(you.duration[permabuff_durs[i]],
                       BASELINE_DELAY * roll_dice(num,size));
         }
@@ -346,7 +344,7 @@ void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
                 0;
         }
     }
-    if (increase_durs && you.props.exists(ORIGINAL_BRAND_KEY)) {
+    if ((increase_durs || turn_off) && you.props.exists(ORIGINAL_BRAND_KEY)) {
         end_weapon_brand(*you.weapon(), true);
     }
     if (turn_off) {
@@ -355,11 +353,20 @@ void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
     }
 }
 
-int permabuff_failure_check(permabuff_type pb) {
+bool permabuff_fail_check(permabuff_type pb, const string &message, 
+                          bool ignoredur) {
+    permabuff_track(pb);
     spell_type spell = permabuff_spell[pb];
-    if (one_chance_in(nominal_duration(spell) / pb_dur_fudge[pb])) {
-        return failure_check(spell, true);
-    } else {
-        return 0;
+    if (one_chance_in(nominal_duration(spell) / pb_dur_fudge[pb]) ||
+        ignoredur) {
+        int fail = failure_check(spell,true);
+        if (fail) {
+            mprf(MSGCH_DURATION, "%s", message.c_str());
+            apply_miscast(spell, fail, false);
+            you.increase_duration(permabuff_durs[pb],roll_dice(2,10) + fail/4);
+            you.perma_miscast[pb] = true;
+            return true;
+        }
     }
+    return false;
 }

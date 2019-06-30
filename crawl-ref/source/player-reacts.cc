@@ -6,6 +6,7 @@
 #include "AppHdr.h"
 
 #include "player-reacts.h"
+#include "spl-selfench.h"
 #include "spl-wpnench.h"
 
 #include <algorithm>
@@ -942,17 +943,21 @@ static void _regenerate_hp_and_mp(int delay)
         if (you.permabuff_working(PERMA_REGEN) &&
             (you.hp < you.hp_max) &&
             (you.props[REGEN_RESERVE].get_int() > 0)) {
-            you.props[REGEN_RESERVE].get_int() -=
-                div_rand_round(
-                    (delay * spell_mana(SPELL_REGENERATION) * 100),
-                    nominal_duration(SPELL_REGENERATION) * BASELINE_DELAY);
-            int fail = permabuff_failure_check(PERMA_REGEN);
-            if (fail) {
-                mprf(MSGCH_DURATION,
-                     "Your skin crawls horribly, then goes numb.");
-                apply_miscast(SPELL_REGENERATION, fail, false);
-                you.increase_duration(DUR_REGENERATION,
-                                      roll_dice(2,10) + fail/4);
+            if (permabuff_fail_check
+                (PERMA_REGEN,
+                 "Your skin crawls horribly, then goes numb.")) {
+                you.props[REGEN_RESERVE] = 0;
+            } else {
+// This is done oddly to fit into 16-bit ints
+                int succ = 10000 / 
+                    (100 - (min(90, failure_rate_to_int
+                                (raw_spell_fail(SPELL_REGENERATION)))));
+                you.props[REGEN_RESERVE].get_int() -= div_rand_round
+                    ((delay * spell_mana(SPELL_REGENERATION) * succ),
+                     (nominal_duration(SPELL_REGENERATION) * BASELINE_DELAY));
+                dprf(DIAG_PERMABUFF, 
+                     "Regen reserve now %d, succ %d, delay %d.",
+                     you.props[REGEN_RESERVE].get_int(), succ, delay);
             }
         }
     }
@@ -1295,7 +1300,8 @@ void player_reacts()
         !you.props.exists(ORIGINAL_BRAND_KEY)) {
         start_weapon_brand(*you.weapon());
     } else if (!you.permabuff_working(PERMA_EXCRU) &&
-               you.props.exists(ORIGINAL_BRAND_KEY)) {
+               you.props.exists(ORIGINAL_BRAND_KEY) &&
+               you.weapon()) {
         end_weapon_brand(*you.weapon(), true);
     } 
     dec_disease_player(you.time_taken);

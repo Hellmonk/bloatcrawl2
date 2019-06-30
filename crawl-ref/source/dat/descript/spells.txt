@@ -534,7 +534,7 @@ it will not affect artefact weapons, ranged weapons, weapons of
 distortion, or antimagic weapons. The weapon will periodically shriek
 uncontrollably when used; it will do so less frequently with higher
 spellpower. If the caster changes weapon, the new weapon will be
-affected after a short delay.
+affected after a moderate delay.
 %%%%
 Flay spell
 

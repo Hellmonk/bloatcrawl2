@@ -41,5 +41,6 @@ spret_type cast_shroud_of_golubria(int pow, bool fail);
 spret_type cast_transform(int pow, transformation which_trans, bool fail);
 
 void spell_drop_permabuffs(bool turn_off, bool end_durs, bool increase_durs,
-			   int num = 2, int size = 10);
-int permabuff_failure_check(permabuff_type pb);
+			   int num = 4, int size = 10);
+bool permabuff_fail_check(permabuff_type pb, const string &message, 
+			  bool ignoredur = false);

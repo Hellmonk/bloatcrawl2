@@ -916,15 +916,9 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
         dec_mp(1);
         // Unlike Infusion, you get the shot off before it fizzles, because 
         // there's no practical way to know which targetter to use
-        permabuff_track(PERMA_PPROJ);
-        int fail = permabuff_failure_check(PERMA_PPROJ);
-        if (fail) {
-            mprf(MSGCH_DURATION,
-                 "You lose control of your teleporting projectiles.");
-                apply_miscast(SPELL_PORTAL_PROJECTILE,fail,false);
-                you.increase_duration(DUR_PORTAL_PROJECTILE,
-                                      roll_dice(2,10) + fail/4);
-        }
+        permabuff_fail_check
+            (PERMA_PPROJ,
+             "You lose control of your teleporting projectiles.");
     }
     else
     {

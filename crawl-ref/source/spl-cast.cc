@@ -122,8 +122,13 @@ static string _spell_base_description(spell_type spell, bool viewing)
 
     desc << "<" << colour_to_str(highlight) << ">" << left;
 
+    bool permacancel = (!viewing && is_permabuff(spell) && 
+                        you.permabuff[permabuff_is(spell)]);
+    string title = permacancel ?
+        make_stringf("Dispel %s", spell_title(spell)) :
+        spell_title(spell);
     // spell name
-    desc << chop_string(spell_title(spell), 30);
+    desc << chop_string(title, 30);
 
     // spell schools
     desc << spell_schools_string(spell);
@@ -134,7 +139,10 @@ static string _spell_base_description(spell_type spell, bool viewing)
     desc << "</" << colour_to_str(highlight) <<">";
 
     // spell fail rate, level
-    const string failure_rate = spell_failure_rate_string(spell);
+    string failure_rate = spell_failure_rate_string(spell);
+    if (permacancel) {
+        failure_rate = "(" + failure_rate + ")";
+    }
     const int width = strwidth(formatted_string::parse_string(failure_rate).tostring());
     desc << failure_rate << string(12-width, ' ');
     desc << spell_difficulty(spell);
@@ -151,8 +159,13 @@ static string _spell_extra_description(spell_type spell, bool viewing)
 
     desc << "<" << colour_to_str(highlight) << ">" << left;
 
+    bool permacancel = (!viewing && is_permabuff(spell) && 
+                        you.permabuff[permabuff_is(spell)]);
+    string title = permacancel ?
+        make_stringf("Dispel %s", spell_title(spell)) :
+        spell_title(spell);
     // spell name
-    desc << chop_string(spell_title(spell), 30);
+    desc << chop_string(title, 30);
 
     // spell power, spell range, hunger level, noise
     const string rangestring = spell_range_string(spell);
@@ -750,8 +763,10 @@ bool cast_a_spell(bool check_range, spell_type spell)
                 else
                 {
                     mprf(MSGCH_PROMPT, "Casting: <w>%s</w> <lightgrey>(%s)</lightgrey>",
-                                       spell_title(you.last_cast_spell),
-                                       _spell_failure_rate_description(you.last_cast_spell).c_str());
+                         spell_title(you.last_cast_spell),
+                         you.has_permabuff(you.last_cast_spell) ?
+                         "cancel permanent enchantment" : 
+                         _spell_failure_rate_description(you.last_cast_spell).c_str());
                     mprf(MSGCH_PROMPT, "Confirm with . or Enter, or press "
                                        "? or * to list all spells.");
                 }

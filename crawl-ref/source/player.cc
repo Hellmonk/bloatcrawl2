@@ -5209,6 +5209,10 @@ void player::pb_off(permabuff_type pb) {
             (spell_mana(permabuff_spell[pb]) * 100 * charms_reserve) /
             charms_reserve_size;
     }
+    if ((pb == PERMA_EXCRU) && you.weapon() && 
+        you.props.exists(ORIGINAL_BRAND_KEY)) {
+        end_weapon_brand(*you.weapon(), true);
+    }
     calc_mp();
 }
 
@@ -5926,22 +5930,16 @@ int player::missile_deflection() const
 void player::ablate_deflection()
 {
     if (you.permabuff_working(PERMA_DMSL)) {
-        permabuff_track(PERMA_DMSL);
-        const int power = calc_spell_power(SPELL_DEFLECT_MISSILES, true);
-        if (one_chance_in(2 + power / 8))
-        {
-            you.props[DMSL_RECHARGE] =
-                spell_mana(SPELL_DEFLECT_MISSILES) * 100;
-            mprf(MSGCH_DURATION, "You feel less protected from missiles.");
-        } else {
 // Lucky you, you can't get both failures at once
-            int fail = permabuff_failure_check(PERMA_DMSL);
-            if (fail) {
-                mprf(MSGCH_DURATION,
-                     "You fail to control your missile deflection.");
-                apply_miscast(SPELL_DEFLECT_MISSILES, fail, false);
-                you.increase_duration(DUR_DEFLECT_MISSILES,
-                                      roll_dice(2,10) + fail/4);
+        if (!permabuff_fail_check
+                (PERMA_DMSL,
+                 "You fail to control your missile deflection.")) {
+            const int power = calc_spell_power(SPELL_DEFLECT_MISSILES, true);
+            if (one_chance_in(2 + power / 8))
+            {
+                you.props[DMSL_RECHARGE] =
+                    spell_mana(SPELL_DEFLECT_MISSILES) * 100;
+                mprf(MSGCH_DURATION, "You feel less protected from missiles.");
             }
         }
     }

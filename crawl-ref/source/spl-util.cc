@@ -1608,13 +1608,18 @@ bool is_permabuff(spell_type spell) {
     permabuff_type permabuff = permabuff_is(spell);
     return (permabuff != PERMA_NO_PERMA);
 }
+
+// It is safe to call this more than once in the same turn for the same PB
 void permabuff_track(int pb) {
     spell_type spell = permabuff_spell[pb];
     int dur = BASELINE_DELAY * nominal_duration(spell);
     // The value of '8' is pretty arbitrary
     you.perma_benefit[pb] = max(you.perma_benefit[pb], div_rand_round(dur, 8));
     you.perma_hunger[pb] = (100 * spell_hunger(spell)) / dur;
-    you.perma_mp[pb] = (10000 * spell_mana(spell)) / dur;
+    int succ = 100 - (min(90, 
+                          failure_rate_to_int
+                          (raw_spell_fail(spell))));
+    you.perma_mp[pb] = (1000000 * spell_mana(spell)) / (dur * succ);
     dprf("%d hunger, %d MP per aut, %d auts", you.perma_hunger[pb], you.perma_mp[pb],you.perma_benefit[pb]);
 // Divide by 3 here as a very crude compensation for the way we only get 
 // pinged on benefit not just from routine recasting

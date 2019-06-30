@@ -31,6 +31,28 @@ static void _redraw_armour()
     you.redraw_armour_class = true;
 }
 
+static bool _recheck_perma(permabuff_type pb) {
+    if (!you.permabuff[pb]) {
+	return true;
+    }
+    if (raw_spell_fail(permabuff_spell[pb]) >= 100) {
+	mprf(MSGCH_DURATION, 
+	     "You have no chance to restore %s, so you dispel it.",
+	     spell_title(permabuff_spell[pb]));
+	you.pb_off(pb);
+	return false;
+    }
+    if (you.perma_miscast[pb]) {
+	if (permabuff_fail_check
+	    (pb, make_stringf("You fail to regain control of %s.",
+			      spell_title(permabuff_spell[pb])), true)) {
+	    you.perma_miscast[pb] = true;
+	    return false;
+	}
+    }
+    return true;
+}
+
 // properties of the duration.
 enum duration_flags : uint32_t
 {
@@ -354,12 +376,13 @@ static const duration_def duration_data[] =
       "shroud dissipated", "",
       "Your distorting shroud has been dissipated.", D_EXPIRES,
       {{ "", []() {
-		  if (you.permabuff_could(PERMA_SHROUD)) {
+		  if (_recheck_perma(PERMA_SHROUD)) {
+		      if (you.permabuff_could(PERMA_SHROUD)) {
 			  mprf(MSGCH_DURATION, 
 			       (you.permabuff_working(PERMA_SHROUD) ? 
 				"You reconstruct your distorting shroud." :
 				"You could once again produce a distorting shroud."));
-		      }}}}},
+		      }}}}}},
     { DUR_TORNADO_COOLDOWN,
       YELLOW, "-Tornado",
       "", "tornado cooldown",
@@ -386,25 +409,27 @@ static const duration_def duration_data[] =
       "You have lost control of your magical infusion.", D_EXPIRES,
       // I wonder if this will become a more general function with >1 perma?
       {{ "", []() {
-		  if (you.permabuff_could(PERMA_INFUSION)) {
+		  if (_recheck_perma(PERMA_INFUSION)) {
+		      if (you.permabuff_could(PERMA_INFUSION)) {
 			  mprf(MSGCH_DURATION, 
 			       "You are once again %s your attacks.",
 			       (you.permabuff_working(PERMA_INFUSION) ? 
 				"magically infusing" :
 				"able to magically infuse"));
-		  }}}}},
+		      }}}}}},
     { DUR_SONG_OF_SLAYING,
       YELLOW, "-Slay",
       "song suppressed", "",
       "You are stumbling over the syllables of your song of slaying.",
       D_EXPIRES,
       {{ "", []() {
-		  if (you.permabuff_could(PERMA_SONG)) {
+		  if (_recheck_perma(PERMA_SONG)) {
+		      if (you.permabuff_could(PERMA_SONG)) {
 			  mprf(MSGCH_DURATION, 
 			       "You are once again %s a song of slaying.",
 			       (you.permabuff_working(PERMA_SONG) ? 
 				"singing" : "able to sing"));
-		  }}}}},
+		      }}}}}},
     // Technically we can get this light and the blue Regen light if we have
     // Regen up and suppressed and worship Trog. I don't care.
     { DUR_REGENERATION,
@@ -412,37 +437,40 @@ static const duration_def duration_data[] =
       "regen suppressed", "",
       "Your magical regeneration has been temporarily dispelled.", D_EXPIRES,
       {{ "", []() {
-		  if (you.permabuff_could(PERMA_REGEN)) {
+		  if (_recheck_perma(PERMA_REGEN)) {
+		      if (you.permabuff_could(PERMA_REGEN)) {
 			  mprf(MSGCH_DURATION, 
 			       "You are once again %s.",
 			       (you.permabuff_working(PERMA_REGEN) ? 
 				"magically regenerating" :
 				"able to magically regenerate"));
-		  }}}}},
+		      }}}}}},
     { DUR_DEFLECT_MISSILES,
       YELLOW, "-DMsl",
       "deflection suppressed", "",
       "Your missile deflection has been temporarily dispelled.", D_EXPIRES,
       {{ "", []() {
-		  if (you.permabuff_could(PERMA_DMSL)) {
+		  if (_recheck_perma(PERMA_DMSL)) {
+		      if (you.permabuff_could(PERMA_DMSL)) {
 			  mprf(MSGCH_DURATION, 
 			       "You are once again %s.",
 			       (you.permabuff_working(PERMA_DMSL) ? 
 				"deflecting missiles" :
 				"able to deflect missiles"));
-		  }}}}},
+		      }}}}}},
     { DUR_EXCRUCIATING_WOUNDS,
       YELLOW, "-Excru",
       "excruciation suppressed", "",
       "You are temporarily unable to cause excruciating wounds.", D_EXPIRES,
       {{ "", []() {
-		  if (you.permabuff_could(PERMA_EXCRU)) {
-		      mprf(MSGCH_DURATION, 
-			   "You are once again %s.",
-			   (you.permabuff_working(PERMA_EXCRU) ? 
+		  if (_recheck_perma(PERMA_EXCRU)) {
+		      if (you.permabuff_could(PERMA_EXCRU)) {
+			  mprf(MSGCH_DURATION, 
+			       "You are once again %s.",
+			       (you.permabuff_working(PERMA_EXCRU) ? 
 			    "inflicting excruciating wounds" :
-			    "able to inflict excruciating wounds"));
-		  }}}}},
+				"able to inflict excruciating wounds"));
+		      }}}}}},
     { DUR_FLAYED,
       RED, "Flay",
       "flayed", "",
@@ -506,13 +534,14 @@ static const duration_def duration_data[] =
       "portal projectile suppressed", "",
       "You cannot currently teleport your projectiles.", D_EXPIRES,
       {{ "", []() {
-		  if (you.permabuff_could(PERMA_PPROJ)) {
+		  if (_recheck_perma(PERMA_PPROJ)) {
+		      if (you.permabuff_could(PERMA_PPROJ)) {
 			  mprf(MSGCH_DURATION, 
 			       "You are once again %s your projectiles.",
 			       (you.permabuff_working(PERMA_PPROJ) ? 
 				"teleporting" :
 				"able to teleport"));
-		  }}}}},
+		      }}}}}},
     { DUR_FORESTED,
       GREEN, "Forest",
       "", "forested",

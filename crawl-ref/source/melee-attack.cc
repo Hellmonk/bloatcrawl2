@@ -393,14 +393,9 @@ bool melee_attack::handle_phase_hit()
     // more than one permabuff
     if (attacker->is_player() && you.permabuff_working(PERMA_INFUSION)) {
         if (enough_mp(1, true, false)) {
-            permabuff_track(PERMA_INFUSION);
-            int fail = permabuff_failure_check(PERMA_INFUSION);
-            if (fail) {
-                mprf(MSGCH_DURATION,
-                     "You lose control of your magical infusion.");
-                apply_miscast(SPELL_INFUSION,fail,false);
-                you.increase_duration(DUR_INFUSION,roll_dice(2,10) + fail/4);
-            } else {
+            if (!permabuff_fail_check
+                (PERMA_INFUSION, 
+                 "You lose control of your magical infusion.")) {
                 const int pow = calc_spell_power(SPELL_INFUSION, true);
                 const int dmg = 2 + div_rand_round(pow, 12);
                 const int hurt = defender->apply_ac(dmg);
@@ -517,14 +512,9 @@ bool melee_attack::handle_phase_damaged()
     {
         int effectiveness = 10; 
         if (defender->is_player()) {
-            permabuff_track(PERMA_SHROUD);
-            int fail = permabuff_failure_check(PERMA_SHROUD);
-            if (fail) {
-                mprf(MSGCH_DURATION,
-                     "You fail to keep your magical shroud coherent.");
-                apply_miscast(SPELL_SHROUD_OF_GOLUBRIA, fail, false);
-                you.increase_duration(DUR_SHROUD_OF_GOLUBRIA,
-                                      roll_dice(2,10) + fail/4);
+            if (permabuff_fail_check
+                (PERMA_SHROUD,
+                 "You fail to keep your magical shroud coherent.")) {
                 return true;
             }
             effectiveness +=  
@@ -924,14 +914,9 @@ bool melee_attack::attack()
 // raises the spectre of trying to recalculate it with the weapon's original
 // brand
         if (special_damage) {
-            permabuff_track(PERMA_EXCRU);
-            int fail = permabuff_failure_check(PERMA_EXCRU);
-            if (fail) {
-                mprf(MSGCH_DURATION,
-                     "You lose control of the necromantic energies infusing your weapon.");
-                apply_miscast(SPELL_EXCRUCIATING_WOUNDS,fail,false);
-                you.increase_duration(DUR_EXCRUCIATING_WOUNDS,
-                                      roll_dice(2,10) + fail/4);
+            if (permabuff_fail_check
+                (PERMA_EXCRU,
+                 "You lose control of the necromantic energies infusing your weapon.")) {
                 end_weapon_brand(*weapon);
             } else if (one_chance_in(
                            nominal_duration(SPELL_EXCRUCIATING_WOUNDS) / 
