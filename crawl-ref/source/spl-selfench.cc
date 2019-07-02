@@ -94,9 +94,7 @@ spret_type deflection(int pow, bool fail)
     if (you.permabuff[PERMA_DMSL]) {
         const int orig_defl = you.missile_deflection();
         mprf("You are %s.",
-             (you.duration[DUR_DEFLECT_MISSILES] ||
-              (you.props.exists(DMSL_RECHARGE) &&
-               you.props[DMSL_RECHARGE].get_int())) ?
+             !you.permabuff_could(PERMA_DMSL) ?
              "no longer attempting to deflect missiles" : 
              (you.missile_deflection() < orig_defl ? 
               "less protected from missiles" :
@@ -217,9 +215,9 @@ int cast_selective_amnesia(const string &pre_msg)
 spret_type cast_infusion(int pow, bool fail)
 {
     if (you.permabuff[PERMA_INFUSION]) {
-        mpr(you.duration[DUR_INFUSION] ? 
-            "You stop attempting to infuse your attacks with magical energy." :
-            "You stop infusing your attacks with magical energy.");
+        mpr(you.permabuff_could(PERMA_INFUSION) ? 
+            "You stop infusing your attacks with magical energy." :
+            "You stop attempting to infuse your attacks with magical energy.");
         you.pb_off(PERMA_INFUSION); return SPRET_PERMACANCEL;
     } else {
         fail_check();
@@ -234,9 +232,9 @@ spret_type cast_infusion(int pow, bool fail)
 spret_type cast_song_of_slaying(int pow, bool fail)
 {
     if (you.permabuff[PERMA_SONG]) {
-        mpr(you.duration[DUR_SONG_OF_SLAYING] ? 
-            "You stop trying to sing a song of slaying." :
-            "You stop singing a song of slaying.");
+        mpr(you.permabuff_could(PERMA_SONG) ? 
+            "You stop singing a song of slaying." :
+            "You stop trying to sing a song of slaying.");
         you.props[SONG_OF_SLAYING_KEY] = 0;
         you.pb_off(PERMA_SONG); return SPRET_PERMACANCEL;
     } else {

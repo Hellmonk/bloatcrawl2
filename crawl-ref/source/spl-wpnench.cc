@@ -76,9 +76,9 @@ void start_weapon_brand(item_def &weapon, bool verbose) {
 spret_type cast_excruciating_wounds(int power, bool fail)
 {
     if (you.permabuff[PERMA_EXCRU]) {
-        mpr(you.duration[DUR_EXCRUCIATING_WOUNDS] ? 
-            "You stop attempting to infuse your attacks with pain." :
-            "You stop infusing your attacks with pain.");
+        mpr(you.permabuff_could(PERMA_EXCRU) ?
+            "You stop infusing your attacks with pain." :
+            "You stop attempting to infuse your attacks with pain.");
         you.pb_off(PERMA_EXCRU); return SPRET_PERMACANCEL;
     } else {
         fail_check();
