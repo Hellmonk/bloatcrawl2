@@ -1060,12 +1060,12 @@ static void _regenerate_hp_and_mp(int delay)
     if (mp_regen_countup > 0) {
         bool dmsl_rech = (you.props.exists(DMSL_RECHARGE) && 
                           (you.props[DMSL_RECHARGE].get_int() > 0) &&
-                          (!you.duration[DUR_BERSERK]) &&
+                          (you.can_renew_pbs()) &&
                           (you.permabuff_notworking(PERMA_DMSL) 
                            >= PB_WORKING));
         if (you.props.exists(SHROUD_RECHARGE) &&
             (you.props[SHROUD_RECHARGE].get_int() > 0) &&
-            (!you.duration[DUR_BERSERK]) &&
+            (you.can_renew_pbs()) &&
             (you.permabuff_notworking(PERMA_SHROUD) >= PB_WORKING)) {
             int available = div_rand_round(mp_regen_countup,
                                            (dmsl_rech ? 3 : 2));
@@ -1096,7 +1096,7 @@ static void _regenerate_hp_and_mp(int delay)
 // The order in which permabuffs get to divert MPreg is kind of arbitrary
         int regen_size = 100 * spell_mana(SPELL_REGENERATION);
         if (you.permabuff_working(PERMA_REGEN) &&
-            (!you.duration[DUR_BERSERK]) &&
+            you.can_renew_pbs() &&
             (!you.confused()) &&
             (you.props[REGEN_RESERVE].get_int() < regen_size)) {
             int divert = (mp_regen_countup * you.magic_points) /

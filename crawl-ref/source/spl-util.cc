@@ -1626,9 +1626,11 @@ void permabuff_track(int pb) {
     if (one_chance_in(nominal_duration(spell) / 3)) {
         practise_casting(spell, true);
     }
-    if (silenced(you.pos()) && one_chance_in(nominal_duration(spell))) {
-        mprf(MSGCH_DURATION, "The silence stops you renewing one of your permanent enchantments!");
-        you.increase_duration(permabuff_durs[pb], roll_dice(2, 10));
+    string reason = you.cannot_renew_pbs_because();
+    if ((!reason.empty()) && one_chance_in(nominal_duration(spell))) {
+        mprf(MSGCH_DURATION, "You can't renew one of your enchantments because %s!", reason.c_str());
+        // Duration reduced now _recheck_perma will silently renew it
+        you.increase_duration(permabuff_durs[pb], roll_dice(2, 4));
     }
 }
 

@@ -763,7 +763,7 @@ You are currently flying over lava.
 Near Bloodless status
 
 Your body is almost entirely devoid of blood. You resist poison and
-cold, significantly resist negative engergy, have a slow metabolism, and
+cold, significantly resist negative energy, have a slow metabolism, and
 heal slowly.
 %%%%
 Recall status
@@ -773,12 +773,12 @@ You are recalling your allies.
 Thirsty status
 
 You are thirsty. You resist poison and cold, significantly resist
-negative engergy, have a slow metabolism, and heal slowly.
+negative energy, have a slow metabolism, and heal slowly.
 %%%%
 Very Thirsty status
 
 You are very thirsty. You resist poison and cold, significantly resist
-negative engergy, have a slow metabolism, and heal slowly.
+negative energy, have a slow metabolism, and heal slowly.
 %%%%
 Water status
 {{

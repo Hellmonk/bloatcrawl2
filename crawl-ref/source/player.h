@@ -932,6 +932,10 @@ public:
     bool has_any_permabuff();
     void pb_on(permabuff_type pb);
     void pb_off(permabuff_type pb);
+    // If called with a specific PB, checks for conditions particular to that
+    // PB. Which there aren't any of right now, but I might think of some.
+    bool can_renew_pbs(permabuff_type pb = PERMA_NO_PERMA);
+    string cannot_renew_pbs_because(permabuff_type pb = PERMA_NO_PERMA);
 
 protected:
     void _removed_beholder(bool quiet = false);

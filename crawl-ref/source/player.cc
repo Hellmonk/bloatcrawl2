@@ -5215,6 +5215,53 @@ void player::pb_off(permabuff_type pb) {
     }
     calc_mp();
 }
+// This is similar to, but not the same as, can_cast_spells - eg the latter
+// doesn't check for being paralysed, petrified, &c
+// We intentionally DO check for conditions that stop PBs working at all.
+// Who knows? We might change our minds.
+bool player::can_renew_pbs(permabuff_type pb) {
+    string reason = cannot_renew_pbs_because(pb);
+    return reason.empty();
+}
+string player::cannot_renew_pbs_because(permabuff_type pb) {
+    if (you.duration[DUR_PETRIFIED]) {
+        return "you are petrified";
+    }
+    if (you.duration[DUR_SLEEP]) {
+        return "you are asleep";
+    }
+    if (you.duration[DUR_PARALYSIS]) {
+        return "you are paralysed";
+    }
+    if (!get_form()->can_cast) {
+        return "of your present form";
+    }
+    if (you.duration[DUR_WATER_HOLD] && !you.res_water_drowning()) {
+        return "you are unable to breathe";
+    }
+    if (you.duration[DUR_BRAINLESS]) {
+        return "you are brainless";
+    }
+    if (you.no_cast()) {
+        return "your equipment blocks your magic";
+    }
+    if (you.berserk()) {
+        return "you are berserk";
+    }
+    if (you.confused()) {
+        return "you are confused";
+    }
+    if (silenced(you.pos())) {
+        return "of the silence";
+    }
+    if (you.duration[DUR_NO_CAST]) {
+        return "you are unable to access your magic";
+    }
+    if (apply_starvation_penalties()) {
+        return "you are too hungry";
+    }
+    return "";
+}
 
 
 void handle_player_drowning(int delay)

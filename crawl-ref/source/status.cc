@@ -366,7 +366,14 @@ bool fill_status_info(int status, status_info& inf)
                 inf.light_text = "-DMsl";
                 inf.short_text = "not deflecting";
                 inf.light_colour = BLUE;
-                inf.long_text = "Your magic regeneration is restoring your missile deflection.";
+                string reason = you.cannot_renew_pbs_because();
+                if (reason.empty()) {
+                    inf.long_text = "Your magic regeneration is restoring your missile deflection.";
+                } else {
+                    inf.long_text = 
+                        "You are not restoring missile deflection because " + 
+                        reason + ".";
+                }
             } else if (you.permabuff_working(PERMA_DMSL)) {
                 inf.light_colour = LIGHTMAGENTA;
                 inf.long_text    = "You deflect missiles.";
@@ -851,8 +858,15 @@ bool fill_status_info(int status, status_info& inf)
                 inf.light_text = "-Shroud";
                 inf.short_text = "unshrouded";
                 inf.light_colour = BLUE;
-                inf.long_text = 
-                    "Your magic regeneration is reconstructing your distorting shroud.";
+                string reason = you.cannot_renew_pbs_because();
+                if (reason.empty()) {
+                    inf.long_text = 
+                        "Your magic regeneration is reconstructing your distorting shroud.";
+                } else {
+                    inf.long_text = 
+                        "You are not reconstructing your shroud because " + 
+                        reason + ".";
+                }
             } else if (you.permabuff_working(PERMA_SHROUD)) {
                 inf.light_colour = LIGHTBLUE;
                 inf.long_text = 
@@ -1021,7 +1035,8 @@ static void _describe_regen(status_info& inf)
         }
         if (you.permabuff_working(PERMA_REGEN) && 
             ((you.props[REGEN_RESERVE].get_int() > 0) ||
-             (!you.props[CHARMS_ALL_MPREGEN].get_bool()))) {
+             (!you.props[CHARMS_ALL_MPREGEN].get_bool() &&
+              you.can_renew_pbs()))) {
             inf.light_colour = LIGHTBLUE;
         }
 
@@ -1044,10 +1059,19 @@ static void _describe_regen(status_info& inf)
         else
         {
             if (you.permabuff_working(PERMA_REGEN) && 
-                (!(you.props[REGEN_RESERVE].get_int() > 0) &&
-                 (you.props[CHARMS_ALL_MPREGEN].get_bool()))) {
-                inf.short_text = "not regenerating (no MP regeneration)";
-                inf.long_text = "You are not regenerating because your other permanent charms are consuming all your MP regeneration.";
+                !(you.props[REGEN_RESERVE].get_int() > 0)) {
+                if (you.props[CHARMS_ALL_MPREGEN].get_bool()) {
+                    inf.short_text = "not regenerating (no MP regeneration)";
+                    inf.long_text = "You are not regenerating because your other permanent charms are consuming all your MP regeneration.";
+                } else {
+                    string reason = you.cannot_renew_pbs_because();
+                    if (!reason.empty()) {
+                        inf.short_text = 
+                            "not regenerating (cannot renew charms)";
+                        inf.long_text = 
+                            "You are not regenerating; you cannot renew your charms because " + reason + ".";
+                    }
+                } 
             } else {
                 inf.short_text = "regenerating";
                 inf.long_text  = "You are regenerating.";

@@ -35,6 +35,11 @@ static bool _recheck_perma(permabuff_type pb) {
     if (!you.permabuff[pb]) {
 	return true;
     }
+    if (!you.can_renew_pbs()) {
+	// silently
+	you.increase_duration(permabuff_durs[pb], roll_dice(2,4));
+	return false;
+    }
     if (raw_spell_fail(permabuff_spell[pb]) >= 100) {
 	mprf(MSGCH_DURATION, 
 	     "You have no chance to restore %s, so you dispel it.",
