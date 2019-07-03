@@ -276,7 +276,7 @@ available. If this continues, your MP will be drained.
 %%%%
 DChan status
 
-You are channeling the dead, causing any living creatures killed in your
+You are channeling the dead, causing some living creatures killed in your
 vicinity to be raised as spectral servants.
 %%%%
 Vit status

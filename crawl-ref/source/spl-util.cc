@@ -1660,9 +1660,13 @@ int nominal_duration(spell_type spell) {
 // but that was in the days before it expired on being hit, so we circa double
 // the old nominal duration as a somewhat arbitary compromise, removing cap
     case SPELL_EXCRUCIATING_WOUNDS:
-        return min(8+calc_spell_power(spell, true), 50);
+        return min(8 + calc_spell_power(spell, true), 50);
         //     you.increase_duration(DUR_EXCRUCIATING_WOUNDS, 
         //     8 + roll_dice(2, power), 50);
+    case SPELL_DEATH_CHANNEL:
+        return min(30 + (calc_spell_power(spell, true)/3), 200);
+        // you.increase_duration(DUR_DEATH_CHANNEL, 
+        // 30 + random2(1 + 2*pow/3), 200);
     default:
         return 0;
     }

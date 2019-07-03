@@ -393,6 +393,32 @@ bool fill_status_info(int status, status_info& inf)
             inf.long_text = "If you recast Deflect Missiles, it will not take effect immediately.";
         }
         break;
+        
+    case STATUS_DCHAN:
+    {
+        if (you.permabuff[PERMA_DCHAN] &&
+            !you.duration[DUR_DEATH_CHANNEL]) {
+            inf.light_text = "DChan";
+            inf.short_text = "death channel";
+            if (you.permabuff_working(PERMA_DCHAN)) {
+                inf.light_colour = LIGHTMAGENTA;
+                inf.long_text = 
+                    "You are channeling the dead.";
+            } else {
+                inf.light_colour = DARKGREY;
+                inf.short_text = "no death channel";
+                inf.long_text = "You would be channeling the dead, but " +
+                    you.permabuff_whynot(PERMA_DCHAN) + ".";
+            }
+        }
+        break;
+    }
+    case DUR_DEATH_CHANNEL: {
+        if (!you.permabuff[PERMA_DCHAN]) {
+            inf.light_colour = DARKGREY;
+            inf.long_text = "If you recast Death Channel, it will not take effect immediately.";
+        }
+    }
 
     case STATUS_REPEL_MISSILES:
         _describe_repel_missiles(inf);

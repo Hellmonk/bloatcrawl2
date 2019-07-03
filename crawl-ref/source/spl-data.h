@@ -1355,7 +1355,7 @@ static const struct spell_desc spelldata[] =
     -1, -1,
     5, 0,
     TILEG_DEATH_CHANNEL,
-    PERMA_NO_PERMA,
+    PERMA_DCHAN,
 },
 
 // Monster-only, players can use Kiku's ability

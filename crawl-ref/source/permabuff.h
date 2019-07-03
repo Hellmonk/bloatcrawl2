@@ -11,8 +11,9 @@ enum permabuff_type {
 	PERMA_PPROJ,
 	PERMA_DMSL,
 	PERMA_EXCRU,
+	PERMA_DCHAN,
 	PERMA_FIRST_PERMA = PERMA_INFUSION,
-	PERMA_LAST_PERMA = PERMA_EXCRU,
+	PERMA_LAST_PERMA = PERMA_DCHAN,
     };
 
 static const duration_type permabuff_durs[] = {
@@ -24,6 +25,7 @@ static const duration_type permabuff_durs[] = {
     DUR_PORTAL_PROJECTILE,
     DUR_DEFLECT_MISSILES,
     DUR_EXCRUCIATING_WOUNDS,
+    DUR_DEATH_CHANNEL,
 };
 
 static const spell_type permabuff_spell[] = {
@@ -35,6 +37,7 @@ static const spell_type permabuff_spell[] = {
     SPELL_PORTAL_PROJECTILE,
     SPELL_DEFLECT_MISSILES,
     SPELL_EXCRUCIATING_WOUNDS,
+    SPELL_DEATH_CHANNEL,
 };
 
 // These PBs charge you MP regeneration based on their nominal duration.
@@ -47,6 +50,7 @@ static const permabuff_type pb_ordinary_mpregen[] = {
     PERMA_PPROJ,
     PERMA_DMSL,
     PERMA_EXCRU,
+    PERMA_DCHAN,
 };
 static const int size_mpregen_pb = ARRAYSZ(pb_ordinary_mpregen);
 
@@ -65,4 +69,5 @@ static const int pb_dur_fudge[] = {
     1, // pproj
     2, // dmsl
     2, // excru
+    1, // DChan - 1 because you might get many kills in a turn
 };

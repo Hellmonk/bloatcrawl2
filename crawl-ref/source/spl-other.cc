@@ -71,21 +71,18 @@ spret_type cast_sublimation_of_blood(int pow, bool fail)
 
 spret_type cast_death_channel(int pow, god_type god, bool fail)
 {
-    if (you.duration[DUR_DEATH_CHANNEL] >= 60 * BASELINE_DELAY)
-    {
-        canned_msg(MSG_NOTHING_HAPPENS);
-        return SPRET_ABORT;
+    if (you.permabuff[PERMA_DCHAN]) {
+        mpr(you.permabuff_could(PERMA_DCHAN) ?
+            "You stop channeling the dead." :
+            "You stop attempting to channel the dead.");
+        you.pb_off(PERMA_DCHAN); return SPRET_PERMACANCEL;
+    } else {
+        fail_check();
+        mpr(you.duration[DUR_DEATH_CHANNEL] ?
+            "You will soon be channeling the dead." :
+            "Malign forces permeate your being, awaiting release.");
+        you.pb_on(PERMA_DCHAN); return SPRET_SUCCESS;
     }
-
-    fail_check();
-    mpr("Malign forces permeate your being, awaiting release.");
-
-    you.increase_duration(DUR_DEATH_CHANNEL, 30 + random2(1 + 2*pow/3), 200);
-
-    if (god != GOD_NO_GOD)
-        you.attribute[ATTR_DIVINE_DEATH_CHANNEL] = static_cast<int>(god);
-
-    return SPRET_SUCCESS;
 }
 
 spret_type cast_recall(bool fail)

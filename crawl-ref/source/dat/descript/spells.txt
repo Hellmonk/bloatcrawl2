@@ -362,8 +362,9 @@ living creature they strike may be dazzled and left stumbling blindly.
 %%%%
 Death Channel spell
 
-Raises living creatures slain by the caster and their allies, reducing them to
-a state of spectral slavery.
+Raises some living creatures slain by the caster and their allies, reducing
+them to a state of spectral slavery. As spellpower rises, a greater proportion
+of the slain are raised.
 %%%%
 Death Rattle spell
 

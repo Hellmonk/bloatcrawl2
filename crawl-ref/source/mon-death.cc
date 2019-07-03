@@ -62,6 +62,7 @@
 #include "spl-damage.h"
 #include "spl-goditem.h"
 #include "spl-miscast.h"
+#include "spl-selfench.h"
 #include "spl-summoning.h"
 #include "sprint.h" // SPRINT_MULTIPLIER
 #include "state.h"
@@ -2731,8 +2732,17 @@ item_def* monster_die(monster& mons, killer_type killer,
     }
     if (corpse && mons.has_ench(ENCH_BOUND_SOUL))
         _make_derived_undead(&mons, !death_message, true);
-    if (you.duration[DUR_DEATH_CHANNEL] && was_visible && gives_player_xp)
-        _make_derived_undead(&mons, !death_message, false);
+    
+    if (you.permabuff_working(PERMA_DCHAN) && was_visible && gives_player_xp) {
+        if (x_chance_in_y(300 + calc_spell_power(SPELL_DEATH_CHANNEL, true),
+                          500)) {
+            if (!permabuff_fail_check
+                (PERMA_DCHAN,
+                 "You fail to channel the dead.")) {
+                _make_derived_undead(&mons, !death_message, false);
+            }
+        }
+    }
 
     const unsigned int player_xp = gives_player_xp
         ? _calc_player_experience(&mons) : 0;

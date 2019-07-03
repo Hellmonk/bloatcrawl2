@@ -203,13 +203,6 @@ static const duration_def duration_data[] =
           if (!you.backlit())
               mprf(MSGCH_DURATION, "You are no longer glowing.");
       }}}},
-    { DUR_DEATH_CHANNEL,
-      MAGENTA, "DChan",
-      "death channel", "",
-      "You are channeling the dead.", D_DISPELLABLE | D_EXPIRES,
-      {{ "Your unholy channel expires.", []() {
-          you.attribute[ATTR_DIVINE_DEATH_CHANNEL] = 0;
-      }}, { "Your unholy channel is weakening.", 1 }}, 6},
     { DUR_DIVINE_STAMINA,
       WHITE, "Vit",
       "vitalised", "divine stamina",
@@ -475,6 +468,19 @@ static const duration_def duration_data[] =
 			       (you.permabuff_working(PERMA_EXCRU) ? 
 			    "inflicting excruciating wounds" :
 				"able to inflict excruciating wounds"));
+		      }}}}}},
+    { DUR_DEATH_CHANNEL,
+      YELLOW, "-DChan",
+      "death channel suppressed", "",
+      "You are temporarily unable to channel the dead.", D_EXPIRES,
+      {{ "", []() {
+		  if (_recheck_perma(PERMA_DCHAN)) {
+		      if (you.permabuff_could(PERMA_DCHAN)) {
+			  mprf(MSGCH_DURATION, 
+			       "You are once again %s.",
+			       (you.permabuff_working(PERMA_DCHAN) ? 
+			    "channelling the dead" :
+				"able to channel the dead"));
 		      }}}}}},
     { DUR_FLAYED,
       RED, "Flay",
