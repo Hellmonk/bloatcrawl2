@@ -1363,6 +1363,10 @@ static void tag_construct_char(writer &th)
     marshallString2(th, crawl_state.map);
 
     marshallByte(th, you.explore);
+
+    marshallByte(th, you.skill_modifier);
+    marshallByte(th, static_cast<int>(you.undead_modifier));
+    marshallBoolean(th, you.chaoskin);
 }
 
 /// is a custom scoring mechanism being stored?
@@ -2272,6 +2276,10 @@ void tag_read_char(reader &th, uint8_t format, uint8_t major, uint8_t minor)
 
     if (major > 34 || major == 34 && minor >= 130)
         you.explore = unmarshallBoolean(th);
+
+    you.skill_modifier = unmarshallByte(th);
+    you.undead_modifier = static_cast<undead_state_type>(unmarshallByte(th));
+    you.chaoskin = unmarshallBoolean(th);
 }
 
 #if TAG_MAJOR_VERSION == 34
@@ -3058,7 +3066,7 @@ static void tag_read_you(reader &th)
     if (th.getMinorVersion() < TAG_MINOR_REAL_MUTS
         && (you.species == SP_NAGA
             || you.species == SP_TENGU
-            || you.species == SP_MUMMY))
+            || you.undead_state() == US_UNDEAD))
     {
         for (int xl = 2; xl <= you.experience_level; ++xl)
             give_level_mutations(you.species, xl);
@@ -3170,7 +3178,7 @@ static void tag_read_you(reader &th)
             you.innate_mutation[MUT_NO_REGENERATION] = 1;
             you.mutation[MUT_NO_REGENERATION] = 1;
         }
-        else if (you.species == SP_GHOUL
+        else if (you.undead_state() == US_HUNGRY_DEAD
                  && you.mutation[MUT_INHIBITED_REGENERATION] > 1)
         {
             you.innate_mutation[MUT_INHIBITED_REGENERATION] = 1;

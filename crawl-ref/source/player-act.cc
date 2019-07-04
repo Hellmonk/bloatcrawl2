@@ -588,7 +588,7 @@ string player::arm_name(bool plural, bool *can_plural) const
         adj = "scaled";
     else if (species == SP_TENGU)
         adj = "feathered";
-    else if (species == SP_MUMMY)
+    else if (you.undead_state() == US_UNDEAD)
         adj = "bandage-wrapped";
     else if (species == SP_OCTOPODE)
         str = "tentacle";

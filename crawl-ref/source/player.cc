@@ -519,7 +519,7 @@ void move_player_to_grid(const coord_def& p, bool stepped)
 }
 
 void dab_on_them_haters()
-{ 
+{
     you.turn_is_over = true;
     const bool dab_master = you.has_mutation(MUT_DAB_MASTER);
     bool dabbed = false;
@@ -1162,7 +1162,7 @@ int player_regen()
 
     // Healing depending on satiation.
     // The better-fed you are, the faster you heal.
-    if (you.species == SP_VAMPIRE)
+    if (you.undead_state() == US_SEMI_UNDEAD)
     {
         if (you.hunger_state <= HS_STARVING)
             rr = 0;   // No regeneration for starving vampires.
@@ -1259,7 +1259,7 @@ int player_hunger_rate(bool temp)
 
     if (you.species == SP_TROLL)
         hunger += 3;            // in addition to the +3 for fast metabolism
-    
+
     if (you.species == SP_TROLL_TWO)
         hunger += 20;
 
@@ -1271,7 +1271,7 @@ int player_hunger_rate(bool temp)
         hunger += 4;
     }
 
-    if (you.species == SP_VAMPIRE)
+    if (you.undead_state() == US_SEMI_UNDEAD)
     {
         switch (you.hunger_state)
         {
@@ -1400,7 +1400,7 @@ int player_res_fire(bool calc_unid, bool temp, bool items)
     }
 
     // species:
-    if (you.species == SP_MUMMY)
+    if (you.undead_state() == US_UNDEAD)
         rf--;
 
     // mutations:
@@ -1474,12 +1474,20 @@ int player_res_cold(bool calc_unid, bool temp, bool items)
 
         rc += get_form()->res_cold();
 
-        if (you.species == SP_VAMPIRE)
+        switch (you.undead_state())
         {
-            if (you.hunger_state <= HS_STARVING)
-                rc += 2;
-            else if (you.hunger_state < HS_SATIATED)
+            case US_ALIVE:
+                break;
+            case US_UNDEAD:
+            case US_HUNGRY_DEAD:
                 rc++;
+                break;
+            case US_SEMI_UNDEAD:
+                if (you.hunger_state <= HS_STARVING)
+                    rc += 2;
+                else if (you.hunger_state < HS_SATIATED)
+                    rc++;
+                break;
         }
     }
 
@@ -1611,6 +1619,19 @@ int player_res_electricity(bool calc_unid, bool temp, bool items)
  */
 bool player_res_torment(bool random)
 {
+    switch (you.undead_state())
+    {
+        case US_UNDEAD:
+        case US_HUNGRY_DEAD:
+        {
+            return true;
+        }
+        case US_ALIVE:
+        case US_SEMI_UNDEAD:
+        {
+            // fall through
+        }
+    }
     if (you.get_mutation_level(MUT_TORMENT_RESISTANCE))
         return true;
 
@@ -1622,7 +1643,7 @@ bool player_res_torment(bool random)
     }
 
     return get_form()->res_neg() == 3
-           || you.species == SP_VAMPIRE && you.hunger_state <= HS_STARVING
+           || you.undead_state() == US_SEMI_UNDEAD && you.hunger_state <= HS_STARVING
            || you.petrified()
 #if TAG_MAJOR_VERSION == 34
            || player_equip_unrand(UNRAND_ETERNAL_TORMENT)
@@ -1694,7 +1715,7 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
 
     // Only thirsty vampires are naturally poison resistant.
     // XXX: && temp?
-    if (you.species == SP_VAMPIRE && you.hunger_state < HS_SATIATED)
+    if (you.undead_state() == US_SEMI_UNDEAD && you.hunger_state < HS_SATIATED)
         rp++;
 
     if (temp)
@@ -1875,23 +1896,37 @@ int player_prot_life(bool calc_unid, bool temp, bool items)
     // Hunger is temporary, true, but that's something you can control,
     // especially as life protection only increases the hungrier you
     // get.
-    if (you.species == SP_VAMPIRE)
+    switch (you.undead_state())
     {
-        switch (you.hunger_state)
+        case US_SEMI_UNDEAD:
         {
-        case HS_FAINTING:
-        case HS_STARVING:
+            switch (you.hunger_state)
+            {
+            case HS_FAINTING:
+            case HS_STARVING:
+                pl = 3;
+                break;
+            case HS_NEAR_STARVING:
+            case HS_VERY_HUNGRY:
+            case HS_HUNGRY:
+                pl = 2;
+                break;
+            case HS_SATIATED:
+                pl = 1;
+                break;
+            default:
+                break;
+            }
+            break;
+        }
+        case US_UNDEAD:
+        case US_HUNGRY_DEAD:
+        {
             pl = 3;
             break;
-        case HS_NEAR_STARVING:
-        case HS_VERY_HUNGRY:
-        case HS_HUNGRY:
-            pl = 2;
-            break;
-        case HS_SATIATED:
-            pl = 1;
-            break;
-        default:
+        }
+        case US_ALIVE:
+        {
             break;
         }
     }
@@ -2913,22 +2948,6 @@ void level_change(bool skip_attribute_increase)
 
             switch (you.species)
             {
-            case SP_VAMPIRE:
-                if (you.experience_level == 3)
-                {
-                    if (you.hunger_state > HS_SATIATED)
-                    {
-                        mprf(MSGCH_INTRINSIC_GAIN, "If you weren't so full, "
-                             "you could now transform into a vampire bat.");
-                    }
-                    else
-                    {
-                        mprf(MSGCH_INTRINSIC_GAIN,
-                             "You can now transform into a vampire bat.");
-                    }
-                }
-                break;
-
             case SP_NAGA:
                 if (!(you.experience_level % 3))
                 {
@@ -3055,6 +3074,26 @@ void level_change(bool skip_attribute_increase)
 
             default:
                 break;
+            }
+
+            if (you.undead_state() == US_SEMI_UNDEAD && you.experience_level == 3)
+            {
+                if (you.hunger_state > HS_SATIATED)
+                {
+                    mprf(MSGCH_INTRINSIC_GAIN, "If you weren't so full, "
+                            "you could now transform into a vampire bat.");
+                }
+                else
+                {
+                    mprf(MSGCH_INTRINSIC_GAIN,
+                            "You can now transform into a vampire bat.");
+                }
+            }
+            if (you.undead_state() == US_UNDEAD
+                && (you.experience_level == 13 || you.experience_level == 26))
+            {
+                perma_mutate(MUT_NECRO_ENHANCER, 1,
+                             species_name(you.species) + " Mummy growth");
             }
 
             give_level_mutations(you.species, you.experience_level);
@@ -3226,7 +3265,7 @@ int player_stealth()
         stealth -= STEALTH_PIP;
 
     // Thirsty vampires are stealthier.
-    if (you.species == SP_VAMPIRE)
+    if (you.undead_state() == US_SEMI_UNDEAD)
     {
         if (you.hunger_state <= HS_STARVING || you.form == transformation::bat)
             stealth += STEALTH_PIP * 2;
@@ -3484,7 +3523,7 @@ void display_char_status()
     else if (you.haloed())
         mpr("An external divine halo illuminates you.");
 
-    if (you.species == SP_VAMPIRE)
+    if (you.undead_state() == US_SEMI_UNDEAD)
         _display_vampire_status();
 
     status_info inf;
@@ -3862,7 +3901,7 @@ void rot_hp(int hp_loss)
 
     calc_hp();
 
-    if (you.species != SP_GHOUL)
+    if (you.undead_state() != US_HUNGRY_DEAD)
         xom_is_stimulated(hp_loss * 25);
 
     you.redraw_hit_points = true;
@@ -4051,7 +4090,7 @@ bool player_regenerates_hp()
 {
     if (you.has_mutation(MUT_NO_REGENERATION))
         return false;
-    if (you.species == SP_VAMPIRE && you.hunger_state <= HS_STARVING)
+    if (you.undead_state() == US_SEMI_UNDEAD && you.hunger_state <= HS_STARVING)
         return false;
     return true;
 }
@@ -6192,7 +6231,9 @@ int player::how_chaotic(bool /*check_spells_god*/) const
  */
 bool player::is_unbreathing() const
 {
-    return !get_form()->breathes || petrified()
+    return undead_state(false) != US_ALIVE // Next line checks temp forms
+        || !get_form()->breathes
+        || petrified()
         || get_mutation_level(MUT_UNBREATHING);
 }
 
@@ -6534,7 +6575,7 @@ undead_state_type player::undead_state(bool temp) const
 {
     if (temp && you.form == transformation::lich)
         return US_UNDEAD;
-    return species_undead_type(you.species);
+    return you.undead_modifier;
 }
 
 bool player::nightvision() const
@@ -7271,7 +7312,7 @@ bool player::can_throw_large_rocks() const
 
 bool player::can_smell() const
 {
-    return species != SP_MUMMY;
+    return you.undead_state() != US_UNDEAD;
 }
 
 bool player::can_sleep(bool holi_only) const
@@ -7731,7 +7772,7 @@ bool player::form_uses_xl() const
     // should apply to more forms, too.  [1KB]
     return form == transformation::wisp || form == transformation::fungus
         || form == transformation::pig
-        || form == transformation::bat && you.species != SP_VAMPIRE;
+        || form == transformation::bat && you.undead_state() != US_SEMI_UNDEAD;
 }
 
 static int _get_potion_heal_factor()

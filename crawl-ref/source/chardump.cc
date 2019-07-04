@@ -1531,7 +1531,7 @@ const char *hunger_level()
 {
     ASSERT(you.hunger_state <= HS_ENGORGED);
 
-    if (you.species == SP_VAMPIRE)
+    if (you.undead_state() == US_SEMI_UNDEAD)
         return thirst_names[you.hunger_state];
     return hunger_names[you.hunger_state];
 }

@@ -645,6 +645,166 @@ static keyfun_action _keyfun_seed_input(int &ch)
     return KEYFUN_IGNORE;
 }
 
+static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
+    const newgame_def& defaults)
+{
+    bool done = false;
+    bool cancel = false;
+
+    // Set modifier defaults
+    choice.undead_type = US_ALIVE;
+    choice.skilled_type = 0;
+    choice.chaoskin = false;
+
+    auto prompt_ui = make_shared<Text>();
+    prompt_ui->on(Widget::slots.event, [&](wm_event ev)  {
+        if (ev.type != WME_KEYDOWN)
+            return false;
+        int key = ev.key.keysym.sym;
+
+        if (key == 'u' || key == 'U')
+        {
+            switch (choice.undead_type)
+            {
+                case US_ALIVE:
+                    choice.undead_type = US_UNDEAD;
+                    break;
+                case US_UNDEAD:
+                    choice.undead_type = US_HUNGRY_DEAD;
+                    break;
+                case US_HUNGRY_DEAD:
+                    choice.undead_type = US_SEMI_UNDEAD;
+                    break;
+                case US_SEMI_UNDEAD:
+                    choice.undead_type = US_ALIVE;
+                    break;
+            }
+            return done = false;
+        }
+        else if (key == 's' || key == 'S')
+        {
+            switch (choice.skilled_type)
+            {
+                case 0:
+                    choice.skilled_type = -1;
+                    break;
+                case -1:
+                    choice.skilled_type = 1;
+                    break;
+                case 1:
+                    choice.skilled_type = 0;
+                    break;
+            }
+            return done = false;
+        }
+        else if (key == 'x' || key == 'X')
+        {
+            choice.chaoskin = !choice.chaoskin;
+            return done = false;
+        }
+        else if (key == CONTROL('M'))
+        {
+            return done = true;
+        }
+        else if (key != -1)
+        {
+            if (key_is_escape(key))
+                return done = cancel = true;
+        }
+        return true;
+    });
+
+    auto box = make_shared<ui::Box>(ui::Widget::VERT);
+    box->add_child(prompt_ui);
+
+    // XXX: Is there some way to format these lines with less code?
+    formatted_string undead_choice_str;
+    undead_choice_str.textcolour(WHITE);
+    undead_choice_str.cprintf("\n(U)");
+    undead_choice_str.textcolour(LIGHTGRAY);
+    undead_choice_str.cprintf("ndead status: normal | mummy | zombie | vampire");
+    auto undead_choice = make_shared<ui::Text>(undead_choice_str);
+    box->add_child(undead_choice);
+
+    formatted_string undead_desc;
+    undead_desc.textcolour(WHITE);
+    undead_desc.cprintf(" Mummy: ");
+    undead_desc.textcolour(LIGHTGRAY);
+    undead_desc.cprintf("-2 apts, rC+, rN+++, rF-, unbreathing, Necro enhancer (XL 13 & 26), foodless.\n");
+    undead_desc.textcolour(WHITE);
+    undead_desc.cprintf(" Zombie: ");
+    undead_desc.textcolour(LIGHTGRAY);
+    undead_desc.cprintf("-1 apts, rC+, rN+++, unbreathing, inhibited regen, chunk healing.\n");
+    undead_desc.textcolour(WHITE);
+    undead_desc.cprintf(" Vampire: ");
+    undead_desc.textcolour(LIGHTGRAY);
+    undead_desc.cprintf("unbreathing, batform (XL 3), blood drinking.\n");
+    box->add_child(make_shared<ui::Text>(undead_desc));
+
+    formatted_string skill_choice_str;
+    skill_choice_str.textcolour(WHITE);
+    skill_choice_str.cprintf("\n(S)");
+    skill_choice_str.textcolour(LIGHTGRAY);
+    skill_choice_str.cprintf("kill: normal | unskilled (-1 apt) | skilled (+1 apt)");
+    auto skill_choice = make_shared<ui::Text>(skill_choice_str);
+    box->add_child(skill_choice);
+
+    formatted_string chaoskin_choice_str;
+    chaoskin_choice_str.textcolour(WHITE);
+    chaoskin_choice_str.cprintf("\n(X)");
+    chaoskin_choice_str.textcolour(LIGHTGRAY);
+    chaoskin_choice_str.cprintf("om's attention: disabled | enabled");
+    auto chaoskin_choice = make_shared<ui::Text>(chaoskin_choice_str);
+    box->add_child(chaoskin_choice);
+
+    auto popup = make_shared<ui::Popup>(box);
+    ui::push_layout(move(popup));
+    while (!done && !crawl_state.seen_hups)
+    {
+        formatted_string prompt;
+        prompt.textcolour(CYAN);
+        prompt.cprintf("Game Modifiers\n");
+        prompt_ui->set_text(prompt);
+
+        switch (choice.undead_type)
+        {
+            case US_ALIVE:
+                undead_choice->set_highlight_pattern("normal", false);
+                break;
+            case US_UNDEAD:
+                undead_choice->set_highlight_pattern("mummy", false);
+                break;
+            case US_HUNGRY_DEAD:
+                undead_choice->set_highlight_pattern("zombie", false);
+                break;
+            case US_SEMI_UNDEAD:
+                undead_choice->set_highlight_pattern("vampire", false);
+                break;
+        }
+        switch (choice.skilled_type)
+        {
+            case 0:
+                skill_choice->set_highlight_pattern("normal", false);
+                break;
+            case -1:
+                skill_choice->set_highlight_pattern("unskilled", false);
+                break;
+            case 1:
+                // Note the space so we don't match "unSKILLED"
+                skill_choice->set_highlight_pattern(" skilled ", false);
+                break;
+        }
+        chaoskin_choice->set_highlight_pattern(choice.chaoskin ? "enabled" : "disabled", false);
+        ui::pump_events();
+    }
+    ui::pop_layout();
+
+    if (cancel || crawl_state.seen_hups)
+        game_ended(game_exit::abort);
+
+    // We copy values from choice to ng in the parent function
+}
+
 static void _choose_seed(newgame_def& ng, newgame_def& choice,
     const newgame_def& defaults)
 {
@@ -808,11 +968,16 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
 
     _choose_char(ng, choice, defaults);
 
+    _choose_player_modifiers(ng, choice, defaults);
+
     // Set these again, since _mark_fully_random may reset ng.
     ng.name = choice.name;
     ng.type = choice.type;
     ng.seed = choice.seed;
     ng.pregenerate = choice.pregenerate;
+    ng.undead_type = choice.undead_type;
+    ng.skilled_type = choice.skilled_type;
+    ng.chaoskin = choice.chaoskin;
 
 #ifndef DGAMELAUNCH
     // New: pick name _after_ character choices.

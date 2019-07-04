@@ -873,7 +873,7 @@ static void _finish_butcher_delay(item_def& corpse, bool bottling)
     finish_butchering(corpse, bottling);
     // Don't waste time picking up chunks if you're already
     // starving. (jpeg)
-    if ((you.hunger_state > HS_STARVING || you.species == SP_VAMPIRE)
+    if ((you.hunger_state > HS_STARVING || you.undead_state() == US_SEMI_UNDEAD)
         // Only pick up chunks if this is the last delay...
         && (you.delay_queue.size() == 1
         // ...Or, equivalently, if it's the last butcher one.

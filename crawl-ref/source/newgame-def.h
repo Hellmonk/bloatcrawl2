@@ -4,6 +4,7 @@
 #include "item-prop-enum.h"
 #include "job-type.h"
 #include "species-type.h"
+#include "undead-state-type.h"
 
 // Either a character definition, with real species, job, and
 // weapon, book, wand as appropriate.
@@ -37,6 +38,11 @@ struct newgame_def
     // If this is true, the species field encodes whether
     // the choice was for a viable character or not.
     bool fully_random;
+
+    // Game variants
+    undead_state_type undead_type;
+    int skilled_type;
+    bool chaoskin; // Xom acts on you always
 
     newgame_def();
     void clear_character();

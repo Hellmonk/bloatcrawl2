@@ -976,10 +976,10 @@ void make_book_kiku_gift(item_def &book, bool first)
     if (first)
     {
         bool can_bleed = you.species != SP_GARGOYLE
-            && you.species != SP_GHOUL
-            && you.species != SP_MUMMY;
+            && you.undead_state() != US_HUNGRY_DEAD
+            && you.undead_state() != US_UNDEAD;
         bool can_regen = you.species != SP_DEEP_DWARF
-            && you.species != SP_MUMMY;
+            && you.undead_state() != US_UNDEAD;
 
         chosen_spells[0] = SPELL_PAIN;
         chosen_spells[1] = SPELL_CORPSE_ROT;

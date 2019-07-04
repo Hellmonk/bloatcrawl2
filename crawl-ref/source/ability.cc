@@ -331,7 +331,7 @@ static const ability_def Ability_List[] =
     { ABIL_HOP, "Hop", 0, 0, 0, 0, {}, abflag::none },
 
     { ABIL_CHARM, "Charm Monsters", 0, 0, 0, 0, {}, abflag::exhaustion },
-    
+
     { ABIL_POWERSQUAT, "Powersquat", 0, 0, 0, 0, {}, abflag::none },
 
     // EVOKE abilities use Evocations and come from items.
@@ -1194,7 +1194,7 @@ void no_ability_msg()
     // Give messages if the character cannot use innate talents right now.
     // * Vampires can't turn into bats when full of blood.
     // * Tengu can't start to fly if already flying.
-    if (you.species == SP_VAMPIRE && you.experience_level >= 3)
+    if (you.undead_state() == US_SEMI_UNDEAD && you.experience_level >= 3)
     {
         if (you.transform_uncancellable)
             mpr("You can't untransform!");
@@ -1912,7 +1912,7 @@ static spret _do_ability(const ability_def& abil, bool fail)
         }
         you.increase_duration(DUR_EXHAUSTED, 25 - you.experience_level / 2 + random2(8));
         return mass_enchantment(ENCH_CHARM, 10 + you.experience_level * 4);
-        
+
     case ABIL_POWERSQUAT:
         if(you.duration[DUR_SQUAT])
         {
@@ -3441,7 +3441,7 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
 
     if (you.get_mutation_level(MUT_CUTE_FOX_EARS))
         _add_talent(talents, ABIL_CHARM, check_confused);
-    
+
     if (you.get_mutation_level(MUT_POWERSQUAT))
         _add_talent(talents, ABIL_POWERSQUAT, check_confused);
 
@@ -3460,7 +3460,7 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
         _add_talent(talents, draconian_breath(you.species), check_confused);
     }
 
-    if (you.species == SP_VAMPIRE && you.experience_level >= 3
+    if (you.undead_state() == US_SEMI_UNDEAD && you.experience_level >= 3
         && you.hunger_state <= HS_SATIATED
         && you.form != transformation::bat)
     {

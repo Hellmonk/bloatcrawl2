@@ -44,7 +44,7 @@
 static bool _start_butchering(item_def& corpse)
 {
     const bool bottle_blood =
-        you.species == SP_VAMPIRE
+        you.undead_state() == US_SEMI_UNDEAD
         && can_bottle_blood_from_corpse(corpse.mon_type);
 
     if (is_forbidden_food(corpse))
@@ -126,7 +126,7 @@ void butchery(item_def* specific_corpse)
         return;
     }
 
-    const bool bottle_blood = you.species == SP_VAMPIRE;
+    const bool bottle_blood = you.undead_state() == US_SEMI_UNDEAD;
     const char * butcher_verb = bottle_blood ? "bottle" : "butcher";
 
     vector<item_def *> all_corpses;
@@ -370,7 +370,7 @@ void turn_corpse_into_chunks(item_def &item, bool bloodspatter)
     {
         item.flags |= ISFLAG_DROPPED;
     }
-    else if (you.species != SP_VAMPIRE)
+    else if (you.undead_state() != US_SEMI_UNDEAD)
         clear_item_pickup_flags(item);
 
     // Initialise timer depending on corpse age
@@ -416,7 +416,7 @@ void butcher_corpse(item_def &item, bool skeleton, bool chunks)
 
 bool can_bottle_blood_from_corpse(monster_type mons_class)
 {
-    return you.species == SP_VAMPIRE && mons_has_blood(mons_class);
+    return you.undead_state() == US_SEMI_UNDEAD && mons_has_blood(mons_class);
 }
 
 int num_blood_potions_from_corpse(monster_type mons_class)

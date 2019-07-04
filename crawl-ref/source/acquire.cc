@@ -405,9 +405,9 @@ static int _acquirement_food_subtype(bool /*divine*/, int& quantity)
 {
     int type_wanted;
     // Food is a little less predictable now. - bwr
-    if (you.species == SP_GHOUL)
+    if (you.undead_state() == US_HUNGRY_DEAD)
         type_wanted = FOOD_CHUNK;
-    else if (you.species == SP_VAMPIRE)
+    else if (you.undead_state() == US_SEMI_UNDEAD)
     {
         // Vampires really don't want any OBJ_FOOD but OBJ_CORPSES
         // but it's easier to just give them a potion of blood
@@ -772,7 +772,7 @@ static int _find_acquirement_subtype(object_class_type &class_wanted,
             class_wanted = random_choose(OBJ_WANDS, OBJ_MISCELLANY);
 
         // Vampires acquire blood, not food.
-        if (class_wanted == OBJ_FOOD && you.species == SP_VAMPIRE)
+        if (class_wanted == OBJ_FOOD && you.undead_state() == US_SEMI_UNDEAD)
             class_wanted = OBJ_POTIONS;
 
         if (_subtype_finders[class_wanted])
@@ -1520,7 +1520,7 @@ bool acquirement(object_class_type class_wanted, int agent,
         { OBJ_GOLD,       0 },
     };
     ASSERT(acq_classes[6].type == OBJ_FOOD);
-    acq_classes[6].name = you.species == SP_VAMPIRE ? "Blood":
+    acq_classes[6].name = you.undead_state() == US_SEMI_UNDEAD ? "Blood":
                                                       "Food";
     string gold_text = make_stringf("Gold (you have $%d)", you.gold);
     ASSERT(acq_classes[7].type == OBJ_GOLD);

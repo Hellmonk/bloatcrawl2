@@ -324,7 +324,7 @@ mutation_activity_type mutation_activity_level(mutation_type mut)
         }
         // Vampire bats keep their fangs.
         if (you.form == transformation::bat
-            && you.species == SP_VAMPIRE
+            && you.undead_state() == US_SEMI_UNDEAD
             && mut == MUT_FANGS)
         {
             return mutation_activity_type::FULL;
@@ -643,7 +643,7 @@ string describe_mutations(bool drop_title)
                          && you.form == transformation::dragon));
     }
 
-    if (you.species == SP_VAMPIRE)
+    if (you.undead_state() == US_SEMI_UNDEAD)
     {
         if (you.hunger_state <= HS_STARVING)
             result += "<green>You do not heal naturally.</green>\n";
@@ -696,6 +696,29 @@ string describe_mutations(bool drop_title)
 
     if (player_res_poison(false, false, false) == 3)
         result += "You are immune to poison.\n";
+
+    const auto undead_state = you.undead_state();
+    switch (undead_state)
+    {
+        case US_SEMI_UNDEAD:
+            result += "You can survive without breathing.";
+            // Fall through
+        case US_UNDEAD:
+        case US_HUNGRY_DEAD:
+            result += "You are immune to negative energy. (rN+++)\n";
+            result += "You are immune to unholy pain and torment.\n";
+            break;
+        case US_ALIVE:
+            // nothing
+            break;
+    }
+    if (undead_state == US_HUNGRY_DEAD)
+    {
+        result += "You hunger for flesh and rot when hungry.\n";
+        result += "You do not regenerate when monsters are visible.\n";
+    }
+    if (undead_state == US_SEMI_UNDEAD)
+        result += "You can transition from alive to undead at will.\n";
 
     result += "</lightblue>";
 
@@ -790,7 +813,7 @@ static int _vampire_bloodlessness()
 
 static string _display_vampire_attributes()
 {
-    ASSERT(you.species == SP_VAMPIRE);
+    ASSERT(you.undead_state() == US_SEMI_UNDEAD);
 
     string result;
 
@@ -872,7 +895,7 @@ void display_mutations()
 
     auto switcher = make_shared<Switcher>();
 
-    const string vamp_s = you.species == SP_VAMPIRE ?_display_vampire_attributes() : "N/A";
+    const string vamp_s = you.undead_state() == US_SEMI_UNDEAD ?_display_vampire_attributes() : "N/A";
     const string descs[3] =  { mutation_s, vamp_s };
     for (int i = 0; i < 2; i++)
     {
@@ -896,7 +919,7 @@ void display_mutations()
     auto bottom = make_shared<Text>(_vampire_Ascreen_footer(true));
     bottom->set_margin_for_sdl({20, 0, 0, 0});
     bottom->set_margin_for_crt({1, 0, 0, 0});
-    if (you.species == SP_VAMPIRE)
+    if (you.undead_state() == US_SEMI_UNDEAD)
         vbox->add_child(bottom);
 
     auto popup = make_shared<ui::Popup>(vbox);
@@ -907,7 +930,7 @@ void display_mutations()
         if (ev.type != WME_KEYDOWN)
             return false;
         lastch = ev.key.keysym.sym;
-        if (you.species == SP_VAMPIRE && (lastch == '!' || lastch == CK_MOUSE_CMD || lastch == '^'))
+        if (you.undead_state() == US_SEMI_UNDEAD && (lastch == '!' || lastch == CK_MOUSE_CMD || lastch == '^'))
         {
             int c = 1 - switcher->current();
             switcher->current() = c;
@@ -925,7 +948,7 @@ void display_mutations()
 #ifdef USE_TILE_WEB
     tiles.json_open_object();
     tiles.json_write_string("mutations", mutation_s);
-    if (you.species == SP_VAMPIRE)
+    if (you.undead_state() == US_SEMI_UNDEAD)
         tiles.json_write_int("vampire", _vampire_bloodlessness());
     tiles.push_ui_layout("mutations", 1);
 #endif
@@ -1261,7 +1284,7 @@ bool physiology_mutation_conflict(mutation_type mutat)
     }
 
     // Vampires' healing and thirst rates depend on their blood level.
-    if (you.species == SP_VAMPIRE
+    if (you.undead_state() == US_SEMI_UNDEAD
         && (mutat == MUT_CARNIVOROUS || mutat == MUT_HERBIVOROUS
             || mutat == MUT_REGENERATION || mutat == MUT_INHIBITED_REGENERATION
             || mutat == MUT_FAST_METABOLISM || mutat == MUT_SLOW_METABOLISM))

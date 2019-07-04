@@ -532,7 +532,7 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
                     break;
 
                 case SPWPN_VAMPIRISM:
-                    if (you.species == SP_VAMPIRE)
+                    if (you.undead_state() == US_SEMI_UNDEAD)
                         mpr("You feel a bloodthirsty glee!");
                     else
                         mpr("You feel a sense of dread.");
@@ -690,7 +690,7 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
             case SPWPN_VAMPIRISM:
                 if (showMsgs)
                 {
-                    if (you.species == SP_VAMPIRE)
+                    if (you.undead_state() == US_SEMI_UNDEAD)
                         mpr("You feel your glee subside.");
                     else
                         mpr("You feel the dreadful sensation subside.");
@@ -1272,7 +1272,7 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
         break;
 
     case AMU_THE_GOURMAND:
-        if (you.species == SP_VAMPIRE
+        if (you.undead_state() == US_SEMI_UNDEAD
             || you_foodless() // Mummy or in lichform
             || you.get_mutation_level(MUT_HERBIVOROUS) > 0) // Spriggan
         {

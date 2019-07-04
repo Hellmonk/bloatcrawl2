@@ -3108,7 +3108,7 @@ bool is_emergency_item(const item_def &item)
             return false;
         }
     case OBJ_POTIONS:
-        if (you.species == SP_MUMMY)
+        if (you.undead_state() == US_UNDEAD)
             return false;
 
         switch (item.sub_type)
@@ -3152,7 +3152,7 @@ bool is_good_item(const item_def &item)
     case OBJ_SCROLLS:
         return item.sub_type == SCR_ACQUIREMENT;
     case OBJ_POTIONS:
-        if (you.species == SP_MUMMY)
+        if (you.undead_state() == US_UNDEAD)
             return false;
         switch (item.sub_type)
         {
@@ -3166,7 +3166,7 @@ bool is_good_item(const item_def &item)
             return true;
 #if TAG_MAJOR_VERSION == 34
         case POT_BENEFICIAL_MUTATION:
-            return you.species != SP_GHOUL; // Mummies are already handled
+            return you.undead_state() != US_HUNGRY_DEAD; // Mummies are already handled
 #endif
         default:
             return false;
@@ -3210,7 +3210,7 @@ bool is_bad_item(const item_def &item, bool temp)
         }
     case OBJ_POTIONS:
         // Can't be bad if you can't use them.
-        if (you.species == SP_MUMMY)
+        if (you.undead_state() == US_UNDEAD)
             return false;
 
         switch (item.sub_type)
@@ -3228,7 +3228,7 @@ bool is_bad_item(const item_def &item, bool temp)
         case POT_POISON:
             // Poison is not that bad if you're poison resistant.
             return player_res_poison(false) <= 0
-                   || !temp && you.species == SP_VAMPIRE;
+                   || !temp && you.undead_state() == US_SEMI_UNDEAD;
 #endif
         default:
             return false;
@@ -3290,7 +3290,7 @@ bool is_dangerous_item(const item_def &item, bool temp)
             return true;
         case SCR_TORMENT:
             return !you.get_mutation_level(MUT_TORMENT_RESISTANCE)
-                   || !temp && you.species == SP_VAMPIRE;
+                   || !temp && you.undead_state() == US_SEMI_UNDEAD;
         case SCR_HOLY_WORD:
             return you.undead_or_demonic();
         default:
@@ -3512,7 +3512,7 @@ bool is_useless_item(const item_def &item, bool temp)
 
         case POT_LIGNIFY:
             return you.undead_state(temp)
-                   && (you.species != SP_VAMPIRE
+                   && (you.undead_state() != US_SEMI_UNDEAD
                        || temp && you.hunger_state < HS_SATIATED);
 
         case POT_FLIGHT:
@@ -3521,12 +3521,12 @@ bool is_useless_item(const item_def &item, bool temp)
 
 #if TAG_MAJOR_VERSION == 34
         case POT_PORRIDGE:
-            return you.species == SP_VAMPIRE
+            return you.undead_state() == US_SEMI_UNDEAD
                     || you.get_mutation_level(MUT_CARNIVOROUS) > 0;
         case POT_BLOOD_COAGULATED:
 #endif
         case POT_BLOOD:
-            return you.species != SP_VAMPIRE;
+            return you.undead_state() != US_SEMI_UNDEAD;
 #if TAG_MAJOR_VERSION == 34
         case POT_DECAY:
             return you.res_rotting(temp) > 0;
@@ -3560,7 +3560,7 @@ bool is_useless_item(const item_def &item, bool temp)
         {
         case AMU_RAGE:
             return you.undead_state(temp)
-                   && (you.species != SP_VAMPIRE
+                   && (you.undead_state() != US_SEMI_UNDEAD
                        || temp && you.hunger_state < HS_SATIATED)
                    || you.species == SP_FORMICID
                    || you.get_mutation_level(MUT_NO_ARTIFICE);
@@ -3590,7 +3590,7 @@ bool is_useless_item(const item_def &item, bool temp)
                    || (temp
                        && you.get_mutation_level(MUT_INHIBITED_REGENERATION) > 0
                        && regeneration_is_inhibited())
-                   || (temp && you.species == SP_VAMPIRE
+                   || (temp && you.undead_state() == US_SEMI_UNDEAD
                        && you.hunger_state <= HS_STARVING);
 
 #if TAG_MAJOR_VERSION == 34
@@ -3603,7 +3603,7 @@ bool is_useless_item(const item_def &item, bool temp)
 
         case RING_POISON_RESISTANCE:
             return player_res_poison(false, temp, false) > 0
-                   && (temp || you.species != SP_VAMPIRE);
+                   && (temp || you.undead_state() != US_SEMI_UNDEAD);
 
         case RING_WIZARDRY:
             return you_worship(GOD_TROG);

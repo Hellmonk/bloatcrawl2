@@ -236,7 +236,7 @@ public:
 
     bool effect(bool=true, int pow = 40, bool=true) const override
     {
-        if (you.species == SP_VAMPIRE)
+        if (you.undead_state() == US_SEMI_UNDEAD)
         {
             mpr("Yummy - fresh blood!");
             lessen_hunger(pow, true);
@@ -661,7 +661,7 @@ public:
 
     bool effect(bool was_known = true, int pow = 40, bool=true) const override
     {
-        if (you.species == SP_VAMPIRE && you.hunger_state < HS_SATIATED)
+        if (you.undead_state() == US_SEMI_UNDEAD && you.hunger_state < HS_SATIATED)
         {
             mpr("You feel slightly irritated.");
             return false;
@@ -924,7 +924,7 @@ public:
 
     bool effect(bool=true, int pow = 40, bool=true) const override
     {
-        if (you.species == SP_VAMPIRE)
+        if (you.undead_state() == US_SEMI_UNDEAD)
         {
             mpr("This tastes delicious.");
             lessen_hunger(pow, true);
@@ -1052,7 +1052,7 @@ public:
 
     bool effect(bool=true, int=40, bool=true) const override
     {
-        if (you.species == SP_VAMPIRE
+        if (you.undead_state() == US_SEMI_UNDEAD
             || you.get_mutation_level(MUT_CARNIVOROUS) > 0)
         {
             mpr("Blech - that potion was really gluggy!");
