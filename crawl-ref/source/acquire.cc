@@ -1439,7 +1439,8 @@ int acquirement_create_item(object_class_type class_wanted,
             }
         }
         // Eliminate the "distortion from acquirement" hilarity
-        if (get_weapon_brand(acq_item) == SPWPN_DISTORTION) {
+        if ((get_weapon_brand(acq_item) == SPWPN_DISTORTION) &&
+            (agent != GOD_XOM)) {
             set_ident_flags(acq_item, ISFLAG_KNOW_TYPE);
         }
 
