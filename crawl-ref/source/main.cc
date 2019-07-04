@@ -445,7 +445,7 @@ NORETURN static void _launch_game()
     if (!crawl_state.game_is_tutorial()) {
         mpr("Press <w>?</w> for a list of commands and other information.");
         if (game_start) {
-            mpr("See http://crawl.montres.org.uk/about.html for Stoat Soup changes.\nMost recent change: 8 permabuffs (last Death Channel) with MP reservation.");
+            mpr("See http://crawl.montres.org.uk/about.html for Stoat Soup changes.\nMost recent change: weapons of distortion from acquirement or god gifts are IDed as such automatically.");
         }
     }
 

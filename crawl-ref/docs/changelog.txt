@@ -22,12 +22,14 @@ Wear-ID amulets with impunity:
  drains at most 1/5 of your piety on removal, and cannot drain more piety than
  was gained while wearing it.
 Permabuffs:
-Infusion, Song of Slaying, Shroud of Golubria, Regeneration, Portal
-Projectile, Deflect Missiles, Excruciating Wounds, and Death Channel
-last forever. If you can't see any monsters, you mutter the words of
-the Song of Slaying under your breath, and don't make any
-noise. Deflect Missiles and Shroud of Golubria automagically restore
-themselves when enemy attacks break them.
+ Infusion, Song of Slaying, Shroud of Golubria, Regeneration, Portal
+ Projectile, Deflect Missiles, Excruciating Wounds, and Death Channel
+ last forever. If you can't see any monsters, you mutter the words of
+ the Song of Slaying under your breath, and don't make any
+ noise. Deflect Missiles and Shroud of Golubria automagically restore
+ themselves when enemy attacks break them.
+When you acquire or are god gifted a weapon of distortion, it is identified
+as such automatically.
 
 Vanilla changes messed around with
 ----------------------------------

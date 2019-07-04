@@ -1438,6 +1438,10 @@ int acquirement_create_item(object_class_type class_wanted,
                 acq_item.plus = max(static_cast<int>(acq_item.plus), random2(2));
             }
         }
+        // Eliminate the "distortion from acquirement" hilarity
+        if (get_weapon_brand(acq_item) == SPWPN_DISTORTION) {
+            set_ident_flags(acq_item, ISFLAG_KNOW_TYPE);
+        }
 
         // Last check: don't acquire items your god hates.
         // Temporarily mark the type as ID'd for the purpose of checking if
