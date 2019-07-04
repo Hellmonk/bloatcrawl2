@@ -190,7 +190,7 @@ static bool _command_not_applicable(const command_type cmd, bool safe)
         for (stack_iterator si(you.pos(), true); si; ++si)
             if (si->is_type(OBJ_CORPSES, CORPSE_BODY))
                 return false;
-        if (you.species == SP_VAMPIRE)
+        if (you.undead_state() == US_SEMI_UNDEAD)
             return false;
         return true;
     case CMD_CAST_SPELL:

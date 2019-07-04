@@ -245,10 +245,10 @@ void wizard_heal(bool super_heal)
 void wizard_set_hunger_state()
 {
     string hunger_prompt = "Set hunger state to ";
-    if (you.species != SP_VAMPIRE && you.species != SP_GHOUL)
+    if (you.undead_state() != US_SEMI_UNDEAD && you.undead_state() != US_HUNGRY_DEAD)
         hunger_prompt += "f(A)inting, ";
     hunger_prompt += "s(T)arving, (N)ear starving, (H)ungry";
-    if (you.species == SP_GHOUL)
+    if (you.undead_state() == US_HUNGRY_DEAD)
         hunger_prompt += " or (S)atiated";
     else
         hunger_prompt += ", (S)atiated, (F)ull or (E)ngorged";
@@ -273,7 +273,7 @@ void wizard_set_hunger_state()
 
     food_change();
 
-    if (you.species == SP_GHOUL && you.hunger_state >= HS_SATIATED)
+    if (you.undead_state() == US_HUNGRY_DEAD && you.hunger_state >= HS_SATIATED)
         mpr("Ghouls can never be full or above!");
 }
 

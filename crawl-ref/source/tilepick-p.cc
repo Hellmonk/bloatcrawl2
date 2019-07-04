@@ -573,8 +573,6 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
         return TILEP_BASE_ORC;
     case SP_KOBOLD:
         return TILEP_BASE_KOBOLD;
-    case SP_MUMMY:
-        return TILEP_BASE_MUMMY;
     case SP_NAGA:
         return TILEP_BASE_NAGA;
     case SP_OGRE:
@@ -604,14 +602,10 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
         return TILEP_BASE_MINOTAUR;
     case SP_DEMONSPAWN:
         return TILEP_BASE_DEMONSPAWN;
-    case SP_GHOUL:
-        return TILEP_BASE_GHOUL;
     case SP_TENGU:
         return TILEP_BASE_TENGU;
     case SP_MERFOLK:
         return TILEP_BASE_MERFOLK;
-    case SP_VAMPIRE:
-        return TILEP_BASE_VAMPIRE;
     case SP_DEEP_DWARF:
         return TILEP_BASE_DEEP_DWARF;
     case SP_GARGOYLE:
@@ -696,9 +690,6 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
         case SP_NAGA:
             hair = TILEP_HAIR_PART2_RED;
             break;
-        case SP_VAMPIRE:
-            hair = TILEP_HAIR_ARWEN;
-            break;
         case SP_DEEP_DWARF:
             hair  = TILEP_HAIR_SHORT_WHITE;
             beard = TILEP_BEARD_GARIBALDI_WHITE;
@@ -709,10 +700,8 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
             break;
         case SP_MINOTAUR:
         case SP_DEMONSPAWN:
-        case SP_GHOUL:
         case SP_HILL_ORC:
         case SP_KOBOLD:
-        case SP_MUMMY:
         case SP_FORMICID:
         case SP_BARACHI:
         case SP_GNOLL:

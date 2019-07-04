@@ -4269,9 +4269,9 @@ static string _gozag_special_shop_name(shop_type type)
 {
     if (type == SHOP_FOOD)
     {
-        if (you.species == SP_VAMPIRE)
+        if (you.undead_state() == US_SEMI_UNDEAD)
             return "Blood";
-        else if (you.species == SP_GHOUL)
+        else if (you.undead_state() == US_HUNGRY_DEAD)
             return "Carrion"; // yum!
     }
 
@@ -4413,7 +4413,7 @@ bool gozag_call_merchant()
         // first index.
         if (type == SHOP_FOOD)
             continue;
-        if (type == SHOP_DISTILLERY && you.species == SP_MUMMY)
+        if (type == SHOP_DISTILLERY && you.undead_state() == US_UNDEAD)
             continue;
         if (type == SHOP_EVOKABLES && you.get_mutation_level(MUT_NO_ARTIFICE))
             continue;
@@ -5077,7 +5077,7 @@ static mutation_type _random_valid_sacrifice(const vector<mutation_type> &muts)
         // Vampires can't get inhibited regeneration for some reason related
         // to their existing regen silliness.
         // Neither can deep dwarf, for obvious reasons.
-        if (mut == MUT_INHIBITED_REGENERATION && you.species == SP_VAMPIRE)
+        if (mut == MUT_INHIBITED_REGENERATION && you.undead_state() == US_SEMI_UNDEAD)
             continue;
 
         // demonspawn can't get frail if they have a robust facet
@@ -5090,7 +5090,7 @@ static mutation_type _random_valid_sacrifice(const vector<mutation_type> &muts)
         }
 
         // No potion heal doesn't affect mummies since they can't quaff potions
-        if (mut == MUT_NO_POTION_HEAL && you.species == SP_MUMMY)
+        if (mut == MUT_NO_POTION_HEAL && you.undead_state() == US_UNDEAD)
             continue;
 
         // The Grunt Algorithm

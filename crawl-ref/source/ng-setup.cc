@@ -292,7 +292,7 @@ static void _give_items_skills(const newgame_def& ng)
             you.skills[SK_ARMOUR]++;
 
         break;
-        
+
     case JOB_UNDERSTUDY:
         create_understudy();
         break;
@@ -300,16 +300,16 @@ static void _give_items_skills(const newgame_def& ng)
     case JOB_WANDERER:
         create_wanderer();
         break;
-        
+
     case JOB_UNCLE:
         add_spell_to_memory(SPELL_CONFUSING_TOUCH);
         add_spell_to_memory(SPELL_PAIN);
         break;
-        
+
     case JOB_PHILOSOPHER:
         add_spell_to_memory(SPELL_CONFUSE);
         break;
-        
+
     case JOB_ENTOMOLOGIST:
         add_spell_to_memory(SPELL_SUMMON_BUTTERFLIES);
         break;
@@ -357,7 +357,7 @@ static void _give_starting_food()
     object_class_type base_type = OBJ_FOOD;
     int sub_type = FOOD_RATION;
     int quantity = 1;
-    if (you.species == SP_VAMPIRE)
+    if (you.undead_state() == US_SEMI_UNDEAD)
     {
         base_type = OBJ_POTIONS;
         sub_type  = POT_BLOOD;
@@ -532,6 +532,10 @@ static void _setup_generic(const newgame_def& ng)
     you.char_class = ng.job;
 
     you.chr_class_name = get_job_name(you.char_class);
+
+    you.undead_modifier = ng.undead_type;
+    you.skill_modifier = ng.skilled_type;
+    you.chaoskin = ng.chaoskin;
 
     species_stat_init(you.species);     // must be down here {dlb}
 
