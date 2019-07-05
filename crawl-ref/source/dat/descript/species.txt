@@ -191,3 +191,9 @@ Chaoskin
 Created by Xom for reasons unknown, Chaoskin constantly evolve. They are better
 than average at everything, but can't escape Xom's attention for long.
 %%%%
+Protean
+
+Proteans are a race of vaguely humanoid amoebas. Their mostly amorphous bodies
+love mutations and magical items, and possessing these vastly increases their
+health. In turn, as their health grows so does their size and strength.
+%%%%

@@ -152,7 +152,25 @@ bool species_has_hair(species_type species)
 
 size_type species_size(species_type species, size_part_type psize)
 {
-    const size_type size = get_species_def(species).size;
+    size_type size = get_species_def(species).size;
+    if (you.get_mutation_level(MUT_PROTEAN_BODY))
+    {
+        // Sizes go: tiny(0) little small medium large big giant(6)
+        // Protean has +0% hp and grows from tiny -> medium without items.
+        // Plus they get +5hp per artefact / mutation.
+        // XL 1 Fighting 0 = 13hp
+        // XL 27 Fighting 0 = 156hp
+        // XL 27 Fighting 27 = 249hp
+        // 40 artefacts = 200hp
+        // Figure out size based on the following abitrary decisions:
+        // * Medium size at 200hp
+        // * Only reach giant with nearly max stats/items/muts
+        // So: tiny 0-50, small 51-100, little 101-150, small 151-200, medium 201-250,
+        //     large 251-300, big 301-350, giant 400+
+        const int hp = you.hp_max;
+        const int size_bonus = min(6, hp / 50);
+        size = static_cast<size_type>(static_cast<int>(size) + size_bonus);
+    }
     if (psize == PSIZE_TORSO
         && bool(get_species_def(species).flags & SPF_SMALL_TORSO))
     {
