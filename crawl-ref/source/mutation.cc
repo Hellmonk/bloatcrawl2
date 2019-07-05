@@ -716,7 +716,7 @@ string describe_mutations(bool drop_title)
     switch (undead_state)
     {
         case US_SEMI_UNDEAD:
-            result += "You can survive without breathing.";
+            result += "You can survive without breathing.\n";
             // Fall through
         case US_UNDEAD:
         case US_HUNGRY_DEAD:
