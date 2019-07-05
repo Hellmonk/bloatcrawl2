@@ -2000,6 +2000,15 @@ static const mutation_def mut_data[] =
    {"You feel sensitive!", "", ""},
    {"You feel less sensitive!", "", ""},
 },
+
+{ MUT_ONI_MAGIC, 0, 1, mutflag::good, false,
+  "oni magic",
+
+   {"You learn spells by gaining experience, not through books or religion.\n"
+    "You only train spellcasting to practice magic.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =
