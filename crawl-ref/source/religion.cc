@@ -3125,7 +3125,8 @@ bool player_can_join_god(god_type which_god)
 
     if (you.has_any_permabuff()) {
         for (unsigned int i = PERMA_FIRST_PERMA; i <= PERMA_LAST_PERMA ; i++) {
-            if (god_hates_spell(permabuff_spell[i],which_god)) return false;
+            if (you.has_permabuff(permabuff_spell[i]) &&
+                god_hates_spell(permabuff_spell[i],which_god)) return false;
         }
     }
 
@@ -3759,14 +3760,15 @@ void god_pitch(god_type which_god)
             }
         } else if (you.has_any_permabuff()) {
             if (which_god == GOD_TROG) {
-                simple_god_message(" does not accept worshippers with permanent enchantments!",
-                                   which_god);
+                simple_god_message(" does not accept worshippers with permanent enchantments!", which_god);
             } else {
                 for (unsigned int i = PERMA_FIRST_PERMA; 
                      i <= PERMA_LAST_PERMA ; i++) {
-                    if (god_hates_spell(permabuff_spell[i],which_god)) {
+                    if (you.has_permabuff(permabuff_spell[i]) &&
+                        god_hates_spell(permabuff_spell[i],which_god)) {
                         // placeholder messages
                         simple_god_message(" does not accept worshippers with one of your permanent enchantments!", which_god);
+                        break;
                     }
                 }
             }
@@ -3781,7 +3783,7 @@ void god_pitch(god_type which_god)
         {
             simple_god_message(" does not accept worship from those who are "
                                "unable to use magical devices!", which_god);
-        }
+        } 
         else if (!_transformed_player_can_join_god(which_god))
         {
             simple_god_message(" says: How dare you approach in such a "
