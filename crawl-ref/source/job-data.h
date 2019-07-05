@@ -103,6 +103,16 @@ static const map<job_type, job_def> job_data =
     { { SK_FIGHTING, 3 }, { SK_DODGING, 2 }, { SK_WEAPON, 3 }, },
 } },
 
+{ JOB_CAVEPERSON, {
+    "Ca", "Caveperson",
+    12, 0, 0,
+    { SP_TROLL_TWO, SP_HALFLING, },
+    { "club plus:1", "hunting sling plus:2", "animal skin", "sling bullet q:22",
+      "stone q:33", "chunk of flesh" },
+    WCHOICE_NONE,
+    { { SK_MACES_FLAILS, 2 }, { SK_SLINGS, 2 }, { SK_UNARMED_COMBAT, 2 }, },
+} },
+
 { JOB_CHAOS_KNIGHT, {
     "CK", "Chaos Knight",
     4, 4, 4,

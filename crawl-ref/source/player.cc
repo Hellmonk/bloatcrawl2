@@ -7735,7 +7735,8 @@ static string _constriction_description()
 **/
 int player_monster_detect_radius()
 {
-    int radius = you.get_mutation_level(MUT_ANTENNAE) * 2;
+    int radius = max(you.get_mutation_level(MUT_ANTENNAE) * 2,
+                     you.get_mutation_level(MUT_CAVEPERSON_WARNING) * 6);
 
     if (player_equip_unrand(UNRAND_BOOTS_ASSASSIN))
         radius = max(radius, 4);

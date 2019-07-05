@@ -306,6 +306,14 @@ void give_level_mutations(species_type species, int xp_level)
             perma_mutate(lum.mut, lum.mut_level,
                          species_name(species) + " growth");
         }
+
+    if (you.char_class == JOB_CAVEPERSON)
+    {
+        if (xp_level == 7)
+            perma_mutate(MUT_FAST, 1, "Caveperson growth");
+        if (xp_level == 15)
+            perma_mutate(MUT_CAVEPERSON_WARNING, 1, "Caveperson growth");
+    }
 }
 
 int species_exp_modifier(species_type species)
