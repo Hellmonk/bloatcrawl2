@@ -424,6 +424,21 @@ static void _splash()
         noisy(8, you.pos(), "Splash!");
 }
 
+static bool _slowed_by_water(dungeon_feature_type water)
+{
+    ASSERT(!you.can_swim());
+    ASSERT(!you.can_water_walk());
+    ASSERT(feat_is_water(water));
+
+    const auto size = species_size(you.species, PSIZE_BODY);
+    if (water == DNGN_SHALLOW_WATER)
+        return size < SIZE_BIG;
+    else if (water == DNGN_DEEP_WATER)
+        return size == SIZE_GIANT;
+    else
+        ASSERT(false);
+}
+
 void moveto_location_effects(dungeon_feature_type old_feat,
                              bool stepped, const coord_def& old_pos)
 {
@@ -446,7 +461,8 @@ void moveto_location_effects(dungeon_feature_type old_feat,
 
             if (!you.can_swim() && !you.can_water_walk())
             {
-                if (!feat_is_water(old_feat))
+                const bool entering = !feat_is_water(old_feat);
+                if (entering)
                 {
                     mprf("You %s the %s water.",
                          stepped ? "enter" : "fall into",
@@ -456,11 +472,29 @@ void moveto_location_effects(dungeon_feature_type old_feat,
                 if (new_grid == DNGN_DEEP_WATER && old_feat != DNGN_DEEP_WATER)
                     mpr("You sink to the bottom.");
 
-                if (!feat_is_water(old_feat))
+                const bool are_slow = _slowed_by_water(new_grid);
+                if (entering)
                 {
-                    mpr("Moving in this stuff is going to be slow.");
-                    if (you.invisible())
-                        mpr("...and don't expect to remain undetected.");
+                    if (are_slow)
+                    {
+                        mpr("Moving in this stuff is going to be slow.");
+                        if (you.invisible())
+                            mpr("...and don't expect to remain undetected.");
+                    }
+                    else
+                        if (you.invisible())
+                            mpr("Don't expect to remain undetected in this stuff.");
+
+                }
+                else
+                {
+                    const bool was_slow = _slowed_by_water(old_feat);
+                    if (are_slow && !was_slow)
+                    {
+                        mpr("Moving in this stuff is going to be slow.");
+                        if (you.invisible())
+                            mpr("...and don't expect to remain undetected.");
+                    }
                 }
             }
 
@@ -607,9 +641,20 @@ bool player_in_connected_branch()
 
 bool player_likes_water(bool permanently)
 {
-    return !permanently && you.can_water_walk()
-           || (species_likes_water(you.species) || !permanently)
-               && form_likes_water();
+    if (permanently)
+    {
+        if (you.has_mutation(MUT_PROTEAN_BODY))
+        {
+            const auto size = species_size(you.species, PSIZE_BODY);
+            if (size == SIZE_BIG || size == SIZE_GIANT)
+                return true;
+        }
+        return species_likes_water(you.species) && form_likes_water();
+    }
+    else
+    {
+        return you.can_water_walk() || form_likes_water();
+    }
 }
 
 /**
@@ -1932,8 +1977,12 @@ int player_movement_speed()
         mv = 6;
 
     // Wading through water is very slow.
-    if (you.in_water() && !you.can_swim())
+    if (you.in_water() && !you.can_swim()
+        && _slowed_by_water(env.grid(you.pos()))
+       )
+    {
         mv += 6;
+    }
 
     // moving on liquefied ground takes longer
     if (you.liquefied_ground())
@@ -2716,7 +2765,7 @@ static void _gain_and_note_hp_mp()
 
 static void _update_protean_size(size_type oldsize)
 {
-    const size_type size = species_size(you.species, PSIZE_TORSO);
+    const size_type size = species_size(you.species, PSIZE_BODY);
     mprf("You change size from %s to %s.", get_size_adj(oldsize), get_size_adj(size));
     for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
     {
@@ -2731,7 +2780,40 @@ static void _update_protean_size(size_type oldsize)
             you.melded.set(i, false);
         }
     }
-    you.redraw_stats[STAT_STR] = true;
+    // You can grow more than one size in a single call to this function
+    if (size >= SIZE_LARGE)
+    {
+        dprf("Checking skin toughness");
+        const int target = (int)size - SIZE_LARGE; // large 0, big 1, giant 2
+        const int cur = you.get_innate_mutation_level(MUT_TOUGH_SKIN); // 0-2
+        // target 0, cur 0 => 0
+        // target 1, cur 0 => +1
+        // target 2, cur 0 => +2
+        // target 0, cur 1 => -1
+        // target 1, cur 1 => 0
+        // target 2, cur 1 => +1
+        // target 0, cur 2 => -2
+        // target 1, cur 2 => -1
+        // target 2, cur 2 => 0
+        const int delta = target - cur;
+        dprf("Target %d cur %d delta %d", target, cur, delta);
+        if (delta > 0)
+            perma_mutate(MUT_TOUGH_SKIN, delta, "protean size");
+        else if (delta < 0)
+        {
+            // There's no function to remove innate mutations, so hack it
+            you.innate_mutation[MUT_TOUGH_SKIN] = target;
+            you.mutation[MUT_TOUGH_SKIN] = target;
+            you.redraw_armour_class = true;
+            mprf(MSGCH_MUTATION, "Your skin feels delicate.");
+        }
+
+    }
+    else if ((oldsize == SIZE_BIG && size == SIZE_LARGE)
+             || (oldsize == SIZE_GIANT && size == SIZE_BIG))
+    {
+        perma_mutate(MUT_TOUGH_SKIN, -1, "protean size");
+    }
 }
 
 /**
@@ -2768,7 +2850,7 @@ void calc_hp(bool scale, bool set)
         you.redraw_hit_points = true;
     }
     if (old_max != you.hp_max && you.get_mutation_level(MUT_PROTEAN_BODY)
-        && species_size(you.species, PSIZE_TORSO) != oldsize)
+        && species_size(you.species, PSIZE_BODY) != oldsize)
     {
             _update_protean_size(oldsize);
     }
@@ -6262,6 +6344,7 @@ int player::res_water_drowning() const
     int rw = 0;
 
     if (is_unbreathing()
+        || species_size(you.species, PSIZE_BODY) == SIZE_GIANT
         || species_can_swim(species) && !form_changed_physiology()
         || form == transformation::ice_beast
         || form == transformation::hydra)

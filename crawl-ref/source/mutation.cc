@@ -677,27 +677,35 @@ string describe_mutations(bool drop_title)
         switch (you.body_size(PSIZE_TORSO, true))
         {
         case SIZE_TINY:
-            result += "You are tiny and have problems with many larger weapons.\n"
+            result += "You are tiny.\n"
+                      "You have problems with many larger weapons.\n"
                       "You are too small for most types of armour.\n";
             break;
         case SIZE_LITTLE:
-            result += "You are very small and have problems with some larger weapons.\n"
+            result += "You are very small.\n"
+                      "You have problems with some larger weapons.\n"
                       "You are too small for most types of armour.\n";
             break;
         case SIZE_SMALL:
-            result += "You are small and have problems with some larger weapons.\n";
+            result += "You are small.\n"
+                      "You have problems with some larger weapons.\n";
             break;
         case SIZE_LARGE:
-            result += "You are large.\n";
-            result += "You are too large for most types of armour.\n";
+            result += "You are large.\n"
+                      "You are too large for most types of armour.\n";
             break;
         case SIZE_BIG:
-            result += "You are very large and can many weapons one-handed.\n";
-            result += "You are too large for most types of armour.\n";
+            result += "You are very large.\n"
+                      "You can many weapons one-handed.\n"
+                      "You are too large for most types of armour.\n"
+                      "You can walk steadily in shallow water.\n";
             break;
         case SIZE_GIANT:
-            result += "You are giant and can wield all weapons one-handed.\n";
-            result += "You are too large for all types of armour.\n";
+            result += "You are giant.\n"
+                      "You can wield all weapons one-handed.\n"
+                      "You are too large for all types of armour.\n"
+                      "You can walk steadily in deep water.\n"
+                      "You are immune to suffocation.\n";
             break;
         default:
             break;
@@ -2264,14 +2272,11 @@ string mutation_desc(mutation_type mut, int level, bool colour,
     else if (mut == MUT_PROTEAN_BODY)
     {
         const int hp = protean_bonus_hp();
-        const size_type s = species_size(you.species, PSIZE_TORSO);
-        const int str = static_cast<int>(s) * 2;
-        const string size = get_size_adj(s);
+        const string size = get_size_adj(species_size(you.species, PSIZE_BODY));
         ostringstream ostr;
         ostr << mdef.have[level - 1]
             << "+" << hp << "hp, "
-            << size << " size, "
-            << "+" << str << " str).";
+            << size << " size).";
         ostr << "\nYour protean flesh cannot be transmuted.";
         ostr << "\nYour protean flesh is especially vulnerable to rot.";
         result = ostr.str();

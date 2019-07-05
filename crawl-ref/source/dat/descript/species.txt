@@ -173,7 +173,6 @@ most skills and frailer than humans, but can charm their foes.
 %%%%
 Protean
 
-Proteans are a race of vaguely humanoid amoebas. Their mostly amorphous bodies
-love mutations and magical items, and possessing these vastly increases their
-health. In turn, as their health grows so does their size and strength.
+Proteans are a race of vaguely humanoid amoebas. Possessing mutations and
+unique items increases their health and size.
 %%%%

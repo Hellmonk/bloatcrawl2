@@ -417,9 +417,6 @@ static int _strength_modifier(bool innate_only)
               - _mut_level(MUT_FLEXIBLE_WEAK, innate_only);
 #endif
 
-    if (you.get_mutation_level(MUT_PROTEAN_BODY))
-        result += static_cast<int>(species_size(you.species, PSIZE_TORSO)) * 2;
-
     return result;
 }
 
