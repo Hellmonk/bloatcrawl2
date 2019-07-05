@@ -188,24 +188,6 @@ bool fill_status_info(int status, status_info& inf)
     // completing or overriding the defaults set above.
     switch (status)
     {
-    case STATUS_DIVINE_ENERGY:
-        if (you.duration[DUR_NO_CAST])
-        {
-            inf.light_colour = RED;
-            inf.light_text   = "-Cast";
-            inf.short_text   = "no casting";
-            inf.long_text    = "You are unable to cast spells.";
-        }
-        else if (you.attribute[ATTR_DIVINE_ENERGY])
-        {
-            inf.light_colour = WHITE;
-            inf.light_text   = "+Cast";
-            inf.short_text   = "divine energy";
-            inf.long_text    = "You are calling on Sif Muna for divine "
-                               "energy.";
-        }
-        break;
-
     case DUR_CORROSION:
         inf.light_text = make_stringf("Corr (%d)",
                           (-4 * you.props["corrosion_amount"].get_int()));
@@ -732,13 +714,28 @@ bool fill_status_info(int status, status_info& inf)
 
 static void _describe_hunger(status_info& inf)
 {
-    const bool vamp = (you.undead_state() == US_SEMI_UNDEAD);
+
+    if (you.undead_state() == US_SEMI_UNDEAD)
+    {
+        if (!you.vampire_alive)
+        {
+            inf.light_colour = LIGHTRED;
+            inf.light_text = "Bloodless";
+            inf.short_text = "bloodless";
+        }
+        else
+        {
+            inf.light_colour = GREEN;
+            inf.light_text = "Alive";
+        }
+        return;
+    }
 
     switch (you.hunger_state)
     {
     case HS_ENGORGED:
-        inf.light_colour = (vamp ? GREEN : LIGHTGREEN);
-        inf.light_text   = (vamp ? "Alive" : "Engorged");
+        inf.light_colour = LIGHTGREEN;
+        inf.light_text   = "Engorged";
         break;
     case HS_VERY_FULL:
         inf.light_colour = GREEN;
@@ -750,25 +747,25 @@ static void _describe_hunger(status_info& inf)
         break;
     case HS_HUNGRY:
         inf.light_colour = YELLOW;
-        inf.light_text   = (vamp ? "Thirsty" : "Hungry");
+        inf.light_text   = "Hungry";
         break;
     case HS_VERY_HUNGRY:
         inf.light_colour = YELLOW;
-        inf.light_text   = (vamp ? "Very Thirsty" : "Very Hungry");
+        inf.light_text   = "Very Hungry";
         break;
     case HS_NEAR_STARVING:
         inf.light_colour = YELLOW;
-        inf.light_text   = (vamp ? "Near Bloodless" : "Near Starving");
+        inf.light_text   = "Near Starving";
         break;
     case HS_STARVING:
         inf.light_colour = LIGHTRED;
-        inf.light_text   = (vamp ? "Bloodless" : "Starving");
-        inf.short_text   = (vamp ? "bloodless" : "starving");
+        inf.light_text   = "Starving";
+        inf.short_text   = "starving";
         break;
     case HS_FAINTING:
         inf.light_colour = RED;
-        inf.light_text   = (vamp ? "Bloodless" : "Fainting");
-        inf.short_text   = (vamp ? "bloodless" : "fainting");
+        inf.light_text   = "Fainting";
+        inf.short_text   = "fainting";
         break;
     case HS_SATIATED: // no status light
     default:
@@ -819,8 +816,7 @@ static void _describe_regen(status_info& inf)
                         || you.duration[DUR_TROGS_HAND] > 0);
     const bool no_heal = !player_regenerates_hp();
     // Does vampire hunger level affect regeneration rate significantly?
-    const bool vampmod = !no_heal && !regen && you.undead_state() == US_SEMI_UNDEAD
-                         && you.hunger_state != HS_SATIATED;
+    const bool vampmod = !no_heal && !regen && you.undead_state() == US_SEMI_UNDEAD;
 
     if (regen)
     {
@@ -858,10 +854,7 @@ static void _describe_regen(status_info& inf)
         else
             inf.short_text = "regenerating";
 
-        if (you.hunger_state < HS_SATIATED)
-            inf.short_text += " slowly";
-        else
-            inf.short_text += " quickly";
+        inf.short_text += " quickly";
     }
 }
 

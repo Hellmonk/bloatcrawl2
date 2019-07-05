@@ -448,6 +448,9 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
         }
     }
 
+    if (you.divine_exegesis)
+        power += you.skill(SK_INVOCATIONS, 300);
+
     if (fail_rate_check)
     {
         // Scale appropriately.
@@ -645,13 +648,6 @@ bool can_cast_spells(bool quiet)
         return false;
     }
 
-    if (you.duration[DUR_NO_CAST])
-    {
-        if (!quiet)
-            mpr("You are unable to access your magic!");
-        return false;
-    }
-
     if (apply_starvation_penalties())
     {
         if (!quiet)
@@ -794,20 +790,11 @@ bool cast_a_spell(bool check_range, spell_type spell)
     }
 
     int cost = spell_mana(spell);
-    int sifcast_amount = 0;
     if (!enough_mp(cost, true))
     {
-        if (you.attribute[ATTR_DIVINE_ENERGY])
-        {
-            sifcast_amount = cost - you.magic_points;
-            cost = you.magic_points;
-        }
-        else
-        {
-            mpr("You don't have enough magic to cast that spell.");
-            crawl_state.zero_turns_taken();
-            return false;
-        }
+        mpr("You don't have enough magic to cast that spell.");
+        crawl_state.zero_turns_taken();
+        return false;
     }
 
     if (check_range && spell_no_hostile_in_range(spell))
@@ -861,7 +848,8 @@ bool cast_a_spell(bool check_range, spell_type spell)
     // Silently take MP before the spell.
     dec_mp(cost, true);
 
-    const spret cast_result = your_spells(spell, 0, true);
+    const spret cast_result = your_spells(spell, 0, !you.divine_exegesis,
+                                          nullptr);
     if (cast_result == spret::abort)
     {
         crawl_state.zero_turns_taken();
@@ -888,13 +876,6 @@ bool cast_a_spell(bool check_range, spell_type spell)
             make_hungry(spellh, true, true);
             learned_something_new(HINT_SPELL_HUNGER);
         }
-    }
-
-    if (sifcast_amount)
-    {
-        simple_god_message(" grants you divine energy.");
-        mpr("You briefly lose access to your magic!");
-        you.set_duration(DUR_NO_CAST, 3 + random2avg(sifcast_amount * 2, 2));
     }
 
     you.turn_is_over = true;
@@ -1228,16 +1209,6 @@ static unique_ptr<targeter> _spell_targeter(spell_type spell, int pow,
     return nullptr;
 }
 
-static double _chance_miscast_prot()
-{
-    double miscast_prot = 0;
-
-    if (have_passive(passive_t::miscast_protection))
-        miscast_prot = (double) you.piety/piety_breakpoint(5);
-
-    return min(1.0, miscast_prot);
-}
-
 // Returns the nth triangular number.
 static int _triangular_number(int n)
 {
@@ -1568,12 +1539,6 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
         mprf("You miscast %s.", spell_title(spell));
         flush_input_buffer(FLUSH_ON_FAILURE);
         learned_something_new(HINT_SPELL_MISCAST);
-
-        if (decimal_chance(_chance_miscast_prot()))
-        {
-            simple_god_message(" protects you from the effects of your miscast!");
-            return spret::fail;
-        }
 
         // All spell failures give a bit of magical radiation.
         // Failure is a function of power squared multiplied by how
@@ -2053,15 +2018,6 @@ double get_miscast_chance(spell_type spell, int severity)
     return chance;
 }
 
-static double _get_miscast_chance_with_miscast_prot(spell_type spell)
-{
-    double raw_chance = get_miscast_chance(spell);
-    double miscast_prot = _chance_miscast_prot();
-    double chance = raw_chance * (1 - miscast_prot);
-
-    return chance;
-}
-
 const char *fail_severity_adjs[] =
 {
     "safe",
@@ -2073,7 +2029,7 @@ COMPILE_CHECK(ARRAYSZ(fail_severity_adjs) > 3);
 
 int fail_severity(spell_type spell)
 {
-    const double chance = _get_miscast_chance_with_miscast_prot(spell);
+    const double chance = get_miscast_chance(spell);
 
     return (chance < 0.001) ? 0 :
            (chance < 0.005) ? 1 :

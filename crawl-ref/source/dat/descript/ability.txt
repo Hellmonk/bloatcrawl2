@@ -63,10 +63,20 @@ is decreased by one for every creature it strikes.
 Bat Form ability
 
 Transforms the user into a swift-moving vampire bat, increasing evasion but
-substantially weakening melee attacks.
+substantially weakening melee attacks. The transformation drains the user's
+attributes.
 
 While tranformed, any equipped weapons, armour and rings are melded, and the
 user becomes unable to cast spells.
+%%%%
+Exsanguinate ability
+
+Remove all of your blood, transitioning to a bloodless state.
+%%%%
+Revivify ability
+
+Return to life, transitioning from bloodless to alive. This process renders
+the user temporarily frail.
 %%%%
 Fly ability
 
@@ -300,16 +310,6 @@ Summons a major demon. Failing to use this ability correctly will turn the
 demon hostile.
 %%%%
 # Sif Muna
-Divine Energy ability
-
-Calls on Sif Muna for divine energy. While active, Sif Muna will allow you to
-cast spells even with insufficient reserves of magic. Doing so will cause you
-to briefly lose access to your magic after the spell is cast.
-%%%%
-Stop Divine Energy ability
-
-Stops requesting divine energy from Sif Muna, no longer allowing you to cast
-spells without sufficient magical reserves.
 %%%%
 Channel Magic ability
 
@@ -319,6 +319,12 @@ that increases with Invocations skill.
 Forget Spell ability
 
 Removes a known spell from memory, so as to free memory to learn others.
+%%%%
+Divine Exegesis ability
+
+Casts any spell from your spell library with guaranteed success. You receive a
+bonus to spell power based on your Invocations skill that is worth 50% more
+than equivalent levels of training in the relevant skills of the spell itself.
 %%%%
 # Trog
 Berserk ability

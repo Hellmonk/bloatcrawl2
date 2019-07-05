@@ -42,6 +42,8 @@ enum ability_type
 #endif
     // Vampires
     ABIL_TRAN_BAT,
+    ABIL_EXSANGUINATE,
+    ABIL_REVIVIFY,
 #if TAG_MAJOR_VERSION == 34
     ABIL_BOTTLE_BLOOD,
 #endif
@@ -119,8 +121,11 @@ enum ability_type
     // Sif Muna
     ABIL_SIF_MUNA_CHANNEL_ENERGY = 1070,
     ABIL_SIF_MUNA_FORGET_SPELL,
+#if TAG_MAJOR_VERSION == 34
     ABIL_SIF_MUNA_DIVINE_ENERGY,
     ABIL_SIF_MUNA_STOP_DIVINE_ENERGY,
+#endif
+    ABIL_SIF_MUNA_DIVINE_EXEGESIS,
     // Trog
     ABIL_TROG_BERSERK = 1080,
     ABIL_TROG_REGEN_MR,

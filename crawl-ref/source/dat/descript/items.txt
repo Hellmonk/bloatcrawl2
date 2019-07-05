@@ -664,6 +664,7 @@ potion of berserk rage
 
 A potion which can send one into an incoherent rage.
 %%%%
+# TAG_MAJOR_VERSION == 34
 potion of blood
 
 A potion containing the essence of life.
@@ -1199,8 +1200,8 @@ A magical device which throws little puffs of flame.
 %%%%
 wand of iceblast
 
-A magical device which throws exploding shards of ice, partially harming even
-creatures resistant to cold.
+A magical device which creates a loud explosion of ice shards, partially
+harming even creatures resistant to cold.
 %%%%
 wand of paralysis
 

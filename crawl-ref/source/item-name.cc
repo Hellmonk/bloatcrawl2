@@ -728,8 +728,8 @@ const char* potion_type_name(int potiontype)
     case POT_CURE_MUTATION:     return "cure mutation";
 #endif
     case POT_MUTATION:          return "mutation";
-    case POT_BLOOD:             return "blood";
 #if TAG_MAJOR_VERSION == 34
+    case POT_BLOOD:             return "blood";
     case POT_BLOOD_COAGULATED:  return "coagulated blood";
 #endif
     case POT_RESISTANCE:        return "resistance";
@@ -2916,7 +2916,7 @@ string make_name(uint32_t seed, makename_type name_type)
             ASSERT(name[i] != ' ');
 
         if (name_type == MNAME_SCROLL || i == 0 || name[i - 1] == ' ')
-            uppercased_name += toupper(name[i]);
+            uppercased_name += toupper_safe(name[i]);
         else
             uppercased_name += name[i];
     }
@@ -3512,9 +3512,9 @@ bool is_useless_item(const item_def &item, bool temp)
 
         case POT_LIGNIFY:
             return you.get_mutation_level(MUT_PROTEAN_BODY)
-                    || (you.undead_state(temp)
-                        && (you.undead_state() != US_SEMI_UNDEAD
-                            || temp && you.hunger_state < HS_SATIATED));
+                || (you.undead_state(temp)
+                   && (you.undead_state() != US_SEMI_UNDEAD
+                       || temp && !you.vampire_alive));
 
         case POT_FLIGHT:
             return you.permanent_flight()
@@ -3525,10 +3525,8 @@ bool is_useless_item(const item_def &item, bool temp)
             return you.undead_state() == US_SEMI_UNDEAD
                     || you.get_mutation_level(MUT_CARNIVOROUS) > 0;
         case POT_BLOOD_COAGULATED:
-#endif
         case POT_BLOOD:
             return you.undead_state() != US_SEMI_UNDEAD;
-#if TAG_MAJOR_VERSION == 34
         case POT_DECAY:
             return you.res_rotting(temp) > 0;
         case POT_STRONG_POISON:
@@ -3562,7 +3560,7 @@ bool is_useless_item(const item_def &item, bool temp)
         case AMU_RAGE:
             return you.undead_state(temp)
                    && (you.undead_state() != US_SEMI_UNDEAD
-                       || temp && you.hunger_state < HS_SATIATED)
+                       || temp && !you.vampire_alive)
                    || you.species == SP_FORMICID
                    || you.get_mutation_level(MUT_NO_ARTIFICE);
 
@@ -3592,7 +3590,7 @@ bool is_useless_item(const item_def &item, bool temp)
                        && you.get_mutation_level(MUT_INHIBITED_REGENERATION) > 0
                        && regeneration_is_inhibited())
                    || (temp && you.undead_state() == US_SEMI_UNDEAD
-                       && you.hunger_state <= HS_STARVING);
+                       && !you.vampire_alive);
 
 #if TAG_MAJOR_VERSION == 34
         case AMU_MANA_REGENERATION:
