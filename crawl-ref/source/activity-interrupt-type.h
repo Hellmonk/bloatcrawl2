@@ -19,6 +19,7 @@ enum activity_interrupt_type
                                     // mimic) during travel/explore.
     AI_SENSE_MONSTER,
     AI_MIMIC,
+    AI_PB_MISCAST,
 
     // Always the last.
     NUM_AINTERRUPTS

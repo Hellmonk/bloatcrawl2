@@ -13,6 +13,7 @@
 #include "art-enum.h"
 #include "butcher.h" // butcher_corpse
 #include "coordit.h" // radius_iterator
+#include "delay.h"
 #include "god-conduct.h"
 #include "god-passive.h"
 #include "hints.h"
@@ -363,6 +364,7 @@ bool permabuff_fail_check(permabuff_type pb, const string &message,
             apply_miscast(spell, fail, false);
             you.increase_duration(permabuff_durs[pb],roll_dice(2,10) + fail/4);
             you.perma_miscast[pb] = true;
+            interrupt_activity(AI_PB_MISCAST);
             return true;
         }
     }

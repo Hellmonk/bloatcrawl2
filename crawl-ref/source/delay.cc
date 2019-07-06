@@ -1391,7 +1391,7 @@ static const char *activity_interrupt_names[] =
 {
     "force", "keypress", "full_hp", "full_mp", "hungry", "message",
     "hp_loss", "stat", "monster", "monster_attack", "teleport", "hit_monster",
-    "sense_monster", "mimic"
+    "sense_monster", "mimic", "pb_miscast",
 };
 
 static const char *_activity_interrupt_name(activity_interrupt_type ai)
