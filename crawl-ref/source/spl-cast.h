@@ -80,7 +80,9 @@ void surge_power_wand(const int mp_cost);
 
 typedef bool (*spell_selector)(spell_type spell);
 
-int list_spells(bool toggle_with_I = true, bool viewing = false,
+// We have removed the default values here to make sure other invocations added
+// to vanilla later get looked at
+int list_spells(bool toggle_with_I, bool viewing, bool casting,
                 bool allow_preselect = true,
                 const string &title = "Your Spells",
                 spell_selector selector = nullptr);

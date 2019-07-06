@@ -114,15 +114,15 @@ void surge_power_wand(const int mp_cost)
     }
 }
 
-static string _spell_base_description(spell_type spell, bool viewing)
+static string _spell_base_description(spell_type spell, bool casting)
 {
     ostringstream desc;
 
-    int highlight =  spell_highlight_by_utility(spell, COL_UNKNOWN, !viewing);
+    int highlight =  spell_highlight_by_utility(spell, COL_UNKNOWN, casting);
 
     desc << "<" << colour_to_str(highlight) << ">" << left;
 
-    bool permacancel = (!viewing && is_permabuff(spell) && 
+    bool permacancel = (casting && is_permabuff(spell) && 
                         you.permabuff[permabuff_is(spell)]);
     string title = permacancel ?
         make_stringf("Dispel %s", spell_title(spell)) :
@@ -151,15 +151,15 @@ static string _spell_base_description(spell_type spell, bool viewing)
     return desc.str();
 }
 
-static string _spell_extra_description(spell_type spell, bool viewing)
+static string _spell_extra_description(spell_type spell, bool casting)
 {
     ostringstream desc;
 
-    int highlight =  spell_highlight_by_utility(spell, COL_UNKNOWN, !viewing);
+    int highlight =  spell_highlight_by_utility(spell, COL_UNKNOWN, casting);
 
     desc << "<" << colour_to_str(highlight) << ">" << left;
 
-    bool permacancel = (!viewing && is_permabuff(spell) && 
+    bool permacancel = (casting && is_permabuff(spell) && 
                         you.permabuff[permabuff_is(spell)]);
     string title = permacancel ?
         make_stringf("Dispel %s", spell_title(spell)) :
@@ -183,8 +183,9 @@ static string _spell_extra_description(spell_type spell, bool viewing)
 // selector is a boolean function that filters spells according
 // to certain criteria. Currently used for Tiles to distinguish
 // spells targeted on player vs. spells targeted on monsters.
-int list_spells(bool toggle_with_I, bool viewing, bool allow_preselect,
-                const string &title, spell_selector selector)
+int list_spells(bool toggle_with_I, bool viewing, bool casting,
+                bool allow_preselect, const string &title, 
+                spell_selector selector)
 {
     if (toggle_with_I && get_spell_by_letter('I') != SPELL_NO_SPELL)
         toggle_with_I = false;
@@ -264,8 +265,8 @@ int list_spells(bool toggle_with_I, bool viewing, bool allow_preselect,
                           || allow_preselect && you.last_cast_spell == spell);
 
         ToggleableMenuEntry* me =
-            new ToggleableMenuEntry(_spell_base_description(spell, viewing),
-                                    _spell_extra_description(spell, viewing),
+            new ToggleableMenuEntry(_spell_base_description(spell, casting),
+                                    _spell_extra_description(spell, casting),
                                     MEL_ITEM, 1, letter, preselect);
 
 #ifdef USE_TILE
@@ -588,7 +589,7 @@ void inspect_spells()
         return;
     }
 
-    list_spells(true, true);
+    list_spells(true, true, false);
 }
 
 bool can_cast_spells(bool quiet, bool perma_release)
@@ -723,7 +724,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
         while (true)
         {
 #ifdef TOUCH_UI
-            keyin = list_spells(true, false);
+            keyin = list_spells(true, false, true);
             if (!keyin)
                 keyin = ESCAPE;
 
@@ -776,7 +777,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
 
             if (keyin == '?' || keyin == '*')
             {
-                keyin = list_spells(true, false);
+                keyin = list_spells(true, false, true);
                 if (!keyin)
                     keyin = ESCAPE;
 
