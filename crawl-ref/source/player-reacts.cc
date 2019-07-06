@@ -1270,14 +1270,14 @@ void player_reacts()
     if (you.props.exists(SHROUD_RECHARGE) && 
         (you.props[SHROUD_RECHARGE].get_int() <= 0) &&
         (you.permabuff_notworking(PERMA_SHROUD) >= PB_WORKING)) {
-        int fail = failure_check(SPELL_SHROUD_OF_GOLUBRIA, true);
-        if (fail) {
-            mpr("You fail to reconstruct your distorting shroud.");
-            apply_miscast(SPELL_SHROUD_OF_GOLUBRIA, fail, false);
+        if (permabuff_fail_check
+            (PERMA_SHROUD, 
+             "You fail to reconstruct your distorting shroud.")) {
             you.props[SHROUD_RECHARGE] = 
                 spell_mana(SPELL_SHROUD_OF_GOLUBRIA) * 100;
         } else {
-            mpr("You reconstruct your distorting shroud.");
+            mprf(MSGCH_DURATION, 
+                 "You reconstruct your distorting shroud.");
             you.props.erase(SHROUD_RECHARGE);
         }
     }
