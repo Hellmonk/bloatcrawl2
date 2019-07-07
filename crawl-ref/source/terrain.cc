@@ -1639,7 +1639,7 @@ void fall_into_a_pool(dungeon_feature_type terrain)
     clear_messages();
     if (terrain == DNGN_LAVA)
     {
-        if (you.species == SP_MUMMY)
+        if (you.undead_state() == US_UNDEAD)
             mpr("You burn to ash...");
         else
             mpr("The lava burns you to a cinder!");

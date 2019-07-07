@@ -1970,7 +1970,7 @@ static void _xom_pseudo_miscast(int /*sever*/)
     //////////////////////////////////////////////
     // Body, player species, transformations, etc.
 
-    if (you.species == SP_MUMMY && you_can_wear(EQ_BODY_ARMOUR, true))
+    if (you.undead_state() == US_UNDEAD && you_can_wear(EQ_BODY_ARMOUR, true))
     {
         messages.emplace_back("You briefly get tangled in your bandages.");
         if (!you.airborne() && !you.swimming())
@@ -2156,7 +2156,7 @@ static void _get_hand_type(string &hand, bool &can_plural)
         hand_vec.emplace_back("mandible");
         plural_vec.push_back(true);
     }
-    else if (you.species != SP_MUMMY && you.species != SP_OCTOPODE
+    else if (you.undead_state() != US_UNDEAD && you.species != SP_OCTOPODE
              && !you.get_mutation_level(MUT_BEAK)
           || form_changed_physiology())
     {
@@ -2165,7 +2165,7 @@ static void _get_hand_type(string &hand, bool &can_plural)
     }
 
     if (you.form == transformation::bat
-        || you.species != SP_MUMMY && you.species != SP_OCTOPODE
+        || you.undead_state() != US_UNDEAD && you.species != SP_OCTOPODE
            && !form_changed_physiology())
     {
         hand_vec.emplace_back("ear");

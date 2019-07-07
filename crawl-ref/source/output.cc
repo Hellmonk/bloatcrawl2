@@ -1237,11 +1237,28 @@ static void _redraw_title()
 #endif
 
     // Line 2:
-    // Minotaur [of God] [Piety]
+    // [Zombie|Vampire] Minotaur [Mummy] [of God] [Piety]
     textcolour(YELLOW);
     CGOTOXY(1, 2, GOTO_STAT);
-    string species = species_name(you.species);
-    NOWRAP_EOL_CPRINTF("%s", species.c_str());
+    const string species = species_name(you.species);
+    switch (you.undead_state())
+    {
+        case US_UNDEAD:
+            NOWRAP_EOL_CPRINTF("%s Mummy", species.c_str());
+            break;
+            ;;
+        case US_HUNGRY_DEAD:
+            NOWRAP_EOL_CPRINTF("Zombie %s", species.c_str());
+            break;
+            ;;
+        case US_SEMI_UNDEAD:
+            NOWRAP_EOL_CPRINTF("Vampire %s", species.c_str());
+            break;
+            ;;
+        case US_ALIVE:
+            NOWRAP_EOL_CPRINTF("%s", species.c_str());
+            break;
+    }
     if (you_worship(GOD_NO_GOD))
     {
         if (you.char_class == JOB_MONK && you.species != SP_DEMIGOD
@@ -2151,6 +2168,50 @@ static bool _player_statrotted()
         || you.dex(false) != you.max_dex();
 }
 
+static formatted_string _get_modifiers()
+{
+    // Game modifiers
+    vector<string> modifiers;
+    switch (you.undead_state())
+    {
+        case US_UNDEAD:
+            modifiers.push_back("Mummy");
+            break;
+        case US_HUNGRY_DEAD:
+            modifiers.push_back("Zombie");
+            break;
+        case US_SEMI_UNDEAD:
+            modifiers.push_back("Vampire");
+            break;
+        case US_ALIVE:
+            // nothing
+            break;
+    }
+    switch (you.skill_modifier)
+    {
+        case -1:
+            modifiers.push_back("Unskilled");
+            break;
+        case 0:
+            // nothing
+            break;
+        case 1:
+            modifiers.push_back("Skilled");
+            break;
+    }
+    if (you.chaoskin)
+        modifiers.push_back("Chaoskin");
+    if (modifiers.empty())
+        modifiers.push_back("None");
+
+    formatted_string mod;
+    mod.textcolour(HUD_CAPTION_COLOUR);
+    mod.cprintf("Game modifiers: ");
+    mod.textcolour(HUD_VALUE_COLOUR);
+    mod.cprintf(join_strings(modifiers.begin(), modifiers.end(), ", "));
+    return mod;
+}
+
 static vector<formatted_string> _get_overview_stats()
 {
     formatted_string entry;
@@ -2525,7 +2586,9 @@ void print_overview_screen()
 
     for (const formatted_string &bline : _get_overview_stats())
         overview.add_formatted_string(bline, true);
-    overview.add_text("\n");
+    // overview.add_text("\n");
+
+    overview.add_formatted_string(_get_modifiers(), true);
 
     {
         vector<formatted_string> blines =
@@ -2550,6 +2613,8 @@ string dump_overview_screen(bool full_id)
         text += bline;
         text += "\n";
     }
+
+    text += _get_modifiers();
     text += "\n";
 
     vector<char> equip_chars;
@@ -2638,6 +2703,24 @@ string mutation_overview()
 
     if (have_passive(passive_t::frail) || player_under_penance(GOD_HEPLIAKLQANA))
         mutations.emplace_back("reduced essence");
+
+    const auto undead_state = you.undead_state();
+    switch (undead_state)
+    {
+        case US_SEMI_UNDEAD:
+            mutations.emplace_back("unbreathing");
+            // Fall through
+        case US_UNDEAD:
+        case US_HUNGRY_DEAD:
+            mutations.emplace_back("negative energy resistance 3");
+            mutations.emplace_back("torment resistance");
+            break;
+        case US_ALIVE:
+            // nothing
+            break;
+    }
+    if (undead_state == US_HUNGRY_DEAD)
+        mutations.emplace_back("inhibited regeneration");
 
     string current;
     for (unsigned i = 0; i < NUM_MUTATIONS; ++i)

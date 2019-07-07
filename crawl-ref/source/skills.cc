@@ -1940,8 +1940,14 @@ int species_apt(skill_type skill, species_type species)
         spec_skills_initialised = true;
     }
 
+    const int undead_modifier = you.undead_modifier == US_UNDEAD ? -2
+                              : you.undead_modifier == US_HUNGRY_DEAD ? -1
+                              : 0; // US_ALIVE & US_SEMI_UNDEAD
+
     return max(UNUSABLE_SKILL, _spec_skills[species][skill]
-                               - you.get_mutation_level(MUT_UNSKILLED));
+                               - you.get_mutation_level(MUT_UNSKILLED)
+                               + undead_modifier
+                               + you.skill_modifier);
 }
 
 float species_apt_factor(skill_type sk, species_type sp)

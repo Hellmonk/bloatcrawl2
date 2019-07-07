@@ -121,6 +121,13 @@ public:
     species_type species;
     job_type char_class;
 
+    // ---------------
+    // Game modifiers
+    // ---------------
+    int skill_modifier;
+    undead_state_type undead_modifier;
+    bool chaoskin;
+
     // This field is here even in non-WIZARD compiles, since the
     // player might have been playing previously under wiz mode.
     bool          wizard;            // true if player has entered wiz mode.

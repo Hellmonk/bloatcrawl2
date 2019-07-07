@@ -2262,12 +2262,7 @@ string scorefile_entry::death_description(death_desc_verbosity verbosity) const
         if (terse)
             desc += "lava";
         else
-        {
-            if (race == SP_MUMMY)
-                desc += "Turned to ash by lava";
-            else
-                desc += "Took a swim in molten lava";
-        }
+            desc += "Took a swim in molten lava";
         break;
 
     case KILLED_BY_WATER:
@@ -2275,8 +2270,6 @@ string scorefile_entry::death_description(death_desc_verbosity verbosity) const
         {
             if (terse)
                 desc = "fell apart";
-            else if (race == SP_MUMMY)
-                desc = "Soaked and fell apart";
             else
                 desc = "Sank and fell apart";
         }
@@ -2347,11 +2340,11 @@ string scorefile_entry::death_description(death_desc_verbosity verbosity) const
     case KILLED_BY_QUITTING:
         desc += terse? "quit" : "Quit the game";
         break;
-        
+
     case KILLED_BY_OLD_AGE:
         desc += terse? "boomerism" : "Died of old age";
         break;
-        
+
     case KILLED_BY_FADING:
         desc += terse? "fading" : "Faded out of existence";
 

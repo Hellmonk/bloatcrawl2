@@ -622,7 +622,7 @@ static void _decrement_durations()
 
     // Vampire bat transformations are permanent (until ended), unless they
     // are uncancellable (polymorph wand on a full vampire).
-    if (you.species != SP_VAMPIRE || you.form != transformation::bat
+    if (you.undead_state() != US_SEMI_UNDEAD || you.form != transformation::bat
         || you.duration[DUR_TRANSFORMATION] <= 5 * BASELINE_DELAY
         || you.transform_uncancellable)
     {
@@ -858,7 +858,7 @@ static void _decrement_durations()
  */
 static void _rot_ghoul_players()
 {
-    if (you.species != SP_GHOUL)
+    if (you.undead_state() != US_HUNGRY_DEAD)
         return;
 
     int resilience = 400;
@@ -881,7 +881,7 @@ static void _mirror_eidolon_hploss()
 {
     if (!you.has_mutation(MUT_FADING))
         return;
-    
+
     if (one_chance_in(25))
     {
         mprf("Your ties to this world fade a bit.");
@@ -1068,7 +1068,7 @@ void player_reacts()
     // XOM now ticks from here, to increase his reaction time to tension.
     if (you_worship(GOD_XOM))
         xom_tick();
-    if (you.species == SP_CHAOSKIN)
+    if (you.chaoskin)
         chaoskin_tick();
     else if (you_worship(GOD_QAZLAL))
         qazlal_storm_clouds();

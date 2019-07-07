@@ -48,11 +48,6 @@ Felid
 Felids are many-lived cats possessing sentience. They are incapable of advanced
 item manipulation or the use of armour or weapons.
 %%%%
-Ghoul
-
-Ghouls are undead creatures, damned to rot eternally. They have sharp claws,
-and they feed on decaying flesh to sustain themselves.
-%%%%
 Gargoyle
 
 Made of living stone, Gargoyles have a preternatural affinity for the earth.
@@ -106,11 +101,6 @@ Mirror Eidolon
 Strange phantoms summoned from the mirror world, Mirror Eidola rapidly fade away.
 They must slay other creatures and take their energy to stay in this plane.
 %%%%
-Mummy
-
-Compelled to walk by an ancient curse, Mummies are adept at Necromancy but
-learn other skills very slowly. They are unable to consume any food or potions.
-%%%%
 Naga
 
 Nagas are hybrids; human from the chest up, with a scaly, muscular torso
@@ -151,11 +141,6 @@ Troll Two
 They're eating her! And then they're going to eat me!
 Oh my GAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHD!
 %%%%
-Vampire
-
-Shifting between the states of life and undeath, Vampires are accomplished
-stabbers and casters.
-%%%%
 Vine Stalker
 
 Frail symbionts, Vine Stalkers cannot regain health from devices or potions.
@@ -185,9 +170,4 @@ Kitsune
 
 Kitsune are enthralling fox spirits that take on human shapes. They are poor at
 most skills and frailer than humans, but can charm their foes.
-%%%%
-Chaoskin
-
-Created by Xom for reasons unknown, Chaoskin constantly evolve. They are better
-than average at everything, but can't escape Xom's attention for long.
 %%%%

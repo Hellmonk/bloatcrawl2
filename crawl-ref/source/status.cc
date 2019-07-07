@@ -732,7 +732,7 @@ bool fill_status_info(int status, status_info& inf)
 
 static void _describe_hunger(status_info& inf)
 {
-    const bool vamp = (you.species == SP_VAMPIRE);
+    const bool vamp = (you.undead_state() == US_SEMI_UNDEAD);
 
     switch (you.hunger_state)
     {
@@ -819,7 +819,7 @@ static void _describe_regen(status_info& inf)
                         || you.duration[DUR_TROGS_HAND] > 0);
     const bool no_heal = !player_regenerates_hp();
     // Does vampire hunger level affect regeneration rate significantly?
-    const bool vampmod = !no_heal && !regen && you.species == SP_VAMPIRE
+    const bool vampmod = !no_heal && !regen && you.undead_state() == US_SEMI_UNDEAD
                          && you.hunger_state != HS_SATIATED;
 
     if (regen)
@@ -934,7 +934,7 @@ static void _describe_airborne(status_info& inf)
 
 static void _describe_rotting(status_info& inf)
 {
-    if (you.species == SP_GHOUL)
+    if (you.undead_state() == US_HUNGRY_DEAD)
     {
         inf.short_text = "rotting";
         inf.long_text = "Your flesh is rotting";
@@ -988,7 +988,7 @@ static void _describe_transform(status_info& inf)
     inf.short_text = form->get_long_name();
     inf.long_text = form->get_description();
 
-    const bool vampbat = (you.species == SP_VAMPIRE
+    const bool vampbat = (you.undead_state() == US_SEMI_UNDEAD
                           && you.form == transformation::bat);
     const bool expire  = dur_expiring(DUR_TRANSFORMATION) && !vampbat;
 

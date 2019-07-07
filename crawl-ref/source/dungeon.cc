@@ -5658,7 +5658,7 @@ static void _stock_shop_item(int j, shop_type shop_type_,
         object_class_type basetype = item_in_shop(shop_type_);
         int subtype = OBJ_RANDOM;
 
-        if (spec.gozag && shop_type_ == SHOP_FOOD && you.species == SP_VAMPIRE)
+        if (spec.gozag && shop_type_ == SHOP_FOOD && you.undead_state() == US_SEMI_UNDEAD)
         {
             basetype = OBJ_POTIONS;
             subtype = POT_BLOOD;
@@ -5678,7 +5678,7 @@ static void _stock_shop_item(int j, shop_type shop_type_,
                                         item_level);
         }
         else if (spec.gozag && shop_type_ == SHOP_FOOD
-                 && you.species == SP_GHOUL)
+                 && you.undead_state() == US_HUNGRY_DEAD)
         {
             item_index = _make_delicious_corpse();
         }
@@ -5719,7 +5719,7 @@ static void _stock_shop_item(int j, shop_type shop_type_,
     if (shop_type_ == SHOP_BOOK && !is_artefact(item))
         stocked[item.sub_type]++;
 
-    if (spec.gozag && shop_type_ == SHOP_FOOD && you.species == SP_VAMPIRE)
+    if (spec.gozag && shop_type_ == SHOP_FOOD && you.undead_state() == US_SEMI_UNDEAD)
     {
         ASSERT(is_blood_potion(item));
         item.quantity += random2(3); // blood for the vampire friends :)

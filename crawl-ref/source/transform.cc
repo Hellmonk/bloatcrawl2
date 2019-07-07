@@ -736,14 +736,14 @@ public:
      */
     monster_type get_equivalent_mons() const override
     {
-        return you.species == SP_VAMPIRE ? MONS_VAMPIRE_BAT : MONS_BAT;
+        return you.undead_state() == US_SEMI_UNDEAD ? MONS_VAMPIRE_BAT : MONS_BAT;
     }
 
     string get_description(bool past_tense) const override
     {
         return make_stringf("You %s in %sbat-form.",
                             past_tense ? "were" : "are",
-                            you.species == SP_VAMPIRE ?  "vampire-" : "");
+                            you.undead_state() == US_SEMI_UNDEAD ?  "vampire-" : "");
     }
 
     /**
@@ -753,7 +753,7 @@ public:
     string get_transform_description() const override
     {
         return make_stringf("a %sbat.",
-                            you.species == SP_VAMPIRE ? "vampire " : "");
+                            you.undead_state() == US_SEMI_UNDEAD ? "vampire " : "");
     }
 };
 
@@ -1541,7 +1541,7 @@ undead_form_reason lifeless_prevents_form(transformation which_trans,
     if (which_trans == transformation::shadow)
         return UFR_GOOD; // even the undead can use dith's shadow form
 
-    if (you.species != SP_VAMPIRE)
+    if (you.undead_state() != US_SEMI_UNDEAD)
         return UFR_TOO_DEAD; // ghouls & mummies can't become anything else
 
     if (which_trans == transformation::lich)

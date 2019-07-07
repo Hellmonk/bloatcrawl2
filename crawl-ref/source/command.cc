@@ -962,11 +962,11 @@ static void _add_formatted_keyhelp(column_composer &cols)
 
     _add_command(cols, 1, CMD_INSCRIBE_ITEM, "inscribe item", 2);
     {
-        const bool vampire = you.species == SP_VAMPIRE;
+        const bool vampire = you.undead_state() == US_SEMI_UNDEAD;
         string butcher = vampire ? "bottle blood from"
                                  : "Chop up";
         _add_command(cols, 1, CMD_BUTCHER, butcher + " a corpse on floor", 2);
-        string interact = (you.species == SP_VAMPIRE ? "drain corpses"
+        string interact = (you.undead_state() == US_SEMI_UNDEAD ? "drain corpses"
                                                      : "Eat food");
         interact += " (tries floor first)\n";
         _add_command(cols, 1, CMD_EAT, interact, 2);
