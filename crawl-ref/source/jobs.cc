@@ -111,11 +111,19 @@ void give_job_equipment(job_type job)
     {
         const item_spec spec = items.get_item(i);
         int plus = 0;
+        int qty = max(spec.qty, 1);
         if (spec.props.exists("charges"))
             plus = spec.props["charges"];
         if (spec.props.exists("plus"))
             plus = spec.props["plus"];
-        newgame_make_item(spec.base_type, spec.sub_type, max(spec.qty, 1),
+        if (job == JOB_CAVEPERSON)
+        {
+            if (qty == 22) // sling bullet
+                qty = random_range(10, 22);
+            else if (qty == 33) // rocks
+                qty = random_range(18, 33);
+        }
+        newgame_make_item(spec.base_type, spec.sub_type, qty,
                           plus, spec.ego);
     }
 }

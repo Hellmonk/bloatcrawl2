@@ -358,6 +358,9 @@ static void _give_starting_food()
     if (you_foodless())
         return;
 
+    if (you.char_class == JOB_CAVEPERSON)
+        return;
+
     object_class_type base_type = OBJ_FOOD;
     int sub_type = FOOD_RATION;
     int quantity = 1;

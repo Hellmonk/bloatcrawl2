@@ -47,6 +47,7 @@ enum mutation_type
     MUT_FADING,
     MUT_HARVEST_ENERGY,
     MUT_ONI_MAGIC,
+    MUT_CAVEPERSON_WARNING,
 #endif
     MUT_ACUTE_VISION,
     MUT_AGILE,
@@ -239,6 +240,7 @@ enum mutation_type
     MUT_FADING,
     MUT_HARVEST_ENERGY,
     MUT_ONI_MAGIC,
+    MUT_CAVEPERSON_WARNING,
 #endif
     NUM_MUTATIONS,
     CATEGORY_MUTATIONS,

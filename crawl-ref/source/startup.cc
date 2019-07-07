@@ -36,8 +36,10 @@
 #include "menu.h"
 #include "message.h"
 #include "misc.h"
+#include "mgen-data.h"
 #include "mon-cast.h"
 #include "mon-death.h"
+#include "mon-place.h"
 #include "mutation.h"
 #include "newgame.h"
 #include "ng-input.h"
@@ -199,6 +201,16 @@ static void _initialize()
     }
 
     mpr(opening_screen().c_str());
+}
+
+static void _spawn_caveperson_dog()
+{
+    if (you.char_class != JOB_CAVEPERSON)
+        return;
+    auto pet_data = mgen_data(MONS_JACKAL, BEH_FRIENDLY, you.pos(), MHITYOU,
+                              MG_FORCE_PLACE | MG_DONT_COME | MG_FORBID_BANDS);
+    pet_data.mname = "Slasher";
+    create_monster(pet_data, false);
 }
 
 /** KILL_RESETs all monsters in LOS.
@@ -428,6 +440,8 @@ static void _post_init(bool newc)
         // For a new game, wipe out monsters in LOS, and
         // for new hints mode games also the items.
         _zap_los_monsters(Hints.hints_events[HINT_SEEN_FIRST_OBJECT]);
+
+        _spawn_caveperson_dog();
     }
 
     // This just puts the view up for the first turn.

@@ -49,6 +49,14 @@ static bool _banned_combination(job_type job, species_type species)
         return true;
     }
 
+    // Cavemen [...] can be humans, dwarves or gnomes.
+    if (job == JOB_CAVEPERSON
+        && !(species == SP_HUMAN || species == SP_DEEP_DWARF
+             || species == SP_DAB_DWARF))
+    {
+        return true;
+    }
+
     return false;
 }
 
