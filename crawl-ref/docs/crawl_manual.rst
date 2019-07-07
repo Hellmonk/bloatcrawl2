@@ -1848,6 +1848,19 @@ Felids (Fe)
   their masters' rituals, yet many have abandoned, outlived, or, in at least one
   case, eviscerated their former masters and gone out into the world.
 
+Oni
+  Standing a head taller than humans, Oni are a feared and monstrous race.
+  Demonic in appearance, but not in personality, they are easily spotted for 
+  their red or blue skin, razor-sharp teeth, pointed fingernails, and 
+  horns made of black ivory. Oni are a strong and robust species.
+
+  They do not subscribe to usual schools of magic, instead preferring
+  to self-teach. As an Oni ages, it will discover a small handful of spells,
+  and need only practice spellcasting to cast them.
+
+The Undead
+========================================
+
   While fully capable of using speech and most forms of magic, Felids are at a
   serious disadvantage due to their inability to use armour or weapons. Like all
   cats, Felids are incapable of thriving on vegetable food, and need meat to

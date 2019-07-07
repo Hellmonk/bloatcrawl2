@@ -1,0 +1,60 @@
+enum: SP_ONI
+monster: MONS_ONI
+name: "Oni"
+difficulty: Advanced
+aptitudes:
+  xp: 0
+  hp: 1
+  mp_mod: 2
+  mr: 3
+  short_blades: -1
+  maces_and_flails: 1
+  slings: -1
+  crossbows: -1
+  throwing: -1
+  armour: -1
+  dodging: -1
+  stealth: -1
+  shields: -1
+  spellcasting: -4
+  conjurations: false
+  hexes: false
+  charms: false
+  summoning: false
+  necromancy: false
+  translocations: false
+  transmutations: false
+  fire_magic: false
+  ice_magic: false
+  air_magic: false
+  earth_magic: false
+  poison_magic: false
+  invocations: 2
+str: 11
+int: 9
+dex: 6
+levelup_stat_frequency: 4
+mutations:
+  1:
+    MUT_HORNS: 1
+    MUT_CLAWS: 1
+    MUT_FANGS: 1
+    MUT_ONI_MAGIC: 1
+recommended_jobs:
+  - JOB_SKALD
+  - JOB_WARPER
+  - JOB_TRANSMUTER
+  - JOB_WIZARD
+  - JOB_CONJURER
+  - JOB_FIRE_ELEMENTALIST
+  - JOB_ICE_ELEMENTALIST
+  - JOB_EARTH_ELEMENTALIST
+  - JOB_AIR_ELEMENTALIST
+recommended_weapons:
+  - SK_MACES_FLAILS
+  - SK_AXES
+  - SK_POLEARMS
+  - SK_LONG_BLADES
+  - SK_STAVES
+  - SK_BOWS
+  - SK_UNARMED_COMBAT
