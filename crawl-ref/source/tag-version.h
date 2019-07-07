@@ -231,7 +231,8 @@ enum tag_minor_version
     TAG_PB_BENEFITS,
     TAG_PB_REWORK,
     TAG_PB_REWORK_2,               // MP reservation
-    TAG_PB_REPEATED_MISCAST,
+    TAG_PB_REPEATED_MISCAST,       // I wonder how trunk avoids having so many
+    TAG_PB_TRACK_FIX,              // of these?
 #endif
     NUM_TAG_MINORS,
     TAG_MINOR_VERSION = NUM_TAG_MINORS - 1

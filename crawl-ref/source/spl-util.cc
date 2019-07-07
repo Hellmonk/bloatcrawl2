@@ -1621,16 +1621,21 @@ void permabuff_track(int pb) {
                           (raw_spell_fail(spell))));
     you.perma_mp[pb] = (1000000 * spell_mana(spell)) / (dur * succ);
     dprf("%d hunger, %d MP per aut, %d auts", you.perma_hunger[pb], you.perma_mp[pb],you.perma_benefit[pb]);
+    int time = min(you.time_taken,
+                   (you.elapsed_time - you.perma_last_track[pb]));
+    you.perma_last_track[pb] = you.elapsed_time;
+    if (time > 0) {
 // Divide by 3 here as a very crude compensation for the way we only get 
 // pinged on benefit not just from routine recasting
-    if (one_chance_in(nominal_duration(spell) / 3)) {
-        practise_casting(spell, true);
-    }
-    string reason = you.cannot_renew_pbs_because();
-    if ((!reason.empty()) && one_chance_in(nominal_duration(spell))) {
-        mprf(MSGCH_DURATION, "You can't renew one of your enchantments because %s!", reason.c_str());
-        // Duration reduced now _recheck_perma will silently renew it
-        you.increase_duration(permabuff_durs[pb], roll_dice(2, 4));
+        if (one_chance_in(dur / (3 * time))) {
+            practise_casting(spell, true);
+        }
+        string reason = you.cannot_renew_pbs_because();
+        if ((!reason.empty()) && one_chance_in(dur / time)) {
+            mprf(MSGCH_DURATION, "You can't renew one of your enchantments because %s!", reason.c_str());
+            // Duration reduced now _recheck_perma will silently renew it
+            you.increase_duration(permabuff_durs[pb], roll_dice(2, 4));
+        }
     }
 }
 

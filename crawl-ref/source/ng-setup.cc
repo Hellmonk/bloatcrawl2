@@ -564,6 +564,7 @@ static void _setup_generic(const newgame_def& ng)
         you.perma_hunger[i] = 0;
         you.perma_mp[i] = 0;
         you.perma_miscast[i] = false;
+        you.perma_last_track[i] = 0;
     }
 
     // We calculate hp and mp here; all relevant factors should be

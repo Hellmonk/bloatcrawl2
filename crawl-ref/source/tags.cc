@@ -1500,6 +1500,8 @@ static void tag_construct_you(writer &th)
         marshallInt(th, you.perma_mp[j]);
     for (int j = 0; j <= PERMA_LAST_PERMA; ++j)
         marshallBoolean(th, you.perma_miscast[j]);
+    for (int j = 0; j <= PERMA_LAST_PERMA; ++j)
+        marshallInt(th, you.perma_last_track[j]);
 
     // how many attributes?
     marshallByte(th, NUM_ATTRIBUTES);
@@ -2799,6 +2801,17 @@ static void tag_read_you(reader &th)
         if (count > 0) {
             for (int j = 0; j <= count; ++j) {
                 you.perma_miscast[j] = unmarshallBoolean(th);
+            }
+        }
+#if TAG_MAJOR_VERSION == 34
+    }
+#endif
+#if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() >= TAG_PB_TRACK_FIX) {
+#endif
+        if (count > 0) {
+            for (int j = 0; j <= count; ++j) {
+                you.perma_last_track[j] = unmarshallInt(th);
             }
         }
 #if TAG_MAJOR_VERSION == 34

@@ -251,11 +251,8 @@ spret_type cast_song_of_slaying(int pow, bool fail)
 void check_sos_miscast() {
     if (you.permabuff_working(PERMA_SONG) &&
         you.props[SONG_OF_SLAYING_KEY].get_int()) {
-        if (permabuff_fail_check
-            (PERMA_SONG,
-             "You stumble over the syllables of your song.")) {
-            you.props[SONG_OF_SLAYING_KEY] = 0;
-        } 
+        permabuff_fail_check(PERMA_SONG,
+                             "You stumble over the syllables of your song.");
     }
 }
 
@@ -356,14 +353,16 @@ bool permabuff_fail_check(permabuff_type pb, const string &message,
                           bool ignoredur) {
     permabuff_track(pb);
     spell_type spell = permabuff_spell[pb];
-    if (one_chance_in(nominal_duration(spell) / pb_dur_fudge[pb]) ||
+    if (one_chance_in((BASELINE_DELAY * nominal_duration(spell)) /
+                      (max(1, you.time_taken) * pb_dur_fudge[pb])) ||
         ignoredur) {
-        int fail = failure_check(spell,true);
+        int fail = failure_check(spell, true);
         if (fail) {
             mprf(MSGCH_DURATION, "%s", message.c_str());
             apply_miscast(spell, fail, false);
             you.increase_duration(permabuff_durs[pb],roll_dice(2,10) + fail/4);
             you.perma_miscast[pb] = true;
+            if (pb == PERMA_SONG) you.props[SONG_OF_SLAYING_KEY] = 0;
             interrupt_activity(AI_PB_MISCAST);
             return true;
         }

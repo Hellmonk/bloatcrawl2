@@ -178,6 +178,9 @@ public:
     FixedVector<int32_t, PERMA_LAST_PERMA+1> perma_mp;     // in 10,000th MP
     // Do we have to make a miscast check at the end of the duration?
     FixedVector<bool, PERMA_LAST_PERMA+1> perma_miscast;
+    // There's not a lot of point in trying to make this safe against 16-bit
+    // ints since you.elapsed_time is a plain int, but vanilla might fix it...
+    FixedVector<int32_t, PERMA_LAST_PERMA+1> perma_last_track;
 
     FixedVector<int8_t, NUM_STATS> stat_loss;
     FixedVector<int8_t, NUM_STATS> base_stats;
