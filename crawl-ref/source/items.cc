@@ -55,6 +55,7 @@
 #include "makeitem.h"
 #include "message.h"
 #include "mon-ench.h"
+#include "mutation.h"
 #include "nearby-danger.h"
 #include "notes.h"
 #include "options.h"

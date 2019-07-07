@@ -21,6 +21,7 @@
 #include "coordit.h"
 #include "dactions.h"
 #include "delay.h"
+#include "describe.h"
 #include "english.h"
 #include "env.h"
 #include "god-abil.h"
@@ -674,15 +675,36 @@ string describe_mutations(bool drop_title)
     {
         switch (you.body_size(PSIZE_TORSO, true))
         {
+        case SIZE_TINY:
+            result += "You are tiny.\n"
+                      "You have problems with many larger weapons.\n"
+                      "You are too small for most types of armour.\n";
+            break;
         case SIZE_LITTLE:
-            result += "You are very small and have problems with some larger weapons.\n"
+            result += "You are very small.\n"
+                      "You have problems with some larger weapons.\n"
                       "You are too small for most types of armour.\n";
             break;
         case SIZE_SMALL:
-            result += "You are small and have problems with some larger weapons.\n";
+            result += "You are small.\n"
+                      "You have problems with some larger weapons.\n";
             break;
         case SIZE_LARGE:
-            result += "You are too large for most types of armour.\n";
+            result += "You are large.\n"
+                      "You are too large for most types of armour.\n";
+            break;
+        case SIZE_BIG:
+            result += "You are very large.\n"
+                      "You can wield many weapons one-handed.\n"
+                      "You are too large for most types of armour.\n"
+                      "You can walk steadily in shallow water.\n";
+            break;
+        case SIZE_GIANT:
+            result += "You are giant.\n"
+                      "You can wield all weapons one-handed.\n"
+                      "You are too large for all types of armour.\n"
+                      "You can walk steadily in deep water.\n"
+                      "You are immune to suffocation.\n";
             break;
         default:
             break;
@@ -1782,6 +1804,9 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
         }
     }
 
+    if (you.get_mutation_level(MUT_PROTEAN_BODY))
+        calc_hp(true, false);
+
 #ifdef USE_TILE_LOCAL
     if (your_talents(false).size() != old_talents)
     {
@@ -1900,6 +1925,9 @@ static bool _delete_single_mutation_level(mutation_type mutat,
     }
     else
         take_note(Note(NOTE_LOSE_MUTATION, mutat, you.mutation[mutat], reason));
+
+    if (you.get_mutation_level(MUT_PROTEAN_BODY))
+        calc_hp(true, false);
 
     if (you.hp <= 0)
     {
@@ -2250,6 +2278,18 @@ string mutation_desc(mutation_type mut, int level, bool colour,
     {
         ostringstream ostr;
         ostr << mdef.have[level - 1] << sanguine_armour_bonus() / 100 << ")";
+        result = ostr.str();
+    }
+    else if (mut == MUT_PROTEAN_BODY)
+    {
+        const int hp = protean_hp_bonus();
+        const string size = get_size_adj(species_size(you.species, PSIZE_BODY));
+        ostringstream ostr;
+        ostr << mdef.have[level - 1]
+            << "+" << hp << "% HP).";
+        ostr << "\nYour health pool defines your size (" << size << ").";
+        ostr << "\nYour protean flesh cannot be transmuted.";
+        ostr << "\nYour protean flesh is especially vulnerable to rot.";
         result = ostr.str();
     }
     else if (!ignore_player && you.species == SP_FELID && mut == MUT_CLAWS)

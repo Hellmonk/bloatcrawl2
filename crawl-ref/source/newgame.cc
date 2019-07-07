@@ -2184,6 +2184,8 @@ static weapon_type _starting_weapon_upgrade(weapon_type wp, job_type job,
 {
     const bool fighter = job == JOB_FIGHTER;
     const size_type size = species_size(species, PSIZE_TORSO);
+    const bool small = size <= SIZE_SMALL;
+    const bool tiny = size <= SIZE_TINY;
 
     // TODO: actually query itemprop for one-handedness.
     switch (wp)
@@ -2191,14 +2193,16 @@ static weapon_type _starting_weapon_upgrade(weapon_type wp, job_type job,
     case WPN_SHORT_SWORD:
         return WPN_RAPIER;
     case WPN_MACE:
-        return WPN_FLAIL;
+        return tiny ? wp : WPN_FLAIL;
     case WPN_HAND_AXE:
-        return WPN_WAR_AXE;
+        return tiny ? wp : WPN_WAR_AXE;
     case WPN_SPEAR:
         // Small fighters can't use tridents with a shield.
-        return fighter && size <= SIZE_SMALL  ? wp : WPN_TRIDENT;
+        return fighter && small ? wp : WPN_TRIDENT;
     case WPN_FALCHION:
-        return WPN_LONG_SWORD;
+        return tiny ? wp : WPN_LONG_SWORD;
+    case WPN_QUARTERSTAFF:
+        return tiny ? WPN_STAFF : wp;
     default:
         return wp;
     }
@@ -2231,7 +2235,7 @@ static vector<weapon_choice> _get_weapons(const newgame_def& ng)
         {
             weapon_choice wp;
             wp.first = startwep[i];
-            if (job_gets_good_weapons(ng.job))
+            if (job_gets_good_weapons(ng.job) && wp.first == WPN_QUARTERSTAFF)
             {
                 wp.first = _starting_weapon_upgrade(wp.first, ng.job,
                                                     ng.species);

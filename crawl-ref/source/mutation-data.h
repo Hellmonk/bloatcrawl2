@@ -2009,6 +2009,15 @@ static const mutation_def mut_data[] =
    {"You feel sensitive!", "", ""},
    {"You feel less sensitive!", "", ""},
 },
+
+{ MUT_PROTEAN_BODY, 0, 1, mutflag::good, true,
+   "protean body",
+
+   // Bonus details added in mutation.cc's mutation_desc
+   {"Your protean body gains health from mutations (", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =

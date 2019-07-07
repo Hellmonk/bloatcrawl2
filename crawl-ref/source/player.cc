@@ -27,6 +27,7 @@
 #include "cloud.h"
 #include "coordit.h"
 #include "delay.h"
+#include "describe.h"
 #include "dgn-overview.h"
 #include "dgn-event.h"
 #include "directn.h"
@@ -423,6 +424,21 @@ static void _splash()
         noisy(8, you.pos(), "Splash!");
 }
 
+static bool _slowed_by_water(dungeon_feature_type water)
+{
+    ASSERT(!you.can_swim());
+    ASSERT(!you.can_water_walk());
+    ASSERT(feat_is_water(water));
+
+    const auto size = species_size(you.species, PSIZE_BODY);
+    if (water == DNGN_SHALLOW_WATER)
+        return size < SIZE_BIG;
+    else if (water == DNGN_DEEP_WATER)
+        return size == SIZE_GIANT;
+    else
+        ASSERT(false);
+}
+
 void moveto_location_effects(dungeon_feature_type old_feat,
                              bool stepped, const coord_def& old_pos)
 {
@@ -445,7 +461,8 @@ void moveto_location_effects(dungeon_feature_type old_feat,
 
             if (!you.can_swim() && !you.can_water_walk())
             {
-                if (!feat_is_water(old_feat))
+                const bool entering = !feat_is_water(old_feat);
+                if (entering)
                 {
                     mprf("You %s the %s water.",
                          stepped ? "enter" : "fall into",
@@ -455,11 +472,29 @@ void moveto_location_effects(dungeon_feature_type old_feat,
                 if (new_grid == DNGN_DEEP_WATER && old_feat != DNGN_DEEP_WATER)
                     mpr("You sink to the bottom.");
 
-                if (!feat_is_water(old_feat))
+                const bool are_slow = _slowed_by_water(new_grid);
+                if (entering)
                 {
-                    mpr("Moving in this stuff is going to be slow.");
-                    if (you.invisible())
-                        mpr("...and don't expect to remain undetected.");
+                    if (are_slow)
+                    {
+                        mpr("Moving in this stuff is going to be slow.");
+                        if (you.invisible())
+                            mpr("...and don't expect to remain undetected.");
+                    }
+                    else
+                        if (you.invisible())
+                            mpr("Don't expect to remain undetected in this stuff.");
+
+                }
+                else
+                {
+                    const bool was_slow = _slowed_by_water(old_feat);
+                    if (are_slow && !was_slow)
+                    {
+                        mpr("Moving in this stuff is going to be slow.");
+                        if (you.invisible())
+                            mpr("...and don't expect to remain undetected.");
+                    }
                 }
             }
 
@@ -606,9 +641,20 @@ bool player_in_connected_branch()
 
 bool player_likes_water(bool permanently)
 {
-    return !permanently && you.can_water_walk()
-           || (species_likes_water(you.species) || !permanently)
-               && form_likes_water();
+    if (permanently)
+    {
+        if (you.has_mutation(MUT_PROTEAN_BODY))
+        {
+            const auto size = species_size(you.species, PSIZE_BODY);
+            if (size == SIZE_BIG || size == SIZE_GIANT)
+                return true;
+        }
+        return species_likes_water(you.species) && form_likes_water();
+    }
+    else
+    {
+        return you.can_water_walk() || form_likes_water();
+    }
 }
 
 /**
@@ -2010,8 +2056,12 @@ int player_movement_speed()
         mv = 6;
 
     // Wading through water is very slow.
-    if (you.in_water() && !you.can_swim())
+    if (you.in_water() && !you.can_swim()
+        && _slowed_by_water(env.grid(you.pos()))
+       )
+    {
         mv += 6;
+    }
 
     // moving on liquefied ground takes longer
     if (you.liquefied_ground())
@@ -2792,6 +2842,56 @@ static void _gain_and_note_hp_mp()
     take_note(Note(NOTE_XP_LEVEL_CHANGE, you.experience_level, 0, buf));
 }
 
+static void _update_protean_size(size_type oldsize)
+{
+    const size_type size = species_size(you.species, PSIZE_BODY);
+    const string verb = (int)size > (int)oldsize ? "grow" : "shrink";
+    mprf("You %s from %s to %s.", verb.c_str(),
+         get_size_adj(oldsize), get_size_adj(size));
+    for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
+    {
+        if (you_can_wear(static_cast<equipment_type>(i)) == MB_FALSE
+            && you.equip[i] != -1)
+        {
+            mprf("%s fall%s away!",
+                 you.inv[you.equip[i]].name(DESC_YOUR).c_str(),
+                 you.inv[you.equip[i]].quantity > 1 ? "" : "s");
+            // Unwear items without the usual processing.
+            you.equip[i] = -1;
+            you.melded.set(i, false);
+        }
+    }
+    // You can grow more than one size in a single call to this function
+    if (size >= SIZE_LARGE)
+    {
+        // dprf("Checking skin toughness");
+        const int target = (int)size - SIZE_LARGE; // large 0, big 1, giant 2
+        const int cur = you.get_innate_mutation_level(MUT_TOUGH_SKIN); // 0-2
+        // target 0, cur 0 => 0
+        // target 1, cur 0 => +1
+        // target 2, cur 0 => +2
+        // target 0, cur 1 => -1
+        // target 1, cur 1 => 0
+        // target 2, cur 1 => +1
+        // target 0, cur 2 => -2
+        // target 1, cur 2 => -1
+        // target 2, cur 2 => 0
+        const int delta = target - cur;
+        // dprf("Target %d cur %d delta %d", target, cur, delta);
+        if (delta > 0)
+            perma_mutate(MUT_TOUGH_SKIN, delta, "protean size");
+        else if (delta < 0)
+        {
+            // There's no function to remove innate mutations, so hack it
+            you.innate_mutation[MUT_TOUGH_SKIN] = target;
+            you.mutation[MUT_TOUGH_SKIN] = target;
+            you.redraw_armour_class = true;
+            mprf(MSGCH_MUTATION, "Your skin feels delicate.");
+        }
+
+    }
+}
+
 /**
  * Calculate max HP changes and scale current HP accordingly.
  */
@@ -2801,6 +2901,7 @@ void calc_hp(bool scale, bool set)
     // We can reduce errors by a factor of 100 by using partial hp we have.
     int oldhp = you.hp;
     int old_max = you.hp_max;
+    size_type oldsize = species_size(you.species, PSIZE_TORSO);
 
     you.hp_max = get_real_hp(true, true);
 
@@ -2823,6 +2924,11 @@ void calc_hp(bool scale, bool set)
     {
         dprf("HP changed: %d/%d -> %d/%d", oldhp, old_max, you.hp, you.hp_max);
         you.redraw_hit_points = true;
+    }
+    if (old_max != you.hp_max && you.get_mutation_level(MUT_PROTEAN_BODY)
+        && species_size(you.species, PSIZE_BODY) != oldsize)
+    {
+            _update_protean_size(oldsize);
     }
 }
 
@@ -3945,6 +4051,9 @@ void rot_hp(int hp_loss)
     if (!player_rotted() && hp_loss > 0)
         you.redraw_magic_points = true;
 
+    if (you.get_mutation_level(MUT_PROTEAN_BODY))
+        hp_loss *= 2;
+
     const int initial_rot = you.hp_max_adj_temp;
     you.hp_max_adj_temp -= hp_loss;
     // don't allow more rot than you have normal mhp
@@ -4068,6 +4177,7 @@ int get_real_hp(bool trans, bool rotted)
                 + (you.attribute[ATTR_DIVINE_VIGOUR] * 5)
                 + (you.get_mutation_level(MUT_RUGGED_BROWN_SCALES) ?
                    you.get_mutation_level(MUT_RUGGED_BROWN_SCALES) * 2 + 1 : 0)
+                + protean_hp_bonus()
                 - (you.get_mutation_level(MUT_FRAIL) * 10)
                 - (hep_frail ? 10 : 0);
 
@@ -5977,6 +6087,15 @@ int sanguine_armour_bonus()
     return 300 + mut_lev * 300;
 }
 
+int protean_hp_bonus()
+{
+    if (!you.has_mutation(MUT_PROTEAN_BODY))
+        return 0;
+
+    const int muts = you.how_mutated(false, true, true);
+    return muts * 4;
+}
+
 /**
  * How much AC does the player get from an unenchanted version of the given
  * armour?
@@ -6326,6 +6445,7 @@ int player::res_water_drowning() const
     int rw = 0;
 
     if (is_unbreathing()
+        || species_size(you.species, PSIZE_BODY) == SIZE_GIANT
         || species_can_swim(species) && !form_changed_physiology()
         || form == transformation::ice_beast
         || form == transformation::hydra)
