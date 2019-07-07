@@ -156,6 +156,8 @@ item_def* newgame_make_item(object_class_type base,
             item.sub_type = ARM_SHIELD;
         else if (is_shield(item))
             item.sub_type = ARM_BUCKLER;
+        else if (item.sub_type == ARM_CLOAK)
+            item.sub_type = ARM_SCARF;
         else
             item.sub_type = ARM_ROBE;
     }
