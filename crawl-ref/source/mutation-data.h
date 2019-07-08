@@ -2001,6 +2001,14 @@ static const mutation_def mut_data[] =
    {"", "", ""},
    {"", "", ""},
 },
+
+{ MUT_CAVEPERSON_WARNING, 0, 1, mutflag::good, false,
+   "warning",
+
+   {"You can sense nearby monsters.", "", ""},
+   {"You feel sensitive!", "", ""},
+   {"You feel less sensitive!", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =
