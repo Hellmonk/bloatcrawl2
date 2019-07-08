@@ -118,7 +118,7 @@ They are not merely brutes, as they are comfortable with spellcasting.
 %%%%
 Oni
 
-Monstrous in nature with the rough appearance of Ogres, albeit smaller. 
+Monstrous in nature with the rough appearance of Ogres, albeit smaller.
 They discover spells as they gain experience and ignore schools of magic.
 %%%%
 Spriggan
@@ -171,3 +171,7 @@ Kitsune
 Kitsune are enthralling fox spirits that take on human shapes. They are poor at
 most skills and frailer than humans, but can charm their foes.
 %%%%
+Ogre Magi
+
+Two-headed Ogre Magi are a rare sight, what they lack in intelligence they make
+up for with dumb luck.

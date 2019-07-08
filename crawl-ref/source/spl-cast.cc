@@ -1556,6 +1556,10 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
             dithmenos_shadow_spell(&beam, spell);
         }
         _spellcasting_side_effects(spell, god, !allow_fail);
+        if (you.has_mutation(MUT_MULTICAST) && coinflip())
+        {
+            mpr("And again!");
+        }
         return spret::success;
     }
     case spret::fail:

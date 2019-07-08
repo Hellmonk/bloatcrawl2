@@ -2009,6 +2009,16 @@ static const mutation_def mut_data[] =
    {"You feel sensitive!", "", ""},
    {"You feel less sensitive!", "", ""},
 },
+
+{ MUT_MULTICAST, 0, 1, mutflag::good, false,
+   "multicast",
+
+   {"You occasionally multicast spells.",
+    "You multicast spells.",
+    "You often multicast spells."},
+   {"Your luck grows.", "Your luck grows.", "Your luck grows."},
+   {"", "", ""},
+}
 };
 
 static const mutation_category_def category_mut_data[] =
