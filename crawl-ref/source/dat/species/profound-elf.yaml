@@ -4,7 +4,7 @@ name: "Profound Elf"
 short_name: "PE"
 adjective: "Elven"
 genus: "Elf"
-difficulty: Intermediate
+difficulty: Advanced
 # difficulty_priority: 40
 species_flags:
   - elven
