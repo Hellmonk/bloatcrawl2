@@ -1885,7 +1885,13 @@ vector<monster_info_func> init_monster_info_funcs() {
                 return newconditions && mi.is(MB_AGILE); }});
     toret.push_back({"swift", "swift",
                 [](const monster_info &mi, bool newconditions) { 
-                return newconditions && mi.is(MB_SWIFT); }});
+                return newconditions && mi.is(MB_SWIFT) && !mi.is(MB_HASTED) &&
+                    !mi.is(MB_BERSERK) && !mi.is(MB_SLOWED); }});
+// This isn't quite true but pretty close
+    toret.push_back({"slow attacks", "slow attacks",
+                [](const monster_info &mi, bool newconditions) { 
+                return newconditions && mi.is(MB_SWIFT) && !mi.is(MB_HASTED) &&
+                    !mi.is(MB_BERSERK) && mi.is(MB_SLOWED); }});
     toret.push_back({"stilling wind", "stilling wind",
                 [](const monster_info &mi, bool newconditions) { 
                 return newconditions && mi.is(MB_STILL_WINDS); }});
@@ -2036,8 +2042,9 @@ vector<monster_info_func> init_monster_info_funcs() {
                 return newconditions && mi.is(MB_POISONED); }});
     toret.push_back({"slow", "slow", 
                 [](const monster_info &mi, bool newconditions) {
-                return newconditions && mi.is(MB_SLOWED) && 
-                    !mi.is(MB_BERSERK) && !mi.is(MB_HASTED); }});
+                return newconditions && mi.is(MB_SLOWED) &&
+                    !mi.is(MB_SWIFT) && !mi.is(MB_BERSERK) && 
+                    !mi.is(MB_HASTED); }});
     toret.push_back({"catching breath", "catching breath", 
                 [](const monster_info &mi, bool newconditions) {
                 return newconditions && mi.is(MB_BREATH_WEAPON); }});
