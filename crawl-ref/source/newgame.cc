@@ -1037,8 +1037,8 @@ static void _mark_fully_random(newgame_def& ng, newgame_def& ng_choice,
  */
 static const int COLUMN_WIDTH = 35;
 static const int X_MARGIN = 4;
-static const int CHAR_DESC_START_Y = 16;
-static const int CHAR_DESC_HEIGHT = 3;
+static const int CHAR_DESC_START_Y = 18;
+static const int CHAR_DESC_HEIGHT = 2;
 static const int SPECIAL_KEYS_START_Y = CHAR_DESC_START_Y
                                         + CHAR_DESC_HEIGHT + 1;
 
