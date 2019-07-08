@@ -127,6 +127,7 @@ public:
     int skill_modifier;
     undead_state_type undead_modifier;
     bool chaoskin;
+    bool no_locks;
 
     // This field is here even in non-WIZARD compiles, since the
     // player might have been playing previously under wiz mode.

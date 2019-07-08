@@ -264,6 +264,8 @@ branch_type parent_branch(branch_type branch)
 
 int runes_for_branch(branch_type branch)
 {
+    if(you.no_locks)
+        return 0;
     switch (branch)
     {
     case BRANCH_VAULTS:   return VAULTS_ENTRY_RUNES;

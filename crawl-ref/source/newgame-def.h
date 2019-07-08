@@ -43,6 +43,7 @@ struct newgame_def
     undead_state_type undead_type;
     int skilled_type;
     bool chaoskin; // Xom acts on you always
+    bool no_locks; // disable rune locks
 
     newgame_def();
     void clear_character();

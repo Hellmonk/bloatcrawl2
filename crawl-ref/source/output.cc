@@ -2201,6 +2201,8 @@ static formatted_string _get_modifiers()
     }
     if (you.chaoskin)
         modifiers.push_back("Chaoskin");
+    if (you.no_locks)
+        modifiers.push_back("No Runelocks");
     if (modifiers.empty())
         modifiers.push_back("None");
 

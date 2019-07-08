@@ -558,7 +558,8 @@ static level_id _travel_destination(const dungeon_feature_type how,
             continue;
 
         if (!you.level_visited(level_id(it->id, 1))
-            && runes_for_branch(it->id) > 0)
+            && runes_for_branch(it->id) > 0
+            && !you.no_locks)
         {
             _rune_effect(how);
         }

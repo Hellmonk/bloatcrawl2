@@ -543,6 +543,7 @@ static void _setup_generic(const newgame_def& ng)
     you.undead_modifier = ng.undead_type;
     you.skill_modifier = ng.skilled_type;
     you.chaoskin = ng.chaoskin;
+    you.no_locks = ng.no_locks;
 
     species_stat_init(you.species);     // must be down here {dlb}
 
