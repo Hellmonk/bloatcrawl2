@@ -1241,28 +1241,16 @@ static void _redraw_title()
     // [Zombie|Vampire] Minotaur [Mummy] [of God] [Piety]
     textcolour(YELLOW);
     CGOTOXY(1, 2, GOTO_STAT);
-    const string species = species_name(you.species);
-    switch (you.undead_state())
-    {
-        case US_UNDEAD:
-            NOWRAP_EOL_CPRINTF("%s Mummy", species.c_str());
-            break;
-            ;;
-        case US_HUNGRY_DEAD:
-            if (you.species != SP_MIRROR_EIDOLON) // what a hack
-                NOWRAP_EOL_CPRINTF("Zombie %s", species.c_str());
-            else
-                NOWRAP_EOL_CPRINTF("%s", species.c_str());
-            break;
-            ;;
-        case US_SEMI_UNDEAD:
-            NOWRAP_EOL_CPRINTF("Vampire %s", species.c_str());
-            break;
-            ;;
-        case US_ALIVE:
-            NOWRAP_EOL_CPRINTF("%s", species.c_str());
-            break;
-    }
+    string species = species_name(you.species);
+    const auto undead = you.undead_state();
+    if (undead == US_UNDEAD)
+        species = make_stringf("%s Mummy", species.c_str());
+    if (undead == US_HUNGRY_DEAD && you.species != SP_MIRROR_EIDOLON) // ugh
+        species = make_stringf("Zombie %s", species.c_str());
+    if (undead == US_SEMI_UNDEAD)
+        species = make_stringf("Vampire %s", species.c_str());
+    NOWRAP_EOL_CPRINTF("%s", species.c_str());
+
     if (you_worship(GOD_NO_GOD))
     {
         if (you.char_class == JOB_MONK && you.species != SP_DEMIGOD
@@ -1292,14 +1280,18 @@ static void _redraw_title()
         const unsigned int textwidth = (unsigned int)(strwidth(species) + strwidth(god) + strwidth(piety) + 1);
         if (textwidth <= WIDTH)
             NOWRAP_EOL_CPRINTF(" %s", piety.c_str());
-        else if (textwidth == (WIDTH + 1))
+        else if (you.species == SP_MOTTLED_DRACONIAN
+                 && textwidth == (WIDTH + 1))
         {
             //mottled draconian of TSO doesn't fit by one symbol,
             //so we remove leading space.
             NOWRAP_EOL_CPRINTF("%s", piety.c_str());
         }
         clear_to_end_of_line();
-        if (you_worship(GOD_GOZAG))
+        // All the extra bloatcrawl species stuff makes this fall off the end.
+        // If that happens, just don't draw it. Gozag worshippers can deal with
+        // it.
+        if (you_worship(GOD_GOZAG) && (textwidth < 35))
         {
             // "Mottled Draconian of Gozag  Gold: 99999" just fits
             _print_stats_gold(textwidth + 2, 2,
