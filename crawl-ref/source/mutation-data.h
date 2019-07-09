@@ -2018,6 +2018,24 @@ static const mutation_def mut_data[] =
    {"", "", ""},
    {"", "", ""},
 },
+
+// "Fake" mutation -- added for players who are US_HUNGRY_DEAD
+{ MUT_HUNGRY_DEAD, 0, 1, mutflag::good, false,
+   "zombie",
+
+   {"You hunger for flesh and rot when hungry.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
+
+// "Fake" mutation -- added for players who are US_SEMI_UNDEAD
+{ MUT_SEMI_UNDEAD, 0, 1, mutflag::good, false,
+   "vampire",
+
+   {"You can transition from alive to undead at will.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+}
 };
 
 static const mutation_category_def category_mut_data[] =

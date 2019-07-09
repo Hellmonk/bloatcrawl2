@@ -1895,6 +1895,8 @@ int player_prot_life(bool calc_unid, bool temp, bool items)
 {
     int pl = 0;
 
+    pl += you.get_mutation_level(MUT_NEGATIVE_ENERGY_RESISTANCE, temp);
+
     // Hunger is temporary, true, but that's something you can control,
     // especially as life protection only increases the hungrier you
     // get.
@@ -1945,8 +1947,16 @@ int player_prot_life(bool calc_unid, bool temp, bool items)
         pl += you.wearing(EQ_STAFF, STAFF_DEATH, calc_unid);
     }
 
-    // undead/demonic power
-    pl += you.get_mutation_level(MUT_NEGATIVE_ENERGY_RESISTANCE, temp);
+    switch (you.undead_modifier)
+    {
+        case US_UNDEAD:
+        case US_HUNGRY_DEAD:
+            pl += 3;
+            break;
+        case US_SEMI_UNDEAD:
+        case US_ALIVE:
+            break;
+    }
 
     pl = min(3, pl);
 

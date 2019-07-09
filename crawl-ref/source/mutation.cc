@@ -44,6 +44,7 @@
 #include "state.h"
 #include "stringutil.h"
 #include "transform.h"
+#include "undead-mutations.h"
 #include "unicode.h"
 #include "viewchar.h"
 #include "xom.h"
@@ -720,29 +721,17 @@ string describe_mutations(bool drop_title)
     if (player_res_poison(false, false, false) == 3)
         result += "You are immune to poison.\n";
 
+    // Undead mutations
     const auto undead_state = you.undead_state();
-    switch (undead_state)
+    for (auto entry : undead_mutations)
     {
-        case US_SEMI_UNDEAD:
-            result += "You can survive without breathing.\n";
-            // Fall through
-        case US_UNDEAD:
-        case US_HUNGRY_DEAD:
-            result += "You are immune to negative energy. (rN+++)\n";
-            result += "You are immune to unholy pain and torment.\n";
-            break;
-        case US_ALIVE:
-            // nothing
-            break;
+        if ((entry.mummy && undead_state == US_UNDEAD)
+            || (entry.zombie && undead_state == US_HUNGRY_DEAD)
+            || (entry.vampire && undead_state == US_SEMI_UNDEAD))
+        {
+            result += mutation_desc(entry.mutation, entry.level) + "\n";
+        }
     }
-    if (undead_state == US_HUNGRY_DEAD)
-    {
-        result += "You hunger for flesh and rot when hungry.\n";
-        result += "You do not regenerate when monsters are visible.\n";
-    }
-    if (undead_state == US_SEMI_UNDEAD)
-        result += "You can transition from alive to undead at will.\n";
-
     result += "</lightblue>";
 
     // First add (non-removable) inborn abilities and demon powers.

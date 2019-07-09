@@ -49,6 +49,7 @@
 #include "throw.h"
 #include "tiles-build-specific.h"
 #include "transform.h"
+#include "undead-mutations.h"
 #include "viewchar.h"
 #include "view.h"
 #include "xom.h"
@@ -1248,7 +1249,10 @@ static void _redraw_title()
             break;
             ;;
         case US_HUNGRY_DEAD:
-            NOWRAP_EOL_CPRINTF("Zombie %s", species.c_str());
+            if (you.species != SP_MIRROR_EIDOLON) // what a hack
+                NOWRAP_EOL_CPRINTF("Zombie %s", species.c_str());
+            else
+                NOWRAP_EOL_CPRINTF("%s", species.c_str());
             break;
             ;;
         case US_SEMI_UNDEAD:
@@ -2706,23 +2710,20 @@ string mutation_overview()
     if (have_passive(passive_t::frail) || player_under_penance(GOD_HEPLIAKLQANA))
         mutations.emplace_back("reduced essence");
 
+    // Undead mutations
     const auto undead_state = you.undead_state();
-    switch (undead_state)
+    for (auto entry : undead_mutations)
     {
-        case US_SEMI_UNDEAD:
-            mutations.emplace_back("unbreathing");
-            // Fall through
-        case US_UNDEAD:
-        case US_HUNGRY_DEAD:
-            mutations.emplace_back("negative energy resistance 3");
-            mutations.emplace_back("torment resistance");
-            break;
-        case US_ALIVE:
-            // nothing
-            break;
+        if ((entry.mummy && undead_state == US_UNDEAD)
+            || (entry.zombie && undead_state == US_HUNGRY_DEAD)
+            || (entry.vampire && undead_state == US_SEMI_UNDEAD))
+        {
+            mutations.emplace_back(
+                make_stringf("%s %d",
+                    mutation_name(entry.mutation),
+                    entry.level));
+        }
     }
-    if (undead_state == US_HUNGRY_DEAD)
-        mutations.emplace_back("inhibited regeneration");
 
     string current;
     for (unsigned i = 0; i < NUM_MUTATIONS; ++i)
