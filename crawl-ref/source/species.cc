@@ -4,11 +4,13 @@
 #include "species.h"
 
 #include "item-prop.h"
+#include "message.h"
 #include "mutation.h"
 #include "output.h"
 #include "player.h"
 #include "player-stats.h"
 #include "random.h"
+#include "religion.h"
 #include "skills.h"
 #include "stringutil.h"
 #include "tiledoll.h"
@@ -437,6 +439,8 @@ void change_species_to(species_type sp)
 {
     ASSERT(sp != SP_UNKNOWN);
 
+    bool had_racial_permanent_flight = you.racial_permanent_flight();
+
     // Re-scale skill-points.
     for (skill_type sk = SK_FIRST_SKILL; sk < NUM_SKILLS; ++sk)
     {
@@ -516,6 +520,25 @@ void change_species_to(species_type sp)
     // Sanitize skills.
     fixup_skills();
 
+    if (had_racial_permanent_flight && you.attribute[ATTR_PERM_FLIGHT])
+    {
+        you.duration[DUR_FLIGHT] = 0;
+        you.attribute[ATTR_PERM_FLIGHT] = 0;
+        land_player();
+    }
+
+    // If you can no longer worship your god, leave peacefully.
+    // eg demigod, transforming into Gr^Yred, ...
+    // XXX is mollifying the old god too good?
+    if (!you_worship(GOD_NO_GOD) && !player_can_join_god(you.religion))
+    {
+        god_type old_god = you.religion;
+        excommunication(true, GOD_NO_GOD);
+        // Copied from wizard_god_mollify
+        if (player_under_penance(old_god))
+            dec_penance(old_god, you.penance[old_god]);
+    }
+
     calc_hp();
     calc_mp();
 
@@ -565,4 +588,46 @@ species_type random_draconian_colour()
                                                  SP_LAST_NONBASE_DRACONIAN));
   } while (!_is_viable_draconian(species));
   return species;
+}
+
+void update_shapeshifter_species()
+{
+    if (!you.shapeshifter_species)
+        return;
+
+    species_type new_species;
+    do {
+        // You can roll shapeshifter here, which is dumb but a cool easter
+        // egg I think?
+        new_species = random_starting_species();
+    } while (new_species == you.species
+             // You lose all skill points in a skill if you change from a
+             // species with a skill marked UNUSABLE to one with the skill
+             // allowed. There are a more cases than these, but they are the
+             // most egregious.
+             || new_species == SP_FELID
+             || new_species == SP_ONI
+             // Instant death would be funny once. This should give enough
+             // time to level up again.
+             || (new_species == SP_MAYFLYTAUR && you.elapsed_time > 15000)
+             // If you are using undead game modifier, check the species
+             // allows undeadness to be overridden.
+             || (you.undead_modifier != US_ALIVE
+                 && !species_can_use_modified_undeadness(new_species))
+            );
+
+    mprf(MSGCH_INTRINSIC_GAIN,
+        "Your form blurs as you shapeshift into a %s!",
+        species_name(new_species).c_str());
+    more();
+    change_species_to(new_species);
+}
+
+// You can only modify the undeadness of species that are default alive. This
+// means you can't modify SP_MIRROR_EIDOLON (hungry dead) or SP_GARGOYLE
+// (non-living, although this isn't represented in code so we have to hardcode
+// it).
+bool species_can_use_modified_undeadness(species_type sp)
+{
+    return sp != SP_GARGOYLE && species_undead_type(sp) == US_ALIVE;
 }

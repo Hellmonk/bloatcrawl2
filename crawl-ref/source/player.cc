@@ -2986,6 +2986,8 @@ void level_change(bool skip_attribute_increase)
             if (!skip_attribute_increase)
                 species_stat_gain(you.species);
 
+            update_shapeshifter_species();
+
             switch (you.species)
             {
             case SP_NAGA:
@@ -3222,6 +3224,8 @@ void level_change(bool skip_attribute_increase)
         you.max_level++;
         if (you.species == SP_FELID)
             _felid_extra_life();
+        if (you.shapeshifter_species)
+            update_shapeshifter_species();
     }
 
     you.redraw_title = true;
@@ -3731,6 +3735,11 @@ unsigned int exp_needed(int lev, int exp_apt)
 
     if (exp_apt == -99)
         exp_apt = species_exp_modifier(you.species);
+
+    // Use a constant XP aptitude to prevent funny business around XL thresholds.
+    // Might not really be a problem, but it looks weird.
+    if (you.shapeshifter_species)
+        exp_apt = 0;
 
     return (unsigned int) ((level - 1) * apt_to_factor(exp_apt - 1));
 }
@@ -6658,6 +6667,10 @@ undead_state_type player::undead_state(bool temp) const
 {
     if (temp && you.form == transformation::lich)
         return US_UNDEAD;
+    // This hardcoded hack required to make Shapeshifter Mirror Eidolons work
+    if (you.species == SP_MIRROR_EIDOLON)
+        return US_HUNGRY_DEAD;
+
     return you.undead_modifier;
 }
 

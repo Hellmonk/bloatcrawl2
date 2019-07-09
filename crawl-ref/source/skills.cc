@@ -282,6 +282,10 @@ static void _change_skill_level(skill_type exsk, int n)
 
     you.skills[exsk] = max(0, you.skills[exsk] + n);
 
+    // Don't print message if you change the level of an unusable skill.
+    if (species_apt(exsk, you.species) == UNUSABLE_SKILL)
+        return;
+
     take_note(Note(n > 0 ? NOTE_GAIN_SKILL : NOTE_LOSE_SKILL,
                    exsk, you.skills[exsk]));
 

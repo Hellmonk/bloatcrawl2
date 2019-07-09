@@ -1,0 +1,20 @@
+enum: SP_SHAPESHIFTER
+monster: MONS_SHAPESHIFTER
+name: Shapeshifter
+difficulty: Advanced
+aptitudes:
+  xp: 0
+  hp: -1
+  mp_mod: 0
+  mr: 3
+# v.good base stats are the only positive of being in your true form.
+str: 12
+int: 12
+dex: 12
+levelup_stat_frequency: 4
+mutations:
+  1:
+    MUT_DETERIORATION: 2
+recommended_jobs:
+  - JOB_WANDERER
+  - JOB_CHAOS_KNIGHT

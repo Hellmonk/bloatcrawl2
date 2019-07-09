@@ -583,7 +583,7 @@ void validate_mutations(bool debug_msg)
                 dprf("scheduled innate for %s: %d, actual %d", mutation_name(mut),
                      trait_level, you.innate_mutation[mut]);
             }
-            if (is_trait)
+            if (is_trait && !you.shapeshifter_species)
                 ASSERT(you.innate_mutation[mut] == trait_level);
         }
     }
