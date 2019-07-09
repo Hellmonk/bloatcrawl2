@@ -252,6 +252,11 @@ static void _give_ammo(weapon_type weapon, int plus)
     }
 }
 
+static void _give_second_head()
+{
+    you.mutation[MUT_SECOND_HEAD] = you.innate_mutation[MUT_SECOND_HEAD] = 1;
+}
+
 static void _give_items_skills(const newgame_def& ng)
 {
     switch (you.char_class)
@@ -556,6 +561,9 @@ static void _setup_generic(const newgame_def& ng)
 
     // Needs to be done before handing out food.
     give_basic_mutations(you.species);
+
+    if (ng.two_heads)
+        _give_second_head();
 
     // This function depends on stats and mutations being finalised.
     _give_items_skills(ng);

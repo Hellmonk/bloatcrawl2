@@ -255,10 +255,14 @@ public:
     FixedVector<uint8_t, 30> branch_stairs;
 
     god_type religion;
+    god_type religion_2h; // Religion of second head
     string jiyva_second_name;       // Random second name of Jiyva
     uint8_t piety;
     uint8_t piety_hysteresis;       // amount of stored-up docking
     uint8_t gift_timeout;
+    uint8_t piety_2h;
+    uint8_t piety_hysteresis_2h;       // amount of stored-up docking
+    uint8_t gift_timeout_2h;
     uint8_t saved_good_god_piety;   // for if you "switch" between E/Z/1 by abandoning one first
     god_type previous_good_god;
     FixedVector<uint8_t, NUM_GODS>  penance;

@@ -52,7 +52,7 @@ void dec_penance(god_type god, int val);
 
 void excommunication(bool voluntary = false, god_type new_god = GOD_NO_GOD);
 
-bool gain_piety(int pgn, int denominator = 1, bool should_scale_piety = true);
+bool gain_piety(int pgn, bool second_head, int denominator = 1, bool should_scale_piety = true);
 void dock_piety(int pietyloss, int penance);
 void god_speaks(god_type god, const char *mesg);
 void lose_piety(int pgn);
@@ -62,13 +62,66 @@ int god_colour(god_type god);
 colour_t god_message_altar_colour(god_type god);
 int gozag_service_fee();
 bool player_can_join_god(god_type which_god);
-void join_religion(god_type which_god);
+void join_religion(god_type which_god, bool second_head);
 void god_pitch(god_type which_god);
 god_type choose_god(god_type def_god = NUM_GODS);
 
+/**
+ * Return the god a particular head worships.
+ */
+static inline god_type your_god(bool second_head)
+{
+    return (second_head ? you.religion : you.religion_2h);
+}
+
+/**
+ * If you worship this god (with either head).
+ */
 static inline bool you_worship(god_type god)
 {
-    return you.religion == god;
+    return your_god(false) == god
+        || your_god(true) == god;
+}
+
+/**
+ * Helper function returns true if both heads are atheist.
+ */
+static inline bool you_atheist()
+{
+    return your_god(false) == GOD_NO_GOD
+        && your_god(true) == GOD_NO_GOD;
+}
+
+static inline void set_piety(int amount, bool second_head)
+{
+    if (!second_head)
+        you.piety = amount;
+    else
+        you.piety_2h = amount;
+}
+
+static inline int you_piety(bool second_head)
+{
+    if (!second_head)
+        return you.piety;
+    else
+        return you.piety_2h;
+}
+
+static inline void set_gift_timeout(int amount, bool second_head)
+{
+    if (!second_head)
+        you.gift_timeout = amount;
+    else
+        you.gift_timeout_2h = amount;
+}
+
+static inline void set_piety_hysteresis(int amount, bool second_head)
+{
+    if (!second_head)
+        you.piety_hysteresis = amount;
+    else
+        you.piety_hysteresis_2h = amount;
 }
 
 static inline int player_under_penance(god_type god = you.religion)

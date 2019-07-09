@@ -1253,7 +1253,7 @@ void describe_god(god_type which_god)
 #endif
 }
 
-bool describe_god_with_join(god_type which_god)
+bool describe_god_with_join(god_type which_god, bool second_head)
 {
     const int fee = (which_god == GOD_GOZAG) ? gozag_service_fee() : 0;
     string service_fee = "";
@@ -1298,9 +1298,15 @@ bool describe_god_with_join(god_type which_god)
     // This is somewhat brittle, but ensures that the UI doesn't resize when
     // switching between prompts.
     const string prompts[] = {
-        make_stringf("%sDo you wish to %sjoin this religion?",
+        make_stringf("%sDo you wish to %sjoin this religion%s?",
                 service_fee.c_str(),
-                (you.worshipped[which_god]) ? "re" : ""),
+                (you.worshipped[which_god]) ? "re" : "",
+                (you.has_mutation(MUT_SECOND_HEAD)
+                    ? make_stringf(" with your %s head", second_head
+                                                         ? "second"
+                                                         : "first").c_str()
+                    : "")
+        ),
         make_stringf("Are you sure you want to abandon %s?",
                 god_name(you.religion).c_str())
     };
@@ -1373,7 +1379,7 @@ bool describe_god_with_join(god_type which_god)
             return done = true;
         }
 
-        if (step == ABANDON || (step == JOIN && you_worship(GOD_NO_GOD)))
+        if (step == ABANDON || (step == JOIN && your_god(second_head) == GOD_NO_GOD))
             return done = join = true;
         step = static_cast<join_step_type>(step + 1);
 

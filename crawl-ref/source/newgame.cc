@@ -655,6 +655,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     choice.undead_type = US_ALIVE;
     choice.skilled_type = 0;
     choice.chaoskin = false;
+    choice.two_heads = false;
 
     auto prompt_ui = make_shared<Text>();
     prompt_ui->on(Widget::slots.event, [&](wm_event ev)  {
@@ -700,6 +701,11 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
         else if (key == 'x' || key == 'X')
         {
             choice.chaoskin = !choice.chaoskin;
+            return done = false;
+        }
+        else if (key == 'h' || key == 'H')
+        {
+            choice.two_heads = !choice.two_heads;
             return done = false;
         }
         else if (key == CONTROL('M'))
@@ -757,6 +763,14 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     auto chaoskin_choice = make_shared<ui::Text>(chaoskin_choice_str);
     box->add_child(chaoskin_choice);
 
+    formatted_string heads_choice_str;
+    heads_choice_str.textcolour(WHITE);
+    heads_choice_str.cprintf("\n(H)");
+    heads_choice_str.textcolour(LIGHTGRAY);
+    heads_choice_str.cprintf("eads: one | two");
+    auto heads_choice = make_shared<ui::Text>(heads_choice_str);
+    box->add_child(heads_choice);
+
     auto popup = make_shared<ui::Popup>(box);
     ui::push_layout(move(popup));
     while (!done && !crawl_state.seen_hups)
@@ -795,6 +809,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
                 break;
         }
         chaoskin_choice->set_highlight_pattern(choice.chaoskin ? "enabled" : "disabled", false);
+        heads_choice->set_highlight_pattern(choice.two_heads ? "two" : "one", false);
         ui::pump_events();
     }
     ui::pop_layout();
@@ -978,6 +993,7 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
     ng.undead_type = choice.undead_type;
     ng.skilled_type = choice.skilled_type;
     ng.chaoskin = choice.chaoskin;
+    ng.two_heads = choice.two_heads;
 
 #ifndef DGAMELAUNCH
     // New: pick name _after_ character choices.

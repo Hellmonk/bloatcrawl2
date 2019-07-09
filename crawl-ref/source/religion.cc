@@ -3154,17 +3154,17 @@ bool player_can_join_god(god_type which_god)
 }
 
 // Handle messaging and identification for items/equipment on conversion.
-static void _god_welcome_handle_gear()
+static void _god_welcome_handle_gear(bool second_head)
 {
     // Check for amulets of faith.
     item_def *amulet = you.slot_item(EQ_AMULET, false);
     if (amulet && amulet->sub_type == AMU_FAITH && !is_useless_item(*amulet))
     {
         mprf(MSGCH_GOD, "Your amulet flashes!");
-        flash_view_delay(UA_PLAYER, god_colour(you.religion), 300);
+        flash_view_delay(UA_PLAYER, god_colour(your_god(second_head)), 300);
     }
 
-    if (you_worship(GOD_ASHENZARI))
+    if (your_god(second_head) == GOD_ASHENZARI)
     {
         if (!item_type_known(OBJ_SCROLLS, SCR_REMOVE_CURSE))
         {
@@ -3194,7 +3194,7 @@ static void _god_welcome_handle_gear()
         if (item && god_hates_item(*item))
         {
             mprf(MSGCH_GOD, "%s warns you to remove %s.",
-                 uppercase_first(god_name(you.religion)).c_str(),
+                 uppercase_first(god_name(your_god(second_head))).c_str(),
                  item->name(DESC_YOUR, false, false, false).c_str());
         }
     }
@@ -3232,7 +3232,7 @@ static void _make_empty_vec(CrawlStoreValue &v, store_val_type vectype)
 // traditional invocation slots (a-e and X). -- bwr
 void set_god_ability_slots()
 {
-    ASSERT(!you_worship(GOD_NO_GOD));
+    ASSERT(!you_worship_no_gods());
 
     if (find(begin(you.ability_letter_table), end(you.ability_letter_table),
              ABIL_RENOUNCE_RELIGION) == end(you.ability_letter_table)
@@ -3248,7 +3248,7 @@ void set_god_ability_slots()
         {
             if (slot == ABIL_NON_ABILITY)
                 break;
-            if (*it == you.religion)
+            if (you_worship(*it))
                 continue;
             for (const god_power& power : god_powers[*it])
                 if (slot == power.abil)
@@ -3259,50 +3259,54 @@ void set_god_ability_slots()
     int num = letter_to_index('a');
     // Not using get_god_powers, so that hotkeys remain stable across games
     // even if you can't use a particular ability in a given game.
-    for (const god_power& power : god_powers[you.religion])
+    const auto gods = [your_god(false), your_god(true)];
+    for (const god_type god : gods)
     {
-        if (power.abil != ABIL_NON_ABILITY
-            // Animate Dead doesn't have its own hotkey; it steals
-            // Animate Remains'
-            && power.abil != ABIL_YRED_ANIMATE_DEAD
-            // hep ident goes to G, so don't take b for it (hack alert)
-            && power.abil != ABIL_HEPLIAKLQANA_IDENTITY
-            && find(begin(you.ability_letter_table),
-                    end(you.ability_letter_table), power.abil)
-               == end(you.ability_letter_table)
-            && you.ability_letter_table[num] == ABIL_NON_ABILITY)
+        for (const god_power& power : god_powers[god])
         {
-            // Assign sequentially: first ability 'a', third ability 'c',
-            // etc., even if one is remapped.
-            if (find_ability_slot(power.abil, index_to_letter(num)) < 0)
+            if (power.abil != ABIL_NON_ABILITY
+                // Animate Dead doesn't have its own hotkey; it steals
+                // Animate Remains'
+                && power.abil != ABIL_YRED_ANIMATE_DEAD
+                // hep ident goes to G, so don't take b for it (hack alert)
+                && power.abil != ABIL_HEPLIAKLQANA_IDENTITY
+                && find(begin(you.ability_letter_table),
+                        end(you.ability_letter_table), power.abil)
+                == end(you.ability_letter_table)
+                && you.ability_letter_table[num] == ABIL_NON_ABILITY)
             {
-                you.ability_letter_table[num] = power.abil;
-                auto_assign_ability_slot(num);
+                // Assign sequentially: first ability 'a', third ability 'c',
+                // etc., even if one is remapped.
+                if (find_ability_slot(power.abil, index_to_letter(num)) < 0)
+                {
+                    you.ability_letter_table[num] = power.abil;
+                    auto_assign_ability_slot(num);
+                }
+                ++num;
             }
-            ++num;
         }
     }
 }
 
 /// Check if the monk's joining bonus should be given. (Except Gozag's.)
-static void _apply_monk_bonus()
+static void _apply_monk_bonus(bool second_head)
 {
     if (you.char_class != JOB_MONK || had_gods() > 0)
         return;
 
     // monks get bonus piety for first god
-    if (you_worship(GOD_RU))
+    if (your_god(second_head) == GOD_RU)
         you.props[RU_SACRIFICE_PROGRESS_KEY] = 9999;
-    else if (you_worship(GOD_USKAYAW))  // Gaining piety past this point does nothing
-        gain_piety(15, 1, false); // of value with this god and looks weird.
+    else if (your_god(second_head) == GOD_USKAYAW)
+        gain_piety(15, second_head, 1, false);
     else
-        gain_piety(35, 1, false);
+        gain_piety(35, second_head, 1, false);
 }
 
 /// Transfer some piety from an old good god to a new one, if applicable.
-static void _transfer_good_god_piety()
+static void _transfer_good_god_piety(bool second_head)
 {
-    if (!is_good_god(you.religion))
+    if (!is_good_god(your_god(second_head)))
         return;
 
     const god_type old_god = you.previous_good_god;
@@ -3311,7 +3315,7 @@ static void _transfer_good_god_piety()
     if (!is_good_god(old_god))
         return;
 
-    if (you.religion != old_god)
+    if (your_religion(second_head) != old_god)
     {
         static const map<god_type, const char*> farewell_messages = {
             { GOD_ELYVILON, "aid the meek" },
@@ -3331,7 +3335,7 @@ static void _transfer_good_god_piety()
     // Give a piety bonus when switching between good gods, or back to the
     // same good god.
     if (old_piety > piety_breakpoint(0))
-        gain_piety(old_piety - piety_breakpoint(0), 2, false);
+        gain_piety(old_piety - piety_breakpoint(0), second_head, 2, false);
 }
 
 
@@ -3383,24 +3387,24 @@ static void _check_good_god_wrath(god_type old_god)
 }
 
 /// Handle basic god piety & related setup for a new-joined god.
-static void _set_initial_god_piety()
+static void _set_initial_god_piety(bool second_head)
 {
     // Currently, penance is just zeroed. This could be much more
     // interesting.
-    you.penance[you.religion] = 0;
+    you.penance[your_god(second_head)] = 0;
 
     switch (you.religion)
     {
     case GOD_XOM:
         // Xom uses piety and gift_timeout differently.
-        you.piety = HALF_MAX_PIETY;
-        you.gift_timeout = random2(40) + random2(40);
+        set_piety(HALF_MAX_PIETY, second_head);
+        set_gift_timeout(random2(40) + random2(40), second_head);
         break;
 
     case GOD_RU:
-        you.piety = 10; // one moderate sacrifice should get you to *.
-        you.piety_hysteresis = 0;
-        you.gift_timeout = 0;
+        set_piety(10, second_head); // one moderate sacrifice should get you to *.
+        set_piety_hysteresis(0, second_head);
+        set_gift_timeout(0, second_head);
 
         // I'd rather this be in on_join(), but then it overrides the
         // monk bonus...
@@ -3416,20 +3420,20 @@ static void _set_initial_god_piety()
         break;
 
     default:
-        you.piety = 15; // to prevent near instant excommunication
-        if (you.piety_max[you.religion] < 15)
-            you.piety_max[you.religion] = 15;
-        you.piety_hysteresis = 0;
-        you.gift_timeout = 0;
+        set_piety(15, second_head); // to prevent near instant excommunication
+        if (you.piety_max[your_god(second_head)] < 15)
+            you.piety_max[your_god(second_head)] = 15;
+        set_piety_hysteresis(0, second_head);
+        set_gift_timeout(0, second_head);
         break;
     }
 
     // Tutorial needs berserk usable.
     if (crawl_state.game_is_tutorial())
-        gain_piety(30, 1, false);
+        gain_piety(30, second_head, 1, false);
 
-    _apply_monk_bonus();
-    _transfer_good_god_piety();
+    _apply_monk_bonus(second_head);
+    _transfer_good_god_piety(second_head);
 }
 
 /// Setup when joining the greedy magnates of Gozag.
@@ -3626,7 +3630,7 @@ static const map<god_type, function<void ()>> on_join = {
     { GOD_ZIN, _join_zin },
 };
 
-void join_religion(god_type which_god)
+void join_religion(god_type which_god, bool second_head)
 {
     ASSERT(which_god != GOD_NO_GOD);
     ASSERT(which_god != GOD_ECUMENICAL);
@@ -3634,7 +3638,7 @@ void join_religion(god_type which_god)
 
     redraw_screen();
 
-    const god_type old_god = you.religion;
+    const god_type old_god = your_god(second_head);
     if (you.previous_good_god == GOD_NO_GOD)
     {
         you.previous_good_god = old_god;
@@ -3644,14 +3648,23 @@ void join_religion(god_type which_god)
     }
 
     // Leave your prior religion first.
-    if (!you_worship(GOD_NO_GOD))
+    if (!you_worship(GOD_NO_GOD, second_head))
         excommunication(true, which_god);
 
     // Welcome to the fold!
-    you.religion = static_cast<god_type>(which_god);
+    if (!second_head)
+        you.religion = static_cast<god_type>(which_god);
+    else
+        you.religion_2h = static_cast<god_type>(which_god);
 
-    mark_milestone("god.worship", "became a worshipper of "
-                   + god_name(you.religion) + ".");
+    mark_milestone("god.worship",
+        make_stringf("became a worshipper%s of ",
+            you.has_mutation(MUT_SECOND_HEAD)
+                ? second_head
+                    ? " (second head)"
+                    : " (first head)"
+                : "").c_str(),
+        + god_name(you.religion) + ".");
     take_note(Note(NOTE_GET_GOD, you.religion));
 
     simple_god_message(make_stringf(" welcomes you%s!",
@@ -3662,41 +3675,41 @@ void join_religion(god_type which_god)
     whereis_record();
 #endif
 
-    _set_initial_god_piety();
+    _set_initial_god_piety(second_head);
 
     set_god_ability_slots();    // remove old god's slots, reserve new god's
 
     // When you start worshipping a good god, you make all non-hostile
     // unholy and evil beings hostile.
-    if (is_good_god(you.religion)
+    if (is_good_god(your_god(second_head))
         && query_daction_counter(DACT_ALLY_UNHOLY_EVIL))
     {
         add_daction(DACT_ALLY_UNHOLY_EVIL);
         mprf(MSGCH_MONSTER_ENCHANT, "Your unholy and evil allies forsake you.");
     }
 
-    const function<void ()> *join_effect = map_find(on_join, you.religion);
+    const function<void ()> *join_effect = map_find(on_join, your_god(second_head));
     if (join_effect != nullptr)
         (*join_effect)();
 
     // after join_effect() so that gozag's service fee is right for monks
-    if (you.worshipped[you.religion] < 100)
-        you.worshipped[you.religion]++;
+    if (you.worshipped[your_god(second_head)] < 100)
+        you.worshipped[your_god(second_head)]++;
 
     // after join_effect so that ru is initialized correctly for get_abilities
     // when flash_view_delay redraws the screen in local tiles
-    _god_welcome_handle_gear();
+    _god_welcome_handle_gear(second_head);
 
     // Warn if a good god is starting wrath now.
     _check_good_god_wrath(old_god);
 
-    if (!you_worship(GOD_GOZAG))
-        for (const auto& power : get_god_powers(you.religion))
+    if (!your_god(second_head) == GOD_GOZAG)
+        for (const auto& power : get_god_powers(your_god(second_head)))
             if (power.rank <= 0)
                 power.display(true, "You can now %s.");
 
     // Allow training all divine ability skills immediately.
-    vector<ability_type> abilities = get_god_abilities();
+    vector<ability_type> abilities = get_god_abilities(second_head);
     for (ability_type abil : abilities)
         you.start_train.insert(abil_skill(abil));
     update_can_train();
@@ -3715,7 +3728,7 @@ void join_religion(god_type which_god)
     learned_something_new(HINT_CONVERT);
 }
 
-void god_pitch(god_type which_god)
+void god_pitch(god_type which_god, bool second_head)
 {
     if (which_god == GOD_BEOGH && grd(you.pos()) != DNGN_ALTAR_BEOGH)
         mpr("You bow before the missionary of Beogh.");
@@ -3805,8 +3818,8 @@ void god_pitch(god_type which_god)
         return;
     }
 
-    if (describe_god_with_join(which_god))
-        join_religion(which_god);
+    if (describe_god_with_join(which_god, second_head))
+        join_religion(which_god, second_head);
     else
     {
         you.turn_is_over = false;

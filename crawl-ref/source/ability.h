@@ -45,7 +45,8 @@ ability_type fixup_ability(ability_type ability);
 
 int find_ability_slot(ability_type abil, char firstletter = 'f');
 int auto_assign_ability_slot(int slot);
-vector<ability_type> get_god_abilities(bool ignore_silence = true,
+vector<ability_type> get_god_abilities(bool second_head,
+                                       bool ignore_silence = true,
                                        bool ignore_piety = true,
                                        bool ignore_penance = true);
 void swap_ability_slots(int index1, int index2, bool silent = false);

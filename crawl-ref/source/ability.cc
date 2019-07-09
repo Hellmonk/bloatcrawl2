@@ -3764,11 +3764,12 @@ int find_ability_slot(const ability_type abil, char firstletter)
 }
 
 
-vector<ability_type> get_god_abilities(bool ignore_silence, bool ignore_piety,
+vector<ability_type> get_god_abilities(bool second_head,
+                                       bool ignore_silence, bool ignore_piety,
                                        bool ignore_penance)
 {
     vector<ability_type> abilities;
-    if (you_worship(GOD_RU))
+    if (your_god(second_head) == GOD_RU)
     {
         ASSERT(you.props.exists(AVAILABLE_SAC_KEY));
         bool any_sacrifices = false;
@@ -3781,8 +3782,8 @@ vector<ability_type> get_god_abilities(bool ignore_silence, bool ignore_piety,
             abilities.push_back(ABIL_RU_REJECT_SACRIFICES);
     }
     // XXX: should we check ignore_piety?
-    if (you_worship(GOD_HEPLIAKLQANA)
-        && piety_rank() >= 2 && !you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY))
+    if ((your_god(second_head) == GOD_HEPLIAKLQANA)
+        && piety_rank(you_piety(second_head)) >= 2 && !you.props.exists(HEPLIAKLQANA_ALLY_TYPE_KEY))
     {
         for (int anc_type = ABIL_HEPLIAKLQANA_FIRST_TYPE;
              anc_type <= ABIL_HEPLIAKLQANA_LAST_TYPE;
@@ -3791,7 +3792,7 @@ vector<ability_type> get_god_abilities(bool ignore_silence, bool ignore_piety,
             abilities.push_back(static_cast<ability_type>(anc_type));
         }
     }
-    if (you_worship(GOD_NEMELEX_XOBEH))
+    if (your_god(second_head) == GOD_NEMELEX_XOBEH)
     {
         for (int deck = ABIL_NEMELEX_FIRST_DECK;
              deck <= ABIL_NEMELEX_LAST_DECK;
@@ -3804,13 +3805,13 @@ vector<ability_type> get_god_abilities(bool ignore_silence, bool ignore_piety,
     }
     if (you.transfer_skill_points > 0)
         abilities.push_back(ABIL_ASHENZARI_END_TRANSFER);
-    if (silenced(you.pos()) && you_worship(GOD_WU_JIAN) && piety_rank() >= 2)
+    if (silenced(you.pos()) && your_god(second_head) == GOD_WU_JIAN && piety_rank(you_piety(second_head)) >= 2)
         abilities.push_back(ABIL_WU_JIAN_WALLJUMP);
 
     if (!ignore_silence && silenced(you.pos()))
         return abilities;
     // Remaining abilities are unusable if silenced.
-    for (const auto& power : get_god_powers(you.religion))
+    for (const auto& power : get_god_powers(your_god(second_head)))
     {
         if (god_power_usable(power, ignore_piety, ignore_penance))
         {

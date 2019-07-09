@@ -21,9 +21,11 @@
 #include "item-prop.h"
 #include "items.h"
 #include "item-use.h"
+#include "macro.h"
 #include "makeitem.h"
 #include "message.h"
 #include "notes.h"
+#include "output.h"
 #include "prompt.h"
 #include "religion.h"
 #include "shopping.h"
@@ -34,6 +36,36 @@
 #include "terrain.h"
 #include "unwind.h"
 #include "view.h"
+
+/**
+ * Figure out which head is worshipping. Returns true if it's the second head.
+ */
+bool check_worship_is_second_head()
+{
+    // Which head is worshipping?
+    if (!you.has_mutation(MUT_SECOND_HEAD))
+        return false;
+
+    mprf(MSGCH_PROMPT, "Which head is worshipping? (F)irst or (S)econd?");
+    int keyin;
+    while (true)
+    {
+        while ((keyin = getchm()) == CK_REDRAW)
+            redraw_screen();
+
+        switch (keyin)
+        {
+        case 'f':
+        case 'F':
+            return false;
+        case 's':
+        case 'S':
+            return true;
+        default:
+            mprf(MSGCH_PROMPT, "F or S only, please.");
+        }
+    }
+}
 
 string god_prayer_reaction()
 {
@@ -78,6 +110,7 @@ static god_type _altar_identify_ecumenical_altar()
 
 static bool _pray_ecumenical_altar()
 {
+    bool second_head = check_worship_is_second_head();
     if (yesno("You cannot tell which god this altar belongs to. Convert to "
               "them anyway?", false, 'n'))
     {
@@ -90,7 +123,7 @@ static bool _pray_ecumenical_altar()
                             god_name(altar_god).c_str());
             you.turn_is_over = true;
             if (!you_worship(altar_god))
-                join_religion(altar_god);
+                join_religion(altar_god, second_head);
             else
                 return true;
         }
@@ -125,6 +158,9 @@ void try_god_conversion(god_type god)
         return;
     }
 
+    bool second_head = check_worship_is_second_head();
+    dprf("Head choice: %d", second_head);
+
     if (god == GOD_ECUMENICAL)
     {
         _pray_ecumenical_altar();
@@ -137,7 +173,7 @@ void try_god_conversion(god_type god)
         you.turn_is_over = true;
         // But if we don't convert then god_pitch
         // makes it not take a turn after all.
-        god_pitch(god);
+        god_pitch(god, second_head);
     }
     else
     {

@@ -2009,6 +2009,14 @@ static const mutation_def mut_data[] =
    {"You feel sensitive!", "", ""},
    {"You feel less sensitive!", "", ""},
 },
+
+{ MUT_SECOND_HEAD, 0, 1, mutflag::good, false,
+   "second head",
+
+   {"You have a second head, which can worship a second god.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+}
 };
 
 static const mutation_category_def category_mut_data[] =

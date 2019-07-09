@@ -43,6 +43,7 @@ struct newgame_def
     undead_state_type undead_type;
     int skilled_type;
     bool chaoskin; // Xom acts on you always
+    bool two_heads; // Dual worship
 
     newgame_def();
     void clear_character();
