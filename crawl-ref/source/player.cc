@@ -2986,6 +2986,8 @@ void level_change(bool skip_attribute_increase)
             if (!skip_attribute_increase)
                 species_stat_gain(you.species);
 
+            update_shapeshifter_species();
+
             switch (you.species)
             {
             case SP_NAGA:
@@ -3217,6 +3219,8 @@ void level_change(bool skip_attribute_increase)
         you.max_level++;
         if (you.species == SP_FELID)
             _felid_extra_life();
+        if (you.shapeshifter_species)
+            update_shapeshifter_species();
     }
 
     you.redraw_title = true;
@@ -3726,6 +3730,12 @@ unsigned int exp_needed(int lev, int exp_apt)
 
     if (exp_apt == -99)
         exp_apt = species_exp_modifier(you.species);
+
+    // For shapeshifters, use a fixed XP aptitude to prevent funny business
+    // around XL thresholds (eg levelling up and then shifting to a species with
+    // a lower XP aptitude, then immediately levelling down again).
+    if (you.shapeshifter_species)
+        exp_apt = 0;
 
     return (unsigned int) ((level - 1) * apt_to_factor(exp_apt - 1));
 }
@@ -6653,6 +6663,17 @@ undead_state_type player::undead_state(bool temp) const
 {
     if (temp && you.form == transformation::lich)
         return US_UNDEAD;
+
+    // Shapeshifters use the species type, if it's special.
+    if (you.shapeshifter_species
+        && (species_undead_type(you.species) != US_ALIVE
+            // ugh, hardcoded
+            || you.species == SP_GARGOYLE)
+       )
+    {
+        return species_undead_type(you.species);
+    }
+
     return you.undead_modifier;
 }
 

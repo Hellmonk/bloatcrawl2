@@ -1238,10 +1238,12 @@ static void _redraw_title()
 #endif
 
     // Line 2:
-    // [Zombie|Vampire] Minotaur [Mummy] [of God] [Piety]
+    // [Zombie|Vampire] Minotaur[-shaped Shapeshifter] [Mummy] [of God] [Piety]
     textcolour(YELLOW);
     CGOTOXY(1, 2, GOTO_STAT);
     string species = species_name(you.species);
+    if (you.shapeshifter_species && you.species != SP_SHAPESHIFTER)
+        species = make_stringf("%s-shaped Shapeshifter", species.c_str());
     const auto undead = you.undead_state();
     if (undead == US_UNDEAD)
         species = make_stringf("%s Mummy", species.c_str());
@@ -2397,7 +2399,9 @@ static vector<formatted_string> _get_overview_stats()
     cols.add_formatted(3, entry.to_colour_string(), false);
     entry.clear();
 
-    if (you.species == SP_FELID)
+    if (you.species == SP_FELID
+        // Shapeshifters can get an extra life when levelling up in Felid form!
+        || (you.shapeshifter_species && (you.lives > 0 || you.deaths > 0)))
     {
         entry.textcolour(HUD_CAPTION_COLOUR);
         entry.cprintf("Lives:  ");

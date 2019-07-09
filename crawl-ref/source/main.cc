@@ -2281,6 +2281,9 @@ void world_reacts()
     if (!crawl_state.game_is_arena())
         player_reacts_to_monsters();
 
+    if (you.shapeshifter_species && you.species == SP_SHAPESHIFTER)
+        bleed_onto_floor(you.pos(), MONS_PLAYER, 6, false, false);
+
     wu_jian_end_of_turn_effects();
 
     viewwindow();

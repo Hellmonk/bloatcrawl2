@@ -542,6 +542,9 @@ static void _setup_generic(const newgame_def& ng)
     you.chaoskin = ng.chaoskin;
     you.no_locks = ng.no_locks;
 
+    if (ng.species == SP_SHAPESHIFTER)
+        you.shapeshifter_species = true;
+
     species_stat_init(you.species);     // must be down here {dlb}
 
     // Before we get into the inventory init, set light radius based
