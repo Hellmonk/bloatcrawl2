@@ -261,10 +261,17 @@ ifneq (,$(findstring CYGWIN,$(uname_S)))
 endif
 
 ifdef BUILD_ALL
-	BUILD_FREETYPE = YesPlease
+	ifdef TILES
+		BUILD_FREETYPE = YesPlease
+		BUILD_SDL2 = YesPlease
+		BUILD_SDL2IMAGE = YesPlease
+		BUILD_LIBPNG = YesPlease
+	endif
+	ifdef WEBTILES
+		BUILD_LIBPNG = YesPlease
+	endif
+
 	BUILD_PCRE = YesPlease
-	BUILD_SDL2 = YesPlease
-	BUILD_SDL2IMAGE = YesPlease
 	ifdef SOUND
 		ifndef WIN32 
 			BUILD_SDL2MIXER = YesPlease
@@ -272,7 +279,6 @@ ifdef BUILD_ALL
 	endif
 	BUILD_SQLITE = YesPlease
 	BUILD_LUA = YesPlease
-	BUILD_LIBPNG = YesPlease
 	BUILD_ZLIB = YesPlease
 endif
 
@@ -1196,7 +1202,10 @@ TITLEIMGS = denzi_dragon denzi_kitchen_duty denzi_summoner \
             psiweapon_kiku white_noise_entering_the_dungeon \
             white_noise_grabbing_the_orb pooryurik_knight \
             psiweapon_roxanne baconkid_gastronok baconkid_mnoleg \
-            peileppe_bloax_eye baconkid_duvessa_dowan
+            peileppe_bloax_eye baconkid_duvessa_dowan ploomutoo_ijyb \
+	    froggy_thunder_fist_nikola froggy_rune_and_run_failed_on_dis \
+	    froggy_natasha_and_boris froggy_jiyva_felid \
+	    froggy_goodgod_tengu_gold Cws_Minotauros
 
 STATICFILES = $(TILEIMAGEFILES:%=webserver/game_data/static/%.png) \
               webserver/static/stone_soup_icon-32x32.png \

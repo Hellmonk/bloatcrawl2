@@ -23,6 +23,7 @@
 #include "describe.h"
 #include "directn.h"
 #include "dungeon.h"
+#include "english.h"
 #include "enum.h"
 #include "env.h"
 #include "exclude.h"
@@ -49,6 +50,7 @@
 #include "mon-gear.h"
 #include "mon-tentacle.h"
 #include "mon-util.h"
+#include "mutation.h"
 #include "nearby-danger.h"
 #include "notes.h"
 #include "options.h"
@@ -144,12 +146,6 @@ static void _interrupt_butchering(const char* action)
                    return d->is_butcher();
                });
     mprf("You stop %s the corpse%s.", action, multiple_corpses ? "s" : "");
-}
-
-bool BottleBloodDelay::try_interrupt()
-{
-    _interrupt_butchering("bottling blood from");
-    return true;
 }
 
 bool ButcherDelay::try_interrupt()
@@ -263,6 +259,38 @@ bool ShaftSelfDelay::try_interrupt()
 {
     mpr("You stop digging.");
     return true;
+}
+
+bool ExsanguinateDelay::try_interrupt()
+{
+    if (duration > 1 && !was_prompted)
+    {
+        if (!crawl_state.disables[DIS_CONFIRMATIONS]
+            && !yesno("Keep bloodletting?", false, 0, false))
+        {
+            mpr("You stop emptying yourself of blood.");
+            return true;
+        }
+        else
+            was_prompted = true;
+    }
+    return false;
+}
+
+bool RevivifyDelay::try_interrupt()
+{
+    if (duration > 1 && !was_prompted)
+    {
+        if (!crawl_state.disables[DIS_CONFIRMATIONS]
+            && !yesno("Continue your ritual?", false, 0, false))
+        {
+            mpr("You stop revivifying.");
+            return true;
+        }
+        else
+            was_prompted = true;
+    }
+    return false;
 }
 
 void stop_delay(bool stop_stair_travel)
@@ -483,6 +511,16 @@ void BlurryScrollDelay::start()
     mprf(MSGCH_MULTITURN_ACTION, "You begin reading the scroll.");
 }
 
+void ExsanguinateDelay::start()
+{
+    mprf(MSGCH_MULTITURN_ACTION, "You begin bloodletting.");
+}
+
+void RevivifyDelay::start()
+{
+    mprf(MSGCH_MULTITURN_ACTION, "You begin the revivification ritual.");
+}
+
 command_type RunDelay::move_cmd() const
 {
     return _get_running_command();
@@ -599,11 +637,6 @@ static bool _check_corpse_gone(item_def& item, const char* action)
 bool ButcherDelay::invalidated()
 {
     return _check_corpse_gone(corpse, "butcher it");
-}
-
-bool BottleBloodDelay::invalidated()
-{
-    return _check_corpse_gone(corpse, "bottle its blood");
 }
 
 bool MultidropDelay::invalidated()
@@ -866,14 +899,14 @@ void BlurryScrollDelay::finish()
         read_scroll(scroll);
 }
 
-static void _finish_butcher_delay(item_def& corpse, bool bottling)
+static void _finish_butcher_delay(item_def& corpse)
 {
     // We know the item is valid and a real corpse, because invalidated()
     // checked for that.
-    finish_butchering(corpse, bottling);
+    finish_butchering(corpse);
     // Don't waste time picking up chunks if you're already
     // starving. (jpeg)
-    if ((you.hunger_state > HS_STARVING || you.undead_state() == US_SEMI_UNDEAD)
+    if (you.hunger_state > HS_STARVING
         // Only pick up chunks if this is the last delay...
         && (you.delay_queue.size() == 1
         // ...Or, equivalently, if it's the last butcher one.
@@ -886,12 +919,7 @@ static void _finish_butcher_delay(item_def& corpse, bool bottling)
 
 void ButcherDelay::finish()
 {
-    _finish_butcher_delay(corpse, false);
-}
-
-void BottleBloodDelay::finish()
-{
-    _finish_butcher_delay(corpse, true);
+    _finish_butcher_delay(corpse);
 }
 
 void DropItemDelay::finish()
@@ -919,6 +947,25 @@ void AscendingStairsDelay::finish()
 void DescendingStairsDelay::finish()
 {
     down_stairs();
+}
+
+void ExsanguinateDelay::finish()
+{
+    blood_spray(you.pos(), MONS_PLAYER, 10);
+    you.vampire_alive = false;
+    you.redraw_status_lights = true;
+    calc_hp(true);
+    mpr("Now bloodless.");
+    vampire_update_transformations();
+}
+
+void RevivifyDelay::finish()
+{
+    you.vampire_alive = true;
+    you.redraw_status_lights = true;
+    mpr("Now alive.");
+    temp_mutate(MUT_FRAIL, "vampire revification");
+    vampire_update_transformations();
 }
 
 void run_macro(const char *macroname)
@@ -1196,7 +1243,9 @@ static inline bool _monster_warning(activity_interrupt ai,
             god_warning = uppercase_first(god_name(you.religion))
                           + " warns you: "
                           + uppercase_first(mon->pronoun(PRONOUN_SUBJECTIVE))
-                          + " is a foul ";
+                          + " "
+                          + conjugate_verb("are", mon->pronoun_plurality())
+                          + " a foul ";
             if (mon->has_ench(ENCH_GLOWING_SHAPESHIFTER))
                 god_warning += "glowing ";
             god_warning += "shapeshifter.";
@@ -1209,7 +1258,8 @@ static inline bool _monster_warning(activity_interrupt ai,
 
         if (!mweap.empty())
         {
-            text += " " + uppercase_first(mon->pronoun(PRONOUN_SUBJECTIVE)) + " is"
+            text += " " + uppercase_first(mon->pronoun(PRONOUN_SUBJECTIVE))
+                + " " + conjugate_verb("are", mi.pronoun_plurality())
                 + (mweap[0] != ' ' ? " " : "")
                 + mweap + ".";
         }

@@ -61,6 +61,7 @@
 #include "prompt.h"
 #include "religion.h"
 #include "skills.h"
+#include "spl-book.h"
 #include "spl-cast.h"
 #include "spl-clouds.h"
 #include "spl-damage.h"
@@ -311,11 +312,15 @@ static const ability_def Ability_List[] =
       0, 0, 125, 0, {fail_basis::xl, 30, 1}, abflag::breath },
     { ABIL_BREATHE_STEAM, "Breathe Steam",
       0, 0, 75, 0, {fail_basis::xl, 20, 1}, abflag::breath },
-    { ABIL_TRAN_BAT, "Bat Form",
-      2, 0, 0, 0, {fail_basis::xl, 45, 2}, abflag::starve_ok },
-
     { ABIL_BREATHE_ACID, "Breathe Acid",
       0, 0, 125, 0, {fail_basis::xl, 30, 1}, abflag::breath },
+
+    { ABIL_TRAN_BAT, "Bat Form",
+      2, 0, 0, 0, {fail_basis::xl, 45, 2}, abflag::starve_ok },
+    { ABIL_EXSANGUINATE, "Exsanguinate",
+      0, 0, 0, 0, {}, abflag::delay},
+    { ABIL_REVIVIFY, "Revivify",
+      0, 0, 0, 0, {}, abflag::delay},
 
     { ABIL_FLY, "Fly", 3, 0, 100, 0, {fail_basis::xl, 42, 3}, abflag::none },
     { ABIL_STOP_FLYING, "Stop Flying", 0, 0, 0, 0, {}, abflag::starve_ok },
@@ -434,14 +439,12 @@ static const ability_def Ability_List[] =
       {fail_basis::invo, 90, 2, 5}, abflag::hostile },
 
     // Sif Muna
-    { ABIL_SIF_MUNA_DIVINE_ENERGY, "Divine Energy",
-      0, 0, 0, 0, {fail_basis::invo}, abflag::instant | abflag::starve_ok },
-    { ABIL_SIF_MUNA_STOP_DIVINE_ENERGY, "Stop Divine Energy",
-      0, 0, 0, 0, {fail_basis::invo}, abflag::instant | abflag::starve_ok },
-    { ABIL_SIF_MUNA_FORGET_SPELL, "Forget Spell",
-      0, 0, 0, 8, {fail_basis::invo}, abflag::none },
     { ABIL_SIF_MUNA_CHANNEL_ENERGY, "Channel Magic",
       0, 0, 200, 2, {fail_basis::invo, 60, 4, 25}, abflag::none },
+    { ABIL_SIF_MUNA_FORGET_SPELL, "Forget Spell",
+      0, 0, 0, 8, {fail_basis::invo}, abflag::none },
+    { ABIL_SIF_MUNA_DIVINE_EXEGESIS, "Divine Exegesis",
+      0, 0, 0, 12, {fail_basis::invo, 80, 4, 25}, abflag::none },
 
     // Trog
     { ABIL_TROG_BERSERK, "Berserk",
@@ -776,6 +779,12 @@ const string make_cost_description(ability_type ability)
     if (ability == ABIL_HEAL_WOUNDS)
         ret += make_stringf(", Permanent MP (%d left)", get_real_mp(false));
 
+    if (ability == ABIL_TRAN_BAT)
+        ret += ", Stat Drain";
+
+    if (ability == ABIL_REVIVIFY)
+        ret += ", Frailty";
+
     if (abil.hp_cost)
         ret += make_stringf(", %d HP", abil.hp_cost.cost(you.hp_max));
 
@@ -1018,11 +1027,6 @@ ability_type fixup_ability(ability_type ability)
         else
             return ability;
 
-    case ABIL_SIF_MUNA_DIVINE_ENERGY:
-        if (you.attribute[ATTR_DIVINE_ENERGY])
-            return ABIL_SIF_MUNA_STOP_DIVINE_ENERGY;
-        return ability;
-
     case ABIL_ASHENZARI_TRANSFER_KNOWLEDGE:
         if (you.species == SP_GNOLL)
             return ABIL_NON_ABILITY;
@@ -1200,8 +1204,8 @@ void no_ability_msg()
             mpr("You can't untransform!");
         else
         {
-            ASSERT(you.hunger_state > HS_SATIATED);
-            mpr("Sorry, you're too full to transform right now.");
+            ASSERT(you.vampire_alive);
+            mpr("Sorry, you cannot become a bat while alive.");
         }
     }
     else if (you.get_mutation_level(MUT_TENGU_FLIGHT)
@@ -1331,6 +1335,22 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
             if (!quiet)
             {
                 mprf("Turning back right now would cause you to %s!",
+                    env.grid(you.pos()) == DNGN_LAVA ? "burn" : "drown");
+            }
+
+            return false;
+        }
+    }
+    else if ((abil.ability == ABIL_EXSANGUINATE
+              || abil.ability == ABIL_REVIVIFY)
+            && you.form != transformation::none)
+    {
+        if (feat_dangerous_for_form(transformation::none, env.grid(you.pos())))
+        {
+            if (!quiet)
+            {
+                mprf("Becoming %s right now would cause you to %s!",
+                    abil.ability == ABIL_EXSANGUINATE ? "bloodless" : "alive",
                     env.grid(you.pos()) == DNGN_LAVA ? "burn" : "drown");
             }
 
@@ -1541,6 +1561,9 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
             return false;
         }
         return true;
+
+    case ABIL_SIF_MUNA_DIVINE_EXEGESIS:
+        return can_cast_spells();
 
     case ABIL_ASHENZARI_TRANSFER_KNOWLEDGE:
         if (!trainable_skills(true))
@@ -2589,19 +2612,6 @@ static spret _do_ability(const ability_def& abil, bool fail)
                          &you);
         break;
 
-    case ABIL_SIF_MUNA_DIVINE_ENERGY:
-        simple_god_message(" will now grant you divine energy when your "
-                           "reserves of magic are depleted.");
-        mpr("You will briefly lose access to your magic after casting a "
-            "spell in this manner.");
-        you.attribute[ATTR_DIVINE_ENERGY] = 1;
-        break;
-
-    case ABIL_SIF_MUNA_STOP_DIVINE_ENERGY:
-        simple_god_message(" stops granting you divine energy.");
-        you.attribute[ATTR_DIVINE_ENERGY] = 0;
-        break;
-
     case ABIL_SIF_MUNA_FORGET_SPELL:
         fail_check();
         if (cast_selective_amnesia() <= 0)
@@ -2616,6 +2626,12 @@ static spret _do_ability(const ability_def& abil, bool fail)
         fail_check();
         you.increase_duration(DUR_CHANNEL_ENERGY,
             4 + random2avg(you.skill_rdiv(SK_INVOCATIONS, 2, 3), 2), 100);
+        break;
+    }
+
+    case ABIL_SIF_MUNA_DIVINE_EXEGESIS:
+    {
+        return divine_exegesis(fail);
         break;
     }
 
@@ -2830,12 +2846,27 @@ static spret _do_ability(const ability_def& abil, bool fail)
         return fedhas_evolve_flora(fail);
 
     case ABIL_TRAN_BAT:
+    {
         fail_check();
         if (!transform(100, transformation::bat))
         {
             crawl_state.zero_turns_taken();
             return spret::abort;
         }
+        int statslost = 2 + binomial(5, 50);
+        for (int i = 0; i < statslost; ++i)
+            lose_stat(random_choose(STAT_STR, STAT_INT, STAT_DEX), 1);
+        break;
+    }
+
+    case ABIL_EXSANGUINATE:
+        fail_check();
+        start_delay<ExsanguinateDelay>(5);
+        break;
+
+    case ABIL_REVIVIFY:
+        fail_check();
+        start_delay<RevivifyDelay>(5);
         break;
 
     case ABIL_JIYVA_CALL_JELLY:
@@ -3460,11 +3491,16 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
         _add_talent(talents, draconian_breath(you.species), check_confused);
     }
 
-    if (you.undead_state() == US_SEMI_UNDEAD && you.experience_level >= 3
-        && you.hunger_state <= HS_SATIATED
-        && you.form != transformation::bat)
+    if (you.undead_state() == US_SEMI_UNDEAD)
     {
-        _add_talent(talents, ABIL_TRAN_BAT, check_confused);
+        if (!you.vampire_alive)
+        {
+            if (you.experience_level >= 3 && you.form != transformation::bat)
+                _add_talent(talents, ABIL_TRAN_BAT, check_confused);
+            _add_talent(talents, ABIL_REVIVIFY, check_confused);
+        }
+        else
+            _add_talent(talents, ABIL_EXSANGUINATE, check_confused);
     }
 
     if (you.racial_permanent_flight() && !you.attribute[ATTR_PERM_FLIGHT])

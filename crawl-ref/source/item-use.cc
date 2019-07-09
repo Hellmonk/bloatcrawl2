@@ -2037,31 +2037,9 @@ void prompt_inscribe_item()
     inscribe_item(you.inv[item_slot]);
 }
 
-static bool _check_blood_corpses_on_ground()
-{
-    for (stack_iterator si(you.pos(), true); si; ++si)
-    {
-        if (si->is_type(OBJ_CORPSES, CORPSE_BODY)
-            && mons_has_blood(si->mon_type))
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-static void _vampire_corpse_help()
-{
-    if (you.undead_state() != US_SEMI_UNDEAD)
-        return;
-
-    if (_check_blood_corpses_on_ground())
-        mpr("Use <w>e</w> to drain blood from corpses.");
-}
-
 void drink(item_def* potion)
 {
-    if (you_foodless())
+    if (you_foodless() && you.undead_state() != US_SEMI_UNDEAD)
     {
         mpr("You can't drink.");
         return;
@@ -2084,10 +2062,7 @@ void drink(item_def* potion)
         potion = use_an_item(OBJ_POTIONS, OPER_QUAFF, "Drink which item?");
 
         if (!potion)
-        {
-            _vampire_corpse_help();
             return;
-        }
     }
 
     if (potion->base_type != OBJ_POTIONS)
@@ -2104,9 +2079,12 @@ void drink(item_def* potion)
         return;
     }
 
-    string prompt = make_stringf("Really quaff the %s?",
-                                 potion->name(DESC_DBNAME).c_str());
-    if (alreadyknown && is_dangerous_item(*potion, true)
+    bool penance = god_hates_item(*potion);
+    string prompt = make_stringf("Really quaff the %s?%s",
+                                 potion->name(DESC_DBNAME).c_str(),
+                                 penance ? " This action would place"
+                                           " you under penance!" : "");
+    if (alreadyknown && (is_dangerous_item(*potion, true) || penance)
         && Options.bad_item_prompt
         && !yesno(prompt.c_str(), false, 'n'))
     {
@@ -2135,11 +2113,6 @@ void drink(item_def* potion)
         // Xom loves it when you drink an unknown potion and there is
         // a dangerous monster nearby...
         xom_is_stimulated(200);
-    }
-    if (is_blood_potion(*potion))
-    {
-        // Always drink oldest potion.
-        remove_oldest_perishable_item(*potion);
     }
 
     // We'll need this later, after destroying the item.
@@ -3205,10 +3178,11 @@ void read_scroll(item_def& scroll)
             {
                 aborted = cast_selective_amnesia() == -1;
                 done = !aborted
-                           || alreadyknown
-                           || crawl_state.seen_hups
-                           || yesno("Really abort (and waste the scroll)?", false, 0);
-                cancel_scroll = aborted && !alreadyknown;
+                       || alreadyknown
+                       || crawl_state.seen_hups
+                       || yesno("Really abort (and waste the scroll)?",
+                                false, 0);
+                cancel_scroll = aborted && alreadyknown;
             } while (!done);
             if (aborted)
                 canned_msg(MSG_OK);
@@ -3408,13 +3382,6 @@ void tile_item_use(int idx)
                 wear_armour(idx);
             return;
 
-        case OBJ_CORPSES:
-            if (you.undead_state() != US_SEMI_UNDEAD
-                || item.sub_type == CORPSE_SKELETON)
-            {
-                break;
-            }
-            // intentional fall-through for Vampires
         case OBJ_FOOD:
             if (check_warning_inscriptions(item, OPER_EAT))
                 eat_food(idx);

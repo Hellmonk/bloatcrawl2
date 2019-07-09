@@ -661,7 +661,7 @@ public:
 
     bool effect(bool was_known = true, int pow = 40, bool=true) const override
     {
-        if (you.undead_state() == US_SEMI_UNDEAD && you.hunger_state < HS_SATIATED)
+        if (you.undead_state() == US_SEMI_UNDEAD && !you.vampire_alive)
         {
             mpr("You feel slightly irritated.");
             return false;

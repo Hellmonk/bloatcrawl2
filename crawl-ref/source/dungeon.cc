@@ -27,6 +27,7 @@
 #include "chardump.h"
 #include "cloud.h"
 #include "coordit.h"
+#include "describe.h"
 #include "directn.h"
 #include "dbg-maps.h"
 #include "dbg-scan.h"
@@ -49,6 +50,7 @@
 #include "libutil.h"
 #include "mapmark.h"
 #include "maps.h"
+#include "message.h"
 #include "mon-death.h"
 #include "mon-pick.h"
 #include "mon-place.h"
@@ -258,6 +260,14 @@ bool builder(bool enable_random_maps)
 
     unwind_bool levelgen(crawl_state.generating_level, true);
     rng_generator levelgen_rng(you.where_are_you);
+
+#ifdef DEBUG_DIAGNOSTICS // no point in enabling unless dprf works
+    CrawlHashTable &debug_logs = you.props["debug_builder_logs"].get_table();
+    string &cur_level_log = debug_logs[level_id::current().describe()].get_string();
+    message_tee debug_messages(cur_level_log);
+    debug_messages.append_line(make_stringf("Builder log for %s:",
+        level_id::current().describe().c_str()));
+#endif
 
     // N tries to build the level, after which we bail with a capital B.
     int tries = 50;
@@ -683,7 +693,7 @@ static void _set_grd(const coord_def &c, dungeon_feature_type feat)
     grd(c) = feat;
 }
 
-static void _dgn_register_vault(const string &name, const set<string> &tags)
+static void _dgn_register_vault(const string &name, const unordered_set<string> &tags)
 {
     if (!tags.count("allow_dup"))
         you.uniq_map_names.insert(name);
@@ -691,7 +701,10 @@ static void _dgn_register_vault(const string &name, const set<string> &tags)
     if (tags.count("luniq"))
         env.level_uniq_maps.insert(name);
 
-    for (const string &tag : tags)
+    vector<string> sorted_tags(tags.begin(), tags.end());
+    sort(sorted_tags.begin(), sorted_tags.end());
+
+    for (const string &tag : sorted_tags)
     {
         if (starts_with(tag, "uniq_"))
             you.uniq_map_tags.insert(tag);
@@ -702,7 +715,7 @@ static void _dgn_register_vault(const string &name, const set<string> &tags)
 
 static void _dgn_register_vault(const map_def &map)
 {
-    _dgn_register_vault(map.name, map.get_tags());
+    _dgn_register_vault(map.name, map.get_tags_unsorted());
 }
 
 static void _dgn_register_vault(const string &name, string &spaced_tags)
@@ -715,7 +728,7 @@ static void _dgn_unregister_vault(const map_def &map)
     you.uniq_map_names.erase(map.name);
     env.level_uniq_maps.erase(map.name);
 
-    for (const string &tag : map.get_tags())
+    for (const string &tag : map.get_tags_unsorted())
     {
         if (starts_with(tag, "uniq_"))
             you.uniq_map_tags.erase(tag);
@@ -1064,9 +1077,7 @@ dgn_register_place(const vault_placement &place, bool register_vault)
     }
 
     // Find tags matching properties.
-    set<string> tags = place.map.get_tags();
-
-    for (const auto &tag : tags)
+    for (const auto &tag : place.map.get_tags_unsorted())
     {
         const feature_property_type prop = str_to_fprop(tag);
         if (prop == FPROP_NONE)
@@ -1137,7 +1148,7 @@ dgn_register_place(const vault_placement &place, bool register_vault)
     vault_placement *new_vault_place = new vault_placement(place);
     env.level_vaults.emplace_back(new_vault_place);
     if (register_vault)
-        _remember_vault_placement(place, place.map.has_tag("extra"));
+        _remember_vault_placement(place, place.map.is_extra_vault());
     return new_vault_place;
 }
 
@@ -1154,7 +1165,7 @@ static bool _dgn_ensure_vault_placed(bool vault_success,
 static bool _ensure_vault_placed_ex(bool vault_success, const map_def *vault)
 {
     return _dgn_ensure_vault_placed(vault_success,
-                                    (!vault->has_tag("extra")
+                                    (!vault->is_extra_vault()
                                      && vault->orient == MAP_ENCOMPASS));
 }
 
@@ -2566,9 +2577,9 @@ static bool _vault_can_use_layout(const map_def *vault, const map_def *layout)
 
     ASSERT(layout->has_tag_prefix("layout_type_"));
 
-    const set<string> tags = layout->get_tags();
-
-    for (auto &tag : tags)
+    // in principle, tag order can matter here, even though that is probably
+    // a vault designer error
+    for (const auto &tag : layout->get_tags())
     {
         if (starts_with(tag, "layout_type_"))
         {
@@ -3159,7 +3170,7 @@ static void _place_minivaults()
             if (vault)
                 _build_secondary_vault(vault);
         } // if ALL maps eligible are "extra" but fail to place, we'd be screwed
-        while (vault && vault->has_tag("extra") && tries++ < 10000);
+        while (vault && vault->is_extra_vault() && tries++ < 10000);
     }
 }
 
@@ -3247,7 +3258,7 @@ static void _place_traps()
         grd(ts.pos) = ts.category();
         ts.prepare_ammo();
         env.trap[ts.pos] = ts;
-        dprf("placed a trap");
+        dprf("placed a %s trap", trap_name(type).c_str());
     }
 
     if (player_in_branch(BRANCH_SPIDER))
@@ -3539,7 +3550,7 @@ static void _place_extra_vaults()
             if (_build_secondary_vault(vault))
             {
                 const map_def &map(*vault);
-                if (map.has_tag("extra"))
+                if (map.is_extra_vault())
                     continue;
                 use_random_maps = false;
             }
@@ -5658,12 +5669,6 @@ static void _stock_shop_item(int j, shop_type shop_type_,
         object_class_type basetype = item_in_shop(shop_type_);
         int subtype = OBJ_RANDOM;
 
-        if (spec.gozag && shop_type_ == SHOP_FOOD && you.undead_state() == US_SEMI_UNDEAD)
-        {
-            basetype = OBJ_POTIONS;
-            subtype = POT_BLOOD;
-        }
-
         if (!spec.items.empty() && !spec.use_all)
         {
             // shop spec lists a random set of items; choose one
@@ -5718,12 +5723,6 @@ static void _stock_shop_item(int j, shop_type shop_type_,
     // (unless it's a randbook)
     if (shop_type_ == SHOP_BOOK && !is_artefact(item))
         stocked[item.sub_type]++;
-
-    if (spec.gozag && shop_type_ == SHOP_FOOD && you.undead_state() == US_SEMI_UNDEAD)
-    {
-        ASSERT(is_blood_potion(item));
-        item.quantity += random2(3); // blood for the vampire friends :)
-    }
 
     // Identify the item, unless we don't do that.
     if (!_shop_sells_antiques(shop_type_))
@@ -5943,7 +5942,7 @@ static void _place_specific_trap(const coord_def& where, trap_spec* spec,
         }
         while (!is_regular_trap(spec_type)
 #if TAG_MAJOR_VERSION == 34
-               || spec_type == TRAP_DART || spec_type == TRAP_GAS
+               || spec_type == TRAP_NEEDLE || spec_type == TRAP_GAS
                || spec_type == TRAP_SHADOW || spec_type == TRAP_SHADOW_DORMANT
 #endif
                || !is_valid_shaft_level() && spec_type == TRAP_SHAFT);
@@ -5955,6 +5954,7 @@ static void _place_specific_trap(const coord_def& where, trap_spec* spec,
     grd(where) = trap_category(spec_type);
     t.prepare_ammo(charges);
     env.trap[where] = t;
+    dprf("placed a %s trap", trap_name(spec_type).c_str());
 }
 
 /**

@@ -702,9 +702,11 @@ static void _hydra_consider_devouring(monster &defender)
     if (defender.is_shapeshifter())
     {
         // handle this carefully, so the player knows what's going on
-        mprf("You spit out %s as %s twists & changes in your mouth!",
+        mprf("You spit out %s as %s %s & %s in your mouth!",
              defender.name(DESC_THE).c_str(),
-             defender.pronoun(PRONOUN_SUBJECTIVE).c_str());
+             defender.pronoun(PRONOUN_SUBJECTIVE).c_str(),
+             conjugate_verb("twist", defender.pronoun_plurality()).c_str(),
+             conjugate_verb("change", defender.pronoun_plurality()).c_str());
         return;
     }
 
@@ -3651,17 +3653,13 @@ bool melee_attack::_player_vampire_draws_blood(const monster* mon, const int dam
         }
     }
 
-    // Gain nutrition.
-    if (you.hunger_state != HS_ENGORGED)
-        lessen_hunger(30 + random2avg(59, 2), false);
-
     return true;
 }
 
 bool melee_attack::_vamp_wants_blood_from_monster(const monster* mon)
 {
     return you.undead_state() == US_SEMI_UNDEAD
-           && you.hunger_state < HS_SATIATED
+           && !you.vampire_alive
            && actor_is_susceptible_to_vampirism(*mon)
            && mons_has_blood(mon->type);
 }

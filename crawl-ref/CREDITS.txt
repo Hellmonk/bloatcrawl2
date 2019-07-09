@@ -189,6 +189,7 @@
     Vesa Kivimäki
     Daniel Klein
     Jon Knapp
+    Quinten Konyn
     Ilkka Koskela
     infiniplex
     Vambola Kotkas
@@ -216,6 +217,7 @@
     Paul Maloney
     Pablo Mansanet
     Wille Mäntylä
+    Gabriel Marks
     Jean Martel
     James 'Eronarn' Meickle
     Jacob Meigs
@@ -259,6 +261,7 @@
     Iago Porto
     psywombats
     pubby
+    Ashley Elizabeth Raine
     Edward Randtke
     Derek Ray
     RealzHS

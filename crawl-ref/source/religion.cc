@@ -179,17 +179,13 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Sif Muna
-    { { 1, ABIL_SIF_MUNA_DIVINE_ENERGY,
-           "request divine energy to cast spells with insufficient magic",
-           "request divine energy" },
-      { 2, "Sif Muna is now protecting you from the effects of miscast magic.",
-           "Sif Muna will no longer protect you from the effects of miscast magic.",
-           "Sif Muna protects you from the effects of miscast magic." },
-      { 3, ABIL_SIF_MUNA_CHANNEL_ENERGY,
+    { { 1, ABIL_SIF_MUNA_CHANNEL_ENERGY,
            "call upon Sif Muna for magical energy" },
-      { 4, ABIL_SIF_MUNA_FORGET_SPELL,
+      { 3, ABIL_SIF_MUNA_FORGET_SPELL,
            "freely open your mind to new spells",
            "forget spells at will" },
+      { 4, ABIL_SIF_MUNA_DIVINE_EXEGESIS,
+           "call upon Sif Muna to cast any spell from your library" },
       { 5, "Sif Muna will now gift you books as you gain piety.",
            "Sif Muna will no longer gift you books.",
            "Sif Muna will gift you books as you gain piety." },
@@ -853,8 +849,10 @@ static void _inc_penance(god_type god, int val)
         {
             if (you.duration[DUR_CHANNEL_ENERGY])
                 you.duration[DUR_CHANNEL_ENERGY] = 0;
+#if TAG_MAJOR_VERSION == 34
             if (you.attribute[ATTR_DIVINE_ENERGY])
                 you.attribute[ATTR_DIVINE_ENERGY] = 0;
+#endif
         }
 
         if (you_worship(god))
@@ -1507,8 +1505,8 @@ static bool _gift_sif_kiku_gift(bool forced)
             gift = BOOK_DEATH;
         }
     }
-    else if (forced || you.piety >= piety_breakpoint(4)
-                       && random2(you.piety) > 100)
+    else if (forced
+             || you.piety >= piety_breakpoint(4) && random2(you.piety) > 100)
     {
         // Sif Muna special: Keep quiet if acquirement fails
         // because the player already has seen all spells.
@@ -2572,9 +2570,11 @@ void lose_piety(int pgn)
                             end(you.ability_letter_table),
                             ABIL_YRED_ANIMATE_DEAD, ABIL_YRED_ANIMATE_REMAINS);
                 }
+#if TAG_MAJOR_VERSION == 34
                 // Deactivate the toggle
                 if (power.abil == ABIL_SIF_MUNA_DIVINE_ENERGY)
                     you.attribute[ATTR_DIVINE_ENERGY] = 0;
+#endif
             }
         }
 #ifdef USE_TILE_LOCAL
@@ -2843,8 +2843,10 @@ void excommunication(bool voluntary, god_type new_god)
     case GOD_SIF_MUNA:
         if (you.duration[DUR_CHANNEL_ENERGY])
             you.duration[DUR_CHANNEL_ENERGY] = 0;
+#if TAG_MAJOR_VERSION == 34
         if (you.attribute[ATTR_DIVINE_ENERGY])
             you.attribute[ATTR_DIVINE_ENERGY] = 0;
+#endif
         break;
 
     case GOD_NEMELEX_XOBEH:
@@ -3127,7 +3129,7 @@ bool player_can_join_god(god_type which_god)
         return false;
 
     // Fedhas hates undead, but will accept demonspawn.
-    if (which_god == GOD_FEDHAS && you.holiness() & MH_UNDEAD)
+    if (which_god == GOD_FEDHAS && you.undead_state())
         return false;
 
     if (which_god == GOD_GOZAG && you.gold < gozag_service_fee())
@@ -3406,12 +3408,12 @@ static void _set_initial_god_piety()
         // monk bonus...
         you.props[RU_SACRIFICE_PROGRESS_KEY] = 0;
         // offer the first sacrifice faster than normal
-    {
-        int delay = 50;
-        if (crawl_state.game_is_sprint())
-            delay /= SPRINT_MULTIPLIER;
-        you.props[RU_SACRIFICE_DELAY_KEY] = delay;
-    }
+        {
+            int delay = 50;
+            if (crawl_state.game_is_sprint())
+                delay /= SPRINT_MULTIPLIER;
+            you.props[RU_SACRIFICE_DELAY_KEY] = delay;
+        }
         you.props[RU_SACRIFICE_PENALTY_KEY] = 0;
         break;
 
@@ -3653,12 +3655,10 @@ void join_religion(god_type which_god)
     mark_milestone("god.worship", "became a worshipper of "
                    + god_name(you.religion) + ".");
     take_note(Note(NOTE_GET_GOD, you.religion));
-    const bool returning = you.worshipped[which_god]
-                           || is_good_god(which_god)
-                              && you.species == SP_BARACHI;
-    simple_god_message(
-        make_stringf(" welcomes you%s!",
-                     returning ? " back" : "").c_str());
+
+    simple_god_message(make_stringf(" welcomes you%s!",
+                                    you.worshipped[which_god] ? " back"
+                                                              : "").c_str());
     // included in default force_more_message
 #ifdef DGL_WHEREIS
     whereis_record();
@@ -4118,6 +4118,7 @@ void handle_god_time(int /*time_delta*/)
 #endif
         case GOD_JIYVA:
         case GOD_WU_JIAN:
+        case GOD_SIF_MUNA:
             if (one_chance_in(17))
                 lose_piety(1);
             break;
@@ -4127,7 +4128,6 @@ void handle_god_time(int /*time_delta*/)
         case GOD_HEPLIAKLQANA:
         case GOD_FEDHAS:
         case GOD_CHEIBRIADOS:
-        case GOD_SIF_MUNA:
         case GOD_SHINING_ONE:
         case GOD_NEMELEX_XOBEH:
             if (one_chance_in(35))

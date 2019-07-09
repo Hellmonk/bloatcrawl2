@@ -143,7 +143,7 @@ Oh my GAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHD!
 %%%%
 Vine Stalker
 
-Frail symbionts, Vine Stalkers cannot regain health from devices or potions.
+Frail symbionts, Vine Stalkers cannot regain health from potions.
 Their magical reserves absorb damage, and they pack a magic-restoring bite.
 %%%%
 Profound Elf
