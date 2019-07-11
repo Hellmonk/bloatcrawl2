@@ -1947,7 +1947,7 @@ vector<monster_info_func> init_monster_info_funcs() {
                 }
                 return false;
             }});
-    toret.push_back({"launcher","launcher", 
+    toret.push_back({"launcher","launchers", 
                 [](const monster_info &mi, bool newconditions) {
                 if (mi.itemuse() >= MONUSE_STARTING_EQUIPMENT) {
                     const item_def* weapon = mi.inv[MSLOT_WEAPON].get();
