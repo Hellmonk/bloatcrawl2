@@ -131,6 +131,11 @@ Summoner
 Summoners are able to cast Summon Small Mammal from the start, and begin with
 other Summonings spells in their library.
 %%%%
+Torpor Knight
+
+Torpor Knights follow Cheibriados and wear heavy, ponderous armour to gain
+their god's favour more quickly.
+%%%%
 Transmuter
 
 Transmuters learn spells to shift their form, as well as to turn sticks into
