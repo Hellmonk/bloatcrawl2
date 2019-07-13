@@ -50,6 +50,7 @@ enum job_type
     JOB_CAVEPERSON,
     JOB_BOUND,
     JOB_TORPOR_KNIGHT,
+    JOB_PALADIN,
     NUM_JOBS,                          // always after the last job
 
     JOB_UNKNOWN = 100,

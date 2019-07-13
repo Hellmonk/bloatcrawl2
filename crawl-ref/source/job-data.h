@@ -283,6 +283,16 @@ static const map<job_type, job_def> job_data =
       { SK_STEALTH, 2 }, },
 } },
 
+{ JOB_PALADIN, {
+    "Pa", "Paladin",
+    4, 4, 4,
+    { SP_OGRE, SP_MINOTAUR },
+    { "chain mail" },
+    WCHOICE_PLAIN,
+    { { SK_FIGHTING, 3 }, { SK_ARMOUR, 1 }, { SK_DODGING, 1 }, 
+      { SK_WEAPON, 2 }, { SK_INVOCATIONS, 2 }, },
+} },
+
 { JOB_PHILOSOPHER, {
     "Ph", "Philosopher",
     0, 12, 0,

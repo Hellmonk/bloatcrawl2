@@ -316,6 +316,16 @@ static void _give_items_skills(const newgame_def& ng)
         else
             you.skills[SK_ARMOUR]++;
         break;
+        
+    case JOB_PALADIN:
+        you.religion = GOD_SHINING_ONE;
+        you.piety = 35;
+
+        if (species_apt(SK_ARMOUR) < species_apt(SK_DODGING))
+            you.skills[SK_DODGING]++;
+        else
+            you.skills[SK_ARMOUR]++;
+        break;
 		
 
     case JOB_UNDERSTUDY:
@@ -347,6 +357,8 @@ static void _give_items_skills(const newgame_def& ng)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +1);
     else if (you.char_class == JOB_CHAOS_KNIGHT)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, 0, SPWPN_CHAOS);
+    else if (you.char_class == JOB_PALADIN)
+        newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +1, SPWPN_HOLY_WRATH);
     else if (you.char_class == JOB_BOUND)
     {
         item_def* wpn = newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +2);
