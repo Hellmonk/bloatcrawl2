@@ -21,6 +21,7 @@
 #include "coordit.h"
 #include "dactions.h"
 #include "delay.h"
+#include "describe.h"
 #include "english.h"
 #include "env.h"
 #include "god-abil.h"
@@ -43,6 +44,7 @@
 #include "state.h"
 #include "stringutil.h"
 #include "transform.h"
+#include "undead-mutations.h"
 #include "unicode.h"
 #include "viewchar.h"
 #include "xom.h"
@@ -645,11 +647,12 @@ string describe_mutations(bool drop_title)
 
     if (you.undead_state() == US_SEMI_UNDEAD)
     {
-        if (you.hunger_state <= HS_STARVING)
-            result += "<green>You do not heal naturally.</green>\n";
-        else if (you.hunger_state < HS_SATIATED)
-            result += "<green>You heal slowly.</green>\n";
-        else if (you.hunger_state >= HS_FULL)
+        if (!you.vampire_alive)
+        {
+            result += "<green>You do not regenerate when monsters are visible.</green>\n";
+            result += "<green>You are frail without blood (-20% HP).</green>\n";
+        }
+        else
             result += "<green>Your natural rate of healing is unusually fast.</green>\n";
     }
 
@@ -674,15 +677,36 @@ string describe_mutations(bool drop_title)
     {
         switch (you.body_size(PSIZE_TORSO, true))
         {
+        case SIZE_TINY:
+            result += "You are tiny.\n"
+                      "You have problems with many larger weapons.\n"
+                      "You are too small for most types of armour.\n";
+            break;
         case SIZE_LITTLE:
-            result += "You are very small and have problems with some larger weapons.\n"
+            result += "You are very small.\n"
+                      "You have problems with some larger weapons.\n"
                       "You are too small for most types of armour.\n";
             break;
         case SIZE_SMALL:
-            result += "You are small and have problems with some larger weapons.\n";
+            result += "You are small.\n"
+                      "You have problems with some larger weapons.\n";
             break;
         case SIZE_LARGE:
-            result += "You are too large for most types of armour.\n";
+            result += "You are large.\n"
+                      "You are too large for most types of armour.\n";
+            break;
+        case SIZE_BIG:
+            result += "You are very large.\n"
+                      "You can wield many weapons one-handed.\n"
+                      "You are too large for most types of armour.\n"
+                      "You can walk steadily in shallow water.\n";
+            break;
+        case SIZE_GIANT:
+            result += "You are giant.\n"
+                      "You can wield all weapons one-handed.\n"
+                      "You are too large for all types of armour.\n"
+                      "You can walk steadily in deep water.\n"
+                      "You are immune to suffocation.\n";
             break;
         default:
             break;
@@ -697,29 +721,17 @@ string describe_mutations(bool drop_title)
     if (player_res_poison(false, false, false) == 3)
         result += "You are immune to poison.\n";
 
+    // Undead mutations
     const auto undead_state = you.undead_state();
-    switch (undead_state)
+    for (auto entry : undead_mutations)
     {
-        case US_SEMI_UNDEAD:
-            result += "You can survive without breathing.\n";
-            // Fall through
-        case US_UNDEAD:
-        case US_HUNGRY_DEAD:
-            result += "You are immune to negative energy. (rN+++)\n";
-            result += "You are immune to unholy pain and torment.\n";
-            break;
-        case US_ALIVE:
-            // nothing
-            break;
+        if ((entry.mummy && undead_state == US_UNDEAD)
+            || (entry.zombie && undead_state == US_HUNGRY_DEAD)
+            || (entry.vampire && undead_state == US_SEMI_UNDEAD))
+        {
+            result += mutation_desc(entry.mutation, entry.level) + "\n";
+        }
     }
-    if (undead_state == US_HUNGRY_DEAD)
-    {
-        result += "You hunger for flesh and rot when hungry.\n";
-        result += "You do not regenerate when monsters are visible.\n";
-    }
-    if (undead_state == US_SEMI_UNDEAD)
-        result += "You can transition from alive to undead at will.\n";
-
     result += "</lightblue>";
 
     // First add (non-removable) inborn abilities and demon powers.
@@ -792,23 +804,7 @@ static formatted_string _vampire_Ascreen_footer(bool first_page)
 
 static int _vampire_bloodlessness()
 {
-    switch (you.hunger_state)
-    {
-    case HS_ENGORGED:
-    case HS_VERY_FULL:
-    case HS_FULL:
-        return 1;
-    case HS_SATIATED:
-        return 2;
-    case HS_HUNGRY:
-    case HS_VERY_HUNGRY:
-    case HS_NEAR_STARVING:
-        return 3;
-    case HS_STARVING:
-    case HS_FAINTING:
-        return 4;
-    }
-    die("bad hunger state %d", you.hunger_state);
+    return you.vampire_alive ? 1 : 2;
 }
 
 static string _display_vampire_attributes()
@@ -817,42 +813,40 @@ static string _display_vampire_attributes()
 
     string result;
 
-    const int lines = 12;
-    string column[lines][5] =
+    const int lines = 11;
+    string column[lines][3] =
     {
-        {"                     ", "<green>Full</green>       ", "Satiated   ", "<yellow>Thirsty</yellow>    ", "<lightred>Bloodless</lightred>"},
-                                 //Full       Satiated      Thirsty         Bloodless
-        {"Metabolism           ", "fast       ", "normal     ", "slow       ", "none  "},
+        {"                     ", "<green>Alive</green>      ", "<lightred>Bloodless</lightred>"},
+                                 //Full       Bloodless
+        {"Regeneration         ", "fast       ", "none with monsters in sight"},
 
-        {"Regeneration         ", "fast       ", "normal     ", "slow       ", "none  "},
+        {"HP Modifier          ", "none       ", "-20%"},
 
-        {"Stealth boost        ", "none       ", "none       ", "minor      ", "major "},
-
-        {"Hunger costs         ", "full       ", "full       ", "halved     ", "none  "},
+        {"Stealth boost        ", "none       ", "major "},
 
         {"\n<w>Resistances</w>\n"
-         "Poison resistance    ", "           ", "           ", "+          ", "immune"},
+         "Poison resistance    ", "           ", "immune"},
 
-        {"Cold resistance      ", "           ", "           ", "+          ", "++    "},
+        {"Cold resistance      ", "           ", "++    "},
 
-        {"Negative resistance  ", "           ", " +         ", "++         ", "+++   "},
+        {"Negative resistance  ", "           ", "+++   "},
 
-        {"Rotting resistance   ", "           ", "           ", "+          ", "+     "},
+        {"Rotting resistance   ", "           ", "+     "},
 
-        {"Torment resistance   ", "           ", "           ", "           ", "+     "},
+        {"Torment resistance   ", "           ", "+     "},
 
         {"\n<w>Transformations</w>\n"
-         "Bat form             ", "no         ", "yes        ", "yes        ", "yes   "},
+         "Bat form             ", "no         ", "yes   "},
 
         {"Other forms and \n"
-         "berserk              ", "yes        ", "yes        ", "no         ", "no    "}
+         "berserk              ", "yes        ", "no    "}
     };
 
     int current = _vampire_bloodlessness();
 
     for (int y = 0; y < lines; y++)  // lines   (properties)
     {
-        for (int x = 0; x < 5; x++)  // columns (hunger states)
+        for (int x = 0; x < 3; x++)  // columns (hunger states)
         {
             if (y > 0 && x == current)
                 result += "<w>";
@@ -1782,6 +1776,9 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
         }
     }
 
+    if (you.get_mutation_level(MUT_PROTEAN_BODY))
+        calc_hp(true, false);
+
 #ifdef USE_TILE_LOCAL
     if (your_talents(false).size() != old_talents)
     {
@@ -1900,6 +1897,9 @@ static bool _delete_single_mutation_level(mutation_type mutat,
     }
     else
         take_note(Note(NOTE_LOSE_MUTATION, mutat, you.mutation[mutat], reason));
+
+    if (you.get_mutation_level(MUT_PROTEAN_BODY))
+        calc_hp(true, false);
 
     if (you.hp <= 0)
     {
@@ -2250,6 +2250,18 @@ string mutation_desc(mutation_type mut, int level, bool colour,
     {
         ostringstream ostr;
         ostr << mdef.have[level - 1] << sanguine_armour_bonus() / 100 << ")";
+        result = ostr.str();
+    }
+    else if (mut == MUT_PROTEAN_BODY)
+    {
+        const int hp = protean_hp_bonus();
+        const string size = get_size_adj(species_size(you.species, PSIZE_BODY));
+        ostringstream ostr;
+        ostr << mdef.have[level - 1]
+            << "+" << hp << "% HP).";
+        ostr << "\nYour health pool defines your size (" << size << ").";
+        ostr << "\nYour protean flesh cannot be transmuted.";
+        ostr << "\nYour protean flesh is especially vulnerable to rot.";
         result = ostr.str();
     }
     else if (!ignore_player && you.species == SP_FELID && mut == MUT_CLAWS)

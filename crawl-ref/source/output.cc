@@ -49,6 +49,7 @@
 #include "throw.h"
 #include "tiles-build-specific.h"
 #include "transform.h"
+#include "undead-mutations.h"
 #include "viewchar.h"
 #include "view.h"
 #include "xom.h"
@@ -1240,25 +1241,16 @@ static void _redraw_title()
     // [Zombie|Vampire] Minotaur [Mummy] [of God] [Piety]
     textcolour(YELLOW);
     CGOTOXY(1, 2, GOTO_STAT);
-    const string species = species_name(you.species);
-    switch (you.undead_state())
-    {
-        case US_UNDEAD:
-            NOWRAP_EOL_CPRINTF("%s Mummy", species.c_str());
-            break;
-            ;;
-        case US_HUNGRY_DEAD:
-            NOWRAP_EOL_CPRINTF("Zombie %s", species.c_str());
-            break;
-            ;;
-        case US_SEMI_UNDEAD:
-            NOWRAP_EOL_CPRINTF("Vampire %s", species.c_str());
-            break;
-            ;;
-        case US_ALIVE:
-            NOWRAP_EOL_CPRINTF("%s", species.c_str());
-            break;
-    }
+    string species = species_name(you.species);
+    const auto undead = you.undead_state();
+    if (undead == US_UNDEAD)
+        species = make_stringf("%s Mummy", species.c_str());
+    if (undead == US_HUNGRY_DEAD && you.species != SP_MIRROR_EIDOLON) // ugh
+        species = make_stringf("Zombie %s", species.c_str());
+    if (undead == US_SEMI_UNDEAD)
+        species = make_stringf("Vampire %s", species.c_str());
+    NOWRAP_EOL_CPRINTF("%s", species.c_str());
+
     if (you_worship(GOD_NO_GOD))
     {
         if (you.char_class == JOB_MONK && you.species != SP_DEMIGOD
@@ -1288,14 +1280,18 @@ static void _redraw_title()
         const unsigned int textwidth = (unsigned int)(strwidth(species) + strwidth(god) + strwidth(piety) + 1);
         if (textwidth <= WIDTH)
             NOWRAP_EOL_CPRINTF(" %s", piety.c_str());
-        else if (textwidth == (WIDTH + 1))
+        else if (you.species == SP_MOTTLED_DRACONIAN
+                 && textwidth == (WIDTH + 1))
         {
             //mottled draconian of TSO doesn't fit by one symbol,
             //so we remove leading space.
             NOWRAP_EOL_CPRINTF("%s", piety.c_str());
         }
         clear_to_end_of_line();
-        if (you_worship(GOD_GOZAG))
+        // All the extra bloatcrawl species stuff makes this fall off the end.
+        // If that happens, just don't draw it. Gozag worshippers can deal with
+        // it.
+        if (you_worship(GOD_GOZAG) && (textwidth < 35))
         {
             // "Mottled Draconian of Gozag  Gold: 99999" just fits
             _print_stats_gold(textwidth + 2, 2,
@@ -2706,23 +2702,20 @@ string mutation_overview()
     if (have_passive(passive_t::frail) || player_under_penance(GOD_HEPLIAKLQANA))
         mutations.emplace_back("reduced essence");
 
+    // Undead mutations
     const auto undead_state = you.undead_state();
-    switch (undead_state)
+    for (auto entry : undead_mutations)
     {
-        case US_SEMI_UNDEAD:
-            mutations.emplace_back("unbreathing");
-            // Fall through
-        case US_UNDEAD:
-        case US_HUNGRY_DEAD:
-            mutations.emplace_back("negative energy resistance 3");
-            mutations.emplace_back("torment resistance");
-            break;
-        case US_ALIVE:
-            // nothing
-            break;
+        if ((entry.mummy && undead_state == US_UNDEAD)
+            || (entry.zombie && undead_state == US_HUNGRY_DEAD)
+            || (entry.vampire && undead_state == US_SEMI_UNDEAD))
+        {
+            mutations.emplace_back(
+                make_stringf("%s %d",
+                    mutation_name(entry.mutation),
+                    entry.level));
+        }
     }
-    if (undead_state == US_HUNGRY_DEAD)
-        mutations.emplace_back("inhibited regeneration");
 
     string current;
     for (unsigned i = 0; i < NUM_MUTATIONS; ++i)

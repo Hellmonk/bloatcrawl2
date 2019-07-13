@@ -657,13 +657,19 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     choice.chaoskin = false;
     choice.no_locks = false;
 
+    // Non-living or default-undead species cannot choose undead state
+    bool can_choose_undead = ng.species != SP_GARGOYLE
+        && species_undead_type(ng.species) == US_ALIVE;
+    if (!can_choose_undead)
+        choice.undead_type = species_undead_type(ng.species);
+
     auto prompt_ui = make_shared<Text>();
     prompt_ui->on(Widget::slots.event, [&](wm_event ev)  {
         if (ev.type != WME_KEYDOWN)
             return false;
         int key = ev.key.keysym.sym;
 
-        if (key == 'u' || key == 'U')
+        if (can_choose_undead && (key == 'u' || key == 'U'))
         {
             switch (choice.undead_type)
             {
@@ -724,28 +730,31 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     box->add_child(prompt_ui);
 
     // XXX: Is there some way to format these lines with less code?
-    formatted_string undead_choice_str;
-    undead_choice_str.textcolour(WHITE);
-    undead_choice_str.cprintf("\n(U)");
-    undead_choice_str.textcolour(LIGHTGRAY);
-    undead_choice_str.cprintf("ndead status: normal | mummy | zombie | vampire");
-    auto undead_choice = make_shared<ui::Text>(undead_choice_str);
-    box->add_child(undead_choice);
-
+    formatted_string undead_header;
+    undead_header.textcolour(can_choose_undead ? WHITE : DARKGRAY);
+    undead_header.cprintf("\n(U)");
+    undead_header.textcolour(can_choose_undead ? LIGHTGRAY : DARKGRAY);
+    undead_header.cprintf("ndead status");
+    box->add_child(make_shared<ui::Text>(undead_header));
+    const string normal_str = "  Normal.";
+    const string mummy_str = "  Mummy: -2 apts, rF-, rC+, rN+++, Necro enhancer (XL 13 & 26), foodless.";
+    const string zombie_str = "  Zombie: -1 apts, rC+, rN+++, inhibited regen, chunk healing.";
+    const string vampire_str = "  Vampire: batform (XL 3), exsanguinate/revive.";
     formatted_string undead_desc;
-    undead_desc.textcolour(WHITE);
-    undead_desc.cprintf(" Mummy: ");
-    undead_desc.textcolour(LIGHTGRAY);
-    undead_desc.cprintf("-2 apts, rC+, rN+++, rF-, unbreathing, Necro enhancer (XL 13 & 26), foodless.\n");
-    undead_desc.textcolour(WHITE);
-    undead_desc.cprintf(" Zombie: ");
-    undead_desc.textcolour(LIGHTGRAY);
-    undead_desc.cprintf("-1 apts, rC+, rN+++, unbreathing, inhibited regen, chunk healing.\n");
-    undead_desc.textcolour(WHITE);
-    undead_desc.cprintf(" Vampire: ");
-    undead_desc.textcolour(LIGHTGRAY);
-    undead_desc.cprintf("unbreathing, batform (XL 3), blood drinking.\n");
-    box->add_child(make_shared<ui::Text>(undead_desc));
+    undead_desc.textcolour(can_choose_undead ? LIGHTGRAY : DARKGRAY);
+    undead_desc.cprintf(normal_str);
+    undead_desc.cprintf("\n");
+    undead_desc.textcolour(can_choose_undead ? LIGHTGRAY : DARKGRAY);
+    undead_desc.cprintf(mummy_str);
+    undead_desc.cprintf("\n");
+    undead_desc.textcolour(can_choose_undead ? LIGHTGRAY : DARKGRAY);
+    undead_desc.cprintf(zombie_str);
+    undead_desc.cprintf("\n");
+    undead_desc.textcolour(can_choose_undead ? LIGHTGRAY : DARKGRAY);
+    undead_desc.cprintf(vampire_str);
+    undead_desc.cprintf("\n");
+    auto undead_choice = make_shared<ui::Text>(undead_desc);
+    box->add_child(undead_choice);
 
     formatted_string skill_choice_str;
     skill_choice_str.textcolour(WHITE);
@@ -762,7 +771,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     chaoskin_choice_str.cprintf("om's attention: disabled | enabled");
     auto chaoskin_choice = make_shared<ui::Text>(chaoskin_choice_str);
     box->add_child(chaoskin_choice);
-    
+
     formatted_string runelock_choice_str;
     runelock_choice_str.textcolour(WHITE);
     runelock_choice_str.cprintf("\n(R)");
@@ -783,16 +792,16 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
         switch (choice.undead_type)
         {
             case US_ALIVE:
-                undead_choice->set_highlight_pattern("normal", false);
+                undead_choice->set_highlight_pattern(normal_str, false);
                 break;
             case US_UNDEAD:
-                undead_choice->set_highlight_pattern("mummy", false);
+                undead_choice->set_highlight_pattern(mummy_str, false);
                 break;
             case US_HUNGRY_DEAD:
-                undead_choice->set_highlight_pattern("zombie", false);
+                undead_choice->set_highlight_pattern(zombie_str, false);
                 break;
             case US_SEMI_UNDEAD:
-                undead_choice->set_highlight_pattern("vampire", false);
+                undead_choice->set_highlight_pattern(vampire_str, false);
                 break;
         }
         switch (choice.skilled_type)
@@ -1053,8 +1062,8 @@ static void _mark_fully_random(newgame_def& ng, newgame_def& ng_choice,
  */
 static const int COLUMN_WIDTH = 35;
 static const int X_MARGIN = 4;
-static const int CHAR_DESC_START_Y = 16;
-static const int CHAR_DESC_HEIGHT = 3;
+static const int CHAR_DESC_START_Y = 18;
+static const int CHAR_DESC_HEIGHT = 2;
 static const int SPECIAL_KEYS_START_Y = CHAR_DESC_START_Y
                                         + CHAR_DESC_HEIGHT + 1;
 
@@ -2185,6 +2194,8 @@ static weapon_type _starting_weapon_upgrade(weapon_type wp, job_type job,
 {
     const bool fighter = job == JOB_FIGHTER;
     const size_type size = species_size(species, PSIZE_TORSO);
+    const bool small = size <= SIZE_SMALL;
+    const bool tiny = size <= SIZE_TINY;
 
     // TODO: actually query itemprop for one-handedness.
     switch (wp)
@@ -2192,14 +2203,16 @@ static weapon_type _starting_weapon_upgrade(weapon_type wp, job_type job,
     case WPN_SHORT_SWORD:
         return WPN_RAPIER;
     case WPN_MACE:
-        return WPN_FLAIL;
+        return tiny ? wp : WPN_FLAIL;
     case WPN_HAND_AXE:
-        return WPN_WAR_AXE;
+        return tiny ? wp : WPN_WAR_AXE;
     case WPN_SPEAR:
         // Small fighters can't use tridents with a shield.
-        return fighter && size <= SIZE_SMALL  ? wp : WPN_TRIDENT;
+        return fighter && small ? wp : WPN_TRIDENT;
     case WPN_FALCHION:
-        return WPN_LONG_SWORD;
+        return tiny ? wp : WPN_LONG_SWORD;
+    case WPN_QUARTERSTAFF:
+        return tiny ? WPN_STAFF : wp;
     default:
         return wp;
     }
@@ -2232,7 +2245,7 @@ static vector<weapon_choice> _get_weapons(const newgame_def& ng)
         {
             weapon_choice wp;
             wp.first = startwep[i];
-            if (job_gets_good_weapons(ng.job))
+            if (job_gets_good_weapons(ng.job) && wp.first == WPN_QUARTERSTAFF)
             {
                 wp.first = _starting_weapon_upgrade(wp.first, ng.job,
                                                     ng.species);

@@ -522,12 +522,12 @@ static bool _WUCAD_MU_evoke(item_def *item, bool* did_work, bool* unevokable)
 
 static void _VAMPIRES_TOOTH_equip(item_def *item, bool *show_msgs, bool unmeld)
 {
-    if (you.undead_state() == US_ALIVE && !you_foodless())
+    if (you.undead_state() == US_ALIVE || you.undead_state() == US_SEMI_UNDEAD)
     {
         _equip_mpr(show_msgs,
                    "You feel a strange hunger, and smell blood in the air...");
     }
-    else if (you.undead_state() != US_SEMI_UNDEAD)
+    else
         _equip_mpr(show_msgs, "You feel strangely empty.");
     // else let player-equip.cc handle message
 }
@@ -1066,6 +1066,8 @@ static void _ORDER_melee_effects(item_def* item, actor* attacker,
                 mpr(msg);
             defender->hurt(attacker, silver_dam);
         }
+        else if (dam > 0)
+            defender->hurt(attacker, 1 + random2(dam) / 3);
     }
 }
 
@@ -1348,9 +1350,9 @@ static void _FROSTBITE_melee_effects(item_def* weapon, actor* attacker,
 
 static void _LEECH_equip(item_def *item, bool *show_msgs, bool unmeld)
 {
-    if (you.undead_state() == US_ALIVE && !you_foodless())
+    if (you.undead_state() == US_ALIVE || you.undead_state() == US_SEMI_UNDEAD)
         _equip_mpr(show_msgs, "You feel a powerful hunger.");
-    else if (you.undead_state() != US_SEMI_UNDEAD)
+    else
         _equip_mpr(show_msgs, "You feel very empty.");
     // else let player-equip.cc handle message
 }

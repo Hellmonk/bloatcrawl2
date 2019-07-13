@@ -118,7 +118,7 @@ They are not merely brutes, as they are comfortable with spellcasting.
 %%%%
 Oni
 
-Monstrous in nature with the rough appearance of Ogres, albeit smaller. 
+Monstrous in nature with the rough appearance of Ogres, albeit smaller.
 They discover spells as they gain experience and ignore schools of magic.
 %%%%
 Spriggan
@@ -143,7 +143,7 @@ Oh my GAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHD!
 %%%%
 Vine Stalker
 
-Frail symbionts, Vine Stalkers cannot regain health from devices or potions.
+Frail symbionts, Vine Stalkers cannot regain health from potions.
 Their magical reserves absorb damage, and they pack a magic-restoring bite.
 %%%%
 Profound Elf
@@ -170,4 +170,9 @@ Kitsune
 
 Kitsune are enthralling fox spirits that take on human shapes. They are poor at
 most skills and frailer than humans, but can charm their foes.
+%%%%
+Protean
+
+Proteans are a race of vaguely humanoid amoebas. Mutations increase their health
+pool, and their health pool controls their size.
 %%%%

@@ -1547,16 +1547,16 @@ undead_form_reason lifeless_prevents_form(transformation which_trans,
     if (which_trans == transformation::lich)
         return UFR_TOO_DEAD; // vampires can never lichform
 
-    if (which_trans == transformation::bat) // can batform on satiated or below
+    if (which_trans == transformation::bat) // can batform bloodless
     {
         if (involuntary)
             return UFR_TOO_DEAD; // but not as a forced polymorph effect
 
-        return you.hunger_state <= HS_SATIATED ? UFR_GOOD : UFR_TOO_ALIVE;
+        return !you.vampire_alive ? UFR_GOOD : UFR_TOO_ALIVE;
     }
 
-    // other forms can only be entered when satiated or above.
-    return you.hunger_state >= HS_SATIATED ? UFR_GOOD : UFR_TOO_DEAD;
+    // other forms can only be entered when alive
+    return you.vampire_alive ? UFR_GOOD : UFR_TOO_DEAD;
 }
 
 /**
@@ -1598,6 +1598,12 @@ bool transform(int pow, transformation which_trans, bool involuntary,
     {
         simple_god_message(" protects your body from unnatural transformation!");
         return false;
+    }
+
+    if (you.species == SP_PROTEAN)
+    {
+        msg = "You cannot transform.";
+        success = false;
     }
 
     if (!involuntary && crawl_state.is_god_acting())
@@ -2100,4 +2106,17 @@ void merfolk_stop_swimming()
 #ifdef USE_TILE
     init_player_doll();
 #endif
+}
+
+void vampire_update_transformations()
+{
+    const undead_form_reason form_reason = lifeless_prevents_form();
+    if (form_reason != UFR_GOOD && you.duration[DUR_TRANSFORMATION])
+    {
+        print_stats();
+        mprf(MSGCH_WARN,
+             "Your blood-%s body can't sustain your transformation.",
+             form_reason == UFR_TOO_DEAD ? "deprived" : "filled");
+        untransform();
+    }
 }

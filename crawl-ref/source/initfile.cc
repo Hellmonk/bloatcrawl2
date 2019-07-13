@@ -216,7 +216,6 @@ const vector<GameOption*> game_options::build_options_list()
         new BoolGameOption(SIMPLE_NAME(wall_jump_prompt), false),
         new BoolGameOption(SIMPLE_NAME(wall_jump_move), false),
         new BoolGameOption(SIMPLE_NAME(darken_beyond_range), true),
-        new BoolGameOption(SIMPLE_NAME(dump_book_spells), true),
         new BoolGameOption(SIMPLE_NAME(arena_dump_msgs), false),
         new BoolGameOption(SIMPLE_NAME(arena_dump_msgs_all), false),
         new BoolGameOption(SIMPLE_NAME(arena_list_eq), false),
@@ -838,8 +837,8 @@ void game_options::set_default_activity_interrupts()
         "interrupt_jewellery_on = interrupt_armour_on",
         "interrupt_memorise = hp_loss, monster_attack, stat",
         "interrupt_butcher = interrupt_armour_on, teleport, stat",
-        "interrupt_bottle_blood = interrupt_butcher",
-        "interrupt_vampire_feed = interrupt_butcher",
+        "interrupt_exsanguinate = interrupt_butcher",
+        "interrupt_revivify = interrupt_butcher",
         "interrupt_multidrop = hp_loss, monster_attack, teleport, stat",
         "interrupt_macro = interrupt_multidrop",
         "interrupt_travel = interrupt_butcher, hungry, hit_monster, "
@@ -1131,6 +1130,8 @@ void game_options::reset_options()
     tile_weapon_offsets.second = INT_MAX;
     tile_shield_offsets.first  = INT_MAX;
     tile_shield_offsets.second = INT_MAX;
+    tile_viewport_scale = 100;
+    tile_map_scale      = 60;
 #endif
 
 #ifdef USE_TILE_WEB
@@ -3452,6 +3453,37 @@ void game_options::read_option_line(const string &str, bool runscript)
         }
 #endif
     }
+#ifdef USE_TILE
+    // TODO: generalize these to an option type?
+    else if (key == "tile_viewport_scale")
+    {
+        float tmp_scale;
+        if (sscanf(field.c_str(), "%f", &tmp_scale))
+        {
+            tile_viewport_scale = min(1600, max(20,
+                                        static_cast<int>(tmp_scale * 100)));
+        }
+        else
+        {
+            report_error("Expected a decimal value for tile_viewport_scale,"
+                " but got '%s'.", field.c_str());
+        }
+    }
+    else if (key == "tile_map_scale")
+    {
+        float tmp_scale;
+        if (sscanf(field.c_str(), "%f", &tmp_scale))
+        {
+            tile_map_scale = min(1600, max(20,
+                                        static_cast<int>(tmp_scale * 100)));
+        }
+        else
+        {
+            report_error("Expected a decimal value for tile_map_scale,"
+                " but got '%s'.", field.c_str());
+        }
+    }
+#endif
 
     // Catch-all else, copies option into map
     else if (runscript)
@@ -4468,6 +4500,8 @@ void game_options::write_webtiles_options(const string& name)
 
     tiles.json_write_string("tile_display_mode", Options.tile_display_mode);
     tiles.json_write_int("tile_cell_pixels", Options.tile_cell_pixels);
+    tiles.json_write_int("tile_viewport_scale", Options.tile_viewport_scale);
+    tiles.json_write_int("tile_map_scale", Options.tile_map_scale);
     tiles.json_write_bool("tile_filter_scaling", Options.tile_filter_scaling);
     tiles.json_write_bool("tile_water_anim", Options.tile_water_anim);
     tiles.json_write_bool("tile_misc_anim", Options.tile_misc_anim);
@@ -4797,6 +4831,7 @@ bool parse_args(int argc, char **argv, bool rc_only)
         case CLO_SCRIPT:
             crawl_state.test   = true;
             crawl_state.script = true;
+            crawl_state.script_args.clear();
             if (current < argc - 1)
             {
                 crawl_state.tests_selected = split_string(",", next_arg);
@@ -4805,8 +4840,10 @@ bool parse_args(int argc, char **argv, bool rc_only)
                 current = argc;
             }
             else
+            {
                 end(1, false,
                     "-script must specify comma-separated script names");
+            }
             break;
 
         case CLO_BUILDDB:

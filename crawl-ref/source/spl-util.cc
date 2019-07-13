@@ -957,7 +957,8 @@ int spell_range(spell_type spell, int pow, bool allow_bonus)
         && vehumet_supports_spell(spell)
         && have_passive(passive_t::spells_range)
         && maxrange > 1
-        && spell != SPELL_GLACIATE)
+        && spell != SPELL_GLACIATE
+        && spell != SPELL_THUNDERBOLT) // lightning rod only
     {
         maxrange++;
         minrange++;
@@ -1166,6 +1167,8 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         }
         if (temp && you.is_lifeless_undead())
             return "your current blood level is not sufficient.";
+        if (you.species == SP_PROTEAN)
+            return "your gelatinous body cannot transform.";
         break;
 
     case SPELL_REGENERATION:

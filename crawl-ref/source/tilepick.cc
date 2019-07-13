@@ -3352,6 +3352,10 @@ tileidx_t tileidx_ability(const ability_type ability)
     // Vampires
     case ABIL_TRAN_BAT:
         return TILEG_ABILITY_BAT_FORM;
+    case ABIL_EXSANGUINATE:
+        return TILEG_ABILITY_EXSANGUINATE;
+    case ABIL_REVIVIFY:
+        return TILEG_ABILITY_REVIVIFY;
     // Deep Dwarves
     case ABIL_HEAL_WOUNDS:
         return TILEG_ABILITY_HEAL_WOUNDS;
@@ -3440,14 +3444,12 @@ tileidx_t tileidx_ability(const ability_type ability)
     case ABIL_MAKHLEB_GREATER_SERVANT_OF_MAKHLEB:
         return TILEG_ABILITY_MAKHLEB_GREATER_SERVANT;
     // Sif Muna
-    case ABIL_SIF_MUNA_DIVINE_ENERGY:
-        return TILEG_ABILITY_SIF_MUNA_DIVINE_ENERGY;
-    case ABIL_SIF_MUNA_STOP_DIVINE_ENERGY:
-        return TILEG_ABILITY_SIF_MUNA_STOP_DIVINE_ENERGY;
     case ABIL_SIF_MUNA_CHANNEL_ENERGY:
         return TILEG_ABILITY_SIF_MUNA_CHANNEL;
     case ABIL_SIF_MUNA_FORGET_SPELL:
         return TILEG_ABILITY_SIF_MUNA_AMNESIA;
+    case ABIL_SIF_MUNA_DIVINE_EXEGESIS:
+        return TILEG_ABILITY_SIF_MUNA_EXEGESIS;
     // Trog
     case ABIL_TROG_BERSERK:
         return TILEG_ABILITY_TROG_BERSERK;
@@ -3805,10 +3807,6 @@ tileidx_t tileidx_corpse_brand(const item_def &item)
 {
     if (item.base_type != OBJ_CORPSES || item.sub_type != CORPSE_BODY)
         return 0;
-
-    // Vampires are only interested in fresh blood.
-    if (you.undead_state() == US_SEMI_UNDEAD && !mons_has_blood(item.mon_type))
-        return TILE_FOOD_INEDIBLE;
 
     // Harmful chunk effects > religious rules > reduced nutrition.
     if (is_noxious(item))

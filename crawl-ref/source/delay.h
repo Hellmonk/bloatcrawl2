@@ -342,36 +342,6 @@ public:
     }
 };
 
-class BottleBloodDelay : public Delay
-{
-    item_def& corpse;
-
-    bool invalidated() override;
-
-    void finish() override;
-public:
-    BottleBloodDelay(int dur, item_def& item) :
-                     Delay(dur), corpse(item)
-    { }
-
-    bool try_interrupt() override;
-
-    bool is_butcher() const override
-    {
-        return true;
-    }
-
-    bool is_being_used(const item_def* item, operation_types oper) const override
-    {
-        return oper == OPER_BUTCHER && (!item || &corpse == item);
-    }
-
-    const char* name() const override
-    {
-        return "bottle_blood";
-    }
-};
-
 class PasswallDelay : public Delay
 {
     coord_def dest;
@@ -691,6 +661,54 @@ public:
     const char* name() const override
     {
         return "blurry_vision";
+    }
+};
+
+class ExsanguinateDelay : public Delay
+{
+    bool was_prompted = false;
+
+    void start() override;
+
+    void tick() override
+    {
+        mprf(MSGCH_MULTITURN_ACTION, "You continue bloodletting.");
+    }
+
+    void finish() override;
+public:
+    ExsanguinateDelay(int dur) : Delay(dur)
+    { }
+
+    bool try_interrupt() override;
+
+    const char* name() const override
+    {
+        return "exsanguinate";
+    }
+};
+
+class RevivifyDelay : public Delay
+{
+    bool was_prompted = false;
+
+    void start() override;
+
+    void tick() override
+    {
+        mprf(MSGCH_MULTITURN_ACTION, "You continue your ritual.");
+    }
+
+    void finish() override;
+public:
+    RevivifyDelay(int dur) : Delay(dur)
+    { }
+
+    bool try_interrupt() override;
+
+    const char* name() const override
+    {
+        return "revivify";
     }
 };
 

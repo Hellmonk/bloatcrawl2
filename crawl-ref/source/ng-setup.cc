@@ -156,6 +156,8 @@ item_def* newgame_make_item(object_class_type base,
             item.sub_type = ARM_SHIELD;
         else if (is_shield(item))
             item.sub_type = ARM_BUCKLER;
+        else if (item.sub_type == ARM_CLOAK)
+            item.sub_type = ARM_SCARF;
         else
             item.sub_type = ARM_ROBE;
     }
@@ -424,11 +426,6 @@ static void _give_starting_food()
     object_class_type base_type = OBJ_FOOD;
     int sub_type = FOOD_RATION;
     int quantity = 1;
-    if (you.undead_state() == US_SEMI_UNDEAD)
-    {
-        base_type = OBJ_POTIONS;
-        sub_type  = POT_BLOOD;
-    }
 
     // Give another one for hungry species.
     if (you.get_mutation_level(MUT_FAST_METABOLISM))
@@ -462,9 +459,6 @@ static void _setup_tutorial_miscs()
 static void _give_basic_knowledge()
 {
     identify_inventory();
-
-    // Recognisable by appearance.
-    you.type_ids[OBJ_POTIONS][POT_BLOOD] = true;
 
     // Removed item types are handled in _set_removed_types_as_identified.
 }
@@ -600,7 +594,10 @@ static void _setup_generic(const newgame_def& ng)
 
     you.chr_class_name = get_job_name(you.char_class);
 
-    you.undead_modifier = ng.undead_type;
+    // You can only set the undead type for species that default to alive
+    const undead_state_type species_undead = species_undead_type(ng.species);
+    you.undead_modifier = (species_undead == US_ALIVE) ? ng.undead_type : species_undead;
+
     you.skill_modifier = ng.skilled_type;
     you.chaoskin = ng.chaoskin;
     you.no_locks = ng.no_locks;

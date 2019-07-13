@@ -809,12 +809,8 @@ static void _sdump_inventory(dump_params &par)
                 if (origin_describable(item) && _dump_item_origin(item))
                     text += "\n" "   (" + origin_desc(item) + ")";
 
-                if (is_dumpable_artefact(item)
-                    || Options.dump_book_spells
-                       && item.base_type == OBJ_BOOKS)
-                {
+                if (is_dumpable_artefact(item))
                     text += chardump_desc(item);
-                }
                 else
                     text += "\n";
             }
@@ -1512,27 +1508,12 @@ static const char* hunger_names[] =
 };
 COMPILE_CHECK(ARRAYSZ(hunger_names) == HS_ENGORGED + 1);
 
-// Must match the order of hunger_state_t enums
-static const char* thirst_names[] =
-{
-    "bloodless",
-    "bloodless",
-    "near bloodless",
-    "very thirsty",
-    "thirsty",
-    "not thirsty",
-    "full",
-    "very full",
-    "almost alive",
-};
-COMPILE_CHECK(ARRAYSZ(thirst_names) == HS_ENGORGED + 1);
-
 const char *hunger_level()
 {
     ASSERT(you.hunger_state <= HS_ENGORGED);
 
     if (you.undead_state() == US_SEMI_UNDEAD)
-        return thirst_names[you.hunger_state];
+        return you.vampire_alive ? "alive" : "bloodless";
     return hunger_names[you.hunger_state];
 }
 

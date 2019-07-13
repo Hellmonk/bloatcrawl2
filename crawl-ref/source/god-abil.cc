@@ -4269,9 +4269,7 @@ static string _gozag_special_shop_name(shop_type type)
 {
     if (type == SHOP_FOOD)
     {
-        if (you.undead_state() == US_SEMI_UNDEAD)
-            return "Blood";
-        else if (you.undead_state() == US_HUNGRY_DEAD)
+        if (you.undead_state() == US_HUNGRY_DEAD)
             return "Carrion"; // yum!
     }
 
@@ -4392,7 +4390,7 @@ static void _gozag_place_shop(int index)
     ASSERT(shop);
 
     const gender_type gender = random_choose(GENDER_FEMALE, GENDER_MALE,
-                                             GENDER_NEUTER);
+                                             GENDER_NEUTRAL);
 
     mprf(MSGCH_GOD, "%s invites you to visit %s %s%s%s.",
                     shop->shop_name.c_str(),
@@ -7042,15 +7040,22 @@ static void _hepliaklqana_choose_name()
 
 static void _hepliaklqana_choose_gender()
 {
-    static const string gender_names[] = { "neither", "male", "female" };
-    const int current_gender
-        = you.props[HEPLIAKLQANA_ALLY_GENDER_KEY].get_int();
-    ASSERT(size_t(current_gender) < ARRAYSZ(gender_names));
+    static const map<gender_type, string> gender_map =
+    {
+        { GENDER_NEUTRAL, "neither" },
+        { GENDER_MALE,    "male"    },
+        { GENDER_FEMALE,  "female"  },
+    };
+
+    const gender_type current_gender =
+        (gender_type)you.props[HEPLIAKLQANA_ALLY_GENDER_KEY].get_int();
+    const string* desc = map_find(gender_map, current_gender);
+    ASSERT(desc);
 
     mprf(MSGCH_PROMPT,
          "Was %s a) male, b) female, or c) neither? (Currently %s.)",
          hepliaklqana_ally_name().c_str(),
-         gender_names[current_gender].c_str());
+         desc->c_str());
 
     int keyin = toalower(get_ch());
     if (!isaalpha(keyin))
@@ -7059,15 +7064,19 @@ static void _hepliaklqana_choose_gender()
         return;
     }
 
+    static const gender_type gender_options[] = { GENDER_MALE,
+                                                  GENDER_FEMALE,
+                                                  GENDER_NEUTRAL };
+
     const uint32_t choice = keyin - 'a';
-    if (choice > ARRAYSZ(gender_names))
+    if (choice >= ARRAYSZ(gender_options))
     {
         canned_msg(MSG_OK);
         return;
     }
 
-    // fun trick
-    const int new_gender = (choice + 1) % 3;
+    const gender_type new_gender = gender_options[choice];
+
     if (new_gender == current_gender)
     {
         canned_msg(MSG_OK);
@@ -7077,7 +7086,7 @@ static void _hepliaklqana_choose_gender()
     you.props[HEPLIAKLQANA_ALLY_GENDER_KEY] = new_gender;
     mprf("%s was always %s, you're pretty sure.",
          hepliaklqana_ally_name().c_str(),
-         gender_names[new_gender].c_str());
+         map_find(gender_map, new_gender)->c_str());
     upgrade_hepliaklqana_ancestor(true);
 }
 
