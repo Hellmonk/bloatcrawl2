@@ -116,6 +116,11 @@ Necromancer
 Necromancers are wizards specializing in the practice of death magic. They
 start out with the Pain spell.
 %%%%
+Night Knight
+
+These knights of the night follow the shadowy god Dithmenos. They begin lightly
+armoured but with good stealth.
+%%%%
 Paladin
 
 Worshippers of The Shining One, these holy warriors fall down a lot. 

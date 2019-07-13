@@ -1406,12 +1406,12 @@ static job_group jobs_order[] =
           JOB_FENCER, JOB_CAVEPERSON }
     },
     {
-        "Zealot",
+        "Warrior-mage",
         coord_def(0, 7), 15,
-        { JOB_BOUND, JOB_BERSERKER, JOB_ABYSSAL_KNIGHT, JOB_CHAOS_KNIGHT,
-          JOB_TORPOR_KNIGHT }
+        { JOB_SKALD, JOB_TRANSMUTER, JOB_WARPER, JOB_ARCANE_MARKSMAN,
+          JOB_ENCHANTER }
     },
-       {
+    {
         "Adventurer",
         coord_def(15, 0), 20,
         { JOB_ARTIFICER, JOB_WANDERER, JOB_ANARCHIST, JOB_UNDERSTUDY,
@@ -1419,10 +1419,10 @@ static job_group jobs_order[] =
           JOB_PHILOSOPHER }
     },
     {
-        "Warrior-mage",
-        coord_def(35, 0), 21,
-        { JOB_SKALD, JOB_TRANSMUTER, JOB_WARPER, JOB_ARCANE_MARKSMAN,
-          JOB_ENCHANTER }
+        "Zealot",
+        coord_def(35, 0), 15,
+        { JOB_BOUND, JOB_BERSERKER, JOB_ABYSSAL_KNIGHT, JOB_CHAOS_KNIGHT,
+          JOB_TORPOR_KNIGHT, JOB_NIGHT_KNIGHT, JOB_PALADIN }
     },
     {
         "Mage",

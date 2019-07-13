@@ -283,6 +283,16 @@ static const map<job_type, job_def> job_data =
       { SK_STEALTH, 2 }, },
 } },
 
+{ JOB_NIGHT_KNIGHT, {
+    "NK", "Night Knight",
+    4, 4, 4,
+    { SP_SPRIGGAN, SP_HALFLING, SP_KOBOLD },
+    { "dagger plus:1"},
+    WCHOICE_NONE,
+    { { SK_FIGHTING, 1 }, { SK_WEAPON, 2 }, { SK_DODGING, 2 }, 
+      { SK_STEALTH, 4 }, { SK_INVOCATIONS, 2 }, },
+} },
+
 { JOB_PALADIN, {
     "Pa", "Paladin",
     4, 4, 4,

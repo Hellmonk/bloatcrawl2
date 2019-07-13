@@ -51,6 +51,7 @@ enum job_type
     JOB_BOUND,
     JOB_TORPOR_KNIGHT,
     JOB_PALADIN,
+    JOB_NIGHT_KNIGHT,
     NUM_JOBS,                          // always after the last job
 
     JOB_UNKNOWN = 100,
