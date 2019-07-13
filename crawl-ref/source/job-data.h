@@ -103,6 +103,16 @@ static const map<job_type, job_def> job_data =
     { { SK_FIGHTING, 3 }, { SK_DODGING, 2 }, { SK_WEAPON, 3 }, },
 } },
 
+{ JOB_BOUND, {
+    "Bo", "Bound",
+    4, 4, 4,
+    { SP_HILL_ORC, SP_MINOTAUR, SP_MERFOLK, SP_GARGOYLE },
+    { },
+    WCHOICE_PLAIN,
+    { { SK_FIGHTING, 3 }, { SK_ARMOUR, 1 }, { SK_DODGING, 2 }, 
+      { SK_WEAPON, 2 }, },
+} },
+
 { JOB_CAVEPERSON, {
     "Ca", "Caveperson",
     6, 0, 0, // half normal stats

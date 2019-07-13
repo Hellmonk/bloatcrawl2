@@ -33,6 +33,11 @@ Berserker
 Berserkers believe in Trog, the magic-hating god of frenzy. Not much can stop a
 raging berserker early on, apart from hubris.
 %%%%
+Bound
+
+Bound serve Ashenzari, the god of curses, and begin their journey partially bound
+with cursed equipment.
+%%%%
 Caveperson
 
 Cavepeople start with exceptional strength but, unfortunately, neolithic weapons.

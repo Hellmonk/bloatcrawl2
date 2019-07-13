@@ -296,6 +296,16 @@ static void _give_items_skills(const newgame_def& ng)
             you.skills[SK_ARMOUR]++;
 
         break;
+        
+    case JOB_BOUND:
+        you.religion = GOD_ASHENZARI;
+        you.piety = 35;
+
+        if (species_apt(SK_ARMOUR) < species_apt(SK_DODGING))
+            you.skills[SK_DODGING]++;
+        else
+            you.skills[SK_ARMOUR]++;
+        break;
 
     case JOB_UNDERSTUDY:
         create_understudy();
@@ -326,6 +336,24 @@ static void _give_items_skills(const newgame_def& ng)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +1);
     else if (you.char_class == JOB_CHAOS_KNIGHT)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, 0, SPWPN_CHAOS);
+    else if (you.char_class == JOB_BOUND)
+    {
+        item_def* wpn = newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +2);
+        if(wpn)
+        {
+            do_curse_item(*wpn);
+		}
+        item_def* armour = newgame_make_item(OBJ_ARMOUR, ARM_ROBE, 1, +1);
+        if(armour)
+        {
+			do_curse_item(*armour);
+        }
+        item_def* amulet = newgame_make_item(OBJ_JEWELLERY, AMU_THE_GOURMAND);
+        if(amulet)
+        {
+            do_curse_item(*amulet);
+        }
+    }
     else if (job_gets_ranged_weapons(you.char_class))
         _give_ranged_weapon(ng.weapon, you.char_class == JOB_HUNTER ? 1 : 0);
     else if (job_has_weapon_choice(you.char_class))

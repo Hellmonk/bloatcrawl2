@@ -48,6 +48,7 @@ enum job_type
     JOB_FENCER,
     JOB_PHILOSOPHER,
     JOB_CAVEPERSON,
+    JOB_BOUND,
     NUM_JOBS,                          // always after the last job
 
     JOB_UNKNOWN = 100,
