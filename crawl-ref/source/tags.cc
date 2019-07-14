@@ -74,6 +74,7 @@
 #include "skills.h"
 #include "species.h"
 #include "spl-wpnench.h"
+#include "star-sign.h"
 #include "state.h"
 #include "stringutil.h"
 #include "syscalls.h"
@@ -1377,6 +1378,7 @@ static void tag_construct_char(writer &th)
     marshallByte(th, static_cast<int>(you.undead_modifier));
     marshallBoolean(th, you.chaoskin);
     marshallBoolean(th, you.no_locks);
+    marshallByte(th, static_cast<int>(you.star_sign));
 }
 
 /// is a custom scoring mechanism being stored?
@@ -2297,6 +2299,7 @@ void tag_read_char(reader &th, uint8_t format, uint8_t major, uint8_t minor)
     you.undead_modifier = static_cast<undead_state_type>(unmarshallByte(th));
     you.chaoskin = unmarshallBoolean(th);
     you.no_locks = unmarshallBoolean(th);
+    you.star_sign = static_cast<star_sign>(unmarshallByte(th));
 }
 
 #if TAG_MAJOR_VERSION == 34

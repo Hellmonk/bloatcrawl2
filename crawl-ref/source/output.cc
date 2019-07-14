@@ -44,6 +44,7 @@
 #include "showsymb.h"
 #include "skills.h"
 #include "state.h"
+#include "star-sign.h"
 #include "status.h"
 #include "stringutil.h"
 #include "throw.h"
@@ -2199,6 +2200,8 @@ static formatted_string _get_modifiers()
         modifiers.push_back("Chaoskin");
     if (you.no_locks)
         modifiers.push_back("No Runelocks");
+    if (you.star_sign != star_sign::none)
+        modifiers.push_back(make_stringf("Star Sign: the %s", star_sign_name(you.star_sign)));
     if (modifiers.empty())
         modifiers.push_back("None");
 

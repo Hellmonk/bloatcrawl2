@@ -656,6 +656,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     choice.skilled_type = 0;
     choice.chaoskin = false;
     choice.no_locks = false;
+    choice.have_star_sign = false;
 
     // Non-living or default-undead species cannot choose undead state
     bool can_choose_undead = ng.species != SP_GARGOYLE
@@ -712,6 +713,11 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
         else if (key == 'r' || key == 'R')
         {
             choice.no_locks = !choice.no_locks;
+            return done = false;
+        }
+        else if (key == 't' || key == 'T')
+        {
+            choice.have_star_sign = !choice.have_star_sign;
             return done = false;
         }
         else if (key == CONTROL('M'))
@@ -780,6 +786,16 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     auto runelock_choice = make_shared<ui::Text>(runelock_choice_str);
     box->add_child(runelock_choice);
 
+    formatted_string star_sign_choice_str;
+    star_sign_choice_str.textcolour(LIGHTGRAY);
+    star_sign_choice_str.cprintf("\nS");
+    star_sign_choice_str.textcolour(WHITE);
+    star_sign_choice_str.cprintf("(t)");
+    star_sign_choice_str.textcolour(LIGHTGRAY);
+    star_sign_choice_str.cprintf("ar sign: enabled | disabled");
+    auto star_sign_choice = make_shared<ui::Text>(star_sign_choice_str);
+    box->add_child(star_sign_choice);
+
     auto popup = make_shared<ui::Popup>(box);
     ui::push_layout(move(popup));
     while (!done && !crawl_state.seen_hups)
@@ -819,6 +835,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
         }
         chaoskin_choice->set_highlight_pattern(choice.chaoskin ? "enabled" : "disabled", false);
         runelock_choice->set_highlight_pattern(choice.no_locks ? "disabled" : "enabled", false);
+        star_sign_choice->set_highlight_pattern(choice.have_star_sign ? "enabled" : "disabled", false);
         ui::pump_events();
     }
     ui::pop_layout();
@@ -1018,6 +1035,7 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
     ng.skilled_type = choice.skilled_type;
     ng.chaoskin = choice.chaoskin;
     ng.no_locks = choice.no_locks;
+    ng.have_star_sign = choice.have_star_sign;
 
 #ifndef DGAMELAUNCH
     // New: pick name _after_ character choices.

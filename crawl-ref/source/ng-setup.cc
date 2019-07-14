@@ -29,6 +29,7 @@
 #include "spl-book.h"
 #include "spl-util.h"
 #include "sprint.h"
+#include "star-sign.h"
 #include "state.h"
 
 #define MIN_START_STAT       3
@@ -725,6 +726,11 @@ static void _setup_generic(const newgame_def& ng)
     you.skill_modifier = ng.skilled_type;
     you.chaoskin = ng.chaoskin;
     you.no_locks = ng.no_locks;
+
+    if (ng.have_star_sign)
+        you.star_sign = random_star_sign();
+    else
+        you.star_sign = star_sign::none;
 
     species_stat_init(you.species);     // must be down here {dlb}
 

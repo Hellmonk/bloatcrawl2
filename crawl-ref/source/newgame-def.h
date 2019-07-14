@@ -44,6 +44,7 @@ struct newgame_def
     int skilled_type;
     bool chaoskin; // Xom acts on you always
     bool no_locks; // disable rune locks
+    bool have_star_sign;
 
     newgame_def();
     void clear_character();

@@ -141,6 +141,7 @@
 #include "spl-transloc.h"
 #include "spl-util.h"
 #include "stairs.h"
+#include "star-sign.h"
 #include "startup.h"
 #include "stash.h"
 #include "state.h"
@@ -432,7 +433,10 @@ NORETURN static void _launch_game()
 #endif
 
     if (game_start)
+    {
        _announce_goal_message();
+       apply_star_sign();
+    }
 
     _god_greeting_message(game_start);
 

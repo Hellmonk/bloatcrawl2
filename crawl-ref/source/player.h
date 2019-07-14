@@ -31,6 +31,7 @@
 #include "religion-enum.h"
 #include "skill-menu-state.h"
 #include "species.h"
+#include "star-sign.h"
 #include "stat-type.h"
 #include "timed-effect-type.h"
 #include "transformation.h"
@@ -128,6 +129,7 @@ public:
     undead_state_type undead_modifier;
     bool chaoskin;
     bool no_locks;
+    star_sign star_sign;
 
     // This field is here even in non-WIZARD compiles, since the
     // player might have been playing previously under wiz mode.

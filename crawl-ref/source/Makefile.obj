@@ -226,6 +226,7 @@ spl-zap.o \
 sprint.o \
 sqldbm.o \
 stairs.o \
+star-sign.o \
 startup.o \
 stash.o \
 state.o \
