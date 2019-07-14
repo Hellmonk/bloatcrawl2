@@ -177,10 +177,16 @@ item_def* newgame_make_item(object_class_type base,
 
     if ((item.base_type == OBJ_WEAPONS && can_wield(&item, false, false)
          || (item.base_type == OBJ_ARMOUR && can_wear_armour(item, false, false))
-         || item.base_type == OBJ_JEWELLERY)
+         // Rings need special handling
+         || (item.base_type == OBJ_JEWELLERY && get_item_slot(item) == EQ_AMULET))
         && you.equip[get_item_slot(item)] == -1)
     {
         you.equip[get_item_slot(item)] = slot;
+    }
+    else if (item.base_type == OBJ_JEWELLERY && get_item_slot(item) == EQ_RINGS)
+    {
+        // Hardcoded, won't support multiple rings
+        you.equip[EQ_LEFT_RING] = slot;
     }
 
     if (item.base_type == OBJ_MISSILES)
