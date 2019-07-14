@@ -4049,6 +4049,11 @@ bool god_protects_from_harm()
 
 void handle_god_time(int /*time_delta*/)
 {
+    ASSERT(you.religion != GOD_RANDOM);
+    ASSERT(you.religion != GOD_ECUMENICAL);
+    ASSERT(you.religion != GOD_NAMELESS);
+    ASSERT(you.religion != NUM_GODS);
+
     if (you.attribute[ATTR_GOD_WRATH_COUNT] > 0)
     {
         vector<god_type> angry_gods;
@@ -4068,81 +4073,21 @@ void handle_god_time(int /*time_delta*/)
         you.attribute[ATTR_GOD_WRATH_COUNT]--;
     }
 
-    // Update the god's opinion of the player.
-    if (!you_worship(GOD_NO_GOD))
+    if (you.religion == GOD_RU)
     {
-        int delay;
-        int sacrifice_count;
-        switch (you.religion)
+        ASSERT(you.props.exists(RU_SACRIFICE_PROGRESS_KEY));
+        ASSERT(you.props.exists(RU_SACRIFICE_DELAY_KEY));
+        ASSERT(you.props.exists(AVAILABLE_SAC_KEY));
+
+        delay = you.props[RU_SACRIFICE_DELAY_KEY].get_int();
+        sacrifice_count = you.props[AVAILABLE_SAC_KEY].get_vector().size();
+
+        // 6* is max piety for Ru
+        if (sacrifice_count == 0 && you.piety < piety_breakpoint(5)
+            && you.props[RU_SACRIFICE_PROGRESS_KEY].get_int() >= delay)
         {
-        case GOD_TROG:
-        case GOD_OKAWARU:
-        case GOD_MAKHLEB:
-        case GOD_BEOGH:
-        case GOD_LUGONU:
-        case GOD_DITHMENOS:
-        case GOD_QAZLAL:
-        case GOD_YREDELEMNUL:
-        case GOD_KIKUBAAQUDGHA:
-        case GOD_VEHUMET:
-        case GOD_ZIN:
-#if TAG_MAJOR_VERSION == 34
-        case GOD_PAKELLAS:
-#endif
-        case GOD_JIYVA:
-        case GOD_WU_JIAN:
-        case GOD_SIF_MUNA:
-            if (one_chance_in(17))
-                lose_piety(1);
-            break;
-
-        case GOD_ASHENZARI:
-        case GOD_ELYVILON:
-        case GOD_HEPLIAKLQANA:
-        case GOD_FEDHAS:
-        case GOD_CHEIBRIADOS:
-        case GOD_SHINING_ONE:
-        case GOD_NEMELEX_XOBEH:
-            if (one_chance_in(35))
-                lose_piety(1);
-            break;
-
-        case GOD_RU:
-            ASSERT(you.props.exists(RU_SACRIFICE_PROGRESS_KEY));
-            ASSERT(you.props.exists(RU_SACRIFICE_DELAY_KEY));
-            ASSERT(you.props.exists(AVAILABLE_SAC_KEY));
-
-            delay = you.props[RU_SACRIFICE_DELAY_KEY].get_int();
-            sacrifice_count = you.props[AVAILABLE_SAC_KEY].get_vector().size();
-
-            // 6* is max piety for Ru
-            if (sacrifice_count == 0 && you.piety < piety_breakpoint(5)
-                && you.props[RU_SACRIFICE_PROGRESS_KEY].get_int() >= delay)
-            {
-              ru_offer_new_sacrifices();
-            }
-
-            break;
-
-        case GOD_USKAYAW:
-            // We handle Uskayaw elsewhere because this func gets called rarely
-        case GOD_GOZAG:
-        case GOD_XOM:
-            // Gods without normal piety do nothing each tick.
-            return;
-
-        case GOD_NO_GOD:
-        case GOD_RANDOM:
-        case GOD_ECUMENICAL:
-        case GOD_NAMELESS:
-        case NUM_GODS:
-            die("Bad god, no bishop!");
-            return;
-
+            ru_offer_new_sacrifices();
         }
-
-        if (you.piety < 1)
-            excommunication();
     }
 }
 
