@@ -15,6 +15,7 @@
 #include "invent.h"
 #include "item-name.h"
 #include "item-prop.h"
+#include "item-status-flag-type.h"
 #include "items.h"
 #include "item-use.h"
 #include "jobs.h"
@@ -214,6 +215,15 @@ item_def* newgame_make_item(object_class_type base,
             add_spell_to_memory(which_spell);
         }
     }
+
+    // Link everything up properly
+    item.pos = ITEM_IN_INVENTORY;
+    item.link = slot;
+    item.slot = index_to_letter(item.link);
+    item_colour(item);  // set correct special and colour
+
+    set_ident_type(item, true);
+    set_ident_flags(item, ISFLAG_IDENT_MASK);
 
     return &item;
 }
