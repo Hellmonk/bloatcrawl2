@@ -334,6 +334,10 @@ static void _give_items_skills(const newgame_def& ng)
         you.piety = 35;
         break;
 		
+    case JOB_DANCER:
+        you.religion = GOD_USKAYAW;
+        you.piety = 200; //you had a really good party right before entering the dungeon
+        break;
 
     case JOB_UNDERSTUDY:
         create_understudy();

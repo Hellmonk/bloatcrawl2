@@ -51,6 +51,11 @@ Conjurer
 
 Conjurers confront problems with damaging spells.
 %%%%
+Dancer
+
+Dancers have left their friends behind and entered the dungeon in service of Uskayaw.
+They have few combat skills but are quite good at evading attacks.
+%%%%
 Deprived
 
 Deprived start with nothing but a ration and almost no skills. Survival may prove...

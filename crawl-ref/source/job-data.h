@@ -145,6 +145,15 @@ static const map<job_type, job_def> job_data =
       { SK_STEALTH, 2 }, },
 } },
 
+{ JOB_DANCER, {
+    "Da", "Dancer",
+    3, 2, 7,
+    { SP_VINE_STALKER, SP_HILL_ORC },
+    { "dagger", "robe", "boots",  },
+    WCHOICE_NONE,
+    { {SK_DODGING, 5}, {SK_INVOCATIONS, 4}, },
+} },
+
 { JOB_DEPRIVED, {
     "De", "Deprived",
     4, 4, 4,
