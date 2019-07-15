@@ -3487,7 +3487,7 @@ static void _join_gozag()
  * @param female    Whether the ancestor is female or male.
  * @return          An appropriate name; e.g. Hrodulf, Citali, Aat.
  */
-static string _make_ancestor_name(bool female)
+string make_ancestor_name(bool female)
 {
     const string gender_name = female ? "female" : "male";
     const string suffix = " " + gender_name + " name";
@@ -3502,7 +3502,7 @@ static void _join_hepliaklqana()
     if (!you.props.exists(HEPLIAKLQANA_ALLY_NAME_KEY))
     {
         const bool female = coinflip();
-        you.props[HEPLIAKLQANA_ALLY_NAME_KEY] = _make_ancestor_name(female);
+        you.props[HEPLIAKLQANA_ALLY_NAME_KEY] = make_ancestor_name(female);
         you.props[HEPLIAKLQANA_ALLY_GENDER_KEY] = female ? GENDER_FEMALE
                                                          : GENDER_MALE;
     }

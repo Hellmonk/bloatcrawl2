@@ -260,6 +260,15 @@ static const map<job_type, job_def> job_data =
       { SK_DODGING, 2 }, { SK_STEALTH, 2 }, },
 } },
 
+{ JOB_INHERITOR, {
+    "In", "Inheritor",
+    4, 4, 4,
+    { SP_MERFOLK, SP_NAGA, SP_BASE_DRACONIAN, SP_OGRE, SP_TROLL, },
+    { "robe" },
+    WCHOICE_NONE,
+    { { SK_INVOCATIONS, 3 }, },
+} },
+
 { JOB_METEOROLOGIST, {
     "Me", "Meteorologist",
     2, 8, 2,

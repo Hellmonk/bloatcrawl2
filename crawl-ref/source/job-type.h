@@ -53,6 +53,7 @@ enum job_type
     JOB_PALADIN,
     JOB_NIGHT_KNIGHT,
     JOB_DANCER,
+    JOB_INHERITOR,
     NUM_JOBS,                          // always after the last job
 
     JOB_UNKNOWN = 100,

@@ -333,6 +333,17 @@ static void _give_items_skills(const newgame_def& ng)
         you.religion = GOD_DITHMENOS;
         you.piety = 35;
         break;
+        
+    case JOB_INHERITOR:
+    {
+        you.religion = GOD_HEPLIAKLQANA;
+        you.piety = 35;
+        bool female = coinflip();
+        you.props[HEPLIAKLQANA_ALLY_NAME_KEY] = make_ancestor_name(female);
+        you.props[HEPLIAKLQANA_ALLY_GENDER_KEY] = female ? GENDER_FEMALE
+                                                         : GENDER_MALE;
+        break;
+    }
 		
     case JOB_DANCER:
         you.religion = GOD_USKAYAW;

@@ -1431,7 +1431,7 @@ static job_group jobs_order[] =
         "Zealot",
         coord_def(35, 0), 15,
         { JOB_BOUND, JOB_BERSERKER, JOB_DANCER, JOB_ABYSSAL_KNIGHT, JOB_CHAOS_KNIGHT,
-          JOB_TORPOR_KNIGHT, JOB_NIGHT_KNIGHT, JOB_PALADIN }
+          JOB_TORPOR_KNIGHT, JOB_NIGHT_KNIGHT, JOB_PALADIN, JOB_INHERITOR }
     },
     {
         "Mage",
