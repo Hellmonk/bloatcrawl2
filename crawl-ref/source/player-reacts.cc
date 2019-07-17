@@ -939,6 +939,17 @@ static void _regenerate_hp_and_mp(int delay)
     {
         const int base_val = player_regen();
         you.hit_points_regeneration += div_rand_round(base_val * delay, BASELINE_DELAY);
+        if (you.permabuff[PERMA_REGEN]) {
+            if (you.hp < you.hp_max) {
+                int report = you.props[REGEN_REPORTING_PERCENT].get_int();
+                if (you.props[REGEN_RESERVE].get_int() > 0) report += delay;
+                report = div_rand_round(100 * report, 100 + delay);
+                you.props[REGEN_REPORTING_PERCENT] = report;
+                dprf(DIAG_PERMABUFF, "Regen working percentage %d", report);
+            } else {
+                you.props[REGEN_REPORTING_PERCENT] = 100;
+            }
+        }
         if (you.permabuff_working(PERMA_REGEN) &&
             (you.hp < you.hp_max) &&
             (you.props[REGEN_RESERVE].get_int() > 0)) {

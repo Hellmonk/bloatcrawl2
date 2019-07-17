@@ -127,6 +127,7 @@ spret_type cast_regen(int pow, bool fail)
         mpr("Your skin crawls.");
         // Made this large again, with the spell reserving a like number of MP
         you.props[REGEN_RESERVE] = spell_mana(SPELL_REGENERATION) * 100;
+        you.props[REGEN_REPORTING_PERCENT] = 100;
         you.pb_on(PERMA_REGEN); return SPRET_SUCCESS;
     }
 }

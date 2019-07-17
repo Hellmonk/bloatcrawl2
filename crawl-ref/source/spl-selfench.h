@@ -12,6 +12,7 @@
 #define CHARMS_DEBT "charms_debt"
 #define REGEN_RESERVE "regen_reserve"
 #define CHARMS_ALL_MPREGEN "charms_all_mpregen"
+#define REGEN_REPORTING_PERCENT "regen_reporting_percent"
 
 int allowed_deaths_door_hp();
 spret_type cast_deaths_door(int pow, bool fail);

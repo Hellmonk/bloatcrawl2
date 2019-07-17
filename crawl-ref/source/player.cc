@@ -1055,17 +1055,21 @@ int player_teleport(bool calc_unid)
 
 // Computes bonuses to regeneration from most sources. Does not handle
 // slow regeneration, vampireness, or Trog's Hand.
-static int _player_bonus_regen()
+static int _player_bonus_regen(bool reporting)
 {
     int rr = 0;
 
     // Trog's Hand is handled separately so that it will bypass slow
     // regeneration, and it overrides the spell.
     if (you.permabuff_working(PERMA_REGEN) && 
-        (you.props[REGEN_RESERVE].get_int() > 0)
-        && !you.duration[DUR_TROGS_HAND])
-    {
-        rr += 100;
+        !you.duration[DUR_TROGS_HAND]) {
+        if (!reporting) {
+            if (you.props[REGEN_RESERVE].get_int() > 0) {
+                rr += 100;
+            }
+        } else {
+            rr += you.props[REGEN_REPORTING_PERCENT].get_int();
+        }
     }
 
     // Jewellery.
@@ -1117,7 +1121,7 @@ bool regeneration_is_inhibited()
     }
 }
 
-int player_regen()
+int player_regen(bool reporting)
 {
     // Note: if some condition can set rr = 0, can't be rested off, and
     // would allow travel, please update is_sufficiently_rested.
@@ -1128,7 +1132,7 @@ int player_regen()
         rr = 20 + ((rr - 20) / 2);
 
     // Add in miscellaneous bonuses
-    rr += _player_bonus_regen();
+    rr += _player_bonus_regen(reporting);
 
     // Before applying other effects, make sure that there's something
     // to heal.
@@ -4807,7 +4811,7 @@ void dec_disease_player(int delay)
         // Extra regeneration means faster recovery from disease.
         // But not if not actually regenerating!
         if (player_regenerates_hp())
-            rr += _player_bonus_regen();
+            rr += _player_bonus_regen(false);
 
         // Trog's Hand.
         if (you.duration[DUR_TROGS_HAND])
