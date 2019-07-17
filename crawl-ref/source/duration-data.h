@@ -3,6 +3,7 @@
  */
 
 #include "god-passive.h"
+#include "spl-clouds.h"
 
 //static void _end_weapon_brand()
 //{
@@ -219,11 +220,22 @@ static const duration_def duration_data[] =
       "You are exhausted.", D_NO_FLAGS,
       {{ "You feel less exhausted." }}},
     { DUR_FIRE_SHIELD,
-      BLUE, "RoF",
-      "immune to fire clouds", "fire shield",
-      "", D_DISPELLABLE | D_EXPIRES,
-      {{ "Your ring of flames gutters out." },
-       { "Your ring of flames is guttering out.", 2}}, 5},
+      YELLOW, "-RoF",
+      "ring of fire suppressed", "",
+      "The fire surrounding you has been disrupted.", D_EXPIRES,
+      {{ "", []() {
+		  if (_recheck_perma(PERMA_ROF) && 
+		      you.permabuff_could(PERMA_ROF)) {
+		      if (you.permabuff_working(PERMA_ROF)) {
+			  mprf(MSGCH_DURATION, 
+			       "You are once again surrounded by a ring of flame.");
+			  manage_fire_shield(1);
+		      } else {
+			  mprf(MSGCH_DURATION, 
+			       "You are once again able to conjure a ring of flames.");
+		      }
+		  }
+	      }}}},
     { DUR_ICY_ARMOUR,
       0, "",
       "icy armour", "",

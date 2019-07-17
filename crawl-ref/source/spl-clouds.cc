@@ -250,20 +250,27 @@ void big_cloud(cloud_type cl_type, const actor *agent,
                      cl_type, agent, spread_rate, -1);
 }
 
-spret_type cast_ring_of_flames(int power, bool fail)
-{
-    fail_check();
-    did_god_conduct(DID_FIRE, min(5 + power/5, 50));
-    you.increase_duration(DUR_FIRE_SHIELD,
-                          6 + (power / 10) + (random2(power) / 5), 50,
-                          "The air around you leaps into flame!");
-    manage_fire_shield(1);
-    return SPRET_SUCCESS;
+spret_type cast_ring_of_flames(int power, bool fail) {
+    if (you.permabuff[PERMA_ROF]) {
+        mpr(you.permabuff_could(PERMA_ROF) ?
+            "The flames around you gutter out." :
+            "You stop attemping to sustain a ring of flames."); // prosaic :-(
+        you.pb_off(PERMA_ROF); return SPRET_PERMACANCEL;
+    } else {
+        fail_check();
+        did_god_conduct(DID_FIRE, min(5 + power/5, 50));
+        mpr(you.duration[DUR_FIRE_SHIELD] ?
+            "The air around you is growing hot." :
+            "The air around you leaps into flame!");
+        you.pb_on(PERMA_ROF);
+        if (you.permabuff_working(PERMA_ROF)) manage_fire_shield(1);
+        return SPRET_SUCCESS;
+    }
 }
 
 void manage_fire_shield(int delay)
 {
-    ASSERT(you.duration[DUR_FIRE_SHIELD]);
+    ASSERT(you.permabuff_working(PERMA_ROF));
 
     // Melt ice armour entirely.
     maybe_melt_player_enchantments(BEAM_FIRE, 100);

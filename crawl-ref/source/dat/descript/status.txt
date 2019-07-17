@@ -287,10 +287,10 @@ strength, intelligence and dexterity.
 %%%%
 RoF status
 
-You are surrounded by a ring of flame clouds, increasing the power of your fire
-magic and giving protection from fire but also making you much more susceptible
-to cold.
-%%%%
+You are surrounded by a ring of flame clouds, increasing the power of
+your fire magic and giving protection from fire but also making you
+much more susceptible to cold attacks which are not intercepted by the clouds.
+%%%% 
 MR/2 status
 
 You are more vulnerable to hostile enchantments.

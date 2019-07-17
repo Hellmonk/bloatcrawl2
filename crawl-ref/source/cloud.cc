@@ -32,6 +32,7 @@
 #include "nearby-danger.h" // Compass (for random_walk, CloudGenerator)
 #include "religion.h"
 #include "shout.h"
+#include "spl-selfench.h"
 #include "spl-util.h"
 #include "state.h"
 #include "stringutil.h"
@@ -862,7 +863,7 @@ bool actor_cloud_immune(const actor &act, cloud_type type)
         case CLOUD_FOREST_FIRE:
             if (!act.is_player())
                 return act.res_fire() >= 3;
-            return you.duration[DUR_FIRE_SHIELD]
+            return you.permabuff_working(PERMA_ROF)
                 || you.has_mutation(MUT_FLAME_CLOUD_IMMUNITY)
                 || player_equip_unrand(UNRAND_FIRESTARTER);
         case CLOUD_HOLY:
@@ -1309,6 +1310,14 @@ int actor_apply_cloud(actor *act)
 
         act->hurt(oppressor, final_damage, BEAM_MISSILE,
                   KILLED_BY_CLOUD, "", cloud.cloud_name(true));
+        
+        if (you.permabuff_working(PERMA_ROF) && oppressor->is_player() &&
+            // adjacency isn't quite right here
+            adjacent(mons->pos(), you.pos()) && (cloud_flavour == BEAM_FIRE)) {
+            permabuff_fail_check(
+                PERMA_ROF,
+                "You lose control of the ring of flames around you.");
+        }
     }
 
     return final_damage;

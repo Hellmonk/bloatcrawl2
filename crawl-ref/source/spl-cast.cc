@@ -940,6 +940,16 @@ bool cast_a_spell(bool check_range, spell_type spell)
                              3 + random2avg(sifcast_amount * 2, 2));
         }
     }
+    // You get a free pass if your fire spell miscasts, to avoid simultaneous
+    // miscasts
+    if ((cast_result == SPRET_SUCCESS) && (you.permabuff_working(PERMA_ROF))) {
+        const spschools_type typeflags = get_spell_disciplines(spell);
+        if (typeflags & SPTYP_FIRE) {
+            permabuff_fail_check
+                (PERMA_ROF,
+                 "You lose control of your ring of flames.");
+        }
+    }
 
     you.turn_is_over = true;
     alert_nearby_monsters();

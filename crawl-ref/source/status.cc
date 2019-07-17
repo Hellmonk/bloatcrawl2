@@ -327,19 +327,6 @@ bool fill_status_info(int status, status_info& inf)
         break;
     }
 
-    case DUR_FIRE_SHIELD:
-    {
-        // Might be better to handle this with an extra virtual status.
-        const bool exp = dur_expiring(DUR_FIRE_SHIELD);
-        if (exp)
-            inf.long_text += "Expiring: ";
-        inf.long_text += "You are surrounded by a ring of flames.\n";
-        if (exp)
-            inf.long_text += "Expiring: ";
-        inf.long_text += "You are immune to clouds of flame.";
-        break;
-    }
-
     case DUR_POISONING:
         _describe_poison(inf);
         break;
@@ -394,8 +381,7 @@ bool fill_status_info(int status, status_info& inf)
         }
         break;
         
-    case STATUS_DCHAN:
-    {
+    case STATUS_DCHAN: {
         if (you.permabuff[PERMA_DCHAN] &&
             !you.duration[DUR_DEATH_CHANNEL]) {
             inf.light_text = "DChan";
@@ -418,6 +404,33 @@ bool fill_status_info(int status, status_info& inf)
             inf.light_colour = DARKGREY;
             inf.long_text = "If you recast Death Channel, it will not take effect immediately.";
         }
+    }
+        
+    case STATUS_ROF: {
+        if (you.permabuff[PERMA_ROF] &&
+            !you.duration[DUR_FIRE_SHIELD]) {
+            inf.light_text = "RoF";
+            inf.short_text = "ring of flames";
+            if (you.permabuff_working(PERMA_ROF)) {
+                inf.light_colour = LIGHTBLUE;
+                inf.long_text = 
+                    "You are surrounded by a ring of blazing flame.";
+            } else {
+                inf.light_colour = DARKGREY;
+                inf.short_text = "no ring of flames";
+                inf.long_text = 
+                    "You would be surrounded by a ring of flame, but " +
+                    you.permabuff_whynot(PERMA_ROF) + ".";
+            }
+        }
+        break;
+    }
+    case DUR_FIRE_SHIELD: {
+        if (!you.permabuff[PERMA_ROF]) {
+            inf.light_colour = DARKGREY;
+            inf.long_text = "If you recast Ring of Flames, it will not take effect immediately.";
+        }
+        break;
     }
 
     case STATUS_REPEL_MISSILES:

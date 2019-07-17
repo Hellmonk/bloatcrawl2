@@ -1234,7 +1234,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "your body armour is too heavy.";
         if (temp && you.form == transformation::statue)
             return "the film of ice won't work on stone.";
-        if (temp && you.duration[DUR_FIRE_SHIELD])
+        if (temp && you.permabuff_working(PERMA_ROF))
             return "your ring of flames would instantly melt the ice.";
         break;
 
@@ -1672,6 +1672,10 @@ int nominal_duration(spell_type spell) {
         return min(30 + (calc_spell_power(spell, true)/3), 200);
         // you.increase_duration(DUR_DEATH_CHANNEL, 
         // 30 + random2(1 + 2*pow/3), 200);
+    case SPELL_RING_OF_FLAMES:
+        return min(50, 6 +  (calc_spell_power(spell, true)/5));
+        // you.increase_duration(DUR_FIRE_SHIELD,
+        //  6 + (power / 10) + (random2(power) / 5), 50,
     default:
         return 0;
     }

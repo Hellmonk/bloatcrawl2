@@ -466,8 +466,7 @@ void player_reacts_to_monsters()
     if (!you_are_delayed())
         update_can_train();
 
-    if (you.duration[DUR_FIRE_SHIELD] > 0)
-        manage_fire_shield(you.time_taken);
+    if (you.permabuff_working(PERMA_ROF)) manage_fire_shield(you.time_taken);
 
     check_monster_detect();
 
@@ -996,22 +995,25 @@ static void _regenerate_hp_and_mp(int delay)
         }
     }
 
-    if (sub) dprf(DIAG_PERMABUFF,
-                  "Total charge %d, regen %d, reserve %d", sub,
-                  mp_regen_countup, you.charms_reserve);
+    if (sub) {
+        dprf(DIAG_PERMABUFF,
+             "Total charge %d, regen %d, reserve %d", sub, mp_regen_countup,
+             you.charms_reserve);
+    }
     if (you.charms_reserve >= sub) {
         you.charms_reserve -= sub; sub = 0;
     } else {
         sub -= you.charms_reserve; you.charms_reserve = 0;
     }
-    if (sub) {
-        you.props[MP_TO_CHARMS].get_int() += sub;
-    }
+    // This is intentionally here so it only shows up if you are losing actual
+    // MP regen. The reporting here isn't brilliant but it's hard to see how
+    // it can be improved
+    if (sub) you.props[MP_TO_CHARMS].get_int() += sub;
     if (sub >= mp_regen_countup) {
         you.props[CHARMS_DEBT].get_int() += (sub - mp_regen_countup);
         mp_regen_countup = 0;
         you.props[CHARMS_ALL_MPREGEN] = true;
-        dprf(DIAG_PERMABUFF,"Debt increased to %d",
+        dprf(DIAG_PERMABUFF, "Debt increased to %d",
              you.props[CHARMS_DEBT].get_int());
     } else {
         mp_regen_countup -= sub;
@@ -1042,7 +1044,10 @@ static void _regenerate_hp_and_mp(int delay)
                     }
                 }
             }
+// If nothing left to turn off, and no MP, lucky? you. You saved some MP.
             if (turnoff != PERMA_NO_PERMA) {
+// Avoid the case where a lingering PB keeps draining MP, which is confusing
+                you.perma_benefit[turnoff] = 0;
                 you.pb_off((permabuff_type) turnoff);
                 mprf(MSGCH_DURATION,
                      "You don't have enough magic to sustain all your permanent charms!");
@@ -1052,8 +1057,10 @@ static void _regenerate_hp_and_mp(int delay)
                 you.perma_mp[turnoff] = 0; 
                 you.props[CHARMS_DEBT].get_int() -= 
                     10 * spell_mana(permabuff_spell[turnoff]);
-            } else {
-                mprf(MSGCH_ERROR, "BUG: Found no permabuff to turn off when out of MP!");
+// This is not an error; it's hard to do, but if you run an expensive short
+// PB with a massive failure chance, you can be charged >1 MP in a turn.
+//            } else {
+//                mprf(MSGCH_ERROR, "BUG: Found no permabuff to turn off when out of MP!");
             }
         }
     }
@@ -1123,9 +1130,10 @@ static void _regenerate_hp_and_mp(int delay)
                      divert, mp_regen_countup, you.charms_reserve,
                      you.charms_reserve_size);
             you.charms_reserve += divert; mp_regen_countup -= divert;
-            if (you.charms_reserve > (you.charms_reserve_size)) {
-                int corr = you.charms_reserve - (you.charms_reserve_size);
-                mp_regen_countup += corr; divert =- corr; 
+            if (you.charms_reserve > you.charms_reserve_size) {
+                int corr = you.charms_reserve - you.charms_reserve_size;
+                dprf(DIAG_PERMABUFF, "Correction %d", corr);
+                mp_regen_countup += corr; divert -= corr; 
                 you.charms_reserve -= corr;
             }
             you.props[MP_TO_CHARMS].get_int() += divert;
