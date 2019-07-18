@@ -116,6 +116,11 @@ Inheritor
 Inheritors worship Hepliaklqana. The spirit of their ancestor follows them to the
 dungeon, and given their lack of skills they may need to rely on it.
 %%%%
+Librarian
+
+Librarians come to the Dungeon in search of new books for their collection. They
+serve Sif Muna the Loreminder and bring a random book along with them.
+%%%%
 Meteorologist
 
 Meteorologists predict the weather and carry around some handy evocable items

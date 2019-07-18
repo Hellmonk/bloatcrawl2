@@ -280,6 +280,15 @@ static const map<job_type, job_def> job_data =
     { { SK_INVOCATIONS, 3 }, },
 } },
 
+{ JOB_LIBRARIAN, {
+    "Li", "Librarian",
+    0, 9, 3,
+    { SP_SPRIGGAN, SP_OCTOPODE, SP_VINE_STALKER, SP_DEEP_ELF, },
+    { "robe", "dagger" },
+    WCHOICE_NONE,
+    { { SK_DODGING, 2 }, { SK_STEALTH, 2 }, { SK_SPELLCASTING, 4 }, },
+} },
+
 { JOB_METEOROLOGIST, {
     "Me", "Meteorologist",
     2, 8, 2,

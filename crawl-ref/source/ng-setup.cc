@@ -354,6 +354,15 @@ static void _give_items_skills(const newgame_def& ng)
         you.piety = 35;
         break;
         
+    case JOB_LIBRARIAN:
+    {
+        you.religion = GOD_SIF_MUNA;
+        you.piety = 35;
+        add_spell_to_memory(SPELL_APPORTATION);
+        librarian_book();
+        break;
+    }
+        
     case JOB_INHERITOR:
     {
         you.religion = GOD_HEPLIAKLQANA;
