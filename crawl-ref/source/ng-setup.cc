@@ -339,6 +339,16 @@ static void _give_items_skills(const newgame_def& ng)
             you.skills[SK_ARMOUR]++;
         break;
         
+    case JOB_BLOOD_KNIGHT:
+        you.religion = GOD_MAKHLEB;
+        you.piety = 35;
+
+        if (species_apt(SK_ARMOUR) < species_apt(SK_DODGING))
+            you.skills[SK_DODGING]++;
+        else
+            you.skills[SK_ARMOUR]++;
+        break;
+        
     case JOB_NIGHT_KNIGHT:
         you.religion = GOD_DITHMENOS;
         you.piety = 35;

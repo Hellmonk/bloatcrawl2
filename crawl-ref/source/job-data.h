@@ -103,6 +103,17 @@ static const map<job_type, job_def> job_data =
     { { SK_FIGHTING, 3 }, { SK_DODGING, 2 }, { SK_WEAPON, 3 }, },
 } },
 
+{ JOB_BLOOD_KNIGHT, {
+    "BK", "Blood Knight",
+    5, 4, 3,
+    { SP_HILL_ORC, SP_GNOLL, SP_DEEP_DWARF, SP_DEMONSPAWN, 
+      SP_FORMICID },
+    { "leather armour" },
+    WCHOICE_PLAIN,
+    { { SK_FIGHTING, 2 }, { SK_INVOCATIONS, 3 }, { SK_DODGING, 1 },
+      { SK_ARMOUR, 1 }, { SK_WEAPON, 1 } },
+} },
+
 { JOB_BOUND, {
     "Bo", "Bound",
     4, 4, 4,
