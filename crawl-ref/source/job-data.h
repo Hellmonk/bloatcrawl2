@@ -340,6 +340,17 @@ static const map<job_type, job_def> job_data =
       { SK_SPELLCASTING, 2 }, { SK_CHARMS, 3 }, { SK_WEAPON, 2 }, },
 } },
 
+{ JOB_SLIME_PRIEST, {
+    "SP", "Slime Priest",
+    4, 4, 4,
+    { SP_TROLL, SP_OCTOPODE, SP_MINOTAUR, SP_SPRIGGAN,
+      SP_DEMONSPAWN, },
+    { "ring mail plus:1" },
+    WCHOICE_PLAIN,
+    { { SK_FIGHTING, 3 }, { SK_ARMOUR, 1 }, { SK_DODGING, 1 }, 
+      { SK_WEAPON, 3 }, },
+} },
+
 { JOB_SUMMONER, {
     "Su", "Summoner",
     0, 7, 5,

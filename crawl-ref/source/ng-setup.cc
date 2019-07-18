@@ -329,6 +329,16 @@ static void _give_items_skills(const newgame_def& ng)
             you.skills[SK_ARMOUR]++;
         break;
         
+    case JOB_SLIME_PRIEST:
+        you.religion = GOD_JIYVA;
+        you.piety = 5;
+
+        if (species_apt(SK_ARMOUR) < species_apt(SK_DODGING))
+            you.skills[SK_DODGING]++;
+        else
+            you.skills[SK_ARMOUR]++;
+        break;
+        
     case JOB_NIGHT_KNIGHT:
         you.religion = GOD_DITHMENOS;
         you.piety = 35;
@@ -705,6 +715,14 @@ static void _setup_generic(const newgame_def& ng)
     // Make sure the starting player is fully charged up.
     set_hp(you.hp_max);
     set_mp(you.max_magic_points);
+    
+    //Mutate Slime Priest
+    if (you.char_class == JOB_SLIME_PRIEST)
+    {
+        mutate(RANDOM_SLIME_MUTATION, "Slime Spawn's Curse", false);
+        mutate(RANDOM_MUTATION, "Slime Spawn's Curse", false);
+        mutate(RANDOM_MUTATION, "Slime Spawn's Curse", false);
+    }
 
     initial_dungeon_setup();
 

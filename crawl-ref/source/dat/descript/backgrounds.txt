@@ -140,6 +140,11 @@ Philosopher
 Philosophers bring their thinking hat to the dungeon, but not much else in the
 way of useful items.
 %%%%
+Slime Priest
+
+Slime priests follow Jiyva, the slime god. They enter the dungeon already mutated
+by their deity's power but with only a small amount of divine favor.
+%%%%
 Skald
 
 Skalds are melee fighters who can boost themselves in battle with spells from
