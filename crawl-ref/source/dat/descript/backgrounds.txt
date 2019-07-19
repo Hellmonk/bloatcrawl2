@@ -61,6 +61,11 @@ Dancer
 Dancers have left their friends behind and entered the dungeon in service of Uskayaw.
 They have few combat skills but are quite good at evading attacks.
 %%%%
+Death Bishop
+
+Pontiffs of Yredelemnul, Death Bishops carry a weapon of draining and use the pain spell 
+in service of their evil god.
+%%%%
 Deprived
 
 Deprived start with nothing but a ration and almost no skills. Survival may prove...

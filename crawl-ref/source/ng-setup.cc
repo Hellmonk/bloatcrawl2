@@ -349,6 +349,11 @@ static void _give_items_skills(const newgame_def& ng)
             you.skills[SK_ARMOUR]++;
         break;
         
+    case JOB_DEATH_BISHOP:
+        you.religion = GOD_YREDELEMNUL;
+        you.piety = 35;
+        break;
+        
     case JOB_NIGHT_KNIGHT:
         you.religion = GOD_DITHMENOS;
         you.piety = 35;
@@ -389,6 +394,9 @@ static void _give_items_skills(const newgame_def& ng)
 
     case JOB_UNCLE:
         add_spell_to_memory(SPELL_CONFUSING_TOUCH);
+    
+    //intentional fallthrough
+    case JOB_DEATH_BISHOP:
         add_spell_to_memory(SPELL_PAIN);
         break;
 
@@ -408,6 +416,8 @@ static void _give_items_skills(const newgame_def& ng)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +1);
     else if (you.char_class == JOB_CHAOS_KNIGHT)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, 0, SPWPN_CHAOS);
+    else if (you.char_class == JOB_DEATH_BISHOP)
+        newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, 0, SPWPN_DRAINING);
     else if (you.char_class == JOB_PALADIN)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +1, SPWPN_HOLY_WRATH);
     else if (you.char_class == JOB_NIGHT_KNIGHT)

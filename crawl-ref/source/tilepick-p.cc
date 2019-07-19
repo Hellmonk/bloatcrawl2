@@ -772,6 +772,7 @@ void tilep_job_default(int job, dolls_data *doll)
             parts[TILEP_PART_BOOTS] = TILEP_BOOTS_SHORT_BROWN;
             break;
         
+        case JOB_DEATH_BISHOP:
         case JOB_BLOOD_KNIGHT:
             parts[TILEP_PART_BODY]  = TILEP_BODY_ROBE_BLACK;
             parts[TILEP_PART_CLOAK] = TILEP_CLOAK_RED;

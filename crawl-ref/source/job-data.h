@@ -165,6 +165,16 @@ static const map<job_type, job_def> job_data =
     { {SK_DODGING, 5}, {SK_INVOCATIONS, 4}, },
 } },
 
+{ JOB_DEATH_BISHOP, {
+    "DB", "Death Bishop",
+    5, 4, 3,
+    { SP_HILL_ORC, SP_GNOLL, SP_SPRIGGAN, SP_DEMONSPAWN, 
+      SP_FORMICID },
+    { "robe" },
+    WCHOICE_PLAIN,
+    { { SK_FIGHTING, 2 }, { SK_INVOCATIONS, 2 }, { SK_DODGING, 2 }, { SK_WEAPON, 2 } },
+} },
+
 { JOB_DEPRIVED, {
     "De", "Deprived",
     4, 4, 4,
