@@ -208,3 +208,7 @@ Wizard
 Wizards start with the wide range of spells present in a book of Minor Magic in
 their spell library.
 %%%%
+Zinja
+
+Zinjas worship Zin and very stealthily recite the Aixoms of Law.
+%%%%

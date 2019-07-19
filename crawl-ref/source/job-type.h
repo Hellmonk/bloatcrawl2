@@ -58,6 +58,7 @@ enum job_type
     JOB_BLOOD_KNIGHT,
     JOB_LIBRARIAN,
     JOB_DEATH_BISHOP,
+    JOB_ZINJA,
     NUM_JOBS,                          // always after the last job
 
     JOB_UNKNOWN = 100,

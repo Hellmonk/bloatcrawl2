@@ -167,7 +167,7 @@ static const map<job_type, job_def> job_data =
 
 { JOB_DEATH_BISHOP, {
     "DB", "Death Bishop",
-    5, 4, 3,
+    4, 4, 4,
     { SP_HILL_ORC, SP_GNOLL, SP_SPRIGGAN, SP_DEMONSPAWN, 
       SP_FORMICID },
     { "robe" },
@@ -474,6 +474,16 @@ static const map<job_type, job_def> job_data =
     WCHOICE_NONE,
     { { SK_DODGING, 2 }, { SK_STEALTH, 2 }, { SK_SPELLCASTING, 3 },
       { SK_TRANSLOCATIONS, 1 }, { SK_CONJURATIONS, 1 }, { SK_SUMMONINGS, 1 }, },
+} },
+
+{ JOB_ZINJA, {
+    "Zi", "Zinja",
+    4, 4, 4,
+    { SP_HILL_ORC, SP_GNOLL, SP_SPRIGGAN, SP_DEMONSPAWN, 
+      SP_FORMICID },
+    { "robe", "boomerang ego:silver q:3" },
+    WCHOICE_PLAIN,
+    { { SK_FIGHTING, 1 }, { SK_INVOCATIONS, 2 }, { SK_DODGING, 1 }, { SK_WEAPON, 2 }, { SK_STEALTH, 4 } },
 } },
 #if TAG_MAJOR_VERSION == 34
 { JOB_DEATH_KNIGHT, {

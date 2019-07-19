@@ -351,6 +351,12 @@ static void _give_items_skills(const newgame_def& ng)
         
     case JOB_DEATH_BISHOP:
         you.religion = GOD_YREDELEMNUL;
+        add_spell_to_memory(SPELL_PAIN);
+        you.piety = 35;
+        break;
+        
+    case JOB_ZINJA:
+        you.religion = GOD_ZIN;
         you.piety = 35;
         break;
         
@@ -394,9 +400,6 @@ static void _give_items_skills(const newgame_def& ng)
 
     case JOB_UNCLE:
         add_spell_to_memory(SPELL_CONFUSING_TOUCH);
-    
-    //intentional fallthrough
-    case JOB_DEATH_BISHOP:
         add_spell_to_memory(SPELL_PAIN);
         break;
 
