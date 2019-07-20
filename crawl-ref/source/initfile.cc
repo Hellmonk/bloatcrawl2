@@ -835,7 +835,7 @@ void game_options::set_default_activity_interrupts()
         "interrupt_multidrop = hp_loss, monster_attack, teleport, stat",
         "interrupt_macro = interrupt_multidrop",
         "interrupt_travel = interrupt_butcher, hungry, hit_monster, "
-                            "sense_monster",
+                            "sense_monster, pb_miscast",
         "interrupt_run = interrupt_travel, message, pb_miscast",
         "interrupt_rest = interrupt_run, full_hp, full_mp, pb_miscast",
 
