@@ -28,7 +28,12 @@
  */
 void end_weapon_brand(item_def &weapon, bool verbose)
 {
-    ASSERT(you.props.exists(ORIGINAL_BRAND_KEY));
+    // The assertion is removed here because I'm not sure enough about this to
+    // want to die rather than get a bug report
+    if (!you.props.exists(ORIGINAL_BRAND_KEY)) {
+        you.props[ORIGINAL_BRAND_KEY] = SPWPN_NORMAL;
+        mprf(MSGCH_ERROR, "BUG: tried to end pain brand but you have no original weapon brand");
+    }
 
     set_item_ego_type(weapon, OBJ_WEAPONS, you.props[ORIGINAL_BRAND_KEY]);
     you.props.erase(ORIGINAL_BRAND_KEY);
