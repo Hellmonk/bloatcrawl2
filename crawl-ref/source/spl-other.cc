@@ -72,7 +72,7 @@ spret_type cast_sublimation_of_blood(int pow, bool fail)
 spret_type cast_death_channel(int pow, god_type god, bool fail)
 {
     if (you.permabuff[PERMA_DCHAN]) {
-        mpr(you.permabuff_could(PERMA_DCHAN) ?
+        mpr(you.permabuff_working(PERMA_DCHAN) ?
             "You stop channeling the dead." :
             "You stop attempting to channel the dead.");
         you.pb_off(PERMA_DCHAN); return SPRET_PERMACANCEL;

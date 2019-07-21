@@ -474,11 +474,13 @@ static const duration_def duration_data[] =
       "You are temporarily unable to cause excruciating wounds.", D_EXPIRES,
       {{ "", []() {
 		  if (_recheck_perma(PERMA_EXCRU)) {
-		      if (you.permabuff_could(PERMA_EXCRU)) {
+		      if (you.permabuff_could(PERMA_EXCRU) ||
+			  (you.permabuff_notworking(PERMA_EXCRU) == 
+			   PB_EXCRU_NOWEP)) {
 			  mprf(MSGCH_DURATION, 
 			       "You are once again %s.",
 			       (you.permabuff_working(PERMA_EXCRU) ? 
-			    "inflicting excruciating wounds" :
+				"inflicting excruciating wounds" :
 				"able to inflict excruciating wounds"));
 		      }}}}}},
     { DUR_DEATH_CHANNEL,
@@ -491,7 +493,7 @@ static const duration_def duration_data[] =
 			  mprf(MSGCH_DURATION, 
 			       "You are once again %s.",
 			       (you.permabuff_working(PERMA_DCHAN) ? 
-			    "channelling the dead" :
+				"channelling the dead" :
 				"able to channel the dead"));
 		      }}}}}},
     { DUR_FLAYED,

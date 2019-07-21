@@ -252,7 +252,7 @@ void big_cloud(cloud_type cl_type, const actor *agent,
 
 spret_type cast_ring_of_flames(int power, bool fail) {
     if (you.permabuff[PERMA_ROF]) {
-        mpr(you.permabuff_could(PERMA_ROF) ?
+        mpr(you.permabuff_working(PERMA_ROF) ?
             "The flames around you gutter out." :
             "You stop attemping to sustain a ring of flames."); // prosaic :-(
         you.pb_off(PERMA_ROF); return SPRET_PERMACANCEL;

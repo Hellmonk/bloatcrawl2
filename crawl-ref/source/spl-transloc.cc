@@ -779,7 +779,7 @@ void you_teleport_now(bool wizard_tele, bool teleportitis)
 spret_type cast_portal_projectile(int pow, bool fail)
 {
     if (you.permabuff[PERMA_PPROJ]) {
-        mpr(you.permabuff_could(PERMA_PPROJ) ?
+        mpr(you.permabuff_working(PERMA_PPROJ) ?
             "You stop teleporting projectiles to their destination." :
             "You stop attempting to teleport projectiles to their destination.");
         you.pb_off(PERMA_PPROJ); return SPRET_PERMACANCEL;
