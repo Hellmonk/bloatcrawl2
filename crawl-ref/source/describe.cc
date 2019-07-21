@@ -2009,7 +2009,9 @@ string get_item_description(const item_def &item, bool verbose,
                         << "]";
             need_base_desc = false;
         }
-        else if (is_unrandom_artefact(item) && item_type_known(item))
+        else if (is_unrandom_artefact(item) && 
+                 (item_type_known(item) || 
+                  is_unrandom_artefact(item, UNRAND_FAERIE)))
         {
             const string desc = getLongDescription(get_artefact_name(item));
             if (!desc.empty())
