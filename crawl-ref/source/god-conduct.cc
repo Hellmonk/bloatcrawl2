@@ -532,26 +532,18 @@ struct like_response
 {
     /// How to describe this conduct on the god description screen.
     const char* desc;
-    /// Whether the god should be described as "especially" liking it.
-    bool really_like;
-    /** Gain in piety for triggering this conduct; added to calculated denom.
-     *
-     * This number is usually negative. In that case, the maximum piety gain
-     * is one point, and the chance of *not* getting that point is:
-     *    -piety_bonus/(piety_denom_bonus + level - you.xl/xl_denom)
-     * (omitting the you.xl term if xl_denom is zero)
+    /** Gain in piety for triggering this conduct. Define just one of piety or
+     * piety_fn (leave the other nullptr).
      */
-    int piety_bonus;
-    /// Divider for piety gained by this conduct; added to 'level'.
-    int piety_denom_bonus;
-    /// Degree to which your XL modifies piety gained. If zero, do not
-    /// modify piety by XL; otherwise divide player XL by this value.
-    int xl_denom;
+    int piety;
+    function<int (const monster* victim)> piety_fn;
+    /** The chance of getting piety is:
+     * x_chance_in_y(piety_chance_base + you.xl * piety_chance_xl_mul, 1000);
+     */
+    int piety_chance_base;
+    int piety_chance_xl_mul;
     /// Something your god says when you trigger this conduct. May be nullptr.
     const char *message;
-    /// Special-case code for weird likes. May modify piety bonus/denom, or
-    /// may have other side effects. If nullptr, doesn't trigger, ofc.
-    special_piety_t special;
 
     /// Apply this response to a given conduct, severity level, and victim.
     /// @param victim may be null.
@@ -570,40 +562,17 @@ struct like_response
 
         // this is all very strange, but replicates legacy behavior.
         // See the comment on piety_bonus above.
-        int denom = piety_denom_bonus + level;
-        if (xl_denom)
-            denom -= you.get_experience_level() / xl_denom;
+        const bool success = x_chance_in_y(
+            piety_chance_base + you.get_experience_level() * piety_chance_xl_mul,
+            1000);
 
-        int gain = denom + piety_bonus;
+        const int gain = piety_fn != nullptr ? piety_fn(victim) : piety;
 
-        // handle weird special cases
-        // may modify gain/denom
-        if (special)
-            special(gain, denom, victim);
-
-        _handle_piety_penance(max(0, gain), max(1, denom), 0, thing_done);
+        // piety_fn might return 0
+        if (success && gain > 0)
+            _handle_piety_penance(gain, 1, thing_done);
     }
 };
-
-/**
- * The piety bonus that is given for killing monsters of the appropriate
- * holiness.
- *
- * Gets slotted into a very strange equation. It's weird.
- */
-static int _piety_bonus_for_holiness(mon_holy_type holiness)
-{
-    if (holiness & (MH_NATURAL | MH_PLANT | MH_NONLIVING))
-        return -6;
-    else if (holiness & MH_UNDEAD)
-        return -5;
-    else if (holiness & MH_DEMONIC)
-        return -4;
-    else if (holiness & MH_HOLY)
-        return -3;
-    else
-        die("unknown holiness type; can't give a bonus");
-}
 
 /**
  * Generate an appropriate kill response (piety gain scaling, message, &c),
@@ -615,41 +584,39 @@ static int _piety_bonus_for_holiness(mon_holy_type holiness)
  * @param special       A special-case function.
  * @return              An appropropriate like_response.
  */
-static like_response _on_kill(const char* desc, mon_holy_type holiness,
-                              bool god_is_good = false,
-                              special_piety_t special = nullptr,
-                              bool really_like = false)
+static like_response _on_kill(const char* desc,
+                              int piety = 1,
+                              function<int (const monster* victim)> piety_fn = nullptr)
 {
     return {
         desc,
-        really_like,
-        _piety_bonus_for_holiness(holiness),
-        18,
-        god_is_good ? 0 : 2,
-        " accepts your kill.",
-        special
+        piety,
+        piety_fn,
+        60,
+        1,
+        " accepts your kill."
     };
 }
 
 /// Response for gods that like killing the living.
 static const like_response KILL_LIVING_RESPONSE =
-    _on_kill("you kill living beings", MH_NATURAL);
+    _on_kill("you kill living beings");
 
 /// Response for non-good gods that like killing (?) undead.
 static const like_response KILL_UNDEAD_RESPONSE =
-    _on_kill("you destroy the undead", MH_UNDEAD);
+    _on_kill("you destroy the undead");
 
 /// Response for non-good gods that like killing (?) demons.
 static const like_response KILL_DEMON_RESPONSE =
-    _on_kill("you kill demons", MH_DEMONIC);
+    _on_kill("you kill demons");
 
 /// Response for non-good gods that like killing (?) holies.
 static const like_response KILL_HOLY_RESPONSE =
-    _on_kill("you kill holy beings", MH_HOLY);
+    _on_kill("you kill holy beings");
 
 /// Response for non-good gods that like killing (?) nonliving enemies.
 static const like_response KILL_NONLIVING_RESPONSE =
-    _on_kill("you destroy nonliving beings", MH_NONLIVING);
+    _on_kill("you destroy nonliving beings");
 
 // Note that holy deaths are special - they're always noticed...
 // If you or any friendly kills one, you'll get the credit/blame.
@@ -658,12 +625,10 @@ static like_response okawaru_kill(const char* desc)
 {
     return
     {
-        desc, false,
-        0, 0, 0, nullptr, [] (int &piety, int &denom, const monster* victim)
+        desc, nullptr, [] (const monster* victim)
         {
             piety = get_fuzzied_monster_difficulty(*victim);
             dprf("fuzzied monster difficulty: %4.2f", piety * 0.01);
-            denom = 550;
 
             if (piety > 3200)
             {
@@ -671,20 +636,16 @@ static like_response okawaru_kill(const char* desc)
                      "<white>%s is honoured by your kill.</white>",
                      uppercase_first(god_name(you.religion)).c_str());
             }
-            else if (piety > 9) // might still be miniscule
+            else
                 simple_god_message(" accepts your kill.");
-        }
+
+            return div_rand_round(piety, 550);
+        }, 60, 1, nullptr,
     };
 }
 
 static const like_response EXPLORE_RESPONSE = {
-    "you explore the world", false,
-    0, 0, 0, nullptr,
-    [] (int &piety, int &denom, const monster* /*victim*/)
-    {
-        // piety = denom = level at the start of the function
-        piety = 14;
-    }
+    "you explore the world", 1, nullptr, 7, 0, nullptr,
 };
 
 
@@ -697,26 +658,24 @@ static like_map divine_likes[] =
     like_map(),
     // GOD_ZIN,
     {
-        { DID_KILL_UNCLEAN, _on_kill("you kill unclean or chaotic beings", MH_DEMONIC, true) },
-        { DID_KILL_CHAOTIC, _on_kill(nullptr, MH_DEMONIC, true) },
+        { DID_KILL_UNCLEAN, _on_kill("you kill the unclean") },
+        { DID_KILL_CHAOTIC, _on_kill("you kill chaotic beings") },
     },
     // GOD_SHINING_ONE,
     {
-        { DID_KILL_UNDEAD, _on_kill("you kill the undead", MH_UNDEAD, true) },
-        { DID_KILL_DEMON, _on_kill("you kill demons", MH_DEMONIC, true) },
-        { DID_KILL_NATURAL_EVIL, _on_kill("you kill evil beings", MH_DEMONIC, true) },
+        { DID_KILL_UNDEAD, _on_kill("you kill the undead") },
+        { DID_KILL_DEMON, _on_kill("you kill demons") },
+        { DID_KILL_NATURAL_EVIL, _on_kill("you kill evil beings") },
         { DID_SEE_MONSTER, {
-            "you encounter other hostile creatures", false,
-            0, 0, 0, nullptr, [] (int &piety, int &denom, const monster* victim)
+            "you encounter other hostile creatures",
+            false, nullptr, [] (const monster* victim)
             {
                 // don't give piety for seeing things we get piety for killing.
                 if (victim && victim->evil())
                     return;
 
-                const int level = denom; // also = piety
-                denom = level / 2 + 6 - you.experience_level / 4;
-                piety = denom - 4;
-            }
+                return 1;
+            }, 60, 1, nullptr,
         } },
     },
     // GOD_KIKUBAAQUDGHA,
@@ -732,18 +691,8 @@ static like_map divine_likes[] =
         { DID_KILL_LIVING, KILL_LIVING_RESPONSE },
         { DID_KILL_UNDEAD, KILL_UNDEAD_RESPONSE },
         { DID_KILL_DEMON, KILL_DEMON_RESPONSE },
-        { DID_KILL_HOLY, _on_kill("you kill holy beings", MH_HOLY, false,
-                                  [](int &piety, int &denom,
-                                     const monster* victim)
-            {
-                piety *= 2;
-                simple_god_message(" appreciates your killing of a holy being.");
-            },
-            true
-        ) },
-        { DID_KILL_NONLIVING, {
-            "you destroy nonliving beings", true, 3, 18, 2, " accepts your kill."
-        } },
+        { DID_KILL_HOLY, _on_kill("you kill holy beings", 2) },
+        { DID_KILL_NONLIVING, _on_kill("you destroy non-living beings", 2) },
     },
     // GOD_XOM,
     like_map(),
@@ -786,10 +735,7 @@ static like_map divine_likes[] =
         { DID_KILL_DEMON, KILL_DEMON_RESPONSE },
         { DID_KILL_HOLY, KILL_HOLY_RESPONSE },
         { DID_KILL_NONLIVING, KILL_NONLIVING_RESPONSE },
-        { DID_KILL_WIZARD, {
-            "you kill wizards and other users of magic", true,
-            -6, 10, 0, " appreciates your killing of a magic user."
-        } },
+        { DID_KILL_WIZARD, _on_kill("you kill wizards and other users of magic", 2) },
     },
     // GOD_NEMELEX_XOBEH,
     {
@@ -797,15 +743,7 @@ static like_map divine_likes[] =
     },
     // GOD_ELYVILON,
     {
-        { DID_EXPLORATION, {
-            "you explore the world", false,
-            0, 0, 0, nullptr,
-            [] (int &piety, int &denom, const monster* /*victim*/)
-            {
-                // piety = denom = level at the start of the function
-                piety = 20;
-            }
-        } },
+        { DID_EXPLORATION, EXPLORE_RESPONSE },
     },
     // GOD_LUGONU,
     {
@@ -815,8 +753,7 @@ static like_map divine_likes[] =
         { DID_KILL_HOLY, KILL_HOLY_RESPONSE },
         { DID_KILL_NONLIVING, KILL_NONLIVING_RESPONSE },
         { DID_BANISH, {
-            "you banish creatures to the Abyss", false,
-            -6, 18, 2, " claims a new guest."
+            "you banish creatures to the Abyss", 2, nullptr, 60, 1, " claims a new guest."
         } },
     },
     // GOD_BEOGH,
@@ -827,8 +764,8 @@ static like_map divine_likes[] =
         { DID_KILL_HOLY, KILL_HOLY_RESPONSE },
         { DID_KILL_NONLIVING, KILL_NONLIVING_RESPONSE },
         { DID_KILL_PRIEST, {
-            "you kill the priests of other religions", true,
-            -6, 18, 0, " appreciates your killing of a heretic priest."
+            "you kill the priests of other religions", 2, nullptr, 60, 1,
+            " appreciates your killing of a heretic priest."
         } },
     },
     // GOD_JIYVA,
