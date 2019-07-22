@@ -483,6 +483,19 @@ static const map<job_type, job_def> job_data =
       { SK_WEAPON, 2 }, },
 } },
 
+{ JOB_WARRIOR, {
+    "Wa", "Warrior",
+    8, 0, 4,
+    { SP_MINOTAUR, SP_HILL_ORC, SP_MERFOLK, SP_GARGOYLE, SP_CENTAUR, },
+    { "scale mail plus:-2", "pair of gloves plus:-1", "hat", "dagger plus:-1", 
+      "bardiche plus:-6", "executioner's axe plus:-6", 
+      "triple sword plus:-6", "hunting sling plus:-2", "shortbow plus:-2", 
+      "hand crossbow plus:-2", "javelin q:1" },
+    WCHOICE_PLAIN,
+    { { SK_FIGHTING, 2 }, { SK_INVOCATIONS, 2 }, { SK_DODGING, 1 }, { SK_ARMOUR, 2 },
+      { SK_WEAPON, 2}, },
+} },
+
 { JOB_WIZARD, {
     "Wz", "Wizard",
     -1, 10, 3,

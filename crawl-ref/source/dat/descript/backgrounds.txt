@@ -213,6 +213,10 @@ Warper
 Warpers start with a weapon of their choice and a scroll of blinking. They
 begin with a number of Translocations spells in their library.
 %%%%
+Warrior
+
+Warriors are followers of Okawaru who bring a variety of equipment to the dungeon.
+%%%%
 Wizard
 
 Wizards start with the wide range of spells present in a book of Minor Magic in
