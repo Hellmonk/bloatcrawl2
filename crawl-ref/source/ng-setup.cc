@@ -368,6 +368,7 @@ static void _give_items_skills(const newgame_def& ng)
     case JOB_GAMBLER:
         you.religion = GOD_NEMELEX_XOBEH;
         you.piety = 35;
+        you.gift_timeout = 1;
         break;
         
     case JOB_DOCTOR:
