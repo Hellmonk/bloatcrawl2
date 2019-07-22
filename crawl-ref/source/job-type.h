@@ -62,6 +62,7 @@ enum job_type
     JOB_ANNIHILATOR,
     JOB_GAMBLER,
     JOB_WARRIOR,
+    JOB_MERCHANT,
     NUM_JOBS,                          // always after the last job
 
     JOB_UNKNOWN = 100,

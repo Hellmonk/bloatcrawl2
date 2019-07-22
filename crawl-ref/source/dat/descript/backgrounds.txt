@@ -136,6 +136,11 @@ Librarian
 Librarians come to the Dungeon in search of new books for their collection. They
 serve Sif Muna the Loreminder and bring a random book along with them.
 %%%%
+Merchant
+
+Merchants are followers of Gozag. Whether newly established or unsuccessful on the 
+surface world, they enter the Dungeon desperate for a source of income.
+%%%%
 Meteorologist
 
 Meteorologists predict the weather and carry around some handy evocable items
