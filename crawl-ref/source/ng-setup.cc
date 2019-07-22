@@ -381,6 +381,23 @@ static void _give_items_skills(const newgame_def& ng)
         you.piety = 35;
         break;
         
+    case JOB_HERMIT:
+    {
+        you.religion = GOD_RU;
+        you.piety = 10;
+        you.piety_hysteresis = 0;
+        you.gift_timeout = 0;
+        you.props[RU_SACRIFICE_PROGRESS_KEY] = 9999;
+        {
+            int delay = 50;
+            if (crawl_state.game_is_sprint())
+                delay /= SPRINT_MULTIPLIER;
+            you.props[RU_SACRIFICE_DELAY_KEY] = delay;
+        }
+        you.props[RU_SACRIFICE_PENALTY_KEY] = 0;
+    }
+        break;
+        
     case JOB_WARRIOR:
         you.religion = GOD_OKAWARU;
         you.piety = 35;

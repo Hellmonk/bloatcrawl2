@@ -125,6 +125,10 @@ Gladiator
 Gladiators are ready for the arena with light armour, nets, and a weapon of
 their choice.
 %%%%
+Hermit
+
+Followers of Ru, Hermits renounce the world and follow the path of asceticism.
+%%%%
 Hunter
 
 Hunters carry a ranged weapon of their choice, and are also equipped with light
