@@ -57,6 +57,15 @@ static const map<job_type, job_def> job_data =
       { SK_DODGING, 2 }, { SK_STEALTH, 2 }, },
 } },
 
+{ JOB_ANNIHILATOR, {
+    "An", "Annihilator",
+    0, 8, 4,
+    { SP_DEEP_ELF, SP_SPRIGGAN, SP_NAGA, SP_TENGU, SP_BASE_DRACONIAN},
+    { "robe" },
+    WCHOICE_NONE,
+    { { SK_CONJURATIONS, 3 }, { SK_SPELLCASTING, 3 },
+      { SK_DODGING, 2 }, { SK_STEALTH, 1 }, },
+} },
 
 { JOB_ARCANE_MARKSMAN, {
     "AM", "Arcane Marksman",

@@ -365,6 +365,13 @@ static void _give_items_skills(const newgame_def& ng)
         you.piety = 35;
         break;
         
+    case JOB_ANNIHILATOR:
+        you.religion = GOD_VEHUMET;
+        you.piety = 35;
+        add_spell_to_memory(SPELL_MAGIC_DART);
+        you.gift_timeout = roll_dice(2, 5);
+        break;   
+        
     case JOB_LIBRARIAN:
     {
         you.religion = GOD_SIF_MUNA;
