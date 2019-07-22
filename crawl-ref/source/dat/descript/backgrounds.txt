@@ -76,6 +76,11 @@ Deprived
 Deprived start with nothing but a ration and almost no skills. Survival may prove...
 difficult.
 %%%%
+Doctor
+
+Medical professionals from the surface occasionally enter the dungeon. They follow
+the healer god Elyvilon.
+%%%%
 Earth Elementalist
 
 Earth Elementalists know the Sandblast spell, and carry stones to fuel the

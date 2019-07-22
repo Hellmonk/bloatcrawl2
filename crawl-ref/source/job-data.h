@@ -193,6 +193,15 @@ static const map<job_type, job_def> job_data =
     { { SK_STEALTH, 1 }, },
 } },
 
+{ JOB_DOCTOR, {
+    "Dr", "Doctor",
+    3, 5, 4,
+    { SP_HILL_ORC, SP_TROLL },
+    { "dagger", "robe", "potion of curing", "potion of heal wounds" },
+    WCHOICE_NONE,
+    { {SK_FIGHTING, 2}, {SK_DODGING, 2}, {SK_STEALTH, 2}, {SK_INVOCATIONS, 4}, },
+} },
+
 { JOB_EARTH_ELEMENTALIST, {
     "EE", "Earth Elementalist",
     0, 7, 5,
