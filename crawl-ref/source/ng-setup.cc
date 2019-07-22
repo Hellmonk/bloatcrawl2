@@ -375,6 +375,11 @@ static void _give_items_skills(const newgame_def& ng)
         you.piety = 35;
         break;
         
+    case JOB_GARDENER:
+        you.religion = GOD_FEDHAS;
+        you.piety = 35;
+        break;
+        
     case JOB_WARRIOR:
         you.religion = GOD_OKAWARU;
         you.piety = 35;

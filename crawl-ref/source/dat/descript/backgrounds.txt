@@ -116,6 +116,10 @@ Gambler
 Followers of Nemelex Xobeh who have lost everything in a run of bad luck sometimes
 venture into the Dungeon. They'll need Nemelex's help to turn things around.
 %%%%
+Gardener
+
+Gardeners worship Fedhas Madash and enter the dungeon to grow shrooms.
+%%%%
 Gladiator
 
 Gladiators are ready for the arena with light armour, nets, and a weapon of
