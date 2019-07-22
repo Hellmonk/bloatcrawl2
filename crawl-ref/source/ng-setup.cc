@@ -349,6 +349,16 @@ static void _give_items_skills(const newgame_def& ng)
             you.skills[SK_ARMOUR]++;
         break;
         
+    case JOB_STORM_CLERIC:
+        you.religion = GOD_QAZLAL;
+        you.piety = 35;
+
+        if (species_apt(SK_ARMOUR) < species_apt(SK_DODGING))
+            you.skills[SK_DODGING]++;
+        else
+            you.skills[SK_ARMOUR]++;
+        break;
+        
     case JOB_DEATH_BISHOP:
         you.religion = GOD_YREDELEMNUL;
         add_spell_to_memory(SPELL_PAIN);

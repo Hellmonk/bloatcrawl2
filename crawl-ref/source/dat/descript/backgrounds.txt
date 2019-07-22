@@ -180,6 +180,10 @@ Skald
 Skalds are melee fighters who can boost themselves in battle with spells from
 the Charms school.
 %%%%
+Storm Cleric
+
+Storm clerics spread destruction in the name of Qazlal.
+%%%%
 Summoner
 
 Summoners are able to cast Summon Small Mammal from the start, and begin with
