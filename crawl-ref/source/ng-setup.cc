@@ -9,6 +9,7 @@
 #include "end.h"
 #include "files.h"
 #include "food.h"
+#include "god-abil.h"
 #include "god-companions.h"
 #include "hints.h"
 #include "invent.h"
@@ -27,6 +28,7 @@
 #include "skills.h"
 #include "spl-book.h"
 #include "spl-util.h"
+#include "sprint.h"
 #include "state.h"
 
 #define MIN_START_STAT       3
