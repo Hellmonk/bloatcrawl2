@@ -5140,11 +5140,11 @@ permabuff_state player::permabuff_notworking(permabuff_type pb) {
         if (!you.weapon()) {
             return PB_EXCRU_NOWEP;
         } else {
-            item_def& weapon = *you.weapon();
-            const brand_type brand = get_weapon_brand(weapon);
-            if (is_range_weapon(weapon) || (weapon.base_type != OBJ_WEAPONS) ||
+            item_def& wpn = *you.weapon();
+            const brand_type brand = get_weapon_brand(wpn);
+            if (is_range_weapon(wpn) || (wpn.base_type != OBJ_WEAPONS) ||
                 (brand == SPWPN_DISTORTION) || (brand == SPWPN_ANTIMAGIC) || 
-                (is_artefact(weapon))) {
+                (is_artefact(wpn))) {
                 return PB_EXCRU_NOWEP;
             }
         }
