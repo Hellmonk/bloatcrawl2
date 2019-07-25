@@ -594,8 +594,6 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
     }
     case SP_CENTAUR:
         return TILEP_BASE_CENTAUR;
-    case SP_DEMIGOD:
-        return TILEP_BASE_DEMIGOD;
     case SP_SPRIGGAN:
         return TILEP_BASE_SPRIGGAN;
     case SP_MINOTAUR:
@@ -765,13 +763,13 @@ void tilep_job_default(int job, dolls_data *doll)
             parts[TILEP_PART_LEG]   = TILEP_LEG_PANTS_SHORT_DARKBROWN;
             parts[TILEP_PART_HELM]  = TILEP_HELM_CLOWN; // Xom
             break;
-            
+
         case JOB_SLIME_PRIEST:
             parts[TILEP_PART_BODY]  = TILEP_BODY_ROBE_GREEN;
             parts[TILEP_PART_ARM]   = TILEP_ARM_GLOVE_WHITE;
             parts[TILEP_PART_BOOTS] = TILEP_BOOTS_SHORT_BROWN;
             break;
-        
+
         case JOB_DEATH_BISHOP:
         case JOB_BLOOD_KNIGHT:
             parts[TILEP_PART_BODY]  = TILEP_BODY_ROBE_BLACK;

@@ -1254,8 +1254,10 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
         break;
 
     case AMU_FAITH:
-        if (you.species == SP_DEMIGOD)
+        if (you.religion_type == player_religion::demigod)
             mpr("You feel a surge of self-confidence.");
+        else if (you.religion_type == player_religion::atheist)
+            mpr("You feel a distinct lack of supernatural hokum.");
         else if (you_worship(GOD_RU) && you.piety >= piety_breakpoint(5))
         {
             simple_god_message(" says: An ascetic of your devotion"

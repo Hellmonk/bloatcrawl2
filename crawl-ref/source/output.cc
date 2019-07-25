@@ -1253,7 +1253,8 @@ static void _redraw_title()
 
     if (you_worship(GOD_NO_GOD))
     {
-        if (you.char_class == JOB_MONK && you.species != SP_DEMIGOD
+        if (you.char_class == JOB_MONK
+            && you.religion_type == player_religion::theist
             && !had_gods())
         {
             string godpiety = "**....";
@@ -2199,6 +2200,18 @@ static formatted_string _get_modifiers()
         modifiers.push_back("Chaoskin");
     if (you.no_locks)
         modifiers.push_back("No Runelocks");
+    switch (you.religion_type)
+    {
+        case player_religion::theist:
+            // nothing
+            break;
+        case player_religion::atheist:
+            modifiers.push_back("Atheist");
+            break;
+        case player_religion::demigod:
+            modifiers.push_back("Demigod");
+            break;
+    }
     if (modifiers.empty())
         modifiers.push_back("None");
 

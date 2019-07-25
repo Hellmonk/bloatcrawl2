@@ -971,9 +971,9 @@ void wizard_transform()
 
 void wizard_join_religion()
 {
-    if (you.species == SP_DEMIGOD)
+    if (you.religion_type != player_religion::theist)
     {
-        mpr("Not even in wizmode may Demigods worship a god!");
+        mpr("Not even in wizmode may you worship a god!");
         return;
     }
     god_type god = choose_god();

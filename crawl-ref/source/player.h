@@ -27,6 +27,7 @@
 #include "mon-holy-type.h"
 #include "mutation-type.h"
 #include "place-info.h"
+#include "player-religion.h"
 #include "quiver.h"
 #include "religion-enum.h"
 #include "skill-menu-state.h"
@@ -128,6 +129,7 @@ public:
     undead_state_type undead_modifier;
     bool chaoskin;
     bool no_locks;
+    player_religion religion_type;
 
     // This field is here even in non-WIZARD compiles, since the
     // player might have been playing previously under wiz mode.

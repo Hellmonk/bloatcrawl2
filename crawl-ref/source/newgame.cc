@@ -26,6 +26,7 @@
 #include "ng-input.h"
 #include "ng-restr.h"
 #include "options.h"
+#include "player-religion.h"
 #include "prompt.h"
 #include "species-groups.h"
 #include "state.h"
@@ -656,12 +657,50 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     choice.skilled_type = 0;
     choice.chaoskin = false;
     choice.no_locks = false;
+    choice.religion_type = player_religion::theist;
 
     // Non-living or default-undead species cannot choose undead state
-    bool can_choose_undead = ng.species != SP_GARGOYLE
+    const bool can_choose_undead = ng.species != SP_GARGOYLE
         && species_undead_type(ng.species) == US_ALIVE;
     if (!can_choose_undead)
         choice.undead_type = species_undead_type(ng.species);
+
+    bool can_choose_unworship;
+    switch (ng.job)
+    {
+        case JOB_MONK:
+        // Zealots
+        case JOB_ABYSSAL_KNIGHT:
+        case JOB_BERSERKER:
+        case JOB_CHAOS_KNIGHT:
+        case JOB_ANNIHILATOR:
+        case JOB_BLOOD_KNIGHT:
+        case JOB_BOUND:
+        case JOB_DANCER:
+        case JOB_DEATH_BISHOP:
+        case JOB_DOCTOR:
+        case JOB_GAMBLER:
+        case JOB_GARDENER:
+        case JOB_HERMIT:
+        case JOB_INHERITOR:
+        case JOB_LIBRARIAN:
+        case JOB_MERCHANT:
+        case JOB_NIGHT_KNIGHT:
+        case JOB_PALADIN:
+        case JOB_SLIME_PRIEST:
+        case JOB_TORPOR_KNIGHT:
+        case JOB_WARRIOR:
+        case JOB_ZINJA:
+        {
+            can_choose_unworship = false;
+            break;
+        }
+        default:
+        {
+            can_choose_unworship = true;
+            break;
+        }
+    }
 
     auto prompt_ui = make_shared<Text>();
     prompt_ui->on(Widget::slots.event, [&](wm_event ev)  {
@@ -714,6 +753,24 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
             choice.no_locks = !choice.no_locks;
             return done = false;
         }
+        else if (can_choose_unworship && (key == 't' || key == 'T'))
+        {
+            switch (choice.religion_type)
+            {
+                case player_religion::theist:
+                    choice.religion_type = player_religion::atheist;
+                    break;
+                case player_religion::atheist:
+                    choice.religion_type = player_religion::demigod;
+                    break;
+                case player_religion::demigod:
+                    choice.religion_type = player_religion::theist;
+                    break;
+            }
+            return done = false;
+            return done = false;
+        }
+        // ^M = Enter
         else if (key == CONTROL('M'))
         {
             return done = true;
@@ -780,6 +837,28 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     auto runelock_choice = make_shared<ui::Text>(runelock_choice_str);
     box->add_child(runelock_choice);
 
+    formatted_string religion_header;
+    religion_header.textcolour(WHITE);
+    religion_header.cprintf("\n(T)");
+    religion_header.textcolour(LIGHTGRAY);
+    religion_header.cprintf("heism:");
+    box->add_child(make_shared<ui::Text>(religion_header));
+    const string theist_str = "  Normal.";
+    const string atheist_str = "  Atheist: cannot worship the gods.";
+    const string demigod_str = "  Demigod: cannot worship the gods, bonus attribute gain.";
+    formatted_string religion_str;
+    religion_str.textcolour(LIGHTGRAY);
+    religion_str.cprintf(theist_str);
+    religion_str.cprintf("\n");
+    religion_str.textcolour(can_choose_unworship ? LIGHTGRAY : DARKGRAY);
+    religion_str.cprintf(atheist_str);
+    religion_str.cprintf("\n");
+    religion_str.textcolour(can_choose_unworship ? LIGHTGRAY : DARKGRAY);
+    religion_str.cprintf(demigod_str);
+    religion_str.cprintf("\n");
+    auto religion_choice = make_shared<ui::Text>(religion_str);
+    box->add_child(religion_choice);
+
     auto popup = make_shared<ui::Popup>(box);
     ui::push_layout(move(popup));
     while (!done && !crawl_state.seen_hups)
@@ -819,6 +898,19 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
         }
         chaoskin_choice->set_highlight_pattern(choice.chaoskin ? "enabled" : "disabled", false);
         runelock_choice->set_highlight_pattern(choice.no_locks ? "disabled" : "enabled", false);
+        switch (choice.religion_type)
+        {
+            case player_religion::theist:
+                religion_choice->set_highlight_pattern(theist_str, false);
+                break;
+            case player_religion::atheist:
+                religion_choice->set_highlight_pattern(atheist_str, false);
+                break;
+            case player_religion::demigod:
+                religion_choice->set_highlight_pattern(demigod_str, false);
+                break;
+        }
+
         ui::pump_events();
     }
     ui::pop_layout();
@@ -826,7 +918,11 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     if (cancel || crawl_state.seen_hups)
         game_ended(game_exit::abort);
 
-    // We copy values from choice to ng in the parent function
+    ng.undead_type = choice.undead_type;
+    ng.skilled_type = choice.skilled_type;
+    ng.chaoskin = choice.chaoskin;
+    ng.no_locks = choice.no_locks;
+    ng.religion_type = choice.religion_type;
 }
 
 static void _choose_seed(newgame_def& ng, newgame_def& choice,
@@ -999,10 +1095,6 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
     ng.type = choice.type;
     ng.seed = choice.seed;
     ng.pregenerate = choice.pregenerate;
-    ng.undead_type = choice.undead_type;
-    ng.skilled_type = choice.skilled_type;
-    ng.chaoskin = choice.chaoskin;
-    ng.no_locks = choice.no_locks;
 
 #ifndef DGAMELAUNCH
     // New: pick name _after_ character choices.
@@ -1433,7 +1525,7 @@ static job_group jobs_order[] =
         { JOB_BOUND, JOB_BERSERKER, JOB_DANCER, JOB_ABYSSAL_KNIGHT, JOB_CHAOS_KNIGHT,
           JOB_TORPOR_KNIGHT, JOB_NIGHT_KNIGHT, JOB_PALADIN, JOB_INHERITOR, JOB_SLIME_PRIEST,
           JOB_BLOOD_KNIGHT, JOB_LIBRARIAN, JOB_DEATH_BISHOP, JOB_DOCTOR, JOB_HERMIT,
-          /*JOB_ZINJA, JOB_GARDENER, JOB_STORM_CLERIC, 
+          /*JOB_ZINJA, JOB_GARDENER, JOB_STORM_CLERIC,
           JOB_WARRIOR, JOB_MERCHANT, JOB_ANNIHILATOR, JOB_GAMBLER,*/ }
     },
     {

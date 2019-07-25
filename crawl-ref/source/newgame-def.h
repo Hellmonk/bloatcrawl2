@@ -3,6 +3,7 @@
 #include "game-type.h"
 #include "item-prop-enum.h"
 #include "job-type.h"
+#include "player-religion.h"
 #include "species-type.h"
 #include "undead-state-type.h"
 
@@ -44,6 +45,7 @@ struct newgame_def
     int skilled_type;
     bool chaoskin; // Xom acts on you always
     bool no_locks; // disable rune locks
+    player_religion religion_type;
 
     newgame_def();
     void clear_character();
