@@ -75,7 +75,7 @@ TextureID get_dngn_tex(tileidx_t idx)
         return TEX_FEAT;
 }
 
-static tileidx_t _tileidx_trap(trap_type type)
+tileidx_t tileidx_trap(trap_type type)
 {
     switch (type)
     {
@@ -558,7 +558,7 @@ tileidx_t tileidx_feature(const coord_def &gc)
 
     case DNGN_TRAP_MECHANICAL:
     case DNGN_TRAP_TELEPORT:
-        return _tileidx_trap(env.map_knowledge(gc).trap());
+        return tileidx_trap(env.map_knowledge(gc).trap());
 
     case DNGN_TRAP_WEB:
     {
@@ -1462,7 +1462,7 @@ tileidx_t tileidx_monster_base(int type, bool in_water, int colour, int number,
         case LIGHTMAGENTA:  offset = 4; break;
         case CYAN:          offset = 5; break;
         case MAGENTA:       offset = 6; break;
-        case RED:           offset = 7; break;
+        case LIGHTRED:      offset = 7; break;
         case WHITE:         offset = 8; break;
         }
 

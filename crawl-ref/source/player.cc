@@ -5344,6 +5344,8 @@ player::player()
 
     uniq_map_tags.clear();
     uniq_map_names.clear();
+    uniq_map_tags_abyss.clear();
+    uniq_map_names_abyss.clear();
     vault_list.clear();
 
     global_info = PlaceInfo();
@@ -5413,7 +5415,8 @@ player::player()
 
     abyss_speed         = 0;
     game_seed           = 0;
-    game_is_seeded      = true;
+    fully_seeded        = true;
+    deterministic_levelgen = true;
 
     old_hunger          = hunger;
 
@@ -5446,7 +5449,7 @@ void player::init_skills()
     train.init(TRAINING_DISABLED);
     train_alt.init(TRAINING_DISABLED);
     training.init(0);
-    can_train.reset();
+    can_currently_train.reset();
     skill_points.init(0);
     ct_skill_points.init(0);
     skill_order.init(MAX_SKILL_ORDER);
@@ -7483,6 +7486,10 @@ bool player::do_shaft()
     {
         return false;
     }
+
+    // Ensure altars, items, and shops discovered at the moment
+    // the player gets shafted are correctly registered.
+    maybe_update_stashes();
 
     duration[DUR_SHAFT_IMMUNITY] = 1;
     down_stairs(DNGN_TRAP_SHAFT);

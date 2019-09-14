@@ -231,6 +231,22 @@ static unique_ptr<dungeon_colour_grid> dgn_colour_grid;
 
 static string branch_epilogues[NUM_BRANCHES];
 
+set<string> &get_uniq_map_tags()
+{
+    if (you.where_are_you == BRANCH_ABYSS)
+        return you.uniq_map_tags_abyss;
+    else
+        return you.uniq_map_tags;
+}
+
+set<string> &get_uniq_map_names()
+{
+    if (you.where_are_you == BRANCH_ABYSS)
+        return you.uniq_map_names_abyss;
+    else
+        return you.uniq_map_names;
+}
+
 /**********************************************************************
  * builder() - kickoff for the dungeon generator.
  *********************************************************************/
@@ -241,8 +257,8 @@ bool builder(bool enable_random_maps)
     ASSERT_RANGE(you.where_are_you, 0, NUM_BRANCHES);
     ASSERT_RANGE(you.depth, 0 + 1, brdepth[you.where_are_you] + 1);
 
-    const set<string> uniq_tags  = you.uniq_map_tags;
-    const set<string> uniq_names = you.uniq_map_names;
+    const set<string> uniq_tags = get_uniq_map_tags();
+    const set<string> uniq_names = get_uniq_map_names();
 
     // For normal cases, this should already be taken care of by enter_level.
     // However, we want to be really sure that the builder isn't ever run with
@@ -259,7 +275,7 @@ bool builder(bool enable_random_maps)
     temp_unique_items = you.unique_items;
 
     unwind_bool levelgen(crawl_state.generating_level, true);
-    rng_generator levelgen_rng(you.where_are_you);
+    rng::generator levelgen_rng(you.where_are_you);
 
 #ifdef DEBUG_DIAGNOSTICS // no point in enabling unless dprf works
     CrawlHashTable &debug_logs = you.props["debug_builder_logs"].get_table();
@@ -290,8 +306,8 @@ bool builder(bool enable_random_maps)
             reread_maps();
         }
 
-        you.uniq_map_tags  = uniq_tags;
-        you.uniq_map_names = uniq_names;
+        get_uniq_map_tags() = uniq_tags;
+        get_uniq_map_names() = uniq_names;
     }
 
     if (!crawl_state.map_stat_gen && !crawl_state.obj_stat_gen)
@@ -605,6 +621,8 @@ void dgn_flush_map_memory()
     // vaults and map stuff
     you.uniq_map_tags.clear();
     you.uniq_map_names.clear();
+    you.uniq_map_tags_abyss.clear();
+    you.uniq_map_names_abyss.clear();
     you.vault_list.clear();
     you.branches_left.reset();
     you.branch_stairs.init(0);
@@ -612,6 +630,7 @@ void dgn_flush_map_memory()
     you.zig_max = 0;
     you.exploration = 0;
     you.seen_portals = 0; // should be just cosmetic
+    reset_portal_entrances();
     // would it be safe to just clear you.props?
     you.props.erase(TEMPLE_SIZE_KEY);
     you.props.erase(TEMPLE_MAP_KEY);
@@ -696,7 +715,7 @@ static void _set_grd(const coord_def &c, dungeon_feature_type feat)
 static void _dgn_register_vault(const string &name, const unordered_set<string> &tags)
 {
     if (!tags.count("allow_dup"))
-        you.uniq_map_names.insert(name);
+        get_uniq_map_names().insert(name);
 
     if (tags.count("luniq"))
         env.level_uniq_maps.insert(name);
@@ -707,7 +726,7 @@ static void _dgn_register_vault(const string &name, const unordered_set<string> 
     for (const string &tag : sorted_tags)
     {
         if (starts_with(tag, "uniq_"))
-            you.uniq_map_tags.insert(tag);
+            get_uniq_map_tags().insert(tag);
         else if (starts_with(tag, "luniq_"))
             env.level_uniq_map_tags.insert(tag);
     }
@@ -725,13 +744,13 @@ static void _dgn_register_vault(const string &name, string &spaced_tags)
 
 static void _dgn_unregister_vault(const map_def &map)
 {
-    you.uniq_map_names.erase(map.name);
+    get_uniq_map_names().erase(map.name);
     env.level_uniq_maps.erase(map.name);
 
     for (const string &tag : map.get_tags_unsorted())
     {
         if (starts_with(tag, "uniq_"))
-            you.uniq_map_tags.erase(tag);
+            get_uniq_map_tags().erase(tag);
         else if (starts_with(tag, "luniq_"))
             env.level_uniq_map_tags.erase(tag);
     }
@@ -1332,6 +1351,8 @@ void dgn_reset_level(bool enable_random_maps)
     tile_init_default_flavour();
     tile_clear_flavour();
     env.tile_names.clear();
+
+    update_portal_entrances();
 }
 
 static int _num_items_wanted(int absdepth0)
@@ -2115,8 +2136,8 @@ static void _build_overflow_temples()
                 }
 
                 if (num_gods == 1
-                    && you.uniq_map_tags.find("uniq_altar_" + name)
-                       != you.uniq_map_tags.end())
+                    && get_uniq_map_tags().find("uniq_altar_" + name)
+                       != get_uniq_map_tags().end())
                 {
                     // We've already placed a specialized temple for this
                     // god, so do nothing.
@@ -2364,8 +2385,8 @@ static void _place_feature_mimics()
             // another one to spawn.
             const char* dst = branches[stair_destination(pos).branch].abbrevname;
             const string tag = "uniq_" + lowercase_string(dst);
-            if (you.uniq_map_tags.count(tag))
-                you.uniq_map_tags.erase(tag);
+            if (get_uniq_map_tags().count(tag))
+                get_uniq_map_tags().erase(tag);
         }
     }
 }
@@ -2645,7 +2666,7 @@ static bool _pan_level()
 
     for (int i = 0; i < 4; i++)
     {
-        if (!you.uniq_map_tags.count(string("uniq_") + pandemon_level_names[i]))
+        if (!get_uniq_map_tags().count(string("uniq_") + pandemon_level_names[i]))
         {
             all_demons_generated = false;
             break;
@@ -2662,7 +2683,7 @@ static bool _pan_level()
         {
             which_demon = random2(4);
         }
-        while (you.uniq_map_tags.count(string("uniq_")
+        while (get_uniq_map_tags().count(string("uniq_")
                                        + pandemon_level_names[which_demon]));
     }
 
@@ -3828,13 +3849,14 @@ static void _randomly_place_item(int item)
     }
     if (!found)
     {
+        dprf(DIAG_DNGN, "Builder failed to place %s",
+            mitm[item].name(DESC_PLAIN, false, true).c_str());
         // Couldn't find a single good spot!
         destroy_item(item);
     }
     else
     {
-        dprf(DIAG_DNGN, "builder placing %s (%s) at %d,%d",
-            mitm[item].name(DESC_PLAIN).c_str(),
+        dprf(DIAG_DNGN, "Builder placing %s at %d,%d",
             mitm[item].name(DESC_PLAIN, false, true).c_str(),
             itempos.x, itempos.y);
         move_item_to_grid(&item, itempos);
@@ -4576,8 +4598,7 @@ int dgn_place_item(const item_spec &spec,
 
             if (_apply_item_props(item, spec, (useless_tries >= 10), false))
             {
-                dprf(DIAG_DNGN, "vault spec: placing %s (%s) at %d,%d",
-                    mitm[item_made].name(DESC_PLAIN).c_str(),
+                dprf(DIAG_DNGN, "vault spec: placing %s at %d,%d",
                     mitm[item_made].name(DESC_PLAIN, false, true).c_str(),
                     where.x, where.y);
                 env.level_map_mask(where) |= MMT_NO_TRAP;
@@ -5108,8 +5129,7 @@ static void _vault_grid_glyph(vault_placement &place, const coord_def& where,
         {
             mitm[item_made].pos = where;
             env.level_map_mask(where) |= MMT_NO_TRAP;
-            dprf(DIAG_DNGN, "vault grid: placing %s (%s) at %d,%d",
-                mitm[item_made].name(DESC_PLAIN).c_str(),
+            dprf(DIAG_DNGN, "vault grid: placing %s at %d,%d",
                 mitm[item_made].name(DESC_PLAIN, false, true).c_str(),
                 mitm[item_made].pos.x, mitm[item_made].pos.y);
         }
@@ -5733,6 +5753,8 @@ static void _stock_shop_item(int j, shop_type shop_type_,
     item.pos = shop.pos;
     item.link = ITEM_IN_SHOP;
     shop.stock.push_back(item);
+    dprf(DIAG_DNGN, "shop spec: placing %s",
+                    item.name(DESC_PLAIN, false, true).c_str());
 }
 
 /**
@@ -5746,6 +5768,7 @@ static void _stock_shop_item(int j, shop_type shop_type_,
  */
 void place_spec_shop(const coord_def& where, shop_spec &spec, int shop_level)
 {
+    rng::subgenerator shop_rng; // isolate shop rolls from levelgen
     no_notes nx;
 
     shop_struct& shop = env.shop[where];
@@ -6974,10 +6997,15 @@ string dump_vault_maps()
             // printing a morgue, this check isn't reliable. Ignore it.
             if (!is_existing_level(lid) && you.save)
             {
-                out += "[-gen,-vis] " + lid.describe() + "\n";
-                continue;
+                out += "[-gen]      ";
+                if (!you.vault_list.count(lid))
+                {
+                    out +=  lid.describe() + "\n";
+                    continue;
+                }
             }
-            out += you.level_visited(lid) ? "[+gen,+vis] " : "[+gen,-vis] ";
+            else
+                out += you.level_visited(lid) ? "[+gen,+vis] " : "[+gen,-vis] ";
         }
         out += lid.describe();
         vector<string> &maps(you.vault_list[lid]);
