@@ -300,6 +300,10 @@ enum misc_item_type
 #endif
     MISC_AIR_HORN,
 
+    // Archaeologist
+    MISC_ANCIENT_CRATE,
+    MISC_DUSTY_TOME,
+
     NUM_MISCELLANY,
     MISC_DECK_UNKNOWN = NUM_MISCELLANY,
 };

@@ -569,6 +569,15 @@ void update_can_currently_train()
         _check_stop_train();
 }
 
+void update_can_train()
+{
+    if (!you.start_train.empty())
+        _check_start_train();
+
+    if (!you.stop_train.empty())
+        _check_stop_train();
+}
+
 bool training_restricted(skill_type sk)
 {
     if (_player_is_gnoll())

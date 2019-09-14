@@ -1267,6 +1267,7 @@ static job_group jobs_order[] =
         {
             JOB_ARTIFICER, JOB_WANDERER, JOB_ANARCHIST, JOB_UNDERSTUDY,
             JOB_METEOROLOGIST, JOB_UNCLE, JOB_ENTOMOLOGIST, JOB_DEPRIVED,
+            JOB_ARCHAEOLOGIST,
         }
     },
     {
