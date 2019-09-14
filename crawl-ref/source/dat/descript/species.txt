@@ -176,3 +176,8 @@ Protean
 Proteans are a race of vaguely humanoid amoebas. Mutations increase their health
 pool, and their health pool controls their size.
 %%%%
+Faerie Dragon
+
+Faerie Dragons are attuned to magic and their spells cost fewer magic points.
+Their shimmering scales repel attacks and their wings let them fly.
+%%%%

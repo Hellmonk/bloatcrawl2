@@ -362,6 +362,12 @@ static void _post_init(bool newc)
         _zap_los_monsters(Hints.hints_events[HINT_SEEN_FIRST_OBJECT]);
 
         _spawn_caveperson_dog();
+
+        if (you.species == SP_FAERIE_DRAGON)
+        {
+            you.attribute[ATTR_PERM_FLIGHT] = 1;
+            float_player();
+        }
     }
 
     // This just puts the view up for the first turn.
