@@ -160,6 +160,17 @@ ccache can be installed with:
     xbps-install ccache
 
 
+Prerequisites (Alpine Linux):
+
+  These commands will install the minimum dependencies for console builds (using
+  Crawl's contrib libraries):
+
+    apk add git g++ make python ncurses-dev perl zlib-dev curl
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+    python get-pip.py
+    pip install PyYAML
+
+
 Prerequisites (other systems):
 
 GNU gcc and g++, GNU make, libncursesw or libcursesw. You need the development
