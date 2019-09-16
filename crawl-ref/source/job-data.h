@@ -335,6 +335,17 @@ static const map<job_type, job_def> job_data =
     { { SK_INVOCATIONS, 3 }, },
 } },
 
+{ JOB_Kikumancer, {
+    "Ki", "Kikumancer",
+    0, 7, 5,
+    { SP_DEEP_ELF, SP_DEEP_DWARF, SP_HILL_ORC, SP_DEMONSPAWN,
+      SP_PROFOUND_ELF, },
+    { "robe", "dagger" },
+    WCHOICE_NONE,
+    { { SK_SPELLCASTING, 2 }, { SK_NECROMANCY, 4 }, { SK_DODGING, 2 },
+      { SK_STEALTH, 2 }, },
+} },
+
 { JOB_LIBRARIAN, {
     "Li", "Librarian",
     0, 9, 3,
