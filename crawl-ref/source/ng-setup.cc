@@ -423,6 +423,11 @@ static void _give_items_skills(const newgame_def& ng)
         you.piety = 35;
         break;
         
+    case JOB_DISCIPLE:
+        you.religion = GOD_WU_JIAN;
+        you.piety = 35;
+        break;
+        
     case JOB_MERCHANT:
         you.religion = GOD_GOZAG;
         you.gold = 1;
@@ -495,6 +500,8 @@ static void _give_items_skills(const newgame_def& ng)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, 0, SPWPN_DRAINING);
     else if (you.char_class == JOB_PALADIN)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +1, SPWPN_HOLY_WRATH);
+    else if (you.char_class == JOB_DISCIPLE)
+        newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +3);
     else if (you.char_class == JOB_NIGHT_KNIGHT)
     {
        newgame_make_item(OBJ_ARMOUR, ARM_ROBE, 1, +1, SPARM_STEALTH);

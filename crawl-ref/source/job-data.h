@@ -193,6 +193,16 @@ static const map<job_type, job_def> job_data =
     { { SK_STEALTH, 1 }, },
 } },
 
+{ JOB_DISCIPLE, {
+    "Di", "Disciple",
+    4, 4, 4,
+    { SP_HILL_ORC, SP_GNOLL, SP_SPRIGGAN, SP_DEMONSPAWN, 
+      SP_FORMICID },
+    { "robe"},
+    WCHOICE_GOOD,
+    { { SK_FIGHTING, 2 }, { SK_DODGING, 2 }, { SK_WEAPON, 3 } },
+} },
+
 { JOB_DOCTOR, {
     "Dr", "Doctor",
     3, 5, 4,
@@ -335,7 +345,7 @@ static const map<job_type, job_def> job_data =
     { { SK_INVOCATIONS, 3 }, },
 } },
 
-{ JOB_Kikumancer, {
+{ JOB_KIKUMANCER, {
     "Ki", "Kikumancer",
     0, 7, 5,
     { SP_DEEP_ELF, SP_DEEP_DWARF, SP_HILL_ORC, SP_DEMONSPAWN,

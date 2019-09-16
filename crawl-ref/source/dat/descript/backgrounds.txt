@@ -76,6 +76,10 @@ Deprived
 Deprived start with nothing but a ration and almost no skills. Survival may prove...
 difficult.
 %%%%
+Disciple
+
+Disciples follow the Wu Jian Council and begin the game with a good weapon.
+%%%%
 Doctor
 
 Medical professionals from the surface occasionally enter the dungeon. They follow
