@@ -9,6 +9,7 @@
 #include "end.h"
 #include "files.h"
 #include "food.h"
+#include "god-abil.h"
 #include "god-companions.h"
 #include "hints.h"
 #include "invent.h"
@@ -27,6 +28,7 @@
 #include "skills.h"
 #include "spl-book.h"
 #include "spl-util.h"
+#include "sprint.h"
 #include "state.h"
 
 #define MIN_START_STAT       3
@@ -256,6 +258,8 @@ static void _give_ammo(weapon_type weapon, int plus)
 
 static void _give_items_skills(const newgame_def& ng)
 {
+    create_wanderer();
+
     switch (you.char_class)
     {
     case JOB_BERSERKER:
@@ -700,7 +704,7 @@ static void _free_up_slot(char letter)
 
 void initial_dungeon_setup()
 {
-    rng_generator levelgen_rng(BRANCH_DUNGEON);
+    rng::generator levelgen_rng(BRANCH_DUNGEON);
 
     initialise_branch_depths();
     initialise_temples();
@@ -710,9 +714,10 @@ void initial_dungeon_setup()
 
 static void _setup_generic(const newgame_def& ng)
 {
-    reset_rng(); // initialize rng from Options.seed
+    rng::reset(); // initialize rng from Options.seed
     _init_player();
     you.game_seed = crawl_state.seed;
+    you.deterministic_levelgen = Options.incremental_pregen;
 
 #if TAG_MAJOR_VERSION == 34
     // Avoid the remove_dead_shops() Gozag fixup in new games: see
@@ -754,8 +759,7 @@ static void _setup_generic(const newgame_def& ng)
     // This function depends on stats and mutations being finalised.
     _give_items_skills(ng);
 
-    if (you.species == SP_DEMONSPAWN)
-        roll_demonspawn_mutations();
+    roll_demonspawn_mutations();
 
     _give_starting_food();
 
@@ -810,7 +814,7 @@ static void _setup_generic(const newgame_def& ng)
 
     reassess_starting_skills();
     init_skill_order();
-    init_can_train();
+    init_can_currently_train();
     init_train();
     init_training();
 

@@ -7,32 +7,68 @@
 
 #include "hash.h"
 #include "rng-type.h"
-
-class rng_generator
-{
-public:
-    rng_generator(rng_type g);
-    rng_generator(branch_type b);
-    ~rng_generator();
-private:
-    rng_type previous;
-};
+#include "pcg.h"
 
 class CrawlVector;
-CrawlVector generators_to_vector();
-void load_generators(const CrawlVector &v);
-vector<uint64_t> get_rng_states();
 
-void seed_rng();
-void seed_rng(uint64_t seed);
-void seed_rng(uint64_t[], int);
-void reset_rng();
+namespace rng
+{
+    class generator
+    {
+    public:
+        generator(rng_type g);
+        generator(branch_type b);
+        ~generator();
+    private:
+        rng_type previous;
+    };
 
-uint32_t get_uint32(rng_type generator);
-uint64_t get_uint64(rng_type generator);
-uint32_t get_uint32();
-uint64_t get_uint64();
-uint32_t peek_uint32();
+    class subgenerator
+    {
+    public:
+        subgenerator();
+        subgenerator(uint64_t seed);
+        subgenerator(uint64_t seed, uint64_t sequence);
+        ~subgenerator();
+    private:
+        PcgRNG current;
+        PcgRNG *previous;
+        rng_type previous_main;
+    };
+
+    rng_type get_branch_generator(const branch_type b);
+    CrawlVector generators_to_vector();
+    void load_generators(const CrawlVector &v);
+    vector<uint64_t> get_states();
+    PcgRNG *get_generator(rng_type r);
+    PcgRNG &current_generator();
+
+    void seed();
+    void seed(uint64_t seed);
+    void seed(uint64_t[], int);
+    void reset();
+
+    uint32_t get_uint32(rng_type generator);
+    uint64_t get_uint64(rng_type generator);
+    uint32_t get_uint32();
+    uint64_t get_uint64();
+    uint32_t peek_uint32();
+    uint64_t peek_uint64();
+
+    class ASSERT_stable
+    {
+    public:
+        ASSERT_stable() : initial_peek(peek_uint64()) { }
+        ~ASSERT_stable()
+        {
+            ASSERT(peek_uint64() == initial_peek);
+        }
+
+    private:
+        uint64_t initial_peek;
+    };
+}
+
 bool coinflip();
 int div_rand_round(int num, int den);
 int rand_round(double x);

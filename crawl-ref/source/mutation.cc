@@ -588,9 +588,6 @@ void validate_mutations(bool debug_msg)
         }
     }
     ASSERT(total_temp == you.attribute[ATTR_TEMP_MUTATIONS]);
-    ASSERT(you.attribute[ATTR_TEMP_MUT_XP] >=0);
-    if (total_temp > 0)
-        ASSERT(you.attribute[ATTR_TEMP_MUT_XP] > 0);
 }
 
 string describe_mutations(bool drop_title)
@@ -926,14 +923,16 @@ void display_mutations()
         lastch = ev.key.keysym.sym;
         if (you.undead_state() == US_SEMI_UNDEAD && (lastch == '!' || lastch == CK_MOUSE_CMD || lastch == '^'))
         {
-            int c = 1 - switcher->current();
-            switcher->current() = c;
+            int& c = switcher->current();
+
+            bottom->set_text(_vampire_Ascreen_footer(c));
+
+            c = 1 - c;
 #ifdef USE_TILE_WEB
             tiles.json_open_object();
             tiles.json_write_int("pane", c);
             tiles.ui_state_change("mutations", 0);
 #endif
-            bottom->set_text(_vampire_Ascreen_footer(c));
         } else
             done = !vbox->on_event(ev);
         return true;
@@ -2593,6 +2592,12 @@ _schedule_ds_mutations(vector<mutation_type> muts)
 
 void roll_demonspawn_mutations()
 {
+    // intentionally create the subgenerator either way, so that this has the
+    // same impact on the current main rng for all chars.
+    rng::subgenerator ds_rng;
+
+    if (you.species != SP_DEMONSPAWN)
+        return;
     you.demonic_traits = _schedule_ds_mutations(
                          _order_ds_mutations(
                          _select_ds_mutations()));

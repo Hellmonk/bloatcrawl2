@@ -868,7 +868,7 @@ static string unmarshallString2(reader &th)
 void marshallString4(writer &th, const string &data)
 {
     const size_t len = data.length();
-    if (len > numeric_limits<int32_t>::max())
+    if (len > static_cast<size_t>(numeric_limits<int32_t>::max()))
         die("trying to marshall too long a string (len=%ld)", (long int) len);
     marshallInt(th, len);
     th.write(data.c_str(), len);
@@ -1267,10 +1267,10 @@ void tag_read(reader &inf, tag_type tag_id)
 #endif
         tag_read_companions(th);
 
-        // If somebody SIGHUP'ed out of the skill menu with all skills disabled.
-        // Doing this here rather in tag_read_you() because you.can_train()
-        // requires the player's equipment be loaded.
-        init_can_train();
+        // If somebody SIGHUP'ed out of the skill menu with every skill
+        // disabled. Doing this here rather in tag_read_you() because
+        // you.can_currently_train() requires the player's equipment be loaded.
+        init_can_currently_train();
         check_selected_skills();
         break;
     case TAG_LEVEL:
@@ -1675,8 +1675,9 @@ static void tag_construct_you(writer &th)
 
     marshallUByte(th, 1); // number of seeds, for historical reasons: always 1
     marshallUnsigned(th, you.game_seed);
-    marshallBoolean(th, you.game_is_seeded);
-    CrawlVector rng_states = generators_to_vector();
+    marshallBoolean(th, you.fully_seeded); // TODO: remove on major version inc?
+    marshallBoolean(th, you.deterministic_levelgen);
+    CrawlVector rng_states = rng::generators_to_vector();
     rng_states.write(th);
 
     CANARY;
@@ -1843,6 +1844,10 @@ static void tag_construct_you_dungeon(writer &th)
                       marshallString);
     marshall_iterator(th, you.uniq_map_names.begin(), you.uniq_map_names.end(),
                       marshallString);
+    marshall_iterator(th, you.uniq_map_tags_abyss.begin(),
+                        you.uniq_map_tags_abyss.end(), marshallString);
+    marshall_iterator(th, you.uniq_map_names_abyss.begin(),
+                        you.uniq_map_names_abyss.end(), marshallString);
     marshallMap(th, you.vault_list, marshall_level_id, marshallStringVector);
 
     write_level_connectivity(th);
@@ -3619,7 +3624,7 @@ static void tag_read_you(reader &th)
         if (th.getMinorVersion() >= TAG_MINOR_REMOVE_ABYSS_SEED
             && th.getMinorVersion() < TAG_MINOR_ADD_ABYSS_SEED)
         {
-            abyssal_state.seed = get_uint32();
+            abyssal_state.seed = rng::get_uint32();
         }
         else
 #endif
@@ -3633,7 +3638,7 @@ static void tag_read_you(reader &th)
         unmarshallFloat(th); // converted abyssal_state.depth to int.
         abyssal_state.depth = 0;
         abyssal_state.destroy_all_terrain = true;
-        abyssal_state.seed = get_uint32();
+        abyssal_state.seed = rng::get_uint32();
     }
 #endif
     abyssal_state.phase = unmarshallFloat(th);
@@ -3698,10 +3703,10 @@ static void tag_read_you(reader &th)
     ASSERT(th.getMinorVersion() < TAG_MINOR_GAMESEEDS || count == 1);
     if (th.getMinorVersion() < TAG_MINOR_GAMESEEDS)
     {
-        you.game_seed = count > 0 ? unmarshallInt(th) : get_uint64();
+        you.game_seed = count > 0 ? unmarshallInt(th) : rng::get_uint64();
         dprf("Upgrading from unseeded game.");
         crawl_state.seed = you.game_seed;
-        you.game_is_seeded = false;
+        you.fully_seeded = false;
         for (int i = 1; i < count; i++)
             unmarshallInt(th);
     }
@@ -3714,10 +3719,19 @@ static void tag_read_you(reader &th)
         you.game_seed = unmarshallUnsigned(th);
         dprf("Unmarshalling seed %" PRIu64, you.game_seed);
         crawl_state.seed = you.game_seed;
-        you.game_is_seeded = unmarshallBoolean(th);
+        you.fully_seeded = unmarshallBoolean(th);
+#if TAG_MAJOR_VERSION == 34
+        // there is no way to tell the levelgen method for games before this
+        // tag, unfortunately. Though if there are unvisited generated levels,
+        // that guarantees some form of deterministic pregen.
+        if (th.getMinorVersion() < TAG_MINOR_INCREMENTAL_PREGEN)
+            you.deterministic_levelgen = false;
+        else
+#endif
+        you.deterministic_levelgen = unmarshallBoolean(th);
         CrawlVector rng_states;
         rng_states.read(th);
-        load_generators(rng_states);
+        rng::load_generators(rng_states);
 #if TAG_MAJOR_VERSION == 34
     }
 #endif
@@ -4307,6 +4321,19 @@ static void tag_read_you_dungeon(reader &th)
                          &string_set::insert,
                          unmarshallString);
 #if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() >= TAG_MINOR_ABYSS_UNIQUE_VAULTS)
+    {
+#endif
+    unmarshall_container(th, you.uniq_map_tags_abyss,
+                         (ssipair (string_set::*)(const string &))
+                         &string_set::insert,
+                         unmarshallString);
+    unmarshall_container(th, you.uniq_map_names_abyss,
+                         (ssipair (string_set::*)(const string &))
+                         &string_set::insert,
+                         unmarshallString);
+#if TAG_MAJOR_VERSION == 34
+    }
     if (th.getMinorVersion() >= TAG_MINOR_VAULT_LIST) // 33:17 has it
 #endif
     unmarshallMap(th, you.vault_list, unmarshall_level_id,

@@ -981,14 +981,14 @@ static bool _could_set_training_target(const item_def &item, bool ignore_current
 
     const int target = min(_item_training_target(item), 270);
 
-    return target && you.can_train[skill]
+    return target && !is_useless_skill(skill)
        && you.skill(skill, 10, false, false, false) < target
        && (ignore_current || you.get_training_target(skill) < target);
 }
 
 /**
  * Produce the "Your skill:" line for item descriptions where specific skill targets
- * are releveant (weapons, missiles, shields)
+ * are relevant (weapons, missiles, shields)
  *
  * @param skill the skill to look at.
  * @param show_target_button whether to show the button for setting a skill target.

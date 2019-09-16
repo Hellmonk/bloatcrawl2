@@ -199,6 +199,7 @@
     Lorenzo Lami
     Lantier
     Maciej Lapinski
+    Nikolai Lavsky
     Lamil Lerran
     Jordan Lewis
     Sami Liedes
@@ -234,7 +235,6 @@
     Naruni
     neofelis
     nicolae
-    Nikolai Lavsky
     Jonathon Nooner
     NormalPerson7
     Michael Nowack
@@ -270,6 +270,7 @@
     Remsleep
     Ryan Riegel
     RjY
+    rmcneive
     Andy Roche
     rockygargoyle
     Will Rogers
@@ -340,7 +341,7 @@ The Dungeon Crawl Stone Soup development team is:
     Corin Buchanan-Howland
     James Bulgin
     Robert Burnham
-    Chris Campbell
+    Kate Campbell
     Matthew Cline
     Florian Diebold
     Rax E. Dillon

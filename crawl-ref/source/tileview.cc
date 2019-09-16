@@ -308,23 +308,36 @@ void tile_clear_flavour()
         tile_clear_flavour(*ri);
 }
 
+static bool _level_uses_dominoes()
+{
+    return you.where_are_you == BRANCH_CRYPT;
+}
+
 // For floors and walls that have not already been set to a particular tile,
 // set them to a random instance of the default floor and wall tileset.
 void tile_init_flavour()
 {
-    vector<unsigned int> output;
+    if (_level_uses_dominoes())
     {
-        domino::DominoSet<domino::EdgeDomino> dominoes(domino::cohen_set, 8);
-        uint64_t seed[] = { static_cast<uint64_t>(you.where_are_you ^ you.game_seed),
-            static_cast<uint64_t>(you.depth) };
-        PcgRNG rng(seed, ARRAYSZ(seed));
-        dominoes.Generate(X_WIDTH, Y_WIDTH, output, rng);
+        vector<unsigned int> output;
+
+        {
+            rng::subgenerator sub_rng(
+                static_cast<uint64_t>(you.where_are_you ^ you.game_seed),
+                static_cast<uint64_t>(you.depth));
+            output.reserve(X_WIDTH * Y_WIDTH);
+            domino::DominoSet<domino::EdgeDomino> dominoes(domino::cohen_set, 8);
+            // TODO: don't pass a PcgRNG object
+            dominoes.Generate(X_WIDTH, Y_WIDTH, output,
+                                                    rng::current_generator());
+        }
+
+        for (rectangle_iterator ri(0); ri; ++ri)
+            tile_init_flavour(*ri, output[ri->x + ri->y * GXM]);
     }
-    for (rectangle_iterator ri(0); ri; ++ri)
-    {
-        unsigned int idx = ri->x + ri->y * GXM;
-        tile_init_flavour(*ri, output[idx]);
-    }
+    else
+        for (rectangle_iterator ri(0); ri; ++ri)
+            tile_init_flavour(*ri, 0);
 }
 
 // 11111333333   55555555
@@ -1024,11 +1037,6 @@ void tile_reset_feat(const coord_def &gc)
 
 static void _tile_place_cloud(const coord_def &gc, const cloud_info &cl)
 {
-    // In the Shoals, ink is handled differently. (jpeg)
-    // I'm not sure it is even possible anywhere else, but just to be safe...
-    if (cl.type == CLOUD_INK && player_in_branch(BRANCH_SHOALS))
-        return;
-
     if (you.see_cell(gc))
     {
         const coord_def ep = grid2show(gc);
@@ -1484,5 +1492,7 @@ void tile_apply_properties(const coord_def &gc, packed_cell &cell)
             }
         }
     }
+
+    cell.flv = env.tile_flv(gc);
 }
 #endif
