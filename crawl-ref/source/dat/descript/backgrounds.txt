@@ -239,6 +239,10 @@ Warrior
 
 Warriors are followers of Okawaru who bring a variety of equipment to the dungeon.
 %%%%
+Witness
+
+Have you heard the good news of Beogh?
+%%%%
 Wizard
 
 Wizards start with the wide range of spells present in a book of Minor Magic in

@@ -542,6 +542,16 @@ static const map<job_type, job_def> job_data =
       { SK_WEAPON, 2}, },
 } },
 
+{ JOB_WITNESS, {
+    "Wi", "Witness",
+    6, 4, 2,
+    { SP_HILL_ORC, },
+    { "ring mail", "scroll of noise"},
+    WCHOICE_PLAIN,
+    { { SK_FIGHTING, 2 }, { SK_WEAPON, 2 }, { SK_ARMOUR, 2 }, { SK_DODGING, 2 }, 
+    { SK_INVOCATIONS, 2 }, },
+} },
+
 { JOB_WIZARD, {
     "Wz", "Wizard",
     -1, 10, 3,
