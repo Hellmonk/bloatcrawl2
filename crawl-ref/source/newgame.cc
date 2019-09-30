@@ -1219,7 +1219,6 @@ static job_group jobs_order[] =
         coord_def(0, 9), 15,
         { JOB_ARTIFICER, JOB_WANDERER, JOB_ANARCHIST, JOB_UNDERSTUDY,
             JOB_METEOROLOGIST, JOB_UNCLE, JOB_ENTOMOLOGIST, JOB_DEPRIVED,
-            JOB_PHILOSOPHER,
         }
     },
     {
@@ -1231,9 +1230,11 @@ static job_group jobs_order[] =
     {
         "Mage",
         coord_def(1, 7), 15,
-        { JOB_WIZARD, JOB_CONJURER, JOB_SUMMONER, JOB_NECROMANCER,
-          JOB_FIRE_ELEMENTALIST, JOB_ICE_ELEMENTALIST,
-          JOB_AIR_ELEMENTALIST, JOB_EARTH_ELEMENTALIST, JOB_VENOM_MAGE }
+        {
+            JOB_WIZARD, JOB_CONJURER, JOB_SUMMONER, JOB_NECROMANCER,
+            JOB_FIRE_ELEMENTALIST, JOB_ICE_ELEMENTALIST, JOB_AIR_ELEMENTALIST,
+            JOB_EARTH_ELEMENTALIST, JOB_VENOM_MAGE, JOB_PHILOSOPHER,
+        }
     },
     {
         "Zealot",
