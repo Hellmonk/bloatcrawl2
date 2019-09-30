@@ -376,10 +376,10 @@ static const map<job_type, job_def> job_data =
 
 { JOB_METEOROLOGIST, {
     "Me", "Meteorologist",
-    2, 8, 2,
+    4, 4, 4,
     { SP_DEEP_DWARF, SP_HALFLING, SP_KOBOLD, SP_SPRIGGAN, SP_BASE_DRACONIAN,
       SP_DEMONSPAWN, },
-    { "robe", "phial of floods", "fan of gales", "lightning rod" },
+    { "robe", "phial of floods", "fan of gales", "lightning rod", "air horn" },
     WCHOICE_NONE,
     { { SK_EVOCATIONS, 4 }, { SK_DODGING, 1 }, { SK_STEALTH, 1 }, },
 } },
