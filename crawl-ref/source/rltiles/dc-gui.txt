@@ -215,6 +215,15 @@ backgrounds/TK.png JOB_RECOMMENDED_TORPOR_KNIGHT
 backgrounds/WA.png JOB_RECOMMENDED_WARRIOR
 backgrounds/Wi.png JOB_RECOMMENDED_WITNESS
 backgrounds/Zi.png JOB_RECOMMENDED_ZINJA
+backgrounds/Fn.png JOB_RECOMMENDED_FENCER
+backgrounds/Ca.png JOB_RECOMMENDED_CAVEPERSON
+backgrounds/Anarchist.png JOB_RECOMMENDED_ANARCHIST
+backgrounds/Us.png JOB_RECOMMENDED_UNDERSTUDY
+backgrounds/Me.png JOB_RECOMMENDED_METEOROLOGIST
+backgrounds/Un.png JOB_RECOMMENDED_UNCLE
+backgrounds/Et.png JOB_RECOMMENDED_ENTOMOLOGIST
+backgrounds/De.png JOB_RECOMMENDED_DEPRIVED
+backgrounds/Ph.png JOB_RECOMMENDED_PHILOSOPHER
 %syn LAST_RECOMMENDED_JOB
 
 %texture backgrounds/disabled-fg
@@ -264,6 +273,15 @@ backgrounds/TK.png JOB_TORPOR_KNIGHT
 backgrounds/WA.png JOB_WARRIOR
 backgrounds/Wi.png JOB_WITNESS
 backgrounds/Zi.png JOB_ZINJA
+backgrounds/Fn.png JOB_FENCER
+backgrounds/Ca.png JOB_CAVEPERSON
+backgrounds/Anarchist.png JOB_ANARCHIST
+backgrounds/Us.png JOB_UNDERSTUDY
+backgrounds/Me.png JOB_METEOROLOGIST
+backgrounds/Un.png JOB_UNCLE
+backgrounds/Et.png JOB_ENTOMOLOGIST
+backgrounds/De.png JOB_DEPRIVED
+backgrounds/Ph.png JOB_PHILOSOPHER
 %syn LAST_JOB
 
 

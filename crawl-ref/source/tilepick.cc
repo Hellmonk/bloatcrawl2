@@ -3844,6 +3844,24 @@ static tileidx_t _tileidx_player_job_base(const job_type job)
             return TILEG_JOB_WITNESS;
         case JOB_ZINJA:
             return TILEG_JOB_ZINJA;
+        case JOB_FENCER:
+            return TILEG_JOB_FENCER;
+        case JOB_CAVEPERSON:
+            return TILEG_JOB_CAVEPERSON;
+        case JOB_ANARCHIST:
+            return TILEG_JOB_ANARCHIST;
+        case JOB_UNDERSTUDY:
+            return TILEG_JOB_UNDERSTUDY;
+        case JOB_METEOROLOGIST:
+            return TILEG_JOB_METEOROLOGIST;
+        case JOB_UNCLE:
+            return TILEG_JOB_UNCLE;
+        case JOB_ENTOMOLOGIST:
+            return TILEG_JOB_ENTOMOLOGIST;
+        case JOB_DEPRIVED:
+            return TILEG_JOB_DEPRIVED;
+        case JOB_PHILOSOPHER:
+            return TILEG_JOB_PHILOSOPHER;
         default:
             return TILEG_ERROR;
     }
