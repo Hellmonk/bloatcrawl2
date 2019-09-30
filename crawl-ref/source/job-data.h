@@ -115,7 +115,7 @@ static const map<job_type, job_def> job_data =
 { JOB_BLOOD_KNIGHT, {
     "BK", "Blood Knight",
     5, 4, 3,
-    { SP_HILL_ORC, SP_GNOLL, SP_DEEP_DWARF, SP_DEMONSPAWN, 
+    { SP_HILL_ORC, SP_GNOLL, SP_DEEP_DWARF, SP_DEMONSPAWN,
       SP_FORMICID },
     { "leather armour" },
     WCHOICE_PLAIN,
@@ -129,7 +129,7 @@ static const map<job_type, job_def> job_data =
     { SP_HILL_ORC, SP_MINOTAUR, SP_MERFOLK, SP_GARGOYLE },
     { },
     WCHOICE_PLAIN,
-    { { SK_FIGHTING, 3 }, { SK_ARMOUR, 1 }, { SK_DODGING, 2 }, 
+    { { SK_FIGHTING, 3 }, { SK_ARMOUR, 1 }, { SK_DODGING, 2 },
       { SK_WEAPON, 2 }, },
 } },
 
@@ -177,7 +177,7 @@ static const map<job_type, job_def> job_data =
 { JOB_DEATH_BISHOP, {
     "DB", "Death Bishop",
     4, 4, 4,
-    { SP_HILL_ORC, SP_GNOLL, SP_SPRIGGAN, SP_DEMONSPAWN, 
+    { SP_HILL_ORC, SP_GNOLL, SP_SPRIGGAN, SP_DEMONSPAWN,
       SP_FORMICID },
     { "robe" },
     WCHOICE_PLAIN,
@@ -196,7 +196,7 @@ static const map<job_type, job_def> job_data =
 { JOB_DISCIPLE, {
     "Di", "Disciple",
     4, 4, 4,
-    { SP_HILL_ORC, SP_GNOLL, SP_SPRIGGAN, SP_DEMONSPAWN, 
+    { SP_HILL_ORC, SP_GNOLL, SP_SPRIGGAN, SP_DEMONSPAWN,
       SP_FORMICID },
     { "robe"},
     WCHOICE_GOOD,
@@ -412,7 +412,7 @@ static const map<job_type, job_def> job_data =
     { SP_SPRIGGAN, SP_HALFLING, SP_KOBOLD },
     { "dagger plus:1"},
     WCHOICE_NONE,
-    { { SK_FIGHTING, 1 }, { SK_WEAPON, 2 }, { SK_DODGING, 2 }, 
+    { { SK_FIGHTING, 1 }, { SK_WEAPON, 2 }, { SK_DODGING, 2 },
       { SK_STEALTH, 4 }, { SK_INVOCATIONS, 2 }, },
 } },
 
@@ -422,7 +422,7 @@ static const map<job_type, job_def> job_data =
     { SP_OGRE, SP_MINOTAUR },
     { "chain mail" },
     WCHOICE_PLAIN,
-    { { SK_FIGHTING, 3 }, { SK_ARMOUR, 1 }, { SK_DODGING, 1 }, 
+    { { SK_FIGHTING, 3 }, { SK_ARMOUR, 1 }, { SK_DODGING, 1 },
       { SK_WEAPON, 2 }, { SK_INVOCATIONS, 2 }, },
 } },
 
@@ -452,7 +452,7 @@ static const map<job_type, job_def> job_data =
       SP_DEMONSPAWN, },
     { "ring mail plus:1" },
     WCHOICE_PLAIN,
-    { { SK_FIGHTING, 3 }, { SK_ARMOUR, 1 }, { SK_DODGING, 1 }, 
+    { { SK_FIGHTING, 3 }, { SK_ARMOUR, 1 }, { SK_DODGING, 1 },
       { SK_WEAPON, 3 }, },
 } },
 
@@ -462,7 +462,7 @@ static const map<job_type, job_def> job_data =
     { SP_FORMICID, SP_MINOTAUR },
     { "ring mail", "air horn" },
     WCHOICE_PLAIN,
-    { { SK_FIGHTING, 2 }, { SK_ARMOUR, 1 }, { SK_DODGING, 1 }, 
+    { { SK_FIGHTING, 2 }, { SK_ARMOUR, 1 }, { SK_DODGING, 1 },
       { SK_WEAPON, 3 }, { SK_INVOCATIONS, 3 }, },
 } },
 
@@ -483,7 +483,7 @@ static const map<job_type, job_def> job_data =
     { SP_HILL_ORC, SP_MINOTAUR },
     { "plate armour ego:ponderousness" },
     WCHOICE_PLAIN,
-    { { SK_FIGHTING, 3 }, { SK_ARMOUR, 1 }, { SK_DODGING, 1 }, 
+    { { SK_FIGHTING, 3 }, { SK_ARMOUR, 1 }, { SK_DODGING, 1 },
       { SK_WEAPON, 2 }, { SK_INVOCATIONS, 2 }, },
 } },
 
@@ -554,9 +554,9 @@ static const map<job_type, job_def> job_data =
     "Wa", "Warrior",
     8, 0, 4,
     { SP_MINOTAUR, SP_HILL_ORC, SP_MERFOLK, SP_GARGOYLE, SP_CENTAUR, },
-    { "scale mail plus:-2", "pair of gloves plus:-1", "hat", "dagger plus:-1", 
-      "bardiche plus:-6", "executioner's axe plus:-6", 
-      "triple sword plus:-6", "hunting sling plus:-2", "shortbow plus:-2", 
+    { "scale mail plus:-2", "pair of gloves plus:-1", "hat", "dagger plus:-1",
+      "bardiche plus:-6", "executioner's axe plus:-6",
+      "triple sword plus:-6", "hunting sling plus:-2", "shortbow plus:-2",
       "hand crossbow plus:-2", "javelin q:1" },
     WCHOICE_PLAIN,
     { { SK_FIGHTING, 2 }, { SK_INVOCATIONS, 2 }, { SK_DODGING, 1 }, { SK_ARMOUR, 2 },
@@ -569,7 +569,7 @@ static const map<job_type, job_def> job_data =
     { SP_HILL_ORC, },
     { "ring mail", "scroll of noise"},
     WCHOICE_PLAIN,
-    { { SK_FIGHTING, 2 }, { SK_WEAPON, 2 }, { SK_ARMOUR, 2 }, { SK_DODGING, 2 }, 
+    { { SK_FIGHTING, 2 }, { SK_WEAPON, 2 }, { SK_ARMOUR, 2 }, { SK_DODGING, 2 },
     { SK_INVOCATIONS, 2 }, },
 } },
 
@@ -587,7 +587,7 @@ static const map<job_type, job_def> job_data =
 { JOB_ZINJA, {
     "Zi", "Zinja",
     4, 4, 4,
-    { SP_HILL_ORC, SP_GNOLL, SP_SPRIGGAN, SP_DEMONSPAWN, 
+    { SP_HILL_ORC, SP_GNOLL, SP_SPRIGGAN, SP_DEMONSPAWN,
       SP_FORMICID },
     { "robe", "boomerang ego:silver q:3" },
     WCHOICE_PLAIN,
