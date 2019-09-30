@@ -1242,9 +1242,9 @@ static job_group jobs_order[] =
           JOB_BOUND, JOB_BERSERKER, JOB_DANCER, JOB_ABYSSAL_KNIGHT, JOB_CHAOS_KNIGHT,
           JOB_TORPOR_KNIGHT, JOB_NIGHT_KNIGHT, JOB_PALADIN, JOB_INHERITOR, JOB_SLIME_PRIEST,
           JOB_BLOOD_KNIGHT, JOB_LIBRARIAN, JOB_DEATH_BISHOP, JOB_DOCTOR, JOB_HERMIT,
-          JOB_ZINJA, } // menu crashes with more items currently JOB_GARDENER, JOB_STORM_CLERIC, JOB_DISCIPLE,
-          //JOB_WARRIOR, JOB_MERCHANT, JOB_ANNIHILATOR, JOB_GAMBLER, JOB_WITNESS, JOB_KIKUMANCER
-        //}
+          JOB_ZINJA, JOB_GARDENER, JOB_STORM_CLERIC, JOB_DISCIPLE,
+          JOB_WARRIOR, JOB_MERCHANT, JOB_ANNIHILATOR, JOB_GAMBLER, JOB_WITNESS, JOB_KIKUMANCER
+        }
     },
 };
 
@@ -1287,7 +1287,7 @@ public:
 
         descriptions = make_shared<Switcher>();
 
-        m_main_items = make_shared<OuterMenu>(true, 3, 20);
+        m_main_items = make_shared<OuterMenu>(true, 3, 40);
         m_main_items->menu_id = m_choice_type == C_JOB ?
             "background-main" : "species-main";
         m_main_items->set_margin_for_crt({1, 0, 1, 0});
