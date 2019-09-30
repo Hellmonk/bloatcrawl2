@@ -1187,279 +1187,6 @@ static void _mark_fully_random(newgame_def& ng, newgame_def& ng_choice,
  * Helper function for _choose_species
  * Constructs the menu screen
  */
-static const int COLUMN_WIDTH = 35;
-static const int X_MARGIN = 4;
-static const int CHAR_DESC_START_Y = 18;
-static const int CHAR_DESC_HEIGHT = 2;
-static const int SPECIAL_KEYS_START_Y = CHAR_DESC_START_Y
-                                        + CHAR_DESC_HEIGHT + 1;
-
-static void _add_choice_menu_options(int choice_type,
-                                     const newgame_def& ng,
-                                     const newgame_def& defaults,
-                                     MenuFreeform* menu)
-{
-    string choice_name = choice_type == C_JOB ? "background" : "species";
-    string other_choice_name = choice_type == C_JOB ? "species" : "background";
-
-    // Add all the special button entries
-    TextItem* tmp = new TextItem();
-    if (choice_type == C_SPECIES)
-        tmp->set_text("+ - Recommended species");
-    else
-        tmp->set_text("+ - Recommended background");
-    coord_def min_coord = coord_def(X_MARGIN, SPECIAL_KEYS_START_Y);
-    coord_def max_coord = coord_def(min_coord.x + tmp->get_text().size(),
-                                    min_coord.y + 1);
-    tmp->set_bounds(min_coord, max_coord);
-    tmp->set_fg_colour(BROWN);
-    tmp->add_hotkey('+');
-    // If the player has species chosen, use VIABLE, otherwise use RANDOM
-    if ((choice_type == C_SPECIES && ng.job != JOB_UNKNOWN)
-       || (choice_type == C_JOB && ng.species != SP_UNKNOWN))
-    {
-        tmp->set_id(M_VIABLE);
-    }
-    else
-        tmp->set_id(M_RANDOM);
-    tmp->set_highlight_colour(STARTUP_HIGHLIGHT_CONTROL);
-    tmp->set_description_text("Picks a random recommended " + other_choice_name + " based on your current " + choice_name + " choice.");
-    menu->attach_item(tmp);
-    tmp->set_visible(true);
-
-    tmp = new TextItem();
-    tmp->set_text("# - Recommended character");
-    min_coord.x = X_MARGIN;
-    min_coord.y = SPECIAL_KEYS_START_Y + 1;
-    max_coord.x = min_coord.x + tmp->get_text().size();
-    max_coord.y = min_coord.y + 1;
-    tmp->set_bounds(min_coord, max_coord);
-    tmp->set_fg_colour(BROWN);
-    tmp->add_hotkey('#');
-    tmp->set_id(M_VIABLE_CHAR);
-    tmp->set_highlight_colour(STARTUP_HIGHLIGHT_CONTROL);
-    tmp->set_description_text("Shuffles through random recommended character combinations "
-                              "until you accept one.");
-    menu->attach_item(tmp);
-    tmp->set_visible(true);
-
-    tmp = new TextItem();
-    tmp->set_text("% - List aptitudes");
-    min_coord.x = X_MARGIN;
-    min_coord.y = SPECIAL_KEYS_START_Y + 2;
-    max_coord.x = min_coord.x + tmp->get_text().size();
-    max_coord.y = min_coord.y + 1;
-    tmp->set_bounds(min_coord, max_coord);
-    tmp->set_fg_colour(BROWN);
-    tmp->add_hotkey('%');
-    tmp->set_id(M_APTITUDES);
-    tmp->set_highlight_colour(STARTUP_HIGHLIGHT_CONTROL);
-    tmp->set_description_text("Lists the numerical skill train aptitudes for all races.");
-    menu->attach_item(tmp);
-    tmp->set_visible(true);
-
-    tmp = new TextItem();
-    tmp->set_text("? - Help");
-    min_coord.x = X_MARGIN;
-    min_coord.y = SPECIAL_KEYS_START_Y + 3;
-    max_coord.x = min_coord.x + tmp->get_text().size();
-    max_coord.y = min_coord.y + 1;
-    tmp->set_bounds(min_coord, max_coord);
-    tmp->set_fg_colour(BROWN);
-    tmp->add_hotkey('?');
-    tmp->set_id(M_HELP);
-    tmp->set_highlight_colour(STARTUP_HIGHLIGHT_CONTROL);
-    tmp->set_description_text("Opens the help screen.");
-    menu->attach_item(tmp);
-    tmp->set_visible(true);
-
-    tmp = new TextItem();
-    tmp->set_text("* - Random " + choice_name);
-    min_coord.x = X_MARGIN + COLUMN_WIDTH;
-    min_coord.y = SPECIAL_KEYS_START_Y;
-    max_coord.x = min_coord.x + tmp->get_text().size();
-    max_coord.y = min_coord.y + 1;
-    tmp->set_bounds(min_coord, max_coord);
-    tmp->set_fg_colour(BROWN);
-    tmp->add_hotkey('*');
-    tmp->set_id(M_RANDOM);
-    tmp->set_highlight_colour(STARTUP_HIGHLIGHT_CONTROL);
-    tmp->set_description_text("Picks a random " + choice_name + ".");
-    menu->attach_item(tmp);
-    tmp->set_visible(true);
-
-    tmp = new TextItem();
-    tmp->set_text("! - Random character");
-    min_coord.x = X_MARGIN + COLUMN_WIDTH;
-    min_coord.y = SPECIAL_KEYS_START_Y + 1;
-    max_coord.x = min_coord.x + tmp->get_text().size();
-    max_coord.y = min_coord.y + 1;
-    tmp->set_bounds(min_coord, max_coord);
-    tmp->set_fg_colour(BROWN);
-    tmp->add_hotkey('!');
-    tmp->set_id(M_RANDOM_CHAR);
-    tmp->set_highlight_colour(STARTUP_HIGHLIGHT_CONTROL);
-    tmp->set_description_text("Shuffles through random character combinations "
-                              "until you accept one.");
-    menu->attach_item(tmp);
-    tmp->set_visible(true);
-
-    tmp = new TextItem();
-    if ((choice_type == C_JOB && ng.species != SP_UNKNOWN)
-        || (choice_type == C_SPECIES && ng.job != JOB_UNKNOWN))
-    {
-        tmp->set_text("Space - Change " + other_choice_name);
-        tmp->set_description_text("Lets you change your " + other_choice_name +
-            " choice.");
-    }
-    else
-    {
-        tmp->set_text("Space - Pick " + other_choice_name + " first");
-        tmp->set_description_text("Lets you pick your " + other_choice_name +
-            " first.");
-    }
-    // Adjust the end marker to align the - because Space text is longer by 4
-    min_coord.x = X_MARGIN + COLUMN_WIDTH - 4;
-    min_coord.y = SPECIAL_KEYS_START_Y + 2;
-    max_coord.x = min_coord.x + tmp->get_text().size();
-    max_coord.y = min_coord.y + 1;
-    tmp->set_bounds(min_coord, max_coord);
-    tmp->set_fg_colour(BROWN);
-    tmp->add_hotkey(' ');
-    tmp->set_id(M_ABORT);
-    tmp->set_highlight_colour(STARTUP_HIGHLIGHT_CONTROL);
-    menu->attach_item(tmp);
-    tmp->set_visible(true);
-
-    if (_char_defined(defaults))
-    {
-        tmp = new TextItem();
-        tmp->set_text("Tab - " + _char_description(defaults));
-        // Adjust the end marker to align the - because Tab text is longer by 2
-        min_coord.x = X_MARGIN + COLUMN_WIDTH - 2;
-        min_coord.y = SPECIAL_KEYS_START_Y + 3;
-        max_coord.x = min_coord.x + tmp->get_text().size();
-        max_coord.y = min_coord.y + 1;
-        tmp->set_bounds(min_coord, max_coord);
-        tmp->set_fg_colour(BROWN);
-        tmp->add_hotkey('\t');
-        tmp->set_id(M_DEFAULT_CHOICE);
-        tmp->set_highlight_colour(STARTUP_HIGHLIGHT_CONTROL);
-        tmp->set_description_text("Play a new game with your previous choice.");
-        menu->attach_item(tmp);
-        tmp->set_visible(true);
-    }
-}
-
-static void _add_group_title(MenuFreeform* menu,
-                             const char* name,
-                             coord_def position,
-                             int width)
-{
-    TextItem* tmp = new NoSelectTextItem();
-    string text;
-    tmp->set_text(name);
-    tmp->set_fg_colour(LIGHTBLUE);
-    coord_def min_coord(2 + position.x, 3 + position.y);
-    coord_def max_coord(min_coord.x + width, min_coord.y + 1);
-    tmp->set_bounds(min_coord, max_coord);
-    menu->attach_item(tmp);
-    tmp->set_visible(true);
-}
-
-static void _attach_group_item(MenuFreeform* menu,
-                               menu_letter &letter,
-                               int id,
-                               int item_status,
-                               string item_name,
-                               bool is_active_item,
-                               coord_def min_coord,
-                               coord_def max_coord)
-
-{
-    TextItem* tmp = new TextItem();
-
-    if (item_status == ITEM_STATUS_UNKNOWN)
-    {
-        tmp->set_fg_colour(LIGHTGRAY);
-        tmp->set_highlight_colour(STARTUP_HIGHLIGHT_NORMAL);
-    }
-    else if (item_status == ITEM_STATUS_RESTRICTED)
-    {
-        tmp->set_fg_colour(DARKGRAY);
-        tmp->set_highlight_colour(STARTUP_HIGHLIGHT_BAD);
-    }
-    else
-    {
-        tmp->set_fg_colour(WHITE);
-        tmp->set_highlight_colour(STARTUP_HIGHLIGHT_GOOD);
-    }
-
-    string text;
-    text += letter;
-    text += " - ";
-    text += item_name;
-    tmp->set_text(text);
-    tmp->set_bounds(min_coord, max_coord);
-    tmp->add_hotkey(letter);
-    tmp->set_id(id);
-    tmp->set_description_text(unwrap_desc(getGameStartDescription(item_name)));
-    menu->attach_item(tmp);
-    tmp->set_visible(true);
-    if (is_active_item)
-        menu->set_active_item(tmp);
-}
-
-void species_group::attach(const newgame_def& ng, const newgame_def& defaults,
-                       MenuFreeform* menu, menu_letter &letter)
-{
-    _add_group_title(menu, name, position, width);
-
-    coord_def min_coord(2 + position.x, 3 + position.y);
-    coord_def max_coord(min_coord.x + width, min_coord.y + 1);
-
-    for (species_type &this_species : species_list)
-    {
-        if (this_species == SP_UNKNOWN)
-            break;
-
-        if (ng.job == JOB_UNKNOWN && !is_starting_species(this_species))
-            continue;
-
-        if (ng.job != JOB_UNKNOWN
-            && species_allowed(ng.job, this_species) == CC_BANNED)
-        {
-            continue;
-        }
-
-        int item_status;
-        if (ng.job == JOB_UNKNOWN)
-            item_status = ITEM_STATUS_UNKNOWN;
-        else if (species_allowed(ng.job, this_species) == CC_RESTRICTED)
-            item_status = ITEM_STATUS_RESTRICTED;
-        else
-            item_status = ITEM_STATUS_ALLOWED;
-
-        const bool is_active_item = defaults.species == this_species;
-
-        ++min_coord.y;
-        ++max_coord.y;
-
-        _attach_group_item(
-            menu,
-            letter,
-            this_species,
-            item_status,
-            species_name(this_species),
-            is_active_item,
-            min_coord,
-            max_coord
-        );
-
-        ++letter;
-    }
-}
-
 static void _construct_species_menu(const newgame_def& ng,
                                     const newgame_def& defaults,
                                     UINewGameMenu* ng_menu)
@@ -1480,44 +1207,45 @@ static void _construct_species_menu(const newgame_def& ng,
         }
     }
 }
-
 static job_group jobs_order[] =
 {
     {
         "Warrior",
         coord_def(0, 0), 15,
-        { JOB_FIGHTER, JOB_GLADIATOR, JOB_MONK, JOB_HUNTER, JOB_ASSASSIN,
-          JOB_FENCER, JOB_CAVEPERSON }
+        { JOB_FIGHTER, JOB_GLADIATOR, JOB_MONK, JOB_HUNTER, JOB_ASSASSIN, JOB_FENCER, JOB_CAVEPERSON }
+    },
+    {
+        "Adventurer",
+        coord_def(0, 9), 15,
+        { JOB_ARTIFICER, JOB_WANDERER, JOB_ANARCHIST, JOB_UNDERSTUDY,
+            JOB_METEOROLOGIST, JOB_UNCLE, JOB_ENTOMOLOGIST, JOB_DEPRIVED,
+            JOB_PHILOSOPHER,
+        }
     },
     {
         "Warrior-mage",
-        coord_def(0, 7), 15,
+        coord_def(1, 0), 15,
         { JOB_SKALD, JOB_TRANSMUTER, JOB_WARPER, JOB_ARCANE_MARKSMAN,
           JOB_ENCHANTER }
     },
     {
-        "Adventurer",
-        coord_def(15, 0), 20,
-        { JOB_ARTIFICER, JOB_WANDERER, JOB_ANARCHIST, JOB_UNDERSTUDY,
-          JOB_METEOROLOGIST, JOB_UNCLE, JOB_ENTOMOLOGIST, JOB_DEPRIVED,
-          JOB_PHILOSOPHER }
-    },
-    {
-        "Zealot",
-        coord_def(35, 0), 15,
-        { JOB_BOUND, JOB_BERSERKER, JOB_DANCER, JOB_ABYSSAL_KNIGHT, JOB_CHAOS_KNIGHT,
-          JOB_TORPOR_KNIGHT, JOB_NIGHT_KNIGHT, JOB_PALADIN, JOB_INHERITOR, JOB_SLIME_PRIEST,
-          JOB_BLOOD_KNIGHT, JOB_LIBRARIAN, JOB_DEATH_BISHOP, JOB_DOCTOR, JOB_HERMIT,
-          /*JOB_ZINJA, JOB_GARDENER, JOB_STORM_CLERIC, JOB_DISCIPLE,
-          JOB_WARRIOR, JOB_MERCHANT, JOB_ANNIHILATOR, JOB_GAMBLER, JOB_WITNESS, JOB_KIKUMANCER*/ }
-    },
-    {
         "Mage",
-        coord_def(2, 0), 22,
+        coord_def(1, 7), 15,
         { JOB_WIZARD, JOB_CONJURER, JOB_SUMMONER, JOB_NECROMANCER,
           JOB_FIRE_ELEMENTALIST, JOB_ICE_ELEMENTALIST,
           JOB_AIR_ELEMENTALIST, JOB_EARTH_ELEMENTALIST, JOB_VENOM_MAGE }
-    }
+    },
+    {
+        "Zealot",
+        coord_def(2, 0), 15,
+        { JOB_BERSERKER, JOB_CHAOS_KNIGHT,
+          JOB_BOUND, JOB_BERSERKER, JOB_DANCER, JOB_ABYSSAL_KNIGHT, JOB_CHAOS_KNIGHT,
+          JOB_TORPOR_KNIGHT, JOB_NIGHT_KNIGHT, JOB_PALADIN, JOB_INHERITOR, JOB_SLIME_PRIEST,
+          JOB_BLOOD_KNIGHT, JOB_LIBRARIAN, JOB_DEATH_BISHOP, JOB_DOCTOR, JOB_HERMIT,
+          JOB_ZINJA, } // menu crashes with more items currently JOB_GARDENER, JOB_STORM_CLERIC, JOB_DISCIPLE,
+          //JOB_WARRIOR, JOB_MERCHANT, JOB_ANNIHILATOR, JOB_GAMBLER, JOB_WITNESS, JOB_KIKUMANCER
+        //}
+    },
 };
 
 /**

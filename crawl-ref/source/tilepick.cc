@@ -3819,8 +3819,6 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
             return TILEG_SP_HILL_ORC;
         case SP_KOBOLD:
             return TILEG_SP_KOBOLD;
-        case SP_MUMMY:
-            return TILEG_SP_MUMMY;
         case SP_NAGA:
             return TILEG_SP_NAGA;
         case SP_OGRE:
@@ -3839,14 +3837,10 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
             return TILEG_SP_MINOTAUR;
         case SP_DEMONSPAWN:
             return TILEG_SP_DEMONSPAWN;
-        case SP_GHOUL:
-            return TILEG_SP_GHOUL;
         case SP_TENGU:
             return TILEG_SP_TENGU;
         case SP_MERFOLK:
             return TILEG_SP_MERFOLK;
-        case SP_VAMPIRE:
-            return TILEG_SP_VAMPIRE;
         case SP_DEEP_DWARF:
             return TILEG_SP_DEEP_DWARF;
         case SP_FELID:
@@ -3864,7 +3858,7 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
         case SP_GNOLL:
             return TILEG_SP_GNOLL;
         default:
-            return TILEP_ERROR;
+            return TILEG_SP_HUMAN;
     }
 }
 

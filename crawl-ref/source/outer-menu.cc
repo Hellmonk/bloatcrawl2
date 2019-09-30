@@ -212,6 +212,7 @@ bool OuterMenu::on_event(const wm_event& event)
 
 void OuterMenu::add_label(shared_ptr<Text> label, int x, int y)
 {
+    //dprf("Adding %s at %d,%d", label, x, y);
     ASSERT(x >= 0 && x < m_width);
     ASSERT(y >= 0 && y < m_height);
     ASSERT(m_buttons[y*m_width + x] == nullptr);
