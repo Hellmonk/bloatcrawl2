@@ -193,6 +193,28 @@ backgrounds/IE.png JOB_RECOMMENDED_ICE_ELEMENTALIST
 backgrounds/AE.png JOB_RECOMMENDED_AIR_ELEMENTALIST
 backgrounds/EE.png JOB_RECOMMENDED_EARTH_ELEMENTALIST
 backgrounds/VM.png JOB_RECOMMENDED_VENOM_MAGE
+backgrounds/Pa.png JOB_RECOMMENDED_PALADIN
+backgrounds/An.png JOB_RECOMMENDED_ANNIHILATOR
+backgrounds/BK.png JOB_RECOMMENDED_BLOOD_KNIGHT
+backgrounds/Bo.png JOB_RECOMMENDED_BOUND
+backgrounds/Da.png JOB_RECOMMENDED_DANCER
+backgrounds/DB.png JOB_RECOMMENDED_DEATH_BISHOP
+backgrounds/Di.png JOB_RECOMMENDED_DISCIPLE
+backgrounds/Dr.png JOB_RECOMMENDED_DOCTOR
+backgrounds/Ga.png JOB_RECOMMENDED_GAMBLER
+backgrounds/Gr.png JOB_RECOMMENDED_GARDENER
+backgrounds/Hm.png JOB_RECOMMENDED_HERMIT
+backgrounds/In.png JOB_RECOMMENDED_INHERITOR
+backgrounds/Ki.png JOB_RECOMMENDED_KIKUMANCER
+backgrounds/Li.png JOB_RECOMMENDED_LIBRARIAN
+backgrounds/Merchant.png JOB_RECOMMENDED_MERCHANT
+backgrounds/NK.png JOB_RECOMMENDED_NIGHT_KNIGHT
+backgrounds/SC.png JOB_RECOMMENDED_STORM_CLERIC
+backgrounds/SP.png JOB_RECOMMENDED_SLIME_PRIEST
+backgrounds/TK.png JOB_RECOMMENDED_TORPOR_KNIGHT
+backgrounds/WA.png JOB_RECOMMENDED_WARRIOR
+backgrounds/Wi.png JOB_RECOMMENDED_WITNESS
+backgrounds/Zi.png JOB_RECOMMENDED_ZINJA
 %syn LAST_RECOMMENDED_JOB
 
 %texture backgrounds/disabled-fg
@@ -220,6 +242,28 @@ backgrounds/IE.png JOB_ICE_ELEMENTALIST
 backgrounds/AE.png JOB_AIR_ELEMENTALIST
 backgrounds/EE.png JOB_EARTH_ELEMENTALIST
 backgrounds/VM.png JOB_VENOM_MAGE
+backgrounds/Pa.png JOB_PALADIN
+backgrounds/An.png JOB_ANNIHILATOR
+backgrounds/BK.png JOB_BLOOD_KNIGHT
+backgrounds/Bo.png JOB_BOUND
+backgrounds/Da.png JOB_DANCER
+backgrounds/DB.png JOB_DEATH_BISHOP
+backgrounds/Di.png JOB_DISCIPLE
+backgrounds/Dr.png JOB_DOCTOR
+backgrounds/Ga.png JOB_GAMBLER
+backgrounds/Gr.png JOB_GARDENER
+backgrounds/Hm.png JOB_HERMIT
+backgrounds/In.png JOB_INHERITOR
+backgrounds/Ki.png JOB_KIKUMANCER
+backgrounds/Li.png JOB_LIBRARIAN
+backgrounds/Merchant.png JOB_MERCHANT
+backgrounds/NK.png JOB_NIGHT_KNIGHT
+backgrounds/SC.png JOB_STORM_CLERIC
+backgrounds/SP.png JOB_SLIME_PRIEST
+backgrounds/TK.png JOB_TORPOR_KNIGHT
+backgrounds/WA.png JOB_WARRIOR
+backgrounds/Wi.png JOB_WITNESS
+backgrounds/Zi.png JOB_ZINJA
 %syn LAST_JOB
 
 

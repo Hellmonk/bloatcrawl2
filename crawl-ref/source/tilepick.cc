@@ -3800,6 +3800,50 @@ static tileidx_t _tileidx_player_job_base(const job_type job)
             return TILEG_JOB_ARCANE_MARKSMAN;
         case JOB_ABYSSAL_KNIGHT:
             return TILEG_JOB_ABYSSAL_KNIGHT;
+        case JOB_PALADIN:
+            return TILEG_JOB_PALADIN;
+        case JOB_ANNIHILATOR:
+            return TILEG_JOB_ANNIHILATOR;
+        case JOB_BLOOD_KNIGHT:
+            return TILEG_JOB_BLOOD_KNIGHT;
+        case JOB_BOUND:
+            return TILEG_JOB_BOUND;
+        case JOB_DANCER:
+            return TILEG_JOB_DANCER;
+        case JOB_DEATH_BISHOP:
+            return TILEG_JOB_DEATH_BISHOP;
+        case JOB_DISCIPLE:
+            return TILEG_JOB_DISCIPLE;
+        case JOB_DOCTOR:
+            return TILEG_JOB_DOCTOR;
+        case JOB_GAMBLER:
+            return TILEG_JOB_GAMBLER;
+        case JOB_GARDENER:
+            return TILEG_JOB_GARDENER;
+        case JOB_HERMIT:
+            return TILEG_JOB_HERMIT;
+        case JOB_INHERITOR:
+            return TILEG_JOB_INHERITOR;
+        case JOB_KIKUMANCER:
+            return TILEG_JOB_KIKUMANCER;
+        case JOB_LIBRARIAN:
+            return TILEG_JOB_LIBRARIAN;
+        case JOB_MERCHANT:
+            return TILEG_JOB_MERCHANT;
+        case JOB_NIGHT_KNIGHT:
+            return TILEG_JOB_NIGHT_KNIGHT;
+        case JOB_STORM_CLERIC:
+            return TILEG_JOB_STORM_CLERIC;
+        case JOB_SLIME_PRIEST:
+            return TILEG_JOB_SLIME_PRIEST;
+        case JOB_TORPOR_KNIGHT:
+            return TILEG_JOB_TORPOR_KNIGHT;
+        case JOB_WARRIOR:
+            return TILEG_JOB_WARRIOR;
+        case JOB_WITNESS:
+            return TILEG_JOB_WITNESS;
+        case JOB_ZINJA:
+            return TILEG_JOB_ZINJA;
         default:
             return TILEG_ERROR;
     }
