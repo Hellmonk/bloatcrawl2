@@ -101,7 +101,9 @@ item_def* newgame_make_item(object_class_type base,
         return nullptr;
 
     // not an actual item
-    if (sub_type == WPN_UNARMED)
+    // the WPN_UNKNOWN case is used when generating a paper doll during
+    // character creation
+    if (sub_type == WPN_UNARMED || sub_type == WPN_UNKNOWN)
         return nullptr;
 
     // Oni are known for wearing animal skins (see Wikipedia).
@@ -256,7 +258,7 @@ static void _give_ammo(weapon_type weapon, int plus)
     }
 }
 
-static void _give_items_skills(const newgame_def& ng)
+void give_items_skills(const newgame_def& ng)
 {
     create_wanderer();
 
@@ -757,7 +759,7 @@ static void _setup_generic(const newgame_def& ng)
     give_basic_mutations(you.species);
 
     // This function depends on stats and mutations being finalised.
-    _give_items_skills(ng);
+    give_items_skills(ng);
 
     roll_demonspawn_mutations();
 

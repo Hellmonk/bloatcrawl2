@@ -24,6 +24,11 @@
 # include "view.h"
 # include "stringutil.h"
 #endif
+#ifdef USE_TILE_LOCAL
+# include "tilepick.h"
+# include "tilepick-p.h"
+# include "tile-player-flag-cut.h"
+#endif
 
 namespace ui {
 
@@ -56,7 +61,7 @@ static inline bool pos_in_rect(i2 pos, i4 rect)
 }
 
 #ifndef USE_TILE_LOCAL
-static void clear_text_region(i4 region);
+static void clear_text_region(i4 region, COLOURS bg);
 #endif
 
 // must be before ui_root declaration for correct destruction order
@@ -72,6 +77,14 @@ public:
         return sz > 0 ? m_root.get_child(sz-1) : nullptr;
     };
     size_t num_children() const { return m_root.num_children(); };
+
+    bool widget_is_in_layout(const Widget* w)
+    {
+        for (; w; w = w->_get_parent())
+            if (w == &m_root)
+                return true;
+        return false;
+    }
 
     void resize(int w, int h);
     void layout();
@@ -91,8 +104,10 @@ public:
     void send_mouse_enter_leave_events(int mx, int my);
 
     bool needs_paint;
+    bool debug_draw = false;
     vector<KeymapContext> keymap_stack;
     vector<int> cutoff_stack;
+    vector<Widget*> focus_stack;
 
 protected:
     int m_w, m_h;
@@ -106,27 +121,17 @@ static stack<i4> scissor_stack;
 
 struct Widget::slots Widget::slots = {};
 
+Widget::~Widget()
+{
+    Widget::slots.event.remove_by_target(this);
+    if (m_parent && get_focused_widget() == this)
+        set_focused_widget(nullptr);
+    _set_parent(nullptr);
+}
+
 bool Widget::on_event(const wm_event& event)
 {
     return Widget::slots.event.emit(this, event);
-}
-
-static inline bool _maybe_propagate_event(wm_event event, shared_ptr<Widget> &child)
-{
-#ifdef USE_TILE_LOCAL
-    /* WME_MOUSELEAVE is conspicuously absent because it is emitted
-     * only on widgets that the cursor just left */
-    if (event.type == WME_MOUSEMOTION
-     || event.type == WME_MOUSEENTER
-     || event.type == WME_MOUSEBUTTONDOWN
-     || event.type == WME_MOUSEBUTTONUP)
-    {
-        i2 pos = {(int)event.mouse_event.px, (int)event.mouse_event.py};
-        if (!pos_in_rect(pos, child->get_region()))
-            return false;
-    }
-#endif
-    return child->on_event(event);
 }
 
 shared_ptr<Widget> ContainerVec::get_child_at_offset(int x, int y)
@@ -140,25 +145,6 @@ shared_ptr<Widget> ContainerVec::get_child_at_offset(int x, int y)
             return child;
     }
     return nullptr;
-}
-
-bool Container::on_event(const wm_event& event)
-{
-    if (Widget::on_event(event))
-        return true;
-    for (shared_ptr<Widget> &child : *this)
-        if (_maybe_propagate_event(event, child))
-            return true;
-    return false;
-}
-
-bool Bin::on_event(const wm_event& event)
-{
-    if (Widget::on_event(event))
-        return true;
-    if (_maybe_propagate_event(event, m_child))
-        return true;
-    return false;
 }
 
 shared_ptr<Widget> Bin::get_child_at_offset(int x, int y)
@@ -325,6 +311,8 @@ vector<int> Box::layout_main_axis(vector<SizeReq>& ch_psz, int main_sz)
     {
         ch_sz[i] = ch_psz[i].min;
         extra -= ch_psz[i].min;
+        if (justify_items == Align::STRETCH)
+            ch_psz[i].nat = INT_MAX;
     }
     ASSERT(extra >= 0);
 
@@ -420,7 +408,15 @@ void Box::_allocate_region()
     ASSERT(extra_main_space >= 0);
 
     // main axis offset
-    int mo = extra_main_space*(justify_items - Box::Justify::START)/2;
+    int mo;
+    switch (justify_items)
+    {
+        case Widget::START:   mo = 0; break;
+        case Widget::CENTER:  mo = extra_main_space/2; break;
+        case Widget::END:     mo = extra_main_space; break;
+        case Widget::STRETCH: mo = 0; break;
+        default: ASSERT(0);
+    }
     int ho = m_region[0] + (horz ? mo : 0);
     int vo = m_region[1] + (!horz ? mo : 0);
 
@@ -750,6 +746,8 @@ void Text::_render()
     vector<size_t> highlights;
     int begin_idx = 0;
 
+    clear_text_region(m_region, m_bg_colour);
+
     if (!hl_pat.empty())
     {
         for (int i = 0; i < region[1]-m_region[1]; i++)
@@ -851,14 +849,24 @@ void Text::_allocate_region()
     wrap_text_to_size(m_region[2], m_region[3]);
 }
 
+#ifndef USE_TILE_LOCAL
+void Text::set_bg_colour(COLOURS colour)
+{
+    m_bg_colour = colour;
+    _expose();
+}
+#endif
+
 void Image::set_tile(tile_def tile)
 {
-#ifdef USE_TILE_LOCAL
+#ifdef USE_TILE
     m_tile = tile;
+#ifdef USE_TILE_LOCAL
     const tile_info &ti = tiles.get_image_manager()->tile_def_info(m_tile);
     m_tw = ti.width;
     m_th = ti.height;
     _invalidate_sizereq();
+#endif
 #endif
 }
 
@@ -952,17 +960,11 @@ void Stack::_allocate_region()
     }
 }
 
-bool Stack::on_event(const wm_event& event)
-{
-    if (Widget::on_event(event))
-        return true;
-    if (m_children.size() > 0 &&_maybe_propagate_event(event, m_children.back()))
-        return true;
-    return false;
-}
-
 void Switcher::add_child(shared_ptr<Widget> child)
 {
+    // TODO XXX: if there's a focused widget
+    // - it must be in the current top child
+    // - unfocus it before we
     child->_set_parent(this);
     m_children.push_back(move(child));
     _invalidate_sizereq();
@@ -971,6 +973,8 @@ void Switcher::add_child(shared_ptr<Widget> child)
 
 int& Switcher::current()
 {
+    // TODO XXX: we need to update the focused widget
+    // so we need an API change
     _expose();
     return m_current;
 }
@@ -1004,18 +1008,43 @@ void Switcher::_allocate_region()
         cr[2] = min(max(pw.min, m_region[2]), pw.nat);
         SizeReq ph = child->get_preferred_size(Widget::VERT, cr[2]);
         cr[3] = min(max(ph.min, m_region[3]), ph.nat);
+        int xo, yo;
+        switch (align_x)
+        {
+            case Widget::START:   xo = 0; break;
+            case Widget::CENTER:  xo = (m_region[2] - cr[2])/2; break;
+            case Widget::END:     xo = m_region[2] - cr[2]; break;
+            case Widget::STRETCH: xo = 0; break;
+            default: ASSERT(0);
+        }
+        switch (align_y)
+        {
+            case Widget::START:   yo = 0; break;
+            case Widget::CENTER:  yo = (m_region[3] - cr[3])/2; break;
+            case Widget::END:     yo = m_region[3] - cr[3]; break;
+            case Widget::STRETCH: yo = 0; break;
+            default: ASSERT(0);
+        }
+        cr[2] += xo;
+        cr[3] += yo;
+        if (align_x == Widget::STRETCH)
+            cr[2] = m_region[2];
+        if (align_y == Widget::STRETCH)
+            cr[3] = m_region[3];
         child->allocate_region(cr);
     }
 }
 
-bool Switcher::on_event(const wm_event& event)
+shared_ptr<Widget> Switcher::get_child_at_offset(int x, int y)
 {
-    if (Widget::on_event(event))
-        return true;
-    m_current = max(0, min(m_current, (int)m_children.size()));
-    if (m_children.size() > 0 &&_maybe_propagate_event(event, m_children[m_current]))
-        return true;
-    return false;
+    if (m_children.size() == 0)
+        return nullptr;
+
+    int c = max(0, min(m_current, (int)m_children.size()));
+    const auto region = m_children[c]->get_region();
+    bool inside = (x > region[0] && x < region[0] + region[2])
+        && (y > region[1] && y < region[1] + region[3]);
+    return inside ? m_children[c] : nullptr;
 }
 
 shared_ptr<Widget> Grid::get_child_at_offset(int x, int y)
@@ -1189,20 +1218,33 @@ void Grid::layout_track(Direction dim, SizeReq sr, int size)
     for (size_t i = 0; i < infos.size(); ++i)
         infos[i].size = infos[i].sr.min;
 
+    const bool stretch = dim ? stretch_v : stretch_h;
+    bool stretching = false;
+
     while (true)
     {
         int sum_flex_grow = 0, sum_taken = 0;
         for (const auto& info : infos)
             sum_flex_grow += info.size < info.sr.nat ? info.flex_grow : 0;
         if (!sum_flex_grow)
-            break;
+        {
+            if (!stretch)
+                break;
+            stretching = true;
+            for (const auto& info : infos)
+                sum_flex_grow += info.flex_grow;
+            if (!sum_flex_grow)
+                break;
+        }
 
         for (size_t i = 0; i < infos.size(); ++i)
         {
-            float efg = infos[i].size < infos[i].sr.nat ? infos[i].flex_grow : 0;
+            float efg = (infos[i].size < infos[i].sr.nat || stretching)
+                ? infos[i].flex_grow : 0;
             int tr_extra = extra * efg / sum_flex_grow;
-            ASSERT(infos[i].size <= infos[i].sr.nat);
-            int taken = min(tr_extra, infos[i].sr.nat - infos[i].size);
+            ASSERT(stretching || infos[i].size <= infos[i].sr.nat);
+            int taken = stretching ? tr_extra
+                : min(tr_extra, infos[i].sr.nat - infos[i].size);
             infos[i].size += taken;
             sum_taken += taken;
         }
@@ -1301,7 +1343,7 @@ void Scroller::_allocate_region()
         rect.set_col(col_a, col_b);
         m_shade_buf.add_primitive(rect);
     }
-    if (ch_reg[3] > m_region[3]) {
+    if (ch_reg[3] > m_region[3] && m_scrolbar_visible) {
         const int x = m_region[0]+m_region[2];
         const float h_percent = m_region[3] / (float)ch_reg[3];
         const int h = m_region[3]*min(max(0.05f, h_percent), 1.0f);
@@ -1369,7 +1411,7 @@ bool Scroller::on_event(const wm_event& event)
     return false;
 }
 
-Popup::Popup(shared_ptr<Widget> child)
+Layout::Layout(shared_ptr<Widget> child)
 {
 #ifdef USE_TILE_LOCAL
     m_depth = ui_root.num_children();
@@ -1377,6 +1419,21 @@ Popup::Popup(shared_ptr<Widget> child)
     child->_set_parent(this);
     m_child = move(child);
     expand_h = expand_v = true;
+}
+
+void Layout::_render()
+{
+    m_child->render();
+}
+
+SizeReq Layout::_get_preferred_size(Direction dim, int prosp_width)
+{
+    return m_child->get_preferred_size(dim, prosp_width);
+}
+
+void Layout::_allocate_region()
+{
+    m_child->allocate_region(m_region);
 }
 
 void Popup::_render()
@@ -1442,6 +1499,11 @@ void Popup::_allocate_region()
             region[0] + region[2] + m_padding - 3,
             region[1] + region[3] + m_padding - 3,
             VColour(4, 2, 4));
+#else
+    SizeReq hsr = m_child->get_preferred_size(HORZ, -1);
+    region[2] = max(hsr.min, min(region[2], hsr.nat));
+    SizeReq vsr = m_child->get_preferred_size(VERT, region[2]);
+    region[3] = max(vsr.min, min(region[3], vsr.nat));
 #endif
     m_child->allocate_region(region);
 }
@@ -1475,10 +1537,129 @@ SizeReq Dungeon::_get_preferred_size(Direction dim, int prosp_width)
     int sz = (dim ? height : width)*32;
     return {sz, sz};
 }
+
+PlayerDoll::PlayerDoll(dolls_data doll)
+{
+    m_save_doll = doll;
+    for (int i = 0; i < TEX_MAX; i++)
+        m_tile_buf[i].set_tex(&tiles.get_image_manager()->m_textures[i]);
+    _pack_doll();
+}
+
+PlayerDoll::~PlayerDoll()
+{
+    for (int t = 0; t < TEX_MAX; t++)
+        m_tile_buf[t].clear();
+}
+
+void PlayerDoll::_pack_doll()
+{
+    m_tiles.clear();
+    // FIXME: Implement this logic in one place in e.g. pack_doll_buf().
+    int p_order[TILEP_PART_MAX] =
+    {
+        TILEP_PART_SHADOW,  //  0
+        TILEP_PART_HALO,
+        TILEP_PART_ENCH,
+        TILEP_PART_DRCWING,
+        TILEP_PART_CLOAK,
+        TILEP_PART_BASE,    //  5
+        TILEP_PART_BOOTS,
+        TILEP_PART_LEG,
+        TILEP_PART_BODY,
+        TILEP_PART_ARM,
+        TILEP_PART_HAIR,
+        TILEP_PART_BEARD,
+        TILEP_PART_DRCHEAD,  // 15
+        TILEP_PART_HELM,
+        TILEP_PART_HAND1,   // 10
+        TILEP_PART_HAND2,
+    };
+
+    int flags[TILEP_PART_MAX];
+    tilep_calc_flags(m_save_doll, flags);
+
+    // For skirts, boots go under the leg armour. For pants, they go over.
+    if (m_save_doll.parts[TILEP_PART_LEG] < TILEP_LEG_SKIRT_OFS)
+    {
+        p_order[6] = TILEP_PART_BOOTS;
+        p_order[7] = TILEP_PART_LEG;
+    }
+
+    // Special case bardings from being cut off.
+    bool is_naga = (m_save_doll.parts[TILEP_PART_BASE] == TILEP_BASE_NAGA
+                    || m_save_doll.parts[TILEP_PART_BASE] == TILEP_BASE_NAGA + 1);
+    if (m_save_doll.parts[TILEP_PART_BOOTS] >= TILEP_BOOTS_NAGA_BARDING
+        && m_save_doll.parts[TILEP_PART_BOOTS] <= TILEP_BOOTS_NAGA_BARDING_RED)
+    {
+        flags[TILEP_PART_BOOTS] = is_naga ? TILEP_FLAG_NORMAL : TILEP_FLAG_HIDE;
+    }
+
+    bool is_cent = (m_save_doll.parts[TILEP_PART_BASE] == TILEP_BASE_CENTAUR
+                    || m_save_doll.parts[TILEP_PART_BASE] == TILEP_BASE_CENTAUR + 1);
+    if (m_save_doll.parts[TILEP_PART_BOOTS] >= TILEP_BOOTS_CENTAUR_BARDING
+        && m_save_doll.parts[TILEP_PART_BOOTS] <= TILEP_BOOTS_CENTAUR_BARDING_RED)
+    {
+        flags[TILEP_PART_BOOTS] = is_cent ? TILEP_FLAG_NORMAL : TILEP_FLAG_HIDE;
+    }
+
+    for (int i = 0; i < TILEP_PART_MAX; ++i)
+    {
+        const int p   = p_order[i];
+        const tileidx_t idx = m_save_doll.parts[p];
+        if (idx == 0 || idx == TILEP_SHOW_EQUIP || flags[p] == TILEP_FLAG_HIDE)
+            continue;
+
+        ASSERT_RANGE(idx, TILE_MAIN_MAX, TILEP_PLAYER_MAX);
+
+        int ymax = TILE_Y;
+
+        if (flags[p] == TILEP_FLAG_CUT_CENTAUR
+            || flags[p] == TILEP_FLAG_CUT_NAGA)
+        {
+            ymax = 18;
+        }
+
+        m_tiles.emplace_back(idx, TEX_PLAYER, ymax);
+    }
+}
+
+void PlayerDoll::_render()
+{
+    for (int i = 0; i < TEX_MAX; i++)
+        m_tile_buf[i].draw();
+}
+
+SizeReq PlayerDoll::_get_preferred_size(Direction dim, int prosp_width)
+{
+    return { TILE_Y, TILE_Y };
+}
+
+void PlayerDoll::_allocate_region()
+{
+    for (int t = 0; t < TEX_MAX; t++)
+        m_tile_buf[t].clear();
+    for (const tile_def &tdef : m_tiles)
+    {
+        int tile      = tdef.tile;
+        TextureID tex = tdef.tex;
+        m_tile_buf[tex].add_unscaled(tile, m_region[0], m_region[1], tdef.ymax);
+    }
+}
+
+bool PlayerDoll::on_event(const wm_event& event)
+{
+    return false;
+}
+
 #endif
 
 void UIRoot::push_child(shared_ptr<Widget> ch, KeymapContext km)
 {
+    if (auto popup = dynamic_cast<Popup*>(ch.get()))
+        focus_stack.push_back(popup->get_child().get());
+    else
+        focus_stack.push_back(ch.get());
     m_root.add_child(move(ch));
     m_needs_layout = true;
     keymap_stack.push_back(km);
@@ -1496,6 +1677,7 @@ void UIRoot::pop_child()
     m_root.pop_child();
     m_needs_layout = true;
     keymap_stack.pop_back();
+    focus_stack.pop_back();
 #ifndef USE_TILE_LOCAL
     if (m_root.num_children() == 0)
         clrscr();
@@ -1569,7 +1751,7 @@ void UIRoot::render()
     m_dirty_region = aabb_intersect(m_dirty_region, m_region);
     textcolour(LIGHTGREY);
     textbackground(BLACK);
-    clear_text_region(m_dirty_region);
+    clear_text_region(m_dirty_region, BLACK);
 #endif
 
     push_scissor(m_region);
@@ -1578,6 +1760,25 @@ void UIRoot::render()
     ASSERT(cutoff <= static_cast<int>(m_root.num_children()));
     for (int i = cutoff; i < static_cast<int>(m_root.num_children()); i++)
         m_root.get_child(i)->render();
+    if (debug_draw)
+    {
+        LineBuffer lb;
+        size_t i = 0;
+        for (const auto& w : prev_hover_path)
+        {
+            i4 r = w->get_region();
+            i++;
+            VColour lc;
+            lc = i == prev_hover_path.size() ?
+                VColour(255, 100, 0, 100) : VColour(0, 50 + i*40, 0, 100);
+            lb.add_square(r[0]+1, r[1]+1, r[0]+r[2], r[1]+r[3], lc);
+        }
+        if (auto w = get_focused_widget()) {
+            i4 r = w->get_region();
+            lb.add_square(r[0]+1, r[1]+1, r[0]+r[2], r[1]+r[3], VColour(128,31,239,255));
+        }
+        lb.draw();
+    }
 #else
     // Render only the top of the UI stack on console
     if (m_root.num_children() > 0)
@@ -1610,6 +1811,7 @@ void UIRoot::send_mouse_enter_leave_events(int mx, int my)
         current = current->get_child_at_offset(mx, my);
     }
 
+    size_t new_hover_path_size = hover_path.size();
     size_t sz = max(prev_hover_path.size(), hover_path.size());
     prev_hover_path.resize(sz, nullptr);
     hover_path.resize(sz, nullptr);
@@ -1629,24 +1831,77 @@ void UIRoot::send_mouse_enter_leave_events(int mx, int my)
         {
             ev.type = WME_MOUSELEAVE;
             if (!event_filter || !event_filter(ev))
-                prev_hover_path[diff]->on_event(ev);
+                for (size_t i = sz; i > diff; --i)
+                {
+                    if (!prev_hover_path[i-1])
+                        continue;
+                    prev_hover_path[i-1]->on_event(ev);
+                }
         }
         if (hover_path[diff])
         {
             ev.type = WME_MOUSEENTER;
             if (!event_filter || !event_filter(ev))
-                hover_path[diff]->on_event(ev);
+                for (size_t i = diff; i < sz; ++i)
+                {
+                    if (!hover_path[i])
+                        break;
+                    hover_path[i]->on_event(ev);
+                }
         }
     }
 
     prev_hover_path = move(hover_path);
+    prev_hover_path.resize(new_hover_path_size);
 }
 
 bool UIRoot::on_event(const wm_event& event)
 {
     if (event_filter && event_filter(event))
         return true;
-    return m_root.on_event(event);
+
+    if (event.type == WME_KEYDOWN && event.key.keysym.sym == CK_INSERT)
+    {
+        ui_root.debug_draw = !ui_root.debug_draw;
+        ui_root.queue_layout();
+        ui_root.expose_region({0,0,INT_MAX,INT_MAX});
+        return true;
+    }
+
+    switch (event.type)
+    {
+        case WME_MOUSEBUTTONDOWN:
+        case WME_MOUSEBUTTONUP:
+        case WME_MOUSEMOTION:
+            if (ui_root.debug_draw)
+            {
+                ui_root.queue_layout();
+                ui_root.expose_region({0,0,INT_MAX,INT_MAX});
+            }
+        case WME_MOUSEWHEEL:
+            for (auto w = prev_hover_path.rbegin(); w != prev_hover_path.rend(); ++w)
+                if ((*w)->on_event(event))
+                    return true;
+            break;
+        case WME_MOUSEENTER:
+        case WME_MOUSELEAVE:
+            die("unreachable");
+            break;
+        default:
+            size_t layer_idx = m_root.num_children();
+            if (!layer_idx)
+                return false;
+            Widget* layer_root = m_root.get_child(layer_idx-1).get();
+            Layout* layout_root = dynamic_cast<Layout*>(layer_root);
+            if (layout_root && layout_root->event_filters.emit(layout_root, event))
+                return true;
+            for (Widget* w = focus_stack.back(); w; w = w->_get_parent())
+                if (w->on_event(event))
+                    return true;
+            break;
+    }
+
+    return false;
 }
 
 void push_scissor(i4 scissor)
@@ -1682,14 +1937,14 @@ i4 get_scissor()
 }
 
 #ifndef USE_TILE_LOCAL
-static void clear_text_region(i4 region)
+static void clear_text_region(i4 region, COLOURS bg)
 {
     if (scissor_stack.size() > 0)
         region = aabb_intersect(region, scissor_stack.top());
     if (region[2] <= 0 || region[3] <= 0)
         return;
     textcolour(LIGHTGREY);
-    textbackground(BLACK);
+    textbackground(bg);
     for (int y=region[1]; y < region[1]+region[3]; y++)
     {
         cgotoxy(region[0]+1, y+1);
@@ -1759,6 +2014,12 @@ void ui_force_render()
 {
     ui_root.layout();
     ui_root.needs_paint = true;
+    ui_root.render();
+}
+
+void ui_render()
+{
+    ui_root.layout();
     ui_root.render();
 }
 
@@ -2008,6 +2269,13 @@ progress_popup::progress_popup(string title, int width)
 {
     auto container = make_shared<Box>(Widget::VERT);
     container->align_items = Widget::CENTER;
+#ifndef USE_TILE_LOCAL
+    // Center the popup in console.
+    // if webtiles browser ever uses this property, then this will probably
+    // look bad there and need another solution. But right now, webtiles ignores
+    // expand_h.
+    container->expand_h = true;
+#endif
     formatted_string bar_string = get_progress_string(bar_width);
     progress_bar = make_shared<Text>(bar_string);
     auto title_text = make_shared<Text>(title);
@@ -2088,6 +2356,49 @@ formatted_string progress_popup::get_progress_string(unsigned int len)
     bar[(center_pos + 1) % len] = marker[2];
     bar = string("<lightmagenta>") + bar + "</lightmagenta>";
     return formatted_string::parse_string(bar);
+}
+
+void set_focused_widget(Widget* w)
+{
+    static bool sent_focusout;
+    static Widget* new_focus;
+
+    if (!ui_root.num_children())
+        return;
+
+    auto current_focus = ui_root.focus_stack.back();
+
+    if (w == current_focus)
+        return;
+
+    new_focus = w;
+
+    if (current_focus && !sent_focusout)
+    {
+        sent_focusout = true;
+        wm_event ev = {0};
+        ev.type = WME_FOCUSOUT;
+        current_focus->on_event(ev);
+    }
+
+    if (new_focus != w)
+        return;
+
+    ui_root.focus_stack.back() = new_focus;
+
+    sent_focusout = false;
+
+    if (new_focus)
+    {
+        wm_event ev = {0};
+        ev.type = WME_FOCUSIN;
+        new_focus->on_event(ev);
+    }
+}
+
+Widget* get_focused_widget()
+{
+    return ui_root.focus_stack.empty() ? nullptr : ui_root.focus_stack.back();
 }
 
 }

@@ -27,6 +27,7 @@
 #include "libutil.h"
 #include "map-knowledge.h"
 #include "menu.h"
+#include "outer-menu.h"
 #include "message.h"
 #include "mon-util.h"
 #include "notes.h"
@@ -430,6 +431,14 @@ wint_t TilesFramework::_handle_control_message(sockaddr_un addr, string data)
         JsonWrapper scroll = json_find_member(obj.node, "scroll");
         scroll.check(JSON_NUMBER);
         recv_formatted_scroller_scroll((int)scroll->number_);
+    }
+    else if (msgtype == "outer_menu_focus")
+    {
+        JsonWrapper menu_id = json_find_member(obj.node, "menu_id");
+        JsonWrapper hotkey = json_find_member(obj.node, "hotkey");
+        menu_id.check(JSON_STRING);
+        hotkey.check(JSON_NUMBER);
+        OuterMenu::recv_outer_menu_focus(menu_id->string_, (int)hotkey->number_);
     }
 
     return c;
@@ -1098,7 +1107,7 @@ void TilesFramework::_send_item(item_info& current, const item_info& next,
     }
 }
 
-static void _send_doll(const dolls_data &doll, bool submerged, bool ghost)
+void TilesFramework::send_doll(const dolls_data &doll, bool submerged, bool ghost)
 {
     // Ordered from back to front.
     // FIXME: Implement this logic in one place in e.g. pack_doll_buf().
@@ -1192,17 +1201,17 @@ static void _send_doll(const dolls_data &doll, bool submerged, bool ghost)
     tiles.json_close_array();
 }
 
-void TilesFramework::send_mcache(mcache_entry *entry, bool submerged, bool send_doll)
+void TilesFramework::send_mcache(mcache_entry *entry, bool submerged, bool send)
 {
     bool trans = entry->transparent();
-    if (trans && send_doll)
+    if (trans && send)
         tiles.json_write_int("trans", 1);
 
     const dolls_data *doll = entry->doll();
-    if (send_doll)
+    if (send)
     {
         if (doll)
-            _send_doll(*doll, submerged, trans);
+            send_doll(*doll, submerged, trans);
         else
         {
             tiles.json_write_comma();
@@ -1425,7 +1434,7 @@ void TilesFramework::_send_cell(const coord_def &gc,
             }
             if (fg_changed || player_doll_changed)
             {
-                _send_doll(last_player_doll, in_water, false);
+                send_doll(last_player_doll, in_water, false);
                 if (Options.tile_use_monster != MONS_0)
                 {
                     monster_info minfo(MONS_PLAYER, MONS_PLAYER);
@@ -1749,9 +1758,9 @@ void TilesFramework::load_dungeon(const crawl_view_buffer &vbuf,
     for (int y = 0; y < GYM; y++)
         for (int x = 0; x < GXM; x++)
         {
-            const coord_def gc(x, y);
-            screen_cell_t *cell = &m_next_view(gc);
-            cell->tile.map_knowledge = map_bounds(gc) ? env.map_knowledge(gc) : map_cell();
+            const coord_def cache_gc(x, y);
+            screen_cell_t *cell = &m_next_view(cache_gc);
+            cell->tile.map_knowledge = map_bounds(cache_gc) ? env.map_knowledge(cache_gc) : map_cell();
         }
 
     m_next_view_tl = view2grid(coord_def(1, 1));
