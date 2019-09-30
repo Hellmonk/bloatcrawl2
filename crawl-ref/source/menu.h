@@ -46,7 +46,8 @@ struct menu_letter
     const menu_letter &operator ++ ()
     {
         letter = letter == 'z'? 'A' :
-                 letter == 'Z'? 'a' :
+                 letter == 'Z'? '0' :
+                 letter == '9'? 'a' :
                                 letter + 1;
         return *this;
     }
