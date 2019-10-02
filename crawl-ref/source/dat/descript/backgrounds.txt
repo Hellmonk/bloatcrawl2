@@ -202,6 +202,10 @@ Skald
 Skalds are melee fighters who can boost themselves in battle with spells from
 the Charms school.
 %%%%
+Spellsword
+
+Spellswords are melee fighters with skill in using damaging spells.
+%%%%
 Storm Cleric
 
 Storm clerics spread destruction in the name of Qazlal.

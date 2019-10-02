@@ -456,6 +456,16 @@ static const map<job_type, job_def> job_data =
       { SK_WEAPON, 3 }, },
 } },
 
+{ JOB_SPELLSWORD, {
+    "Ss", "Spellsword",
+    7, 5, 0,
+    { SP_HALFLING, SP_MERFOLK, },
+    { "leather armour", "book of Conjurations" },
+    WCHOICE_PLAIN,
+    { { SK_FIGHTING, 2 }, { SK_ARMOUR, 3 }, { SK_WEAPON, 2 },
+      { SK_CONJURATIONS, 4 }, },
+} },
+
 { JOB_STORM_CLERIC, {
     "SC", "Storm Cleric",
     4, 4, 4,
