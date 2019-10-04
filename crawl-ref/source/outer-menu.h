@@ -26,6 +26,7 @@ public:
     colour_t fg_highlight = BLACK;
 #endif
     string description;
+    int strength;
 
 #ifdef USE_TILE_WEB
     void serialize();
@@ -82,6 +83,7 @@ public:
 
     weak_ptr<OuterMenu> linked_menus[4];
     shared_ptr<ui::Switcher> descriptions;
+    shared_ptr<ui::Switcher> strengths;
     const char *menu_id {nullptr};
 
 protected:

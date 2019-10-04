@@ -287,6 +287,12 @@ void OuterMenu::add_button(shared_ptr<MenuButton> btn, int x, int y)
         m_description_indexes[y*m_width + x] = descriptions->num_children()-1;
     }
 
+    if (strengths)
+    {
+        auto strength_text = make_shared<Text>(btn->strength);
+        strengths->add_child(move(strength_text));
+    }
+
     Widget *r;
     for (Widget *p = btn.get(); p; p = p->_get_parent())
         r = p;
