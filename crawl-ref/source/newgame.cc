@@ -893,6 +893,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
 
     auto popup = make_shared<ui::Popup>(box);
     ui::push_layout(move(popup));
+    ui::set_focused_widget(prompt_ui.get());
     while (!done && !crawl_state.seen_hups)
     {
         formatted_string prompt;
