@@ -4,11 +4,13 @@
 #include "species.h"
 
 #include "item-prop.h"
+#include "message.h"
 #include "mutation.h"
 #include "output.h"
 #include "player.h"
 #include "player-stats.h"
 #include "random.h"
+#include "religion.h"
 #include "skills.h"
 #include "stringutil.h"
 #include "tiledoll.h"
@@ -432,19 +434,30 @@ species_type find_species_from_string(const string &species, bool initial_only)
  * species_data it'll do something.
  *
  * @param sp the new species.
+ * @param rescale_skills If true, try to keep skill levels the same. If false,
+ *                       just keep skill points unchanged.
  */
-void change_species_to(species_type sp)
+void change_species_to(species_type sp, bool rescale_skills)
 {
-    ASSERT(sp != SP_UNKNOWN);
+    ASSERT(sp < NUM_SPECIES);
+    const species_type old_sp = you.species;
+    bool had_racial_permanent_flight = you.racial_permanent_flight();
 
     // Re-scale skill-points.
-    for (skill_type sk = SK_FIRST_SKILL; sk < NUM_SKILLS; ++sk)
+    if (rescale_skills)
     {
-        you.skill_points[sk] *= species_apt_factor(sk, sp)
-                                / species_apt_factor(sk);
+        for (skill_type sk = SK_FIRST_SKILL; sk < NUM_SKILLS; ++sk)
+        {
+            // If the skill was/becomes unusable, don't modify the skill points.
+            if ((species_apt(sk, old_sp) != UNUSABLE_SKILL)
+                && (species_apt(sk, sp) != UNUSABLE_SKILL))
+            {
+                you.skill_points[sk] *= species_apt_factor(sk, sp)
+                                    / species_apt_factor(sk);
+            }
+        }
     }
 
-    species_type old_sp = you.species;
     you.species = sp;
     you.chr_species_name = species_name(sp);
 
@@ -516,6 +529,18 @@ void change_species_to(species_type sp)
     // Sanitize skills.
     fixup_skills();
 
+    if (had_racial_permanent_flight && you.attribute[ATTR_PERM_FLIGHT])
+    {
+        you.duration[DUR_FLIGHT] = 0;
+        you.attribute[ATTR_PERM_FLIGHT] = 0;
+        land_player();
+    }
+
+    // If you can no longer worship your god, abandon them.
+    // eg changing to Demigod, Gr^Yred, etc...
+    if (!you_worship(GOD_NO_GOD) && !player_can_join_god(you.religion))
+        excommunication(true, GOD_NO_GOD);
+
     calc_hp();
     calc_mp();
 
@@ -565,4 +590,37 @@ species_type random_draconian_colour()
                                                  SP_LAST_NONBASE_DRACONIAN));
   } while (!_is_viable_draconian(species));
   return species;
+}
+
+void update_shapeshifter_species()
+{
+    if (!you.shapeshifter_species)
+        return;
+
+    species_type sp;
+    do {
+        sp = random_starting_species();
+    } while (sp == you.species
+             || (sp == SP_SHAPESHIFTER)
+             // This should give enough time to level up again.
+             || (sp == SP_MAYFLYTAUR && you.elapsed_time > 15000)
+            );
+    
+    if (sp == SP_BASE_DRACONIAN && you.experience_level >= 7)
+        sp = random_draconian_colour();
+
+    mprf(MSGCH_INTRINSIC_GAIN,
+        "Your form blurs as you shapeshift into a %s!",
+        species_name(sp).c_str());
+    more();
+    change_species_to(sp, false);
+}
+
+// You can only modify the undeadness of species that are default alive. This
+// means you can't modify SP_MIRROR_EIDOLON (hungry dead) or SP_GARGOYLE
+// (non-living, although this isn't represented in code so we have to hardcode
+// it).
+bool species_can_use_modified_undeadness(species_type sp)
+{
+    return sp != SP_GARGOYLE && species_undead_type(sp) == US_ALIVE;
 }

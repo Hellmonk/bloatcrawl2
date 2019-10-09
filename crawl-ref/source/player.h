@@ -129,6 +129,8 @@ public:
     bool chaoskin;
     bool no_locks;
 
+    bool shapeshifter_species;
+
     // This field is here even in non-WIZARD compiles, since the
     // player might have been playing previously under wiz mode.
     bool          wizard;            // true if player has entered wiz mode.

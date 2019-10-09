@@ -176,6 +176,11 @@ Protean
 Proteans are a race of vaguely humanoid amoebas. Mutations increase their health
 pool, and their health pool controls their size.
 %%%%
+Shapeshifter
+
+Shapeshifters imitate monsters around them to an uncanny degree. They cannot
+control their shifting, and are only rarely seen in their true form.
+%%%%
 Faerie Dragon
 
 Faerie Dragons are attuned to magic and their spells cost fewer magic points.

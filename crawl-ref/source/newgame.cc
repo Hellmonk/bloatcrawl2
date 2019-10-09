@@ -770,8 +770,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     choice.no_locks = false;
 
     // Non-living or default-undead species cannot choose undead state
-    bool can_choose_undead = ng.species != SP_GARGOYLE
-        && species_undead_type(ng.species) == US_ALIVE;
+    bool can_choose_undead = species_can_use_modified_undeadness(ng.species);
     if (!can_choose_undead)
         choice.undead_type = species_undead_type(ng.species);
 

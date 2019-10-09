@@ -63,10 +63,12 @@ void species_stat_init(species_type species);
 void species_stat_gain(species_type species);
 bool species_has_low_str(species_type species);
 
-void change_species_to(species_type sp);
+void change_species_to(species_type sp, bool rescale_skills = true);
 
 const species_def& get_species_def(species_type species);
 
 species_type random_starting_species();
 bool is_starting_species(species_type species);
 species_type random_draconian_colour();
+void update_shapeshifter_species();
+bool species_can_use_modified_undeadness(species_type sp);
