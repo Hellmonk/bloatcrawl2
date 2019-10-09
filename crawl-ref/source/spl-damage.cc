@@ -3077,3 +3077,33 @@ spret cast_borgnjors_vile_clutch(int pow, bolt &beam, bool fail)
 
     return spret::success;
 }
+
+spret cast_starburst(int pow, bool fail)
+{
+    fail_check();
+
+    int range = spell_range(SPELL_STARBURST, pow);
+
+    int fuzz = -1 + random2avg(3, div_rand_round(pow, 66) + 1);
+
+    vector<coord_def> offsets = { coord_def(range, fuzz),
+                                  coord_def(-fuzz, range),
+                                  coord_def(-range, -fuzz),
+                                  coord_def(fuzz, -range) };
+
+    bolt beam;
+    beam.range        = range;
+    beam.source       = you.pos();
+    beam.source_id    = MID_PLAYER;
+    beam.thrower      = KILL_YOU;
+    beam.origin_spell = SPELL_STARBURST;
+    zappy(ZAP_BOLT_OF_FIRE, pow, false, beam);
+
+    for (const coord_def & offset : offsets)
+    {
+        beam.target = you.pos() + offset;
+        beam.fire();
+    }
+
+    return spret::success;
+}
