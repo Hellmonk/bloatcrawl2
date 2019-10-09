@@ -6051,6 +6051,13 @@ void monster::react_to_damage(const actor *oppressor, int damage,
     if (!alive())
         return;
 
+    if (has_ench(ENCH_INNER_FLAME) && oppressor && damage && one_chance_in(3))
+    {
+        mon_enchant i_f = get_ench(ENCH_INNER_FLAME);
+        mprf("Flame seeps out of %s.", name(DESC_THE).c_str());
+        check_place_cloud(CLOUD_FIRE, pos(), 2, actor_by_mid(i_f.source));
+    }
+
 
     if (mons_species() == MONS_BUSH
         && res_fire() < 0 && flavour == BEAM_FIRE
