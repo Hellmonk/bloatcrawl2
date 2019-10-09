@@ -93,6 +93,7 @@ oni_f ONI
 oni_m
 oni2_f
 oni2_m
+faerie_dragon FAERIE_DRAGON
 
 # draconians
 draconian_f DRACONIAN DRACONIAN_FIRST
