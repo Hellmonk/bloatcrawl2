@@ -159,7 +159,7 @@ easily into any body armour, but they cannot wear other armour types.
 Leprechaun
 
 Leprechauns are small and frail but versatile. Their intrinsic luck gives them
-a knack for finding better items and more gold than other species.
+a knack for finding better items.
 %%%%
 Hedgehog
 
@@ -173,8 +173,8 @@ most skills and frailer than humans, but can charm their foes.
 %%%%
 Protean
 
-Proteans are a race of vaguely humanoid amoebas. Mutations increase their health
-pool, and their health pool controls their size.
+Proteans are a race of vaguely humanoid amoebas. They grow in health and size as
+they mutate.
 %%%%
 Shapeshifter
 

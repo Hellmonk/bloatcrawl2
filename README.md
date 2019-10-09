@@ -15,12 +15,12 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Flans** are gelatinous and slightly corrosive beings. Their fluid shape lets them fit easily into any body armour, but they cannot wear other armour types.
 * Rolling around at the speed of sound, **Hedgehogs** have got places to go and gotta follow their rainbow.
 * **Kitsune** are enthralling fox spirits that take on human shapes. They are poor at most skills and frailer than humans, but can charm their foes.
-* **Leprechauns** are small and frail but versatile. Their intrinsic luck gives them a knack for finding better items and more gold than other species.
+* **Leprechauns** are small and frail but versatile. Their intrinsic luck gives them a knack for finding better items.
 * Half insect, half human, **Mayflytaurs** have incredibly short lifespans but have evolved to be exceptionally overpowered in just about every imaginable way.
 * Strange phantoms summoned from the mirror world, **Mirror Eidola** rapidly fade away. They must slay other creatures and take their energy to stay in this plane.
 * **Oni** are monstrous in nature with the rough appearance of Ogres, albeit smaller. They discover spells as they gain experience and ignore schools of magic.
 * Deeper than a Deep Elf and twice as elven, **Profound Elves** are extremely frail magical experts.
-* **Proteans** are a race of vaguely humanoid amoebas. Mutations increase their health pool, and their health pool controls their size.
+* **Proteans** are a race of vaguely humanoid amoebas. They grow in health and size as they mutate.
 * **Shapeshifters** imitate monsters around them to an uncanny degree. They cannot control their shifting, and are only rarely seen in their true form.
 * Less dextrous than other elves, **Squat Elves** have mastered the art of the power squat. They use this ability to enhance their strength and intelligence.
 * **Troll Two**: They're eating her! And then they're going to eat me! Oh my GAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHD!
