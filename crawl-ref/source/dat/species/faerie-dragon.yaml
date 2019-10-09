@@ -1,0 +1,62 @@
+enum: SP_FAERIE_DRAGON
+monster: MONS_THE_ENCHANTRESS
+name: Faerie Dragon
+genus: Fae
+difficulty: Simple
+aptitudes:
+  xp: 0
+  hp: -1
+  mp_mod: 2
+  mr: 4
+  fighting: -1
+  short_blades: -2
+  long_blades: -2
+  axes: -2
+  maces_and_flails: -1
+  polearms: -2
+  staves: -1
+  slings: -2
+  bows: -2
+  crossbows: -2
+  throwing: -1
+  armour: false
+  dodging: 3
+  stealth: -2
+  shields: 2
+  spellcasting: 2
+  conjurations: 2
+  hexes: 1
+  summoning: 1
+  necromancy: 1
+  fire_magic: 2
+  ice_magic: 2
+  air_magic: 2
+  earth_magic: 2
+  poison_magic: 2
+  evocations: 1
+str: 6
+int: 11
+dex: 7
+levelup_stat_frequency: 4
+levelup_stats:
+  - int
+  - dex
+mutations:
+  1:
+    MUT_FAERIE_WINGS: 1
+    MUT_FAERIE_MAGIC: 1
+    MUT_FAERIE_SCALES: 1
+recommended_jobs:
+  - JOB_AIR_ELEMENTALIST
+  - JOB_FIRE_ELEMENTALIST
+  - JOB_ICE_ELEMENTALIST
+  - JOB_CONJURER
+  - JOB_EARTH_ELEMENTALIST
+  - JOB_VENOM_MAGE
+  - JOB_WIZARD
+  - JOB_NECROMANCER
+recommended_weapons:
+  - SK_LONG_BLADES
+  - SK_MACES_FLAILS
+  - SK_STAVES
+  - SK_SLINGS

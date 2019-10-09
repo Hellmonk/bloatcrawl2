@@ -405,6 +405,9 @@ int spell_hunger(spell_type which_spell)
     if (player_energy())
         return 0;
 
+    if (you.species == SP_FAERIE_DRAGON)
+        return 0;
+
     const int level = spell_difficulty(which_spell);
 
     const int basehunger[] = { 50, 100, 150, 250, 400, 550, 700, 850, 1000 };
@@ -462,7 +465,10 @@ bool spell_harms_area(spell_type spell)
 // for Xom acting (more power = more likely to grab his attention) {dlb}
 int spell_mana(spell_type which_spell)
 {
-    return _seekspell(which_spell)->level;
+    int spell_cost = _seekspell(which_spell)->level;
+    if (you.species == SP_FAERIE_DRAGON)
+        spell_cost--;
+    return spell_cost;
 }
 
 // applied in naughties (more difficult = higher level knowledge = worse)

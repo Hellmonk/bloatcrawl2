@@ -2387,6 +2387,8 @@ int player_shield_class()
     shield += (you.get_mutation_level(MUT_LARGE_BONE_PLATES) > 0
                ? you.get_mutation_level(MUT_LARGE_BONE_PLATES) * 400 + 400
                : 0);
+    if (you.has_mutation(MUT_FAERIE_SCALES))
+        shield += 600;
 
     shield += qazlal_sh_boost() * 100;
     shield += tso_sh_boost() * 100;
@@ -3354,6 +3356,8 @@ int player_stealth()
     const int how_transparent = you.get_mutation_level(MUT_TRANSLUCENT_SKIN);
     if (how_transparent)
         stealth += 15 * (how_transparent);
+    if (you.has_mutation(MUT_FAERIE_SCALES))
+        stealth -= STEALTH_PIP;
 
     // Radiating silence is the negative complement of shouting all the
     // time... a sudden change from background noise to no noise is going
@@ -6143,6 +6147,8 @@ int player::base_ac(int scale) const
     AC -= get_mutation_level(MUT_PHYSICAL_VULNERABILITY)
           ? get_mutation_level(MUT_PHYSICAL_VULNERABILITY) * 500 : 0;
               // +3, +6, +9
+    if (you.has_mutation(MUT_FAERIE_SCALES))
+        AC += 600;
 
     return AC * scale / 100;
 }
@@ -6628,7 +6634,8 @@ bool player::permanent_flight() const
 bool player::racial_permanent_flight() const
 {
     return get_mutation_level(MUT_TENGU_FLIGHT)
-        || get_mutation_level(MUT_BIG_WINGS);
+        || get_mutation_level(MUT_BIG_WINGS)
+        || get_mutation_level(MUT_FAERIE_WINGS);
 }
 
 bool player::tengu_flight() const
