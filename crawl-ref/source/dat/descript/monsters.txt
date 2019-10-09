@@ -527,7 +527,7 @@ ancestor
 
 A humanoid construct of insubstantial memory, floating through the air. Though
 perhaps somewhat changed in shape and bearing few discernable features, still
-it seems somehow to resemble a warrior from the distantly remembered past.
+they seem somehow to resemble a warrior from the distantly remembered past.
 %%%%
 ancient champion
 
@@ -1606,7 +1606,7 @@ prey.
 %%%%
 meliai
 
-A nymphal hybrid, with a winged torso of a human ontop of the stinging abdomen
+A nymphal hybrid, with a winged torso of a human atop the stinging abdomen
 of a bee. The meliai serve under many roles: priestesses of nature, nurses to
 the divine, and warrior-champions for their hives.
 %%%%

@@ -680,7 +680,7 @@ public:
      */
     void more(bool full, bool user=false)
     {
-        rng_generator rng(RNG_UI);
+        rng::generator rng(rng::UI);
 
         if (_pre_more())
             return;
@@ -966,15 +966,15 @@ message_tee::~message_tee()
     current_message_tees.erase(this);
 }
 
-void message_tee::append(const string &s)
+void message_tee::append(const string &s, msg_channel_type ch)
 {
     // could use a more c++y external interface -- but that just complicates things
     store << s;
 }
 
-void message_tee::append_line(const string &s)
+void message_tee::append_line(const string &s, msg_channel_type ch)
 {
-    store << s << "\n";
+    append(s + "\n", ch);
 }
 
 string message_tee::get_store() const
@@ -982,10 +982,10 @@ string message_tee::get_store() const
     return store.str();
 }
 
-static void _append_to_tees(const string &s)
+static void _append_to_tees(const string &s, msg_channel_type ch)
 {
     for (auto tee : current_message_tees)
-        tee->append(s);
+        tee->append(s, ch);
 }
 
 no_messages::no_messages() : msuppressed(suppress_messages)
@@ -1402,7 +1402,7 @@ static int _last_msg_turn = -1; // Turn of last message.
 static void _mpr(string text, msg_channel_type channel, int param, bool nojoin,
                  bool cap)
 {
-    rng_generator rng(RNG_UI);
+    rng::generator rng(rng::UI);
 
     if (_msg_dump_file != nullptr)
         fprintf(_msg_dump_file, "%s\n", text.c_str());
@@ -1460,7 +1460,7 @@ static void _mpr(string text, msg_channel_type channel, int param, bool nojoin,
     text = "<" + col + ">" + text + "</" + col + ">"; // XXX
 
     if (current_message_tees.size())
-        _append_to_tees(text + "\n");
+        _append_to_tees(text + "\n", channel);
 
     formatted_string fs = formatted_string::parse_string(text);
 
@@ -1819,7 +1819,7 @@ static bool _pre_more()
 
 void more(bool user_forced)
 {
-    rng_generator rng(RNG_UI);
+    rng::generator rng(rng::UI);
 
     if (!crawl_state.io_inited)
         return;
@@ -2176,7 +2176,7 @@ static void _replay_messages_core(formatted_scroller &hist)
             }
         }
 
-    hist.add_formatted_string(lines, !lines.empty());
+    hist.add_formatted_string(lines);
     hist.show();
 }
 

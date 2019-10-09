@@ -14,6 +14,11 @@ Anarchist
 No Kings, No Rulers (maybe a god though). Anarchists are bent on dismantling
 the dungeon hierarchy with rocks and explosives.
 %%%%
+Annihilator
+
+Annihilators worship Vehumet, the god of destructive magic. They can cast
+magic dart and eventually receive additional spells from their god.
+%%%%
 Arcane Marksman
 
 Arcane Marksmen carry ranged weapons, and use magic to make their foes more
@@ -33,6 +38,16 @@ Berserker
 Berserkers believe in Trog, the magic-hating god of frenzy. Not much can stop a
 raging berserker early on, apart from hubris.
 %%%%
+Blood Knight
+
+Servants of the demon god Makhleb, blood knights begin with moderate skill in 
+combat and quickly learn to harness Makhleb's destructive power.
+%%%%
+Bound
+
+Bound serve Ashenzari, the god of curses, and begin their journey partially bound
+with cursed equipment.
+%%%%
 Caveperson
 
 Cavepeople start with exceptional strength but, unfortunately, neolithic weapons.
@@ -46,10 +61,29 @@ Conjurer
 
 Conjurers confront problems with damaging spells.
 %%%%
+Dancer
+
+Dancers have left their friends behind and entered the dungeon in service of Uskayaw.
+They have few combat skills but are quite good at evading attacks.
+%%%%
+Death Bishop
+
+Pontiffs of Yredelemnul, Death Bishops carry a weapon of draining and use the pain spell 
+in service of their evil god.
+%%%%
 Deprived
 
 Deprived start with nothing but a ration and almost no skills. Survival may prove...
 difficult.
+%%%%
+Disciple
+
+Disciples follow the Wu Jian Council and begin the game with a good weapon.
+%%%%
+Doctor
+
+Medical professionals from the surface occasionally enter the dungeon. They follow
+the healer god Elyvilon.
 %%%%
 Earth Elementalist
 
@@ -81,10 +115,23 @@ Fire Elementalist
 Fire Elementalists start with the book of Flames and know the Flame Tongue
 spell. Their other starting spells focus on destruction as well.
 %%%%
+Gambler
+
+Followers of Nemelex Xobeh who have lost everything in a run of bad luck sometimes
+venture into the Dungeon. They'll need Nemelex's help to turn things around.
+%%%%
+Gardener
+
+Gardeners worship Fedhas Madash and enter the dungeon to grow shrooms.
+%%%%
 Gladiator
 
 Gladiators are ready for the arena with light armour, nets, and a weapon of
 their choice.
+%%%%
+Hermit
+
+Followers of Ru, Hermits renounce the world and follow the path of asceticism.
 %%%%
 Hunter
 
@@ -95,6 +142,26 @@ Ice Elementalist
 
 Ice Elementalists begin with the Freeze spell. The spells in their starting
 library are quite versatile.
+%%%%
+Inheritor
+
+Inheritors worship Hepliaklqana. The spirit of their ancestor follows them to the
+dungeon, and given their lack of skills they may need to rely on it.
+%%%%
+Kikumancer
+
+Kikumancers are like Necromancers, but they worship the god of necromancy instead
+of starting with a book of spells.
+%%%%
+Librarian
+
+Librarians come to the Dungeon in search of new books for their collection. They
+serve Sif Muna the Loreminder and bring a random book along with them.
+%%%%
+Merchant
+
+Merchants are followers of Gozag. Whether newly established or unsuccessful on the 
+surface world, they enter the Dungeon desperate for a source of income.
 %%%%
 Meteorologist
 
@@ -111,20 +178,43 @@ Necromancer
 Necromancers are wizards specializing in the practice of death magic. They
 start out with the Pain spell.
 %%%%
+Night Knight
+
+These knights of the night follow the shadowy god Dithmenos. They begin lightly
+armoured but with good stealth.
+%%%%
+Paladin
+
+Worshippers of The Shining One, these holy warriors fall down a lot. 
+%%%%
 Philosopher
 
 Philosophers bring their thinking hat to the dungeon, but not much else in the
 way of useful items.
+%%%%
+Slime Priest
+
+Slime priests follow Jiyva, the slime god. They enter the dungeon already mutated
+by their deity's power but with only a small amount of divine favor.
 %%%%
 Skald
 
 Skalds are melee fighters who can boost themselves in battle with spells from
 the Charms school.
 %%%%
+Storm Cleric
+
+Storm clerics spread destruction in the name of Qazlal.
+%%%%
 Summoner
 
 Summoners are able to cast Summon Small Mammal from the start, and begin with
 other Summonings spells in their library.
+%%%%
+Torpor Knight
+
+Torpor Knights follow Cheibriados and wear heavy, ponderous armour to gain
+their god's favour more quickly.
 %%%%
 Transmuter
 
@@ -154,8 +244,20 @@ Warper
 Warpers start with a weapon of their choice and a scroll of blinking. They
 begin with a number of Translocations spells in their library.
 %%%%
+Warrior
+
+Warriors are followers of Okawaru who bring a variety of equipment to the dungeon.
+%%%%
+Witness
+
+Have you heard the good news of Beogh?
+%%%%
 Wizard
 
 Wizards start with the wide range of spells present in a book of Minor Magic in
 their spell library.
+%%%%
+Zinja
+
+Zinjas worship Zin and very stealthily recite the Aixoms of Law.
 %%%%

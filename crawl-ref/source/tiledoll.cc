@@ -7,7 +7,11 @@
 #include <sys/stat.h>
 
 #include "files.h"
+#include "jobs.h"
+#include "makeitem.h"
 #include "mon-info.h"
+#include "newgame.h"
+#include "ng-setup.h"
 #include "options.h"
 #include "syscalls.h"
 #include "tile-player-flag-cut.h"
@@ -19,6 +23,7 @@
 #include "tilepick.h"
 #include "tilepick-p.h"
 #include "transform.h"
+#include "unwind.h"
 
 dolls_data::dolls_data()
 {
@@ -290,6 +295,7 @@ void fill_doll_equipment(dolls_data &result)
         case SP_NAGA:    ch = TILEP_TRAN_STATUE_NAGA;     break;
         case SP_FELID:   ch = TILEP_TRAN_STATUE_FELID;    break;
         case SP_OCTOPODE:ch = TILEP_TRAN_STATUE_OCTOPODE; break;
+        case SP_FAIRY:   ch = TILEP_TRAN_STATUE_FAERIE_DRAGON; break;
         default:         ch = TILEP_TRAN_STATUE_HUMANOID; break;
         }
         result.parts[TILEP_PART_BASE]    = ch;
@@ -304,6 +310,7 @@ void fill_doll_equipment(dolls_data &result)
         case SP_NAGA:    ch = TILEP_TRAN_LICH_NAGA;     break;
         case SP_FELID:   ch = TILEP_TRAN_LICH_FELID;    break;
         case SP_OCTOPODE:ch = TILEP_TRAN_LICH_OCTOPODE; break;
+        case SP_FAIRY:   ch = TILEP_TRAN_LICH_FAERIE_DRAGON; break;
         default:         ch = TILEP_TRAN_LICH_HUMANOID; break;
         }
         result.parts[TILEP_PART_BASE]    = ch;
@@ -417,6 +424,8 @@ void fill_doll_equipment(dolls_data &result)
                     result.parts[TILEP_PART_HELM] = TILEP_HELM_HORNS_CAT;
                 }
             }
+            else if (species_is_draconian(you.species))
+                result.parts[TILEP_PART_HELM] = TILEP_HELM_HORNS_DRAC;
             else
                 switch (you.get_mutation_level(MUT_HORNS))
                 {
@@ -498,6 +507,36 @@ void fill_doll_equipment(dolls_data &result)
             result.parts[i] = 0;
 }
 
+void fill_doll_for_newgame(dolls_data &result, const newgame_def& ng)
+{
+    for (int j = 0; j < TILEP_PART_MAX; j++)
+        result.parts[j] = TILEP_SHOW_EQUIP;
+
+    unwind_var<player> unwind_you(you);
+    you = player();
+
+    // The following is part of the new game setup code from _setup_generic()
+    you.your_name  = ng.name;
+    you.species    = ng.species;
+    you.char_class = ng.job;
+    you.chr_class_name = get_job_name(you.char_class);
+
+    species_stat_init(you.species);
+    update_vision_range();
+    job_stat_init(you.char_class);
+    give_basic_mutations(you.species);
+    give_items_skills(ng);
+
+    for (int i = 0; i < ENDOFPACK; ++i)
+    {
+        auto &item = you.inv[i];
+        if (item.defined())
+            item_colour(item);
+    }
+
+    fill_doll_equipment(result);
+}
+
 // Writes equipment information into per-character doll file.
 void save_doll_file(writer &dollf)
 {
@@ -545,6 +584,17 @@ void pack_doll_buf(SubmergedTileBuffer& buf, const dolls_data &doll,
     {
         p_order[7] = TILEP_PART_BOOTS;
         p_order[6] = TILEP_PART_LEG;
+    }
+
+    // Draw scarves above other clothing.
+    if (doll.parts[TILEP_PART_CLOAK] >= TILEP_CLOAK_SCARF_FIRST_NORM)
+    {
+        p_order[4] = p_order[5];
+        p_order[5] = p_order[6];
+        p_order[6] = p_order[7];
+        p_order[7] = p_order[8];
+        p_order[8] = p_order[9];
+        p_order[9] = TILEP_PART_CLOAK;
     }
 
     // Special case bardings from being cut off.

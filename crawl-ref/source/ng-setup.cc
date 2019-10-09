@@ -9,6 +9,7 @@
 #include "end.h"
 #include "files.h"
 #include "food.h"
+#include "god-abil.h"
 #include "god-companions.h"
 #include "hints.h"
 #include "invent.h"
@@ -27,6 +28,7 @@
 #include "skills.h"
 #include "spl-book.h"
 #include "spl-util.h"
+#include "sprint.h"
 #include "state.h"
 
 #define MIN_START_STAT       3
@@ -99,7 +101,9 @@ item_def* newgame_make_item(object_class_type base,
         return nullptr;
 
     // not an actual item
-    if (sub_type == WPN_UNARMED)
+    // the WPN_UNKNOWN case is used when generating a paper doll during
+    // character creation
+    if (sub_type == WPN_UNARMED || sub_type == WPN_UNKNOWN)
         return nullptr;
 
     // Oni are known for wearing animal skins (see Wikipedia).
@@ -254,8 +258,10 @@ static void _give_ammo(weapon_type weapon, int plus)
     }
 }
 
-static void _give_items_skills(const newgame_def& ng)
+void give_items_skills(const newgame_def& ng)
 {
+    create_wanderer();
+
     switch (you.char_class)
     {
     case JOB_BERSERKER:
@@ -298,6 +304,172 @@ static void _give_items_skills(const newgame_def& ng)
             you.skills[SK_ARMOUR]++;
 
         break;
+        
+    case JOB_BOUND:
+        you.religion = GOD_ASHENZARI;
+        you.piety = 35;
+
+        if (species_apt(SK_ARMOUR) < species_apt(SK_DODGING))
+            you.skills[SK_DODGING]++;
+        else
+            you.skills[SK_ARMOUR]++;
+        break;
+        
+    case JOB_TORPOR_KNIGHT:
+        you.religion = GOD_CHEIBRIADOS;
+        you.piety = 35;
+
+        if (species_apt(SK_ARMOUR) < species_apt(SK_DODGING))
+            you.skills[SK_DODGING]++;
+        else
+            you.skills[SK_ARMOUR]++;
+        break;
+        
+    case JOB_PALADIN:
+        you.religion = GOD_SHINING_ONE;
+        you.piety = 35;
+
+        if (species_apt(SK_ARMOUR) < species_apt(SK_DODGING))
+            you.skills[SK_DODGING]++;
+        else
+            you.skills[SK_ARMOUR]++;
+        break;
+        
+    case JOB_SLIME_PRIEST:
+        you.religion = GOD_JIYVA;
+        you.piety = 5;
+
+        if (species_apt(SK_ARMOUR) < species_apt(SK_DODGING))
+            you.skills[SK_DODGING]++;
+        else
+            you.skills[SK_ARMOUR]++;
+        break;
+        
+    case JOB_BLOOD_KNIGHT:
+        you.religion = GOD_MAKHLEB;
+        you.piety = 35;
+
+        if (species_apt(SK_ARMOUR) < species_apt(SK_DODGING))
+            you.skills[SK_DODGING]++;
+        else
+            you.skills[SK_ARMOUR]++;
+        break;
+        
+    case JOB_STORM_CLERIC:
+        you.religion = GOD_QAZLAL;
+        you.piety = 35;
+
+        if (species_apt(SK_ARMOUR) < species_apt(SK_DODGING))
+            you.skills[SK_DODGING]++;
+        else
+            you.skills[SK_ARMOUR]++;
+        break;
+        
+    case JOB_DEATH_BISHOP:
+        you.religion = GOD_YREDELEMNUL;
+        add_spell_to_memory(SPELL_PAIN);
+        you.piety = 35;
+        break;
+        
+    case JOB_GAMBLER:
+        you.religion = GOD_NEMELEX_XOBEH;
+        you.piety = 35;
+        you.gift_timeout = 1;
+        break;
+        
+    case JOB_DOCTOR:
+        you.religion = GOD_ELYVILON;
+        you.piety = 35;
+        break;
+        
+    case JOB_GARDENER:
+        you.religion = GOD_FEDHAS;
+        you.piety = 35;
+        break;
+        
+    case JOB_HERMIT:
+    {
+        you.religion = GOD_RU;
+        you.piety = 10;
+        you.piety_hysteresis = 0;
+        you.gift_timeout = 0;
+        you.props[RU_SACRIFICE_PROGRESS_KEY] = 9999;
+        {
+            int delay = 50;
+            if (crawl_state.game_is_sprint())
+                delay /= SPRINT_MULTIPLIER;
+            you.props[RU_SACRIFICE_DELAY_KEY] = delay;
+        }
+        you.props[RU_SACRIFICE_PENALTY_KEY] = 0;
+    }
+        break;
+        
+    case JOB_WARRIOR:
+        you.religion = GOD_OKAWARU;
+        you.piety = 35;
+        break;
+        
+    case JOB_WITNESS:
+        you.religion = GOD_BEOGH;
+        you.piety = 35;
+        break;
+        
+    case JOB_KIKUMANCER:
+        you.religion = GOD_KIKUBAAQUDGHA;
+        you.piety = 35;
+        break;
+        
+    case JOB_ZINJA:
+        you.religion = GOD_ZIN;
+        you.piety = 35;
+        break;
+        
+    case JOB_NIGHT_KNIGHT:
+        you.religion = GOD_DITHMENOS;
+        you.piety = 35;
+        break;
+        
+    case JOB_DISCIPLE:
+        you.religion = GOD_WU_JIAN;
+        you.piety = 35;
+        break;
+        
+    case JOB_MERCHANT:
+        you.religion = GOD_GOZAG;
+        you.gold = 1;
+        break;
+        
+    case JOB_ANNIHILATOR:
+        you.religion = GOD_VEHUMET;
+        you.piety = 35;
+        add_spell_to_memory(SPELL_MAGIC_DART);
+        you.gift_timeout = roll_dice(2, 5);
+        break;   
+        
+    case JOB_LIBRARIAN:
+    {
+        you.religion = GOD_SIF_MUNA;
+        you.piety = 35;
+        add_spell_to_memory(SPELL_APPORTATION);
+        librarian_book();
+        break;
+    }
+        
+    case JOB_INHERITOR:
+    {
+        you.religion = GOD_HEPLIAKLQANA;
+        you.piety = 35;
+        bool female = coinflip();
+        you.props[HEPLIAKLQANA_ALLY_NAME_KEY] = make_ancestor_name(female);
+        you.props[HEPLIAKLQANA_ALLY_GENDER_KEY] = female ? GENDER_FEMALE
+                                                         : GENDER_MALE;
+        break;
+    }
+		
+    case JOB_DANCER:
+        you.religion = GOD_USKAYAW;
+        you.piety = 200; //you had a really good party right before entering the dungeon
+        break;
 
     case JOB_UNDERSTUDY:
         create_understudy();
@@ -328,6 +500,36 @@ static void _give_items_skills(const newgame_def& ng)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +1);
     else if (you.char_class == JOB_CHAOS_KNIGHT)
         newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, 0, SPWPN_CHAOS);
+    else if (you.char_class == JOB_WARRIOR)
+        newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, -2);
+    else if (you.char_class == JOB_DEATH_BISHOP)
+        newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, 0, SPWPN_DRAINING);
+    else if (you.char_class == JOB_PALADIN)
+        newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +1, SPWPN_HOLY_WRATH);
+    else if (you.char_class == JOB_DISCIPLE)
+        newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +3);
+    else if (you.char_class == JOB_NIGHT_KNIGHT)
+    {
+       newgame_make_item(OBJ_ARMOUR, ARM_ROBE, 1, +1, SPARM_STEALTH);
+    }
+    else if (you.char_class == JOB_BOUND)
+    {
+        item_def* wpn = newgame_make_item(OBJ_WEAPONS, ng.weapon, 1, +2);
+        if(wpn)
+        {
+            do_curse_item(*wpn);
+		}
+        item_def* armour = newgame_make_item(OBJ_ARMOUR, ARM_ROBE, 1, +1);
+        if(armour)
+        {
+			do_curse_item(*armour);
+        }
+        item_def* amulet = newgame_make_item(OBJ_JEWELLERY, AMU_THE_GOURMAND);
+        if(amulet)
+        {
+            do_curse_item(*amulet);
+        }
+    }
     else if (job_gets_ranged_weapons(you.char_class))
         _give_ranged_weapon(ng.weapon, you.char_class == JOB_HUNTER ? 1 : 0);
     else if (job_has_weapon_choice(you.char_class))
@@ -504,7 +706,7 @@ static void _free_up_slot(char letter)
 
 void initial_dungeon_setup()
 {
-    rng_generator levelgen_rng(BRANCH_DUNGEON);
+    rng::generator levelgen_rng(BRANCH_DUNGEON);
 
     initialise_branch_depths();
     initialise_temples();
@@ -514,9 +716,10 @@ void initial_dungeon_setup()
 
 static void _setup_generic(const newgame_def& ng)
 {
-    reset_rng(); // initialize rng from Options.seed
+    rng::reset(); // initialize rng from Options.seed
     _init_player();
     you.game_seed = crawl_state.seed;
+    you.deterministic_levelgen = Options.incremental_pregen;
 
 #if TAG_MAJOR_VERSION == 34
     // Avoid the remove_dead_shops() Gozag fixup in new games: see
@@ -559,10 +762,9 @@ static void _setup_generic(const newgame_def& ng)
     give_basic_mutations(you.species);
 
     // This function depends on stats and mutations being finalised.
-    _give_items_skills(ng);
+    give_items_skills(ng);
 
-    if (you.species == SP_DEMONSPAWN)
-        roll_demonspawn_mutations();
+    roll_demonspawn_mutations();
 
     _give_starting_food();
 
@@ -617,7 +819,7 @@ static void _setup_generic(const newgame_def& ng)
 
     reassess_starting_skills();
     init_skill_order();
-    init_can_train();
+    init_can_currently_train();
     init_train();
     init_training();
 
@@ -633,6 +835,14 @@ static void _setup_generic(const newgame_def& ng)
     // Make sure the starting player is fully charged up.
     set_hp(you.hp_max);
     set_mp(you.max_magic_points);
+    
+    //Mutate Slime Priest
+    if (you.char_class == JOB_SLIME_PRIEST)
+    {
+        mutate(RANDOM_SLIME_MUTATION, "Slime Spawn's Curse", false);
+        mutate(RANDOM_MUTATION, "Slime Spawn's Curse", false);
+        mutate(RANDOM_MUTATION, "Slime Spawn's Curse", false);
+    }
 
     initial_dungeon_setup();
 

@@ -90,13 +90,10 @@ static COORD screensize;
 static unsigned InputCP, OutputCP;
 static const unsigned PREFERRED_CODEPAGE = 437;
 
-static bool w32_smart_cursor = true;
-
 // we can do straight translation of DOS colour to win32 console colour.
 #define WIN32COLOR(col) (WORD)(col)
 static void writeChar(char32_t c);
 static void bFlush();
-static void _setcursortype_internal(bool curstype);
 
 // [ds] Unused for portability reasons
 /*
@@ -121,6 +118,15 @@ static DWORD crawlColorData[16] =
     0x00ffffff   // WHITE
 };
  */
+
+/** @brief The current foreground @em colour. */
+static COLOURS FG_COL = LIGHTGREY;
+
+/** @brief The current background @em colour. */
+static COLOURS BG_COL = BLACK;
+
+/** @brief The default background @em colour. */
+static COLOURS BG_COL_DEFAULT = BLACK;
 
 void writeChar(char32_t c)
 {
@@ -179,16 +185,6 @@ void writeChar(char32_t c)
     cx += 1;
     if (cx >= screensize.X)
         cx = screensize.X - 1;
-}
-
-void enable_smart_cursor(bool cursor)
-{
-    w32_smart_cursor = cursor;
-}
-
-bool is_smart_cursor_enabled()
-{
-    return w32_smart_cursor;
 }
 
 void bFlush()
@@ -324,7 +320,7 @@ static void set_w32_screen_size()
 static void w32_handle_resize_event()
 {
     if (crawl_state.waiting_for_command)
-        handle_terminal_resize(true);
+        handle_terminal_resize();
     else
         crawl_state.terminal_resized = true;
 }
@@ -393,8 +389,8 @@ void console_startup()
     // initialise text colour
     textcolour(DARKGREY);
 
-    // initialise cursor to NONE.
-    _setcursortype_internal(false);
+    cursor_is_enabled = true; // ensure cursor is set regardless of actual state
+    set_cursor_enabled(false);
 
     crawl_state.terminal_resize_handler = w32_term_resizer;
     crawl_state.terminal_resize_check   = w32_check_screen_resize;
@@ -432,7 +428,7 @@ void console_shutdown()
     _set_string_input(true);
 
     // set cursor and normal textcolour
-    _setcursortype_internal(true);
+    set_cursor_enabled(true);
     textcolour(DARKGREY);
 
     inbuf = nullptr;
@@ -454,18 +450,12 @@ void console_shutdown()
     }
 }
 
-void set_cursor_enabled(bool enabled)
-{
-    if (!w32_smart_cursor)
-        _setcursortype_internal(enabled);
-}
-
 bool is_cursor_enabled()
 {
     return cursor_is_enabled;
 }
 
-static void _setcursortype_internal(bool curstype)
+void set_cursor_enabled(bool curstype)
 {
     CONSOLE_CURSOR_INFO cci;
 
@@ -553,25 +543,34 @@ void gotoxy_sys(int x, int y)
     }
 }
 
+// Hacked-up version of corresponding function in libunix.cc
+static void adjust_color_pair_to_non_identical(short &fg, short &bg)
+{
+    // ignore brighness when comparing visually
+    if ((fg & ~COLFLAG_CURSES_BRIGHTEN) != bg)
+        return;  // colours look different; no need to adjust
+    fg &= ~COLFLAG_CURSES_BRIGHTEN;
+    fg = fg == BG_COL_DEFAULT ? WHITE : BG_COL_DEFAULT;;
+}
+
+static void update_text_colours()
+{
+    short macro_fg = Options.colour[FG_COL];
+    short macro_bg = Options.colour[BG_COL];
+    adjust_color_pair_to_non_identical(macro_fg, macro_bg);
+    current_colour = (macro_bg << 4) | macro_fg;
+}
+
 void textcolour(int c)
 {
-    // change current colour used to stamp chars
-    short fg = c & 0xF;
-    short bg = (c >> 4) & 0xF;
-    short macro_fg = Options.colour[fg];
-    short macro_bg = Options.colour[bg];
-
-    current_colour = macro_fg | (macro_bg << 4);
+    FG_COL = static_cast<COLOURS>(c & 0xF);
+    update_text_colours();
 }
 
 void textbackground(int c)
 {
-    // change current background colour used to stamp chars
-    // parameter does NOT come bitshifted by four
-    short bg = c & 0xF;
-    short macro_bg = Options.colour[bg];
-
-    current_colour = current_colour | (macro_bg << 4);
+    BG_COL = static_cast<COLOURS>(c & 0xF);
+    update_text_colours();
 }
 
 static void cprintf_aux(const char *s)
@@ -794,8 +793,6 @@ int getch_ck()
     }
 
     const bool oldValue = cursor_is_enabled;
-    if (w32_smart_cursor)
-        _setcursortype_internal(true);
 
     bool waiting_for_event = true;
     while (waiting_for_event)
@@ -839,9 +836,6 @@ int getch_ck()
             }
         }
     }
-
-    if (w32_smart_cursor)
-        _setcursortype_internal(oldValue);
 
     return key;
 }

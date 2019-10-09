@@ -2387,6 +2387,8 @@ int player_shield_class()
     shield += (you.get_mutation_level(MUT_LARGE_BONE_PLATES) > 0
                ? you.get_mutation_level(MUT_LARGE_BONE_PLATES) * 400 + 400
                : 0);
+    if (you.has_mutation(MUT_FAERIE_SCALES))
+        shield += 600;
 
     shield += qazlal_sh_boost() * 100;
     shield += tso_sh_boost() * 100;
@@ -3048,6 +3050,11 @@ void level_change(bool skip_attribute_increase)
                         check_skill_level_change(sk);
                     }
 
+                    // It's possible we passed a training target due to
+                    // skills being rescaled to new aptitudes. Thus, we must
+                    // check the training targets.
+                    check_training_targets();
+
                     // Tell the player about their new species
                     for (auto &mut : fake_mutations(you.species, false))
                         mprf(MSGCH_INTRINSIC_GAIN, "%s", mut.c_str());
@@ -3353,6 +3360,8 @@ int player_stealth()
     const int how_transparent = you.get_mutation_level(MUT_TRANSLUCENT_SKIN);
     if (how_transparent)
         stealth += 15 * (how_transparent);
+    if (you.has_mutation(MUT_FAERIE_SCALES))
+        stealth -= STEALTH_PIP;
 
     // Radiating silence is the negative complement of shouting all the
     // time... a sudden change from background noise to no noise is going
@@ -5349,6 +5358,8 @@ player::player()
 
     uniq_map_tags.clear();
     uniq_map_names.clear();
+    uniq_map_tags_abyss.clear();
+    uniq_map_names_abyss.clear();
     vault_list.clear();
 
     global_info = PlaceInfo();
@@ -5418,7 +5429,8 @@ player::player()
 
     abyss_speed         = 0;
     game_seed           = 0;
-    game_is_seeded      = true;
+    fully_seeded        = true;
+    deterministic_levelgen = true;
 
     old_hunger          = hunger;
 
@@ -5451,7 +5463,7 @@ void player::init_skills()
     train.init(TRAINING_DISABLED);
     train_alt.init(TRAINING_DISABLED);
     training.init(0);
-    can_train.reset();
+    can_currently_train.reset();
     skill_points.init(0);
     ct_skill_points.init(0);
     skill_order.init(MAX_SKILL_ORDER);
@@ -6145,6 +6157,8 @@ int player::base_ac(int scale) const
     AC -= get_mutation_level(MUT_PHYSICAL_VULNERABILITY)
           ? get_mutation_level(MUT_PHYSICAL_VULNERABILITY) * 500 : 0;
               // +3, +6, +9
+    if (you.has_mutation(MUT_FAERIE_SCALES))
+        AC += 600;
 
     return AC * scale / 100;
 }
@@ -6630,7 +6644,8 @@ bool player::permanent_flight() const
 bool player::racial_permanent_flight() const
 {
     return get_mutation_level(MUT_TENGU_FLIGHT)
-        || get_mutation_level(MUT_BIG_WINGS);
+        || get_mutation_level(MUT_BIG_WINGS)
+        || get_mutation_level(MUT_FAERIE_WINGS);
 }
 
 bool player::tengu_flight() const
@@ -7499,6 +7514,10 @@ bool player::do_shaft()
     {
         return false;
     }
+
+    // Ensure altars, items, and shops discovered at the moment
+    // the player gets shafted are correctly registered.
+    maybe_update_stashes();
 
     duration[DUR_SHAFT_IMMUNITY] = 1;
     down_stairs(DNGN_TRAP_SHAFT);

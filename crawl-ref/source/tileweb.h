@@ -205,10 +205,12 @@ public:
     void update_input_mode(mouse_mode mode);
 
     void send_mcache(mcache_entry *entry, bool submerged,
-                     bool send_doll = true);
+                     bool send = true);
     void write_tileidx(tileidx_t t);
 
     void zoom_dungeon(bool in);
+
+    void send_doll(const dolls_data &doll, bool submerged, bool ghost);
 
 protected:
     int m_sock;
@@ -259,10 +261,10 @@ protected:
     bool m_view_loaded;
     bool m_player_on_level;
 
-    FixedArray<screen_cell_t, GXM, GYM> m_current_view;
+    crawl_view_buffer m_current_view;
     coord_def m_current_gc;
 
-    FixedArray<screen_cell_t, GXM, GYM> m_next_view;
+    crawl_view_buffer m_next_view;
     coord_def m_next_gc;
     coord_def m_next_view_tl;
     coord_def m_next_view_br;

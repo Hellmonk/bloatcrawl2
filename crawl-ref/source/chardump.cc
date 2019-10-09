@@ -212,13 +212,18 @@ static void _sdump_header(dump_params &par)
 #endif
     par.text += " character file.\n\n";
 
-    if (you.game_is_seeded
+    if (you.fully_seeded
 #ifdef DGAMELAUNCH
-        && par.se // for online games, only show seed for a dead char
+        && (par.se // for online games, show seed for a dead char
+            || you.wizard
+            || crawl_state.type == GAME_TYPE_CUSTOM_SEED)
 #endif
         )
     {
-        par.text += make_stringf("Game seed: %" PRIu64 "\n\n", crawl_state.seed);
+        par.text += make_stringf(
+            "Game seed: %" PRIu64 ", levelgen mode: %s\n\n",
+            crawl_state.seed, you.deterministic_levelgen
+                                                ? "deterministic" : "classic");
     }
 }
 

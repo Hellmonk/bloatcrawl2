@@ -35,6 +35,7 @@
 #include "view.h"
 #include "xom.h"
 #include "ui.h"
+#include "tiledef-feat.h"
 
 #ifdef __ANDROID__
 #include <android/log.h>
@@ -290,6 +291,19 @@ static string _exit_type_to_string(game_exit e)
     return "BUGGY EXIT TYPE";
 }
 
+class HiscoreScroller : public Scroller
+{
+public:
+    virtual void _allocate_region();
+    int scroll_target = 0;
+};
+
+void HiscoreScroller::_allocate_region()
+{
+    m_scroll = scroll_target - m_region[3]/2;
+    Scroller::_allocate_region();
+}
+
 NORETURN void end_game(scorefile_entry &se)
 {
     //Update states
@@ -443,7 +457,6 @@ NORETURN void end_game(scorefile_entry &se)
 
     if (!crawl_state.disables[DIS_CONFIRMATIONS])
         display_inventory();
-    textcolour(LIGHTGREY);
 
     clua.save_persist();
 
@@ -451,43 +464,90 @@ NORETURN void end_game(scorefile_entry &se)
     if (crawl_state.unsaved_macros && yesno("Save macros?", true, 'n'))
         macro_save();
 
-#ifdef USE_TILE_WEB
-    tiles_crt_popup show_as_popup;
+    auto title_hbox = make_shared<Box>(Widget::HORZ);
+#ifdef USE_TILE
+    tile_def death_tile(TILEG_ERROR, TEX_GUI);
+    if (death_type == KILLED_BY_LEAVING || death_type == KILLED_BY_WINNING)
+        death_tile = tile_def(TILE_DNGN_EXIT_DUNGEON, TEX_FEAT);
+    else
+        death_tile = tile_def(TILE_DNGN_GRAVESTONE+1, TEX_FEAT);
+
+    auto tile = make_shared<Image>(death_tile);
+    tile->set_margin_for_sdl({0, 10, 0, 0});
+    title_hbox->add_child(move(tile));
 #endif
+    string goodbye_title = make_stringf("Goodbye, %s.", you.your_name.c_str());
+    title_hbox->add_child(make_shared<Text>(goodbye_title));
+    title_hbox->align_items = Widget::CENTER;
+    title_hbox->set_margin_for_sdl({0, 0, 20, 0});
+    title_hbox->set_margin_for_crt({0, 0, 1, 0});
+
+    auto vbox = make_shared<Box>(Box::VERT);
+    vbox->add_child(move(title_hbox));
 
     string goodbye_msg;
-    goodbye_msg += make_stringf("Goodbye, %s.", you.your_name.c_str());
-    goodbye_msg += "\n\n    "; // Space padding where # would go in list format
+    goodbye_msg += "    "; // Space padding where # would go in list format
 
     string hiscore = hiscores_format_single_long(se, true);
-
-    const int desc_lines = count_occurrences(hiscore, "\n") + 1;
 
     goodbye_msg += hiscore;
 
     goodbye_msg += make_stringf("\nBest Crawlers - %s\n",
             crawl_state.game_type_name().c_str());
 
-    // "- 5" gives us an extra line in case the description wraps on a line.
-    goodbye_msg += hiscores_print_list(get_number_of_lines() - desc_lines - 5,
-                                       SCORE_TERSE, hiscore_index);
-
-#ifndef DGAMELAUNCH
-    goodbye_msg += make_stringf("\nYou can find your morgue file in the '%s' directory.",
-            morgue_directory().c_str());
+#ifdef USE_TILE_LOCAL
+        const int line_height = tiles.get_crt_font()->char_height();
+#else
+        const int line_height = 1;
 #endif
 
-    auto prompt_ui = make_shared<Text>(formatted_string::parse_string(goodbye_msg));
+    int start;
+    int num_lines = 100;
+    string hiscores = hiscores_print_list(num_lines, SCORE_TERSE, hiscore_index, start);
+    auto scroller = make_shared<HiscoreScroller>();
+    auto hiscores_txt = make_shared<Text>(formatted_string::parse_string(hiscores));
+    scroller->set_child(hiscores_txt);
+    scroller->set_scrollbar_visible(false);
+    scroller->scroll_target = (hiscore_index - start)*line_height + (line_height/2);
+
+    mouse_control mc(MOUSE_MODE_MORE);
+
+    auto goodbye_txt = make_shared<Text>(formatted_string::parse_string(goodbye_msg));
+    vbox->add_child(goodbye_txt);
+    vbox->add_child(scroller);
+
+#ifndef DGAMELAUNCH
+    string morgue_dir = make_stringf("\nYou can find your morgue file in the '%s' directory.",
+            morgue_directory().c_str());
+    vbox->add_child(make_shared<Text>(formatted_string::parse_string(morgue_dir)));
+#endif
+
+    auto popup = make_shared<ui::Popup>(move(vbox));
     bool done = false;
-    prompt_ui->on(Widget::slots.event, [&](wm_event ev)  {
+    popup->on(Widget::slots.event, [&](wm_event ev)  {
         return done = ev.type == WME_KEYDOWN;
     });
 
-    mouse_control mc(MOUSE_MODE_MORE);
-    auto popup = make_shared<ui::Popup>(prompt_ui);
-
     if (!crawl_state.seen_hups && !crawl_state.disables[DIS_CONFIRMATIONS])
+    {
+#ifdef USE_TILE_WEB
+    tiles.json_open_object();
+    tiles.json_open_object("tile");
+    tiles.json_write_int("t", death_tile.tile);
+    tiles.json_write_int("tex", death_tile.tex);
+    tiles.json_close_object();
+    tiles.json_write_string("title", goodbye_title);
+    tiles.json_write_string("body", goodbye_msg
+            + hiscores_print_list(11, SCORE_TERSE, hiscore_index, start));
+    tiles.push_ui_layout("game-over", 0);
+#endif
+
         ui::run_layout(move(popup), done);
+
+#ifdef USE_TILE_WEB
+    tiles.pop_ui_layout();
+#endif
+    }
 
 #ifdef USE_TILE_WEB
     tiles.send_exit_reason(reason, hiscore);

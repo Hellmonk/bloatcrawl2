@@ -69,6 +69,7 @@
 #include "prompt.h"
 #include "species.h"
 #include "spl-summoning.h"
+#include "stairs.h"
 #include "stash.h"  // for fedhas_rot_all_corpses
 #include "state.h"
 #include "stringutil.h"
@@ -83,6 +84,7 @@
 #include "tileview.h"
 #include "tiles-build-specific.h"
 #include "timed-effects.h"
+#include "ui.h"
 #include "unwind.h"
 #include "version.h"
 #include "view.h"
@@ -1369,6 +1371,87 @@ static void _generic_level_reset()
     clear_travel_trail();
 }
 
+
+// used to resolve generation order for cases where a single level has multiple
+// portals.
+static const vector<branch_type> portal_generation_order =
+{
+    BRANCH_SEWER,
+    BRANCH_OSSUARY,
+    BRANCH_ICE_CAVE,
+    BRANCH_VOLCANO,
+    BRANCH_BAILEY,
+    BRANCH_GAUNTLET,
+#if TAG_MAJOR_VERSION == 34
+    BRANCH_LABYRINTH,
+#endif
+    // do not pregenerate bazaar (TODO: this is non-ideal)
+    // do not pregenerate trove
+    BRANCH_WIZLAB,
+    BRANCH_DESOLATION,
+};
+
+void update_portal_entrances()
+{
+    unordered_set<branch_type, std::hash<int>> seen_portals;
+    auto const cur_level = level_id::current();
+    // add any portals not currently registered
+    for (rectangle_iterator ri(0); ri; ++ri)
+    {
+        dungeon_feature_type feat = env.grid(*ri);
+        // excludes pan, hell, abyss.
+        if (feat_is_portal_entrance(feat) && !feature_mimic_at(*ri))
+        {
+            level_id whither = stair_destination(feat, "", false);
+            if (whither.branch == BRANCH_ZIGGURAT // not (quite) pregenerated
+                || whither.branch == BRANCH_TROVE // not pregenerated
+                || whither.branch == BRANCH_BAZAAR) // multiple bazaars possible
+            {
+                continue; // handle these differently
+            }
+            dprf("Setting up entry for %s.", whither.describe().c_str());
+            ASSERT(count(portal_generation_order.begin(),
+                         portal_generation_order.end(),
+                         whither.branch) == 1);
+            if (brentry[whither.branch] != level_id())
+            {
+                mprf(MSGCH_ERROR, "Second portal entrance for %s!",
+                    whither.describe().c_str());
+            }
+            brentry[whither.branch] = cur_level;
+            seen_portals.insert(whither.branch);
+        }
+    }
+    // clean up any portals that aren't actually here -- comes up for wizmode
+    // and test mode cases.
+    for (auto b : portal_generation_order)
+        if (!seen_portals.count(b) && brentry[b] == cur_level)
+            brentry[b] = level_id();
+}
+
+void reset_portal_entrances()
+{
+    for (auto b : portal_generation_order)
+        if (brentry[b].is_valid())
+            brentry[b] = level_id();
+}
+
+static bool _generate_portal_levels()
+{
+    // find any portals that branch off of the current level.
+    level_id here = level_id::current();
+    vector<level_id> to_build;
+    for (auto b : portal_generation_order)
+        if (brentry[b] == here)
+            for (int i = 1; i <= branches[b].numlevels; i++)
+                to_build.push_back(level_id(b, i));
+
+    bool generated = false;
+    for (auto lid : to_build)
+        generated = generate_level(lid) || generated;
+    return generated;
+}
+
 /**
  * Ensure that the level given by `l` is generated. This does not do much in
  * the way of cleanup, and the caller must ensure the player ends up somewhere
@@ -1418,7 +1501,21 @@ bool generate_level(const level_id &l)
     dprf("Generating new level for '%s'.", level_name.c_str());
     builder(true);
 
-    you.vault_list[level_id::current()] = level_vault_names();
+    auto &vault_list =  you.vault_list[level_id::current()];
+#ifdef DEBUG
+    // places where a level can generate multiple times.
+    // could add portals to this list for debugging purposes?
+    if (   you.where_are_you == BRANCH_ABYSS
+        || you.where_are_you == BRANCH_PANDEMONIUM
+        || you.where_are_you == BRANCH_BAZAAR
+        || you.where_are_you == BRANCH_ZIGGURAT)
+    {
+        vault_list.push_back("[gen]");
+    }
+#endif
+    const auto &level_vaults = level_vault_names();
+    vault_list.insert(vault_list.end(),
+                        level_vaults.begin(), level_vaults.end());
 
     // initialize env for a new level
     env.turns_on_level = 0;
@@ -1426,10 +1523,183 @@ bool generate_level(const level_id &l)
     env.sanctuary_time = 0;
     env.markers.init_all(); // init first, activation happens when entering
     show_update_emphasis(); // Clear map knowledge stair emphasis in env.
+    update_portal_entrances();
 
     // save the level and associated env state
     _save_level(level_id::current());
+
+    const string save_name = level_id::current().describe(); // should be same as level_name...
+
+    // generate levels for all portals that branch off from here
+    if (_generate_portal_levels())
+    {
+        // if portals were generated, we're currently elsewhere.
+        ASSERT(you.save->has_chunk(save_name));
+        dprf("Reloading new level '%s'.", save_name.c_str());
+        _restore_tagged_chunk(you.save, save_name, TAG_LEVEL,
+            "Level file is invalid.");
+    }
     return true;
+}
+
+// bel's original proposal generated D to lair depth, then lair, then D
+// to orc depth, then orc, then the rest of D. I have simplified this to
+// just generate whole branches at a time -- I am not sure how much real
+// impact this has. One idea might be to shuffle this slightly based on
+// the seed.
+// TODO: probably need to do portal vaults too?
+// Should this use something like logical_branch_order?
+static const vector<branch_type> branch_generation_order =
+{
+    BRANCH_DUNGEON,
+    BRANCH_TEMPLE,
+    BRANCH_LAIR,
+    BRANCH_ORC,
+    BRANCH_SPIDER,
+    BRANCH_SNAKE,
+    BRANCH_SHOALS,
+    BRANCH_SWAMP,
+    BRANCH_VAULTS,
+    BRANCH_CRYPT,
+    BRANCH_DEPTHS,
+    BRANCH_VESTIBULE,
+    BRANCH_ELF,
+    BRANCH_ZOT,
+    BRANCH_SLIME,
+    BRANCH_TOMB,
+    BRANCH_TARTARUS,
+    BRANCH_COCYTUS,
+    BRANCH_DIS,
+    BRANCH_GEHENNA,
+    BRANCH_PANDEMONIUM,
+    BRANCH_ZIGGURAT,
+    NUM_BRANCHES,
+};
+
+static bool _branch_pregenerates(branch_type b)
+{
+    if (!you.deterministic_levelgen)
+        return false;
+    if (b == NUM_BRANCHES || !brentry[b].is_valid() && is_random_subbranch(b))
+        return false;
+    return count(branch_generation_order.begin(),
+        branch_generation_order.end(), b) > 0;
+}
+
+/**
+* Generate dungeon branches in a stable order until the level `stopping_point`
+* is found; `stopping_point` will be generated if it doesn't already exist. If
+* it does exist, the function is a noop.
+*
+* If `stopping_point` is not in the generation order, it will be generated on
+* its own.
+*
+* To generate all generatable levels, pass a level_id with NUM_BRANCHES as the
+* branch.
+*/
+bool pregen_dungeon(const level_id &stopping_point)
+{
+    // TODO: the is_valid() check here doesn't look quite right to me, but so
+    // far I can't get it to break anything...
+    if (stopping_point.is_valid()
+        || stopping_point.branch != NUM_BRANCHES &&
+           is_random_subbranch(stopping_point.branch) && you.wizard)
+    {
+        if (you.save->has_chunk(stopping_point.describe()))
+            return false;
+
+        if (!_branch_pregenerates(stopping_point.branch))
+            return generate_level(stopping_point);
+    }
+
+    vector<level_id> to_generate;
+    bool at_end = false;
+    for (auto br : branch_generation_order)
+    {
+        if (br == BRANCH_ZIGGURAT &&
+            stopping_point.branch == BRANCH_ZIGGURAT)
+        {
+            // zigs delete levels as they go, so don't catchup when we're
+            // already in one. Zigs are only handled this way so that everything
+            // else generates first.
+            to_generate.push_back(stopping_point);
+            continue;
+        }
+        // TODO: why is dungeon invalid? it's not set up properly in
+        // `initialise_branch_depths` for some reason. The vestibule is invalid
+        // because its depth isn't set until the player actually enters a
+        // portal, similarly for other portal branches.
+        if (br < NUM_BRANCHES &&
+            (brentry[br].is_valid()
+             || br == BRANCH_DUNGEON || br == BRANCH_VESTIBULE
+             || !is_connected_branch(br)))
+        {
+            for (int i = 1; i <= branches[br].numlevels; i++)
+            {
+                level_id new_level = level_id(br, i);
+                if (you.save->has_chunk(new_level.describe()))
+                    continue;
+                to_generate.push_back(new_level);
+
+                if (br == stopping_point.branch
+                    && (i == stopping_point.depth
+                        || i == branches[br].numlevels))
+                {
+                    at_end = true;
+                    break;
+                }
+            }
+        }
+        if (at_end)
+            break;
+    }
+
+    if (to_generate.size() == 0)
+    {
+        dprf("levelgen: No valid levels to generate.");
+        return false;
+    }
+    else if (to_generate.size() == 1)
+        return generate_level(to_generate[0]); // no popup for this case
+    else
+    {
+        // be sure that AK start doesn't interfere with the builder
+        unwind_var<game_chapter> chapter(you.chapter, CHAPTER_ORB_HUNTING);
+
+        ui::progress_popup progress("Generating dungeon...\n\n", 35);
+        progress.advance_progress();
+
+        // in normal usage if we get to here, something will generate. But it
+        // is possible to call this in a way that doesn't lead to generation.
+        bool generated = false;
+
+        for (const level_id &new_level : to_generate)
+        {
+            string status = "\nbuilding ";
+
+            switch (new_level.branch)
+            {
+            case BRANCH_SPIDER:
+            case BRANCH_SNAKE:
+                status += "a lair branch";
+                break;
+            case BRANCH_SHOALS:
+            case BRANCH_SWAMP:
+                status += "another lair branch";
+                break;
+            default:
+                status += branches[new_level.branch].longname;
+                break;
+            }
+            progress.set_status_text(status);
+            dprf("Pregenerating %s:%d",
+                branches[new_level.branch].abbrevname, new_level.depth);
+            progress.advance_progress();
+            generated = generate_level(new_level) || generated;
+        }
+
+        return generated;
+    }
 }
 
 /**
@@ -1527,14 +1797,10 @@ bool load_level(dungeon_feature_type stair_taken, load_mode_type load_mode,
         you.chapter = CHAPTER_ORB_HUNTING;
     }
 
-    // GENERATE new level when the file can't be opened:
-    if (!you.save->has_chunk(level_name))
+    // GENERATE new level(s) when the file can't be opened:
+    if (!pregen_dungeon(level_id::current()))
     {
-        ASSERT(load_mode != LOAD_VISITOR);
-        generate_level(level_id::current());
-    }
-    else
-    {
+        ASSERT(you.save->has_chunk(level_name));
         dprf("Loading old level '%s'.", level_name.c_str());
         _restore_tagged_chunk(you.save, level_name, TAG_LEVEL, "Level file is invalid.");
         _redraw_all(); // TODO why is there a redraw call here?
@@ -2286,7 +2552,7 @@ static vector<ghost_demon> _load_permastore_ghosts(bool backup_on_upgrade=false)
  */
 bool define_ghost_from_bones(monster& mons)
 {
-    rng_generator rng(RNG_SYSTEM_SPECIFIC);
+    rng::generator rng(rng::SYSTEM_SPECIFIC);
 
     bool used_permastore = false;
 
@@ -2901,7 +3167,7 @@ static size_t _ghost_permastore_size()
 
 static vector<ghost_demon> _update_permastore(const vector<ghost_demon> &ghosts)
 {
-    rng_generator rng(RNG_SYSTEM_SPECIFIC);
+    rng::generator rng(rng::SYSTEM_SPECIFIC);
     if (ghosts.empty())
         return ghosts;
 

@@ -3010,8 +3010,8 @@ void excommunication(bool voluntary, god_type new_god)
     for (ability_type abil : get_god_abilities())
         you.stop_train.insert(abil_skill(abil));
 
-    update_can_train();
-    you.can_train.set(SK_INVOCATIONS, false);
+    update_can_currently_train();
+    you.can_currently_train.set(SK_INVOCATIONS, false);
     reset_training();
 
     // Perhaps we abandoned Trog with everything but Spellcasting maxed out.
@@ -3487,7 +3487,7 @@ static void _join_gozag()
  * @param female    Whether the ancestor is female or male.
  * @return          An appropriate name; e.g. Hrodulf, Citali, Aat.
  */
-static string _make_ancestor_name(bool female)
+string make_ancestor_name(bool female)
 {
     const string gender_name = female ? "female" : "male";
     const string suffix = " " + gender_name + " name";
@@ -3502,7 +3502,7 @@ static void _join_hepliaklqana()
     if (!you.props.exists(HEPLIAKLQANA_ALLY_NAME_KEY))
     {
         const bool female = coinflip();
-        you.props[HEPLIAKLQANA_ALLY_NAME_KEY] = _make_ancestor_name(female);
+        you.props[HEPLIAKLQANA_ALLY_NAME_KEY] = make_ancestor_name(female);
         you.props[HEPLIAKLQANA_ALLY_GENDER_KEY] = female ? GENDER_FEMALE
                                                          : GENDER_MALE;
     }
@@ -3701,7 +3701,7 @@ void join_religion(god_type which_god)
     vector<ability_type> abilities = get_god_abilities();
     for (ability_type abil : abilities)
         you.start_train.insert(abil_skill(abil));
-    update_can_train();
+    update_can_currently_train();
 
     // now that you have a god, you can't save any piety from your prev god
     you.previous_good_god = GOD_NO_GOD;

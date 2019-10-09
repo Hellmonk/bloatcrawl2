@@ -22,6 +22,8 @@ enum wm_event_type
     WME_RESIZE,
     WME_EXPOSE,
     WME_MOVE,
+    WME_FOCUSIN,
+    WME_FOCUSOUT,
     WME_NUMEVENTS = 15
 };
 
@@ -160,7 +162,7 @@ public:
     // System time functions
     virtual unsigned int set_timer(unsigned int interval,
                                    wm_timer_callback callback) = 0;
-    virtual void remove_timer(unsigned int timer_id) = 0;
+    virtual void remove_timer(unsigned int& timer_id) = 0;
     virtual unsigned int get_ticks() const = 0;
     virtual void delay(unsigned int ms) = 0;
 

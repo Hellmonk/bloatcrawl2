@@ -346,7 +346,7 @@ tileidx_t tilep_equ_armour(const item_def &item)
 
 tileidx_t tilep_equ_cloak(const item_def &item)
 {
-    if (item.base_type != OBJ_ARMOUR || item.sub_type != ARM_CLOAK)
+    if (item.base_type != OBJ_ARMOUR)
         return 0;
 
     if (item.props.exists("worn_tile"))
@@ -359,7 +359,18 @@ tileidx_t tilep_equ_cloak(const item_def &item)
             return tile;
     }
 
-    return _modrng(item.rnd, TILEP_CLOAK_FIRST_NORM, TILEP_CLOAK_LAST_NORM);
+    switch (item.sub_type)
+    {
+        case ARM_CLOAK:
+            return _modrng(item.rnd, TILEP_CLOAK_FIRST_NORM,
+                           TILEP_CLOAK_LAST_NORM);
+
+        case ARM_SCARF:
+            return _modrng(item.rnd, TILEP_CLOAK_SCARF_FIRST_NORM,
+                           TILEP_CLOAK_SCARF_LAST_NORM);
+    }
+
+    return 0;
 }
 
 tileidx_t tilep_equ_helm(const item_def &item)
@@ -486,6 +497,7 @@ tileidx_t tileidx_player()
         case SP_PURPLE_DRACONIAN:  ch = TILEP_TRAN_DRAGON_PURPLE;  break;
         case SP_WHITE_DRACONIAN:   ch = TILEP_TRAN_DRAGON_WHITE;   break;
         case SP_RED_DRACONIAN:     ch = TILEP_TRAN_DRAGON_RED;     break;
+        case SP_FAIRY:             ch = TILEP_TRAN_DRAGON_FAERIE;  break;
         default:                   ch = TILEP_TRAN_DRAGON;         break;
         }
         break;
@@ -624,6 +636,8 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
         return TILEP_BASE_GNOLL;
     case SP_ONI:
         return TILEP_BASE_ONI;
+    case SP_FAIRY:
+        return TILEP_BASE_FAERIE_DRAGON;
     default:
         return TILEP_BASE_HUMAN;
     }
@@ -709,6 +723,7 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
         case SP_GNOLL:
         case SP_GARGOYLE:
         case SP_VINE_STALKER:
+        case SP_FAIRY:
             hair = 0;
             break;
         default:
@@ -764,6 +779,18 @@ void tilep_job_default(int job, dolls_data *doll)
             parts[TILEP_PART_BODY]  = TILEP_BODY_MESH_BLACK;
             parts[TILEP_PART_LEG]   = TILEP_LEG_PANTS_SHORT_DARKBROWN;
             parts[TILEP_PART_HELM]  = TILEP_HELM_CLOWN; // Xom
+            break;
+            
+        case JOB_SLIME_PRIEST:
+            parts[TILEP_PART_BODY]  = TILEP_BODY_ROBE_GREEN;
+            parts[TILEP_PART_ARM]   = TILEP_ARM_GLOVE_WHITE;
+            parts[TILEP_PART_BOOTS] = TILEP_BOOTS_SHORT_BROWN;
+            break;
+        
+        case JOB_DEATH_BISHOP:
+        case JOB_BLOOD_KNIGHT:
+            parts[TILEP_PART_BODY]  = TILEP_BODY_ROBE_BLACK;
+            parts[TILEP_PART_CLOAK] = TILEP_CLOAK_RED;
             break;
 
         case JOB_ABYSSAL_KNIGHT:
@@ -964,6 +991,9 @@ void tilep_calc_flags(const dolls_data &doll, int flag[])
 
     if (doll.parts[TILEP_PART_HELM] >= TILEP_HELM_FHELM_OFS)
         flag[TILEP_PART_BEARD] = TILEP_FLAG_HIDE;
+
+    if (doll.parts[TILEP_PART_HELM] >= TILEP_HELM_HELM_OFS)
+        flag[TILEP_PART_DRCHEAD] = TILEP_FLAG_HIDE;
 
     if (is_player_tile(doll.parts[TILEP_PART_BASE], TILEP_BASE_NAGA))
     {

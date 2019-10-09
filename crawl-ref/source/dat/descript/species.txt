@@ -181,3 +181,8 @@ Shapeshifter
 Shapeshifters imitate monsters around them to an uncanny degree. They cannot
 control their shifting, and are only rarely seen in their true form.
 %%%%
+Faerie Dragon
+
+Faerie Dragons are attuned to magic and their spells cost fewer magic points.
+Their shimmering scales repel attacks and their wings let them fly.
+%%%%

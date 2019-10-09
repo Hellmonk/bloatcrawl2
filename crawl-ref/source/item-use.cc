@@ -571,7 +571,7 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
         if (unwield_item(show_weff_messages))
         {
             // Enable skills so they can be re-disabled later
-            update_can_train();
+            update_can_currently_train();
         }
         else
             return false;
@@ -690,6 +690,13 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
     {
         if (verbose)
             mpr("You can't wear that!");
+        return false;
+    }
+
+    if (you.species == SP_FAERIE_DRAGON && slot == EQ_BODY_ARMOUR)
+    {
+        if (verbose)
+            mprf("Your wings are too delicate to wear that!");
         return false;
     }
 

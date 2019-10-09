@@ -16,6 +16,7 @@
 #include "unwind.h"
 #include "windowmanager.h"
 #ifdef USE_TILE_LOCAL
+# include "tiledoll.h"
 # include "tilesdl.h"
 # include "tilebuf.h"
 # include "tiledgnbuf.h"
@@ -55,6 +56,7 @@ template<class Target, class... Args>
 class Slot<Target, bool (Args...)>
 {
 public:
+    ~Slot() { alive = false; }
     typedef function<bool (Args...)> HandlerSig;
     typedef multimap<Target*, HandlerSig> HandlerMap;
     bool emit(Target *target, Args&... args)
@@ -75,13 +77,15 @@ public:
     }
     void remove_by_target(Target *target)
     {
-        handlers.erase(target);
+        if (alive)
+            handlers.erase(target);
     }
 protected:
+    bool alive {true};
     HandlerMap handlers;
 };
 
-class Widget
+class Widget : public enable_shared_from_this<Widget>
 {
 public:
     enum Align {
@@ -97,10 +101,7 @@ public:
         VERT,
     };
 
-    virtual ~Widget() {
-        Widget::slots.event.remove_by_target(this);
-        _set_parent(nullptr);
-    }
+    virtual ~Widget();
 
     i4 margin = {0,0,0,0};
     int flex_grow = 1;
@@ -115,6 +116,10 @@ public:
     virtual SizeReq _get_preferred_size(Direction dim, int prosp_width);
     virtual void _allocate_region();
     void _set_parent(Widget* p);
+    Widget* _get_parent() const { return m_parent; };
+    shared_ptr<Widget> get_shared() {
+        return shared_from_this();
+    };
     void _invalidate_sizereq(bool immediate = true);
     void _queue_allocation(bool immediate = true);
     void set_allocation_needed() { alloc_queued = true; };
@@ -151,12 +156,15 @@ public:
         Slot<Widget, bool (const wm_event&)> event;
     } slots;
 
+    // XXX: add documentation
     virtual shared_ptr<Widget> get_child_at_offset(int x, int y) {
         return nullptr;
     };
 
 protected:
     i4 m_region;
+
+    void _unparent(shared_ptr<Widget>& child);
 
 private:
     bool cached_sr_valid[2] = { false, false };
@@ -219,8 +227,6 @@ public:
         iter_impl *it;
     };
 
-    virtual bool on_event(const wm_event& event) override;
-
 public:
     virtual iterator begin() = 0;
     virtual iterator end() = 0;
@@ -231,9 +237,8 @@ class Bin : public Container
 public:
     virtual ~Bin() {
         if (m_child)
-            m_child->_set_parent(nullptr);
+            _unparent(m_child);
     };
-    virtual bool on_event(const wm_event& event) override;
     void set_child(shared_ptr<Widget> child);
     virtual shared_ptr<Widget> get_child() { return m_child; };
     virtual shared_ptr<Widget> get_child_at_offset(int x, int y) override;
@@ -273,10 +278,12 @@ public:
     virtual ~ContainerVec() {
         for (auto& child : m_children)
             if (child)
-                child->_set_parent(nullptr);
+                _unparent(child);
     }
     virtual shared_ptr<Widget> get_child_at_offset(int x, int y) override;
     size_t num_children() const { return m_children.size(); }
+    shared_ptr<Widget>& operator[](size_t pos) { return m_children[pos]; };
+    const shared_ptr<Widget>& operator[](size_t pos) const { return m_children[pos]; };
 private:
     typedef Container::iterator I;
 
@@ -314,12 +321,6 @@ protected:
 class Box : public ContainerVec
 {
 public:
-    enum Justify {
-        START = 0,
-        CENTER,
-        END,
-    };
-
     enum Expand {
         NONE = 0x0,
         EXPAND_H = 0x1,
@@ -337,7 +338,7 @@ public:
     virtual ~Box() {}
     void add_child(shared_ptr<Widget> child);
     bool horz;
-    Justify justify_items = START;
+    Widget::Align justify_items = START;
     Widget::Align align_items = UNSET;
 
     virtual void _render() override;
@@ -352,7 +353,7 @@ protected:
 class Text : public Widget
 {
 public:
-    Text() {}
+    Text();
     Text(string text) : Text()
     {
         set_text(formatted_string(text));
@@ -369,6 +370,8 @@ public:
         set_text(formatted_string(text));
     };
 
+    void set_font(FontWrapper *font);
+
     const formatted_string& get_text() { return m_text; };
     void set_highlight_pattern(string pattern, bool hl_line = false);
 
@@ -379,6 +382,10 @@ public:
     bool wrap_text = false;
     bool ellipsize = false;
 
+#ifndef USE_TILE_LOCAL
+    void set_bg_colour(COLOURS colour);
+#endif
+
 protected:
     void wrap_text_to_size(int width, int height);
 
@@ -388,8 +395,10 @@ protected:
     vector<brkpt> m_brkpts;
     formatted_string m_text_wrapped;
     ShapeBuffer m_hl_buf;
+    FontWrapper *m_font;
 #else
     vector<formatted_string> m_wrapped_lines;
+    COLOURS m_bg_colour = BLACK;
 #endif
     i2 m_wrapped_size = { -1, -1 };
     string hl_pat;
@@ -403,13 +412,14 @@ public:
     Image(tile_def tile) { set_tile(tile); };
     virtual ~Image() {}
     void set_tile(tile_def tile);
+    tile_def get_tile() const { return m_tile; };
 
     virtual void _render() override;
     virtual SizeReq _get_preferred_size(Direction dim, int prosp_width) override;
 
 protected:
     tile_def m_tile = {TILEG_ERROR, TEX_GUI};
-    int m_tw, m_th;
+    int m_tw {0}, m_th {0};
 
 #ifdef USE_TILE_LOCAL
     GenericTexture m_img;
@@ -428,7 +438,6 @@ public:
     virtual void _render() override;
     virtual SizeReq _get_preferred_size(Direction dim, int prosp_width) override;
     virtual void _allocate_region() override;
-    virtual bool on_event(const wm_event& event) override;
 };
 
 class Switcher : public ContainerVec
@@ -438,10 +447,12 @@ public:
     void add_child(shared_ptr<Widget> child);
     int& current();
 
+    Widget::Align align_x = START, align_y = START;
+
     virtual void _render() override;
     virtual SizeReq _get_preferred_size(Direction dim, int prosp_width) override;
     virtual void _allocate_region() override;
-    virtual bool on_event(const wm_event& event) override;
+    virtual shared_ptr<Widget> get_child_at_offset(int x, int y) override;
 
 protected:
     int m_current;
@@ -453,26 +464,28 @@ public:
     virtual ~Grid() {
         for (auto& child : m_child_info)
             if (child.widget)
-                child.widget->_set_parent(nullptr);
+                _unparent(child.widget);
     };
     void add_child(shared_ptr<Widget> child, int x, int y, int w = 1, int h = 1);
-    const int column_flex_grow(int x) const { return m_col_info[x].flex_grow; }
-    const int row_flex_grow(int y) const { return m_row_info[y].flex_grow; }
+    const int column_flex_grow(int x) const { return m_col_info.at(x).flex_grow; }
+    const int row_flex_grow(int y) const { return m_row_info.at(y).flex_grow; }
     int& column_flex_grow(int x)
     {
         init_track_info();
-        return m_col_info[x].flex_grow;
+        return m_col_info.at(x).flex_grow;
     }
     int& row_flex_grow(int y)
     {
         init_track_info();
-        return m_row_info[y].flex_grow;
+        return m_row_info.at(y).flex_grow;
     }
     virtual shared_ptr<Widget> get_child_at_offset(int x, int y) override;
 
     virtual void _render() override;
     virtual SizeReq _get_preferred_size(Direction dim, int prosp_width) override;
     virtual void _allocate_region() override;
+
+    bool stretch_h = false, stretch_v = false;
 
 protected:
     i4 get_tracks_region(int x, int y, int w, int h) const
@@ -543,22 +556,44 @@ public:
 
     virtual void set_scroll(int y);
     int get_scroll() const { return m_scroll; };
+    void set_scrollbar_visible(bool vis) { m_scrolbar_visible = vis; };
     virtual void _render() override;
     virtual SizeReq _get_preferred_size(Direction dim, int prosp_width) override;
     virtual void _allocate_region() override;
     virtual bool on_event(const wm_event& event) override;
 protected:
     int m_scroll = 0;
+    bool m_scrolbar_visible = true;
 #ifdef USE_TILE_LOCAL
     VertBuffer m_shade_buf = VertBuffer(false, true);
     ShapeBuffer m_scrollbar_buf;
 #endif
 };
 
-class Popup : public Bin
+class Layout : public Bin
+{
+    friend struct UIRoot;
+public:
+    Layout(shared_ptr<Widget> child);
+    virtual void _render() override;
+    virtual SizeReq _get_preferred_size(Direction dim, int prosp_width) override;
+    virtual void _allocate_region() override;
+
+    void add_event_filter(function<bool (const wm_event&)> handler)
+    {
+        event_filters.on(this, handler);
+    }
+protected:
+#ifdef USE_TILE_LOCAL
+    int m_depth;
+#endif
+    Slot<Widget, bool (const wm_event&)> event_filters;
+};
+
+class Popup : public Layout
 {
 public:
-    Popup(shared_ptr<Widget> child);
+    Popup(shared_ptr<Widget> child) : Layout(move(child)) {};
     virtual void _render() override;
     virtual SizeReq _get_preferred_size(Direction dim, int prosp_width) override;
     virtual void _allocate_region() override;
@@ -568,7 +603,6 @@ public:
 protected:
 #ifdef USE_TILE_LOCAL
     ShapeBuffer m_buf;
-    int m_depth;
     static constexpr int m_depth_indent = 20;
     static constexpr int m_base_margin = 50;
     static constexpr int m_padding = 23;
@@ -592,6 +626,25 @@ protected:
     DungeonCellBuffer m_buf;
     bool m_dirty;
 };
+
+class PlayerDoll : public Widget
+{
+public:
+    PlayerDoll(dolls_data doll);
+    virtual ~PlayerDoll();
+
+    virtual void _render() override;
+    virtual SizeReq _get_preferred_size(Direction dim, int prosp_width) override;
+    virtual void _allocate_region() override;
+    virtual bool on_event(const wm_event& event) override;
+
+protected:
+    void _pack_doll();
+    dolls_data m_save_doll;
+
+    vector<tile_def> m_tiles;
+    FixedVector<TileBuffer, TEX_MAX> m_tile_buf;
+};
 #endif
 
 #ifdef USE_TILE
@@ -614,11 +667,15 @@ void run_layout(shared_ptr<Widget> root, const bool& done);
 bool has_layout();
 int getch(KeymapContext km = KMC_DEFAULT);
 void ui_force_render();
+void ui_render();
 void ui_delay(unsigned int ms);
 
 void push_scissor(i4 scissor);
 void pop_scissor();
 i4 get_scissor();
+
+void set_focused_widget(Widget* w);
+Widget* get_focused_widget();
 
 // XXX: this is a hack used to ensure that when switching to a
 // layout-based UI, the starting window size is correct. This is necessary

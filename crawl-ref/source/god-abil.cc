@@ -2633,12 +2633,11 @@ spret fedhas_sunlight(bool fail)
         process_sunlights(false);
     }
 
-#ifndef USE_TILE_LOCAL
-    // Move the cursor out of the way (it looks weird).
-    coord_def temp = grid2view(base);
-    cgotoxy(temp.x, temp.y, GOTO_DNGN);
-#endif
-    scaled_delay(200);
+    {
+        // hide the cursor (it looks weird).
+        cursor_control con(false);
+        scaled_delay(200);
+    }
 
     if (revealed_count)
     {
@@ -5663,7 +5662,7 @@ static bool _execute_sacrifice(ability_type sac, const char* message)
 static void _ru_kill_skill(skill_type skill)
 {
     change_skill_points(skill, -you.skill_points[skill], true);
-    you.can_train.set(skill, false);
+    you.can_currently_train.set(skill, false);
     reset_training();
     check_selected_skills();
 }

@@ -18,6 +18,9 @@
 #include <utility> // pair
 #include <vector>
 #include <fcntl.h>
+#ifdef DGAMELAUNCH
+# include <unistd.h>
+#endif
 
 #ifndef TARGET_OS_WINDOWS
 # ifndef __ANDROID__
@@ -763,6 +766,7 @@ static bool _cmd_is_repeatable(command_type cmd, bool is_again = false)
         return false;
 
     // Multi-turn commands
+    case CMD_REST:
     case CMD_PICKUP:
     case CMD_DROP:
     case CMD_DROP_LAST:
@@ -838,7 +842,6 @@ static bool _cmd_is_repeatable(command_type cmd, bool is_again = false)
 
         return _cmd_is_repeatable(crawl_state.prev_cmd, true);
 
-    case CMD_REST:
     case CMD_WAIT:
     case CMD_SAFE_WAIT:
     case CMD_SAFE_MOVE_LEFT:
@@ -1071,7 +1074,7 @@ static void _input()
         }
 
         if (!you_are_delayed())
-            update_can_train();
+            update_can_currently_train();
 
 #ifdef USE_TILE_WEB
         tiles.flush_messages();
@@ -1189,7 +1192,7 @@ static void _input()
         viewwindow();
     }
 
-    update_can_train();
+    update_can_currently_train();
 
     _update_replay_state();
 
@@ -1361,6 +1364,18 @@ static bool _prompt_stairs(dungeon_feature_type ygrd, bool down, bool shaft)
         // "unsafe", as often you bail at single-digit hp and a wasted turn to
         // an overeager prompt cancellation might be nasty.
         if (!yesno("Are you sure you want to leave this ziggurat?", false, 'n'))
+        {
+            canned_msg(MSG_OK);
+            return false;
+        }
+    }
+
+    // Leaving ziggurat figurines behind.
+    if (ygrd == DNGN_EXIT_ZIGGURAT
+        && you.depth == brdepth[BRANCH_ZIGGURAT]
+        && find_floor_item(OBJ_MISCELLANY, MISC_ZIGGURAT))
+    {
+        if (!yesno("Really leave the ziggurat figurine behind?", false, 'n'))
         {
             canned_msg(MSG_OK);
             return false;
@@ -2059,8 +2074,6 @@ static void _prep_input()
     you.time_taken = player_speed();
     you.shield_blocks = 0;              // no blocks this round
 
-    textcolour(LIGHTGREY);
-
     you.redraw_status_lights = true;
     print_stats();
 
@@ -2285,6 +2298,8 @@ void world_reacts()
         bleed_onto_floor(you.pos(), MONS_PLAYER, 6, false, false);
 
     wu_jian_end_of_turn_effects();
+
+    add_auto_excludes();
 
     viewwindow();
 
@@ -2547,16 +2562,10 @@ static void _safe_move_player(coord_def move)
 static int _get_num_and_char(const char* prompt, char* buf, int buf_len)
 {
     if (prompt != nullptr)
-        mprf(MSGCH_PROMPT, "%s", prompt);
-
-    line_reader reader(buf, buf_len);
-
-    reader.set_keyproc(keyfun_num_and_char);
-#ifdef USE_TILE_WEB
-    reader.set_tag("repeat");
-#endif
-
-    return reader.read_line(true);
+        msgwin_prompt(prompt);
+    auto ret = cancellable_get_line(buf, buf_len, nullptr, keyfun_num_and_char, "", "repeat");
+    msgwin_reply(buf);
+    return ret;
 }
 
 static void _cancel_cmd_repeat()
@@ -2718,6 +2727,10 @@ static void _do_cmd_repeat()
     for (; i < count && crawl_state.is_repeating_cmd(); ++i)
     {
         last_repeat_turn = you.num_turns;
+#ifdef DGAMELAUNCH
+        if (i >= 100)
+            usleep(500000);
+#endif
         _run_input_with_keys(repeat_keys);
         _check_cmd_repeat(last_repeat_turn);
     }

@@ -232,6 +232,14 @@ void leaving_level_now(dungeon_feature_type stair_used)
                        you.depth));
     }
 
+    if (stair_used == DNGN_EXIT_ABYSS)
+    {
+#ifdef DEBUG
+        auto &vault_list =  you.vault_list[level_id::current()];
+        vault_list.push_back("[exit]");
+#endif
+    }
+
     dungeon_events.fire_position_event(DET_PLAYER_CLIMBS, you.pos());
     dungeon_events.fire_event(DET_LEAVING_LEVEL);
 
@@ -406,7 +414,7 @@ static void _gauntlet_effect()
     if (you.species == SP_FORMICID)
         return;
 
-    mprf(MSGCH_WARN, "The nature of this place prevents teleportation.");
+    mprf(MSGCH_WARN, "The nature of this place prevents you from teleporting.");
 
     if (you.has_mutation(MUT_TELEPORT, true)
         || you.wearing(EQ_RINGS, RING_TELEPORTATION, true)
@@ -817,8 +825,8 @@ void floor_transition(dungeon_feature_type how,
                 mpr(rune_msg);
         }
 
-        // Entered a regular (non-portal) branch from above.
-        if (!going_up && parent_branch(branch) == old_level.branch)
+        // Entered a branch from its parent.
+        if (parent_branch(branch) == old_level.branch)
             enter_branch(branch, old_level);
     }
 

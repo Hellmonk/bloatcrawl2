@@ -2035,7 +2035,32 @@ static const mutation_def mut_data[] =
    {"You can transition from alive to undead at will.", "", ""},
    {"", "", ""},
    {"", "", ""},
-}
+},
+
+{ MUT_FAERIE_WINGS, 0, 1, mutflag::good, false,
+   "faerie wings",
+
+   {"You can fly.\n"
+    "Your wings prevent you fitting into any form of body armour.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
+
+{ MUT_FAERIE_MAGIC, 0, 1, mutflag::good, false,
+   "faerie magic",
+
+   {"Your spells do not cause hunger and MP costs are reduced by 1.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
+
+{ MUT_FAERIE_SCALES, 0, 1, mutflag::good, false,
+   "faerie magic",
+
+   {"You are covered in bright scales. (AC+6, SH+6, Stealth-)", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =

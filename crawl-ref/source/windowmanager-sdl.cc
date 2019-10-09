@@ -809,7 +809,15 @@ int SDLWrapper::send_textinput(wm_event *event)
         int wc_bytelen = utf8towc(&wc, m_textinput_queue.c_str());
         m_textinput_queue.erase(0, wc_bytelen);
 
-        if (prev_keycode && _key_suppresses_textinput(prev_keycode) == wc)
+        // SDL2 on linux sends an apparently spurious '=' text event for ctrl-=,
+        // but not for key combinations like ctrl-f (no 'f' text event is sent).
+        // this is relevant only for ctrl-- and ctrl-= bindings at the moment,
+        // and I'm somewhat nervous about blocking genuine text entry via the alt
+        // key, so for the moment this only blacklists text events with ctrl held
+        bool nontext_modifier_held = wm->get_mod_state() == TILES_MOD_CTRL;
+
+        bool should_suppress = prev_keycode && _key_suppresses_textinput(prev_keycode) == wc;
+        if (nontext_modifier_held || should_suppress)
         {
             // this needs to return something, or the event loop in
             // TilesFramework::getch_ck will block. Currently, CK_NO_KEY
@@ -926,9 +934,13 @@ unsigned int SDLWrapper::set_timer(unsigned int interval,
     return SDL_AddTimer(interval, callback, nullptr);
 }
 
-void SDLWrapper::remove_timer(unsigned int timer_id)
+void SDLWrapper::remove_timer(unsigned int& timer_id)
 {
-    SDL_RemoveTimer(timer_id);
+    if (timer_id)
+    {
+        SDL_RemoveTimer(timer_id);
+        timer_id = 0;
+    }
 }
 
 int SDLWrapper::raise_custom_event()

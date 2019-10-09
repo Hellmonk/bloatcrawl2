@@ -159,7 +159,7 @@ static string _spell_extra_description(spell_type spell, bool viewing)
     const string rangestring = spell_range_string(spell);
 
     desc << chop_string(spell_power_string(spell), 13)
-         << chop_string(rangestring, 9 + tagged_string_tag_length(rangestring))
+         << chop_string(rangestring, 9)
          << chop_string(spell_hunger_string(spell), 8)
          << chop_string(spell_noise_string(spell, 10), 14);
 
@@ -186,9 +186,6 @@ int list_spells(bool toggle_with_I, bool viewing, bool allow_preselect,
                 titlestring + "         Type                          Failure  Level  ",
                 titlestring + "         Power        Range    Hunger  Noise           ",
                 MEL_TITLE);
-#ifdef USE_TILE_LOCAL
-        me->colour = BLUE;
-#endif
         spell_menu.set_title(me, true, true);
     }
     spell_menu.set_highlighter(nullptr);

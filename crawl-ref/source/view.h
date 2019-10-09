@@ -13,6 +13,8 @@
 bool mon_enemies_around(const monster* mons);
 void seen_monsters_react(int stealth = player_stealth());
 
+string describe_monsters_condensed(const vector<monster*>& monsters);
+
 bool magic_mapping(int map_radius, int proportion, bool suppress_msg,
                    bool force = false, bool deterministic = false,
                    coord_def origin = coord_def(-1, -1));
@@ -78,4 +80,4 @@ void flush_comes_into_view();
 void toggle_show_terrain();
 void reset_show_terrain();
 
-void handle_terminal_resize(bool redraw = true);
+void handle_terminal_resize();

@@ -127,6 +127,7 @@ bool vehumet_is_offering(spell_type spell);
 void vehumet_accept_gift(spell_type spell);
 
 mgen_data hepliaklqana_ancestor_gen_data();
+string make_ancestor_name(bool female);
 string hepliaklqana_ally_name();
 int hepliaklqana_ally_hp();
 
