@@ -481,6 +481,9 @@ void player_reacts_to_monsters()
         you.stop_being_constricted(true);
     }
 
+    if (you.props.exists("cast_conjure_flame"))
+        you.props.erase("cast_conjure_flame");
+
     _maybe_melt_armour();
     _update_cowardice();
     if (you_worship(GOD_USKAYAW))

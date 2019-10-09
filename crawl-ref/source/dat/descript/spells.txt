@@ -322,7 +322,8 @@ exploding.
 %%%%
 Conjure Flame spell
 
-Creates a blazing column of flame in a targeted empty location.
+Creates a blazing column of flame around the caster. The caster won't be burned
+by the initial spark, but lingering in the flame will be unpleasant.
 %%%%
 Controlled Blink spell
 
