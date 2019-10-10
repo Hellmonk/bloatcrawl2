@@ -1,0 +1,56 @@
+enum: SP_ASTRAL
+monster: MONS_ANGEL
+name: "Astral"
+short_name: "As"
+difficulty: Advanced
+difficulty_priority: 70
+aptitudes:
+  xp: 0
+  hp: 2
+  mp_mod: 2
+  mr: 0
+  long_blades: 1
+  dodging: 2
+  stealth: 2
+  spellcasting: 1
+  fire_magic: 1
+  ice_magic: 1
+  air_magic: -1
+  earth_magic: -1
+  evocations: -2
+  invocations: 1
+str: 9
+int: 9
+dex: 9
+levelup_stat_frequency: 4
+levelup_stats:
+  - str
+  - dex
+  - int
+mutations:
+  1:
+    MUT_BIG_WINGS: 1
+    MUT_CLARITY: 1
+    MUT_ACUTE_VISION: 1
+fake_mutations:
+  - long: You can't gain resistances
+    short: No resists
+  - long: Your melee attacks strip magic resistance
+    short: Vuln melee
+  - long: You have innate wizardry
+    short: Wiz
+recommended_jobs:
+  - JOB_SUMMONER
+  - JOB_ICE_ELEMENTALIST
+  - JOB_FIRE_ELEMENTALIST
+  - JOB_NECROMANCER
+recommended_weapons:
+  - SK_MACES_FLAILS
+  - SK_STAVES
+  - SK_AXES
+  - SK_POLEARMS
+  - SK_LONG_BLADES
+  - SK_SLINGS
+  - SK_THROWING
+  - SK_BOWS
+  - SK_CROSSBOWS

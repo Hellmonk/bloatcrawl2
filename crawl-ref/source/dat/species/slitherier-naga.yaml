@@ -1,0 +1,54 @@
+enum: SP_SLITHERIER_NAGA
+monster: MONS_NAGA
+name: Slitherier Naga
+short name: Sn
+difficulty: Advanced
+difficulty_priority: 60
+species_flags:
+  - small_torso
+aptitudes:
+  xp: 0
+  hp: 4
+  mp_mod: 0
+  mr: 7
+  slings: -2
+  bows: -2
+  crossbows: -2
+  throwing: -2
+  armour: -4
+  dodging: -4
+  stealth: 10
+  shields: -4
+  spellcasting: -2
+  poison_magic: 6
+  invocations: 2
+size: big
+str: 12
+int: 8
+dex: 4
+levelup_stat_frequency: 4
+mutations:
+  1:
+    MUT_ACUTE_VISION: 1
+    MUT_SLOW: 2
+    MUT_DEFORMED: 1
+    MUT_SPIT_POISON: 1
+    MUT_POISON_RESISTANCE: 1
+    MUT_SLOW_METABOLISM: 1
+  13:
+    MUT_CONSTRICTING_TAIL: 1
+    MUT_SPIT_POISON: 2
+fake_mutations:
+  - long: You cannot wear boots.
+  - long: You're extra slow, moreso than regular naga.
+recommended_jobs:
+  - JOB_BERSERKER
+  - JOB_TRANSMUTER
+  - JOB_ENCHANTER
+  - JOB_FIRE_ELEMENTALIST
+  - JOB_ICE_ELEMENTALIST
+  - JOB_WARPER
+  - JOB_WIZARD
+  - JOB_VENOM_MAGE
+walking_verb: Slid
+altar_action: coil in front of
