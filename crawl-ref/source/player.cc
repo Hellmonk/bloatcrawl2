@@ -1374,6 +1374,9 @@ bool player_likes_chunks(bool permanently)
 // If temp is set to false, temporary sources or resistance won't be counted.
 int player_res_fire(bool calc_unid, bool temp, bool items)
 {
+    if (you.species == SP_ASTRAL)
+        return 0;
+    
     int rf = 0;
 
     if (items)
@@ -1445,6 +1448,9 @@ int player_res_fire(bool calc_unid, bool temp, bool items)
 
 int player_res_steam(bool calc_unid, bool temp, bool items)
 {
+    if (you.species == SP_ASTRAL)
+        return 0;
+    
     int res = 0;
     const int rf = player_res_fire(calc_unid, temp, items);
 
@@ -1468,6 +1474,9 @@ int player_res_steam(bool calc_unid, bool temp, bool items)
 
 int player_res_cold(bool calc_unid, bool temp, bool items)
 {
+    if (you.species == SP_ASTRAL)
+        return 0;
+    
     int rc = 0;
 
     if (temp)
@@ -1545,6 +1554,9 @@ int player_res_cold(bool calc_unid, bool temp, bool items)
 
 bool player::res_corr(bool calc_unid, bool items) const
 {
+    if (you.species == SP_ASTRAL)
+        return false;
+    
     if (have_passive(passive_t::resist_corrosion))
         return true;
 
@@ -1569,11 +1581,17 @@ bool player::res_corr(bool calc_unid, bool items) const
 
 int player_res_acid(bool calc_unid, bool items)
 {
+    if (you.species == SP_ASTRAL)
+        return 0;
+    
     return you.res_corr(calc_unid, items) ? 1 : 0;
 }
 
 int player_res_electricity(bool calc_unid, bool temp, bool items)
 {
+    if (you.species == SP_ASTRAL)
+        return 0;
+    
     int re = 0;
 
     if (items)
@@ -1627,6 +1645,9 @@ int player_res_electricity(bool calc_unid, bool temp, bool items)
  */
 bool player_res_torment(bool random)
 {
+    if (you.species == SP_ASTRAL)
+        return false;
+    
     switch (you.undead_state())
     {
         case US_UNDEAD:
@@ -1670,6 +1691,9 @@ bool player_kiku_res_torment()
 // If temp is set to false, temporary sources or resistance won't be counted.
 int player_res_poison(bool calc_unid, bool temp, bool items)
 {
+    if (you.species == SP_ASTRAL)
+        return 0;
+    
     switch (you.undead_state(temp))
     {
         case US_ALIVE:
@@ -1752,6 +1776,9 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
 
 int player_res_sticky_flame(bool calc_unid, bool temp, bool items)
 {
+    if (you.species == SP_ASTRAL)
+        return 0;
+    
     int rsf = 0;
 
     // dragonskin cloak: 0.5 to draconic resistances
@@ -1894,6 +1921,9 @@ int player_energy()
 // counted.
 int player_prot_life(bool calc_unid, bool temp, bool items)
 {
+    if(you.species == SP_ASTRAL)
+        return 0;
+    
     int pl = 0;
 
     pl += you.get_mutation_level(MUT_NEGATIVE_ENERGY_RESISTANCE, temp);
@@ -2347,7 +2377,8 @@ int player_armour_shield_spell_penalty()
 int player_wizardry(spell_type spell)
 {
     return you.wearing(EQ_RINGS, RING_WIZARDRY)
-           + you.wearing(EQ_STAFF, STAFF_WIZARDRY);
+           + you.wearing(EQ_STAFF, STAFF_WIZARDRY)
+           + you.species == SP_ASTRAL;
 }
 
 /**
@@ -6434,6 +6465,9 @@ bool player::res_sticky_flame() const
 
 int player::res_holy_energy() const
 {
+    if(you.species == SP_ASTRAL)
+        return 0;
+    
     if (undead_or_demonic())
         return -1;
 
@@ -6483,6 +6517,8 @@ int player::res_magic(bool /*calc_unid*/) const
 
 int player_res_magic(bool calc_unid, bool temp)
 {
+    if (you.species == SP_ASTRAL)
+        return 0;
 
     if (temp && you.form == transformation::shadow)
         return MAG_IMMUNE;

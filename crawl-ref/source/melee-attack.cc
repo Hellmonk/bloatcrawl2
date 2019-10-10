@@ -436,6 +436,18 @@ bool melee_attack::handle_phase_hit()
         mprf("You touch %s and corrode them.", defender_name(true).c_str());
         defender->corrode_equipment();
     }
+    
+    // Astral vuln melee
+    if (attacker->is_player() && you.species == SP_ASTRAL)
+    {
+        if(defender->as_monster()->res_magic() != MAG_IMMUNE)
+        {
+            mprf("Your touch strips away the magical defenses of %s!", defender_name(true).c_str());
+            mon_enchant lowered_mr(ENCH_LOWERED_MR, 1, attacker,
+                                       (10 + you.experience_level + random2(20)) * BASELINE_DELAY);
+            defender->as_monster()->add_ench(lowered_mr);
+        }
+    }
 
     if (attacker->is_player() && you.duration[DUR_INFUSION])
     {

@@ -1,4 +1,9 @@
 %%%%
+Astral
+
+Strange beings from beyond the stars, Astrals cannot gain resistances to magic 
+or the elements. Their attacks inflict powerful debuffs on beings from this world.
+%%%%
 Barachi
 
 Barachim are amphibious humanoids who rebelled against the gods. They're fast

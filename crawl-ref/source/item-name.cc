@@ -3565,7 +3565,7 @@ bool is_useless_item(const item_def &item, bool temp)
                    || you.get_mutation_level(MUT_NO_ARTIFICE);
 
         case RING_RESIST_CORROSION:
-            return you.res_corr(false, false);
+            return you.res_corr(false, false) || you.species == SP_ASTRAL;
 
         case AMU_THE_GOURMAND:
             return player_likes_chunks(true)
@@ -3582,7 +3582,7 @@ bool is_useless_item(const item_def &item, bool temp)
             return you.spirit_shield(false, false);
 
         case RING_LIFE_PROTECTION:
-            return player_prot_life(false, temp, false) == 3;
+            return player_prot_life(false, temp, false) == 3 || you.species == SP_ASTRAL;
 
         case AMU_REGENERATION:
             return you.get_mutation_level(MUT_NO_REGENERATION) > 0
@@ -3602,7 +3602,7 @@ bool is_useless_item(const item_def &item, bool temp)
 
         case RING_POISON_RESISTANCE:
             return player_res_poison(false, temp, false) > 0
-                   && (temp || you.undead_state() != US_SEMI_UNDEAD);
+                   && (temp || you.undead_state() != US_SEMI_UNDEAD) || you.species == SP_ASTRAL;
 
         case RING_WIZARDRY:
             return you_worship(GOD_TROG);
@@ -3617,6 +3617,11 @@ bool is_useless_item(const item_def &item, bool temp)
 
         case RING_STEALTH:
             return you.get_mutation_level(MUT_NO_STEALTH);
+
+        case RING_PROTECTION_FROM_COLD:
+        case RING_PROTECTION_FROM_FIRE:
+        case RING_PROTECTION_FROM_MAGIC:
+            return you.species == SP_ASTRAL;
 
         default:
             return false;
