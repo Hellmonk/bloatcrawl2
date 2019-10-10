@@ -2004,7 +2004,7 @@ void untransform(bool skip_move)
     // Removed barding check, no transformed creatures can wear barding
     // anyway.
     // *coughs* Ahem, blade hands... -- jpeg
-    if (you.species == SP_NAGA || you.species == SP_CENTAUR)
+    if (you.species == SP_NAGA || you.species == SP_SLITHERIER_NAGA || you.species == SP_CENTAUR)
     {
         const int arm = you.equip[EQ_BOOTS];
 

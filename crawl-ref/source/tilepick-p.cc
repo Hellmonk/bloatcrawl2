@@ -586,6 +586,7 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
     case SP_KOBOLD:
         return TILEP_BASE_KOBOLD;
     case SP_NAGA:
+    case SP_SLITHERIER_NAGA:
         return TILEP_BASE_NAGA;
     case SP_OGRE:
         return TILEP_BASE_OGRE;
@@ -704,6 +705,7 @@ void tilep_race_default(int sp, int level, dolls_data *doll)
             hair = TILEP_HAIR_GREEN;
             break;
         case SP_NAGA:
+        case SP_SLITHERIER_NAGA:
             hair = TILEP_HAIR_PART2_RED;
             break;
         case SP_DEEP_DWARF:

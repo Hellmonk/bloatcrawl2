@@ -682,7 +682,7 @@ static function<void(bolt&, const monster&, int)>
 /// Returns true if a message referring to the player's legs makes sense.
 static bool _legs_msg_applicable()
 {
-    return you.species != SP_NAGA && !you.fishtail;
+    return you.species != SP_NAGA && you.species != SP_SLITHERIER_NAGA && !you.fishtail;
 }
 
 // Monster spell of uselessness, just prints a message.

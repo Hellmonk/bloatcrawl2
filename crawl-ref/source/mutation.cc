@@ -633,7 +633,7 @@ string describe_mutations(bool drop_title)
 
         result += _annotate_form_based(
                     make_stringf("Your %s. (AC +%d)",
-                       you.species == SP_NAGA ? "serpentine skin is tough" :
+                       you.species == SP_NAGA || you.species == SP_SLITHERIER_NAGA ? "serpentine skin is tough" :
                        you.species == SP_GARGOYLE ? "stone body is resilient" :
                                                     scale_clause.c_str(),
                        you.racial_ac(false) / 100),
@@ -1211,7 +1211,7 @@ static int _body_covered()
     // Note: this won't take into account forms, so is only usable for checking in general.
     int covered = 0;
 
-    if (you.species == SP_NAGA)
+    if (you.species == SP_NAGA || you.species == SP_SLITHERIER_NAGA)
         covered++;
 
     if (species_is_draconian(you.species))
@@ -1241,7 +1241,7 @@ bool physiology_mutation_conflict(mutation_type mutat)
         return true;
 
     // Only Nagas and Draconians can get this one.
-    if (you.species != SP_NAGA && !species_is_draconian(you.species)
+    if (you.species != SP_NAGA && you.species != SP_SLITHERIER_NAGA && !species_is_draconian(you.species)
         && mutat == MUT_STINGER)
     {
         return true;
@@ -1266,7 +1266,7 @@ bool physiology_mutation_conflict(mutation_type mutat)
     }
 
     // Only nagas can get upgraded poison spit.
-    if (you.species != SP_NAGA && mutat == MUT_SPIT_POISON)
+    if (you.species != SP_NAGA && you.species != SP_SLITHERIER_NAGA && mutat == MUT_SPIT_POISON)
         return true;
 
     // Only Draconians (and gargoyles) can get wings.

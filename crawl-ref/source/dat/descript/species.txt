@@ -121,6 +121,11 @@ Oni
 Monstrous in nature with the rough appearance of Ogres, albeit smaller.
 They discover spells as they gain experience and ignore schools of magic.
 %%%%
+Slitherier Naga
+
+An offbrand Naga that's about twice as much everything. Extremely healthy,
+extremely stealthy, extremely big, and excruciatingly slow.
+%%%%
 Spriggan
 
 Very small, very frail and very fast, Spriggans make highly competent stabbers

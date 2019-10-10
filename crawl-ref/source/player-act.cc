@@ -142,7 +142,7 @@ bool player::extra_balanced() const
     return species == SP_GREY_DRACONIAN
               || form == transformation::tree
               || grid == DNGN_SHALLOW_WATER
-                  && (species == SP_NAGA // tails, not feet
+                  && (species == SP_NAGA || species == SP_SLITHERIER_NAGA // tails, not feet
                       || body_size(PSIZE_BODY) >= SIZE_LARGE)
                   && form_keeps_mutations();
 }
@@ -534,7 +534,7 @@ static string _foot_name_singular(bool *can_plural)
         return "tentacles";
     }
 
-    if (you.species == SP_NAGA)
+    if (you.species == SP_NAGA || you.species == SP_SLITHERIER_NAGA)
     {
         *can_plural = false;
         return "underbelly";
@@ -584,7 +584,7 @@ string player::arm_name(bool plural, bool *can_plural) const
     string adj;
     string str = "arm";
 
-    if (species_is_draconian(you.species) || species == SP_NAGA)
+    if (species_is_draconian(you.species) || species == SP_NAGA || species == SP_SLITHERIER_NAGA)
         adj = "scaled";
     else if (species == SP_TENGU)
         adj = "feathered";

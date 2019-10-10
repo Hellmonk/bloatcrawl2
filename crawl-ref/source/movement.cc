@@ -557,7 +557,7 @@ void move_player_action(coord_def move)
     const string walkverb = you.airborne()                     ? "fly"
                           : you.swimming()                     ? "swim"
                           : you.form == transformation::spider ? "crawl"
-                          : (you.species == SP_NAGA
+                          : ((you.species == SP_NAGA || you.species == SP_SLITHERIER_NAGA)
                              && form_keeps_mutations())        ? "slither"
                                                                : "walk";
 

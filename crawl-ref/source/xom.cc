@@ -2000,7 +2000,7 @@ static void _xom_pseudo_miscast(int /*sever*/)
         messages.emplace_back("Your eyebrows wriggle.");
     }
 
-    if (you.species != SP_NAGA && !you.fishtail && !you.airborne())
+    if (you.species != SP_NAGA && you.species != SP_SLITHERIER_NAGA && !you.fishtail && !you.airborne())
         messages.emplace_back("You do an impromptu tapdance.");
 
     ///////////////////////////
@@ -2139,7 +2139,7 @@ static void _get_hand_type(string &hand, bool &can_plural)
     hand_vec.push_back(you.hand_name(false, &plural));
     plural_vec.push_back(plural);
 
-    if (you.species != SP_NAGA || form_changed_physiology())
+    if ((you.species != SP_NAGA && you.species != SP_SLITHERIER_NAGA) || form_changed_physiology())
     {
         if (item_def* item = you.slot_item(EQ_BOOTS))
         {

@@ -810,7 +810,7 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
 
     case EQ_BOOTS: // And bardings
         dummy.sub_type = ARM_BOOTS;
-        if (you.species == SP_NAGA)
+        if (you.species == SP_NAGA || you.species == SP_SLITHERIER_NAGA)
             alternate.sub_type = ARM_NAGA_BARDING;
         if (you.species == SP_CENTAUR)
             alternate.sub_type = ARM_CENTAUR_BARDING;
@@ -856,6 +856,7 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
 bool player_has_feet(bool temp, bool include_mutations)
 {
     if (you.species == SP_NAGA
+        || you.species == SP_SLITHERIER_NAGA
         || you.species == SP_FELID
         || you.species == SP_OCTOPODE
         || you.fishtail && temp)
@@ -2025,7 +2026,15 @@ int player_movement_speed()
 
     if (int slow = you.get_mutation_level(MUT_SLOW))
     {
-        mv *= 10 + slow * 2;
+        // make slitherier naga extra slow
+        if(you.species == SP_SLITHERIER_NAGA)
+        {
+            mv *= 10 + slow * 4;
+        }
+        else 
+        {
+            mv *= 10 + slow * 2;
+        }
         mv /= 10;
     }
 
@@ -2993,6 +3002,7 @@ void level_change(bool skip_attribute_increase)
             switch (you.species)
             {
             case SP_NAGA:
+            case SP_SLITHERIER_NAGA:
                 if (!(you.experience_level % 3))
                 {
                     mprf(MSGCH_INTRINSIC_GAIN, "Your skin feels tougher.");
@@ -6070,7 +6080,7 @@ int player::racial_ac(bool temp) const
 
     if (!(player_is_shapechanged() && temp))
     {
-        if (species == SP_NAGA)
+        if (species == SP_NAGA || species == SP_SLITHERIER_NAGA)
             return 100 * experience_level / 3;              // max 9
         else if (species == SP_GARGOYLE)
         {

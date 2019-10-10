@@ -2942,7 +2942,7 @@ static void tag_read_you(reader &th)
     you.mutation[MUT_FAST] = you.innate_mutation[MUT_FAST];
     you.mutation[MUT_SLOW] = you.innate_mutation[MUT_SLOW];
     you.mutation[MUT_BREATHE_FLAMES] = 0;
-    if (you.species != SP_NAGA)
+    if (you.species != SP_NAGA && you.species != SP_SLITHERIER_NAGA)
         you.mutation[MUT_SPIT_POISON] = 0;
 #endif
 

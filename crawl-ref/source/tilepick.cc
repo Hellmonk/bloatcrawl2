@@ -3882,6 +3882,7 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
         case SP_KOBOLD:
             return TILEG_SP_KOBOLD;
         case SP_NAGA:
+        case SP_SLITHERIER_NAGA:
             return TILEG_SP_NAGA;
         case SP_OGRE:
             return TILEG_SP_OGRE;
