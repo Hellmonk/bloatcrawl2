@@ -128,6 +128,7 @@ public:
     undead_state_type undead_modifier;
     bool chaoskin;
     bool no_locks;
+    int trap_type;
 
     bool shapeshifter_species;
 

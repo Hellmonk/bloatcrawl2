@@ -2196,6 +2196,20 @@ static formatted_string _get_modifiers()
             modifiers.push_back("Skilled");
             break;
     }
+    switch (you.trap_type)
+    {
+        case 0:
+            break;
+        case 1:
+            modifiers.push_back("Traps Disabled");
+            break;
+        case 2:
+            modifiers.push_back("Floor Traps Only");
+            break;
+        case 3:
+            modifiers.push_back("Random Traps Only");
+            break;
+    }
     if (you.chaoskin)
         modifiers.push_back("Chaoskin");
     if (you.no_locks)

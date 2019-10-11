@@ -768,6 +768,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     choice.skilled_type = 0;
     choice.chaoskin = false;
     choice.no_locks = false;
+    choice.trap_type = 0;
 
     // Non-living or default-undead species cannot choose undead state
     bool can_choose_undead = species_can_use_modified_undeadness(ng.species);
@@ -811,6 +812,25 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
                     break;
                 case 1:
                     choice.skilled_type = 0;
+                    break;
+            }
+            return done = false;
+        }
+        else if (key == 't' || key == 'T')
+        {
+            switch (choice.trap_type)
+            {
+                case 0:
+                    choice.trap_type = 1;
+                    break;
+                case 1:
+                    choice.trap_type = 2;
+                    break;
+                case 2:
+                    choice.trap_type = 3;
+                    break;
+                case 3:
+                    choice.trap_type = 0;
                     break;
             }
             return done = false;
@@ -890,6 +910,14 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     runelock_choice_str.cprintf("une locks: enabled | disabled");
     auto runelock_choice = make_shared<ui::Text>(runelock_choice_str);
     box->add_child(runelock_choice);
+    
+    formatted_string trap_choice_str;
+    trap_choice_str.textcolour(WHITE);
+    trap_choice_str.cprintf("\n(T)");
+    trap_choice_str.textcolour(LIGHTGRAY);
+    trap_choice_str.cprintf("raps: normal | none | floor only | random only");
+    auto trap_choice = make_shared<ui::Text>(trap_choice_str);
+    box->add_child(trap_choice);
 
     auto popup = make_shared<ui::Popup>(box);
     ui::push_layout(move(popup));
@@ -927,6 +955,21 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
             case 1:
                 // Note the space so we don't match "unSKILLED"
                 skill_choice->set_highlight_pattern(" skilled ", false);
+                break;
+        }
+        switch (choice.trap_type)
+        {
+            case 0:
+                trap_choice->set_highlight_pattern("normal", false);
+                break;
+            case 1:
+                trap_choice->set_highlight_pattern("none", false);
+                break;
+            case 2:
+                trap_choice->set_highlight_pattern("floor only", false);
+                break;
+            case 3:
+                trap_choice->set_highlight_pattern("random only", false);
                 break;
         }
         chaoskin_choice->set_highlight_pattern(choice.chaoskin ? "enabled" : "disabled", false);
@@ -1130,6 +1173,7 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
     ng.skilled_type = choice.skilled_type;
     ng.chaoskin = choice.chaoskin;
     ng.no_locks = choice.no_locks;
+    ng.trap_type = choice.trap_type;
 
 #ifndef DGAMELAUNCH
     // New: pick name _after_ character choices.
