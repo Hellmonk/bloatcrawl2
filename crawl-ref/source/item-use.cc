@@ -2851,7 +2851,10 @@ void read(item_def* scroll)
         }
     }
 
-    if (you.get_mutation_level(MUT_BLURRY_VISION)
+    // quill orc fast reading offsets one level of blurry vision
+    const int qo = (you.species == SP_QUILL_ORC) ? 1 : 0;
+
+    if (you.get_mutation_level(MUT_BLURRY_VISION) - qo > 0
         && !i_feel_safe(false, false, true)
         && !yesno("Really read with blurry vision while enemies are nearby?",
                   false, 'n'))
@@ -2872,13 +2875,20 @@ void read(item_def* scroll)
 
     // if we have blurry vision, we need to start a delay before the actual
     // scroll effect kicks in.
-    if (you.get_mutation_level(MUT_BLURRY_VISION))
+    // quill orc fast reading offsets one level of blurry vision.
+    if (you.get_mutation_level(MUT_BLURRY_VISION) - qo > 0)
     {
         // takes 0.5, 1, 2 extra turns
-        const int turns = max(1, you.get_mutation_level(MUT_BLURRY_VISION) - 1);
+        const int turns = max(1, you.get_mutation_level(MUT_BLURRY_VISION) - qo - 1);
         start_delay<BlurryScrollDelay>(turns, *scroll);
-        if (you.get_mutation_level(MUT_BLURRY_VISION) == 1)
+        if (you.get_mutation_level(MUT_BLURRY_VISION) - qo == 1)
             you.time_taken /= 2;
+    }
+    // quill orcs without blurry vision read scrolls faster
+    else if (you.species == SP_QUILL_ORC && !you.get_mutation_level(MUT_BLURRY_VISION))
+    {
+        you.time_taken /= 2;
+        read_scroll(*scroll);
     }
     else
         read_scroll(*scroll);

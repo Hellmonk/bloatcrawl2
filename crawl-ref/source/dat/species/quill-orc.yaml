@@ -1,0 +1,66 @@
+enum: SP_QUILL_ORC
+monster: MONS_ORC
+name: Quill Orc
+short_name: QO
+difficulty: Simple
+difficulty_priority: 100
+species_flags:
+  - orcish
+aptitudes:
+  xp: 0
+  hp: 1
+  mp_mod: 0
+  mr: 3
+  fighting: -2
+  short_blades: -4
+  long_blades: -3
+  axes: -1
+  maces_and_flails: -3
+  polearms: -3
+  staves: -1
+  slings: -1
+  bows: -1
+  crossbows: -1
+  throwing: -1
+  armour: -3
+  dodging: -2
+  stealth: -1
+  shields: -3
+  unarmed_combat: -2
+  spellcasting: -1
+  conjurations: 2
+  hexes: 2
+  charms: 1
+  summoning: 2
+  necromancy: 2
+  translocations: 0
+  transmutations: -1
+  fire_magic: 3
+  ice_magic: 1
+  air_magic: 0
+  earth_magic: 2
+  poison_magic: 1
+  invocations: 3
+  evocations: 0
+str: 6
+int: 10
+dex: 6
+levelup_stat_frequency: 5
+levelup_stats:
+  - int
+fake_mutations:
+  - long: You read scrolls and books at an uncanny pace.
+  - short: fast reader
+recommended_jobs:
+  - JOB_WIZARD
+  - JOB_CONJURER
+  - JOB_SUMMONER
+  - JOB_NECROMANCER
+  - JOB_FIRE_ELEMENTALIST
+  - JOB_ICE_ELEMENTALIST
+  - JOB_AIR_ELEMENTALIST
+  - JOB_EARTH_ELEMENTALIST
+  - JOB_VENOM_MAGE
+recommended_weapons:
+  - SK_AXES
+  - SK_STAVES

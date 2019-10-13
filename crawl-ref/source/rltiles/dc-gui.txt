@@ -212,7 +212,7 @@ backgrounds/NK.png JOB_RECOMMENDED_NIGHT_KNIGHT
 backgrounds/SC.png JOB_RECOMMENDED_STORM_CLERIC
 backgrounds/SP.png JOB_RECOMMENDED_SLIME_PRIEST
 backgrounds/TK.png JOB_RECOMMENDED_TORPOR_KNIGHT
-backgrounds/WA.png JOB_RECOMMENDED_WARRIOR
+backgrounds/Wa.png JOB_RECOMMENDED_WARRIOR
 backgrounds/Wi.png JOB_RECOMMENDED_WITNESS
 backgrounds/Zi.png JOB_RECOMMENDED_ZINJA
 backgrounds/Fn.png JOB_RECOMMENDED_FENCER
@@ -270,7 +270,7 @@ backgrounds/NK.png JOB_NIGHT_KNIGHT
 backgrounds/SC.png JOB_STORM_CLERIC
 backgrounds/SP.png JOB_SLIME_PRIEST
 backgrounds/TK.png JOB_TORPOR_KNIGHT
-backgrounds/WA.png JOB_WARRIOR
+backgrounds/Wa.png JOB_WARRIOR
 backgrounds/Wi.png JOB_WITNESS
 backgrounds/Zi.png JOB_ZINJA
 backgrounds/Fn.png JOB_FENCER

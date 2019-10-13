@@ -1,95 +1,71 @@
-[![Build Status](https://travis-ci.org/crawl/crawl.svg?branch=master)](https://travis-ci.org/crawl/crawl)
+# Bloatcrawl 2
 
-# Dungeon Crawl Stone Soup
-
-Dungeon Crawl Stone Soup is a game of dungeon exploration, combat and magic, involving characters of diverse skills, worshipping deities of great power and caprice. To win, you'll need to be a master of tactics and strategy, and prevail against overwhelming odds.
+Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) ([github](https://github.com/crawl/crawl)). If you aren't familiar with the base game this fork probably won't make any sense.
 
 ## Contents
 
-1. [How to Play](#how-to-play)
-3. [Community](#community)
-5. [How you can help](#how-you-can-help)
-4. [License and history information](#license-and-history-information)
+1. [New Species](#new-species)
+2. [New Backgrounds](#new-backgrounds)
+3. [Other New Stuff](#other-new-stuff)
 
-## How to Play
+## New Species
 
-If you'd like to dive in immediately, we suggest one of:
+* Strange beings from beyond the stars, **Astrals** cannot gain resistances to magic or the elements. Their attacks inflict powerful debuffs on beings from this world.
+* **Dab Dwarves** have perfected the ancient art of dabbing. They can dab on multiple creatures at once and may even daze their foes with the power of their dab.
+* **Faerie Dragons** are attuned to magic and their spells cost fewer magic points. Their shimmering scales repel attacks and their wings let them fly.
+* **Flans** are gelatinous and slightly corrosive beings. Their fluid shape lets them fit easily into any body armour, but they cannot wear other armour types.
+* Rolling around at the speed of sound, **Hedgehogs** have got places to go and gotta follow their rainbow.
+* **Kitsune** are enthralling fox spirits that take on human shapes. They are poor at most skills and frailer than humans, but can charm their foes.
+* **Leprechauns** are small and frail but versatile. Their intrinsic luck gives them a knack for finding better items.
+* Half insect, half human, **Mayflytaurs** have incredibly short lifespans but have evolved to be exceptionally overpowered in just about every imaginable way.
+* Strange phantoms summoned from the mirror world, **Mirror Eidola** rapidly fade away. They must slay other creatures and take their energy to stay in this plane.
+* **Oni** are monstrous in nature with the rough appearance of Ogres, albeit smaller. They discover spells as they gain experience and ignore schools of magic.
+* Deeper than a Deep Elf and twice as elven, **Profound Elves** are extremely frail magical experts.
+* **Proteans** are a race of vaguely humanoid amoebas. They grow in health and size as they mutate.
+* **Quill orcs** love to read and hate close combat. They read books and scrolls at an
+uncanny pace.
+* **Shapeshifters** imitate monsters around them to an uncanny degree. They cannot control their shifting, and are only rarely seen in their true form.
+* **Slitherier Nagas** are offbrand Nagas, and about twice as much everything. Extremely healthy, extremely stealthy, extremely big, and excruciatingly slow.
+* Less dextrous than other elves, **Squat Elves** have mastered the art of the power squat. They use this ability to enhance their strength and intelligence.
+* **Troll Two**: They're eating her! And then they're going to eat me! Oh my GAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHD!
 
-* Start a game and pick a tutorial (select tutorial in the game menu),
-* Read [quickstart.txt](crawl-ref/docs/quickstart.txt) (in the [docs/](crawl-ref/docs/) directory), or
-* For the studious, [read Crawl's full manual](crawl-ref/docs/crawl_manual.rst).
+## New Backgrounds
 
-There is also an ingame list of frequently asked questions which you can access by typing
-`?Q`.
+* No Kings, No Rulers (maybe a god though). **Anarchists** are bent on dismantling the dungeon hierarchy with rocks and explosives.
+* Servants of the demon god Makhleb, **Blood Knights** begin with moderate skill in  combat and quickly learn to harness Makhleb's destructive power.
+* **Bound** serve Ashenzari, the god of curses, and begin their journey partially bound with cursed equipment.
+* **Cavepeople** start with exceptional strength but, unfortunately, neolithic weapons.
+* **Dancers** have left their friends behind and entered the dungeon in service of Uskayaw. They have few combat skills but are quite good at evading attacks.
+* Pontiffs of Yredelemnul, **Death Bishops** carry a weapon of draining and use the pain spell in service of their evil god.
+* **Deprived** start with nothing but a ration and almost no skills. Survival may prove... difficult.
+* **Disciples** follow the Wu Jian Council and begin the game with a good weapon.
+* **Doctor**: Medical professionals from the surface occasionally enter the dungeon. They follow the healer god Elyvilon.
+* **Entomologists** study insects and related creatures. They bring along a net and a sack of spiders, and can also summon butterflies.
+* Incredibly dextrous, **Fencers** enter the dungeon with a rapier, gloves of dexterity, and an amulet of the acrobat.
+* **Gambler**: Followers of Nemelex Xobeh who have lost everything in a run of bad luck sometimes venture into the Dungeon. They'll need Nemelex's help to turn things around.
+* **Gardeners** worship Fedhas Madash and enter the dungeon to grow shrooms.
+* Followers of Ru, **Hermits** renounce the world and follow the path of asceticism.
+* **Inheritors** worship Hepliaklqana. The spirit of their ancestor follows them to the dungeon, and given their lack of skills they may need to rely on it.
+* **Kikumancers** are like Necromancers, but they worship the god of necromancy instead of starting with a book of spells.
+* **Librarians** come to the Dungeon in search of new books for their collection. They serve Sif Muna the Loreminder and bring a random book along with them.
+* **Merchants** are followers of Gozag. Whether newly established or unsuccessful on the  surface world, they enter the Dungeon desperate for a source of income.
+* **Meteorologists** predict the weather and carry around some handy evocable items to make their predictions come true.
+* **Neckbeards** come to the Dungeon from their moms' basements with a cape, a fedora, 
+a rusty katana and the ability to teleport behind you (nothing personal, kid).
+* **Night Knights** follow the shadowy god Dithmenos. They begin lightly armoured but with good stealth.
+* **Paladin**: Worshippers of The Shining One, these holy warriors fall down a lot.
+* **Philosophers** bring their thinking hat to the dungeon, but not much else in the way of useful items.
+* **Slime Priests** follow Jiyva, the slime god. They enter the dungeon already mutated by their deity's power but with only a small amount of divine favor.
+* **Storm Clerics** spread destruction in the name of Qazlal.
+* **Torpor Knights** follow Cheibriados and wear heavy, ponderous armour to gain their god's favour more quickly.
+* **Uncles** search the dungeon for their lost nephews.
+* It's opening night for "The Orb of Zot" and the hero is sick! The **Understudy** must learn their role quickly if they want to make it through the final act.
+* **Warriors** are followers of Okawaru who bring a variety of equipment to the dungeon.
+* Have you heard the good news of Beogh? **Witnesses** have.
+* **Zinjas** worship Zin and very stealthily recite the Aixoms of Law.
 
-#### Internet Play
+## Other New Stuff
 
-You can play Crawl online, competing with other players or watching them. Click "Play Online Now!" on [the Crawl homepage](https://crawl.develz.org/) to find your closest server. You can play in your browser or over SSH.
-
-#### Offline Play
-
-Both classical ASCII and tiles (GUI) versions of Crawl are available to [download for Linux, Windows and OS X](https://crawl.develz.org/download.htm).
-
-## Community
-
-### Web
-Our official homepage is [https://crawl.develz.org](https://crawl.develz.org/). You can find online play, offline downloads, a community forum and the development bug tracker/wiki.
-
-### IRC
-Chat with fellow crawlers in [##crawl on irc.freenode.net](https://webchat.freenode.net/?channels=##crawl), or talk development in [##crawl-dev](https://webchat.freenode.net/?channels=##crawl-dev).
-
-## How you can help
-
-If you like the game and you want to help make it better, there are a number
-of ways to do so. For a detailed guide to the crawl workflow, look at
-the [contributor's guide](crawl-ref/docs/develop/contribution-process.md).
-
-### Reporting bugs
-
-At any time, there will be bugs -- finding and reporting them is a great help.
-Many of the online servers host the regularly updated development version. Bugs
-should be reported to [our bug tracker](https://crawl.develz.org/mantis/). Besides pointing out bugs, new ideas on how to improve interface or gameplay are welcome. These can be added to [the development wiki](https://crawl.develz.org/wiki/).
-
-### Map making
-Crawl creates levels by combining many hand-made (but often randomised) maps, known as *vaults*. Making them is fun and
-easy. It's best to start with simple entry vaults: see [simple.des](crawl-ref/source/dat/des/arrival/simple.des) for examples. You can also read [the level-design manual](crawl-ref/docs/develop/levels/introduction.txt) for more help.
-
-If you're ambitious, you can create new vaults for anywhere in the game. If you've
-made some vaults, you can test them on your own system (no compiling needed) and
-submit them to [our bug tracker](https://crawl.develz.org/mantis/).
-
-### Monster Speech & Item Descriptions
-Monster speech provides a lot of flavour. Just like vaults, varied speech depends
-upon a large set of entries. Speech syntax is effective but unusual, so you may want to read [the formatting guide](crawl-ref/docs/develop/monster_speech.txt).
-
-Current item descriptions can be read in-game with `?/` or out-of-game
-them in [dat/descript/](crawl-ref/source/dat/descript/). The following conventions should be more or less obeyed:
-* Descriptions ought to contain flavour text, ideally pointing out major weaknesses/strengths.
-* No numbers, please.
-* Citations are okay, but try to stay away from the most generic ones.
-
-### Tiles
-We're always open to improvements to existing tiles or variants of often-used tiles (eg floor tiles). If you want to give this a shot, please [contact us](#community) via forums or IRC. In case you drew some tiles of your own, you can submit them to [our bug tracker](https://crawl.develz.org/mantis/).
-
-### Patches
-For developers (both existing & aspiring!), you can download/fork the source code and write patches. Bug fixes as well as new features are very much welcome.
-
-For large changes, it's always a good idea to [talk with the dev team](#community) first, to see if any plans already exist and if your suggestion is likely to be accepted.
-
-Please be sure to read [docs/develop/coding_conventions.txt](crawl-ref/docs/develop/coding_conventions.txt) too.
-
-## License and history information
-
-Crawl is licensed as GPLv2+. See [licence.txt](crawl-ref/licence.txt) for the full text.
-
-Crawl is a descendant of Linley's Dungeon Crawl. Development of the main branch stalled at version 4.0.0b26, with a final alpha of 4.1 being released by Brent Ross in 2005. Since 2006, the Dungeon Crawl Stone Soup team has continued development. [CREDITS.txt](crawl-ref/CREDITS.txt) contains a full list of contributors.
-
-Crawl gladly uses the following open source packages; thanks to their developers:
-
-* The Lua scripting language, for in-game functionality and user macros ([license](crawl-ref/docs/license/lualicense.txt)).
-* The PCRE library, for regular expressions ([license](crawl-ref/docs/license/pcre_license.txt)).
-* The SQLite library, as a database engine ([license](https://www.sqlite.org/copyright.html)).
-* The SDL and SDL_image libraries, for tiles display ([license](crawl-ref/docs/license/lgpl.txt)).
-* The libpng library, for tiles image loading ([license](crawl-ref/docs/license/libpng-LICENSE.txt)).
-
-Thank you, and have fun crawling!
+* **Dab** at any time with the `p` key.
+* **Game Modifiers**: Select game modifiers when starting a new game. Play any species as a mummy. Remove rune locks. Etcetera.
+* Unleash the elemental power of sound with the **Air Horn** evocable.
