@@ -2156,7 +2156,7 @@ static weapon_type _starting_weapon_upgrade(weapon_type wp, job_type job,
         return tiny ? wp : WPN_WAR_AXE;
     case WPN_SPEAR:
         // Small fighters can't use tridents with a shield.
-        return fighter && small ? wp : WPN_TRIDENT;
+        return tiny || (fighter && small) ? wp : WPN_TRIDENT;
     case WPN_FALCHION:
         return tiny ? wp : WPN_LONG_SWORD;
     case WPN_QUARTERSTAFF:
@@ -2193,7 +2193,7 @@ static vector<weapon_choice> _get_weapons(const newgame_def& ng)
         {
             weapon_choice wp;
             wp.first = startwep[i];
-            if (job_gets_good_weapons(ng.job) && wp.first == WPN_QUARTERSTAFF)
+            if (job_gets_good_weapons(ng.job) || wp.first == WPN_QUARTERSTAFF)
             {
                 wp.first = _starting_weapon_upgrade(wp.first, ng.job,
                                                     ng.species);
