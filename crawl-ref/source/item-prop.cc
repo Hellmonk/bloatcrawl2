@@ -488,6 +488,10 @@ static const weapon_def Weapon_prop[] =
     { WPN_SCIMITAR,              "scimitar",              11, 0, 14,
         SK_LONG_BLADES,  SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_SLICING, 6, 10, 40, LBL_BRANDS },
+    // Katanas should only be available to neckbeard starts
+    { WPN_KATANA,            "katana",            13,  3, 12,
+        SK_LONG_BLADES,  SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
+	        DAMV_SLICING, 0, 0, 200, LBL_BRANDS },
     { WPN_DEMON_BLADE,           "demon blade",           12, -1, 13,
         SK_LONG_BLADES,  SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_SLICING, 0, 2, 150, DEMON_BRANDS },

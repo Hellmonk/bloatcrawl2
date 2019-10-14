@@ -1662,6 +1662,10 @@ jelly
  A splotch, a blotch...”
     -Burt Bacharach and Mack David, “Beware of the Blob”. 1958.
 %%%%
+katana
+
+<demon blade>
+%%%%
 kobold
 
 “Kobolds are harmless.”

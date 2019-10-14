@@ -395,6 +395,17 @@ static const map<job_type, job_def> job_data =
       { SK_STEALTH, 2 }, },
 } },
 
+{ JOB_NECKBEARD, {
+    "Nb", "Neckbeard",
+    4, 4, 4,
+    { SP_DEEP_DWARF, SP_HILL_ORC, SP_MERFOLK, SP_MINOTAUR, SP_GARGOYLE,
+      SP_CENTAUR, },
+    { "robe", "hat", "cloak", "katana plus:-4" },
+    WCHOICE_NONE,
+    { { SK_FIGHTING, 2 }, { SK_DODGING, 2 }, { SK_WEAPON, 3},
+      { SK_SPELLCASTING, 1}, { SK_TRANSLOCATIONS, 2}, }
+} },
+
 { JOB_NECROMANCER, {
     "Ne", "Necromancer",
     0, 7, 5,

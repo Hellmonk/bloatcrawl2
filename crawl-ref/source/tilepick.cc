@@ -2099,6 +2099,7 @@ static tileidx_t _tileidx_weapon_base(const item_def &item)
     case WPN_LONG_SWORD:            return TILE_WPN_LONG_SWORD;
     case WPN_GREAT_SWORD:           return TILE_WPN_GREAT_SWORD;
     case WPN_SCIMITAR:              return TILE_WPN_SCIMITAR;
+    case WPN_KATANA:                return TILE_WPN_KATANA;
     case WPN_DOUBLE_SWORD:          return TILE_WPN_DOUBLE_SWORD;
     case WPN_TRIPLE_SWORD:          return TILE_WPN_TRIPLE_SWORD;
     case WPN_HAND_AXE:              return TILE_WPN_HAND_AXE;

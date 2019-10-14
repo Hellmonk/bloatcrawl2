@@ -173,6 +173,11 @@ Monk
 Monks start with a simple weapon of their choice, and gain additional piety
 with the first god they worship.
 %%%%
+Neckbeard
+
+Neckbeards come to the Dungeon from their moms' basements with a cape, a fedora, 
+a rusty katana and the ability to teleport behind you (nothing personal, kid).
+%%%%
 Necromancer
 
 Necromancers are wizards specializing in the practice of death magic. They

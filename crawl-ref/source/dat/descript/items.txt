@@ -540,6 +540,10 @@ range.
     end
 }}
 %%%%
+katana
+
+A very rare and extremely effective weapon, featuring a long single-edged blade.
+%%%%
 lajatang
 
 A very rare and extremely effective weapon, featuring a pole with half-moon
