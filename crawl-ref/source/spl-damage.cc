@@ -3107,3 +3107,60 @@ spret cast_starburst(int pow, bool fail)
 
     return spret::success;
 }
+
+/**
+ * Hailstorm the given cell. (Per the spell.)
+ *
+ * @param where     The cell in question.
+ * @param pow       The power with which the spell is being cast.
+ * @param agent     The agent (player or monster) doing the hailstorming.
+ */
+static void _hailstorm_cell(coord_def where, int pow, actor *agent)
+{
+    bolt beam;
+    beam.flavour    = BEAM_ICE;
+    beam.thrower    = agent->is_player() ? KILL_YOU : KILL_MON;
+    beam.source_id  = agent->mid;
+    beam.glyph      = dchar_glyph(DCHAR_FIRED_BURST);
+    beam.colour     = ETC_ICE;
+#ifdef USE_TILE
+    beam.tile_beam  = -1;
+#endif
+    beam.draw_delay = 10;
+    beam.source     = where;
+    beam.target     = where;
+    beam.damage     = calc_dice(3, 7 + pow / 3);
+    beam.hit        = 18 + pow / 6;
+    beam.name       = "hail";
+    beam.hit_verb   = "pelts";
+
+    monster *mons = monster_at(where);
+    if (mons && mons->is_icy())
+    {
+        string msg;
+        one_chance_in(20) ? msg = "%s dances in the hail." :
+                            msg = "%s is unaffected.";
+        mprf(msg.c_str(), mons->name(DESC_THE).c_str());
+        beam.draw(where);
+        return;
+    }
+
+    beam.fire();
+}
+
+spret cast_hailstorm(int pow, bool fail)
+{
+    fail_check();
+
+    mpr("A cannonade of hail descends around you!");
+
+    for (radius_iterator ri(you.pos(), 3, C_SQUARE, LOS_NO_TRANS, true); ri; ++ri)
+    {
+        if (grid_distance(you.pos(), *ri) == 1)
+            continue;
+
+        _hailstorm_cell(*ri, pow, &you);
+    }
+
+    return spret::success;
+}
