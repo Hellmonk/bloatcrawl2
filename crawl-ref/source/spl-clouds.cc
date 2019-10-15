@@ -58,11 +58,11 @@ spret conjure_flame(int pow, bool fail)
     }
     else
     {
-        const int durat = min(5 + (random2(pow)/2) + (random2(pow)/2), 23);
-        place_cloud(CLOUD_FIRE, you.pos(), durat, &you);
-        mpr("The fire ignites!");
+        you.props["cflame_dur"] = min(5 + (random2(pow)/2)
+                                               + (random2(pow)/2), 23);
+        place_cloud(CLOUD_EMBERS, you.pos(), 2, &you);
+        mpr("The fire begins to smolder!");
     }
-    you.props["cast_conjure_flame"] = true;
     noisy(spell_effect_noise(SPELL_CONJURE_FLAME), you.pos());
 
     return spret::success;
