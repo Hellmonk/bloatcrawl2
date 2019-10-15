@@ -518,18 +518,14 @@ static const ability_def Ability_List[] =
       0, 0, 0, 15, {fail_basis::invo}, abflag::none },
 
     // Fedhas
-    { ABIL_FEDHAS_FUNGAL_BLOOM, "Fungal Bloom",
-      0, 0, 0, 0, {fail_basis::invo}, abflag::none },
-    { ABIL_FEDHAS_SUNLIGHT, "Sunlight",
-      2, 0, 50, 0, {fail_basis::invo, 30, 6, 20}, abflag::none },
-    { ABIL_FEDHAS_EVOLUTION, "Evolution",
-      2, 0, 0, 0, {fail_basis::invo, 30, 6, 20}, abflag::rations_or_piety },
-    { ABIL_FEDHAS_PLANT_RING, "Growth",
-      2, 0, 0, 0, {fail_basis::invo, 40, 5, 20}, abflag::rations },
-    { ABIL_FEDHAS_SPAWN_SPORES, "Reproduction",
-      4, 0, 100, 1, {fail_basis::invo, 60, 4, 25}, abflag::none },
-    { ABIL_FEDHAS_RAIN, "Rain",
-      4, 0, 150, 4, {fail_basis::invo, 70, 4, 25}, abflag::none },
+    { ABIL_FEDHAS_WALL_OF_BRIARS, "Wall of Briars",
+      3, 0, 50, 2, {fail_basis::invo, 30, 6, 20}, abflag::none},
+    { ABIL_FEDHAS_GROW_BALLISTOMYCETE, "Grow Ballistomycete",
+      4, 0, 100, 4, {fail_basis::invo, 60, 4, 25}, abflag::none },
+    { ABIL_FEDHAS_OVERGROW, "Overgrow",
+      8, 0, 200, 12, {fail_basis::invo, 70, 5, 20}, abflag::none},
+    { ABIL_FEDHAS_GROW_OKLOB, "Grow Oklob",
+      6, 0, 150, 6, {fail_basis::invo, 80, 4, 25}, abflag::none },
 
     // Cheibriados
     { ABIL_CHEIBRIADOS_TIME_BEND, "Bend Time",
@@ -1579,26 +1575,6 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
             return false;
         }
         return true;
-
-    case ABIL_FEDHAS_EVOLUTION:
-        return fedhas_check_evolve_flora(quiet);
-
-    case ABIL_FEDHAS_SPAWN_SPORES:
-    {
-        const int retval = fedhas_check_corpse_spores(quiet);
-        if (retval <= 0)
-        {
-            if (!quiet)
-            {
-                if (retval == 0)
-                    mpr("No corpses are in range.");
-                else
-                    canned_msg(MSG_OK);
-            }
-            return false;
-        }
-        return true;
-    }
 
     case ABIL_SPIT_POISON:
     case ABIL_BREATHE_FIRE:
@@ -2899,38 +2875,35 @@ static spret _do_ability(const ability_def& abil, bool fail)
         end_recall();
         break;
 
-    case ABIL_FEDHAS_FUNGAL_BLOOM:
-        fedhas_fungal_bloom();
-        return spret::success;
-
-    case ABIL_FEDHAS_SUNLIGHT:
-        return fedhas_sunlight(fail);
-
-    case ABIL_FEDHAS_PLANT_RING:
+    case ABIL_FEDHAS_WALL_OF_BRIARS:
         fail_check();
-        if (!fedhas_plant_ring_from_rations())
+        if (!fedhas_wall_of_briars())
             return spret::abort;
         break;
 
-    case ABIL_FEDHAS_RAIN:
-        fail_check();
-        if (!fedhas_rain(you.pos()))
-        {
-            canned_msg(MSG_NOTHING_HAPPENS);
-            return spret::abort;
-        }
-        break;
-
-    case ABIL_FEDHAS_SPAWN_SPORES:
+    case ABIL_FEDHAS_GROW_BALLISTOMYCETE:
     {
-        fail_check();
-        const int num = fedhas_corpse_spores();
-        ASSERT(num > 0);
+        return fedhas_grow_ballistomycete(fail);
+
         break;
     }
 
-    case ABIL_FEDHAS_EVOLUTION:
-        return fedhas_evolve_flora(fail);
+    case ABIL_FEDHAS_OVERGROW:
+    {
+        fail_check();
+
+        if (!fedhas_overgrow())
+            return spret::abort;
+
+        break;
+    }
+
+    case ABIL_FEDHAS_GROW_OKLOB:
+    {
+        return fedhas_grow_oklob(fail);
+
+        break;
+    }
 
     case ABIL_TRAN_BAT:
     {
@@ -3289,8 +3262,7 @@ static spret _do_ability(const ability_def& abil, bool fail)
         fail_check();
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",
                   false, 'n')
-            && yesno("Are you sure you won't change your mind later?",
-                     false, 'n'))
+            && yesno("Are you sure?", false, 'n'))
         {
             excommunication(true);
         }

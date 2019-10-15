@@ -210,7 +210,7 @@ static void _print_version()
     auto vbox = make_shared<Box>(Widget::VERT);
 
 #ifdef USE_TILE_LOCAL
-    vbox->max_size()[0] = tiles.get_crt_font()->char_width()*80;
+    vbox->max_size().width = tiles.get_crt_font()->char_width()*80;
 #endif
 
     auto title_hbox = make_shared<Box>(Widget::HORZ);
@@ -221,30 +221,28 @@ static void _print_version()
 #endif
 
     auto title = make_shared<Text>(formatted_string::parse_string(info));
-    title->set_margin_for_crt({0, 0, 0, 0});
-    title->set_margin_for_sdl({0, 0, 0, 10});
+    title->set_margin_for_sdl(0, 0, 0, 10);
     title_hbox->add_child(move(title));
 
-    title_hbox->align_items = Widget::CENTER;
-    title_hbox->set_margin_for_crt({0, 0, 1, 0});
-    title_hbox->set_margin_for_sdl({0, 0, 20, 0});
+    title_hbox->align_cross = Widget::CENTER;
+    title_hbox->set_margin_for_crt(0, 0, 1, 0);
+    title_hbox->set_margin_for_sdl(0, 0, 20, 0);
     vbox->add_child(move(title_hbox));
 
     auto scroller = make_shared<Scroller>();
     auto content = formatted_string::parse_string(feats + "\n\n" + changes);
     auto text = make_shared<Text>(move(content));
-    text->wrap_text = true;
+    text->set_wrap_text(true);
     scroller->set_child(move(text));
     vbox->add_child(scroller);
 
     auto popup = make_shared<ui::Popup>(vbox);
 
     bool done = false;
-    popup->on(Widget::slots.event, [&done, &vbox](wm_event ev) {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        done = !vbox->on_event(ev);
-        return true;
+    popup->on(Widget::slots.event, [&done, &scroller](wm_event ev) {
+        if (scroller->on_event(ev))
+            return true;
+        return done = ev.type == WME_KEYDOWN;
     });
 
 #ifdef USE_TILE_WEB

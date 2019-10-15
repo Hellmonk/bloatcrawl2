@@ -411,11 +411,11 @@ UIHiscoresMenu::UIHiscoresMenu()
 {
     m_root = make_shared<Box>(Widget::VERT);
     m_root->_set_parent(this);
+    m_root->align_cross = Widget::CENTER;
 
     auto title = make_shared<Text>(formatted_string(
                 "Dungeon Crawl Stone Soup: High Scores", YELLOW));
-    title->align_self = Widget::CENTER;
-    title->set_margin_for_sdl({0, 0, 20, 0});
+    title->set_margin_for_sdl(0, 0, 20, 0);
     m_description = make_shared<Text>(string(9, '\n'));
 
     m_score_entries= make_shared<OuterMenu>(true, 1, 100);
@@ -423,8 +423,17 @@ UIHiscoresMenu::UIHiscoresMenu()
     _construct_hiscore_table();
 
     m_root->add_child(move(title));
-    m_root->add_child(m_description);
-    m_root->add_child(m_score_entries);
+    if (initial_focus)
+    {
+        m_root->add_child(m_description);
+        m_root->add_child(m_score_entries);
+    }
+    else
+    {
+        auto placeholder = formatted_string("No high scores yet...", DARKGRAY);
+        m_root->add_child(make_shared<Text>(placeholder));
+        initial_focus = this;
+    }
 }
 
 void UIHiscoresMenu::_construct_hiscore_table()
@@ -455,7 +464,7 @@ void UIHiscoresMenu::_add_hiscore_row(scorefile_entry& se, int id)
 
     tmp->set_text(formatted_string(hiscores_format_single(se)));
     auto btn = make_shared<MenuButton>();
-    tmp->set_margin_for_sdl({2,2,2,2});
+    tmp->set_margin_for_sdl(2);
     btn->set_child(move(tmp));
     btn->on(Widget::slots.event, [this, id, se](wm_event ev) {
         if (ev.type == WME_MOUSEBUTTONUP && ev.mouse_event.button == MouseEvent::LEFT

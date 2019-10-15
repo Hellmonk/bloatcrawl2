@@ -481,47 +481,33 @@ Bring an orc corpse back to life. The orc will be an ally, even if it was not
 already one before it died.
 %%%%
 # Fedhas
-Fungal Bloom ability
+Wall of Briars ability
 
-Call up Fedhas to accelerate the natural process of decay, transforming all
-corpses nearby into fast-growing, short-lived toadstools. Zombies, ghouls,
-and necrophages are considered walking corpses, and are affected accordingly;
-zombies rot into skeletons, and ghouls and necrophages rot away entirely,
-granting no experience.
+Grow short-lived briar patches around you. Monsters attacking these briars will
+be damaged by sharp thorns. Invocations skill increases the briars' health.
 %%%%
-Sunlight ability
+Grow Ballistomycete ability
 
-Calls sunlight down over a small area of the dungeon. Monsters illuminated by
-the light will be easier to hit. Water affected by the sunlight will evaporate.
-In particular, deep water will become shallow water, and shallow water will dry
-up completely, revealing the dungeon floor.
+Grow a short-lived ballistomycete at the location you choose. A Ballistomycete
+occasionally release spores that quickly seek out foes and violently explode,
+damaging and confusing all living things caught in the blast.
+
+Invocations skill increases the health and duration of the ballistomycete as
+well as the damage of its exploding spores.
 %%%%
-Growth ability
+Overgrow ability
 
-Uses food to grow a ring of plants around yourself. If a complete ring cannot
-be formed (because you do not have enough food), plants will grow on squares
-adjacent to you that are close to monsters. The plants you create gain bonus
-health proportional to your Invocations skill.
+Permanently destroy a wall-like structure, growing a short-lived plant ally in
+its place. Even a tree will give its life to support the will of Fedhas, and
+only truly indestructible walls are immune to this power.
 %%%%
-Rain ability
+Grow Oklob ability
 
-Causes rain to fall around you, turning the dungeon floor into shallow water
-and shallow water into deep water. This may also allow plants and mushrooms to
-grow in areas that are not directly drenched. Invocations skill increases the
-number of rain-clouds created.
-%%%%
-Reproduction ability
+Grow a short-lived oklob plant at the location you choose. These dangerous
+plants spray corrosive vitriol at your foes.
 
-Creates ballistomycete spores from corpses in your line of sight. The spores will
-explode, causing damage to you or your enemies.
-%%%%
-Evolution ability
-
-Turns plants and fungi into stronger species. Upgraded plants gain a bonus to attack
-accuracy proportional to the user's Invocations skill, and oklob plants are
-more likely to spit acid at higher Invocations.
-
-Upgrading fungi requires piety, while upgrading plants requires food.
+Invocations skill increases the health and duration of the oklob as well as the
+frequency with which it sprays its acid.
 %%%%
 # Cheibriados
 Bend Time ability

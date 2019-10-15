@@ -11,15 +11,15 @@
 #include "format.h"
 #include "KeymapContext.h"
 #include "state.h"
-#include "tilefont.h"
 #include "tiledef-gui.h"
+#include "tilefont.h"
 #include "unwind.h"
 #include "windowmanager.h"
 #ifdef USE_TILE_LOCAL
-# include "tiledoll.h"
-# include "tilesdl.h"
 # include "tilebuf.h"
 # include "tiledgnbuf.h"
+# include "tiledoll.h"
+# include "tilesdl.h"
 #endif
 #ifdef USE_TILE_WEB
 # include "tileweb.h"
@@ -27,28 +27,70 @@
 
 namespace ui {
 
-// This is used instead of std::array because travis uses older versions of GCC
-// and Clang that demand braces around initializer lists everywhere.
-template <size_t N>
-struct vec {
-    int items[N];
-    template <typename... Ts> vec<N> (Ts... l) : items{l...} {}
-    const int& operator[](int index) const { return items[index]; }
-    int& operator[](int index) { return items[index]; }
-    inline bool operator==(const vec<N>& rhs) {
-        return equal(begin(items), end(items), begin(rhs.items));
-    }
-    inline bool operator!=(const vec<N>& rhs) { return !(*this == rhs); }
-};
-using i2 = vec<2>;
-using i4 = vec<4>;
-
 struct SizeReq
 {
     int min, nat;
 };
 
-struct RestartAllocation {};
+class Margin
+{
+public:
+    constexpr Margin() : top(0), right(0), bottom(0), left(0) {};
+    constexpr Margin(int v) : top(v), right(v), bottom(v), left(v) {};
+    constexpr Margin(int v, int h) : top(v), right(h), bottom(v), left(h) {};
+    constexpr Margin(int t, int lr, int b) : top(t), right(lr), bottom(b), left(lr) {};
+    constexpr Margin(int t, int r, int b, int l) : top(t), right(r), bottom(b), left(l) {};
+
+    int top, right, bottom, left;
+};
+
+class Region
+{
+public:
+    constexpr Region() : x(0), y(0), width(0), height(0) {};
+    constexpr Region(int _x, int _y, int _width, int _height) : x(_x), y(_y), width(_width), height(_height) {};
+
+    constexpr bool operator == (const Region& other) const
+    {
+        return x == other.x && y == other.y
+            && width == other.width && height == other.height;
+    }
+
+    constexpr bool empty() const
+    {
+        return width == 0 || height == 0;
+    }
+
+    constexpr int ex() const { return x + width; }
+    constexpr int ey() const { return y + height; }
+
+    constexpr bool contains_point(int _x, int _y) const
+    {
+        return _x >= x && _x < ex() && _y >= y && _y < ey();
+    }
+
+    int x, y, width, height;
+};
+
+class Size
+{
+public:
+    constexpr Size() : width(0), height(0) {};
+    constexpr Size(int v) : width(v), height(v) {};
+    constexpr Size(int w, int h) : width(w), height(h) {};
+
+    constexpr bool operator <= (const Size& other) const
+    {
+        return width <= other.width && height <= other.height;
+    }
+
+    constexpr bool operator == (const Size& other) const
+    {
+        return width == other.width && height == other.height;
+    }
+
+    int width, height;
+};
 
 template<typename, typename> class Slot;
 
@@ -89,8 +131,7 @@ class Widget : public enable_shared_from_this<Widget>
 {
 public:
     enum Align {
-        UNSET = 0,
-        START,
+        START = 0,
         END,
         CENTER,
         STRETCH,
@@ -103,14 +144,13 @@ public:
 
     virtual ~Widget();
 
-    i4 margin = {0,0,0,0};
     int flex_grow = 1;
-    Align align_self = UNSET;
     bool expand_h = false, expand_v = false;
     bool shrink_h = false, shrink_v = false;
-    const i4 get_region() const { return m_region; }
-    i2& min_size() { _invalidate_sizereq(); return m_min_size; }
-    i2& max_size() { _invalidate_sizereq(); return m_max_size; }
+    Region get_region() const { return m_region; }
+
+    Size& min_size() { _invalidate_sizereq(); return m_min_size; }
+    Size& max_size() { _invalidate_sizereq(); return m_max_size; }
 
     virtual void _render() = 0;
     virtual SizeReq _get_preferred_size(Direction dim, int prosp_width);
@@ -125,25 +165,37 @@ public:
     void set_allocation_needed() { alloc_queued = true; };
     void _expose();
 
+    bool is_visible() const { return m_visible; }
+    void set_visible(bool);
+
     // Wrapper functions which handle common behavior
     // - margins
     // - caching
     void render();
     SizeReq get_preferred_size(Direction dim, int prosp_width);
-    void allocate_region(i4 region);
+    void allocate_region(Region region);
 
-    void set_margin_for_crt(i4 _margin)
+    Margin get_margin() const {
+        return margin;
+    }
+
+    template<class... Args>
+    void set_margin_for_crt(Args&&... args)
     {
 #ifndef USE_TILE_LOCAL
-        margin = _margin;
+        margin = Margin(forward<Args>(args)...);
+        _invalidate_sizereq();
 #endif
-    };
-    void set_margin_for_sdl(i4 _margin)
+    }
+
+    template<class... Args>
+    void set_margin_for_sdl(Args&&... args)
     {
 #ifdef USE_TILE_LOCAL
-        margin = _margin;
+        margin = Margin(forward<Args>(args)...);
+        _invalidate_sizereq();
 #endif
-    };
+    }
 
     virtual bool on_event(const wm_event& event);
 
@@ -162,7 +214,8 @@ public:
     };
 
 protected:
-    i4 m_region;
+    Region m_region;
+    Margin margin = { 0 };
 
     void _unparent(shared_ptr<Widget>& child);
 
@@ -171,65 +224,18 @@ private:
     SizeReq cached_sr[2];
     int cached_sr_pw;
     bool alloc_queued = false;
+    bool m_visible = true;
     Widget* m_parent = nullptr;
-    i2 m_min_size = { 0, 0 }, m_max_size = { INT_MAX, INT_MAX };
+
+    Size m_min_size = { 0 };
+    Size m_max_size = { INT_MAX };
 };
 
 class Container : public Widget
 {
-protected:
-    class iter_impl
-    {
-    public:
-        virtual ~iter_impl() {};
-        virtual void operator++() = 0;
-        virtual shared_ptr<Widget>& operator*() = 0;
-        virtual iter_impl* clone() const = 0;
-        virtual bool equal(iter_impl &other) const = 0;
-    };
-
 public:
     virtual ~Container() {}
-    class iterator : public std::iterator<input_iterator_tag, shared_ptr<Widget>>
-    {
-    public:
-        iterator(iter_impl *_it) : it(_it) {};
-        ~iterator() { delete it; it = nullptr; };
-        iterator(const iterator& other) : it(other.it->clone()) {};
-        iterator& operator=(const iterator& other)
-        {
-            if (it != other.it)
-            {
-                delete it;
-                it = other.it->clone();
-            }
-            return *this;
-        }
-        iterator& operator=(iterator&& other)
-        {
-            if (it != other.it)
-            {
-                delete it;
-                it = other.it;
-                other.it = nullptr;
-            }
-            return *this;
-        }
-
-        void operator++() { ++(*it); };
-        bool operator==(const iterator& other) const
-        {
-            return typeid(it) == typeid(other.it) && it->equal(*other.it);
-        };
-        bool operator!=(const iterator& other) const { return !(*this == other); }
-        shared_ptr<Widget>& operator*() { return **it; };
-    protected:
-        iter_impl *it;
-    };
-
-public:
-    virtual iterator begin() = 0;
-    virtual iterator end() = 0;
+    virtual void foreach(function<void(shared_ptr<Widget>&)> f) = 0;
 };
 
 class Bin : public Container
@@ -243,31 +249,35 @@ public:
     virtual shared_ptr<Widget> get_child() { return m_child; };
     virtual shared_ptr<Widget> get_child_at_offset(int x, int y) override;
 
-private:
-    typedef Container::iterator I;
-
-    class iter_impl_bin : public iter_impl
+protected:
+    class iterator
     {
-    private:
-        typedef shared_ptr<Widget> C;
     public:
-        explicit iter_impl_bin (C& _c, bool _state) : c(_c), state(_state) {};
-    protected:
-        virtual void operator++() override { state = true; };
-        virtual shared_ptr<Widget>& operator*() override { return c; };
-        virtual iter_impl_bin* clone() const override { return new iter_impl_bin(c, state); };
-        virtual bool equal (iter_impl &_other) const override {
-            iter_impl_bin &other = static_cast<iter_impl_bin&>(_other);
-            return c == other.c && state == other.state;
-        };
+        typedef shared_ptr<Widget> value_type;
+        typedef ptrdiff_t distance;
+        typedef shared_ptr<Widget>* pointer;
+        typedef shared_ptr<Widget>& reference;
+        typedef input_iterator_tag iterator_category;
 
-        C& c;
+        value_type c;
         bool state;
+
+        iterator(value_type& _c, bool _state) : c(_c), state(_state) {};
+        void operator++ () { state = true; };
+        value_type& operator* () { return c; };
+        bool operator== (const iterator& other) { return c == other.c && state == other.state; }
+        bool operator!= (const iterator& other) { return !(*this == other); }
     };
 
 public:
-    virtual I begin() override { return I(new iter_impl_bin(m_child, false)); }
-    virtual I end() override { return I(new iter_impl_bin(m_child, true)); }
+    iterator begin() { return iterator(m_child, false); }
+    iterator end() { return iterator(m_child, true); }
+    virtual void foreach(function<void(shared_ptr<Widget>&)> f) override
+    {
+        for (auto& child : *this)
+            f(child);
+    }
+
 protected:
     shared_ptr<Widget> m_child;
 };
@@ -284,31 +294,36 @@ public:
     size_t num_children() const { return m_children.size(); }
     shared_ptr<Widget>& operator[](size_t pos) { return m_children[pos]; };
     const shared_ptr<Widget>& operator[](size_t pos) const { return m_children[pos]; };
-private:
-    typedef Container::iterator I;
 
-    class iter_impl_vec : public iter_impl
+protected:
+    class iterator
     {
-    private:
-        typedef vector<shared_ptr<Widget>> C;
     public:
-        explicit iter_impl_vec (C& _c, C::iterator _it) : c(_c), it(_it) {};
-    protected:
-        virtual void operator++() override { ++it; };
-        virtual shared_ptr<Widget>& operator*() override { return *it; };
-        virtual iter_impl_vec* clone() const override { return new iter_impl_vec(c, it); };
-        virtual bool equal (iter_impl &_other) const override {
-            iter_impl_vec &other = static_cast<iter_impl_vec&>(_other);
-            return c == other.c && it == other.it;
-        };
+        typedef shared_ptr<Widget> value_type;
+        typedef ptrdiff_t distance;
+        typedef shared_ptr<Widget>* pointer;
+        typedef shared_ptr<Widget>& reference;
+        typedef input_iterator_tag iterator_category;
 
-        C& c;
-        C::iterator it;
+        vector<value_type>& c;
+        vector<value_type>::iterator it;
+
+        iterator(vector<value_type>& _c, vector<value_type>::iterator _it) : c(_c), it(_it) {};
+        void operator++ () { ++it; };
+        value_type& operator* () { return *it; };
+        bool operator== (const iterator& other) { return c == other.c && it == other.it; }
+        bool operator!= (const iterator& other) { return !(*this == other); }
     };
 
 public:
-    virtual I begin() override { return I(new iter_impl_vec(m_children, m_children.begin())); }
-    virtual I end() override { return I(new iter_impl_vec(m_children, m_children.end())); }
+    iterator begin() { return iterator(m_children, m_children.begin()); }
+    iterator end() { return iterator(m_children, m_children.end()); }
+    virtual void foreach(function<void(shared_ptr<Widget>&)> f) override
+    {
+        for (auto& child : *this)
+            f(child);
+    }
+
 protected:
     vector<shared_ptr<Widget>> m_children;
 };
@@ -316,7 +331,6 @@ protected:
 // Box widget: similar to the CSS flexbox (without wrapping)
 //  - Lays its children out in either a row or a column
 //  - Extra space is allocated according to each child's flex_grow property
-//  - align and justify properties work like flexbox's
 
 class Box : public ContainerVec
 {
@@ -337,15 +351,16 @@ public:
     };
     virtual ~Box() {}
     void add_child(shared_ptr<Widget> child);
-    bool horz;
-    Widget::Align justify_items = START;
-    Widget::Align align_items = UNSET;
+    Widget::Align align_main = START;
+    Widget::Align align_cross = START;
 
     virtual void _render() override;
     virtual SizeReq _get_preferred_size(Direction dim, int prosp_width) override;
     virtual void _allocate_region() override;
 
 protected:
+    bool horz;
+
     vector<int> layout_main_axis(vector<SizeReq>& ch_psz, int main_sz);
     vector<int> layout_cross_axis(vector<SizeReq>& ch_psz, int cross_sz);
 };
@@ -379,15 +394,31 @@ public:
     virtual SizeReq _get_preferred_size(Direction dim, int prosp_width) override;
     virtual void _allocate_region() override;
 
-    bool wrap_text = false;
-    bool ellipsize = false;
-
 #ifndef USE_TILE_LOCAL
     void set_bg_colour(COLOURS colour);
 #endif
 
+    void set_wrap_text(bool _wrap_text)
+    {
+        if (wrap_text == _wrap_text)
+            return;
+        wrap_text = _wrap_text;
+        _invalidate_sizereq();
+    };
+
+    void set_ellipsize(bool _ellipsize)
+    {
+        if (ellipsize == _ellipsize)
+            return;
+        ellipsize = _ellipsize;
+        _invalidate_sizereq();
+    };
+
 protected:
     void wrap_text_to_size(int width, int height);
+
+    bool wrap_text = false;
+    bool ellipsize = false;
 
     formatted_string m_text;
 #ifdef USE_TILE_LOCAL
@@ -400,7 +431,7 @@ protected:
     vector<formatted_string> m_wrapped_lines;
     COLOURS m_bg_colour = BLACK;
 #endif
-    i2 m_wrapped_size = { -1, -1 };
+    Size m_wrapped_size = { -1 };
     string hl_pat;
     bool hl_line;
 };
@@ -446,6 +477,7 @@ public:
     virtual ~Switcher() {};
     void add_child(shared_ptr<Widget> child);
     int& current();
+    shared_ptr<Widget> current_widget();
 
     Widget::Align align_x = START, align_y = START;
 
@@ -488,13 +520,14 @@ public:
     bool stretch_h = false, stretch_v = false;
 
 protected:
-    i4 get_tracks_region(int x, int y, int w, int h) const
+    Region get_tracks_region(int x, int y, int w, int h) const
     {
-        return {
-            m_col_info[x].offset, m_row_info[y].offset,
-            m_col_info[x+w-1].size + m_col_info[x+w-1].offset - m_col_info[x].offset,
-            m_row_info[y+h-1].size + m_row_info[y+h-1].offset - m_row_info[y].offset,
-        };
+        Region track_region;
+        track_region.x = m_col_info[x].offset;
+        track_region.y = m_row_info[y].offset;
+        track_region.width = m_col_info[x+w-1].size + m_col_info[x+w-1].offset - m_col_info[x].offset;
+        track_region.height = m_row_info[y+h-1].size + m_row_info[y+h-1].offset - m_row_info[y].offset;
+        return track_region;
     }
 
     struct track_info {
@@ -507,8 +540,10 @@ protected:
     vector<track_info> m_row_info;
 
     struct child_info {
-        i2 pos;
-        i2 span;
+        struct {
+            int x, y;
+        } pos;
+        Size span;
         shared_ptr<Widget> widget;
         inline bool operator==(const child_info& rhs) const { return widget == rhs.widget; }
     };
@@ -520,33 +555,34 @@ protected:
     void init_track_info();
     bool m_track_info_dirty = false;
 
-private:
-    typedef Container::iterator I;
-
-    class iter_impl_grid : public iter_impl
+protected:
+    class iterator
     {
-    private:
-        typedef vector<child_info> C;
     public:
-        explicit iter_impl_grid (C& _c, C::iterator _it) : c(_c), it(_it) {};
-    protected:
-        virtual void operator++() override { ++it; };
-        virtual shared_ptr<Widget>& operator*() override { return it->widget; };
-        virtual iter_impl_grid* clone() const override {
-            return new iter_impl_grid(c, it);
-        };
-        virtual bool equal (iter_impl &_other) const override {
-            iter_impl_grid &other = static_cast<iter_impl_grid&>(_other);
-            return c == other.c && it == other.it;
-        };
+        typedef shared_ptr<Widget> value_type;
+        typedef ptrdiff_t distance;
+        typedef shared_ptr<Widget>* pointer;
+        typedef shared_ptr<Widget>& reference;
+        typedef input_iterator_tag iterator_category;
 
-        C& c;
-        C::iterator it;
+        vector<child_info>& c;
+        vector<child_info>::iterator it;
+
+        iterator(vector<child_info>& _c, vector<child_info>::iterator _it) : c(_c), it(_it) {};
+        void operator++ () { ++it; };
+        value_type& operator* () { return it->widget; };
+        bool operator== (const iterator& other) { return c == other.c && it == other.it; }
+        bool operator!= (const iterator& other) { return !(*this == other); }
     };
 
 public:
-    virtual I begin() override { return I(new iter_impl_grid(m_child_info, m_child_info.begin())); }
-    virtual I end() override { return I(new iter_impl_grid(m_child_info, m_child_info.end())); }
+    iterator begin() { return iterator(m_child_info, m_child_info.begin()); }
+    iterator end() { return iterator(m_child_info, m_child_info.end()); }
+    virtual void foreach(function<void(shared_ptr<Widget>&)> f) override
+    {
+        for (auto& child : *this)
+            f(child);
+    }
 };
 
 class Scroller : public Bin
@@ -598,14 +634,15 @@ public:
     virtual SizeReq _get_preferred_size(Direction dim, int prosp_width) override;
     virtual void _allocate_region() override;
 
-    i2 get_max_child_size();
+    Size get_max_child_size();
 
 protected:
 #ifdef USE_TILE_LOCAL
     ShapeBuffer m_buf;
     static constexpr int m_depth_indent = 20;
-    static constexpr int m_base_margin = 50;
     static constexpr int m_padding = 23;
+
+    int base_margin();
 #endif
     bool m_centred{!crawl_state.need_save};
 };
@@ -665,14 +702,15 @@ shared_ptr<Widget> top_layout();
 void pump_events(int wait_event_timeout = INT_MAX);
 void run_layout(shared_ptr<Widget> root, const bool& done);
 bool has_layout();
+NORETURN void restart_layout();
 int getch(KeymapContext km = KMC_DEFAULT);
-void ui_force_render();
-void ui_render();
-void ui_delay(unsigned int ms);
+void force_render();
+void render();
+void delay(unsigned int ms);
 
-void push_scissor(i4 scissor);
+void push_scissor(Region scissor);
 void pop_scissor();
-i4 get_scissor();
+Region get_scissor();
 
 void set_focused_widget(Widget* w);
 Widget* get_focused_widget();

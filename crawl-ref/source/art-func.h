@@ -558,10 +558,7 @@ static void _ZONGULDROK_melee_effects(item_def* weapon, actor* attacker,
                                       actor* defender, bool mondied, int dam)
 {
     if (attacker->is_player())
-    {
         did_god_conduct(DID_EVIL, 3);
-        did_god_conduct(DID_CORPSE_VIOLATION, 3);
-    }
 }
 
 ///////////////////////////////////////////////////
@@ -1426,5 +1423,24 @@ static void _ZHOR_world_reacts(item_def *item)
         && one_chance_in(7 * div_rand_round(BASELINE_DELAY, you.time_taken)))
     {
         cast_englaciation(30, false);
+    }
+}
+
+////////////////////////////////////////////////////
+
+// XXX: Staff of Battle giving a boost to conjuration spells is hardcoded in
+// player_spec_conj().
+
+static void _BATTLE_unequip(item_def *item, bool *show_msgs)
+{
+    end_battlesphere(find_battlesphere(&you), false);
+}
+
+static void _BATTLE_world_reacts(item_def *item)
+{
+    if (!find_battlesphere(&you) && there_are_monsters_nearby(true, true, false))
+    {
+        your_spells(SPELL_BATTLESPHERE, 0, false);
+        did_god_conduct(DID_SPELL_CASTING, 1);
     }
 }

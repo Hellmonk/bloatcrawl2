@@ -40,15 +40,46 @@ void MenuButton::_allocate_region()
     {
         const VColour bg = active ?
             VColour(0, 0, 0, 255) : VColour(255, 255, 255, 25);
-        m_buf.add(m_region[0], m_region[1],
-                m_region[0]+m_region[2], m_region[1]+m_region[3], bg);
+        m_buf.add(m_region.x, m_region.y, m_region.ex(), m_region.ey(), bg);
         const VColour mouse_colour = active ?
             VColour(34, 34, 34, 255) : term_colours[highlight_colour];
-        m_line_buf.add_square(m_region[0]+1, m_region[1]+1,
-                m_region[0]+m_region[2], m_region[1]+m_region[3], mouse_colour);
+        m_line_buf.add_square(m_region.x+1, m_region.y+1,
+            m_region.ex(), m_region.ey(), mouse_colour);
     }
 #endif
 }
+
+#ifndef USE_TILE_LOCAL
+void MenuButton::recolour_descendants(const shared_ptr<Widget>& node)
+{
+    auto tw = dynamic_pointer_cast<Text>(node);
+    if (tw)
+    {
+        if (focused)
+        {
+            // keep the original colour so we can restore it on unfocus
+            const auto& first_op = tw->get_text().ops[0];
+            fg_normal = first_op.type == FSOP_COLOUR ? first_op.colour : LIGHTGREY;
+        }
+
+        const colour_t fg = focused ? fg_highlight : fg_normal;
+        const colour_t bg = focused ? highlight_colour : BLACK;
+        formatted_string new_contents;
+        new_contents.textcolour(fg);
+        new_contents.cprintf("%s", tw->get_text().tostring().c_str());
+        tw->set_text(move(new_contents));
+        tw->set_bg_colour(static_cast<COLOURS>(bg));
+        return;
+    }
+    auto container = dynamic_pointer_cast<Container>(node);
+    if (container)
+    {
+        container->foreach([this](shared_ptr<Widget>& child) {
+                recolour_descendants(child);
+            });
+    }
+}
+#endif
 
 bool MenuButton::on_event(const wm_event& event)
 {
@@ -66,6 +97,11 @@ bool MenuButton::on_event(const wm_event& event)
         focused = true;
     if (event.type == WME_FOCUSOUT)
         focused = false;
+
+#ifndef USE_TILE_LOCAL
+    if (event.type == WME_FOCUSIN || event.type == WME_FOCUSOUT)
+        recolour_descendants(shared_from_this());
+#endif
 
 #ifdef USE_TILE_LOCAL
     if (event.type == WME_MOUSEENTER)
@@ -241,42 +277,13 @@ void OuterMenu::add_button(shared_ptr<MenuButton> btn, int x, int y)
         }
         if (ev.type == WME_FOCUSIN && m_description_indexes[y*this->m_width+x] != -1)
             descriptions->current() = m_description_indexes[y*this->m_width+x];
-#ifndef USE_TILE_LOCAL
-        if (ev.type == WME_FOCUSIN || ev.type == WME_FOCUSOUT)
-        {
-            auto btn2 = this->m_buttons[y*this->m_width+x];
-            Text* tw = dynamic_cast<Text*>(btn2->get_child().get());
-            if (!tw)
-            {
-                // TODO: very hacky: if the child is a container,
-                // find the first label in a container.
-                // This handles several cases: webtiles menus on console,
-                // weapon select on local console. Is there a more elegant way
-                // of doing this? Maybe do it for every label in the widget?
-                auto tw_cont = dynamic_cast<ContainerVec*>(
-                                                    btn2->get_child().get());
-                if (tw_cont)
-                    for (auto it = tw_cont->begin(); it != tw_cont->end(); ++it)
-                    {
-                        tw = dynamic_cast<Text*>((*it).get());
-                        if (tw)
-                            break;
-                    }
-            }
-            if (tw)
-            {
-                tw->set_bg_colour(ev.type == WME_FOCUSIN
-                                            ? btn2->highlight_colour : BLACK);
-            }
-        }
-#endif
         return false;
     });
 
     if (descriptions)
     {
         auto desc_text = make_shared<Text>(formatted_string(btn->description, WHITE));
-        desc_text->wrap_text = true;
+        desc_text->set_wrap_text(true);
         descriptions->add_child(move(desc_text));
         m_description_indexes[y*m_width + x] = descriptions->num_children()-1;
     }
@@ -306,7 +313,7 @@ void OuterMenu::scroll_button_into_view(MenuButton *btn)
     Scroller* scroller = dynamic_cast<Scroller*>(gp);
     if (!scroller)
         return;
-    i4 btn_reg = btn->get_region(), scr_reg = scroller->get_region();
+    const auto btn_reg = btn->get_region(), scr_reg = scroller->get_region();
 
 #ifdef USE_TILE_LOCAL
     constexpr int shade_height = 12;
@@ -314,9 +321,9 @@ void OuterMenu::scroll_button_into_view(MenuButton *btn)
     constexpr int shade_height = 0;
 #endif
 
-    const int btn_top = btn_reg[1], btn_bot = btn_top + btn_reg[3],
-                scr_top = scr_reg[1] + shade_height,
-                scr_bot = scr_reg[1] + scr_reg[3] - shade_height;
+    const int btn_top = btn_reg.y, btn_bot = btn_top + btn_reg.height,
+                scr_top = scr_reg.y + shade_height,
+                scr_bot = scr_reg.y + scr_reg.height - shade_height;
     const int delta = btn_top < scr_top ? btn_top - scr_top :
                 btn_bot > scr_bot ? btn_bot - scr_bot : 0;
     scroller->set_scroll(scroller->get_scroll() + delta);
@@ -381,7 +388,7 @@ bool OuterMenu::scroller_event_hook(const wm_event& ev)
                 }
         ASSERT(fx >= 0 && fy >= 0);
 
-        const int pagesz = m_root->get_region()[3] / focus->get_region()[3] - 1;
+        const int pagesz = m_root->get_region().height / focus->get_region().height - 1;
         const int limit = (key == CK_HOME || key == CK_END) ? INT_MAX
             : (key == CK_PGUP || key == CK_PGDN) ? pagesz : 1;
 

@@ -1057,128 +1057,6 @@ static void _search_dungeon(const coord_def & start,
     }
 }
 
-static bool _ballisto_at(const coord_def & target)
-{
-    monster* mons = monster_at(target);
-    return mons && mons->type == MONS_BALLISTOMYCETE
-           && mons->alive();
-}
-
-static bool _mold_connected(const coord_def & target)
-{
-    return is_moldy(target) || _ballisto_at(target);
-}
-
-// If 'monster' is a ballistomycete or spore, activate some number of
-// ballistomycetes on the level.
-static void _activate_ballistomycetes(monster* mons, const coord_def& origin,
-                                      bool player_kill)
-{
-    if (!mons || mons->is_summoned()
-              || mons->mons_species() != MONS_BALLISTOMYCETE
-                 && mons->type != MONS_BALLISTOMYCETE_SPORE)
-    {
-        return;
-    }
-
-    // If a spore or inactive ballisto died we will only activate one
-    // other ballisto. If it was an active ballisto we will distribute
-    // its count to others on the level.
-    int activation_count = 1;
-    if (mons->type == MONS_BALLISTOMYCETE)
-        activation_count += mons->ballisto_activity;
-    if (mons->type == MONS_HYPERACTIVE_BALLISTOMYCETE)
-        activation_count = 0;
-
-    int non_activable_count = 0;
-    int ballisto_count = 0;
-
-    for (monster_iterator mi; mi; ++mi)
-    {
-        if (mi->mindex() != mons->mindex() && mi->alive())
-        {
-            if (mi->type == MONS_BALLISTOMYCETE)
-                ballisto_count++;
-            else if (mi->type == MONS_BALLISTOMYCETE_SPORE
-                     || mi->type == MONS_HYPERACTIVE_BALLISTOMYCETE)
-            {
-                non_activable_count++;
-            }
-        }
-    }
-
-    bool exhaustive = true;
-    bool (*valid_target)(const coord_def &) = _ballisto_at;
-    bool (*connecting_square) (const coord_def &) = _mold_connected;
-
-    set<position_node> visited;
-    vector<set<position_node>::iterator > candidates;
-
-    _search_dungeon(origin, valid_target, connecting_square, visited,
-                    candidates, exhaustive);
-
-    if (candidates.empty())
-    {
-        if (non_activable_count == 0
-            && ballisto_count == 0
-            && mons->attitude == ATT_HOSTILE)
-        {
-            if (player_kill)
-                mpr("The fungal colony is destroyed.");
-
-            // Get rid of the mold, so it'll be more useful when new fungi
-            // spawn.
-            for (rectangle_iterator ri(1); ri; ++ri)
-                remove_mold(*ri);
-        }
-
-        return;
-    }
-
-    // A (very) soft cap on colony growth, no activations if there are
-    // already a lot of ballistos on level.
-    if (candidates.size() > 25)
-        return;
-
-    shuffle_array(candidates);
-
-    int index = 0;
-
-    for (int i = 0; i < activation_count; ++i)
-    {
-        index = i % candidates.size();
-
-        monster* spawner = monster_at(candidates[index]->pos);
-
-        // This may be the players position, in which case we don't
-        // have to mess with spore production on anything
-        if (spawner)
-        {
-            spawner->ballisto_activity++;
-
-            // Change color and start the spore production timer if we
-            // are moving from 0 to 1.
-            if (spawner->ballisto_activity == 1)
-            {
-                spawner->colour = LIGHTMAGENTA;
-                // Reset the spore production timer.
-                spawner->del_ench(ENCH_SPORE_PRODUCTION, false);
-                spawner->add_ench(ENCH_SPORE_PRODUCTION);
-            }
-        }
-
-        const position_node* thread = &(*candidates[index]);
-        while (thread)
-        {
-            if (!one_chance_in(3))
-                env.pgrid(thread->pos) |= FPROP_GLOW_MOLD;
-
-            thread = thread->last;
-        }
-        env.level_state |= LSTATE_GLOW_MOLD;
-    }
-}
-
 static void _setup_base_explosion(bolt & beam, const monster& origin)
 {
     beam.is_tracer    = false;
@@ -1206,10 +1084,10 @@ void setup_spore_explosion(bolt & beam, const monster& origin)
 {
     _setup_base_explosion(beam, origin);
     beam.flavour = BEAM_SPORE;
-    beam.damage  = dice_def(3, 15);
+    beam.damage  = dice_def(3, 5 + origin.get_hit_dice());
     beam.name    = "explosion of spores";
     beam.colour  = LIGHTGREY;
-    beam.ex_size = 2;
+    beam.ex_size = 1;
 }
 
 static void _setup_lightning_explosion(bolt & beam, const monster& origin)
@@ -1404,7 +1282,6 @@ static bool _explode_monster(monster* mons, killer_type killer,
     else
         beam.explode();
 
-    _activate_ballistomycetes(mons, beam.target, YOU_KILL(beam.killer()));
     // Monster died in explosion, so don't re-attach it to the grid.
     return true;
 }
@@ -2345,21 +2222,6 @@ item_def* monster_die(monster& mons, killer_type killer,
 
             _fire_kill_conducts(mons, killer, killer_index, gives_player_xp);
 
-            // Kill conducts do not assess piety loss for friends
-            // killed by other monsters.
-            if (mons.friendly())
-            {
-                const bool sentient = mons_class_intel(mons.type) >= I_HUMAN;
-                // plant HD aren't very meaningful. (fedhas hack)
-                const int severity = mons.holiness() & MH_PLANT ?
-                                     1 :
-                                     1 + (mons.get_experience_level() / 4);
-
-                did_god_conduct(sentient ? DID_SOULED_FRIEND_DIED
-                                         : DID_FRIEND_DIED,
-                                severity, true, &mons);
-            }
-
             // Trying to prevent summoning abuse here, so we're trying to
             // prevent summoned creatures from being done_good kills. Only
             // affects creatures which were friendly when summoned.
@@ -2633,12 +2495,6 @@ item_def* monster_die(monster& mons, killer_type killer,
             _infestation_create_scarab(&mons);
         if (you.duration[DUR_DEATH_CHANNEL] && was_visible && gives_player_xp)
             _make_derived_undead(&mons, !death_message, false);
-    }
-
-    if (mons.mons_species() == MONS_BALLISTOMYCETE)
-    {
-        _activate_ballistomycetes(&mons, mons.pos(),
-                                  YOU_KILL(killer) || pet_kill);
     }
 
     if (!wizard && !submerged && !was_banished)

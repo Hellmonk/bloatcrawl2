@@ -263,12 +263,10 @@ const vector<god_power> god_powers[NUM_GODS] =
 
     // Fedhas
     {
-      { 0, ABIL_FEDHAS_FUNGAL_BLOOM, "turn corpses into toadstools" },
-      { 1, ABIL_FEDHAS_SUNLIGHT, "call sunshine" },
-      { 2, ABIL_FEDHAS_EVOLUTION, "induce evolution" },
-      { 3, ABIL_FEDHAS_PLANT_RING, "cause a ring of plants to grow" },
-      { 4, ABIL_FEDHAS_SPAWN_SPORES, "spawn explosive spores" },
-      { 5, ABIL_FEDHAS_RAIN, "control the weather" },
+      { 2, ABIL_FEDHAS_WALL_OF_BRIARS, "encircle yourself with summoned briar patches"},
+      { 3, ABIL_FEDHAS_GROW_BALLISTOMYCETE, "grow a ballistomycete" },
+      { 4, ABIL_FEDHAS_OVERGROW, "transform dungeon walls and trees into plant allies"},
+      { 5, ABIL_FEDHAS_GROW_OKLOB, "grow an oklob plant" },
     },
 
     // Cheibriados
@@ -3075,7 +3073,7 @@ static bool _transformed_player_can_join_god(god_type which_god)
     switch (you.form)
     {
     case transformation::lich:
-        return !(is_good_god(which_god) || which_god == GOD_FEDHAS);
+        return !is_good_god(which_god);
     case transformation::statue:
     case transformation::wisp:
         return !(which_god == GOD_YREDELEMNUL);
@@ -3126,10 +3124,6 @@ bool player_can_join_god(god_type which_god)
         return false;
 
     if (which_god == GOD_BEOGH && !species_is_orcish(you.species))
-        return false;
-
-    // Fedhas hates undead, but will accept demonspawn.
-    if (which_god == GOD_FEDHAS && you.undead_state())
         return false;
 
     if (which_god == GOD_GOZAG && you.gold < gozag_service_fee())

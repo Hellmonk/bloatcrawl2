@@ -182,12 +182,12 @@ void pick_hints(newgame_def& choice)
     auto prompt_ui = make_shared<Text>(formatted_string::parse_string(prompt));
 
     auto vbox = make_shared<Box>(Box::VERT);
-    vbox->align_items = Widget::Align::STRETCH;
+    vbox->align_cross = Widget::Align::STRETCH;
     vbox->add_child(prompt_ui);
 
     auto main_items = make_shared<OuterMenu>(true, 1, 3);
-    main_items->set_margin_for_sdl({15, 0, 15, 0});
-    main_items->set_margin_for_crt({1, 0, 1, 0});
+    main_items->set_margin_for_sdl(15, 0);
+    main_items->set_margin_for_crt(1, 0);
     vbox->add_child(main_items);
 
     for (int i = 0; i < 3; i++)
@@ -197,20 +197,20 @@ void pick_hints(newgame_def& choice)
 
 #ifdef USE_TILE_LOCAL
         auto hbox = make_shared<Box>(Box::HORZ);
-        hbox->align_items = Widget::Align::CENTER;
+        hbox->align_cross = Widget::Align::CENTER;
         dolls_data doll;
         newgame_def tng = choice;
         _fill_newgame_choice_for_hints(tng, static_cast<hints_types>(i));
         fill_doll_for_newgame(doll, tng);
         auto tile = make_shared<ui::PlayerDoll>(doll);
-        tile->set_margin_for_sdl({0, 6, 0, 0});
+        tile->set_margin_for_sdl(0, 6, 0, 0);
         hbox->add_child(move(tile));
         hbox->add_child(label);
 #endif
 
         auto btn = make_shared<MenuButton>();
 #ifdef USE_TILE_LOCAL
-        hbox->set_margin_for_sdl({4,8,4,8});
+        hbox->set_margin_for_sdl(4,8);
         btn->set_child(move(hbox));
 #else
         btn->set_child(move(label));
@@ -416,11 +416,11 @@ void hints_starting_screen()
     trim_string(text);
 
     auto prompt_ui = make_shared<Text>(formatted_string::parse_string(text));
-    prompt_ui->wrap_text = true;
+    prompt_ui->set_wrap_text(true);
 #ifdef USE_TILE_LOCAL
-    prompt_ui->max_size()[0] = 800;
+    prompt_ui->max_size().width = 800;
 #else
-    prompt_ui->max_size()[0] = 80;
+    prompt_ui->max_size().width = 80;
 #endif
 
     bool done = false;

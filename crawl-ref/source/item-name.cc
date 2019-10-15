@@ -3587,10 +3587,9 @@ bool is_useless_item(const item_def &item, bool temp)
         case AMU_REGENERATION:
             return you.get_mutation_level(MUT_NO_REGENERATION) > 0
                    || (temp
-                       && you.get_mutation_level(MUT_INHIBITED_REGENERATION) > 0
-                       && regeneration_is_inhibited())
-                   || (temp && you.undead_state() == US_SEMI_UNDEAD
-                       && !you.vampire_alive);
+                       && (you.get_mutation_level(MUT_INHIBITED_REGENERATION) > 0
+                           || you.undead_state() == US_SEMI_UNDEAD)
+                       && regeneration_is_inhibited());
 
 #if TAG_MAJOR_VERSION == 34
         case AMU_MANA_REGENERATION:

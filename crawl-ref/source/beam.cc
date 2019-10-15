@@ -2551,43 +2551,6 @@ void bolt::affect_ground()
     if (is_tracer)
         return;
 
-    // Spore explosions might spawn a fungus. The spore explosion
-    // covers 21 tiles in open space, so the expected number of spores
-    // produced is the x in x_chance_in_y() in the conditional below.
-    if (is_explosion && flavour == BEAM_SPORE
-        && agent() && !agent()->is_summoned())
-    {
-        if (env.grid(pos()) == DNGN_FLOOR)
-            env.pgrid(pos()) |= FPROP_MOLD;
-
-        if (x_chance_in_y(2, 21)
-           && mons_class_can_pass(MONS_BALLISTOMYCETE, env.grid(pos()))
-           && !actor_at(pos()))
-        {
-            beh_type beh = attitude_creation_behavior(attitude);
-            // A friendly spore or hyperactive can exist only with Fedhas
-            // in which case the inactive ballistos spawned should be
-            // good_neutral to avoid hidden piety costs of Fedhas abilities
-            if (beh == BEH_FRIENDLY)
-                beh = BEH_GOOD_NEUTRAL;
-
-            const god_type god = agent()->deity();
-
-            if (create_monster(mgen_data(MONS_BALLISTOMYCETE,
-                                         beh,
-                                         pos(),
-                                         MHITNOT,
-                                         MG_FORCE_PLACE,
-                                         god)))
-            {
-                remove_mold(pos());
-                if (you.see_cell(pos()))
-                    mpr("A fungus suddenly grows.");
-
-            }
-        }
-    }
-
     affect_place_clouds();
 }
 
@@ -2618,7 +2581,7 @@ bool bolt::can_affect_wall(const coord_def& p, bool map_knowledge) const
         return true;
     }
 
-    // Temporary trees (from Summon Forest) can't be burned/distintegrated.
+    // Temporary trees (from Summon Forest) can't be burned.
     if (feat_is_tree(wall) && is_temp_terrain(p))
         return false;
 

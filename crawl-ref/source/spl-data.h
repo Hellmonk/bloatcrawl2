@@ -626,7 +626,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_ANIMATE_DEAD, "Animate Dead",
     spschool::necromancy,
-    spflag::area | spflag::neutral | spflag::corpse_violating | spflag::utility,
+    spflag::area | spflag::neutral | spflag::utility,
     4,
     0,
     -1, -1,
@@ -661,7 +661,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_ANIMATE_SKELETON, "Animate Skeleton",
     spschool::necromancy,
-    spflag::corpse_violating | spflag::utility,
+    spflag::utility,
     1,
     0,
     -1, -1,
@@ -832,7 +832,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_FULSOME_DISTILLATION, "Fulsome Distillation",
     spschool::transmutation | spschool::necromancy,
-    spflag::corpse_violating,
+    spflag::none,
     1,
     0,
     -1, -1,
@@ -855,8 +855,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_TWISTED_RESURRECTION, "Twisted Resurrection",
     spschool::necromancy,
-    spflag::chaotic | spflag::corpse_violating | spflag::utility
-        | spflag::monster,
+    spflag::chaotic | spflag::utility | spflag::monster,
     5,
     200,
     -1, -1,
@@ -1236,7 +1235,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_NECROMUTATION, "Necromutation",
     spschool::transmutation | spschool::necromancy,
-    spflag::helpful | spflag::corpse_violating | spflag::chaotic,
+    spflag::helpful | spflag::chaotic,
     8,
     200,
     -1, -1,
@@ -1600,7 +1599,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_SIMULACRUM, "Simulacrum",
     spschool::ice | spschool::necromancy,
-    spflag::corpse_violating,
+    spflag::none,
     6,
     200,
     -1, -1,
@@ -3691,8 +3690,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_CIGOTUVIS_EMBRACE, "Cigotuvi's Embrace",
     spschool::necromancy,
-    spflag::chaotic | spflag::corpse_violating | spflag::utility
-        | spflag::no_ghost,
+    spflag::chaotic | spflag::utility | spflag::no_ghost,
     5,
     200,
     -1, -1,
@@ -3822,7 +3820,7 @@ static const struct spell_desc spelldata[] =
     100,
     -1, -1,
     2, 0,
-    TILEG_GENERIC_MONSTER_SPELL,
+    TILEG_SPRINT,
 },
 
 {
@@ -4009,6 +4007,17 @@ static const struct spell_desc spelldata[] =
     5,
     200,
     LOS_RADIUS, LOS_RADIUS,
+    5, 0,
+    TILEG_GENERIC_MONSTER_SPELL,
+},
+
+{
+    SPELL_SPORULATE, "Sporulate",
+    spschool::conjuration | spschool::earth,
+    spflag::monster | spflag::selfench,
+    5,
+    200,
+    -1, -1,
     5, 0,
     TILEG_GENERIC_MONSTER_SPELL,
 },
