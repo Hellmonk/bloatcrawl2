@@ -94,7 +94,7 @@ static const struct spell_desc spelldata[] =
     spflag::neutral | spflag::no_ghost,
     3,
     100,
-    3, 3,
+    -1, -1,
     3, 2,
     TILEG_CONJURE_FLAME,
 },
