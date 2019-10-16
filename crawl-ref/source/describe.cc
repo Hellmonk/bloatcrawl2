@@ -661,7 +661,8 @@ string trap_name(trap_type trap)
 
 string full_trap_name(trap_type trap)
 {
-    string basename = trap_name(trap);
+    string disabled = you.trap_type == 1 || you.trap_type == 3 ? "disabled " : "";
+    string basename = disabled + trap_name(trap);
     switch (trap)
     {
     case TRAP_GOLUBRIA:
