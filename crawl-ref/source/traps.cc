@@ -158,6 +158,10 @@ bool trap_def::is_safe(actor* act) const
 {
     if (!act)
         act = &you;
+    
+    //if floor traps are disabled, return true
+    if(you.trap_type == 1 || you.trap_type == 3)
+        return true;
 
     // TODO: For now, just assume they're safe; they don't damage outright,
     // and the messages get old very quickly
