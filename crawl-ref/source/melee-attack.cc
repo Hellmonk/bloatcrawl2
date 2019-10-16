@@ -150,7 +150,8 @@ bool melee_attack::handle_phase_attempted()
     {
         // Set delay now that we know the attack won't be cancelled.
         if (!is_riposte
-             && (wu_jian_attack == WU_JIAN_ATTACK_NONE))
+             && (wu_jian_attack == WU_JIAN_ATTACK_NONE)
+			&& ((effective_attack_number == 0)||(effective_attack_number==2)))
         {
             you.time_taken = you.attack_delay().roll();
         }
@@ -298,21 +299,51 @@ bool melee_attack::handle_phase_dodged()
         if (!attacker->alive())
             return false;
 
-        if (defender->is_player())
-        {
-            const bool using_lbl = defender->weapon()
-                && item_attack_skill(*defender->weapon()) == SK_LONG_BLADES;
-            const bool using_fencers
-                = player_equip_unrand(UNRAND_FENCERS);
-            const int chance = using_lbl + using_fencers;
+        const bool using_lbl0 = defender->weapon(0)
+            && item_attack_skill(*defender->weapon(0)) == SK_LONG_BLADES;
+		const bool using_lbl1 = defender->weapon(1)
+			&& item_attack_skill(*defender->weapon(1)) == SK_LONG_BLADES;
+        const bool using_fencers
+            = (defender->is_player()) && player_equip_unrand(UNRAND_FENCERS);
+        const int chance = using_lbl0 + using_lbl1 + using_fencers;
 
-            if (x_chance_in_y(chance, 3) && !is_riposte) // no ping-pong!
-                riposte();
-
-            // Retaliations can kill!
-            if (!attacker->alive())
-                return false;
-        }
+		if (x_chance_in_y(chance, 3) && !is_riposte) // no ping-pong!
+		{
+			if (using_fencers)
+			{
+				if (is_melee_weapon(*defender->weapon(0)))
+				{
+					if (is_melee_weapon(*defender->weapon(1)))
+					{
+						if (coinflip())
+							riposte(0);
+						else
+							riposte(1);
+					}
+					else
+						riposte(0);
+				}
+				else if (is_melee_weapon(*defender->weapon(1)))
+					riposte(1);
+			}
+			else if (using_lbl0)
+			{
+				if (using_lbl1)
+				{
+					if (coinflip())
+						riposte(0);
+					else
+						riposte(1);
+				}
+				else
+					riposte(0);
+			}
+			else if (using_lbl1)
+				riposte(1);
+		}
+        // Retaliations can kill!
+        if (!attacker->alive())
+            return false;
     }
 
     return true;
@@ -558,7 +589,8 @@ bool melee_attack::handle_phase_aux()
         // returns whether an aux attack successfully took place
         // additional attacks from cleave don't get aux
         if (!defender->as_monster()->friendly()
-            && adjacent(defender->pos(), attack_position))
+            && adjacent(defender->pos(), attack_position)
+			&& ((effective_attack_number == 1)||(effective_attack_number == 2)))
         {
             player_aux_unarmed();
         }
@@ -1208,32 +1240,24 @@ void melee_attack::player_aux_setup(unarmed_attack_type atk)
 }
 
 /**
- * Decide whether the player gets a bonus punch attack.
- *
- * Partially random.
+ * Octopode extra tentacle slap only now.
  *
  * @return  Whether the player gets a bonus punch aux attack on this attack.
  */
 bool melee_attack::player_gets_aux_punch()
 {
-    if (!get_form()->can_offhand_punch())
-        return false;
+	// No punching with a shield or 2-handed wpn.
+	// Octopodes aren't affected by this, though!
+	if (you.species != SP_OCTOPODE)
+		return false;
 
     // roll for punch chance based on uc skill & armour penalty
-    if (!attacker->fights_well_unarmed(attacker_armour_tohit_penalty
-                                       + attacker_shield_tohit_penalty))
+    if (!attacker->fights_well_unarmed(attacker_shield_tohit_penalty))
     {
         return false;
     }
 
-    // No punching with a shield or 2-handed wpn.
-    // Octopodes aren't affected by this, though!
-    if (you.species != SP_OCTOPODE && !you.has_usable_offhand())
-        return false;
-
-    // Octopodes get more tentacle-slaps.
-    return x_chance_in_y(you.species == SP_OCTOPODE ? 3 : 2,
-                         6);
+    return coinflip();
 }
 
 bool melee_attack::player_aux_test_hit()
@@ -1544,6 +1568,11 @@ void melee_attack::set_attack_verb(int damage)
     {
         weap_type = weapon->sub_type;
     }
+	else if (weapon->base_type == OBJ_SHIELDS
+			&& is_hybrid(weapon->sub_type))
+	{
+		weap_type = weapon->sub_type;
+	}
 
     // All weak hits with weapons look the same.
     if (damage < HIT_WEAK
@@ -1557,7 +1586,7 @@ void melee_attack::set_attack_verb(int damage)
     }
 
     // Take normal hits into account. If the hit is from a weapon with
-    // more than one damage type, randomly	choose one damage type from
+    // more than one damage type, randomly choose one damage type from
     // it.
     monster_type defender_genus = mons_genus(defender->type);
     switch (weapon ? single_damage_type(*weapon) : -1)
@@ -3294,14 +3323,14 @@ void melee_attack::do_minotaur_retaliation()
  * XXX: might be wrong for deep elf blademasters with a long blade in only
  * one hand
  */
-void melee_attack::riposte()
+void melee_attack::riposte(int which_attack)
 {
     if (you.see_cell(defender->pos()))
     {
         mprf("%s riposte%s.", defender->name(DESC_THE).c_str(),
              defender->is_player() ? "" : "s");
     }
-    melee_attack attck(defender, attacker, 0, effective_attack_number + 1);
+    melee_attack attck(defender, attacker, which_attack, 3);
     attck.is_riposte = true;
     attck.attack();
 }

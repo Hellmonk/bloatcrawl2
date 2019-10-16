@@ -2212,6 +2212,34 @@ static tileidx_t _tileidx_missile(const item_def &item)
     return tileidx_enchant_equ(item, tile);
 }
 
+static tileidx_t _tileidx_shield_base(const item_def &item)
+{
+	int type = item.sub_type;
+	switch (type)
+	{
+	case SHD_BUCKLER:
+		return TILE_SHD_BUCKLER;
+
+	case SHD_SHIELD:
+		return TILE_SHD_SHIELD;
+
+	case SHD_LARGE_SHIELD:
+		return TILE_SHD_LARGE_SHIELD;
+
+	case SHD_SAI:
+		return TILE_SHD_SAI;
+
+	case SHD_NUNCHAKU:
+		return TILE_SHD_NUNCHAKU;
+
+	case SHD_TARGE:
+		return TILE_SHD_TARGE;
+
+	default:
+		return TILE_SHD_SHIELD;
+	}
+}
+
 static tileidx_t _tileidx_armour_base(const item_def &item)
 {
     int type  = item.sub_type;
@@ -2238,9 +2266,10 @@ static tileidx_t _tileidx_armour_base(const item_def &item)
     case ARM_CRYSTAL_PLATE_ARMOUR:
         return TILE_ARM_CRYSTAL_PLATE_ARMOUR;
 
+#if TAG_MAJOR_VERSION == 34
     case ARM_SHIELD:
-        return TILE_ARM_SHIELD;
-
+        return TILE_SHD_SHIELD;
+#endif
     case ARM_CLOAK:
         return TILE_ARM_CLOAK;
 
@@ -2264,11 +2293,13 @@ static tileidx_t _tileidx_armour_base(const item_def &item)
     case ARM_BOOTS:
         return TILE_ARM_BOOTS;
 
+#if TAG_MAJOR_VERSION == 34
     case ARM_BUCKLER:
-        return TILE_ARM_BUCKLER;
+        return TILE_SHD_BUCKLER;
 
     case ARM_LARGE_SHIELD:
-        return TILE_ARM_LARGE_SHIELD;
+        return TILE_SHD_LARGE_SHIELD;
+#endif
 
     case ARM_CENTAUR_BARDING:
         return TILE_ARM_CENTAUR_BARDING;
@@ -2320,6 +2351,12 @@ static tileidx_t _tileidx_armour(const item_def &item)
 {
     tileidx_t tile = _tileidx_armour_base(item);
     return tileidx_enchant_equ(item, tile);
+}
+
+static tileidx_t _tileidx_shields(const item_def &item)
+{
+	tileidx_t tile = _tileidx_shield_base(item);
+	return tileidx_enchant_equ(item, tile);
 }
 
 static tileidx_t _tileidx_chunk(const item_def &item)
@@ -2609,11 +2646,17 @@ tileidx_t tileidx_item(const item_def &item)
     case OBJ_MISSILES:
         return _tileidx_missile(item);
 
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         if (is_unrandom_artefact(item) && !is_randapp_artefact(item))
             return _tileidx_unrand_artefact(find_unrandart_index(item));
         else
             return _tileidx_armour(item);
+
+	case OBJ_SHIELDS:
+		if (is_unrandom_artefact(item) && !is_randapp_artefact(item))
+			return _tileidx_unrand_artefact(find_unrandart_index(item));
+		else
+			return _tileidx_shields(item);
 
     case OBJ_WANDS:
         if (item.flags & ISFLAG_KNOW_TYPE)
@@ -3741,16 +3784,16 @@ tileidx_t tileidx_branch(const branch_type br)
 
 tileidx_t tileidx_known_brand(const item_def &item)
 {
-    if (!item_type_known(item))
-        return 0;
+	if (!item_type_known(item))
+		return 0;
 
-    if (item.base_type == OBJ_WEAPONS)
-    {
-        const int brand = get_weapon_brand(item);
-        if (brand != SPWPN_NORMAL)
-            return TILE_BRAND_WEP_FIRST + get_weapon_brand(item) - 1;
-    }
-    else if (item.base_type == OBJ_ARMOUR)
+	if (item.base_type == OBJ_WEAPONS || (item.base_type == OBJ_SHIELDS && is_hybrid(item.sub_type)))
+	{
+		const int brand = get_weapon_brand(item);
+		if (brand != SPWPN_NORMAL)
+			return TILE_BRAND_WEP_FIRST + get_weapon_brand(item) - 1;
+	}
+    else if (item.base_type == OBJ_ARMOURS || (item.base_type == OBJ_SHIELDS && !is_hybrid(item.sub_type)))
     {
         const int brand = get_armour_ego_type(item);
         if (brand != SPARM_NORMAL)

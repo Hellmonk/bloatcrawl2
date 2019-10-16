@@ -24,7 +24,7 @@ enum object_selector
 #if TAG_MAJOR_VERSION == 34
     OSEL_RECHARGE                =  -4,
 #endif
-    OSEL_ENCHANTABLE_ARMOUR      =  -5,
+    OSEL_ENCHANTABLE_ITEM	     =  -5,
     OSEL_BEOGH_GIFT              =  -6,
     OSEL_DRAW_DECK               =  -7,
     OSEL_THROWABLE               =  -8,
@@ -36,7 +36,9 @@ enum object_selector
     OSEL_UNCURSED_WORN_JEWELLERY = -13,
 #endif
     OSEL_BRANDABLE_WEAPON        = -14,
+#if TAG_MAJOR_VERSION == 34
     OSEL_ENCHANTABLE_WEAPON      = -15,
+#endif
     OSEL_BLESSABLE_WEAPON        = -16,
     OSEL_CURSABLE                = -17, // Items that are cursable and not
                                         // known-cursed. Unknown-cursed items
@@ -46,6 +48,7 @@ enum object_selector
     OSEL_DIVINE_RECHARGE         = -18,
 #endif
     OSEL_UNCURSED_WORN_RINGS     = -19,
+	OSEL_UNCURSED_WIELDED_WEAPONS = -20,
 };
 
 /// Behaviour flags for prompt_invent_item().

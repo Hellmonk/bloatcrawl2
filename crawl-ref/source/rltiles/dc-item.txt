@@ -20,6 +20,7 @@
 ##Maces and Flails
 club WPN_CLUB
 club2
+club3
 mace1 WPN_MACE
 mace2
 mace3
@@ -342,7 +343,7 @@ rock MI_LARGE_ROCK
 # flying rock
 effect/rock0 MI_LARGE_ROCK0
 
-######OBJ_ARMOUR
+######OBJ_ARMOURS
 %sdir item/armour
 robe1 ARM_ROBE ARM_ROBE_FIRST
 robe2 ARM_ROBE_LAST
@@ -416,31 +417,6 @@ centaur_barding_metal
 centaur_barding_magenta
 centaur_barding_red
 
-%sdir item/armour/shields
-%rim 0
-buckler1 ARM_BUCKLER
-buckler2
-buckler3
-%rim 1
-
-buckler_spriggan ARM_BUCKLER_SPRIGGAN
-
-shield1 ARM_SHIELD
-shield2
-shield3
-
-large_shield1 ARM_LARGE_SHIELD
-large_shield2
-large_shield3
-
-shield_dd SHIELD_DEEP_DWARF
-shield_dd_scion SHIELD_DEEP_DWARF_SCION
-lshield_dd_dk LARGE_SHIELD_DEEP_DWARF_DEATH_KNIGHT
-%rim 0
-shield_donald SHIELD_DONALD
-lshield_louise LSHIELD_LOUISE
-%rim 1
-
 %sdir item/armour/headgear
 #####ARM_HELMET
 elven_leather_helm THELM_CAP
@@ -510,6 +486,44 @@ i-jumping BRAND_ARM_JUMPING
 i-repulsion BRAND_ARM_REPULSION
 i-cloud-immune BRAND_ARM_CLOUD_IMMUNE
 i-high-priest BRAND_ARM_HIGH_PRIEST BRAND_ARM_LAST
+
+###########OBJ_SHIELDS
+%sdir item/shields
+%rim 0
+buckler1 SHD_BUCKLER
+buckler2
+buckler3
+%rim 1
+
+shield1 SHD_SHIELD
+shield2
+shield3
+
+large_shield1 SHD_LARGE_SHIELD
+large_shield2
+large_shield3
+
+sai1 SHD_SAI
+sai2
+sai3
+
+targe1 SHD_TARGE
+targe2
+targe3
+
+nunchaku1 SHD_NUNCHAKU
+nunchaku2
+nunchaku3
+
+buckler_spriggan SHD_BUCKLER_SPRIGGAN
+
+shield_dd SHIELD_DEEP_DWARF
+shield_dd_scion SHIELD_DEEP_DWARF_SCION
+lshield_dd_dk LARGE_SHIELD_DEEP_DWARF_DEATH_KNIGHT
+%rim 0
+shield_donald SHIELD_DONALD
+lshield_louise LSHIELD_LOUISE
+%rim 1
 
 ###########OBJ_WANDS
 %sdir item/wand

@@ -227,18 +227,23 @@ void player_quiver::on_item_fired(const item_def& item, bool explicitly_chosen)
     // If item matches the launcher, put it in that launcher's last-used item.
     // Otherwise, it goes into last hand-thrown item.
 
-    const item_def *weapon = you.weapon();
-
-    if (weapon && item.launched_by(*weapon))
+    if (you.weapon(0) && item.launched_by(*you.weapon(0)))
     {
-        const ammo_t t = _get_weapon_ammo_type(weapon);
+        const ammo_t t = _get_weapon_ammo_type(you.weapon(0));
         m_last_used_of_type[t] = item;
         m_last_used_of_type[t].quantity = 1;    // 0 makes it invalid :(
         m_last_used_type = t;
     }
+	else if (you.weapon(1) && item.launched_by(*you.weapon(1)))
+	{
+		const ammo_t t = _get_weapon_ammo_type(you.weapon(1));
+		m_last_used_of_type[t] = item;
+		m_last_used_of_type[t].quantity = 1;    // 0 makes it invalid :(
+		m_last_used_type = t;
+	}
     else
     {
-        const launch_retval projected = is_launched(&you, you.weapon(),
+        const launch_retval projected = is_launched(&you, you.weapon(0), you.weapon(1),
                                                     item);
 
         // Don't do anything if this item is not really fit for throwing.
@@ -315,7 +320,13 @@ void player_quiver::_maybe_fill_empty_slot()
     if (you.species == SP_FELID)
         return;
 
-    const item_def* weapon = you.weapon();
+	item_def* weapon;
+	
+	if (you.weapon(0) && is_range_weapon(*you.weapon(0)))
+		weapon = you.weapon(0);
+	else
+		weapon = you.weapon(1);
+
     const ammo_t slot = _get_weapon_ammo_type(weapon);
 
 #ifdef DEBUG_QUIVER
@@ -362,7 +373,7 @@ void player_quiver::_maybe_fill_empty_slot()
     {
         for (int ord : order)
         {
-            if (is_launched(&you, weapon, you.inv[ord]) == desired_ret)
+            if (is_launched(&you, weapon, weapon, you.inv[ord]) == desired_ret)
             {
                 m_last_used_of_type[slot] = you.inv[ord];
                 m_last_used_of_type[slot].quantity = 1;
@@ -414,7 +425,7 @@ void player_quiver::_get_fire_order(vector<int>& order,
             continue;
 
         // Don't do anything if this item is not really fit for throwing.
-        if (is_launched(&you, you.weapon(), item) == launch_retval::FUMBLED)
+        if (is_launched(&you, you.weapon(0), you.weapon(1), item) == launch_retval::FUMBLED)
             continue;
 
         // =f prevents item from being in fire order.

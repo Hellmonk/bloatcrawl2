@@ -1246,7 +1246,7 @@ static bool _is_potentially_boring(stash_search_result res)
 {
     return res.item.defined() && !res.in_inventory && !res.shop
            && (res.item.base_type == OBJ_WEAPONS
-               || res.item.base_type == OBJ_ARMOUR
+               || res.item.base_type == OBJ_ARMOURS
                || res.item.base_type == OBJ_MISSILES)
            && (item_type_known(res.item) || !item_is_branded(res.item));
 }

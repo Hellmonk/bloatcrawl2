@@ -500,16 +500,16 @@ static void _wanderer_good_equipment(skill_type & skill)
         break;
 
     case SK_ARMOUR:
-        newgame_make_item(OBJ_ARMOUR, ARM_SCALE_MAIL, 1, 2);
+        newgame_make_item(OBJ_ARMOURS, ARM_SCALE_MAIL, 1, 2);
         break;
 
     case SK_DODGING:
         // +2 leather armour or +0 leather armour and also 2-4 nets
         if (coinflip())
-            newgame_make_item(OBJ_ARMOUR, ARM_LEATHER_ARMOUR, 1, 2);
+            newgame_make_item(OBJ_ARMOURS, ARM_LEATHER_ARMOUR, 1, 2);
         else
         {
-            newgame_make_item(OBJ_ARMOUR, ARM_LEATHER_ARMOUR);
+            newgame_make_item(OBJ_ARMOURS, ARM_LEATHER_ARMOUR);
             newgame_make_item(OBJ_MISSILES, MI_THROWING_NET, 2 + random2(3));
         }
         break;
@@ -522,7 +522,7 @@ static void _wanderer_good_equipment(skill_type & skill)
 
 
     case SK_SHIELDS:
-        newgame_make_item(OBJ_ARMOUR, ARM_SHIELD);
+        newgame_make_item(OBJ_ARMOURS, SHD_SHIELD);
         break;
 
     case SK_SPELLCASTING:
@@ -606,11 +606,11 @@ static void _wanderer_decent_equipment(skill_type & skill,
         break;
 
     case SK_ARMOUR:
-        newgame_make_item(OBJ_ARMOUR, ARM_RING_MAIL);
+        newgame_make_item(OBJ_ARMOURS, ARM_RING_MAIL);
         break;
 
     case SK_SHIELDS:
-        newgame_make_item(OBJ_ARMOUR, ARM_BUCKLER);
+        newgame_make_item(OBJ_ARMOURS, SHD_BUCKLER);
         break;
 
     case SK_SPELLCASTING:
@@ -647,7 +647,7 @@ static void _wanderer_decent_equipment(skill_type & skill,
 static void _wanderer_cover_equip_holes()
 {
     if (you.equip[EQ_BODY_ARMOUR] == -1)
-        newgame_make_item(OBJ_ARMOUR, ARM_ROBE);
+        newgame_make_item(OBJ_ARMOURS, ARM_ROBE);
 
     if (you.equip[EQ_WEAPON0] == -1)
     {

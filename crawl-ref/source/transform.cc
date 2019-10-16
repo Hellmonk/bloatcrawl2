@@ -1171,10 +1171,9 @@ static void _remove_equipment(const set<equipment_type>& removed,
         if (unequip)
         {
             if (e == EQ_WEAPON0)
-            {
-                unwield_item(!you.berserk());
-                canned_msg(MSG_EMPTY_HANDED_NOW);
-            }
+                unwield_item(true, true);
+			if (e == EQ_WEAPON1)
+				unwield_item(false, true);
             else
                 unequip_item(e);
 
@@ -1204,8 +1203,7 @@ static void _unmeld_equipment_type(equipment_type e)
 
     if (e == EQ_WEAPON0)
     {
-        if (you.slot_item(EQ_WEAPON1)
-            && is_shield_incompatible(item, you.slot_item(EQ_WEAPON1)))
+        if (you.slot_item(EQ_WEAPON1))
         {
             force_remove = true;
         }
@@ -1219,8 +1217,7 @@ static void _unmeld_equipment_type(equipment_type e)
         // If you switched weapons during the transformation, make
         // sure you can still wear your shield.
         // (This is only possible with Statue Form.)
-        if (e == EQ_WEAPON1 && you.weapon()
-            && is_shield_incompatible(*you.weapon(), &item))
+        if (e == EQ_WEAPON1 && you.weapon())
         {
             force_remove = true;
         }
@@ -1340,7 +1337,7 @@ static bool _flying_in_new_form(transformation which_trans)
         //similar code to safe_to_remove from item-use.cc
         if (inf.is_type(OBJ_JEWELLERY, RING_FLIGHT))
             sources_removed++;
-        if (inf.base_type == OBJ_ARMOUR && inf.brand == SPARM_FLYING)
+        if (inf.base_type == OBJ_ARMOURS && inf.brand == SPARM_FLYING)
             sources_removed++;
         if (is_artefact(inf) && artefact_known_property(inf, ARTP_FLY))
             sources_removed++;
@@ -1694,7 +1691,8 @@ bool transform(int pow, transformation which_trans, bool involuntary,
     item_def nil_item;
     nil_item.link = -1;
     if (just_check && !involuntary
-        && which_trans == transformation::lich && rem_stuff.count(EQ_WEAPON0)
+        && which_trans == transformation::lich
+		&& (rem_stuff.count(EQ_WEAPON0) || rem_stuff.count(EQ_WEAPON1))
         && !check_old_item_warning(nil_item, OPER_WIELD))
     {
         canned_msg(MSG_OK);

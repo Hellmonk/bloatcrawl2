@@ -174,14 +174,14 @@ void debug_item_scan()
         }
         else if (abs(mitm[i].plus) > 30 &&
                     (mitm[i].base_type == OBJ_WEAPONS
-                     || mitm[i].base_type == OBJ_ARMOUR))
+                     || mitm[i].base_type == OBJ_ARMOURS))
         {
             debug_dump_item(name, i, mitm[i], "Bad plus:");
         }
         else if (!is_artefact(mitm[i])
                  && (mitm[i].base_type == OBJ_WEAPONS
                         && mitm[i].brand >= NUM_SPECIAL_WEAPONS
-                     || mitm[i].base_type == OBJ_ARMOUR
+                     || mitm[i].base_type == OBJ_ARMOURS
                         && mitm[i].brand >= NUM_SPECIAL_ARMOURS))
         {
             debug_dump_item(name, i, mitm[i], "Bad special value:");

@@ -65,33 +65,43 @@ int melee_confuse_chance(int HD)
     return max(80 * (24 - HD) / 24, 0);
 }
 
-/**
- * Switch from a bad weapon to melee.
- *
- * This function assumes some weapon is being wielded.
- * @return whether a swap did occur.
- */
-static bool _autoswitch_to_melee()
+// Quick wrapper for all the logic that follows a player attacking.
+static bool _handle_player_attack(actor * defender, bool simu, int atk_num, int eff_atk_num, bool * did_hit)
 {
-    bool penance;
-    if (is_melee_weapon(*you.weapon())
-        && !needs_handle_warning(*you.weapon(), OPER_ATTACK, penance))
-    {
-        return false;
-    }
+	melee_attack attk(&you, defender, atk_num, eff_atk_num);
 
-    int item_slot;
-    if (you.equip[EQ_WEAPON0] == letter_to_index('a'))
-        item_slot = letter_to_index('b');
-    else if (you.equip[EQ_WEAPON0] == letter_to_index('b'))
-        item_slot = letter_to_index('a');
-    else
-        return false;
+	if (simu)
+		attk.simu = true;
 
-    if (!is_melee_weapon(you.inv[item_slot]))
-        return false;
+	// Check if the player is fighting with something unsuitable,
+	// or someone unsuitable.
+	if (you.can_see(*defender) && !simu
+		&& !wielded_weapon_check(attk.weapon))
+	{
+		if (eff_atk_num != 1)
+			you.turn_is_over = false;
+		return false;
+	}
 
-    return wield_weapon(true, item_slot);
+	if (!attk.attack())
+	{
+		// Attack was cancelled or unsuccessful...
+		if (attk.cancel_attack)
+			you.turn_is_over = false;
+		return !attk.cancel_attack;
+	}
+
+	if (did_hit)
+		*did_hit = attk.did_hit;
+
+	// A spectral weapon attacks whenever the player does
+	if (!simu && you.props.exists("spectral_weapon"))
+		trigger_spectral_weapon(&you, defender);
+
+	if (!simu && will_have_passive(passive_t::shadow_attacks))
+		dithmenos_shadow_melee(defender);
+
+	return true;
 }
 
 /**
@@ -135,59 +145,51 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit, bool simu)
         // change that.
         behaviour_event(attacker->as_monster(), ME_ALERT, defender);
     }
-    else if (attacker->is_player())
-    {
-        ASSERT(!crawl_state.game_is_arena());
-        // Can't damage orbs this way.
-        if (mons_is_projectile(defender->type) && !you.confused())
-        {
-            you.turn_is_over = false;
-            return false;
-        }
+	else if (attacker->is_player())
+	{
+		ASSERT(!crawl_state.game_is_arena());
+		// Can't damage orbs this way.
+		if (mons_is_projectile(defender->type) && !you.confused())
+		{
+			you.turn_is_over = false;
+			return false;
+		}
 
-        if (!simu && Options.auto_switch
-            && you.weapon()
-            && _autoswitch_to_melee())
-        {
-            return true; // Is this right? We did take time, but we didn't melee
-        }
+		// We're trying to hit a monster, break out of travel/explore now.
+		interrupt_activity(AI_HIT_MONSTER, defender->as_monster());
 
-        melee_attack attk(&you, defender);
+		bool local_time = false; // Not sure this is necessary; but I'm going to use it.
 
-        if (simu)
-            attk.simu = true;
+		if (!you.weapon(0) || is_melee_weapon(*you.weapon(0)))
+		{
+			if (!you.weapon(1) || is_melee_weapon(*you.weapon(1)))
+			{
+				if (you.weapon(0) && you.hands_reqd(*you.weapon(0)) == HANDS_TWO)
+					return _handle_player_attack(defender, simu, 0, 2, did_hit);
+				else if (you.weapon(1) && you.hands_reqd(*you.weapon(1)) == HANDS_TWO)
+					return _handle_player_attack(defender, simu, 1, 2, did_hit);
+				else
+				{
+					coord_def pos = defender->pos();
+					local_time = _handle_player_attack(defender, simu, 0, 0, did_hit);
+					if (!defender->alive()
+						|| defender->pos() != pos
+						|| defender->is_banished())
+						return local_time;
+					else
+						return _handle_player_attack(defender, simu, 1, 1, did_hit) || local_time;
+				}
+			}
+			else
+				return _handle_player_attack(defender, simu, 0, 2, did_hit);
+		}
+		else if (!you.weapon(1) || is_melee_weapon(*you.weapon(1)))
+			return _handle_player_attack(defender, simu, 1, 2, did_hit);
 
-        // We're trying to hit a monster, break out of travel/explore now.
-        interrupt_activity(AI_HIT_MONSTER, defender->as_monster());
-
-        // Check if the player is fighting with something unsuitable,
-        // or someone unsuitable.
-        if (you.can_see(*defender) && !simu
-            && !wielded_weapon_check(attk.weapon))
-        {
-            you.turn_is_over = false;
-            return false;
-        }
-
-        if (!attk.attack())
-        {
-            // Attack was cancelled or unsuccessful...
-            if (attk.cancel_attack)
-                you.turn_is_over = false;
-            return !attk.cancel_attack;
-        }
-
-        if (did_hit)
-            *did_hit = attk.did_hit;
-
-        // A spectral weapon attacks whenever the player does
-        if (!simu && you.props.exists("spectral_weapon"))
-            trigger_spectral_weapon(&you, defender);
-
-        if (!simu && will_have_passive(passive_t::shadow_attacks))
-            dithmenos_shadow_melee(defender);
-
-        return true;
+		mpr("You can't melee attack with what you're currently wielding.");
+		
+		you.turn_is_over = false;
+		return false;
     }
 
     // If execution gets here, attacker != Player, so we can safely continue
@@ -637,10 +639,14 @@ bool wielded_weapon_check(item_def *weapon)
     }
 
     string prompt;
-    if (weapon)
-        prompt = "Really attack while wielding " + weapon->name(DESC_YOUR) + "?";
-    else
-        prompt = "Really attack barehanded?";
+	if (weapon)
+		prompt = "Really attack while wielding " + weapon->name(DESC_YOUR) + "?";
+	else if ((!you.weapon(0) && !you.weapon(1))
+		|| (!you.weapon(1) && you.weapon(0) && you.weapon(0)->base_type == OBJ_SHIELDS && !is_hybrid(you.weapon(0)->sub_type))
+		|| (!you.weapon(0) && you.weapon(1) && you.weapon(1)->base_type == OBJ_SHIELDS && !is_hybrid(you.weapon(1)->sub_type)))
+		prompt = "Really attack barehanded?";
+	else
+		return true;
     if (penance)
         prompt += " This could place you under penance!";
 
@@ -787,9 +793,47 @@ void attack_cleave_targets(actor &attacker, list<actor*> &targets,
  */
 int weapon_min_delay_skill(const item_def &weapon)
 {
-    const int speed = property(weapon, PWPN_SPEED);
+	int speed = 1;
+	if (weapon.base_type == OBJ_SHIELDS)
+		speed = property(weapon, PSHD_SPEED);
+	else
+		speed = property(weapon, PWPN_SPEED);
     const int mindelay = weapon_min_delay(weapon, false);
     return (speed - mindelay) * 2;
+}
+
+/**
+ * What's the base delay at 0 skill with the given weapon combination?
+ * @param weap0 The first weapon.
+ * @param weap1 The second weapon.
+ * @returns base delay when wielding those two weapons.
+ */
+
+int dual_wield_base_delay(const item_def &weap0, const item_def &weap1)
+{
+	const int wpn0_delay = weapon_delay(weap0);
+	const int wpn1_delay = weapon_delay(weap1);
+
+	const int mismatch_malus = (item_attack_skill(weap0) == item_attack_skill(weap1)) ? 0 : 4;
+
+	return max(wpn0_delay, wpn1_delay) + div_round_up(min(wpn0_delay, wpn1_delay) - min(weapon_min_delay(weap0), weapon_min_delay(weap1)),2) + mismatch_malus;
+}
+
+/**
+* How much skill is necessary to hit mindelay with the given weapon combo?
+* Can be >27.
+* Only works for matching skill types; different skill types use a simpler formula.
+* @param weap0 The first weapon.
+* @param weap1 The second weapon.
+* @returns base delay when wielding those two weapons.
+*/
+
+int dual_wield_mindelay_skill(const item_def &weap0, const item_def &weap1)
+{
+	const int slower_skill = max(weapon_min_delay_skill(weap0), weapon_min_delay_skill(weap1));
+	const int faster_skill = min(weapon_min_delay_skill(weap0), weapon_min_delay_skill(weap1));
+
+	return slower_skill + (faster_skill) / 2;
 }
 
 /**
@@ -802,7 +846,10 @@ int weapon_min_delay_skill(const item_def &weapon)
  */
 int weapon_min_delay(const item_def &weapon, bool check_speed)
 {
-    const int base = property(weapon, PWPN_SPEED);
+	int base = 20;
+	if (weapon.base_type == OBJ_SHIELDS)
+		base = property(weapon, PSHD_SPEED);
+	else base = property(weapon, PWPN_SPEED);
     int min_delay = base/2;
 
     // Short blades can get up to at least unarmed speed.

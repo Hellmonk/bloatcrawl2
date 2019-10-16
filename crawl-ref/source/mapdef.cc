@@ -4938,7 +4938,7 @@ int str_to_ego(object_class_type item_type, string ego_str)
 
     switch (item_type)
     {
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         order = armour_order;
         break;
 
@@ -5509,10 +5509,11 @@ bool item_list::parse_single_spec(item_spec& result, string s)
 
     if (result.base_type != OBJ_WEAPONS
         && result.base_type != OBJ_MISSILES
-        && result.base_type != OBJ_ARMOUR)
+        && result.base_type != OBJ_ARMOURS
+		&& result.base_type != OBJ_SHIELDS)
     {
-        error = "An ego can only be applied to a weapon, missile or "
-            "armour.";
+        error = "An ego can only be applied to a weapon, missile, "
+            "shield or armour.";
         return false;
     }
 
@@ -5541,7 +5542,7 @@ bool item_list::parse_single_spec(item_spec& result, string s)
     }
     else if (result.base_type == OBJ_WEAPONS
                 && !is_weapon_brand_ok(result.sub_type, ego, false)
-             || result.base_type == OBJ_ARMOUR
+             || result.base_type == OBJ_ARMOURS
                 && !is_armour_brand_ok(result.sub_type, ego, false)
              || result.base_type == OBJ_MISSILES
                 && !is_missile_brand_ok(result.sub_type, ego, false))

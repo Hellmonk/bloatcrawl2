@@ -98,7 +98,7 @@ static void _labyrinth_place_items(const coord_def &end)
     {
         const object_class_type glopop = random_choose_weighted(
                                        14, OBJ_WEAPONS,
-                                       14, OBJ_ARMOUR,
+                                       14, OBJ_ARMOURS,
                                        3, OBJ_MISSILES,
                                        3, OBJ_MISCELLANY,
                                        14, OBJ_WANDS,

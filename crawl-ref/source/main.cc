@@ -1867,8 +1867,16 @@ void process_command(command_type cmd)
 
     case CMD_EVOKE_WIELDED:
     case CMD_FORCE_EVOKE_WIELDED:
-        if (!evoke_item(you.equip[EQ_WEAPON0], cmd != CMD_FORCE_EVOKE_WIELDED))
-            flush_input_buffer(FLUSH_ON_FAILURE);
+		if (you.weapon(0))
+		{
+			if (!evoke_item(you.equip[EQ_WEAPON0], cmd != CMD_FORCE_EVOKE_WIELDED))
+				flush_input_buffer(FLUSH_ON_FAILURE);
+		}
+		if (you.weapon(1))
+		{
+			if (!evoke_item(you.equip[EQ_WEAPON1], cmd != CMD_FORCE_EVOKE_WIELDED))
+				flush_input_buffer(FLUSH_ON_FAILURE);
+		}
         break;
 
     case CMD_MEMORISE_SPELL:

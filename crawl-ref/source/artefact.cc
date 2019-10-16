@@ -430,7 +430,7 @@ static void _populate_item_intrinsic_artps(const item_def &item,
 {
     switch (item.base_type)
     {
-        case OBJ_ARMOUR:
+        case OBJ_ARMOURS:
             _populate_armour_intrinsic_artps((armour_type)item.sub_type,
                                              proprt);
             break;
@@ -544,22 +544,22 @@ static bool _artp_can_go_on_item(artefact_prop_type prop, const item_def &item,
     switch (prop)
     {
         case ARTP_SLAYING:
-            return item_class != OBJ_WEAPONS; // they already have slaying!
+            return (item_class != OBJ_WEAPONS) && !(item_class == OBJ_SHIELDS && is_hybrid(item.sub_type)); // they already have slaying!
         case ARTP_POISON:
         case ARTP_IMPROVED_VISION:
-            return !item.is_type(OBJ_ARMOUR, ARM_NAGA_BARDING);
+            return !item.is_type(OBJ_ARMOURS, ARM_NAGA_BARDING);
             // naga already have rPois & sInv!
         case ARTP_CORRODE:
             return !extant_props[ARTP_RCORR];
         case ARTP_RCORR:
-            return item_class == OBJ_ARMOUR && !extant_props[ARTP_CORRODE];
+            return (item_class == OBJ_ARMOURS && !extant_props[ARTP_CORRODE]) || (item_class == OBJ_SHIELDS && !is_hybrid(item.sub_type));
         case ARTP_REGENERATION:
         case ARTP_PREVENT_SPELLCASTING:
-            return item_class == OBJ_ARMOUR; // limit availability to armour
+            return item_class == OBJ_ARMOURS; // limit availability to armour
         case ARTP_BERSERK:
         case ARTP_ANGRY:
         case ARTP_NOISE:
-            return item_class == OBJ_WEAPONS && !is_range_weapon(item);
+            return (item_class == OBJ_WEAPONS || (item_class == OBJ_SHIELDS && is_hybrid(item.sub_type))) && !is_range_weapon(item);
             // works poorly with ranged weapons
         case ARTP_CAUSE_TELEPORTATION:
             return item_class != OBJ_WEAPONS
@@ -580,7 +580,7 @@ static bool _artp_can_go_on_item(artefact_prop_type prop, const item_def &item,
             // not quite as interesting on armour, since you swap it less
             // rings have 2 slots, so little swap pressure
         case ARTP_FRAGILE:
-            return item_class != OBJ_ARMOUR
+            return item_class != OBJ_ARMOURS
                    && (item_class != OBJ_JEWELLERY
                        || jewellery_is_amulet(item));
         default:
@@ -861,7 +861,7 @@ static void _get_randart_properties(const item_def &item,
     item_props.init(0);
 
     // make sure all weapons have a brand
-    if (item_class == OBJ_WEAPONS)
+    if (item_class == OBJ_WEAPONS || (item_class == OBJ_SHIELDS && is_hybrid(item.sub_type)))
         _add_randart_weapon_brand(item, item_props);
 
     // randomly pick properties from the list, choose an appropriate value,
@@ -1101,12 +1101,14 @@ static string _get_artefact_type(const item_def &item, bool appear = false)
         return "book";
     case OBJ_WEAPONS:
         return "weapon";
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         if (item.sub_type == ARM_ROBE)
             return "robe";
         if (get_item_slot(item) == EQ_BODY_ARMOUR)
             return "body armour";
         return "armour";
+	case OBJ_SHIELDS:
+		return "shield";
     case OBJ_JEWELLERY:
         // Distinguish between amulets and rings only in appearance.
         if (!appear)
@@ -1126,7 +1128,7 @@ static bool _pick_db_name(const item_def &item)
     switch (item.base_type)
     {
     case OBJ_WEAPONS:
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         return coinflip();
     case OBJ_JEWELLERY:
         return one_chance_in(5);
@@ -1153,9 +1155,11 @@ string make_artefact_name(const item_def &item, bool appearance)
     ASSERT(is_artefact(item));
 
     ASSERT(item.base_type == OBJ_WEAPONS
-           || item.base_type == OBJ_ARMOUR
+		   || item.base_type == OBJ_SHIELDS
+           || item.base_type == OBJ_ARMOURS
            || item.base_type == OBJ_JEWELLERY
-           || item.base_type == OBJ_BOOKS);
+           || item.base_type == OBJ_BOOKS
+		   || item.base_type == OBJ_SHIELDS);
 
     if (is_unrandom_artefact(item))
     {
@@ -1555,9 +1559,9 @@ bool randart_is_bad(const item_def &item, artefact_properties_t &proprt)
         return true;
 
     // Weapons must have a brand and at least one other property.
-    if (item.base_type == OBJ_WEAPONS
-        && (proprt[ARTP_BRAND] == SPWPN_NORMAL
-            || _artefact_num_props(proprt) < 2))
+    if ((item.base_type == OBJ_WEAPONS ||  (item.base_type == OBJ_SHIELDS && is_hybrid(item.sub_type)))
+        && ((proprt[ARTP_BRAND] == SPWPN_NORMAL
+            || _artefact_num_props(proprt) < 2)))
     {
         return true;
     }
@@ -1602,8 +1606,9 @@ static void _artefact_setup_prop_vectors(item_def &item)
 bool make_item_randart(item_def &item, bool force_mundane)
 {
     if (item.base_type != OBJ_WEAPONS
-        && item.base_type != OBJ_ARMOUR
-        && item.base_type != OBJ_JEWELLERY)
+        && item.base_type != OBJ_ARMOURS
+        && item.base_type != OBJ_JEWELLERY
+		&& item.base_type != OBJ_SHIELDS)
     {
         return false;
     }
@@ -1676,11 +1681,11 @@ static void _make_faerie_armour(item_def &item)
         if (artefact_property(doodad, ARTP_PREVENT_SPELLCASTING))
             continue;
 
-        if (one_chance_in(20))
+        if (one_chance_in(10))
             artefact_set_property(doodad, ARTP_CLARITY, 1);
-        if (one_chance_in(20))
+        if (one_chance_in(10))
             artefact_set_property(doodad, ARTP_MAGICAL_POWER, 1 + random2(10));
-        if (one_chance_in(20))
+        if (one_chance_in(10))
             artefact_set_property(doodad, ARTP_HP, random2(16) - 5);
 
         break;
@@ -1776,8 +1781,11 @@ bool make_item_unrandart(item_def &item, int unrand_index)
 
 void unrand_reacts()
 {
-    item_def*  weapon     = you.weapon();
-    const int  old_plus   = weapon ? weapon->plus : 0;
+    item_def*  weapon0     = you.weapon(0);
+    const int  old_plus0   = weapon0 ? weapon0->plus : 0;
+
+	item_def*  weapon1 = you.weapon(1);
+	const int  old_plus1 = weapon1 ? weapon1->plus : 0;
 
     for (int i = 0; i < NUM_EQUIP; i++)
     {
@@ -1790,8 +1798,10 @@ void unrand_reacts()
         }
     }
 
-    if (weapon && (old_plus != weapon->plus))
+    if (weapon0 && (old_plus0 != weapon0->plus))
         you.wield_change = true;
+	if (weapon1 && (old_plus1 != weapon1->plus))
+		you.wield_change = true;
 }
 
 void artefact_set_property(item_def          &item,

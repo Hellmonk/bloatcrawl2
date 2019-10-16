@@ -132,20 +132,21 @@ static void _equip_use_warning(const item_def& item);
 
 static void _assert_valid_slot(equipment_type eq, equipment_type slot)
 {
-#ifdef ASSERTS
     if (eq == slot)
         return;
-    ASSERT(eq == EQ_RINGS); // all other slots are unique
-    equipment_type r1 = EQ_LEFT_RING, r2 = EQ_RIGHT_RING;
-    if (you.species == SP_OCTOPODE)
-        r1 = EQ_RING_ONE, r2 = EQ_RING_EIGHT;
-    if (slot >= r1 && slot <= r2)
-        return;
-    if (const item_def* amu = you.slot_item(EQ_AMULET, true))
-        if (is_unrandom_artefact(*amu, UNRAND_FINGER_AMULET) && slot == EQ_RING_AMULET)
-            return;
-    die("ring on invalid slot %d", slot);
-#endif
+	if (eq == EQ_RINGS); // all other slots are unique
+	{
+		equipment_type r1 = EQ_LEFT_RING, r2 = EQ_RIGHT_RING;
+		if (you.species == SP_OCTOPODE)
+			r1 = EQ_RING_ONE, r2 = EQ_RING_EIGHT;
+		if (slot >= r1 && slot <= r2)
+			return;
+		if (const item_def* amu = you.slot_item(EQ_AMULET, true))
+			if (is_unrandom_artefact(*amu, UNRAND_FINGER_AMULET) && slot == EQ_RING_AMULET)
+				return;
+	}
+	if ((eq == EQ_WEAPON0 || eq == EQ_WEAPON1) && (slot == EQ_WEAPON0 || slot == EQ_WEAPON1))
+		return;
 }
 
 void equip_effect(equipment_type slot, int item_slot, bool unmeld, bool msg)
@@ -155,13 +156,15 @@ void equip_effect(equipment_type slot, int item_slot, bool unmeld, bool msg)
 
     if (slot == EQ_WEAPON0 && eq != EQ_WEAPON0)
         return;
+	if (slot == EQ_WEAPON1 && eq != EQ_WEAPON1)
+		return;
 
     _assert_valid_slot(eq, slot);
 
     if (msg)
         _equip_use_warning(item);
 
-    if (slot == EQ_WEAPON0)
+    if (slot == EQ_WEAPON0 || slot == EQ_WEAPON1)
         _equip_weapon_effect(item, msg, unmeld);
     else if (slot >= EQ_CLOAK && slot <= EQ_BODY_ARMOUR)
         _equip_armour_effect(item, unmeld, slot);
@@ -177,9 +180,12 @@ void unequip_effect(equipment_type slot, int item_slot, bool meld, bool msg)
     if (slot == EQ_WEAPON0 && eq != EQ_WEAPON0)
         return;
 
+	if (slot == EQ_WEAPON1 && eq != EQ_WEAPON1)
+		return;
+
     _assert_valid_slot(eq, slot);
 
-    if (slot == EQ_WEAPON0)
+    if (slot == EQ_WEAPON0 || slot == EQ_WEAPON1)
         _unequip_weapon_effect(item, msg, meld);
     else if (slot >= EQ_CLOAK && slot <= EQ_BODY_ARMOUR)
         _unequip_armour_effect(item, meld, slot);
@@ -655,6 +661,7 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
                                    bool meld)
 {
     you.wield_change = true;
+
     you.m_quiver.on_weapon_changed();
 
     // Fragile artefacts may be destroyed, so make a copy
@@ -1462,22 +1469,35 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
     calc_mp();
 }
 
-bool unwield_item(bool showMsgs)
+bool unwield_item(bool handedness, bool showMsgs)
 {
-    if (!you.weapon())
+	equipment_type slot;
+	int item = -1;
+
+	if (handedness)
+	{
+		if (!you.weapon(0))
+			return false; 
+		slot = EQ_WEAPON0;
+		item = 0;
+	}
+	else
+	{
+		if (!you.weapon(1))
+			return false;
+		slot = EQ_WEAPON1;
+		item = 1;
+	}
+
+    const bool is_weapon = get_item_slot(*you.weapon(item)) == slot;
+
+    if (is_weapon && !safe_to_remove(*you.weapon(item)))
         return false;
 
-    item_def& item = *you.weapon();
-
-    const bool is_weapon = get_item_slot(item) == EQ_WEAPON0;
-
-    if (is_weapon && !safe_to_remove(item))
-        return false;
-
-    unequip_item(EQ_WEAPON0, showMsgs);
+    unequip_item(slot, showMsgs);
 
     you.wield_change     = true;
-    you.redraw_quiver    = true;
+	you.redraw_quiver    = true;
 
     return true;
 }

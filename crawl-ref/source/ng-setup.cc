@@ -132,15 +132,15 @@ item_def* newgame_make_item(object_class_type base,
 
     // If the character is restricted in wearing the requested armour,
     // hand out a replacement instead.
-    if (item.base_type == OBJ_ARMOUR
+    if (item.base_type == OBJ_ARMOURS
         && !can_wear_armour(item, false, false))
     {
         if (item.sub_type == ARM_HELMET || item.sub_type == ARM_HAT)
             item.sub_type = ARM_HAT;
-        else if (item.sub_type == ARM_BUCKLER)
-            item.sub_type = ARM_SHIELD;
+        else if (item.sub_type == SHD_BUCKLER)
+            item.sub_type = SHD_SHIELD;
         else if (is_shield(item))
-            item.sub_type = ARM_BUCKLER;
+            item.sub_type = SHD_BUCKLER;
         else
             item.sub_type = ARM_ROBE;
     }
@@ -156,7 +156,7 @@ item_def* newgame_make_item(object_class_type base,
     }
 
     if ((item.base_type == OBJ_WEAPONS && can_wield(&item, false, false)
-        || item.base_type == OBJ_ARMOUR && can_wear_armour(item, false, false))
+        || item.base_type == OBJ_ARMOURS && can_wear_armour(item, false, false))
         && you.equip[get_item_slot(item)] == -1)
     {
         you.equip[get_item_slot(item)] = slot;
@@ -380,7 +380,7 @@ static void _setup_tutorial_miscs()
     // Give them some mana to play around with.
     you.mp_max_adj += 2;
 
-    newgame_make_item(OBJ_ARMOUR, ARM_ROBE, 1, 0, 0, true);
+    newgame_make_item(OBJ_ARMOURS, ARM_ROBE, 1, 0, 0, true);
 
     // No need for Shields skill without shield.
     you.skills[SK_SHIELDS] = 0;

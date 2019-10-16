@@ -1616,10 +1616,10 @@ int monster_info::randarts(artefact_prop_type ra_prop) const
         if (second && second->base_type == OBJ_WEAPONS && is_artefact(*second))
             ret += artefact_property(*second, ra_prop);
 
-        if (armour && armour->base_type == OBJ_ARMOUR && is_artefact(*armour))
+        if (armour && armour->base_type == OBJ_ARMOURS && is_artefact(*armour))
             ret += artefact_property(*armour, ra_prop);
 
-        if (shield && shield->base_type == OBJ_ARMOUR && is_artefact(*shield))
+        if (shield && shield->base_type == OBJ_ARMOURS && is_artefact(*shield))
             ret += artefact_property(*shield, ra_prop);
 
         if (ring && ring->base_type == OBJ_JEWELLERY && is_artefact(*ring))

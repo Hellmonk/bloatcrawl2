@@ -396,7 +396,7 @@ bool InventoryRegion::update_tip_text(string& tip)
             {
                 if (wielded && !item_is_evokable(item))
                 {
-                    if (type == OBJ_JEWELLERY || type == OBJ_ARMOUR
+                    if (type == OBJ_JEWELLERY || type == OBJ_ARMOURS
                         || is_weapon(item))
                     {
                         type = OBJ_WEAPONS + EQUIP_OFFSET;
@@ -411,6 +411,7 @@ bool InventoryRegion::update_tip_text(string& tip)
             // first equipable categories
             case OBJ_WEAPONS:
             case OBJ_STAVES:
+			case OBJ_SHIELDS:
                 if (you.species != SP_FELID)
                 {
                     _handle_wield_tip(tmp, cmd);
@@ -448,14 +449,14 @@ bool InventoryRegion::update_tip_text(string& tip)
                 cmd.push_back(CMD_EVOKE_WIELDED);
                 _handle_wield_tip(tmp, cmd, "\n[Ctrl + L-Click] ", true);
                 break;
-            case OBJ_ARMOUR:
+            case OBJ_ARMOURS:
                 if (you.species != SP_FELID)
                 {
                     tmp += "Wear (%)";
                     cmd.push_back(CMD_WEAR_ARMOUR);
                 }
                 break;
-            case OBJ_ARMOUR + EQUIP_OFFSET:
+            case OBJ_ARMOURS + EQUIP_OFFSET:
                 tmp += "Take off (%)";
                 cmd.push_back(CMD_REMOVE_ARMOUR);
                 break;
@@ -653,7 +654,7 @@ static void _fill_item_info(InventoryTile &desc, const item_info &item)
         desc.quantity = -1;
 
     if (type == OBJ_WEAPONS || type == OBJ_MISSILES
-        || type == OBJ_ARMOUR
+        || type == OBJ_ARMOURS
 #if TAG_MAJOR_VERSION == 34
         || type == OBJ_RODS
 #endif

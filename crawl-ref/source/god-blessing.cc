@@ -219,7 +219,7 @@ static string _beogh_bless_melee_weapon(monster* mon)
     }
     // Enchant and uncurse it. (Lower odds at high weapon enchantment.)
     if (!x_chance_in_y(wpn.plus, MAX_WPN_ENCHANT)
-        && enchant_weapon(wpn, true))
+        && enchant_item(wpn, true))
     {
         set_ident_flags(wpn, ISFLAG_KNOW_PLUSES);
         blessed = true;
@@ -265,7 +265,7 @@ static string _beogh_bless_ranged_weapon(monster* mon)
         }
         // Enchant and uncurse it. (Lower odds at high weapon enchantment.)
         if (!x_chance_in_y(launcher.plus, MAX_WPN_ENCHANT)
-            && enchant_weapon(launcher, true))
+            && enchant_item(launcher, true))
         {
             set_ident_flags(launcher, ISFLAG_KNOW_PLUSES);
             blessed = true;
@@ -355,12 +355,14 @@ static string _beogh_bless_weapon(monster* mon)
     return _beogh_bless_ranged_weapon(mon);
 }
 
+/*
 static void _upgrade_shield(item_def &sh)
 {
     // Promote from buckler up through large shield.
     if (sh.sub_type >= ARM_FIRST_SHIELD && sh.sub_type < ARM_LAST_SHIELD)
         sh.sub_type++;
 }
+*/
 
 static void _upgrade_body_armour(item_def &arm)
 {
@@ -388,9 +390,9 @@ static void _gift_armour_to_orc(monster* orc, bool shield = false)
                            || orc->type == MONS_ORC_WARLORD;
 
     item_def armour;
-    armour.base_type = OBJ_ARMOUR;
+    armour.base_type = OBJ_ARMOURS;
     if (shield)
-        armour.sub_type = highlevel ? ARM_SHIELD : ARM_BUCKLER;
+        armour.sub_type = highlevel ? SHD_SHIELD : SHD_BUCKLER;
     else
         armour.sub_type = highlevel ? ARM_SCALE_MAIL : ARM_RING_MAIL;
     armour.quantity = 1;
@@ -441,19 +443,15 @@ static string _beogh_bless_armour(monster* mon)
     item_def& arm(mitm[slot]);
 
     const int old_subtype = arm.sub_type;
-    // 50% chance of improving armour/shield type
-    if (!is_artefact(arm) && coinflip())
-    {
-        if (slot == shield)
-            _upgrade_shield(arm);
-        else
-            _upgrade_body_armour(arm);
-    }
+
+    // 50% chance of improving armour type
+    if (!is_artefact(arm) && coinflip() && slot != shield)
+		_upgrade_body_armour(arm);
 
     // And enchant or uncurse it. (Lower chance for higher enchantment.)
     int ac_change;
     const bool enchanted = !x_chance_in_y(arm.plus, armour_max_enchant(arm))
-                           && enchant_armour(ac_change, true, arm);
+                           && enchant_item(arm, true);
 
     if (enchanted)
         set_ident_flags(arm, ISFLAG_KNOW_PLUSES);

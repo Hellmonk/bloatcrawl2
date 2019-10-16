@@ -1522,7 +1522,7 @@ static void _equip_undead(const coord_def &a, const item_def& corpse, monster *m
         // Stupid undead can't use most items.
         if (si->base_type != OBJ_WEAPONS
             && si->base_type != OBJ_STAVES
-            && si->base_type != OBJ_ARMOUR
+            && si->base_type != OBJ_ARMOURS
             || is_range_weapon(*si))
         {
             continue;

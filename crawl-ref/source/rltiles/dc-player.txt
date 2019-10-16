@@ -1,3 +1,4 @@
+
 %name player
 %startvalue TILE_MAIN_MAX main
 %prefix TILEP
@@ -557,31 +558,75 @@ crossbow_fire FIERY_DEVIL
 zephyr ZEPHYR
 
 %sdir player/hand1
+##random shields
+buckler_round BUCKLER_ROUND 
+buckler_round2 BUCKLER_ROUND2
+buckler_round3 BUCKLER_ROUND3
+buckler_rb BUCKLER_RB
+buckler_green BUCKLER_GREEN
+buckler_spiral BUCKLER_SPIRAL 
+
+shield_knight_blue SHIELD_KNIGHT_BLUE 
+shield_knight_gray SHIELD_KNIGHT_GRAY
+shield_knight_rw SHIELD_KNIGHT_RW
+shield_kite1 SHIELD_KITE1
+shield_kite2 SHIELD_KITE2
+shield_kite3 SHIELD_KITE3
+shield_kite4 SHIELD_KITE4 
+
+lshield_long_red LARGE_SHIELD_LONG_RED 
+lshield_gold LARGE_SHIELD_GOLD
+lshield_green LARGE_SHIELD_GREEN
+lshield_quartered LARGE_SHIELD_QUARTERED
+lshield_teal LARGE_SHIELD_TEAL
+lshield_spiral LARGE_SHIELD_SPIRAL
+
+targe0 TARGE0
+targe1 TARGE1
+targe2 TARGE2
+targe3 TARGE3
+targe4 TARGE4
+targe5 TARGE5
+
+sai SAI
+
+##unrand (or unique) shields
+buckler_spriggan BUCKLER_SPRIGGAN
+buckler_warlock BUCKLER_WARLOCK
+
+shield_donald SHIELD_DONALD
+shield_bullseye SHIELD_BULLSEYE
+shield_gong SHIELD_GONG
+shield_of_resistance SHIELD_OF_RESISTANCE
+
+lshield_of_ignorance LARGE_SHIELD_OF_IGNORANCE
+lshield_louise LSHIELD_LOUISE
+
 # blades
 dagger DAGGER
-dagger2
+dagger2 DAGGER2
 dagger_slant DAGGER_SLANT
-dagger_slant2
+dagger_slant2 DAGGER_SLANT2
 short_sword SHORT_SWORD
 short_sword_slant SHORT_SWORD_SLANT
-short_sword_slant2
+short_sword_slant2 SHORT_SWORD_SLANT2
 short_sword_two SHORT_SWORD2
 sword_thief SWORD_THIEF
 double_sword DOUBLE_SWORD
-double_sword2
-double_sword3
+double_sword2 DOUBLE_SWORD2
+double_sword3 DOUBLE_SWORD3
 long_sword_slant LONG_SWORD_SLANT
-long_sword_slant2
+long_sword_slant2 LONG_SWORD_SLANT2
 blessed_blade BLESSED_BLADE
 great_sword_slant GREAT_SWORD_SLANT
-great_sword_slant2
+great_sword_slant2 GREAT_SWORD_SLANT2
 triple_sword TRIPLE_SWORD
-triple_sword2
+triple_sword2 TRIPLE_SWORD2
 katana_slant KATANA_SLANT
 scimitar SCIMITAR
-scimitar2
+scimitar2 SCIMITAR2
 falchion FALCHION
-falchion2
+falchion2 FALCHION2
 sword_two SWORD2
 broadsword BROADSWORD
 black_sword BLACK_SWORD
@@ -590,7 +635,7 @@ sword_twist SWORD_TWIST
 knife KNIFE
 heavy_sword HEAVY_SWORD
 rapier RAPIER
-rapier2
+rapier2 RAPIER2
 sword_three SWORD3
 sword_breaker SWORD_BREAKER
 sword_jag SWORD_JAG
@@ -609,28 +654,28 @@ giant_club_spike GIANT_CLUB_SPIKE
 giant_club_spike_slant GIANT_CLUB_SPIKE_SLANT
 giant_club_plain GIANT_CLUB_PLAIN
 whip WHIP
-whip2
+whip2 WHIP2
 sceptre SCEPTRE
 mace_two MACE2
 mace MACE
-mace2
+mace2 MACE3
 great_mace GREAT_MACE
-great_mace2
+great_mace2 GREAT_MACE2
 mace_ruby MACE_RUBY
 morningstar_two MORNINGSTAR2
 morningstar MORNINGSTAR
-morningstar2
+morningstar2 MORNINGSTAR3
 eveningstar EVENINGSTAR
-eveningstar2
+eveningstar2 EVENINGSTAR2
 large_mace LARGE_MACE
 black_whip BLACK_WHIP
 sacred_scourge SACRED_SCOURGE
 sacred_scourge_two SACRED_SCOURGE2
 flail_stick FLAIL_STICK
 flail_ball FLAIL
-flail_ball2
+flail_ball2 FLAIL2
 flail_great GREAT_FLAIL
-flail_great2
+flail_great2 GREAT_FLAIL2
 flail_stick_slant FLAIL_STICK_SLANT
 flail_ball_two FLAIL_BALL2
 flail_balls FLAIL_BALLS
@@ -640,47 +685,47 @@ nunchaku NUNCHAKU
 
 ## polearms
 spear SPEAR
-spear2
+spear2 SPEAR6
 spear_two SPEAR2
 spear_three SPEAR3
 spear_four SPEAR4
 spear_five SPEAR5
 hook HOOK
 halberd HALBERD
-halberd2
+halberd2 HALBERD2
 pick_axe PICK_AXE
 trident TRIDENT
 trident_demon DEMON_TRIDENT
 trident_elec TRIDENT_ELEC
 trident_two TRIDENT2
-trident_two2
+trident_two2 TRIDENT4
 trident_three TRIDENT3
 lance LANCE
 lance_two LANCE2
 scythe SCYTHE
-scythe2
+scythe2 SCYTHE2
 scythe_slant SCYTHE_SLANT
 pike PIKE
 staff STAFF
 quarterstaff QUARTERSTAFF1
-quarterstaff2
+quarterstaff2 QUARTERSTAFF5
 quarterstaff_two QUARTERSTAFF2
 quarterstaff_three QUARTERSTAFF3
 quarterstaff_four QUARTERSTAFF4
 quarterstaff_jester QUARTERSTAFF_JESTER
 sickle SICKLE
 glaive GLAIVE
-glaive2
+glaive2 GLAIVE4
 glaive_two GLAIVE2
 glaive_three GLAIVE3
-glaive_three2
+glaive_three2 GLAIVE5
 d_glaive D_GLAIVE
 pole_forked POLE_FORKED
 fork FORK2
 trishula TRISHULA
 lajatang1 LAJATANG
-lajatang2
-lajatang3
+lajatang2 LAJATANG2
+lajatang3 LAJATANG3
 
 ## staves
 
@@ -705,28 +750,28 @@ staff_fork STAFF_FORK
 # Remove when TAG_MAJOR_VERSION > 34
 # These 10 rods correspond to the same order as item/rod/
 rod_ruby ROD_FIRST
-rod_brown
-rod_emerald
-rod_hammer
-rod_blue
-rod_thick
-rod_moon
-rod_magenta
-rod_forked
-rod_aries
+rod_brown ROD0
+rod_emerald ROD1
+rod_hammer ROD2
+rod_blue ROD3
+rod_thick ROD4
+rod_moon ROD5
+rod_magenta ROD6
+rod_forked ROD7
+rod_aries ROD_LAST
 
 ## axes
 axe_small AXE_SMALL
 hand_axe HAND_AXE
-hand_axe2
+hand_axe2 HAND_AXE2
 war_axe WAR_AXE
-war_axe2
+war_axe2 WAR_AXE2
 broad_axe BROAD_AXE
-broad_axe2
+broad_axe2 BROAD_AXE2
 battleaxe BATTLEAXE
-battleaxe2
+battleaxe2 BATTLEAXE2
 axe_executioner EXECUTIONERS_AXE
-axe_executioner2
+axe_executioner2 EXECUTIONERS_AXE2
 axe_double AXE_DOUBLE
 axe_blood AXE_BLOOD
 axe_short AXE_SHORT
@@ -760,6 +805,35 @@ gimli GIMLI
 legolas LEGOLAS
 saruman SARUMAN
 
+%sdir player/hand1/doll_only
+
+shield_middle_round SHIELD_MIDDLE_ROUND
+shield_skull SHIELD_SKULL
+shield_round_white SHIELD_ROUND_WHITE
+boromir SHIELD_BOROMIR
+shield_round1 SHIELD_ROUND1
+shield_round2 SHIELD_ROUND2
+shield_round3 SHIELD_ROUND3
+shield_round4 SHIELD_ROUND4
+shield_round5 SHIELD_ROUND5
+shield_round6 SHIELD_ROUND6
+shield_round7 SHIELD_ROUND7
+
+shield_middle_unicorn SHIELD_MIDDLE_UNICORN
+shield_middle_gray SHIELD_MIDDLE_GRAY
+shield_diamond_yellow SHIELD_DIAMOND_YELLOW
+shield_middle_brown SHIELD_MIDDLE_BROWN
+shield_middle_black SHIELD_MIDDLE_BLACK
+shield_middle_cyan SHIELD_MIDDLE_CYAN
+shield_middle_ethn SHIELD_MIDDLE_ETHN
+shield_long_cross SHIELD_LONG_CROSS
+shield_shaman SHIELD_SHAMAN
+gil-galad SHIELD_GILGALAD
+
+shield_dd SHIELD_DEEP_DWARF
+shield_dd_scion SHIELD_DEEP_DWARF_SCION
+lshield_dd_dk LARGE_SHIELD_DEEP_DWARF_DEATH_KNIGHT
+
 ## misc items
 %sdir player/hand1/misc
 bone_lantern BONE_LANTERN
@@ -791,34 +865,332 @@ fire_white2 FIRE_WHITE2
 bladehands BLADEHAND
 bladehands_op BLADEHAND_OP
 bladehands_fe BLADEHAND_FE
+
+## books
+%sdir player/hand1/misc2
+book_black BOOK_BLACK
+book_blue BOOK_BLUE
+book_red BOOK_RED
+book_magenta BOOK_MAGENTA
+book_green BOOK_GREEN
+book_cyan BOOK_CYAN
+book_yellow BOOK_YELLOW
+book_white BOOK_WHITE
+book_sky BOOK_SKY
+book_blue_dim BOOK_BLUE_DIM
+book_cyan_dim BOOK_CYAN_DIM
+book_green_dim BOOK_GREEN_DIM
+book_magenta_dim BOOK_MAGENTA_DIM
+book_red_dim BOOK_RED_DIM
+book_yellow_dim BOOK_YELLOW_DIM
+
+## other non-shields
+torch TORCH
+pj PJ
+torch2 TORCH2
 %end_ctg
 
 ### Hand 2
 %parts_ctg HAND2
+
+###Artefacts
+%sdir player/hand2/artefact
+# blades
+bloodbane BLOODBANE
+chilly_death CHILLY_DEATH
+doom_knight DOOM_KNIGHT
+flaming_death FLAMING_DEATH
+leech LEECH
+morg MORG
+plutonium_sword PLUTONIUM_SWORD
+zealot_sword ZEALOT_SWORD
+singing_sword SINGING_SWORD
+zonguldrok ZONGULDROK
+sword_of_power SWORD_OF_POWER
+knife_of_accuracy KNIFE_OF_ACCURACY
+vampires_tooth VAMPIRES_TOOTH
+spriggans_knife SPRIGGANS_KNIFE
+capt_cutlass CAPT_CUTLASS
+arc_blade ARC_BLADE
+gyre GYRE
+thermic_engine THERMIC_ENGINE
+## blunt
+wucad_mu WUCAD_MU
+mace_of_variability MACE_OF_VARIABILITY
+mace_of_brilliance MACE_OF_BRILLIANCE
+undeadhunter UNDEADHUNTER
+eos EOS
+snakebite SNAKEBITE
+shillelagh SHILLELAGH
+dark_maul DARK_MAUL
+spellbinder SPELLBINDER
+firestarter FIRESTARTER
+majin MAJIN
+## polearms
+trident_octopus_king TRIDENT_OCTOPUS_KING
+glaive_of_prune GLAIVE_OF_PRUNE
+botono BOTONO
+finisher FINISHER
+glaive_of_the_guard GLAIVE_OF_THE_GUARD
+wyrmbane WYRMBANE
+crystal_spear CRYSTAL_SPEAR
+## staves
+elemental_staff ELEMENTAL_STAFF
+asmodeus ASMODEUS
+dispater DISPATER
+olgreb OLGREB
+order ORDER
+## axes
+axe_trog AXE_TROG
+arga ARGA
+demon_axe DEMON_AXE
+axe_of_woe AXE_OF_WOE
+frostbite FROSTBITE
+## launchers
+blowgun_assassin BLOWGUN_ASSASSIN
+punk PUNK
+sniper SNIPER
+crossbow_fire FIERY_DEVIL
+zephyr ZEPHYR
+
+%sdir player/hand2
+
+# blades
+dagger DAGGER
+dagger2 DAGGER2
+dagger_slant DAGGER_SLANT
+dagger_slant2 DAGGER_SLANT2
+short_sword SHORT_SWORD
+short_sword_slant SHORT_SWORD_SLANT
+short_sword_slant2 SHORT_SWORD_SLANT2
+short_sword_two SHORT_SWORD2
+sword_thief SWORD_THIEF
+double_sword DOUBLE_SWORD
+double_sword2 DOUBLE_SWORD2
+double_sword3 DOUBLE_SWORD3
+long_sword_slant LONG_SWORD_SLANT
+long_sword_slant2 LONG_SWORD_SLANT2
+blessed_blade BLESSED_BLADE
+great_sword_slant GREAT_SWORD_SLANT
+great_sword_slant2 GREAT_SWORD_SLANT2
+triple_sword TRIPLE_SWORD
+triple_sword2 TRIPLE_SWORD2
+katana_slant KATANA_SLANT
+scimitar SCIMITAR
+scimitar2 SCIMITAR2
+falchion FALCHION
+falchion2 FALCHION2
+sword_two SWORD2
+broadsword BROADSWORD
+black_sword BLACK_SWORD
+sword_black SWORD_BLACK
+sword_twist SWORD_TWIST
+knife KNIFE
+heavy_sword HEAVY_SWORD
+rapier RAPIER
+rapier2 RAPIER2
+sword_three SWORD3
+sword_breaker SWORD_BREAKER
+sword_jag SWORD_JAG
+demonblade DEMON_BLADE
+enchantress_dagger ENCHANTRESS_DAGGER
+
+## blunt
+club CLUB
+club_slant CLUB_SLANT
+club_two CLUB2
+club_three CLUB3
+stick STICK
+giant_club GIANT_CLUB
+giant_club_slant GIANT_CLUB_SLANT
+giant_club_spike GIANT_CLUB_SPIKE
+giant_club_spike_slant GIANT_CLUB_SPIKE_SLANT
+giant_club_plain GIANT_CLUB_PLAIN
+whip WHIP
+whip2 WHIP2
+sceptre SCEPTRE
+mace_two MACE2
+mace MACE
+mace2 MACE3
+great_mace GREAT_MACE
+great_mace2 GREAT_MACE2
+mace_ruby MACE_RUBY
+morningstar_two MORNINGSTAR2
+morningstar MORNINGSTAR
+morningstar2 MORNINGSTAR3
+eveningstar EVENINGSTAR
+eveningstar2 EVENINGSTAR2
+large_mace LARGE_MACE
+black_whip BLACK_WHIP
+sacred_scourge SACRED_SCOURGE
+sacred_scourge_two SACRED_SCOURGE2
+flail_stick FLAIL_STICK
+flail_ball FLAIL
+flail_ball2 FLAIL2
+flail_great GREAT_FLAIL
+flail_great2 GREAT_FLAIL2
+flail_stick_slant FLAIL_STICK_SLANT
+flail_ball_two FLAIL_BALL2
+flail_balls FLAIL_BALLS
+flail_ball_three FLAIL_BALL3
+flail_ball_four FLAIL_BALL4
+nunchaku NUNCHAKU
+
+## polearms
+spear SPEAR
+spear2 SPEAR6
+spear_two SPEAR2
+spear_three SPEAR3
+spear_four SPEAR4
+spear_five SPEAR5
+hook HOOK
+halberd HALBERD
+halberd2 HALBERD2
+pick_axe PICK_AXE
+trident TRIDENT
+trident_demon DEMON_TRIDENT
+trident_elec TRIDENT_ELEC
+trident_two TRIDENT2
+trident_two2 TRIDENT4
+trident_three TRIDENT3
+lance LANCE
+lance_two LANCE2
+scythe SCYTHE
+scythe2 SCYTHE2
+scythe_slant SCYTHE_SLANT
+pike PIKE
+staff STAFF
+quarterstaff QUARTERSTAFF1
+quarterstaff2 QUARTERSTAFF5
+quarterstaff_two QUARTERSTAFF2
+quarterstaff_three QUARTERSTAFF3
+quarterstaff_four QUARTERSTAFF4
+quarterstaff_jester QUARTERSTAFF_JESTER
+sickle SICKLE
+glaive GLAIVE
+glaive2 GLAIVE4
+glaive_two GLAIVE2
+glaive_three GLAIVE3
+glaive_three2 GLAIVE5
+d_glaive D_GLAIVE
+pole_forked POLE_FORKED
+fork FORK2
+trishula TRISHULA
+lajatang1 LAJATANG
+lajatang2 LAJATANG2
+lajatang3 LAJATANG3
+
+## staves
+
+# These 10 staves correspond to the same order as item/staff/
+staff_large STAFF_LARGE
+great_staff GREAT_STAFF
+staff_mage STAFF_MAGE
+staff_mage_two STAFF_MAGE2
+staff_plain STAFF_PLAIN
+staff_organic STAFF_ORGANIC
+staff_skull STAFF_SKULL
+staff_sceptre STAFF_SCEPTRE
+staff_ruby STAFF_RUBY
+staff_fancy STAFF_FANCY
+
+staff_evil STAFF_EVIL
+staff_ring_blue STAFF_RING_BLUE
+staff_mummy STAFF_MUMMY
+staff_fork STAFF_FORK
+
+## rods
+# Remove when TAG_MAJOR_VERSION > 34
+# These 10 rods correspond to the same order as item/rod/
+rod_ruby ROD_FIRST
+rod_brown ROD0
+rod_emerald ROD1
+rod_hammer ROD2
+rod_blue ROD3
+rod_thick ROD4
+rod_moon ROD5
+rod_magenta ROD6
+rod_forked ROD7
+rod_aries ROD_LAST
+
+## axes
+axe_small AXE_SMALL
+hand_axe HAND_AXE
+hand_axe2 HAND_AXE2
+war_axe WAR_AXE
+war_axe2 WAR_AXE2
+broad_axe BROAD_AXE
+broad_axe2 BROAD_AXE2
+battleaxe BATTLEAXE
+battleaxe2 BATTLEAXE2
+axe_executioner EXECUTIONERS_AXE
+axe_executioner2 EXECUTIONERS_AXE2
+axe_double AXE_DOUBLE
+axe_blood AXE_BLOOD
+axe_short AXE_SHORT
+
+## launchers
+sling HUNTING_SLING
+fustibalus FUSTIBALUS
+bow BOW
+bow_two BOW2
+bow_three BOW3
+great_bow GREAT_BOW
+storm_bow STORM_BOW
+hand_crossbow HAND_CROSSBOW
+arbalest ARBALEST
+arbalest_two ARBALEST2
+arbalest_three ARBALEST3
+arbalest_four ARBALEST4
+triple_crossbow TRIPLE_CROSSBOW
+blowgun BLOWGUN
+
+##missiles
+dart DART
+
+## lotr
+aragorn ARAGORN
+arwen ARWEN
+boromir BOROMIR
+frodo FRODO
+gandalf GANDALF
+gimli GIMLI
+legolas LEGOLAS
+saruman SARUMAN
+
 %sdir player/hand2
 
 ##random shields
-buckler_round BUCKLER_ROUND BUCKLER_FIRST_NORM
+buckler_round BUCKLER_ROUND
 buckler_round2 BUCKLER_ROUND2
 buckler_round3 BUCKLER_ROUND3
 buckler_rb BUCKLER_RB
 buckler_green BUCKLER_GREEN
-buckler_spiral BUCKLER_SPIRAL BUCKLER_LAST_NORM
+buckler_spiral BUCKLER_SPIRAL
 
-shield_knight_blue SHIELD_KNIGHT_BLUE SHIELD_FIRST_NORM
+shield_knight_blue SHIELD_KNIGHT_BLUE
 shield_knight_gray SHIELD_KNIGHT_GRAY
 shield_knight_rw SHIELD_KNIGHT_RW
 shield_kite1 SHIELD_KITE1
 shield_kite2 SHIELD_KITE2
 shield_kite3 SHIELD_KITE3
-shield_kite4 SHIELD_KITE4 SHIELD_LAST_NORM
+shield_kite4 SHIELD_KITE4
 
-lshield_long_red LARGE_SHIELD_LONG_RED LSHIELD_FIRST_NORM
+lshield_long_red LARGE_SHIELD_LONG_RED
 lshield_gold LARGE_SHIELD_GOLD
 lshield_green LARGE_SHIELD_GREEN
 lshield_quartered LARGE_SHIELD_QUARTERED
 lshield_teal LARGE_SHIELD_TEAL
-lshield_spiral LARGE_SHIELD_SPIRAL LSHIELD_LAST_NORM
+lshield_spiral LARGE_SHIELD_SPIRAL
+
+targe0 TARGE0
+targe1 TARGE1
+targe2 TARGE2
+targe3 TARGE3
+targe4 TARGE4
+targe5 TARGE5
+
+sai SAI
 
 ##unrand (or unique) shields
 buckler_spriggan BUCKLER_SPRIGGAN
@@ -837,7 +1209,7 @@ lshield_louise LSHIELD_LOUISE
 shield_middle_round SHIELD_MIDDLE_ROUND
 shield_skull SHIELD_SKULL
 shield_round_white SHIELD_ROUND_WHITE
-boromir BOROMIR
+boromir SHIELD_BOROMIR
 shield_round1 SHIELD_ROUND1
 shield_round2 SHIELD_ROUND2
 shield_round3 SHIELD_ROUND3
@@ -862,7 +1234,7 @@ shield_dd_scion SHIELD_DEEP_DWARF_SCION
 lshield_dd_dk LARGE_SHIELD_DEEP_DWARF_DEATH_KNIGHT
 
 ## books
-%sdir player/hand2/misc
+%sdir player/hand2/misc2
 book_black BOOK_BLACK
 book_blue BOOK_BLUE
 book_red BOOK_RED
@@ -896,23 +1268,24 @@ torch2 TORCH2
 
 bladehands BLADEHAND
 
-# The 1-2 "typos" are intentional; the equivalent tiles above have no
-# enums and become TILEP_GREAT_FLAIL_1 and TILEP_GREAT_MACE_1 respectively.
-dagger DAGGER
-dagger2 DAGGER_1
-rapier RAPIER
-rapier2 RAPIER_1
-short_sword_slant SHORT_SWORD_SLANT
-short_sword_slant2 SHORT_SWORD_SLANT_1
-flail_great GREAT_FLAIL
-flail_great2 GREAT_FLAIL_1
-great_mace GREAT_MACE
-great_mace2 GREAT_MACE_1
-giant_club GIANT_CLUB
-giant_club_slant GIANT_CLUB_SLANT
-giant_club_spike GIANT_CLUB_SPIKE
-giant_club_spike_slant GIANT_CLUB_SPIKE_SLANT
-giant_club_plain GIANT_CLUB_PLAIN
+## misc items
+%sdir player/hand2/misc
+bone_lantern BONE_LANTERN
+fan FAN
+bottle BOTTLE
+box BOX
+crystal CRYSTAL
+deck DECK
+horn HORN
+orb ORB
+stone STONE
+
+## other non-weapons
+skull SKULL
+head HEAD
+
+bladehands_op BLADEHAND_OP
+bladehands_fe BLADEHAND_FE
 %end_ctg
 
 ###Hair

@@ -848,11 +848,10 @@ static void _print_stats_ac(int x, int y)
         text_col = RED;
 
     string ac = make_stringf("%2d ", you.armour_class());
-#ifdef WIZARD
-    if (you.wizard)
-        ac += make_stringf("(%d%%) ", you.gdr_perc());
-#endif
-    textcolour(text_col);
+
+    ac += make_stringf("(%d%%) ", you.gdr_perc());
+    
+	textcolour(text_col);
     CGOTOXY(x+4, y, GOTO_STAT);
     CPRINTF("%-12s", ac.c_str());
 
@@ -883,16 +882,18 @@ static void _print_stats_ev(int x, int y)
  * Get the appropriate colour for the UI text describing the player's weapon.
  * (Or hands/ice fists/etc, as appropriate.)
  *
+ * @param hand Which weapon's color.
+ *
  * @return     A colour enum for the player's weapon.
  */
-static int _wpn_name_colour()
+static int _wpn_name_colour(int hand)
 {
     if (you.duration[DUR_CORROSION])
         return RED;
 
-    if (you.weapon())
+    if (you.weapon(hand))
     {
-        const item_def& wpn = *you.weapon();
+        const item_def& wpn = *you.weapon(hand);
 
         const string prefix = item_prefix(wpn);
         const int prefcol = menu_colour(wpn.name(DESC_INVENTORY), prefix, "stats");
@@ -907,16 +908,18 @@ static int _wpn_name_colour()
 /**
  * Print a description of the player's weapon (or lack thereof) to the UI.
  *
+ * @param hand  Which hand's weapon.
  * @param y     The y-coordinate to print the description at.
  */
-static void _print_stats_wp(int y)
+static void _print_stats_wp(int hand, int y)
 {
     string text;
-    if (you.weapon())
+    if (you.weapon(hand))
     {
-        item_def wpn = *you.weapon(); // copy
+        item_def wpn = *you.weapon(hand); // copy
 
-        if (you.duration[DUR_CORROSION] && wpn.base_type == OBJ_WEAPONS)
+        if (you.duration[DUR_CORROSION] && (wpn.base_type == OBJ_WEAPONS
+			|| wpn.base_type == OBJ_SHIELDS))
             wpn.plus -= 4 * you.props["corrosion_amount"].get_int();
 
         text = wpn.name(DESC_PLAIN, true, false, true);
@@ -926,16 +929,17 @@ static void _print_stats_wp(int y)
 
     CGOTOXY(1, y, GOTO_STAT);
     textcolour(HUD_CAPTION_COLOUR);
-    const char slot_letter = you.weapon() ? index_to_letter(you.weapon()->link)
+    const char slot_letter = you.weapon(hand) ? index_to_letter(you.weapon(hand)->link)
                                           : '-';
     const string slot_name = make_stringf("%c) ", slot_letter);
     CPRINTF("%s", slot_name.c_str());
-    textcolour(_wpn_name_colour());
+    textcolour(_wpn_name_colour(hand));
     const int max_name_width = crawl_view.hudsz.x - slot_name.size();
     CPRINTF("%s", chop_string(text, max_name_width).c_str());
     textcolour(LIGHTGREY);
 }
 
+/*
 static void _print_stats_qv(int y)
 {
     int col;
@@ -982,6 +986,7 @@ static void _print_stats_qv(int y)
 #endif
     textcolour(LIGHTGREY);
 }
+*/
 
 struct status_light
 {
@@ -1328,12 +1333,12 @@ void print_stats()
         _print_stats_mp(1, 4);
     }
 
-    if (you.redraw_armour_class)
+    if (you.wield_change || you.redraw_armour_class)
     {
         you.redraw_armour_class = false;
         _print_stats_ac(1, ac_pos);
     }
-    if (you.redraw_evasion)
+    if (you.wield_change || you.redraw_evasion)
     {
         you.redraw_evasion = false;
         _print_stats_ev(1, ev_pos);
@@ -1389,18 +1394,15 @@ void print_stats()
         // Also, it's a little bogus to change simulation state in
         // render code. We should find a better place for this.
         you.m_quiver.on_weapon_changed();
-        _print_stats_wp(9 + yhack);
+        _print_stats_wp(0, 9 + yhack);
+		_print_stats_wp(1, 10 + yhack);
     }
     you.wield_change  = false;
 
-    if (you.species == SP_FELID)
-    {
-        // There are no circumstances under which Felids could quiver something.
-        // Reduce line counter for status display.
-        yhack -= 1;
-    }
+	/*
     else if (you.redraw_quiver || you.wield_change)
-        _print_stats_qv(10 + yhack);
+        _print_stats_qv(11 + yhack);
+	*/
 
     you.redraw_quiver = false;
 
@@ -1837,7 +1839,7 @@ static string _itosym(int level, int max = 1)
 
 static const char *s_equip_slot_names[] =
 {
-    "Weapon", "Weapon/Shield", "Cloak",  "Helmet", "Gloves", "Boots",
+    "Weapon", "Weapon0", "Cloak",  "Helmet", "Gloves", "Boots",
     "Shield", "Armour", "Left Ring", "Right Ring", "Amulet",
     "First Ring", "Second Ring", "Third Ring", "Fourth Ring",
     "Fifth Ring", "Sixth Ring", "Seventh Ring", "Eighth Ring",
@@ -1944,6 +1946,7 @@ static void _print_overview_screen_equip(column_composer& cols,
     {
         if (you.species == SP_OCTOPODE
             && eqslot != EQ_WEAPON0
+			&& eqslot != EQ_WEAPON1
             && !you_can_wear(eqslot))
         {
             continue;

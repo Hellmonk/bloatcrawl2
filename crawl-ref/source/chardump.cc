@@ -707,7 +707,7 @@ static bool _dump_item_origin(const item_def &item)
     {
         return true;
     }
-    if (fs(IODS_EGO_ARMOUR) && item.base_type == OBJ_ARMOUR
+    if (fs(IODS_EGO_ARMOUR) && item.base_type == OBJ_ARMOURS
         && item_type_known(item))
     {
         const int spec_ench = get_armour_ego_type(item);
@@ -1263,11 +1263,11 @@ static string _describe_action_subtype(caction_type type, int compound_subtype)
         return uppercase_first(item_base_name(OBJ_WEAPONS, subtype));
     case CACT_ARMOUR:
         return (subtype == -1) ? "Skin"
-               : uppercase_first(item_base_name(OBJ_ARMOUR, subtype));
+               : uppercase_first(item_base_name(OBJ_ARMOURS, subtype));
     case CACT_BLOCK:
     {
         if (subtype > -1)
-            return uppercase_first(item_base_name(OBJ_ARMOUR, subtype));
+            return uppercase_first(item_base_name(OBJ_ARMOURS, subtype));
         switch (auxtype)
         {
         case BLOCK_OTHER:

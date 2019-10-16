@@ -159,7 +159,7 @@ sub finish_art
         {
             $artefact->{BRAND} = "SPWPN_NORMAL";
         }
-        elsif ($type eq "OBJ_ARMOUR")
+        elsif ($type eq "OBJ_ARMOURS")
         {
             $artefact->{BRAND} = "SPARM_NORMAL";
         }
@@ -710,7 +710,11 @@ sub write_tiles
         {
             $dir = "weapon";
         }
-        elsif ($type eq "OBJ_ARMOUR")
+		elsif ($type eq "OBJ_SHIELDS")
+        {
+            $dir = "weapon";
+        }
+        elsif ($type eq "OBJ_ARMOURS")
         {
             $dir = "armour";
         }
@@ -793,18 +797,13 @@ HEADER_END
         }
 
         my $part = "BODY";
-        if ($artefact->{base_type} eq "OBJ_WEAPONS")
+        if ($artefact->{base_type} eq "OBJ_WEAPONS" || $artefact->{base_type} eq "OBJ_SHIELDS")
         {
             $part = "HAND1";
         }
-        elsif ($artefact->{base_type} ne "OBJ_ARMOUR")
+        elsif ($artefact->{base_type} ne "OBJ_ARMOURS")
         {
             next;
-        }
-        elsif ($artefact->{sub_type} =~ /_SHIELD/
-               || $artefact->{sub_type} =~ /_BUCKLER/)
-        {
-            $part = "HAND2";
         }
         elsif ($artefact->{sub_type} =~ /_CLOAK/)
         {
@@ -813,10 +812,6 @@ HEADER_END
         elsif ($artefact->{sub_type} =~ /_CAP|_HAT|_HELMET/)
         {
             $part = "HELM";
-        }
-        elsif ($artefact->{sub_type} =~ /_SHIELD/)
-        {
-            $part = "HAND2";
         }
         elsif ($artefact->{sub_type} =~ /_BOOTS|_BARDING/)
         {
@@ -864,7 +859,7 @@ HEADER_END
             {
                 if ($art->{TILE_EQ} eq $name)
                 {
-                    $art->{TILE_EQ_ENUM} = "TILEP_".$curr_part."_".$enum;
+                    $art->{TILE_EQ_ENUM} = $enum;
                     # Don't break from the loop in case several artefacts
                     # share the same tile.
                 }
@@ -936,6 +931,10 @@ HEADER_END
     print TILES (" " x 4) . "{\n";
     foreach my $part (sort keys %parts)
     {
+			if ($part eq "HAND1")
+		{
+			next;
+		}
         print TILES (" " x 4) . "// $part\n";
         foreach my $artefact (@{$parts{$part}})
         {
@@ -946,7 +945,7 @@ HEADER_END
                 next;
             }
             my $enum   = "UNRAND_$artefact->{_ENUM}";
-            my $t_enum = $artefact->{TILE_EQ_ENUM};
+            my $t_enum = "TILEP_".$part."_".$artefact->{TILE_EQ_ENUM};
             print TILES (" " x 4) . "case $enum:"
                 . " " x ($longest_enum - length($enum) + 2) . "return $t_enum;\n";
         }
@@ -954,6 +953,61 @@ HEADER_END
     print TILES (" " x 4) . "default: return 0;\n";
     print TILES (" " x 4) . "}\n";
     print TILES "}\n\n";
+
+	print TILES "int unrandart_to_right_hand(int unrand)\n{\n";
+    print TILES (" " x 4) . "switch (unrand)\n";
+    print TILES (" " x 4) . "{\n";
+    foreach my $part (sort keys %parts)
+    {
+		if ($part ne "HAND1")
+		{
+			next;
+		}
+        foreach my $artefact (@{$parts{$part}})
+        {
+            if (not defined $artefact->{TILE_EQ_ENUM})
+            {
+                print STDERR "Tile '$artefact->{TILE_EQ}' for part '$part' not "
+                           . "found in 'dc-player.txt'.\n";
+                next;
+            }
+            my $enum   = "UNRAND_$artefact->{_ENUM}";
+            my $t_enum = "TILEP_HAND1_".$artefact->{TILE_EQ_ENUM};
+            print TILES (" " x 4) . "case $enum:"
+                . " " x ($longest_enum - length($enum) + 2) . "return $t_enum;\n";
+        }
+    }
+    print TILES (" " x 4) . "default: return 0;\n";
+    print TILES (" " x 4) . "}\n";
+    print TILES "}\n\n";
+
+	print TILES "int unrandart_to_left_hand(int unrand)\n{\n";
+    print TILES (" " x 4) . "switch (unrand)\n";
+    print TILES (" " x 4) . "{\n";
+    foreach my $part (sort keys %parts)
+    {
+		if ($part ne "HAND1")
+		{
+			next;
+		}
+        foreach my $artefact (@{$parts{$part}})
+        {
+            if (not defined $artefact->{TILE_EQ_ENUM})
+            {
+                print STDERR "Tile '$artefact->{TILE_EQ}' for part '$part' not "
+                           . "found in 'dc-player.txt'.\n";
+                next;
+            }
+            my $enum   = "UNRAND_$artefact->{_ENUM}";
+            my $t_enum = "TILEP_HAND2_".$artefact->{TILE_EQ_ENUM};
+            print TILES (" " x 4) . "case $enum:"
+                . " " x ($longest_enum - length($enum) + 2) . "return $t_enum;\n";
+        }
+    }
+    print TILES (" " x 4) . "default: return 0;\n";
+    print TILES (" " x 4) . "}\n";
+    print TILES "}\n\n";
+
     close(TILES);
 }
 

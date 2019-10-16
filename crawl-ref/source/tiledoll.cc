@@ -359,7 +359,7 @@ void fill_doll_equipment(dolls_data &result)
         else if (item == -1)
             result.parts[TILEP_PART_HAND1] = 0;
         else
-            result.parts[TILEP_PART_HAND1] = tilep_equ_weapon(you.inv[item]);
+            result.parts[TILEP_PART_HAND1] = tilep_equ_hand1(you.inv[item]);
     }
     // Off hand.
     if (result.parts[TILEP_PART_HAND2] == TILEP_SHOW_EQUIP)
@@ -376,7 +376,7 @@ void fill_doll_equipment(dolls_data &result)
         else if (item == -1)
             result.parts[TILEP_PART_HAND2] = 0;
         else
-            result.parts[TILEP_PART_HAND2] = tilep_equ_shield(you.inv[item]);
+            result.parts[TILEP_PART_HAND2] = tilep_equ_hand2(you.inv[item]);
     }
     // Body armour.
     if (result.parts[TILEP_PART_BODY] == TILEP_SHOW_EQUIP)

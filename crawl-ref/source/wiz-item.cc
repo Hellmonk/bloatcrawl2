@@ -393,7 +393,7 @@ void wizard_tweak_object()
     if (prompt_failed(item))
         return;
 
-    if (item == you.equip[EQ_WEAPON0])
+    if (item == you.equip[EQ_WEAPON0] || item == you.equip[EQ_WEAPON1])
         you.wield_change = true;
 
     const bool is_art = is_artefact(you.inv[item]);
@@ -493,8 +493,8 @@ void wizard_tweak_object()
 // Returns whether an item of this type can be an artefact.
 static bool _item_type_can_be_artefact(int type)
 {
-    return type == OBJ_WEAPONS || type == OBJ_ARMOUR || type == OBJ_JEWELLERY
-           || type == OBJ_BOOKS;
+    return type == OBJ_WEAPONS || type == OBJ_ARMOURS || type == OBJ_JEWELLERY
+           || type == OBJ_BOOKS || type == OBJ_SHIELDS;
 }
 
 static bool _make_book_randart(item_def &book)
@@ -671,8 +671,8 @@ void wizard_make_object_randart()
 // Returns whether an item of this type can be cursed.
 static bool _item_type_can_be_cursed(int type)
 {
-    return type == OBJ_WEAPONS || type == OBJ_ARMOUR || type == OBJ_JEWELLERY
-           || type == OBJ_STAVES;
+    return type == OBJ_WEAPONS || type == OBJ_ARMOURS || type == OBJ_JEWELLERY
+           || type == OBJ_STAVES || type == OBJ_SHIELDS;
 }
 
 void wizard_uncurse_item()
@@ -832,7 +832,7 @@ static void _debug_acquirement_stats(FILE *ostat)
     switch (keyin)
     {
     case 'a': type = OBJ_WEAPONS;    break;
-    case 'b': type = OBJ_ARMOUR;     break;
+    case 'b': type = OBJ_ARMOURS;     break;
     case 'c': type = OBJ_JEWELLERY;  break;
     case 'd': type = OBJ_BOOKS;      break;
     case 'e': type = OBJ_STAVES;     break;
@@ -914,7 +914,7 @@ static void _debug_acquirement_stats(FILE *ostat)
                 }
             }
         }
-        else if (type == OBJ_ARMOUR) // Exclude artefacts when counting egos.
+        else if (type == OBJ_ARMOURS) // Exclude artefacts when counting egos.
             ego_quants[get_armour_ego_type(item)]++;
         else if (type == OBJ_BOOKS && item.sub_type == BOOK_MANUAL)
         {
@@ -948,7 +948,7 @@ static void _debug_acquirement_stats(FILE *ostat)
     // Print acquirement base type.
     fprintf(ostat, "Acquiring %s for:\n\n",
             type == OBJ_WEAPONS    ? "weapons" :
-            type == OBJ_ARMOUR     ? "armour"  :
+            type == OBJ_ARMOURS     ? "armour"  :
             type == OBJ_JEWELLERY  ? "jewellery" :
             type == OBJ_BOOKS      ? "books" :
             type == OBJ_STAVES     ? "staves" :
@@ -1119,7 +1119,7 @@ static void _debug_acquirement_stats(FILE *ostat)
 
         fprintf(ostat, "\n\n");
     }
-    else if (type == OBJ_ARMOUR)
+    else if (type == OBJ_ARMOURS)
     {
         fprintf(ostat, "Maximum plus: %d\n", max_plus);
         fprintf(ostat, "Average plus: %5.2f\n\n",

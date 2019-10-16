@@ -285,9 +285,9 @@ static int l_item_do_subtype(lua_State *ls)
     const char *s = nullptr;
     string saved;
 
-    // Special-case OBJ_ARMOUR behavior to maintain compatibility with
+    // Special-case OBJ_ARMOURS behavior to maintain compatibility with
     // existing scripts.
-    if (item->base_type == OBJ_ARMOUR)
+    if (item->base_type == OBJ_ARMOURS)
         s = item_slot_name(get_armour_slot(*item));
     else if (item_type_known(*item))
     {
@@ -464,7 +464,7 @@ IDEF(equip_type)
 
     if (is_weapon(*item))
         eq = EQ_WEAPON0;
-    else if (item->base_type == OBJ_ARMOUR)
+    else if (item->base_type == OBJ_ARMOURS)
         eq = get_armour_slot(*item);
     else if (item->base_type == OBJ_JEWELLERY)
         eq = item->sub_type >= AMU_RAGE ? EQ_AMULET : EQ_RINGS;
@@ -677,7 +677,7 @@ IDEF(plus)
         return 0;
 
     if (item_ident(*item, ISFLAG_KNOW_PLUSES)
-        && (item->base_type == OBJ_WEAPONS || item->base_type == OBJ_ARMOUR
+        && (item->base_type == OBJ_WEAPONS || item->base_type == OBJ_ARMOURS
             || item->base_type == OBJ_WANDS))
     {
         lua_pushnumber(ls, item->plus);
@@ -786,7 +786,7 @@ IDEF(ac)
     if (!item || !item->defined())
         return 0;
 
-    if (item->base_type == OBJ_ARMOUR)
+    if (item->base_type == OBJ_ARMOURS)
         lua_pushnumber(ls, property(*item, PARM_AC));
     else
         lua_pushnil(ls);
@@ -799,7 +799,7 @@ IDEF(encumbrance)
     if (!item || !item->defined())
         return 0;
 
-    if (item->base_type == OBJ_ARMOUR)
+    if (item->base_type == OBJ_ARMOURS)
         lua_pushnumber(ls, -property(*item, PARM_EVASION) / 10);
     else
         lua_pushnil(ls);

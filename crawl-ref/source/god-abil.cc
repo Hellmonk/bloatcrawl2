@@ -182,9 +182,9 @@ bool bless_weapon(god_type god, brand_type brand, colour_t colour)
 
     string old_name = wpn.name(DESC_A);
     set_equip_desc(wpn, ISFLAG_GLOWING);
-    set_item_ego_type(wpn, OBJ_WEAPONS, brand);
-    enchant_weapon(wpn, true);
-    enchant_weapon(wpn, true);
+    set_item_ego_type(wpn, wpn.base_type, brand);
+    enchant_item(wpn, true);
+    enchant_item(wpn, true);
     if (wpn.cursed())
         do_uncurse_item(wpn);
 
@@ -1639,7 +1639,7 @@ bool beogh_gift_item()
     item_def& gift = you.inv[item_slot];
 
     const bool shield = is_shield(gift);
-    const bool body_armour = gift.base_type == OBJ_ARMOUR
+    const bool body_armour = gift.base_type == OBJ_ARMOURS
                              && get_armour_slot(gift) == EQ_BODY_ARMOUR;
     const bool weapon = gift.base_type == OBJ_WEAPONS;
     const bool range_weapon = weapon && is_range_weapon(gift);

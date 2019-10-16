@@ -269,7 +269,7 @@ static string _describe_ash_skill_boost()
                "with cursed items.";
     }
 
-    static const char* bondage_parts[NUM_ET] = { "Weapon hand", "Shield hand",
+    static const char* bondage_parts[NUM_ET] = { "Right hand", "Left hand",
                                                  "Armour", "Jewellery" };
     static const char* bonus_level[3] = { "Low", "Medium", "High" };
     ostringstream desc;
@@ -280,13 +280,13 @@ static string _describe_ash_skill_boost()
     desc << "Bonus\n";
     desc << "</white>";
 
-    for (int i = ET_WEAPON; i < NUM_ET; i++)
+    for (int i = ET_RIGHT; i < NUM_ET; i++)
     {
-        if (you.bondage[i] <= 0 || i == ET_SHIELD && you.bondage[i] == 3)
+        if (you.bondage[i] <= 0 || i == ET_LEFT && you.bondage[i] == 3)
             continue;
 
         desc << setw(18);
-        if (i == ET_WEAPON && you.bondage[i] == 3)
+        if (i == ET_RIGHT && you.bondage[i] == 3)
             desc << "Hands";
         else
             desc << bondage_parts[i];

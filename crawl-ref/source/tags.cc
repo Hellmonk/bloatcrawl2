@@ -4559,7 +4559,7 @@ void unmarshallItem(reader &th, item_def &item)
     }
 
     if (th.getMinorVersion() < TAG_MINOR_NO_SPLINT
-        && item.base_type == OBJ_ARMOUR && item.sub_type > ARM_CHAIN_MAIL)
+        && item.base_type == OBJ_ARMOURS && item.sub_type > ARM_CHAIN_MAIL)
     {
         --item.sub_type;
     }
@@ -4886,7 +4886,7 @@ void unmarshallItem(reader &th, item_def &item)
         { ARM_QUICKSILVER_DRAGON_HIDE,  ARM_QUICKSILVER_DRAGON_ARMOUR },
     };
     // ASSUMPTION: there was no such thing as an artefact hide
-    if (item.base_type == OBJ_ARMOUR && hide_to_armour.count(item.sub_type))
+    if (item.base_type == OBJ_ARMOURS && hide_to_armour.count(item.sub_type))
     {
         auto subtype_ptr = map_find(hide_to_armour, item.sub_type);
         ASSERT(subtype_ptr);

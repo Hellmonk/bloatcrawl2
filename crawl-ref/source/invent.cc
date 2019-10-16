@@ -31,6 +31,7 @@
 #include "item-status-flag-type.h"
 #include "libutil.h"
 #include "macro.h"
+#include "mutation.h"
 #include "message.h"
 #include "options.h"
 #include "output.h"
@@ -135,7 +136,7 @@ bool InvEntry::is_glowing() const
            && (get_equip_desc(*item)
                || (is_artefact(*item)
                    && (item->base_type == OBJ_WEAPONS
-                       || item->base_type == OBJ_ARMOUR
+                       || item->base_type == OBJ_ARMOURS
                        || item->base_type == OBJ_BOOKS)));
 }
 
@@ -145,7 +146,7 @@ bool InvEntry::is_ego() const
            && item->brand != 0
            && (item->base_type == OBJ_WEAPONS
                || item->base_type == OBJ_MISSILES
-               || item->base_type == OBJ_ARMOUR);
+               || item->base_type == OBJ_ARMOURS);
 }
 
 bool InvEntry::is_art() const
@@ -235,9 +236,12 @@ void get_class_hotkeys(const int type, vector<char> &glyphs)
     case OBJ_WEAPONS:
         glyphs.push_back(')');
         break;
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         glyphs.push_back('[');
         break;
+	case OBJ_SHIELDS:
+		glyphs.push_back(']');
+		break;
     case OBJ_WANDS:
         glyphs.push_back('/');
         break;
@@ -359,7 +363,7 @@ static bool _has_temp_unwearable_armour()
 {
     for (const auto &item : you.inv)
     {
-        if (item.defined() && item.base_type == OBJ_ARMOUR
+        if (item.defined() && item.base_type == OBJ_ARMOURS
             && can_wear_armour(item, false, true)
             && !can_wear_armour(item, false, false))
         {
@@ -398,11 +402,14 @@ string no_selectables_message(int item_selector)
     case OSEL_ANY:
         return "You aren't carrying anything.";
     case OSEL_WIELD:
+		return "You aren't carrying any weapons or shields.";
     case OBJ_WEAPONS:
         return "You aren't carrying any weapons.";
+	case OBJ_SHIELDS:
+		return "You aren't carrying any shields.";
     case OSEL_BLESSABLE_WEAPON:
         return "You aren't carrying any weapons that can be blessed.";
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
     {
         if (_has_melded_armour())
             return "Your armour is currently melded into you.";
@@ -413,8 +420,8 @@ string no_selectables_message(int item_selector)
     }
     case OSEL_UNIDENT:
         return "You don't have any unidentified items.";
-    case OSEL_ENCHANTABLE_ARMOUR:
-        return "You aren't carrying any armour which can be enchanted further.";
+    case OSEL_ENCHANTABLE_ITEM:
+        return "You aren't carrying any items which can be enchanted further.";
     case OBJ_CORPSES:
         return "You don't have any corpses.";
     case OSEL_DRAW_DECK:
@@ -536,7 +543,7 @@ bool get_tiles_for_item(const item_def &item, vector<tile_def>& tileset, bool sh
         }
     }
     if (item.base_type == OBJ_WEAPONS || item.base_type == OBJ_MISSILES
-        || item.base_type == OBJ_ARMOUR
+        || item.base_type == OBJ_ARMOURS || item.base_type == OBJ_SHIELDS
 #if TAG_MAJOR_VERSION == 34
         || item.base_type == OBJ_RODS
 #endif
@@ -742,8 +749,9 @@ void InvMenu::sort_menu(vector<InvEntry*> &invitems,
 
 FixedVector<int, NUM_OBJECT_CLASSES> inv_order(
     OBJ_WEAPONS,
+	OBJ_SHIELDS,
     OBJ_MISSILES,
-    OBJ_ARMOUR,
+    OBJ_ARMOURS,
     OBJ_STAVES,
 #if TAG_MAJOR_VERSION == 34
     OBJ_RODS,
@@ -916,7 +924,6 @@ const char *item_class_name(int type, bool terse)
     {
         switch (type)
         {
-        case OBJ_STAVES:     return "magical staff";
         case OBJ_MISCELLANY: return "misc";
         default:             return base_type_string((object_class_type) type);
         }
@@ -926,9 +933,10 @@ const char *item_class_name(int type, bool terse)
         switch (type)
         {
         case OBJ_GOLD:       return "Gold";
-        case OBJ_WEAPONS:    return "Hand Weapons";
+        case OBJ_WEAPONS:    return "Weapons";
+		case OBJ_SHIELDS:    return "Shields";
         case OBJ_MISSILES:   return "Missiles";
-        case OBJ_ARMOUR:     return "Armour";
+        case OBJ_ARMOURS:    return "Armour";
         case OBJ_WANDS:      return "Wands";
         case OBJ_FOOD:       return "Comestibles";
         case OBJ_SCROLLS:    return "Scrolls";
@@ -956,7 +964,6 @@ const char* item_slot_name(equipment_type type)
     case EQ_HELMET:      return "helmet";
     case EQ_GLOVES:      return "gloves";
     case EQ_BOOTS:       return "boots";
-    case EQ_WEAPON1:     return "shield";
     case EQ_BODY_ARMOUR: return "body";
     default:             return "";
     }
@@ -999,18 +1006,18 @@ bool item_is_selected(const item_def &i, int selector)
 {
     const object_class_type itype = i.base_type;
     if (selector == OSEL_ANY || selector == itype
-                                && itype != OBJ_FOOD && itype != OBJ_ARMOUR)
+                                && itype != OBJ_FOOD && itype != OBJ_ARMOURS)
     {
         return true;
     }
 
     switch (selector)
     {
-    case OBJ_ARMOUR:
-        return itype == OBJ_ARMOUR && can_wear_armour(i, false, false);
+    case OBJ_ARMOURS:
+        return itype == OBJ_ARMOURS && can_wear_armour(i, false, false);
 
     case OSEL_WORN_ARMOUR:
-        return itype == OBJ_ARMOUR && item_is_equipped(i);
+        return itype == OBJ_ARMOURS && item_is_equipped(i);
 
     case OSEL_UNIDENT:
         return !fully_identified(i) && itype != OBJ_BOOKS;
@@ -1023,7 +1030,7 @@ bool item_is_selected(const item_def &i, int selector)
         if (itype != OBJ_WEAPONS && itype != OBJ_MISSILES)
             return false;
 
-        const launch_retval projected = is_launched(&you, you.weapon(), i);
+        const launch_retval projected = is_launched(&you, you.weapon(0), you.weapon(1), i);
 
         if (projected == launch_retval::FUMBLED)
             return false;
@@ -1031,6 +1038,7 @@ bool item_is_selected(const item_def &i, int selector)
         return true;
     }
     case OBJ_WEAPONS:
+	case OBJ_SHIELDS:
     case OSEL_WIELD:
         return item_is_wieldable(i);
 
@@ -1041,8 +1049,8 @@ bool item_is_selected(const item_def &i, int selector)
     case OSEL_EVOKABLE:
         return item_is_evokable(i, true, true);
 
-    case OSEL_ENCHANTABLE_ARMOUR:
-        return is_enchantable_armour(i, true);
+    case OSEL_ENCHANTABLE_ITEM:
+        return is_enchantable_item(i);
 
     case OBJ_FOOD:
         return itype == OBJ_FOOD && !is_inedible(i);
@@ -1052,11 +1060,11 @@ bool item_is_selected(const item_def &i, int selector)
 
     case OSEL_CURSED_WORN:
         return i.cursed() && item_is_equipped(i)
-               && (&i != you.weapon() || is_weapon(i));
+               && (&i != you.weapon(0) && &i != you.weapon(1) || is_weapon(i));
 
 #if TAG_MAJOR_VERSION == 34
     case OSEL_UNCURSED_WORN_ARMOUR:
-        return !i.cursed() && item_is_equipped(i) && itype == OBJ_ARMOUR;
+        return !i.cursed() && item_is_equipped(i) && itype == OBJ_ARMOURS;
 
     case OSEL_UNCURSED_WORN_JEWELLERY:
         return !i.cursed() && item_is_equipped(i) && itype == OBJ_JEWELLERY;
@@ -1065,11 +1073,13 @@ bool item_is_selected(const item_def &i, int selector)
     case OSEL_BRANDABLE_WEAPON:
         return is_brandable_weapon(i, true);
 
+#if TAG_MAJOR_VERSION == 34
     case OSEL_ENCHANTABLE_WEAPON:
         return itype == OBJ_WEAPONS
                && !is_artefact(i)
                && (!item_ident(i, ISFLAG_KNOW_PLUSES)
                    || i.plus < MAX_WPN_ENCHANT);
+#endif
 
     case OSEL_BLESSABLE_WEAPON:
         return is_brandable_weapon(i, you_worship(GOD_SHINING_ONE), true);
@@ -1077,7 +1087,7 @@ bool item_is_selected(const item_def &i, int selector)
     case OSEL_BEOGH_GIFT:
         return (itype == OBJ_WEAPONS
                 || is_shield(i)
-                || itype == OBJ_ARMOUR
+                || itype == OBJ_ARMOURS
                    && get_armour_slot(i) == EQ_BODY_ARMOUR)
                 && !item_is_equipped(i);
 
@@ -1085,8 +1095,12 @@ bool item_is_selected(const item_def &i, int selector)
         return item_is_cursable(i);
 
     case OSEL_UNCURSED_WORN_RINGS:
-        return !i.cursed() && item_is_equipped(i) && itype == OBJ_JEWELLERY
-            && !jewellery_is_amulet(i);
+        return (!i.cursed() || (you.get_mutation_level(MUT_GHOST) > 0)) && item_is_equipped(i) 
+			&& itype == OBJ_JEWELLERY && !jewellery_is_amulet(i);
+
+	case OSEL_UNCURSED_WIELDED_WEAPONS:
+			return (!i.cursed() || (you.get_mutation_level(MUT_GHOST) > 0)) && item_is_equipped(i)
+			&& (itype == OBJ_WEAPONS || itype == OBJ_STAVES || itype == OBJ_SHIELDS);
 
     default:
         return false;
@@ -1232,7 +1246,7 @@ static string _drop_selitem_text(const vector<MenuEntry*> *s)
     {
         const item_def *item = static_cast<item_def *>(entry->data);
         const int eq = get_equip_slot(item);
-        if (eq > EQ_WEAPON0 && eq < NUM_EQUIP)
+        if (eq > EQ_WEAPON1 && eq < NUM_EQUIP)
         {
             extraturns = true;
             break;
@@ -1436,12 +1450,15 @@ static bool _has_warning_inscription(const item_def& item,
 bool check_old_item_warning(const item_def& item,
                              operation_types oper)
 {
+
+	// BCADREN DO: CASE FOR OFFHAND.
+
     item_def old_item;
     string prompt;
     bool penance = false;
     if (oper == OPER_WIELD) // can we safely unwield old item?
     {
-        if (!you.weapon())
+        if (!you.weapon(0) && !you.weapon(1))
             return true;
 
         int equip = you.equip[EQ_WEAPON0];
@@ -1456,7 +1473,7 @@ bool check_old_item_warning(const item_def& item,
     }
     else if (oper == OPER_WEAR) // can we safely take off old item?
     {
-        if (item.base_type != OBJ_ARMOUR)
+        if (item.base_type != OBJ_ARMOURS)
             return true;
 
         equipment_type eq_slot = get_armour_slot(item);
@@ -1530,8 +1547,13 @@ static string _operation_verb(operation_types oper)
 
 static bool _is_wielded(const item_def &item)
 {
-    int equip = you.equip[EQ_WEAPON0];
-    return equip != -1 && item.link == equip;
+    int equip0 = you.equip[EQ_WEAPON0];
+	if (equip0 != -1 && item.link == equip0)
+		return true;
+	int equip1 = you.equip[EQ_WEAPON1];
+	if (equip1 != -1 && item.link == equip1)
+		return true;
+	return false;
 }
 
 static bool _is_known_no_tele_item(const item_def &item)
@@ -1666,7 +1688,7 @@ bool needs_handle_warning(const item_def &item, operation_types oper,
     if ((oper == OPER_TAKEOFF || oper == OPER_REMOVE || (oper == OPER_WIELD && item_is_equipped(item)))
         && (
                 (is_artefact(item) && artefact_property(item, ARTP_INVISIBLE))
-                || (item.base_type == OBJ_ARMOUR && get_armour_ego_type(item) == SPARM_INVISIBILITY)
+                || (item.base_type == OBJ_ARMOURS && get_armour_ego_type(item) == SPARM_INVISIBILITY)
             )
         && you.evokable_invis() < 2 // If you've got 2 sources, removing 1 is fine.
         && you.duration[DUR_INVIS] > 1
@@ -1938,7 +1960,7 @@ int prompt_invent_item(const char *prompt,
             else if (must_exist && !item_is_selected(you.inv[ret],
                                                      current_type_expected))
             {
-                mpr("That's the wrong kind of item! (Use * to select it.)");
+                mpr("That's the wrong kind of item!");
             }
             else if (!do_warning || check_warning_inscriptions(you.inv[ret], oper))
                 break;
@@ -1975,7 +1997,7 @@ bool prompt_failed(int retval)
 // wielded to be used normally.
 bool item_is_wieldable(const item_def &item)
 {
-    return is_weapon(item) && you.species != SP_FELID;
+    return (is_weapon(item) || item.base_type == OBJ_SHIELDS) && you.species != SP_FELID;
 }
 
 /**
@@ -2035,7 +2057,9 @@ bool item_is_evokable(const item_def &item, bool reach, bool known,
     }
 
     const bool wielded = !equip || you.equip[EQ_WEAPON0] == item.link
-                                   && !item_is_melded(item);
+                                   && !item_is_melded(item) ||
+								   you.equip[EQ_WEAPON1] == item.link
+								   && !item_is_melded(item);
 
     switch (item.base_type)
     {

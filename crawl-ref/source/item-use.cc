@@ -48,6 +48,7 @@
 #include "nearby-danger.h"
 #include "orb.h"
 #include "output.h"
+#include "player.h"
 #include "player-equip.h"
 #include "player-stats.h"
 #include "potion.h"
@@ -313,7 +314,7 @@ bool can_wield(const item_def *weapon, bool say_reason,
 #define SAY(x) {if (say_reason) { x; }}
     if (you.melded[EQ_WEAPON0] && unwield)
     {
-        SAY(mpr("Your weapon is melded into your body!"));
+        SAY(mpr("It's melded into your body!"));
         return false;
     }
 
@@ -324,15 +325,39 @@ bool can_wield(const item_def *weapon, bool say_reason,
     }
 
     if (!ignore_temporary_disability
-        && you.weapon()
-        && is_weapon(*you.weapon())
-        && you.weapon()->cursed()
+        && you.weapon(0)
+        && (you.hands_reqd(*you.weapon(0)) == HANDS_TWO)
+        && you.weapon(0)->cursed()
 		&& you.get_mutation_level(MUT_GHOST) == 0)
     {
-        SAY(mprf("You can't unwield your weapon%s!",
+        SAY(mprf("You can't unwield your %s%s!",
+				you.weapon(0)->base_type == OBJ_SHIELDS ? "shield" : "weapon",
                  !unwield ? " to draw a new one" : ""));
         return false;
     }
+
+	if (!ignore_temporary_disability
+		&& you.weapon(1)
+		&& (you.hands_reqd(*you.weapon(1)) == HANDS_TWO)
+		&& you.weapon(1)->cursed()
+		&& you.get_mutation_level(MUT_GHOST) == 0)
+	{
+		SAY(mprf("You can't unwield your %s%s!",
+			you.weapon(1)->base_type == OBJ_SHIELDS ? "shield" : "weapon",
+			!unwield ? " to draw a new one" : ""));
+		return false;
+	}
+
+	if (!ignore_temporary_disability
+		&& you.weapon(0)
+		&& you.weapon(1)
+		&& you.weapon(0)->cursed()
+		&& you.weapon(1)->cursed()
+		&& you.get_mutation_level(MUT_GHOST) == 0)
+	{
+		SAY(mprf("You're wielding two cursed items!"));
+		return false;
+	}
 
     // If we don't have an actual weapon to check, return now.
     if (!weapon)
@@ -345,28 +370,14 @@ bool can_wield(const item_def *weapon, bool say_reason,
         return false;
     }
 
-    for (int i = EQ_MIN_ARMOUR; i <= EQ_MAX_WORN; i++)
-    {
-        if (you.equip[i] != -1 && &you.inv[you.equip[i]] == weapon)
-        {
-            SAY(mpr("You are wearing that object!"));
-            return false;
-        }
-    }
-
     if (!you.could_wield(*weapon, true, true, !say_reason))
         return false;
 
-    // All non-weapons only need a shield check.
-    if (weapon->base_type != OBJ_WEAPONS)
+    if (weapon->base_type != OBJ_WEAPONS && weapon->base_type != OBJ_STAVES
+		&& weapon->base_type != OBJ_SHIELDS)
     {
-        if (!ignore_temporary_disability && is_shield_incompatible(*weapon))
-        {
-            SAY(mpr("You can't wield that with a shield."));
-            return false;
-        }
-        else
-            return true;
+		SAY(mpr("You can't wield that."));
+		return false;
     }
 
     bool id_brand = false;
@@ -412,16 +423,96 @@ bool can_wield(const item_def *weapon, bool say_reason,
         return false;
     }
 
-    if (!ignore_temporary_disability && is_shield_incompatible(*weapon))
-    {
-        SAY(mpr("You can't wield that with a shield."));
-        return false;
-    }
-
     // We can wield this weapon. Phew!
     return true;
 
 #undef SAY
+}
+
+// Returns a list of possible weapon slots.
+static vector<equipment_type> _current_weapon_types()
+{
+	vector<equipment_type> ret;
+	ret.push_back(EQ_WEAPON0);
+	if (you.get_mutation_level(MUT_MISSING_HAND) == 0)
+		ret.push_back(EQ_WEAPON1);
+	return ret;
+}
+
+static const char _weapon_slot_key(equipment_type slot)
+{
+	switch (slot)
+	{
+	case EQ_WEAPON0:      return '<';
+	case EQ_WEAPON1:      return '>';
+	default:
+		die("Invalid weapon slot");
+	}
+}
+
+static int _prompt_weapon_to_unwield(int new_weapon)
+{
+	const vector<equipment_type> weapon_types = _current_weapon_types();
+	vector<char> slot_chars;
+	vector<item_def*> weapons;
+	for (auto eq : weapon_types)
+	{
+		weapons.push_back(you.slot_item(eq, true));
+		ASSERT(weapons.back());
+		slot_chars.push_back(index_to_letter(weapons.back()->link));
+	}
+
+	clear_messages();
+
+	mprf(MSGCH_PROMPT,
+		"You're wielding all the weapons you can. Unwield which one?");
+	mprf(MSGCH_PROMPT, "(<w>?</w> for menu, <w>Esc</w> to cancel)");
+
+	// FIXME: Needs TOUCH_UI version
+
+	for (size_t i = 0; i < weapons.size(); i++)
+	{
+		string m = "<w>";
+		const char key = _weapon_slot_key(weapon_types[i]);
+		m += key;
+		if (key == '<')
+			m += '<';
+
+		m += "</w> or " + weapons[i]->name(DESC_INVENTORY);
+		mprf_nocap("%s", m.c_str());
+	}
+	flush_prev_message();
+
+	// Deactivate choice from tile inventory.
+	// FIXME: We need to be able to get the choice (item letter)n
+	//        *without* the choice taking action by itself!
+	int eqslot = EQ_NONE;
+
+	mouse_control mc(MOUSE_MODE_PROMPT);
+	int c;
+	do
+	{
+		c = getchm();
+		for (size_t i = 0; i < slot_chars.size(); i++)
+		{
+			if (c == slot_chars[i]
+				|| c == _weapon_slot_key(weapon_types[i]))
+			{
+				eqslot = weapon_types[i];
+				c = ' ';
+				break;
+			}
+		}
+	} while (!key_is_escape(c) && c != ' ' && c != '?');
+
+	clear_messages();
+
+	if (c == '?')
+		return EQ_NONE;
+	else if (key_is_escape(c) || eqslot == EQ_NONE)
+		return -2;
+
+	return you.equip[eqslot];
 }
 
 /**
@@ -481,19 +572,46 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
                             MT_INVLIST, OSEL_WIELD,
                             OPER_WIELD, invprompt_flag::no_warning, '-');
         }
-        else
-            item_slot = SLOT_BARE_HANDS;
+		else
+			item_slot = SLOT_BARE_HANDS;
     }
 
     if (prompt_failed(item_slot))
         return false;
-    else if (item_slot == you.equip[EQ_WEAPON0])
+    else if (item_slot == you.equip[EQ_WEAPON0]
+		|| item_slot == you.equip[EQ_WEAPON1])
     {
         if (Options.equip_unequip)
             item_slot = SLOT_BARE_HANDS;
         else
         {
-            mpr("You are already wielding that!");
+			if ((you.weapon(0) && you.inv[you.equip[EQ_WEAPON0]].cursed()) || (you.weapon(1) && you.inv[you.equip[EQ_WEAPON1]].cursed()))
+				mpr("You can't swap weapons while either is cursed.");
+			else if (you.weapon(0) && is_range_weapon(*you.weapon(0)))
+				mpr("Ranged weapons can only be wielded in your right hand.");
+			else if (you.hands_reqd(*you.weapon(0)) == HANDS_TWO)
+				mpr("You're already wielding that.");
+			else if (yesno("Switch to other hand?", true, false, true, true, false, nullptr, GOTO_MSG)) 
+			{
+				int temp0 = you.equip[EQ_WEAPON0];
+				unequip_item(EQ_WEAPON0, show_weff_messages);
+				int temp1 = you.equip[EQ_WEAPON1];
+				unequip_item(EQ_WEAPON1, show_weff_messages);
+				if (temp1 > -1)
+					equip_item(EQ_WEAPON0, temp1, show_weff_messages);
+				if (temp0 > -1)
+					equip_item(EQ_WEAPON1, temp0, show_weff_messages);
+
+				if (adjust_time_taken)
+					you.time_taken /= 2;
+
+				you.wield_change = true;
+				you.m_quiver.on_weapon_changed();
+				you.turn_is_over = true;
+			}
+
+			else
+				canned_msg(MSG_OK);
             return true;
         }
     }
@@ -501,53 +619,108 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
     // Reset the warning counter.
     you.received_weapon_warning = false;
 
+	int unwanted = 0;
+	item_def* wpn;
+
     if (item_slot == SLOT_BARE_HANDS)
     {
-        if (const item_def* wpn = you.weapon())
+		if (you.weapon(0))
+		{
+			if (you.weapon(1))
+			{
+
+				if (you.weapon(1)->cursed() && you.get_mutation_level(MUT_GHOST) == 0)
+					wpn = you.weapon(0);
+				else if (you.weapon(0)->cursed() && you.get_mutation_level(MUT_GHOST) == 0)
+					wpn = you.weapon(1);
+				else
+				{
+					unwanted = _prompt_weapon_to_unwield(SLOT_BARE_HANDS);
+
+					if (unwanted == EQ_NONE)
+					{
+						unwanted = prompt_invent_item(
+							"You're wielding something in both hands. Unwield which one?",
+							MT_INVLIST, OSEL_UNCURSED_WIELDED_WEAPONS, OPER_REMOVE,
+							invprompt_flag::no_warning | invprompt_flag::hide_known);;
+					}
+
+					if (unwanted < 0)
+					{
+						canned_msg(MSG_OK);
+						return false;
+					}
+
+					wpn = &you.inv[unwanted];
+				}
+			}
+
+			else
+			{
+				wpn = you.weapon(0);
+			}
+		}
+
+		else if (you.weapon(1) && !you.weapon(0))
+		{
+			wpn = you.weapon(1);
+		}
+		
+		else
+		{
+			canned_msg(MSG_EMPTY_HANDED_ALREADY);
+			return false;
+		}
+
+		bool penance = false;
+		// Can we safely unwield this item?
+		
+		if (needs_handle_warning(*wpn, OPER_WIELD, penance))
+		{
+			string prompt =
+				"Really unwield " + wpn->name(DESC_INVENTORY) + "?";
+			if (penance)
+				prompt += " This could place you under penance!";
+
+			if (!yesno(prompt.c_str(), false, 'n'))
+			{
+				canned_msg(MSG_OK);
+				return false;
+			}
+		}
+
+		// check if you'd get stat-zeroed
+		if (!_safe_to_remove_or_wear(*wpn, true))
+			return false;
+
+		if (wpn == you.weapon(0))
+		{
+			if (!unwield_item(true, show_weff_messages))
+				return false;
+		}
+
+		else
+		{
+			if (!unwield_item(false, show_weff_messages))
+				return false;
+		}
+
+        if (show_unwield_msg)
         {
-            bool penance = false;
-            // Can we safely unwield this item?
-            if (needs_handle_warning(*wpn, OPER_WIELD, penance))
-            {
-                string prompt =
-                    "Really unwield " + wpn->name(DESC_INVENTORY) + "?";
-                if (penance)
-                    prompt += " This could place you under penance!";
-
-                if (!yesno(prompt.c_str(), false, 'n'))
-                {
-                    canned_msg(MSG_OK);
-                    return false;
-                }
-            }
-
-            // check if you'd get stat-zeroed
-            if (!_safe_to_remove_or_wear(*wpn, true))
-                return false;
-
-            if (!unwield_item(show_weff_messages))
-                return false;
-
-            if (show_unwield_msg)
-            {
 #ifdef USE_SOUND
-                parse_sound(WIELD_NOTHING_SOUND);
+            parse_sound(WIELD_NOTHING_SOUND);
 #endif
-                canned_msg(MSG_EMPTY_HANDED_NOW);
-            }
-
-            // Switching to bare hands is extra fast.
-            you.turn_is_over = true;
-            if (adjust_time_taken)
-            {
-                you.time_taken *= 3;
-                you.time_taken /= 10;
-            }
+            canned_msg(MSG_EMPTY_HANDED_NOW);
         }
-        else
-            canned_msg(MSG_EMPTY_HANDED_ALREADY);
 
-        return true;
+        // Switching to bare hands is extra fast.
+        you.turn_is_over = true;
+        if (adjust_time_taken)
+        {
+            you.time_taken *= 3;
+            you.time_taken /= 10;
+        }
+		return true;
     }
 
     item_def& new_wpn(you.inv[item_slot]);
@@ -581,22 +754,149 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
         return false;
     }
 
-    // Unwield any old weapon.
-    if (you.weapon())
+	if (you.hands_reqd(new_wpn) == HANDS_TWO)
+	{
+		if (you.weapon(0))
+		{
+			if (you.weapon(0)->cursed() && you.get_mutation_level(MUT_GHOST) == 0)
+			{
+				mpr("You can't unwield what's in your right hand.");
+				return false;
+			}
+			if (you.weapon(1) && you.weapon(1)->cursed() && you.get_mutation_level(MUT_GHOST) == 0)
+			{
+				mpr("You can't unwield what's in your left hand.");
+				return false;
+			}
+			if (!unwield_item(true, show_weff_messages))
+				return false;
+		}
+		if (you.weapon(1))
+		{
+			if (you.weapon(1)->cursed() && you.get_mutation_level(MUT_GHOST) == 0)
+			{
+				mpr("You can't unwield what's in your left hand.");
+				return false;
+			}
+			if (!unwield_item(false, show_weff_messages))
+				return false;
+		}
+		update_can_train();
+		// Go ahead and wield the weapon.
+		equip_item(EQ_WEAPON0, item_slot, show_weff_messages);
+	}
+
+    else if (!you.weapon(0))
     {
-        if (unwield_item(show_weff_messages))
-        {
-            // Enable skills so they can be re-disabled later
-            update_can_train();
-        }
-        else
-            return false;
+		equip_item(EQ_WEAPON0, item_slot, show_weff_messages);
     }
 
-    const unsigned int old_talents = your_talents(false).size();
+	else if (is_range_weapon(new_wpn))
+	{
+		if (you.weapon(0)->cursed() && you.get_mutation_level(MUT_GHOST) == 0)
+		
+		{
+			mpr("You can't unwield what's in your right hand.");
+			return false;
+		}
 
-    // Go ahead and wield the weapon.
-    equip_item(EQ_WEAPON0, item_slot, show_weff_messages);
+		if (!unwield_item(true, show_weff_messages))
+			return false;
+
+		equip_item(EQ_WEAPON0, item_slot, show_weff_messages);
+	}
+
+	else if (!you.weapon(1))
+	{
+		if (you.hands_reqd(*(you.weapon(0))) == HANDS_TWO)
+		{
+			if (unwield_item(true, show_weff_messages))
+				equip_item(EQ_WEAPON0, item_slot, show_weff_messages);
+			else
+				return false;
+		}
+		else
+			equip_item(EQ_WEAPON1, item_slot, show_weff_messages);
+	}
+
+	else if (new_wpn.base_type == OBJ_STAVES && you.weapon(0) && you.weapon(0)->base_type == OBJ_STAVES)
+	{
+		if (you.weapon(0)->cursed() && you.get_mutation_level(MUT_GHOST) == 0)
+
+		{
+			mpr("You can't unwield your magical staff to draw a new one.");
+			return false;
+		}
+
+		if (!unwield_item(true, show_weff_messages))
+			return false;
+
+		equip_item(EQ_WEAPON0, item_slot, show_weff_messages);
+	}
+
+	else if (new_wpn.base_type == OBJ_STAVES && you.weapon(1) && you.weapon(1)->base_type == OBJ_STAVES)
+	{
+		if (you.weapon(1)->cursed() && you.get_mutation_level(MUT_GHOST) == 0)
+
+		{
+			mpr("You can't unwield your magical staff to draw a new one.");
+			return false;
+		}
+
+		if (!unwield_item(false, show_weff_messages))
+			return false;
+
+		equip_item(EQ_WEAPON1, item_slot, show_weff_messages);
+	}
+
+	else
+	{
+		unwanted = _prompt_weapon_to_unwield(SLOT_BARE_HANDS);
+
+		if (unwanted == EQ_NONE)
+		{
+			unwanted = prompt_invent_item(
+				"You're wielding something in both hands. Unwield which one?",
+				MT_INVLIST, OSEL_UNCURSED_WIELDED_WEAPONS, OPER_REMOVE,
+				invprompt_flag::no_warning | invprompt_flag::hide_known);;
+		}
+
+		if (unwanted < 0)
+		{
+			canned_msg(MSG_OK);
+			return false;
+		}
+
+		wpn = &you.inv[unwanted];
+		// check if you'd get stat-zeroed
+
+		if (wpn->cursed() && (you.get_mutation_level(MUT_GHOST) == 0))
+		{
+			mpr("You can't unwield that.");
+			return false;
+		}
+
+		if (!_safe_to_remove_or_wear(*wpn, true))
+			return false;
+
+		if (wpn == you.weapon(0))
+		{
+			if (unwield_item(true, show_weff_messages))
+				equip_item(EQ_WEAPON0, item_slot, show_weff_messages);
+			else
+				return false;
+		}
+		
+		else
+		{
+			if (unwield_item(false, show_weff_messages))
+				equip_item(EQ_WEAPON1, item_slot, show_weff_messages);
+			else
+				return false;
+		}
+	}
+
+    const unsigned int old_talents = your_talents(false).size();
 
     if (show_wield_msg)
     {
@@ -646,7 +946,7 @@ bool armour_prompt(const string & mesg, int *index, operation_types oper)
         canned_msg(MSG_TOO_BERSERK);
     else
     {
-        int selector = OBJ_ARMOUR;
+        int selector = OBJ_ARMOURS;
         if (oper == OPER_TAKEOFF && !Options.equip_unequip)
             selector = OSEL_WORN_ARMOUR;
         int slot = prompt_invent_item(mesg.c_str(), MT_INVLIST, selector, oper);
@@ -690,7 +990,7 @@ static int armour_equip_delay(const item_def &item)
 bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
 {
     const object_class_type base_type = item.base_type;
-    if (base_type != OBJ_ARMOUR || you.species == SP_FELID)
+    if (base_type != OBJ_ARMOURS || you.species == SP_FELID)
     {
         if (verbose)
             mpr("You can't wear that.");
@@ -701,7 +1001,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
     const int sub_type = item.sub_type;
     const equipment_type slot = get_armour_slot(item);
 
-    if (you.species == SP_OCTOPODE && slot != EQ_HELMET && slot != EQ_WEAPON1)
+    if (you.species == SP_OCTOPODE && slot != EQ_HELMET)
     {
         if (verbose)
             mpr("You can't wear that!");
@@ -746,8 +1046,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
     }
 
     if (!ignore_temporary && you.weapon()
-        && is_shield(item)
-        && is_shield_incompatible(*you.weapon(), &item))
+        && is_shield(item))
     {
         if (verbose)
         {
@@ -987,7 +1286,7 @@ static bool _can_takeoff_armour(int item);
 static bool _can_equip_armour(const item_def &item)
 {
     const object_class_type base_type = item.base_type;
-    if (base_type != OBJ_ARMOUR)
+    if (base_type != OBJ_ARMOURS)
     {
         mpr("You can't wear that.");
         return false;
@@ -1028,7 +1327,7 @@ bool wear_armour(int item)
 
     if (item == -1)
     {
-        item = prompt_invent_item("Wear which item?", MT_INVLIST, OBJ_ARMOUR,
+        item = prompt_invent_item("Wear which item?", MT_INVLIST, OBJ_ARMOURS,
                                   OPER_WEAR, invprompt_flag::no_warning);
         if (prompt_failed(item))
             return false;
@@ -1040,12 +1339,6 @@ bool wear_armour(int item)
     if (!invitem.defined())
     {
         mpr("You don't have any such object.");
-        return false;
-    }
-
-    if (item == you.equip[EQ_WEAPON0])
-    {
-        mpr("You are wielding that object!");
         return false;
     }
 
@@ -1079,7 +1372,6 @@ bool wear_armour(int item)
            || slot == EQ_HELMET
            || slot == EQ_GLOVES
            || slot == EQ_BOOTS
-           || slot == EQ_WEAPON1
            || slot == EQ_BODY_ARMOUR)
         && you.equip[slot] != -1)
     {
@@ -1106,7 +1398,7 @@ bool wear_armour(int item)
 static bool _can_takeoff_armour(int item)
 {
     item_def& invitem = you.inv[item];
-    if (invitem.base_type != OBJ_ARMOUR)
+    if (invitem.base_type != OBJ_ARMOURS)
     {
         mpr("You aren't wearing that!");
         return false;
@@ -1164,7 +1456,6 @@ bool takeoff_armour(int item)
     switch (slot)
     {
     case EQ_BODY_ARMOUR:
-    case EQ_WEAPON1:
     case EQ_CLOAK:
     case EQ_HELMET:
     case EQ_GLOVES:
@@ -1245,6 +1536,7 @@ static const char _ring_slot_key(equipment_type slot)
         die("Invalid ring slot");
     }
 }
+
 
 static int _prompt_ring_to_remove(int new_ring)
 {
@@ -1345,7 +1637,7 @@ static bool _safe_to_remove_or_wear(const item_def &item, bool remove, bool quie
             break;
         }
     }
-    else if (item.base_type == OBJ_ARMOUR && item_type_known(item))
+    else if (item.base_type == OBJ_ARMOURS && item_type_known(item))
     {
         switch (item.brand)
         {
@@ -1425,7 +1717,7 @@ bool safe_to_remove(const item_def &item, bool quiet)
 
     const bool grants_flight =
          inf.is_type(OBJ_JEWELLERY, RING_FLIGHT)
-         || inf.base_type == OBJ_ARMOUR && inf.brand == SPARM_FLYING
+         || inf.base_type == OBJ_ARMOURS && inf.brand == SPARM_FLYING
          || is_artefact(inf)
             && artefact_known_property(inf, ARTP_FLY);
 
@@ -1631,11 +1923,6 @@ static bool _can_puton_jewellery(int item_slot)
     // TODO: between this function, _puton_item, _swap_rings, and remove_ring,
     // there's a bit of duplicated work, and sep. of concerns not clear
     item_def& item = you.inv[item_slot];
-    if (item_slot == you.equip[EQ_WEAPON0])
-    {
-        mpr("You are wielding that object.");
-        return false;
-    }
 
     if (item.base_type != OBJ_JEWELLERY)
     {
@@ -2312,8 +2599,8 @@ static object_selector _enchant_selector(scroll_type scroll)
 {
     if (scroll == SCR_BRAND_WEAPON)
         return OSEL_BRANDABLE_WEAPON;
-    else if (scroll == SCR_ENCHANT_WEAPON)
-        return OSEL_ENCHANTABLE_WEAPON;
+//    else if (scroll == SCR_ENCHANT_WEAPON)
+ //       return OSEL_ENCHANTABLE_WEAPON;
     die("Invalid scroll type %d for _enchant_selector", (int)scroll);
 }
 
@@ -2347,33 +2634,6 @@ static bool _handle_brand_weapon(bool alreadyknown, const string &pre_msg)
     return true;
 }
 
-bool enchant_weapon(item_def &wpn, bool quiet)
-{
-    bool success = false;
-
-    // Get item name now before changing enchantment.
-    string iname = _item_name(wpn);
-
-    if (is_weapon(wpn)
-        && !is_artefact(wpn)
-        && wpn.base_type == OBJ_WEAPONS
-        && wpn.plus < MAX_WPN_ENCHANT)
-    {
-        wpn.plus++;
-        success = true;
-        if (!quiet)
-            mprf("%s glows red for a moment.", iname.c_str());
-    }
-
-    if (!success && !quiet)
-        canned_msg(MSG_NOTHING_HAPPENS);
-
-    if (success)
-        you.wield_change = true;
-
-    return success;
-}
-
 static bool _identify(bool alreadyknown, const string &pre_msg, int &link)
 {
 	mprf("Everything is identified. This scroll is removed.");
@@ -2382,49 +2642,50 @@ static bool _identify(bool alreadyknown, const string &pre_msg, int &link)
 
 static bool _handle_enchant_weapon(bool alreadyknown, const string &pre_msg)
 {
-    item_def* weapon = _scroll_choose_weapon(alreadyknown, pre_msg,
-                                             SCR_ENCHANT_WEAPON);
-    if (!weapon)
-        return !alreadyknown;
-
-    enchant_weapon(*weapon, false);
+	mprf("Removed scroll crumbles to ashes uselessly.");
     return true;
 }
 
-bool enchant_armour(int &ac_change, bool quiet, item_def &arm)
+bool enchant_item(item_def &item, bool quiet)
 {
-    ASSERT(arm.defined());
-    ASSERT(arm.base_type == OBJ_ARMOUR);
+	ASSERT(item.defined());
 
-    ac_change = 0;
+	if (!is_enchantable_item(item))
+	{
+		if (!quiet)
+			canned_msg(MSG_NOTHING_HAPPENS);
+		return false;
+	}
 
-    // Cannot be enchanted.
-    if (!is_enchantable_armour(arm))
-    {
-        if (!quiet)
-            canned_msg(MSG_NOTHING_HAPPENS);
-        return false;
-    }
+	// Get item name now before changing enchantment.
+	string iname = _item_name(item);
 
-    // Output message before changing enchantment and curse status.
-    if (!quiet)
-    {
-        const bool plural = armour_is_hide(arm)
-                            && arm.sub_type != ARM_TROLL_LEATHER_ARMOUR;
-        mprf("%s %s green for a moment.",
-             _item_name(arm).c_str(),
-             conjugate_verb("glow", plural).c_str());
-    }
+	if ( (item.base_type == OBJ_ARMOURS || (item.base_type == OBJ_SHIELDS && !is_hybrid(item.sub_type))))
+	{
+		if (!quiet)
+		{
+			const bool plural = armour_is_hide(item)
+				&& item.sub_type != ARM_TROLL_LEATHER_ARMOUR;
+			mprf("%s %s green for a moment.",
+				iname.c_str(),
+				conjugate_verb("glow", plural).c_str());
+		}
+		you.redraw_armour_class = true;
+	}
 
-    arm.plus++;
-    ac_change++;
+	if (item.base_type == OBJ_WEAPONS || (item.base_type == OBJ_SHIELDS && is_hybrid(item.sub_type)) && !quiet)
+		mprf("%s glows red for a moment.", iname.c_str());
 
-    return true;
+	you.wield_change = true;
+
+	item.plus++;
+
+	return true;
 }
 
-static int _handle_enchant_armour(bool alreadyknown, const string &pre_msg)
+static int _handle_enchant_item(bool alreadyknown, const string &pre_msg)
 {
-    item_def* target = _choose_target_item_for_scroll(alreadyknown, OSEL_ENCHANTABLE_ARMOUR,
+    item_def* target = _choose_target_item_for_scroll(alreadyknown, OSEL_ENCHANTABLE_ITEM,
                                                       "Enchant which item?");
 
     if (!target)
@@ -2434,11 +2695,7 @@ static int _handle_enchant_armour(bool alreadyknown, const string &pre_msg)
     if (alreadyknown)
         mpr(pre_msg);
 
-    int ac_change;
-    bool result = enchant_armour(ac_change, false, *target);
-
-    if (ac_change)
-        you.redraw_armour_class = true;
+    bool result = enchant_item(*target, false);
 
     return result ? 1 : 0;
 }
@@ -2549,7 +2806,7 @@ static void _vulnerability_scroll()
 static bool _is_cancellable_scroll(scroll_type scroll)
 {
     return    scroll == SCR_BLINKING
-           || scroll == SCR_ENCHANT_ARMOUR
+           || scroll == SCR_ENCHANT
            || scroll == SCR_AMNESIA
            || scroll == SCR_REMOVE_CURSE
 #if TAG_MAJOR_VERSION == 34
@@ -2557,9 +2814,9 @@ static bool _is_cancellable_scroll(scroll_type scroll)
            || scroll == SCR_CURSE_ARMOUR
            || scroll == SCR_CURSE_JEWELLERY
            || scroll == SCR_RECHARGING
+		   || scroll == SCR_ENCHANT_WEAPON
 #endif
            || scroll == SCR_BRAND_WEAPON
-           || scroll == SCR_ENCHANT_WEAPON
            || scroll == SCR_MAGIC_MAPPING
            || scroll == SCR_ACQUIREMENT;
 }
@@ -2660,12 +2917,13 @@ string cannot_read_item_reason(const item_def &item)
                 return "You have no spells to forget!";
             return "";
 
-        case SCR_ENCHANT_ARMOUR:
-            return _no_items_reason(OSEL_ENCHANTABLE_ARMOUR, true);
+        case SCR_ENCHANT:
+            return _no_items_reason(OSEL_ENCHANTABLE_ITEM, true);
 
+#if TAG_MAJOR_VERSION == 34
         case SCR_ENCHANT_WEAPON:
             return _no_items_reason(OSEL_ENCHANTABLE_WEAPON, true);
-
+#endif
 
 
         case SCR_REMOVE_CURSE:
@@ -2992,15 +3250,15 @@ void read_scroll(item_def& scroll)
         cancel_scroll = !_handle_brand_weapon(alreadyknown, pre_succ_msg);
         break;
 
-    case SCR_ENCHANT_ARMOUR:
+    case SCR_ENCHANT:
         if (!alreadyknown)
         {
             mpr(pre_succ_msg);
-            mpr("It is a scroll of enchant armour.");
+            mpr("It is a scroll of item enchanting.");
             // included in default force_more_message (to show it before menu)
         }
         cancel_scroll =
-            (_handle_enchant_armour(alreadyknown, pre_succ_msg) == -1);
+            (_handle_enchant_item(alreadyknown, pre_succ_msg) == -1);
         break;
 #if TAG_MAJOR_VERSION == 34
     // Should always be identified by Ashenzari.
@@ -3090,9 +3348,9 @@ void read_scroll(item_def& scroll)
     if (!alreadyknown
         && which_scroll != SCR_ACQUIREMENT
         && which_scroll != SCR_BRAND_WEAPON
-        && which_scroll != SCR_ENCHANT_WEAPON
-        && which_scroll != SCR_ENCHANT_ARMOUR
+        && which_scroll != SCR_ENCHANT
 #if TAG_MAJOR_VERSION == 34
+		&& which_scroll != SCR_ENCHANT_WEAPON
         && which_scroll != SCR_RECHARGING
 		&& which_scroll != SCR_IDENTIFY
 #endif
@@ -3188,29 +3446,28 @@ void tile_item_use(int idx)
 
     // Equipped?
     bool equipped = false;
-    bool equipped_weapon = false;
     for (unsigned int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; i++)
     {
         if (you.equip[i] == idx)
         {
             equipped = true;
-            if (i == EQ_WEAPON0)
-                equipped_weapon = true;
             break;
         }
     }
 
+/*
     // Special case for folks who are wielding something
     // that they shouldn't be wielding.
     // Note that this is only a problem for equipables
     // (otherwise it would only waste a turn)
     if (you.equip[EQ_WEAPON0] == idx
-        && (item.base_type == OBJ_ARMOUR
+        && (item.base_type == OBJ_ARMOURS
             || item.base_type == OBJ_JEWELLERY))
     {
         wield_weapon(true, SLOT_BARE_HANDS);
         return;
     }
+*/
 
     const int type = item.base_type;
 
@@ -3220,6 +3477,7 @@ void tile_item_use(int idx)
         case OBJ_WEAPONS:
         case OBJ_STAVES:
         case OBJ_MISCELLANY:
+		case OBJ_SHIELDS:
         case OBJ_WANDS:
             // Wield any unwielded item of these types.
             if (!equipped && item_is_wieldable(item))
@@ -3243,13 +3501,13 @@ void tile_item_use(int idx)
                 fire_thing(idx);
             return;
 
-        case OBJ_ARMOUR:
+        case OBJ_ARMOURS:
             if (!form_can_wear())
             {
                 mpr("You can't wear or remove anything in your present form.");
                 return;
             }
-            if (equipped && !equipped_weapon)
+            if (equipped)
             {
                 if (check_warning_inscriptions(item, OPER_TAKEOFF))
                     takeoff_armour(idx);
@@ -3276,7 +3534,7 @@ void tile_item_use(int idx)
             return;
 
         case OBJ_JEWELLERY:
-            if (equipped && !equipped_weapon)
+            if (equipped)
                 remove_ring(idx);
             else if (check_warning_inscriptions(item, OPER_PUTON))
                 puton_ring(idx);

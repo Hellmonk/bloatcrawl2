@@ -57,8 +57,9 @@ void do_curse_item(item_def &item, bool quiet = true);
 void do_uncurse_item(item_def &item, bool check_bondage = true);
 inline constexpr bool item_type_has_curses(object_class_type base_type)
 {
-        return base_type == OBJ_WEAPONS || base_type == OBJ_ARMOUR
-               || base_type == OBJ_JEWELLERY || base_type == OBJ_STAVES;
+        return base_type == OBJ_WEAPONS || base_type == OBJ_ARMOURS
+               || base_type == OBJ_JEWELLERY || base_type == OBJ_STAVES
+			   || base_type == OBJ_SHIELDS;
 }
 
 // stationary:
@@ -114,17 +115,19 @@ int wand_charge_value(int type) PURE;
 bool is_known_empty_wand(const item_def &item) PURE;
 #endif
 bool is_offensive_wand(const item_def &item) PURE;
-bool is_enchantable_armour(const item_def &arm, bool unknown = false) PURE;
+
+bool is_enchantable_item(const item_def &item) PURE;
 
 bool is_shield(const item_def &item) PURE;
-bool is_shield_incompatible(const item_def &weapon,
-                            const item_def *shield = nullptr) PURE;
 bool shield_reflects(const item_def &shield) PURE;
 void ident_reflector(item_def *item);
 
 // Only works for armour/weapons/missiles
 // weapon functions:
 int weapon_rarity(int w_type) IMMUTABLE;
+int shield_rarity(int s_type) IMMUTABLE;
+
+bool is_hybrid(int s_type) IMMUTABLE;
 
 bool  is_weapon_wieldable(const item_def &item, size_type size) PURE;
 
@@ -165,8 +168,8 @@ const char *ammo_name(const weapon_type bow) PURE;
 bool has_launcher(const item_def &ammo) PURE;
 bool is_throwable(const actor *actor, const item_def &wpn,
                   bool force = false) PURE;
-launch_retval is_launched(const actor *actor, const item_def *launcher,
-                          const item_def &missile) PURE;
+launch_retval is_launched(const actor *actor, const item_def *launcher0,
+                          const item_def *launcher1, const item_def &missile) PURE;
 
 bool ammo_always_destroyed(const item_def &missile) PURE;
 bool ammo_never_destroyed(const item_def &missile) PURE;
@@ -242,11 +245,15 @@ string food_type_name(int sub_type);
 const char *weapon_base_name(weapon_type subtype) IMMUTABLE;
 weapon_type name_nospace_to_weapon(string name_nospace);
 
+int weapon_damage(const item_def &item);
+int weapon_delay(const item_def &item);
+
 void seen_item(const item_def &item);
 
 static inline bool is_weapon(const item_def &item)
 {
-    return item.base_type == OBJ_WEAPONS || item.base_type == OBJ_STAVES;
+    return item.base_type == OBJ_WEAPONS || item.base_type == OBJ_STAVES
+		|| (item.base_type == OBJ_SHIELDS && is_hybrid(item.sub_type));
 }
 
 void remove_whitespace(string &str);

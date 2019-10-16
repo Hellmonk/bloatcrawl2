@@ -36,7 +36,7 @@ ranged_attack::ranged_attack(actor *attk, actor *defn, item_def *proj,
 
     string proj_name = projectile->name(DESC_PLAIN);
     // init launch type early, so we can use it later in the constructor
-    launch_type = is_launched(attacker, weapon, *projectile);
+    launch_type = is_launched(attacker, weapon, weapon, *projectile);
 
     // [dshaligram] When changing bolt names here, you must edit
     // hiscores.cc (scorefile_entry::terse_missile_cause()) to match.
@@ -330,7 +330,7 @@ bool ranged_attack::using_weapon() const
 {
     return weapon && (launch_type == launch_retval::LAUNCHED
                      || launch_type == launch_retval::BUGGY // not initialized
-                         && is_launched(attacker, weapon, *projectile)
+                         && is_launched(attacker, weapon, weapon, *projectile)
                             == launch_retval::LAUNCHED);
 }
 

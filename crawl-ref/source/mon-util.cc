@@ -464,7 +464,7 @@ int monster::wearing(equipment_type slot, int sub_type, bool calc_unid) const
     case EQ_BOOTS:
     case EQ_WEAPON1:
         item = mslot_item(MSLOT_SHIELD);
-        if (item && item->is_type(OBJ_ARMOUR, sub_type))
+        if (item && item->is_type(OBJ_SHIELDS, sub_type))
             ret++;
         // Don't check MSLOT_ARMOUR for EQ_WEAPON1
         if (slot == EQ_WEAPON1)
@@ -472,7 +472,7 @@ int monster::wearing(equipment_type slot, int sub_type, bool calc_unid) const
         // intentional fall-through
     case EQ_BODY_ARMOUR:
         item = mslot_item(MSLOT_ARMOUR);
-        if (item && item->is_type(OBJ_ARMOUR, sub_type))
+        if (item && item->is_type(OBJ_ARMOURS, sub_type))
             ret++;
         break;
 
@@ -523,7 +523,7 @@ int monster::wearing_ego(equipment_type slot, int special, bool calc_unid) const
     case EQ_BOOTS:
     case EQ_WEAPON1:
         item = mslot_item(MSLOT_SHIELD);
-        if (item && item->base_type == OBJ_ARMOUR
+        if (item && item->base_type == OBJ_SHIELDS
             && get_armour_ego_type(*item) == special
             && (calc_unid || item_type_known(*item)))
         {
@@ -535,7 +535,7 @@ int monster::wearing_ego(equipment_type slot, int special, bool calc_unid) const
         // intentional fall-through
     case EQ_BODY_ARMOUR:
         item = mslot_item(MSLOT_ARMOUR);
-        if (item && item->base_type == OBJ_ARMOUR
+        if (item && item->base_type == OBJ_ARMOURS
             && get_armour_ego_type(*item) == special
             && (calc_unid || item_type_known(*item)))
         {
@@ -582,13 +582,13 @@ int monster::scan_artefacts(artefact_prop_type ra_prop, bool calc_unid,
             ret += artefact_property(mitm[second], ra_prop);
         }
 
-        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOUR
+        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS
             && is_artefact(mitm[armour]))
         {
             ret += artefact_property(mitm[armour], ra_prop);
         }
 
-        if (shld != NON_ITEM && mitm[shld].base_type == OBJ_ARMOUR
+        if (shld != NON_ITEM && mitm[shld].base_type == OBJ_ARMOURS
             && is_artefact(mitm[shld]))
         {
             ret += artefact_property(mitm[shld], ra_prop);
@@ -3867,7 +3867,7 @@ static bool _mons_has_usable_ranged_weapon(const monster* mon)
     if (!missile)
         return false;
 
-    return is_launched(mon, weapon, *missile) != launch_retval::FUMBLED;
+    return is_launched(mon, weapon, weapon, *missile) != launch_retval::FUMBLED;
 }
 
 bool mons_has_ranged_attack(const monster& mon)
@@ -4267,7 +4267,7 @@ mon_inv_type item_to_mslot(const item_def &item)
         return MSLOT_WEAPON;
     case OBJ_MISSILES:
         return MSLOT_MISSILE;
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         return equip_slot_to_mslot(get_armour_slot(item));
     case OBJ_JEWELLERY:
         return MSLOT_JEWELLERY;

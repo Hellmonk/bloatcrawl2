@@ -53,11 +53,11 @@ static bool _fire_validate_item(int selected, string& err);
 bool is_penetrating_attack(const actor& attacker, const item_def* weapon,
                            const item_def& projectile)
 {
-    return is_launched(&attacker, weapon, projectile) != launch_retval::FUMBLED
+    return is_launched(&attacker, weapon, weapon, projectile) != launch_retval::FUMBLED
             && projectile.base_type == OBJ_MISSILES
             && get_ammo_brand(projectile) == SPMSL_PENETRATION
            || weapon
-              && is_launched(&attacker, weapon, projectile) == launch_retval::LAUNCHED
+              && is_launched(&attacker, weapon, weapon, projectile) == launch_retval::LAUNCHED
               && get_weapon_brand(*weapon) == SPWPN_PENETRATION;
 }
 
@@ -155,7 +155,7 @@ void fire_target_behaviour::set_prompt()
         msg << "Firing ";
     else
     {
-        const launch_retval projected = is_launched(&you, you.weapon(),
+        const launch_retval projected = is_launched(&you, you.weapon(0), you.weapon(1),
                                                     *active_item());
         switch (projected)
         {
@@ -417,45 +417,11 @@ bool fire_warn_if_impossible(bool silent)
     return false;
 }
 
-static bool _autoswitch_to_ranged()
-{
-    int item_slot;
-    if (you.equip[EQ_WEAPON0] == letter_to_index('a'))
-        item_slot = letter_to_index('b');
-    else if (you.equip[EQ_WEAPON0] == letter_to_index('b'))
-        item_slot = letter_to_index('a');
-    else
-        return false;
-
-    const item_def& launcher = you.inv[item_slot];
-    if (!is_range_weapon(launcher))
-        return false;
-    if (none_of(you.inv.begin(), you.inv.end(), [&launcher](const item_def& it)
-                { return it.launched_by(launcher);}))
-    {
-        return false;
-    }
-
-    if (!wield_weapon(true, item_slot))
-        return false;
-
-    you.turn_is_over = true;
-    //XXX Hacky. Should use a delay instead.
-    macro_buf_add(command_to_key(CMD_FIRE));
-    return true;
-}
-
 int get_ammo_to_shoot(int item, dist &target, bool teleport)
 {
     if (fire_warn_if_impossible())
     {
         flush_input_buffer(FLUSH_ON_FAILURE);
-        return -1;
-    }
-
-    if (Options.auto_switch && you.m_quiver.get_fire_item() == -1
-       && _autoswitch_to_ranged())
-    {
         return -1;
     }
 
@@ -493,7 +459,7 @@ void fire_thing(int item)
 
     if (check_warning_inscriptions(you.inv[item], OPER_FIRE)
         && (!you.weapon()
-            || is_launched(&you, you.weapon(), you.inv[item]) != launch_retval::LAUNCHED
+            || is_launched(&you, you.weapon(0), you.weapon(1), you.inv[item]) != launch_retval::LAUNCHED
             || check_warning_inscriptions(*you.weapon(), OPER_FIRE)))
     {
         bolt beam;
@@ -632,12 +598,16 @@ static bool _setup_missile_beam(const actor *agent, bolt &beam, item_def &item,
 static void _throw_noise(actor* act, const bolt &pbolt, const item_def &ammo)
 {
     ASSERT(act); // XXX: change to actor &act
-    const item_def* launcher = act->weapon();
+	item_def* launcher; 
+	if (is_range_weapon(*act->weapon(0)))
+		launcher = act->weapon(0);
+	else
+		launcher = act->weapon(1);
 
     if (launcher == nullptr || launcher->base_type != OBJ_WEAPONS)
         return;
 
-    if (is_launched(act, launcher, ammo) != launch_retval::LAUNCHED)
+    if (is_launched(act, launcher, launcher, ammo) != launch_retval::LAUNCHED)
         return;
 
     // Throwing and blowguns are silent...
@@ -729,8 +699,8 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
     item_def& thrown = you.inv[throw_2];
     ASSERT(thrown.defined());
 
-    // Figure out if we're thrown or launched.
-    const launch_retval projected = is_launched(&you, you.weapon(), thrown);
+	// Figure out if we're thrown or launched.
+	const launch_retval projected = is_launched(&you, you.weapon(0), you.weapon(1), thrown);
 
     // Making a copy of the item: changed only for venom launchers.
     item_def item = thrown;
@@ -837,7 +807,11 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
     {
     case launch_retval::LAUNCHED:
     {
-        const item_def *launcher = you.weapon();
+		item_def *launcher;
+		if (you.weapon(0) && is_range_weapon(*you.weapon(0)))
+			launcher = you.weapon(0);
+		else
+			launcher = you.weapon(1);
         ASSERT(launcher);
         practise_launching(*launcher);
         if (is_unrandom_artefact(*launcher)
@@ -1033,7 +1007,7 @@ bool mons_throw(monster* mons, bolt &beam, int msl, bool teleport)
     beam.aimed_at_spot |= returning;
 
     const launch_retval projected =
-        is_launched(mons, mons->mslot_item(MSLOT_WEAPON),
+        is_launched(mons, mons->mslot_item(MSLOT_WEAPON), mons->mslot_item(MSLOT_WEAPON),
                     mitm[msl]);
 
     if (projected == launch_retval::THROWN)

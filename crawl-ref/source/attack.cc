@@ -191,7 +191,7 @@ int attack::calc_to_hit(bool random)
         // weapon bonus contribution
         if (using_weapon())
         {
-            if (weapon->base_type == OBJ_WEAPONS)
+            if (weapon->base_type == OBJ_WEAPONS || weapon->base_type == OBJ_SHIELDS)
             {
                 mhit += weapon->plus;
                 mhit += property(*weapon, PWPN_HIT);

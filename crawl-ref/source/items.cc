@@ -412,7 +412,7 @@ bool dec_inv_item_quantity(int obj, int amount)
 {
     bool ret = false;
 
-    if (you.equip[EQ_WEAPON0] == obj)
+    if (you.equip[EQ_WEAPON0] == obj || you.equip[EQ_WEAPON1] == obj)
         you.wield_change = true;
 
     you.m_quiver.on_inv_quantity_changed(obj, amount);
@@ -425,9 +425,14 @@ bool dec_inv_item_quantity(int obj, int amount)
             {
                 if (i == EQ_WEAPON0)
                 {
-                    unwield_item();
+                    unwield_item(true,true);
                     canned_msg(MSG_EMPTY_HANDED_NOW);
                 }
+				else if (i == EQ_WEAPON1)
+				{
+					unwield_item(false, true);
+					canned_msg(MSG_EMPTY_HANDED_NOW);
+				}
                 you.equip[i] = -1;
             }
         }
@@ -478,7 +483,7 @@ bool dec_mitm_item_quantity(int obj, int amount)
 
 void inc_inv_item_quantity(int obj, int amount)
 {
-    if (you.equip[EQ_WEAPON0] == obj)
+    if (you.equip[EQ_WEAPON0] == obj || you.equip[EQ_WEAPON1] == obj)
         you.wield_change = true;
 
     you.m_quiver.on_inv_quantity_changed(obj, amount);
@@ -781,7 +786,12 @@ bool item_is_branded(const item_def& item)
     {
     case OBJ_WEAPONS:
         return get_weapon_brand(item) != SPWPN_NORMAL;
-    case OBJ_ARMOUR:
+	case OBJ_SHIELDS:
+		if (is_hybrid(item.sub_type))
+			return get_weapon_brand(item) != SPWPN_NORMAL;
+		else
+			return get_armour_ego_type(item) != SPARM_NORMAL;
+    case OBJ_ARMOURS:
         return get_armour_ego_type(item) != SPARM_NORMAL;
     case OBJ_MISSILES:
         return get_ammo_brand(item) != SPMSL_NORMAL;
@@ -793,8 +803,9 @@ bool item_is_branded(const item_def& item)
 // 2 - artefact, 1 - glowing/runed, 0 - mundane
 static int _item_name_specialness(const item_def& item)
 {
-    if (item.base_type != OBJ_WEAPONS && item.base_type != OBJ_ARMOUR
-        && item.base_type != OBJ_MISSILES && item.base_type != OBJ_JEWELLERY)
+    if (item.base_type != OBJ_WEAPONS && item.base_type != OBJ_ARMOURS
+        && item.base_type != OBJ_MISSILES && item.base_type != OBJ_JEWELLERY
+		&& item.base_type != OBJ_SHIELDS)
     {
         return 0;
     }
@@ -2562,9 +2573,8 @@ bool drop_item(int item_dropped, int quant_drop)
         return false;
     }
 
-    if (item_dropped == you.equip[EQ_WEAPON0]
-        && item.base_type == OBJ_WEAPONS && item.cursed()
-		&& you.get_mutation_level(MUT_GHOST) == 0)
+    if ((item_dropped == you.equip[EQ_WEAPON0] || item_dropped == you.equip[EQ_WEAPON1])
+		&& item.cursed() && you.get_mutation_level(MUT_GHOST) == 0)
     {
         mprf("%s is stuck to you!", item.name(DESC_THE).c_str());
         return false;
@@ -2596,7 +2606,7 @@ bool drop_item(int item_dropped, int quant_drop)
     //
     // Unwield needs to be done before copy in order to clear things
     // like temporary brands. -- bwr
-    if (item_dropped == you.equip[EQ_WEAPON0] && quant_drop >= item.quantity)
+    if ((item_dropped == you.equip[EQ_WEAPON0] || item_dropped == you.equip[EQ_WEAPON1])  && quant_drop >= item.quantity)
     {
         if (!wield_weapon(true, SLOT_BARE_HANDS, true, true, true, false))
             return false;
@@ -3031,7 +3041,7 @@ static bool _similar_equip(const item_def& pickup_item,
 
     // Just filling the same slot is enough for armour to be considered
     // similar.
-    if (pickup_item.base_type == OBJ_ARMOUR)
+    if (pickup_item.base_type == OBJ_ARMOURS)
         return true;
 
     return item_attack_skill(pickup_item) == item_attack_skill(inv_item)
@@ -3124,7 +3134,8 @@ static bool _interesting_explore_pickup(const item_def& item)
     {
     case OBJ_WEAPONS:
     case OBJ_MISSILES:
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
+	case OBJ_SHIELDS:
         // Ego items.
         if (item.brand != 0)
             return true;
@@ -3137,7 +3148,7 @@ static bool _interesting_explore_pickup(const item_def& item)
     switch (item.base_type)
     {
     case OBJ_WEAPONS:
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         return _item_different_than_inv(item, _similar_equip);
 
     case OBJ_WANDS:
@@ -3333,6 +3344,7 @@ int get_max_subtype(object_class_type base_type)
         NUM_RODS,
 #endif
         NUM_RUNE_TYPES,
+		NUM_SHIELDS,
     };
     COMPILE_CHECK(ARRAYSZ(max_subtype) == NUM_OBJECT_CLASSES);
 
@@ -3394,7 +3406,7 @@ int item_def::index() const
 
 int item_def::armour_rating() const
 {
-    if (!defined() || base_type != OBJ_ARMOUR)
+    if (!defined() || base_type != OBJ_ARMOURS)
         return 0;
 
     return property(*this, PARM_AC) + plus;
@@ -3459,7 +3471,7 @@ colour_t item_def::randart_colour() const
  */
 colour_t item_def::weapon_colour() const
 {
-    ASSERT(base_type == OBJ_WEAPONS);
+    ASSERT(base_type == OBJ_WEAPONS || base_type == OBJ_SHIELDS);
 
     // random artefact
     if (is_artefact(*this))
@@ -3475,6 +3487,7 @@ colour_t item_def::weapon_colour() const
         case SK_CROSSBOWS:
             return LIGHTBLUE;
         case SK_THROWING:
+		case SK_SHIELDS:
             return WHITE;
         case SK_SLINGS:
             return BROWN;
@@ -3539,7 +3552,7 @@ colour_t item_def::missile_colour() const
  */
 colour_t item_def::armour_colour() const
 {
-    ASSERT(base_type == OBJ_ARMOUR);
+    ASSERT(base_type == OBJ_ARMOURS);
 
     if (is_artefact(*this))
         return randart_colour();
@@ -3575,10 +3588,12 @@ colour_t item_def::armour_colour() const
             return LIGHTGREY;
         case ARM_CRYSTAL_PLATE_ARMOUR:
             return WHITE;
+#if TAG_MAJOR_VERSION == 34
         case ARM_SHIELD:
         case ARM_LARGE_SHIELD:
         case ARM_BUCKLER:
             return CYAN;
+#endif
         default:
             return LIGHTCYAN;
     }
@@ -4005,11 +4020,12 @@ colour_t item_def::get_colour() const
 
     switch (base_type)
     {
+		case OBJ_SHIELDS: // Deliberate fallthrough.
         case OBJ_WEAPONS:
             return weapon_colour();
         case OBJ_MISSILES:
             return missile_colour();
-        case OBJ_ARMOUR:
+        case OBJ_ARMOURS:
             return armour_colour();
         case OBJ_WANDS:
             return wand_colour();
@@ -4131,7 +4147,7 @@ bool item_def::is_mundane() const
         }
         break;
 
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         if (sub_type == ARM_ANIMAL_SKIN)
             return true;
         break;
@@ -4440,7 +4456,8 @@ bool get_item_by_name(item_def *item, const char* specs,
 
             // Search for a matching unrandart.
             case OBJ_WEAPONS:
-            case OBJ_ARMOUR:
+            case OBJ_ARMOURS:
+			case OBJ_SHIELDS:
             case OBJ_JEWELLERY:
             {
                 // XXX: if we ever allow ?/ lookup of unrands, change this,
@@ -4498,7 +4515,8 @@ bool get_item_by_name(item_def *item, const char* specs,
         item->quantity = 30;
         // intentional fall-through
     case OBJ_WEAPONS:
-    case OBJ_ARMOUR:
+	case OBJ_SHIELDS:
+    case OBJ_ARMOURS:
     {
         char buf[80];
         msgwin_get_line_autohist("What ego type? ", buf, sizeof(buf));
@@ -4718,7 +4736,14 @@ item_info get_item_info(const item_def& item)
         if (item_type_known(item))
             ii.brand = item.brand;
         break;
-    case OBJ_ARMOUR:
+	case OBJ_SHIELDS:
+		ii.sub_type = item.sub_type;
+		if (item_ident(ii, ISFLAG_KNOW_PLUSES))
+			ii.plus = item.plus;
+		if (item_type_known(item))
+			ii.brand = item.brand;
+		break;
+    case OBJ_ARMOURS:
         ii.sub_type = item.sub_type;
         if (item_ident(ii, ISFLAG_KNOW_PLUSES))
             ii.plus = item.plus;
@@ -4885,9 +4910,9 @@ int runes_in_pack()
 
 object_class_type get_random_item_mimic_type()
 {
-   return random_choose(OBJ_GOLD, OBJ_WEAPONS, OBJ_ARMOUR, OBJ_SCROLLS,
-                        OBJ_POTIONS, OBJ_BOOKS, OBJ_STAVES, OBJ_FOOD,
-                        OBJ_MISCELLANY, OBJ_JEWELLERY);
+   return random_choose(OBJ_GOLD, OBJ_WEAPONS, OBJ_SHIELDS, OBJ_ARMOURS,
+						OBJ_SCROLLS, OBJ_POTIONS, OBJ_BOOKS, OBJ_STAVES, 
+	                    OBJ_FOOD, OBJ_MISCELLANY, OBJ_JEWELLERY);
 }
 
 /**

@@ -86,7 +86,7 @@ static bool _reaching_weapon_attack(const item_def& wpn)
 
 	if (you.drowning())
 	{
-		mpr("You can't attack, while struggling to swim!");
+		mpr("You can't attack while struggling to swim!");
 		return false;
 	}
 
@@ -1454,9 +1454,9 @@ static spret_type _phantom_mirror()
 
 bool evoke_check(int slot, bool quiet)
 {
-    const bool reaching = slot != -1 && slot == you.equip[EQ_WEAPON0]
-                          && !you.melded[EQ_WEAPON0]
-                          && weapon_reach(*you.weapon()) > REACH_NONE;
+    const bool reaching = slot != -1 && (slot == you.equip[EQ_WEAPON0] && weapon_reach(*you.weapon(0)) > REACH_NONE) || 
+										(slot == you.equip[EQ_WEAPON1] && weapon_reach(*you.weapon(1)) > REACH_NONE)
+										&& !you.melded[EQ_WEAPON0];
 
     if (you.berserk() && !reaching)
     {
@@ -1481,18 +1481,21 @@ bool evoke_item(int slot, bool check_range)
         if (prompt_failed(slot))
             return false;
     }
-    else if (!check_warning_inscriptions(you.inv[slot], OPER_EVOKE))
-        return false;
+	else if (!check_warning_inscriptions(you.inv[slot], OPER_EVOKE))
+	{
+		canned_msg(MSG_OK);
+		return false;
+	}
 
     ASSERT(slot >= 0);
 
 #ifdef ASSERTS // Used only by an assert
-    const bool wielded = (you.equip[EQ_WEAPON0] == slot);
+    const bool wielded = ((you.equip[EQ_WEAPON0] == slot) || (you.equip[EQ_WEAPON1] == slot));
 #endif /* DEBUG */
 
     item_def& item = you.inv[slot];
     // Also handles messages.
-    if (!item_is_evokable(item, true, false, true))
+    if (!item_is_evokable(item, true, false, false))
         return false;
 
     bool did_work   = false;  // "Nothing happens" message

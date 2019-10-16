@@ -2722,7 +2722,16 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
     case ABIL_JIYVA_SLIMIFY:
     {
         fail_check();
-        const item_def* const weapon = you.weapon();
+		if (you.weapon(0) && (you.weapon(0)->base_type == OBJ_SHIELDS && !is_hybrid(you.weapon(0)->sub_type)) || is_range_weapon(*you.weapon(0)) &&
+			(you.hands_reqd(*you.weapon(0)) == HANDS_TWO ||
+			you.weapon(1) && (you.weapon(1)->base_type == OBJ_SHIELDS && !is_hybrid(you.weapon(1)->sub_type)) || is_range_weapon(*you.weapon(1))))
+		{
+			mpr("You need a free hand or a melee weapon in one hand to use this ability.");
+			return SPRET_ABORT;
+		}
+		item_def* weapon = you.weapon(0);
+		if (you.weapon(0) && !is_melee_weapon(*you.weapon(0)))
+			weapon = you.weapon(1);
         const string msg = weapon ? weapon->name(DESC_YOUR)
                                   : ("your " + you.hand_name(true));
         mprf(MSGCH_DURATION, "A thick mucus forms on %s.", msg.c_str());

@@ -329,7 +329,7 @@ unsigned int item_value(item_def item, bool ident)
         }
         break;
 
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         valued += armour_base_price((armour_type)item.sub_type);
 
         if (item_type_known(item))
@@ -565,8 +565,7 @@ unsigned int item_value(item_def item, bool ident)
                 break;
 
             case SCR_BLINKING:
-            case SCR_ENCHANT_ARMOUR:
-            case SCR_ENCHANT_WEAPON:
+            case SCR_ENCHANT:
             case SCR_TORMENT:
             case SCR_HOLY_WORD:
             case SCR_SILENCE:

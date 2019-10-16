@@ -325,7 +325,7 @@ bool is_hasty_item(const item_def& item, bool calc_unid)
 
     switch (item.base_type)
     {
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         {
         const int item_brand = get_armour_ego_type(item);
         retval = (item_brand == SPARM_RUNNING);

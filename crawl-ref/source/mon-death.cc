@@ -444,7 +444,7 @@ static void _create_monster_hide(const item_def &corpse, bool silent)
     const armour_type type = hide_for_monster(mons_species(mtyp));
     ASSERT(type != NUM_ARMOURS);
 
-    int o = items(false, OBJ_ARMOUR, type, 0);
+    int o = items(false, OBJ_ARMOURS, type, 0);
     squash_plusses(o);
 
     if (o == NON_ITEM)

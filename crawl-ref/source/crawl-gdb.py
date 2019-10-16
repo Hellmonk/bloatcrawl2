@@ -104,8 +104,9 @@ class item_def_printer:
         ty = str(self.val['base_type'])
         sub_type_type = {
             'OBJ_WEAPONS':   'weapon_type',
+			'OBJ_SHIELDS':   'shield_type',
             'OBJ_MISSILES':  'missile_type',
-            'OBJ_ARMOUR':    'armour_type',
+            'OBJ_ARMOURS':   'armour_type',
             'OBJ_WANDS':     'wand_type',
             'OBJ_FOOD':      'food_type',
             'OBJ_SCROLLS':   'scroll_type',
@@ -131,7 +132,7 @@ class item_def_printer:
             yield f('plus')
 
         plus2typename = {
-            ('OBJ_ARMOUR', 'ARM_GLOVES'):'gloves_desc_type',
+            ('OBJ_ARMOURS', 'ARM_GLOVES'):'gloves_desc_type',
             }.get((ty, sub_ty), 'short')
         yield g('plus2', plus2typename)
 
@@ -148,7 +149,7 @@ class item_def_printer:
             special_type = {
                 'OBJ_WEAPONS':  'brand_type',
                 'OBJ_MISSILES': 'special_missile_type',
-                'OBJ_ARMOUR':   'special_armour_type',
+                'OBJ_ARMOURS':   'special_armour_type',
                 }.get(ty, 'int')
         yield g('special', special_type)
 

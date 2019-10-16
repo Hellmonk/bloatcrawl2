@@ -353,9 +353,9 @@ static vector<string> _randart_propnames(const item_def& item,
                   && entry->flags & UNRAND_FLAG_SKIP_EGO))
     {
         string ego;
-        if (item.base_type == OBJ_WEAPONS)
+        if (item.base_type == OBJ_WEAPONS || (item.base_type == OBJ_SHIELDS && is_hybrid(item.sub_type)))
             ego = weapon_brand_name(item, true);
-        else if (item.base_type == OBJ_ARMOUR)
+        else if (item.base_type == OBJ_ARMOURS || (item.base_type == OBJ_SHIELDS && !is_hybrid(item.sub_type)))
             ego = armour_ego_name(item, true);
         if (!ego.empty())
         {
@@ -931,9 +931,15 @@ static int _item_training_target(const item_def &item)
 {
     const int throw_dam = property(item, PWPN_DAMAGE);
     if (item.base_type == OBJ_WEAPONS || item.base_type == OBJ_STAVES)
-        return weapon_min_delay_skill(item) * 10;
-    else if (is_shield(item))
-        return round(you.get_shield_skill_to_offset_penalty(item) * 10);
+		return weapon_min_delay_skill(item) * 10;
+
+	else if (item.base_type == OBJ_SHIELDS)
+	{
+		if (is_hybrid(item.sub_type))
+			return max(weapon_min_delay_skill(item) * 10, int(round(you.get_shield_skill_to_offset_penalty(item) * 10)));
+		else
+			return round(you.get_shield_skill_to_offset_penalty(item) * 10);
+	}
     else if (item.base_type == OBJ_MISSILES && throw_dam)
         return (((10 + throw_dam / 2) - FASTEST_PLAYER_THROWING_SPEED) * 2) * 10;
     else
@@ -948,11 +954,10 @@ static int _item_training_target(const item_def &item)
 static skill_type _item_training_skill(const item_def &item)
 {
     const int throw_dam = property(item, PWPN_DAMAGE);
-    if (item.base_type == OBJ_WEAPONS || item.base_type == OBJ_STAVES)
+    if (item.base_type == OBJ_WEAPONS || item.base_type == OBJ_STAVES
+		|| item.base_type == OBJ_SHIELDS)
         return item_attack_skill(item);
-    else if (is_shield(item))
-        return SK_SHIELDS; // shields are armour, so do shields before armour
-    else if (item.base_type == OBJ_ARMOUR)
+    else if (item.base_type == OBJ_ARMOURS)
         return SK_ARMOUR;
     else if (item.base_type == OBJ_MISSILES && throw_dam)
         return SK_THROWING;
@@ -982,6 +987,21 @@ static bool _could_set_training_target(const item_def &item, bool ignore_current
     return target && you.can_train[skill]
        && you.skill(skill, 10, false, false, false) < target
        && (ignore_current || you.get_training_target(skill) < target);
+}
+
+// Returns if it makes sense to set a skill target for this dual wield combination.
+static bool _dual_wield_target(const item_def &item, const int target)
+{
+	if (!crawl_state.need_save || is_useless_item(item) || you.species == SP_GNOLL)
+		return false;
+
+	const skill_type skill = _item_training_skill(item);
+	if (skill == SK_NONE)
+		return false;
+
+	return target && you.can_train[skill]
+		&& you.skill(skill, 10, false, false, false) < target
+		&& you.get_training_target(skill) < target;
 }
 
 /**
@@ -1015,6 +1035,52 @@ static string _your_skill_desc(skill_type skill, bool show_target_button, int sc
                             target_button_desc.c_str());
 }
 
+static string _your_dual_skill_desc(skill_type skill0, skill_type skill1, bool show_target_button, int scaled_target0, int scaled_target1)
+{
+	if (!crawl_state.need_save || skill0 == SK_NONE)
+		return "";
+	string target_button_desc = "";
+	int min_scaled_target0 = min(scaled_target0, 270);
+	int min_scaled_target1 = min(scaled_target1, 270);
+	int current_skill0 = max(you.get_training_target(skill0), you.skill(skill0, 10));
+	int current_skill1 = max(you.get_training_target(skill1), you.skill(skill1, 10));
+	if (show_target_button)
+	{
+		if (current_skill0 < min_scaled_target0)
+		{
+			if (current_skill1 < min_scaled_target1)
+				target_button_desc = make_stringf(	
+					"\n    Use <white>(s)</white> to set %d.%d as a target for %s"
+					" and %d.%d as a target for %s.",
+					min_scaled_target0 / 10, min_scaled_target0 % 10,
+					skill_name(skill0),
+					min_scaled_target1 / 10, min_scaled_target1 % 10,
+					skill_name(skill1));
+			else
+				target_button_desc = make_stringf(
+					"\n    Use <white>(s)</white> to set %d.%d as a target for %s.",
+					min_scaled_target0 / 10, min_scaled_target0 % 10,
+					skill_name(skill0));
+		}
+		else if (current_skill1 < min_scaled_target1)
+			target_button_desc = make_stringf(
+				"\n    Use <white>(s)</white> to set %d.%d as a target for %s.",
+				min_scaled_target1 / 10, min_scaled_target1 % 10,
+				skill_name(skill1));
+	}
+	int you_skill_temp0 = you.skill(skill0, 10, false, true, true);
+	int you_skill0 = you.skill(skill0, 10, false, false, false);
+	int you_skill_temp1 = you.skill(skill1, 10, false, true, true);
+	int you_skill1 = you.skill(skill1, 10, false, false, false);
+	const bool steve = (you_skill_temp0 != you_skill0 || you_skill_temp1 != you_skill1);
+
+	return make_stringf("Your %sskill: %d.%d (%s) ; %d.%d (%s)%s",
+		(steve ? "(base) " : ""),
+		you_skill0 / 10, you_skill0 % 10, skill_name(skill0),
+		you_skill1 / 10, you_skill1 % 10, skill_name(skill1),
+		target_button_desc.c_str());
+}
+
 /**
  * Produce a description of a skill target for items where specific targets are
  * relevant.
@@ -1037,6 +1103,9 @@ static string _skill_target_desc(skill_type skill, int scaled_target,
     const skill_diff diffs = skill_level_to_diffs(skill,
                                 (double) scaled_target / 10, training, false);
     const int level_diff = xp_to_level_diff(diffs.experience / 10, 10);
+
+	if (level_diff == 0)
+		return description;
 
     if (max_training)
         description += "At 100% training ";
@@ -1068,10 +1137,13 @@ static string _skill_target_desc(skill_type skill, int scaled_target,
  * current training rate.
  */
 static void _append_skill_target_desc(string &description, skill_type skill,
-                                        int scaled_target)
+                                        int scaled_target, bool dual)
 {
-    if (you.species != SP_GNOLL)
-        description += "\n    " + _skill_target_desc(skill, scaled_target, 100);
+	if (you.species != SP_GNOLL)
+	{
+		if (dual) description += "\n    " + _skill_target_desc(skill, scaled_target, 50);
+		else description += "\n    " + _skill_target_desc(skill, scaled_target, 50);
+	}
     if (you.training[skill] > 0 && you.training[skill] < 100)
     {
         description += "\n    " + _skill_target_desc(skill, scaled_target,
@@ -1079,9 +1151,25 @@ static void _append_skill_target_desc(string &description, skill_type skill,
     }
 }
 
+static bool _check_set_dual_skill(const item_def &item)
+{
+	if (you.weapon(0) && you.weapon(1) &&
+		is_melee_weapon(*you.weapon(0)) && is_melee_weapon(*you.weapon(1)) &&
+		(you.weapon(0) == &item || you.weapon(1) == &item))
+	{
+		if (item_attack_skill(*you.weapon(0)) == item_attack_skill(*you.weapon(1)))
+			return you.skill(item_attack_skill(*you.weapon(0)), 10) < 10 * dual_wield_mindelay_skill(*you.weapon(0), *you.weapon(1));
+		else
+			return (you.skill(item_attack_skill(*you.weapon(0)), 10) < (40 + _item_training_target(*you.weapon(0))) ||
+				you.skill(item_attack_skill(*you.weapon(1)), 10) < (40 + _item_training_target(*you.weapon(1))));
+	}
+
+	return false;
+}
+
 static void _append_weapon_stats(string &description, const item_def &item)
 {
-    const int base_dam = property(item, PWPN_DAMAGE);
+    const int base_dam = weapon_damage(item);
     const int ammo_type = fires_ammo_type(item);
     const int ammo_dam = ammo_type == MI_NONE ? 0 :
                                                 ammo_type_damage(ammo_type);
@@ -1089,6 +1177,7 @@ static void _append_weapon_stats(string &description, const item_def &item)
     const int mindelay_skill = _item_training_target(item);
 
     const bool could_set_target = _could_set_training_target(item, true);
+	bool could_set_dual_target = false;
 
     if (skill == SK_SLINGS)
     {
@@ -1097,23 +1186,102 @@ static void _append_weapon_stats(string &description, const item_def &item)
                                     ammo_type_damage(MI_SLING_BULLET));
     }
 
-    description += make_stringf(
-    "\nBase accuracy: %+d  Base damage: %d  Base attack delay: %.1f"
-    "\nThis weapon's minimum attack delay (%.1f) is reached at skill level %d.",
-        property(item, PWPN_HIT),
-        base_dam + ammo_dam,
-        (float) property(item, PWPN_SPEED) / 10,
-        (float) weapon_min_delay(item, item_brand_known(item)) / 10,
-        mindelay_skill / 10);
+	if (item.base_type == OBJ_SHIELDS)
+	{
+		description += make_stringf(
+			"\nBase accuracy: %+d  Base damage: %d  Base attack delay: %.1f"
+			"\nThis weapon's minimum attack delay (%.1f) is reached at skill level %d.",
+			property(item, PSHD_HIT),
+			base_dam,
+			(float)property(item, PSHD_SPEED) / 10,
+			(float)weapon_min_delay(item, item_brand_known(item)) / 10,
+			mindelay_skill / 10);
+	}
+
+	if (item.base_type == OBJ_WEAPONS || item.base_type == OBJ_STAVES)
+	{
+		description += make_stringf(
+			"\nBase accuracy: %+d  Base damage: %d  Base attack delay: %.1f"
+			"\nThis weapon's minimum attack delay (%.1f) is reached at skill level %d.",
+			property(item, PWPN_HIT),
+			base_dam + ammo_dam,
+			(float)property(item, PWPN_SPEED) / 10,
+			(float)weapon_min_delay(item, item_brand_known(item)) / 10,
+			mindelay_skill / 10);
+	}
+
+	int skill_level = 0;
+	int skill_level1 = 0;
+	bool dual = false;
+
+	if (you.weapon(0) && you.weapon(1) && 
+		is_melee_weapon(*you.weapon(0)) && is_melee_weapon(*you.weapon(1)) &&
+		(you.weapon(0) == &item ||you.weapon(1) == &item))
+	{
+		const int delay = dual_wield_base_delay(*you.weapon(0), *you.weapon(1));
+		const int min_delay = max(weapon_min_delay(*you.weapon(0)), weapon_min_delay(*you.weapon(1)));
+
+		if (item_attack_skill(*you.weapon(0)) == item_attack_skill(*you.weapon(1)))
+		{
+			skill_level = 10 * dual_wield_mindelay_skill(*you.weapon(0), *you.weapon(1));
+
+			description += make_stringf(
+				"\n\nDual wielding stats based on both currently wielded weapons."
+				"\nBase dual wielding attack delay: %.1f"
+				"\nThis combinations's minimum attack delay (%.1f) is reached at skill level %d.",
+
+				(float)delay / 10,
+				(float)min_delay / 10,
+				skill_level/10);
+
+			could_set_dual_target = _dual_wield_target(item, skill_level);
+		}
+		else
+		{
+
+			skill_level  = (40 + _item_training_target(*you.weapon(0)));
+			skill_level1 = (40 + _item_training_target(*you.weapon(1)));
+			dual = true;
+			could_set_dual_target = _dual_wield_target(*you.weapon(0), skill_level) || _dual_wield_target(*you.weapon(1), skill_level1);
+
+			description += make_stringf(
+				"\n\nDual wielding stats based on both currently wielded weapons."
+				"\nBase dual wielding attack delay: %.1f"
+				"\nThis combinations's minimum attack delay (%.1f) is reached with"
+				"\nboth weapon's skills, %d (%s) and %d (%s).",
+
+				(float)delay / 10,
+				(float)min_delay / 10,
+				skill_level / 10,
+				skill_name(item_attack_skill(*you.weapon(0))),
+				skill_level1 / 10,
+				skill_name(item_attack_skill(*you.weapon(1))));
+		}
+	}
 
     if (!is_useless_item(item))
     {
-        description += "\n    " + _your_skill_desc(skill,
-                    could_set_target && in_inventory(item), mindelay_skill);
+		if (dual)
+			description += "\n    " + _your_dual_skill_desc(item_attack_skill(*you.weapon(0)),
+				item_attack_skill(*you.weapon(1)),
+				could_set_dual_target && in_inventory(item), skill_level, skill_level1);
+		else
+			description += "\n    " + _your_skill_desc(skill,
+                could_set_dual_target || could_set_target && in_inventory(item), max(mindelay_skill, skill_level));
     }
 
-    if (could_set_target)
-        _append_skill_target_desc(description, skill, mindelay_skill);
+	if (could_set_dual_target)
+	{
+		if (dual)
+		{
+			_append_skill_target_desc(description, item_attack_skill(*you.weapon(0)), skill_level, true);
+			_append_skill_target_desc(description, item_attack_skill(*you.weapon(1)), skill_level1, true);
+		}
+		else
+			_append_skill_target_desc(description, skill, skill_level, false);
+	}
+    else if (could_set_target)
+        _append_skill_target_desc(description, skill, mindelay_skill, false);
 }
 
 static string _handedness_string(const item_def &item)
@@ -1124,16 +1292,394 @@ static string _handedness_string(const item_def &item)
     {
     case HANDS_ONE:
         if (you.species == SP_FORMICID)
-            description += "It is a weapon for one hand-pair.";
+            description += "It is wielded with one pair of hands.";
         else
-            description += "It is a one handed weapon.";
+            description += "It is one handed.";
         break;
     case HANDS_TWO:
-        description += "It is a two handed weapon.";
+        description += "It is two handed.";
         break;
     }
 
     return description;
+}
+
+static string _armour_brand_desc(const item_def item)
+{
+	string description = "\n\n";
+
+	int ego = get_armour_ego_type(item);
+
+	switch (ego)
+	{
+	case SPARM_RUNNING:
+		if (item.sub_type == ARM_NAGA_BARDING)
+			description += "It allows its wearer to slither at a great speed.";
+		else
+			description += "It allows its wearer to run at a great speed.";
+		break;
+	case SPARM_FIRE_RESISTANCE:
+		description += "It protects its wearer from heat.";
+		break;
+	case SPARM_COLD_RESISTANCE:
+		description += "It protects its wearer from cold.";
+		break;
+	case SPARM_POISON_RESISTANCE:
+		description += "It protects its wearer from poison.";
+		break;
+	case SPARM_IMPROVED_VISION:
+		description += "It improves the wearer's vision.";
+		break;
+	case SPARM_INVISIBILITY:
+		description += "When activated it hides its wearer from "
+			"the sight of others, but also increases "
+			"their metabolic rate by a large amount.";
+		break;
+	case SPARM_STRENGTH:
+		description += "It increases the physical power of its wearer (+3 to strength).";
+		break;
+	case SPARM_DEXTERITY:
+		description += "It increases the dexterity of its wearer (+3 to dexterity).";
+		break;
+	case SPARM_INTELLIGENCE:
+		description += "It makes you more clever (+3 to intelligence).";
+		break;
+	case SPARM_PONDEROUSNESS:
+		description += "It is very cumbersome, thus slowing your movement.";
+		break;
+	case SPARM_FLYING:
+		description += "It can be activated to allow its wearer to "
+			"fly indefinitely.";
+		break;
+	case SPARM_MAGIC_RESISTANCE:
+		description += "It increases its wearer's resistance "
+			"to enchantments.";
+		break;
+	case SPARM_PROTECTION:
+		description += "It protects its wearer from harm (+3 to AC).";
+		break;
+	case SPARM_STEALTH:
+		description += "It enhances the stealth of its wearer.";
+		break;
+	case SPARM_RESISTANCE:
+		description += "It protects its wearer from the effects "
+			"of both cold and heat.";
+		break;
+	case SPARM_POSITIVE_ENERGY:
+		description += "It protects its wearer from "
+			"the effects of negative energy.";
+		break;
+
+		// This is only for robes.
+	case SPARM_ARCHMAGI:
+		description += "It increases the power of its wearer's "
+			"magical spells.";
+		break;
+	case SPARM_HIGH_PRIEST:
+		description += "It increases the strength god powers "
+			"when invoked by the wearer.";
+		break;
+#if TAG_MAJOR_VERSION == 34
+	case SPARM_PRESERVATION:
+		description += "It does nothing special.";
+		break;
+#endif
+	case SPARM_REFLECTION:
+		description += "It reflects blocked things back in the "
+			"direction they came from.";
+		break;
+
+	case SPARM_SPIRIT_SHIELD:
+		description += "It shields its wearer from harm at the cost "
+			"of magical power.";
+		break;
+
+	case SPARM_NORMAL:
+		description += "It has no special ego (it is not resistant to "
+			"fire, etc), but is still enchanted in some way - "
+			"positive or negative.";
+
+		break;
+
+		// This is only for gloves.
+	case SPARM_ARCHERY:
+		description += "It improves your effectiveness with ranged "
+			"weaponry, such as bows and javelins (Slay+4).";
+		break;
+
+		// These are only for scarves.
+	case SPARM_REPULSION:
+		description += "It protects its wearer by repelling missiles.";
+		break;
+
+	case SPARM_CLOUD_IMMUNE:
+		description += "It completely protects its wearer from the effects of clouds.";
+		break;
+	}
+
+	return description;
+}
+
+static string _weapon_brand_desc(const item_def &item)
+{
+
+	const int damtype = get_vorpal_type(item);
+
+	string description = "\n\n";
+
+	switch (get_weapon_brand(item))
+	{
+	case SPWPN_ACID:
+		description += "It is coated in a slimy acidic goo that may deal extra damage to those"
+			" that don't resist corrosion. Additionally may debuff the target's defensive"
+			" and weapon capabilities by coating them in acid.";
+	case SPWPN_MOLTEN:
+		if (is_range_weapon(item))
+		{
+			description += "It melts metal ammo placed within it; making them maluable so they can"
+				" partially ignore armour. Causes less base damage than a standard weapon; but partially"
+				" ignores enemy's defense, occasionally melts through shields, and burns causing"
+				" additional damage to those that don't resist heat.";
+		}
+		else
+			description += "Its maluable surface is completely molten, allowing it to meld around and"
+			" partially ignore armour. Causes less base damage than a standard weapon; but partially"
+			" ignores enemy's defense and burns causing additional damage to those that don't resist heat.";
+
+		if (!is_range_weapon(item) &&
+			(damtype == DVORP_SLICING || damtype == DVORP_CHOPPING
+				|| damtype == DVORP_DP || damtype == DVORP_TP))
+		{
+			description += " Big, molten blades are also staple "
+				"armaments of hydra-hunters.";
+		}
+		break;
+	case SPWPN_FREEZING:
+		if (is_range_weapon(item))
+		{
+			description += "It causes projectiles fired from it to freeze "
+				"those they strike,";
+		}
+		else
+		{
+			description += "It has been specially enchanted to freeze "
+				"those struck by it,";
+		}
+		description += " causing extra injury to most foes "
+			"and up to half again as much damage against particularly "
+			"susceptible opponents.";
+		if (is_range_weapon(item))
+			description += " They";
+		else
+			description += " It";
+		description += " can also slow down cold-blooded creatures.";
+		break;
+	case SPWPN_HOLY_WRATH:
+		description += "It has been blessed by the Shining One";
+		if (is_range_weapon(item))
+		{
+			description += ", and any ";
+			description += ammo_name(item);
+			description += " fired from it will";
+		}
+		else
+			description += " to";
+		description += " cause great damage to the undead and demons.";
+		break;
+	case SPWPN_ELECTROCUTION:
+		if (is_range_weapon(item))
+		{
+			description += "It charges the ammunition it shoots with "
+				"electricity; occasionally upon a hit, such missiles "
+				"may discharge and cause terrible harm.";
+		}
+		else
+		{
+			description += "Occasionally, upon striking a foe, it will "
+				"discharge some electrical energy and cause terrible "
+				"harm.";
+		}
+		break;
+	case SPWPN_VENOM:
+		if (is_range_weapon(item))
+			description += "It poisons the ammo it fires.";
+		else
+			description += "It poisons the flesh of those it strikes.";
+		break;
+	case SPWPN_PROTECTION:
+		description += "It protects the one who uses it against "
+			"injury (+AC on strike).";
+		break;
+	case SPWPN_DRAINING:
+		description += "A truly terrible weapon, it drains the "
+			"life of those it strikes.";
+		break;
+	case SPWPN_SPEED:
+		description += "Attacks with this weapon are significantly faster.";
+		break;
+	case SPWPN_VORPAL:
+		if (is_range_weapon(item))
+		{
+			description += "Any ";
+			description += ammo_name(item);
+			description += " fired from it inflicts extra damage.";
+		}
+		else
+		{
+			description += "It inflicts extra damage upon your "
+				"enemies.";
+		}
+		break;
+	case SPWPN_CHAOS:
+		if (is_range_weapon(item))
+		{
+			description += "Each projectile launched from it has a "
+				"different, random effect.";
+		}
+		else
+		{
+			description += "Each time it hits an enemy it has a "
+				"different, random effect.";
+		}
+		break;
+	case SPWPN_VAMPIRISM:
+		description += "It inflicts no extra harm, but heals "
+			"its wielder when it wounds a living foe.";
+		break;
+	case SPWPN_PAIN:
+		description += "In the hands of one skilled in necromantic "
+			"magic, it inflicts extra damage on living creatures.";
+		break;
+	case SPWPN_DISTORTION:
+		description += "It warps and distorts space around it. "
+			"Unwielding it can cause banishment or high damage.";
+		break;
+	case SPWPN_PENETRATION:
+		description += "Ammo fired by it will pass through the "
+			"targets it hits, potentially hitting all targets in "
+			"its path until it reaches maximum range.";
+		break;
+	case SPWPN_REAPING:
+		description += "If a monster killed with it leaves a "
+			"corpse in good enough shape, the corpse will be "
+			"animated as a zombie friendly to the killer.";
+		break;
+	case SPWPN_ANTIMAGIC:
+		description += "It reduces the magical energy of the wielder, "
+			"and disrupts the spells and magical abilities of those "
+			"hit. Natural abilities and divine invocations are not "
+			"affected.";
+		break;
+	case SPWPN_NORMAL:
+		description += "It has no special brand (it is not molten, "
+			"freezing, etc), but is still enchanted in some way - "
+			"positive or negative.";
+		break;
+	default:
+		description += "This is a buggy removed brand.";
+		break;
+	}
+
+	if (you.duration[DUR_EXCRUCIATING_WOUNDS] && &item == you.weapon(0))
+	{
+		description += "\nIt is temporarily rebranded; it is actually a";
+		if ((int)you.props[ORIGINAL_BRAND_KEY] == SPWPN_NORMAL)
+			description += "n unbranded weapon.";
+		else
+		{
+			description += " weapon of "
+				+ ego_type_string(item, false, you.props[ORIGINAL_BRAND_KEY])
+				+ ".";
+		}
+	}
+
+	return description;
+}
+
+static string _warlock_mirror_reflect_desc()
+{
+	const int SH = crawl_state.need_save ? player_shield_class() : 0;
+	const int reflect_chance = 100 * SH / omnireflect_chance_denom(SH);
+	return "\n\nWith your current SH, it has a " + to_string(reflect_chance) +
+		"% chance to reflect enchantments and other normally unblockable "
+		"effects.";
+}
+
+static string _describe_shield(const item_def &item, bool verbose)
+{
+	string description;
+
+	description.reserve(200);
+
+	description = "";
+
+	if (verbose)
+	{
+		description += "\n";
+		if (is_hybrid(item.sub_type))
+			_append_weapon_stats(description, item);
+	}
+
+	if (verbose && item_type_known(item) && is_hybrid(item.sub_type) 
+		&& get_weapon_brand(item) != SPWPN_NORMAL)
+		description += _weapon_brand_desc(item);
+
+	const int target_skill = _item_training_target(item);
+	const int penalty_skill = round(you.get_shield_skill_to_offset_penalty(item) * 10);
+	description += "\n";
+	description += "\nBase shield rating: "
+		+ to_string(property(item, PSHD_SH));
+	const bool could_set_target = _could_set_training_target(item, true);
+
+	if (!is_useless_item(item))
+	{
+		description += "       Skill to remove penalty: "
+			+ make_stringf("%d.%d", penalty_skill / 10,
+				penalty_skill % 10);
+
+		if (crawl_state.need_save)
+		{
+			description += "\n                            "
+				+ _your_skill_desc(SK_SHIELDS,
+					could_set_target && in_inventory(item), target_skill);
+		}
+		else
+			description += "\n";
+		if (could_set_target)
+		{
+			_append_skill_target_desc(description, SK_SHIELDS,
+				target_skill, false);
+		}
+	}
+
+	if (!is_hybrid(item.sub_type))
+	{
+		int ego = get_armour_ego_type(item);
+
+		if (ego != SPARM_NORMAL && item_type_known(item) && verbose)
+		{
+			description += _armour_brand_desc(item);
+		}
+	}
+
+	if (is_unrandom_artefact(item, UNRAND_WARLOCK_MIRROR))
+		description += _warlock_mirror_reflect_desc();
+
+	if (is_artefact(item))
+	{
+		string rand_desc = _randart_descrip(item);
+		if (!rand_desc.empty())
+		{
+			description += "\n";
+			description += rand_desc;
+		}
+
+		// Can't happen, right? (XXX)
+		if (!item_ident(item, ISFLAG_KNOW_PROPERTIES) && item_type_known(item))
+			description += "\nThis armour may have some hidden properties.";
+	}
+
+	return description;
 }
 
 static string _describe_weapon(const item_def &item, bool verbose)
@@ -1171,7 +1717,8 @@ static string _describe_weapon(const item_def &item, bool verbose)
             break;
         case SK_SHORT_BLADES:
             {
-                string adj = (item.sub_type == WPN_DAGGER) ? "extremely"
+                string adj = (item.sub_type == WPN_DAGGER || item.sub_type == SHD_SAI) 
+														   ? "extremely"
                                                            : "particularly";
                 description += "\n\nIt is " + adj + " good for stabbing"
                                " unaware enemies.";
@@ -1182,176 +1729,8 @@ static string _describe_weapon(const item_def &item, bool verbose)
         }
     }
 
-    // ident known & no brand but still glowing
-    // TODO: deduplicate this with the code in item-name.cc
-    const bool enchanted = get_equip_desc(item) && spec_ench == SPWPN_NORMAL
-                           && !item_ident(item, ISFLAG_KNOW_PLUSES);
-
-    // special weapon descrip
-    if (item_type_known(item) && (spec_ench != SPWPN_NORMAL || enchanted))
-    {
-        description += "\n\n";
-
-        switch (spec_ench)
-        {
-        case SPWPN_MOLTEN:
-			if (is_range_weapon(item))
-			{
-				description += "It melts metal ammo placed within it; making them maluable so they can"
-					" ignore armour. Causes less base damage than a standard weapon; but completely ignores"
-					" enemy's defense, occasionally melts through shields, and burns causing additional damage"
-					"to those that don't resist heat.";
-			}
-			else 
-                description += "Its maluable surface is completely molten, allowing it to meld around and"
-                    " ignore armour. Causes less base damage than a standard weapon; but completely ignores"
-					" enemy's defense and burns causing additional damage to those that don't resist heat.";
-
-            if (!is_range_weapon(item) &&
-                (damtype == DVORP_SLICING || damtype == DVORP_CHOPPING
-					|| damtype == DVORP_DP || damtype == DVORP_TP))
-            {
-                description += " Big, molten blades are also staple "
-                    "armaments of hydra-hunters.";
-            }
-            break;
-        case SPWPN_FREEZING:
-            if (is_range_weapon(item))
-            {
-                description += "It causes projectiles fired from it to freeze "
-                    "those they strike,";
-            }
-            else
-            {
-                description += "It has been specially enchanted to freeze "
-                    "those struck by it,";
-            }
-            description += " causing extra injury to most foes "
-                    "and up to half again as much damage against particularly "
-                    "susceptible opponents.";
-            if (is_range_weapon(item))
-                description += " They";
-            else
-                description += " It";
-            description += " can also slow down cold-blooded creatures.";
-            break;
-        case SPWPN_HOLY_WRATH:
-            description += "It has been blessed by the Shining One";
-            if (is_range_weapon(item))
-            {
-                description += ", and any ";
-                description += ammo_name(item);
-                description += " fired from it will";
-            }
-            else
-                description += " to";
-            description += " cause great damage to the undead and demons.";
-            break;
-        case SPWPN_ELECTROCUTION:
-            if (is_range_weapon(item))
-            {
-                description += "It charges the ammunition it shoots with "
-                    "electricity; occasionally upon a hit, such missiles "
-                    "may discharge and cause terrible harm.";
-            }
-            else
-            {
-                description += "Occasionally, upon striking a foe, it will "
-                    "discharge some electrical energy and cause terrible "
-                    "harm.";
-            }
-            break;
-        case SPWPN_VENOM:
-            if (is_range_weapon(item))
-                description += "It poisons the ammo it fires.";
-            else
-                description += "It poisons the flesh of those it strikes.";
-            break;
-        case SPWPN_PROTECTION:
-            description += "It protects the one who uses it against "
-                "injury (+AC on strike).";
-            break;
-        case SPWPN_DRAINING:
-            description += "A truly terrible weapon, it drains the "
-                "life of those it strikes.";
-            break;
-        case SPWPN_SPEED:
-            description += "Attacks with this weapon are significantly faster.";
-            break;
-        case SPWPN_VORPAL:
-            if (is_range_weapon(item))
-            {
-                description += "Any ";
-                description += ammo_name(item);
-                description += " fired from it inflicts extra damage.";
-            }
-            else
-            {
-                description += "It inflicts extra damage upon your "
-                    "enemies.";
-            }
-            break;
-        case SPWPN_CHAOS:
-            if (is_range_weapon(item))
-            {
-                description += "Each projectile launched from it has a "
-                               "different, random effect.";
-            }
-            else
-            {
-                description += "Each time it hits an enemy it has a "
-                    "different, random effect.";
-            }
-            break;
-        case SPWPN_VAMPIRISM:
-            description += "It inflicts no extra harm, but heals "
-                "its wielder when it wounds a living foe.";
-            break;
-        case SPWPN_PAIN:
-            description += "In the hands of one skilled in necromantic "
-                "magic, it inflicts extra damage on living creatures.";
-            break;
-        case SPWPN_DISTORTION:
-            description += "It warps and distorts space around it. "
-                "Unwielding it can cause banishment or high damage.";
-            break;
-        case SPWPN_PENETRATION:
-            description += "Ammo fired by it will pass through the "
-                "targets it hits, potentially hitting all targets in "
-                "its path until it reaches maximum range.";
-            break;
-        case SPWPN_REAPING:
-            description += "If a monster killed with it leaves a "
-                "corpse in good enough shape, the corpse will be "
-                "animated as a zombie friendly to the killer.";
-            break;
-        case SPWPN_ANTIMAGIC:
-            description += "It reduces the magical energy of the wielder, "
-                    "and disrupts the spells and magical abilities of those "
-                    "hit. Natural abilities and divine invocations are not "
-                    "affected.";
-            break;
-        case SPWPN_NORMAL:
-            ASSERT(enchanted);
-            description += "It has no special brand (it is not molten, "
-                    "freezing, etc), but is still enchanted in some way - "
-                    "positive or negative.";
-            break;
-        }
-    }
-
-    if (you.duration[DUR_EXCRUCIATING_WOUNDS] && &item == you.weapon())
-    {
-        description += "\nIt is temporarily rebranded; it is actually a";
-        if ((int) you.props[ORIGINAL_BRAND_KEY] == SPWPN_NORMAL)
-            description += "n unbranded weapon.";
-        else
-        {
-            description += " weapon of "
-                        + ego_type_string(item, false, you.props[ORIGINAL_BRAND_KEY])
-                        + ".";
-        }
-    }
+	if (spec_ench != SPWPN_NORMAL && item_type_known(item))
+		description += _weapon_brand_desc(item);
 
     if (is_artefact(item))
     {
@@ -1544,7 +1923,7 @@ static string _describe_ammo(const item_def &item)
                         could_set_target && in_inventory(item), target_skill);
         }
         if (could_set_target)
-            _append_skill_target_desc(description, SK_THROWING, target_skill);
+            _append_skill_target_desc(description, SK_THROWING, target_skill, false);
     }
 
     if (ammo_always_destroyed(item))
@@ -1555,15 +1934,6 @@ static string _describe_ammo(const item_def &item)
     return description;
 }
 
-static string _warlock_mirror_reflect_desc()
-{
-    const int SH = crawl_state.need_save ? player_shield_class() : 0;
-    const int reflect_chance = 100 * SH / omnireflect_chance_denom(SH);
-    return "\n\nWith your current SH, it has a " + to_string(reflect_chance) +
-           "% chance to reflect enchantments and other normally unblockable "
-           "effects.";
-}
-
 static string _describe_armour(const item_def &item, bool verbose)
 {
     string description;
@@ -1572,63 +1942,28 @@ static string _describe_armour(const item_def &item, bool verbose)
 
     if (verbose)
     {
-        if (is_shield(item))
+        const int evp = property(item, PARM_EVASION);
+        description += "\n\nBase armour rating: "
+                    + to_string(property(item, PARM_AC));
+        if (get_armour_slot(item) == EQ_BODY_ARMOUR)
         {
-            const int target_skill = _item_training_target(item);
-            description += "\n";
-            description += "\nBase shield rating: "
-                        + to_string(property(item, PARM_AC));
-            const bool could_set_target = _could_set_training_target(item, true);
-
-            if (!is_useless_item(item))
-            {
-                description += "       Skill to remove penalty: "
-                            + make_stringf("%d.%d", target_skill / 10,
-                                                target_skill % 10);
-
-                if (crawl_state.need_save)
-                {
-                    description += "\n                            "
-                        + _your_skill_desc(SK_SHIELDS,
-                          could_set_target && in_inventory(item), target_skill);
-                }
-                else
-                    description += "\n";
-                if (could_set_target)
-                {
-                    _append_skill_target_desc(description, SK_SHIELDS,
-                                                                target_skill);
-                }
-            }
-
-            if (is_unrandom_artefact(item, UNRAND_WARLOCK_MIRROR))
-                description += _warlock_mirror_reflect_desc();
+            description += "       Encumbrance rating: "
+                        + to_string(-evp / 10);
         }
-        else
+        // Bardings reduce evasion by a fixed amount, and don't have any of
+        // the other effects of encumbrance.
+        else if (evp)
         {
-            const int evp = property(item, PARM_EVASION);
-            description += "\n\nBase armour rating: "
-                        + to_string(property(item, PARM_AC));
-            if (get_armour_slot(item) == EQ_BODY_ARMOUR)
-            {
-                description += "       Encumbrance rating: "
-                            + to_string(-evp / 10);
-            }
-            // Bardings reduce evasion by a fixed amount, and don't have any of
-            // the other effects of encumbrance.
-            else if (evp)
-            {
-                description += "       Evasion: "
-                            + to_string(evp / 30);
-            }
+            description += "       Evasion: "
+                        + to_string(evp / 30);
+        }
 
-            // only display player-relevant info if the player exists
-            if (crawl_state.need_save && get_armour_slot(item) == EQ_BODY_ARMOUR)
-            {
-                description += make_stringf("\nWearing mundane armour of this type "
-                                            "will give the following: %d AC",
-                                             you.base_ac_from(item));
-            }
+        // only display player-relevant info if the player exists
+        if (crawl_state.need_save && get_armour_slot(item) == EQ_BODY_ARMOUR)
+        {
+            description += make_stringf("\nWearing mundane armour of this type "
+                                        "will give the following: %d AC",
+                                            you.base_ac_from(item));
         }
     }
 
@@ -1638,115 +1973,7 @@ static string _describe_armour(const item_def &item, bool verbose)
 
     if ((ego != SPARM_NORMAL || enchanted) && item_type_known(item) && verbose)
     {
-        description += "\n\n";
-
-        switch (ego)
-        {
-        case SPARM_RUNNING:
-            if (item.sub_type == ARM_NAGA_BARDING)
-                description += "It allows its wearer to slither at a great speed.";
-            else
-                description += "It allows its wearer to run at a great speed.";
-            break;
-        case SPARM_FIRE_RESISTANCE:
-            description += "It protects its wearer from heat.";
-            break;
-        case SPARM_COLD_RESISTANCE:
-            description += "It protects its wearer from cold.";
-            break;
-        case SPARM_POISON_RESISTANCE:
-            description += "It protects its wearer from poison.";
-            break;
-        case SPARM_IMPROVED_VISION:
-            description += "It improves the wearer's vision.";
-            break;
-        case SPARM_INVISIBILITY:
-            description += "When activated it hides its wearer from "
-                "the sight of others, but also increases "
-                "their metabolic rate by a large amount.";
-            break;
-        case SPARM_STRENGTH:
-            description += "It increases the physical power of its wearer (+3 to strength).";
-            break;
-        case SPARM_DEXTERITY:
-            description += "It increases the dexterity of its wearer (+3 to dexterity).";
-            break;
-        case SPARM_INTELLIGENCE:
-            description += "It makes you more clever (+3 to intelligence).";
-            break;
-        case SPARM_PONDEROUSNESS:
-            description += "It is very cumbersome, thus slowing your movement.";
-            break;
-        case SPARM_FLYING:
-            description += "It can be activated to allow its wearer to "
-                "fly indefinitely.";
-            break;
-        case SPARM_MAGIC_RESISTANCE:
-            description += "It increases its wearer's resistance "
-                "to enchantments.";
-            break;
-        case SPARM_PROTECTION:
-            description += "It protects its wearer from harm (+3 to AC).";
-            break;
-        case SPARM_STEALTH:
-            description += "It enhances the stealth of its wearer.";
-            break;
-        case SPARM_RESISTANCE:
-            description += "It protects its wearer from the effects "
-                "of both cold and heat.";
-            break;
-        case SPARM_POSITIVE_ENERGY:
-            description += "It protects its wearer from "
-                "the effects of negative energy.";
-            break;
-
-        // This is only for robes.
-        case SPARM_ARCHMAGI:
-            description += "It increases the power of its wearer's "
-                "magical spells.";
-            break;
-		case SPARM_HIGH_PRIEST:
-			description += "It increases the strength god powers "
-				"when invoked by the wearer.";
-			break;
-#if TAG_MAJOR_VERSION == 34
-        case SPARM_PRESERVATION:
-            description += "It does nothing special.";
-            break;
-#endif
-        case SPARM_REFLECTION:
-            description += "It reflects blocked things back in the "
-                "direction they came from.";
-            break;
-
-        case SPARM_SPIRIT_SHIELD:
-            description += "It shields its wearer from harm at the cost "
-                "of magical power.";
-            break;
-
-        case SPARM_NORMAL:
-            ASSERT(enchanted);
-            description += "It has no special ego (it is not resistant to "
-                           "fire, etc), but is still enchanted in some way - "
-                           "positive or negative.";
-
-            break;
-
-        // This is only for gloves.
-        case SPARM_ARCHERY:
-            description += "It improves your effectiveness with ranged "
-                           "weaponry, such as bows and javelins (Slay+4).";
-            break;
-
-        // These are only for scarves.
-        case SPARM_REPULSION:
-            description += "It protects its wearer by repelling missiles.";
-            break;
-
-        case SPARM_CLOUD_IMMUNE:
-            description += "It completely protects its wearer from the effects of clouds.";
-            break;
-        }
+		description += _armour_brand_desc(item);
     }
 
     if (is_artefact(item))
@@ -1995,8 +2222,9 @@ string get_item_description(const item_def &item, bool verbose,
 #endif
 
     if (verbose || (item.base_type != OBJ_WEAPONS
-                    && item.base_type != OBJ_ARMOUR
-                    && item.base_type != OBJ_BOOKS))
+                    && item.base_type != OBJ_ARMOURS
+                    && item.base_type != OBJ_BOOKS
+					&& item.base_type != OBJ_SHIELDS))
     {
         description << "\n\n";
 
@@ -2073,7 +2301,15 @@ string get_item_description(const item_def &item, bool verbose,
             description << desc;
         break;
 
-    case OBJ_ARMOUR:
+	case OBJ_SHIELDS:
+		desc = _describe_shield(item, verbose);
+		if (desc.empty())
+			need_extra_line = false;
+		else
+			description << desc;
+		break;
+
+    case OBJ_ARMOURS:
         desc = _describe_armour(item, verbose);
         if (desc.empty())
             need_extra_line = false;
@@ -2215,7 +2451,7 @@ string get_item_description(const item_def &item, bool verbose,
 
             if (is_artefact(item))
             {
-                if (item.base_type == OBJ_ARMOUR
+                if (item.base_type == OBJ_ARMOURS
                     || item.base_type == OBJ_WEAPONS)
                 {
                     description << "\nThis ancient artefact cannot be changed "
@@ -2527,7 +2763,7 @@ static vector<command_type> _allowed_actions(const item_def& item)
     {
     case OBJ_WEAPONS:
     case OBJ_STAVES:
-        if (_could_set_training_target(item, false))
+        if (_could_set_training_target(item, false) || _check_set_dual_skill(item))
             actions.push_back(CMD_SET_SKILL_TARGET);
         // intentional fallthrough
     case OBJ_MISCELLANY:
@@ -2545,7 +2781,7 @@ static vector<command_type> _allowed_actions(const item_def& item)
         if (you.species != SP_FELID)
             actions.push_back(CMD_QUIVER_ITEM);
         break;
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         if (_could_set_training_target(item, false))
             actions.push_back(CMD_SET_SKILL_TARGET);
         if (item_is_equipped(item))
@@ -2699,20 +2935,70 @@ static bool _do_action(item_def &item, const vector<command_type>& actions, int 
 
 void target_item(item_def &item)
 {
-    const skill_type skill = _item_training_skill(item);
-    if (skill == SK_NONE)
-        return;
+	// Dual Wielding Skill Targeting
+	if (you.weapon(0) && you.weapon(1) &&
+		is_melee_weapon(*you.weapon(0)) && is_melee_weapon(*you.weapon(1)) &&
+		(you.weapon(0) == &item || you.weapon(1) == &item))
+	{
+		const skill_type skill0 = _item_training_skill(*you.weapon(0));
+		const skill_type skill1 = _item_training_skill(*you.weapon(1));
 
-    const int target = _item_training_target(item);
-    if (target == 0)
-        return;
+		if (skill0 == skill1)
+		{
+			const int target = 10 * dual_wield_mindelay_skill(*you.weapon(0), *you.weapon(1));
 
-    you.set_training_target(skill, target, true);
-    // ensure that the skill is at least enabled
-    if (you.train[skill] == TRAINING_DISABLED)
-        you.train[skill] = TRAINING_ENABLED;
-    you.train_alt[skill] = you.train[skill];
-    reset_training();
+			if (target <= you.skill(skill0, 10))
+				return;
+
+			you.set_training_target(skill0, target, true);
+			// ensure that the skill is at least enabled
+			if (you.train[skill0] == TRAINING_DISABLED)
+				you.train[skill0] = TRAINING_ENABLED;
+			you.train_alt[skill0] = you.train[skill0];
+			reset_training();
+		}
+		else
+		{
+			const int target0 = (40 + _item_training_target(*you.weapon(0)));
+			const int target1 = (40 + _item_training_target(*you.weapon(1)));
+
+			if (target0 > you.skill(skill0, 10))
+			{
+				you.set_training_target(skill0, target0, true);
+				// ensure that the skill is at least enabled
+				if (you.train[skill0] == TRAINING_DISABLED)
+					you.train[skill0] = TRAINING_ENABLED;
+				you.train_alt[skill0] = you.train[skill0];
+				reset_training();
+			}
+			if (target1 > you.skill(skill1, 10))
+			{
+				you.set_training_target(skill1, target1, true);
+				// ensure that the skill is at least enabled
+				if (you.train[skill1] == TRAINING_DISABLED)
+					you.train[skill1] = TRAINING_ENABLED;
+				you.train_alt[skill1] = you.train[skill1];
+				reset_training();
+			}
+		}
+	}
+
+	else {
+		const skill_type skill = _item_training_skill(item);
+		if (skill == SK_NONE)
+			return;
+
+		const int target = _item_training_target(item);
+		if (target == 0)
+			return;
+
+		you.set_training_target(skill, target, true);
+		// ensure that the skill is at least enabled
+		if (you.train[skill] == TRAINING_DISABLED)
+			you.train[skill] = TRAINING_ENABLED;
+		you.train_alt[skill] = you.train[skill];
+		reset_training();
+	}
 }
 
 /**

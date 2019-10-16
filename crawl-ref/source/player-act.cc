@@ -201,10 +201,18 @@ int player::damage_type(int)
 /**
  * What weapon brand does the player attack with in melee?
  */
-brand_type player::damage_brand(int)
+brand_type player::damage_brand(int which_attack)
 {
-    const int wpn = equip[EQ_WEAPON0];
-    if (wpn != -1 && !melded[EQ_WEAPON0])
+	equipment_type slot; 
+	
+	if (which_attack == 0)
+		slot = EQ_WEAPON0;
+	if (which_attack == 1)
+		slot = EQ_WEAPON1;
+
+	const int wpn = equip[slot];
+
+    if (wpn != -1 && !melded[slot])
     {
         if (is_range_weapon(inv[wpn]))
             return SPWPN_NORMAL; // XXX: check !is_melee_weapon instead?
@@ -232,61 +240,109 @@ brand_type player::damage_brand(int)
  */
 random_var player::attack_delay(const item_def *projectile, bool rescale) const
 {
-    const item_def* weap = weapon();
-    random_var attk_delay(15);
+    item_def* weap0 = weapon(0);
+	item_def* weap1 = weapon(1);
+    random_var attk_delay (100);
     // a semi-arbitrary multiplier, to minimize loss of precision from integer
     // math.
     const int DELAY_SCALE = 20;
-    const int base_shield_penalty = adjusted_shield_penalty(DELAY_SCALE);
 
-    if (projectile && is_launched(this, weap, *projectile) == launch_retval::THROWN)
-    {
-        // Thrown weapons use 10 + projectile damage to determine base delay.
-        const skill_type wpn_skill = SK_THROWING;
-        const int projectile_delay = 10 + property(*projectile, PWPN_DAMAGE) / 2;
-        attk_delay = random_var(projectile_delay);
-        attk_delay -= div_rand_round(random_var(you.skill(wpn_skill, 10)),
-                                     DELAY_SCALE);
 
-        // apply minimum to weapon skill modification
-        attk_delay = rv::max(attk_delay,
-                random_var(FASTEST_PLAYER_THROWING_SPEED));
-    }
-    else if (!weap)
+	// Old Version Applies when a Single Weapon is used (this Weap being that weapon).
+	item_def * weap;
+
+	// UC; now always 5.
+    if (!weap0 && !weap1)
     {
-        int sk = form_uses_xl() ? experience_level * 10 :
-                                  skill(SK_UNARMED_COMBAT, 10);
-        attk_delay = random_var(10) - div_rand_round(random_var(sk), 27*2);
+        attk_delay = random_var(5);
     }
-    else if (weap &&
-             (projectile ? projectile->launched_by(*weap)
-                         : is_melee_weapon(*weap)))
+
+	// Thrown Weapons. (Left Alone for Now).
+	else if (projectile && is_launched(this, weap0, weap1, *projectile) == launch_retval::THROWN)
+	{
+		// Thrown weapons use 10 + projectile damage to determine base delay.
+		const skill_type wpn_skill = SK_THROWING;
+		const int projectile_delay = 10 + property(*projectile, PWPN_DAMAGE) / 2;
+		attk_delay = random_var(projectile_delay);
+		attk_delay -= div_rand_round(random_var(you.skill(wpn_skill, 10)),
+			DELAY_SCALE);
+
+		// apply minimum to weapon skill modification
+		attk_delay = rv::max(attk_delay,
+			random_var(FASTEST_PLAYER_THROWING_SPEED));
+	}
+
+	// Dual Wielding Version
+	else if (weap0 && weap1 && is_melee_weapon(*weap0) && is_melee_weapon(*weap1) && !projectile)
+	{
+		const skill_type wpn_skill0 = item_attack_skill(*weap0);
+		const skill_type wpn_skill1 = item_attack_skill(*weap1);
+
+		attk_delay = random_var(dual_wield_base_delay(*weap0, *weap1));
+
+		// Two weapons that use the same skill
+		if (wpn_skill0 == wpn_skill1)
+		{
+			const int wpn_sklev = min(you.skill(wpn_skill0, 10), 10 * dual_wield_mindelay_skill(*weap0, *weap1));
+
+			attk_delay -= div_rand_round(random_var(wpn_sklev), DELAY_SCALE);
+		}
+
+		else
+		{
+			const int skill0 = min(you.skill(wpn_skill0, 10), 10 * (4 + weapon_min_delay_skill(*weap0)));
+			const int skill1 = min(you.skill(wpn_skill1, 10), 10 * (4 + weapon_min_delay_skill(*weap1)));
+			attk_delay -= div_rand_round(random_var((skill0 + skill1) / 2), DELAY_SCALE);
+		}
+
+		if (weap0->base_type == OBJ_WEAPONS && get_weapon_brand(*weap0) == SPWPN_SPEED)
+			attk_delay = div_rand_round(attk_delay * 8, 10);
+		if (weap1->base_type == OBJ_WEAPONS && get_weapon_brand(*weap1) == SPWPN_SPEED)
+			attk_delay = div_rand_round(attk_delay * 8, 10);
+	}
+
+	// The old version; only changed to accommodate shield/weapon hybrids.
+	else
     {
+
+		if (weap0 && !weap1) // Single Melee Weapon (either 2H or with Offhand Punch)
+			weap = weap0;
+
+		else if (weap1 && !weap0) // Single Melee Weapon (either 2H or with Offhand Punch)
+			weap = weap1;
+
+		else if (weap0 && projectile && projectile->launched_by(*weap0)) // Ranged
+			weap = weap0;
+
+		else if (is_range_weapon(*weap0) && is_melee_weapon(*weap1)) // Melee weapon and Ranged weapon (only melee used)
+			weap = weap1;
+
         const skill_type wpn_skill = item_attack_skill(*weap);
         // Cap skill contribution to mindelay skill, so that rounding
         // doesn't make speed brand benefit from higher skill.
         const int wpn_sklev = min(you.skill(wpn_skill, 10),
                                   10 * weapon_min_delay_skill(*weap));
 
-        attk_delay = random_var(property(*weap, PWPN_SPEED));
-        attk_delay -= div_rand_round(random_var(wpn_sklev), DELAY_SCALE);
-        if (get_weapon_brand(*weap) == SPWPN_SPEED)
-            attk_delay = div_rand_round(attk_delay * 2, 3);
+		if (weap->base_type == OBJ_SHIELDS)
+		{
+			attk_delay = random_var(property(*weap, PSHD_SPEED));
+			attk_delay -= div_rand_round(random_var(wpn_sklev), DELAY_SCALE);
+
+			if (get_weapon_brand(*weap) == SPWPN_SPEED)
+				attk_delay = div_rand_round(attk_delay * 2, 3);
+		}
+
+		else
+		{
+			attk_delay = random_var(property(*weap, PWPN_SPEED));
+			attk_delay -= div_rand_round(random_var(wpn_sklev), DELAY_SCALE);
+			if (get_weapon_brand(*weap) == SPWPN_SPEED)
+				attk_delay = div_rand_round(attk_delay * 2, 3);
+		}
     }
 
     // At the moment it never gets this low anyway.
     attk_delay = rv::max(attk_delay, random_var(3));
-
-    if (base_shield_penalty)
-    {
-        // Calculate this separately to avoid overflowing the weights in
-        // the random_var.
-        random_var shield_penalty =
-            div_rand_round(rv::min(rv::roll_dice(1, base_shield_penalty),
-                                   rv::roll_dice(1, base_shield_penalty)),
-                           DELAY_SCALE);
-        attk_delay += shield_penalty;
-    }
 
 	if (you.duration[DUR_CLUMSY])
 		attk_delay = attk_delay * 2;
@@ -321,12 +377,23 @@ item_def *player::slot_item(equipment_type eq, bool include_melded) const
 }
 
 // Returns the item in the player's weapon slot.
-item_def *player::weapon(int /* which_attack */) const
+item_def *player::weapon(int which_attack) const
 {
-    if (melded[EQ_WEAPON0])
-        return nullptr;
+	if (which_attack < 1)
+	{
+		if (melded[EQ_WEAPON0])
+			return nullptr;
 
-    return slot_item(EQ_WEAPON0, false);
+		return slot_item(EQ_WEAPON0, false);
+	}
+	else
+	{
+		if (melded[EQ_WEAPON1])
+			return nullptr;
+
+		return slot_item(EQ_WEAPON1, false);
+
+	}
 }
 
 // Give hands required to wield weapon.
@@ -342,12 +409,6 @@ bool player::can_wield(const item_def& item, bool ignore_curse,
                        bool ignore_brand, bool ignore_shield,
                        bool ignore_transform) const
 {
-    if (equip[EQ_WEAPON0] != -1 && !ignore_curse)
-    {
-        if (inv[equip[EQ_WEAPON0]].cursed())
-            return false;
-    }
-
     // Unassigned means unarmed combat.
     const bool two_handed = item.base_type == OBJ_UNASSIGNED
                             || hands_reqd(item) == HANDS_TWO;
@@ -384,18 +445,7 @@ bool player::could_wield(const item_def &item, bool ignore_brand,
     }
 
     // Most non-weapon objects can be wielded, though there's rarely a point
-    if (!is_weapon(item))
-    {
-        if (item.base_type == OBJ_ARMOUR || item.base_type == OBJ_JEWELLERY)
-        {
-            if (!quiet)
-                mprf("You can't wield %s.", base_type_string(item));
-            return false;
-        }
-
-        return true;
-    }
-    else if (species == SP_FELID)
+    if (species == SP_FELID)
     {
         if (!quiet)
             mpr("You can't use weapons.");
@@ -428,10 +478,27 @@ bool player::could_wield(const item_def &item, bool ignore_brand,
     return true;
 }
 
-// Returns the shield the player is wearing, or nullptr if none.
+// Returns the shield the player is wielding, or nullptr if none.
 item_def *player::shield() const
 {
-    return slot_item(EQ_WEAPON1, false);
+	item_def * item0 = slot_item(EQ_WEAPON0, false);
+	item_def * item1 = slot_item(EQ_WEAPON1, false);
+	if (item0 && item0->base_type == OBJ_SHIELDS)
+	{
+		if (item1 && item1->base_type == OBJ_SHIELDS)
+		{
+			if (coinflip())
+				return item0;
+			else
+				return item1;
+		}
+		else
+			return item0;
+	}
+	else if (item1 && item1->base_type == OBJ_SHIELDS)
+		return item1;
+	else 
+		return nullptr;
 }
 
 void player::make_hungry(int hunger_increase, bool silent)

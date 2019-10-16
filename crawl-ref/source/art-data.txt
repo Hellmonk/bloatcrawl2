@@ -306,7 +306,7 @@ BOOL:    evil, nogen
 # Reserved for the Enchantress.
 ENUM:    FAERIE
 NAME:    faerie dragon scales
-OBJ:     OBJ_ARMOUR/ARM_ACID_DRAGON_ARMOUR
+OBJ:     OBJ_ARMOURS/ARM_ACID_DRAGON_ARMOUR
 PLUS:    +3
 COLOUR:  ETC_JEWEL
 TILE:    urand_faerie
@@ -652,7 +652,7 @@ TILE_EQ:  storm_bow
 BRAND:    SPWPN_ELECTROCUTION
 
 NAME:    large shield of Ignorance
-OBJ:     OBJ_ARMOUR/ARM_LARGE_SHIELD
+OBJ:     OBJ_SHIELDS/SHD_LARGE_SHIELD
 PLUS:    +10
 COLOUR:  BROWN
 TILE:    urand_ignorance
@@ -661,7 +661,7 @@ INT:     -4
 LIFE:    1
 
 NAME:    robe of Augmentation
-OBJ:     OBJ_ARMOUR/ARM_ROBE
+OBJ:     OBJ_ARMOURS/ARM_ROBE
 PLUS:    +4
 COLOUR:  LIGHTRED
 TILE:    urand_augmentation
@@ -671,7 +671,7 @@ INT:     4
 DEX:     4
 
 NAME:     cloak of the Thief
-OBJ:      OBJ_ARMOUR/ARM_CLOAK
+OBJ:      OBJ_ARMOURS/ARM_CLOAK
 INSCRIP:  +Fog
 PLUS:     +2
 COLOUR:   ETC_DARK
@@ -683,7 +683,7 @@ BOOL:     seeinv, fog
 
 # TAG_MAJOR_VERSION == 34
 NAME:    large shield "Bullseye"
-OBJ:     OBJ_ARMOUR/ARM_LARGE_SHIELD
+OBJ:     OBJ_SHIELDS/SHD_LARGE_SHIELD
 PLUS:    +15
 COLOUR:  RED
 TILE:    urand_bullseye
@@ -692,7 +692,7 @@ EV:      -5
 BOOL:    nogen
 
 NAME:    crown of Dyrovepreva
-OBJ:     OBJ_ARMOUR/ARM_HAT
+OBJ:     OBJ_ARMOURS/ARM_HAT
 PLUS:    +3
 COLOUR:  ETC_JEWEL
 TILE:    urand_dyrovepreva
@@ -701,7 +701,7 @@ INT:     2
 BOOL:    elec, seeinv
 
 NAME:     hat of the Bear Spirit
-OBJ:      OBJ_ARMOUR/ARM_HAT
+OBJ:      OBJ_ARMOURS/ARM_HAT
 PLUS:     +2
 COLOUR:   DARKGREY
 TILE:     urand_bear
@@ -712,7 +712,7 @@ MAGIC:    2
 LIFE:     1
 
 NAME:     robe of Misfortune
-OBJ:      OBJ_ARMOUR/ARM_ROBE
+OBJ:      OBJ_ARMOURS/ARM_ROBE
 PLUS:     -5
 COLOUR:   LIGHTMAGENTA
 TILE:     urand_misfortune
@@ -723,7 +723,7 @@ BOOL:     nospell, rnd_tele, randapp, unided, mutate, drain, curse
 
 # TAG_MAJOR_VERSION == 34
 NAME:     cloak of Flash
-OBJ:      OBJ_ARMOUR/ARM_CLOAK
+OBJ:      OBJ_ARMOURS/ARM_CLOAK
 PLUS:     +3
 COLOUR:   ETC_FLASH
 TILE:     urand_flash
@@ -733,7 +733,7 @@ BOOL:     fly, nogen
 
 ENUM:     BOOTS_ASSASSIN
 NAME:     boots of the Assassin
-OBJ:      OBJ_ARMOUR/ARM_BOOTS
+OBJ:      OBJ_ARMOURS/ARM_BOOTS
 INSCRIP:  Detection Stab+
 PLUS:     +2
 COLOUR:   BROWN
@@ -744,7 +744,7 @@ VALUE:    600
 
 ENUM:    LEAR
 NAME:    Lear's hauberk
-OBJ:     OBJ_ARMOUR/ARM_CHAIN_MAIL
+OBJ:     OBJ_ARMOURS/ARM_CHAIN_MAIL
 PLUS:    27
 COLOUR:  ETC_GOLD
 TILE:    urand_lear
@@ -752,7 +752,7 @@ TILE_EQ: lears_hauberk
 BOOL:    special
 
 NAME:    skin of Zhor
-OBJ:     OBJ_ARMOUR/ARM_ANIMAL_SKIN
+OBJ:     OBJ_ARMOURS/ARM_ANIMAL_SKIN
 PLUS:    +4
 COLOUR:  BROWN
 TILE:    urand_zhor
@@ -761,7 +761,7 @@ COLD:    3
 
 ENUM:    SALAMANDER
 NAME:    salamander hide armour
-OBJ:     OBJ_ARMOUR/ARM_LEATHER_ARMOUR
+OBJ:     OBJ_ARMOURS/ARM_LEATHER_ARMOUR
 PLUS:    +3
 COLOUR:  ETC_FIRE
 TILE:    urand_salamander
@@ -770,7 +770,7 @@ FIRE:    2
 BOOL:    berserk
 
 NAME:    gauntlets of War
-OBJ:     OBJ_ARMOUR/ARM_GLOVES
+OBJ:     OBJ_ARMOURS/ARM_GLOVES
 PLUS:    +3
 COLOUR:  BROWN
 TILE:    urand_war
@@ -778,7 +778,7 @@ TILE_EQ: glove_black
 SLAY:    5
 
 NAME:    shield of Resistance
-OBJ:     OBJ_ARMOUR/ARM_SHIELD
+OBJ:     OBJ_SHIELDS/SHD_SHIELD
 PLUS:    +2
 COLOUR:  LIGHTRED
 TILE:    urand_resistance
@@ -788,7 +788,7 @@ COLD:    1
 MAGIC:   1
 
 NAME:    robe of Folly
-OBJ:     OBJ_ARMOUR/ARM_ROBE
+OBJ:     OBJ_ARMOURS/ARM_ROBE
 PLUS:    3
 COLOUR:  LIGHTGREY
 TILE:    urand_folly
@@ -799,7 +799,7 @@ MAGIC:   -2
 
 ENUM:    MAXWELL
 NAME:    Maxwell's patent armour
-OBJ:     OBJ_ARMOUR/ARM_PLATE_ARMOUR
+OBJ:     OBJ_ARMOURS/ARM_PLATE_ARMOUR
 PLUS:    +15
 COLOUR:  LIGHTGREEN
 TILE:    urand_maxwell
@@ -809,7 +809,7 @@ BOOL:    nospell, notelep, elec, rCorr
 
 ENUM:    DRAGONMASK
 NAME:    mask of the Dragon
-OBJ:     OBJ_ARMOUR/ARM_HAT
+OBJ:     OBJ_ARMOURS/ARM_HAT
 COLOUR:  ETC_SHIMMER_BLUE
 TILE:    urand_dragonmask
 TILE_EQ: art_dragonhelm
@@ -818,7 +818,7 @@ SLAY:    3
 BOOL:    seeinv
 
 NAME:     robe of Night
-OBJ:      OBJ_ARMOUR/ARM_ROBE
+OBJ:      OBJ_ARMOURS/ARM_ROBE
 PLUS:     +5
 INSCRIP:  Dark
 COLOUR:   ETC_DARK
@@ -829,7 +829,7 @@ BOOL:     seeinv
 VALUE:    600
 
 NAME:    scales of the Dragon King
-OBJ:     OBJ_ARMOUR/ARM_GOLD_DRAGON_ARMOUR
+OBJ:     OBJ_ARMOURS/ARM_GOLD_DRAGON_ARMOUR
 PLUS:    +9
 COLOUR:  ETC_GOLD
 TILE:    urand_dragon_king
@@ -837,7 +837,7 @@ TILE_EQ: dragonarm_gold
 MAGIC:   1
 
 NAME:    hat of the Alchemist
-OBJ:     OBJ_ARMOUR/ARM_HAT
+OBJ:     OBJ_ARMOURS/ARM_HAT
 PLUS:    -2
 COLOUR:  LIGHTMAGENTA
 TILE:    urand_alchemist
@@ -851,7 +851,7 @@ BOOL:    elec, poison, rMut, rCorr
 ENUM:    FENCERS
 NAME:    fencer's gloves
 INSCRIP: +Riposte
-OBJ:     OBJ_ARMOUR/ARM_GLOVES
+OBJ:     OBJ_ARMOURS/ARM_GLOVES
 PLUS:    +0
 COLOUR:  WHITE
 TILE:    urand_fencer
@@ -860,7 +860,7 @@ DEX:     3
 VALUE:   400
 
 NAME:     cloak of Starlight
-OBJ:      OBJ_ARMOUR/ARM_CLOAK
+OBJ:      OBJ_ARMOURS/ARM_CLOAK
 PLUS:     +1
 COLOUR:   ETC_ICE
 TILE:     urand_starlight
@@ -871,7 +871,7 @@ STEALTH:  -2
 BOOL:     elec
 
 NAME:     ratskin cloak
-OBJ:      OBJ_ARMOUR/ARM_CLOAK
+OBJ:      OBJ_ARMOURS/ARM_CLOAK
 PLUS:     +2
 COLOUR:   ETC_BEOGH
 TILE:     urand_ratskin_cloak
@@ -884,7 +884,7 @@ LIFE:     1
 BOOL:     poison
 
 NAME:     shield of the Gong
-OBJ:      OBJ_ARMOUR/ARM_SHIELD
+OBJ:      OBJ_SHIELDS/SHD_SHIELD
 PLUS:     +18
 COLOUR:   ETC_GOLD
 TILE:     urand_gong
@@ -965,7 +965,7 @@ EV:       5
 
 ENUM:     RCLOUDS
 NAME:     robe of Clouds
-OBJ:      OBJ_ARMOUR/ARM_ROBE
+OBJ:      OBJ_ARMOURS/ARM_ROBE
 PLUS:     +3
 COLOUR:   ETC_MIST
 TILE:     urand_clouds
@@ -973,7 +973,7 @@ TILE_EQ:  robe_clouds
 BOOL:     elec, fly
 
 NAME:     hat of Pondering
-OBJ:      OBJ_ARMOUR/ARM_HAT
+OBJ:      OBJ_ARMOURS/ARM_HAT
 PLUS:     +3
 COLOUR:   LIGHTRED
 TILE:     urand_pondering
@@ -994,7 +994,7 @@ BRAND:    SPWPN_VORPAL
 BOOL:     evil, seeinv, fly, curse
 
 NAME:     lightning scales
-OBJ:      OBJ_ARMOUR/ARM_NAGA_BARDING
+OBJ:      OBJ_ARMOURS/ARM_NAGA_BARDING
 PLUS:     +6
 TILE:     urand_lightning_scales
 TILE_EQ:  lightning_scales
@@ -1004,7 +1004,7 @@ BOOL:     elec
 
 ENUM:     BLACK_KNIGHT_HORSE
 NAME:     Black Knight's horse barding
-OBJ:      OBJ_ARMOUR/ARM_CENTAUR_BARDING
+OBJ:      OBJ_ARMOURS/ARM_CENTAUR_BARDING
 PLUS:     +10
 TILE:     urand_bk_barding
 TILE_EQ:  black_knight
@@ -1049,7 +1049,7 @@ VALUE:    600
 ENUM:     DRAGONSKIN
 NAME:     dragonskin cloak
 APPEAR:   opalescent scaly cloak
-OBJ:      OBJ_ARMOUR/ARM_CLOAK
+OBJ:      OBJ_ARMOURS/ARM_CLOAK
 TILE:     urand_dragonskin
 TILE_EQ:  dragonskin
 PLUS:     +4
@@ -1080,7 +1080,7 @@ TILE_EQ:  axe_of_woe
 BOOL:     nogen, no_upgrade
 
 NAME:     moon troll leather armour
-OBJ:      OBJ_ARMOUR/ARM_TROLL_LEATHER_ARMOUR
+OBJ:      OBJ_ARMOURS/ARM_TROLL_LEATHER_ARMOUR
 PLUS:     +4
 COLOUR:   ETC_SHIMMER_BLUE
 BRAND:    SPARM_SPIRIT_SHIELD
@@ -1100,7 +1100,7 @@ VALUE:    400
 # TAG_MAJOR_VERSION == 34
 ENUM:     SPIDER
 NAME:     boots of the spider
-OBJ:      OBJ_ARMOUR/ARM_BOOTS
+OBJ:      OBJ_ARMOURS/ARM_BOOTS
 TILE:     urand_spider
 TILE_EQ:  spider
 PLUS:     +3
@@ -1124,7 +1124,7 @@ BRAND:    SPWPN_VORPAL
 ENUM:    HIGH_COUNCIL
 NAME:    hat of the High Council
 INSCRIP: Wiz-
-OBJ:     OBJ_ARMOUR/ARM_HAT
+OBJ:     OBJ_ARMOURS/ARM_HAT
 COLOUR:  LIGHTGREEN
 TILE:    urand_high_council
 TILE_EQ: wizard_lightgreen
@@ -1175,7 +1175,7 @@ FIRE:     2
 BOOL:     skip_ego
 
 NAME:     orange crystal plate armour
-OBJ:      OBJ_ARMOUR/ARM_CRYSTAL_PLATE_ARMOUR
+OBJ:      OBJ_ARMOURS/ARM_CRYSTAL_PLATE_ARMOUR
 COLOUR:   LIGHTRED
 TILE:     urand_orange_crystal
 TILE_EQ:  orange_crystal
@@ -1209,7 +1209,7 @@ DEX:     -3
 
 ENUM:    ETHERIC_CAGE
 NAME:    Maxwell's etheric cage
-OBJ:     OBJ_ARMOUR/ARM_HELMET
+OBJ:     OBJ_ARMOURS/ARM_HELMET
 COLOUR:  ETC_ELECTRICITY
 TILE:    urand_etheric_cage
 TILE_EQ: etheric_cage
@@ -1221,7 +1221,7 @@ VALUE:   400
 
 ENUM:    ETERNAL_TORMENT
 NAME:    crown of Eternal Torment
-OBJ:     OBJ_ARMOUR/ARM_HAT
+OBJ:     OBJ_ARMOURS/ARM_HAT
 PLUS:    +3
 COLOUR:  ETC_DARK
 TILE:    urand_eternal_torment
@@ -1232,7 +1232,7 @@ BOOL:    evil, seeinv, curse
 
 ENUM:    VINES
 NAME:    robe of Vines
-OBJ:     OBJ_ARMOUR/ARM_ROBE
+OBJ:     OBJ_ARMOURS/ARM_ROBE
 PLUS:    +2
 COLOUR:  GREEN
 TILE:    urand_vines
@@ -1243,7 +1243,7 @@ VALUE:   800
 
 ENUM:    KRYIAS
 NAME:    Kryia's mail coat
-OBJ:     OBJ_ARMOUR/ARM_SCALE_MAIL
+OBJ:     OBJ_ARMOURS/ARM_SCALE_MAIL
 PLUS:    +7
 COLOUR:  LIGHTCYAN
 TILE:    urand_kryias
@@ -1267,7 +1267,7 @@ BOOL:    skip_ego, fly, noises
 # TAG_MAJOR_VERSION == 34
 ENUM:     TALOS
 NAME:     armour of Talos
-OBJ:      OBJ_ARMOUR/ARM_PLATE_ARMOUR
+OBJ:      OBJ_ARMOURS/ARM_PLATE_ARMOUR
 PLUS:     +12
 TILE:     urand_talos
 TILE_EQ:  talos
@@ -1278,7 +1278,7 @@ BOOL:     nogen
 
 ENUM:     WARLOCK_MIRROR
 NAME:     warlock's mirror
-OBJ:      OBJ_ARMOUR/ARM_BUCKLER
+OBJ:      OBJ_SHIELDS/SHD_BUCKLER
 PLUS:     +3
 TILE:     urand_warlock
 TILE_EQ:  buckler_warlock

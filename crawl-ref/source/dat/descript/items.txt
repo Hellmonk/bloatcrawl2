@@ -501,6 +501,12 @@ helmet
 
 A piece of metal headgear.
 %%%%
+heater shield
+
+A classically shaped brass knight's shield to be strapped on one arm for defence.
+It is cumbersome to wear, and impedes the evasion, spellcasting ability, and attack
+speed of an unskilled wearer.
+%%%%
 horn of Geryon
 
 The horn belonging to Geryon, guardian of the Vestibule of Hell. It has the
@@ -558,12 +564,6 @@ A very large and very heavy stone. {{
    end
 }}
 %%%%
-large shield
-
-A large piece of wood and metal, to be strapped on one arm for defence. It is
-cumbersome to wear, and impedes the evasion, spellcasting ability, and attack
-speed of an unskilled wearer.
-%%%%
 leather armour
 
 A suit made from layers of tanned animal hide. It provides basic protection
@@ -612,6 +612,12 @@ needle
 A thin piece of metal, typically coated in some harmful substance. When
 launched from a blowgun it can deliver its toxins into the bloodstream of a
 living or demonic being.
+%%%%
+nunchaku
+
+Two wooden staves of equal length attached together with a length of metal
+chain. Provides some protection (shield hand) as well as working as an offensive
+flail.
 %%%%
 orb of zot
 
@@ -889,6 +895,12 @@ sacred scourge
 A blessed weapon, woven by the saints in Heaven and hated by the unholy. It is
 a favoured weapon of the Shining One's servants.
 %%%%
+sai
+
+A steel parrying dagger; dull prongs attached to either side of the dagger 
+enhance its ability to block incoming attacks, providing defense (shield hand)
+as well as its offensive use as a dagger.
+%%%%
 scale mail
 
 A leather suit covered with metal plates attached to each other in overlapping
@@ -932,7 +944,7 @@ scroll of enchant armour
 
 A scroll that places an enchantment on a piece of armour chosen by the reader.
 Body armour and bardings can be enchanted up to the same value as their base
-AC. Bucklers, shields and large shields can be enchanted up to +3, +5 or +8
+AC. Bucklers, heater shields and scuta can be enchanted up to +3, +5 or +8
 respectively, and other armour can be enchanted up to +2. Magical artefacts
 cannot be enchanted at all.
 %%%%
@@ -1021,15 +1033,15 @@ A scroll that briefly halves the resistance to hostile enchantments of the
 reader and any nearby beings. The scroll cannot affect those fully immune to
 magic.
 %%%%
+scutum
+
+An oblong convex bronze shield, traditionally worn by spear-wielding soldiers.
+Strapped to one arm for defence it is cumbersome to wear, and impedes the evasion,
+spellcasting ability, and attack speed of an unskilled wearer.
+%%%%
 scythe
 
 A farm implement, usually only used by untrained mobs in combat.
-%%%%
-shield
-
-A piece of wood and metal, to be strapped on one arm for defence. It is
-cumbersome to wear, and impedes the evasion, spellcasting ability, and attack
-speed of an unskilled wearer.
 %%%%
 shortbow
 
@@ -1133,6 +1145,12 @@ scale armours, and gives its wearer resistance to electrical discharges.
 swamp dragon scales
 
 The scales of a swamp dragon. It confers resistance to poison on its wearer.
+%%%%
+targe
+
+A medium-sized disc of stiffened leather for use as a shield. In the middle,
+there are rough bronze spikes for catching weapons or bashing an unsuspecting
+opponent in the face.
 %%%%
 throwing net
 

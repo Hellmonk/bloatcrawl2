@@ -43,8 +43,8 @@ static const char32_t dchar_table[NUM_CSET][NUM_DCHAR_TYPES] =
         '\\',  '}',  '~',  '8',  '{',  '{',  '{',  '}',  ')',  '[',  '/',  '%',
         // item_scroll .. item_amulet
          '?',  '=',  '!',  '(',  ':',  '|',  '|',  '}',  '%',  '%',  '$',  '"',
-        // cloud .. tree
-         '0',  '7',
+        // item_shield ... cloud .. tree
+         ']', '0',  '7',
 #if TAG_MAJOR_VERSION == 34
          '^',
 #endif
@@ -74,7 +74,7 @@ dungeon_char_type dchar_by_name(const string &name)
         "item_rod",
 #endif
         "item_miscellany", "item_corpse", "item_skeleton", "item_gold",
-        "item_amulet", "cloud", "tree",
+        "item_amulet", "item_shield", "cloud", "tree",
 #if TAG_MAJOR_VERSION == 34
         "teleporter",
 #endif

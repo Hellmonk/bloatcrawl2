@@ -740,7 +740,7 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
     }
 
     item_def dummy, alternate;
-    dummy.base_type = alternate.base_type = OBJ_ARMOUR;
+    dummy.base_type = alternate.base_type = OBJ_ARMOURS;
     dummy.sub_type = alternate.sub_type = NUM_ARMOURS;
     // Make sure can_wear_armour doesn't think it's Lear's.
     dummy.unrand_idx = alternate.unrand_idx = 0;
@@ -772,10 +772,10 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
         break;
 
     case EQ_WEAPON1:
-        // No races right now that can wear ARM_LARGE_SHIELD but not ARM_SHIELD
-        dummy.sub_type = ARM_LARGE_SHIELD;
+        // No races right now that can wear SHD_LARGE_SHIELD but not SHD_SHIELD
+        dummy.sub_type = SHD_LARGE_SHIELD;
         if (you.body_size(PSIZE_TORSO, !temp) < SIZE_MEDIUM)
-            alternate.sub_type = ARM_BUCKLER;
+            alternate.sub_type = SHD_BUCKLER;
         break;
 
 
@@ -856,11 +856,16 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid) const
 
     switch (slot)
     {
+	
     case EQ_WEAPON0:
-        // Hands can have more than just weapons.
-        if (weapon() && weapon()->is_type(OBJ_WEAPONS, sub_type))
+        if (weapon(0))
             ret++;
         break;
+	
+	case EQ_WEAPON1:
+		if (weapon(1))
+			ret++;
+		break;
 
     case EQ_STAFF:
         // Like above, but must be magical staff.
@@ -932,7 +937,7 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
 	case EQ_WEAPON0:
 		// Hands can have more than just weapons.
 		if ((item = slot_item(EQ_WEAPON0))
-			&& item->base_type == OBJ_WEAPONS
+			&& (item->base_type == OBJ_WEAPONS || item->base_type == OBJ_SHIELDS)
 			&& get_weapon_brand(*item) == special)
 		{
 			ret++;
@@ -940,12 +945,12 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
 		break;
 
 	case EQ_WEAPON1:
-/*		if (item->base_type == OBJ_WEAPONS
+		if ((item = slot_item(EQ_WEAPON1))
+			&& (item->base_type == OBJ_WEAPONS || item->base_type == OBJ_SHIELDS)
 			&& get_weapon_brand(*item) == special)
+		{
 			ret++;
-		else if (item->base_type == OBJ_ARMOUR
-			&& get_armour_ego_type(*item) == special)
-			ret++; */
+		}
 		break;
 		
 
@@ -2202,8 +2207,8 @@ static int _player_adjusted_evasion_penalty(const int scale)
     // Some lesser armours have small penalties now (barding).
     for (int i = EQ_MIN_ARMOUR; i < EQ_MAX_ARMOUR; i++)
     {
-        if (i == EQ_WEAPON1 || !you.slot_item(static_cast<equipment_type>(i)))
-            continue;
+		if (!you.slot_item(static_cast<equipment_type>(i)))
+			continue;
 
         // [ds] Evasion modifiers for armour are negatives, change
         // those to positive for penalty calc.
@@ -2402,28 +2407,31 @@ int player_shield_class()
 
     if (you.shield())
     {
-        const item_def& item = you.inv[you.equip[EQ_WEAPON1]];
-        int size_factor = (you.body_size(PSIZE_TORSO) - SIZE_MEDIUM)
-                        * (item.sub_type - ARM_LARGE_SHIELD);
-        int base_shield = property(item, PARM_AC) * 2 + size_factor;
+		const item_def& item0 = you.inv[you.equip[EQ_WEAPON0]];
+		const item_def& item1 = you.inv[you.equip[EQ_WEAPON1]];
+		int base_shield0 = 0;
+		int base_shield1 = 0;
+        int size_factor = (SIZE_GIANT - you.body_size(PSIZE_TORSO));
+		if (item0.base_type == OBJ_SHIELDS)
+			base_shield0 += property(item0, PSHD_SH) * 2 + size_factor;
+		if (item1.base_type == OBJ_SHIELDS)
+			base_shield1 += property(item1, PSHD_SH) * 2 + size_factor;
 
         // bonus applied only to base, see above for effect:
-        shield += base_shield * 50;
-        shield += base_shield * you.skill(SK_SHIELDS, 5) / 2;
+        shield += (base_shield0 + base_shield1) * 50;
+        shield += base_shield0 * you.skill(item_attack_skill(item0), 5) / 2;
+		shield += base_shield1 * you.skill(item_attack_skill(item1), 5) / 2;
 
-        shield += item.plus * 200;
+		if (item0.base_type == OBJ_SHIELDS && !is_hybrid(item0.sub_type))
+			shield += item0.plus * 200;
+		if (item1.base_type == OBJ_SHIELDS && !is_hybrid(item0.sub_type))
+			shield += item1.plus * 200;
 
         shield += you.skill(SK_SHIELDS, 38)
                 + min(you.skill(SK_SHIELDS, 38), 3 * 38);
 
-        int stat = 0;
-        if (item.sub_type == ARM_BUCKLER)
-            stat = you.dex() * 38;
-        else if (item.sub_type == ARM_LARGE_SHIELD)
-            stat = you.dex() * 12 + you.strength() * 26;
-        else
-            stat = you.dex() * 19 + you.strength() * 19;
-        stat = stat * (base_shield + 13) / 26;
+        int stat = you.dex() * 38;
+        stat = stat * (base_shield0 + base_shield1 + 13) / 26;
 
         shield += stat;
     }
@@ -2844,7 +2852,8 @@ void recalc_and_scale_hp()
 
 int xp_to_level_diff(int xp, int scale)
 {
-    ASSERT(xp >= 0);
+	if (xp <= 0)
+		return 0;
     const int adjusted_xp = you.experience + xp;
     int projected_level = you.experience_level;
     while (you.experience >= exp_needed(projected_level + 1))
@@ -5840,18 +5849,26 @@ int player::adjusted_body_armour_penalty(int scale) const
  */
 int player::adjusted_shield_penalty(int scale) const
 {
-    const item_def *shield_l = slot_item(EQ_WEAPON1, false);
-    if (!shield_l)
-        return 0;
+    const item_def *shield0 = slot_item(EQ_WEAPON0, false);
+	const item_def *shield1 = slot_item(EQ_WEAPON1, false);
 
-    const int base_shield_penalty = -property(*shield_l, PARM_EVASION);
+	int base_shield_penalty = 0;
+	
+	if (shield0 && shield0->base_type == OBJ_SHIELDS)
+		base_shield_penalty += -property(*shield0, PSHD_ER);
+	if (shield1 && shield1->base_type == OBJ_SHIELDS)
+		base_shield_penalty += -property(*shield1, PSHD_ER);
+
+	if (base_shield_penalty == 0)
+		return 0;
+
     return max(0, ((base_shield_penalty * scale) - skill(SK_SHIELDS, scale)
                   / player_shield_racial_factor() * 10) / 10);
 }
 
 float player::get_shield_skill_to_offset_penalty(const item_def &item)
 {
-    int evp = property(item, PARM_EVASION);
+    int evp = property(item, PSHD_ER);
     return -1 * evp * player_shield_racial_factor() / 10.0;
 }
 
@@ -6989,7 +7006,7 @@ bool player::has_usable_offhand() const
 {
     if (get_mutation_level(MUT_MISSING_HAND))
         return false;
-    if (shield())
+    if (slot_item(EQ_WEAPON1))
         return false;
 
     const item_def* wp = slot_item(EQ_WEAPON0);

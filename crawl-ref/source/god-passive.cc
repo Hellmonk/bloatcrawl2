@@ -560,7 +560,7 @@ int apply_pity(int power)
 void ash_init_bondage(player *y)
 {
     y->bondage_level = 0;
-    for (int i = ET_WEAPON; i < NUM_ET; ++i)
+    for (int i = ET_RIGHT; i < NUM_ET; ++i)
         y->bondage[i] = 0;
 }
 
@@ -586,9 +586,9 @@ void ash_check_bondage(bool msg)
         const equipment_type i = static_cast<equipment_type>(j);
         eq_type s;
         if (i == EQ_WEAPON0)
-            s = ET_WEAPON;
+            s = ET_RIGHT;
         else if (i == EQ_WEAPON1)
-            s = ET_SHIELD;
+            s = ET_LEFT;
         else if (i <= EQ_MAX_ARMOUR)
             s = ET_ARMOUR;
         // Missing hands mean fewer rings
@@ -629,12 +629,12 @@ void ash_check_bondage(bool msg)
                 const item_def& item = you.inv[you.equip[i]];
                 if (item.cursed() && (i != EQ_WEAPON0 || is_weapon(item)))
                 {
-                    if (s == ET_WEAPON
+                    if (s == ET_RIGHT
                         && (_two_handed()
                             || you.get_mutation_level(MUT_MISSING_HAND)))
                     {
-                        cursed[ET_WEAPON] = 3;
-                        cursed[ET_SHIELD] = 3;
+                        cursed[ET_RIGHT] = 3;
+                        cursed[ET_LEFT] = 3;
                     }
                     else
                     {
@@ -649,7 +649,7 @@ void ash_check_bondage(bool msg)
 
     int8_t new_bondage[NUM_ET];
     int old_level = you.bondage_level;
-    for (int s = ET_WEAPON; s < NUM_ET; s++)
+    for (int s = ET_RIGHT; s < NUM_ET; s++)
     {
         if (slots[s] == 0)
             new_bondage[s] = -1;
@@ -677,20 +677,20 @@ void ash_check_bondage(bool msg)
             ++you.bondage_level;
     }
     else
-        for (int i = ET_WEAPON; i < NUM_ET; ++i)
+        for (int i = ET_RIGHT; i < NUM_ET; ++i)
             if (new_bondage[i] > 0)
                 ++you.bondage_level;
 
     int flags = 0;
     if (msg)
     {
-        for (int s = ET_WEAPON; s < NUM_ET; s++)
+        for (int s = ET_RIGHT; s < NUM_ET; s++)
             if (new_bondage[s] != you.bondage[s])
                 flags |= 1 << s;
     }
 
     you.skill_boost.clear();
-    for (int s = ET_WEAPON; s < NUM_ET; s++)
+    for (int s = ET_RIGHT; s < NUM_ET; s++)
     {
         you.bondage[s] = new_bondage[s];
         map<skill_type, int8_t> boosted_skills = ash_get_boosted_skills(eq_type(s));
@@ -714,37 +714,33 @@ void ash_check_bondage(bool msg)
 string ash_describe_bondage(int flags, bool level)
 {
     string desc;
-    if (flags & ETF_WEAPON && flags & ETF_SHIELD
-        && you.bondage[ET_WEAPON] != -1)
+    if (flags & ETF_RIGHT && flags & ETF_LEFT
+        && you.bondage[ET_RIGHT] != -1)
     {
-        if (you.bondage[ET_WEAPON] == you.bondage[ET_SHIELD])
+        if (you.bondage[ET_RIGHT] == you.bondage[ET_LEFT])
         {
             const string verb = make_stringf("are%s",
-                                             you.bondage[ET_WEAPON] ? ""
+                                             you.bondage[ET_RIGHT] ? ""
                                                                     : " not");
             desc = you.hands_act(verb, "bound.\n");
         }
         else
         {
             // FIXME: what if you sacrificed a hand?
-            desc = make_stringf("Your %s %s is bound but not your %s %s.\n",
-                                you.bondage[ET_WEAPON] ? "weapon" : "shield",
-                                you.hand_name(false).c_str(),
-                                you.bondage[ET_WEAPON] ? "shield" : "weapon",
-                                you.hand_name(false).c_str());
+            desc = make_stringf("One of your hands is bound, but not the other.");
         }
     }
-    else if (flags & ETF_WEAPON && you.bondage[ET_WEAPON] != -1)
+    else if (flags & ETF_RIGHT && you.bondage[ET_RIGHT] != -1)
     {
-        desc = make_stringf("Your weapon %s is %sbound.\n",
+        desc = make_stringf("Your right %s is %sbound.\n",
                             you.hand_name(false).c_str(),
-                            you.bondage[ET_WEAPON] ? "" : "not ");
+                            you.bondage[ET_RIGHT] ? "" : "not ");
     }
-    else if (flags & ETF_SHIELD && you.bondage[ET_SHIELD] != -1)
+    else if (flags & ETF_LEFT && you.bondage[ET_LEFT] != -1)
     {
-        desc = make_stringf("Your shield %s is %sbound.\n",
+        desc = make_stringf("Your left %s is %sbound.\n",
                             you.hand_name(false).c_str(),
-                            you.bondage[ET_SHIELD] ? "" : "not ");
+                            you.bondage[ET_LEFT] ? "" : "not ");
     }
 
     if (flags & ETF_ARMOUR && flags & ETF_JEWELS
@@ -796,8 +792,6 @@ static bool _is_slot_cursed(equipment_type eq)
     if (!worn || !worn->cursed())
         return false;
 
-    if (eq == EQ_WEAPON0)
-        return is_weapon(*worn);
     return true;
 }
 
@@ -818,7 +812,7 @@ bool passive_id_item(item_def& item, bool silent)
         
 		item.props["needs_autopickup"] = true;
 
-    if (is_weapon(item) || item.base_type == OBJ_ARMOUR
+    if (is_weapon(item) || item.base_type == OBJ_ARMOURS
 		|| item.base_type == OBJ_JEWELLERY || item.base_type == OBJ_SCROLLS 
 		|| item.base_type == OBJ_POTIONS || item.base_type == OBJ_WANDS)
 		
@@ -833,7 +827,7 @@ bool passive_id_item(item_def& item, bool silent)
         if (item.props.exists("needs_autopickup") && is_useless_item(item))
             item.props.erase("needs_autopickup");
 
-        if (&item == you.weapon())
+        if (&item == you.weapon(0) || &item == you.weapon(1))
             you.wield_change = true;
 
         if (!silent)
@@ -948,43 +942,68 @@ map<skill_type, int8_t> ash_get_boosted_skills(eq_type type)
         return boost;
 
     // Include melded.
-    const item_def* wpn = you.slot_item(EQ_WEAPON0, true);
+    const item_def* right = you.slot_item(EQ_WEAPON0, true);
+	const item_def* left = you.slot_item(EQ_WEAPON1, true);
     const item_def* armour = you.slot_item(EQ_BODY_ARMOUR, true);
     const int evp = armour ? -property(*armour, PARM_EVASION) / 10 : 0;
     switch (type)
     {
-    case (ET_WEAPON):
-        ASSERT(wpn);
+    case (ET_RIGHT):
+        ASSERT(right);
 
         // Boost weapon skill. Plain "staff" means an unrand magical staff,
         // boosted later.
-        if (wpn->base_type == OBJ_WEAPONS
-            && wpn->sub_type != WPN_STAFF)
+        if ((right->base_type == OBJ_WEAPONS || right->base_type == OBJ_SHIELDS)
+            && right->sub_type != WPN_STAFF)
         {
-            boost[item_attack_skill(*wpn)] = bondage;
+            boost[item_attack_skill(*right)] = bondage;
         }
         // Staves that have a melee effect, powered by evocations.
-        if (staff_uses_evocations(*wpn))
+        if (staff_uses_evocations(*right))
         {
             boost[SK_EVOCATIONS] = 1;
             boost[SK_STAVES] = 1;
 
         }
         // Staves with an evokable ability but no melee effect.
-        else if (is_weapon(*wpn)
-                 && item_is_evokable(*wpn, false, false, false, false))
+        else if (is_weapon(*right)
+                 && item_is_evokable(*right, false, false, false, false))
         {
             boost[SK_EVOCATIONS] = 2;
         }
         // Other magical staves.
-        else if (wpn->base_type == OBJ_STAVES)
+        else if (right->base_type == OBJ_STAVES)
             boost[SK_SPELLCASTING] = 2;
         break;
 
-    case (ET_SHIELD):
-        if (bondage == 2)
-            boost[SK_SHIELDS] = 1;
-        break;
+    case (ET_LEFT):
+		if (!left)
+			break;
+
+		// Boost weapon skill. Plain "staff" means an unrand magical staff,
+		// boosted later.
+		if ((left->base_type == OBJ_WEAPONS || left->base_type == OBJ_SHIELDS)
+			&& left->sub_type != WPN_STAFF)
+		{
+			boost[item_attack_skill(*left)] = bondage;
+		}
+		// Staves that have a melee effect, powered by evocations.
+		if (staff_uses_evocations(*left))
+		{
+			boost[SK_EVOCATIONS] = 1;
+			boost[SK_STAVES] = 1;
+
+		}
+		// Staves with an evokable ability but no melee effect.
+		else if (is_weapon(*left)
+			&& item_is_evokable(*left, false, false, false, false))
+		{
+			boost[SK_EVOCATIONS] = 2;
+		}
+		// Other magical staves.
+		else if (left->base_type == OBJ_STAVES)
+			boost[SK_SPELLCASTING] = 2;
+		break;
 
     // Bonus for bounded armour depends on body armour type.
     case (ET_ARMOUR):

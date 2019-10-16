@@ -13,8 +13,9 @@ struct dolls_data;
 struct item_def;
 
 // Player equipment lookup
+tileidx_t tilep_equ_hand1(const item_def &item);
+tileidx_t tilep_equ_hand2(const item_def &item);
 tileidx_t tilep_equ_weapon(const item_def &item);
-tileidx_t tilep_equ_shield(const item_def &item);
 tileidx_t tilep_equ_armour(const item_def &item);
 tileidx_t tilep_equ_cloak(const item_def &item);
 tileidx_t tilep_equ_helm(const item_def &item);

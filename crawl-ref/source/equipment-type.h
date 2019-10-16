@@ -45,4 +45,5 @@ enum equipment_type
 #endif
     EQ_ALL_ARMOUR,                     // check all armour types
     EQ_AMULET_PLUS,                    // check amulet for pluses.
+	EQ_SHIELD,                         // weapon with base_type OBJ_SHIELDS
 };

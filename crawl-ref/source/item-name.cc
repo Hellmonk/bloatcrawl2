@@ -90,7 +90,7 @@ static const char* _interesting_origin(const item_def &item)
         return "god gift";
 
     if (item.orig_monnum == MONS_DONALD && get_equip_desc(item)
-        && item.is_type(OBJ_ARMOUR, ARM_SHIELD))
+        && item.is_type(OBJ_SHIELDS, SHD_SHIELD))
     {
         return "Donald";
     }
@@ -265,13 +265,14 @@ string item_def::name(description_level_type descrip, bool terse, bool ident,
                     else if (you.species == SP_FELID)
                         buff << " (in mouth)";
                     else
-                        buff << " (in " << you.hand_name(false) << ")";
+                        buff << " (shield)";
                     break;
 				case EQ_WEAPON1:
 					if (is_weapon(*this))
-						buff << " (secondary weapon)";
+						buff << " (weapon)";
 					else
-						buff << " (shield hand)";
+						buff << " (shield)";
+					break;
                 case EQ_CLOAK:
                 case EQ_HELMET:
                 case EQ_GLOVES:
@@ -721,8 +722,10 @@ static const char* scroll_type_name(int scrolltype)
     case SCR_NOISE:              return "attention";
     case SCR_REMOVE_CURSE:       return "remove curse";
     case SCR_SUMMONING:          return "summoning";
+#if TAG_MAJOR_VERSION == 34
     case SCR_ENCHANT_WEAPON:     return "enchant weapon";
-    case SCR_ENCHANT_ARMOUR:     return "enchant armour";
+#endif
+    case SCR_ENCHANT:			 return "enchantment";
     case SCR_TORMENT:            return "torment";
 #if TAG_MAJOR_VERSION == 34
     case SCR_RANDOM_USELESSNESS: return "random uselessness";
@@ -1172,8 +1175,9 @@ const char *base_type_string(object_class_type type)
     switch (type)
     {
     case OBJ_WEAPONS: return "weapon";
+	case OBJ_SHIELDS: return "shield";
     case OBJ_MISSILES: return "missile";
-    case OBJ_ARMOUR: return "armour";
+    case OBJ_ARMOURS: return "armour";
     case OBJ_WANDS: return "wand";
     case OBJ_FOOD: return "food";
     case OBJ_SCROLLS: return "scroll";
@@ -1202,7 +1206,8 @@ string sub_type_string(const item_def &item, bool known)
     {
     case OBJ_WEAPONS:  // deliberate fall through, as XXX_prop is a local
     case OBJ_MISSILES: // variable to item-prop.cc.
-    case OBJ_ARMOUR:
+	case OBJ_SHIELDS:
+    case OBJ_ARMOURS:
         return item_base_name(type, sub_type);
     case OBJ_WANDS: return _wand_type_name(sub_type);
     case OBJ_FOOD: return food_type_name(sub_type);
@@ -1277,7 +1282,7 @@ string ego_type_string(const item_def &item, bool terse, int override_brand)
 {
     switch (item.base_type)
     {
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         return armour_ego_name(item, terse);
     case OBJ_WEAPONS:
         if (!terse)
@@ -1624,49 +1629,131 @@ static string _name_weapon(const item_def &weap, description_level_type desc,
     const string ego_prefix
         = _ego_prefix(weap, desc, terse, ident, ignore_flags);
     const string ego_suffix = know_ego ? _ego_suffix(weap, terse) : "";
-    const string curse_suffix
-        = know_curse && weap.cursed() && terse ? " (curse)" :  "";
-    return curse_prefix + plus_text + cosmetic_text + ego_prefix
-           + item_base_name(weap)
-           + ego_suffix + curse_suffix;
+	const string curse_suffix
+	= know_curse && weap.cursed() && terse ? " (curse)" : "";
+	return curse_prefix + plus_text + cosmetic_text + ego_prefix
+	+ item_base_name(weap)
+	+ ego_suffix + curse_suffix;
 }
 
 // Note that "terse" is only currently used for the "in hand" listing on
 // the game screen.
 string item_def::name_aux(description_level_type desc, bool terse, bool ident,
-                          bool with_inscription, iflags_t ignore_flags) const
+	bool with_inscription, iflags_t ignore_flags) const
 {
-    // Shortcuts
-    const int item_typ   = sub_type;
+	// Shortcuts
+	const int item_typ = sub_type;
 
-    const bool know_type = ident || item_type_known(*this);
+	const bool know_type = ident || item_type_known(*this);
 
-    const bool dbname   = (desc == DESC_DBNAME);
-    const bool basename = _use_basename(*this, desc, ident);
-    const bool qualname = (desc == DESC_QUALNAME);
+	const bool dbname = (desc == DESC_DBNAME);
+	const bool basename = _use_basename(*this, desc, ident);
+	const bool qualname = (desc == DESC_QUALNAME);
 
-    const bool know_curse =  _know_curse(*this, desc, ident, ignore_flags);
-    const bool know_pluses = _know_pluses(*this, desc, ident, ignore_flags);
-    const bool know_brand =  _know_ego(*this, desc, ident, ignore_flags);
+	const bool know_curse = _know_curse(*this, desc, ident, ignore_flags);
+	const bool know_pluses = _know_pluses(*this, desc, ident, ignore_flags);
+	const bool know_brand = _know_ego(*this, desc, ident, ignore_flags);
 
-    const bool know_ego = know_brand;
+	const bool know_ego = know_brand;
 
-    // Display runed/glowing/embroidered etc?
-    // Only display this if brand is unknown.
-    const bool show_cosmetic = !know_pluses && !know_brand
-                               && !basename && !qualname && !dbname
-                               && !terse
-                               && !(ignore_flags & ISFLAG_COSMETIC_MASK);
+	// Display runed/glowing/embroidered etc?
+	// Only display this if brand is unknown.
+	const bool show_cosmetic = !know_pluses && !know_brand
+		&& !basename && !qualname && !dbname
+		&& !terse
+		&& !(ignore_flags & ISFLAG_COSMETIC_MASK);
 
-    const bool need_plural = !basename && !dbname;
+	const bool need_plural = !basename && !dbname;
 
-    ostringstream buff;
+	ostringstream buff;
 
-    switch (base_type)
-    {
-    case OBJ_WEAPONS:
-        buff << _name_weapon(*this, desc, terse, ident, with_inscription,
-                             ignore_flags);
+	switch (base_type)
+	{
+	case OBJ_WEAPONS:
+		buff << _name_weapon(*this, desc, terse, ident, with_inscription,
+			ignore_flags);
+		break;
+
+	case OBJ_SHIELDS:
+
+		if (know_curse && !terse)
+		{
+			if (cursed())
+				buff << "cursed ";
+			else if (!know_pluses)
+				buff << "uncursed ";
+		}
+
+		if (is_hybrid(this->sub_type))
+			buff << _ego_prefix(*this, desc, terse, ident, with_inscription);
+
+		// If we know enough to know it has *something* ('shiny' etc),
+		// but we know it has no ego, it must have a plus. (or maybe a curse.)
+		// If we don't know what the plus is, call it 'enchanted'.
+		else if (!terse && know_ego && get_armour_ego_type(*this) == SPARM_NORMAL &&
+			!know_pluses && !is_artefact(*this) && get_equip_desc(*this))
+		{
+			buff << "enchanted ";
+		}
+
+		// Don't list unenchantable armor as +0.
+		if (know_pluses)
+			buff << make_stringf("%+d ", plus);
+
+		if (is_artefact(*this) && !dbname)
+		{
+			buff << get_artefact_name(*this);
+			break;
+		}
+
+		if (show_cosmetic)
+		{
+			switch (get_equip_desc(*this))
+			{
+			case ISFLAG_EMBROIDERED_SHINY:
+				if (!testbits(ignore_flags, ISFLAG_EMBROIDERED_SHINY))
+					buff << "shiny ";
+				break;
+
+			case ISFLAG_RUNED:
+				if (!testbits(ignore_flags, ISFLAG_RUNED))
+					buff << "runed ";
+				break;
+
+			case ISFLAG_GLOWING:
+				if (!testbits(ignore_flags, ISFLAG_GLOWING))
+					buff << "glowing ";
+				break;
+			}
+		}
+
+		buff << item_base_name(*this);
+
+		if (know_ego && !is_artefact(*this))
+		{
+			if (is_hybrid(this->sub_type))
+			{
+				buff << _ego_suffix(*this, terse);
+			}
+			else
+			{
+				const special_armour_type sparm = get_armour_ego_type(*this);
+
+				if (sparm != SPARM_NORMAL)
+				{
+					if (!terse)
+						buff << " of ";
+					else
+						buff << " {";
+					buff << armour_ego_name(*this, terse);
+					if (terse)
+						buff << "}";
+				}
+			}
+        }
+
+        if (know_curse && cursed() && terse)
+            buff << " (curse)";
         break;
 
     case OBJ_MISSILES:
@@ -1702,14 +1789,13 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
 
         break;
     }
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         if (know_curse && !terse)
         {
             if (cursed())
                 buff << "cursed ";
             else if (!know_pluses)
                 buff << "uncursed ";
-
         }
 
         // If we know enough to know it has *something* ('shiny' etc),
@@ -3437,11 +3523,8 @@ bool is_useless_item(const item_def &item, bool temp)
 
         return false;
 
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         if (!can_wear_armour(item, false, true))
-            return true;
-
-        if (is_shield(item) && you.get_mutation_level(MUT_MISSING_HAND))
             return true;
 
         if (is_artefact(item))
@@ -3483,9 +3566,9 @@ bool is_useless_item(const item_def &item, bool temp)
 #if TAG_MAJOR_VERSION == 34
         case SCR_CURSE_WEAPON: // for non-Ashenzari, already handled
         case SCR_CURSE_ARMOUR:
-#endif
         case SCR_ENCHANT_WEAPON:
-        case SCR_ENCHANT_ARMOUR:
+#endif
+        case SCR_ENCHANT:
         case SCR_BRAND_WEAPON:
             return you.species == SP_FELID;
         case SCR_SUMMONING:
@@ -3863,7 +3946,7 @@ string item_prefix(const item_def &item, bool temp)
             prefixes.push_back("melee");
         // fall through
 
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
     case OBJ_JEWELLERY:
         if (is_artefact(item))
             prefixes.push_back("artefact");

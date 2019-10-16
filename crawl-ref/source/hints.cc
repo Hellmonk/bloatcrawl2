@@ -667,7 +667,7 @@ void taken_new_item(object_class_type item_type)
     case OBJ_WEAPONS:
         learned_something_new(HINT_SEEN_WEAPON);
         break;
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         learned_something_new(HINT_SEEN_ARMOUR);
         break;
     case OBJ_MISSILES:
@@ -2876,7 +2876,7 @@ static string _hints_abilities(const item_def& item)
             str += "first <w>%</w>ield it";
             cmd.push_back(CMD_WIELD_WEAPON);
             break;
-        case OBJ_ARMOUR:
+        case OBJ_ARMOURS:
             str += "first <w>%</w>ear it";
             cmd.push_back(CMD_WEAR_ARMOUR);
             break;
@@ -3078,7 +3078,7 @@ string hints_describe_item(const item_def &item)
                 ostr << _hints_throw_stuff(item);
                 cmd.push_back(CMD_FIRE);
             }
-            else if (is_launched(&you, you.weapon(), item) == launch_retval::LAUNCHED)
+            else if (is_launched(&you, you.weapon(0), you.weapon(1), item) == launch_retval::LAUNCHED)
             {
                 ostr << "As you're already wielding the appropriate launcher, "
                         "you can simply ";
@@ -3115,7 +3115,7 @@ string hints_describe_item(const item_def &item)
             Hints.hints_events[HINT_SEEN_MISSILES] = false;
             break;
 
-        case OBJ_ARMOUR:
+        case OBJ_ARMOURS:
         {
             bool wearable = true;
             if (you.species == SP_CENTAUR && item.sub_type == ARM_BOOTS)

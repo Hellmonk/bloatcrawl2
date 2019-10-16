@@ -38,13 +38,13 @@ enum armour_type
 
     ARM_BOOTS,
 
+#if TAG_MAJOR_VERSION == 34
     ARM_BUCKLER, // order of shields matters
     ARM_FIRST_SHIELD = ARM_BUCKLER,
     ARM_SHIELD,
     ARM_LARGE_SHIELD,
     ARM_LAST_SHIELD = ARM_LARGE_SHIELD,
 
-#if TAG_MAJOR_VERSION == 34
     ARM_CRYSTAL_PLATE_ARMOUR,
 #endif
 
@@ -106,10 +106,23 @@ enum armour_type
     NUM_ARMOURS
 };
 
+enum shield_type
+{
+	SHD_BUCKLER,
+	SHD_FIRST_NORM = SHD_BUCKLER,
+	SHD_SHIELD,
+	SHD_LARGE_SHIELD,
+	SHD_LAST_NORM = SHD_LARGE_SHIELD,
+	SHD_SAI,
+	SHD_TARGE,
+	SHD_NUNCHAKU,
+	NUM_SHIELDS
+};
+
 enum armour_property_type
 {
     PARM_AC,
-    PARM_EVASION,
+    PARM_EVASION
 };
 
 const int SP_FORBID_EGO   = -1;
@@ -410,8 +423,10 @@ enum scroll_type
     SCR_NOISE,
     SCR_REMOVE_CURSE,
     SCR_SUMMONING,
+#if TAG_MAJOR_VERSION == 34
     SCR_ENCHANT_WEAPON,
-    SCR_ENCHANT_ARMOUR,
+#endif
+    SCR_ENCHANT,
     SCR_TORMENT,
 #if TAG_MAJOR_VERSION == 34
     SCR_RANDOM_USELESSNESS,
@@ -677,6 +692,16 @@ enum weapon_property_type
     PWPN_HIT,
     PWPN_SPEED,
     PWPN_ACQ_WEIGHT,
+};
+
+enum shield_property_type
+{
+	PSHD_HYBRID,
+	PSHD_SH,
+	PSHD_ER,
+	PSHD_HIT,
+	PSHD_DAMAGE,
+	PSHD_SPEED,
 };
 
 enum vorpal_damage_type

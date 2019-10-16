@@ -45,7 +45,6 @@
 
 static equipment_type _acquirement_armour_slot(bool);
 static armour_type _acquirement_armour_for_slot(equipment_type, bool);
-static armour_type _acquirement_shield_type();
 static armour_type _acquirement_body_armour(bool);
 static armour_type _useless_armour_type();
 
@@ -133,7 +132,6 @@ static equipment_type _acquirement_armour_slot(bool divine)
 
     vector<pair<equipment_type, int>> weights = {
         { EQ_BODY_ARMOUR,   divine ? 5 : 1 },
-        { EQ_WEAPON1,        1 },
         { EQ_CLOAK,         1 },
         { EQ_HELMET,        1 },
         { EQ_GLOVES,        1 },
@@ -182,8 +180,6 @@ static armour_type _acquirement_armour_for_slot(equipment_type slot_type,
             if (you_can_wear(EQ_HELMET) == MB_TRUE)
                 return random_choose(ARM_HELMET, ARM_HAT);
             return ARM_HAT;
-        case EQ_WEAPON1:
-            return _acquirement_shield_type();
         case EQ_BODY_ARMOUR:
             return _acquirement_body_armour(divine);
         default:
@@ -207,21 +203,34 @@ static armour_type _acquirement_armour_for_slot(equipment_type slot_type,
  *
  * @return A potentially wearable type of shield.
  */
-static armour_type _acquirement_shield_type()
+static int _acquirement_shield_subtype(bool /*divine*/, int& /*quantity*/)
 {
     const int scale = 256;
-    vector<pair<armour_type, int>> weights = {
-        { ARM_BUCKLER,       player_shield_racial_factor() * 4 * scale
+
+	if (random2(you.skill(SK_SHORT_BLADES, 10, false, false, false)) > random2(you.skill(SK_SHIELDS, 10, false, false, false)))
+		return SHD_SAI;
+
+	if (random2(you.skill(SK_SHIELDS, 10, false, false, false)) < 50 || one_chance_in(5))
+	{
+		if (one_chance_in(2))
+			return SHD_NUNCHAKU;
+		else if (one_chance_in(2))
+			return SHD_SAI;
+	}
+
+    vector<pair<shield_type, int>> weights = {
+        { SHD_BUCKLER,       player_shield_racial_factor() * 4 * scale
                                 - _skill_rdiv(SK_SHIELDS, scale) },
-        { ARM_SHIELD,        10 * scale },
-        { ARM_LARGE_SHIELD,  20 * scale
+        { SHD_SHIELD,        6 * scale },
+		{ SHD_TARGE,         4 * scale },
+        { SHD_LARGE_SHIELD,  20 * scale
                              - player_shield_racial_factor() * 4 * scale
                              + _skill_rdiv(SK_SHIELDS, scale / 2) },
     };
 
-    return filtered_vector_select(weights, [] (armour_type shtyp) {
-        return check_armour_size(shtyp,  you.body_size(PSIZE_TORSO, true));
-    });
+	const shield_type* shield_ptr = random_choose_weighted(weights);
+	ASSERT(shield_ptr);
+	return *shield_ptr;
 }
 
 /**
@@ -307,7 +316,7 @@ static armour_type _acquirement_body_armour(bool divine)
 static armour_type _useless_armour_type()
 {
     vector<pair<equipment_type, int>> weights = {
-        { EQ_BODY_ARMOUR, 1 }, { EQ_WEAPON1, 1 }, { EQ_CLOAK, 1 },
+        { EQ_BODY_ARMOUR, 1 }, { EQ_CLOAK, 1 },
         { EQ_HELMET, 1 }, { EQ_GLOVES, 1 }, { EQ_BOOTS, 1 },
     };
 
@@ -340,20 +349,6 @@ static armour_type _useless_armour_type()
             return random_choose(ARM_HELMET, ARM_HAT);
         case EQ_CLOAK:
             return ARM_CLOAK;
-        case EQ_WEAPON1:
-        {
-            vector<pair<armour_type, int>> shield_weights = {
-                { ARM_BUCKLER,       1 },
-                { ARM_SHIELD,        1 },
-                { ARM_LARGE_SHIELD,  1 },
-            };
-
-            return filtered_vector_select(shield_weights,
-                                          [] (armour_type shtyp) {
-                return !check_armour_size(shtyp,
-                                          you.body_size(PSIZE_TORSO, true));
-            });
-        }
         case EQ_BODY_ARMOUR:
             // only the rarest & most precious of unwearable armours for Xom
             if (you_can_wear(EQ_BODY_ARMOUR))
@@ -746,6 +741,7 @@ static const acquirement_subtype_finder _subtype_finders[] =
     0, // no rods
 #endif
     0, // no runes either
+	_acquirement_shield_subtype, // Will put shields back in soon. I'm a derp.
 };
 
 static int _find_acquirement_subtype(object_class_type &class_wanted,
@@ -755,7 +751,7 @@ static int _find_acquirement_subtype(object_class_type &class_wanted,
     COMPILE_CHECK(ARRAYSZ(_subtype_finders) == NUM_OBJECT_CLASSES);
     ASSERT(class_wanted != OBJ_RANDOM);
 
-    if (class_wanted == OBJ_ARMOUR && you.species == SP_FELID)
+    if (class_wanted == OBJ_ARMOURS && you.species == SP_FELID)
         return OBJ_RANDOM;
 
     int type_wanted = OBJ_RANDOM;
@@ -1066,7 +1062,7 @@ static int _weapon_brand_quality(int brand, bool range)
 static bool _armour_slot_seen(armour_type arm)
 {
     item_def item;
-    item.base_type = OBJ_ARMOUR;
+    item.base_type = OBJ_ARMOURS;
     item.quantity = 1;
 
     for (int i = 0; i < NUM_ARMOURS; i++)
@@ -1088,7 +1084,7 @@ static bool _armour_slot_seen(armour_type arm)
 
 static bool _is_armour_plain(const item_def &item)
 {
-    ASSERT(item.base_type == OBJ_ARMOUR);
+    ASSERT(item.base_type == OBJ_ARMOURS);
     if (is_artefact(item))
         return false;
 
@@ -1118,7 +1114,7 @@ static bool _brand_already_seen(const item_def &item)
         case OBJ_WEAPONS:
             return you.seen_weapon[item.sub_type]
                    & (1<<get_weapon_brand(item));
-        case OBJ_ARMOUR:
+        case OBJ_ARMOURS:
             return you.seen_armour[item.sub_type]
                    & (1<<get_armour_ego_type(item));
         default:
@@ -1143,7 +1139,7 @@ static bool _brand_already_seen(const item_def &item)
  */
 static void _adjust_brand(item_def &item, bool divine)
 {
-    if (item.base_type != OBJ_WEAPONS && item.base_type != OBJ_ARMOUR)
+    if (item.base_type != OBJ_WEAPONS && item.base_type != OBJ_ARMOURS)
         return; // don't reroll missile brands, I guess
 
     if (is_artefact(item))
@@ -1179,7 +1175,7 @@ static string _why_reject(const item_def &item, int agent)
     if (agent != GOD_XOM
         && (item.base_type == OBJ_WEAPONS
                 && !can_wield(&item, false, true)
-            || item.base_type == OBJ_ARMOUR
+            || item.base_type == OBJ_ARMOURS
                 && !can_wear_armour(item, false, true)))
     {
         return "Destroying unusable weapon or armour!";
@@ -1243,7 +1239,7 @@ int acquirement_create_item(object_class_type class_wanted,
     for (int item_tries = 0; item_tries < MAX_ACQ_TRIES; item_tries++)
     {
         int type_wanted = -1;
-        if (agent == GOD_XOM && class_wanted == OBJ_ARMOUR && one_chance_in(20))
+        if (agent == GOD_XOM && class_wanted == OBJ_ARMOURS && one_chance_in(20))
             type_wanted = _useless_armour_type();
         else
         {
@@ -1274,7 +1270,7 @@ int acquirement_create_item(object_class_type class_wanted,
 
         // For plain armour, try to change the subtype to something
         // matching a currently unfilled equipment slot.
-        if (acq_item.base_type == OBJ_ARMOUR && !is_artefact(acq_item))
+        if (acq_item.base_type == OBJ_ARMOURS && !is_artefact(acq_item))
         {
             const special_armour_type sparm = get_armour_ego_type(acq_item);
 
@@ -1306,7 +1302,7 @@ int acquirement_create_item(object_class_type class_wanted,
                 if (at != NUM_ARMOURS)
                 {
                     destroy_item(thing_created, true);
-                    thing_created = items(true, OBJ_ARMOUR, at,
+                    thing_created = items(true, OBJ_ARMOURS, at,
                                           ITEM_LEVEL, 0, agent);
                 }
                 else if (agent != GOD_XOM && one_chance_in(3))
@@ -1481,8 +1477,9 @@ bool acquirement(object_class_type class_wanted, int agent,
     if (you.species == SP_FELID)
     {
         bad_class.set(OBJ_WEAPONS);
+		bad_class.set(OBJ_SHIELDS);
         bad_class.set(OBJ_MISSILES);
-        bad_class.set(OBJ_ARMOUR);
+        bad_class.set(OBJ_ARMOURS);
         bad_class.set(OBJ_STAVES);
     }
     if (you.get_mutation_level(MUT_NO_ARTIFICE))
@@ -1493,7 +1490,8 @@ bool acquirement(object_class_type class_wanted, int agent,
     static struct { object_class_type type; const char* name; } acq_classes[] =
     {
         { OBJ_WEAPONS,    "Weapon" },
-        { OBJ_ARMOUR,     "Armour" },
+	    { OBJ_SHIELDS,    "Shield" },
+        { OBJ_ARMOURS,    "Armour" },
         { OBJ_JEWELLERY,  "Jewellery" },
         { OBJ_BOOKS,      "Book" },
         { OBJ_STAVES,     "Staff " },
@@ -1501,12 +1499,12 @@ bool acquirement(object_class_type class_wanted, int agent,
         { OBJ_FOOD,       0 }, // amended below
         { OBJ_GOLD,       0 },
     };
-    ASSERT(acq_classes[6].type == OBJ_FOOD);
-    acq_classes[6].name = you.species == SP_VAMPIRE ? "Blood":
+    ASSERT(acq_classes[7].type == OBJ_FOOD);
+    acq_classes[7].name = you.species == SP_VAMPIRE ? "Blood":
                                                       "Food";
     string gold_text = make_stringf("Gold (you have $%d)", you.gold);
-    ASSERT(acq_classes[7].type == OBJ_GOLD);
-    acq_classes[7].name = gold_text.c_str();
+    ASSERT(acq_classes[8].type == OBJ_GOLD);
+    acq_classes[8].name = gold_text.c_str();
 
     int thing_created = NON_ITEM;
 

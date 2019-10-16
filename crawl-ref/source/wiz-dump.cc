@@ -257,7 +257,7 @@ static int _find_ego_type(object_class_type type, const string &s)
                 return i;
         }
         break;
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         for (int i = SPARM_NORMAL; i < NUM_SPECIAL_ARMOURS; ++i)
         {
             item.brand = i;

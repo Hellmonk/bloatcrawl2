@@ -382,7 +382,7 @@ random_var monster::attack_delay(const item_def *projectile,
     const item_def* weap = weapon();
 
     const bool use_unarmed =
-        (projectile) ? is_launched(this, weap, *projectile) != launch_retval::LAUNCHED
+        (projectile) ? is_launched(this, weap, weap, *projectile) != launch_retval::LAUNCHED
                      : !weap;
 
     if (use_unarmed || !weap)
@@ -922,7 +922,7 @@ void monster::equip(item_def &item, bool msg)
         equip_weapon(item, msg);
         break;
 
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         equip_armour(item, msg);
         break;
 
@@ -1034,7 +1034,7 @@ bool monster::unequip(item_def &item, bool msg, bool force)
         unequip_weapon(item, msg);
         break;
 
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         unequip_armour(item, msg);
         break;
 
@@ -1578,21 +1578,7 @@ bool monster::wants_weapon(const item_def &weap) const
 
 bool monster::wants_armour(const item_def &item) const
 {
-    // Monsters that are capable of dual wielding won't pick up shields.
-    // Neither will monsters that are already wielding a two-hander.
-    if (is_shield(item)
-        && (mons_wields_two_weapons(*this)
-            || mslot_item(MSLOT_WEAPON)
-               && hands_reqd(*mslot_item(MSLOT_WEAPON))
-                      == HANDS_TWO))
-    {
-        return false;
-    }
-
-    // Don't pick up new armour if we've been gifted something by the player.
-    if (is_shield(item) && props.exists(BEOGH_SH_GIFT_KEY))
-        return false;
-    else if (props.exists(BEOGH_ARM_GIFT_KEY))
+    if (props.exists(BEOGH_ARM_GIFT_KEY))
         return false;
 
     // Spellcasters won't pick up restricting armour, although they can
@@ -1675,7 +1661,7 @@ static int _get_monster_armour_value(const monster *mon,
  */
 bool monster::pickup_armour(item_def &item, bool msg, bool force)
 {
-    ASSERT(item.base_type == OBJ_ARMOUR);
+    ASSERT(item.base_type == OBJ_ARMOURS);
 
     if (!force && !wants_armour(item))
         return false;
@@ -1896,6 +1882,24 @@ bool monster::pickup_weapon(item_def &item, bool msg, bool force)
     return false;
 }
 
+bool monster::pickup_shield(item_def &item, bool msg, bool force)
+{
+
+	// Monsters that are capable of dual wielding won't pick up shields.
+	// Neither will monsters that are already wielding a two-hander.
+	if (!force && mons_wields_two_weapons(*this)
+			|| (mslot_item(MSLOT_WEAPON) && hands_reqd(*mslot_item(MSLOT_WEAPON)) == HANDS_TWO))
+		return false;
+
+	// Don't pick up new armour if we've been gifted something by the player.
+	if (!force && props.exists(BEOGH_SH_GIFT_KEY))
+		return false;
+	
+	if (is_weapon_wieldable(item, body_size()))
+		return pickup(item, MSLOT_SHIELD, msg);
+	return false;
+}
+
 /**
  * Have a monster pick up a missile item.
  *
@@ -2070,8 +2074,8 @@ bool monster::pickup_item(item_def &item, bool msg, bool force)
         {
             // These are not important enough for pickup when
             // seeking, fleeing etc.
-            if (itype == OBJ_ARMOUR || itype == OBJ_CORPSES
-                || itype == OBJ_JEWELLERY
+            if (itype == OBJ_ARMOURS || itype == OBJ_CORPSES
+                || itype == OBJ_JEWELLERY || itype == OBJ_SHIELDS
                 || itype == OBJ_MISCELLANY || itype == OBJ_GOLD)
             {
                 return false;
@@ -2098,8 +2102,10 @@ bool monster::pickup_item(item_def &item, bool msg, bool force)
     switch (item.base_type)
     {
     // Pickup some stuff only if WANDERING.
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         return pickup_armour(item, msg, force);
+	case OBJ_SHIELDS:
+		return pickup_shield(item, msg, force);
     case OBJ_GOLD:
         return pickup_gold(item, msg);
     case OBJ_JEWELLERY:
@@ -3139,12 +3145,12 @@ int monster::shield_bonus() const
 
     int sh = -100;
     const item_def *shld = shield();
-	if (shld && get_armour_slot(*shld) == EQ_WEAPON1)
+	if (shld && shld->base_type == OBJ_SHIELDS)
 	{
 
 		int shld_c = property(*shld, PARM_AC) + shld->plus * 2;
 		shld_c = shld_c * 2 + (body_size(PSIZE_TORSO) - SIZE_MEDIUM)
-			* (shld->sub_type - ARM_LARGE_SHIELD);
+			* (shld->sub_type - SHD_LARGE_SHIELD);
 		sh = random2avg(shld_c + get_hit_dice() * 4 / 3, 2) / 2;
 	}
 
@@ -3751,10 +3757,10 @@ int monster::res_fire() const
         const int shld      = inv[MSLOT_SHIELD];
         const int jewellery = inv[MSLOT_JEWELLERY];
 
-        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOUR)
+        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS)
             u += get_armour_res_fire(mitm[armour], false);
 
-        if (shld != NON_ITEM && mitm[shld].base_type == OBJ_ARMOUR)
+        if (shld != NON_ITEM && mitm[shld].base_type == OBJ_ARMOURS)
             u += get_armour_res_fire(mitm[shld], false);
 
         if (jewellery != NON_ITEM && mitm[jewellery].base_type == OBJ_JEWELLERY)
@@ -3805,10 +3811,10 @@ int monster::res_cold() const
         const int shld      = inv[MSLOT_SHIELD];
         const int jewellery = inv[MSLOT_JEWELLERY];
 
-        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOUR)
+        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS)
             u += get_armour_res_cold(mitm[armour], false);
 
-        if (shld != NON_ITEM && mitm[shld].base_type == OBJ_ARMOUR)
+        if (shld != NON_ITEM && mitm[shld].base_type == OBJ_ARMOURS)
             u += get_armour_res_cold(mitm[shld], false);
 
         if (jewellery != NON_ITEM && mitm[jewellery].base_type == OBJ_JEWELLERY)
@@ -3848,7 +3854,7 @@ int monster::res_elec() const
         const int armour    = inv[MSLOT_ARMOUR];
         const int jewellery = inv[MSLOT_JEWELLERY];
 
-        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOUR)
+        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS)
             u += get_armour_res_elec(mitm[armour], false);
 
         if (jewellery != NON_ITEM && mitm[jewellery].base_type == OBJ_JEWELLERY)
@@ -3902,10 +3908,10 @@ int monster::res_poison(bool temp) const
         const int shld      = inv[MSLOT_SHIELD];
         const int jewellery = inv[MSLOT_JEWELLERY];
 
-        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOUR)
+        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS)
             u += get_armour_res_poison(mitm[armour], false);
 
-        if (shld != NON_ITEM && mitm[shld].base_type == OBJ_ARMOUR)
+        if (shld != NON_ITEM && mitm[shld].base_type == OBJ_ARMOURS)
             u += get_armour_res_poison(mitm[shld], false);
 
         if (jewellery != NON_ITEM && mitm[jewellery].base_type == OBJ_JEWELLERY)
@@ -3993,10 +3999,10 @@ int monster::res_negative_energy(bool intrinsic_only) const
         const int shld      = inv[MSLOT_SHIELD];
         const int jewellery = inv[MSLOT_JEWELLERY];
 
-        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOUR)
+        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS)
             u += get_armour_life_protection(mitm[armour], false);
 
-        if (shld != NON_ITEM && mitm[shld].base_type == OBJ_ARMOUR)
+        if (shld != NON_ITEM && mitm[shld].base_type == OBJ_ARMOURS)
             u += get_armour_life_protection(mitm[shld], false);
 
         if (jewellery != NON_ITEM && mitm[jewellery].base_type == OBJ_JEWELLERY)
@@ -4104,13 +4110,13 @@ int monster::res_magic(bool calc_unid) const
     // XXX: should also include artefacts mr props
     // (remove ", false" and add appropriate flag checks for calc_unid)
 
-    if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOUR
+    if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS
         && (calc_unid || (mitm[armour].flags & ISFLAG_KNOW_TYPE)))
     {
         u += get_armour_res_magic(mitm[armour], false);
     }
 
-    if (shld != NON_ITEM && mitm[shld].base_type == OBJ_ARMOUR
+    if (shld != NON_ITEM && mitm[shld].base_type == OBJ_ARMOURS
         && (calc_unid || (mitm[shld].flags & ISFLAG_KNOW_TYPE)))
     {
         u += get_armour_res_magic(mitm[shld], false);
@@ -4181,7 +4187,7 @@ bool monster::airborne() const
            || has_facet(BF_BAT)
            || scan_artefacts(ARTP_FLY) > 0
            || mslot_item(MSLOT_ARMOUR)
-              && mslot_item(MSLOT_ARMOUR)->base_type == OBJ_ARMOUR
+              && mslot_item(MSLOT_ARMOUR)->base_type == OBJ_ARMOURS
               && mslot_item(MSLOT_ARMOUR)->brand == SPARM_FLYING
            || mslot_item(MSLOT_JEWELLERY)
               && mslot_item(MSLOT_JEWELLERY)->is_type(OBJ_JEWELLERY, RING_FLIGHT)

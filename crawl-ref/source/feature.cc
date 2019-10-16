@@ -157,7 +157,7 @@ void init_show_table()
     {
         show_item_type si = static_cast<show_item_type>(i);
         // SHOW_ITEM_NONE is bogus, but "invis exposed" is an ok placeholder
-        COMPILE_CHECK(DCHAR_ITEM_AMULET - DCHAR_ITEM_DETECTED + 2 == NUM_SHOW_ITEMS);
+        COMPILE_CHECK(DCHAR_ITEM_SHIELD - DCHAR_ITEM_DETECTED + 2 == NUM_SHOW_ITEMS);
         item_defs[si].minimap = MF_ITEM;
         item_defs[si].dchar = static_cast<dungeon_char_type>(i
             + DCHAR_ITEM_DETECTED - SHOW_ITEM_DETECTED);

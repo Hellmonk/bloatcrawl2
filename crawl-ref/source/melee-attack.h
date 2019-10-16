@@ -83,7 +83,7 @@ private:
     int cleave_damage_mod(int dam);
 
     /* Long blade riposte */
-    void riposte();
+    void riposte(int which_weapon);
 
     /* Wu Jian martial attacks*/
     int martial_damage_mod(int dam);

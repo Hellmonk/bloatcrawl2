@@ -699,7 +699,7 @@ static bool _selectively_curse_item(bool armour, const string &pre_msg)
 
         if (item.cursed()
             || !item_is_equipped(item)
-            || armour && item.base_type != OBJ_ARMOUR
+            || armour && item.base_type != OBJ_ARMOURS
             || !armour && item.base_type != OBJ_JEWELLERY)
         {
             mprf("Choose an uncursed equipped piece of %s, or Esc to abort.",

@@ -84,7 +84,7 @@
 
 static weapon_type _hepliaklqana_weapon_type(monster_type mc, int HD);
 static brand_type _hepliaklqana_weapon_brand(monster_type mc, int HD);
-static armour_type _hepliaklqana_shield_type(monster_type mc, int HD);
+static shield_type _hepliaklqana_shield_type(monster_type mc, int HD);
 static special_armour_type _hepliaklqana_shield_ego(int HD);
 
 const vector<god_power> god_powers[NUM_GODS] =
@@ -1365,7 +1365,7 @@ static bool _give_trog_oka_gift(bool forced)
             gift_type = OBJ_WEAPONS;
         }
         else
-            gift_type = OBJ_ARMOUR;
+            gift_type = OBJ_ARMOURS;
     }
     else if (need_missiles)
         gift_type = OBJ_MISSILES;
@@ -1387,7 +1387,7 @@ static bool _give_trog_oka_gift(bool forced)
             else
                 simple_god_message(" grants you armour!");
             // Okawaru charges extra for armour acquirements.
-            if (you_worship(GOD_OKAWARU) && gift_type == OBJ_ARMOUR)
+            if (you_worship(GOD_OKAWARU) && gift_type == OBJ_ARMOURS)
                 _inc_gift_timeout(30 + random2avg(15, 2));
 
             _inc_gift_timeout(30 + random2avg(19, 2));
@@ -1747,7 +1747,7 @@ static string _item_ego_name(object_class_type base_type, int brand)
                            || brand == SPWPN_ANTIMAGIC;
         return brand_type_name(brand, terse);
     }
-    case OBJ_ARMOUR:
+    case OBJ_ARMOURS:
         // XXX: hack
         return "reflection";
     default:
@@ -1862,11 +1862,11 @@ void upgrade_hepliaklqana_ancestor(bool quiet_force)
             give_shield(ancestor);
     }
 
-    const armour_type shld = _hepliaklqana_shield_type(ancestor->type, hd);
+    const shield_type shld = _hepliaklqana_shield_type(ancestor->type, hd);
     if (shld != _hepliaklqana_shield_type(ancestor->type, old_hd)
         && !quiet_force)
     {
-        _regain_item_memory(*ancestor, OBJ_ARMOUR, shld,
+        _regain_item_memory(*ancestor, OBJ_SHIELDS, shld,
                             _hepliaklqana_shield_ego(hd));
     }
 
@@ -1878,7 +1878,7 @@ void upgrade_hepliaklqana_ancestor(bool quiet_force)
 		mprf("%s remembers %s %s reflection.",
 			ancestor->name(DESC_YOUR, true).c_str(),
 			ancestor->pronoun(PRONOUN_POSSESSIVE, true).c_str(),
-			apostrophise(item_base_name(OBJ_ARMOUR, shld)).c_str());
+			apostrophise(item_base_name(OBJ_ARMOURS, shld)).c_str());
 	}
 
     if (quiet_force)
@@ -1995,22 +1995,22 @@ void upgrade_hepliaklqana_weapon(monster_type mtyp, item_def &item)
  * @param HD        The HD (XL) of the ancestor in question.
  * @return          An appropriate type of shield, or NUM_ARMOURS.
  */
-static armour_type _hepliaklqana_shield_type(monster_type mc, int HD)
+static shield_type _hepliaklqana_shield_type(monster_type mc, int HD)
 {
 	if (you.species == SP_FELID)
-		return NUM_ARMOURS;
+		return NUM_SHIELDS;
 	else if (mc != MONS_ANCESTOR_KNIGHT)
 	{
 		if (you.species == SP_FORMICID)
-			return ARM_SHIELD;
+			return SHD_SHIELD;
 		else
-			return NUM_ARMOURS;
+			return NUM_SHIELDS;
 	}
 	else if (you.body_size() < SIZE_MEDIUM)
-		return ARM_BUCKLER;
+		return SHD_BUCKLER;
     if (HD < 13)
-        return ARM_SHIELD;
-    return ARM_LARGE_SHIELD;
+        return SHD_SHIELD;
+    return SHD_LARGE_SHIELD;
 }
 
 static special_armour_type _hepliaklqana_shield_ego(int HD)
@@ -2030,13 +2030,13 @@ void upgrade_hepliaklqana_shield(const monster &ancestor, item_def &item)
 {
     ASSERT(mons_is_hepliaklqana_ancestor(ancestor.type));
     const int HD = ancestor.get_experience_level();
-    const armour_type shield_type = _hepliaklqana_shield_type(ancestor.type,
+    const shield_type type = _hepliaklqana_shield_type(ancestor.type,
                                                               HD);
-    if (shield_type == NUM_ARMOURS)
+    if (type == NUM_SHIELDS)
         return; // no shield yet!
 
-    item.base_type = OBJ_ARMOUR;
-    item.sub_type = shield_type;
+    item.base_type = OBJ_SHIELDS;
+    item.sub_type = type;
     item.brand = _hepliaklqana_shield_ego(HD);
     item.plus = 0;
     item.flags |= ISFLAG_KNOW_TYPE | ISFLAG_SUMMONED;

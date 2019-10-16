@@ -4308,7 +4308,8 @@ static object_class_type _acquirement_object_class()
         OBJ_WANDS,
         OBJ_MISCELLANY, // Felids stop here
         OBJ_WEAPONS,
-        OBJ_ARMOUR,
+		OBJ_SHIELDS,
+        OBJ_ARMOURS,
         OBJ_STAVES,
     };
 
@@ -4450,7 +4451,7 @@ static bool _apply_item_props(item_def &item, const item_spec &spec,
     }
     if (item.base_type == OBJ_WANDS && props.exists("charges"))
         item.charges = props["charges"].get_int();
-    if ((item.base_type == OBJ_WEAPONS || item.base_type == OBJ_ARMOUR
+    if ((item.base_type == OBJ_WEAPONS || item.base_type == OBJ_ARMOURS
          || item.base_type == OBJ_JEWELLERY || item.base_type == OBJ_MISSILES)
         && props.exists("plus") && !is_unrandom_artefact(item))
     {
@@ -4488,7 +4489,8 @@ static object_class_type _superb_object_class()
 {
     return random_choose_weighted(
             20, OBJ_WEAPONS,
-            10, OBJ_ARMOUR,
+			 5, OBJ_SHIELDS,
+            10, OBJ_ARMOURS,
             10, OBJ_JEWELLERY,
             10, OBJ_BOOKS,
             10, OBJ_STAVES,
@@ -4645,7 +4647,7 @@ static void _dgn_give_mon_spec_items(mons_spec &mspec,
 
         // Don't give monster a randart, and don't randomly give
         // monster an ego item.
-        if (spec.base_type == OBJ_ARMOUR || spec.base_type == OBJ_WEAPONS
+        if (spec.base_type == OBJ_ARMOURS || spec.base_type == OBJ_WEAPONS
             || spec.base_type == OBJ_MISSILES)
         {
             spec.allow_uniques = 0;
@@ -5784,7 +5786,7 @@ object_class_type item_in_shop(shop_type shop_type)
 
     case SHOP_ARMOUR:
     case SHOP_ARMOUR_ANTIQUE:
-        return OBJ_ARMOUR;
+        return OBJ_ARMOURS;
 
     case SHOP_GENERAL:
     case SHOP_GENERAL_ANTIQUE:
