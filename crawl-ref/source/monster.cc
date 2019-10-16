@@ -4675,6 +4675,10 @@ bool monster::is_trap_safe(const coord_def& where, bool just_check) const
 {
     const mon_intel_type intel = mons_intel(*this);
 
+    //floor traps are always safe if they're disabled by option
+    if(you.trap_type == 1 || you.trap_type == 3)
+        return true;
+
     const trap_def *ptrap = trap_at(where);
     if (!ptrap)
         return true;
