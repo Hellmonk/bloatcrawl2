@@ -741,7 +741,7 @@ static const acquirement_subtype_finder _subtype_finders[] =
     0, // no rods
 #endif
     0, // no runes either
-	_acquirement_shield_subtype, // Will put shields back in soon. I'm a derp.
+	_acquirement_shield_subtype,
 };
 
 static int _find_acquirement_subtype(object_class_type &class_wanted,

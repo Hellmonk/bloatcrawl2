@@ -1640,7 +1640,7 @@ static void _give_shield(monster* mon, int level)
         {
             if (coinflip())
             {
-                // set_item_ego_type(*shield, OBJ_SHIELDS, SPARM_REFLECTION); BCADDO::FIX THIS.
+				set_item_ego_type(*shield, OBJ_SHIELDS, SPARM_REFLECTION);
                 set_equip_desc(*shield, ISFLAG_GLOWING);
             }
             if (!is_artefact(*shield))

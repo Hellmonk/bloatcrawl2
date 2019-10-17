@@ -355,14 +355,12 @@ static string _beogh_bless_weapon(monster* mon)
     return _beogh_bless_ranged_weapon(mon);
 }
 
-/*
 static void _upgrade_shield(item_def &sh)
 {
     // Promote from buckler up through large shield.
-    if (sh.sub_type >= ARM_FIRST_SHIELD && sh.sub_type < ARM_LAST_SHIELD)
+    if (sh.sub_type >= SHD_FIRST_NORM && sh.sub_type < SHD_LAST_NORM)
         sh.sub_type++;
 }
-*/
 
 static void _upgrade_body_armour(item_def &arm)
 {
@@ -390,11 +388,16 @@ static void _gift_armour_to_orc(monster* orc, bool shield = false)
                            || orc->type == MONS_ORC_WARLORD;
 
     item_def armour;
-    armour.base_type = OBJ_ARMOURS;
-    if (shield)
-        armour.sub_type = highlevel ? SHD_SHIELD : SHD_BUCKLER;
-    else
-        armour.sub_type = highlevel ? ARM_SCALE_MAIL : ARM_RING_MAIL;
+	if (shield)
+	{
+		armour.base_type = OBJ_SHIELDS;
+		armour.sub_type = highlevel ? SHD_SHIELD : SHD_BUCKLER;
+	}
+	else
+	{
+		armour.base_type = OBJ_ARMOURS;
+		armour.sub_type = highlevel ? ARM_SCALE_MAIL : ARM_RING_MAIL;
+	}
     armour.quantity = 1;
     set_ident_flags(armour, ISFLAG_IDENT_MASK);
     give_specific_item(orc, armour);
@@ -408,48 +411,52 @@ static void _gift_armour_to_orc(monster* orc, bool shield = false)
  */
 static string _beogh_bless_armour(monster* mon)
 {
-    const int armour = mon->inv[MSLOT_ARMOUR];
-    const int shield = mon->inv[MSLOT_SHIELD];
+	const int armour = mon->inv[MSLOT_ARMOUR];
+	const int shield = mon->inv[MSLOT_SHIELD];
 
-    // always give naked orcs armour, if possible
-    if (armour == NON_ITEM)
-    {
-        _gift_armour_to_orc(mon);
-        if (mon->inv[MSLOT_ARMOUR] != NON_ITEM)
-            return "armour";
-        dprf("Couldn't give armour to an orc!"); //?
-        return "";
-    }
+	// always give naked orcs armour, if possible
+	if (armour == NON_ITEM)
+	{
+		_gift_armour_to_orc(mon);
+		if (mon->inv[MSLOT_ARMOUR] != NON_ITEM)
+			return "armour";
+		dprf("Couldn't give armour to an orc!"); //?
+		return "";
+	}
 
-    // Pick either a monster's armour or its shield.
-    const item_def* melee_weap = mon->melee_weapon();
-    const item_def* launcher = mon->launcher();
-    const bool can_use_shield = (melee_weap == nullptr
-                                 || mon->hands_reqd(*melee_weap) != HANDS_TWO)
-                                && (launcher == nullptr
-                                   || mon->hands_reqd(*launcher) != HANDS_TWO);
-    const int slot = coinflip() && can_use_shield ? shield : armour;
+	// Pick either a monster's armour or its shield.
+	const item_def* melee_weap = mon->melee_weapon();
+	const item_def* launcher = mon->launcher();
+	const bool can_use_shield = (melee_weap == nullptr
+		|| mon->hands_reqd(*melee_weap) != HANDS_TWO)
+		&& (launcher == nullptr
+			|| mon->hands_reqd(*launcher) != HANDS_TWO);
+	const int slot = coinflip() && can_use_shield ? shield : armour;
 
-    if (slot == NON_ITEM)
-    {
-        ASSERT(slot == shield);
-        _gift_armour_to_orc(mon, true);
-        if (mon->inv[MSLOT_SHIELD] != NON_ITEM)
-            return "a shield";
-        dprf("Couldn't give a shield to an orc!"); //?
-        return "";
-    }
+	if (slot == NON_ITEM)
+	{
+		ASSERT(slot == shield);
+		_gift_armour_to_orc(mon, true);
+		if (mon->inv[MSLOT_SHIELD] != NON_ITEM)
+			return "a shield";
+		dprf("Couldn't give a shield to an orc!"); //?
+		return "";
+	}
 
-    item_def& arm(mitm[slot]);
+	item_def& arm(mitm[slot]);
 
-    const int old_subtype = arm.sub_type;
+	const int old_subtype = arm.sub_type;
 
-    // 50% chance of improving armour type
-    if (!is_artefact(arm) && coinflip() && slot != shield)
-		_upgrade_body_armour(arm);
+	// 50% chance of improving armour type
+	if (!is_artefact(arm) && coinflip())
+	{
+		if (slot == shield)
+			_upgrade_shield(arm);
+		else
+			_upgrade_body_armour(arm);
+	}
 
     // And enchant or uncurse it. (Lower chance for higher enchantment.)
-    int ac_change;
     const bool enchanted = !x_chance_in_y(arm.plus, armour_max_enchant(arm))
                            && enchant_item(arm, true);
 

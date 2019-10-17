@@ -294,6 +294,20 @@ mcache_monster::mcache_monster(const monster_info& mon)
     {
         const item_info* mon_shield = mon.inv[MSLOT_SHIELD].get();
         m_shd_tile = (mon_shield != nullptr) ? tilep_equ_hand2(*mon_shield) : 0;
+		switch (m_shd_tile)
+		{
+			case TILEP_HAND1_SHIELD_DONALD:
+				m_shd_tile = TILEP_HAND2_SHIELD_DONALD;
+				break;
+			case TILEP_HAND1_BUCKLER_SPRIGGAN:
+				m_shd_tile = TILEP_HAND2_BUCKLER_SPRIGGAN;
+				break;
+			case TILEP_HAND1_LSHIELD_LOUISE:
+				m_shd_tile = TILEP_HAND2_LSHIELD_LOUISE;
+				break;
+			default:
+				break;
+		}
     }
 }
 

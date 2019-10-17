@@ -619,6 +619,13 @@ tileidx_t tilep_equ_weapon(const item_def &item)
 		case SHD_LARGE_SHIELD:
 			return _modrng(item.rnd, TILEP_HAND2_LARGE_SHIELD_LONG_RED,
 				TILEP_HAND2_LARGE_SHIELD_SPIRAL);
+		case SHD_NUNCHAKU:
+			return (TILEP_HAND2_FLAIL_STICK_SLANT);
+		case SHD_TARGE:
+			return _modrng(item.rnd, TILEP_HAND2_TARGE0,
+				TILEP_HAND2_TARGE5);
+		case SHD_SAI:
+			return (TILEP_HAND2_SAI);
 		default: return 0;
 		}
 	}

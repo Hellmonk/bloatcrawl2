@@ -2407,28 +2407,33 @@ int player_shield_class()
 
     if (you.shield())
     {
-		const item_def& item0 = you.inv[you.equip[EQ_WEAPON0]];
-		const item_def& item1 = you.inv[you.equip[EQ_WEAPON1]];
 		int base_shield0 = 0;
 		int base_shield1 = 0;
         int size_factor = (SIZE_GIANT - you.body_size(PSIZE_TORSO));
-		if (item0.base_type == OBJ_SHIELDS)
-			base_shield0 += property(item0, PSHD_SH) * 2 + size_factor;
-		if (item1.base_type == OBJ_SHIELDS)
-			base_shield1 += property(item1, PSHD_SH) * 2 + size_factor;
+		if (you.weapon(0) && you.weapon(0)->base_type == OBJ_SHIELDS)
+			base_shield0 += property(*you.weapon(0), PSHD_SH) * 2 + size_factor;
+		if (you.weapon(1) && you.weapon(1)->base_type == OBJ_SHIELDS)
+			base_shield1 += property(*you.weapon(1), PSHD_SH) * 2 + size_factor;
 
         // bonus applied only to base, see above for effect:
         shield += (base_shield0 + base_shield1) * 50;
-        shield += base_shield0 * you.skill(item_attack_skill(item0), 5) / 2;
-		shield += base_shield1 * you.skill(item_attack_skill(item1), 5) / 2;
+		if (you.weapon(0))
+	        shield += base_shield0 * you.skill(item_attack_skill(*you.weapon(0)), 5) / 2;
+		if (you.weapon(1))
+			shield += base_shield1 * you.skill(item_attack_skill(*you.weapon(1)), 5) / 2;
 
-		if (item0.base_type == OBJ_SHIELDS && !is_hybrid(item0.sub_type))
-			shield += item0.plus * 200;
-		if (item1.base_type == OBJ_SHIELDS && !is_hybrid(item0.sub_type))
-			shield += item1.plus * 200;
+		if (you.weapon(0) && you.weapon(0)->base_type == OBJ_SHIELDS && !is_hybrid(you.weapon(0)->sub_type))
+			shield += you.weapon(0)->plus * 200;
+		if (you.weapon(1) && you.weapon(1)->base_type == OBJ_SHIELDS && !is_hybrid(you.weapon(1)->sub_type))
+			shield += you.weapon(1)->plus * 200;
 
-        shield += you.skill(SK_SHIELDS, 38)
-                + min(you.skill(SK_SHIELDS, 38), 3 * 38);
+		if (you.weapon(0))
+			shield += you.skill(item_attack_skill(*you.weapon(0)), 19)
+					+ min(you.skill(item_attack_skill(*you.weapon(0)), 19), 3 * 19);
+
+		if (you.weapon(1))
+			shield += you.skill(item_attack_skill(*you.weapon(1)), 19)
+				+ min(you.skill(item_attack_skill(*you.weapon(1)), 19), 3 * 19);
 
         int stat = you.dex() * 38;
         stat = stat * (base_shield0 + base_shield1 + 13) / 26;

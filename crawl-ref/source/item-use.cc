@@ -581,17 +581,19 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
     else if (item_slot == you.equip[EQ_WEAPON0]
 		|| item_slot == you.equip[EQ_WEAPON1])
     {
-        if (Options.equip_unequip)
-            item_slot = SLOT_BARE_HANDS;
+		if (Options.equip_unequip)
+		{
+			item_slot = SLOT_BARE_HANDS;
+		}
         else
         {
 			if ((you.weapon(0) && you.inv[you.equip[EQ_WEAPON0]].cursed()) || (you.weapon(1) && you.inv[you.equip[EQ_WEAPON1]].cursed()))
 				mpr("You can't swap weapons while either is cursed.");
-			else if (you.weapon(0) && is_range_weapon(*you.weapon(0)))
+			if (you.weapon(0) && is_range_weapon(*you.weapon(0)))
 				mpr("Ranged weapons can only be wielded in your right hand.");
-			else if (you.hands_reqd(*you.weapon(0)) == HANDS_TWO)
+			if (you.weapon(0) && you.hands_reqd(*you.weapon(0)) == HANDS_TWO)
 				mpr("You're already wielding that.");
-			else if (yesno("Switch to other hand?", true, false, true, true, false, nullptr, GOTO_MSG)) 
+			if (yesno("Switch to other hand?", true, false, true, true, false, nullptr, GOTO_MSG)) 
 			{
 				int temp0 = you.equip[EQ_WEAPON0];
 				unequip_item(EQ_WEAPON0, show_weff_messages);
