@@ -353,7 +353,7 @@ function setup_armoury_orcs(e)
             "| plate armour randart")
     e.kmons("F = orc warlord ; " .. knight_def .. " . chain mail good_item " ..
             "| chain mail randart | plate armour good_item " ..
-            "| plate armour randart . shield good_item w:4" ..
-            "| shield randart w:2 | large shield good_item w:2 " ..
-            "| large shield randart w:1")
+            "| plate armour randart . heater shield good_item w:4" ..
+            "| heater shield randart w:2 | scutum good_item w:2 " ..
+            "| scutum randart w:1")
 end

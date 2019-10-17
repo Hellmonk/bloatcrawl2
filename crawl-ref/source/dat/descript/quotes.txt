@@ -1715,7 +1715,7 @@ large rock
  There's no hiding place down here.”
     -Negro spiritual. 19th cent.
 %%%%
-large shield
+scutum
 
 <buckler>
 %%%%
@@ -2560,7 +2560,7 @@ shapeshifter
     -Homer, _The Odyssey_, IV, 602-14.
      trans. George Chapman, 1857.
 %%%%
-shield
+heater shield
 
 <buckler>
 %%%%
