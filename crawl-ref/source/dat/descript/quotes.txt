@@ -2420,11 +2420,7 @@ scroll of brand weapon
 
 <scroll>
 %%%%
-scroll of enchant armour
-
-<scroll>
-%%%%
-scroll of enchant weapon
+scroll of enchantment
 
 <scroll>
 %%%%

@@ -4745,7 +4745,7 @@ void unmarshallItem(reader &th, item_def &item)
 
     if (th.getMinorVersion() < TAG_MINOR_MERGE_EW)
     {
-        // Combine EW1/EW2/EW3 scrolls into single enchant weapon scroll.
+        // Combine EW1/EW2/EW3 scrolls into single enchantment scroll.
         if (item.base_type == OBJ_SCROLLS
             && (item.sub_type == SCR_ENCHANT_WEAPON_II
                 || item.sub_type == SCR_ENCHANT_WEAPON_III))

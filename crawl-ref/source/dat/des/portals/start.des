@@ -54,20 +54,23 @@ KFEAT:  1 = armour shop count:10 greed:10 type:Dragon suffix:Armour use_all ; \
             mundane not_cursed ice dragon scales | mundane not_cursed gold dragon scales |\
             mundane not_cursed steam dragon scales | mundane not_cursed swamp dragon scales |\
             mundane not_cursed pearl dragon scales | mundane not_cursed acid dragon scales
-KFEAT:  3 = armour shop count:14 greed:42 type:Shield suffix:Center use_all ; \
-            mundane not_cursed shield | not_cursed shield ego:protection plus:0 |\
-            not_cursed shield ego:reflection plus:0 |\
-            not_cursed shield ego:positive_energy plus:0 |\
-            not_cursed shield ego:poison_resistance plus:0 |\
-            not_cursed shield ego:fire_resistance plus:0 |\
-            not_cursed shield ego:cold_resistance plus:0 |\
-            mundane not_cursed large shield |\
-            not_cursed large shield ego:protection plus:0 |\
-            not_cursed large shield ego:reflection plus:0 |\
-            not_cursed large shield ego:positive_energy plus:0 |\
-            not_cursed large shield ego:poison_resistance plus:0 |\
-            not_cursed large shield ego:fire_resistance plus:0 |\
-            not_cursed large shield ego:cold_resistance plus:0 
+KFEAT:  3 = armour shop count:17 greed:42 type:Shield suffix:Center use_all ; \
+            mundane not_cursed heater shield | not_cursed heater shield ego:protection plus:0 |\
+            not_cursed heater shield ego:reflection plus:0 |\
+            not_cursed heater shield ego:positive_energy plus:0 |\
+            not_cursed heater shield ego:poison_resistance plus:0 |\
+            not_cursed heater shield ego:fire_resistance plus:0 |\
+            not_cursed heater shield ego:cold_resistance plus:0 |\
+            mundane not_cursed scutum |\
+            not_cursed scutum ego:protection plus:0 |\
+            not_cursed scutum ego:reflection plus:0 |\
+            not_cursed scutum ego:positive_energy plus:0 |\
+            not_cursed scutum ego:poison_resistance plus:0 |\
+            not_cursed scutum ego:fire_resistance plus:0 |\
+            not_cursed scutum ego:cold_resistance plus:0 |\
+			mundane not_cursed sai |\
+			mundane not_cursed nunchaku |\
+			mundane not_cursed targe
 KFEAT:  Z = armour shop count:7 greed:40 type:Buckler suffix:Bureau use_all ; \
             mundane not_cursed buckler | not_cursed buckler ego:protection plus:0 |\
             not_cursed buckler ego:reflection plus:0 |\
@@ -77,8 +80,8 @@ KFEAT:  Z = armour shop count:7 greed:40 type:Buckler suffix:Bureau use_all ; \
             not_cursed buckler ego:cold_resistance plus:0 
 KFEAT:  Y = armour shop count:3 greed:31 type:the suffix:Resistance use_all ; \
             not_cursed buckler ego:resistance plus:0 |\
-            not_cursed shield ego:resistance plus:0 |\
-            not_cursed large shield ego:resistance plus:0
+            not_cursed heater shield ego:resistance plus:0 |\
+            not_cursed scutum ego:resistance plus:0
 KFEAT:  2 = weapon shop type:Archery suffix:Annex count:6 use_all greed:40 ; \
             mundane not_cursed shortbow | mundane not_cursed longbow |\
             mundane not_cursed hand crossbow | mundane not_cursed arbalest |\
@@ -211,10 +214,9 @@ KFEAT:  C = food shop type:Multiplicative suffix:MREs count:15 use_all greed:5 ;
             ration q:32 | ration q:64 | ration q:128 | ration q:264 |\
             ration q:512 | ration q:1024 | ration q:2048 | ration q:4096 |\
 	    ration q:8192 | ration q:16384
-KFEAT:  D = scroll shop type:Scrolls suffix:and_such count:21 use_all greed:16 ; \
+KFEAT:  D = scroll shop type:Scrolls suffix:and_such count:19 use_all greed:16 ; \
 	    scroll of amnesia q:1 | scroll of blinking q:1 | scroll of blinking q:2 |\
-            scroll of enchant armour q:1 | scroll of enchant armour q:2 |\
-            scroll of enchant weapon q:1 | scroll of enchant weapon q:2 |\
+            scroll of enchantment q:1 | scroll of enchantment q:2 |\
             scroll of fear q:1 | scroll of fear q:2 | scroll of fog q:1 |\
 	        scroll of fog q:2 | scroll of holy word q:1 | scroll of immolation q:1 |\
             scroll of magic mapping q:1 | scroll of remove curse q:1 |\

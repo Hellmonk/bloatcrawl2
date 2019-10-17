@@ -151,8 +151,8 @@ ae := autopickup_exceptions
 df := drop_filter
 ae =
 df =
-# keep: identify,teleportation,remove curse,enchant weapon,
-#       enchant armour,acquirement,recharging,holy word
+# keep: identify,teleportation,remove curse,enchantment,
+#       enchantment,acquirement,recharging,holy word
 ae += scrolls? of (summoning|vulnerability|brand weapon)
 ae += scrolls? of (magic mapping|fog|fear|silence)
 ae += scrolls? of (blinking|amnesia)
@@ -3575,7 +3575,7 @@ function plan_use_good_consumables()
         else
           return read2(it, " f")
         end
-      elseif it.name():find("enchant weapon") then
+      elseif it.name():find("enchantment") then
         weapon = items.equipped_at("weapon")
         if weapon and not weapon.artefact and
            weapon.plus < 9 then
@@ -3585,7 +3585,7 @@ function plan_use_good_consumables()
             return true
           end
         end
-      elseif it.name():find("enchant armour") then
+      elseif it.name():find("enchantment") then
         body = items.equipped_at("Armour")
         ac = armour_ac()
         if body and not body.artefact and body.plus < ac

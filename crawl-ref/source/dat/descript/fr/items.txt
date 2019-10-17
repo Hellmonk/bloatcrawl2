@@ -859,7 +859,7 @@ scroll of curse weapon
 
 Ce parchemin place une malédiction sur une arme équipé.
 %%%%
-scroll of enchant weapon
+scroll of enchantment
 
 Ce parchemin place un enchantement sur l'arme équipée,  la rendant plus précise
 et augmentant ses dégâts en combat. Les chances de succès de l'enchantement

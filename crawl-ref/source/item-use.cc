@@ -3234,7 +3234,7 @@ void read_scroll(item_def& scroll)
         if (!alreadyknown)
         {
             mpr(pre_succ_msg);
-            mpr("It is a scroll of enchant weapon.");
+            mpr("It is a scroll of enchantment.");
             // included in default force_more_message (to show it before menu)
         }
 

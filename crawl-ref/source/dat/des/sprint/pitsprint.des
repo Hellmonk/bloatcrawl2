@@ -169,8 +169,8 @@ function general_item_setup(e)
           scroll of fog w:1 ident:all / scroll of holy word w:1 ident:all /\
           potion of might ident:all w:2 / potion of agility w:2 ident:all /\
           scroll of acquirement q:1 w:1 ident:all /\
-          scroll of enchant weapon ident:all q:4 w:2 /\
-          scroll of enchant armour ident:all q:4 w:2 /\
+          scroll of enchantment ident:all q:4 w:2 /\
+          scroll of enchantment ident:all q:4 w:2 /\
           scroll of brand weapon ident:all")
   e.kitem("| = superb_item ident:all w:66 / star_item ident:all w:33")
   e.kitem("* = star_item ident:all w:66 / any ident:all w:33")
@@ -184,8 +184,8 @@ function general_item_setup(e)
   e.kitem("? = scroll of blinking ident:all /\
           scroll of remove curse ident:all /\
           scroll of fog ident:all / scroll of fear ident:all /\
-          scroll of enchant weapon ident:all q:2 /\
-          scroll of enchant armour ident:all q:2")
+          scroll of enchantment ident:all q:2 /\
+          scroll of enchantment ident:all q:2")
   e.kitem(") = battleaxe plus:9 good_item not_cursed ident:all /\
     battleaxe plus:7 randart not_cursed ident:all /\
     executioner's axe plus:7 good_item not_cursed ident:all /\
@@ -246,8 +246,8 @@ function general_item_setup(e)
     cloak plus:2 good_item not_cursed ident:all /\
     hat plus:4 not_cursed ident:all /\
     hat plus:2 good_item not_cursed ident:all /\
-    large shield plus:5 not_cursed ident:all /\
-    large shield plus:3 good_item not_cursed ident:all /\
+    scutum plus:5 not_cursed ident:all /\
+    scutum plus:3 good_item not_cursed ident:all /\
     naga barding plus:6 not_cursed ident:all w:5 /\
     centaur barding plus:6 not_cursed ident:all w:5")
   e.kitem("( = battleaxe plus:6 ego:none not_cursed ident:all /\
@@ -306,8 +306,8 @@ function general_item_setup(e)
     cloak plus:0 good_item not_cursed ident:all /\
     hat plus:2 not_cursed ident:all /\
     hat plus:0 good_item not_cursed ident:all /\
-    large shield plus:3 not_cursed ident:all /\
-    large shield plus:0 good_item not_cursed ident:all /\
+    scutum plus:3 not_cursed ident:all /\
+    scutum plus:0 good_item not_cursed ident:all /\
     naga barding plus:2 not_cursed ident:all w:5 /\
     centaur barding plus:2 not_cursed ident:all w:5")
 end
@@ -443,7 +443,7 @@ function armoury_setup(e)
           storm dragon scales plus:3 not_cursed ident:all w:5 /\
           shadow dragon scales plus:3 not_cursed ident:all w:5 /\
           gold dragon scales plus:2 not_cursed ident:all /\
-          large shield plus:1 not_cursed ident:all /\
+          scutum plus:1 not_cursed ident:all /\
           any armour good_item ident:all w:20")
   e.kitem("c = any weapon good_item ident:all")
   e.kitem("d = any armour good_item ident:all")

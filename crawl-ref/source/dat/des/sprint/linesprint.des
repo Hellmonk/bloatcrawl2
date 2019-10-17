@@ -36,8 +36,8 @@ function general_item_setup(e)
   e.kitem("? = scroll of blinking ident:all /\
           scroll of remove curse ident:all /\
           scroll of fog ident:all /\
-          scroll of fear ident:all / scroll of enchant weapon ident:all q:2 /\
-          scroll of enchant armour ident:all q:2")
+          scroll of fear ident:all / scroll of enchantment ident:all q:2 /\
+          scroll of enchantment ident:all q:2")
 end
 
 }}
@@ -446,7 +446,7 @@ KITEM:    d = any armour level:27 ident:all /\
           acid dragon scales plus:0 not_cursed ident:all /\
           storm dragon scales plus:0 not_cursed ident:all w:5 /\
           shadow dragon scales plus:0 not_cursed ident:all w:5 /\
-          large shield plus:1 not_cursed ident:all /\
+          scutum plus:1 not_cursed ident:all /\
           any armour good_item ident:all w:20
 KITEM:    e = any weapon good_item ident:all
 KITEM:    f = any armour good_item ident:all
@@ -643,8 +643,8 @@ KITEM:    d = plate armour plus:5 not_cursed ident:all /\
     cloak plus:0 good_item not_cursed ident:all /\
     hat plus:1 not_cursed ident:all /\
     hat plus:0 good_item not_cursed ident:all /\
-    large shield plus:3 not_cursed ident:all /\
-    large shield plus:0 good_item not_cursed ident:all /\
+    scutum plus:3 not_cursed ident:all /\
+    scutum plus:0 good_item not_cursed ident:all /\
     naga barding plus:2 not_cursed ident:all w:5 /\
     centaur barding plus:2 not_cursed ident:all w:5
 : line_setup(_G)
@@ -862,8 +862,8 @@ KITEM:    d = plate armour plus:6 not_cursed ident:all /\
     cloak plus:0 good_item not_cursed ident:all /\
     hat plus:2 not_cursed ident:all /\
     hat plus:0 good_item not_cursed ident:all /\
-    large shield plus:5 not_cursed ident:all /\
-    large shield plus:3 good_item not_cursed ident:all /\
+    scutum plus:5 not_cursed ident:all /\
+    scutum plus:3 good_item not_cursed ident:all /\
     naga barding plus:4 not_cursed ident:all w:5 /\
     centaur barding plus:4 not_cursed ident:all w:5
 KITEM:     e = potion of haste q:5 ident:all

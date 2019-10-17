@@ -723,7 +723,7 @@ static const char* scroll_type_name(int scrolltype)
     case SCR_REMOVE_CURSE:       return "remove curse";
     case SCR_SUMMONING:          return "summoning";
 #if TAG_MAJOR_VERSION == 34
-    case SCR_ENCHANT_WEAPON:     return "enchant weapon";
+    case SCR_ENCHANT_WEAPON:     return "enchantment";
 #endif
     case SCR_ENCHANT:			 return "enchantment";
     case SCR_TORMENT:            return "torment";
@@ -1184,7 +1184,7 @@ const char *base_type_string(object_class_type type)
     case OBJ_JEWELLERY: return "jewellery";
     case OBJ_POTIONS: return "potion";
     case OBJ_BOOKS: return "book";
-    case OBJ_STAVES: return "staff";
+    case OBJ_STAVES: return "magical staff";
 #if TAG_MAJOR_VERSION == 34
     case OBJ_RODS: return "removed rod";
 #endif

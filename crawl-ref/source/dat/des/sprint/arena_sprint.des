@@ -1036,8 +1036,8 @@ KFEAT:  EP = scroll shop greed:10 use_all count:14 ; \
             scroll of blinking q:3 | scroll of blinking q:4 | scroll of blinking q:5 |\
             scroll of fog q:3 | scroll of fog q:4 | scroll of fog q:5 |\
             scroll of silence q:3 | scroll of brand weapon | scroll of vulnerability q:3 |\
-            scroll of amnesia q:5 | scroll of remove curse q:15 | scroll of enchant weapon q:8 |\
-            scroll of enchant armour q:4 | scroll of enchant armour q:4
+            scroll of amnesia q:5 | scroll of remove curse q:15 | scroll of enchantment q:8 |\
+            scroll of enchantment q:4 | scroll of enchantment q:4
 KFEAT:  FS = distillery shop use_all count:17 greed:7 ; \
              potion of haste q:3 | potion of haste q:4 | potion of haste q:5 |\
              potion of agility q:6 | potion of might q:6 | potion of brilliance q:6 |\
@@ -1056,8 +1056,8 @@ KFEAT:  I = antiques shop type:Jewellery count:17 greed:9 ; \
 KFEAT:  K = antique armour shop count:17 use_all type:Advanced suffix:Armour greed:35 ; \
             pair of gloves randart | pair of gloves randart | pair of boots randart |\
             pair of boots randart | helmet randart | hat randart | buckler randart |\
-            shield randart | cloak randart | cloak randart | robe randart | animal skin randart |\
-            large shield randart | robe randart | buckler randart | leather armour randart
+            heater shield randart | cloak randart | cloak randart | robe randart | animal skin randart |\
+            scutum randart | robe randart | buckler randart | leather armour randart
 KFEAT:  L = armour shop count:17 greed:12 type:Basic suffix:Armour use_all ; \
             mundane not_cursed storm dragon scales | mundane not_cursed fire dragon scales |\
             mundane not_cursed shadow dragon scales | mundane not_cursed quicksilver dragon scales |\
