@@ -1918,6 +1918,7 @@ int items(bool allow_uniques,
     ASSERT(force_ego <= 0
            || force_class == OBJ_WEAPONS
            || force_class == OBJ_ARMOURS
+		   || force_class == OBJ_SHIELDS
            || force_class == OBJ_MISSILES
            || force_class == OBJ_MISCELLANY && is_deck_type(force_type));
 
