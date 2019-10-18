@@ -1092,8 +1092,9 @@ static special_armour_type _generate_armour_ego(const item_def& item,
         = _generate_armour_type_ego(static_cast<armour_type>(item.sub_type),
                                     item_level);
 
-//    ASSERT(is_armour_brand_ok(item.sub_type, ego, true));
-    return ego;
+    if (is_armour_brand_ok(item.sub_type, ego, true))
+		return ego;
+	return SPARM_NORMAL;
 }
 
 bool is_armour_brand_ok(int type, int brand, bool strict)
