@@ -171,7 +171,7 @@ KFEAT:  P = armour shop type:Heavily suffix:Armoured use_all count:16 greed:12 ;
             not_cursed plate armour ego:magic_resistance plus:0|\
             not_cursed plate armour ego:positive_energy plus:0|\
 			not_cursed plate armour ego:high_priest plus:0|\
-            not_cursed plate armour ego:archmagi plus:0:|\
+            not_cursed plate armour ego:archmagi plus:0|\
             not_cursed plate armour ego:ponderousness plus:5|\
             mundane not_cursed crystal plate armour
 KFEAT:  Q = jewellery shop name:Pakellas type:Wand suffix:Workshop use_all count:11 greed:15 ; \

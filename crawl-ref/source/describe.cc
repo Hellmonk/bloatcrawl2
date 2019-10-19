@@ -1766,8 +1766,14 @@ static string _describe_weapon(const item_def &item, bool verbose)
 
         description += _handedness_string(item);
 
-        if (!you.could_wield(item, true) && crawl_state.need_save)
-            description += "\nIt is too large for you to wield.";
+		if (!you.could_wield(item, true) && crawl_state.need_save)
+		{
+			if (you.body_size(PSIZE_TORSO,true) < SIZE_MEDIUM)
+				description += "\nIt is too large for you to wield.";
+			else
+				description += "\nIt is too small for you to wield.";
+
+		}
     }
 
     if (!is_artefact(item))

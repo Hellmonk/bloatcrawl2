@@ -456,8 +456,13 @@ bool player::could_wield(const item_def &item, bool ignore_brand,
     // Small species wielding large weapons...
     if (!is_weapon_wieldable(item, bsize))
     {
-        if (!quiet)
-            mpr("That's too large for you to wield.");
+		if (!quiet)
+		{
+			if (you.body_size(PSIZE_TORSO,true) < SIZE_MEDIUM)
+				mpr("That's too large for you to wield.");
+			else
+				mpr("That's too small for you to wield.");
+		}
         return false;
     }
 

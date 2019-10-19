@@ -3474,6 +3474,7 @@ bool is_useless_item(const item_def &item, bool temp)
 
     switch (item.base_type)
     {
+	case OBJ_SHIELDS: // Deliberate fallthrough.
     case OBJ_WEAPONS:
         if (you.species == SP_FELID)
             return true;

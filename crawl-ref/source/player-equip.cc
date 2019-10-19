@@ -118,8 +118,8 @@ bool unmeld_slot(equipment_type slot, bool msg)
     return false;
 }
 
-static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld);
-static void _unequip_weapon_effect(item_def& item, bool showMsgs, bool meld);
+static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld, equipment_type slot);
+static void _unequip_weapon_effect(item_def& item, bool showMsgs, bool meld, equipment_type slot);
 static void _equip_armour_effect(item_def& arm, bool unmeld,
                                  equipment_type slot);
 static void _unequip_armour_effect(item_def& item, bool meld,
@@ -163,7 +163,7 @@ void equip_effect(equipment_type slot, int item_slot, bool unmeld, bool msg)
 		|| (item.base_type == OBJ_SHIELDS && is_hybrid(item.sub_type)))
 		_equip_armour_effect(item, unmeld, slot);
 	else if (slot == EQ_WEAPON0 || slot == EQ_WEAPON1)
-		_equip_weapon_effect(item, msg, unmeld);
+		_equip_weapon_effect(item, msg, unmeld, slot);
     else if (slot >= EQ_FIRST_JEWELLERY && slot <= EQ_LAST_JEWELLERY)
         _equip_jewellery_effect(item, unmeld, slot);
 }
@@ -179,7 +179,7 @@ void unequip_effect(equipment_type slot, int item_slot, bool meld, bool msg)
 		|| (item.base_type == OBJ_SHIELDS && is_hybrid(item.sub_type)))
 		_unequip_armour_effect(item, meld, slot);
     else if (slot == EQ_WEAPON0 || slot == EQ_WEAPON1)
-        _unequip_weapon_effect(item, msg, meld);
+        _unequip_weapon_effect(item, msg, meld,slot);
     else if (slot >= EQ_FIRST_JEWELLERY && slot <= EQ_LAST_JEWELLERY)
         _unequip_jewellery_effect(item, msg, meld, slot);
 }
@@ -424,7 +424,7 @@ static void _wield_cursed(item_def& item, bool known_cursed, bool unmeld)
 // Provide a function for handling initial wielding of 'special'
 // weapons, or those whose function is annoying to reproduce in
 // other places *cough* auto-butchering *cough*.    {gdl}
-static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
+static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld, equipment_type slot)
 {
     int special = 0;
 
@@ -451,7 +451,7 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
 		// Note that if the unrand equip prints a message, it will
 		// generally set showMsgs to false.
 		if (artefact)
-			_equip_artefact_effect(item, &showMsgs, unmeld, EQ_WEAPON0);
+			_equip_artefact_effect(item, &showMsgs, unmeld, slot);
 
 		const bool was_known = item_type_known(item);
 		bool known_recurser = false;
@@ -641,7 +641,7 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
 }
 
 static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
-                                   bool meld)
+                                   bool meld, equipment_type slot)
 {
     you.wield_change = true;
 
@@ -654,7 +654,7 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
     // false if it does its own message handling.
     if (is_artefact(item))
     {
-        _unequip_artefact_effect(real_item, &showMsgs, meld, EQ_WEAPON0,
+        _unequip_artefact_effect(real_item, &showMsgs, meld, slot,
                                  true);
     }
 

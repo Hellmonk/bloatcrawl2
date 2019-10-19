@@ -2194,7 +2194,13 @@ bool item_skills(const item_def &item, set<skill_type> &skills)
 bool is_weapon_wieldable(const item_def &item, size_type size)
 {
 	if (item.base_type == OBJ_SHIELDS)
-		return Shield_prop[Shield_index[item.sub_type]].min_2h_size <= size;
+	{
+		if (Shield_prop[Shield_index[item.sub_type]].min_2h_size <= size)
+			return false;
+		if (Shield_prop[Shield_index[item.sub_type]].max_size >= size)
+			return false;
+		return true;
+	}
 
 	const int subtype = OBJ_STAVES == item.base_type ? WPN_STAFF
 													 : item.sub_type;
