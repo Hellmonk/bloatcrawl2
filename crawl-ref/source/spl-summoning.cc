@@ -728,6 +728,7 @@ bool tukima_affects(const actor &target)
            && is_weapon(*wpn)
            && !is_range_weapon(*wpn)
            && !is_special_unrandom_artefact(*wpn)
+		   && wpn->base_type != OBJ_SHIELDS // BCADNOTE: Again, enemies can't properly use the new shields.
            && !mons_class_is_animated_weapon(target.type)
            && !mons_is_hepliaklqana_ancestor(target.type);
 }
@@ -738,10 +739,10 @@ bool tukima_affects(const actor &target)
  * @param target     The spell's target.
  * @return           Whether the target is valid.
  **/
-static bool _check_tukima_validity(const actor *target)
+static bool _check_tukima_validity(const actor *target, int weap_slot)
 {
     bool target_is_player = target == &you;
-    const item_def* wpn = target->weapon();
+    const item_def* wpn = target->weapon(weap_slot);
     bool can_see_target = target_is_player || target->visible_to(&you);
 
     // See if the wielded item is appropriate.
@@ -794,10 +795,10 @@ static bool _check_tukima_validity(const actor *target)
  * @param pow               Spellpower.
  * @param target            The spell's target (monster or player)
  **/
-static void _animate_weapon(int pow, actor* target)
+static void _animate_weapon(int pow, actor* target, int weap_slot)
 {
     bool target_is_player = target == &you;
-    item_def * const wpn = target->weapon();
+    item_def * const wpn = target->weapon(weap_slot);
     ASSERT(wpn);
     if (target_is_player)
     {
@@ -881,10 +882,21 @@ void cast_tukimas_dance(int pow, actor* target)
 {
     ASSERT(target);
 
-    if (!_check_tukima_validity(target))
+	int weap_slot = 0;
+
+	if (_check_tukima_validity(target, 0))
+	{
+		if (_check_tukima_validity(target, 1))
+			weap_slot = coinflip() ? 0 : 1;
+		else
+			weap_slot = 0;
+	}
+	else if (_check_tukima_validity(target, 1))
+		weap_slot = 1;
+	else
         return;
 
-    _animate_weapon(pow, target);
+    _animate_weapon(pow, target, weap_slot);
 }
 
 spret_type cast_conjure_ball_lightning(int pow, god_type god, bool fail)
@@ -3062,10 +3074,14 @@ monster* find_spectral_weapon(const actor* agent)
         return nullptr;
 }
 
+// BCADNOTE: Since Mons can't use hybrid shield/weapons properly atm; they can't
+// be spectral weapons. Consider changing this in the future.
+
 bool weapon_can_be_spectral(const item_def *wpn)
 {
     return wpn && is_weapon(*wpn) && !is_range_weapon(*wpn)
-        && !is_special_unrandom_artefact(*wpn);
+        && !is_special_unrandom_artefact(*wpn)
+		&& wpn->base_type != OBJ_SHIELDS;
 }
 
 spret_type cast_spectral_weapon(actor *agent, int pow, god_type god, bool fail)
@@ -3080,17 +3096,23 @@ spret_type cast_spectral_weapon(actor *agent, int pow, god_type god, bool fail)
     {
         if (agent->is_player())
         {
-            if (wpn)
+			if (you.weapon(1) && weapon_can_be_spectral(you.weapon(1)))
+				wpn = you.weapon(1);
+            else if (wpn)
             {
                 mprf("%s vibrate%s crazily for a second.",
                      wpn->name(DESC_YOUR).c_str(),
                      wpn->quantity > 1 ? "" : "s");
+				return SPRET_ABORT;
             }
-            else
-                mpr(you.hands_act("twitch", "."));
+			else
+			{
+				mpr(you.hands_act("twitch", "."));
+				return SPRET_ABORT;
+			}
         }
-
-        return SPRET_ABORT;
+		else
+			return SPRET_ABORT;
     }
 
     fail_check();

@@ -154,20 +154,16 @@ void equip_effect(equipment_type slot, int item_slot, bool unmeld, bool msg)
     item_def& item = you.inv[item_slot];
     equipment_type eq = get_item_slot(item);
 
-    if (slot == EQ_WEAPON0 && eq != EQ_WEAPON0)
-        return;
-	if (slot == EQ_WEAPON1 && eq != EQ_WEAPON1)
-		return;
-
     _assert_valid_slot(eq, slot);
 
     if (msg)
         _equip_use_warning(item);
 
-    if (slot == EQ_WEAPON0 || slot == EQ_WEAPON1)
-        _equip_weapon_effect(item, msg, unmeld);
-    else if (slot >= EQ_CLOAK && slot <= EQ_BODY_ARMOUR)
-        _equip_armour_effect(item, unmeld, slot);
+	if (slot >= EQ_CLOAK && slot <= EQ_BODY_ARMOUR 
+		|| (item.base_type == OBJ_SHIELDS && is_hybrid(item.sub_type)))
+		_equip_armour_effect(item, unmeld, slot);
+	else if (slot == EQ_WEAPON0 || slot == EQ_WEAPON1)
+		_equip_weapon_effect(item, msg, unmeld);
     else if (slot >= EQ_FIRST_JEWELLERY && slot <= EQ_LAST_JEWELLERY)
         _equip_jewellery_effect(item, unmeld, slot);
 }
@@ -177,18 +173,13 @@ void unequip_effect(equipment_type slot, int item_slot, bool meld, bool msg)
     item_def& item = you.inv[item_slot];
     equipment_type eq = get_item_slot(item);
 
-    if (slot == EQ_WEAPON0 && eq != EQ_WEAPON0)
-        return;
-
-	if (slot == EQ_WEAPON1 && eq != EQ_WEAPON1)
-		return;
-
     _assert_valid_slot(eq, slot);
 
-    if (slot == EQ_WEAPON0 || slot == EQ_WEAPON1)
+	if (slot >= EQ_CLOAK && slot <= EQ_BODY_ARMOUR 
+		|| (item.base_type == OBJ_SHIELDS && is_hybrid(item.sub_type)))
+		_unequip_armour_effect(item, meld, slot);
+    else if (slot == EQ_WEAPON0 || slot == EQ_WEAPON1)
         _unequip_weapon_effect(item, msg, meld);
-    else if (slot >= EQ_CLOAK && slot <= EQ_BODY_ARMOUR)
-        _unequip_armour_effect(item, meld, slot);
     else if (slot >= EQ_FIRST_JEWELLERY && slot <= EQ_LAST_JEWELLERY)
         _unequip_jewellery_effect(item, msg, meld, slot);
 }
@@ -441,62 +432,59 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
     const bool known_cursed = item_known_cursed(item);
 
     // And here we finally get to the special effects of wielding. {dlb}
-    switch (item.base_type)
-    {
-    case OBJ_STAVES:
-    {
-        set_ident_flags(item, ISFLAG_IDENT_MASK);
-        set_ident_type(OBJ_STAVES, item.sub_type, true);
+	if (item.base_type == OBJ_STAVES)
+	{
+		set_ident_flags(item, ISFLAG_IDENT_MASK);
+		set_ident_type(OBJ_STAVES, item.sub_type, true);
 
-        if (item.sub_type == STAFF_POWER)
-        {
-            canned_msg(MSG_MANA_INCREASE);
-            calc_mp();
-        }
+		if (item.sub_type == STAFF_POWER)
+		{
+			canned_msg(MSG_MANA_INCREASE);
+			calc_mp();
+		}
 
-        _wield_cursed(item, known_cursed, unmeld);
-        break;
-    }
+		_wield_cursed(item, known_cursed, unmeld);
+	}
 
-    case OBJ_WEAPONS:
-    {
-        // Note that if the unrand equip prints a message, it will
-        // generally set showMsgs to false.
-        if (artefact)
-            _equip_artefact_effect(item, &showMsgs, unmeld, EQ_WEAPON0);
+	else if ((item.base_type == OBJ_SHIELDS && is_hybrid(item.sub_type)) || item.base_type == OBJ_WEAPONS)
+	{
+		// Note that if the unrand equip prints a message, it will
+		// generally set showMsgs to false.
+		if (artefact)
+			_equip_artefact_effect(item, &showMsgs, unmeld, EQ_WEAPON0);
 
-        const bool was_known      = item_type_known(item);
-              bool known_recurser = false;
+		const bool was_known = item_type_known(item);
+		bool known_recurser = false;
 
-        set_ident_flags(item, ISFLAG_IDENT_MASK);
+		set_ident_flags(item, ISFLAG_IDENT_MASK);
 
-        special = item.brand;
+		special = item.brand;
 
-        if (artefact)
-        {
-            special = artefact_property(item, ARTP_BRAND);
+		if (artefact)
+		{
+			special = artefact_property(item, ARTP_BRAND);
 
-            if (!was_known && !(item.flags & ISFLAG_NOTED_ID))
-            {
-                item.flags |= ISFLAG_NOTED_ID;
+			if (!was_known && !(item.flags & ISFLAG_NOTED_ID))
+			{
+				item.flags |= ISFLAG_NOTED_ID;
 
-                // Make a note of it.
-                take_note(Note(NOTE_ID_ITEM, 0, 0, item.name(DESC_A),
-                               origin_desc(item)));
-            }
-            else
-                known_recurser = artefact_known_property(item, ARTP_CURSE);
-        }
+				// Make a note of it.
+				take_note(Note(NOTE_ID_ITEM, 0, 0, item.name(DESC_A),
+					origin_desc(item)));
+			}
+			else
+				known_recurser = artefact_known_property(item, ARTP_CURSE);
+		}
 
-        if (special != SPWPN_NORMAL)
-        {
-            // message first
-            if (showMsgs)
-            {
-                const string item_name = item.name(DESC_YOUR);
-                switch (special)
-                {
-                case SPWPN_MOLTEN:
+		if (special != SPWPN_NORMAL)
+		{
+			// message first
+			if (showMsgs)
+			{
+				const string item_name = item.name(DESC_YOUR);
+				switch (special)
+				{
+				case SPWPN_MOLTEN:
 					if (item.sub_type == WPN_HAND_CROSSBOW || item.sub_type == WPN_ARBALEST ||
 						item.sub_type == WPN_TRIPLE_CROSSBOW)
 						mprf("As you load %s, your bolt melts into a column of liquid metal!", item_name.c_str());
@@ -505,156 +493,151 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld)
 					else if (item.sub_type == WPN_SHORTBOW || item.sub_type == WPN_LONGBOW)
 						mprf("As you load %s, the head of your arrow melts into a liquid metal spear!", item_name.c_str());
 					else
-	                    mprf("The surface of %s melts into red hot liquid metal!", item_name.c_str());
-                    break;
+						mprf("The surface of %s melts into red hot liquid metal!", item_name.c_str());
+					break;
 
-                case SPWPN_FREEZING:
-                   mprf("%s %s", item_name.c_str(),
-                        is_range_weapon(item) ?
-                            "is covered in frost." :
-                            "glows with a cold blue light!");
-                    break;
+				case SPWPN_FREEZING:
+					mprf("%s %s", item_name.c_str(),
+						is_range_weapon(item) ?
+						"is covered in frost." :
+						"glows with a cold blue light!");
+					break;
 
-                case SPWPN_HOLY_WRATH:
+				case SPWPN_HOLY_WRATH:
 				case SPWPN_SILVER:
-                    mprf("%s softly glows with a divine radiance!",
-                         item_name.c_str());
-                    break;
+					mprf("%s softly glows with a divine radiance!",
+						item_name.c_str());
+					break;
 
-                case SPWPN_ELECTROCUTION:
-                    if (!silenced(you.pos()))
-                    {
-                        mprf(MSGCH_SOUND,
-                             "You hear the crackle of electricity.");
-                    }
-                    else
-                        mpr("You see sparks fly.");
-                    break;
+				case SPWPN_ELECTROCUTION:
+					if (!silenced(you.pos()))
+					{
+						mprf(MSGCH_SOUND,
+							"You hear the crackle of electricity.");
+					}
+					else
+						mpr("You see sparks fly.");
+					break;
 
-                case SPWPN_VENOM:
-                    mprf("%s begins to drip with poison!", item_name.c_str());
-                    break;
+				case SPWPN_VENOM:
+					mprf("%s begins to drip with poison!", item_name.c_str());
+					break;
 
-                case SPWPN_PROTECTION:
-                    mprf("%s hums with potential!", item_name.c_str());
-                    break;
+				case SPWPN_PROTECTION:
+					mprf("%s hums with potential!", item_name.c_str());
+					break;
 
-                case SPWPN_DRAINING:
-                    mpr("You sense an unholy aura.");
-                    break;
+				case SPWPN_DRAINING:
+					mpr("You sense an unholy aura.");
+					break;
 
-                case SPWPN_SPEED:
-                    mpr(you.hands_act("tingle", "!"));
-                    break;
+				case SPWPN_SPEED:
+					mpr(you.hands_act("tingle", "!"));
+					break;
 
-                case SPWPN_VAMPIRISM:
-                    if (you.species == SP_VAMPIRE)
-                        mpr("You feel a bloodthirsty glee!");
-                    else if (you.undead_state() == US_ALIVE && !you_foodless())
-                        mpr("You feel a dreadful hunger.");
-                    else
-                        mpr("You feel an empty sense of dread.");
-                    break;
+				case SPWPN_VAMPIRISM:
+					if (you.species == SP_VAMPIRE)
+						mpr("You feel a bloodthirsty glee!");
+					else if (you.undead_state() == US_ALIVE && !you_foodless())
+						mpr("You feel a dreadful hunger.");
+					else
+						mpr("You feel an empty sense of dread.");
+					break;
 
-                case SPWPN_PAIN:
-                {
-                    const string your_arm = you.arm_name(false);
-                    if (you.skill(SK_NECROMANCY) == 0)
-                        mpr("You have a feeling of ineptitude.");
-                    else if (you.skill(SK_NECROMANCY) <= 6)
-                    {
-                        mprf("Pain shudders through your %s!",
-                             your_arm.c_str());
-                    }
-                    else
-                    {
-                        mprf("A searing pain shoots up your %s!",
-                             your_arm.c_str());
-                    }
-                    break;
-                }
+				case SPWPN_PAIN:
+				{
+					const string your_arm = you.arm_name(false);
+					if (you.skill(SK_NECROMANCY) == 0)
+						mpr("You have a feeling of ineptitude.");
+					else if (you.skill(SK_NECROMANCY) <= 6)
+					{
+						mprf("Pain shudders through your %s!",
+							your_arm.c_str());
+					}
+					else
+					{
+						mprf("A searing pain shoots up your %s!",
+							your_arm.c_str());
+					}
+					break;
+				}
 
-                case SPWPN_CHAOS:
-                    mprf("%s is briefly surrounded by a scintillating aura of "
-                         "random colours.", item_name.c_str());
-                    break;
+				case SPWPN_CHAOS:
+					mprf("%s is briefly surrounded by a scintillating aura of "
+						"random colours.", item_name.c_str());
+					break;
 
-                case SPWPN_PENETRATION:
-                {
-                    // FIXME: make hands_act take a pre-verb adverb so we can
-                    // use it here.
-                    bool plural = true;
-                    string hand = you.hand_name(true, &plural);
+				case SPWPN_PENETRATION:
+				{
+					// FIXME: make hands_act take a pre-verb adverb so we can
+					// use it here.
+					bool plural = true;
+					string hand = you.hand_name(true, &plural);
 
-                    mprf("Your %s briefly %s through it before you manage "
-                         "to get a firm grip on it.",
-                         hand.c_str(), conjugate_verb("pass", plural).c_str());
-                    break;
-                }
+					mprf("Your %s briefly %s through it before you manage "
+						"to get a firm grip on it.",
+						hand.c_str(), conjugate_verb("pass", plural).c_str());
+					break;
+				}
 
-                case SPWPN_REAPING:
-                    mprf("%s is briefly surrounded by shifting shadows.",
-                         item_name.c_str());
-                    break;
+				case SPWPN_REAPING:
+					mprf("%s is briefly surrounded by shifting shadows.",
+						item_name.c_str());
+					break;
 
-                case SPWPN_ANTIMAGIC:
-                    // Even if your maxmp is 0.
-                    mpr("You feel magic leave you.");
-                    break;
+				case SPWPN_ANTIMAGIC:
+					// Even if your maxmp is 0.
+					mpr("You feel magic leave you.");
+					break;
 
-                case SPWPN_DISTORTION:
-                    mpr("Space warps around you for a moment!");
-                    break;
+				case SPWPN_DISTORTION:
+					mpr("Space warps around you for a moment!");
+					break;
 
-                case SPWPN_ACID:
-                    mprf("%s begins to ooze corrosive slime!", item_name.c_str());
-                    break;
+				case SPWPN_ACID:
+					mprf("%s begins to ooze corrosive slime!", item_name.c_str());
+					break;
 
-                default:
-                    break;
-                }
-            }
+				default:
+					break;
+				}
+			}
 
-            // effect second
-            switch (special)
-            {
-            case SPWPN_VAMPIRISM:
-                if (you.species != SP_VAMPIRE
-                    && you.undead_state() == US_ALIVE
-                    && !you_foodless()
-                    && !unmeld)
-                {
-                    make_hungry(4500, false, false);
-                }
-                break;
+			// effect second
+			switch (special)
+			{
+			case SPWPN_VAMPIRISM:
+				if (you.species != SP_VAMPIRE
+					&& you.undead_state() == US_ALIVE
+					&& !you_foodless()
+					&& !unmeld)
+				{
+					make_hungry(4500, false, false);
+				}
+				break;
 
-            case SPWPN_DISTORTION:
-                if (!was_known)
-                {
-                    // Xom loves it when you ID a distortion weapon this way,
-                    // and even more so if he gifted the weapon himself.
-                    if (origin_as_god_gift(item) == GOD_XOM)
-                        xom_is_stimulated(200);
-                    else
-                        xom_is_stimulated(100);
-                }
-                break;
+			case SPWPN_DISTORTION:
+				if (!was_known)
+				{
+					// Xom loves it when you ID a distortion weapon this way,
+					// and even more so if he gifted the weapon himself.
+					if (origin_as_god_gift(item) == GOD_XOM)
+						xom_is_stimulated(200);
+					else
+						xom_is_stimulated(100);
+				}
+				break;
 
-            case SPWPN_ANTIMAGIC:
-                calc_mp();
-                break;
+			case SPWPN_ANTIMAGIC:
+				calc_mp();
+				break;
 
-            default:
-                break;
-            }
-        }
-
-        _wield_cursed(item, known_cursed || known_recurser, unmeld);
-        break;
-    }
-    default:
-        break;
-    }
+			default:
+				break;
+			}
+		}
+		_wield_cursed(item, known_cursed || known_recurser, unmeld);
+	}
 }
 
 static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
@@ -675,7 +658,7 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
                                  true);
     }
 
-    if (item.base_type == OBJ_WEAPONS)
+    if (item.base_type == OBJ_WEAPONS || (item.base_type == OBJ_SHIELDS && is_hybrid(item.sub_type)))
     {
         const int brand = get_weapon_brand(item);
 
@@ -787,7 +770,7 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
 
     // Unwielding dismisses an active spectral weapon
     monster *spectral_weapon = find_spectral_weapon(&you);
-    if (spectral_weapon)
+    if (spectral_weapon && (spectral_weapon->weapon(0)->base_type == item.base_type))
     {
         mprf("Your spectral weapon disappears as %s.",
              meld ? "your weapon melds" : "you unwield");
