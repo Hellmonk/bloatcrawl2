@@ -1367,7 +1367,7 @@ brand_type choose_weapon_brand(weapon_type wpn_type)
 bool set_item_ego_type(item_def &item, object_class_type item_type,
                        int ego_type)
 {
-    if (item.base_type == item_type && !is_artefact(item))
+    if (!is_artefact(item))
     {
         item.brand = ego_type;
         return true;
@@ -1381,7 +1381,7 @@ brand_type get_weapon_brand(const item_def &item)
     // Weapon ego types are "brands", so we do the randart lookup here.
 
     // Staves "brands" handled specially
-    if (item.base_type != OBJ_WEAPONS && !(item.base_type == OBJ_SHIELDS && is_hybrid(item.sub_type)))
+    if (item.base_type == OBJ_STAVES)
         return SPWPN_NORMAL;
 
     if (is_artefact(item))

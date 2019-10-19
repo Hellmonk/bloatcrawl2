@@ -812,7 +812,7 @@ bool passive_id_item(item_def& item, bool silent)
         
 		item.props["needs_autopickup"] = true;
 
-    if (is_weapon(item) || item.base_type == OBJ_ARMOURS
+    if (is_weapon(item) || item.base_type == OBJ_SHIELDS || item.base_type == OBJ_ARMOURS
 		|| item.base_type == OBJ_JEWELLERY || item.base_type == OBJ_SCROLLS 
 		|| item.base_type == OBJ_POTIONS || item.base_type == OBJ_WANDS)
 		
