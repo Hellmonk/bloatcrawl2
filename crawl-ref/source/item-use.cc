@@ -587,12 +587,22 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 		}
         else
         {
-			if ((you.weapon(0) && you.inv[you.equip[EQ_WEAPON0]].cursed()) || (you.weapon(1) && you.inv[you.equip[EQ_WEAPON1]].cursed()))
+			if (((you.weapon(0) && you.inv[you.equip[EQ_WEAPON0]].cursed()) || (you.weapon(1) && you.inv[you.equip[EQ_WEAPON1]].cursed()))
+				&& you.get_mutation_level(MUT_GHOST))
+			{
 				mpr("You can't swap weapons while either is cursed.");
+				return false;
+			}
 			if (you.weapon(0) && is_range_weapon(*you.weapon(0)))
+			{
 				mpr("Ranged weapons can only be wielded in your right hand.");
+				return false;
+			}
 			if (you.weapon(0) && you.hands_reqd(*you.weapon(0)) == HANDS_TWO)
+			{
 				mpr("You're already wielding that.");
+				return false;
+			}
 			if (yesno("Switch to other hand?", true, false, true, true, false, nullptr, GOTO_MSG)) 
 			{
 				int temp0 = you.equip[EQ_WEAPON0];
@@ -694,6 +704,12 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 		// check if you'd get stat-zeroed
 		if (!_safe_to_remove_or_wear(*wpn, true))
 			return false;
+
+		if (wpn->cursed() && you.get_mutation_level(MUT_GHOST) == 0)
+		{
+			mprf("You can't unwield your %s.", wpn->base_type == OBJ_SHIELDS ? "shield" : "weapon");
+			return false;
+		}
 
 		if (wpn == you.weapon(0))
 		{
@@ -2461,7 +2477,7 @@ static void _rebrand_weapon(item_def& wpn)
         }
     }
 
-    set_item_ego_type(wpn, OBJ_WEAPONS, new_brand);
+    set_item_ego_type(wpn, wpn.base_type, new_brand);
     convert2bad(wpn);
 }
 
@@ -2574,8 +2590,6 @@ static object_selector _enchant_selector(scroll_type scroll)
 {
     if (scroll == SCR_BRAND_WEAPON)
         return OSEL_BRANDABLE_WEAPON;
-//    else if (scroll == SCR_ENCHANT_WEAPON)
- //       return OSEL_ENCHANTABLE_WEAPON;
     die("Invalid scroll type %d for _enchant_selector", (int)scroll);
 }
 
@@ -2583,11 +2597,8 @@ static object_selector _enchant_selector(scroll_type scroll)
 static item_def* _scroll_choose_weapon(bool alreadyknown, const string &pre_msg,
                                        scroll_type scroll)
 {
-    const bool branding = scroll == SCR_BRAND_WEAPON;
+    item_def* target = _choose_target_item_for_scroll(alreadyknown, _enchant_selector(scroll), "Brand which item?");
 
-    item_def* target = _choose_target_item_for_scroll(alreadyknown, _enchant_selector(scroll),
-                                                      branding ? "Brand which weapon?"
-                                                               : "Enchant which weapon?");
     if (!target)
         return target;
 

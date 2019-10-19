@@ -165,7 +165,9 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit, bool simu)
 			if (!you.weapon(1) || is_melee_weapon(*you.weapon(1)))
 			{
 				if (you.weapon(0) && you.hands_reqd(*you.weapon(0)) == HANDS_TWO)
+				{
 					return _handle_player_attack(defender, simu, 0, 2, did_hit);
+				}
 				else if (you.weapon(1) && you.hands_reqd(*you.weapon(1)) == HANDS_TWO)
 					return _handle_player_attack(defender, simu, 1, 2, did_hit);
 				else
@@ -184,7 +186,10 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit, bool simu)
 				return _handle_player_attack(defender, simu, 0, 2, did_hit);
 		}
 		else if (!you.weapon(1) || is_melee_weapon(*you.weapon(1)))
-			return _handle_player_attack(defender, simu, 1, 2, did_hit);
+		{
+			if (!(you.weapon(0) && you.hands_reqd(*you.weapon(0)) == HANDS_TWO))
+				return _handle_player_attack(defender, simu, 1, 2, did_hit);
+		}
 
 		mpr("You can't melee attack with what you're currently wielding.");
 		
