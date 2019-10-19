@@ -653,7 +653,7 @@ static void _generate_shield_item(item_def& item, bool allow_uniques,
 		{
 			// Brand is set as for "good" items.
 			if (is_hybrid(item.sub_type))
-				set_item_ego_type(item, OBJ_WEAPONS, determine_weapon_brand(item, item_level));
+				set_item_ego_type(item, OBJ_WEAPONS, determine_weapon_brand(item, 2 + 2 * env.absdepth0));
 			else
 				set_item_ego_type(item, OBJ_ARMOURS, _defensive_shield_brand());
 		}
@@ -670,10 +670,7 @@ static void _generate_shield_item(item_def& item, bool allow_uniques,
 		if (!no_brand)
 		{
 			if (is_hybrid(item.sub_type))
-			{
-				if (acqu)
-				set_item_ego_type(item, OBJ_WEAPONS, determine_weapon_brand(item, 2 + 2 * env.absdepth0));
-			}
+				set_item_ego_type(item, OBJ_WEAPONS, determine_weapon_brand(item, item_level));
 			else
 				set_item_ego_type(item, OBJ_ARMOURS, _defensive_shield_brand());
 		}
@@ -1191,6 +1188,9 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
     case SPARM_REPULSION:
     case SPARM_CLOUD_IMMUNE:
         return type == ARM_SCARF;
+
+	default:
+		return false; // Shouldn't happen; but we come here if a shield-unique brand ends up on normal armour.
 
     case NUM_SPECIAL_ARMOURS:
     case NUM_REAL_SPECIAL_ARMOURS:
