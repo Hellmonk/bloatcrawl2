@@ -992,6 +992,7 @@ static int armour_equip_delay(const item_def &item)
 bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
 {
     const object_class_type base_type = item.base_type;
+
     if (base_type != OBJ_ARMOURS || you.species == SP_FELID)
     {
         if (verbose)
@@ -1032,35 +1033,6 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         }
         else if (verbose)
             mpr("You can't wear that!");
-        return false;
-    }
-
-    if (you.get_mutation_level(MUT_MISSING_HAND) && is_shield(item))
-    {
-        if (verbose)
-        {
-            if (you.species == SP_OCTOPODE)
-                mpr("You need the rest of your tentacles for walking.");
-            else
-                mprf("You'd need another %s to do that!", you.hand_name(false).c_str());
-        }
-        return false;
-    }
-
-    if (!ignore_temporary && you.weapon()
-        && is_shield(item))
-    {
-        if (verbose)
-        {
-            if (you.species == SP_OCTOPODE)
-                mpr("You need the rest of your tentacles for walking.");
-            else
-            {
-                // Singular hand should have already been handled above.
-                mprf("You'd need three %s to do that!",
-                     you.hand_name(true).c_str());
-            }
-        }
         return false;
     }
 
@@ -1124,6 +1096,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
             }
         }
     }
+
     else if (slot >= EQ_HELMET && slot <= EQ_BOOTS
              && !ignore_temporary
              && player_equip_unrand(UNRAND_LEAR))

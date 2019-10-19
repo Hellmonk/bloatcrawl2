@@ -68,9 +68,9 @@ KFEAT:  3 = armour shop count:17 greed:42 type:Shield suffix:Center use_all ; \
             not_cursed scutum ego:poison_resistance plus:0 |\
             not_cursed scutum ego:fire_resistance plus:0 |\
             not_cursed scutum ego:cold_resistance plus:0 |\
-			mundane not_cursed sai |\
-			mundane not_cursed nunchaku |\
-			mundane not_cursed targe
+			mundane not_cursed sai plus:0|\
+			mundane not_cursed nunchaku plus:0|\
+			mundane not_cursed targe plus:0
 KFEAT:  Z = armour shop count:7 greed:40 type:Buckler suffix:Bureau use_all ; \
             mundane not_cursed buckler | not_cursed buckler ego:protection plus:0 |\
             not_cursed buckler ego:reflection plus:0 |\
@@ -157,7 +157,7 @@ KFEAT:  O = armour shop type:Lightly suffix:Armoured use_all count:15 greed:30 ;
             not_cursed ring mail ego:poison_resistance plus:0|\
             not_cursed ring mail ego:magic_resistance plus:0|\
             not_cursed ring mail ego:positive_energy plus:0
-KFEAT:  P = armour shop type:Heavily suffix:Armoured use_all count:15 greed:12 ;\
+KFEAT:  P = armour shop type:Heavily suffix:Armoured use_all count:16 greed:12 ;\
             mundane not_cursed scale mail|\
             not_cursed scale mail ego:fire_resistance plus:0|\
             not_cursed scale mail ego:cold_resistance plus:0|\
@@ -170,7 +170,7 @@ KFEAT:  P = armour shop type:Heavily suffix:Armoured use_all count:15 greed:12 ;
             not_cursed plate armour ego:poison_resistance plus:0|\
             not_cursed plate armour ego:magic_resistance plus:0|\
             not_cursed plate armour ego:positive_energy plus:0|\
-	    not_cursed plate armour ego:high_priest plus:0|\
+			not_cursed plate armour ego:high_priest plus:0|\
             not_cursed plate armour ego:archmagi plus:0:|\
             not_cursed plate armour ego:ponderousness plus:5|\
             mundane not_cursed crystal plate armour
@@ -185,8 +185,8 @@ KFEAT:  N = antiques shop name:Pakellas type:Evokable suffix:Objects use_all cou
             lamp of fire | phial of floods | fan of gales | crystal ball of energy |\
             box of beasts q:1 | box of beasts q:2 | sack of spiders q:1 | sack of spiders q:2 |\
             phantom mirror q:1 | phantom mirror q:2
-KFEAT:  9 = weapon shop type:Blade suffix:Boutique count:17 use_all greed:40 ; \
-	    mundane not_cursed dagger | mundane not_cursed short sword |\
+KFEAT:  9 = weapon shop type:Blade suffix:Boutique count:16 use_all greed:40 ; \
+			mundane not_cursed dagger | mundane not_cursed short sword |\
             mundane not_cursed rapier |\
             mundane not_cursed falchion | mundane not_cursed long sword |\
             mundane not_cursed scimitar | mundane not_cursed great sword |\
@@ -200,11 +200,11 @@ KFEAT:  A = weapon shop type:Mashing suffix:MeleeMart count:9 use_all greed:40 ;
             mundane not_cursed whip | mundane not_cursed mace |\
             mundane not_cursed flail |\
             mundane not_cursed morningstar |\
-	    mundane not_cursed dire flail | mundane not_cursed great mace |\
+			mundane not_cursed dire flail | mundane not_cursed great mace |\
             mundane not_cursed giant club | mundane not_cursed giant spiked club |\
             mundane not_cursed quarterstaff
 KFEAT:  B = weapon shop type:Demonics suffix:and_Exotics count:9 use_all greed:40 ; \
-	    mundane not_cursed quick blade | mundane not_cursed demon whip |\
+			mundane not_cursed quick blade | mundane not_cursed demon whip |\
             mundane not_cursed eveningstar | mundane not_cursed demon blade |\
             mundane not_cursed lajatang | mundane not_cursed demon trident |\
             mundane not_cursed triple sword | mundane not_cursed executioner's axe|\

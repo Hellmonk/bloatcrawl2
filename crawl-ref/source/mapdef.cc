@@ -28,6 +28,7 @@
 #include "english.h"
 #include "files.h"
 #include "initfile.h"
+#include "item-prop.h"
 #include "item-status-flag-type.h"
 #include "invent.h"
 #include "libutil.h"
@@ -4946,10 +4947,6 @@ int str_to_ego(object_class_type item_type, string ego_str)
         order = weapon_order;
         break;
 
-	case OBJ_SHIELDS:
-		order = armour_order;
-		break;
-
     case OBJ_MISSILES:
 #if TAG_MAJOR_VERSION == 34
         // HACK to get an old save to load; remove me soon?
@@ -5527,7 +5524,17 @@ bool item_list::parse_single_spec(item_spec& result, string s)
         return true;
     }
 
-    const int ego = str_to_ego(result.base_type, ego_str);
+	int ego = 0;
+
+	if (result.base_type == OBJ_SHIELDS)
+	{
+		if (is_hybrid(result.sub_type))
+			ego = str_to_ego(OBJ_WEAPONS, ego_str);
+		else
+			ego = str_to_ego(OBJ_ARMOURS, ego_str);
+	}
+	else 
+		ego = str_to_ego(result.base_type, ego_str);
 
     if (ego == 0)
     {

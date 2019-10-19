@@ -187,6 +187,82 @@ int artefact_value(const item_def &item)
     return (ret > 0) ? ret : 0;
 }
 
+static int _weapon_brand_value(item_def item)
+{
+	switch (get_weapon_brand(item))
+	{
+		case SPWPN_NORMAL:
+		default:            // randart
+			return 10;
+
+		case SPWPN_SPEED:
+		case SPWPN_VAMPIRISM:
+		case SPWPN_ANTIMAGIC:
+			return 30;
+
+		case SPWPN_DISTORTION:
+		case SPWPN_ELECTROCUTION:
+		case SPWPN_PAIN:
+		case SPWPN_ACID:
+		case SPWPN_PENETRATION: // Unrand-only.
+			return 25;
+
+		case SPWPN_CHAOS:
+		case SPWPN_DRAINING: // Unrand-only.
+		case SPWPN_MOLTEN:
+		case SPWPN_FREEZING:
+		case SPWPN_HOLY_WRATH:
+		case SPWPN_SILVER:
+		case SPWPN_VENOM:
+			return 18;
+
+		case SPWPN_VORPAL:
+			return 15;
+
+		case SPWPN_PROTECTION:
+			return 12;
+	}
+}
+
+static int _armour_brand_value(special_armour_type sparm)
+{
+	switch (sparm)
+	{
+	case SPARM_RUNNING:
+	case SPARM_ARCHMAGI:
+	case SPARM_HIGH_PRIEST:
+	case SPARM_RESISTANCE:
+		return 250;
+
+	case SPARM_COLD_RESISTANCE:
+	case SPARM_DEXTERITY:
+	case SPARM_FIRE_RESISTANCE:
+	case SPARM_IMPROVED_VISION:
+	case SPARM_INTELLIGENCE:
+	case SPARM_FLYING:
+	case SPARM_STEALTH:
+	case SPARM_STRENGTH:
+	case SPARM_INVISIBILITY:
+	case SPARM_MAGIC_RESISTANCE:
+	case SPARM_PROTECTION:
+	case SPARM_ARCHERY:
+	case SPARM_REPULSION:
+		return 50;
+
+	case SPARM_POSITIVE_ENERGY:
+	case SPARM_POISON_RESISTANCE:
+	case SPARM_REFLECTION:
+	case SPARM_SPIRIT_SHIELD:
+		return 20;
+
+	case SPARM_PONDEROUSNESS:
+		return -250;
+
+	case SPARM_NORMAL:
+	default:
+		return 0;
+	}
+}
 unsigned int item_value(item_def item, bool ident)
 {
     // Note that we pass item in by value, since we want a local
@@ -210,46 +286,7 @@ unsigned int item_value(item_def item, bool ident)
 
         if (item_type_known(item))
         {
-            switch (get_weapon_brand(item))
-            {
-            case SPWPN_NORMAL:
-            default:            // randart
-                valued *= 10;
-                break;
-
-            case SPWPN_SPEED:
-            case SPWPN_VAMPIRISM:
-            case SPWPN_ANTIMAGIC:
-                valued *= 30;
-                break;
-
-            case SPWPN_DISTORTION:
-            case SPWPN_ELECTROCUTION:
-            case SPWPN_PAIN:
-            case SPWPN_ACID: // Unrand-only.
-            case SPWPN_PENETRATION: // Unrand-only.
-                valued *= 25;
-                break;
-
-            case SPWPN_CHAOS:
-            case SPWPN_DRAINING:
-            case SPWPN_MOLTEN:
-            case SPWPN_FREEZING:
-            case SPWPN_HOLY_WRATH:
-			case SPWPN_SILVER:
-                valued *= 18;
-                break;
-
-            case SPWPN_VORPAL:
-                valued *= 15;
-                break;
-
-            case SPWPN_PROTECTION:
-            case SPWPN_VENOM:
-                valued *= 12;
-                break;
-            }
-
+			valued *= _weapon_brand_value(item);
             valued /= 10;
         }
 
@@ -329,49 +366,48 @@ unsigned int item_value(item_def item, bool ident)
         }
         break;
 
+	case OBJ_SHIELDS:
+		valued += shield_base_price((shield_type)item.sub_type);
+
+		if (item_type_known(item))
+		{
+			if (is_hybrid(item.sub_type))
+			{
+				valued *= _weapon_brand_value(item);
+				valued /= 10;
+			}
+			else
+				valued += _armour_brand_value(get_armour_ego_type(item));
+		}
+
+		if (item_ident(item, ISFLAG_KNOW_PLUSES))
+			valued += 50 * item.plus;
+
+		if (is_artefact(item))
+		{
+			if (item_type_known(item))
+				valued += (7 * artefact_value(item));
+			else
+				valued += 50;
+		
+		}
+
+		else if (!(item.flags & ISFLAG_IDENT_MASK)
+			&& (get_equip_desc(item) != 0))
+		{
+			valued += 30; // un-id'd "glowing" - arbitrary added cost
+		}
+
+		if (item_known_cursed(item))
+			valued -= 30;
+
+		break;
+
     case OBJ_ARMOURS:
         valued += armour_base_price((armour_type)item.sub_type);
 
         if (item_type_known(item))
-        {
-            const int sparm = get_armour_ego_type(item);
-            switch (sparm)
-            {
-            case SPARM_RUNNING:
-            case SPARM_ARCHMAGI:
-			case SPARM_HIGH_PRIEST:
-            case SPARM_RESISTANCE:
-                valued += 250;
-                break;
-
-            case SPARM_COLD_RESISTANCE:
-            case SPARM_DEXTERITY:
-            case SPARM_FIRE_RESISTANCE:
-            case SPARM_IMPROVED_VISION:
-            case SPARM_INTELLIGENCE:
-            case SPARM_FLYING:
-            case SPARM_STEALTH:
-            case SPARM_STRENGTH:
-            case SPARM_INVISIBILITY:
-            case SPARM_MAGIC_RESISTANCE:
-            case SPARM_PROTECTION:
-            case SPARM_ARCHERY:
-            case SPARM_REPULSION:
-                valued += 50;
-                break;
-
-            case SPARM_POSITIVE_ENERGY:
-            case SPARM_POISON_RESISTANCE:
-            case SPARM_REFLECTION:
-            case SPARM_SPIRIT_SHIELD:
-                valued += 20;
-                break;
-
-            case SPARM_PONDEROUSNESS:
-                valued -= 250;
-                break;
-            }
-        }
+			valued += _armour_brand_value(get_armour_ego_type(item));
 
         if (item_ident(item, ISFLAG_KNOW_PLUSES))
             valued += 50 * item.plus;
@@ -565,7 +601,7 @@ unsigned int item_value(item_def item, bool ident)
                 break;
 
             case SCR_BLINKING:
-            case SCR_ENCHANT:
+			case SCR_ENCHANT:
             case SCR_TORMENT:
             case SCR_HOLY_WORD:
             case SCR_SILENCE:

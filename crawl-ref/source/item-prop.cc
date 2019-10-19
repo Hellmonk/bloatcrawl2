@@ -3315,3 +3315,8 @@ int armour_base_price(armour_type type)
 {
     return Armour_prop[ Armour_index[type] ].price;
 }
+
+int shield_base_price(shield_type type)
+{
+	return Armour_prop[Armour_index[type]].price;
+}

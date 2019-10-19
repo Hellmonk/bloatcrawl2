@@ -137,10 +137,6 @@ item_def* newgame_make_item(object_class_type base,
     {
         if (item.sub_type == ARM_HELMET || item.sub_type == ARM_HAT)
             item.sub_type = ARM_HAT;
-        else if (item.sub_type == SHD_BUCKLER)
-            item.sub_type = SHD_SHIELD;
-        else if (is_shield(item))
-            item.sub_type = SHD_BUCKLER;
         else
             item.sub_type = ARM_ROBE;
     }
@@ -155,12 +151,23 @@ item_def* newgame_make_item(object_class_type base,
         return nullptr;
     }
 
+	if (item.base_type == OBJ_SHIELDS)
+	{
+		if (you.body_size(PSIZE_TORSO,true) < SIZE_MEDIUM)
+			item.sub_type = SHD_BUCKLER;
+		else if (!can_wield(&item,false,false))
+			item.sub_type = SHD_SHIELD;
+	}
+
     if ((item.base_type == OBJ_WEAPONS && can_wield(&item, false, false)
         || item.base_type == OBJ_ARMOURS && can_wear_armour(item, false, false))
         && you.equip[get_item_slot(item)] == -1)
     {
         you.equip[get_item_slot(item)] = slot;
     }
+
+	if (item.base_type == OBJ_SHIELDS && can_wield(&item, false, false))
+		you.equip[EQ_WEAPON1] = slot;
 
     if (item.base_type == OBJ_MISSILES)
         _autopickup_ammo(static_cast<missile_type>(item.sub_type));
