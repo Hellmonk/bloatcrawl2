@@ -1454,8 +1454,8 @@ static spret_type _phantom_mirror()
 
 bool evoke_check(int slot, bool quiet)
 {
-    const bool reaching = slot != -1 && (slot == you.equip[EQ_WEAPON0] && weapon_reach(*you.weapon(0)) > REACH_NONE) || 
-										(slot == you.equip[EQ_WEAPON1] && weapon_reach(*you.weapon(1)) > REACH_NONE)
+    const bool reaching = slot != -1 && ((slot == you.equip[EQ_WEAPON0] && you.weapon(0) && weapon_reach(*you.weapon(0)) > REACH_NONE) || 
+										(slot == you.equip[EQ_WEAPON1] && you.weapon(1) && weapon_reach(*you.weapon(1)) > REACH_NONE))
 										&& !you.melded[EQ_WEAPON0];
 
     if (you.berserk() && !reaching)
@@ -1477,7 +1477,6 @@ bool evoke_item(int slot, bool check_range)
         slot = prompt_invent_item("Evoke which item? (* to show all)",
                                    MT_INVLIST,
                                    OSEL_EVOKABLE, OPER_EVOKE);
-
         if (prompt_failed(slot))
             return false;
     }
@@ -1528,6 +1527,10 @@ bool evoke_item(int slot, bool check_range)
     case OBJ_WANDS:
         zap_wand(slot);
         return true;
+
+	// No Evocable Shields exist right now.
+	case OBJ_SHIELDS:
+		return false;
 
     case OBJ_WEAPONS:
         ASSERT(wielded);
