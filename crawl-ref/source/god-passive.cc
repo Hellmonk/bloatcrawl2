@@ -1354,6 +1354,18 @@ monster* shadow_monster(bool equip)
             new_item.base_type = OBJ_WEAPONS;
             new_item.sub_type  = WPN_STAFF;
         }
+
+		// Hack to prevent a crash. BCADDO: Remove if/when enemies are able to use shield hybrids as weapons.
+
+		if (wpn->base_type == OBJ_SHIELDS)
+		{
+			new_item.base_type = OBJ_WEAPONS;
+			if (wpn->sub_type == SHD_SAI)
+				new_item.sub_type = WPN_DAGGER;
+			else
+				new_item.sub_type = WPN_QUARTERSTAFF;
+		}
+
         else
         {
             new_item.base_type = wpn->base_type;

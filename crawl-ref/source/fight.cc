@@ -645,7 +645,11 @@ bool wielded_weapon_check(item_def *weapon)
 
     string prompt;
 	if (weapon)
+	{
+		if (weapon->base_type == OBJ_SHIELDS && !is_hybrid(weapon->sub_type) && you.skill(SK_UNARMED_COMBAT) > 1)
+			return true;
 		prompt = "Really attack while wielding " + weapon->name(DESC_YOUR) + "?";
+	}
 	else if ((!you.weapon(0) && !you.weapon(1))
 		|| (!you.weapon(1) && you.weapon(0) && you.weapon(0)->base_type == OBJ_SHIELDS && !is_hybrid(you.weapon(0)->sub_type))
 		|| (!you.weapon(0) && you.weapon(1) && you.weapon(1)->base_type == OBJ_SHIELDS && !is_hybrid(you.weapon(1)->sub_type)))
