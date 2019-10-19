@@ -227,7 +227,7 @@ static const shield_def Shield_prop[] =
 {
 	// Standard Shields
 	{ SHD_BUCKLER, "buckler", 0, 0, 0, SK_SHIELDS, DAMV_CRUSHING,
-		3, -8, SIZE_TINY, SIZE_LITTLE, SIZE_BIG, 20, 45 },
+		3, -8, SIZE_TINY, SIZE_LITTLE, SIZE_MEDIUM, 20, 45 },
 	{ SHD_SHIELD, "heater shield", 0, 0, 0, SK_SHIELDS, DAMV_CRUSHING,
 		8, -30, SIZE_LITTLE, SIZE_SMALL, SIZE_LARGE, 20, 45 },
 	{ SHD_LARGE_SHIELD, "scutum", 0, 0, 0, SK_SHIELDS, DAMV_CRUSHING,
@@ -2195,9 +2195,9 @@ bool is_weapon_wieldable(const item_def &item, size_type size)
 {
 	if (item.base_type == OBJ_SHIELDS)
 	{
-		if (Shield_prop[Shield_index[item.sub_type]].min_2h_size <= size)
+		if (Shield_prop[Shield_index[item.sub_type]].min_1h_size > size)
 			return false;
-		if (Shield_prop[Shield_index[item.sub_type]].max_size >= size)
+		if (Shield_prop[Shield_index[item.sub_type]].max_size < size)
 			return false;
 		return true;
 	}
