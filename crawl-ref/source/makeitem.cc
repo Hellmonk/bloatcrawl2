@@ -335,7 +335,10 @@ brand_type determine_weapon_brand(const item_def& item, int item_level)
 			wpn_type = WPN_DIRE_FLAIL;
 		}
 	}
-	else wpn_type = static_cast<weapon_type>(item.sub_type);
+	else
+	{
+		wpn_type = static_cast<weapon_type>(item.sub_type);
+	}
     const int tries       = _num_brand_tries(item, item_level);
     brand_type rc         = SPWPN_NORMAL;
 
@@ -639,7 +642,7 @@ static void _generate_shield_item(item_def& item, bool allow_uniques,
 	const bool no_brand = item.brand == SPWPN_FORBID_BRAND;
 
 	if (no_brand)
-		set_item_ego_type(item, OBJ_SHIELDS, SPWPN_NORMAL);
+		set_item_ego_type(item, OBJ_WEAPONS, SPWPN_NORMAL);
 
 	item.plus = 0;
 
@@ -650,9 +653,9 @@ static void _generate_shield_item(item_def& item, bool allow_uniques,
 		{
 			// Brand is set as for "good" items.
 			if (is_hybrid(item.sub_type))
-				set_item_ego_type(item, OBJ_SHIELDS, determine_weapon_brand(item, 2 + 2 * env.absdepth0));
+				set_item_ego_type(item, OBJ_WEAPONS, determine_weapon_brand(item, 2 + 2 * env.absdepth0));
 			else
-				set_item_ego_type(item, OBJ_SHIELDS, _defensive_shield_brand());
+				set_item_ego_type(item, OBJ_ARMOURS, _defensive_shield_brand());
 		}
 		item.plus -= 1 + random2(3);
 
@@ -667,9 +670,9 @@ static void _generate_shield_item(item_def& item, bool allow_uniques,
 		if (!no_brand)
 		{
 			if (is_hybrid(item.sub_type))
-				set_item_ego_type(item, OBJ_SHIELDS, determine_weapon_brand(item, 2 + 2 * env.absdepth0));
+				set_item_ego_type(item, OBJ_WEAPONS, determine_weapon_brand(item, 2 + 2 * env.absdepth0));
 			else
-				set_item_ego_type(item, OBJ_SHIELDS, _defensive_shield_brand());
+				set_item_ego_type(item, OBJ_ARMOURS, _defensive_shield_brand());
 		}
 
 		// if acquired item still not ego... enchant it up a bit.
@@ -1094,6 +1097,9 @@ static special_armour_type _generate_armour_ego(const item_def& item,
 
     if (is_armour_brand_ok(item.sub_type, ego, true))
 		return ego;
+	if (item.base_type == OBJ_SHIELDS)
+		return ego;
+	// Hacky if it causes weird behavior we may need to restore the assert.
 	return SPARM_NORMAL;
 }
 
