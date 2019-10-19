@@ -1117,19 +1117,26 @@ static set<equipment_type>
 _init_equipment_removal(transformation form)
 {
     set<equipment_type> result;
-    if (!form_can_wield(form) && you.weapon() || you.melded[EQ_WEAPON0])
-        result.insert(EQ_WEAPON0);
+	if (!form_can_wield(form))
+	{
+		if (you.weapon(0) || you.melded[EQ_WEAPON0])
+			result.insert(EQ_WEAPON0);
+		if (you.weapon(1) || you.melded[EQ_WEAPON1])
+			result.insert(EQ_WEAPON1);
+	}
 
     // Liches can't wield holy weapons.
-    if (form == transformation::lich && you.weapon()
-        && is_holy_item(*you.weapon()))
-    {
-        result.insert(EQ_WEAPON0);
+    if (form == transformation::lich)
+	{
+		if (you.weapon(0) && is_holy_item(*you.weapon(0)))
+		   result.insert(EQ_WEAPON0);
+		if (you.weapon(1) && is_holy_item(*you.weapon(1)))
+			result.insert(EQ_WEAPON1);
     }
 
     for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
     {
-        if (i == EQ_WEAPON0)
+        if (i == EQ_WEAPON0 || i == EQ_WEAPON1)
             continue;
         const equipment_type eq = static_cast<equipment_type>(i);
         const item_def *pitem = you.slot_item(eq, true);
@@ -1155,11 +1162,9 @@ static void _remove_equipment(const set<equipment_type>& removed,
             continue;
 
         bool unequip = !meld;
-        if (!unequip && e == EQ_WEAPON0)
+        if (!unequip && (e == EQ_WEAPON0 || e == EQ_WEAPON1))
         {
             if (form_can_wield(you.form))
-                unequip = true;
-            if (!is_weapon(*equip))
                 unequip = true;
         }
 
@@ -1201,26 +1206,21 @@ static void _unmeld_equipment_type(equipment_type e)
     item_def& item = you.inv[you.equip[e]];
     bool force_remove = false;
 
-    if (e == EQ_WEAPON0)
-    {
-        if (you.slot_item(EQ_WEAPON1))
-        {
-            force_remove = true;
-        }
-    }
-    else if (item.base_type != OBJ_JEWELLERY)
+    if (item.base_type != OBJ_JEWELLERY)
     {
         // This could happen if the player was mutated during the form.
-        if (!can_wear_armour(item, false, false))
+        if (item.base_type == OBJ_ARMOURS && !can_wear_armour(item, false, false))
             force_remove = true;
 
         // If you switched weapons during the transformation, make
         // sure you can still wear your shield.
         // (This is only possible with Statue Form.)
-        if (e == EQ_WEAPON1 && you.weapon())
-        {
-            force_remove = true;
-        }
+		if (you.weapon(0) && you.weapon(1) && (you.hands_reqd(*you.weapon(0), true) == HANDS_TWO || you.hands_reqd(*you.weapon(1), true) == HANDS_TWO))
+			force_remove = true;
+		if (you.weapon(0) && !can_wield(you.weapon(0), false, true, false, true))
+			force_remove = true;
+		if (you.weapon(1) && !can_wield(you.weapon(1), false, true, false, false))
+			force_remove = true;
     }
 
     if (force_remove)
