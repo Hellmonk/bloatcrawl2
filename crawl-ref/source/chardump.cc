@@ -1221,7 +1221,10 @@ static const char* _aux_attack_names[1 + UNAT_LAST_ATTACK] =
     "Punch",
     "Bite",
     "Pseudopods",
-    "Tentacles",
+    "T. Squeeze",
+	"T. Slap",
+	"T. Smack",
+	"T. Thwack",
 };
 
 static string _describe_action_subtype(caction_type type, int compound_subtype)
@@ -1260,6 +1263,10 @@ static string _describe_action_subtype(caction_type type, int compound_subtype)
                 return uppercase_first(tn);
             subtype = get_unrand_entry(subtype)->sub_type;
         }
+		else if (subtype == -2)
+		{
+			return uppercase_first(item_base_name(OBJ_SHIELDS, auxtype));
+		}
         return uppercase_first(item_base_name(OBJ_WEAPONS, subtype));
     case CACT_ARMOUR:
         return (subtype == -1) ? "Skin"

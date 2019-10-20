@@ -159,16 +159,18 @@ bool melee_attack::handle_phase_attempted()
         const caction_type cact_typ = is_riposte ? CACT_RIPOSTE : CACT_MELEE;
         if (weapon)
         {
-            if (weapon->base_type == OBJ_WEAPONS)
-                if (is_unrandom_artefact(*weapon)
-                    && get_unrand_entry(weapon->unrand_idx)->type_name)
-                {
-                    count_action(cact_typ, weapon->unrand_idx);
-                }
-                else
-                    count_action(cact_typ, weapon->sub_type);
-            else if (weapon->base_type == OBJ_STAVES)
-                count_action(cact_typ, WPN_STAFF);
+			if (weapon->base_type == OBJ_WEAPONS)
+				if (is_unrandom_artefact(*weapon)
+					&& get_unrand_entry(weapon->unrand_idx)->type_name)
+				{
+					count_action(cact_typ, weapon->unrand_idx);
+				}
+				else
+					count_action(cact_typ, weapon->sub_type);
+			else if (weapon->base_type == OBJ_STAVES)
+				count_action(cact_typ, WPN_STAFF);
+			else if (weapon->base_type == OBJ_SHIELDS)
+				count_action(cact_typ, -2, weapon->sub_type);
         }
         else
             count_action(cact_typ, -1, -1); // unarmed subtype/auxtype
@@ -1273,24 +1275,13 @@ void melee_attack::player_aux_setup(unarmed_attack_type atk)
 }
 
 /**
- * Octopode extra tentacle slap only now.
+ * Disabled. Kept as function for legacy purposes.
  *
  * @return  Whether the player gets a bonus punch aux attack on this attack.
  */
 bool melee_attack::player_gets_aux_punch()
 {
-	// No punching with a shield or 2-handed wpn.
-	// Octopodes aren't affected by this, though!
-	if (you.species != SP_OCTOPODE)
-		return false;
-
-    // roll for punch chance based on uc skill & armour penalty
-    if (!attacker->fights_well_unarmed(attacker_shield_tohit_penalty))
-    {
-        return false;
-    }
-
-    return coinflip();
+	return false;
 }
 
 bool melee_attack::player_aux_test_hit()
