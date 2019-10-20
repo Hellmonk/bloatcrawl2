@@ -1185,6 +1185,33 @@ public:
     : AuxAttackType(12, "squeeze") { };
 };
 
+class AuxTentacles2 : public AuxAttackType
+{
+public:
+	AuxTentacles2()
+	: AuxAttackType(3, "slap") { };
+	
+	int get_damage() const { return damage + div_rand_round(you.experience_level, 4); }
+};
+
+class AuxTentacles3 : public AuxAttackType
+{
+public:
+	AuxTentacles3()
+	 : AuxAttackType(3, "smack") { };
+	
+	int get_damage() const { return damage + div_rand_round(you.experience_level, 5); }
+};
+
+class AuxTentacles4 : public AuxAttackType
+{
+public:
+	AuxTentacles4()
+	 : AuxAttackType(5, "thwack") { };
+	
+	int get_damage() const { return damage + div_rand_round(you.experience_level, 3); }
+};
+
 static const AuxConstrict   AUX_CONSTRICT = AuxConstrict();
 static const AuxKick        AUX_KICK = AuxKick();
 static const AuxPeck        AUX_PECK = AuxPeck();
@@ -1194,6 +1221,9 @@ static const AuxPunch       AUX_PUNCH = AuxPunch();
 static const AuxBite        AUX_BITE = AuxBite();
 static const AuxPseudopods  AUX_PSEUDOPODS = AuxPseudopods();
 static const AuxTentacles   AUX_TENTACLES = AuxTentacles();
+static const AuxTentacles2  AUX_TENTACLES2 = AuxTentacles2();
+static const AuxTentacles3  AUX_TENTACLES3 = AuxTentacles3();
+static const AuxTentacles4  AUX_TENTACLES4 = AuxTentacles4();
 
 static const AuxAttackType* const aux_attack_types[] =
 {
@@ -1206,6 +1236,9 @@ static const AuxAttackType* const aux_attack_types[] =
     &AUX_BITE,
     &AUX_PSEUDOPODS,
     &AUX_TENTACLES,
+	&AUX_TENTACLES2,
+	&AUX_TENTACLES3,
+	&AUX_TENTACLES4
 };
 
 
@@ -3498,7 +3531,16 @@ bool melee_attack::_extra_aux_attack(unarmed_attack_type atk)
         return you.has_usable_pseudopods() && !one_chance_in(3);
 
     case UNAT_TENTACLES:
-        return you.has_usable_tentacles() && !one_chance_in(3);
+        return you.has_usable_tentacles();
+
+	case UNAT_TENTACLES2:
+		return you.has_usable_tentacles() && (you.strength() + you.dex() >= random2(50)) && !(one_chance_in(3));
+
+	case UNAT_TENTACLES3:
+		return you.has_usable_tentacles() && (you.strength() + you.dex() >= random2(65)) && !(one_chance_in(3));
+		
+	case UNAT_TENTACLES4:
+		return you.has_usable_tentacles() && (you.strength() + you.dex() >= random2(80));
 
     case UNAT_BITE:
         return you.get_mutation_level(MUT_ANTIMAGIC_BITE)
