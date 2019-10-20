@@ -162,7 +162,7 @@ int attack::calc_to_hit(bool random)
     if (attacker->is_player())
     {
         // fighting contribution
-        mhit += maybe_random_div(you.skill(SK_FIGHTING, 100), 100, random);
+		mhit += maybe_random_div(you.skill(SK_FIGHTING, 175), 100, random);
 
         // weapon skill contribution
         if (using_weapon())
@@ -172,20 +172,18 @@ int attack::calc_to_hit(bool random)
                 if (you.skill(wpn_skill) < 1 && player_in_a_dangerous_place())
                     xom_is_stimulated(10); // Xom thinks that is mildly amusing.
 
-                mhit += maybe_random_div(you.skill(wpn_skill, 100), 100,
-                                         random);
+				mhit += maybe_random_div(you.skill(wpn_skill, 200), 100, random);
             }
         }
         else if (you.form_uses_xl())
-            mhit += maybe_random_div(you.experience_level * 100, 100, random);
+			mhit += maybe_random_div(you.experience_level * 200, 100, random);
         else
         {
             // Claws give a slight bonus to accuracy when active
             mhit += (you.get_mutation_level(MUT_CLAWS) > 0
                      && wpn_skill == SK_UNARMED_COMBAT) ? 4 : 2;
 
-            mhit += maybe_random_div(you.skill(wpn_skill, 100), 100,
-                                     random);
+			mhit += maybe_random_div(you.skill(wpn_skill, 200), 100, random);
         }
 
         // weapon bonus contribution
@@ -224,7 +222,10 @@ int attack::calc_to_hit(bool random)
 		mhit += 5 * you.vision();
 
         // hit roll
-        mhit = maybe_random2(mhit, random);
+		mhit = (maybe_random2(mhit, random) + maybe_random2(mhit, random)) / 2
+			+ random2((you.dex() / 2));
+			// stats certainly have a good effect on accuracy now
+
     }
     else    // Monster to-hit.
     {
