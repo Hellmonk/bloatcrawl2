@@ -24,7 +24,7 @@ static const char32_t dchar_table[NUM_CSET][NUM_DCHAR_TYPES] =
 #if TAG_MAJOR_VERSION == 34
          '\\',
 #endif
-         '}', U'†', U'÷',  '$',  '"', U'§', U'♣',
+         '}', U'†', U'÷',  '$',  '"', ']', U'§', U'♣',
 #if TAG_MAJOR_VERSION == 34
         U'©',
 #endif
