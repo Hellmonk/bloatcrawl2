@@ -1267,7 +1267,7 @@ static string _describe_action_subtype(caction_type type, int compound_subtype)
     case CACT_BLOCK:
     {
         if (subtype > -1)
-            return uppercase_first(item_base_name(OBJ_ARMOURS, subtype));
+            return uppercase_first(item_base_name(OBJ_SHIELDS, subtype));
         switch (auxtype)
         {
         case BLOCK_OTHER:
