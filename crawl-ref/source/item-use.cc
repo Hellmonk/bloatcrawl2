@@ -3441,20 +3441,6 @@ void tile_item_use(int idx)
         }
     }
 
-/*
-    // Special case for folks who are wielding something
-    // that they shouldn't be wielding.
-    // Note that this is only a problem for equipables
-    // (otherwise it would only waste a turn)
-    if (you.equip[EQ_WEAPON0] == idx
-        && (item.base_type == OBJ_ARMOURS
-            || item.base_type == OBJ_JEWELLERY))
-    {
-        wield_weapon(true, SLOT_BARE_HANDS);
-        return;
-    }
-*/
-
     const int type = item.base_type;
 
     // Use it
