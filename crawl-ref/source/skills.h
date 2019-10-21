@@ -65,6 +65,7 @@ void init_train();
 void init_can_currently_train();
 void init_training();
 void update_can_currently_train();
+void update_can_train();
 void reset_training();
 int calc_skill_level_change(skill_type sk, int starting_level, int sk_points);
 void check_skill_level_change(skill_type sk, bool do_level_up = true);
