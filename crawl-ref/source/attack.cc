@@ -148,7 +148,7 @@ bool attack::handle_phase_end()
 int attack::calc_to_hit(bool random)
 {
     int mhit = attacker->is_player() ?
-                15 + (you.dex() / 2)
+                (you.dex() * 2 / 3)
               : calc_mon_to_hit_base();
 
 #ifdef DEBUG_DIAGNOSTICS
@@ -225,7 +225,6 @@ int attack::calc_to_hit(bool random)
 		mhit = (maybe_random2(mhit, random) + maybe_random2(mhit, random)) / 2
 			+ random2((you.dex() / 2));
 			// stats certainly have a good effect on accuracy now
-
     }
     else    // Monster to-hit.
     {
@@ -1200,6 +1199,10 @@ int attack::player_apply_final_multipliers(int damage)
     if (you.form == transformation::shadow)
         damage = div_rand_round(damage, 2);
 
+	// Global melee player damage nerf to offset Dual Wielding's buff.
+	if (!weapon || is_melee_weapon(*weapon))
+		damage = div_rand_round(3 * damage, 4);
+
     return damage;
 }
 
@@ -1249,7 +1252,7 @@ int attack::calc_damage()
         if (using_weapon() || wpn_skill == SK_THROWING)
         {
             damage_max = weapon_damage();
-            damage += random2(damage_max);
+            damage += random2avg(damage_max + 1, 3); // if we're averaging player damage let's do enemies too.
 
             int wpn_damage_plus = 0;
             if (weapon) // can be 0 for throwing projectiles
