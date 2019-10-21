@@ -21,7 +21,7 @@ Deep Elves have a strong affinity for all kinds of magic, but are very fragile.
 Demigod
 
 Born of a union between a god and a mortal, demigods are unable to benefit from
-worship. However; their base attributes and magic reserves are very strong.
+worship. However; they have godly attributes and magic reserves.
 %%%%
 Demonspawn
 
