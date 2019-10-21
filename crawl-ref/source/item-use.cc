@@ -3309,6 +3309,10 @@ void read_scroll(item_def& scroll)
             cancel_scroll = (cast_selective_amnesia(pre_succ_msg) == -1);
         break;
 
+	case SCR_RANDOM_USELESSNESS:
+		random_uselessness();
+		break;
+
     default:
         mpr("Read a buggy scroll, please report this.");
         break;
