@@ -3702,6 +3702,7 @@ bool is_useless_item(const item_def &item, bool temp)
         case AMU_FAITH:
             return (you.species == SP_DEMIGOD && !you.religion)
                     || you_worship(GOD_GOZAG)
+				    || (you.char_class == JOB_DEMIGOD && !you.religion)
                     || (you_worship(GOD_RU) && you.piety == piety_breakpoint(5));
 
         case AMU_GUARDIAN_SPIRIT:

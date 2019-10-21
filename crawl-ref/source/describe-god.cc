@@ -344,7 +344,7 @@ static const map<monster_type, vector<ancestor_upgrade> > ancestor_data =
         { 1,  "Shield" },
         { 1,  "Chain mail (+AC)" },
         { 15, "Broad axe (flame)" },
-        { 19, "Large shield (reflect)" },
+        { 19, "Scutum (reflect)" },
         { 19, "Haste" },
         { 24, "Broad axe (speed)" },
       }

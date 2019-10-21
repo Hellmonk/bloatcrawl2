@@ -20,13 +20,13 @@ Deep Elves have a strong affinity for all kinds of magic, but are very fragile.
 %%%%
 Demigod
 
-Demigods refuse to worship any god, but make up for this with divine attributes
-and high reserves of health and magic.
+Born of a union between a god and a mortal, demigods are unable to benefit from
+worship. However; their base attributes and magic reserves are very strong.
 %%%%
 Demonspawn
 
-Demonspawn are half human, half demon. They acquire strong demonic mutations as
-they grow.
+Born of an unholy union between a demon and a mortal. They acquire strong demonic
+mutations as they grow.
 %%%%
 Draconian
 

@@ -2975,7 +2975,7 @@ void level_change(bool skip_attribute_increase)
             tiles.layout_statcol();
             redraw_screen();
 #endif
-            if (!skip_attribute_increase)
+            if (!skip_attribute_increase && you.char_class != JOB_DEMIGOD)
                 species_stat_gain(you.species);
 
             switch (you.species)

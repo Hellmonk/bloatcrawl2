@@ -911,7 +911,7 @@ static void _equip_armour_effect(item_def& arm, bool unmeld,
             break;
 
 		case SPARM_HIGH_PRIEST:
-			if (you.species == SP_DEMIGOD)
+			if (you.species == SP_DEMIGOD || you.char_class == JOB_DEMIGOD)
 				mpr("You feel like worshipping yourself.");
 			else if (you_worship(GOD_NO_GOD))
 				mpr("You feel like seeking a god to worship.");
@@ -1092,7 +1092,7 @@ static void _unequip_armour_effect(item_def& item, bool meld,
         break;
 
 	case SPARM_HIGH_PRIEST:
-		if (you.species == SP_DEMIGOD)
+		if (you.species == SP_DEMIGOD || you.char_class == JOB_DEMIGOD)
 			mpr("You feel less interested in self-worship.");
 		else 
  			mprf(MSGCH_GOD,"Your divine fervour dies down.");
@@ -1283,7 +1283,7 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
         break;
 
     case AMU_FAITH:
-        if (you.species == SP_DEMIGOD)
+        if (you.species == SP_DEMIGOD || you.char_class == JOB_DEMIGOD)
             mpr("You feel a surge of self-confidence.");
         else if (you_worship(GOD_RU) && you.piety >= piety_breakpoint(5))
         {

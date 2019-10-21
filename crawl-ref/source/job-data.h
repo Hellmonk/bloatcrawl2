@@ -301,10 +301,37 @@ static const map<job_type, job_def> job_data =
 { JOB_PRIEST,{
 	"Pr", "Priest",
 	4, 4, 4,
-	{},
+	{ SP_HILL_ORC },
 	{ "robe" },
 	WCHOICE_STAT,
 	{ {SK_DODGING, 2} , {SK_STEALTH, 2} , {SK_UNARMED_COMBAT,3} , {SK_INVOCATIONS, 4} ,},
+} },
+
+{ JOB_DEMIGOD,{
+	"Dg", "Demigod",
+	7, 7, 7,
+	{ SP_GNOLL, SP_SPRIGGAN, SP_TROLL, SP_MINOTAUR },
+	{ "leather armour" },
+	WCHOICE_GOOD,
+	{ { SK_DODGING, 3 } ,{ SK_STEALTH, 2 } ,{ SK_WEAPON,4 } ,{ SK_FIGHTING, 2 } , },
+} },
+
+{ JOB_MUMMY,{
+	"Mu", "Mummy",
+	2, 7, 4,
+	{},
+	{ "leather armour" , "book of necromancy"},
+	WCHOICE_PLAIN,
+	{ { SK_DODGING, 3 } ,{ SK_STEALTH, 2 } ,{ SK_WEAPON,2 } , {SK_SPELLCASTING, 2} , {SK_NECROMANCY,3} },
+} },
+
+{ JOB_DEMONSPAWN,{
+	"Ds", "Demonspawn",
+	6, 4, 4,
+	{},
+	{ "leather armour" },
+	WCHOICE_GOOD,
+	{ { SK_DODGING, 3 } ,{ SK_STEALTH, 2 } ,{ SK_WEAPON,4 } ,{ SK_FIGHTING, 2 } ,{ SK_INVOCATIONS,3 } },
 } },
 
 #if TAG_MAJOR_VERSION == 34

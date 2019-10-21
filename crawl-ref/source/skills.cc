@@ -1715,7 +1715,7 @@ string skill_title_by_rank(skill_type best_skill, uint8_t skill_rank,
         { "Adj", species_name(species, SPNAME_ADJ) },
         { "Genus", species_name(species, SPNAME_GENUS) },
         { "genus", lowercase_string(species_name(species, SPNAME_GENUS)) },
-        { "Genus_Short", species == SP_DEMIGOD ? "God" :
+        { "Genus_Short", (species == SP_DEMIGOD || you.char_class == JOB_DEMIGOD) ? "God" :
                            species_name(species, SPNAME_GENUS) },
         { "Walker", species_walking_verb(species) + "er" },
         { "Weight", _stk_weight(species) },
@@ -1925,8 +1925,32 @@ int species_apt(skill_type skill, species_type species)
         spec_skills_initialised = true;
     }
 
+	int mod = 0;
+
+	if (you.char_class == JOB_MUMMY)
+	{
+		if (skill == SK_NECROMANCY || skill == SK_SPELLCASTING)
+			mod = 2;
+		else if (skill == SK_FIGHTING)
+			mod = 0;
+		else
+			mod = -2;
+	}
+
+	if (you.char_class == JOB_DEMIGOD && skill == SK_INVOCATIONS)
+		return UNUSABLE_SKILL;
+
+	else if (you.char_class == JOB_DEMIGOD || you.char_class == JOB_DEMONSPAWN)
+	{
+		if (skill == SK_INVOCATIONS)
+			mod = 3;
+		else
+			mod = -1;
+	}
+
     return max(UNUSABLE_SKILL, _spec_skills[species][skill]
-                               - you.get_mutation_level(MUT_UNSKILLED));
+                               - you.get_mutation_level(MUT_UNSKILLED)
+	                           + mod);
 }
 
 float species_apt_factor(skill_type sk, species_type sp)

@@ -317,6 +317,9 @@ void give_basic_mutations(species_type species)
     for (const auto& lum : get_species_def(species).level_up_mutations)
         if (lum.xp_level == 1)
             you.mutation[lum.mut] = you.innate_mutation[lum.mut] = lum.mut_level;
+
+	if (you.char_class == JOB_DEMIGOD && you.get_mutation_level(MUT_HIGH_MAGIC) < 3)
+		you.mutation[MUT_HIGH_MAGIC] = you.innate_mutation[MUT_HIGH_MAGIC] = (you.get_mutation_level(MUT_HIGH_MAGIC) + 1);
 }
 
 void give_level_mutations(species_type species, int xp_level)
@@ -336,6 +339,8 @@ int species_exp_modifier(species_type species)
 
 int species_hp_modifier(species_type species)
 {
+	if (you.char_class == JOB_DEMIGOD)
+		return get_species_def(species).hp_mod + 1;
     return get_species_def(species).hp_mod;
 }
 

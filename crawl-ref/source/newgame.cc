@@ -208,7 +208,7 @@ static const species_type species_order[] =
     // mostly human shape but made of a strange substance
     SP_VINE_STALKER,
     // celestial species
-    SP_DEMIGOD,        SP_DEMONSPAWN,
+    SP_DEMONSPAWN,
     // undead species
     SP_MUMMY,          SP_GHOUL,
     SP_SILENT_SPECTRE,
@@ -1083,7 +1083,6 @@ static species_group species_groups[] =
         20,
         {
             SP_VINE_STALKER,
-            SP_DEMIGOD,
 			SP_GOBLIN,
             SP_FORMICID,
             SP_OCTOPODE,
@@ -1189,6 +1188,11 @@ static job_group jobs_order[] =
 		"Custom",
 		coord_def(15, 7), 20,
 		{ JOB_PRIEST , JOB_NOBLE}
+	},
+	{
+		"Hybrid",
+		coord_def(35, 7), 21,
+		{ JOB_DEMIGOD }
 	},
     {
         "Warrior-mage",

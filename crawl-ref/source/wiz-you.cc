@@ -969,7 +969,7 @@ void wizard_transform()
 
 void wizard_join_religion()
 {
-    if (you.species == SP_DEMIGOD)
+    if (you.species == SP_DEMIGOD || you.char_class == JOB_DEMIGOD)
     {
         mpr("Not even in wizmode may Demigods worship a god!");
         return;
