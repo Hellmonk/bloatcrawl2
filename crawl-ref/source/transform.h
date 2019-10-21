@@ -135,7 +135,6 @@ public:
      */
     virtual brand_type get_uc_brand() const { return uc_brand; }
 
-    virtual bool can_offhand_punch() const { return can_wield(); }
     virtual string get_uc_attack_name(string default_name) const;
     virtual int get_ac_bonus() const;
 

@@ -532,8 +532,6 @@ public:
                             singular ? "its" : "their");
     }
 
-    bool can_offhand_punch() const override { return true; }
-
     /**
      * Get the name displayed in the UI for the form's unarmed-combat 'weapon'.
      */
@@ -687,8 +685,6 @@ public:
                 return 0;
         }
     }
-
-    bool can_offhand_punch() const override { return true; }
 };
 
 class FormLich : public Form

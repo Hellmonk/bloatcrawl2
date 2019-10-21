@@ -1227,12 +1227,12 @@ int attack::calc_base_unarmed_damage()
 
     // Claw damage only applies for bare hands.
     if (you.has_usable_claws())
-        damage += you.has_claws() * 2;
+        damage += you.has_claws();
 
     if (you.form_uses_xl())
         damage += div_rand_round(you.experience_level, 3);
     else
-        damage += you.skill_rdiv(wpn_skill);
+        damage += div_rand_round(2 * you.skill_rdiv(wpn_skill), 3);
 
     if (damage < 0)
         damage = 0;
