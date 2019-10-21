@@ -1200,7 +1200,7 @@ int attack::player_apply_final_multipliers(int damage)
         damage = div_rand_round(damage, 2);
 
 	// Global melee player damage nerf to offset Dual Wielding's buff.
-	if (!weapon || is_melee_weapon(*weapon))
+	if (is_melee_weapon(*weapon))
 		damage = div_rand_round(3 * damage, 4);
 
     return damage;
