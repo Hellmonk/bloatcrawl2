@@ -389,7 +389,12 @@ void species_stat_init(species_type species)
 void species_stat_gain(species_type species)
 {
     const species_def& sd = get_species_def(species);
-    if (you.experience_level % sd.how_often == 0)
+	if (you.char_class == JOB_MUMMY)
+	{
+		if (you.experience_level % (sd.how_often + 1) == 0)
+			modify_stat(*random_iterator(sd.level_stats), 1, false);
+	}
+    else if (you.experience_level % sd.how_often == 0)
         modify_stat(*random_iterator(sd.level_stats), 1, false);
 }
 
