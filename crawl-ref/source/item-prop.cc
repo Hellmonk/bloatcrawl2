@@ -3052,12 +3052,12 @@ equipment_type get_item_slot(object_class_type type, int sub_type)
 
 bool is_shield(const item_def &item)
 {
-    return item.base_type == OBJ_SHIELDS;
+    return (item.base_type == OBJ_SHIELD;
 }
 
 bool shield_reflects(const item_def &shield)
 {   
-	if (is_shield(shield))
+	if (is_shield(shield) && !is_hybrid(shield.sub_type))
 		return get_armour_ego_type(shield) == SPARM_REFLECTION;
 	else
 		return false;
