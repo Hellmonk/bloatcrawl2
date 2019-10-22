@@ -5001,7 +5001,7 @@ static mutation_type _random_valid_sacrifice(const vector<mutation_type> &muts)
 			continue;
 
         // demonspawn can't get frail if they have a robust facet
-        if (you.species == SP_DEMONSPAWN && mut == MUT_FRAIL
+        if ((you.species == SP_DEMONSPAWN || you.char_class == JOB_DEMONSPAWN) && mut == MUT_FRAIL
             && any_of(begin(you.demonic_traits), end(you.demonic_traits),
                       [] (player::demon_trait t)
                       { return t.mutation == MUT_ROBUST; }))
@@ -5335,7 +5335,7 @@ int get_sacrifice_piety(ability_type sac, bool include_skill)
             // absolutely certain, but it's very likely and they should still
             // get a bonus for the risk. Could check the exact mutation
             // schedule, but this seems too leaky.
-            if (you.species == SP_DEMONSPAWN)
+            if (you.species == SP_DEMONSPAWN || you.char_class == JOB_DEMONSPAWN)
                 piety_gain += 28;
             break;
         case ABIL_RU_SACRIFICE_COURAGE:

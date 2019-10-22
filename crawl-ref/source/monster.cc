@@ -4401,10 +4401,10 @@ bool monster::corrode_equipment(const char* corrosion_source, int degree)
 /**
  * Attempts to apply corrosion to a monster.
  */
-void monster::splash_with_acid(const actor* evildoer, int /*acid_strength*/,
+void monster::splash_with_acid(const actor* evildoer, int acid_strength,
                                bool /*allow_corrosion*/, const char* /*hurt_msg*/)
 {
-    const int dam = roll_dice(2, 4);
+    const int dam = roll_dice(acid_strength, 4);
     const int post_res_dam = resist_adjust_damage(this, BEAM_ACID, dam);
 
     if (this->observable())

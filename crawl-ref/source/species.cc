@@ -487,7 +487,7 @@ void change_species_to(species_type sp)
             you.innate_mutation[i] -= prev_muts[i];
     }
 
-    if (sp == SP_DEMONSPAWN)
+    if (sp == SP_DEMONSPAWN || you.char_class == JOB_DEMONSPAWN)
     {
         roll_demonspawn_mutations();
         for (int i = 0; i < int(you.demonic_traits.size()); ++i)

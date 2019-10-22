@@ -524,7 +524,7 @@ static void _setup_generic(const newgame_def& ng)
     // This function depends on stats and mutations being finalised.
     _give_items_skills(ng);
 
-    if (you.species == SP_DEMONSPAWN)
+    if (you.species == SP_DEMONSPAWN || you.char_class == JOB_DEMONSPAWN)
         roll_demonspawn_mutations();
 
     _give_starting_food();

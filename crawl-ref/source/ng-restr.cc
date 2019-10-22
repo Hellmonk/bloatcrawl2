@@ -41,10 +41,11 @@ static bool _banned_combination(job_type job, species_type species)
         }
         break;
 	case SPF_DRACONIAN:  // Temporarily Banned pending a special case.
-	case SP_DEMONSPAWN:  // The race will be banned soon enough, but permaundead that gets racial muts just no.
+		if (job == JOB_MUMMY)
+			return true;
 	case SP_GHOUL:
 	case SP_SILENT_SPECTRE:
-		if (job == JOB_MUMMY)
+		if (job == JOB_MUMMY || job == JOB_DEMONSPAWN)
 			return true;
     default:
         break;

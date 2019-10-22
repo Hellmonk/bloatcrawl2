@@ -560,7 +560,7 @@ void validate_mutations(bool debug_msg)
 
         // reconstruct what the innate mutations should be based on Ds mutation schedule
         // TODO generalize to all innate muts
-        if (you.species == SP_DEMONSPAWN)
+        if (you.species == SP_DEMONSPAWN || you.char_class == JOB_DEMONSPAWN)
         {
             bool is_trait = false;
             int trait_level = 0;
@@ -1212,11 +1212,12 @@ static int _body_covered()
     return covered;
 }
 
-bool physiology_mutation_conflict(mutation_type mutat)
+bool physiology_mutation_conflict(mutation_type mutat, bool ds_roll)
 {
-    // If demonspawn, and mutat is a scale, see if they were going
-    // to get it sometime in the future anyway; otherwise, conflict.
-    if (you.species == SP_DEMONSPAWN && _is_covering(mutat)
+	// If demonspawn, and mutat is a scale, see if they were going
+	// to get it sometime in the future anyway; otherwise, conflict.
+	if ((you.species == SP_DEMONSPAWN || you.char_class == JOB_DEMONSPAWN)
+		&& !ds_roll && _is_covering(mutat)
         && find(_all_scales, _all_scales+ARRAYSZ(_all_scales), mutat) !=
                 _all_scales+ARRAYSZ(_all_scales))
     {
@@ -2271,7 +2272,7 @@ string mutation_desc(mutation_type mut, int level, bool colour,
 
         if (permanent)
         {
-            const bool demonspawn = (you.species == SP_DEMONSPAWN);
+            const bool demonspawn = (you.species == SP_DEMONSPAWN || you.char_class == JOB_DEMONSPAWN);
             const bool extra = you.get_base_mutation_level(mut, false, true, true) > 0;
 
             if (fully_inactive || (mut == MUT_COLD_BLOODED && player_res_cold(false) > 0))
@@ -2452,7 +2453,8 @@ try_again:
             }
             while (!_works_at_tier(*next_facet, tier)
                    || facets_used.count(next_facet)
-                   || !_slot_is_unique(next_facet->muts, facets_used));
+                   || !_slot_is_unique(next_facet->muts, facets_used)
+				   || physiology_mutation_conflict(next_facet->muts[2], true));
 
             facets_used.insert(next_facet);
 
@@ -2666,7 +2668,7 @@ int player::how_mutated(bool innate, bool levels, bool temp) const
             else if (mut_level > 0)
                 result++;
         }
-        if (you.species == SP_DEMONSPAWN
+        if ((you.species == SP_DEMONSPAWN || you.char_class == JOB_DEMONSPAWN)
             && you.props.exists("num_sacrifice_muts"))
         {
             result -= you.props["num_sacrifice_muts"].get_int();

@@ -1667,7 +1667,7 @@ string skill_title_by_rank(skill_type best_skill, uint8_t skill_rank,
             break;
 
         case SK_INVOCATIONS:
-            if (species == SP_DEMONSPAWN
+            if ((species == SP_DEMONSPAWN || you.char_class == JOB_DEMONSPAWN)
                 && skill_rank == 5
                 && is_evil_god(god))
             {

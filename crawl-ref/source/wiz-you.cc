@@ -730,7 +730,7 @@ void wizard_list_props()
  */
 static void reset_ds_muts_from_schedule(int xl)
 {
-    if (you.species != SP_DEMONSPAWN)
+    if (you.species != SP_DEMONSPAWN && you.char_class != JOB_DEMONSPAWN)
         return;
 
     for (int i = 0; i < NUM_MUTATIONS; i++)

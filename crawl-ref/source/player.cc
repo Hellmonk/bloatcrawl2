@@ -3142,6 +3142,53 @@ void level_change(bool skip_attribute_increase)
                 break;
             }
 
+			if (you.char_class == JOB_DEMONSPAWN)
+			{
+				bool gave_message = false;
+				int level = 0;
+				mutation_type first_body_facet = NUM_MUTATIONS;
+
+				for (const player::demon_trait trait : you.demonic_traits)
+				{
+					if (is_body_facet(trait.mutation))
+					{
+						if (first_body_facet < NUM_MUTATIONS
+							&& trait.mutation != first_body_facet)
+						{
+							if (you.experience_level == level)
+							{
+								mprf(MSGCH_MUTATION, "You feel monstrous as "
+									"your demonic heritage exerts itself.");
+								mark_milestone("monstrous", "discovered their "
+									"monstrous ancestry!");
+							}
+						}
+
+						if (first_body_facet == NUM_MUTATIONS)
+						{
+							first_body_facet = trait.mutation;
+							level = trait.level_gained;
+						}
+					}
+				}
+
+				for (const player::demon_trait trait : you.demonic_traits)
+				{
+					if (trait.level_gained == you.experience_level)
+					{
+						if (!gave_message)
+						{
+							mprf(MSGCH_INTRINSIC_GAIN,
+								"Your demonic ancestry asserts itself...");
+
+							gave_message = true;
+						}
+						perma_mutate(trait.mutation, 1, "demonic ancestry");
+					}
+				}
+;
+			}
+
             give_level_mutations(you.species, you.experience_level);
 
         }
@@ -6236,7 +6283,8 @@ mon_holy_type player::holiness(bool temp) const
     if (is_good_god(religion))
         holi |= MH_HOLY;
 
-    if (is_evil_god(religion) || species == SP_DEMONSPAWN)
+    if (is_evil_god(religion) || species == SP_DEMONSPAWN || 
+		(char_class == JOB_DEMONSPAWN && species != SP_GARGOYLE))
         holi |= MH_EVIL;
 
     // possible XXX: Monsters get evil/unholy bits set on spell selection
@@ -6247,7 +6295,7 @@ mon_holy_type player::holiness(bool temp) const
 bool player::undead_or_demonic() const
 {
     // This is only for TSO-related stuff, so demonspawn are included.
-    return undead_state() || species == SP_DEMONSPAWN;
+    return undead_state() || species == SP_DEMONSPAWN || char_class == JOB_DEMONSPAWN;
 }
 
 bool player::is_holy(bool check_spells) const

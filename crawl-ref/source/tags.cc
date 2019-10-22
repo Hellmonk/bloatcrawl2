@@ -2956,7 +2956,7 @@ static void tag_read_you(reader &th)
     }
 
     if (th.getMinorVersion() < TAG_MINOR_FOUL_STENCH
-        && you.species == SP_DEMONSPAWN
+        && (you.species == SP_DEMONSPAWN || you.char_class == JOB_DEMONSPAWN)
         && you.innate_mutation[MUT_SAPROVOROUS])
     {
         you.mutation[MUT_ROT_IMMUNITY] =
@@ -2967,7 +2967,7 @@ static void tag_read_you(reader &th)
     you.innate_mutation[MUT_SAPROVOROUS] = 0;
 
     if (th.getMinorVersion() < TAG_MINOR_DS_CLOUD_MUTATIONS
-        && you.species == SP_DEMONSPAWN)
+        && (you.species == SP_DEMONSPAWN || you.char_class == JOB_DEMONSPAWN))
     {
         if (you.innate_mutation[MUT_CONSERVE_POTIONS])
         {

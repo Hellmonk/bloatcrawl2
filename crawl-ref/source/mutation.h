@@ -74,7 +74,7 @@ bool temp_mutation_wanes();
 void check_demonic_guardian();
 void check_monster_detect();
 equipment_type beastly_slot(int mut);
-bool physiology_mutation_conflict(mutation_type mutat);
+bool physiology_mutation_conflict(mutation_type mutat, bool ds_roll = false);
 int augmentation_amount();
 void reset_powered_by_death_duration();
 
