@@ -6616,6 +6616,8 @@ undead_state_type player::undead_state(bool temp) const
 {
     if (temp && you.form == transformation::lich)
         return US_UNDEAD;
+	if (you.char_class == JOB_MUMMY)
+		return US_UNDEAD;
     return species_undead_type(you.species);
 }
 
@@ -7347,7 +7349,7 @@ bool player::can_throw_large_rocks() const
 
 bool player::can_smell() const
 {
-    return species != SP_MUMMY;
+    return (species != SP_MUMMY && char_class != JOB_MUMMY);
 }
 
 bool player::can_sleep(bool holi_only) const

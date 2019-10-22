@@ -34,11 +34,18 @@ static bool _banned_combination(job_type job, species_type species)
             || job == JOB_CHAOS_KNIGHT
             || job == JOB_ABYSSAL_KNIGHT
             || job == JOB_MONK
-			|| job == JOB_PRIEST)
+			|| job == JOB_PRIEST
+			|| job == JOB_DEMIGOD)
         {
             return true;
         }
         break;
+	case SPF_DRACONIAN:  // Temporarily Banned pending a special case.
+	case SP_DEMONSPAWN:  // The race will be banned soon enough, but permaundead that gets racial muts just no.
+	case SP_GHOUL:
+	case SP_SILENT_SPECTRE:
+		if (job == JOB_MUMMY)
+			return true;
     default:
         break;
     }

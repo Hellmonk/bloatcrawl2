@@ -213,7 +213,7 @@ static const map<job_type, job_def> job_data =
 { JOB_NECROMANCER, {
     "Ne", "Necromancer",
     0, 7, 5,
-    { SP_DEEP_ELF, SP_HILL_ORC, SP_DEMONSPAWN, SP_MUMMY,
+    { SP_DEEP_ELF, SP_HILL_ORC, SP_DEMONSPAWN,
       SP_VAMPIRE, SP_SILENT_SPECTRE},
     { "robe", "book of Necromancy" },
     WCHOICE_NONE,
@@ -290,8 +290,7 @@ static const map<job_type, job_def> job_data =
 { JOB_WIZARD, {
     "Wz", "Wizard",
     -1, 10, 3,
-    { SP_DEEP_ELF, SP_NAGA, SP_BASE_DRACONIAN, SP_OCTOPODE, SP_HUMAN,
-      SP_MUMMY, },
+    { SP_DEEP_ELF, SP_NAGA, SP_BASE_DRACONIAN, SP_OCTOPODE, SP_HUMAN, },
     { "robe", "hat", "book of Minor Magic" },
     WCHOICE_NONE,
     { { SK_DODGING, 2 }, { SK_STEALTH, 2 }, { SK_SPELLCASTING, 3 },

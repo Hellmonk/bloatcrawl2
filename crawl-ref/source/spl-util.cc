@@ -1245,6 +1245,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         if (you.species == SP_GARGOYLE
             || you.species == SP_GHOUL
             || you.species == SP_MUMMY
+			|| you.char_class == JOB_MUMMY
 			|| you.species == SP_SILENT_SPECTRE
             || (temp && !form_can_bleed(you.form)))
         {

@@ -682,14 +682,15 @@ static bool _has_hair(actor* target)
         return false;
 
     return !form_changed_physiology()
-           && (species_has_hair(you.species) || you.species == SP_MUMMY);
+           && (species_has_hair(you.species) || you.species == SP_MUMMY
+			   || you.char_class == JOB_MUMMY);
 }
 
 static string _hair_str(actor* target, bool &plural)
 {
     ASSERT(target->is_player());
 
-    if (you.species == SP_MUMMY)
+    if (you.species == SP_MUMMY || you.char_class == JOB_MUMMY)
     {
         plural = true;
         return "bandages";
@@ -777,10 +778,10 @@ void MiscastEffect::_conjuration(int severity)
             // care of elsewhere.
             break;
         case 9:
-            if (you.can_smell())
+			if (you.species == SP_MUMMY || you.char_class == JOB_MUMMY)
+				you_msg = "Your bandages flutter.";
+            else if (you.can_smell())
                 all_msg = "You smell something strange.";
-            else if (you.species == SP_MUMMY)
-                you_msg = "Your bandages flutter.";
             break;
         case 10:
         {
@@ -1619,10 +1620,10 @@ void MiscastEffect::_necromancy(int severity)
         switch (random2(10))
         {
         case 0:
-            if (you.can_smell())
+			if (you.species == SP_MUMMY || you.char_class == JOB_MUMMY)
+				you_msg = "Your bandages flutter.";
+            else if (you.can_smell())
                 all_msg = "You smell decay.";
-            else if (you.species == SP_MUMMY)
-                you_msg = "Your bandages flutter.";
             break;
         case 1:
             if (neither_end_silenced())
@@ -1710,7 +1711,7 @@ void MiscastEffect::_necromancy(int severity)
                     do_msg();
                 target->rot(act_source, 1, true);
             }
-            else if (you.species == SP_MUMMY)
+            else if (you.species == SP_MUMMY || you.char_class == JOB_MUMMY)
             {
                 // Monster messages needed.
                 you_msg = "Your bandages flutter.";
@@ -1892,10 +1893,10 @@ void MiscastEffect::_transmutation(int severity)
             // care of elsewhere.
             break;
         case 9:
-            if (you.can_smell())
+			if (you.species == SP_MUMMY || you.char_class == JOB_MUMMY)
+				you_msg = "Your bandages flutter.";
+            else if (you.can_smell())
                 all_msg = "You smell something strange.";
-            else if (you.species == SP_MUMMY)
-                you_msg = "Your bandages flutter.";
             break;
         case 10:
         {
@@ -2075,10 +2076,10 @@ void MiscastEffect::_fire(int severity)
             all_msg = "You have a brief vision of globes of primordial fire.";
             break;
         case 4:
-            if (you.can_smell())
+			if (you.species == SP_MUMMY || you.char_class == JOB_MUMMY)
+				you_msg = "Your bandages flutter.";
+            else if (you.can_smell())
                 all_msg = "You smell smoke.";
-            else if (you.species == SP_MUMMY)
-                you_msg = "Your bandages flutter.";
             break;
         case 5:
             you_msg = "Heat runs through your body.";
@@ -2620,10 +2621,10 @@ void MiscastEffect::_air(int severity)
                 msg_ch         = MSGCH_SOUND;
                 sound_loudness = 2;
             }
+			else if (you.species == SP_MUMMY || you.char_class == JOB_MUMMY)
+				you_msg = "Your bandages flutter.";
             else if (you.can_smell())
                 all_msg = "You smell ozone.";
-            else if (you.species == SP_MUMMY)
-                you_msg = "Your bandages flutter.";
             break;
         case 5:
             // Set nothing; canned_msg(MSG_NOTHING_HAPPENS) will be taken
@@ -2636,10 +2637,10 @@ void MiscastEffect::_air(int severity)
                 msg_ch         = MSGCH_SOUND;
                 sound_loudness = 2;
             }
+			else if (you.species == SP_MUMMY || you.char_class == JOB_MUMMY)
+				you_msg = "Your bandages flutter.";
             else if (you.can_smell())
                 all_msg = "You smell something musty.";
-            else if (you.species == SP_MUMMY)
-                you_msg = "Your bandages flutter.";
             break;
         case 7:
             you_msg      = "There is a short, sharp shower of sparks.";

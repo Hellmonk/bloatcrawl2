@@ -4317,7 +4317,7 @@ bool gozag_call_merchant()
         // first index.
         if (type == SHOP_FOOD)
             continue;
-        if (type == SHOP_DISTILLERY && you.species == SP_MUMMY)
+        if (type == SHOP_DISTILLERY && (you.species == SP_MUMMY || you.char_class == JOB_MUMMY))
             continue;
 		if (type == SHOP_SCROLL && you.species == SP_SILENT_SPECTRE)
 			continue;

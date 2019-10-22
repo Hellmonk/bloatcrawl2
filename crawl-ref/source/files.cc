@@ -695,8 +695,8 @@ static void _fill_player_doll(player_save_info &p, package *save)
     for (unsigned int j = 0; j < TILEP_PART_MAX; ++j)
         equip_doll.parts[j] = TILEP_SHOW_EQUIP;
 
-    equip_doll.parts[TILEP_PART_BASE]
-        = tilep_species_to_base_tile(p.species, p.experience_level);
+	equip_doll.parts[TILEP_PART_BASE]
+		= tilep_species_to_base_tile(p.species, p.experience_level);
 
     bool success = false;
 

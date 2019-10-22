@@ -646,12 +646,12 @@ dgn.good_scrolls = [[
     w:33  scroll of fog no_pickup q:2 /
     w:85  scroll of remove curse no_pickup /
     w:38  scroll of remove curse no_pickup q:2 /
-    w:95  scroll of enchant weapon no_pickup /
-    w:38  scroll of enchant weapon no_pickup q:2 /
+    w:95  scroll of enchantment no_pickup /
+    w:38  scroll of enchantment no_pickup q:2 /
     w:54  scroll of blinking no_pickup /
     w:22  scroll of blinking no_pickup q:2 /
-    w:54  scroll of enchant armour no_pickup /
-    w:22  scroll of enchant armour no_pickup q:2 /
+    w:54  scroll of enchantment no_pickup /
+    w:22  scroll of enchantment no_pickup q:2 /
     w:33  scroll of magic mapping no_pickup /
     w:22  scroll of magic mapping no_pickup q:2 /
     w:33  scroll of amnesia no_pickup /

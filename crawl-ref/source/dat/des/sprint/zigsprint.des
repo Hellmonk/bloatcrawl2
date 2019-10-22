@@ -100,8 +100,8 @@ e.kitem("1 = superb_item ident:all w:590 / ration w:2 /\
             scroll of fog w:1 ident:all / scroll of holy word w:1 ident:all /\
             potion of might ident:all w:2 / potion of agility w:2 ident:all /\
             scroll of acquirement q:1 w:1 ident:all /\
-            scroll of enchant weapon ident:all q:4 w:2 /\
-            scroll of enchant armour ident:all q:4 w:2 /\
+            scroll of enchantment ident:all q:4 w:2 /\
+            scroll of enchantment ident:all q:4 w:2 /\
             scroll of brand weapon ident:all")
 
     -- Place monsters

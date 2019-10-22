@@ -210,8 +210,7 @@ static const species_type species_order[] =
     // celestial species
     SP_DEMONSPAWN,
     // undead species
-    SP_MUMMY,          SP_GHOUL,
-    SP_SILENT_SPECTRE,
+    SP_GHOUL,          SP_SILENT_SPECTRE,
     // not humanoid at all
     SP_FELID,          SP_OCTOPODE,
 };
@@ -1088,7 +1087,6 @@ static species_group species_groups[] =
             SP_OCTOPODE,
             SP_FELID,
             SP_BARACHI,
-            SP_MUMMY,
 			SP_SILENT_SPECTRE,
         }
     },
@@ -1192,7 +1190,7 @@ static job_group jobs_order[] =
 	{
 		"Hybrid",
 		coord_def(35, 7), 21,
-		{ JOB_DEMIGOD }
+		{ JOB_DEMIGOD , JOB_MUMMY }
 	},
     {
         "Warrior-mage",

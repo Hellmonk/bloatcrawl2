@@ -1109,6 +1109,17 @@ static int _draconian_colour(int race, int level)
 
 tileidx_t tilep_species_to_base_tile(int sp, int level)
 {
+
+	if (sp != SP_CENTAUR && sp != SP_OCTOPODE
+		&& sp != SP_NAGA && sp != SP_FELID)
+	{
+		if (you.char_class == JOB_MUMMY)
+			return TILEP_BASE_MUMMY;
+		if (you.char_class == JOB_DEMIGOD)
+			return TILEP_BASE_DEMIGOD;
+		if (you.char_class == JOB_DEMONSPAWN)
+			return TILEP_BASE_DEMONSPAWN;
+	}
     switch (sp)
     {
     case SP_HUMAN:

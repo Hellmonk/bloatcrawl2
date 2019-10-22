@@ -5804,7 +5804,7 @@ void set_ancestor_spells(monster &ancestor, bool notify)
 				SPELL_BOLT_OF_FIRE :
 				SPELL_THROW_FLAME);
 		}
-		else if (you.species == SP_MUMMY | you.species == SP_GHOUL)
+		else if (you.species == SP_MUMMY || you.char_class == JOB_MUMMY ||  you.species == SP_GHOUL)
 		{
 			_add_ancestor_spell(ancestor.spells, HD >= 10 ?
 				SPELL_AGONY :
