@@ -627,16 +627,15 @@ void ash_check_bondage(bool msg)
             if (you.equip[i] != -1)
             {
                 const item_def& item = you.inv[you.equip[i]];
-                if (item.cursed() && (i != EQ_WEAPON0 || is_weapon(item)))
+                if (item.cursed())
                 {
                     if (s == ET_RIGHT
                         && (_two_handed()
                             || you.get_mutation_level(MUT_MISSING_HAND)))
                     {
-                        cursed[ET_RIGHT] = 3;
-                        cursed[ET_LEFT] = 3;
+                        cursed[ET_RIGHT] = 2;
                     }
-                    else
+					else
                     {
                         cursed[s]++;
                         if (i == EQ_BODY_ARMOUR && is_unrandom_artefact(item, UNRAND_LEAR))
@@ -977,8 +976,7 @@ map<skill_type, int8_t> ash_get_boosted_skills(eq_type type)
         break;
 
     case (ET_LEFT):
-		if (!left)
-			break;
+		ASSERT(left);
 
 		// Boost weapon skill. Plain "staff" means an unrand magical staff,
 		// boosted later.
