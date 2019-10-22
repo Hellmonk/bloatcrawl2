@@ -938,7 +938,7 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
 	case EQ_WEAPON0:
 		// Hands can have more than just weapons.
 		if ((item = slot_item(EQ_WEAPON0))
-			&& (item->base_type == OBJ_WEAPONS || item->base_type == OBJ_SHIELDS)
+			&& (item->base_type == OBJ_WEAPONS || (item->base_type == OBJ_SHIELDS && is_hybrid(item->sub_type)))
 			&& get_weapon_brand(*item) == special)
 		{
 			ret++;
@@ -947,13 +947,12 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
 
 	case EQ_WEAPON1:
 		if ((item = slot_item(EQ_WEAPON1))
-			&& (item->base_type == OBJ_WEAPONS || item->base_type == OBJ_SHIELDS)
+			&& (item->base_type == OBJ_WEAPONS || (item->base_type == OBJ_SHIELDS && is_hybrid(item->sub_type)))
 			&& get_weapon_brand(*item) == special)
 		{
 			ret++;
 		}
 		break;
-		
 
     case EQ_LEFT_RING:
     case EQ_RIGHT_RING:
@@ -974,6 +973,10 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
                 ret++;
             }
         }
+		if ((item = slot_item(EQ_WEAPON0)) && (item->base_type == OBJ_SHIELDS && !is_hybrid(item->sub_type)) && get_armour_ego_type(*item) == special)
+			ret++;
+		if ((item = slot_item(EQ_WEAPON1)) && (item->base_type == OBJ_SHIELDS && !is_hybrid(item->sub_type)) && get_armour_ego_type(*item) == special)
+			ret++;
         break;
 
     default:
