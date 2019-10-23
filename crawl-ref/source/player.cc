@@ -6107,8 +6107,13 @@ int player::base_ac(int scale) const
 
     AC += wearing(EQ_RINGS, RING_PROTECTION) * 500;
 
-    if (wearing_ego(EQ_WEAPON1, SPARM_PROTECTION))
-        AC += 300;
+	if (you.weapon(0) && you.weapon(0)->base_type == OBJ_SHIELDS && !is_hybrid(you.weapon(0)->sub_type)
+		&& get_armour_ego_type(*you.weapon(0)) == SPARM_PROTECTION)
+		AC += 300;
+
+	if (you.weapon(1) && you.weapon(1)->base_type == OBJ_SHIELDS && !is_hybrid(you.weapon(1)->sub_type)
+		&& get_armour_ego_type(*you.weapon(1)) == SPARM_PROTECTION)
+		AC += 300;
 
     AC += scan_artefacts(ARTP_AC) * 100;
 
