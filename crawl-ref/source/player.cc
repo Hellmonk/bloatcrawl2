@@ -973,6 +973,7 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
                 ret++;
             }
         }
+
 		if ((item = slot_item(EQ_WEAPON0)) && (item->base_type == OBJ_SHIELDS && !is_hybrid(item->sub_type)) && get_armour_ego_type(*item) == special)
 			ret++;
 		if ((item = slot_item(EQ_WEAPON1)) && (item->base_type == OBJ_SHIELDS && !is_hybrid(item->sub_type)) && get_armour_ego_type(*item) == special)
@@ -6117,7 +6118,7 @@ int player::base_ac(int scale) const
 		AC += 300;
 
 	if (you.weapon(1) && (you.weapon(1)->base_type == OBJ_SHIELDS && is_hybrid(you.weapon(1)->sub_type)
-		|| you.weapon(0)->base_type == OBJ_WEAPONS) && get_weapon_brand(*you.weapon(1)) == SPWPN_PROTECTION)
+		|| you.weapon(1)->base_type == OBJ_WEAPONS) && get_weapon_brand(*you.weapon(1)) == SPWPN_PROTECTION)
 		AC += 300;
 
     AC += scan_artefacts(ARTP_AC) * 100;
