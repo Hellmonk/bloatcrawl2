@@ -303,6 +303,25 @@ item_def* use_an_item(int item_type, operation_types oper, const char* prompt,
     }
 }
 
+static bool _handle_warning(const item_def &item)
+{
+	bool penance = false;
+	if (needs_handle_warning(item, OPER_WIELD, penance))
+	{
+		string prompt =
+			"Really unwield " + item.name(DESC_INVENTORY) + "?";
+		if (penance)
+			prompt += " This could place you under penance!";
+
+		if (!yesno(prompt.c_str(), false, 'n'))
+		{
+			canned_msg(MSG_OK);
+			return false;
+		}
+	}
+	return true;
+}
+
 static bool _safe_to_remove_or_wear(const item_def &item, bool remove,
                                     bool quiet = false);
 
@@ -608,35 +627,26 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 
 				int temp0 = you.equip[EQ_WEAPON0];
 				int temp1 = you.equip[EQ_WEAPON1];
-				bool penance = false;
-				if (needs_handle_warning(*you.weapon(0), OPER_WIELD, penance))
+				if (you.weapon(0))
 				{
-					string prompt =
-						"Really unwield " + you.weapon(0)->name(DESC_INVENTORY) + "?";
-					if (penance)
-						prompt += " This could place you under penance!";
-
-					if (!yesno(prompt.c_str(), false, 'n'))
-					{
-						canned_msg(MSG_OK);
+					if (!can_wield(you.weapon(0),true,false,false,false))
 						return false;
-					}
+					if (!_handle_warning(*you.weapon(0)))
+						return false;
 				}
-				if (needs_handle_warning(*you.weapon(1), OPER_WIELD, penance))
+				if (you.weapon(1))
 				{
-					string prompt =
-						"Really unwield " + you.weapon(1)->name(DESC_INVENTORY) + "?";
-					if (penance)
-						prompt += " This could place you under penance!";
-
-					if (!yesno(prompt.c_str(), false, 'n'))
-					{
-						canned_msg(MSG_OK);
+					if (!can_wield(you.weapon(1), true, false, false, false))
 						return false;
-					}
+					if (!_handle_warning(*you.weapon(1)))
+						return false;
 				}
-				unequip_item(EQ_WEAPON0, show_weff_messages);
-				unequip_item(EQ_WEAPON1, show_weff_messages);
+				
+				if (you.weapon(0))
+					unequip_item(EQ_WEAPON0, show_weff_messages);
+				if (you.weapon(1))
+					unequip_item(EQ_WEAPON1, show_weff_messages);
+
 				if (temp1 > -1)
 					equip_item(EQ_WEAPON0, temp1, show_weff_messages);
 				if (temp0 > -1)
@@ -712,22 +722,8 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 			return false;
 		}
 
-		bool penance = false;
-		// Can we safely unwield this item?
-		
-		if (needs_handle_warning(*wpn, OPER_WIELD, penance))
-		{
-			string prompt =
-				"Really unwield " + wpn->name(DESC_INVENTORY) + "?";
-			if (penance)
-				prompt += " This could place you under penance!";
-
-			if (!yesno(prompt.c_str(), false, 'n'))
-			{
-				canned_msg(MSG_OK);
-				return false;
-			}
-		}
+		if (!_handle_warning(*wpn))
+			return false;
 
 		// check if you'd get stat-zeroed
 		if (!_safe_to_remove_or_wear(*wpn, true))
@@ -814,7 +810,12 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 				mpr("You can't unwield what's in your left hand.");
 				return false;
 			}
-			if (!unwield_item(true, show_weff_messages))
+			
+			if (!_handle_warning(*you.weapon(0)))
+				return false;
+			if (you.weapon(1) && !_handle_warning(*you.weapon(1)))
+				return false;
+			if (!unwield_item(false, show_weff_messages))
 				return false;
 		}
 		if (you.weapon(1))
@@ -824,7 +825,8 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 				mpr("You can't unwield what's in your left hand.");
 				return false;
 			}
-			if (!unwield_item(false, show_weff_messages))
+
+			if (!unwield_item(true, show_weff_messages))
 				return false;
 		}
 		update_can_train();

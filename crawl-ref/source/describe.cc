@@ -1575,6 +1575,12 @@ static string _weapon_brand_desc(const item_def &item)
 			"freezing, etc), but is still enchanted in some way - "
 			"positive or negative.";
 		break;
+	case SPWPN_SILVER:
+		description += "It deals substantially increased damage to chaotic "
+			"and magically transformed beings. It also inflicts "
+			"extra damage against mutated beings, according to "
+			"how mutated they are.";
+		break;
 	default:
 		description += "This is a buggy removed brand.";
 		break;
