@@ -1464,7 +1464,8 @@ bool evoke_check(int slot, bool quiet)
             canned_msg(MSG_TOO_BERSERK);
         return false;
     }
-    return true;
+	
+    return (item_is_evokable(you.inv[slot]));
 }
 
 bool evoke_item(int slot, bool check_range)
