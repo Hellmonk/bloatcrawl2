@@ -6094,9 +6094,6 @@ int player::base_ac(int scale) const
 
     for (int eq = EQ_MIN_ARMOUR; eq <= EQ_MAX_ARMOUR; ++eq)
     {
-        if (eq == EQ_WEAPON1)
-            continue;
-
         if (!slot_item(static_cast<equipment_type>(eq)))
             continue;
 
@@ -6113,6 +6110,14 @@ int player::base_ac(int scale) const
 
 	if (you.weapon(1) && you.weapon(1)->base_type == OBJ_SHIELDS && !is_hybrid(you.weapon(1)->sub_type)
 		&& get_armour_ego_type(*you.weapon(1)) == SPARM_PROTECTION)
+		AC += 300;
+
+	if (you.weapon(0) && (you.weapon(0)->base_type == OBJ_SHIELDS && is_hybrid(you.weapon(0)->sub_type)
+		|| you.weapon(0)->base_type == OBJ_WEAPONS) && get_weapon_brand(*you.weapon(0)) == SPWPN_PROTECTION)
+		AC += 300;
+
+	if (you.weapon(1) && (you.weapon(1)->base_type == OBJ_SHIELDS && is_hybrid(you.weapon(1)->sub_type)
+		|| you.weapon(0)->base_type == OBJ_WEAPONS) && get_weapon_brand(*you.weapon(1)) == SPWPN_PROTECTION)
 		AC += 300;
 
     AC += scan_artefacts(ARTP_AC) * 100;
@@ -6176,11 +6181,7 @@ int player::armour_class(bool /*calc_unid*/) const
 
     if (duration[DUR_QAZLAL_AC])
         AC += 300;
-
-	// Note: We're leaving protection weapons doing nothing for now; need to fix that after we get back from making dual wielding...or just remove the brand, unsure.
-//    if (you.weapon()->damage_brand == SPWPN_PROTECTION)
-//        AC += 500; 
-
+	
     if (duration[DUR_CORROSION])
         AC -= 400 * you.props["corrosion_amount"].get_int();
 

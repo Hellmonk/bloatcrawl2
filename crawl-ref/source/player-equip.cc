@@ -524,7 +524,7 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld, equ
 					break;
 
 				case SPWPN_PROTECTION:
-					mprf("%s hums with potential!", item_name.c_str());
+					mprf("%s protects you from harm!", item_name.c_str());
 					break;
 
 				case SPWPN_DRAINING:
@@ -695,7 +695,7 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
 
             case SPWPN_PROTECTION:
                 if (showMsgs)
-                    mprf("%s goes still.", msg.c_str());
+                    mprf("You feel less protected.", msg.c_str());
                 break;
 
             case SPWPN_VAMPIRISM:

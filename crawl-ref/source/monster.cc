@@ -3350,7 +3350,7 @@ int monster::armour_class(bool calc_unid) const
     int ac = base_armour_class();
 
     // check for protection-brand weapons
-    ac += 5 * _weapons_with_prop(this, SPWPN_PROTECTION, calc_unid);
+    ac += 3 * _weapons_with_prop(this, SPWPN_PROTECTION, calc_unid);
 
     // armour from ac
     const item_def *armour = mslot_item(MSLOT_ARMOUR);

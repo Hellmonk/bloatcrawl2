@@ -1508,7 +1508,7 @@ static string _weapon_brand_desc(const item_def &item)
 		break;
 	case SPWPN_PROTECTION:
 		description += "It protects the one who uses it against "
-			"injury (+AC on strike).";
+			"injury (+AC).";
 		break;
 	case SPWPN_DRAINING:
 		description += "A truly terrible weapon, it drains the "
