@@ -226,11 +226,11 @@ static int Shield_index[NUM_SHIELDS];
 static const shield_def Shield_prop[] =
 {
 	// Standard Shields
-	{ SHD_BUCKLER, "buckler", 0, 0, 0, SK_SHIELDS, DAMV_CRUSHING,
+	{ SHD_BUCKLER, "buckler", 0, 0, 8, SK_SHIELDS, DAMV_CRUSHING,
 		3, -8, SIZE_TINY, SIZE_LITTLE, SIZE_MEDIUM, 20, 45 },
-	{ SHD_SHIELD, "heater shield", 0, 0, 0, SK_SHIELDS, DAMV_CRUSHING,
+	{ SHD_SHIELD, "heater shield", 0, 0, 12, SK_SHIELDS, DAMV_CRUSHING,
 		8, -30, SIZE_LITTLE, SIZE_SMALL, SIZE_LARGE, 20, 45 },
-	{ SHD_LARGE_SHIELD, "scutum", 0, 0, 0, SK_SHIELDS, DAMV_CRUSHING,
+	{ SHD_LARGE_SHIELD, "scutum", 0, 0, 14, SK_SHIELDS, DAMV_CRUSHING,
 		13, -50, SIZE_SMALL, SIZE_MEDIUM, SIZE_GIANT, 5, 45 },
 
 	// Hybrid Shield/Weapons
@@ -2773,8 +2773,14 @@ int weapon_damage(const item_def &item)
 
 int weapon_delay(const item_def &item)
 {
+	int mod = 0;
+	
 	if (item.base_type == OBJ_SHIELDS)
-		return property(item, PSHD_SPEED);
+	{
+		if (!is_hybrid(item.sub_type))
+			mod = (SIZE_MEDIUM - you.body_size(PSIZE_TORSO, true)) * 2;
+		return property(item, PSHD_SPEED + mod);
+	}
 
 	return property(item, PWPN_SPEED);
 }

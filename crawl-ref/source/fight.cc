@@ -857,7 +857,11 @@ int weapon_min_delay(const item_def &weapon, bool check_speed)
 {
 	int base = 20;
 	if (weapon.base_type == OBJ_SHIELDS)
+	{
+		if (!is_hybrid(weapon.sub_type))
+			return 5;
 		base = property(weapon, PSHD_SPEED);
+	}
 	else base = property(weapon, PWPN_SPEED);
     int min_delay = base/2;
 
