@@ -815,7 +815,7 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 				return false;
 			if (you.weapon(1) && !_handle_warning(*you.weapon(1)))
 				return false;
-			if (!unwield_item(false, show_weff_messages))
+			if (!unwield_item(true, show_weff_messages))
 				return false;
 		}
 		if (you.weapon(1))
@@ -825,8 +825,10 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 				mpr("You can't unwield what's in your left hand.");
 				return false;
 			}
+			if (!_handle_warning(*you.weapon(1)))
+				return false;
 
-			if (!unwield_item(true, show_weff_messages))
+			if (!unwield_item(false, show_weff_messages))
 				return false;
 		}
 		update_can_train();
