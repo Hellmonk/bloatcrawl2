@@ -771,7 +771,8 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     choice.trap_type = 0;
 
     // Non-living or default-undead species cannot choose undead state
-    bool can_choose_undead = species_can_use_modified_undeadness(ng.species);
+    bool can_choose_undead = species_can_use_modified_undeadness(ng.species)
+        && !job_is_good_god_zealot(ng.job);
     if (!can_choose_undead)
         choice.undead_type = species_undead_type(ng.species);
 
@@ -910,7 +911,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     runelock_choice_str.cprintf("une locks: enabled | disabled");
     auto runelock_choice = make_shared<ui::Text>(runelock_choice_str);
     box->add_child(runelock_choice);
-    
+
     formatted_string trap_choice_str;
     trap_choice_str.textcolour(WHITE);
     trap_choice_str.cprintf("\n(T)");

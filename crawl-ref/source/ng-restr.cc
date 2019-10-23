@@ -31,35 +31,7 @@ static bool _banned_combination(job_type job, species_type species)
         }
         break;
     case SP_DEMIGOD:
-        if (job == JOB_BERSERKER
-            || job == JOB_CHAOS_KNIGHT
-            || job == JOB_ABYSSAL_KNIGHT
-            || job == JOB_MONK
-            || job == JOB_PALADIN
-            || job == JOB_BOUND
-            || job == JOB_WITNESS
-            || job == JOB_TORPOR_KNIGHT
-            || job == JOB_NIGHT_KNIGHT
-            || job == JOB_DOCTOR
-            || job == JOB_GARDENER
-            || job == JOB_MERCHANT
-            || job == JOB_INHERITOR
-            || job == JOB_SLIME_PRIEST
-            || job == JOB_KIKUMANCER
-            || job == JOB_BLOOD_KNIGHT
-            || job == JOB_GAMBLER
-            || job == JOB_WARRIOR
-            || job == JOB_STORM_CLERIC
-            || job == JOB_HERMIT
-            || job == JOB_LIBRARIAN
-            || job == JOB_DANCER
-            || job == JOB_ANNIHILATOR
-            || job == JOB_DISCIPLE
-            || job == JOB_DEATH_BISHOP
-            || job == JOB_ZINJA)
-        {
-            return true;
-        }
+        return job_is_zealot(job);
         break;
     case SP_GNOLL:
         if (job == JOB_ARCHAEOLOGIST)
@@ -70,19 +42,13 @@ static bool _banned_combination(job_type job, species_type species)
             return true;
         break;
     case SP_DEMONSPAWN:
-        if (job == JOB_PALADIN
-            || job == JOB_DOCTOR
-            || job == JOB_ZINJA)
-        {
-            return true;
-        }
+        return job_is_good_god_zealot(job);
         break;
     default:
         break;
     }
 
-    if ((job == JOB_TRANSMUTER || job == JOB_ZINJA 
-         || job == JOB_PALADIN || job == JOB_DOCTOR)
+    if ((job == JOB_TRANSMUTER || job_is_good_god_zealot(job))
         && (species_undead_type(species) == US_UNDEAD
            || species_undead_type(species) == US_HUNGRY_DEAD))
     {
