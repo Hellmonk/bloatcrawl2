@@ -605,9 +605,37 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 			}
 			if (yesno("Switch to other hand?", true, false, true, true, false, nullptr, GOTO_MSG)) 
 			{
+
 				int temp0 = you.equip[EQ_WEAPON0];
-				unequip_item(EQ_WEAPON0, show_weff_messages);
 				int temp1 = you.equip[EQ_WEAPON1];
+				bool penance = false;
+				if (needs_handle_warning(*you.weapon(0), OPER_WIELD, penance))
+				{
+					string prompt =
+						"Really unwield " + you.weapon(0)->name(DESC_INVENTORY) + "?";
+					if (penance)
+						prompt += " This could place you under penance!";
+
+					if (!yesno(prompt.c_str(), false, 'n'))
+					{
+						canned_msg(MSG_OK);
+						return false;
+					}
+				}
+				if (needs_handle_warning(*you.weapon(1), OPER_WIELD, penance))
+				{
+					string prompt =
+						"Really unwield " + you.weapon(1)->name(DESC_INVENTORY) + "?";
+					if (penance)
+						prompt += " This could place you under penance!";
+
+					if (!yesno(prompt.c_str(), false, 'n'))
+					{
+						canned_msg(MSG_OK);
+						return false;
+					}
+				}
+				unequip_item(EQ_WEAPON0, show_weff_messages);
 				unequip_item(EQ_WEAPON1, show_weff_messages);
 				if (temp1 > -1)
 					equip_item(EQ_WEAPON0, temp1, show_weff_messages);
