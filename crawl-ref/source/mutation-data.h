@@ -354,7 +354,7 @@ static const mutation_def mut_data[] =
 { MUT_ACUTE_VISION, 2, 1, mutflag::good, false,
   "see invisible",
 
-  {"You have supernaturally acute eyesight. (SInv)", "", ""},
+  {"You have supernaturally acute eyesight. (+Vis)", "", ""},
   {"Your vision sharpens.", "", ""},
   {"Your vision seems duller.", "", ""},
 },
@@ -765,7 +765,7 @@ static const mutation_def mut_data[] =
 
   {"You have a pair of small antennae on your head.",
    "You have a pair of antennae on your head.",
-   "You have a pair of large antennae on your head. (SInv)"},
+   "You have a pair of large antennae on your head. (+Vis)"},
 
   {"A pair of antennae grows on your head!",
    "The antennae on your head grow some more.",
@@ -1169,7 +1169,7 @@ static const mutation_def mut_data[] =
 
   {"Your body has grown golden eyes which may confuse attackers. (Acc +3)",
    "Your body has grown many golden eyes which may confuse attackers. (Acc +5)",
-   "Your body is covered in golden eyes which may confuse attackers. (Acc +7, SInv)"},
+   "Your body is covered in golden eyes which may confuse attackers. (Acc +7, +Vis)"},
 
   {"Eyeballs grow over part of your body.",
    "Eyeballs cover a large portion of your body.",

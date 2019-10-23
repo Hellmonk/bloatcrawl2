@@ -649,7 +649,7 @@ static const artefact_prop_data artp_data[] =
         _gen_good_res_artp, nullptr, 2, 4 },
     { "MR", ARTP_VAL_ANY, 50,       // ARTP_MAGIC_RESISTANCE,
         _gen_good_res_artp, _gen_bad_res_artp, 2, 4 },
-    { "SInv", ARTP_VAL_BOOL, 30,    // ARTP_IMPROVED_VISION,
+    { "+Vis", ARTP_VAL_BOOL, 30,    // ARTP_IMPROVED_VISION,
         []() { return 1; }, nullptr, 0, 0 },
     { "+Inv", ARTP_VAL_BOOL, 15,    // ARTP_INVISIBLE,
         []() { return 1; }, nullptr, 0, 0 },
