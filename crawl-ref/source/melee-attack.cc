@@ -1567,6 +1567,10 @@ int melee_attack::player_apply_final_multipliers(int damage)
     if (you.duration[DUR_WEAK])
         damage = div_rand_round(damage * 3, 4);
 
+	// Global melee player damage nerf to offset Dual Wielding's buff.
+	if (weapon)
+		damage = div_rand_round(3 * damage, 4);
+
     if (you.duration[DUR_CONFUSING_TOUCH] && wpn_skill == SK_UNARMED_COMBAT)
         return 0;
 

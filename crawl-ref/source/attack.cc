@@ -1199,10 +1199,6 @@ int attack::player_apply_final_multipliers(int damage)
     if (you.form == transformation::shadow)
         damage = div_rand_round(damage, 2);
 
-	// Global melee player damage nerf to offset Dual Wielding's buff.
-	if (is_melee_weapon(*weapon))
-		damage = div_rand_round(3 * damage, 4);
-
     return damage;
 }
 
@@ -1292,7 +1288,7 @@ int attack::calc_damage()
 
         potential_damage = player_stat_modify_damage(potential_damage);
 
-		damage_done = random2avg(potential_damage + 1, 3); // wow variation die pls
+		damage = random2avg(potential_damage + 1, 3); // wow variation die pls
 
         damage = player_apply_weapon_skill(damage);
         damage = player_apply_fighting_skill(damage, false);

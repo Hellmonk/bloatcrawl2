@@ -336,9 +336,6 @@ bool ranged_attack::using_weapon() const
 
 int ranged_attack::weapon_damage()
 {
-    if (launch_type == launch_retval::FUMBLED)
-        return 0;
-
     int dam = property(*projectile, PWPN_DAMAGE);
     if (projectile->base_type == OBJ_MISSILES
         && get_ammo_brand(*projectile) == SPMSL_STEEL)
