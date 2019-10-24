@@ -1227,7 +1227,7 @@ bool physiology_mutation_conflict(mutation_type mutat, bool ds_roll)
     }
 
     // Strict 3-scale limit.
-    if (_is_covering(mutat) && _body_covered() >= 3)
+    if (_is_covering(mutat) && _body_covered() >= 3 && !ds_roll)
         return true;
 
     // Only Nagas and Draconians can get this one.
