@@ -1,5 +1,5 @@
-Stone Soup 0.24 (up to 83157970ee)
-----------------------------------
+Stone Soup 0.24 (20191024)
+--------------------------------
 
 Highlights
 ----------
@@ -12,11 +12,13 @@ Branches, Environment
 ---------------------
 * Incremental pregeneration:
   - This mode generates the dungeon in a stable order for all games regardless
-    of the path taken by the player.
+    of the path taken by the player, meaning that the behavior of seeds for
+    online and offline games should now be the same.
   - Games using the same seed will see the same dungeon if they are
     incrementally pregenerated without requiring the long initial generation
-    time of a fully pregenerated game.
+    time of full pregeneration as introduced in 0.23.
   - Incremental pregeneration is the default mode for new games.
+  - Servers can now enable seed selection without heavy CPU cost.
 * A Trove map requiring many uses of digging has been removed.
 * Identification scrolls are no longer used as a potential Trove cost.
 * Transporters in vaults now correctly place in the Abyss.
@@ -44,7 +46,7 @@ Character
 
 Gods
 ----
-* Fedhas reworked:
+* Fedhas reimagined:
   - Piety is gained exclusively from kills instead of through corpse decay.
   - Fedhas abilities now create plant allies directly as temporary summons
     instead of creating permanent allies using plants. All abilities cost
@@ -84,12 +86,15 @@ Interface
 ---------
 * The 'X' key map mode has zoom support, defaulting to 60% zoom.
 * Sealed off clinging and sensed monsters no longer stop autoexplore.
+* Equipment melding no longer stops autoexplore and autotravel.
 * Armour, jewellery, and weapons can be worn/wielded from the floor.
 * Summoner monsters are now highlighted when the cursor is over one of its
   summons.
 * Traps are now shown in the ctrl-x listing and are indexed in the stash
   tracker.
 * Scarves are now properly shown on player tiles.
+* Species and background selection menus now have tiles.
+* Updated visual theme for main menu, high scores, and related screens.
 
 Items
 -----
@@ -102,20 +107,20 @@ Items
   - Piercer has been removed, its effect having been merged into Storm Bow.
 * Weapons with the holy wrath ego can now be cursed.
 * Randart rings no longer generate with both rCorr and *Corrode.
-* Throwing weapons have been simplified.
+* Throwing weapons have been streamlined.
   - Blowguns are removed, needles are replaced with throwing darts.
   - Dart effects scale with Throwing and Stealth skill.
   - Darts of sleep, paralysis, confusion are removed.
   - Darts of frenzy are renamed datura-tipped darts.
   - A new dart brand, atropa is added. Atropa-tipped darts cause brief
-      confusion and longer-lasting blindness in the target.
-  - Tomahawks always return.
+    confusion and longer-lasting blindness in the target.
+  - Tomahawks are renamed to boomerangs and always return.
   - Javelins always penetrate.
   - Steel and silver are merged into a single brand, called silver. Silver
-      ammunition applies 30% bonus damage to most targets and the old silver
-      damage bonus to silver-vulnerable targets.
+    ammunition applies the maximum of vorpal bonus damage and the old silver
+    damage bonus.
   - Poison, returning, penetration, and exploding are no longer available
-      brands for tomahawks and javelins.
+    brands for tomahawks and javelins.
 
 Lua
 ---
@@ -123,20 +128,21 @@ Lua
   monster.info class.
 * A new function 'defeat_mr()' to determine the chance that a given spell
   defeats a monster's magic resistance.
-* There is a basic seed explorer available in tests/seed_explorer.lua.
+* There is a basic seed explorer available in scripts/seed_explorer.lua.
 
 Monsters
 --------
 * Monsters can now use wands of clouds, iceblast, and scattershot.
-* Monsters clones created by Mara, rakshasa, and phantom mirrors have the
-  intended reduced HP of the original monster instead of several times
-  that value.
+* Monsters clones created by Mara and rakshasa have the intended reduced HP of
+  the original monster instead of several times that value.
 * A monster having the Dig spell no longer allows it to cast spells out of
   LOS.
 * Azrael and draconian scorchers can use Call Down Damnation when not at
   low HP.
 * Player ghosts can be shafted.
 * Golden Eyes no longer have randomized spellpower for their gaze.
+* Monster airstrike uses the same formula as the player, reducing damage
+  variance.
 * Pikel's slaves no longer drop corpses nor items.
 
 Spells
@@ -144,6 +150,8 @@ Spells
 * The HP from Death's Door is fixed at time of casting rather than being
   updated continuously, hence being subject to changes in spellpower.
 * Olgreb's Toxic Radiance now properly triggers ally conducts when cast.
+* Olgreb's Toxic Radiance now applies direct damage and poison status in a way
+  that considers the time of each turn.
 * Shroud of Golubria's spellpower is now capped at 50.
 
 

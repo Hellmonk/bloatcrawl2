@@ -103,6 +103,7 @@ protected:
     Region m_dirty_region;
     Stack m_root;
     bool m_needs_layout{false};
+    bool m_changed_layout_since_click = false;
 } ui_root;
 
 static stack<Region> scissor_stack;
@@ -230,6 +231,20 @@ SizeReq Widget::_get_preferred_size(Direction dim, int prosp_width)
 
 void Widget::_allocate_region()
 {
+}
+
+/**
+ * Determine whether a widget contains the given widget.
+ *
+ * @param child   The other widget.
+ * @return        True if the other widget is a descendant of this widget.
+ */
+bool Widget::is_ancestor_of(const shared_ptr<Widget>& other)
+{
+    for (Widget* w = other.get(); w; w = w->_get_parent())
+        if (w == this)
+            return true;
+    return false;
 }
 
 void Widget::_set_parent(Widget* p)
@@ -1676,6 +1691,7 @@ void UIRoot::push_child(shared_ptr<Widget> ch, KeymapContext km)
     m_root.add_child(move(ch));
     m_needs_layout = true;
     keymap_stack.push_back(km);
+    m_changed_layout_since_click = true;
 #ifndef USE_TILE_LOCAL
     if (m_root.num_children() == 1)
     {
@@ -1691,6 +1707,7 @@ void UIRoot::pop_child()
     m_needs_layout = true;
     keymap_stack.pop_back();
     focus_stack.pop_back();
+    m_changed_layout_since_click = true;
 #ifndef USE_TILE_LOCAL
     if (m_root.num_children() == 0)
         clrscr();
@@ -1912,6 +1929,11 @@ bool UIRoot::on_event(const wm_event& event)
             }
 #endif
         case WME_MOUSEWHEEL:
+            if (event.type == WME_MOUSEBUTTONDOWN)
+                m_changed_layout_since_click = false;
+            else if (event.type == WME_MOUSEBUTTONUP)
+                if (m_changed_layout_since_click)
+                    break;
             if (!prev_hover_path.empty()) {
                 for (auto w = prev_hover_path.back(); w; w = w->_get_parent())
                     if (w->on_event(event))
@@ -2037,10 +2059,9 @@ void resize(int w, int h)
 
 static void remap_key(wm_event &event)
 {
-    const auto keymap = ui_root.keymap_stack.size() > 0 ?
-            ui_root.keymap_stack[0] : KMC_NONE;
-    ASSERT(get_macro_buf_size() == 0);
-    macro_buf_add_with_keymap(event.key.keysym.sym, keymap);
+    keyseq keys = {event.key.keysym.sym};
+    KeymapContext km = ui_root.keymap_stack.size() > 0 ? ui_root.keymap_stack[0] : KMC_NONE;
+    macro_buf_add_with_keymap(keys, km);
     event.key.keysym.sym = macro_buf_get();
     ASSERT(event.key.keysym.sym != -1);
 }
@@ -2403,7 +2424,12 @@ void set_focused_widget(Widget* w)
     static bool sent_focusout;
     static Widget* new_focus;
 
-    if (!ui_root.num_children())
+    const auto top = top_layout();
+
+    if (!top)
+        return;
+
+    if (w && !top->is_ancestor_of(w->get_shared()))
         return;
 
     auto current_focus = ui_root.focus_stack.back();
