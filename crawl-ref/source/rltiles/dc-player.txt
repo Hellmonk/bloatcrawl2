@@ -87,6 +87,7 @@ octopode5
 djinni_f DJINNI
 djinni_m
 %rim 1
+lignifite LIGNIFITE
 formicid FORMICID
 vine_stalker_f VINE_STALKER
 vine_stalker_m

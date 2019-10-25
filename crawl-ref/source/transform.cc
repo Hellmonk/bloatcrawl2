@@ -1603,6 +1603,11 @@ bool transform(int pow, transformation which_trans, bool involuntary,
     if (!involuntary && crawl_state.is_god_acting())
         involuntary = true;
 
+	if (you.attribute[ATTR_ROOTED])
+	{
+		msg = "You can't change form while your roots are underground!";
+		success = false;
+	}
     if (you.transform_uncancellable)
     {
         msg = "You are stuck in your current form!";
@@ -1676,6 +1681,19 @@ bool transform(int pow, transformation which_trans, bool involuntary,
         msg = "You cannot become a lich while in Death's Door.";
         success = false;
     }
+	else if (you.species == SP_LIGNIFITE)
+	{
+		if (which_trans == transformation::tree)
+		{
+			msg = "You're already a tree.";
+			success = false;
+		}
+		else if (which_trans == transformation::lich)
+		{
+			msg = "An undead tree; what a novel thought. Doesn't work though.";
+			success = false;
+		}
+	}
 
     if (!just_check && previous_trans != transformation::none)
         untransform(true);

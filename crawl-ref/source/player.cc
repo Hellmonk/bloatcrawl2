@@ -808,6 +808,7 @@ bool player_has_feet(bool temp, bool include_mutations)
     if (you.species == SP_NAGA
         || you.species == SP_FELID
         || you.species == SP_OCTOPODE
+		|| you.species == SP_LIGNIFITE
         || you.fishtail && temp)
     {
         return false;
@@ -1105,6 +1106,11 @@ static int _player_bonus_regen()
     {
         rr += 100;
     }
+
+	if (you.attribute[ATTR_ROOTED])
+	{
+		rr += 100;
+	}
 
     // Jewellery.
     if (you.props[REGEN_AMULET_ACTIVE].get_int() == 1)
@@ -1410,7 +1416,7 @@ int player_res_fire(bool calc_unid, bool temp, bool items)
     }
 
     // species:
-    if (you.species == SP_MUMMY)
+    if (you.species == SP_MUMMY || you.species == SP_LIGNIFITE)
         rf--;
 
     // mutations:
@@ -2449,6 +2455,7 @@ int player_shield_class()
                ? you.get_mutation_level(MUT_LARGE_BONE_PLATES) * 400 + 400
                : 0);
 
+	shield += you.branch_SH(true) * 200;
     shield += qazlal_sh_boost() * 100;
     shield += tso_sh_boost() * 100;
     shield += you.wearing(EQ_AMULET, AMU_REFLECTION) * 1000;
@@ -3009,6 +3016,45 @@ void level_change(bool skip_attribute_increase)
                 }
                 break;
 
+			case SP_LIGNIFITE:
+				if (!((you.experience_level - 1) % 6))
+				{
+					mprf(MSGCH_INTRINSIC_GAIN, "You grow larger and bulkier, but also slower.");
+				}
+				if (you.experience_level == 13)
+				{
+					mprf(MSGCH_INTRINSIC_GAIN, "Your bark begins to get tough.");
+					mprf(MSGCH_INTRINSIC_GAIN, "Your roots become strong enough to boost your regeneration and grant stasis.");
+					you.redraw_armour_class = true;
+				}
+				if (you.experience_level > 13)
+				{
+					mprf(MSGCH_INTRINSIC_GAIN, "Your bark becomes more resilient.");
+					you.redraw_armour_class = true;
+				}
+				if (!(you.experience_level % 3))
+				{
+					mprf(MSGCH_INTRINSIC_GAIN, "Your branches grow thicker.");
+					you.redraw_armour_class = true;
+				}
+				if (you.experience_level == 25 && you.attribute[ATTR_HELD])
+				{
+					trap_def *trap = trap_at(you.pos());
+					if (trap && trap->type == TRAP_WEB)
+					{
+						mpr("You shred the web into pieces!");
+					destroy_trap(you.pos());
+					}
+					int net = get_trapping_net(you.pos());
+					if (net != NON_ITEM)
+					{
+						mpr("The net rips apart!");
+						destroy_item(net);
+					}
+					stop_being_held();
+				}
+				break;
+
             case SP_BASE_DRACONIAN:
                 if (you.experience_level >= 7)
                 {
@@ -3340,6 +3386,10 @@ int player_stealth()
         // this is an absurd special case but also it's really funny so w/e
     }
 
+	// Roots!
+	if (you.attribute[ATTR_ROOTED])
+		stealth += STEALTH_PIP * 3;
+
     // Mutations.
     stealth += STEALTH_PIP * you.get_mutation_level(MUT_NIGHTSTALKER);
     stealth += (STEALTH_PIP / 2)
@@ -3657,7 +3707,7 @@ bool player::gourmand(bool calc_unid, bool items) const
 
 bool player::stasis() const
 {
-    return species == SP_FORMICID;
+    return (species == SP_FORMICID || you.attribute[ATTR_ROOTED]);
 }
 
 bool player::cloud_immune(bool calc_unid, bool items) const
@@ -5034,6 +5084,11 @@ bool flight_allowed(bool quiet, string *fail_reason)
             : "You can't fly in this form.";
         success = false;
     }
+	else if (you.attribute[ATTR_ROOTED])
+	{
+		msg =  "Your roots keep you in place.";
+		success = false;
+	}
     else if (you.liquefied_ground())
     {
         msg = "You can't fly while stuck in liquid ground.";
@@ -5801,7 +5856,8 @@ bool player::shielded() const
            || qazlal_sh_boost() > 0
            || attribute[ATTR_BONE_ARMOUR] > 0
            || you.wearing(EQ_AMULET, AMU_REFLECTION) > 0
-           || you.scan_artefacts(ARTP_SHIELDING);
+           || you.scan_artefacts(ARTP_SHIELDING)
+		   || you.branch_SH(true) > 0;
 }
 
 int player::shield_bonus() const
@@ -6075,6 +6131,10 @@ int player::racial_ac(bool temp) const
             return 200 + 100 * experience_level * 2 / 5     // max 20
                        + 100 * max(0, experience_level - 7) * 2 / 5;
         }
+		else if (species == SP_LIGNIFITE)
+		{
+			return max(0, (experience_level - 12) * 100);
+		}
     }
 
     return 0;
@@ -6174,6 +6234,9 @@ int player::armour_class(bool /*calc_unid*/) const
     const int scale = 100;
     int AC = base_ac(scale);
 
+	if (attribute[ATTR_ROOTED])
+		AC += 800;
+
     if (duration[DUR_ICY_ARMOUR])
         AC += 500 + you.props[ICY_ARMOUR_KEY].get_int() * 8;
 
@@ -6219,6 +6282,8 @@ int player::gdr_perc() const
     const item_def *body_armour = slot_item(EQ_BODY_ARMOUR, false);
 
     int body_base_AC = (species == SP_GARGOYLE ? 5 : 0);
+	if (species == SP_LIGNIFITE)
+		body_base_AC += (racial_ac(true)/300);
     if (body_armour)
         body_base_AC += property(*body_armour, PARM_AC);
 
@@ -6535,6 +6600,9 @@ string player::no_tele_reason(bool calc_unid, bool blinking) const
 {
     if (crawl_state.game_is_sprint() && !blinking)
         return "Long-range teleportation is disallowed in Dungeon Sprint.";
+
+	if (you.attribute[ATTR_ROOTED])
+		return "You're held in place by your roots.";
 
     if (stasis())
         return "Your stasis prevents you from teleporting.";
@@ -7135,6 +7203,21 @@ int player::has_usable_tentacles(bool allow_tran) const
     return has_tentacles(allow_tran);
 }
 
+int player::branch_SH (bool allow_tran) const
+{
+	if (allow_tran)
+	{
+		// Most transformations suppress branches.
+		if (!form_keeps_mutations())
+			return 0;
+	}
+
+	if (species != SP_LIGNIFITE)
+		return 0;
+
+	return (you.experience_level/3 + 1);
+}
+
 bool player::sicken(int amount)
 {
     ASSERT(!crawl_state.game_is_arena());
@@ -7316,7 +7399,7 @@ bool player::can_bleed(bool allow_tran) const
 
 bool player::is_stationary() const
 {
-    return form == transformation::tree;
+    return (form == transformation::tree || you.attribute[ATTR_ROOTED]);
 }
 
 bool player::malmutate(const string &reason)

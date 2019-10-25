@@ -40,6 +40,7 @@ static bool _banned_combination(job_type job, species_type species)
             return true;
         }
         break;
+	case SP_LIGNIFITE:
 	case SP_BASE_DRACONIAN:  // Temporarily Banned pending a special case.
 		if (job == JOB_MUMMY)
 			return true;

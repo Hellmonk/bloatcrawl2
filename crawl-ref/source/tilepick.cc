@@ -3391,6 +3391,10 @@ tileidx_t tileidx_ability(const ability_type ability)
         return TILEG_ABILITY_BLINK;
     case ABIL_HOP:
         return TILEG_ABILITY_HOP;
+	case ABIL_PLANT_ROOTS:
+		return TILEG_ABILITY_PLANT_ROOTS;
+	case ABIL_DEROOT:
+		return TILEG_ABILITY_UPROOT;
 
     // Others
     case ABIL_END_TRANSFORMATION:

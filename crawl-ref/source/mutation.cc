@@ -376,7 +376,7 @@ mutation_activity_type mutation_activity_level(mutation_type mut)
     if (you.form == transformation::blade_hands && mut == MUT_PAWS)
         return mutation_activity_type::INACTIVE;
 
-    if (you.form == transformation::tree
+    if ((you.form == transformation::tree || you.attribute[ATTR_ROOTED])
         && (mut == MUT_BLINK || mut == MUT_TELEPORT))
     {
         return mutation_activity_type::INACTIVE;
@@ -641,6 +641,7 @@ string describe_mutations(bool drop_title)
                     make_stringf("Your %s. (AC +%d)",
                        you.species == SP_NAGA ? "serpentine skin is tough" :
                        you.species == SP_GARGOYLE ? "stone body is resilient" :
+					   you.species == SP_LIGNIFITE ? "bark is resilient" :
                                                     scale_clause.c_str(),
                        you.racial_ac(false) / 100),
                     player_is_shapechanged()
@@ -657,6 +658,17 @@ string describe_mutations(bool drop_title)
         else if (you.hunger_state >= HS_FULL)
             result += "<green>Your natural rate of healing is unusually fast.</green>\n";
     }
+
+	if (you.species == SP_LIGNIFITE)
+	{
+		result += _annotate_form_based(
+			make_stringf("A tangle of shorter branches protects your body from attack. (+%d SH)",
+				you.branch_SH(false)),
+			!form_keeps_mutations());
+		if (you.experience_level > 12)
+			result += _annotate_form_based("You can plant your roots to grant stasis and boost your AC and Regeneration.",
+				!form_keeps_mutations());
+	}
 
     if (you.species == SP_OCTOPODE)
     {
@@ -689,6 +701,11 @@ string describe_mutations(bool drop_title)
         case SIZE_LARGE:
             result += "You are too large for most types of armour.\n";
             break;
+		case SIZE_GIANT:
+			result += "Your enormous size allows you to wade in deep water.\n"
+				      "You are too large for most types of armour.\n"
+				      "Webs and nets cannot contain a creature of your size.\n";
+			break;
         default:
             break;
         }

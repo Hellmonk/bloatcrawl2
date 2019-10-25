@@ -31,6 +31,9 @@ enum ability_type
     // Species-specific abilities.
     // Demonspawn-only
     ABIL_DAMNATION,
+	// Lignifite-only
+	ABIL_PLANT_ROOTS,
+	ABIL_DEROOT,
     // Tengu, Draconians
     ABIL_FLY,
 #if TAG_MAJOR_VERSION == 34

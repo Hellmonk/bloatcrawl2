@@ -57,6 +57,7 @@ enum species_type
     SP_GNOLL,
 	SP_SILENT_SPECTRE,
 	SP_GOBLIN,
+	SP_LIGNIFITE,
     NUM_SPECIES,
 
     SP_UNKNOWN  = 100,

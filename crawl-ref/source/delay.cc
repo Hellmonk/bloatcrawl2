@@ -261,6 +261,22 @@ bool ShaftSelfDelay::try_interrupt()
     return true;
 }
 
+bool DerootDelay::try_interrupt()
+{
+	if (duration > 1 && !was_prompted)
+	{
+		if (!crawl_state.disables[DIS_CONFIRMATIONS]
+			&& !yesno("Keep uprooting?", false, 0, false))
+		{
+			mpr("You stop digging up your roots.");
+			return true;
+		}
+		else
+			was_prompted = true;
+	}
+	return false;
+}
+
 void stop_delay(bool stop_stair_travel)
 {
     if (you.delay_queue.empty())
@@ -467,6 +483,11 @@ void MemoriseDelay::start()
 void PasswallDelay::start()
 {
     mprf(MSGCH_MULTITURN_ACTION, "You begin to meditate on the wall.");
+}
+
+void DerootDelay::start()
+{
+	mprf(MSGCH_MULTITURN_ACTION, "You begin to carefully uproot yourself.");
 }
 
 void ShaftSelfDelay::start()
@@ -853,6 +874,12 @@ void PasswallDelay::finish()
 void ShaftSelfDelay::finish()
 {
     you.do_shaft_ability();
+}
+
+void DerootDelay::finish()
+{
+	you.attribute[ATTR_ROOTED] = 0;
+	mpr("You finish extracting your roots and can move again.");
 }
 
 void BlurryScrollDelay::finish()

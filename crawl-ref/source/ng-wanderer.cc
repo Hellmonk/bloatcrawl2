@@ -430,7 +430,7 @@ static void _decent_potion_or_scroll()
         { { OBJ_POTIONS, POT_CURING },
             you.species == SP_MUMMY ? 0 : 1 },
         { { OBJ_POTIONS, POT_LIGNIFY },
-            you.is_lifeless_undead(false) ? 0 : 1 },
+            you.is_lifeless_undead(false) || you.species == SP_LIGNIFITE ? 0 : 1 },
     };
 
     const pair<object_class_type, int> *option

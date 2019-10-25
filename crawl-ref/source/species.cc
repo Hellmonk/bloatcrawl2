@@ -163,7 +163,23 @@ bool species_has_hair(species_type species)
 
 size_type species_size(species_type species, size_part_type psize)
 {
-    const size_type size = get_species_def(species).size;
+
+	if (species == SP_LIGNIFITE)
+	{
+		if (you.experience_level < 7)
+			return SIZE_LITTLE;
+		else if (you.experience_level < 13)
+			return SIZE_SMALL;
+		else if (you.experience_level < 19)
+			return SIZE_MEDIUM;
+		else if (you.experience_level < 25)
+			return SIZE_LARGE;
+		else
+			return SIZE_GIANT;
+	}
+
+	const size_type size = get_species_def(species).size;
+
     if (psize == PSIZE_TORSO
         && bool(get_species_def(species).flags & SPF_SMALL_TORSO))
     {
@@ -343,6 +359,20 @@ void give_level_mutations(species_type species, int xp_level)
         }
 	if (you.char_class == JOB_MUMMY && xp_level == 13)
 		perma_mutate(MUT_NECRO_ENHANCER, 2, "mummy growth");
+
+	// Ineligant, make something more refined if losing mutations with level becomes more common.
+	// Also doing this way instead of perma_mutate() to use custom messaging.
+	if (you.species == SP_LIGNIFITE)
+	{
+		if (xp_level == 7)
+			you.mutation[MUT_FAST] = you.innate_mutation[MUT_FAST] = 1;
+		if (xp_level == 13)
+			you.mutation[MUT_FAST] = you.innate_mutation[MUT_FAST] = 0;
+		if (xp_level == 19)
+			you.mutation[MUT_SLOW] = you.innate_mutation[MUT_SLOW] = 1;
+		if (xp_level == 25)
+			you.mutation[MUT_SLOW] = you.innate_mutation[MUT_SLOW] = 2;
+	}
 }
 
 int species_exp_modifier(species_type species)
@@ -354,6 +384,8 @@ int species_hp_modifier(species_type species)
 {
 	if (you.char_class == JOB_DEMIGOD)
 		return get_species_def(species).hp_mod + 1;
+	if (you.species == SP_LIGNIFITE)
+		return (-1 + ((you.experience_level - 1) / 6));
     return get_species_def(species).hp_mod;
 }
 

@@ -205,8 +205,8 @@ static const species_type species_order[] =
     SP_TENGU,          SP_BASE_DRACONIAN,
     SP_GARGOYLE,       SP_FORMICID,
     SP_BARACHI,        SP_GNOLL,
-    // mostly human shape but made of a strange substance
-    SP_VINE_STALKER,
+    // plant species
+    SP_LIGNIFITE,      SP_VINE_STALKER,
     // undead species
     SP_GHOUL,          SP_SILENT_SPECTRE,
     // not humanoid at all
@@ -1079,6 +1079,7 @@ static species_group species_groups[] =
         20,
         {
             SP_VINE_STALKER,
+			SP_LIGNIFITE,
 			SP_GOBLIN,
             SP_FORMICID,
             SP_OCTOPODE,

@@ -476,10 +476,15 @@ static const duration_def duration_data[] =
     { DUR_NO_POTIONS,
       RED, "-Potion",
       "no potions", "",
-      "You cannot drink potions.", D_NO_FLAGS,
+      you.species == SP_LIGNIFITE ? "Pouring potions on your roots has no effect" :
+		  "You cannot drink potions.", D_NO_FLAGS,
       {{ "", []() {
-          if (!you_foodless())
-              mprf(MSGCH_RECOVERY, "You can drink potions again.");
+		  if (!you_foodless())
+			  {
+			      if (you.species != SP_LIGNIFITE)
+				      mprf(MSGCH_RECOVERY, "You can drink potions again.");
+				  else mprf(MSGCH_RECOVERY, "You may absorb potions through your roots again.");
+			  }
       }}}},
     { DUR_QAZLAL_FIRE_RES,
       LIGHTBLUE, "rF+",

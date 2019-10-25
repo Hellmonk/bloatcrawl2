@@ -395,6 +395,29 @@ public:
     }
 };
 
+class DerootDelay : public Delay
+{
+	bool was_prompted = false;
+	void start() override;
+
+	void tick() override
+	{
+		mprf(MSGCH_MULTITURN_ACTION, "You keep digging out your roots.");
+	}
+
+	void finish() override;
+public:
+	DerootDelay(int dur) : Delay(dur)
+	{ }
+
+	bool try_interrupt() override;
+
+	const char* name() const override
+	{
+		return "uprooting";
+	}
+};
+
 class DropItemDelay : public Delay
 {
     item_def& item;

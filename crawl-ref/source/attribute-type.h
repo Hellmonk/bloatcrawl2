@@ -94,5 +94,6 @@ enum attribute_type
     ATTR_SERPENTS_LASH,        // Remaining instant movement actions.
     ATTR_HEAVENLY_STORM,       // Strength of Heavenly Storm slaying.
     ATTR_WALL_JUMP_READY,      // Ready to perform a wall jump.
+	ATTR_ROOTED,               // Lignifite Roots are in the ground.
     NUM_ATTRIBUTES
 };

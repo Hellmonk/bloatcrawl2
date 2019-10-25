@@ -318,6 +318,8 @@ static const ability_def Ability_List[] =
 
     { ABIL_FLY, "Fly", 3, 0, 100, 0, {fail_basis::xl, 42, 3}, abflag::none },
     { ABIL_STOP_FLYING, "Stop Flying", 0, 0, 0, 0, {}, abflag::starve_ok },
+    { ABIL_PLANT_ROOTS, "Plant Roots", 3, 0, 100, 0,{ fail_basis::xl, 42, 3 }, abflag::none },
+    { ABIL_DEROOT, "Unearth Roots", 0, 0, 0, 0,{}, abflag::starve_ok },
     { ABIL_DAMNATION, "Hurl Damnation",
         0, 150, 200, 0, {fail_basis::xl, 50, 1}, abflag::none },
 
@@ -2009,6 +2011,17 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
             mpr("You feel very comfortable in the air.");
         break;
 
+	case ABIL_PLANT_ROOTS:
+		fail_check();
+		mpr("Your roots penetrate the ground.");
+		you.attribute[ATTR_ROOTED] = 1;
+		break;
+
+	case ABIL_DEROOT:
+		fail_check();
+		start_delay<DerootDelay>(8);
+		break;
+
     // DEMONIC POWERS:
     case ABIL_DAMNATION:
         fail_check();
@@ -3351,6 +3364,13 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
         // Other dracs can mutate big wings whenever as well.
         _add_talent(talents, ABIL_FLY, check_confused);
     }
+
+	if (you.species == SP_LIGNIFITE && you.experience_level > 12 
+		&& !you.attribute[ATTR_ROOTED] && form_keeps_mutations())
+		_add_talent(talents, ABIL_PLANT_ROOTS, check_confused);
+
+	if (you.attribute[ATTR_ROOTED])
+		_add_talent(talents, ABIL_DEROOT, check_confused);
 
     if (you.attribute[ATTR_PERM_FLIGHT] && you.racial_permanent_flight())
         _add_talent(talents, ABIL_STOP_FLYING, check_confused);

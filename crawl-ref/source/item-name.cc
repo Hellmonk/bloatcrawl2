@@ -3629,6 +3629,8 @@ bool is_useless_item(const item_def &item, bool temp)
         case POT_LIGNIFY:
 			if (you.undead_state(temp) == US_GHOST)
 				return false;
+			else if (you.species == SP_LIGNIFITE)
+				return true;
 			else
 				return you.undead_state(temp)
 					   && (you.species != SP_VAMPIRE

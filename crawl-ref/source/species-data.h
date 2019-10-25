@@ -537,9 +537,29 @@ static const map<species_type, species_def> species_data =
     { "You reflexively headbutt those who attack you in melee." },
     { "retaliatory headbutt" },
     { JOB_FIGHTER, JOB_GLADIATOR, JOB_MONK, JOB_HUNTER, JOB_BERSERKER,
-      JOB_ABYSSAL_KNIGHT },
+      JOB_ABYSSAL_KNIGHT, JOB_DEMONSPAWN },
     { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_LONG_BLADES, SK_STAVES,
       SK_BOWS, SK_CROSSBOWS, SK_SLINGS },
+} },
+
+{ SP_LIGNIFITE,{
+	"Li",
+	"Lignifite", "Lignin", "Tree",
+	SPF_NONE,
+    -1, -1, 1, 4, // HP Changes handled elsewhere.
+	MONS_SHAMBLING_MANGROVE,
+	HT_LAND, US_ALIVE, SIZE_LITTLE, // Size changes handled elsewhere.
+	13, 9, 3, // 25
+	{ STAT_STR, STAT_INT }, 4,
+	{ { MUT_POISON_RESISTANCE , 1, 1 }, {MUT_ROT_IMMUNITY,1,1},
+	  { MUT_TORMENT_RESISTANCE,1,1}, {MUT_SLOW_METABOLISM,1,1},
+	  { MUT_DEFORMED,1,1}, {MUT_FAST,2,1}, }, // Speed changes handled elsewhere (innate mutation code doesn't play nicely with REMOVING innate mutations).
+	{ "Your woody flesh burns easily. (rF-)" },
+	{ "rF-" },
+	{ JOB_FIGHTER, JOB_MONK, JOB_BERSERKER, JOB_ABYSSAL_KNIGHT,
+	  JOB_SKALD, JOB_VENOM_MAGE, JOB_SUMMONER},
+	{ SK_MACES_FLAILS, SK_POLEARMS, SK_STAVES,
+	  SK_THROWING },
 } },
 
 { SP_MUMMY, {
@@ -716,6 +736,7 @@ static const map<species_type, species_def> species_data =
     { SK_MACES_FLAILS, SK_AXES, SK_POLEARMS, SK_LONG_BLADES, SK_STAVES,
       SK_BOWS, SK_CROSSBOWS, SK_SLINGS },
 } },
+
 #if TAG_MAJOR_VERSION == 34
 { SP_SLUDGE_ELF, {
     "SE",

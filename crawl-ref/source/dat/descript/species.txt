@@ -81,6 +81,11 @@ Kobold
 
 Kobolds are small, mischievous and a little fragile, but multi-talented.
 %%%%
+Lignifite
+
+Lignifites are sentient trees originating from the deep forests to the north.
+Beginning as tiny saplings they grow to massive trees as they gain experience.
+%%%%
 Merfolk
 
 Half fish, half human, Merfolk are citizens of both water and land. They are

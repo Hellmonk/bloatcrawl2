@@ -1069,6 +1069,15 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         return false;
     }
 
+	if (you.species == SP_LIGNIFITE && slot == EQ_BODY_ARMOUR && fit_armour_size(item, SIZE_LARGE) != 0)
+	{
+		if (verbose)
+		{
+			mprf("The branches won't fit in that!");
+		}
+		return false;
+	}
+
     if (sub_type == ARM_NAGA_BARDING || sub_type == ARM_CENTAUR_BARDING)
     {
         if (you.species == SP_NAGA && sub_type == ARM_NAGA_BARDING
@@ -1167,17 +1176,6 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
     }
 #endif
 
-    if (bad_size)
-    {
-        if (verbose)
-        {
-            mprf("This armour is too %s for you!",
-                 (bad_size > 0) ? "big" : "small");
-        }
-
-        return false;
-    }
-
     if (you.form == transformation::appendage
         && ignore_temporary
         && slot == beastly_slot(you.attribute[ATTR_APPENDAGE])
@@ -1199,6 +1197,13 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
             }
             return false;
         }
+		if (you.species == SP_LIGNIFITE)
+		{
+			if (verbose)
+			{
+				mpr("Gloves don't fit on your branches!");
+			}
+		}
     }
 
     if (sub_type == ARM_BOOTS)
@@ -1223,6 +1228,13 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
                 mpr("You have no legs!");
             return false;
         }
+
+		if (you.species == SP_LIGNIFITE)
+		{
+			if (verbose)
+				mpr("Boots don't fit on your roots!");
+			return false;
+		}
 
         if (!ignore_temporary && you.fishtail)
         {
@@ -1280,6 +1292,13 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
                 return false;
             }
 
+			if (you.species == SP_LIGNIFITE)
+			{
+				if (verbose)
+					mpr("You can't wear that on your branches.");
+				return false;
+			}
+
             if (you.species == SP_OCTOPODE)
             {
                 if (verbose)
@@ -1288,6 +1307,17 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
             }
         }
     }
+
+	if (bad_size)
+	{
+		if (verbose)
+		{
+			mprf("This armour is too %s for you!",
+				(bad_size > 0) ? "big" : "small");
+		}
+
+		return false;
+	}
 
     // Can't just use Form::slot_available because of shroom caps.
     if (!ignore_temporary && !get_form()->can_wear_item(item))
@@ -2373,13 +2403,19 @@ void drink(item_def* potion)
 
     if (you.duration[DUR_NO_POTIONS])
     {
-        mpr("You cannot drink potions in your current state!");
+		if (you.species == SP_LIGNIFITE)
+			mpr("You cannot absorb potions through your roots in your current state!");
+		else
+	        mpr("You cannot drink potions in your current state!");
         return;
     }
 
     if (!potion)
     {
-        potion = use_an_item(OBJ_POTIONS, OPER_QUAFF, "Drink which item?");
+		if (you.species == SP_LIGNIFITE)
+			potion = use_an_item(OBJ_POTIONS, OPER_QUAFF, "Pour which item on your roots?");
+		else 
+			potion = use_an_item(OBJ_POTIONS, OPER_QUAFF, "Drink which item?");
 
         if (!potion)
         {
@@ -2390,7 +2426,10 @@ void drink(item_def* potion)
 
     if (potion->base_type != OBJ_POTIONS)
     {
-        mpr("You can't drink that!");
+		if (you.species == SP_LIGNIFITE)
+			mpr("You can't absorb that!");
+		else
+	        mpr("You can't drink that!");
         return;
     }
 
