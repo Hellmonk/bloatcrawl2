@@ -7259,6 +7259,9 @@ int player::vision(bool calc_unid) const
         x++;
     }
 
+	if (scan_artefacts(ARTP_INACCURACY) > 0)
+		x--;
+
     return min(x,1);
 }
 

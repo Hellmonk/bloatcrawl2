@@ -298,6 +298,7 @@ static vector<string> _randart_propnames(const item_def& item,
         { ARTP_DRAIN,                 prop_note::plain },
         { ARTP_SLOW,                  prop_note::plain },
         { ARTP_FRAGILE,               prop_note::plain },
+		{ ARTP_INACCURACY,            prop_note::plain },
 
         // Evokable abilities come second
         { ARTP_BLINK,                 prop_note::plain },
@@ -541,6 +542,7 @@ static string _randart_descrip(const item_def &item)
         { ARTP_HP, "It affects your health (%d).", false},
         { ARTP_MAGICAL_POWER, "It affects your magic capacity (%d).", false},
         { ARTP_IMPROVED_VISION, "It improves your vision.", false},
+	    { ARTP_INACCURACY, "It blurs your vision.", false },
         { ARTP_INVISIBLE, "It lets you turn invisible.", false},
         { ARTP_FLY, "It lets you fly.", false},
         { ARTP_BLINK, "It lets you blink.", false},

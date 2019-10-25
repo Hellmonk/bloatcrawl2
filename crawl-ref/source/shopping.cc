@@ -157,6 +157,9 @@ int artefact_value(const item_def &item)
     if (prop[ ARTP_NOISE ])
         ret -= 5;
 
+	if (prop[ ARTP_INACCURACY ])
+		ret -= 8;
+
     if (prop[ ARTP_PREVENT_TELEPORTATION ])
         ret -= 8;
 

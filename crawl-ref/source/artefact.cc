@@ -546,7 +546,6 @@ static bool _artp_can_go_on_item(artefact_prop_type prop, const item_def &item,
         case ARTP_SLAYING:
             return (item_class != OBJ_WEAPONS) && !(item_class == OBJ_SHIELDS && is_hybrid(item.sub_type)); // they already have slaying!
         case ARTP_POISON:
-        case ARTP_IMPROVED_VISION:
             return !item.is_type(OBJ_ARMOURS, ARM_NAGA_BARDING);
             // naga already have rPois & sInv!
         case ARTP_CORRODE:
@@ -583,6 +582,11 @@ static bool _artp_can_go_on_item(artefact_prop_type prop, const item_def &item,
             return item_class != OBJ_ARMOURS
                    && (item_class != OBJ_JEWELLERY
                        || jewellery_is_amulet(item));
+		case ARTP_ACCURACY:
+		case ARTP_IMPROVED_VISION:
+			return (!extant_props[ARTP_INACCURACY] && !item.is_type(OBJ_ARMOURS, ARM_NAGA_BARDING)); //contradictory properties.
+		case ARTP_INACCURACY:
+			return !extant_props[ARTP_IMPROVED_VISION] && !extant_props[ARTP_ACCURACY]; //contradictory properties.
         default:
             return true;
     }
@@ -717,6 +721,7 @@ static const artefact_prop_data artp_data[] =
     { "Fragile", ARTP_VAL_BOOL, 25, // ARTP_FRAGILE,
         nullptr, []() { return 1; }, 0, 0 },
     { "SH", ARTP_VAL_ANY, 0, nullptr, nullptr, 0, 0 }, // ARTP_SHIELDING,
+    { "-Vis", ARTP_VAL_BOOL, 25, nullptr, []() { return 1; }, 0, 0 }, // ARTP_INACCURACY,
 };
 COMPILE_CHECK(ARRAYSZ(artp_data) == ARTP_NUM_PROPERTIES);
 // weights sum to 1000

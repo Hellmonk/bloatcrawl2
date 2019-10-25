@@ -5232,6 +5232,8 @@ bool monster::can_see_invisible(bool calc_unid) const
     if (!calc_unid)
         return false;
 
+	if (scan_artefacts(ARTP_INACCURACY) > 0)
+		return false;
     if (scan_artefacts(ARTP_IMPROVED_VISION) > 0)
         return true;
     else if (wearing_ego(EQ_ALL_ARMOUR, SPARM_IMPROVED_VISION))
