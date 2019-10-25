@@ -1045,6 +1045,7 @@ static int _weapon_brand_quality(int brand, bool range)
     case SPWPN_DISTORTION:
     case SPWPN_HOLY_WRATH:
     case SPWPN_REAPING:
+	case SPWPN_SILVER:
         return 3;
     case SPWPN_CHAOS:
         return 2;

@@ -267,7 +267,7 @@ void ghost_demon::init_pandemonium_lord()
 }
 
 static const set<brand_type> ghost_banned_brands =
-                { SPWPN_HOLY_WRATH, SPWPN_CHAOS };
+                { SPWPN_HOLY_WRATH };
 
 void ghost_demon::init_player_ghost(bool actual_ghost)
 {

@@ -1464,7 +1464,8 @@ bool attack::apply_damage_brand(const char *what)
     if (!damage_done
         && (brand == SPWPN_MOLTEN || brand == SPWPN_FREEZING
             || brand == SPWPN_HOLY_WRATH || brand == SPWPN_ANTIMAGIC
-            || brand == SPWPN_VORPAL || brand == SPWPN_VAMPIRISM))
+            || brand == SPWPN_VORPAL || brand == SPWPN_VAMPIRISM
+			|| brand == SPWPN_SILVER))
     {
         // These brands require some regular damage to function.
         return false;

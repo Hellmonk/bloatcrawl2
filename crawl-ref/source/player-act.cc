@@ -473,6 +473,13 @@ bool player::could_wield(const item_def &item, bool ignore_brand,
         return false;
     }
 
+	if (you.char_class == JOB_DEMONSPAWN && item.base_type == OBJ_WEAPONS && get_weapon_brand(item) == SPWPN_SILVER)
+	{
+		if (!quiet)
+			mpr("The silver starts to burn your flesh as you try to hold it.");
+		return false;
+	}
+
     // don't let undead/demonspawn wield holy weapons/scrolls (out of spite)
     if (!ignore_brand && undead_or_demonic() && is_holy_item(item))
     {
