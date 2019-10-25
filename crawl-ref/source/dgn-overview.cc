@@ -198,7 +198,7 @@ static string _portals_description_string()
                 }
                 last_id = entry.first.id;
 
-                // Portals notes (Zig/Trovel price).
+                // Portals notes (Zig/Trove price).
                 const string note = portal_notes[entry.first];
                 if (!note.empty())
                     disp += " (" + note + ")";
