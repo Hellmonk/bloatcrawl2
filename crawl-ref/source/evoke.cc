@@ -1457,7 +1457,7 @@ bool evoke_check(int slot, bool quiet)
 	if (slot == -1)
 		return true;
 
-    const bool reaching = ((slot == you.equip[EQ_WEAPON0] && you.weapon(0) && weapon_reach(*you.weapon(0)) > REACH_NONE && !you.melded[EQ_WEAPON0]) ||
+    const bool reaching =  ((slot == you.equip[EQ_WEAPON0] && you.weapon(0) && weapon_reach(*you.weapon(0)) > REACH_NONE && !you.melded[EQ_WEAPON0]) ||
 							(slot == you.equip[EQ_WEAPON1] && you.weapon(1) && weapon_reach(*you.weapon(1)) > REACH_NONE && !you.melded[EQ_WEAPON1]));
 
     if (you.berserk() && !reaching)

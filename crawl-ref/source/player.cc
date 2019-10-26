@@ -5946,8 +5946,8 @@ int player::adjusted_body_armour_penalty(int scale) const
         max(0, unadjusted_body_armour_penalty()
                    - get_mutation_level(MUT_STURDY_FRAME) * 2);
 
-    // New formula for effect of str on aevp: (2/5) * evp^2 / (str+3)
-    return 2 * base_ev_penalty * base_ev_penalty * (450 - skill(SK_ARMOUR, 10))
+    // New formula for effect of str on aevp: (1/5) * evp^2 / (str+3)
+    return base_ev_penalty * base_ev_penalty * (450 - skill(SK_ARMOUR, 10))
            * scale / (5 * (strength() + 3)) / 450;
 }
 
@@ -5973,7 +5973,7 @@ int player::adjusted_shield_penalty(int scale) const
 		return 0;
 
     return max(0, ((base_shield_penalty * scale) - skill(SK_SHIELDS, scale)
-                  / player_shield_racial_factor() * 10) / 10);
+                  / player_shield_racial_factor() * 5) / 10);
 }
 
 float player::get_shield_skill_to_offset_penalty(const item_def &item)

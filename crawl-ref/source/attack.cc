@@ -147,8 +147,8 @@ bool attack::handle_phase_end()
  */
 int attack::calc_to_hit(bool random)
 {
-    int mhit = attacker->is_player() ?
-                (you.dex() * 2 / 3)
+    float mhit = attacker->is_player() ?
+                5 + you.dex()
               : calc_mon_to_hit_base();
 
 #ifdef DEBUG_DIAGNOSTICS
@@ -162,7 +162,7 @@ int attack::calc_to_hit(bool random)
     if (attacker->is_player())
     {
         // fighting contribution
-		mhit += maybe_random_div(you.skill(SK_FIGHTING, 175), 100, random);
+		mhit *= (2000 + you.skill(SK_FIGHTING, 100))/2000;
 
         // weapon skill contribution
         if (using_weapon())
@@ -172,80 +172,75 @@ int attack::calc_to_hit(bool random)
                 if (you.skill(wpn_skill) < 1 && player_in_a_dangerous_place())
                     xom_is_stimulated(10); // Xom thinks that is mildly amusing.
 
-				mhit += maybe_random_div(you.skill(wpn_skill, 200), 100, random);
+				mhit *= (2000 + you.skill(wpn_skill, 100)) / 2000;
             }
         }
         else if (you.form_uses_xl())
-			mhit += maybe_random_div(you.experience_level * 200, 100, random);
+			mhit *= (20 + you.experience_level) / 20;
         else
         {
             // Claws give a slight bonus to accuracy when active
-            mhit += (you.get_mutation_level(MUT_CLAWS) > 0
-                     && wpn_skill == SK_UNARMED_COMBAT) ? 4 : 2;
+            mhit *= (you.get_mutation_level(MUT_CLAWS) > 0
+                     && wpn_skill == SK_UNARMED_COMBAT) ? 1.1 : 1;
 
-			mhit += maybe_random_div(you.skill(wpn_skill, 200), 100, random);
-        }
-
-        // weapon bonus contribution
-        if (using_weapon())
-        {
-            if (weapon->base_type == OBJ_WEAPONS || weapon->base_type == OBJ_SHIELDS)
-            {
-                mhit += weapon->plus;
-                mhit += property(*weapon, PWPN_HIT);
-            }
-            else if (weapon->base_type == OBJ_STAVES)
-                mhit += property(*weapon, PWPN_HIT);
+			mhit *= (2000 + you.skill(wpn_skill, 100)) / 2000;
         }
 
         // slaying bonus
-        mhit += slaying_bonus(wpn_skill == SK_THROWING
+        mhit *= (20 + slaying_bonus(wpn_skill == SK_THROWING
                               || (weapon && is_range_weapon(*weapon)
-                                         && using_weapon()));
+                                         && using_weapon())))/20;
 
         // hunger penalty
         if (apply_starvation_penalties())
-            mhit -= 3;
+            mhit *= 0.85;
 
         // armour penalty
-        mhit -= (attacker_armour_tohit_penalty + attacker_shield_tohit_penalty);
+		mhit *= max((20 - attacker_armour_tohit_penalty - attacker_shield_tohit_penalty), 5);
+		mhit /= 20;
 
         // vertigo penalty
         if (you.duration[DUR_VERTIGO])
-            mhit -= 5;
+            mhit *= 0.85;
 
         // mutation
         if (you.get_mutation_level(MUT_EYEBALLS))
-            mhit += 2 * you.get_mutation_level(MUT_EYEBALLS) + 1;
+            mhit *= (20 + you.get_mutation_level(MUT_EYEBALLS))/20;
 
 		// +0 for normal vision, +5 for Supernaturally Acute Vision, -5 For Impaired Vision
-		mhit += 5 * you.vision();
-
-        // hit roll
-		mhit = (maybe_random2(mhit, random) + maybe_random2(mhit, random)) / 2
-			+ random2((you.dex() / 2));
-			// stats certainly have a good effect on accuracy now
+		mhit *= (20 + you.vision() * 2)/20;
     }
     else    // Monster to-hit.
     {
-        if (using_weapon())
-            mhit += weapon->plus + property(*weapon, PWPN_HIT);
+		mhit *= (20 - attacker->inaccuracy()) / 20;
 
         const int jewellery = attacker->as_monster()->inv[MSLOT_JEWELLERY];
         if (jewellery != NON_ITEM
             && mitm[jewellery].is_type(OBJ_JEWELLERY, RING_SLAYING))
         {
-            mhit += mitm[jewellery].plus;
+            mhit *= 1.25;
         }
 
-        mhit += attacker->scan_artefacts(ARTP_SLAYING);
+		if (attacker->scan_artefacts(ARTP_SLAYING))
+			mhit *= 1.25;
     }
 
+	// weapon bonus contribution
+	if (using_weapon())
+	{
+		if (weapon->base_type == OBJ_WEAPONS || weapon->base_type == OBJ_SHIELDS)
+		{
+			mhit *= (20 + weapon->plus)/20;
+			mhit *= (20 + property(*weapon, PWPN_HIT))/20;
+		}
+		else if (weapon->base_type == OBJ_STAVES)
+			mhit *= (20 + property(*weapon, PWPN_HIT))/20;
+	}
+
     // Penalties for both players and monsters:
-    mhit -= 5 * attacker->inaccuracy();
 
     if (attacker->confused())
-        mhit -= 5;
+        mhit *= 0.75;
 
     if (using_weapon()
         && (is_unrandom_artefact(*weapon, UNRAND_WOE)
@@ -260,32 +255,29 @@ int attack::calc_to_hit(bool random)
         return mhit;
 
     if (!defender->visible_to(attacker))
-        if (attacker->is_player())
-            mhit -= 6;
-        else
-            mhit = mhit * 65 / 100;
+            mhit *= 0.75;
     else
     {
         // This can only help if you're visible!
         const int how_transparent = you.get_mutation_level(MUT_TRANSLUCENT_SKIN);
         if (defender->is_player() && how_transparent)
-            mhit -= 2 * how_transparent;
+            mhit *= (20 - 1 * how_transparent)/20;
 
         if (defender->backlit(false))
-            mhit += 2 + random2(8);
+            mhit *= (20 + 1 + random2(9))/20;
         else if (!attacker->nightvision()
                  && defender->umbra())
-            mhit -= 2 + random2(4);
+            mhit *= (20 - 1 - random2(4))/20;
     }
+
     // Don't delay doing this roll until test_hit().
-    if (!attacker->is_player())
-        mhit = random2(mhit + 1);
+    mhit = maybe_random2(mhit, random) + maybe_random2(mhit, random);
 
     dprf(DIAG_COMBAT, "%s: Base to-hit: %d, Final to-hit: %d",
          attacker->name(DESC_PLAIN).c_str(),
          base_hit, mhit);
 
-    return mhit;
+    return rand_round(mhit);
 }
 
 /* Returns an actor's name
@@ -1322,8 +1314,10 @@ int attack::test_hit(int to_land, int ev, bool randomise_ev)
         ev = random2avg(2*ev, 2);
     if (to_land >= AUTOMATIC_HIT)
         return true;
-    else if (x_chance_in_y(MIN_HIT_MISS_PERCENTAGE, 100))
-        margin = (random2(2) ? 1 : -1) * AUTOMATIC_HIT;
+    else if (x_chance_in_y(MIN_HIT_PERCENTAGE, 100))
+        margin = AUTOMATIC_HIT;
+	else if (x_chance_in_y(MIN_MISS_PERCENTAGE, 100))
+		margin -= AUTOMATIC_HIT;
     else
         margin = to_land - ev;
 

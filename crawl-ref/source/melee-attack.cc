@@ -1487,14 +1487,14 @@ string melee_attack::player_why_missed()
     const int ev = defender->evasion(EV_IGNORE_NONE, attacker);
     const int combined_penalty =
         attacker_armour_tohit_penalty + attacker_shield_tohit_penalty;
-    if (to_hit < ev && to_hit + combined_penalty >= ev)
+    if (to_hit < ev && (to_hit * (20 + combined_penalty)) >= (20 * ev))
     {
         const bool armour_miss =
             (attacker_armour_tohit_penalty
-             && to_hit + attacker_armour_tohit_penalty >= ev);
+             && (to_hit * (20 + attacker_armour_tohit_penalty)) >= (20 *ev));
         const bool shield_miss =
             (attacker_shield_tohit_penalty
-             && to_hit + attacker_shield_tohit_penalty >= ev);
+             && (to_hit * (20 + attacker_shield_tohit_penalty)) >= (20 * ev));
 
         const item_def *armour = you.slot_item(EQ_BODY_ARMOUR, false);
         const string armour_name = armour ? armour->name(DESC_BASENAME)
@@ -3601,8 +3601,8 @@ int melee_attack::calc_mon_to_hit_base()
 {
     const bool fighter = attacker->is_monster()
                          && attacker->as_monster()->is_fighter();
-    const int hd_mult = fighter ? 25 : 15;
-    return 18 + attacker->get_hit_dice() * hd_mult / 10;
+    const int hd_mult = fighter ? 15 : 9;
+    return (5 + attacker->get_hit_dice()) * hd_mult / 6;
 }
 
 /**
