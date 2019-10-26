@@ -420,7 +420,7 @@ void god_power::display(bool gaining, const char* fmt) const
     // hack: don't mention the necronomicon alone unless it wasn't
     // already mentioned by the other message
     if (abil == ABIL_KIKU_GIFT_NECRONOMICON
-        && you.species != SP_FELID)
+        && you.species != SP_FELID && you.species != SP_BUTTERFLY)
     {
         return;
     }
@@ -1365,7 +1365,7 @@ static bool _give_trog_oka_gift(bool forced)
     }
 
     // Should gift catnip instead.
-    if (you.species == SP_FELID)
+    if (you.species == SP_FELID || you.species == SP_BUTTERFLY)
         return false;
 
     const bool need_missiles = _need_missile_gift(forced);

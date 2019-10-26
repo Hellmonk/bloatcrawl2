@@ -1297,6 +1297,8 @@ string blade_parts(bool terse)
 
     if (you.species == SP_FELID)
         str = terse ? "paw" : "front paw";
+    else if (you.species == SP_BUTTERFLY)
+        str = "leg";
     else if (you.species == SP_OCTOPODE)
         str = "tentacle";
     else

@@ -2,12 +2,17 @@
 Astral
 
 Strange beings from beyond the stars, Astrals cannot gain resistances to magic 
-or the elements. Their attacks inflict powerful debuffs on beings from this world.
+or the elements. Their attacks inflict vulnerability on beings from this world.
 %%%%
 Barachi
 
 Barachim are amphibious humanoids who rebelled against the gods. They're fast
 learners and can hop long distances, but are otherwise slow and easily seen.
+%%%%
+Butterfly
+
+A cute butterfly that will stop at nothing to obtain the Orb. Monsters turn 
+neutral when they first see you.
 %%%%
 Centaur
 

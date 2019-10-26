@@ -1577,7 +1577,11 @@ static void _do_remove_armour()
         mpr("You can't remove your fur, sorry.");
         return;
     }
-
+    if (you.species == SP_BUTTERFLY)
+    {
+        mpr("You can't remove your wings, sorry.");
+        return;
+    }
     if (!form_can_wear())
     {
         mpr("You can't wear or remove anything in your present form.");
@@ -1652,7 +1656,7 @@ static void _do_display_map()
 
 static void _do_cycle_quiver(int dir)
 {
-    if (you.species == SP_FELID)
+    if (you.species == SP_FELID || you.species == SP_BUTTERFLY)
     {
         mpr("You can't grasp things well enough to throw them.");
         return;

@@ -775,7 +775,7 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
 
     case EQ_WEAPON:
     case EQ_STAFF:
-        return you.species == SP_FELID ? MB_FALSE :
+        return you.species == SP_FELID || you.species == SP_BUTTERFLY ? MB_FALSE :
                you.body_size(PSIZE_TORSO, !temp) < SIZE_MEDIUM ? MB_MAYBE :
                                          MB_TRUE;
 
@@ -859,6 +859,7 @@ bool player_has_feet(bool temp, bool include_mutations)
     if (you.species == SP_NAGA
         || you.species == SP_SLITHERIER_NAGA
         || you.species == SP_FELID
+        || you.species == SP_BUTTERFLY
         || you.species == SP_OCTOPODE
         || you.fishtail && temp)
     {
@@ -5712,6 +5713,8 @@ string player::shout_verb(bool directed) const
         return dog_shout_verbs[screaminess];
     if (species == SP_BARACHI)
         return frog_shout_verbs[screaminess];
+    if (you.species == SP_BUTTERFLY)
+        return "flutter noisily";
     if (species != SP_FELID)
         return shout_verbs[screaminess];
     if (directed && screaminess == 0)

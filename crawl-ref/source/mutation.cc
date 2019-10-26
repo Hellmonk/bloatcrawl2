@@ -671,7 +671,7 @@ string describe_mutations(bool drop_title)
             !form_keeps_mutations());
     }
 
-    if (you.species != SP_FELID)
+    if (you.species != SP_FELID && you.species != SP_BUTTERFLY)
     {
         switch (you.body_size(PSIZE_TORSO, true))
         {
@@ -1290,7 +1290,7 @@ bool physiology_mutation_conflict(mutation_type mutat)
 
     // Felids have innate claws, and unlike trolls/ghouls, there are no
     // increases for them. And octopodes have no hands.
-    if ((you.species == SP_FELID || you.species == SP_OCTOPODE)
+    if ((you.species == SP_FELID || you.species == SP_OCTOPODE || you.species == SP_BUTTERFLY)
          && mutat == MUT_CLAWS)
     {
         return true;
@@ -1634,7 +1634,7 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
         case MUT_LARGE_BONE_PLATES:
             {
                 const char *arms;
-                if (you.species == SP_FELID)
+                if (you.species == SP_FELID || you.species == SP_BUTTERFLY)
                     arms = "legs";
                 else if (you.species == SP_OCTOPODE)
                     arms = "tentacles";
@@ -1652,6 +1652,8 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
                 const char *hands;
                 if (you.species == SP_FELID)
                     hands = "front paws";
+                else if (you.species == SP_BUTTERFLY)
+                    hands = "forelegs";
                 else if (you.species == SP_OCTOPODE)
                     hands = "tentacles";
                 else

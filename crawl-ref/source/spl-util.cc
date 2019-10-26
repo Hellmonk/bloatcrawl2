@@ -1195,7 +1195,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         // intentional fallthrough
     case SPELL_PORTAL_PROJECTILE:
     case SPELL_SPECTRAL_WEAPON:
-        if (you.species == SP_FELID)
+        if (you.species == SP_FELID || you.species == SP_BUTTERFLY)
             return "this spell is useless without hands.";
         break;
 

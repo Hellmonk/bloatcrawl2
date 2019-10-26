@@ -1888,11 +1888,12 @@ const vector<int> archaeologist_unrands()
             continue;
         }
 
+        bool needs_jewellery = you.species == SP_FELID || you.species == SP_BUTTERFLY;
         // As a non-felid: jewellery does not shape a character enough
         // As a felid: we have no choice but to give jewellery
         // XXX: This seems like a really convoluted way to do XNOR -- NP7.
-        if (you.species == SP_FELID && entry->base_type != OBJ_JEWELLERY
-            || you.species != SP_FELID && entry->base_type == OBJ_JEWELLERY)
+        if (needs_jewellery && entry->base_type != OBJ_JEWELLERY
+            || !needs_jewellery && entry->base_type == OBJ_JEWELLERY)
         {
             continue;
         }

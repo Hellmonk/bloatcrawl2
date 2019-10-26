@@ -663,7 +663,7 @@ void give_items_skills(const newgame_def& ng)
     if (job_gets_ranged_weapons(you.char_class))
         _give_ammo(ng.weapon, you.char_class == JOB_HUNTER ? 1 : 0);
 
-    if (you.species == SP_FELID)
+    if (you.species == SP_FELID || you.species == SP_BUTTERFLY)
     {
         you.skills[SK_THROWING] = 0;
         you.skills[SK_SHIELDS] = 0;
