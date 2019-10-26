@@ -1073,7 +1073,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
 	{
 		if (verbose)
 		{
-			mprf("The branches won't fit in that!");
+			mprf("Your branches won't fit in that!");
 		}
 		return false;
 	}
@@ -1203,6 +1203,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
 			{
 				mpr("Gloves don't fit on your branches!");
 			}
+			return false;
 		}
     }
 

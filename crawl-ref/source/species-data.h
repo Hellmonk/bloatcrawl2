@@ -553,7 +553,7 @@ static const map<species_type, species_def> species_data =
 	{ STAT_STR, STAT_INT }, 4,
 	{ { MUT_POISON_RESISTANCE , 1, 1 }, {MUT_ROT_IMMUNITY,1,1},
 	  { MUT_TORMENT_RESISTANCE,1,1}, {MUT_SLOW_METABOLISM,1,1},
-	  { MUT_DEFORMED,1,1}, {MUT_FAST,2,1}, }, // Speed changes handled elsewhere (innate mutation code doesn't play nicely with REMOVING innate mutations).
+	  { MUT_DEFORMED,1,1}, {MUT_FAST,2,1}, {MUT_UNBREATHING,1,1}}, // Speed changes handled elsewhere (innate mutation code doesn't play nicely with REMOVING innate mutations).
 	{ "Your woody flesh burns easily. (rF-)" },
 	{ "rF-" },
 	{ JOB_FIGHTER, JOB_MONK, JOB_BERSERKER, JOB_ABYSSAL_KNIGHT,
