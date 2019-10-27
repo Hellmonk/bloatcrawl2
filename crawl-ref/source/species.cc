@@ -346,6 +346,7 @@ void give_basic_mutations(species_type species)
 		you.mutation[MUT_UNBREATHING] = you.innate_mutation[MUT_UNBREATHING] = 1;
 		you.mutation[MUT_NECRO_ENHANCER] = you.innate_mutation[MUT_NECRO_ENHANCER] = 1;
 		you.mutation[MUT_HEAT_VULNERABILITY] = you.innate_mutation[MUT_HEAT_VULNERABILITY] = 1;
+		you.mutation[MUT_COLD_BLOODED] = you.innate_mutation[MUT_COLD_BLOODED] = 0; // Taking this back away from things that have it because it makes no sense on undead.
 	}
 }
 
