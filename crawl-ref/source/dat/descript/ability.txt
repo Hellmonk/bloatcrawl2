@@ -102,6 +102,21 @@ Shaft Self ability
 Sends you to a random position one to two floors down, as if you jumped into a
 shaft trap. It takes some time to dig the shaft.
 %%%%
+Plant Roots ability
+
+Plants your roots in the ground, granting stasis (immunity to teleportation,
+slowing, hasting and paralysis) and buffing your AC and granting a significant
+regeneration boost. However; once you plant your roots you cannot move again
+until you dig your roots back out of the ground, which takes as long as removing
+heavy armour.
+%%%%
+Unearth Roots ability
+
+You spend several turns digging your roots back out of the ground. If you are
+interrupted you can choose to stop or to continue; continuing opens you up to
+several turns of attacks, while stopping causes the hole you were digging to
+collapse completely nulling the progress you made to uproot yourself.
+%%%%
 Evoke Blink ability
 
 <Blink ability>

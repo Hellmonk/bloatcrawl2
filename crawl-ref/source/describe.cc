@@ -2777,6 +2777,7 @@ static vector<command_type> _allowed_actions(const item_def& item)
     {
     case OBJ_WEAPONS:
     case OBJ_STAVES:
+	case OBJ_SHIELDS:
         if (_could_set_training_target(item, false) || _check_set_dual_skill(item))
             actions.push_back(CMD_SET_SKILL_TARGET);
         // intentional fallthrough

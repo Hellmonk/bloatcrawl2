@@ -66,7 +66,7 @@ bool is_holy_item(const item_def& item, bool calc_unid)
             return true;
     }
 
-    if (item.base_type == OBJ_WEAPONS)
+    if (item.base_type == OBJ_WEAPONS || (item.base_type == OBJ_SHIELDS && is_hybrid(item.sub_type)))
     {
         if (is_blessed(item))
             return true;
