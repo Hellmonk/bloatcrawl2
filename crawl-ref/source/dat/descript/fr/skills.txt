@@ -38,7 +38,7 @@ dans un ou deux types d'armes pour devenir plus puissant avec elles.
 Être compétent en Haches rend plus facile l'apprentissage en Masses & Fléaux et
 en Armes d'Hast, et vice versa.
 %%%%
-Maces & Flails
+Whips & Flails
 
 Être compétent en Masses & Fléaux  vous permettra d'attaquer plus rapidement
 avec toutes les armes de ce type, accroitra votre précision et les dégâts
@@ -59,7 +59,7 @@ occasionnés par elles.
 Être compétent en Armes d'Hast rend plus facile l'apprentissage en Haches et
 Bâtons, et vice versa.
 %%%%
-Staves
+Maces & Staves
 
 Les Bâtons requièrent un relativement faible niveau de compétence pour être
 employé le plus efficacement cependant, ils n'ont pas de dégâts aussi puissants

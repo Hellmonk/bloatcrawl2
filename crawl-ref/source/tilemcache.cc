@@ -1363,7 +1363,9 @@ mcache_ghost::mcache_ghost(const monster_info& mon)
 
     switch (sk)
     {
-    case SK_MACES_FLAILS:
+		// BCADDO: Consider reworking these tile choices.
+
+    case SK_WHIPS_FLAILS:
         if (dam > 30)
             m_doll.parts[TILEP_PART_HAND1] = TILEP_HAND1_GREAT_FLAIL;
         else if (dam > 25)

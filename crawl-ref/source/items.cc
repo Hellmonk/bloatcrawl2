@@ -3497,11 +3497,11 @@ colour_t item_def::weapon_colour() const
             return LIGHTCYAN;
         case SK_AXES:
             return MAGENTA;
-        case SK_MACES_FLAILS:
+        case SK_WHIPS_FLAILS:
             return LIGHTGREY;
         case SK_POLEARMS:
             return RED;
-        case SK_STAVES:
+        case SK_MACES_STAVES:
             return GREEN;
         default:
             die("Unknown weapon attack skill %d", item_attack_skill(*this));

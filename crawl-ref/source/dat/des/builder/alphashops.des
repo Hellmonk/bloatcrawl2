@@ -120,11 +120,10 @@
        "large rock", "leather armour", "long sword",
        "potion of lignification", "lajatang", "longbow", "lightning rod" }
 
-      elseif s == "M" then i = { "manual of maces & flails",
-       "book of minor magic", "book of misfortune", "book of maledictions",
-       "morningstar", "mace", "potion of magic",
-       "ring of magical power", "amulet of magic regeneration", "potion of might",
-       "potion of mutation", "scroll of magic mapping", }
+      elseif s == "M" then i = { "book of minor magic", "book of misfortune",
+	   "manual of maces & staves", "book of maledictions", "morningstar", "mace",
+	   "potion of magic", "ring of magical power", "amulet of magic regeneration",
+	   "potion of might", "potion of mutation", "scroll of magic mapping" }
 
       elseif s == "N" then i = { "book of necromancy", "naga barding",
        "necronomicon", "needle", "manual of necromancy" }
@@ -153,11 +152,11 @@
        "ring of slaying", "spear", "ring of stealth",
        "ring of strength", "manual of stealth", "sack of spiders",
        "scroll of summoning", "scythe", "book of spatial translocations",
-       "scroll of silence", "scutum", "shortbow", "manual of staves",
-       "steam dragon scales", "shadow dragon scales", "storm dragon scales",
-       "swamp dragon scales", "manual of short blades", "staff of summoning",
-       "manual of slings", "manual of shields", "manual of spellcasting",
-       "manual of summonings", "stone", "wand of scattershot" }
+       "scroll of silence", "scutum", "shortbow", "steam dragon scales",
+	   "shadow dragon scales", "storm dragon scales", "swamp dragon scales",
+	   "manual of short blades", "staff of summoning", "manual of slings",
+	   "manual of shields", "manual of spellcasting", "manual of summonings",
+	   "stone", "wand of scattershot" }
 
       elseif s == "T" then i = { "book of the tempests", "scroll of torment",
        "book of transfigurations", "ring of teleportation",
@@ -171,7 +170,7 @@
       elseif s == "V" then i = { "scroll of vulnerability" }
 
       elseif s == "W" then i = { "ring of wizardry", "book of the warp", "whip",
-       "war axe", "staff of wizardry" }
+       "war axe", "staff of wizardry", "manual of whips and flails" }
 
       elseif s == "X" then i = { "any" }
 

@@ -17,7 +17,7 @@
 #####NORMAL
 %sdir item/weapon
 %rim 0
-##Maces and Flails
+##Whips and Flails
 club WPN_CLUB
 club2
 club3
@@ -132,7 +132,7 @@ demon_trident2
 demon_trident3
 trishula WPN_TRISHULA
 
-##Staves
+##Maces & Staves
 staff WPN_STAFF
 quarterstaff WPN_QUARTERSTAFF
 quarterstaff2

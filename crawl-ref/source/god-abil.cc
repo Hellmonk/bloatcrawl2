@@ -5183,9 +5183,6 @@ static int _piety_for_skill_by_sacrifice(ability_type sacrifice)
     piety_gain += _piety_for_skill(sac_def.sacrifice_skill);
     if (sacrifice == ABIL_RU_SACRIFICE_HAND)
     {
-        // No one-handed staves for small races.
-        if (species_size(you.species, PSIZE_TORSO) <= SIZE_SMALL)
-            piety_gain += _piety_for_skill(SK_STAVES);
         // No one-handed bows.
         if (you.species != SP_FORMICID)
             piety_gain += _piety_for_skill(SK_BOWS);
@@ -5850,9 +5847,6 @@ bool ru_do_sacrifice(ability_type sac)
     // but not the others.
     if (sac == ABIL_RU_SACRIFICE_HAND)
     {
-        // No one-handed staves for small races.
-        if (species_size(you.species, PSIZE_TORSO) <= SIZE_SMALL)
-            _ru_kill_skill(SK_STAVES);
         // No one-handed bows.
         if (you.species != SP_FORMICID)
             _ru_kill_skill(SK_BOWS);

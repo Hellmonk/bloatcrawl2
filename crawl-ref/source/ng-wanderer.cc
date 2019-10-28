@@ -43,8 +43,8 @@ static void _give_wanderer_weapon(skill_type wpn_skill, int plus)
         sub_type = WPN_FALCHION;
         break;
 
-    case SK_MACES_FLAILS:
-        sub_type = WPN_MACE;
+    case SK_WHIPS_FLAILS:
+        sub_type = WPN_WHIP;
         break;
 
     case SK_AXES:
@@ -55,7 +55,7 @@ static void _give_wanderer_weapon(skill_type wpn_skill, int plus)
         sub_type = WPN_SPEAR;
         break;
 
-    case SK_STAVES:
+    case SK_MACES_STAVES:
         sub_type = WPN_QUARTERSTAFF;
         break;
 
@@ -177,12 +177,12 @@ static skill_type _wanderer_role_weapon_select(stat_type role)
 {
     skill_type skill = NUM_SKILLS;
     const skill_type str_weapons[] =
-        { SK_AXES, SK_MACES_FLAILS, SK_BOWS, SK_CROSSBOWS };
+        { SK_AXES, SK_WHIPS_FLAILS, SK_BOWS, SK_CROSSBOWS };
 
     int str_size = ARRAYSZ(str_weapons);
 
     const skill_type dex_weapons[] =
-        { SK_SHORT_BLADES, SK_LONG_BLADES, SK_STAVES, SK_UNARMED_COMBAT,
+        { SK_SHORT_BLADES, SK_LONG_BLADES, SK_MACES_STAVES, SK_UNARMED_COMBAT,
           SK_POLEARMS };
 
     int dex_size = ARRAYSZ(dex_weapons);
@@ -462,8 +462,8 @@ static void _wanderer_good_equipment(skill_type & skill)
 {
 
     const skill_type combined_weapon_skills[] =
-        { SK_AXES, SK_MACES_FLAILS, SK_BOWS, SK_CROSSBOWS,
-          SK_SHORT_BLADES, SK_LONG_BLADES, SK_STAVES, SK_UNARMED_COMBAT,
+        { SK_AXES, SK_WHIPS_FLAILS, SK_BOWS, SK_CROSSBOWS,
+          SK_SHORT_BLADES, SK_LONG_BLADES, SK_MACES_STAVES, SK_UNARMED_COMBAT,
           SK_POLEARMS };
 
     int total_weapons = ARRAYSZ(combined_weapon_skills);
@@ -487,14 +487,14 @@ static void _wanderer_good_equipment(skill_type & skill)
 
     switch (skill)
     {
-    case SK_MACES_FLAILS:
+    case SK_WHIPS_FLAILS:
     case SK_AXES:
     case SK_POLEARMS:
     case SK_THROWING:
     case SK_SHORT_BLADES:
     case SK_LONG_BLADES:
     case SK_BOWS:
-    case SK_STAVES:
+    case SK_MACES_STAVES:
     case SK_CROSSBOWS:
         _give_wanderer_weapon(skill, 2);
         break;
@@ -561,8 +561,8 @@ static void _wanderer_decent_equipment(skill_type & skill,
                                        set<skill_type> & gift_skills)
 {
     const skill_type combined_weapon_skills[] =
-        { SK_AXES, SK_MACES_FLAILS, SK_BOWS, SK_CROSSBOWS,
-          SK_SHORT_BLADES, SK_LONG_BLADES, SK_STAVES, SK_UNARMED_COMBAT,
+        { SK_AXES, SK_WHIPS_FLAILS, SK_BOWS, SK_CROSSBOWS,
+          SK_SHORT_BLADES, SK_LONG_BLADES, SK_MACES_STAVES, SK_UNARMED_COMBAT,
           SK_POLEARMS };
 
     int total_weapons = ARRAYSZ(combined_weapon_skills);
@@ -593,13 +593,13 @@ static void _wanderer_decent_equipment(skill_type & skill,
 
     switch (skill)
     {
-    case SK_MACES_FLAILS:
+    case SK_WHIPS_FLAILS:
     case SK_AXES:
     case SK_POLEARMS:
     case SK_BOWS:
     case SK_CROSSBOWS:
     case SK_THROWING:
-    case SK_STAVES:
+    case SK_MACES_STAVES:
     case SK_SHORT_BLADES:
     case SK_LONG_BLADES:
         _give_wanderer_weapon(skill, 0);

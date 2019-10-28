@@ -38,10 +38,10 @@ General skills, Experience   Melee and Ranged Combat     Spellcasting and Magic
 Arm - Armour                 Fgt - Fighting              Spc - Spellcasting
 Ddg - Dodging                SBl - Short Blades          Coj - Conjurations
 Sth - Stealth                LBl - Long Blades           Hex - Hexes
-Shd - Shields                M&F - Maces & Flails        Cha - Charms
+Shd - Shields                W&F - Whips & Flails        Cha - Charms
                              Axs - Axes                  Sum - Summonings
 Inv - Invocations            Pla - Polearms              Nec - Necromancy
-Evo - Evocations             Stv - Staves                Trl - Translocations
+Evo - Evocations             M&S - Maces & Staves        Trl - Translocations
                              UC  - Unarmed Combat        Trm - Transmutations
 
 HP  - hit points             Thr - Throwing              Fir - Fire Magic
@@ -55,7 +55,7 @@ MR  - magic resistance       Crb - Crossbows             Ear - Earth Magic
 ----------------------------------------------------------------------
 
 
-                 Fgt SBl LBl M&F Axs Pla Stv UC    Thr Slg Bws Crb
+                 Fgt SBl LBl W&F Axs Pla M&S UC    Thr Slg Bws Crb
 ----------------------------------------------------------------------
 
 

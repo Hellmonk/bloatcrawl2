@@ -241,7 +241,7 @@ static const shield_def Shield_prop[] =
 		7, 0, 13, SK_SHIELDS, DAMV_CRUSHING,
 		7, -35, SIZE_LITTLE, SIZE_SMALL, SIZE_LARGE, 10, 130 },
 	{ SHD_NUNCHAKU, "nunchaku",
-		9, 2, 12, SK_MACES_FLAILS, DAMV_CRUSHING,
+		9, 2, 12, SK_WHIPS_FLAILS, DAMV_CRUSHING,
 		4, -15, SIZE_LITTLE, SIZE_LITTLE, SIZE_LARGE, 5, 200 },
 };
 
@@ -438,15 +438,15 @@ static const weapon_def Weapon_prop[] =
 {
     // Maces & Flails
     { WPN_CLUB,              "club",                5,  3, 13,
-        SK_MACES_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
+        SK_WHIPS_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_CRUSHING, 10, 0, 10, {} },
 #if TAG_MAJOR_VERSION == 34
     { WPN_SPIKED_FLAIL,      "spiked flail",        5,  3, 13,
-        SK_MACES_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
+        SK_WHIPS_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_CRUSHING, 0, 0, 0, {} },
 #endif
     { WPN_WHIP,              "whip",                6,  2, 11,
-        SK_MACES_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
+        SK_WHIPS_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_SLASHING, 4, 0, 25, {
             { SPWPN_NORMAL,        32 },
             { SPWPN_VENOM,         16 },
@@ -463,17 +463,17 @@ static const weapon_def Weapon_prop[] =
         }},
 #if TAG_MAJOR_VERSION == 34
     { WPN_HAMMER,            "hammer",              7,  3, 13,
-        SK_MACES_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
+	    SK_MACES_STAVES, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_CRUSHING, 0, 0, 0, M_AND_F_BRANDS },
 #endif
     { WPN_MACE,              "mace",                8,  3, 14,
-        SK_MACES_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
+        SK_WHIPS_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_CRUSHING, 9, 10, 30, M_AND_F_BRANDS },
     { WPN_FLAIL,             "flail",              10,  0, 14,
-        SK_MACES_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
+        SK_WHIPS_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_CRUSHING, 8, 10, 35, M_AND_F_BRANDS },
     { WPN_MORNINGSTAR,       "morningstar",        13, -2, 15,
-        SK_MACES_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
+	    SK_MACES_STAVES, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_CRUSHING | DAM_PIERCE, 7, 10, 40, {
             { SPWPN_PROTECTION,     30 },
             { SPWPN_NORMAL,         15 },
@@ -490,16 +490,16 @@ static const weapon_def Weapon_prop[] =
             { SPWPN_CHAOS,           2 },
         }},
     { WPN_DEMON_WHIP,        "demon whip",         11,  1, 11,
-        SK_MACES_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
+        SK_WHIPS_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_SLASHING, 0, 2, 150, DEMON_BRANDS },
     { WPN_SACRED_SCOURGE,    "sacred scourge",     12,  0, 11,
-        SK_MACES_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
+        SK_WHIPS_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_SLASHING, 0, 0, 200, HOLY_BRANDS },
     { WPN_DIRE_FLAIL,        "dire flail",         19, -3, 13,
-        SK_MACES_FLAILS, SIZE_MEDIUM, SIZE_BIG, MI_NONE,
+        SK_WHIPS_FLAILS, SIZE_MEDIUM, SIZE_BIG, MI_NONE,
         DAMV_CRUSHING | DAM_PIERCE, 2, 10, 40, M_AND_F_BRANDS },
     { WPN_EVENINGSTAR,       "eveningstar",        15, -1, 15,
-        SK_MACES_FLAILS, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
+	    SK_MACES_STAVES, SIZE_LITTLE, SIZE_LITTLE, MI_NONE,
         DAMV_CRUSHING | DAM_PIERCE, 0, 2, 150, {
             { SPWPN_PROTECTION,     30 },
             { SPWPN_ACID,           17 },
@@ -516,13 +516,13 @@ static const weapon_def Weapon_prop[] =
             { SPWPN_CHAOS,           2 },
         }},
     { WPN_GREAT_MACE,        "great mace",         25, -4, 17,
-        SK_MACES_FLAILS, SIZE_MEDIUM, NUM_SIZE_LEVELS, MI_NONE,
+	    SK_MACES_STAVES, SIZE_MEDIUM, NUM_SIZE_LEVELS, MI_NONE,
         DAMV_CRUSHING, 3, 10, 65, M_AND_F_BRANDS },
     { WPN_GIANT_CLUB,        "giant club",         30, -6, 16,
-        SK_MACES_FLAILS, SIZE_LARGE, NUM_SIZE_LEVELS, MI_NONE,
+	    SK_MACES_STAVES, SIZE_LARGE, NUM_SIZE_LEVELS, MI_NONE,
         DAMV_CRUSHING, 1, 10, 17, {} },
     { WPN_GIANT_SPIKED_CLUB, "giant spiked club",  34, -7, 18,
-        SK_MACES_FLAILS, SIZE_LARGE, NUM_SIZE_LEVELS, MI_NONE,
+        SK_MACES_STAVES, SIZE_LARGE, NUM_SIZE_LEVELS, MI_NONE,
         DAMV_CRUSHING | DAM_PIERCE, 1, 10, 19, {} },
 
     // Short Blades
@@ -663,10 +663,10 @@ static const weapon_def Weapon_prop[] =
     // Staves
     // WPN_STAFF is for weapon stats for magical staves only.
     { WPN_STAFF,             "staff",               5,  5, 12,
-        SK_STAVES,       SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
+        SK_MACES_STAVES,       SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
         DAMV_CRUSHING, 0, 0, 15, {} },
     { WPN_QUARTERSTAFF,      "quarterstaff",        15, 3, 13,
-        SK_STAVES,       SIZE_LITTLE, SIZE_BIG,  MI_NONE,
+        SK_MACES_STAVES,       SIZE_LITTLE, SIZE_BIG,  MI_NONE,
         DAMV_CRUSHING, 8, 10, 40, {
             { SPWPN_NORMAL,     48 },
             { SPWPN_PROTECTION, 18 },
@@ -680,7 +680,7 @@ static const weapon_def Weapon_prop[] =
 		    { SPWPN_CHAOS,       2 },
         }},
     { WPN_LAJATANG,          "lajatang",            24,-3, 14,
-        SK_STAVES,       SIZE_LITTLE, NUM_SIZE_LEVELS, MI_NONE,
+        SK_MACES_STAVES,       SIZE_LITTLE, NUM_SIZE_LEVELS, MI_NONE,
         DAMV_SLICING, 2, 2, 150, {
             { SPWPN_NORMAL,         31 },
             { SPWPN_SPEED,          12 },
@@ -697,18 +697,18 @@ static const weapon_def Weapon_prop[] =
 		// Virtuals, these aren't supposed to spawn; just part of 
 		// a hack, if forced to spawn they are all plain staves.
 	{ WPN_AVERAGE,             "average (4/4/4)",               5,  5, 12,
-	SK_STAVES,       SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
-	DAMV_CRUSHING, 0, 0, 15,{} },
+	    SK_MACES_STAVES,       SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
+	    DAMV_CRUSHING, 0, 0, 15,{} },
 
 	{ WPN_STRONG, "strong (8/2/2)", 5, 5, 12,
-		SK_STAVES, SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
+		SK_MACES_STAVES, SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
 		DAMV_CRUSHING, 0, 0, 15, {} },
 	{ WPN_INTELLIGENT, "intelligent (2/8/2)", 5, 5, 12,
-			SK_STAVES, SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
-			DAMV_CRUSHING, 0, 0, 15, {} },
+		SK_MACES_STAVES, SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
+		DAMV_CRUSHING, 0, 0, 15, {} },
 	{ WPN_DEFT, "deft (2/2/8)", 5, 5, 12,
-			SK_STAVES, SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
-			DAMV_CRUSHING, 0, 0, 15, {} },
+		SK_MACES_STAVES, SIZE_LITTLE, SIZE_MEDIUM, MI_NONE,
+		DAMV_CRUSHING, 0, 0, 15, {} },
 
     // Range weapons
     { WPN_BLOWGUN,           "blowgun",             0,  2, 10,
@@ -2082,7 +2082,7 @@ skill_type item_attack_skill(const item_def &item)
 	if (item.base_type == OBJ_WEAPONS)
 		return Weapon_prop[Weapon_index[item.sub_type]].skill;
 	else if (item.base_type == OBJ_STAVES)
-		return SK_STAVES;
+		return SK_MACES_STAVES;
 	else if (item.base_type == OBJ_SHIELDS)
 		return Shield_prop[Shield_index[item.sub_type]].skill;
     else if (item.base_type == OBJ_MISSILES && !has_launcher(item))

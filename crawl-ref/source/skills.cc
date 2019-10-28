@@ -70,9 +70,9 @@ static const char *skill_titles[NUM_SKILLS][6] =
     {"Short Blades",   "Cutter",        "Slicer",          "Swashbuckler",    "Cutthroat",      "Politician"},
     {"Long Blades",    "Slasher",       "Carver",          "Fencer",          "@Adj@ Blade",    "Swordmaster"},
     {"Axes",           "Chopper",       "Cleaver",         "Severer",         "Executioner",    "Axe Maniac"},
-    {"Maces & Flails", "Cudgeler",      "Basher",          "Bludgeoner",      "Shatterer",      "Skullcrusher"},
+    {"Whips & Flails", "Whippersnapper","Lasher",          "Disciplinarian",  "Punisher",       "Sadistic @Genus@"},
     {"Polearms",       "Poker",         "Spear-Bearer",    "Impaler",         "Phalangite",     "@Adj@ Porcupine"},
-    {"Staves",         "Twirler",       "Cruncher",        "Stickfighter",    "Pulveriser",     "Chief of Staff"},
+    {"Maces & Staves", "Twirler",       "Cruncher",        "Shatterer",       "Pulveriser",     "Skullcrusher"},
     {"Slings",         "Vandal",        "Slinger",         "Whirler",         "Slingshot",      "@Adj@ Catapult"},
     {"Bows",           "Shooter",       "Archer",          "Marks@genus@",    "Crack Shot",     "Merry @Genus@"},
     {"Crossbows",      "Bolt Thrower",  "Quickloader",     "Sharpshooter",    "Sniper",         "@Adj@ Arbalest"},
@@ -1971,15 +1971,21 @@ vector<skill_type> get_crosstrain_skills(skill_type sk)
     case SK_LONG_BLADES:
         return { SK_SHORT_BLADES };
     case SK_AXES:
-    case SK_STAVES:
-        return { SK_POLEARMS, SK_MACES_FLAILS };
-    case SK_MACES_FLAILS:
+		return { SK_POLEARMS };
+    case SK_MACES_STAVES:
+         return { SK_WHIPS_FLAILS };
+    case SK_WHIPS_FLAILS:
+		return { SK_MACES_STAVES };
     case SK_POLEARMS:
-        return { SK_AXES, SK_STAVES };
+		return { SK_AXES }; 
     case SK_SLINGS:
         return { SK_THROWING };
     case SK_THROWING:
         return { SK_SLINGS };
+	case SK_BOWS:
+		return { SK_CROSSBOWS };
+	case SK_CROSSBOWS:
+		return { SK_BOWS };
     default:
         return {};
     }

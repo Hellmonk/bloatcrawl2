@@ -1784,16 +1784,17 @@ static tileidx_t _tileidx_monster_no_props(const monster_info& mon)
                 return TILEP_MONS_SPECTRAL_AXE;
             case SK_POLEARMS:
                 return TILEP_MONS_SPECTRAL_SPEAR;
-            case SK_STAVES:
-                return TILEP_MONS_SPECTRAL_STAFF;
-            case SK_MACES_FLAILS:
-                {
-                    const weapon_type wt = (weapon_type)item.sub_type;
-                    return (wt == WPN_WHIP || wt == WPN_FLAIL
-                            || wt == WPN_DIRE_FLAIL || wt == WPN_DEMON_WHIP
-                            || wt == WPN_SACRED_SCOURGE) ?
-                        TILEP_MONS_SPECTRAL_WHIP : TILEP_MONS_SPECTRAL_MACE;
-                }
+            case SK_MACES_STAVES:
+			{
+				if (item.base_type == OBJ_STAVES)
+					return TILEP_MONS_SPECTRAL_STAFF;
+				const weapon_type wt = (weapon_type)item.sub_type;
+				return (wt == WPN_QUARTERSTAFF || wt == WPN_LAJATANG) ?
+					TILEP_MONS_SPECTRAL_STAFF
+					: TILEP_MONS_SPECTRAL_MACE;
+			}
+            case SK_WHIPS_FLAILS:
+				return TILEP_MONS_SPECTRAL_WHIP;
             default:
                 return TILEP_MONS_SPECTRAL_SBL;
             }
@@ -3139,9 +3140,9 @@ tileidx_t tileidx_skill(skill_type skill, int train)
     case SK_SHORT_BLADES:   ch = TILEG_SHORT_BLADES_ON; break;
     case SK_LONG_BLADES:    ch = TILEG_LONG_BLADES_ON; break;
     case SK_AXES:           ch = TILEG_AXES_ON; break;
-    case SK_MACES_FLAILS:   ch = TILEG_MACES_FLAILS_ON; break;
+    case SK_WHIPS_FLAILS:   ch = TILEG_MACES_FLAILS_ON; break;
     case SK_POLEARMS:       ch = TILEG_POLEARMS_ON; break;
-    case SK_STAVES:         ch = TILEG_STAVES_ON; break;
+    case SK_MACES_STAVES:   ch = TILEG_STAVES_ON; break;
     case SK_SLINGS:         ch = TILEG_SLINGS_ON; break;
     case SK_BOWS:           ch = TILEG_BOWS_ON; break;
     case SK_CROSSBOWS:      ch = TILEG_CROSSBOWS_ON; break;

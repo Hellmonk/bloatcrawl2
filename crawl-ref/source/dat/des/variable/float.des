@@ -8992,7 +8992,7 @@ KITEM:   _ = wrath of trog no_pickup
 KITEM:   _ = nothing
 : end
 ITEM:    manual of armour w:30 / manual of fighting w:30 / \
-         manual of long blades / manual of axes / manual of maces & flails / \
+         manual of long blades / manual of axes / manual of whips & flails / \
          manual of polearms / manual of dodging / manual of shields
 ITEM:    executioner's axe good_item no_pickup w:5 / \
          battleaxe good_item randart no_pickup / \
