@@ -70,7 +70,7 @@ static const char *skill_titles[NUM_SKILLS][6] =
     {"Short Blades",   "Cutter",        "Slicer",          "Swashbuckler",    "Cutthroat",      "Politician"},
     {"Long Blades",    "Slasher",       "Carver",          "Fencer",          "@Adj@ Blade",    "Swordmaster"},
     {"Axes",           "Chopper",       "Cleaver",         "Severer",         "Executioner",    "Axe Maniac"},
-    {"Whips & Flails", "Whippersnapper","Lasher",          "Disciplinarian",  "Punisher",       "Sadistic @Genus@"},
+    {"Whips & Flails", "Whippersnapper","Lasher",          "Disciplinarian",  "Punisher",       "Sadistic @Genus_Short@"},
     {"Polearms",       "Poker",         "Spear-Bearer",    "Impaler",         "Phalangite",     "@Adj@ Porcupine"},
     {"Maces & Staves", "Twirler",       "Cruncher",        "Shatterer",       "Pulveriser",     "Skullcrusher"},
     {"Slings",         "Vandal",        "Slinger",         "Whirler",         "Slingshot",      "@Adj@ Catapult"},
