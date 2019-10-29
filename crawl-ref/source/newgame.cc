@@ -1977,7 +1977,7 @@ static weapon_type _starting_weapon_upgrade(weapon_type wp, job_type job,
     {
     case WPN_SHORT_SWORD:
         return WPN_RAPIER;
-    case WPN_MACE:
+    case WPN_WHIP:
         return WPN_FLAIL;
     case WPN_HAND_AXE:
         return WPN_WAR_AXE;
@@ -1986,6 +1986,8 @@ static weapon_type _starting_weapon_upgrade(weapon_type wp, job_type job,
         return fighter && size <= SIZE_SMALL  ? wp : WPN_TRIDENT;
     case WPN_FALCHION:
         return WPN_LONG_SWORD;
+	case WPN_MACE:
+		return fighter ? WPN_MORNINGSTAR : WPN_QUARTERSTAFF;
     default:
         return wp;
     }
@@ -2025,8 +2027,8 @@ static vector<weapon_choice> _get_weapons(const newgame_def& ng)
 	}
     else
     {
-        weapon_type startwep[7] = { WPN_SHORT_SWORD, WPN_MACE, WPN_HAND_AXE,
-                                    WPN_SPEAR, WPN_FALCHION, WPN_QUARTERSTAFF,
+        weapon_type startwep[7] = { WPN_SHORT_SWORD, WPN_WHIP, WPN_HAND_AXE,
+                                    WPN_SPEAR, WPN_FALCHION, WPN_MACE,
                                     WPN_UNARMED };
         for (int i = 0; i < 7; ++i)
         {
