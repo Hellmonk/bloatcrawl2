@@ -63,3 +63,5 @@ recommended_jobs:
   - JOB_ASSASSIN
 recommended_weapons:
   - SK_UNARMED_COMBAT
+walking_verb: Flutter
+altar_action: flap around respectfully in front of
