@@ -4027,6 +4027,9 @@ void inc_hp(int hp_gain)
 
     if (hp_gain < 1 || you.hp >= you.hp_max)
         return;
+    
+    if (you.species == SP_MOONOTAUR)
+        hp_gain = 1;
 
     you.hp += hp_gain;
 
@@ -4161,6 +4164,10 @@ int get_real_hp(bool trans, bool rotted)
     // Racial modifier.
     hitp *= 10 + species_hp_modifier(you.species);
     hitp /= 10;
+
+    //moonotaurs get +1 here to let them start at 2 hp instead of 1
+    if (you.species == SP_MOONOTAUR)
+        hitp += 1;
 
     const bool hep_frail = have_passive(passive_t::frail)
                            || player_under_penance(GOD_HEPLIAKLQANA);
