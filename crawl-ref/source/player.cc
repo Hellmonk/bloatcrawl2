@@ -1378,7 +1378,10 @@ int player_res_fire(bool calc_unid, bool temp, bool items)
 {
     if (you.species == SP_ASTRAL)
         return 0;
-    
+
+    if (you.has_mutation(MUT_VAPOROUS_RESISTANCE))
+        return you.vaporous_resistance_fire;
+
     int rf = 0;
 
     if (items)
@@ -1452,7 +1455,7 @@ int player_res_steam(bool calc_unid, bool temp, bool items)
 {
     if (you.species == SP_ASTRAL)
         return 0;
-    
+
     int res = 0;
     const int rf = player_res_fire(calc_unid, temp, items);
 
@@ -1478,7 +1481,10 @@ int player_res_cold(bool calc_unid, bool temp, bool items)
 {
     if (you.species == SP_ASTRAL)
         return 0;
-    
+
+    if (you.has_mutation(MUT_VAPOROUS_RESISTANCE))
+        return you.vaporous_resistance_cold;
+
     int rc = 0;
 
     if (temp)
@@ -1558,7 +1564,7 @@ bool player::res_corr(bool calc_unid, bool items) const
 {
     if (you.species == SP_ASTRAL)
         return false;
-    
+
     if (have_passive(passive_t::resist_corrosion))
         return true;
 
@@ -1585,7 +1591,7 @@ int player_res_acid(bool calc_unid, bool items)
 {
     if (you.species == SP_ASTRAL)
         return 0;
-    
+
     return you.res_corr(calc_unid, items) ? 1 : 0;
 }
 
@@ -1593,7 +1599,10 @@ int player_res_electricity(bool calc_unid, bool temp, bool items)
 {
     if (you.species == SP_ASTRAL)
         return 0;
-    
+
+    if (you.has_mutation(MUT_VAPOROUS_RESISTANCE))
+        return you.vaporous_resistance_elec;
+
     int re = 0;
 
     if (items)
@@ -1649,7 +1658,7 @@ bool player_res_torment(bool random)
 {
     if (you.species == SP_ASTRAL)
         return false;
-    
+
     switch (you.undead_state())
     {
         case US_UNDEAD:
@@ -1695,7 +1704,10 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
 {
     if (you.species == SP_ASTRAL)
         return 0;
-    
+
+    if (you.has_mutation(MUT_VAPOROUS_RESISTANCE))
+        return you.vaporous_resistance_poison;
+
     switch (you.undead_state(temp))
     {
         case US_ALIVE:
@@ -1781,7 +1793,7 @@ int player_res_sticky_flame(bool calc_unid, bool temp, bool items)
 {
     if (you.species == SP_ASTRAL)
         return 0;
-    
+
     int rsf = 0;
 
     // dragonskin cloak: 0.5 to draconic resistances
@@ -1929,7 +1941,10 @@ int player_prot_life(bool calc_unid, bool temp, bool items)
 {
     if(you.species == SP_ASTRAL)
         return 0;
-    
+
+    if (you.has_mutation(MUT_VAPOROUS_RESISTANCE))
+        return you.vaporous_resistance_neg;
+
     int pl = 0;
 
     pl += you.get_mutation_level(MUT_NEGATIVE_ENERGY_RESISTANCE, temp);
@@ -2067,7 +2082,7 @@ int player_movement_speed()
         {
             mv *= 10 + slow * 4;
         }
-        else 
+        else
         {
             mv *= 10 + slow * 2;
         }
@@ -2245,6 +2260,9 @@ static int _player_evasion_bonuses()
 
     if (you.get_mutation_level(MUT_DISTORTION_FIELD))
         evbonus += you.get_mutation_level(MUT_DISTORTION_FIELD) + 1;
+
+    if (evbonus += you.get_mutation_level(MUT_VAPOROUS_BODY))
+        evbonus += 2;
 
     // transformation penalties/bonuses not covered by size alone:
     if (you.get_mutation_level(MUT_SLOW_REFLEXES))
@@ -3168,6 +3186,11 @@ void level_change(bool skip_attribute_increase)
                 _felid_extra_life();
                 break;
 
+            case SP_ARGON:
+                mpr("You gain enough energy for another flash.");
+                you.argon_flashes_available++;
+                break;
+
             default:
                 break;
             }
@@ -3292,6 +3315,11 @@ void level_change(bool skip_attribute_increase)
             _felid_extra_life();
         if (you.shapeshifter_species)
             update_shapeshifter_species();
+        if (you.species == SP_ARGON)
+        {
+            mpr("You gain enough energy for another flash.");
+            you.argon_flashes_available++;
+        }
     }
 
     you.redraw_title = true;
@@ -4028,7 +4056,7 @@ void inc_hp(int hp_gain)
 
     if (hp_gain < 1 || you.hp >= you.hp_max)
         return;
-    
+
     if (you.species == SP_MOONOTAUR)
         hp_gain = 1;
 
@@ -6211,6 +6239,7 @@ int player::base_ac(int scale) const
     AC += get_mutation_level(MUT_GELATINOUS_BODY)
           ? get_mutation_level(MUT_GELATINOUS_BODY) * 100 : 0;
               // +1, +2, +3
+    AC += get_mutation_level(MUT_VAPOROUS_BODY) * 200;
     AC += get_mutation_level(MUT_IRIDESCENT_SCALES, mutation_activity_type::FULL) * 200;
               // +2, +4, +6
 #if TAG_MAJOR_VERSION == 34
@@ -6474,7 +6503,8 @@ int player::res_rotting(bool temp) const
 {
     if (get_mutation_level(MUT_ROT_IMMUNITY)
         || is_nonliving(temp)
-        || temp && get_form()->res_rot())
+        || temp && get_form()->res_rot()
+        || you.has_mutation(MUT_VAPOROUS_BODY))
     {
         return 3;
     }
@@ -6507,7 +6537,7 @@ int player::res_holy_energy() const
 {
     if(you.species == SP_ASTRAL)
         return 0;
-    
+
     if (undead_or_demonic())
         return -1;
 
@@ -6536,7 +6566,8 @@ bool player::res_tornado() const
 bool player::res_petrify(bool temp) const
 {
     return get_mutation_level(MUT_PETRIFICATION_RESISTANCE)
-           || temp && get_form()->res_petrify();
+           || temp && get_form()->res_petrify()
+           || you.has_mutation(MUT_VAPOROUS_BODY);
 }
 
 int player::res_constrict() const
@@ -6724,7 +6755,8 @@ bool player::cancellable_flight() const
 
 bool player::permanent_flight() const
 {
-    return attribute[ATTR_PERM_FLIGHT];
+    return attribute[ATTR_PERM_FLIGHT]
+        || get_mutation_level(MUT_VAPOROUS_BODY);
 }
 
 bool player::racial_permanent_flight() const

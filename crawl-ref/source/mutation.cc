@@ -1490,6 +1490,16 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
         }
     }
 
+    // Argone cannot mutate
+    if (you.has_mutation(MUT_VAPOROUS_BODY))
+    {
+        if (god_gift)
+            return false;
+        mpr("The mutagenic energy damages you!");
+        ouch(random_range(7, 17), KILLED_BY_DRAINING, MID_NOBODY, "mutagenic energy");
+        return false;
+    }
+
     // Undead bodies don't mutate, they fall apart. -- bwr
     if (undead_mutation_rot())
     {
@@ -1671,6 +1681,10 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
                 for (int i = 0; i < 52; ++i)
                     if (you.ability_letter_table[i] == ABIL_SPIT_POISON)
                         you.ability_letter_table[i] = ABIL_BREATHE_POISON;
+            break;
+
+        case MUT_VAPOROUS_RESISTANCE:
+            pick_vaporous_resistance();
             break;
 
         default:

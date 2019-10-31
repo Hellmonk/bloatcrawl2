@@ -865,3 +865,9 @@ Hop ability
 Hops toward a chosen destination, landing somewhere nearby. After using this
 ability, you will be unable to hop again until you have spent some time not
 moving. (Other actions, such as casting spells and attacking, are fine.)
+%%%%
+Argon Flash ability
+
+Emit a sudden flash of light, temporarily blinding everything in sight. The
+energy required to emit this much light is enormous, and requires you to build
+a charge over an extended period of time.

@@ -362,10 +362,18 @@ static void _post_init(bool newc)
 
         _spawn_caveperson_dog();
 
-        if (you.species == SP_FAERIE_DRAGON)
+        // Start certain species flying
+        switch (you.species)
         {
+        case SP_ARGON:
+            you.attribute[ATTR_FLIGHT_UNCANCELLABLE] = true;
+            // deliberate fall-through
+        case SP_FAERIE_DRAGON:
             you.attribute[ATTR_PERM_FLIGHT] = 1;
             float_player();
+            break;
+        default:
+            break;
         }
     }
 

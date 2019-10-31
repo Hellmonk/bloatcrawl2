@@ -218,6 +218,9 @@ brand_type player::damage_brand(int)
 
     // unarmed
 
+    if (you.has_mutation(MUT_VAPOROUS_BODY))
+        return SPWPN_ELECTROCUTION;
+
     return get_form()->get_uc_brand();
 }
 
