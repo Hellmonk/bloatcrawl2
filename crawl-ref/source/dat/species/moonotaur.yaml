@@ -50,7 +50,6 @@ levelup_stats:
   - int
 mutations:
   1:
-    MUT_HORNS: 2
     MUT_NO_POTION_HEAL: 3
     MUT_INHIBITED_REGENERATION: 1
 fake_mutations:

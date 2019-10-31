@@ -1710,6 +1710,7 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
     }
 
     if (you.is_nonliving(temp)
+        || you.species == SP_MOONOTAUR
         || temp && get_form()->res_pois() == 3
         || items && player_equip_unrand(UNRAND_OLGREB)
         || temp && you.duration[DUR_DIVINE_STAMINA])
