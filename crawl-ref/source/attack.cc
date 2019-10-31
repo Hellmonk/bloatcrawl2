@@ -1314,12 +1314,8 @@ int attack::test_hit(int to_land, int ev, bool randomise_ev)
         ev = random2avg(2*ev, 2);
     if (to_land >= AUTOMATIC_HIT)
         return true;
-    else if (x_chance_in_y(MIN_HIT_PERCENTAGE, 100))
-        margin = AUTOMATIC_HIT;
-	else if (x_chance_in_y(MIN_MISS_PERCENTAGE, 100))
-		margin -= AUTOMATIC_HIT;
-    else
-        margin = to_land - ev;
+    
+    margin = to_land - ev;
 
 #ifdef DEBUG_DIAGNOSTICS
     dprf(DIAG_COMBAT, "to hit: %d; ev: %d; result: %s (%d)",
