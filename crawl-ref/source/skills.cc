@@ -1973,11 +1973,11 @@ vector<skill_type> get_crosstrain_skills(skill_type sk)
     case SK_AXES:
 		return { SK_POLEARMS };
     case SK_MACES_STAVES:
-         return { SK_WHIPS_FLAILS };
+         return { SK_WHIPS_FLAILS, SK_POLEARMS };
     case SK_WHIPS_FLAILS:
 		return { SK_MACES_STAVES };
     case SK_POLEARMS:
-		return { SK_AXES }; 
+		return { SK_AXES, SK_MACES_STAVES }; 
     case SK_SLINGS:
         return { SK_THROWING };
     case SK_THROWING:
