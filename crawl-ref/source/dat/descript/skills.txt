@@ -50,16 +50,16 @@ Polearms can be evoked with ‘v’ to attack enemies from two spaces away.
 Being skilled with Polearms will allow you to attack more quickly with all
 weapons of this type, as well as increasing your accuracy and damage with them.
 
-Being skilled with Polearms increases your effectiveness with Axes and Staves,
-and vice versa.
+Being skilled with Polearms increases your effectiveness with Axes and Maces & 
+Staves, and vice versa.
 %%%%
 Maces & Staves
 
 Being skilled with Maces & Staves will allow you to attack more quickly with all
 weapons of this type, as well as increasing your accuracy and damage with them.
 
-Being skilled with Staves increases your effectiveness with Maces & Staves and
-Polearms, and vice versa.
+Being skilled with Maces & Staves increases your effectiveness with Whips & Flails
+and Polearms, and vice versa.
 %%%%
 Slings
 
