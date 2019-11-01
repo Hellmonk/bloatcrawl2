@@ -2531,6 +2531,26 @@ void bolt::affect_endpoint()
         if (!path_taken.empty())
             place_cloud(CLOUD_FIRE, pos(), 5 + random2(5), agent());
 
+	case SPELL_MAGIC_CANDLE:
+	{
+		if (foe_info.count == 0)
+		{
+			if (feat_is_watery(grd(pos())))
+			{
+				noisy(2, pos(), source_id);
+				noise_generated = true;
+				if (!silenced(you.pos()))
+					mpr("You hear a splash.");
+			}
+			else
+			{
+				mpr("The magic candle falls to the ground, lighting the tile it fell upon for a short while.");
+				const int expiry = you.elapsed_time + 60;
+				env.sunlight.emplace_back(pos(), expiry);
+			}
+		}
+	}
+
     default:
         break;
     }

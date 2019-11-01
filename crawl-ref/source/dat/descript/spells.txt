@@ -850,7 +850,8 @@ Magic Candle spell
 
 Throws a harmless magical light source at the monster. Should it hit,
 the light of the candle offsets the dark, musty atmosphere of the dungeon, and
-makes the affected creature appreciably easier to hit.
+makes the affected creature appreciably easier to hit. If it misses, it will
+fall to the floor and light the tile briefly; unless it falls into water.
 %%%%
 Mass Confusion spell
 
