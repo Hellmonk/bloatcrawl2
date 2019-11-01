@@ -226,6 +226,7 @@ enum mon_resist_flags
     MR_VUL_POISON        = mrd(MR_RES_POISON, -1),
     MR_VUL_FIRE          = mrd(MR_RES_FIRE, -1),
     MR_VUL_COLD          = mrd(MR_RES_COLD, -1),
+	MR_VUL_ACID          = mrd(MR_RES_ACID, -1),
 };
 
 enum shout_type

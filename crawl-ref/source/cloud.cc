@@ -883,7 +883,7 @@ bool actor_cloud_immune(const actor &act, cloud_type type)
         case CLOUD_SPECTRAL:
             return bool(act.holiness() & MH_UNDEAD);
         case CLOUD_ACID:
-            return act.res_acid() > 0;
+            return act.res_acid() > 1;
         case CLOUD_STORM:
             return act.res_elec() >= 3;
         case CLOUD_NEGATIVE_ENERGY:

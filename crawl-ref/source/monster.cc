@@ -4053,17 +4053,22 @@ int monster::res_constrict() const
 
 bool monster::res_corr(bool calc_unid, bool items) const
 {
-    if (get_mons_resist(*this, MR_RES_ACID) > 0)
-        return true;
-
     return actor::res_corr(calc_unid, items);
 }
 
 int monster::res_acid(bool calc_unid) const
 {
-    int u = max(get_mons_resist(*this, MR_RES_ACID), (int)actor::res_corr(calc_unid));
+	int u = get_mons_resist(*this, MR_RES_ACID);
+	
+	if (res_corr(calc_unid))
+	{
+		u++;
+	}
 
-    if (has_ench(ENCH_RESISTANCE))
+	if (inv[MSLOT_ARMOUR] != NON_ITEM && u < 2)
+		u++;
+
+    if (has_ench(ENCH_RESISTANCE) && u < 2)
         u++;
 
     return u;
@@ -4373,13 +4378,19 @@ bool monster::corrode_equipment(const char* corrosion_source, int degree)
     if (mons_is_avatar(type) || type == MONS_PLAYER_SHADOW)
         return false;
 
-    // rCorr protects against 50% of corrosion.
-    // As long as degree is at least 1, we'll apply the status once, because
-    // it doesn't look to me like applying it more times does anything.
-    // If I'm wrong, we should fix that.
-    if (res_corr())
+	const int rAcid = res_acid();
+	int acidResistDegree = 0;
+
+	if (rAcid >= 3)
+		return false; // This shouldn't happen.
+	else if (rAcid == 2)
+		acidResistDegree = 20;
+	else if (rAcid == 1)
+		acidResistDegree = 60;
+
+    if (rAcid > 0)
     {
-        degree = binomial(degree, 50);
+        degree = binomial(degree, acidResistDegree);
         if (!degree)
         {
             dprf("rCorr protects.");
@@ -4410,7 +4421,7 @@ void monster::splash_with_acid(const actor* evildoer, int acid_strength,
     if (this->observable())
          mprf("%s is splashed with acid.", this->name(DESC_THE).c_str());
 
-    if (!one_chance_in(3))
+    if (x_chance_in_y(acid_strength,4))
         corrode_equipment();
 
     if (post_res_dam > 0)

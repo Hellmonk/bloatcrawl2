@@ -66,7 +66,7 @@ static const form_entry formdata[] =
 {
     transformation::spider, MONS_SPIDER, "Spider", "spider-form", "spider",
     "a venomous arachnid creature.",
-    EQF_PHYSICAL, MR_VUL_POISON,
+    EQF_PHYSICAL, MR_VUL_POISON | MR_RES_ACID,
     FormDuration(10, PS_DOUBLE, 60), 0, 5, SIZE_TINY, 10,
     2, 0, 0, true, 10, 10, 5,
     SPWPN_VENOM, LIGHTGREEN, "Fangs", ANIMAL_VERBS,
@@ -187,7 +187,7 @@ static const form_entry formdata[] =
     transformation::wisp, MONS_INSUBSTANTIAL_WISP, "Wisp", "wisp-form", "wisp",
     "an insubstantial wisp.",
     EQF_ALL, mrd(MR_RES_FIRE, 2) | mrd(MR_RES_COLD, 2) | MR_RES_ELEC
-             | MR_RES_STICKY_FLAME | mrd(MR_RES_NEG, 3) | MR_RES_ACID
+             | MR_RES_STICKY_FLAME | mrd(MR_RES_NEG, 3) | mrd(MR_RES_ACID, 3)
              | MR_RES_PETRIFY,
     BAD_DURATION, 0, 0, SIZE_TINY, 10,
     5, 0, 50, false, 0, 10, 5,
@@ -213,7 +213,7 @@ static const form_entry formdata[] =
 {
     transformation::fungus, MONS_WANDERING_MUSHROOM, "Fungus", "fungus-form", "fungus",
     "a sentient fungus.",
-    EQF_PHYSICAL, MR_RES_POISON | mrd(MR_RES_NEG, 3),
+    EQF_PHYSICAL, MR_RES_POISON | MR_VUL_ACID | mrd(MR_RES_NEG, 3),
     BAD_DURATION, 0, 0, SIZE_TINY, 10,
     12, 0, 0, false, 0, 10, 8,
     SPWPN_CONFUSE, BROWN, "Spores", FormAttackVerbs("release spores at"),
@@ -224,8 +224,8 @@ static const form_entry formdata[] =
 {
     transformation::shadow, MONS_PLAYER_SHADOW, "Shadow", "shadow-form", "shadow",
     "a swirling mass of dark shadows.",
-    EQF_NONE, mrd(MR_RES_POISON, 3) | mrd(MR_RES_NEG, 3) | MR_RES_ROTTING
-                                                         | MR_RES_PETRIFY,
+    EQF_NONE, mrd(MR_RES_POISON, 3) | mrd(MR_RES_NEG, 3)  | MR_RES_ROTTING
+                                    | mrd(MR_RES_ACID, 3) | MR_RES_PETRIFY,
     DEFAULT_DURATION, 0, 0, SIZE_CHARACTER, 10,
     0, 0, 0, true, 0, 0, 2,
     SPWPN_NORMAL, MAGENTA, "", DEFAULT_VERBS,
@@ -236,7 +236,7 @@ static const form_entry formdata[] =
 {
     transformation::hydra, MONS_HYDRA, "Hydra", "hydra-form", "hydra",
     "",
-    EQF_PHYSICAL, MR_RES_POISON,
+    EQF_PHYSICAL, MR_RES_POISON | MR_RES_ACID,
     FormDuration(10, PS_SINGLE, 100), 0, 0, SIZE_BIG, 13,
     6, 5, 0, true, 0, 10, -1,
     SPWPN_NORMAL, GREEN, "", { "nip at", "bite", "gouge", "chomp" },

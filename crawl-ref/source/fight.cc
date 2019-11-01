@@ -567,6 +567,7 @@ int resist_adjust_damage(const actor* defender, beam_type flavour, int rawdamage
                                      || flavour == BEAM_MALIGN_OFFERING
                                      || flavour == BEAM_HOLY
                                      || flavour == BEAM_POISON
+			                         || flavour == BEAM_ACID
                                      // just the resistible part
                                      || flavour == BEAM_POISON_ARROW;
 

@@ -1432,6 +1432,7 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
     case BEAM_ACID:
     {
         hurted = resist_adjust_damage(mons, pbolt.flavour, hurted);
+
         if (!hurted)
         {
             if (doFlavouredEffects)
@@ -1441,8 +1442,21 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
                                                       : " appears unharmed.");
             }
         }
-        else if (mons->res_acid() <= 0 && doFlavouredEffects)
-            mons->splash_with_acid(pbolt.agent());
+		
+		if (original > hurted)
+		{
+			if (doFlavouredEffects)
+				simple_monster_message(*mons, " resists.");
+		}
+		
+		if (original < hurted)
+		{
+			if (doFlavouredEffects)
+				simple_monster_message(*mons, " is burned terribly!");
+		}
+
+        if (hurted && mons->res_acid() <= 2 && doFlavouredEffects)
+            mons->splash_with_acid(pbolt.agent(), div_round_up(hurted, 10));
         break;
     }
 
