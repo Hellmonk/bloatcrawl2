@@ -1519,6 +1519,13 @@ bool attack::apply_damage_brand(const char *what)
             break;
         else if (one_chance_in(3))
         {
+            // Argons don't proc the unarmed electrocution as often as usual
+            if (you.has_mutation(MUT_VAPOROUS_BODY)
+                && !using_weapon()
+                && one_chance_in(you.experience_level))
+            {
+                break;
+            }
             special_damage = 8 + random2(13);
             const string punctuation =
                     attack_strength_punctuation(special_damage);

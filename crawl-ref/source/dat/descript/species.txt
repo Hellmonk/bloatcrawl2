@@ -206,3 +206,8 @@ Faerie Dragon
 Faerie Dragons are attuned to magic and their spells cost fewer magic points.
 Their shimmering scales repel attacks and their wings let them fly.
 %%%%
+Argon
+
+Argons are, unlike most other living beings, made of gas. Some think they 
+originated on a far away star.
+%%%%

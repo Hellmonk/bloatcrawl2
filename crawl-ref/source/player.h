@@ -471,6 +471,12 @@ public:
     // Number of viewport refreshes.
     unsigned int frame_no;
 
+    int vaporous_resistance_fire;
+    int vaporous_resistance_cold;
+    int vaporous_resistance_neg;
+    int vaporous_resistance_elec;
+    int vaporous_resistance_poison;
+    int argon_flashes_available;
 
     // ---------------------
     // The save file itself.

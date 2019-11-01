@@ -2061,6 +2061,22 @@ static const mutation_def mut_data[] =
    {"", "", ""},
    {"", "", ""},
 },
+
+{ MUT_VAPOROUS_BODY, 0, 1, mutflag::good, false,
+  "vaporous body",
+
+  {"Your body is vaporous (+2 AC, +2 EV).", "", ""},
+  {"", "", ""},
+  {"", "", ""},
+},
+
+{ MUT_VAPOROUS_RESISTANCE, 0, 3, mutflag::good, false,
+  "vaporous resistance",
+
+  {"Your vaporous body innately gains resistances", "", ""}, // TODO: Append to in mutation.cc
+  {"Your vaporous resistance grows.", "Your vaporous resistance grows.", "Your vaporous resistance grows."},
+  {"", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =

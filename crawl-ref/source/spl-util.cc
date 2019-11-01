@@ -1175,6 +1175,8 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "your current blood level is not sufficient.";
         if (you.species == SP_PROTEAN)
             return "your gelatinous body cannot transform.";
+        if (you.has_mutation(MUT_VAPOROUS_BODY))
+            return "your vaporous body cannot transform.";
         break;
 
     case SPELL_REGENERATION:

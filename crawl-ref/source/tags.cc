@@ -1380,6 +1380,12 @@ static void tag_construct_char(writer &th)
     marshallByte(th, you.trap_type);
 
     marshallBoolean(th, you.shapeshifter_species);
+    marshallByte(th, you.vaporous_resistance_fire);
+    marshallByte(th, you.vaporous_resistance_cold);
+    marshallByte(th, you.vaporous_resistance_neg);
+    marshallByte(th, you.vaporous_resistance_elec);
+    marshallByte(th, you.vaporous_resistance_poison);
+    marshallByte(th, you.argon_flashes_available);
 }
 
 /// is a custom scoring mechanism being stored?
@@ -2303,6 +2309,12 @@ void tag_read_char(reader &th, uint8_t format, uint8_t major, uint8_t minor)
     you.trap_type = unmarshallByte(th);
 
     you.shapeshifter_species = unmarshallBoolean(th);
+    you.vaporous_resistance_fire = unmarshallByte(th);
+    you.vaporous_resistance_cold = unmarshallByte(th);
+    you.vaporous_resistance_neg = unmarshallByte(th);
+    you.vaporous_resistance_elec = unmarshallByte(th);
+    you.vaporous_resistance_poison = unmarshallByte(th);
+    you.argon_flashes_available = unmarshallByte(th);
 }
 
 #if TAG_MAJOR_VERSION == 34
