@@ -2019,7 +2019,7 @@ spret_type cast_discharge(int pow, bool fail)
 
 bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
                               const coord_def target, bool quiet,
-                              const char **what, bool &hole)
+                              const char **what, bool &hole, bool &destroy)
 {
     beam.flavour     = BEAM_FRAG;
     beam.glyph       = dchar_glyph(DCHAR_FIRED_BURST);
@@ -2039,6 +2039,8 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
 
     monster* mon = monster_at(target);
     const dungeon_feature_type grid = grd(target);
+
+	destroy = false;
 
     if (target == you.pos())
     {
@@ -2173,33 +2175,63 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
     case DNGN_ORCISH_IDOL:
         if (what && *what == nullptr)
             *what = "stone idol";
+		destroy = true;
         // fall-through
     case DNGN_ROCK_WALL:
+	case DNGN_CLEAR_ROCK_WALL:
     case DNGN_SLIMY_WALL:
+		if (what && *what == nullptr)
+			*what = "wall";
+
+		beam.name = "blast of rock fragments";
+		beam.damage.num = 2;
+
+		if (x_chance_in_y(pow, 500) || beam.is_tracer)
+		{
+			destroy = true;
+			beam.ex_size++;
+			beam.damage.num++;
+		}
+
+		break;
     case DNGN_STONE_WALL:
-    case DNGN_CLEAR_ROCK_WALL:
     case DNGN_CLEAR_STONE_WALL:
         if (what && *what == nullptr)
             *what = "wall";
-        // fall-through
+
+		beam.name = "blast of stone fragments";
+		beam.damage.num = 3;
+
+		if (x_chance_in_y(pow, 1600) || beam.is_tracer)
+		{
+			beam.ex_size++;
+			beam.damage.num++;
+			destroy = true;
+		}
+		break;
     case DNGN_GRANITE_STATUE:
         if (what && *what == nullptr)
             *what = "statue";
 
-        beam.name       = "blast of rock fragments";
-        beam.damage.num = 3;
+        beam.name       = "blast of granite fragments";
+        beam.damage.num = 4;
+		destroy = true;
         break;
 
     // Metal -- small but nasty explosion
     case DNGN_METAL_WALL:
         if (what)
             *what = "metal wall";
+		beam.name = "blast of metal fragments";
+		beam.damage.num = 4;
+		break;
         // fall through
     case DNGN_GRATE:
         if (what && *what == nullptr)
             *what = "iron grate";
-        beam.name       = "blast of metal fragments";
-        beam.damage.num = 4;
+		beam.name = "blast of metal fragments";
+		beam.damage.num = 4;
+		destroy = true;
         break;
 
     // Crystal
@@ -2209,22 +2241,23 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
         beam.ex_size    = 2;
         beam.name       = "blast of crystal shards";
         beam.damage.num = 4;
+		if (coinflip() || beam.is_tracer)
+		{
+			beam.ex_size++;
+			beam.damage.num++;
+			destroy = true;
+		}
         break;
 
-    // Stone doors and arches
-    case DNGN_OPEN_DOOR:
-    case DNGN_CLOSED_DOOR:
-    case DNGN_RUNED_DOOR:
-    case DNGN_SEALED_DOOR:
-        if (what)
-            *what = "door";
-        // fall-through
+    // Stone arches
     case DNGN_STONE_ARCH:
         if (what && *what == nullptr)
             *what = "stone arch";
         hole            = false;  // to hit monsters standing on doors
         beam.name       = "blast of rock fragments";
         beam.damage.num = 3;
+		if (x_chance_in_y(pow, 1600))
+			destroy = true;
         break;
 
     default:
@@ -2252,11 +2285,12 @@ spret_type cast_fragmentation(int pow, const actor *caster,
                               const coord_def target, bool fail)
 {
     bool hole                = true;
+	bool destroy             = false;
     const char *what         = nullptr;
 
     bolt beam;
 
-    if (!setup_fragmentation_beam(beam, pow, caster, target, false, &what,hole))
+    if (!setup_fragmentation_beam(beam, pow, caster, target, false, &what, hole, destroy))
         return SPRET_ABORT;
 
     if (caster->is_player())
@@ -2264,7 +2298,7 @@ spret_type cast_fragmentation(int pow, const actor *caster,
         bolt tempbeam;
         bool temp;
         setup_fragmentation_beam(tempbeam, pow, caster, target, true, nullptr,
-                                 temp);
+                                 temp, temp);
         tempbeam.is_tracer = true;
         tempbeam.explode(false);
         if (tempbeam.beam_cancelled)
@@ -2282,7 +2316,9 @@ spret_type cast_fragmentation(int pow, const actor *caster,
     {
         if (you.see_cell(target))
             mprf("The %s shatters!", what);
-		//destroy_wall(target); BCADDO: Restore ability of LRD to destroy walls (it goes here).
+
+		if (destroy)
+		    destroy_wall(target);
     }
     else if (target == you.pos()) // You explode.
     {

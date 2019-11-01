@@ -4812,7 +4812,7 @@ static coord_def _mons_fragment_target(const monster &mon)
         bool temp;
         bolt beam;
         if (!setup_fragmentation_beam(beam, pow, mons, mons->target, true,
-                                      nullptr, temp))
+                                      nullptr, temp, temp))
         {
             return target;
         }
@@ -4830,7 +4830,7 @@ static coord_def _mons_fragment_target(const monster &mon)
 
         bolt beam;
         if (!setup_fragmentation_beam(beam, pow, mons, *di, true, nullptr,
-                                      temp))
+                                      temp, temp))
         {
             continue;
         }

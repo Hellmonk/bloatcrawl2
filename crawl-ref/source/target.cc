@@ -686,7 +686,7 @@ bool targeter_fragment::valid_aim(coord_def a)
 
     bolt tempbeam;
     bool temp;
-    if (!setup_fragmentation_beam(tempbeam, pow, agent, a, true, nullptr, temp))
+    if (!setup_fragmentation_beam(tempbeam, pow, agent, a, true, nullptr, temp, temp))
         return notify_fail("You cannot affect that.");
     return true;
 }
@@ -698,11 +698,16 @@ bool targeter_fragment::set_aim(coord_def a)
 
     bolt tempbeam;
     bool temp;
+	bool destroy_possible;
+	tempbeam.is_tracer = true;
 
-    if (setup_fragmentation_beam(tempbeam, pow, agent, a, true, nullptr, temp))
+    if (setup_fragmentation_beam(tempbeam, pow, agent, a, true, nullptr, temp, destroy_possible))
     {
-        exp_range_min = tempbeam.ex_size;
-        exp_range_max = tempbeam.ex_size;
+		exp_range_max = tempbeam.ex_size;
+		if (destroy_possible && tempbeam.ex_size > 1)
+			exp_range_min = tempbeam.ex_size - 1;
+		else
+			exp_range_min = tempbeam.ex_size;
     }
     else
     {
