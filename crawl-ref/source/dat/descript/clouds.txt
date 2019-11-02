@@ -58,9 +58,9 @@ sneeze. Perhaps metaphysically gross, but otherwise harmless.
 %%%%
 spreading flames cloud
 
-A raging forest fire. Any creature not entirely immune to fire will be hurt by
+A raging fire. Any creature not entirely immune to fire will be hurt by
 time spent in the flames. The flames will intermittently flare up and fill
-their surroundings with lesser fires. Any trees unfortunate enough to be nearby
+their surroundings with lesser fires. Any trees or wooden doors nearby
 will often find themselves transformed into more kindling for the fire.
 
 Ranged cold attacks passing through the cloud are substantially reduced in

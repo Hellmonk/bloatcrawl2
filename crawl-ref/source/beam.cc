@@ -872,8 +872,8 @@ void bolt::digging_wall_effect()
 void bolt::burn_wall_effect()
 {
     dungeon_feature_type feat = grd(pos());
-    // Fire only affects trees.
-    if (!feat_is_tree(feat)
+    // Fire affects trees and (closed wooden) doors.
+    if ((!feat_is_tree(feat) && !feat_is_door(feat))
         || env.markers.property_at(pos(), MAT_ANY, "veto_fire") == "veto"
         || !can_burn_trees()) // sanity
     {
@@ -885,7 +885,9 @@ void bolt::burn_wall_effect()
     destroy_wall(pos());
     if (you.see_cell(pos()))
     {
-        if (player_in_branch(BRANCH_SWAMP))
+		if (feat_is_door(feat))
+			emit_message("The door bursts into flame!");
+        else if (player_in_branch(BRANCH_SWAMP))
             emit_message("The tree smoulders and burns.");
         else
             emit_message("The tree burns like a torch!");
@@ -2681,7 +2683,10 @@ bool bolt::can_burn_trees() const
            || origin_spell == SPELL_BOLT_OF_FIRE
            || origin_spell == SPELL_BOLT_OF_MAGMA
            || origin_spell == SPELL_FIREBALL
-           || origin_spell == SPELL_INNER_FLAME;
+           || origin_spell == SPELL_INNER_FLAME
+		   || origin_spell == SPELL_IGNITION
+		   || origin_spell == SPELL_FIRE_STORM
+		   || origin_spell == SPELL_CONJURE_BALL_LIGHTNING;
 }
 
 bool bolt::can_affect_wall(const coord_def& p, bool map_knowledge) const
@@ -2695,16 +2700,12 @@ bool bolt::can_affect_wall(const coord_def& p, bool map_knowledge) const
         return true;
     }
 
-    // Temporary trees (from Summon Forest) can't be burned/distintegrated.
-    if (feat_is_tree(wall) && is_temp_terrain(p))
-        return false;
-
     // digging
     if (flavour == BEAM_DIGGING && feat_is_diggable(wall))
         return true;
 
     if (can_burn_trees())
-        return feat_is_tree(wall);
+        return (feat_is_tree(wall) || feat_is_door(wall));
 
     // Lee's Rapid Deconstruction
     if (flavour == BEAM_FRAG)
@@ -2799,6 +2800,12 @@ void bolt::affect_place_explosion_clouds()
         place_cloud(CLOUD_STEAM, p, 2 + random2(5), agent());
         return;
     }
+
+	if (feat_is_door(grd(p)) && is_fiery())
+	{
+		destroy_wall(p);
+		place_cloud(CLOUD_FIRE, p, 2 + random2(5), agent());
+	}
 
     if (flavour == BEAM_MEPHITIC)
     {
