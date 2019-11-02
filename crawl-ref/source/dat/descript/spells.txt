@@ -792,6 +792,10 @@ strongly reduced by armour.
 Targets made from rock, stone, ice or bone will cause a small explosion. Metal
 targets will cause a small but more damaging explosion, and targets made from
 crystal will cause a large and more damaging explosion.
+
+All targets except metal walls have a chance to be destroyed completely by this 
+fragmentation. When a wall is destroyed in this way it increases the explosion
+radius and damage significantly.
 %%%%
 Legendary Destruction spell
 
