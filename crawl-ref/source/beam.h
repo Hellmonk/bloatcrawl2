@@ -200,7 +200,8 @@ public:
     void explosion_affect_cell(const coord_def& p);
     void determine_affected_cells(explosion_map& m, const coord_def& delta,
                                   int count, int r,
-                                  bool stop_at_statues, bool stop_at_walls);
+                                  bool stop_at_statues, bool stop_at_walls,
+                                  bool stop_at_trees = true);
 
     // Setup.
     void fake_flavour();

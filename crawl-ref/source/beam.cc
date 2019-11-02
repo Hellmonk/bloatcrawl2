@@ -894,13 +894,13 @@ void bolt::burn_wall_effect()
     }
     else if (you.can_smell())
         emit_message("You smell burning wood.");
-    if (whose_kill() == KC_YOU)
+    if (whose_kill() == KC_YOU && feat_is_tree(feat))
         did_god_conduct(DID_KILL_PLANT, 1, god_cares());
-    else if (whose_kill() == KC_FRIENDLY && !crawl_state.game_is_arena())
+    else if (whose_kill() == KC_FRIENDLY && !crawl_state.game_is_arena() && feat_is_tree(feat))
         did_god_conduct(DID_KILL_PLANT, 1, god_cares());
 
     // Trees do not burn so readily in a wet environment.
-    if (player_in_branch(BRANCH_SWAMP))
+    if (player_in_branch(BRANCH_SWAMP) && feat_is_tree(feat))
         place_cloud(CLOUD_FIRE, pos(), random2(12)+5, agent());
     else
         place_cloud(CLOUD_FOREST_FIRE, pos(), random2(30)+25, agent());
@@ -5954,7 +5954,10 @@ bool bolt::explode(bool show_more, bool hole_in_the_middle)
     // Run DFS to determine which cells are influenced
     explosion_map exp_map;
     exp_map.init(INT_MAX);
-    determine_affected_cells(exp_map, coord_def(), 0, r, true, true);
+	if (can_burn_trees())
+		determine_affected_cells(exp_map, coord_def(), 0, r, true, true, false);
+	else
+        determine_affected_cells(exp_map, coord_def(), 0, r, true, true);
 
     // We get a bit fancy, drawing all radius 0 effects, then radius
     // 1, radius 2, etc. It looks a bit better that way.
@@ -6060,7 +6063,8 @@ void bolt::explosion_affect_cell(const coord_def& p)
 // Uses DFS
 void bolt::determine_affected_cells(explosion_map& m, const coord_def& delta,
                                     int count, int r,
-                                    bool stop_at_statues, bool stop_at_walls)
+                                    bool stop_at_statues, bool stop_at_walls,
+                                    bool stop_at_trees)
 {
     const coord_def centre(9,9);
     const coord_def loc = pos() + delta;
@@ -6086,9 +6090,7 @@ void bolt::determine_affected_cells(explosion_map& m, const coord_def& delta,
     // XXX: We could just include trees as wall features, but this currently
     // would have some unintended side-effects. Would be ideal to deal with
     // those and simplify feat_is_wall() to return true for trees. -gammafunk
-    if (feat_is_wall(dngn_feat)
-        || feat_is_tree(dngn_feat)
-        || feat_is_closed_door(dngn_feat))
+    if (feat_is_wall(dngn_feat))
     {
         // Special case: explosion originates from rock/statue
         // (e.g. Lee's Rapid Deconstruction) - in this case, ignore
@@ -6099,6 +6101,13 @@ void bolt::determine_affected_cells(explosion_map& m, const coord_def& delta,
         if (flavour != BEAM_DIGGING)
             at_wall = true;
     }
+
+	if (feat_is_tree(dngn_feat) || feat_is_closed_door(dngn_feat))
+	{
+		if (!stop_at_trees)
+			return;
+		at_wall = true;
+	}
 
     if (feat_is_solid(dngn_feat) && !feat_is_wall(dngn_feat)
         && !can_affect_wall(loc) && stop_at_statues)

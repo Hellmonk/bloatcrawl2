@@ -1155,7 +1155,7 @@ static unique_ptr<targeter> _spell_targeter(spell_type spell, int pow,
     case SPELL_THROW_ICICLE:
         return make_unique<targeter_imb>(&you, pow, range);
     case SPELL_FIRE_STORM:
-        return make_unique<targeter_smite>(&you, range, 2, pow > 76 ? 3 : 2);
+        return make_unique<targeter_smite>(&you, range, 2, pow > 76 ? 3 : 2, true);
     case SPELL_FREEZING_CLOUD:
     case SPELL_POISONOUS_CLOUD:
     case SPELL_HOLY_BREATH:

@@ -1285,6 +1285,7 @@ static void _setup_lightning_explosion(bolt & beam, const monster& origin)
     beam.name      = "blast of lightning";
     beam.explode_noise_msg = "You hear a clap of thunder!";
     beam.colour    = LIGHTCYAN;
+	beam.origin_spell = SPELL_CONJURE_BALL_LIGHTNING;
     beam.ex_size   = x_chance_in_y(origin.get_hit_dice(), 24) ? 3 : 2;
     // Don't credit the player for ally-summoned ball lightning explosions.
     if (origin.summoner && origin.summoner != MID_PLAYER)
@@ -1438,9 +1439,11 @@ static bool _explode_monster(monster* mons, killer_type killer,
         torment(mons, TORMENT_LURKING_HORROR, mons->pos());
     else if (mons->has_ench(ENCH_INNER_FLAME))
     {
-        for (adjacent_iterator ai(mons->pos(), false); ai; ++ai)
-            if (!cell_is_solid(*ai) && !cloud_at(*ai) && !one_chance_in(5))
-                place_cloud(CLOUD_FIRE, *ai, 10 + random2(10), agent);
+		for (adjacent_iterator ai(mons->pos(), false); ai; ++ai)
+		{
+			if (!cell_is_solid(*ai) && !cloud_at(*ai) && !one_chance_in(5))
+				place_cloud(CLOUD_FIRE, *ai, 10 + random2(10), agent);
+		}
     }
 
     // Detach monster from the grid first, so it doesn't get hit by

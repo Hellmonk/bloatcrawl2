@@ -69,7 +69,7 @@ spret_type cast_fire_storm(int pow, bolt &beam, bool fail)
         return SPRET_ABORT;
     }
 
-    if (cell_is_solid(beam.target))
+    if (cell_is_solid(beam.target) && !feat_is_tree(grd(beam.target)) && !feat_is_door(grd(beam.target)))
     {
         const char *feat = feat_type_name(grd(beam.target));
         mprf("You can't place the storm on %s.", article_a(feat).c_str());
@@ -1836,11 +1836,36 @@ spret_type cast_ignition(const actor *agent, int pow, bool fail)
         // Fake "shaped" radius 1 explosions (skipping squares with friends).
         for (coord_def pos : blast_sources)
         {
-            for (adjacent_iterator ai(pos); ai; ++ai)
-            {
-                if (cell_is_solid(*ai))
-                    continue;
+			for (adjacent_iterator ai(pos); ai; ++ai)
+			{
+				if (cell_is_solid(*ai))
+				{
+					if (feat_is_tree(grd(*ai)) || feat_is_door(grd(*ai)))
+					{
+						if (feat_is_tree(grd(*ai)) && agent->is_player())
+							did_god_conduct(DID_KILL_PLANT, 1, true);
+						// Destroy the wall.
+						destroy_wall(*ai);
+						if (you.see_cell(*ai))
+						{
+							if (feat_is_door(grd(*ai)))
+								mpr("The door bursts into flame!");
+							else if (player_in_branch(BRANCH_SWAMP))
+								mpr("The tree smoulders and burns.");
+							else
+								mpr("The tree burns like a torch!");
+						}
+						else if (you.can_smell())
+							mpr("You smell burning wood.");
 
+						// Trees do not burn so readily in a wet environment.
+						if (player_in_branch(BRANCH_SWAMP))
+							place_cloud(CLOUD_FIRE, *ai, random2(12) + 5, agent);
+						else
+							place_cloud(CLOUD_FOREST_FIRE, *ai, random2(30) + 25, agent);
+					}
+					continue;
+				}
                 actor *act = actor_at(*ai);
 
                 // Friendly creature, don't blast this square.
