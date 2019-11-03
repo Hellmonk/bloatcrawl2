@@ -882,6 +882,15 @@ Metal Splinters spell
 Fires a directed stream of sharp metal splinters. Its damage is strongly
 reduced by armour.
 %%%%
+Methodical Deconstruction spell
+
+Vibrates a wall to examine its weaknesses (loud). Then focuses on the 
+destruction of the wall for two to sixteen turns, depending on spellpower,
+and the difficulty to destroy the wall. At the end of the meditation, the
+wall collapses in on itself.
+
+Rock takes the least time to destroy; metal takes the longest, stone in between.
+%%%%
 Miasma Breath spell
 
 Creates a large cloud of foul pestilence, slowing and rotting any living

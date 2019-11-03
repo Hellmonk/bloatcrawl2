@@ -519,7 +519,7 @@ spret_type cast_SMD(const coord_def& target, int pow, bool fail)
 			return SPRET_ABORT;
 	}
 
-	delay = max(2,div_rand_round(delay * 100, pow));
+	delay = min(max(2,div_rand_round(delay * 100, pow)), 16);
 
 	start_delay<SMDDelay>(delay, target);
 	return SPRET_SUCCESS;
