@@ -911,6 +911,191 @@ spret_type cast_freeze(int pow, monster* mons, bool fail)
     return SPRET_SUCCESS;
 }
 
+void cloud_strike(actor * caster, actor * foe, int damage)
+{
+	if (!cloud_at(foe->pos()))
+		return;
+	cloud_type cloud = cloud_at(foe->pos())->type;
+
+	if (cloud == CLOUD_CHAOS)
+	{
+		int x = random2(8);
+		switch (x)
+		{
+		case 0:
+			cloud = CLOUD_HOLY;
+		case 1:
+			cloud = CLOUD_ACID;
+		case 2:
+			cloud = CLOUD_FIRE;
+		case 3:
+			cloud = CLOUD_COLD;
+		case 4:
+			cloud = CLOUD_NEGATIVE_ENERGY;
+		case 5:
+			cloud = CLOUD_MIASMA;
+		case 6:
+			cloud = CLOUD_PETRIFY;
+		case 7:
+			cloud = CLOUD_BLACK_SMOKE;
+		case 8:
+			cloud = CLOUD_STORM;
+		default:
+			cloud = CLOUD_HOLY;
+		}
+
+	}
+
+	switch (cloud)
+	{
+	case CLOUD_NONE:
+		return;
+	case CLOUD_FIRE:
+	case CLOUD_FOREST_FIRE:
+	case CLOUD_STEAM:
+		damage = resist_adjust_damage(foe, BEAM_FIRE, damage);
+		if (damage > 0)
+		{
+			foe->hurt(caster, damage, BEAM_FIRE, KILLED_BY_BEAM,
+				"", "by the air");
+			if (foe->is_player())
+			    mpr("You are burned by the wild clouds!");
+			else 
+			    simple_monster_message(*foe->as_monster(), " is engulfed in scorching flames!");
+		}
+		break;
+	case CLOUD_MEPHITIC:
+	case CLOUD_POISON:
+	case CLOUD_MIASMA:
+		damage = resist_adjust_damage(foe, BEAM_POISON, damage);
+		if (damage > 0)
+		{
+			foe->hurt(caster, damage, BEAM_POISON, KILLED_BY_BEAM,
+				"", "by the air");
+			if (foe->is_player())
+			{
+				poison_player(1, "the air");
+				mpr("You are engulfed by the poisonous vapours!");
+			}
+			else
+			{
+				poison_monster(foe->as_monster(), caster);
+				simple_monster_message(*foe->as_monster(), " is engulfed in poisonous vapours!");
+			}
+		}
+		break;
+	case CLOUD_COLD:
+		damage = resist_adjust_damage(foe, BEAM_COLD, damage);
+		if (damage > 0)
+		{
+			foe->hurt(caster, damage, BEAM_COLD, KILLED_BY_BEAM,
+				"", "by the air");
+			if (foe->is_player())
+				mpr("The freezing vapours engulf you!");
+			else
+			    simple_monster_message(*foe->as_monster(), " is engulfed in freezing air!");
+		}
+		break;
+	case CLOUD_HOLY:
+		damage = resist_adjust_damage(foe, BEAM_HOLY, damage);
+		if (damage > 0)
+		{
+			foe->hurt(caster, damage, BEAM_HOLY, KILLED_BY_BEAM,
+				"", "by the air");
+			if (foe->is_player())
+				mpr("You are rebuked by the blessed clouds!");
+			else
+				simple_monster_message(*foe->as_monster(), " is rebuked by the holy cloud!");
+		}
+		break;
+	case CLOUD_BLACK_SMOKE:
+	case CLOUD_GREY_SMOKE:
+	case CLOUD_BLUE_SMOKE:
+	case CLOUD_PURPLE_SMOKE:
+	case CLOUD_TLOC_ENERGY:
+	case CLOUD_MIST:
+	case CLOUD_RAIN:
+	case CLOUD_MAGIC_TRAIL:
+	case CLOUD_DUST:
+	case CLOUD_XOM_TRAIL:
+	case CLOUD_SALT:
+	case CLOUD_FLUFFY:
+		damage = foe->apply_ac(damage);
+		if (damage > 0)
+		{
+			foe->hurt(caster, damage, BEAM_COLD, KILLED_BY_BEAM,
+				"", "by the air");
+			if (foe->is_player())
+				mpr("The cloud makes the air strike you more forcefully!");
+			else
+				simple_monster_message(*foe->as_monster(), " is struck by the cloud!");
+		}
+		break;
+	case CLOUD_MUTAGENIC:
+	case CLOUD_PETRIFY:
+	case CLOUD_TORNADO:
+	case CLOUD_GOLD_DUST:
+		damage = foe->apply_ac(damage * 2);
+		if (damage > 0)
+		{
+			foe->hurt(caster, damage, BEAM_COLD, KILLED_BY_BEAM,
+				"", "by the air");
+			if (foe->is_player())
+				mpr("The dense cloud makes the air strike wildly!");
+			else
+				simple_monster_message(*foe->as_monster(), " is struck by the thick clouds!");
+		}
+		break;
+
+	case CLOUD_NEGATIVE_ENERGY:
+	case CLOUD_SPECTRAL:
+		damage = resist_adjust_damage(foe, BEAM_NEG, damage);
+		if (damage > 0)
+		{
+			foe->hurt(caster, damage, BEAM_NEG, KILLED_BY_BEAM,
+				"", "by the air");
+			if (foe->is_player())
+			{
+				mpr("You are drained as the cloud strikes you!");
+				drain_player();
+			}
+			else
+			{
+				simple_monster_message(*foe->as_monster(), " is drained by the clouds!");
+			}
+		}
+		break;
+	case CLOUD_ACID:
+		damage = resist_adjust_damage(foe, BEAM_ACID, damage);
+		if (damage > 0)
+		{
+			foe->hurt(caster, damage, BEAM_ACID, KILLED_BY_BEAM,
+				"", "by the air");
+			if (foe->is_player())
+				mpr("You are engulfed in acidic fog!");
+			else
+				simple_monster_message(*foe->as_monster(), " is engulfed in acidic fog!");
+		}
+		break;
+	case CLOUD_STORM:
+		damage = resist_adjust_damage(foe, BEAM_ELECTRICITY, damage);
+		if (damage > 0)
+		{
+			foe->hurt(caster, damage, BEAM_ELECTRICITY, KILLED_BY_BEAM,
+				"", "by the air");
+			if (foe->is_player())
+				mpr("The airstrike triggers a lightning strike through you!");
+			else
+				simple_monster_message(*foe->as_monster(), " is struck by lightning!");
+			noisy(15, foe->pos());
+		}
+		break;
+	default:
+		break;
+	}
+	return;
+}
+
 spret_type cast_airstrike(int pow, const dist &beam, bool fail)
 {
     if (cell_is_solid(beam.target))
@@ -945,7 +1130,7 @@ spret_type cast_airstrike(int pow, const dist &beam, bool fail)
 
     enable_attack_conducts(conducts);
 
-    int hurted = 8 + random2(2 + div_rand_round(pow, 7));
+    int dam = 8 + random2avg(2 + div_rand_round(pow, 7),3);
 
     bolt pbeam;
     pbeam.flavour = BEAM_AIR;
@@ -953,12 +1138,15 @@ spret_type cast_airstrike(int pow, const dist &beam, bool fail)
 #ifdef DEBUG_DIAGNOSTICS
     const int preac = hurted;
 #endif
-    hurted = mons->apply_ac(mons->beam_resists(pbeam, hurted, false));
+    int hurted = mons->apply_ac(mons->beam_resists(pbeam, dam, false));
     dprf("preac: %d, postac: %d", preac, hurted);
 
     mons->hurt(&you, hurted);
-    if (mons->alive())
-        print_wounds(*mons);
+	if (mons->alive())
+	{
+		cloud_strike(&you, mons, dam);
+		print_wounds(*mons);
+	}
 
     return SPRET_SUCCESS;
 }

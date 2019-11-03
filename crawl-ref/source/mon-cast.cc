@@ -5790,9 +5790,12 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
 
         // Previous method of damage calculation (in line with player
         // airstrike) had absurd variance.
-        damage_taken = foe->apply_ac(random2avg(damage_taken, 3));
+		int dam = random2avg(damage_taken, 3);
+        damage_taken = foe->apply_ac(dam);
         foe->hurt(mons, damage_taken, BEAM_MISSILE, KILLED_BY_BEAM,
                   "", "by the air");
+		if (foe->alive())
+			cloud_strike(mons, foe, dam);
         return;
     }
 
