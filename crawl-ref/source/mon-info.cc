@@ -49,7 +49,7 @@
 static map<enchant_type, monster_info_flags> trivial_ench_mb_mappings = {
     { ENCH_BERSERK,         MB_BERSERK },
     { ENCH_POISON,          MB_POISONED },
-    { ENCH_MAGIC_CANDLE,          MB_GLOWING },
+    { ENCH_MAGIC_CANDLE,    MB_GLOWING },
     { ENCH_SILVER_CANDLE,   MB_GLOWING },
     { ENCH_SLOW,            MB_SLOWED },
     { ENCH_SICK,            MB_SICK },
