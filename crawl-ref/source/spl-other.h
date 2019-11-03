@@ -42,3 +42,4 @@ void end_recall();
 spret_type cast_passwall(const coord_def& delta, int pow, bool fail);
 spret_type cast_intoxicate(int pow, bool fail);
 spret_type cast_darkness(int pow, bool fail);
+spret_type cast_SMD(const coord_def& target, int pow, bool fail);

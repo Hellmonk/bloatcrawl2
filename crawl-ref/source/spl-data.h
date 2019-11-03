@@ -1553,6 +1553,17 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+	SPELL_SMD, "Methodical Deconstruction",
+	SPTYP_EARTH,
+	SPFLAG_TARGET,
+	5,
+	200,
+	1, 1,
+	4, 0,
+	TILEG_LEES_RAPID_DECONSTRUCTION,
+},
+
+{
     SPELL_SANDBLAST, "Sandblast",
     SPTYP_EARTH,
     SPFLAG_DIR_OR_TARGET | SPFLAG_NOT_SELF | SPFLAG_NEEDS_TRACER,

@@ -395,6 +395,29 @@ public:
     }
 };
 
+class SMDDelay : public Delay
+{
+	coord_def target;
+
+	void start() override;
+
+	void tick() override;
+
+	void finish() override;
+
+public:
+	SMDDelay(int dur, coord_def pos) :
+		Delay(dur), target{ pos }
+	{ }
+
+	bool try_interrupt() override;
+
+	const char* name() const override
+	{
+		return "methodical destruction";
+	}
+};
+
 class DerootDelay : public Delay
 {
 	bool was_prompted = false;

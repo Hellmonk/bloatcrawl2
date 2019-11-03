@@ -1167,6 +1167,8 @@ static unique_ptr<targeter> _spell_targeter(spell_type spell, int pow,
                 you.props[THUNDERBOLT_AIM_KEY].get_coord() : coord_def());
     case SPELL_LRD:
         return make_unique<targeter_fragment>(&you, pow, range);
+	case SPELL_SMD:
+		return make_unique<targeter_smite>(&you, 1, 0, 0, true);
     case SPELL_FULMINANT_PRISM:
         return make_unique<targeter_smite>(&you, range, 0, 2);
     case SPELL_BLINDING_SPRAY:
@@ -1632,6 +1634,9 @@ static spret_type _do_cast(spell_type spell, int powc, const dist& spd,
 
     case SPELL_LRD:
         return cast_fragmentation(powc, &you, spd.target, fail);
+
+	case SPELL_SMD:
+		return cast_SMD(spd.target, powc, fail);
 
     case SPELL_GRAVITAS:
         return cast_gravitas(powc, beam.target, fail);

@@ -481,3 +481,46 @@ spret_type cast_darkness(int pow, bool fail)
 
     return SPRET_SUCCESS;
 }
+
+spret_type cast_SMD(const coord_def& target, int pow, bool fail)
+{
+	fail_check();
+
+	dungeon_feature_type grid = grd(target);
+	int delay = 0;
+
+	switch (grid)
+	{
+		// Rock
+		case DNGN_ROCK_WALL:
+		case DNGN_CLEAR_ROCK_WALL:
+		case DNGN_SLIMY_WALL:
+			delay = 3;
+			break;
+
+		// Stone
+		case DNGN_STONE_WALL:
+		case DNGN_CLEAR_STONE_WALL:
+			delay = 8;
+			break;
+
+		// Metal 
+		case DNGN_METAL_WALL:
+			delay = 12;
+			break;
+
+		// Crystal
+		case DNGN_CRYSTAL_WALL:
+			delay = 2;
+			break;
+
+		default:
+			mpr("You can't deconstruct that!");
+			return SPRET_ABORT;
+	}
+
+	delay = max(2,div_rand_round(delay * 100, pow));
+
+	start_delay<SMDDelay>(delay, target);
+	return SPRET_SUCCESS;
+}

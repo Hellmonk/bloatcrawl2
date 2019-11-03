@@ -16,8 +16,10 @@
 #include "bloodspatter.h"
 #include "butcher.h"
 #include "clua.h"
+#include "cloud.h"
 #include "command.h"
 #include "coord.h"
+#include "coordit.h"
 #include "database.h"
 #include "describe.h"
 #include "directn.h"
@@ -67,6 +69,7 @@
 #include "state.h"
 #include "stringutil.h"
 #include "teleport.h"
+#include "terrain.h"
 #include "transform.h"
 #include "traps.h"
 #include "travel.h"
@@ -253,6 +256,12 @@ bool PasswallDelay::try_interrupt()
 {
     mpr("Your meditation is interrupted.");
     return true;
+}
+
+bool SMDDelay::try_interrupt()
+{
+	mpr("Your destruction attempt is interrupted.");
+	return true;
 }
 
 bool ShaftSelfDelay::try_interrupt()
@@ -485,6 +494,12 @@ void PasswallDelay::start()
     mprf(MSGCH_MULTITURN_ACTION, "You begin to meditate on the wall.");
 }
 
+void SMDDelay::start()
+{
+	noisy(max(5,duration), target);
+	mprf(MSGCH_SOUND, "The wall sings out as you magically vibrate it to determine its weaknesses.");
+}
+
 void DerootDelay::start()
 {
 	mprf(MSGCH_MULTITURN_ACTION, "You begin to carefully uproot yourself.");
@@ -662,6 +677,16 @@ void MultidropDelay::tick()
         you.time_taken = 0;
     }
     items.erase(items.begin());
+}
+
+void SMDDelay::tick()
+{
+	if (one_chance_in(3))
+	{
+		mprf(MSGCH_SOUND, "Your destruction attempt makes a loud rumbling!");
+		noisy(roll_dice(4,6), target);
+	}
+	mprf(MSGCH_MULTITURN_ACTION, "You continue focusing on collapsing the wall.");
 }
 
 void JewelleryOnDelay::tick()
@@ -880,6 +905,19 @@ void DerootDelay::finish()
 {
 	you.attribute[ATTR_ROOTED] = 0;
 	mpr("You finish extracting your roots and can move again.");
+}
+
+void SMDDelay::finish()
+{
+	mprf(MSGCH_SOUND, "You intensely vibrate the wall and it collapses in on itself with a thud.");
+	noisy(2 + random2(4), target);
+	destroy_wall(target);
+	place_cloud(CLOUD_DUST, target, random2(10) + 5, &you);
+	for (adjacent_iterator ai(target, false); ai; ++ai)
+	{
+		if (!cell_is_solid(*ai) && !cloud_at(*ai) && !one_chance_in(3))
+			place_cloud(CLOUD_DUST, *ai, 5 + random2(10), &you);
+	}
 }
 
 void BlurryScrollDelay::finish()

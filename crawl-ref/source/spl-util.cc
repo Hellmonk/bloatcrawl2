@@ -506,6 +506,8 @@ const char *get_spell_target_prompt(spell_type which_spell)
         return "Smite";
     case SPELL_LRD:
         return "Fragment what (e.g. wall or brittle monster)?";
+	case SPELL_SMD:
+		return "Destroy what (e.g. wall)?";
     default:
         return nullptr;
     }
@@ -1365,6 +1367,7 @@ bool spell_no_hostile_in_range(spell_type spell)
     case SPELL_APPORTATION:
     case SPELL_CONJURE_FLAME:
     case SPELL_PASSWALL:
+	case SPELL_SMD:
     case SPELL_GOLUBRIAS_PASSAGE:
     case SPELL_LRD:
     case SPELL_FULMINANT_PRISM:
