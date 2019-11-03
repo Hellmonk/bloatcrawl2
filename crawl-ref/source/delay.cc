@@ -254,20 +254,50 @@ bool DescendingStairsDelay::try_interrupt()
 
 bool PasswallDelay::try_interrupt()
 {
-    mpr("Your meditation is interrupted.");
+	if (!prompted)
+	{
+		if (!crawl_state.disables[DIS_CONFIRMATIONS]
+			&& !yesno("Continue meditating on the wall?", false, 0, false))
+		{
+			mpr("Your Your meditation is interrupted.");
+			return true;
+		}
+		else
+			prompted = true;
+	}
+	return false;
+}
+
+bool ShaftSelfDelay::try_interrupt()
+{
+	if (!prompted)
+	{
+		if (!crawl_state.disables[DIS_CONFIRMATIONS]
+			&& !yesno("Continue digging your shaft?", false, 0, false))
+		{
+			mpr("You stop digging.");
+			return true;
+		}
+		else
+			prompted = true;
+	}
     return true;
 }
 
 bool SMDDelay::try_interrupt()
 {
-	mpr("Your destruction attempt is interrupted.");
-	return true;
-}
-
-bool ShaftSelfDelay::try_interrupt()
-{
-    mpr("You stop digging.");
-    return true;
+	if (!prompted)
+	{
+		if (!crawl_state.disables[DIS_CONFIRMATIONS]
+			&& !yesno("Continue your destruction?", false, 0, false))
+		{
+			mpr("Your destruction attempt is interrupted.");
+			return true;
+		}
+		else
+			prompted = true;
+	}
+	return false;
 }
 
 bool DerootDelay::try_interrupt()
@@ -496,7 +526,7 @@ void PasswallDelay::start()
 
 void SMDDelay::start()
 {
-	noisy(max(5,duration), target);
+	noisy(20, target);
 	mprf(MSGCH_SOUND, "The wall sings out as you magically vibrate it to determine its weaknesses.");
 }
 
@@ -683,8 +713,8 @@ void SMDDelay::tick()
 {
 	if (one_chance_in(3))
 	{
-		mprf(MSGCH_SOUND, "Your destruction attempt makes a loud rumbling!");
-		noisy(roll_dice(4,6), target);
+		mprf(MSGCH_SOUND, "The wall makes a loud rumbling!");
+		noisy(random_range(4,30), target);
 	}
 	mprf(MSGCH_MULTITURN_ACTION, "You continue focusing on collapsing the wall.");
 }
@@ -1109,7 +1139,7 @@ static bool _should_stop_activity(Delay* delay,
         return false;
     }
 
-    return ai == AI_FORCE_INTERRUPT
+    return ai == AI_FORCE_INTERRUPT || ai == AI_HP_LOSS
            || Options.activity_interrupts[delay->name()][ai];
 }
 
@@ -1350,8 +1380,8 @@ void autotoggle_autopickup(bool off)
 bool interrupt_activity(activity_interrupt_type ai,
                         const activity_interrupt_data &at,
                         vector<string>* msgs_buf)
-{
-    if (interrupt_block::blocked())
+{	
+	if (interrupt_block::blocked())
         return false;
 
     const interrupt_block block_recursive_interrupts;

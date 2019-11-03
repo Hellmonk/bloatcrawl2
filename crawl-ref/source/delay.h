@@ -374,6 +374,7 @@ public:
 class PasswallDelay : public Delay
 {
     coord_def dest;
+	bool prompted = false;
     void start() override;
 
     void tick() override
@@ -398,6 +399,7 @@ public:
 class SMDDelay : public Delay
 {
 	coord_def target;
+	bool prompted = false;
 
 	void start() override;
 
@@ -687,6 +689,8 @@ public:
 
 class ShaftSelfDelay : public Delay
 {
+	bool prompted = false;
+
     void start() override;
 
     void tick() override
