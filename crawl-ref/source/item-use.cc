@@ -607,7 +607,7 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
         else
         {
 			if (((you.weapon(0) && you.inv[you.equip[EQ_WEAPON0]].cursed()) || (you.weapon(1) && you.inv[you.equip[EQ_WEAPON1]].cursed()))
-				&& you.get_mutation_level(MUT_GHOST))
+				&& you.get_mutation_level(MUT_GHOST) == 0)
 			{
 				mpr("You can't swap weapons while either is cursed.");
 				return false;
@@ -836,11 +836,6 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 		equip_item(EQ_WEAPON0, item_slot, show_weff_messages);
 	}
 
-    else if (!you.weapon(0))
-    {
-		equip_item(EQ_WEAPON0, item_slot, show_weff_messages);
-    }
-
 	else if (is_range_weapon(new_wpn))
 	{
 		if (you.weapon(0)->cursed() && you.get_mutation_level(MUT_GHOST) == 0)
@@ -854,19 +849,6 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 			return false;
 
 		equip_item(EQ_WEAPON0, item_slot, show_weff_messages);
-	}
-
-	else if (!you.weapon(1))
-	{
-		if (you.hands_reqd(*(you.weapon(0))) == HANDS_TWO)
-		{
-			if (unwield_item(true, show_weff_messages))
-				equip_item(EQ_WEAPON0, item_slot, show_weff_messages);
-			else
-				return false;
-		}
-		else
-			equip_item(EQ_WEAPON1, item_slot, show_weff_messages);
 	}
 
 	else if (new_wpn.base_type == OBJ_STAVES && you.weapon(0) && you.weapon(0)->base_type == OBJ_STAVES)
@@ -897,6 +879,24 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 			return false;
 
 		equip_item(EQ_WEAPON1, item_slot, show_weff_messages);
+	}
+
+	else if (!you.weapon(0))
+	{
+		equip_item(EQ_WEAPON0, item_slot, show_weff_messages);
+	}
+
+	else if (!you.weapon(1))
+	{
+		if (you.hands_reqd(*(you.weapon(0))) == HANDS_TWO)
+		{
+			if (unwield_item(true, show_weff_messages))
+				equip_item(EQ_WEAPON0, item_slot, show_weff_messages);
+			else
+				return false;
+		}
+		else
+			equip_item(EQ_WEAPON1, item_slot, show_weff_messages);
 	}
 
 	else
