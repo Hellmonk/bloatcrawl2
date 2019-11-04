@@ -1833,8 +1833,8 @@ static const mutation_def mut_data[] =
   "MP-powered wands",
 
   {"You expend magic power (3 MP) to strengthen your wands.", "", ""},
-  {"You feel your magical essence link to your wands.", "", ""},
-  {"Your magical essence is no longer linked to your wands.", "", ""},
+  {"You feel your magical essence link to the dungeon's wands.", "", ""},
+  {"Your magical essence no longer links to wands of the dungeon.", "", ""},
 },
 
 { MUT_UNSKILLED, 0, 3, mutflag::bad, false,
@@ -2060,6 +2060,22 @@ static const mutation_def mut_data[] =
    {"You are covered in bright scales. (AC+6, SH+6, Stealth-)", "", ""},
    {"", "", ""},
    {"", "", ""},
+},
+
+{ MUT_VAPOROUS_BODY, 0, 1, mutflag::good, false,
+  "vaporous body",
+
+  {"Your body is vaporous (+2 AC, +2 EV).", "", ""},
+  {"", "", ""},
+  {"", "", ""},
+},
+
+{ MUT_VAPOROUS_RESISTANCE, 0, 3, mutflag::good, false,
+  "vaporous resistance",
+
+  {"Your vaporous body innately gains resistances", "", ""}, // TODO: Append to in mutation.cc
+  {"Your vaporous resistance grows.", "Your vaporous resistance grows.", "Your vaporous resistance grows."},
+  {"", "", ""},
 },
 };
 

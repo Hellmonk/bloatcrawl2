@@ -15,6 +15,7 @@ enum stat_desc_type
 const char* stat_desc(stat_type stat, stat_desc_type desc);
 
 bool attribute_increase();
+bool pick_vaporous_resistance();
 
 void modify_stat(stat_type which_stat, int amount, bool suppress_msg);
 

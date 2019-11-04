@@ -2562,6 +2562,12 @@ static tileidx_t _tileidx_misc(const item_def &item)
 
     case MISC_QUAD_DAMAGE:
         return TILE_MISC_QUAD_DAMAGE;
+
+    case MISC_ANCIENT_CRATE:
+        return TILE_MISC_ANCIENT_CRATE;
+
+    case MISC_DUSTY_TOME:
+        return TILE_MISC_DUSTY_TOME;
     }
 
     return TILE_ERROR;
@@ -3534,18 +3540,14 @@ tileidx_t tileidx_ability(const ability_type ability)
     case ABIL_JIYVA_CURE_BAD_MUTATION:
         return TILEG_ABILITY_JIYVA_CURE_BAD_MUTATIONS;
     // Fedhas
-    case ABIL_FEDHAS_FUNGAL_BLOOM:
-        return TILEG_ABILITY_FEDHAS_FUNGAL_BLOOM;
-    case ABIL_FEDHAS_SUNLIGHT:
-        return TILEG_ABILITY_FEDHAS_SUNLIGHT;
-    case ABIL_FEDHAS_RAIN:
-        return TILEG_ABILITY_FEDHAS_RAIN;
-    case ABIL_FEDHAS_PLANT_RING:
-        return TILEG_ABILITY_FEDHAS_PLANT_RING;
-    case ABIL_FEDHAS_SPAWN_SPORES:
-        return TILEG_ABILITY_FEDHAS_SPAWN_SPORES;
-    case ABIL_FEDHAS_EVOLUTION:
-        return TILEG_ABILITY_FEDHAS_EVOLUTION;
+    case ABIL_FEDHAS_WALL_OF_BRIARS:
+        return TILEG_ABILITY_FEDHAS_WALL_OF_BRIARS;
+    case ABIL_FEDHAS_GROW_BALLISTOMYCETE:
+        return TILEG_ABILITY_FEDHAS_GROW_BALLISTOMYCETE;
+    case ABIL_FEDHAS_OVERGROW:
+        return TILEG_ABILITY_FEDHAS_OVERGROW;
+    case ABIL_FEDHAS_GROW_OKLOB:
+        return TILEG_ABILITY_FEDHAS_GROW_OKLOB;
     // Cheibriados
     case ABIL_CHEIBRIADOS_TIME_STEP:
         return TILEG_ABILITY_CHEIBRIADOS_TIME_STEP;

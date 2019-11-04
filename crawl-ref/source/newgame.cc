@@ -135,7 +135,7 @@ static bool _char_defined(const newgame_def& ng)
     return ng.species != SP_UNKNOWN && ng.job != JOB_UNKNOWN;
 }
 
-static string _char_description(const newgame_def& ng)
+string newgame_char_description(const newgame_def& ng)
 {
     if (_is_random_viable_choice(ng))
         return "Recommended character";
@@ -370,7 +370,7 @@ static void _choose_species_job(newgame_def& ng, newgame_def& ng_choice,
         // Either an invalid combination was passed in through options,
         // or we messed up.
         end(1, false, "Incompatible species and background (%s) selected.",
-                                _char_description(ng).c_str());
+                                newgame_char_description(ng).c_str());
     }
 }
 
@@ -391,14 +391,14 @@ static bool _reroll_random(newgame_def& ng)
     fill_doll_for_newgame(doll, ng);
 #ifdef USE_TILE_LOCAL
     auto tile = make_shared<ui::PlayerDoll>(doll);
-    tile->set_margin_for_sdl({0, 10, 0, 0});
+    tile->set_margin_for_sdl(0, 10, 0, 0);
     title_hbox->add_child(move(tile));
 #endif
 #endif
     title_hbox->add_child(make_shared<Text>(prompt));
-    title_hbox->align_items = Widget::CENTER;
-    title_hbox->set_margin_for_sdl({0, 0, 20, 0});
-    title_hbox->set_margin_for_crt({0, 0, 1, 0});
+    title_hbox->align_cross = Widget::CENTER;
+    title_hbox->set_margin_for_sdl(0, 0, 20, 0);
+    title_hbox->set_margin_for_crt(0, 0, 1, 0);
 
     auto vbox = make_shared<Box>(Box::VERT);
     vbox->add_child(move(title_hbox));
@@ -562,8 +562,8 @@ static void _add_menu_sub_item(shared_ptr<OuterMenu>& menu, int x, int y, const 
 {
     auto tmp = make_shared<Text>();
     tmp->set_text(formatted_string(text, BROWN));
-    tmp->set_margin_for_sdl({4,8,4,8});
-    tmp->set_margin_for_crt({0,2,0,0});
+    tmp->set_margin_for_sdl(4,8);
+    tmp->set_margin_for_crt(0, 2, 0, 0);
 
     auto btn = make_shared<MenuButton>();
     btn->set_child(move(tmp));
@@ -619,14 +619,14 @@ static void _choose_name(newgame_def& ng, newgame_def& choice)
     fill_doll_for_newgame(doll, ng);
 #ifdef USE_TILE_LOCAL
     auto tile = make_shared<ui::PlayerDoll>(doll);
-    tile->set_margin_for_sdl({0, 10, 0, 0});
+    tile->set_margin_for_sdl(0, 10, 0, 0);
     title_hbox->add_child(move(tile));
 #endif
 #endif
     title_hbox->add_child(make_shared<Text>(title));
-    title_hbox->align_items = Widget::CENTER;
-    title_hbox->set_margin_for_sdl({0, 0, 20, 0});
-    title_hbox->set_margin_for_crt({0, 0, 1, 0});
+    title_hbox->align_cross = Widget::CENTER;
+    title_hbox->set_margin_for_sdl(0, 0, 20, 0);
+    title_hbox->set_margin_for_crt(0, 0, 1, 0);
 
     auto vbox = make_shared<Box>(Box::VERT);
     vbox->add_child(move(title_hbox));
@@ -648,8 +648,8 @@ static void _choose_name(newgame_def& ng, newgame_def& choice)
         tmp->set_text(formatted_string("Enter - Begin!", BROWN));
 
         auto btn = make_shared<MenuButton>();
-        tmp->set_margin_for_sdl({4,8,4,8});
-        tmp->set_margin_for_crt({0,2,0,0});
+        tmp->set_margin_for_sdl(4,8);
+        tmp->set_margin_for_crt(0, 2, 0, 0);
         btn->set_child(move(tmp));
         btn->id = CK_ENTER;
         btn->description = "";
@@ -658,9 +658,9 @@ static void _choose_name(newgame_def& ng, newgame_def& choice)
 
         auto err = make_shared<Text>(
                 formatted_string("That's a silly name!", LIGHTRED));
-        err->set_margin_for_sdl({0,0,0,10});
+        err->set_margin_for_sdl(0, 0, 0, 10);
         auto box = make_shared<Box>(Box::HORZ);
-        box->align_items = Widget::CENTER;
+        box->align_cross = Widget::CENTER;
         box->add_child(err);
 
         ok_switcher->add_child(btn);
@@ -768,9 +768,11 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     choice.skilled_type = 0;
     choice.chaoskin = false;
     choice.no_locks = false;
+    choice.trap_type = 0;
 
     // Non-living or default-undead species cannot choose undead state
-    bool can_choose_undead = species_can_use_modified_undeadness(ng.species);
+    bool can_choose_undead = species_can_use_modified_undeadness(ng.species)
+        && !job_is_good_god_zealot(ng.job);
     if (!can_choose_undead)
         choice.undead_type = species_undead_type(ng.species);
 
@@ -811,6 +813,25 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
                     break;
                 case 1:
                     choice.skilled_type = 0;
+                    break;
+            }
+            return done = false;
+        }
+        else if (key == 't' || key == 'T')
+        {
+            switch (choice.trap_type)
+            {
+                case 0:
+                    choice.trap_type = 1;
+                    break;
+                case 1:
+                    choice.trap_type = 2;
+                    break;
+                case 2:
+                    choice.trap_type = 3;
+                    break;
+                case 3:
+                    choice.trap_type = 0;
                     break;
             }
             return done = false;
@@ -891,6 +912,14 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     auto runelock_choice = make_shared<ui::Text>(runelock_choice_str);
     box->add_child(runelock_choice);
 
+    formatted_string trap_choice_str;
+    trap_choice_str.textcolour(WHITE);
+    trap_choice_str.cprintf("\n(T)");
+    trap_choice_str.textcolour(LIGHTGRAY);
+    trap_choice_str.cprintf("raps: normal | none | floor only | random only");
+    auto trap_choice = make_shared<ui::Text>(trap_choice_str);
+    box->add_child(trap_choice);
+
     auto popup = make_shared<ui::Popup>(box);
     ui::push_layout(move(popup));
     ui::set_focused_widget(prompt_ui.get());
@@ -927,6 +956,21 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
             case 1:
                 // Note the space so we don't match "unSKILLED"
                 skill_choice->set_highlight_pattern(" skilled ", false);
+                break;
+        }
+        switch (choice.trap_type)
+        {
+            case 0:
+                trap_choice->set_highlight_pattern("normal", false);
+                break;
+            case 1:
+                trap_choice->set_highlight_pattern("none", false);
+                break;
+            case 2:
+                trap_choice->set_highlight_pattern("floor only", false);
+                break;
+            case 3:
+                trap_choice->set_highlight_pattern("random only", false);
                 break;
         }
         chaoskin_choice->set_highlight_pattern(choice.chaoskin ? "enabled" : "disabled", false);
@@ -986,6 +1030,15 @@ static void _choose_seed(newgame_def& ng, newgame_def& choice,
             char timebuf[9];
             strftime(timebuf, sizeof(timebuf), "%Y%m%d", timeinfo);
             reader.set_text(timebuf);
+#ifdef USE_TILE_WEB
+            // TODO: can this be done more automatically somehow?
+            tiles.json_open_object();
+            tiles.json_write_string("msg", "update_input");
+            tiles.json_write_string("input_text", string(timebuf));
+            tiles.json_write_bool("select", true);
+            tiles.json_close_object();
+            tiles.finish_message();
+#endif
             return done = false;
         }
         else if (key == '?')
@@ -993,6 +1046,15 @@ static void _choose_seed(newgame_def& ng, newgame_def& choice,
         else if (key == '-')
         {
             reader.set_text("");
+#ifdef USE_TILE_WEB
+            // TODO: can this be done more automatically somehow?
+            tiles.json_open_object();
+            tiles.json_write_string("msg", "update_input");
+            tiles.json_write_string("input_text", string(""));
+            tiles.json_write_bool("select", true);
+            tiles.json_close_object();
+            tiles.finish_message();
+#endif
             return done = false;
         }
 #ifdef USE_TILE_LOCAL
@@ -1030,42 +1092,69 @@ static void _choose_seed(newgame_def& ng, newgame_def& choice,
         pregen_choice->set_text(
             "Pregenerate the dungeon ([tab] to switch)? Yes | No");
     }
+    const string title_text = make_stringf(
+        "Play a game with a custom seed for version %s.",
+        Version::Long);
+    const string body_text =
+        "Choose 0 for a random seed. Press [d] for today's daily seed.\n"
+#ifdef USE_TILE_LOCAL
+        "Press [p] to paste a seed from the clipboard (overwriting the\n"
+        "current value).\n"
+#endif
+        ;
+    const string prompt_text = "Seed ([-] to clear):";
+    const string footer_text =
+        "The seed will determine the dungeon layout, monsters, and items\n"
+        "that you discover, relative to this version of crawl. (See the \n"
+        "manual for more details.)"
+#ifdef SEEDING_UNRELIABLE
+        "Warning: your build of crawl does not support stable seeding!\n"
+        "Levels may differ from 'official' seeded games."
+#endif
+        ;
 
     auto popup = make_shared<ui::Popup>(box);
     ui::push_layout(move(popup));
     ui::set_focused_widget(prompt_ui.get());
+#ifdef USE_TILE_WEB
+    // activate seed selection popup
+    tiles.json_open_object();
+    tiles.json_write_string("body", body_text);
+    tiles.json_write_string("title", title_text);
+    tiles.json_write_string("footer", footer_text);
+    tiles.push_ui_layout("seed-selection", 1);
+    // activate input box. TODO: have this happen automatically on the js side
+    // when the popup is in place?
+    tiles.json_open_object();
+    tiles.json_write_string("msg", "init_input");
+    tiles.json_write_string("type", "seed-selection");
+    tiles.json_write_string("prefill", string(buf));
+    tiles.json_write_string("prompt", prompt_text);
+    tiles.json_write_int("maxlen", sizeof(buf) - 1);
+    tiles.json_write_bool("select_prefill", true);
+    tiles.json_close_object();
+    tiles.finish_message();
+#endif
     while (!done && !crawl_state.seen_hups)
     {
+        // TODO: rewrite with widgets
         formatted_string prompt;
         prompt.textcolour(CYAN);
-        prompt.cprintf("Play a game with a custom seed for version %s.\n\n",
-            Version::Long);
+        prompt.cprintf(title_text + "\n\n");
         prompt.textcolour(LIGHTGREY);
-        prompt.cprintf(
-            "Choose 0 for a random seed. Press [d] for today's daily seed.\n"
-#ifdef USE_TILE_LOCAL
-            "Press [p] to paste a seed from the clipboard (overwriting the\n"
-            "current value).\n"
-#endif
-            "\n");
-        prompt.cprintf("Seed ([-] to clear):");
+        prompt.cprintf(body_text + "\n");
+
+        prompt.cprintf(prompt_text);
         string seed_text = make_stringf("%-20s", buf);
         prompt.cprintf("\n%s\n\n", seed_text.c_str());
 
-        prompt.cprintf(
-            "The seed will determine the dungeon layout, monsters, and items\n"
-            "that you discover, relative to this version of crawl. (See the \n"
-            "manual for more details.)\n\n");
-#ifdef SEEDING_UNRELIABLE
-            prompt.cprintf(
-                "Warning: your build of crawl does not support stable seeding!\n"
-                "Levels may differ from 'official' seeded games.\n\n");
-#endif
+        prompt.cprintf(footer_text + "\n\n");
         prompt_ui->set_text(prompt);
         // yes this appalling, some day we will have real buttons and text
         // input. The seed highlight doesn't do much on console, but makes
         // tiles look a lot better. N.b. the newline before the seed above
         // is really so that an empty seed string won't get multiple highlights.
+        // TODO: not implemented on the webtiles side.
         prompt_ui->set_highlight_pattern(seed_text, false);
         if (show_pregen_toggle)
         {
@@ -1077,7 +1166,15 @@ static void _choose_seed(newgame_def& ng, newgame_def& choice,
         ui::pump_events();
     }
     ui::pop_layout();
+#ifdef USE_TILE_WEB
+    // decomission input box, if it's still around
+    tiles.json_open_object();
+    tiles.json_write_string("msg", "close_input");
+    tiles.json_close_object();
+    tiles.finish_message();
 
+    tiles.pop_ui_layout();
+#endif
     string result = reader.get_text();
     uint64_t tmp_seed = 0;
     // TODO: if the user types in a number that exceeds the max value, sscanf
@@ -1130,6 +1227,7 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
     ng.skilled_type = choice.skilled_type;
     ng.chaoskin = choice.chaoskin;
     ng.no_locks = choice.no_locks;
+    ng.trap_type = choice.trap_type;
 
 #ifndef DGAMELAUNCH
     // New: pick name _after_ character choices.
@@ -1224,6 +1322,7 @@ static job_group jobs_order[] =
             JOB_ARTIFICER, JOB_WANDERER, JOB_ANARCHIST, JOB_UNDERSTUDY,
             JOB_METEOROLOGIST, JOB_UNCLE, JOB_ENTOMOLOGIST, JOB_DEPRIVED,
             JOB_NECKBEARD,
+            JOB_ARCHAEOLOGIST,
         }
     },
     {
@@ -1286,7 +1385,7 @@ public:
     {
         m_vbox = make_shared<Box>(Box::VERT);
         m_vbox->_set_parent(this);
-        m_vbox->align_items = Widget::Align::STRETCH;
+        m_vbox->align_cross = Widget::Align::STRETCH;
 
         welcome.textcolour(BROWN);
         welcome.cprintf("%s", _welcome(m_ng).c_str());
@@ -1300,8 +1399,8 @@ public:
         m_main_items = make_shared<OuterMenu>(true, 3, 40);
         m_main_items->menu_id = m_choice_type == C_JOB ?
             "background-main" : "species-main";
-        m_main_items->set_margin_for_crt({1, 0, 1, 0});
-        m_main_items->set_margin_for_sdl({15, 0, 15, 0});
+        m_main_items->set_margin_for_crt(1, 0);
+        m_main_items->set_margin_for_sdl(15, 0);
         m_main_items->descriptions = descriptions;
         m_vbox->add_child(m_main_items);
 
@@ -1310,8 +1409,8 @@ public:
         max_size() = { 80, INT_MAX };
 #endif
 
-        descriptions->set_margin_for_crt({1, 0, 1, 0});
-        descriptions->set_margin_for_sdl({0, 0, 15, 0});
+        descriptions->set_margin_for_crt(1, 0);
+        descriptions->set_margin_for_sdl(0, 0, 15, 0);
         descriptions->current() = -1;
         descriptions->shrink_h = true;
         m_vbox->add_child(descriptions);
@@ -1385,11 +1484,11 @@ protected:
 
 #ifdef USE_TILE
         auto hbox = make_shared<Box>(Box::HORZ);
-        hbox->align_items = Widget::Align::CENTER;
-        hbox->justify_items = Widget::Align::STRETCH;
+        hbox->align_cross = Widget::Align::CENTER;
+        hbox->align_main = Widget::Align::STRETCH;
         auto tile = make_shared<Image>();
         tile->set_tile(item_tile);
-        tile->set_margin_for_sdl({0, 6, 0, 0});
+        tile->set_margin_for_sdl(0, 6, 0, 0);
         tile->flex_grow = 0;
         hbox->add_child(move(tile));
         hbox->add_child(label);
@@ -1424,7 +1523,7 @@ protected:
 
         auto btn = make_shared<MenuButton>();
 #ifdef USE_TILE
-        hbox->set_margin_for_sdl({2,10,2,2});
+        hbox->set_margin_for_sdl(2, 10, 2, 2);
         btn->set_child(move(hbox));
 #else
         btn->set_child(move(label));
@@ -1433,7 +1532,7 @@ protected:
         btn->description = desc;
         btn->hotkey = letter;
         btn->highlight_colour = hl;
-        btn->set_margin_for_crt({0,1,0,0});
+        btn->set_margin_for_crt(0, 1, 0, 0);
 
         m_main_items->add_button(btn, position.x, position.y);
 
@@ -1444,7 +1543,7 @@ protected:
     void _add_group_title(const char* name, coord_def position)
     {
         auto text = make_shared<Text>(formatted_string(name, LIGHTBLUE));
-        text->set_margin_for_sdl({7, 0, 7, 32+2+6});
+        text->set_margin_for_sdl(7, 0, 7, 32+2+6);
         m_main_items->add_label(move(text), position.x, position.y);
     }
 
@@ -1521,7 +1620,8 @@ protected:
         if (_char_defined(defaults))
         {
             _add_choice_menu_option(1, 3,
-                    "  Tab - " + _char_description(defaults), '\t', M_DEFAULT_CHOICE,
+                    "  Tab - " + newgame_char_description(defaults), '\t',
+                    M_DEFAULT_CHOICE,
                     "Play a new game with your previous choice.");
         }
     }
@@ -1797,7 +1897,7 @@ static void _prompt_choice(int choice_type, newgame_def& ng, newgame_def& ng_cho
 
     ui::push_layout(move(popup));
     ui::set_focused_widget(newgame_ui.get());
-    while (!newgame_ui->done)
+    while (!newgame_ui->done && !crawl_state.seen_hups)
         ui::pump_events();
     ui::pop_layout();
 
@@ -1911,12 +2011,12 @@ static void _construct_weapon_menu(const newgame_def& ng,
         const auto& choice = choices[i];
 
         auto hbox = make_shared<Box>(Box::HORZ);
-        hbox->align_items = Widget::Align::CENTER;
-        hbox->set_margin_for_sdl({2,10,2,2});
+        hbox->align_cross = Widget::Align::CENTER;
+        hbox->set_margin_for_sdl(2, 10, 2, 2);
 
 #ifdef USE_TILE
         auto tile_stack = make_shared<Stack>();
-        tile_stack->set_margin_for_sdl({0, 6, 0, 0});
+        tile_stack->set_margin_for_sdl(0, 6, 0, 0);
         tile_stack->flex_grow = 0;
         hbox->add_child(tile_stack);
 
@@ -1932,9 +2032,9 @@ static void _construct_weapon_menu(const newgame_def& ng,
                             // these dimensions are apparently unused for
                             // webtiles, we do this so they're not interpreted
                             // as characters for webtiles console.
-                            { 0,0 };
+                            0;
 #else
-                            { TILE_Y, TILE_Y };
+                            TILE_Y;
 #endif
         }
         else
@@ -1955,25 +2055,24 @@ static void _construct_weapon_menu(const newgame_def& ng,
 
         weapon_type wpn_type = weapons[i].first;
         char_choice_restriction wpn_restriction = weapons[i].second;
-        label->set_text(formatted_string(text,
-                    wpn_restriction == CC_UNRESTRICTED ? WHITE : LIGHTGREY));
 
-        hbox->justify_items = Widget::Align::STRETCH;
+        const auto fg = wpn_restriction == CC_UNRESTRICTED ? WHITE : LIGHTGREY;
+        const auto bg = wpn_restriction == CC_UNRESTRICTED ?
+            STARTUP_HIGHLIGHT_GOOD : STARTUP_HIGHLIGHT_BAD;
+
+        label->set_text(formatted_string(text, fg));
+
+        hbox->align_main = Widget::Align::STRETCH;
         string apt_text = make_stringf("(%+d apt)",
                 species_apt(choice.skill, ng.species));
-        auto suffix = make_shared<Text>(formatted_string(apt_text,
-                wpn_restriction == CC_UNRESTRICTED ? WHITE : LIGHTGREY));
+        auto suffix = make_shared<Text>(formatted_string(apt_text, fg));
         hbox->add_child(suffix);
 
         auto btn = make_shared<MenuButton>();
         btn->set_child(move(hbox));
         btn->id = wpn_type;
         btn->hotkey = letter;
-
-        if (wpn_restriction == CC_UNRESTRICTED)
-            btn->highlight_colour = STARTUP_HIGHLIGHT_GOOD;
-        else
-            btn->highlight_colour = STARTUP_HIGHLIGHT_BAD;
+        btn->highlight_colour = bg;
 
         // Is this item our default weapon?
         if (wpn_type == defweapon || (defweapon == WPN_UNKNOWN && i == 0))
@@ -2024,26 +2123,26 @@ static bool _prompt_weapon(const newgame_def& ng, newgame_def& ng_choice,
     fill_doll_for_newgame(doll, ng);
 #ifdef USE_TILE_LOCAL
     auto tile = make_shared<ui::PlayerDoll>(doll);
-    tile->set_margin_for_sdl({0, 10, 0, 0});
+    tile->set_margin_for_sdl(0, 10, 0, 0);
     title_hbox->add_child(move(tile));
 #endif
 #endif
     auto title = make_shared<Text>(formatted_string(_welcome(ng), BROWN));
     title_hbox->add_child(title);
-    title_hbox->align_items = Widget::CENTER;
-    title_hbox->set_margin_for_sdl({0, 0, 20, 0});
-    title_hbox->set_margin_for_crt({0, 0, 1, 0});
+    title_hbox->align_cross = Widget::CENTER;
+    title_hbox->set_margin_for_sdl(0, 0, 20, 0);
+    title_hbox->set_margin_for_crt(0, 0, 1, 0);
 
     auto vbox = make_shared<Box>(Box::VERT);
-    vbox->align_items = Widget::Align::STRETCH;
+    vbox->align_cross = Widget::Align::STRETCH;
     vbox->add_child(title_hbox);
     auto prompt = make_shared<Text>(formatted_string("You have a choice of weapons.", CYAN));
     vbox->add_child(prompt);
 
     auto main_items = make_shared<OuterMenu>(true, 1, weapons.size());
     main_items->menu_id = "weapon-main";
-    main_items->set_margin_for_sdl({15, 0, 15, 0});
-    main_items->set_margin_for_crt({1, 0, 1, 0});
+    main_items->set_margin_for_sdl(15, 0);
+    main_items->set_margin_for_crt(1, 0);
     vbox->add_child(main_items);
 
     auto sub_items = make_shared<OuterMenu>(false, 2, 3);
@@ -2157,7 +2256,7 @@ static weapon_type _starting_weapon_upgrade(weapon_type wp, job_type job,
         return tiny ? wp : WPN_WAR_AXE;
     case WPN_SPEAR:
         // Small fighters can't use tridents with a shield.
-        return fighter && small ? wp : WPN_TRIDENT;
+        return tiny || (fighter && small) ? wp : WPN_TRIDENT;
     case WPN_FALCHION:
         return tiny ? wp : WPN_LONG_SWORD;
     case WPN_QUARTERSTAFF:
@@ -2194,7 +2293,7 @@ static vector<weapon_choice> _get_weapons(const newgame_def& ng)
         {
             weapon_choice wp;
             wp.first = startwep[i];
-            if (job_gets_good_weapons(ng.job) && wp.first == WPN_QUARTERSTAFF)
+            if (job_gets_good_weapons(ng.job) || wp.first == WPN_QUARTERSTAFF)
             {
                 wp.first = _starting_weapon_upgrade(wp.first, ng.job,
                                                     ng.species);
@@ -2256,7 +2355,7 @@ static bool _choose_weapon(newgame_def& ng, newgame_def& ng_choice,
                            const newgame_def& defaults)
 {
     // No weapon use at all. The actual item will be removed later.
-    if (ng.species == SP_FELID)
+    if (ng.species == SP_FELID || ng.species == SP_BUTTERFLY)
         return true;
 
     if (!job_has_weapon_choice(ng.job))
@@ -2343,10 +2442,10 @@ static void _construct_gamemode_map_menu(const mapref_vector& maps,
 
 #ifdef USE_TILE
         auto hbox = make_shared<Box>(Box::HORZ);
-        hbox->align_items = Widget::Align::CENTER;
+        hbox->align_cross = Widget::Align::CENTER;
         auto tile = make_shared<Image>();
         tile->set_tile(tile_for_map_name(map_name));
-        tile->set_margin_for_sdl({0, 6, 0, 0});
+        tile->set_margin_for_sdl(0, 6, 0, 0);
         hbox->add_child(move(tile));
         hbox->add_child(label);
 #endif
@@ -2355,7 +2454,7 @@ static void _construct_gamemode_map_menu(const mapref_vector& maps,
 
         auto btn = make_shared<MenuButton>();
 #ifdef USE_TILE
-        hbox->set_margin_for_sdl({2,10,2,2});
+        hbox->set_margin_for_sdl(2, 10, 2, 2);
         btn->set_child(move(hbox));
 #else
         btn->set_child(move(label));
@@ -2437,13 +2536,13 @@ static void _prompt_gamemode_map(newgame_def& ng, newgame_def& ng_choice,
             ng_choice.type == GAME_TYPE_TUTORIAL ? "lessons" : "maps");
 
     auto vbox = make_shared<Box>(Box::VERT);
-    vbox->align_items = Widget::Align::STRETCH;
+    vbox->align_cross = Widget::Align::STRETCH;
     vbox->add_child(make_shared<Text>(welcome));
 
     auto main_items = make_shared<OuterMenu>(true, 1, maps.size());
     main_items->menu_id = "map-main";
-    main_items->set_margin_for_sdl({15, 0, 15, 0});
-    main_items->set_margin_for_crt({1, 0, 1, 0});
+    main_items->set_margin_for_sdl(15, 0);
+    main_items->set_margin_for_crt(1, 0);
     vbox->add_child(main_items);
 
     auto sub_items = make_shared<OuterMenu>(false, 2, 2);

@@ -142,7 +142,7 @@ void give_job_skills(job_type job)
             const item_def *weap = you.weapon();
             skill = weap ? item_attack_skill(*weap) : SK_UNARMED_COMBAT;
             //XXX: WTF?
-            if (you.species == SP_FELID && job == JOB_FIGHTER)
+            if ((you.species == SP_FELID || you.species == SP_BUTTERFLY) && job == JOB_FIGHTER)
                 amount += 2;
             // Don't give throwing hunters Short Blades skill.
             if (job_gets_ranged_weapons(job) && !(weap && is_range_weapon(*weap)))
@@ -195,4 +195,39 @@ bool is_starting_job(job_type job)
 {
     return job < NUM_JOBS
         && !_job_def(job).recommended_species.empty();
+}
+
+bool job_is_zealot(job_type job)
+{
+    return (job == JOB_BERSERKER
+            || job == JOB_CHAOS_KNIGHT
+            || job == JOB_ABYSSAL_KNIGHT
+            || job == JOB_MONK
+            || job == JOB_PALADIN
+            || job == JOB_BOUND
+            || job == JOB_WITNESS
+            || job == JOB_TORPOR_KNIGHT
+            || job == JOB_NIGHT_KNIGHT
+            || job == JOB_DOCTOR
+            || job == JOB_GARDENER
+            || job == JOB_MERCHANT
+            || job == JOB_INHERITOR
+            || job == JOB_SLIME_PRIEST
+            || job == JOB_KIKUMANCER
+            || job == JOB_BLOOD_KNIGHT
+            || job == JOB_GAMBLER
+            || job == JOB_WARRIOR
+            || job == JOB_STORM_CLERIC
+            || job == JOB_HERMIT
+            || job == JOB_LIBRARIAN
+            || job == JOB_DANCER
+            || job == JOB_ANNIHILATOR
+            || job == JOB_DISCIPLE
+            || job == JOB_DEATH_BISHOP
+            || job == JOB_ZINJA);
+}
+
+bool job_is_good_god_zealot(job_type job)
+{
+    return (job == JOB_ZINJA || job == JOB_PALADIN || job == JOB_DOCTOR);
 }

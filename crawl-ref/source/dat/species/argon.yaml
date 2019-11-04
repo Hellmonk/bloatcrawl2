@@ -1,0 +1,35 @@
+enum: SP_ARGON
+monster: MONS_HUMAN
+name: Argon
+adjective: Argonian
+difficulty: Simple
+species_flags:
+  - hairless
+aptitudes:
+  xp: 0
+  hp: 0
+  mp_mod: 0
+  mr: 5
+str: 8
+int: 8
+dex: 8
+levelup_stat_frequency: 4
+mutations:
+  1:
+    MUT_UNBREATHING: 1
+    MUT_VAPOROUS_BODY: 1
+  7:
+    MUT_VAPOROUS_RESISTANCE: 1
+  14:
+    MUT_VAPOROUS_RESISTANCE: 1
+  21:
+    MUT_VAPOROUS_RESISTANCE: 1
+fake_mutations:
+  - long: You are constantly flying and cannot wear boots.
+  - long: Your unarmed attacks can cause electric damage.
+  - long: Your vaporous body is immune to rotting, transformation, and mutation.
+  # TODO: move this to mutation.cc so we can append the amount of remaining uses
+  - long: You can blind everyone in sight with a flash of light.
+recommended_jobs:
+  - JOB_WANDERER
+create_enum: true

@@ -411,20 +411,44 @@ UIHiscoresMenu::UIHiscoresMenu()
 {
     m_root = make_shared<Box>(Widget::VERT);
     m_root->_set_parent(this);
+    m_root->align_cross = Widget::STRETCH;
+
+    auto title_hbox = make_shared<Box>(Widget::HORZ);
+    title_hbox->set_margin_for_sdl(0, 0, 20, 0);
+    title_hbox->set_margin_for_crt(0, 0, 1, 0);
+
+#ifdef USE_TILE
+    auto tile = make_shared<Image>();
+    tile->set_tile(tile_def(TILEG_STARTUP_HIGH_SCORES, TEX_GUI));
+    title_hbox->add_child(move(tile));
+#endif
 
     auto title = make_shared<Text>(formatted_string(
                 "Dungeon Crawl Stone Soup: High Scores", YELLOW));
-    title->align_self = Widget::CENTER;
-    title->set_margin_for_sdl({0, 0, 20, 0});
+    title->set_margin_for_sdl(0, 0, 0, 16);
+    title_hbox->add_child(move(title));
+
+    title_hbox->align_main = Widget::CENTER;
+    title_hbox->align_cross = Widget::CENTER;
+
     m_description = make_shared<Text>(string(9, '\n'));
 
     m_score_entries= make_shared<OuterMenu>(true, 1, 100);
     nhsr = 0;
     _construct_hiscore_table();
 
-    m_root->add_child(move(title));
-    m_root->add_child(m_description);
-    m_root->add_child(m_score_entries);
+    m_root->add_child(move(title_hbox));
+    if (initial_focus)
+    {
+        m_root->add_child(m_description);
+        m_root->add_child(m_score_entries);
+    }
+    else
+    {
+        auto placeholder = formatted_string("No high scores yet...", DARKGRAY);
+        m_root->add_child(make_shared<Text>(placeholder));
+        initial_focus = this;
+    }
 }
 
 void UIHiscoresMenu::_construct_hiscore_table()
@@ -455,7 +479,7 @@ void UIHiscoresMenu::_add_hiscore_row(scorefile_entry& se, int id)
 
     tmp->set_text(formatted_string(hiscores_format_single(se)));
     auto btn = make_shared<MenuButton>();
-    tmp->set_margin_for_sdl({2,2,2,2});
+    tmp->set_margin_for_sdl(2);
     btn->set_child(move(tmp));
     btn->on(Widget::slots.event, [this, id, se](wm_event ev) {
         if (ev.type == WME_MOUSEBUTTONUP && ev.mouse_event.button == MouseEvent::LEFT
@@ -773,6 +797,7 @@ void scorefile_entry::init_from(const scorefile_entry &se)
     zigmax             = se.zigmax;
     scrolls_used       = se.scrolls_used;
     potions_used       = se.potions_used;
+    seed               = se.seed;
     fixup_char_name();
 
     // We could just reset raw_line to "" instead.
@@ -1076,6 +1101,8 @@ void scorefile_entry::init_with_fields()
     scrolls_used = fields->int_field("scrollsused");
     potions_used = fields->int_field("potionsused");
 
+    seed = fields->str_field("seed");
+
     fixup_char_name();
 }
 
@@ -1224,6 +1251,8 @@ void scorefile_entry::set_score_fields() const
 
     if (!killer_map.empty())
         fields->add_field("killermap", "%s", killer_map.c_str());
+
+    fields->add_field("seed", "%s", seed.c_str());
 
 #ifdef DGL_EXTENDED_LOGFILES
     const string short_msg = short_kill_message();
@@ -1510,6 +1539,7 @@ void scorefile_entry::reset()
     zigmax               = 0;
     scrolls_used         = 0;
     potions_used         = 0;
+    seed.clear();
 }
 
 static int _award_modified_experience()
@@ -1749,6 +1779,7 @@ void scorefile_entry::init(time_t dt)
 
     wiz_mode = (you.wizard || you.suppress_wizard ? 1 : 0);
     explore_mode = (you.explore ? 1 : 0);
+    seed = make_stringf("%" PRIu64, crawl_state.seed);
 }
 
 string scorefile_entry::hiscore_line(death_desc_verbosity verbosity) const
@@ -1952,6 +1983,7 @@ scorefile_entry::character_description(death_desc_verbosity verbosity) const
         ASSERT(birth_time);
         desc += " on ";
         desc += _hiscore_date_string(birth_time);
+        // TODO: show seed here?
 
         desc = _append_sentence_delimiter(desc, ".");
         desc += _hiscore_newline_string();

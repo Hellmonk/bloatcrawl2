@@ -38,6 +38,7 @@
 #include "dungeon.h"
 #include "english.h"
 #include "env.h"
+#include "evoke.h"
 #include "food.h"
 #include "god-passive.h"
 #include "god-prayer.h"
@@ -1801,6 +1802,12 @@ bool move_item_to_inv(int obj, int quant_got, bool quiet)
 {
     item_def &it = mitm[obj];
     const coord_def old_item_pos = it.pos;
+
+    if (you.props.exists(ARCHAEOLOGIST_TRIGGER_TOME_ON_PICKUP) && it.props.exists(ARCHAEOLOGIST_TOME_SKILL))
+        archaeologist_read_tome(it);
+
+    if (you.props.exists(ARCHAEOLOGIST_TRIGGER_CRATE_ON_PICKUP) && it.props.exists(ARCHAEOLOGIST_CRATE_ITEM))
+        archaeologist_open_crate(it);
 
     bool actually_went_in = false;
     const bool keep_going = _put_item_in_inv(it, quant_got, quiet, actually_went_in);
@@ -3969,6 +3976,9 @@ colour_t item_def::miscellany_colour() const
             return ETC_DARK;
         case MISC_ZIGGURAT:
             return _zigfig_colour();
+        case MISC_ANCIENT_CRATE:
+        case MISC_DUSTY_TOME:
+            return BROWN;
         default:
             return LIGHTGREEN;
     }

@@ -2,12 +2,17 @@
 Astral
 
 Strange beings from beyond the stars, Astrals cannot gain resistances to magic 
-or the elements. Their attacks inflict powerful debuffs on beings from this world.
+or the elements. Their attacks inflict vulnerability on beings from this world.
 %%%%
 Barachi
 
 Barachim are amphibious humanoids who rebelled against the gods. They're fast
 learners and can hop long distances, but are otherwise slow and easily seen.
+%%%%
+Butterfly
+
+A cute butterfly that will stop at nothing to obtain the Orb. Monsters turn 
+neutral when they first see you.
 %%%%
 Centaur
 
@@ -101,6 +106,11 @@ Minotaur
 Minotaurs are large muscular humans with bovine heads. They excel at all forms
 of close and ranged combat.
 %%%%
+Moonotaur
+
+Moonotaurs are medium sized humans with lunar heads. Their exceedingly strange
+physiology reduces all damage taken to 1, but has... drawbacks.
+%%%%
 Mirror Eidolon
 
 Strange phantoms summoned from the mirror world, Mirror Eidola rapidly fade away.
@@ -169,7 +179,7 @@ easily into any body armour, but they cannot wear other armour types.
 Leprechaun
 
 Leprechauns are small and frail but versatile. Their intrinsic luck gives them
-a knack for finding better items and more gold than other species.
+a knack for finding better items.
 %%%%
 Hedgehog
 
@@ -183,8 +193,8 @@ most skills and frailer than humans, but can charm their foes.
 %%%%
 Protean
 
-Proteans are a race of vaguely humanoid amoebas. Mutations increase their health
-pool, and their health pool controls their size.
+Proteans are a race of vaguely humanoid amoebas. They grow in health and size as
+they mutate.
 %%%%
 Shapeshifter
 
@@ -195,4 +205,9 @@ Faerie Dragon
 
 Faerie Dragons are attuned to magic and their spells cost fewer magic points.
 Their shimmering scales repel attacks and their wings let them fly.
+%%%%
+Argon
+
+Argons are, unlike most other living beings, made of gas. Some think they 
+originated on a far away star.
 %%%%

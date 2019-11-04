@@ -1156,10 +1156,8 @@ void game_options::reset_options()
     dump_order.clear();
     new_dump_fields("header,hiscore,stats,misc,inventory,"
                     "skills,spells,overview,mutations,messages,"
-                    "screenshot,monlist,kills,notes");
-    if (Version::ReleaseType == VER_ALPHA)
-        new_dump_fields("vaults");
-    new_dump_fields("skill_gains,action_counts");
+                    "screenshot,monlist,kills,notes,vaults",
+                    "skill_gains,action_counts");
     // Currently enabled by default for testing in trunk.
     if (Version::ReleaseType == VER_ALPHA)
         new_dump_fields("xp_by_level");
@@ -3441,13 +3439,6 @@ void game_options::read_option_line(const string &str, bool runscript)
     }
     else if (key == "game_seed")
     {
-#ifdef DGAMELAUNCH
-        // try to avoid confusing online players who put this in their rc
-        // file. N.b. it is still possible to use the -seed CLO.
-        report_error("Your rc file specifies a game seed, but this build of "
-                     "crawl does not support seed selection. I will "
-                     "choose a seed randomly.");
-#else
         // special handling because of the large type.
         uint64_t tmp_seed = 0;
         if (sscanf(field.c_str(), "%" SCNu64, &tmp_seed))
@@ -3457,7 +3448,6 @@ void game_options::read_option_line(const string &str, bool runscript)
             if (!seed_from_rc)
                 seed_from_rc = tmp_seed;
         }
-#endif
     }
     else if (key == "pregen_dungeon")
     {

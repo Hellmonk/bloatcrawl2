@@ -158,6 +158,10 @@ bool trap_def::is_safe(actor* act) const
 {
     if (!act)
         act = &you;
+    
+    //if floor traps are disabled, return true
+    if(you.trap_type == 1 || you.trap_type == 3)
+        return true;
 
     // TODO: For now, just assume they're safe; they don't damage outright,
     // and the messages get old very quickly
@@ -455,6 +459,14 @@ void trap_def::trigger(actor& triggerer)
     // Out of sight, out of mind.
     if (!you.see_cell(pos))
         return;
+    
+    // If the player has disabled floor traps, don't trigger them
+    // but make sure to allow passage of golubria
+    if (you.trap_type == 1 || you.trap_type == 3)
+    {
+        if (type != TRAP_GOLUBRIA)
+            return;
+    }
 
     // If set, the trap will be removed at the end of the
     // triggering process.
@@ -1367,6 +1379,10 @@ void roll_trap_effects()
 void do_trap_effects()
 {
     // Try to shaft, teleport, or alarm the player.
+    
+    //if traps are disabled, just return immediately
+    if(you.trap_type == 1 || you.trap_type == 2)
+        return;
 
     // We figure out which possibilites are allowed before picking which happens
     // so that the overall chance of being trapped doesn't depend on which

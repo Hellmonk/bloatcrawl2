@@ -263,6 +263,8 @@ string item_def::name(description_level_type descrip, bool terse, bool ident,
                         buff << " (weapon)";
                     else if (you.species == SP_FELID)
                         buff << " (in mouth)";
+                    else if (you.species == SP_BUTTERFLY)
+                        buff << " (in proboscis)";
                     else
                         buff << " (in " << you.hand_name(false) << ")";
                     break;
@@ -1035,6 +1037,8 @@ static string misc_type_name(int type, bool known)
     case MISC_XOMS_CHESSBOARD:           return "removed chess piece";
 #endif
     case MISC_AIR_HORN:                  return "air horn";
+    case MISC_ANCIENT_CRATE:             return "ancient crate";
+    case MISC_DUSTY_TOME:                return "dusty tome";
 
     default:
         return "buggy miscellaneous item";
@@ -3351,7 +3355,7 @@ bool is_useless_item(const item_def &item, bool temp)
     switch (item.base_type)
     {
     case OBJ_WEAPONS:
-        if (you.species == SP_FELID)
+        if (you.species == SP_FELID || you.species == SP_BUTTERFLY)
             return true;
 
         if (!you.could_wield(item, true, !temp)
@@ -3386,7 +3390,7 @@ bool is_useless_item(const item_def &item, bool temp)
         }
 
         // Save for the above spells, all missiles are useless for felids.
-        if (you.species == SP_FELID)
+        if (you.species == SP_FELID || you.species == SP_BUTTERFLY)
             return true;
 
         // These are the same checks as in is_throwable(), except that
@@ -3453,7 +3457,7 @@ bool is_useless_item(const item_def &item, bool temp)
         case SCR_ENCHANT_WEAPON:
         case SCR_ENCHANT_ARMOUR:
         case SCR_BRAND_WEAPON:
-            return you.species == SP_FELID;
+            return you.species == SP_FELID || you.species == SP_BUTTERFLY;
         case SCR_SUMMONING:
             return you.get_mutation_level(MUT_NO_LOVE) > 0;
         case SCR_FOG:
@@ -3587,10 +3591,9 @@ bool is_useless_item(const item_def &item, bool temp)
         case AMU_REGENERATION:
             return you.get_mutation_level(MUT_NO_REGENERATION) > 0
                    || (temp
-                       && you.get_mutation_level(MUT_INHIBITED_REGENERATION) > 0
-                       && regeneration_is_inhibited())
-                   || (temp && you.undead_state() == US_SEMI_UNDEAD
-                       && !you.vampire_alive);
+                       && (you.get_mutation_level(MUT_INHIBITED_REGENERATION) > 0
+                           || you.undead_state() == US_SEMI_UNDEAD)
+                       && regeneration_is_inhibited());
 
 #if TAG_MAJOR_VERSION == 34
         case AMU_MANA_REGENERATION:
@@ -3633,7 +3636,7 @@ bool is_useless_item(const item_def &item, bool temp)
 #endif
 
     case OBJ_STAVES:
-        if (you.species == SP_FELID)
+        if (you.species == SP_FELID || you.species == SP_BUTTERFLY)
             return true;
         if (!you.could_wield(item, true, !temp))
         {

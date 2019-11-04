@@ -112,6 +112,19 @@ void slime_convert(monster* mons)
     }
 }
 
+void butterfly_convert(monster* mons)
+{
+    if(you.species == SP_BUTTERFLY
+        && !mons->neutral()
+        && !testbits(mons->flags, MF_ATT_CHANGE_ATTEMPT))
+    {
+        mons->flags |= MF_ATT_CHANGE_ATTEMPT;
+        mons->attitude = ATT_NEUTRAL;
+        mons_att_changed(mons);
+        stop_running();
+    }
+}
+
 void fedhas_neutralise(monster* mons)
 {
     if (have_passive(passive_t::friendly_plants)
@@ -488,6 +501,7 @@ void gozag_break_bribe(monster* victim)
 // Conversions and bribes.
 void do_conversions(monster* target)
 {
+        butterfly_convert(target);
         beogh_follower_convert(target);
         gozag_check_bribe(target);
 }

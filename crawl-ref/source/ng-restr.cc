@@ -21,29 +21,36 @@ static bool _banned_combination(job_type job, species_type species)
     switch (species)
     {
     case SP_FELID:
+    case SP_BUTTERFLY:
         if (job == JOB_GLADIATOR
             || job == JOB_ASSASSIN
             || job == JOB_HUNTER
             || job == JOB_ARCANE_MARKSMAN
             || job == JOB_NECKBEARD)
+            || job == JOB_ARCHAEOLOGIST)
         {
             return true;
         }
         break;
     case SP_DEMIGOD:
-        if (job == JOB_BERSERKER
-            || job == JOB_CHAOS_KNIGHT
-            || job == JOB_ABYSSAL_KNIGHT
-            || job == JOB_MONK)
-        {
+        return job_is_zealot(job);
+        break;
+    case SP_GNOLL:
+        if (job == JOB_ARCHAEOLOGIST)
             return true;
-        }
+        break;
+    case SP_GARGOYLE:
+        if (job == JOB_DEATH_BISHOP)
+            return true;
+        break;
+    case SP_DEMONSPAWN:
+        return job_is_good_god_zealot(job);
         break;
     default:
         break;
     }
 
-    if (job == JOB_TRANSMUTER
+    if ((job == JOB_TRANSMUTER || job_is_good_god_zealot(job))
         && (species_undead_type(species) == US_UNDEAD
            || species_undead_type(species) == US_HUNGRY_DEAD))
     {
@@ -118,7 +125,7 @@ char_choice_restriction weapon_restriction(weapon_type wpn,
 
     // Some special cases:
 
-    if (ng.species == SP_FELID && wpn != WPN_UNARMED)
+    if ((ng.species == SP_FELID || ng.species == SP_BUTTERFLY) && wpn != WPN_UNARMED)
         return CC_BANNED;
 
     // These recommend short blades because they're good at stabbing,

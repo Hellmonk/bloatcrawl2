@@ -282,7 +282,7 @@ TILE_EQ: zonguldrok
 BRAND:   SPWPN_REAPING
 FB_BRAND: SPWPN_PAIN
 VALUE:   800
-BOOL:    evil, corpse_violating
+BOOL:    evil
 
 NAME:    sword of Cerebov
 APPEAR:  great serpentine sword
@@ -1371,6 +1371,15 @@ COLOUR:   ETC_WARP
 TILE:     urand_rift
 TILE_EQ:  rift
 BRAND:    SPWPN_DISTORTION
+
+ENUM:     BATTLE
+NAME:     staff of Battle
+OBJ:      OBJ_WEAPONS/WPN_STAFF
+PLUS:     +0
+COLOUR:   ETC_MAGIC
+TILE:     urand_staff_of_battle
+TILE_EQ:  battle_staff
+VALUE:    800
 
 # This entry must always be last.
 ENUM:   DUMMY2

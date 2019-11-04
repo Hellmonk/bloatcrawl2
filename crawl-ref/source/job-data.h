@@ -67,6 +67,16 @@ static const map<job_type, job_def> job_data =
       { SK_DODGING, 2 }, { SK_STEALTH, 1 }, },
 } },
 
+{ JOB_ARCHAEOLOGIST, {
+    "Ac", "Archaeologist",
+    3, 6, 3,
+    { SP_CENTAUR, SP_FORMICID, SP_MINOTAUR, SP_NAGA, SP_VINE_STALKER, SP_GARGOYLE, SP_HILL_ORC, SP_HUMAN },
+    { "whip", "robe plus:1", "hat plus:1", "pair of boots plus:1",
+      "dusty tome", "ancient crate" },
+    WCHOICE_NONE,
+    { { SK_STEALTH, 3}, { SK_DODGING, 3}, { SK_FIGHTING, 1}, { SK_MACES_FLAILS, 1} },
+} },
+
 { JOB_ARCANE_MARKSMAN, {
     "AM", "Arcane Marksman",
     2, 5, 5,

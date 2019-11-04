@@ -1377,8 +1377,15 @@ static void tag_construct_char(writer &th)
     marshallByte(th, static_cast<int>(you.undead_modifier));
     marshallBoolean(th, you.chaoskin);
     marshallBoolean(th, you.no_locks);
+    marshallByte(th, you.trap_type);
 
     marshallBoolean(th, you.shapeshifter_species);
+    marshallByte(th, you.vaporous_resistance_fire);
+    marshallByte(th, you.vaporous_resistance_cold);
+    marshallByte(th, you.vaporous_resistance_neg);
+    marshallByte(th, you.vaporous_resistance_elec);
+    marshallByte(th, you.vaporous_resistance_poison);
+    marshallByte(th, you.argon_flashes_available);
 }
 
 /// is a custom scoring mechanism being stored?
@@ -2299,8 +2306,15 @@ void tag_read_char(reader &th, uint8_t format, uint8_t major, uint8_t minor)
     you.undead_modifier = static_cast<undead_state_type>(unmarshallByte(th));
     you.chaoskin = unmarshallBoolean(th);
     you.no_locks = unmarshallBoolean(th);
+    you.trap_type = unmarshallByte(th);
 
     you.shapeshifter_species = unmarshallBoolean(th);
+    you.vaporous_resistance_fire = unmarshallByte(th);
+    you.vaporous_resistance_cold = unmarshallByte(th);
+    you.vaporous_resistance_neg = unmarshallByte(th);
+    you.vaporous_resistance_elec = unmarshallByte(th);
+    you.vaporous_resistance_poison = unmarshallByte(th);
+    you.argon_flashes_available = unmarshallByte(th);
 }
 
 #if TAG_MAJOR_VERSION == 34
@@ -4471,13 +4485,6 @@ static void tag_construct_level(writer &th)
     marshallInt(th, env.forest_awoken_until);
     marshall_level_vault_data(th);
     marshallInt(th, env.density);
-
-    marshallShort(th, env.sunlight.size());
-    for (const auto &sunspot : env.sunlight)
-    {
-        marshallCoord(th, sunspot.first);
-        marshallInt(th, sunspot.second);
-    }
 }
 
 void marshallItem(writer &th, const item_def &item, bool iinfo)
@@ -6069,15 +6076,19 @@ static void tag_read_level(reader &th)
     env.forest_awoken_until = unmarshallInt(th);
     unmarshall_level_vault_data(th);
     env.density = unmarshallInt(th);
+#if TAG_MAJOR_VERSION == 34
 
-    int num_lights = unmarshallShort(th);
-    ASSERT(num_lights >= 0);
-    env.sunlight.clear();
-    while (num_lights-- > 0)
+    if (th.getMinorVersion() < TAG_MINOR_NO_SUNLIGHT)
     {
-        coord_def c = unmarshallCoord(th);
-        env.sunlight.emplace_back(c, unmarshallInt(th));
+        int num_lights = unmarshallShort(th);
+        ASSERT(num_lights >= 0);
+        while (num_lights-- > 0)
+        {
+            unmarshallCoord(th);
+            unmarshallInt(th);
+        }
     }
+#endif
 }
 
 #if TAG_MAJOR_VERSION == 34

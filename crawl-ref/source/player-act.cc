@@ -169,10 +169,8 @@ bool player::can_pass_through_feat(dungeon_feature_type grid) const
 
 bool player::is_habitable_feat(dungeon_feature_type actual_grid) const
 {
-    if (!can_pass_through_feat(actual_grid))
-        return false;
-
-    return !is_feat_dangerous(actual_grid);
+    return can_pass_through_feat(actual_grid)
+           && !is_feat_dangerous(actual_grid);
 }
 
 size_type player::body_size(size_part_type psize, bool base) const
@@ -219,6 +217,9 @@ brand_type player::damage_brand(int)
     }
 
     // unarmed
+
+    if (you.has_mutation(MUT_VAPOROUS_BODY))
+        return SPWPN_ELECTROCUTION;
 
     return get_form()->get_uc_brand();
 }
@@ -396,7 +397,7 @@ bool player::could_wield(const item_def &item, bool ignore_brand,
 
         return true;
     }
-    else if (species == SP_FELID)
+    else if (species == SP_FELID || species == SP_BUTTERFLY)
     {
         if (!quiet)
             mpr("You can't use weapons.");
@@ -480,6 +481,9 @@ static string _hand_name_singular()
 
     if (you.species == SP_FELID)
         return "paw";
+    
+    if (you.species == SP_BUTTERFLY)
+        return "leg";
 
     if (you.has_usable_claws())
         return "claw";
@@ -542,6 +546,9 @@ static string _foot_name_singular(bool *can_plural)
 
     if (you.species == SP_FELID)
         return "paw";
+    
+    if (you.species == SP_BUTTERFLY)
+        return "leg";
 
     if (you.fishtail)
     {
@@ -627,6 +634,8 @@ string player::unarmed_attack_name() const
     }
     else if (has_usable_tentacles(true))
         default_name = "Tentacles";
+    else if (you.species == SP_BUTTERFLY)
+        default_name = "Legs";
 
     return get_form()->get_uc_attack_name(default_name);
 }

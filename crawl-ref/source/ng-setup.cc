@@ -4,6 +4,7 @@
 
 #include "ability.h"
 #include "adjust.h"
+#include "art-enum.h"
 #include "artefact.h"
 #include "dungeon.h"
 #include "end.h"
@@ -30,6 +31,7 @@
 #include "spl-util.h"
 #include "sprint.h"
 #include "state.h"
+#include "tiledef-player.h"
 
 #define MIN_START_STAT       3
 
@@ -258,6 +260,126 @@ static void _give_ammo(weapon_type weapon, int plus)
     }
 }
 
+static skill_type _archaeologist_armour_skill_unusable(int type)
+{  // Only deals with auxiliary armour unrands not handled in the
+   // switch-case in _setup_archaeologist_crate()
+    switch (type)
+    {
+    case UNRAND_STARLIGHT:
+        return SK_FIGHTING;
+    case UNRAND_ALCHEMIST:
+        return SK_SPELLCASTING;
+    case UNRAND_RATSKIN_CLOAK:
+        return SK_EVOCATIONS;
+    default: // UNRAND_DYROVEPREVA
+        return SK_DODGING;
+    }
+}
+
+static skill_type _setup_archaeologist_crate(item_def& crate)
+{
+    item_def unrand;
+    int type;
+    const vector<int> unrands = archaeologist_unrands();
+
+    do
+    {
+        unrand = item_def();
+        type = unrands[random2(unrands.size())];
+        if (!make_item_unrandart(unrand, type))
+            continue;
+    }
+    while (!you.could_wield(unrand) && !can_wear_armour(unrand, false, true));
+
+    dprf("Initializing archaeologist crate with %s",
+         unrand.name(DESC_A).c_str());
+
+    crate.props[ARCHAEOLOGIST_CRATE_ITEM] = type;
+
+    // Handle items unlocked through interesting skills.
+    // Jewellery only happens on felids.
+    switch (type)
+    {
+    case UNRAND_PONDERING:
+    case UNRAND_MAJIN:
+    case UNRAND_ETHERIC_CAGE:
+        return SK_SPELLCASTING;
+    case UNRAND_DRAGONMASK:
+    case UNRAND_WAR:
+    case UNRAND_BEAR_SPIRIT:
+    case UNRAND_BLOODLUST:
+    case UNRAND_ROBUSTNESS:
+    case UNRAND_SHIELDING:
+    case UNRAND_VITALITY:
+        return SK_FIGHTING;
+    case UNRAND_PHASING:
+    case UNRAND_FENCERS:
+        return SK_DODGING;
+    case UNRAND_THIEF:
+    case UNRAND_BOOTS_ASSASSIN:
+    case UNRAND_NIGHT:
+    case UNRAND_SHADOWS:
+        return SK_STEALTH;
+    case UNRAND_ELEMENTAL_STAFF:
+    case UNRAND_OLGREB:
+    case UNRAND_WUCAD_MU:
+        return SK_EVOCATIONS;
+    default:
+        break;
+    }
+
+    if (unrand.base_type == OBJ_JEWELLERY)
+        return SK_SPELLCASTING;
+    else if (unrand.base_type == OBJ_WEAPONS)
+    {
+        if(you.species == SP_HILL_ORC && !is_range_weapon(unrand))
+            return SK_FIGHTING;
+        else
+            return item_attack_skill(unrand);
+    }
+    else if (is_shield(unrand))
+        return SK_SHIELDS;
+    else if (unrand.sub_type == ARM_ROBE || unrand.sub_type == ARM_ANIMAL_SKIN)
+        return coinflip() ? SK_SPELLCASTING : SK_DODGING;
+    else
+        return species_apt(SK_ARMOUR) == UNUSABLE_SKILL
+               ? _archaeologist_armour_skill_unusable(type)
+               : SK_ARMOUR;
+}
+
+static void _setup_archaeologist()
+{
+    for (uint8_t i = 0; i < ENDOFPACK; i++)
+        if (you.inv[i].defined())
+        {
+            if (you.inv[i].is_type(OBJ_ARMOUR, ARM_ROBE))
+                you.inv[i].props["worn_tile"] = (short)TILEP_BODY_SLIT_BLACK;
+            if (you.inv[i].is_type(OBJ_ARMOUR, ARM_GLOVES))
+                you.inv[i].props["worn_tile"] = (short)TILEP_ARM_GLOVE_BROWN;
+            if (you.inv[i].is_type(OBJ_ARMOUR, ARM_BOOTS))
+                you.inv[i].props["worn_tile"] = (short)TILEP_BOOTS_MESH_BLACK;
+            if (you.inv[i].is_type(OBJ_ARMOUR, ARM_HAT))
+                you.inv[i].props["worn_tile"] = (short)TILEP_HELM_HAT_BLACK;
+        }
+
+    skill_type manual_skill = SK_NONE;
+    for (uint8_t i = 0; i < ENDOFPACK; i++)
+        if (you.inv[i].defined()
+            && you.inv[i].is_type(OBJ_MISCELLANY, MISC_ANCIENT_CRATE))
+
+        {
+            manual_skill = _setup_archaeologist_crate(you.inv[i]);
+        }
+
+    for (uint8_t i = 0; i < ENDOFPACK; i++)
+        if (you.inv[i].defined()
+            && you.inv[i].is_type(OBJ_MISCELLANY, MISC_DUSTY_TOME))
+
+        {
+            you.inv[i].props[ARCHAEOLOGIST_TOME_SKILL] = manual_skill;
+        }
+}
+
 void give_items_skills(const newgame_def& ng)
 {
     create_wanderer();
@@ -304,7 +426,7 @@ void give_items_skills(const newgame_def& ng)
             you.skills[SK_ARMOUR]++;
 
         break;
-        
+
     case JOB_BOUND:
         you.religion = GOD_ASHENZARI;
         you.piety = 35;
@@ -314,7 +436,7 @@ void give_items_skills(const newgame_def& ng)
         else
             you.skills[SK_ARMOUR]++;
         break;
-        
+
     case JOB_TORPOR_KNIGHT:
         you.religion = GOD_CHEIBRIADOS;
         you.piety = 35;
@@ -324,7 +446,7 @@ void give_items_skills(const newgame_def& ng)
         else
             you.skills[SK_ARMOUR]++;
         break;
-        
+
     case JOB_PALADIN:
         you.religion = GOD_SHINING_ONE;
         you.piety = 35;
@@ -334,7 +456,7 @@ void give_items_skills(const newgame_def& ng)
         else
             you.skills[SK_ARMOUR]++;
         break;
-        
+
     case JOB_SLIME_PRIEST:
         you.religion = GOD_JIYVA;
         you.piety = 5;
@@ -344,7 +466,7 @@ void give_items_skills(const newgame_def& ng)
         else
             you.skills[SK_ARMOUR]++;
         break;
-        
+
     case JOB_BLOOD_KNIGHT:
         you.religion = GOD_MAKHLEB;
         you.piety = 35;
@@ -354,7 +476,7 @@ void give_items_skills(const newgame_def& ng)
         else
             you.skills[SK_ARMOUR]++;
         break;
-        
+
     case JOB_STORM_CLERIC:
         you.religion = GOD_QAZLAL;
         you.piety = 35;
@@ -364,29 +486,29 @@ void give_items_skills(const newgame_def& ng)
         else
             you.skills[SK_ARMOUR]++;
         break;
-        
+
     case JOB_DEATH_BISHOP:
         you.religion = GOD_YREDELEMNUL;
         add_spell_to_memory(SPELL_PAIN);
         you.piety = 35;
         break;
-        
+
     case JOB_GAMBLER:
         you.religion = GOD_NEMELEX_XOBEH;
         you.piety = 35;
         you.gift_timeout = 1;
         break;
-        
+
     case JOB_DOCTOR:
         you.religion = GOD_ELYVILON;
         you.piety = 35;
         break;
-        
+
     case JOB_GARDENER:
         you.religion = GOD_FEDHAS;
         you.piety = 35;
         break;
-        
+
     case JOB_HERMIT:
     {
         you.religion = GOD_RU;
@@ -403,49 +525,49 @@ void give_items_skills(const newgame_def& ng)
         you.props[RU_SACRIFICE_PENALTY_KEY] = 0;
     }
         break;
-        
+
     case JOB_WARRIOR:
         you.religion = GOD_OKAWARU;
         you.piety = 35;
         break;
-        
+
     case JOB_WITNESS:
         you.religion = GOD_BEOGH;
         you.piety = 35;
         break;
-        
+
     case JOB_KIKUMANCER:
         you.religion = GOD_KIKUBAAQUDGHA;
         you.piety = 35;
         break;
-        
+
     case JOB_ZINJA:
         you.religion = GOD_ZIN;
         you.piety = 35;
         break;
-        
+
     case JOB_NIGHT_KNIGHT:
         you.religion = GOD_DITHMENOS;
         you.piety = 35;
         break;
-        
+
     case JOB_DISCIPLE:
         you.religion = GOD_WU_JIAN;
         you.piety = 35;
         break;
-        
+
     case JOB_MERCHANT:
         you.religion = GOD_GOZAG;
         you.gold = 1;
         break;
-        
+
     case JOB_ANNIHILATOR:
         you.religion = GOD_VEHUMET;
         you.piety = 35;
         add_spell_to_memory(SPELL_MAGIC_DART);
         you.gift_timeout = roll_dice(2, 5);
-        break;   
-        
+        break;
+
     case JOB_LIBRARIAN:
     {
         you.religion = GOD_SIF_MUNA;
@@ -454,7 +576,7 @@ void give_items_skills(const newgame_def& ng)
         librarian_book();
         break;
     }
-        
+
     case JOB_INHERITOR:
     {
         you.religion = GOD_HEPLIAKLQANA;
@@ -465,7 +587,7 @@ void give_items_skills(const newgame_def& ng)
                                                          : GENDER_MALE;
         break;
     }
-		
+
     case JOB_DANCER:
         you.religion = GOD_USKAYAW;
         you.piety = 200; //you had a really good party right before entering the dungeon
@@ -545,7 +667,7 @@ void give_items_skills(const newgame_def& ng)
     if (job_gets_ranged_weapons(you.char_class))
         _give_ammo(ng.weapon, you.char_class == JOB_HUNTER ? 1 : 0);
 
-    if (you.species == SP_FELID)
+    if (you.species == SP_FELID || you.species == SP_BUTTERFLY)
     {
         you.skills[SK_THROWING] = 0;
         you.skills[SK_SHIELDS] = 0;
@@ -558,6 +680,9 @@ void give_items_skills(const newgame_def& ng)
         if (!you_worship(GOD_XOM))
             you.piety_max[you.religion] = you.piety;
     }
+
+    if (you.char_class == JOB_ARCHAEOLOGIST)
+        _setup_archaeologist();
 }
 
 static void _give_starting_food()
@@ -748,9 +873,18 @@ static void _setup_generic(const newgame_def& ng)
     you.skill_modifier = ng.skilled_type;
     you.chaoskin = ng.chaoskin;
     you.no_locks = ng.no_locks;
+    you.trap_type = ng.trap_type;
 
     if (ng.species == SP_SHAPESHIFTER)
         you.shapeshifter_species = true;
+
+    // Only relevant for Argons, but saved for every species
+    you.vaporous_resistance_fire = 0;
+    you.vaporous_resistance_cold = 0;
+    you.vaporous_resistance_neg = 0;
+    you.vaporous_resistance_elec = 0;
+    you.vaporous_resistance_poison = 0;
+    you.argon_flashes_available = 0;
 
     species_stat_init(you.species);     // must be down here {dlb}
 
@@ -839,7 +973,7 @@ static void _setup_generic(const newgame_def& ng)
     // Make sure the starting player is fully charged up.
     set_hp(you.hp_max);
     set_mp(you.max_magic_points);
-    
+
     //Mutate Slime Priest
     if (you.char_class == JOB_SLIME_PRIEST)
     {
