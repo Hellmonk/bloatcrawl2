@@ -469,7 +469,7 @@ vector<pair<spell_type,char>> map_chars_to_spells(const spellset &spells,
 static string _range_string(const spell_type &spell, const monster_info *mon_owner, int hd)
 {
     auto flags = get_spell_flags(spell);
-    int pow = mons_power_for_hd(spell, hd, false);
+    int pow = mons_power_for_hd(spell, hd);
     int range = spell_range(spell, pow, false);
     const bool has_range = mon_owner
                         && range > 0
@@ -510,7 +510,7 @@ static void _describe_book(const spellbook_contents &book,
     if (source_item)
     {
         description.cprintf(
-            "\n Spells                           Type                      Level");
+            "\n Spells                           Type                      Level       Known");
     }
     description.cprintf("\n");
 
@@ -580,9 +580,16 @@ static void _describe_book(const spellbook_contents &book,
                                                :
 #endif
                          _spell_schools(spell);
-        description.cprintf("%s%d\n",
+
+        string known = "";
+        if (!mon_owner) {
+            known = you.spell_library[spell] ? "         yes" : "          no";
+        }
+
+        description.cprintf("%s%d%s\n",
                             chop_string(schools, 30).c_str(),
-                            spell_difficulty(spell));
+                            spell_difficulty(spell),
+                            known.c_str());
     }
 
     // are we halfway through a column?

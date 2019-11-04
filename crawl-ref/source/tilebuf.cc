@@ -302,7 +302,7 @@ void ShapeBuffer::add(float pos_sx, float pos_sy, float pos_ex, float pos_ey,
 /////////////////////////////////////////////////////////////////////////////
 // LineBuffer
 
-LineBuffer::LineBuffer() : VertBuffer(false, true, nullptr, GLW_LINES)
+LineBuffer::LineBuffer() : VertBuffer(false, true, nullptr)
 {
     m_state.array_colour = true;
 }
@@ -318,13 +318,13 @@ void LineBuffer::add(float pos_sx, float pos_sy, float pos_ex, float pos_ey,
 void LineBuffer::add_square(float sx, float sy, float ex, float ey,
                             const VColour &col)
 {
-    GLW_3VF scale;
-    glmanager->get_transform(nullptr, &scale);
-    float dx = 1.0/scale.x, dy = 1.0/scale.y;
-    add(sx-dx, sy, ex-dx, sy, col);
-    add(ex, sy-dy, ex, ey-dy, col);
-    add(ex, ey, sx, ey, col);
-    add(sx, ey, sx, sy, col);
+    const float dx = 1, dy = 1; // line thickness
+    const float tx = 1, ty = 1; // shift used to prevent corner overlap
+
+    add(sx-dx, sy-ty, ex-dx, sy, col);
+    add(ex-tx, sy-dy, ex, ey-dy, col);
+    add(ex, ey-ty, sx, ey, col);
+    add(sx-tx, ey, sx, sy, col);
 }
 
 #endif

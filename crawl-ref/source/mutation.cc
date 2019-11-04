@@ -648,6 +648,7 @@ string describe_mutations(bool drop_title)
         {
             result += "<green>You do not regenerate when monsters are visible.</green>\n";
             result += "<green>You are frail without blood (-20% HP).</green>\n";
+            result += "<green>You can heal yourself when you bite living creatures.</green>\n";
         }
         else
             result += "<green>Your natural rate of healing is unusually fast.</green>\n";
@@ -670,7 +671,7 @@ string describe_mutations(bool drop_title)
             !form_keeps_mutations());
     }
 
-    if (you.species != SP_FELID)
+    if (you.species != SP_FELID && you.species != SP_BUTTERFLY)
     {
         switch (you.body_size(PSIZE_TORSO, true))
         {
@@ -810,16 +811,18 @@ static string _display_vampire_attributes()
 
     string result;
 
-    const int lines = 11;
+    const int lines = 12;
     string column[lines][3] =
     {
         {"                     ", "<green>Alive</green>      ", "<lightred>Bloodless</lightred>"},
                                  //Full       Bloodless
         {"Regeneration         ", "fast       ", "none with monsters in sight"},
 
-        {"HP Modifier          ", "none       ", "-20%"},
+        {"HP modifier          ", "none       ", "-20%"},
 
         {"Stealth boost        ", "none       ", "major "},
+
+        {"Heal on bite         ", "no         ", "yes "},
 
         {"\n<w>Resistances</w>\n"
          "Poison resistance    ", "           ", "immune"},
@@ -878,10 +881,10 @@ void display_mutations()
     trim_string_right(mutation_s);
 
     auto vbox = make_shared<Box>(Widget::VERT);
+    vbox->align_cross = Widget::CENTER;
 
     const char *title_text = "Innate Abilities, Weirdness & Mutations";
     auto title = make_shared<Text>(formatted_string(title_text, WHITE));
-    title->align_self = Widget::CENTER;
     vbox->add_child(move(title));
 
     auto switcher = make_shared<Switcher>();
@@ -893,23 +896,23 @@ void display_mutations()
         auto scroller = make_shared<Scroller>();
         auto text = make_shared<Text>(formatted_string::parse_string(
                 descs[static_cast<int>(i)]));
-        text->wrap_text = true;
+        text->set_wrap_text(true);
         scroller->set_child(text);
         switcher->add_child(move(scroller));
     }
 
     switcher->current() = 0;
-    switcher->set_margin_for_sdl({20, 0, 0, 0});
-    switcher->set_margin_for_crt({1, 0, 0, 0});
+    switcher->set_margin_for_sdl(20, 0, 0, 0);
+    switcher->set_margin_for_crt(1, 0, 0, 0);
     switcher->expand_h = false;
 #ifdef USE_TILE_LOCAL
-    switcher->max_size()[0] = tiles.get_crt_font()->char_width()*80;
+    switcher->max_size().width = tiles.get_crt_font()->char_width()*80;
 #endif
     vbox->add_child(switcher);
 
     auto bottom = make_shared<Text>(_vampire_Ascreen_footer(true));
-    bottom->set_margin_for_sdl({20, 0, 0, 0});
-    bottom->set_margin_for_crt({1, 0, 0, 0});
+    bottom->set_margin_for_sdl(20, 0, 0, 0);
+    bottom->set_margin_for_crt(1, 0, 0, 0);
     if (you.undead_state() == US_SEMI_UNDEAD)
         vbox->add_child(bottom);
 
@@ -934,7 +937,7 @@ void display_mutations()
             tiles.ui_state_change("mutations", 0);
 #endif
         } else
-            done = !vbox->on_event(ev);
+            done = !switcher->current_widget()->on_event(ev);
         return true;
     });
 
@@ -1287,7 +1290,7 @@ bool physiology_mutation_conflict(mutation_type mutat)
 
     // Felids have innate claws, and unlike trolls/ghouls, there are no
     // increases for them. And octopodes have no hands.
-    if ((you.species == SP_FELID || you.species == SP_OCTOPODE)
+    if ((you.species == SP_FELID || you.species == SP_OCTOPODE || you.species == SP_BUTTERFLY)
          && mutat == MUT_CLAWS)
     {
         return true;
@@ -1487,6 +1490,16 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
         }
     }
 
+    // Argone cannot mutate
+    if (you.has_mutation(MUT_VAPOROUS_BODY))
+    {
+        if (god_gift)
+            return false;
+        mpr("The mutagenic energy damages you!");
+        ouch(random_range(7, 17), KILLED_BY_DRAINING, MID_NOBODY, "mutagenic energy");
+        return false;
+    }
+
     // Undead bodies don't mutate, they fall apart. -- bwr
     if (undead_mutation_rot())
     {
@@ -1631,7 +1644,7 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
         case MUT_LARGE_BONE_PLATES:
             {
                 const char *arms;
-                if (you.species == SP_FELID)
+                if (you.species == SP_FELID || you.species == SP_BUTTERFLY)
                     arms = "legs";
                 else if (you.species == SP_OCTOPODE)
                     arms = "tentacles";
@@ -1649,6 +1662,8 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
                 const char *hands;
                 if (you.species == SP_FELID)
                     hands = "front paws";
+                else if (you.species == SP_BUTTERFLY)
+                    hands = "forelegs";
                 else if (you.species == SP_OCTOPODE)
                     hands = "tentacles";
                 else
@@ -1666,6 +1681,10 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
                 for (int i = 0; i < 52; ++i)
                     if (you.ability_letter_table[i] == ABIL_SPIT_POISON)
                         you.ability_letter_table[i] = ABIL_BREATHE_POISON;
+            break;
+
+        case MUT_VAPOROUS_RESISTANCE:
+            pick_vaporous_resistance();
             break;
 
         default:

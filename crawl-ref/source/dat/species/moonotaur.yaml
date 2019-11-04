@@ -1,0 +1,64 @@
+enum: SP_MOONOTAUR
+monster: MONS_MINOTAUR
+name: Moonotaur
+short_name: Mo
+difficulty: Advanced
+difficulty_priority: 90
+aptitudes:
+  xp: -2
+  hp: -9
+  mp_mod: 0
+  mr: 3
+  fighting: -2
+  short_blades: 1
+  long_blades: 1
+  axes: 1
+  maces_and_flails: 1
+  polearms: 1
+  staves: 1
+  slings: 1
+  bows: 0
+  crossbows: 1
+  throwing: 1
+  armour: -2
+  dodging: -2
+  stealth: -1
+  shields: -2
+  unarmed_combat: 1
+  spellcasting: -1
+  conjurations: 0
+  hexes: 0
+  charms: 0
+  summoning: 0
+  necromancy: -2
+  translocations: 0
+  transmutations: 0
+  fire_magic: 0
+  ice_magic: 0
+  air_magic: 0
+  earth_magic: 0
+  poison_magic: 0
+  evocations: -1
+  invocations: -2
+str: 9
+int: 9
+dex: 9
+levelup_stat_frequency: 4
+levelup_stats:
+  - str
+  - dex
+  - int
+mutations:
+  1:
+    MUT_NO_POTION_HEAL: 3
+    MUT_INHIBITED_REGENERATION: 1
+fake_mutations:
+  - long: You take but a single point of damage from any source
+    short: reduce all damage to 1
+  - long: Healing from other sources has reduced effect on you
+    short: reduced healing
+recommended_jobs:
+  - JOB_HUNTER
+  - JOB_FIRE_ELEMENTALIST
+  - JOB_AIR_ELEMENTALIST
+  - JOB_BERSERKER

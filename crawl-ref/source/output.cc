@@ -1416,7 +1416,7 @@ void print_stats()
     }
     you.wield_change  = false;
 
-    if (you.species == SP_FELID)
+    if (you.species == SP_FELID || you.species == SP_BUTTERFLY)
     {
         // There are no circumstances under which Felids could quiver something.
         // Reduce line counter for status display.
@@ -2194,6 +2194,20 @@ static formatted_string _get_modifiers()
             break;
         case 1:
             modifiers.push_back("Skilled");
+            break;
+    }
+    switch (you.trap_type)
+    {
+        case 0:
+            break;
+        case 1:
+            modifiers.push_back("Traps Disabled");
+            break;
+        case 2:
+            modifiers.push_back("Floor Traps Only");
+            break;
+        case 3:
+            modifiers.push_back("Random Traps Only");
             break;
     }
     if (you.chaoskin)

@@ -44,6 +44,7 @@ struct newgame_def
     int skilled_type;
     bool chaoskin; // Xom acts on you always
     bool no_locks; // disable rune locks
+    int trap_type; // types of traps that are enabled/disabled
 
     newgame_def();
     void clear_character();

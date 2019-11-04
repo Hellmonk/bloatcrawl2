@@ -16,6 +16,7 @@
 
 #include "abyss.h"
 #include "acquire.h"
+#include "act-iter.h"
 #include "areas.h"
 #include "art-enum.h"
 #include "branch.h"
@@ -117,6 +118,7 @@ enum class abflag
     starve_ok           = 0x00800000, // can use even if starving
     berserk_ok          = 0x01000000, // can use even if berserk
     card                = 0x02000000, // deck drawing (Nemelex)
+    argon_flash         = 0x04000000, // Argon flash charge
 };
 DEF_BITFIELD(ability_flags, abflag);
 
@@ -339,6 +341,8 @@ static const ability_def Ability_List[] =
 
     { ABIL_POWERSQUAT, "Powersquat", 0, 0, 0, 0, {}, abflag::none },
 
+    { ABIL_ARGON_FLASH, "Argon Flash", 0, 0, 0, 0, {}, abflag::argon_flash },
+
     // EVOKE abilities use Evocations and come from items.
     // Teleportation and Blink can also come from mutations
     // so we have to distinguish them (see above). The off items
@@ -518,18 +522,14 @@ static const ability_def Ability_List[] =
       0, 0, 0, 15, {fail_basis::invo}, abflag::none },
 
     // Fedhas
-    { ABIL_FEDHAS_FUNGAL_BLOOM, "Fungal Bloom",
-      0, 0, 0, 0, {fail_basis::invo}, abflag::none },
-    { ABIL_FEDHAS_SUNLIGHT, "Sunlight",
-      2, 0, 50, 0, {fail_basis::invo, 30, 6, 20}, abflag::none },
-    { ABIL_FEDHAS_EVOLUTION, "Evolution",
-      2, 0, 0, 0, {fail_basis::invo, 30, 6, 20}, abflag::rations_or_piety },
-    { ABIL_FEDHAS_PLANT_RING, "Growth",
-      2, 0, 0, 0, {fail_basis::invo, 40, 5, 20}, abflag::rations },
-    { ABIL_FEDHAS_SPAWN_SPORES, "Reproduction",
-      4, 0, 100, 1, {fail_basis::invo, 60, 4, 25}, abflag::none },
-    { ABIL_FEDHAS_RAIN, "Rain",
-      4, 0, 150, 4, {fail_basis::invo, 70, 4, 25}, abflag::none },
+    { ABIL_FEDHAS_WALL_OF_BRIARS, "Wall of Briars",
+      3, 0, 50, 2, {fail_basis::invo, 30, 6, 20}, abflag::none},
+    { ABIL_FEDHAS_GROW_BALLISTOMYCETE, "Grow Ballistomycete",
+      4, 0, 100, 4, {fail_basis::invo, 60, 4, 25}, abflag::none },
+    { ABIL_FEDHAS_OVERGROW, "Overgrow",
+      8, 0, 200, 12, {fail_basis::invo, 70, 5, 20}, abflag::none},
+    { ABIL_FEDHAS_GROW_OKLOB, "Grow Oklob",
+      6, 0, 150, 6, {fail_basis::invo, 80, 4, 25}, abflag::none },
 
     // Cheibriados
     { ABIL_CHEIBRIADOS_TIME_BEND, "Bend Time",
@@ -856,6 +856,14 @@ const string make_cost_description(ability_type ability)
         ret += _nemelex_card_text(ability);
     }
 
+    if (abil.flags & abflag::argon_flash)
+    {
+        ret += make_stringf(", a flash charge (%s)",
+            you.argon_flashes_available > 0 ?
+                make_stringf("%d left", you.argon_flashes_available).c_str()
+                : "none available");
+    }
+
     // If we haven't output anything so far, then the effect has no cost
     if (ret.empty())
         return "None";
@@ -1015,7 +1023,7 @@ ability_type fixup_ability(ability_type ability)
     case ABIL_TSO_BLESS_WEAPON:
     case ABIL_KIKU_BLESS_WEAPON:
     case ABIL_LUGONU_BLESS_WEAPON:
-        if (you.species == SP_FELID)
+        if (you.species == SP_FELID || you.species == SP_BUTTERFLY)
             return ABIL_NON_ABILITY;
         else
             return ability;
@@ -1580,26 +1588,6 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
         }
         return true;
 
-    case ABIL_FEDHAS_EVOLUTION:
-        return fedhas_check_evolve_flora(quiet);
-
-    case ABIL_FEDHAS_SPAWN_SPORES:
-    {
-        const int retval = fedhas_check_corpse_spores(quiet);
-        if (retval <= 0)
-        {
-            if (!quiet)
-            {
-                if (retval == 0)
-                    mpr("No corpses are in range.");
-                else
-                    canned_msg(MSG_OK);
-            }
-            return false;
-        }
-        return true;
-    }
-
     case ABIL_SPIT_POISON:
     case ABIL_BREATHE_FIRE:
     case ABIL_BREATHE_FROST:
@@ -2042,6 +2030,28 @@ static spret _do_ability(const ability_def& abil, bool fail)
         you.increase_duration(DUR_SQUAT, 10 + random2(40));
         notify_stat_change(STAT_INT, you.base_stats[STAT_STR] / 2, true);
         notify_stat_change(STAT_STR, you.base_stats[STAT_INT] / 2, true);
+        break;
+
+    case ABIL_ARGON_FLASH:
+        if (you.argon_flashes_available == 0)
+        {
+            mpr("You do not have the energy to flash.");
+            return spret::abort;
+        }
+        you.argon_flashes_available--;
+
+        flash_view(UA_PLAYER, YELLOW);
+        mpr("You emit a blinding flash of light!");
+        for (monster_iterator mi; mi; ++mi)
+        {
+            dprf("%s: see: %d blind: %d", mi->name(DESC_THE).c_str(), you.see_cell(mi->pos()), mons_can_be_blinded(mi->type));
+            if (you.see_cell(mi->pos()) && mons_can_be_blinded(mi->type))
+            {
+                if (you.can_see(**mi))
+                    mprf(MSGCH_GOD, "You blind %s!", mi->name(DESC_THE).c_str());
+                mi->add_ench(mon_enchant(ENCH_BLIND, 1, &you, 100+random2(100)));
+            }
+        }
         break;
 
     case ABIL_SPIT_POISON:      // Naga poison spit
@@ -2899,38 +2909,35 @@ static spret _do_ability(const ability_def& abil, bool fail)
         end_recall();
         break;
 
-    case ABIL_FEDHAS_FUNGAL_BLOOM:
-        fedhas_fungal_bloom();
-        return spret::success;
-
-    case ABIL_FEDHAS_SUNLIGHT:
-        return fedhas_sunlight(fail);
-
-    case ABIL_FEDHAS_PLANT_RING:
+    case ABIL_FEDHAS_WALL_OF_BRIARS:
         fail_check();
-        if (!fedhas_plant_ring_from_rations())
+        if (!fedhas_wall_of_briars())
             return spret::abort;
         break;
 
-    case ABIL_FEDHAS_RAIN:
-        fail_check();
-        if (!fedhas_rain(you.pos()))
-        {
-            canned_msg(MSG_NOTHING_HAPPENS);
-            return spret::abort;
-        }
-        break;
-
-    case ABIL_FEDHAS_SPAWN_SPORES:
+    case ABIL_FEDHAS_GROW_BALLISTOMYCETE:
     {
-        fail_check();
-        const int num = fedhas_corpse_spores();
-        ASSERT(num > 0);
+        return fedhas_grow_ballistomycete(fail);
+
         break;
     }
 
-    case ABIL_FEDHAS_EVOLUTION:
-        return fedhas_evolve_flora(fail);
+    case ABIL_FEDHAS_OVERGROW:
+    {
+        fail_check();
+
+        if (!fedhas_overgrow())
+            return spret::abort;
+
+        break;
+    }
+
+    case ABIL_FEDHAS_GROW_OKLOB:
+    {
+        return fedhas_grow_oklob(fail);
+
+        break;
+    }
 
     case ABIL_TRAN_BAT:
     {
@@ -3289,8 +3296,7 @@ static spret _do_ability(const ability_def& abil, bool fail)
         fail_check();
         if (yesno("Really renounce your faith, foregoing its fabulous benefits?",
                   false, 'n')
-            && yesno("Are you sure you won't change your mind later?",
-                     false, 'n'))
+            && yesno("Are you sure?", false, 'n'))
         {
             excommunication(true);
         }
@@ -3603,6 +3609,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
 
     if (you.attribute[ATTR_PERM_FLIGHT] && you.racial_permanent_flight())
         _add_talent(talents, ABIL_STOP_FLYING, check_confused);
+
+    if (you.species == SP_ARGON)
+        _add_talent(talents, ABIL_ARGON_FLASH, check_confused);
 
     // Mutations
     if (you.get_mutation_level(MUT_HURL_DAMNATION))

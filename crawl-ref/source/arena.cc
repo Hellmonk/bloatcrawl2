@@ -877,7 +877,7 @@ namespace arena
                 do_respawn(faction_a);
                 do_respawn(faction_b);
                 balance_spawners();
-                ui_delay(Options.view_delay);
+                ui::delay(Options.view_delay);
                 clear_messages();
                 ASSERT(you.pet_target == MHITNOT);
             }
@@ -887,7 +887,7 @@ namespace arena
         if (contest_cancelled)
         {
             mpr("Canceled contest at user request");
-            ui_delay(Options.view_delay);
+            ui::delay(Options.view_delay);
             clear_messages();
             return;
         }
@@ -1075,11 +1075,11 @@ namespace arena
             do_fight();
 
             if (trials_done < total_trials)
-                ui_delay(Options.view_delay * 5);
+                ui::delay(Options.view_delay * 5);
         }
         while (!contest_cancelled && trials_done < total_trials);
 
-        ui_delay(Options.view_delay * 5);
+        ui::delay(Options.view_delay * 5);
 
         if (total_trials > 0)
         {
@@ -1487,13 +1487,7 @@ static void _choose_arena_teams(newgame_def& choice,
     popup->on(Widget::slots.event, [&](wm_event ev)  {
         if (ev.type != WME_KEYDOWN)
             return false;
-        int key = ev.key.keysym.sym;
-        if (key == CONTROL('P'))
-            {
-                replay_messages();
-                return false;
-            }
-        key = reader.putkey(key);
+        const int key = reader.putkey(ev.key.keysym.sym);
         if (key == -1)
             return true;
         cancel = !!key;

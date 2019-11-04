@@ -118,7 +118,7 @@ int show_description(const describe_info &inf, const tile_def *tile)
         {
             auto icon = make_shared<Image>();
             icon->set_tile(*tile);
-            icon->set_margin_for_sdl({0, 10, 0, 0});
+            icon->set_margin_for_sdl(0, 10, 0, 0);
             title_hbox->add_child(move(icon));
         }
 #endif
@@ -126,9 +126,9 @@ int show_description(const describe_info &inf, const tile_def *tile)
         auto title = make_shared<Text>(inf.title);
         title_hbox->add_child(move(title));
 
-        title_hbox->align_items = Widget::CENTER;
-        title_hbox->set_margin_for_sdl({0, 0, 20, 0});
-        title_hbox->set_margin_for_crt({0, 0, 1, 0});
+        title_hbox->align_cross = Widget::CENTER;
+        title_hbox->set_margin_for_sdl(0, 0, 20, 0);
+        title_hbox->set_margin_for_crt(0, 0, 1, 0);
         vbox->add_child(move(title_hbox));
     }
 
@@ -145,7 +145,7 @@ int show_description(const describe_info &inf, const tile_def *tile)
         auto scroller = make_shared<Scroller>();
         auto fs = formatted_string::parse_string(trimmed_string(desc));
         auto text = make_shared<Text>(fs);
-        text->wrap_text = true;
+        text->set_wrap_text(true);
         scroller->set_child(text);
         switcher->add_child(move(scroller));
     }
@@ -153,15 +153,15 @@ int show_description(const describe_info &inf, const tile_def *tile)
     switcher->current() = 0;
     switcher->expand_h = false;
 #ifdef USE_TILE_LOCAL
-    switcher->max_size()[0] = tiles.get_crt_font()->char_width()*80;
+    switcher->max_size().width = tiles.get_crt_font()->char_width()*80;
 #endif
     vbox->add_child(switcher);
 
     if (!inf.quote.empty())
     {
         auto footer = make_shared<Text>(_toggle_message);
-        footer->set_margin_for_sdl({20, 0, 0, 0});
-        footer->set_margin_for_crt({1, 0, 0, 0});
+        footer->set_margin_for_sdl(20, 0, 0, 0);
+        footer->set_margin_for_crt(1, 0, 0, 0);
         vbox->add_child(move(footer));
     }
 
@@ -176,7 +176,7 @@ int show_description(const describe_info &inf, const tile_def *tile)
         if (!inf.quote.empty() && (lastch == '!' || lastch == CK_MOUSE_CMD || lastch == '^'))
             switcher->current() = 1 - switcher->current();
         else
-            done = !vbox->on_event(ev);
+            done = !switcher->current_widget()->on_event(ev);
         return true;
     });
 
@@ -661,7 +661,8 @@ string trap_name(trap_type trap)
 
 string full_trap_name(trap_type trap)
 {
-    string basename = trap_name(trap);
+    string disabled = you.trap_type == 1 || you.trap_type == 3 ? "disabled " : "";
+    string basename = disabled + trap_name(trap);
     switch (trap)
     {
     case TRAP_GOLUBRIA:
@@ -2198,6 +2199,7 @@ void get_feature_desc(const coord_def &pos, describe_info &inf, bool include_ext
 
     string desc      = feature_description_at(pos, false, DESC_A, false);
     string db_name   = feat == DNGN_ENTER_SHOP ? "a shop" : desc;
+    strip_suffix(db_name, " (summoned)");
     string long_desc = getLongDescription(db_name);
 
     inf.title = uppercase_first(desc);
@@ -2236,6 +2238,15 @@ void get_feature_desc(const coord_def &pos, describe_info &inf, bool include_ext
                          command_to_string(CMD_GO_DOWNSTAIRS).c_str());
     }
 
+    // mention that permanent trees are usually flammable
+    // (expect for autumnal trees in Wucad Mu's Monastery)
+    if (feat_is_tree(feat) && !is_temp_terrain(pos)
+        && env.markers.property_at(pos, MAT_ANY, "veto_fire") != "veto")
+    {
+        long_desc += "\nIt is susceptible to bolts of lightning";
+        long_desc += " and to sufficiently intense sources of fire.";
+    }
+
     inf.body << long_desc;
 
     if (include_extra)
@@ -2251,7 +2262,7 @@ void get_feature_desc(const coord_def &pos, describe_info &inf, bool include_ext
 void describe_feature_wide(const coord_def& pos)
 {
     typedef struct {
-        string title, body;
+        string title, body, quote;
         tile_def tile;
     } feat_info;
 
@@ -2260,7 +2271,7 @@ void describe_feature_wide(const coord_def& pos)
     {
         describe_info inf;
         get_feature_desc(pos, inf, false);
-        feat_info f = { "", "", tile_def(TILEG_TODO, TEX_GUI)};
+        feat_info f = { "", "", "", tile_def(TILEG_TODO, TEX_GUI)};
         f.title = inf.title;
         f.body = trimmed_string(inf.body.str());
 #ifdef USE_TILE
@@ -2268,12 +2279,13 @@ void describe_feature_wide(const coord_def& pos)
         apply_variations(env.tile_flv(pos), &tile, pos);
         f.tile = tile_def(tile, get_dngn_tex(tile));
 #endif
+        f.quote = trimmed_string(inf.quote);
         feats.emplace_back(f);
     }
     auto extra_descs = _get_feature_extra_descs(pos);
     for (const auto &desc : extra_descs)
     {
-        feat_info f = { "", "", tile_def(TILEG_TODO, TEX_GUI)};
+        feat_info f = { "", "", "", tile_def(TILEG_TODO, TEX_GUI)};
         f.title = desc.first;
         f.body = trimmed_string(desc.second);
 #ifdef USE_TILE
@@ -2293,7 +2305,7 @@ void describe_feature_wide(const coord_def& pos)
         string hint_text = trimmed_string(hints_describe_pos(pos.x, pos.y));
         if (!hint_text.empty())
         {
-            feat_info f = { "", "", tile_def(TILEG_TODO, TEX_GUI)};
+            feat_info f = { "", "", "", tile_def(TILEG_TODO, TEX_GUI)};
             f.title = "Hints.";
             f.body = hint_text;
             f.tile = tile_def(TILEG_STARTUP_HINTS, TEX_GUI);
@@ -2313,30 +2325,39 @@ void describe_feature_wide(const coord_def& pos)
         title_hbox->add_child(move(icon));
 #endif
         auto title = make_shared<Text>(feat.title);
-        title->set_margin_for_crt({0, 0, 0, 0});
-        title->set_margin_for_sdl({0, 0, 0, 10});
+        title->set_margin_for_sdl(0, 0, 0, 10);
         title_hbox->add_child(move(title));
-        title_hbox->align_items = Widget::CENTER;
+        title_hbox->align_cross = Widget::CENTER;
 
-        bool has_desc = feat.body != feat.title && feat.body != "";
+        const bool has_desc = feat.body != feat.title && feat.body != "";
+
         if (has_desc || &feat != &feats.back())
         {
-            title_hbox->set_margin_for_crt({0, 0, 1, 0});
-            title_hbox->set_margin_for_sdl({0, 0, 20, 0});
+            title_hbox->set_margin_for_crt(0, 0, 1, 0);
+            title_hbox->set_margin_for_sdl(0, 0, 20, 0);
         }
         vbox->add_child(move(title_hbox));
 
         if (has_desc)
         {
-            auto text = make_shared<Text>(formatted_string::parse_string(feat.body));
+            formatted_string desc_text = formatted_string::parse_string(feat.body);
+            if (!feat.quote.empty())
+            {
+                desc_text.cprintf("\n\n");
+                desc_text += formatted_string::parse_string(feat.quote);
+            }
+            auto text = make_shared<Text>(desc_text);
             if (&feat != &feats.back())
-                text->set_margin_for_sdl({0, 0, 20, 0});
-            text->wrap_text = true;
+            {
+                text->set_margin_for_sdl(0, 0, 20, 0);
+                text->set_margin_for_crt(0, 0, 1, 0);
+            }
+            text->set_wrap_text(true);
             vbox->add_child(text);
         }
     }
 #ifdef USE_TILE_LOCAL
-    vbox->max_size()[0] = tiles.get_crt_font()->char_width()*80;
+    vbox->max_size().width = tiles.get_crt_font()->char_width()*80;
 #endif
     scroller->set_child(move(vbox));
 
@@ -2344,10 +2365,9 @@ void describe_feature_wide(const coord_def& pos)
 
     bool done = false;
     popup->on(Widget::slots.event, [&](wm_event ev) {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        done = !scroller->on_event(ev);
-        return true;
+        if (scroller->on_event(ev))
+            return true;
+        return done = ev.type == WME_KEYDOWN;
     });
 
 #ifdef USE_TILE_WEB
@@ -2357,7 +2377,8 @@ void describe_feature_wide(const coord_def& pos)
     {
         tiles.json_open_object();
         tiles.json_write_string("title", feat.title);
-        tiles.json_write_string("body", feat.body);
+        tiles.json_write_string("body", trimmed_string(feat.body));
+        tiles.json_write_string("quote", trimmed_string(feat.quote));
         tiles.json_open_object("tile");
         tiles.json_write_int("t", feat.tile.tile);
         tiles.json_write_int("tex", feat.tile.tex);
@@ -2431,7 +2452,7 @@ static vector<command_type> _allowed_actions(const item_def& item)
     case OBJ_MISSILES:
         if (_could_set_training_target(item, false))
             actions.push_back(CMD_SET_SKILL_TARGET);
-        if (you.species != SP_FELID)
+        if (you.species != SP_FELID && you.species != SP_BUTTERFLY)
             actions.push_back(CMD_QUIVER_ITEM);
         break;
     case OBJ_ARMOUR:
@@ -2678,18 +2699,17 @@ bool describe_item(item_def &item, function<void (string&)> fixup_desc)
 #endif
 
     auto title = make_shared<Text>(name);
-    title->set_margin_for_crt({0, 0, 0, 0});
-    title->set_margin_for_sdl({0, 0, 0, 10});
+    title->set_margin_for_sdl(0, 0, 0, 10);
     title_hbox->add_child(move(title));
 
-    title_hbox->align_items = Widget::CENTER;
-    title_hbox->set_margin_for_crt({0, 0, 1, 0});
-    title_hbox->set_margin_for_sdl({0, 0, 20, 0});
+    title_hbox->align_cross = Widget::CENTER;
+    title_hbox->set_margin_for_crt(0, 0, 1, 0);
+    title_hbox->set_margin_for_sdl(0, 0, 20, 0);
     vbox->add_child(move(title_hbox));
 
     auto scroller = make_shared<Scroller>();
     auto text = make_shared<Text>(fs_desc.trim());
-    text->wrap_text = true;
+    text->set_wrap_text(true);
     scroller->set_child(text);
     vbox->add_child(scroller);
 
@@ -2701,13 +2721,13 @@ bool describe_item(item_def &item, function<void (string&)> fixup_desc)
         footer_text += formatted_string(_actions_desc(actions, item));
         auto footer = make_shared<Text>();
         footer->set_text(footer_text);
-        footer->set_margin_for_crt({1, 0, 0, 0});
-        footer->set_margin_for_sdl({20, 0, 0, 0});
+        footer->set_margin_for_crt(1, 0, 0, 0);
+        footer->set_margin_for_sdl(20, 0, 0, 0);
         vbox->add_child(move(footer));
     }
 
 #ifdef USE_TILE_LOCAL
-    vbox->max_size()[0] = tiles.get_crt_font()->char_width()*80;
+    vbox->max_size().width = tiles.get_crt_font()->char_width()*80;
 #endif
 
     auto popup = make_shared<ui::Popup>(move(vbox));
@@ -2901,7 +2921,7 @@ string get_skill_description(skill_type skill, bool need_title)
 static int _hex_pow(const spell_type spell, const int hd)
 {
     const int cap = 200;
-    const int pow = mons_power_for_hd(spell, hd, false) / ENCH_POW_FACTOR;
+    const int pow = mons_power_for_hd(spell, hd) / ENCH_POW_FACTOR;
     return min(cap, pow);
 }
 
@@ -3152,7 +3172,7 @@ void describe_spell(spell_type spell, const monster_info *mon_owner,
 
     auto vbox = make_shared<Box>(Widget::VERT);
 #ifdef USE_TILE_LOCAL
-    vbox->max_size()[0] = tiles.get_crt_font()->char_width()*80;
+    vbox->max_size().width = tiles.get_crt_font()->char_width()*80;
 #endif
 
     auto title_hbox = make_shared<Box>(Widget::HORZ);
@@ -3167,19 +3187,18 @@ void describe_spell(spell_type spell, const monster_info *mon_owner,
 
     auto title = make_shared<Text>();
     title->set_text(formatted_string(spl_title));
-    title->set_margin_for_crt({0, 0, 0, 0});
-    title->set_margin_for_sdl({0, 0, 0, 10});
+    title->set_margin_for_sdl(0, 0, 0, 10);
     title_hbox->add_child(move(title));
 
-    title_hbox->align_items = Widget::CENTER;
-    title_hbox->set_margin_for_crt({0, 0, 1, 0});
-    title_hbox->set_margin_for_sdl({0, 0, 20, 0});
+    title_hbox->align_cross = Widget::CENTER;
+    title_hbox->set_margin_for_crt(0, 0, 1, 0);
+    title_hbox->set_margin_for_sdl(0, 0, 20, 0);
     vbox->add_child(move(title_hbox));
 
     auto scroller = make_shared<Scroller>();
     auto text = make_shared<Text>();
     text->set_text(formatted_string::parse_string(desc));
-    text->wrap_text = true;
+    text->set_wrap_text(true);
     scroller->set_child(move(text));
     vbox->add_child(scroller);
 
@@ -3187,8 +3206,8 @@ void describe_spell(spell_type spell, const monster_info *mon_owner,
     {
         auto more = make_shared<Text>();
         more->set_text(formatted_string("(M)emorise this spell.", CYAN));
-        more->set_margin_for_crt({1, 0, 0, 0});
-        more->set_margin_for_sdl({20, 0, 0, 0});
+        more->set_margin_for_crt(1, 0, 0, 0);
+        more->set_margin_for_sdl(20, 0, 0, 0);
         vbox->add_child(move(more));
     }
 
@@ -4534,13 +4553,12 @@ int describe_monsters(const monster_info &mi, bool force_seen,
 
     auto title = make_shared<Text>();
     title->set_text(formatted_string(inf.title));
-    title->set_margin_for_crt({0, 0, 0, 0});
-    title->set_margin_for_sdl({0, 0, 0, 10});
+    title->set_margin_for_sdl(0, 0, 0, 10);
     title_hbox->add_child(move(title));
 
-    title_hbox->align_items = Widget::CENTER;
-    title_hbox->set_margin_for_crt({0, 0, 1, 0});
-    title_hbox->set_margin_for_sdl({0, 0, 20, 0});
+    title_hbox->align_cross = Widget::CENTER;
+    title_hbox->set_margin_for_crt(0, 0, 1, 0);
+    title_hbox->set_margin_for_sdl(0, 0, 20, 0);
     vbox->add_child(move(title_hbox));
 
     desc += formatted_string(inf.body.str());
@@ -4572,7 +4590,7 @@ int describe_monsters(const monster_info &mi, bool force_seen,
         const formatted_string *content[2] = { &desc, &quote };
         auto scroller = make_shared<Scroller>();
         auto text = make_shared<Text>(content[i]->trim());
-        text->wrap_text = true;
+        text->set_wrap_text(true);
         scroller->set_child(text);
         desc_sw->add_child(move(scroller));
 
@@ -4580,15 +4598,15 @@ int describe_monsters(const monster_info &mi, bool force_seen,
                 formatted_string::parse_string(mores[i])));
     }
 
-    more_sw->set_margin_for_sdl({20, 0, 0, 0});
-    more_sw->set_margin_for_crt({1, 0, 0, 0});
+    more_sw->set_margin_for_sdl(20, 0, 0, 0);
+    more_sw->set_margin_for_crt(1, 0, 0, 0);
     desc_sw->expand_h = false;
     vbox->add_child(desc_sw);
     if (!inf.quote.empty())
         vbox->add_child(more_sw);
 
 #ifdef USE_TILE_LOCAL
-    vbox->max_size()[0] = tiles.get_crt_font()->char_width()*80;
+    vbox->max_size().width = tiles.get_crt_font()->char_width()*80;
 #endif
 
     auto popup = make_shared<ui::Popup>(move(vbox));

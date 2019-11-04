@@ -202,6 +202,7 @@ static void _initialize()
     }
 
     mpr(opening_screen().tostring().c_str());
+    mpr(options_read_status().tostring().c_str());
 }
 
 static void _spawn_caveperson_dog()
@@ -361,10 +362,18 @@ static void _post_init(bool newc)
 
         _spawn_caveperson_dog();
 
-        if (you.species == SP_FAERIE_DRAGON)
+        // Start certain species flying
+        switch (you.species)
         {
+        case SP_ARGON:
+            you.attribute[ATTR_FLIGHT_UNCANCELLABLE] = true;
+            // deliberate fall-through
+        case SP_FAERIE_DRAGON:
             you.attribute[ATTR_PERM_FLIGHT] = 1;
             float_player();
+            break;
+        default:
+            break;
         }
     }
 
@@ -424,10 +433,10 @@ static void _construct_game_modes_menu(shared_ptr<OuterMenu>& container)
 
 #ifdef USE_TILE_LOCAL
         auto hbox = make_shared<Box>(Box::HORZ);
-        hbox->align_items = Widget::Align::CENTER;
+        hbox->align_cross = Widget::Align::CENTER;
         auto tile = make_shared<Image>();
         tile->set_tile(tile_def(tileidx_gametype(entry.id), TEX_GUI));
-        tile->set_margin_for_sdl({0, 6, 0, 0});
+        tile->set_margin_for_sdl(0, 6, 0, 0);
         hbox->add_child(move(tile));
         hbox->add_child(label);
 #endif
@@ -436,7 +445,7 @@ static void _construct_game_modes_menu(shared_ptr<OuterMenu>& container)
 
         auto btn = make_shared<MenuButton>();
 #ifdef USE_TILE_LOCAL
-        hbox->set_margin_for_sdl({2,10,2,2});
+        hbox->set_margin_for_sdl(2, 10, 2, 2);
         btn->set_child(move(hbox));
 #else
         btn->set_child(move(label));
@@ -454,10 +463,10 @@ static shared_ptr<MenuButton> _make_newgame_button(shared_ptr<OuterMenu>& contai
 
 #ifdef USE_TILE_LOCAL
     auto hbox = make_shared<Box>(Box::HORZ);
-    hbox->align_items = Widget::Align::CENTER;
+    hbox->align_cross = Widget::Align::CENTER;
     hbox->add_child(label);
-    label->set_margin_for_sdl({0,0,0,TILE_Y+6});
-    hbox->min_size() = { 0, TILE_Y };
+    label->set_margin_for_sdl(0,0,0,TILE_Y+6);
+    hbox->min_size().height = TILE_Y;
 #endif
 
     auto btn = make_shared<MenuButton>();
@@ -466,7 +475,7 @@ static shared_ptr<MenuButton> _make_newgame_button(shared_ptr<OuterMenu>& contai
 #else
     btn->set_child(move(label));
 #endif
-    btn->get_child()->set_margin_for_sdl({2,10,2,2});
+    btn->get_child()->set_margin_for_sdl(2, 10, 2, 2);
     btn->id = NUM_GAME_TYPE + num_chars;
     btn->highlight_colour = LIGHTGREY;
     return btn;
@@ -478,23 +487,23 @@ static void _construct_save_games_menu(shared_ptr<OuterMenu>& container,
     for (unsigned int i = 0; i < chars.size(); ++i)
     {
         auto hbox = make_shared<Box>(Box::HORZ);
-        hbox->align_items = Widget::Align::CENTER;
+        hbox->align_cross = Widget::Align::CENTER;
 
 #ifdef USE_TILE_LOCAL
         auto tile = make_shared<ui::PlayerDoll>(chars.at(i).doll);
-        tile->set_margin_for_sdl({0, 6, 0, 0});
+        tile->set_margin_for_sdl(0, 6, 0, 0);
         hbox->add_child(move(tile));
 #endif
 
-        const COLOURS bg = chars.at(i).save_loadable ? WHITE : RED;
+        const COLOURS fg = chars.at(i).save_loadable ? WHITE : RED;
         auto text = chars.at(i).short_desc();
         bool wiz = strip_suffix(text, " (WIZ)");
-        auto label = make_shared<Text>(formatted_string( text, bg));
-        label->ellipsize = true;
+        auto label = make_shared<Text>(formatted_string(text, fg));
+        label->set_ellipsize(true);
 #ifdef USE_TILE_LOCAL
-        label->max_size() = { INT_MAX, (int)tiles.get_crt_font()->char_height() };
+        label->max_size().height = tiles.get_crt_font()->char_height();
 #else
-        label->max_size() = { INT_MAX, 1 };
+        label->max_size().height = 1;
 #endif
         hbox->add_child(label);
 
@@ -511,7 +520,7 @@ static void _construct_save_games_menu(shared_ptr<OuterMenu>& container,
 #else
         btn->set_child(move(label));
 #endif
-        btn->get_child()->set_margin_for_sdl({2,10,2,2});
+        btn->get_child()->set_margin_for_sdl(2, 10, 2, 2);
         btn->id = NUM_GAME_TYPE + i;
         btn->highlight_colour = LIGHTGREY;
         container->add_button(move(btn), 0, i);
@@ -554,47 +563,46 @@ public:
 
         m_root = make_shared<Box>(Box::VERT);
         m_root->_set_parent(this);
-        m_root->align_items = Widget::Align::STRETCH;
+        m_root->align_cross = Widget::Align::STRETCH;
 
-        m_root->add_child(make_shared<Text>(opening_screen()));
+        auto about = make_shared<Text>(opening_screen());
+        about->set_margin_for_crt(0, 0, 1, 0);
+        about->set_margin_for_sdl(0, 0, 10, 0);
+
+        m_root->add_child(move(about));
 
         auto grid = make_shared<Grid>();
-        grid->set_margin_for_crt({1, 0, 2, 0});
+        grid->set_margin_for_crt(0, 0, 1, 0);
+
+        auto name_prompt = make_shared<Text>("Enter your name:");
+        name_prompt->set_margin_for_crt(0, 1, 1, 0);
+        name_prompt->set_margin_for_sdl(0, 0, 10, 0);
 
         // If the game filled in a complete name, the user will
         // usually want to enter a new name instead of adding
         // to the current one.
-        full_name = !input_string.empty();
-        input_text = make_shared<Text>();
-        input_text->set_text(formatted_string(input_string, WHITE));
-        input_text->set_margin_for_crt({0, 0, 1, 0});
+        input_text = make_shared<Text>(formatted_string(input_string, WHITE));
+        input_text->set_margin_for_crt(0, 0, 1, 0);
+        input_text->set_margin_for_sdl(0, 0, 10, 10);
 
-        auto name_prompt = make_shared<Text>("Enter your name:");
-        name_prompt->set_margin_for_crt({0, 1, 1, 0});
-#ifdef USE_TILE_LOCAL
-        name_prompt->min_size() = { 0, TILE_Y + 2 };
-#endif
-        input_text->set_margin_for_sdl({0, 0, 10, 10});
         grid->add_child(move(name_prompt), 0, 0);
         grid->add_child(input_text, 1, 0);
 
         descriptions = make_shared<Switcher>();
 
         auto mode_prompt = make_shared<Text>("Choices:");
-        mode_prompt->set_margin_for_crt({0, 1, 1, 0});
-#ifdef USE_TILE_LOCAL
-        mode_prompt->min_size() = { 0, TILE_Y + 2 };
-#endif
+        mode_prompt->set_margin_for_crt(0, 1, 1, 0);
+        mode_prompt->set_margin_for_sdl(0, 0, 10, 0);
         game_modes_menu = make_shared<OuterMenu>(true, 1, ARRAYSZ(entries));
-        game_modes_menu->set_margin_for_sdl({0, 0, 10, 10});
-        game_modes_menu->set_margin_for_crt({0, 0, 1, 0});
+        game_modes_menu->set_margin_for_sdl(0, 0, 10, 10);
+        game_modes_menu->set_margin_for_crt(0, 0, 1, 0);
         game_modes_menu->descriptions = descriptions;
         _construct_game_modes_menu(game_modes_menu);
 
 #ifdef USE_TILE_LOCAL
-        game_modes_menu->min_size() = { 0, TILE_Y*3 };
+        game_modes_menu->min_size().height = TILE_Y*3;
 #else
-        game_modes_menu->min_size() = { 0, 2 };
+        game_modes_menu->min_size().height = 2;
 #endif
 
         grid->add_child(move(mode_prompt), 0, 1);
@@ -604,13 +612,14 @@ public:
         if (num_saves > 0)
         {
             auto save_prompt = make_shared<Text>("Saved games:");
-            save_prompt->set_margin_for_crt({0, 1, 1, 0});
-            save_games_menu->set_margin_for_sdl({0, 0, 10, 10});
+            save_prompt->set_margin_for_crt(0, 1, 1, 0);
+            save_prompt->set_margin_for_sdl(0, 0, 10, 0);
+            save_games_menu->set_margin_for_sdl(0, 0, 10, 10);
 #ifdef USE_TILE_LOCAL
-            save_prompt->min_size() = { 0, TILE_Y + 2 };
-            save_games_menu->min_size() = { 0, TILE_Y * min(num_saves, 3) };
+            save_prompt->min_size().height = TILE_Y + 2;
+            save_games_menu->min_size().height = TILE_Y * min(num_saves, 3);
 #else
-            save_games_menu->min_size() = { 0, 2 };
+            save_games_menu->min_size().height = 2;
 #endif
             save_games_menu->descriptions = descriptions;
 
@@ -647,26 +656,34 @@ public:
 
         m_root->add_child(move(grid));
 
-        string text = "Use the up/down keys to select the type of game or load a "
-                    "character.";
-#ifdef USE_TILE_LOCAL
-        if (tiles.is_using_small_layout())
-            text += " ";
-        else
-#endif
-            text += "\n";
-        text +=       "You can type your name; if you leave it blank you will be "
-                    "asked later.\n"
-                    "Press Enter to start";
-        // TODO: this should include a description of that character.
-        if (_game_defined(defaults))
-            text += ", Tab to repeat the last game's choice";
-        text += ".\n";
+        string instructions_text;
+        // TODO: these can overflow on console 80x24 and won't line-wrap, is
+        // there any good solution to this? e.g.
+        // `long name long name the Vine Stalker Earth Elementalist`
+        if (defaults.name.size() > 0 && _find_save(chars, defaults.name) != -1)
+        {
+            auto save = _find_save(chars, defaults.name);
+            instructions_text +=
+                    "<white>[tab]</white> quick-load last game: "
+                    + chars[save].really_short_desc() + "\n";
+        }
+        else if (_game_defined(defaults))
+        {
+            instructions_text +=
+                    "<white>[tab]</white> quick-start last combo: "
+                    + defaults.name + " the "
+                    + newgame_char_description(defaults) + "\n";
+        }
+        instructions_text +=
+            "<white>[ctrl-p]</white> view rc file information and log";
         if (recent_error_messages())
-            text += "Errors during initialization; press ctrl-p to view the full log.\n";
-        m_root->add_child(make_shared<Text>(text));
+            instructions_text += " (<red>Errors during initialization!</red>)";
 
-        descriptions->set_margin_for_crt({1, 0, 0, 0});
+        m_root->add_child(make_shared<Text>(
+                        formatted_string::parse_string(instructions_text)));
+
+        descriptions->set_margin_for_crt(1, 0, 0, 0);
+        descriptions->set_margin_for_sdl(10, 0, 0, 0);
         m_root->add_child(descriptions);
     };
 
@@ -686,7 +703,6 @@ private:
     newgame_def& ng_choice;
     const newgame_def &defaults;
     string input_string;
-    bool full_name;
     vector<player_save_info> chars;
     int num_saves;
 
@@ -722,7 +738,6 @@ private:
                     input_string = chars.at(save_number).name;
                 else // new game
                     input_string = "";
-                full_name = true;
                 break;
             }
             input_text->set_text(formatted_string(input_string, WHITE));
@@ -796,7 +811,8 @@ void UIStartupMenu::on_show()
     layout->add_event_filter([this](wm_event ev) {
         if (ev.type != WME_KEYDOWN)
             return false;
-        int keyn = ev.key.keysym.sym;
+        const int keyn = ev.key.keysym.sym;
+        bool changed_name = false;
 
         if (key_is_escape(keyn) || keyn == CK_MOUSE_CMD)
         {
@@ -818,18 +834,17 @@ void UIStartupMenu::on_show()
             replay_messages_during_startup();
             return true;
         }
+        else if (keyn == CONTROL('U'))
+        {
+            input_string = "";
+            changed_name = true;
+        }
 
         // handle the non-action keys by hand to poll input
         // Only consider alphanumeric keys and -_ .
-        bool changed_name = false;
         if (iswalnum(keyn) || keyn == '-' || keyn == '.'
             || keyn == '_' || keyn == ' ')
         {
-            if (full_name)
-            {
-                full_name = false;
-                input_string = "";
-            }
             if (strwidth(input_string) < MAX_NAME_LENGTH)
             {
                 input_string += stringize_glyph(keyn);
@@ -840,15 +855,12 @@ void UIStartupMenu::on_show()
         {
             if (!input_string.empty())
             {
-                if (full_name)
-                    input_string = "";
-                else
-                    input_string.erase(input_string.size() - 1);
+                input_string.erase(input_string.size() - 1);
                 changed_name = true;
-                full_name = false;
             }
         }
-        else
+
+        if (!changed_name)
             return false;
 
         input_text->set_text(formatted_string(input_string, WHITE));
@@ -858,13 +870,10 @@ void UIStartupMenu::on_show()
         // We want enter to start a new game if no character
         // with the given name exists, or load the corresponding
         // game.
-        if (changed_name)
-        {
-            int i = _find_save(chars, input_string);
-            auto menu = i == -1 ? game_modes_menu : save_games_menu;
-            auto btn = menu->get_button(0, i == -1 ? 0 : i);
-            menu->scroll_button_into_view(btn);
-        }
+        int i = _find_save(chars, input_string);
+        auto menu = i == -1 ? game_modes_menu : save_games_menu;
+        auto btn = menu->get_button(0, i == -1 ? 0 : i);
+        menu->scroll_button_into_view(btn);
         return true;
     });
 }
@@ -944,7 +953,7 @@ static void _show_startup_menu(newgame_def& ng_choice,
 
     ui::run_layout(move(popup), startup_ui->done);
 
-    if (startup_ui->end_game)
+    if (startup_ui->end_game || crawl_state.seen_hups)
     {
 #ifdef USE_TILE_WEB
         tiles.send_exit_reason("cancel");

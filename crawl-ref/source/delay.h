@@ -13,6 +13,25 @@
 #include "operation-types.h"
 #include "seen-context-type.h"
 
+class interrupt_block
+{
+public:
+    interrupt_block(bool block = true) {
+        m_block = block;
+        if (block)
+            ++interrupts_blocked;
+    }
+    ~interrupt_block() {
+        if (m_block)
+            --interrupts_blocked;
+    }
+
+    static bool blocked() { return interrupts_blocked > 0; }
+private:
+    bool m_block;
+    static int interrupts_blocked;
+};
+
 class monster;
 struct ait_hp_loss;
 
@@ -271,13 +290,13 @@ public:
 
 class JewelleryOnDelay : public Delay
 {
-    item_def& jewellery;
+    const item_def& jewellery;
 
     void tick() override;
 
     void finish() override;
 public:
-    JewelleryOnDelay(int dur, item_def& item) :
+    JewelleryOnDelay(int dur, const item_def& item) :
                      Delay(dur), jewellery(item)
     { }
 

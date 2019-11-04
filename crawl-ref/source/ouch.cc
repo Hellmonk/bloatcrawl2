@@ -813,7 +813,14 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             dam /= 2;
         else if (you.petrifying())
             dam = dam * 10 / 15;
+        
+        // Reduce damage taken by moonotaurs to 1
+        if (you.species == SP_MOONOTAUR)
+        {
+            dam = min(dam, 1);
+        }
     }
+    
     ait_hp_loss hpl(dam, death_type);
     interrupt_activity(activity_interrupt::hp_loss, &hpl);
 

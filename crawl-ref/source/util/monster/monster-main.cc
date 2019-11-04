@@ -287,7 +287,8 @@ static string mi_calc_smiting_damage(monster* mons) { return "7-17"; }
 
 static string mi_calc_airstrike_damage(monster* mons)
 {
-    return make_stringf("0-%d", 10 + 2 * mons->get_experience_level());
+    int pow = 12 * mons->get_experience_level();
+    return make_stringf("8-%d", 2 + ( 6 + pow ) / 7);
 }
 
 static string mi_calc_glaciate_damage(monster* mons)
@@ -346,7 +347,7 @@ static string mons_human_readable_spell_damage_string(monster* monster,
                                                       spell_type sp)
 {
     bolt spell_beam = mons_spell_beam(
-        monster, sp, mons_power_for_hd(sp, monster->spell_hd(sp), false), true);
+        monster, sp, mons_power_for_hd(sp, monster->spell_hd(sp)), true);
     switch (sp)
     {
         case SPELL_PORTAL_PROJECTILE:

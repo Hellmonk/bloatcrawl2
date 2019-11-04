@@ -125,41 +125,6 @@ bool is_potentially_evil_item(const item_def& item, bool calc_unid)
     return false;
 }
 
-// This is a subset of is_evil_item().
-bool is_corpse_violating_item(const item_def& item, bool calc_unid)
-{
-    bool retval = false;
-
-    if (is_unrandom_artefact(item))
-    {
-        const unrandart_entry* entry = get_unrand_entry(item.unrand_idx);
-
-        if (entry->flags & UNRAND_FLAG_CORPSE_VIOLATING)
-            return true;
-    }
-
-    if (item.base_type == OBJ_WEAPONS
-        && (calc_unid || item_brand_known(item))
-        && get_weapon_brand(item) == SPWPN_REAPING)
-    {
-        return true;
-    }
-
-    if (!calc_unid && !item_type_known(item))
-        return false;
-
-    switch (item.base_type)
-    {
-    case OBJ_BOOKS:
-        retval = _is_book_type(item, is_corpse_violating_spell);
-        break;
-    default:
-        break;
-    }
-
-    return retval;
-}
-
 /**
  * Do good gods always hate use of this item?
  *
@@ -362,11 +327,12 @@ bool is_channeling_item(const item_def& item, bool calc_unid)
               && item.sub_type == MISC_CRYSTAL_BALL_OF_ENERGY;
 }
 
-bool is_corpse_violating_spell(spell_type spell)
+bool is_wizardly_item(const item_def& item, bool calc_unid)
 {
-    spell_flags flags = get_spell_flags(spell);
+    if (is_unrandom_artefact(item, UNRAND_BATTLE))
+        return true;
 
-    return testbits(flags, spflag::corpse_violating);
+    return false;
 }
 
 /**
@@ -433,14 +399,12 @@ vector<conduct_type> item_conducts(const item_def &item)
     if (item_is_spellbook(item))
         conducts.push_back(DID_SPELL_MEMORISE);
 
-    if (item.sub_type == BOOK_MANUAL && item_type_known(item)
+    if ((item.sub_type == BOOK_MANUAL && item_type_known(item)
         && is_magic_skill((skill_type)item.plus))
+        || is_wizardly_item(item))
     {
         conducts.push_back(DID_SPELL_PRACTISE);
     }
-
-    if (is_corpse_violating_item(item, false))
-        conducts.push_back(DID_CORPSE_VIOLATION);
 
     if (_is_potentially_hasty_item(item) || is_hasty_item(item, false))
         conducts.push_back(DID_HASTY);

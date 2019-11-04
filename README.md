@@ -10,6 +10,8 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 
 ## New Species
 
+=======
+* **Argons** are, unlike most other living beings, made of gas. Some think they originated on a far away star.
 * Strange beings from beyond the stars, **Astrals** cannot gain resistances to magic or the elements. Their attacks inflict powerful debuffs on beings from this world.
 * **Dab Dwarves** have perfected the ancient art of dabbing. They can dab on multiple creatures at once and may even daze their foes with the power of their dab.
 * **Faerie Dragons** are attuned to magic and their spells cost fewer magic points. Their shimmering scales repel attacks and their wings let them fly.
@@ -22,8 +24,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Oni** are monstrous in nature with the rough appearance of Ogres, albeit smaller. They discover spells as they gain experience and ignore schools of magic.
 * Deeper than a Deep Elf and twice as elven, **Profound Elves** are extremely frail magical experts.
 * **Proteans** are a race of vaguely humanoid amoebas. They grow in health and size as they mutate.
-* **Quill orcs** love to read and hate close combat. They read books and scrolls at an
-uncanny pace.
+* **Quill orcs** love to read and hate close combat. They read books and scrolls at an uncanny pace.
 * **Shapeshifters** imitate monsters around them to an uncanny degree. They cannot control their shifting, and are only rarely seen in their true form.
 * **Slitherier Nagas** are offbrand Nagas, and about twice as much everything. Extremely healthy, extremely stealthy, extremely big, and excruciatingly slow.
 * Less dextrous than other elves, **Squat Elves** have mastered the art of the power squat. They use this ability to enhance their strength and intelligence.
@@ -50,8 +51,6 @@ uncanny pace.
 * **Librarians** come to the Dungeon in search of new books for their collection. They serve Sif Muna the Loreminder and bring a random book along with them.
 * **Merchants** are followers of Gozag. Whether newly established or unsuccessful on the  surface world, they enter the Dungeon desperate for a source of income.
 * **Meteorologists** predict the weather and carry around some handy evocable items to make their predictions come true.
-* **Neckbeards** come to the Dungeon from their moms' basements with a cape, a fedora, 
-a rusty katana and the ability to teleport behind you (nothing personal, kid).
 * **Night Knights** follow the shadowy god Dithmenos. They begin lightly armoured but with good stealth.
 * **Paladin**: Worshippers of The Shining One, these holy warriors fall down a lot.
 * **Philosophers** bring their thinking hat to the dungeon, but not much else in the way of useful items.

@@ -34,6 +34,7 @@
 #include "english.h"
 #include "env.h"
 #include "errors.h"
+#include "evoke.h"
 #include "exercise.h"
 #include "files.h"
 #include "food.h"
@@ -774,7 +775,7 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
 
     case EQ_WEAPON:
     case EQ_STAFF:
-        return you.species == SP_FELID ? MB_FALSE :
+        return you.species == SP_FELID || you.species == SP_BUTTERFLY ? MB_FALSE :
                you.body_size(PSIZE_TORSO, !temp) < SIZE_MEDIUM ? MB_MAYBE :
                                          MB_TRUE;
 
@@ -858,6 +859,7 @@ bool player_has_feet(bool temp, bool include_mutations)
     if (you.species == SP_NAGA
         || you.species == SP_SLITHERIER_NAGA
         || you.species == SP_FELID
+        || you.species == SP_BUTTERFLY
         || you.species == SP_OCTOPODE
         || you.fishtail && temp)
     {
@@ -1376,7 +1378,10 @@ int player_res_fire(bool calc_unid, bool temp, bool items)
 {
     if (you.species == SP_ASTRAL)
         return 0;
-    
+
+    if (you.has_mutation(MUT_VAPOROUS_RESISTANCE))
+        return you.vaporous_resistance_fire;
+
     int rf = 0;
 
     if (items)
@@ -1450,7 +1455,7 @@ int player_res_steam(bool calc_unid, bool temp, bool items)
 {
     if (you.species == SP_ASTRAL)
         return 0;
-    
+
     int res = 0;
     const int rf = player_res_fire(calc_unid, temp, items);
 
@@ -1476,7 +1481,10 @@ int player_res_cold(bool calc_unid, bool temp, bool items)
 {
     if (you.species == SP_ASTRAL)
         return 0;
-    
+
+    if (you.has_mutation(MUT_VAPOROUS_RESISTANCE))
+        return you.vaporous_resistance_cold;
+
     int rc = 0;
 
     if (temp)
@@ -1556,7 +1564,7 @@ bool player::res_corr(bool calc_unid, bool items) const
 {
     if (you.species == SP_ASTRAL)
         return false;
-    
+
     if (have_passive(passive_t::resist_corrosion))
         return true;
 
@@ -1583,7 +1591,7 @@ int player_res_acid(bool calc_unid, bool items)
 {
     if (you.species == SP_ASTRAL)
         return 0;
-    
+
     return you.res_corr(calc_unid, items) ? 1 : 0;
 }
 
@@ -1591,7 +1599,10 @@ int player_res_electricity(bool calc_unid, bool temp, bool items)
 {
     if (you.species == SP_ASTRAL)
         return 0;
-    
+
+    if (you.has_mutation(MUT_VAPOROUS_RESISTANCE))
+        return you.vaporous_resistance_elec;
+
     int re = 0;
 
     if (items)
@@ -1647,7 +1658,7 @@ bool player_res_torment(bool random)
 {
     if (you.species == SP_ASTRAL)
         return false;
-    
+
     switch (you.undead_state())
     {
         case US_UNDEAD:
@@ -1693,7 +1704,10 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
 {
     if (you.species == SP_ASTRAL)
         return 0;
-    
+
+    if (you.has_mutation(MUT_VAPOROUS_RESISTANCE))
+        return you.vaporous_resistance_poison;
+
     switch (you.undead_state(temp))
     {
         case US_ALIVE:
@@ -1708,6 +1722,7 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
     }
 
     if (you.is_nonliving(temp)
+        || you.species == SP_MOONOTAUR
         || temp && get_form()->res_pois() == 3
         || items && player_equip_unrand(UNRAND_OLGREB)
         || temp && you.duration[DUR_DIVINE_STAMINA])
@@ -1778,7 +1793,7 @@ int player_res_sticky_flame(bool calc_unid, bool temp, bool items)
 {
     if (you.species == SP_ASTRAL)
         return 0;
-    
+
     int rsf = 0;
 
     // dragonskin cloak: 0.5 to draconic resistances
@@ -1870,6 +1885,9 @@ int player_spec_conj()
     // Staves
     sc += you.wearing(EQ_STAFF, STAFF_CONJURATION);
 
+    if (player_equip_unrand(UNRAND_BATTLE))
+        sc++;
+
     return sc;
 }
 
@@ -1923,7 +1941,10 @@ int player_prot_life(bool calc_unid, bool temp, bool items)
 {
     if(you.species == SP_ASTRAL)
         return 0;
-    
+
+    if (you.has_mutation(MUT_VAPOROUS_RESISTANCE))
+        return you.vaporous_resistance_neg;
+
     int pl = 0;
 
     pl += you.get_mutation_level(MUT_NEGATIVE_ENERGY_RESISTANCE, temp);
@@ -2061,7 +2082,7 @@ int player_movement_speed()
         {
             mv *= 10 + slow * 4;
         }
-        else 
+        else
         {
             mv *= 10 + slow * 2;
         }
@@ -2239,6 +2260,9 @@ static int _player_evasion_bonuses()
 
     if (you.get_mutation_level(MUT_DISTORTION_FIELD))
         evbonus += you.get_mutation_level(MUT_DISTORTION_FIELD) + 1;
+
+    if (evbonus += you.get_mutation_level(MUT_VAPOROUS_BODY))
+        evbonus += 2;
 
     // transformation penalties/bonuses not covered by size alone:
     if (you.get_mutation_level(MUT_SLOW_REFLEXES))
@@ -3162,6 +3186,11 @@ void level_change(bool skip_attribute_increase)
                 _felid_extra_life();
                 break;
 
+            case SP_ARGON:
+                mpr("You gain enough energy for another flash.");
+                you.argon_flashes_available++;
+                break;
+
             default:
                 break;
             }
@@ -3260,6 +3289,23 @@ void level_change(bool skip_attribute_increase)
         learned_something_new(HINT_NEW_LEVEL);
     }
 
+    if (you.char_class == JOB_ARCHAEOLOGIST && you.experience_level >= 3)
+    {
+        int tome_index = -1;
+        for (int i = 0; i < ENDOFPACK; i++)
+            if (you.inv[i].defined() && you.inv[i].is_type(OBJ_MISCELLANY, MISC_DUSTY_TOME))
+                tome_index = i;
+
+        if (tome_index != -1)
+            archaeologist_read_tome(you.inv[tome_index]);
+        else if (!you.props.exists(ARCHAEOLOGIST_TRIGGER_TOME_ON_PICKUP))
+            mpr("You suddenly remember the dusty tome you brought into the dungeon! "
+                 "You feel able to decipher it now. "
+                 "If only you could remember where you put it...");
+
+        you.props[ARCHAEOLOGIST_TRIGGER_TOME_ON_PICKUP] = true;
+    }
+
     while (you.experience >= exp_needed(you.max_level + 1))
     {
         ASSERT(you.experience_level == you.get_max_xl());
@@ -3269,6 +3315,11 @@ void level_change(bool skip_attribute_increase)
             _felid_extra_life();
         if (you.shapeshifter_species)
             update_shapeshifter_species();
+        if (you.species == SP_ARGON)
+        {
+            mpr("You gain enough energy for another flash.");
+            you.argon_flashes_available++;
+        }
     }
 
     you.redraw_title = true;
@@ -4006,6 +4057,9 @@ void inc_hp(int hp_gain)
     if (hp_gain < 1 || you.hp >= you.hp_max)
         return;
 
+    if (you.species == SP_MOONOTAUR)
+        hp_gain = 1;
+
     you.hp += hp_gain;
 
     if (you.hp > you.hp_max)
@@ -4139,6 +4193,10 @@ int get_real_hp(bool trans, bool rotted)
     // Racial modifier.
     hitp *= 10 + species_hp_modifier(you.species);
     hitp /= 10;
+
+    //moonotaurs get +1 here to let them start at 2 hp instead of 1
+    if (you.species == SP_MOONOTAUR)
+        hitp += 1;
 
     const bool hep_frail = have_passive(passive_t::frail)
                            || player_under_penance(GOD_HEPLIAKLQANA);
@@ -5538,6 +5596,14 @@ bool player_save_info::operator<(const player_save_info& rhs) const
            || (experience_level == rhs.experience_level && name < rhs.name);
 }
 
+string player_save_info::really_short_desc() const
+{
+    ostringstream desc;
+    desc << name << " the " << species_name << ' ' << class_name;
+
+    return desc.str();
+}
+
 string player_save_info::short_desc() const
 {
     ostringstream desc;
@@ -5683,6 +5749,8 @@ string player::shout_verb(bool directed) const
         return dog_shout_verbs[screaminess];
     if (species == SP_BARACHI)
         return frog_shout_verbs[screaminess];
+    if (you.species == SP_BUTTERFLY)
+        return "flutter noisily";
     if (species != SP_FELID)
         return shout_verbs[screaminess];
     if (directed && screaminess == 0)
@@ -6171,6 +6239,7 @@ int player::base_ac(int scale) const
     AC += get_mutation_level(MUT_GELATINOUS_BODY)
           ? get_mutation_level(MUT_GELATINOUS_BODY) * 100 : 0;
               // +1, +2, +3
+    AC += get_mutation_level(MUT_VAPOROUS_BODY) * 200;
     AC += get_mutation_level(MUT_IRIDESCENT_SCALES, mutation_activity_type::FULL) * 200;
               // +2, +4, +6
 #if TAG_MAJOR_VERSION == 34
@@ -6434,7 +6503,8 @@ int player::res_rotting(bool temp) const
 {
     if (get_mutation_level(MUT_ROT_IMMUNITY)
         || is_nonliving(temp)
-        || temp && get_form()->res_rot())
+        || temp && get_form()->res_rot()
+        || you.has_mutation(MUT_VAPOROUS_BODY))
     {
         return 3;
     }
@@ -6467,7 +6537,7 @@ int player::res_holy_energy() const
 {
     if(you.species == SP_ASTRAL)
         return 0;
-    
+
     if (undead_or_demonic())
         return -1;
 
@@ -6496,7 +6566,8 @@ bool player::res_tornado() const
 bool player::res_petrify(bool temp) const
 {
     return get_mutation_level(MUT_PETRIFICATION_RESISTANCE)
-           || temp && get_form()->res_petrify();
+           || temp && get_form()->res_petrify()
+           || you.has_mutation(MUT_VAPOROUS_BODY);
 }
 
 int player::res_constrict() const
@@ -6684,7 +6755,8 @@ bool player::cancellable_flight() const
 
 bool player::permanent_flight() const
 {
-    return attribute[ATTR_PERM_FLIGHT];
+    return attribute[ATTR_PERM_FLIGHT]
+        || get_mutation_level(MUT_VAPOROUS_BODY);
 }
 
 bool player::racial_permanent_flight() const

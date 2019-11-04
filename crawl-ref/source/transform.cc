@@ -1297,6 +1297,8 @@ string blade_parts(bool terse)
 
     if (you.species == SP_FELID)
         str = terse ? "paw" : "front paw";
+    else if (you.species == SP_BUTTERFLY)
+        str = "leg";
     else if (you.species == SP_OCTOPODE)
         str = "tentacle";
     else
@@ -1600,7 +1602,7 @@ bool transform(int pow, transformation which_trans, bool involuntary,
         return false;
     }
 
-    if (you.species == SP_PROTEAN)
+    if (you.species == SP_PROTEAN || you.has_mutation(MUT_VAPOROUS_BODY))
     {
         msg = "You cannot transform.";
         success = false;

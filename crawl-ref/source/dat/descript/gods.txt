@@ -44,11 +44,9 @@ followers can convert to the Shining One or Zin while keeping some piety.
 %%%%
 Fedhas
 
-The god of plant and fungal life, Fedhas Madash demands that followers
-encourage the decomposition of corpses. Fedhas also forbids followers from
-harming any species under Fedhas' protection, and from using any necromantic
-effects that interfere with corpses. In return Fedhas grants a number of
-abilities that promote the growth of plants and fungi. These abilities may
+Fedhas is the god of plant and fungal life. Followers are forbidden from
+harming any species under Fedhas' protection. In return Fedhas grants a number
+of abilities that promote the growth of plants and fungi. These abilities may
 incidentally prove useful to adventurers.
 %%%%
 Gozag
@@ -153,10 +151,10 @@ foes.
 Sif Muna
 
 Sif Muna the Loreminder is a contemplative but powerful deity, served by those
-who seek magical knowledge. The Loreminder appreciates followers who triumph
-over their foes and especially the training of spellcasting skills in order to
-do so. The faithful can expect to receive a supply of spellbooks taken directly
-from Sif Muna's legendary library.
+who seek magical knowledge. Followers who triumph over their foes can call upon
+the Loreminder for magical power and the ability to cast spells beyond their
+magical training. The devout are rewarded with a supply of spellbooks taken
+directly from Sif Muna's legendary library.
 %%%%
 the Shining One
 
@@ -267,13 +265,13 @@ upon Elyvilon for protection.
 Fedhas powers
 
 Plants and fungi will not attack Fedhas' worshippers without provocation.
-Corpses on different levels will rot away; followers can also induce this decay
-directly to create fungi. Fedhas' worshippers may walk through plants or fungi,
-and even fire missiles or spells through them without causing harm. Fedhas
-grants the ability to promote plants and fungi into stronger species. Followers
-can eventually grow a wall of plants and create explosive spores from corpses.
-They are also granted some control over the weather, being able to call
-sunlight and eventually rainstorms.
+Worshippers may walk through plants or fungi, and even fire missiles or spells
+through them without causing harm. Fedhas grants powers to temporarily grow a
+menagerie of plant allies whose strength and duration increase with Invocations
+skill. Worshipers may grow a protective wall of briar patches as well as
+ballistomycetes that fire damaging spores whose explosions confuse living
+creatures. Devout followers can overgrow a stretch of solid terrain with a
+cluster of plant allies or even summon a mighty oklob plant.
 %%%%
 Gozag powers
 
@@ -393,11 +391,10 @@ Ru's sacrificants increases in strength with more piety from more sacrifices.
 %%%%
 Sif Muna powers
 
-Sif Muna will grant followers divine energy, allowing them to occasionally cast
-spells even with insufficient reserves of magic. Eventually worshippers will
-gain the ability to rapidly restore their magical energy, and to forget spells
-at will, so as to learn new ones. Sif Muna protects spellcasters against the
-negative effects of miscasting spells. Over time, followers will receive
+Sif Muna grants followers the ability to rapidly restore their magical energy,
+and to forget spells at will, so as to learn new ones. Worshipers can call upon
+the Loreminder to help cast any spell they've discovered, even if it's well
+beyond their current magical training. Over time, devout followers will receive
 spellbooks containing a vast range of spells.
 %%%%
 the Shining One powers

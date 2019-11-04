@@ -448,7 +448,7 @@ static bool _fire_validate_item(int slot, string &err)
 // Returns true if warning is given.
 bool fire_warn_if_impossible(bool silent)
 {
-    if (you.species == SP_FELID)
+    if (you.species == SP_FELID || you.species == SP_BUTTERFLY)
     {
         if (!silent)
             mpr("You can't grasp things well enough to throw them.");
@@ -855,6 +855,11 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
                     monster *am = monster_at(*ai);
                     if (am)
                         cancelled = stop_attack_prompt(am, false, *ai);
+                    else if (*ai == you.pos())
+                    {
+                        cancelled = !yesno("That is likely to hit you. Continue anyway?",
+                                           false, 'n');
+                    }
                 }
             }
         }

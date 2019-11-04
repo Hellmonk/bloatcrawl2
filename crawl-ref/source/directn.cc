@@ -2271,11 +2271,8 @@ static bool _mons_is_valid_target(const monster* mon, targ_mode_type mode,
                                   int range)
 {
     // Monsters that are no threat to you don't count as monsters.
-    if (mode != TARG_EVOLVABLE_PLANTS
-        && !mons_is_threatening(*mon))
-    {
+    if (!mons_is_threatening(*mon))
         return false;
-    }
 
     // Don't target submerged monsters.
     if (mode != TARG_HOSTILE_SUBMERGED && mon->submerged())
@@ -2313,8 +2310,6 @@ static bool _want_target_monster(const monster *mon, targ_mode_type mode,
             return true;
         return !mon->wont_attack() && !mon->neutral()
             && unpacifiable_reason(*mon).empty();
-    case TARG_EVOLVABLE_PLANTS:
-        return mons_is_evolvable(mon);
     case TARG_BEOGH_GIFTABLE:
         return beogh_can_gift_items_to(mon);
     case TARG_MOVABLE_OBJECT:
@@ -2883,15 +2878,8 @@ string feature_description_at(const coord_def& where, bool covering,
 
     string covering_description = "";
 
-    if (covering && you.see_cell(where))
-    {
-        if (is_bloodcovered(where))
-            covering_description = ", spattered with blood";
-        else if (glowing_mold(where))
-            covering_description = ", covered with glowing mould";
-        else if (is_moldy(where))
-            covering_description = ", covered with mould";
-    }
+    if (covering && you.see_cell(where) && is_bloodcovered(where))
+        covering_description = ", spattered with blood";
 
     // FIXME: remove desc markers completely; only Zin walls are left.
     // They suffer, among other problems, from an information leak.
@@ -2991,6 +2979,8 @@ string feature_description_at(const coord_def& where, bool covering,
             desc += "awoken ";
         desc += grid == grd(where) ? raw_feature_description(where)
                                    : _base_feature_desc(grid, trap);
+        if (is_temp_terrain(where))
+            desc += " (summoned)";
         desc += covering_description;
         return thing_do_grammar(dtype, add_stop, false, desc);
     }

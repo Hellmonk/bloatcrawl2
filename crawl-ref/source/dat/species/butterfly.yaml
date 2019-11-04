@@ -1,0 +1,67 @@
+enum: SP_BUTTERFLY
+monster: MONS_BUTTERFLY
+name: Butterfly
+genus: Lepidopteran
+difficulty: Advanced
+aptitudes:
+  xp: 0
+  hp: -7
+  mp_mod: 0
+  mr: 7
+  fighting: -1
+  short_blades: False
+  long_blades: False
+  axes: False
+  maces_and_flails: False
+  polearms: False
+  staves: False
+  slings: False
+  bows: False
+  crossbows: False
+  throwing: False
+  armour: False
+  dodging: 4
+  stealth: 2
+  shields: False
+  unarmed_combat: -2
+  spellcasting: 1
+  conjurations: -1
+  hexes: -1
+  charms: 3
+  summoning: 0
+  necromancy: -2
+  translocations: 1
+  transmutations: -4
+  fire_magic: -1
+  ice_magic: -1
+  air_magic: 1
+  earth_magic: -2
+  poison_magic: -2
+  evocations: -2
+  invocations: -1
+size: little
+str: 3
+int: 11
+dex: 11
+levelup_stat_frequency: 4
+levelup_stats:
+  - int
+  - dex
+mutations:
+  1:
+    MUT_BIG_WINGS: 1
+    MUT_ANTENNAE: 3
+fake_mutations:
+  - long: You cannot wear armour.
+    short: no armour
+  - long: You are incapable of wielding weapons or throwing items.
+    short: no weapons or thrown items
+  - long: Monsters turn neutral when they first notice you.
+    short: neutral monsters
+recommended_jobs:
+  - JOB_AIR_ELEMENTALIST
+  - JOB_ASSASSIN
+recommended_weapons:
+  - SK_UNARMED_COMBAT
+walking_verb: Flutter
+altar_action: flap around respectfully in front of

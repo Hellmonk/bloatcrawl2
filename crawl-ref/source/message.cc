@@ -1903,6 +1903,8 @@ void canned_msg(canned_message_type which_message)
             (which_message == MSG_EMPTY_HANDED_ALREADY ? "already" : "now");
             if (you.species == SP_FELID)
                 mprf("Your mouth is %s empty.", when);
+            else if (you.species == SP_BUTTERFLY)
+                mprf("Your proboscis is %s empty.", when);
             else if (you.has_usable_claws(true))
                 mprf("You are %s empty-clawed.", when);
             else if (you.has_usable_tentacles(true))
@@ -2193,8 +2195,7 @@ void replay_messages_during_startup()
     formatted_scroller hist(FS_PREWRAPPED_TEXT);
     hist.set_more();
     hist.set_more(formatted_string::parse_string(
-                        "<cyan>Press Esc or Enter to continue, "
-                        "arrows/pgup/pgdn to scroll.</cyan>"));
+            "<cyan>Press Esc to close, arrows/pgup/pgdn to scroll.</cyan>"));
     hist.set_title(formatted_string::parse_string(recent_error_messages()
         ? "<yellow>Crawl encountered errors during initialization:</yellow>"
         : "<yellow>Initialization log:</yellow>"));
