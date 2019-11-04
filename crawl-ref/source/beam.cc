@@ -2535,7 +2535,7 @@ void bolt::affect_endpoint()
 
 	case SPELL_MAGIC_CANDLE:
 	{
-		if (foe_info.count == 0)
+		if (hit_count.empty())
 		{
 			if (feat_is_watery(grd(pos())))
 			{
