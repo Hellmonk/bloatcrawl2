@@ -413,6 +413,20 @@ spret_type controlled_blink(bool fail, bool safe_cancel)
     return SPRET_SUCCESS;
 }
 
+// Is there dangerous terrain in LoS.
+static bool _dangerous_terrain_seen()
+{
+	for (rectangle_iterator ri(you.pos(), 7, true); ri; ++ri)
+	{
+		const dungeon_feature_type feat = grd(*ri);
+		if (feat == DNGN_LAVA)
+			return true;
+		if (!you.can_swim() && feat == DNGN_DEEP_WATER)
+			return true;
+	}
+	return false;
+}
+
 /**
  * Cast the player spell Blink.
  *
@@ -425,6 +439,12 @@ spret_type cast_blink(bool fail)
     // effects that cast the spell through the player, I guess (e.g. xom)
     if (you.no_tele(false, false, true))
         return fail ? SPRET_FAIL : SPRET_SUCCESS; // probably always SUCCESS
+
+	if (!you.airborne() && _dangerous_terrain_seen() && !yesno("Really blink while near dangerous terrain?", false, 'n'))
+	{
+		canned_msg(MSG_OK);
+		return SPRET_ABORT;
+	}
 
     fail_check();
     uncontrolled_blink();
@@ -462,6 +482,12 @@ spret_type cast_controlled_blink(bool fail, bool safe)
         {
             return SPRET_ABORT;
         }
+
+		if (!you.airborne() && _dangerous_terrain_seen() && !yesno("Really make an uncontrolled blink while near dangerous terrain?", false, 'n'))
+		{
+			canned_msg(MSG_OK);
+			return SPRET_ABORT;
+		}
 
         mprf(MSGCH_ORB, "The Orb prevents control of your translocation!");
         return cast_blink(fail);
