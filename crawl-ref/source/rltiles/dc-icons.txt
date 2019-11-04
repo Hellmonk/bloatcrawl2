@@ -57,8 +57,11 @@ infested INFESTED
 corroded CORRODED
 swift SWIFT
 pinned PINNED
+mute MUTE
+wretched WRETCHED
 vile_clutch VILE_CLUTCH
 possessable POSSESSABLE
+dazed DAZED
 
 something_under SOMETHING_UNDER
 new_stair NEW_STAIR

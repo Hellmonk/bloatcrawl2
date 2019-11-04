@@ -1913,6 +1913,12 @@ tileidx_t tileidx_monster(const monster_info& mons)
         ch |= TILE_FLAG_DRAIN;
     if (mons.is(MB_IDEALISED))
         ch |= TILE_FLAG_IDEALISED;
+	if (mons.is(MB_WRETCHED))
+		ch |= TILE_FLAG_WRETCHED;
+	if (mons.is(MB_DAZED))
+		ch |= TILE_FLAG_DAZED;
+	if (mons.is(MB_MUTE))
+		ch |= TILE_FLAG_MUTE;
     if (mons.is(MB_BOUND_SOUL))
         ch |= TILE_FLAG_BOUND_SOUL;
     if (mons.is(MB_INFESTATION))
