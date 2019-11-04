@@ -62,6 +62,8 @@ wretched WRETCHED
 vile_clutch VILE_CLUTCH
 possessable POSSESSABLE
 dazed DAZED
+confused CONFUSED
+black_mark BLACK_MARK
 
 something_under SOMETHING_UNDER
 new_stair NEW_STAIR

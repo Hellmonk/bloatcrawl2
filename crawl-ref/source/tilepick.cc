@@ -1933,6 +1933,8 @@ tileidx_t tileidx_monster(const monster_info& mons)
         ch |= TILE_FLAG_VILE_CLUTCH;
     if (mons.is(MB_POSSESSABLE))
         ch |= TILE_FLAG_POSSESSABLE;
+	if (mons.is(MB_BLACK_MARK))
+		ch |= TILE_FLAG_BLACK_MARK;
 
     if (mons.attitude == ATT_FRIENDLY)
         ch |= TILE_FLAG_PET;
@@ -1942,6 +1944,8 @@ tileidx_t tileidx_monster(const monster_info& mons)
         ch |= TILE_FLAG_NEUTRAL;
     if (mons.is(MB_FLEEING))
         ch |= TILE_FLAG_FLEEING;
+	else if (mons.is(MB_CONFUSED))
+		ch |= TILE_FLAG_CONFUSED;
     else if (mons.is(MB_STABBABLE) || mons.is(MB_SLEEPING)
              || mons.is(MB_DORMANT))
     {
