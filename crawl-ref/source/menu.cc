@@ -245,6 +245,8 @@ void UIMenu::update_item(int index)
     entry.heading = me->level == MEL_TITLE || me->level == MEL_SUBTITLE;
     entry.tiles.clear();
     me->get_tiles(entry.tiles);
+#else
+    UNUSED(index);
 #endif
 }
 
@@ -439,6 +441,7 @@ SizeReq UIMenu::_get_preferred_size(Direction dim, int prosp_width)
         return {0, m_height};
     }
 #else
+    UNUSED(prosp_width);
     if (!dim)
         return {0, 80};
     else
@@ -802,9 +805,6 @@ Menu::Menu(int _flags, const string& tagname, KeymapContext kmc)
     m_ui.vbox = make_shared<Box>(Widget::VERT);
     m_ui.vbox->align_cross = Widget::STRETCH;
 
-    m_ui.title->set_margin_for_sdl(0, 0, 10, 0);
-    m_ui.more->set_margin_for_sdl(10, 0, 0, 0);
-
     m_ui.vbox->add_child(m_ui.title);
 #ifdef USE_TILE_LOCAL
     m_ui.vbox->add_child(m_ui.scroller);
@@ -874,7 +874,7 @@ void Menu::clear()
     last_selected = -1;
 }
 
-void Menu::set_flags(int new_flags, bool use_options)
+void Menu::set_flags(int new_flags)
 {
     flags = new_flags;
 
@@ -1094,6 +1094,7 @@ bool Menu::title_prompt(char linebuf[], int bufsz, const char* prompt)
     line_reader reader(linebuf, bufsz, get_number_of_cols());
     validline = !reader.read_line("");
 #else
+    UNUSED(prompt);
     ASSERT(!m_filter);
     m_filter = new resumable_line_reader(linebuf, bufsz);
     update_title();
@@ -1503,7 +1504,7 @@ bool MenuEntry::get_tiles(vector<tile_def>& tileset) const
     return true;
 }
 #else
-bool MenuEntry::get_tiles(vector<tile_def>& tileset) const { return false; }
+bool MenuEntry::get_tiles(vector<tile_def>& /*tileset*/) const { return false; }
 #endif
 
 #ifdef USE_TILE
@@ -1870,6 +1871,8 @@ void Menu::update_menu(bool update_entries)
         if (items.size() > 0)
             webtiles_update_items(0, items.size() - 1);
     }
+#else
+    UNUSED(update_entries);
 #endif
 }
 
@@ -1952,8 +1955,9 @@ void Menu::update_title()
 
 #ifdef USE_TILE_LOCAL
     const bool tile_indent = m_indent_title && Options.tile_menu_icons;
-    m_ui.title->set_margin_for_sdl(0, 0, 10,
+    m_ui.title->set_margin_for_sdl(0, UIMenu::item_pad+UIMenu::pad_right, 10,
             UIMenu::item_pad + (tile_indent ? 38 : 0));
+    m_ui.more->set_margin_for_sdl(10, UIMenu::item_pad+UIMenu::pad_right, 0, 0);
 #endif
     m_ui.title->set_text(fs);
 #ifdef USE_TILE_WEB
@@ -2065,7 +2069,7 @@ void Menu::webtiles_write_menu(bool replace) const
     tiles.json_open_array("items");
 
     for (int i = start; i < end; ++i)
-        webtiles_write_item(i, items[i]);
+        webtiles_write_item(items[i]);
 
     tiles.json_close_array();
 
@@ -2103,7 +2107,7 @@ void Menu::webtiles_handle_item_request(int start, int end)
     tiles.json_open_array("items");
 
     for (int i = start; i <= end; ++i)
-        webtiles_write_item(i, items[i]);
+        webtiles_write_item(items[i]);
 
     tiles.json_close_array();
 
@@ -2207,7 +2211,7 @@ void Menu::webtiles_write_tiles(const MenuEntry& me) const
     }
 }
 
-void Menu::webtiles_write_item(int index, const MenuEntry* me) const
+void Menu::webtiles_write_item(const MenuEntry* me) const
 {
     tiles.json_open_object();
 
@@ -2878,7 +2882,7 @@ void MenuItem::move(const coord_def& delta)
 }
 
 // By default, value does nothing. Override for Items needing it.
-void MenuItem::select(bool toggle, int value)
+void MenuItem::select(bool toggle, int /*value*/)
 {
     select(toggle);
 }
@@ -3976,14 +3980,14 @@ vector<MenuItem*> BoxMenuHighlighter::get_selected_items()
     return ret_val;
 }
 
-MenuObject::InputReturnValue BoxMenuHighlighter::process_input(int key)
+MenuObject::InputReturnValue BoxMenuHighlighter::process_input(int /*key*/)
 {
     // just in case we somehow end up processing input of this item
     return MenuObject::INPUT_NO_ACTION;
 }
 
 #ifdef USE_TILE_LOCAL
-MenuObject::InputReturnValue BoxMenuHighlighter::handle_mouse(const MouseEvent &me)
+MenuObject::InputReturnValue BoxMenuHighlighter::handle_mouse(const MouseEvent &/*me*/)
 {
     // we have nothing interesting to do on mouse events because render()
     // always checks if the active has changed

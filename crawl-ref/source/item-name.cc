@@ -1002,7 +1002,7 @@ const char* rune_type_name(short p)
     }
 }
 
-static string misc_type_name(int type, bool known)
+static string misc_type_name(int type)
 {
 #if TAG_MAJOR_VERSION == 34
     if (is_deck_type(type))
@@ -1247,7 +1247,7 @@ string sub_type_string(const item_def &item, bool known)
 #if TAG_MAJOR_VERSION == 34
     case OBJ_RODS:   return "removed rod";
 #endif
-    case OBJ_MISCELLANY: return misc_type_name(sub_type, known);
+    case OBJ_MISCELLANY: return misc_type_name(sub_type);
     // these repeat as base_type_string
     case OBJ_ORBS: return "orb of Zot";
     case OBJ_CORPSES: return "corpse";
@@ -1909,7 +1909,7 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
         if (!dbname && item_typ == MISC_ZIGGURAT && you.zigs_completed > 0)
             buff << "+" << you.zigs_completed << " ";
 
-        buff << misc_type_name(item_typ, know_type);
+        buff << misc_type_name(item_typ);
 
         if (is_xp_evoker(*this) && !dbname && !evoker_charges(sub_type))
             buff << " (inert)";
@@ -2304,7 +2304,7 @@ public:
     virtual string get_text(bool need_cursor) const override
     {
         need_cursor = need_cursor && show_cursor;
-        int flags = item->base_type == OBJ_WANDS ? 0 : ISFLAG_KNOW_PLUSES;
+        int flags = item->base_type == OBJ_WANDS ? 0 : int{ISFLAG_KNOW_PLUSES};
 
         string name;
 
@@ -2404,7 +2404,7 @@ public:
 
     virtual string get_text(const bool = false) const override
     {
-        int flags = item->base_type == OBJ_WANDS ? 0 : ISFLAG_KNOW_PLUSES;
+        int flags = item->base_type == OBJ_WANDS ? 0 : int{ISFLAG_KNOW_PLUSES};
 
         return string(" ") + item->name(DESC_PLAIN, false, true, false,
                                         false, flags);
@@ -2428,7 +2428,7 @@ static MenuEntry *unknown_item_mangle(MenuEntry *me)
 static bool _identified_item_names(const item_def *it1,
                                    const item_def *it2)
 {
-    int flags = it1->base_type == OBJ_WANDS ? 0 : ISFLAG_KNOW_PLUSES;
+    int flags = it1->base_type == OBJ_WANDS ? 0 : int{ISFLAG_KNOW_PLUSES};
     return it1->name(DESC_PLAIN, false, true, false, false, flags)
          < it2->name(DESC_PLAIN, false, true, false, false, flags);
 }
@@ -2581,7 +2581,7 @@ void check_item_knowledge(bool unknown_items)
 
     string prompt = "(_ for help)";
     //TODO: when the menu is opened, the text is not justified properly.
-    stitle = stitle + string(max(0, 80 - strwidth(stitle) - strwidth(prompt)),
+    stitle = stitle + string(max(0, MIN_COLS - strwidth(stitle + prompt)),
                              ' ') + prompt;
 
     menu.set_preselect(&selected_items);
@@ -2628,7 +2628,10 @@ static MenuEntry* _fixup_runeorb_entry(MenuEntry* me)
         colour_t colour;
         // Make Gloorx's rune more distinguishable from uncollected runes.
         if (you.runes[rune])
-            colour = (rune == RUNE_GLOORX_VLOQ) ? LIGHTGREY : rune_colour(rune);
+        {
+            colour = (rune == RUNE_GLOORX_VLOQ) ? colour_t{LIGHTGREY}
+                                                : rune_colour(rune);
+        }
         else
             colour = DARKGREY;
 

@@ -409,7 +409,8 @@ static void _good_potion_or_scroll()
             (you.undead_state() == US_UNDEAD
              || you.species == SP_VINE_STALKER) ? 0 : 1 },
         { { OBJ_POTIONS, POT_HASTE },
-            you.undead_state() == US_UNDEAD ? 0 : 1 },
+            (you.undead_state() == US_UNDEAD
+             || you.species == SP_FORMICID) ? 0 : 1 },
         { { OBJ_POTIONS, POT_BERSERK_RAGE },
             (you.species == SP_FORMICID
              || you.is_lifeless_undead(false)) ? 0 : 1},

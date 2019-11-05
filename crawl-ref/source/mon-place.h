@@ -39,8 +39,8 @@ monster_type resolve_monster_type(monster_type mon_type,
                                   bool *want_band = nullptr,
                                   bool allow_ood = true);
 
-const monster_type fixup_zombie_type(const monster_type cls,
-                                     const monster_type base_type);
+monster_type fixup_zombie_type(const monster_type cls,
+                               const monster_type base_type);
 
 /* ***********************************************************************
  * This isn't really meant to be a public function. It is a low level
@@ -114,7 +114,7 @@ void setup_vault_mon_list();
 
 monster* get_free_monster();
 
-bool can_place_on_trap(monster_type mon_type, trap_type trap);
+bool can_place_on_trap(monster_type mon_type);
 void mons_add_blame(monster* mon, const string &blame_string);
 
 void debug_bands();

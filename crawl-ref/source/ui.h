@@ -187,6 +187,8 @@ public:
 #ifndef USE_TILE_LOCAL
         margin = Margin(forward<Args>(args)...);
         _invalidate_sizereq();
+#else
+        UNUSED(args...);
 #endif
     }
 
@@ -196,6 +198,8 @@ public:
 #ifdef USE_TILE_LOCAL
         margin = Margin(forward<Args>(args)...);
         _invalidate_sizereq();
+#else
+        UNUSED(args...);
 #endif
     }
 
@@ -211,7 +215,7 @@ public:
     } slots;
 
     // XXX: add documentation
-    virtual shared_ptr<Widget> get_child_at_offset(int x, int y) {
+    virtual shared_ptr<Widget> get_child_at_offset(int, int) {
         return nullptr;
     };
 
@@ -501,8 +505,8 @@ public:
                 _unparent(child.widget);
     };
     void add_child(shared_ptr<Widget> child, int x, int y, int w = 1, int h = 1);
-    const int column_flex_grow(int x) const { return m_col_info.at(x).flex_grow; }
-    const int row_flex_grow(int y) const { return m_row_info.at(y).flex_grow; }
+    int column_flex_grow(int x) const { return m_col_info.at(x).flex_grow; }
+    int row_flex_grow(int y) const { return m_row_info.at(y).flex_grow; }
     int& column_flex_grow(int x)
     {
         init_track_info();
@@ -675,7 +679,6 @@ public:
     virtual void _render() override;
     virtual SizeReq _get_preferred_size(Direction dim, int prosp_width) override;
     virtual void _allocate_region() override;
-    virtual bool on_event(const wm_event& event) override;
 
 protected:
     void _pack_doll();

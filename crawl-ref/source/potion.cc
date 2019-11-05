@@ -39,7 +39,7 @@ PotionEffect::PotionEffect(const potion_type pot)
     : potion_name(potion_type_name(pot)), kind(pot)
 { }
 
-bool PotionEffect::can_quaff(string *reason) const
+bool PotionEffect::can_quaff(string */*reason*/) const
 {
     return true;
 }
@@ -635,7 +635,7 @@ public:
         return true;
     }
 
-    bool effect(bool=true, int pow = 40, bool=true) const override
+    bool effect(bool=true, int = 40, bool=true) const override
     {
         inc_mp(POT_MAGIC_MP);
         mpr("Magic courses through your body.");
@@ -659,7 +659,7 @@ public:
         return you.can_go_berserk(true, true, true, reason);
     }
 
-    bool effect(bool was_known = true, int pow = 40, bool=true) const override
+    bool effect(bool was_known = true, int = 40, bool=true) const override
     {
         if (you.undead_state() == US_SEMI_UNDEAD && !you.vampire_alive)
         {

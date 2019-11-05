@@ -517,7 +517,7 @@ god_iterator::operator bool() const
     return i < NUM_GODS;
 }
 
-const god_type god_iterator::operator*() const
+god_type god_iterator::operator*() const
 {
     if (i < NUM_GODS)
         return (god_type)i;
@@ -525,7 +525,7 @@ const god_type god_iterator::operator*() const
         return GOD_NO_GOD;
 }
 
-const god_type god_iterator::operator->() const
+god_type god_iterator::operator->() const
 {
     return **this;
 }
@@ -1051,7 +1051,7 @@ static int _preferably_unseen_item(const vector<int> &item_types,
 }
 #endif
 
-static void _delayed_gift_callback(const mgen_data &mg, monster *&mon,
+static void _delayed_gift_callback(const mgen_data &/*mg*/, monster *&mon,
                                    int placed)
 {
     if (placed <= 0)
@@ -3574,7 +3574,7 @@ static void _join_zin()
         // rich. In that case, you have to donate again more... That the poor
         // widow is not spared doesn't mean the rich can't be milked for more.
         lucre.props[ACQUIRE_KEY] = 0;
-        you.gold -= zin_tithe(lucre, lucre.quantity, false, true);
+        you.gold -= zin_tithe(lucre, lucre.quantity, true);
     }
 }
 

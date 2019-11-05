@@ -183,8 +183,8 @@ int list_spells(bool toggle_with_I, bool viewing, bool allow_preselect,
     {
         ToggleableMenuEntry* me =
             new ToggleableMenuEntry(
-                titlestring + "         Type                          Failure  Level  ",
-                titlestring + "         Power        Range    Hunger  Noise           ",
+                titlestring + "         Type                          Failure  Level",
+                titlestring + "         Power        Range    Hunger  Noise         ",
                 MEL_TITLE);
         spell_menu.set_title(me, true, true);
     }
@@ -984,7 +984,7 @@ static void _spellcasting_side_effects(spell_type spell, god_type god,
 }
 
 #ifdef WIZARD
-static void _try_monster_cast(spell_type spell, int powc,
+static void _try_monster_cast(spell_type spell, int /*powc*/,
                               dist &spd, bolt &beam)
 {
     if (monster_at(you.pos()))

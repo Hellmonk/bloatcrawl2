@@ -94,7 +94,7 @@ int show_description(const string &body, const tile_def *tile)
 {
     describe_info inf;
     inf.body << body;
-    return show_description(inf);
+    return show_description(inf, tile);
 }
 
 /// A message explaining how the player can toggle between quote &
@@ -121,6 +121,8 @@ int show_description(const describe_info &inf, const tile_def *tile)
             icon->set_margin_for_sdl(0, 10, 0, 0);
             title_hbox->add_child(move(icon));
         }
+#else
+        UNUSED(tile);
 #endif
 
         auto title = make_shared<Text>(inf.title);
@@ -2746,6 +2748,8 @@ bool describe_item(item_def &item, function<void (string&)> fixup_desc)
             done = true;
         else if (key == ' ' || key == CK_ESCAPE)
             done = true;
+        else if (scroller->on_event(ev))
+            return true;
         const vector<pair<spell_type,char>> spell_map = map_chars_to_spells(spells, &item);
         auto entry = find_if(spell_map.begin(), spell_map.end(),
                 [key](const pair<spell_type,char>& e) { return e.second == key; });
@@ -3215,12 +3219,14 @@ void describe_spell(spell_type spell, const monster_info *mon_owner,
 
     bool done = false;
     int lastch;
-    popup->on(Widget::slots.event, [&done, &lastch, &can_mem](wm_event ev) {
+    popup->on(Widget::slots.event, [&](wm_event ev) {
         if (ev.type != WME_KEYDOWN)
             return false;
         lastch = ev.key.keysym.sym;
         done = (toupper_safe(lastch) == 'M' && can_mem || lastch == CK_ESCAPE
             || lastch == CK_ENTER || lastch == ' ');
+        if (scroller->on_event(ev))
+            return true;
         return done;
     });
 
@@ -3864,7 +3870,7 @@ COMPILE_CHECK(ARRAYSZ(size_adj) == NUM_SIZE_LEVELS);
 // This is used in monster description and on '%' screen for player size
 const char* get_size_adj(const size_type size, bool ignore_medium)
 {
-    ASSERT_RANGE(static_cast<int>(size), 0, ARRAYSZ(size_adj));
+    ASSERT_RANGE(size, 0, ARRAYSZ(size_adj));
     if (ignore_medium && size == SIZE_MEDIUM)
         return nullptr; // don't mention medium size
     return size_adj[size];
@@ -4211,7 +4217,7 @@ string serpent_of_hell_flavour(monster_type m)
 
 // Fetches the monster's database description and reads it into inf.
 void get_monster_db_desc(const monster_info& mi, describe_info &inf,
-                         bool &has_stat_desc, bool force_seen)
+                         bool &has_stat_desc)
 {
     if (inf.title.empty())
         inf.title = getMiscString(mi.common_name(DESC_DBNAME) + " title");
@@ -4530,14 +4536,13 @@ void get_monster_db_desc(const monster_info& mi, describe_info &inf,
 #endif
 }
 
-int describe_monsters(const monster_info &mi, bool force_seen,
-                      const string &footer)
+int describe_monsters(const monster_info &mi, const string& /*footer*/)
 {
     bool has_stat_desc = false;
     describe_info inf;
     formatted_string desc;
 
-    get_monster_db_desc(mi, inf, has_stat_desc, force_seen);
+    get_monster_db_desc(mi, inf, has_stat_desc);
 
     spellset spells = monster_spellset(mi);
 
@@ -4629,6 +4634,8 @@ int describe_monsters(const monster_info &mi, bool force_seen,
             tiles.ui_state_change("describe-monster", 0);
 #endif
         }
+        if (desc_sw->current_widget()->on_event(ev))
+            return true;
         const vector<pair<spell_type,char>> spell_map = map_chars_to_spells(spells, nullptr);
         auto entry = find_if(spell_map.begin(), spell_map.end(),
                 [key](const pair<spell_type,char>& e) { return e.second == key; });

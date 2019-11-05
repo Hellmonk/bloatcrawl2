@@ -1789,7 +1789,7 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
     return rp;
 }
 
-int player_res_sticky_flame(bool calc_unid, bool temp, bool items)
+int player_res_sticky_flame(bool calc_unid, bool /*temp*/, bool items)
 {
     if (you.species == SP_ASTRAL)
         return 0;
@@ -2119,7 +2119,7 @@ int player_movement_speed()
  * @param enhancers     Bonus enhancers to evocations (pak device surge).
  * @return              A modified power value.
  */
-const int player_adjust_evoc_power(const int power, int enhancers)
+int player_adjust_evoc_power(const int power, int enhancers)
 {
     const int total_enhancers = you.spec_evoke() + enhancers;
     return stepdown_spellpower(100 *apply_enhancement(power, total_enhancers));
@@ -2398,7 +2398,7 @@ int player_armour_shield_spell_penalty()
  * @param spell     The type of spell being cast.
  * @return          The number of relevant wizardry effects.
  */
-int player_wizardry(spell_type spell)
+int player_wizardry(spell_type /*spell*/)
 {
     return you.wearing(EQ_RINGS, RING_WIZARDRY)
            + you.wearing(EQ_STAFF, STAFF_WIZARDRY)
@@ -6415,7 +6415,7 @@ bool player::undead_or_demonic() const
     return undead_state() || species == SP_DEMONSPAWN;
 }
 
-bool player::is_holy(bool check_spells) const
+bool player::is_holy(bool /*check_spells*/) const
 {
     return bool(holiness() & MH_HOLY);
 }
@@ -6661,7 +6661,7 @@ string player::no_tele_reason(bool calc_unid, bool blinking) const
     vector<string> problems;
 
     if (duration[DUR_DIMENSION_ANCHOR])
-        problems.emplace_back("locked down by Dimension Anchor");
+        problems.emplace_back("locked down by a dimension anchor");
 
     if (form == transformation::tree)
         problems.emplace_back("held in place by your roots");
@@ -6823,7 +6823,7 @@ reach_type player::reach_range() const
     return REACH_NONE;
 }
 
-monster_type player::mons_species(bool zombie_base) const
+monster_type player::mons_species(bool /*zombie_base*/) const
 {
     return player_species_to_mons_species(species);
 }
@@ -6888,7 +6888,7 @@ void player::drain_stat(stat_type s, int amount)
     lose_stat(s, amount);
 }
 
-bool player::rot(actor *who, int amount, bool quiet, bool /*no_cleanup*/)
+bool player::rot(actor */*who*/, int amount, bool quiet, bool /*no_cleanup*/)
 {
     ASSERT(!crawl_state.game_is_arena());
 
@@ -6965,7 +6965,7 @@ bool player::corrode_equipment(const char* corrosion_source, int degree)
  * @param hurt_msg A message to display when dealing damage.
  */
 void player::splash_with_acid(const actor* evildoer, int acid_strength,
-                              bool allow_corrosion, const char* hurt_msg)
+                              bool allow_corrosion, const char* /*hurt_msg*/)
 {
     if (allow_corrosion && binomial(3, acid_strength + 1, 30))
         corrode_equipment();
@@ -6986,12 +6986,12 @@ void player::splash_with_acid(const actor* evildoer, int acid_strength,
     }
 }
 
-bool player::drain_exp(actor *who, bool quiet, int pow)
+bool player::drain_exp(actor */*who*/, bool quiet, int pow)
 {
     return drain_player(pow, !quiet);
 }
 
-void player::confuse(actor *who, int str)
+void player::confuse(actor */*who*/, int str)
 {
     confuse_player(str);
 }
@@ -7087,7 +7087,7 @@ void player::petrify(actor *who, bool force)
     mprf(MSGCH_WARN, "You are slowing down.");
 }
 
-bool player::fully_petrify(actor *foe, bool quiet)
+bool player::fully_petrify(actor */*foe*/, bool /*quiet*/)
 {
     duration[DUR_PETRIFIED] = 6 * BASELINE_DELAY
                         + random2(4 * BASELINE_DELAY);
@@ -7099,7 +7099,7 @@ bool player::fully_petrify(actor *foe, bool quiet)
     return true;
 }
 
-void player::slow_down(actor *foe, int str)
+void player::slow_down(actor */*foe*/, int str)
 {
     ::slow_player(str);
 }
@@ -7858,7 +7858,7 @@ bool player::made_nervous_by(const monster *mons)
     return false;
 }
 
-void player::weaken(actor *attacker, int pow)
+void player::weaken(actor */*attacker*/, int pow)
 {
     if (!duration[DUR_WEAK])
         mprf(MSGCH_WARN, "You feel your attacks grow feeble.");

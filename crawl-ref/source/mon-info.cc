@@ -1750,8 +1750,9 @@ bool monster_info::has_spells() const
 }
 
 /// What hd does this monster cast spells with? May vary from actual HD.
-int monster_info::spell_hd() const
+int monster_info::spell_hd(spell_type spell) const
 {
+    UNUSED(spell);
     if (!props.exists(SPELL_HD_KEY))
         return hd;
     return props[SPELL_HD_KEY].get_int();
@@ -1846,7 +1847,7 @@ const char *monster_info::pronoun(pronoun_type variant) const
     return mons_pronoun(type, variant, true);
 }
 
-const bool monster_info::pronoun_plurality() const
+bool monster_info::pronoun_plurality() const
 {
     if (props.exists(MON_GENDER_KEY))
         return props[MON_GENDER_KEY].get_int() == GENDER_NEUTRAL;

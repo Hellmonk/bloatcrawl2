@@ -1103,7 +1103,8 @@ void direction_chooser::set_target(const coord_def& new_target)
 
 static void _draw_ray_cell(coord_def p, coord_def target, aff_type aff)
 {
- #ifdef USE_TILE
+    UNUSED(target);
+#ifdef USE_TILE
     tile_place_ray(p, aff);
 #endif
 #ifndef USE_TILE_LOCAL
@@ -2439,7 +2440,7 @@ static bool _find_monster_expl(const coord_def& where, targ_mode_type mode,
     return false;
 }
 
-static const item_def* const _item_at(const coord_def &where)
+static const item_def* _item_at(const coord_def &where)
 {
     // XXX: are we ever interacting with unseen items, anyway?
     return you.see_cell(where)

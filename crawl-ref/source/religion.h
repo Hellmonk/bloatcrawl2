@@ -161,8 +161,8 @@ public:
     god_iterator();
 
     operator bool() const;
-    const god_type operator*() const;
-    const god_type operator->() const;
+    god_type operator*() const;
+    god_type operator->() const;
     god_iterator& operator++();
     god_iterator operator++(int);
 

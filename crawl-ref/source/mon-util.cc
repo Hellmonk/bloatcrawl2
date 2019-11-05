@@ -399,7 +399,7 @@ int get_mons_resist(const monster& mon, mon_resist_flags res)
 }
 
 // Returns true if the monster successfully resists this attempt to poison it.
-const bool monster_resists_this_poison(const monster& mons, bool force)
+bool monster_resists_this_poison(const monster& mons, bool force)
 {
     const int res = mons.res_poison();
     if (res >= 3)
@@ -568,7 +568,7 @@ int monster::wearing_ego(equipment_type slot, int special, bool calc_unid) const
     return ret;
 }
 
-int monster::scan_artefacts(artefact_prop_type ra_prop, bool calc_unid,
+int monster::scan_artefacts(artefact_prop_type ra_prop, bool /*calc_unid*/,
                             vector<item_def> *matches) const
 {
     UNUSED(matches); //TODO: implement this when it will be required somewhere
@@ -2955,7 +2955,7 @@ void define_monster(monster& mons)
     case MONS_PLAYER_ILLUSION:
     {
         ghost_demon ghost;
-        ghost.init_player_ghost(mcls == MONS_PLAYER_GHOST);
+        ghost.init_player_ghost();
         if (mcls == MONS_PLAYER_GHOST)
         {
             // still don't allow undead ghosts, even mirrored

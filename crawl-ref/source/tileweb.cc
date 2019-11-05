@@ -1258,8 +1258,8 @@ static inline unsigned _get_brand(int col)
            (col & COLFLAG_MAYSTAB)          ? Options.may_stab_brand :
            (col & COLFLAG_FEATURE_ITEM)     ? Options.feature_item_brand :
            (col & COLFLAG_TRAP_ITEM)        ? Options.trap_item_brand :
-           (col & COLFLAG_REVERSE)          ? CHATTR_REVERSE
-                                            : CHATTR_NORMAL;
+           (col & COLFLAG_REVERSE)          ? unsigned{CHATTR_REVERSE}
+                                            : unsigned{CHATTR_NORMAL};
 }
 
 void TilesFramework::write_tileidx(tileidx_t t)
@@ -2016,16 +2016,16 @@ void TilesFramework::place_cursor(cursor_type type, const coord_def &gc)
     }
 }
 
-void TilesFramework::clear_text_tags(text_tag_type type)
+void TilesFramework::clear_text_tags(text_tag_type /*type*/)
 {
 }
 
-void TilesFramework::add_text_tag(text_tag_type type, const string &tag,
-                                  const coord_def &gc)
+void TilesFramework::add_text_tag(text_tag_type /*type*/, const string &/*tag*/,
+                                  const coord_def &/*gc*/)
 {
 }
 
-void TilesFramework::add_text_tag(text_tag_type type, const monster_info& mon)
+void TilesFramework::add_text_tag(text_tag_type /*type*/, const monster_info& /*mon*/)
 {
 }
 
