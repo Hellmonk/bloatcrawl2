@@ -2596,12 +2596,12 @@ MONS:   angel god:zin dbname:zin_angel / \
 : interest_check(_G)
 MAP
 xxxxxxxxx
-xcccccccx
-xc1m.._cx
-xcmm...cx
+xVVVcVVVx
+xV1m.._Vx
+xVmm...Vx
 xc.....cx
 xcG...Gcx
-xccc+cccx
+xccV+Vccx
     @
 ENDMAP
 
@@ -2616,15 +2616,16 @@ TILE:   c = wall_church
 FTILE:  _.m+$ = floor_limestone
 : interest_check(_G)
 MAP
-  xxxxxxx
-  xcccccx
- xxc$$$cxx
-xxcc$$$ccxx
+  xxxxxxxx
+  xccccccx
+ xcVVVVVcx
+ xcV$$$Vcxx
+xxcV$$$Vcxx
 xccmm$mmccx
 xcc.mmm.ccx
 xcc.._..ccx
-xxc.....cxx
- xccc+cccx
+xxcV...Vcxx
+ xccV+Vccx
      @
 ENDMAP
 
@@ -2636,17 +2637,15 @@ KFEAT:  _ = altar_zin
 KFEAT:  v = general shop name:Zin type:Purification suffix:Station count:1 \
         greed:30 ; \
         potion of curing
-COLOUR: c = white
 COLOUR: ' = white
-TILE:   c = wall_church
 FTILE:  Td'_ = floor_limestone
 SUBST:  ' = .
 : interest_check(_G)
 MAP
  .....
-..ccc..
-.ccTcc.
-..c_c..
+..VVV..
+.VVTVV.
+..V_V..
  .....
 ...'...
 ..'v'..
@@ -2666,15 +2665,16 @@ TILE:   c = wall_church
 FTILE:  _.m+d = floor_limestone
 NSUBST: ? = 2:d / *:.
 MAP
-  xxxxxxx
-  xcccccx
- xxc???cxx
- xcc???ccx
-xxcccmcccxx
+  xxxxxxxx
+ xcccccccx
+ xcVVVVVcx
+ xcV???Vcx
+ xcV???Vcx
+xxcVVmVVcxx
 xcc.....ccx
-xcc.._..ccx
+xccV._.Vccx
 xxc.....cxx
- xccc+cccx
+ xccV+Vccx
      @
 ENDMAP
 
@@ -2690,8 +2690,8 @@ FTILE:  _' = floor_limestone
 SUBST:  ' = .
 MAP
   ccccccc
-ccc.ttttccc
-c.tt'_'t..c
+VVV.ttttVVV
+V.tt'_'t..V
 ....'''....
 ...........
 ...'''''...
@@ -2710,8 +2710,9 @@ FTILE:  _'+ = floor_limestone
 SUBST:  ' = .
 MAP
  .......
-..ccccc..
-.cc'_'cc.
+ .ccccc.
+..cVVVc..
+.ccV_Vcc.
 ..cc+cc..
 ...'''...
 .G.....G.
@@ -2931,6 +2932,11 @@ MONS:    plant
 KFEAT:   D = altar_elyvilon
 KFEAT:   E = altar_zin
 KFEAT:   F = altar_the_shining_one
+COLOUR:  x = white
+TILE:    x = wall_church
+FTILE:   DEFG. = floor_limestone
+TILE:    G = dngn_golden_statue
+: set_feature_name("granite_statue", "golden statue")
 : if crawl.coinflip() then
 SHUFFLE: x" / t1 / wT / IJ
 : else
@@ -2939,14 +2945,12 @@ SUBST:   " : ..x
 SUBST:   HI : x
 SUBST:   x : xcvb
 SUBST:   ' : .
-SHUFFLE: EG/'E
-SUBST:   J : G
-SHUFFLE: DEF
 : interest_check(_G)
 MAP
  xxxxx
-xxxGxxx
-xD.E.Fx
+ xVVVx
+xxVEVxx
+xD.G.Fx
 xx+++xx
  ""@""
 ENDMAP
@@ -3053,11 +3057,11 @@ MONS:  angel god:zin dbname:zin_angel perm_ench:confusion generate_awake / \
 MAP
  .......
 ....A....
-..nnnnn..
+..vnnnv..
 ..n___n..
 @.n_1_n.@
 ..n___n..
-..nnnnn..
+..VnnnV..
 ....B....
  .......
 ENDMAP
@@ -3082,14 +3086,15 @@ SUBST:  X = CL
 FTILE:  _BN2 = floor_limestone
 TILE:   C = wall_church
 COLOUR: C = white
+COLOUR: v = red
 MAP
     x.@.x
   xxx...xxx
-xxxXXX+CCCxxx
-xccc--;__CCCx
+xxxXXv+VCCxxx
+xccv--;__VCCx
 xc1nA-;_BN2Cx
-xccc--;__CCCx
-xxxXXX+CCCxxx
+xccv--;__VCCx
+xxxXXv+VCCxxx
   xxx...xxx
     x.@.x
 ENDMAP
