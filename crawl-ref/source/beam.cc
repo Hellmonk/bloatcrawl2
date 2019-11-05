@@ -1337,6 +1337,8 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
     // damage check only.
     // Do not print messages or apply any side effects!
     int original = hurted;
+	string msg; // I hate putting this here since only one case uses it;
+	// but it didn't play nice with putting it in the middle.
 
     switch (pbolt.flavour)
     {
@@ -1407,6 +1409,17 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
                 simple_monster_message(*mons, " is frozen!");
         }
         break;
+
+	case BEAM_SILVER_FRAG:
+	{
+		if (doFlavouredEffects)
+		{
+			silver_damages_victim(mons, hurted, msg);
+			if (!msg.empty())
+				mpr(msg);
+		}
+		break;
+	}
 
     case BEAM_ELECTRICITY:
         hurted = resist_adjust_damage(mons, pbolt.flavour, hurted);
@@ -2708,7 +2721,7 @@ bool bolt::can_affect_wall(const coord_def& p, bool map_knowledge) const
         return (feat_is_tree(wall) || feat_is_door(wall));
 
     // Lee's Rapid Deconstruction
-    if (flavour == BEAM_FRAG)
+    if (flavour == BEAM_FRAG || flavour == BEAM_SILVER_FRAG)
         return true; // smite targeting, we don't care
 
     return false;
@@ -3970,6 +3983,7 @@ int bolt::apply_AC(const actor *victim, int hurted)
     case BEAM_ELECTRICITY:
         ac_rule = AC_HALF; break;
     case BEAM_FRAG:
+	case BEAM_SILVER_FRAG: // fallthrough
         ac_rule = AC_TRIPLE; break;
     default: ;
     }
@@ -6416,6 +6430,7 @@ static string _beam_type_name(beam_type type)
     case BEAM_ENERGY:                return "energy";
     case BEAM_HOLY:                  return "cleansing flame";
     case BEAM_FRAG:                  return "fragments";
+	case BEAM_SILVER_FRAG:           return "silver fragments";
     case BEAM_LAVA:                  return "magma";
     case BEAM_ICE:                   return "ice";
     case BEAM_DEVASTATION:           return "devastation";

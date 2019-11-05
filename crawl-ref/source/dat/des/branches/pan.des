@@ -3955,8 +3955,7 @@ KFEAT:  E = altar_elyvilon
 KFEAT:  Z = altar_zin
 TILE:   c = wall_church
 COLOUR: cGH = yellow
-TILE:   v = dngn_metal_wall_white
-COLOUR: v& = white
+COLOUR: & = white
 TILE:   GH = dngn_golden_statue
 FTILE:  _124SDcG|*'O = floor_limestone
 FTILE:  "E0 = floor_grass
@@ -3964,7 +3963,6 @@ COLOUR: "0 = green
 FTILE:  -ZBghi&v = floor_vault
 SUBST:  D& = +, '"- = ., H = G, C = c
 : set_feature_name("granite_statue", "golden statue")
-: set_feature_name("metal_wall", "silver wall")
 : set_random_mon_list("angel w:20 / cherub / ophan / daeva / apis w:20")
 MAP
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -4019,19 +4017,19 @@ xwwwwwww.....xxxx.........x....cc......5........3........5......cc....xx....xxxx
 xwwwwww.....xxxx.........xx...ccc+.............................+ccc.........xxxx
 xwwww........xx...............c*'cccccccccccc.......cccccccccccc'*c........xxxxx
 xww...........................c1*cccccccccccc.......cccccccccccc*1c.......xxxxxx
-xxxx..xx..v.vvvvvvvvvvvvvv....cccc..........H.......H..........cccc......xxxxxxx
-xxxx..xx...vvv----v-----iv.v................................x..........xxxxxxxxx
-xxxx...x..vvv-Bv-----vvBiv.vv...............H.......H......xxx........xxxxxxxxxx
-xxxxx.....vvi-----v-----iv........v........................xxx.........xxxxxxxxx
-xxxxx.....vv------vvvvvvvvvvvvvv......xx....H.......H.....xxx.....xx..x..xxxxxxx
-xxxxx.....vv---------vBv-v-v-v-v.v...xxxx.......................xxxxx....xxxxxxx
-xxxxx.....vg-Z---vvv-&---------&......xxxx..................xxxxxxxxxxxx...x.Axx
-xxxxxx....vv---------vBv-v-v-v-v.v.....xxx.............xxxxxxxxxxxxxxxx........x
-xxxxxx....vv------vvvvvvvvvvvvvv...............xxxxxxxxxxxxxxx$$$xxxxx..xxxx...x
-xxxxxxx...vvi-----v-----iv........v......xxxxxxxxxxxxxxxxxxxx$.AAxxxxA.xxxx..xxx
-xxxxxxxx..vvv-Bv-----vvBiv.vv.........xxxxxxxxxxxxxx$$$$$xxxxxxA...xxxxxxx....xx
-xxxxxxxx...vvv----v-----iv.v......xxxxxxxxxxxxxxxxx$$$9$$$xxxxxx..x..xxx....x..x
-xxxxxxxx..v.vvvvvvvvvvvvvv....xxxxxxxxxxxxxxxxxxxxx$$$$$$..xxxxxxx........xxxxAx
+xxxx..xx..V.VVVVVVVVVVVVVV....cccc..........H.......H..........cccc......xxxxxxx
+xxxx..xx...VVV----V-----iV.V................................x..........xxxxxxxxx
+xxxx...x..VVV-BV-----VVBiV.VV...............H.......H......xxx........xxxxxxxxxx
+xxxxx.....VVi-----V-----iV........V........................xxx.........xxxxxxxxx
+xxxxx.....VV------VVVVVVVVVVVVVV......xx....H.......H.....xxx.....xx..x..xxxxxxx
+xxxxx.....VV---------VBV-V-V-V-V.V...xxxx.......................xxxxx....xxxxxxx
+xxxxx.....Vg-Z---VVV-&---------&......xxxx..................xxxxxxxxxxxx...x.Axx
+xxxxxx....VV---------VBV-V-V-V-V.V.....xxx.............xxxxxxxxxxxxxxxx........x
+xxxxxx....VV------VVVVVVVVVVVVVV...............xxxxxxxxxxxxxxx$$$xxxxx..xxxx...x
+xxxxxxx...VVi-----V-----iV........V......xxxxxxxxxxxxxxxxxxxx$.AAxxxxA.xxxx..xxx
+xxxxxxxx..VVV-BV-----VVBiV.VV.........xxxxxxxxxxxxxx$$$$$xxxxxxA...xxxxxxx....xx
+xxxxxxxx...VVV----V-----iV.V......xxxxxxxxxxxxxxxxx$$$9$$$xxxxxx..x..xxx....x..x
+xxxxxxxx..V.VVVVVVVVVVVVVV....xxxxxxxxxxxxxxxxxxxxx$$$$$$..xxxxxxx........xxxxAx
 xxxxxxxxx..................xxxxxxxxxxxxxxxxxxxxxxxxx$$$.....xxxxxxx......xxxxxxx
 xxxxxxxxxxx..............xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx....wwxxx....xxxxxxxxxxx
 xxxxxxxxxxxxx........xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxwwwwwxxxxxxxxxxxxxx

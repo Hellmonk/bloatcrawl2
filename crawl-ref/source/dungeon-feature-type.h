@@ -18,6 +18,9 @@ enum dungeon_feature_type
     DNGN_TREE,
 
     // Walls
+#if TAG_MAJOR_VERSION > 34
+	DNGN_SILVER_WALL,                  // Zin-Blessed Metal Walls (rare outside of Imprison (a)bility).
+#endif
     DNGN_METAL_WALL,
     DNGN_CRYSTAL_WALL,
     DNGN_ROCK_WALL,
@@ -257,6 +260,8 @@ enum dungeon_feature_type
     DNGN_ALTAR_WU_JIAN,
     DNGN_TRANSPORTER,
     DNGN_TRANSPORTER_LANDING,
+
+	DNGN_SILVER_WALL,
 #endif
 
     NUM_FEATURES

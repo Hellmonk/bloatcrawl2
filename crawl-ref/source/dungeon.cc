@@ -4951,6 +4951,7 @@ static dungeon_feature_type _glyph_to_feat(int glyph,
            (glyph == 'X') ? DNGN_PERMAROCK_WALL :
            (glyph == 'c') ? DNGN_STONE_WALL :
            (glyph == 'v') ? DNGN_METAL_WALL :
+		   (glyph == 'V') ? DNGN_SILVER_WALL :
            (glyph == 'b') ? DNGN_CRYSTAL_WALL :
            (glyph == 'm') ? DNGN_CLEAR_ROCK_WALL :
            (glyph == 'n') ? DNGN_CLEAR_STONE_WALL :

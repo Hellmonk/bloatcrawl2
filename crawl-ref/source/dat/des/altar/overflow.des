@@ -3229,18 +3229,15 @@ KFEAT:  _ = altar_gozag
 KFEAT:  O = altar_zin
 TILE:   G = dngn_golden_statue
 COLOUR: G = yellow
-TILE:   v = dngn_metal_wall_white
-COLOUR: v = white
 FTILE:  +._O$ = floor_limestone
 : set_feature_name("granite_statue", "golden statue")
-: set_feature_name("metal_wall", "silver wall")
 MAP
-vvvvvvvvv
-v..$$$..v
-v._.$.O.v
-v.......v
-vv.....vv
- vvv+vvv
+VVVVVVVVV
+V..$$$..V
+V._.$.O.V
+V.......V
+VV.....VV
+ VVV+VVV
 ENDMAP
 
 NAME:   grunt_temple_overflow_forces_of_nature

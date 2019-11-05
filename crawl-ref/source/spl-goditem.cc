@@ -862,7 +862,7 @@ static bool _do_imprison(int pow, const coord_def& where, bool zin)
                 marker->set_property("feature_description", "a gleaming silver wall");
                 env.markers.add(marker);
 
-                temp_change_terrain(*ai, DNGN_METAL_WALL, INFINITE_DURATION,
+                temp_change_terrain(*ai, DNGN_SILVER_WALL, INFINITE_DURATION,
                                     TERRAIN_CHANGE_IMPRISON);
 
                 // Make the walls silver.

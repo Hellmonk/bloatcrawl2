@@ -24,6 +24,7 @@ enum beam_type                  // bolt::flavour
     BEAM_ENERGY,
     BEAM_HOLY,
     BEAM_FRAG,
+	BEAM_SILVER_FRAG,
     BEAM_LAVA,
     BEAM_ICE,
     BEAM_DEVASTATION,

@@ -505,6 +505,7 @@ spret_type cast_SMD(const coord_def& target, int pow, bool fail)
 			break;
 
 		// Metal 
+		case DNGN_SILVER_WALL:
 		case DNGN_METAL_WALL:
 			delay = 12;
 			break;

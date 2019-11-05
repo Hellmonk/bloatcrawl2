@@ -115,6 +115,7 @@ static dungeon_feature_type _abyss_proto_feature()
                                    600, DNGN_ROCK_WALL,
                                    300, DNGN_STONE_WALL,
                                    100, DNGN_METAL_WALL,
+		                             3, DNGN_SILVER_WALL,
                                      1, DNGN_CLOSED_DOOR);
 }
 
@@ -1139,6 +1140,7 @@ static cloud_type _cloud_from_feat(const dungeon_feature_type &ft)
     {
         case DNGN_CLOSED_DOOR:
         case DNGN_METAL_WALL:
+		case DNGN_SILVER_WALL:
             return CLOUD_GREY_SMOKE;
         case DNGN_CRYSTAL_WALL:
         case DNGN_ROCK_WALL:
@@ -1841,6 +1843,9 @@ static bool _is_grid_corruptible(const coord_def &c)
     case DNGN_LAVA_SEA:
     case DNGN_TRANSPORTER_LANDING: // entry already taken care of as stairs
         return false;
+
+	case DNGN_SILVER_WALL:
+		return one_chance_in(12);
 
     case DNGN_METAL_WALL:
     case DNGN_CRYSTAL_WALL:

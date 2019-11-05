@@ -1279,6 +1279,7 @@ static int _shatter_walls(coord_def where, int pow, actor *agent)
         chance = 100;
         break;
 
+	case DNGN_SILVER_WALL:
     case DNGN_METAL_WALL:
         chance = 15;
         break;
@@ -2438,7 +2439,7 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
 		beam.name = "blast of metal fragments";
 		beam.damage.num = 4;
 		break;
-        // fall through
+
     case DNGN_GRATE:
         if (what && *what == nullptr)
             *what = "iron grate";
@@ -2446,6 +2447,16 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
 		beam.damage.num = 4;
 		destroy = true;
         break;
+
+	// Silver
+	case DNGN_SILVER_WALL: // Zin's blessed silver walls do bonus damage to chaotics.
+		if (what)
+			*what = "silver wall";
+		beam.name = "blast of silver fragments";
+		beam.colour = WHITE;
+		beam.damage.num = 4;
+		beam.flavour = BEAM_SILVER_FRAG;
+		break;
 
     // Crystal
     case DNGN_CRYSTAL_WALL:       // crystal -- large & nasty explosion

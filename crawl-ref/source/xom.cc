@@ -1877,6 +1877,12 @@ static void _xom_pseudo_miscast(int /*sever*/)
                               "wall!");
     }
 
+	if (in_view[DNGN_SILVER_WALL])
+	{
+		messages.emplace_back("You swear you can see Zin's face scowling at "
+			"your reflection in the silver wall!");
+	}
+
     if (in_view[DNGN_FOUNTAIN_BLUE] || in_view[DNGN_FOUNTAIN_SPARKLING])
     {
         priority.emplace_back("The water in the fountain briefly bubbles.");
