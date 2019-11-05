@@ -12,6 +12,8 @@ spret_type controlled_blink(bool fail, bool safe_cancel = true);
 spret_type frog_hop(bool fail);
 void wizard_blink();
 
+bool dangerous_terrain_seen();
+
 void you_teleport();
 void you_teleport_now(bool wizard_tele = false, bool teleportitis = false);
 bool you_teleport_to(const coord_def where,

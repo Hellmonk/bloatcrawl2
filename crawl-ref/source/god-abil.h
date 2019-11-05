@@ -131,7 +131,7 @@ bool mons_is_evolvable(const monster* mon);
 bool fedhas_check_evolve_flora(bool quiet);
 spret_type fedhas_evolve_flora(bool fail);
 
-void lugonu_bend_space();
+bool lugonu_bend_space();
 
 void cheibriados_time_bend(int pow);
 void cheibriados_temporal_distortion();

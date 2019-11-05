@@ -3368,10 +3368,16 @@ static void _lugonu_warp_area(int pow)
     }, you.pos());
 }
 
-void lugonu_bend_space()
+bool lugonu_bend_space()
 {
     const int pow = apply_invo_enhancer(4 + skill_bump(SK_INVOCATIONS),true);
     const bool area_warp = random2(pow) > 9;
+
+	if (!you.airborne() && dangerous_terrain_seen() && !yesno("Really bend space while near dangerous terrain?", false, 'n'))
+	{
+		canned_msg(MSG_OK);
+		return false;
+	}
 
     mprf("Space bends %saround you!", area_warp ? "sharply " : "");
 
@@ -3379,6 +3385,7 @@ void lugonu_bend_space()
         _lugonu_warp_area(pow);
 
     uncontrolled_blink(true);
+	return true;
 }
 
 void cheibriados_time_bend(int pow)

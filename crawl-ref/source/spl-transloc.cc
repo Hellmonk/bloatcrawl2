@@ -414,7 +414,7 @@ spret_type controlled_blink(bool fail, bool safe_cancel)
 }
 
 // Is there dangerous terrain in LoS.
-static bool _dangerous_terrain_seen()
+bool dangerous_terrain_seen()
 {
 	for (rectangle_iterator ri(you.pos(), 7, true); ri; ++ri)
 	{
@@ -440,7 +440,7 @@ spret_type cast_blink(bool fail)
     if (you.no_tele(false, false, true))
         return fail ? SPRET_FAIL : SPRET_SUCCESS; // probably always SUCCESS
 
-	if (!you.airborne() && _dangerous_terrain_seen() && !yesno("Really blink while near dangerous terrain?", false, 'n'))
+	if (!you.airborne() && dangerous_terrain_seen() && !yesno("Really blink while near dangerous terrain?", false, 'n'))
 	{
 		canned_msg(MSG_OK);
 		return SPRET_ABORT;
@@ -483,7 +483,7 @@ spret_type cast_controlled_blink(bool fail, bool safe)
             return SPRET_ABORT;
         }
 
-		if (!you.airborne() && _dangerous_terrain_seen() && !yesno("Really make an uncontrolled blink while near dangerous terrain?", false, 'n'))
+		if (!you.airborne() && dangerous_terrain_seen() && !yesno("Really make an uncontrolled blink while near dangerous terrain?", false, 'n'))
 		{
 			canned_msg(MSG_OK);
 			return SPRET_ABORT;

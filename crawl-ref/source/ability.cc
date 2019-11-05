@@ -2575,7 +2575,8 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
 
     case ABIL_LUGONU_BEND_SPACE:
         fail_check();
-        lugonu_bend_space();
+		if (!lugonu_bend_space())
+			return SPRET_ABORT;
         break;
 
     case ABIL_LUGONU_BANISH:
