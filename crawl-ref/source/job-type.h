@@ -70,6 +70,7 @@ enum job_type
     JOB_WITNESS,
     JOB_KIKUMANCER,
     JOB_DISCIPLE,
+    JOB_NECKBEARD,
     JOB_ARCHAEOLOGIST,
     NUM_JOBS,                          // always after the last job
 

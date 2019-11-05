@@ -51,6 +51,8 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Librarians** come to the Dungeon in search of new books for their collection. They serve Sif Muna the Loreminder and bring a random book along with them.
 * **Merchants** are followers of Gozag. Whether newly established or unsuccessful on the  surface world, they enter the Dungeon desperate for a source of income.
 * **Meteorologists** predict the weather and carry around some handy evocable items to make their predictions come true.
+* **Neckbeards** come to the Dungeon from their moms' basements with a cape, a fedora, 
+a rusty katana and the ability to teleport behind you (nothing personal, kid).
 * **Night Knights** follow the shadowy god Dithmenos. They begin lightly armoured but with good stealth.
 * **Paladin**: Worshippers of The Shining One, these holy warriors fall down a lot.
 * **Philosophers** bring their thinking hat to the dungeon, but not much else in the way of useful items.

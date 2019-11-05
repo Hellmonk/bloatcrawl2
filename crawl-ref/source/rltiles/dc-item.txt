@@ -94,6 +94,8 @@ demon_blade WPN_DEMON_BLADE
 demon_blade2
 demon_blade3
 blessed_blade WPN_BLESSED_BLADE
+katana1 WPN_KATANA
+katana2
 
 ##Axes
 hand_axe1 WPN_HAND_AXE

@@ -614,6 +614,10 @@ void give_items_skills(const newgame_def& ng)
         add_spell_to_memory(SPELL_SUMMON_BUTTERFLIES);
         break;
 
+    case JOB_NECKBEARD:
+        add_spell_to_memory(SPELL_BLINK);
+        break;
+
     default:
         break;
     }

@@ -610,6 +610,7 @@ sword_three SWORD3
 sword_breaker SWORD_BREAKER
 sword_jag SWORD_JAG
 demonblade DEMON_BLADE
+katana_slant KATANA
 enchantress_dagger ENCHANTRESS_DAGGER
 
 ## blunt
