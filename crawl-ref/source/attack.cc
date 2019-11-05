@@ -208,11 +208,13 @@ int attack::calc_to_hit(bool random)
             mhit *= (20 + you.get_mutation_level(MUT_EYEBALLS))/20;
 
 		// +0 for normal vision, +5 for Supernaturally Acute Vision, -5 For Impaired Vision
-		mhit *= (20 + you.vision() * 2)/20;
+		mhit *= 10 + you.vision();
+		mhit /= 10;
     }
     else    // Monster to-hit.
     {
-		mhit *= (20 - attacker->inaccuracy()) / 20;
+		mhit *= 10 - attacker->inaccuracy();
+		mhit /= 10;
 
         const int jewellery = attacker->as_monster()->inv[MSLOT_JEWELLERY];
         if (jewellery != NON_ITEM
