@@ -196,6 +196,11 @@ Protean
 Proteans are a race of vaguely humanoid amoebas. They grow in health and size as
 they mutate.
 %%%%
+Quill Orc
+
+Quill orcs love to read and hate close combat. They read books and scrolls at an
+uncanny pace.
+%%%%
 Shapeshifter
 
 Shapeshifters imitate monsters around them to an uncanny degree. They cannot

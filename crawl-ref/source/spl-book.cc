@@ -1023,7 +1023,13 @@ bool learn_spell(spell_type specspell, bool wizard)
     else
     {
         if (!already_learning_spell(specspell))
-            start_delay<MemoriseDelay>(spell_difficulty(specspell), specspell);
+        {
+            int spl_diff = spell_difficulty(specspell);
+            // quill orcs read books faster
+            if (you.species == SP_QUILL_ORC)
+                spl_diff /= 2;
+            start_delay<MemoriseDelay>(spl_diff, specspell);
+        }
         you.turn_is_over = true;
 
         did_god_conduct(DID_SPELL_CASTING, 2 + random2(5));

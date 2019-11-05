@@ -3880,6 +3880,7 @@ static tileidx_t _tileidx_player_species_base(const species_type species)
         case SP_HALFLING:
             return TILEG_SP_HALFLING;
         case SP_HILL_ORC:
+        case SP_QUILL_ORC:
             return TILEG_SP_HILL_ORC;
         case SP_KOBOLD:
             return TILEG_SP_KOBOLD;

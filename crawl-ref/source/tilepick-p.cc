@@ -582,6 +582,7 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
     case SP_HALFLING:
         return TILEP_BASE_HALFLING;
     case SP_HILL_ORC:
+    case SP_QUILL_ORC:
         return TILEP_BASE_ORC;
     case SP_KOBOLD:
         return TILEP_BASE_KOBOLD;
