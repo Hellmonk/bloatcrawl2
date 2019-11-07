@@ -901,7 +901,7 @@ bool feat_destroys_items(dungeon_feature_type feat)
 bool feat_eliminates_items(dungeon_feature_type feat)
 {
     return feat_destroys_items(feat)
-           || (feat == DNGN_DEEP_WATER || feat == DNGN_ICE) && !species_likes_water(you.species);
+           || (feat == DNGN_DEEP_WATER && !species_likes_water(you.species));
 }
 
 static coord_def _dgn_find_nearest_square(
