@@ -2763,7 +2763,7 @@ void bolt::affect_place_clouds()
 			if (defender->is_player())
 			{
 				mprf(MSGCH_WARN, "The lava turns into stone around your %s.", you.foot_name(true).c_str());
-				you.increase_duration(DUR_LAVA_CAKE, 5 + random2(damage.size));
+				you.increase_duration(DUR_LAVA_CAKE, 5 + random2(damage.size/3));
 			}
 			else
 			{
@@ -2771,7 +2771,7 @@ void bolt::affect_place_clouds()
 					defender->name(DESC_THE).c_str());
 				defender->as_monster()->add_ench(
 					mon_enchant(ENCH_LAVA_CAKE, 0, agent(),
-					(5 + random2(damage.size)) * BASELINE_DELAY));
+					(5 + random2(damage.size/3))));
 			}
 		}
 		temp_change_terrain(p, DNGN_OBSIDIAN, damage.roll() * 5, TERRAIN_CHANGE_FROZEN);
@@ -2784,7 +2784,7 @@ void bolt::affect_place_clouds()
 			if (defender->is_player())
 			{
 				mprf(MSGCH_WARN, "You are encased in ice.");
-				you.increase_duration(DUR_FROZEN, 5 + random2(damage.size));
+				you.increase_duration(DUR_FROZEN, 5 + random2(damage.size/3));
 			}
 			else
 			{
@@ -2792,7 +2792,7 @@ void bolt::affect_place_clouds()
 					defender->name(DESC_THE).c_str());
 				defender->as_monster()->add_ench(
 					mon_enchant(ENCH_FROZEN, 0, agent(),
-					(5 + random2(damage.size)) * BASELINE_DELAY));
+					(5 + random2(damage.size/3))));
 			}
 		}
 		else 

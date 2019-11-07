@@ -3218,13 +3218,11 @@ spret_type cast_glaciate(actor *caster, int pow, coord_def aim, bool fail)
                     ? calc_dice(7, (66 + 3 * pow) / eff_range)
                     : calc_dice(10, (54 + 3 * pow / 2) / eff_range);
 
-            if (actor_at(entry.first))
-            {
-                beam.source = beam.target = entry.first;
-                beam.source.x -= sgn(beam.source.x - hitfunc.origin.x);
-                beam.source.y -= sgn(beam.source.y - hitfunc.origin.y);
-                beam.fire();
-            }
+            beam.source = beam.target = entry.first;
+            beam.source.x -= sgn(beam.source.x - hitfunc.origin.x);
+            beam.source.y -= sgn(beam.source.y - hitfunc.origin.y);
+            beam.fire();
+            
             place_cloud(CLOUD_COLD, entry.first,
                         (18 + random2avg(45,2)) / eff_range, caster);
         }
