@@ -106,7 +106,7 @@ MONS:    ice statue / obsidian statue / orange crystal statue
 : end
 SHUFFLE: 1|/!*
 SUBST:   *:*$, ?:x., !:., '=w.
-ITEM:    ring of flight ident:type
+ITEM:    scroll of random uselessness
 MAP
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxwwwxxxxxxxxxxx
@@ -184,7 +184,7 @@ NAME:    dragon1_lemuel
 ORIENT:  northeast
 DEPTH:   D:9-, Lair
 MONS:    patrolling fire dragon, patrolling ice dragon
-ITEM:    potion of flight / scroll of teleportation
+ITEM:    scroll of random uselessness / scroll of teleportation
 SUBST:   ! : ?x
 SHUFFLE: 1?/2W
 SUBST:   2=2:20 1
@@ -553,8 +553,8 @@ DEPTH:   D:10-, !D:$
 ORIENT:  south
 TAGS:    no_pool_fixup no_rotate uniq_rubicon
 WEIGHT:  6
-ITEM:    ring of flight ident:type / potion of flight ident:type / nothing
-ITEM:    potion of flight ident:type / nothing, nothing, nothing, nothing
+ITEM:    scroll of random uselessness
+ITEM:    scroll of random uselessness
 SHUFFLE: {[(, )gh
 SUBST:   ?:?.w, ?=w., w:lw, ':'.c, '=cx.
 MAP
@@ -584,8 +584,8 @@ DEPTH:   D:10-, !D:$
 ORIENT:  south
 TAGS:    no_rotate uniq_rubicon
 WEIGHT:  4
-ITEM:    ring of flight ident:type / potion of flight ident:type / nothing
-ITEM:    potion of flight ident:type, nothing, nothing, nothing, nothing
+ITEM:    scroll of random uselessness
+ITEM:    scroll of random uselessness
 SHUFFLE: {[(, fgW, )hi
 SUBST:   ?:?.wW, ?=wW., ':'.c, '=c.
 MAP

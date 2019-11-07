@@ -138,6 +138,7 @@ enum monster_info_flags
     MB_ICEMAIL,
     MB_AGILE,
     MB_FROZEN,
+	MB_LAVA_CAKE,
     MB_BLACK_MARK,
     MB_SAP_MAGIC,
     MB_SHROUD,

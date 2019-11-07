@@ -217,6 +217,7 @@ int check_your_resists(int hurted, beam_type flavour, string source,
         break;
 
     case BEAM_ICE:
+	case BEAM_FREEZE:
         hurted = resist_adjust_damage(&you, flavour, hurted);
 
         if (hurted < original && doEffects)
@@ -326,8 +327,7 @@ void expose_player_to_element(beam_type flavour, int strength, bool slow_cold_bl
 static void _lose_level_abilities()
 {
     if (you.attribute[ATTR_PERM_FLIGHT]
-        && !you.racial_permanent_flight()
-        && !you.wearing_ego(EQ_ALL_ARMOUR, SPARM_FLYING))
+        && !you.racial_permanent_flight())
     {
         you.increase_duration(DUR_FLIGHT, 50, 100);
         you.attribute[ATTR_PERM_FLIGHT] = 0;

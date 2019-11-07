@@ -788,7 +788,7 @@ WEIGHT:  5
 ORIENT:  encompass
 KFEAT:   A = gadget shop
 KFEAT:   B = distillery shop
-ITEM:    ring of flight ident:type
+ITEM:    scroll of random uselessness
 SHUFFLE: lAB/wBA
 # special cases for blue/red floor
 : local colour = random_bazaar_colour()

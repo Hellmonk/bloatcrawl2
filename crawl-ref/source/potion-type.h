@@ -12,9 +12,7 @@ enum potion_type
     POT_GAIN_STRENGTH,
     POT_GAIN_DEXTERITY,
     POT_GAIN_INTELLIGENCE,
-#endif
     POT_FLIGHT,
-#if TAG_MAJOR_VERSION == 34
     POT_POISON,
     POT_SLOWING,
 #endif

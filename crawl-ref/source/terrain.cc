@@ -901,7 +901,7 @@ bool feat_destroys_items(dungeon_feature_type feat)
 bool feat_eliminates_items(dungeon_feature_type feat)
 {
     return feat_destroys_items(feat)
-           || feat == DNGN_DEEP_WATER && !species_likes_water(you.species);
+           || (feat == DNGN_DEEP_WATER || feat == DNGN_ICE) && !species_likes_water(you.species);
 }
 
 static coord_def _dgn_find_nearest_square(
@@ -2019,6 +2019,22 @@ dungeon_feature_type orig_terrain(coord_def pos)
     ASSERTM(terch, "%s has incorrect class", mark->debug_describe().c_str());
 
     return terch->old_feature;
+}
+
+void mutate_terrain_change_duration(coord_def pos, int delta, bool replace)
+{
+	map_marker *mark = env.markers.find(pos, MAT_TERRAIN_CHANGE);
+	map_terrain_change_marker *terch = dynamic_cast<map_terrain_change_marker *>(mark);
+
+	if (replace)
+	{
+		if (delta > terch->duration)
+			terch->duration = delta;
+		else
+			terch->duration += div_rand_round(delta, 10);
+	}
+	else
+		terch->duration += delta;
 }
 
 void temp_change_terrain(coord_def pos, dungeon_feature_type newfeat, int dur,

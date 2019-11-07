@@ -18,6 +18,7 @@
 #include "item-prop.h"
 #include "item-status-flag-type.h"
 #include "libutil.h"
+#include "mapmark.h"
 #include "mon-death.h"
 #include "mon-tentacle.h"
 #include "mon-util.h"
@@ -198,6 +199,10 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
     case DNGN_FLOOR:
     case DNGN_UNDISCOVERED_TRAP:
         return TILE_FLOOR_NORMAL;
+	case DNGN_OBSIDIAN:
+		return TILE_OBSIDIAN;
+	case DNGN_ICE:
+		return TILE_DEEP_ICE;
     case DNGN_ENDLESS_SALT:
         return TILE_DNGN_ENDLESS_SALT;
     case DNGN_ENTER_HELL:
@@ -611,6 +616,27 @@ tileidx_t tileidx_feature(const coord_def &gc)
 
             return t;
         }
+	
+	case DNGN_ICE:
+	case DNGN_OBSIDIAN:
+	{
+		map_marker * mark = env.markers.find(gc, MAT_TERRAIN_CHANGE);
+		if (mark)
+		{
+			map_terrain_change_marker *terch = dynamic_cast<map_terrain_change_marker *>(mark);
+			if (terch)
+			{
+				if (terch->duration > 40)
+					return tileidx_feature_base(feat);
+				else if (feat == DNGN_ICE)
+					return TILE_ICE_CRACKED;
+				else
+					return TILE_OBSIDIAN_MELTING;
+			}
+		}
+		return tileidx_feature_base(feat);
+	}
+
     default:
         return tileidx_feature_base(feat);
     }

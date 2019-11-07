@@ -264,6 +264,9 @@ enum dungeon_feature_type
 	DNGN_SILVER_WALL,
 #endif
 
-    NUM_FEATURES
+    DNGN_ICE,
+    DNGN_OBSIDIAN,
+
+    NUM_FEATURES,
 };
 COMPILE_CHECK(NUM_FEATURES <= 256);

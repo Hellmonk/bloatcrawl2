@@ -848,6 +848,7 @@ const set<pair<object_class_type, int> > removed_items =
     { OBJ_JEWELLERY, RING_PROTECTION_FROM_FIRE },
     { OBJ_JEWELLERY, RING_PROTECTION_FROM_COLD },
     { OBJ_JEWELLERY, RING_SEE_INVISIBLE },
+    { OBJ_JEWELLERY, RING_FLIGHT },
     { OBJ_STAVES,    STAFF_ENCHANTMENT },
     { OBJ_STAVES,    STAFF_CHANNELING },
     { OBJ_POTIONS,   POT_GAIN_STRENGTH },
@@ -864,6 +865,7 @@ const set<pair<object_class_type, int> > removed_items =
     { OBJ_POTIONS,   POT_RESTORE_ABILITIES },
     { OBJ_POTIONS,   POT_CURE_MUTATION },
     { OBJ_POTIONS,   POT_BENEFICIAL_MUTATION },
+    { OBJ_POTIONS,   POT_FLIGHT },
     { OBJ_BOOKS,     BOOK_WIZARDRY },
     { OBJ_BOOKS,     BOOK_CONTROL },
     { OBJ_BOOKS,     BOOK_BUGGY_DESTRUCTION },
@@ -2891,11 +2893,8 @@ bool gives_ability(const item_def &item)
     case OBJ_WEAPONS:
         break;
     case OBJ_JEWELLERY:
-        if (item.sub_type == RING_FLIGHT
-            || item.sub_type == AMU_RAGE)
-        {
+        if (item.sub_type == AMU_RAGE)
             return true;
-        }
         break;
     case OBJ_ARMOURS:
     {
@@ -2904,7 +2903,7 @@ bool gives_ability(const item_def &item)
             return false;
         const special_armour_type ego = get_armour_ego_type(item);
 
-        if (ego == SPARM_INVISIBILITY || ego == SPARM_FLYING)
+        if (ego == SPARM_INVISIBILITY)
             return true;
         break;
     }

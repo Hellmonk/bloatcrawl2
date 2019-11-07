@@ -1214,6 +1214,7 @@ void qazlal_element_adapt(beam_type flavour, int strength)
             descript = "fire";
             break;
         case BEAM_COLD:
+		case BEAM_FREEZE:
         case BEAM_ICE:
             what = BEAM_COLD;
             dur = DUR_QAZLAL_COLD_RES;

@@ -1595,7 +1595,7 @@ NAME:   minmay_rotating_lava
 TAGS:   no_monster_gen
 DEPTH:  D:10-
 MONS:   hell hound, hell knight band, hell knight
-ITEM:   potion of flight ident:type q:3
+ITEM:   scroll of random uselessness
 KPROP:  .123* = no_tele_into
 MAP
 '''''''''''''''

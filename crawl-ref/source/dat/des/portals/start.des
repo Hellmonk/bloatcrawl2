@@ -243,10 +243,10 @@ KFEAT:  G = book shop type:Further suffix:Studies_in_the_Mystic_Arts count:18 gr
             book of the sky | book of the warp | book of beasts |\
             book of unlife | book of the earth | book of the dragon |\
             book of burglary | book of dreams | book of alchemy
-KFEAT:  H = distillery shop type:Alchemist suffix:Brewery count:16 greed:20 use_all ; \
+KFEAT:  H = distillery shop type:Alchemist suffix:Brewery count:15 greed:20 use_all ; \
 	    potion of curing q:1 | potion of curing q:2 | potion of heal wounds q:1 |\
             potion of heal wounds q:2 | potion of haste q:1 | potion of might q:1 |\
-            potion of brilliance q:1 | potion of agility q:1 | potion of flight q:1 |\
+            potion of brilliance q:1 | potion of agility q:1 |\
             potion of cancellation q:1 | potion of ambrosia q:1 | potion of invisibility q:1 |\
             potion of magic q:1 | potion of berserk rage q:1 | potion of resistance q:1 |\
             potion of lignification q:1
@@ -257,7 +257,7 @@ KFEAT:  I = jewellery shop type:Amulets suffix:and_Necklaces count:9 greed:10 us
             mundane not_cursed amulet of guardian spirit |\
             mundane not_cursed amulet of reflection | mundane not_cursed amulet of regeneration |\
 	    mundane not_cursed amulet of faith
-KFEAT:  J = jewellery shop type:Rings, suffix:Glorious_Rings count:18 greed:8 use_all ; \
+KFEAT:  J = jewellery shop type:Rings, suffix:Glorious_Rings count:17 greed:8 use_all ; \
             mundane not_cursed ring of protection | mundane not_cursed ring of evasion |\
             mundane not_cursed ring of poison resistance | mundane not_cursed ring of resist corrosion|\
             mundane not_cursed ring of strength | mundane not_cursed ring of intelligence |\
@@ -266,8 +266,7 @@ KFEAT:  J = jewellery shop type:Rings, suffix:Glorious_Rings count:18 greed:8 us
             mundane cursed ring of attention | mundane cursed ring of teleportation |\
             mundane not_cursed ring of wizardry | mundane not_cursed ring of magical power |\
             mundane not_cursed ring of fire | mundane not_cursed ring of ice |\
-            mundane not_cursed ring of protection from magic | mundane not_cursed ring of positive energy|\
-            mundane not_cursed ring of flight
+            mundane not_cursed ring of protection from magic | mundane not_cursed ring of positive energy
 KFEAT:  R = abandoned_shop
 KFEAT:  T = weapon shop type:Tossed_out suffix:Treasures count:16 greed:10 use_all ; \
 	    tomahawk q:10 | tomahawk ego:poisoned q:10 | tomahawk ego:returning q:10 |\

@@ -554,7 +554,7 @@ ENDMAP
 ############################################################################
 # River.
 #
-# There will be either a ring of flight or three potions.
+# There will be either a scroll of random uselessness or three scrolls of random uselessness.
 # Loots consists of six good items.
 #
 NAME:    bailey_axe_4
@@ -562,8 +562,8 @@ ORIENT:  encompass
 TAGS:    bailey_axe no_rotate no_item_gen no_monster_gen no_pool_fixup
 #
 ITEM:    any good_item
-ITEM:    potion of flight ident:type
-ITEM:    ring of flight ident:type
+ITEM:    scroll of random uselessness
+ITEM:    scroll of random uselessness
 SUBST:   e : eeef
 NSUBST:  f = 1:f / *:.
 SHUFFLE: EB / XY / XY / XY
@@ -1072,7 +1072,7 @@ KITEM:  D = any weapon good_item
 KITEM:  e = any armour
 KITEM:  E = any armour good_item
 KITEM:  f = potion of curing / potion of might / potion of brilliance / \
-            potion of agility / potion of mutation w:30 / potion of flight w:20 / \
+            potion of agility / potion of mutation w:30 / \
             potion of lignification  / \
             scroll of teleportation / \
             scroll of fear / scroll of attention / scroll of magic mapping / \

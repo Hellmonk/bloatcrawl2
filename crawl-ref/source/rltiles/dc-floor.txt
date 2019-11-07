@@ -209,6 +209,15 @@ lair7
 %weight 1
 lair7b
 
+deep_water_ice0 DEEP_ICE
+deep_water_ice1
+
+ice_cracked ICE_CRACKED
+
+obsidian OBSIDIAN
+
+obsidian_melting OBSIDIAN_MELTING
+
 %weight 10
 orc0 FLOOR_ORC
 orc1
@@ -1009,6 +1018,9 @@ etched2
 etched3
 etched4
 etched5
+
+deep_water_ice0 DEEP_WATER_ICE
+deep_water_ice1
 
 %weight 10
 mosaic0 FLOOR_MOSAIC

@@ -554,7 +554,6 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_DEXTERITY:         return "dexterity";
         case SPARM_INTELLIGENCE:      return "intelligence";
         case SPARM_PONDEROUSNESS:     return "ponderousness";
-        case SPARM_FLYING:            return "flying";
 
         case SPARM_MAGIC_RESISTANCE:  return "magic resistance";
         case SPARM_PROTECTION:        return "protection";
@@ -566,6 +565,7 @@ const char* armour_ego_name(const item_def& item, bool terse)
 		case SPARM_HIGH_PRIEST:       if (item.sub_type == ARM_ROBE) return "the High Priest";
 									  else return "the Paladin";
 #if TAG_MAJOR_VERSION == 34
+		case SPARM_FLYING:            return "flying";
         case SPARM_JUMPING:           return "jumping";
         case SPARM_PRESERVATION:      return "preservation";
 #endif
@@ -592,7 +592,6 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_DEXTERITY:         return "Dex+3";
         case SPARM_INTELLIGENCE:      return "Int+3";
         case SPARM_PONDEROUSNESS:     return "ponderous";
-        case SPARM_FLYING:            return "Fly";
         case SPARM_MAGIC_RESISTANCE:  return "MR+";
         case SPARM_PROTECTION:        return "AC+3";
         case SPARM_STEALTH:           return "Stlth+";
@@ -601,6 +600,7 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_ARCHMAGI:          return "Archmagi";
 		case SPARM_HIGH_PRIEST:       return "High Priest";
 #if TAG_MAJOR_VERSION == 34
+		case SPARM_FLYING:            return "Fly";
         case SPARM_JUMPING:           return "obsolete";
         case SPARM_PRESERVATION:      return "obsolete";
 #endif
@@ -673,9 +673,7 @@ const char* potion_type_name(int potiontype)
     case POT_STRONG_POISON:     return "strong poison";
     case POT_PORRIDGE:          return "porridge";
     case POT_SLOWING:           return "slowing";
-#endif
     case POT_FLIGHT:            return "flight";
-#if TAG_MAJOR_VERSION == 34
     case POT_POISON:            return "poison";
 #endif
     case POT_CANCELLATION:      return "cancellation";
@@ -791,7 +789,9 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
         case RING_INTELLIGENCE:          return "intelligence";
         case RING_WIZARDRY:              return "wizardry";
         case RING_MAGICAL_POWER:         return "magical power";
+#if TAG_MAJOR_VERSION == 34
         case RING_FLIGHT:                return "flight";
+#endif
         case RING_LIFE_PROTECTION:       return "positive energy";
         case RING_PROTECTION_FROM_MAGIC: return "protection from magic";
         case RING_FIRE:                  return "fire";
@@ -846,7 +846,9 @@ const char* jewellery_effect_name(int jeweltype, bool terse)
         case RING_DEXTERITY:             return "Dex";
         case RING_INTELLIGENCE:          return "Int";
         case RING_MAGICAL_POWER:         return "MP+9";
+#if TAG_MAJOR_VERSION == 34
         case RING_FLIGHT:                return "+Fly";
+#endif
         case RING_LIFE_PROTECTION:       return "rN+";
         case RING_PROTECTION_FROM_MAGIC: return "MR+";
         case AMU_RAGE:                   return "+Rage";
@@ -3636,11 +3638,11 @@ bool is_useless_item(const item_def &item, bool temp)
 					   && (you.species != SP_VAMPIRE
 						   || temp && you.hunger_state < HS_SATIATED);
 
+#if TAG_MAJOR_VERSION == 34
         case POT_FLIGHT:
             return you.permanent_flight()
                    || you.racial_permanent_flight();
 
-#if TAG_MAJOR_VERSION == 34
         case POT_PORRIDGE:
             return you.species == SP_VAMPIRE
                     || you.get_mutation_level(MUT_CARNIVOROUS) > 0;
@@ -3727,11 +3729,6 @@ bool is_useless_item(const item_def &item, bool temp)
 
         case RING_TELEPORTATION:
             return !is_bad_item(item, temp);
-
-        case RING_FLIGHT:
-            return you.permanent_flight()
-                   || you.racial_permanent_flight()
-                   || you.get_mutation_level(MUT_NO_ARTIFICE);
 
         case RING_STEALTH:
             return you.get_mutation_level(MUT_NO_STEALTH);

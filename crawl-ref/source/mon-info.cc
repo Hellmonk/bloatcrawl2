@@ -97,6 +97,7 @@ static map<enchant_type, monster_info_flags> trivial_ench_mb_mappings = {
     { ENCH_ICEMAIL,         MB_ICEMAIL },
     { ENCH_AGILE,           MB_AGILE },
     { ENCH_FROZEN,          MB_FROZEN },
+    { ENCH_LAVA_CAKE,       MB_LAVA_CAKE },
     { ENCH_BLACK_MARK,      MB_BLACK_MARK },
     { ENCH_SAP_MAGIC,       MB_SAP_MAGIC },
     { ENCH_SHROUD,          MB_SHROUD },
@@ -1504,6 +1505,8 @@ vector<string> monster_info::attributes() const
         v.emplace_back("unusually agile");
     if (is(MB_FROZEN))
         v.emplace_back("encased in ice");
+	if (is(MB_LAVA_CAKE))
+		v.emplace_back("encased in obsidian");
     if (is(MB_BLACK_MARK))
         v.emplace_back("absorbing vital energies");
     if (is(MB_SAP_MAGIC))

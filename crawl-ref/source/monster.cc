@@ -4191,11 +4191,6 @@ bool monster::airborne() const
            || mons_class_flag(type, M_FLIES)
            || has_facet(BF_BAT)
            || scan_artefacts(ARTP_FLY) > 0
-           || mslot_item(MSLOT_ARMOUR)
-              && mslot_item(MSLOT_ARMOUR)->base_type == OBJ_ARMOURS
-              && mslot_item(MSLOT_ARMOUR)->brand == SPARM_FLYING
-           || mslot_item(MSLOT_JEWELLERY)
-              && mslot_item(MSLOT_JEWELLERY)->is_type(OBJ_JEWELLERY, RING_FLIGHT)
            || has_ench(ENCH_FLIGHT);
 }
 
@@ -5329,7 +5324,7 @@ bool monster::can_bleed(bool /*allow_tran*/) const
 
 bool monster::is_stationary() const
 {
-    return mons_class_is_stationary(type);
+    return mons_class_is_stationary(type) || has_ench(ENCH_LAVA_CAKE);
 }
 
 /**

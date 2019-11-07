@@ -2179,7 +2179,7 @@ static const char *enchant_names[] =
     "aura_of_brilliance", "empowered_spells", "gozag_incite", "pain_bond",
     "idealised", "bound_soul", "infestation",
     "stilling the winds", "thunder_ringed", "pinned_by_whirlwind",
-    "vortex", "vortex_cooldown", "vile_clutch",
+    "vortex", "vortex_cooldown", "vile_clutch", "trapped_in_lava",
     "buggy",
 };
 

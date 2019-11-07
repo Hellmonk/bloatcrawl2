@@ -3165,7 +3165,7 @@ spret_type cast_glaciate(actor *caster, int pow, coord_def aim, bool fail)
     bolt beam;
     beam.name              = "great icy blast";
     beam.aux_source        = "great icy blast";
-    beam.flavour           = BEAM_ICE;
+    beam.flavour           = BEAM_FREEZE;
     beam.glyph             = dchar_glyph(DCHAR_EXPLOSION);
     beam.colour            = WHITE;
     beam.range             = 1;

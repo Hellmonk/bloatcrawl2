@@ -1769,16 +1769,13 @@ bool safe_to_remove(const item_def &item, bool quiet)
 {
     item_info inf = get_item_info(item);
 
-    const bool grants_flight =
-         inf.is_type(OBJ_JEWELLERY, RING_FLIGHT)
-         || inf.base_type == OBJ_ARMOURS && inf.brand == SPARM_FLYING
-         || is_artefact(inf)
+    const bool grants_flight = is_artefact(inf)
             && artefact_known_property(inf, ARTP_FLY);
 
     // assumes item can't grant flight twice
     const bool removing_ends_flight = you.airborne()
           && !you.racial_permanent_flight()
-          && !you.attribute[ATTR_FLIGHT_UNCANCELLABLE]
+		  && !you.attribute[ATTR_FLIGHT_UNCANCELLABLE]
           && (you.evokable_flight() == 1);
 
     const dungeon_feature_type feat = grd(you.pos());

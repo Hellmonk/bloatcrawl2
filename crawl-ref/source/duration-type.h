@@ -150,6 +150,7 @@ enum duration_type
     DUR_BARBS,
     DUR_POISON_VULN,
     DUR_FROZEN,
+	DUR_LAVA_CAKE,
     DUR_SAP_MAGIC,
 #if TAG_MAJOR_VERSION == 34
     DUR_MAGIC_SAPPED,

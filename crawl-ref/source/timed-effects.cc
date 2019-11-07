@@ -1639,6 +1639,8 @@ void timeout_terrain_changes(int duration, bool force)
     if (!duration && !force)
         return;
 
+	string warning;
+	string statement;
     int num_seen[NUM_TERRAIN_CHANGE_TYPES] = {0};
 
     for (map_marker *mark : env.markers.get_all(MAT_TERRAIN_CHANGE))
@@ -1661,6 +1663,39 @@ void timeout_terrain_changes(int duration, bool force)
             continue;
         }
 
+		if (marker->duration <= 40 && marker->change_type == TERRAIN_CHANGE_FROZEN)
+		{
+			if (you.pos() == marker->pos)
+			{
+				if (you.airborne())
+				{
+					if (marker->new_feature == DNGN_OBSIDIAN)
+						statement = "The obsidian below you is quickly melting back into lava.";
+					else
+						statement = "The ice below you is cracking and breaking apart.";
+				}
+				else
+				{
+					if (marker->new_feature == DNGN_OBSIDIAN)
+						warning = "The obsidian you're standing on is quickly melting back into lava!";
+					else
+					{
+						if (you.can_swim() || you.can_water_walk())
+							statement = "The ice you're standing on is cracking and breaking apart.";
+						else
+							warning = "The ice you're standing on is cracking and breaking apart!";
+					}
+				}
+			}
+			else if (you.see_cell(marker->pos) && statement.empty())
+			{
+				if (marker->new_feature == DNGN_ICE)
+					statement = "You see some ice cracking.";
+				else
+					statement = "You see some obsidian melting.";
+			}
+		}
+
         monster* mon_src = monster_by_mid(marker->mon_num);
         if (marker->duration <= 0
             || (marker->mon_num != 0
@@ -1672,6 +1707,11 @@ void timeout_terrain_changes(int duration, bool force)
             revert_terrain_change(marker->pos, marker->change_type);
         }
     }
+
+	if (!warning.empty())
+		mprf(MSGCH_DANGER, warning.c_str());
+	else if (!statement.empty())
+		mprf(MSGCH_PLAIN, statement.c_str());
 
     if (num_seen[TERRAIN_CHANGE_DOOR_SEAL] > 1)
         mpr("The runic seals fade away.");

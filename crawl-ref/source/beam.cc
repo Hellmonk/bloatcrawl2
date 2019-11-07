@@ -1577,6 +1577,7 @@ int mons_adjust_flavoured(monster* mons, bolt &pbolt, int hurted,
         break;
     }
 
+	case BEAM_FREEZE:
     case BEAM_ICE:
         // ice - 40% of damage is cold, other 60% is impact and
         // can't be resisted (except by AC, of course)
@@ -2163,13 +2164,25 @@ void create_feat_splash(coord_def center,
                             TERRAIN_CHANGE_FLOOD);
     }
 
+	if (grd(center) == DNGN_LAVA)
+	{
+		temp_change_terrain(center, DNGN_OBSIDIAN, 100 + random2(100),
+			                TERRAIN_CHANGE_FROZEN);
+	}
+
     for (int i = 0; i < nattempts; ++i)
     {
         const coord_def newp(_random_point_hittable_from(center, radius));
-        if (newp.origin() || (grd(newp) != DNGN_FLOOR && grd(newp) != DNGN_SHALLOW_WATER))
+        if (newp.origin() || (grd(newp) != DNGN_FLOOR && grd(newp) != DNGN_SHALLOW_WATER && grd(newp) != DNGN_LAVA))
             continue;
-        temp_change_terrain(newp, DNGN_SHALLOW_WATER, 100 + random2(100),
-                            TERRAIN_CHANGE_FLOOD);
+		
+		if (grd(newp) == DNGN_LAVA)
+			temp_change_terrain(newp, DNGN_OBSIDIAN, 100 + random2(100),
+				TERRAIN_CHANGE_FROZEN);
+		else
+			temp_change_terrain(newp, DNGN_SHALLOW_WATER, 100 + random2(100),
+				TERRAIN_CHANGE_FLOOD);
+
     }
 }
 
@@ -2259,7 +2272,7 @@ static void _maybe_imb_explosion(bolt *parent, coord_def center)
     beam.obvious_effect = true;
     beam.pierce         = false;
     beam.is_explosion   = false;
-	beam.flavour        = BEAM_COLD;
+	beam.flavour        = BEAM_ICE;
     // So as not to recur infinitely
     beam.origin_spell = SPELL_NO_SPELL;
     beam.passed_target  = true; // The centre was the target.
@@ -2550,12 +2563,17 @@ void bolt::affect_endpoint()
 	{
 		if (hit_count.empty())
 		{
-			if (feat_is_watery(grd(pos())))
+			if (feat_is_water(grd(pos())) || grd(pos()) == DNGN_LAVA)
 			{
 				noisy(2, pos(), source_id);
 				noise_generated = true;
 				if (!silenced(you.pos()))
-					mpr("You hear a splash.");
+				{
+					string x = "";
+					if (grd(pos()) == DNGN_LAVA)
+						x = " sizzling";
+					mprf("You hear a%s splash.", x.c_str());
+				}
 			}
 			else
 			{
@@ -2727,12 +2745,68 @@ bool bolt::can_affect_wall(const coord_def& p, bool map_knowledge) const
     return false;
 }
 
+// Also used to terrain change ice bridges now (no real reason to have a seperate function for that).
 void bolt::affect_place_clouds()
 {
     if (in_explosion_phase)
         affect_place_explosion_clouds();
 
     const coord_def p = pos();
+	const dungeon_feature_type feat = grd(p);
+	actor * defender = actor_at(p);
+
+	// Terrain changes don't care about the clouds.
+	if (feat == DNGN_LAVA && (flavour == BEAM_COLD || flavour == BEAM_FREEZE))
+	{	
+		if (defender && !defender->airborne())
+		{
+			if (defender->is_player())
+			{
+				mprf(MSGCH_WARN, "The lava turns into stone around your %s.", you.foot_name(true).c_str());
+				you.increase_duration(DUR_LAVA_CAKE, 5 + random2(damage.size));
+			}
+			else
+			{
+				mprf("%s is trapped by lava hardening to stone.",
+					defender->name(DESC_THE).c_str());
+				defender->as_monster()->add_ench(
+					mon_enchant(ENCH_LAVA_CAKE, 0, agent(),
+					(5 + random2(damage.size)) * BASELINE_DELAY));
+			}
+		}
+		temp_change_terrain(p, DNGN_OBSIDIAN, damage.roll() * 5, TERRAIN_CHANGE_FROZEN);
+	}
+
+	if (feat_is_water(feat) && (flavour == BEAM_COLD || flavour == BEAM_FREEZE))
+	{
+		if (defender && !defender->airborne())
+		{
+			if (defender->is_player())
+			{
+				mprf(MSGCH_WARN, "You are encased in ice.");
+				you.increase_duration(DUR_FROZEN, 5 + random2(damage.size));
+			}
+			else
+			{
+				mprf("%s is flash-frozen.",
+					defender->name(DESC_THE).c_str());
+				defender->as_monster()->add_ench(
+					mon_enchant(ENCH_FROZEN, 0, agent(),
+					(5 + random2(damage.size)) * BASELINE_DELAY));
+			}
+		}
+		else 
+			temp_change_terrain(p, DNGN_ICE, damage.roll() * 5, TERRAIN_CHANGE_FROZEN);
+	}
+
+	if ((feat == DNGN_ICE || feat == DNGN_OBSIDIAN) && (flavour == BEAM_COLD || flavour == BEAM_FREEZE))
+		mutate_terrain_change_duration(p, damage.roll() * 5, true);
+
+	if (feat == DNGN_ICE && is_fiery())
+	{
+		mpr("The fire melts away some of the ice.");
+		mutate_terrain_change_duration(p, damage.roll() * -1);
+	}
 
     // Is there already a cloud here?
     if (cloud_struct* cloud = cloud_at(p))
@@ -2752,7 +2826,6 @@ void bolt::affect_place_clouds()
     }
 
     // No clouds here, free to make new ones.
-    const dungeon_feature_type feat = grd(p);
 
     if (origin_spell == SPELL_POISONOUS_CLOUD)
         place_cloud(CLOUD_POISON, p, random2(5) + 3, agent());
@@ -2770,7 +2843,7 @@ void bolt::affect_place_clouds()
         place_cloud(CLOUD_STEAM, p, 2 + random2(5), agent(), 11);
     }
 
-    if (feat_is_watery(feat) && flavour == BEAM_COLD
+    if (feat_is_watery(feat) && (flavour == BEAM_COLD || flavour == BEAM_FREEZE)
         && damage.num * damage.size > 35)
     {
         place_cloud(CLOUD_COLD, p, damage.num * damage.size / 30 + 1, agent());
@@ -6432,7 +6505,8 @@ static string _beam_type_name(beam_type type)
     case BEAM_FRAG:                  return "fragments";
 	case BEAM_SILVER_FRAG:           return "silver fragments";
     case BEAM_LAVA:                  return "magma";
-    case BEAM_ICE:                   return "ice";
+    case BEAM_ICE:                   // fallthrough
+	case BEAM_FREEZE:                return "ice";
     case BEAM_DEVASTATION:           return "devastation";
     case BEAM_RANDOM:                return "random";
     case BEAM_CHAOS:                 return "chaos";

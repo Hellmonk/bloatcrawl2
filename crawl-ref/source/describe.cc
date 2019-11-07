@@ -1349,10 +1349,11 @@ static string _armour_brand_desc(const item_def item)
 	case SPARM_PONDEROUSNESS:
 		description += "It is very cumbersome, thus slowing your movement.";
 		break;
+#if TAG_MAJOR_VERSION == 34
 	case SPARM_FLYING:
-		description += "It can be activated to allow its wearer to "
-			"fly indefinitely.";
+		description += "It does nothing special.";
 		break;
+#endif
 	case SPARM_MAGIC_RESISTANCE:
 		description += "It increases its wearer's resistance "
 			"to enchantments.";

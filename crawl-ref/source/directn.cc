@@ -2743,6 +2743,8 @@ void describe_floor()
     switch (grid)
     {
     case DNGN_FLOOR:
+	case DNGN_ICE:
+	case DNGN_OBSIDIAN:
         return;
 
     case DNGN_ENTER_SHOP:

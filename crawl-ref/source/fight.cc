@@ -474,6 +474,7 @@ static inline int get_resistible_fraction(beam_type flavour)
         return 40;
 
     // Assume ice storm and throw icicle are mostly solid.
+	case BEAM_FREEZE:
     case BEAM_ICE:
         return 40;
 
@@ -507,6 +508,7 @@ static int _beam_to_resist(const actor* defender, beam_type flavour)
             return defender->res_steam();
         case BEAM_COLD:
 		case BEAM_DEVASTATION:
+		case BEAM_FREEZE:
         case BEAM_ICE:
             return defender->res_cold();
         case BEAM_WATER:

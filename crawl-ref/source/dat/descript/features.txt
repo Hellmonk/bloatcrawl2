@@ -162,7 +162,8 @@ through is to fly over.
 Some lava
 
 An intensely hot pool of molten rock, emitting clouds of sulphurous smoke.
-Nothing but the mythical salamander can cross this without flight.
+Only the mythical salamander can cross this without taking extreme damage 
+from the heat.
 %%%%
 Some shallow water
 
@@ -881,6 +882,16 @@ A solid gold statue of a saint.
 A silver wall
 
 A wall made of pure silver.
+%%%%
+An obsidian
+
+Lava hardened into brittle obsidian. Though the surface is safe to walk upon, 
+the molten rock below will melt it back into a deadly pool shortly.
+%%%%
+An ice
+
+The surface of the water is flash frozen allowing safe passage. Should it begin
+to crack; measures to leave for dry land or freeze the surface anew should be taken.
 %%%%
 # Slime:$
 A rune-carved stone wall

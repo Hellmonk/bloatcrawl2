@@ -5151,7 +5151,8 @@ bool land_player(bool quiet)
     if (you.species == SP_TENGU)
         you.redraw_evasion = true;
 
-    you.attribute[ATTR_FLIGHT_UNCANCELLABLE] = 0;
+	you.attribute[ATTR_FLIGHT_UNCANCELLABLE] = 0;
+
     // Re-enter the terrain.
     move_player_to_grid(you.pos(), false);
     return true;
@@ -5577,7 +5578,6 @@ bool player::airborne() const
         return false;
 
     if (duration[DUR_FLIGHT]
-        || you.props[EMERGENCY_FLIGHT_KEY].get_bool()
         || attribute[ATTR_PERM_FLIGHT]
         || get_form()->enables_flight())
     {
@@ -6692,7 +6692,7 @@ bool player::fights_well_unarmed(int heavy_armour_penalty)
 bool player::cancellable_flight() const
 {
     return duration[DUR_FLIGHT] && !permanent_flight()
-           && !attribute[ATTR_FLIGHT_UNCANCELLABLE];
+		&& !attribute[ATTR_FLIGHT_UNCANCELLABLE];
 }
 
 bool player::permanent_flight() const
@@ -7395,7 +7395,8 @@ bool player::can_bleed(bool allow_tran) const
 
 bool player::is_stationary() const
 {
-    return (form == transformation::tree || you.attribute[ATTR_ROOTED]);
+    return (form == transformation::tree || you.attribute[ATTR_ROOTED]
+		|| you.duration[DUR_LAVA_CAKE]);
 }
 
 bool player::malmutate(const string &reason)

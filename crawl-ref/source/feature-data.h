@@ -204,6 +204,20 @@ static feature_def feat_defs[] =
     FFT_NONE, MF_FLOOR,
 },
 
+{
+	DNGN_ICE, "ice", "ice",
+	DCHAR_FLOOR, DCHAR_FLOOR_MAGIC,
+	COLOUR_IS(WHITE),
+	FFT_NONE, MF_FLOOR,
+},
+
+{
+	DNGN_OBSIDIAN, "obsidian", "obsidian",
+	DCHAR_FLOOR, DCHAR_FLOOR_MAGIC,
+	COLOUR_IS(BLACK),
+	FFT_NONE, MF_FLOOR,
+},
+
 #if TAG_MAJOR_VERSION == 34
 {
     DNGN_BADLY_SEALED_DOOR, "", "badly_sealed_door",

@@ -242,7 +242,6 @@ static int _armour_brand_value(special_armour_type sparm)
 	case SPARM_FIRE_RESISTANCE:
 	case SPARM_IMPROVED_VISION:
 	case SPARM_INTELLIGENCE:
-	case SPARM_FLYING:
 	case SPARM_STEALTH:
 	case SPARM_STRENGTH:
 	case SPARM_INVISIBILITY:
@@ -541,7 +540,6 @@ unsigned int item_value(item_def item, bool ident)
 
             case POT_CURING:
             case POT_LIGNIFY:
-            case POT_FLIGHT:
                 valued += 30;
                 break;
 
@@ -551,6 +549,7 @@ unsigned int item_value(item_def item, bool ident)
             case POT_PORRIDGE:
             case POT_SLOWING:
             case POT_DECAY:
+			case POT_FLIGHT:
 #endif
             case POT_BLOOD:
 #if TAG_MAJOR_VERSION == 34
@@ -727,7 +726,6 @@ unsigned int item_value(item_def item, bool ident)
                     break;
 
                 case RING_STEALTH:
-                case RING_FLIGHT:
                     valued += 175;
                     break;
 

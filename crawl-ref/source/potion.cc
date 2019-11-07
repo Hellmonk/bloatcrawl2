@@ -381,7 +381,7 @@ public:
     }
 };
 
-
+#if TAG_MAJOR_VERSION == 34
 class PotionFlight : public PotionEffect
 {
 private:
@@ -395,24 +395,16 @@ public:
 
     bool can_quaff(string *reason = nullptr) const override
     {
-        if (!flight_allowed(true, reason))
-        {
-            if (reason)
-                *reason = "You cannot fly right now.";
-            return false;
-        }
-        return true;
+        return false;
     }
 
     bool effect(bool=true, int pow = 40, bool=true) const override
     {
-        you.attribute[ATTR_FLIGHT_UNCANCELLABLE] = 1;
-        fly_player(pow);
-        return you.airborne();
+		mpr("The removed item fails to make you fly anymore");
+		return false;
     }
 };
 
-#if TAG_MAJOR_VERSION == 34
 class PotionPoison : public PotionEffect
 {
 private:

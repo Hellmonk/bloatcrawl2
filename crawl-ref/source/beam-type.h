@@ -27,6 +27,7 @@ enum beam_type                  // bolt::flavour
 	BEAM_SILVER_FRAG,
     BEAM_LAVA,
     BEAM_ICE,
+	BEAM_FREEZE,                  // Identical to ice except it causes water to freeze.
     BEAM_DEVASTATION,
     BEAM_RANDOM,                  // currently translates into FIRE..ACID
     BEAM_CHAOS,

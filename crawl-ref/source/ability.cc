@@ -2053,24 +2053,11 @@ static spret_type _do_ability(const ability_def& abil, bool fail)
         break;
 #endif
 
-    case ABIL_EVOKE_FLIGHT:             // ring, boots, randarts
+    case ABIL_EVOKE_FLIGHT:             // randarts
         fail_check();
         ASSERT(!get_form()->forbids_flight());
-        if (you.wearing_ego(EQ_ALL_ARMOUR, SPARM_FLYING))
-        {
-            bool standing = !you.airborne();
-            you.attribute[ATTR_PERM_FLIGHT] = 1;
-            if (standing)
-                float_player();
-            else
-                mpr("You feel more buoyant.");
-        }
-        else
-        {
-            surge_power(you.spec_evoke());
-            fly_player(
-                player_adjust_evoc_power(you.skill(SK_EVOCATIONS, 2) + 30));
-        }
+        surge_power(you.spec_evoke());
+        fly_player(player_adjust_evoc_power(you.skill(SK_EVOCATIONS, 2) + 30));
         break;
 
     case ABIL_EVOKE_FOG:     // cloak of the Thief
@@ -3458,8 +3445,7 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
         {
             // You can still evoke perm flight if you have temporary one.
             if (!you.airborne()
-                || !you.attribute[ATTR_PERM_FLIGHT]
-                   && you.wearing_ego(EQ_ALL_ARMOUR, SPARM_FLYING))
+                || !you.attribute[ATTR_PERM_FLIGHT])
             {
                 _add_talent(talents, ABIL_EVOKE_FLIGHT, check_confused);
             }

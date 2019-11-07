@@ -787,8 +787,7 @@ KITEM:    P = ring of strength not_cursed ident:all plus:6, \
               ring of intelligence not_cursed ident:all plus:6, \
               ring of intelligence not_cursed ident:all plus:6, \
               ring of dexterity not_cursed ident:all plus:6, \
-              ring of dexterity not_cursed ident:all plus:6, \
-          ring of flight not_cursed ident:all
+              ring of dexterity not_cursed ident:all plus:6
 KITEM:    R = obsidian_axe ident:all, \
               shield_of_the_gong ident:all, \
               maxwells_patent_armour ident:all, \

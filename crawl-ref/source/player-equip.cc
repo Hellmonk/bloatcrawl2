@@ -851,37 +851,6 @@ static void _equip_armour_effect(item_def& arm, bool unmeld,
             mpr("You feel rather ponderous.");
             break;
 
-        case SPARM_FLYING:
-            // If you weren't flying when you took off the boots, don't restart.
-            if (you.attribute[ATTR_LAST_FLIGHT_STATUS]
-                || you.has_mutation(MUT_NO_ARTIFICE))
-            {
-                if (you.airborne())
-                {
-                    you.attribute[ATTR_PERM_FLIGHT] = 1;
-                    mpr("You feel rather light.");
-                }
-                else
-                {
-                    you.attribute[ATTR_PERM_FLIGHT] = 1;
-                    float_player();
-                }
-            }
-            if (!unmeld && !you.has_mutation(MUT_NO_ARTIFICE))
-            {
-                if (you.has_mutation(MUT_NO_ARTIFICE))
-                    mpr("Take it off to stop flying.");
-                else
-                {
-                mprf("(use the <w>%s</w>bility menu to %s flying)",
-                     command_to_string(CMD_USE_ABILITY).c_str(),
-                     you.attribute[ATTR_LAST_FLIGHT_STATUS]
-                         ? "stop or start" : "start or stop");
-                }
-            }
-
-            break;
-
         case SPARM_MAGIC_RESISTANCE:
             mpr("You feel resistant to hostile enchantments.");
             break;
@@ -939,6 +908,9 @@ static void _equip_armour_effect(item_def& arm, bool unmeld,
             else
                 mpr("You feel immune to the effects of clouds.");
             break;
+
+		default:
+			mpr("You don't feel anything in particular.");
         }
     }
 
@@ -983,7 +955,6 @@ void lose_permafly_source()
     const bool had_perm_flight = you.attribute[ATTR_PERM_FLIGHT];
 
     if (had_perm_flight
-        && !you.wearing_ego(EQ_ALL_ARMOUR, SPARM_FLYING)
         && !you.racial_permanent_flight())
     {
         you.attribute[ATTR_PERM_FLIGHT] = 0;
@@ -1056,14 +1027,6 @@ static void _unequip_armour_effect(item_def& item, bool meld,
 
     case SPARM_PONDEROUSNESS:
         mpr("That put a bit of spring back into your step.");
-        break;
-
-    case SPARM_FLYING:
-        // Save current flight status so we can restore it on reequip
-        you.attribute[ATTR_LAST_FLIGHT_STATUS] =
-            you.attribute[ATTR_PERM_FLIGHT];
-
-        lose_permafly_source();
         break;
 
     case SPARM_MAGIC_RESISTANCE:
@@ -1411,14 +1374,6 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
 
     case RING_INTELLIGENCE:
         notify_stat_change(STAT_INT, -5, false);
-        break;
-
-    case RING_FLIGHT:
-        if (you.cancellable_flight() && !you.evokable_flight())
-        {
-            you.duration[DUR_FLIGHT] = 0;
-            land_player();
-        }
         break;
 
     case RING_MAGICAL_POWER:

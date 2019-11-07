@@ -620,13 +620,6 @@ static void _decrement_durations()
         || you.duration[DUR_TRANSFORMATION] <= 5 * BASELINE_DELAY
         || you.transform_uncancellable)
     {
-        if (form_can_fly()
-            || form_likes_water() && feat_is_water(grd(you.pos())))
-        {
-            // Disable emergency flight if it was active
-            you.props.erase(EMERGENCY_FLIGHT_KEY);
-        }
-
         if (_decrement_a_duration(DUR_TRANSFORMATION, delay, nullptr, random2(3),
                                   "Your transformation is almost over."))
         {
@@ -725,18 +718,12 @@ static void _decrement_durations()
             {
                 land_player();
             }
-            else
-            {
-                // Disable emergency flight if it was active
-                you.props.erase(EMERGENCY_FLIGHT_KEY);
-            }
         }
         else if ((you.duration[DUR_FLIGHT] -= delay) <= 0)
         {
             // Just time out potions/spells/miscasts.
             you.attribute[ATTR_FLIGHT_UNCANCELLABLE] = 0;
             you.duration[DUR_FLIGHT] = 0;
-            you.props.erase(EMERGENCY_FLIGHT_KEY);
         }
     }
 
@@ -869,23 +856,6 @@ static void _rot_ghoul_players()
         dprf("rot rate: 1/%d", resilience);
         mprf(MSGCH_WARN, "You feel your flesh rotting away.");
         rot_hp(1);
-    }
-}
-
-static void _handle_emergency_flight()
-{
-    ASSERT(you.props[EMERGENCY_FLIGHT_KEY].get_bool());
-
-    if (!is_feat_dangerous(orig_terrain(you.pos()), true, false))
-    {
-        mpr("You float gracefully downwards.");
-        land_player();
-        you.props.erase(EMERGENCY_FLIGHT_KEY);
-    }
-    else
-    {
-        const int drain = div_rand_round(15 * you.time_taken, BASELINE_DELAY);
-        drain_player(drain, true, true);
     }
 }
 

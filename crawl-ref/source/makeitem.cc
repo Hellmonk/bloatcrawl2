@@ -1027,11 +1027,11 @@ static special_armour_type _generate_armour_type_ego(armour_type type,
         return random_choose(SPARM_DEXTERITY, SPARM_STRENGTH, SPARM_ARCHERY);
 
     case ARM_BOOTS:
-        return random_choose(SPARM_RUNNING, SPARM_FLYING, SPARM_STEALTH);
+        return random_choose(SPARM_RUNNING, SPARM_STRENGTH, SPARM_STEALTH);
 
     case ARM_NAGA_BARDING:
     case ARM_CENTAUR_BARDING:
-        return random_choose(SPARM_FLYING, SPARM_STEALTH,
+        return random_choose(SPARM_STEALTH,
                              SPARM_COLD_RESISTANCE, SPARM_FIRE_RESISTANCE);
 
     case ARM_ROBE:
@@ -1116,10 +1116,13 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
     case SPARM_NORMAL:
         return true;
 
+
+#if TAG_MAJOR_VERSION == 34
     case SPARM_FLYING:
         if (slot == EQ_BODY_ARMOUR)
             return true;
         // deliberate fall-through
+#endif
     case SPARM_RUNNING:
     case SPARM_STEALTH:
 #if TAG_MAJOR_VERSION == 34
@@ -1556,11 +1559,10 @@ static void _generate_potion_item(item_def& item, int force_type,
         // Currently does nothing, until we come up with a boring potion.
         do
         {
-            // total weight: 979
+            // total weight: 906
             stype = random_choose_weighted(192, POT_CURING,
                                            105, POT_HEAL_WOUNDS,
                                             73, POT_LIGNIFY,
-                                            73, POT_FLIGHT,
                                             73, POT_HASTE,
                                             66, POT_MIGHT,
                                             66, POT_AGILITY,

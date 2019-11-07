@@ -1583,7 +1583,7 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         beam.name     = "flash freeze";
         beam.damage   = dice_def(3, 7 + (power / 12));
         beam.colour   = WHITE;
-        beam.flavour  = BEAM_ICE;
+        beam.flavour  = BEAM_FREEZE;
         beam.hit      = 5 + power / 3;
         break;
 
@@ -5511,7 +5511,7 @@ static void _mons_upheaval(monster& mons, actor& foe)
             break;
         case 1:
             beam.name    = "blast of ice";
-            beam.flavour = BEAM_ICE;
+            beam.flavour = BEAM_FREEZE;
             beam.colour  = WHITE;
             message      = "A blizzard blasts the area with ice!";
             break;
