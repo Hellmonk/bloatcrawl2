@@ -206,6 +206,11 @@ Shapeshifter
 Shapeshifters imitate monsters around them to an uncanny degree. They cannot
 control their shifting, and are only rarely seen in their true form.
 %%%%
+Sloth of Wrath
+
+Very distant relatives of moths of wrath, these slow humanoids inspire berserk rages
+in their enemies.
+%%%%
 Faerie Dragon
 
 Faerie Dragons are attuned to magic and their spells cost fewer magic points.

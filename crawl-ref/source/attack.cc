@@ -109,7 +109,16 @@ bool attack::handle_phase_damaged()
     if (attacker->is_player())
     {
         if (damage_done)
+        {
             player_exercise_combat_skills();
+            if (you.species == SP_SLOTH_OF_WRATH && one_chance_in(3) 
+                && !invalid_monster(defender->as_monster()) && defender->can_go_berserk())
+            {
+                mprf("Your attack infuriates %s!",
+                    defender_name(true).c_str());
+                defender->go_berserk(false);
+            }
+        }
     }
     else
     {

@@ -1042,6 +1042,18 @@ void player_reacts()
     _decrement_durations();
     _rot_ghoul_players();
     _mirror_eidolon_hploss();
+    
+    // Sloth rage aura
+    if (you.species == SP_SLOTH_OF_WRATH && one_chance_in(100))
+    {
+        int tension = get_tension(GOD_NO_GOD);
+        // don't bother berserking things in non-tense situations
+        if(tension > 0)
+        {
+            mpr("You uncontrollably radiate an aura of rage!");
+            mass_enchantment(ENCH_BERSERK, 10 + you.experience_level * 3, false);
+        }
+    }
 
     // Translocations and possibly other duration decrements can
     // escape a player from beholders and fearmongers. These should
