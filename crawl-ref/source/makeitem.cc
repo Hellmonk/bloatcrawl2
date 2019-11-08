@@ -1942,10 +1942,10 @@ int items(bool allow_uniques,
 
     const bool force_good = item_level >= ISPEC_GIFT;
 
+	item.brand = force_ego;
+
     if (force_ego != 0)
         allow_uniques = false;
-
-    item.brand = force_ego;
 
     // cap item_level unless an acquirement-level item {dlb}:
     if (item_level > 50 && !force_good)
