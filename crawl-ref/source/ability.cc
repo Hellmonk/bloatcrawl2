@@ -1536,6 +1536,14 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
                 canned_msg(MSG_CANNOT_DO_YET);
             return false;
         }
+		if (!you.is_unbreathing() && you.res_poison() < 2
+			&& cloud_at(you.pos()) && cloud_at(you.pos())->type == CLOUD_MEPHITIC
+			&& one_chance_in(1 + div_round_up(you.experience_level, 8)))
+		{
+			mpr("You sharply inhale and choke on fumes!");
+			return false;
+		}
+
         return true;
 
     case ABIL_HEAL_WOUNDS:

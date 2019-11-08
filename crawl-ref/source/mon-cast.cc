@@ -5658,8 +5658,17 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
 		&& cloud_at(mons->pos())->type == CLOUD_MEPHITIC
 		&& !x_chance_in_y(5 + mons->get_hit_dice(), 30))
 	{
-		simple_monster_message(*mons, " tries to cast a spell, but chokes on the fumes!");
-		return;
+		if (slot_flags == MON_SPELL_BREATH)
+		{
+			simple_monster_message(*mons, " inhales deeply and chokes on fumes!");
+			return;
+		}
+
+		else if (slot_flags == MON_SPELL_PRIEST || slot_flags == MON_SPELL_WIZARD)
+		{
+			simple_monster_message(*mons, " tries to cast a spell, but chokes on the fumes!");
+			return;
+		}
 	}
 
     if (spell_is_soh_breath(spell_cast))

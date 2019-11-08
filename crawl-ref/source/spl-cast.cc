@@ -1489,8 +1489,9 @@ spret_type your_spells(spell_type spell, int powc, bool allow_fail,
             fail = spfail_chance - spfl;
     }
 
-	if (cloud_at(you.pos()) && cloud_at(you.pos())->type == CLOUD_MEPHITIC && (you.res_poison() < 2) && !you.is_unbreathing()
-		&& one_chance_in(1 + div_round_up(you.experience_level, 8)))
+	if ((you.res_poison() < 2) && !you.is_unbreathing() && !evoked_item &&
+		cloud_at(you.pos()) && cloud_at(you.pos())->type == CLOUD_MEPHITIC &&
+		one_chance_in(1 + div_round_up(you.experience_level, 8)))
 	{
 		mpr("You choke on the fumes and fail to recite the spell correctly.");
 		fail = antimagic = true;
