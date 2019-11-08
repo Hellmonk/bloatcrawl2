@@ -5654,6 +5654,14 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
     if (max_mons_charge(mons->type) > 0 && !_spell_charged(mons))
         return;
 
+	if (!mons->is_unbreathing() && (mons->res_poison() < 2) && cloud_at(mons->pos())
+		&& cloud_at(mons->pos())->type == CLOUD_MEPHITIC
+		&& !x_chance_in_y(5 + mons->get_hit_dice(), 30))
+	{
+		simple_monster_message(*mons, " tries to cast a spell, but chokes on the fumes!");
+		return;
+	}
+
     if (spell_is_soh_breath(spell_cast))
     {
         const vector<spell_type> *breaths = soh_breath_spells(spell_cast);
