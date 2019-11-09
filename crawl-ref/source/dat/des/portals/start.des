@@ -96,7 +96,7 @@ KFEAT:  6 = weapon shop type:Ammo suffix:outlet count:7 use_all greed:5 ; \
 KFEAT:  7 = weapon shop type:Blowgun suffix:Blowout count:7 use_all greed:100 ; \
             needle ego:curare q:5 |\
 	    needle ego:confusion q:5 | needle ego:frenzy q:5 |\
-            needle ego:sleep q:5 | needle ego:paralysis q:5 |\
+            needle ego:sleep q:5 | needle ego:petrification q:5 |\
             large rock q:5 | large rock q:5
 KFEAT:  8 = armour shop type:Auxillary suffix:Armour count:11 use_all greed:20 ; \
             mundane not_cursed hat | not_cursed hat ego:magic_resistance plus:0|\
@@ -174,8 +174,8 @@ KFEAT:  P = armour shop type:Heavily suffix:Armoured use_all count:16 greed:12 ;
             not_cursed plate armour ego:archmagi plus:0|\
             not_cursed plate armour ego:ponderousness plus:5|\
             mundane not_cursed crystal plate armour
-KFEAT:  Q = jewellery shop name:Pakellas type:Wand suffix:Workshop use_all count:11 greed:15 ; \
-	    wand of flame charges:20 | wand of paralysis charges:10 |\
+KFEAT:  Q = jewellery shop name:Pakellas type:Wand suffix:Workshop use_all count:10 greed:15 ; \
+	        wand of flame charges:20 |\
             wand of digging charges:10 | wand of iceblast charges:10 |\
             wand of polymorph charges:20 | wand of enslavement charges:10 |\
             wand of acid charges:10 | wand of disintegration charges:20 |\

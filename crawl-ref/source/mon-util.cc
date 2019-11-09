@@ -3837,12 +3837,8 @@ bool mons_has_incapacitating_spell(const monster& mon, const actor& foe)
         case SPELL_CONFUSE:
         case SPELL_MASS_CONFUSION:
         case SPELL_PARALYSE:
+		case SPELL_PETRIFY:
             return true;
-
-        case SPELL_PETRIFY:
-            if (foe.res_petrify())
-                return true;
-            break;
 
         default:
             break;
@@ -3902,7 +3898,7 @@ bool mons_has_incapacitating_ranged_attack(const monster& mon, const actor& foe)
             break;
 
         case SPMSL_CONFUSION:
-        case SPMSL_PARALYSIS:
+        case SPMSL_PETRIFICATION:
             return true;
 
         default:
@@ -5828,7 +5824,7 @@ void set_ancestor_spells(monster &ancestor, bool notify)
 		}
         break;
     case MONS_ANCESTOR_HEXER:
-        _add_ancestor_spell(ancestor.spells, HD >= 10 ? SPELL_PARALYSE
+        _add_ancestor_spell(ancestor.spells, HD >= 10 ? SPELL_PETRIFY
                                                       : SPELL_SLOW);
         _add_ancestor_spell(ancestor.spells, HD >= 13 ? SPELL_MASS_CONFUSION
                                                       : SPELL_CONFUSE);

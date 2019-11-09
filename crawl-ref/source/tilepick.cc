@@ -3868,7 +3868,7 @@ tileidx_t tileidx_known_brand(const item_def &item)
             return TILE_BRAND_EXPLOSION;
         case SPMSL_CONFUSION:
             return TILE_BRAND_CONFUSION;
-        case SPMSL_PARALYSIS:
+        case SPMSL_PETRIFICATION:
             return TILE_BRAND_PARALYSIS;
 #if TAG_MAJOR_VERSION == 34
         case SPMSL_SLOW:

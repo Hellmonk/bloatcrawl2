@@ -364,7 +364,7 @@ static const map<monster_type, vector<ancestor_upgrade> > ancestor_data =
       { { 1,  "Dagger (drain)" },
         { 1,  "Slow" },
         { 1,  "Confuse" },
-        { 15, "Paralyse" },
+        { 15, "Petrify" },
         { 19, "Mass Confusion" },
         { 19, "Haste" },
         { 24, "Quick blade (antimagic)" },

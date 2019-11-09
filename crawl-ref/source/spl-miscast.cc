@@ -515,17 +515,6 @@ bool MiscastEffect::_big_cloud(cloud_type cl_type, int cloud_pow, int size,
     return true;
 }
 
-bool MiscastEffect::_paralyse(int dur)
-{
-    if (special_source != HELL_EFFECT_MISCAST)
-    {
-        target->paralyse(act_source, dur, cause);
-        return true;
-    }
-    else
-        return false;
-}
-
 bool MiscastEffect::_sleep(int dur)
 {
     if (!target->can_sleep() || special_source == HELL_EFFECT_MISCAST)
@@ -1164,7 +1153,7 @@ void MiscastEffect::_charms(int severity)
             switch (random2(target->is_player() ? 4 : 2))
             {
             case 0:
-                reroll = !_paralyse(2 + random2(6));
+                target->petrify(act_source);
                 break;
             case 1:
                 target->confuse(act_source, 5 + random2(3));
@@ -3071,8 +3060,6 @@ void MiscastEffect::_zot()
         switch (random2(target->is_player() ? 13 : 9))
         {
         case 0:
-            target->paralyse(act_source, 2 + random2(4), cause);
-            break;
         case 1:
             target->petrify(act_source);
             break;

@@ -159,8 +159,6 @@ static const zap_info zap_data[] =
     1
 },
 
-_mon_hex_zap(ZAP_PARALYSE, BEAM_PARALYSIS),
-
 {
     ZAP_BOLT_OF_FIRE,
     "bolt of fire",

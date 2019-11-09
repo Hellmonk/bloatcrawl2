@@ -39,7 +39,6 @@ enum beam_type                  // bolt::flavour
     BEAM_HASTE,
     BEAM_MIGHT,
     BEAM_HEALING,
-    BEAM_PARALYSIS,
     BEAM_CONFUSION,
     BEAM_INVISIBILITY,
     BEAM_DIGGING,

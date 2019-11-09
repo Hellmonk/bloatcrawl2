@@ -328,7 +328,7 @@ Slug Dart cast
 
 @The_monster@ launches a dart @at@ @target@.
 %%%%
-Paralysis Gaze cast
+Petrification Gaze cast
 
 @The_monster@ gazes piercingly through @target@!
 ########################################################################
@@ -418,7 +418,7 @@ Mennas cast
 
 VISUAL:@The_monster@ gestures frantically.
 %%%%
-Paralyse Xtahua cast
+Petrify Xtahua cast
 
 @The_monster@ roars overwhelmingly @at@ @target@!
 

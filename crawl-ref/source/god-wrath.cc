@@ -325,7 +325,7 @@ static bool _zin_retribution()
             you.put_to_sleep(nullptr, 30 + random2(20));
             break;
         case 2:
-            paralyse_player(_god_wrath_name(god));
+            slow_player(20 + random2(15));
             return false;
         }
         break;
@@ -766,13 +766,11 @@ static bool _trog_retribution()
             break;
 
         case 3:
-            if (!you.duration[DUR_PARALYSIS])
-            {
-                mprf(MSGCH_WARN, "You suddenly pass out!");
-                const int turns = 2 + random2(6);
-                take_note(Note(NOTE_PARALYSIS, min(turns, 13), 0, "Trog"));
-                you.increase_duration(DUR_PARALYSIS, turns, 13);
-            }
+			if (!you.duration[DUR_PETRIFIED])
+			{
+				you.petrify(nullptr);
+				break;
+			}
             return false;
 
         case 4:
@@ -1684,7 +1682,7 @@ static bool _uskayaw_retribution()
         {
             simple_god_message(" booms out, \"Time for someone else to take a solo\"",
                                     god);
-            paralyse_player(_god_wrath_name(god));
+            you.petrify(nullptr);
             dec_penance(god, 1);
             return false;
         }

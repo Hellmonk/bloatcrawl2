@@ -1864,8 +1864,8 @@ static string _describe_ammo(const item_def &item)
                            "It is twice as likely to be destroyed on impact as "
                            "other needles.";
             break;
-        case SPMSL_PARALYSIS:
-            description += "It is tipped with a paralysing substance.";
+        case SPMSL_PETRIFICATION:
+            description += "It is tipped with a petrifying substance.";
             break;
         case SPMSL_SLEEP:
             description += "It is coated with a fast-acting tranquilizer.";
@@ -3860,7 +3860,7 @@ static string _flavour_base_desc(attack_flavour flavour)
         { AF_FIRE,              "deal up to %d extra fire damage" },
         { AF_HUNGER,            "cause hunger" },
         { AF_MUTATE,            "cause mutations" },
-        { AF_POISON_PARALYSE,   "poison and cause paralysis or slowing" },
+        { AF_POISON_PETRIFY,   "poison and cause petrification" },
         { AF_POISON,            "cause poisoning" },
         { AF_POISON_STRONG,     "cause strong poisoning" },
         { AF_ROT,               "cause rotting" },

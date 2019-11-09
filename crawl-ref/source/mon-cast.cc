@@ -337,10 +337,10 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
         },
         _cast_flay,
     } },
-    { SPELL_PARALYSIS_GAZE, {
+    { SPELL_PETRIFICATION_GAZE, {
         _caster_sees_foe,
         [](monster &caster, mon_spell_slot, bolt&) {
-            caster.get_foe()->paralyse(&caster, 2 + random2(3));
+            caster.get_foe()->petrify(&caster);
         },
     } },
     { SPELL_DRAINING_GAZE, {
@@ -424,7 +424,7 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
     { SPELL_SLOW, _hex_logic(SPELL_SLOW) },
     { SPELL_CONFUSE, _hex_logic(SPELL_CONFUSE) },
     { SPELL_BANISHMENT, _hex_logic(SPELL_BANISHMENT) },
-    { SPELL_PARALYSE, _hex_logic(SPELL_PARALYSE) },
+    // { SPELL_PARALYSE, _hex_logic(SPELL_PARALYSE) },
     { SPELL_PETRIFY, _hex_logic(SPELL_PETRIFY) },
     { SPELL_PAIN, _hex_logic(SPELL_PAIN, [](const monster& caster) {
             return _torment_vulnerable(caster.get_foe());

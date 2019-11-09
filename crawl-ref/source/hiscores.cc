@@ -2783,9 +2783,9 @@ string scorefile_entry::death_description(death_desc_verbosity verbosity) const
                 if (needs_damage && !done_damage)
                     desc += _hiscore_newline_string();
 
-                if (you.duration[DUR_PARALYSIS])
+                if (you.duration[DUR_PETRIFIED])
                 {
-                    desc += "... while paralysed";
+                    desc += "... while petrified";
                     if (you.props.exists("paralysed_by"))
                         desc += " by " + you.props["paralysed_by"].get_string();
                     desc += _hiscore_newline_string();

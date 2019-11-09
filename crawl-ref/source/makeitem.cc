@@ -737,7 +737,7 @@ static special_missile_type _determine_missile_brand(const item_def& item,
 
         rc = random_choose_weighted(30, SPMSL_SLEEP,
                                     30, SPMSL_CONFUSION,
-                                    10, SPMSL_PARALYSIS,
+                                    10, SPMSL_PETRIFICATION,
                                     10, SPMSL_FRENZY,
                                     nw, SPMSL_POISONED);
         break;
@@ -793,7 +793,7 @@ bool is_missile_brand_ok(int type, int brand, bool strict)
         break;
 
     case SPMSL_CURARE:
-    case SPMSL_PARALYSIS:
+    case SPMSL_PETRIFICATION:
 #if TAG_MAJOR_VERSION == 34
     case SPMSL_SLOW:
 #endif
@@ -1461,12 +1461,11 @@ static monster_type _choose_random_monster_corpse()
  */
 static int _random_wand_subtype()
 {
-    // total weight 75 [arbitrary]
+    // total weight 67 [arbitrary]
     return random_choose_weighted(10, WAND_FLAME,
                                   10, WAND_ICEBLAST,
                                   8, WAND_RANDOM_EFFECTS,
                                   8, WAND_POLYMORPH,
-                                  8, WAND_PARALYSIS,
                                   8, WAND_ACID,
                                   6, WAND_DISINTEGRATION,
                                   6, WAND_DIGGING,
@@ -1488,7 +1487,6 @@ bool is_high_tier_wand(int type)
     switch (type)
     {
     case WAND_ENSLAVEMENT:
-    case WAND_PARALYSIS:
     case WAND_ACID:
     case WAND_ICEBLAST:
     case WAND_DISINTEGRATION:

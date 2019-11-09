@@ -465,7 +465,7 @@ special_missile_type ranged_attack::random_chaos_missile_brand()
                     10, SPMSL_FROST,
                     10, SPMSL_POISONED,
                     10, SPMSL_CHAOS,
-                     5, SPMSL_PARALYSIS,
+                     5, SPMSL_PETRIFICATION,
                      5, SPMSL_SLEEP,
                      5, SPMSL_FRENZY,
                      2, SPMSL_CURARE,
@@ -502,7 +502,7 @@ special_missile_type ranged_attack::random_chaos_missile_brand()
             }
             // fall through
         case SPMSL_SLEEP:
-        case SPMSL_PARALYSIS:
+        case SPMSL_PETRIFICATION:
             if (defender->holiness() & (MH_UNDEAD | MH_NONLIVING))
                 susceptible = false;
             break;
@@ -576,7 +576,7 @@ bool ranged_attack::blowgun_check(special_missile_type type)
 
         if (type == SPMSL_FRENZY)
             chance = chance / 2;
-        else if (type == SPMSL_PARALYSIS || type == SPMSL_SLEEP)
+        else if (type == SPMSL_PETRIFICATION || type == SPMSL_SLEEP)
             chance = chance * 4 / 5;
 
         return x_chance_in_y(chance, 100);
@@ -633,7 +633,7 @@ int ranged_attack::blowgun_duration_roll(special_missile_type type)
     {
         switch (type)
         {
-            case SPMSL_PARALYSIS:
+            case SPMSL_PETRIFICATION:
                 return 3 + random2(4);
             case SPMSL_SLEEP:
                 return 5 + random2(5);
@@ -751,10 +751,10 @@ bool ranged_attack::apply_missile_brand()
         special_damage = silver_damages_victim(defender, damage_done,
                                                special_damage_message);
         break;
-    case SPMSL_PARALYSIS:
+    case SPMSL_PETRIFICATION:
         if (!blowgun_check(brand))
             break;
-        defender->paralyse(attacker, damage_done);
+        defender->petrify(attacker);
         break;
     case SPMSL_SLEEP:
         if (!blowgun_check(brand))

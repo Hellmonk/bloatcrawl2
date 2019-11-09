@@ -857,7 +857,7 @@ ITEM:   Young Poisoner's Handbook / book of Changes / \
 : if crawl.coinflip() then
 KITEM:  f = javelin ego:poisoned q:4-6 / tomahawk ego:poisoned
 : else
-KITEM:  f = blowgun / w:5 nothing, needle ego:poisoned / needle ego:curare / needle ego:paralysis
+KITEM:  f = blowgun / w:5 nothing, needle ego:poisoned / needle ego:curare / needle ego:petrification
 : end
 KITEM:  g = any potion q:2-3
 MONS:   plant, oklob sapling, ball python
@@ -912,7 +912,7 @@ ITEM:   Young Poisoner's Handbook / book of Changes / \
 : if crawl.coinflip() then
 KITEM:  f = javelin ego:poisoned q:4-6 / tomahawk ego:poisoned
 : else
-KITEM:  f = blowgun / w:5 nothing, needle ego:poisoned / needle ego:curare / needle ego:paralysis
+KITEM:  f = blowgun / w:5 nothing, needle ego:poisoned / needle ego:curare / needle ego:petrification
 : end
 KITEM:  g = any potion q:2 / any potion q:3
 MONS:   plant, oklob sapling, ball python

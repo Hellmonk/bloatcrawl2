@@ -269,7 +269,6 @@ public:
     mon_resist_type apply_enchantment_to_monster(monster* mon);
     void apply_beam_conducts();
 private:
-    void apply_bolt_paralysis(monster* mons);
     void apply_bolt_petrify(monster* mons);
     void monster_post_hit(monster* mon, int dmg);
     // for players

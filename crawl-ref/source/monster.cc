@@ -4578,7 +4578,7 @@ void monster::confuse(actor *atk, int strength)
 
 void monster::paralyse(actor *atk, int strength, string cause)
 {
-    enchant_actor_with_flavour(this, atk, BEAM_PARALYSIS, strength);
+	enchant_actor_with_flavour(this, atk, BEAM_PETRIFY);
 }
 
 void monster::petrify(actor *atk, bool force)

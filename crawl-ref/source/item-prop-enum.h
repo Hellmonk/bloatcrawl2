@@ -516,7 +516,7 @@ enum special_missile_type // to separate from weapons in general {dlb}
     SPMSL_EXPLODING,
     SPMSL_STEEL,
     SPMSL_SILVER,
-    SPMSL_PARALYSIS,                   // needle only from here on
+    SPMSL_PETRIFICATION,                   // needle only from here on
 #if TAG_MAJOR_VERSION == 34
     SPMSL_SLOW,
 #endif
@@ -759,9 +759,7 @@ enum wand_type
     WAND_HASTING_REMOVED,
     WAND_MAGIC_DARTS_REMOVED,
     WAND_HEAL_WOUNDS_REMOVED,
-#endif
-    WAND_PARALYSIS,
-#if TAG_MAJOR_VERSION == 34
+    WAND_PARALYSIS_REMOVED,
     WAND_FIRE_REMOVED,
     WAND_COLD_REMOVED,
     WAND_CONFUSION_REMOVED,

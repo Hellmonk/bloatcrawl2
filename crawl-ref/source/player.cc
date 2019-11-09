@@ -6981,7 +6981,7 @@ void player::petrify(actor *who, bool force)
 {
     ASSERT(!crawl_state.game_is_arena());
 
-    if (res_petrify() && !force)
+    if (res_petrify() && !force && !one_chance_in(3))
     {
         canned_msg(MSG_YOU_UNAFFECTED);
         return;
@@ -7003,7 +7003,7 @@ void player::petrify(actor *who, bool force)
     if (petrified())
         return;
 
-    duration[DUR_PETRIFYING] = 3 * BASELINE_DELAY;
+    duration[DUR_PETRIFYING] = 30;
 
     redraw_evasion = true;
     mprf(MSGCH_WARN, "You are slowing down.");
@@ -7011,8 +7011,8 @@ void player::petrify(actor *who, bool force)
 
 bool player::fully_petrify(actor *foe, bool quiet)
 {
-    duration[DUR_PETRIFIED] = 6 * BASELINE_DELAY
-                        + random2(4 * BASELINE_DELAY);
+    duration[DUR_PETRIFIED] = 60
+                        + random2(40);
     redraw_evasion = true;
     mpr("You have turned to stone.");
 
@@ -8401,12 +8401,12 @@ void player_end_berserk()
         else
         {
             mprf(MSGCH_WARN, "You pass out from exhaustion.");
-            you.increase_duration(DUR_PARALYSIS, roll_dice(1, 4));
+            you.increase_duration(DUR_SLEEP, roll_dice(1, 4));
             you.stop_directly_constricting_all(false);
         }
     }
 
-    if (!you.duration[DUR_PARALYSIS] && !you.petrified())
+    if (!you.duration[DUR_SLEEP] && !you.petrified())
         mprf(MSGCH_WARN, "You are exhausted.");
 
     you.berserk_penalty = 0;

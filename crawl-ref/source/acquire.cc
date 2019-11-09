@@ -117,7 +117,7 @@ M filtered_vector_select(vector<pair<M, int>> weights, Pred filter)
  * Guaranteed to be wearable, in principle.
  *
  * @param divine    Whether the item is a god gift.
- * @return          A random equipment slot; e.g. EQ_WEAPON1, EQ_BODY_ARMOUR...
+ * @return          A random equipment slot; e.g. EQ_BOOTS, EQ_BODY_ARMOUR...
  */
 static equipment_type _acquirement_armour_slot(bool divine)
 {
@@ -688,14 +688,13 @@ static int _acquirement_misc_subtype(bool /*divine*/, int & /*quantity*/)
  */
 static int _acquirement_wand_subtype(bool /*divine*/, int & /*quantity*/)
 {
-    // basic total: 120
+    // basic total: 112
     vector<pair<wand_type, int>> weights = {
         { WAND_SCATTERSHOT,     25 },
         { WAND_CLOUDS,          25 },
         { WAND_ACID,            18 },
         { WAND_ICEBLAST,        18 },
         { WAND_ENSLAVEMENT,     you.get_mutation_level(MUT_NO_LOVE) ? 0 : 8 },
-        { WAND_PARALYSIS,       8 },
         { WAND_DISINTEGRATION,  5 },
         { WAND_POLYMORPH,       5 },
         { WAND_DIGGING,         5 },

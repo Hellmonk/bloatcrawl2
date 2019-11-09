@@ -568,8 +568,7 @@ static beam_type _chaos_beam_flavour(bolt* beam)
          10, BEAM_SLOW,
          10, BEAM_HASTE,
          10, BEAM_INVISIBILITY,
-          5, BEAM_PARALYSIS,
-          5, BEAM_PETRIFY,
+         10, BEAM_PETRIFY,
           5, BEAM_BERSERK,
          // Combined weight for poly, clone, and "shapeshifter" effects.
           5, BEAM_POLYMORPH,
@@ -1816,24 +1815,6 @@ spret_type mass_enchantment(enchant_type wh_enchant, int pow, bool fail)
         did_god_conduct(DID_HASTY, 8, true);
 
     return SPRET_SUCCESS;
-}
-
-void bolt::apply_bolt_paralysis(monster* mons)
-{
-    if (mons->paralysed() || mons->stasis())
-        return;
-    // asleep monsters can still be paralysed (and will be always woken by
-    // trying to resist); the message might seem wrong but paralysis is
-    // always visible.
-    if (!mons_is_immotile(*mons)
-        && simple_monster_message(*mons, " suddenly stops moving!"))
-    {
-        mons->stop_directly_constricting_all();
-        obvious_effect = true;
-    }
-
-    mons->add_ench(mon_enchant(ENCH_PARALYSIS, 0, agent(),
-                               _ench_pow_to_dur(ench_power)));
 }
 
 // Petrification works in two stages. First the monster is slowed down in
@@ -3519,11 +3500,6 @@ void bolt::affect_player_enchantment(bool resistible)
         nice  = true;
         break;
 
-    case BEAM_PARALYSIS:
-        you.paralyse(agent(), 2 + random2(6));
-        obvious_effect = true;
-        break;
-
     case BEAM_PETRIFY:
         you.petrify(agent());
         obvious_effect = true;
@@ -5171,7 +5147,7 @@ bool bolt::has_saving_throw() const
         return false;
     case BEAM_VULNERABILITY:
         return !one_chance_in(3);  // Ignores MR 1/3 of the time
-    case BEAM_PARALYSIS:        // Giant eyeball paralysis is irresistible
+    case BEAM_PETRIFY:             // Giant eyeball petrification is irresistible
         return !(agent() && agent()->type == MONS_FLOATING_EYE);
     default:
         return true;
@@ -5191,7 +5167,7 @@ bool ench_flavour_affects_monster(beam_type flavour, const monster* mon,
 
     case BEAM_SLOW:
     case BEAM_HASTE:
-    case BEAM_PARALYSIS:
+	case BEAM_PETRIFY:
         rc = !mon->stasis();
         break;
 
@@ -5507,10 +5483,6 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
             else if (simple_monster_message(*mon, " is healed somewhat."))
                 obvious_effect = true;
         }
-        return MON_AFFECTED;
-
-    case BEAM_PARALYSIS:
-        apply_bolt_paralysis(mon);
         return MON_AFFECTED;
 
     case BEAM_PETRIFY:
@@ -6299,7 +6271,6 @@ bool bolt::nasty_to(const monster* mon) const
         case BEAM_INFESTATION:
         case BEAM_VILE_CLUTCH:
         case BEAM_SLOW:
-        case BEAM_PARALYSIS:
         case BEAM_DISPEL_UNDEAD:
         case BEAM_PAIN:
         case BEAM_AGONY:
@@ -6357,8 +6328,7 @@ killer_type bolt::killer() const
     {
     case KILL_YOU:
     case KILL_YOU_MISSILE:
-        return (flavour == BEAM_PARALYSIS
-                || flavour == BEAM_PETRIFY) ? KILL_YOU : KILL_YOU_MISSILE;
+        return (flavour == BEAM_PETRIFY) ? KILL_YOU : KILL_YOU_MISSILE;
 
     case KILL_MON:
     case KILL_MON_MISSILE:
@@ -6534,7 +6504,6 @@ static string _beam_type_name(beam_type type)
     case BEAM_HASTE:                 return "haste";
     case BEAM_MIGHT:                 return "might";
     case BEAM_HEALING:               return "healing";
-    case BEAM_PARALYSIS:             return "paralysis";
     case BEAM_CONFUSION:             return "confusion";
     case BEAM_INVISIBILITY:          return "invisibility";
     case BEAM_DIGGING:               return "digging";

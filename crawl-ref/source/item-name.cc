@@ -374,8 +374,8 @@ const char* missile_brand_name(const item_def &item, mbn_type t)
         return "steel";
     case SPMSL_SILVER:
         return "silver";
-    case SPMSL_PARALYSIS:
-        return "paralysis";
+    case SPMSL_PETRIFICATION:
+        return "petrification";
 #if TAG_MAJOR_VERSION == 34
     case SPMSL_SLOW:
         return t == MBN_TERSE ? "slow" : "slowing";
@@ -619,7 +619,6 @@ static const char* _wand_type_name(int wandtype)
     switch (wandtype)
     {
     case WAND_FLAME:           return "flame";
-    case WAND_PARALYSIS:       return "paralysis";
     case WAND_DIGGING:         return "digging";
     case WAND_ICEBLAST:        return "iceblast";
     case WAND_POLYMORPH:       return "polymorph";

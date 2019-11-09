@@ -1758,10 +1758,10 @@ TAGS: no_monster_gen no_item_gen
 DEPTH: D:2-9
 SHUFFLE: MCSBP
 KFEAT: _ = altar_ru
-KMONS: P = ball python perm_ench:paralysis / rat perm_ench:paralysis / \
-  frilled lizard perm_ench:paralysis / giant cockroach perm_ench:paralysis / \
-  quokka perm_ench:paralysis / kobold w:5 perm_ench:paralysis / \
-  goblin w:5 perm_ench:paralysis / hobgoblin w:5 perm_ench:paralysis
+KMONS: P = ball python perm_ench:petrified / rat perm_ench:petrified / \
+  frilled lizard perm_ench:petrified / giant cockroach perm_ench:petrified / \
+  quokka perm_ench:petrified / kobold w:5 perm_ench:petrified / \
+  goblin w:5 perm_ench:petrified / hobgoblin w:5 perm_ench:petrified
 KMONS: C = bat perm_ench:magic_candle / adder perm_ench:magic_candle / \
   kobold perm_ench:magic_candle / goblin perm_ench:magic_candle / hobgoblin perm_ench:magic_candle
 KMONS: S = jackal perm_ench:slow / bat perm_ench:slow / adder perm_ench:slow / \

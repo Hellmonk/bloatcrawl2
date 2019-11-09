@@ -977,10 +977,9 @@ Paralyse spell
 
 Prevents a creature from taking any action for a short time.
 %%%%
-Paralysis Gaze spell
+Petrification Gaze spell
 
-Irresistably prevents a creature from taking any action for a short time,
-requiring multiple charges but not line of fire.
+Irresistably stuns a target to stone, not requiring direct line of fire.
 %%%%
 Passage of Golubria spell
 
@@ -1372,7 +1371,7 @@ Summons multiple Executioners to tear apart foes of the caster.
 %%%%
 Summon Eyeballs spell
 
-Summons multiple floating eyeballs that may be able to paralyse, drain,
+Summons multiple floating eyeballs that may be able to petrify, drain,
 confuse, mutate or disintegrate.
 %%%%
 Summon Fire Elementals spell

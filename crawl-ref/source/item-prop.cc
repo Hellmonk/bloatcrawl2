@@ -1752,7 +1752,6 @@ bool is_offensive_wand(const item_def& item)
 
     case WAND_ENSLAVEMENT:
     case WAND_FLAME:
-    case WAND_PARALYSIS:
     case WAND_POLYMORPH:
     case WAND_ACID:
     case WAND_DISINTEGRATION:

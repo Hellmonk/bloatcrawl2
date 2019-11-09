@@ -674,13 +674,7 @@ static const vector<chaos_effect> chaos_effects = {
     { "invisible", 10, nullptr, BEAM_INVISIBILITY, },
     { "slowing", 10, _is_chaos_slowable, BEAM_SLOW },
     {
-        "paralysis", 5, [](const actor &defender) {
-            return !defender.is_monster()
-                    || !mons_is_firewood(*defender.as_monster());
-        }, BEAM_PARALYSIS,
-    },
-    {
-        "petrify", 5, [](const actor &defender) {
+        "petrify", 10, [](const actor &defender) {
             return _is_chaos_slowable(defender) && !defender.res_petrify();
         }, BEAM_PETRIFY,
     },

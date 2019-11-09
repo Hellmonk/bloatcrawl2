@@ -335,7 +335,7 @@ unsigned int item_value(item_def item, bool ident)
                 break;
 
             case SPMSL_CURARE:
-            case SPMSL_PARALYSIS:
+            case SPMSL_PETRIFICATION:
             case SPMSL_PENETRATION:
             case SPMSL_SILVER:
             case SPMSL_STEEL:
@@ -465,7 +465,6 @@ unsigned int item_value(item_def item, bool ident)
 
             case WAND_ENSLAVEMENT:
             case WAND_POLYMORPH:
-            case WAND_PARALYSIS:
                 valued += 20;
                 break;
 

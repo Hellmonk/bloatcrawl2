@@ -3563,7 +3563,7 @@ static const struct spell_desc spelldata[] =
 },
 
 {
-    SPELL_PARALYSIS_GAZE, "Paralysis Gaze",
+    SPELL_PETRIFICATION_GAZE, "Petrification Gaze",
     SPTYP_HEXES,
     SPFLAG_TARGET | SPFLAG_NOT_SELF | SPFLAG_MONSTER,
     4,

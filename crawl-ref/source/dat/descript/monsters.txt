@@ -1117,7 +1117,7 @@ dungeon, inflicting the anguish it felt in life upon those still living.
 floating eye
 
 A floating eyeball, said to be one of the servitors of Jiyva. It possesses a
-gaze that can eventually paralyse even the most strong-willed of adventurers.
+gaze that can eventually petrify even the most strong-willed of adventurers.
 %%%%
 flying skull
 
@@ -1967,7 +1967,7 @@ A muscular red-scaled humanoid with a reptilian tail and small wings.
 %%%%
 hornet
 
-A buzzing hornet with a vicious stinger dripping with paralytic poison.
+A buzzing hornet with a vicious stinger dripping with petrifying poison.
 %%%%
 redback
 

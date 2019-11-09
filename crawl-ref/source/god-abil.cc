@@ -823,7 +823,7 @@ enum class zin_eff
     nothing,
     daze,
     confuse,
-    paralyse,
+    cause_fear,
     smite,
     blind,
     silver_candle,
@@ -922,7 +922,7 @@ bool zin_recite_to_single_monster(const coord_def& where)
             else
             {
                 if (one_chance_in(3))
-                    effect = zin_eff::paralyse;
+                    effect = zin_eff::cause_fear;
                 else
                     effect = zin_eff::confuse;
             }
@@ -953,7 +953,7 @@ bool zin_recite_to_single_monster(const coord_def& where)
                 if (one_chance_in(3))
                     effect = zin_eff::blind;
                 else if (coinflip())
-                    effect = zin_eff::paralyse;
+                    effect = zin_eff::cause_fear;
                 else
                     effect = zin_eff::mute;
             }
@@ -1083,13 +1083,13 @@ bool zin_recite_to_single_monster(const coord_def& where)
         }
         break;
 
-    case zin_eff::paralyse:
-        if (mon->add_ench(mon_enchant(ENCH_PARALYSIS, 0, &you,
+    case zin_eff::cause_fear:
+        if (mon->add_ench(mon_enchant(ENCH_FEAR, 0, &you,
                           (degree + random2(spellpower)) * BASELINE_DELAY)))
         {
             simple_monster_message(*mon,
-                minor ? " is awed by your recitation."
-                      : " is aghast at the heresy of your recitation.");
+                minor ? " is afraid of the wrath of Zin."
+                      : " is terrified of your heretical recitation.");
             affected = true;
         }
         break;
@@ -5995,9 +5995,9 @@ void ru_do_retribution(monster* mons, int damage)
     }
     else if (power > 35)
     {
-        mprf(MSGCH_GOD, "You focus your will and paralyse %s in retribution!",
+        mprf(MSGCH_GOD, "You focus your will and petrify %s in retribution!",
                 mons->name(DESC_THE).c_str());
-        mons->add_ench(mon_enchant(ENCH_PARALYSIS, 1, act, power+random2(60)));
+        mons->add_ench(mon_enchant(ENCH_PETRIFYING, 1, act, power+random2(60)));
     }
     else if (power > 25)
     {
@@ -6250,10 +6250,10 @@ static int _apply_apocalypse(coord_def where)
                 duration = apply_invo_enhancer(500 + random2(200),false);
                 num_dice = 4;
                 break;
-            } // if not antimagicable, fall through to paralysis.
+            } // if not antimagicable, fall through to petrification.
         case 1:
-            message = " is paralysed by terrible understanding!";
-            enchantment = ENCH_PARALYSIS;
+            message = " is petrified by terrible understanding!";
+            enchantment = ENCH_PETRIFYING;
             duration = apply_invo_enhancer(80 + random2(60),false);
             num_dice = 4;
             break;
