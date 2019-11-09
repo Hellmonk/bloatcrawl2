@@ -3854,7 +3854,9 @@ void bolt::affect_player()
 
     // Roll the damage.
     if (!(origin_spell == SPELL_FLASH_FREEZE && you.duration[DUR_FROZEN]))
-        hurted += damage.roll();
+        hurted += (damage.roll() + damage.roll() + damage.roll());
+
+	hurted /= 3;
 
 #ifdef DEBUG_DIAGNOSTICS
     const int preac = hurted;
@@ -4168,8 +4170,11 @@ bool bolt::determine_damage(monster* mon, int& preac, int& postac, int& final,
         // Was mean between min and max;
         preac = preac_max_damage;
     }
-    else if (!freeze_immune)
-        preac = damage.roll();
+	else if (!freeze_immune)
+	{
+		preac = damage.roll() + damage.roll() + damage.roll();
+		preac /= 3;
+	}
 
     int tracer_postac_max = preac_max_damage;
 
