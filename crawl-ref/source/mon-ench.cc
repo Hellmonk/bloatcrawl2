@@ -1135,20 +1135,13 @@ bool monster::clear_far_engulf(void)
     return nonadj;
 }
 
-static void _entangle_actor(actor* act)
+static void _entangle_actor(monster *mons, actor* act)
 {
     if (act->is_player())
     {
         you.duration[DUR_GRASPING_ROOTS] = 10;
-        you.redraw_evasion = true;
-        if (you.duration[DUR_FLIGHT] || you.attribute[ATTR_PERM_FLIGHT])
-        {
-            you.attribute[ATTR_LAST_FLIGHT_STATUS] =
-                you.attribute[ATTR_PERM_FLIGHT];
-            you.duration[DUR_FLIGHT] = 0;
-            you.attribute[ATTR_PERM_FLIGHT] = 0;
-            land_player(true);
-        }
+		you.redraw_evasion = true;
+		force_land_player(mons);
     }
     else
     {
@@ -1208,7 +1201,7 @@ static bool _apply_grasping_roots(monster* mons)
                  you.foot_name(true).c_str());
         }
 
-        _entangle_actor(*ai);
+        _entangle_actor(mons, *ai);
     }
 
     return found_hostile;

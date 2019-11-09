@@ -221,8 +221,11 @@ static void _decrement_petrification(int delay)
 		{
 			mprf(MSGCH_DURATION, "Your stony form becomes more flexible, allowing you to move again.");
 		}
-        mprf(MSGCH_DURATION, "You turn to %s and can move again.",
-             flesh_equiv.c_str());
+		else
+		{
+			mprf(MSGCH_DURATION, "You turn to %s and can move again.",
+				flesh_equiv.c_str());
+		}
     }
 
     if (you.duration[DUR_PETRIFYING])
@@ -232,11 +235,6 @@ static void _decrement_petrification(int delay)
         if ((dur -= delay) <= 0)
         {
             dur = 0;
-            // If we'd kill the player when active flight stops, this will
-            // need to pass the killer. Unlike monsters, almost all flight is
-            // magical, including tengu, as there's no flapping of wings. Should
-            // we be nasty to dragon and bat forms?  For now, let's not instakill
-            // them even if it's inconsistent.
             you.fully_petrify(nullptr);
         }
         else if (dur < 15 && old_dur >= 15)

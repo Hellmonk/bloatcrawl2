@@ -824,10 +824,6 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             drain_amount = (dam - (dam / 2));
             dam /= 2;
         }
-        if (you.petrified())
-            dam /= 2;
-        else if (you.petrifying())
-            dam = dam * 10 / 15;
     }
     ait_hp_loss hpl(dam, death_type);
     interrupt_activity(AI_HP_LOSS, &hpl);

@@ -1472,8 +1472,7 @@ static void _pre_monster_move(monster& mons)
 
     _monster_add_energy(mons);
 
-	if (!mons.has_ench(ENCH_FLIGHT) && !mons_class_flag(mons.type, M_FLIES)
-			&& !mons.airborne())
+	if (!mons.airborne())
 		actor_apply_terrain(&mons, env.grid(mons.position));
 
 	if ((mons_primary_habitat(mons) == HT_WATER || mons_primary_habitat(mons) == HT_LAVA)

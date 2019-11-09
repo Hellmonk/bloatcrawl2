@@ -450,7 +450,7 @@ void moveto_location_effects(dungeon_feature_type old_feat,
             if (!stepped)
                 _splash();
 
-            if (!you.can_swim() && !you.can_water_walk())
+            if (!you.can_swim() && !you.can_water_walk() && !you.petrified()) // Petrified message handled elsewhere.
             {
                 if (!feat_is_water(old_feat))
                 {
@@ -484,8 +484,11 @@ void moveto_location_effects(dungeon_feature_type old_feat,
 		{
 			if (!feat_is_lava(old_feat))
 			{
-				mprf(MSGCH_WARN, "This stuff is boiling hot and burns your body as you move through it.");
-				mprf("The liquefied rock is difficult to stand upon; moving is going to be slow.");
+				if (!you.petrified())
+					mprf(MSGCH_WARN, "You %s the boiling magma.", stepped ? "enter" : "fall into");
+				mprf(MSGCH_WARN, "This stuff is boiling hot and burns your body!");
+				if (!you.petrified())
+				    mprf(MSGCH_WARN, "The liquefied rock is difficult to stand upon; moving through it is going to be slow.");
 			}
 		}
     }
@@ -5134,8 +5137,34 @@ void fly_player(int pow, bool already_flying)
         float_player();
 }
 
+// Forcing the player to land; via grasping roots or petrification.
+void force_land_player(actor * foe, bool damage)
+{
+	if (you.duration[DUR_FLIGHT] || you.attribute[ATTR_PERM_FLIGHT])
+	{
+		if (damage)
+		{
+			if (feat_is_water(grd(you.pos())))
+				mprf(MSGCH_WARN, "You fall straight down and sink like a stone!");
+			else if (grd(you.pos()) == DNGN_LAVA)
+				mprf(MSGCH_WARN, "You fall straight down and make a sizzling splash on the lava!");
+			else
+			{
+				mprf(MSGCH_WARN, "You crash to the ground with a thud.");
+				ouch(roll_dice(2, 10), KILLED_BY_FALLING);
+			}
+			noisy(15, you.pos());
+		}
+		you.attribute[ATTR_LAST_FLIGHT_STATUS] =
+			you.attribute[ATTR_PERM_FLIGHT];
+		you.duration[DUR_FLIGHT] = 0;
+		you.attribute[ATTR_PERM_FLIGHT] = 0;
+		land_player(true);
+	}
+}
+
 /**
- * Handle the player's flight ending. Apply emergency flight if needed.
+ * Handle the player's flight ending.
  *
  * @param quiet         Should we notify the player flight is ending?
  * @return              If flight was ended.
@@ -5574,7 +5603,8 @@ player::~player()
 bool player::airborne() const
 {
     // Might otherwise be airborne, but currently stuck to the ground
-    if (you.duration[DUR_GRASPING_ROOTS] || get_form()->forbids_flight())
+    if (you.duration[DUR_GRASPING_ROOTS] || get_form()->forbids_flight()
+		|| you.petrified())
         return false;
 
     if (duration[DUR_FLIGHT]
@@ -6232,6 +6262,12 @@ int player::armour_class(bool /*calc_unid*/) const
 
     if (duration[DUR_ICY_ARMOUR])
         AC += 500 + you.props[ICY_ARMOUR_KEY].get_int() * 8;
+
+	if (duration[DUR_PETRIFYING])
+		AC += 400 + you.experience_level * 67;
+
+	if (duration[DUR_PETRIFIED])
+		AC += 600 + you.experience_level * 100;
 
     if (has_mutation(MUT_ICEMAIL))
         AC += 100 * player_icemail_armour_class();
@@ -7015,6 +7051,8 @@ bool player::fully_petrify(actor *foe, bool quiet)
                         + random2(40);
     redraw_evasion = true;
     mpr("You have turned to stone.");
+
+	force_land_player(foe, true);
 
     end_searing_ray();
 

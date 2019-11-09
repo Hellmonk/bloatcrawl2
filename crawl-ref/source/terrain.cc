@@ -1630,7 +1630,12 @@ void actor_apply_terrain(actor* act, dungeon_feature_type terrain)
 		{
 			if (you.drowning())
 			{
-				if (coinflip())
+				if (you.petrified())
+				{
+					mpr("You are drowning!");
+					ouch(timescale_damage(act, roll_dice(2, 10)), KILLED_BY_WATER, MID_NOBODY, "Deep Water");
+				}
+				else if (coinflip())
 				{
 					mpr("Your struggles to swim create loud splashing noises!");
 					noisy(25, you.position);

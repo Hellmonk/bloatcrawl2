@@ -53,6 +53,7 @@
 #include "mon-transit.h"
 #include "religion.h"
 #include "rot.h"
+#include "shout.h"
 #include "spl-monench.h"
 #include "spl-summoning.h"
 #include "spl-util.h"
@@ -3367,6 +3368,10 @@ int monster::armour_class(bool calc_unid) const
     }
 
     // various enchantments
+	if (has_ench(ENCH_PETRIFYING))
+		ac += 4 + 2 * (get_hit_dice() / 3);
+	if (has_ench(ENCH_PETRIFIED))
+		ac += 6 + get_hit_dice();
     if (has_ench(ENCH_OZOCUBUS_ARMOUR))
         ac += 4 + get_hit_dice() / 3;
     if (has_ench(ENCH_ICEMAIL))
@@ -4183,6 +4188,9 @@ bool monster::antimagic_susceptible() const
 
 bool monster::airborne() const
 {
+	if (petrified() || paralysed() || has_ench(ENCH_GRASPING_ROOTS))
+		return false;
+
     // For dancing weapons, this function can get called before their
     // ghost_demon is created, so check for a nullptr ghost. -cao
     return mons_is_ghost_demon(type) && ghost && ghost->flies
@@ -4447,14 +4455,6 @@ int monster::hurt(const actor *agent, int amount, beam_type flavour,
                 return 0;
         }
 
-        if (amount != INSTANT_DEATH)
-        {
-            if (petrified())
-                amount /= 2;
-            else if (petrifying())
-                amount = amount * 2 / 3;
-        }
-
         if (amount != INSTANT_DEATH && has_ench(ENCH_INJURY_BOND))
         {
             actor* guardian = get_ench(ENCH_INJURY_BOND).agent();
@@ -4590,6 +4590,21 @@ bool monster::fully_petrify(actor *atk, bool quiet)
 {
     bool msg = !quiet && simple_monster_message(*this, mons_is_immotile(*this) ?
                          " turns to stone!" : " stops moving altogether!");
+
+	if (airborne())
+	{
+		dungeon_feature_type feat = grd(pos());
+		if (feat == DNGN_LAVA)
+			simple_monster_message(*this, " falls into the lava with a sizzling splash!");
+		else if (feat_is_water(feat))
+			simple_monster_message(*this, " falls into the water and sinks like a stone!");
+		else
+		{
+			simple_monster_message(*this, " crashes into the ground with a thud!");
+			hurt(atk, roll_dice(2, 10), BEAM_MMISSILE, KILLED_BY_FALLING);
+		}
+		noisy(15, pos());
+	}
 
     add_ench(ENCH_PETRIFIED);
     return msg;
