@@ -162,7 +162,8 @@ int attack::calc_to_hit(bool random)
     if (attacker->is_player())
     {
         // fighting contribution
-		mhit *= (2000 + you.skill(SK_FIGHTING, 100))/2000;
+		mhit *= (2000 + you.skill(SK_FIGHTING, 100));
+		mhit /= 2000;
 
         // weapon skill contribution
         if (using_weapon())
@@ -172,24 +173,30 @@ int attack::calc_to_hit(bool random)
                 if (you.skill(wpn_skill) < 1 && player_in_a_dangerous_place())
                     xom_is_stimulated(10); // Xom thinks that is mildly amusing.
 
-				mhit *= (2000 + you.skill(wpn_skill, 100)) / 2000;
+				mhit *= (2000 + you.skill(wpn_skill, 100));
+				mhit /= 2000;
             }
         }
-        else if (you.form_uses_xl())
-			mhit *= (20 + you.experience_level) / 20;
+		else if (you.form_uses_xl())
+		{
+			mhit *= (20 + you.experience_level);
+			mhit /= 20;
+		}
         else
         {
             // Claws give a slight bonus to accuracy when active
             mhit *= (you.get_mutation_level(MUT_CLAWS) > 0
                      && wpn_skill == SK_UNARMED_COMBAT) ? 1.1 : 1;
 
-			mhit *= (2000 + you.skill(wpn_skill, 100)) / 2000;
+			mhit *= (2000 + you.skill(wpn_skill, 100));
+			mhit /= 2000;
         }
 
         // slaying bonus
         mhit *= (20 + slaying_bonus(wpn_skill == SK_THROWING
                               || (weapon && is_range_weapon(*weapon)
-                                         && using_weapon())))/20;
+                                         && using_weapon())));
+		mhit /= 20;
 
         // hunger penalty
         if (apply_starvation_penalties())
@@ -204,8 +211,11 @@ int attack::calc_to_hit(bool random)
             mhit *= 0.85;
 
         // mutation
-        if (you.get_mutation_level(MUT_EYEBALLS))
-            mhit *= (20 + you.get_mutation_level(MUT_EYEBALLS))/20;
+		if (you.get_mutation_level(MUT_EYEBALLS))
+		{
+			mhit *= (20 + you.get_mutation_level(MUT_EYEBALLS));
+			mhit /= 20;
+		}
 
 		// +0 for normal vision, +5 for Supernaturally Acute Vision, -5 For Impaired Vision
 		mhit *= 10 + you.vision();
@@ -232,14 +242,18 @@ int attack::calc_to_hit(bool random)
 	{
 		if (weapon->base_type == OBJ_WEAPONS || weapon->base_type == OBJ_SHIELDS)
 		{
-			mhit *= (20 + weapon->plus)/20;
-			mhit *= (20 + property(*weapon, PWPN_HIT))/20;
+			mhit *= (20 + weapon->plus);
+			mhit *= (20 + property(*weapon, PWPN_HIT));
+			mhit /= 400;
 		}
 		else if (weapon->base_type == OBJ_STAVES)
-			mhit *= (20 + property(*weapon, PWPN_HIT))/20;
+		{
+			mhit *= (20 + property(*weapon, PWPN_HIT));
+			mhit /= 20;
+		}
 	}
 
-    // Penalties for both players and monsters:
+    // Penalties and Buffs for both players and monsters:
 
     if (attacker->confused())
         mhit *= 0.75;
@@ -258,18 +272,27 @@ int attack::calc_to_hit(bool random)
 
     if (!defender->visible_to(attacker))
             mhit *= 0.75;
-    else
-    {
-        // This can only help if you're visible!
-        const int how_transparent = you.get_mutation_level(MUT_TRANSLUCENT_SKIN);
-        if (defender->is_player() && how_transparent)
-            mhit *= (20 - 1 * how_transparent)/20;
+	else
+	{
+		// This can only help if you're visible!
+		const int how_transparent = you.get_mutation_level(MUT_TRANSLUCENT_SKIN);
+		if (defender->is_player() && how_transparent)
+		{
+			mhit *= (20 - 1 * how_transparent); 
+			mhit /= 20;
+	    }
 
-        if (defender->backlit(false))
-            mhit *= (20 + 1 + random2(9))/20;
-        else if (!attacker->nightvision()
-                 && defender->umbra())
-            mhit *= (20 - 1 - random2(4))/20;
+		if (defender->backlit(false))
+		{
+			mhit *= (20 + 1 + random2(9));
+			mhit /= 20;
+		}
+		else if (!attacker->nightvision()
+			&& defender->umbra())
+		{
+			mhit *= (20 - 1 - random2(4));
+			mhit /= 20;
+		}
     }
 
     // Don't delay doing this roll until test_hit().
