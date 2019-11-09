@@ -838,7 +838,7 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
 
 	else if (is_range_weapon(new_wpn))
 	{
-		if (you.weapon(0)->cursed() && you.get_mutation_level(MUT_GHOST) == 0)
+		if (you.weapon(0) && you.weapon(0)->cursed() && you.get_mutation_level(MUT_GHOST) == 0)
 		
 		{
 			mpr("You can't unwield what's in your right hand.");
