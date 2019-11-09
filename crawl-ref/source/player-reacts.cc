@@ -216,7 +216,11 @@ static void _decrement_petrification(int delay)
         const string flesh_equiv = get_form()->flesh_equivalent.empty() ?
                                             "flesh" :
                                             get_form()->flesh_equivalent;
-
+		
+		if (you.species == SP_GARGOYLE || you.form == transformation::statue)
+		{
+			mprf(MSGCH_DURATION, "Your stony form becomes more flexible, allowing you to move again.");
+		}
         mprf(MSGCH_DURATION, "You turn to %s and can move again.",
              flesh_equiv.c_str());
     }
