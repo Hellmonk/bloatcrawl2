@@ -1232,7 +1232,7 @@ void set_ident_flags(item_def &item, iflags_t flags)
     }
 
     if (item.flags & ISFLAG_KNOW_TYPE && !is_artefact(item)
-        && _is_affordable(item))
+        && _is_affordable(item) && you.chapter != CHAPTER_NONDUNGEON_START)
     {
         if (item.base_type == OBJ_WEAPONS)
             you.seen_weapon[item.sub_type] |= 1 << item.brand;
