@@ -669,6 +669,38 @@ dgn.good_scrolls = [[
 	w:54  scroll of attention no_pickup
     ]]
 
+-- Some scroll and potions with weights that are used as nice loot. These lists
+-- emphasize tactical consumables and permanent character/equipment
+-- upgrades--things that are relevant the entire game and for most characters.
+-- These lists should be used to supplement the more variable loot types % and
+-- * to help ensure that a loot pile has usable items. Each list should total
+-- 100 weight.
+dgn.loot_scrolls = [[
+    w:15  scroll of teleportation /
+    w:15  scroll of fog /
+    w:15  scroll of fear /
+    w:10  scroll of blinking /
+    w:10  scroll of summoning /
+    w:8   scroll of magic mapping /
+    w:15  scroll of enchantment /
+    w:5   scroll of brand weapon /
+    w:2   scroll of acquirement
+    ]]
+
+dgn.loot_potions = [[
+    w:15  potion of haste /
+    w:15  potion of heal wounds /
+    w:10  potion of might /
+    w:10  potion of invisibility /
+    w:10  potion of agility /
+    w:10  potion of magic /
+    w:10  potion of mutation /
+    w:8   potion of cancellation /
+    w:5   potion of brilliance /
+    w:5   potion of resistance /
+    w:2   potion of experience
+    ]]
+
 -- Returns true if point1 is inside radius(X, point2).
 function dgn.point_in_radius(point1, point2, radius)
   return dgn.distance(point1.x, point1.y, point2.x, point2.y) <=
