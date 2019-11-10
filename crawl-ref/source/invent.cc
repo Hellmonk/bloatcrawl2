@@ -1059,8 +1059,7 @@ bool item_is_selected(const item_def &i, int selector)
         return is_deck(i);
 
     case OSEL_CURSED_WORN:
-        return i.cursed() && item_is_equipped(i)
-               && (&i != you.weapon(0) && &i != you.weapon(1) || is_weapon(i));
+        return i.cursed() && item_is_equipped(i);
 
 #if TAG_MAJOR_VERSION == 34
     case OSEL_UNCURSED_WORN_ARMOUR:
