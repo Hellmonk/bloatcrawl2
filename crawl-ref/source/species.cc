@@ -8,6 +8,7 @@
 #include "output.h"
 #include "player.h"
 #include "player-stats.h"
+#include "transform.h"
 #include "random.h"
 #include "skills.h"
 #include "stringutil.h"
@@ -374,6 +375,13 @@ void give_level_mutations(species_type species, int xp_level)
 		if (xp_level == 25)
 			you.mutation[MUT_SLOW] = you.innate_mutation[MUT_SLOW] = 2;
 	}
+
+	// Right now this only happens to lignifites; but leave it open to possibly happen to
+	// any race later (Demonspawn get bigger/smaller as a facet? maybe).
+	if (!is_weapon_wieldable(*you.weapon(0), you.body_size(PSIZE_TORSO, true)))
+		remove_one_equip(EQ_WEAPON0, false, true);
+	if (!is_weapon_wieldable(*you.weapon(1), you.body_size(PSIZE_TORSO, true)))
+		remove_one_equip(EQ_WEAPON1, false, true);
 }
 
 int species_exp_modifier(species_type species)
@@ -386,7 +394,7 @@ int species_hp_modifier(species_type species)
 	if (you.char_class == JOB_DEMIGOD)
 		return get_species_def(species).hp_mod + 1;
 	if (you.species == SP_LIGNIFITE)
-		return (-1 + ((you.experience_level - 1) / 6));
+		return (-2 + div_round_up(you.experience_level - 1, 6));
     return get_species_def(species).hp_mod;
 }
 
