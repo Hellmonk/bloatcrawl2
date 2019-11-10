@@ -1599,7 +1599,7 @@ static string _weapon_brand_desc(const item_def &item)
 		else
 		{
 			description += " weapon of "
-				+ ego_type_string(item, false, you.props[ORIGINAL_BRAND_KEY])
+				+ ego_type_string(item, false, (brand_type)you.props[ORIGINAL_BRAND_KEY].get_int())
 				+ ".";
 		}
 	}
