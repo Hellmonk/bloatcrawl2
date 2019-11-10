@@ -1203,10 +1203,16 @@ static int _shatter_mon_dice(const monster *mon)
         return 6;
 
     default:
-        if (mon->is_insubstantial())
-            return 1;
-        if (mon->petrifying() || mon->petrified())
-            return 6; // reduced later by petrification's damage reduction
+		if (mon->is_insubstantial())
+		{
+			if (mon->airborne())
+				return 0;
+			return 1;
+		}
+        if (mon->petrifying()) 
+            return 4;
+		if (mon->petrified())
+			return 6;
         else if (mon->is_skeletal() || mon->is_icy())
             return 6;
         else if (mon->airborne() || mons_is_slime(*mon))
