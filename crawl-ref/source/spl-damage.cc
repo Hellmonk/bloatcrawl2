@@ -1204,11 +1204,7 @@ static int _shatter_mon_dice(const monster *mon)
 
     default:
 		if (mon->is_insubstantial())
-		{
-			if (mon->airborne())
-				return 0;
-			return 1;
-		}
+			return 0;
         if (mon->petrifying()) 
             return 4;
 		if (mon->petrified())
