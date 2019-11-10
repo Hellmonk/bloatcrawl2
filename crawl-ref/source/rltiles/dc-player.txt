@@ -954,6 +954,7 @@ punk PUNK
 sniper SNIPER
 crossbow_fire FIERY_DEVIL
 zephyr ZEPHYR
+sceptre_of_torment SCEPTRE_OF_TORMENT
 
 %sdir player/hand2
 
