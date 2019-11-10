@@ -1232,7 +1232,7 @@ void set_ident_flags(item_def &item, iflags_t flags)
     }
 
     if (item.flags & ISFLAG_KNOW_TYPE && !is_artefact(item)
-        && _is_affordable(item))
+        && _is_affordable(item) && you.chapter != CHAPTER_NONDUNGEON_START)
     {
         if (item.base_type == OBJ_WEAPONS)
             you.seen_weapon[item.sub_type] |= 1 << item.brand;
@@ -3137,7 +3137,7 @@ weapon_type name_nospace_to_weapon(string name_nospace)
 
 void seen_item(const item_def &item)
 {
-    if (!is_artefact(item) && _is_affordable(item))
+    if (!is_artefact(item) && _is_affordable(item) && !you.chapter == CHAPTER_NONDUNGEON_START)
     {
         // Known brands will be set in set_item_flags().
         if (item.base_type == OBJ_WEAPONS)
