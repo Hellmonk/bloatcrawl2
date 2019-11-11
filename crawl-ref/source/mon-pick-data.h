@@ -916,7 +916,6 @@ static const pop_entry pop_zig[] =
   { 0,0,0,FLAT,MONS_0 }
 };
 
-<<<<<<< HEAD
 static const pop_entry pop_starttemple[] =
 { // Starting Temple for Priests
 	{ 0,0,0,FLAT,MONS_0 }
@@ -1141,7 +1140,7 @@ static const population_list population[] =
 #endif
     POP(desolation),
 	POP(starttemple),
-	POP(startmarket)
+	POP(startmarket),
 #if TAG_MAJOR_VERSION == 34
     POP(gauntlet),
 #endif
@@ -1260,7 +1259,7 @@ static const population_list population_zombie[] =
 #endif
     POP(desolation),
 	POP(starttemple),
-	POP(startmarket)
+	POP(startmarket),
 #if TAG_MAJOR_VERSION == 34
     POP(gauntlet),
 #endif
