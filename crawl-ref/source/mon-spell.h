@@ -2032,8 +2032,8 @@ static const mon_spellbook mspell_list[] =
     // ('1') Greater demons.
     {  MST_IGNACIO,
       {
-       { SPELL_AGONY, 21, MON_SPELL_MAGICAL },
-       { SPELL_HASTE, 41, MON_SPELL_MAGICAL },
+       { SPELL_AGONY, 42, MON_SPELL_MAGICAL },
+       { SPELL_HASTE, 82, MON_SPELL_MAGICAL },
       }
     },
 
