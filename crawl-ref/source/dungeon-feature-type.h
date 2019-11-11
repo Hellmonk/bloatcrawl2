@@ -271,6 +271,8 @@ enum dungeon_feature_type
 
 	DNGN_TRAP_DISPERSAL,
 
+#endif
+
     NUM_FEATURES,
 };
 COMPILE_CHECK(NUM_FEATURES <= 256);
