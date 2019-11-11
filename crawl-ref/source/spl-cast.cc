@@ -325,8 +325,18 @@ int raw_spell_fail(spell_type spell)
     chance -= calc_spell_power(spell, false, true, false, 6);
     chance -= (you.intel() * 2); // realistic range: -2 to -70
 
-    const int armour_shield_penalty = player_armour_shield_spell_penalty();
+    const int spell_level = spell_difficulty(spell);
+
+    int armour_shield_penalty = player_armour_shield_spell_penalty();
     dprf("Armour+Shield spell failure penalty: %d", armour_shield_penalty);
+    if (you.has_mutation(MUT_BLOOD_MAGIC))
+    {
+        // 55% reduction at level 1, 0% at level 9
+        armour_shield_penalty = div_rand_round(armour_shield_penalty
+                                               * (9 + spell_level), 18);
+        dprf("Blood magic modified Armour+Shield failure penalty: %d",
+             armour_shield_penalty);
+    }
     chance += armour_shield_penalty; // range: 0 to 500 in extreme cases.
                                      // A midlevel melee character in plate
                                      // might have 40 or 50, and a caster in a
@@ -347,7 +357,6 @@ int raw_spell_fail(spell_type spell)
         260,
         340,
     };
-    const int spell_level = spell_difficulty(spell);
     ASSERT_RANGE(spell_level, 0, (int) ARRAYSZ(difficulty_by_level));
     chance += difficulty_by_level[spell_level]; // between 0 and 330
 
@@ -793,6 +802,12 @@ bool cast_a_spell(bool check_range, spell_type spell)
         crawl_state.zero_turns_taken();
         return false;
     }
+    if (you.has_mutation(MUT_BLOOD_MAGIC) && you.hp < (1 + cost))
+    {
+        mpr("You don't have enough health to cast that spell.");
+        crawl_state.zero_turns_taken();
+        return false;
+    }
 
     if (check_range && spell_no_hostile_in_range(spell))
     {
@@ -844,6 +859,8 @@ bool cast_a_spell(bool check_range, spell_type spell)
     you.last_cast_spell = spell;
     // Silently take MP before the spell.
     dec_mp(cost, true);
+    if (you.has_mutation(MUT_BLOOD_MAGIC))
+        dec_hp(cost, false, "blood magic");
 
     const spret cast_result = your_spells(spell, 0, !you.divine_exegesis,
                                           nullptr);

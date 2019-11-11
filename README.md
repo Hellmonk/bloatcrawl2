@@ -17,6 +17,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Faerie Dragons** are attuned to magic and their spells cost fewer magic points. Their shimmering scales repel attacks and their wings let them fly.
 * **Flans** are gelatinous and slightly corrosive beings. Their fluid shape lets them fit easily into any body armour, but they cannot wear other armour types.
 * Rolling around at the speed of sound, **Hedgehogs** have got places to go and gotta follow their rainbow.
+* Irits are magical, brutish one-eyed humanoids. They are adept at casting spells in heavy armour, although it costs them life force to do so.
 * **Kitsune** are enthralling fox spirits that take on human shapes. They are poor at most skills and frailer than humans, but can charm their foes.
 * **Leprechauns** are small and frail but versatile. Their intrinsic luck gives them a knack for finding better items.
 * Half insect, half human, **Mayflytaurs** have incredibly short lifespans but have evolved to be exceptionally overpowered in just about every imaginable way.
