@@ -98,12 +98,9 @@ dungeon_char_type dchar_by_name(const string &name)
         "item_rod",
 #endif
         "item_miscellany", "item_corpse", "item_skeleton", "item_gold",
-<<<<<<< HEAD
-        "item_amulet", "item_shield", "cloud", "tree",
-=======
-        "item_amulet", "cloud", "cloud_weak", "cloud_fading", "cloud_terminal",
+        "item_amulet", "item_shield", "cloud",
+        "cloud_weak", "cloud_fading", "cloud_terminal",
         "tree",
->>>>>>> a828402fb8... Make cloud duration more apparent to console players
 #if TAG_MAJOR_VERSION == 34
         "teleporter",
 #endif
