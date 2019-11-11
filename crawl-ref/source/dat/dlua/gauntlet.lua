@@ -62,7 +62,7 @@ end
 --                     of subvault placement.
 -- @param exit_glyphs  A string of glyphs for exit transporter landing site
 --                     glyphs in order of subvault placement.
-function gauntlet_arena_setup(e, entry_glyphs, exit_glyphs)
+function gauntlet_setup(e, entry_glyphs, exit_glyphs)
     for i = 1, entry_glyphs:len() do
         e.lua_marker(entry_glyphs:sub(i,i),
                      transp_loc("gauntlet_arena_entry_" ..  tostring(i)))
