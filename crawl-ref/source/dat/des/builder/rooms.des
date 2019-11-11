@@ -126,7 +126,7 @@ function sroom_morgue(e)
     elseif you.in_branch("Dis") then
         weap = " good_item"
     elseif you.in_branch("Tar") then
-        weap = " ego:draining ident:type"
+        weap = " ego:pain ident:type"
     end
 
     local mons = {}
