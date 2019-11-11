@@ -1017,17 +1017,14 @@ static void _ARC_BLADE_melee_effects(item_def* weapon, actor* attacker,
                                      actor* defender, bool mondied,
                                      int dam)
 {
-    if (one_chance_in(3))
-    {
-        const int pow = 100 + random2avg(100, 2);
+    const int pow = 50 + random2avg(50, 2);
 
-        if (you.can_see(*attacker))
-            mpr("The arc blade crackles.");
-        else
-            mpr("You hear the crackle of electricity.");
+    if (you.can_see(*attacker))
+        mpr("The arc blade crackles.");
+    else
+        mpr("You hear the crackle of electricity.");
 
-        cast_discharge(pow, *attacker);
-    }
+    cast_discharge(pow, *attacker);
 }
 
 ///////////////////////////////////////////////////

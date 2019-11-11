@@ -2054,8 +2054,6 @@ static void _extra_hp(int amount_extra) // must also set in calc_hp
 
     you.hp *= amount_extra;
     you.hp /= 10;
-
-    deflate_hp(you.hp_max, false);
 }
 
 /**
