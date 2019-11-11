@@ -31,7 +31,7 @@ static const char32_t dchar_table[NUM_CSET][NUM_DCHAR_TYPES] =
 #endif
          '}', U'\x2020', //†
             U'\xf7', //÷
-            '$', '"', ']' U'\xa7', //§
+            '$', '"', ']', U'\xa7', //§
             U'\x2663', //♣
 #if TAG_MAJOR_VERSION == 34
          U'\xa9', //©
