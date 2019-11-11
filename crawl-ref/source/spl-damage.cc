@@ -2374,13 +2374,8 @@ spret_type cast_fragmentation(int pow, const actor *caster,
 
     bolt beam;
 
-<<<<<<< HEAD
     if (!setup_fragmentation_beam(beam, pow, caster, target, false, &what, hole, destroy))
-=======
-    if (!setup_fragmentation_beam(beam, pow, caster, target, false, &what,
-                hole))
     {
->>>>>>> 15b4f39479... Centralize conducts for some player damage spells
         return SPRET_ABORT;
     }
 
