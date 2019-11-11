@@ -968,6 +968,7 @@ EV:       5
 
 ENUM:     RCLOUDS
 NAME:     robe of Clouds
+INSCRIP:  +Thunder rCloud
 OBJ:      OBJ_ARMOURS/ARM_ROBE
 PLUS:     +3
 COLOUR:   ETC_MIST
