@@ -2985,7 +2985,6 @@ void level_change(bool skip_attribute_increase)
 
             // Set this after printing, since a more() might clear it.
             you.redraw_experience = true;
-
             crawl_state.stat_gain_prompt = false;
             you.experience_level = new_exp;
             you.max_level = you.experience_level;
@@ -3253,8 +3252,9 @@ void level_change(bool skip_attribute_increase)
             mprf(MSGCH_INTRINSIC_GAIN, "Your scales feel tougher.");
             you.redraw_armour_class = true;
         }
-        if (!updated_maxhp)
-            _gain_and_note_hp_mp();
+
+		if (!updated_maxhp)
+			_gain_and_note_hp_mp();
 
         xom_is_stimulated(12);
         if (in_good_standing(GOD_HEPLIAKLQANA))
