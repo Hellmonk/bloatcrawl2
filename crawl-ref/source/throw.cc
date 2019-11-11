@@ -287,7 +287,7 @@ vector<string> fire_target_behaviour::get_monster_desc(const monster_info& mi)
         if (you.weapon() && you.weapon()->is_type(OBJ_WEAPONS, WPN_BLOWGUN))
         {
             special_missile_type brand = get_ammo_brand(*item);
-            if (brand == SPMSL_PARALYSIS || brand == SPMSL_CONFUSION
+            if (brand == SPMSL_PETRIFICATION || brand == SPMSL_CONFUSION
                 || brand == SPMSL_FRENZY || brand == SPMSL_SLEEP)
             {
                 int chance = _get_blowgun_chance(mi.hd);
@@ -295,10 +295,10 @@ vector<string> fire_target_behaviour::get_monster_desc(const monster_info& mi)
                 if (mi.holi & (MH_UNDEAD | MH_NONLIVING))
                     immune = true;
 
-                string verb = brand == SPMSL_PARALYSIS ? "paralyse" :
-                              brand == SPMSL_CONFUSION ? "confuse"  :
-                              brand == SPMSL_FRENZY    ? "frenzy"
-                              /* SPMSL_SLEEP */        : "sleep";
+                string verb = brand == SPMSL_PETRIFICATION ? "petrify" :
+                              brand == SPMSL_CONFUSION     ? "confuse"  :
+                              brand == SPMSL_FRENZY        ? "frenzy"
+                              /* SPMSL_SLEEP */            : "sleep";
 
                 string chance_string = immune ? "immune to needles" :
                                        make_stringf("chance to %s on hit: %d%%",
