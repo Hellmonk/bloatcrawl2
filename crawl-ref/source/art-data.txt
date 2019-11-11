@@ -1198,6 +1198,7 @@ MP:      6
 INT:     6
 BRAND:   SPWPN_VAMPIRISM
 
+# TAG_MAJOR_VERSION == 34
 ENUM:    GYRE
 NAME:    pair of quick blades "Gyre" and "Gimble"
 OBJ:     OBJ_WEAPONS/WPN_QUICK_BLADE
@@ -1208,6 +1209,7 @@ TILE_EQ: gyre
 PLUS:    5
 BRAND:   SPWPN_VORPAL
 DEX:     -3
+BOOL:    nogen
 
 ENUM:    ETHERIC_CAGE
 NAME:    Maxwell's etheric cage
