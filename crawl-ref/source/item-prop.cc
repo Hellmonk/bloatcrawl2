@@ -1702,7 +1702,6 @@ int wand_charge_value(int type)
     case WAND_ICEBLAST:
     case WAND_ACID:
     case WAND_ENSLAVEMENT:
-    case WAND_PARALYSIS:
     case WAND_POLYMORPH:
         return 15;
 
