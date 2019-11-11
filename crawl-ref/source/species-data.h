@@ -526,7 +526,7 @@ static const map<species_type, species_def> species_data =
 
 { SP_MINOTAUR, {
     "Mi",
-    "Minotaur", nullptr, nullptr,
+    "Minotaur", "Bovine", "Cow",
     SPF_NONE,
     -1, 1, -1, 3,
     MONS_MINOTAUR,
