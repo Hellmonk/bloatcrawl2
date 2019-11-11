@@ -787,7 +787,7 @@ void trap_def::trigger(actor& triggerer)
 			}
 			else if (m)
 			{
-				if (one_chance_in(3))
+				if (one_chance_in(3) || trig_smart && coinflip())
 				{
 					// Not triggered, trap stays.
 					if (in_sight)
