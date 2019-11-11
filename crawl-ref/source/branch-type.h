@@ -59,6 +59,7 @@ enum branch_type                // you.where_are_you
     BRANCH_DESOLATION,
 	BRANCH_START_TEMPLE,
 	BRANCH_START_MARKET,
+#if TAG_MAJOR_VERSION == 34
     BRANCH_GAUNTLET,
 #endif
 

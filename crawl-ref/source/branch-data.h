@@ -348,7 +348,10 @@ const Branch branches[NUM_BRANCHES] =
       LIGHTGREY, BROWN, // TODO
 #if TAG_MAJOR_VERSION == 34
       '9', {}, BRANCH_NOISE_LOUD },
-<<<<<<< HEAD
+#endif
+#if TAG_MAJOR_VERSION > 34
+	  '0', {}, BRANCH_NOISE_LOUD },
+#endif
 
 	{ BRANCH_START_TEMPLE, NUM_BRANCHES, -1, -1, 1, 4,
 	  BFLAG_NO_XLEV_TRAVEL | BFLAG_NO_ITEMS,
@@ -366,12 +369,6 @@ const Branch branches[NUM_BRANCHES] =
 	  LIGHTGREY, BROWN,
 	  '-',{}, BRANCH_NOISE_LOUD },
 
-};
-=======
-#endif
-#if TAG_MAJOR_VERSION > 34
-      '0', {}, BRANCH_NOISE_LOUD },
-#endif
 #if TAG_MAJOR_VERSION == 34
 
     { BRANCH_GAUNTLET, NUM_BRANCHES, -1, -1, 1, 15,
@@ -383,4 +380,3 @@ const Branch branches[NUM_BRANCHES] =
       '!', {}, BRANCH_NOISE_NORMAL },
 #endif
 };
->>>>>>> 58dc622acb... Gauntlet: A new portal that replaces Labyrinths
