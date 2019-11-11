@@ -378,9 +378,9 @@ void give_level_mutations(species_type species, int xp_level)
 
 	// Right now this only happens to lignifites; but leave it open to possibly happen to
 	// any race later (Demonspawn get bigger/smaller as a facet? maybe).
-	if (!is_weapon_wieldable(*you.weapon(0), you.body_size(PSIZE_TORSO, true)))
+	if (you.weapon(0) && !is_weapon_wieldable(*you.weapon(0), you.body_size(PSIZE_TORSO, true)))
 		remove_one_equip(EQ_WEAPON0, false, true);
-	if (!is_weapon_wieldable(*you.weapon(1), you.body_size(PSIZE_TORSO, true)))
+	if (you.weapon(1) && !is_weapon_wieldable(*you.weapon(1), you.body_size(PSIZE_TORSO, true)))
 		remove_one_equip(EQ_WEAPON1, false, true);
 }
 
