@@ -1,0 +1,28 @@
+enum: SP_BOOMER
+monster: MONS_HUMAN
+name: Human
+short_name: Bo
+difficulty: Advanced
+aptitudes:
+  xp: 1
+  hp: 0
+  mp_mod: 0
+  mr: 3
+  stealth: 1
+  spellcasting: -1
+  invocations: 1
+str: 8
+int: 8
+dex: 8
+levelup_stat_frequency: 4
+mutations:
+  1:
+    MUT_DETERIORATION: 2
+    MUT_DEFORMED: 1
+    MUT_SCREAM: 1
+recommended_jobs:
+  - JOB_BERSERKER
+  - JOB_CONJURER
+  - JOB_NECROMANCER
+  - JOB_FIRE_ELEMENTALIST
+  - JOB_ICE_ELEMENTALIST

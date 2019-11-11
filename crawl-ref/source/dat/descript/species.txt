@@ -9,6 +9,11 @@ Barachi
 Barachim are amphibious humanoids who rebelled against the gods. They're fast
 learners and can hop long distances, but are otherwise slow and easily seen.
 %%%%
+Boomer
+
+An elderly subspecies of humans, Boomers have deformed, rapidly degenerating
+bodies. They never tip more than 10%.
+%%%%
 Butterfly
 
 A cute butterfly that will stop at nothing to obtain the Orb. Monsters turn 
