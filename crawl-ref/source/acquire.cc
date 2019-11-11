@@ -350,23 +350,6 @@ static armour_type _useless_armour_type()
             return random_choose(ARM_HELMET, ARM_HAT);
         case EQ_CLOAK:
             return ARM_CLOAK;
-<<<<<<< HEAD
-=======
-        case EQ_SHIELD:
-        {
-            vector<pair<armour_type, int>> shield_weights = {
-                { ARM_BUCKLER,       1 },
-                { ARM_SHIELD,        1 },
-                { ARM_LARGE_SHIELD,  1 },
-            };
-
-            return filtered_vector_select<armour_type>(shield_weights,
-                                          [] (armour_type shtyp) {
-                return !check_armour_size(shtyp,
-                                          you.body_size(PSIZE_TORSO, true));
-            });
-        }
->>>>>>> f497b7cc99... Improve (?) filtered_vector_select
         case EQ_BODY_ARMOUR:
             // only the rarest & most precious of unwearable armours for Xom
             if (you_can_wear(EQ_BODY_ARMOUR))
