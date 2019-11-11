@@ -6743,6 +6743,7 @@ void monster::align_summons(bool force_friendly)
                                    : attitude);
 
 	bool destroy_avatars = false;
+	bool avatar_gone = false;
 
     // Neutral monsters don't need avatars, and in same cases would attack their
     // own avatars if they had them.
@@ -6754,7 +6755,10 @@ void monster::align_summons(bool force_friendly)
     if (avatar)
     {
 		if (destroy_avatars)
+		{
 			end_spectral_weapon(avatar, false, false);
+			avatar_gone = true;
+		}
 		else
 		{
 			avatar->attitude = new_att;
@@ -6766,13 +6770,19 @@ void monster::align_summons(bool force_friendly)
     if (avatar)
     {
 		if (destroy_avatars)
-		    end_battlesphere(avatar, false);
+		{
+			end_battlesphere(avatar, false);
+			avatar_gone = true;
+		}
 		else
 		{
 			avatar->attitude = new_att;
 			reset_battlesphere(avatar);
 		}
     }
+
+	if (avatar_gone)
+		simple_monster_message(this, " dismisses their weapons as they adapt a more neutral outlook on things.");
 
 	for (monster_iterator mi; mi; ++mi)
 	{
