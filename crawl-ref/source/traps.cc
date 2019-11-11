@@ -491,421 +491,421 @@ void trap_def::trigger(actor& triggerer)
         shoot_ammo(triggerer, trig_smart || you_trigger);
     else switch (type)
     {
-    case TRAP_GOLUBRIA:
-    {
-        coord_def to = p;
-        passage_type search_result = _find_other_passage_side(to);
-        if (search_result == PASSAGE_FREE)
-        {
-            if (you_trigger)
-                mpr("You enter the passage of Golubria.");
-            else
-                simple_monster_message(*m, " enters the passage of Golubria.");
-
-            // Should always be true.
-            bool moved = triggerer.move_to_pos(to);
-            ASSERT(moved);
-
-            place_cloud(CLOUD_TLOC_ENERGY, p, 1 + random2(3), &triggerer);
-            trap_destroyed = true;
-            know_trap_destroyed = you_trigger;
-        }
-        else if (you_trigger)
-        {
-            mprf("This passage %s!", search_result == PASSAGE_BLOCKED ?
-                 "seems to be blocked by something" : "doesn't lead anywhere");
-        }
-        break;
-    }
-    case TRAP_DISPERSAL:
-        dprf("Triggered dispersal.");
-        if (you_trigger)
-            mprf("You enter %s!", name(DESC_A).c_str());
-        else if (in_sight)
-            mprf("%s enters %s!", triggerer.name(DESC_THE).c_str(),
-                    name(DESC_A).c_str());
-        apply_visible_monsters([] (monster& mons) {
-                return !mons.no_tele() && monster_blink(&mons);
-            }, pos);
-        if (!you_trigger && you.see_cell_no_trans(pos))
-            you.blink();
-        // Don't chain disperse
-        triggerer.blink();
-        break;
-    case TRAP_TELEPORT:
-    case TRAP_TELEPORT_PERMANENT:
-        if (you_trigger)
-            mprf("You enter %s!", name(DESC_A).c_str());
-        if (ammo_qty > 0 && !--ammo_qty)
-        {
-            // can't use trap_destroyed, as we might recurse into a shaft
-            // or be banished by a Zot trap
-            if (in_sight)
-            {
-                env.map_knowledge(pos).set_feature(DNGN_FLOOR);
-                mprf("%s disappears.", name(DESC_THE).c_str());
-            }
-            destroy();
-        }
-        if (!triggerer.no_tele(true, you_trigger))
-            triggerer.teleport(true);
-        break;
-
-    case TRAP_ALARM:
-        // Alarms always mark the player, but not through glass
-        // The trap gets destroyed to prevent the player from abusing an alarm
-        // trap found in favorable terrain.
-        if (you.see_cell_no_trans(pos))
-            break;
-
-        trap_destroyed = true;
-
-        if (you_trigger)
-            mprf("You set off the alarm!");
-        else
-            mprf("%s %s the alarm!", triggerer.name(DESC_THE).c_str(),
-                 mons_intel(*m) >= I_HUMAN ? "pulls" : "sets off");
-
-        if (silenced(pos))
-        {
-            mprf("%s vibrates slightly, failing to make a sound.",
-                    name(DESC_THE).c_str());
-        }
-        else
-        {
-            string msg = make_stringf("%s emits a blaring wail!",
-                                name(DESC_THE).c_str());
-            noisy(40, pos, msg.c_str(), triggerer.mid);
-        }
-
-        you.sentinel_mark(true);
-        }
-        break;
-
-    case TRAP_BLADE:
-        if (you_trigger)
-        {
-            if (one_chance_in(3))
-                mpr("You avoid triggering a blade trap.");
-            else if (random2limit(you.evasion(), 40)
-                     + random2(6) + 3 > 8)
-            {
-                mpr("A huge blade swings just past you!");
-            }
-            else
-            {
-                mpr("A huge blade swings out and slices into you!");
-                const int damage = you.apply_ac(48 + random2avg(29, 2));
-                string n = name(DESC_A);
-                ouch(damage, KILLED_BY_TRAP, MID_NOBODY, n.c_str());
-                bleed_onto_floor(you.pos(), MONS_PLAYER, damage, true);
-            }
-        }
-        else if (m)
-        {
-            if (one_chance_in(5) || (trig_smart && coinflip()))
-            {
-                // Trap doesn't trigger.
-                if (in_sight)
-                {
-                    simple_monster_message(*m,
-                                           " fails to trigger a blade trap.");
-                }
-            }
-            else if (random2(m->evasion()) > 8
-                     || (trig_smart && random2(m->evasion()) > 8))
-            {
-                if (in_sight
-                    && !simple_monster_message(*m,
-                                            " avoids a huge, swinging blade."))
-                {
-                    mpr("A huge blade swings out!");
-                }
-            }
-            else
-            {
-                if (in_sight)
-                {
-                    string msg = "A huge blade swings out";
-                    if (m->visible_to(&you))
-                    {
-                        msg += " and slices into ";
-                        msg += m->name(DESC_THE);
-                    }
-                    msg += "!";
-                    mpr(msg);
-                }
-
-                int damage_taken = m->apply_ac(10 + random2avg(29, 2));
-
-                if (!m->is_summoned())
-                    bleed_onto_floor(m->pos(), m->type, damage_taken, true);
-
-                m->hurt(nullptr, damage_taken);
-                if (in_sight && m->alive())
-                    print_wounds(*m);
-            }
-        }
-        break;
-
-    case TRAP_NET:
-        if (you_trigger)
-        {
-            if (one_chance_in(3))
-                mpr("A net swings high above you.");
-            else
-            {
-                item_def item = generate_trap_item();
-                copy_item_to_grid(item, triggerer.pos());
-
-                if (random2limit(you.evasion(), 40)
-                    + random2(4) + 3 > 12)
-                {
-                    mpr("A net drops to the ground!");
-                }
-                else
-                {
-                    mpr("A large net falls onto you!");
-                    if (player_caught_in_net())
-                    {
-                        if (player_in_a_dangerous_place())
-                            xom_is_stimulated(50);
-
-                        // Mark the item as trapping; after this it's
-                        // safe to update the view.
-                        _mark_net_trapping(you.pos());
-                    }
-                }
-
-                trap_destroyed = true;
-            }
-        }
-        else if (m)
-        {
-            bool triggered = false;
-            if (one_chance_in(3) || (trig_smart && coinflip()))
-            {
-                // Not triggered, trap stays.
-                triggered = false;
-                if (in_sight)
-                    simple_monster_message(*m, " fails to trigger a net trap.");
-            }
-            else if (random2(m->evasion()) > 8
-                     || (trig_smart && random2(m->evasion()) > 8))
-            {
-                // Triggered but evaded.
-                triggered = true;
-
-                if (in_sight)
-                {
-                    if (!simple_monster_message(*m,
-                                                " nimbly jumps out of the way "
-                                                "of a falling net."))
-                    {
-                        mpr("A large net falls down!");
-                    }
-                }
-            }
-            else
-            {
-                // Triggered and hit.
-                triggered = true;
-
-                if (in_sight)
-                {
-                    if (m->visible_to(&you))
-                    {
-                        mprf("A large net falls down onto %s!",
-                             m->name(DESC_THE).c_str());
-                    }
-                    else
-                        mpr("A large net falls down!");
-                }
-
-                // actually try to net the monster
-                if (monster_caught_in_net(m, nullptr))
-                {
-                    // Don't try to escape the net in the same turn
-                    m->props[NEWLY_TRAPPED_KEY] = true;
-                }
-            }
-
-            if (triggered)
-            {
-                item_def item = generate_trap_item();
-                copy_item_to_grid(item, triggerer.pos());
-
-                if (m->caught())
-                    _mark_net_trapping(m->pos());
-
-                trap_destroyed = true;
-            }
-        }
-        break;
-
-    case TRAP_WEB:
-        if (triggerer.body_size(PSIZE_BODY) >= SIZE_GIANT)
-        {
-            trap_destroyed = true;
-            if (you_trigger)
-                mpr("You tear through the web.");
-            else if (m)
-                simple_monster_message(*m, " tears through a web.");
-            break;
-        }
-
-        if (triggerer.is_web_immune())
-        {
-			if (m)
+		case TRAP_GOLUBRIA:
+		{
+			coord_def to = p;
+			passage_type search_result = _find_other_passage_side(to);
+			if (search_result == PASSAGE_FREE)
 			{
-				if (m->is_insubstantial())
-					simple_monster_message(*m, " passes through a web.");
-				else if (mons_genus(m->type) == MONS_JELLY)
-					simple_monster_message(*m, " oozes through a web.");
-				// too spammy for spiders, and expected
+				if (you_trigger)
+					mpr("You enter the passage of Golubria.");
+				else
+					simple_monster_message(*m, " enters the passage of Golubria.");
+
+				// Should always be true.
+				bool moved = triggerer.move_to_pos(to);
+				ASSERT(moved);
+
+				place_cloud(CLOUD_TLOC_ENERGY, p, 1 + random2(3), &triggerer);
+				trap_destroyed = true;
+				know_trap_destroyed = you_trigger;
 			}
-			else if (you.is_insubstantial())
-				mprf("You pass through a web.");
-            break;
-        }
+			else if (you_trigger)
+			{
+				mprf("This passage %s!", search_result == PASSAGE_BLOCKED ?
+					 "seems to be blocked by something" : "doesn't lead anywhere");
+			}
+			break;
+		}
+		case TRAP_DISPERSAL:
+			dprf("Triggered dispersal.");
+			if (you_trigger)
+				mprf("You enter %s!", name(DESC_A).c_str());
+			else if (in_sight)
+				mprf("%s enters %s!", triggerer.name(DESC_THE).c_str(),
+						name(DESC_A).c_str());
+			apply_visible_monsters([] (monster& mons) {
+					return !mons.no_tele() && monster_blink(&mons);
+				}, pos);
+			if (!you_trigger && you.see_cell_no_trans(pos))
+				you.blink();
+			// Don't chain disperse
+			triggerer.blink();
+			break;
+		case TRAP_TELEPORT:
+		case TRAP_TELEPORT_PERMANENT:
+			if (you_trigger)
+				mprf("You enter %s!", name(DESC_A).c_str());
+			if (ammo_qty > 0 && !--ammo_qty)
+			{
+				// can't use trap_destroyed, as we might recurse into a shaft
+				// or be banished by a Zot trap
+				if (in_sight)
+				{
+					env.map_knowledge(pos).set_feature(DNGN_FLOOR);
+					mprf("%s disappears.", name(DESC_THE).c_str());
+				}
+				destroy();
+			}
+			if (!triggerer.no_tele(true, you_trigger))
+				triggerer.teleport(true);
+			break;
 
-        if (you_trigger)
-        {
-            if (one_chance_in(3))
-                mpr("You pick your way through the web.");
-            else
-            {
-                mpr("You are caught in the web!");
+		case TRAP_ALARM:
+			// Alarms always mark the player, but not through glass
+			// The trap gets destroyed to prevent the player from abusing an alarm
+			// trap found in favorable terrain.
+			if (you.see_cell_no_trans(pos))
+				break;
 
-                if (_player_caught_in_web())
-                {
-                    check_monsters_sense(SENSE_WEB_VIBRATION, 9, you.pos());
-                    if (player_in_a_dangerous_place())
-                        xom_is_stimulated(50);
-                }
-            }
-        }
-        else if (m)
-        {
-            if (one_chance_in(3) || (trig_knows && coinflip()))
-            {
-                // Not triggered, trap stays.
-                if (in_sight)
-                    simple_monster_message(*m, " evades a web.");
-            }
-            else
-            {
-                // Triggered and hit.
-                if (in_sight)
-                {
-                    if (m->visible_to(&you))
-                        simple_monster_message(*m, " is caught in a web!");
-                    else
-                        mpr("A web moves frantically as something is caught in it!");
-                }
+			trap_destroyed = true;
 
-                // If somehow already caught, make it worse.
-                m->add_ench(ENCH_HELD);
+			if (you_trigger)
+				mprf("You set off the alarm!");
+			else
+				mprf("%s %s the alarm!", triggerer.name(DESC_THE).c_str(),
+					 mons_intel(*m) >= I_HUMAN ? "pulls" : "sets off");
 
-                // Don't try to escape the web in the same turn
-                m->props[NEWLY_TRAPPED_KEY] = true;
+			if (silenced(pos))
+			{
+				mprf("%s vibrates slightly, failing to make a sound.",
+						name(DESC_THE).c_str());
+			}
+			else
+			{
+				string msg = make_stringf("%s emits a blaring wail!",
+									name(DESC_THE).c_str());
+				noisy(40, pos, msg.c_str(), triggerer.mid);
+			}
 
-                // Alert monsters.
-                check_monsters_sense(SENSE_WEB_VIBRATION, 9, triggerer.position);
-            }
-        }
-        break;
+			you.sentinel_mark(true);
+			
+			break;
 
-    case TRAP_ZOT:
-        if (you_trigger)
-        {
-            mpr("You enter the Zot trap.");
+		case TRAP_BLADE:
+			if (you_trigger)
+			{
+				if (one_chance_in(3))
+					mpr("You avoid triggering a blade trap.");
+				else if (random2limit(you.evasion(), 40)
+						 + random2(6) + 3 > 8)
+				{
+					mpr("A huge blade swings just past you!");
+				}
+				else
+				{
+					mpr("A huge blade swings out and slices into you!");
+					const int damage = you.apply_ac(48 + random2avg(29, 2));
+					string n = name(DESC_A);
+					ouch(damage, KILLED_BY_TRAP, MID_NOBODY, n.c_str());
+					bleed_onto_floor(you.pos(), MONS_PLAYER, damage, true);
+				}
+			}
+			else if (m)
+			{
+				if (one_chance_in(5) || (trig_smart && coinflip()))
+				{
+					// Trap doesn't trigger.
+					if (in_sight)
+					{
+						simple_monster_message(*m,
+											   " fails to trigger a blade trap.");
+					}
+				}
+				else if (random2(m->evasion()) > 8
+						 || (trig_smart && random2(m->evasion()) > 8))
+				{
+					if (in_sight
+						&& !simple_monster_message(*m,
+												" avoids a huge, swinging blade."))
+					{
+						mpr("A huge blade swings out!");
+					}
+				}
+				else
+				{
+					if (in_sight)
+					{
+						string msg = "A huge blade swings out";
+						if (m->visible_to(&you))
+						{
+							msg += " and slices into ";
+							msg += m->name(DESC_THE);
+						}
+						msg += "!";
+						mpr(msg);
+					}
 
-            MiscastEffect(&you, nullptr, ZOT_TRAP_MISCAST, SPTYP_RANDOM,
-                           3, name(DESC_A));
-        }
-        else if (m)
-        {
-            // Zot traps are out to get *the player*! Hostile monsters
-            // benefit and friendly monsters suffer. Such is life.
+					int damage_taken = m->apply_ac(10 + random2avg(29, 2));
 
-            // The old code rehid the trap, but that's pure interface screw
-            // in 99% of cases - a player can just watch who stepped where
-            // and mark the trap on an external paper map. Not good.
+					if (!m->is_summoned())
+						bleed_onto_floor(m->pos(), m->type, damage_taken, true);
 
-            actor* targ = nullptr;
-            if (you.see_cell_no_trans(pos))
-            {
-                if (m->wont_attack() || crawl_state.game_is_arena())
-                    targ = m;
-                else if (one_chance_in(5))
-                    targ = &you;
-            }
+					m->hurt(nullptr, damage_taken);
+					if (in_sight && m->alive())
+						print_wounds(*m);
+				}
+			}
+			break;
 
-            // Give the player a chance to figure out what happened
-            // to their friend.
-            if (player_can_hear(pos) && (!targ || !in_sight))
-            {
-                mprf(MSGCH_SOUND, "You hear a %s \"Zot\"!",
-                     in_sight ? "loud" : "distant");
-            }
+		case TRAP_NET:
+			if (you_trigger)
+			{
+				if (one_chance_in(3))
+					mpr("A net swings high above you.");
+				else
+				{
+					item_def item = generate_trap_item();
+					copy_item_to_grid(item, triggerer.pos());
 
-            if (targ)
-            {
-                if (in_sight)
-                {
-                    mprf("The power of Zot is invoked against %s!",
-                         targ->name(DESC_THE).c_str());
-                }
-                MiscastEffect(targ, nullptr, ZOT_TRAP_MISCAST, SPTYP_RANDOM,
-                              3, "the power of Zot");
-            }
-        }
-        break;
+					if (random2limit(you.evasion(), 40)
+						+ random2(4) + 3 > 12)
+					{
+						mpr("A net drops to the ground!");
+					}
+					else
+					{
+						mpr("A large net falls onto you!");
+						if (player_caught_in_net())
+						{
+							if (player_in_a_dangerous_place())
+								xom_is_stimulated(50);
 
-    case TRAP_SHAFT:
-        // Known shafts don't trigger as traps.
-        // Allies don't fall through shafts (no herding!)
-        if (trig_smart || (m && m->wont_attack()) || you_trigger)
-            break;
+							// Mark the item as trapping; after this it's
+							// safe to update the view.
+							_mark_net_trapping(you.pos());
+						}
+					}
 
-        // A chance to escape.
-        if (one_chance_in(4))
-            break;
+					trap_destroyed = true;
+				}
+			}
+			else if (m)
+			{
+				bool triggered = false;
+				if (one_chance_in(3) || (trig_smart && coinflip()))
+				{
+					// Not triggered, trap stays.
+					triggered = false;
+					if (in_sight)
+						simple_monster_message(*m, " fails to trigger a net trap.");
+				}
+				else if (random2(m->evasion()) > 8
+						 || (trig_smart && random2(m->evasion()) > 8))
+				{
+					// Triggered but evaded.
+					triggered = true;
 
-        {
-        // keep this for messaging purposes
-        const bool triggerer_seen = you.can_see(triggerer);
+					if (in_sight)
+					{
+						if (!simple_monster_message(*m,
+													" nimbly jumps out of the way "
+													"of a falling net."))
+						{
+							mpr("A large net falls down!");
+						}
+					}
+				}
+				else
+				{
+					// Triggered and hit.
+					triggered = true;
 
-        // Fire away!
-        triggerer.do_shaft();
+					if (in_sight)
+					{
+						if (m->visible_to(&you))
+						{
+							mprf("A large net falls down onto %s!",
+								 m->name(DESC_THE).c_str());
+						}
+						else
+							mpr("A large net falls down!");
+					}
 
-        // Player-used shafts are destroyed
-        // after one use in down_stairs()
-        if (!you_trigger)
-        {
-            if (in_sight)
-            {
-                mprf("%s shaft crumbles and collapses.",
-                     triggerer_seen ? "The" : "A");
-                know_trap_destroyed = true;
-            }
-            trap_destroyed = true;
-        }
-        }
-        break;
+					// actually try to net the monster
+					if (monster_caught_in_net(m, nullptr))
+					{
+						// Don't try to escape the net in the same turn
+						m->props[NEWLY_TRAPPED_KEY] = true;
+					}
+				}
 
-#if TAG_MAJOR_VERSION == 34
-    case TRAP_GAS:
-        if (in_sight)
-            mpr("The gas trap seems to be inoperative.");
-        trap_destroyed = true;
-        break;
-#endif
+				if (triggered)
+				{
+					item_def item = generate_trap_item();
+					copy_item_to_grid(item, triggerer.pos());
 
-    case TRAP_PLATE:
-        dungeon_events.fire_position_event(DET_PRESSURE_PLATE, pos);
-        break;
+					if (m->caught())
+						_mark_net_trapping(m->pos());
+
+					trap_destroyed = true;
+				}
+			}
+			break;
+
+		case TRAP_WEB:
+			if (triggerer.body_size(PSIZE_BODY) >= SIZE_GIANT)
+			{
+				trap_destroyed = true;
+				if (you_trigger)
+					mpr("You tear through the web.");
+				else if (m)
+					simple_monster_message(*m, " tears through a web.");
+				break;
+			}
+
+			if (triggerer.is_web_immune())
+			{
+				if (m)
+				{
+					if (m->is_insubstantial())
+						simple_monster_message(*m, " passes through a web.");
+					else if (mons_genus(m->type) == MONS_JELLY)
+						simple_monster_message(*m, " oozes through a web.");
+					// too spammy for spiders, and expected
+				}
+				else if (you.is_insubstantial())
+					mprf("You pass through a web.");
+				break;
+			}
+
+			if (you_trigger)
+			{
+				if (one_chance_in(3))
+					mpr("You pick your way through the web.");
+				else
+				{
+					mpr("You are caught in the web!");
+
+					if (_player_caught_in_web())
+					{
+						check_monsters_sense(SENSE_WEB_VIBRATION, 9, you.pos());
+						if (player_in_a_dangerous_place())
+							xom_is_stimulated(50);
+					}
+				}
+			}
+			else if (m)
+			{
+				if (one_chance_in(3))
+				{
+					// Not triggered, trap stays.
+					if (in_sight)
+						simple_monster_message(*m, " evades a web.");
+				}
+				else
+				{
+					// Triggered and hit.
+					if (in_sight)
+					{
+						if (m->visible_to(&you))
+							simple_monster_message(*m, " is caught in a web!");
+						else
+							mpr("A web moves frantically as something is caught in it!");
+					}
+
+					// If somehow already caught, make it worse.
+					m->add_ench(ENCH_HELD);
+
+					// Don't try to escape the web in the same turn
+					m->props[NEWLY_TRAPPED_KEY] = true;
+
+					// Alert monsters.
+					check_monsters_sense(SENSE_WEB_VIBRATION, 9, triggerer.position);
+				}
+			}
+			break;
+
+		case TRAP_ZOT:
+			if (you_trigger)
+			{
+				mpr("You enter the Zot trap.");
+
+				MiscastEffect(&you, nullptr, ZOT_TRAP_MISCAST, SPTYP_RANDOM,
+							   3, name(DESC_A));
+			}
+			else if (m)
+			{
+				// Zot traps are out to get *the player*! Hostile monsters
+				// benefit and friendly monsters suffer. Such is life.
+
+				// The old code rehid the trap, but that's pure interface screw
+				// in 99% of cases - a player can just watch who stepped where
+				// and mark the trap on an external paper map. Not good.
+
+				actor* targ = nullptr;
+				if (you.see_cell_no_trans(pos))
+				{
+					if (m->wont_attack() || crawl_state.game_is_arena())
+						targ = m;
+					else if (one_chance_in(5))
+						targ = &you;
+				}
+
+				// Give the player a chance to figure out what happened
+				// to their friend.
+				if (player_can_hear(pos) && (!targ || !in_sight))
+				{
+					mprf(MSGCH_SOUND, "You hear a %s \"Zot\"!",
+						 in_sight ? "loud" : "distant");
+				}
+
+				if (targ)
+				{
+					if (in_sight)
+					{
+						mprf("The power of Zot is invoked against %s!",
+							 targ->name(DESC_THE).c_str());
+					}
+					MiscastEffect(targ, nullptr, ZOT_TRAP_MISCAST, SPTYP_RANDOM,
+								  3, "the power of Zot");
+				}
+			}
+			break;
+
+		case TRAP_SHAFT:
+			// Known shafts don't trigger as traps.
+			// Allies don't fall through shafts (no herding!)
+			if (trig_smart || (m && m->wont_attack()) || you_trigger)
+				break;
+
+			// A chance to escape.
+			if (one_chance_in(4))
+				break;
+
+			{
+			// keep this for messaging purposes
+			const bool triggerer_seen = you.can_see(triggerer);
+
+			// Fire away!
+			triggerer.do_shaft();
+
+			// Player-used shafts are destroyed
+			// after one use in down_stairs()
+			if (!you_trigger)
+			{
+				if (in_sight)
+				{
+					mprf("%s shaft crumbles and collapses.",
+						 triggerer_seen ? "The" : "A");
+					know_trap_destroyed = true;
+				}
+				trap_destroyed = true;
+			}
+			}
+			break;
+
+	#if TAG_MAJOR_VERSION == 34
+		case TRAP_GAS:
+			if (in_sight)
+				mpr("The gas trap seems to be inoperative.");
+			trap_destroyed = true;
+			break;
+	#endif
+
+		case TRAP_PLATE:
+			dungeon_events.fire_position_event(DET_PRESSURE_PLATE, pos);
+			break;
 
 #if TAG_MAJOR_VERSION == 34
     case TRAP_SHADOW:
