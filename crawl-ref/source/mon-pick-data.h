@@ -1352,7 +1352,6 @@ static const population_list population_water[] =
     POP(water_generic), // Desolation
 	POP(water_generic), // Start Market
 	POP(water_generic), // Start Temple
-    POP(water_generic), 
 };
 COMPILE_CHECK(ARRAYSZ(population_water) == NUM_BRANCHES);
 
