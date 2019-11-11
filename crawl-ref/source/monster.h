@@ -557,8 +557,7 @@ public:
     bool is_jumpy() const;
 
     int  spell_hd(spell_type spell = SPELL_NO_SPELL) const;
-    void align_avatars(bool force_friendly = false);
-    void remove_avatars();
+    void align_summons(bool force_friendly = false);
     void note_spell_cast(spell_type spell);
 
     bool clear_far_engulf() override;

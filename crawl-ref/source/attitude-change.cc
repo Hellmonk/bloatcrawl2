@@ -61,7 +61,7 @@ void mons_att_changed(monster* mon)
     {
         remove_companion(mon);
     }
-    mon->align_avatars();
+    mon->align_summons();
 }
 
 static void _jiyva_convert_slime(monster* slime);
