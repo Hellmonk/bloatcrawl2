@@ -835,6 +835,7 @@ static void _setup_generic(const newgame_def& ng)
     you.chaoskin = ng.chaoskin;
     you.no_locks = ng.no_locks;
     you.trap_type = ng.trap_type;
+    you.mod_exp = ng.mod_exp;
 
     if (ng.species == SP_SHAPESHIFTER)
         you.shapeshifter_species = true;

@@ -2772,6 +2772,14 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain)
 
     // handle actual experience gains,
     // i.e. XL and skills
+    
+    // handle experience game modifier
+    if (you.mod_exp == -2)
+        exp_gained = div_rand_round(exp_gained, 2);
+    else if (you.mod_exp == -1)
+        exp_gained = div_rand_round(exp_gained * 3, 4);
+    else if (you.mod_exp == 1)
+        exp_gained = div_rand_round(exp_gained * 3, 2);
 
     const unsigned int old_exp = you.experience;
 

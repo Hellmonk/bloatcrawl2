@@ -1378,6 +1378,7 @@ static void tag_construct_char(writer &th)
     marshallBoolean(th, you.chaoskin);
     marshallBoolean(th, you.no_locks);
     marshallByte(th, you.trap_type);
+    marshallByte(th, you.mod_exp);
 
     marshallBoolean(th, you.shapeshifter_species);
     marshallByte(th, you.vaporous_resistance_fire);
@@ -2307,6 +2308,7 @@ void tag_read_char(reader &th, uint8_t /*format*/, uint8_t major, uint8_t minor)
     you.chaoskin = unmarshallBoolean(th);
     you.no_locks = unmarshallBoolean(th);
     you.trap_type = unmarshallByte(th);
+    you.mod_exp = unmarshallByte(th);
 
     you.shapeshifter_species = unmarshallBoolean(th);
     you.vaporous_resistance_fire = unmarshallByte(th);

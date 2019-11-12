@@ -769,6 +769,7 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     choice.chaoskin = false;
     choice.no_locks = false;
     choice.trap_type = 0;
+    choice.mod_exp = 0;
 
     // Non-living or default-undead species cannot choose undead state
     bool can_choose_undead = species_can_use_modified_undeadness(ng.species)
@@ -813,6 +814,25 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
                     break;
                 case 1:
                     choice.skilled_type = 0;
+                    break;
+            }
+            return done = false;
+        }
+        else if (key == 'e' || key == 'E')
+        {
+            switch (choice.mod_exp)
+            {
+                case 0:
+                    choice.mod_exp = -1;
+                    break;
+                case -1:
+                    choice.mod_exp = -2;
+                    break;
+                case -2:
+                    choice.mod_exp = 1;
+                    break;
+                case 1:
+                    choice.mod_exp = 0;
                     break;
             }
             return done = false;
@@ -895,6 +915,14 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
     skill_choice_str.cprintf("kill: normal | unskilled (-1 apt) | skilled (+1 apt)");
     auto skill_choice = make_shared<ui::Text>(skill_choice_str);
     box->add_child(skill_choice);
+    
+    formatted_string exp_choice_str;
+    exp_choice_str.textcolour(WHITE);
+    exp_choice_str.cprintf("\n(E)");
+    exp_choice_str.textcolour(LIGHTGRAY);
+    exp_choice_str.cprintf("xp: normal | reduced (x0.75) | halved (x0.5) | increased (x1.5)");
+    auto exp_choice = make_shared<ui::Text>(exp_choice_str);
+    box->add_child(exp_choice);
 
     formatted_string chaoskin_choice_str;
     chaoskin_choice_str.textcolour(WHITE);
@@ -956,6 +984,21 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
             case 1:
                 // Note the space so we don't match "unSKILLED"
                 skill_choice->set_highlight_pattern(" skilled ", false);
+                break;
+        }
+        switch (choice.mod_exp)
+        {
+            case 0:
+                skill_choice->set_highlight_pattern("normal", false);
+                break;
+            case -1:
+                skill_choice->set_highlight_pattern("reduced", false);
+                break;
+            case -2:
+                skill_choice->set_highlight_pattern("halved", false);
+                break;
+            case 1:
+                skill_choice->set_highlight_pattern("increased", false);
                 break;
         }
         switch (choice.trap_type)
@@ -1230,6 +1273,7 @@ bool choose_game(newgame_def& ng, newgame_def& choice,
     ng.chaoskin = choice.chaoskin;
     ng.no_locks = choice.no_locks;
     ng.trap_type = choice.trap_type;
+    ng.mod_exp = choice.mod_exp;
 
 #ifndef DGAMELAUNCH
     // New: pick name _after_ character choices.

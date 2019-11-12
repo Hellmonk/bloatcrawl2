@@ -129,6 +129,7 @@ public:
     bool chaoskin;
     bool no_locks;
     int trap_type;
+    int mod_exp;
 
     bool shapeshifter_species;
 

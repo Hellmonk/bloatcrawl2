@@ -1,7 +1,8 @@
 enum: SP_BOOMER
 monster: MONS_HUMAN
-name: Human
+name: Boomer
 short_name: Bo
+genus: Boomer
 difficulty: Advanced
 aptitudes:
   xp: 1

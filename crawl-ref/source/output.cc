@@ -2194,6 +2194,20 @@ static formatted_string _get_modifiers()
             modifiers.push_back("Skilled");
             break;
     }
+    switch (you.mod_exp)
+    {
+        case -2:
+            modifiers.push_back("Halved");
+        case -1:
+            modifiers.push_back("Reduced (x0.75)");
+            break;
+        case 0:
+            // nothing
+            break;
+        case 1:
+            modifiers.push_back("Increased (x1.5)");
+            break;
+    }
     switch (you.trap_type)
     {
         case 0:
