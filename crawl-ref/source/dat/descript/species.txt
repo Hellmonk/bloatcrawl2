@@ -226,3 +226,7 @@ Argon
 Argons are, unlike most other living beings, made of gas. Some think they 
 originated on a far away star.
 %%%%
+Irit
+
+Irits are magical, brutish one-eyed humanoids. They are adept at casting spells
+in heavy armour, although it costs them life force to do so.

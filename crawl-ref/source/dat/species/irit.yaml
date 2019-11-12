@@ -1,0 +1,58 @@
+enum: SP_IRIT
+monster: MONS_EFREET
+name: Irit
+short_name: Ir
+difficulty: Simple
+aptitudes:
+  xp: 0
+  hp: 1
+  mp_mod: 1
+  mr: 3
+  fighting: -1
+  short_blades: -1
+  long_blades: -1
+  axes: -1
+  maces_and_flails: -1
+  polearms: -1
+  staves: -1
+  slings: -1
+  bows: -1
+  crossbows: -1
+  throwing: -1
+  armour: -1
+  dodging: -1
+  # shields: 0
+  unarmed_combat: -1
+  spellcasting: -1
+  conjurations: -1
+  hexes: -1
+  charms: -1
+  summoning: -1
+  necromancy: -1
+  translocations: -1
+  transmutations: -1
+  fire_magic: -1
+  ice_magic: -1
+  air_magic: -1
+  earth_magic: -1
+  poison_magic: -1
+  invocations: -2
+  evocations: -2
+str: 10
+int: 10
+dex: 4
+levelup_stat_frequency: 5
+levelup_stats:
+  - str
+  - int
+mutations:
+  1:
+    MUT_MANA_SHIELD: 1
+    MUT_BLOOD_MAGIC: 1
+    MUT_MISSING_EYE: 1
+    MUT_BLURRY_VISION: 3
+recommended_jobs:
+  - JOB_SKALD
+  - JOB_ENCHANTER
+  - JOB_WARPER
+  - JOB_GLADIATOR

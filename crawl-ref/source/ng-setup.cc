@@ -112,6 +112,9 @@ item_def* newgame_make_item(object_class_type base,
     if (you.species == SP_ONI && base == OBJ_ARMOUR && sub_type == ARM_ROBE)
         sub_type = ARM_ANIMAL_SKIN;
 
+    if (you.species == SP_IRIT && base == OBJ_ARMOUR && sub_type == ARM_ROBE)
+        sub_type = ARM_LEATHER_ARMOUR;
+
     int slot;
     for (slot = 0; slot < ENDOFPACK; ++slot)
     {
