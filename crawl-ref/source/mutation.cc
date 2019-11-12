@@ -2282,6 +2282,14 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         ostr << "\nYour protean flesh is especially vulnerable to rot.";
         result = ostr.str();
     }
+    else if (mut == MUT_UNBREATHING && you.has_mutation(MUT_BOL_XI))
+    {
+        result = "There is no breath.\nNor hunger.";
+    }
+    else if (mut == MUT_MUTATION_RESISTANCE && you.has_mutation(MUT_BOL_XI))
+    {
+        result = "The body it is immutable from without.\nYet we are unstable within.";
+    }
     else if (!ignore_player && you.species == SP_FELID && mut == MUT_CLAWS)
         result = "You have sharp claws.";
     else if (have_passive(passive_t::no_mp_regen) && mut == MUT_ANTIMAGIC_BITE)
@@ -2317,12 +2325,15 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         if (permanent)
         {
             const bool demonspawn = (you.species == SP_DEMONSPAWN);
+            const bool bol_xi = (you.has_mutation(MUT_BOL_XI));
             const bool extra = you.get_base_mutation_level(mut, false, true, true) > 0;
 
             if (fully_inactive || (mut == MUT_COLD_BLOODED && player_res_cold(false) > 0))
                 colourname = "darkgrey";
             else if (is_sacrifice)
                 colourname = "lightred";
+            else if (bol_xi)
+                colourname = coinflip() ? "magenta" : "lightmagenta";
             else if (partially_active)
                 colourname = demonspawn ? "yellow"    : "blue";
             else if (extra)

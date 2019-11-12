@@ -179,6 +179,7 @@ enum enchant_type
     ENCH_VORTEX,
     ENCH_VORTEX_COOLDOWN,
     ENCH_VILE_CLUTCH,
+    ENCH_BOL_XI_FEAR,
     // Update enchant_names[] in mon-ench.cc when adding or removing
     // enchantments.
     NUM_ENCHANTMENTS

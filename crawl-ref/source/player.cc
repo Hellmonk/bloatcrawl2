@@ -2772,7 +2772,7 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain)
 
     // handle actual experience gains,
     // i.e. XL and skills
-    
+
     // handle experience game modifier
     if (you.mod_exp == -2)
         exp_gained = div_rand_round(exp_gained, 2);
@@ -3037,7 +3037,8 @@ void level_change(bool skip_attribute_increase)
                      new_exp);
             }
 
-            const bool manual_stat_level = new_exp % 3 == 0;  // 3,6,9,12...
+            const bool manual_stat_level = new_exp % 3 == 0 // 3,6,9,12...
+                && you.species != SP_BOL_XI;
 
             // Must do this before actually changing experience_level,
             // so we will re-prompt on load if a hup is received.

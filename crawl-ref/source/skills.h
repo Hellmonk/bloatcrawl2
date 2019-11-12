@@ -170,3 +170,4 @@ static inline bool is_invalid_skill(skill_type skill)
 {
     return skill < SK_FIRST_SKILL || skill >= NUM_SKILLS;
 }
+void bol_xi_aptitude_shuffle();

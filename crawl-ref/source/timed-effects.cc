@@ -416,6 +416,16 @@ static void _evolve(int /*time_delta*/)
         }
 }
 
+static void _bol_xi_shuffle(int /*time_delta*/)
+{
+    if (!you.has_mutation(MUT_BOL_XI))
+        return;
+    bol_xi_aptitude_shuffle();
+    bol_xi_stat_shuffle();
+    mpr("Your skills and attributes shift.");
+    more();
+}
+
 // Get around C++ dividing integers towards 0.
 static int _div(int num, int denom)
 {
@@ -459,6 +469,7 @@ static struct timed_effect timed_effects[] =
 #if TAG_MAJOR_VERSION == 34
     { nullptr,                         0,     0, false },
 #endif
+    { _bol_xi_shuffle,              10000, 25000, false },
 };
 
 // Do various time related actions...

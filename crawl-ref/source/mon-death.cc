@@ -1794,7 +1794,8 @@ item_def* monster_die(monster& mons, killer_type killer,
     const bool hard_reset    = testbits(mons.flags, MF_HARD_RESET);
     const bool timeout       = killer == KILL_TIMEOUT;
     const bool fake_abjure   = mons.has_ench(ENCH_FAKE_ABJURATION);
-    const bool gives_player_xp = mons_gives_xp(mons, you);
+    const bool gives_player_xp = mons_gives_xp(mons, you)
+                                 && !mons.has_ench(ENCH_BOL_XI_FEAR);
     bool drop_items          = !hard_reset;
     const bool submerged     = mons.submerged();
     bool in_transit          = false;

@@ -1956,6 +1956,10 @@ int species_apt(skill_type skill, species_type species)
         spec_skills_initialised = true;
     }
 
+    // This has to be before the initialisation check below
+    if (you.has_mutation(MUT_BOL_XI))
+        return you.bol_xi_apts[(int)skill];
+
     const int undead_modifier = you.undead_modifier == US_UNDEAD ? -2
                               : you.undead_modifier == US_HUNGRY_DEAD ? -1
                               : 0; // US_ALIVE & US_SEMI_UNDEAD
@@ -2322,4 +2326,27 @@ bool can_enable_skill(skill_type sk, bool override)
        && you.skills[sk] < MAX_SKILL_LEVEL
        && !is_useless_skill(sk)
        && (override || (you.can_currently_train[sk] && !is_harmful_skill(sk)));
+}
+
+static skill_type random_skill()
+{
+    skill_type sk;
+    do {
+        sk = (skill_type) random_range(0, NUM_SKILLS - 1);
+    } while (is_removed_skill(sk));
+    return sk;
+}
+
+void bol_xi_aptitude_shuffle()
+{
+    for (int sk=0; sk<NUM_SKILLS; sk++)
+        you.bol_xi_apts[sk] = 0;
+    for (int i=0; i<5; i++)
+        you.bol_xi_apts[random_skill()] += random_range(4, 7) * (coinflip() ? 1 : -1);
+    for (int i=0; i<10; i++)
+        you.bol_xi_apts[random_skill()] += random_range(1, 3) * (coinflip() ? 1 : -1);
+    for (int i=0; i<100; i++)
+        you.bol_xi_apts[random_skill()] += coinflip() ? 1 : -1;
+    for (int i=0; i<NUM_SKILLS; i++)
+        you.bol_xi_apts[i] = min(9, max(-9, you.bol_xi_apts[i]));
 }

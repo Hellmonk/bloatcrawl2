@@ -2297,6 +2297,9 @@ static string _mon_special_name(const monster& mon, description_level_type desc,
 string monster::name(description_level_type desc, bool force_vis,
                      bool force_article) const
 {
+    if (you.has_mutation(MUT_BOL_XI) && has_ench(ENCH_BOL_XI_FEAR))
+        return "it";
+
     string s = _mon_special_name(*this, desc, force_vis);
     if (!s.empty() || desc == DESC_NONE)
         return s;

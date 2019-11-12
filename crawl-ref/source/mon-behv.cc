@@ -270,7 +270,7 @@ void handle_behaviour(monster* mon)
     bool proxFoe;
     bool isHealthy  = (mon->hit_points > mon->max_hit_points / 2);
     bool isSmart    = (mons_intel(*mon) >= I_HUMAN);
-    bool isScared   = mon->has_ench(ENCH_FEAR);
+    bool isScared   = mon->has_ench(ENCH_FEAR) || mon->has_ench(ENCH_BOL_XI_FEAR);
     bool isPacified = mon->pacified();
     bool patrolling = mon->is_patrolling();
     static vector<level_exit> e;
@@ -1108,10 +1108,14 @@ void behaviour_event(monster* mon, mon_event_type event, const actor *src,
         {
             mon->behaviour = BEH_RETREAT;
         }
-        else if (mon->has_ench(ENCH_FEAR))
+        else if (mon->has_ench(ENCH_FEAR) || mon->has_ench(ENCH_BOL_XI_FEAR))
         {
             // self-attacks probably shouldn't break fear.
             if (src == mon)
+                break;
+
+            // can't be broken
+            if (mon->has_ench(ENCH_BOL_XI_FEAR))
                 break;
 
             if (you.can_see(*mon))
@@ -1245,6 +1249,10 @@ void behaviour_event(monster* mon, mon_event_type event, const actor *src,
 
         // Pacified monsters shouldn't change their behaviour.
         if (mon->pacified())
+            break;
+
+        // Can't break Bol Xi fear
+        if (mon->has_ench(ENCH_BOL_XI_FEAR))
             break;
 
         // If we were already cornered last turn, give up on trying to flee

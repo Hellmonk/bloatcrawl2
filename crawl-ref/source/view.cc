@@ -140,6 +140,7 @@ void seen_monsters_react(int stealth)
             && check_awaken(*mi, stealth))
         {
             behaviour_event(*mi, ME_ALERT, &you, you.pos(), false);
+            bol_xi_affect_mon(*mi);
 
             // That might have caused a pacified monster to leave the level.
             if (!(*mi)->alive())

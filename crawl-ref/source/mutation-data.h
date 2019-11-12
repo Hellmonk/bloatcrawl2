@@ -2087,6 +2087,13 @@ static const mutation_def mut_data[] =
    {"", "", ""},
 },
 
+{ MUT_BOL_XI, 0, 1, mutflag::good, true,
+   "stranger",
+
+   {"We are not of this world.", "", ""},
+   {"", "", ""},
+   {"", "", ""},
+},
 };
 
 static const mutation_category_def category_mut_data[] =
