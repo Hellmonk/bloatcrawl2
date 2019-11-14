@@ -3680,6 +3680,11 @@ static mutation_type _random_valid_sacrifice(const vector<mutation_type> &muts)
         // No potion heal doesn't affect mummies since they can't quaff potions
         if (mut == MUT_NO_POTION_HEAL && you.undead_state() == US_UNDEAD)
             continue;
+        
+        // Ancient Gnolls can't get stat-changing mutations
+        if ((mut == MUT_DOPEY || mut == MUT_WEAK || mut == MUT_CLUMSY)
+            && you.species == SP_ANCIENT_GNOLL)
+            continue;
 
         // The Grunt Algorithm
         // (choose a random element from a set of unknown size without building

@@ -3548,6 +3548,8 @@ bool is_useless_item(const item_def &item, bool temp)
         case POT_INVISIBILITY:
             return _invisibility_is_useless(temp);
         }
+        case POT_DEGENERATION:
+            return you.species == SP_ANCIENT_GNOLL;
 
         return false;
     }
@@ -3623,6 +3625,11 @@ bool is_useless_item(const item_def &item, bool temp)
 
         case RING_STEALTH:
             return you.get_mutation_level(MUT_NO_STEALTH);
+
+        case RING_STRENGTH:
+        case RING_INTELLIGENCE:
+        case RING_DEXTERITY:
+            return you.species == SP_ANCIENT_GNOLL;
 
         case RING_PROTECTION_FROM_COLD:
         case RING_PROTECTION_FROM_FIRE:

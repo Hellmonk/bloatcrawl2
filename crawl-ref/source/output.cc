@@ -810,6 +810,10 @@ static void _print_stats_hp(int x, int y)
 
 static short _get_stat_colour(stat_type stat)
 {
+    // If player is Ancient Gnoll, stats don't change; always return HUD_VALUE_COLOUR
+    if (you.species == SP_ANCIENT_GNOLL)
+        return HUD_VALUE_COLOUR;
+    
     if (you.duration[stat_zero_duration(stat)])
         return LIGHTRED;
 

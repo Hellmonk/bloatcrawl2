@@ -105,6 +105,9 @@ static void _handle_stat_change(stat_type stat);
  */
 bool attribute_increase()
 {
+    if (you.species == SP_ANCIENT_GNOLL)
+        return true;
+    
     const string stat_gain_message = make_stringf("Your experience leads to a%s "
                                                   "increase in your attributes!",
                                                   you.species == SP_DEMIGOD ?
@@ -487,6 +490,9 @@ void modify_stat(stat_type which_stat, int amount, bool suppress_msg)
 
 void notify_stat_change(stat_type which_stat, int amount, bool suppress_msg)
 {
+    if (you.species == SP_ANCIENT_GNOLL)
+        return;
+    
     ASSERT(!crawl_state.game_is_arena());
 
     // sanity - is non-zero amount?
@@ -523,6 +529,9 @@ static int _mut_level(mutation_type mut, bool innate_only)
 
 static int _strength_modifier(bool innate_only)
 {
+    if (you.species == SP_ANCIENT_GNOLL)
+        return 0;
+    
     int result = 0;
 
     if (!innate_only)
@@ -564,6 +573,10 @@ static int _strength_modifier(bool innate_only)
 
 static int _int_modifier(bool innate_only)
 {
+    
+    if (you.species == SP_ANCIENT_GNOLL)
+        return 0;
+    
     int result = 0;
 
     if (!innate_only)
@@ -598,6 +611,10 @@ static int _int_modifier(bool innate_only)
 
 static int _dex_modifier(bool innate_only)
 {
+    
+    if (you.species == SP_ANCIENT_GNOLL)
+        return 0;
+    
     int result = 0;
 
     if (!innate_only)
@@ -675,6 +692,9 @@ int stat_loss_roll()
 bool lose_stat(stat_type which_stat, int stat_loss, bool force)
 {
     if (stat_loss <= 0)
+        return false;
+    
+    if (you.species == SP_ANCIENT_GNOLL)
         return false;
 
     if (which_stat == STAT_RANDOM)

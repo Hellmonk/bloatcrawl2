@@ -1,4 +1,9 @@
 %%%%
+Ancient Gnoll
+
+Ancient Gnolls are distant ancestors of the common Gnoll, once thought extinct.
+They train skills freely but cannot alter their physical attributes.
+%%%%
 Astral
 
 Strange beings from beyond the stars, Astrals cannot gain resistances to magic 

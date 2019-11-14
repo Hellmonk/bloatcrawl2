@@ -2442,7 +2442,8 @@ static void _gain_piety_point()
         update_player_symbol();
 
     if (have_passive(passive_t::stat_boost)
-        && chei_stat_boost(old_piety) < chei_stat_boost())
+        && chei_stat_boost(old_piety) < chei_stat_boost()
+        && you.species != SP_ANCIENT_GNOLL)
     {
         string msg = " raises the support of your attributes";
         if (have_passive(passive_t::slowed))
@@ -3590,9 +3591,12 @@ static void _join_pakellas()
 // Setup for joining the easygoing followers of Cheibriados.
 static void _join_cheibriados()
 {
-    simple_god_message(" begins to support your attributes as your "
+    if (you.species != SP_ANCIENT_GNOLL)
+    {
+        simple_god_message(" begins to support your attributes as your "
                        "movement slows.");
-    notify_stat_change();
+        notify_stat_change();
+    }
 }
 
 /// What special things happen when you join a god?
