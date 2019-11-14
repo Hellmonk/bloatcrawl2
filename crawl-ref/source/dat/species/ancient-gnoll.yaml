@@ -1,0 +1,59 @@
+enum: SP_ANCIENT_GNOLL
+monster: MONS_GNOLL
+name: "Ancient Gnoll"
+short_name: AG
+difficulty: Intermediate
+difficulty_priority: 10
+aptitudes:
+  xp: 0
+  hp: 0
+  mp_mod: 0
+  mr: 3
+  fighting: 3
+  short_blades: 3
+  long_blades: 3
+  axes: 3
+  maces_and_flails: 3
+  polearms: 3
+  staves: 3
+  slings: 3
+  bows: 3
+  crossbows: 3
+  throwing: 3
+  armour: 3
+  dodging: 3
+  stealth: 3
+  shields: 3
+  unarmed_combat: 3
+  spellcasting: 3
+  conjurations: 3
+  hexes: 3
+  charms: 3
+  summoning: 3
+  necromancy: 3
+  translocations: 3
+  transmutations: 3
+  fire_magic: 3
+  ice_magic: 3
+  air_magic: 3
+  earth_magic: 3
+  poison_magic: 3
+  invocations: 3
+  evocations: 3
+str: 7
+int: 7
+dex: 7
+levelup_stat_frequency: 28
+mutations:
+  1:
+    MUT_STRONG_NOSE: 1
+    MUT_FANGS: 1
+fake_mutations:
+  - long: Your physical attributes cannot change through any means.
+    short: locked stats
+recommended_jobs:
+  - JOB_SKALD
+  - JOB_WARPER
+  - JOB_ARCANE_MARKSMAN
+  - JOB_TRANSMUTER
+  - JOB_WANDERER
