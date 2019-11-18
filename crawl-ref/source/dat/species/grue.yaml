@@ -1,0 +1,64 @@
+enum: SP_GRUE
+monster: MONS_GHOUL
+name: "Grue"
+short_name: "Gu"
+difficulty: Simple
+aptitudes:
+  xp: 0
+  hp: 0
+  mp_mod: 0
+  mr: 3
+  fighting: 0
+  short_blades: 0
+  long_blades: 0
+  axes: 0
+  maces_and_flails: 0
+  polearms: -2
+  staves: 0
+  slings: -2
+  bows: -2
+  crossbows: -2
+  throwing: -2
+  armour: -1
+  dodging: -1
+  stealth: 3
+  shields: -1
+  unarmed_combat: 1
+  spellcasting: -1
+  conjurations: -1
+  hexes: -1
+  charms: 0
+  summoning: -2
+  necromancy: 0
+  translocations: 1
+  transmutations: 1
+  fire_magic: 0
+  ice_magic: 0
+  air_magic: -1
+  earth_magic: 0
+  poison_magic: 1
+  invocations: -1
+  evocations: 0
+str: 9
+int: 7
+dex: 10
+levelup_stat_frequency: 5
+levelup_stats:
+  - str
+  - dex
+mutations:
+  1:
+    MUT_NIGHTSTALKER: 1
+  11:
+    MUT_NIGHTSTALKER: 1
+  21:
+    MUT_NIGHTSTALKER: 1
+fake_mutations:
+  - short: devour enemies
+    long: You can devour your enemies.
+recommended_jobs:
+  - JOB_ASSASSIN
+  - JOB_EARTH_ELEMENTALIST
+  - JOB_GLADIATOR
+  - JOB_TRANSMUTER
+  - JOB_VENOM_MAGE

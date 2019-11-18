@@ -78,6 +78,11 @@ Gnoll
 Gnolls are canine-like humanoids. They have incredible proficiency and
 excellent physical attributes, but must learn all skills at once.
 %%%%
+Grue
+
+Grues are stealthy predators that are adapted to life in the darkness. They can
+devour their foes whole and slip further into the shadows as they grow.
+%%%%
 Halfling
 
 Small but hardy, Halflings excel with slings. They have an increased resistance
