@@ -1,6 +1,7 @@
 enum: SP_BOL_XI
 monster: MONS_ANCIENT_ZYME
 name: Bol Xi
+short_name: BX
 difficulty: Advanced
 aptitudes:
   xp: 0
