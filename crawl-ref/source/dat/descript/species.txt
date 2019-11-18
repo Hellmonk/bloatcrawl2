@@ -29,6 +29,11 @@ Centaur
 Swift, strong and bulky, Centaurs are particularly skilled with ranged
 weaponry.
 %%%%
+Crystal Dwarf
+
+Crystal Dwarves have reflective, crystalline skin that naturally shields them.
+They are frailer than other dwarves, but adept at elemental magic.
+%%%%
 Dab Dwarf
 
 Dab Dwarves have perfected the ancient art of dabbing. They can dab on multiple

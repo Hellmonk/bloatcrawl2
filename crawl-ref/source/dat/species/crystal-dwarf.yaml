@@ -1,0 +1,63 @@
+enum: SP_CRYSTAL_DWARF
+monster: MONS_DEEP_DWARF
+name: "Crystal Dwarf"
+short_name: "CD"
+adjective: "Dwarven"
+genus: "Dwarf"
+difficulty: Intermediate
+aptitudes:
+  xp: -1
+  hp: -2
+  mp_mod: 0
+  mr: 4
+  fighting: 0
+  short_blades: -1
+  long_blades: -1
+  axes: 1
+  maces_and_flails: -1
+  polearms: -1
+  staves: -1
+  slings: -1
+  bows: -1
+  crossbows: -1
+  throwing: -1
+  armour: 0
+  dodging: 0
+  stealth: 0
+  shields: 0
+  unarmed_combat: -1
+  spellcasting: -2
+  conjurations: -1
+  hexes: -2
+  charms: -2
+  summoning: -2
+  necromancy: -2
+  translocations: -2
+  transmutations: -2
+  fire_magic: 1
+  ice_magic: 1
+  air_magic: 1
+  earth_magic: 1
+  poison_magic: 1
+  invocations: 0
+  evocations: 0
+str: 9
+int: 9
+dex: 7
+levelup_stat_frequency: 4
+levelup_stats:
+  - str
+  - int
+fake_mutations:
+  - short: crystal skin
+    long: Your reflective crystalline skin shields you.
+recommended_jobs:
+  - JOB_FIGHTER
+  - JOB_FIRE_ELEMENTALIST
+  - JOB_EARTH_ELEMENTALIST
+  - JOB_AIR_ELEMENTALIST
+  - JOB_ICE_ELEMENTALIST
+  - JOB_VENOM_MAGE
+recommended_weapons:
+  - SK_AXES
+  - SK_CROSSBOWS

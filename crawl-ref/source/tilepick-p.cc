@@ -624,6 +624,8 @@ tileidx_t tilep_species_to_base_tile(int sp, int level)
     case SP_MERFOLK:
         return TILEP_BASE_MERFOLK;
     case SP_DEEP_DWARF:
+    case SP_DAB_DWARF:
+    case SP_CRYSTAL_DWARF:
         return TILEP_BASE_DEEP_DWARF;
     case SP_GARGOYLE:
         return TILEP_BASE_GARGOYLE;
