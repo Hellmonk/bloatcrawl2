@@ -30,7 +30,7 @@
 
 typedef enum
 {
-    JSON_nullptr,
+    JSON_NULL,
     JSON_BOOL,
     JSON_STRING,
     JSON_NUMBER,
@@ -83,8 +83,8 @@ bool        json_validate       (const char *json);
 
 /*** Lookup and traversal ***/
 
-JsonNode   *json_find_element   (JsonNode *array, int index);
-JsonNode   *json_find_member    (JsonNode *object, const char *key);
+JsonNode   *json_find_element   (const JsonNode *array, int index);
+JsonNode   *json_find_member    (const JsonNode *object, const char *key);
 
 JsonNode   *json_first_child    (const JsonNode *node);
 

@@ -1998,7 +1998,8 @@ bool load_level(dungeon_feature_type stair_taken, load_mode_type load_mode,
 
 static void _save_level(const level_id& lid)
 {
-    travel_cache.get_level_info(lid).update();
+    if (you.level_visited(lid))
+        travel_cache.get_level_info(lid).update();
 
     // Nail all items to the ground.
     fix_item_coordinates();
@@ -2664,7 +2665,8 @@ static bool _restore_game(const string& filename)
             you.save = 0;
             return false;
         }
-        crawl_state.default_startup_name = you.your_name; // for main menu
+        if (Options.remember_name)
+            crawl_state.default_startup_name = you.your_name; // for main menu
         you.save->abort();
         delete you.save;
         you.save = 0;
@@ -2690,7 +2692,8 @@ static bool _restore_game(const string& filename)
         }
     }
 
-    crawl_state.default_startup_name = you.your_name; // for main menu
+    if (Options.remember_name)
+        crawl_state.default_startup_name = you.your_name; // for main menu
 
     if (numcmp(you.prev_save_version.c_str(), Version::Long, 2) == -1
         && version_is_stable(you.prev_save_version.c_str()))
@@ -2844,13 +2847,22 @@ void level_excursion::go_to(const level_id& next)
 {
     if (level_id::current() != next)
     {
+        if (!you.level_visited(level_id::current()))
+            travel_cache.erase_level_info(level_id::current());
+
         ever_changed_levels = true;
 
         _save_level(level_id::current());
         _load_level(next);
 
-        LevelInfo &li = travel_cache.get_level_info(next);
-        li.set_level_excludes();
+        if (you.level_visited(next))
+        {
+            LevelInfo &li = travel_cache.get_level_info(next);
+            li.set_level_excludes();
+        }
+        // TODO: this won't clear excludes on an excursion to an unvisited
+        // level. Does this matter? Not right now, this case is only used for
+        // abyss procgen.
     }
 
     you.on_current_level = (level_id::current() == original);

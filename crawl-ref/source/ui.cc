@@ -539,10 +539,10 @@ void Text::wrap_text_to_size(int width, int height)
     if (height < (int)m_wrapped_lines.size())
     {
         auto& last_line = m_wrapped_lines[height-1], next_line = m_wrapped_lines[height];
-        last_line += formatted_string(" ");
+        last_line += " ";
         last_line += next_line;
         last_line = last_line.chop(width-2);
-        last_line += formatted_string("..");
+        last_line += "..";
         m_wrapped_lines.resize(height);
     }
     if (m_wrapped_lines.empty())
@@ -2215,9 +2215,12 @@ void pump_events(int wait_event_timeout)
 #endif
 }
 
-void run_layout(shared_ptr<Widget> root, const bool& done)
+void run_layout(shared_ptr<Widget> root, const bool& done,
+        shared_ptr<Widget> initial_focus)
 {
     push_layout(root);
+    if (initial_focus)
+        set_focused_widget(initial_focus.get());
     while (!done && !crawl_state.seen_hups)
         pump_events();
     pop_layout();

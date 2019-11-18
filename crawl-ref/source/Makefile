@@ -47,6 +47,7 @@
 #    USE_ICC       -- set to use Intel's compiler
 #    LTO           -- set for better optimization but slower compilation,
 #                     requires gcc4.6+
+#    NO_TRY_LLD    -- if set don't try to detect a working lld linker
 #    NO_TRY_GOLD   -- if set don't try to detect a working gold linker
 #    NOASSERTS     -- set to disable assertion checks (ignored in debug mode)
 #    NOWIZARD      -- set to disable wizard mode.  Use if you have untrusted
@@ -131,7 +132,7 @@ CFWARN_L += -Wextra \
 	    -Wno-type-limits \
 	    -Wno-uninitialized \
 
-DEFINES := -DTOURNEY='"0.24"' $(EXTERNAL_DEFINES)
+DEFINES := $(EXTERNAL_DEFINES)
 
 ifndef ANDROID
 LDFLAGS :=
@@ -1027,10 +1028,21 @@ CFWARN := -wd383,810,869,981,1418 -we14,193,304
 CFWARN_L :=
 endif
 
+LINKER_LDFLAG=
+ifndef NO_TRY_LLD
+ifeq (,$(shell echo 'int main(){return 1;}'|$(GXX) -x c++ - -o /dev/null -fuse-ld=lld 2>&1))
+ LINKER_LDFLAG = -fuse-ld=lld
+endif
+endif
+ifeq ($(LINKER_LDFLAG),)
 ifndef NO_TRY_GOLD
 ifeq (,$(shell echo 'int main(){return 1;}'|$(GXX) -x c++ - -o /dev/null -fuse-ld=gold 2>&1))
-  LDFLAGS += -fuse-ld=gold
+  LINKER_LDFLAG = -fuse-ld=gold
 endif
+endif
+endif
+ifneq ($(LINKER_LDFLAG),)
+LDFLAGS += $(LINKER_LDFLAG)
 endif
 
 LDFLAGS += $(CFOPTIMIZE) $(CFOPTIMIZE_L) $(EXTERNAL_LDFLAGS)
@@ -1298,7 +1310,8 @@ DEPS := $(ALL_OBJECTS:.o=.d)
 # That rebuild will overwrite the stopgap .d file with a good one for
 # the next build.
 ifndef NEED_REBUILD
-  VALID_DEPS := $(shell for x_d in $(DEPS); do \
+  VALID_DEPS := $(shell checkdep () { \
+                          x_d="$$1"; \
                           x="$${x_d%%.d}"; x_cc="$${x}.cc"; x_o="$${x}.o"; \
                           if [ "$$x_cc" -ot "$$x_d" \
                                -a "$$x_d" -nt .cflags ]; \
@@ -1307,6 +1320,9 @@ ifndef NEED_REBUILD
                               || echo "$$x_o: FORCE" > "$$x_d"; \
                             echo "$$x_d"; \
                           fi; \
+                        }; \
+                        for x_d in $(DEPS); do \
+                          checkdep "$$x_d" & \
                         done)
 endif
 -include $(VALID_DEPS)

@@ -671,7 +671,7 @@ public:
         {
             instructions_text +=
                     "<white>[tab]</white> quick-start last combo: "
-                    + defaults.name + " the "
+                    + (defaults.name.size() ? (defaults.name + " the ") : "")
                     + newgame_char_description(defaults) + "\n";
         }
         instructions_text +=
@@ -705,6 +705,7 @@ private:
     string input_string;
     vector<player_save_info> chars;
     int num_saves;
+    bool first_action = true;
 
     bool button_event_hook(const wm_event& ev, MenuButton* btn)
     {
@@ -834,6 +835,11 @@ void UIStartupMenu::on_show()
             replay_messages_during_startup();
             return true;
         }
+        else if (keyn == '*')
+        {
+            input_string = newgame_random_name();
+            changed_name = true;
+        }
         else if (keyn == CONTROL('U'))
         {
             input_string = "";
@@ -845,6 +851,7 @@ void UIStartupMenu::on_show()
         if (iswalnum(keyn) || keyn == '-' || keyn == '.'
             || keyn == '_' || keyn == ' ')
         {
+            first_action = false;
             if (strwidth(input_string) < MAX_NAME_LENGTH)
             {
                 input_string += stringize_glyph(keyn);
@@ -853,6 +860,12 @@ void UIStartupMenu::on_show()
         }
         else if (keyn == CK_BKSP)
         {
+            if (first_action)
+            {
+                first_action = false;
+                input_string = "";
+                changed_name = true;
+            }
             if (!input_string.empty())
             {
                 input_string.erase(input_string.size() - 1);
@@ -990,7 +1003,7 @@ bool startup_step()
     crawl_state.type = choice.type;
 
     newgame_def defaults = read_startup_prefs();
-    if (crawl_state.default_startup_name.size() == 0)
+    if (crawl_state.default_startup_name.size() == 0 && Options.remember_name)
         crawl_state.default_startup_name = defaults.name;
 
     // Set the crawl_state gametype to the requested game type. This must
@@ -1074,7 +1087,8 @@ bool startup_step()
                                     // setup_game.
         write_newgame_options_file(choice);
     }
-    crawl_state.default_startup_name = you.your_name;
+    if (Options.remember_name)
+        crawl_state.default_startup_name = you.your_name;
 
     _post_init(newchar);
 
