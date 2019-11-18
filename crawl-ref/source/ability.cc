@@ -15,10 +15,12 @@
 #include <sstream>
 
 #include "abyss.h"
+#include "act-iter.h"
 #include "acquire.h"
 #include "act-iter.h"
 #include "areas.h"
 #include "art-enum.h"
+#include "bloodspatter.h"
 #include "branch.h"
 #include "butcher.h"
 #include "chardump.h"
@@ -52,6 +54,8 @@
 #include "maps.h"
 #include "menu.h"
 #include "message.h"
+#include "mon-behv.h"
+#include "mon-death.h"
 #include "mon-place.h"
 #include "mutation.h"
 #include "notes.h"
@@ -170,6 +174,7 @@ enum class fail_basis
     xl,
     evo,
     invo,
+    bol_xi_end,
 };
 
 /**
@@ -244,6 +249,8 @@ struct failure_info
                 = piety_fail_denom ? you.piety / piety_fail_denom : 0;
             return base_chance - sk_mod - piety_mod;
         }
+        case fail_basis::bol_xi_end:
+            return 100 * you.bol_xi_end_uses / (you.bol_xi_end_uses + 1);
         default:
             die("unknown failure basis %d!", (int)basis);
         }
@@ -342,6 +349,8 @@ static const ability_def Ability_List[] =
     { ABIL_POWERSQUAT, "Powersquat", 0, 0, 0, 0, {}, abflag::none },
 
     { ABIL_ARGON_FLASH, "Argon Flash", 0, 0, 0, 0, {}, abflag::argon_flash },
+
+    { ABIL_BOL_XI_END, "End", 0, 0, 0, 0, {fail_basis::bol_xi_end, 100}, abflag::pain },
 
     // EVOKE abilities use Evocations and come from items.
     // Teleportation and Blink can also come from mutations
@@ -2054,6 +2063,81 @@ static spret _do_ability(const ability_def& abil, bool fail)
         }
         break;
 
+    case ABIL_BOL_XI_END:
+    {
+        set_hp(1);
+        fail_check();
+        you.bol_xi_end_uses++;
+        mprf(MSGCH_ORB, "You think of home.");
+        flash_view_delay(UA_HP, LIGHTMAGENTA, 200);
+
+        enum end_effect
+        {
+            VANISH,
+            BLOOD,
+            STATUE,
+            FEAR,
+            ZOMBIFY,
+        };
+
+        for (monster_iterator mi; mi; ++mi)
+        {
+            if (!you.can_see(**mi))
+                continue;
+
+            const end_effect choice = random_choose_weighted(
+                55, VANISH,
+                15, BLOOD,
+                15, STATUE,
+                15, FEAR,
+                5, ZOMBIFY);
+            switch (choice)
+            {
+                case VANISH:
+                    monster_die(**mi, KILL_RESET, NON_MONSTER);
+                    break;
+                case BLOOD:
+                    blood_spray(mi->pos(), mi->type, 20);
+                    monster_die(**mi, KILL_RESET, NON_MONSTER);
+                    break;
+                case STATUE:
+                {
+                    const coord_def where = mi->pos();
+                    const monster_type pillar_type = mons_species(mi->type);
+                    monster_die(**mi, KILL_RESET, NON_MONSTER);
+                    create_monster(mgen_data(
+                        coinflip() ? MONS_PILLAR_OF_SALT : MONS_BLOCK_OF_ICE,
+                        BEH_HOSTILE,
+                        where,
+                        MHITNOT,
+                        MG_FORCE_PLACE).set_base(pillar_type),
+                        false);
+                    break;
+                }
+                case FEAR:
+                    mi->add_ench(mon_enchant(ENCH_BOL_XI_FEAR, 0, &you));
+                    behaviour_event(*mi, ME_SCARE, &you);
+                    break;
+                // Neutral zombie
+                case ZOMBIFY:
+                {
+                    const coord_def where = mi->pos();
+                    const monster_type pillar_type = mons_species(mi->type);
+                    monster_die(**mi, KILL_RESET, NON_MONSTER);
+                    create_monster(mgen_data(
+                        random_choose(MONS_ZOMBIE, MONS_SKELETON),
+                        BEH_NEUTRAL,
+                        where,
+                        MHITNOT,
+                        MG_FORCE_PLACE).set_base(pillar_type),
+                        false);
+                    break;
+                }
+            }
+        }
+        break;
+    }
+
     case ABIL_SPIT_POISON:      // Naga poison spit
     {
         int power = 10 + you.experience_level;
@@ -3570,6 +3654,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
 
     if (you.get_mutation_level(MUT_POWERSQUAT))
         _add_talent(talents, ABIL_POWERSQUAT, check_confused);
+
+    if (you.has_mutation(MUT_BOL_XI))
+        _add_talent(talents, ABIL_BOL_XI_END, check_confused);
 
     // Spit Poison, possibly upgraded to Breathe Poison.
     if (you.get_mutation_level(MUT_SPIT_POISON) == 2)

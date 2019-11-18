@@ -56,8 +56,11 @@ enum ability_type
     ABIL_HOP,
     ABIL_CHARM,
     ABIL_POWERSQUAT,
+    // Argon
     ABIL_ARGON_FLASH,
-    ABIL_MAX_INTRINSIC = ABIL_ARGON_FLASH,
+    // Bol Xi
+    ABIL_BOL_XI_END,
+    ABIL_MAX_INTRINSIC = ABIL_BOL_XI_END,
 
     // Evoking items.
     ABIL_EVOKE_BERSERK = 40,

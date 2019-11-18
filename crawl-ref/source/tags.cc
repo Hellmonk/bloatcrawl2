@@ -1387,6 +1387,9 @@ static void tag_construct_char(writer &th)
     marshallByte(th, you.vaporous_resistance_elec);
     marshallByte(th, you.vaporous_resistance_poison);
     marshallByte(th, you.argon_flashes_available);
+    for (int i=0; i<NUM_SKILLS; i++)
+        marshallByte(th, you.bol_xi_apts[i]);
+    marshallBoolean(th, you.bol_xi_end_uses);
 }
 
 /// is a custom scoring mechanism being stored?
@@ -2317,6 +2320,9 @@ void tag_read_char(reader &th, uint8_t /*format*/, uint8_t major, uint8_t minor)
     you.vaporous_resistance_elec = unmarshallByte(th);
     you.vaporous_resistance_poison = unmarshallByte(th);
     you.argon_flashes_available = unmarshallByte(th);
+    for (int i=0; i<NUM_SKILLS; i++)
+        you.bol_xi_apts[i] = unmarshallByte(th);
+    you.bol_xi_end_uses = unmarshallBoolean(th);
 }
 
 #if TAG_MAJOR_VERSION == 34

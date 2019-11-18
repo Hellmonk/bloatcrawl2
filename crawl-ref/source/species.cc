@@ -380,6 +380,9 @@ void species_stat_init(species_type species)
     you.base_stats[STAT_STR] = get_species_def(species).s;
     you.base_stats[STAT_INT] = get_species_def(species).i;
     you.base_stats[STAT_DEX] = get_species_def(species).d;
+
+    if (species == SP_BOL_XI)
+        bol_xi_stat_shuffle();
 }
 
 void species_stat_gain(species_type species)

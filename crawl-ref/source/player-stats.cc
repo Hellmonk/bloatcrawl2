@@ -847,3 +847,23 @@ bool have_stat_zero()
 
     return false;
 }
+
+void bol_xi_stat_shuffle()
+{
+    if (!you.has_mutation(MUT_BOL_XI))
+        return;
+    // 36 base + 1/every 3rd level
+    you.base_stats[STAT_STR] = 0;
+    you.base_stats[STAT_INT] = 0;
+    you.base_stats[STAT_DEX] = 0;
+    for (int i = 0; i < 4; i++)
+        you.base_stats[random_choose(STAT_STR, STAT_INT, STAT_DEX)] += 7;
+    for (int i = 0; i < (8 + (you.experience_level / 3)); i++)
+        you.base_stats[random_choose(STAT_STR, STAT_INT, STAT_DEX)]++;
+    for (int i = 0; i < NUM_STATS; i++)
+        if (you.base_stats[i] == 0)
+            you.base_stats[i] = 1;
+    you.redraw_stats[STAT_STR] = true;
+    you.redraw_stats[STAT_INT] = true;
+    you.redraw_stats[STAT_DEX] = true;
+}

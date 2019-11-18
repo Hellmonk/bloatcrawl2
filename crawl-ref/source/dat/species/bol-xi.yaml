@@ -1,0 +1,51 @@
+enum: SP_BOL_XI
+monster: MONS_ANCIENT_ZYME
+name: Bol Xi
+difficulty: Advanced
+aptitudes:
+  xp: 0
+  hp: 0
+  mp_mod: 0
+  mr: 3
+  fighting: -9
+  short_blades: -9
+  long_blades: -9
+  axes: -9
+  maces_and_flails: -9
+  polearms: -9
+  staves: -9
+  unarmed_combat: -9
+  slings: -9
+  bows: -9
+  crossbows: -9
+  throwing: -9
+  armour: -9
+  dodging: -9
+  stealth: -9
+  shields: -9
+  spellcasting: -9
+  conjurations: -9
+  hexes: -9
+  charms: -9
+  summoning: -9
+  necromancy: -9
+  translocations: -9
+  transmutations: -9
+  fire_magic: -9
+  ice_magic: -9
+  air_magic: -9
+  earth_magic: -9
+  poison_magic: -9
+  invocations: -9
+  evocations: -9
+str: 8
+int: 8
+dex: 8
+levelup_stat_frequency: 4
+mutations:
+  1:
+    MUT_UNBREATHING: 1
+    MUT_BOL_XI: 1
+    MUT_MUTATION_RESISTANCE: 3
+recommended_jobs:
+  - JOB_WANDERER

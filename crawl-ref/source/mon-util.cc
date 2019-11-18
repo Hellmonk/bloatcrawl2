@@ -5707,3 +5707,18 @@ bool apply_visible_monsters(monster_func f, const coord_def& where, los_type los
 {
     return _apply_to_monsters(f, radius_iterator(where, los, true));
 }
+
+void bol_xi_affect_mon(monster* mons)
+{
+    if (you.has_mutation(MUT_BOL_XI)
+        && one_chance_in(20)
+        && !mons_is_firewood(*mons)
+        && !mons->asleep()
+        && !mons->confused()
+        && !mons->is_stationary()
+        && !mons->berserk())
+    {
+        mons->add_ench(mon_enchant(ENCH_BOL_XI_FEAR, 0, &you));
+        behaviour_event(mons, ME_SCARE, &you);
+    }
+}

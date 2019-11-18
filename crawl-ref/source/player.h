@@ -133,6 +133,9 @@ public:
 
     bool shapeshifter_species;
 
+    int bol_xi_apts[NUM_SKILLS];
+    int bol_xi_end_uses;
+
     // This field is here even in non-WIZARD compiles, since the
     // player might have been playing previously under wiz mode.
     bool          wizard;            // true if player has entered wiz mode.
