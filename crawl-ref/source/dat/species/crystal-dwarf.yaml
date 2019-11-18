@@ -49,8 +49,8 @@ levelup_stats:
   - str
   - int
 fake_mutations:
-  - short: crystal skin
-    long: Your reflective crystalline skin shields you.
+  - long: Your reflective crystalline skin shields you.
+    short: crystal skin
 recommended_jobs:
   - JOB_FIGHTER
   - JOB_FIRE_ELEMENTALIST

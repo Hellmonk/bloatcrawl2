@@ -2,6 +2,8 @@ enum: SP_GRUE
 monster: MONS_GHOUL
 name: "Grue"
 short_name: "Gu"
+adjective: "Gruesome"
+genus: "Grue"
 difficulty: Simple
 aptitudes:
   xp: 0
@@ -54,8 +56,8 @@ mutations:
   21:
     MUT_NIGHTSTALKER: 1
 fake_mutations:
-  - short: devour enemies
-    long: You can devour your enemies.
+  - long: You can devour your enemies.
+    short: devour enemies
 recommended_jobs:
   - JOB_ASSASSIN
   - JOB_EARTH_ELEMENTALIST

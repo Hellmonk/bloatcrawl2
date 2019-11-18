@@ -4,6 +4,11 @@ Ancient Gnoll
 Ancient Gnolls are distant ancestors of the common Gnoll, once thought extinct.
 They train skills freely but cannot alter their physical attributes.
 %%%%
+Angel
+
+Angels are graceful, holy beings created by The Shining One. Most angels continue
+to serve their maker, but they are free to follow another god if they wish.
+%%%%
 Astral
 
 Strange beings from beyond the stars, Astrals cannot gain resistances to magic 
