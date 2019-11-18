@@ -491,9 +491,13 @@ void give_items_skills(const newgame_def& ng)
         break;
 
     case JOB_DEATH_BISHOP:
+    {
         you.religion = GOD_YREDELEMNUL;
         add_spell_to_memory(SPELL_PAIN);
         you.piety = 35;
+        if (you.species == SP_ANGEL)
+            you.species = static_cast<species_type>(SP_PROFANE_SERVITOR);
+    }
         break;
 
     case JOB_GAMBLER:

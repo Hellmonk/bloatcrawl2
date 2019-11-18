@@ -2809,6 +2809,11 @@ void excommunication(bool voluntary, god_type new_god)
             add_daction(DACT_ALLY_YRED_SLAVE);
             remove_all_companions(GOD_YREDELEMNUL);
         }
+        if (you.species == SP_PROFANE_SERVITOR)
+        {
+            you.species = static_cast<species_type>(SP_ANGEL);
+            redraw_screen();
+        }
         break;
 
     case GOD_VEHUMET:
@@ -3678,6 +3683,9 @@ void join_religion(god_type which_god)
     const function<void ()> *join_effect = map_find(on_join, you.religion);
     if (join_effect != nullptr)
         (*join_effect)();
+
+    if(you.species == SP_ANGEL && you_worship(GOD_YREDELEMNUL))
+        you.species = static_cast<species_type>(SP_PROFANE_SERVITOR);
 
     // after join_effect() so that gozag's service fee is right for monks
     if (you.worshipped[you.religion] < 100)
