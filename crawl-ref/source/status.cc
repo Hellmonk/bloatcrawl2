@@ -849,7 +849,7 @@ static void _describe_regen(status_info& inf)
         }
         _mark_expiring(inf, dur_expiring(DUR_REGENERATION));
     }
-    else if (you.species == SP_VAMPIRE && you.vampire_alive)
+    else if (you.undead_modifier == US_SEMI_UNDEAD && you.vampire_alive)
     {
         inf.short_text = you.disease ? "recuperating" : "regenerating";
         inf.short_text += " quickly";

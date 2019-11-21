@@ -389,7 +389,7 @@ mutation_activity_type mutation_activity_level(mutation_type mut)
     }
 #endif
 
-    if (mut == MUT_BERSERK && you.species == SP_VAMPIRE && !you.vampire_alive)
+    if (mut == MUT_BERSERK && you.undead_modifier != US_ALIVE && !you.vampire_alive)
         return mutation_activity_type::INACTIVE;
 
     if (!form_can_bleed(you.form) && mut == MUT_SANGUINE_ARMOUR)
