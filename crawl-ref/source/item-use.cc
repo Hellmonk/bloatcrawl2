@@ -858,6 +858,13 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
             mpr("You can't wear that!");
         return false;
     }
+    
+    if (you.species == SP_EXTINGUISHER && slot == EQ_SHIELD)
+    {
+        if (verbose)
+            mpr("You don't understand the use of that!");
+        return false;
+    }
 
     if (you.species == SP_FAERIE_DRAGON && slot == EQ_BODY_ARMOUR)
     {

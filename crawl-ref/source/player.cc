@@ -2413,6 +2413,9 @@ int player_wizardry(spell_type /*spell*/)
  */
 int player_shield_class()
 {
+    if (you.species == SP_EXTINGUISHER)
+        return 0;
+    
     int shield = 0;
 
     if (you.incapacitated())
@@ -3857,6 +3860,13 @@ unsigned int exp_needed(int lev, int exp_apt)
     return (unsigned int) ((level - 1) * apt_to_factor(exp_apt - 1));
 }
 
+int extinguisher_slaying_bonus()
+{
+    if (you.species != SP_EXTINGUISHER)
+        return 0;
+    return _player_evasion(ev_ignore::helpless);
+}
+
 // returns bonuses from rings of slaying, etc.
 int slaying_bonus(bool ranged)
 {
@@ -3876,6 +3886,8 @@ int slaying_bonus(bool ranged)
         ret -= you.props[HORROR_PENALTY_KEY].get_int();
 
     ret += you.attribute[ATTR_HEAVENLY_STORM];
+    
+    ret += extinguisher_slaying_bonus();
 
     return ret;
 }
@@ -6371,6 +6383,9 @@ int player::evasion(ev_ignore_type evit, const actor* act) const
     const bool attacker_invis = act && !act->visible_to(this);
     const int invis_penalty
         = attacker_invis && !testbits(evit, ev_ignore::helpless) ? 10 : 0;
+        
+    if (you.species == SP_EXTINGUISHER)
+        return 0;
 
     return base_evasion - constrict_penalty - invis_penalty;
 }

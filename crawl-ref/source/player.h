@@ -1055,6 +1055,7 @@ int player_teleport(bool calc_unid = true);
 
 int player_monster_detect_radius();
 
+int extinguisher_slaying_bonus();
 int slaying_bonus(bool ranged = false);
 
 unsigned int exp_needed(int lev, int exp_apt = -99);

@@ -153,6 +153,7 @@ static bool _fill_inf_from_ddef(duration_type dur, status_info& inf)
 }
 
 static void _describe_airborne(status_info& inf);
+static void _extinguisher_slaying(status_info& inf);
 static void _describe_glow(status_info& inf);
 static void _describe_hunger(status_info& inf);
 static void _describe_regen(status_info& inf);
@@ -700,6 +701,13 @@ bool fill_status_info(int status, status_info& inf)
             inf.light_text = "-Clouds";
         }
         break;
+        
+    case STATUS_EXTINGUISHER_SLAY:
+    {
+        if (you.species == SP_EXTINGUISHER)
+            _extinguisher_slaying(inf);
+        break;
+    }
 
     default:
         if (!found)
@@ -713,6 +721,7 @@ bool fill_status_info(int status, status_info& inf)
         else
             break;
     }
+    
     return true;
 }
 
@@ -774,6 +783,16 @@ static void _describe_hunger(status_info& inf)
     case HS_SATIATED: // no status light
     default:
         break;
+    }
+}
+
+static void _extinguisher_slaying(status_info& inf)
+{
+    if (you.species == SP_EXTINGUISHER)
+    {
+        inf.light_colour = YELLOW;
+        int slay_amt = extinguisher_slaying_bonus();
+        inf.light_text = "Slaying (" + to_string(slay_amt) + ")";
     }
 }
 

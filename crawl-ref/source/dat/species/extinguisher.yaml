@@ -1,0 +1,58 @@
+enum: SP_EXTINGUISHER
+monster: MONS_EXECUTIONER
+name: Extinguisher
+short_name: Ex
+difficulty: Advanced
+aptitudes:
+  xp: 0
+  hp: 0
+  mp_mod: 0
+  mr: 3
+  fighting: 0
+  short_blades: -2
+  long_blades: -2
+  axes: -2
+  maces_and_flails: -2
+  polearms: -2
+  staves: -2
+  unarmed_combat: -2
+  slings: -2
+  bows: -2
+  crossbows: -2
+  throwing: -2
+  armour: -2
+  dodging: 0
+  stealth: 0
+  shields: False
+  spellcasting: 0
+  conjurations: 0
+  hexes: 0
+  charms: 0
+  summoning: 0
+  necromancy: 0
+  translocations: 0
+  transmutations: 0
+  fire_magic: 0
+  ice_magic: 0
+  air_magic: 0
+  earth_magic: 0
+  poison_magic: 0
+  invocations: 0
+  evocations: 0
+str: 8
+int: 8
+dex: 8
+levelup_stat_frequency: 4
+mutations:
+  1:
+    MUT_TORMENT_RESISTANCE: 1
+    MUT_DEFORMED: 1
+    MUT_NEGATIVE_ENERGY_RESISTANCE: 3
+recommended_jobs:
+  - JOB_HUNTER
+  - JOB_ARCANE_MARKSMAN
+fake_mutations:
+  - long: Your evasion becomes bonus slaying
+    short: no evasion; bonus slaying
+  - long: You are incapable of blocking attacks
+    short: no blocking

@@ -68,6 +68,11 @@ Draconian
 Draconians are versatile hybrids. They mature when reaching level 7 and develop
 a colour.
 %%%%
+Extinguisher
+
+Turbo demons from Ultra Hell, Extinguishers are incapable of blocking attacks.
+They consider "evasion" to be a method of slaying things faster.
+%%%%
 Formicid
 
 Formicids are humanoid ants adept at digging. Their limbs are exceptionally
