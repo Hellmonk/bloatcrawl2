@@ -2830,6 +2830,20 @@ static void _felid_extra_life()
     }
 }
 
+static void _januvian_aspect_change()
+{
+    if (you.species == SP_JANUVIAN)
+    {
+        you.species = static_cast<species_type>(SP_JATWOVIAN);
+        mprf("You feel magically adept as your aspect changes.");
+    }
+    else if (you.species == SP_JATWOVIAN)
+    {
+        you.species = static_cast<species_type>(SP_JANUVIAN);
+        mprf("You feel physically adept as your aspect changes.");
+    }
+}
+
 static void _gain_and_note_hp_mp()
 {
     const int old_mp = you.magic_points;
@@ -3199,6 +3213,11 @@ void level_change(bool skip_attribute_increase)
             case SP_FELID:
                 _felid_extra_life();
                 break;
+                
+            case SP_JANUVIAN:
+            case SP_JATWOVIAN:
+                _januvian_aspect_change();
+                break;
 
             case SP_ARGON:
                 mpr("You gain enough energy for another flash.");
@@ -3332,6 +3351,8 @@ void level_change(bool skip_attribute_increase)
         you.max_level++;
         if (you.species == SP_FELID)
             _felid_extra_life();
+        if (you.species == SP_JANUVIAN || you.species == SP_JATWOVIAN)
+            _januvian_aspect_change();
         if (you.shapeshifter_species)
             update_shapeshifter_species();
         if (you.species == SP_ARGON)
