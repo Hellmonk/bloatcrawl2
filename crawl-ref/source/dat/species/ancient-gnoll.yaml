@@ -44,6 +44,7 @@ str: 7
 int: 7
 dex: 7
 levelup_stat_frequency: 28
+levelup_stats: []
 mutations:
   1:
     MUT_STRONG_NOSE: 1
