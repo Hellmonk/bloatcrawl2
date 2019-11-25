@@ -71,7 +71,7 @@ void formatted_scroller::scroll_to_end()
 int formatted_scroller::show()
 {
     auto vbox = make_shared<Box>(Widget::VERT);
-    vbox->align_cross = Widget::Align::STRETCH;
+    vbox->set_cross_alignment(Widget::Align::STRETCH);
 
     if (!m_title.empty())
     {
@@ -81,7 +81,7 @@ int formatted_scroller::show()
         title->set_margin_for_sdl(0, 0, 20, 0);
         auto title_hbox = make_shared<Box>(Widget::HORZ);
 #ifdef USE_TILE_LOCAL
-        title_hbox->align_main = Widget::Align::CENTER;
+        title_hbox->set_main_alignment(Widget::Align::CENTER);
 #endif
         title_hbox->add_child(move(title));
         vbox->add_child(move(title_hbox));
@@ -118,10 +118,8 @@ int formatted_scroller::show()
 
     m_contents_dirty = false;
     bool done = false;
-    popup->on(Widget::slots.event, [&done, &text, this](wm_event ev) {
-        if (ev.type != WME_KEYDOWN)
-            return false; // allow default event handling
-        m_lastch = ev.key.keysym.sym;
+    popup->on_keydown_event([&done, &text, this](const KeyEvent& ev) {
+        m_lastch = ev.key();
         done = !process_key(m_lastch);
         if (m_contents_dirty)
         {

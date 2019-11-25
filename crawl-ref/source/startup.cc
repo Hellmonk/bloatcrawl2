@@ -433,7 +433,7 @@ static void _construct_game_modes_menu(shared_ptr<OuterMenu>& container)
 
 #ifdef USE_TILE_LOCAL
         auto hbox = make_shared<Box>(Box::HORZ);
-        hbox->align_cross = Widget::Align::CENTER;
+        hbox->set_cross_alignment(Widget::Align::CENTER);
         auto tile = make_shared<Image>();
         tile->set_tile(tile_def(tileidx_gametype(entry.id), TEX_GUI));
         tile->set_margin_for_sdl(0, 6, 0, 0);
@@ -463,7 +463,7 @@ static shared_ptr<MenuButton> _make_newgame_button(int num_chars)
 
 #ifdef USE_TILE_LOCAL
     auto hbox = make_shared<Box>(Box::HORZ);
-    hbox->align_cross = Widget::Align::CENTER;
+    hbox->set_cross_alignment(Widget::Align::CENTER);
     hbox->add_child(label);
     label->set_margin_for_sdl(0,0,0,TILE_Y+6);
     hbox->min_size().height = TILE_Y;
@@ -487,7 +487,7 @@ static void _construct_save_games_menu(shared_ptr<OuterMenu>& container,
     for (unsigned int i = 0; i < chars.size(); ++i)
     {
         auto hbox = make_shared<Box>(Box::HORZ);
-        hbox->align_cross = Widget::Align::CENTER;
+        hbox->set_cross_alignment(Widget::Align::CENTER);
 
 #ifdef USE_TILE_LOCAL
         auto tile = make_shared<ui::PlayerDoll>(chars.at(i).doll);
@@ -562,8 +562,8 @@ public:
         input_string = crawl_state.default_startup_name;
 
         m_root = make_shared<Box>(Box::VERT);
-        m_root->_set_parent(this);
-        m_root->align_cross = Widget::Align::STRETCH;
+        add_internal_child(m_root);
+        m_root->set_cross_alignment(Widget::Align::STRETCH);
 
         auto about = make_shared<Text>(opening_screen());
         about->set_margin_for_crt(0, 0, 1, 0);
@@ -634,20 +634,24 @@ public:
             grid->row_flex_grow(2) = 1;
         }
 
-        game_modes_menu->on_button_activated =
-        save_games_menu->on_button_activated =
-            [this](int id) { this->menu_item_activated(id); };
+        m_root->on_activate_event([this](const ActivateEvent& event) {
+            const auto button = static_pointer_cast<const MenuButton>(event.target());
+            this->menu_item_activated(button->id);
+            return true;
+        });
 
+        // TODO: focus events should probably not bubble, but there should be
+        // some way to capture them...
         for (auto &w : game_modes_menu->get_buttons())
         {
-            w->on(Widget::slots.event, [w, this](wm_event ev) {
-                return this->button_event_hook(ev, w);
+            w->on_focusin_event([w, this](const FocusEvent&) {
+                return this->on_button_focusin(*w);
             });
         }
         for (auto &w : save_games_menu->get_buttons())
         {
-            w->on(Widget::slots.event, [w, this](wm_event ev) {
-                return this->button_event_hook(ev, w);
+            w->on_focusin_event([w, this](const FocusEvent&) {
+                return this->on_button_focusin(*w);
             });
         }
 
@@ -707,42 +711,36 @@ private:
     int num_saves;
     bool first_action = true;
 
-    bool button_event_hook(const wm_event& ev, MenuButton* btn)
+    bool on_button_focusin(const MenuButton& btn)
     {
-        if (ev.type == WME_FOCUSIN)
+        startup_menu_game_type = btn.id;
+        switch (startup_menu_game_type)
         {
-            startup_menu_game_type = btn->id;
-            switch (startup_menu_game_type)
-            {
-            case GAME_TYPE_ARENA:
-                break;
-            case GAME_TYPE_NORMAL:
-            case GAME_TYPE_CUSTOM_SEED:
-            case GAME_TYPE_TUTORIAL:
-            case GAME_TYPE_SPRINT:
-            case GAME_TYPE_HINTS:
-                // If a game type is chosen, the user expects
-                // to start a new game. Just blanking the name
-                // it it clashes for now.
-                if (_find_save(chars, input_string) != -1)
-                    input_string = "";
-                break;
-            case GAME_TYPE_HIGH_SCORES:
-                break;
+        case GAME_TYPE_NORMAL:
+        case GAME_TYPE_CUSTOM_SEED:
+        case GAME_TYPE_TUTORIAL:
+        case GAME_TYPE_SPRINT:
+        case GAME_TYPE_HINTS:
+            // If a game type is chosen, the user expects to start a new game.
+            // Just blanking the name it it clashes for now.
+            if (_find_save(chars, input_string) != -1)
+                input_string = "";
+            break;
 
-            case GAME_TYPE_INSTRUCTIONS:
-                break;
+        case GAME_TYPE_ARENA:
+        case GAME_TYPE_HIGH_SCORES:
+        case GAME_TYPE_INSTRUCTIONS:
+            break;
 
-            default:
-                int save_number = startup_menu_game_type - NUM_GAME_TYPE;
-                if (save_number < num_saves)
-                    input_string = chars.at(save_number).name;
-                else // new game
-                    input_string = "";
-                break;
-            }
-            input_text->set_text(formatted_string(input_string, WHITE));
+        default:
+            int save_number = startup_menu_game_type - NUM_GAME_TYPE;
+            if (save_number < num_saves)
+                input_string = chars.at(save_number).name;
+            else // new game
+                input_string = "";
+            break;
         }
+        input_text->set_text(formatted_string(input_string, WHITE));
         return false;
     }
 
@@ -805,14 +803,8 @@ void UIStartupMenu::on_show()
     else if (auto focus2 = save_games_menu->get_button_by_id(id))
         save_games_menu->scroll_button_into_view(focus2);
 
-    Layout *layout = nullptr;
-    for (Widget *w = _get_parent(); w && !layout; w = w->_get_parent())
-        layout = dynamic_cast<Layout*>(w);
-    ASSERT(layout);
-    layout->add_event_filter([this](wm_event ev) {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        const int keyn = ev.key.keysym.sym;
+    on_hotkey_event([this](const KeyEvent& ev) {
+        const auto keyn = ev.key();
         bool changed_name = false;
 
         if (key_is_escape(keyn) || keyn == CK_MOUSE_CMD)
@@ -916,13 +908,11 @@ void UIStartupMenu::menu_item_activated(int id)
         return;
 
     case GAME_TYPE_INSTRUCTIONS:
+        show_help();
+        return;
+
     case GAME_TYPE_HIGH_SCORES:
-        {
-            if (id == GAME_TYPE_INSTRUCTIONS)
-                show_help();
-            else
-                show_hiscore_table();
-        }
+        show_hiscore_table();
         return;
 
     default:

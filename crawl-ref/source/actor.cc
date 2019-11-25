@@ -16,6 +16,7 @@
 #include "god-passive.h"
 #include "item-prop.h"
 #include "los.h"
+#include "message.h"
 #include "mon-behv.h"
 #include "mon-death.h"
 #include "religion.h"
@@ -49,7 +50,7 @@ level_id actor::shaft_dest() const
  */
 bool actor::ground_level() const
 {
-    return !airborne() && !is_wall_clinging();
+    return !airborne();
 }
 
 bool actor::stand_on_solid_ground() const
@@ -95,9 +96,6 @@ bool actor::can_pass_through(const coord_def &c) const
 
 bool actor::is_habitable(const coord_def &_pos) const
 {
-    if (can_cling_to(_pos))
-        return true;
-
     return is_habitable_feat(grd(_pos));
 }
 
@@ -398,70 +396,6 @@ bool actor_slime_wall_immune(const actor *act)
     return act->is_player() && have_passive(passive_t::slime_wall_immune)
         || act->res_acid() == 3
         || act->is_monster() && mons_is_slime(*act->as_monster());
-}
-
-/**
- * Accessor method to the clinging member.
- *
- * @return  The value of clinging.
- */
-bool actor::is_wall_clinging() const
-{
-    return props.exists(CLING_KEY) && props[CLING_KEY].get_bool();
-}
-
-/**
- * Check a cell to see if actor can keep clinging if it moves to it.
- *
- * @param p Coordinates of the cell checked.
- * @return  Whether the actor can cling.
- */
-bool actor::can_cling_to(const coord_def& p) const
-{
-    if (!is_wall_clinging() || !can_pass_through_feat(grd(p)))
-        return false;
-
-    return cell_can_cling_to(pos(), p);
-}
-
-/**
- * Update the clinging status of an actor.
- *
- * It checks adjacent orthogonal walls to see if the actor can cling to them.
- * If actor has fallen from the wall (wall dug or actor changed form), print a
- * message and apply location effects.
- *
- * @param stepped Whether the actor has taken a step.
- * @return the new clinging status.
- */
-bool actor::check_clinging(bool stepped, bool door)
-{
-    bool was_clinging = is_wall_clinging();
-    bool clinging = can_cling_to_walls() && cell_is_clingable(pos())
-                    && !airborne();
-
-    if (can_cling_to_walls())
-        props[CLING_KEY] = clinging;
-    else if (props.exists(CLING_KEY))
-        props.erase(CLING_KEY);
-
-    if (!stepped && was_clinging && !clinging)
-    {
-        if (you.can_see(*this))
-        {
-            mprf("%s %s off the %s.", name(DESC_THE).c_str(),
-                 conj_verb("fall").c_str(),
-                 door ? "door" : "wall");
-        }
-        apply_location_effects(pos());
-    }
-    return clinging;
-}
-
-void actor::clear_clinging()
-{
-    if (props.exists(CLING_KEY))
-        props[CLING_KEY] = false;
 }
 
 void actor::clear_constricted()
@@ -996,6 +930,11 @@ string actor::resist_margin_phrase(int margin) const
 void actor::collide(coord_def newpos, const actor *agent, int pow)
 {
     actor *other = actor_at(newpos);
+    const bool fedhas_prot = agent->deity() == GOD_FEDHAS
+                             && is_monster() && fedhas_protects(*as_monster());
+    const bool fedhas_prot_other = agent->deity() == GOD_FEDHAS
+                                   && other && other->is_monster()
+                                   && fedhas_protects(*(other->as_monster()));
     ASSERT(this != other);
     ASSERT(alive());
 
@@ -1006,28 +945,42 @@ void actor::collide(coord_def newpos, const actor *agent, int pow)
         return;
     }
 
-    if (is_monster())
+    if (is_monster() && !fedhas_prot)
         behaviour_event(as_monster(), ME_WHACK, agent);
 
     dice_def damage(2, 1 + pow / 10);
 
     if (other && other->alive())
     {
-        if (other->is_monster())
+        if (other->is_monster() && !fedhas_prot_other)
             behaviour_event(other->as_monster(), ME_WHACK, agent);
+
         if (you.can_see(*this) || you.can_see(*other))
         {
             mprf("%s %s with %s!",
                  name(DESC_THE).c_str(),
                  conj_verb("collide").c_str(),
                  other->name(DESC_THE).c_str());
+            if (fedhas_prot || fedhas_prot_other)
+            {
+                const bool both = fedhas_prot && fedhas_prot_other;
+                simple_god_message(
+                    make_stringf(" protects %s plant%s from harm.",
+                        agent->is_player() ? "your" :
+                        both ? "some" : "a",
+                        both ? "s" : "").c_str(), GOD_FEDHAS);
+            }
         }
+
         const string thisname = name(DESC_A, true);
         const string othername = other->name(DESC_A, true);
-        other->hurt(agent, other->apply_ac(damage.roll()),
-                    BEAM_MISSILE, KILLED_BY_COLLISION,
-                    othername, thisname);
-        if (alive())
+        if (!fedhas_prot_other)
+        {
+            other->hurt(agent, other->apply_ac(damage.roll()),
+                        BEAM_MISSILE, KILLED_BY_COLLISION,
+                        othername, thisname);
+        }
+        if (alive() && !fedhas_prot)
         {
             hurt(agent, apply_ac(damage.roll()), BEAM_MISSILE,
                  KILLED_BY_COLLISION, thisname, othername);
@@ -1051,10 +1004,21 @@ void actor::collide(coord_def newpos, const actor *agent, int pow)
             mprf("%s violently %s moving!",
                  name(DESC_THE).c_str(), conj_verb("stop").c_str());
         }
+
+        if (fedhas_prot)
+        {
+            simple_god_message(
+                make_stringf(" protects %s plant from harm.",
+                    agent->is_player() ? "your" : "a").c_str(), GOD_FEDHAS);
+        }
     }
-    hurt(agent, apply_ac(damage.roll()), BEAM_MISSILE,
-         KILLED_BY_COLLISION, "",
-         feature_description_at(newpos, false, DESC_A, false));
+
+    if (!fedhas_prot)
+    {
+        hurt(agent, apply_ac(damage.roll()), BEAM_MISSILE,
+             KILLED_BY_COLLISION, "",
+             feature_description_at(newpos, false, DESC_A, false));
+    }
 }
 
 /// Is this creature despised by the so-called 'good gods'?

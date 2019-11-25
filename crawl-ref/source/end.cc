@@ -134,25 +134,21 @@ bool fatal_error_notification(string error_msg)
 
     auto prompt_ui =
                 make_shared<Text>(formatted_string::parse_string(error_msg));
+    auto popup = make_shared<ui::Popup>(prompt_ui);
     bool done = false;
-    prompt_ui->on(Widget::slots.event, [&](wm_event ev) {
-        if (ev.type == WME_KEYDOWN)
+
+    popup->on_hotkey_event([&](const KeyEvent& ev) {
+        if (ev.key() == CONTROL('P'))
         {
-            if (ev.key.keysym.sym == CONTROL('P'))
-            {
-                done = false;
-                replay_messages();
-            }
-            else
-                done = true;
+            replay_messages();
+            return true;
         }
-        else
-            done = false;
-        return done;
+        return false;
     });
 
+    popup->on_keydown_event([&](const KeyEvent&) { return done = true; });
+
     mouse_control mc(MOUSE_MODE_MORE);
-    auto popup = make_shared<ui::Popup>(prompt_ui);
     ui::run_layout(move(popup), done);
 #endif
 
@@ -251,13 +247,11 @@ NORETURN void screen_end_game(string text)
     {
         auto prompt_ui = make_shared<Text>(
                 formatted_string::parse_string(text));
+        auto popup = make_shared<ui::Popup>(prompt_ui);
         bool done = false;
-        prompt_ui->on(Widget::slots.event, [&](wm_event ev)  {
-            return done = ev.type == WME_KEYDOWN;
-        });
+        popup->on_keydown_event([&](const KeyEvent&) { return done = true; });
 
         mouse_control mc(MOUSE_MODE_MORE);
-        auto popup = make_shared<ui::Popup>(prompt_ui);
         ui::run_layout(move(popup), done);
     }
 
@@ -479,7 +473,7 @@ NORETURN void end_game(scorefile_entry &se)
 #endif
     string goodbye_title = make_stringf("Goodbye, %s.", you.your_name.c_str());
     title_hbox->add_child(make_shared<Text>(goodbye_title));
-    title_hbox->align_cross = Widget::CENTER;
+    title_hbox->set_cross_alignment(Widget::CENTER);
     title_hbox->set_margin_for_sdl(0, 0, 20, 0);
     title_hbox->set_margin_for_crt(0, 0, 1, 0);
 
@@ -525,9 +519,7 @@ NORETURN void end_game(scorefile_entry &se)
 
     auto popup = make_shared<ui::Popup>(move(vbox));
     bool done = false;
-    popup->on(Widget::slots.event, [&](wm_event ev)  {
-        return done = ev.type == WME_KEYDOWN;
-    });
+    popup->on_keydown_event([&](const KeyEvent&) { return done = true; });
 
     if (!crawl_state.seen_hups && !crawl_state.disables[DIS_CONFIRMATIONS])
     {

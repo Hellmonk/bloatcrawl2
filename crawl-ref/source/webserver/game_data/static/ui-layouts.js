@@ -711,15 +711,7 @@ function ($, comm, client, ui, enums, cr, util, scroller, main, gui, player) {
     {
         var $popup = $(".templates > .msgwin-get-line").clone();
         $popup.children(".header").html(util.formatted_string_to_html(msg.prompt));
-        $popup.children(".body")[0].textContent = msg.text;
         return $popup;
-    }
-    function msgwin_get_line_update(msg)
-    {
-        var $popup = ui.top_popup();
-        if (!$popup.hasClass("msgwin-get-line"))
-            return;
-        $popup.children(".body")[0].textContent = msg.text;
     }
 
     function focus_button($button)
@@ -741,7 +733,7 @@ function ($, comm, client, ui, enums, cr, util, scroller, main, gui, player) {
         var $descriptions = $popup.find(".descriptions");
         paneset_cycle($descriptions, $button.attr("data-description-index"));
         comm.send_message("outer_menu_focus", {
-            hotkey: parseInt($button.attr("data-hotkey"), 10),
+            hotkey: ui.utf8_from_key_value($button.attr("data-hotkey")),
             menu_id: menu_id,
         });
     }
@@ -792,13 +784,11 @@ function ($, comm, client, ui, enums, cr, util, scroller, main, gui, player) {
                 $button.attr("style", "grid-row:"+(button.y+1)+"; grid-column:"+(button.x+1)+";");
                 $descriptions.append("<span class='pane'> " + button.description + "</span>");
                 $button.attr("data-description-index", $descriptions.children().length - 1);
-                $button.attr("data-hotkey", button.hotkey);
+                $button.attr("data-hotkey", ui.key_value_from_utf8(button.hotkey));
                 $button.addClass("hlc-" + button.highlight_colour);
                 $container.append($button);
 
-                $button.on("click", function () {
-                    comm.send_message("key", { keycode: button.hotkey });
-                }).on('hover', function () { focus_button($(this)) });
+                $button.on('hover', function () { focus_button($(this)) });
             });
             $.each(data.labels, function (i, button) {
                 var $button = $("<div class=label>");
@@ -812,7 +802,6 @@ function ($, comm, client, ui, enums, cr, util, scroller, main, gui, player) {
         build_item_grid(msg["main-items"], $main, true);
         build_item_grid(msg["sub-items"], $popup.find(".sub-items"));
         scroller($main.parent()[0]);
-        focus_button($popup.find(".main-items").eq(0));
 
         return $popup;
     }
@@ -824,7 +813,8 @@ function ($, comm, client, ui, enums, cr, util, scroller, main, gui, player) {
         var $popup = ui.top_popup();
         if (!$popup || !$popup.hasClass("newgame-choice"))
             return;
-        focus_button($popup.find("[data-hotkey='"+msg.button_focus+"']"));
+        var hotkey = ui.key_value_from_utf8(msg.button_focus);
+        focus_button($popup.find("[data-hotkey='"+hotkey+"']"));
     }
 
     function newgame_random_combo(msg)
@@ -866,12 +856,23 @@ function ($, comm, client, ui, enums, cr, util, scroller, main, gui, player) {
     function seed_selection(desc)
     {
         var $popup = $(".templates > .seed-selection").clone();
-        $popup.find(".header > span").html(desc.title);
-        $popup.find(".body > span").html(fmt_body_txt(
-                                util.formatted_string_to_html(desc.body)));
-        $popup.find(".footer > span").html(fmt_body_txt(
-                                util.formatted_string_to_html(desc.footer)));
-        // TODO: handle input here? currently handled from c++ side.
+        $popup.find(".header").html(desc.title);
+        $popup.find(".body-text").html(desc.body);
+        $popup.find(".footer").html(desc.footer);
+        if (!desc.show_pregen_toggle)
+            $popup.find(".pregen-toggle").remove();
+        scroller($popup.find(".body")[0]);
+
+        var $input = $popup.find("input[type=text]");
+        var input_val = $input.val();
+        $input.on("input change", function (event) {
+            var valid_seed = $input.val().match(/^\d*$/);
+            if (valid_seed)
+                input_val = $input.val();
+            else
+                $input.val(input_val);
+        });
+
         return $popup;
     }
 
@@ -903,7 +904,7 @@ function ($, comm, client, ui, enums, cr, util, scroller, main, gui, player) {
     {
         var handler = ui_handlers[msg.type];
         var popup = handler ? handler(msg) : $("<div>Unhandled UI type "+msg.type+"</div>");
-        ui.show_popup(popup, msg["ui-centred"]);
+        ui.show_popup(popup, msg["ui-centred"], msg.generation_id);
     }
 
     function recv_ui_pop(msg)
@@ -926,7 +927,6 @@ function ($, comm, client, ui, enums, cr, util, scroller, main, gui, player) {
             "describe-god" : describe_god_update,
             "describe-monster" : describe_monster_update,
             "formatted-scroller" : formatted_scroller_update,
-            "msgwin-get-line" : msgwin_get_line_update,
             "progress-bar" : progress_bar_update,
             "newgame-choice" : newgame_choice_update,
         };

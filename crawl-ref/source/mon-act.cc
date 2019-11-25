@@ -240,9 +240,6 @@ static bool _swap_monsters(monster& mover, monster& moved)
     if (!mover.swap_with(&moved))
         return false;
 
-    mover.check_clinging(true);
-    moved.check_clinging(true);
-
     if (you.can_see(mover) && you.can_see(moved))
     {
         mprf("%s and %s swap places.", mover.name(DESC_THE).c_str(),
@@ -362,10 +359,6 @@ static bool _allied_monster_at(monster* mon, coord_def a, coord_def b,
 // some monster types.
 static bool _mon_on_interesting_grid(monster* mon)
 {
-    // Patrolling shouldn't happen all the time.
-    if (one_chance_in(4))
-        return false;
-
     const dungeon_feature_type feat = grd(mon->pos());
 
     switch (feat)
@@ -405,10 +398,11 @@ static bool _mon_on_interesting_grid(monster* mon)
 // if it left it for fighting, seeking etc.
 static void _maybe_set_patrol_route(monster* mons)
 {
-    if (mons_is_wandering(*mons)
-        && !mons->friendly()
+    if (_mon_on_interesting_grid(mons) // Patrolling shouldn't always happen
+        && one_chance_in(4)
+        && mons_is_wandering(*mons)
         && !mons->is_patrolling()
-        && _mon_on_interesting_grid(mons))
+        && !mons->friendly())
     {
         mons->patrol_point = mons->pos();
     }
@@ -526,39 +520,45 @@ static void _handle_movement(monster* mons)
 {
     _maybe_set_patrol_route(mons);
 
-    // Monsters will try to flee out of a sanctuary.
-    if (is_sanctuary(mons->pos())
-        && mons_is_influenced_by_sanctuary(*mons)
-        && !mons_is_fleeing_sanctuary(*mons))
+    if (sanctuary_exists())
     {
-        mons_start_fleeing_from_sanctuary(*mons);
-    }
-    else if (mons_is_fleeing_sanctuary(*mons)
-             && !is_sanctuary(mons->pos()))
-    {
-        // Once outside there's a chance they'll regain their courage.
-        // Nonliving and berserking monsters always stop immediately,
-        // since they're only being forced out rather than actually
-        // scared.
-        if (mons->is_nonliving()
-            || mons->berserk()
-            || mons->has_ench(ENCH_INSANE)
-            || x_chance_in_y(2, 5))
+        // Monsters will try to flee out of a sanctuary.
+        if (is_sanctuary(mons->pos())
+            && mons_is_influenced_by_sanctuary(*mons)
+            && !mons_is_fleeing_sanctuary(*mons))
         {
-            mons_stop_fleeing_from_sanctuary(*mons);
+            mons_start_fleeing_from_sanctuary(*mons);
+        }
+        else if (mons_is_fleeing_sanctuary(*mons)
+                 && !is_sanctuary(mons->pos()))
+        {
+            // Once outside there's a chance they'll regain their courage.
+            // Nonliving and berserking monsters always stop immediately,
+            // since they're only being forced out rather than actually
+            // scared.
+            if (mons->is_nonliving()
+                || mons->berserk()
+                || mons->has_ench(ENCH_INSANE)
+                || x_chance_in_y(2, 5))
+            {
+                mons_stop_fleeing_from_sanctuary(*mons);
+            }
         }
     }
 
     coord_def delta;
     _set_mons_move_dir(mons, &mmov, &delta);
 
-    // Don't allow monsters to enter a sanctuary or attack you inside a
-    // sanctuary, even if you're right next to them.
-    if (is_sanctuary(mons->pos() + mmov)
-        && (!is_sanctuary(mons->pos())
-            || mons->pos() + mmov == you.pos()))
+    if (sanctuary_exists())
     {
-        mmov.reset();
+        // Don't allow monsters to enter a sanctuary or attack you inside a
+        // sanctuary, even if you're right next to them.
+        if (is_sanctuary(mons->pos() + mmov)
+            && (!is_sanctuary(mons->pos())
+                || mons->pos() + mmov == you.pos()))
+        {
+            mmov.reset();
+        }
     }
 
     // Bounds check: don't let fleeing monsters try to run off the grid.
@@ -593,8 +593,10 @@ static void _handle_movement(monster* mons)
 
     const coord_def newpos(mons->pos() + mmov);
 
+    // Filling this is relatively costly and not always needed, so be a bit
+    // lazy about it.
     move_array good_move;
-    _fill_good_move(mons, &good_move);
+    bool good_move_filled = false;
 
     // If the monster is moving in your direction, whether to attack or
     // protect you, or towards a monster it intends to attack, check
@@ -611,6 +613,8 @@ static void _handle_movement(monster* mons)
         && !mons_is_confused(*mons) && !mons->caught()
         && !mons->berserk_or_insane())
     {
+        _fill_good_move(mons, &good_move);
+        good_move_filled = true;
         // If the monster is moving parallel to the x or y axis, check
         // whether
         //
@@ -687,6 +691,11 @@ static void _handle_movement(monster* mons)
     if (mmov.origin())
         return;
 
+    // everything below here is irrelevant if the player is not in bounds, for
+    // example if they have stepped from time.
+    if (!in_bounds(you.pos()))
+        return;
+
     // Try to stay in sight of the player if we're moving towards
     // him/her, in order to avoid the monster coming into view,
     // shouting, and then taking a step in a path to the player which
@@ -731,13 +740,20 @@ static void _handle_movement(monster* mons)
             if (i == 0 && j == 0)
                 continue;
 
+            coord_def d(i - 1, j - 1);
+            coord_def tmp = old_pos + d;
+            if (!you.see_cell(tmp))
+                continue;
+
+            if (!good_move_filled)
+            {
+                _fill_good_move(mons, &good_move);
+                good_move_filled = true;
+            }
             if (!good_move[i][j])
                 continue;
 
-            coord_def d(i - 1, j - 1);
-            coord_def tmp = old_pos + d;
-
-            if (grid_distance(you.pos(), tmp) < old_dist && you.see_cell(tmp))
+            if (grid_distance(you.pos(), tmp) < old_dist)
             {
                 if (one_chance_in(++matches))
                     mmov = d;
@@ -1976,10 +1992,7 @@ void handle_monster_move(monster* mons)
         }
 
         if (mons->cannot_move() || !_monster_move(mons))
-        {
             mons->speed_increment -= non_move_energy;
-            mons->check_clinging(false);
-        }
     }
     you.update_beholder(mons);
     you.update_fearmonger(mons);
@@ -2791,9 +2804,9 @@ bool mon_can_move_to_pos(const monster* mons, const coord_def& delta,
 
     // Non-friendly and non-good neutral monsters won't enter
     // sanctuaries.
-    if (!mons->wont_attack()
-        && is_sanctuary(targ)
-        && !is_sanctuary(mons->pos()))
+    if (is_sanctuary(targ)
+        && !is_sanctuary(mons->pos())
+        && !mons->wont_attack())
     {
         return false;
     }
@@ -2964,10 +2977,10 @@ bool mon_can_move_to_pos(const monster* mons, const coord_def& delta,
 
     // Friendlies shouldn't try to move onto the player's
     // location, if they are aiming for some other target.
-    if (!_unfriendly_or_impaired(*mons)
-        && mons->foe != MHITYOU
+    if (mons->foe != MHITYOU
+        && targ == you.pos()
         && (mons->foe != MHITNOT || mons->is_patrolling())
-        && targ == you.pos())
+        && !_unfriendly_or_impaired(*mons))
     {
         return false;
     }
@@ -3140,15 +3153,11 @@ bool monster_swaps_places(monster* mon, const coord_def& delta,
     }
 
     mon->check_redraw(m2->pos(), false);
-    if (mon->is_wall_clinging())
-        mon->check_clinging(true); // XXX: avoids location effects!
-    else if (apply_effects)
+    if (apply_effects)
         mon->apply_location_effects(m2->pos());
 
     m2->check_redraw(mon->pos(), false);
-    if (m2->is_wall_clinging())
-        m2->check_clinging(true); // XXX: avoids location effects!
-    else if (apply_effects)
+    if (apply_effects)
         m2->apply_location_effects(mon->pos());
 
     // The seen context no longer applies if the monster is moving normally.
@@ -3260,16 +3269,13 @@ static bool _do_move_monster(monster& mons, const coord_def& delta)
     _escape_water_hold(mons);
 
     if (grd(mons.pos()) == DNGN_DEEP_WATER && grd(f) != DNGN_DEEP_WATER
-        && !monster_habitable_grid(&mons, DNGN_DEEP_WATER)
-        && !mons.is_wall_clinging())
+        && !monster_habitable_grid(&mons, DNGN_DEEP_WATER))
     {
         // er, what?  Seems impossible.
         mons.seen_context = SC_NONSWIMMER_SURFACES_FROM_DEEP;
     }
 
     mons.move_to_pos(f, false);
-
-    mons.check_clinging(true);
 
     // Let go of all constrictees; only stop *being* constricted if we are now
     // too far away (done in move_to_pos above).

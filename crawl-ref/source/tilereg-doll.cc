@@ -319,7 +319,7 @@ void DollEditRegion::render()
     glmanager->reset_transform();
 }
 
-int DollEditRegion::handle_mouse(MouseEvent &/*event*/)
+int DollEditRegion::handle_mouse(wm_mouse_event &/*event*/)
 {
     return 0;
 }
@@ -387,17 +387,15 @@ void DollEditRegion::run()
     auto doll_ui = make_shared<UIDollEditor>(this);
 
     auto vbox = make_shared<Box>(Widget::VERT);
-    vbox->align_cross = Widget::CENTER;
+    vbox->set_cross_alignment(Widget::CENTER);
     auto title = make_shared<Text>(formatted_string("Doll Editor", YELLOW));
     title->set_margin_for_sdl(0, 0, 20, 0);
     vbox->add_child(move(title));
     vbox->add_child(doll_ui);
     auto popup = make_shared<ui::Popup>(move(vbox));
 
-    popup->on(Widget::slots.event, [this, &done, &doll_ui, &update_part_idx](wm_event ev) {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        int key = ev.key.keysym.sym;
+    popup->on_keydown_event([this, &done, &doll_ui, &update_part_idx](const KeyEvent& ev) {
+        const auto key = ev.key();
         command_type cmd = key_to_command(key, KMC_DOLL);
 
         switch (cmd)

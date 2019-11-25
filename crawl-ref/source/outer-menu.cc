@@ -14,7 +14,26 @@
 
 using namespace ui;
 
-bool MenuButton::focus_on_mouse = false;
+bool OuterMenu::focus_button_on_mouseenter = false;
+
+MenuButton::MenuButton()
+{
+    on_hotkey_event([this](const KeyEvent& event) {
+        if (event.key() == hotkey)
+        {
+            activate();
+            return true;
+        }
+        return false;
+    });
+}
+
+bool MenuButton::activate()
+{
+    auto ev = ActivateEvent();
+    ev.set_target(get_shared());
+    return ui::raise_event(ev);
+}
 
 void MenuButton::_render()
 {
@@ -41,11 +60,21 @@ void MenuButton::_allocate_region()
         const VColour bg = active ?
             VColour(0, 0, 0, 255) : VColour(255, 255, 255, 25);
         m_buf.add(m_region.x, m_region.y, m_region.ex(), m_region.ey(), bg);
-        const VColour mouse_colour = active ?
-            VColour(34, 34, 34, 255) : term_colours[highlight_colour];
-        m_line_buf.add_square(m_region.x+1, m_region.y+1,
-            m_region.ex(), m_region.ey(), mouse_colour);
     }
+
+    const auto darken = [](VColour c) {
+        c.r /= 2;
+        c.g /= 2;
+        c.b /= 2;
+        return c;
+    };
+
+    const VColour border = active ? VColour(34, 34, 34, 255) :
+        focused ? term_colours[highlight_colour] :
+        hovered ? darken(term_colours[highlight_colour]) :
+        VColour(0, 0, 0, 0);
+    m_line_buf.add_square(m_region.x+1, m_region.y+1,
+        m_region.ex(), m_region.ey(), border);
 #endif
 }
 
@@ -71,52 +100,63 @@ void MenuButton::recolour_descendants(const shared_ptr<Widget>& node)
         tw->set_bg_colour(static_cast<COLOURS>(bg));
         return;
     }
-    auto container = dynamic_pointer_cast<Container>(node);
-    if (container)
-    {
-        container->foreach([this](shared_ptr<Widget>& child) {
-                recolour_descendants(child);
-            });
-    }
+    node->for_each_child([this](shared_ptr<Widget>& child) {
+        recolour_descendants(child);
+    });
 }
 #endif
 
-bool MenuButton::on_event(const wm_event& event)
+bool MenuButton::on_event(const Event& event)
 {
     if (Bin::on_event(event))
         return true;
 
-    bool old_focused = focused, old_active = active;
+    bool old_focused = focused, old_active = active, old_hovered = hovered;
 
-    if (event.type == WME_MOUSEENTER && focus_on_mouse)
-        ui::set_focused_widget(this);
-    if (event.type == WME_MOUSEMOTION)
-        ui::set_focused_widget(this);
-
-    if (event.type == WME_FOCUSIN)
+    if (event.type() == Event::Type::MouseEnter)
+        hovered = true;
+    if (event.type() == Event::Type::MouseLeave)
+        hovered = false;
+    if (event.type() == Event::Type::FocusIn)
         focused = true;
-    if (event.type == WME_FOCUSOUT)
+    if (event.type() == Event::Type::FocusOut)
         focused = false;
 
 #ifndef USE_TILE_LOCAL
-    if (event.type == WME_FOCUSIN || event.type == WME_FOCUSOUT)
+    if (event.type() == Event::Type::FocusIn || event.type() == Event::Type::FocusOut)
         recolour_descendants(shared_from_this());
 #endif
 
 #ifdef USE_TILE_LOCAL
-    if (event.type == WME_MOUSEENTER)
+    if (event.type() == Event::Type::MouseEnter)
         wm->set_mouse_cursor(MOUSE_CURSOR_POINTER);
-    if (event.type == WME_MOUSELEAVE)
+    if (event.type() == Event::Type::MouseLeave)
         wm->set_mouse_cursor(MOUSE_CURSOR_ARROW);
 #endif
 
-    if (event.type == WME_MOUSEBUTTONDOWN && event.mouse_event.button == MouseEvent::LEFT)
+    if (event.type() == Event::Type::MouseDown
+        && static_cast<const MouseEvent&>(event).button() == MouseEvent::Button::Left)
+    {
         active = true;
-    if (event.type == WME_MOUSEBUTTONUP && event.mouse_event.button == MouseEvent::LEFT)
+    }
+    if (event.type() == Event::Type::MouseUp
+        && static_cast<const MouseEvent&>(event).button() == MouseEvent::Button::Left)
+    {
         active = false;
+    }
 
-    if (old_focused != focused || old_active != active)
+    if (old_focused != focused || old_active != active || old_hovered != hovered)
         _queue_allocation();
+
+    const bool left_mouse_button = old_active && !active;
+    if (left_mouse_button)
+        return activate();
+    else if (event.type() == Event::Type::KeyDown)
+    {
+        const auto key = static_cast<const KeyEvent&>(event).key();
+        if (key == CK_ENTER || key == ' ')
+            return activate();
+    }
 
     return old_active != active;
 }
@@ -169,7 +209,7 @@ OuterMenu::OuterMenu(bool can_shrink, int width, int height)
     m_grid = make_shared<Grid>();
     m_grid->stretch_h = true;
 
-    m_grid->on(Widget::slots.event, [this](wm_event ev){
+    m_grid->on_any_event([this](const Event& ev) {
         return this->scroller_event_hook(ev);
     });
 
@@ -182,7 +222,7 @@ OuterMenu::OuterMenu(bool can_shrink, int width, int height)
     else
         m_root = m_grid;
 
-    m_root->_set_parent(this);
+    add_internal_child(m_root);
 
     m_width = width;
     m_height = height;
@@ -213,24 +253,9 @@ SizeReq OuterMenu::_get_preferred_size(Direction dim, int prosp_width)
 
 void OuterMenu::_allocate_region()
 {
-    if (!have_allocated && on_button_activated)
+    if (!have_allocated)
     {
         have_allocated = true;
-        Layout *layout = nullptr;
-        for (Widget *w = _get_parent(); w && !layout; w = w->_get_parent())
-            layout = dynamic_cast<Layout*>(w);
-        ASSERT(layout);
-        layout->add_event_filter([this](wm_event ev) {
-            if (ev.type != WME_KEYDOWN)
-                return false;
-            for (const auto& btn : this->m_buttons)
-                if (btn && ev.key.keysym.sym == btn->hotkey)
-                {
-                    this->on_button_activated(btn->id);
-                    return true;
-                }
-            return false;
-        });
 #ifdef USE_TILE_WEB
         if (menu_id)
             open_menus.emplace(menu_id, this);
@@ -241,7 +266,7 @@ void OuterMenu::_allocate_region()
     m_root->allocate_region(m_region);
 }
 
-bool OuterMenu::on_event(const wm_event& event)
+bool OuterMenu::on_event(const Event& event)
 {
     return Widget::on_event(event);
 }
@@ -265,18 +290,19 @@ void OuterMenu::add_button(shared_ptr<MenuButton> btn, int x, int y)
     ASSERT(item == nullptr);
     item = btn.get();
 
-    const int btn_id = btn->id;
-    btn->on(Widget::slots.event, [btn_id, this, x, y](const wm_event& ev) {
-        if (on_button_activated)
-        if ((ev.type == WME_MOUSEBUTTONUP
-                && ev.mouse_event.button == MouseEvent::LEFT)
-            || (ev.type == WME_KEYDOWN && ev.key.keysym.sym == CK_ENTER))
-        {
-            this->on_button_activated(btn_id);
-            return ev.type == WME_KEYDOWN; // button needs to catch clicks
-        }
-        if (ev.type == WME_FOCUSIN && m_description_indexes[y*this->m_width+x] != -1)
+    // TODO: once we add event capturing, move handlers to menu
+    btn->on_focusin_event([this, x, y](const Event&) {
+        if (m_description_indexes[y*this->m_width+x] != -1)
             descriptions->current() = m_description_indexes[y*this->m_width+x];
+        return false;
+    });
+    btn->on_mouseenter_event([btn](const MouseEvent&) {
+        if (focus_button_on_mouseenter)
+            ui::set_focused_widget(btn.get());
+        return false;
+    });
+    btn->on_mousemove_event([btn](const MouseEvent&) {
+        ui::set_focused_widget(btn.get());
         return false;
     });
 
@@ -360,13 +386,14 @@ bool OuterMenu::move_button_focus(int fx, int fy, int dx, int dy, int limit)
     return btn != nullptr;
 }
 
-bool OuterMenu::scroller_event_hook(const wm_event& ev)
+bool OuterMenu::scroller_event_hook(const Event& ev)
 {
-    MenuButton::focus_on_mouse = ev.type == WME_MOUSEWHEEL;
+    focus_button_on_mouseenter = ev.type() == Event::Type::MouseWheel;
 
-    if (ev.type != WME_KEYDOWN)
+    if (ev.type() != Event::Type::KeyDown)
         return false;
-    int key = ev.key.keysym.sym;
+
+    const auto key = static_cast<const KeyEvent&>(ev).key();
 
     if (key == CK_DOWN || key == CK_UP || key == CK_LEFT || key == CK_RIGHT
             || key == CK_HOME || key == CK_END || key == CK_PGUP || key == CK_PGDN)

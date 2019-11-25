@@ -58,7 +58,7 @@
 #include "ui.h"
 #include "unicode.h"
 #include "unwind.h"
-#if defined(USE_TILE_LOCAL) && defined(TOUCH_UI)
+#ifdef USE_TILE_LOCAL
 #include "windowmanager.h"
 #endif
 
@@ -88,7 +88,7 @@ public:
     virtual SizeReq _get_preferred_size(Direction dim, int prosp_width) override;
     virtual void _allocate_region() override;
 #ifdef USE_TILE_LOCAL
-    virtual bool on_event(const wm_event& event) override;
+    virtual bool on_event(const Event& event) override;
     int get_num_columns() const { return m_num_columns; };
     void set_num_columns(int n) {
         m_num_columns = n;
@@ -605,24 +605,26 @@ void UIMenu::update_hovered_entry()
     m_mouse_idx = -1;
 }
 
-bool UIMenu::on_event(const wm_event& event)
+bool UIMenu::on_event(const Event& ev)
 {
-    if (Widget::on_event(event))
+    if (Widget::on_event(ev))
         return true;
 
-    if (event.type != WME_MOUSEMOTION
-     && event.type != WME_MOUSEBUTTONDOWN
-     && event.type != WME_MOUSEBUTTONUP
-     && event.type != WME_MOUSEENTER
-     && event.type != WME_MOUSELEAVE)
+    if (ev.type() != Event::Type::MouseMove
+     && ev.type() != Event::Type::MouseDown
+     && ev.type() != Event::Type::MouseUp
+     && ev.type() != Event::Type::MouseEnter
+     && ev.type() != Event::Type::MouseLeave)
     {
         return false;
     }
 
-    m_mouse_x = event.mouse_event.px;
-    m_mouse_y = event.mouse_event.py;
+    auto event = static_cast<const MouseEvent&>(ev);
 
-    if (event.type == WME_MOUSEENTER)
+    m_mouse_x = event.x();
+    m_mouse_y = event.y();
+
+    if (event.type() == Event::Type::MouseEnter)
     {
         do_layout(m_region.width, m_num_columns);
         update_hovered_entry();
@@ -631,7 +633,7 @@ bool UIMenu::on_event(const wm_event& event)
         return false;
     }
 
-    if (event.type == WME_MOUSELEAVE)
+    if (event.type() == Event::Type::MouseLeave)
     {
         wm->set_mouse_cursor(MOUSE_CURSOR_ARROW);
         m_mouse_x = -1;
@@ -644,7 +646,7 @@ bool UIMenu::on_event(const wm_event& event)
         return false;
     }
 
-    if (event.type == WME_MOUSEMOTION)
+    if (event.type() == Event::Type::MouseMove)
     {
         do_layout(m_region.width, m_num_columns);
         update_hovered_entry();
@@ -654,14 +656,14 @@ bool UIMenu::on_event(const wm_event& event)
     }
 
     int key = -1;
-    if (event.type == WME_MOUSEBUTTONDOWN
-            && event.mouse_event.button == MouseEvent::LEFT)
+    if (event.type() ==  Event::Type::MouseDown
+        && event.button() == MouseEvent::Button::Left)
     {
         m_mouse_pressed = true;
         _queue_allocation();
     }
-    else if (event.type == WME_MOUSEBUTTONUP
-            && event.mouse_event.button == MouseEvent::LEFT
+    else if (event.type() == Event::Type::MouseUp
+            && event.button() == MouseEvent::Button::Left
             && m_mouse_pressed)
     {
         int entry = m_mouse_idx;
@@ -673,10 +675,10 @@ bool UIMenu::on_event(const wm_event& event)
 
     if (key != -1)
     {
-        wm_event ev = {0};
-        ev.type = WME_KEYDOWN;
-        ev.key.keysym.sym = key;
-        m_menu->m_ui.popup->on_event(ev);
+        wm_keyboard_event wm_ev = {0};
+        wm_ev.keysym.sym = key;
+        KeyEvent key_ev(Event::Type::KeyDown, wm_ev);
+        m_menu->m_ui.popup->on_event(key_ev);
     }
 
     return true;
@@ -803,14 +805,14 @@ Menu::Menu(int _flags, const string& tagname, KeymapContext kmc)
     m_ui.more = make_shared<UIMenuMore>();
     m_ui.more->set_visible(false);
     m_ui.vbox = make_shared<Box>(Widget::VERT);
-    m_ui.vbox->align_cross = Widget::STRETCH;
+    m_ui.vbox->set_cross_alignment(Widget::STRETCH);
 
     m_ui.vbox->add_child(m_ui.title);
 #ifdef USE_TILE_LOCAL
     m_ui.vbox->add_child(m_ui.scroller);
 #else
     auto scroller_wrap = make_shared<Box>(Widget::VERT, Box::Expand::EXPAND_V);
-    scroller_wrap->align_cross = Widget::STRETCH;
+    scroller_wrap->set_cross_alignment(Widget::STRETCH);
     scroller_wrap->add_child(m_ui.scroller);
     m_ui.vbox->add_child(scroller_wrap);
 #endif
@@ -971,12 +973,10 @@ void Menu::do_menu()
     bool done = false;
     m_ui.popup = make_shared<UIMenuPopup>(m_ui.vbox, this);
 
-    m_ui.popup->on(Widget::slots.event, [this, &done](wm_event ev) {
-        if (ev.type != WME_KEYDOWN)
-            return false;
+    m_ui.popup->on_keydown_event([this, &done](const KeyEvent& ev) {
         if (m_filter)
         {
-            int key = m_filter->putkey(ev.key.keysym.sym);
+            int key = m_filter->putkey(ev.key());
             if (key != -1)
             {
                 delete m_filter;
@@ -985,26 +985,24 @@ void Menu::do_menu()
             update_title();
             return true;
         }
-        done = !process_key(ev.key.keysym.sym);
+        done = !process_key(ev.key());
         return true;
     });
 #ifdef TOUCH_UI
-    auto menu_wrap_click = [this, &done](const wm_event& ev) {
-        if (!m_filter && ev.type == WME_MOUSEBUTTONDOWN
-                && ev.mouse_event.button == MouseEvent::LEFT)
+    auto menu_wrap_click = [this, &done](const MouseEvent& ev) {
+        if (!m_filter && ev.button() == MouseEvent::Buttton::Left)
         {
             done = !process_key(CK_TOUCH_DUMMY);
             return true;
         }
         return false;
     };
-    m_ui.title->on(Widget::slots.event, menu_wrap_click);
-    m_ui.more->on(Widget::slots.event, menu_wrap_click);
+    m_ui.title->on_mousedown_event(menu_wrap_click);
+    m_ui.more->on_mousedown_event(menu_wrap_click);
 #endif
 
     update_menu();
     ui::push_layout(m_ui.popup, m_kmc);
-    ui::set_focused_widget(m_ui.popup.get());
 
 #ifdef USE_TILE_WEB
     tiles.push_menu(this);
@@ -2614,7 +2612,7 @@ bool PrecisionMenu::process_key(int key)
 }
 
 #ifdef USE_TILE_LOCAL
-int PrecisionMenu::handle_mouse(const MouseEvent &me)
+int PrecisionMenu::handle_mouse(const wm_mouse_event &me)
 {
     // Feed input to each attached object that the mouse is over
     // The objects are responsible for processing the input
@@ -3674,7 +3672,7 @@ MenuObject::InputReturnValue MenuFreeform::process_input(int key)
 }
 
 #ifdef USE_TILE_LOCAL
-MenuObject::InputReturnValue MenuFreeform::handle_mouse(const MouseEvent& me)
+MenuObject::InputReturnValue MenuFreeform::handle_mouse(const wm_mouse_event& me)
 {
     if (!m_allow_focus || !m_visible)
         return INPUT_NO_ACTION;
@@ -3694,7 +3692,7 @@ MenuObject::InputReturnValue MenuFreeform::handle_mouse(const MouseEvent& me)
 
     if (find_item && find_item->handle_mouse(me))
         return MenuObject::INPUT_SELECTED; // The object handled the event
-    else if (me.event == MouseEvent::MOVE)
+    else if (me.event == wm_mouse_event::MOVE)
     {
         if (find_item == nullptr)
         {
@@ -3715,9 +3713,9 @@ MenuObject::InputReturnValue MenuFreeform::handle_mouse(const MouseEvent& me)
         return INPUT_NO_ACTION;
     }
     InputReturnValue ret = INPUT_NO_ACTION;
-    if (me.event == MouseEvent::PRESS)
+    if (me.event == wm_mouse_event::PRESS)
     {
-        if (me.button == MouseEvent::LEFT)
+        if (me.button == wm_mouse_event::LEFT)
         {
             if (find_item != nullptr)
             {
@@ -3728,7 +3726,7 @@ MenuObject::InputReturnValue MenuFreeform::handle_mouse(const MouseEvent& me)
                     ret = INPUT_DESELECTED;
             }
         }
-        else if (me.button == MouseEvent::RIGHT)
+        else if (me.button == wm_mouse_event::RIGHT)
             ret = INPUT_END_MENU_ABORT;
     }
     // all the other Mouse Events are uninteresting and are ignored
@@ -3987,7 +3985,7 @@ MenuObject::InputReturnValue BoxMenuHighlighter::process_input(int /*key*/)
 }
 
 #ifdef USE_TILE_LOCAL
-MenuObject::InputReturnValue BoxMenuHighlighter::handle_mouse(const MouseEvent &/*me*/)
+MenuObject::InputReturnValue BoxMenuHighlighter::handle_mouse(const wm_mouse_event &/*me*/)
 {
     // we have nothing interesting to do on mouse events because render()
     // always checks if the active has changed

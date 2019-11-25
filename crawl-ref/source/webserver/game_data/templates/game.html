@@ -292,7 +292,9 @@
     </div>
     <div class=msgwin-get-line>
         <div class=header></div>
-        <div class="body fg7"></div>
+        <input type="text" data-sync-id="input">
+        <div data-hotkey="Enter"></div>
+        <div data-hotkey="Escape"></div>
     </div>
     <div class="newgame-choice">
         <div class=header></div>
@@ -315,10 +317,28 @@
         <div class="body fg7"></div>
     </div>
     <div class="seed-selection">
-        <div class="header fg3"><span></span></div>
-        <div class="body fg7"><span></span></div>
-        <div class="seed-input fg7"></div>
-        <div class="footer fg7"><span></span></div>
+        <div class="header fg3"></div>
+        <div class="body fg7">
+            <p class="body-text"></p>
+            <div class="seed-input">
+                <span>Enter seed: </span>
+                <input type="text" data-sync-id="seed">
+                <button data-hotkey="d" data-sync-id="btn-daily">
+                    <span>d - Today's daily seed</span>
+                </button>
+            </div>
+            <p class="footer"></p>
+            <div class="pregen-toggle">
+                <label>
+                    <input type=checkbox data-sync-id="pregenerate" />
+                    <span>Pregenerate the Dungeon</span>
+                </label>
+            </div>
+        </div>
+        <div class="button-bar">
+            <button data-hotkey="Enter" data-sync-id="btn-begin">
+                <span>Enter - Begin!</span>
+            </button>
         </div>
     </div>
 </div>

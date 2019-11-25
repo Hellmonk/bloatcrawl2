@@ -52,6 +52,7 @@
 #include "tileview.h"
 #include "transform.h"
 #include "travel.h"
+#include "ui.h"
 #include "unicode.h"
 #include "unwind.h"
 #include "version.h"
@@ -440,6 +441,8 @@ wint_t TilesFramework::_handle_control_message(sockaddr_un addr, string data)
         hotkey.check(JSON_NUMBER);
         OuterMenu::recv_outer_menu_focus(menu_id->string_, (int)hotkey->number_);
     }
+    else if (msgtype == "ui_state_sync")
+        ui::recv_ui_state_change(obj.node);
 
     return c;
 }
@@ -677,6 +680,7 @@ void TilesFramework::push_ui_layout(const string& type, unsigned num_state_slots
     tiles.json_write_string("msg", "ui-push");
     tiles.json_write_string("type", type);
     tiles.json_write_bool("ui-centred", !crawl_state.need_save);
+    tiles.json_write_int("generation_id", ui::layout_generation_id());
     tiles.json_close_object();
     UIStackFrame frame;
     frame.type = UIStackFrame::UI;
@@ -1874,6 +1878,8 @@ void TilesFramework::_send_everything()
     update_input_mode(mouse_control::current_mode());
 
     m_text_menu.send(true);
+
+    ui::sync_ui_state();
 }
 
 void TilesFramework::clrscr()
