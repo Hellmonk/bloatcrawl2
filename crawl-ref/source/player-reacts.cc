@@ -623,7 +623,6 @@ static void _decrement_durations()
     // Vampire bat transformations are permanent (until ended), unless they
     // are uncancellable (polymorph wand on a full vampire).
     if (you.undead_state() != US_SEMI_UNDEAD || you.form != transformation::bat
-        || you.duration[DUR_TRANSFORMATION] <= 5 * BASELINE_DELAY
         || you.transform_uncancellable)
     {
         if (form_can_fly()
@@ -1042,7 +1041,7 @@ void player_reacts()
     _decrement_durations();
     _rot_ghoul_players();
     _mirror_eidolon_hploss();
-    
+
     // Sloth rage aura
     if (you.species == SP_SLOTH_OF_WRATH && one_chance_in(100))
     {
