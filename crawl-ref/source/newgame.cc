@@ -756,7 +756,7 @@ static keyfun_action _keyfun_seed_input(int &ch)
 }
 
 static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
-    const newgame_def& defaults)
+    const newgame_def& /* defaults */)
 {
     bool done = false;
     bool cancel = false;
@@ -776,10 +776,8 @@ static void _choose_player_modifiers(newgame_def& ng, newgame_def& choice,
         choice.undead_type = species_undead_type(ng.species);
 
     auto prompt_ui = make_shared<Text>();
-    prompt_ui->on(Widget::slots.event, [&](wm_event ev)  {
-        if (ev.type != WME_KEYDOWN)
-            return false;
-        int key = ev.key.keysym.sym;
+    prompt_ui->on_keydown_event([&](ui::KeyEvent ev) {
+        int key = ev.key();
 
         if (can_choose_undead && (key == 'u' || key == 'U'))
         {
