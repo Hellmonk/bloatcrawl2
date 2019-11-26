@@ -1,0 +1,20 @@
+enum: SP_OAK_TREE
+monster: MONS_HUMAN
+name: Oak Tree
+short_name: OT
+difficulty: Simple
+aptitudes:
+  xp: 0
+  hp: 0
+  mp_mod: 0
+  mr: 3
+str: 10
+int: 1
+dex: 1
+levelup_stat_frequency: 28
+levelup_stats: []
+fake_mutations:
+  - short: tree
+    long: You are a tree.
+recommended_jobs:
+  - JOB_MONK

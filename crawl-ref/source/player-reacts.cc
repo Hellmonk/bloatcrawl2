@@ -622,8 +622,9 @@ static void _decrement_durations()
 
     // Vampire bat transformations are permanent (until ended), unless they
     // are uncancellable (polymorph wand on a full vampire).
-    if (you.undead_state() != US_SEMI_UNDEAD || you.form != transformation::bat
-        || you.transform_uncancellable)
+    const bool permanent_vampire_bat = you.undead_state() == US_SEMI_UNDEAD && you.form == transformation::bat && !you.transform_uncancellable;
+    const bool oak_tree = you.species == SP_OAK_TREE;
+    if (!permanent_vampire_bat && !oak_tree)
     {
         if (form_can_fly()
             || form_likes_water() && feat_is_water(grd(you.pos())))
@@ -631,7 +632,7 @@ static void _decrement_durations()
             // Disable emergency flight if it was active
             you.props.erase(EMERGENCY_FLIGHT_KEY);
         }
-
+        dprf("Going to decrement transformation duration");
         if (_decrement_a_duration(DUR_TRANSFORMATION, delay, nullptr, random2(3),
                                   "Your transformation is almost over."))
         {

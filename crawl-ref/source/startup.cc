@@ -62,6 +62,7 @@
  #include "tilepick.h"
 #endif
 #include "tileview.h"
+#include "transform.h"
 #include "viewchar.h"
 #include "view.h"
 #ifdef USE_TILE_LOCAL
@@ -374,6 +375,12 @@ static void _post_init(bool newc)
             break;
         default:
             break;
+        }
+
+        if (you.species == SP_OAK_TREE)
+        {
+            if (transform(200, transformation::tree, true))
+            you.transform_uncancellable = true;
         }
     }
 

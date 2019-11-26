@@ -607,8 +607,10 @@ void update_shapeshifter_species()
              || (sp == SP_SHAPESHIFTER)
              // This should give enough time to level up again.
              || (sp == SP_MAYFLYTAUR && you.elapsed_time > 15000)
+             // game over man
+             || (sp == SP_OAK_TREE)
             );
-    
+
     if (sp == SP_BASE_DRACONIAN && you.experience_level >= 7)
         sp = random_draconian_colour();
 

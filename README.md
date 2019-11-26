@@ -22,6 +22,7 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Leprechauns** are small and frail but versatile. Their intrinsic luck gives them a knack for finding better items.
 * Half insect, half human, **Mayflytaurs** have incredibly short lifespans but have evolved to be exceptionally overpowered in just about every imaginable way.
 * Strange phantoms summoned from the mirror world, **Mirror Eidola** rapidly fade away. They must slay other creatures and take their energy to stay in this plane.
+* **Oak Trees** are part of the genus Quercus of the beech family, Fagaceae. Oaks have spirally arranged leaves, often with lobate margins.
 * **Oni** are monstrous in nature with the rough appearance of Ogres, albeit smaller. They discover spells as they gain experience and ignore schools of magic.
 * Deeper than a Deep Elf and twice as elven, **Profound Elves** are extremely frail magical experts.
 * **Proteans** are a race of vaguely humanoid amoebas. They grow in health and size as they mutate.
