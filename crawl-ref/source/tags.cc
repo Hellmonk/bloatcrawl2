@@ -1692,7 +1692,7 @@ static void tag_construct_you(writer &th)
     marshallBoolean(th, you.deterministic_levelgen);
     CrawlVector rng_states = rng::generators_to_vector();
     rng_states.write(th);
-    
+
     // Marshall UD overflow
     marshallUnsigned(th, you.overflow_healing_ud);
 

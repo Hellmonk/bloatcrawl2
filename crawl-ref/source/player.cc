@@ -1230,7 +1230,7 @@ int player_mp_regen()
 
     if (you.props[MANA_REGEN_AMULET_ACTIVE].get_int() == 1)
         regen_amount += 25;
-    
+
     if (you.species == SP_EMBER_ELF)
         regen_amount *= 3;
 
@@ -2264,7 +2264,8 @@ static int _player_evasion_bonuses()
     if (you.get_mutation_level(MUT_DISTORTION_FIELD))
         evbonus += you.get_mutation_level(MUT_DISTORTION_FIELD) + 1;
 
-    if (evbonus += you.get_mutation_level(MUT_VAPOROUS_BODY))
+    if (you.get_mutation_level(MUT_VAPOROUS_BODY))
+        evbonus += 2;
 
     if (you.has_mutation(MUT_EXOSKELETON))
         evbonus += 2;
@@ -5582,7 +5583,7 @@ player::player()
     trapped          = false;
 
     last_view_update = 0;
-    
+
     overflow_healing_ud = 30;
 
     spell_letter_table.init(-1);

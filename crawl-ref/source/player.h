@@ -475,7 +475,7 @@ public:
 
     // Number of viewport refreshes.
     unsigned int frame_no;
-    
+
     // Overflow healing for UD
     unsigned int overflow_healing_ud;
 
