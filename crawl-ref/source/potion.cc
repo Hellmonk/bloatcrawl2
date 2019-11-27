@@ -125,7 +125,8 @@ public:
                     unrotted = true;
                 // Pay for rot right off the top.
                 amount = unrot_hp(amount);
-                inc_hp(amount);
+                if(you.species != SP_UNFATHOMED_DWARF)
+                    inc_hp(amount);
             }
         }
 
@@ -205,10 +206,17 @@ public:
             amount = you.scale_potion_healing(amount);
         // Pay for rot right off the top.
         amount = unrot_hp(amount);
-        inc_hp(amount);
-        if (is_potion)
-            print_potion_heal_message();
-        mpr("You feel much better.");
+        if(you.species != SP_UNFATHOMED_DWARF)
+        {
+            inc_hp(amount);
+            if (is_potion)
+                print_potion_heal_message();
+            mpr("You feel much better.");
+        }
+        else if (is_potion)
+        {
+            mpr("Unfathomable Dwarves cannot heal health using these potions!");
+        }
         return true;
     }
 };

@@ -271,6 +271,11 @@ Irit
 Irits are magical, brutish one-eyed humanoids. They are adept at casting spells
 in heavy armour, although it costs them life force to do so.
 %%%%
+Unfathomed Dwarf
+
+Deeper than deep, these dwarves cannot heal even through divine means. However, 
+they have adapted to heal on kills and brew ambrosia potions from leftover life essence.
+%%%%
 Yeti
 
 Yeti are large, seldom-seen creatures that live on frozen mountain peaks.

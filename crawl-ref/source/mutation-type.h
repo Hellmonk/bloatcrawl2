@@ -58,6 +58,7 @@ enum mutation_type
     MUT_VAPOROUS_RESISTANCE,
     MUT_BLOOD_MAGIC,
     MUT_BOL_XI,
+    MUT_HEAL_ON_KILL,
 #endif
     MUT_ACUTE_VISION,
     MUT_AGILE,
@@ -261,6 +262,7 @@ enum mutation_type
     MUT_VAPOROUS_RESISTANCE,
     MUT_BLOOD_MAGIC,
     MUT_BOL_XI,
+    MUT_HEAL_ON_KILL,
 #endif
     NUM_MUTATIONS,
     CATEGORY_MUTATIONS,

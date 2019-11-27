@@ -1215,7 +1215,7 @@ int player_regen()
         rr = 0;
 
     // Trog's Hand. This circumvents sickness or inhibited regeneration.
-    if (you.duration[DUR_TROGS_HAND])
+    if (you.duration[DUR_TROGS_HAND] && you.species != SP_UNFATHOMED_DWARF)
         rr += 100;
 
     return rr;
@@ -5064,7 +5064,7 @@ static void _dec_elixir_hp(int delay)
         you.duration[DUR_ELIXIR_HEALTH] = 0;
 
     int heal = (delay * you.hp_max / 10) / BASELINE_DELAY;
-    if (!you.duration[DUR_DEATHS_DOOR])
+    if (!you.duration[DUR_DEATHS_DOOR] && you.species != SP_UNFATHOMED_DWARF)
         inc_hp(heal);
 }
 
@@ -5506,6 +5506,8 @@ player::player()
     trapped          = false;
 
     last_view_update = 0;
+    
+    overflow_healing_ud = 30;
 
     spell_letter_table.init(-1);
     ability_letter_table.init(ABIL_NON_ABILITY);

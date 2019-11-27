@@ -484,6 +484,15 @@ static const mutation_def mut_data[] =
   {"Your thinking seems confused.", "", ""},
 },
 
+
+{ MUT_HEAL_ON_KILL, 0, 1, mutflag::good, false,
+  "heals on kill",
+
+  {"You may heal when you kill monsters.", "", ""},
+  {"You now heal when you kill monsters.", "", ""},
+  {"You no longer heal when you kill monsters.", "", ""},
+},
+
 { MUT_BERSERK, 7, 3, mutflag::bad, false,
   "berserk",
 

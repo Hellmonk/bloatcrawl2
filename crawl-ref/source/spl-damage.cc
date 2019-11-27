@@ -786,7 +786,7 @@ spret vampiric_drain(int pow, monster* mons, bool fail)
 
     hp_gain = div_rand_round(hp_gain, 2);
 
-    if (hp_gain && !you.duration[DUR_DEATHS_DOOR])
+    if (hp_gain && !you.duration[DUR_DEATHS_DOOR] && you.species != SP_UNFATHOMED_DWARF)
     {
         mpr("You feel life coursing into your body.");
         inc_hp(hp_gain);

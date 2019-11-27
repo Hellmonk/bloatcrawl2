@@ -4730,7 +4730,8 @@ void ru_draw_out_power()
 
     int hp_inc = div_rand_round(you.piety, 16);
     hp_inc += roll_dice(div_rand_round(you.piety, 20), 6);
-    inc_hp(hp_inc);
+    if(you.species != SP_UNFATHOMED_DWARF)
+        inc_hp(hp_inc);
     int mp_inc = div_rand_round(you.piety, 48);
     mp_inc += roll_dice(div_rand_round(you.piety, 40), 4);
     inc_mp(mp_inc);

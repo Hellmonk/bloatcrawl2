@@ -2617,7 +2617,7 @@ static spret _do_ability(const ability_def& abil, bool fail)
         if (result != spret::success)
             return result;
 
-        if (damage > 0)
+        if (damage > 0 && you.species != SP_UNFATHOMED_DWARF)
         {
             mpr("You feel life flooding into your body.");
             inc_hp(damage);
@@ -2833,6 +2833,12 @@ static spret _do_ability(const ability_def& abil, bool fail)
     case ABIL_ELYVILON_LESSER_HEALING:
     case ABIL_ELYVILON_GREATER_HEALING:
     {
+        
+        if(you.species == SP_UNFATHOMED_DWARF)
+        {
+            mpr("Unfathomable Dwarves cannot receive godly healing!");
+            break;
+        }
         fail_check();
         int pow = 0;
         if (abil.ability == ABIL_ELYVILON_LESSER_HEALING)

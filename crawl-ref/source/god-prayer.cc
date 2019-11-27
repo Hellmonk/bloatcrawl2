@@ -274,7 +274,8 @@ static slurp_gain _sacrifice_one_item_noncount(const item_def& item)
     if (have_passive(passive_t::slime_hp)
         && x_chance_in_y(you.piety, MAX_PIETY)
         && you.hp < you.hp_max
-        && !you.duration[DUR_DEATHS_DOOR])
+        && !you.duration[DUR_DEATHS_DOOR]
+        && you.species != SP_UNFATHOMED_DWARF)
     {
         inc_hp(max(random2(item_value), 1));
         gain.jiyva_bonus |= jiyva_slurp_result::hp;
