@@ -1230,6 +1230,9 @@ int player_mp_regen()
 
     if (you.props[MANA_REGEN_AMULET_ACTIVE].get_int() == 1)
         regen_amount += 25;
+    
+    if (you.species == SP_EMBER_ELF)
+        regen_amount *= 3;
 
     return regen_amount;
 }
@@ -4323,6 +4326,9 @@ int get_real_mp(bool include_items)
 
     if (include_items && you.wearing_ego(EQ_WEAPON, SPWPN_ANTIMAGIC))
         enp /= 3;
+
+    if (you.species == SP_EMBER_ELF)
+        enp /= 2;
 
     enp = max(enp, 0);
 
