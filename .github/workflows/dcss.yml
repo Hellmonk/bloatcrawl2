@@ -14,5 +14,16 @@ jobs:
           sudo apt install build-essential libncursesw5-dev bison flex liblua5.1-0-dev
           libsqlite3-dev libz-dev pkg-config python-yaml libsdl2-image-dev
           libsdl2-mixer-dev libsdl2-dev libfreetype6-dev libpng-dev ttf-dejavu-core
-      - run: make
+          ccache
+      - run: echo "::add-path::/usr/lib/ccache"
+      - name: Cache compilation
+        uses: actions/cache@v1
+        with:
+          path: crawl-ref/source
+          key: ${{ runner.OS }}
+          restore-keys: |
+            ${{ runner.OS }}
+      - run: make -j2
+        working-directory: crawl-ref/source
+      - run: ./crawl -builddb
         working-directory: crawl-ref/source
