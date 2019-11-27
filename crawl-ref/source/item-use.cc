@@ -858,7 +858,7 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
             mpr("You can't wear that!");
         return false;
     }
-    
+
     if (you.species == SP_EXTINGUISHER && slot == EQ_SHIELD)
     {
         if (verbose)
@@ -873,7 +873,8 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
         return false;
     }
 
-    if (species_is_draconian(you.species) && slot == EQ_BODY_ARMOUR)
+    if ((species_is_draconian(you.species) || species_is_turtle(you.species))
+        && slot == EQ_BODY_ARMOUR)
     {
         if (verbose)
         {

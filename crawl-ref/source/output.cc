@@ -43,6 +43,7 @@
 #include "scroller.h"
 #include "showsymb.h"
 #include "skills.h"
+#include "species.h"
 #include "state.h"
 #include "status.h"
 #include "stringutil.h"
@@ -1242,9 +1243,25 @@ static void _redraw_title()
 
     // Line 2:
     // [Zombie|Vampire] Minotaur[-shaped Shapeshifter] [Mummy] [of God] [Piety]
+    // Turtle species name special case: [Red] [Mutant] [Zinja] Turtle
     textcolour(YELLOW);
     CGOTOXY(1, 2, GOTO_STAT);
     string species = species_name(you.species);
+    if (species_is_turtle(you.species))
+    {
+        const bool coloured = species_is_coloured_turtle(you.species);
+        string colour = turtle_bandana_colour(you.species).c_str();
+        colour[0] = toupper(colour[0]);
+        colour = make_stringf("%s ", colour.c_str());
+        const bool mutant = you.how_mutated() > 0;
+        const bool zinja = you_worship(GOD_ZIN);
+        species = make_stringf("%s%s%s%s",
+            coloured ? colour.c_str() : "",
+            mutant ? "Mutant " : "",
+            zinja ? "Zinja " : "",
+            "Turtle"
+        );
+    }
     if (you.shapeshifter_species && you.species != SP_SHAPESHIFTER)
         species = make_stringf("%s-shaped Shapeshifter", species.c_str());
     const auto undead = you.undead_state();
@@ -1277,8 +1294,10 @@ static void _redraw_title()
     {
         string god = " of ";
         god += you_worship(GOD_JIYVA) ? god_name_jiyva(true)
-                                      : god_name(you.religion);
-        NOWRAP_EOL_CPRINTF("%s", god.c_str());
+                                    : god_name(you.religion);
+                                    // remove " of Zin"
+        if (!(you_worship(GOD_ZIN) && species_is_turtle(you.species)))
+            NOWRAP_EOL_CPRINTF("%s", god.c_str());
 
         string piety = _god_asterisks();
         textcolour(_god_status_colour(YELLOW));

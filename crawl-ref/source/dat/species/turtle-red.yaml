@@ -1,0 +1,44 @@
+enum: SP_RED_TURTLE
+monster: MONS_SNAPPING_TURTLE
+name: Red Turtle
+genus: Turtle
+species_flags:
+  - turtle
+difficulty: False
+aptitudes:
+  xp: 0
+  hp: -1
+  mp_mod: -1
+  mr: 3
+  fighting: 2
+  short_blades: 1
+  long_blades: -1
+  axes: -2
+  maces_and_flails: -1
+  polearms: -2
+  staves: -1
+  throwing: -1
+  slings: -2
+  bows: -2
+  crossbows: -2
+  armour: False
+  shields: -3
+  spellcasting: -1
+  conjurations: -1
+  hexes: -2
+  charms: -1
+  summoning: -2
+  necromancy: False
+  translocations: -1
+  transmutations: -2
+  fire_magic: 0
+  ice_magic: -2
+  air_magic: -2
+  earth_magic: -2
+  poison_magic: False
+  invocations: 0
+  evocations: -1
+str: 6
+int: 9
+dex: 9
+levelup_stat_frequency: 4

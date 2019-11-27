@@ -11,7 +11,7 @@ to serve their maker, but they are free to follow another god if they wish.
 %%%%
 Astral
 
-Strange beings from beyond the stars, Astrals cannot gain resistances to magic 
+Strange beings from beyond the stars, Astrals cannot gain resistances to magic
 or the elements. Their attacks inflict vulnerability on beings from this world.
 %%%%
 Barachi
@@ -26,7 +26,7 @@ bodies. They never tip more than 10%.
 %%%%
 Butterfly
 
-A cute butterfly that will stop at nothing to obtain the Orb. Monsters turn 
+A cute butterfly that will stop at nothing to obtain the Orb. Monsters turn
 neutral when they first see you.
 %%%%
 Centaur
@@ -263,7 +263,7 @@ Their shimmering scales repel attacks and their wings let them fly.
 %%%%
 Argon
 
-Argons are, unlike most other living beings, made of gas. Some think they 
+Argons are, unlike most other living beings, made of gas. Some think they
 originated on a far away star.
 %%%%
 Irit
@@ -273,10 +273,16 @@ in heavy armour, although it costs them life force to do so.
 %%%%
 Unfathomed Dwarf
 
-Deeper than deep, these dwarves cannot heal even through divine means. However, 
+Deeper than deep, these dwarves cannot heal even through divine means. However,
 they have adapted to heal on kills and brew ambrosia potions from leftover life essence.
 %%%%
 Yeti
 
 Yeti are large, seldom-seen creatures that live on frozen mountain peaks.
 Sufficiently mature Yeti passively freeze adjacent foes.
+%%%%
+Turtle
+
+Turtles are hard-shelled warriors trained in the arts of ninjutsu. They fight
+evil wherever it can be found and follow a strict honour code.
+%%%%

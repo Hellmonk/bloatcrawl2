@@ -46,6 +46,8 @@ static bool _banned_combination(job_type job, species_type species)
     case SP_DEMONSPAWN:
         return job_is_good_god_zealot(job);
         break;
+    case SP_TURTLE:
+        return job_is_evil_god_zealot(job);
     default:
         break;
     }

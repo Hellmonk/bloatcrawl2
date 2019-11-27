@@ -13,6 +13,8 @@ bool species_is_elven(species_type species);
 bool species_is_draconian(species_type species);
 bool species_is_orcish(species_type species);
 bool species_has_hair(species_type species);
+bool species_is_turtle(species_type species);
+bool species_is_coloured_turtle(species_type species);
 bool species_can_throw_large_rocks(species_type species);
 
 bool species_has_claws(species_type species);
@@ -70,5 +72,7 @@ const species_def& get_species_def(species_type species);
 species_type random_starting_species();
 bool is_starting_species(species_type species);
 species_type random_draconian_colour();
+species_type random_turtle_colour();
+string turtle_bandana_colour(species_type sp);
 void update_shapeshifter_species();
 bool species_can_use_modified_undeadness(species_type sp);

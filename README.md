@@ -30,9 +30,9 @@ Bloatcrawl 2 is a fork of [Dungeon Crawl Stone Soup](https://crawl.develz.org/) 
 * **Slitherier Nagas** are offbrand Nagas, and about twice as much everything. Extremely healthy, extremely stealthy, extremely big, and excruciatingly slow.
 * Less dextrous than other elves, **Squat Elves** have mastered the art of the power squat. They use this ability to enhance their strength and intelligence.
 * **Troll Two**: They're eating her! And then they're going to eat me! Oh my GAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHD!
+* **Turtles** are hard-shelled warriors trained in the arts of ninjutsu. They fight evil wherever it can be found and follow a strict honour code.
 * Deeper than deep, **Unfathomable Dwarves** cannot heal even through divine means. However, they have adapted to heal on kills and brew ambrosia potions from leftover life essence.
 * **Yeti** are large, seldom-seen creatures that live on frozen mountain peaks. Sufficiently mature Yeti passively freeze adjacent foes.
-
 
 ## New Backgrounds
 

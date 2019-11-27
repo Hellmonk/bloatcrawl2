@@ -41,6 +41,7 @@
 #include "religion.h"
 #include "scroller.h"
 #include "skills.h"
+#include "species.h"
 #include "state.h"
 #include "stringutil.h"
 #include "transform.h"
@@ -636,6 +637,7 @@ string describe_mutations(bool drop_title)
 
         result += _annotate_form_based(
                     make_stringf("Your %s. (AC +%d)",
+                       species_is_turtle(you.species) ? "shell is tough" :
                        you.species == SP_NAGA || you.species == SP_SLITHERIER_NAGA ? "serpentine skin is tough" :
                        you.species == SP_GARGOYLE ? "stone body is resilient" :
                                                     scale_clause.c_str(),
@@ -716,7 +718,7 @@ string describe_mutations(bool drop_title)
 
     // Could move this into species-data, but then the hack that assumes
     // _dragon_abil should get called on all draconian fake muts would break.
-    if (species_is_draconian(you.species))
+    if (species_is_draconian(you.species) || species_is_turtle(you.species))
         result += "You cannot fit into any form of body armour.\n";
 
     if (player_res_poison(false, false, false) == 3)
@@ -1559,6 +1561,14 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
                                    force_mutation, false);
     }
 
+    // Turtles only get good mutations, except from Jiyva
+    if (species_is_turtle(you.species) && which_mutation > NUM_MUTATIONS
+        && which_mutation < MUT_NON_MUTATION
+        && which_mutation != RANDOM_SLIME_MUTATION)
+    {
+            which_mutation = RANDOM_GOOD_MUTATION;
+    }
+
     switch (which_mutation)
     {
     case RANDOM_MUTATION:
@@ -1715,6 +1725,8 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
 
         // For all those scale mutations.
         you.redraw_armour_class = true;
+        if (species_is_turtle(you.species))
+            you.redraw_title = true;
 
         notify_stat_change();
 

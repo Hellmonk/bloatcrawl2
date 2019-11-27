@@ -231,3 +231,10 @@ bool job_is_good_god_zealot(job_type job)
 {
     return (job == JOB_ZINJA || job == JOB_PALADIN || job == JOB_DOCTOR);
 }
+
+bool job_is_evil_god_zealot(job_type job)
+{
+    return (job == JOB_KIKUMANCER || job == JOB_BLOOD_KNIGHT
+            || job == JOB_DEATH_BISHOP || job == JOB_WITNESS
+            || job == JOB_ABYSSAL_KNIGHT || job == JOB_NIGHT_KNIGHT);
+}
