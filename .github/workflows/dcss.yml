@@ -4,11 +4,13 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
-    - name: make
-      run: make
-      working-directory: crawl-ref/source
+      - uses: actions/checkout@v1
+      - run: >
+          apt-get install build-essential libncursesw5-dev bison flex liblua5.1-0-dev
+          libsqlite3-dev libz-dev pkg-config python-yaml libsdl2-image-dev
+          libsdl2-mixer-dev libsdl2-dev libfreetype6-dev libpng-dev ttf-dejavu-core
+      - run: make
+        working-directory: crawl-ref/source
